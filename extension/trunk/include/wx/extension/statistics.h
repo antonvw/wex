@@ -2,7 +2,7 @@
 * File:          statistics.h
 * Purpose:       Include file for statistics classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: statistics.h 21 2008-11-08 15:01:15Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

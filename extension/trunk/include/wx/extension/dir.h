@@ -2,7 +2,7 @@
 * File:          dir.h
 * Purpose:       Declaration of class 'exDir'
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: dir.h 53 2008-11-13 18:38:57Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

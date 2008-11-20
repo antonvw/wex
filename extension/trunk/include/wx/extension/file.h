@@ -2,7 +2,7 @@
 * File:          file.h
 * Purpose:       Declaration of wxWidgets file extension classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: file.h 67 2008-11-15 09:12:31Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

@@ -2,7 +2,7 @@
 * File:          otl.h
 * Purpose:       Declaration of otl related things
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: otl.h 53 2008-11-13 18:38:57Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
