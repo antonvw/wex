@@ -1,0 +1,261 @@
+<!--
+File:    release.htm
+Author:  Anton van Wezenbeek
+RCS-ID:  $Id: release.htm 65 2008-11-14 19:55:20Z anton $
+Purpose: Release info for wxfiletool
+-->
+
+<HEAD>
+<TITLE>
+wxfiletool Release Information
+</TITLE>
+</HEAD>
+
+<p>
+wxfiletool contains a collection of wxextension classes
+that are implemented for a list view component.
+
+<STYLE type="text/css">
+.TableStyle
+{
+<!-- font-family: Verdana; -->
+font-weight: normal;
+font-size: 9px;
+color: #404040;
+background-color: #fafafa;
+border: 1px #6699CC solid;
+}
+</STYLE>
+
+<!--
+Next version:
+
+Wait for next wxWidgets:
+- In ftProcess::HasInput allow php script error messages to be able to be double clicked and goto line no.
+  Is already added, but the reg ex does not match, wait for next wxWidgets.
+  Then also change the gcc check implemented by tokenizer into reg ex check.
+- wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
+  found files as items to the list view, whereas that could be fast. Profiling necessary??
+  Or just hope better for next wxWidgets.
+
+Roadmap:
+- In ftSTC adding file drop causes text dragging not work.
+  In scintilla v1.70 file drop is supported (how?), check and remove from here if okay.
+  This can be tested in sample for wxExtension.
+- Readonly item font configurable.
+- Implement ftState as a thread.
+- In ftListView GTK a list view (lijst weergave) should be possible too.
+  Wait for new wxDataviewCtrl, then sort will probably work as well.
+- Make process and wxGTK can be improved: not always a valid file is found.
+  And for each new Run clear the old contents??
+-->
+
+<p>
+<TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
+<tr>
+<td><I>Version</I>
+<td><I>Released</I>
+<td><I>Description</I>
+<td><I>Uses</I>
+
+<tr>
+<td>
+v2.0
+<td>
+2008
+<td>
+<ul>
+<li> wxfiletool is now under SVN.
+<li> Added exProcess, uses a thread for processing.
+<li> Update for project, saved in data dir.
+</ul>
+<td>
+wxWidgets-SVN, wxExtension 2.0
+
+<tr>
+<td>
+v1.6
+<td>
+26 October 2007
+<td>
+<ul>
+<li> File and project history support added using same base code.
+<li> Improved ftFind, size now part of constructor, and uses no explicit face name.
+<li> CompareSetup improved (the wxRegEx used), and moved to filetool together with CompareFile.
+<li> Compare support added to ftSTC.
+<li> Not existing list items get a 'computer' image.
+</ul>
+<td>
+wxWidgets 2.8.6, wxExtension 1.12
+
+<tr>
+<td>
+v1.5
+<td>
+3 April 2007
+<td>
+<ul>
+<li> Uses new exConfigDialog for RBS dialog.
+<li> Add second constructor to ftSTC.
+</ul>
+<td>
+wxWidgets 2.8.3, wxExtension 1.6
+
+<tr>
+<td>
+v1.4
+<td>
+14 December 2006
+<td>
+<ul>
+<li> Better implementation for printing ftListView and CompareSetup.
+<li> RBS script file uses 1 second wait time and now prints "DONE" if file has been transferred.
+</ul>
+<td>
+wxWidgets 2.8.0, wxExtension 1.5
+
+<tr>
+<td>
+v1.3
+<td>
+4 August 2006
+<td>
+<ul>
+<li> Uses wxTheFileIconsTable for file icons.
+<li> ftListView::OnIdle uses readonly bit for checking for updates.
+     Readonly files have italic font filename.
+<li> Text in the find text combobox is now stored when you select another text from the combobox.
+<li> If CompareSetup does not find anything a statusbar message is given.
+</ul>
+<td>
+wxWidgets 2.6.3, wxExtension 1.4
+
+<tr>
+<td>
+v1.2
+<td>
+8 March 2006
+<td>
+<td>
+wxWidgets 2.6.3, wxExtension 1.3
+
+<tr>
+<td>
+v1.1
+<td>
+20 January 2006
+<td>
+Added ftState. The list process uses information icon if
+the line does not relate to an existing file.
+<td>
+wxExtension 1.2
+
+<tr>
+<td>
+v1.0
+<td>
+22 December 2005
+<td>
+First version.
+<td>
+wxWidgets 2.6.2, wxExtension 1.1
+
+</TABLE>
+
+<p>
+Here are all the available classes.
+
+<p>
+<TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
+
+<tr>
+<td><i>Class</i>
+<td><i>Derived from</i>
+<td><i>Description</i>
+
+<tr>
+<td>
+ftDir
+<td>
+exDir
+ftState
+<td>
+Adds ftListView interface to exDir and adds a RunTool method to
+allow you to run tools on all matching files in the dir and report results
+to a ftListView.
+
+<tr>
+<td>
+ftFind
+<td>
+<td>
+Allows you to use a combobox as find text in a tool bar.
+
+<tr>
+<td>
+ftFrame
+<td>
+exFrame
+<td>
+Adds a ftListView interface to exFrame through the Activate method.
+
+<tr>
+<td>
+ftListItem
+<td>
+exListItem
+<td>
+Offers a list item associated with a file on a ftListView.
+
+<tr>
+<td>
+ftListView
+<td>
+exListView
+exFile
+ftState
+<td>
+Adds drag/drop files from explorer, and combines exListView and exFile,
+giving you a list control with file synchronization support.
+There are predefined ftListViews.
+
+<tr>
+<td>
+ftState
+<td>
+<td>
+Offers a state for running and stopping processes.
+
+<tr>
+<td>
+ftStatistics
+<td>
+exFileStatistics
+<td>
+Implements statistics for a ftListView.
+
+<tr>
+<td>
+ftSTC
+<td>
+exSTC
+<td>
+Adds drag/drop files from explorer, adds an ftFrame to exSTC, giving it a ftListView interface.
+
+<tr>
+<td>
+ftTextFile
+<td>
+exTextFile
+<td>
+Adds a ftListView interface to a exTextFile (the report methods).
+
+<tr>
+<td>
+ftTool
+<td>
+exTool
+<td>
+Adds a cast to list type from a tool type.
+
+</TABLE>

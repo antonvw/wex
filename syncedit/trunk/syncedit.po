@@ -1,0 +1,352 @@
+# File:    syncedit.po
+# Purpose: Translation for syncedit to dutch.
+# RCS-ID:  $Id: syncedit.po 58 2008-11-14 19:23:27Z anton $
+# Copyright (c) 1998-2008 Anton van Wezenbeek
+msgid ""
+msgstr ""
+"Project-Id-Version: syncedit v5.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-10-31 12:36+0100\n"
+"PO-Revision-Date: 2008-10-31 12:37+0100\n"
+"Last-Translator: Anton <a.m.vanwezenbeek@lvnl.nl>\n"
+"Language-Team: Anton <a.m.vanwezenbeek@lvnl.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ./\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: frame.cpp:70
+msgid "Project Files"
+msgstr "Project bestanden"
+
+#: frame.cpp:101
+msgid "Files"
+msgstr "Bestanden"
+
+#: frame.cpp:103
+msgid "Projects"
+msgstr "Projecten"
+
+#: frame.cpp:105
+msgid "Output"
+msgstr "Resultaten"
+
+#: frame.cpp:107
+msgid "Explorer"
+msgstr "Verkenner"
+
+#: frame.cpp:110
+msgid "History"
+msgstr "Geschiedenis"
+
+#: frame.cpp:112
+msgid "Toolbar"
+msgstr "Werkbalk"
+
+#: frame.cpp:253
+msgid "Project"
+msgstr "Project"
+
+#: frame.cpp:253
+msgid "Textfile"
+msgstr "Bestand"
+
+#: frame.cpp:322
+msgid "Print all files"
+msgstr "Alle bestanden afdrukken"
+
+#: frame.cpp:323
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: frame.cpp:393
+msgid ""
+"This program offers a portable text or binary editor\n"
+"with automatic syncing. All its config files are read\n"
+"and saved in the same directory as where the executable is."
+msgstr ""
+"Dit programma biedt een portable text of binaire editor met\n"
+"automatische synchronisatie. Alle configuratie bestanden worden\n"
+"bewaard en gelezen in dezelfde map als waar het programma zelf staat."
+
+#: frame.cpp:398
+msgid "This program offers a text or binary editor with automatic syncing."
+msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
+
+#: frame.cpp:400
+msgid "All rights reserved."
+msgstr "Alle rechten voorbehouden."
+
+#: frame.cpp:503
+msgid "Comparator"
+msgstr "Vergelijker"
+
+#: frame.cpp:504
+msgid "Set Comparator"
+msgstr "Vergelijker instellen"
+
+#: frame.cpp:508
+msgid "Editor Options"
+msgstr "Editor opties"
+
+#: frame.cpp:514
+msgid "Set List Colour"
+msgstr "Lijst kleuren instellen"
+
+#: frame.cpp:521
+#: frame.cpp:529
+#: frame.cpp:534
+msgid "List Font"
+msgstr "Lijst lettertype"
+
+#: frame.cpp:526
+msgid "Set List Font"
+msgstr "Lijst lettertype instellen"
+
+#: frame.cpp:635
+msgid "Ascii Table"
+msgstr "Ascii tabel"
+
+#: support.cpp:31
+msgid "File Type"
+msgstr "Bestands type"
+
+#: support.cpp:32
+msgid "Lines"
+msgstr "Regels"
+
+#: support.cpp:42
+msgid "Lexer"
+msgstr "Lexer"
+
+#: support.cpp:45
+msgid "Items"
+msgstr "Items"
+
+#: support.cpp:55
+msgid "Open &Lexers"
+msgstr "&Lexers file openen"
+
+#: support.cpp:56
+msgid "Open &Logfile"
+msgstr "&Logfile openen"
+
+#: support.cpp:58
+msgid "Close A&ll"
+msgstr "A&lles sluiten"
+
+#: support.cpp:62
+msgid "Save A&ll"
+msgstr "A&lles opslaan"
+
+#: support.cpp:65
+msgid "Print A&ll"
+msgstr "&Alles afdrukken"
+
+#: support.cpp:78
+msgid "Find &Next\tF3"
+msgstr "&Volgende zoeken\tF3"
+
+#: support.cpp:80
+msgid "Find &In Files"
+msgstr "&Zoeken in bestanden"
+
+#: support.cpp:84
+msgid "&Goto"
+msgstr "&Ga naar"
+
+#: support.cpp:86
+msgid "&Control Char"
+msgstr "&Controle karakter"
+
+#: support.cpp:88
+msgid "Start Record"
+msgstr "Start opname"
+
+#: support.cpp:89
+msgid "Stop Record"
+msgstr "Stop opname"
+
+#: support.cpp:90
+msgid "Playback\tCtrl+M"
+msgstr "Afspelen\tCtrl+M"
+
+#: support.cpp:93
+msgid "&Statusbar"
+msgstr "&Statusbalk"
+
+#: support.cpp:94
+msgid "&Toolbar"
+msgstr "&Werkbalk"
+
+#: support.cpp:96
+msgid "&Files"
+msgstr "&Bestanden"
+
+#: support.cpp:97
+msgid "&Projects"
+msgstr "&Projecten"
+
+#: support.cpp:98
+msgid "&Explorer"
+msgstr "&Verkenner"
+
+#: support.cpp:99
+msgid "&Output"
+msgstr "&Resultaten"
+
+#: support.cpp:100
+msgid "&Ascii Table"
+msgstr "&Ascii tabel"
+
+#: support.cpp:101
+msgid "&History"
+msgstr "&Geschiedenis"
+
+#: support.cpp:105
+msgid "&List"
+msgstr "&Lijst"
+
+#: support.cpp:106
+msgid "&Detail"
+msgstr "&Details"
+
+#: support.cpp:107
+msgid "&Small Icon"
+msgstr "&Pictogrammen"
+
+#: support.cpp:109
+msgid "&Lists"
+msgstr "&Lijstweergave"
+
+#: support.cpp:113
+msgid "&Select"
+msgstr "&Selecteren"
+
+#: support.cpp:115
+msgid "&Run"
+msgstr "Uitvoeren"
+
+#: support.cpp:122
+msgid "&Open As Text"
+msgstr "&Als tekst openen"
+
+#: support.cpp:128
+msgid "&Auto Sort"
+msgstr "&Automatisch sorteren"
+
+#: support.cpp:131
+msgid "Split"
+msgstr "Splitsen"
+
+#: support.cpp:134
+msgid "Set &Comparator"
+msgstr "Vergelijker &instellen"
+
+#: support.cpp:136
+msgid "Set &List Colour"
+msgstr "&Lijst kleuren instellen"
+
+#: support.cpp:137
+msgid "Set &List Font"
+msgstr "&Lijst lettertype instellen"
+
+#: support.cpp:139
+msgid "&Ascending"
+msgstr "&Oplopend"
+
+#: support.cpp:140
+msgid "&Descending"
+msgstr "&Aflopend"
+
+#: support.cpp:141
+msgid "&Toggle"
+msgstr "&Afwisselen"
+
+#: support.cpp:142
+msgid "Set &List Sort Method"
+msgstr "&Lijst sorteer methode instellen"
+
+#: support.cpp:144
+msgid "Set &Editor Options"
+msgstr "&Editor opties"
+
+#: support.cpp:147
+msgid "&Contents"
+msgstr "Inhoud"
+
+#: support.cpp:150
+msgid "&File"
+msgstr "&Bestand"
+
+#: support.cpp:151
+msgid "&Edit"
+msgstr "Be&werken"
+
+#: support.cpp:152
+msgid "&View"
+msgstr "&Beeld"
+
+#: support.cpp:153
+msgid "&Process"
+msgstr "&Proces"
+
+#: support.cpp:154
+msgid "&Project"
+msgstr "&Project"
+
+#: support.cpp:155
+msgid "&Window"
+msgstr "&Venster"
+
+#: support.cpp:156
+msgid "&Options"
+msgstr "&Opties"
+
+#: support.cpp:182
+msgid "Open project..."
+msgstr "Project openen..."
+
+#: support.cpp:187
+msgid "Save project"
+msgstr "Project opslaan"
+
+#: support.cpp:195
+msgid "View in list mode"
+msgstr "Lijst weergave"
+
+#: support.cpp:200
+msgid "View in detail mode"
+msgstr "Details weergave"
+
+#: support.cpp:229
+msgid "View in hex mode"
+msgstr "Bekijk hexadecimaal"
+
+#: support.cpp:231
+msgid "Synchronize modified files"
+msgstr "Synchronizeer gewijzigde bestanden"
+
+#~ msgid "Browse"
+#~ msgstr "Overzicht"
+#~ msgid "&Browse"
+#~ msgstr "&Overzicht"
+#~ msgid "day"
+#~ msgstr "dag"
+#~ msgid "week"
+#~ msgstr "week"
+#~ msgid "month"
+#~ msgstr "maand"
+#~ msgid "year"
+#~ msgstr "jaar"
+#~ msgid "link"
+#~ msgstr "koppeling"
+#~ msgid "help"
+#~ msgstr "help"
+#~ msgid "show this help"
+#~ msgstr "geeft deze help"
+#~ msgid "input file:line number"
+#~ msgstr "bestand:regel nummer"
+
