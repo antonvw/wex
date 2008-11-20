@@ -1,0 +1,338 @@
+<!--
+File:    release.htm
+Author:  Anton van Wezenbeek
+RCS-ID:  $Id: release.htm 64 2008-11-14 19:45:22Z anton $
+Purpose: Release info for wxextension
+-->
+
+<HEAD>
+<TITLE>
+wxextension Release Information
+</TITLE>
+</HEAD>
+
+<STYLE type="text/css">
+.TableStyle
+{
+<!-- font-family: Verdana; -->
+font-weight: normal;
+font-size: 9px;
+color: #404040;
+background-color: #fafafa;
+border: 1px #6699CC solid;
+}
+</STYLE>
+
+<!--
+Next version:
+
+Wait for wxWidgets 3.0:
+- Update exStat documentation.
+- Sorting on listview string column no longer works.
+- Make exDir multi threaded.
+- Use new wxAuiToolBar.
+- New wxSTC has a fix in GetTextRaw, maybe this fixed some things for exSTC.
+- exFile::Read is much slower than v1.12 (see sample). Maybe set USE_STL helps?
+- Add WXDLLEXPORT.
+- Add SpinCtrlDouble to exConfigDialog (in new SVN).
+- No longer use iterate on strings by index, but use iterators instead.
+  See in stc.cpp::SequenceDialog
+  for (int pos = end.length() - 1; pos >= 0; pos--)
+  {
+    lines *= abs(end[pos] - start[pos]) + 1;
+  }
+  And in textfile.cpp::ParseLine.
+  wxString s = "hello";
+  wxString::iterator i;
+  for (i = s.begin(); i != s.end(); ++i)
+  {
+    wxUniChar uni_ch = *i;
+    wxChar ch = uni_ch;
+     // same as wxChar ch  = *i;
+  }
+- Find in Grid and SetGridCursor does not work?
+- Print All (i.e. exSTC Print(false)) does not work, same problem as with IP Gateway (when prompt false, nothing is printed).
+  Then the lib can be used for building a spooler as well.
+- Print prints empty page.
+  Maybe:
+  In exPrintout check on page.x == 0 etc. and the 0.8 factor should be as in Code::Blocks.
+  Done, no change, also Print Preview missing lines.
+- Copy/paste between msw exSTC and gtk exSTC is not possible. There was a change in wxWidgets 2.9.
+
+- In exSTC you cannot place the cursor inside the () pair for cpp lexer (bug in Scintilla?).
+- In exNotebook add a SyncCloseAll for close complete notebook (if the event can be catched).
+- In exFileName the IsLink does not seem to work:
+  when adding links to a project, the link text is not coloured.
+- In exGrid add rules for html tables (not yet implemented in html/m_tables.cpp 'The tables handler:').
+- Improve embedded html lexers, like Scite does (wait for next scintilla version??).
+  And check the scite sources how.
+
+Roadmap:
+- Convert lexers.cfg into xml format.
+- Making the find/replace dialog a static member of exInterface does not work for Linux.
+  Test again in 2.1.
+- When opening large file, allow open to be cancelled, and show progress.
+  Maybe use a separate thread for this.
+- Add dialog for updating the include directory (with browsing for folders).
+-->
+
+<TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
+<tr>
+<td><I>Version</I>
+<td><I>Released</I>
+<td><I>Description</I>
+<td><I>Uses</I>
+
+<tr>
+<td>
+v2.0
+<td>
+2008
+<td>
+<ul>
+<li> Changes for wxWidgets-SVN (unicode related). Removed all wxT().
+<li> wxextension is now under SVN.
+<li> Compiles if wxUSE_STL is set.
+<li> Documentation is doxygen parseble, and lexers.cfg now colours doxygen comments.
+<li> Added exManagedFrame, and added freeze and thaw when maximize and set window size.
+<li> Added exStat with a ConfigDialog for colouring.
+<li> Added exStockArt offers stock items on the toolbar.
+<li> Added exSTCShell.
+<li> Added exToolBar.
+<li> Updated exApp.
+     Added wxLocale and no longer depends on wxstd, just reads all catalogs available.
+     Moved printer from exInterface to exApp.
+     Moved config member from exFrame to exApp.
+<li> Updated exConfigDialog checkboxes grow again.
+     wxAPPLY is supported by exConfigDialog.
+     Added combobox items to exConfigDialog, so the find in files dialogs are no longer necessary.
+     Uses wxSizerFlags.
+<li> Updated exMenu and exTool, no longer offering virtual methods.
+<li> Updated exStatistics. Templatized it and added Show method, and corrected Clear.
+<li> Updated exSTC. Added macro support.
+     In exSTC when document is changed, uses event wxEVT_STC_MODIFIED in OnStyledText
+     for displaying new modification time and call PropertiesMessage.
+     If file is synchronized, while there was a selection,
+     the selection is gone, whereas ADDTEXT should not change the selection.
+<li> Updated exTextfile. The ParseComments in exTextfile is now virtual,
+     all db code in exTextFile is removed.
+     OTL is used for grid filling.
+<li> Added plaform switches to lexers.cfg.
+     Last line in lexers.cfg was not parsed correctly.
+     Updated sql keywords in lexers.cfg.
+<li> Added wxUSE_GUI switches.
+<li> namespace no longer in header files.
+<li> Most enums now inside classes.
+<li> More default constructors, and less copy constructors. More methods are const aware.
+<li> wxTheApp->Yield only for main thread, otherwise calls wxThread::Yield.
+<li> Updated default lexer, so C++ comments counted correctly.
+<li> When setting new lexer, folding is enabled/disabled according to this new lexer.
+<li> The find item in list view popup menu did not have an icon.
+<li> When replacing text, the 'replace with' combobox uses the same text as default.
+<li> Replaced wxGenericColourButton into wxColourPickerWidget.
+<li> Subdir flag is used in config for config file.
+<li> Directory structure similar to wx.
+<li> Tooltip on statusbar is now set if mouse is over a pane.
+</ul>
+<td>
+wxWidgets-SVN (scintilla 1.75)
+
+<tr>
+<td>
+v1.12
+<td>
+26 October 2007
+<td>
+<ul>
+<li> Replace in files is fixed.
+<li> In exConfigDialog checkboxes no longer grow.
+<li> Fix in lexers, so in lexers.cfg /* */ can be used too for comments, and can be folded.
+<li> wxTextFile::GetEOL instead of constant cEOL.
+<li> Fix for exSTC Save As, now also updates lexer.
+<li> Change all ID_ALL into ID_STC_ALL.
+</ul>
+<td>
+wxWidgets 2.8.6 (scintilla 1.70)
+
+<tr>
+<td>
+v1.11
+<td>
+17 September 2007
+<td>
+<ul>
+<li> The lexers file parses as a cpp file, so #RRGGBB colours are
+     interpreted correctly.
+<li> Added allow sync so you can set sync behaviour.
+<li> Moved exNotebook from base to it's own files.
+<li> In exSTC::FileSave if filename is empty, do a FileSaveAs.
+<li> GotoLine selects the line if text empty.
+<li> Text raw added.
+<li> Paste was enabled, but pasting did not put any characters.
+</ul>
+<td>
+wxWidgets 2.8.5 (scintilla 1.70)
+
+<tr>
+<td>
+v1.10
+<td>
+30 August 2007
+<td>
+<ul>
+<li> Updated extension.h, only often used files are included, split of large files.
+<li> Added grid rendering.
+<li> In exSTC links inside ' and ' are allowed too.
+<li> Fix in exLexer.
+</ul>
+<td>
+wxWidgets 2.8.4 (scintilla 1.70)
+
+<tr>
+<td>
+v1.9
+<td>
+16 August 2007
+<td>
+<ul>
+<li> In exSTC and AddAsciiTable do not use %3d, that fills using spaces. Just set tab size temporary.
+     Also, settings as Show Eol char should not be used for the ascii table.
+<li> Several keywords are allowed on one line in lexers.cfg.
+<li> Hex mode is improved (opening twice as fast).
+     In hex mode, if cursor on a char, colour the corresponding char on the other field.
+<li> In exListView wxGTK Sort By Date gives error Date Format,
+     this causes Project Sync not to work on gtk as well.
+<li> Small improvement in exConfigDialog.
+</ul>
+<td>
+wxWidgets 2.8.4 (scintilla 1.70)
+
+<tr>
+<td>
+v1.8
+<td>
+9 July 2007
+<td>
+<ul>
+<li> In exConfigDialog the checkboxes are extendible, so all text fits.
+<li> In exSTC hex view when on 0x00010 and doing ctrl d, no tooltip appears.
+<li> In exSTC::SetLexer if (m_Lexer.GetScintillaLexer().empty()) return false;
+     results in global styles not applied, as that is done later on in Colourise.
+<li> In exStatusText added a flag DEFAULT, and use that in syncedit support instead of 0.
+<li> In exLexers change name GetFileName into GetFullPath.
+<li> exSTCEntryDialog supports binary data containing NULL.
+<li> Syncing is improved, also on file size change, and better honouring the selection
+     (using Append, so now done by Scintilla, though it seems not correct always).
+</ul>
+<td>
+wxWidgets 2.8.4 (scintilla 1.70)
+
+<tr>
+<td>
+v1.7
+<td>
+13 June 2007
+<td>
+<ul>
+<li> Keywords in lexers.cfg.
+<li> Hex mode string is allocated.
+<li> exFileName::GetColouring uses status info and no longer FileExists,
+     and now folders get a colour as well.
+<li> Hex char mode also shows decimal value.
+<li> Use wxUSE_GRID, wxUSE_TOOLBAR, wxUSE_ACCEL defines for using toolbar, grid etc.
+<li> In exSTC add link popup menu not if menu type = EX_STC_SIMPLE (for socket server).
+<li> In exFile and Read always do Seek(seek_position).
+<li> In exGrid if one cell selected, uses selection as default for FindText.
+<li> All code with odbc is within USE_ODBC directives.
+</ul>
+<td>
+wxWidgets 2.8.4 (scintilla 1.70)
+
+<tr>
+<td>
+v1.6
+<td>
+23 March 2007
+<td>
+Used by Socket Server.
+<ul>
+<li> Improved exConfig, exConfigDialog, exDialog and exNotebook (derived from wxAuiNotebook).
+<li> In exSTC OnPreparePrinting added a check on paper size 0, otherwise Print and Preview hangs.
+<li> exFile::Read improved.
+</ul>
+<td>
+wxWidgets 2.8.3 (scintilla 1.70)
+
+<tr>
+<td>
+v1.5
+<td>
+14 December 2006
+<td>
+Used by IP Gateway and Intel Hex Upload.
+<ul>
+<li> Improved exNotebook (no longer template based).
+<li> Lexers are kept in lexers.cfg config file, using the exTextFile as base.
+<li> Files can be read and saved with NULLs (binary mode improved).
+<li> Added EX_PORTABLE switch, used by IP Gateway.
+<li> In exSTC Insert is configurable by adding an EX_STC_INSERT type.
+<li> In exGrid and exListView printing is improved.
+<li> RCS Keywords no longer supported.
+</ul>
+<td>
+wxWidgets 2.8.0 (scintilla 1.70)
+
+<tr>
+<td>
+v1.4
+<td>
+14 July 2006
+<td>
+Used by the GAREX regrouping prototype.
+<ul>
+<li> Added sequence generator to exSTC.
+<li> Added find (and use config) to exGrid.
+<li> Update find for exListView to look in other columns as well.
+</ul>
+<td>
+wxWidgets 2.6.3 (scintilla 1.67)
+
+<tr>
+<td>
+v1.3
+<td>
+27 March 2006
+<td>
+Added class exStatusBar.
+<td>
+wxWidgets 2.6.3 (scintilla 1.67)
+
+<tr>
+<td>
+v1.2
+<td>
+30 January 2006
+<td>
+Extended exGrid with drag/drop functionality.
+<td>
+
+<tr>
+<td>
+v1.1
+<td>
+21 December 2005
+<td>
+Functionality moved from syncedit to wxExtension.
+<td>
+
+<tr>
+<td>
+v1.0
+<td>
+19 October 2005
+<td>
+First version, used by MCLOG and syncedit.
+<td>
+wxWidgets 2.6.2 (scintilla 1.62)
+
+</TABLE>

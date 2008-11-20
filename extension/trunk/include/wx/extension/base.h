@@ -1,0 +1,403 @@
+/******************************************************************************\
+* File:          base.h
+* Purpose:       Declaration of wxWidgets base extension classes
+* Author:        Anton van Wezenbeek
+* RCS-ID:        $Id: base.h 53 2008-11-13 18:38:57Z anton $
+*
+* Copyright (c) 1998-2008, Anton van Wezenbeek
+* All rights are reserved. Reproduction in whole or part is prohibited
+* without the written consent of the copyright owner.
+\******************************************************************************/
+
+#ifndef _EXBASE_H
+#define _EXBASE_H
+
+#include <wx/artprov.h> // for wxArtID
+#include <wx/aui/auibook.h>
+#include <wx/datetime.h>
+#include <wx/fdrepdlg.h>
+#include <wx/html/htmprint.h>
+#include <wx/print.h>
+#include <wx/printdlg.h>
+#include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
+
+// Only if we have a gui.
+#if wxUSE_GUI
+class exListView;
+class exStatusBar;
+class exSTC;
+
+/// Offers a general dialog, with a separated button sizer at the bottom.
+/// Derived dialogs can use the user sizer for laying out their controls.
+class exDialog : public wxDialog
+{
+public:
+  /// Constructor.
+  /// Flags is a bit list of the following flags:
+  /// wxOK, wxCANCEL, wxYES, wxNO, wxHELP, wxNO_DEFAULT.
+  exDialog(wxWindow* parent,
+    const wxString& title,
+    long flags = wxOK | wxCANCEL,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    const wxString& name = wxDialogNameStr);
+protected:
+  /// Adds to the user sizer using the sizer flags.
+  wxSizerItem* AddUserSizer(
+    wxWindow* window,
+    const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
+  /// Adds to the user sizer using the sizer flags.
+  wxSizerItem* AddUserSizer(
+    wxSizer* sizer,
+    const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
+  /// Gets the flags (as specified in constructor).
+  long GetFlags() const {return m_Flags;};
+private:
+  const long m_Flags;
+  wxFlexGridSizer* m_TopSizer;
+  wxFlexGridSizer* m_UserSizer;
+};
+
+/// Offers a general find and printer interface.
+class exInterface
+{
+public:
+  /// Constructor.
+  exInterface();
+
+  /// Destructor.
+  virtual ~exInterface();
+
+  /// Build the page, for the htmleasyprinting.
+  virtual const wxString BuildPage() {return wxEmptyString;};
+
+  /// Shows a find dialog.
+  virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
+
+  /// Finds next (or previous) occurrence.
+  /// Default returns false.
+  virtual bool FindNext(const wxString& text, bool find_next = true);
+
+  /// Shows searching for in the statusbar, and calls FindNext.
+  bool FindResult(const wxString& text, bool find_next, bool& recursive);
+
+  /// Invokes exApp PrintText with BuildPage.
+  void Print();
+
+  /// Adds a caption.
+  virtual const wxString PrintCaption() {return _("Printout");};
+
+  /// You can use macros in PrintFooter and in PrintHeader:
+  ///   @PAGENUM@ is replaced by page number
+  ///   @PAGESCNT@ is replaced by total number of pages
+  virtual const wxString PrintFooter()
+    {return _("Page @PAGENUM@ of @PAGESCNT@");};
+
+  /// Adds a header.
+  virtual const wxString PrintHeader()
+    {return _("Printed") + ": " + wxDateTime::Now().Format();};
+
+  /// Invokes exApp PreviewText with BuildPage.
+  void PrintPreview();
+
+  /// Shows a replace dialog.
+  virtual void ReplaceDialog(wxWindow* parent, const wxString& caption = _("Replace"));
+protected:
+  void OnFindDialog(wxFindDialogEvent& event);
+private:
+  wxFindReplaceDialog* m_FindReplaceDialog;
+};
+
+/// Offers a collection of art, mapping stock id's to art id's.
+class exStockArt
+{
+public:
+  /// Constructor, fills the map first time it is invoked.
+  exStockArt();
+protected:
+  /// If id is a stock id, fills stock_label and bitmap.
+  void CheckStock(
+    int id,
+    wxString& stock_label,
+    wxBitmap& bitmap,
+    long flags = wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR,
+    const wxSize& bitmap_size = wxSize(16, 15));
+private:
+  static std::map<wxWindowID, wxArtID> m_StockArt;
+};
+
+#if wxUSE_STATUSBAR
+/// This class defines our statusbar panes, to be used by exFrame::SetupStatusBar.
+class exPane
+{
+  friend class exFrame;
+public:
+  /// Constructor.
+  exPane(
+    const wxString& name,
+    int width = 50,
+    const wxString& helptext = wxEmptyString, // in that cases uses name
+    int style = wxSB_NORMAL)
+    : m_Helptext(helptext)
+    , m_Name(name)
+    , m_Style(style)
+    , m_Width(width){};
+
+  /// Assignment operator.
+  exPane& operator=(const exPane& p)
+  {
+    m_Helptext = p.m_Helptext;
+    m_Name = p.m_Name;
+    m_Style = p.m_Style;
+    m_Width = p.m_Width;
+    return *this;
+  };
+private:
+  wxString m_Helptext;
+  wxString m_Name;
+  int m_Style;
+  int m_Width;
+};
+#endif // wxUSE_STATUSBAR
+
+/// Offers a frame with easy statusbar methods.
+class exFrame : public wxFrame
+{
+  friend class exStatusBar;
+public:
+  /// Constructor, the frame position and size is taken from the config.
+  exFrame(wxWindow* parent,
+    wxWindowID id,
+    const wxString& title,
+    long style = wxDEFAULT_FRAME_STYLE,
+    const wxString& name = wxFrameNameStr);
+
+  /// Using specified position and size.
+  exFrame(wxWindow* parent,
+    wxWindowID id,
+    const wxString& title,
+    const wxPoint& pos,
+    const wxSize& size,
+    long style = wxDEFAULT_FRAME_STYLE,
+    const wxString& name = wxFrameNameStr);
+
+  /// Destructor, deletes the statusbar.
+ ~exFrame();
+
+  /// Called when a config dialog apply button was pressed.
+  virtual void ConfigDialogApplied(wxWindowID WXUNUSED(dialogid)) {};
+
+  /// Returns a listview, default returns the focused listview.
+  virtual exListView* GetListView() {return GetFocusedListView();};
+
+  /// Returns an STC, default returns the focused STC.
+  virtual exSTC* GetSTC() {return GetFocusedSTC();};
+
+  /// Default opens the file using the GetFocusedSTC.
+  virtual bool OpenFile(const wxString& file,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long flags = 0);
+
+  /// If the window that has focus is a ListView, then returns that, otherwise returns NULL.
+  exListView* GetFocusedListView();
+
+  /// If the window that has focus is an STC, then returns that, otherwise returns NULL.
+  exSTC* GetFocusedSTC();
+
+  /// Returns the field number of status bar pane.
+  int GetPaneField(const wxString& pane) const;
+
+#if wxUSE_STATUSBAR
+  /// Do something when statusbar is clicked.
+  virtual void StatusBarClicked(int WXUNUSED(field), const wxPoint& WXUNUSED(point)) {};
+
+  /// When double clicked, uses the GetSTC() for some dialogs.
+  virtual void StatusBarDoubleClicked(int field, const wxPoint& point);
+
+  /// Don't forget to call SetupStatusBar first.
+  /// If pane is the empty string, the text is set for all panes.
+  static void StatusText(const wxString& text, const wxString& pane = "PaneText");
+#endif
+protected:
+  /// Writes the current frame size and position to the config.
+  void OnClose(wxCloseEvent& event);
+  /// If there is a focused STC, updates the status bar.
+  void OnUpdateUI(wxUpdateUIEvent& event);
+
+#if wxUSE_STATUSBAR
+  // Interface from wxFrame.
+  virtual wxStatusBar* OnCreateStatusBar(int number,
+    long style,
+    wxWindowID id,
+    const wxString& name);
+
+  /// Sets up the status bar if you want to use StatusText.
+  void SetupStatusBar(
+    const std::vector<exPane>& panes,
+    long style = wxST_SIZEGRIP,
+    wxWindowID id = ID_EDIT_STATUS_BAR,
+    const wxString& name = "statusBar");
+#endif
+private:
+#if wxUSE_STATUSBAR
+  static exStatusBar* m_StatusBar;
+  static std::map<wxString, int> m_Panes;
+  static std::map<int, wxString> m_PanesText;
+  static std::vector<wxString> m_PanesHelp;
+#endif
+
+  const bool m_KeepPosAndSize;
+
+  DECLARE_EVENT_TABLE()
+};
+
+/// Offers an aui managed frame with a notebook multiple document interface,
+/// used by the notebook classes.
+class exManagedFrame : public exFrame
+{
+public:
+  /// Constructor, the frame position and size is taken from the config.
+  exManagedFrame(wxWindow* parent,
+    wxWindowID id,
+    const wxString& title,
+    long style = wxDEFAULT_FRAME_STYLE,
+    const wxString& name = wxFrameNameStr);
+
+  /// Destructor.
+ ~exManagedFrame();
+
+  // Interface for notebooks.
+  /// Returns true if the page can be closed.
+  virtual bool AllowClose(wxWindowID WXUNUSED(id), wxWindow* WXUNUSED(page)) {return true;}
+
+  /// Called if the notebook changed page.
+  virtual void OnNotebook(wxWindowID WXUNUSED(id), wxWindow* WXUNUSED(page)) {;};
+
+  /// Called after all pages from the notebooks are deleted.
+  virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
+
+  /// Gets the manager.
+  wxAuiManager& GetManager() {return m_Manager;};
+
+  /// Toggles the managed pane: if shown hides it, otherwise shows it.
+  void TogglePane(const wxString& pane);
+private:
+  wxAuiManager m_Manager;
+};
+
+/// Adds artid, edit, printing and tool menu items to wxMenu.
+class exMenu : public exStockArt, public wxMenu
+{
+public:
+  /// The menu styles.
+  enum
+  {
+    MENU_IS_READ_ONLY = 0x0001, ///< readonly control
+    MENU_IS_SELECTED  = 0x0002, ///< text is selected somewhere on the control
+    MENU_IS_EMPTY     = 0x0004, ///< control is empty
+
+    MENU_ALLOW_CLEAR  = 0x0008, ///< add clear item in menu
+    MENU_CAN_PASTE    = 0x0010, ///< add paste item in menu
+
+    MENU_DEFAULT      = MENU_CAN_PASTE, ///< default
+  };
+
+  /// Constructor.
+  exMenu(long style = MENU_DEFAULT);
+
+  /// Copy constructor.
+  exMenu(const exMenu& menu);
+
+  /// Adds automatic naming (for stock menu id's) and art id for menu items.
+  /// Even though you don't provide artid, using this one instead of
+  /// wxMenu::Append can be usefull, as it reserves space for the empty bitmap.
+  void Append(int id, // this can be a stock item, then name and art is derived from it
+    const wxString& name = wxEmptyString,
+    const wxString& helptext = wxEmptyString,
+    wxItemKind kind = wxITEM_NORMAL,
+    wxMenu* submenu = NULL,
+    wxArtID artid = wxEmptyString);
+
+  /// Appends edit menu items, depending on the style specified during construction.
+  /// Returns true if at least one item has been added.
+  bool AppendEdit(bool add_invert = false);
+
+  /// Appends print menu items.
+  /// This always adds some items, so no boolean return needed.
+  void AppendPrint();
+
+  /// Appends a tools submenu consisting of the basic and report tools at the specified menu.
+  exMenu* AppendTools(int toolmenu_id);
+
+  /// Gets the style.
+  long GetStyle() const {return m_Style;};
+private:
+  const long m_Style;
+};
+
+#if wxUSE_STATUSBAR
+/// Offers a status bar with popup menu in relation to exFrame.
+class exStatusBar : public wxStatusBar
+{
+public:
+  /// Constructor.
+  exStatusBar(exFrame* parent,
+    wxWindowID id = wxID_ANY,
+    long style = wxST_SIZEGRIP,
+    const wxString& name = wxPanelNameStr);
+protected:
+  void OnMouse(wxMouseEvent& event);
+private:
+  exFrame* m_Frame;
+
+  DECLARE_EVENT_TABLE()
+};
+#endif // wxUSE_STATUSBAR
+
+/// Offers a toolbar together with stock art.
+class exToolBar : public exStockArt, public wxToolBar
+{
+public:
+  /// Constructor.
+  exToolBar(wxWindow* parent,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxTB_HORIZONTAL | wxNO_BORDER,
+    const wxSize& bitmap_size = wxSize(16, 15),
+    const wxString& name = wxPanelNameStr);
+
+  /// Adds automatic naming (for stock menu id's) and art id for toolbar items.
+  wxToolBarToolBase* AddTool(
+    int toolId, // this can be a stock item, then shortHelpString and bitmap (art) is derived from it
+    const wxString& label = wxEmptyString,
+    const wxBitmap& bitmap1 = wxNullBitmap,
+    const wxString& shortHelpString = wxEmptyString,
+    wxItemKind kind = wxITEM_NORMAL);
+
+  /// As above.
+  wxToolBarToolBase* AddTool(
+    int toolId,
+    const wxString& longHelpString,
+    const wxString& label = wxEmptyString,
+    const wxBitmap& bitmap1 = wxNullBitmap,
+    const wxBitmap& bitmap2 = wxNullBitmap,
+    wxItemKind kind = wxITEM_NORMAL,
+    const wxString& shortHelpString = wxEmptyString,
+    wxObject* clientData = NULL);
+
+  /// And for check tools as well.
+  wxToolBarToolBase* AddCheckTool(
+    int toolId,
+    const wxString& label = wxEmptyString,
+    const wxBitmap& bitmap1 = wxNullBitmap,
+    const wxBitmap& bitmap2 = wxNullBitmap,
+    const wxString& shortHelpString = wxEmptyString,
+    const wxString& longHelpString = wxEmptyString,
+    wxObject* clientData = NULL);
+};
+#endif // wxUSE_GUI
+#endif
