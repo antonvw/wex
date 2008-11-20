@@ -2,7 +2,7 @@
 * File:          extension.cpp
 * Purpose:       Implementation of wxWidgets extension methods
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: extension.cpp 81 2008-11-20 17:58:29Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

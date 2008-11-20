@@ -2,7 +2,7 @@
 * File:          renderer.cpp
 * Purpose:       Implementation of exRenderer class
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: renderer.cpp 20 2008-11-08 14:54:08Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2007-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

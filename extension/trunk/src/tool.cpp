@@ -2,7 +2,7 @@
 * File:          tool.cpp
 * Purpose:       Implementation of exTool classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: tool.cpp 81 2008-11-20 17:58:29Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

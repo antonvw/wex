@@ -2,7 +2,7 @@
 * File:          file.cpp
 * Purpose:       Implementation of wxWidgets file extension classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: file.cpp 68 2008-11-15 09:14:30Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

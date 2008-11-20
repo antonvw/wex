@@ -2,7 +2,7 @@
 * File:          base.cpp
 * Purpose:       Implementation of wxWidgets base extension classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: base.cpp 20 2008-11-08 14:54:08Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

@@ -2,7 +2,7 @@
 * File:          lexers.cpp
 * Purpose:       Implementation of exLexers classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: lexers.cpp 77 2008-11-19 16:56:56Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2008 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

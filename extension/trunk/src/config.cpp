@@ -2,7 +2,7 @@
 * File:          config.cpp
 * Purpose:       Implementation of wxWidgets config extension classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: config.cpp 41 2008-11-12 16:42:46Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2007 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
