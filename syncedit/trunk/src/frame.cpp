@@ -498,6 +498,10 @@ and saved in the same directory as where the executable is."));
   case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName().GetFullPath()); break;
   case ID_OPEN_LOGFILE: OpenFile(exLogfileName().GetFullPath()); break;
 
+  case ID_COMMIT:
+    exCommitDialog(_("Commit"));
+    break;
+
   case ID_OPTION_COMPARATOR:
     {
     std::vector<exConfigItem> v;

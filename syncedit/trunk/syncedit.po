@@ -1,6 +1,6 @@
 # File:    syncedit.po
 # Purpose: Translation for syncedit to dutch.
-# RCS-ID:  $Id: syncedit.po 58 2008-11-14 19:23:27Z anton $
+# RCS-ID:  $Id$
 # Copyright (c) 1998-2008 Anton van Wezenbeek
 msgid ""
 msgstr ""
