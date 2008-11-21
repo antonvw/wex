@@ -1,0 +1,289 @@
+<HEAD>
+<TITLE>syncedit help
+</TITLE>
+</HEAD>
+
+<!--
+Help for syncedit v5.2
+-->
+
+<STYLE type="text/css">
+.TableStyle
+{
+<!-- font-family: Verdana; -->
+font-weight: normal;
+font-size: 9px;
+color: #404040;
+background-color: #fafafa;
+border: 1px #6699CC solid;
+}
+</STYLE>
+
+<P>
+syncedit is a synchronizing editor, with automatic synchronizing for all its
+<A HREF="#EDIT">Editor windows</A> and its <A HREF="#LIST">List windows</A>.
+Furthermore it supports <A HREF="#SQL">embedded SQL</A> and it can update
+<A HREF="#RCS">Check-in and out</A>.
+Finally you can download selected files easily using
+<A HREF="#UPL">Build RBS File</A>.
+Because the lists and editors are notebook pages, they all can be moved around and
+put on separate panes.
+
+<P>
+The configuration is read when starting up and saved when closing down.
+On MSW the config is stored in the registry under the key
+"syncedit", on Linux in the file ".syncedit" in your home
+directory. There is also a special portable version (syncped) that stores and 
+reads all data from the same directory as your executable is in.
+
+<P>
+You can specify on the command line the file(s) or project to open.
+
+<P>
+You can also select and run a process using Process Select and Process Run.
+The output (stdout and stderr) of the process is logged into the output
+list 'Process Output'.
+
+<hr>
+<A NAME="EDIT"></A><B>Editor</B>
+<P>
+This is an MDI notebook editor implemented using a
+<A HREF="http://www.scintilla.org">scintilla</A> component.
+It has the next features:
+<ul>
+<li> Synchronizes if the file is changed from outside. Can be used for
+     viewing log files: If you're on the last position in a log file
+     and the log file is synchronized, then only new data is added to the
+     file, and your position is restored to the end of file. This also works in hex mode
+     (enabled/disabled by toggling the Hex button).
+<li> The lexer, colouring and keywords are from lexers.cfg, editable using 'Lexers File Open'.
+     This directly reflects
+     colouring style changes on all open editors.
+<li> Fast searching by selecting text and pressing F3 or F4.
+     Expressions are interpreted as regular expressions if the
+     'Match whole word' check box is not checked.
+<li> If you select several lines, you can sort the selection using
+     any sort position in the selection. The default sort position
+     is the cursor position at the last line of the selection.
+<li> You can set the position of the edge column.
+     This position is also used when adding check-in or out comments.
+<li> You can set rectangular selection by pressing ALT before selecting.
+<li> When the mouse is on a hex number the decimal number is
+     shown as a tooltip py pressing Ctrl T.
+<li> Links are navigated using popup menu on a Link.
+</ul>
+
+<hr>
+<A NAME="LIST"></A><B>List</B>
+<P>
+The output lists and the projects are implemented using a MDI notebook using a
+standard list control component.
+
+<P>
+It has the next features:
+
+<ul>
+<li> Synchronizes if a list item is changed from outside.
+<li> Items (the background colour of items) are coloured according to their
+modification time. This colour can be set using Set Colour.
+<li> Columns<br>
+All lists have at least the following columns:
+<ul>
+<li> Name
+<li> Type<br>
+For folders this field holds the pattern that was specified during Adding the folder.
+<li> Modified<br>
+<li> In Folder
+<li> Size<br>
+For folders this field is not used.
+</ul>
+<li> 'Find In ...' is available that allows you
+to find text in all files in your project. If items are selected in
+the project, then searching is limited to these files.
+<li> The list can be sorted on each of its columns by
+clicking on the column header.
+You also have an Automatic Sort option for the project. If set, then
+your project is automatically sorted ascending or descending
+(depending on your SortMethod) and resorted whenever
+one of the files in the project is synchronized.
+<li> An item on the list can be opened by double clicking.
+<li> List items can be copied to the clipboard as
+ascii text with columns separated by tabs, and then pasted on other lists,
+or into an edit window.
+<li> You can compare items with each other, or with a base version from
+a version list. A version list can be created from an item if the item
+is part of a directory structure where the same item appears in
+another directory as well where that directory matches the [0-9]*\\.[0-9]*.*" regular expression.
+</ul>
+
+
+<P>
+The project file is stored as a text file containing the full paths of all items,
+you can edit it using 'File Open As Text' in order to replace or change items.
+The file format is: ['fullpath'[\t'folder extension']\n]+.
+
+<P>
+File attributes like modification times and access rights are not stored in this file,
+they are read from disk each time you open the file.
+
+
+<hr>
+<A NAME="SQL"></A><B>Embedded SQL Queries</B>
+<P>
+Some applications contain a lot of tables, but cannot access a database
+where these tables better would be stored.
+Therefore Embedded SQL support has been
+added to syncedit. It is implemented by allowing you to put standard ANSI SQL queries as
+comments (according to a special syntax described below) for your source code
+language before data you like to be get from the ODBC database. When syncedit detects such
+a query, it will run it and put the new results directly after the query replacing all
+that is there until the end of SQL comment statement is found.
+
+<P>
+'Run SQL Query' allows you to run the embedded SQL queries.
+The files selected should have a checked out status.
+You now select an ODBC database, and the files that contain embedded queries are updated with the new
+values from the database.
+
+<P>
+The syntax is:
+
+<P>
+<small><I>CommentStart</small></I>_SQL_#
+<small><I>YourQuery</small></I> #
+<small><I>QueryInfo</small></I>
+<small><I>CommentEnd</small></I>
+<small><I>Data</small></I>
+<small><I>CommentStart</small></I>_SQL_END <small><I>CommentEnd</small></I>,
+<P>
+
+<P>
+where:
+<BR>
+<small><I>CommentStart</small></I> form the control characters to indicate that
+the following text should be interpreted as legal comments for the specific source language,<BR>
+<small><I>_</small></I> is exactly one space character,<BR>
+<small><I>CommentEnd</small></I> form the control characters to indicate that here the
+comments end for the specific source language,<BR>
+<small><I>YourQuery</small></I> is the SQL query you want to perform,<BR>
+<small><I>QueryInfo</small></I> is information about the query generated by syncedit,<BR>
+<small><I>Data</small></I> is the new data that is the result of the query.
+
+<P>
+E.g. an embedded query in PDP-11 assembler:
+
+<P>
+<PRE>
+; SQL # SELECT
+;   '',
+;   '.WORD',
+;   '',
+;   DEFAULT_LRP_KEY_NO,
+;   '; ' & Q1_FUNCTION.[NO] & ' ' & NAME
+;   FROM Q1_FUNCTION, FUNCTION WHERE Q1_FUNCTION.FUNCTION_NO = FUNCTION.[NO]
+;   ORDER BY Q1_FUNCTION.[NO] #
+; QUERY RUN TIME: 30/12/1998 15:55:14
+; USING ODBC DATABASE: GAREX CONFIG MAIN
+    .WORD       0   ; 1 SOC
+    .WORD       12  ; 2 VB-TWR
+    .WORD       10  ; 3 KD*
+    .WORD       3   ; 4 NSEo
+    .WORD       0   ; 5 NOT USED
+    .WORD       0   ; 6 MIL-COOR
+    .WORD       5   ; 7 LON-1*
+    .WORD       0   ; 8 NOT USED
+    .WORD       2   ; 9 CLNo
+    .WORD       0   ; 10 VB*
+    .WORD       0   ; 11 NOT USED
+    .WORD       0   ; 12 SB*
+    .WORD       0   ; 13 MIL-S*
+    .WORD       6   ; 14 LON-2*
+    .WORD       0   ; 15 NOT USED
+    .WORD       0   ; 16 NOT USED
+    .WORD       0   ; 17 NOT USED
+    .WORD       0   ; 18 NOT USED
+    .WORD       0   ; 19 NOT USED
+    .WORD       0   ; 20 NOT USED
+    .WORD       0   ; 21 NOT USED
+    .WORD       0   ; 22 NOT USED
+    .WORD       0   ; 23 NOT USED
+    .WORD       0   ; 24 NOT USED
+; SQL END</PRE>
+
+<hr>
+<A NAME="RCS"></A><B>Check-in and out</B>
+<P>
+A file that is checked in will have its Windows or UNIX read-only attribute set.
+
+<P>
+When checking in you can
+add comments to the file(s) being checked in. The check-in comment is placed in
+the source file
+directly after the first empty line that is found, and always consists of the
+time and date the check-in is
+made (the format used is explained below), followed by the RCS/User option,
+followed by the entered comment.
+The check-in comment is always split up into lines containing 'Edit/EdgeColumn' characters.
+syncedit
+takes care that no words are split over two lines if the entered comment exceeds
+this amount of characters.
+
+<P>
+Supported revision time formats:
+
+<P>
+<TABLE BORDER=2 CELLPADDING=3 CELLSPACING=1 class="TableStyle">
+
+<TR><TD> <I>Format</I><TD> <I>Example</I>
+<tr><td>%2y%2m%2d %2H%2M%2S<td>990826 152624
+<tr><td>%2y%2m%2d<td>990826
+<tr><td>%B %d, %Y %H:%M<td>January 12, 2001 12:32
+</TABLE>
+
+<P>
+E.g. a check-in comment that is placed into a PDP-11 Assembler file:
+
+<P>
+<PRE>
+;*********************************************************************
+; MODULE NAME  : TPHONY
+; FILE NAME    : FSMLRP.MAC
+; DATE         : 04-MARS-89
+; FUNCTION     : FSM-DATA FOR LRP AND TEMPORARY TABLES
+;*********************************************************************
+
+; 990826 152311 AvW Added defaults to the table by using SQL connect.
+</PRE>
+
+<P>
+E.g. a check-in comment that is placed into a PASCAL file:
+
+<P>
+<PRE>
+(****************************************************************************
+** MODULE NAME       : STATIS
+** FILE NAME         : STAPRITB.PAS
+** TYPE              : TABLE DEFINITION FILE FOR STATIS TASK
+** DATE              : 22-MAR-89
+** CONTENT OF FILE   : DEFINITIONS OF ORDER OF PHYSICAL POSITION NAMES
+***************************************************************************)
+
+(* 990826 152624 AvW Added SQL connect and now sorted on equipment NAM.       *)
+</PRE>
+
+<hr>
+<A NAME="UPL"></A><B>Build RBS File</B>
+<P>
+syncedit uses a Reflection Basic script file for Kermit to allow uploading (the Windows version only).
+
+<P>
+The "Build RBS File" command creates the Reflection Basic
+Script file based on the items you selected, and allows you to replace a part of the folder name
+(e.g. substitute 'F:\GAREX\V807\' with ''). This simplifies downloading updated files back to
+a remote system.
+Using Run Script in Reflection Basic allows you to run this script file, now all files are sent using
+Kermit to that system.
+</P>
+
+<P>
+syncedit assumes RSX OS on the remote system.
