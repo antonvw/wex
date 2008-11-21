@@ -2,7 +2,7 @@
 * File:          defs.h
 * Purpose:       Common definitions for wxFileTool
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: defs.h 28 2008-11-09 14:21:41Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

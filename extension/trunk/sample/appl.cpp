@@ -2,7 +2,7 @@
 * File:          appl.cpp
 * Purpose:       Implementation of sample classes for wxExtension
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: appl.cpp 39 2008-11-10 18:16:08Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

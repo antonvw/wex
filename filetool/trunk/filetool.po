@@ -1,6 +1,6 @@
 # File:    filetool.po
 # Purpose: Translation for filetool library to dutch.
-# RCS-ID:  $Id: filetool.po 61 2008-11-14 19:26:33Z anton $
+# RCS-ID:  $Id$
 # Copyright (c) 1998-2008 Anton van Wezenbeek
 msgid ""
 msgstr ""

@@ -2,7 +2,7 @@
 * File:          textfile.h
 * Purpose:       Declaration of class 'ftTextFile'
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: textfile.h 56 2008-11-14 19:14:37Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2007, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

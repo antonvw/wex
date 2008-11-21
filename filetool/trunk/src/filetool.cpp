@@ -2,7 +2,7 @@
 * File:          filetool.cpp
 * Purpose:       Implementation of filetool classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: filetool.cpp 36 2008-11-10 18:07:02Z anton $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2008 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
