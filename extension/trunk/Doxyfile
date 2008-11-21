@@ -1,10 +1,11 @@
 # Doxyfile 1.5.4
+# $Id$
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = wxExtension
+PROJECT_NAME           = wxextension
 PROJECT_NUMBER         = v2.0
 OUTPUT_DIRECTORY       = ./
 CREATE_SUBDIRS         = NO
