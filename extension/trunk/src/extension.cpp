@@ -142,7 +142,7 @@ bool exCommitDialog(const wxString& caption)
   wxString msg;
   for (size_t i = 0; i < output.GetCount(); i++)
   {
-    msg += output[i];
+    msg += output[i] + " ";
   }
   
   exFrame::StatusText(msg);
