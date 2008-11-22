@@ -128,6 +128,8 @@ bool exCommitDialog(const wxString& caption)
   {
     return false;
   }
+  
+  system("svn commit -m " + exApp::GetConfig(_("Revision comment"));
         
   return true;
 }
