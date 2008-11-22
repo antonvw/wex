@@ -89,7 +89,7 @@ Frame::Frame(const wxString& project_wildcard)
   
   if (exApp::GetConfigBool("RCS/Local"))
   {
-    menuEdit->Append(ID_COMMIT, _("C&ommit"));
+    menuEdit->Append(ID_COMMIT, exEllipsed(_("C&ommit")));
     menuEdit->AppendSeparator();
   }
 
