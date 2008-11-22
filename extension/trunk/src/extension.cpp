@@ -120,7 +120,7 @@ bool exCommitDialog(const wxString& caption)
 {
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Revision comment")));
-  v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
   if (exConfigDialog(wxTheApp->GetTopWindow(),
     v,
@@ -128,9 +128,25 @@ bool exCommitDialog(const wxString& caption)
   {
     return false;
   }
+
+  const wxString cwd = wxGetCwd();
+  wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
+  wxArrayString output;
+  wxArrayString errors;
+  wxExecute(
+    "svn commit -m \'" + exApp::GetConfig(_("Revision comment")) + "\"",
+    output,
+    errors);
+  wxSetWorkingDirectory(cwd);
+
+  wxString msg;
+  for (size_t i = 0; i < output.GetCount(); i++)
+  {
+    msg += output[i];
+  }
   
-  system("svn commit -m " + exApp::GetConfig(_("Revision comment")));
-        
+  exFrame::StatusText(msg);
+                  
   return true;
 }
 
