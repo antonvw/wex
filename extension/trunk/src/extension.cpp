@@ -134,7 +134,7 @@ bool exCommitDialog(const wxString& caption)
   wxArrayString output;
   wxArrayString errors;
   wxExecute(
-    "svn commit -m \'" + exApp::GetConfig(_("Revision comment")) + "\"",
+    "svn commit -m " + exApp::GetConfig(_("Revision comment")),
     output,
     errors);
   wxSetWorkingDirectory(cwd);
