@@ -142,7 +142,8 @@ bool exCommitDialog(const wxString& caption)
   wxString msg;
   for (size_t i = 0; i < output.GetCount(); i++)
   {
-    msg += output[i] + " ";
+    // Take care that we have only one space between output lines.
+    msg += exSkipWhiteSpace(output[i] + " ");
   }
   
   exFrame::StatusText(msg);
