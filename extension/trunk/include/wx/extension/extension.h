@@ -47,7 +47,7 @@ public:
     {return m_Config->Get(key, default_value, field_separator);}
 
   /// Gets key as a bool.
-  static bool GetConfigBool(const wxString& key, bool default_value = false)
+  static bool GetConfigBool(const wxString& key, bool default_value = true)
     {return m_Config->GetBool(key, default_value);}
 
   /// Gets the config.
@@ -77,7 +77,7 @@ public:
     {m_Config->Set(key, value);}
 
   /// Sets key as a bool.
-  static void SetConfigBool(const wxString& key, bool value)
+  static void SetConfigBool(const wxString& key, bool value = true)
     {m_Config->SetBool(key, value);}
 
   /// Sets logging as specified.
