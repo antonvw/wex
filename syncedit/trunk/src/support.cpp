@@ -86,10 +86,13 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, exEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
-#ifndef LOCAL_RCS
-  menuEdit->Append(ID_COMMIT, _("C&ommit"));
-  menuEdit->AppendSeparator();
-#endif
+  
+  if (exApp::GetConfigBool("RCS/Local"))
+  {
+    menuEdit->Append(ID_COMMIT, _("C&ommit"));
+    menuEdit->AppendSeparator();
+  }
+
   menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
