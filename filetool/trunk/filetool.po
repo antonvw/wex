@@ -13,10 +13,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: C:\\Documents and Settings\\anton.COM\\My Documents\n"
+"X-Poedit-Basepath: ./\n"
 "X-Poedit-Country: NETHERLANDS\n"
-"X-Poedit-SearchPath-0: wxFileTool\\v2.0\\include\n"
-"X-Poedit-SearchPath-1: wxFileTool\\v2.0\\src\n"
+"X-Poedit-SearchPath-0: include\n"
+"X-Poedit-SearchPath-1: src\n"
 
 #: wxFileTool\v2.0\src/filetool.cpp:17
 msgid "Comparator"
@@ -513,5 +513,4 @@ msgstr "Databron"
 #~ msgid "Files"
 #~ msgstr "Bestanden"
 #~ msgid "Files Run"
-#~ msgstr "Statistiek"
-
+#~ msgstr "Statistiek" 

@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ./\n"
 "X-Poedit-Country: NETHERLANDS\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: src\n"
 
 #: frame.cpp:70
 msgid "Project Files"
