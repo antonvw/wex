@@ -927,14 +927,6 @@ bool exTextFile::RunTool()
 
   if (!Cancelled())
   {
-    if (m_Tool.GetId() == ID_TOOL_COMMIT)
-    {
-      if (!m_FileNameStatistics.GetStat().SetReadOnly(true))
-      {
-        return false;
-      }
-    }
-
     GetStatisticElements().Set(_("Files Passed"), 1);
 
     if (m_Tool.IsStatisticsType())
