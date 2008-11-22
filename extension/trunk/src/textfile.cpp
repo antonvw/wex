@@ -309,11 +309,11 @@ bool exTextFile::ParseComments()
         else
         {
           wxLogError("Line marker not set, cannot add revision comments: "
-            + exApp::GetConfig("RCS/RevisionComment"));
+            + exApp::GetConfig(_("Revision comment")));
           return false;
         }
 
-        RevisionAddComments(exApp::GetConfig("RCS/RevisionComment"));
+        RevisionAddComments(exApp::GetConfig(_("Revision comment")));
         m_AllowAction = false;
 
         // We are not yet finished, there might still be RCS keywords somewhere!
@@ -886,7 +886,7 @@ bool exTextFile::RunTool()
 
   if (m_Tool.GetId() == ID_TOOL_COMMIT)
   {
-    if (!exApp::GetConfig("RCS/RevisionComment").empty() &&
+    if (!exApp::GetConfig(_("Revision comment")).empty() &&
          m_Tool.GetId() == ID_TOOL_COMMIT)
     {
       if (!ParseForOther())

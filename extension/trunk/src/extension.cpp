@@ -118,18 +118,17 @@ void exBackgroundColourDialog(wxWindow* parent, wxWindow* win)
 
 bool exCommitDialog(const wxString& caption)
 {
-  wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
-    _("Input") + ":",
-    caption,
-    exApp::GetConfig("RCS/RevisionComment"));
+  std::vector<exConfigItem> v;
+  v.push_back(exConfigItem(_("Revision comment")));
+  v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
-  if (dlg.ShowModal() == wxID_CANCEL)
+  if (exConfigDialog(wxTheApp->GetTopWindow(),
+    v,
+    caption).ShowModal() == wxID_CANCEL)
   {
     return false;
   }
-
-  exApp::GetConfig()->Set("RCS/RevisionComment", dlg.GetValue());
-
+        
   return true;
 }
 

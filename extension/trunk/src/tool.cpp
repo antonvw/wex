@@ -63,21 +63,16 @@ void exTool::Initialize()
 {
   // If you change these labels, don't forget to change in listview too 
   // for title when checking in-out.
-  wxString ci = _("&Commit");
-  if (exApp::GetConfig("RCS/AddCommitComment", 0l)) ci = exEllipsed(ci);
-
-#ifdef LOCAL_RCS 
-  AddInfo(ID_TOOL_COMMIT, _("Commited"), ci);
-#endif  
+  if (exApp::GetConfigBool("RCS/Local"))
+  {
+    AddInfo(ID_TOOL_COMMIT, _("Commited"), exEllipsed(_("&Commit")));
+    AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
+    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("&Revision"), false);
+  }
 
   AddInfo(ID_TOOL_HEADER, _("Edited header in"), exEllipsed(_("&Header")));
   AddInfo(ID_TOOL_LINE_CODE, _("Parsed code lines"));
   AddInfo(ID_TOOL_LINE_COMMENT, _("Parsed comment lines"));
-
-#ifdef LOCAL_RCS 
-  AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-  AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("&Revision"), false);
-#endif  
 
   AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("&Count"), false);
   AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
