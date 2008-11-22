@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _FTSTYLEDTEXTCTRL_H
-#define _FTSTYLEDTEXTCTRL_H
+#ifndef _FTSTC_H
+#define _FTSTC_H
 
 class ftFrame;
 
