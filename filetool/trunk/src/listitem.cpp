@@ -70,7 +70,7 @@ bool ftListItem::Run(const exTool& tool, ftListView* listview)
 
     if (file.RunTool())
     {
-      if (tool.IsCheckInOrOutType())
+      if (tool.IsRCSType())
       {
         Update();
       }
