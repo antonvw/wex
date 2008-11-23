@@ -243,6 +243,7 @@ void exLexers::ReportLine(const wxString& line)
     }
     else
     {
+      // Now parse the lexer. Change if xml is supported.
       const exLexer& lexer = ParseLexer(m_LexerLine);
 
       if (!lexer.GetScintillaLexer().empty())
