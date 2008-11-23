@@ -886,8 +886,7 @@ bool exTextFile::RunTool()
 
   if (m_Tool.GetId() == ID_TOOL_COMMIT)
   {
-    if (!exApp::GetConfig(_("Revision comment")).empty() &&
-         m_Tool.GetId() == ID_TOOL_COMMIT)
+    if (!exApp::GetConfig(_("Revision comment")).empty())
     {
       if (!ParseForOther())
       {
