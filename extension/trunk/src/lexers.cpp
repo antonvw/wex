@@ -25,7 +25,6 @@ exLexers::exLexers()
 #endif
       "lexers.xml",
       false)
-  , m_LexerLine()
 {
 }
 
@@ -210,11 +209,9 @@ void exLexers::Read()
   m_Styles.clear();
   m_StylesHex.clear();
 
-  m_LexerLine.clear();
-
   m_Skip = false;
 
-  wxXmlDocument doc
+  wxXmlDocument doc;
   
   if (!doc.Load(m_FileName.GetFullPath())
   {
@@ -250,7 +247,6 @@ void exLexers::Read()
     child = child->GetNext();
   }
  
-    
   if (m_Skip)
   {
     wxLogError("Found #if statement without matching #endif");
