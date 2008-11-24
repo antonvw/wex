@@ -17,15 +17,14 @@
 using namespace std;
 
 exLexers::exLexers()
-  : exTextFile(
-    exFileName(
+  : m_FileName(
 #ifdef EX_PORTABLE
       wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
 #else
       wxStandardPaths::Get().GetUserDataDir(),
 #endif
-      "lexers.cfg",
-      false))
+      "lexers.xml",
+      false)
   , m_LexerLine()
 {
 }
@@ -74,7 +73,7 @@ const exLexer exLexers::FindByName(const wxString& name) const
   return exLexer();
 }
 
-void exLexers::ParseGlobalProperties(const wxString& str)
+void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 {
   wxStringTokenizer tkz(str.AfterFirst('\t'), GetEOL());
 
@@ -116,7 +115,7 @@ void exLexers::ParseGlobalProperties(const wxString& str)
   }
 }
 
-const exLexer exLexers::ParseLexer(const wxString& str)
+const exLexer exLexers::ParseLexer(const wxXmlNode* node)
 {
   wxStringTokenizer fields(str, "\t", wxTOKEN_RET_EMPTY);
 
@@ -169,7 +168,7 @@ const exLexer exLexers::ParseLexer(const wxString& str)
   return lexer;
 }
 
-const exMarker exLexers::ParseMarker(const wxString& str)
+const exMarker exLexers::ParseMarker(const wxXmlNode* node)
 {
   wxStringTokenizer fields(str, "=");
 
@@ -203,7 +202,7 @@ const exMarker exLexers::ParseMarker(const wxString& str)
 
 void exLexers::Read()
 {
-  if (!GetFileName().FileExists()) return;
+  if (!m_FileName.FileExists()) return;
 
   // Initialize members.
   m_Lexers.clear();
@@ -215,20 +214,47 @@ void exLexers::Read()
 
   m_Skip = false;
 
-  // Keep current tool.
-  const exTool tool = GetTool();
+  wxXmlDocument doc
+  
+  if (!doc.Load(m_FileName.GetFullPath())
+  {
+    return false;
+  }
+ 
+  wxXmlNode *child = doc.GetRoot()->GetChildren();
+  while (child) 
+  {
+    if (child->GetName() == "global") 
+    {
+      ParseGlobalProperties(child);
+    }
+    else
+    {
+      // process text enclosed by <tag1></tag1>
+      wxString content = child->GetNodeContent();
 
-  SetupTool(ID_TOOL_LINE);
+      // process properties of <tag1>
+      wxString propvalue1 = 
+          child->GetPropVal(wxT("prop1"), 
+                              wxT("default-value"));
+      wxString propvalue2 = 
+          child->GetPropVal(wxT("prop2"), 
+                              wxT("default-value"));
 
-  RunTool();
+        
+    } 
+    else if (child->GetName() == wxT("tag2")) {
+    {
+    }
 
+    child = child->GetNext();
+  }
+ 
+    
   if (m_Skip)
   {
     wxLogError("Found #if statement without matching #endif");
   }
-
-  // And restore it.
-  SetTool(tool);
 }
 
 void exLexers::ReportLine(const wxString& line)

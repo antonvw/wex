@@ -12,14 +12,14 @@
 #ifndef _EXLEXERS_H
 #define _EXLEXERS_H
 
-#include <wx/extension/textfile.h>
+#include <wx/xml/xml.h>
 
 /// Contains the lexers.
 /// Reads the lexers, keywords, markers and styles
-/// from configuration file lexers.cfg and makes
+/// from configuration file lexers.xml and makes
 /// them available (without the comment lines).
-/// See for documentation the lexers.cfg file.
-class exLexers : public exTextFile
+/// See for documentation the lexers.xml file.
+class exLexers
 {
 public:
   /// Constructor.
@@ -43,15 +43,12 @@ public:
   /// Gets the styles hex.
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
-  /// Reads the lexers, keywords, markers and styles from configuration file.
+  /// Reads the lexers, keywords, markers and styles from xml configuration file.
   void Read();
-protected:
-  // Interface from exTextFile.
-  virtual void ReportLine(const wxString& line);
 private:
-  void ParseGlobalProperties(const wxString& str);
-  const exLexer ParseLexer(const wxString& str);
-  const exMarker ParseMarker(const wxString& str);
+  void ParseGlobalProperties(const wxXmlNode* node);
+  const exLexer ParseLexer(const wxXmlNode* node);
+  const exMarker ParseMarker(const wxXmlNode* node);
 
   std::vector<exLexer> m_Lexers;
   std::vector<exMarker> m_Markers;
@@ -60,6 +57,6 @@ private:
 
   bool m_Skip;
 
-  wxString m_LexerLine;
+  exFileName m_FileName;
 };
 #endif
