@@ -1,0 +1,811 @@
+<!--
+File:    release.htm
+Author:  Anton van Wezenbeek
+RCS-ID:  $Id$
+Purpose: Release information for syncedit
+-->
+
+<head>
+<title>syncedit release information
+</title>
+</head>
+
+<!---
+Next version:
+- Searching for text in the toolbar combo box by pressing enter causes same text to be entered.
+- Find In Project text: 'split' does not work, 'SPLIT' does, though no case.
+- In Bewerken Extra Header: niet vertaald, en HANGT!
+- Find and replace dialog no longer works!!!
+- Solve \todo.
+
+Wait for next wxWidgets:
+- Use wxDataViewSortedListModel for lists instead of ftListView (but sample dataview not in wxGTK-2.8.0).
+- Maximize window search results is not correct.
+- Relation with SyncCloseAll and exNotebook (wait for update in wxAuiNotebook).
+
+Roadmap:
+- Use TortoiseSVN.
+- Add ctags (like Exuberant CTAGS).
+- Add gdb front-end.
+- Use Boost, Ultimate++ or OMGUI (very later).
+-->
+
+<!-- For changes, see -->
+<!-- Changes -->
+
+<!-- Style -->
+
+<style type="text/css">
+.TableStyle
+{
+<!-- font-family: Verdana; -->
+font-weight: normal;
+font-size: 9px;
+color: #404040;
+background-color: #fafafa;
+border: 1px #6699CC solid;
+}
+</style>
+
+<!-- Overview -->
+
+<table BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
+
+<tr>
+<td><I>Version </I>
+<td><I>Released</I>
+<td><I>Dependencies (libraries)</I>
+<td><I>Availability (platform)</I>
+<td><I>Tools, IDE</I>
+
+<tr><td><A HREF="#60">6.0</A>
+<td><B>Not yet released</B>
+<td>wxWidgets-SVN, wxExtension.v2.0, wxFileTool.v2.0, odbc
+<td>Ubuntu 8.0
+<td>Code::Blocks 8.02, gcc3.4.5. mingw3.14
+
+<tr><td><A HREF="#51">5.1</A>
+<td>09-10-2007
+<td>wxWidgets 2.8.6, wxExtension.v1.12, wxFileTool.v1.6
+<td>Ubuntu 6.0 ???
+<td>
+
+<tr><td><A HREF="#50"><B>5.0</B></A>
+<td><B>04-04-2007</B>
+<td>wxWidgets 2.8.3, wxExtension.v1.6,wxFileTool.v1.5, wxAUI
+<td>
+<td>
+
+<tr><td><A HREF="#44">4.4</A>
+<td>14-12-2006
+<td>wxWidgets 2.8.0, wxExtension.v1.5,  wxFileTool.v1.4
+<td>
+<td>
+
+<tr><td><A HREF="#43">4.3</A>
+<td>19-06-2006
+<td>wxWidgets 2.6.3, wxExtension.v1.4,  wxFileTool.v1.3
+<td>
+<td>
+
+<tr><td><A HREF="#42">4.2</A>
+<td>03-04-2006
+<td>wxWidgets 2.6.3, wxExtension.v1.3,  wxFileTool.v1.2
+<td>
+<td>
+
+<tr><td><A HREF="#41">4.1</A>
+<td>06-02-2006
+<td>wxWidgets 2.6.2, wxExtension.v1.2,  wxFileTool.v1.1
+<td>
+<td>
+
+<tr><td><A HREF="#40"><B>4.0</B></A>
+<td><B>23-12-2005</B>
+<td>wxWidgets 2.6.2, wxExtension.v1.1,wxFileTool.v1.0, STL
+<td>Windows XP, SUSE Linux 9.3 (GTK 2.0)
+<td>Visual C++.Net 2003
+
+<tr><td><A HREF="#36">3.6</A>
+<td>09-07-2003
+<td>wxWidgets 2.4.1, scintilla 1.52
+<td>Windows NT, Redhat Linux 8.0 (GTK 1.2)
+<td>
+
+<tr><td><A HREF="#35">3.5</A>
+<td>22-03-2002
+<td>wxWidgets 2.3.2
+<td>
+<td>
+
+<tr><td><A HREF="#34">3.4</A>
+<td>21-02-2002
+<td>wxWidgets 2.3.2
+<td>
+<td>
+
+<tr><td><A HREF="#33">3.3</A>
+<td>30-11-2001
+<td>wxWidgets 2.2.7
+<td>
+<td>
+
+<tr><td><A HREF="#32">3.2</A>
+<td>11-07-2001
+<td>wxWidgets 2.2.7
+<td>
+<td>
+
+<tr><td><A HREF="#31">3.1</A>
+<td>22-06-2001
+<td>wxWidgets 2.2.7
+<td>
+<td>
+
+<tr><td><A HREF="#30"><B>3.0</B></A>
+<td><B>12-06-2001</B>
+<td>wxWidgets 2.2.1, wxODBC
+<td>Windows NT, Redhat Linux 6.0 (GTK 1.2)
+<td>
+
+<tr><td><A HREF="#22">2.2</A>
+<td>18-12-2000
+<td>XT122DemoLib
+<td>
+<td>
+
+<tr><td><A HREF="#21">2.1</A>
+<td>14-11-2000
+<td>CodeJock Library v6.09
+<td>
+<td>
+
+<tr><td><A HREF="#20"><B>2.0</B></A>
+<td><B>19-06-2000</B>
+<td>Visual C++ MFC 6.0
+<td>
+<td>
+
+<tr><td><A HREF="#19">1.9</A>
+<td>18-04-2000
+<td>
+<td>
+
+<tr><td><A HREF="#18">1.8</A>
+<td>07-01-2000
+<td>
+<td>
+
+<tr><td><A HREF="#17">1.7</A>
+<td>15-12-1999
+<td>
+<td>
+<td>ClassBuilder 2.0
+
+<tr><td><A HREF="#16">1.6</A>
+<td>12-10-1999
+<td>
+<td>Windows NT
+<td>
+
+<tr><td><A HREF="#15">1.5</A>
+<td>23-03-1999
+<td>
+<td>
+<td>
+
+<tr><td><A HREF="#14">1.4</A>
+<td>11-08-1998
+<td>Embedded SQL
+<td>
+<td>
+
+<tr><td><A HREF="#13">1.3</A>
+<td>18-06-1998
+<td>
+<td>
+<td>
+
+<tr><td><A HREF="#12">1.2</A>
+<td>23-04-1998
+<td>
+<td>
+<td>
+
+<tr><td><A HREF="#11">1.1</A>
+<td>16-03-1998
+<td>
+<td>
+<td>
+
+<tr><td><A HREF="#10"><B>1.0</B></A>
+<td><B>27-01-1998</B>
+<td>Visual C++ MFC 5.0
+<td>
+
+<tr><td><A HREF="#01">0.1</A>
+<td>08-12-1997
+<td>Visual Basic
+<td>Windows 95
+
+</table>
+
+<!-- Changes -->
+
+<hr>
+<A NAME="60"></A><B>Version 6.0</B>
+<P><I>Released: </I>
+<ol>
+<li> Unicode changes (no longer wxT()).
+<li> Macro support added.
+<li> Multi-threaded architecture.
+<li> The STC Window can be split.
+<li> List colour dialog is from exStat::ConfigDialog.
+<li> Comments according to Doxygen.
+<li> Ascii table and dir ctrl only constructed if necessary (to speed up).
+<li> Opening in browser works on wxGTK (after installing KDE konqueror).
+<li> Uses new exToolBar.
+<li> The config file name (for PORTABLE) is now in exConfig.
+<li> No crash opening frame.cpp from lib wxFileTool and here.
+<li> Projects opened and saved in datadir.
+<li> New application icon in .xpm and .ico file.
+<li> Location of help file is now in the DataDir instead of ConfigDir.
+<li> Find tool larger, and nicer height.
+<li> Embedded sql using otlv4.0. in separate library.
+<li> Syncedit renamed into syncedit.
+<li> Double click on status bar list item field when STC has focus now gives a dialog.
+<li> Under msw Code::Blocks is used.
+</ol>
+
+<hr>
+<A NAME="51"></A><B>Version 5.1</B>
+<P><I>Released: 09-10-2007</I>
+<ol>
+<li> Added Browse pane.
+<li> Recent file support code moved to wxFileTool lib. Recent project under menu now
+     also supported.
+<li> Add sync check box to stop the automatically refesh of (log) files.
+<li> When opening link, do not make new notebook for each link, but one for all.
+<li> Toolbar also under wxAuiManager control.
+<li> Hex toggle button is now a hex check box, and hex mode is kept in config.
+<li> At the right of the notebooks there is a close button as well and a window list.
+     Each tab has it's own close as well.
+<li> When starting automatically opens last opened file,
+     and project if project pane was shown.
+<li> The ascii table is readonly.
+<li> Bitmaps are shown on editor and project pages.
+<li> appl.ico used for msw.
+</ol>
+
+<hr>
+<A NAME="50"></A><B>Version 5.0</B>
+<P><I>Released: 04-04-2007</I>
+<P>
+Uses the new wxAUI lib.
+<ol>
+<li> Uses new exConfigDialog (so options are back).
+     The second notebooked MDI with editors is removed, as you can
+     now split the wxAuiNotebook.
+<li> Notebooked MDI with projects is supported.
+<li> Added option Set Comparator.
+<li> Ascii table is under View, and is a separate pane.
+<li> Change name ped into syncped.
+</ol>
+
+<hr>
+<A NAME="44"></A><B>Version 4.4</B>
+<P><I>Released: 14-12-2006</I>
+<ol>
+<li> Portable version 'ped' available that reads and saves all config
+     files from exe directory.
+<li> Margin Line Numbers respect the font.
+<li> When opening syncedit logfile, jump to last line in it.
+<li> Printing also possible for list views.
+</ol>
+
+<hr>
+<A NAME="43"></A><B>Version 4.3</B>
+<P><I>Released: 19-06-2006</I>
+<ol>
+<li> File icons are used. Large icon mode remove again
+     (file icons does not support it).
+     The column image is removed (no icon available in file icons).
+<li> Moved functionality of most support classes to wxFileTool lib.
+</ol>
+
+<hr>
+<A NAME="42"></A><B>Version 4.2</B>
+<P><I>Released: 03-04-2006</I>
+<ol>
+<li> GUI now supports a second notebooked MDI with editors.
+<li> po editing improved, you now can go to a line in the po file using the popup menu.
+<li> SortSync can be set using the menu.
+<li> Large icon mode is supported.
+<li> Added option to allow you to add the current open file to a list window
+     (like the history before).
+<li> Changing lexer using statusbar mouse double click (and so in wxFileTool lib).
+<li> Changed wxTextCtrl into wxComboBox on toolbar.
+</ol>
+
+<hr>
+<A NAME="41"></A><B>Version 4.1</B>
+<P><I>Released: 06-02-2006</I>
+<ol>
+<li> Added hex mode opening (read-only only).
+<li> Improved open recent file and open recent project.
+<li> Added show/hide statusbar.
+<li> Buttons instead of bitmaps for stopping and running a process.
+<li> No more uses DirData and DirWorking from config, but uses wxStandardPaths.
+</ol>
+
+<hr>
+<A NAME="40"></A><B>Version 4.0</B>
+<P><I>Released: 23-12-2005</I>
+<P>
+STLization and localization added wherever appropriate.
+<ol>
+<li> wxFileTool and wxExtension are available as separate libraries.
+<li> GUI is now a notebooked MDI with editors.
+<li> All relations are now modeled using an STL equivalent,
+     therefore ClassBuilder is no longer used.
+<li> Binary files can be opened as well. Saved only if no nulls are inside.
+     Added hex edit possibilities (except for adding nulls).
+<li> Printing is supported, including a Print All menu item.
+<li> Edit Replace In Project and Replace In Files have been added, together with a
+     Replace Results notebook page.
+<li> Add Files, Select Process, Find In Project and Find In Files are improved,
+     they now share dialog and use comboboxes for all fields.
+     All bitmaps are taken from the wxWidgets art provider, wxDesigner is no longer used.
+<li> Notebook pages are only added when required. You can now close pages as well.
+<li> Added Open Link, enabled if selection contains a valid file name, on
+     one of the paths from option DirInclude.
+<li> Drag/drop files from explorer to a list or an editor window is supported.
+<li> The config now contains all related to syntax colouring, and can be edited
+     using Edit Languages in an edit window.
+<li> Autocompletion is added, using the keyword files already present.
+<li> Unix (bash) script, make, xml and html, .po translation files are
+     recognized without any associations.
+<li> All code is converted to Unicode, using wxT() macro over all text,
+     and using wxChar instead of char.
+     All text to be translated is embedded in the _() macro.
+     Localization is added using xgettext and poEdit and localized date time formats,
+     and dutch translation is available.
+<li> End of line mode can be set and changed for the current file,
+     and the file type (DOS, Unix, MAC) is shown on the status bar.
+<li> Folding is supported.
+<li> Selection uppercase, lowercase and sorting in the editor is supported.
+<li> Renamed into Syncedit. The log file is named syncedit.log.
+<li> Open recent file and one recent project have been added.
+<li> A column image is shown on the sorted column. A context menu is shown when
+     right clicking on a list header.
+<li> The status bar has separate panes for list views and editors and shows the
+     current lexer.
+<li> Command line now allows to specify files to open.
+<li> No longer export HTML. No longer uses the wxr resource system. File History
+     has been removed as a notebook page.
+</ol>
+
+<hr>
+<A NAME="36"></A><B>Version 3.6</B>
+<P><I>Released: 09-07-2003</I>
+<P>
+The wxStyledTextCtrl (from scintilla 1.52) is added as internal editor.
+Options Edit completeley removed, using RegEdit or file edit on Unix just as easy.
+Compiled under Linux RedHat 8.0, using gcc 3.2.
+<ol>
+<li> The GUI code is modelled in ClassBuilder as well. Now all code is generated.
+<li> Edit Find In Project and Find In Files have been added, together with a
+     Find Results notebook page.
+<li> File History has been added as a notebook page.
+<li> Renamed into Sync Edit Tool (syncedt).
+<li> GUI and ClassBuilder code are better separated using virtual functions.
+<li> Running a process (for e.g. building using a makefile) and showing a
+     results list has been added.
+<li> Keywords setup in text files and languages setup in config. Text files can now have
+     keywords associated with them as well. So you can count keywords in ordinary text files.
+<li> Revision format is based on the previous found format (using time stamps etc.) in the file.
+<li> Synchronizing can now be used for inspecting logfiles.
+<li> Items that do not exist now get an image, instead of being deleted from the list.
+     This makes handling the Run Process page easier.
+<li> CBD Macro's are expanded, this is easier to maintain on different platforms.
+<li> Uses the wxr resource system.
+</ol>
+
+<hr>
+<A NAME="35"></A><B>Version 3.5</B>
+<P><I>Released: 22-03-2002</I>
+<ol>
+<li> Shows SQL errors in the new message dialog box, instead of a separate file.
+     Added username, password to be changed for ODBC database connection.
+<li> Added RevisionDialog, now revision comment can be copied,
+     and large comments are more easiliy shown, the revision author is shown as well.
+<li> Uses locale preferred date time settings for FORMAT_TIMESTAMP.
+<li> EditMIME is improved: error is now shown.
+<li> Added error string to be shown instead of 'There were errors'.
+</ol>
+
+<hr>
+<A NAME="34"></A><B>Version 3.4</B>
+<P><I>Released: 21-02-2002</I>
+<ol>
+<li> ClassBuilder revision reports are supported.
+<li> Hot item colouring is introduced: the colour of an item depends on when it was
+     last modified.
+<li> OnIdle has been improved: now consumes less processor time, less than 1 percent if not active.
+     This was 100 percent even if not active.
+<li> Added vertical/horizontal lines (window style wxLC_HRULES and wxLC_VRULES).
+<li> Individual folders are only reported on the count page if more than 1 selected.
+<li> Allow reports to be converted into HTML tables by using right mouse View HTML.
+<li> Removed Parent Only checkbox from add dialog, now solved internally by list item dir.
+<li> Compare with Base Version change into title of selected base element. If
+     no base selected, the menu item is disabled.
+<li> The sash window can be double clicked, in which case splitter window is unsplit.
+     Added View Unhide to resplit it.
+<li> Removed the Line and Version column from Version List. Type column only present in main list.
+<li> A warning is given if column text field exceed 512 characters.
+<li> Removed FTP support, wait until reported bug free in wxWidgets.
+<li> Bitmaps are now designed using wxDesigner as well, utility xv only used for main icon.
+     The report bitmaps on the toolbar are replaced by small buttons, the bitmaps
+     on the notebook pages are no longer used as well.
+<li> The statusbar layout has been improved: 2 variable width fields.
+</ol>
+
+<hr>
+<A NAME="33"></A><B>Version 3.3</B>
+<P><I>Released: 30-11-2001</I>
+<P>
+Uses wxTextFile. This is a better base class since it already contains functions
+such as DetermineFileType. StrStream is no longer necessary.
+Command line interface support.
+<ol>
+<li> Removed threads. The threads did not work okay under Linux, and under Windows 2000
+     there were problems as well. This makes the application simpler and smaller.
+<li> Visual C++ Compiler now uses no exception support (52k less code). Setting Single Threaded Library gives
+     4 linking errors buffer::openprot?
+<li> Most code is converted to Unicode, using wxT() macro over all text, and using wxChar instead of char.
+<li> The Linux version did not handle SetReadOnlyAccess okay, read bit was not set if read-only.
+<li> The Author field is no longer used to end a Header Description. Instead
+     any other field, or an empty field is used to end the description.
+<li> CompareSetup has been improved: comparing now uses Upper and checks mtimes, so Compare
+     Recent Version really finds different versions. It can now be stopped too.
+<li> Count and Report Count show the summary in a new text window part of the Count notebook page.
+     This allows you to copy counted numbers more easily.
+     If counted and 1 element selected, the name of this element is logged.
+     Show does not Log if number of completed files is zero.
+<li> AddDialog has extra checkbox for IncludeParentOnly. Add New File no longer uses the dialog,
+     and gives as default path the current project. Tooltips added, and from folder now starts
+     in current project.
+<li> If an SQL query returns an error, the sqllog file is opened automatically. Read-only files are no
+     longer executed. The database is closed before running.
+<li> Added time stamp to log window.
+<li> The wxHtmlWindow is no longer used for help contents. Instead just invokes MIME on .htm.
+     This gives an executable almost 100k size less.
+<li> OnIdle has been improved: added RequestMore() and indeed external changes are updated a lot faster.
+<li> Data Mining has been removed.
+<li> The wxGTK version no longer has out commented database code. so wxUSE_ODBC should be set in the
+     setup.h file. ./configure --with-odbc works okay.
+<li> RBS* only available for wxMSW (and Build RBS File option).
+     RBSDefaultFolder and RBSMakefile now available for both RSX and VMS.
+<li> Added windows place, size, style and sash position at startup and close down.
+<li> SetProject is improved, now source code files and folders determine project.
+<li> The Edit Create Comment shows the language description in the title.
+<li> Size column for folders is now empty.
+<li> During FileOpen Hide and Show is used this speeds up processing, especially for Linux.
+<li> Menu accelerators have been added.
+<li> FTP support has been added.
+</ol>
+
+<P>Bugs</P>
+<ol>
+<li> The comment: "/* comment */// other comment" is not counted correctly
+     (as in all previous versions).
+</ol>
+
+<hr>
+<A NAME="32"></A><B>Version 3.2</B>
+<P><I>Released: 11-07-2001</I>
+<P>
+Changed config into a property sheet to get the Options Edit back again.
+<ol>
+<li> Adding sub folders on parent level only is now possible using key IncludeParentOnly.
+<li> RBSStream has been improved: no hard coded strings for the VAX, everything settable in config.
+<li> All key values are written to the registry only when exiting (no more ReadWrite).
+<li> Added html help contents and updated the .htm file.
+<li> Added key DefaultFolder for opening and saving files.
+</ol>
+
+<hr>
+<A NAME="31"></A><B>Version 3.1</B>
+<P><I>Released: 22-06-2001</I>
+<P>
+Uses wxWidgets 2.2.7. Improved sorting for strings, now exactly sorted.
+<ol>
+<li> Column percentage is no longer used.
+<li> First default revision in a header starts at 1.1, instead of 1.0.
+</ol>
+
+<hr>
+<A NAME="30"></A><B>Version 3.0</B>
+<P><I>Released: 12-06-2001</I>
+<P>
+Uses wxWidgets 2.2.1. Dialogs are designed using wxDesigner 2.5.
+Application is now available for Unix (Linux RedHat 6.2) as well.
+Reason for changing to wxWidgets has been as test case for developing MEWINT using wxWidgets.
+Threads are back again.
+<ol>
+<li> Embedded SQL support is now for any ODBC database, not only Access.
+     This caused a small change in queries supported: columns are now separated by ' instead of " sign, and
+     the ''' used to generate a ' sign is now a CHR(39). Error reporting when queries have incorrect syntax
+     is improved (a detailed sqllog.txt file is available). SQL statements supported is no longer
+     limited to SELECT queries, now DROP TABLE statements etc. are supported as well.
+<li> The main frame is a splitter window with a notebook containing several pages
+     with image index for reports.
+<li> EditDialog is improved, now uses a wxGrid for displaying counts, numbers are right aligned.
+<li> MRU support has been added to the File menu.
+<li> Compare Recent Version has been added, this directly compares the selected item with the most recent item found.
+<li> Compare and Restore dialog are combined into a Version List, EditDeleteDoubles is invoked automatically,
+     so only real different versions appear in this window.
+<li> List timer support is now replaced by OnIdle support in the list class,
+     synchronization no longer activated for folders.
+     The OnIdle is better, since it is called when application is idle.
+<li> All ClassBuilder _ref members are replaced by the Get.. methods.
+<li> All exceptions are removed.
+<li> Options is removed from the menu.
+<li> The config is much simpler, templates are no longer used.
+<li> GetNextRevisionNumber contained error for revisions above 2 digits, was incorrect spaced.
+<li> Copy Elements and Sub Elements now both copy elements separated by newlines to the clipboard.
+<li> SetProject is improved, now only source code files determine project.
+<li> Backup support is removed.
+<li> Headers added have RCS keywords.
+<li> Tool tips are now available for the tool bar.
+<li> All icons (except application icon) have been replaced by bitmaps, so now same code for Linux and MSW.
+<li> At startup the week number and the day of the week are logged.
+<li> Data Mining has been out commented.
+<li> xv is used for translating bmp into xpm files for Linux.
+</ol>
+
+<hr>
+<A NAME="22"></A><B>Version 2.2</B>
+<P><I>Released: 18-12-2000</I>
+<P>
+Uses the XTToolKit library XT122DemoLib, this is the successor for the CodeJock library.
+However it is no longer freeware.
+<ol>
+<li> Support for more RCS Keywords has been added, and is now conform RCS rules.
+<li> Engine and Interface classes are separated.
+<li> ReportSQL did not report file names ok in the previous version.
+<li> Drag/drop support has been added.
+<li> Revision Number is now shown (if present) with RevisionEdit.
+<li> The CompareWithBase from config is removed, automatically done when Comparing on 1 file.
+</ol>
+
+<hr>
+<A NAME="21"></A><B>Version 2.1</B>
+<P><I>Released: 14-11-2000</I>
+<P>
+Uses the CodeJock Library v6.09 that offers sorting, and provides a flat header with a sorting image,
+and some file name classes (CCJShell).
+<ol>
+<li> The revision number is shown and updated as well. RevisionEdit was not invoked for revisions consisting
+     of only 1 revision in the header. Revisions are now reported if found in the entire source file,
+     not only before fist 3 lines of code, and the version numbers are added after parsing is complete,
+     no longer after first empty line.
+<li> All status bar pane 0 text is displayed in an edit box, and written to a log file as well, all status
+     bars share one log file. This is for project management. The log file can be
+     opened directly under File Open Logfile.
+<li> The project file format has changed, item data, images, states (including mod. times), are no longer stored.
+     Counts are now part of new report count, therefore not stored either.
+     New file format: ['fullpath'[\t'folder extension']\n]+.
+<li> The mining database has been extended with two tables for project management. These tables are updated
+     each time Continue is invoked, the config now contains a MiningDatabase member which allows the mining
+     database to be opened automatically when starting up.
+<li> Non source files are opened using the registry. Images are improved, and image lists are now shared by
+     all lists. Now regular shell images are used for non-source code files. The folder image is no longer used,
+     as it is taken from the system list.
+<li> Support for the Unix 'static char ident' has been improved. The previous version did not update it
+     when making new revisions. This version just updates any idents found and the correct assist type was selected.
+<li> The OnCompare now invokes CompareFile, and shows status bar text.
+<li> Each report has its own window placement in the registry.
+<li> The main list now has a timer which updates the Modified field every minute if necessary.
+<li> If SQL database is not open and RunSQL is selected, the database dialog is shown allowing you to open
+     the database, or to cancel, in which case run selected items is cancelled. The SQL Report status bar text
+     has been updated, it now reports the number of revisions found (same as Run SQL).
+<li> The CheckShellReturn code has been improved, no longer contains the text with error messages, but
+     invokes the wfc_get_error_string instead (from the WFC class library).
+<li> Headers and comments with formatting are handled okay, they now share the same code.
+<li> The project file can now be opened as text file.
+</ol>
+
+<hr>
+<A NAME="20"></A><B>Version 2.0</B>
+<P><I>Released: 19-6-2000</I>
+<P>
+Uses Visual C++ 6.0 together with MFC 6.0.
+Threads gave errors in debugging mode. Therefore multi threading is removed.
+<ol>
+<li> Hot tracking has been added. One click item activate has been added, allowing you to open an element
+     using one click only. Behavior is now Internet Explorer like. Tracking information is shown in the status bar.
+<li> EditRename has been added, allowing you to rename a file element on disk and on the list at the same time.
+<li> OnLClick has been changed, now items are copied to the clipboard automatically.
+<li> A Tool bar has been added that contains the most frequently used commands.
+<li> The DatabaseDialog now shows the kind of database that is going to be opened. A test is done when
+     opening a mining database, whether this is a legal mining database. If the mining database is open,
+     then no count dialog is shown after counting. It has no longer a statusbar, as the title and the OK
+     button indicate whether database can be opened or closed.
+<li> Columns can be moved simply by dragging them.
+<li> Full row selection has been added.
+<li> Grid lines have been added.
+<li> The 'stopped' overlay image is changed, and is now similar to the stop bitmap on the toolbar.
+<li> ToggleSort has been replaced by SortAscending, when you now click on a column it is sorted according to this button is checked or not.
+<li> The Report Count is no longer supported, this did not add anything new, so removed for simplicity.
+<li> dynamic_cast is no longer used, instead direct casting, this reduces size of the executable.
+</ol>
+
+<hr>
+<A NAME="19"></A><B>Version 1.9</B>
+<P><I>Released: 18-4-2000</I>
+<P>
+Unix files are supported. When opening a file for writing, the application determines it's file type and
+writes the file using this file type. The RCS identifier 'static char ident' is updated
+whenever a Revision Edit is done.
+<ol>
+<li> A Report Keyword has been added. This counts all language (not-commented) keywords for the current
+     selected elements, and counts a total as well. Report SQL is improved. It now also reports queries that
+     have not been run yet. The column 'Date' has been renamed into 'Run time'.
+<li> Data Mining has been added. If a MS Access mining database has been selected, and you count files or keywords,
+     or report revisions, then the results are saved into this database as well. This allows for more complex reports
+     and overviews to be made outside the application.
+<li> The SQL database and the mining database are selected using the File menu. After running SQL queries, the
+     number of queries executed is reported.
+<li> All lists have a light gray background color, and alternating row coloring for detailed view. The Created and
+     Accessed columns are added to the main list, after the Modified column. This allows you to sort on them as well.
+<li> Modal Edit Dialogs are centered, and do not use config information for positioning on the parent window.
+     The InternalEditor has font Courier 10, Edit Dialogs invoked with text from files also use Courier font.
+<li> Counting of words of code has been added.
+<li> Reflection support has been improved, now also support for  VAX files, with a default dir and makefile to be invoked.
+<li> The command line interface has been improved, see option -h for details.
+<li> DeleteFromDisk menu item has been added, allows you to delete elements from list and from disk as well.
+<li> All SortBy items are disabled if the list is empty.
+<li> A Default button has been added to some dialogs, to restore to the default settings.
+</ol>
+
+<hr>
+<A NAME="18"></A><B>Version 1.8</B>
+<P><I>Released: 7-1-2000</I>
+<P>
+RevisionReport is improved, and now allows RCS revisions (as used by CCIS) to be reported and
+edited as well. Revision comments format words nicely on lines, so one word is no longer split up
+over 2 lines.
+<ol>
+<li> A new MakeBackup option is added. This creates backup of source files each time a new revision is made.
+     A Restore command is added allowing you to restore to one of the backup files.
+<li> Large Icon View mode is supported.
+<li> Count Lines and Count All are collapsed into one Count. Strings are recognized, and comments appearing in
+     strings are no longer counted as comments. Empty last lines are no longer counted.
+</ol>
+
+<hr>
+<A NAME="17"></A><B>Version 1.7</B>
+<P><I>Released: 15-12-1999</I>
+<P>
+The source code is now generated by ClassBuilder 2.0 (2.0a PR246).
+<ol>
+<li> MFC usage is limited to the window derived classes. Classes like CFile, CMemFile are no longer used,
+     but instead replaced by the standard iostream library classes.
+<li> Initials are no longer limited to maximal 3 characters. You can set the size using Options.
+<li> Added Number of Empty Lines.
+<li> System file layouts are no longer supported.
+</ol>
+
+<hr>
+<A NAME="16"></A><B>Version 1.6</B>
+<P><I>Released: 12-10-1999</I>
+<P>
+Interface is now conform SDI guidelines (e.g. File Open) and has a menu instead of buttons.
+You can now enter both check-in or check-out comments. The format of these comments is now YYMMDD HHMMSS.
+Added header support.
+<ol>
+<li> Added comparing of files using your own comparator.
+<li> Added Delete Doubles and Delete Singles.
+<li> Added Add New File.
+<li> Added automatic project name in the status bar.
+<li> Code is prepared to be used by ClassBuilder.
+</ol>
+
+<hr>
+<A NAME="15"></A><B>Version 1.5</B>
+<P><I>Released: 23-3-1999</I>
+<P>
+Checking in and out of files is supported.
+<ol>
+<li> Sort now uses a default ascending order, when you did not yet sorted on that column before.
+<li> The Open command on folders now uses the Explorer.
+<li> ReadOnly Items have special bitmaps.
+<li> Portable files have a default file name and are kept in the config.
+<li> Added option Initials to be used when checking in.
+<li> Added option ToggleSort.
+<li> Options is implemented as a property sheet.
+<li> Added a Properties Dialog.
+<li> The layout of system files has been modified, now considerably smaller. The size and modified
+     are no longer part of the system file, this data is read when sorting on these columns.
+</ol>
+
+<hr>
+<A NAME="14"></A><B>Version 1.4</B>
+<P><I>Released: 11-8-1998</I>
+<P>
+Embedded SQL is supported. Queries are run and the results are placed in the file.
+RBS is supported.
+<ol>
+<li> Added a Send menu item, so you can send your selection to a platform.
+<li> The Folder column has a larger default value.
+<li> Added a separate Add dialog.
+<li> Size of columns is now kept in the config.
+<li> Added a separate Options dialog. This dialog allows you to edit all options specified in
+     the config (e.g. the language extensions).
+<li> Timestamp format now ""%m/%d/%Y %H:%M:%S"". If set otherwise sorting will not work.
+</ol>
+
+<hr>
+<A NAME="13"></A><B>Version 1.3</B>
+<P><I>Released: 18-6-1998</I>
+<P>
+<ol>
+<li> Binary system files are used for keeping results.
+<li> The code now uses overlay images, so the image icons now more exactly show the states for the items.
+<li> Folder icons show whether they contain source code files.
+</ol>
+
+<hr>
+<A NAME="12"></A><B>Version 1.2</B>
+<P><I>Released: 23-4-1998</I>
+<P>
+Changed CListBox into CListCtrl. Images added and sorting on columns by clicking.
+<ol>
+<li> Right click gives you a popup menu to choose Open, Copy (no longer separate buttons).
+<li> The default button is removed, its behavior is implicit. If you delete the .ini files,
+     the defaults are used (or if you start the application for the first time).
+<li> Added column with comment percentages.
+<li> The file extension now determines the type of file, according to config values.
+<li> Removed the InFiles column. Added the Type column. For folders this column contains the InFiles text
+     used to add the folder, so you can easily reanalyze the folder later on.
+<li> The status bar also shows the number of items and the number of selected items in the list.
+<li> The type column now specifies the extension in case the item is a file, and the InFiles in
+     case the item is a folder.
+</ol>
+
+<hr>
+<A NAME="11"></A><B>Version 1.1</B>
+<P><I>Released: 16-3-1998</I>
+<P>
+Changed CEdit into a CListBox, so updating window now less flickering,
+and considerably faster when the window gets filled.
+<ol>
+<li> More advanced matching of file type, so you can not only match on *.cpp,
+     but for example foo*.cpp as well.
+<li> Double clicking on an item lets you open the file with your favorite editor
+     (specified in the config by the Editor item).
+</ol>
+
+<hr>
+<A NAME="10"></A><B>Version 1.0</B>
+<P><I>Released: 27-1-1998</I>
+<P>
+Uses Visual C++ 5.0 together with MFC 5.0. CEdit is used as base for the output.
+This version counts lines and comments.
+<ol>
+<li> Recursive counting and multiple threads.
+<li> 16/12/97 Started using Visual C++ 5.0 together with MFC.
+</ol>
+
+<hr>
+<A NAME="01"></A><B>Version 0.1</B>
+<P><I>Released: 8-12-1997</I>
+<P>
+This is the Visual Basic prototype, it was called Linecount.
+The prototype lacks recursive counting of
+directories, which was the main reason to switch to C++.
+<ol>
+<li> 01/12/97 Started coding the prototype using Visual Basic.
+<!--- 01/10/97 Started working at the LVB. -->
+</ol>
