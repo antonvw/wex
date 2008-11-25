@@ -74,15 +74,13 @@ const exLexer exLexers::FindByName(const wxString& name) const
 
 void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 {
-  wxStringTokenizer tkz(str.AfterFirst('\t'), GetEOL());
+  wxXmlNode *child = node>GetChildren();
 
-  while (tkz.HasMoreTokens())
+  while (child) 
   {
-    const wxString value = tkz.GetNextToken();
-
-    if (value.StartsWith("marker"))
+    if (child->HasProp("marker");
     {
-      const exMarker marker(ParseMarker(value.AfterFirst('.')));
+      const exMarker marker(ParseMarker(child->GetPropVal("marker"));
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
           marker.GetMarkerSymbol() < wxSTC_STYLE_MAX)
@@ -97,20 +95,20 @@ void exLexers::ParseGlobalProperties(const wxXmlNode* node)
           GetCurrentLine() + 1);
       }
     }
-    else if (value.StartsWith("style"))
+    else if (child->HasProp("style");
     {
       m_Styles.push_back(value.AfterFirst('.'));
     }
-    else if (value.StartsWith("hex"))
+    else if (child->HasProp("hex");
     {
       m_StylesHex.push_back(value.AfterFirst('.'));
     }
     else
     {
-      wxLogError("Undefined property: %s on line: %d",
-        value.c_str(),
-        GetCurrentLine() + 1);
+      wxLogError("Undefined property: %s on", value.c_str());
     }
+    
+    child = child->GetNext();
   }
 }
 
