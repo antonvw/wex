@@ -47,6 +47,8 @@ public:
   void Read();
 private:
   void ParseGlobalProperties(const wxXmlNode* node);
+  void ParseLocalColourings(const wxXmlNode* node);
+  void ParseLocalProperties(const wxXmlNode* node);
   const exLexer ParseLexer(const wxXmlNode* node);
   const exMarker ParseMarker(const wxString& number, const wxString& props);
 

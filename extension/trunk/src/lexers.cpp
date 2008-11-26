@@ -14,8 +14,6 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/extension.h>
 
-using namespace std;
-
 exLexers::exLexers()
   : m_FileName(
 #ifdef EX_PORTABLE
@@ -36,7 +34,7 @@ const exLexer exLexers::FindByFileName(const wxFileName& filename) const
   }
 
   for (
-    vector<exLexer>::const_iterator it = m_Lexers.begin();
+    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -54,7 +52,7 @@ const exLexer exLexers::FindByName(const wxString& name) const
   if (!m_Lexers.empty())
   {
     for (
-      vector<exLexer>::const_iterator it = m_Lexers.begin();
+      std::vector<exLexer>::const_iterator it = m_Lexers.begin();
       it != m_Lexers.end();
       ++it)
     {
@@ -72,6 +70,7 @@ const exLexer exLexers::FindByName(const wxString& name) const
   return exLexer();
 }
 
+// TODO: Styles and Styles hex parse them here insteaad of at stc.
 void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 {
   wxXmlNode *child = node>GetChildren();
@@ -99,17 +98,17 @@ void exLexers::ParseGlobalProperties(const wxXmlNode* node)
           GetCurrentLine() + 1);
       }
     }
-    else if (child->HasProp("style");
+    else if (child->GetName() == "style")
     {
-      m_Styles.push_back(value.AfterFirst('.'));
+      m_Styles.push_back(child->PropVal() + "=" + child->NodeContent());
     }
-    else if (child->HasProp("hex");
+    else if (child->GetName() == "hex")
     {
-      m_StylesHex.push_back(value.AfterFirst('.'));
+      m_StylesHex.push_back(child->PropVal() + "=" + child->NodeContent());
     }
     else
     {
-      wxLogError("Undefined property: %s on", value.c_str());
+      wxLogError("Undefined property: %s", child->GetName().c_str());
     }
     
     child = child->GetNext();
@@ -118,19 +117,8 @@ void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 
 const exLexer exLexers::ParseLexer(const wxXmlNode* node)
 {
-  wxStringTokenizer fields(str, "\t", wxTOKEN_RET_EMPTY);
-
-  if (fields.CountTokens() < 3)
-  {
-    wxLogError("Syntax error in: %s on line: %d",
-      str.c_str(),
-      GetCurrentLine() + 1);
-
-    return exLexer();
-  }
-
   exLexer lexer;
-  lexer.m_ScintillaLexer = fields.GetNextToken().Strip(wxString::both);
+  lexer.m_ScintillaLexer = child->GetPropVal("name");
 
   if (lexer.m_ScintillaLexer == exLexer().Default().m_ScintillaLexer)
   {
@@ -138,35 +126,95 @@ const exLexer exLexers::ParseLexer(const wxXmlNode* node)
     // they are skipped by ReportLine, so do it here.
     lexer = exLexer().Default();
   }
+  
+  lexer.m_Associations = child->GetPropVal("extensions");
 
-  lexer.m_Associations = fields.GetNextToken().Strip(wxString::both);
-  lexer.m_Colourings = fields.GetNextToken().Strip(wxString::both);
-  lexer.SetKeywords(fields.GetNextToken().Strip(wxString::both));
-  lexer.m_Properties = fields.GetNextToken().Strip(wxString::both);
-  lexer.m_CommentEnd = "\0"; // set the default
-  lexer.m_CommentEnd2 = "\0"; // set the default
+  wxXmlNode *child = node>GetChildren();
 
-  if (fields.HasMoreTokens())
+  while (child) 
   {
-    lexer.m_CommentBegin = fields.GetNextToken().Strip(wxString::both);
-
-    if (fields.HasMoreTokens())
+    wxXmlProperty* prop = child->GetProperties();
+    
+    if (child->GetName() == "colourings")
     {
-      lexer.m_CommentEnd = fields.GetNextToken().Strip(wxString::both);
-
-      if (fields.HasMoreTokens())
-      {
-        lexer.m_CommentBegin2 = fields.GetNextToken().Strip(wxString::both);
-
-        if (fields.HasMoreTokens())
-        {
-          lexer.m_CommentEnd2 = fields.GetNextToken().Strip(wxString::both);
-        }
-      }
+      lexer.m_Colourings = ParseLocalColourings(node);
     }
+    else if (child->GetName() == "keywords")
+    {
+      lexer.SetKeywords(child->NodeContent());
+    }
+    else if (child->GetName() == "properties")
+    {
+      lexer.m_Properties = ParseLocalProperties(node);
+    }
+    else if (child->GetName() == "comment")
+    {
+      lexer.m_CommentBegin = child->GetPropVal("begin");
+      lexer.m_CommentBegin2 = child->GetPropVal("begin2");
+      lexer.m_CommentEnd = child->GetPropVal("end");
+      lexer.m_CommentEnd2 = child->GetPropVal("end2");
+    }
+    else
+    {
+      wxLogError("Undefined property: %s", child->GetName().c_str());
+    }
+    
+    child = child->GetNext();
   }
 
   return lexer;
+}
+
+void exLexers::ParseLocalColourings(const wxXmlNode* node)
+{
+  wxString text;
+
+  wxXmlNode *child = node>GetChildren();
+
+  while (child) 
+  {
+    wxXmlProperty* prop = child->GetProperties();
+    
+    if (child->GetName() == "colouring")
+    {
+      text += 
+        child->GetPropVal("name") + "=" + child->GetNodeContent());
+    }
+    else
+    {
+      wxLogError("Undefined colouring property: %s", child->GetName().c_str());
+    }
+    
+    child = child->GetNext();
+  }
+  
+  return text;
+}
+
+void exLexers::ParseLocalProperties(const wxXmlNode* node)
+{
+  wxString text;
+  
+  wxXmlNode *child = node>GetChildren();
+
+  while (child) 
+  {
+    wxXmlProperty* prop = child->GetProperties();
+    
+    if (child->GetName() == "property")
+    {
+      text += 
+        child->GetPropVal("name") + "=" + child->GetNodeContent());
+    }
+    else
+    {
+      wxLogError("Undefined property: %s", child->GetName().c_str());
+    }
+    
+    child = child->GetNext();
+  }
+  
+  return text;
 }
 
 const exMarker exLexers::ParseMarker(const wxString& number, const wxString& props)
@@ -174,6 +222,7 @@ const exMarker exLexers::ParseMarker(const wxString& number, const wxString& pro
   wxStringTokenizer prop_fields(props, ",");
 
   const wxString symbol = prop_fields.GetNextToken();
+  
   wxColour foreground;
   wxColour background;
 
