@@ -78,9 +78,13 @@ void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 
   while (child) 
   {
-    if (child->HasProp("marker");
+    wxXmlProperty* prop = child->GetProperties();
+    
+    if (child->GetName() == "marker")
     {
-      const exMarker marker(ParseMarker(child->GetPropVal("marker"));
+      const exMarker marker(ParseMarker(
+        child->GetPropVal("marker"),
+        child->GetNodeContent());
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
           marker.GetMarkerSymbol() < wxSTC_STYLE_MAX)
@@ -165,13 +169,8 @@ const exLexer exLexers::ParseLexer(const wxXmlNode* node)
   return lexer;
 }
 
-const exMarker exLexers::ParseMarker(const wxXmlNode* node)
+const exMarker exLexers::ParseMarker(const wxString& number, const wxString& props)
 {
-  wxStringTokenizer fields(str, "=");
-
-  const wxString number = fields.GetNextToken();
-  const wxString props = fields.GetNextToken();
-
   wxStringTokenizer prop_fields(props, ",");
 
   const wxString symbol = prop_fields.GetNextToken();
@@ -217,30 +216,22 @@ void exLexers::Read()
   }
  
   wxXmlNode *child = doc.GetRoot()->GetChildren();
+
   while (child) 
   {
     if (child->GetName() == "global") 
     {
       ParseGlobalProperties(child);
     }
-    else
+    else if (child->GetName() == "lexer") 
     {
-      // process text enclosed by <tag1></tag1>
-      wxString content = child->GetNodeContent();
+      const exLexer& lexer = ParseLexer(child);
 
-      // process properties of <tag1>
-      wxString propvalue1 = 
-          child->GetPropVal(wxT("prop1"), 
-                              wxT("default-value"));
-      wxString propvalue2 = 
-          child->GetPropVal(wxT("prop2"), 
-                              wxT("default-value"));
-
-        
+      if (!lexer.GetScintillaLexer().empty())
+      {
+        m_Lexers.push_back(lexer);
+      }
     } 
-    else if (child->GetName() == wxT("tag2")) {
-    {
-    }
 
     child = child->GetNext();
   }
@@ -248,69 +239,5 @@ void exLexers::Read()
   if (m_Skip)
   {
     wxLogError("Found #if statement without matching #endif");
-  }
-}
-
-void exLexers::ReportLine(const wxString& line)
-{
-  // Eof() is not set when reporting the last line.
-  if ((GetCurrentLine() == GetLineCount() - 1 || line.empty()) &&
-      !m_LexerLine.empty())
-  {
-    if (m_LexerLine.Contains("global\t"))
-    {
-      ParseGlobalProperties(m_LexerLine);
-    }
-    else
-    {
-      // Now parse the lexer. Change if xml is supported.
-      const exLexer& lexer = ParseLexer(m_LexerLine);
-
-      if (!lexer.GetScintillaLexer().empty())
-      {
-        m_Lexers.push_back(lexer);
-      }
-    }
-
-    m_LexerLine.clear();
-  }
-
-  if (!line.empty())
-  {
-    bool skip_line = false;
-
-    if (line.StartsWith("#if GTK"))
-    {
-      skip_line = true;
-
-#ifdef __WXMSW__
-      // We're on windows platform, so if this section is for GTK
-      // skip it.
-      m_Skip = true;
-#endif
-    }
-
-    if (line.StartsWith("#if MSW"))
-    {
-      skip_line = true;
-#ifdef __WXGTK__
-      // We're on GTK platform, so if this section is for MSW
-      // skip it.
-      m_Skip = true;
-#endif
-    }
-
-    // Are we finished skipping?
-    if (line.StartsWith("#endif"))
-    {
-      skip_line = true;
-      m_Skip = false;
-    }
-
-    // Only keep line if we are not skipping.
-    if (!m_Skip && !skip_line)
-    {
-      m_LexerLine += line + GetEOL();
-    }
   }
 }
