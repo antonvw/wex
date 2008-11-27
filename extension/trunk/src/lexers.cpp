@@ -73,17 +73,15 @@ const exLexer exLexers::FindByName(const wxString& name) const
 // TODO: Styles and Styles hex parse them here insteaad of at stc.
 void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 {
-  wxXmlNode *child = node>GetChildren();
+  wxXmlNode* child = node->GetChildren();
 
   while (child) 
   {
-    wxXmlProperty* prop = child->GetProperties();
-    
     if (child->GetName() == "marker")
     {
       const exMarker marker(ParseMarker(
-        child->GetPropVal("marker"),
-        child->GetNodeContent());
+        child->GetAttribute("no", "0"),
+        child->GetNodeContent()));
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
           marker.GetMarkerSymbol() < wxSTC_STYLE_MAX)
@@ -92,23 +90,22 @@ void exLexers::ParseGlobalProperties(const wxXmlNode* node)
       }
       else
       {
-        wxLogError("Illegal marker number: %d or symbol: %d on line: %d",
+        wxLogError("Illegal marker number: %d or symbol: %d",
           marker.GetMarkerNumber(),
-          marker.GetMarkerSymbol(),
-          GetCurrentLine() + 1);
+          marker.GetMarkerSymbol());
       }
     }
     else if (child->GetName() == "style")
     {
-      m_Styles.push_back(child->PropVal() + "=" + child->NodeContent());
+      m_Styles.push_back(child->GetAttribute("no", "0") + "=" + child->GetNodeContent());
     }
     else if (child->GetName() == "hex")
     {
-      m_StylesHex.push_back(child->PropVal() + "=" + child->NodeContent());
+      m_StylesHex.push_back(child->GetAttribute("no", "0") + "=" + child->GetNodeContent());
     }
     else
     {
-      wxLogError("Undefined property: %s", child->GetName().c_str());
+      wxLogError("Undefined attribute: %s", child->GetName().c_str());
     }
     
     child = child->GetNext();
@@ -118,7 +115,7 @@ void exLexers::ParseGlobalProperties(const wxXmlNode* node)
 const exLexer exLexers::ParseLexer(const wxXmlNode* node)
 {
   exLexer lexer;
-  lexer.m_ScintillaLexer = child->GetPropVal("name");
+  lexer.m_ScintillaLexer = node->GetAttribute("name", "cpp");
 
   if (lexer.m_ScintillaLexer == exLexer().Default().m_ScintillaLexer)
   {
@@ -127,21 +124,19 @@ const exLexer exLexers::ParseLexer(const wxXmlNode* node)
     lexer = exLexer().Default();
   }
   
-  lexer.m_Associations = child->GetPropVal("extensions");
+  lexer.m_Associations = node->GetAttribute("extensions", "*.cpp");
 
-  wxXmlNode *child = node>GetChildren();
+  wxXmlNode *child = node->GetChildren();
 
   while (child) 
   {
-    wxXmlProperty* prop = child->GetProperties();
-    
     if (child->GetName() == "colourings")
     {
       lexer.m_Colourings = ParseLocalColourings(node);
     }
     else if (child->GetName() == "keywords")
     {
-      lexer.SetKeywords(child->NodeContent());
+      lexer.SetKeywords(child->GetNodeContent());
     }
     else if (child->GetName() == "properties")
     {
@@ -149,14 +144,14 @@ const exLexer exLexers::ParseLexer(const wxXmlNode* node)
     }
     else if (child->GetName() == "comment")
     {
-      lexer.m_CommentBegin = child->GetPropVal("begin");
-      lexer.m_CommentBegin2 = child->GetPropVal("begin2");
-      lexer.m_CommentEnd = child->GetPropVal("end");
-      lexer.m_CommentEnd2 = child->GetPropVal("end2");
+      lexer.m_CommentBegin = child->GetAttribute("begin", "");
+      lexer.m_CommentBegin2 = child->GetAttribute("begin2", "");
+      lexer.m_CommentEnd = child->GetAttribute("end", "");
+      lexer.m_CommentEnd2 = child->GetAttribute("end2", "\n");
     }
     else
     {
-      wxLogError("Undefined property: %s", child->GetName().c_str());
+      wxLogError("Undefined attribute: %s", child->GetName().c_str());
     }
     
     child = child->GetNext();
@@ -165,20 +160,18 @@ const exLexer exLexers::ParseLexer(const wxXmlNode* node)
   return lexer;
 }
 
-void exLexers::ParseLocalColourings(const wxXmlNode* node)
+const wxString exLexers::ParseLocalColourings(const wxXmlNode* node)
 {
   wxString text;
 
-  wxXmlNode *child = node>GetChildren();
+  wxXmlNode* child = node->GetChildren();
 
   while (child) 
   {
-    wxXmlProperty* prop = child->GetProperties();
-    
     if (child->GetName() == "colouring")
     {
       text += 
-        child->GetPropVal("name") + "=" + child->GetNodeContent());
+        child->GetAttribute("name", "0") + "=" + child->GetNodeContent();
     }
     else
     {
@@ -191,20 +184,18 @@ void exLexers::ParseLocalColourings(const wxXmlNode* node)
   return text;
 }
 
-void exLexers::ParseLocalProperties(const wxXmlNode* node)
+const wxString exLexers::ParseLocalProperties(const wxXmlNode* node)
 {
   wxString text;
   
-  wxXmlNode *child = node>GetChildren();
+  wxXmlNode *child = node->GetChildren();
 
   while (child) 
   {
-    wxXmlProperty* prop = child->GetProperties();
-    
     if (child->GetName() == "property")
     {
       text += 
-        child->GetPropVal("name") + "=" + child->GetNodeContent());
+        child->GetAttribute("name", "0") + "=" + child->GetNodeContent();
     }
     else
     {
@@ -259,12 +250,12 @@ void exLexers::Read()
 
   wxXmlDocument doc;
   
-  if (!doc.Load(m_FileName.GetFullPath())
+  if (!doc.Load(m_FileName.GetFullPath()))
   {
-    return false;
+    return;
   }
  
-  wxXmlNode *child = doc.GetRoot()->GetChildren();
+  wxXmlNode* child = doc.GetRoot()->GetChildren();
 
   while (child) 
   {

@@ -31,6 +31,9 @@ public:
   /// Finds a lexer specified by the (scintilla) name.
   const exLexer FindByName(const wxString& name) const;
 
+  /// Gets the filename.
+  const exFileName& GetFileName() const {return m_FileName;};
+  
   /// Gets the lexers.
   const std::vector<exLexer>& Get() const {return m_Lexers;};
 
@@ -47,8 +50,8 @@ public:
   void Read();
 private:
   void ParseGlobalProperties(const wxXmlNode* node);
-  void ParseLocalColourings(const wxXmlNode* node);
-  void ParseLocalProperties(const wxXmlNode* node);
+  const wxString ParseLocalColourings(const wxXmlNode* node);
+  const wxString ParseLocalProperties(const wxXmlNode* node);
   const exLexer ParseLexer(const wxXmlNode* node);
   const exMarker ParseMarker(const wxString& number, const wxString& props);
 
