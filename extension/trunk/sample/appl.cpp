@@ -145,10 +145,10 @@ exSampleFrame::exSampleFrame(const wxString& title)
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().Update();
 
-  m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
+//  m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
   m_Notebook->AddPage(m_ListView, "exListView");
   m_Notebook->AddPage(m_Grid, "exGrid");
-  m_Notebook->AddPage(m_STC, exApp::GetLexers()->GetFileName().GetFullName());
+//  m_Notebook->AddPage(m_STC, exApp::GetLexers()->GetFileName().GetFullName());
 
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
