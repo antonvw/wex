@@ -14,10 +14,9 @@
 
 #include <wx/xml/xml.h>
 
-/// Contains the lexers.
 /// Reads the lexers, keywords, markers and styles
-/// from configuration file lexers.xml and makes
-/// them available (without the comment lines).
+/// from the configuration file lexers.xml and makes
+/// them available.
 /// See for documentation the lexers.xml file.
 class exLexers
 {
@@ -49,18 +48,16 @@ public:
   /// Reads the lexers, keywords, markers and styles from xml configuration file.
   void Read();
 private:
-  void ParseGlobalProperties(const wxXmlNode* node);
-  const wxString ParseLocalColourings(const wxXmlNode* node);
-  const wxString ParseLocalProperties(const wxXmlNode* node);
-  const exLexer ParseLexer(const wxXmlNode* node);
-  const exMarker ParseMarker(const wxString& number, const wxString& props);
+  const wxString ParseTagColourings(const wxXmlNode* node);
+  void ParseTagGlobal(const wxXmlNode* node);
+  const exLexer ParseTagLexer(const wxXmlNode* node);
+  const exMarker ParseTagMarker(const wxString& number, const wxString& props);
+  const wxString ParseTagProperties(const wxXmlNode* node);
 
   std::vector<exLexer> m_Lexers;
   std::vector<exMarker> m_Markers;
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
-
-  bool m_Skip;
 
   exFileName m_FileName;
 };
