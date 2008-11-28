@@ -130,6 +130,9 @@ public:
   /// Default constructor.
   exFile();
 
+  /// Opens a file with a filename.
+  exFile(const wxString& filename, wxFile::OpenMode mode = wxFile::read);
+
   /// Destructor.
   /// NB: for wxFile the destructor is not virtual so you should not use wxFile polymorphically.
   /// So do it here.

@@ -22,6 +22,15 @@ exFile::exFile()
 {
 }
 
+exFile::exFile(const wxString& filename, wxFile::OpenMode mode)
+  : wxFile(filename, mode)
+  , m_FileName(filename)
+  , m_Stat(filename)
+  , m_Message(_("Select File"))
+  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
+{
+}
+
 int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
 {
   if (ask_for_continue)

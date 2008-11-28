@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/extension.h>
+#include <wx/extension/statistics.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>

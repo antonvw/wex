@@ -137,7 +137,7 @@ exSampleFrame::exSampleFrame(const wxString& title)
   m_Notebook = new exNotebook(this, NULL);
   m_Grid = new exGrid(m_Notebook);
   m_ListView = new exListView(m_Notebook);
-  exSTC* st = new exSTC(this, "appl.cpp");
+  exSTC* st = new exSTC(this);
   m_STCShell = new exSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
   GetManager().AddPane(st, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("exSTC"));

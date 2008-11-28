@@ -13,6 +13,7 @@
 #include <ctype.h> // for isspace
 #include <wx/stdpaths.h>
 #include <wx/extension/extension.h>
+#include <wx/extension/textfile.h>
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
 

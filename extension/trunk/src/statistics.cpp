@@ -11,7 +11,9 @@
 
 #include <wx/stdpaths.h>
 #include <wx/extension/extension.h>
+#include <wx/extension/statistics.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/textfile.h>
 
 long exFileNameStatistics::Get(const wxString& key) const
 {
