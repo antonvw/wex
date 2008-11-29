@@ -60,7 +60,6 @@ bool exSampleApp::OnInit()
   return true;
 }
 
-
 #if wxUSE_GRID
 exSampleDir::exSampleDir(const wxString& fullpath, const wxString& findfiles, exGrid* grid)
   : exDir(fullpath, findfiles)
@@ -152,17 +151,8 @@ exSampleFrame::exSampleFrame(const wxString& title)
 
   assert(exApp::GetLexers());
   
-  if (exApp::GetLexers()->GetFileName().GetStat().IsOk())
-  {
-    m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
-    m_Notebook->AddPage(m_STC, exApp::GetLexers()->GetFileName().GetFullName());
-  }
-  else
-  {
-    m_STC = new exSTC(this);
-    m_Notebook->AddPage(m_STC, "exSTC");
-  }
-  
+  m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
+  m_Notebook->AddPage(m_STC, exApp::GetLexers()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "exListView");
   
 #if wxUSE_GRID
@@ -251,15 +241,13 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
       wxFileSelectorDefaultWildcardStr,
       wxFD_OPEN | wxFD_CHANGE_DIR);
 
-    if (GetFocusedSTC() == NULL) return;
-
-    if (GetFocusedSTC()->AskFileOpen(dlg) == wxID_CANCEL) return;
+    if (m_STC->AskFileOpen(dlg) == wxID_CANCEL) return;
 
     wxStopWatch sw;
-    GetFocusedSTC()->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
+    m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
     const long stop = sw.Time();
 
-    StatusText(wxString::Format("exSTC::Open:%ld milliseconds, %d bytes", stop, GetFocusedSTC()->GetTextLength()));
+    StatusText(wxString::Format("exSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
     }
     break;
 
@@ -268,19 +256,15 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_PRINT_SETUP: exApp::GetPrinter()->PageSetup(); break;
 
   case wxID_SAVE: 
-    if (GetFocusedSTC() != NULL) 
+    m_STC->FileSave();
+
+    if (m_STC->GetFileName().GetFullPath() == exApp::GetLexers()->GetFileName().GetFullPath())
     {
-      GetFocusedSTC()->FileSave();
+      exApp::GetLexers()->Read();
 
-      if (GetFocusedSTC()->GetFileName().GetFullPath() == exApp::GetLexers()->GetFileName().GetFullPath())
-      {
-        exApp::GetLexers()->Read();
-
-        m_STC->SetLexer();
-        GetFocusedSTC()->SetLexer();
-        // As the lexer might have changed, update status bar field as well.
-        GetFocusedSTC()->UpdateStatusBar("PaneLexer");
-      }
+      m_STC->SetLexer();
+      // As the lexer might have changed, update status bar field as well.
+      m_STC->UpdateStatusBar("PaneLexer");
     }
     break;
 
@@ -399,11 +383,9 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_FILE_TIMING:
     {
-    if (GetFocusedSTC() == NULL) return;
-
     wxBusyInfo wait(_("Please wait, working..."));
 
-    exFile file(GetFocusedSTC()->GetFileName().GetFullPath());
+    exFile file(m_STC->GetFileName().GetFullPath());
 
     if (!file.IsOpened())
     {
@@ -425,7 +407,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
     sw.Start();
 
-    wxFile wxfile(GetFocusedSTC()->GetFileName().GetFullPath());
+    wxFile wxfile(m_STC->GetFileName().GetFullPath());
 
     for (int j = 0; j < max; j++)
     {
@@ -447,15 +429,13 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_FILE_ATTRIB_TIMING:
     {
-    if (GetFocusedSTC() == NULL) return;
-
     wxBusyInfo wait(_("Please wait, working..."));
 
     const int max = 1000;
 
     wxStopWatch sw;
 
-    const exFileName exfile(GetFocusedSTC()->GetFileName().GetFullPath());
+    const exFileName exfile(m_STC->GetFileName().GetFullPath());
 
     int checked = 0;
 
@@ -468,7 +448,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
     sw.Start();
 
-    const wxFileName file(GetFocusedSTC()->GetFileName().GetFullPath());
+    const wxFileName file(m_STC->GetFileName().GetFullPath());
 
     for (int j = 0; j < max; j++)
     {
@@ -546,18 +526,17 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     }
     }
     break;
-  case ID_STC_GOTO: if (GetFocusedSTC() != NULL) GetFocusedSTC()->GotoDialog(); break;
-  case ID_STC_LEXER: if (GetFocusedSTC() != NULL) GetFocusedSTC()->LexerDialog(); break;
+  case ID_STC_GOTO: m_STC->GotoDialog(); break;
+  case ID_STC_LEXER: m_STC->LexerDialog(); break;
   case ID_STC_SPLIT: 
-    if (GetFocusedSTC() != NULL)
-    {
-      exSTC* stc = new exSTC(*GetFocusedSTC());
-      m_Notebook->AddPage(
-        stc, 
-        wxString::Format("stc%d", stc->GetId()),
-        GetFocusedSTC()->GetFileName().GetFullName());
-      stc->SetDocPointer(GetFocusedSTC()->GetDocPointer());
-     }
+    { 
+    exSTC* stc = new exSTC(*m_STC);
+    m_Notebook->AddPage(
+      stc, 
+      wxString::Format("stc%d", stc->GetId()),
+      m_STC->GetFileName().GetFullName());
+    stc->SetDocPointer(m_STC->GetDocPointer());
+    }
     break;
   }
 }
