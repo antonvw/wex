@@ -145,6 +145,8 @@ exSampleFrame::exSampleFrame(const wxString& title)
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().Update();
 
+  ASSERT(exApp::GetLexers());
+  
   if (exApp::GetLexers()->GetFileName().GetStat().IsOk())
   {
     m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
