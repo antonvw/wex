@@ -1,10 +1,10 @@
 # File:          Makefile
 # Author:        Anton van Wezenbeek
 # RCS-ID:        $Id$
-# Purpose:       Makefile for gtk
+# Purpose:       Makefile for wxextension sample gtk
 
-LIBS=-L../../buildgtk -lwxextension.v2.0.gtk `wx-config --libs all --debug=no` -lodbc
-CFLAGS=`wx-config --cflags --debug=no`
+LIBS=-L../buildgtk -lwxextension.v2.0.gtk `wx-config --libs all` -lodbc
+CFLAGS=`wx-config --cflags`
 APP_VERSION=sample
 PROGRAM=$(APP_VERSION).gtk
 
@@ -15,14 +15,14 @@ WFLAGS=-Wall -Wpointer-arith
 
 # C environment flags, shared by all build dirs
 # Set tracing using DWXTRACE, and trace string (only in debug mode).
-EXTRAFLAGS=-DWXUSINGDLL -INONE -I../../include -O2
+EXTRAFLAGS=-DWXUSINGDLL -INONE -I../include -O2
 
 OBJS=	appl.o
 $(PROGRAM): $(OBJS)
 	$(CC) $(LDFLAGS) $(LIBS) -o $@ $(OBJS)
 
 # General rule.
-%.o: ../%.cpp
+%.o: %.cpp
 	$(CC) $(WFLAGS) $(EXTRAFLAGS) $(CFLAGS) -c $<
 
 clean:
