@@ -9,4 +9,4 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#define EX_LIB_VERSION "wxExtension v2.0"
+#define EX_LIB_VERSION "wxextended v1.0"
