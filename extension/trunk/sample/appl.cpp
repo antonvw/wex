@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          appl.cpp
-* Purpose:       Implementation of sample classes for wxExtension
+* Purpose:       Implementation of sample classes for wxextension
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -60,6 +60,8 @@ bool exSampleApp::OnInit()
   return true;
 }
 
+
+#if wxUSE_GRID
 exSampleDir::exSampleDir(const wxString& fullpath, const wxString& findfiles, exGrid* grid)
   : exDir(fullpath, findfiles)
   , m_Grid(grid)
@@ -81,6 +83,7 @@ void exSampleDir::OnFile(const wxString& file)
   m_Grid->SetReadOnly(no, 1);
   m_Grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
 }
+#endif
 
 exSampleFrame::exSampleFrame(const wxString& title)
   : exManagedFrame(NULL, wxID_ANY, title)
@@ -135,7 +138,9 @@ exSampleFrame::exSampleFrame(const wxString& title)
   SetMenuBar(menubar);
 
   m_Notebook = new exNotebook(this, NULL);
+#if wxUSE_GRID
   m_Grid = new exGrid(m_Notebook);
+#endif
   m_ListView = new exListView(m_Notebook);
   exSTC* st = new exSTC(this);
   m_STCShell = new exSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
@@ -145,7 +150,7 @@ exSampleFrame::exSampleFrame(const wxString& title)
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().Update();
 
-  ASSERT(exApp::GetLexers());
+  assert(exApp::GetLexers());
   
   if (exApp::GetLexers()->GetFileName().GetStat().IsOk())
   {
@@ -159,15 +164,15 @@ exSampleFrame::exSampleFrame(const wxString& title)
   }
   
   m_Notebook->AddPage(m_ListView, "exListView");
+  
+#if wxUSE_GRID
   m_Notebook->AddPage(m_Grid, "exGrid");
-
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
-
   exSampleDir dir(wxGetCwd(), "appl.*", m_Grid);
   dir.FindFiles();
-
   m_Grid->AutoSizeColumns();
+#endif
 
   m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
   m_ListView->InsertColumn("String", exColumn::COL_STRING);

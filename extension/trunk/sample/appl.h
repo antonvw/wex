@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          appl.h
-* Purpose:       Declaration of sample classes for wxExtension
+* Purpose:       Declaration of sample classes for wxextension
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -30,6 +30,7 @@ private:
   DECLARE_NO_COPY_CLASS(exSampleApp)
 };
 
+#if wxUSE_GRID
 /// Use exDir.
 class exSampleDir: public exDir
 {
@@ -41,6 +42,7 @@ private:
   virtual void OnFile(const wxString& file);
   exGrid* m_Grid; ///< put it in a grid
 };
+#endif
 
 /// Use exManagedFrame.
 class exSampleFrame: public exManagedFrame
@@ -53,7 +55,9 @@ protected:
   /// Do something.
   void OnCommand(wxCommandEvent& event);
 private:
+#if wxUSE_GRID
   exGrid* m_Grid;         ///< a grid
+#endif  
   exListView* m_ListView; ///< a listview
   exNotebook* m_Notebook; ///< a notebook
   exSTCShell* m_STCShell; ///< an stc shell
