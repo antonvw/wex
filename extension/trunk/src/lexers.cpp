@@ -84,9 +84,13 @@ const wxString exLexers::ParseTagColourings(const wxXmlNode* node)
       text += 
         child->GetAttribute("name", "0") + "=" + child->GetNodeContent();
     }
+    else if (child->GetName() == "comment")
+    { 
+      // Ignore comments.
+    }
     else
     {
-      wxLogError("Undefined tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined colourings tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
@@ -128,9 +132,13 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     {
       m_StylesHex.push_back(child->GetAttribute("no", "0") + "=" + child->GetNodeContent());
     }
+    else if (child->GetName() == "comment")
+    { 
+      // Ignore comments.
+    }
     else
     {
-      wxLogError("Undefined tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined global tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
@@ -157,7 +165,7 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
   {
     if (child->GetName() == "colourings")
     {
-      lexer.m_Colourings = ParseTagColourings(node);
+      lexer.m_Colourings = ParseTagColourings(node->GetChildren());
     }
     else if (child->GetName() == "keywords")
     {
@@ -165,18 +173,22 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
     }
     else if (child->GetName() == "properties")
     {
-      lexer.m_Properties = ParseTagProperties(node);
+      lexer.m_Properties = ParseTagProperties(node->GetChildren());
     }
-    else if (child->GetName() == "comment")
+    else if (child->GetName() == "comments")
     {
       lexer.m_CommentBegin = child->GetAttribute("begin", "");
       lexer.m_CommentBegin2 = child->GetAttribute("begin2", "");
       lexer.m_CommentEnd = child->GetAttribute("end", "");
       lexer.m_CommentEnd2 = child->GetAttribute("end2", "\n");
     }
+    else if (child->GetName() == "comment")
+    { 
+      // Ignore comments.
+    }
     else
     {
-      wxLogError("Undefined tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined lexer tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
@@ -226,9 +238,13 @@ const wxString exLexers::ParseTagProperties(const wxXmlNode* node)
       text += 
         child->GetAttribute("name", "0") + "=" + child->GetNodeContent();
     }
+    else if (child->GetName() == "comment")
+    { 
+      // Ignore comments.
+    }
     else
     {
-      wxLogError("Undefined tag: %s on %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined properties tag: %s on %d", child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
@@ -237,9 +253,12 @@ const wxString exLexers::ParseTagProperties(const wxXmlNode* node)
   return text;
 }
 
-void exLexers::Read()
+bool exLexers::Read()
 {
-  if (!m_FileName.FileExists()) return;
+  if (!m_FileName.FileExists()) 
+  {
+    return false;
+  }
 
   // Initialize members.
   m_Lexers.clear();
@@ -251,7 +270,7 @@ void exLexers::Read()
   
   if (!doc.Load(m_FileName.GetFullPath()))
   {
-    return;
+    return false;
   }
  
   wxXmlNode* child = doc.GetRoot()->GetChildren();
@@ -273,5 +292,8 @@ void exLexers::Read()
     } 
 
     child = child->GetNext();
-  } 
+  }
+
+  return true; 
 }
+

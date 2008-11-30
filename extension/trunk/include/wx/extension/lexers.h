@@ -46,7 +46,8 @@ public:
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
   /// Reads the lexers, keywords, markers and styles from xml configuration file.
-  void Read();
+  /// Returns true if file exists and is valid xml document.
+  bool Read();
 private:
   const wxString ParseTagColourings(const wxXmlNode* node);
   void ParseTagGlobal(const wxXmlNode* node);

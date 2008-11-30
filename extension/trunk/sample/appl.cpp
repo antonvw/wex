@@ -260,11 +260,13 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
     if (m_STC->GetFileName().GetFullPath() == exApp::GetLexers()->GetFileName().GetFullPath())
     {
-      exApp::GetLexers()->Read();
-
-      m_STC->SetLexer();
-      // As the lexer might have changed, update status bar field as well.
-      m_STC->UpdateStatusBar("PaneLexer");
+      if (exApp::GetLexers()->Read())
+      {
+        wxLogMessage("file contains: %d lexers, exApp::GetLexers()->Get().size());
+        m_STC->SetLexer();
+        // As the lexer might have changed, update status bar field as well.
+        m_STC->UpdateStatusBar("PaneLexer");
+      }
     }
     break;
 

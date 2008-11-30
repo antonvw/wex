@@ -38,7 +38,7 @@ without the written consent of the copyright owner.
     is built of two fields, separated by an equal sign (=).
     The first field contains the scintilla property key.
     The second field contains the scintilla property value. 
- 4) A comment element.
+ 4) A comments element.
 */
 -->
 
@@ -190,7 +190,7 @@ without the written consent of the copyright owner.
       <property name="fold.preprocessor="> 	0 </property>
     </properties>
     
-    <comment begin1="/*"	end1="*/"	begin2="//" />
+    <comments begin1="/*"	end1="*/"	begin2="//" />
     
   </lexer>
   
@@ -227,7 +227,7 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
     </properties>
     
-    <comment begin1="(*"	end1="*)"	begin2="{" end2="}"/>
+    <comments begin1="(*"	end1="*)"	begin2="{" end2="}"/>
     
   </lexer>
   
@@ -280,7 +280,7 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
     </properties>
     
-    <comment begin1="#" />
+    <comments begin1="#" />
     
   </lexer>
   
@@ -344,7 +344,7 @@ without the written consent of the copyright owner.
     MN SO DO PC MS CC SP R1 R2 R3 R4 R5		
     </keywords>
   
-    <comment begin1=";" />
+    <comments begin1=";" />
   
   </lexer>
   
