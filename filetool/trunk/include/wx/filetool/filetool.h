@@ -14,6 +14,7 @@
 
 #include <wx/extension/extension.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/textfile.h>
 #include <wx/filetool/defs.h>
 #include <wx/filetool/listview.h>
 #include <wx/filetool/listitem.h>
