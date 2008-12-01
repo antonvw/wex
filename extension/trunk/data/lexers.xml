@@ -196,7 +196,7 @@ without the written consent of the copyright owner.
   
   <lexer
     name="pascal"
-    extension="*.pas">
+    extensions="*.pas">
   
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
