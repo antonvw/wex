@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/dnd.h>
+#include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/grid.h>

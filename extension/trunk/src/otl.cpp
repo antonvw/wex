@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
 // \todo Using config.h only gives compile errors
 #include <wx/extension/extension.h>

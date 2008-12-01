@@ -13,6 +13,7 @@
 #include <wx/colordlg.h>
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
+#include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/stc.h>
