@@ -83,7 +83,7 @@ const wxString exLexers::ParseTagColourings(const wxXmlNode* node)
     if (child->GetName() == "colouring")
     {
       text += 
-        child->GetAttribute("name", "0") + "=" + child->GetNodeContent() + wxTextFile::GetEOL();
+        child->GetAttribute("no", "0") + "=" + child->GetNodeContent() + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     { 
