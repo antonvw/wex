@@ -38,7 +38,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxbase29u.lib wxbase29u_net.lib wxpng.lib wxjpeg.lib wxregexu.lib wxtiff.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxfiletool.lib wxextension.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxexpat.lib wxpng.lib wxjpeg.lib wxregexu.lib wxtiff.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxfiletool.lib wxextension.lib"
 				OutputFile=".\buildmsw/syncedit.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -215,36 +215,33 @@
 			Name="Sources"
 			Filter="*.cpp">
 			<File
-				RelativePath=".\appl.cpp">
+				RelativePath=".\src\appl.cpp">
 			</File>
 			<File
-				RelativePath=".\frame.cpp">
+				RelativePath=".\src\frame.cpp">
 			</File>
 			<File
-				RelativePath=".\support.cpp">
+				RelativePath=".\src\support.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Include"
 			Filter="*.h">
 			<File
-				RelativePath=".\appl.h">
+				RelativePath=".\src\appl.h">
 			</File>
 			<File
-				RelativePath=".\defs.h">
+				RelativePath=".\src\frame.h">
 			</File>
 			<File
-				RelativePath=".\frame.h">
+				RelativePath=".\src\support.h">
 			</File>
 			<File
-				RelativePath=".\support.h">
-			</File>
-			<File
-				RelativePath=".\version.h">
+				RelativePath=".\src\version.h">
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\appl.rc">
+			RelativePath=".\src\appl.rc">
 		</File>
 	</Files>
 	<Globals>
