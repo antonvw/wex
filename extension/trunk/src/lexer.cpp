@@ -99,16 +99,6 @@ exLexer::exCommentType exLexer::CheckForComment(wxChar c1, wxChar c2) const
   return comment_type;
 }
 
-const exLexer exLexer::Default() const
-{
-  exLexer lexer;
-  lexer.m_ScintillaLexer = "cpp";
-  lexer.m_CommentBegin = "/*";
-  lexer.m_CommentEnd = "*/";
-  lexer.m_CommentBegin2 = "//";
-  return lexer;
-}
-
 const wxString exLexer::FormatText(
   const wxString& text,
   bool fill_out,

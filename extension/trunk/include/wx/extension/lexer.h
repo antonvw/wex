@@ -59,9 +59,6 @@ public:
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
       m_CommentEnd : m_CommentEnd2;};
 
-  /// Returns the default lexer.
-  const exLexer Default() const;
-
   /// Returns a lexer comment string with text formatted.
   const wxString FormatText(
     const wxString& text,

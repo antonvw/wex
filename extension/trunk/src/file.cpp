@@ -188,10 +188,6 @@ exFileName::exFileName(
   {
     SetLexer();
   }
-  else
-  {
-    m_Lexer = exLexer().Default();
-  }
 }
 
 void exFileName::SetLexer(
@@ -203,21 +199,11 @@ void exFileName::SetLexer(
 
   if (lexer.empty())
   {
-    if (GetFullPath() == exApp::GetLexers()->GetFileName().GetFullPath())
-    {
-      // Take the default scintilla lexer, and use that one from
-      // our lexers. Taking directly the default gives empty colourings etc.
-      m_Lexer = exApp::GetLexers()->FindByName(
-        m_Lexer.Default().GetScintillaLexer());
-    }
-    else
-    {
-      m_Lexer = exApp::GetLexers()->FindByFileName(*this);
+    m_Lexer = exApp::GetLexers()->FindByFileName(*this);
 
-      if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
-      {
-        m_Lexer.SetLexerFromText(text);
-      }
+    if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
+    {
+      m_Lexer.SetLexerFromText(text);
     }
   }
   else

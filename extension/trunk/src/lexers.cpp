@@ -12,6 +12,7 @@
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
+#include <wx/textfile.h>
 #include <wx/extension/extension.h>
 
 exLexers::exLexers()
@@ -82,7 +83,7 @@ const wxString exLexers::ParseTagColourings(const wxXmlNode* node)
     if (child->GetName() == "colouring")
     {
       text += 
-        child->GetAttribute("name", "0") + "=" + child->GetNodeContent();
+        child->GetAttribute("name", "0") + "=" + child->GetNodeContent() + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     { 
@@ -149,14 +150,6 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
 {
   exLexer lexer;
   lexer.m_ScintillaLexer = node->GetAttribute("name", "cpp");
-
-  if (lexer.m_ScintillaLexer == exLexer().Default().m_ScintillaLexer)
-  {
-    // As the comments for the configuration are itself comments,
-    // they are skipped by ReportLine, so do it here.
-    lexer = exLexer().Default();
-  }
-  
   lexer.m_Associations = node->GetAttribute("extensions", "*.cpp");
 
   wxXmlNode *child = node->GetChildren();
@@ -165,7 +158,7 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
   {
     if (child->GetName() == "colourings")
     {
-      lexer.m_Colourings = ParseTagColourings(node->GetChildren());
+      lexer.m_Colourings = ParseTagColourings(child);
     }
     else if (child->GetName() == "keywords")
     {
@@ -173,7 +166,7 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
     }
     else if (child->GetName() == "properties")
     {
-      lexer.m_Properties = ParseTagProperties(node->GetChildren());
+      lexer.m_Properties = ParseTagProperties(child);
     }
     else if (child->GetName() == "comments")
     {
@@ -236,7 +229,7 @@ const wxString exLexers::ParseTagProperties(const wxXmlNode* node)
     if (child->GetName() == "property")
     {
       text += 
-        child->GetAttribute("name", "0") + "=" + child->GetNodeContent();
+        child->GetAttribute("name", "0") + "=" + child->GetNodeContent() + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     { 
@@ -296,4 +289,3 @@ bool exLexers::Read()
 
   return true; 
 }
-
