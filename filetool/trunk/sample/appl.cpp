@@ -13,8 +13,9 @@
   #include "mondrian.xpm"
 #endif
 
-#include <wx/filetool/filetool.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
+#include <wx/filetool/filetool.h>
+#include <wx/filetool/process.h>
 #include "appl.h"
 
 enum
@@ -79,7 +80,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   toolBar->AddControl(new ftFind(toolBar, this));
   toolBar->Realize();
 
-  vector<exPane> panes;
+  std::vector<exPane> panes;
   panes.push_back(exPane("PaneText", -3));
   panes.push_back(exPane("PaneFileType", 50));
   panes.push_back(exPane("PaneLines", 100));
@@ -133,7 +134,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
 ftListView* ftSampleFrame::Activate(int type, const exLexer* lexer)
 {
   for (
-    map<wxString, wxWindow*>::const_iterator it = m_NotebookWithLists->GetMapPages().begin();
+    std::map<wxString, wxWindow*>::const_iterator it = m_NotebookWithLists->GetMapPages().begin();
     it != m_NotebookWithLists->GetMapPages().end();
     ++it)
   {
@@ -193,7 +194,7 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_PRINT_SETUP: exApp::GetPrinter()->PageSetup(); break;
 
   case ID_PROCESS_DIALOG:
-    ftListView::ProcessDialog(); 
+    ftProcess::ConfigDialog(); 
     break;
 
   case ID_PROCESS_RUN:
