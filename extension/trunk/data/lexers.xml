@@ -44,7 +44,7 @@ without the written consent of the copyright owner.
 
 <lexers>
 
-  <global>	
+  <global>
     <!--
      Global properties
      In addition to lexers, also global properties can be specified.
@@ -145,7 +145,7 @@ without the written consent of the copyright owner.
       <colouring no="7"> fore:pink </colouring>
       <colouring no="9"> fore:grey </colouring>
       <colouring no="10"> fore:brown </colouring>
-      <colouring no="16"> italic	</colouring>
+      <colouring no="16"> italic </colouring>
     </colourings>
   
     <keywords>
@@ -180,7 +180,7 @@ without the written consent of the copyright owner.
     set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
     size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
     swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 valarray:1
-    vector:1	
+    vector:1
     </keywords>
   
     <properties>
@@ -190,7 +190,7 @@ without the written consent of the copyright owner.
       <property name="fold.preprocessor"> 0 </property>
     </properties>
     
-    <comments begin1="/*"	end1="*/"	begin2="//" />
+    <comments begin1="/*" end1="*/" begin2="//" />
     
   </lexer>
   
@@ -206,7 +206,7 @@ without the written consent of the copyright owner.
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:pink </colouring>
       <colouring no="10"> fore:brown </colouring>
-      <colouring no="16"> italic	 </colouring>
+      <colouring no="16"> italic </colouring>
     </colourings>
   
     <keywords>    
@@ -227,7 +227,7 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
     </properties>
     
-    <comments begin1="(*"	end1="*)"	begin2="{" end2="}"/>
+    <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
     
   </lexer>
   
@@ -258,7 +258,7 @@ without the written consent of the copyright owner.
       <colouring no="4"> bold </colouring>
       <colouring no="5"> fore:blue </colouring>
       <colouring no="6"> fore:pink </colouring>
-      <colouring no="7"> fore:brown	 </colouring>
+      <colouring no="7"> fore:brown </colouring>
     </colourings>
   
     <keywords>    
@@ -271,7 +271,7 @@ without the written consent of the copyright owner.
      becomes known by Scintilla, add them to new keyword file.
     -->
     msgid
-    msgstr	
+    msgstr
     </keywords>
 
     <properties>
@@ -330,7 +330,7 @@ without the written consent of the copyright owner.
       <colouring no="8"> fore:blue </colouring>
       <colouring no="9"> italic </colouring>
       <colouring no="11"> underline </colouring>
-      <colouring no="12"> fore:pink	 </colouring>
+      <colouring no="12"> fore:pink  </colouring>
     </colourings>
   
     <keywords>    
@@ -341,7 +341,7 @@ without the written consent of the copyright owner.
     .ASCII .ASCIZ .ASECT .BLKB .BYTE .CROSS .CSECT .DSABL .ENABL .END .ENDC .EVEN .FLT2 .FLT4 .GLOBL .IDENT .IF 
     .IFF .IFT .IFTF .IIF .INCLUDE .LIBRARY .LIMIT .LIST .NLIST .NOCROSS .ODD .PACKED .PAGE .PSECT .RAD50 .RADIX .REM 
     .RESTORE .SBTTL .TITLE .WEAK .WORD
-    MN SO DO PC MS CC SP R1 R2 R3 R4 R5		
+    MN SO DO PC MS CC SP R1 R2 R3 R4 R5
     </keywords>
   
     <comments begin1=";" />
@@ -488,7 +488,7 @@ without the written consent of the copyright owner.
       <colouring no="121"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
       <colouring no="122"> fore:#CC9900,back:#FFF8F8 </colouring>
       <colouring no="123"> fore:#00007F,italic,back:#FFF8F8 </colouring>
-      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic,size:8	 </colouring>	
+      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic,size:8 </colouring>
       <colouring no="126"> fore:#007F00,italic,back:#FFF8F8 </colouring>
       <colouring no="127"> fore:#000000,back:#FFF8F8 </colouring>
     </colourings>
@@ -536,7 +536,7 @@ without the written consent of the copyright owner.
       <colouring no="5"> bold </colouring>
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:pink </colouring>
-      <colouring no="10"> fore:brown	 </colouring>
+      <colouring no="10"> fore:brown </colouring>
     </colourings>
   
     <keywords>    
@@ -593,7 +593,7 @@ without the written consent of the copyright owner.
     value values varchar variable varying view
     when whenever where with without work write
     year
-    zone	
+    zone
     </keywords>
     
     <properties>
