@@ -83,7 +83,8 @@ const wxString exLexers::ParseTagColourings(const wxXmlNode* node)
     if (child->GetName() == "colouring")
     {
       text += 
-        child->GetAttribute("no", "0") + "=" + child->GetNodeContent() + wxTextFile::GetEOL();
+        child->GetAttribute("no", "0") + "=" + 
+        child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     { 
@@ -110,7 +111,7 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     {
       const exMarker marker(ParseTagMarker(
         child->GetAttribute("no", "0"),
-        child->GetNodeContent()));
+        child->GetNodeContent().Strip(wxString::both)));
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
           marker.GetMarkerSymbol() < wxSTC_STYLE_MAX)
@@ -127,11 +128,15 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "style")
     {
-      m_Styles.push_back(child->GetAttribute("no", "0") + "=" + child->GetNodeContent());
+      m_Styles.push_back(
+        child->GetAttribute("no", "0") + "=" + 
+        child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "hex")
     {
-      m_StylesHex.push_back(child->GetAttribute("no", "0") + "=" + child->GetNodeContent());
+      m_StylesHex.push_back(
+        child->GetAttribute("no", "0") + "=" + 
+        child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "comment")
     { 
@@ -162,7 +167,7 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
     }
     else if (child->GetName() == "keywords")
     {
-      lexer.SetKeywords(child->GetNodeContent());
+      lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "properties")
     {
@@ -229,7 +234,8 @@ const wxString exLexers::ParseTagProperties(const wxXmlNode* node)
     if (child->GetName() == "property")
     {
       text += 
-        child->GetAttribute("name", "0") + "=" + child->GetNodeContent() + wxTextFile::GetEOL();
+        child->GetAttribute("name", "0") + "=" + 
+        child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     { 
