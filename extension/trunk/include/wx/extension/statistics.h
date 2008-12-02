@@ -185,13 +185,6 @@ public:
     wxPathFormat format = wxPATH_NATIVE)
     : exFileName(fullpath, format){}
 
-  /// Constructor.
-  exFileNameStatistics(
-    const wxString& fullpath,
-    const wxString& name,
-    wxPathFormat format = wxPATH_NATIVE)
-    : exFileName(fullpath, name, true, format){}
-
   /// Constructor from an exFileName.
   exFileNameStatistics(const exFileName& filename)
     : exFileName(filename){}

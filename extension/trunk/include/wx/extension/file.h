@@ -89,13 +89,6 @@ public:
     , m_Stat(fullpath) {
     SetLexer();}
 
-  /// Constructor.
-  exFileName(
-    const wxString& path,
-    const wxString& name,
-    bool set_lexer = true,
-    wxPathFormat format = wxPATH_NATIVE);
-
   /// Gets the lexer.
   exLexer& GetLexer() {return m_Lexer;};
 

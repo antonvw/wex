@@ -176,20 +176,6 @@ void exFile::Update(const exFileName& filename)
   m_Stat.Update(filename.GetFullPath());
 }
 
-exFileName::exFileName(
-  const wxString& path,
-  const wxString& name,
-  bool set_lexer,
-  wxPathFormat format)
-  : wxFileName(path, name, format)
-  , m_Stat(wxFileName(path, name, format).GetFullPath())
-{
-  if (set_lexer)
-  {
-    SetLexer();
-  }
-}
-
 void exFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)

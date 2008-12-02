@@ -18,12 +18,11 @@
 exLexers::exLexers()
   : m_FileName(
 #ifdef EX_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
 #else
-      wxStandardPaths::Get().GetUserDataDir(),
+      wxStandardPaths::Get().GetUserDataDir()
 #endif
-      "lexers.xml",
-      false)
+      + wxFileName::GetPathSeparator() + "lexers.xml")
 {
 }
 

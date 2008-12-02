@@ -16,7 +16,7 @@
 ftListItem::ftListItem(exListView* lv, const int itemnumber)
   : exListItem(lv, itemnumber)
   , m_Statistics(
-      GetColumnText(_("In Folder"), false),
+      GetColumnText(_("In Folder"), false) + wxFileName::GetPathSeparator() +
       GetColumnText(_("File Name"), false))
   , m_FileSpec(GetColumnText(_("Type"), false))
 {
