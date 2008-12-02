@@ -71,55 +71,6 @@ exConfig::~exConfig()
   }
 }
 
-long exConfig::Get(const wxString& key, long default_value)
-{
-  map<wxString, long>::const_iterator it = m_LongValues.find(key);
-
-  if (it != m_LongValues.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    m_LongValues.insert(make_pair(key, Read(key, default_value)));
-    return m_LongValues[key];
-  }
-}
-
-const wxString exConfig::Get(
-  const wxString& key,
-  const wxString& default_value,
-  const wxChar field_separator)
-{
-  map<wxString, wxString>::const_iterator it = m_StringValues.find(key);
-
-  if (it != m_StringValues.end())
-  {
-    const wxString value = it->second;
-    return value.BeforeFirst(field_separator);
-  }
-  else
-  {
-    m_StringValues.insert(make_pair(key, Read(key, default_value)));
-    return m_StringValues[key];
-  }
-}
-
-bool exConfig::GetBool(const wxString& key, bool default_value)
-{
-  map<wxString, bool>::const_iterator it = m_BoolValues.find(key);
-
-  if (it != m_BoolValues.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    m_BoolValues.insert(make_pair(key, ReadBool(key, default_value)));
-    return m_BoolValues[key];
-  }
-}
-
 #if wxUSE_GUI
 const int width = 200;
 const int width_numeric = 75;

@@ -43,7 +43,19 @@ public:
   /// Gets the key as a long. If the key is not present,
   /// it is added to the map of long values.
   long Get(
-    const wxString& key, long default_value);
+    const wxString& key, long default_value) {
+    std::map<wxString, long>::const_iterator it = m_LongValues.find(key);
+
+    if (it != m_LongValues.end())
+    {
+      return it->second;
+    }
+    else
+    {
+      m_LongValues.insert(std::make_pair(key, Read(key, default_value)));
+      return m_LongValues[key];
+    }
+  }
 
   /// Gets the key as a string. If the key is not present,
   /// it is added to the map of string values.
@@ -53,12 +65,37 @@ public:
   const wxString Get(
     const wxString& key,
     const wxString& default_value = wxEmptyString,
-    const wxChar field_separator = ',');
+    const wxChar field_separator = ',') {
+    std::map<wxString, wxString>::const_iterator it = m_StringValues.find(key);
+
+    if (it != m_StringValues.end())
+    {
+      const wxString value = it->second;
+      return value.BeforeFirst(field_separator);
+    }  
+    else
+    {
+      m_StringValues.insert(std::make_pair(key, Read(key, default_value)));
+      return m_StringValues[key];
+    }
+  }
 
   /// Gets the key as a bool. If the key is not present,
   /// it is added to the map of bool values.
   bool GetBool(
-    const wxString& key, bool default_value = true);
+    const wxString& key, bool default_value = true) {
+    std::map<wxString, bool>::const_iterator it = m_BoolValues.find(key);
+
+    if (it != m_BoolValues.end())
+    {
+      return it->second;
+    }
+    else
+    {
+      m_BoolValues.insert(std::make_pair(key, ReadBool(key, default_value)));
+      return m_BoolValues[key];
+    }
+  }
 
   /// Gets the find replace data.
   exFindReplaceData* GetFindReplaceData() const {
