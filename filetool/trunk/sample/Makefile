@@ -1,6 +1,6 @@
 # File:          Makefile
 # Author:        Anton van Wezenbeek
-# RCS-ID:        $Id: Makefile 64 2008-11-29 09:32:47Z antonvw $
+# RCS-ID:        $Id$
 # Purpose:       Makefile for wxfiletool sample gtk
 
 LIBS=-L../buildgtk -lwxfiletool -lwxextension.v2.0.gtk `wx-config --libs all` -lodbc
