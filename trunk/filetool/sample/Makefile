@@ -3,7 +3,7 @@
 # RCS-ID:        $Id$
 # Purpose:       Makefile for wxfiletool sample gtk
 
-LIBS=-L../buildgtk -lwxfiletool.v2.0.gtk -L../../../extension/trunk/buildgtk -lwxextension.v2.0.gtk `wx-config --libs all` -lodbc
+LIBS=-L../buildgtk -lwxfiletool.v2.0.gtk -L../../extension/buildgtk -lwxextension.v2.0.gtk `wx-config --libs all` -lodbc
 CFLAGS=`wx-config --cflags`
 APP_VERSION=sample
 PROGRAM=$(APP_VERSION).gtk
@@ -15,7 +15,7 @@ WFLAGS=-Wall -Wpointer-arith
 
 # C environment flags, shared by all build dirs
 # Set tracing using DWXTRACE, and trace string (only in debug mode).
-EXTRAFLAGS=-DWXUSINGDLL -INONE -I../include -I../../../extension/trunk/include -O2
+EXTRAFLAGS=-DWXUSINGDLL -INONE -I../include -I../../extension/include -O2
 
 OBJS=	appl.o
 $(PROGRAM): $(OBJS)
