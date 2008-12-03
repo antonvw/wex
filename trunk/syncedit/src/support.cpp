@@ -87,9 +87,10 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, exEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
   
-  if (exApp::GetConfigBool("RCS/Local"))
+  if (!exApp::GetConfigBool("RCS/Local"))
   {
-    menuEdit->Append(ID_COMMIT, exEllipsed(_("C&ommit")));
+    menuEdit->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
+    menuEdit->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
     menuEdit->AppendSeparator();
   }
 
