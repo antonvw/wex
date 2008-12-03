@@ -499,43 +499,11 @@ and saved in the same directory as where the executable is."));
   case ID_OPEN_LOGFILE: OpenFile(exLogfileName().GetFullPath()); break;
 
   case ID_SVN_COMMIT:
-    exCommitDialog(_("Commit"));
+    exSvnDialog(SVN_COMMIT);
     break;
 
   case ID_SVN_STAT:
-  {
-    std::vector<exConfigItem> v;
-    v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
-
-    if (exConfigDialog(wxTheApp->GetTopWindow(),
-      v,
-     "Stat").ShowModal() == wxID_CANCEL)
-    {
-      return;
-    }
-
-    const wxString cwd = wxGetCwd();
-    wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
-    wxArrayString output;
-    wxArrayString errors;
-    
-    wxExecute(
-      "svn stat",
-      output,
-      errors);
-      
-    wxSetWorkingDirectory(cwd);
-
-    wxString msg;
-    for (size_t i = 0; i < output.GetCount(); i++)
-    {
-      // Take care that we have only one space between output lines.
-      msg += exSkipWhiteSpace(output[i] + "\n");
-    }
-    
-    wxLogMessage(msg);
-    }
-  
+    exSvnDialog(SVN_STAT);
     break;
 
   case ID_OPTION_COMPARATOR:
