@@ -9,4 +9,4 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#define FT_LIB_VERSION "wxFileTool v2.0"
+#define FT_LIB_VERSION "wxfiletool v1.0"
