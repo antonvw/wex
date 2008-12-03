@@ -117,10 +117,29 @@ void exBackgroundColourDialog(wxWindow* parent, wxWindow* win)
   }
 }
 
-bool exCommitDialog(const wxString& caption)
+bool exSvnDialog(int svn_type)
 {
+  wxString caption;
+  wxString svn_command;
+
+  switch (svn_type)
+  {
+    case SVN_COMMIT: 
+      caption = _("Commit"); 
+      svn_command = "commit";
+      break;
+    case SVN_STAT: 
+      caption = _("Stat"); 
+      svn_command = "stat";
+      break;
+    case SVN_LOG: 
+      caption = _("Log"); 
+      svn_command = "log";
+      break;
+  }
+  
   std::vector<exConfigItem> v;
-  v.push_back(exConfigItem(_("Revision comment")));
+  if (svn_type == SVN_COMMIT) v.push_back(exConfigItem(_("Revision comment")));
   v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
   if (exConfigDialog(wxTheApp->GetTopWindow(),
@@ -134,20 +153,25 @@ bool exCommitDialog(const wxString& caption)
   wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
   wxArrayString output;
   wxArrayString errors;
+  
+  wxString arg;
+  if (svn_type == SVN_COMMIT) arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
+  
   wxExecute(
-    "svn commit -m \"" + exApp::GetConfig(_("Revision comment")) + "\"",
+    "svn " + svn_command + arg,
     output,
     errors);
+    
   wxSetWorkingDirectory(cwd);
 
   wxString msg;
   for (size_t i = 0; i < output.GetCount(); i++)
   {
     // Take care that we have only one space between output lines.
-    msg += exSkipWhiteSpace(output[i] + " ");
+    msg += output[i] + " ";
   }
   
-  exFrame::StatusText(msg);
+  wxLogMessage(msg);
                   
   return true;
 }

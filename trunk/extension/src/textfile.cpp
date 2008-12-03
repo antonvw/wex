@@ -976,7 +976,8 @@ bool exTextFile::SetupTool(const exTool& tool)
   switch (tool.GetId())
   {
   case ID_TOOL_COMMIT:
-    return exCommitDialog(_("Commit"));
+    // TODO: This should be another dialog.
+    return exSvnDialog(SVN_COMMIT);
   break;
   default: return true;
   }

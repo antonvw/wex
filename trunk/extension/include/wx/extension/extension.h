@@ -161,8 +161,16 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 /// Shows the standard colour dialog with current background colour from specified window and
 /// allows you to change that colour.
 void exBackgroundColourDialog(wxWindow* parent, wxWindow* win);
-/// Shows a commit dialog. Returns true dialog is accepted.
-bool exCommitDialog(const wxString& caption);
+
+enum 
+{ 
+  SVN_COMMIT,
+  SVN_STAT,
+  SVN_LOG,
+};
+
+/// Shows a subversion dialog. Returns true dialog is accepted.
+bool exSvnDialog(int svn_type);
 
 // Combobox methods.
 /// Adds entries from a combobox to a text string.
