@@ -172,7 +172,7 @@ bool exSvnDialog(int svn_type)
     msg += output[i] + "\n";
   }
   
-  exSTCEntryDialog(NULL, "SVN", msg, wxEmptyString, wxOK).Show();
+  exSTCEntryDialog(NULL, "SVN", msg, wxEmptyString, wxOK).ShowModal();
                   
   return true;
 }
