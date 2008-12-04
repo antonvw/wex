@@ -1,8 +1,8 @@
 /******************************************************************************\
 * File:          appl.cpp
-* Purpose:       Implementation of classes for syncquery
+* Purpose:       Implementation of classes for syncodbcquery
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: appl.cpp 80 2008-12-01 18:39:08Z antonvw $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
@@ -26,11 +26,11 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-  SetAppName("syncquery");
+  SetAppName("syncodbcquery");
 
   exApp::OnInit();
 
-  MyFrame *frame = new MyFrame("syncquery");
+  MyFrame *frame = new MyFrame("syncodbcquery");
   frame->Show(true);
 
   SetTopWindow(frame);

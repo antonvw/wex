@@ -2,7 +2,7 @@
 * File:          appl.h
 * Purpose:       Declaration of classes for syncquery
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: appl.cpp 80 2008-12-01 18:39:08Z antonvw $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
