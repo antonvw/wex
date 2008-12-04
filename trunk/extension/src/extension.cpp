@@ -165,10 +165,11 @@ bool exSvnDialog(int svn_type)
   wxSetWorkingDirectory(cwd);
 
   wxString msg;
+
   for (size_t i = 0; i < output.GetCount(); i++)
   {
     // Take care that we have only one space between output lines.
-    msg += output[i] + " ";
+    msg += output[i] + "\n";
   }
   
   wxLogMessage(msg);
