@@ -1,8 +1,8 @@
 <!--
-File:    release.htm
+File:    syncedit.htm
 Author:  Anton van Wezenbeek
 RCS-ID:  $Id$
-Purpose: Release info for syncedit
+Purpose: Users guide for syncedit
 -->
 
 <HEAD>
@@ -25,8 +25,8 @@ border: 1px #6699CC solid;
 <P>
 syncedit is a synchronizing editor, with automatic synchronizing for all its
 <A HREF="#EDIT">Editor windows</A> and its <A HREF="#LIST">List windows</A>.
-Furthermore it supports <A HREF="#SQL">embedded SQL</A> and it can update
-<A HREF="#RCS">Check-in and out</A>.
+Furthermore it supports <A HREF="#SQL">embedded SQL</A> and it works with 
+<A HREF="#SVN">SVN</A>.
 Finally you can download selected files easily using
 <A HREF="#UPL">Build RBS File</A>.
 Because the lists and editors are notebook pages, they all can be moved around and
@@ -59,7 +59,7 @@ It has the next features:
      and the log file is synchronized, then only new data is added to the
      file, and your position is restored to the end of file. This also works in hex mode
      (enabled/disabled by toggling the Hex button).
-<li> The lexer, colouring and keywords are from lexers.cfg, editable using 'Lexers File Open'.
+<li> The lexer, colouring and keywords are from lexers.xml, editable using 'Lexers File Open'.
      This directly reflects
      colouring style changes on all open editors.
 <li> Fast searching by selecting text and pressing F3 or F4.
@@ -118,7 +118,6 @@ a version list. A version list can be created from an item if the item
 is part of a directory structure where the same item appears in
 another directory as well where that directory matches the [0-9]*\\.[0-9]*.*" regular expression.
 </ul>
-
 
 <P>
 The project file is stored as a text file containing the full paths of all items,
@@ -214,8 +213,10 @@ E.g. an embedded query in PDP-11 assembler:
 ; SQL END</PRE>
 
 <hr>
-<A NAME="RCS"></A><B>Check-in and out</B>
+<A NAME="SVN"></A><B>SVN</B>
 <P>
+This handles local revision.
+TODO: svn explain.
 A file that is checked in will have its Windows or UNIX read-only attribute set.
 
 <P>
