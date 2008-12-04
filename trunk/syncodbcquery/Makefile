@@ -1,6 +1,6 @@
 # File:          Makefile
 # Author:        Anton van Wezenbeek
-# RCS-ID:        $Id: Makefile 104 2008-12-03 13:36:59Z antonvw $
+# RCS-ID:        $Id$
 # Purpose:       Makefile for syncodbcquery gtk
 
 LIBS=`wx-config --libs all` -lwxextension.v2.0.gtk -lwxfiletool.v2.0.gtk -lodbc
