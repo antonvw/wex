@@ -1,0 +1,322 @@
+# Translation for syncedit to dutch.
+# Copyright (C) 2005-2006 Anton van Wezenbeek
+msgid ""
+msgstr ""
+"Project-Id-Version: syncquery v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-14 08:21+0100\n"
+"PO-Revision-Date: 2008-07-14 08:21+0100\n"
+"Last-Translator: Anton <a.m.vanwezenbeek@lvnl.nl>\n"
+"Language-Team: Anton <a.m.vanwezenbeek@lvnl.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: C:\\Documents and Settings\\anton.COM\\My Documents\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SearchPath-0: syncquery/v1.0\n"
+
+#: syncquery/v1.0/appl.cpp:68
+msgid "&Open"
+msgstr "&Openen"
+
+#: syncquery/v1.0/appl.cpp:69
+msgid "&Close"
+msgstr "&Sluiten"
+
+#: syncquery/v1.0/appl.cpp:72
+msgid "&Run"
+msgstr "Uitvoeren"
+
+#: syncquery/v1.0/appl.cpp:76
+msgid "&Edit"
+msgstr "&Bewerken"
+
+#: syncquery/v1.0/appl.cpp:79
+#: syncquery/v1.0/appl.cpp:123
+msgid "Query"
+msgstr "Query"
+
+#: syncquery/v1.0/appl.cpp:80
+#: syncquery/v1.0/appl.cpp:116
+msgid "Results"
+msgstr "Uitvoer"
+
+#: syncquery/v1.0/appl.cpp:81
+#: syncquery/v1.0/appl.cpp:130
+msgid "Statistics"
+msgstr "Statistiek"
+
+#: syncquery/v1.0/appl.cpp:87
+msgid "&File"
+msgstr "&Bestand"
+
+#: syncquery/v1.0/appl.cpp:88
+msgid "&Database"
+msgstr "&Database"
+
+#: syncquery/v1.0/appl.cpp:89
+msgid "&Query"
+msgstr "&Query"
+
+#: syncquery/v1.0/appl.cpp:90
+msgid "&View"
+msgstr "&Beeld"
+
+#: syncquery/v1.0/appl.cpp:91
+msgid "&Options"
+msgstr "&Opties"
+
+#: syncquery/v1.0/appl.cpp:92
+msgid "&Help"
+msgstr "&Help"
+
+#: syncquery/v1.0/appl.cpp:140
+msgid "Lines in window"
+msgstr "Regels in scherm"
+
+#: syncquery/v1.0/appl.cpp:148
+msgid "Run query"
+msgstr "Voer uit"
+
+#: syncquery/v1.0/appl.cpp:183
+msgid "This program offers a general ODBC query."
+msgstr "Dit programma biedt algemene ODBC query"
+
+#: syncquery/v1.0/appl.cpp:228
+msgid "Datasource"
+msgstr "Databron"
+
+#: syncquery/v1.0/appl.cpp:232
+msgid "Editor Options"
+msgstr "Editor opties"
+
+#: syncquery/v1.0/appl.cpp:260
+#: syncquery/v1.0/appl.cpp:416
+msgid ""
+"\n"
+"error: "
+msgstr ""
+"\n"
+"fout: "
+
+#: syncquery/v1.0/appl.cpp:265
+msgid ""
+"\n"
+"not connected"
+msgstr ""
+"\n"
+"geen verbinding"
+
+#: syncquery/v1.0/appl.cpp:415
+msgid "Number of query errors"
+msgstr "Aantal query fouten"
+
+#: syncquery/v1.0/appl.cpp:416
+msgid " in: "
+msgstr " in: "
+
+#: syncquery/v1.0/appl.cpp:421
+#, c-format
+msgid ""
+"\n"
+"%d queries (%.3f seconds)"
+msgstr ""
+"\n"
+"%d queries (%.3f seconden)"
+
+#: syncquery/v1.0/appl.cpp:428
+#, c-format
+msgid ""
+"\n"
+"%d rows processed (%.3f seconds)"
+msgstr ""
+"\n"
+"%d records opgehaald (%.3f seconden)"
+
+#: syncquery/v1.0/appl.cpp:432
+msgid "Rows processed"
+msgstr "Records opgehaald"
+
+#: syncquery/v1.0/appl.cpp:433
+msgid "Query runtime"
+msgstr "Query uitvoertijd"
+
+#: syncquery/v1.0/appl.cpp:435
+msgid "Total number of queries run"
+msgstr "Totaal aantal uitgevoerde queries"
+
+#: syncquery/v1.0/appl.cpp:436
+msgid "Total query runtime"
+msgstr "Totaal query uitvoertijd"
+
+#: syncquery/v1.0/appl.cpp:437
+msgid "Total rows processed"
+msgstr "Totaal aantal records opgehaald"
+
+#~ msgid "&Open..."
+#~ msgstr "&Openen..."
+#~ msgid "Console"
+#~ msgstr "Console"
+#~ msgid "Perspective"
+#~ msgstr "Perspektief"
+#~ msgid "New"
+#~ msgstr "Nieuw"
+#~ msgid "Save"
+#~ msgstr "&Opslaan"
+#~ msgid ""
+#~ "\n"
+#~ "Error: '%s'"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout: '%s'"
+#~ msgid "Open Database"
+#~ msgstr "Database openen"
+#~ msgid "Error: '%s' during opening database: %s"
+#~ msgstr "Fout: '%s' tijdens openen database: %s"
+#~ msgid "Error: '%s' during running query: '%s'\n"
+#~ msgstr "Fout: '%s' tijdens uitvoeren query: '%s'\n"
+#~ msgid "Run: %d queries in: %d milliseconds"
+#~ msgstr "%d queries uitgevoerd in: %d milliseconden"
+#~ msgid "Datasource connected with"
+#~ msgstr "Verbinding met databron"
+#~ msgid "show this help"
+#~ msgstr "geeft deze help"
+#~ msgid "input file:line number"
+#~ msgstr "bestand:regel nummer"
+#~ msgid "Project Files"
+#~ msgstr "Project bestanden"
+#~ msgid "Files"
+#~ msgstr "Bestanden"
+#~ msgid "Projects"
+#~ msgstr "Projecten"
+#~ msgid "Output"
+#~ msgstr "Resultaten"
+#~ msgid "Ascii Table"
+#~ msgstr "Ascii tabel"
+#~ msgid "Browse"
+#~ msgstr "Overzicht"
+#~ msgid "Toolbar"
+#~ msgstr "Werkbalk"
+#~ msgid "Project"
+#~ msgstr "Project"
+#~ msgid "Textfile"
+#~ msgstr "Bestand"
+#~ msgid "Print all files"
+#~ msgstr "Alle bestanden afdrukken"
+#~ msgid "Confirm"
+#~ msgstr "Bevestigen"
+#~ msgid ""
+#~ "This program offers a portable text or binary editor with automatic "
+#~ "syncing.\n"
+#~ "All its config files are read and saved in the same directory as where "
+#~ "the executable is."
+#~ msgstr ""
+#~ "Dit programma biedt een portable text of binaire editor met automatische "
+#~ "synchronisatie.\n"
+#~ "Alle configuratie bestanden worden bewaard en gelezen in dezelfde map als "
+#~ "waar het programma zelf staat."
+#~ msgid "This program offers a text or binary editor with automatic syncing."
+#~ msgstr ""
+#~ "Dit programma biedt een text of binaire editor met automatische "
+#~ "synchronisatie."
+#~ msgid "All rights reserved."
+#~ msgstr "Alle rechten voorbehouden."
+#~ msgid "Stopped"
+#~ msgstr "Gestopt"
+#~ msgid "Comparator"
+#~ msgstr "Vergelijker"
+#~ msgid "Set Comparator"
+#~ msgstr "Vergelijker instellen"
+#~ msgid "day"
+#~ msgstr "dag"
+#~ msgid "week"
+#~ msgstr "week"
+#~ msgid "month"
+#~ msgstr "maand"
+#~ msgid "year"
+#~ msgstr "jaar"
+#~ msgid "link"
+#~ msgstr "koppeling"
+#~ msgid "Set List Colour"
+#~ msgstr "Lijst kleuren instellen"
+#~ msgid "List Font"
+#~ msgstr "Lijst lettertype"
+#~ msgid "Set List Font"
+#~ msgstr "Lijst lettertype instellen"
+#~ msgid "Open &Lexers"
+#~ msgstr "&Lexers file openen"
+#~ msgid "Open &Logfile"
+#~ msgstr "&Logfile openen"
+#~ msgid "Print A&ll"
+#~ msgstr "&Alles afdrukken"
+#~ msgid "Find &Next\tF3"
+#~ msgstr "&Volgende zoeken\tF3"
+#~ msgid "Find &In Files"
+#~ msgstr "&Zoeken in bestanden"
+#~ msgid "&Goto"
+#~ msgstr "&Ga naar"
+#~ msgid "&Control Char"
+#~ msgstr "&Controle karakter"
+#~ msgid "&Statusbar"
+#~ msgstr "&Statusregel"
+#~ msgid "&Toolbar"
+#~ msgstr "&Werkbalk"
+#~ msgid "&Files"
+#~ msgstr "&Bestanden"
+#~ msgid "&Projects"
+#~ msgstr "&Projecten"
+#~ msgid "&Browse"
+#~ msgstr "&Overzicht"
+#~ msgid "&Output"
+#~ msgstr "&Resultaten"
+#~ msgid "&Ascii Table"
+#~ msgstr "&Ascii tabel"
+#~ msgid "&Select"
+#~ msgstr "&Selecteren"
+#~ msgid "&Open As Text"
+#~ msgstr "&Als tekst openen"
+#~ msgid "&List"
+#~ msgstr "&Lijst"
+#~ msgid "&Detail"
+#~ msgstr "&Details"
+#~ msgid "&Small Icon"
+#~ msgstr "&Pictogrammen"
+#~ msgid "&Auto Sort"
+#~ msgstr "&Automatisch sorteren"
+#~ msgid "Set &Comparator"
+#~ msgstr "Vergelijker &instellen"
+#~ msgid "Set &List Colour"
+#~ msgstr "&Lijst kleuren instellen"
+#~ msgid "Set &List Font"
+#~ msgstr "&Lijst lettertype instellen"
+#~ msgid "&Ascending"
+#~ msgstr "&Oplopend"
+#~ msgid "&Descending"
+#~ msgstr "&Aflopend"
+#~ msgid "&Toggle"
+#~ msgstr "&Afwisselen"
+#~ msgid "Set &List Sort Method"
+#~ msgstr "&Lijst sorteer methode instellen"
+#~ msgid "&Contents"
+#~ msgstr "Inhoud"
+#~ msgid "&Process"
+#~ msgstr "&Proces"
+#~ msgid "&Project"
+#~ msgstr "&Project"
+#~ msgid "Save file"
+#~ msgstr "Bestand opslaan"
+#~ msgid "Print file"
+#~ msgstr "Bestand afdrukken"
+#~ msgid "Find text"
+#~ msgstr "Zoeken"
+#~ msgid "Open project"
+#~ msgstr "Project openen"
+#~ msgid "Save project"
+#~ msgstr "Project opslaan"
+#~ msgid "View project in list mode"
+#~ msgstr "Project in lijst weergave"
+#~ msgid "View project in detail mode"
+#~ msgstr "Project in details weergave"
+#~ msgid "Run"
+#~ msgstr "Uitvoeren"
+
