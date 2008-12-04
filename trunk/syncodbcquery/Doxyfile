@@ -1,10 +1,12 @@
-# Doxyfile 1.5.5
+# Filename: Doxyfile 1.5.5
+# RCS-ID:  $Id: Doxyfile 102 2008-12-03 13:25:38Z antonvw $
+# Author:  Anton van Wezenbeek
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = syncuery
+PROJECT_NAME           = syncodbcquery
 PROJECT_NUMBER         = v1.0
 OUTPUT_DIRECTORY       = ./
 CREATE_SUBDIRS         = NO
