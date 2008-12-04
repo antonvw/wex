@@ -231,6 +231,9 @@
 				RelativePath=".\src\appl.h">
 			</File>
 			<File
+				RelativePath=".\src\defs.h">
+			</File>
+			<File
 				RelativePath=".\src\frame.h">
 			</File>
 			<File

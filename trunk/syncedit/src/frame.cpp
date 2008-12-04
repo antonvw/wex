@@ -498,14 +498,6 @@ and saved in the same directory as where the executable is."));
   case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName().GetFullPath()); break;
   case ID_OPEN_LOGFILE: OpenFile(exLogfileName().GetFullPath()); break;
 
-  case ID_SVN_COMMIT:
-    exSvnDialog(SVN_COMMIT);
-    break;
-
-  case ID_SVN_STAT:
-    exSvnDialog(SVN_STAT);
-    break;
-
   case ID_OPTION_COMPARATOR:
     {
     std::vector<exConfigItem> v;
@@ -626,6 +618,10 @@ and saved in the same directory as where the executable is."));
     stc->SetDocPointer(editor->GetDocPointer());
   }
   break;
+
+  case ID_SVN_COMMIT: exSvnDialog(SVN_COMMIT); break;
+  case ID_SVN_LOG: exSvnDialog(SVN_LOG); break;
+  case ID_SVN_STAT: exSvnDialog(SVN_STAT); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
