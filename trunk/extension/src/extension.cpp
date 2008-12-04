@@ -141,6 +141,7 @@ bool exSvnDialog(int svn_type)
   std::vector<exConfigItem> v;
   if (svn_type == SVN_COMMIT) v.push_back(exConfigItem(_("Revision comment")));
   v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(exConfigItem(_("Flags")));
 
   if (exConfigDialog(wxTheApp->GetTopWindow(),
     v,
@@ -156,9 +157,9 @@ bool exSvnDialog(int svn_type)
   
   wxString arg;
   if (svn_type == SVN_COMMIT) arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
-  
+
   wxExecute(
-    "svn " + svn_command + arg,
+    "svn " + exApp::GetConfig(_("Flags")) + " " + svn_command + arg,
     output,
     errors);
     
@@ -168,11 +169,10 @@ bool exSvnDialog(int svn_type)
 
   for (size_t i = 0; i < output.GetCount(); i++)
   {
-    // Take care that we have only one space between output lines.
     msg += output[i] + "\n";
   }
   
-  wxLogMessage(msg);
+  exSTCEntryDialog(NULL, "SVN", msg, wxEmptyString, wxOK).Show();
                   
   return true;
 }
