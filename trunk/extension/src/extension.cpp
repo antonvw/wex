@@ -117,66 +117,6 @@ void exBackgroundColourDialog(wxWindow* parent, wxWindow* win)
   }
 }
 
-bool exSvnDialog(int svn_type)
-{
-  wxString caption;
-  wxString svn_command;
-
-  switch (svn_type)
-  {
-    case SVN_COMMIT: 
-      caption = _("Commit"); 
-      svn_command = "commit";
-      break;
-    case SVN_STAT: 
-      caption = _("Stat"); 
-      svn_command = "stat";
-      break;
-    case SVN_LOG: 
-      caption = _("Log"); 
-      svn_command = "log";
-      break;
-  }
-  
-  std::vector<exConfigItem> v;
-  if (svn_type == SVN_COMMIT) v.push_back(exConfigItem(_("Revision comment")));
-  v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
-  v.push_back(exConfigItem(_("Flags")));
-
-  if (exConfigDialog(wxTheApp->GetTopWindow(),
-    v,
-    caption).ShowModal() == wxID_CANCEL)
-  {
-    return false;
-  }
-
-  const wxString cwd = wxGetCwd();
-  wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
-  wxArrayString output;
-  wxArrayString errors;
-  
-  wxString arg;
-  if (svn_type == SVN_COMMIT) arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
-
-  wxExecute(
-    "svn " + exApp::GetConfig(_("Flags")) + " " + svn_command + arg,
-    output,
-    errors);
-    
-  wxSetWorkingDirectory(cwd);
-
-  wxString msg;
-
-  for (size_t i = 0; i < output.GetCount(); i++)
-  {
-    msg += output[i] + "\n";
-  }
-  
-  exSTCEntryDialog(NULL, "SVN", msg, wxEmptyString, wxOK).ShowModal();
-                  
-  return true;
-}
-
 bool exClipboardAdd(const wxString& text)
 {
   wxClipboardLocker locker;
@@ -452,6 +392,73 @@ void exStatusText(const exFileName& filename, long flags)
   exFrame::StatusText(text);
 }
 #endif // wxUSE_STATUSBAR
+
+bool exSvnDialog(int svn_type)
+{
+  wxString caption;
+  wxString svn_command;
+
+  switch (svn_type)
+  {
+    case SVN_COMMIT: 
+      caption = _("Commit"); 
+      svn_command = "commit";
+      break;
+    case SVN_STAT: 
+      caption = _("Stat"); 
+      svn_command = "stat";
+      break;
+    case SVN_LOG: 
+      caption = _("Log"); 
+      svn_command = "log";
+      break;
+  }
+  
+  std::vector<exConfigItem> v;
+  if (svn_type == SVN_COMMIT) v.push_back(exConfigItem(_("Revision comment")));
+  v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(exConfigItem(_("Flags")));
+
+  if (exConfigDialog(wxTheApp->GetTopWindow(),
+    v,
+    caption).ShowModal() == wxID_CANCEL)
+  {
+    return false;
+  }
+
+  const wxString cwd = wxGetCwd();
+  wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
+  wxArrayString output;
+  wxArrayString errors;
+  
+  wxString arg;
+  if (svn_type == SVN_COMMIT) arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
+
+  wxExecute(
+    "svn " + exApp::GetConfig(_("Flags")) + " " + svn_command + arg,
+    output,
+    errors);
+    
+  wxSetWorkingDirectory(cwd);
+
+  wxString msg;
+
+  for (size_t i = 0; i < output.GetCount(); i++)
+  {
+    msg += output[i] + "\n";
+  }
+  
+  exSTCEntryDialog(
+    NULL, 
+    "SVN", 
+    msg, 
+    wxEmptyString, 
+    wxOK,
+    wxID_ANY,
+    wxDefaultPosition, wxSize(550, 250)).ShowModal();
+                  
+  return true;
+}
 
 const wxString exTranslate(const wxString& text, int pageNum, int numPages)
 {

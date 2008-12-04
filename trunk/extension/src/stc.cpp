@@ -2750,7 +2750,6 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
   m_STC->ResetMargins();
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-  m_STC->SetWrapMode(wxSTC_WRAP_WORD);
 
   if (!text.empty())
   {
