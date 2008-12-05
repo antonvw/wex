@@ -13,6 +13,7 @@
 #define _EXNOTEBOOK_H
 
 #include <wx/aui/auibook.h>
+#include <wx/extension/base.h> //for exManagedFrame
 
 #if wxUSE_GUI
 

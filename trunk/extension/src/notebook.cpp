@@ -9,8 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/splitter.h>
-#include <wx/extension/extension.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
 
@@ -104,16 +102,10 @@ bool exNotebook::ForEach(int id)
 
     if (stc == NULL)
     {
-      wxSplitterWindow* splitter = wxDynamicCast(GetPage(page), wxSplitterWindow);
-      stc = wxDynamicCast(splitter->GetWindow1(), exSTC);
-
-      if (stc == NULL)
-      {
-        wxLogError(FILE_INFO("Notebook page: %d (%s) cannot be cast to an exSTC"), 
-          page, 
-          GetPageText(page).c_str());
-        return false;
-      }
+      wxLogError(FILE_INFO("Notebook page: %d (%s) cannot be cast to an exSTC"), 
+        page, 
+        GetPageText(page).c_str());
+      return false;
     }
 
     switch (id)
