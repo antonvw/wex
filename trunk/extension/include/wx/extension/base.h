@@ -12,6 +12,11 @@
 #ifndef _EXBASE_H
 #define _EXBASE_H
 
+#include <map>
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/artprov.h> // for wxArtID
 #include <wx/aui/auibook.h>
 #include <wx/datetime.h>
@@ -20,6 +25,7 @@
 #include <wx/print.h>
 #include <wx/printdlg.h>
 #include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
+#include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 
 // Only if we have a gui.
 #if wxUSE_GUI

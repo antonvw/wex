@@ -13,6 +13,7 @@
 #define _EXGRID_H
 
 #include <wx/grid.h>
+#include <wx/extension/base.h>
 
 #if wxUSE_GRID
 
