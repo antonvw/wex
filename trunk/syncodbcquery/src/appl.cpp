@@ -10,10 +10,10 @@
 \******************************************************************************/
 
 #include <wx/aboutdlg.h>
-#include <wx/extension/extension.h>
+#include <wx/tokenzr.h>
+#include <wx/extension/extension.h> // TODO: should not be necessary
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>
-#include <wx/tokenzr.h>
 #include "appl.h"
 #include "appl.xpm"
 
@@ -189,6 +189,8 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     info.SetDescription(_("This program offers a general ODBC query."));
     info.SetVersion("v1.0");
     info.SetCopyright("(c) 2008, Anton van Wezenbeek");
+    info.AddDeveloper(EX_LIB_VERSION);
+    info.AddDeveloper(FT_LIB_VERSION);
     info.AddDeveloper(exOTLVersion());
     wxAboutBox(info);
     }
