@@ -13,9 +13,9 @@
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/tokenzr.h>
 #include <wx/url.h> // for wxURL
+#include <wx/extension/stc.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/textfile.h>
-#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 

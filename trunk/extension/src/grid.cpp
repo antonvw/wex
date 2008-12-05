@@ -12,8 +12,8 @@
 #include <wx/dnd.h>
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
-#include <wx/extension/extension.h>
 #include <wx/extension/grid.h>
+#include <wx/extension/extension.h>
 
 #if wxUSE_GRID
 #if wxUSE_DRAG_AND_DROP

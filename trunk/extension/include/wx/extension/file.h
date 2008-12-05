@@ -15,6 +15,7 @@
 #include <sys/stat.h> // for stat
 #include <wx/file.h>
 #include <wx/filename.h>
+#include <wx/extension/lexer.h>
 
 class exConfigDialog;
 
