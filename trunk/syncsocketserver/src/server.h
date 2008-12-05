@@ -2,6 +2,7 @@
 * File:          server.h
 * Purpose:       General socket server
 * Author:        Anton van Wezenbeek
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2007-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited

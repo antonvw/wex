@@ -2,6 +2,7 @@
 * File:          server.cpp
 * Purpose:       General socket server
 * Author:        Anton van Wezenbeek
+* RCS-ID:        $Id$
 *
 * Copyright (c) 2007-2008, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
@@ -246,8 +247,10 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general socket server."));
-    info.SetVersion("v1.4");
+    info.SetVersion("v1.0");
     info.SetCopyright("(c) 2007-2008, Anton van Wezenbeek");
+    info.AddDeveloper(EX_LIB_VERSION);
+    info.AddDeveloper(FT_LIB_VERSION);
     wxAboutBox(info);
     }
     break;
