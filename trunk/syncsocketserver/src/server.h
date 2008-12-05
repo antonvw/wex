@@ -24,7 +24,7 @@ public:
 class MyFrame : public ftFrame
 {
 public:
-  MyFrame();
+  MyFrame(const wxString& title);
  ~MyFrame();
   bool ServerNotListening() const {
     return m_SocketServer == NULL;}

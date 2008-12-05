@@ -24,9 +24,9 @@ IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
 {
-  SetAppName(_("Socket Server"));
+  SetAppName("syncsocketserver");
   exApp::OnInit();
-  MyFrame *frame = new MyFrame();
+  MyFrame *frame = new MyFrame("syncsocketserver");
   SetTopWindow(frame);
   return true;
 }
@@ -60,8 +60,8 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_UPDATE_UI(ID_WRITE_DATA, MyFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame()
-  : ftFrame(NULL, wxID_ANY, _("Socket Server"), 4)
+MyFrame::MyFrame(const wxString& title)
+  : ftFrame(NULL, wxID_ANY, title)
   , m_Timer(this)
 {
   SetIcon(wxICON(appl));
@@ -208,7 +208,7 @@ void MyFrame::LogConnection(
   bool show_clients)
 {
   wxString text;
-  const wxString prefix = (accepted ? _("Accepted"): _("Lost"));
+  const wxString prefix = (accepted ? _("accepted"): _("lost"));
 
   text <<
     prefix << " " << SocketDetails(sock);
@@ -275,7 +275,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     if (m_DataWindow->FileSave())
     {
       m_LogWindow->AppendTextWithTimestamp(
-        _("Saved: ") + m_DataWindow->GetFileName().GetFullPath());
+        _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     }
     break;
 
@@ -283,7 +283,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     if (m_DataWindow->FileSaveAs())
     {
       m_LogWindow->AppendTextWithTimestamp(
-        _("Saved: ") + m_DataWindow->GetFileName().GetFullPath());
+        _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     }
     break;
 
@@ -373,7 +373,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       delete m_SocketServer;
       m_SocketServer = NULL;
 
-      const wxString text = wxTheApp->GetAppName() + _(" stopped");
+      const wxString text = _("server stopped");
       m_TaskBarIcon->SetIcon(wxICON(notready), text);
 
       StatusText(
@@ -395,7 +395,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_TIMER_STOP:
     m_Timer.Stop();
-    m_LogWindow->AppendTextWithTimestamp(_("Timer stopped"));
+    m_LogWindow->AppendTextWithTimestamp(_("timer stopped"));
     StatusText(wxEmptyString, "PaneTimer");
     break;
 
@@ -439,7 +439,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     if (sock == NULL)
     {
       m_LogWindow->AppendTextWithTimestamp(
-        _("Error: couldn't accept a new connection"));
+        _("error: couldn't accept a new connection"));
       return;
     }
 
@@ -504,7 +504,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
           {
             const wxString text(buffer, sock->LastCount());
             m_LogWindow->AppendTextWithTimestamp(
-              _("Read: '") + text + wxString::Format("' (%d bytes)", sock->LastCount()));
+              _("read: '") + text + wxString::Format("' (%d bytes)", sock->LastCount()));
           }
         }
 
@@ -527,8 +527,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         if (m_Clients.size() == 0)
         {
           const wxString text =
-            wxString::Format(_("%s listening at %d"),
-              wxTheApp->GetAppName().c_str(),
+            wxString::Format(_("server listening at %d"),
               exApp::GetConfig(_("Port"), 3000));
 
           m_TaskBarIcon->SetIcon(wxICON(ready), text);
@@ -635,7 +634,7 @@ bool MyFrame::OpenFile(
     GetManager().Update();
 
     m_LogWindow->AppendTextWithTimestamp(
-      _("Opened: ") + file + wxString::Format(" (%d bytes)",
+      _("opened: ") + file + wxString::Format(" (%d bytes)",
       m_DataWindow->GetLength()));
 
     return true;
@@ -659,7 +658,7 @@ bool MyFrame::SetupSocketServer()
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
-    m_TaskBarIcon->SetIcon(wxICON(notready), wxTheApp->GetAppName() + _(" not ready"));
+    m_TaskBarIcon->SetIcon(wxICON(notready), _("server not ready"));
     StatusText(_("Could not listen at the specified socket"));
     m_SocketServer->Destroy();
     delete m_SocketServer;
@@ -669,9 +668,7 @@ bool MyFrame::SetupSocketServer()
   else
   {
     const wxString text =
-      wxString::Format(_("%s listening at %d"),
-        wxTheApp->GetAppName().c_str(),
-        exApp::GetConfig(_("Port"), 3000));
+      wxString::Format(_("server listening at %d"), exApp::GetConfig(_("Port"), 3000));
 
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
     StatusText(text);
@@ -774,7 +771,7 @@ void MyFrame::TimerDialog()
   {
     m_Timer.Start(1000 * val);
     m_LogWindow->AppendTextWithTimestamp(
-      wxString::Format(_("Timer set to: %d seconds (%s)"),
+      wxString::Format(_("timer set to: %d seconds (%s)"),
       val,
       wxTimeSpan(0, 0, val, 0).Format().c_str()));
     StatusText(wxString::Format("%ld", val), "PaneTimer");
@@ -782,7 +779,7 @@ void MyFrame::TimerDialog()
   else if (val == 0)
   {
     m_Timer.Stop();
-    m_LogWindow->AppendTextWithTimestamp(_("Timer stopped"));
+    m_LogWindow->AppendTextWithTimestamp(_("timer stopped"));
     StatusText(wxEmptyString, "PaneTimer");
   }
 }
@@ -797,7 +794,7 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
 
   if (client->LastCount() != buffer->size())
   {
-    m_LogWindow->AppendTextWithTimestamp(_("Not all bytes sent to socket"));
+    m_LogWindow->AppendTextWithTimestamp(_("not all bytes sent to socket"));
   }
 
   m_Statistics.Inc(_("Messages Sent"));
@@ -810,7 +807,7 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
   if (exApp::GetConfigBool(_("Log Data")))
   {
     m_LogWindow->AppendTextWithTimestamp(
-      wxString::Format(_("Write: %d bytes to %s"),
+      wxString::Format(_("write: %d bytes to %s"),
         client->LastCount(), SocketDetails(client).c_str()));
   }
 }
