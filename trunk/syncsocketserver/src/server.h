@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <list>
 #include <wx/socket.h>
 #include <wx/taskbar.h>
 #include <wx/filetool/filetool.h>
