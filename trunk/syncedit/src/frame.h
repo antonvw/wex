@@ -13,8 +13,8 @@
 #define _MDIFRAME_H
 
 #include <wx/generic/dirctrlg.h>
-#include <wx/extension/extension.h>
 #include <wx/extension/notebook.h>
+#include <wx/extension/stc.h>
 #include "support.h"
 
 /// Adds notebooks to Frame.
