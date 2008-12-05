@@ -536,6 +536,8 @@ and saved in the same directory as where the executable is."));
 
         ftForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
         ftForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
+        m_History->SetFont(font);
+        m_History->ItemsUpdate();
       }
     }
     break;
