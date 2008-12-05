@@ -11,7 +11,6 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/tokenzr.h>
-#include <wx/extension/extension.h> // TODO: should not be necessary
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>
 #include "appl.h"
