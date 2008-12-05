@@ -12,6 +12,7 @@
 #ifndef _EXLISTVIEW_H
 #define _EXLISTVIEW_H
 
+#include <vector>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/extension/extension.h> // for exInterface

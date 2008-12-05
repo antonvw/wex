@@ -12,6 +12,7 @@
 #ifndef _EXLEXERS_H
 #define _EXLEXERS_H
 
+#include <vector>
 #include <wx/xml/xml.h>
 
 /// Reads the lexers, keywords, markers and styles

@@ -13,6 +13,7 @@
 #define _EXBASE_H
 
 #include <map>
+#include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
