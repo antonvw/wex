@@ -1,12 +1,14 @@
-# Translation for syncedit to dutch.
-# Copyright (C) 2005-2006 Anton van Wezenbeek
+# File:    syncsocketserver.po
+# Purpose: Translation for syncsocketserver to dutch.
+# RCS-ID:  $Id$
+# Copyright (c) 1998-2008 Anton van Wezenbeek
 msgid ""
 msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-06 12:39+0100\n"
 "PO-Revision-Date: 2008-12-06 12:42+0100\n"
-"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@lvnl.nl>\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
