@@ -4,11 +4,11 @@
 # Copyright (c) 1998-2008 Anton van Wezenbeek
 msgid ""
 msgstr ""
-"Project-Id-Version: wxfiletool v2.0\n"
+"Project-Id-Version: wxfiletool v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-31 12:35+0100\n"
-"PO-Revision-Date: 2008-10-31 12:36+0100\n"
-"Last-Translator: Anton <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2008-12-06 12:34+0100\n"
+"PO-Revision-Date: 2008-12-06 12:34+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@lvnl.nl>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,483 +18,483 @@ msgstr ""
 "X-Poedit-SearchPath-0: include\n"
 "X-Poedit-SearchPath-1: src\n"
 
-#: wxFileTool\v2.0\src/filetool.cpp:17
-msgid "Comparator"
-msgstr "Vergelijker"
-
-#: wxFileTool\v2.0\src/filetool.cpp:21
-msgid "Please add a comparator"
-msgstr "Voeg een vergelijker toe"
-
-#: wxFileTool\v2.0\src/filetool.cpp:35
-msgid "Compared"
-msgstr "Vergeleken"
-
-#: wxFileTool\v2.0\src/filetool.cpp:45
-#: wxFileTool\v2.0\src/filetool.cpp:88
-#: wxFileTool\v2.0\src/listview.cpp:1119
-msgid "Find what"
-msgstr "Zoeken naar"
-
-#: wxFileTool\v2.0\src/filetool.cpp:46
-#: wxFileTool\v2.0\src/filetool.cpp:92
-#: wxFileTool\v2.0\src/listview.cpp:1120
-msgid "Replace with"
-msgstr "Vervangen door"
-
-#: wxFileTool\v2.0\src/filetool.cpp:47
-#: wxFileTool\v2.0\src/filetool.cpp:80
-msgid "In files"
-msgstr "In bestanden"
-
-#: wxFileTool\v2.0\src/filetool.cpp:48
-#: wxFileTool\v2.0\src/filetool.cpp:79
-#: wxFileTool\v2.0\src/listview.cpp:159
-#: wxFileTool\v2.0\src/listview.cpp:172
-#: wxFileTool\v2.0\src/process.cpp:153
-#: wxFileTool\v2.0\src/process.cpp:161
-msgid "In folder"
-msgstr "In map"
-
-#: wxFileTool\v2.0\src/filetool.cpp:49
-#: wxFileTool\v2.0\src/listview.cpp:1121
-msgid "Match whole word"
-msgstr "Geheel woord"
-
-#: wxFileTool\v2.0\src/filetool.cpp:50
-#: wxFileTool\v2.0\src/listview.cpp:1122
-msgid "Match case"
-msgstr "Letter gevoelig"
-
-#: wxFileTool\v2.0\src/filetool.cpp:54
-msgid "Replace In Files"
-msgstr "Vervangen in bestanden"
-
-#: wxFileTool\v2.0\src/filetool.cpp:54
-msgid "Find In Files"
-msgstr "Zoeken in bestanden"
-
-#: wxFileTool\v2.0\src/filetool.cpp:88
-msgid "Searching for"
-msgstr "Zoeken naar"
-
-#: wxFileTool\v2.0\src/filetool.cpp:92
-msgid "Replacing with"
-msgstr "Vervangen door"
-
-#: wxFileTool\v2.0\src/filetool.cpp:114
-msgid "No version information found"
-msgstr "Geen basis versie gevonden"
-
-#: wxFileTool\v2.0\src/filetool.cpp:187
-msgid "No files found"
-msgstr "Geen bestanden gevonden"
-
-#: wxFileTool\v2.0\src/frame.cpp:51
-#, c-format
-msgid "Executed %ld SQL queries in"
-msgstr "%ld queries uitgevoerd"
-
-#: wxFileTool\v2.0\src/frame.cpp:52
-msgid "&SQL Query Run"
-msgstr "&SQL Queries uitvoeren"
-
-#: wxFileTool\v2.0\src/frame.cpp:56
-#, c-format
-msgid "Reported %ld SQL queries in"
-msgstr "%ld queries gerapporteerd"
-
-#: wxFileTool\v2.0\src/frame.cpp:57
-msgid "SQL &Query Report"
-msgstr "&SQL Queries"
-
-#: wxFileTool\v2.0\src/frame.cpp:74
-msgid "All Files"
-msgstr "Alle bestanden"
-
-#: wxFileTool\v2.0\src/frame.cpp:106
-msgid "Select Files"
-msgstr "Bestanden selecteren"
-
-#: wxFileTool\v2.0\src/frame.cpp:131
-msgid "Select Projects"
-msgstr "Projecten selecteren"
-
-#: wxFileTool\v2.0\src/frame.cpp:155
-#, c-format
-msgid "Removed not existing file: %s from history"
-msgstr "Niet bestaand bestand: %s verwijderd uit geschiedenis"
-
-#: wxFileTool\v2.0\src/frame.cpp:189
-msgid "Process is running"
-msgstr "Proces is bezig"
-
-#: wxFileTool\v2.0\src/frame.cpp:398
-msgid "Open &Recent"
-msgstr "&Laatste openen"
-
-#: wxFileTool\v2.0\src/listitem.cpp:18
-#: wxFileTool\v2.0\src/listitem.cpp:143
-#: wxFileTool\v2.0\src/listview.cpp:590
-#: wxFileTool\v2.0\src/listview.cpp:701
-msgid "In Folder"
-msgstr "Map"
-
-#: wxFileTool\v2.0\src/listitem.cpp:19
-#: wxFileTool\v2.0\src/listitem.cpp:37
-#: wxFileTool\v2.0\src/listview.cpp:344
-#: wxFileTool\v2.0\src/listview.cpp:349
-#: wxFileTool\v2.0\src/listview.cpp:444
-#: wxFileTool\v2.0\src/listview.cpp:530
-#: wxFileTool\v2.0\src/listview.cpp:567
-msgid "File Name"
-msgstr "Bestand"
-
-#: wxFileTool\v2.0\src/listitem.cpp:20
-#: wxFileTool\v2.0\src/listitem.cpp:139
-#: wxFileTool\v2.0\src/listview.cpp:591
-#: wxFileTool\v2.0\src/listview.cpp:632
-#: wxFileTool\v2.0\src/listview.cpp:640
-#: wxFileTool\v2.0\src/listview.cpp:700
-#: wxFileTool\v2.0\src/listview.cpp:740
-msgid "Type"
-msgstr "Type"
-
-#: wxFileTool\v2.0\src/listitem.cpp:120
-#: wxFileTool\v2.0\src/listitem.cpp:125
-msgid "List Font"
-msgstr "Lijst lettertype"
-
-#: wxFileTool\v2.0\src/listitem.cpp:144
-#: wxFileTool\v2.0\src/listview.cpp:592
-#: wxFileTool\v2.0\src/listview.cpp:702
-msgid "Size"
-msgstr "Grootte"
-
-#: wxFileTool\v2.0\src/listitem.cpp:148
-#: wxFileTool\v2.0\src/listview.cpp:190
-#: wxFileTool\v2.0\src/listview.cpp:401
-#: wxFileTool\v2.0\src/listview.cpp:589
-#: wxFileTool\v2.0\src/listview.cpp:703
-#: wxFileTool\v2.0\src/listview.cpp:858
-#: wxFileTool\v2.0\src/listview.cpp:918
-#: wxFileTool\v2.0\src/listview.cpp:938
-#: wxFileTool\v2.0\src/listview.cpp:1159
-msgid "Modified"
-msgstr "Gewijzigd"
-
-#: wxFileTool\v2.0\src/listitem.cpp:156
-#: wxFileTool\v2.0\src/listview.cpp:574
-msgid "Revision"
-msgstr "Revisie"
-
-#: wxFileTool\v2.0\src/listitem.cpp:157
-#: wxFileTool\v2.0\src/listview.cpp:571
-msgid "Date"
-msgstr "Datum"
-
-#: wxFileTool\v2.0\src/listitem.cpp:158
-#: wxFileTool\v2.0\src/listview.cpp:572
-msgid "Initials"
-msgstr "Initialen"
-
-#: wxFileTool\v2.0\src/listitem.cpp:159
-#: wxFileTool\v2.0\src/listview.cpp:570
-msgid "Revision Comment"
-msgstr "Revisie commentaar"
-
-#: wxFileTool\v2.0\src/listview.cpp:158
-#: wxFileTool\v2.0\src/listview.cpp:173
-msgid "Add what"
-msgstr "Toevoegen"
-
-#: wxFileTool\v2.0\src/listview.cpp:160
-#: wxFileTool\v2.0\src/listview.cpp:176
-msgid "Add files"
-msgstr "Bestanden toevoegen"
-
-#: wxFileTool\v2.0\src/listview.cpp:161
-#: wxFileTool\v2.0\src/listview.cpp:177
-msgid "Add folders"
-msgstr "Mappen toevoegen"
-
-#: wxFileTool\v2.0\src/listview.cpp:165
-msgid "Add Files"
-msgstr "Bestanden toevoegen"
-
-#: wxFileTool\v2.0\src/listview.cpp:193
-msgid "Added"
-msgstr "Toegevoegd"
-
-#: wxFileTool\v2.0\src/listview.cpp:193
-msgid "file(s)"
-msgstr "bestanden"
-
-#: wxFileTool\v2.0\src/listview.cpp:231
-msgid "&Open"
-msgstr "&Openen"
-
-#: wxFileTool\v2.0\src/listview.cpp:235
-msgid "&Make"
-msgstr "&Maken"
-
-#: wxFileTool\v2.0\src/listview.cpp:241
-msgid "C&ompare"
-msgstr "&Vergelijken"
-
-#: wxFileTool\v2.0\src/listview.cpp:258
-msgid "&Compare With"
-msgstr "Vergelijken &met"
-
-#: wxFileTool\v2.0\src/listview.cpp:265
-#: wxFileTool\v2.0\src/stc.cpp:102
-msgid "&Compare Recent Version"
-msgstr "&Vergelijken met laatste versie"
-
-#: wxFileTool\v2.0\src/listview.cpp:266
-msgid "&Version List"
-msgstr "&Versie lijst"
-
-#: wxFileTool\v2.0\src/listview.cpp:273
-msgid "&Build RBS File"
-msgstr "&RBS Bestand maken"
-
-#: wxFileTool\v2.0\src/listview.cpp:312
-msgid "&Add Files"
-msgstr "Bestanden &toevoegen"
-
-#: wxFileTool\v2.0\src/listview.cpp:436
-msgid "Replace In"
-msgstr "Vervangen in"
-
-#: wxFileTool\v2.0\src/listview.cpp:437
-msgid "Find In"
-msgstr "Zoeken in"
-
-#: wxFileTool\v2.0\src/listview.cpp:448
-msgid "Selection"
-msgstr "selectie"
-
-#: wxFileTool\v2.0\src/listview.cpp:482
-msgid "File Count"
-msgstr "Statistiek"
-
-#: wxFileTool\v2.0\src/listview.cpp:483
-msgid "Find Results"
-msgstr "Zoek resultaten"
-
-#: wxFileTool\v2.0\src/listview.cpp:484
-msgid "Headers"
-msgstr "Kopteksten"
-
-#: wxFileTool\v2.0\src/listview.cpp:485
-msgid "History"
-msgstr "Geschiedenis"
-
-#: wxFileTool\v2.0\src/listview.cpp:486
-#: wxFileTool\v2.0\src/listview.cpp:562
-msgid "Keywords"
-msgstr "Keywords"
-
-#: wxFileTool\v2.0\src/listview.cpp:487
-msgid "Process Output"
-msgstr "Proces uitvoer"
-
-#: wxFileTool\v2.0\src/listview.cpp:488
-msgid "Project"
-msgstr "Project"
-
-#: wxFileTool\v2.0\src/listview.cpp:489
-msgid "Replace Results"
-msgstr "Vervang resultaten"
-
-#: wxFileTool\v2.0\src/listview.cpp:490
-msgid "Revisions"
-msgstr "Revisies"
-
-#: wxFileTool\v2.0\src/listview.cpp:491
-msgid "SQL Queries"
-msgstr "SQL Queries"
-
-#: wxFileTool\v2.0\src/listview.cpp:492
-msgid "Version List"
-msgstr "Versie lijst"
-
-#: wxFileTool\v2.0\src/listview.cpp:537
-#: wxFileTool\v2.0\src/textfile.cpp:252
-msgid "Lines"
-msgstr "Regels"
-
-#: wxFileTool\v2.0\src/listview.cpp:538
-#: wxFileTool\v2.0\src/textfile.cpp:253
-msgid "Lines Of Code"
-msgstr "Coderegels"
-
-#: wxFileTool\v2.0\src/listview.cpp:539
-#: wxFileTool\v2.0\src/textfile.cpp:254
-msgid "Empty Lines"
-msgstr "Lege regels"
-
-#: wxFileTool\v2.0\src/listview.cpp:540
-#: wxFileTool\v2.0\src/textfile.cpp:255
-msgid "Words Of Code"
-msgstr "Codewoorden"
-
-#: wxFileTool\v2.0\src/listview.cpp:541
-#: wxFileTool\v2.0\src/textfile.cpp:256
-msgid "Comments"
-msgstr "Commentaar"
-
-#: wxFileTool\v2.0\src/listview.cpp:542
-#: wxFileTool\v2.0\src/textfile.cpp:257
-msgid "Comment Size"
-msgstr "Commentaar grootte"
-
-#: wxFileTool\v2.0\src/listview.cpp:546
-#: wxFileTool\v2.0\src/listview.cpp:565
-#: wxFileTool\v2.0\src/process.cpp:126
-#: wxFileTool\v2.0\src/process.cpp:133
-#: wxFileTool\v2.0\src/textfile.cpp:212
+#: src/process.cpp:118
+#: src/process.cpp:125
+#: src/textfile.cpp:213
+#: src/listview.cpp:547
+#: src/listview.cpp:566
 msgid "Line"
 msgstr "Regel"
 
-#: wxFileTool\v2.0\src/listview.cpp:547
-#: wxFileTool\v2.0\src/listview.cpp:651
-#: wxFileTool\v2.0\src/textfile.cpp:213
-msgid "Match"
-msgstr "Zoektekst"
-
-#: wxFileTool\v2.0\src/listview.cpp:548
-#: wxFileTool\v2.0\src/listview.cpp:566
-#: wxFileTool\v2.0\src/listview.cpp:573
-#: wxFileTool\v2.0\src/listview.cpp:579
-#: wxFileTool\v2.0\src/listview.cpp:646
-#: wxFileTool\v2.0\src/process.cpp:127
-#: wxFileTool\v2.0\src/textfile.cpp:205
+#: src/process.cpp:119
+#: src/textfile.cpp:206
+#: src/listview.cpp:549
+#: src/listview.cpp:567
+#: src/listview.cpp:574
+#: src/listview.cpp:580
+#: src/listview.cpp:647
 msgid "Line No"
 msgstr "Regel nummer"
 
-#: wxFileTool\v2.0\src/listview.cpp:551
-msgid "Header Description"
-msgstr "Koptekst omschrijving"
-
-#: wxFileTool\v2.0\src/listview.cpp:577
-#: wxFileTool\v2.0\src/textfile.cpp:223
-msgid "Run Time"
-msgstr "Uitvoertijd"
-
-#: wxFileTool\v2.0\src/listview.cpp:578
-#: wxFileTool\v2.0\src/textfile.cpp:222
-msgid "Query"
-msgstr "Query"
-
-#: wxFileTool\v2.0\src/listview.cpp:586
-#: wxFileTool\v2.0\src/listview.cpp:650
-#: wxFileTool\v2.0\src/textfile.cpp:210
-msgid "Replaced"
-msgstr "Vervangen"
-
-#: wxFileTool\v2.0\src/listview.cpp:630
-msgid "Input"
-msgstr "Invoer"
-
-#: wxFileTool\v2.0\src/listview.cpp:631
-msgid "Folder Type"
-msgstr "Map type"
-
-#: wxFileTool\v2.0\src/listview.cpp:881
-msgid "Make"
-msgstr "Maken"
-
-#: wxFileTool\v2.0\src/listview.cpp:1028
-#, c-format
-msgid "File: %s Modified: %s Printed: %s"
-msgstr "Bestand: %s Gewijzigd: %s Afgedrukt: %s"
-
-#: wxFileTool\v2.0\src/listview.cpp:1096
-msgid "Already running, stop"
-msgstr "Proces al bezig, stop"
-
-#: wxFileTool\v2.0\src/listview.cpp:1097
-msgid "Confirm"
-msgstr "Bevestig"
-
-#: wxFileTool\v2.0\src/listview.cpp:1199
-#: wxFileTool\v2.0\src/listview.cpp:1204
-#: wxFileTool\v2.0\src/listview.cpp:1245
-msgid "RBS File"
-msgstr "RBS Bestand"
-
-#: wxFileTool\v2.0\src/listview.cpp:1200
-#: wxFileTool\v2.0\src/listview.cpp:1215
-msgid "RBS Pattern"
-msgstr "RBS Patroon"
-
-#: wxFileTool\v2.0\src/listview.cpp:1201
-msgid "Build RBS File"
-msgstr "RBS Bestand maken"
-
-#: wxFileTool\v2.0\src/listview.cpp:1245
-msgid "generated"
-msgstr "gegenereerd"
-
-#: wxFileTool\v2.0\src/process.cpp:152
-#: wxFileTool\v2.0\src/process.cpp:162
+#: src/process.cpp:144
+#: src/process.cpp:154
 msgid "Process"
 msgstr "Proces uitvoer"
 
-#: wxFileTool\v2.0\src/process.cpp:157
+#: src/process.cpp:145
+#: src/process.cpp:153
+#: src/listview.cpp:160
+#: src/listview.cpp:173
+#: src/filetool.cpp:49
+#: src/filetool.cpp:80
+msgid "In folder"
+msgstr "In map"
+
+#: src/process.cpp:149
 msgid "Select Process"
 msgstr "Proces selecteren"
 
-#: wxFileTool\v2.0\src/process.cpp:175
+#: src/process.cpp:167
 msgid "Ready"
 msgstr "Klaar"
 
-#: wxFileTool\v2.0\src/process.cpp:194
+#: src/process.cpp:193
 msgid "Running process"
 msgstr "Uitvoeren proces"
 
-#: wxFileTool\v2.0\src/process.cpp:214
+#: src/process.cpp:213
 msgid "Stopped"
 msgstr "Gestopt"
 
-#: wxFileTool\v2.0\src/stc.cpp:88
-msgid "Find &In Files"
-msgstr "&Zoeken in bestanden"
-
-#: wxFileTool\v2.0\src/stc.cpp:93
-msgid "&Replace In Files"
-msgstr "&Vervangen in bestanden"
-
-#: wxFileTool\v2.0\src/stc.cpp:203
-msgid "Readonly"
-msgstr "Alleen lezen"
-
-#: wxFileTool\v2.0\src/textfile.cpp:147
+#: src/textfile.cpp:148
 msgid "File"
 msgstr "Bestand"
 
-#: wxFileTool\v2.0\src/textfile.cpp:155
+#: src/textfile.cpp:156
 #, c-format
 msgid "Retrieved: %d records"
 msgstr "%d records opgehaald"
 
-#: wxFileTool\v2.0\src/textfile.cpp:190
+#: src/textfile.cpp:191
 msgid "Actions Completed"
 msgstr "Acties uitgevoerd"
 
-#: wxFileTool\v2.0\src/textfile.cpp:369
+#: src/textfile.cpp:211
+#: src/listview.cpp:587
+#: src/listview.cpp:651
+msgid "Replaced"
+msgstr "Vervangen"
+
+#: src/textfile.cpp:214
+#: src/listview.cpp:548
+#: src/listview.cpp:652
+msgid "Match"
+msgstr "Zoektekst"
+
+#: src/textfile.cpp:223
+#: src/listview.cpp:579
+msgid "Query"
+msgstr "Query"
+
+#: src/textfile.cpp:224
+#: src/listview.cpp:578
+msgid "Run Time"
+msgstr "Uitvoertijd"
+
+#: src/textfile.cpp:253
+#: src/listview.cpp:538
+msgid "Lines"
+msgstr "Regels"
+
+#: src/textfile.cpp:254
+#: src/listview.cpp:539
+msgid "Lines Of Code"
+msgstr "Coderegels"
+
+#: src/textfile.cpp:255
+#: src/listview.cpp:540
+msgid "Empty Lines"
+msgstr "Lege regels"
+
+#: src/textfile.cpp:256
+#: src/listview.cpp:541
+msgid "Words Of Code"
+msgstr "Codewoorden"
+
+#: src/textfile.cpp:257
+#: src/listview.cpp:542
+msgid "Comments"
+msgstr "Commentaar"
+
+#: src/textfile.cpp:258
+#: src/listview.cpp:543
+msgid "Comment Size"
+msgstr "Commentaar grootte"
+
+#: src/textfile.cpp:370
 msgid "Error"
 msgstr "Fout"
 
-#: wxFileTool\v2.0\src/textfile.cpp:370
+#: src/textfile.cpp:371
 msgid "ODBC Error"
 msgstr "ODBC Fout"
 
-#: wxFileTool\v2.0\src/textfile.cpp:382
+#: src/textfile.cpp:383
 msgid "Datasource"
 msgstr "Databron"
+
+#: src/listview.cpp:159
+#: src/listview.cpp:174
+msgid "Add what"
+msgstr "Toevoegen"
+
+#: src/listview.cpp:161
+#: src/listview.cpp:177
+msgid "Add files"
+msgstr "Bestanden toevoegen"
+
+#: src/listview.cpp:162
+#: src/listview.cpp:178
+msgid "Add folders"
+msgstr "Mappen toevoegen"
+
+#: src/listview.cpp:166
+msgid "Add Files"
+msgstr "Bestanden toevoegen"
+
+#: src/listview.cpp:191
+#: src/listview.cpp:402
+#: src/listview.cpp:590
+#: src/listview.cpp:704
+#: src/listview.cpp:859
+#: src/listview.cpp:917
+#: src/listview.cpp:938
+#: src/listview.cpp:1161
+#: src/listitem.cpp:149
+msgid "Modified"
+msgstr "Gewijzigd"
+
+#: src/listview.cpp:194
+msgid "Added"
+msgstr "Toegevoegd"
+
+#: src/listview.cpp:194
+msgid "file(s)"
+msgstr "bestanden"
+
+#: src/listview.cpp:232
+msgid "&Open"
+msgstr "&Openen"
+
+#: src/listview.cpp:236
+msgid "&Make"
+msgstr "&Maken"
+
+#: src/listview.cpp:242
+msgid "C&ompare"
+msgstr "&Vergelijken"
+
+#: src/listview.cpp:259
+msgid "&Compare With"
+msgstr "Vergelijken &met"
+
+#: src/listview.cpp:266
+#: src/stc.cpp:106
+msgid "&Compare Recent Version"
+msgstr "&Vergelijken met laatste versie"
+
+#: src/listview.cpp:267
+msgid "&Version List"
+msgstr "&Versie lijst"
+
+#: src/listview.cpp:274
+msgid "&Build RBS File"
+msgstr "&RBS Bestand maken"
+
+#: src/listview.cpp:313
+msgid "&Add Files"
+msgstr "Bestanden &toevoegen"
+
+#: src/listview.cpp:345
+#: src/listview.cpp:350
+#: src/listview.cpp:445
+#: src/listview.cpp:531
+#: src/listview.cpp:568
+#: src/listitem.cpp:20
+#: src/listitem.cpp:38
+msgid "File Name"
+msgstr "Bestand"
+
+#: src/listview.cpp:437
+msgid "Replace In"
+msgstr "Vervangen in"
+
+#: src/listview.cpp:438
+msgid "Find In"
+msgstr "Zoeken in"
+
+#: src/listview.cpp:449
+msgid "Selection"
+msgstr "selectie"
+
+#: src/listview.cpp:483
+msgid "File Count"
+msgstr "Statistiek"
+
+#: src/listview.cpp:484
+msgid "Find Results"
+msgstr "Zoek resultaten"
+
+#: src/listview.cpp:485
+msgid "Headers"
+msgstr "Kopteksten"
+
+#: src/listview.cpp:486
+msgid "History"
+msgstr "Geschiedenis"
+
+#: src/listview.cpp:487
+#: src/listview.cpp:563
+msgid "Keywords"
+msgstr "Keywords"
+
+#: src/listview.cpp:488
+msgid "Process Output"
+msgstr "Proces uitvoer"
+
+#: src/listview.cpp:489
+msgid "Project"
+msgstr "Project"
+
+#: src/listview.cpp:490
+msgid "Replace Results"
+msgstr "Vervang resultaten"
+
+#: src/listview.cpp:491
+msgid "Revisions"
+msgstr "Revisies"
+
+#: src/listview.cpp:492
+msgid "SQL Queries"
+msgstr "SQL Queries"
+
+#: src/listview.cpp:493
+msgid "Version List"
+msgstr "Versie lijst"
+
+#: src/listview.cpp:552
+msgid "Header Description"
+msgstr "Koptekst omschrijving"
+
+#: src/listview.cpp:571
+#: src/listitem.cpp:160
+msgid "Revision Comment"
+msgstr "Revisie commentaar"
+
+#: src/listview.cpp:572
+#: src/listitem.cpp:158
+msgid "Date"
+msgstr "Datum"
+
+#: src/listview.cpp:573
+#: src/listitem.cpp:159
+msgid "Initials"
+msgstr "Initialen"
+
+#: src/listview.cpp:575
+#: src/listitem.cpp:157
+msgid "Revision"
+msgstr "Revisie"
+
+#: src/listview.cpp:591
+#: src/listview.cpp:702
+#: src/listitem.cpp:19
+#: src/listitem.cpp:144
+msgid "In Folder"
+msgstr "Map"
+
+#: src/listview.cpp:592
+#: src/listview.cpp:633
+#: src/listview.cpp:641
+#: src/listview.cpp:701
+#: src/listview.cpp:741
+#: src/listitem.cpp:21
+#: src/listitem.cpp:140
+msgid "Type"
+msgstr "Type"
+
+#: src/listview.cpp:593
+#: src/listview.cpp:703
+#: src/listitem.cpp:145
+msgid "Size"
+msgstr "Grootte"
+
+#: src/listview.cpp:631
+msgid "Input"
+msgstr "Invoer"
+
+#: src/listview.cpp:632
+msgid "Folder Type"
+msgstr "Map type"
+
+#: src/listview.cpp:882
+msgid "Make"
+msgstr "Maken"
+
+#: src/listview.cpp:1030
+#, c-format
+msgid "File: %s Modified: %s Printed: %s"
+msgstr "Bestand: %s Gewijzigd: %s Afgedrukt: %s"
+
+#: src/listview.cpp:1098
+msgid "Already running, stop"
+msgstr "Proces al bezig, stop"
+
+#: src/listview.cpp:1099
+msgid "Confirm"
+msgstr "Bevestig"
+
+#: src/listview.cpp:1121
+#: src/filetool.cpp:46
+#: src/filetool.cpp:89
+msgid "Find what"
+msgstr "Zoeken naar"
+
+#: src/listview.cpp:1122
+#: src/filetool.cpp:47
+#: src/filetool.cpp:93
+msgid "Replace with"
+msgstr "Vervangen door"
+
+#: src/listview.cpp:1123
+#: src/filetool.cpp:50
+msgid "Match whole word"
+msgstr "Geheel woord"
+
+#: src/listview.cpp:1124
+#: src/filetool.cpp:51
+msgid "Match case"
+msgstr "Letter gevoelig"
+
+#: src/listview.cpp:1201
+#: src/listview.cpp:1206
+#: src/listview.cpp:1247
+msgid "RBS File"
+msgstr "RBS Bestand"
+
+#: src/listview.cpp:1202
+#: src/listview.cpp:1217
+msgid "RBS Pattern"
+msgstr "RBS Patroon"
+
+#: src/listview.cpp:1203
+msgid "Build RBS File"
+msgstr "RBS Bestand maken"
+
+#: src/listview.cpp:1247
+msgid "generated"
+msgstr "gegenereerd"
+
+#: src/stc.cpp:92
+msgid "Find &In Files"
+msgstr "&Zoeken in bestanden"
+
+#: src/stc.cpp:97
+msgid "&Replace In Files"
+msgstr "&Vervangen in bestanden"
+
+#: src/stc.cpp:207
+msgid "Readonly"
+msgstr "Alleen lezen"
+
+#: src/frame.cpp:52
+#, c-format
+msgid "Executed %ld SQL queries in"
+msgstr "%ld queries uitgevoerd"
+
+#: src/frame.cpp:53
+msgid "&SQL Query Run"
+msgstr "&SQL Queries uitvoeren"
+
+#: src/frame.cpp:57
+#, c-format
+msgid "Reported %ld SQL queries in"
+msgstr "%ld queries gerapporteerd"
+
+#: src/frame.cpp:58
+msgid "SQL &Query Report"
+msgstr "&SQL Queries"
+
+#: src/frame.cpp:75
+msgid "All Files"
+msgstr "Alle bestanden"
+
+#: src/frame.cpp:107
+msgid "Select Files"
+msgstr "Bestanden selecteren"
+
+#: src/frame.cpp:132
+msgid "Select Projects"
+msgstr "Projecten selecteren"
+
+#: src/frame.cpp:156
+#, c-format
+msgid "Removed not existing file: %s from history"
+msgstr "Niet bestaand bestand: %s verwijderd uit geschiedenis"
+
+#: src/frame.cpp:190
+msgid "Process is running"
+msgstr "Proces is bezig"
+
+#: src/frame.cpp:399
+msgid "Open &Recent"
+msgstr "&Laatste openen"
+
+#: src/listitem.cpp:121
+#: src/listitem.cpp:126
+msgid "List Font"
+msgstr "Lijst lettertype"
+
+#: src/filetool.cpp:18
+msgid "Comparator"
+msgstr "Vergelijker"
+
+#: src/filetool.cpp:22
+msgid "Please add a comparator"
+msgstr "Voeg een vergelijker toe"
+
+#: src/filetool.cpp:36
+msgid "Compared"
+msgstr "Vergeleken"
+
+#: src/filetool.cpp:48
+#: src/filetool.cpp:81
+msgid "In files"
+msgstr "In bestanden"
+
+#: src/filetool.cpp:55
+msgid "Replace In Files"
+msgstr "Vervangen in bestanden"
+
+#: src/filetool.cpp:55
+msgid "Find In Files"
+msgstr "Zoeken in bestanden"
+
+#: src/filetool.cpp:89
+msgid "Searching for"
+msgstr "Zoeken naar"
+
+#: src/filetool.cpp:93
+msgid "Replacing with"
+msgstr "Vervangen door"
+
+#: src/filetool.cpp:115
+msgid "No version information found"
+msgstr "Geen basis versie gevonden"
+
+#: src/filetool.cpp:188
+msgid "No files found"
+msgstr "Geen bestanden gevonden"
 
 #~ msgid "Files Passed"
 #~ msgstr "Bestanden langs gelopen"
@@ -513,4 +513,5 @@ msgstr "Databron"
 #~ msgid "Files"
 #~ msgstr "Bestanden"
 #~ msgid "Files Run"
-#~ msgstr "Statistiek" 
+#~ msgstr "Statistiek"
+

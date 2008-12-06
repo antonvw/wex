@@ -2,96 +2,96 @@
 # Copyright (C) 2005-2006 Anton van Wezenbeek
 msgid ""
 msgstr ""
-"Project-Id-Version: syncquery v1.0\n"
+"Project-Id-Version: syncodbcquery v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-14 08:21+0100\n"
-"PO-Revision-Date: 2008-07-14 08:21+0100\n"
-"Last-Translator: Anton <a.m.vanwezenbeek@lvnl.nl>\n"
-"Language-Team: Anton <a.m.vanwezenbeek@lvnl.nl>\n"
+"POT-Creation-Date: 2008-12-06 12:38+0100\n"
+"PO-Revision-Date: 2008-12-06 12:38+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@lvnl.nl>\n"
+"Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Basepath: C:\\Documents and Settings\\anton.COM\\My Documents\n"
+"X-Poedit-Basepath: ./\n"
 "X-Poedit-Country: NETHERLANDS\n"
-"X-Poedit-SearchPath-0: syncquery/v1.0\n"
+"X-Poedit-SearchPath-0: src\n"
 
-#: syncquery/v1.0/appl.cpp:68
+#: src/appl.cpp:73
 msgid "&Open"
 msgstr "&Openen"
 
-#: syncquery/v1.0/appl.cpp:69
+#: src/appl.cpp:74
 msgid "&Close"
 msgstr "&Sluiten"
 
-#: syncquery/v1.0/appl.cpp:72
+#: src/appl.cpp:77
 msgid "&Run"
 msgstr "Uitvoeren"
 
-#: syncquery/v1.0/appl.cpp:76
+#: src/appl.cpp:81
 msgid "&Edit"
 msgstr "&Bewerken"
 
-#: syncquery/v1.0/appl.cpp:79
-#: syncquery/v1.0/appl.cpp:123
+#: src/appl.cpp:84
+#: src/appl.cpp:128
 msgid "Query"
 msgstr "Query"
 
-#: syncquery/v1.0/appl.cpp:80
-#: syncquery/v1.0/appl.cpp:116
+#: src/appl.cpp:85
+#: src/appl.cpp:121
 msgid "Results"
 msgstr "Uitvoer"
 
-#: syncquery/v1.0/appl.cpp:81
-#: syncquery/v1.0/appl.cpp:130
+#: src/appl.cpp:86
+#: src/appl.cpp:135
 msgid "Statistics"
 msgstr "Statistiek"
 
-#: syncquery/v1.0/appl.cpp:87
+#: src/appl.cpp:92
 msgid "&File"
 msgstr "&Bestand"
 
-#: syncquery/v1.0/appl.cpp:88
-msgid "&Database"
-msgstr "&Database"
-
-#: syncquery/v1.0/appl.cpp:89
-msgid "&Query"
-msgstr "&Query"
-
-#: syncquery/v1.0/appl.cpp:90
+#: src/appl.cpp:93
 msgid "&View"
 msgstr "&Beeld"
 
-#: syncquery/v1.0/appl.cpp:91
+#: src/appl.cpp:94
+msgid "&Database"
+msgstr "&Database"
+
+#: src/appl.cpp:95
+msgid "&Query"
+msgstr "&Query"
+
+#: src/appl.cpp:96
 msgid "&Options"
 msgstr "&Opties"
 
-#: syncquery/v1.0/appl.cpp:92
+#: src/appl.cpp:97
 msgid "&Help"
 msgstr "&Help"
 
-#: syncquery/v1.0/appl.cpp:140
+#: src/appl.cpp:145
 msgid "Lines in window"
 msgstr "Regels in scherm"
 
-#: syncquery/v1.0/appl.cpp:148
+#: src/appl.cpp:153
 msgid "Run query"
 msgstr "Voer uit"
 
-#: syncquery/v1.0/appl.cpp:183
+#: src/appl.cpp:188
 msgid "This program offers a general ODBC query."
 msgstr "Dit programma biedt algemene ODBC query"
 
-#: syncquery/v1.0/appl.cpp:228
+#: src/appl.cpp:236
 msgid "Datasource"
 msgstr "Databron"
 
-#: syncquery/v1.0/appl.cpp:232
+#: src/appl.cpp:240
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: syncquery/v1.0/appl.cpp:260
-#: syncquery/v1.0/appl.cpp:416
+#: src/appl.cpp:268
+#: src/appl.cpp:428
 msgid ""
 "\n"
 "error: "
@@ -99,7 +99,7 @@ msgstr ""
 "\n"
 "fout: "
 
-#: syncquery/v1.0/appl.cpp:265
+#: src/appl.cpp:273
 msgid ""
 "\n"
 "not connected"
@@ -107,15 +107,15 @@ msgstr ""
 "\n"
 "geen verbinding"
 
-#: syncquery/v1.0/appl.cpp:415
+#: src/appl.cpp:427
 msgid "Number of query errors"
 msgstr "Aantal query fouten"
 
-#: syncquery/v1.0/appl.cpp:416
+#: src/appl.cpp:428
 msgid " in: "
 msgstr " in: "
 
-#: syncquery/v1.0/appl.cpp:421
+#: src/appl.cpp:433
 #, c-format
 msgid ""
 "\n"
@@ -124,7 +124,7 @@ msgstr ""
 "\n"
 "%d queries (%.3f seconden)"
 
-#: syncquery/v1.0/appl.cpp:428
+#: src/appl.cpp:440
 #, c-format
 msgid ""
 "\n"
@@ -133,23 +133,23 @@ msgstr ""
 "\n"
 "%d records opgehaald (%.3f seconden)"
 
-#: syncquery/v1.0/appl.cpp:432
+#: src/appl.cpp:444
 msgid "Rows processed"
 msgstr "Records opgehaald"
 
-#: syncquery/v1.0/appl.cpp:433
+#: src/appl.cpp:445
 msgid "Query runtime"
 msgstr "Query uitvoertijd"
 
-#: syncquery/v1.0/appl.cpp:435
+#: src/appl.cpp:447
 msgid "Total number of queries run"
 msgstr "Totaal aantal uitgevoerde queries"
 
-#: syncquery/v1.0/appl.cpp:436
+#: src/appl.cpp:448
 msgid "Total query runtime"
 msgstr "Totaal query uitvoertijd"
 
-#: syncquery/v1.0/appl.cpp:437
+#: src/appl.cpp:449
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
 

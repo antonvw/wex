@@ -1,0 +1,579 @@
+# Translation for syncedit to dutch.
+# Copyright (C) 2005-2006 Anton van Wezenbeek
+msgid ""
+msgstr ""
+"Project-Id-Version: syncsocketserver v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-12-06 12:39+0100\n"
+"PO-Revision-Date: 2008-12-06 12:42+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@lvnl.nl>\n"
+"Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ./\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SearchPath-0: src\n"
+
+#: src/server.cpp:78
+msgid "Number of clients connected"
+msgstr ""
+
+#: src/server.cpp:79
+msgid "Repeat timer"
+msgstr ""
+
+#: src/server.cpp:80
+msgid "Number of bytes received and sent"
+msgstr ""
+
+#: src/server.cpp:81
+msgid "File type"
+msgstr ""
+
+#: src/server.cpp:82
+#, fuzzy
+msgid "Lines in window"
+msgstr "Regels in scherm"
+
+#: src/server.cpp:103
+msgid "Clear Statistics"
+msgstr "Statistiek legen"
+
+#: src/server.cpp:103
+msgid "Clears the statistics"
+msgstr ""
+
+#: src/server.cpp:107
+msgid "Hide"
+msgstr ""
+
+#: src/server.cpp:107
+msgid "Puts back in the task bar"
+msgstr ""
+
+#: src/server.cpp:113
+msgid "Config"
+msgstr "Configureer"
+
+#: src/server.cpp:113
+msgid "Configures the server"
+msgstr ""
+
+#: src/server.cpp:115
+msgid "Start"
+msgstr ""
+
+#: src/server.cpp:115
+msgid "Starts the server"
+msgstr ""
+
+#: src/server.cpp:116
+msgid "Stop"
+msgstr "Stoppen"
+
+#: src/server.cpp:117
+msgid "Closes connection with all clients and stops the server"
+msgstr ""
+
+#: src/server.cpp:120
+#: src/server.cpp:322
+#: src/server.cpp:511
+#: src/server.cpp:587
+msgid "Echo"
+msgstr ""
+
+#: src/server.cpp:121
+msgid "Echo's received data back to client"
+msgstr ""
+
+#: src/server.cpp:122
+#: src/server.cpp:326
+#: src/server.cpp:518
+#: src/server.cpp:591
+#: src/server.cpp:828
+msgid "Log Data"
+msgstr ""
+
+#: src/server.cpp:123
+msgid "Logs data read from and written to client"
+msgstr ""
+
+#: src/server.cpp:125
+msgid "Set Buffer Size"
+msgstr ""
+
+#: src/server.cpp:126
+msgid "Sets buffersize for data retrieved from client"
+msgstr ""
+
+#: src/server.cpp:128
+msgid "Repeat Timer"
+msgstr ""
+
+#: src/server.cpp:129
+msgid "Repeats with timer writing last data to all clients"
+msgstr ""
+
+#: src/server.cpp:130
+msgid "Stop Timer"
+msgstr ""
+
+#: src/server.cpp:130
+msgid "Stops the timer"
+msgstr ""
+
+#: src/server.cpp:132
+msgid "Write"
+msgstr ""
+
+#: src/server.cpp:133
+msgid "Writes data to all clients"
+msgstr ""
+
+#: src/server.cpp:136
+msgid "&Statusbar"
+msgstr "&Statusregel"
+
+#: src/server.cpp:137
+msgid "&Toolbar"
+msgstr "&Werkbalk"
+
+#: src/server.cpp:139
+msgid "Log"
+msgstr ""
+
+#: src/server.cpp:140
+#: src/server.cpp:174
+msgid "Data"
+msgstr "Data"
+
+#: src/server.cpp:141
+#: src/server.cpp:178
+msgid "Statistics"
+msgstr "Statistiek"
+
+#: src/server.cpp:144
+msgid "Edit"
+msgstr "&Bewerken"
+
+#: src/server.cpp:150
+msgid "&File"
+msgstr "&Bestand"
+
+#: src/server.cpp:151
+msgid "&View"
+msgstr "&Beeld"
+
+#: src/server.cpp:152
+msgid "&Server"
+msgstr ""
+
+#: src/server.cpp:153
+msgid "&Client"
+msgstr "&Klant"
+
+#: src/server.cpp:154
+msgid "&Options"
+msgstr "&Opties"
+
+#: src/server.cpp:155
+msgid "&Help"
+msgstr "&Help"
+
+#: src/server.cpp:167
+msgid "Write data"
+msgstr ""
+
+#: src/server.cpp:186
+#: src/server.cpp:188
+#: src/server.cpp:189
+#: src/server.cpp:785
+#: src/server.cpp:789
+msgid "Timer"
+msgstr ""
+
+#: src/server.cpp:221
+msgid "accepted"
+msgstr ""
+
+#: src/server.cpp:221
+msgid "lost"
+msgstr "verloren"
+
+#: src/server.cpp:228
+msgid "Clients: "
+msgstr ""
+
+#: src/server.cpp:259
+msgid "This program offers a general socket server."
+msgstr "Dit programma biedt algemene socket server"
+
+#: src/server.cpp:289
+#: src/server.cpp:297
+msgid "saved: "
+msgstr ""
+
+#: src/server.cpp:309
+#: src/server.cpp:782
+msgid "Input:"
+msgstr ""
+
+#: src/server.cpp:311
+#: src/server.cpp:312
+#: src/server.cpp:316
+#: src/server.cpp:496
+msgid "Buffer Size"
+msgstr ""
+
+#: src/server.cpp:334
+msgid "Editor Options"
+msgstr "Editor opties"
+
+#: src/server.cpp:342
+#: src/server.cpp:669
+msgid "Hostname"
+msgstr ""
+
+#: src/server.cpp:343
+#: src/server.cpp:476
+#: src/server.cpp:546
+#: src/server.cpp:670
+#: src/server.cpp:690
+msgid "Port"
+msgstr ""
+
+#: src/server.cpp:351
+msgid "Server Config"
+msgstr ""
+
+#: src/server.cpp:365
+msgid "Stop server?"
+msgstr ""
+
+#: src/server.cpp:366
+msgid "Confirm"
+msgstr "Bevestigen"
+
+#: src/server.cpp:387
+msgid "server stopped"
+msgstr ""
+
+#: src/server.cpp:393
+#: src/server.cpp:565
+#, c-format
+msgid "%d clients"
+msgstr ""
+
+#: src/server.cpp:411
+#: src/server.cpp:803
+msgid "timer stopped"
+msgstr "timer gestopt"
+
+#: src/server.cpp:444
+msgid "Socket Server Events"
+msgstr ""
+
+#: src/server.cpp:455
+msgid "error: couldn't accept a new connection"
+msgstr ""
+
+#: src/server.cpp:459
+msgid "Socket Server Accepted Connections"
+msgstr ""
+
+#: src/server.cpp:474
+#, c-format
+msgid "%s connected at %d"
+msgstr "%s verbonden met %s"
+
+#: src/server.cpp:484
+msgid "Socket Client Events"
+msgstr ""
+
+#: src/server.cpp:490
+msgid "Socket Client Input Events"
+msgstr ""
+
+#: src/server.cpp:507
+#: src/server.cpp:529
+#: src/server.cpp:824
+msgid "Bytes Received"
+msgstr ""
+
+#: src/server.cpp:515
+#: src/server.cpp:530
+#: src/server.cpp:825
+msgid "Bytes Sent"
+msgstr ""
+
+#: src/server.cpp:522
+msgid "read: '"
+msgstr ""
+
+#: src/server.cpp:539
+msgid "Socket Client Lost Events"
+msgstr ""
+
+#: src/server.cpp:545
+#: src/server.cpp:690
+#, c-format
+msgid "server listening at %d"
+msgstr ""
+
+#: src/server.cpp:555
+msgid "Socket Client Unhandled Events"
+msgstr ""
+
+#: src/server.cpp:560
+msgid "Socket Unhandled Events"
+msgstr ""
+
+#: src/server.cpp:654
+msgid "opened: "
+msgstr ""
+
+#: src/server.cpp:679
+msgid "server not ready"
+msgstr ""
+
+#: src/server.cpp:681
+msgid "Could not listen at the specified socket"
+msgstr ""
+
+#: src/server.cpp:711
+#, c-format
+msgid "Socket error: %d"
+msgstr ""
+
+#: src/server.cpp:744
+msgid "socket: "
+msgstr ""
+
+#: src/server.cpp:784
+msgid "Give Seconds"
+msgstr ""
+
+#: src/server.cpp:795
+#, c-format
+msgid "timer set to: %d seconds (%s)"
+msgstr ""
+
+#: src/server.cpp:818
+msgid "not all bytes sent to socket"
+msgstr ""
+
+#: src/server.cpp:821
+msgid "Messages Sent"
+msgstr ""
+
+#: src/server.cpp:831
+#, c-format
+msgid "write: %d bytes to %s"
+msgstr ""
+
+#: src/server.cpp:873
+msgid "Open"
+msgstr "&Openen"
+
+#~ msgid "&Run"
+#~ msgstr "Uitvoeren"
+#~ msgid "Query"
+#~ msgstr "Query"
+#~ msgid "Results"
+#~ msgstr "Uitvoer"
+#~ msgid "&Query"
+#~ msgstr "&Query"
+#~ msgid "Run query"
+#~ msgstr "Voer uit"
+#~ msgid "Datasource"
+#~ msgstr "Databron"
+#~ msgid ""
+#~ "\n"
+#~ "error: "
+#~ msgstr ""
+#~ "\n"
+#~ "fout: "
+#~ msgid "Number of query errors"
+#~ msgstr "Aantal query fouten"
+#~ msgid " in: "
+#~ msgstr " in: "
+#~ msgid ""
+#~ "\n"
+#~ "%d queries (%.3f seconds)"
+#~ msgstr ""
+#~ "\n"
+#~ "%d queries (%.3f seconden)"
+#~ msgid ""
+#~ "\n"
+#~ "%d rows processed (%.3f seconds)"
+#~ msgstr ""
+#~ "\n"
+#~ "%d records opgehaald (%.3f seconden)"
+#~ msgid "Rows processed"
+#~ msgstr "Records opgehaald"
+#~ msgid "Query runtime"
+#~ msgstr "Query uitvoertijd"
+#~ msgid "Total number of queries run"
+#~ msgstr "Totaal aantal uitgevoerde queries"
+#~ msgid "Total query runtime"
+#~ msgstr "Totaal query uitvoertijd"
+#~ msgid "Total rows processed"
+#~ msgstr "Totaal aantal records opgehaald"
+#~ msgid "&Open..."
+#~ msgstr "&Openen..."
+#~ msgid "Console"
+#~ msgstr "Console"
+#~ msgid "Perspective"
+#~ msgstr "Perspektief"
+#~ msgid "New"
+#~ msgstr "Nieuw"
+#~ msgid "Save"
+#~ msgstr "&Opslaan"
+#~ msgid ""
+#~ "\n"
+#~ "Error: '%s'"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout: '%s'"
+#~ msgid "Open Database"
+#~ msgstr "Database openen"
+#~ msgid "Error: '%s' during opening database: %s"
+#~ msgstr "Fout: '%s' tijdens openen database: %s"
+#~ msgid "Error: '%s' during running query: '%s'\n"
+#~ msgstr "Fout: '%s' tijdens uitvoeren query: '%s'\n"
+#~ msgid "Run: %d queries in: %d milliseconds"
+#~ msgstr "%d queries uitgevoerd in: %d milliseconden"
+#~ msgid "Datasource connected with"
+#~ msgstr "Verbinding met databron"
+#~ msgid "show this help"
+#~ msgstr "geeft deze help"
+#~ msgid "input file:line number"
+#~ msgstr "bestand:regel nummer"
+#~ msgid "Project Files"
+#~ msgstr "Project bestanden"
+#~ msgid "Files"
+#~ msgstr "Bestanden"
+#~ msgid "Projects"
+#~ msgstr "Projecten"
+#~ msgid "Output"
+#~ msgstr "Resultaten"
+#~ msgid "Ascii Table"
+#~ msgstr "Ascii tabel"
+#~ msgid "Browse"
+#~ msgstr "Overzicht"
+#~ msgid "Toolbar"
+#~ msgstr "Werkbalk"
+#~ msgid "Project"
+#~ msgstr "Project"
+#~ msgid "Textfile"
+#~ msgstr "Bestand"
+#~ msgid "Print all files"
+#~ msgstr "Alle bestanden afdrukken"
+#~ msgid ""
+#~ "This program offers a portable text or binary editor with automatic "
+#~ "syncing.\n"
+#~ "All its config files are read and saved in the same directory as where "
+#~ "the executable is."
+#~ msgstr ""
+#~ "Dit programma biedt een portable text of binaire editor met automatische "
+#~ "synchronisatie.\n"
+#~ "Alle configuratie bestanden worden bewaard en gelezen in dezelfde map als "
+#~ "waar het programma zelf staat."
+#~ msgid "This program offers a text or binary editor with automatic syncing."
+#~ msgstr ""
+#~ "Dit programma biedt een text of binaire editor met automatische "
+#~ "synchronisatie."
+#~ msgid "All rights reserved."
+#~ msgstr "Alle rechten voorbehouden."
+#~ msgid "Comparator"
+#~ msgstr "Vergelijker"
+#~ msgid "Set Comparator"
+#~ msgstr "Vergelijker instellen"
+#~ msgid "day"
+#~ msgstr "dag"
+#~ msgid "week"
+#~ msgstr "week"
+#~ msgid "month"
+#~ msgstr "maand"
+#~ msgid "year"
+#~ msgstr "jaar"
+#~ msgid "link"
+#~ msgstr "koppeling"
+#~ msgid "Set List Colour"
+#~ msgstr "Lijst kleuren instellen"
+#~ msgid "List Font"
+#~ msgstr "Lijst lettertype"
+#~ msgid "Set List Font"
+#~ msgstr "Lijst lettertype instellen"
+#~ msgid "Open &Lexers"
+#~ msgstr "&Lexers file openen"
+#~ msgid "Open &Logfile"
+#~ msgstr "&Logfile openen"
+#~ msgid "Print A&ll"
+#~ msgstr "&Alles afdrukken"
+#~ msgid "Find &Next\tF3"
+#~ msgstr "&Volgende zoeken\tF3"
+#~ msgid "Find &In Files"
+#~ msgstr "&Zoeken in bestanden"
+#~ msgid "&Goto"
+#~ msgstr "&Ga naar"
+#~ msgid "&Control Char"
+#~ msgstr "&Controle karakter"
+#~ msgid "&Files"
+#~ msgstr "&Bestanden"
+#~ msgid "&Projects"
+#~ msgstr "&Projecten"
+#~ msgid "&Browse"
+#~ msgstr "&Overzicht"
+#~ msgid "&Output"
+#~ msgstr "&Resultaten"
+#~ msgid "&Ascii Table"
+#~ msgstr "&Ascii tabel"
+#~ msgid "&Select"
+#~ msgstr "&Selecteren"
+#~ msgid "&Open As Text"
+#~ msgstr "&Als tekst openen"
+#~ msgid "&List"
+#~ msgstr "&Lijst"
+#~ msgid "&Detail"
+#~ msgstr "&Details"
+#~ msgid "&Small Icon"
+#~ msgstr "&Pictogrammen"
+#~ msgid "&Auto Sort"
+#~ msgstr "&Automatisch sorteren"
+#~ msgid "Set &Comparator"
+#~ msgstr "Vergelijker &instellen"
+#~ msgid "Set &List Colour"
+#~ msgstr "&Lijst kleuren instellen"
+#~ msgid "Set &List Font"
+#~ msgstr "&Lijst lettertype instellen"
+#~ msgid "&Ascending"
+#~ msgstr "&Oplopend"
+#~ msgid "&Descending"
+#~ msgstr "&Aflopend"
+#~ msgid "&Toggle"
+#~ msgstr "&Afwisselen"
+#~ msgid "Set &List Sort Method"
+#~ msgstr "&Lijst sorteer methode instellen"
+#~ msgid "&Process"
+#~ msgstr "&Proces"
+#~ msgid "&Project"
+#~ msgstr "&Project"
+#~ msgid "Save file"
+#~ msgstr "Bestand opslaan"
+#~ msgid "Print file"
+#~ msgstr "Bestand afdrukken"
+#~ msgid "Find text"
+#~ msgstr "Zoeken"
+#~ msgid "Open project"
+#~ msgstr "Project openen"
+#~ msgid "Save project"
+#~ msgstr "Project opslaan"
+#~ msgid "View project in list mode"
+#~ msgstr "Project in lijst weergave"
+#~ msgid "View project in detail mode"
+#~ msgstr "Project in details weergave"
+#~ msgid "Run"
+#~ msgstr "Uitvoeren"
+
