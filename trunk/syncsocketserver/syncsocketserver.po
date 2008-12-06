@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-06 12:39+0100\n"
-"PO-Revision-Date: 2008-12-06 14:50+0100\n"
+"PO-Revision-Date: 2008-12-06 15:47+0100\n"
 "Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@lvnl.nl>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,6 @@ msgid "File type"
 msgstr "File type"
 
 #: src/server.cpp:82
-#, fuzzy
 msgid "Lines in window"
 msgstr "Regels in scherm"
 
@@ -99,39 +98,39 @@ msgstr "Log data"
 
 #: src/server.cpp:123
 msgid "Logs data read from and written to client"
-msgstr ""
+msgstr "Logs gelezen en geschreven data"
 
 #: src/server.cpp:125
 msgid "Set Buffer Size"
-msgstr ""
+msgstr "Set buffer grootte"
 
 #: src/server.cpp:126
 msgid "Sets buffersize for data retrieved from client"
-msgstr ""
+msgstr "Stel buffer grootte in"
 
 #: src/server.cpp:128
 msgid "Repeat Timer"
-msgstr ""
+msgstr "Herhaal timer"
 
 #: src/server.cpp:129
 msgid "Repeats with timer writing last data to all clients"
-msgstr ""
+msgstr "Herhaal timer"
 
 #: src/server.cpp:130
 msgid "Stop Timer"
-msgstr ""
+msgstr "Stop timer"
 
 #: src/server.cpp:130
 msgid "Stops the timer"
-msgstr ""
+msgstr "Stop de timer"
 
 #: src/server.cpp:132
 msgid "Write"
-msgstr ""
+msgstr "Schrijf"
 
 #: src/server.cpp:133
 msgid "Writes data to all clients"
-msgstr ""
+msgstr "Schrijf data naar alle klanten"
 
 #: src/server.cpp:136
 msgid "&Statusbar"
@@ -143,7 +142,7 @@ msgstr "&Werkbalk"
 
 #: src/server.cpp:139
 msgid "Log"
-msgstr ""
+msgstr "Log"
 
 #: src/server.cpp:140
 #: src/server.cpp:174
@@ -169,7 +168,7 @@ msgstr "&Beeld"
 
 #: src/server.cpp:152
 msgid "&Server"
-msgstr ""
+msgstr "&Server"
 
 #: src/server.cpp:153
 msgid "&Client"
@@ -185,7 +184,7 @@ msgstr "&Help"
 
 #: src/server.cpp:167
 msgid "Write data"
-msgstr ""
+msgstr "Schrijf data"
 
 #: src/server.cpp:186
 #: src/server.cpp:188
@@ -193,11 +192,11 @@ msgstr ""
 #: src/server.cpp:785
 #: src/server.cpp:789
 msgid "Timer"
-msgstr ""
+msgstr "Timer"
 
 #: src/server.cpp:221
 msgid "accepted"
-msgstr ""
+msgstr "geaccepteerd"
 
 #: src/server.cpp:221
 msgid "lost"
@@ -205,7 +204,7 @@ msgstr "verloren"
 
 #: src/server.cpp:228
 msgid "Clients: "
-msgstr ""
+msgstr "Klanten:"
 
 #: src/server.cpp:259
 msgid "This program offers a general socket server."
@@ -214,19 +213,19 @@ msgstr "Dit programma biedt algemene socket server"
 #: src/server.cpp:289
 #: src/server.cpp:297
 msgid "saved: "
-msgstr ""
+msgstr "opgeslagen:"
 
 #: src/server.cpp:309
 #: src/server.cpp:782
 msgid "Input:"
-msgstr ""
+msgstr "Ivoer:"
 
 #: src/server.cpp:311
 #: src/server.cpp:312
 #: src/server.cpp:316
 #: src/server.cpp:496
 msgid "Buffer Size"
-msgstr ""
+msgstr "Buffer grootte"
 
 #: src/server.cpp:334
 msgid "Editor Options"
@@ -235,7 +234,7 @@ msgstr "Editor opties"
 #: src/server.cpp:342
 #: src/server.cpp:669
 msgid "Hostname"
-msgstr ""
+msgstr "Hostnaam"
 
 #: src/server.cpp:343
 #: src/server.cpp:476
@@ -243,15 +242,15 @@ msgstr ""
 #: src/server.cpp:670
 #: src/server.cpp:690
 msgid "Port"
-msgstr ""
+msgstr "Poort"
 
 #: src/server.cpp:351
 msgid "Server Config"
-msgstr ""
+msgstr "Server configuratie"
 
 #: src/server.cpp:365
 msgid "Stop server?"
-msgstr ""
+msgstr "Server stoppen?"
 
 #: src/server.cpp:366
 msgid "Confirm"
@@ -259,13 +258,13 @@ msgstr "Bevestigen"
 
 #: src/server.cpp:387
 msgid "server stopped"
-msgstr ""
+msgstr "server gestopt"
 
 #: src/server.cpp:393
 #: src/server.cpp:565
 #, c-format
 msgid "%d clients"
-msgstr ""
+msgstr "%d klanten"
 
 #: src/server.cpp:411
 #: src/server.cpp:803
@@ -274,105 +273,105 @@ msgstr "timer gestopt"
 
 #: src/server.cpp:444
 msgid "Socket Server Events"
-msgstr ""
+msgstr "Socket server gebeurtenissen"
 
 #: src/server.cpp:455
 msgid "error: couldn't accept a new connection"
-msgstr ""
+msgstr "fout: kon geeen nieuwe verbinding accepteren"
 
 #: src/server.cpp:459
 msgid "Socket Server Accepted Connections"
-msgstr ""
+msgstr "Socket Server geaccepteerde gebeurtenissen"
 
 #: src/server.cpp:474
 #, c-format
 msgid "%s connected at %d"
-msgstr "%s verbonden met %s"
+msgstr "%s verbonden met %d"
 
 #: src/server.cpp:484
 msgid "Socket Client Events"
-msgstr ""
+msgstr "Socket klant gebeurtenissen"
 
 #: src/server.cpp:490
 msgid "Socket Client Input Events"
-msgstr ""
+msgstr "Socket klant invoer gebeurtenissen"
 
 #: src/server.cpp:507
 #: src/server.cpp:529
 #: src/server.cpp:824
 msgid "Bytes Received"
-msgstr ""
+msgstr "Bytes verstuurd"
 
 #: src/server.cpp:515
 #: src/server.cpp:530
 #: src/server.cpp:825
 msgid "Bytes Sent"
-msgstr ""
+msgstr "Bytes ontvangen"
 
 #: src/server.cpp:522
 msgid "read: '"
-msgstr ""
+msgstr "gelezen: '"
 
 #: src/server.cpp:539
 msgid "Socket Client Lost Events"
-msgstr ""
+msgstr "Socket klant gebeurtenissen"
 
 #: src/server.cpp:545
 #: src/server.cpp:690
 #, c-format
 msgid "server listening at %d"
-msgstr ""
+msgstr "server luistert op: %d"
 
 #: src/server.cpp:555
 msgid "Socket Client Unhandled Events"
-msgstr ""
+msgstr "Socket klant niet afgehandelde gebeurtenissen"
 
 #: src/server.cpp:560
 msgid "Socket Unhandled Events"
-msgstr ""
+msgstr "Socket niet afgehandelde gebeurtenissen"
 
 #: src/server.cpp:654
 msgid "opened: "
-msgstr ""
+msgstr "geopened"
 
 #: src/server.cpp:679
 msgid "server not ready"
-msgstr ""
+msgstr "server niet klaar"
 
 #: src/server.cpp:681
 msgid "Could not listen at the specified socket"
-msgstr ""
+msgstr "Kan niet luisteren op socket"
 
 #: src/server.cpp:711
 #, c-format
 msgid "Socket error: %d"
-msgstr ""
+msgstr "Socket fout: %d"
 
 #: src/server.cpp:744
 msgid "socket: "
-msgstr ""
+msgstr "socket:"
 
 #: src/server.cpp:784
 msgid "Give Seconds"
-msgstr ""
+msgstr "Geef seconden"
 
 #: src/server.cpp:795
 #, c-format
 msgid "timer set to: %d seconds (%s)"
-msgstr ""
+msgstr "Timer gezet op: %d seconden (%s)"
 
 #: src/server.cpp:818
 msgid "not all bytes sent to socket"
-msgstr ""
+msgstr "niet alle bytes verstuurd"
 
 #: src/server.cpp:821
 msgid "Messages Sent"
-msgstr ""
+msgstr "Berichten verstuurd"
 
 #: src/server.cpp:831
 #, c-format
 msgid "write: %d bytes to %s"
-msgstr ""
+msgstr "geschreven: %d bytes naar %s"
 
 #: src/server.cpp:873
 msgid "Open"
