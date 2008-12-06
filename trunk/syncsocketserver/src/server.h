@@ -14,7 +14,9 @@
 #include <wx/taskbar.h>
 #include <wx/filetool/filetool.h>
 
+#ifdef USE_TASKBARICON
 class MyTaskBarIcon;
+#endif
 
 class MyApp : public exApp
 {
@@ -65,11 +67,14 @@ private:
   wxSocketServer* m_SocketServer;
   wxTimer m_Timer;
 
+#ifdef USE_TASKBARICON
   MyTaskBarIcon* m_TaskBarIcon;
+#endif
 
   DECLARE_EVENT_TABLE()
 };
 
+#ifdef USE_TASKBARICON
 class MyTaskBarIcon: public wxTaskBarIcon
 {
 public:
@@ -84,6 +89,7 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
+#endif
 
 enum
 {
