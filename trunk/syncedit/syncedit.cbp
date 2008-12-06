@@ -12,8 +12,6 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O1" />
-					<Add option="-W" />
 					<Add option="-DNDEBUG" />
 					<Add option="-DWIN32" />
 					<Add option="-D_WINDOWS" />
@@ -21,160 +19,156 @@
 					<Add option="-D__WXMSW__" />
 					<Add option="-D__WIN95__" />
 					<Add option="-D__WIN32__" />
+					<Add option="-DUSE_NOTEBOOK_IMAGE" />
 					<Add option="-DWINVER=0x0400" />
 					<Add option="-DSTRICT" />
-					<Add directory="C:\wxWidgets-2.8.7\include" />
-					<Add directory="C:\wxWidgets-2.8.7\contrib\include" />
+					<Add option="-W" />
+					<Add option="-O1" />
+					<Add directory="..\..\include" />
+					<Add directory="..\..\contrib\include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="..\..\include" />
 					<Add directory="..\..\contrib\include" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="comctl32" />
-					<Add library="oleacc" />
-					<Add library="oleaut32" />
-					<Add library="olecli32" />
-					<Add library="oledlg" />
-					<Add library="olepro32" />
-					<Add library="olesvr32" />
-					<Add library="imm32" />
-					<Add library="mingw32" />
-					<Add library="gdi32" />
-					<Add library="ole32" />
 					<Add library="odbc32" />
 					<Add library="odbccp32" />
+					<Add library="comctl32" />
 					<Add library="rpcrt4" />
 					<Add library="winmm" />
 					<Add library="wsock32" />
-					<Add library="wx_wxexpat" />
-					<Add library="wx_net" />
-					<Add library="wx_odbc" />
-					<Add library="wx_wxpng" />
-					<Add library="wx_wxjpeg" />
-					<Add library="wx_wxregex" />
-					<Add library="wx_wxtiff" />
-					<Add library="wx_media" />
-					<Add library="wx_adv" />
-					<Add library="wx_qa" />
-					<Add library="wx_aui" />
-					<Add library="stc" />
-					<Add library="uuid" />
-					<Add library="ctl3d32" />
-					<Add library="d3d8" />
-					<Add library="d3d9" />
-					<Add library="d3dim" />
-					<Add library="d3drm" />
-					<Add library="d3dx8d" />
-					<Add library="d3dx9d" />
-					<Add library="d3dxof" />
-					<Add library="ddraw" />
-					<Add library="dhcpcsvc" />
-					<Add library="dinput8" />
-					<Add library="dinput" />
-					<Add library="dlcapi" />
-					<Add library="dmoguids" />
-					<Add library="dnsapi" />
-					<Add library="dplayx" />
-					<Add library="dpnaddr" />
-					<Add library="dpnet" />
-					<Add library="dpnlobby" />
-					<Add library="dpvoice" />
-					<Add library="dsetup" />
-					<Add library="dsound" />
-					<Add library="dxapi" />
-					<Add library="dxerr8" />
-					<Add library="dxerr9" />
-					<Add library="dxguid" />
-					<Add library="faultrep" />
-					<Add library="glaux" />
-					<Add library="glu32" />
-					<Add library="glut32" />
-					<Add library="glut" />
-					<Add library="gmon" />
-					<Add library="hal" />
-					<Add library="hid" />
-					<Add library="hidparse" />
-					<Add library="iberty" />
-					<Add library="icmui" />
-					<Add library="igmpagnt" />
-					<Add library="imagehlp" />
-					<Add library="iphlpapi" />
-					<Add library="kernel32" />
-					<Add library="ksproxy" />
-					<Add library="ksuser" />
-					<Add library="largeint" />
-					<Add library="lz32" />
-					<Add library="m" />
-					<Add library="mapi32" />
-					<Add library="mcd" />
-					<Add library="mfcuia32" />
-					<Add library="mgmtapi" />
-					<Add library="mingwex" />
-					<Add library="mingwthrd" />
-					<Add library="moldname" />
-					<Add library="moldnamed" />
-					<Add library="mpr" />
-					<Add library="mprapi" />
-					<Add library="mqrt" />
-					<Add library="msacm32" />
-					<Add library="mscms" />
-					<Add library="msdmo" />
-					<Add library="msimg32" />
-					<Add library="msvcp60" />
-					<Add library="msvcr70" />
-					<Add library="msvcr70d" />
-					<Add library="msvcr71" />
-					<Add library="msvcr71d" />
-					<Add library="msvcr80" />
-					<Add library="msvcr80d" />
-					<Add library="msvcr90" />
-					<Add library="msvcr90d" />
-					<Add library="msvcrt" />
-					<Add library="msvcrtd" />
-					<Add library="msvfw32" />
-					<Add library="mswsock" />
-					<Add library="nddeapi" />
-					<Add library="ndis" />
-					<Add library="netapi32" />
-					<Add library="newdev" />
-					<Add library="ntdll" />
-					<Add library="ntoskrnl" />
-					<Add library="opcodes" />
-					<Add library="opengl32" />
-					<Add library="penwin32" />
-					<Add library="pkpd32" />
-					<Add library="powrprof" />
-					<Add library="psapi" />
-					<Add library="quartz" />
-					<Add library="rapi" />
-					<Add library="rasapi32" />
-					<Add library="rasdlg" />
-					<Add library="rpcdce4" />
-					<Add library="rpcns4" />
-					<Add library="rtm" />
-					<Add library="rtutils" />
-					<Add library="scrnsave" />
-					<Add library="scrnsavw" />
-					<Add library="scsiport" />
-					<Add library="secur32" />
-					<Add library="setupapi" />
-					<Add library="shell32" />
-					<Add library="shfolder" />
-					<Add library="shlwapi" />
-					<Add library="snmpapi" />
-					<Add library="wx_core" />
-					<Add library="wx_base" />
-					<Add library="wx_html" />
-					<Add library="wx_wxzlib" />
-					<Add library="wxFileTool" />
-					<Add library="wxExtension" />
+					<Add library="wxbase29u" />
+					<Add library="wxbase29u_net" />
+					<Add library="wxbase29u_xml" />
+					<Add library="wxexpat" />
+					<Add library="wxpng" />
+					<Add library="wxjpeg" />
+					<Add library="wxregexu" />
+					<Add library="wxtiff" />
+					<Add library="wxmsw29u_adv" />
+					<Add library="wxmsw29u_core" />
+					<Add library="wxmsw29u_stc" />
+					<Add library="wxmsw29u_html" />
+					<Add library="wxmsw29u_aui" />
+					<Add library="wxfiletool" />
+					<Add library="wxextension" />
+				</Linker>
+			</Target>
+			<Target title="Debug Win32">
+				<Option output=".\buildmswd\syncedit" prefix_auto="1" extension_auto="1" />
+				<Option object_output="buildmswd" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D__WINDOWS__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DDEBUG=1" />
+					<Add option="-D__WXDEBUG__" />
+					<Add option="-D__WIN95__" />
+					<Add option="-D__WIN32__" />
+					<Add option="-DWINVER=0x0400" />
+					<Add option="-DSTRICT" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+					<Add directory="..\..\include" />
+					<Add directory="..\..\contrib\include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\..\include" />
+					<Add directory="..\..\contrib\include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="odbc32" />
+					<Add library="odbccp32" />
+					<Add library="comctl32" />
+					<Add library="rpcrt4" />
+					<Add library="wsock32" />
+					<Add library="winmm" />
+					<Add library="wxpngd" />
+					<Add library="wxzlib" />
+					<Add library="wxjpegd" />
+					<Add library="wxexpatd" />
+					<Add library="wxregexud" />
+					<Add library="wxtiffd" />
+					<Add library="wxbase29ud" />
+					<Add library="wxbase29ud_net" />
+					<Add library="wxbase29ud_xml" />
+					<Add library="wxmsw29ud_adv" />
+					<Add library="wxmsw29ud_core" />
+					<Add library="wxmsw29ud_html" />
+					<Add library="wxmsw29ud_stc" />
+					<Add library="wxmsw29ud_aui" />
+					<Add library="wxfiletoold" />
+					<Add library="wxextensiond" />
+					<Add directory="..\..\lib" />
+					<Add directory="..\..\contrib\lib" />
+				</Linker>
+			</Target>
+			<Target title="Portable Win32">
+				<Option output=".\buildmswp\syncped" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".\buildmswp" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DNDEBUG" />
+					<Add option="-DWIN32" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D__WINDOWS__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__WIN95__" />
+					<Add option="-D__WIN32__" />
+					<Add option="-DUSE_NOTEBOOK_IMAGE" />
+					<Add option="-DWINVER=0x0400" />
+					<Add option="-DSTRICT" />
+					<Add option="-W" />
+					<Add option="-O1" />
+					<Add option='-D&quot;EX_PORTABLE&quot;' />
+					<Add directory="..\..\include" />
+					<Add directory="..\..\contrib\include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\..\include" />
+					<Add directory="..\..\contrib\include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="odbc32" />
+					<Add library="odbccp32" />
+					<Add library="comctl32" />
+					<Add library="rpcrt4" />
+					<Add library="winmm" />
+					<Add library="wsock32" />
+					<Add library="wxbase29u" />
+					<Add library="wxbase29u_net" />
+					<Add library="wxpng" />
+					<Add library="wxjpeg" />
+					<Add library="wxregexu" />
+					<Add library="wxtiff" />
+					<Add library="wxmsw29u_adv" />
+					<Add library="wxmsw29u_core" />
+					<Add library="wxmsw29u_stc" />
+					<Add library="wxmsw29u_html" />
+					<Add library="wxmsw29u_aui" />
+					<Add library="wxfiletoolp" />
+					<Add library="wxextensionp" />
 				</Linker>
 			</Target>
 		</Build>
-		<Unit filename="appl.cpp" />
-		<Unit filename="frame.cpp" />
-		<Unit filename="support.cpp" />
+		<Unit filename="src\appl.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="src\appl.cpp" />
+		<Unit filename="src\frame.cpp" />
+		<Unit filename="src\support.cpp" />
+		<Unit filename="src\appl.h" />
+		<Unit filename="src\defs.h" />
+		<Unit filename="src\frame.h" />
+		<Unit filename="src\support.h" />
+		<Unit filename="src\version.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

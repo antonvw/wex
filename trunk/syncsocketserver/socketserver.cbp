@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="server" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release Win32">
+				<Option output="buildmsw\server" prefix_auto="1" extension_auto="1" />
+				<Option object_output="buildmsw" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-DNOPCH" />
+					<Add option="-Wall" />
+					<Add option="-O1" />
+					<Add option="-frtti" />
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\vc_lib\msw" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\vc_lib\msw" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="wxmsw29u_core" />
+					<Add library="wxbase29u_net" />
+					<Add library="wxbase29u_xml" />
+					<Add library="wxbase29u" />
+					<Add library="wxmsw29u_adv" />
+					<Add library="wxmsw29u_stc" />
+					<Add library="wxmsw29u_html" />
+					<Add library="wxmsw29u_aui" />
+					<Add library="wxtiff" />
+					<Add library="wxjpeg" />
+					<Add library="wxpng" />
+					<Add library="wxexpat" />
+					<Add library="wxzlib" />
+					<Add library="wxregexu" />
+					<Add library="winmm" />
+					<Add library="comctl32" />
+					<Add library="rpcrt4" />
+					<Add library="wsock32" />
+					<Add library="oleacc" />
+					<Add library="wxExtension" />
+					<Add library="wxFileTool" />
+					<Add directory=".\..\..\lib\vc_lib" />
+				</Linker>
+			</Target>
+			<Target title="Debug Win32">
+				<Option output="buildmswd\server" prefix_auto="1" extension_auto="1" />
+				<Option object_output="buildmswd" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__WXDEBUG__" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-DNOPCH" />
+					<Add option="-Wall" />
+					<Add option="-O0" />
+					<Add option="-frtti" />
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\vc_lib\mswd" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\vc_lib\mswd" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="wxtiffd" />
+					<Add library="wxjpegd" />
+					<Add library="wxpngd" />
+					<Add library="wxzlibd" />
+					<Add library="wxregexd" />
+					<Add library="wxexpatd" />
+					<Add library="winmm" />
+					<Add library="comctl32" />
+					<Add library="rpcrt4" />
+					<Add library="wsock32" />
+					<Add library="oleacc" />
+					<Add library="odbc32" />
+					<Add library="wxbase28d" />
+					<Add library="wxbase28d_net" />
+					<Add library="wxbase28d_odbc" />
+					<Add library="wxmsw28d_adv" />
+					<Add library="wxmsw28d_core" />
+					<Add library="wxmsw28d_dbgrid" />
+					<Add library="wxmsw28d_html" />
+					<Add library="wxmsw28d_stc" />
+					<Add library="wxmsw28d_aui" />
+					<Add library="wxFileToold" />
+					<Add library="wxExtensiond" />
+					<Add directory=".\..\..\lib\vc_lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="src\server.cpp" />
+		<Unit filename="src\server.h" />
+		<Unit filename="src\server.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

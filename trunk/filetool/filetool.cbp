@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="filetool" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="lib\libwxfiletoold" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="buildmswd" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DUSE_OTL" />
+					<Add option="-DUSE_EMBEDDED_SQL" />
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-O0" />
+				</Compiler>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="lib\libwxfiletool" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="buildmsw" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D__WINDOWS__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__HACK_MY_MSDEV40__" />
+					<Add option="-D__WIN95__" />
+					<Add option="-D__WIN32__" />
+					<Add option="-DWINVER=0x0400" />
+					<Add option="-DSTRICT" />
+					<Add option="-DSCI_LEXER" />
+					<Add option="-DLINK_LEXERS" />
+					<Add option="-D__WX__" />
+					<Add option="-DUSE_OTL" />
+					<Add option="-DUSE_EMBEDDED_SQL" />
+					<Add option="-W" />
+					<Add option="-O2" />
+				</Compiler>
+			</Target>
+			<Target title="Portable Win32">
+				<Option output="lib\libwxfiletoolp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="Portable Win32" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D__WINDOWS__" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__HACK_MY_MSDEV40__" />
+					<Add option="-D__WIN95__" />
+					<Add option="-D__WIN32__" />
+					<Add option="-DWINVER=0x0400" />
+					<Add option="-DSTRICT" />
+					<Add option="-DSCI_LEXER" />
+					<Add option="-DLINK_LEXERS" />
+					<Add option="-D__WX__" />
+					<Add option="-W" />
+					<Add option="-O2" />
+					<Add option='-D&quot;EX_PORTABLE&quot;' />
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="src\filetool.cpp" />
+		<Unit filename="src\frame.cpp" />
+		<Unit filename="src\listitem.cpp" />
+		<Unit filename="src\listview.cpp" />
+		<Unit filename="src\process.cpp" />
+		<Unit filename="src\stc.cpp" />
+		<Unit filename="src\textfile.cpp" />
+		<Unit filename="include\wx\filetool\defs.h" />
+		<Unit filename="include\wx\filetool\filetool.h" />
+		<Unit filename="include\wx\filetool\frame.h" />
+		<Unit filename="include\wx\filetool\listitem.h" />
+		<Unit filename="include\wx\filetool\listview.h" />
+		<Unit filename="include\wx\filetool\process.h" />
+		<Unit filename="include\wx\filetool\stc.h" />
+		<Unit filename="include\wx\filetool\textfile.h" />
+		<Unit filename="include\wx\filetool\version.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
