@@ -4,7 +4,7 @@
 		<Project filename="extension\extension.cbp" />
 		<Project filename="filetool\filetool.cbp" />
 		<Project filename="syncedit\syncedit.cbp" />
-		<Project filename="syncodbcquery\appl.cbp" />
-		<Project filename="syncsocketserver\socketserver.cbp" active="1" />
+		<Project filename="syncodbcquery\syncodbcquery.cbp" />
+		<Project filename="syncsocketserver\syncsocketserver.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
