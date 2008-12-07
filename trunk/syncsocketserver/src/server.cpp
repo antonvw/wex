@@ -15,9 +15,11 @@
 
 #ifndef __WXMSW__
 #include "appl.xpm"
+#ifdef USE_TASKBARICON
 #include "connect.xpm"
 #include "notready.xpm"
 #include "ready.xpm"
+#endif
 #endif
 
 IMPLEMENT_APP(MyApp)
