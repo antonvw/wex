@@ -5,7 +5,7 @@
 
 LIBS=`wx-config --libs all` -lwxextension.v2.0.gtk -lwxfiletool.v2.0.gtk -lodbc
 CFLAGS=`wx-config --cflags`
-APP_VERSION=syncodbcquery
+APP_VERSION=syncsocketserver
 PROGRAM=$(APP_VERSION).gtk
 
 CC=$(shell wx-config --cxx)
