@@ -92,9 +92,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./ \
-                         E:\lib\wxExtension\v2.0 \
-                         "C:\Documents and Settings\anton.COM\My Documents\wxFileTool\v2.0"
+INPUT                  = ./include \
+                         ../extension/include
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -273,7 +272,8 @@ CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
-DOT_PATH               = "C:/Program Files/Graphviz2.16/bin  "
+#DOT_PATH               = "C:/Program Files/Graphviz2.16/bin  "
+DOT_PATH               = /usr/local/bin
 DOTFILE_DIRS           = 
 DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 1000
