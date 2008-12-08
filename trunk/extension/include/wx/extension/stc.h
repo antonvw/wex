@@ -13,8 +13,7 @@
 #define _EXSTC_H
 
 #include <wx/stc/stc.h>
-#include <wx/extension/base.h>
-#include <wx/extension/file.h>
+#include <wx/extension/extension.h> // for exApp (and exFile, exInterface)
 
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
