@@ -155,6 +155,9 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos();
 
+  /// Gets the menu flags.
+  long GetMenuFlags() const {return m_MenuFlags;};
+
   /// Gets search text, as selected or from config.
   const wxString GetSearchText(); // cannot be const, it uses GetSelectedText
 
@@ -236,9 +239,6 @@ public:
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(exMenu& menu);
-
-  /// Gets the menu flags.
-  long GetMenuFlags() const {return m_MenuFlags;};
 
   void OnCommand(wxCommandEvent& event);
   void OnFindDialog(wxFindDialogEvent& event);
