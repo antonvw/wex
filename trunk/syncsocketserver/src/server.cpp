@@ -239,7 +239,9 @@ void MyFrame::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
+#ifdef USE_TASKBARICON
     Hide();
+#endif
     return;
   }
 
@@ -681,7 +683,7 @@ bool MyFrame::SetupSocketServer()
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
-    text = _("Could not listen at %d", exApp::GetConfig(_("Port"), 3000));
+    text = wxString::Format(_("Could not listen at %d"), exApp::GetConfig(_("Port"), 3000));
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
