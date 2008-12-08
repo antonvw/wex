@@ -1123,26 +1123,6 @@ void exSTC::FoldAll()
   GotoLine(current_line);
 }
 
-long exSTC::GetConfig(const wxString& key, long default_value)
-{
-  return exApp::GetConfig(GetConfigKeyBase() + key, default_value);
-}
-
-wxString exSTC::GetConfig(const wxString& key, const wxString& default_value)
-{
-  return exApp::GetConfig(GetConfigKeyBase() + key, default_value);
-}
-
-bool exSTC::GetConfigBool(const wxString& key, bool default_value)
-{
-  return exApp::GetConfigBool(GetConfigKeyBase() + key, default_value);
-}
-
-wxString exSTC::GetConfigKeyBase()
-{
-  return "Edit/";
-}
-
 const wxString exSTC::GetEOL()
 {
   switch (GetEOLMode())
@@ -2528,19 +2508,7 @@ void exSTC::SetProperties()
   while (properties.HasMoreTokens())
   {
     wxStringTokenizer property(properties.GetNextToken(), "=");
-
-    if (property.CountTokens() != 2)
-    {
-      wxLogMessage("Property: %s for: %s missing scintilla key or value",
-        m_FileName.GetLexer().GetProperties().c_str(),
-        m_FileName.GetLexer().GetScintillaLexer().c_str());
-      return;
-    }
-
-    const wxString key = property.GetNextToken();
-    const wxString value = property.GetNextToken();
-
-    SetProperty(key, value);
+    SetProperty(property.GetNextToken(), property.GetNextToken());
   }
 }
 
@@ -2551,13 +2519,6 @@ void exSTC::SetStyle(const wxString& style)
   // 1,2,3 are the scintilla_styles, and the rest is spec
 
   wxStringTokenizer stylespec(style, "=");
-
-  if (stylespec.CountTokens() != 2)
-  {
-    wxLogMessage("Colouring: %s for: %s missing scintilla style or colour spec",
-      style.c_str(), m_FileName.GetLexer().GetScintillaLexer().c_str());
-    return;
-  }
 
   wxStringTokenizer scintilla_styles(stylespec.GetNextToken(), ",");
   const wxString spec = stylespec.GetNextToken();

@@ -262,10 +262,6 @@ private:
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   int FindReplaceDataFlags() const;
   void FoldAll();
-  static long GetConfig(const wxString& key, long default_value);
-  static wxString GetConfig(const wxString& key, const wxString& default_value = wxEmptyString);
-  static bool GetConfigBool(const wxString& key, bool default_value = false);
-  static wxString GetConfigKeyBase();
   void GuessType();
   void HexDecCalltip(int pos);
   void Initialize();
@@ -280,6 +276,16 @@ private:
   void SetMarkers();
   void SetProperties();
   void SetStyle(const wxString& style);
+  
+  // static access
+  static long GetConfig(const wxString& key, long default_value) {
+    return exApp::GetConfig(GetConfigKeyBase() + key, default_value);};
+  static wxString GetConfig(const wxString& key, const wxString& default_value = wxEmptyString) {
+    return exApp::GetConfig(GetConfigKeyBase() + key, default_value);};
+  static bool GetConfigBool(const wxString& key, bool default_value = false) {
+    return exApp::GetConfigBool(GetConfigKeyBase() + key, default_value);};
+  static wxString GetConfigKeyBase() {
+    return "Edit/";};
 
   // All objects share the following:
   static bool m_AllowSync;
