@@ -182,7 +182,9 @@ MyFrame::MyFrame(const wxString& title)
 
   if (SetupSocketServer())
   {
+#ifdef USE_TASKBARICON
     Hide();
+#endif
   }
 
   if (exApp::GetConfig(_("Timer"), 0) > 0)
@@ -674,29 +676,34 @@ bool MyFrame::SetupSocketServer()
   // Create the socket
   m_SocketServer = new wxSocketServer(addr);
 
+  wxString text;
+
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
+    text = _("Could not listen at %d", exApp::GetConfig(_("Port"), 3000));
 #ifdef USE_TASKBARICON
-    m_TaskBarIcon->SetIcon(wxICON(notready), _("server not ready"));
+    m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
-    StatusText(_("Could not listen at the specified socket"));
     m_SocketServer->Destroy();
     delete m_SocketServer;
     m_SocketServer = NULL;
+    StatusText(text);
+    m_LogWindow->AppendTextWithTimestamp(text);
     return false;
   }
   else
   {
-    const wxString text =
+    text =
       wxString::Format(_("server listening at %d"), exApp::GetConfig(_("Port"), 3000));
 
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
 #endif    
-    StatusText(text);
-    m_LogWindow->AppendTextWithTimestamp(text);
   }
+
+  StatusText(text);
+  m_LogWindow->AppendTextWithTimestamp(text);
 
   // Setup the event handler and subscribe to connection events
   m_SocketServer->SetEventHandler(*this, ID_SERVER);

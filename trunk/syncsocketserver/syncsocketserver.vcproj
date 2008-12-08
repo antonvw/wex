@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="server"
+	Name="syncsocketserver"
 	ProjectGUID="{FCA3C7BC-A0DE-40D0-A38B-8E583B94711D}"
 	SccProjectName=""
 	SccLocalPath="">
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="wxmsw29u_core.lib wxbase29u_net.lib wxbase29u_xml.lib wxbase29u.lib wxmsw29u_adv.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxtiff.lib wxjpeg.lib wxpng.lib wxexpat.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib wxExtension.lib wxFileTool.lib"
-				OutputFile="buildmsw\server.exe"
+				OutputFile="buildmsw\syncsocketserver.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories=".\..\..\lib\vc_lib"
