@@ -976,8 +976,21 @@ bool exTextFile::SetupTool(const exTool& tool)
   switch (tool.GetId())
   {
   case ID_TOOL_COMMIT:
-    // TODO: This should be another dialog.
-    return exSvnDialog(SVN_COMMIT);
+    {
+    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(), 
+      wxString(_("Input")) + wxT(":"), 
+      "Commit", 
+      exApp::GetConfig(_("Revision comment")));
+
+    if (dlg.ShowModal() == wxID_CANCEL) 
+    {
+      return false;
+    }
+
+    exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
+
+    return true;
+    }
   break;
   default: return true;
   }
