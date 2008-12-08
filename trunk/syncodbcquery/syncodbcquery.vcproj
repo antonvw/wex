@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="syncquery"
+	Name="syncodbcquery"
 	ProjectGUID="{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}"
 	SccProjectName=""
 	SccLocalPath="">
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxmsw29u_stc.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib wxExtension.lib wxFileTool.lib"
-				OutputFile="./buildmsw\syncquery.exe"
+				OutputFile="./buildmsw\syncodbcquery.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories=".\..\..\lib\buildlib"
