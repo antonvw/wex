@@ -237,14 +237,6 @@ void MyFrame::LogConnection(
 
 void MyFrame::OnClose(wxCloseEvent& event)
 {
-  if (event.CanVeto())
-  {
-#ifdef USE_TASKBARICON
-    Hide();
-#endif
-    return;
-  }
-
   if (!m_DataWindow->Continue())
   {
     return;
