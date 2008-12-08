@@ -3,7 +3,7 @@
 # RCS-ID:        $Id$
 # Purpose:       Makefile for wxextension sample gtk
 
-LIBS=-L../buildgtk -lwxextension.v2.0.gtk `wx-config --libs all` -lodbc
+LIBS=-L../libs -lwxextension.v2.0.gtk `wx-config --libs all` -lodbc
 CFLAGS=`wx-config --cflags`
 APP_VERSION=sample
 PROGRAM=$(APP_VERSION).gtk
