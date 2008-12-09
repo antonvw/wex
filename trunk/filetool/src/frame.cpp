@@ -289,14 +289,15 @@ void ftFrame::OnIdle(wxIdleEvent& event)
   }
 }
 
-bool ftFrame::OpenFile(const wxString& file,
+bool ftFrame::OpenFile(
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
 {
-  if (exFrame::OpenFile(file, line_number, match, flags))
+  if (exFrame::OpenFile(filename, line_number, match, flags))
   {
-    SetRecentFile(file);
+    SetRecentFile(file.GetFullPath());
     return true;
   }
 

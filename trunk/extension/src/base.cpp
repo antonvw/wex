@@ -231,7 +231,8 @@ void exFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool exFrame::OpenFile(const wxString& file,
+bool exFrame::OpenFile(
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -242,7 +243,7 @@ bool exFrame::OpenFile(const wxString& file,
   {
     // Remove link flags;
     const long new_flags = 0;
-    return stc->Open(file, line_number, match, new_flags);
+    return stc->Open(filename, line_number, match, new_flags);
   }
 
   return false;

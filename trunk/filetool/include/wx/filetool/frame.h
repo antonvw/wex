@@ -74,7 +74,8 @@ public:
     return m_ProjectHistory.GetHistoryFile(0);}
 
   /// Interface from exFrame.
-  virtual bool OpenFile(const wxString& file, 
+  virtual bool OpenFile(
+    const exFileName& filename,
     int line_number = 0, 
     const wxString& match = wxEmptyString, 
     long flags = 0);

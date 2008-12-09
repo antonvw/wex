@@ -63,7 +63,7 @@ public:
 
   /// Calls base and sets recent file if base call succeeded.
   virtual bool Open(
-    const wxString& filename,
+    const exFileName& filename,
     int line_number = 0, // goes to the line if > 0, if -1 goes to end of file
     const wxString& match = wxEmptyString,     // and selects the text on that line
     long flags = 0);

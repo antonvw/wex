@@ -175,7 +175,7 @@ void ftSTC::OnCommand(wxCommandEvent& command)
 }
 
 bool ftSTC::Open(
-  const wxString& filename,
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -192,7 +192,7 @@ bool ftSTC::Open(
 
     if (retValue)
     {
-      m_Frame->SetRecentFile(filename);
+      m_Frame->SetRecentFile(filename.GetFullPath());
     }
   }
 

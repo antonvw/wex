@@ -27,6 +27,7 @@
 #include <wx/printdlg.h>
 #include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
+#include <wx/extension/file.h> // for exFileName
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -203,7 +204,8 @@ public:
   virtual exSTC* GetSTC() {return GetFocusedSTC();};
 
   /// Default opens the file using the GetFocusedSTC.
-  virtual bool OpenFile(const wxString& file,
+  virtual bool OpenFile(
+    const exFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
