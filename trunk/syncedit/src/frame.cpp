@@ -899,26 +899,12 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 }
 
 bool MDIFrame::OpenFile(
-  const wxString& file,
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
 {
   wxLogTrace("SY_CALL", "+OpenFile");
-
-  exFileName filename(file);
-
-  if (!filename.MakeAbsolute())
-  {
-    wxLogError("Could not make absolute: " + file);
-    return false;
-  }
-
-  if (!filename.GetStat().IsOk())
-  {
-    wxLogError("File does not exist: " + file);
-    return false;
-  }
 
   exNotebook* notebook = (flags & ftSTC::STC_OPEN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
@@ -930,7 +916,7 @@ bool MDIFrame::OpenFile(
     if (page == NULL)
     {
       ftListView* project = new ftListView(m_NotebookWithProjects,
-        file,
+        filename.GetFullPath(),
         project_wildcard,
         FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
 
@@ -989,7 +975,7 @@ bool MDIFrame::OpenFile(
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
-        m_DirCtrl->SetPath(file);
+        m_DirCtrl->SetPath(filename.GetFullPath());
       }
     }
     else if (line_number > 0)

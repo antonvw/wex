@@ -37,7 +37,8 @@ private:
   virtual void ConfigDialogApplied(wxWindowID dialogid);
   virtual exSTC* GetSTC() {return GetCurrentSTC();}
   virtual exListView* GetListView();
-  virtual bool OpenFile(const wxString& file, 
+  virtual bool OpenFile(
+    const exFileName& filename,
     int line_number = 0, 
     const wxString& match = wxEmptyString, 
     long flags = 0);
