@@ -1006,7 +1006,7 @@ void exTextFile::WriteComment(
 
 bool exTextFile::WriteFileHeader()
 {
-  const wxString actual_author = (m_Author.empty() || m_Author.Contains("$") ?
+  const wxString actual_author = (m_Author.empty() ?
     exApp::GetConfig("Header/Author"):
     m_Author);
   const wxString address = exApp::GetConfig("Header/Address");
@@ -1023,9 +1023,15 @@ bool exTextFile::WriteFileHeader()
 
   WriteComment(wxEmptyString, true);
   WriteComment("File:        " + m_FileNameStatistics.GetFullName(), true);
+  WriteTextWithPrefix(m_Description, "Purpose:     ");
   WriteComment("Author:      " + actual_author, true);
-  WriteComment("Date:        " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
-  WriteTextWithPrefix(m_Description, "Description:");
+  WriteComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
+
+  if (!exApp::GetConfigBool("RCS/Local"))
+  {
+    WriteComment("RCS-ID:      $Id$", true);
+  }
+
   WriteComment(wxEmptyString, true, true);
   WriteComment(
     "Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + company
