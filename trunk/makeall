@@ -3,14 +3,14 @@
 # Purpose: script to make all
 # RCS-ID:  $Id$
 
-cd extension/buildgtk
+cd ~/wxprojects/trunk/extension/buildgtk
 make
-cd filetool/buildgtk
+cd ~/wxprojects/trunk/filetool/buildgtk
 make
-cd syncedit/buildgtk
+cd ~/wxprojects/trunk/syncedit/buildgtk
 make
-cd syncodbcquery
+cd ~/wxprojects/trunk/syncodbcquery
 make
-cd syncsocketserver
+cd ~/wxprojects/trunk/syncsocketserver
 make
 
