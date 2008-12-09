@@ -1,0 +1,16 @@
+# bash
+# File:    makeall
+# Purpose: script to make all
+# RCS-ID:  $Id$
+
+cd extension/buildgtk
+make
+cd filetool/buildgtk
+make
+cd syncedit/buildgtk
+make
+cd syncodbcquery
+make
+cd syncsocketserver
+make
+
