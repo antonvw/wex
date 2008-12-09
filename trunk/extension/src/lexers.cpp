@@ -174,9 +174,9 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
     }
     else if (child->GetName() == "comments")
     {
-      lexer.m_CommentBegin = child->GetAttribute("begin", "");
+      lexer.m_CommentBegin = child->GetAttribute("begin1", "");
+      lexer.m_CommentEnd = child->GetAttribute("end1", "");
       lexer.m_CommentBegin2 = child->GetAttribute("begin2", "");
-      lexer.m_CommentEnd = child->GetAttribute("end", "");
       lexer.m_CommentEnd2 = child->GetAttribute("end2", "\n");
     }
     else if (child->GetName() == "comment")
