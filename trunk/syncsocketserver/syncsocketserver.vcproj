@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw29u_core.lib wxbase29u_net.lib wxbase29u_xml.lib wxbase29u.lib wxmsw29u_adv.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxtiff.lib wxjpeg.lib wxpng.lib wxexpat.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib wxExtension.lib wxFileTool.lib"
+				AdditionalDependencies="wxmsw29u_core.lib wxbase29u_net.lib wxbase29u_xml.lib wxbase29u.lib wxmsw29u_adv.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxtiff.lib wxjpeg.lib wxpng.lib wxexpat.lib wxzlib.lib wxregexu.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib wxextension.lib wxfiletool.lib"
 				OutputFile="buildmsw\syncsocketserver.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

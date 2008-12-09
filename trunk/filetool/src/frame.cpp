@@ -297,7 +297,7 @@ bool ftFrame::OpenFile(
 {
   if (exFrame::OpenFile(filename, line_number, match, flags))
   {
-    SetRecentFile(file.GetFullPath());
+    SetRecentFile(filename.GetFullPath());
     return true;
   }
 
