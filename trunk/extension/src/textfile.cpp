@@ -122,10 +122,13 @@ bool exTextFile::HeaderDialog()
 
   if (new_header)
   {
-    // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
-    m_RevisionNumber = "1.0";
-    RevisionAddComments(wxString(
-      (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
+    if (!exApp::GetConfigBool("RCS/Local"))
+    {
+      // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
+      m_RevisionNumber = "1.0";
+      RevisionAddComments(wxString(
+        (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
+    }
 
     if (m_FileNameStatistics.GetExt() == "h" && m_FileNameStatistics.GetStat().st_size == 0)
     {
