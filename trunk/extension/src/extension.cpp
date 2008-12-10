@@ -415,7 +415,12 @@ bool exSvnDialog(int svn_type)
   }
   
   std::vector<exConfigItem> v;
-  if (svn_type == SVN_COMMIT) v.push_back(exConfigItem(_("Revision comment")));
+
+  if (svn_type == SVN_COMMIT) 
+  {
+    v.push_back(exConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
+  }
+
   v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(exConfigItem(_("Flags")));
 

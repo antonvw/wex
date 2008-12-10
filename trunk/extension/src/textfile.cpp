@@ -1012,17 +1012,12 @@ bool exTextFile::WriteFileHeader()
   const wxString actual_author = (m_Author.empty() ?
     exApp::GetConfig("Header/Author"):
     m_Author);
+
   const wxString address = exApp::GetConfig("Header/Address");
   const wxString company = exApp::GetConfig("Header/Company");
   const wxString country = exApp::GetConfig("Header/Country");
   const wxString place = exApp::GetConfig("Header/Place");
   const wxString zipcode = exApp::GetConfig("Header/Zipcode");
-
-  if (address.empty() || company.empty() || country.empty() || place.empty() || zipcode.empty())
-  {
-    wxLogError("One of the header components is empty");
-    return false;
-  }
 
   WriteComment(wxEmptyString, true);
   WriteComment("File:        " + m_FileNameStatistics.GetFullName(), true);
@@ -1032,14 +1027,20 @@ bool exTextFile::WriteFileHeader()
 
   if (!exApp::GetConfigBool("RCS/Local"))
   {
-    WriteComment("RCS-ID:      $Id$", true);
+    // Prevent the Id to be expanded by SVN itself here.
+    WriteComment("RCS-ID:      $" + wxString("Id$"), true);
   }
 
   WriteComment(wxEmptyString, true, true);
   WriteComment(
-    "Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + company
+    "Copyright (c) " + wxDateTime::Now().Format("%Y") + (!company.empty() ? " " + company: wxEmptyString)
     + ". All rights reserved.", true);
-  WriteComment(address + ", " + zipcode + " " + place + ", " + country, true);
+
+  if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
+  {
+    WriteComment(address + ", " + zipcode + " " + place + ", " + country, true);
+  }
+
   WriteComment(wxEmptyString, true);
 
   InsertLine(wxEmptyString);
