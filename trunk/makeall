@@ -4,13 +4,13 @@
 # RCS-ID:  $Id$
 
 cd ~/wxprojects/trunk/extension/buildgtk
-make
+make $1
 cd ~/wxprojects/trunk/filetool/buildgtk
-make
+make $1
 cd ~/wxprojects/trunk/syncedit/buildgtk
 make
 cd ~/wxprojects/trunk/syncodbcquery
-make
+make $1
 cd ~/wxprojects/trunk/syncsocketserver
-make
+make $1
 
