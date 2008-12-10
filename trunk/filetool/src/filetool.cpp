@@ -253,7 +253,7 @@ bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
 int ftGetFileIcon(const exFileName* filename)
 {
-  if (filename->GetStat().IsOk())
+  if (filename->GetStat().IsOk() && !filename->GetExt().empty())
   {
     // README: DirExists from wxFileName is not okay, so use the static one here!
     return

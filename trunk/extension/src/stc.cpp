@@ -2507,7 +2507,11 @@ void exSTC::SetProperties()
   while (properties.HasMoreTokens())
   {
     wxStringTokenizer property(properties.GetNextToken(), "=");
-    SetProperty(property.GetNextToken(), property.GetNextToken());
+    // Don't put key, value into SetProperty, as that might parse value first,
+    // reversing the two.
+    const wxString key = property.GetNextToken();
+    const wxString value = property.GetNextToken();
+    SetProperty(key, value);
   }
 }
 
