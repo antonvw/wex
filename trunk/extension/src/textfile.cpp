@@ -122,7 +122,7 @@ bool exTextFile::HeaderDialog()
 
   if (new_header)
   {
-    if (!exApp::GetConfigBool("RCS/Local"))
+    if (exApp::GetConfigBool("RCS/Local"))
     {
       // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
       m_RevisionNumber = "1.0";
@@ -691,72 +691,69 @@ bool exTextFile::PrepareRevision()
   return true;
 }
 
-const wxString exTextFile::ProcessFormattedText(
+void exTextFile::ProcessFormattedText(
   const wxString& lines,
   const wxString& header,
   bool is_comment)
 {
-  wxString text = lines, header_to_use = header, out;
+  wxString text = lines, header_to_use = header;
   size_t nCharIndex;
 
-  // ftProcess text between the carriage return line feeds.
+  // Process text between the carriage return line feeds.
   while ((nCharIndex = text.find("\n")) != wxString::npos)
   {
-    const wxString& line = ProcessUnFormattedText(
+    ProcessUnFormattedText(
       text.substr(0, nCharIndex),
       header_to_use,
       is_comment);
-    InsertLine(line);
-    out +=  line + "\n";
     text = text.substr(nCharIndex + 1);
     header_to_use = wxString(' ', header.length());
   }
 
   if (!text.empty())
   {
-    const wxString& line = ProcessUnFormattedText(
+    ProcessUnFormattedText(
       text,
       header_to_use,
       is_comment);
-    InsertLine(line);
-    out += line;
   }
-
-  return out;
 }
 
-const wxString exTextFile::ProcessUnFormattedText(
+void exTextFile::ProcessUnFormattedText(
   const wxString& lines,
   const wxString& header,
   bool is_comment)
 {
   const size_t line_length = m_FileNameStatistics.GetLexer().UsableCharactersPerLine();
+
   // Use the header, with one space extra to separate, or no header at all.
   const wxString header_with_spaces =
-    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length() + 1);
-  wxString in = lines, line = header, out;
+    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
+
+  wxString in = lines, line = header;
+
+  bool at_begin = true;
 
   while (!in.empty())
   {
     const wxString word = exGetWord(in, false, false);
+
     if (line.length() + 1 + word.length() > line_length)
     {
       const wxString& newline = (is_comment ? m_FileNameStatistics.GetLexer().FormatText(line, true, true): line);
       InsertLine(newline);
-      out += newline + "\n";
       line = header_with_spaces + word;
+      at_begin = true;
     }
     else
     {
-      line += (!line.empty() ? " ": wxString(wxEmptyString)) + word;
+      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
+      at_begin = false;
     }
   }
 
   const wxString& newline = (is_comment ? m_FileNameStatistics.GetLexer().FormatText(line, true, true): line);
   InsertLine(newline);
-  out += newline;
-
-  return out;
 }
 
 void exTextFile::Report()

@@ -120,11 +120,11 @@ private:
   bool ParseForOther();
   void ParseHeader();
   bool PrepareRevision();
-  const wxString ProcessFormattedText(
+  void ProcessFormattedText(
     const wxString& lines,
     const wxString& header,
     bool is_comment);
-  const wxString ProcessUnFormattedText(
+  void ProcessUnFormattedText(
     const wxString& lines,
     const wxString& header,
     bool is_comment);

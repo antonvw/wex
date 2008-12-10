@@ -45,7 +45,7 @@ ftSTC::ftSTC(wxWindow* parent,
 }
 
 ftSTC::ftSTC(wxWindow* parent,
-  const wxString& filename,
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags,
