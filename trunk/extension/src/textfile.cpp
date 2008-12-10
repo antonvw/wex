@@ -1030,7 +1030,7 @@ bool exTextFile::WriteFileHeader()
 
   WriteComment(wxEmptyString, true, true);
   WriteComment(
-    "Copyright (c) " + wxDateTime::Now().Format("%Y") + (!company.empty() ? " " + company: wxEmptyString)
+    "Copyright (c) " + wxDateTime::Now().Format("%Y") + (!company.empty() ? " " + company: wxString(wxEmptyString))
     + ". All rights reserved.", true);
 
   if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
