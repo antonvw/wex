@@ -18,12 +18,13 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/config.h>
+#include <wx/extension/file.h>
 
 // Log methods.
-/// Returns the name of the logfile.
-const wxFileName exLogfileName();
+/// Returns the filename of the logfile.
+const exFileName exLogfileName();
 /// Logs text with a timestamp at the end of the file.
-void exLog(const wxString& text, const wxFileName& filename = exLogfileName());
+void exLog(const wxString& text, const exFileName& filename = exLogfileName());
 
 /// Offers the application, with a configuration, lexer, printer, logging
 /// and locale.

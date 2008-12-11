@@ -313,7 +313,7 @@ bool exIsWordCharacter(wxChar c)
   return isalnum(c) || c == '_';
 }
 
-void exLog(const wxString& text, const wxFileName& filename)
+void exLog(const wxString& text, const exFileName& filename)
 {
   wxFile(
     filename.GetFullPath(), 
@@ -321,15 +321,15 @@ void exLog(const wxString& text, const wxFileName& filename)
       wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
 }
 
-const wxFileName exLogfileName()
+const exFileName exLogfileName()
 {
 #ifdef EX_PORTABLE
-  return wxFileName(
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+  return exFileName(
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()) + wxFileName::GetPathSeparator() + 
     wxTheApp->GetAppName().Lower() + ".log");
 #else
-  return wxFileName(
-    wxStandardPaths::Get().GetUserDataDir(),
+  return exFileName(
+    wxStandardPaths::Get().GetUserDataDir() + wxFileName::GetPathSeparator() + 
     wxTheApp->GetAppName().Lower() + ".log");
 #endif
 }

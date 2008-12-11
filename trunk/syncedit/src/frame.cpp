@@ -121,7 +121,7 @@ MDIFrame::MDIFrame(bool open_recent)
   {
     if (!GetRecentFile().empty())
     {
-      OpenFile(GetRecentFile());
+      OpenFile(exFileName(GetRecentFile()));
     }
     else
     {
@@ -133,7 +133,7 @@ MDIFrame::MDIFrame(bool open_recent)
       if (!GetRecentProject().empty())
       {
         OpenFile(
-          GetRecentProject(),
+          exFileName(GetRecentProject()),
           0,
           wxEmptyString,
           ftSTC::STC_OPEN_IS_PROJECT);
@@ -493,8 +493,8 @@ and saved in the same directory as where the executable is."));
 #endif
     break;
 
-  case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName().GetFullPath()); break;
-  case ID_OPEN_LOGFILE: OpenFile(exLogfileName().GetFullPath()); break;
+  case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName()); break;
+  case ID_OPEN_LOGFILE: OpenFile(exLogfileName()); break;
 
   case ID_OPTION_COMPARATOR:
     {
@@ -571,7 +571,7 @@ and saved in the same directory as where the executable is."));
         }
       }
 
-      OpenFile(project->GetFileName().GetFullPath());
+      OpenFile(project->GetFileName());
     }
     break;
   case ID_PROJECT_SAVEAS:
@@ -662,7 +662,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
   if (!selection.empty())
   {
-    OpenFile(selection);
+    OpenFile(exFileName(selection));
   }
 }
 

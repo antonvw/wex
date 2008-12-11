@@ -36,15 +36,15 @@ long exFileNameStatistics::Get(const wxString& key) const
   return 0;
 }
 
-const wxFileName exFileNameStatistics::GetLogfileName()
+const exFileName exFileNameStatistics::GetLogfileName()
 {
-  wxFileName filename(
+  exFileName filename(
 #ifdef EX_PORTABLE
-  wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
 #else
-  wxStandardPaths::Get().GetUserDataDir(),
+    wxStandardPaths::Get().GetUserDataDir()
 #endif
-  _("statistics.log"));
+    + GetPathSeparator() + _("statistics.log"));
 
   return filename;
 }
