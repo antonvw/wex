@@ -557,11 +557,6 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       wxString text;
       if (exComboBoxToString(cb, text, ',', it->m_MaxItems))
       {
-        if (cb->GetName() == _("Include Directory"))
-        {
-          path_involved = true;
-        }
-
         m_Config->Set(m_ConfigGroup + cb->GetName(), text);
       }
       }
@@ -604,6 +599,10 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
       m_Config->Set(m_ConfigGroup + tc->GetName(), tc->GetValue());
+      if (tc->GetName() == _("Include Directory"))
+      {
+        path_involved = true;
+      }
       }
       break;
 
