@@ -169,11 +169,7 @@ Frame::Frame(const wxString& project_wildcard)
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
 
-  m_ToolBar = new exToolBar(this, 
-    wxID_ANY,
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
+  CreateToolBar();
 
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);
@@ -257,6 +253,17 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
     return ((ftListView*)page)->Continue();
   else
     return ftFrame::AllowClose(id, page);
+}
+
+wxToolBar* Frame::OnCreateToolBar(long style, wxWindowID id, const wxString& name)
+{
+  m_ToolBar = new exToolBar(this, 
+    wxID_ANY,
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
+
+  return m_ToolBar;
 }
 
 void Frame::OnNotebook(wxWindowID id, wxWindow* page) 

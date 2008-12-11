@@ -16,10 +16,9 @@ BEGIN_EVENT_TABLE(ftFrame, exManagedFrame)
   EVT_CLOSE(ftFrame::OnClose)
   EVT_IDLE(ftFrame::OnIdle)
   EVT_MENU(wxID_OPEN, ftFrame::OnCommand)
-  EVT_MENU(ID_PROJECT_OPEN, ftFrame::OnCommand)
-  EVT_MENU(ID_PROJECT_SAVE, ftFrame::OnCommand)
-  EVT_MENU(ID_SPECIAL_FIND_IN_FILES, ftFrame::OnCommand)
-  EVT_MENU_RANGE(ID_RECENT_LOWEST, ID_RECENT_HIGHEST, ftFrame::OnCommand)
+  EVT_MENU_RANGE(ID_FILETOOL_LOWEST, ID_FILETOOL_HIGHEST, ftFrame::OnCommand)
+  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, ftFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, ftFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
 ftFrame::ftFrame(wxWindow* parent,
@@ -251,6 +250,16 @@ void ftFrame::OnCommand(wxCommandEvent& event)
       ftFindInFiles(this);
       break;
 
+    case ID_VIEW_STATUSBAR:
+      GetStatusBar()->Show(!GetStatusBar()->IsShown());
+      SendSizeEvent();
+      break;
+
+    case ID_VIEW_TOOLBAR:
+      GetToolBar()->Show(!GetToolBar()->IsShown());
+      SendSizeEvent();
+      break;
+
     default:
       wxLogError(FILE_INFO("Unhandled: %d"), event.GetId());
     }
@@ -286,6 +295,25 @@ void ftFrame::OnIdle(wxIdleEvent& event)
     {
       wxFrame::SetTitle(title.substr(0, title.length() - 2));
     }
+  }
+}
+
+void ftFrame::OnUpdateUI(wxUpdateUIEvent& event)
+{
+  switch (event.GetId())
+  {
+  case ID_VIEW_STATUSBAR:
+    if (GetStatusBar() == NULL) return;
+    event.Check(GetStatusBar()->IsShown());
+    break;
+
+  case ID_VIEW_TOOLBAR:
+    if (GetToolBar() == NULL) return;
+    event.Check(GetToolBar()->IsShown());
+    break;
+
+  default:
+    wxLogError("Unhandled event");
   }
 }
 

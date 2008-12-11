@@ -57,8 +57,6 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_UPDATE_UI(ID_VIEW_DATA, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_LOG, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_STATISTICS, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_WRITE_DATA, MyFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -414,16 +412,6 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case ID_VIEW_LOG: TogglePane("LOG"); break;
   case ID_VIEW_STATISTICS: TogglePane("STATISTICS"); break;
 
-  case ID_VIEW_STATUSBAR:
-    GetStatusBar()->Show(!GetStatusBar()->IsShown());
-    SendSizeEvent();
-    break;
-
-  case ID_VIEW_TOOLBAR:
-    GetToolBar()->Show(!GetToolBar()->IsShown());
-    SendSizeEvent();
-    break;
-
   case ID_WRITE_DATA:
     WriteDataWindowToClients();
     break;
@@ -622,14 +610,6 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case ID_VIEW_STATUSBAR:
     event.Check(GetStatusBar()->IsShown());
-    break;
-
-  case ID_VIEW_TOOLBAR:
-    event.Check(GetToolBar()->IsShown());
-    break;
-
-  case ID_WRITE_DATA:
-    event.Enable(m_Clients.size() > 0 && m_DataWindow->GetLength() > 0);
     break;
 
   default:

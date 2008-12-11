@@ -28,9 +28,8 @@ public:
   /// Gets sync mode.  
   wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
 #endif
-
-  /// Gets the toolbar.
-  wxToolBar* GetToolBar() {return m_ToolBar;}
+protected:
+  virtual wxToolBar* OnCreateToolBar(long style, wxWindowID id, const wxString& name);
 private:
   // Interface from exFrame.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);

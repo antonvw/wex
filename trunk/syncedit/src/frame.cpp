@@ -109,8 +109,6 @@ MDIFrame::MDIFrame(bool open_recent)
 
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
-  GetManager().AddPane(GetToolBar(),
-    wxAuiPaneInfo().ToolbarPane().Top().Name("TOOLBAR").Caption(_("Toolbar")));
 
   GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
 
@@ -653,11 +651,6 @@ and saved in the same directory as where the executable is."));
   case ID_VIEW_HISTORY: TogglePane("HISTORY"); break;
   case ID_VIEW_OUTPUT: TogglePane("OUTPUT"); break;
   case ID_VIEW_PROJECTS: TogglePane("PROJECTS"); break;
-  case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR");  break;
-  case ID_VIEW_STATUSBAR:
-    GetStatusBar()->Show(!GetStatusBar()->IsShown());
-    SendSizeEvent();
-    break;
 
   default: event.Skip();
   }
@@ -776,12 +769,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_VIEW_DIRCTRL:
       event.Check(GetManager().GetPane("DIRCTRL").IsShown());
       break;
-    case ID_VIEW_STATUSBAR:
-      event.Check(GetStatusBar()->IsShown());
-      break;
-    case ID_VIEW_TOOLBAR:
-      event.Check(GetManager().GetPane("TOOLBAR").IsShown());
-      break;
 
     case wxID_PREVIEW:
     case wxID_PRINT:
@@ -892,7 +879,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         }
         break;
 
-      default: wxLogError(FILE_INFO("Unhandled event: %d"), event.GetId());
+      default: event.Skip();
       }
     }
   }

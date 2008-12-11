@@ -49,8 +49,6 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_UPDATE_UI(ID_DATABASE_OPEN, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_QUERY_RUN, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENTFILE_MENU, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_QUERY, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_RESULTS, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_STATISTICS, MyFrame::OnUpdateUI)
@@ -286,16 +284,6 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     m_Shell->Prompt("Cancelled");
     break;
 
-  case ID_VIEW_STATUSBAR:
-    GetStatusBar()->Show(!GetStatusBar()->IsShown());
-    SendSizeEvent();
-    break;
-
-  case ID_VIEW_TOOLBAR:
-    GetToolBar()->Show(!GetToolBar()->IsShown());
-    SendSizeEvent();
-    break;
-
   case ID_VIEW_QUERY: TogglePane("QUERY"); break;
   case ID_VIEW_RESULTS: TogglePane("RESULTS"); break;
   case ID_VIEW_STATISTICS: TogglePane("STATISTICS"); break;
@@ -331,14 +319,6 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case ID_RECENTFILE_MENU: 
     event.Enable(!GetRecentFile().empty()); 
-    break;
-
-  case ID_VIEW_STATUSBAR:
-    event.Check(GetStatusBar()->IsShown());
-    break;
-
-  case ID_VIEW_TOOLBAR:
-    event.Check(GetToolBar()->IsShown());
     break;
 
   case ID_VIEW_QUERY:

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          defs.h
-* Purpose:       Common definitions for wxFileTool
+* Purpose:       Common definitions for wxfiletool
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -17,9 +17,11 @@
 
 #define EX_TIMESTAMP_FORMAT "%d %B %Y %H:%M:%S"
 
-// Commands supported by wxFileTool. 
+// Commands supported by wxfiletool. 
 enum
 {
+  ID_FILETOOL_LOWEST,
+
   ID_TOOL_SQL = ID_TOOL_FIRST_USER + 1,
   ID_TOOL_REPORT_SQL = ID_TOOL_REPORT_FIRST_USER + 1,
   ID_LIST_LOWEST = ID_TOOL_HIGHEST + 1,
@@ -49,6 +51,10 @@ enum
   ID_STC_COMPARE,
   ID_STC_TOOL_MENU,
   ID_STC_HIGHEST,
+  ID_VIEW_STATUSBAR,
+  ID_VIEW_TOOLBAR,
+
+  ID_FILETOOL_HIGHEST,
 };
 
 #endif
