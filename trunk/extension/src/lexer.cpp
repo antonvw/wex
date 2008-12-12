@@ -239,29 +239,26 @@ void exLexer::SetKeywords(const wxString& value)
 
 void exLexer::SetLexerFromText(const wxString& text)
 {
-  if (m_ScintillaLexer.empty())
-  {
-    // Add automatic lexers if text starts with some special tokens.
-    const wxString text_lowercase = text.Lower();
+  // Add automatic lexers if text starts with some special tokens.
+  const wxString text_lowercase = text.Lower();
 
-    if (text_lowercase.StartsWith("#") ||
-        // .po files that do not have comment headers, start with msgid, so set them
-        text_lowercase.StartsWith("msgid"))
-    {
-      (*this) = exApp::GetLexers()->FindByName("bash");
-    }
-    else if (text_lowercase.StartsWith("<html>") ||
-             text_lowercase.StartsWith("<?php") ||
-             text_lowercase.StartsWith("<?xml"))
-    {
-      (*this) = exApp::GetLexers()->FindByName("hypertext");
-    }
-    // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
-    // so add here.
-    else if (text_lowercase.StartsWith("//"))
-    {
-      (*this) = exApp::GetLexers()->FindByName("cpp");
-    }
+  if (text_lowercase.StartsWith("#") ||
+      // .po files that do not have comment headers, start with msgid, so set them
+      text_lowercase.StartsWith("msgid"))
+  {
+    (*this) = exApp::GetLexers()->FindByName("bash");
+  }
+  else if (text_lowercase.StartsWith("<html>") ||
+           text_lowercase.StartsWith("<?php") ||
+           text_lowercase.StartsWith("<?xml"))
+  {
+    (*this) = exApp::GetLexers()->FindByName("hypertext");
+  }
+  // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
+  // so add here.
+  else if (text_lowercase.StartsWith("//"))
+  {
+    (*this) = exApp::GetLexers()->FindByName("cpp");
   }
 }
 

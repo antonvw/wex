@@ -349,14 +349,14 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& pattern)
   return false;
 }
 
-void exOpenFile(const wxFileName& filename, long open_flags)
+void exOpenFile(const exFileName& filename, long open_flags)
 {
   wxWindow* window = wxTheApp->GetTopWindow();
   exFrame* frame = wxDynamicCast(window, exFrame);
 
   if (frame != NULL)
   {
-    frame->OpenFile(filename.GetFullPath(), -1, wxEmptyString, open_flags);
+    frame->OpenFile(filename, -1, wxEmptyString, open_flags);
   }
 }
 

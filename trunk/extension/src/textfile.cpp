@@ -897,7 +897,10 @@ bool exTextFile::RunTool()
   }
   else if (GetLineCount() > 0)
   {
-    m_FileNameStatistics.GetLexer().SetLexerFromText(GetLine(0));
+    if (m_FileNameStatistics.GetLexer().GetScintillaLexer().empty())
+    {
+      m_FileNameStatistics.GetLexer().SetLexerFromText(GetLine(0));
+    }
 
     if (m_Tool.IsHeaderType())
     {

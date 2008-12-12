@@ -168,7 +168,7 @@ enum
   SVN_LOG,
 };
 
-/// Shows a subversion dialog. Returns true dialog is accepted.
+/// Shows a subversion dialog. Returns true if dialog is accepted.
 bool exSvnDialog(int svn_type);
 
 // Combobox methods.
@@ -185,7 +185,7 @@ bool exComboBoxToString(
   size_t max_items = 25);
 
 /// Calls OpenFile for exFrame, if this is your top window.
-void exOpenFile(const wxFileName& filename, long open_flags = 0);
+void exOpenFile(const exFileName& filename, long open_flags = 0);
 
 // Status bar.
 #if wxUSE_STATUSBAR
