@@ -161,15 +161,20 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 /// allows you to change that colour.
 void exBackgroundColourDialog(wxWindow* parent, wxWindow* win);
 
-enum 
+/// SVN types supported.
+enum exSvnType
 { 
   SVN_COMMIT,
+  SVN_DIFF,
   SVN_STAT,
   SVN_LOG,
 };
 
-/// Shows a subversion dialog. Returns true if dialog is accepted.
-bool exSvnDialog(int svn_type);
+/// Shows a subversion dialog, depending on type.
+/// If no fullpaht is specified, a base folder is shown, otherwise
+/// the specified fullpath is used for getting svn contents from.
+/// Returns true if dialog is accepted.
+bool exSvnDialog(exSvnType svn_type, const wxString& fullpath = wxEmptyString);
 
 // Combobox methods.
 /// Adds entries from a combobox to a text string.

@@ -393,7 +393,7 @@ void exStatusText(const exFileName& filename, long flags)
 }
 #endif // wxUSE_STATUSBAR
 
-bool exSvnDialog(int svn_type)
+bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
 {
   wxString caption;
   wxString svn_command;
@@ -404,13 +404,17 @@ bool exSvnDialog(int svn_type)
       caption = _("Commit"); 
       svn_command = "commit";
       break;
-    case SVN_STAT: 
-      caption = _("Stat"); 
-      svn_command = "stat";
+    case SVN_DIFF: 
+      caption = _("Diff"); 
+      svn_command = "diff";
       break;
     case SVN_LOG: 
       caption = _("Log"); 
       svn_command = "log";
+      break;
+    case SVN_STAT: 
+      caption = _("Stat"); 
+      svn_command = "stat";
       break;
   }
   
@@ -421,7 +425,11 @@ bool exSvnDialog(int svn_type)
     v.push_back(exConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
   }
 
-  v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  if (fullpath.empty())
+  {
+    v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  }
+
   v.push_back(exConfigItem(_("Flags")));
 
   if (exConfigDialog(wxTheApp->GetTopWindow(),
@@ -432,7 +440,18 @@ bool exSvnDialog(int svn_type)
   }
 
   const wxString cwd = wxGetCwd();
-  wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
+
+  wxString file;
+
+  if (fullpath.empty())
+  {
+    wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
+  }
+  else
+  {
+    file = " \"" + fullpath + "\"";
+  }
+
   wxArrayString output;
   wxArrayString errors;
   
@@ -440,19 +459,30 @@ bool exSvnDialog(int svn_type)
   if (svn_type == SVN_COMMIT) arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
 
   wxExecute(
-    "svn " + exApp::GetConfig(_("Flags")) + " " + svn_command + arg,
+    "svn " + exApp::GetConfig(_("Flags")) + " " + svn_command + arg + file,
     output,
     errors);
     
-  wxSetWorkingDirectory(cwd);
+  if (fullpath.empty())
+  {
+    wxSetWorkingDirectory(cwd);
+  }
 
   wxString msg;
 
-  for (size_t i = 0; i < output.GetCount(); i++)
+  // First output the errors.
+  for (size_t i = 0; i < errors.GetCount(); i++)
   {
-    msg += output[i] + "\n";
+    msg += errors[i] + "\n";
   }
-  
+
+  // Then the normal output, will be empty if there are errors.
+  for (size_t j = 0; j < output.GetCount(); j++)
+  {
+    msg += output[j] + "\n";
+  }
+
+  /// Finally present it.
   exSTCEntryDialog(
     NULL, 
     "SVN", 
