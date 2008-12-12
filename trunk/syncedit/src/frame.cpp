@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
 #endif
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
+  EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_PRINT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, MDIFrame::OnUpdateUI)
@@ -629,6 +630,9 @@ and saved in the same directory as where the executable is."));
 #endif
     break;
 
+  case ID_TREE_SVN_DIFF: exSvnDialog(SVN_DIFF, m_DirCtrl->GetFilePath()); break;
+  case ID_TREE_SVN_LOG: exSvnDialog(SVN_LOG, m_DirCtrl->GetFilePath()); break;
+
   case ID_VIEW_ASCII_TABLE:
     if (m_AsciiTable == NULL)
     {
@@ -660,9 +664,22 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 {
   const wxString selection = m_DirCtrl->GetFilePath();
 
-  if (!selection.empty())
+  if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
-    OpenFile(exFileName(selection));
+    if (!exApp::GetConfigBool("RCS/Local"))
+    {
+      exMenu menu;
+      menu.Append(ID_TREE_SVN_DIFF, exEllipsed(_("Diff")));
+      menu.Append(ID_TREE_SVN_LOG, exEllipsed(_("Log")));
+      PopupMenu(&menu);
+    }
+  }
+  else
+  {
+    if (!selection.empty())
+    {
+      OpenFile(exFileName(selection));
+    }
   }
 }
 

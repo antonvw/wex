@@ -42,6 +42,8 @@ enum
   ID_RECENT_PROJECT_MENU,
   ID_SORT_SYNC,
   ID_SPLIT,
+  ID_TREE_SVN_DIFF,
+  ID_TREE_SVN_LOG,
   ID_VIEW_MENU,
   ID_VIEW_PANE_FIRST, // put all your panes from here
   ID_VIEW_FILES,
