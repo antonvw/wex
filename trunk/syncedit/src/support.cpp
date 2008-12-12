@@ -261,7 +261,7 @@ wxToolBar* Frame::OnCreateToolBar(long style, wxWindowID id, const wxString& nam
     wxID_ANY,
     wxDefaultPosition, 
     wxDefaultSize, 
-    wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
+    wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
 
   return m_ToolBar;
 }
