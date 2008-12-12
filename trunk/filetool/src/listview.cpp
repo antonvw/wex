@@ -243,7 +243,9 @@ void ftListView::BuildPopupMenu(exMenu& menu)
     }
     else
     {
-      if (m_Type != LIST_PROJECT && m_Frame != NULL && exists && !is_folder)
+      if (m_Type != LIST_PROJECT && 
+          exApp::GetConfigBool("RCS/Local") &&
+          m_Frame != NULL && exists && !is_folder)
       {
         ftListView* list = m_Frame->Activate(LIST_PROJECT);
         if (list != NULL && list->GetSelectedItemCount() == 1)
@@ -263,8 +265,15 @@ void ftListView::BuildPopupMenu(exMenu& menu)
 
     if (exists && !is_folder)
     {
-      menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version") + "\tCtrl+M");
-      menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
+      if (exApp::GetConfigBool("RCS/Local"))
+      {
+        menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version") + "\tCtrl+M");
+        menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
+      }
+      else if (GetSelectedItemCount() == 1)
+      {
+        menu.Append(ID_LIST_DIFF, exEllipsed(_("&Compare Recent Version")) + "\tCtrl+M");
+      }
     }
 
 #ifdef __WXMSW__
@@ -781,6 +790,19 @@ void ftListView::OnCommand(wxCommandEvent& event)
   break;
 
   case ID_LIST_ADD_ITEM: AddItems(); break;
+
+  case ID_LIST_DIFF:
+  {
+    int i = -1;
+    while ((i = GetNextSelected(i)) != -1)
+    {
+      ftListItem li(this, i);
+      const wxFileName* filename = &li.GetFileName();
+
+      exSvnDialog(SVN_DIFF, filename->GetFullPath());
+    }
+  }
+  break;
 
   case ID_LIST_COMPARE:
   case ID_LIST_COMPARELAST:
