@@ -8,7 +8,7 @@ make $1
 cd ~/wxprojects/trunk/filetool/buildgtk
 make $1
 cd ~/wxprojects/trunk/syncedit/buildgtk
-make
+make $1
 cd ~/wxprojects/trunk/syncodbcquery
 make $1
 cd ~/wxprojects/trunk/syncsocketserver
