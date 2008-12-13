@@ -17,38 +17,6 @@
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
 
-exTextFile::exCommentType CheckCommentSyntax(
-  const wxString& syntax_begin,
-  const wxString& syntax_end,
-  wxChar c1,
-  wxChar c2)
-{
-  const wxString comp = ((syntax_begin.length() == 1) ? wxString(c1) : wxString(c2) + wxString(c1));
-
-  if (syntax_begin == comp)
-  {
-    return (syntax_end == comp) ? exLexer::COMMENT_BOTH: exLexer::COMMENT_BEGIN;
-  }
-  else
-  {
-    if (syntax_end == comp ||
-        // If syntax_end was empty, we assume the terminating 0 ends the comment.
-       (syntax_end.empty() && c1 == 0))
-    {
-      return exLexer::COMMENT_END;
-    }
-  }
-
-  if ((syntax_begin.length() > 1 && syntax_begin[0] == c1) ||
-      (syntax_end.length() > 1 && syntax_end[0] == c1) ||
-      (c1 == 0))
-  {
-    return exLexer::COMMENT_INCOMPLETE;
-  }
-
-  return exLexer::COMMENT_NONE;
-}
-
 exTool exTextFile::m_Tool = ID_TOOL_LOWEST;
 exTextFile::exSyntaxType exTextFile::m_SyntaxType = exTextFile::SYNTAX_NONE;
 exTextFile::exSyntaxType exTextFile::m_LastSyntaxType = exTextFile::SYNTAX_NONE;
@@ -59,7 +27,40 @@ exTextFile::exTextFile(const exFileName& filename)
   Initialize();
 }
 
-exLexer::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2) const
+
+exTextFile::exCommentType exTextFile::CheckCommentSyntax(
+  const wxString& syntax_begin,
+  const wxString& syntax_end,
+  wxChar c1,
+  wxChar c2) const
+{
+  const wxString comp = ((syntax_begin.length() == 1) ? wxString(c1) : wxString(c2) + wxString(c1));
+
+  if (syntax_begin == comp)
+  {
+    return (syntax_end == comp) ? COMMENT_BOTH: COMMENT_BEGIN;
+  }
+  else
+  {
+    if (syntax_end == comp ||
+        // If syntax_end was empty, we assume the terminating 0 ends the comment.
+       (syntax_end.empty() && c1 == 0))
+    {
+      return COMMENT_END;
+    }
+  }
+
+  if ((syntax_begin.length() > 1 && syntax_begin[0] == c1) ||
+      (syntax_end.length() > 1 && syntax_end[0] == c1) ||
+      (c1 == 0))
+  {
+    return COMMENT_INCOMPLETE;
+  }
+
+  return COMMENT_NONE;
+}
+
+exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2) const
 {
   if (m_FileNameStatistics.GetLexer().GetCommentBegin2().empty())
   {
@@ -586,21 +587,21 @@ bool exTextFile::ParseLine(const wxString& line)
       wxChar pc = 0;
       if (i > 0) pc = line[i - 1];
 
-      switch (m_FileNameStatistics.GetLexer().CheckForComment(cc, pc))
+      switch (CheckForComment(cc, pc))
       {
-      case exLexer::COMMENT_BEGIN:
+      case COMMENT_BEGIN:
         if (!m_IsCommentStatement) CommentStatementStart();
         break;
 
-      case exLexer::COMMENT_END:
+      case COMMENT_END:
         CommentStatementEnd();
         break;
 
-      case exLexer::COMMENT_BOTH:
+      case COMMENT_BOTH:
         !m_IsCommentStatement ? CommentStatementStart(): CommentStatementEnd();
         break;
 
-      case exLexer::COMMENT_NONE:
+      case COMMENT_NONE:
         if (cc > 0 && !isspace(cc) && !m_IsCommentStatement)
         {
           line_contains_code = true;

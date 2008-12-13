@@ -39,13 +39,13 @@ public:
   const wxString GetCommentBegin() const {return m_CommentBegin;};
 
   /// Gets the comment begin 2.
-  const wxString GetCommentBegin2 const {return m_CommentBegin2;};
+  const wxString GetCommentBegin2() const {return m_CommentBegin2;};
 
   /// Gets the comment end.
-  const wxString GetCommentEnd const {return m_CommentEnd;};
+  const wxString GetCommentEnd() const {return m_CommentEnd;};
 
   /// Gets the comment end 2.
-  const wxString GetCommentEnd2 const {return m_CommentEnd2;};
+  const wxString GetCommentEnd2() const {return m_CommentEnd2;};
 
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};

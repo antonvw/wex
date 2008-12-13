@@ -126,6 +126,12 @@ private:
     SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
     SYNTAX_TWO,      ///< syntax according to comment begin2 and end2
   };
+  
+  exCommentType CheckCommentSyntax(
+    const wxString& syntax_begin,
+    const wxString& syntax_end,
+    wxChar c1,
+    wxChar c2) const;
 
   /// Gets the actual begin of comment, depending on the syntax type.
   const wxString CommentBegin() const {
@@ -137,14 +143,14 @@ private:
   const wxString CommentEnd() const {
     return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE ) ?
       m_FileNameStatistics.GetLexer().GetCommentEnd() :
-      m_FileNameStatistics.GetLexer().GetCommentEn2d;};
+      m_FileNameStatistics.GetLexer().GetCommentEnd2();};
 
   /// Gets the last end of comment detected, depending on the last syntax type.
   /// TODO: Exact the same as CommentEnd????
   const wxString CommentEndDetected() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
       m_FileNameStatistics.GetLexer().GetCommentEnd() :
-      m_FileNameStatistics.GetLexer().GetCommentEn2d;};
+      m_FileNameStatistics.GetLexer().GetCommentEnd2();};
 
   /// Check whether specified chars result in a comment.
   exCommentType CheckForComment(wxChar c1, wxChar c2) const;
