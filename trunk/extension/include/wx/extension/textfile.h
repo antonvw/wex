@@ -109,6 +109,45 @@ protected:
   /// At the end it calls ParseComments.
   bool ParseLine(const wxString& line);
 private:
+  /// The comment type.
+  enum exCommentType
+  {
+    COMMENT_NONE = 0,  ///< no comment
+    COMMENT_BEGIN,     ///< begin of comment
+    COMMENT_END,       ///< end of comment
+    COMMENT_BOTH,      ///< begin or end of comment
+    COMMENT_INCOMPLETE ///< within a comment
+  };
+
+  /// The syntax type.
+  enum exSyntaxType
+  {
+    SYNTAX_NONE = 0, ///< no syntax
+    SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
+    SYNTAX_TWO,      ///< syntax according to comment begin2 and end2
+  };
+
+  /// Gets the actual begin of comment, depending on the syntax type.
+  const wxString CommentBegin() const {
+    return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
+      m_FileNameStatistics.GetLexer().GetCommentBegin() :
+      m_FileNameStatistics.GetLexer().GetCommentBegin2();};
+
+  /// Gets the actual end of comment, depending on the syntax type.
+  const wxString CommentEnd() const {
+    return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE ) ?
+      m_FileNameStatistics.GetLexer().GetCommentEnd() :
+      m_FileNameStatistics.GetLexer().GetCommentEn2d;};
+
+  /// Gets the last end of comment detected, depending on the last syntax type.
+  /// TODO: Exact the same as CommentEnd????
+  const wxString CommentEndDetected() const {
+    return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
+      m_FileNameStatistics.GetLexer().GetCommentEnd() :
+      m_FileNameStatistics.GetLexer().GetCommentEn2d;};
+
+  /// Check whether specified chars result in a comment.
+  exCommentType CheckForComment(wxChar c1, wxChar c2) const;
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
@@ -161,5 +200,8 @@ private:
   wxString m_RevisionFormat;
   wxString m_RevisionNumber;
   wxString m_User;
+
+  static exSyntaxType m_LastSyntaxType;
+  static exSyntaxType m_SyntaxType;
 };
 #endif

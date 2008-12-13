@@ -23,42 +23,6 @@ class exLexer
 {
   friend class exLexers;
 public:
-  /// The comment type.
-  enum exCommentType
-  {
-    COMMENT_NONE = 0,  ///< no comment
-    COMMENT_BEGIN,     ///< begin of comment
-    COMMENT_END,       ///< end of comment
-    COMMENT_BOTH,      ///< begin or end of comment
-    COMMENT_INCOMPLETE ///< within a comment
-  };
-
-  /// The syntax type.
-  enum exSyntaxType
-  {
-    SYNTAX_NONE = 0, ///< no syntax
-    SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
-    SYNTAX_TWO,      ///< syntax according to comment begin2 and end2
-  };
-
-  /// Check whether specified chars result in a comment.
-  exCommentType CheckForComment(wxChar c1, wxChar c2) const;
-
-  /// Gets the actual begin of comment, depending on the syntax type.
-  const wxString CommentBegin() const {
-    return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
-      m_CommentBegin : m_CommentBegin2;};
-
-  /// Gets the actual end of comment, depending on the syntax type.
-  const wxString CommentEnd() const {
-    return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE ) ?
-      m_CommentEnd : m_CommentEnd2;};
-
-  /// Gets the last end of comment detected, depending on the last syntax type.
-  const wxString CommentEndDetected() const {
-    return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
-      m_CommentEnd : m_CommentEnd2;};
-
   /// Returns a lexer comment string with text formatted.
   const wxString FormatText(
     const wxString& text,
@@ -70,6 +34,18 @@ public:
 
   /// Gets the colourings.
   const wxString& GetColourings() const {return m_Colourings;};
+
+  /// Gets the comment begin.
+  const wxString GetCommentBegin() const {return m_CommentBegin;};
+
+  /// Gets the comment begin 2.
+  const wxString GetCommentBegin2 const {return m_CommentBegin2;};
+
+  /// Gets the comment end.
+  const wxString GetCommentEnd const {return m_CommentEnd;};
+
+  /// Gets the comment end 2.
+  const wxString GetCommentEnd2 const {return m_CommentEnd2;};
 
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
@@ -113,9 +89,6 @@ private:
 
   std::set<wxString> m_Keywords; // all keywords
   std::vector< std::set<wxString> > m_KeywordsSet; // each keyword set in a separate keyword set
-
-  static exSyntaxType m_LastSyntaxType;
-  static exSyntaxType m_SyntaxType;
 };
 
 /// This class defines our markers, closely related to scintilla markers.

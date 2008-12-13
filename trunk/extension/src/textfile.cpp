@@ -17,12 +17,102 @@
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
 
+exTextFile::exCommentType CheckCommentSyntax(
+  const wxString& syntax_begin,
+  const wxString& syntax_end,
+  wxChar c1,
+  wxChar c2)
+{
+  const wxString comp = ((syntax_begin.length() == 1) ? wxString(c1) : wxString(c2) + wxString(c1));
+
+  if (syntax_begin == comp)
+  {
+    return (syntax_end == comp) ? exLexer::COMMENT_BOTH: exLexer::COMMENT_BEGIN;
+  }
+  else
+  {
+    if (syntax_end == comp ||
+        // If syntax_end was empty, we assume the terminating 0 ends the comment.
+       (syntax_end.empty() && c1 == 0))
+    {
+      return exLexer::COMMENT_END;
+    }
+  }
+
+  if ((syntax_begin.length() > 1 && syntax_begin[0] == c1) ||
+      (syntax_end.length() > 1 && syntax_end[0] == c1) ||
+      (c1 == 0))
+  {
+    return exLexer::COMMENT_INCOMPLETE;
+  }
+
+  return exLexer::COMMENT_NONE;
+}
+
 exTool exTextFile::m_Tool = ID_TOOL_LOWEST;
+exTextFile::exSyntaxType exTextFile::m_SyntaxType = exTextFile::SYNTAX_NONE;
+exTextFile::exSyntaxType exTextFile::m_LastSyntaxType = exTextFile::SYNTAX_NONE;
 
 exTextFile::exTextFile(const exFileName& filename)
   : m_FileNameStatistics(filename)
 {
   Initialize();
+}
+
+exLexer::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2) const
+{
+  if (m_FileNameStatistics.GetLexer().GetCommentBegin2().empty())
+  {
+    return CheckCommentSyntax(
+      m_FileNameStatistics.GetLexer().GetCommentBegin(),
+      m_FileNameStatistics.GetLexer().GetCommentEnd(), c1, c2);
+  }
+
+  exCommentType comment_type1 = COMMENT_NONE;
+
+  if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
+  {
+    if ((comment_type1 = CheckCommentSyntax(
+      m_FileNameStatistics.GetLexer().GetCommentBegin(),
+      m_FileNameStatistics.GetLexer().GetCommentEnd(), c1, c2)) == COMMENT_BEGIN)
+      m_SyntaxType = SYNTAX_ONE;
+  }
+
+  exCommentType comment_type2 = COMMENT_NONE;
+
+  if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
+  {
+    if ((comment_type2 = CheckCommentSyntax(
+      m_FileNameStatistics.GetLexer().GetCommentBegin2(),
+      m_FileNameStatistics.GetLexer().GetCommentEnd2(), c1, c2)) == COMMENT_BEGIN)
+      m_SyntaxType = SYNTAX_TWO;
+  }
+
+  exCommentType comment_type = COMMENT_NONE;
+
+  switch (comment_type1)
+  {
+  case COMMENT_NONE:  comment_type = comment_type2; break;
+  case COMMENT_BEGIN: comment_type = COMMENT_BEGIN; break;
+  case COMMENT_END:   comment_type = COMMENT_END; break;
+  case COMMENT_BOTH:  comment_type = COMMENT_BOTH; break;
+  case COMMENT_INCOMPLETE:
+    comment_type = (comment_type2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_type2;
+    break;
+  default: wxLogError(FILE_INFO("Unhandled"));
+  }
+
+  if (comment_type == COMMENT_END)
+  {
+    // E.g. we have a correct /* */ comment, with */ at the end of the line.
+    // Then the end of line itself should not generate a COMMENT_END.
+    if (m_SyntaxType == SYNTAX_NONE) comment_type = COMMENT_NONE;
+    // Keep the syntax type.
+    m_LastSyntaxType = m_SyntaxType;
+    m_SyntaxType = SYNTAX_NONE;
+  }
+
+  return comment_type;
 }
 
 void exTextFile::CommentStatementEnd()
@@ -35,7 +125,7 @@ void exTextFile::CommentStatementEnd()
   // already reset, whereas in the buffer the really used end
   // of comment characters should be removed.
   m_Comments = m_Comments.Left(
-    m_Comments.length() - m_FileNameStatistics.GetLexer().CommentEndDetected().length());
+    m_Comments.length() - CommentEndDetected().length());
 }
 
 void exTextFile::CommentStatementStart()
@@ -44,8 +134,8 @@ void exTextFile::CommentStatementStart()
 
   GetStatisticElements().Inc(_("Comments"));
   GetStatisticElements().Inc(
-    _("Comment Size"), 
-    m_FileNameStatistics.GetLexer().CommentBegin().length());
+    _("Comment Size"),
+    CommentBegin().length());
 }
 
 void exTextFile::EndCurrentRevision()
@@ -980,12 +1070,12 @@ bool exTextFile::SetupTool(const exTool& tool)
   {
   case ID_TOOL_COMMIT:
     {
-    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(), 
-      wxString(_("Input")) + wxT(":"), 
-      "Commit", 
+    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
+      wxString(_("Input")) + wxT(":"),
+      "Commit",
       exApp::GetConfig(_("Revision comment")));
 
-    if (dlg.ShowModal() == wxID_CANCEL) 
+    if (dlg.ShowModal() == wxID_CANCEL)
     {
       return false;
     }
