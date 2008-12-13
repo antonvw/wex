@@ -630,9 +630,19 @@ and saved in the same directory as where the executable is."));
 #endif
     break;
 
+  case ID_TREE_RUN_MAKE: 
+  {
+    wxSetWorkingDirectory(wxFileName(m_DirCtrl->GetFilePath()).GetPath());
+
+    ftListView::ProcessRun(
+      exApp::GetConfig(_("Make")) + wxString(" ") +
+      exApp::GetConfig("MakeSwitch", "-f") + wxString(" ") +
+      m_DirCtrl->GetFilePath());
+  }
+  break;
   case ID_TREE_SVN_DIFF: exSvnDialog(SVN_DIFF, m_DirCtrl->GetFilePath()); break;
   case ID_TREE_SVN_LOG: exSvnDialog(SVN_LOG, m_DirCtrl->GetFilePath()); break;
-
+  
   case ID_VIEW_ASCII_TABLE:
     if (m_AsciiTable == NULL)
     {
@@ -663,6 +673,9 @@ and saved in the same directory as where the executable is."));
 void MDIFrame::OnTree(wxTreeEvent& event)
 {
   const wxString selection = m_DirCtrl->GetFilePath();
+  if (selection.empty()) return;
+
+  const exFileName filename(selection);
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
@@ -671,15 +684,19 @@ void MDIFrame::OnTree(wxTreeEvent& event)
       exMenu menu;
       menu.Append(ID_TREE_SVN_DIFF, exEllipsed(_("Diff")));
       menu.Append(ID_TREE_SVN_LOG, exEllipsed(_("Log")));
+      
+      if (filename.GetLexer().GetScintillaLexer() == "makefile")
+      {
+        menu.AppendSeparator();
+        menu.Append(ID_TREE_RUN_MAKE, exEllipsed(_("&Make")));
+      }
+      
       PopupMenu(&menu);
     }
   }
   else
   {
-    if (!selection.empty())
-    {
-      OpenFile(exFileName(selection));
-    }
+    OpenFile(filename);
   }
 }
 

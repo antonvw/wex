@@ -793,14 +793,8 @@ void ftListView::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_DIFF:
   {
-    int i = -1;
-    while ((i = GetNextSelected(i)) != -1)
-    {
-      ftListItem li(this, i);
-      const wxFileName* filename = &li.GetFileName();
-
-      exSvnDialog(SVN_DIFF, filename->GetFullPath());
-    }
+    const ftListItem item(this, GetNextSelected(-1));
+    exSvnDialog(SVN_DIFF, item.GetFileName().GetFullPath());
   }
   break;
 
