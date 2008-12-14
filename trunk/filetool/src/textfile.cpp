@@ -210,12 +210,12 @@ void ftTextFile::Report()
   case ID_TOOL_REPORT_REPLACE:
     item.SetColumnText(_("Replaced"), exApp::GetConfig()->GetFindReplaceData()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
-    item.SetColumnText(_("Line"), GetDescription().Strip(wxString::both));
+    item.SetColumnText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
     item.SetColumnText(_("Match"), exApp::GetConfig()->GetFindReplaceData()->GetFindString());
   break;
 
   case ID_TOOL_REPORT_REVISION:
-    item.UpdateRevisionList(this, GetRevisionFormat());
+    item.UpdateRevisionList(this, GetRCS().GetRevisionFormat());
   break;
 
 #if USE_EMBEDDED_SQL
@@ -259,7 +259,7 @@ void ftTextFile::ReportStatistics()
   break;
 
   case ID_TOOL_REPORT_HEADER:
-    item.SetColumnText(1, GetDescription());
+    item.SetColumnText(1, GetRCS().GetDescription());
   break;
 
   case ID_TOOL_REPORT_KEYWORD:

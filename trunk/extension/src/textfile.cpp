@@ -161,24 +161,24 @@ const wxString exTextFile::GetNextRevisionNumber()
   // E.g.
   // 1.1   -> 1.2
   // 1.2.3 -> 1.2.4
-  if (!m_RevisionNumber.empty())
+  if (!m_RCS.m_RevisionNumber.empty())
   {
-    const int pos = m_RevisionNumber.rfind('.');
+    const int pos = m_RCS.m_RevisionNumber.rfind('.');
 
-    const wxString leftpart = m_RevisionNumber.substr(0, pos + 1);
-    const wxString rightpart = m_RevisionNumber.substr(pos + 1);
+    const wxString leftpart = m_RCS.m_RevisionNumber.substr(0, pos + 1);
+    const wxString rightpart = m_RCS.m_RevisionNumber.substr(pos + 1);
     const int new_number = atoi(rightpart.c_str()) + 1;
 
-    m_RevisionNumber = leftpart + wxString::Format("%d", new_number);
-    m_RevisionNumber.Append(' ', 6 - m_RevisionNumber.length());
+    m_RCS.m_RevisionNumber = leftpart + wxString::Format("%d", new_number);
+    m_RCS.m_RevisionNumber.Append(' ', 6 - m_RCS.m_RevisionNumber.length());
   }
 
-  return m_RevisionNumber;
+  return m_RCS.m_RevisionNumber;
 }
 
 bool exTextFile::HeaderDialog()
 {
-  const bool new_header = (m_Description.empty());
+  const bool new_header = (m_RCS.m_Description.empty());
   if (new_header && m_FileNameStatistics.GetStat().IsReadOnly())
   {
     return false;
@@ -187,7 +187,7 @@ bool exTextFile::HeaderDialog()
   wxTextEntryDialog ted(wxTheApp->GetTopWindow(),
     _("Input") + ":",
     _("Header Description") + ": " + m_FileNameStatistics.GetFullName(),
-    m_Description,
+    m_RCS.m_Description,
     wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
 
   if (ted.ShowModal() == wxID_CANCEL)
@@ -204,7 +204,7 @@ bool exTextFile::HeaderDialog()
   }
 
   GoToLine(0);
-  m_Description = ted.GetValue();
+  m_RCS.m_Description = ted.GetValue();
 
   if (!WriteFileHeader())
   {
@@ -216,7 +216,7 @@ bool exTextFile::HeaderDialog()
     if (exApp::GetConfigBool("RCS/Local"))
     {
       // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
-      m_RevisionNumber = "1.0";
+      m_RCS.m_RevisionNumber = "1.0";
       RevisionAddComments(wxString(
         (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
     }
@@ -248,7 +248,7 @@ void exTextFile::Initialize()
   m_RevisionActive = false;
   m_LineMarkerEnd = 0;
   m_VersionLine = 0;
-  m_RevisionFormat = REV_DATE_FORMAT;
+  m_RCS.m_RevisionFormat = REV_DATE_FORMAT;
 }
 
 void exTextFile::InsertLine(const wxString& line)
@@ -315,7 +315,7 @@ bool exTextFile::MatchLine(wxString& line)
 
   if (match)
   {
-    m_Description = line;
+    m_RCS.m_Description = line;
   }
 
   return match;
@@ -366,7 +366,7 @@ bool exTextFile::ParseComments()
           if (m_VersionLine >= 1 && GetCurrentLine() == m_LineMarkerEnd + 1)
           {
             m_LineMarkerEnd = GetCurrentLine();
-            m_Description += (!m_Description.empty() ? " ": wxString(wxEmptyString)) + m_Comments;
+            m_RCS.m_Description += (!m_RCS.m_Description.empty() ? " ": wxString(wxEmptyString)) + m_Comments;
           }
           else
           {
@@ -517,7 +517,7 @@ void exTextFile::ParseHeader()
   if (word == "Author")
   {
     comments.Trim();
-    m_Author = comments;
+    m_RCS.m_Author = comments;
   }
   else
   {
@@ -531,7 +531,7 @@ void exTextFile::ParseHeader()
       {
         m_AllowAction = true;
         comments.Trim();
-        m_Description = comments;
+        m_RCS.m_Description = comments;
       }
       else
       {
@@ -541,11 +541,11 @@ void exTextFile::ParseHeader()
         check.Trim();
         m_Comments.Trim(false); // remove formatting
         m_Comments.Trim();
-        if ((check.length() > 0 || m_Comments.empty()) && !m_Description.empty())
+        if ((check.length() > 0 || m_Comments.empty()) && !m_RCS.m_Description.empty())
           m_AllowAction = false;
         else
-          m_Description =
-            (!m_Description.empty() ? m_Description + ' ': wxString(wxEmptyString)) + m_Comments;
+          m_RCS.m_Description =
+            (!m_RCS.m_Description.empty() ? m_RCS.m_Description + ' ': wxString(wxEmptyString)) + m_Comments;
       }
     }
   }
@@ -729,11 +729,11 @@ bool exTextFile::PrepareRevision()
   wxString word = exGetWord(m_Comments);
   if (word.find('.') != wxString::npos)
   {
-    m_RevisionNumber = word;
+    m_RCS.m_RevisionNumber = word;
   }
   else
   {
-    m_RevisionNumber = wxEmptyString;
+    m_RCS.m_RevisionNumber = wxEmptyString;
     m_Comments = word + " " + m_Comments; // put back the word!
   }
 
@@ -741,12 +741,12 @@ bool exTextFile::PrepareRevision()
   const wxString REV_TIMESTAMP_FORMAT = "%2y%2m%2d %2H%2M%2S";
 
   const char* rest;
-  if      ((rest = m_RevisionTime.ParseFormat(m_Comments, REV_TIMESTAMP_FORMAT, wxDefaultDateTime)) != NULL)
-    m_RevisionFormat = REV_TIMESTAMP_FORMAT;
-  else if ((rest = m_RevisionTime.ParseFormat(m_Comments, REV_DATE_FORMAT, wxDefaultDateTime)) != NULL)
-    m_RevisionFormat = REV_DATE_FORMAT;
-  else if ((rest = m_RevisionTime.ParseFormat(m_Comments, REV_CBD_FORMAT, wxDefaultDateTime)) != NULL)
-    m_RevisionFormat = REV_CBD_FORMAT;
+  if      ((rest = m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_TIMESTAMP_FORMAT, wxDefaultDateTime)) != NULL)
+    m_RCS.m_RevisionFormat = REV_TIMESTAMP_FORMAT;
+  else if ((rest = m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_DATE_FORMAT, wxDefaultDateTime)) != NULL)
+    m_RCS.m_RevisionFormat = REV_DATE_FORMAT;
+  else if ((rest = m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_CBD_FORMAT, wxDefaultDateTime)) != NULL)
+    m_RCS.m_RevisionFormat = REV_CBD_FORMAT;
   else
   {
     // At this moment we support no other formats.
@@ -754,7 +754,7 @@ bool exTextFile::PrepareRevision()
   }
 
   // TODO: This seems like a bug.
-  m_RevisionFormat.Replace("2", wxEmptyString);
+  m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
   m_Comments = m_Comments.substr(m_Comments.Find(rest));
   word = exGetWord(m_Comments);
 
@@ -775,9 +775,9 @@ bool exTextFile::PrepareRevision()
   }
 
   m_VersionLine++;
-  m_User = word;
+  m_RCS.m_User = word;
   m_Comments.Trim();
-  m_Description = m_Comments;
+  m_RCS.m_Description = m_Comments;
 
   return true;
 }
@@ -857,14 +857,14 @@ void exTextFile::Report()
   case ID_TOOL_REPORT_REPLACE:
     logtext << exApp::GetConfig()->GetFindReplaceData()->GetReplaceString();
   case ID_TOOL_REPORT_FIND:
-    logtext << _("Line: ") << GetDescription().Strip(wxString::both);
+    logtext << _("Line: ") << m_RCS.GetDescription().Strip(wxString::both);
     logtext << _("Match: ") << exApp::GetConfig()->GetFindReplaceData()->GetFindString();
   break;
   case ID_TOOL_REPORT_REVISION:
-    if (!GetRevisionNumber().empty()) logtext << GetRevisionNumber() << ' ';
-    if (GetRevisionTime().IsValid()) logtext << GetRevisionTime().Format(m_RevisionFormat) << ' ';
-    if (!GetUser().empty()) logtext << GetUser() << ' ';
-    logtext << GetDescription();
+    if (!m_RCS.GetRevisionNumber().empty()) logtext << m_RCS.GetRevisionNumber() << ' ';
+    if (m_RCS.GetRevisionTime().IsValid()) logtext << m_RCS.GetRevisionTime().Format(m_RCS.m_RevisionFormat) << ' ';
+    if (!m_RCS.GetUser().empty()) logtext << m_RCS.GetUser() << ' ';
+    logtext << m_RCS.GetDescription();
     line--;
   break;
   default: wxLogError(FILE_INFO("Unhandled id: %d"), m_Tool.GetId());
@@ -884,7 +884,7 @@ void exTextFile::ReportStatistics()
 {
   switch (m_Tool.GetId())
   {
-  case ID_TOOL_REPORT_HEADER: wxLogMessage(m_Description); break;
+  case ID_TOOL_REPORT_HEADER: wxLogMessage(m_RCS.m_Description); break;
   case ID_TOOL_REPORT_KEYWORD: wxLogMessage(GetStatisticKeywords().Get()); break;
   default:
     // This used to be done for ID_TOOL_REPORT_COUNT,
@@ -896,63 +896,10 @@ void exTextFile::ReportStatistics()
 void exTextFile::RevisionAddComments(const wxString& comments)
 {
   // TODO: This seems like a bug.
-  m_RevisionFormat.Replace("2", wxEmptyString);
+  m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
   WriteTextWithPrefix(comments,
-    GetNextRevisionNumber() + wxDateTime::Now().Format(m_RevisionFormat) + " " +
+    GetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
     exApp::GetConfig("RCS/User", wxGetUserName()), !m_IsCommentStatement);
-}
-
-bool exTextFile::RevisionDialog()
-{
-  if (m_DialogShown)
-  {
-    return true;
-  }
-
-  long cancel_button = 0;
-  if (!m_FileNameStatistics.GetStat().IsReadOnly())
-  {
-    cancel_button = wxCANCEL;
-  }
-
-  wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
-    m_RevisionTime.Format(m_RevisionFormat) + "\n" + m_User,
-    m_FileNameStatistics.GetFullName(),
-    m_Description,
-    wxOK | cancel_button | wxCENTRE | wxTE_MULTILINE);
-
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return false;
-  }
-
-  m_DialogShown = true;
-
-  if (m_FileNameStatistics.GetStat().IsReadOnly())
-  {
-    return true;
-  }
-
-  // Replace the old revision with this revision.
-  if (m_LineMarker == 0 || m_LineMarkerEnd == 0)
-  {
-    wxLogError("Not all markers set (%d, %d), cannot save", m_LineMarker, m_LineMarkerEnd);
-    return false;
-  }
-
-  if (!m_Description.empty())
-  {
-    for (size_t i = m_LineMarkerEnd; i >= m_LineMarker; i--)
-    {
-      RemoveLine(i);
-    }
-
-    GoToLine(m_LineMarker);
-    m_Description = dlg.GetValue();
-    RevisionAddComments(m_Description);
-  }
-
-  return true;
 }
 
 bool exTextFile::RunTool()
@@ -1027,7 +974,7 @@ bool exTextFile::RunTool()
     {
       if (m_Tool.GetId() == ID_TOOL_REPORT_HEADER)
       {
-        if (m_Description.empty())
+        if (m_RCS.m_Description.empty())
         {
           return false;
         }
@@ -1100,9 +1047,9 @@ void exTextFile::WriteComment(
 
 bool exTextFile::WriteFileHeader()
 {
-  const wxString actual_author = (m_Author.empty() ?
+  const wxString actual_author = (m_RCS.m_Author.empty() ?
     exApp::GetConfig("Header/Author"):
-    m_Author);
+    m_RCS.m_Author);
 
   const wxString address = exApp::GetConfig("Header/Address");
   const wxString company = exApp::GetConfig("Header/Company");
@@ -1112,7 +1059,7 @@ bool exTextFile::WriteFileHeader()
 
   WriteComment(wxEmptyString, true);
   WriteComment("File:        " + m_FileNameStatistics.GetFullName(), true);
-  WriteTextWithPrefix(m_Description, "Purpose:     ");
+  WriteTextWithPrefix(m_RCS.m_Description, "Purpose:     ");
   WriteComment("Author:      " + actual_author, true);
   WriteComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
 

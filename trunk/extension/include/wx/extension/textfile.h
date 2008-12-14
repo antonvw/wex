@@ -16,20 +16,18 @@
 #include <wx/textfile.h>
 #include <wx/extension/statistics.h>
 
-/// Adds file tool methods to wxTextFile.
-/// In your derived class just implement the Report or ReportStatistics, and take
-/// care that the strings are added to your component.
-class exTextFile : public wxTextFile
+class exTextFile;
+
+/// Class for keeping RCS information.
+class exRCS
 {
+  friend class exTextFile;
 public:
-  /// Constructor.
-  exTextFile(const exFileName& filename);
+  /// Gets the author.
+  const wxString& GetAuthor() const {return m_Author;};
 
   /// Gets the description.
   const wxString& GetDescription() const {return m_Description;};
-
-  /// Gets the filename.
-  const exFileName& GetFileName() const {return m_FileNameStatistics;};
 
   /// Gets the revision format.
   const wxString& GetRevisionFormat() const {return m_RevisionFormat;};
@@ -40,14 +38,38 @@ public:
   /// Gets the revision time.
   const wxDateTime& GetRevisionTime() const {return m_RevisionTime;};
 
+  /// Gets the user.
+  const wxString& GetUser() const {return m_User;};
+
+private:
+  wxString m_Author;
+  wxString m_Description;
+  wxString m_RevisionFormat;
+  wxString m_RevisionNumber;
+  wxDateTime m_RevisionTime;
+  wxString m_User;
+};
+
+/// Adds file tool methods to wxTextFile.
+/// In your derived class just implement the Report or ReportStatistics, and take
+/// care that the strings are added to your component.
+class exTextFile : public wxTextFile
+{
+public:
+  /// Constructor.
+  exTextFile(const exFileName& filename);
+
+  /// Gets the filename.
+  const exFileName& GetFileName() const {return m_FileNameStatistics;};
+
+  /// Gets the RCS data.
+  const exRCS& GetRCS() const {return m_RCS;};
+
   /// Gets the statistics.
   const exFileNameStatistics& GetStatistics() const {return m_FileNameStatistics;}
 
   /// Gets the tool.
   static exTool& GetTool() {return m_Tool;};
-
-  /// Gets the user.
-  const wxString& GetUser() const {return m_User;};
 
   /// Inserts a line at current line (or at end if at end),
   /// make that line current and sets modified.
@@ -174,7 +196,6 @@ private:
     const wxString& header,
     bool is_comment);
   void RevisionAddComments(const wxString& m_FileNameStatistics);
-  bool RevisionDialog();
   bool WriteFileHeader();
   void WriteTextWithPrefix(
     const wxString& text,
@@ -197,15 +218,10 @@ private:
   size_t m_LineMarker;
   size_t m_LineMarkerEnd;
   size_t m_VersionLine;
+  
+  exRCS m_RCS;
 
-  wxDateTime m_RevisionTime;
-
-  wxString m_Author;
   wxString m_Comments;
-  wxString m_Description;
-  wxString m_RevisionFormat;
-  wxString m_RevisionNumber;
-  wxString m_User;
 
   static exSyntaxType m_LastSyntaxType;
   static exSyntaxType m_SyntaxType;
