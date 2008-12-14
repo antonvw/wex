@@ -374,7 +374,7 @@ void ftDir::OnFile(const wxString& file)
           if (report.SetupTool(ID_TOOL_REVISION_RECENT))
           {
             report.RunTool();
-            item.UpdateRevisionList(&report);
+            item.UpdateRevisionList(report.GetRCS());
           }
         }
       }

@@ -215,7 +215,7 @@ void ftTextFile::Report()
   break;
 
   case ID_TOOL_REPORT_REVISION:
-    item.UpdateRevisionList(this, GetRCS().GetRevisionFormat());
+    item.UpdateRevisionList(GetRCS(), GetRCS().GetRevisionFormat());
   break;
 
 #if USE_EMBEDDED_SQL

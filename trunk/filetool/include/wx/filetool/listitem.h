@@ -46,9 +46,9 @@ public:
   /// Updates all attributes.
   void Update();
 
-  /// Sets revision list columns with data from specified file.
+  /// Sets revision list columns with data from specified rcs.
   void UpdateRevisionList(
-    const exTextFile* file,
+    const exRCS& rcs,
     const wxString& format = wxDefaultDateTimeFormat);
 private:
   exFileNameStatistics m_Statistics;

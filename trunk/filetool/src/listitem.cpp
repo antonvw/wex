@@ -151,11 +151,11 @@ void ftListItem::Update()
 }
 
 void ftListItem::UpdateRevisionList(
-  const exTextFile* file,
+  const exRCS& rcs,
   const wxString& format)
 {
-  SetColumnText(_("Revision"), file->GetRevisionNumber());
-  SetColumnText(_("Date"), file->GetRevisionTime().Format(format));
-  SetColumnText(_("Initials"), file->GetUser());
-  SetColumnText(_("Revision Comment"), file->GetDescription());
+  SetColumnText(_("Revision"), rcs.GetRevisionNumber());
+  SetColumnText(_("Date"), rcs.GetRevisionTime().Format(format));
+  SetColumnText(_("Initials"), rcs.GetUser());
+  SetColumnText(_("Revision Comment"), rcs.GetDescription());
 }
