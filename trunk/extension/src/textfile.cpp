@@ -17,6 +17,25 @@
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
 
+exRCS::exRCS()
+  : m_RevisionFormat(REV_DATE_FORMAT)
+  // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
+  , m_RevisionNumber("1.0")
+{
+}
+
+const wxString exRCS::GetRevision() const
+{
+  wxString logtext;
+
+  if (!m_RevisionNumber.empty()) logtext << m_RevisionNumber << ' ';
+  if (m_RevisionTime.IsValid()) logtext << m_RevisionTime.Format(m_RevisionFormat) << ' ';
+  if (!m_User.empty()) logtext << m_User << ' ';
+  logtext << m_Description;
+
+  return logtext;
+}
+
 const wxString exRCS::SetNextRevisionNumber()
 {
   // If the m_RevisionNumber member is valid, and this is a new comment (check-in or out),
@@ -46,7 +65,17 @@ exTextFile::exSyntaxType exTextFile::m_LastSyntaxType = exTextFile::SYNTAX_NONE;
 exTextFile::exTextFile(const exFileName& filename)
   : m_FileNameStatistics(filename)
 {
-  Initialize();
+  m_LineMarker = 0;
+  m_AllowAction = false;
+  m_DialogShown = false;
+  m_EmptyLine = false;
+  m_FinishedAction = false;
+  m_IsCommentStatement = false;
+  m_IsString = false;
+  m_Modified = false;
+  m_RevisionActive = false;
+  m_LineMarkerEnd = 0;
+  m_VersionLine = 0;
 }
 
 
@@ -212,8 +241,6 @@ bool exTextFile::HeaderDialog()
   {
     if (exApp::GetConfigBool("RCS/Local"))
     {
-      // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
-      m_RCS.m_RevisionNumber = "1.0";
       RevisionAddComments(wxString(
         (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
     }
@@ -230,22 +257,6 @@ bool exTextFile::HeaderDialog()
   }
 
   return true;
-}
-
-void exTextFile::Initialize()
-{
-  m_LineMarker = 0;
-  m_AllowAction = false;
-  m_DialogShown = false;
-  m_EmptyLine = false;
-  m_FinishedAction = false;
-  m_IsCommentStatement = false;
-  m_IsString = false;
-  m_Modified = false;
-  m_RevisionActive = false;
-  m_LineMarkerEnd = 0;
-  m_VersionLine = 0;
-  m_RCS.m_RevisionFormat = REV_DATE_FORMAT;
 }
 
 void exTextFile::InsertLine(const wxString& line)
@@ -858,10 +869,7 @@ void exTextFile::Report()
     logtext << _("Match: ") << exApp::GetConfig()->GetFindReplaceData()->GetFindString();
   break;
   case ID_TOOL_REPORT_REVISION:
-    if (!m_RCS.GetRevisionNumber().empty()) logtext << m_RCS.GetRevisionNumber() << ' ';
-    if (m_RCS.GetRevisionTime().IsValid()) logtext << m_RCS.GetRevisionTime().Format(m_RCS.m_RevisionFormat) << ' ';
-    if (!m_RCS.GetUser().empty()) logtext << m_RCS.GetUser() << ' ';
-    logtext << m_RCS.GetDescription();
+    logtext << m_RCS.GetRevision();
     line--;
   break;
   default: wxLogError(FILE_INFO("Unhandled id: %d"), m_Tool.GetId());

@@ -23,11 +23,17 @@ class exRCS
 {
   friend class exTextFile;
 public:
+  /// Default constructor.
+  exRSC();
+
   /// Gets the author.
   const wxString& GetAuthor() const {return m_Author;};
 
   /// Gets the description.
   const wxString& GetDescription() const {return m_Description;};
+
+  /// Gets a revision string from number, time, user and description.
+  const wxString& GetRevision() const;
 
   /// Gets the revision format.
   const wxString& GetRevisionFormat() const {return m_RevisionFormat;};
@@ -150,7 +156,7 @@ private:
     SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
     SYNTAX_TWO,      ///< syntax according to comment begin2 and end2
   };
-  
+
   exCommentType CheckCommentSyntax(
     const wxString& syntax_begin,
     const wxString& syntax_end,
@@ -219,7 +225,7 @@ private:
   size_t m_LineMarker;
   size_t m_LineMarkerEnd;
   size_t m_VersionLine;
-  
+
   exRCS m_RCS;
 
   wxString m_Comments;
