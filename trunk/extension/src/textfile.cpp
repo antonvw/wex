@@ -179,10 +179,6 @@ void exTextFile::EndCurrentRevision()
 bool exTextFile::HeaderDialog()
 {
   const bool new_header = (m_RCS.m_Description.empty());
-  if (new_header && m_FileNameStatistics.GetStat().IsReadOnly())
-  {
-    return false;
-  }
 
   wxTextEntryDialog ted(wxTheApp->GetTopWindow(),
     _("Input") + ":",
@@ -195,6 +191,8 @@ bool exTextFile::HeaderDialog()
     return false;
   }
 
+  m_RCS.m_Description = ted.GetValue();
+
   if (GetLineCount() > 0 && GetCurrentLine() > 1)
   {
     for (size_t i = GetCurrentLine() - 1; i > 0; i--)
@@ -204,7 +202,6 @@ bool exTextFile::HeaderDialog()
   }
 
   GoToLine(0);
-  m_RCS.m_Description = ted.GetValue();
 
   if (!WriteFileHeader())
   {
