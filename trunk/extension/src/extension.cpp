@@ -401,19 +401,23 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   switch (svn_type)
   {
     case SVN_COMMIT: 
-      caption = _("Commit"); 
+      caption = _("SVN commit"); 
       svn_command = "commit";
       break;
+    case SVN_CAT: 
+      caption = _("SVN cat"); 
+      svn_command = "cat";
+      break;
     case SVN_DIFF: 
-      caption = _("Diff"); 
+      caption = _("SVN diff"); 
       svn_command = "diff";
       break;
     case SVN_LOG: 
-      caption = _("Log"); 
+      caption = _("SVN log"); 
       svn_command = "log";
       break;
     case SVN_STAT: 
-      caption = _("Stat"); 
+      caption = _("SVN stat"); 
       svn_command = "stat";
       break;
   }

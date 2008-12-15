@@ -164,10 +164,11 @@ void exBackgroundColourDialog(wxWindow* parent, wxWindow* win);
 /// SVN types supported.
 enum exSvnType
 { 
-  SVN_COMMIT,
-  SVN_DIFF,
-  SVN_STAT,
-  SVN_LOG,
+  SVN_COMMIT, ///< svn commit 
+  SVN_CAT,    ///< svn cat
+  SVN_DIFF,   ///< svn diff 
+  SVN_STAT,   ///< svn stat 
+  SVN_LOG,    ///< svn log 
 };
 
 /// Shows a subversion dialog, depending on type.
