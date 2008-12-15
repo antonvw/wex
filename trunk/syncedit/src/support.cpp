@@ -92,6 +92,7 @@ Frame::Frame(const wxString& project_wildcard)
     wxMenu* menuRCS = new wxMenu;
     menuRCS->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
     menuRCS->Append(ID_SVN_LOG, exEllipsed(_("&Log")));
+    menuRCS->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
     menuRCS->AppendSeparator();
     menuRCS->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
     menuEdit->Append(-1, _("&SVN"), wxEmptyString, wxITEM_NORMAL, menuRCS);

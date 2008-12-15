@@ -621,6 +621,7 @@ and saved in the same directory as where the executable is."));
   break;
 
   case ID_SVN_COMMIT: exSvnDialog(SVN_COMMIT); break;
+  case ID_SVN_DIFF: exSvnDialog(SVN_DIFF); break;
   case ID_SVN_LOG: exSvnDialog(SVN_LOG); break;
   case ID_SVN_STAT: exSvnDialog(SVN_STAT); break;
 
