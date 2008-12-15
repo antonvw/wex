@@ -24,7 +24,7 @@ class exRCS
   friend class exTextFile;
 public:
   /// Default constructor.
-  exRSC();
+  exRCS();
 
   /// Gets the author.
   const wxString& GetAuthor() const {return m_Author;};
@@ -33,7 +33,7 @@ public:
   const wxString& GetDescription() const {return m_Description;};
 
   /// Gets a revision string from number, time, user and description.
-  const wxString& GetRevision() const;
+  const wxString GetRevision() const;
 
   /// Gets the revision format.
   const wxString& GetRevisionFormat() const {return m_RevisionFormat;};
