@@ -41,6 +41,8 @@ public:
   /// Gets the user.
   const wxString& GetUser() const {return m_User;};
 
+  /// Increments the revision number, and returns the new number.
+  const wxString SetNextRevisionNumber();
 private:
   wxString m_Author;
   wxString m_Description;
@@ -179,7 +181,6 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
-  const wxString GetNextRevisionNumber();
   bool HeaderDialog();
   void Initialize();
   bool MatchLine(wxString& line);

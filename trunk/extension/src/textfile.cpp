@@ -17,6 +17,28 @@
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
 
+const wxString exRCS::SetNextRevisionNumber()
+{
+  // If the m_RevisionNumber member is valid, and this is a new comment (check-in or out),
+  // then the revision can be incremented. Always increment the rightmost part.
+  // E.g.
+  // 1.1   -> 1.2
+  // 1.2.3 -> 1.2.4
+  if (!m_RevisionNumber.empty())
+  {
+    const int pos = m_RevisionNumber.rfind('.');
+
+    const wxString leftpart = m_RevisionNumber.substr(0, pos + 1);
+    const wxString rightpart = m_RevisionNumber.substr(pos + 1);
+    const int new_number = atoi(rightpart.c_str()) + 1;
+
+    m_RevisionNumber = leftpart + wxString::Format("%d", new_number);
+    m_RevisionNumber.Append(' ', 6 - m_RevisionNumber.length());
+  }
+
+  return m_RevisionNumber;
+}
+
 exTool exTextFile::m_Tool = ID_TOOL_LOWEST;
 exTextFile::exSyntaxType exTextFile::m_SyntaxType = exTextFile::SYNTAX_NONE;
 exTextFile::exSyntaxType exTextFile::m_LastSyntaxType = exTextFile::SYNTAX_NONE;
@@ -152,28 +174,6 @@ void exTextFile::EndCurrentRevision()
 
     m_RevisionActive = false;
   }
-}
-
-const wxString exTextFile::GetNextRevisionNumber()
-{
-  // If the m_RevisionNumber member is valid, and this is a new comment (check-in or out),
-  // then the revision can be incremented. Always increment the rightmost part.
-  // E.g.
-  // 1.1   -> 1.2
-  // 1.2.3 -> 1.2.4
-  if (!m_RCS.m_RevisionNumber.empty())
-  {
-    const int pos = m_RCS.m_RevisionNumber.rfind('.');
-
-    const wxString leftpart = m_RCS.m_RevisionNumber.substr(0, pos + 1);
-    const wxString rightpart = m_RCS.m_RevisionNumber.substr(pos + 1);
-    const int new_number = atoi(rightpart.c_str()) + 1;
-
-    m_RCS.m_RevisionNumber = leftpart + wxString::Format("%d", new_number);
-    m_RCS.m_RevisionNumber.Append(' ', 6 - m_RCS.m_RevisionNumber.length());
-  }
-
-  return m_RCS.m_RevisionNumber;
 }
 
 bool exTextFile::HeaderDialog()
@@ -898,7 +898,7 @@ void exTextFile::RevisionAddComments(const wxString& comments)
   // TODO: This seems like a bug.
   m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
   WriteTextWithPrefix(comments,
-    GetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
+    m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
     exApp::GetConfig("RCS/User", wxGetUserName()), !m_IsCommentStatement);
 }
 
