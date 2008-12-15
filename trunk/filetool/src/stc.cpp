@@ -103,7 +103,16 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
     if (GetMenuFlags() & STC_MENU_COMPARE)
     {
       menu.AppendSeparator();
-      menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
+
+      if (exApp::GetConfigBool("RCS/Local"))
+      {
+        menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
+      }
+      else
+      {
+        menu.Append(ID_STC_SVN_DIFF, exEllipsed(_("&Diff")));
+        menu.Append(ID_STC_SVN_LOG, exEllipsed(_("Log")));
+      }
     }
   }
 }
@@ -152,17 +161,15 @@ void ftSTC::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case ID_STC_COMPARE:
-    if (exApp::GetConfigBool("RCS/Local"))
     {
       wxFileName lastfile;
       if (ftFindOtherFileName(m_FileName, NULL, &lastfile))
         ftCompareFile(m_FileName, lastfile);
     }
-    else
-    {
-      exSvnDialog(SVN_DIFF, m_FileName.GetFullPath());
-    }
     break;
+
+  case ID_STC_SVN_DIFF: exSvnDialog(SVN_DIFF, m_FileName.GetFullPath()); break;
+  case ID_STC_SVN_LOG: exSvnDialog(SVN_LOG, m_FileName.GetFullPath()); break;
 
   case ID_STC_FIND_FILES:
     GetSearchText();
