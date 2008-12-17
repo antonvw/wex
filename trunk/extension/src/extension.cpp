@@ -487,14 +487,22 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   }
 
   /// Finally present it.
-  exSTCEntryDialog(
+  exSTCEntryDialog dlg(
     NULL, 
     "SVN", 
     msg, 
     wxEmptyString, 
     wxOK,
     wxID_ANY,
-    wxDefaultPosition, wxSize(550, 250)).ShowModal();
+    wxDefaultPosition, wxSize(550, 250));
+    
+  if (!fullpath.empty())
+  { 
+    exFileName fn(fullpath); 
+    dlg.SetLexer(fn.GetLexer().GetScintillaLexer());
+  }
+  
+  dlg.ShowModal();
                   
   return true;
 }

@@ -325,10 +325,14 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-  /// Get normal text value.
-  const wxString GetText() const {return m_STC->GetText();}
-  /// Get raw text value.
-  wxString* GetTextRaw() const {return m_STC->GetTextRaw();}
+  /// Gets the normal text value.
+  const wxString GetText() const {return m_STC->GetText();};
+  
+  /// Gets raw text value.
+  wxString* GetTextRaw() const {return m_STC->GetTextRaw();};
+
+  /// Sets the STC lexer.
+  void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};
 private:
   exSTC* m_STC;
 };
