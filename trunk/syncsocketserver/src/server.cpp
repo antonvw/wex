@@ -608,12 +608,12 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Check(GetManager().GetPane("STATISTICS").IsShown());
     break;
 
-  case ID_VIEW_STATUSBAR:
-    event.Check(GetStatusBar()->IsShown());
+  case ID_WRITE_DATA:
+    event.Enable(m_Clients.size() > 0 && m_DataWindow->GetLength() > 0);
     break;
 
   default:
-    wxLogError("Unhandled event");
+    wxLogError(wxString::Format("Unhandled event: %d"), event.GetId());
   }
 }
 
