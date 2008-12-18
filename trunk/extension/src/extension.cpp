@@ -496,7 +496,7 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
     wxID_ANY,
     wxDefaultPosition, wxSize(550, 250));
     
-  if (!fullpath.empty())
+  if (!fullpath.empty() && svn_type == SVN_CAT)
   { 
     exFileName fn(fullpath); 
     dlg.SetLexer(fn.GetLexer().GetScintillaLexer());

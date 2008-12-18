@@ -641,6 +641,8 @@ and saved in the same directory as where the executable is."));
       m_DirCtrl->GetFilePath());
   }
   break;
+
+  case ID_TREE_SVN_CAT: exSvnDialog(SVN_CAT, m_DirCtrl->GetFilePath()); break;
   case ID_TREE_SVN_DIFF: exSvnDialog(SVN_DIFF, m_DirCtrl->GetFilePath()); break;
   case ID_TREE_SVN_LOG: exSvnDialog(SVN_LOG, m_DirCtrl->GetFilePath()); break;
   
@@ -683,8 +685,9 @@ void MDIFrame::OnTree(wxTreeEvent& event)
     if (!exApp::GetConfigBool("RCS/Local"))
     {
       exMenu menu;
-      menu.Append(ID_TREE_SVN_DIFF, exEllipsed(_("Diff")));
-      menu.Append(ID_TREE_SVN_LOG, exEllipsed(_("Log")));
+      menu.Append(ID_TREE_SVN_DIFF, exEllipsed(_("&diff")));
+      menu.Append(ID_TREE_SVN_LOG, exEllipsed(_("&log")));
+      menu.Append(ID_TREE_SVN_CAT, exEllipsed(_("&cat")));
       
       if (filename.GetLexer().GetScintillaLexer() == "makefile")
       {
