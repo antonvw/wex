@@ -110,9 +110,11 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
       }
       else
       {
-        menu.Append(ID_STC_SVN_DIFF, exEllipsed(_("&diff")));
-        menu.Append(ID_STC_SVN_LOG, exEllipsed(_("&log")));
-        menu.Append(ID_STC_SVN_CAT, exEllipsed(_("&cat")));
+        wxMenu* svnmenu = new wxMenu;
+        svnmenu->Append(ID_STC_SVN_DIFF, exEllipsed(_("&Diff")));
+        svnmenu->Append(ID_STC_SVN_LOG, exEllipsed(_("&Log")));
+        svnmenu->Append(ID_STC_SVN_CAT, exEllipsed(_("&Cat")));
+        menu.Append(-1, _("&SVN"), wxEmptyString, wxITEM_NORMAL, svnmenu);
       }
     }
   }

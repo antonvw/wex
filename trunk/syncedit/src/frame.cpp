@@ -684,10 +684,12 @@ void MDIFrame::OnTree(wxTreeEvent& event)
   {
     if (!exApp::GetConfigBool("RCS/Local"))
     {
-      exMenu menu;
-      menu.Append(ID_TREE_SVN_DIFF, exEllipsed(_("&diff")));
-      menu.Append(ID_TREE_SVN_LOG, exEllipsed(_("&log")));
-      menu.Append(ID_TREE_SVN_CAT, exEllipsed(_("&cat")));
+      wxMenu menu;
+      wxMenu* svnmenu = new wxMenu;
+      svnmenu->Append(ID_TREE_SVN_DIFF, exEllipsed(_("&Diff")));
+      svnmenu->Append(ID_TREE_SVN_LOG, exEllipsed(_("&Log")));
+      svnmenu->Append(ID_TREE_SVN_CAT, exEllipsed(_("&Cat")));
+      menu.AppendSubMenu(svnmenu, _("&SVN"));
       
       if (filename.GetLexer().GetScintillaLexer() == "makefile")
       {

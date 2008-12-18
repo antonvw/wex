@@ -401,23 +401,23 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   switch (svn_type)
   {
     case SVN_COMMIT: 
-      caption = _("SVN commit"); 
+      caption = _("SVN Commit");
       svn_command = "commit";
       break;
     case SVN_CAT: 
-      caption = _("SVN cat"); 
+      caption = _("SVN Cat");
       svn_command = "cat";
       break;
     case SVN_DIFF: 
-      caption = _("SVN diff"); 
+      caption = _("SVN Diff"); 
       svn_command = "diff";
       break;
     case SVN_LOG: 
-      caption = _("SVN log"); 
+      caption = _("SVN Log"); 
       svn_command = "log";
       break;
     case SVN_STAT: 
-      caption = _("SVN stat"); 
+      caption = _("SVN Stat"); 
       svn_command = "stat";
       break;
   }
@@ -489,7 +489,7 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   /// Finally present it.
   exSTCEntryDialog dlg(
     NULL, 
-    "SVN", 
+    caption + (!fullpath.empty() ? " " + wxFileName(fullpath).GetFullName(): wxString(wxEmptyString)),
     msg, 
     wxEmptyString, 
     wxOK,
