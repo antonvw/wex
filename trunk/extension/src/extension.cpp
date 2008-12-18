@@ -17,6 +17,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/tool.h>
 
 bool exApp::m_Logging = false;
 wxString exApp::m_CatalogDir;

@@ -15,7 +15,6 @@
 #include <wx/intl.h> // for wxLocale
 #include <wx/extension/version.h>
 #include <wx/extension/base.h>
-#include <wx/extension/tool.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/config.h>
 #include <wx/extension/file.h>

@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/extension.h>
+#include <wx/extension/tool.h>
 
 std::map < int, const exToolInfo > exTool::m_ToolInfo;
 

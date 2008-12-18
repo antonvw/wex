@@ -15,6 +15,7 @@
 #include <wx/datetime.h>
 #include <wx/textfile.h>
 #include <wx/extension/statistics.h>
+#include <wx/extension/tool.h>
 
 class exTextFile;
 
