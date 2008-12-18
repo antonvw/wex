@@ -488,7 +488,7 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   }
 
   /// Finally present it.
-  exSTCEntryDialog dlg(
+  exSTCEntryDialog* dlg = new exSTCEntryDialog(
     NULL, 
     caption + (!fullpath.empty() ? " " + wxFileName(fullpath).GetFullName(): wxString(wxEmptyString)),
     msg, 
@@ -500,10 +500,10 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   if (!fullpath.empty() && svn_type == SVN_CAT)
   { 
     exFileName fn(fullpath); 
-    dlg.SetLexer(fn.GetLexer().GetScintillaLexer());
+    dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
   }
   
-  dlg.ShowModal();
+  dlg->Show();
                   
   return true;
 }
