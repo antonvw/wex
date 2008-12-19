@@ -398,9 +398,11 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
 {
   wxString contents;
 
-  const bool okay = exSvnGet(contents, svn_type, fullpath);
+  // Get svn contents.
+  const int errors = exSvnGet(contents, svn_type, fullpath);
+  if (errors < 0) return false;
 
-  /// Finally present it.
+  // Create a dialog for contents.
   exSTCEntryDialog* dlg = new exSTCEntryDialog(
     wxTheApp->GetTopWindow(), 
     "SVN" + (!fullpath.empty() ? " " + wxFileName(fullpath).GetFullName(): wxString(wxEmptyString)),
@@ -410,11 +412,11 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
     wxID_ANY,
     wxDefaultPosition, wxSize(550, 250));
 
-  /// Add a lexer if we specified a path, asked for cat and there were no errors.
+  // Add a lexer if we specified a path, asked for cat and there were no errors.
   if (
     !fullpath.empty() && 
      svn_type == SVN_CAT &&
-     okay)
+     errors == 0)
   { 
     exFileName fn(fullpath); 
     dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
@@ -425,7 +427,7 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   return true;
 }
 
-bool exSvnGet(
+int exSvnGet(
   wxString& contents,
   exSvnType svn_type, 
   const wxString& fullpath)
@@ -475,7 +477,7 @@ bool exSvnGet(
     v,
     caption).ShowModal() == wxID_CANCEL)
   {
-    return false;
+    return -1;
   }
 
   const wxString cwd = wxGetCwd();
@@ -519,7 +521,7 @@ bool exSvnGet(
     contents += output[j] + "\n";
   }
 
-  return errors.GetCount() == 0;
+  return errors.GetCount();
 }
 
 const wxString exTranslate(const wxString& text, int pageNum, int numPages)

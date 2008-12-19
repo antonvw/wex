@@ -173,8 +173,8 @@ enum exSvnType
 /// Gets info from svn, depending on type.
 /// If no fullpath is specified, a base folder is shown, otherwise
 /// the specified fullpath is used for getting svn contents from.
-/// Returns true if there were no errors.
-bool exSvnGet(
+/// Returns -1 if dialog was cancelled, or the number of errors otherwise.
+int exSvnGet(
   wxString& contents,
   exSvnType svn_type, 
   const wxString& fullpath = wxEmptyString);
