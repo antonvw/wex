@@ -170,18 +170,19 @@ enum exSvnType
   SVN_LOG,    ///< svn log 
 };
 
-/// Gets info from svn, depending on type.
-/// If no fullpath is specified, a base folder is shown, otherwise
-/// the specified fullpath is used for getting svn contents from.
-/// Returns -1 if dialog was cancelled, or the number of errors otherwise.
-int exSvnGet(
-  wxString& contents,
-  exSvnType svn_type, 
-  const wxString& fullpath = wxEmptyString);
-
 /// Shows a subversion dialog, using exSvnGet.
 /// Returns true if dialog is accepted.
 bool exSvnDialog(exSvnType svn_type, const wxString& fullpath = wxEmptyString);
+
+/// Gets info from svn, depending on type.
+/// If no fullpath is specified, a dialog with base folder is shown, otherwise
+/// the specified fullpath is used for getting svn contents from.
+/// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
+/// that were reported by svn otherwise.
+int exSvnGet(
+  exSvnType svn_type,
+  wxString& contents,
+  const wxString& fullpath = wxEmptyString);
 
 // Combobox methods.
 /// Adds entries from a combobox to a text string.

@@ -399,8 +399,8 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   wxString contents;
 
   // Get svn contents.
-  const int errors = exSvnGet(contents, svn_type, fullpath);
-  if (errors < 0) return false;
+  const int retcode = exSvnGet(svn_type, contents, fullpath);
+  if (retcode < 0) return false;
 
   // Create a dialog for contents.
   exSTCEntryDialog* dlg = new exSTCEntryDialog(
@@ -416,7 +416,7 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
   if (
     !fullpath.empty() && 
      svn_type == SVN_CAT &&
-     errors == 0)
+     retcode == 0)
   { 
     exFileName fn(fullpath); 
     dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
@@ -428,8 +428,8 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
 }
 
 int exSvnGet(
-  wxString& contents,
   exSvnType svn_type, 
+  wxString& contents,
   const wxString& fullpath)
 {
   wxString caption;
