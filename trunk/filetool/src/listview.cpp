@@ -793,8 +793,9 @@ void ftListView::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_DIFF:
   {
+    // TODO: Compare with last version only??
     const ftListItem item(this, GetNextSelected(-1));
-    exSvnDialog(SVN_DIFF, item.GetFileName().GetFullPath());
+    exSVN(SVN_DIFF).Show(item.GetFileName().GetFullPath());
   }
   break;
 
