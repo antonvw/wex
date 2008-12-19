@@ -63,10 +63,10 @@ ftSTC::ftSTC(wxWindow* parent,
   }
 }
 
-ftSTC::ftSTC(const ftSTC& stc)
+ftSTC::ftSTC(const exSTC& stc)
   : exSTC(stc)
 {
-  m_Frame = stc.m_Frame;
+  Initialize();
 }
 
 void ftSTC::BuildPopupMenu(exMenu& menu)

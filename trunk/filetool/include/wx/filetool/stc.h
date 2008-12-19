@@ -16,7 +16,8 @@ class ftFrame;
 
 #include <wx/extension/stc.h>
 
-/// Adds a frame and drag/drop to exSTC.
+/// Adds a frame and drag/drop to exSTC. 
+/// The frame is assigned in the Initialize.
 class ftSTC : public exSTC
 {
 public:
@@ -58,8 +59,8 @@ public:
     long style = 0,
     const wxString& name = wxSTCNameStr);
 
-  /// Copy constructor.
-  ftSTC(const ftSTC& stc);
+  /// Copy constructor from an exSTC.
+  ftSTC(const exSTC& stc);
 
   /// Calls base and sets recent file if base call succeeded.
   virtual bool Open(

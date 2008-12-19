@@ -396,6 +396,40 @@ void exStatusText(const exFileName& filename, long flags)
 
 bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
 {
+  wxString contents;
+
+  const bool okay = exSvnGet(contents, svn_type, fullpath);
+
+  /// Finally present it.
+  exSTCEntryDialog* dlg = new exSTCEntryDialog(
+    wxTheApp->GetTopWindow(), 
+    "SVN" + (!fullpath.empty() ? " " + wxFileName(fullpath).GetFullName(): wxString(wxEmptyString)),
+    contents, 
+    wxEmptyString, 
+    wxOK,
+    wxID_ANY,
+    wxDefaultPosition, wxSize(550, 250));
+
+  /// Add a lexer if we specified a path, asked for cat and there were no errors.
+  if (
+    !fullpath.empty() && 
+     svn_type == SVN_CAT &&
+     okay)
+  { 
+    exFileName fn(fullpath); 
+    dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
+  }
+  
+  dlg->Show();
+                  
+  return true;
+}
+
+bool exSvnGet(
+  wxString& contents,
+  exSvnType svn_type, 
+  const wxString& fullpath)
+{
   wxString caption;
   wxString svn_command;
 
@@ -473,39 +507,19 @@ bool exSvnDialog(exSvnType svn_type, const wxString& fullpath)
     wxSetWorkingDirectory(cwd);
   }
 
-  wxString msg;
-
   // First output the errors.
   for (size_t i = 0; i < errors.GetCount(); i++)
   {
-    msg += errors[i] + "\n";
+    contents += errors[i] + "\n";
   }
 
   // Then the normal output, will be empty if there are errors.
   for (size_t j = 0; j < output.GetCount(); j++)
   {
-    msg += output[j] + "\n";
+    contents += output[j] + "\n";
   }
 
-  /// Finally present it.
-  exSTCEntryDialog* dlg = new exSTCEntryDialog(
-    NULL, 
-    caption + (!fullpath.empty() ? " " + wxFileName(fullpath).GetFullName(): wxString(wxEmptyString)),
-    msg, 
-    wxEmptyString, 
-    wxOK,
-    wxID_ANY,
-    wxDefaultPosition, wxSize(550, 250));
-    
-  if (!fullpath.empty() && svn_type == SVN_CAT)
-  { 
-    exFileName fn(fullpath); 
-    dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
-  }
-  
-  dlg->Show();
-                  
-  return true;
+  return errors.GetCount() == 0;
 }
 
 const wxString exTranslate(const wxString& text, int pageNum, int numPages)

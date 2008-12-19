@@ -170,9 +170,16 @@ enum exSvnType
   SVN_LOG,    ///< svn log 
 };
 
-/// Shows a subversion dialog, depending on type.
-/// If no fullpaht is specified, a base folder is shown, otherwise
+/// Gets info from svn, depending on type.
+/// If no fullpath is specified, a base folder is shown, otherwise
 /// the specified fullpath is used for getting svn contents from.
+/// Returns true if there were no errors.
+bool exSvnGet(
+  wxString& contents,
+  exSvnType svn_type, 
+  const wxString& fullpath = wxEmptyString);
+
+/// Shows a subversion dialog, using exSvnGet.
 /// Returns true if dialog is accepted.
 bool exSvnDialog(exSvnType svn_type, const wxString& fullpath = wxEmptyString);
 
