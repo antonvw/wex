@@ -107,6 +107,43 @@ private:
   static wxString m_CatalogDir;
 };
 
+/// SVN types supported.
+enum exSvnType
+{ 
+  SVN_CAT,    ///< svn cat
+  SVN_COMMIT, ///< svn commit 
+  SVN_DIFF,   ///< svn diff 
+  SVN_LOG,    ///< svn log 
+  SVN_STAT,   ///< svn stat 
+};
+
+#if wxUSE_GUI
+/// This class collects all svn handling.
+class exSVN
+{
+public:
+  /// Constructor, specify the type of what to get.
+  exSVN(exSvnType m_Type);
+
+  /// Gets info from svn.
+  /// If no fullpath is specified, a dialog with base folder is shown, otherwise
+  /// the specified fullpath is used for getting svn contents from.
+  /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
+  /// that were reported by svn otherwise.
+  int Get(
+    wxString& contents,
+    const wxString& fullpath = wxEmptyString);
+
+  /// Gets info and shows results in a dialog.
+  /// Returns true if dialog is accepted.
+  bool Show(const wxString& fullpath = wxEmptyString);
+private:
+  const exSvnType m_Type;
+  wxString m_Caption;
+  wxString m_Command;
+};
+#endif
+
 /*! \file */
 // Clipboard handling.
 /// Adds data to the clipboard.
@@ -159,30 +196,6 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 /// Shows the standard colour dialog with current background colour from specified window and
 /// allows you to change that colour.
 void exBackgroundColourDialog(wxWindow* parent, wxWindow* win);
-
-/// SVN types supported.
-enum exSvnType
-{ 
-  SVN_COMMIT, ///< svn commit 
-  SVN_CAT,    ///< svn cat
-  SVN_DIFF,   ///< svn diff 
-  SVN_STAT,   ///< svn stat 
-  SVN_LOG,    ///< svn log 
-};
-
-/// Shows a subversion dialog, using exSvnGet.
-/// Returns true if dialog is accepted.
-bool exSvnDialog(exSvnType svn_type, const wxString& fullpath = wxEmptyString);
-
-/// Gets info from svn, depending on type.
-/// If no fullpath is specified, a dialog with base folder is shown, otherwise
-/// the specified fullpath is used for getting svn contents from.
-/// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
-/// that were reported by svn otherwise.
-int exSvnGet(
-  exSvnType svn_type,
-  wxString& contents,
-  const wxString& fullpath = wxEmptyString);
 
 // Combobox methods.
 /// Adds entries from a combobox to a text string.

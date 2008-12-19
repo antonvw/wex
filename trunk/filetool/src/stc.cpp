@@ -171,9 +171,9 @@ void ftSTC::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_STC_SVN_CAT: exSvnDialog(SVN_CAT, m_FileName.GetFullPath()); break;
-  case ID_STC_SVN_DIFF: exSvnDialog(SVN_DIFF, m_FileName.GetFullPath()); break;
-  case ID_STC_SVN_LOG: exSvnDialog(SVN_LOG, m_FileName.GetFullPath()); break;
+  case ID_STC_SVN_CAT: exSVN(SVN_CAT).Show(m_FileName.GetFullPath()); break;
+  case ID_STC_SVN_DIFF: exSVN(SVN_DIFF).Show(m_FileName.GetFullPath()); break;
+  case ID_STC_SVN_LOG: exSVN(SVN_LOG).Show(m_FileName.GetFullPath()); break;
 
   case ID_STC_FIND_FILES:
     GetSearchText();
