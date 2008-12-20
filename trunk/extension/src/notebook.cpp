@@ -12,8 +12,6 @@
 #include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
 
-using namespace std;
-
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(exNotebook, wxAuiNotebook)
@@ -32,41 +30,10 @@ exNotebook::exNotebook(wxWindow* parent,
 {
 }
 
-wxWindow* exNotebook::AddPage(
-  wxWindow* page,
-  const wxString& key,
-  const wxString& text,
-  bool select,
-  const wxBitmap& bitmap)
-{
-  if (GetPageByKey(key, select) != NULL)
-  {
-    wxLogError(FILE_INFO("Page with key: %s already exists"), key.c_str());
-    return NULL;
-  }
-
-  const wxString use_text = (text.empty() ? key: text);
-
-  if (!wxAuiNotebook::AddPage(page, use_text, select, bitmap))
-  {
-    wxLogError(FILE_INFO("Could not add page with text: %s"), use_text.c_str());
-    return NULL;
-  }
-
-  m_MapPages[key] = page;
-
-  return page;
-}
-
-bool exNotebook::DeletePage(const wxString& key)
-{
-  return wxAuiNotebook::DeletePage(GetPageIndex(m_MapPages[key]));
-}
-
 bool exNotebook::ErasePage(size_t n)
 {
   for (
-    map<wxString,wxWindow*>::const_iterator it = m_MapPages.begin();
+    std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.begin();
     it != m_MapPages.end();
     ++it)
   {
@@ -140,23 +107,6 @@ bool exNotebook::ForEach(int id)
   }
 
   return true;
-}
-
-wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select)
-{
-  map<wxString,wxWindow*>::const_iterator it = m_MapPages.find(key);
-
-  if (it == m_MapPages.end())
-  {
-    return NULL;
-  }
-
-  if (select)
-  {
-    SetSelection(GetPageIndex(it->second));
-  }
-
-  return it->second;
 }
 
 void exNotebook::OnNotebook(wxAuiNotebookEvent& event)
