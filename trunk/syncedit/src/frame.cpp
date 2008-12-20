@@ -649,12 +649,13 @@ and saved in the same directory as where the executable is."));
     if (exSVN(SVN_CAT).Get(contents, m_DirCtrl->GetFilePath()) == 0)
     {
       editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
-      wxFileName filename(m_DirCtrl->GetFilePath());
+      const exFileName filename(m_DirCtrl->GetFilePath());
+      editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 
       m_NotebookWithEditors->AddPage(
         editor,
         filename.GetFullPath() + exApp::GetConfig(_("Flags")),
-        filename.GetFullName() + exApp::GetConfig(_("Flags")),
+        filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
         true
 #ifdef USE_NOTEBOOK_IMAGE
         ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
