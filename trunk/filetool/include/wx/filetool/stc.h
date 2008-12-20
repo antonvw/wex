@@ -37,9 +37,10 @@ public:
     STC_OPEN_IS_PROJECT = 0x0100,
   };
 
-  /// Constructor. Does not open a file.
+  /// Constructor. Does not open a file, but sets text to specified value.
   ftSTC(wxWindow* parent,
     long type = STC_MENU_DEFAULT,
+    const wxString& value = wxEmptyString,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,

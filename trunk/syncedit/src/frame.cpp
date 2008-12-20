@@ -642,7 +642,27 @@ and saved in the same directory as where the executable is."));
   }
   break;
 
-  case ID_TREE_SVN_CAT: exSVN(SVN_CAT).Show(m_DirCtrl->GetFilePath()); break;
+  case ID_TREE_SVN_CAT: 
+  {
+    wxString contents;
+    
+    if (exSVN(SVN_CAT).Get(contents, m_DirCtrl->GetFilePath()) == 0)
+    {
+      editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
+      wxFileName filename(m_DirCtrl->GetFilePath());
+
+      m_NotebookWithEditors->AddPage(
+        editor,
+        filename.GetFullPath() + exApp::GetConfig(_("Flags")),
+        filename.GetFullName() + exApp::GetConfig(_("Flags")),
+        true
+#ifdef USE_NOTEBOOK_IMAGE
+        ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
+#endif
+        );
+      }
+    }
+    break;
   case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF).Show(m_DirCtrl->GetFilePath()); break;
   case ID_TREE_SVN_LOG: exSVN(SVN_LOG).Show(m_DirCtrl->GetFilePath()); break;
   

@@ -34,12 +34,13 @@ private:
 
 ftSTC::ftSTC(wxWindow* parent,
   long type,
+  const wxString& value,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
-  : exSTC(parent, type, wxEmptyString, id, pos, size, style, name)
+  : exSTC(parent, type, value, id, pos, size, style, name)
 {
   Initialize();
 }
