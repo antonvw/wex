@@ -648,23 +648,30 @@ and saved in the same directory as where the executable is."));
     
     if (exSVN(SVN_CAT).Get(contents, m_DirCtrl->GetFilePath()) == 0)
     {
-      editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
       const exFileName filename(m_DirCtrl->GetFilePath());
-      editor->SetLexer(filename.GetLexer().GetScintillaLexer());
-      editor->ResetContentsChanged();
+      const wxString key = filename.GetFullPath()+ exApp::GetConfig(_("Flags"));
 
-      m_NotebookWithEditors->AddPage(
-        editor,
-        filename.GetFullPath() + exApp::GetConfig(_("Flags")),
-        filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
-        true
+      wxWindow* page = m_NotebookWithEditors->GetPageByKey(key, true);
+        
+      if (page == NULL)
+      {
+        editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
+        editor->SetLexer(filename.GetLexer().GetScintillaLexer());
+        editor->ResetContentsChanged();
+
+        m_NotebookWithEditors->AddPage(
+          editor,
+          key,
+          filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
+          true
 #ifdef USE_NOTEBOOK_IMAGE
-        ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
+          ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
 #endif
-        );
+          );
       }
     }
-    break;
+  }
+  break;
   case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF).Show(m_DirCtrl->GetFilePath()); break;
   case ID_TREE_SVN_LOG: exSVN(SVN_LOG).Show(m_DirCtrl->GetFilePath()); break;
   
