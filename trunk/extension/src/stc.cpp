@@ -787,7 +787,7 @@ int exSTC::ConfigDialog(
 #ifdef __WXMSW__
     (400, 450);
 #else
-    (450, 450);
+    (500, 450);
 #endif
 
   int buttons = wxOK | wxCANCEL;
