@@ -292,6 +292,7 @@ exSTC::exSTC(wxWindow* parent,
     // So for text with nulls this is the only way for opening.
     SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
     DocumentStart();    
+    ResetContentsChanged();
   }
 
   PropertiesMessage();

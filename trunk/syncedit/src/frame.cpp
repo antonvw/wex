@@ -657,7 +657,6 @@ and saved in the same directory as where the executable is."));
       {
         editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
         editor->SetLexer(filename.GetLexer().GetScintillaLexer());
-        editor->ResetContentsChanged();
 
         m_NotebookWithEditors->AddPage(
           editor,
