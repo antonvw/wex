@@ -128,16 +128,18 @@ private:
 /// The config item types supported.
 enum
 {
-  CONFIG_CHECKBOX,       ///< a check box (use GetBool to retrieve value)
+  CONFIG_CHECKBOX,       ///< a checkbox (use GetBool to retrieve value)
+  CONFIG_CHECKLISTBOX,   ///< a checklistbox (not mutually exclusive choices)
   CONFIG_COLOUR,         ///< a colour button
-  CONFIG_COMBOBOX,       ///< a combo box
-  CONFIG_COMBOBOXDIR,    ///< a combo box with a browse button
-  CONFIG_DIRPICKERCTRL,  ///< a dir picker ctrl
-  CONFIG_FILEPICKERCTRL, ///< a file picker ctrl
-  CONFIG_FONTPICKERCTRL, ///< a font picker ctrl
-  CONFIG_INT,            ///< a text ctrl that only accepts an integer (a long integer)
-  CONFIG_SPINCTRL,       ///< a spin ctrl
-  CONFIG_STRING,         ///< a text ctrl
+  CONFIG_COMBOBOX,       ///< a combobox
+  CONFIG_COMBOBOXDIR,    ///< a combobox with a browse button
+  CONFIG_DIRPICKERCTRL,  ///< a dirpicker ctrl
+  CONFIG_FILEPICKERCTRL, ///< a filepicker ctrl
+  CONFIG_FONTPICKERCTRL, ///< a fontpicker ctrl
+  CONFIG_INT,            ///< a textctrl that only accepts an integer (a long integer)
+  CONFIG_RADIOBOX,       ///< a radiobox (mutually exclusive choices)
+  CONFIG_SPINCTRL,       ///< a spinctrl
+  CONFIG_STRING,         ///< a textctrl
 };
 
 /// Container class for using with exConfigDialog.
@@ -176,6 +178,22 @@ public:
   , m_Style(style)
   , m_Type(CONFIG_STRING) {;};
 
+  /// Constructor for a radiobox or a checklistbox. Just specify
+  /// the map with values and text.
+  exConfigItem(const wxString& name,
+    const std::map<int, const wxString> & choices,
+    bool use_radiobox = true,
+    const wxString& page = wxEmptyString)
+  : m_IsRequired(false)
+  , m_Min(0)
+  , m_Max(0)
+  , m_MaxItems(0)
+  , m_Name(name)
+  , m_Page(page)
+  , m_Style(0)
+  , m_Choices(choices)
+  , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX) {;};
+
   /// Constuctor for other types.
   exConfigItem(const wxString& name,
     int type,
@@ -202,6 +220,7 @@ private:
   long m_Style;
   int m_Type;
   wxControl* m_Control;
+  std::map<int, const wxString> m_Choices;
 };
 #endif // wxUSE_GUI
 
@@ -244,6 +263,11 @@ private:
     wxWindow* parent,
     wxSizer* sizer,
     const wxString& text);
+  wxControl* AddCheckListBox(
+    wxWindow* parent,
+    wxSizer* sizer,
+    const wxString& text,
+    std::map<int, const wxString> & choices);
   wxControl* AddColourButton(
     wxWindow* parent,
     wxSizer* sizer,
@@ -268,6 +292,11 @@ private:
     wxWindow* parent,
     wxSizer* sizer,
     const wxString& text);
+  wxControl* AddRadioBox(
+    wxWindow* parent,
+    wxSizer* sizer,
+    const wxString& text,
+    std::map<int, const wxString> & choices);
   wxControl* AddSpinCtrl(
     wxWindow* parent,
     wxSizer* sizer,

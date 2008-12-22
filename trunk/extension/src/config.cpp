@@ -171,6 +171,10 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       control = AddCheckBox(parent, sizer, it->m_Name);
       break;
 
+    case CONFIG_CHECKLISTBOX:
+      control = AddCheckListBox(parent, sizer, it->m_Name, it->m_Choices);
+      break;
+
     case CONFIG_COLOUR:
       control = AddColourButton(parent, sizer, it->m_Name);
       break;
@@ -197,6 +201,10 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
 
     case CONFIG_INT:
       control = AddTextCtrl(parent, sizer, it->m_Name, true);
+      break;
+
+    case CONFIG_RADIOBOX:
+      control = AddRadioBox(parent, sizer, it->m_Name, it->m_Choices);
       break;
 
     case CONFIG_SPINCTRL:
@@ -273,6 +281,41 @@ wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
   sizer->Add(checkbox, flags);
 
   return checkbox;
+}
+
+wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
+  wxSizer* sizer, const wxString& text, std::map<int, const wxString> & choices)
+{
+  wxArrayString arraychoices;
+
+  for (
+    std::map<int, const wxString>::const_iterator it = choices.begin();
+    it != choices.end();
+    ++it)
+  {
+    arraychoices.Add(it->second);
+  }
+
+  wxCheckListBox* box = new wxCheckListBox(parent, 
+    wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
+
+  const long value = m_Config->Get(m_ConfigGroup + text, 0);
+
+  int item = 0;
+  for (
+    std::map<int, const wxString>::const_iterator it = choices.begin();
+    it != choices.end();
+    ++it)
+  {
+    if (value & it->first)
+    {
+      box->Check(item);
+    }
+
+    item++;
+  }
+
+  return Add(sizer, parent, box, text + ":");
 }
 
 wxControl* exConfigDialog::AddColourButton(wxWindow* parent,
@@ -430,6 +473,32 @@ wxControl* exConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
   return Add(sizer, parent, pc, text + ":");
 }
 
+wxControl* exConfigDialog::AddRadioBox(wxWindow* parent,
+  wxSizer* sizer, const wxString& text, std::map<int, const wxString> & choices)
+{
+  wxArrayString arraychoices;
+
+  for (
+    std::map<int, const wxString>::const_iterator it = choices.begin();
+    it != choices.end();
+    ++it)
+  {
+    arraychoices.Add(it->second);
+  }
+
+  wxRadioBox* box = new wxRadioBox(parent, 
+    wxID_ANY, text, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
+
+  box->SetStringSelection(choices[m_Config->Get(m_ConfigGroup + text, 0)]);
+
+  sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
+  wxSizerFlags flags;
+  flags.Expand().Left().Border();
+  sizer->Add(box, flags);
+
+  return box;
+}
+
 wxControl* exConfigDialog::AddSpinCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text, int min, int max)
 {
@@ -541,6 +610,30 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       }
       break;
 
+    case CONFIG_CHECKLISTBOX:
+      {
+      wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+
+      long value = 0;
+      int item = 0;
+
+      for (
+        std::map<int, const wxString>::const_iterator b = it->m_Choices.begin();
+        b != it->m_Choices.end();
+        ++b)
+      {
+        if (clb->IsChecked(item))
+        {
+          value |= b->first;
+        }
+
+        item++;
+      }
+
+      m_Config->Set(m_ConfigGroup + clb->GetName(), value);
+      }
+      break;
+
     case CONFIG_COLOUR:
       {
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
@@ -592,6 +685,23 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
       m_Config->Set(m_ConfigGroup + tc->GetName(), atol(tc->GetValue().c_str()));
+      }
+      break;
+
+    case CONFIG_RADIOBOX:
+      {
+      wxRadioBox* rb = (wxRadioBox*)it->m_Control;
+
+      for (
+        std::map<int, const wxString>::const_iterator b = it->m_Choices.begin();
+        b != it->m_Choices.end();
+        ++b)
+      {
+        if (b->second == rb->GetStringSelection())
+        {
+          m_Config->Set(m_ConfigGroup + rb->GetName(), b->first);
+        }
+      }
       }
       break;
 

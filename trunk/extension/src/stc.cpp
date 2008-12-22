@@ -732,21 +732,46 @@ int exSTC::ConfigDialog(
     page = _("Setting");
   }
 
-  items.push_back(exConfigItem(_("WhiteSpace"), wxSTC_WS_INVISIBLE, wxSTC_WS_VISIBLEAFTERINDENT, page));
+  map<int, const wxString> choices;
+  choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
+  choices.insert(make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
+  choices.insert(make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
+  items.push_back(exConfigItem(_("WhiteSpace"), choices, true, page));
+
   items.push_back(exConfigItem(_("Tab Width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
   items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
-  items.push_back(exConfigItem(_("Wrap Line"), wxSTC_WRAP_NONE, wxSTC_WRAP_CHAR, page));
+
+  map<int, const wxString> wchoices;
+  wchoices.insert(make_pair(wxSTC_WRAP_NONE, _("None")));
+  wchoices.insert(make_pair(wxSTC_WRAP_WORD, _("Word")));
+  wchoices.insert(make_pair(wxSTC_WRAP_CHAR, _("Char")));
+  items.push_back(exConfigItem(_("Wrap Line"), wchoices, true, page));
+
   items.push_back(exConfigItem(_("End Of Line"), CONFIG_CHECKBOX, page));
   items.push_back(exConfigItem(_("Line Numbers"), CONFIG_CHECKBOX, page));
   items.push_back(exConfigItem(_("Use Tabs"), CONFIG_CHECKBOX, page));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
-    items.push_back(exConfigItem(_("Edge Line"), wxSTC_EDGE_NONE, wxSTC_EDGE_BACKGROUND, _("Edge")));
+    map<int, const wxString> echoices;
+    echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
+    echoices.insert(make_pair(wxSTC_EDGE_LINE, _("Line")));
+    echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
+    items.push_back(exConfigItem(_("Edge Line"), echoices, true, _("Edge")));
+
     items.push_back(exConfigItem(_("Edge Column"), CONFIG_INT, _("Edge")));
 
     items.push_back(exConfigItem(_("Auto Fold"), CONFIG_INT, _("Folding")));
-    items.push_back(exConfigItem(_("Fold Flags"), 0, wxSTC_FOLDFLAG_LEVELNUMBERS, _("Folding")));
+
+    map<int, const wxString> fchoices;
+    fchoices.insert(make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
+    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")));
+    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));
+    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
+    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
+    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
+    items.push_back(exConfigItem(_("Fold Flags"), fchoices, false, _("Folding")));
+
     items.push_back(exConfigItem(_("Indentation Guide"), CONFIG_CHECKBOX, _("Folding")));
 
     items.push_back(exConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
