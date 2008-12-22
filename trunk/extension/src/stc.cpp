@@ -291,8 +291,10 @@ exSTC::exSTC(wxWindow* parent,
     // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for text with nulls this is the only way for opening.
     SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
-    DocumentStart();    
+    DocumentStart();
     ResetContentsChanged();
+    // Do not allow the text specified to be undone.
+    EmptyUndoBuffer();
   }
 
   PropertiesMessage();
@@ -2719,10 +2721,6 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
 
   if (!text.empty())
   {
-    // Do not allow the text specified to be undone.
-    m_STC->EmptyUndoBuffer();
-    m_STC->SetSavePoint();
-
     if ((button_style & wxCANCEL) == 0 &&
         (button_style & wxNO) == 0)
     {
