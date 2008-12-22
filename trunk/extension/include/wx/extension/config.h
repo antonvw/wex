@@ -191,8 +191,8 @@ public:
   , m_Name(name)
   , m_Page(page)
   , m_Style(0)
-  , m_Choices(choices)
-  , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX) {;};
+  , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
+  , m_Choices(choices) {;};
 
   /// Constuctor for other types.
   exConfigItem(const wxString& name,
