@@ -732,14 +732,14 @@ int exSTC::ConfigDialog(
     page = _("Setting");
   }
 
+  items.push_back(exConfigItem(_("Tab Width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
+  items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
+
   map<int, const wxString> choices;
   choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
   items.push_back(exConfigItem(_("WhiteSpace"), choices, true, page));
-
-  items.push_back(exConfigItem(_("Tab Width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
-  items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
 
   map<int, const wxString> wchoices;
   wchoices.insert(make_pair(wxSTC_WRAP_NONE, _("None")));
@@ -753,13 +753,13 @@ int exSTC::ConfigDialog(
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
+    items.push_back(exConfigItem(_("Edge Column"), CONFIG_INT, _("Edge")));
+
     map<int, const wxString> echoices;
     echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
     echoices.insert(make_pair(wxSTC_EDGE_LINE, _("Line")));
     echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
     items.push_back(exConfigItem(_("Edge Line"), echoices, true, _("Edge")));
-
-    items.push_back(exConfigItem(_("Edge Column"), CONFIG_INT, _("Edge")));
 
     items.push_back(exConfigItem(_("Auto Fold"), CONFIG_INT, _("Folding")));
 
