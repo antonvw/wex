@@ -89,13 +89,13 @@ Frame::Frame(const wxString& project_wildcard)
   
   if (exApp::GetConfigBool("SVN"))
   {
-    wxMenu* menuRCS = new wxMenu;
-    menuRCS->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
-    menuRCS->Append(ID_SVN_LOG, exEllipsed(_("&Log")));
-    menuRCS->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
-    menuRCS->AppendSeparator();
-    menuRCS->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
-    menuEdit->Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, menuRCS);
+    wxMenu* menuSVN = new wxMenu;
+    menuSVN->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
+    menuSVN->Append(ID_SVN_LOG, exEllipsed(_("&Log")));
+    menuSVN->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
+    menuSVN->AppendSeparator();
+    menuSVN->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
+    menuEdit->Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, menuSVN);
     menuEdit->AppendSeparator();
   }
 
@@ -145,7 +145,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuWindow->Append(ID_SPLIT, _("Split"));
   
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(ID_OPTION_COMPARATOR, exEllipsed(_("Set &Comparator")));
+  menuOptions->Append(ID_OPTION_SVN_AND_COMPARATOR, exEllipsed(_("Set SVN And &Comparator")));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST_COLOUR, exEllipsed(_("Set &List Colour")));
   menuOptions->Append(ID_OPTION_LIST_FONT, exEllipsed(_("Set &List Font")));

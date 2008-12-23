@@ -497,12 +497,12 @@ and saved in the same directory as where the executable is."));
   case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(exLogfileName()); break;
 
-  case ID_OPTION_COMPARATOR:
+  case ID_OPTION_SVN_AND_COMPARATOR:
     {
     std::vector<exConfigItem> v;
     v.push_back(exConfigItem("SVN", CONFIG_CHECKBOX));
-    v.push_back(exConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
-    exConfigDialog(this, v, _("Set Comparator")).ShowModal();
+    v.push_back(exConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
+    exConfigDialog(this, v, _("Set SVN And Comparator")).ShowModal();
     }
     break;
   case ID_OPTION_EDITOR:
