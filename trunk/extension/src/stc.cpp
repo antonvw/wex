@@ -747,6 +747,12 @@ int exSTC::ConfigDialog(
   wchoices.insert(make_pair(wxSTC_WRAP_CHAR, _("Char")));
   items.push_back(exConfigItem(_("Wrap line"), wchoices, true, page));
 
+  map<int, const wxString> vchoices;
+  vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
+  vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
+  vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
+  items.push_back(exConfigItem(_("Wrap visual flags"), vchoices, true, page));
+
   items.push_back(exConfigItem(_("End of line"), CONFIG_CHECKBOX, page));
   items.push_back(exConfigItem(_("Line numbers"), CONFIG_CHECKBOX, page));
   items.push_back(exConfigItem(_("Use tabs"), CONFIG_CHECKBOX, page));
@@ -785,9 +791,9 @@ int exSTC::ConfigDialog(
 
   const wxSize size
 #ifdef __WXMSW__
-    (400, 450);
+    (400, 550);
 #else
-    (500, 450);
+    (500, 550);
 #endif
 
   int buttons = wxOK | wxCANCEL;
@@ -856,6 +862,7 @@ void exSTC::ConfigGet()
   SetViewEOL(GetConfigBool(_("End of line"), false));
   SetViewWhiteSpace(GetConfig(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(GetConfig(_("Wrap line"), wxSTC_WRAP_NONE));
+  SetWrapVisualFlags(GetConfig(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 }
 
 void exSTC::ControlCharDialog(const wxString& caption)
