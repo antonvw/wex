@@ -674,6 +674,7 @@ and saved in the same directory as where the executable is."));
   break;
   case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF).Show(m_DirCtrl->GetFilePath()); break;
   case ID_TREE_SVN_LOG: exSVN(SVN_LOG).Show(m_DirCtrl->GetFilePath()); break;
+  case ID_TREE_OPEN: OpenFile(exFileName(m_DirCtrl->GetFilePath())); break;
   
   case ID_VIEW_ASCII_TABLE:
     if (m_AsciiTable == NULL)
@@ -711,9 +712,11 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
+    wxMenu menu;
+    menu.Append(ID_TREE_OPEN, _("&Open"));
+    
     if (exApp::GetConfigBool("SVN"))
     {
-      wxMenu menu;
       wxMenu* svnmenu = new wxMenu;
       svnmenu->Append(ID_TREE_SVN_DIFF, exEllipsed(_("&Diff")));
       svnmenu->Append(ID_TREE_SVN_LOG, exEllipsed(_("&Log")));
@@ -724,10 +727,10 @@ void MDIFrame::OnTree(wxTreeEvent& event)
       {
         menu.AppendSeparator();
         menu.Append(ID_TREE_RUN_MAKE, exEllipsed(_("&Make")));
-      }
-      
-      PopupMenu(&menu);
+      } 
     }
+    
+    PopupMenu(&menu);
   }
   else
   {
