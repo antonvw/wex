@@ -709,7 +709,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
       m_Config->Set(m_ConfigGroup + tc->GetName(), tc->GetValue());
-      if (tc->GetName() == _("Include Directory"))
+      if (tc->GetName() == _("Include directory"))
       {
         path_involved = true;
       }

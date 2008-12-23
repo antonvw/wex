@@ -732,7 +732,7 @@ int exSTC::ConfigDialog(
     page = _("Setting");
   }
 
-  items.push_back(exConfigItem(_("Tab Width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
+  items.push_back(exConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
   items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
 
   map<int, const wxString> choices;
@@ -745,23 +745,23 @@ int exSTC::ConfigDialog(
   wchoices.insert(make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(make_pair(wxSTC_WRAP_WORD, _("Word")));
   wchoices.insert(make_pair(wxSTC_WRAP_CHAR, _("Char")));
-  items.push_back(exConfigItem(_("Wrap Line"), wchoices, true, page));
+  items.push_back(exConfigItem(_("Wrap line"), wchoices, true, page));
 
-  items.push_back(exConfigItem(_("End Of Line"), CONFIG_CHECKBOX, page));
-  items.push_back(exConfigItem(_("Line Numbers"), CONFIG_CHECKBOX, page));
-  items.push_back(exConfigItem(_("Use Tabs"), CONFIG_CHECKBOX, page));
+  items.push_back(exConfigItem(_("End of line"), CONFIG_CHECKBOX, page));
+  items.push_back(exConfigItem(_("Line numbers"), CONFIG_CHECKBOX, page));
+  items.push_back(exConfigItem(_("Use tabs"), CONFIG_CHECKBOX, page));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
-    items.push_back(exConfigItem(_("Edge Column"), CONFIG_INT, _("Edge")));
+    items.push_back(exConfigItem(_("Edge column"), CONFIG_INT, _("Edge")));
 
     map<int, const wxString> echoices;
     echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
     echoices.insert(make_pair(wxSTC_EDGE_LINE, _("Line")));
     echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
-    items.push_back(exConfigItem(_("Edge Line"), echoices, true, _("Edge")));
+    items.push_back(exConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
-    items.push_back(exConfigItem(_("Auto Fold"), CONFIG_INT, _("Folding")));
+    items.push_back(exConfigItem(_("Auto fold"), CONFIG_INT, _("Folding")));
 
     map<int, const wxString> fchoices;
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
@@ -770,17 +770,17 @@ int exSTC::ConfigDialog(
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
-    items.push_back(exConfigItem(_("Fold Flags"), fchoices, false, _("Folding")));
+    items.push_back(exConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
-    items.push_back(exConfigItem(_("Indentation Guide"), CONFIG_CHECKBOX, _("Folding")));
+    items.push_back(exConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
     items.push_back(exConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
 
     items.push_back(exConfigItem(_("Divider"), CONFIG_INT, _("Margin")));
     items.push_back(exConfigItem(_("Folding"), CONFIG_INT, _("Margin")));
-    items.push_back(exConfigItem(_("Line Number"), CONFIG_INT, _("Margin")));
+    items.push_back(exConfigItem(_("Line number"), CONFIG_INT, _("Margin")));
 
-    items.push_back(exConfigItem(_("Include Directory"), _("Directory"), wxTE_MULTILINE));
+    items.push_back(exConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
   }
 
   const wxSize size
@@ -838,24 +838,24 @@ void exSTC::ConfigGet()
 {
   CallTipSetBackground(GetConfig(_("CallTip"), exColourToLong(wxColour("YELLOW"))));
 
-  SetEdgeColumn(GetConfig(_("Edge Column"), 80)); // see also lexer
-  SetEdgeMode(GetConfig(_("Edge Line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
-  SetFoldFlags(GetConfig(_("Fold Flags"),
+  SetEdgeColumn(GetConfig(_("Edge column"), 80)); // see also lexer
+  SetEdgeMode(GetConfig(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
+  SetFoldFlags(GetConfig(_("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
   SetIndent(GetConfig(_("Indent"), 4));
-  SetIndentationGuides(GetConfigBool(_("Indentation Guide"), false));
+  SetIndentationGuides(GetConfigBool(_("Indentation guide"), false));
 
   SetMarginWidth(m_MarginDividerNumber, GetConfig(_("Divider"), 16));
   SetMarginWidth(m_MarginFoldingNumber, GetConfig(_("Folding"), 16));
   SetMarginWidth(m_MarginLineNumber,
-    (GetConfigBool(_("Line Numbers"), false) ?
-      GetConfig(_("Line Number"), TextWidth(m_MarginLineNumber, "999999")): 0));
+    (GetConfigBool(_("Line numbers"), false) ?
+      GetConfig(_("Line number"), TextWidth(m_MarginLineNumber, "999999")): 0));
 
-  SetTabWidth(GetConfig(_("Tab Width"), 4));
-  SetUseTabs(GetConfigBool(_("Use Tabs"), false));
-  SetViewEOL(GetConfigBool(_("End Of Line"), false));
+  SetTabWidth(GetConfig(_("Tab width"), 4));
+  SetUseTabs(GetConfigBool(_("Use tabs"), false));
+  SetViewEOL(GetConfigBool(_("End of line"), false));
   SetViewWhiteSpace(GetConfig(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
-  SetWrapMode(GetConfig(_("Wrap Line"), wxSTC_WRAP_NONE));
+  SetWrapMode(GetConfig(_("Wrap line"), wxSTC_WRAP_NONE));
 }
 
 void exSTC::ControlCharDialog(const wxString& caption)
@@ -2149,7 +2149,7 @@ void exSTC::PathListInit()
   m_PathList.Clear();
 
   wxStringTokenizer tkz(
-    GetConfig(_("Include Directory")),
+    GetConfig(_("Include directory")),
     ";");
 
   while (tkz.HasMoreTokens())
