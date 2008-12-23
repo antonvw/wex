@@ -239,7 +239,7 @@ bool exTextFile::HeaderDialog()
 
   if (new_header)
   {
-    if (!exApp::GetConfigBool("SVN)))
+    if (!exApp::GetConfigBool("SVN"))
     {
       RevisionAddComments(wxString(
         (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
