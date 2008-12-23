@@ -105,7 +105,7 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
     {
       menu.AppendSeparator();
 
-      if (exApp::GetConfigBool("RCS/Local"))
+      if (!exApp::GetConfigBool("SVN"))
       {
         menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
       }
@@ -115,7 +115,7 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
         svnmenu->Append(ID_STC_SVN_DIFF, exEllipsed(_("&Diff")));
         svnmenu->Append(ID_STC_SVN_LOG, exEllipsed(_("&Log")));
         svnmenu->Append(ID_STC_SVN_CAT, exEllipsed(_("&Cat")));
-        menu.Append(-1, _("&SVN"), wxEmptyString, wxITEM_NORMAL, svnmenu);
+        menu.Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, svnmenu);
       }
     }
   }

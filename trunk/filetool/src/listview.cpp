@@ -244,7 +244,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
     else
     {
       if (m_Type != LIST_PROJECT && 
-          exApp::GetConfigBool("RCS/Local") &&
+          !exApp::GetConfigBool("SVN") &&
           m_Frame != NULL && exists && !is_folder)
       {
         ftListView* list = m_Frame->Activate(LIST_PROJECT);
@@ -265,7 +265,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
 
     if (exists && !is_folder)
     {
-      if (exApp::GetConfigBool("RCS/Local"))
+      if (!exApp::GetConfigBool("SVN"))
       {
         menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version") + "\tCtrl+M");
         menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));

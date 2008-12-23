@@ -64,7 +64,7 @@ void exTool::Initialize()
 {
   // If you change these labels, don't forget to change in listview too 
   // for title when checking in-out.
-  if (exApp::GetConfigBool("RCS/Local"))
+  if (!exApp::GetConfigBool("SVN"))
   {
     AddInfo(ID_TOOL_COMMIT, _("Commited"), exEllipsed(_("&Commit")));
     AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));

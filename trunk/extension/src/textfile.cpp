@@ -239,7 +239,7 @@ bool exTextFile::HeaderDialog()
 
   if (new_header)
   {
-    if (exApp::GetConfigBool("RCS/Local"))
+    if (!exApp::GetConfigBool("SVN)))
     {
       RevisionAddComments(wxString(
         (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
@@ -1068,7 +1068,7 @@ bool exTextFile::WriteFileHeader()
   WriteComment("Author:      " + actual_author, true);
   WriteComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
 
-  if (!exApp::GetConfigBool("RCS/Local"))
+  if (exApp::GetConfigBool("SVN"))
   {
     // Prevent the Id to be expanded by SVN itself here.
     WriteComment("RCS-ID:      $" + wxString("Id$"), true);

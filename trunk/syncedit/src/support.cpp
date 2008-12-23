@@ -87,7 +87,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, exEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
   
-  if (!exApp::GetConfigBool("RCS/Local"))
+  if (exApp::GetConfigBool("SVN"))
   {
     wxMenu* menuRCS = new wxMenu;
     menuRCS->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
@@ -95,7 +95,7 @@ Frame::Frame(const wxString& project_wildcard)
     menuRCS->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
     menuRCS->AppendSeparator();
     menuRCS->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
-    menuEdit->Append(-1, _("&SVN"), wxEmptyString, wxITEM_NORMAL, menuRCS);
+    menuEdit->Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, menuRCS);
     menuEdit->AppendSeparator();
   }
 

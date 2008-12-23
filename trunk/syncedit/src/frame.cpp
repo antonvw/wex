@@ -500,6 +500,7 @@ and saved in the same directory as where the executable is."));
   case ID_OPTION_COMPARATOR:
     {
     std::vector<exConfigItem> v;
+    v.push_back(exConfigItem("SVN", CONFIG_CHECKBOX));
     v.push_back(exConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
     exConfigDialog(this, v, _("Set Comparator")).ShowModal();
     }
@@ -710,14 +711,14 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
-    if (!exApp::GetConfigBool("RCS/Local"))
+    if (exApp::GetConfigBool("SVN"))
     {
       wxMenu menu;
       wxMenu* svnmenu = new wxMenu;
       svnmenu->Append(ID_TREE_SVN_DIFF, exEllipsed(_("&Diff")));
       svnmenu->Append(ID_TREE_SVN_LOG, exEllipsed(_("&Log")));
       svnmenu->Append(ID_TREE_SVN_CAT, exEllipsed(_("&Cat")));
-      menu.AppendSubMenu(svnmenu, _("&SVN"));
+      menu.AppendSubMenu(svnmenu, "&SVN");
       
       if (filename.GetLexer().GetScintillaLexer() == "makefile")
       {

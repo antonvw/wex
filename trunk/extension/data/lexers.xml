@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <?xml-stylesheet href="lexers.xsl" type="text/xsl" ?>
-
 <!--
 File:    lexers.xml
 Purpose: Lexers configuration for wxextension.
@@ -15,7 +14,7 @@ without the written consent of the copyright owner.
 
 <!--
  Each lexer has a name atribute (scintilla lexer) and 
- an extension atribute (file extensions for files associated with this lexer).
+ an extensions atribute (file extensions for files associated with this lexer).
  Extensions are separated by a semicolon (;).
  Each lexer might contain the next elements:
  1) colourings. Colouring styles for this lexer. 
@@ -373,7 +372,7 @@ without the written consent of the copyright owner.
     #define wxSTC_H_QUESTION 18
     #define wxSTC_H_VALUE 19
     #define wxSTC_H_XCCOMMENT 20
-    // SGML
+    SGML
     #define wxSTC_H_SGML_DEFAULT 21
     #define wxSTC_H_SGML_COMMAND 22
     #define wxSTC_H_SGML_1ST_PARAM 23
@@ -385,7 +384,7 @@ without the written consent of the copyright owner.
     #define wxSTC_H_SGML_COMMENT 29
     #define wxSTC_H_SGML_1ST_PARAM_COMMENT 30
     #define wxSTC_H_SGML_BLOCK_DEFAULT 31
-    // Embedded Javascript
+    Embedded Javascript
     #define wxSTC_HJ_START 40
     #define wxSTC_HJ_DEFAULT 41
     #define wxSTC_HJ_COMMENT 42
@@ -399,7 +398,7 @@ without the written consent of the copyright owner.
     #define wxSTC_HJ_SYMBOLS 50
     #define wxSTC_HJ_STRINGEOL 51
     #define wxSTC_HJ_REGEX 52
-    // ASP Javascript
+    ASP Javascript
     #define wxSTC_HJA_START 55
     #define wxSTC_HJA_DEFAULT 56
     #define wxSTC_HJA_COMMENT 57
