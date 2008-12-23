@@ -272,7 +272,11 @@ void ftListView::BuildPopupMenu(exMenu& menu)
       }
       else if (GetSelectedItemCount() == 1)
       {
-        menu.Append(ID_LIST_DIFF, exEllipsed(_("&Compare Recent Version")) + "\tCtrl+M");
+        wxMenu* svnmenu = new wxMenu;
+        svnmenu->Append(ID_LIST_SVN_DIFF, exEllipsed(_("&Diff")));
+        svnmenu->Append(ID_LIST_SVN_LOG, exEllipsed(_("&Log")));
+        svnmenu->Append(ID_LIST_SVN_CAT, exEllipsed(_("&Cat")));
+        menu.Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, svnmenu);
       }
     }
 
@@ -791,12 +795,14 @@ void ftListView::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_ADD_ITEM: AddItems(); break;
 
-  case ID_LIST_DIFF:
-  {
-    // TODO: Compare with last version only??
-    const ftListItem item(this, GetNextSelected(-1));
-    exSVN(SVN_DIFF).Show(item.GetFileName().GetFullPath());
-  }
+  case ID_LIST_SVN_CAT:
+    exSVN(SVN_CAT).Show(ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+  break;
+  case ID_LIST_SVN_DIFF:
+    exSVN(SVN_DIFF).Show(ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+  break;
+  case ID_LIST_SVN_LOG:
+    exSVN(SVN_LOG).Show(ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
   break;
 
   case ID_LIST_COMPARE:

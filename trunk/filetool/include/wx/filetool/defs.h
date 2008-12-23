@@ -29,11 +29,13 @@ enum
   ID_LIST_TOOL_MENU,
   ID_LIST_COMPARE, 
   ID_LIST_COMPARELAST, 
-  ID_LIST_DIFF, 
   ID_LIST_OPEN_ITEM, 
   ID_LIST_RUN_MAKE,
   ID_LIST_VERSIONLIST,
   ID_LIST_SEND_ITEM,
+  ID_LIST_SVN_CAT, 
+  ID_LIST_SVN_DIFF, 
+  ID_LIST_SVN_LOG, 
   ID_LIST_HIGHEST,
   ID_LIST_ALL_ITEMS, // not a real command, used by ftForEach
   ID_LIST_ALL_CLOSE, // not a real command, used by ftForEach
