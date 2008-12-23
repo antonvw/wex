@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-23 11:35+0100\n"
-"PO-Revision-Date: 2008-12-23 11:36+0100\n"
+"POT-Creation-Date: 2008-12-23 15:11+0100\n"
+"PO-Revision-Date: 2008-12-23 15:13+0100\n"
 "Last-Translator: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -75,65 +75,60 @@ msgstr "Dit programma biedt een text of binaire editor met automatische synchron
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: src/frame.cpp:503
+#: src/frame.cpp:504
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: src/frame.cpp:504
-msgid "Set Comparator"
-msgstr "Vergelijker instellen"
+#: src/frame.cpp:505
+msgid "Set SVN And Comparator"
+msgstr "SVN en vergelijker instellen"
 
-#: src/frame.cpp:508
+#: src/frame.cpp:509
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: src/frame.cpp:514
+#: src/frame.cpp:515
 msgid "Set List Colour"
 msgstr "Lijst kleuren instellen"
 
-#: src/frame.cpp:521
-#: src/frame.cpp:529
-#: src/frame.cpp:534
+#: src/frame.cpp:522
+#: src/frame.cpp:530
+#: src/frame.cpp:535
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: src/frame.cpp:526
+#: src/frame.cpp:527
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: src/frame.cpp:639
+#: src/frame.cpp:640
 msgid "Make"
 msgstr "Maken"
 
-#: src/frame.cpp:652
-#: src/frame.cpp:664
+#: src/frame.cpp:653
+#: src/frame.cpp:665
 msgid "Flags"
 msgstr "Vlaggen"
 
-#: src/frame.cpp:685
+#: src/frame.cpp:686
 msgid "Ascii Table"
 msgstr "Ascii tabel"
 
-#: src/frame.cpp:717
+#: src/frame.cpp:718
 #: src/support.cpp:95
 msgid "&Diff"
 msgstr "&Diff"
 
-#: src/frame.cpp:718
+#: src/frame.cpp:719
 #: src/support.cpp:94
 msgid "&Log"
 msgstr "&Log"
 
-#: src/frame.cpp:719
+#: src/frame.cpp:720
 msgid "&Cat"
 msgstr "&Cat"
 
-#: src/frame.cpp:720
-#: src/support.cpp:98
-msgid "&SVN"
-msgstr "&SVN"
-
-#: src/frame.cpp:725
+#: src/frame.cpp:726
 msgid "&Make"
 msgstr "&Maken"
 
@@ -278,8 +273,8 @@ msgid "Split"
 msgstr "Splitsen"
 
 #: src/support.cpp:148
-msgid "Set &Comparator"
-msgstr "Vergelijker &instellen"
+msgid "Set SVN And &Comparator"
+msgstr "SVN en vergelijker &instellen"
 
 #: src/support.cpp:150
 msgid "Set &List Colour"
@@ -365,6 +360,8 @@ msgstr "Bekijk hexadecimaal"
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
 
+#~ msgid "&SVN"
+#~ msgstr "&SVN"
 #~ msgid "Toolbar"
 #~ msgstr "Werkbalk"
 #~ msgid "Browse"
