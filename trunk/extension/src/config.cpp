@@ -210,7 +210,6 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
 
     case CONFIG_SPACER:
       sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
-      continue;
       break;
       
     case CONFIG_SPINCTRL:
@@ -229,8 +228,11 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       break;
     }
 
-    control->SetName(it->m_Name);
-    it->m_Control = control;
+    if (control != NULL)
+    {
+      control->SetName(it->m_Name);
+      it->m_Control = control;
+    }
 
     m_ConfigItems.push_back(*it);
   }
