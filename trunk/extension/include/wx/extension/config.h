@@ -139,6 +139,7 @@ enum
   CONFIG_INT,            ///< a textctrl that only accepts an integer (a long integer)
   CONFIG_RADIOBOX,       ///< a radiobox (mutually exclusive choices)
   CONFIG_SPINCTRL,       ///< a spinctrl
+  CONFIG_SPACER,         ///< a spacer only, no config item
   CONFIG_STRING,         ///< a textctrl
 };
 
@@ -148,6 +149,11 @@ class exConfigItem
 {
   friend class exConfigDialog;
 public:
+  /// Contructor for a spacer item.
+  exConfigItem()
+  : m_Name("spacer")
+  , m_Type(CONFIG_SPACER) {;}
+  
   /// Constructor for a spin ctrl.
   exConfigItem(const wxString& name,
     int min,

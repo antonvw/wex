@@ -735,6 +735,10 @@ int exSTC::ConfigDialog(
   items.push_back(exConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
   items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
 
+  items.push_back(exConfigItem(_("End of line"), CONFIG_CHECKBOX, page));
+  items.push_back(exConfigItem(_("Line numbers"), CONFIG_CHECKBOX, page));
+  items.push_back(exConfigItem(_("Use tabs"), CONFIG_CHECKBOX, page));
+
   map<int, const wxString> choices;
   choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
@@ -752,10 +756,6 @@ int exSTC::ConfigDialog(
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
   items.push_back(exConfigItem(_("Wrap visual flags"), vchoices, true, page));
-
-  items.push_back(exConfigItem(_("End of line"), CONFIG_CHECKBOX, page));
-  items.push_back(exConfigItem(_("Line numbers"), CONFIG_CHECKBOX, page));
-  items.push_back(exConfigItem(_("Use tabs"), CONFIG_CHECKBOX, page));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
@@ -791,9 +791,9 @@ int exSTC::ConfigDialog(
 
   const wxSize size
 #ifdef __WXMSW__
-    (400, 550);
+    (400, 500);
 #else
-    (500, 550);
+    (500, 500);
 #endif
 
   int buttons = wxOK | wxCANCEL;

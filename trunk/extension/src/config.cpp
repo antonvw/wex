@@ -132,7 +132,8 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
     }
 
-    if (it->m_Page != previous_page)
+    if (it->m_Type != CONFIG_SPACER && 
+        it->m_Page != previous_page)
     {
       if (notebook != NULL)
       {
@@ -163,7 +164,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
     wxWindow* parent =
       (page_panel != NULL ? (wxWindow*)page_panel: this);
 
-    wxControl* control;
+    wxControl* control = NULL;
 
     switch (it->m_Type)
     {
@@ -207,6 +208,11 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       control = AddRadioBox(parent, sizer, it->m_Name, it->m_Choices);
       break;
 
+    case CONFIG_SPACER:
+      sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
+      continue;
+      break;
+      
     case CONFIG_SPINCTRL:
       control = AddSpinCtrl(parent, sizer, it->m_Name, it->m_Min, it->m_Max);
       break;
@@ -256,10 +262,10 @@ wxControl* exConfigDialog::Add(
   bool expand)
 {
   wxSizerFlags flags;
-  flags.Left().Border();
+  flags.Border();
 
-  sizer->Add(new wxStaticText(parent, wxID_ANY, text), flags);
-  sizer->Add(control, (expand ? flags.Expand(): flags));
+  sizer->Add(new wxStaticText(parent, wxID_ANY, text), flags.Right());
+  sizer->Add(control, (expand ? flags.Left().Expand(): flags.Left()));
 
   return control;
 }
@@ -491,7 +497,6 @@ wxControl* exConfigDialog::AddRadioBox(wxWindow* parent,
 
   box->SetStringSelection(choices[m_Config->Get(m_ConfigGroup + text, 0)]);
 
-  sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
   wxSizerFlags flags;
   flags.Expand().Left().Border();
   sizer->Add(box, flags);
@@ -704,7 +709,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       }
       }
       break;
-
+      
     case CONFIG_STRING:
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
