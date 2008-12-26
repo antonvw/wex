@@ -176,6 +176,10 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       control = AddCheckListBox(parent, sizer, it->m_Name, it->m_Choices);
       break;
 
+    case CONFIG_CHECKLISTBOX_NONAME:
+      control = AddCheckListBoxNoName(parent, sizer, it->m_Name, it->m_ChoicesBool);
+      break;
+
     case CONFIG_COLOUR:
       control = AddColourButton(parent, sizer, it->m_Name);
       break;
@@ -316,6 +320,39 @@ wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
     ++it)
   {
     if (value & it->first)
+    {
+      box->Check(item);
+    }
+
+    item++;
+  }
+
+  return Add(sizer, parent, box, text + ":");
+}
+
+wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
+  wxSizer* sizer, const wxString& text, std::set<const wxString> & choices)
+{
+  wxArrayString arraychoices;
+
+  for (
+    std::set<const wxString>::const_iterator it = choices.begin();
+    it != choices.end();
+    ++it)
+  {
+    arraychoices.Add(*it);
+  }
+
+  wxCheckListBox* box = new wxCheckListBox(parent, 
+    wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
+
+  int item = 0;
+  for (
+    std::set<const wxString>::const_iterator it = choices.begin();
+    it != choices.end();
+    ++it)
+  {
+    if (m_Config->GetBool(m_ConfigGroup + *it))
     {
       box->Check(item);
     }
@@ -638,6 +675,25 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       }
 
       m_Config->Set(m_ConfigGroup + clb->GetName(), value);
+      }
+      break;
+
+    case CONFIG_CHECKLISTBOX_NONAME:
+      {
+      wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+
+      int item = 0;
+
+      for (
+        std::set<const wxString>::const_iterator b = it->m_ChoicesBool.begin();
+        b != it->m_ChoicesBool.end();
+        ++b)
+      {
+        m_Config->SetBool(m_ConfigGroup + *b, clb->IsChecked(item));
+
+        item++;
+      }
+
       }
       break;
 

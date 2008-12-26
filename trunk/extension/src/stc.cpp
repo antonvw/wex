@@ -735,9 +735,11 @@ int exSTC::ConfigDialog(
   items.push_back(exConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
   items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
 
-  items.push_back(exConfigItem(_("End of line"), CONFIG_CHECKBOX, page));
-  items.push_back(exConfigItem(_("Line numbers"), CONFIG_CHECKBOX, page));
-  items.push_back(exConfigItem(_("Use tabs"), CONFIG_CHECKBOX, page));
+  set<const wxString> bchoices;
+  bchoices.insert(_("End of line"));
+  bchoices.insert(_("Line numbers"));
+  bchoices.insert(_("Use tabs"));
+  items.push_back(exConfigItem(bchoices, page));
 
   map<int, const wxString> choices;
   choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));

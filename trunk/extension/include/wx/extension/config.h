@@ -130,6 +130,7 @@ enum
 {
   CONFIG_CHECKBOX,       ///< a checkbox (use GetBool to retrieve value)
   CONFIG_CHECKLISTBOX,   ///< a checklistbox (not mutually exclusive choices)
+  CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox without a name (not mutually exclusive choices)
   CONFIG_COLOUR,         ///< a colour button
   CONFIG_COMBOBOX,       ///< a combobox
   CONFIG_COMBOBOXDIR,    ///< a combobox with a browse button
@@ -200,6 +201,20 @@ public:
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices) {;};
 
+  /// Constructor for a checklistbox without a name. Just specify
+  /// the map with values and text.
+  exConfigItem(const std::set<const wxString> & choices,
+    const wxString& page = wxEmptyString)
+  : m_IsRequired(false)
+  , m_Min(0)
+  , m_Max(0)
+  , m_MaxItems(0)
+  , m_Name("checklistbox_noname")
+  , m_Page(page)
+  , m_Style(0)
+  , m_Type(CONFIG_CHECKLISTBOX_NONAME)
+  , m_ChoicesBool(choices) {;};
+
   /// Constuctor for other types.
   exConfigItem(const wxString& name,
     int type,
@@ -227,6 +242,7 @@ private:
   int m_Type;
   wxControl* m_Control;
   std::map<int, const wxString> m_Choices;
+  std::set<const wxString> m_ChoicesBool;
 };
 #endif // wxUSE_GUI
 
@@ -274,6 +290,11 @@ private:
     wxSizer* sizer,
     const wxString& text,
     std::map<int, const wxString> & choices);
+  wxControl* AddCheckListBoxNoName(
+    wxWindow* parent,
+    wxSizer* sizer,
+    const wxString& text,
+    std::set<const wxString> & choices);
   wxControl* AddColourButton(
     wxWindow* parent,
     wxSizer* sizer,
