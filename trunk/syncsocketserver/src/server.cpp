@@ -347,7 +347,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       _("Server Config"),
       wxEmptyString,
       0,
-      1,
+      2,
       flags).ShowModal();
     }
     break;

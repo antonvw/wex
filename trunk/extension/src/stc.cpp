@@ -813,7 +813,7 @@ int exSTC::ConfigDialog(
       title,
       GetConfigKeyBase(),
       0,
-      1,
+      2,
       buttons,
       id,
       wxDefaultPosition,

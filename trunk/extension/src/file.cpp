@@ -226,7 +226,7 @@ int exStat::ConfigDialog(
       items,
       title,
       "Colour/",
-      0, 1,
+      0, 2,
       wxOK | wxCANCEL | wxAPPLY,
       id);
   }
