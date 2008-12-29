@@ -782,6 +782,9 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       }
       break;
       
+    case CONFIG_SPACER:
+      break;
+
     case CONFIG_STRING:
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
