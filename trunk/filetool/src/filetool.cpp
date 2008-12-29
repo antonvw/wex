@@ -47,7 +47,9 @@ void ftFindInFiles(ftFrame* frame, bool replace)
   if (replace) v.push_back(exConfigItem(_("Replace with"), CONFIG_COMBOBOX));
   v.push_back(exConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(exConfigItem());
   v.push_back(exConfigItem(_("Match whole word"), CONFIG_CHECKBOX));
+  v.push_back(exConfigItem());
   v.push_back(exConfigItem(_("Match case"), CONFIG_CHECKBOX));
 
   if (exConfigDialog(NULL,

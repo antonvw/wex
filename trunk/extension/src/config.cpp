@@ -461,7 +461,7 @@ wxControl* exConfigDialog::AddComboBoxDir(wxWindow* parent,
       wxBU_EXACTFIT),
     flag.Center().Border(wxLEFT));
 
-  sizer->Add(new wxStaticText(this, wxID_ANY, text + ":"), flag.Left().Border());
+  sizer->Add(new wxStaticText(this, wxID_ANY, text + ":"), flag.Right().Border());
   sizer->Add(browse, flag.Center().Border());
 
   return cb;
