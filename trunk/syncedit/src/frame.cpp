@@ -500,6 +500,7 @@ and saved in the same directory as where the executable is."));
   case ID_OPTION_SVN_AND_COMPARATOR:
     {
     std::vector<exConfigItem> v;
+    v.push_back(exConfigItem()); // a spacer
     v.push_back(exConfigItem("SVN", CONFIG_CHECKBOX));
     v.push_back(exConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
     exConfigDialog(this, v, _("Set SVN And Comparator")).ShowModal();

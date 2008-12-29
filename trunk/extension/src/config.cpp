@@ -105,6 +105,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
 {
   m_Config = exApp::GetConfig();
 
+  bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
   wxFlexGridSizer* notebook_sizer = NULL;
   wxAuiNotebook* notebook = NULL;
@@ -132,10 +133,13 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
     }
 
-    if (it->m_Type != CONFIG_SPACER && 
-        it->m_Page != previous_page)
+    if (first_time || 
+        (it->m_Page != previous_page && 
+         it->m_Page != wxEmptyString))
     {
-      if (notebook != NULL)
+      first_time = false;
+
+      if (notebook != NULL && it->m_Type != CONFIG_SPACER)
       {
         // Finish the current page.
         if (sizer != NULL)
@@ -155,9 +159,16 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       else
         sizer = new wxFlexGridSizer(cols);
 
-      for (int i = 0; i < cols; i++)
+      if (cols == 2)
       {
-        sizer->AddGrowableCol(i);
+        sizer->AddGrowableCol(1);
+      }
+      else
+      {
+        for (int i = 0; i < cols; i++)
+        {
+          sizer->AddGrowableCol(i);
+        }
       }
     }
 

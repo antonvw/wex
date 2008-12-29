@@ -153,6 +153,7 @@ public:
   /// Contructor for a spacer item.
   exConfigItem()
   : m_Name("spacer")
+  , m_Page(wxEmptyString)
   , m_Type(CONFIG_SPACER) {;}
   
   /// Constructor for a spin ctrl.

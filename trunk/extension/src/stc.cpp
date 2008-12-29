@@ -770,6 +770,8 @@ int exSTC::ConfigDialog(
     items.push_back(exConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
     items.push_back(exConfigItem(_("Auto fold"), CONFIG_INT, _("Folding")));
+    items.push_back(exConfigItem()); // spacer
+    items.push_back(exConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
     map<int, const wxString> fchoices;
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
@@ -779,8 +781,6 @@ int exSTC::ConfigDialog(
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
     items.push_back(exConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
-
-    items.push_back(exConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
     items.push_back(exConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
 
