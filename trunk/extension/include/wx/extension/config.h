@@ -265,7 +265,7 @@ public:
     const wxString& title = _("Options"),
     const wxString& configGroup = wxEmptyString,
     int rows = 0,
-    int cols = 1,
+    int cols = 2,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -293,7 +293,6 @@ private:
   wxControl* AddCheckListBoxNoName(
     wxWindow* parent,
     wxSizer* sizer,
-    const wxString& text,
     std::set<const wxString> & choices);
   wxControl* AddColourButton(
     wxWindow* parent,

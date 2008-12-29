@@ -151,13 +151,13 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       previous_page = it->m_Page;
 
       if (rows != 0)
-        sizer = new wxFlexGridSizer(rows, 2 * cols, 0, 0);
+        sizer = new wxFlexGridSizer(rows, cols, 0, 0);
       else
-        sizer = new wxFlexGridSizer(2 * cols);
+        sizer = new wxFlexGridSizer(cols);
 
       for (int i = 0; i < cols; i++)
       {
-        sizer->AddGrowableCol(1 + 2 * i);
+        sizer->AddGrowableCol(i);
       }
     }
 
@@ -177,7 +177,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       break;
 
     case CONFIG_CHECKLISTBOX_NONAME:
-      control = AddCheckListBoxNoName(parent, sizer, it->m_Name, it->m_ChoicesBool);
+      control = AddCheckListBoxNoName(parent, sizer, it->m_ChoicesBool);
       break;
 
     case CONFIG_COLOUR:
@@ -287,7 +287,6 @@ wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
 
   checkbox->SetValue(m_Config->GetBool(m_ConfigGroup + text, false));
 
-  sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
   wxSizerFlags flags;
   flags.Expand().Left().Border();
   sizer->Add(checkbox, flags);
@@ -331,7 +330,7 @@ wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
 }
 
 wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, std::set<const wxString> & choices)
+  wxSizer* sizer, std::set<const wxString> & choices)
 {
   wxArrayString arraychoices;
 
@@ -360,7 +359,11 @@ wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
     item++;
   }
 
-  return Add(sizer, parent, box, text + ":");
+  wxSizerFlags flags;
+  flags.Expand().Left().Border();
+  sizer->Add(box, flags);
+
+  return box;
 }
 
 wxControl* exConfigDialog::AddColourButton(wxWindow* parent,
