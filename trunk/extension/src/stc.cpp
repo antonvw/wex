@@ -735,7 +735,7 @@ int exSTC::ConfigDialog(
   items.push_back(exConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
   items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
 
-  set<const wxString> bchoices;
+  set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));

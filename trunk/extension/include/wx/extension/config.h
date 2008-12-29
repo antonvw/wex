@@ -204,7 +204,7 @@ public:
 
   /// Constructor for a checklistbox without a name. Just specify
   /// the map with values and text.
-  exConfigItem(const std::set<const wxString> & choices,
+  exConfigItem(std::set<wxString> & choices,
     const wxString& page = wxEmptyString)
   : m_IsRequired(false)
   , m_Min(0)
@@ -243,7 +243,7 @@ private:
   int m_Type;
   wxControl* m_Control;
   std::map<int, const wxString> m_Choices;
-  std::set<const wxString> m_ChoicesBool;
+  std::set<wxString> m_ChoicesBool;
 };
 #endif // wxUSE_GUI
 
@@ -294,7 +294,7 @@ private:
   wxControl* AddCheckListBoxNoName(
     wxWindow* parent,
     wxSizer* sizer,
-    std::set<const wxString> & choices);
+    std::set<wxString> & choices);
   wxControl* AddColourButton(
     wxWindow* parent,
     wxSizer* sizer,

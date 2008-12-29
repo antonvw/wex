@@ -341,12 +341,12 @@ wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
 }
 
 wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
-  wxSizer* sizer, std::set<const wxString> & choices)
+  wxSizer* sizer, std::set<wxString> & choices)
 {
   wxArrayString arraychoices;
 
   for (
-    std::set<const wxString>::const_iterator it = choices.begin();
+    std::set<wxString>::const_iterator it = choices.begin();
     it != choices.end();
     ++it)
   {
@@ -358,7 +358,7 @@ wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
 
   int item = 0;
   for (
-    std::set<const wxString>::const_iterator it = choices.begin();
+    std::set<wxString>::const_iterator it = choices.begin();
     it != choices.end();
     ++it)
   {
@@ -699,7 +699,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       int item = 0;
 
       for (
-        std::set<const wxString>::const_iterator b = it->m_ChoicesBool.begin();
+        std::set<wxString>::const_iterator b = it->m_ChoicesBool.begin();
         b != it->m_ChoicesBool.end();
         ++b)
       {
