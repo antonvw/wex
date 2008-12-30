@@ -31,14 +31,18 @@ exDialog::exDialog(wxWindow* parent,
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
+  m_TopSizer->AddGrowableCol(0);
+  m_UserSizer->AddGrowableCol(0);
+
   wxSizerFlags flag;
   flag.Expand().Center().Border();
 
   // The top sizer starts with a spacer, for a nice border.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
-  // Then place the user sizer.
+  // Then place the growable user sizer.
   m_TopSizer->Add(m_UserSizer, flag);
+  m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
 
   // Then the button sizer.
   wxSizer* sbz = CreateSeparatedButtonSizer(flags);
@@ -50,11 +54,6 @@ exDialog::exDialog(wxWindow* parent,
 
   // The top sizer ends with a spacer as well.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
-
-  m_TopSizer->AddGrowableCol(0);
-  m_TopSizer->AddGrowableRow(1); // this is the user sizer
-
-  m_UserSizer->AddGrowableCol(0);
 
   SetSizer(m_TopSizer);
 }
@@ -93,9 +92,7 @@ wxSizerItem* exDialog::AddUserSizer(
 
 #if wxUSE_STATUSBAR
 exStatusBar* exFrame::m_StatusBar = NULL;
-map<wxString, int> exFrame::m_Panes;
-vector<wxString> exFrame::m_PanesHelp;
-map<int, wxString> exFrame::m_PanesText;
+map<wxString, exPane> exFrame::m_Panes;
 #endif
 
 BEGIN_EVENT_TABLE(exFrame, wxFrame)
@@ -168,20 +165,38 @@ exSTC* exFrame::GetFocusedSTC()
   return wxDynamicCast(win, exSTC);
 }
 
-int exFrame::GetPaneField(const wxString& pane) const
+#if wxUSE_STATUSBAR
+const exPane exFrame::GetPane(int pane) const
 {
-  if (!m_Panes.empty())
+  for (
+    map<wxString, exPane>::const_iterator it = m_Panes.begin();
+    it != m_Panes.end();
+    ++it)
   {
-    map<wxString, int>::const_iterator it = m_Panes.find(pane);
-
-    if (it != m_Panes.end())
+    if (it->second.m_No == pane)
     {
       return it->second;
     }
   }
 
+  return exPane();
+}
+
+int exFrame::GetPaneField(const wxString& pane)
+{
+  if (!m_Panes.empty())
+  {
+    map<wxString, exPane>::const_iterator it = m_Panes.find(pane);
+
+    if (it != m_Panes.end())
+    {
+      return it->second.m_No;
+    }
+  }
+
   return -1;
 }
+#endif // wxUSE_STATUSBAR
 
 void exFrame::OnClose(wxCloseEvent& event)
 {
@@ -259,7 +274,6 @@ void exFrame::SetupStatusBar(
 {
   wxFrame::CreateStatusBar(panes.size(), style, id, name);
 
-  int pane_number = 0;
   int* styles = new int[panes.size()];
   int* widths = new int[panes.size()];
 
@@ -268,13 +282,9 @@ void exFrame::SetupStatusBar(
     it != panes.end();
     ++it)
   {
-    m_Panes[it->m_Name] = pane_number;
-    m_PanesHelp.push_back(it->m_Helptext);
-
-    styles[pane_number] = it->m_Style;
-    widths[pane_number] = it->m_Width;
-
-    pane_number++;
+    m_Panes[it->m_Name] = *it;
+    styles[it->m_No] = it->m_Style;
+    widths[it->m_No] = it->m_Width;
   }
 
   m_StatusBar->SetStatusStyles(panes.size(), styles);
@@ -319,29 +329,16 @@ void exFrame::StatusText(const wxString& text, const wxString& pane)
     return;
   }
 
-  if (pane.empty())
-  {
-    // Set text on all panes.
-    for (size_t i = 0; i < m_Panes.size(); i++)
-    {
-      m_StatusBar->SetStatusText(text, i);
-      m_PanesText[i] = text;
-    }
-    }
-  else
-  {
-    map<wxString, int>::iterator it = m_Panes.find(pane);
+  const int field = GetPaneField(pane);
 
-    if (it != m_Panes.end())
+  if (field > 0)
+  {
+    // Especially with statusbar updating (in the OnIdle for exSTC or your application), most
+    // of the time the statusbar does not change.
+    // To avoid flicker, therefore only set if something changes.
+    if (m_StatusBar->GetStatusText(field) != text)
     {
-      // Especially with statusbar updating (in the OnIdle for exSTC or your application), most
-      // of the time the statusbar does not change.
-      // To avoid flicker, therefore only set if something changes.
-      if (m_PanesText[it->second] != text)
-      {
-        m_StatusBar->SetStatusText(text, it->second);
-        m_PanesText[it->second] = text;
-      }
+      m_StatusBar->SetStatusText(text, field);
     }
   }
 }
@@ -614,6 +611,8 @@ exMenu* exMenu::AppendTools(int toolmenu_id)
   return menuTool;
 }
 
+int exPane::m_Total = 0;
+
 #if wxUSE_STATUSBAR
 BEGIN_EVENT_TABLE(exStatusBar, wxStatusBar)
   EVT_LEFT_DOWN(exStatusBar::OnMouse)
@@ -654,14 +653,14 @@ void exStatusBar::OnMouse(wxMouseEvent& event)
         // Show tooltip if tooltip is available, and not yet tooltip presented.
         else if (event.Moving())
         {
-          if (!m_Frame->m_PanesHelp.empty())
+          if (!m_Frame->m_Panes.empty())
           {
             const wxString tooltip =
               (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
 
-            if (tooltip != m_Frame->m_PanesHelp[i])
+            if (tooltip != m_Frame->GetPane(i).m_Helptext)
             {
-              SetToolTip(m_Frame->m_PanesHelp[i]);
+              SetToolTip(m_Frame->GetPane(i).m_Helptext);
             }
           }
         }

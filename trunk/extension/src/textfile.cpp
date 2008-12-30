@@ -67,7 +67,6 @@ exTextFile::exTextFile(const exFileName& filename)
 {
   m_LineMarker = 0;
   m_AllowAction = false;
-  m_DialogShown = false;
   m_EmptyLine = false;
   m_FinishedAction = false;
   m_IsCommentStatement = false;

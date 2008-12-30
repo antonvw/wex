@@ -211,7 +211,6 @@ private:
     bool is_comment = true);
 
   bool m_AllowAction;
-  bool m_DialogShown;
   bool m_EmptyLine;
   bool m_FinishedAction;
   bool m_IsCommentStatement;

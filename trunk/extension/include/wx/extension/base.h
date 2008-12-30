@@ -141,17 +141,20 @@ private:
 class exPane
 {
   friend class exFrame;
+  friend class exStatusBar;
 public:
-  /// Constructor.
+  /// Default constructor.
   exPane(
-    const wxString& name,
+    const wxString& name = wxEmptyString,
     int width = 50,
     const wxString& helptext = wxEmptyString, // in that cases uses name
     int style = wxSB_NORMAL)
     : m_Helptext(helptext)
     , m_Name(name)
     , m_Style(style)
-    , m_Width(width){};
+    , m_Width(width)
+    , m_No(m_Total)
+    {m_Total++;};
 
   /// Assignment operator.
   exPane& operator=(const exPane& p)
@@ -160,6 +163,7 @@ public:
     m_Name = p.m_Name;
     m_Style = p.m_Style;
     m_Width = p.m_Width;
+    m_No = p.m_No;
     return *this;
   };
 private:
@@ -167,6 +171,8 @@ private:
   wxString m_Name;
   int m_Style;
   int m_Width;
+  int m_No;
+  static int m_Total;
 };
 #endif // wxUSE_STATUSBAR
 
@@ -216,18 +222,23 @@ public:
   /// If the window that has focus is an STC, then returns that, otherwise returns NULL.
   exSTC* GetFocusedSTC();
 
-  /// Returns the field number of status bar pane.
-  int GetPaneField(const wxString& pane) const;
-
 #if wxUSE_STATUSBAR
+  /// Returns the status bar pane. 
+  /// If pane could not be found, returns empty pane.
+  const exPane GetPane(int pane) const;
+
+  /// Returns the field number of status bar pane.
+  /// If pane could not be fonud, returns -1.
+  static int GetPaneField(const wxString& pane);
+
   /// Do something when statusbar is clicked.
   virtual void StatusBarClicked(int WXUNUSED(field), const wxPoint& WXUNUSED(point)) {};
 
   /// When double clicked, uses the GetSTC() for some dialogs.
   virtual void StatusBarDoubleClicked(int field, const wxPoint& point);
 
+  /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
-  /// If pane is the empty string, the text is set for all panes.
   static void StatusText(const wxString& text, const wxString& pane = "PaneText");
 #endif
 protected:
@@ -253,9 +264,7 @@ protected:
 private:
 #if wxUSE_STATUSBAR
   static exStatusBar* m_StatusBar;
-  static std::map<wxString, int> m_Panes;
-  static std::map<int, wxString> m_PanesText;
-  static std::vector<wxString> m_PanesHelp;
+  static std::map<wxString, exPane> m_Panes;
 #endif
 
   const bool m_KeepPosAndSize;

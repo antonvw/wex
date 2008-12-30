@@ -339,7 +339,7 @@ exSTC::exSTC(const exSTC& stc)
 
   if (stc.m_FileName.IsOk())
   {
-    Open(stc.m_FileName.GetFullPath(), m_LineNumber, wxEmptyString, m_Flags);
+    Open(stc.m_FileName, m_LineNumber, wxEmptyString, m_Flags);
   }
 }
 
@@ -793,9 +793,9 @@ int exSTC::ConfigDialog(
 
   const wxSize size
 #ifdef __WXMSW__
-    (400, 500);
+    (400, 400);
 #else
-    (500, 500);
+    (500, 400);
 #endif
 
   int buttons = wxOK | wxCANCEL;
@@ -966,7 +966,7 @@ bool exSTC::FileIsSynced()
     flags |= STC_OPEN_IS_SYNCED;
   }
 
-  return Open(m_FileName.GetFullPath(), 0, wxEmptyString, flags);
+  return Open(m_FileName, 0, wxEmptyString, flags);
 }
 
 bool exSTC::FileNew(const exFileName& filename)
@@ -2129,7 +2129,7 @@ bool exSTC::Open(
 #endif
   }
 
-  if (m_FileName.GetFullPath() == exLogfileName().GetFullPath())
+  if (m_FileName == exLogfileName())
   {
     DocumentEnd();
   }

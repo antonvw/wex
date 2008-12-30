@@ -449,7 +449,7 @@ and saved in the same directory as where the executable is."));
     {
       editor->PropertiesMessage();
 
-      if (editor->GetFileName().GetFullPath() == exApp::GetLexers()->GetFileName().GetFullPath())
+      if (editor->GetFileName() == exApp::GetLexers()->GetFileName())
       {
         exApp::GetLexers()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);
