@@ -331,7 +331,7 @@ void exFrame::StatusText(const wxString& text, const wxString& pane)
 
   const int field = GetPaneField(pane);
 
-  if (field > 0)
+  if (field >= 0)
   {
     // Especially with statusbar updating (in the OnIdle for exSTC or your application), most
     // of the time the statusbar does not change.
