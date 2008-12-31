@@ -75,7 +75,6 @@ MDIFrame::MDIFrame(bool open_recent)
   : Frame(project_wildcard)
   , m_NewFileNo(1)
   , m_History(NULL)
-  , m_AsciiTable(NULL)
 {
   wxLogTrace("SY_CALL", "+MDIFrame");
 
@@ -98,6 +97,9 @@ MDIFrame::MDIFrame(bool open_recent)
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY, 
     wxFileName(GetRecentFile()).GetFullPath());
+  exSTC* asciiTable = new exSTC(this);
+  asciiTable->AddAsciiTable();
+  asciiTable->SetReadOnly(true);
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
@@ -107,7 +109,8 @@ MDIFrame::MDIFrame(bool open_recent)
     wxAuiPaneInfo().Bottom().MaximizeButton(true).MinSize(250, 100).Name("OUTPUT").Caption(_("Output")));
   GetManager().AddPane(m_DirCtrl,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("DIRCTRL").Caption(_("Explorer")));
-
+  GetManager().AddPane(asciiTable,
+    wxAuiPaneInfo().Left().BestSize(400, 250).Name("ASCIITABLE").Caption(_("Ascii Table")));
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
 
@@ -677,23 +680,7 @@ and saved in the same directory as where the executable is."));
   case ID_TREE_SVN_LOG: exSVN(SVN_LOG).Show(m_DirCtrl->GetFilePath()); break;
   case ID_TREE_OPEN: OpenFile(exFileName(m_DirCtrl->GetFilePath())); break;
   
-  case ID_VIEW_ASCII_TABLE:
-    if (m_AsciiTable == NULL)
-    {
-      m_AsciiTable = new exSTC(this);
-      m_AsciiTable->AddAsciiTable();
-      m_AsciiTable->SetReadOnly(true);
-
-      GetManager().AddPane(m_AsciiTable,
-        wxAuiPaneInfo().Left().BestSize(400, 250).Name("ASCIITABLE").Caption(_("Ascii Table")));
-      GetManager().Update();
-    }
-    else
-    {
-      TogglePane("ASCIITABLE");
-    }
-    break;
-
+  case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
   case ID_VIEW_FILES: TogglePane("FILES"); break;
   case ID_VIEW_HISTORY: TogglePane("HISTORY"); break;
@@ -818,6 +805,12 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(exApp::GetConfigBool("List/SortSync"));
     break;
 
+    case ID_VIEW_ASCII_TABLE:
+      event.Check(GetManager().GetPane("ASCIITABLE").IsShown());
+      break;
+    case ID_VIEW_DIRCTRL:
+      event.Check(GetManager().GetPane("DIRCTRL").IsShown());
+      break;
     case ID_VIEW_FILES:
       event.Check(GetManager().GetPane("FILES").IsShown());
       break;
@@ -829,18 +822,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
     case ID_VIEW_PROJECTS:
       event.Check(GetManager().GetPane("PROJECTS").IsShown());
-      break;
-    case ID_VIEW_ASCII_TABLE:
-      if (m_AsciiTable == NULL)
-      {
-        event.Check(false);
-        return;
-      }
-
-      event.Check(GetManager().GetPane("ASCIITABLE").IsShown());
-      break;
-    case ID_VIEW_DIRCTRL:
-      event.Check(GetManager().GetPane("DIRCTRL").IsShown());
       break;
 
     case wxID_PREVIEW:

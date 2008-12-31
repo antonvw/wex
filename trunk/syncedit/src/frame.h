@@ -55,7 +55,6 @@ private:
   exNotebook* m_NotebookWithEditors;
   exNotebook* m_NotebookWithLists;
   exNotebook* m_NotebookWithProjects;
-  exSTC* m_AsciiTable;
 
   DECLARE_EVENT_TABLE()
 };
