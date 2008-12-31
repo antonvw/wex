@@ -142,11 +142,6 @@ MDIFrame::MDIFrame(bool open_recent)
           wxEmptyString,
           ftSTC::STC_OPEN_IS_PROJECT);
       }
-      else
-      {
-        GetManager().GetPane("PROJECTS").Hide();
-        GetManager().Update();
-      }
     }
   }
 
@@ -972,17 +967,26 @@ bool MDIFrame::OpenFile(
         );
     }
 
-    GetManager().GetPane("PROJECTS").Show();
+    if (!GetManager().GetPane("PROJECTS").IsShown())
+    {
+      GetManager().GetPane("PROJECTS").Show();
+      GetManager().Update();
+    }
 
     SetTitle(wxEmptyString, filename.GetName());
   }
   else
   {
-    GetManager().GetPane("FILES").Show();
-
-    if (GetManager().GetPane("PROJECTS").IsMaximized())
+    if (!GetManager().GetPane("FILES").IsShown())
     {
-      GetManager().GetPane("PROJECTS").Restore();
+      GetManager().GetPane("FILES").Show();
+
+      if (GetManager().GetPane("PROJECTS").IsMaximized())
+      {
+        GetManager().GetPane("PROJECTS").Restore();
+      }
+
+      GetManager().Update();
     }
 
     ftSTC* editor = (ftSTC*)page;
@@ -1023,16 +1027,7 @@ bool MDIFrame::OpenFile(
     {
       editor->GotoLineAndSelect(line_number, match);
     }
-
-    // Removed in v5.1, as now each link is splitted, if already splitted
-    // a new split should not be necessary, but there is no way to detect this.
-    if (flags & exSTC::STC_OPEN_FROM_LINK)
-    {
-      //m_NotebookWithEditors->Split(m_NotebookWithEditors->GetSelection(), wxRIGHT);
-    }
   }
-
-  GetManager().Update();
 
   wxLogTrace("SY_CALL", "-OpenFile");
 
