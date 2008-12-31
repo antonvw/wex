@@ -52,8 +52,9 @@ public:
     }
     else
     {
-      m_LongValues.insert(std::make_pair(key, Read(key, default_value)));
-      return m_LongValues[key];
+      const long config_value = Read(key, default_value);
+      m_LongValues.insert(std::make_pair(key, config_value));
+      return config_value;
     }
   }
 
@@ -75,8 +76,9 @@ public:
     }  
     else
     {
-      m_StringValues.insert(std::make_pair(key, Read(key, default_value)));
-      return m_StringValues[key];
+      const wxString config_value = Read(key, default_value);
+      m_StringValues.insert(std::make_pair(key, config_value));
+      return config_value;
     }
   }
 
@@ -92,8 +94,9 @@ public:
     }
     else
     {
-      m_BoolValues.insert(std::make_pair(key, ReadBool(key, default_value)));
-      return m_BoolValues[key];
+      const bool config_value = ReadBool(key, default_value);
+      m_BoolValues.insert(std::make_pair(key, config_value));
+      return config_value;
     }
   }
 
@@ -128,9 +131,19 @@ private:
 /// The config item types supported.
 enum
 {
+  /// A checklistbox (not mutually exclusive choices).
+  /// Should be used to get/set individual bits in a long.
+  CONFIG_CHECKLISTBOX,   
+
+  /// A checklistbox without a name (not mutually exclusive choices).
+  /// Should be used to get/set several boolean values in one checklistbox.
+  CONFIG_CHECKLISTBOX_NONAME,
+
+  /// A radiobox (mutually exclusive choices).
+  /// Should be used when a long value can have a short set of possible individual values.
+  CONFIG_RADIOBOX,       
+
   CONFIG_CHECKBOX,       ///< a checkbox (use GetBool to retrieve value)
-  CONFIG_CHECKLISTBOX,   ///< a checklistbox (not mutually exclusive choices)
-  CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox without a name (not mutually exclusive choices)
   CONFIG_COLOUR,         ///< a colour button
   CONFIG_COMBOBOX,       ///< a combobox
   CONFIG_COMBOBOXDIR,    ///< a combobox with a browse button
@@ -138,7 +151,6 @@ enum
   CONFIG_FILEPICKERCTRL, ///< a filepicker ctrl
   CONFIG_FONTPICKERCTRL, ///< a fontpicker ctrl
   CONFIG_INT,            ///< a textctrl that only accepts an integer (a long integer)
-  CONFIG_RADIOBOX,       ///< a radiobox (mutually exclusive choices)
   CONFIG_SPINCTRL,       ///< a spinctrl
   CONFIG_SPACER,         ///< a spacer only, no config item
   CONFIG_STRING,         ///< a textctrl
@@ -189,7 +201,7 @@ public:
   /// Constructor for a radiobox or a checklistbox. Just specify
   /// the map with values and text.
   exConfigItem(const wxString& name,
-    const std::map<int, const wxString> & choices,
+    const std::map<long, const wxString> & choices,
     bool use_radiobox = true,
     const wxString& page = wxEmptyString)
   : m_IsRequired(false)
@@ -242,7 +254,7 @@ private:
   long m_Style;
   int m_Type;
   wxControl* m_Control;
-  std::map<int, const wxString> m_Choices;
+  std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
 };
 #endif // wxUSE_GUI
@@ -290,7 +302,7 @@ private:
     wxWindow* parent,
     wxSizer* sizer,
     const wxString& text,
-    std::map<int, const wxString> & choices);
+    std::map<long, const wxString> & choices);
   wxControl* AddCheckListBoxNoName(
     wxWindow* parent,
     wxSizer* sizer,
@@ -323,7 +335,7 @@ private:
     wxWindow* parent,
     wxSizer* sizer,
     const wxString& text,
-    std::map<int, const wxString> & choices);
+    std::map<long, const wxString> & choices);
   wxControl* AddSpinCtrl(
     wxWindow* parent,
     wxSizer* sizer,

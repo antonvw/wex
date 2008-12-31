@@ -741,19 +741,19 @@ int exSTC::ConfigDialog(
   bchoices.insert(_("Use tabs"));
   items.push_back(exConfigItem(bchoices, page));
 
-  map<int, const wxString> choices;
+  map<long, const wxString> choices;
   choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
   items.push_back(exConfigItem(_("WhiteSpace"), choices, true, page));
 
-  map<int, const wxString> wchoices;
+  map<long, const wxString> wchoices;
   wchoices.insert(make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(make_pair(wxSTC_WRAP_WORD, _("Word")));
   wchoices.insert(make_pair(wxSTC_WRAP_CHAR, _("Char")));
   items.push_back(exConfigItem(_("Wrap line"), wchoices, true, page));
 
-  map<int, const wxString> vchoices;
+  map<long, const wxString> vchoices;
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
@@ -763,7 +763,7 @@ int exSTC::ConfigDialog(
   {
     items.push_back(exConfigItem(_("Edge column"), CONFIG_INT, _("Edge")));
 
-    map<int, const wxString> echoices;
+    map<long, const wxString> echoices;
     echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
     echoices.insert(make_pair(wxSTC_EDGE_LINE, _("Line")));
     echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
@@ -773,7 +773,7 @@ int exSTC::ConfigDialog(
     items.push_back(exConfigItem()); // spacer
     items.push_back(exConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
-    map<int, const wxString> fchoices;
+    map<long, const wxString> fchoices;
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));

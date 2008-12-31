@@ -306,12 +306,12 @@ wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
 }
 
 wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, std::map<int, const wxString> & choices)
+  wxSizer* sizer, const wxString& text, std::map<long, const wxString> & choices)
 {
   wxArrayString arraychoices;
 
   for (
-    std::map<int, const wxString>::const_iterator it = choices.begin();
+    std::map<long, const wxString>::const_iterator it = choices.begin();
     it != choices.end();
     ++it)
   {
@@ -325,7 +325,7 @@ wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
 
   int item = 0;
   for (
-    std::map<int, const wxString>::const_iterator it = choices.begin();
+    std::map<long, const wxString>::const_iterator it = choices.begin();
     it != choices.end();
     ++it)
   {
@@ -533,12 +533,12 @@ wxControl* exConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
 }
 
 wxControl* exConfigDialog::AddRadioBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, std::map<int, const wxString> & choices)
+  wxSizer* sizer, const wxString& text, std::map<long, const wxString> & choices)
 {
   wxArrayString arraychoices;
 
   for (
-    std::map<int, const wxString>::const_iterator it = choices.begin();
+    std::map<long, const wxString>::const_iterator it = choices.begin();
     it != choices.end();
     ++it)
   {
@@ -676,7 +676,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       int item = 0;
 
       for (
-        std::map<int, const wxString>::const_iterator b = it->m_Choices.begin();
+        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
         b != it->m_Choices.end();
         ++b)
       {
@@ -770,7 +770,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       wxRadioBox* rb = (wxRadioBox*)it->m_Control;
 
       for (
-        std::map<int, const wxString>::const_iterator b = it->m_Choices.begin();
+        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
         b != it->m_Choices.end();
         ++b)
       {
