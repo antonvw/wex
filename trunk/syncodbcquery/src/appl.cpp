@@ -338,7 +338,8 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool MyFrame::OpenFile(const wxString& file,
+bool MyFrame::OpenFile(
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -348,7 +349,7 @@ bool MyFrame::OpenFile(const wxString& file,
 
   // Take care that DialogFileOpen always results in opening in the query.
   // Otherwise if results are focused, the file is opened in the results.
-  return m_Query->Open(file, line_number, match, flags);
+  return m_Query->Open(filename, line_number, match, flags);
 }
 
 void MyFrame::RunQuery(const wxString& query, bool empty_results)

@@ -45,7 +45,8 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual void  ConfigDialogApplied(wxWindowID dialogid);
-  virtual bool OpenFile(const wxString& file,
+  virtual bool OpenFile(
+    const exFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);

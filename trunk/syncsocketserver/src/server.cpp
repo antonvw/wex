@@ -618,18 +618,18 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 }
 
 bool MyFrame::OpenFile(
-  const wxString& file,
+  const exFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
 {
-  if (m_DataWindow->Open(file, line_number, match, flags))
+  if (m_DataWindow->Open(filename, line_number, match, flags))
   {
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
 
     m_LogWindow->AppendTextWithTimestamp(
-      _("opened: ") + file + wxString::Format(" (%d bytes)",
+      _("opened: ") + filename.GetFullPath() + wxString::Format(" (%d bytes)",
       m_DataWindow->GetLength()));
 
     return true;
