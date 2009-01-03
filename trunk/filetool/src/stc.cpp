@@ -115,6 +115,8 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
         svnmenu->Append(ID_STC_SVN_DIFF, exEllipsed(_("&Diff")));
         svnmenu->Append(ID_STC_SVN_LOG, exEllipsed(_("&Log")));
         svnmenu->Append(ID_STC_SVN_CAT, exEllipsed(_("&Cat")));
+        svnmenu->AppendSeparator();
+        svnmenu->Append(ID_STC_SVN_COMMIT, exEllipsed(_("&Commit")));
         menu.Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, svnmenu);
       }
     }
@@ -173,6 +175,7 @@ void ftSTC::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_STC_SVN_CAT: exSVN(SVN_CAT).Show(m_FileName.GetFullPath()); break;
+  case ID_STC_SVN_COMMIT: exSVN(SVN_COMMIT).Show(m_FileName.GetFullPath()); break;
   case ID_STC_SVN_DIFF: exSVN(SVN_DIFF).Show(m_FileName.GetFullPath()); break;
   case ID_STC_SVN_LOG: exSVN(SVN_LOG).Show(m_FileName.GetFullPath()); break;
 
