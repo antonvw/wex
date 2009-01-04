@@ -91,6 +91,7 @@ Frame::Frame(const wxString& project_wildcard)
   {
     wxMenu* menuSVN = new wxMenu;
     menuSVN->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
+    menuSVN->Append(ID_SVN_INFO, exEllipsed(_("&Info")));
     menuSVN->Append(ID_SVN_LOG, exEllipsed(_("&Log")));
     menuSVN->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
     menuSVN->AppendSeparator();

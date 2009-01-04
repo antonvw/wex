@@ -622,6 +622,7 @@ and saved in the same directory as where the executable is."));
 
   case ID_SVN_COMMIT: exSVN(SVN_COMMIT).Show(); break;
   case ID_SVN_DIFF: exSVN(SVN_DIFF).Show(); break;
+  case ID_SVN_INFO: exSVN(SVN_INFO).Show(); break;
   case ID_SVN_LOG: exSVN(SVN_LOG).Show(); break;
   case ID_SVN_STAT: exSVN(SVN_STAT).Show(); break;
 
@@ -700,6 +701,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
     
     if (exApp::GetConfigBool("SVN"))
     {
+      menu.AppendSeparator();
       wxMenu* svnmenu = new wxMenu;
       svnmenu->Append(ID_TREE_SVN_DIFF, exEllipsed(_("&Diff")));
       svnmenu->Append(ID_TREE_SVN_LOG, exEllipsed(_("&Log")));

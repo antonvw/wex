@@ -122,6 +122,10 @@ exSVN::exSVN(exSvnType m_Type)
       m_Caption = _("SVN Diff"); 
       m_Command = "diff";
       break;
+    case SVN_INFO: 
+      m_Caption = _("SVN Info"); 
+      m_Command = "info";
+      break;
     case SVN_LOG: 
       m_Caption = _("SVN Log"); 
       m_Command = "log";

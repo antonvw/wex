@@ -113,6 +113,7 @@ enum exSvnType
   SVN_CAT,    ///< svn cat
   SVN_COMMIT, ///< svn commit 
   SVN_DIFF,   ///< svn diff 
+  SVN_INFO,   ///< svn info
   SVN_LOG,    ///< svn log 
   SVN_STAT,   ///< svn stat 
 };
