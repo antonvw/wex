@@ -106,7 +106,23 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
 
   while (child) 
   {
-    if (child->GetName() == "marker")
+    if (child->GetName() == "comment")
+    { 
+      // Ignore comments.
+    }
+    else if (child->GetName() == "hex")
+    {
+      m_StylesHex.push_back(
+        child->GetAttribute("no", "0") + "=" + 
+        child->GetNodeContent().Strip(wxString::both));
+    }
+    else if (child->GetName() == "indicator")
+    {
+      m_Styles.insert(std::make_pair(
+        atoi(child->GetAttribute("no", "0").c_str()),
+        atoi(child->GetNodeContent().Strip(wxString::both)).c_str()));
+    }
+    else if (child->GetName() == "marker")
     {
       const exMarker marker(ParseTagMarker(
         child->GetAttribute("no", "0"),
@@ -130,16 +146,6 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
       m_Styles.push_back(
         child->GetAttribute("no", "0") + "=" + 
         child->GetNodeContent().Strip(wxString::both));
-    }
-    else if (child->GetName() == "hex")
-    {
-      m_StylesHex.push_back(
-        child->GetAttribute("no", "0") + "=" + 
-        child->GetNodeContent().Strip(wxString::both));
-    }
-    else if (child->GetName() == "comment")
-    { 
-      // Ignore comments.
     }
     else
     {

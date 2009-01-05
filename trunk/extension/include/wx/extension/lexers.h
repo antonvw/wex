@@ -12,6 +12,7 @@
 #ifndef _EXLEXERS_H
 #define _EXLEXERS_H
 
+#include <map>
 #include <vector>
 #include <wx/xml/xml.h>
 
@@ -37,6 +38,9 @@ public:
   /// Gets the lexers.
   const std::vector<exLexer>& Get() const {return m_Lexers;};
 
+  /// Gets the indicators.
+  const std::map<int, int>& GetIndicators() const {return m_Indicators;};
+
   /// Gets the markers.
   const std::vector<exMarker>& GetMarkers() const {return m_Markers;};
 
@@ -56,6 +60,7 @@ private:
   const exMarker ParseTagMarker(const wxString& number, const wxString& props);
   const wxString ParseTagProperties(const wxXmlNode* node);
 
+  std::map<int, int> m_Indicators;
   std::vector<exLexer> m_Lexers;
   std::vector<exMarker> m_Markers;
   std::vector<wxString> m_Styles;
