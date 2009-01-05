@@ -70,7 +70,9 @@ public:
   bool KeywordStartsWith(const wxString& word) const;
 
   /// Adds the keywords from value to keywords and keywords set.
-  void SetKeywords(const wxString& value);
+  /// The value might contain the keyword set after a ':'.
+  /// Returns true if keyword could be added.
+  bool SetKeywords(const wxString& value);
 
   /// Sets the lexer if text starts with some special tokens.
   void SetLexerFromText(const wxString& text);

@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2008 Anton van Wezenbeek
+* Copyright (c) 2008-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -166,7 +166,10 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
     }
     else if (child->GetName() == "keywords")
     {
-      lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both));
+      if (!lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both)))
+      {
+        wxLogError("Keywords could not be set on: %d", child->GetLineNumber());
+      }
     }
     else if (child->GetName() == "properties")
     {
@@ -213,13 +216,18 @@ const exMarker exLexers::ParseTagMarker(const wxString& number, const wxString& 
     }
   }
 
-  const exMarker marker(
-    atoi(number.c_str()),
-    atoi(symbol.c_str()),
-    foreground,
-    background);
+  const int no = atoi(number.c_str());
+  const int symbol_no = atoi(symbol.c_str());
 
-  return marker;
+  if (no <= wxSTC_MARKER_MAX && symbol_no <= wxSTC_MARKER_MAX)
+  {
+    return exMarker(no, symbol_no, foreground, background);
+  }
+  else
+  {
+    wxLogError("Illegal marker number: %d or symbol: %d", no, symbol_no);
+    return exMarker(0, 0, foreground, background);
+  }
 }
 
 const wxString exLexers::ParseTagProperties(const wxXmlNode* node)

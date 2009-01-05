@@ -4,11 +4,12 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/extension.h>
 
@@ -106,7 +107,7 @@ bool exLexer::KeywordStartsWith(const wxString& word) const
   return false;
 }
 
-void exLexer::SetKeywords(const wxString& value)
+bool exLexer::SetKeywords(const wxString& value)
 {
   set<wxString> keywords_set;
 
@@ -126,6 +127,11 @@ void exLexer::SetKeywords(const wxString& value)
       keyword = fields.GetNextToken();
 
       const int new_setno = atoi(fields.GetNextToken().c_str());
+
+      if (new_setno >= wxSTC_KEYWORDSET_MAX)
+      {
+        return false;
+      }
 
       if (new_setno != setno)
       {
@@ -150,6 +156,8 @@ void exLexer::SetKeywords(const wxString& value)
   }
 
   m_KeywordsSet.push_back(keywords_set);
+
+  return true;
 }
 
 void exLexer::SetLexerFromText(const wxString& text)
