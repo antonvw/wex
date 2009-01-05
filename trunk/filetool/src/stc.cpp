@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -102,7 +102,7 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
 
   if (m_FileName.FileExists() && GetSelectedText().empty())
   {
-    if (GetMenuFlags() & STC_MENU_COMPARE)
+    if (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN)
     {
       menu.AppendSeparator();
 

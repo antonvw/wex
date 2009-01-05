@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -28,7 +28,7 @@ public:
     STC_MENU_TOOL           = 0x0100, ///< for adding tool menu
     STC_MENU_REPORT_FIND    = 0x0200, ///< for adding find in files
     STC_MENU_REPORT_REPLACE = 0x0400, ///< for adding replace in files
-    STC_MENU_COMPARE        = 0x1000, ///< for adding compare
+    STC_MENU_COMPARE_OR_SVN = 0x1000, ///< for adding compare or SVN menu
   };
 
   /// Extra open flags.
