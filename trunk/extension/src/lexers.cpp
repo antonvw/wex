@@ -118,9 +118,9 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "indicator")
     {
-      m_Styles.insert(std::make_pair(
+      m_Indicators.insert(std::make_pair(
         atoi(child->GetAttribute("no", "0").c_str()),
-        atoi(child->GetNodeContent().Strip(wxString::both)).c_str()));
+        atoi(child->GetNodeContent().Strip(wxString::both).c_str())));
     }
     else if (child->GetName() == "marker")
     {
@@ -273,6 +273,7 @@ bool exLexers::Read()
   }
 
   // Initialize members.
+  m_Indicators.clear();
   m_Lexers.clear();
   m_Markers.clear();
   m_Styles.clear();

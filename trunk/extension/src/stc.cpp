@@ -2454,6 +2454,14 @@ void exSTC::SetGlobalStyles()
     {
       SetStyle(*it);
     }
+    
+    for (
+      map<int, int>::const_iterator ind = exApp::GetLexers()->GetIndicators().begin();
+      ind != exApp::GetLexers()->GetIndicators().end();
+      ++ind)
+    {
+      IndicatorSetStyle(ind->first, ind->second);
+    }
   }
   else
   {
