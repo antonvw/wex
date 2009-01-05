@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/extension/svn.h>
 #include <wx/filetool/filetool.h>
 
 BEGIN_EVENT_TABLE(ftSTC, exSTC)
