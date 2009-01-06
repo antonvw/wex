@@ -65,13 +65,16 @@ const wxString exLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-    if (keyword_set >= (int)m_KeywordsSet.size())
+    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.find(keyword_set);
+
+    if (it == m_KeywordsSet.end())
     {
       wxLogError(FILE_INFO("Illegal index"));
     }
     else
     {
-      set<wxString> theset = m_KeywordsSet.at(keyword_set);
+      set<wxString> theset = it->second;
+
       for (
         set<wxString>::const_iterator it = theset.begin();
         it != theset.end();
@@ -113,7 +116,7 @@ bool exLexer::SetKeywords(const wxString& value)
 
   wxStringTokenizer tkz(value, "\r\n ");
 
-  int setno = -1;
+  int setno = 0;
 
   while (tkz.HasMoreTokens())
   {
@@ -135,13 +138,13 @@ bool exLexer::SetKeywords(const wxString& value)
 
       if (new_setno != setno)
       {
-        setno = new_setno;
-
         if (!keywords_set.empty())
         {
-          m_KeywordsSet.push_back(keywords_set);
+          m_KeywordsSet.insert(make_pair(setno, keywords_set));
           keywords_set.clear();
         }
+
+        setno = new_setno;
       }
 
       keywords_set.insert(keyword);
@@ -155,7 +158,7 @@ bool exLexer::SetKeywords(const wxString& value)
     m_Keywords.insert(keyword);
   }
 
-  m_KeywordsSet.push_back(keywords_set);
+  m_KeywordsSet.insert(make_pair(setno, keywords_set));
 
   return true;
 }

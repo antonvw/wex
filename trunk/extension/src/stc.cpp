@@ -2485,13 +2485,13 @@ void exSTC::SetKeyWords()
 
   // TODO: The Scintilla lexer only recognized lower case words, apparently.
   for (
-    size_t setno = 0;
-    setno < m_FileName.GetLexer().GetKeywordsSet().size();
-    setno++)
+    std::map< int, std::set<wxString> >::const_iterator it = m_FileName.GetLexer().GetKeywordsSet().begin();
+    it != m_FileName.GetLexer().GetKeywordsSet().end();
+    ++it)
   {
     wxStyledTextCtrl::SetKeyWords(
-      setno,
-      m_FileName.GetLexer().GetKeywordsString(setno).Lower());
+      it->first,
+      m_FileName.GetLexer().GetKeywordsString(it->first).Lower());
   }
 }
 

@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -50,8 +50,8 @@ public:
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
 
-  /// Gets the keywords set.
-  const std::vector< std::set<wxString> >& GetKeywordsSet() const {return m_KeywordsSet;};
+  /// Gets all the keywords sets.
+  const std::map< int, std::set<wxString> >& GetKeywordsSet() const {return m_KeywordsSet;};
 
   /// Gets the keywords as one large string, if keyword_set -1 take all the sets,
   /// otherwise take the specified set.
@@ -69,7 +69,7 @@ public:
   /// Does any keyword (allways all keywords) start with this word.
   bool KeywordStartsWith(const wxString& word) const;
 
-  /// Adds the keywords from value to keywords and keywords set.
+  /// Adds the keywords from value to the keywords and the keywords set.
   /// The value might contain the keyword set after a ':'.
   /// Returns true if keyword could be added.
   bool SetKeywords(const wxString& value);
@@ -90,7 +90,7 @@ private:
   wxString m_ScintillaLexer;
 
   std::set<wxString> m_Keywords; // all keywords
-  std::vector< std::set<wxString> > m_KeywordsSet; // each keyword set in a separate keyword set
+  std::map< int, std::set<wxString> > m_KeywordsSet; // each keyword set in a separate keyword set
 };
 
 /// This class defines our markers, closely related to scintilla markers.
