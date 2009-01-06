@@ -476,7 +476,7 @@ void exSTC::AppendTextWithTimestamp(const wxString& text)
     SetReadOnly(false);
   }
 
-  AppendText(now + " " + text + wxTextFile::GetEOL());
+  AppendText(now + " " + text + GetEOL());
 
   SetSavePoint();
 
