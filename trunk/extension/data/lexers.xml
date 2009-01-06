@@ -7,7 +7,7 @@ Purpose: Lexers configuration for wxextension.
 Author:  Anton van Wezenbeek
 RCS-ID:  $Id$
 
-Copyright (c) 1998-2008, Anton van Wezenbeek
+Copyright (c) 1998-2009, Anton van Wezenbeek
 All rights are reserved. Reproduction in whole or part is prohibited
 without the written consent of the copyright owner.
 -->
@@ -18,11 +18,10 @@ without the written consent of the copyright owner.
  Extensions are separated by a semicolon (;).
  Each lexer might contain the next elements:
  1) colourings. Colouring styles for this lexer. 
-    The attribute contains the scintilla styles.
-    This field lists all styles that will have the style specifier that follows,
+    The attribute 'no' contains the scintilla styles.
+    This attribute lists all styles that will have the style specifier that follows,
     separated by a comma sign (,).
-    The value contains the scintilla style specifier. 
-    This field can have the next attributes:
+    The value contains the scintilla style specifier. It can have the next values:
     bold turns on bold
     italic turns on italics
     fore:[name or #RRGGBB] sets the foreground colour
@@ -47,8 +46,8 @@ without the written consent of the copyright owner.
     <!--
      Global properties
      In addition to lexers, also global properties can be specified.
-     At this moment global markers, styles and hex elements are supported.
-     A marker element value contains the next fields:
+     At this moment hex styles, indicators, markers and styles are supported.
+     The marker element has a 'no' attribute and its value contains the next fields:
      <marker symbol number><','><foreground colour><','><background colour>
     #define wxSTC_MARK_CIRCLE 0
     #define wxSTC_MARK_ROUNDRECT 1
@@ -91,6 +90,24 @@ without the written consent of the copyright owner.
     #define wxSTC_STYLE_CONTROLCHAR 36
     #define wxSTC_STYLE_INDENTGUIDE 37
     #define wxSTC_STYLE_CALLTIP 38
+    #define wxSTC_INDIC_PLAIN 0
+    #define wxSTC_INDIC_SQUIGGLE 1
+    #define wxSTC_INDIC_TT 2
+    #define wxSTC_INDIC_DIAGONAL 3
+    #define wxSTC_INDIC_STRIKE 4
+    #define wxSTC_INDIC_HIDDEN 5
+    #define wxSTC_INDIC_BOX 6
+    #define wxSTC_INDIC_ROUNDBOX 7
+    #define wxSTC_INDIC_MAX 31
+    #define wxSTC_INDIC_CONTAINER 8
+    #define wxSTC_INDIC0_MASK 0x20
+    #define wxSTC_INDIC1_MASK 0x40
+    #define wxSTC_INDIC2_MASK 0x80
+    #define wxSTC_INDICS_MASK 0xE0
+    #define wxSTC_IV_NONE 0
+    #define wxSTC_IV_REAL 1
+    #define wxSTC_IV_LOOKFORWARD 2
+    #define wxSTC_IV_LOOKBOTH 3
     -->
     <marker no="25"> 2,light grey,white </marker>
     <marker no="26"> 6,light grey,white </marker>
@@ -99,6 +116,7 @@ without the written consent of the copyright owner.
     <marker no="29"> 9,light grey,light grey </marker>
     <marker no="30"> 2,light grey,white </marker>
     <marker no="31"> 6,light grey,white </marker>
+    <indicator no="3"> 6 </indicator>
     <style no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> fore:black,size:10,face:courier new </style>
     <style no="34"> fore:blue,bold </style>
     <style no="36"> size:6 </style>
