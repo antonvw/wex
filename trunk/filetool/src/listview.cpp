@@ -159,7 +159,9 @@ int ftListView::AddItems()
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(exConfigItem());
   v.push_back(exConfigItem(_("Add files"), CONFIG_CHECKBOX));
+  v.push_back(exConfigItem());
   v.push_back(exConfigItem(_("Add folders"), CONFIG_CHECKBOX));
 
   if (exConfigDialog(NULL,
@@ -1144,7 +1146,9 @@ void ftListView::RunItems(const exTool& tool)
     std::vector<exConfigItem> v;
     v.push_back(exConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
     if (tool.GetId() == ID_TOOL_REPORT_REPLACE) v.push_back(exConfigItem(_("Replace with"), CONFIG_COMBOBOX));
+    v.push_back(exConfigItem());
     v.push_back(exConfigItem(_("Match whole word"), CONFIG_CHECKBOX));
+    v.push_back(exConfigItem());
     v.push_back(exConfigItem(_("Match case"), CONFIG_CHECKBOX));
 
     if (exConfigDialog(NULL,
