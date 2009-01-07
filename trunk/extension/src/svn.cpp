@@ -42,6 +42,9 @@ exSVN::exSVN(exSvnType m_Type)
       m_Caption = _("SVN Stat"); 
       m_Command = "stat";
       break;
+    default:
+      wxLogError("SVN type: %d not handled", m_Type);
+      break;
   }
 }
 

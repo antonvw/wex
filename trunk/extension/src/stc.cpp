@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -251,7 +251,6 @@ BEGIN_EVENT_TABLE(exSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, exSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, exSTC::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exSTC::OnCommand)
   EVT_STC_DWELLEND(wxID_ANY, exSTC::OnStyledText)
   EVT_STC_DWELLSTART(wxID_ANY, exSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, exSTC::OnStyledText)
@@ -1622,20 +1621,6 @@ void exSTC::MacroPlayback()
 
 void exSTC::OnCommand(wxCommandEvent& command)
 {
-  if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
-  {
-    const exTool tool(command.GetId());
-
-    if (exTextFile::SetupTool(tool))
-    {
-      exTextFile textfile(m_FileName);
-      textfile.RunTool();
-      textfile.GetStatistics().Log();
-    }
-
-    return;
-  }
-
   switch (command.GetId())
   {
   case wxID_COPY: Copy(); break;
