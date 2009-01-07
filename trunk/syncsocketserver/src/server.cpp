@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2007-2008, Anton van Wezenbeek
+* Copyright (c) 2007-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_UPDATE_UI(ID_CLEAR_STATISTICS, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_ECHO, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, MyFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SERVER_START, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SERVER_STOP, MyFrame::OnUpdateUI)
@@ -121,8 +122,10 @@ MyFrame::MyFrame(const wxString& title)
     _("Echo's received data back to client"), wxITEM_CHECK);
   menuClient->Append(ID_CLIENT_LOG_DATA, _("Log Data"), 
     _("Logs data read from and written to client"), wxITEM_CHECK);
+  menuClient->Append(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"), 
+    _("Adds timestamp to logdata"), wxITEM_CHECK);
   menuClient->AppendSeparator();
-  menuClient->Append(ID_CLIENT_BUFFER_SIZE, exEllipsed(_("Set Buffer Size")),
+  menuClient->Append(ID_CLIENT_BUFFER_SIZE, exEllipsed(_("Buffer Size")),
     _("Sets buffersize for data retrieved from client"));
   menuClient->AppendSeparator();
   menuClient->Append(ID_TIMER_START, exEllipsed(_("Repeat Timer")),
@@ -230,7 +233,7 @@ void MyFrame::LogConnection(
     text << " " << _("Clients: ") << m_Clients.size();
   }
 
-  m_LogWindow->AppendTextWithTimestamp(text);
+  m_LogWindow->AppendTextForced(text);
 }
 
 void MyFrame::OnClose(wxCloseEvent& event)
@@ -281,7 +284,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     if (m_DataWindow->FileSave())
     {
-      m_LogWindow->AppendTextWithTimestamp(
+      m_LogWindow->AppendTextForced(
         _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     }
     break;
@@ -289,7 +292,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVEAS:
     if (m_DataWindow->FileSaveAs())
     {
-      m_LogWindow->AppendTextWithTimestamp(
+      m_LogWindow->AppendTextForced(
         _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     }
     break;
@@ -309,7 +312,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       1,
       65536)) > 0)
     {
-      exApp::SetConfig(_("Buffer Size"), val);
+      exApp::GetConfig()->Set(_("Buffer Size"), val);
     }
     }
     break;
@@ -320,6 +323,10 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_CLIENT_LOG_DATA:
     exApp::ToggleConfig(_("Log Data"));
+    break;
+
+  case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
+    exApp::ToggleConfig(_("Add Timestamp"));
     break;
 
   case ID_HIDE:
@@ -389,13 +396,13 @@ void MyFrame::OnCommand(wxCommandEvent& event)
         wxString::Format(_("%d clients"), m_Clients.size()),
         "PaneClients");
 
-      m_LogWindow->AppendTextWithTimestamp(text);
+      m_LogWindow->AppendTextForced(text);
 
       const wxString statistics = m_Statistics.Get();
 
       if (!statistics.empty())
       {
-        m_LogWindow->AppendTextWithTimestamp(statistics);
+        m_LogWindow->AppendTextForced(statistics);
       }
     }
     break;
@@ -404,7 +411,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_TIMER_STOP:
     m_Timer.Stop();
-    m_LogWindow->AppendTextWithTimestamp(_("timer stopped"));
+    m_LogWindow->AppendTextForced(_("timer stopped"));
     StatusText(wxEmptyString, "PaneTimer");
     break;
 
@@ -437,7 +444,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
     if (sock == NULL)
     {
-      m_LogWindow->AppendTextWithTimestamp(
+      m_LogWindow->AppendTextForced(
         _("error: couldn't accept a new connection"));
       return;
     }
@@ -449,6 +456,10 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     sock->Notify(true);
 
     m_Clients.push_back(sock);
+
+    StatusText(
+      wxString::Format(_("%d clients"), m_Clients.size()),
+      "PaneClients");
 
     LogConnection(sock, true);
 
@@ -504,8 +515,16 @@ void MyFrame::OnSocket(wxSocketEvent& event)
           if (exApp::GetConfigBool(_("Log Data")))
           {
             const wxString text(buffer, sock->LastCount());
-            m_LogWindow->AppendTextWithTimestamp(
-              _("read: '") + text + wxString::Format("' (%d bytes)", sock->LastCount()));
+
+            if (exApp::GetConfigBool(_("Add Timestamp")))
+            {
+              m_LogWindow->AppendTextForced(
+                _("read: '") + text + wxString::Format("' (%d bytes)", sock->LastCount()));
+            }
+            else
+            {
+              m_LogWindow->AppendTextForced(text, false);
+            }
           }
         }
 
@@ -524,6 +543,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
       case wxSOCKET_LOST:
         m_Statistics.Inc(_("Socket Client Lost Events"));
         SocketLost(sock, true);
+        StatusText(
+          wxString::Format(_("%d clients"), m_Clients.size()),
+          "PaneClients");
 
         if (m_Clients.size() == 0)
         {
@@ -546,10 +568,6 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     m_Statistics.Inc(_("Socket Unhandled Events"));
     wxLogError("Socket unhandled event");
   }
-
-  StatusText(
-    wxString::Format(_("%d clients"), m_Clients.size()),
-    "PaneClients");
 }
 
 void MyFrame::OnTimer(wxTimerEvent& /* event */)
@@ -575,6 +593,11 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case ID_CLIENT_LOG_DATA:
     event.Check(exApp::GetConfigBool(_("Log Data")));
+    break;
+
+  case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
+    event.Enable(exApp::GetConfigBool(_("Log Data")));
+    event.Check(exApp::GetConfigBool(_("Add Timestamp")));
     break;
 
   case ID_RECENT_FILE_MENU: 
@@ -628,7 +651,7 @@ bool MyFrame::OpenFile(
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
 
-    m_LogWindow->AppendTextWithTimestamp(
+    m_LogWindow->AppendTextForced(
       _("opened: ") + filename.GetFullPath() + wxString::Format(" (%d bytes)",
       m_DataWindow->GetLength()));
 
@@ -663,7 +686,7 @@ bool MyFrame::SetupSocketServer()
     delete m_SocketServer;
     m_SocketServer = NULL;
     StatusText(text);
-    m_LogWindow->AppendTextWithTimestamp(text);
+    m_LogWindow->AppendTextForced(text);
     return false;
   }
   else
@@ -677,7 +700,7 @@ bool MyFrame::SetupSocketServer()
   }
 
   StatusText(text);
-  m_LogWindow->AppendTextWithTimestamp(text);
+  m_LogWindow->AppendTextForced(text);
 
   // Setup the event handler and subscribe to connection events
   m_SocketServer->SetEventHandler(*this, ID_SERVER);
@@ -762,19 +785,22 @@ void MyFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
 void MyFrame::TimerDialog()
 {
   const long val = wxGetNumberFromUser(
-    _("Input:"),
+    _("Input (seconds):"),
     wxEmptyString,
-    _("Give Seconds"),
-    exApp::GetConfig(_("Timer"), 4096),
+    _("Repeat Timer"),
+    exApp::GetConfig(_("Timer"), 60),
     1,
     3600 * 24);
 
-  exApp::SetConfig(_("Timer"), val);
+  if (val != -1)
+  {
+    exApp::GetConfig()->Set(_("Timer"), val);
+  }
 
   if (val > 0)
   {
     m_Timer.Start(1000 * val);
-    m_LogWindow->AppendTextWithTimestamp(
+    m_LogWindow->AppendTextForced(
       wxString::Format(_("timer set to: %d seconds (%s)"),
       val,
       wxTimeSpan(0, 0, val, 0).Format().c_str()));
@@ -783,7 +809,7 @@ void MyFrame::TimerDialog()
   else if (val == 0)
   {
     m_Timer.Stop();
-    m_LogWindow->AppendTextWithTimestamp(_("timer stopped"));
+    m_LogWindow->AppendTextForced(_("timer stopped"));
     StatusText(wxEmptyString, "PaneTimer");
   }
 }
@@ -798,7 +824,7 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
 
   if (client->LastCount() != buffer->size())
   {
-    m_LogWindow->AppendTextWithTimestamp(_("not all bytes sent to socket"));
+    m_LogWindow->AppendTextForced(_("not all bytes sent to socket"));
   }
 
   m_Statistics.Inc(_("Messages Sent"));
@@ -810,9 +836,16 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
 
   if (exApp::GetConfigBool(_("Log Data")))
   {
-    m_LogWindow->AppendTextWithTimestamp(
-      wxString::Format(_("write: %d bytes to %s"),
-        client->LastCount(), SocketDetails(client).c_str()));
+    if (exApp::GetConfigBool(_("Add Timestamp")))
+    {
+      m_LogWindow->AppendTextForced(
+        wxString::Format(_("write: %d bytes to %s"),
+          client->LastCount(), SocketDetails(client).c_str()));
+    }
+    else
+    {
+      m_LogWindow->AppendTextForced(*buffer, false);
+    }
   }
 }
 

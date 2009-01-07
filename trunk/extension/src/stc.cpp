@@ -463,11 +463,9 @@ offset    hex field                                         ascii field
   AddText(text);
 }
 
-void exSTC::AppendTextWithTimestamp(const wxString& text)
+void exSTC::AppendTextForced(const wxString& text, bool withTimestamp)
 {
-  const wxString now = wxDateTime::Now().Format();
   const bool pos_at_end = (GetCurrentPos() == GetTextLength());
-
   const bool readonly = GetReadOnly();
 
   if (readonly)
@@ -475,7 +473,16 @@ void exSTC::AppendTextWithTimestamp(const wxString& text)
     SetReadOnly(false);
   }
 
-  AppendText(now + " " + text + GetEOL());
+  if (withTimestamp)
+  {
+    const wxString now = wxDateTime::Now().Format();
+    AppendText(now + " " + text + GetEOL());
+  }
+  else
+  {
+    // No GetEOL, that is only added with timestamps.
+    AppendText(text);
+  }
 
   SetSavePoint();
 
@@ -2503,7 +2510,7 @@ void exSTC::SetLexer(const wxString& lexer)
 
   Colourise();
   
-  if (GetLineCount() > GetConfig(_("Auto Fold"), -1))
+  if (GetLineCount() > GetConfig(_("Auto fold"), -1))
   {
     FoldAll();
   }

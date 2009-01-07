@@ -110,9 +110,9 @@ public:
   /// Adds an ascii table to current document.
   void AddAsciiTable();
 
-  /// Appends timestamp with text, even if the document is readonly.
+  /// Appends text, possibly with timestamp, even if the document is readonly.
   /// If caret was at end, it is repositioned at the end.
-  void AppendTextWithTimestamp(const wxString& text);
+  void AppendTextForced(const wxString& text, bool withTimestamp = true);
 
   // Called by exApp::OnExit, so not for doxygen.
   static void CleanUp();
