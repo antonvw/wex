@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -190,25 +190,28 @@ private:
   void EndCurrentRevision();
   bool HeaderDialog();
   void Initialize();
+  void InsertFormattedText(
+    const wxString& lines,
+    const wxString& header,
+    bool is_comment);
+  void InsertUnFormattedText(
+    const wxString& lines,
+    const wxString& header,
+    bool is_comment);
   bool MatchLine(wxString& line);
   bool ParseForHeader();
   bool ParseForOther();
   void ParseHeader();
   bool PrepareRevision();
-  void ProcessFormattedText(
-    const wxString& lines,
-    const wxString& header,
-    bool is_comment);
-  void ProcessUnFormattedText(
-    const wxString& lines,
-    const wxString& header,
-    bool is_comment);
   void RevisionAddComments(const wxString& m_FileNameStatistics);
   bool WriteFileHeader();
   void WriteTextWithPrefix(
     const wxString& text,
     const wxString& prefix,
-    bool is_comment = true);
+    bool is_comment = true) {
+    text.find("\n") != wxString::npos ?
+      InsertFormattedText(text, prefix, is_comment):
+      InsertUnFormattedText(text, prefix, is_comment);};
 
   bool m_AllowAction;
   bool m_EmptyLine;

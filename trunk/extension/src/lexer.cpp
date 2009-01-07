@@ -15,40 +15,6 @@
 
 using namespace std;
 
-const wxString exLexer::FormatText(
-  const wxString& text,
-  bool fill_out,
-  bool fill_out_with_space) const
-{
-  // First set the fill_out_character.
-  wxChar fill_out_character;
-
-  if (fill_out_with_space)  fill_out_character = ' ';
-  else
-  {
-    if (text.empty())
-    {
-      if (m_CommentBegin == m_CommentEnd || m_CommentEnd.empty())
-           fill_out_character = '-';
-      else fill_out_character = m_CommentBegin[m_CommentBegin.length() - 1];
-    }
-    else   fill_out_character = ' ';
-  }
-
-  wxString out = m_CommentBegin + fill_out_character + text;
-
-  // Add fill out characters if necessary.
-  if (fill_out)
-  {
-    const wxString fill_out(fill_out_character, UsableCharactersPerLine() - text.length());
-    out += fill_out;
-  }
-
-  if (!m_CommentEnd.empty()) out += fill_out_character + m_CommentEnd;
-
-  return out;
-}
-
 const wxString exLexer::GetKeywordsString(int keyword_set) const
 {
   wxString keywords;
@@ -108,6 +74,40 @@ bool exLexer::KeywordStartsWith(const wxString& word) const
   }
 
   return false;
+}
+
+const wxString exLexer::MakeComment(
+  const wxString& text,
+  bool fill_out,
+  bool fill_out_with_space) const
+{
+  // First set the fill_out_character.
+  wxChar fill_out_character;
+
+  if (fill_out_with_space)  fill_out_character = ' ';
+  else
+  {
+    if (text.empty())
+    {
+      if (m_CommentBegin == m_CommentEnd || m_CommentEnd.empty())
+           fill_out_character = '-';
+      else fill_out_character = m_CommentBegin[m_CommentBegin.length() - 1];
+    }
+    else   fill_out_character = ' ';
+  }
+
+  wxString out = m_CommentBegin + fill_out_character + text;
+
+  // Add fill out characters if necessary.
+  if (fill_out)
+  {
+    const wxString fill_out(fill_out_character, UsableCharactersPerLine() - text.length());
+    out += fill_out;
+  }
+
+  if (!m_CommentEnd.empty()) out += fill_out_character + m_CommentEnd;
+
+  return out;
 }
 
 bool exLexer::SetKeywords(const wxString& value)

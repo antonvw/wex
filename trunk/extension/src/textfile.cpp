@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -258,6 +258,34 @@ bool exTextFile::HeaderDialog()
   return true;
 }
 
+void exTextFile::InsertFormattedText(
+  const wxString& lines,
+  const wxString& header,
+  bool is_comment)
+{
+  wxString text = lines, header_to_use = header;
+  size_t nCharIndex;
+
+  // Process text between the carriage return line feeds.
+  while ((nCharIndex = text.find("\n")) != wxString::npos)
+  {
+    InsertUnFormattedText(
+      text.substr(0, nCharIndex),
+      header_to_use,
+      is_comment);
+    text = text.substr(nCharIndex + 1);
+    header_to_use = wxString(' ', header.length());
+  }
+
+  if (!text.empty())
+  {
+    InsertUnFormattedText(
+      text,
+      header_to_use,
+      is_comment);
+  }
+}
+
 void exTextFile::InsertLine(const wxString& line)
 {
   if (GetCurrentLine() == GetLineCount())
@@ -272,6 +300,47 @@ void exTextFile::InsertLine(const wxString& line)
   m_Modified = true;
 
   GoToLine(GetCurrentLine() + 1);
+}
+
+void exTextFile::InsertUnFormattedText(
+  const wxString& lines,
+  const wxString& header,
+  bool is_comment)
+{
+  const size_t line_length = m_FileNameStatistics.GetLexer().UsableCharactersPerLine();
+
+  // Use the header, with one space extra to separate, or no header at all.
+  const wxString header_with_spaces =
+    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
+
+  wxString in = lines, line = header;
+
+  bool at_begin = true;
+
+  while (!in.empty())
+  {
+    const wxString word = exGetWord(in, false, false);
+
+    if (line.length() + 1 + word.length() > line_length)
+    {
+      const wxString& newline = 
+        (is_comment ? m_FileNameStatistics.GetLexer().MakeComment(line, true, true): line);
+
+      InsertLine(newline);
+      line = header_with_spaces + word;
+      at_begin = true;
+    }
+    else
+    {
+      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
+      at_begin = false;
+    }
+  }
+
+  const wxString& newline = 
+    (is_comment ? m_FileNameStatistics.GetLexer().MakeComment(line, true, true): line);
+
+  InsertLine(newline);
 }
 
 bool exTextFile::MatchLine(wxString& line)
@@ -789,71 +858,6 @@ bool exTextFile::PrepareRevision()
   return true;
 }
 
-void exTextFile::ProcessFormattedText(
-  const wxString& lines,
-  const wxString& header,
-  bool is_comment)
-{
-  wxString text = lines, header_to_use = header;
-  size_t nCharIndex;
-
-  // Process text between the carriage return line feeds.
-  while ((nCharIndex = text.find("\n")) != wxString::npos)
-  {
-    ProcessUnFormattedText(
-      text.substr(0, nCharIndex),
-      header_to_use,
-      is_comment);
-    text = text.substr(nCharIndex + 1);
-    header_to_use = wxString(' ', header.length());
-  }
-
-  if (!text.empty())
-  {
-    ProcessUnFormattedText(
-      text,
-      header_to_use,
-      is_comment);
-  }
-}
-
-void exTextFile::ProcessUnFormattedText(
-  const wxString& lines,
-  const wxString& header,
-  bool is_comment)
-{
-  const size_t line_length = m_FileNameStatistics.GetLexer().UsableCharactersPerLine();
-
-  // Use the header, with one space extra to separate, or no header at all.
-  const wxString header_with_spaces =
-    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
-
-  wxString in = lines, line = header;
-
-  bool at_begin = true;
-
-  while (!in.empty())
-  {
-    const wxString word = exGetWord(in, false, false);
-
-    if (line.length() + 1 + word.length() > line_length)
-    {
-      const wxString& newline = (is_comment ? m_FileNameStatistics.GetLexer().FormatText(line, true, true): line);
-      InsertLine(newline);
-      line = header_with_spaces + word;
-      at_begin = true;
-    }
-    else
-    {
-      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
-      at_begin = false;
-    }
-  }
-
-  const wxString& newline = (is_comment ? m_FileNameStatistics.GetLexer().FormatText(line, true, true): line);
-  InsertLine(newline);
-}
-
 void exTextFile::Report()
 {
   wxString logtext;
@@ -1046,7 +1050,7 @@ void exTextFile::WriteComment(
   const bool fill_out,
   const bool fill_out_with_space)
 {
-  InsertLine(m_FileNameStatistics.GetLexer().FormatText(text, fill_out, fill_out_with_space));
+  InsertLine(m_FileNameStatistics.GetLexer().MakeComment(text, fill_out, fill_out_with_space));
 }
 
 bool exTextFile::WriteFileHeader()
@@ -1088,14 +1092,4 @@ bool exTextFile::WriteFileHeader()
   InsertLine(wxEmptyString);
 
   return true;
-}
-
-void exTextFile::WriteTextWithPrefix(const wxString& text, const wxString& prefix, bool is_comment)
-{
-  // Normally lines contains unformatted text, however in case of a header
-  // it can contain CR LF characters, these should directly invoke
-  // a WriteComment.
-  text.find("\n") != wxString::npos ?
-    ProcessFormattedText(text, prefix, is_comment):
-    ProcessUnFormattedText(text, prefix, is_comment);
 }

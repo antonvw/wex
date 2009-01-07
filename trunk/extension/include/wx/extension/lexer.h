@@ -23,12 +23,6 @@ class exLexer
 {
   friend class exLexers;
 public:
-  /// Returns a lexer comment string with text formatted.
-  const wxString FormatText(
-    const wxString& text,
-    bool fill_out,
-    bool fill_out_with_space = false) const;
-
   /// Gets the associations, e.g. *.cpp;*.c;*.cc;*.h;*.hpp;.
   const wxString& GetAssociations() const {return m_Associations;};
 
@@ -68,6 +62,12 @@ public:
 
   /// Does any keyword (allways all keywords) start with this word.
   bool KeywordStartsWith(const wxString& word) const;
+
+  /// Returns a lexer comment string with text formatted.
+  const wxString MakeComment(
+    const wxString& text,
+    bool fill_out,
+    bool fill_out_with_space = false) const;
 
   /// Adds the keywords from value to the keywords and the keywords set.
   /// The value might contain the keyword set after a ':'.
