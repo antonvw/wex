@@ -207,6 +207,12 @@ MyFrame::MyFrame(const wxString& title)
     OpenFile(GetRecentFile());
   }
 
+  if (GetManager().GetPane("SHELL").IsShown())
+  {
+    m_Shell->SetFocus();
+    m_Shell->DocumentEnd();
+  }
+
   GetManager().Update();
 }
 
@@ -918,11 +924,6 @@ BEGIN_EVENT_TABLE(MyTaskBarIcon, wxTaskBarIcon)
   EVT_UPDATE_UI(wxID_EXIT, MyTaskBarIcon::OnUpdateUI)
 END_EVENT_TABLE()
 
-MyTaskBarIcon::MyTaskBarIcon(MyFrame* frame)
-  : m_Frame(frame)
-{
-}
-
 wxMenu *MyTaskBarIcon::CreatePopupMenu()
 {
   exMenu* menu = new exMenu;
@@ -943,15 +944,5 @@ void MyTaskBarIcon::OnCommand(wxCommandEvent& event)
     m_Frame->Show();
     break;
   }
-}
-
-void MyTaskBarIcon::OnTaskBarIcon(wxTaskBarIconEvent&)
-{
-  m_Frame->Show();
-}
-
-void MyTaskBarIcon::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  event.Enable(m_Frame->ServerNotListening());
 }
 #endif

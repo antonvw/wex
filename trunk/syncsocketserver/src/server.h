@@ -81,12 +81,15 @@ private:
 class MyTaskBarIcon: public wxTaskBarIcon
 {
 public:
-  MyTaskBarIcon(MyFrame* frame);
+  MyTaskBarIcon(MyFrame* frame)
+    : m_Frame(frame) {}
 protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnTaskBarIcon(wxTaskBarIconEvent&);
-  void OnUpdateUI(wxUpdateUIEvent&);
   virtual wxMenu* CreatePopupMenu();
+  void OnCommand(wxCommandEvent& event);
+  void OnTaskBarIcon(wxTaskBarIconEvent&) {
+    m_Frame->Show();}
+  void OnUpdateUI(wxUpdateUIEvent&) {
+    event.Enable(m_Frame->ServerNotListening());}
 private:
   MyFrame* m_Frame;
 
