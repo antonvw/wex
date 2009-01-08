@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -33,7 +33,7 @@ exSTCShell::exSTCShell(
   long type)
   : exSTC(parent, type)
   , m_Command(wxEmptyString)
-  , m_CommandEnd(command_end)
+  , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)
   , m_Echo(echo)
   // take a char that is not likely to appear inside commands
@@ -333,14 +333,14 @@ void exSTCShell::OnKey(wxKeyEvent& event)
   }
 }
 
-void exSTCShell::Prompt(const wxString& text)
+void exSTCShell::Prompt(const wxString& text, bool add_eol)
 {
   if (!text.empty())
   {
     AppendText(text);
   }
 
-  if (GetTextLength() > 0)
+  if (GetTextLength() > 0 && add_eol)
   {
     AppendText(GetEOL());
   }

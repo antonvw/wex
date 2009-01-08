@@ -12,6 +12,7 @@
 #include <list>
 #include <wx/socket.h>
 #include <wx/taskbar.h>
+#include <wx/extension/shell.h>
 #include <wx/filetool/filetool.h>
 
 #ifdef USE_TASKBARICON
@@ -60,8 +61,9 @@ private:
 
   std::list<wxSocketBase*> m_Clients;
 
-  ftSTC* m_LogWindow;
   ftSTC* m_DataWindow;
+  ftSTC* m_LogWindow;
+  exSTCShell* m_Shell;
 
   exStatistics < long > m_Statistics;
 
@@ -111,6 +113,7 @@ enum
   ID_TIMER_START,
   ID_VIEW_DATA,
   ID_VIEW_LOG,
+  ID_VIEW_SHELL,
   ID_VIEW_STATISTICS,
   ID_WRITE_DATA,
 

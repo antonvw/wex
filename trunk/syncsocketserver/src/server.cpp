@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_MENU(wxID_OPEN, MyFrame::OnCommand)
   EVT_MENU(wxID_SAVE, MyFrame::OnCommand)
   EVT_MENU(wxID_SAVEAS, MyFrame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND, MyFrame::OnCommand)
   EVT_MENU_RANGE(ID_MENU_FIRST, ID_MENU_LAST, MyFrame::OnCommand)
   EVT_SOCKET(ID_SERVER, MyFrame::OnSocket)
   EVT_SOCKET(ID_CLIENT, MyFrame::OnSocket)
@@ -57,6 +58,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_UPDATE_UI(ID_TIMER_STOP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_DATA, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_LOG, MyFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_SHELL, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_STATISTICS, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_WRITE_DATA, MyFrame::OnUpdateUI)
 END_EVENT_TABLE()
@@ -83,11 +85,13 @@ MyFrame::MyFrame(const wxString& title)
   panes.push_back(exPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 
-  m_LogWindow = new ftSTC(this, ftSTC::STC_MENU_SIMPLE | ftSTC::STC_MENU_FIND);
   m_DataWindow = new ftSTC(
     this,
     ftSTC::STC_MENU_SIMPLE | ftSTC::STC_MENU_FIND |
     ftSTC::STC_MENU_REPLACE | ftSTC::STC_MENU_INSERT);
+  m_LogWindow = new ftSTC(this, ftSTC::STC_MENU_SIMPLE | ftSTC::STC_MENU_FIND);
+  m_Shell = new exSTCShell(this);
+  m_Shell->SetLexer();
 
   m_LogWindow->SetReadOnly(true);
   m_LogWindow->SetLexer();
@@ -141,6 +145,7 @@ MyFrame::MyFrame(const wxString& title)
   menuView->AppendSeparator();
   menuView->Append(ID_VIEW_LOG, _("Log"), wxEmptyString, wxITEM_CHECK);
   menuView->Append(ID_VIEW_DATA, _("Data"), wxEmptyString, wxITEM_CHECK);
+  menuView->Append(ID_VIEW_SHELL, _("Shell"), wxEmptyString, wxITEM_CHECK);
   menuView->Append(ID_VIEW_STATISTICS, _("Statistics"), wxEmptyString, wxITEM_CHECK);
 
   wxMenu* menuOptions = new wxMenu();
@@ -175,11 +180,14 @@ MyFrame::MyFrame(const wxString& title)
     wxAuiPaneInfo().CenterPane().Name("LOG"));
   GetManager().AddPane(m_DataWindow,
     wxAuiPaneInfo().Hide().Left().MaximizeButton(true).Caption(_("Data")).Name("DATA"));
+  GetManager().AddPane(m_Shell,
+    wxAuiPaneInfo().Hide().Left().MaximizeButton(true).Caption(_("Shell")).Name("SHELL"));
   GetManager().AddPane(m_Statistics.Show(this),
     wxAuiPaneInfo().Hide().Left().
       MaximizeButton(true).
       Caption(_("Statistics")).
       Name("STATISTICS"));
+  GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
 
   if (SetupSocketServer())
   {
@@ -194,12 +202,11 @@ MyFrame::MyFrame(const wxString& title)
     StatusText(wxString::Format("%ld", exApp::GetConfig(_("Timer"), 0)), "PaneTimer");
   }
 
-  if (!GetRecentFile().empty())
+  if (!GetRecentFile().empty() && GetManager().GetPane("DATA").IsShown())
   {
     OpenFile(GetRecentFile());
   }
 
-  GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
   GetManager().Update();
 }
 
@@ -213,8 +220,9 @@ MyFrame::~MyFrame()
 
 void MyFrame::ConfigDialogApplied(wxWindowID /* dialogid */)
 {
-  m_LogWindow->ConfigGet();
   m_DataWindow->ConfigGet();
+  m_LogWindow->ConfigGet();
+  m_Shell->ConfigGet();
 }
 
 void MyFrame::LogConnection(
@@ -257,7 +265,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general socket server."));
     info.SetVersion("v1.0");
-    info.SetCopyright("(c) 2007-2008, Anton van Wezenbeek");
+    info.SetCopyright("(c) 2007-2009, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(EX_LIB_VERSION);
     info.AddDeveloper(FT_LIB_VERSION);
@@ -407,6 +415,23 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
+  case ID_SHELL_COMMAND:
+    {
+      wxString data = event.GetString() + m_Shell->GetEOL();
+
+      for (
+        std::list<wxSocketBase*>::iterator it = m_Clients.begin();
+        it != m_Clients.end();
+        ++it)
+      {
+        wxSocketBase* sock = *it;
+        WriteDataToClient(&data, sock);
+      }
+
+      m_Shell->Prompt();
+    }
+    break;
+
   case ID_TIMER_START: TimerDialog(); break;
 
   case ID_TIMER_STOP:
@@ -417,6 +442,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_VIEW_DATA: TogglePane("DATA"); break;
   case ID_VIEW_LOG: TogglePane("LOG"); break;
+  case ID_VIEW_SHELL: TogglePane("SHELL"); break;
   case ID_VIEW_STATISTICS: TogglePane("STATISTICS"); break;
 
   case ID_WRITE_DATA:
@@ -512,10 +538,20 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             m_Statistics.Inc(_("Bytes Sent"), sock->LastCount());
           }
 
+          const wxString text(buffer, sock->LastCount());
+
+          if (GetManager().GetPane("SHELL").IsShown())
+          {
+            m_Shell->AppendTextForced(text, false);
+
+            if (text.EndsWith("\n"))
+            {
+              m_Shell->Prompt(wxEmptyString, false); // no eol
+            }
+          }
+
           if (exApp::GetConfigBool(_("Log Data")))
           {
-            const wxString text(buffer, sock->LastCount());
-
             if (exApp::GetConfigBool(_("Add Timestamp")))
             {
               m_LogWindow->AppendTextForced(
@@ -625,6 +661,10 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case ID_VIEW_LOG:
     event.Check(GetManager().GetPane("LOG").IsShown());
+    break;
+
+  case ID_VIEW_SHELL:
+    event.Check(GetManager().GetPane("SHELL").IsShown());
     break;
 
   case ID_VIEW_STATISTICS:

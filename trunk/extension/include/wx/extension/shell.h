@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -33,7 +33,9 @@ public:
   exSTCShell(
     wxWindow* parent,
     const wxString& prompt = ">",
-    const wxString& command_end = ";",
+    /// Give the command used to end a line.
+    /// The default uses the GetEOL.
+    const wxString& command_end = wxEmptyString,
     bool echo = true,
     /// Give the number of commands that are kept in the config.
     /// Default -1, no commands are kept.
@@ -46,9 +48,11 @@ public:
   /// Gets the prompt.
   const wxString& GetPrompt() const {return m_Prompt;};
 
-  /// Puts the text and a prompt at the end, goes to the end,
-  /// and empties the undo buffer.
-  void Prompt(const wxString& text = wxEmptyString);
+  /// Puts the text (if not empty) and a prompt at the end, goes to the end,
+  /// and empties the undo buffer. Default it also adds an eol before the prompt.
+  void Prompt(
+    const wxString& text = wxEmptyString,
+    bool add_eol = true);
 
   /// Sets the prompt, and prompts if asked for.
   void SetPrompt(const wxString& prompt, bool do_prompt = true) {
