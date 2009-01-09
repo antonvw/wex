@@ -799,13 +799,13 @@ void ftListView::OnCommand(wxCommandEvent& event)
   case ID_LIST_ADD_ITEM: AddItems(); break;
 
   case ID_LIST_SVN_CAT:
-    exSVN(SVN_CAT).Show(ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+    exSVN(SVN_CAT, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).Show();
   break;
   case ID_LIST_SVN_DIFF:
-    exSVN(SVN_DIFF).Show(ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+    exSVN(SVN_DIFF, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).Show();
   break;
   case ID_LIST_SVN_LOG:
-    exSVN(SVN_LOG).Show(ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+    exSVN(SVN_LOG, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).Show();
   break;
 
   case ID_LIST_COMPARE:

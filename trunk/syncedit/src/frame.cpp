@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -646,35 +646,21 @@ and saved in the same directory as where the executable is."));
 
   case ID_TREE_SVN_CAT: 
   {
-    wxString contents;
+    exSVN svn(SVN_CAT, m_DirCtrl->GetFilePath());
+    const int result = svn.Get();
     
-    if (exSVN(SVN_CAT).Get(contents, m_DirCtrl->GetFilePath()) == 0)
+    if (result == 0)
     {
-      const exFileName filename(m_DirCtrl->GetFilePath());
-      const wxString key = filename.GetFullPath()+ exApp::GetConfig(_("Flags"));
-
-      wxWindow* page = m_NotebookWithEditors->GetPageByKey(key, true);
-        
-      if (page == NULL)
-      {
-        editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
-        editor->SetLexer(filename.GetLexer().GetScintillaLexer());
-
-        m_NotebookWithEditors->AddPage(
-          editor,
-          key,
-          filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
-          true
-#ifdef USE_NOTEBOOK_IMAGE
-          ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
-#endif
-          );
-      }
+      OpenFile(exFileName(m_DirCtrl->GetFilePath()), svn.GetContents());
+    }
+    else if (result > 0)
+    {
+      svn.ShowContents();
     }
   }
   break;
-  case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF).Show(m_DirCtrl->GetFilePath()); break;
-  case ID_TREE_SVN_LOG: exSVN(SVN_LOG).Show(m_DirCtrl->GetFilePath()); break;
+  case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).Show(); break;
+  case ID_TREE_SVN_LOG: exSVN(SVN_LOG, m_DirCtrl->GetFilePath()).Show(); break;
   case ID_TREE_OPEN: OpenFile(exFileName(m_DirCtrl->GetFilePath())); break;
   
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
@@ -935,6 +921,34 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       }
     }
   }
+}
+
+bool MDIFrame::OpenFile(
+  const exFileName& filename,
+  const wxString& contents,
+  long flags) 
+{
+  const wxString key = filename.GetFullPath()+ exApp::GetConfig(_("Flags"));
+
+  wxWindow* page = m_NotebookWithEditors->GetPageByKey(key, true);
+        
+  if (page == NULL)
+  {
+    ftSTC* editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
+    editor->SetLexer(filename.GetLexer().GetScintillaLexer());
+
+    m_NotebookWithEditors->AddPage(
+      editor,
+      key,
+      filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
+      true
+#ifdef USE_NOTEBOOK_IMAGE
+      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
+#endif
+      );
+  }
+
+  return true;
 }
 
 bool MDIFrame::OpenFile(

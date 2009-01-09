@@ -73,6 +73,12 @@ public:
     if (m_ProjectHistory.GetCount() == 0) return wxEmptyString;
     return m_ProjectHistory.GetHistoryFile(0);}
 
+  /// Allows you to open a filename with specified contents.
+  virtual bool OpenFile(
+    const exFileName& filename,
+    const wxString& contents,
+    long flags = 0) {return false;};
+
   /// Interface from exFrame.
   virtual bool OpenFile(
     const exFileName& filename,

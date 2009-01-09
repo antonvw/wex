@@ -13,8 +13,10 @@
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
-exSVN::exSVN(exSvnType m_Type)
+exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   : m_Type(m_Type)
+  , m_Contents()
+  , m_FullPath(fullpath)
 {
   switch (m_Type)
   {
@@ -48,8 +50,10 @@ exSVN::exSVN(exSvnType m_Type)
   }
 }
 
-int exSVN::Get(wxString& contents, const wxString& fullpath)
+int exSVN::Get()
 {
+  m_Contents.clear();
+
   std::vector<exConfigItem> v;
 
   if (m_Type == SVN_COMMIT)
@@ -57,7 +61,7 @@ int exSVN::Get(wxString& contents, const wxString& fullpath)
     v.push_back(exConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
   }
 
-  if (fullpath.empty())
+  if (m_FullPath.empty())
   {
     v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   }
@@ -68,20 +72,21 @@ int exSVN::Get(wxString& contents, const wxString& fullpath)
     v,
     m_Caption).ShowModal() == wxID_CANCEL)
   {
-    return -1;
+    m_ReturnCode = -1;
+    return m_ReturnCode;
   }
 
   const wxString cwd = wxGetCwd();
 
   wxString file;
 
-  if (fullpath.empty())
+  if (m_FullPath.empty())
   {
     wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
   }
   else
   {
-    file = " \"" + fullpath + "\"";
+    file = " \"" + m_FullPath + "\"";
   }
 
   wxArrayString output;
@@ -95,7 +100,7 @@ int exSVN::Get(wxString& contents, const wxString& fullpath)
     output,
     errors);
     
-  if (fullpath.empty())
+  if (m_FullPath.empty())
   {
     wxSetWorkingDirectory(cwd);
   }
@@ -103,31 +108,35 @@ int exSVN::Get(wxString& contents, const wxString& fullpath)
   // First output the errors.
   for (size_t i = 0; i < errors.GetCount(); i++)
   {
-    contents += errors[i] + "\n";
+    m_Contents += errors[i] + "\n";
   }
 
   // Then the normal output, will be empty if there are errors.
   for (size_t j = 0; j < output.GetCount(); j++)
   {
-    contents += output[j] + "\n";
+    m_Contents += output[j] + "\n";
   }
 
-  return errors.GetCount();
+  m_ReturnCode = errors.GetCount();
+  return m_ReturnCode;
 }
 
-bool exSVN::Show(const wxString& fullpath)
+bool exSVN::Show()
 {
-  wxString contents;
+  if (Get() < 0) return false;
 
-  // Get svn contents.
-  const int retcode = Get(contents, fullpath);
-  if (retcode < 0) return false;
+  ShowContents();
 
+  return true;
+}
+
+void exSVN::ShowContents()
+{
   // Create a dialog for contents.
   exSTCEntryDialog* dlg = new exSTCEntryDialog(
     wxTheApp->GetTopWindow(), 
-    m_Caption + (!fullpath.empty() ? " " + wxFileName(fullpath).GetFullName(): wxString(wxEmptyString)),
-    contents, 
+    m_Caption + (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString)),
+    m_Contents, 
     wxEmptyString, 
     wxOK,
     wxID_ANY,
@@ -135,16 +144,15 @@ bool exSVN::Show(const wxString& fullpath)
 
   // Add a lexer if we specified a path, asked for cat and there were no errors.
   if (
-    !fullpath.empty() && 
+    !m_FullPath.empty() && 
      m_Type == SVN_CAT &&
-     retcode == 0)
+     m_ReturnCode == 0)
   { 
-    exFileName fn(fullpath); 
+    exFileName fn(m_FullPath); 
     dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
   }
   
   dlg->Show();
-                  
-  return true;
 }
+
 #endif

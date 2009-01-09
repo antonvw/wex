@@ -39,6 +39,10 @@ private:
   virtual exListView* GetListView();
   virtual bool OpenFile(
     const exFileName& filename,
+    const wxString& contents,
+    long flags = 0);
+  virtual bool OpenFile(
+    const exFileName& filename,
     int line_number = 0, 
     const wxString& match = wxEmptyString, 
     long flags = 0);
