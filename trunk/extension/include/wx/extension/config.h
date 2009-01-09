@@ -12,8 +12,12 @@
 #ifndef _EXCONFIG_H
 #define _EXCONFIG_H
 
+#include <map>
+#include <set>
+#include <vector>
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h>
+#include <wx/extension/base.h>
 
 class exFindReplaceData;
 

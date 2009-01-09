@@ -15,6 +15,7 @@
 #include <map>
 #include <vector>
 #include <wx/xml/xml.h>
+#include <wx/extension/lexer.h>
 
 /// Reads the lexers, keywords, markers and styles
 /// from the configuration file lexers.xml and makes

@@ -22,9 +22,6 @@
 #include <wx/aui/auibook.h>
 #include <wx/datetime.h>
 #include <wx/fdrepdlg.h>
-#include <wx/html/htmprint.h>
-#include <wx/print.h>
-#include <wx/printdlg.h>
 #include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for exFileName
