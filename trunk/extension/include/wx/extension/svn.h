@@ -46,9 +46,9 @@ public:
   /// Gets the contents (Get should be called).
   const wxString& GetContents() const {return m_Contents;};
 
-  /// Gets info and shows contents in a dialog.
-  /// Returns true if dialog is accepted.
-  bool Show();
+  /// Gets info and if not cancelled shows contents in a dialog.
+  /// Returns return code from Get.
+  int Show();
 
   /// Shows contents in a dialog only, Get should already be done.
   void ShowContents();

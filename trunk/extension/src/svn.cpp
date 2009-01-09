@@ -121,13 +121,14 @@ int exSVN::Get()
   return m_ReturnCode;
 }
 
-bool exSVN::Show()
+int exSVN::Show()
 {
-  if (Get() < 0) return false;
+  if (Get() >= 0)
+  {
+    ShowContents();
+  }
 
-  ShowContents();
-
-  return true;
+  return m_ReturnCode;
 }
 
 void exSVN::ShowContents()
