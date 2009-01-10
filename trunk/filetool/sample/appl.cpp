@@ -211,11 +211,11 @@ void ftSampleFrame::OnTree(wxTreeEvent& event)
 
   if (!selection.empty())
   {
-    OpenFile(selection);
+    OpenFile(exFileName(selection));
   }
 }
 
-bool ftSampleFrame::OpenFile(const wxString& file, 
+bool ftSampleFrame::OpenFile(const exFileName& file, 
   int line_number, 
   const wxString& match,
   long flags)

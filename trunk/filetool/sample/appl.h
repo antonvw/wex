@@ -35,7 +35,8 @@ protected:
   // Interface from ftFrame.
   virtual ftListView* Activate(int type, const exLexer* lexer = NULL);
   virtual ftSTC* GetCurrentSTC() {return m_STC;};
-  virtual bool OpenFile(const wxString& file, 
+  virtual bool OpenFile(
+    const exFileName& file, 
     int line_number = 0, 
     const wxString& match = wxEmptyString, 
     long flags = 0);
