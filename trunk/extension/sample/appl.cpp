@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -228,7 +228,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetVersion(EX_LIB_VERSION);
     info.AddDeveloper(wxVERSION_STRING);
-    info.SetCopyright(_("Copyright (c) Anton van Wezenbeek."));
+    info.SetCopyright(_("(c) 1998-2009 Anton van Wezenbeek."));
     wxAboutBox(info);
     }
     break;
