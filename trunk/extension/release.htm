@@ -25,7 +25,6 @@ border: 1px #6699CC solid;
 
 <!--
 Wait for wxWidgets 3.0:
-- Update exStat documentation.
 - Sorting on listview string column no longer works.
 - Make exDir multi threaded.
 - Use new wxAuiToolBar.
@@ -66,6 +65,7 @@ Wait for wxWidgets 3.0:
   And check the scite sources how.
 
 Roadmap:
+- Added platform switches to lexers.xml.
 - Making the find/replace dialog a static member of exInterface does not work for Linux.
   Test again in 2.1.
 - When opening large file, allow open to be cancelled, and show progress.
@@ -90,9 +90,8 @@ v1.0
 <li> Convert lexers.cfg into xml format.
 <li> Changes for wxWidgets-SVN (unicode related). Removed all wxT().
 <li> wxextension is now under SVN.
-     exCommitDialog supports svn.
 <li> Compiles if wxUSE_STL is set.
-<li> Documentation is doxygen parseble, and lexers.cfg now colours doxygen comments.
+<li> Documentation is doxygen parseble, and lexers.xml now colours doxygen comments.
 <li> Added exManagedFrame, and added freeze and thaw when maximize and set window size.
 <li> Added exStat with a ConfigDialog for colouring.
 <li> Added exStockArt offers stock items on the toolbar.
@@ -116,20 +115,14 @@ v1.0
 <li> Updated exTextfile. The ParseComments in exTextfile is now virtual,
      all db code in exTextFile is removed.
      OTL is used for grid filling.
-<li> Added plaform switches to lexers.cfg.
-     Last line in lexers.cfg was not parsed correctly.
-     Updated sql keywords in lexers.cfg.
 <li> Added wxUSE_GUI switches.
 <li> namespace no longer in header files.
 <li> Most enums now inside classes.
 <li> More default constructors, and less copy constructors. More methods are const aware.
 <li> wxTheApp->Yield only for main thread, otherwise calls wxThread::Yield.
-<li> Updated default lexer, so C++ comments counted correctly.
 <li> When setting new lexer, folding is enabled/disabled according to this new lexer.
 <li> The find item in list view popup menu did not have an icon.
-<li> When replacing text, the 'replace with' combobox uses the same text as default.
 <li> Replaced wxGenericColourButton into wxColourPickerWidget.
-<li> Subdir flag is used in config for config file.
 <li> Directory structure similar to wx.
 <li> Tooltip on statusbar is now set if mouse is over a pane.
 </ul>
