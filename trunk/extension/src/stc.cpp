@@ -1757,8 +1757,15 @@ void exSTC::OnFindDialog(wxFindDialogEvent& event)
 
     SetSearchFlags(FindReplaceDataFlags());
     int nr_replacements = 0;
+
     while (SearchInTarget(frd->GetFindString()) != -1)
     {
+      if (GetTargetStart() == GetTargetEnd())
+      {
+        wxLogError("Target start and end are equal");
+        break;
+      }
+
       const int target_start = GetTargetStart();
       int length;
       bool skip_replace = false;
