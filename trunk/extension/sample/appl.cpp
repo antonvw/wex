@@ -142,7 +142,7 @@ exSampleFrame::exSampleFrame(const wxString& title)
   m_Grid = new exGrid(m_Notebook);
 #endif
   m_ListView = new exListView(m_Notebook);
-  m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
+  m_STC = new exSTC(this);
   m_STCShell = new exSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
   GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("exSTC"));
@@ -152,7 +152,7 @@ exSampleFrame::exSampleFrame(const wxString& title)
 
   assert(exApp::GetLexers());
   
-  exSTC* st = new exSTC(this);
+  exSTC* st = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
   m_Notebook->AddPage(st, exApp::GetLexers()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "exListView");
   
