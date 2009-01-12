@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -139,7 +139,6 @@ void ftProcess::CheckInput()
 
 int ftProcess::ConfigDialog()
 {
-  // Better do not give it this as parent, as the process list usually is not yet created.
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
@@ -177,6 +176,12 @@ void ftProcess::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 
 bool ftProcess::Run()
 {
+  if (m_Command.empty())
+  {
+    wxLogError("Process is empty");
+    return false;
+  }
+
   long pid;
 
   if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)

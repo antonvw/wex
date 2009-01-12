@@ -142,11 +142,14 @@ class exPane
 public:
   /// Default constructor.
   exPane(
+    /// If you do no provide helptext, it is derived from the name, by using
+    /// text after the first 'e' character (so after 'Pane') if name is 
+    /// not 'PaneText'.
     const wxString& name = wxEmptyString,
     int width = 50,
-    const wxString& helptext = wxEmptyString, // in that cases uses name
+    const wxString& helptext = wxEmptyString,
     int style = wxSB_NORMAL)
-    : m_Helptext(helptext)
+    : m_Helptext(helptext.empty() && name != "PaneText" ? name.AfterFirst('e'): helptext)
     , m_Name(name)
     , m_Style(style)
     , m_Width(width)
