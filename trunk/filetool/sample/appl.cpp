@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -13,6 +13,7 @@
   #include "mondrian.xpm"
 #endif
 
+#include <wx/aboutdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/filetool/filetool.h>
 #include <wx/filetool/process.h>
@@ -59,15 +60,21 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_PROCESS_DIALOG, _("Process Dialog"));
-  menuFile->Append(ID_PROCESS_RUN, _("Process Run"));
-  menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
+  exMenu *menuProcess = new exMenu;
+  menuProcess->Append(ID_PROCESS_DIALOG, exEllipsed(_("Dialog")));
+  menuProcess->Append(ID_PROCESS_RUN, _("Run"));
+  
+  exMenu* menuHelp = new exMenu;
+  menuHelp->Append(wxID_ABOUT);
+
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menuFile, _("&File"));
+  menubar->Append(menuProcess, _("&Process"));
+  menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
   wxToolBar* toolBar = new wxToolBar(this, 
@@ -165,6 +172,16 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
+  case wxID_ABOUT:
+    {
+    wxAboutDialogInfo info;
+    info.SetIcon(GetIcon());
+    info.SetVersion(FT_LIB_VERSION);
+    info.AddDeveloper(wxVERSION_STRING);
+    info.SetCopyright(_("(c) 1998-2009 Anton van Wezenbeek."));
+    wxAboutBox(info);
+    }
+    break;
   case wxID_EXIT: Close(true); break;
   case wxID_PREVIEW: 
     if (m_STC->HasCapture())
