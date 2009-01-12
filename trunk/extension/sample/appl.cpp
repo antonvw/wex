@@ -142,18 +142,18 @@ exSampleFrame::exSampleFrame(const wxString& title)
   m_Grid = new exGrid(m_Notebook);
 #endif
   m_ListView = new exListView(m_Notebook);
-  exSTC* st = new exSTC(this);
+  m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
   m_STCShell = new exSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
-  GetManager().AddPane(st, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("exSTC"));
+  GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("exSTC"));
   GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().Update();
 
   assert(exApp::GetLexers());
   
-  m_STC = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
-  m_Notebook->AddPage(m_STC, exApp::GetLexers()->GetFileName().GetFullName());
+  exSTC* st = new exSTC(this);
+  m_Notebook->AddPage(st, exApp::GetLexers()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "exListView");
   
 #if wxUSE_GRID
@@ -314,7 +314,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
       _("Config Dialog"),
       wxEmptyString,
       5,
-      5,
+      6,
       wxAPPLY | wxCANCEL,
       wxID_ANY,
       wxDefaultPosition,
@@ -344,8 +344,8 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
       v,
       _("Config Dialog Readonly"),
       wxEmptyString,
-      1,
-      1,
+      2,
+      2,
       wxCANCEL);
 
       dlg->Show();
@@ -511,7 +511,9 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_STC_CONFIG_DLG:
-    exSTC::ConfigDialog(_("Editor Options"));
+    exSTC::ConfigDialog(
+      _("Editor Options"),
+      exSTC::STC_CONFIG_MODELESS | exSTC::STC_CONFIG_WITH_APPLY);
     break;
   case ID_STC_FLAGS:
     {
