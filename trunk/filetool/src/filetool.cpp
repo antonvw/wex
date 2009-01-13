@@ -346,7 +346,7 @@ void ftDir::OnFile(const wxString& file)
   {
     const exFileName filename(file);
 
-    if (filename.FileExists())
+    if (filename.GetStat().IsOk())
     {
       ftTextFile report(filename);
       report.RunTool();

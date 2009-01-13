@@ -67,6 +67,8 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   exMenu *menuProcess = new exMenu;
   menuProcess->Append(ID_PROCESS_DIALOG, exEllipsed(_("Dialog")));
   menuProcess->Append(ID_PROCESS_RUN, _("Run"));
+  menuProcess->AppendSeparator();
+  menuProcess->Append(wxID_STOP);
   
   exMenu* menuHelp = new exMenu;
   menuHelp->Append(wxID_ABOUT);
@@ -117,8 +119,8 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   }
 
   GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
-  GetManager().AddPane(m_NotebookWithLists, wxAuiPaneInfo().CloseButton(false).MaximizeButton(true));
-  GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo().Caption(_("DirCtrl")));
+  GetManager().AddPane(m_NotebookWithLists, wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
+  GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
@@ -209,6 +211,13 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
     }
     break;
   case wxID_PRINT_SETUP: exApp::GetPrinter()->PageSetup(); break;
+
+  case wxID_STOP:
+    if (ftListView::ProcessIsRunning())
+    {
+      ftListView::ProcessStop();
+    }
+    break;
 
   case ID_PROCESS_DIALOG:
     ftProcess::ConfigDialog(); 

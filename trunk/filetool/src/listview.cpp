@@ -220,10 +220,10 @@ void ftListView::BuildPopupMenu(exMenu& menu)
 
   if (GetSelectedItemCount() == 1)
   {
-    ftListItem item(this, GetFirstSelected());
+    const ftListItem item(this, GetFirstSelected());
 
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
-    exists = item.GetFileName().FileExists() || is_folder;
+    exists = item.GetFileName().GetStat().IsOk();
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }
