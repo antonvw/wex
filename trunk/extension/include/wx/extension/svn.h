@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _WXSVN_H
-#define _WXSVN_H
+#ifndef _EXSVN_H
+#define _EXSVN_H
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP

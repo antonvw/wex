@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _WXAPP_H
-#define _WXAPP_H
+#ifndef _EXAPP_H
+#define _EXAPP_H
 
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
