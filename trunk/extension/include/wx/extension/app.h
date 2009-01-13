@@ -14,7 +14,6 @@
 
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
-#include <wx/print.h>
 #include <wx/extension/config.h>
 #include <wx/extension/lexers.h>
 
