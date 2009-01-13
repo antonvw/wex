@@ -89,6 +89,7 @@ protected:
 
     stats.Log();
 
+    m_ListView->ThreadTerminated();
     return NULL;
   };
 private:
@@ -1170,6 +1171,12 @@ void ftListView::RunItems(const exTool& tool)
   m_Thread = new ftToolThread(tool, this);
   m_Thread->Create();
   m_Thread->Run();
+}
+
+void ftListView::ThreadTerminated()
+{
+  m_Thread = NULL;
+  exStatusText(_("Ready"));
 }
 
 #if wxUSE_DRAG_AND_DROP
