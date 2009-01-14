@@ -149,7 +149,7 @@ void exSVN::ShowContents()
      m_Type == SVN_CAT &&
      m_ReturnCode == 0)
   { 
-    exFileName fn(m_FullPath); 
+    const exFileName fn(m_FullPath);
     dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
   }
   
