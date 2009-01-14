@@ -15,10 +15,10 @@
 class exDirTraverser: public wxDirTraverser
 {
 public:
-  exDirTraverser(exDir& dir, wxArrayString& files, wxStatusBar* statusbar) 
+  exDirTraverser(exDir& dir, wxArrayString& files, bool callonfile) 
     : m_Dir(dir)
+    , m_CallOnFile(callonfile)
     , m_Files(files)
-    , m_StatusBar(statusbar)
     {}
 
   virtual wxDirTraverseResult OnDir(const wxString& dirname)
@@ -42,11 +42,6 @@ public:
       wxThread::This()->Yield();
     }
 
-    if (m_StatusBar != NULL)
-    {
-      m_StatusBar->SetStatusText(dirname);
-    }
-
     return wxDIR_CONTINUE;
   }
 
@@ -62,6 +57,11 @@ public:
     if (exMatchesOneOf(file, m_Dir.GetFileSpec()))
     {
       m_Files.Add(filename);
+      
+      if (m_CallOnFile)
+      {
+        m_Dir.OnFile(filename);
+      }
     }
 
     if (wxIsMainThread())
@@ -73,25 +73,19 @@ public:
       wxThread::This()->Yield();
     }
 
-    if (m_StatusBar != NULL)
-    {
-      m_StatusBar->SetStatusText(filename);
-    }
-
     return wxDIR_CONTINUE;
   }
 
 private:
   exDir& m_Dir;
+  bool m_CallOnFile;
   wxArrayString& m_Files;
-  wxStatusBar* m_StatusBar;
 };
 
-exDir::exDir(const wxString& fullpath, const wxString& filespec, wxStatusBar* statusbar)
+exDir::exDir(const wxString& fullpath, const wxString& filespec)
   : wxDir(fullpath)
   , m_FileSpec(filespec)
   , m_Flags(wxDIR_DEFAULT)
-  , m_StatusBar(statusbar)
 {
 }
 
@@ -107,26 +101,13 @@ size_t exDir::FindFiles(int flags, bool callOnFile)
 
   exFrame::StatusText(_("Collecting files"));
 
-  exDirTraverser traverser(*this, m_Files, m_StatusBar);
+  exDirTraverser traverser(*this, m_Files, callOnFile);
 
   // TODO: Using m_FileSpec here does not work, as it might
   // contains several specs (*.cpp;*.h), wxDir does not handle that.
-  Traverse(traverser, wxEmptyString, m_Flags); // m_FileSpec
-
-  if (callOnFile)
-  {
-    int files_processed = 0;
-
-    for (size_t i = 0; i < m_Files.Count() && !Cancelled(); i++)
-    {
-      OnFile(m_Files[i]);
-      files_processed++;
-    }
-
-    return files_processed;
-  }
+  Traverse(traverser, wxEmptyString, m_Flags);
   
   exStatusText(_("Ready"));
-
+  
   return m_Files.Count();
 }

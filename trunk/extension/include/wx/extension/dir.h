@@ -22,11 +22,9 @@ public:
   /// Constructor.
   /// Opens the wxDir and sets the filespec.
   /// This filespec specifies what files are found.
-  /// If you give a statusbar, then paths are shown while traversing.
   exDir(
     const wxString& fullpath,
-    const wxString& filespec = wxEmptyString, // finds all
-    wxStatusBar* statusbar = NULL);
+    const wxString& filespec = wxEmptyString); // finds all
 
   /// Destructor.
   virtual ~exDir();
@@ -47,13 +45,12 @@ public:
 
   /// Gets the flags.
   int GetFlags() const {return m_Flags;};
-protected:
+  
   /// Do something with the file.
   virtual void OnFile(const wxString& WXUNUSED(file)) {;};
 private:
   const wxString m_FileSpec;
   int m_Flags;
   wxArrayString m_Files;
-  wxStatusBar* m_StatusBar;
 };
 #endif
