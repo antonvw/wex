@@ -312,8 +312,8 @@ void ftOpenFiles(
 }
 
 ftDir::ftDir(ftListView* listview,
-  const wxString& fullpath, const wxString& filespec, wxStatusBar* statusbar)
-  : exDir(fullpath, filespec, statusbar)
+  const wxString& fullpath, const wxString& filespec)
+  : exDir(fullpath, filespec)
   , m_Statistics(fullpath)
   , m_Frame(NULL)
   , m_ListView(listview)
@@ -323,9 +323,8 @@ ftDir::ftDir(ftListView* listview,
 }
 
 ftDir::ftDir(ftFrame* frame,
-  const wxString& fullpath, const wxString& filespec, long flags,
-  wxStatusBar* statusbar)
-  : exDir(fullpath, filespec, statusbar)
+  const wxString& fullpath, const wxString& filespec, long flags)
+  : exDir(fullpath, filespec)
   , m_Statistics(fullpath)
   , m_Frame(frame)
   , m_ListView(NULL)

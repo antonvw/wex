@@ -32,16 +32,14 @@ public:
   /// and on these files RunTool is invoked.
   ftDir(ftListView* listview, 
     const wxString& fullpath, 
-    const wxString& filespec = wxEmptyString,
-    wxStatusBar* statusbar = NULL);
+    const wxString& filespec = wxEmptyString);
 
   /// Allows you to FindFiles on a frame.
   /// In the findfiles all found files are opened using OpenFile from frame.
   ftDir(ftFrame* frame, 
     const wxString& fullpath, 
     const wxString& filespec, 
-    long flags = 0,
-    wxStatusBar* statusbar = NULL);
+    long flags = 0);
 
   /// Calls RunTool from exTextFile on all matching files.
   /// SetupTool from exTextFile should already be called.
