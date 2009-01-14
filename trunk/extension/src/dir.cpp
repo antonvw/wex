@@ -105,7 +105,6 @@ size_t exDir::FindFiles(int flags, bool callOnFile)
 
   m_Flags = flags;
 
-  // This is independant on the status bar member.
   exFrame::StatusText(_("Collecting files"));
 
   exDirTraverser traverser(*this, m_Files, m_StatusBar);
@@ -126,6 +125,8 @@ size_t exDir::FindFiles(int flags, bool callOnFile)
 
     return files_processed;
   }
+  
+  exStatusText(_("Ready"));
 
   return m_Files.Count();
 }
