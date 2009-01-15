@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2007, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -12,6 +12,7 @@
 #ifndef _FTTEXTFILE_H
 #define _FTTEXTFILE_H
 
+#include <wx/extension/textfile.h>
 #include <wx/extension/otl.h>
 
 /// Offers an exTextFile with reporting to a listview.
