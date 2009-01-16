@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2007-2008, Anton van Wezenbeek
+* Copyright (c) 2007-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -39,10 +39,11 @@ public:
 
   /// Constructor.
   exRenderer(
-    long flags,
-    const wxPen& pen,                       ///< used for CELL_UP .. CELL_CROSS
-    const wxPen& pen_outer,                 ///< used for CELL_RECT (outline) etc.
-    const wxBrush& brush = *wxBLACK_BRUSH); ///< used for CELL_RECT filling
+    long flags,                           ///< the exRendererFlags
+    const wxPen& pen,                     ///< used for CELL_UP .. CELL_CROSS
+    const wxPen& pen_outer,               ///< used for CELL_RECT (outline) etc.
+    const wxBrush& brush = *wxBLACK_BRUSH ///< used for CELL_RECT filling
+    ); 
 
   /// Interface from wxGridCellRenderer.
   virtual void Draw(

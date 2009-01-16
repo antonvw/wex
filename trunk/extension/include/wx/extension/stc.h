@@ -56,10 +56,11 @@ public:
     STC_CONFIG_SIMPLE     = 0x0004, ///< only 'simple' options on dialog
   };
 
-  /// Constructor. Does not open a file, but sets text to specified value.
+  /// Constructor. Does not open a file, but sets text to specified value,
+  /// NULL's are allowed.
+  /// This default value is overwritten by Open.
   exSTC(wxWindow* parent,
     long menu_flags = STC_MENU_DEFAULT,
-    /// default value, overwritten by Open, NULL's are allowed
     const wxString& value = wxEmptyString,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -68,11 +69,12 @@ public:
     const wxString& name = wxSTCNameStr);
 
   /// Constructor, opens the file.
+  /// See also Open.
   exSTC(wxWindow* parent,
     const exFileName& filename,
-    int line_number = 0, ///< goes to the line if > 0, if -1 goes to end of file
-    const wxString& match = wxEmptyString, ///< and selects the text on that line
-    long flags = 0, ///< open flags
+    int line_number = 0, 
+    const wxString& match = wxEmptyString,
+    long open_flags = 0,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -85,11 +87,14 @@ public:
 
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
+  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
+  /// If you specify a match selects the text on that line.
   virtual bool Open(
     const exFileName& filename,
-    int line_number = 0, ///< goes to the line if > 0, if -1 goes to end of file
-    const wxString& match = wxEmptyString, ///< and selects the text on that line
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
     long flags = 0);
+
   /// Shows properties on the statusbar.
   virtual void PropertiesMessage();
 

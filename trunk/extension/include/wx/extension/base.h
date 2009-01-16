@@ -146,8 +146,11 @@ public:
     /// text after the first 'e' character (so after 'Pane') if name is 
     /// not 'PaneText'.
     const wxString& name = wxEmptyString,
+    /// Width of the pane.
     int width = 50,
+    /// The helptext shown as a tooltip.
     const wxString& helptext = wxEmptyString,
+    /// The style.
     int style = wxSB_NORMAL)
     : m_Helptext(helptext.empty() && name != "PaneText" ? name.AfterFirst('e'): helptext)
     , m_Name(name)

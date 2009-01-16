@@ -30,8 +30,8 @@ exSTCShell::exSTCShell(
   const wxString& command_end,
   bool echo,
   int commands_save_in_config,
-  long type)
-  : exSTC(parent, type)
+  long menu_flags)
+  : exSTC(parent, menu_flags)
   , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)

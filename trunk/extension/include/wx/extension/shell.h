@@ -31,16 +31,20 @@ class exSTCShell: public exSTC
 public:
   /// Constructor.
   exSTCShell(
+    /// Parent.
     wxWindow* parent,
-    const wxString& prompt = ">",
     /// Give the command used to end a line.
     /// The default uses the GetEOL.
+    const wxString& prompt = ">",
+    /// The command used to end a line.
     const wxString& command_end = wxEmptyString,
+    /// Will commands be echoed.
     bool echo = true,
     /// Give the number of commands that are kept in the config.
     /// Default -1, no commands are kept.
     int commands_save_in_config = -1,
-    long type = STC_MENU_SIMPLE | STC_MENU_FIND);
+    /// The stc menu flags.
+    long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND);
 
   /// Destructor, keeps the commands in the config, if required.
  ~exSTCShell();
