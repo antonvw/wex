@@ -24,6 +24,8 @@ wxLocale exApp::m_Locale;
 wxHtmlEasyPrinting* exApp::m_Printer = NULL;
 #endif
 
+// Do not inline this method, as exLog is only available after including extension.h,
+// which requires app.h...
 void exApp::Log(const wxString& text) 
 {
   if (m_Logging) exLog(text);
