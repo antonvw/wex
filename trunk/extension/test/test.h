@@ -10,30 +10,30 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef TestStudent_h
-#define TestStudent_h
+#ifndef _EXTESTCASE_H
+#define _EXTESTCASE_H
 
 #include <iostream>
 #include <string>
-
 #include <TestCase.h>
 #include <TestSuite.h>
 #include <TestCaller.h>
 #include <TestRunner.h>
 
-class StudentTestCase : public CppUnit::TestCase
+/// CppUnit test case.
+class exTestCase : public CppUnit::TestCase
 {
 public:
-  // constructor - Note 3
-  StudentTestCase(std::string name) : TestCase(name) {}
+  /// Constructor.
+  exTestCase(std::string name) : TestCase(name) {}
 
-  // method to test the constructor
+  /// Test the constructor of various extension classes.
   void testConstructor();
 
-  // method to test the assigning and retrieval of grades
-  void testAssignAndRetrieveGrades();
+  /// Test various methods of various extension classes.
+  void testMethods();
 
-  // method to create a suite of tests
+  /// Method to create a suite of tests.
   static CppUnit::Test* suite();
 };
 #endif

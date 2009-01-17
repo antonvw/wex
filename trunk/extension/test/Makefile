@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 
 WXWIN_BASE_VERSION=$(shell wx-config --release)
-PROGRAM=test.v2.0
+PROGRAM=test.v1.0
 INCPATH=/usr/local/include/wxExtension
 LIBPATH=/usr/local/lib
 
@@ -24,10 +24,10 @@ CFLAGS=-DUSE_OTL `wx-config --cflags`
 
 EXTRAFLAGS=-DWXUSINGDLL -INONE -I/usr/include/cppunit/ -I/usr/local/include/wxExtension/ -O2
 
-LIBS=`wx-config --libs all --debug=no` -lwxExtension.v2.0.gtk -lodbc -lcppunit
+LIBS=`wx-config --libs all --debug=no` -lwxextension.v1.0.gtk -lodbc -lcppunit
 
-#OBJS=	test.o
-OBJS=	Main.o
+OBJS=	test.o
+#OBJS=	main.o
 $(PROGRAM): $(OBJS)
 	$(CC) $(LDFLAGS) $(LIBS) -o $@ $(OBJS)
 

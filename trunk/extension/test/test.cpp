@@ -14,42 +14,37 @@
 #include "test.h"
 
 using CppUnit::Test;
-using CppUnit::TestSuite;
-using CppUnit::TestFactoryRegistry;
-using CppUnit::TextUi::TestRunner;
-using CppUnit::CompilerOutputter;
 
-// method to test the constructor
-void StudentTestCase::testConstructor() 
+void exTestCase::testConstructor() 
 {
   exFile file("test.h");
   
   assert(file.GetStat().IsOk());
 }
 
-// method to test the assigning and retrieval of grades
-void StudentTestCase::testAssignAndRetrieveGrades() 
+void exTestCase::testMethods() 
 {
 }
 
-// method to create a suite of tests - Note 7
-Test* StudentTestCase::suite()
+Test* exTestCase::suite()
 {
-  TestSuite* testSuite = new TestSuite("wxExtensionTestCase");
-  
-  // add the tests
-  testSuite->addTest(new TestCaller(
+  // Construct the tests.
+  CPPUNIT_NS::TestCaller* test1 = new CPPUNIT_NS::TestCaller(
     "testConstructor", 
-    &StudentTestCase::testConstructor));
+    &exTestCase::testConstructor);
     
-  testSuite->addTest(new TestCaller(
-    "testAssignAndRetrieveGrades", 
-    &StudentTestCase::testAssignAndRetrieveGrades));
+  CPPUNIT_NS::TestCaller* test2 = new CPPUNIT_NS::TestCaller(
+    "testMethods", 
+    &exTestCase::testMethods);
+    
+  // Add the tests.
+  CPPUNIT_NS::TestSuite* testSuite = new CPPUNIT_NS::TestSuite("wxExtensionTestCase");
+  testSuite->addTest(test1);    
+  testSuite->addTest(test2);
        
   return testSuite;
 }
 
-// the main method - Note 8
 int main (int argc, char* argv[]) 
 {
   if (argc != 2)
@@ -58,9 +53,9 @@ int main (int argc, char* argv[])
     exit(1);
   }
 
-  TestRunner runner;
-  runner.addTest(argv[1], StudentTestCase::suite());
-  runner.run(argc, argv);
+  CPPUNIT_NS::TestRunner runner;
+  runner.addTest(exTestCase::suite());
+  runner.run("", false, true);
   
   return 0;
 }

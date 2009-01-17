@@ -21,7 +21,6 @@
 
 class exTestCase : public CppUnit::TestCase {
 public:
-  // constructor - Note 3
   exTestCase(std::string name) : TestCase(name) {}
 
   virtual void runTest();
