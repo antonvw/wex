@@ -10,6 +10,9 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <ui/text/TestRunner.h>
+#include <TestSuite.h>
+#include <TestCaller.h>
 #include <wx/extension/extension.h>
 #include "test.h"
 
@@ -53,9 +56,9 @@ int main (int argc, char* argv[])
     exit(1);
   }
 
-  CPPUNIT_NS::TestRunner runner;
+  CppUnit::TextUi::TestRunner runner;
   runner.addTest(exTestCase::suite());
-  runner.run("", false, true);
+  runner.run();
   
   return 0;
 }

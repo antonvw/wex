@@ -16,9 +16,6 @@
 #include <iostream>
 #include <string>
 #include <TestCase.h>
-#include <TestSuite.h>
-#include <TestCaller.h>
-#include <TestRunner.h>
 
 /// CppUnit test case.
 class exTestCase : public CppUnit::TestCase
