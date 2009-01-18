@@ -31,19 +31,14 @@ void exTestCase::testMethods()
 
 Test* exTestCase::suite()
 {
-  // Construct the tests.
-  CPPUNIT_NS::TestCaller* test1 = new CPPUNIT_NS::TestCaller(
-    "testConstructors", 
-    &exTestCase::testConstructors);
-    
-  CPPUNIT_NS::TestCaller* test2 = new CPPUNIT_NS::TestCaller(
-    "testMethods", 
-    &exTestCase::testMethods);
-    
   // Add the tests.
-  CPPUNIT_NS::TestSuite* testSuite = new CPPUNIT_NS::TestSuite("wxextension test suite");
-  testSuite->addTest(test1);    
-  testSuite->addTest(test2);
+  CppUnit::TestSuite* testSuite = new CppUnit::TestSuite("wxextension test suite");
+  testSuite->addTest(new CppUnit::TestCaller<exTestCase>(
+    "testConstructors", 
+    &exTestCase::testConstructors));    
+  testSuite->addTest(new CppUnit::TestCaller<exTestCase>(
+    "testMethods", 
+    &exTestCase::testMethods));
        
   return testSuite;
 }
