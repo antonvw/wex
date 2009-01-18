@@ -24,13 +24,13 @@ public:
   /// Constructor.
   exTestCase(std::string name) : TestCase(name) {}
 
-  /// Test the constructor of various extension classes.
-  void testConstructor();
+  /// Test the constructors of various extension classes.
+  void testConstructors();
 
-  /// Test various methods of various extension classes.
+  /// Test methods of various extension classes.
   void testMethods();
 
-  /// Method to create a suite of tests.
+  /// Create a suite of tests.
   static CppUnit::Test* suite();
 };
 #endif

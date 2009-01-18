@@ -18,7 +18,7 @@
 
 using CppUnit::Test;
 
-void exTestCase::testConstructor() 
+void exTestCase::testConstructors() 
 {
   exFile file("test.h");
   
@@ -33,15 +33,15 @@ Test* exTestCase::suite()
 {
   // Construct the tests.
   CPPUNIT_NS::TestCaller* test1 = new CPPUNIT_NS::TestCaller(
-    "testConstructor", 
-    &exTestCase::testConstructor);
+    "testConstructors", 
+    &exTestCase::testConstructors);
     
   CPPUNIT_NS::TestCaller* test2 = new CPPUNIT_NS::TestCaller(
     "testMethods", 
     &exTestCase::testMethods);
     
   // Add the tests.
-  CPPUNIT_NS::TestSuite* testSuite = new CPPUNIT_NS::TestSuite("wxExtensionTestCase");
+  CPPUNIT_NS::TestSuite* testSuite = new CPPUNIT_NS::TestSuite("wxextension test suite");
   testSuite->addTest(test1);    
   testSuite->addTest(test2);
        
@@ -50,13 +50,8 @@ Test* exTestCase::suite()
 
 int main (int argc, char* argv[]) 
 {
-  if (argc != 2)
-  {
-    std::cout << "usage: tester name_of_class_being_test" << std::endl;
-    exit(1);
-  }
-
   CppUnit::TextUi::TestRunner runner;
+  
   runner.addTest(exTestCase::suite());
   runner.run();
   
