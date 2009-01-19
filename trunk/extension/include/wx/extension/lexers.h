@@ -16,6 +16,7 @@
 #include <vector>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/file.h>
 
 /// Reads the lexers, keywords, markers and styles
 /// from the configuration file lexers.xml and makes
@@ -55,11 +56,11 @@ public:
   /// Returns true if file exists and is valid xml document.
   bool Read();
 private:
-  const wxString ParseTagColourings(const wxXmlNode* node);
+  const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
-  const exLexer ParseTagLexer(const wxXmlNode* node);
-  const exMarker ParseTagMarker(const wxString& number, const wxString& props);
-  const wxString ParseTagProperties(const wxXmlNode* node);
+  const exLexer ParseTagLexer(const wxXmlNode* node) const;
+  const exMarker ParseTagMarker(const wxString& number, const wxString& props) const;
+  const wxString ParseTagProperties(const wxXmlNode* node) const;
 
   std::map<int, int> m_Indicators;
   std::vector<exLexer> m_Lexers;

@@ -13,7 +13,8 @@
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
-#include <wx/extension/extension.h>
+#include <wx/extension/lexers.h>
+#include <wx/extension/extension.h> // for exMatchesOneOf
 
 exLexers::exLexers()
   : m_FileName(
@@ -71,7 +72,7 @@ const exLexer exLexers::FindByName(const wxString& name) const
 }
 
 // TODO: Styles and Styles hex parse them here instead of at stc.
-const wxString exLexers::ParseTagColourings(const wxXmlNode* node)
+const wxString exLexers::ParseTagColourings(const wxXmlNode* node) const
 {
   wxString text;
 
@@ -91,7 +92,8 @@ const wxString exLexers::ParseTagColourings(const wxXmlNode* node)
     }
     else
     {
-      wxLogError("Undefined colourings tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined colourings tag: %s on: %d", 
+        child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
@@ -149,14 +151,15 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else
     {
-      wxLogError("Undefined global tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined global tag: %s on: %d", 
+        child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
   }
 }
 
-const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
+const exLexer exLexers::ParseTagLexer(const wxXmlNode* node) const
 {
   exLexer lexer;
   lexer.m_ScintillaLexer = node->GetAttribute("name", "cpp");
@@ -194,7 +197,8 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
     }
     else
     {
-      wxLogError("Undefined lexer tag: %s on: %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined lexer tag: %s on: %d", 
+        child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();
@@ -203,7 +207,9 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node)
   return lexer;
 }
 
-const exMarker exLexers::ParseTagMarker(const wxString& number, const wxString& props)
+const exMarker exLexers::ParseTagMarker(
+  const wxString& number, 
+  const wxString& props) const
 {
   wxStringTokenizer prop_fields(props, ",");
 
@@ -236,7 +242,7 @@ const exMarker exLexers::ParseTagMarker(const wxString& number, const wxString& 
   }
 }
 
-const wxString exLexers::ParseTagProperties(const wxXmlNode* node)
+const wxString exLexers::ParseTagProperties(const wxXmlNode* node) const
 {
   wxString text;
   
@@ -256,7 +262,8 @@ const wxString exLexers::ParseTagProperties(const wxXmlNode* node)
     }
     else
     {
-      wxLogError("Undefined properties tag: %s on %d", child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined properties tag: %s on %d", 
+        child->GetName().c_str(), child->GetLineNumber());
     }
     
     child = child->GetNext();

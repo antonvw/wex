@@ -13,6 +13,10 @@
 #define _EXFILE_H
 
 #include <sys/stat.h> // for stat
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/extension/lexer.h>
