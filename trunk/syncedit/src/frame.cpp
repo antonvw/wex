@@ -146,12 +146,6 @@ MDIFrame::MDIFrame(bool open_recent)
     }
   }
 
-#if wxUSE_CHECKBOX
-/// \todo The next does not cause checkbox to be set.
-//  GetSyncCheckBox()->SetValue(exSTC::GetAllowSync());
-  GetSyncCheckBox()->SetValue(true);
-#endif // wxUSE_CHECKBOX
-
   wxLogTrace("SY_CALL", "-MDIFrame");
 }
 

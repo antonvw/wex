@@ -171,7 +171,7 @@ Frame::Frame(const wxString& project_wildcard)
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
 
-  CreateToolBar();
+  CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
 
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);
@@ -260,10 +260,12 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
 wxToolBar* Frame::OnCreateToolBar(long style, wxWindowID id, const wxString& name)
 {
   m_ToolBar = new exToolBar(this, 
-    wxID_ANY,
+    id,
     wxDefaultPosition, 
     wxDefaultSize, 
-    wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
+    style,
+    wxSize(16, 15),
+    name);
 
   return m_ToolBar;
 }
