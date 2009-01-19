@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -28,8 +28,6 @@ public:
   /// Gets sync mode.  
   wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
 #endif
-protected:
-  virtual wxToolBar* OnCreateToolBar(long style, wxWindowID id, const wxString& name);
 private:
   // Interface from exFrame.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
@@ -39,6 +37,5 @@ private:
   wxCheckBox* m_HexModeCheckBox;
   wxCheckBox* m_SyncCheckBox;
 #endif
-  exToolBar* m_ToolBar;
 };
 #endif

@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -233,6 +233,19 @@ wxStatusBar* exFrame::OnCreateStatusBar(
   return m_StatusBar;
 }
 #endif
+
+wxToolBar* exFrame::OnCreateToolBar(long style, wxWindowID id, const wxString& name)
+{
+  m_ToolBar = new exToolBar(this, 
+    id,
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    style,
+    wxSize(16, 15),
+    name);
+
+  return m_ToolBar;
+}
 
 void exFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {

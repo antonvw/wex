@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -31,6 +31,7 @@
 class exListView;
 class exStatusBar;
 class exSTC;
+class exToolBar;
 
 /// Offers a general dialog, with a separated button sizer at the bottom.
 /// Derived dialogs can use the user sizer for laying out their controls.
@@ -256,7 +257,15 @@ protected:
     long style,
     wxWindowID id,
     const wxString& name);
+#endif
+    
+  // Interface from wxFrame.
+  virtual wxToolBar* OnCreateToolBar(
+    long style, 
+    wxWindowID id, 
+    const wxString& name);
 
+#if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
   void SetupStatusBar(
     const std::vector<exPane>& panes,
@@ -264,6 +273,8 @@ protected:
     wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");
 #endif
+protected:
+  exToolBar* m_ToolBar;
 private:
 #if wxUSE_STATUSBAR
   static exStatusBar* m_StatusBar;

@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -255,19 +255,6 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
     return ((ftListView*)page)->Continue();
   else
     return ftFrame::AllowClose(id, page);
-}
-
-wxToolBar* Frame::OnCreateToolBar(long style, wxWindowID id, const wxString& name)
-{
-  m_ToolBar = new exToolBar(this, 
-    id,
-    wxDefaultPosition, 
-    wxDefaultSize, 
-    style,
-    wxSize(16, 15),
-    name);
-
-  return m_ToolBar;
 }
 
 void Frame::OnNotebook(wxWindowID id, wxWindow* page) 
