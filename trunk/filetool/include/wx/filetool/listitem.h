@@ -13,7 +13,7 @@
 #define _FTLISTITEM_H
 
 #include <wx/extension/statistics.h>
-#include <wx/extension/textfile.h>
+#include <wx/extension/textfile.h> // for exRCS
 
 class ftListView;
 
