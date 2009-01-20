@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -946,8 +946,8 @@ void ftListView::OnIdle(wxIdleEvent& event)
         )
     {
       item.Update();
+      item.GetFileName().StatusText(STAT_SYNC | STAT_FULLPATH);
       m_ItemUpdated = true;
-      exStatusText(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
     }
 
     m_ItemNumber++;
@@ -977,7 +977,7 @@ void ftListView::OnIdle(wxIdleEvent& event)
     {
       if (FileOpen(m_FileName))
       {
-        exStatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
+        m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
       }
     }
   }
@@ -1000,7 +1000,7 @@ void ftListView::OnList(wxListEvent& event)
       if ((m_Type != LIST_PROCESS) ||
           (m_Type == LIST_PROCESS && item.GetFileName().FileExists()))
       {
-        exStatusText(item.GetFileName(), STAT_FULLPATH);
+        item.GetFileName().StatusText(STAT_FULLPATH);
       }
     }
 
@@ -1019,7 +1019,7 @@ void ftListView::OnMouse(wxMouseEvent& event)
     {
       if (m_FileName.FileExists())
       {
-        exStatusText(m_FileName);
+        m_FileName.StatusText();
       }
     }
   }
@@ -1176,7 +1176,7 @@ void ftListView::RunItems(const exTool& tool)
 void ftListView::ThreadTerminated()
 {
   m_Thread = NULL;
-  exStatusText(_("Ready"));
+  exFrame::StatusText(_("Ready"));
 }
 
 #if wxUSE_DRAG_AND_DROP

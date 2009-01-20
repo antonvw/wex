@@ -280,32 +280,6 @@ const wxString exSkipWhiteSpace(const wxString& text, const wxString& replace_wi
   return output;
 }
 
-#if wxUSE_STATUSBAR
-void exStatusText(const exFileName& filename, long flags)
-{
-  wxString text; // clear status bar for empty or not existing or not initialized file names
-
-  if (filename.IsOk())
-  {
-    const wxString path = (flags & STAT_FULLPATH
-      ? filename.GetFullPath(): filename.GetFullName());
-
-    text += path;
-
-    if (filename.GetStat().IsOk())
-    {
-      const wxString what = (flags & STAT_SYNC
-        ? _("Synchronized"): _("Modified"));
-      const wxString time = (flags & STAT_SYNC
-        ? wxDateTime::Now().Format(): filename.GetStat().GetModificationTime());
-      text += " " + what + " " + time;
-    }
-  }
-
-  exFrame::StatusText(text);
-}
-#endif // wxUSE_STATUSBAR
-
 const wxString exTranslate(const wxString& text, int pageNum, int numPages)
 {
   wxString translation = text;

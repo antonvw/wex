@@ -112,7 +112,7 @@ size_t exDir::FindFiles(int flags, bool callOnFile)
   // contains several specs (*.cpp;*.h), wxDir does not handle that.
   Traverse(traverser, wxEmptyString, m_Flags);
   
-  exStatusText(_("Ready"));
+  exFrame::StatusText(_("Ready"));
   
   return m_Files.Count();
 }

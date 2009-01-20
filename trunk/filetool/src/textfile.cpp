@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -155,7 +155,7 @@ bool ftTextFile::ParseSQL()
 
     const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
     exApp::Log(msg);
-    exStatusText(msg);
+    exFrame::StatusText(msg);
   }
 
   // Test for SQL end statement.

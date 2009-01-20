@@ -82,6 +82,14 @@ private:
   bool m_IsOk;
 };
 
+/// Flags for exStatusText.
+enum exStatusFlags
+{
+  STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
+  STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
+  STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
+};
+
 /// Adds an exStat and an exLexer member to wxFileName.
 class exFileName : public wxFileName
 {
@@ -114,6 +122,12 @@ public:
   void SetLexer(
     const wxString& lexer = wxEmptyString,
     const wxString& text = wxEmptyString);
+
+#if wxUSE_STATUSBAR
+  /// Shows filename info on the statusbar.
+  void StatusText(long flags = STAT_DEFAULT) const;
+#endif // wxUSE_STATUSBAR
+
 private:
   exLexer m_Lexer;
   exStat m_Stat;

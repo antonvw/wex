@@ -198,6 +198,32 @@ void exFileName::SetLexer(
   }
 }
 
+#if wxUSE_STATUSBAR
+void exFileName::StatusText(long flags) const
+{
+  wxString text; // clear status bar for empty or not existing or not initialized file names
+
+  if (IsOk())
+  {
+    const wxString path = (flags & STAT_FULLPATH
+      ? GetFullPath(): GetFullName());
+
+    text += path;
+
+    if (GetStat().IsOk())
+    {
+      const wxString what = (flags & STAT_SYNC
+        ? _("Synchronized"): _("Modified"));
+      const wxString time = (flags & STAT_SYNC
+        ? wxDateTime::Now().Format(): GetStat().GetModificationTime());
+      text += " " + what + " " + time;
+    }
+  }
+
+  exFrame::StatusText(text);
+}
+#endif // wxUSE_STATUSBAR
+
 #if wxUSE_GUI
 exConfigDialog* exStat::m_ConfigDialog = NULL;
 #endif

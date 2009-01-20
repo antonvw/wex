@@ -163,7 +163,7 @@ bool ftProcess::IsRunning() const
 
 void ftProcess::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
-  exStatusText(_("Ready"));
+  exFrame::StatusText(_("Ready"));
 
   if (m_Thread != NULL)
   {
@@ -194,7 +194,7 @@ bool ftProcess::Run()
     {
       if (m_Thread->Run() == wxTHREAD_NO_ERROR)
       {
-        exStatusText(m_Command);
+        exFrame::StatusText(m_Command);
         exApp::Log(_("Running process") + ": " + m_Command);
         return true;
       }
@@ -215,5 +215,5 @@ void ftProcess::Stop()
 
   Kill(GetPid(), wxSIGKILL);
 
-  exStatusText(_("Stopped"));
+  exFrame::StatusText(_("Stopped"));
 }
