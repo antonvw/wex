@@ -234,7 +234,10 @@ wxStatusBar* exFrame::OnCreateStatusBar(
 }
 #endif
 
-wxToolBar* exFrame::OnCreateToolBar(long style, wxWindowID id, const wxString& name)
+wxToolBar* exFrame::OnCreateToolBar(
+  long style, 
+  wxWindowID id, 
+  const wxString& name)
 {
   m_ToolBar = new exToolBar(this, 
     id,

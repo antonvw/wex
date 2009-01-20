@@ -180,7 +180,7 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
-/// Offers a frame with easy statusbar methods.
+/// Offers a frame with easy statusbar methods, and a toolbar if you call CreateToolBar.
 class exFrame : public wxFrame
 {
   friend class exStatusBar;
@@ -219,6 +219,12 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
+
+  /// Override from base, we use a different style.
+  virtual wxToolBar* CreateToolBar(
+    long style = wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE, 
+    wxWindowID id = -1, 
+    const wxString& name = "toolBar") {return wxFrame::CreateToolBar(style, id, name);};
 
   /// If the window that has focus is a ListView, then returns that, otherwise returns NULL.
   exListView* GetFocusedListView();

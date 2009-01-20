@@ -61,7 +61,6 @@ private:
   exListView* m_ListView; ///< a listview
   exNotebook* m_Notebook; ///< a notebook
   exSTCShell* m_STCShell; ///< an stc shell
-  exToolBar* m_ToolBar;   ///< a notebook
   exSTC* m_STC;           ///< an stc
 
   long m_FlagsSTC;        ///< keep current flags

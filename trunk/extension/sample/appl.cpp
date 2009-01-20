@@ -201,13 +201,12 @@ exSampleFrame::exSampleFrame(const wxString& title)
   panes.push_back(exPane("PaneLexer", 60, _("Lexer")));
   SetupStatusBar(panes);
 
-  m_ToolBar = new exToolBar(this);
+  CreateToolBar();
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);
   m_ToolBar->AddTool(wxID_PRINT);
   m_ToolBar->AddTool(wxID_EXIT);
   m_ToolBar->Realize();
-  SetToolBar(m_ToolBar);
 }
 
 void exSampleFrame::ConfigDialogApplied(wxWindowID id)

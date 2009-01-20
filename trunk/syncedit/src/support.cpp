@@ -171,7 +171,7 @@ Frame::Frame(const wxString& project_wildcard)
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
 
-  CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
+  CreateToolBar();
 
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);

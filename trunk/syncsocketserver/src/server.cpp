@@ -163,18 +163,18 @@ MyFrame::MyFrame(const wxString& title)
   menuBar->Append(menuHelp, _("&Help"));
   SetMenuBar(menuBar);
 
-  exToolBar* toolbar = new exToolBar(this,
-    wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
-  toolbar->AddTool(wxID_NEW);
-  toolbar->AddTool(wxID_OPEN);
-  toolbar->AddTool(wxID_SAVE);
-  toolbar->AddTool(
+  CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
+
+  m_ToolBar->AddTool(wxID_NEW);
+  m_ToolBar->AddTool(wxID_OPEN);
+  m_ToolBar->AddTool(wxID_SAVE);
+  m_ToolBar->AddTool(
     ID_WRITE_DATA,
     wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, toolbar->GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     _("Write data"));
-  toolbar->Realize();
-  SetToolBar(toolbar);
+
+  m_ToolBar->Realize();
 
   GetManager().AddPane(m_LogWindow,
     wxAuiPaneInfo().CenterPane().Name("LOG"));

@@ -149,14 +149,14 @@ MyFrame::MyFrame(const wxString& title)
   panes.push_back(exPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 
-  exToolBar* toolbar = new exToolBar(this,
-    wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
-  toolbar->AddTool(wxID_NEW);
-  toolbar->AddTool(wxID_OPEN);
-  toolbar->AddTool(wxID_SAVE);
-  toolbar->AddTool(ID_QUERY_RUN, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_FORWARD), _("Run query"));
-  toolbar->Realize();
-  SetToolBar(toolbar);
+  CreateToolBar();
+
+  m_ToolBar->AddTool(wxID_NEW);
+  m_ToolBar->AddTool(wxID_OPEN);
+  m_ToolBar->AddTool(wxID_SAVE);
+  m_ToolBar->AddTool(ID_QUERY_RUN, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_FORWARD), _("Run query"));
+
+  m_ToolBar->Realize();
 
   otl_connect::otl_initialize();
 }
