@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -13,6 +13,8 @@
 #include <io.h> // for chmod
 #endif
 #include <wx/extension/extension.h>
+#include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
+#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 
 exFile::exFile()
   : m_FileName()

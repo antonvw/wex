@@ -9,8 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/filetool/filetool.h>
 
 bool ftCompareFile(const wxFileName& file1, const wxFileName& file2)
