@@ -52,6 +52,7 @@ bool Application::OnInit()
   }
 
   MDIFrame* frame = new MDIFrame(parser.GetParamCount() == 0);
+  frame->Show();  
   
   if (parser.GetParamCount() > 0)
   {
@@ -62,13 +63,9 @@ bool Application::OnInit()
       files.Add(parser.GetParam(i));
     }
 
-    frame->Freeze();
     ftOpenFiles(frame, files);
-    frame->Thaw();
   }
 
-  frame->Show();
-  
   wxUpdateUIEvent::SetUpdateInterval(0);
   
   exSTC::SetAllowSync(true);
