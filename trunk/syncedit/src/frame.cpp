@@ -607,7 +607,7 @@ and saved in the same directory as where the executable is."));
       stc->GetFileName().GetFullName(),
       true
 #ifdef USE_NOTEBOOK_IMAGE
-      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&stc->GetFileName()))
+      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIcon())
 #endif
       );
 
@@ -937,7 +937,7 @@ bool MDIFrame::OpenFile(
       filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
       true
 #ifdef USE_NOTEBOOK_IMAGE
-      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
+      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
 #endif
       );
   }
@@ -1025,7 +1025,7 @@ bool MDIFrame::OpenFile(
         filename.GetFullName(),
         true
 #ifdef USE_NOTEBOOK_IMAGE
-        ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(ftGetFileIcon(&filename))
+        ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
 #endif
         );
 

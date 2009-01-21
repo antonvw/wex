@@ -102,6 +102,9 @@ public:
     , m_Stat(fullpath) {
     SetLexer();}
 
+  /// Gets the icon index for this filename (uses the file extension to get it).
+  int GetIcon();
+
   /// Gets the lexer.
   exLexer& GetLexer() {return m_Lexer;};
 

@@ -253,22 +253,6 @@ bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   return true;
 }
 
-int ftGetFileIcon(const exFileName* filename)
-{
-  if (filename->GetStat().IsOk() && !filename->GetExt().empty())
-  {
-    // README: DirExists from wxFileName is not okay, so use the static one here!
-    return
-      (wxFileName::DirExists(filename->GetFullPath()) ?
-       wxFileIconsTable::folder:
-       wxTheFileIconsTable->GetIconID(filename->GetExt()));
-  }
-  else
-  {
-    return wxFileIconsTable::computer;
-  }
-}
-
 void ftOpenFiles(
   ftFrame* frame,
   const wxArrayString& files,
@@ -297,7 +281,7 @@ void ftOpenFiles(
        }
       }
 
-      wxFileName filename(file);
+      exFileName filename(file);
 
       if (!filename.FileExists()) filename.Normalize();
       if (!filename.FileExists())
@@ -306,7 +290,7 @@ void ftOpenFiles(
         continue;
       }
 
-      frame->OpenFile(filename.GetFullPath(), line, wxEmptyString, flags);
+      frame->OpenFile(filename, line, wxEmptyString, flags);
     }
   }
 }

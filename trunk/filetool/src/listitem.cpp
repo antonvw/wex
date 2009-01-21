@@ -52,7 +52,7 @@ void ftListItem::Insert(long index)
   GetListView()->InsertItem(*this);
   GetListView()->UpdateStatusBar();
 
-  SetImage(ftGetFileIcon(&m_Statistics));
+  SetImage(m_Statistics.GetIcon());
 
   Update();
 

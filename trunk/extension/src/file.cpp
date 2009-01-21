@@ -176,6 +176,22 @@ void exFile::Update(const exFileName& filename)
   m_Stat.Update(filename.GetFullPath());
 }
 
+int exFileName::GetIcon() const
+{
+  if (GetStat().IsOk() && !GetExt().empty())
+  {
+    // README: DirExists from wxFileName is not okay, so use the static one here!
+    return
+      (wxFileName::DirExists(GetFullPath()) ?
+       wxFileIconsTable::folder:
+       wxTheFileIconsTable->GetIconID(GetExt()));
+  }
+  else
+  {
+    return wxFileIconsTable::computer;
+  }
+}
+
 void exFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)

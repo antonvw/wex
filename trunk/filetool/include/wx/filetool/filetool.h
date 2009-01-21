@@ -99,9 +99,6 @@ bool ftFindOtherFileName(
 /// Do something (id) for all pages on the notebook.
 bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
-/// Gets the file icon index for specified filename.
-int ftGetFileIcon(const exFileName* filename);
-
 /// Opens files and updates history, both for files and projects.
 void ftOpenFiles(ftFrame* frame, 
   const wxArrayString& files, 
