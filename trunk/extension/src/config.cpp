@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2007 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -809,8 +809,8 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
     }
   }
 
-  if (command.GetId() == wxID_APPLY ||
-      command.GetId() == wxID_OK && !IsModal())
+  if ( command.GetId() == wxID_APPLY ||
+      (command.GetId() == wxID_OK && !IsModal()))
   {
     wxWindow* window = wxTheApp->GetTopWindow();
     exFrame* frame = wxDynamicCast(window, exFrame);

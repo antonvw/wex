@@ -1160,7 +1160,7 @@ void ftListView::RunItems(const exTool& tool)
     }
 
     exApp::GetConfig()->GetFindReplaceData()->Update();
-    ftFindLog(tool.GetId() == ID_TOOL_REPORT_REPLACE);
+    exApp::Log(exApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!ftTextFile::SetupTool(tool))

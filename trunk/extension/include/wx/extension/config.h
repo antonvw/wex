@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -370,6 +370,15 @@ public:
 
   /// Destructor, saves members to config.
  ~exFindReplaceData();
+
+  /// Gets find/replace text.
+  const wxString GetText(bool replace = false) const {
+    wxString log = _("Searching for") + ": " + m_Config->Get(_("Find what"));
+    if (replace)
+    {
+      log += " " + _("Replacing with") + ": " + m_Config->Get(_("Replace with"));
+    }
+    return log;};
 
   /// Gets the regular expression.
   const wxRegEx& GetFindRegularExpression() const {

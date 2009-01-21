@@ -86,9 +86,6 @@ bool ftCompareFile(const wxFileName& file1, const wxFileName& file2);
 /// Shows a find in files dialog and finds or replaces text in files if chosen.
 void ftFindInFiles(ftFrame* frame, bool replace = false);
 
-/// Logs about finding/replacing.
-void ftFindLog(bool replace);
-
 /// Finds other filenames from the one specified in the same dir structure.
 /// Results are put on the list if not null, or in the filename if not null.
 bool ftFindOtherFileName(

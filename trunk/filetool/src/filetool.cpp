@@ -73,7 +73,7 @@ void ftFindInFiles(ftFrame* frame, bool replace)
     return;
   }
 
-  ftFindLog(replace);
+  exApp::Log(exApp::GetConfig()->GetFindReplaceData()->GetText(replace));
 
   ftDir dir(
     output,
@@ -82,18 +82,6 @@ void ftFindInFiles(ftFrame* frame, bool replace)
 
   dir.RunTool();
   dir.GetStatistics().Log();
-}
-
-void ftFindLog(bool replace)
-{
-  wxString log = _("Searching for") + ": " + exApp::GetConfig(_("Find what"));
-
-  if (replace)
-  {
-    log += " " + _("Replacing with") + ": " + exApp::GetConfig(_("Replace with"));
-  }
-
-  exApp::Log(log);
 }
 
 bool ftFindOtherFileName(
