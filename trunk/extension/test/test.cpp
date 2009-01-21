@@ -13,41 +13,55 @@
 #include <ui/text/TestRunner.h>
 #include <TestSuite.h>
 #include <TestCaller.h>
-#include <wx/extension/extension.h>
 #include "test.h"
 
 using CppUnit::Test;
 
-void exTestCase::testConstructors() 
+void exTestFixture::testConstructors() 
 {
-  exFile file("test.h");
-  
-  assert(file.GetStat().IsOk());
+  assert(m_File->GetStat().IsOk());
+  assert(m_FileName->GetStat().IsOk());
+  assert(m_Stat->IsOk());
 }
 
-void exTestCase::testMethods() 
+void exTestFixture::testMethods() 
 {
 }
 
-Test* exTestCase::suite()
+Test* exTestFixture::suite()
 {
-  // Add the tests.
   CppUnit::TestSuite* testSuite = new CppUnit::TestSuite("wxextension test suite");
-  testSuite->addTest(new CppUnit::TestCaller<exTestCase>(
+  
+  // Add the tests.
+  testSuite->addTest(new CppUnit::TestCaller<exTestFixture>(
     "testConstructors", 
-    &exTestCase::testConstructors));    
-  testSuite->addTest(new CppUnit::TestCaller<exTestCase>(
+    &exTestFixture::testConstructors));    
+  testSuite->addTest(new CppUnit::TestCaller<exTestFixture>(
     "testMethods", 
-    &exTestCase::testMethods));
+    &exTestFixture::testMethods));
        
   return testSuite;
 }
+
+void exTestFixture::setUp()
+{
+  m_File = new exFile("test.h");
+  m_FileName = new exFileName("test.h");
+  m_Stat = new exStat("test.h");
+}
+
+void exTestFixture::tearDown()
+{
+  delete m_File;
+  delete m_FileName;
+  delete m_Stat;
+} 
 
 int main (int argc, char* argv[]) 
 {
   CppUnit::TextUi::TestRunner runner;
   
-  runner.addTest(exTestCase::suite());
+  runner.addTest(exTestFixture::suite());
   runner.run();
   
   return 0;
