@@ -711,7 +711,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   if (event.GetId() == ID_VIEW_MENU)
   {
     event.Enable(
-      project != NULL && project->IsShown() ||
+      (project != NULL && project->IsShown()) ||
       m_History->IsShown());
   }
   else if (event.GetId() >= wxID_VIEW_DETAILS && event.GetId() <= wxID_VIEW_LIST)
