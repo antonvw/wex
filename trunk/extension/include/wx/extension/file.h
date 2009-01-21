@@ -103,7 +103,7 @@ public:
     SetLexer();}
 
   /// Gets the icon index for this filename (uses the file extension to get it).
-  int GetIcon();
+  int GetIcon() const;
 
   /// Gets the lexer.
   exLexer& GetLexer() {return m_Lexer;};
