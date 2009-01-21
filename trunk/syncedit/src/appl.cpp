@@ -31,11 +31,6 @@ bool Application::OnInit()
 
   exApp::OnInit();
   
-  const int fontsizes[] = {4, 6, 8, 10, 12, 16, 22};
-  GetPrinter()->SetFonts(wxEmptyString, wxEmptyString, fontsizes);
-  GetPrinter()->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
-  GetPrinter()->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
-  
   exSTC::SetAllowSync(false);
   
   SetLogging();
@@ -56,20 +51,17 @@ bool Application::OnInit()
     return false;
   }
 
-  wxArrayString files;
-
+  MDIFrame* frame = new MDIFrame(parser.GetParamCount() == 0);
+  
   if (parser.GetParamCount() > 0)
   {
+    wxArrayString files;
+
     for (size_t i = 0; i < parser.GetParamCount(); i++)
     {
       files.Add(parser.GetParam(i));
     }
-  }
 
-  MDIFrame* frame = new MDIFrame(files.GetCount() == 0);
-  
-  if (files.GetCount() > 0)
-  {
     frame->Freeze();
     ftOpenFiles(frame, files);
     frame->Thaw();

@@ -87,7 +87,7 @@ bool exApp::OnInit()
   m_Config = new exConfig(
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
-      wxTheApp->GetAppName() + wxString(".cfg")).GetFullPath());
+      GetAppName() + wxString(".cfg")).GetFullPath());
 #else
   m_Config = new exConfig();
 #endif
@@ -98,6 +98,11 @@ bool exApp::OnInit()
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
+
+  const int fontsizes[] = {4, 6, 8, 10, 12, 16, 22};
+  GetPrinter()->SetFonts(wxEmptyString, wxEmptyString, fontsizes);
+  GetPrinter()->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
+  GetPrinter()->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 #endif
 
   // Finally call all available static initializers.
