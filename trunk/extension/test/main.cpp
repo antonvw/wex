@@ -10,54 +10,18 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestCase.h>
-#include <cppunit/TestResultCollector.h>
+#include <ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
-#include <wx/filename.h>
+#include "test.h"
 
-class exTestCase : public CppUnit::TestCase {
-public:
-  exTestCase(std::string name) : TestCase(name) {}
-
-  virtual void runTest();
-};
-
-void exTestCase::runTest()
+int main (int argc, char* argv[]) 
 {
-  wxFileName file("test.h");
-  CPPUNIT_ASSERT(file.FileExists() == true);
-}
-
-int
-main( int argc, char* argv[] )
-{
-  // Create the event manager and test controller
-  CPPUNIT_NS::TestResult controller;
-
-  // Add a listener that colllects test result
-  CPPUNIT_NS::TestResultCollector result;
-  controller.addListener( &result );        
-
-  // Add a listener that print dots as test run.
-  CPPUNIT_NS::BriefTestProgressListener progress;
-  controller.addListener( &progress );      
-
-  exTestCase test("hoi"); 
+  CppUnit::TextUi::TestRunner runner;
   
-  // Add the top suite to the test runner
-  CPPUNIT_NS::TestRunner runner;
-  runner.addTest( CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest() );
-  runner.addTest( &test);
-  runner.run( controller );
-
-  // Print test in a compiler compatible format.
-  CPPUNIT_NS::CompilerOutputter outputter( &result, CPPUNIT_NS::stdCOut() );
-  outputter.write(); 
-
-  return result.wasSuccessful() ? 0 : 1;
+  exTestSuite* suite = new exTestSuite;
+  
+  runner.addTest(suite);
+  runner.run();
+  
+  return 0;
 }
-

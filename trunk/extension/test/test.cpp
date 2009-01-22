@@ -10,59 +10,76 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <ui/text/TestRunner.h>
 #include <TestSuite.h>
 #include <TestCaller.h>
 #include "test.h"
 
 using CppUnit::Test;
 
-void exTestFixture::testConstructors() 
+void exTestFixture::setUp()
+{
+  m_File = new exFile("test.h");
+  m_FileName = new exFileName("test.h");
+  m_FileNameStatistics = new exFileNameStatistics("test.h");
+  m_Lexer = new exLexer(); 
+  m_RCS = new exRCS();  
+  m_SVN = new exSVN(SVN_STAT); 
+  m_Stat = new exStat("test.h");
+  m_Statistics = new exStatistics<long>(); 
+  m_Tool = new exTool(100); // TODO: which number, and document in constructor  
+}
+
+void exTestFixture::testBaseConstructors() 
+{
+}
+
+void exTestFixture::testBaseMethods() 
 {
   assert(m_File->GetStat().IsOk());
   assert(m_FileName->GetStat().IsOk());
   assert(m_Stat->IsOk());
 }
 
+void exTestFixture::testConstructors() 
+{
+//  m_Config = new exConfig();
+  m_Dir = new exDir("test.h");
+//  m_FindReplaceData = new exFindReplaceData(m_Config);
+  m_Lexers = new exLexers(); 
+  m_RCS = new exRCS();  
+  m_SVN = new exSVN(SVN_STAT); 
+  m_Stat = new exStat("test.h");
+  m_Statistics = new exStatistics<long>(); 
+  m_Tool = new exTool(100); // TODO: which number, and document in constructor  
+}
+
 void exTestFixture::testMethods() 
 {
 }
 
-Test* exTestFixture::suite()
-{
-  CppUnit::TestSuite* testSuite = new CppUnit::TestSuite("wxextension test suite");
-  
-  // Add the tests.
-  testSuite->addTest(new CppUnit::TestCaller<exTestFixture>(
-    "testConstructors", 
-    &exTestFixture::testConstructors));    
-  testSuite->addTest(new CppUnit::TestCaller<exTestFixture>(
-    "testMethods", 
-    &exTestFixture::testMethods));
-       
-  return testSuite;
-}
-
-void exTestFixture::setUp()
-{
-  m_File = new exFile("test.h");
-  m_FileName = new exFileName("test.h");
-  m_Stat = new exStat("test.h");
-}
-
 void exTestFixture::tearDown()
 {
-  delete m_File;
-  delete m_FileName;
-  delete m_Stat;
-} 
+}
+ 
+exTestSuite::exTestSuite()
+  : CppUnit::TestSuite("wxextension test suite")
 
-int main (int argc, char* argv[]) 
 {
-  CppUnit::TextUi::TestRunner runner;
-  
-  runner.addTest(exTestFixture::suite());
-  runner.run();
-  
-  return 0;
+  // Add the tests.
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testBaseConstructors", 
+    &exTestFixture::testBaseConstructors));
+    
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testBaseMethods", 
+    &exTestFixture::testBaseMethods));
+/*    
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testConstructors", 
+    &exTestFixture::testConstructors));
+    
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testMethods", 
+    &exTestFixture::testMethods));
+*/       
 }
