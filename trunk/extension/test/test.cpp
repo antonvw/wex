@@ -10,11 +10,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <TestSuite.h>
 #include <TestCaller.h>
 #include "test.h"
-
-using CppUnit::Test;
 
 void exTestFixture::setUp()
 {
@@ -26,38 +23,45 @@ void exTestFixture::setUp()
   m_SVN = new exSVN(SVN_STAT); 
   m_Stat = new exStat("test.h");
   m_Statistics = new exStatistics<long>(); 
-  m_Tool = new exTool(100); // TODO: which number, and document in constructor  
+  m_Tool = new exTool(ID_TOOL_LINE);
 }
 
-void exTestFixture::testBaseConstructors() 
+void exTestFixture::testConstructors()
 {
+  assert(m_File != NULL);
 }
 
-void exTestFixture::testBaseMethods() 
+void exTestFixture::testMethods() 
 {
   assert(m_File->GetStat().IsOk());
   assert(m_FileName->GetStat().IsOk());
   assert(m_Stat->IsOk());
 }
 
-void exTestFixture::testConstructors() 
-{
-//  m_Config = new exConfig();
-  m_Dir = new exDir("test.h");
-//  m_FindReplaceData = new exFindReplaceData(m_Config);
-  m_Lexers = new exLexers(); 
-  m_RCS = new exRCS();  
-  m_SVN = new exSVN(SVN_STAT); 
-  m_Stat = new exStat("test.h");
-  m_Statistics = new exStatistics<long>(); 
-  m_Tool = new exTool(100); // TODO: which number, and document in constructor  
-}
-
-void exTestFixture::testMethods() 
-{
-}
-
 void exTestFixture::tearDown()
+{
+}
+ 
+void exAppTestFixture::setUp()
+{
+}
+ 
+void exAppTestFixture::testConstructors() 
+{
+  m_App = new exApp();
+  m_Dir = new exDir("test.h");
+}
+
+void exAppTestFixture::testMethods() 
+{
+  m_App->OnInit();
+  
+  assert(m_App->GetConfig() != NULL);
+  assert(m_App->GetLexers() != NULL);
+  assert(m_App->GetPrinter() != NULL);
+}
+
+void exAppTestFixture::tearDown()
 {
 }
  
@@ -67,19 +71,18 @@ exTestSuite::exTestSuite()
 {
   // Add the tests.
   addTest(new CppUnit::TestCaller<exTestFixture>(
-    "testBaseConstructors", 
-    &exTestFixture::testBaseConstructors));
-    
-  addTest(new CppUnit::TestCaller<exTestFixture>(
-    "testBaseMethods", 
-    &exTestFixture::testBaseMethods));
-/*    
-  addTest(new CppUnit::TestCaller<exTestFixture>(
     "testConstructors", 
     &exTestFixture::testConstructors));
     
   addTest(new CppUnit::TestCaller<exTestFixture>(
     "testMethods", 
     &exTestFixture::testMethods));
-*/       
+    
+  addTest(new CppUnit::TestCaller<exAppTestFixture>(
+    "testConstructors", 
+    &exAppTestFixture::testConstructors));
+    
+  addTest(new CppUnit::TestCaller<exAppTestFixture>(
+    "testMethods", 
+    &exAppTestFixture::testMethods));
 }

@@ -23,6 +23,16 @@
 class exApp : public wxApp
 {
 public:
+  // Interface from wxApp.
+  /// Constructs the config, lexers and printer (and reads the lexers).
+  /// Initializes the locale and exTool.
+  /// In your class first set the app name, as it uses this name for the config file.
+  virtual bool OnInit();
+
+  /// This destroys (and so writes) the config, lexers, printer
+  /// and cleans up things if necessary.
+  virtual int OnExit();
+  
   /// Gets the dir where the catalogs are for the locale.
   static wxString& GetCatalogDir() {return m_CatalogDir;};
 
@@ -75,17 +85,6 @@ public:
   /// Toggles boolean key.
   static void ToggleConfig(const wxString& key)
     {m_Config->Toggle(key);}
-
-protected:
-  // Interface from wxApp.
-  /// Constructs the config, lexers and printer (and reads the lexers).
-  /// Initializes the locale and exTool.
-  /// In your class first set the app name, as it uses this name for the config file.
-  virtual bool OnInit();
-
-  /// This destroys (and so writes) the config, lexers, printer
-  /// and cleans up things if necessary.
-  virtual int OnExit();
 private:
   static bool m_Logging;
   static exConfig* m_Config;

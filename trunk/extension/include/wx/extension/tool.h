@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -20,6 +20,7 @@
 #include <wx/extension/defs.h>
 
 /// This class defines our tool info.
+/// It is stored in the tool info map available from the exTool class.
 class exToolInfo
 {
 public:
@@ -57,7 +58,7 @@ private:
 class exTool
 {
 public:
-  /// Constructor, specify the tool to use.
+  /// Constructor, specify the exToolId to use.
   exTool(int id);
 
   /// Adds your own info to the tool.
@@ -119,5 +120,4 @@ private:
   int m_Id; // cannot be const, as we set tool id using operator= in exTextFile::SetupTool
   static std::map < int, const exToolInfo > m_ToolInfo;
 };
-
 #endif
