@@ -39,7 +39,6 @@ public:
     m_FileNameStatistics = NULL;
     m_Lexer = NULL;
     m_RCS = NULL;
-    m_SVN = NULL;
     m_Stat = NULL;
     m_Statistics = NULL;
     m_Tool = NULL;
@@ -52,7 +51,6 @@ public:
     delete m_FileNameStatistics;
     delete m_Lexer;
     delete m_RCS;
-    delete m_SVN;
     delete m_Stat;
     delete m_Statistics;
     delete m_Tool;
@@ -78,7 +76,6 @@ private:
   exRCS* m_RCS; ///< testing exRCS
   exStat* m_Stat; ///< testing exStat
   exStatistics<long>* m_Statistics; ///< testing exStatstics
-  exSVN* m_SVN; ///< testing exSVN
   exTool* m_Tool; ///< testing exTool
 };
 
@@ -90,12 +87,14 @@ public:
   exAppTestFixture() : TestFixture() {
     m_App = NULL;
     m_Dir = NULL;
+    m_SVN = NULL;
     };
     
   /// Destructor.    
  ~exAppTestFixture() {
     delete m_App;
     delete m_Dir;
+    delete m_SVN;
     };
 
   /// From TestFixture.
@@ -113,5 +112,6 @@ public:
 private:
   exApp* m_App; ///< testing exApp
   exDir* m_Dir; ///< testing exDir
+  exSVN* m_SVN; ///< testing exSVN
 };
 #endif
