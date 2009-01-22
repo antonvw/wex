@@ -165,6 +165,11 @@ bool exLexer::SetKeywords(const wxString& value)
 
 void exLexer::SetLexerFromText(const wxString& text)
 {
+  if (exApp::GetLexers() == NULL)
+  {
+    return;
+  }
+  
   // Add automatic lexers if text starts with some special tokens.
   const wxString text_lowercase = text.Lower();
 
