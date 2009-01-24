@@ -24,8 +24,6 @@ enum
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
   ID_CONFIG_TIMING,
-  ID_FILE_TIMING,
-  ID_FILE_ATTRIB_TIMING,
   ID_PRINT_SPECIAL,
   ID_LOCALE_SHOW_DIR,
   ID_STATISTICS_CLEAR,
@@ -93,9 +91,6 @@ exSampleFrame::exSampleFrame(const wxString& title)
 
   exMenu* menuFile = new exMenu;
   menuFile->Append(wxID_OPEN);
-  menuFile->AppendSeparator();
-  menuFile->Append(ID_FILE_TIMING, _("Timing"));
-  menuFile->Append(ID_FILE_ATTRIB_TIMING, _("Attrib Timing"));
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
@@ -380,89 +375,6 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
       "exConfig::Get:%ld wxConfig::Read:%ld",
       exconfig,
       config));
-    }
-    break;
-
-  case ID_FILE_TIMING:
-    {
-    wxBusyInfo wait(_("Please wait, working..."));
-
-    exFile file(m_STC->GetFileName().GetFullPath());
-
-    if (!file.IsOpened())
-    {
-      wxLogError("File could not be opened");
-      return;
-    }
-
-    const int max = 10000;
-
-    wxStopWatch sw;
-
-    for (int i = 0; i < max; i++)
-    {
-      wxString* buffer = file.Read();
-      delete buffer;
-    }
-
-    const long exfile_read = sw.Time();
-
-    sw.Start();
-
-    wxFile wxfile(m_STC->GetFileName().GetFullPath());
-
-    for (int j = 0; j < max; j++)
-    {
-      char* charbuffer= new char[wxfile.Length()];
-      wxfile.Read(charbuffer, wxfile.Length());
-      wxString* buffer = new wxString(charbuffer, wxfile.Length());
-      delete charbuffer;
-      delete buffer;
-    }
-
-    const long file_read = sw.Time();
-
-    StatusText(wxString::Format(
-      "exFile::Read:%ld wxFile::Read:%ld",
-      exfile_read,
-      file_read));
-    }
-    break;
-
-  case ID_FILE_ATTRIB_TIMING:
-    {
-    wxBusyInfo wait(_("Please wait, working..."));
-
-    const int max = 1000;
-
-    wxStopWatch sw;
-
-    const exFileName exfile(m_STC->GetFileName().GetFullPath());
-
-    int checked = 0;
-
-    for (int i = 0; i < max; i++)
-    {
-      checked += exfile.GetStat().IsReadOnly();
-    }
-
-    const long exfile_time = sw.Time();
-
-    sw.Start();
-
-    const wxFileName file(m_STC->GetFileName().GetFullPath());
-
-    for (int j = 0; j < max; j++)
-    {
-      checked += file.IsFileWritable();
-    }
-
-    const long file_time = sw.Time();
-
-    StatusText(wxString::Format(
-      "exFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld",
-      exfile_time,
-      file_time));
     }
     break;
 

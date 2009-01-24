@@ -65,6 +65,83 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
 }
 
+void exTestFixture::testTiming()
+{
+  exFile file("test.h");
+
+  if (!file.IsOpened())
+  {
+    printf("File could not be opened");
+    return;
+  }
+  
+  wxStopWatch sw;
+
+  const int max = 10000;
+
+  for (int i = 0; i < max; i++)
+  {
+    wxString* buffer = file.Read();
+    delete buffer;
+  }
+
+  const long exfile_read = sw.Time();
+
+  sw.Start();
+
+  wxFile wxfile("test.h");
+
+  for (int j = 0; j < max; j++)
+  {
+    char* charbuffer= new char[wxfile.Length()];
+    wxfile.Read(charbuffer, wxfile.Length());
+    wxString* buffer = new wxString(charbuffer, wxfile.Length());
+    delete charbuffer;
+    delete buffer;
+  }
+
+  const long file_read = sw.Time();
+
+  printf(
+    "exFile::Read:%ld wxFile::Read:%ld",
+    exfile_read,
+    file_read);
+}
+
+void exTestFixture::testTimingAttrib()
+{
+  const int max = 1000;
+
+  wxStopWatch sw;
+
+  const exFileName exfile("test.h");
+
+  int checked = 0;
+
+  for (int i = 0; i < max; i++)
+  {
+    checked += exfile.GetStat().IsReadOnly();
+  }
+
+  const long exfile_time = sw.Time();
+
+  sw.Start();
+
+  const wxFileName file("test.h");
+
+  for (int j = 0; j < max; j++)
+  {
+    checked += file.IsFileWritable();
+  }
+
+  const long file_time = sw.Time();
+
+  printf(
+    "exFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld",
+    exfile_time,
+    file_time);
+}
+
 void exTestFixture::tearDown()
 {
 }
@@ -109,6 +186,14 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exTestFixture>(
     "testMethods",
     &exTestFixture::testMethods));
+
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testTiming",
+    &exTestFixture::testTiming));
+
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testTimingAttrib",
+    &exTestFixture::testTimingAttrib));
 
 /* TODO: the exApp or wxApp not yet okay without normal wxApp initialization
 

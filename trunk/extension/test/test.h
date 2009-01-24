@@ -68,6 +68,12 @@ public:
 
   /// Test methods of various extension classes.
   void testMethods();
+  
+  /// Test timing of methods.
+  void testTiming();
+  
+  /// Test timing of methods.
+  void testTimingAttrib();
 private:
   exFile* m_File; ///< testing exFile
   exFileName* m_FileName; ///< testing exFileName
