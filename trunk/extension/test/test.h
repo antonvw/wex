@@ -115,6 +115,9 @@ public:
 
   /// Test methods of various extension classes.
   void testMethods();
+  
+  /// Test timing of methods.
+  void testTimingConfig();
 private:
   exApp* m_App; ///< testing exApp
   exDir* m_Dir; ///< testing exDir

@@ -69,11 +69,7 @@ void exTestFixture::testTiming()
 {
   exFile file("test.h");
 
-  if (!file.IsOpened())
-  {
-    printf("File could not be opened");
-    return;
-  }
+  CPPUNIT_ASSERT(file.IsOpened());
   
   wxStopWatch sw;
 
@@ -82,6 +78,7 @@ void exTestFixture::testTiming()
   for (int i = 0; i < max; i++)
   {
     wxString* buffer = file.Read();
+    CPPUNIT_ASSERT(buffer !° NULL);
     delete buffer;
   }
 
@@ -93,7 +90,7 @@ void exTestFixture::testTiming()
 
   for (int j = 0; j < max; j++)
   {
-    char* charbuffer= new char[wxfile.Length()];
+    char* charbuffer = new char[wxfile.Length()];
     wxfile.Read(charbuffer, wxfile.Length());
     wxString* buffer = new wxString(charbuffer, wxfile.Length());
     delete charbuffer;
@@ -103,7 +100,7 @@ void exTestFixture::testTiming()
   const long file_read = sw.Time();
 
   printf(
-    "exFile::Read:%ld wxFile::Read:%ld",
+    "exFile::Read:%ld wxFile::Read:%ld\n",
     exfile_read,
     file_read);
 }
@@ -137,7 +134,7 @@ void exTestFixture::testTimingAttrib()
   const long file_time = sw.Time();
 
   printf(
-    "exFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld",
+    "exFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld\n",
     exfile_time,
     file_time);
 }
@@ -153,7 +150,7 @@ void exAppTestFixture::setUp()
 void exAppTestFixture::testConstructors()
 {
   m_App = new exApp();
-  m_Dir = new exDir("test.h");
+  m_Dir = new exDir("./");
   m_SVN = new exSVN(SVN_STAT, "test.h");
 }
 
@@ -166,12 +163,44 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_App->GetLexers() != NULL);
   CPPUNIT_ASSERT(m_App->GetPrinter() != NULL);
 
+  // test exDir
+  CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
+  
   // test exSVN
   m_SVN->Get();
 }
 
+void exAppTestFixture::testTimingConfig()
+{
+}
+
 void exAppTestFixture::tearDown()
 {
+  const int max = 100000;
+
+  wxStopWatch sw;
+
+  for (int i = 0; i < max; i++)
+  {
+    exApp::GetConfig("test", 0);
+  }
+
+  const long exconfig = sw.Time();
+
+  sw.Start();
+
+  for (int j = 0; j < max; j++)
+  {
+    exApp::GetConfig()->Read("test", 0l);
+  }
+
+  const long config = sw.Time();
+
+  printf(
+    "exConfig::Get:%ld wxConfig::Read:%ld\n",
+    exconfig,
+    config);
+  }
 }
 
 exTestSuite::exTestSuite()
@@ -204,5 +233,9 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testMethods",
     &exAppTestFixture::testMethods));
+    
+  addTest(new CppUnit::TestCaller<exAppTestFixture>(
+    "testTimingConfig",
+    &exAppTestFixture::testTimingConfig));
     */
 }

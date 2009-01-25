@@ -23,7 +23,6 @@ enum
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
-  ID_CONFIG_TIMING,
   ID_PRINT_SPECIAL,
   ID_LOCALE_SHOW_DIR,
   ID_STATISTICS_CLEAR,
@@ -107,7 +106,6 @@ exSampleFrame::exSampleFrame(const wxString& title)
   menuConfig->Append(ID_CONFIG_DLG, exEllipsed(_("Config Dialog")));
   menuConfig->Append(ID_CONFIG_DLG_READONLY, exEllipsed(_("Config Dialog Readonly")));
   menuConfig->AppendSeparator();
-  menuConfig->Append(ID_CONFIG_TIMING, _("Timing"));
 
   exMenu* menuSTC = new exMenu;
   menuSTC->Append(ID_STC_FLAGS, exEllipsed(_("Open Flag")));
@@ -343,38 +341,6 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
       wxCANCEL);
 
       dlg->Show();
-    }
-    break;
-
-  case ID_CONFIG_TIMING:
-    {
-    wxBusyInfo wait(_("Please wait, working..."));
-    wxTheApp->Yield();
-
-    const int max = 100000;
-
-    wxStopWatch sw;
-
-    for (int i = 0; i < max; i++)
-    {
-      exApp::GetConfig("test", 0);
-    }
-
-    const long exconfig = sw.Time();
-
-    sw.Start();
-
-    for (int j = 0; j < max; j++)
-    {
-      exApp::GetConfig()->Read("test", 0l);
-    }
-
-    const long config = sw.Time();
-
-    StatusText(wxString::Format(
-      "exConfig::Get:%ld wxConfig::Read:%ld",
-      exconfig,
-      config));
     }
     break;
 
