@@ -60,6 +60,8 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->Get("test") == 12);
   m_Statistics->Inc("test2");
   CPPUNIT_ASSERT(m_Statistics->Get("test2") == 1);
+  m_Statistics->Clear();
+  CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
 
   // test exTool
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
@@ -78,7 +80,7 @@ void exTestFixture::testTiming()
   for (int i = 0; i < max; i++)
   {
     wxString* buffer = file.Read();
-    CPPUNIT_ASSERT(buffer !° NULL);
+    CPPUNIT_ASSERT(buffer != NULL);
     delete buffer;
   }
 
@@ -172,10 +174,6 @@ void exAppTestFixture::testMethods()
 
 void exAppTestFixture::testTimingConfig()
 {
-}
-
-void exAppTestFixture::tearDown()
-{
   const int max = 100000;
 
   wxStopWatch sw;
@@ -200,7 +198,10 @@ void exAppTestFixture::tearDown()
     "exConfig::Get:%ld wxConfig::Read:%ld\n",
     exconfig,
     config);
-  }
+}
+
+void exAppTestFixture::tearDown()
+{
 }
 
 exTestSuite::exTestSuite()
