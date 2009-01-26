@@ -171,7 +171,8 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
 
   // test exSVN
-  m_SVN->Get();
+  CPPUNIT_ASSERT(m_SVN->GetInfo() == 0);
+  CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
 }
 
 void exAppTestFixture::testTimingConfig()
