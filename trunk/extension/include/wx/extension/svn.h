@@ -36,22 +36,22 @@ public:
   /// Constructor, specify the type of what to get and a fullpath.
   exSVN(exSvnType m_Type, const wxString& fullpath = wxEmptyString);
 
+  /// Gets the contents (GetInfo should already be called).
+  const wxString& GetContents() const {return m_Contents;};
+
   /// Gets info from svn.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
   /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
   /// that were reported by svn otherwise.
-  int Get();
-
-  /// Gets the contents (Get should be called).
-  const wxString& GetContents() const {return m_Contents;};
+  int GetInfo();
 
   /// Gets info and if not cancelled shows contents in a dialog.
   /// Returns return code from Get.
-  int Show();
+  int GetInfoAndShowConents();
 
-  /// Shows contents in a dialog only, Get should already be done.
-  void ShowContents();
+  /// Shows contents in a dialog only, GetInfo should already be done.
+  void ShowContents() const;
 private:
   const exSvnType m_Type;
   wxString m_Caption;

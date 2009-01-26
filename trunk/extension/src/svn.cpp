@@ -50,7 +50,7 @@ exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   }
 }
 
-int exSVN::Get()
+int exSVN::GetInfo()
 {
   m_Contents.clear();
 
@@ -121,9 +121,9 @@ int exSVN::Get()
   return m_ReturnCode;
 }
 
-int exSVN::Show()
+int exSVN::GetInfoAndShowConents()
 {
-  if (Get() >= 0)
+  if (GetInfo() >= 0)
   {
     ShowContents();
   }
@@ -131,7 +131,7 @@ int exSVN::Show()
   return m_ReturnCode;
 }
 
-void exSVN::ShowContents()
+void exSVN::ShowContents() const
 {
   // Create a dialog for contents.
   exSTCEntryDialog* dlg = new exSTCEntryDialog(

@@ -179,16 +179,16 @@ void ftSTC::OnCommand(wxCommandEvent& command)
     {
     exSVN svn(SVN_CAT, m_FileName.GetFullPath());
 
-    if (svn.Get() == 0)
+    if (svn.GetInfo() == 0)
     {
       m_Frame->OpenFile(m_FileName, svn.GetContents());
     }
     }
     break;
 
-  case ID_STC_SVN_COMMIT: exSVN(SVN_COMMIT, m_FileName.GetFullPath()).Show(); break;
-  case ID_STC_SVN_DIFF: exSVN(SVN_DIFF, m_FileName.GetFullPath()).Show(); break;
-  case ID_STC_SVN_LOG: exSVN(SVN_LOG, m_FileName.GetFullPath()).Show(); break;
+  case ID_STC_SVN_COMMIT: exSVN(SVN_COMMIT, m_FileName.GetFullPath()).GetInfoAndShowConents(); break;
+  case ID_STC_SVN_DIFF: exSVN(SVN_DIFF, m_FileName.GetFullPath()).GetInfoAndShowConents(); break;
+  case ID_STC_SVN_LOG: exSVN(SVN_LOG, m_FileName.GetFullPath()).GetInfoAndShowConents(); break;
 
   case ID_STC_FIND_FILES:
     GetSearchText();
