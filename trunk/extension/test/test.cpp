@@ -171,7 +171,7 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
 
   // test exSVN
-  CPPUNIT_ASSERT(m_SVN->GetInfo() == 0);
+  CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
   CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
 }
 

@@ -44,7 +44,9 @@ public:
   /// the specified fullpath is used for getting svn contents from.
   /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
   /// that were reported by svn otherwise.
-  int GetInfo();
+  /// If you use show_dialog = false, then the dialog is not shown,
+  /// and defaults from the config are used.
+  int GetInfo(bool show_dialog = true);
 
   /// Gets info and if not cancelled shows contents in a dialog.
   /// Returns return code from Get.

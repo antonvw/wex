@@ -50,30 +50,33 @@ exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   }
 }
 
-int exSVN::GetInfo()
+int exSVN::GetInfo(bool show_dialog)
 {
   m_Contents.clear();
 
-  std::vector<exConfigItem> v;
-
-  if (m_Type == SVN_COMMIT)
+  if (show_dialog)
   {
-    v.push_back(exConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
-  }
+    std::vector<exConfigItem> v;
 
-  if (m_FullPath.empty())
-  {
-    v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
-  }
+    if (m_Type == SVN_COMMIT)
+    {
+      v.push_back(exConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
+    }
 
-  v.push_back(exConfigItem(_("Flags")));
+    if (m_FullPath.empty())
+    {
+      v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+    }
 
-  if (exConfigDialog(wxTheApp->GetTopWindow(),
-    v,
-    m_Caption).ShowModal() == wxID_CANCEL)
-  {
-    m_ReturnCode = -1;
-    return m_ReturnCode;
+    v.push_back(exConfigItem(_("Flags")));
+
+    if (exConfigDialog(wxTheApp->GetTopWindow(),
+      v,
+      m_Caption).ShowModal() == wxID_CANCEL)
+    {
+      m_ReturnCode = -1;
+      return m_ReturnCode;
+    }
   }
 
   const wxString cwd = wxGetCwd();
@@ -89,12 +92,16 @@ int exSVN::GetInfo()
     file = " \"" + m_FullPath + "\"";
   }
 
+  wxString arg;
+  
+  if (m_Type == SVN_COMMIT) 
+  {
+    arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
+  }
+
   wxArrayString output;
   wxArrayString errors;
   
-  wxString arg;
-  if (m_Type == SVN_COMMIT) arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
-
   wxExecute(
     "svn " + exApp::GetConfig(_("Flags")) + " " + m_Command + arg + file,
     output,
@@ -118,6 +125,7 @@ int exSVN::GetInfo()
   }
 
   m_ReturnCode = errors.GetCount();
+  
   return m_ReturnCode;
 }
 
