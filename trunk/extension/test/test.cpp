@@ -47,7 +47,9 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
   // test exStat
+  CPPUNIT_ASSERT(!m_Stat->IsLink());
   CPPUNIT_ASSERT(m_Stat->IsOk());
+  CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
 
   // test exStatistics
   m_Statistics->Inc("test");
@@ -72,7 +74,7 @@ void exTestFixture::testTiming()
   exFile file("test.h");
 
   CPPUNIT_ASSERT(file.IsOpened());
-  
+
   wxStopWatch sw;
 
   const int max = 10000;
@@ -167,7 +169,7 @@ void exAppTestFixture::testMethods()
 
   // test exDir
   CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
-  
+
   // test exSVN
   m_SVN->Get();
 }
@@ -234,7 +236,7 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testMethods",
     &exAppTestFixture::testMethods));
-    
+
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testTimingConfig",
     &exAppTestFixture::testTimingConfig));
