@@ -460,8 +460,8 @@ bool exTextFile::ParseComments()
 
          // In case commiting, if we have come at the code, there
          // was not a revision, so create a new one.
-        (m_Tool.GetId () == ID_TOOL_COMMIT) &&
-          GetStatisticElements().Get(_("Lines Of Code")) > 1
+        (m_Tool.GetId () == ID_TOOL_COMMIT &&
+          GetStatisticElements().Get(_("Lines Of Code")) > 1)
        )
     {
       if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT)
