@@ -236,6 +236,11 @@ void exLog(const wxString& text, const exFileName& filename)
 
 const exFileName exLogfileName()
 {
+  if (wxTheApp == NULL)
+  {
+    return exFileName("app.log");
+  }
+
 #ifdef EX_PORTABLE
   return exFileName(
     wxPathOnly(wxStandardPaths::Get().GetExecutablePath()) + wxFileName::GetPathSeparator() + 
@@ -264,6 +269,11 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 
 void exOpenFile(const exFileName& filename, long open_flags)
 {
+  if (wxTheApp == NULL)
+  {
+    return;
+  }
+
   wxWindow* window = wxTheApp->GetTopWindow();
   exFrame* frame = wxDynamicCast(window, exFrame);
 

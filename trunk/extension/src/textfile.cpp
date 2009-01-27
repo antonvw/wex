@@ -511,7 +511,7 @@ bool exTextFile::ParseForHeader()
       return false;
     }
 
-    if (wxIsMainThread())
+    if (wxIsMainThread() && wxTheApp != NULL)
     {
       wxTheApp->Yield();
     }
@@ -567,7 +567,7 @@ bool exTextFile::ParseForOther()
       }
     }
 
-    if (wxIsMainThread())
+    if (wxIsMainThread() && wxTheApp != NULL)
     {
       wxTheApp->Yield();
     }
