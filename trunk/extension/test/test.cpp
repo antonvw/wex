@@ -22,6 +22,7 @@ void exTestFixture::setUp()
   m_RCS = new exRCS();
   m_Stat = new exStat("test.h");
   m_Statistics = new exStatistics<long>();
+  m_TextFile = new exTextFile(*m_FileName);
   m_Tool = new exTool(ID_TOOL_REPORT_COUNT);
 }
 
@@ -64,6 +65,12 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->Get("test2") == 1);
   m_Statistics->Clear();
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
+
+  // test exTextFile
+  exTextFile::SetupTool(ID_TOOL_REPORT_COUNT);
+  m_TextFile->RunTool();
+  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().empty());
+  CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
 
   // test exTool
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
@@ -169,6 +176,14 @@ void exAppTestFixture::testMethods()
 
   // test exDir
   CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
+
+  // test exLexers
+  exLexers* lexers = m_App->GetLexers();
+  if (lexers != NULL)
+  {
+    CPPUNIT_ASSERT(!lexers->FindByFileName("test.h").GetScintillaLexer().empty());
+    CPPUNIT_ASSERT(lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
+  }
 
   // test exSVN
   CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog

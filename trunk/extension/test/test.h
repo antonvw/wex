@@ -41,6 +41,7 @@ public:
     m_RCS = NULL;
     m_Stat = NULL;
     m_Statistics = NULL;
+    m_TextFile = NULL;
     m_Tool = NULL;
     };
 
@@ -53,6 +54,7 @@ public:
     delete m_RCS;
     delete m_Stat;
     delete m_Statistics;
+    delete m_TextFile;
     delete m_Tool;
     };
 
@@ -82,6 +84,7 @@ private:
   exRCS* m_RCS; ///< testing exRCS
   exStat* m_Stat; ///< testing exStat
   exStatistics<long>* m_Statistics; ///< testing exStatstics
+  exTextFile* m_TextFile; ///< testing exTextFile
   exTool* m_Tool; ///< testing exTool
 };
 
