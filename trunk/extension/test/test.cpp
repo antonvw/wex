@@ -69,7 +69,7 @@ void exTestFixture::testMethods()
   // test exTextFile
   exTextFile::SetupTool(ID_TOOL_REPORT_COUNT);
   m_TextFile->RunTool();
-  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().empty());
+  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
 
   // test exTool
@@ -181,7 +181,7 @@ void exAppTestFixture::testMethods()
   exLexers* lexers = m_App->GetLexers();
   if (lexers != NULL)
   {
-    CPPUNIT_ASSERT(!lexers->FindByFileName("test.h").GetScintillaLexer().empty());
+    CPPUNIT_ASSERT(!lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer().empty());
     CPPUNIT_ASSERT(lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
   }
 
