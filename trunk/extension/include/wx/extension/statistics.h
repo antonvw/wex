@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -70,7 +70,7 @@ public:
     return text;};
 
   /// Gets the items.
-    const std::map<wxString, T> & GetItems() const {return m_Items;};
+  const std::map<wxString, T> & GetItems() const {return m_Items;};
 
   /// Gets value for specified key.
   /// If the key is not in the items it is added.
@@ -176,6 +176,8 @@ private:
 
 /// Offers filename statistics. 
 /// Adds element and keyword statistics to exFileName.
+/// Used in exTextFile to keep statistics like comments and lines of code.
+/// These are stored as elements.
 class exFileNameStatistics : public exFileName
 {
 public:
@@ -200,11 +202,17 @@ public:
   /// 0 is returned.
   long Get(const wxString& key) const;
 
-  /// Returns member.
+  /// Gets the elements.
   exStatistics<long>& GetElements() {return m_Elements;};
 
-  /// Returns member.
+  /// Gets the const elements.
+  const exStatistics<long>& GetElements() const {return m_Elements;};
+
+  /// Gets the keywords.
   exStatistics<long>& GetKeywords() {return m_Keywords;};
+
+  /// Gets the const keywords.
+  const exStatistics<long>& GetKeywords() const {return m_Keywords;};
 
   /// Returns the statistics log filename.
   static const exFileName GetLogfileName();
