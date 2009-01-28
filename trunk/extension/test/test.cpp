@@ -38,7 +38,11 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() == "test.h");
 
   // test exFileName
+  CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
+  m_FileName->Assign("xxx");
+  m_FileName->GetStat().Update("xxx");
+  CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
 
   // test exLexer
   m_Lexer->SetLexerFromText("// this is a cpp comment text");
