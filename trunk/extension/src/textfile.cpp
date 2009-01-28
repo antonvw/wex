@@ -894,9 +894,11 @@ void exTextFile::ReportStatistics()
   {
   case ID_TOOL_REPORT_HEADER: wxLogMessage(m_RCS.m_Description); break;
   case ID_TOOL_REPORT_KEYWORD: wxLogMessage(GetStatisticKeywords().Get()); break;
+  case ID_TOOL_REPORT_COUNT: 
+    // Do nothing, not necessary as statistics are colleced in the styatistics items,
+    // and therefore available.
+    break;
   default:
-    // This used to be done for ID_TOOL_REPORT_COUNT,
-    // however might be usefull for others as well.
     m_FileNameStatistics.Log();
   }
 }
