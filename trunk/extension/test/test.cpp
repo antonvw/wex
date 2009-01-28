@@ -75,6 +75,12 @@ void exTestFixture::testMethods()
   m_TextFile->RunTool();
   CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
+  exTextFile::SetupTool(ID_TOOL_REPORT_HEADER);
+  m_TextFile->RunTool();
+  CPPUNIT_ASSERT(m_TextFile->GetRCS().GetDescription() == "Declaration of exTextFile class");
+  exTextFile::SetupTool(ID_TOOL_REPORT_KEYWORD);
+  m_TextFile->RunTool();
+  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
   // test exTool
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);

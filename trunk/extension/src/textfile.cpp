@@ -858,51 +858,6 @@ bool exTextFile::PrepareRevision()
   return true;
 }
 
-void exTextFile::Report()
-{
-  wxString logtext;
-  int line = GetCurrentLine() + 1;
-
-  switch (m_Tool.GetId())
-  {
-  case ID_TOOL_REPORT_REPLACE:
-    logtext << exApp::GetConfig()->GetFindReplaceData()->GetReplaceString();
-  case ID_TOOL_REPORT_FIND:
-    logtext << _("Line: ") << m_RCS.GetDescription().Strip(wxString::both);
-    logtext << _("Match: ") << exApp::GetConfig()->GetFindReplaceData()->GetFindString();
-  break;
-  case ID_TOOL_REPORT_REVISION:
-    logtext << m_RCS.GetRevision();
-    line--;
-  break;
-  default: wxLogError(FILE_INFO("Unhandled id: %d"), m_Tool.GetId());
-  }
-
-  logtext << _("Line No: ") << wxString::Format("%d", line);
-
-  wxLogMessage(logtext);
-}
-
-void exTextFile::ReportLine(const wxString& line)
-{
-  wxLogMessage(line);
-}
-
-void exTextFile::ReportStatistics()
-{
-  switch (m_Tool.GetId())
-  {
-  case ID_TOOL_REPORT_HEADER: wxLogMessage(m_RCS.m_Description); break;
-  case ID_TOOL_REPORT_KEYWORD: wxLogMessage(GetStatisticKeywords().Get()); break;
-  case ID_TOOL_REPORT_COUNT: 
-    // Do nothing, not necessary as statistics are colleced in the styatistics items,
-    // and therefore available.
-    break;
-  default:
-    m_FileNameStatistics.Log();
-  }
-}
-
 void exTextFile::RevisionAddComments(const wxString& comments)
 {
   // TODO: This seems like a bug.

@@ -106,22 +106,20 @@ protected:
   virtual bool ParseComments();
 
   // Virtual report generators.
-  // The default reports use a wxLogMessage.
   /// This one is invoked during parsing of lines.
-  virtual void Report();
+  virtual void Report() {;};
 
   /// This one is invoked for ID_TOOL_LINE_CODE,
   /// for each line that contains code, or
   /// for ID_TOOL_LINE_COMMENTS for each line that contains a comment.
-  /// Default reports the lines using a wxLogMessage.
-  virtual void ReportLine(const wxString& line);
+  virtual void ReportLine(const wxString& line) {;};
 
   /// Sets the tool directly (without calling any dialogs).
   static void SetTool(const exTool& tool) {m_Tool = tool;};
 public:
   /// This one is invoked at the end, when statistics are completed.
   /// It is made public, as it can be useful from outside.
-  virtual void ReportStatistics();
+  virtual void ReportStatistics() {;};
 protected:
   /// Clears the comments.
   void ClearComments() {m_Comments.clear();}
