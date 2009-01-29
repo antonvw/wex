@@ -92,37 +92,4 @@ private:
   std::set<wxString> m_Keywords; // all keywords
   std::map< int, std::set<wxString> > m_KeywordsSet; // each keyword set in a separate keyword set
 };
-
-/// This class defines our markers, closely related to scintilla markers.
-class exMarker
-{
-public:
-  /// Constructor.
-  exMarker(
-    int markerNumber,
-    int markerSymbol,
-    const wxColour& foreground = wxNullColour,
-    const wxColour& background = wxNullColour)
-    : m_MarkerNumber(markerNumber)
-    , m_MarkerSymbol(markerSymbol)
-    , m_BackgroundColour(background)
-    , m_ForegroundColour(foreground) {}
-
-  /// Gets the background colour.
-  const wxColour& GetBackgroundColour() const {return m_BackgroundColour;};
-
-  /// Gets the foreground colour.
-  const wxColour& GetForegroundColour() const {return m_ForegroundColour;};
-
-  /// Gets the marker number.
-  unsigned int GetMarkerNumber() const {return m_MarkerNumber;};
-
-  /// Gets the marker symbol.
-  unsigned int GetMarkerSymbol() const {return m_MarkerSymbol;};
-private:
-  unsigned int m_MarkerNumber;
-  unsigned int m_MarkerSymbol;
-  wxColour m_BackgroundColour;
-  wxColour m_ForegroundColour;
-};
 #endif

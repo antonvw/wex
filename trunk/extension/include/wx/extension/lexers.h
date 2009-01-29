@@ -18,10 +18,44 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/file.h>
 
+/// This class defines our markers, closely related to scintilla markers.
+class exMarker
+{
+public:
+  /// Constructor.
+  exMarker(
+    int markerNumber,
+    int markerSymbol,
+    const wxColour& foreground = wxNullColour,
+    const wxColour& background = wxNullColour)
+    : m_MarkerNumber(markerNumber)
+    , m_MarkerSymbol(markerSymbol)
+    , m_BackgroundColour(background)
+    , m_ForegroundColour(foreground) {}
+
+  /// Gets the background colour.
+  const wxColour& GetBackgroundColour() const {return m_BackgroundColour;};
+
+  /// Gets the foreground colour.
+  const wxColour& GetForegroundColour() const {return m_ForegroundColour;};
+
+  /// Gets the marker number.
+  unsigned int GetMarkerNumber() const {return m_MarkerNumber;};
+
+  /// Gets the marker symbol.
+  unsigned int GetMarkerSymbol() const {return m_MarkerSymbol;};
+private:
+  unsigned int m_MarkerNumber;
+  unsigned int m_MarkerSymbol;
+  wxColour m_BackgroundColour;
+  wxColour m_ForegroundColour;
+};
+
 /// Reads the lexers, keywords, markers and styles
 /// from the configuration file lexers.xml and makes
 /// them available.
 /// See for documentation the lexers.xml file.
+/// Reading is done during exApp::OnInit.
 class exLexers
 {
 public:
