@@ -47,6 +47,15 @@ void exTestFixture::testMethods()
   // test exLexer
   m_Lexer->SetLexerFromText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
+  m_Lexer->SetKeywords("test11 test21:1 test31:1 test12:2 test22:2");
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test11"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test21"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test12"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test22"));
+  CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("te"));
+  CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xx"));
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
 
   // test exRCS
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
