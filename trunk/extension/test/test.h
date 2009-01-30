@@ -97,6 +97,7 @@ public:
     m_App = NULL;
     m_Dir = NULL;
     m_SVN = NULL;
+    m_TextFile = NULL;
     };
     
   /// Destructor.    
@@ -104,6 +105,7 @@ public:
     delete m_App;
     delete m_Dir;
     delete m_SVN;
+    delete m_TextFile;
     };
 
   /// From TestFixture.
@@ -125,5 +127,6 @@ private:
   exApp* m_App; ///< testing exApp
   exDir* m_Dir; ///< testing exDir
   exSVN* m_SVN; ///< testing exSVN
+  exTextFile* m_TextFile; ///< testing exTextFile
 };
 #endif
