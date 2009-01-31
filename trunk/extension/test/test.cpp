@@ -62,7 +62,30 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Lexers->Read());
   m_Lexer->SetLexerFromText(m_Lexers, "// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() == "cpp");
-  
+  CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(!m_Lexers->Get().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetIndicators().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetMarkers().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetStyles().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetStylesHex().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetAssociations().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetColourings().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin2().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd2().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsString().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetProperties().empty());
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("class"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("const"));
+  CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("cla"));
+  CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xxx"));
+  CPPUNIT_ASSERT(!m_Lexer->MakeComment("test", true).empty());
+  CPPUNIT_ASSERT(m_Lexer->UsableCharactersPerLine() == 74); // 80 - 4 (comments) - 2 (spaces)
+
   // test exRCS
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
@@ -210,7 +233,7 @@ void exAppTestFixture::testMethods()
   exLexers* lexers = m_App->GetLexers();
   if (lexers != NULL)
   {
-    CPPUNIT_ASSERT(!lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer().empty());
+    CPPUNIT_ASSERT(lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
     CPPUNIT_ASSERT(lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
   }
 
