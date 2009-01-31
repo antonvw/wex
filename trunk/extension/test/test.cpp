@@ -60,6 +60,8 @@ void exTestFixture::testMethods()
 
   // test exLexers
   CPPUNIT_ASSERT(m_Lexers->Read());
+  m_Lexer->SetLexerFromText(m_Lexers, "// this is a cpp comment text");
+  CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() == "cpp");
   
   // test exRCS
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
