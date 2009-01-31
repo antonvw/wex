@@ -16,17 +16,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/extension.h> // for exMatchesOneOf
 
-exLexers::exLexers()
-  : m_FileName(
-#ifdef EX_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "lexers.xml")
-{
-}
-
 exLexers::exLexers(const exFileName& filename)
   : m_FileName(filename)
 {

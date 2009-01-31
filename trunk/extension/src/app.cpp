@@ -93,7 +93,14 @@ bool exApp::OnInit()
 #endif
 
   // And construct and read the lexers.
-  m_Lexers = new exLexers();
+  m_Lexers = new exLexers(exFileName(
+#ifdef EX_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + "lexers.xml")
+    );
   m_Lexers->Read();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE

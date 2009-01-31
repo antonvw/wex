@@ -54,16 +54,10 @@ private:
 /// Reads the lexers, keywords, markers and styles
 /// from the configuration file and makes
 /// them available.
-/// See for documentation the lexers.xml file.
 class exLexers
 {
 public:
-  /// Default constructor, uses lexers.xml.
-  /// Reading is done during exApp::OnInit.
-  exLexers();
-
-  /// Constructor for lexers from sepcified filename.
-  /// Use this if you don't use exApp, so invoke Read yourself.
+  /// Constructor for lexers from specified filename.
   exLexers(const exFileName& filename);
   
   /// Finds a lexer specified by a filename.
