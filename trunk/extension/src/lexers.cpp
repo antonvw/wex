@@ -27,6 +27,11 @@ exLexers::exLexers()
 {
 }
 
+exLexers::exLexers(const exFileName& filename)
+  : m_FileName(filename)
+{
+}
+  
 const exLexer exLexers::FindByFileName(const wxFileName& filename) const
 {
   if (!filename.IsOk() || m_Lexers.empty())

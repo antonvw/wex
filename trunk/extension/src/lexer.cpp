@@ -11,7 +11,7 @@
 
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
-#include <wx/extension/app.h> // for exApp
+#include <wx/extension/lexers.h> // for exLexers
 
 using namespace std;
 
@@ -35,7 +35,7 @@ const wxString exLexer::GetKeywordsString(int keyword_set) const
 
     if (it == m_KeywordsSet.end())
     {
-      wxLogError(FILE_INFO("Illegal index"));
+      wxLogError("Illegal index in GetKeywordsString");
     }
     else
     {
@@ -163,9 +163,9 @@ bool exLexer::SetKeywords(const wxString& value)
   return true;
 }
 
-void exLexer::SetLexerFromText(const wxString& text)
+void exLexer::SetLexerFromText(const exLexers* lexers, const wxString& text)
 {
-  if (exApp::GetLexers() == NULL)
+  if (lexers == NULL)
   {
     return;
   }
@@ -177,19 +177,19 @@ void exLexer::SetLexerFromText(const wxString& text)
       // .po files that do not have comment headers, start with msgid, so set them
       text_lowercase.StartsWith("msgid"))
   {
-    (*this) = exApp::GetLexers()->FindByName("bash");
+    (*this) = lexers->FindByName("bash");
   }
   else if (text_lowercase.StartsWith("<html>") ||
            text_lowercase.StartsWith("<?php") ||
            text_lowercase.StartsWith("<?xml"))
   {
-    (*this) = exApp::GetLexers()->FindByName("hypertext");
+    (*this) = lexers->FindByName("hypertext");
   }
   // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
   // so add here.
   else if (text_lowercase.StartsWith("//"))
   {
-    (*this) = exApp::GetLexers()->FindByName("cpp");
+    (*this) = lexers->FindByName("cpp");
   }
 }
 

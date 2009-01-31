@@ -15,6 +15,8 @@
 #include <set>
 #include <vector>
 
+class exLexers;
+
 /// This class defines a lexer using file associations,
 /// syntax colouring and comment definitions.
 /// This lexer is one of the Scintilla lexers.
@@ -75,7 +77,7 @@ public:
   bool SetKeywords(const wxString& value);
 
   /// Sets the lexer if text starts with some special tokens.
-  void SetLexerFromText(const wxString& text);
+  void SetLexerFromText(const exLexers* lexers, const wxString& text);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;

@@ -38,6 +38,7 @@ public:
     m_FileName = NULL;
     m_FileNameStatistics = NULL;
     m_Lexer = NULL;
+    m_Lexers = NULL;
     m_RCS = NULL;
     m_Stat = NULL;
     m_Statistics = NULL;
@@ -51,6 +52,7 @@ public:
     delete m_FileName;
     delete m_FileNameStatistics;
     delete m_Lexer;
+    delete m_Lexers;
     delete m_RCS;
     delete m_Stat;
     delete m_Statistics;
@@ -81,6 +83,7 @@ private:
   exFileName* m_FileName; ///< testing exFileName
   exFileNameStatistics* m_FileNameStatistics; ///< testing exFileNameStatistics
   exLexer* m_Lexer; ///< testing exLexer
+  exLexers* m_Lexers; ///< testing exLexers
   exRCS* m_RCS; ///< testing exRCS
   exStat* m_Stat; ///< testing exStat
   exStatistics<long>* m_Statistics; ///< testing exStatstics

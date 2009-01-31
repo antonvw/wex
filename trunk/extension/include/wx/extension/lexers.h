@@ -52,16 +52,20 @@ private:
 };
 
 /// Reads the lexers, keywords, markers and styles
-/// from the configuration file lexers.xml and makes
+/// from the configuration file and makes
 /// them available.
 /// See for documentation the lexers.xml file.
-/// Reading is done during exApp::OnInit.
 class exLexers
 {
 public:
-  /// Constructor.
+  /// Default constructor, uses lexers.xml.
+  /// Reading is done during exApp::OnInit.
   exLexers();
 
+  /// Constructor for lexers from sepcified filename.
+  /// Use this if you don't use exApp, so invoke Read yourself.
+  exLexers(const exFileName& filename);
+  
   /// Finds a lexer specified by a filename.
   const exLexer FindByFileName(const wxFileName& filename) const;
 
@@ -86,7 +90,7 @@ public:
   /// Gets the styles hex.
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
-  /// Reads the lexers, keywords, markers and styles from xml configuration file.
+  /// Reads the lexers, keywords, markers and styles from file.
   /// Returns true if file exists and is valid xml document.
   bool Read();
 private:
@@ -102,6 +106,6 @@ private:
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
 
-  exFileName m_FileName;
+  const exFileName m_FileName;
 };
 #endif

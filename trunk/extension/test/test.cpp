@@ -19,6 +19,7 @@ void exTestFixture::setUp()
   m_FileName = new exFileName("test.h");
   m_FileNameStatistics = new exFileNameStatistics("test.h");
   m_Lexer = new exLexer();
+  m_Lexers = new exLexers(exFileName("../data/lexers.xml"));
   m_RCS = new exRCS();
   m_Stat = new exStat("test.h");
   m_Statistics = new exStatistics<long>();
@@ -45,7 +46,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
 
   // test exLexer
-  m_Lexer->SetLexerFromText("// this is a cpp comment text");
+  m_Lexer->SetLexerFromText(m_Lexers, "// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
   m_Lexer->SetKeywords("test11 test21:1 test31:1 test12:2 test22:2");
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("test11"));
@@ -57,6 +58,9 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
 
+  // test exLexers
+  CPPUNIT_ASSERT(m_Lexers->Read());
+  
   // test exRCS
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
