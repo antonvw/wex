@@ -5,6 +5,7 @@
 		<Project filename="filetool\filetool.cbp" />
 		<Project filename="syncedit\syncedit.cbp" />
 		<Project filename="syncodbcquery\syncodbcquery.cbp" />
-		<Project filename="syncsocketserver\syncsocketserver.cbp" active="1" />
+		<Project filename="syncsocketserver\syncsocketserver.cbp" />
+		<Project filename="extension\test\test.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
