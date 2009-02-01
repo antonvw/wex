@@ -16,7 +16,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/extension.h> // for exMatchesOneOf
 
-exLexers::exLexers(const exFileName& filename)
+exLexers::exLexers(const wxFileName& filename)
   : m_FileName(filename)
 {
 }

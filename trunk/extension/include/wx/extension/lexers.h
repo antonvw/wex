@@ -14,9 +14,9 @@
 
 #include <map>
 #include <vector>
+#include <wx/filename.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
-#include <wx/extension/file.h>
 
 /// This class defines our markers, closely related to scintilla markers.
 class exMarker
@@ -58,7 +58,7 @@ class exLexers
 {
 public:
   /// Constructor for lexers from specified filename.
-  exLexers(const exFileName& filename);
+  exLexers(const wxFileName& filename);
   
   /// Finds a lexer specified by a filename.
   const exLexer FindByFileName(const wxFileName& filename) const;
@@ -67,7 +67,7 @@ public:
   const exLexer FindByName(const wxString& name) const;
 
   /// Gets the filename.
-  const exFileName& GetFileName() const {return m_FileName;};
+  const wxFileName& GetFileName() const {return m_FileName;};
   
   /// Gets the lexers.
   const std::vector<exLexer>& Get() const {return m_Lexers;};
@@ -100,6 +100,6 @@ private:
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
 
-  const exFileName m_FileName;
+  const wxFileName m_FileName;
 };
 #endif
