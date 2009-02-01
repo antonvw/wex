@@ -70,10 +70,11 @@ public:
   /// Sets readonly as specified.
   bool SetReadOnly(const bool read_only);
 
-  /// Updates fullpath member (and keeps result in IsOk).
-  void Update(const wxString& fullpath) {
+  /// Updates fullpath member, returns result and keeps result in IsOk.
+  bool Update(const wxString& fullpath) {
     m_FullPath = fullpath;
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);};
+    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
+    return m_IsOk;};
 private:
 #if wxUSE_GUI
   static exConfigDialog* m_ConfigDialog;

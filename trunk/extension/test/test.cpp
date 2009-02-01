@@ -93,6 +93,8 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Stat->IsLink());
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
+  CPPUNIT_ASSERT(m_Stat->Update("testlink"));
+  CPPUNIT_ASSERT(m_Stat->IsLink());
 
   // test exStatistics
   m_Statistics->Inc("test");
