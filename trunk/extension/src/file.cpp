@@ -207,7 +207,7 @@ void exFileName::SetLexer(
 
     if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
     {
-      m_Lexer.SetLexerFromText(exApp::GetLexers(), text);
+      m_Lexer = exApp::GetLexers()->FindByText(text);
     }
   }
   else

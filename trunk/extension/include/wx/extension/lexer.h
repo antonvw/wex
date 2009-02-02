@@ -12,6 +12,7 @@
 #ifndef _EXLEXER_H
 #define _EXLEXER_H
 
+#include <map>
 #include <set>
 #include <vector>
 
@@ -75,9 +76,6 @@ public:
   /// The value might contain the keyword set after a ':'.
   /// Returns true if keyword could be added.
   bool SetKeywords(const wxString& value);
-
-  /// Sets the lexer if text starts with some special tokens.
-  void SetLexerFromText(const exLexers* lexers, const wxString& text);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;

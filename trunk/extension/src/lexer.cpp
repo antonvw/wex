@@ -12,7 +12,7 @@
 #include <wx/log.h>
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
-#include <wx/extension/lexers.h> // for exLexers
+#include <wx/extension/lexer.h>
 
 using namespace std;
 
@@ -162,36 +162,6 @@ bool exLexer::SetKeywords(const wxString& value)
   m_KeywordsSet.insert(make_pair(setno, keywords_set));
 
   return true;
-}
-
-void exLexer::SetLexerFromText(const exLexers* lexers, const wxString& text)
-{
-  if (lexers == NULL)
-  {
-    return;
-  }
-  
-  // Add automatic lexers if text starts with some special tokens.
-  const wxString text_lowercase = text.Lower();
-
-  if (text_lowercase.StartsWith("#") ||
-      // .po files that do not have comment headers, start with msgid, so set them
-      text_lowercase.StartsWith("msgid"))
-  {
-    (*this) = lexers->FindByName("bash");
-  }
-  else if (text_lowercase.StartsWith("<html>") ||
-           text_lowercase.StartsWith("<?php") ||
-           text_lowercase.StartsWith("<?xml"))
-  {
-    (*this) = lexers->FindByName("hypertext");
-  }
-  // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
-  // so add here.
-  else if (text_lowercase.StartsWith("//"))
-  {
-    (*this) = lexers->FindByName("cpp");
-  }
 }
 
 int exLexer::UsableCharactersPerLine() const

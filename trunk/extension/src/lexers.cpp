@@ -65,6 +65,33 @@ const exLexer exLexers::FindByName(const wxString& name) const
   return exLexer();
 }
 
+const exLexer exLexers::FindByText(const wxString& text) const
+{
+  // Add automatic lexers if text starts with some special tokens.
+  const wxString text_lowercase = text.Lower();
+
+  if (text_lowercase.StartsWith("#") ||
+      // .po files that do not have comment headers, start with msgid, so set them
+      text_lowercase.StartsWith("msgid"))
+  {
+    return FindByName("bash");
+  }
+  else if (text_lowercase.StartsWith("<html>") ||
+           text_lowercase.StartsWith("<?php") ||
+           text_lowercase.StartsWith("<?xml"))
+  {
+    return FindByName("hypertext");
+  }
+  // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
+  // so add here.
+  else if (text_lowercase.StartsWith("//"))
+  {
+    return FindByName("cpp");
+  }
+  
+  return exLexer();
+}
+
 // TODO: Styles and Styles hex parse them here instead of at stc.
 const wxString exLexers::ParseTagColourings(const wxXmlNode* node) const
 {
