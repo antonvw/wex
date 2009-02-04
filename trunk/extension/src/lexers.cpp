@@ -300,13 +300,6 @@ bool exLexers::Read()
     return false;
   }
 
-  // Initialize members.
-  m_Indicators.clear();
-  m_Lexers.clear();
-  m_Markers.clear();
-  m_Styles.clear();
-  m_StylesHex.clear();
-
   wxXmlDocument doc;
   
   if (!doc.Load(m_FileName.GetFullPath()))
@@ -314,6 +307,13 @@ bool exLexers::Read()
     return false;
   }
  
+  // Initialize members.
+  m_Indicators.clear();
+  m_Lexers.clear();
+  m_Markers.clear();
+  m_Styles.clear();
+  m_StylesHex.clear();
+
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
   while (child) 

@@ -12,7 +12,8 @@
 #include <algorithm>
 #include <ctype.h> // for isspace
 #include <wx/stdpaths.h>
-#include <wx/extension/extension.h>
+#include <wx/tokenzr.h>
+#include <wx/extension/app.h>
 #include <wx/extension/textfile.h>
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
@@ -204,6 +205,22 @@ void exTextFile::EndCurrentRevision()
   }
 }
 
+const wxString exTextFile::GetWord(
+  wxString& text,
+  bool use_other_field_separators,
+  bool use_path_separator) const
+{
+  wxString field_separators = " \t";
+  if (use_other_field_separators) field_separators += ":";
+  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
+  wxString token;
+  wxStringTokenizer tkz(text, field_separators);
+  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
+  text = tkz.GetString();
+  text.Trim(false);
+  return token;
+}
+
 bool exTextFile::HeaderDialog()
 {
   const bool new_header = (m_RCS.m_Description.empty());
@@ -319,7 +336,7 @@ void exTextFile::InsertUnFormattedText(
 
   while (!in.empty())
   {
-    const wxString word = exGetWord(in, false, false);
+    const wxString word = GetWord(in, false, false);
 
     if (line.length() + 1 + word.length() > line_length)
     {
@@ -343,6 +360,24 @@ void exTextFile::InsertUnFormattedText(
   InsertLine(newline);
 }
 
+bool exTextFile::IsBrace(int ch) const
+{
+  return ch == '[' || ch == ']' ||
+         ch == '(' || ch == ')' ||
+         ch == '{' || ch == '}' ||
+         ch == '<' || ch == '>';
+};
+
+bool exTextFile::IsCodewordSeparator(int c) const
+{
+  return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');
+}
+
+bool exTextFile::IsWordCharacter(wxChar c) const
+{
+  return isalnum(c) || c == '_';
+}
+
 bool exTextFile::MatchLine(wxString& line)
 {
   bool match = false;
@@ -358,8 +393,8 @@ bool exTextFile::MatchLine(wxString& line)
     {
       if (frd->MatchWord())
       {
-        if (!exIsWordCharacter(search_line[pos - 1]) &&
-            !exIsWordCharacter(search_line[pos + frd->GetFindStringNoCase().length()]))
+        if (!IsWordCharacter(search_line[pos - 1]) &&
+            !IsWordCharacter(search_line[pos + frd->GetFindStringNoCase().length()]))
         {
           match = true;
         }
@@ -589,7 +624,7 @@ void exTextFile::ParseHeader()
   wxString comments(m_Comments);
   comments.Trim(false);
 
-  wxString word = exGetWord(comments, true);
+  wxString word = GetWord(comments, true);
   if (word == "Author")
   {
     comments.Trim();
@@ -599,7 +634,7 @@ void exTextFile::ParseHeader()
   {
     // This word contains the description. If length not large enough, try next one.
     // Some descriptions start with * Purpose, or * Function.
-    if (word.length() < 7) word = exGetWord(comments, true);
+    if (word.length() < 7) word = GetWord(comments, true);
     word.MakeLower();
     if (word == "description" || word == "function" || word == "purpose" || m_AllowAction)
     {
@@ -682,7 +717,7 @@ bool exTextFile::ParseLine(const wxString& line)
         {
           line_contains_code = true;
 
-          if (!exIsCodewordSeparator(cc))
+          if (!IsCodewordSeparator(cc))
           {
             if (!sequence)
             {
@@ -702,7 +737,7 @@ bool exTextFile::ParseLine(const wxString& line)
       default: break;
       }
 
-      if (sequence && (exIsCodewordSeparator(cc) || i == line.length()))
+      if (sequence && (IsCodewordSeparator(cc) || i == line.length()))
       {
         if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
         {
@@ -802,7 +837,7 @@ bool exTextFile::PrepareRevision()
   // ClassBuilder lines start with '* ', these characters are skipped here.
   wxRegEx("^\\* ").ReplaceFirst(&m_Comments, wxEmptyString);
   // If there is a revision in the first word, store it.
-  wxString word = exGetWord(m_Comments);
+  wxString word = GetWord(m_Comments);
   if (word.find('.') != wxString::npos)
   {
     m_RCS.m_RevisionNumber = word;
@@ -832,7 +867,7 @@ bool exTextFile::PrepareRevision()
   // TODO: This seems like a bug.
   m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
   m_Comments = m_Comments.substr(m_Comments.Find(rest));
-  word = exGetWord(m_Comments);
+  word = GetWord(m_Comments);
 
   if (m_LineMarker == 0)
   {

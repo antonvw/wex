@@ -186,7 +186,12 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
-  bool HeaderDialog();
+  /// Gets a word from a string.
+  const wxString GetWord(
+    wxString& text,
+    bool use_other_field_separators = false,
+    bool use_path_separator = false) const;
+  bool HeaderDialog() ;
   void Initialize();
   void InsertFormattedText(
     const wxString& lines,
@@ -196,6 +201,12 @@ private:
     const wxString& lines,
     const wxString& header,
     bool is_comment);
+  /// Returns true if char is a brace open or close character.
+  bool IsBrace(int c) const;
+  /// Returns true if char is a code word separator.
+  bool IsCodewordSeparator(int c) const;
+  /// Returns true if char is alphanumeric or a _ sign.
+  bool IsWordCharacter(wxChar c) const;
   bool MatchLine(wxString& line);
   bool ParseForHeader();
   bool ParseForOther();

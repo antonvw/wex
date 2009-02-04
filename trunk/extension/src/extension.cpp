@@ -168,22 +168,6 @@ int exGetNumberOfLines(const wxString& text)
   }
 }
 
-const wxString exGetWord(
-  wxString& text,
-  bool use_other_field_separators,
-  bool use_path_separator)
-{
-  wxString field_separators = " \t";
-  if (use_other_field_separators) field_separators += ":";
-  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
-  wxString token;
-  wxStringTokenizer tkz(text, field_separators);
-  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
-  text = tkz.GetString();
-  text.Trim(false);
-  return token;
-}
-
 int exGetLineNumberFromText(const wxString& text)
 {
   // Get text after :.
@@ -206,24 +190,6 @@ int exGetLineNumberFromText(const wxString& text)
   {
     return 0;
   }
-}
-
-bool exIsBrace(int ch)
-{
-  return ch == '[' || ch == ']' ||
-         ch == '(' || ch == ')' ||
-         ch == '{' || ch == '}' ||
-         ch == '<' || ch == '>';
-};
-
-bool exIsCodewordSeparator(int c)
-{
-  return (isspace(c) || exIsBrace(c) || c == ',' || c == ';' || c == ':');
-}
-
-bool exIsWordCharacter(wxChar c)
-{
-  return isalnum(c) || c == '_';
 }
 
 void exLog(const wxString& text, const exFileName& filename)

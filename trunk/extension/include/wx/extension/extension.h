@@ -44,11 +44,6 @@ const wxString exGetEndOfWord(
   size_t max_chars = 15);
 /// Gets a line number from a string.
 int exGetNumberOfLines(const wxString& text);
-/// Gets a word from a string.
-const wxString exGetWord(
-  wxString& text,
-  bool use_other_field_separators = false,
-  bool use_path_separator = false);
 int exGetLineNumberFromText(const wxString& text);
 /// Returns a string without all white space in specified input.
 const wxString exSkipWhiteSpace(
@@ -58,13 +53,6 @@ const wxString exSkipWhiteSpace(
 const wxString exTranslate(const wxString& text, int pageNum, int numPages);
 
 // Char methods.
-/// Returns true if char is a brace open or close character.
-bool exIsBrace(int c);
-/// Returns true if char is a code word separator.
-bool exIsCodewordSeparator(int c);
-/// Returns true if char is alphanumeric or a _ sign.
-bool exIsWordCharacter(wxChar c);
-
 // Checks whether the file fullname matches a pattern (such as wildcard extensions separated by a ;).
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
