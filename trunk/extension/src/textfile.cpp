@@ -360,12 +360,12 @@ void exTextFile::InsertUnFormattedText(
   InsertLine(newline);
 }
 
-bool exTextFile::IsBrace(int ch) const
+bool exTextFile::IsBrace(int c) const
 {
-  return ch == '[' || ch == ']' ||
-         ch == '(' || ch == ')' ||
-         ch == '{' || ch == '}' ||
-         ch == '<' || ch == '>';
+  return c == '[' || c == ']' ||
+         c == '(' || c == ')' ||
+         c == '{' || c == '}' ||
+         c == '<' || c == '>';
 };
 
 bool exTextFile::IsCodewordSeparator(int c) const
@@ -373,7 +373,7 @@ bool exTextFile::IsCodewordSeparator(int c) const
   return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');
 }
 
-bool exTextFile::IsWordCharacter(wxChar c) const
+bool exTextFile::IsWordCharacter(int c) const
 {
   return isalnum(c) || c == '_';
 }

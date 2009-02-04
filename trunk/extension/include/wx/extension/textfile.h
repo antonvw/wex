@@ -206,7 +206,7 @@ private:
   /// Returns true if char is a code word separator.
   bool IsCodewordSeparator(int c) const;
   /// Returns true if char is alphanumeric or a _ sign.
-  bool IsWordCharacter(wxChar c) const;
+  bool IsWordCharacter(int c) const;
   bool MatchLine(wxString& line);
   bool ParseForHeader();
   bool ParseForOther();
