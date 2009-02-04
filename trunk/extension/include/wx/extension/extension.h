@@ -60,10 +60,6 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 
 #if wxUSE_GUI
 
-/// Shows the standard colour dialog with current background colour from specified window and
-/// allows you to change that colour.
-void exBackgroundColourDialog(wxWindow* parent, wxWindow* win);
-
 // Combobox methods.
 /// Adds entries from a combobox to a text string.
 void exComboBoxFromString(

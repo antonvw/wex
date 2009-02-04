@@ -17,19 +17,6 @@
 #include <wx/extension/extension.h>
 
 #if wxUSE_GUI
-void exBackgroundColourDialog(wxWindow* parent, wxWindow* win)
-{
-  wxColourData data;
-  data.SetColour(win->GetBackgroundColour());
-  wxColourDialog dlg(parent, &data);
-
-  if (dlg.ShowModal())
-  {
-    win->SetBackgroundColour(dlg.GetColourData().GetColour());
-    win->Refresh();
-  }
-}
-
 bool exClipboardAdd(const wxString& text)
 {
   wxClipboardLocker locker;
@@ -64,11 +51,6 @@ const wxString exClipboardGet()
   }
 
   return data.GetText();
-}
-
-long exColourToLong(const wxColour& c)
-{
-  return c.Red() | (c.Green() << 8) | (c.Blue() << 16);
 }
 
 void exComboBoxFromString(
@@ -127,6 +109,13 @@ bool exComboBoxToString(
   }
 
   return true;
+}
+
+#endif // wxUSE_GUI
+
+long exColourToLong(const wxColour& c)
+{
+  return c.Red() | (c.Green() << 8) | (c.Blue() << 16);
 }
 
 const wxString exEllipsed(const wxString& text, const wxString& control)
@@ -269,4 +258,3 @@ const wxString exTranslate(const wxString& text, int pageNum, int numPages)
 
   return translation;
 }
-#endif // wxUSE_GUI
