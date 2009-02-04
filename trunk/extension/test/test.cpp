@@ -46,7 +46,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
 
   // test exLexer
-  m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
+  *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
   m_Lexer->SetKeywords("test11 test21:1 test31:1 test12:2 test22:2");
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("test11"));
@@ -60,7 +60,7 @@ void exTestFixture::testMethods()
 
   // test exLexers
   CPPUNIT_ASSERT(m_Lexers->Read());
-  m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
+  *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
