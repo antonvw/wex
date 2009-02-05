@@ -17,6 +17,8 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/tool.h>
 
+class exConfig;
+class exLexers;
 class exTextFile;
 
 /// Class for keeping RCS information.
@@ -66,7 +68,10 @@ class exTextFile : public wxTextFile
 {
 public:
   /// Constructor.
-  exTextFile(const exFileName& filename);
+  exTextFile(
+    const exFileName& filename,
+    exConfig* config,
+    const exLexers* lexers);
 
   /// Gets the filename.
   const exFileName& GetFileName() const {return m_FileNameStatistics;};
@@ -87,10 +92,10 @@ public:
   /// Opens the file and runs the tool.
   bool RunTool();
 
-  /// Sets the tool as specified and calls a dialog if necessary, afterwards
-  /// you have to call RunTool. If you use tool find or replace in files,
+  /// Sets the tool as specified, next
+  /// you can call RunTool. If you use tool find or replace in files,
   /// be sure to set the exFindReplaceData.
-  static bool SetupTool(const exTool& tool);
+  static void SetTool(const exTool& tool) {m_Tool = tool;};
 
   /// Writes a comment to the current line.
   void WriteComment(
@@ -113,9 +118,6 @@ protected:
   /// for each line that contains code, or
   /// for ID_TOOL_LINE_COMMENTS for each line that contains a comment.
   virtual void ReportLine(const wxString& line) {;};
-
-  /// Sets the tool directly (without calling any dialogs).
-  static void SetTool(const exTool& tool) {m_Tool = tool;};
 public:
   /// This one is invoked at the end, when statistics are completed.
   /// It is made public, as it can be useful from outside.
@@ -230,6 +232,8 @@ private:
   bool m_Modified;
   bool m_RevisionActive;
 
+  static exSyntaxType m_LastSyntaxType;
+  static exSyntaxType m_SyntaxType;
   static exTool m_Tool;
 
   exFileNameStatistics m_FileNameStatistics;
@@ -241,8 +245,8 @@ private:
   exRCS m_RCS;
 
   wxString m_Comments;
-
-  static exSyntaxType m_LastSyntaxType;
-  static exSyntaxType m_SyntaxType;
+ 
+  exConfig* m_Config;
+  const exLexers* m_Lexers;
 };
 #endif

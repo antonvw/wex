@@ -155,6 +155,21 @@ void ftSTC::OnCommand(wxCommandEvent& command)
   {
     const exTool tool(command.GetId());
 
+    if (tool.GetId() == ID_TOOL_COMMIT)
+    {
+    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
+      wxString(_("Input")) + wxT(":"),
+      "Commit",
+      exApp::GetConfig(_("Revision comment")));
+
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return;
+    }
+
+    exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
+    }
+
     if (ftTextFile::SetupTool(tool))
     {
       ftTextFile report(m_FileName);

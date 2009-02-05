@@ -48,7 +48,7 @@ private:
 #endif
 
 ftTextFile::ftTextFile(const exFileName& filename)
-  : exTextFile(filename)
+  : exTextFile(filename, exApp::GetConfig(), exApp::GetLexers())
 #if USE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
 #endif
@@ -345,7 +345,9 @@ bool ftTextFile::SetupTool(const exTool& tool)
     }
   }
 
-  return exTextFile::SetupTool(tool);
+  exTextFile::SetTool(tool);
+
+  return true;
 }
 
 #if USE_EMBEDDED_SQL

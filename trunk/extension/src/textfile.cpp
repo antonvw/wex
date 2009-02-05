@@ -13,7 +13,8 @@
 #include <ctype.h> // for isspace
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
-#include <wx/extension/app.h>
+#include <wx/extension/config.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
 
 const wxString REV_DATE_FORMAT = "%2y%2m%2d";
@@ -63,8 +64,13 @@ exTool exTextFile::m_Tool = ID_TOOL_LOWEST;
 exTextFile::exSyntaxType exTextFile::m_SyntaxType = exTextFile::SYNTAX_NONE;
 exTextFile::exSyntaxType exTextFile::m_LastSyntaxType = exTextFile::SYNTAX_NONE;
 
-exTextFile::exTextFile(const exFileName& filename)
+exTextFile::exTextFile(
+  const exFileName& filename,
+  exConfig* config,
+  const exLexers* lexers)
   : m_FileNameStatistics(filename)
+  , m_Config(config)
+  , m_Lexers(lexers)
 {
   m_LineMarker = 0;
   m_AllowAction = false;
@@ -77,7 +83,6 @@ exTextFile::exTextFile(const exFileName& filename)
   m_LineMarkerEnd = 0;
   m_VersionLine = 0;
 }
-
 
 exTextFile::exCommentType exTextFile::CheckCommentSyntax(
   const wxString& syntax_begin,
@@ -255,7 +260,7 @@ bool exTextFile::HeaderDialog()
 
   if (new_header)
   {
-    if (!exApp::GetConfigBool("SVN"))
+    if (!m_Config->GetBool("SVN"))
     {
       RevisionAddComments(wxString(
         (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
@@ -382,7 +387,7 @@ bool exTextFile::MatchLine(wxString& line)
 {
   bool match = false;
 
-  exFindReplaceData* frd = exApp::GetConfig()->GetFindReplaceData();
+  exFindReplaceData* frd = m_Config->GetFindReplaceData();
 
   if (!frd->IsRegExp())
   {
@@ -515,11 +520,11 @@ bool exTextFile::ParseComments()
         else
         {
           wxLogError("Line marker not set, cannot add revision comments: "
-            + exApp::GetConfig(_("Revision comment")));
+            + m_Config->Get(_("Revision comment")));
           return false;
         }
 
-        RevisionAddComments(exApp::GetConfig(_("Revision comment")));
+        RevisionAddComments(m_Config->Get(_("Revision comment")));
         m_AllowAction = false;
 
         // We are not yet finished, there might still be RCS keywords somewhere!
@@ -573,7 +578,7 @@ bool exTextFile::ParseForOther()
 
   if (m_Tool.IsFindType())
   {
-    if (exApp::GetConfig()->GetFindReplaceData()->GetFindStringNoCase().empty())
+    if (m_Config->GetFindReplaceData()->GetFindStringNoCase().empty())
     {
       wxLogError("Find string is empty");
       return false;
@@ -821,7 +826,7 @@ bool exTextFile::ParseLine(const wxString& line)
 bool exTextFile::PrepareRevision()
 {
   if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT ||
-      exApp::GetConfigBool("RCS/RecentOnly"))
+      m_Config->GetBool("RCS/RecentOnly"))
   {
     if (m_VersionLine == 1)
     {
@@ -899,7 +904,7 @@ void exTextFile::RevisionAddComments(const wxString& comments)
   m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
   WriteTextWithPrefix(comments,
     m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
-    exApp::GetConfig("RCS/User", wxGetUserName()), !m_IsCommentStatement);
+    m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement);
 }
 
 bool exTextFile::RunTool()
@@ -925,7 +930,7 @@ bool exTextFile::RunTool()
 
   if (m_Tool.GetId() == ID_TOOL_COMMIT)
   {
-    if (!exApp::GetConfig(_("Revision comment")).empty())
+    if (!m_Config->Get(_("Revision comment")).empty())
     {
       if (!ParseForOther())
       {
@@ -937,7 +942,7 @@ bool exTextFile::RunTool()
   {
     if (m_FileNameStatistics.GetLexer().GetScintillaLexer().empty())
     {
-      m_FileNameStatistics.GetLexer() = exApp::GetLexers()->FindByText(GetLine(0));
+      m_FileNameStatistics.GetLexer() = m_Lexers->FindByText(GetLine(0));
     }
 
     if (m_Tool.IsHeaderType())
@@ -1010,33 +1015,6 @@ bool exTextFile::RunTool()
   return true;
 }
 
-bool exTextFile::SetupTool(const exTool& tool)
-{
-  m_Tool = tool;
-
-  switch (tool.GetId())
-  {
-  case ID_TOOL_COMMIT:
-    {
-    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
-      wxString(_("Input")) + wxT(":"),
-      "Commit",
-      exApp::GetConfig(_("Revision comment")));
-
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-
-    exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
-
-    return true;
-    }
-  break;
-  default: return true;
-  }
-}
-
 void exTextFile::WriteComment(
   const wxString& text,
   const bool fill_out,
@@ -1048,14 +1026,14 @@ void exTextFile::WriteComment(
 bool exTextFile::WriteFileHeader()
 {
   const wxString actual_author = (m_RCS.m_Author.empty() ?
-    exApp::GetConfig("Header/Author"):
+    m_Config->Get("Header/Author"):
     m_RCS.m_Author);
 
-  const wxString address = exApp::GetConfig("Header/Address");
-  const wxString company = exApp::GetConfig("Header/Company");
-  const wxString country = exApp::GetConfig("Header/Country");
-  const wxString place = exApp::GetConfig("Header/Place");
-  const wxString zipcode = exApp::GetConfig("Header/Zipcode");
+  const wxString address = m_Config->Get("Header/Address");
+  const wxString company = m_Config->Get("Header/Company");
+  const wxString country = m_Config->Get("Header/Country");
+  const wxString place = m_Config->Get("Header/Place");
+  const wxString zipcode = m_Config->Get("Header/Zipcode");
 
   WriteComment(wxEmptyString, true);
   WriteComment("File:        " + m_FileNameStatistics.GetFullName(), true);
@@ -1063,7 +1041,7 @@ bool exTextFile::WriteFileHeader()
   WriteComment("Author:      " + actual_author, true);
   WriteComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
 
-  if (exApp::GetConfigBool("SVN"))
+  if (m_Config->GetBool("SVN"))
   {
     // Prevent the Id to be expanded by SVN itself here.
     WriteComment("RCS-ID:      $" + wxString("Id$"), true);

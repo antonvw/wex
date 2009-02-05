@@ -1163,6 +1163,21 @@ void ftListView::RunItems(const exTool& tool)
     exApp::Log(exApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
+  if (tool.GetId() == ID_TOOL_COMMIT)
+  {
+    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
+    wxString(_("Input")) + wxT(":"),
+    "Commit",
+    exApp::GetConfig(_("Revision comment")));
+
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return;
+    }
+
+    exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
+  }
+    
   if (!ftTextFile::SetupTool(tool))
   {
     return;
