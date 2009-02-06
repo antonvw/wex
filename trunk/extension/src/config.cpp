@@ -812,16 +812,19 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
   if ( command.GetId() == wxID_APPLY ||
       (command.GetId() == wxID_OK && !IsModal()))
   {
-    wxWindow* window = wxTheApp->GetTopWindow();
-    exFrame* frame = wxDynamicCast(window, exFrame);
-
-    if (frame != NULL)
+    if (wxTheApp != NULL)
     {
-      frame->ConfigDialogApplied(GetId());
+      wxWindow* window = wxTheApp->GetTopWindow();
+      exFrame* frame = wxDynamicCast(window, exFrame);
 
-      if (path_involved)
+      if (frame != NULL)
       {
-        exSTC::PathListInit();
+        frame->ConfigDialogApplied(GetId());
+
+        if (path_involved)
+        {
+          exSTC::PathListInit();
+        }
       }
     }
   }

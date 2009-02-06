@@ -228,6 +228,8 @@ const wxString exTextFile::GetWord(
 
 bool exTextFile::HeaderDialog()
 {
+  if (wxTheApp == NULL) return false;
+
   const bool new_header = (m_RCS.m_Description.empty());
 
   wxTextEntryDialog ted(wxTheApp->GetTopWindow(),
