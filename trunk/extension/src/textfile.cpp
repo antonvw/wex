@@ -912,12 +912,6 @@ bool exTextFile::RunTool(const exTool& tool)
 {
   m_Tool = tool;
 
-  if (m_Tool.GetId() == ID_TOOL_LOWEST)
-  {
-    wxLogError("You should call SetupTool first and not use ID_TOOL_LOWEST");
-    return false;
-  }
-
   if (!wxTextFile::Open(m_FileNameStatistics.GetFullPath()))
   {
     return false;
