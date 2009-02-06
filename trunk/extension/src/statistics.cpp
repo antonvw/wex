@@ -60,6 +60,7 @@ void exFileNameStatistics::Log(
     return;
   }
 
+/*
   wxString logtext(exTextFile::GetTool().Info());
 
   if (logtext.Contains("%ld"))
@@ -96,4 +97,5 @@ void exFileNameStatistics::Log(
       }
     }
   }
+*/
 }

@@ -60,10 +60,6 @@ const wxString exRCS::SetNextRevisionNumber()
   return m_RevisionNumber;
 }
 
-exTool exTextFile::m_Tool = ID_TOOL_LOWEST;
-exTextFile::exSyntaxType exTextFile::m_SyntaxType = exTextFile::SYNTAX_NONE;
-exTextFile::exSyntaxType exTextFile::m_LastSyntaxType = exTextFile::SYNTAX_NONE;
-
 exTextFile::exTextFile(
   const exFileName& filename,
   exConfig* config,
@@ -71,8 +67,10 @@ exTextFile::exTextFile(
   : m_FileNameStatistics(filename)
   , m_Config(config)
   , m_Lexers(lexers)
+  , m_LastSyntaxType(SYNTAX_NONE)
+  , m_SyntaxType(SYNTAX_NONE)
+  , m_Tool(ID_TOOL_LOWEST)
 {
-  m_LineMarker = 0;
   m_AllowAction = false;
   m_EmptyLine = false;
   m_FinishedAction = false;
@@ -80,6 +78,7 @@ exTextFile::exTextFile(
   m_IsString = false;
   m_Modified = false;
   m_RevisionActive = false;
+  m_LineMarker = 0;
   m_LineMarkerEnd = 0;
   m_VersionLine = 0;
 }
@@ -116,7 +115,7 @@ exTextFile::exCommentType exTextFile::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2) const
+exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
 {
   if (m_FileNameStatistics.GetLexer().GetCommentBegin2().empty())
   {
@@ -909,8 +908,10 @@ void exTextFile::RevisionAddComments(const wxString& comments)
     m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement);
 }
 
-bool exTextFile::RunTool()
+bool exTextFile::RunTool(const exTool& tool)
 {
+  m_Tool = tool;
+
   if (m_Tool.GetId() == ID_TOOL_LOWEST)
   {
     wxLogError("You should call SetupTool first and not use ID_TOOL_LOWEST");

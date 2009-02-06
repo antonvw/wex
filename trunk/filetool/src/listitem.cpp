@@ -70,7 +70,7 @@ bool ftListItem::Run(const exTool& tool, ftListView* listview)
   {
     ftTextFile file(m_Statistics);
 
-    if (file.RunTool())
+    if (file.RunTool(tool))
     {
       if (tool.IsRCSType())
       {
@@ -90,7 +90,7 @@ bool ftListItem::Run(const exTool& tool, ftListView* listview)
   {
     ftDir dir(listview, m_Statistics.GetFullPath(), m_FileSpec);
 
-    if (dir.RunTool())
+    if (dir.RunTool(tool))
     {
       m_Statistics += dir.GetStatistics();
 

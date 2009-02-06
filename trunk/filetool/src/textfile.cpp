@@ -345,8 +345,6 @@ bool ftTextFile::SetupTool(const exTool& tool)
     }
   }
 
-  exTextFile::SetTool(tool);
-
   return true;
 }
 

@@ -173,7 +173,7 @@ void ftSTC::OnCommand(wxCommandEvent& command)
     if (ftTextFile::SetupTool(tool))
     {
       ftTextFile report(m_FileName);
-      report.RunTool();
+      report.RunTool(tool);
       report.GetStatistics().Log();
     }
 

@@ -83,19 +83,14 @@ public:
   const exFileNameStatistics& GetStatistics() const {return m_FileNameStatistics;}
 
   /// Gets the tool.
-  static exTool& GetTool() {return m_Tool;};
+  const exTool& GetTool() const {return m_Tool;};
 
   /// Inserts a line at current line (or at end if at end),
   /// make that line current and sets modified.
   void InsertLine(const wxString& line);
 
   /// Opens the file and runs the tool.
-  bool RunTool();
-
-  /// Sets the tool as specified, next
-  /// you can call RunTool. If you use tool find or replace in files,
-  /// be sure to set the exFindReplaceData.
-  static void SetTool(const exTool& tool) {m_Tool = tool;};
+  bool RunTool(const exTool& tool);
 
   /// Writes a comment to the current line.
   void WriteComment(
@@ -184,7 +179,7 @@ private:
       m_FileNameStatistics.GetLexer().GetCommentEnd2();};
 
   /// Check whether specified chars result in a comment.
-  exCommentType CheckForComment(wxChar c1, wxChar c2) const;
+  exCommentType CheckForComment(wxChar c1, wxChar c2);
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
@@ -232,9 +227,9 @@ private:
   bool m_Modified;
   bool m_RevisionActive;
 
-  static exSyntaxType m_LastSyntaxType;
-  static exSyntaxType m_SyntaxType;
-  static exTool m_Tool;
+  exSyntaxType m_LastSyntaxType;
+  exSyntaxType m_SyntaxType;
+  exTool m_Tool;
 
   exFileNameStatistics m_FileNameStatistics;
 

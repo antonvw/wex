@@ -42,7 +42,7 @@ public:
 
   /// Calls RunTool from exTextFile on all matching files.
   /// SetupTool from exTextFile should already be called.
-  size_t RunTool(int flags = wxDIR_DEFAULT);
+  size_t RunTool(const exTool& tool, int flags = wxDIR_DEFAULT);
 
   /// Gets the statistics.
   const exFileNameStatistics& GetStatistics() {return m_Statistics;};
@@ -55,6 +55,7 @@ private:
   ftListView* m_ListView;
   const long m_Flags;
   bool m_RunningTool;
+  exTool m_Tool;
 };
 
 /// Offers a find combobox that allows yuo to find text 

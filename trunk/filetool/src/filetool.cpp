@@ -80,7 +80,7 @@ void ftFindInFiles(ftFrame* frame, bool replace)
     exApp::GetConfig(_("In folder")),
     exApp::GetConfig(_("In files")));
 
-  dir.RunTool();
+  dir.RunTool(tool);
   dir.GetStatistics().Log();
 }
 
@@ -289,6 +289,7 @@ ftDir::ftDir(ftListView* listview,
   , m_ListView(listview)
   , m_Flags(0)
   , m_RunningTool(false)
+  , m_Tool(ID_TOOL_LOWEST)
 {
 }
 
@@ -300,6 +301,7 @@ ftDir::ftDir(ftFrame* frame,
   , m_ListView(NULL)
   , m_Flags(flags)
   , m_RunningTool(false)
+  , m_Tool(ID_TOOL_LOWEST)
 {
 }
 
@@ -318,7 +320,7 @@ void ftDir::OnFile(const wxString& file)
     if (filename.GetStat().IsOk())
     {
       ftTextFile report(filename);
-      report.RunTool();
+      report.RunTool(m_Tool);
       m_Statistics += report.GetStatistics();
     }
   }
@@ -344,7 +346,7 @@ void ftDir::OnFile(const wxString& file)
           ftTextFile report(item.m_Statistics);
           if (report.SetupTool(ID_TOOL_REVISION_RECENT))
           {
-            report.RunTool();
+            report.RunTool(ID_TOOL_REVISION_RECENT);
             item.UpdateRevisionList(report.GetRCS());
           }
         }
@@ -353,8 +355,10 @@ void ftDir::OnFile(const wxString& file)
   }
 }
 
-size_t ftDir::RunTool(int flags)
+size_t ftDir::RunTool(const exTool& tool, int flags)
 {
+  m_Tool = tool;
+
   m_RunningTool = true;
 
   size_t result = FindFiles(flags);
