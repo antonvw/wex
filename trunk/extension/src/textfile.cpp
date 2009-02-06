@@ -65,11 +65,11 @@ exTextFile::exTextFile(
   exConfig* config,
   const exLexers* lexers)
   : m_FileNameStatistics(filename)
-  , m_Config(config)
-  , m_Lexers(lexers)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(ID_TOOL_LOWEST)
+  , m_Config(config)
+  , m_Lexers(lexers)
 {
   m_AllowAction = false;
   m_EmptyLine = false;

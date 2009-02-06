@@ -227,21 +227,18 @@ private:
   bool m_Modified;
   bool m_RevisionActive;
 
+  exFileNameStatistics m_FileNameStatistics;
+  exRCS m_RCS;
   exSyntaxType m_LastSyntaxType;
   exSyntaxType m_SyntaxType;
   exTool m_Tool;
-
-  exFileNameStatistics m_FileNameStatistics;
+  exConfig* m_Config;
+  const exLexers* m_Lexers;
 
   size_t m_LineMarker;
   size_t m_LineMarkerEnd;
   size_t m_VersionLine;
 
-  exRCS m_RCS;
-
   wxString m_Comments;
- 
-  exConfig* m_Config;
-  const exLexers* m_Lexers;
 };
 #endif
