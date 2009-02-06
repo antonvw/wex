@@ -10,10 +10,10 @@
 \******************************************************************************/
 
 #include <wx/stdpaths.h>
+#include <wx/textfile.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/textfile.h>
 
 long exFileNameStatistics::Get(const wxString& key) const
 {
@@ -50,6 +50,7 @@ const exFileName exFileNameStatistics::GetLogfileName()
 }
 
 void exFileNameStatistics::Log(
+  const exTool& tool,
   bool log_to_file,
   bool open_file) const
 {
@@ -60,8 +61,7 @@ void exFileNameStatistics::Log(
     return;
   }
 
-/*
-  wxString logtext(exTextFile::GetTool().Info());
+  wxString logtext(tool.Info());
 
   if (logtext.Contains("%ld"))
   {
@@ -80,7 +80,7 @@ void exFileNameStatistics::Log(
   {
     exApp::Log(logtext);
 
-    if (exTextFile::GetTool().IsCountType())
+    if (tool.IsCountType())
     {
       wxString logtext;
 
@@ -97,5 +97,4 @@ void exFileNameStatistics::Log(
       }
     }
   }
-*/
 }

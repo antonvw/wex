@@ -97,7 +97,7 @@ bool ftListItem::Run(const exTool& tool, ftListView* listview)
       // Here we show the counts of individual folders on the top level.
       if (tool.IsCountType() && GetListView()->GetSelectedItemCount() > 1)
       {
-        m_Statistics.Log();
+        m_Statistics.Log(tool);
       }
 
       return true;

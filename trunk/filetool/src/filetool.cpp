@@ -81,7 +81,7 @@ void ftFindInFiles(ftFrame* frame, bool replace)
     exApp::GetConfig(_("In files")));
 
   dir.RunTool(tool);
-  dir.GetStatistics().Log();
+  dir.GetStatistics().Log(tool);
 }
 
 bool ftFindOtherFileName(

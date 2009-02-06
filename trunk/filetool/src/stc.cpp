@@ -174,7 +174,7 @@ void ftSTC::OnCommand(wxCommandEvent& command)
     {
       ftTextFile report(m_FileName);
       report.RunTool(tool);
-      report.GetStatistics().Log();
+      report.GetStatistics().Log(tool);
     }
 
     return;

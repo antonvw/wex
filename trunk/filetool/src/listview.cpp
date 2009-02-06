@@ -87,7 +87,7 @@ protected:
       Sleep(20);
     }
 
-    stats.Log();
+    stats.Log(m_Tool);
 
     m_ListView->ThreadTerminated();
     return NULL;

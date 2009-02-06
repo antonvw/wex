@@ -13,6 +13,7 @@
 #define _EXSTATISTICS_H
 
 #include <wx/extension/grid.h>
+#include <wx/extension/tool.h>
 
 /// Offers base statistics. All statistics involve a key value pair,
 /// where the key is a wxString, and the value a template.
@@ -221,6 +222,7 @@ public:
   /// the statusbar (always), to the statistics logfile (if specified),
   /// and open the statistics logfile (if specified) and the tool was a count type.
   void Log(
+    const exTool& tool,
     bool log_to_file = true,
     bool open_file = true) const;
 private:
