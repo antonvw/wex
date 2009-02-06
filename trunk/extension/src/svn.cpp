@@ -102,10 +102,14 @@ int exSVN::GetInfo(bool show_dialog)
   wxArrayString output;
   wxArrayString errors;
   
-  wxExecute(
+  if (wxExecute(
     "svn " + exApp::GetConfig(_("Flags")) + " " + m_Command + arg + file,
     output,
-    errors);
+    errors) == -1)
+  {
+    m_ReturnCode = -1;
+    return m_ReturnCode;
+  }
     
   if (m_FullPath.empty())
   {
