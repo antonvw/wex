@@ -34,6 +34,7 @@ class exTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   exTestFixture() : TestFixture() {
+    m_Config = NULL;
     m_File = NULL;
     m_FileName = NULL;
     m_FileNameStatistics = NULL;
@@ -48,6 +49,7 @@ public:
 
   /// Destructor.    
  ~exTestFixture() {
+    delete m_Config;
     delete m_File;
     delete m_FileName;
     delete m_FileNameStatistics;
@@ -78,7 +80,11 @@ public:
   
   /// Test timing of methods.
   void testTimingAttrib();
+  
+  /// Test timing of methods.
+  void testTimingConfig();
 private:
+  exConfig* m_Config; ///< testing exConfig
   exFile* m_File; ///< testing exFile
   exFileName* m_FileName; ///< testing exFileName
   exFileNameStatistics* m_FileNameStatistics; ///< testing exFileNameStatistics
@@ -122,10 +128,7 @@ public:
   void testConstructors();
 
   /// Test methods of various extension classes.
-  void testMethods();
-  
-  /// Test timing of methods.
-  void testTimingConfig();
+  void testMethods();  
 private:
   exApp* m_App; ///< testing exApp
   exDir* m_Dir; ///< testing exDir

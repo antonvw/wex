@@ -15,6 +15,7 @@
 
 void exTestFixture::setUp()
 {
+  m_Config = new exConfig("test.cfg", wxCONFIG_USE_LOCAL_FILE);
   m_File = new exFile("test.h");
   m_FileName = new exFileName("test.h");
   m_FileNameStatistics = new exFileNameStatistics("test.h");
@@ -23,8 +24,7 @@ void exTestFixture::setUp()
   m_RCS = new exRCS();
   m_Stat = new exStat("test.h");
   m_Statistics = new exStatistics<long>();
-  // TODO: config should not be NULL.
-  m_TextFile = new exTextFile(exFileName("test.h"), NULL, m_Lexers);
+  m_TextFile = new exTextFile(exFileName("test.h"), m_Config, m_Lexers);
   m_Tool = new exTool(ID_TOOL_REPORT_COUNT);
 }
 
@@ -35,6 +35,20 @@ void exTestFixture::testConstructors()
 
 void exTestFixture::testMethods()
 {
+  // test exConfig
+  CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val");
+  CPPUNIT_ASSERT(m_Config->Get("keylong", 12) == 12);
+  CPPUNIT_ASSERT(m_Config->GetBool("keybool", true));
+  CPPUNIT_ASSERT(m_Config->GetFindReplaceData() != NULL);
+  m_Config->Set("keystring", "val2");
+  CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val2");
+  m_Config->Set("keylong", 15);
+  CPPUNIT_ASSERT(m_Config->Get("keylong", 7) == 15);
+  m_Config->SetBool("keybool", false);
+  CPPUNIT_ASSERT(m_Config->GetBool("keybool", "true") == false);
+  m_Config->Toggle("keybool");
+  CPPUNIT_ASSERT(m_Config->GetBool("keybool", "false"));
+  
   // test exFile
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
   CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() == "test.h");
@@ -200,6 +214,34 @@ void exTestFixture::testTimingAttrib()
     file_time);
 }
 
+void exTestFixture::testTimingConfig()
+{
+  const int max = 100000;
+
+  wxStopWatch sw;
+
+  for (int i = 0; i < max; i++)
+  {
+    m_Config->Get("test", 0);
+  }
+
+  const long exconfig = sw.Time();
+
+  sw.Start();
+
+  for (int j = 0; j < max; j++)
+  {
+    m_Config->Read("test", 0l);
+  }
+
+  const long config = sw.Time();
+
+  printf(
+    "exConfig::Get:%ld wxConfig::Read:%ld\n",
+    exconfig,
+    config);
+}
+
 void exTestFixture::tearDown()
 {
 }
@@ -250,34 +292,6 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 }
 
-void exAppTestFixture::testTimingConfig()
-{
-  const int max = 100000;
-
-  wxStopWatch sw;
-
-  for (int i = 0; i < max; i++)
-  {
-    exApp::GetConfig("test", 0);
-  }
-
-  const long exconfig = sw.Time();
-
-  sw.Start();
-
-  for (int j = 0; j < max; j++)
-  {
-    exApp::GetConfig()->Read("test", 0l);
-  }
-
-  const long config = sw.Time();
-
-  printf(
-    "exConfig::Get:%ld wxConfig::Read:%ld\n",
-    exconfig,
-    config);
-}
-
 void exAppTestFixture::tearDown()
 {
 }
@@ -303,6 +317,10 @@ exTestSuite::exTestSuite()
     "testTimingAttrib",
     &exTestFixture::testTimingAttrib));
 
+  addTest(new CppUnit::TestCaller<exTestFixture>(
+    "testTimingConfig",
+    &exTestFixture::testTimingConfig));
+    
 /* TODO: the exApp or wxApp not yet okay without normal wxApp initialization
 
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
@@ -312,9 +330,5 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testMethods",
     &exAppTestFixture::testMethods));
-
-  addTest(new CppUnit::TestCaller<exAppTestFixture>(
-    "testTimingConfig",
-    &exAppTestFixture::testTimingConfig));
     */
 }
