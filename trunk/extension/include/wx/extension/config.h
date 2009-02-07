@@ -21,26 +21,23 @@
 
 class exFindReplaceData;
 
+/// Offers a general configuration.
+/// Keys are read the first time accessed from the config.
+/// Next time they are retrieved from the maps, so access is fast.
 #ifdef EX_PORTABLE
 #include <wx/fileconf.h>
 class exConfig : public wxFileConfig
 #else
 #include <wx/config.h>
-
-/// Offers a general configuration.
-/// Keys are read the first time accessed from the config.
-/// Next time they are retrieved from the maps, so access is fast.
 class exConfig : public wxConfig
 #endif
 {
 public:
-#ifdef EX_PORTABLE
   /// Default constructor.
-  exConfig(const wxString& filename = wxEmptyString);
-#else
-  /// Default constructor.
-  exConfig();
-#endif
+  exConfig(
+    const wxString& filename = wxEmptyString,
+    long style = 0);
+
   /// Destructor, writes all keys.
  ~exConfig();
 

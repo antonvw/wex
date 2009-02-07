@@ -87,9 +87,14 @@ bool exApp::OnInit()
   m_Config = new exConfig(
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
-      GetAppName() + wxString(".cfg")).GetFullPath());
+      GetAppName() + wxString(".cfg")).GetFullPath(),
+    wxCONFIG_USE_LOCAL_FILE);
 #else
-  m_Config = new exConfig();
+  // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
+  // (ignored on non-Unix system)
+  m_Config = new exConfig(
+    wxEmptyString,
+    wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
 
   // And construct and read the lexers.

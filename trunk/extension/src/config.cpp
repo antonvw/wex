@@ -19,25 +19,15 @@
 
 using namespace std;
 
-#ifdef EX_PORTABLE
-exConfig::exConfig(const wxString& filename)
+exConfig::exConfig(
+  const wxString& filename,
+  long style)
   : wxFileConfig(
       wxEmptyString,
       wxEmptyString,
       filename,
       wxEmptyString,
-      wxCONFIG_USE_LOCAL_FILE)
-#else
-exConfig::exConfig()
-  : wxConfig(
-      wxEmptyString,
-      wxEmptyString,
-      wxEmptyString,
-      wxEmptyString,
-      // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
-      // (ignored on non-Unix system)
-      wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR)
-#endif
+      style)
 {
   m_FindReplaceData = new exFindReplaceData(this);
 }
