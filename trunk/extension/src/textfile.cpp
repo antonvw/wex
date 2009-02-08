@@ -976,21 +976,19 @@ bool exTextFile::RunTool(const exTool& tool)
     {
       if (m_Tool.GetId() == ID_TOOL_REPORT_HEADER)
       {
-        if (m_RCS.m_Description.empty())
+        if (!m_RCS.m_Description.empty())
         {
-          return false;
+          GetStatisticElements().Inc(_("Actions Completed"));
         }
 
-        GetStatisticElements().Inc(_("Actions Completed"));
       }
       else if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
       {
-        if (m_FileNameStatistics.GetLexer().GetKeywordsString().empty())
+        if (!m_FileNameStatistics.GetLexer().GetKeywordsString().empty())
         {
-          return false;
+          GetStatisticElements().Inc(_("Actions Completed"));
         }
 
-        GetStatisticElements().Inc(_("Actions Completed"));
       }
 
       ReportStatistics();
