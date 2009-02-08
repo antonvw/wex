@@ -135,6 +135,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool  
   
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_HEADER));
+wxLogMessage(m_TextFile->GetRCS().GetDescription());  
   CPPUNIT_ASSERT(m_TextFile->GetRCS().GetDescription() == 
     "Declaration of classes for wxextension cpp unit testing");
     
