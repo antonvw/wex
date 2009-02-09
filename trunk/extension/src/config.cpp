@@ -22,7 +22,11 @@ using namespace std;
 exConfig::exConfig(
   const wxString& filename,
   long style)
+#ifdef EX_PORTABLE
   : wxFileConfig(
+#else
+  : wxConfig(
+#endif
       wxEmptyString,
       wxEmptyString,
       filename,
