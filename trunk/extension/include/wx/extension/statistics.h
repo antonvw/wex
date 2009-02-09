@@ -198,6 +198,11 @@ public:
     m_Keywords += s.m_Keywords;
     return *this;}
 
+  /// Gets all items as a string. All items are returned as a string,
+  /// with newlines separating items.
+  const wxString Get() const {
+    return m_Elements.Get() + m_Keywords.Get();};
+
   /// Gets the key, first the elements are tried,
   /// if not present, the keywords are tried, if not present
   /// 0 is returned.
