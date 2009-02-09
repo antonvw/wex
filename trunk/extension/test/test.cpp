@@ -60,6 +60,10 @@ void exTestFixture::testMethods()
   m_FileName->GetStat().Update("xxx");
   CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
 
+  // test exFileNameStatistics
+  CPPUNIT_ASSERT(m_FileNameStatistics->Get().empty());
+  CPPUNIT_ASSERT(m_FileNameStatistics->Get("xx") == 0);
+  
   // test exLexer
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
@@ -102,6 +106,8 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Lexer->UsableCharactersPerLine() == 74); // 80 - 4 (comments) - 2 (spaces)
 
   // test exRCS
+  CPPUNIT_ASSERT(m_RCS->GetAuthor().empty());
+  CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
   // test exStat
@@ -135,7 +141,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool  
   
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_HEADER));
-wxLogMessage(m_TextFile->GetRCS().GetDescription());  
+wxLogMessage(m_TextFile->GetStatistics().Get() + m_TextFile->GetRCS().GetDescription());  
   CPPUNIT_ASSERT(m_TextFile->GetRCS().GetDescription() == 
     "Declaration of classes for wxextension cpp unit testing");
     
