@@ -17,6 +17,7 @@ exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   : m_Type(m_Type)
   , m_Contents()
   , m_FullPath(fullpath)
+  , m_ReturnCode(-2)
 {
   switch (m_Type)
   {
@@ -145,6 +146,12 @@ int exSVN::GetInfoAndShowConents()
 
 void exSVN::ShowContents() const
 {
+  // If we did not yet ask GetInfo, return.
+  if (m_ReturnCode == -2)
+  {
+    return;
+  }
+
   // Create a dialog for contents.
   exSTCEntryDialog* dlg = new exSTCEntryDialog(
     wxTheApp->GetTopWindow(), 
