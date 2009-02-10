@@ -335,7 +335,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   {
     if (editor != NULL)
     {
-      editor->AddPendingEvent(event);
+      wxPostEvent(editor, event);
     }
   }
   // tool commands
@@ -344,11 +344,11 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     wxWindow* focus = wxWindow::FindFocus();
     if (focus != NULL)
     {
-      focus->AddPendingEvent(event);
+      wxPostEvent(focus, event);
     }
     else if (editor != NULL)
     {
-      editor->AddPendingEvent(event);
+      wxPostEvent(editor, event);
     }
   }
   // view commands

@@ -238,7 +238,7 @@ void exSTCShell::OnKey(wxKeyEvent& event)
           KeepCommand();
           wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
           event.SetString(m_Command);
-          GetParent()->AddPendingEvent(event);
+          wxPostEvent(GetParent(), event);
         }
         else
         {
@@ -251,7 +251,7 @@ void exSTCShell::OnKey(wxKeyEvent& event)
         KeepCommand();
         wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
         event.SetString(m_Command);
-        GetParent()->AddPendingEvent(event);
+        wxPostEvent(GetParent(), event);
       }
 
       m_Command.clear();
@@ -292,7 +292,7 @@ void exSTCShell::OnKey(wxKeyEvent& event)
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
-    GetParent()->AddPendingEvent(event);
+    wxPostEvent(GetParent(), event);
   }
   // Ctrl-V pressed, used for pasting as well.
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')
