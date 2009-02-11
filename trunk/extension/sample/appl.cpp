@@ -105,7 +105,6 @@ exSampleFrame::exSampleFrame(const wxString& title)
   exMenu* menuConfig = new exMenu;
   menuConfig->Append(ID_CONFIG_DLG, exEllipsed(_("Config Dialog")));
   menuConfig->Append(ID_CONFIG_DLG_READONLY, exEllipsed(_("Config Dialog Readonly")));
-  menuConfig->AppendSeparator();
 
   exMenu* menuSTC = new exMenu;
   menuSTC->Append(ID_STC_FLAGS, exEllipsed(_("Open Flag")));
