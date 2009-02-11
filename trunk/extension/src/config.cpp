@@ -262,7 +262,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
     AddUserSizer(sizer);
   }
 
-  Fit();
+  BuildSizers();
 }
 
 wxControl* exConfigDialog::Add(

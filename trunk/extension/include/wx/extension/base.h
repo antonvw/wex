@@ -54,10 +54,15 @@ protected:
   wxSizerItem* AddUserSizer(
     wxWindow* window,
     const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
+    
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(
     wxSizer* sizer,
     const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
+    
+  /// BUild the sizers. Should be invoked after adding to sizers.
+  void BuildSizers();
+  
   /// Gets the flags (as specified in constructor).
   long GetFlags() const {return m_Flags;};
 private:

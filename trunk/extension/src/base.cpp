@@ -31,31 +31,6 @@ exDialog::exDialog(wxWindow* parent,
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
-  m_TopSizer->AddGrowableCol(0);
-  m_UserSizer->AddGrowableCol(0);
-
-  wxSizerFlags flag;
-  flag.Expand().Center().Border();
-
-  // The top sizer starts with a spacer, for a nice border.
-  m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
-
-  // Then place the growable user sizer.
-  m_TopSizer->Add(m_UserSizer, flag);
-  m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
-
-  // Then the button sizer.
-  wxSizer* sbz = CreateSeparatedButtonSizer(flags);
-
-  if (sbz != NULL)
-  {
-    m_TopSizer->Add(sbz, flag);
-  }
-
-  // The top sizer ends with a spacer as well.
-  m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
-
-  SetSizer(m_TopSizer);
 }
 
 wxSizerItem* exDialog::AddUserSizer(
@@ -88,6 +63,38 @@ wxSizerItem* exDialog::AddUserSizer(
   m_TopSizer->SetSizeHints(this);
 
   return item;
+}
+
+
+void exDialog::BuildSizers()
+{
+  m_TopSizer->AddGrowableCol(0);
+  m_UserSizer->AddGrowableCol(0);
+
+  wxSizerFlags flag;
+  flag.Expand().Center().Border();
+
+  // The top sizer starts with a spacer, for a nice border.
+  m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
+
+  // Then place the growable user sizer.
+  m_TopSizer->Add(m_UserSizer, flag);
+  m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
+
+  // Then the button sizer.
+  wxSizer* sbz = CreateSeparatedButtonSizer(m_Flags);
+
+  if (sbz != NULL)
+  {
+    m_TopSizer->Add(sbz, flag);
+  }
+
+  // The top sizer ends with a spacer as well.
+  m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
+
+  SetSizer(m_TopSizer);
+  
+  Fit();
 }
 
 #if wxUSE_STATUSBAR

@@ -2773,5 +2773,7 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
   }
 
   AddUserSizer(m_STC);
+  
+  BuildSizers();
 }
 #endif // wxUSE_GUI
