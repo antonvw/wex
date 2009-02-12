@@ -144,6 +144,7 @@ int ftProcess::ConfigDialog()
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
   const int result = exConfigDialog(NULL,
+    exApp::GetConfig(),
     v,
     _("Select Process")).ShowModal();
 

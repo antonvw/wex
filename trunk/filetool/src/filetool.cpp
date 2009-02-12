@@ -51,6 +51,7 @@ void ftFindInFiles(ftFrame* frame, bool replace)
   v.push_back(exConfigItem(_("Match case"), CONFIG_CHECKBOX));
 
   if (exConfigDialog(NULL,
+    exApp::GetConfig(),
     v,
     (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
   {

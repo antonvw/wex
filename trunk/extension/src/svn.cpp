@@ -72,6 +72,7 @@ int exSVN::GetInfo(bool show_dialog)
     v.push_back(exConfigItem(_("Flags")));
 
     if (exConfigDialog(wxTheApp->GetTopWindow(),
+      exApp::GetConfig(),
       v,
       m_Caption).ShowModal() == wxID_CANCEL)
     {

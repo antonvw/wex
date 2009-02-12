@@ -815,6 +815,7 @@ int exSTC::ConfigDialog(
   {
     exConfigDialog dlg(
       parent,
+      exApp::GetConfig(),
       items,
       title,
       GetConfigKeyBase(),
@@ -833,6 +834,7 @@ int exSTC::ConfigDialog(
     {
       m_ConfigDialog = new exConfigDialog(
         parent,
+        exApp::GetConfig(),
         items,
         title,
         GetConfigKeyBase(),

@@ -14,7 +14,7 @@
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
 #include <wx/spinctrl.h>
-#include <wx/extension/extension.h>
+#include <wx/extension/config.h>
 #include <wx/extension/stc.h> // for PathListInit
 
 using namespace std;
@@ -84,6 +84,7 @@ END_EVENT_TABLE()
 // wxPropertySheetDialog has been tried as well,
 // then you always have a notebook, and apply button is not supported.
 exConfigDialog::exConfigDialog(wxWindow* parent,
+  exConfig* config,
   vector<exConfigItem> v,
   const wxString& title,
   const wxString& configGroup,
@@ -95,10 +96,9 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
   const wxSize& size,
   long style)
   : exDialog(parent, title, flags, id, pos, size, style)
+  , m_Config(config)
   , m_ConfigGroup(configGroup)
 {
-  m_Config = exApp::GetConfig();
-
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
   wxFlexGridSizer* notebook_sizer = NULL;

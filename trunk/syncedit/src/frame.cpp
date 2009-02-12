@@ -496,7 +496,7 @@ and saved in the same directory as where the executable is."));
     v.push_back(exConfigItem()); // a spacer
     v.push_back(exConfigItem("SVN", CONFIG_CHECKBOX));
     v.push_back(exConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
-    exConfigDialog(this, v, _("Set SVN And Comparator")).ShowModal();
+    exConfigDialog(this, exApp::GetConfig(), v, _("Set SVN And Comparator")).ShowModal();
     }
     break;
   case ID_OPTION_EDITOR:
@@ -517,6 +517,7 @@ and saved in the same directory as where the executable is."));
 
       if (exConfigDialog(
         this,
+        exApp::GetConfig(),
         v,
         _("Set List Font")).ShowModal() == wxID_OK)
       {

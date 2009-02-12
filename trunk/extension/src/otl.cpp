@@ -31,6 +31,7 @@ bool exOTLDialog(
 
   // Always show the dialog.
   if (exConfigDialog(wxTheApp->GetTopWindow(),
+    exApp::GetConfig(),
     v,
     _("Open ODBC Database")).ShowModal() == wxID_CANCEL)
   {

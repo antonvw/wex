@@ -166,6 +166,7 @@ int ftListView::AddItems()
   v.push_back(exConfigItem(_("Add folders"), CONFIG_CHECKBOX));
 
   if (exConfigDialog(NULL,
+    exApp::GetConfig(),
     v,
     _("Add Files")).ShowModal() == wxID_CANCEL)
   {
@@ -1153,6 +1154,7 @@ void ftListView::RunItems(const exTool& tool)
     v.push_back(exConfigItem(_("Match case"), CONFIG_CHECKBOX));
 
     if (exConfigDialog(NULL,
+      exApp::GetConfig(),
       v,
       GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
     {
@@ -1250,7 +1252,7 @@ void ftRBSFile::GenerateDialog()
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("RBS File"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
   v.push_back(exConfigItem(_("RBS Pattern"), CONFIG_DIRPICKERCTRL));
-  exConfigDialog dlg(NULL, v, _("Build RBS File"));
+  exConfigDialog dlg(NULL, exApp::GetConfig(), v, _("Build RBS File"));
   if (dlg.ShowModal() == wxID_CANCEL) return;
 
   const wxString script = exApp::GetConfig(_("RBS File"));

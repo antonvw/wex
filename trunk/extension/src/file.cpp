@@ -267,6 +267,7 @@ int exStat::ConfigDialog(
   {
     m_ConfigDialog = new exConfigDialog(
       parent,
+      exApp::GetConfig(),
       items,
       title,
       "Colour/",
