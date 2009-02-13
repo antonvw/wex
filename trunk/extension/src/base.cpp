@@ -44,8 +44,6 @@ wxSizerItem* exDialog::AddUserSizer(
     m_UserSizer->AddGrowableRow(m_UserSizer->GetChildren().GetCount() - 1);
   }
 
-  m_TopSizer->SetSizeHints(this);
-
   return item;
 }
 
@@ -59,8 +57,6 @@ wxSizerItem* exDialog::AddUserSizer(
   {
     m_UserSizer->AddGrowableRow(m_UserSizer->GetChildren().GetCount() - 1);
   }
-
-  m_TopSizer->SetSizeHints(this);
 
   return item;
 }
@@ -92,9 +88,7 @@ void exDialog::BuildSizers()
   // The top sizer ends with a spacer as well.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
-  SetSizer(m_TopSizer);
-  
-  Fit();
+  SetSizerAndFit(m_TopSizer);
 }
 
 #if wxUSE_STATUSBAR

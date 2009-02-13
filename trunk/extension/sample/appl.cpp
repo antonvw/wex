@@ -301,6 +301,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
     exConfigDialog* dlg = new exConfigDialog(
       this,
+      exApp::GetConfig(),
       v,
       _("Config Dialog"),
       wxEmptyString,
@@ -332,6 +333,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
     exConfigDialog* dlg = new exConfigDialog(
       this,
+      exApp::GetConfig(),
       v,
       _("Config Dialog Readonly"),
       wxEmptyString,

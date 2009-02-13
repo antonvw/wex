@@ -246,12 +246,9 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
     m_ConfigItems.push_back(*it);
   }
 
-  if (notebook != NULL && notebook_sizer != NULL && sizer != NULL)
+  if (page_panel != NULL && notebook_sizer != NULL && sizer != NULL)
   {
-    if (sizer != NULL)
-    {
-      page_panel->SetSizer(sizer);
-    }
+    page_panel->SetSizer(sizer);
 
     AddUserSizer(notebook_sizer);
 
