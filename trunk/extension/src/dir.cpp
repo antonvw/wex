@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/extension/extension.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/util.h>
 
 class exDirTraverser: public wxDirTraverser
 {
@@ -69,7 +69,7 @@ public:
       }
     }
 
-    if (wxIsMainThread())
+    if (wxIsMainThread() && wxTheApp != NULL)
     {
       wxTheApp->Yield();
     }
@@ -104,15 +104,11 @@ size_t exDir::FindFiles(int flags, bool callOnFile)
 
   m_Flags = flags;
 
-  exFrame::StatusText(_("Collecting files"));
-
   exDirTraverser traverser(*this, m_Files, callOnFile);
 
   // TODO: Using m_FileSpec here does not work, as it might
   // contains several specs (*.cpp;*.h), wxDir does not handle that.
   Traverse(traverser, wxEmptyString, m_Flags);
-  
-  exFrame::StatusText(_("Ready"));
   
   return m_Files.Count();
 }

@@ -12,6 +12,7 @@
 #ifndef _EXDIR_H
 #define _EXDIR_H
 
+#include <wx/arrstr.h> 
 #include <wx/dir.h>
 
 /// Adds FindFiles to a wxDir, by overriding OnFile you can take care

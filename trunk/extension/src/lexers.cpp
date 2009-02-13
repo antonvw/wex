@@ -14,7 +14,7 @@
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/extension.h> // for exMatchesOneOf
+#include <wx/extension/util.h> // for exMatchesOneOf
 
 exLexers::exLexers(const wxFileName& filename)
   : m_FileName(filename)

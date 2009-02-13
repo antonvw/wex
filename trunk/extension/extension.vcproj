@@ -223,6 +223,9 @@
 			<File
 				RelativePath=".\src\tool.cpp">
 			</File>
+			<File
+				RelativePath=".\src\util.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -286,6 +289,9 @@
 			</File>
 			<File
 				RelativePath=".\include\wx\extension\tool.h">
+			</File>
+			<File
+				RelativePath=".\include\wx\extension\util.h">
 			</File>
 			<File
 				RelativePath=".\include\wx\extension\version.h">
