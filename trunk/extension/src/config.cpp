@@ -138,7 +138,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
         // Finish the current page.
         if (sizer != NULL)
         {
-          page_panel->SetSizer(sizer);
+          page_panel->SetSizerAndFit(sizer);
         }
 
         // And make a new one.
@@ -152,6 +152,8 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
         sizer = new wxFlexGridSizer(rows, cols, 0, 0);
       else
         sizer = new wxFlexGridSizer(cols);
+
+      sizer->AddGrowableRow(0);
 
       if (cols == 2)
       {
