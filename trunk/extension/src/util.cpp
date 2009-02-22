@@ -16,7 +16,6 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_GUI
 bool exClipboardAdd(const wxString& text)
 {
   wxClipboardLocker locker;
@@ -53,6 +52,7 @@ const wxString exClipboardGet()
   return data.GetText();
 }
 
+#if wxUSE_GUI
 void exComboBoxFromString(
   wxComboBox* cb,
   const wxString& text,
