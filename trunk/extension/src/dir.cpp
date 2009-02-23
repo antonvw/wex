@@ -102,6 +102,8 @@ size_t exDir::FindFiles(int flags, bool callOnFile)
 {
   if (!IsOpened()) return 0;
 
+  m_Files.clear();
+  
   m_Flags = flags;
 
   exDirTraverser traverser(*this, m_Files, callOnFile);
