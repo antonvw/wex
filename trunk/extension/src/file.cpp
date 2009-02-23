@@ -12,9 +12,10 @@
 #ifdef __WXMSW__
 #include <io.h> // for chmod
 #endif
-#include <wx/extension/extension.h>
 #include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/extension/app.h> // for exApp
+#include <wx/extension/util.h> // for exColourToLong
 
 exFile::exFile()
   : m_FileName()
