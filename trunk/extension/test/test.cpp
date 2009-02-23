@@ -291,6 +291,7 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_App->GetPrinter() != NULL);
 
   // test exDir
+  CPPUNIT_ASSERT(m_Dir->FindFiles() > 0);
   CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
 
   // test exSVN
