@@ -272,13 +272,13 @@ void exTestFixture::tearDown()
 
 void exAppTestFixture::setUp()
 {
+  m_App = new exApp();
+  m_Dir = new exDir("./");
+  m_SVN = new exSVN(SVN_STAT, "test.h");
 }
 
 void exAppTestFixture::testConstructors()
 {
-  m_App = new exApp();
-  m_Dir = new exDir("./");
-  m_SVN = new exSVN(SVN_STAT, "test.h");
 }
 
 void exAppTestFixture::testMethods()
@@ -298,6 +298,9 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
   CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
 }
+
+// make a separate file here, without a main
+// IMPLEMENT_APP(exApp)
 
 void exAppTestFixture::tearDown()
 {
