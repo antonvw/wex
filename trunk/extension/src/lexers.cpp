@@ -183,8 +183,8 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
 const exLexer exLexers::ParseTagLexer(const wxXmlNode* node) const
 {
   exLexer lexer;
-  lexer.m_ScintillaLexer = node->GetAttribute("name", "cpp");
-  lexer.m_Associations = node->GetAttribute("extensions", "*.cpp");
+  lexer.m_ScintillaLexer = node->GetAttribute("name", "");
+  lexer.m_Associations = node->GetAttribute("extensions", "");
 
   wxXmlNode *child = node->GetChildren();
 
