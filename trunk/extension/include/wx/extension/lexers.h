@@ -72,9 +72,6 @@ public:
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
   
-  /// Gets the lexers.
-  const std::vector<exLexer>& Get() const {return m_Lexers;};
-
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};
 
@@ -90,6 +87,13 @@ public:
   /// Reads the lexers, keywords, markers and styles from file.
   /// Returns true if file exists and is valid xml document.
   bool Read();
+
+  /// Shows a dialog with all lexers, allowing you to choose one.
+  /// Returns true if you selected one.
+  bool ShowDialog(
+    wxWindow* parent,
+    const wxString& caption = _("Enter Lexer"),
+    exLexer& lexer = exLexer());
 private:
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);

@@ -1496,33 +1496,13 @@ void exSTC::Initialize()
 
 void exSTC::LexerDialog(const wxString& caption)
 {
-  wxArrayString aChoices;
-  int choice = -1;
-  int index = 0;
+  exLexer lexer = m_FileName.GetLexer();
 
-  for (
-    vector<exLexer>::const_iterator it = exApp::GetLexers()->Get().begin();
-    it != exApp::GetLexers()->Get().end();
-    ++it)
-  {
-    aChoices.Add(it->GetScintillaLexer());
-    if (m_FileName.GetLexer().GetScintillaLexer() == it->GetScintillaLexer())
-    {
-      choice = index;
-    }
-
-    index++;
-  }
-
-  wxSingleChoiceDialog dlg(this, _("Input") + ":", caption, aChoices);
-  dlg.SetSelection(choice);
-
-  if (dlg.ShowModal() == wxID_CANCEL)
+  if (!exApp::GetLexers()->ShowDialog(this, caption, lexer))
   {
     return;
   }
 
-  const exLexer lexer = exApp::GetLexers()->FindByName(dlg.GetStringSelection());
   SetLexer(lexer.GetScintillaLexer());
 }
 

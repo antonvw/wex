@@ -337,3 +337,40 @@ bool exLexers::Read()
 
   return true; 
 }
+
+bool exLexers::ShowDialog(
+  wxWindow* parent,
+  const wxString& caption,
+  exLexer& lexer)
+{
+  wxArrayString aChoices;
+  int choice = -1;
+  int index = 0;
+
+  for (
+    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
+  {
+    aChoices.Add(it->GetScintillaLexer());
+
+    if (lexer.GetScintillaLexer() == it->GetScintillaLexer())
+    {
+      choice = index;
+    }
+
+    index++;
+  }
+
+  wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, aChoices);
+  dlg.SetSelection(choice);
+
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return false;
+  }
+
+  lexer = FindByName(dlg.GetStringSelection());
+
+  return true;
+}
