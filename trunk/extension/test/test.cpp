@@ -83,7 +83,8 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(!m_Lexers->Get().empty());
+  CPPUNIT_ASSERT(m_Lexers->Count() > 0);
+  CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName("test.h")).empty());
   CPPUNIT_ASSERT(!m_Lexers->GetIndicators().empty());
   CPPUNIT_ASSERT(!m_Lexers->GetMarkers().empty());
   CPPUNIT_ASSERT(!m_Lexers->GetStyles().empty());

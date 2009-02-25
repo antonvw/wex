@@ -21,7 +21,7 @@ exLexers::exLexers(const wxFileName& filename)
 {
 }
 
-const wxString exLexers::BuildwildCards(const wxFileName& filename) const
+const wxString exLexers::BuildWildCards(const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =
     _("All Files") + wxString::Format(" (%s)|%s",
@@ -376,8 +376,8 @@ bool exLexers::Read()
 
 bool exLexers::ShowDialog(
   wxWindow* parent,
-  const wxString& caption,
-  exLexer& lexer) const
+  exLexer& lexer, 
+  const wxString& caption) const
 {
   wxArrayString aChoices;
   int choice = -1;

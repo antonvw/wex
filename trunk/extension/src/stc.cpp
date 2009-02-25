@@ -1498,7 +1498,7 @@ void exSTC::LexerDialog(const wxString& caption)
 {
   exLexer lexer = m_FileName.GetLexer();
 
-  if (!exApp::GetLexers()->ShowDialog(this, caption, lexer))
+  if (!exApp::GetLexers()->ShowDialog(this, lexer, caption))
   {
     return;
   }

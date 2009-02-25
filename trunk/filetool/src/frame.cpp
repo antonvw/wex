@@ -74,7 +74,7 @@ bool ftFrame::DialogFileOpen(long style, bool ask_for_continue)
 
   if (stc != NULL)
   {
-    wildcards = exApp::GetLexers()->BuildwildCards(stc->GetFileName());
+    wildcards = exApp::GetLexers()->BuildWildCards(stc->GetFileName());
   }
 
   wxFileDialog dlg(this,

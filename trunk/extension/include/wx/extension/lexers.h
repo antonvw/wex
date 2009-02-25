@@ -61,7 +61,7 @@ public:
   exLexers(const wxFileName& filename);
 
   /// Builds a wildcard string from available lexers using specified filename.
-  const wxString BuildwildCards(const wxFileName& filename) const;
+  const wxString BuildWildCards(const wxFileName& filename) const;
 
   /// Returns the number of lexers.
   const size_t Count() const {
@@ -100,8 +100,8 @@ public:
   /// Returns true if you selected one.
   bool ShowDialog(
     wxWindow* parent,
-    const wxString& caption = _("Enter Lexer"),
-    exLexer& lexer = exLexer()) const;
+    exLexer& lexer,
+    const wxString& caption = _("Enter Lexer")) const;
 private:
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
