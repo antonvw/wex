@@ -33,7 +33,7 @@ Frame::Frame(const wxString& project_wildcard)
   panes.push_back(exPane("PaneLines", 100, _("Lines")));
 
   // Add the lexer pane only if we have lexers.
-  if (!exApp::GetLexers()->Get().empty())
+  if (!exApp::GetLexers()->Count() > 0)
   {
 #ifdef __WXMSW__
     const int lexer_size = 60;

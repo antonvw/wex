@@ -70,36 +70,11 @@ bool ftFrame::DialogFileOpen(long style, bool ask_for_continue)
 {
   ftSTC* stc = GetCurrentSTC();
 
-  const wxString allfiles_wildcard =
-    _("All Files") + wxString::Format(" (%s)|%s",
-      wxFileSelectorDefaultWildcardStr,
-      wxFileSelectorDefaultWildcardStr);
+  wxString wildcards;
 
-  wxString wildcards = allfiles_wildcard;
-
-  // Build the wildcard string using all available lexers.
-  for (
-    std::vector<exLexer>::const_iterator it = exApp::GetLexers()->Get().begin();
-    it != exApp::GetLexers()->Get().end();
-    ++it)
+  if (stc != NULL)
   {
-    if (!it->GetAssociations().empty())
-    {
-      const wxString wildcard =
-        it->GetScintillaLexer() +
-        " (" + it->GetAssociations() + ") |" +
-        it->GetAssociations();
-
-      if (stc != NULL &&
-          exMatchesOneOf(stc->GetFileName(), it->GetAssociations()))
-      {
-        wildcards = wildcard + "|" + wildcards;
-      }
-      else
-      {
-        wildcards = wildcards + "|" + wildcard;
-      }
-    }
+    wildcards = exApp::GetLexers()->BuildwildCards(stc->GetFileName());
   }
 
   wxFileDialog dlg(this,

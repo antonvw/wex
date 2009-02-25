@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2008, Anton van Wezenbeek
+* Copyright (c) 2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -59,6 +59,14 @@ class exLexers
 public:
   /// Constructor for lexers from specified filename.
   exLexers(const wxFileName& filename);
+
+  /// Builds a wildcard string from available lexers using specified filename.
+  const wxString BuildwildCards(const wxFileName& filename) const;
+
+  /// Returns the number of lexers.
+  const size_t Count() const {
+    if (m_Lexers.empty()) return 0;
+    return m_Lexers.size();};
   
   /// Finds a lexer specified by a filename.
   const exLexer FindByFileName(const wxFileName& filename) const;
@@ -93,7 +101,7 @@ public:
   bool ShowDialog(
     wxWindow* parent,
     const wxString& caption = _("Enter Lexer"),
-    exLexer& lexer = exLexer());
+    exLexer& lexer = exLexer()) const;
 private:
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);

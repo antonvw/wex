@@ -20,7 +20,43 @@ exLexers::exLexers(const wxFileName& filename)
   : m_FileName(filename)
 {
 }
-  
+
+const wxString exLexers::BuildwildCards(const wxFileName& filename) const
+{
+  const wxString allfiles_wildcard =
+    _("All Files") + wxString::Format(" (%s)|%s",
+      wxFileSelectorDefaultWildcardStr,
+      wxFileSelectorDefaultWildcardStr);
+
+  wxString wildcards = allfiles_wildcard;
+
+  // Build the wildcard string using all available lexers.
+  for (
+    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
+  {
+    if (!it->GetAssociations().empty())
+    {
+      const wxString wildcard =
+        it->GetScintillaLexer() +
+        " (" + it->GetAssociations() + ") |" +
+        it->GetAssociations();
+
+      if (exMatchesOneOf(filename, it->GetAssociations()))
+      {
+        wildcards = wildcard + "|" + wildcards;
+      }
+      else
+      {
+        wildcards = wildcards + "|" + wildcard;
+      }
+    }
+  }
+
+  return wildcards;
+}
+
 const exLexer exLexers::FindByFileName(const wxFileName& filename) const
 {
   if (!filename.IsOk() || m_Lexers.empty())
@@ -341,7 +377,7 @@ bool exLexers::Read()
 bool exLexers::ShowDialog(
   wxWindow* parent,
   const wxString& caption,
-  exLexer& lexer)
+  exLexer& lexer) const
 {
   wxArrayString aChoices;
   int choice = -1;
