@@ -20,7 +20,7 @@ CC=$(shell wx-config --cxx)
 # Warning flags
 WFLAGS=-Wall -Wpointer-arith 
 
-EXTRAFLAGS=-DWXUSINGDLL -INONE -I/usr/include/cppunit/ -I../include -O2
+EXTRAFLAGS=-DAPP_TEST -DWXUSINGDLL -INONE -I/usr/include/cppunit/ -I../include -O2
 
 OBJS=	test.o\
       main.o

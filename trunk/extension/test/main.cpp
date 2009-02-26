@@ -14,6 +14,7 @@
 #include <cppunit/TestRunner.h>
 #include "test.h"
 
+#ifndef APP_TEST
 int main (int argc, char* argv[]) 
 {
   CppUnit::TextUi::TestRunner runner;
@@ -25,3 +26,4 @@ int main (int argc, char* argv[])
   
   return 0;
 }
+#endif

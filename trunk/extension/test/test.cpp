@@ -300,8 +300,11 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
 }
 
-// make a separate file here, without a main
-// IMPLEMENT_APP(exApp)
+
+#ifdef APP_TEST
+// main is not compiled, so we can use exApp
+IMPLEMENT_APP(exApp)
+#endif
 
 void exAppTestFixture::tearDown()
 {
@@ -310,6 +313,7 @@ void exAppTestFixture::tearDown()
 exTestSuite::exTestSuite()
   : CppUnit::TestSuite("wxextension test suite")
 {
+#ifndef APP_TEST
   // Add the tests.
   addTest(new CppUnit::TestCaller<exTestFixture>(
     "testConstructors",
@@ -330,9 +334,7 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exTestFixture>(
     "testTimingConfig",
     &exTestFixture::testTimingConfig));
-    
-/* TODO: the exApp or wxApp not yet okay without normal wxApp initialization
-
+#else    
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testConstructors",
     &exAppTestFixture::testConstructors));
@@ -340,5 +342,5 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testMethods",
     &exAppTestFixture::testMethods));
-    */
+#endif
 }
