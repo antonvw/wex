@@ -1498,12 +1498,10 @@ void exSTC::LexerDialog(const wxString& caption)
 {
   exLexer lexer = m_FileName.GetLexer();
 
-  if (!exApp::GetLexers()->ShowDialog(this, lexer, caption))
+  if (exApp::GetLexers()->ShowDialog(this, lexer, caption))
   {
-    return;
+    SetLexer(lexer.GetScintillaLexer());
   }
-
-  SetLexer(lexer.GetScintillaLexer());
 }
 
 bool exSTC::LinkOpen(
