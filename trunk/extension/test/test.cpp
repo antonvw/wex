@@ -48,7 +48,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", "true") == false);
   m_Config->Toggle("keybool");
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", "false"));
-  
+
   // test exFile
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
   CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() == "test.h");
@@ -63,7 +63,7 @@ void exTestFixture::testMethods()
   // test exFileNameStatistics
   CPPUNIT_ASSERT(m_FileNameStatistics->Get().empty());
   CPPUNIT_ASSERT(m_FileNameStatistics->Get("xx") == 0);
-  
+
   // test exLexer
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
@@ -139,30 +139,19 @@ void exTestFixture::testMethods()
 
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_COUNT)); // do the same test
   CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool  
-  
+  CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
+
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_HEADER));
   CPPUNIT_ASSERT(m_TextFile->GetTool().GetId() == ID_TOOL_REPORT_HEADER);
-//wxLogMessage(m_TextFile->GetStatistics().Get() + m_TextFile->GetRCS().GetDescription());  
-//  CPPUNIT_ASSERT(m_TextFile->GetRCS().GetDescription() == 
+//wxLogMessage(m_TextFile->GetStatistics().Get() + m_TextFile->GetRCS().GetDescription());
+//  CPPUNIT_ASSERT(m_TextFile->GetRCS().GetDescription() ==
 //    "Declaration of classes for wxextension cpp unit testing");
-    
+
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_KEYWORD));
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
   // test exTool
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
-  
-  // test util
-  /*
-  CPPUNIT_ASSERT(exClipboardAdd("test"));  
-  CPPUNIT_ASSERT(exClipboardGet() == "test");
-  CPPUNIT_ASSERT(exGetNumberOfLines("test\ntest\n") == 2);
-  CPPUNIT_ASSERT(exGetLineNumberFromText("test on line: 1200") == 1200);
-  CPPUNIT_ASSERT(!exMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
-  CPPUNIT_ASSERT(exMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
-  CPPUNIT_ASSERT(exSkipWhiteSpace("t     es   t") == "t es t");
-*/
 }
 
 void exTestFixture::testTiming()
@@ -271,6 +260,32 @@ void exTestFixture::tearDown()
 {
 }
 
+#ifdef APP_TEST
+// main is not compiled, so we can use exApp
+IMPLEMENT_APP(exTestApp)
+#endif
+
+bool exTestApp::OnInit()
+{
+  SetAppName("exTestApp");
+
+  exApp::OnInit();
+
+  exFrame *frame = new exFrame("exTestApp");
+  frame->Show(true);
+
+  SetTopWindow(frame);
+
+  CppUnit::TextUi::TestRunner runner;
+
+  exTestSuite* suite = new exTestSuite;
+
+  runner.addTest(suite);
+  runner.run();
+
+  return true;
+}
+
 void exAppTestFixture::setUp()
 {
   m_App = new exApp();
@@ -298,13 +313,16 @@ void exAppTestFixture::testMethods()
   // test exSVN
   CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
   CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
+
+  // test util
+  CPPUNIT_ASSERT(exClipboardAdd("test"));
+  CPPUNIT_ASSERT(exClipboardGet() == "test");
+  CPPUNIT_ASSERT(exGetNumberOfLines("test\ntest\n") == 2);
+  CPPUNIT_ASSERT(exGetLineNumberFromText("test on line: 1200") == 1200);
+  CPPUNIT_ASSERT(!exMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
+  CPPUNIT_ASSERT(exMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
+  CPPUNIT_ASSERT(exSkipWhiteSpace("t     es   t") == "t es t");
 }
-
-
-#ifdef APP_TEST
-// main is not compiled, so we can use exApp
-IMPLEMENT_APP(exApp)
-#endif
 
 void exAppTestFixture::tearDown()
 {
@@ -334,7 +352,7 @@ exTestSuite::exTestSuite()
   addTest(new CppUnit::TestCaller<exTestFixture>(
     "testTimingConfig",
     &exTestFixture::testTimingConfig));
-#else    
+#else
   addTest(new CppUnit::TestCaller<exAppTestFixture>(
     "testConstructors",
     &exAppTestFixture::testConstructors));

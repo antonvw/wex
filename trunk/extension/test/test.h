@@ -47,7 +47,7 @@ public:
     m_Tool = NULL;
     };
 
-  /// Destructor.    
+  /// Destructor.
  ~exTestFixture() {
     delete m_Config;
     delete m_File;
@@ -63,9 +63,9 @@ public:
     };
 
   /// From TestFixture.
-  /// Set up context before running a test. 
+  /// Set up context before running a test.
   virtual void setUp();
-  
+
   /// Clean up after the test run.
   virtual void tearDown();
 
@@ -74,13 +74,13 @@ public:
 
   /// Test methods of various extension classes.
   void testMethods();
-  
+
   /// Test timing of methods.
   void testTiming();
-  
+
   /// Test timing of methods.
   void testTimingAttrib();
-  
+
   /// Test timing of methods.
   void testTimingConfig();
 private:
@@ -97,7 +97,19 @@ private:
   exTool* m_Tool; ///< testing exTool
 };
 
+/// Derive your application from exApp.
+class exTestApp: public exApp
+{
+public:
+  /// Constructor.
+  exTestApp() {}
+private:
+  /// Override the OnInit.
+  virtual bool OnInit();
+};
+
 /// CppUnit app test fixture.
+/// These classes require either an exApp object, or wx to be initialized.
 class exAppTestFixture : public CppUnit::TestFixture
 {
 public:
@@ -107,8 +119,8 @@ public:
     m_Dir = NULL;
     m_SVN = NULL;
     };
-    
-  /// Destructor.    
+
+  /// Destructor.
  ~exAppTestFixture() {
     delete m_App;
     delete m_Dir;
@@ -116,20 +128,20 @@ public:
     };
 
   /// From TestFixture.
-  /// Set up context before running a test. 
+  /// Set up context before running a test.
   virtual void setUp();
-  
+
   /// Clean up after the test run.
   virtual void tearDown();
 
   /// Test the constructors of various extension classes.
   void testConstructors();
 
-  /// Test methods of various extension classes.
-  void testMethods();  
+  /// Test methods of various extension classes requiring app.
+  void testMethods();
 private:
-  exApp* m_App; ///< testing exApp
-  exDir* m_Dir; ///< testing exDir
-  exSVN* m_SVN; ///< testing exSVN
+  exTestApp* m_App; ///< testing exApp
+  exDir* m_Dir;     ///< testing exDir
+  exSVN* m_SVN;     ///< testing exSVN
 };
 #endif
