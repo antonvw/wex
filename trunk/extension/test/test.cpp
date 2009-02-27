@@ -260,35 +260,8 @@ void exTestFixture::tearDown()
 {
 }
 
-#ifdef APP_TEST
-// main is not compiled, so we can use exApp
-IMPLEMENT_APP(exTestApp)
-#endif
-
-bool exTestApp::OnInit()
-{
-  SetAppName("exTestApp");
-
-  exApp::OnInit();
-
-  exFrame *frame = new exFrame("exTestApp");
-  frame->Show(true);
-
-  SetTopWindow(frame);
-
-  CppUnit::TextUi::TestRunner runner;
-
-  exTestSuite* suite = new exTestSuite;
-
-  runner.addTest(suite);
-  runner.run();
-
-  return true;
-}
-
 void exAppTestFixture::setUp()
 {
-  m_App = new exApp();
   m_Dir = new exDir("./");
   m_SVN = new exSVN(SVN_STAT, "test.h");
 }
@@ -300,11 +273,9 @@ void exAppTestFixture::testConstructors()
 void exAppTestFixture::testMethods()
 {
   // test exApp
-  m_App->OnInit();
-
-  CPPUNIT_ASSERT(m_App->GetConfig() != NULL);
-  CPPUNIT_ASSERT(m_App->GetLexers() != NULL);
-  CPPUNIT_ASSERT(m_App->GetPrinter() != NULL);
+  CPPUNIT_ASSERT(exApp::GetConfig() != NULL);
+  CPPUNIT_ASSERT(exApp::GetLexers() != NULL);
+  CPPUNIT_ASSERT(exApp::GetPrinter() != NULL);
 
   // test exDir
   CPPUNIT_ASSERT(m_Dir->FindFiles() > 0);
@@ -317,7 +288,7 @@ void exAppTestFixture::testMethods()
   // test util
   CPPUNIT_ASSERT(exClipboardAdd("test"));
   CPPUNIT_ASSERT(exClipboardGet() == "test");
-  CPPUNIT_ASSERT(exGetNumberOfLines("test\ntest\n") == 2);
+  CPPUNIT_ASSERT(exGetNumberOfLines("test\ntest\n") == 3);
   CPPUNIT_ASSERT(exGetLineNumberFromText("test on line: 1200") == 1200);
   CPPUNIT_ASSERT(!exMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(exMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));

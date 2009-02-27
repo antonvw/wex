@@ -115,14 +115,12 @@ class exAppTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   exAppTestFixture() : TestFixture() {
-    m_App = NULL;
     m_Dir = NULL;
     m_SVN = NULL;
     };
 
   /// Destructor.
  ~exAppTestFixture() {
-    delete m_App;
     delete m_Dir;
     delete m_SVN;
     };
@@ -140,7 +138,6 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  exTestApp* m_App; ///< testing exApp
   exDir* m_Dir;     ///< testing exDir
   exSVN* m_SVN;     ///< testing exSVN
 };

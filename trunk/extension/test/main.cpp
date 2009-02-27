@@ -26,4 +26,28 @@ int main (int argc, char* argv[])
   
   return 0;
 }
+#else
+// main is not compiled, so we can use exApp
+IMPLEMENT_APP(exTestApp)
+
+bool exTestApp::OnInit()
+{
+  SetAppName("exTestApp");
+
+  exApp::OnInit();
+
+  exFrame *frame = new exFrame(NULL, wxID_ANY, "exTestApp");
+  frame->Show(true);
+
+  SetTopWindow(frame);
+
+  CppUnit::TextUi::TestRunner runner;
+
+  exTestSuite* suite = new exTestSuite;
+
+  runner.addTest(suite);
+  runner.run();
+
+  return true;
+}
 #endif
