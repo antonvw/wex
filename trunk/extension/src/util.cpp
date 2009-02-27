@@ -21,7 +21,13 @@ bool exClipboardAdd(const wxString& text)
   wxClipboardLocker locker;
   if (!locker) return false;
   if (!wxTheClipboard->AddData(new wxTextDataObject(text))) return false;
-  if (!wxTheClipboard->Flush()) return false; // take care that clipboard data remain after exiting
+  
+  // Take care that clipboard data remain after exiting
+  // This is a boolean method as well, we don't check it, as 
+  // clipboard data is copied.
+  // At least on Ubuntu 8.10 FLush returns false.
+  wxTheClipboard->Flush();
+  
   return true;
 }
 
