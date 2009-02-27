@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/clipbrd.h>
+#include <wx/file.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
@@ -187,7 +188,7 @@ int exGetLineNumberFromText(const wxString& text)
   }
 }
 
-void exLog(const wxString& text, const exFileName& filename)
+void exLog(const wxString& text, const wxFileName& filename)
 {
   wxFile(
     filename.GetFullPath(), 
@@ -195,19 +196,19 @@ void exLog(const wxString& text, const exFileName& filename)
       wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
 }
 
-const exFileName exLogfileName()
+const wxFileName exLogfileName()
 {
   if (wxTheApp == NULL)
   {
-    return exFileName("app.log");
+    return wxFileName("app.log");
   }
 
 #ifdef EX_PORTABLE
-  return exFileName(
+  return wxFileName(
     wxPathOnly(wxStandardPaths::Get().GetExecutablePath()) + wxFileName::GetPathSeparator() + 
     wxTheApp->GetAppName().Lower() + ".log");
 #else
-  return exFileName(
+  return wxFileName(
     wxStandardPaths::Get().GetUserDataDir() + wxFileName::GetPathSeparator() + 
     wxTheApp->GetAppName().Lower() + ".log");
 #endif

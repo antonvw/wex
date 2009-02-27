@@ -16,7 +16,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/extension/file.h>
+#include <wx/filename.h>
 
 /*! \file */
 
@@ -46,10 +46,10 @@ int exGetNumberOfLines(const wxString& text);
 int exGetLineNumberFromText(const wxString& text);
 
 /// Returns the filename of the logfile.
-const exFileName exLogfileName();
+const wxFileName exLogfileName();
 
 /// Logs text with a timestamp at the end of the file.
-void exLog(const wxString& text, const exFileName& filename = exLogfileName());
+void exLog(const wxString& text, const wxFileName& filename = exLogfileName());
 
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
