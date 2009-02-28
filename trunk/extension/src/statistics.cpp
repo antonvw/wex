@@ -36,9 +36,9 @@ long exFileNameStatistics::Get(const wxString& key) const
   return 0;
 }
 
-const exFileName exFileNameStatistics::GetLogfileName()
+const wxFileName exFileNameStatistics::GetLogfileName()
 {
-  exFileName filename(
+  wxFileName filename(
 #ifdef EX_PORTABLE
     wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
 #else

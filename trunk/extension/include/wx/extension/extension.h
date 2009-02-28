@@ -20,6 +20,7 @@
 
 #if wxUSE_GUI
 /// Calls OpenFile for exFrame, if this is your top window.
-void exOpenFile(const exFileName& filename, long open_flags = 0);
+void exOpenFile(const wxFileName& filename, long open_flags = 0);
 #endif // wxUSE_GUI
 #endif
+

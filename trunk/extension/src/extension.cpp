@@ -11,7 +11,7 @@
 
 #include <wx/extension/extension.h>
 
-void exOpenFile(const exFileName& filename, long open_flags)
+void exOpenFile(const wxFileName& filename, long open_flags)
 {
   if (wxTheApp == NULL)
   {
@@ -23,6 +23,6 @@ void exOpenFile(const exFileName& filename, long open_flags)
 
   if (frame != NULL)
   {
-    frame->OpenFile(filename, -1, wxEmptyString, open_flags);
+    frame->OpenFile(exFileName(filename.GetFullPath()), -1, wxEmptyString, open_flags);
   }
 }

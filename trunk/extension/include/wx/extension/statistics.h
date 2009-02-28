@@ -221,7 +221,7 @@ public:
   const exStatistics<long>& GetKeywords() const {return m_Keywords;};
 
   /// Returns the statistics log filename.
-  static const exFileName GetLogfileName();
+  static const wxFileName GetLogfileName();
 
   /// For the last exTextFile::ToolRun logs the elements statistics to 
   /// the statusbar (always), to the statistics logfile (if specified),

@@ -254,7 +254,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     {
       if (exApp::GetLexers()->Read())
       {
-        wxLogMessage("file contains: %d lexers", exApp::GetLexers()->Get().size());
+        wxLogMessage("file contains: %d lexers", exApp::GetLexers()->Count());
         m_STC->SetLexer();
         // As the lexer might have changed, update status bar field as well.
         m_STC->UpdateStatusBar("PaneLexer");
