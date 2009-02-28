@@ -17,7 +17,11 @@
 #include <TestSuite.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/dir.h>
+#include <wx/extension/grid.h>
+#include <wx/extension/listview.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/svn.h>
+#include <wx/extension/shell.h>
 #include <wx/extension/textfile.h>
 
 /// CppUnit test suite.
@@ -116,12 +120,20 @@ public:
   /// Default constructor.
   exAppTestFixture() : TestFixture() {
     m_Dir = NULL;
+    m_Grid = NULL;
+    m_ListView = NULL;
+    m_STC = NULL;
+    m_STCShell = NULL;
     m_SVN = NULL;
     };
 
   /// Destructor.
  ~exAppTestFixture() {
     delete m_Dir;
+    delete m_Grid;
+    delete m_ListView;
+    delete m_STC;
+    delete m_STCShell;
     delete m_SVN;
     };
 
@@ -139,6 +151,10 @@ public:
   void testMethods();
 private:
   exDir* m_Dir;     ///< testing exDir
+  exGrid* m_Grid;   ///< testing exDir
+  exListView* m_ListView; ///< testing exDir
+  exSTCShell* m_STCShell; ///< testing exSTC
+  exSTC* m_STC;     ///< testing exSTC
   exSVN* m_SVN;     ///< testing exSVN
 };
 #endif

@@ -263,6 +263,10 @@ void exTestFixture::tearDown()
 void exAppTestFixture::setUp()
 {
   m_Dir = new exDir("./");
+  m_Grid = new exGrid(wxTheApp->GetTopWindow());
+  m_ListView = new exListView(wxTheApp->GetTopWindow());
+  m_STC = new exSTC(wxTheApp->GetTopWindow(), exFileName("test.h"));
+  m_STCShell = new exSTCShell(wxTheApp->GetTopWindow());
   m_SVN = new exSVN(SVN_STAT, "test.h");
 }
 
