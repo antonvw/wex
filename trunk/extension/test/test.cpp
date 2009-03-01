@@ -287,7 +287,9 @@ void exAppTestFixture::testMethods()
 
   // test exSVN
   CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
-  CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
+  // The contents depends on the svn stat, of course,
+  // so do not assert on it.
+  m_SVN->GetContents();
   
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test");
