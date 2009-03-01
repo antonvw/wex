@@ -49,6 +49,9 @@ public:
   /// Destructor, keeps the commands in the config, if required.
  ~exSTCShell();
 
+  /// Gets all history commands as a string, separated by a newline (for testing).
+  const wxString GetHistory() const;
+
   /// Gets the prompt.
   const wxString& GetPrompt() const {return m_Prompt;};
 
@@ -70,7 +73,9 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
 private:
-  bool GetHistory(const wxString& short_command);
+  /// Gets history command for command specified as number,
+  /// and sets the m_Command to it, if found.
+  bool GetHistoryNo(const wxString& short_command);
   void KeepCommand();
   void ShowHistory();
   void ShowCommand(int key);

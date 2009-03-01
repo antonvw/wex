@@ -97,7 +97,23 @@ exSTCShell::~exSTCShell()
   }
 }
 
-bool exSTCShell::GetHistory(const wxString& short_command)
+
+const wxString exSTCShell::GetHistory() const
+{
+  wxString commands;
+  
+  for (
+    list < wxString >::const_iterator it = m_Commands.begin();
+    it != m_Commands.end();
+    it++)
+  {
+    commands += *it + "\n";
+  }
+  
+  return commands;
+}
+
+bool exSTCShell::GetHistoryNo(const wxString& short_command)
 {
   const int no_asked_for = atoi(short_command.c_str());
 
@@ -106,7 +122,7 @@ bool exSTCShell::GetHistory(const wxString& short_command)
     int no = 1;
 
     for (
-      list < wxString >::iterator it = m_Commands.begin();
+      list < wxString >::const_iterator it = m_Commands.begin();
       it != m_Commands.end();
       it++)
     {
@@ -136,7 +152,7 @@ bool exSTCShell::GetHistory(const wxString& short_command)
     }
 
     for (
-      list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      list < wxString >::const_reverse_iterator it = m_Commands.rbegin();
       it != m_Commands.rend();
       it++)
     {
@@ -232,7 +248,7 @@ void exSTCShell::OnKey(wxKeyEvent& event)
       // !.. command, get it from history.
       else if (m_Command.StartsWith("!"))
       {
-        if (GetHistory(m_Command.substr(1)))
+        if (GetHistoryNo(m_Command.substr(1)))
         {
           AppendText(m_Command);
           KeepCommand();
