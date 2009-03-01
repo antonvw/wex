@@ -45,9 +45,9 @@ void exTestFixture::testMethods()
   m_Config->Set("keylong", 15);
   CPPUNIT_ASSERT(m_Config->Get("keylong", 7) == 15);
   m_Config->SetBool("keybool", false);
-  CPPUNIT_ASSERT(m_Config->GetBool("keybool", "true") == false);
+  CPPUNIT_ASSERT(m_Config->GetBool("keybool", true) == false);
   m_Config->Toggle("keybool");
-  CPPUNIT_ASSERT(m_Config->GetBool("keybool", "false"));
+  CPPUNIT_ASSERT(m_Config->GetBool("keybool", false));
 
   // test exFile
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
@@ -290,10 +290,10 @@ void exAppTestFixture::testMethods()
   // The contents depends on the svn stat, of course,
   // so do not assert on it.
   m_SVN->GetContents();
-  
+
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
-  
+
   // test exSTCShell
   m_STCShell->Prompt("test1");
   m_STCShell->Prompt("test2");
