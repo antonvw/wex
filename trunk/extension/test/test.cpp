@@ -292,7 +292,7 @@ void exAppTestFixture::testMethods()
   m_SVN->GetContents();
   
   // test exSTC
-  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test");
+  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
   
   // test exSTCShell
   m_STCShell->Prompt("test1");
