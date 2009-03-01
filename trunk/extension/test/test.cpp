@@ -288,6 +288,16 @@ void exAppTestFixture::testMethods()
   // test exSVN
   CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
   CPPUNIT_ASSERT(!m_SVN->GetContents().empty());
+  
+  // test exSTC
+  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test");
+  
+  // test exSTCShell
+  m_STCShell->Prompt("test1");
+  m_STCShell->Prompt("test2");
+  m_STCShell->Prompt("test3");
+  m_STCShell->Prompt("test4");
+  CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("test4"));
 
   // test util
   CPPUNIT_ASSERT(exClipboardAdd("test"));
