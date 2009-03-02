@@ -288,14 +288,17 @@ void exAppTestFixture::testMethods()
   // test exGrid
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
   m_Grid->SelectAll();
-  m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test");
-  CPPUNIT_ASSERT(m_Grid->GetSelectedCellsValue() == "test");
+  m_Grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
+  CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test");
+  m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
+  CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test1");
 
   // test exListView
-  exListView->InsertColumn("String", exColumn::COL_STRING);
-  exListView->InsertColumn("Number", exColumn::COL_INT);
-  CPPUNIT_ASSERT(exListView->FindColumn("String") == 0);
-  CPPUNIT_ASSERT(exListView->FindColumn("Number") == 1);
+  m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
+  m_ListView->InsertColumn("String", exColumn::COL_STRING);
+  m_ListView->InsertColumn("Number", exColumn::COL_INT);
+  CPPUNIT_ASSERT(m_ListView->FindColumn("String") == 0);
+  CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
 
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
@@ -305,7 +308,9 @@ void exAppTestFixture::testMethods()
   m_STCShell->Prompt("test2");
   m_STCShell->Prompt("test3");
   m_STCShell->Prompt("test4");
-  CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("test4"));
+  // Prompting does not add a command to history...
+  // TODO: Make a better test.
+  CPPUNIT_ASSERT(!m_STCShell->GetHistory().Contains("test4"));
 
   // test exSVN
   CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
