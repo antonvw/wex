@@ -285,11 +285,17 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Dir->FindFiles() > 0);
   CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
 
-  // test exSVN
-  CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
-  // The contents depends on the svn stat, of course,
-  // so do not assert on it.
-  m_SVN->GetContents();
+  // test exGrid
+  CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
+  m_Grid->SelectAll();
+  m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test");
+  CPPUNIT_ASSERT(m_Grid->GetSelectedCellsValue() == "test");
+
+  // test exListView
+  exListView->InsertColumn("String", exColumn::COL_STRING);
+  exListView->InsertColumn("Number", exColumn::COL_INT);
+  CPPUNIT_ASSERT(exListView->FindColumn("String") == 0);
+  CPPUNIT_ASSERT(exListView->FindColumn("Number") == 1);
 
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
@@ -300,6 +306,12 @@ void exAppTestFixture::testMethods()
   m_STCShell->Prompt("test3");
   m_STCShell->Prompt("test4");
   CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("test4"));
+
+  // test exSVN
+  CPPUNIT_ASSERT(m_SVN->GetInfo(false) == 0); // do not use a dialog
+  // The contents depends on the svn stat, of course,
+  // so do not assert on it.
+  m_SVN->GetContents();
 
   // test util
   CPPUNIT_ASSERT(exClipboardAdd("test"));
