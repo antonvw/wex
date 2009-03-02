@@ -151,8 +151,9 @@ bool exSTCShell::GetHistoryNo(const wxString& short_command)
           short_command.length() - m_CommandEnd.length());
     }
 
+    // using a const_reverse_iterator here does not compile under MSW
     for (
-      list < wxString >::const_reverse_iterator it = m_Commands.rbegin();
+      list < wxString >::reverse_iterator it = m_Commands.rbegin();
       it != m_Commands.rend();
       it++)
     {
