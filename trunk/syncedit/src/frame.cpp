@@ -488,7 +488,7 @@ and saved in the same directory as where the executable is."));
     break;
 
   case ID_OPEN_LEXERS: OpenFile(exFileName(exApp::GetLexers()->GetFileName().GetFullPath())); break;
-  case ID_OPEN_LOGFILE: OpenFile(exLogfileName().GetFullPath()); break;
+  case ID_OPEN_LOGFILE: OpenFile(exLogfileName()); break;
 
   case ID_OPTION_SVN_AND_COMPARATOR:
     {

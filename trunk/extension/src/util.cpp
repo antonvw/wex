@@ -205,11 +205,11 @@ const wxFileName exLogfileName()
 
 #ifdef EX_PORTABLE
   return wxFileName(
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()) + wxFileName::GetPathSeparator() + 
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
     wxTheApp->GetAppName().Lower() + ".log");
 #else
   return wxFileName(
-    wxStandardPaths::Get().GetUserDataDir() + wxFileName::GetPathSeparator() + 
+    wxStandardPaths::Get().GetUserDataDir(),
     wxTheApp->GetAppName().Lower() + ".log");
 #endif
 }

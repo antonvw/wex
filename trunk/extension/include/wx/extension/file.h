@@ -103,6 +103,12 @@ public:
     , m_Stat(fullpath) {
     SetLexer();}
 
+  /// Copy constructor from a wxFileName.
+  exFileName(const wxFileName& filename)
+    : wxFileName(filename) 
+    , m_Stat(filename.GetFullPath()) {
+    SetLexer();}
+
   /// Gets the icon index for this filename (uses the file extension to get it).
   int GetIcon() const;
 
