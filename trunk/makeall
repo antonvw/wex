@@ -7,8 +7,8 @@ echo "extension"
 cd ~/wxprojects/trunk/extension/buildgtk
 make $1
 
-echo "extension sample"
-cd ~/wxprojects/trunk/extension/sample
+echo "extension test"
+cd ~/wxprojects/trunk/extension/test
 make $1
 
 echo "filetool"
