@@ -27,3 +27,5 @@ $(PROGRAM): $(OBJS)
 
 clean:
 	rm -f *.o $(PROGRAM)
+
+install:

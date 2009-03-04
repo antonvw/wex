@@ -3,30 +3,39 @@
 # Purpose: script to make all
 # RCS-ID:  $Id$
 
-echo "extension"
+echo "-- extension --"
 cd ~/wxprojects/trunk/extension/buildgtk
 make $1
+if [ "$?" != "0" ]; then
+  exit 1
+fi
 
-echo "extension test"
+echo "-- extension test --"
 cd ~/wxprojects/trunk/extension/test
 make $1
+if [ "$?" != "0" ]; then
+  exit 1
+fi
 
-echo "filetool"
+echo "-- filetool --"
 cd ~/wxprojects/trunk/filetool/buildgtk
 make $1
+if [ "$?" != "0" ]; then
+  exit 1
+fi
 
-echo "filetool sample"
+echo "-- filetool sample --"
 cd ~/wxprojects/trunk/filetool/sample
 make $1
 
-echo "syncedit"
+echo "-- syncedit --"
 cd ~/wxprojects/trunk/syncedit/buildgtk
 make $1
 
-echo "syncodbcquery"
+echo "-- syncodbcquery --"
 cd ~/wxprojects/trunk/syncodbcquery
 make $1
 
-echo "syncsocketserver"
+echo "-- syncsocketserver --"
 cd ~/wxprojects/trunk/syncsocketserver
 make $1

@@ -13,6 +13,7 @@ WXWIN_BASE_VERSION=$(shell wx-config --release)
 LIBS=-L../../libs -lwxextension.v1.0.gtk `wx-config --libs all` -lodbc -lcppunit
 CFLAGS=-DUSE_OTL `wx-config --cflags`
 LIBPATH=/usr/local/lib
+CLFLAG= # use -DAPP_TEST
 PROGRAM=test.v1.0
 
 CC=$(shell wx-config --cxx)
@@ -20,7 +21,7 @@ CC=$(shell wx-config --cxx)
 # Warning flags
 WFLAGS=-Wall -Wpointer-arith 
 
-EXTRAFLAGS=-DAPP_TEST -DWXUSINGDLL -INONE -I/usr/include/cppunit/ -I../include -O2
+EXTRAFLAGS=$(CLFLAG) -DWXUSINGDLL -INONE -I/usr/include/cppunit/ -I../include -O2
 
 OBJS=	test.o\
       main.o
@@ -35,4 +36,6 @@ clean:
 	rm -f *.o $(PROGRAM)
 
 install:
-	@cp $(PROGRAM) $(BINPATH)
+
+run:
+	./$(PROGRAM)
