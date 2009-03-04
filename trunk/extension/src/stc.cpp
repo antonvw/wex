@@ -1804,7 +1804,7 @@ void exSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  m_FileName.GetStat().Update(m_FileName.GetFullPath());
+  m_FileName.GetStat().Sync();
 
   if (
     IsOpened() ||

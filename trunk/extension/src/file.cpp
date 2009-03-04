@@ -95,7 +95,7 @@ bool exFile::FileNew(const exFileName& filename)
 {
   if (!Continue()) return false;
 
-  Update(filename);
+  m_FileName = filename;
 
   return true;
 }
@@ -106,7 +106,7 @@ bool exFile::FileOpen(const exFileName& filename)
     !Continue() ||
     !filename.FileExists()) return false;
 
-  Update(filename);
+  m_FileName = filename;
 
   return Open(m_FileName.GetFullPath());
 }
@@ -169,14 +169,6 @@ wxString* exFile::Read(wxFileOffset seek_position)
     wxLogError(FILE_INFO("Read error"));
     return NULL;
   }
-}
-
-void exFile::Update(const exFileName& filename)
-{
-  m_FileName.Assign(filename);
-  m_FileName.GetStat().Update(filename.GetFullPath());
-  m_FileName.SetLexer();
-  m_Stat.Update(filename.GetFullPath());
 }
 
 int exFileName::GetIcon() const

@@ -70,6 +70,11 @@ public:
   /// Sets readonly as specified.
   bool SetReadOnly(const bool read_only);
 
+  /// Updates stat only, returns result and keeps result in IsOk.
+  bool Sync() {
+    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
+    return m_IsOk;};
+
   /// Updates fullpath member, returns result and keeps result in IsOk.
   bool Update(const wxString& fullpath) {
     m_FullPath = fullpath;
@@ -205,8 +210,6 @@ public:
 protected:
   exFileName m_FileName; ///< the filename
 private:
-  void Update(const exFileName& filename);
-
   exStat m_Stat;
   wxString m_Message;
   wxString m_Wildcard;

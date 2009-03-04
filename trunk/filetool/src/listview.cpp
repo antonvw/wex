@@ -970,7 +970,7 @@ void ftListView::OnIdle(wxIdleEvent& event)
     }
   }
 
-  m_FileName.GetStat().Update(m_FileName.GetFullPath());
+  m_FileName.GetStat().Sync();
 
   if (m_FileName.GetStat().IsOk())
   {
