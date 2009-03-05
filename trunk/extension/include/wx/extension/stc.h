@@ -148,7 +148,7 @@ public:
   void FileTypeMenu();
 
   /// Gets allowed synchronize.
-  static bool GetAllowSync() {return m_AllowSync;};
+  static bool GetAllowSync() {return GetConfigBool(_("Allow sync"), true);};
 
   /// Gets EOL string.
   const wxString GetEOL();
@@ -201,8 +201,8 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
-  /// Default syncing is on (allowed). Here you can turn if off, and on again.
-  static void SetAllowSync(bool allow_sync) {m_AllowSync = allow_sync;};
+  /// Change the syncing behaviour. Here you can turn if off, and on again.
+  static void SetAllowSync(bool allow_sync);
 
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.
@@ -292,7 +292,6 @@ private:
     return "Edit/";};
 
   // All objects share the following:
-  static bool m_AllowSync;
   static exConfigDialog* m_ConfigDialog;
   static std::vector <wxString> m_Macro;
   static wxPathList m_PathList;

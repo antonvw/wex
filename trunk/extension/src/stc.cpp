@@ -258,7 +258,6 @@ BEGIN_EVENT_TABLE(exSTC, wxStyledTextCtrl)
   EVT_STC_MODIFIED(wxID_ANY, exSTC::OnStyledText)
 END_EVENT_TABLE()
 
-bool exSTC::m_AllowSync = true;
 exConfigDialog* exSTC::m_ConfigDialog = NULL;
 vector <wxString> exSTC::m_Macro;
 wxPathList exSTC::m_PathList;
@@ -960,7 +959,7 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
 bool exSTC::FileIsSynced()
 {
   // Stop if not allowed.
-  if (!m_AllowSync)
+  if (!GetConfigBool(_("Allow sync"), true))
   {
     return false;
   }
@@ -2394,6 +2393,12 @@ void exSTC::SequenceDialog()
   }
 
   AddText(sequence + GetEOL());
+}
+
+
+void exSTC::SetAllowSync(bool allow_sync) 
+{
+  exApp::SetConfigBool(GetConfigKeyBase() + _("Allow sync"), allow_sync);
 }
 
 void exSTC::SetFolding()
