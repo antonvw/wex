@@ -959,7 +959,7 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
 bool exSTC::FileIsSynced()
 {
   // Stop if not allowed.
-  if (!GetConfigBool(_("Allow sync"), true))
+  if (!exApp::GetConfigBool("AllowSync"), true))
   {
     return false;
   }
@@ -2393,12 +2393,6 @@ void exSTC::SequenceDialog()
   }
 
   AddText(sequence + GetEOL());
-}
-
-
-void exSTC::SetAllowSync(bool allow_sync) 
-{
-  exApp::SetConfigBool(GetConfigKeyBase() + _("Allow sync"), allow_sync);
 }
 
 void exSTC::SetFolding()

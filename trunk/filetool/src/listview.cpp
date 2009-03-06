@@ -972,7 +972,8 @@ void ftListView::OnIdle(wxIdleEvent& event)
 
   m_FileName.GetStat().Sync();
 
-  if (m_FileName.GetStat().IsOk())
+  if (m_FileName.GetStat().IsOk() && 
+      exApp::GetConfigBool("AllowSync"), true)
   {
     if (m_FileName.GetStat().st_mtime != GetStat().st_mtime)
     {

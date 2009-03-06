@@ -147,9 +147,6 @@ public:
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
 
-  /// Gets allowed synchronize.
-  static bool GetAllowSync() {return GetConfigBool(_("Allow sync"), true);};
-
   /// Gets EOL string.
   const wxString GetEOL();
 
@@ -200,9 +197,6 @@ public:
   /// Reset all margins.
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
-
-  /// Change the syncing behaviour. Here you can turn if off, and on again.
-  static void SetAllowSync(bool allow_sync);
 
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.

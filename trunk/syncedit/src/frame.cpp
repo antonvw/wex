@@ -624,7 +624,7 @@ and saved in the same directory as where the executable is."));
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
-    exSTC::SetAllowSync(GetSyncCheckBox()->GetValue());
+    exApp::SetConfigBool("AllowSync", GetSyncCheckBox()->GetValue());
 #endif
     break;
 
