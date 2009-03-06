@@ -3,39 +3,51 @@
 # Purpose: script to make all
 # RCS-ID:  $Id$
 
+target=$1
+
+if [ "$1" = "all" ]; then
+  target=""
+fi
+
 echo "-- extension --"
 cd ~/wxprojects/trunk/extension/buildgtk
-make $1
+make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- extension test --"
 cd ~/wxprojects/trunk/extension/test
-make $1
+make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- filetool --"
 cd ~/wxprojects/trunk/filetool/buildgtk
-make $1
+make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- filetool sample --"
 cd ~/wxprojects/trunk/filetool/sample
-make $1
+make $target
+if [ "$?" != "0" ]; then
+  exit 1
+fi
 
 echo "-- syncedit --"
 cd ~/wxprojects/trunk/syncedit/buildgtk
-make $1
+make $target
 
-echo "-- syncodbcquery --"
-cd ~/wxprojects/trunk/syncodbcquery
-make $1
+# The rest is not always built.
+if [ "$1" = "all" ]; then
+  echo "-- syncodbcquery --"
+  cd ~/wxprojects/trunk/syncodbcquery
+  make $target
 
-echo "-- syncsocketserver --"
-cd ~/wxprojects/trunk/syncsocketserver
-make $1
+  echo "-- syncsocketserver --"
+  cd ~/wxprojects/trunk/syncsocketserver
+  make $target
+fi

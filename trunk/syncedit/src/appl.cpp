@@ -31,8 +31,6 @@ bool Application::OnInit()
 
   exApp::OnInit();
   
-  exSTC::SetAllowSync(false);
-  
   SetLogging();
 
   static const wxCmdLineEntryDesc cmdLineDesc[] =
@@ -68,12 +66,5 @@ bool Application::OnInit()
 
   wxUpdateUIEvent::SetUpdateInterval(0);
   
-  exSTC::SetAllowSync(true);
-
-#if wxUSE_CHECKBOX
-  // And update the checkbox.
-  frame->GetSyncCheckBox()->SetValue(exSTC::GetAllowSync());
-#endif // wxUSE_CHECKBOX
-
   return true;
 }

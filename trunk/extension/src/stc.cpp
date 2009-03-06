@@ -959,7 +959,7 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
 bool exSTC::FileIsSynced()
 {
   // Stop if not allowed.
-  if (!exApp::GetConfigBool("AllowSync"), true))
+  if (!exApp::GetConfigBool("AllowSync"), true)
   {
     return false;
   }
