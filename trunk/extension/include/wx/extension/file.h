@@ -213,6 +213,9 @@ public:
 protected:
   exFileName m_FileName; ///< the filename
 private:
+  // Take care that filename and stat are in sync.
+  bool MakeAbsolute();
+  
   exStat m_Stat;
   wxString m_Message;
   wxString m_Wildcard;

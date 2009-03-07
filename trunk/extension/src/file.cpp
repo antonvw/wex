@@ -32,9 +32,7 @@ exFile::exFile(const wxString& filename, wxFile::OpenMode mode)
   , m_Message(_("Select File"))
   , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
-  m_FileName.MakeAbsolute();
-  m_FileName.GetStat().Update(m_FileName.GetFullPath());
-  m_Stat.Update(m_FileName.GetFullPath());
+  MakeAbsolute();
 }
 
 int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
@@ -99,11 +97,8 @@ bool exFile::FileNew(const exFileName& filename)
   if (!Continue()) return false;
 
   m_FileName = filename;
-  m_FileName.MakeAbsolute();
-  m_FileName.GetStat().Update(m_FileName.GetFullPath());
-  m_Stat.Update(m_FileName.GetFullPath());
-
-  return true;
+  
+  return MakeAbsolute();
 }
 
 bool exFile::FileOpen(const exFileName& filename)
@@ -113,9 +108,8 @@ bool exFile::FileOpen(const exFileName& filename)
     !filename.FileExists()) return false;
 
   m_FileName = filename;
-  m_FileName.MakeAbsolute();
-  m_FileName.GetStat().Update(m_FileName.GetFullPath());
-  m_Stat.Update(m_FileName.GetFullPath());
+  
+  MakeAbsolute();
 
   return Open(m_FileName.GetFullPath());
 }
@@ -155,6 +149,21 @@ bool exFile::FileSaveAs()
   }
 
   return false;
+}
+
+
+bool exFile::MakeAbsolute()
+{
+  if (m_FileName.MakeAbsolute())
+  {
+    m_FileName.GetStat().Update(m_FileName.GetFullPath());
+    m_Stat.Update(m_FileName.GetFullPath());
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 wxString* exFile::Read(wxFileOffset seek_position)
