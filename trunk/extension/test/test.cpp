@@ -51,7 +51,9 @@ void exTestFixture::testMethods()
 
   // test exFile
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
-  CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() == "test.h");
+  CPPUNIT_ASSERT(m_File->GetStat().GetFullPath() == m_File->GetFileName().GetFullPath());
+  // The fullpath should be normalized, test it.
+  CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() != "test.h");
 
   // test exFileName
   CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());

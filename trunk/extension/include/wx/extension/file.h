@@ -48,6 +48,9 @@ public:
   /// Default the colours are stored under the config group as specified.
   const wxColour GetColour() const;
 
+  /// Gets fullpath member.
+  const wxString& GetFullPath() const {return m_FullPath;};
+  
   /// Returns a colour if this is a link.
   const wxColour GetLinkColour() const;
 

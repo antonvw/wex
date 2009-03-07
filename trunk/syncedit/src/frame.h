@@ -39,10 +39,6 @@ private:
   virtual exListView* GetListView();
   virtual bool OpenFile(
     const exFileName& filename,
-    const wxString& contents,
-    long flags = 0);
-  virtual bool OpenFile(
-    const exFileName& filename,
     int line_number = 0, 
     const wxString& match = wxEmptyString, 
     long flags = 0);
@@ -51,6 +47,10 @@ private:
   ftListView* AddPage(int type, const exLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);
+  bool OpenFile(
+    const exFileName& filename,
+    const wxString& contents,
+    long flags = 0);
 
   int m_NewFileNo;
 
