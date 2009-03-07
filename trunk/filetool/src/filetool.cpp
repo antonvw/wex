@@ -247,7 +247,7 @@ void ftOpenFiles(
 {
   for (size_t i = 0; i < files.GetCount(); i++)
   {
-    wxString file = files[i];
+    wxString file = files[i]; // cannot be const because of file = later on
 
     if (file.Contains("*") || file.Contains("?"))
     {
@@ -265,18 +265,10 @@ void ftOpenFiles(
         if (line != 0) // this indicates an error in the number
         {
           file = file.BeforeFirst(':');
-       }
+        }
       }
 
-      exFileName filename(file);
-
-      if (!filename.FileExists()) filename.Normalize();
-      if (!filename.FileExists())
-      {
-        wxLogError("File does not exist: " + filename.GetFullPath());
-        continue;
-      }
-
+      const exFileName filename(file);
       frame->OpenFile(filename, line, wxEmptyString, flags);
     }
   }
