@@ -33,6 +33,8 @@ exFile::exFile(const wxString& filename, wxFile::OpenMode mode)
   , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
   m_FileName.MakeAbsolute();
+  m_FileName.GetStat().Update(m_FileName.GetFullPath());
+  m_Stat.Update(m_FileName.GetFullPath());
 }
 
 int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
@@ -98,6 +100,8 @@ bool exFile::FileNew(const exFileName& filename)
 
   m_FileName = filename;
   m_FileName.MakeAbsolute();
+  m_FileName.GetStat().Update(m_FileName.GetFullPath());
+  m_Stat.Update(m_FileName.GetFullPath());
 
   return true;
 }
@@ -110,6 +114,8 @@ bool exFile::FileOpen(const exFileName& filename)
 
   m_FileName = filename;
   m_FileName.MakeAbsolute();
+  m_FileName.GetStat().Update(m_FileName.GetFullPath());
+  m_Stat.Update(m_FileName.GetFullPath());
 
   return Open(m_FileName.GetFullPath());
 }
