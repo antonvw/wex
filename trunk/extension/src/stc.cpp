@@ -956,20 +956,6 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
   }
 }
 
-void exSTC::FileIsSynced()
-{
-  // Reopen the file using current mode,
-  // and adding sync flag if not modified.
-  long flags = m_Flags;
-
-  if (!GetModify())
-  {
-    flags |= STC_OPEN_IS_SYNCED;
-  }
-
-  Open(m_FileName, 0, wxEmptyString, flags);
-}
-
 bool exSTC::FileNew(const exFileName& filename)
 {
   if (!exFile::FileNew(filename))
@@ -1032,6 +1018,20 @@ bool exSTC::FileSaveAs()
   SetLexer();
 
   return true;
+}
+
+void exSTC::FileSync()
+{
+  // Reopen the file using current mode,
+  // and adding sync flag if not modified.
+  long flags = m_Flags;
+
+  if (!GetModify())
+  {
+    flags |= STC_OPEN_IS_SYNCED;
+  }
+
+  Open(m_FileName, 0, wxEmptyString, flags);
 }
 
 void exSTC::FileTypeMenu()
@@ -1808,7 +1808,7 @@ void exSTC::OnIdle(wxIdleEvent& event)
     FileReadOnlyAttributeChanged();
   }
 
-  m_FileName.SyncNeeded();
+  CheckSyncNeeded();
 }
 
 void exSTC::OnKey(wxKeyEvent& event)

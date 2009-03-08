@@ -377,14 +377,6 @@ void ftListView::DeleteDoubles()
 }
 
 
-void ftListView::FileIsSynced()
-{
-  if (FileOpen(m_FileName))
-  {
-    m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
-  }
-}
-
 bool ftListView::FileNew(const exFileName& filename)
 {
   if (!exFile::FileNew(filename))
@@ -455,6 +447,14 @@ bool ftListView::FileSave()
   m_ContentsChanged = false;
 
   return true;
+}
+
+void ftListView::FileSync()
+{
+  if (FileOpen(m_FileName))
+  {
+    m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
+  }
 }
 
 const wxString ftListView::GetFindInCaption(int id)
@@ -980,7 +980,8 @@ void ftListView::OnIdle(wxIdleEvent& event)
   }
 
   m_FileName.GetStat().Sync();
-  m_FileName.SyncNeeded();
+  
+  CheckSyncNeeded();
 }
 
 void ftListView::OnList(wxListEvent& event)

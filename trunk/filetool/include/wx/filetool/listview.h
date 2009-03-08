@@ -88,6 +88,9 @@ public:
   
   /// Saves list items to file.
   virtual bool FileSave();
+  
+  /// Syncs the file.
+  void FileSync();
 
   /// Returns member.
   virtual bool GetContentsChanged() {return m_ContentsChanged;};

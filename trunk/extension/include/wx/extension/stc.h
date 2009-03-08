@@ -256,7 +256,7 @@ private:
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
   void EOLModeUpdate(int eol_mode);
-  bool FileIsSynced();                 // re-opens the file!
+  virtual void FileSync();
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   int FindReplaceDataFlags() const;
   void FoldAll();

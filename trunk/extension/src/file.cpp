@@ -59,6 +59,25 @@ int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
   return dlg.ShowModal();
 }
 
+bool exFile::CheckSyncNeeded()
+{
+  if (IsOpened() ||
+     !m_FileName.GetStat().IsOk() ||
+     !exApp::GetConfigBool("AllowSync"), true)
+  {
+    return false;
+  }
+
+  if (
+    m_FileName.GetStat().st_mtime != GetStat().st_mtime ||
+    m_FileName.GetStat().st_size != GetStat().st_size)
+  {
+    FileSync();
+  }
+  
+  return true;
+}
+
 bool exFile::Continue()
 {
   if (GetContentsChanged())
@@ -189,23 +208,6 @@ wxString* exFile::Read(wxFileOffset seek_position)
   }
 }
 
-
-bool exFile::SyncNeeded() const
-{
-  if (IsOpened() ||
-     !m_FileName.GetStat().IsOk())
-     !exApp::GetConfigBool("AllowSync"), true)
-  {
-    return false;
-  }
-
-  if (
-    m_FileName.GetStat().st_mtime != GetStat().st_mtime ||
-    m_FileName.GetStat().st_size != GetStat().st_size)
-  {
-    FileIsSynced();
-  }
-}
 
 int exFileName::GetIcon() const
 {
