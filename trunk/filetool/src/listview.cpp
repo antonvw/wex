@@ -376,6 +376,15 @@ void ftListView::DeleteDoubles()
   }
 }
 
+
+void ftListView::FileIsSynced()
+{
+  if (FileOpen(m_FileName))
+  {
+    m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
+  }
+}
+
 bool ftListView::FileNew(const exFileName& filename)
 {
   if (!exFile::FileNew(filename))
@@ -971,18 +980,7 @@ void ftListView::OnIdle(wxIdleEvent& event)
   }
 
   m_FileName.GetStat().Sync();
-
-  if (m_FileName.GetStat().IsOk() && 
-      exApp::GetConfigBool("AllowSync"), true)
-  {
-    if (m_FileName.GetStat().st_mtime != GetStat().st_mtime)
-    {
-      if (FileOpen(m_FileName))
-      {
-        m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
-      }
-    }
-  }
+  m_FileName.SyncNeeded();
 }
 
 void ftListView::OnList(wxListEvent& event)

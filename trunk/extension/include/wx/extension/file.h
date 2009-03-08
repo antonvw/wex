@@ -181,6 +181,9 @@ public:
   /// Shows file dialog and calls FileSave.
   virtual bool FileSaveAs();
 
+  /// Called if file needs to be synced.
+  virtual void FileIsSynced() {;};
+  
   /// Returns whether contents have been changed.
   /// Default returns false.
   virtual bool GetContentsChanged() {return false;};
@@ -208,6 +211,9 @@ public:
   /// The buffer is allocated by the lib, you should delete the string after using.
   wxString* Read(wxFileOffset seek_position = 0);
 
+  /// Returns true if this file should be synced.
+  bool SyncNeeded() const;
+  
   /// Sets the wild card member.
   void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};
 protected:

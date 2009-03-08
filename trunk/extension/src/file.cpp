@@ -189,6 +189,24 @@ wxString* exFile::Read(wxFileOffset seek_position)
   }
 }
 
+
+bool exFile::SyncNeeded() const
+{
+  if (IsOpened() ||
+     !m_FileName.GetStat().IsOk())
+     !exApp::GetConfigBool("AllowSync"), true)
+  {
+    return false;
+  }
+
+  if (
+    m_FileName.GetStat().st_mtime != GetStat().st_mtime ||
+    m_FileName.GetStat().st_size != GetStat().st_size)
+  {
+    FileIsSynced();
+  }
+}
+
 int exFileName::GetIcon() const
 {
   if (GetStat().IsOk() && !GetExt().empty())

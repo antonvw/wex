@@ -956,14 +956,8 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
   }
 }
 
-bool exSTC::FileIsSynced()
+void exSTC::FileIsSynced()
 {
-  // Stop if not allowed.
-  if (!exApp::GetConfigBool("AllowSync"), true)
-  {
-    return false;
-  }
-
   // Reopen the file using current mode,
   // and adding sync flag if not modified.
   long flags = m_Flags;
@@ -973,7 +967,7 @@ bool exSTC::FileIsSynced()
     flags |= STC_OPEN_IS_SYNCED;
   }
 
-  return Open(m_FileName, 0, wxEmptyString, flags);
+  Open(m_FileName, 0, wxEmptyString, flags);
 }
 
 bool exSTC::FileNew(const exFileName& filename)
@@ -1806,13 +1800,6 @@ void exSTC::OnIdle(wxIdleEvent& event)
   m_FileName.GetStat().Sync();
 
   if (
-    IsOpened() ||
-    !m_FileName.GetStat().IsOk())
-  {
-    return;
-  }
-
-  if (
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(m_Flags & STC_OPEN_READ_ONLY) &&
@@ -1820,12 +1807,8 @@ void exSTC::OnIdle(wxIdleEvent& event)
   {
     FileReadOnlyAttributeChanged();
   }
-  else if (
-    m_FileName.GetStat().st_mtime != GetStat().st_mtime ||
-    m_FileName.GetStat().st_size != GetStat().st_size)
-  {
-    FileIsSynced();
-  }
+
+  m_FileName.SyncNeeded();
 }
 
 void exSTC::OnKey(wxKeyEvent& event)
