@@ -74,7 +74,7 @@ const wxString exConfig::GetBoolKeys() const
     itb != m_BoolValues.end();
     ++itb)
   {
-    text += itb->first + "\t" + itb->second + "\n";
+    text << itb->first << "\t" << itb->second << "\n";
   }
   
   return text;
@@ -89,7 +89,7 @@ const wxString exConfig::GetLongKeys() const
     itb != m_LongValues.end();
     ++itb)
   {
-    text += itb->first + "\t" + itb->second + "\n";
+    text << itb->first << "\t" << itb->second << "\n";
   }
   
   return text;

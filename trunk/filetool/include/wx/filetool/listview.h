@@ -83,9 +83,6 @@ public:
   /// Opens the file and gets all data as list items.
   virtual bool FileOpen(const exFileName& filename);
 
-  /// Reopens file.
-  virtual void FileIsSynced();
-  
   /// Saves list items to file.
   virtual bool FileSave();
   
