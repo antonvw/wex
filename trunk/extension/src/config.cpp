@@ -65,6 +65,51 @@ exConfig::~exConfig()
   }
 }
 
+const wxString exConfig::GetBoolKeys() const
+{
+  wxString text;
+  
+  for (
+    map<wxString, bool>::const_iterator itb = m_BoolValues.begin();
+    itb != m_BoolValues.end();
+    ++itb)
+  {
+    text += itb->first + "\t" + itb->second + "\n";
+  }
+  
+  return text;
+}
+  
+const wxString exConfig::GetLongKeys() const
+{
+  wxString text;
+  
+  for (
+    map<wxString, long>::const_iterator itb = m_LongValues.begin();
+    itb != m_LongValues.end();
+    ++itb)
+  {
+    text += itb->first + "\t" + itb->second + "\n";
+  }
+  
+  return text;
+}
+  
+const wxString exConfig::GetStringKeys() const
+{
+  wxString text;
+  
+  for (
+    map<wxString, wxString>::const_iterator itb = m_StringValues.begin();
+    itb != m_StringValues.end();
+    ++itb)
+  {
+    text += itb->first + "\t" + itb->second + "\n";
+  }
+  
+  return text;
+}
+  
 #if wxUSE_GUI
 const int width = 200;
 const int width_numeric = 75;

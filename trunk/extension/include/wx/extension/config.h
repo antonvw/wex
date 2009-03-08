@@ -59,6 +59,9 @@ public:
     }
   }
 
+  /// Gets all longs keys as one string.
+  const wxString GetLongKeys() const;
+  
   /// Gets the key as a string. If the key is not present,
   /// it is added to the map of string values.
   /// This also works for comboboxes,
@@ -83,6 +86,9 @@ public:
     }
   }
 
+  /// Gets all string keys as one string.
+  const wxString GetStringKeys() const;
+  
   /// Gets the key as a bool. If the key is not present,
   /// it is added to the map of bool values.
   bool GetBool(
@@ -101,6 +107,9 @@ public:
     }
   }
 
+  /// Gets all bool keys as one string.
+  const wxString GetBoolKeys() const;
+  
   /// Gets the find replace data.
   exFindReplaceData* GetFindReplaceData() const {
     return m_FindReplaceData;};
