@@ -3,7 +3,7 @@
 * Purpose:       main for wxfiletool cpp unit testing
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
-* Created:       za 17 jan 2009 11:51:20 CET
+* Created:       zo 08 mrt 2009 16:16:29 CET
 *
 * Copyright (c) 2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
@@ -14,9 +14,9 @@
 #include <cppunit/TestRunner.h>
 #include "test.h"
 
-IMPLEMENT_APP(exTestApp)
+IMPLEMENT_APP(ftTestApp)
 
-bool exTestApp::OnInit()
+bool ftTestApp::OnInit()
 {
   SetAppName("ftTestApp");
 
@@ -36,4 +36,3 @@ bool exTestApp::OnInit()
 
   return true;
 }
-

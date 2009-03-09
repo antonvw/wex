@@ -13,12 +13,22 @@
 #include <TestCaller.h>
 #include "test.h"
 
+void ftAppTestFixture::setUp()
+{
+  m_ListView = new ftListView(wxTheApp->GetTopWindow(), ftListView::LIST_PROCESS);
+  m_Process = new ftProcess(m_ListView, "wc test.h");
+  m_STC = new ftSTC(wxTheApp->GetTopWindow(), exFileName("test.h"));
+}
+
 void ftAppTestFixture::testConstructors()
 {
 }
 
 void ftAppTestFixture::testMethods()
 {
+  // test ftProcess
+  CPPUNIT_ASSERT(m_Process->Run());
+
   // test ftSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
 }
@@ -30,11 +40,11 @@ void ftAppTestFixture::tearDown()
 ftTestSuite::ftTestSuite()
   : CppUnit::TestSuite("wxfiletool test suite")
 {
-  addTest(new CppUnit::TestCaller<exAppTestFixture>(
+  addTest(new CppUnit::TestCaller<ftAppTestFixture>(
     "testConstructors",
     &ftAppTestFixture::testConstructors));
 
-  addTest(new CppUnit::TestCaller<exAppTestFixture>(
+  addTest(new CppUnit::TestCaller<ftAppTestFixture>(
     "testMethods",
     &ftAppTestFixture::testMethods));
 }

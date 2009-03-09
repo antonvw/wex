@@ -28,7 +28,7 @@ $(PROGRAM): $(OBJS)
 	$(CC) $(LDFLAGS) $(LIBS) -o $@ $(OBJS)
 
 # General rule.
-%.o:	%.cpp ../include/wx/extension/extension.h
+%.o:	%.cpp ../include/wx/filetool/filetool.h
 	$(CC) $(WFLAGS) $(EXTRAFLAGS) $(CFLAGS) -c $<
 
 clean:

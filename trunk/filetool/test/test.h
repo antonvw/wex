@@ -16,6 +16,7 @@
 #include <TestFixture.h>
 #include <TestSuite.h>
 #include <wx/filetool/filetool.h>
+#include <wx/filetool/process.h>
 
 /// CppUnit test suite.
 class ftTestSuite : public CppUnit::TestSuite
@@ -43,11 +44,15 @@ class ftAppTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   ftAppTestFixture() : TestFixture() {
+    m_ListView = NULL;
+    m_Process = NULL;
     m_STC = NULL;
     };
 
   /// Destructor.
  ~ftAppTestFixture() {
+    delete m_ListView;
+    delete m_Process;
     delete m_STC;
     };
 
@@ -64,7 +69,9 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  ftSTC* m_STC;     ///< testing ftSTC
+  ftListView* m_ListView; ///< testing ftListView
+  ftProcess* m_Process;   ///< testing ftProcess
+  ftSTC* m_STC;           ///< testing ftSTC
 };
 #endif
 
