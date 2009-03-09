@@ -49,7 +49,8 @@ int exGetLineNumberFromText(const wxString& text);
 const wxFileName exLogfileName();
 
 /// Logs text with a timestamp at the end of the file.
-void exLog(const wxString& text, const wxFileName& filename = exLogfileName());
+/// Returns true if text was written succesfully.
+bool exLog(const wxString& text, const wxFileName& filename = exLogfileName());
 
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).

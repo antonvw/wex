@@ -188,9 +188,9 @@ int exGetLineNumberFromText(const wxString& text)
   }
 }
 
-void exLog(const wxString& text, const wxFileName& filename)
+bool exLog(const wxString& text, const wxFileName& filename)
 {
-  wxFile(
+  return wxFile(
     filename.GetFullPath(), 
     wxFile::write_append).Write(
       wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());

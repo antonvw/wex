@@ -325,6 +325,7 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(exClipboardGet() == "test");
   CPPUNIT_ASSERT(exGetNumberOfLines("test\ntest\n") == 3);
   CPPUNIT_ASSERT(exGetLineNumberFromText("test on line: 1200") == 1200);
+  CPPUNIT_ASSERT(exLog("hello from wxextension test"));
   CPPUNIT_ASSERT(!exMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(exMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(exSkipWhiteSpace("t     es   t") == "t es t");
