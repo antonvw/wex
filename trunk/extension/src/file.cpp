@@ -128,19 +128,21 @@ bool exFile::FileOpen(const exFileName& filename)
 
   m_FileName = filename;
   
-  MakeAbsolute();
-
-  return Open(m_FileName.GetFullPath());
+  if (MakeAbsolute())
+  {
+    return Open(m_FileName.GetFullPath());
+  }
+  else
+  {
+    return false;
+  }
 }
 
 bool exFile::FileSave()
 {
   wxFile::Close();
 
-  m_FileName.GetStat().Update(m_FileName.GetFullPath());
-  m_Stat.Update(m_FileName.GetFullPath());
-
-  return true;
+  return MakeAbsolute();
 }
 
 bool exFile::FileSaveAs()
@@ -169,7 +171,6 @@ bool exFile::FileSaveAs()
 
   return false;
 }
-
 
 bool exFile::MakeAbsolute()
 {
