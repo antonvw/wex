@@ -61,9 +61,9 @@ int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
 
 bool exFile::CheckSyncNeeded()
 {
-  if (IsOpened() ||
-     !m_FileName.GetStat().IsOk() ||
-     !exApp::GetConfigBool("AllowSync"), true)
+  if (IsOpened() || 
+     !m_FileName.GetStat().IsOk() || 
+     !exApp::GetConfigBool("AllowSync", true))
   {
     return false;
   }
