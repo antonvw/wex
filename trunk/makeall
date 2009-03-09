@@ -30,8 +30,8 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-echo "-- filetool sample --"
-cd ~/wxprojects/trunk/filetool/sample
+echo "-- filetool test --"
+cd ~/wxprojects/trunk/filetool/test
 make $target
 if [ "$?" != "0" ]; then
   exit 1
@@ -43,6 +43,20 @@ make $target
 
 # The rest is not always built.
 if [ "$1" = "all" ]; then
+  echo "-- extension sample --"
+  cd ~/wxprojects/trunk/extension/sample
+  make $target
+  if [ "$?" != "0" ]; then
+    exit 1
+  fi
+
+  echo "-- filetool sample --"
+  cd ~/wxprojects/trunk/filetool/sample
+  make $target
+  if [ "$?" != "0" ]; then
+    exit 1
+  fi
+
   echo "-- syncodbcquery --"
   cd ~/wxprojects/trunk/syncodbcquery
   make $target
