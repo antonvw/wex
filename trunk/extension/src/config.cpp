@@ -168,8 +168,8 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
 
       notebook_sizer = new wxFlexGridSizer(1);
       notebook_sizer->AddGrowableCol(0);
-      notebook_sizer->AddGrowableRow(0);
       notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
+      notebook_sizer->AddGrowableRow(0);
     }
 
     if (first_time || 
@@ -197,8 +197,6 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
         sizer = new wxFlexGridSizer(rows, cols, 0, 0);
       else
         sizer = new wxFlexGridSizer(cols);
-
-      sizer->AddGrowableRow(0);
 
       if (cols == 2)
       {
@@ -282,6 +280,14 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
         it->m_Type);
       return;
       break;
+    }
+
+    if (sizer != NULL)
+    {
+      if (sizer->GetRows() > 0)
+      {
+        sizer->AddGrowableRow(sizer->GetRows() - 1);
+      }
     }
 
     if (control != NULL)
