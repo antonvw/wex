@@ -449,14 +449,6 @@ bool ftListView::FileSave()
   return true;
 }
 
-void ftListView::FileSync()
-{
-  if (FileOpen(m_FileName))
-  {
-    m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
-  }
-}
-
 const wxString ftListView::GetFindInCaption(int id)
 {
   const wxString prefix =

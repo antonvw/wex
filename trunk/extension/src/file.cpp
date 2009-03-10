@@ -170,6 +170,14 @@ bool exFile::FileSaveAs()
   return false;
 }
 
+void exFile::FileSync()
+{
+  if (FileOpen(m_FileName))
+  {
+    m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
+  }
+}
+
 bool exFile::MakeAbsolute()
 {
   if (m_FileName.MakeAbsolute())

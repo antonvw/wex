@@ -182,7 +182,8 @@ public:
   virtual bool FileSaveAs();
 
   /// Called if file needs to be synced.
-  virtual void FileSync() {;};
+  /// The default calls FileOpen, and updates status text.
+  virtual void FileSync();
   
   /// Returns whether contents have been changed.
   /// Default returns false.
