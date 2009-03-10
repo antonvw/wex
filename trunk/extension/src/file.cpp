@@ -68,9 +68,7 @@ bool exFile::CheckSyncNeeded()
     return false;
   }
 
-  if (
-    m_FileName.GetStat().st_mtime != GetStat().st_mtime ||
-    m_FileName.GetStat().st_size != GetStat().st_size)
+  if (m_FileName.GetStat().st_mtime != GetStat().st_mtime)
   {
     FileSync();
   }
