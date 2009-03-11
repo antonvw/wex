@@ -2041,7 +2041,6 @@ bool exSTC::Open(
   SetReadOnly(false);
 
   ReadFromFile(log_sync);
-  wxFile::Close();
 
   if (!(flags & STC_OPEN_HEX))
   {
@@ -2095,6 +2094,9 @@ bool exSTC::Open(
   {
     DocumentEnd();
   }
+
+  // Close file as late as possible, to prevent OnIdle from interfering.
+  wxFile::Close();
 
   return true;
 }

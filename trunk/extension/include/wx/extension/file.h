@@ -196,8 +196,8 @@ public:
   /// Invoked ShowModal on dialog, and returns dialog return code.
   int AskFileOpen(wxFileDialog& dlg, bool ask_for_continue = true);
 
-  /// Returns true if this file should be synced.
-  /// Invokes FileSync if true.
+  /// Invokes FileSync if this file needs to be synced.
+  /// Returns false if no check was done (e.g. this file was opened).
   bool CheckSyncNeeded();
   
   /// Shows dialog if file contents was changed, and returns true if
