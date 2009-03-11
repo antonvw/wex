@@ -57,6 +57,11 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(!m_File->CheckSyncNeeded());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
+  CPPUNIT_ASSERT(m_File->FileOpen(exFileName("test.bin")));
+  wxString* buffer = m_File->Read();
+  CPPUNIT_ASSERT(buffer != NULL);
+  CPPUNIT_ASSERT(buffer->size() == 40);
+  delete buffer;
 
   // test exFileName
   CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
