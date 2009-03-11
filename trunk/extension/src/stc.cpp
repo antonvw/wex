@@ -1804,6 +1804,7 @@ void exSTC::OnIdle(wxIdleEvent& event)
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(m_Flags & STC_OPEN_READ_ONLY) &&
+    m_FileName.GetStat().IsOk() &&
     m_FileName.GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
