@@ -22,7 +22,11 @@
 class Application : public exApp
 {
 private:
-  bool OnInit();
+  virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+  virtual bool OnInit();
+  virtual void OnInitCmdLine(wxCmdLineParser& parser);
+  
+  wxArrayString m_Files;
 };
 
 #endif
