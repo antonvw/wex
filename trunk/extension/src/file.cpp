@@ -115,7 +115,9 @@ bool exFile::FileNew(const exFileName& filename)
 
   m_FileName = filename;
   
-  return MakeAbsolute();
+  // Do not make it absolute, the specified filename does not need
+  // to exist.
+  return true;
 }
 
 bool exFile::FileOpen(const exFileName& filename)
