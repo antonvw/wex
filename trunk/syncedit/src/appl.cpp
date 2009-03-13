@@ -10,12 +10,25 @@
 \******************************************************************************/
 
 #include <wx/cmdline.h> // for wxCmdLineParser
-#include <wx/stdpaths.h>
 #include "appl.h"
 #include "frame.h"
 
 DECLARE_APP(Application)
 IMPLEMENT_APP(Application)
+
+bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+  if (parser.GetParamCount() > 0)
+  {
+  
+    for (size_t i = 0; i < parser.GetParamCount(); i++)
+    {
+      m_Files.Add(parser.GetParam(i));
+    }
+  }
+
+  return wxApp::OnCmdLineParsed(parser);
+}
 
 bool Application::OnInit()
 {
@@ -58,18 +71,4 @@ void Application::OnInitCmdLine(wxCmdLineParser& parser)
     "input file:line number", 
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
-}
-
-bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
-{
-  if (parser.GetParamCount() > 0)
-  {
-  
-    for (size_t i = 0; i < parser.GetParamCount(); i++)
-    {
-      m_Files.Add(parser.GetParam(i));
-    }
-  }
-
-  return wxApp::OnCmdLineParsed(parser);
 }
