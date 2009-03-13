@@ -29,6 +29,9 @@ enum exSvnType
 };
 
 #if wxUSE_GUI
+
+class exSTCEntryDialog;
+
 /// This class collects all svn handling.
 class exSVN
 {
@@ -53,7 +56,7 @@ public:
   int GetInfoAndShowConents();
 
   /// Shows contents in a dialog only, GetInfo should already be done.
-  void ShowContents() const;
+  void ShowContents();
 private:
   const exSvnType m_Type;
   wxString m_Caption;
@@ -61,6 +64,7 @@ private:
   wxString m_Contents;
   const wxString m_FullPath;
   int m_ReturnCode;
+  exSTCEntryDialog* m_STCEntryDialog;
 };
 #endif
 #endif

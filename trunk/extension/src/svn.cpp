@@ -18,6 +18,7 @@ exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   , m_Contents()
   , m_FullPath(fullpath)
   , m_ReturnCode(-2)
+  , m_STCEntryDialog(NULL)
 {
   switch (m_Type)
   {
@@ -145,7 +146,7 @@ int exSVN::GetInfoAndShowConents()
   return m_ReturnCode;
 }
 
-void exSVN::ShowContents() const
+void exSVN::ShowContents()
 {
   // If we did not yet ask GetInfo, return.
   if (m_ReturnCode == -2)
@@ -153,15 +154,26 @@ void exSVN::ShowContents() const
     return;
   }
 
+  const wxString caption = m_Caption + 
+    (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString));
+
   // Create a dialog for contents.
-  exSTCEntryDialog* dlg = new exSTCEntryDialog(
-    wxTheApp->GetTopWindow(), 
-    m_Caption + (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString)),
-    m_Contents, 
-    wxEmptyString, 
-    wxOK,
-    wxID_ANY,
-    wxDefaultPosition, wxSize(550, 250));
+  if (m_STCEntryDialog == NULL)
+  {
+    m_STCEntryDialog = new exSTCEntryDialog(
+      wxTheApp->GetTopWindow(), 
+      caption,
+      m_Contents, 
+      wxEmptyString, 
+      wxOK,
+      wxID_ANY,
+      wxDefaultPosition, wxSize(550, 250));
+  }
+  else
+  {
+    m_STCEntryDialog->SetText(m_Contents);
+    m_STCEntryDialog->SetTitle(caption);
+  }
 
   // Add a lexer if we specified a path, asked for cat and there were no errors.
   if (
@@ -170,10 +182,10 @@ void exSVN::ShowContents() const
      m_ReturnCode == 0)
   { 
     const exFileName fn(m_FullPath);
-    dlg->SetLexer(fn.GetLexer().GetScintillaLexer());
+    m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
   }
   
-  dlg->Show();
+  m_STCEntryDialog->Show();
 }
 
 #endif

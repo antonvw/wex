@@ -286,13 +286,7 @@ exSTC::exSTC(wxWindow* parent,
 
   if (!value.empty())
   {
-    // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
-    // So for text with nulls this is the only way for opening.
-    SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
-    DocumentStart();
-    ResetContentsChanged();
-    // Do not allow the text specified to be undone.
-    EmptyUndoBuffer();
+    SetText(value);
   }
 
   PropertiesMessage();
@@ -2542,6 +2536,17 @@ void exSTC::SetStyle(const wxString& style)
   {
     StyleSetSpec(atoi(scintilla_styles.GetNextToken().c_str()), spec);
   }
+}
+
+void exSTC::SetText(const wxString& value)
+{
+  // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
+  // So for text with nulls this is the only way for opening.
+  SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
+  DocumentStart();
+  ResetContentsChanged();
+  // Do not allow the text specified to be undone.
+  EmptyUndoBuffer();
 }
 
 void exSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)

@@ -209,6 +209,9 @@ public:
   /// Then colourises the document.
   void SetLexer(const wxString& lexer = wxEmptyString);
 
+  /// Sets the text.
+  void SetText(const wxString& value);
+
   /// Asks for confirmation to sort the selection.
   void SortSelectionDialog(
     bool sort_ascending,
@@ -331,6 +334,9 @@ public:
 
   /// Sets the STC lexer.
   void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};
+
+  /// Sets the text (either normal or raw).
+  void SetText(const wxString& text) {m_STC->SetText(text);};
 private:
   exSTC* m_STC;
 };
