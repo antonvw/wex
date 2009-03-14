@@ -55,6 +55,12 @@ void exAppTestFixture::testMethods()
 
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
+  // do the same test as with exFile in base for a bianry file
+  CPPUNIT_ASSERT(m_STC->Open(exFileName("../base/test.bin"));
+  wxString* buffer = m_STC->GetTextRaw();
+  CPPUNIT_ASSERT(buffer != NULL);
+  CPPUNIT_ASSERT(buffer->size() == 40);
+  delete buffer;
 
   // test exSTCShell
   m_STCShell->Prompt("test1");
