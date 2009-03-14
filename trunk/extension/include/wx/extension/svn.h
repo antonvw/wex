@@ -53,7 +53,7 @@ public:
 
   /// Gets info and if not cancelled shows contents in a dialog.
   /// Returns return code from Get.
-  int GetInfoAndShowConents();
+  int GetInfoAndShowContents();
 
   /// Shows contents in a dialog only, GetInfo should already be done.
   void ShowContents();

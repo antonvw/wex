@@ -136,7 +136,7 @@ int exSVN::GetInfo(bool show_dialog)
   return m_ReturnCode;
 }
 
-int exSVN::GetInfoAndShowConents()
+int exSVN::GetInfoAndShowContents()
 {
   if (GetInfo() >= 0)
   {

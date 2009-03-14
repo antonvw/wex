@@ -616,11 +616,11 @@ and saved in the same directory as where the executable is."));
   }
   break;
 
-  case ID_SVN_COMMIT: exSVN(SVN_COMMIT).GetInfoAndShowConents(); break;
-  case ID_SVN_DIFF: exSVN(SVN_DIFF).GetInfoAndShowConents(); break;
-  case ID_SVN_INFO: exSVN(SVN_INFO).GetInfoAndShowConents(); break;
-  case ID_SVN_LOG: exSVN(SVN_LOG).GetInfoAndShowConents(); break;
-  case ID_SVN_STAT: exSVN(SVN_STAT).GetInfoAndShowConents(); break;
+  case ID_SVN_COMMIT: exSVN(SVN_COMMIT).GetInfoAndShowContents(); break;
+  case ID_SVN_DIFF: exSVN(SVN_DIFF).GetInfoAndShowContents(); break;
+  case ID_SVN_INFO: exSVN(SVN_INFO).GetInfoAndShowContents(); break;
+  case ID_SVN_LOG: exSVN(SVN_LOG).GetInfoAndShowContents(); break;
+  case ID_SVN_STAT: exSVN(SVN_STAT).GetInfoAndShowContents(); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
@@ -654,8 +654,8 @@ and saved in the same directory as where the executable is."));
     }
   }
   break;
-  case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).GetInfoAndShowConents(); break;
-  case ID_TREE_SVN_LOG: exSVN(SVN_LOG, m_DirCtrl->GetFilePath()).GetInfoAndShowConents(); break;
+  case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).GetInfoAndShowContents(); break;
+  case ID_TREE_SVN_LOG: exSVN(SVN_LOG, m_DirCtrl->GetFilePath()).GetInfoAndShowContents(); break;
   case ID_TREE_OPEN: OpenFile(exFileName(m_DirCtrl->GetFilePath())); break;
   
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
