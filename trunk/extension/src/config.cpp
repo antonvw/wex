@@ -170,6 +170,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       notebook_sizer->AddGrowableCol(0);
       notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
       notebook_sizer->AddGrowableRow(0);
+      notebook_sizer->SetMinSize(size);
     }
 
     if (first_time || 
