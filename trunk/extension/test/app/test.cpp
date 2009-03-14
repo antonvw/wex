@@ -2,7 +2,7 @@
 * File:          test.cpp
 * Purpose:       Implementation for wxextension cpp unit testing
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: test.cpp 450 2009-03-11 20:02:41Z antonvw $
+* RCS-ID:        $Id$
 * Created:       za 17 jan 2009 11:51:20 CET
 *
 * Copyright (c) 2009 Anton van Wezenbeek
