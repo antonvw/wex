@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="sample" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release Win32">
+				<Option output=".\buildmsw\sample" prefix_auto="1" extension_auto="1" />
+				<Option object_output="buildmsw" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-DNOPCH" />
+					<Add option="-DUSE_SHELL" />
+					<Add option="-Wall" />
+					<Add option="-O2" />
+					<Add option="-frtti" />
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\buildlib\msw" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\buildlib\msw" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="wxbase29u" />
+					<Add library="wxbase29u_net" />
+					<Add library="wxbase29u_xml" />
+					<Add library="wxmsw29u_adv" />
+					<Add library="wxmsw29u_core" />
+					<Add library="wxmsw29u_html" />
+					<Add library="wxmsw29u_aui" />
+					<Add library="wxmsw29u_stc" />
+					<Add library="wxtiff" />
+					<Add library="wxjpeg" />
+					<Add library="wxpng" />
+					<Add library="wxexpat" />
+					<Add library="wxzlib" />
+					<Add library="wxregexu" />
+					<Add library="winmm" />
+					<Add library="comctl32" />
+					<Add library="rpcrt4" />
+					<Add library="wsock32" />
+					<Add library="oleacc" />
+					<Add library="wxExtension" />
+					<Add directory=".\..\..\lib\buildlib" />
+				</Linker>
+			</Target>
+			<Target title="Debug Win32">
+				<Option output="buildmswd\test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="buildmswd\test" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-D__WXDEBUG__" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-DNOPCH" />
+					<Add option="-DUSE_SHELL" />
+					<Add option="-Wall" />
+					<Add option="-O0" />
+					<Add option="-frtti" />
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\buildlib\mswd" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory=".\..\..\include" />
+					<Add directory=".\..\..\lib\buildlib\mswd" />
+					<Add directory="." />
+					<Add directory=".\..\..\samples" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="odbc32" />
+					<Add library="odbccp32" />
+					<Add library="comctl32" />
+					<Add library="rpcrt4" />
+					<Add library="wsock32" />
+					<Add library="winmm" />
+					<Add library="wxbase29ud" />
+					<Add library="wxbase29ud_net" />
+					<Add library="wxpngd" />
+					<Add library="wxzlib" />
+					<Add library="wxjpegd" />
+					<Add library="wxregexud" />
+					<Add library="wxtiffd" />
+					<Add library="wxmsw29ud_adv" />
+					<Add library="wxmsw29ud_aui" />
+					<Add library="wxmsw29ud_core" />
+					<Add library="wxmsw29ud_html" />
+					<Add library="wxmsw29ud_stc" />
+					<Add library="wxExtensiond" />
+					<Add directory=".\..\..\lib\buildlib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="main.cpp" />
+		<Unit filename="test.cpp" />
+		<Unit filename="test.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
