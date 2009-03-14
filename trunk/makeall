@@ -16,8 +16,15 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-echo "-- extension test --"
-cd ~/wxprojects/trunk/extension/test
+echo "-- extension test base --"
+cd ~/wxprojects/trunk/extension/test/base
+make $target
+if [ "$?" != "0" ]; then
+  exit 1
+fi
+
+echo "-- extension test app --"
+cd ~/wxprojects/trunk/extension/test/app
 make $target
 if [ "$?" != "0" ]; then
   exit 1
