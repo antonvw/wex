@@ -944,10 +944,11 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
 
   for (int i = line_start; i <= line_end; i++)
   {
-    if (!GetLineVisible(i))
-    {
-      EnsureVisible(i);
-    }
+    GotoLine(i);
+
+    // Using next no longer works (wxWidgets-2.9.0-testrun2):
+    // if (!GetLineVisible(i)) EnsureVisible(i);
+    // However the goto is perhaps better, as it updates caret.
   }
 }
 
