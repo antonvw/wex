@@ -14,7 +14,7 @@
 
 #include <map>
 #include <wx/regex.h>
-#include <wx/fdrepdlg.h>
+#include <wx/fdrepdlg.h> // for wxFindReplaceData
 
 class exFindReplaceData;
 

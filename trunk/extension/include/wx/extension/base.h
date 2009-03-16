@@ -19,9 +19,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/artprov.h> // for wxArtID
-#include <wx/aui/auibook.h>
+#include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/datetime.h>
-#include <wx/fdrepdlg.h>
+#include <wx/fdrepdlg.h> // for wxFindReplaceDialog
 #include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for exFileName
