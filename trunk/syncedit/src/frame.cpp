@@ -12,6 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
+#include <wx/extension/configdialog.h>
 #include <wx/extension/svn.h>
 #include <wx/filetool/process.h>
 #include "frame.h"

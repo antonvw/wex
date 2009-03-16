@@ -13,6 +13,7 @@
 #include <wx/extension/otl.h>
 // \todo Using config.h only gives compile errors
 #include <wx/extension/extension.h>
+#include <wx/extension/configdialog.h>
 
 #if USE_OTL
 bool exOTLDialog(

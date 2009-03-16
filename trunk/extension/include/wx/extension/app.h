@@ -12,6 +12,7 @@
 #ifndef _EXAPP_H
 #define _EXAPP_H
 
+#include <wx/app.h> 
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
 #include <wx/extension/config.h>

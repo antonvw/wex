@@ -14,7 +14,9 @@
 #endif
 #include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/extension/file.h>
 #include <wx/extension/app.h> // for exApp
+#include <wx/extension/configdialog.h>
 #include <wx/extension/util.h> // for exColourToLong
 
 exFile::exFile()

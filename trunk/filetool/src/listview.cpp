@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/tokenzr.h>
+#include <wx/extension/configdialog.h>
 #include <wx/extension/svn.h>
 #include <wx/filetool/filetool.h>
 #include <wx/filetool/process.h>

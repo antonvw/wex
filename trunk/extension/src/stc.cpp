@@ -14,6 +14,7 @@
 #include <wx/tokenzr.h>
 #include <wx/url.h> // for wxURL
 #include <wx/extension/stc.h>
+#include <wx/extension/configdialog.h>
 #include <wx/extension/textfile.h>
 
 #if wxUSE_GUI

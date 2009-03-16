@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/extension/configdialog.h>
 #include <wx/filetool/filetool.h>
 
 bool ftCompareFile(const wxFileName& file1, const wxFileName& file2)

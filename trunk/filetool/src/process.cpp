@@ -11,6 +11,7 @@
 
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
+#include <wx/extension/configdialog.h>
 #include <wx/filetool/process.h>
 #include <wx/filetool/filetool.h>
 

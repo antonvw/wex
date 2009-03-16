@@ -176,6 +176,9 @@
 				RelativePath=".\src\config.cpp">
 			</File>
 			<File
+				RelativePath=".\src\configdialog.cpp">
+			</File>
+			<File
 				RelativePath=".\src\dir.cpp">
 			</File>
 			<File
@@ -238,6 +241,9 @@
 			</File>
 			<File
 				RelativePath=".\include\wx\extension\config.h">
+			</File>
+			<File
+				RelativePath=".\include\wx\extension\configdialog.h">
 			</File>
 			<File
 				RelativePath=".\include\wx\extension\defs.h">
