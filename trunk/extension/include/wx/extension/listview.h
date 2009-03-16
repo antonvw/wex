@@ -147,7 +147,7 @@ protected:
   virtual void AfterSorting() {;};
 
   /// Inserts a new item with column values from text.
-  virtual void ItemFromText(const wxString& text);
+  virtual bool ItemFromText(const wxString& text);
 
   /// Copies this item (all columns) to text.
   virtual const wxString ItemToText(int item_number);
@@ -216,8 +216,8 @@ public:
   exListItem(exListView* lv, const int id);
 
   /// Inserts the item on the list.
-  void Insert() {
-    m_ListView->InsertItem(*this);}
+  long Insert() {
+    return m_ListView->InsertItem(*this);}
 
   /// Gets the column using column number.
   const wxString GetColumnText(int col_no);

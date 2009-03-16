@@ -100,7 +100,8 @@ public:
   virtual void ItemsUpdate();
 
   /// Tries to insert items from specified text.
-  virtual void ItemFromText(const wxString& text);
+  /// Returns true if successfull.
+  virtual bool ItemFromText(const wxString& text);
 
   /// Returns colunm text for specified item.
   virtual const wxString ItemToText(int item_number);

@@ -693,12 +693,12 @@ void ftListView::ItemsUpdate()
   }
 }
 
-void ftListView::ItemFromText(const wxString& text)
+bool ftListView::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
     wxLogError(FILE_INFO("Text is empty"));
-    return;
+    return false;
   }
 
   wxStringTokenizer tkz(text, GetFieldSeparator());
@@ -747,6 +747,8 @@ void ftListView::ItemFromText(const wxString& text)
   }
 
   m_ContentsChanged = true;
+
+  return true;
 }
 
 const wxString ftListView::ItemToText(int item_number)

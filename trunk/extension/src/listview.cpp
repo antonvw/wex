@@ -587,8 +587,14 @@ void exListView::ItemsClear()
   m_Items.clear();
 }
 
-void exListView::ItemFromText(const wxString& text)
+bool exListView::ItemFromText(const wxString& text)
 {
+  if (text.empty())
+  {
+    wxLogError(FILE_INFO("Text is empty"));
+    return false;
+  }
+
   wxStringTokenizer tkz(text, m_FieldSeparator);
   if (tkz.HasMoreTokens())
   {
@@ -610,6 +616,8 @@ void exListView::ItemFromText(const wxString& text)
     exListItem item(this, text);
     item.Insert();
   }
+
+  return true;
 }
 
 const wxString exListView::ItemToText(int item_number)
