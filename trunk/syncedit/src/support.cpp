@@ -105,21 +105,21 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
   
   exMenu *menuView = new exMenu;
-  menuView->Append(ID_VIEW_STATUSBAR, _("&Statusbar"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_TOOLBAR, _("&Toolbar"), wxEmptyString, wxITEM_CHECK);
+  menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
+  menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   menuView->AppendSeparator();
-  menuView->Append(ID_VIEW_FILES, _("&Files"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_PROJECTS, _("&Projects"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_DIRCTRL, _("&Explorer"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_OUTPUT, _("&Output"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_ASCII_TABLE, _("&Ascii Table"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_HISTORY, _("&History"), wxEmptyString, wxITEM_CHECK);
+  menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
+  menuView->AppendCheckItem(ID_VIEW_PROJECTS, _("&Projects"));
+  menuView->AppendCheckItem(ID_VIEW_DIRCTRL, _("&Explorer"));
+  menuView->AppendCheckItem(ID_VIEW_OUTPUT, _("&Output"));
+  menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
+  menuView->AppendCheckItem(ID_VIEW_HISTORY, _("&History"));
 #ifdef __WXMSW__
   ///  \todo Listctrl under GTK and X11 behave differently, items become non-existing by the OnIdle.
   wxMenu *menuListView = new wxMenu;
-  menuListView->Append(wxID_VIEW_LIST, _("&List"), wxEmptyString, wxITEM_CHECK);
-  menuListView->Append(wxID_VIEW_DETAILS, _("&Detail"), wxEmptyString, wxITEM_CHECK);
-  menuListView->Append(wxID_VIEW_SMALLICONS, _("&Small Icon"), wxEmptyString, wxITEM_CHECK);
+  menuListView->AppendCheckItem(wxID_VIEW_LIST, _("&List"));
+  menuListView->AppendCheckItem(wxID_VIEW_DETAILS, _("&Detail"));
+  menuListView->AppendCheckItem(wxID_VIEW_SMALLICONS, _("&Small Icon"));
   menuView->AppendSeparator();
   menuView->Append(ID_VIEW_MENU, _("&Lists"), wxEmptyString, wxITEM_NORMAL, menuListView);
 #endif
@@ -140,7 +140,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuProject->Append(ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxITEM_NORMAL, NULL, wxART_FILE_SAVE);
   menuProject->Append(ID_PROJECT_SAVEAS, wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxITEM_NORMAL, NULL, wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
-  menuProject->Append(ID_SORT_SYNC, _("&Auto Sort"), wxEmptyString, wxITEM_CHECK);
+  menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
   
   wxMenu *menuWindow = new wxMenu();
   menuWindow->Append(ID_SPLIT, _("Split"));
@@ -151,9 +151,9 @@ Frame::Frame(const wxString& project_wildcard)
   menuOptions->Append(ID_OPTION_LIST_COLOUR, exEllipsed(_("Set &List Colour")));
   menuOptions->Append(ID_OPTION_LIST_FONT, exEllipsed(_("Set &List Font")));
   wxMenu *menuListSort = new wxMenu;
-  menuListSort->Append(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"), wxEmptyString, wxITEM_CHECK);
-  menuListSort->Append(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"), wxEmptyString, wxITEM_CHECK);
-  menuListSort->Append(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"), wxEmptyString, wxITEM_CHECK);
+  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
+  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
+  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
   menuOptions->Append(ID_OPTION_LIST_SORT_MENU, _("Set &List Sort Method"), menuListSort);
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_EDITOR, exEllipsed(_("Set &Editor Options")));
