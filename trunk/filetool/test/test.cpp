@@ -27,7 +27,7 @@ void ftAppTestFixture::testConstructors()
 void ftAppTestFixture::testMethods()
 {
   // test ftListView
-  CPPUNIT_ASSERT(m_ListView->FileOpen("test.prj"));
+  CPPUNIT_ASSERT(m_ListView->FileOpen(exFileName("test.prj")));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
   
   // test ftProcess
