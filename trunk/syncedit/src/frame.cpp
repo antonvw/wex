@@ -21,7 +21,7 @@
 
 BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_BUTTON(wxID_STOP, MDIFrame::OnCommand)
-  EVT_BUTTON(ID_PROCESS_RUN, MDIFrame::OnCommand)
+  EVT_BUTTON(wxID_EXECUTE, MDIFrame::OnCommand)
   EVT_CLOSE(MDIFrame::OnClose)
   EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, MDIFrame::OnCommand)
@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(wxID_CLOSE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_COPY, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CUT, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_EXECUTE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REPLACE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PRINT, MDIFrame::OnUpdateUI)
@@ -55,7 +56,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_FIND_TEXT, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_PROCESS_RUN, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
@@ -465,6 +465,7 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
+  case wxID_EXECUTE: ftListView::ProcessRun(); break;
   case wxID_STOP:
     if (ftListView::ProcessIsRunning())
     {
@@ -542,7 +543,6 @@ and saved in the same directory as where the executable is."));
       exApp::SetConfig("List/SortMethod", 2 + event.GetId() - ID_OPTION_LIST_SORT_ASCENDING);
     break;
 
-  case ID_PROCESS_RUN: ftListView::ProcessRun(); break;
   case ID_PROCESS_SELECT: ftProcess::ConfigDialog(); break;
 
   case ID_PROJECT_CLOSE:
@@ -737,6 +737,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
   else switch (event.GetId())
     {
+    case wxID_EXECUTE: event.Enable(ftProcess::IsSelected()); break;
     case wxID_STOP: event.Enable(ftListView::ProcessIsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
@@ -752,8 +753,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         event.GetId() - ID_OPTION_LIST_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
         SORT_TOGGLE) - 2);
     break;
-
-    case ID_PROCESS_RUN: event.Enable(ftProcess::IsSelected()); break;
 
     case ID_PROJECT_CLOSE:
     case ID_PROJECT_SAVEAS:

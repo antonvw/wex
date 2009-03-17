@@ -127,7 +127,7 @@ Frame::Frame(const wxString& project_wildcard)
   wxMenu *menuProcess = new wxMenu();
   menuProcess->Append(ID_PROCESS_SELECT, exEllipsed(_("&Select")));
   menuProcess->AppendSeparator();
-  menuProcess->Append(ID_PROCESS_RUN, _("&Run"));
+  menuProcess->Append(wxID_EXECUTE, _("&Run"));
   menuProcess->Append(wxID_STOP);
   
   exMenu *menuProject = new exMenu();
