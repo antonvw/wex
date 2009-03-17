@@ -514,8 +514,6 @@ void exMenu::Append(
   int id,
   const wxString& name,
   const wxString& helptext,
-  wxItemKind kind,
-  wxMenu* submenu,
   wxArtID artid)
 {
   wxString use_name = name;
@@ -528,10 +526,8 @@ void exMenu::Append(
 
   CheckStock(id, use_name, use_bitmap);
 
-  wxMenuItem* item = new wxMenuItem(this, id, use_name, helptext, kind, submenu);
+  wxMenuItem* item = wxMenu::Append(id, use_name, helptext);
   item->SetBitmap(use_bitmap);
-
-  wxMenu::Append(item);
 }
 
 bool exMenu::AppendEdit(bool add_invert)
@@ -603,10 +599,10 @@ void exMenu::AppendPrint()
   Append(wxID_PRINT);
 }
 
-exMenu* exMenu::AppendTools(int toolmenu_id)
+exMenu* exMenu::AppendTools()
 {
   exMenu* menuTool = new exMenu(*this);
-  exMenu *menuReport = new exMenu(*this);
+  exMenu* menuReport = new exMenu(*this);
 
   for (
     map <int, const exToolInfo>::const_iterator it = exTool::GetToolInfo().begin();
@@ -621,9 +617,9 @@ exMenu* exMenu::AppendTools(int toolmenu_id)
   }
 
   menuTool->AppendSeparator();
-  menuTool->Append(-1, _("&Report"), wxEmptyString, wxITEM_NORMAL, menuReport);
+  menuTool->AppendSubMenu(menuReport, _("&Report"));
 
-  Append(toolmenu_id, _("&Tools"), wxEmptyString, wxITEM_NORMAL, menuTool);
+  AppendSubMenu(menuTool, _("&Tools"));
 
   return menuTool;
 }

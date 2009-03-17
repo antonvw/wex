@@ -272,8 +272,6 @@ void exListView::BuildPopupMenu(exMenu& menu)
     menu.Append(ID_LIST_FIND,
       wxGetStockLabel(wxID_FIND, wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR),
       wxEmptyString,
-      wxITEM_NORMAL,
-      NULL,
       wxART_FIND);
 
     menu.AppendSeparator();

@@ -360,8 +360,6 @@ public:
   void Append(int id, // this can be a stock item, then name and art is derived from it
     const wxString& name = wxEmptyString,
     const wxString& helptext = wxEmptyString,
-    wxItemKind kind = wxITEM_NORMAL,
-    wxMenu* submenu = NULL,
     wxArtID artid = wxEmptyString);
 
   /// Appends edit menu items, depending on the style specified during construction.
@@ -372,8 +370,8 @@ public:
   /// This always adds some items, so no boolean return needed.
   void AppendPrint();
 
-  /// Appends a tools submenu consisting of the basic and report tools at the specified menu.
-  exMenu* AppendTools(int toolmenu_id);
+  /// Appends a tools submenu consisting of the basic and report tools.
+  exMenu* AppendTools();
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};

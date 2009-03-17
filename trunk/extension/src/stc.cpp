@@ -575,7 +575,7 @@ void exSTC::BuildPopupMenu(exMenu& menu)
   if (menuSelection != NULL)
   {
     menu.AppendSeparator();
-    menu.Append(0, _("&Selection"), wxEmptyString, wxITEM_NORMAL, menuSelection);
+    menu.AppendSubMenu(menuSelection, _("&Selection"));
   }
 
   if (sel.empty() && m_FileName.GetLexer().GetScintillaLexer() == "hypertext")
