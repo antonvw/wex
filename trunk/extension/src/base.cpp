@@ -517,17 +517,23 @@ void exMenu::Append(
   wxArtID artid)
 {
   wxString use_name = name;
-  wxBitmap use_bitmap = wxNullBitmap;
+  wxBitmap bitmap;
 
   if (!artid.empty())
   {
-    use_bitmap = wxArtProvider::GetBitmap(artid, wxART_MENU, wxSize(16, 15));
+    bitmap = wxArtProvider::GetBitmap(artid, wxART_MENU, wxSize(16, 15));
   }
 
-  CheckStock(id, use_name, use_bitmap);
+  CheckStock(id, use_name, bitmap);
 
-  wxMenuItem* item = wxMenu::Append(id, use_name, helptext);
-  item->SetBitmap(use_bitmap);
+  wxMenuItem* item = new wxMenuItem(this, id, use_name, helptext);
+
+  if (bitmap.IsOk())
+  {
+    item->SetBitmap(bitmap);
+  }
+
+  wxMenu::Append(item);
 }
 
 bool exMenu::AppendEdit(bool add_invert)
