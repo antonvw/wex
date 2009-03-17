@@ -96,7 +96,7 @@ Frame::Frame(const wxString& project_wildcard)
     menuSVN->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
     menuSVN->AppendSeparator();
     menuSVN->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
-    menuEdit->Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, menuSVN);
+    menuEdit->AppendSubMenu(menuSVN, "&SVN");
     menuEdit->AppendSeparator();
   }
 
@@ -104,7 +104,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
   
-  exMenu *menuView = new exMenu;
+  wxMenu *menuView = new wxMenu;
   menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   menuView->AppendSeparator();
@@ -121,7 +121,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuListView->AppendCheckItem(wxID_VIEW_DETAILS, _("&Detail"));
   menuListView->AppendCheckItem(wxID_VIEW_SMALLICONS, _("&Small Icon"));
   menuView->AppendSeparator();
-  menuView->Append(ID_VIEW_MENU, _("&Lists"), wxEmptyString, wxITEM_NORMAL, menuListView);
+  menuView->AppendSubMenu(menuListView, _("&Lists"));
 #endif
   
   wxMenu *menuProcess = new wxMenu();

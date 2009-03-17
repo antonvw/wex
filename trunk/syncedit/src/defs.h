@@ -49,7 +49,6 @@ enum
   ID_TREE_SVN_CAT,
   ID_TREE_SVN_DIFF,
   ID_TREE_SVN_LOG,
-  ID_VIEW_MENU,
   ID_VIEW_PANE_FIRST, // put all your panes from here
   ID_VIEW_FILES,
   ID_VIEW_PROJECTS,
