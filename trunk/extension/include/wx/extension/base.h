@@ -355,9 +355,7 @@ public:
   exMenu(const exMenu& menu);
 
   /// Adds automatic naming (for stock menu id's) and art id for menu items.
-  /// Even though you don't provide artid, using this one instead of
-  /// wxMenu::Append can be usefull, as it reserves space for the empty bitmap.
-  void Append(int id, // this can be a stock item, then name and art is derived from it
+  wxMenuItem* Append(int id, // this can be a stock item, then name and art is derived from it
     const wxString& name = wxEmptyString,
     const wxString& helptext = wxEmptyString,
     wxArtID artid = wxEmptyString);

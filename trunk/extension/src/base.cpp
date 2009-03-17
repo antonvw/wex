@@ -510,7 +510,7 @@ exMenu::exMenu(const exMenu& menu)
 {
 }
 
-void exMenu::Append(
+wxMenuItem* exMenu::Append(
   int id,
   const wxString& name,
   const wxString& helptext,
@@ -534,6 +534,8 @@ void exMenu::Append(
   }
 
   wxMenu::Append(item);
+
+  return item;
 }
 
 bool exMenu::AppendEdit(bool add_invert)
