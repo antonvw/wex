@@ -533,9 +533,7 @@ wxMenuItem* exMenu::Append(
     item->SetBitmap(bitmap);
   }
 
-  wxMenu::Append(item);
-
-  return item;
+  return wxMenu::Append(item);
 }
 
 bool exMenu::AppendEdit(bool add_invert)
