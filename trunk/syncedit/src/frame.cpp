@@ -56,6 +56,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_FIND_TEXT, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_OPTION_LIST_SORT_TOGGLE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
@@ -64,7 +65,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI_RANGE(wxID_VIEW_DETAILS, wxID_VIEW_LIST, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(wxID_SORT_ASCENDING, wxID_SORT_DESCENDING, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, MDIFrame::OnUpdateUI)
 END_EVENT_TABLE()
@@ -537,10 +538,10 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case ID_OPTION_LIST_SORT_ASCENDING:
-  case ID_OPTION_LIST_SORT_DESCENDING:
+  case wxID_SORT_ASCENDING:
+  case wxID_SORT_DESCENDING:
   case ID_OPTION_LIST_SORT_TOGGLE:
-      exApp::SetConfig("List/SortMethod", 2 + event.GetId() - ID_OPTION_LIST_SORT_ASCENDING);
+      exApp::SetConfig("List/SortMethod", 2 + event.GetId() - wxID_SORT_ASCENDING);
     break;
 
   case ID_PROCESS_SELECT: ftProcess::ConfigDialog(); break;
@@ -746,11 +747,11 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Enable(m_NotebookWithEditors->GetPageCount() > 2);
     break;
 
-    case ID_OPTION_LIST_SORT_ASCENDING:
-    case ID_OPTION_LIST_SORT_DESCENDING:
+    case wxID_SORT_ASCENDING:
+    case wxID_SORT_DESCENDING:
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
-        event.GetId() - ID_OPTION_LIST_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
+        event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
         SORT_TOGGLE) - 2);
     break;
 

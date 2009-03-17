@@ -104,6 +104,7 @@ BEGIN_EVENT_TABLE(ftListView, exListView)
   EVT_IDLE(ftListView::OnIdle)
   EVT_LIST_ITEM_ACTIVATED(ID_LISTVIEW, ftListView::OnList)
   EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, ftListView::OnList)
+  EVT_MENU(wxID_ADD, ftListView::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, ftListView::OnCommand)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, ftListView::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, ftListView::OnCommand)
@@ -329,7 +330,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
 
   if (add)
   {
-    menu.Append(ID_LIST_ADD_ITEM, exEllipsed(_("&Add Files")));
+    menu.Append(wxID_ADD);
     menu.AppendSeparator();
   }
 
@@ -802,7 +803,7 @@ void ftListView::OnCommand(wxCommandEvent& event)
     }
   break;
 
-  case ID_LIST_ADD_ITEM: AddItems(); break;
+  case wxID_ADD: AddItems(); break;
 
   case ID_LIST_SVN_CAT:
     exSVN(SVN_CAT, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
