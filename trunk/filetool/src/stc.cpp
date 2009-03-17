@@ -82,7 +82,7 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
       !GetFileName().GetLexer().GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
-    menu.AppendTools(ID_STC_TOOL_MENU);
+    menu.AppendTools();
   }
 
   if (GetMenuFlags() & (STC_MENU_REPORT_FIND | STC_MENU_REPORT_REPLACE))
@@ -118,7 +118,7 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
         svnmenu->Append(ID_STC_SVN_CAT, exEllipsed(_("&Cat")));
         svnmenu->AppendSeparator();
         svnmenu->Append(ID_STC_SVN_COMMIT, exEllipsed(_("&Commit")));
-        menu.Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, svnmenu);
+        menu.AppendSubMenu(svnmenu, "&SVN");
       }
     }
   }

@@ -60,10 +60,10 @@ Frame::Frame(const wxString& project_wildcard)
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
-  menuFile->Append(ID_ALL_STC_SAVE, _("Save A&ll"), wxEmptyString, wxITEM_NORMAL, NULL, wxART_FILE_SAVE);
+  menuFile->Append(ID_ALL_STC_SAVE, _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
-  menuFile->Append(ID_ALL_STC_PRINT, exEllipsed(_("Print A&ll")), wxEmptyString, wxITEM_NORMAL, NULL, wxART_PRINT);
+  menuFile->Append(ID_ALL_STC_PRINT, exEllipsed(_("Print A&ll")), wxEmptyString, wxART_PRINT);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
   
@@ -80,7 +80,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(wxID_REPLACE);
   menuEdit->Append(ID_SPECIAL_FIND_IN_FILES, exEllipsed(_("Find &In Files")));
   menuEdit->AppendSeparator();
-  menuEdit->AppendTools(ID_STC_TOOL_MENU);
+  menuEdit->AppendTools();
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_GOTO, exEllipsed(_("&Goto"), "Ctrl+G"));
   menuEdit->AppendSeparator();
@@ -131,14 +131,14 @@ Frame::Frame(const wxString& project_wildcard)
   menuProcess->Append(wxID_STOP);
   
   exMenu *menuProject = new exMenu();
-  menuProject->Append(ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxITEM_NORMAL, NULL, wxART_NEW);
-  menuProject->Append(ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxITEM_NORMAL, NULL, wxART_FILE_OPEN);
+  menuProject->Append(ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
+  menuProject->Append(ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open As Text"));
   menuProject->Append(ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE));
   menuProject->AppendSeparator();
-  menuProject->Append(ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxITEM_NORMAL, NULL, wxART_FILE_SAVE);
-  menuProject->Append(ID_PROJECT_SAVEAS, wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxITEM_NORMAL, NULL, wxART_FILE_SAVE_AS);
+  menuProject->Append(ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxART_FILE_SAVE);
+  menuProject->Append(ID_PROJECT_SAVEAS, wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
   

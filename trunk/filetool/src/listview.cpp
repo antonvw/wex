@@ -282,7 +282,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
         svnmenu->Append(ID_LIST_SVN_DIFF, exEllipsed(_("&Diff")));
         svnmenu->Append(ID_LIST_SVN_LOG, exEllipsed(_("&Log")));
         svnmenu->Append(ID_LIST_SVN_CAT, exEllipsed(_("&Cat")));
-        menu.Append(-1, "&SVN", wxEmptyString, wxITEM_NORMAL, svnmenu);
+        menu.AppendSubMenu(svnmenu, "&SVN");
       }
     }
 
@@ -339,7 +339,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
      (m_MenuFlags & FT_LISTVIEW_TOOL))
   {
     menu.AppendSeparator();
-    menu.AppendTools(ID_LIST_TOOL_MENU);
+    menu.AppendTools();
   }
 }
 

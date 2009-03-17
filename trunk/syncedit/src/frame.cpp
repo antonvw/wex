@@ -60,7 +60,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_STC_TOOL_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_VIEW_DETAILS, wxID_VIEW_LIST, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, MDIFrame::OnUpdateUI)
@@ -832,7 +831,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       case ID_EDIT_GOTO:
       case ID_EDIT_UNFOLD_ALL:
       case ID_FIND_TEXT:
-      case ID_STC_TOOL_MENU:
         event.Enable(editor->GetLength() > 0);
         break;
 
