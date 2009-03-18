@@ -660,6 +660,12 @@ void exListView::OnCommand(wxCommandEvent& event)
   case wxID_SELECTALL: 
     EditSelectAll(); 
     break;
+  case wxID_SORT_ASCENDING: 
+    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING); 
+    break;
+  case wxID_SORT_DESCENDING: 
+    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING); 
+    break;
   case ID_EDIT_SELECT_INVERT: 
     EditInvertAll(); 
     break;
@@ -668,12 +674,6 @@ void exListView::OnCommand(wxCommandEvent& event)
     {
       Select(i, false); 
     }
-    break;
-  case ID_EDIT_SORT_ASCENDING: 
-    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING); 
-    break;
-  case ID_EDIT_SORT_DESCENDING: 
-    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING); 
     break;
   case ID_LIST_FIND: 
     FindDialog(this); 
@@ -710,8 +710,8 @@ void exListView::OnList(wxListEvent& event)
     m_ToBeSortedColumnNo = event.GetColumn();
 
     exMenu menu(GetSelectedItemCount() > 0 ? exMenu::MENU_IS_SELECTED: exMenu::MENU_DEFAULT);
-    menu.Append(ID_EDIT_SORT_ASCENDING, _("Sort Ascending"));
-    menu.Append(ID_EDIT_SORT_DESCENDING, _("Sort Descending"));
+    menu.Append(wxID_SORT_ASCENDING);
+    menu.Append(wxID_SORT_DESCENDING);
 
     PopupMenu(&menu);
   }

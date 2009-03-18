@@ -537,12 +537,8 @@ void exSTC::BuildPopupMenu(exMenu& menu)
       if (exGetNumberOfLines(sel) > 1)
       {
         menuSelection->AppendSeparator();
-        menuSelection->Append(
-          ID_EDIT_SORT_ASCENDING,
-          exEllipsed(_("Sort &Ascending"), "F7"));
-        menuSelection->Append(
-          ID_EDIT_SORT_DESCENDING,
-          exEllipsed(_("Sort &Descending"), "F8"));
+        menuSelection->Append(wxID_SORT_ASCENDING);
+        menuSelection->Append(wxID_SORT_DESCENDING);
       }
     }
     else
@@ -1458,8 +1454,8 @@ void exSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
   entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
   entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, ID_EDIT_SORT_ASCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, ID_EDIT_SORT_DESCENDING);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
@@ -1609,6 +1605,8 @@ void exSTC::OnCommand(wxCommandEvent& command)
   case wxID_UNDO: Undo(); break;
   case wxID_REDO: Redo(); break;
   case wxID_SAVE: FileSave(); break;
+  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
+  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
 
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
@@ -1670,8 +1668,6 @@ void exSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
-  case ID_EDIT_SORT_ASCENDING: SortSelectionDialog(true); break;
-  case ID_EDIT_SORT_DESCENDING: SortSelectionDialog(false); break;
   default: wxLogError(FILE_INFO("Unhandled")); break;
   }
 }

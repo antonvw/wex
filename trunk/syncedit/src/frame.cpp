@@ -62,10 +62,10 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(wxID_SORT_ASCENDING, wxID_SORT_DESCENDING, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_VIEW_DETAILS, wxID_VIEW_LIST, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(wxID_SORT_ASCENDING, wxID_SORT_DESCENDING, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, MDIFrame::OnUpdateUI)
 END_EVENT_TABLE()
@@ -538,11 +538,12 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case wxID_SORT_ASCENDING:
+  case wxID_SORT_ASCENDING: 
+    exApp::SetConfig("List/SortMethod", SORT_ASCENDING); break;
   case wxID_SORT_DESCENDING:
+    exApp::SetConfig("List/SortMethod", SORT_DESCENDING); break;
   case ID_OPTION_LIST_SORT_TOGGLE:
-      exApp::SetConfig("List/SortMethod", 2 + event.GetId() - wxID_SORT_ASCENDING);
-    break;
+    exApp::SetConfig("List/SortMethod", SORT_TOGGLE); break;
 
   case ID_PROCESS_SELECT: ftProcess::ConfigDialog(); break;
 
@@ -748,11 +749,15 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
     case wxID_SORT_ASCENDING:
+      event.Check(
+        event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
+        SORT_TOGGLE) - SORT_ASCENDING);
+      break;
     case wxID_SORT_DESCENDING:
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
-        event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
-        SORT_TOGGLE) - 2);
+        event.GetId() - ID_OPTION_LIST_SORT_TOGGLE == exApp::GetConfig("List/SortMethod", 
+        SORT_TOGGLE) - SORT_TOGGLE);
     break;
 
     case ID_PROJECT_CLOSE:
