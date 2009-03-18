@@ -11,6 +11,7 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
+#include <wx/extension/configdialog.h>
 #include "server.h"
 
 #ifndef __WXMSW__
@@ -122,12 +123,12 @@ MyFrame::MyFrame(const wxString& title)
     _("Closes connection with all clients and stops the server"));
 
   exMenu* menuClient = new exMenu();
-  menuClient->Append(ID_CLIENT_ECHO, _("Echo"), 
-    _("Echo's received data back to client"), wxITEM_CHECK);
-  menuClient->Append(ID_CLIENT_LOG_DATA, _("Log Data"), 
-    _("Logs data read from and written to client"), wxITEM_CHECK);
-  menuClient->Append(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"), 
-    _("Adds timestamp to logdata"), wxITEM_CHECK);
+  menuClient->AppendCheckItem(ID_CLIENT_ECHO, _("Echo"), 
+    _("Echo's received data back to client"));
+  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"), 
+    _("Logs data read from and written to client"));
+  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"), 
+    _("Adds timestamp to logdata"));
   menuClient->AppendSeparator();
   menuClient->Append(ID_CLIENT_BUFFER_SIZE, exEllipsed(_("Buffer Size")),
     _("Sets buffersize for data retrieved from client"));
@@ -137,16 +138,16 @@ MyFrame::MyFrame(const wxString& title)
   menuClient->Append(ID_TIMER_STOP, _("Stop Timer"), _("Stops the timer"));
   menuClient->AppendSeparator();
   menuClient->Append(ID_WRITE_DATA, _("Write"), 
-    _("Writes data to all clients"), wxITEM_NORMAL, NULL, wxART_GO_FORWARD);
+    _("Writes data to all clients"), wxART_GO_FORWARD);
 
   wxMenu* menuView = new wxMenu();
-  menuView->Append(ID_VIEW_STATUSBAR, _("&Statusbar"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_TOOLBAR, _("&Toolbar"), wxEmptyString, wxITEM_CHECK);
+  menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
+  menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   menuView->AppendSeparator();
-  menuView->Append(ID_VIEW_LOG, _("Log"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_DATA, _("Data"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_SHELL, _("Shell"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_STATISTICS, _("Statistics"), wxEmptyString, wxITEM_CHECK);
+  menuView->AppendCheckItem(ID_VIEW_LOG, _("Log"));
+  menuView->AppendCheckItem(ID_VIEW_DATA, _("Data"));
+  menuView->AppendCheckItem(ID_VIEW_SHELL, _("Shell"));
+  menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
 
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(ID_OPTIONS, exEllipsed(_("Edit")));

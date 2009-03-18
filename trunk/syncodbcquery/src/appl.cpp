@@ -74,19 +74,19 @@ MyFrame::MyFrame(const wxString& title)
   menuDatabase->Append(ID_DATABASE_CLOSE, _("&Close"));
 
   exMenu* menuQuery = new exMenu;
-  menuQuery->Append(ID_QUERY_RUN, _("&Run"), wxEmptyString, wxITEM_NORMAL, NULL, wxART_GO_FORWARD);
+  menuQuery->Append(ID_QUERY_RUN, _("&Run"), wxEmptyString, wxART_GO_FORWARD);
   menuQuery->Append(wxID_STOP);
 
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(ID_OPTIONS, exEllipsed(_("&Edit")));
 
   wxMenu* menuView = new wxMenu();
-  menuView->Append(ID_VIEW_STATUSBAR, _("&Statusbar"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_TOOLBAR, _("&Toolbar"), wxEmptyString, wxITEM_CHECK);
+  menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
+  menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   menuView->AppendSeparator();
-  menuView->Append(ID_VIEW_QUERY, _("Query"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_RESULTS, _("Results"), wxEmptyString, wxITEM_CHECK);
-  menuView->Append(ID_VIEW_STATISTICS, _("Statistics"), wxEmptyString, wxITEM_CHECK);
+  menuView->AppendCheckItem(ID_VIEW_QUERY, _("Query"));
+  menuView->AppendCheckItem(ID_VIEW_RESULTS, _("Results"));
+  menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
 
   wxMenu* menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
