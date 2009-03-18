@@ -82,7 +82,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->AppendSeparator();
   menuEdit->AppendTools();
   menuEdit->AppendSeparator();
-  menuEdit->Append(ID_EDIT_GOTO, exEllipsed(_("&Goto"), "Ctrl+G"));
+  menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, exEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();

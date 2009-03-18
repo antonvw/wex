@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(wxID_COPY, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CUT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_JUMP_TO, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REPLACE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PRINT, MDIFrame::OnUpdateUI)
@@ -51,7 +52,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(wxID_REDO, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_STOP, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_GOTO, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, MDIFrame::OnUpdateUI)
@@ -829,11 +829,11 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         break;
 
       case wxID_FIND:
+      case wxID_JUMP_TO:
       case wxID_REPLACE:
       case wxID_SAVEAS:
       case ID_EDIT_FIND_NEXT:
       case ID_EDIT_FOLD_ALL:
-      case ID_EDIT_GOTO:
       case ID_EDIT_UNFOLD_ALL:
       case ID_FIND_TEXT:
         event.Enable(editor->GetLength() > 0);

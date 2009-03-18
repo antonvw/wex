@@ -1599,6 +1599,7 @@ void exSTC::OnCommand(wxCommandEvent& command)
   case wxID_CUT: Cut(); break;
   case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
   case wxID_FIND: FindDialog(this); break;
+  case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
   case wxID_REPLACE: ReplaceDialog(this); break;
   case wxID_SELECTALL: SelectAll(); break;
@@ -1663,7 +1664,6 @@ void exSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_FIND_NEXT: FindNext(GetSearchText(), true); break;
   case ID_EDIT_FIND_PREVIOUS: FindNext(GetSearchText(), false); break;
-  case ID_EDIT_GOTO: GotoDialog(); break;
   case ID_EDIT_INSERT_DATE: AddText(wxDateTime::Now().Format()); break;
   case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
   case ID_EDIT_LOWERCASE: LowerCase(); break;
