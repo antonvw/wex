@@ -328,7 +328,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
   // as wxID_ABOUT etc. is used here and not in the editor.
   // That causes appl to hang.
-  if ((event.GetId() == wxID_UNDO || event.GetId() == wxID_REDO) ||
+  if ((event.GetId() == wxID_UNDO || 
+       event.GetId() == wxID_REDO ||
+       event.GetId() == wxID_JUMP_TO) ||
       (event.GetId() >= wxID_CUT && event.GetId() <= wxID_PROPERTIES) ||
       (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST)||
       (event.GetId() >= ID_STC_LOWEST && event.GetId() <= ID_STC_HIGHEST))
