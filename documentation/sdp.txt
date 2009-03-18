@@ -20,6 +20,8 @@ General
 
 - automated testing is done using cppunit
 
+- translation is done using poedit
+
 
 Adding functionality in trunk
 
