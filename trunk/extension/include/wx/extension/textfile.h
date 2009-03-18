@@ -112,7 +112,7 @@ protected:
   /// This one is invoked for ID_TOOL_LINE_CODE,
   /// for each line that contains code, or
   /// for ID_TOOL_LINE_COMMENTS for each line that contains a comment.
-  virtual void ReportLine(const wxString& line) {;};
+  virtual void ReportLine(const wxString& WXUNUSED(line)) {;};
 public:
   /// This one is invoked at the end, when statistics are completed.
   /// It is made public, as it can be useful from outside.
