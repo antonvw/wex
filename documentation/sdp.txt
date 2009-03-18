@@ -1,2 +1,35 @@
 Software Development Plan
 
+
+General
+
+- GUI library wxWidgets, currently svn (as there is not yet a base)
+
+- database is OTL
+
+- development is in trunk
+
+- stable releases are in tags/branches
+
+- application icons are designed using GIMP
+    but menu and toolbar bitmaps are from wxWidgets, using wxArtProvider,
+    or gtk stock items
+
+- most documentation is generated using Doxygen
+    however, some docs are in html format
+
+- automated testing is done using cppunit
+
+
+Adding functionality in trunk
+
+- add a sample for it in
+    extension/sample, 
+    filetool/sample, 
+
+- add a test for it in 
+    extension/test/base, 
+    extension/test/app, 
+    filetool/test, 
+  where it has least dependancies
+
