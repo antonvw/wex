@@ -336,7 +336,7 @@ public:
   void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};
 
   /// Sets the text (either normal or raw).
-  void SetText(const wxString& text) {m_STC->SetText(text);};
+  void SetText(const wxString& text);
 private:
   exSTC* m_STC;
 };

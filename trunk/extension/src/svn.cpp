@@ -14,12 +14,14 @@
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
+
+exSTCEntryDialog* exSVN::m_STCEntryDialog = NULL;
+
 exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   : m_Type(m_Type)
   , m_Contents()
   , m_FullPath(fullpath)
   , m_ReturnCode(-2)
-  , m_STCEntryDialog(NULL)
 {
   switch (m_Type)
   {

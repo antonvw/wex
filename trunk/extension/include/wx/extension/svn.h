@@ -64,7 +64,7 @@ private:
   wxString m_Contents;
   const wxString m_FullPath;
   int m_ReturnCode;
-  exSTCEntryDialog* m_STCEntryDialog;
+  static exSTCEntryDialog* m_STCEntryDialog;
 };
 #endif
 #endif

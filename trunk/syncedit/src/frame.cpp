@@ -751,11 +751,11 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
     case wxID_SORT_ASCENDING:
+    case wxID_SORT_DESCENDING:
       event.Check(
         event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
         SORT_TOGGLE) - SORT_ASCENDING);
       break;
-    case wxID_SORT_DESCENDING:
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
         event.GetId() - ID_OPTION_LIST_SORT_TOGGLE == exApp::GetConfig("List/SortMethod", 

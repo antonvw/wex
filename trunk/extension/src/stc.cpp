@@ -2746,4 +2746,23 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
   
   BuildSizers();
 }
+
+void exSTCEntryDialog::SetText(const wxString& text)
+{
+  bool readonly = false;
+
+  if (m_STC->GetReadOnly())
+  {
+    readonly = true;
+    m_STC->SetReadOnly(false);
+  }
+
+  m_STC->SetText(text);
+
+  if (readonly)
+  {
+    m_STC->SetReadOnly(true);
+  }
+}
+
 #endif // wxUSE_GUI
