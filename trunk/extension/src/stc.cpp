@@ -790,9 +790,9 @@ int exSTC::ConfigDialog(
 
   const wxSize size
 #ifdef __WXMSW__
-    (400, 400);
+    (400, 450);
 #else
-    (500, 400);
+    (500, 350);
 #endif
 
   int buttons = wxOK | wxCANCEL;
