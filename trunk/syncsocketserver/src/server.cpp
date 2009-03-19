@@ -37,24 +37,27 @@ bool MyApp::OnInit()
 BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_CLOSE(MyFrame::OnClose)
   EVT_MENU(wxID_ABOUT, MyFrame::OnCommand)
+  EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
   EVT_MENU(wxID_EXIT, MyFrame::OnCommand)
   EVT_MENU(wxID_NEW, MyFrame::OnCommand)
   EVT_MENU(wxID_OPEN, MyFrame::OnCommand)
+  EVT_MENU(wxID_PREFERENCES, MyFrame::OnCommand)
   EVT_MENU(wxID_SAVE, MyFrame::OnCommand)
   EVT_MENU(wxID_SAVEAS, MyFrame::OnCommand)
+  EVT_MENU(wxID_STOP, MyFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, MyFrame::OnCommand)
   EVT_MENU_RANGE(ID_MENU_FIRST, ID_MENU_LAST, MyFrame::OnCommand)
   EVT_SOCKET(ID_SERVER, MyFrame::OnSocket)
   EVT_SOCKET(ID_CLIENT, MyFrame::OnSocket)
   EVT_TIMER(-1, MyFrame::OnTimer)
+  EVT_UPDATE_UI(wxID_EXECUTE, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_SAVE, MyFrame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_STOP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLEAR_STATISTICS, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_ECHO, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_SERVER_START, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_SERVER_STOP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SERVER_CONFIG, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_TIMER_STOP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_DATA, MyFrame::OnUpdateUI)
@@ -118,9 +121,8 @@ MyFrame::MyFrame(const wxString& title)
   wxMenu* menuServer = new wxMenu();
   menuServer->Append(ID_SERVER_CONFIG, exEllipsed(_("Config")), _("Configures the server"));
   menuServer->AppendSeparator();
-  menuServer->Append(ID_SERVER_START, _("Start"), _("Starts the server"));
-  menuServer->Append(ID_SERVER_STOP, exEllipsed(_("Stop")),
-    _("Closes connection with all clients and stops the server"));
+  menuServer->Append(wxID_EXECUTE);
+  menuServer->Append(wxID_STOP);
 
   exMenu* menuClient = new exMenu();
   menuClient->AppendCheckItem(ID_CLIENT_ECHO, _("Echo"), 
@@ -150,7 +152,7 @@ MyFrame::MyFrame(const wxString& title)
   menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(ID_OPTIONS, exEllipsed(_("Edit")));
+  menuOptions->Append(wxID_PREFERENCES, exEllipsed(_("Edit")));
 
   wxMenu* menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
@@ -348,7 +350,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     Close(false);
     break;
 
-  case ID_OPTIONS:
+  case wxID_PREFERENCES:
     exSTC::ConfigDialog(_("Editor Options"),
       exSTC::STC_CONFIG_MODELESS | exSTC::STC_CONFIG_SIMPLE,
       this);
@@ -375,11 +377,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_SERVER_START:
+  case wxID_EXECUTE:
     SetupSocketServer();
     break;
 
-  case ID_SERVER_STOP:
+  case wxID_STOP:
     {
       if (wxMessageBox(_("Stop server?"),
         _("Confirm"),
@@ -651,11 +653,11 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
   case ID_SERVER_CONFIG:
     break;
 
-  case ID_SERVER_STOP:
+  case wxID_STOP:
     event.Enable(m_SocketServer != NULL);
     break;
 
-  case ID_SERVER_START:
+  case wxID_EXECUTE:
     event.Enable(m_SocketServer == NULL);
     break;
 
