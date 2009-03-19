@@ -31,6 +31,8 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
 #if wxUSE_CHECKBOX
   EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
   EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, MDIFrame::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_CASE, MDIFrame::OnCommand)
 #endif
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
@@ -104,11 +106,15 @@ MDIFrame::MDIFrame(bool open_recent)
 
   wxPanel* panel = new wxPanel(this);
   wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+  m_MatchWholeWord = new wxCheckBox(panel, ID_MATCH_WHOLE_WORD, _("Match whole word"));
+  m_MatchWholeWord->SetValue(exApp::GetConfigBool(_("Match whole word")));
+  m_MatchCase = new wxCheckBox(panel, ID_MATCH_CASE, _("Match case"));
+  m_MatchCase->SetValue(exApp::GetConfigBool(_("Match case")));
   sizer->Add(new ftFind(panel, this, ID_FIND_TEXT));
-  sizer->Add(new wxCheckBox(panel, 998, "Match Whole Word"));
-  sizer->Add(new wxCheckBox(panel, 999, "Match Case"));
+  sizer->Add(m_MatchWholeWord);
+  sizer->Add(m_MatchCase);
   panel->SetSizerAndFit(sizer);
-
+  
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
   GetManager().AddPane(m_NotebookWithProjects,
@@ -497,6 +503,13 @@ and saved in the same directory as where the executable is."));
           0, wxEmptyString, flags);
       }
 #endif
+    break;
+
+  case ID_MATCH_WHOLE_WORD: 
+    exApp::SetConfigBool(_("Match whole word"), m_MatchWholeWord->GetValue()); 
+    break;
+  case ID_MATCH_CASE: 
+    exApp::SetConfigBool(_("Match case"), m_MatchCase->GetValue()); 
     break;
 
   case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName()); break;

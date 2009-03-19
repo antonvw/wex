@@ -54,6 +54,8 @@ private:
 
   int m_NewFileNo;
 
+  wxCheckBox* m_MatchCase;
+  wxCheckBox* m_MatchWholeWord;
   wxGenericDirCtrl* m_DirCtrl;
   ftListView* m_History;
   exNotebook* m_NotebookWithEditors;
