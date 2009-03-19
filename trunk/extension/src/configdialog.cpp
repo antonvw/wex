@@ -216,6 +216,8 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
     AddUserSizer(notebook_sizer);
 
     SetMinSize(size);
+
+    SendSizeEvent();
   }
   else
   {
