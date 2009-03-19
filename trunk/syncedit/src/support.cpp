@@ -107,6 +107,7 @@ Frame::Frame(const wxString& project_wildcard)
   wxMenu *menuView = new wxMenu;
   menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
+  menuView->AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
   menuView->AppendCheckItem(ID_VIEW_PROJECTS, _("&Projects"));

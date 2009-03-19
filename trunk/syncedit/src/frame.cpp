@@ -102,6 +102,13 @@ MDIFrame::MDIFrame(bool open_recent)
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
 
+  wxPanel* panel = new wxPanel(this);
+  wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+  sizer->Add(new ftFind(panel, this, ID_FIND_TEXT));
+  sizer->Add(new wxCheckBox(panel, 998, "Match Whole Word"));
+  sizer->Add(new wxCheckBox(panel, 999, "Match Case"));
+  panel->SetSizerAndFit(sizer);
+
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
   GetManager().AddPane(m_NotebookWithProjects,
@@ -114,10 +121,8 @@ MDIFrame::MDIFrame(bool open_recent)
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("ASCIITABLE").Caption(_("Ascii Table")));
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
-
-  GetManager().AddPane(
-    new ftFind(this, this, ID_FIND_TEXT),
-    wxAuiPaneInfo().ToolbarPane().Bottom());
+  GetManager().AddPane(panel,
+    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR"));
 
   GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
 
@@ -668,6 +673,7 @@ and saved in the same directory as where the executable is."));
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
   case ID_VIEW_FILES: TogglePane("FILES"); break;
+  case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
   case ID_VIEW_HISTORY: TogglePane("HISTORY"); break;
   case ID_VIEW_OUTPUT: TogglePane("OUTPUT"); break;
   case ID_VIEW_PROJECTS: TogglePane("PROJECTS"); break;
@@ -796,6 +802,9 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
     case ID_VIEW_FILES:
       event.Check(GetManager().GetPane("FILES").IsShown());
+      break;
+    case ID_VIEW_FINDBAR:
+      event.Check(GetManager().GetPane("FINDBAR").IsShown());
       break;
     case ID_VIEW_HISTORY:
       event.Check(GetManager().GetPane("HISTORY").IsShown());
