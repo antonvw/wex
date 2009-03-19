@@ -115,6 +115,10 @@ MDIFrame::MDIFrame(bool open_recent)
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
 
+  GetManager().AddPane(
+    new ftFind(this, this, ID_FIND_TEXT),
+    wxAuiPaneInfo().ToolbarPane().Bottom());
+
   GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
 
   // Regardless of the perspective initially hide the next panels.

@@ -178,14 +178,8 @@ Frame::Frame(const wxString& project_wildcard)
   m_ToolBar->AddTool(wxID_PRINT);
   m_ToolBar->AddSeparator();
   m_ToolBar->AddTool(wxID_FIND);
-#ifdef __WXMSW__
-  const wxSize tbz(150, 20);
-#else
-  const wxSize tbz(150, -1);
-#endif  
-  m_ToolBar->AddControl(new ftFind(m_ToolBar, this, ID_FIND_TEXT, wxDefaultPosition, tbz));
-  
   m_ToolBar->AddSeparator();
+
   m_ToolBar->AddTool(
     ID_PROJECT_OPEN, 
     wxEmptyString, 
