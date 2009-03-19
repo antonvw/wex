@@ -127,7 +127,7 @@ Frame::Frame(const wxString& project_wildcard)
   wxMenu *menuProcess = new wxMenu();
   menuProcess->Append(ID_PROCESS_SELECT, exEllipsed(_("&Select")));
   menuProcess->AppendSeparator();
-  menuProcess->Append(wxID_EXECUTE, _("&Run"));
+  menuProcess->Append(wxID_EXECUTE);
   menuProcess->Append(wxID_STOP);
   
   exMenu *menuProject = new exMenu();
@@ -154,7 +154,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuListSort->AppendCheckItem(wxID_SORT_ASCENDING, _("&Ascending"));
   menuListSort->AppendCheckItem(wxID_SORT_DESCENDING, _("&Descending"));
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
-  menuOptions->Append(ID_OPTION_LIST_SORT_MENU, _("Set &List Sort Method"), menuListSort);
+  menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_EDITOR, exEllipsed(_("Set &Editor Options")));
   wxMenu *menuHelp = new wxMenu();
