@@ -363,9 +363,9 @@ size_t ftDir::RunTool(const exTool& tool, int flags)
 }
 
 
-BEGIN_EVENT_TABLE(MDIFrame, Frame)
-  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, MDIFrame::OnCommand)
-  EVT_CHECKBOX(ID_MATCH_CASE, MDIFrame::OnCommand)
+BEGIN_EVENT_TABLE(ftFindPanel, wxPanel)
+  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, ftFindPanel::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_CASE, ftFindPanel::OnCommand)
 END_EVENT_TABLE()
 
 ftFindPanel::ftFindPanel(
