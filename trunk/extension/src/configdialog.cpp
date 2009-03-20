@@ -252,7 +252,19 @@ wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(125, wxDefaultCoord));
 
-  checkbox->SetValue(m_Config->GetBool(m_ConfigGroup + text, false));
+  // Special cases, should be taken from the find replace data.
+  if (text == _("Match whole word"))
+  {
+    checkbox->SetValue(m_Config->GetFindReplaceData()->MatchWord());
+  }
+  else if (text == _("Match case"))
+  {
+    checkbox->SetValue(m_Config->GetFindReplaceData()->MatchCase());
+  }
+  else
+  {
+    checkbox->SetValue(m_Config->GetBool(m_ConfigGroup + text, false));
+  }
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -620,7 +632,20 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)it->m_Control;
-      m_Config->SetBool(m_ConfigGroup + cb->GetName(), cb->GetValue());
+      
+      // Special case, should be taken from find replace data.
+      if (cb->GetName() == _("Match whole word"))
+      {
+        m_Config->GetFindReplaceData()->SetMatchWord(cb->GetValue());
+      }
+      else if (cb->GetName() == _("Match case"))
+      {
+        m_Config->GetFindReplaceData()->SetMatchCase(cb->GetValue());
+      }
+      else
+      {
+        m_Config->SetBool(m_ConfigGroup + cb->GetName(), cb->GetValue());
+      }
       }
       break;
 
