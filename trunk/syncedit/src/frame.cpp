@@ -107,9 +107,9 @@ MDIFrame::MDIFrame(bool open_recent)
   wxPanel* panel = new wxPanel(this);
   wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
   m_MatchWholeWord = new wxCheckBox(panel, ID_MATCH_WHOLE_WORD, _("Match whole word"));
-  m_MatchWholeWord->SetValue(exApp::GetConfigBool(_("Match whole word")));
+  m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
   m_MatchCase = new wxCheckBox(panel, ID_MATCH_CASE, _("Match case"));
-  m_MatchCase->SetValue(exApp::GetConfigBool(_("Match case")));
+  m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
   sizer->Add(new ftFind(panel, this, ID_FIND_TEXT));
   sizer->Add(m_MatchWholeWord);
   sizer->Add(m_MatchCase);
@@ -506,10 +506,10 @@ and saved in the same directory as where the executable is."));
     break;
 
   case ID_MATCH_WHOLE_WORD: 
-    exApp::SetConfigBool(_("Match whole word"), m_MatchWholeWord->GetValue()); 
-    break;
   case ID_MATCH_CASE: 
-    exApp::SetConfigBool(_("Match case"), m_MatchCase->GetValue()); 
+    exApp::GetConfig()->SetFindReplaceData(
+      m_MatchWholeWord->GetValue(), 
+      m_MatchCase->GetValue()); 
     break;
 
   case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName()); break;

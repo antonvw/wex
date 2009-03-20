@@ -122,6 +122,9 @@ public:
   /// Sets key as a bool.
   void SetBool(const wxString& key, bool value) {
     m_BoolValues[key] = value;};
+  
+  /// Sets flags in find replace data.
+  void SetFindReplaceData(bool matchword, bool matchcase);
 
   /// Toggles boolean key value.
   void Toggle(const wxString& key) {

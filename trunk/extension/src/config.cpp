@@ -104,6 +104,13 @@ const wxString exConfig::GetStringKeys() const
   return text;
 }
   
+
+void exConfig::SetFindReplaceData(bool matchword, bool matchcase)
+{
+  m_FindReplaceData->SetMatchWord(matchword);
+  m_FindReplaceData->SetMatchCase(matchcase);
+}
+
 exFindReplaceData::exFindReplaceData(exConfig* config)
   : wxFindReplaceData()
   , m_Config(config)

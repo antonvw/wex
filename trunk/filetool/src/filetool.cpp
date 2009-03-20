@@ -413,8 +413,6 @@ void ftFind::OnCommand(wxCommandEvent& event)
 
 void ftFind::OnKey(wxKeyEvent& event)
 {
-  event.Skip();
-
   const int key = event.GetKeyCode();
 
   if (key == WXK_RETURN)
@@ -434,7 +432,12 @@ void ftFind::OnKey(wxKeyEvent& event)
         exApp::GetConfig()->Set("FindReplace/FindStrings", text);
         Clear(); // so exComboBoxFromString can append again
         exComboBoxFromString(this, text);
+        SetValue(exApp::GetConfig()->GetFindReplaceData()->GetFindString());
       }
     }
+  }
+  else
+  {
+    event.Skip();
   }
 }
