@@ -31,8 +31,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
 #if wxUSE_CHECKBOX
   EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
   EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
-  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, MDIFrame::OnCommand)
-  EVT_CHECKBOX(ID_MATCH_CASE, MDIFrame::OnCommand)
 #endif
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
@@ -57,7 +55,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_FIND_TEXT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_OPTION_LIST_SORT_TOGGLE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
@@ -98,23 +95,13 @@ MDIFrame::MDIFrame(bool open_recent)
     ftListView::LIST_HISTORY,
     FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
   m_DirCtrl = new wxGenericDirCtrl(this,
-    wxID_ANY, 
+    wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
   exSTC* asciiTable = new exSTC(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
+  ftFindPanel* fp = new ftFindPanel(this, this);
 
-  wxPanel* panel = new wxPanel(this);
-  wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-  m_MatchWholeWord = new wxCheckBox(panel, ID_MATCH_WHOLE_WORD, _("Match whole word"));
-  m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
-  m_MatchCase = new wxCheckBox(panel, ID_MATCH_CASE, _("Match case"));
-  m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
-  sizer->Add(new ftFind(panel, this, ID_FIND_TEXT));
-  sizer->Add(m_MatchWholeWord);
-  sizer->Add(m_MatchCase);
-  panel->SetSizerAndFit(sizer);
-  
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
   GetManager().AddPane(m_NotebookWithProjects,
@@ -127,7 +114,7 @@ MDIFrame::MDIFrame(bool open_recent)
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("ASCIITABLE").Caption(_("Ascii Table")));
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
-  GetManager().AddPane(panel,
+  GetManager().AddPane(fp,
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR"));
 
   GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
@@ -343,7 +330,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
   // as wxID_ABOUT etc. is used here and not in the editor.
   // That causes appl to hang.
-  if ((event.GetId() == wxID_UNDO || 
+  if ((event.GetId() == wxID_UNDO ||
        event.GetId() == wxID_REDO ||
        event.GetId() == wxID_JUMP_TO) ||
       (event.GetId() >= wxID_CUT && event.GetId() <= wxID_PROPERTIES) ||
@@ -505,13 +492,6 @@ and saved in the same directory as where the executable is."));
 #endif
     break;
 
-  case ID_MATCH_WHOLE_WORD: 
-  case ID_MATCH_CASE: 
-    exApp::GetConfig()->SetFindReplaceData(
-      m_MatchWholeWord->GetValue(), 
-      m_MatchCase->GetValue()); 
-    break;
-
   case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(exLogfileName()); break;
 
@@ -562,7 +542,7 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case wxID_SORT_ASCENDING: 
+  case wxID_SORT_ASCENDING:
     exApp::SetConfig("List/SortMethod", SORT_ASCENDING); break;
   case wxID_SORT_DESCENDING:
     exApp::SetConfig("List/SortMethod", SORT_DESCENDING); break;
@@ -653,7 +633,7 @@ and saved in the same directory as where the executable is."));
 #endif
     break;
 
-  case ID_TREE_RUN_MAKE: 
+  case ID_TREE_RUN_MAKE:
   {
     wxSetWorkingDirectory(wxFileName(m_DirCtrl->GetFilePath()).GetPath());
 
@@ -664,11 +644,11 @@ and saved in the same directory as where the executable is."));
   }
   break;
 
-  case ID_TREE_SVN_CAT: 
+  case ID_TREE_SVN_CAT:
   {
     exSVN svn(SVN_CAT, m_DirCtrl->GetFilePath());
     const int result = svn.GetInfo();
-    
+
     if (result == 0)
     {
       OpenFile(exFileName(m_DirCtrl->GetFilePath()), svn.GetContents());
@@ -682,7 +662,7 @@ and saved in the same directory as where the executable is."));
   case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).GetInfoAndShowContents(); break;
   case ID_TREE_SVN_LOG: exSVN(SVN_LOG, m_DirCtrl->GetFilePath()).GetInfoAndShowContents(); break;
   case ID_TREE_OPEN: OpenFile(exFileName(m_DirCtrl->GetFilePath())); break;
-  
+
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
   case ID_VIEW_FILES: TogglePane("FILES"); break;
@@ -706,7 +686,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
   {
     wxMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
-    
+
     if (exApp::GetConfigBool("SVN"))
     {
       menu.AppendSeparator();
@@ -715,14 +695,14 @@ void MDIFrame::OnTree(wxTreeEvent& event)
       svnmenu->Append(ID_TREE_SVN_LOG, exEllipsed(_("&Log")));
       svnmenu->Append(ID_TREE_SVN_CAT, exEllipsed(_("&Cat")));
       menu.AppendSubMenu(svnmenu, "&SVN");
-      
+
       if (filename.GetLexer().GetScintillaLexer() == "makefile")
       {
         menu.AppendSeparator();
         menu.Append(ID_TREE_RUN_MAKE, exEllipsed(_("&Make")));
-      } 
+      }
     }
-    
+
     PopupMenu(&menu);
   }
   else
@@ -776,12 +756,12 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_SORT_ASCENDING:
     case wxID_SORT_DESCENDING:
       event.Check(
-        event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod", 
+        event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod",
         SORT_TOGGLE) - SORT_ASCENDING);
       break;
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
-        event.GetId() - ID_OPTION_LIST_SORT_TOGGLE == exApp::GetConfig("List/SortMethod", 
+        event.GetId() - ID_OPTION_LIST_SORT_TOGGLE == exApp::GetConfig("List/SortMethod",
         SORT_TOGGLE) - SORT_TOGGLE);
     break;
 
@@ -789,18 +769,18 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_PROJECT_SAVEAS:
       event.Enable(project != NULL && project->IsShown());
     break;
-    case ID_PROJECT_OPENTEXT: 
-      event.Enable(project != NULL && !project->GetFileName().GetFullPath().empty()); 
+    case ID_PROJECT_OPENTEXT:
+      event.Enable(project != NULL && !project->GetFileName().GetFullPath().empty());
       break;
-    case ID_PROJECT_SAVE: 
-      event.Enable(project != NULL && project->GetContentsChanged()); 
+    case ID_PROJECT_SAVE:
+      event.Enable(project != NULL && project->GetContentsChanged());
       break;
 
-    case ID_RECENT_FILE_MENU: 
-      event.Enable(!GetRecentFile().empty()); 
+    case ID_RECENT_FILE_MENU:
+      event.Enable(!GetRecentFile().empty());
       break;
-    case ID_RECENT_PROJECT_MENU: 
-      event.Enable(!GetRecentProject().empty()); 
+    case ID_RECENT_PROJECT_MENU:
+      event.Enable(!GetRecentProject().empty());
       break;
 
     case ID_SORT_SYNC:
@@ -863,11 +843,10 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       case ID_EDIT_FIND_NEXT:
       case ID_EDIT_FOLD_ALL:
       case ID_EDIT_UNFOLD_ALL:
-      case ID_FIND_TEXT:
         event.Enable(editor->GetLength() > 0);
         break;
 
-      case ID_EDIT_MACRO_PLAYBACK: 
+      case ID_EDIT_MACRO_PLAYBACK:
         event.Enable(editor->MacroIsRecorded() && !editor->MacroIsRecording());
         break;
       case ID_EDIT_MACRO_START_RECORD:
@@ -879,11 +858,11 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
       case ID_EDIT_TOGGLE_FOLD:
         event.Enable(
-          editor->GetTextLength() > 0 && 
+          editor->GetTextLength() > 0 &&
           editor->GetFoldLevel(editor->GetCurrentLine()) > wxSTC_FOLDLEVELBASE);
         break;
 
-      case wxID_COPY: 
+      case wxID_COPY:
         if (GetFocusedListView() != NULL)
         {
           event.Enable(GetFocusedListView()->GetSelectedItemCount() > 0);
@@ -907,7 +886,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         }
         break;
 
-      case wxID_PASTE: 
+      case wxID_PASTE:
         if (GetFocusedListView() != NULL)
         {
           event.Enable(GetFocusedListView()->GetType() == ftListView::LIST_PROJECT);
@@ -918,16 +897,16 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         }
         break;
 
-      case wxID_SAVE: 
+      case wxID_SAVE:
         event.Enable(
           !editor->GetFileName().GetFullPath().empty() &&
            editor->GetModify());
         break;
-      case wxID_REDO: 
-        event.Enable(editor->CanRedo()); 
+      case wxID_REDO:
+        event.Enable(editor->CanRedo());
         break;
-      case wxID_UNDO: 
-        event.Enable(editor->CanUndo()); 
+      case wxID_UNDO:
+        event.Enable(editor->CanUndo());
         break;
 
       case ID_EDIT_CONTROL_CHAR:
@@ -946,12 +925,12 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 bool MDIFrame::OpenFile(
   const exFileName& filename,
   const wxString& contents,
-  long flags) 
+  long flags)
 {
   const wxString key = filename.GetFullPath()+ exApp::GetConfig(_("Flags"));
 
   wxWindow* page = m_NotebookWithEditors->GetPageByKey(key, true);
-        
+
   if (page == NULL)
   {
     ftSTC* editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);

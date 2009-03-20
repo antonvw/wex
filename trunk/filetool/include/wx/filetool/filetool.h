@@ -22,22 +22,22 @@
 #include <wx/filetool/frame.h>
 #include <wx/filetool/version.h>
 
-/// Adds frame and listview interface to exDir. 
+/// Adds frame and listview interface to exDir.
 class ftDir : public exDir
 {
 public:
   /// When using FindFiles each found file is added as listitem to the listview.
   /// When using RunTool findfiles is also used to get all matching files,
   /// and on these files RunTool is invoked.
-  ftDir(ftListView* listview, 
-    const wxString& fullpath, 
+  ftDir(ftListView* listview,
+    const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// Allows you to FindFiles on a frame.
   /// In the findfiles all found files are opened using OpenFile from frame.
-  ftDir(ftFrame* frame, 
-    const wxString& fullpath, 
-    const wxString& filespec, 
+  ftDir(ftFrame* frame,
+    const wxString& fullpath,
+    const wxString& filespec,
     long flags = 0);
 
   /// Calls RunTool from exTextFile on all matching files.
@@ -58,7 +58,7 @@ private:
   exTool m_Tool;
 };
 
-/// Offers a find combobox that allows yuo to find text 
+/// Offers a find combobox that allows yuo to find text
 /// on a current STC on an ftFrame.
 class ftFind : public wxComboBox
 {
@@ -78,6 +78,21 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
+/// Offers a find panel, containing a ftFind control and checkboxes.
+class ftFindPanel : public wxPanel
+{
+public:
+  /// Constructor.
+  ftFindPanel(wxWindow* parent, ftFrame* frame, wxWindowID id = wxID_ANY);
+protected:
+  void OnCommand(wxCommandEvent& event);
+private:
+  wxCheckBox* m_MatchCase;
+  wxCheckBox* m_MatchWholeWord;
+
+  DECLARE_EVENT_TABLE()
+};
+
 /*! \file */
 // General tool methods.
 
@@ -90,15 +105,15 @@ void ftFindInFiles(ftFrame* frame, bool replace = false);
 /// Finds other filenames from the one specified in the same dir structure.
 /// Results are put on the list if not null, or in the filename if not null.
 bool ftFindOtherFileName(
-  const wxFileName& filename, 
-  ftListView* listview, 
+  const wxFileName& filename,
+  ftListView* listview,
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Do something (id) for all pages on the notebook.
 bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
 /// Opens files and updates history, both for files and projects.
-void ftOpenFiles(ftFrame* frame, 
-  const wxArrayString& files, 
+void ftOpenFiles(ftFrame* frame,
+  const wxArrayString& files,
   long flags = 0);
 #endif

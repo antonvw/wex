@@ -39,8 +39,8 @@ private:
   virtual exListView* GetListView();
   virtual bool OpenFile(
     const exFileName& filename,
-    int line_number = 0, 
-    const wxString& match = wxEmptyString, 
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
     long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
 
@@ -54,8 +54,6 @@ private:
 
   int m_NewFileNo;
 
-  wxCheckBox* m_MatchCase;
-  wxCheckBox* m_MatchWholeWord;
   wxGenericDirCtrl* m_DirCtrl;
   ftListView* m_History;
   exNotebook* m_NotebookWithEditors;

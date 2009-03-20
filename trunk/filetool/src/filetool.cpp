@@ -362,6 +362,46 @@ size_t ftDir::RunTool(const exTool& tool, int flags)
   return result;
 }
 
+
+BEGIN_EVENT_TABLE(MDIFrame, Frame)
+  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, MDIFrame::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_CASE, MDIFrame::OnCommand)
+END_EVENT_TABLE()
+
+ftFindPanel::ftFindPanel(
+  wxWindow* parent,
+  ftFrame* frame,
+  wxWindowID id)
+  : wxPanel(parent, id)
+{
+  wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+
+  m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, _("Match whole word"));
+  m_MatchCase = new wxCheckBox(this, ID_MATCH_CASE, _("Match case"));
+
+  m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
+  m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
+
+  sizer->Add(new ftFind(this, frame, ID_FIND_TEXT));
+  sizer->Add(m_MatchWholeWord);
+  sizer->Add(m_MatchCase);
+
+  SetSizerAndFit(sizer);
+}
+
+void ftFindPanel::OnCommand(wxCommandEvent& event)
+{
+  switch (event.GetId())
+  {
+  case ID_MATCH_WHOLE_WORD:
+  case ID_MATCH_CASE:
+    exApp::GetConfig()->SetFindReplaceData(
+      m_MatchWholeWord->GetValue(),
+      m_MatchCase->GetValue());
+    break;
+  }
+}
+
 BEGIN_EVENT_TABLE(ftFind, wxComboBox)
   EVT_CHAR(ftFind::OnKey)
   EVT_MENU(wxID_DELETE, ftFind::OnCommand)
