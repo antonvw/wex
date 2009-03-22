@@ -58,26 +58,6 @@ private:
   exTool m_Tool;
 };
 
-/// Offers a find combobox that allows yuo to find text
-/// on a current STC on an ftFrame.
-class ftFind : public wxComboBox
-{
-public:
-  /// Constructor. Fills the combobox box with values from FindReplace from config.
-  ftFind(
-    wxWindow* parent,
-    ftFrame* frame,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize);
-private:
-  void OnCommand(wxCommandEvent& event);
-  void OnKey(wxKeyEvent& event);
-  ftFrame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
-};
-
 /// Offers a find panel, containing a ftFind control and checkboxes.
 class ftFindPanel : public wxPanel
 {
