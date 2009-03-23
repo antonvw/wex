@@ -13,6 +13,7 @@
 #define _WXFILETOOL_H
 
 #include <wx/extension/extension.h>
+#include <wx/aui/auibar.h>
 #include <wx/extension/dir.h>
 #include <wx/filetool/defs.h>
 #include <wx/filetool/listview.h>
@@ -58,12 +59,14 @@ private:
   exTool m_Tool;
 };
 
-/// Offers a find panel, containing a ftFind control and checkboxes.
-class ftFindPanel : public wxPanel
+/// Offers a find toolbar, containing a find combobox and checkboxes.
+/// The find combobox allows you to find in an ftSTC 
+/// component on the specified ftFrame.
+class ftFindToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
-  ftFindPanel(wxWindow* parent, ftFrame* frame, wxWindowID id = wxID_ANY);
+  ftFindToolBar(wxWindow* parent, ftFrame* frame, wxWindowID id = wxID_ANY);
 protected:
   void OnCommand(wxCommandEvent& event);
 private:

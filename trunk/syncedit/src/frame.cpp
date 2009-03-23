@@ -100,7 +100,7 @@ MDIFrame::MDIFrame(bool open_recent)
   exSTC* asciiTable = new exSTC(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
-  ftFindPanel* fp = new ftFindPanel(this, this);
+  ftFindToolBar* fp = new ftFindToolBar(this, this);
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
