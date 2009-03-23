@@ -233,7 +233,7 @@ Frame::Frame(const wxString& project_wildcard)
       wxNO_BORDER));
 
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_HexModeCheckBox->SetValue(exApp::GetConfigBool("HexMode"));
+  m_HexModeCheckBox->SetValue(exApp::GetConfigBool("HexMode", false)); // default no hex
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
   m_SyncCheckBox->SetValue(exApp::GetConfigBool("AllowSync"));
 #endif // wxUSE_CHECKBOX
