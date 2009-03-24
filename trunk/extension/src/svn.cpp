@@ -57,8 +57,6 @@ exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
 
 int exSVN::GetInfo(bool show_dialog)
 {
-  m_Contents.clear();
-
   if (show_dialog)
   {
     std::vector<exConfigItem> v;
@@ -122,6 +120,8 @@ int exSVN::GetInfo(bool show_dialog)
     wxSetWorkingDirectory(cwd);
   }
 
+  m_Contents.clear();
+
   // First output the errors.
   for (size_t i = 0; i < errors.GetCount(); i++)
   {
@@ -151,8 +151,8 @@ int exSVN::GetInfoAndShowContents()
 
 void exSVN::ShowContents()
 {
-  // If we did not yet ask GetInfo, return.
-  if (m_ReturnCode == -2)
+  // If we did not yet ask GetInfo, or cancelled, return.
+  if (m_ReturnCode < 0)
   {
     return;
   }
