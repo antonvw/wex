@@ -181,7 +181,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
-      control = AddSpinCtrlDouble(parent, sizer, it->m_Name, it->m_MinDouble, it->m_MaxDouble);
+      control = AddSpinCtrlDouble(parent, sizer, it->m_Name, it->m_MinDouble, it->m_MaxDouble, it->m_Inc);
       break;
 
     case CONFIG_STRING:
@@ -556,7 +556,7 @@ wxControl* exConfigDialog::AddSpinCtrl(wxWindow* parent,
 }
 
 wxControl* exConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, double min, double max)
+  wxSizer* sizer, const wxString& text, double min, double max, double inc)
 {
   long style = wxSP_ARROW_KEYS;
 
@@ -574,6 +574,7 @@ wxControl* exConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
     style,
     min,
     max,
+    inc,
     m_Config->Get(m_ConfigGroup + text, min));
 
   spinctrl->SetValue(m_Config->Get(m_ConfigGroup + text, min));

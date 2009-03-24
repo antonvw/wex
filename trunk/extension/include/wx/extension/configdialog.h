@@ -79,10 +79,12 @@ public:
   exConfigItem(const wxString& name,
     double min,
     double max,
+    double inc = 1,
     const wxString& page = wxEmptyString)
   : m_IsRequired(false)
   , m_MinDouble(min)
   , m_MaxDouble(max)
+  , m_Inc(inc)
   , m_MaxItems(0)
   , m_Name(name)
   , m_Page(page)
@@ -162,6 +164,7 @@ private:
   int m_Type;
   double m_MinDouble;
   double m_MaxDouble;
+  double m_Inc;
   wxControl* m_Control;
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
@@ -257,7 +260,8 @@ private:
     wxSizer* sizer,
     const wxString& text,
     double min,
-    double max);
+    double max,
+    double inc);
   wxControl* AddTextCtrl(
     wxWindow* parent,
     wxSizer* sizer,
