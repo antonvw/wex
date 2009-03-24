@@ -790,7 +790,7 @@ int exSTC::ConfigDialog(
 
   const wxSize size
 #ifdef __WXMSW__
-    (315, 300);
+    (320, 300);
 #else
     (500, 350);
 #endif
@@ -938,6 +938,11 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
 {
   const int line_start = LineFromPosition(pos_start);
   const int line_end = LineFromPosition(pos_end);
+
+  if (GetFoldExpanded(line_start)) 
+  {
+    ToggleFold(line_start);
+  }
 
   for (int i = line_start; i <= line_end; i++)
   {
