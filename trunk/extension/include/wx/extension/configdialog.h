@@ -44,6 +44,7 @@ enum
   CONFIG_FONTPICKERCTRL, ///< a fontpicker ctrl
   CONFIG_INT,            ///< a textctrl that only accepts an integer (a long integer)
   CONFIG_SPINCTRL,       ///< a spinctrl
+  CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_SPACER,         ///< a spacer only, no config item
   CONFIG_STRING,         ///< a textctrl
 };
@@ -73,6 +74,20 @@ public:
   , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_SPINCTRL) {;};
+
+  /// Constructor for a spin ctrl double.
+  exConfigItem(const wxString& name,
+    double min,
+    double max,
+    const wxString& page = wxEmptyString)
+  : m_IsRequired(false)
+  , m_MinDouble(min)
+  , m_MaxDouble(max)
+  , m_MaxItems(0)
+  , m_Name(name)
+  , m_Page(page)
+  , m_Style(0)
+  , m_Type(CONFIG_SPINCTRL_DOUBLE) {;};
 
   /// Constructor for a string.
   /// The extra style argument is the style for the wxTextCtrl used.
@@ -145,6 +160,8 @@ private:
   wxString m_Page;
   long m_Style;
   int m_Type;
+  double m_MinDouble;
+  double m_MaxDouble;
   wxControl* m_Control;
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
@@ -235,6 +252,12 @@ private:
     const wxString& text,
     int min,
     int max);
+  wxControl* AddSpinCtrlDouble(
+    wxWindow* parent,
+    wxSizer* sizer,
+    const wxString& text,
+    double min,
+    double max);
   wxControl* AddTextCtrl(
     wxWindow* parent,
     wxSizer* sizer,

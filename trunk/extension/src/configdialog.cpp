@@ -180,6 +180,10 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       control = AddSpinCtrl(parent, sizer, it->m_Name, it->m_Min, it->m_Max);
       break;
 
+    case CONFIG_SPINCTRL_DOUBLE:
+      control = AddSpinCtrlDouble(parent, sizer, it->m_Name, it->m_MinDouble, it->m_MaxDouble);
+      break;
+
     case CONFIG_STRING:
       control = AddTextCtrl(parent, sizer, it->m_Name, false, it->m_Style);
       break;
@@ -551,6 +555,32 @@ wxControl* exConfigDialog::AddSpinCtrl(wxWindow* parent,
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
 
+wxControl* exConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
+  wxSizer* sizer, const wxString& text, double min, double max)
+{
+  long style = wxSP_ARROW_KEYS;
+
+  // If only cancel button, make readonly.
+  if (GetFlags() == wxCANCEL)
+  {
+    style |= wxTE_READONLY;
+  }
+
+  wxSpinCtrlDouble* spinctrl = new wxSpinCtrlDouble(parent,
+    wxID_ANY,
+    wxEmptyString,
+    wxDefaultPosition,
+    wxSize(width_numeric, wxDefaultCoord),
+    style,
+    min,
+    max,
+    m_Config->Get(m_ConfigGroup + text, min));
+
+  spinctrl->SetValue(m_Config->Get(m_ConfigGroup + text, min));
+
+  return Add(sizer, parent, spinctrl, text + ":", false);
+}
+
 wxControl* exConfigDialog::AddTextCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text, bool is_numeric, long style)
 {
@@ -780,6 +810,13 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_SPINCTRL:
       {
       wxSpinCtrl* sc = (wxSpinCtrl*)it->m_Control;
+      m_Config->Set(m_ConfigGroup + sc->GetName(), sc->GetValue());
+      }
+      break;
+
+    case CONFIG_SPINCTRL_DOUBLE:
+      {
+      wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)it->m_Control;
       m_Config->Set(m_ConfigGroup + sc->GetName(), sc->GetValue());
       }
       break;

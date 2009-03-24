@@ -27,11 +27,9 @@ border: 1px #6699CC solid;
 Wait for wxWidgets 3.0:
 - Sorting on listview string column no longer works.
 - Make exDir multi threaded.
-- Use new wxAuiToolBar.
 - New wxSTC has a fix in GetTextRaw, maybe this fixed some things for exSTC.
 - exFile::Read is much slower than v1.12 (see sample). Maybe set USE_STL helps?
 - Add WXDLLEXPORT.
-- Add SpinCtrlDouble to exConfigDialog (in new SVN).
 - No longer use iterate on strings by index, but use iterators instead.
   See in stc.cpp::SequenceDialog
   for (int pos = end.length() - 1; pos >= 0; pos--)
