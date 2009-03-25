@@ -579,20 +579,17 @@ and saved in the same directory as where the executable is."));
   case ID_PROJECT_SAVEAS:
     if (project != NULL)
     {
-      /// \todo If we did file new, and now save as, then the file does not
-      /// exist. In wxExteension the path is then not used for directory, but should be.
-      /// For next wxExtension!
       const wxString dir = wxGetCwd();
       wxSetWorkingDirectory(wxStandardPaths::Get().GetUserDataDir());
 
-      const wxString old_key = project->GetFileName().GetFullPath(); // before FileSaveAs!
+      const wxString old_key = m_NotebookWithProjects->GetKeyByPage(project);
 
       if (project->FileSaveAs())
       {
         m_NotebookWithProjects->SetPageText(
           old_key,
           project->GetFileName().GetFullPath(),
-          project->GetFileName().GetFullName());
+          project->GetFileName().GetName());
         SetTitle(wxEmptyString, project->GetFileName().GetName());
       }
 

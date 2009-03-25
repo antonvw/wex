@@ -109,6 +109,24 @@ bool exNotebook::ForEach(int id)
   return true;
 }
 
+const wxString exNotebook::GetKeyByPage(wxWindow* page) const
+{
+  for (
+    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
+    it != m_MapPages.end();
+    ++it)
+  {
+    if (it->second == page)
+    {
+      return it->first;
+    }
+  }
+
+  wxLogError("GetKeyByPage failed");
+
+  return wxEmptyString;
+}
+
 void exNotebook::OnNotebook(wxAuiNotebookEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED)

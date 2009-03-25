@@ -61,6 +61,10 @@ public:
   /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
   bool ForEach(int id);
 
+  /// Returns the key specified by the given page.
+  /// If the page does not exist an empty string is returned.
+  const wxString GetKeyByPage(wxWindow* page) const;
+
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
   wxWindow* GetPageByKey(const wxString& key, bool select = false) {
