@@ -45,7 +45,6 @@ public:
   /// Returns a colour depending on modification time.
   /// Colour setup is taken from config.
   /// Method GetColouring is available through exLexer, and returns syntax colouring.
-  /// Default the colours are stored under the config group as specified.
   const wxColour GetColour() const;
 
   /// Gets fullpath member.
@@ -89,6 +88,8 @@ private:
 #endif
   wxString m_FullPath;
   bool m_IsOk;
+  // The colours are stored under this config group.
+  static wxString m_ColourGroup;
 };
 
 /// Flags for exStatusText.

@@ -288,6 +288,8 @@ void exFileName::StatusText(long flags) const
 exConfigDialog* exStat::m_ConfigDialog = NULL;
 #endif
 
+wxString exStat::m_ColourGroup = "Colour/";
+
 #if wxUSE_GUI
 // This is a static method, cannot use normal members here.
 int exStat::ConfigDialog(
@@ -312,7 +314,7 @@ int exStat::ConfigDialog(
       exApp::GetConfig(),
       items,
       title,
-      "Colour/",
+      m_ColourGroup,
       0, 2,
       wxOK | wxCANCEL | wxAPPLY,
       id);
@@ -326,29 +328,28 @@ const wxColour exStat::GetColour() const
 {
   if (IsOk())
   {
-    const wxString& group = "Colour/";
     const wxDateTime now = wxDateTime::Now();
     const wxDateTime mtime = wxDateTime(st_mtime);
 
     // within 1 day (12 hours)
     if (mtime > now - 12 * wxTimeSpan::Hour())
     {
-      return exApp::GetConfig(group + _("day"), exColourToLong(*wxGREEN));
+      return exApp::GetConfig(m_ColourGroup + _("day"), exColourToLong(*wxGREEN));
     }
     // within 1 week
     else if (mtime > now - wxDateSpan::Week())
     {
-      return exApp::GetConfig(group + _("week"), exColourToLong(*wxBLUE));
+      return exApp::GetConfig(m_ColourGroup + _("week"), exColourToLong(*wxBLUE));
     }
     // within 1 month (default colour is white, so not used)
     else if (mtime > now - wxDateSpan::Month())
     {
-      return exApp::GetConfig(group + _("month"), exColourToLong(*wxWHITE));
+      return exApp::GetConfig(m_ColourGroup + _("month"), exColourToLong(*wxWHITE));
     }
     // within 1 year (default colour is white, so not used)
     else if (mtime > now - wxDateSpan::Year())
     {
-      return exApp::GetConfig(group + _("year"), exColourToLong(*wxWHITE));
+      return exApp::GetConfig(m_ColourGroup + _("year"), exColourToLong(*wxWHITE));
     }
   }
 
@@ -357,7 +358,7 @@ const wxColour exStat::GetColour() const
 
 const wxColour exStat::GetLinkColour() const
 {
-  return exApp::GetConfig("Colour/" + _("link"), exColourToLong(*wxRED));
+  return exApp::GetConfig(m_ColourGroup + _("link"), exColourToLong(*wxRED));
 }
 
 const wxString exStat::GetModificationTime(const wxString& format) const
