@@ -95,7 +95,7 @@ protected:
   };
 private:
   ftListView* m_ListView;
-  const exTool& m_Tool;
+  const exTool m_Tool;
 };
 
 const int ID_LISTVIEW = 100;
