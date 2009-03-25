@@ -19,6 +19,7 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/shell.h>
@@ -53,6 +54,7 @@ public:
     m_Dir = NULL;
     m_Grid = NULL;
     m_ListView = NULL;
+    m_Notebook = NULL;
     m_STC = NULL;
     m_STCShell = NULL;
     m_SVN = NULL;
@@ -63,6 +65,7 @@ public:
     delete m_Dir;
     delete m_Grid;
     delete m_ListView;
+    delete m_Notebook;
     delete m_STC;
     delete m_STCShell;
     delete m_SVN;
@@ -84,6 +87,7 @@ private:
   exDir* m_Dir;     ///< testing exDir
   exGrid* m_Grid;   ///< testing exDir
   exListView* m_ListView; ///< testing exDir
+  exNotebook* m_Notebook; ///< testing exNotebook
   exSTCShell* m_STCShell; ///< testing exSTC
   exSTC* m_STC;     ///< testing exSTC
   exSVN* m_SVN;     ///< testing exSVN
