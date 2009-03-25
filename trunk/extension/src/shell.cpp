@@ -19,7 +19,6 @@ using namespace std;
 
 /// \todo WX_DELETE is not coming in as an event?
 BEGIN_EVENT_TABLE(exSTCShell, exSTC)
-//  EVT_CHAR(exSTCShell::OnChar)
   EVT_KEY_DOWN(exSTCShell::OnKey)
   EVT_MENU(wxID_PASTE, exSTCShell::OnCommand)
 END_EVENT_TABLE()
@@ -179,13 +178,6 @@ void exSTCShell::KeepCommand()
   {
     m_CommandsIterator = m_Commands.end();
   }
-}
-
-void exSTCShell::OnChar(wxKeyEvent& event)
-{
-  const int key = event.GetKeyCode();
-  wxLogMessage("key: %d pos: %d csp: %d", key, GetCurrentPos(), m_CommandStartPosition);
-  event.Skip();
 }
 
 void exSTCShell::OnCommand(wxCommandEvent& command)

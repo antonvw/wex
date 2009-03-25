@@ -69,7 +69,6 @@ protected:
   /// Override the default from exSTC.
   /// When you manipulate commands, this should not cause contents changed.
   virtual bool GetContentsChanged() {return false;};
-  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
 private:
