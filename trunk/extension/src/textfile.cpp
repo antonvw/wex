@@ -931,6 +931,8 @@ bool exTextFile::RunTool(const exTool& tool)
     {
       if (!ParseForOther())
       {
+        Close();
+
         return false;
       }
     }
@@ -950,6 +952,8 @@ bool exTextFile::RunTool(const exTool& tool)
         {
           if (!HeaderDialog())
           {
+            Close();
+
             return false;
           }
         }
@@ -963,6 +967,8 @@ bool exTextFile::RunTool(const exTool& tool)
     {
       if (!ParseForOther())
       {
+        Close();
+
         return false;
       }
     }
@@ -999,6 +1005,8 @@ bool exTextFile::RunTool(const exTool& tool)
       {
         if (!Write())
         {
+          Close();
+
           return false;
         }
       }

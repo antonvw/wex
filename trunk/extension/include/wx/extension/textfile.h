@@ -89,7 +89,7 @@ public:
   /// make that line current and sets modified.
   void InsertLine(const wxString& line);
 
-  /// Opens the file and runs the tool.
+  /// Runs the tool (opens the file before running and closes afterwards).
   bool RunTool(const exTool& tool);
 
   /// Writes a comment to the current line.
