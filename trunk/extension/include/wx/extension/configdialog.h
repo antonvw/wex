@@ -82,10 +82,10 @@ public:
     double inc = 1,
     const wxString& page = wxEmptyString)
   : m_IsRequired(false)
+  , m_MaxItems(0)
   , m_MinDouble(min)
   , m_MaxDouble(max)
   , m_Inc(inc)
-  , m_MaxItems(0)
   , m_Name(name)
   , m_Page(page)
   , m_Style(0)
@@ -158,13 +158,13 @@ private:
   int m_Min;
   int m_Max;
   int m_MaxItems;
+  double m_MinDouble;
+  double m_MaxDouble;
+  double m_Inc;
   wxString m_Name;
   wxString m_Page;
   long m_Style;
   int m_Type;
-  double m_MinDouble;
-  double m_MaxDouble;
-  double m_Inc;
   wxControl* m_Control;
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
