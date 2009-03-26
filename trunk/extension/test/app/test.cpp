@@ -55,8 +55,17 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
 
   // test exNotebook
-  CPPUNIT_ASSERT(m_Notebook->AddPage(new wxWindow(this), "key1") != NULL);
-  CPPUNIT_ASSERT(m_Notebook->AddPage(new wxWindow(this), "key1") != NULL);
+  wxWindow* page1 = new wxWindow(this);
+  wxWindow* page2 = new wxWindow(this);
+  CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") != NULL);
+  CPPUNIT_ASSERT(m_Notebook->AddPage(page2, "key2") != NULL);
+  CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") == NULL);
+  CPPUNIT_ASSERT(m_Notebook->GetKeyByPage(page1) == "key1");
+  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("key1") == page1);
+  CPPUNIT_ASSERT(m_Notebook->SetPageText("key1", "keyx", "hello"));
+  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == page1);
+  CPPUNIT_ASSERT(m_Notebook->DeletePage("keyx"));
+  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL));
   
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
