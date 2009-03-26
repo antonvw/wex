@@ -479,7 +479,12 @@ ftFindToolBar::ftFindToolBar(
   m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
   m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
 
-  AddControl(new ftFind(this, frame, ID_FIND_TEXT));
+#ifdef __WXMSW__
+  const wxSize size(150, 20);
+#else
+  const wxSize size(150, -1);
+#endif  
+  AddControl(new ftFind(this, frame, ID_FIND_TEXT, wxDefaultPosition, size));
   AddSeparator();
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
