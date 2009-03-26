@@ -18,7 +18,7 @@ void exAppTestFixture::setUp()
   m_Dir = new exDir("./");
   m_Grid = new exGrid(wxTheApp->GetTopWindow());
   m_ListView = new exListView(wxTheApp->GetTopWindow());
-  m_Notebook = new exNotebook(wxTheApp->GetTopWindow());
+  m_Notebook = new exNotebook(wxTheApp->GetTopWindow(), NULL);
   m_STC = new exSTC(wxTheApp->GetTopWindow(), exFileName("test.h"));
   m_STCShell = new exSTCShell(wxTheApp->GetTopWindow());
   m_SVN = new exSVN(SVN_STAT, "test.h");
@@ -55,8 +55,8 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
 
   // test exNotebook
-  wxWindow* page1 = new wxWindow(this);
-  wxWindow* page2 = new wxWindow(this);
+  wxWindow* page1 = new wxWindow(NULL, wxID_ANY);
+  wxWindow* page2 = new wxWindow(NULL, wxID_ANY);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") != NULL);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page2, "key2") != NULL);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") == NULL);
@@ -65,7 +65,7 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Notebook->SetPageText("key1", "keyx", "hello"));
   CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == page1);
   CPPUNIT_ASSERT(m_Notebook->DeletePage("keyx"));
-  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL));
+  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL);
   
   // test exSTC
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
