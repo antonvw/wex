@@ -1449,7 +1449,6 @@ void exSTC::Initialize()
 
   SetMouseDwellTime(1000);
 
-  // TODO: Improve this code!
   const int accels = 19; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
@@ -1479,7 +1478,7 @@ void exSTC::Initialize()
     entries[i++].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
   }
 
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
+  wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
 
   SetGlobalStyles();

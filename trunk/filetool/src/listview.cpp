@@ -246,7 +246,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
 
     if (GetSelectedItemCount() > 1)
     {
-      menu.Append(ID_LIST_COMPARE, _("C&ompare") + "\tCtrl+N");
+      menu.Append(ID_LIST_COMPARE, _("C&ompare"));
     }
     else
     {
@@ -274,7 +274,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
     {
       if (!exApp::GetConfigBool("SVN"))
       {
-        menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version") + "\tCtrl+M");
+        menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
         menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
       }
       else if (GetSelectedItemCount() == 1)
@@ -621,23 +621,6 @@ void ftListView::Initialize(const exLexer* lexer)
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new ftListViewDropTarget(this));
 #endif
-
-  // TODO: Because we use our own accel, the accels from exListView
-  // are copied to, otherwise they are not inherited!
-  const int accels = 9;
-  wxAcceleratorEntry entries[accels];
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[4].Set(wxACCEL_NORMAL, WXK_F3, ID_LIST_FIND_NEXT);
-  entries[5].Set(wxACCEL_NORMAL, WXK_F4, ID_LIST_FIND_PREVIOUS);
-  entries[6].Set(wxACCEL_NORMAL, WXK_F5, ID_LIST_FIND);
-  entries[7].Set(wxACCEL_CTRL, 'N', ID_LIST_COMPARE);
-  entries[8].Set(wxACCEL_CTRL, 'M', ID_LIST_COMPARELAST);
-
-  wxAcceleratorTable accel(accels, entries);
-  SetAcceleratorTable(accel);
 }
 
 bool ftListView::ItemOpenFile(int item_number)

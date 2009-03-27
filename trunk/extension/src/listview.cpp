@@ -201,6 +201,7 @@ exListView::exListView(wxWindow* parent,
   SetFont(font);
 
   wxAcceleratorEntry entries[7];
+
   entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
   entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
@@ -209,7 +210,7 @@ exListView::exListView(wxWindow* parent,
   entries[5].Set(wxACCEL_NORMAL, WXK_F4, ID_LIST_FIND_PREVIOUS);
   entries[6].Set(wxACCEL_NORMAL, WXK_F5, ID_LIST_FIND);
 
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
+  wxAcceleratorTable accel(7, entries);
   SetAcceleratorTable(accel);
 }
 
