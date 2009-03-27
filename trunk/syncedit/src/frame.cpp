@@ -100,7 +100,7 @@ MDIFrame::MDIFrame(bool open_recent)
   exSTC* asciiTable = new exSTC(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
-  ftFindToolBar* fp = new ftFindToolBar(this, this);
+  ftFindToolBar* findbar = new ftFindToolBar(this, this);
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
@@ -114,8 +114,8 @@ MDIFrame::MDIFrame(bool open_recent)
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("ASCIITABLE").Caption(_("Ascii Table")));
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
-  GetManager().AddPane(fp,
-    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR"));
+  GetManager().AddPane(findbar,
+    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
   const wxString perspective = exApp::GetConfig("Perspective");
 
