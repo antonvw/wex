@@ -116,7 +116,6 @@ Frame::Frame(const wxString& project_wildcard)
   menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
   menuView->AppendCheckItem(ID_VIEW_HISTORY, _("&History"));
 #ifdef __WXMSW__
-  ///  \todo Listctrl under GTK and X11 behave differently, items become non-existing by the OnIdle.
   wxMenu *menuListView = new wxMenu;
   menuListView->AppendCheckItem(wxID_VIEW_LIST, _("&List"));
   menuListView->AppendCheckItem(wxID_VIEW_DETAILS, _("&Detail"));
@@ -192,7 +191,6 @@ Frame::Frame(const wxString& project_wildcard)
     wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()), 
     _("Save project"));
 #ifdef __WXMSW__
-  ///  \todo See comment above.
   m_ToolBar->AddCheckTool(
     wxID_VIEW_LIST, 
     wxEmptyString, 

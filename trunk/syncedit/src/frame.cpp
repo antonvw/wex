@@ -117,7 +117,19 @@ MDIFrame::MDIFrame(bool open_recent)
   GetManager().AddPane(fp,
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR"));
 
-  GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
+  const wxString perspective = exApp::GetConfig("Perspective");
+
+  if (perspective.empty())
+  {
+    GetManager().GetPane("PROJECTS").Hide();
+    GetManager().GetPane("DIRCTRL").Hide();
+    GetManager().GetPane("ASCIITABLE").Hide();
+    GetManager().GetPane("HISTORY").Hide();
+  }
+  else
+  {
+    GetManager().LoadPerspective(perspective);
+  }
 
   // Regardless of the perspective initially hide the next panels.
   GetManager().GetPane("OUTPUT").Hide();
@@ -820,8 +832,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       ftSTC* editor = GetCurrentSTC();
       if (editor == NULL || !editor->IsShown())
       {
-        ///  \todo Strangely this has a side effect of disabling double clicking on the status bar to
-        /// go to a list item.
         event.Enable(false);
         return;
       }
