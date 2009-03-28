@@ -412,8 +412,9 @@ offset    hex field                                         ascii field
 
   for (wxFileOffset offset = 0; offset < length; offset += bytes_per_line)
   {
-    long count =
-      (bytes_per_line < (count = length - offset) ? bytes_per_line : count);
+    long count = length - offset;
+    count =
+      (bytes_per_line < count ? bytes_per_line : count);
 
     wxString field_hex, field_ascii;
 
