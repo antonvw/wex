@@ -54,9 +54,10 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_ListView->FindColumn("String") == 0);
   CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
 
-  // test exNotebook
-  wxWindow* page1 = new wxWindow(NULL, wxID_ANY);
-  wxWindow* page2 = new wxWindow(NULL, wxID_ANY);
+  // test exNotebook (parent should not be NULL)
+  wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") != NULL);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page2, "key2") != NULL);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") == NULL);

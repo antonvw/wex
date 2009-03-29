@@ -30,16 +30,33 @@ exNotebook::exNotebook(wxWindow* parent,
 {
 }
 
+
+bool exNotebook::DeletePage(const wxString& key) 
+{
+  wxWindow* page = GetPageByKey(key);
+  
+  if (page == NULL)
+  { 
+    return false;
+  }
+  
+  m_MapPages.erase(key);
+  
+  const int index = GetPageIndex(page);
+  
+  return wxAuiNotebook::DeletePage(index);
+}
+  
 bool exNotebook::ErasePage(size_t n)
 {
   for (
-    std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.begin();
+    std::map<wxString,wxWindow*>::iterator it = m_MapPages.begin();
     it != m_MapPages.end();
     ++it)
   {
     if (it->second == GetPage(n))
     {
-      m_MapPages.erase(it->first);
+      m_MapPages.erase(it);
       return true;
     }
   }
@@ -111,18 +128,21 @@ bool exNotebook::ForEach(int id)
 
 const wxString exNotebook::GetKeyByPage(wxWindow* page) const
 {
-  for (
-    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
-    it != m_MapPages.end();
-    ++it)
+  if (!m_MapPages.empty())
   {
-    if (it->second == page)
+    for (
+      std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
+      it != m_MapPages.end();
+      ++it)
     {
-      return it->first;
+      if (it->second == page)
+      {
+        return it->first;
+      }
     }
-  }
 
-  wxLogError("GetKeyByPage failed");
+    wxLogError("GetKeyByPage failed");
+  }
 
   return wxEmptyString;
 }

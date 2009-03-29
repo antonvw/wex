@@ -53,8 +53,7 @@ public:
     return page;}
 
   /// Deletes the page with the given key.
-  bool DeletePage(const wxString& key) {
-    return wxAuiNotebook::DeletePage(GetPageIndex(m_MapPages[key]));};
+  bool DeletePage(const wxString& key);
 
   /// Do something for each page in the notebook.
   /// The pages should all be castable to exSTC pages.
@@ -68,6 +67,7 @@ public:
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
   wxWindow* GetPageByKey(const wxString& key, bool select = false) {
+    if (m_MapPages.empty()) return NULL;
     std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.find(key);
     if (it == m_MapPages.end()) return NULL;
     if (select)
