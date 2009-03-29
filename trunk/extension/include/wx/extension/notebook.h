@@ -37,20 +37,7 @@ public:
     const wxString& key,
     const wxString& text = wxEmptyString, // in that case uses key as text
     bool select = false,
-    const wxBitmap& bitmap = wxNullBitmap) {
-    if (GetPageByKey(key, select) != NULL)
-    {
-      wxLogError(FILE_INFO("Page with key: %s already exists"), key.c_str());
-      return NULL;
-    }
-    const wxString use_text = (text.empty() ? key: text);
-    if (!wxAuiNotebook::AddPage(page, use_text, select, bitmap))
-    {
-      wxLogError(FILE_INFO("Could not add page with text: %s"), use_text.c_str());
-      return NULL;
-    }
-    m_MapPages[key] = page;
-    return page;}
+    const wxBitmap& bitmap = wxNullBitmap);
 
   /// Deletes the page with the given key.
   bool DeletePage(const wxString& key);
@@ -66,13 +53,7 @@ public:
 
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
-  wxWindow* GetPageByKey(const wxString& key, bool select = false) {
-    if (m_MapPages.empty()) return NULL;
-    std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.find(key);
-    if (it == m_MapPages.end()) return NULL;
-    if (select)
-      SetSelection(GetPageIndex(it->second));
-    return it->second;}
+  wxWindow* GetPageByKey(const wxString& key, bool select = false);
 
   /// Gets the pages map.
   const std::map<wxString, wxWindow*> & GetMapPages() const {return m_MapPages;};
