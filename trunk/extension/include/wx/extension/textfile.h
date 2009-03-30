@@ -172,7 +172,6 @@ private:
       m_FileNameStatistics.GetLexer().GetCommentEnd2();};
 
   /// Gets the last end of comment detected, depending on the last syntax type.
-  /// TODO: Exact the same as CommentEnd????
   const wxString CommentEndDetected() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
       m_FileNameStatistics.GetLexer().GetCommentEnd() :
