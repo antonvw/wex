@@ -70,6 +70,7 @@ public:
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
+  wxCheckBox* m_RegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
 

@@ -105,10 +105,12 @@ const wxString exConfig::GetStringKeys() const
 }
   
 
-void exConfig::SetFindReplaceData(bool matchword, bool matchcase)
+void exConfig::SetFindReplaceData(
+  bool matchword, bool matchcase, bool regularexpression)
 {
   m_FindReplaceData->SetMatchWord(matchword);
   m_FindReplaceData->SetMatchCase(matchcase);
+  m_FindReplaceData->SetIsRegularExpression(regularexpression);
 }
 
 exFindReplaceData::exFindReplaceData(exConfig* config)
@@ -124,6 +126,8 @@ exFindReplaceData::exFindReplaceData(exConfig* config)
 
   SetFindString(m_Config->Get(_("Find what")));
   SetReplaceString(m_Config->Get(_("Replace with")));
+
+  m_IsRegularExpression = m_Config->GetBool(_("Regular expression"));
 }
 
 exFindReplaceData::~exFindReplaceData()
@@ -134,18 +138,12 @@ exFindReplaceData::~exFindReplaceData()
   m_Config->SetBool(_("Match case"), MatchCase());
   m_Config->SetBool(_("Match whole word"), MatchWord());
   m_Config->SetBool(_("Search down"), (GetFlags() & wxFR_DOWN) > 0);
+  m_Config->SetBool(_("Regular expression"), m_IsRegularExpression);
 }
 
 bool exFindReplaceData::IsRegExp() const
 {
-  if (GetFlags() & wxFR_WHOLEWORD)
-  {
-    return false;
-  }
-  else
-  {
-    return true;
-  }
+  return m_IsRegularExpression;
 }
 
 bool exFindReplaceData::SetFindString(const wxString& value)
@@ -161,6 +159,11 @@ bool exFindReplaceData::SetFindString(const wxString& value)
   }
 
   return true;
+}
+
+void exFindReplaceData::SetIsRegularExpression(bool value)
+{
+  m_IsRegularExpression = value;
 }
 
 void exFindReplaceData::SetMatchCase(bool value)
@@ -184,6 +187,7 @@ void exFindReplaceData::Update()
   SetFindString(m_Config->Get(_("Find what")));
   SetReplaceString(m_Config->Get(_("Replace with")));
 
+  SetIsRegularExpression(m_Config->GetBool(_("Regular expression")));
   SetMatchWord(m_Config->GetBool(_("Match whole word")));
   SetMatchCase(m_Config->GetBool(_("Match case")));
 }

@@ -124,7 +124,8 @@ public:
     m_BoolValues[key] = value;};
   
   /// Sets flags in find replace data.
-  void SetFindReplaceData(bool matchword, bool matchcase);
+  void SetFindReplaceData(
+    bool matchword, bool matchcase, bool regularexpression);
 
   /// Toggles boolean key value.
   void Toggle(const wxString& key) {
@@ -163,8 +164,7 @@ public:
   const wxString& GetFindStringNoCase() const {
     return m_FindStringNoCase;};
 
-  /// Returns true if the flags are used as regular expression.
-  /// \todo Add separate member.
+  /// Returns true if find text is a regular expression.
   bool IsRegExp() const;
 
   /// Returns true if the flags have match case set.
@@ -179,6 +179,9 @@ public:
   /// This string is used for tool find in files and replace in files.
   bool SetFindString(const wxString& value);
 
+  /// Sets member.
+  void SetIsRegularExpression(bool value);
+
   /// Sets flags for match case.
   void SetMatchCase(bool value);
 
@@ -191,5 +194,6 @@ private:
   exConfig* m_Config;
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
+  bool m_IsRegularExpression;
 };
 #endif

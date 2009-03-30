@@ -465,6 +465,7 @@ void ftFind::OnKey(wxKeyEvent& event)
 BEGIN_EVENT_TABLE(ftFindToolBar, wxAuiToolBar)
   EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, ftFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_MATCH_CASE, ftFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, ftFindToolBar::OnCommand)
 END_EVENT_TABLE()
 
 ftFindToolBar::ftFindToolBar(
@@ -473,11 +474,13 @@ ftFindToolBar::ftFindToolBar(
   wxWindowID id)
   : wxAuiToolBar(parent, id)
 {
-  m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, _("Match whole word"));
   m_MatchCase = new wxCheckBox(this, ID_MATCH_CASE, _("Match case"));
+  m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, _("Match whole word"));
+  m_RegularExpression = new wxCheckBox(this, ID_REGULAR_EXPRESSION, _("Regular expression"));
 
-  m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
   m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
+  m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
+  m_RegularExpression->SetValue(exApp::GetConfig()->GetFindReplaceData()->IsRegExp());
 
 #ifdef __WXMSW__
   const wxSize size(150, 20);
@@ -488,6 +491,7 @@ ftFindToolBar::ftFindToolBar(
   AddSeparator();
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
+  AddControl(m_RegularExpression);
 
   Realize();
 }
@@ -498,9 +502,11 @@ void ftFindToolBar::OnCommand(wxCommandEvent& event)
   {
   case ID_MATCH_WHOLE_WORD:
   case ID_MATCH_CASE:
+  case ID_REGULAR_EXPRESSION:
     exApp::GetConfig()->SetFindReplaceData(
       m_MatchWholeWord->GetValue(),
-      m_MatchCase->GetValue());
+      m_MatchCase->GetValue(),
+      m_RegularExpression->GetValue());
     break;
   }
 }
