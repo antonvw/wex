@@ -51,12 +51,12 @@ public:
   /// If the page does not exist an empty string is returned.
   const wxString GetKeyByPage(wxWindow* page) const;
 
+  /// Gets all keys as a string, separated by a newline (for testing).
+  const wxString GetKeys() const;
+
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
   wxWindow* GetPageByKey(const wxString& key, bool select = false);
-
-  /// Gets the pages map.
-  const std::map<wxString, wxWindow*> & GetMapPages() const {return m_MapPages;};
 
   /// Sets the pagetext for the given key.
   /// If the key does not exist false is returned.

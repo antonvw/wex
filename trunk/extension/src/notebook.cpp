@@ -171,6 +171,21 @@ const wxString exNotebook::GetKeyByPage(wxWindow* page) const
   return wxEmptyString;
 }
 
+const wxString exNotebook::GetKeys() const
+{
+  wxString keys;
+  
+  for (
+    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
+    it != m_MapPages.end();
+    it++)
+  {
+    keys += it->first + "\n";
+  }
+  
+  return keys;
+}
+
 wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select) 
 {
   if (m_MapPages.empty()) return NULL;
