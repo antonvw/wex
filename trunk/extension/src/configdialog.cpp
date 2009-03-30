@@ -256,19 +256,7 @@ wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(125, wxDefaultCoord));
 
-  // Special cases, should be taken from the find replace data.
-  if (text == _("Match whole word"))
-  {
-    checkbox->SetValue(m_Config->GetFindReplaceData()->MatchWord());
-  }
-  else if (text == _("Match case"))
-  {
-    checkbox->SetValue(m_Config->GetFindReplaceData()->MatchCase());
-  }
-  else
-  {
-    checkbox->SetValue(m_Config->GetBool(m_ConfigGroup + text, false));
-  }
+  checkbox->SetValue(m_Config->GetBool(m_ConfigGroup + text, false));
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -334,7 +322,29 @@ wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
     it != choices.end();
     ++it)
   {
-    if (m_Config->GetBool(m_ConfigGroup + *it))
+    // Special cases, should be taken from the find replace data.
+    if (*it == _("Match whole word"))
+    {
+      if (m_Config->GetFindReplaceData()->MatchWord())
+      {
+        box->Check(item);
+      }
+    }
+    else if (*it == _("Match case"))
+    {
+      if (m_Config->GetFindReplaceData()->MatchCase())
+      {
+        box->Check(item);
+      }
+    }
+    else if (*it == _("Regular expression"))
+    {
+      if (m_Config->GetFindReplaceData()->IsRegExp())
+      {
+        box->Check(item);
+      }
+    }
+    else if (m_Config->GetBool(m_ConfigGroup + *it))
     {
       box->Check(item);
     }
@@ -663,20 +673,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)it->m_Control;
-      
-      // Special case, should be taken from find replace data.
-      if (cb->GetName() == _("Match whole word"))
-      {
-        m_Config->GetFindReplaceData()->SetMatchWord(cb->GetValue());
-      }
-      else if (cb->GetName() == _("Match case"))
-      {
-        m_Config->GetFindReplaceData()->SetMatchCase(cb->GetValue());
-      }
-      else
-      {
-        m_Config->SetBool(m_ConfigGroup + cb->GetName(), cb->GetValue());
-      }
+      m_Config->SetBool(m_ConfigGroup + cb->GetName(), cb->GetValue());
       }
       break;
 
@@ -715,7 +712,23 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
         b != it->m_ChoicesBool.end();
         ++b)
       {
-        m_Config->SetBool(m_ConfigGroup + *b, clb->IsChecked(item));
+        // Special case, should be taken from find replace data.
+        if (*b == _("Match whole word"))
+        {
+          m_Config->GetFindReplaceData()->SetMatchWord(clb->IsChecked(item));
+        }
+        else if (*b == _("Match case"))
+        {
+          m_Config->GetFindReplaceData()->SetMatchCase(clb->IsChecked(item));
+        }
+        else if (*b == _("Regular experssion"))
+        {
+          m_Config->GetFindReplaceData()->SetIsRegularExpression(clb->IsChecked(item));
+        }
+        else
+        {
+          m_Config->SetBool(m_ConfigGroup + *b, clb->IsChecked(item));
+        }
 
         item++;
       }
