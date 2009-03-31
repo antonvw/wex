@@ -128,6 +128,10 @@ exFindReplaceData::exFindReplaceData(exConfig* config)
   SetReplaceString(m_Config->Get(_("Replace with")));
 
   m_IsRegularExpression = m_Config->GetBool(_("Regular expression"));
+
+  m_Info.insert(_("Match whole word"));
+  m_Info.insert(_("Match case"));
+  m_Info.insert(_("Regular expression"));
 }
 
 exFindReplaceData::~exFindReplaceData()

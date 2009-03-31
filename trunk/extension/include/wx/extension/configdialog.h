@@ -125,7 +125,7 @@ public:
 
   /// Constructor for a checklistbox without a name. Just specify
   /// the map with values and text.
-  exConfigItem(std::set<wxString> & choices,
+  exConfigItem(const std::set<wxString> & choices,
     const wxString& page = wxEmptyString)
   : m_IsRequired(false)
   , m_Min(0)

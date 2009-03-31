@@ -67,11 +67,7 @@ void ftFindInFiles(ftFrame* frame, bool replace)
   v.push_back(exConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(exConfigItem());
-  std::set<wxString> choices;
-  choices.insert(_("Match whole word"));
-  choices.insert(_("Match case"));
-  choices.insert(_("Regular expression"));
-  v.push_back(exConfigItem(choices));
+  v.push_back(exConfigItem(exApp::GetConfig()->GetFindReplaceData()->GetInfo()));
 
   if (exConfigDialog(NULL,
     exApp::GetConfig(),

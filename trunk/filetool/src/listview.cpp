@@ -1128,11 +1128,7 @@ void ftListView::RunItems(const exTool& tool)
     v.push_back(exConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
     if (tool.GetId() == ID_TOOL_REPORT_REPLACE) v.push_back(exConfigItem(_("Replace with"), CONFIG_COMBOBOX));
     v.push_back(exConfigItem());
-    std::set<wxString> choices;
-    choices.insert(_("Match whole word"));
-    choices.insert(_("Match case"));
-    choices.insert(_("Regular expression"));
-    v.push_back(exConfigItem(choices));
+    v.push_back(exConfigItem(exApp::GetConfig()->GetFindReplaceData()->GetInfo()));
 
     if (exConfigDialog(NULL,
       exApp::GetConfig(),

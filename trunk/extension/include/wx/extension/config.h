@@ -13,6 +13,7 @@
 #define _EXCONFIG_H
 
 #include <map>
+#include <set>
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
 
@@ -156,6 +157,9 @@ public:
     }
     return log;};
 
+  /// Gets the text for the check boxes.
+  const std::set<wxString> & GetInfo() const {return m_Info;};
+
   /// Gets the regular expression.
   const wxRegEx& GetFindRegularExpression() const {
     return m_FindRegularExpression;};
@@ -192,5 +196,6 @@ private:
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;
+  std::set<wxString> m_Info;
 };
 #endif
