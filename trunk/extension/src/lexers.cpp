@@ -128,7 +128,6 @@ const exLexer exLexers::FindByText(const wxString& text) const
   return exLexer();
 }
 
-// TODO: Styles and Styles hex parse them here instead of at stc.
 const wxString exLexers::ParseTagColourings(const wxXmlNode* node) const
 {
   wxString text;
