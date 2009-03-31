@@ -17,7 +17,6 @@
 
 using namespace std;
 
-/// \todo WX_DELETE is not coming in as an event?
 BEGIN_EVENT_TABLE(exSTCShell, exSTC)
   EVT_KEY_DOWN(exSTCShell::OnKey)
   EVT_MENU(wxID_PASTE, exSTCShell::OnCommand)

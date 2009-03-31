@@ -9,10 +9,13 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
-// \todo Using config.h only gives compile errors
-#include <wx/extension/extension.h>
+#include <wx/extension/app.h>
 #include <wx/extension/configdialog.h>
 
 #if USE_OTL
