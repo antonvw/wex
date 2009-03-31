@@ -187,9 +187,6 @@ public:
 
   /// Sets flags for match word.
   void SetMatchWord(bool value);
-
-  /// Updates data from config.
-  void Update();
 private:
   exConfig* m_Config;
   wxRegEx m_FindRegularExpression;

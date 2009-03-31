@@ -753,6 +753,15 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       if (exComboBoxToString(cb, text, ',', it->m_MaxItems))
       {
         m_Config->Set(m_ConfigGroup + cb->GetName(), text);
+
+        if (cb->GetName() == _("Find what"))
+        {
+          m_Config->GetFindReplaceData()->SetFindString(text);
+        }
+        else if (cb->GetName() == _("Replace with"))
+        {
+          m_Config->GetFindReplaceData()->SetReplaceString(text);
+        }
       }
       }
       break;

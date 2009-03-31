@@ -85,8 +85,6 @@ void ftFindInFiles(ftFrame* frame, bool replace)
     frame->Activate(replace ? ftListView::LIST_REPLACE : ftListView::LIST_FIND);
   if (output == NULL) return;
 
-  exApp::GetConfig()->GetFindReplaceData()->Update();
-
   const exTool tool =
     (replace ?
        ID_TOOL_REPORT_REPLACE:

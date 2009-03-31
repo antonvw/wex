@@ -181,13 +181,3 @@ void exFindReplaceData::SetMatchWord(bool value)
   else       flags &= ~wxFR_WHOLEWORD;
   SetFlags(flags);
 }
-
-void exFindReplaceData::Update()
-{
-  SetFindString(m_Config->Get(_("Find what")));
-  SetReplaceString(m_Config->Get(_("Replace with")));
-
-  SetIsRegularExpression(m_Config->GetBool(_("Regular expression")));
-  SetMatchWord(m_Config->GetBool(_("Match whole word")));
-  SetMatchCase(m_Config->GetBool(_("Match case")));
-}
