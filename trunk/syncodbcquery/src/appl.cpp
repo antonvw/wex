@@ -39,6 +39,8 @@ bool MyApp::OnInit()
 
 BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_CLOSE(MyFrame::OnClose)
+  EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
+  EVT_MENU(wxID_PREFERENCES, MyFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, MyFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND_STOP, MyFrame::OnCommand)
   EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, MyFrame::OnCommand)
@@ -47,7 +49,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_UPDATE_UI(wxID_SAVEAS, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_DATABASE_CLOSE, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_DATABASE_OPEN, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_QUERY_RUN, MyFrame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_EXECUTE, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENTFILE_MENU, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_QUERY, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_RESULTS, MyFrame::OnUpdateUI)
@@ -74,11 +76,11 @@ MyFrame::MyFrame(const wxString& title)
   menuDatabase->Append(ID_DATABASE_CLOSE, _("&Close"));
 
   exMenu* menuQuery = new exMenu;
-  menuQuery->Append(ID_QUERY_RUN, _("&Run"), wxEmptyString, wxART_GO_FORWARD);
+  menuQuery->Append(wxID_EXECUTE);
   menuQuery->Append(wxID_STOP);
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(ID_OPTIONS, exEllipsed(_("&Edit")));
+  menuOptions->Append(wxID_PREFERENCES);
 
   wxMenu* menuView = new wxMenu();
   menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
@@ -154,7 +156,7 @@ MyFrame::MyFrame(const wxString& title)
   m_ToolBar->AddTool(wxID_NEW);
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);
-  m_ToolBar->AddTool(ID_QUERY_RUN, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_FORWARD), _("Run query"));
+  m_ToolBar->AddTool(wxID_EXECUTE, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_FORWARD), _("Run query"));
 
   m_ToolBar->Realize();
 
@@ -200,6 +202,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
+  case wxID_EXECUTE:
+    m_Stopped = false;
+    RunQueries(m_Query->GetText());
+    break;
+
   case wxID_EXIT:
     Close(true);
     break;
@@ -240,14 +247,9 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     m_Shell->SetPrompt((m_db.connected ? exApp::GetConfig(_("Datasource")): "") + ">");
     break;
 
-  case ID_OPTIONS:
+  case wxID_PREFERENCES:
     exSTC::ConfigDialog(_("Editor Options"), 
       exSTC::STC_CONFIG_SIMPLE | exSTC::STC_CONFIG_MODELESS);
-    break;
-
-  case ID_QUERY_RUN:
-    m_Stopped = false;
-    RunQueries(m_Query->GetText());
     break;
 
   case ID_SHELL_COMMAND:
@@ -297,6 +299,11 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
+  case wxID_EXECUTE:
+    // If we have a query, you can hide it, but still run it.
+    event.Enable(m_Query->GetLength() > 0 && m_db.connected);
+    break;
+
   case wxID_SAVE:
     event.Enable(m_Query->GetModify());
     break;
@@ -311,11 +318,6 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case ID_DATABASE_OPEN:
     event.Enable(!m_db.connected);
-    break;
-
-  case ID_QUERY_RUN:
-    // If we have a query, you can hide it, but still run it.
-    event.Enable(m_Query->GetLength() > 0 && m_db.connected);
     break;
 
   case ID_RECENTFILE_MENU: 
