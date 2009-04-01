@@ -15,7 +15,6 @@
 
 void exAppTestFixture::setUp()
 {
-  m_Dir = new exDir("./");
   m_Grid = new exGrid(wxTheApp->GetTopWindow());
   m_ListView = new exListView(wxTheApp->GetTopWindow());
   m_Notebook = new exNotebook(wxTheApp->GetTopWindow(), NULL);
@@ -34,9 +33,6 @@ void exAppTestFixture::testMethods()
   CPPUNIT_ASSERT(exApp::GetConfig() != NULL);
   CPPUNIT_ASSERT(exApp::GetLexers() != NULL);
   CPPUNIT_ASSERT(exApp::GetPrinter() != NULL);
-
-  // test exDir
-  CPPUNIT_ASSERT(m_Dir->FindFiles() > 0);
 
   // test exGrid
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));

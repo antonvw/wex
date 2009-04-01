@@ -51,7 +51,6 @@ class exAppTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   exAppTestFixture() : TestFixture() {
-    m_Dir = NULL;
     m_Grid = NULL;
     m_ListView = NULL;
     m_Notebook = NULL;
@@ -62,7 +61,6 @@ public:
 
   /// Destructor.
  ~exAppTestFixture() {
-    delete m_Dir;
     delete m_Grid;
     delete m_ListView;
     delete m_Notebook;
@@ -84,7 +82,6 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  exDir* m_Dir;     ///< testing exDir
   exGrid* m_Grid;   ///< testing exDir
   exListView* m_ListView; ///< testing exDir
   exNotebook* m_Notebook; ///< testing exNotebook
