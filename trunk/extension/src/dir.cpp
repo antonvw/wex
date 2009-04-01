@@ -9,7 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/arrstr.h> 
 #include <wx/extension/dir.h>
 #include <wx/extension/util.h>
 
