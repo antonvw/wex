@@ -37,7 +37,6 @@ void exAppTestFixture::testMethods()
 
   // test exDir
   CPPUNIT_ASSERT(m_Dir->FindFiles() > 0);
-  CPPUNIT_ASSERT(m_Dir->GetFiles().GetCount() > 0);
 
   // test exGrid
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
