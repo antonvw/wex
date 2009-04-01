@@ -141,7 +141,8 @@ private:
 
 #if wxUSE_STATUSBAR
 /// This class defines our statusbar panes, to be used by exFrame::SetupStatusBar.
-class exPane
+/// It just adds some members to the base class, and keeps a static total.
+class exPane : public wxStatusBarPane
 {
   friend class exFrame;
   friend class exStatusBar;
@@ -158,28 +159,14 @@ public:
     const wxString& helptext = wxEmptyString,
     /// The style.
     int style = wxSB_NORMAL)
-    : m_Helptext(helptext.empty() && name != "PaneText" ? name.AfterFirst('e'): helptext)
+    : wxStatusBarPane(style, width)
+    , m_Helptext(helptext.empty() && name != "PaneText" ? name.AfterFirst('e'): helptext)
     , m_Name(name)
-    , m_Style(style)
-    , m_Width(width)
     , m_No(m_Total)
     {m_Total++;};
-
-  /// Assignment operator.
-  exPane& operator=(const exPane& p)
-  {
-    m_Helptext = p.m_Helptext;
-    m_Name = p.m_Name;
-    m_Style = p.m_Style;
-    m_Width = p.m_Width;
-    m_No = p.m_No;
-    return *this;
-  };
 private:
   wxString m_Helptext;
   wxString m_Name;
-  int m_Style;
-  int m_Width;
   int m_No;
   static int m_Total;
 };

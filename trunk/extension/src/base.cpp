@@ -300,8 +300,8 @@ void exFrame::SetupStatusBar(
     ++it)
   {
     m_Panes[it->m_Name] = *it;
-    styles[it->m_No] = it->m_Style;
-    widths[it->m_No] = it->m_Width;
+    styles[it->m_No] = it->nStyle; // change for new SVN
+    widths[it->m_No] = it->nWidth; // change for new SVN
   }
 
   m_StatusBar->SetStatusStyles(panes.size(), styles);
