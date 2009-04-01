@@ -219,16 +219,19 @@ wxString* exFile::Read(wxFileOffset seek_position)
   }
 }
 
-
 int exFileName::GetIcon() const
 {
-  if (GetStat().IsOk() && !GetExt().empty())
+  if (GetStat().IsOk())
   {
-    // README: DirExists from wxFileName is not okay, so use the static one here!
-    return
-      (wxFileName::DirExists(GetFullPath()) ?
-       wxFileIconsTable::folder:
-       wxTheFileIconsTable->GetIconID(GetExt()));
+    if (IsDir() && !FileExists())
+    {
+      return wxFileIconsTable::folder;
+    }
+    else if (!GetExt().empty())
+    {
+      wxTheFileIconsTable->GetIconID(GetExt());
+    }
+    else return wxFileIconsTable::computer;
   }
   else
   {
