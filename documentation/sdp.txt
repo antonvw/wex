@@ -3,11 +3,11 @@ Software Development Plan
 
 General
 
+- development is in svn trunk, under windows TortoiseSVN is used
+
 - GUI library wxWidgets, currently svn (as there is not yet a base)
 
 - database is OTL
-
-- development is in trunk
 
 - stable releases are in tags/branches
 
