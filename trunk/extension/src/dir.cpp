@@ -9,15 +9,15 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/arrstr.h> 
 #include <wx/extension/dir.h>
 #include <wx/extension/util.h>
 
 class exDirTraverser: public wxDirTraverser
 {
 public:
-  exDirTraverser(exDir& dir, wxArrayString& files, bool callonfile) 
+  exDirTraverser(exDir& dir, size_t& files) 
     : m_Dir(dir)
-    , m_CallOnFile(callonfile)
     , m_Files(files)
     {}
 
@@ -30,12 +30,8 @@ public:
 
     if (m_Dir.GetFlags() & wxDIR_DIRS)
     {
-      m_Files.Add(dirname);
-
-      if (m_CallOnFile)
-      {
-        m_Dir.OnFile(dirname);
-      }
+      m_Files++;
+      m_Dir.OnFile(dirname);
     }
 
     if (wxIsMainThread())
@@ -61,12 +57,8 @@ public:
 
     if (exMatchesOneOf(file, m_Dir.GetFileSpec()))
     {
-      m_Files.Add(filename);
-      
-      if (m_CallOnFile)
-      {
-        m_Dir.OnFile(filename);
-      }
+      m_Files++;
+      m_Dir.OnFile(filename);
     }
 
     if (wxIsMainThread() && wxTheApp != NULL)
@@ -83,8 +75,7 @@ public:
 
 private:
   exDir& m_Dir;
-  bool m_CallOnFile;
-  wxArrayString& m_Files;
+  size_t& m_Files;
 };
 
 exDir::exDir(const wxString& fullpath, const wxString& filespec)
@@ -98,19 +89,19 @@ exDir::~exDir()
 {
 }
 
-size_t exDir::FindFiles(int flags, bool callOnFile)
+size_t exDir::FindFiles(int flags)
 {
   if (!IsOpened()) return 0;
 
-  m_Files.clear();
+  size_t files = 0;
   
   m_Flags = flags;
 
-  exDirTraverser traverser(*this, m_Files, callOnFile);
+  exDirTraverser traverser(*this, files);
 
-  // TODO: Using m_FileSpec here does not work, as it might
-  // contains several specs (*.cpp;*.h), wxDir does not handle that.
+  // Using m_FileSpec here does not work, as it might
+  // contain several specs (*.cpp;*.h), wxDir does not handle that.
   Traverse(traverser, wxEmptyString, m_Flags);
   
-  return m_Files.Count();
+  return files;
 }

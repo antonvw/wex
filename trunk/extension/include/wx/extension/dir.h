@@ -12,7 +12,6 @@
 #ifndef _EXDIR_H
 #define _EXDIR_H
 
-#include <wx/arrstr.h> 
 #include <wx/dir.h>
 
 /// Adds FindFiles to a wxDir, by overriding OnFile you can take care
@@ -34,12 +33,8 @@ public:
   virtual bool Cancelled() {return false;};
 
   /// Finds matching files.
-  /// This results in recursive calls for OnFile if callOnFile is specified,
-  /// this only makes sense if you implemented OnFile.
-  size_t FindFiles(int flags = wxDIR_DEFAULT, bool callOnFile = true);
-
-  /// Gets the files.
-  const wxArrayString& GetFiles() const {return m_Files;};
+  /// This results in recursive calls for OnFile.
+  size_t FindFiles(int flags = wxDIR_DEFAULT);
 
   /// Gets the file spec.
   const wxString& GetFileSpec() const {return m_FileSpec;};
@@ -48,10 +43,9 @@ public:
   int GetFlags() const {return m_Flags;};
   
   /// Do something with the file.
-  virtual void OnFile(const wxString& WXUNUSED(file)) {;};
+  virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
 private:
   const wxString m_FileSpec;
   int m_Flags;
-  wxArrayString m_Files;
 };
 #endif
