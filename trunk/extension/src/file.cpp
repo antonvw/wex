@@ -223,15 +223,18 @@ int exFileName::GetIcon() const
 {
   if (GetStat().IsOk())
   {
-    if (IsDir() && !FileExists())
+    if (DirExists(GetFullPath()))
     {
       return wxFileIconsTable::folder;
     }
     else if (!GetExt().empty())
     {
-      wxTheFileIconsTable->GetIconID(GetExt());
+      return wxTheFileIconsTable->GetIconID(GetExt());
     }
-    else return wxFileIconsTable::computer;
+    else 
+    {
+      return wxFileIconsTable::computer;
+    }
   }
   else
   {
