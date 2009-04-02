@@ -44,6 +44,7 @@ class ftAppTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   ftAppTestFixture() : TestFixture() {
+	m_Dir = NULL;
     m_ListView = NULL;
     m_Process = NULL;
     m_STC = NULL;
@@ -51,6 +52,7 @@ public:
 
   /// Destructor.
  ~ftAppTestFixture() {
+	delete m_Dir;
     delete m_ListView;
     delete m_Process;
     delete m_STC;
@@ -69,6 +71,7 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
+  ftDir* m_Dir;           ///< testing ftDir
   ftListView* m_ListView; ///< testing ftListView
   ftProcess* m_Process;   ///< testing ftProcess
   ftSTC* m_STC;           ///< testing ftSTC
