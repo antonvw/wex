@@ -56,6 +56,7 @@ private:
   exGrid* m_Results;
   exStatistics <long> m_Statistics;
   otl_connect m_db;
+  bool m_Running;
   bool m_Stopped;
 
   DECLARE_NO_COPY_CLASS(MyFrame)

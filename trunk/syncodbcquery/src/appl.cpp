@@ -47,6 +47,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
   EVT_MENU_RANGE(ID_FIRST, ID_LAST, MyFrame::OnCommand)
   EVT_UPDATE_UI(wxID_SAVE, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_SAVEAS, MyFrame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_STOP, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_DATABASE_CLOSE, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_DATABASE_OPEN, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, MyFrame::OnUpdateUI)
@@ -58,6 +59,7 @@ END_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString& title)
   : ftFrame(NULL, wxID_ANY, title)
+  , m_Running(false)
   , m_Stopped(false)
 {
   SetIcon(appl_xpm);
@@ -156,7 +158,10 @@ MyFrame::MyFrame(const wxString& title)
   m_ToolBar->AddTool(wxID_NEW);
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);
-  m_ToolBar->AddTool(wxID_EXECUTE, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_FORWARD), _("Run query"));
+
+#ifdef __WXGTK__
+  m_ToolBar->AddTool(wxID_EXECUTE);
+#endif
 
   m_ToolBar->Realize();
 
@@ -234,6 +239,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_STOP:
+    m_Running = false;
     m_Stopped = true;
     break;
 
@@ -310,6 +316,10 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case wxID_SAVEAS:
     event.Enable(m_Query->GetLength() > 0);
+    break;
+
+  case wxID_STOP:
+    event.Enable(m_Running);
     break;
 
   case ID_DATABASE_CLOSE:
@@ -413,6 +423,7 @@ void MyFrame::RunQueries(const wxString& text)
   int no_queries = 0;
 
   wxStopWatch sw;
+  m_Running = true;
 
   // Run all queries.
   while (tkz.HasMoreTokens() && !m_Stopped)
@@ -440,6 +451,8 @@ void MyFrame::RunQueries(const wxString& text)
   m_Shell->Prompt(wxString::Format(_("\n%d queries (%.3f seconds)"),
     no_queries,
     (float)sw.Time() / (float)1000));
+
+  m_Running = false;
 }
 
 void MyFrame::UpdateStatistics(const wxStopWatch& sw, long rpc)
