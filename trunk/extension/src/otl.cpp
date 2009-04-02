@@ -15,11 +15,11 @@
 #endif
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
-#include <wx/extension/app.h>
 #include <wx/extension/configdialog.h>
 
 #if USE_OTL
 bool exOTLDialog(
+  exConfig* config,
   otl_connect* db,
   int max_items)
 {
@@ -35,7 +35,7 @@ bool exOTLDialog(
 
   // Always show the dialog.
   if (exConfigDialog(wxTheApp->GetTopWindow(),
-    exApp::GetConfig(),
+    config,
     v,
     _("Open ODBC Database")).ShowModal() == wxID_CANCEL)
   {
@@ -50,9 +50,9 @@ bool exOTLDialog(
   try
   {
     const wxString connect =
-      exApp::GetConfig(_("User")) + "/" +
-      exApp::GetConfig(_("Password")) + "@" +
-      exApp::GetConfig(_("Datasource"));
+      config->Get(_("User")) + "/" +
+      config->Get(_("Password")) + "@" +
+      config->Get(_("Datasource"));
 
     db->rlogon(
       connect.c_str(),
@@ -64,7 +64,7 @@ bool exOTLDialog(
   {
     wxLogError("'%s' during opening database: %s",
       wxString(p.msg).c_str(),
-      exApp::GetConfig(_("Datasource")).c_str());
+      config->Get(_("Datasource")).c_str());
   }
 
   return false;

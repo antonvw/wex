@@ -315,7 +315,7 @@ bool ftTextFile::SetupTool(const exTool& tool)
       m_db.logoff();
     }
 
-    if (!exOTLDialog(&m_db))
+    if (!exOTLDialog(exApp::GetConfig(), &m_db))
     {
       return false;
     }

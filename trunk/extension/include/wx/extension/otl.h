@@ -24,10 +24,13 @@
 #endif
 #include <otlv4.h>
 
+class exConfig;
+
 /*! \file */
 /// Shows a database dialog, and if db is specified also tries to login.
 /// max_items specifies max number of datasources in the combobox and config.
 bool exOTLDialog(
+  exConfig* config,
   otl_connect* db = NULL,
   int max_items = 4);
 

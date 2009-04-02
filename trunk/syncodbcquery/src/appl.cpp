@@ -249,7 +249,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_OPEN:
-    exOTLDialog(&m_db);
+    exOTLDialog(exApp::GetConfig(), &m_db);
     m_Shell->SetPrompt((m_db.connected ? exApp::GetConfig(_("Datasource")): "") + ">");
     break;
 
