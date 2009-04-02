@@ -111,37 +111,6 @@ void exListItem::StoreImage(int image)
   }
 }
 
-int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
-{
-  const bool ascending = (sortData > 0);
-  const exColumn::exColumnType type = (exColumn::exColumnType)abs(sortData);
-
-  switch (type)
-  {
-  case exColumn::COL_STRING:
-    if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
-    {
-#ifdef __WXMSW__
-      if (ascending) return stricmp((const char*)item1, (const char*)item2);
-      else           return stricmp((const char*)item2, (const char*)item1);
-#else
-      if (ascending) return strcasecmp((const char*)item1, (const char*)item2);
-      else           return strcasecmp((const char*)item2, (const char*)item1);
-#endif
-    }
-    else
-    {
-      if (ascending) return strcmp((const char*)item1, (const char*)item2);
-      else           return strcmp((const char*)item2, (const char*)item1);
-    }
-  break;
-
-  default:
-    if (ascending) return (unsigned long)item1 > (unsigned long)item2;
-    else           return (unsigned long)item1 < (unsigned long)item2;
-  }
-}
-
 BEGIN_EVENT_TABLE(exListView, wxListView)
   EVT_FIND(wxID_ANY, exListView::OnFindDialog)
   EVT_FIND_CLOSE(wxID_ANY, exListView::OnFindDialog)
@@ -759,8 +728,48 @@ void exListView::PasteItemsFromClipboard()
   }
 }
 
+int sorted_col_no = 0;
+
+int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
+{
+  const bool ascending = (sortData > 0);
+  const exColumn::exColumnType type = (exColumn::exColumnType)abs(sortData);
+
+  switch (type)
+  {
+  case exColumn::COL_STRING:
+    {
+    const wxString& str1 = ((exListItem *)item1)->GetColumnText(sorted_col_no);
+    const wxString& str2 = ((exListItem *)item2)->GetColumnText(sorted_col_no);
+
+    if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
+    {
+      if (ascending) return strcmp(str1.Upper(), str2.Upper());
+      else           return strcmp(str2.Upper(), str1.Upper());
+    }
+    else
+    {
+      if (ascending) return strcmp(str1.c_str(), str2.c_str());
+      else           return strcmp(str2.c_str(), str1.c_str());
+    }
+    }
+  break;
+
+  case exColumn::COL_DATE:
+    if (ascending) return (unsigned long)item1 > (unsigned long)item2;
+    else           return (unsigned long)item1 < (unsigned long)item2;
+  break;
+
+  default:
+    if (ascending) return item1 > item2;
+    else           return item1 < item2;
+  }
+}
+
 void exListView::SortColumn(int column_no, exSortType sort_method)
 {
+  sorted_col_no = column_no;
+
   SortColumnReset();
 
   exColumn* sorted_col = &m_Columns[column_no];
@@ -773,7 +782,7 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
     // Keeping the items is necessary for sorting strings.
     m_Items.push_back(new exListItem(this, i));
     exListItem* li = m_Items.back();
-    const wxString val = li->GetColumnText(column_no);
+    const wxString& val = li->GetColumnText(column_no);
 
     long longval = 0;
 
@@ -798,13 +807,17 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
         longval = dt.GetTicks();
       }
     break;
-    default: longval = (long)(const char *)val.c_str();
+    default: longval = (long)li;
     }
 
     SetItemData(i, longval);
   }
 
-  const long sortdata = (sorted_col->GetIsSortedAscending() ? sorted_col->GetType(): (0 - sorted_col->GetType()));
+  const long sortdata = 
+    (sorted_col->GetIsSortedAscending() ? 
+       sorted_col->GetType(): 
+      (0 - sorted_col->GetType()));
+
   SortItems(CompareFunctionCB, sortdata);
 
   m_SortedColumnNo = column_no;
@@ -813,10 +826,11 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
   // Otherwise the list items get a sorting image as well.
   if (!m_ArtIDs.empty())
   {
-    SetColumnImage(column_no, GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
+    SetColumnImage(column_no, 
+      GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
   }
 
-  // TODO: Try to set colour for this sorted column. Does not work.
+  // Readme: Try to set colour for this sorted column. Does not work.
   /*
   wxListItem item;
   item.SetBackgroundColour("blue");
