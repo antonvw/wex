@@ -66,22 +66,25 @@ ftListView* ftFrame::Activate(
   return NULL;
 }
 
-bool ftFrame::DialogFileOpen(long style, bool ask_for_continue)
+bool ftFrame::DialogFileOpen(
+  long style, 
+  const wxString wildcards,
+  bool ask_for_continue)
 {
   ftSTC* stc = GetCurrentSTC();
 
-  wxString wildcards;
+  wxString use_wildcards = wildcards;
 
-  if (stc != NULL)
+  if (stc != NULL && use_wildcards.empty())
   {
-    wildcards = exApp::GetLexers()->BuildWildCards(stc->GetFileName());
+    use_wildcards = exApp::GetLexers()->BuildWildCards(stc->GetFileName());
   }
 
   wxFileDialog dlg(this,
     _("Select Files"),
     wxEmptyString,
     wxEmptyString,
-    wildcards,
+    use_wildcards,
     style);
 
   if (stc != NULL)

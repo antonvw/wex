@@ -227,7 +227,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_OPEN:
-    DialogFileOpen(wxFD_OPEN | wxFD_CHANGE_DIR, true);
+    DialogFileOpen(wxFD_OPEN | wxFD_CHANGE_DIR, "sql files (*.sql) | *.sql", true);
     break;
 
   case wxID_SAVE:

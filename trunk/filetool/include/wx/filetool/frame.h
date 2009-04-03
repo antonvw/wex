@@ -38,8 +38,10 @@ public:
 
   /// Shows a wxFileDialog dialog for files, 
   /// and opens all selected (depending on style) files if not cancelled.
+  /// If wildcards are empty, they are retrieved from the exApp lexers.
   bool DialogFileOpen(
     long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
+    const wxString wildcards = wxEmptyString,
     bool ask_for_continue = false);
 
   /// Shows a wxFileDialog dialog for projects, 
