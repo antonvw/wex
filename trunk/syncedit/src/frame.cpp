@@ -134,8 +134,6 @@ MDIFrame::MDIFrame(bool open_recent)
   // Regardless of the perspective initially hide the next panels.
   GetManager().GetPane("OUTPUT").Hide();
 
-  GetManager().Update();
-
   if (open_recent)
   {
     if (!GetRecentFile().empty())
@@ -159,6 +157,13 @@ MDIFrame::MDIFrame(bool open_recent)
       }
     }
   }
+  else
+  {
+    GetManager().GetPane("PROJECTS").Hide();
+  }
+
+  // End with update, so all changes in the manager are handled.
+  GetManager().Update();
 
   wxLogTrace("SY_CALL", "-MDIFrame");
 }
