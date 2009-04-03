@@ -80,13 +80,15 @@ void exListItem::SetColumnText(const int col_no, const wxString& text)
     return;
   }
 
-  // TODO: 512 should be a constant from the wx lib.
+#ifdef __WXDEBUG__
+  // Readme: 512 should be a constant from the wx lib.
   if (text.length() >= 512)
   {
     exFrame::StatusText(
       "Warning, column max size is 512, column text: ..." +
         text.substr(text.length() - 25) + " ignored");
   }
+#endif
 
   SetColumn(col_no);
   SetMask(wxLIST_MASK_TEXT);
