@@ -28,7 +28,7 @@ void ftAppTestFixture::testConstructors()
 void ftAppTestFixture::testMethods()
 {
   // test ftDir
-  CPPUNIT_ASSERT(m_Dir->FindFiles();
+  CPPUNIT_ASSERT(m_Dir->FindFiles());
 
   // test ftListView
   CPPUNIT_ASSERT(m_ListView->FileOpen(exFileName("test.prj")));
