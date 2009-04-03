@@ -130,10 +130,9 @@ long exOTLQueryToGrid(
         }
         else
         {
-          // TODO: Is this okay?.
-          unsigned char rowstr[512];
-          i >> rowstr; // and this...
-          grid->SetCellValue(startrow + rows, n, rowstr);
+          std::string s;
+          i >> s;
+          grid->SetCellValue(startrow + rows, n, s);
         }
       }
       catch (otl_exception&)
@@ -213,10 +212,9 @@ long exOTLQueryToSTC(
         }
         else
         {
-          // TODO: Is this okay?.
-          unsigned char rowstr[512];
-          i >> rowstr; // and this...
-          line += rowstr;
+          std::string s;
+          i >> s;
+          line += s;
         }
       }
       catch (otl_exception&)
