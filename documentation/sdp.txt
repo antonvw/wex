@@ -3,7 +3,10 @@ Software Development Plan
 
 General
 
-- development is in svn trunk, under windows TortoiseSVN is used
+- storage is on sliksvn
+
+- development is in svn trunk, under windows TortoiseSVN is used,
+    under Linux just the svn client
 
 - GUI library wxWidgets, currently svn (as there is not yet a base)
 
