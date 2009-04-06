@@ -205,12 +205,10 @@ wxString* exFile::Read(wxFileOffset seek_position)
 
   wxMemoryBuffer buffer(bytes_to_read);
   buffer.SetDataLen(bytes_to_read);
+
   if (wxFile::Read(buffer.GetData(), bytes_to_read) == bytes_to_read)
   {
-    /// \todo If the last char is a NULL, is not put in the string strangely enough.
-    ///       However, it is in the buffer as next message shows.
-//wxLogMessage("%d", ((char*)buffer.GetData())[bytes_to_read - 1]);
-    return new wxString(buffer, *wxConvCurrent, bytes_to_read);
+    return new wxString(buffer, bytes_to_read);
   }
   else
   {
@@ -369,13 +367,7 @@ const wxColour exStat::GetLinkColour() const
 
 const wxString exStat::GetModificationTime(const wxString& format) const
 {
-#ifdef __WXMSW__
   return wxDateTime(st_mtime).Format(format);
-#else
-  // TODO: The current locale %c cannot be sorted in the listview,
-  // so override format and use this one.
-  return wxDateTime(st_mtime).Format("%Y%m%d %H:%M:%S");
-#endif
 }
 
 bool exStat::IsLink() const

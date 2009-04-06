@@ -1258,18 +1258,8 @@ const wxString exSTC::GetTextAtCurrentPos()
 
 wxString* exSTC::GetTextRaw()
 {
-  wxString* buffer = new wxString(
-    (const char *)wxStyledTextCtrl::GetTextRaw(),
-    GetLength() + 1);
-
-  /// \todo The last char in the file is replaced by NULL without the next line!
-  /// See also FileSave.
-  if (GetLength() > 0)
-  {
-    buffer->SetChar(GetLength() - 1, GetCharAt(GetLength() - 1));
-  }
-
-  return buffer;
+  // Readme: For new svn, test and add length (wxCharBuffer, and scoped char).
+  return new wxString(wxStyledTextCtrl::GetTextRaw());
 }
 
 const wxString exSTC::GetWordAtPos(int pos)
@@ -2446,7 +2436,7 @@ void exSTC::SetKeyWords()
     wxStyledTextCtrl::SetKeyWords(setno, wxEmptyString);
   }
 
-  // TODO: The Scintilla lexer only recognized lower case words, apparently.
+  // Readme: The Scintilla lexer only recognized lower case words, apparently.
   for (
     std::map< int, std::set<wxString> >::const_iterator it = m_FileName.GetLexer().GetKeywordsSet().begin();
     it != m_FileName.GetLexer().GetKeywordsSet().end();
