@@ -3,16 +3,14 @@ Software Development Plan
 
 General
 
-- storage is on sliksvn
-
-- development is in svn trunk, under windows TortoiseSVN is used,
-    under Linux just the svn client
+- storage is on sliksvn, 
+    https://svn2.sliksvn.com/wxprojects
 
 - GUI library wxWidgets, currently svn (as there is not yet a base)
+    http://wxwidgets.org/
 
 - database is OTL
-
-- stable releases are in tags/branches
+    http://otl.sourceforge.net/
 
 - application icons are designed using GIMP
     but menu and toolbar bitmaps are from wxWidgets, using wxArtProvider,
@@ -20,10 +18,21 @@ General
 
 - most documentation is generated using Doxygen
     however, some docs are in html format
+    http://www.stack.nl/~dimitri/doxygen/
 
 - automated testing is done using cppunit
+    http://sourceforge.net/projects/cppunit
 
 - translation is done using poedit
+    http://www.poedit.net/
+
+
+SVN hierarchy
+
+- development is in svn trunk, under windows TortoiseSVN is used,
+    under Linux just the svn client
+
+- stable releases are in tags/branches
 
 
 Adding functionality in trunk
