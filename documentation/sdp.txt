@@ -3,8 +3,7 @@ Software Development Plan
 
 General
 
-- storage is on sliksvn, 
-    https://svn2.sliksvn.com/wxprojects
+- storage is on xp-dev.com, 
 
 - GUI library wxWidgets, currently svn (as there is not yet a base)
     http://wxwidgets.org/
