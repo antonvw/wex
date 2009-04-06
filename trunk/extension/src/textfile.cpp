@@ -17,6 +17,23 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
 
+/// Gets a word from a string.
+const wxString GetWord(
+  wxString& text,
+  bool use_other_field_separators = false,
+  bool use_path_separator = false)
+{
+  wxString field_separators = " \t";
+  if (use_other_field_separators) field_separators += ":";
+  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
+  wxString token;
+  wxStringTokenizer tkz(text, field_separators);
+  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
+  text = tkz.GetString();
+  text.Trim(false);
+  return token;
+}
+
 const wxString REV_DATE_FORMAT = "%y%m%d";
 
 exRCS::exRCS()
@@ -58,6 +75,48 @@ const wxString exRCS::SetNextRevisionNumber()
   }
 
   return m_RevisionNumber;
+}
+
+bool exRCS::SetRevision(wxString& text)
+{
+  // ClassBuilder lines start with '* ', these characters are skipped here.
+  wxRegEx("^\\* ").ReplaceFirst(&text, wxEmptyString);
+  // If there is a revision in the first word, store it.
+  wxString word = GetWord(text);
+  if (word.find('.') != wxString::npos)
+  {
+    m_RevisionNumber = word;
+  }
+  else
+  {
+    m_RevisionNumber = wxEmptyString;
+    text = word + " " + text; // put back the word!
+  }
+
+  const wxString REV_CBD_FORMAT = "%B %d, %Y %H:%M";
+  const wxString REV_TIMESTAMP_FORMAT = "%y%m%d %H%M%S";
+
+  wxString::const_iterator end;
+
+  if      (m_RevisionTime.ParseFormat(text, REV_TIMESTAMP_FORMAT, &end))
+    m_RevisionFormat = REV_TIMESTAMP_FORMAT;
+  else if (m_RevisionTime.ParseFormat(text, REV_DATE_FORMAT, &end))
+    m_RevisionFormat = REV_DATE_FORMAT;
+  else if (m_RevisionTime.ParseFormat(text, REV_CBD_FORMAT, &end))
+    m_RevisionFormat = REV_CBD_FORMAT;
+  else
+  {
+    // At this moment we support no other formats.
+    return false;
+  }
+
+  text = wxString(end, text.end());
+  word = GetWord(text);
+  m_User = word;
+  text.Trim();
+  m_Description = text;
+
+  return true;
 }
 
 exTextFile::exTextFile(
@@ -207,22 +266,6 @@ void exTextFile::EndCurrentRevision()
 
     m_RevisionActive = false;
   }
-}
-
-const wxString exTextFile::GetWord(
-  wxString& text,
-  bool use_other_field_separators,
-  bool use_path_separator) const
-{
-  wxString field_separators = " \t";
-  if (use_other_field_separators) field_separators += ":";
-  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
-  wxString token;
-  wxStringTokenizer tkz(text, field_separators);
-  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
-  text = tkz.GetString();
-  text.Trim(false);
-  return token;
 }
 
 bool exTextFile::HeaderDialog()
@@ -839,39 +882,10 @@ bool exTextFile::PrepareRevision()
     }
   }
 
-  // ClassBuilder lines start with '* ', these characters are skipped here.
-  wxRegEx("^\\* ").ReplaceFirst(&m_Comments, wxEmptyString);
-  // If there is a revision in the first word, store it.
-  wxString word = GetWord(m_Comments);
-  if (word.find('.') != wxString::npos)
+  if (!m_RCS.SetRevision(m_Comments))
   {
-    m_RCS.m_RevisionNumber = word;
-  }
-  else
-  {
-    m_RCS.m_RevisionNumber = wxEmptyString;
-    m_Comments = word + " " + m_Comments; // put back the word!
-  }
-
-  const wxString REV_CBD_FORMAT = "%B %d, %Y %H:%M";
-  const wxString REV_TIMESTAMP_FORMAT = "%y%m%d %H%M%S";
-
-  wxString::const_iterator end;
-
-  if      (m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_TIMESTAMP_FORMAT, &end))
-    m_RCS.m_RevisionFormat = REV_TIMESTAMP_FORMAT;
-  else if (m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_DATE_FORMAT, &end))
-    m_RCS.m_RevisionFormat = REV_DATE_FORMAT;
-  else if (m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_CBD_FORMAT, &end))
-    m_RCS.m_RevisionFormat = REV_CBD_FORMAT;
-  else
-  {
-    // At this moment we support no other formats.
     return false;
   }
-
-  m_Comments = wxString(end, m_Comments.end());
-  word = GetWord(m_Comments);
 
   if (m_LineMarker == 0)
   {
@@ -890,9 +904,6 @@ bool exTextFile::PrepareRevision()
   }
 
   m_VersionLine++;
-  m_RCS.m_User = word;
-  m_Comments.Trim();
-  m_RCS.m_Description = m_Comments;
 
   return true;
 }

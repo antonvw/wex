@@ -52,6 +52,9 @@ public:
 
   /// Increments the revision number, and returns the new number.
   const wxString SetNextRevisionNumber();
+
+  /// Sets revision info from specified text.
+  bool SetRevision(wxString& text);
 private:
   wxString m_Author;
   wxString m_Description;
@@ -182,11 +185,6 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
-  /// Gets a word from a string.
-  const wxString GetWord(
-    wxString& text,
-    bool use_other_field_separators = false,
-    bool use_path_separator = false) const;
   bool HeaderDialog() ;
   void Initialize();
   void InsertFormattedText(
