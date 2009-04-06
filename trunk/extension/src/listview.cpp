@@ -203,9 +203,8 @@ const wxString exListView::BuildPage()
 
   text << "<TABLE border=1 cellpadding=4 cellspacing=0 ";
 
-  // TODO: The rules does not work (also see exGrid).
-  if ((GetWindowStyle() & wxLC_MASK_TYPE) == wxLC_HRULES ||
-      (GetWindowStyle() & wxLC_MASK_TYPE) == wxLC_VRULES)
+  if ((GetWindowStyle() & wxLC_HRULES) ||
+      (GetWindowStyle() & wxLC_VRULES))
     text << "rules=\"all\" ";
   else
     text << "rules=\"none\" ";

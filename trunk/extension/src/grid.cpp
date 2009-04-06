@@ -102,7 +102,6 @@ const wxString exGrid::BuildPage()
 
   text << "<TABLE border=1 cellpadding=4 cellspacing=0 ";
 
-  // TODO: The rules does not work (also see exListView).
   if (GridLinesEnabled())
     text << "rules=\"all\" ";
   else
