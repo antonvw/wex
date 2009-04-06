@@ -50,9 +50,7 @@ public:
   void Update();
 
   /// Sets revision list columns with data from specified rcs.
-  void UpdateRevisionList(
-    const exRCS& rcs,
-    const wxString& format = wxDefaultDateTimeFormat);
+  void UpdateRevisionList(const exRCS& rcs);
 private:
   exFileNameStatistics m_Statistics;
   const wxString m_FileSpec;

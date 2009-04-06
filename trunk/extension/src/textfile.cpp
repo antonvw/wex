@@ -17,7 +17,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
 
-const wxString REV_DATE_FORMAT = "%2y%2m%2d";
+const wxString REV_DATE_FORMAT = "%y%m%d";
 
 exRCS::exRCS()
   : m_RevisionFormat(REV_DATE_FORMAT)
@@ -529,7 +529,6 @@ bool exTextFile::ParseComments()
         m_AllowAction = false;
 
         // We are not yet finished, there might still be RCS keywords somewhere!
-        // TODO: this does not work. Run inside debugger.
         m_FinishedAction = true;
       }
     }
@@ -855,14 +854,15 @@ bool exTextFile::PrepareRevision()
   }
 
   const wxString REV_CBD_FORMAT = "%B %d, %Y %H:%M";
-  const wxString REV_TIMESTAMP_FORMAT = "%2y%2m%2d %2H%2M%2S";
+  const wxString REV_TIMESTAMP_FORMAT = "%y%m%d %H%M%S";
 
-  const char* rest;
-  if      ((rest = m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_TIMESTAMP_FORMAT, wxDefaultDateTime)) != NULL)
+  wxString::const_iterator end;
+
+  if      (m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_TIMESTAMP_FORMAT, &end))
     m_RCS.m_RevisionFormat = REV_TIMESTAMP_FORMAT;
-  else if ((rest = m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_DATE_FORMAT, wxDefaultDateTime)) != NULL)
+  else if (m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_DATE_FORMAT, &end))
     m_RCS.m_RevisionFormat = REV_DATE_FORMAT;
-  else if ((rest = m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_CBD_FORMAT, wxDefaultDateTime)) != NULL)
+  else if (m_RCS.m_RevisionTime.ParseFormat(m_Comments, REV_CBD_FORMAT, &end))
     m_RCS.m_RevisionFormat = REV_CBD_FORMAT;
   else
   {
@@ -870,9 +870,7 @@ bool exTextFile::PrepareRevision()
     return false;
   }
 
-  // TODO: This seems like a bug.
-  m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
-  m_Comments = m_Comments.substr(m_Comments.Find(rest));
+  m_Comments = wxString(end, m_Comments.end());
   word = GetWord(m_Comments);
 
   if (m_LineMarker == 0)
@@ -901,8 +899,6 @@ bool exTextFile::PrepareRevision()
 
 void exTextFile::RevisionAddComments(const wxString& comments)
 {
-  // TODO: This seems like a bug.
-  m_RCS.m_RevisionFormat.Replace("2", wxEmptyString);
   WriteTextWithPrefix(comments,
     m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
     m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement);

@@ -152,12 +152,10 @@ void ftListItem::Update()
   }
 }
 
-void ftListItem::UpdateRevisionList(
-  const exRCS& rcs,
-  const wxString& format)
+void ftListItem::UpdateRevisionList(const exRCS& rcs)
 {
   SetColumnText(_("Revision"), rcs.GetRevisionNumber());
-  SetColumnText(_("Date"), rcs.GetRevisionTime().Format(format));
+  SetColumnText(_("Date"), rcs.GetRevisionTime().Format());
   SetColumnText(_("Initials"), rcs.GetUser());
   SetColumnText(_("Revision Comment"), rcs.GetDescription());
 }
