@@ -10,6 +10,11 @@ General
 - GUI library wxWidgets, currently svn (as there is not yet a base)
     http://wxwidgets.org/
 
+- development 
+  under windows codeblocks: 
+  http://www.codeblocks.org/
+  under linux gccc
+
 - database is OTL
     http://otl.sourceforge.net/
 
