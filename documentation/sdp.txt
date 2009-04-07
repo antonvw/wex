@@ -3,7 +3,8 @@ Software Development Plan
 
 General
 
-- storage is on xp-dev.com, 
+- Subversion Repository is on xp-dev.com, 
+    https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
 - GUI library wxWidgets, currently svn (as there is not yet a base)
     http://wxwidgets.org/
