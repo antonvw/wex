@@ -98,7 +98,7 @@ bool exNotebook::ForEach(int id)
     return true;
   }
 
-  for (int page = GetPageCount() - 1; page >= 0; page--)
+  for (size_t page = GetPageCount() - 1; page >= 0; page--)
   {
     // When trying to cast to exFile, there is an error:
     // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const exFile *'
