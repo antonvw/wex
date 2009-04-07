@@ -79,15 +79,10 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  wxToolBar* toolBar = new wxToolBar(this, 
-    wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
-  SetToolBar(toolBar);
+  CreateToolBar();
 
-  const wxSize toolbar_size(16, 15);
-  toolBar->SetToolBitmapSize(toolbar_size);
-  toolBar->AddTool(wxID_OPEN, wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, toolbar_size), _("Open file"));
-  toolBar->AddControl(new ftFind(toolBar, this));
-  toolBar->Realize();
+  m_ToolBar->AddTool(wxID_OPEN);
+  m_ToolBar->Realize();
 
   std::vector<exPane> panes;
   panes.push_back(exPane("PaneText", -3));
@@ -106,6 +101,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
     wxID_ANY, wxDefaultPosition, wxDefaultSize,
     wxAUI_NB_DEFAULT_STYLE | 
     wxAUI_NB_WINDOWLIST_BUTTON);
+  ftFindToolBar* findbar = new ftFindToolBar(this, this);
 
   m_STC = new ftSTC(this); // use all flags (default)
 
@@ -121,6 +117,8 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
   GetManager().AddPane(m_NotebookWithLists, wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
+  GetManager().AddPane(findbar,
+    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
   GetManager().Update();
 
@@ -248,8 +246,8 @@ bool ftSampleFrame::OpenFile(const exFileName& file,
 {
   // We cannot use the ftFrame::OpenFile, as that uses the focused STC.
   // Prevent recursion.
-  if (flags & exSTC::STC_OPEN_FROM_LINK |
-      flags & exSTC::STC_OPEN_FROM_STATISTICS)
+  if ((flags & exSTC::STC_OPEN_FROM_LINK) |
+      (flags & exSTC::STC_OPEN_FROM_STATISTICS))
   {
     flags = 0;
   }
