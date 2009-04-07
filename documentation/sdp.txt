@@ -4,6 +4,7 @@ Software Development Plan
 General
 
 - Subversion Repository is on xp-dev.com, 
+    http://svn.xp-dev.com/svn/antonvw-wxprojects/
     https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
 - GUI library wxWidgets, currently svn (as there is not yet a base)
