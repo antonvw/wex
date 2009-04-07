@@ -141,11 +141,11 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
 ftListView* ftSampleFrame::Activate(int type, const exLexer* lexer)
 {
   for (
-    std::map<wxString, wxWindow*>::const_iterator it = m_NotebookWithLists->GetMapPages().begin();
-    it != m_NotebookWithLists->GetMapPages().end();
-    ++it)
+    size_t i = 0;
+    i < m_NotebookWithLists->GetPageCount();
+    i++)
   {
-    ftListView* vw = (ftListView*)it->second;
+    ftListView* vw = (ftListView*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetType() == type)
     {
