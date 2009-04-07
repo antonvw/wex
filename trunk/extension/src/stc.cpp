@@ -940,14 +940,10 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
   const int line_start = LineFromPosition(pos_start);
   const int line_end = LineFromPosition(pos_end);
 
-  if (GetFoldExpanded(line_start)) 
-  {
-    ToggleFold(line_start);
-  }
-
   for (int i = line_start; i <= line_end; i++)
   {
     GotoLine(i);
+    EnsureVisible(i);
 
     // Using next no longer works (wxWidgets-2.9.0-testrun2):
     // if (!GetLineVisible(i)) EnsureVisible(i);
