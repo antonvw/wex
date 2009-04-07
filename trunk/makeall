@@ -5,70 +5,72 @@
 
 target=$1
 
+ORG=$PWD
+
 if [ "$1" = "all" ]; then
   target=""
 fi
 
 echo "-- extension --"
-cd ~/wxprojects/trunk/extension/buildgtk
+cd $ORG/extension/buildgtk
 make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- extension test base --"
-cd ~/wxprojects/trunk/extension/test/base
+cd $ORG/extension/test/base
 make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- extension test app --"
-cd ~/wxprojects/trunk/extension/test/app
+cd $ORG/extension/test/app
 make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- filetool --"
-cd ~/wxprojects/trunk/filetool/buildgtk
+cd $ORG/filetool/buildgtk
 make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- filetool test --"
-cd ~/wxprojects/trunk/filetool/test
+cd $ORG/filetool/test
 make $target
 if [ "$?" != "0" ]; then
   exit 1
 fi
 
 echo "-- syncedit --"
-cd ~/wxprojects/trunk/syncedit/buildgtk
+cd $ORG/syncedit/buildgtk
 make $target
 
 # The rest is not always built.
 if [ "$1" = "all" ]; then
   echo "-- extension sample --"
-  cd ~/wxprojects/trunk/extension/sample
+  cd $ORG/extension/sample
   make $target
   if [ "$?" != "0" ]; then
     exit 1
   fi
 
   echo "-- filetool sample --"
-  cd ~/wxprojects/trunk/filetool/sample
+  cd $ORG/filetool/sample
   make $target
   if [ "$?" != "0" ]; then
     exit 1
   fi
 
   echo "-- syncodbcquery --"
-  cd ~/wxprojects/trunk/syncodbcquery
+  cd $ORG/syncodbcquery
   make $target
 
   echo "-- syncsocketserver --"
-  cd ~/wxprojects/trunk/syncsocketserver
+  cd $ORG/syncsocketserver
   make $target
 fi
