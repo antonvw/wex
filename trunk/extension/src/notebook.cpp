@@ -113,7 +113,9 @@ bool exNotebook::ForEach(int id)
       wxLogError(FILE_INFO("Notebook page: %d (%s) cannot be cast to an exSTC"), 
         page, 
         GetPageText(page).c_str());
-      return false;
+        
+      // Do not return false, otherwise close all would not finish.
+      continue;
     }
 
     switch (id)
