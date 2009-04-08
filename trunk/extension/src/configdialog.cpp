@@ -82,8 +82,8 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       notebook_sizer->SetMinSize(size);
     }
 
-    if (first_time || 
-        (it->m_Page != previous_page && 
+    if (first_time ||
+        (it->m_Page != previous_page &&
          it->m_Page != wxEmptyString))
     {
       first_time = false;
@@ -175,7 +175,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
     case CONFIG_SPACER:
       sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
       break;
-      
+
     case CONFIG_SPINCTRL:
       control = AddSpinCtrl(parent, sizer, it->m_Name, it->m_Min, it->m_Max);
       break;
@@ -278,7 +278,7 @@ wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
     arraychoices.Add(it->second);
   }
 
-  wxCheckListBox* box = new wxCheckListBox(parent, 
+  wxCheckListBox* box = new wxCheckListBox(parent,
     wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
 
   const long value = m_Config->Get(m_ConfigGroup + text, 0);
@@ -313,7 +313,7 @@ wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
     arraychoices.Add(*it);
   }
 
-  wxCheckListBox* box = new wxCheckListBox(parent, 
+  wxCheckListBox* box = new wxCheckListBox(parent,
     wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
 
   int item = 0;
@@ -527,7 +527,7 @@ wxControl* exConfigDialog::AddRadioBox(wxWindow* parent,
     arraychoices.Add(it->second);
   }
 
-  wxRadioBox* box = new wxRadioBox(parent, 
+  wxRadioBox* box = new wxRadioBox(parent,
     wxID_ANY, text, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
 
   box->SetStringSelection(choices[m_Config->Get(m_ConfigGroup + text, 0)]);
@@ -721,7 +721,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
         {
           m_Config->GetFindReplaceData()->SetMatchCase(clb->IsChecked(item));
         }
-        else if (*b == _("Regular experssion"))
+        else if (*b == _("Regular expression"))
         {
           m_Config->GetFindReplaceData()->SetIsRegularExpression(clb->IsChecked(item));
         }
@@ -815,7 +815,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       }
       }
       break;
-      
+
     case CONFIG_SPACER:
       break;
 
