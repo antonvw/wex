@@ -23,7 +23,7 @@ $(PROGRAM): $(OBJS)
 	$(CC) $(LDFLAGS) $(LIBS) -o $@ $(OBJS)
 
 # General rule.
-%.o: src/%.cpp
+%.o: src/%.cpp src/appl.xpm
 	$(CC) $(WFLAGS) $(EXTRAFLAGS) $(CFLAGS) -c $<
 
 clean:
