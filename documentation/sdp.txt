@@ -7,13 +7,17 @@ General
     http://svn.xp-dev.com/svn/antonvw-wxprojects/
     https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
+- Subversion access
+    under windows TortoiseSVN is used,
+    under Linux just the svn client
+
 - GUI library wxWidgets, currently svn (as there is not yet a base)
     http://wxwidgets.org/
 
 - development 
-  under windows codeblocks: 
+  under windows using Mingw and codeblocks: 
   http://www.codeblocks.org/
-  under linux gccc
+  under using linux gcc and no IDE
 
 - database is OTL
     http://otl.sourceforge.net/
@@ -35,21 +39,22 @@ General
 
 SVN hierarchy
 
-- development is in svn trunk, under windows TortoiseSVN is used,
-    under Linux just the svn client
+- development is in svn trunk, 
 
 - stable releases are in tags/branches
 
+- documentation contains all general docs
 
-Adding functionality in trunk
 
-- add a sample for it in
-    extension/sample, 
-    filetool/sample, 
+When adding functionality in trunk
 
 - add a test for it in 
     extension/test/base, 
     extension/test/app, 
     filetool/test, 
   where it has least dependancies
+
+- add a sample for it in
+    extension/sample, 
+    filetool/sample, 
 
