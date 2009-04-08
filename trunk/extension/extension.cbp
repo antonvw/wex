@@ -78,23 +78,6 @@
 				</Compiler>
 			</Target>
 		</Build>
-		<Unit filename="src\base.cpp" />
-		<Unit filename="src\config.cpp" />
-		<Unit filename="src\dir.cpp" />
-		<Unit filename="src\extension.cpp" />
-		<Unit filename="src\file.cpp" />
-		<Unit filename="src\grid.cpp" />
-		<Unit filename="src\lexer.cpp" />
-		<Unit filename="src\lexers.cpp" />
-		<Unit filename="src\listview.cpp" />
-		<Unit filename="src\notebook.cpp" />
-		<Unit filename="src\otl.cpp" />
-		<Unit filename="src\renderer.cpp" />
-		<Unit filename="src\shell.cpp" />
-		<Unit filename="src\statistics.cpp" />
-		<Unit filename="src\stc.cpp" />
-		<Unit filename="src\textfile.cpp" />
-		<Unit filename="src\tool.cpp" />
 		<Unit filename="include\wx\extension\base.h" />
 		<Unit filename="include\wx\extension\config.h" />
 		<Unit filename="include\wx\extension\defs.h" />
@@ -114,6 +97,24 @@
 		<Unit filename="include\wx\extension\textfile.h" />
 		<Unit filename="include\wx\extension\tool.h" />
 		<Unit filename="include\wx\extension\version.h" />
+		<Unit filename="src\base.cpp" />
+		<Unit filename="src\config.cpp" />
+		<Unit filename="src\configdialog.cpp" />
+		<Unit filename="src\dir.cpp" />
+		<Unit filename="src\extension.cpp" />
+		<Unit filename="src\file.cpp" />
+		<Unit filename="src\grid.cpp" />
+		<Unit filename="src\lexer.cpp" />
+		<Unit filename="src\lexers.cpp" />
+		<Unit filename="src\listview.cpp" />
+		<Unit filename="src\notebook.cpp" />
+		<Unit filename="src\otl.cpp" />
+		<Unit filename="src\renderer.cpp" />
+		<Unit filename="src\shell.cpp" />
+		<Unit filename="src\statistics.cpp" />
+		<Unit filename="src\stc.cpp" />
+		<Unit filename="src\textfile.cpp" />
+		<Unit filename="src\tool.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
