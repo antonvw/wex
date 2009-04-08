@@ -1,14 +1,14 @@
 # File:    syncedit.po
 # Purpose: Translation for syncedit to dutch.
 # RCS-ID:  $Id$
-# Copyright (c) 1998-2008 Anton van Wezenbeek
+# Copyright (c) 1998-2009 Anton van Wezenbeek
 msgid ""
 msgstr ""
-"Project-Id-Version: syncedit v6.0\n"
+"Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-19 07:52+0100\n"
-"PO-Revision-Date: 2009-03-19 07:54+0100\n"
-"Last-Translator: Anton <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-04-08 14:17+0100\n"
+"PO-Revision-Date: 2009-04-08 14:17+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: src\n"
 
-#: src/frame.cpp:73
+#: src/frame.cpp:72
 msgid "Project Files"
 msgstr "Project bestanden"
 
@@ -45,23 +45,27 @@ msgstr "Ascii tabel"
 msgid "History"
 msgstr "Geschiedenis"
 
-#: src/frame.cpp:246
+#: src/frame.cpp:118
+msgid "Findbar"
+msgstr "Zoekbalk"
+
+#: src/frame.cpp:265
 msgid "Project"
 msgstr "Project"
 
-#: src/frame.cpp:246
+#: src/frame.cpp:265
 msgid "Textfile"
 msgstr "Bestand"
 
-#: src/frame.cpp:315
+#: src/frame.cpp:334
 msgid "Print all files"
 msgstr "Alle bestanden afdrukken"
 
-#: src/frame.cpp:316
+#: src/frame.cpp:335
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: src/frame.cpp:388
+#: src/frame.cpp:407
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -71,68 +75,68 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: src/frame.cpp:393
+#: src/frame.cpp:412
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: src/frame.cpp:395
+#: src/frame.cpp:414
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: src/frame.cpp:501
+#: src/frame.cpp:520
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: src/frame.cpp:502
+#: src/frame.cpp:521
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: src/frame.cpp:506
+#: src/frame.cpp:525
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: src/frame.cpp:512
+#: src/frame.cpp:531
 msgid "Set List Colour"
 msgstr "Lijst kleuren instellen"
 
-#: src/frame.cpp:519
-#: src/frame.cpp:528
-#: src/frame.cpp:533
+#: src/frame.cpp:538
+#: src/frame.cpp:547
+#: src/frame.cpp:552
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: src/frame.cpp:525
+#: src/frame.cpp:544
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: src/frame.cpp:639
+#: src/frame.cpp:655
 msgid "Make"
 msgstr "Maken"
 
-#: src/frame.cpp:685
+#: src/frame.cpp:702
 msgid "&Open"
 msgstr "&Openen"
 
-#: src/frame.cpp:691
+#: src/frame.cpp:708
 #: src/support.cpp:96
 msgid "&Diff"
 msgstr "&Diff"
 
-#: src/frame.cpp:692
+#: src/frame.cpp:709
 #: src/support.cpp:95
 msgid "&Log"
 msgstr "&Log"
 
-#: src/frame.cpp:693
+#: src/frame.cpp:710
 msgid "&Cat"
 msgstr "&Cat"
 
-#: src/frame.cpp:699
+#: src/frame.cpp:716
 msgid "&Make"
 msgstr "&Maken"
 
-#: src/frame.cpp:925
-#: src/frame.cpp:937
+#: src/frame.cpp:942
+#: src/frame.cpp:954
 msgid "Flags"
 msgstr "Vlaggen"
 
@@ -216,27 +220,31 @@ msgstr "&Statusbalk"
 msgid "&Toolbar"
 msgstr "&Werkbalk"
 
-#: src/support.cpp:111
+#: src/support.cpp:110
+msgid "&Findbar"
+msgstr "&Zoekbalk"
+
+#: src/support.cpp:112
 msgid "&Files"
 msgstr "&Bestanden"
 
-#: src/support.cpp:112
+#: src/support.cpp:113
 msgid "&Projects"
 msgstr "&Projecten"
 
-#: src/support.cpp:113
+#: src/support.cpp:114
 msgid "&Explorer"
 msgstr "&Verkenner"
 
-#: src/support.cpp:114
+#: src/support.cpp:115
 msgid "&Output"
 msgstr "&Resultaten"
 
-#: src/support.cpp:115
+#: src/support.cpp:116
 msgid "&Ascii Table"
 msgstr "&Ascii tabel"
 
-#: src/support.cpp:116
+#: src/support.cpp:117
 msgid "&History"
 msgstr "&Geschiedenis"
 
@@ -336,27 +344,27 @@ msgstr "&Venster"
 msgid "&Options"
 msgstr "&Opties"
 
-#: src/support.cpp:193
+#: src/support.cpp:187
 msgid "Open project..."
 msgstr "Project openen..."
 
-#: src/support.cpp:198
+#: src/support.cpp:192
 msgid "Save project"
 msgstr "Project opslaan"
 
-#: src/support.cpp:206
+#: src/support.cpp:199
 msgid "View in list mode"
 msgstr "Lijst weergave"
 
-#: src/support.cpp:211
+#: src/support.cpp:204
 msgid "View in detail mode"
 msgstr "Details weergave"
 
-#: src/support.cpp:240
+#: src/support.cpp:233
 msgid "View in hex mode"
 msgstr "Bekijk hexadecimaal"
 
-#: src/support.cpp:242
+#: src/support.cpp:235
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
 

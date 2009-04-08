@@ -1,13 +1,13 @@
 # File:    syncsocketserver.po
 # Purpose: Translation for syncsocketserver to dutch.
 # RCS-ID:  $Id$
-# Copyright (c) 1998-2008 Anton van Wezenbeek
+# Copyright (c) 1998-2009 Anton van Wezenbeek
 msgid ""
 msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-20 13:29+0100\n"
-"PO-Revision-Date: 2009-03-20 13:30+0100\n"
+"POT-Creation-Date: 2009-04-08 14:19+0100\n"
+"PO-Revision-Date: 2009-04-08 14:20+0100\n"
 "Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr "Terug naar werkbalk"
 
 #: src/server.cpp:122
 msgid "Config"
-msgstr "Configureer"
+msgstr "Configureren"
 
 #: src/server.cpp:122
 msgid "Configures the server"

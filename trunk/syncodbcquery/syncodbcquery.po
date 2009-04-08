@@ -1,13 +1,13 @@
 # File:    syncodbcquery.po
 # Purpose: Translation for syncodbcquery to dutch.
 # RCS-ID:  $Id$
-# Copyright (c) 1998-2008 Anton van Wezenbeek
+# Copyright (c) 1998-2009 Anton van Wezenbeek
 msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-06 12:38+0100\n"
-"PO-Revision-Date: 2008-12-06 12:38+0100\n"
+"POT-Creation-Date: 2009-04-08 14:18+0100\n"
+"PO-Revision-Date: 2009-04-08 14:19+0100\n"
 "Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,83 +17,79 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: src\n"
 
-#: src/appl.cpp:73
+#: src/appl.cpp:77
 msgid "&Open"
 msgstr "&Openen"
 
-#: src/appl.cpp:74
+#: src/appl.cpp:78
 msgid "&Close"
 msgstr "&Sluiten"
 
-#: src/appl.cpp:77
-msgid "&Run"
-msgstr "Uitvoeren"
+#: src/appl.cpp:88
+msgid "&Statusbar"
+msgstr "&Statusregel"
 
-#: src/appl.cpp:81
-msgid "&Edit"
-msgstr "&Bewerken"
+#: src/appl.cpp:89
+msgid "&Toolbar"
+msgstr "&Werkbalk"
 
-#: src/appl.cpp:84
-#: src/appl.cpp:128
+#: src/appl.cpp:91
+#: src/appl.cpp:136
 msgid "Query"
 msgstr "Query"
 
-#: src/appl.cpp:85
-#: src/appl.cpp:121
+#: src/appl.cpp:92
+#: src/appl.cpp:129
 msgid "Results"
 msgstr "Uitvoer"
 
-#: src/appl.cpp:86
-#: src/appl.cpp:135
+#: src/appl.cpp:93
+#: src/appl.cpp:143
 msgid "Statistics"
 msgstr "Statistiek"
 
-#: src/appl.cpp:92
+#: src/appl.cpp:99
 msgid "&File"
 msgstr "&Bestand"
 
-#: src/appl.cpp:93
+#: src/appl.cpp:100
 msgid "&View"
 msgstr "&Beeld"
 
-#: src/appl.cpp:94
+#: src/appl.cpp:101
 msgid "&Database"
 msgstr "&Database"
 
-#: src/appl.cpp:95
+#: src/appl.cpp:102
 msgid "&Query"
 msgstr "&Query"
 
-#: src/appl.cpp:96
+#: src/appl.cpp:103
 msgid "&Options"
 msgstr "&Opties"
 
-#: src/appl.cpp:97
+#: src/appl.cpp:104
 msgid "&Help"
 msgstr "&Help"
 
-#: src/appl.cpp:145
+#: src/appl.cpp:153
 msgid "Lines in window"
 msgstr "Regels in scherm"
 
-#: src/appl.cpp:153
-msgid "Run query"
-msgstr "Voer uit"
-
-#: src/appl.cpp:188
+#: src/appl.cpp:199
 msgid "This program offers a general ODBC query."
 msgstr "Dit programma biedt algemene ODBC query"
 
-#: src/appl.cpp:236
+#: src/appl.cpp:253
 msgid "Datasource"
 msgstr "Databron"
 
-#: src/appl.cpp:240
+#: src/appl.cpp:257
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: src/appl.cpp:268
-#: src/appl.cpp:428
+#: src/appl.cpp:280
+#: src/appl.cpp:446
 msgid ""
 "\n"
 "error: "
@@ -101,7 +97,7 @@ msgstr ""
 "\n"
 "fout: "
 
-#: src/appl.cpp:273
+#: src/appl.cpp:285
 msgid ""
 "\n"
 "not connected"
@@ -109,15 +105,15 @@ msgstr ""
 "\n"
 "geen verbinding"
 
-#: src/appl.cpp:427
+#: src/appl.cpp:445
 msgid "Number of query errors"
 msgstr "Aantal query fouten"
 
-#: src/appl.cpp:428
+#: src/appl.cpp:446
 msgid " in: "
 msgstr " in: "
 
-#: src/appl.cpp:433
+#: src/appl.cpp:451
 #, c-format
 msgid ""
 "\n"
@@ -126,7 +122,7 @@ msgstr ""
 "\n"
 "%d queries (%.3f seconden)"
 
-#: src/appl.cpp:440
+#: src/appl.cpp:460
 #, c-format
 msgid ""
 "\n"
@@ -135,26 +131,32 @@ msgstr ""
 "\n"
 "%d records opgehaald (%.3f seconden)"
 
-#: src/appl.cpp:444
+#: src/appl.cpp:464
 msgid "Rows processed"
 msgstr "Records opgehaald"
 
-#: src/appl.cpp:445
+#: src/appl.cpp:465
 msgid "Query runtime"
 msgstr "Query uitvoertijd"
 
-#: src/appl.cpp:447
+#: src/appl.cpp:467
 msgid "Total number of queries run"
 msgstr "Totaal aantal uitgevoerde queries"
 
-#: src/appl.cpp:448
+#: src/appl.cpp:468
 msgid "Total query runtime"
 msgstr "Totaal query uitvoertijd"
 
-#: src/appl.cpp:449
+#: src/appl.cpp:469
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
 
+#~ msgid "&Run"
+#~ msgstr "Uitvoeren"
+#~ msgid "&Edit"
+#~ msgstr "&Bewerken"
+#~ msgid "Run query"
+#~ msgstr "Voer uit"
 #~ msgid "&Open..."
 #~ msgstr "&Openen..."
 #~ msgid "Console"
@@ -259,10 +261,6 @@ msgstr "Totaal aantal records opgehaald"
 #~ msgstr "&Ga naar"
 #~ msgid "&Control Char"
 #~ msgstr "&Controle karakter"
-#~ msgid "&Statusbar"
-#~ msgstr "&Statusregel"
-#~ msgid "&Toolbar"
-#~ msgstr "&Werkbalk"
 #~ msgid "&Files"
 #~ msgstr "&Bestanden"
 #~ msgid "&Projects"
