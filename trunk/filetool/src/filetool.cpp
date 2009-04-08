@@ -12,26 +12,6 @@
 #include <wx/extension/configdialog.h>
 #include <wx/filetool/filetool.h>
 
-/// Offers a find combobox that allows yuo to find text
-/// on a current STC on an ftFrame.
-class ftFind : public wxComboBox
-{
-public:
-  /// Constructor. Fills the combobox box with values from FindReplace from config.
-  ftFind(
-    wxWindow* parent,
-    ftFrame* frame,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize);
-private:
-  void OnCommand(wxCommandEvent& event);
-  void OnKey(wxKeyEvent& event);
-  ftFrame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
-};
-
 bool ftCompareFile(const wxFileName& file1, const wxFileName& file2)
 {
   const wxString comparator = exApp::GetConfig(_("Comparator"));
@@ -378,12 +358,32 @@ size_t ftDir::RunTool(const exTool& tool, int flags)
   return result;
 }
 
-BEGIN_EVENT_TABLE(ftFind, wxComboBox)
-  EVT_CHAR(ftFind::OnKey)
-  EVT_MENU(wxID_DELETE, ftFind::OnCommand)
+/// Offers a find combobox that allows you to find text
+/// on a current STC on an ftFrame.
+class ComboBox : public wxComboBox
+{
+public:
+  /// Constructor. Fills the combobox box with values from FindReplace from config.
+  ComboBox(
+    wxWindow* parent,
+    ftFrame* frame,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize);
+private:
+  void OnCommand(wxCommandEvent& event);
+  void OnKey(wxKeyEvent& event);
+  ftFrame* m_Frame;
+
+  DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(ComboBox, wxComboBox)
+  EVT_CHAR(ComboBox::OnKey)
+  EVT_MENU(wxID_DELETE, ComboBox::OnCommand)
 END_EVENT_TABLE()
 
-ftFind::ftFind(
+ComboBox::ComboBox(
   wxWindow* parent,
   ftFrame* frame,
   wxWindowID id,
@@ -412,7 +412,7 @@ ftFind::ftFind(
   SetValue(exApp::GetConfig()->GetFindReplaceData()->GetFindString());
 }
 
-void ftFind::OnCommand(wxCommandEvent& event)
+void ComboBox::OnCommand(wxCommandEvent& event)
 {
   // README: The delete key default behaviour does not delete the char right from insertion point.
   // Instead, the event is sent to the editor and a char is deleted from the editor.
@@ -427,7 +427,7 @@ void ftFind::OnCommand(wxCommandEvent& event)
   }
 }
 
-void ftFind::OnKey(wxKeyEvent& event)
+void ComboBox::OnKey(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
 
@@ -483,7 +483,7 @@ ftFindToolBar::ftFindToolBar(
 #else
   const wxSize size(150, -1);
 #endif  
-  AddControl(new ftFind(this, frame, ID_FIND_TEXT, wxDefaultPosition, size));
+  AddControl(new ComboBox(this, frame, ID_FIND_TEXT, wxDefaultPosition, size));
   AddSeparator();
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
