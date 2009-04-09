@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          frame.cpp
-* Purpose:       Implementation of ftFrame class
+* Purpose:       Implementation of exFrameWithHistory class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,16 +12,16 @@
 #include <wx/stdpaths.h>
 #include <wx/filetool/filetool.h>
 
-BEGIN_EVENT_TABLE(ftFrame, exManagedFrame)
-  EVT_CLOSE(ftFrame::OnClose)
-  EVT_IDLE(ftFrame::OnIdle)
-  EVT_MENU(wxID_OPEN, ftFrame::OnCommand)
-  EVT_MENU_RANGE(ID_FILETOOL_LOWEST, ID_FILETOOL_HIGHEST, ftFrame::OnCommand)
-  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, ftFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, ftFrame::OnUpdateUI)
+BEGIN_EVENT_TABLE(exFrameWithHistory, exManagedFrame)
+  EVT_CLOSE(exFrameWithHistory::OnClose)
+  EVT_IDLE(exFrameWithHistory::OnIdle)
+  EVT_MENU(wxID_OPEN, exFrameWithHistory::OnCommand)
+  EVT_MENU_RANGE(ID_FILETOOL_LOWEST, ID_FILETOOL_HIGHEST, exFrameWithHistory::OnCommand)
+  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, exFrameWithHistory::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, exFrameWithHistory::OnUpdateUI)
 END_EVENT_TABLE()
 
-ftFrame::ftFrame(wxWindow* parent,
+exFrameWithHistory::exFrameWithHistory(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
   size_t maxFiles,
@@ -59,19 +59,19 @@ ftFrame::ftFrame(wxWindow* parent,
 #endif
 }
 
-ftListView* ftFrame::Activate(
+exListViewFile* exFrameWithHistory::Activate(
   int WXUNUSED(type),
   const exLexer* WXUNUSED(lexer))
 {
   return NULL;
 }
 
-bool ftFrame::DialogFileOpen(
+bool exFrameWithHistory::DialogFileOpen(
   long style, 
   const wxString wildcards,
   bool ask_for_continue)
 {
-  ftSTC* stc = GetCurrentSTC();
+  exSTCWithFrame* stc = GetCurrentSTC();
 
   wxString use_wildcards = wildcards;
 
@@ -98,12 +98,12 @@ bool ftFrame::DialogFileOpen(
 
   wxArrayString files;
   dlg.GetPaths(files);
-  ftOpenFiles(this, files);
+  exOpenFiles(this, files);
 
   return true;
 }
 
-bool ftFrame::DialogProjectOpen(long style)
+bool exFrameWithHistory::DialogProjectOpen(long style)
 {
   wxFileDialog dlg(this,
     _("Select Projects"),
@@ -116,12 +116,12 @@ bool ftFrame::DialogProjectOpen(long style)
 
   wxArrayString files;
   dlg.GetPaths(files);
-  ftOpenFiles(this, files, ftSTC::STC_OPEN_IS_PROJECT);
+  exOpenFiles(this, files, exSTCWithFrame::STC_OPEN_IS_PROJECT);
 
   return true;
 }
 
-void ftFrame::DoRecent(wxFileHistory& history, int index, long flags)
+void exFrameWithHistory::DoRecent(wxFileHistory& history, int index, long flags)
 {
   if (history.GetCount() > 0)
   {
@@ -139,14 +139,14 @@ void ftFrame::DoRecent(wxFileHistory& history, int index, long flags)
   }
 }
 
-ftSTC* ftFrame::GetCurrentSTC()
+exSTCWithFrame* exFrameWithHistory::GetCurrentSTC()
 {
   exSTC* stc = GetFocusedSTC();
   if (stc == NULL) return NULL;
-  return wxDynamicCast(stc, ftSTC);
+  return wxDynamicCast(stc, exSTCWithFrame);
 }
 
-ftListView* ftFrame::GetFocusedListView()
+exListViewFile* exFrameWithHistory::GetFocusedListView()
 {
   wxWindow* win = wxWindow::FindFocus();
 
@@ -155,14 +155,14 @@ ftListView* ftFrame::GetFocusedListView()
     return NULL;
   }
 
-  return wxDynamicCast(win, ftListView);
+  return wxDynamicCast(win, exListViewFile);
 }
 
-void ftFrame::OnClose(wxCloseEvent& event)
+void exFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
-    if (ftListView::ProcessIsRunning())
+    if (exListViewFile::ProcessIsRunning())
     {
       wxLogMessage(_("Process is running"));
       event.Veto();
@@ -170,9 +170,9 @@ void ftFrame::OnClose(wxCloseEvent& event)
     }
   }
 
-  ftListView::CleanUp();
+  exListViewFile::CleanUp();
 #ifdef EMBEDDED_SQL
-  ftTextFile::CleanUp();
+  exTextFileWithReport::CleanUp();
 #endif
 
   m_FileHistory.Save(*exApp::GetConfig());
@@ -187,7 +187,7 @@ void ftFrame::OnClose(wxCloseEvent& event)
   event.Skip();
 }
 
-void ftFrame::OnCommand(wxCommandEvent& event)
+void exFrameWithHistory::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() >= ID_RECENT_FILE_LOWEST &&
       event.GetId() <= ID_RECENT_FILE_HIGHEST)
@@ -200,7 +200,7 @@ void ftFrame::OnCommand(wxCommandEvent& event)
   {
     DoRecent(m_ProjectHistory,
       event.GetId() - ID_RECENT_PROJECT_LOWEST,
-      ftSTC::STC_OPEN_IS_PROJECT);
+      exSTCWithFrame::STC_OPEN_IS_PROJECT);
   }
   else
   {
@@ -216,7 +216,7 @@ void ftFrame::OnCommand(wxCommandEvent& event)
 
     case ID_PROJECT_SAVE:
       {
-        ftListView* project = GetCurrentProject();
+        exListViewFile* project = GetCurrentProject();
         if (project != NULL && project->FileSave())
         {
           SetTitle(wxEmptyString, project->GetFileName().GetName());
@@ -225,7 +225,7 @@ void ftFrame::OnCommand(wxCommandEvent& event)
       break;
 
     case ID_SPECIAL_FIND_IN_FILES:
-      ftFindInFiles(this);
+      exFindInFiles(this);
       break;
 
     case ID_VIEW_STATUSBAR:
@@ -244,15 +244,15 @@ void ftFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void ftFrame::OnIdle(wxIdleEvent& event)
+void exFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
   wxWindow* win = wxWindow::FindFocus();
   if (win == NULL) return;
 
-  ftSTC* editor = wxDynamicCast(win, ftSTC);
-  ftListView* project = wxDynamicCast(win, ftListView);
+  exSTCWithFrame* editor = wxDynamicCast(win, exSTCWithFrame);
+  exListViewFile* project = wxDynamicCast(win, exListViewFile);
 
   const wxString title(GetTitle());
   const wxChar indicator('*');
@@ -276,7 +276,7 @@ void ftFrame::OnIdle(wxIdleEvent& event)
   }
 }
 
-void ftFrame::OnUpdateUI(wxUpdateUIEvent& event)
+void exFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
@@ -295,7 +295,7 @@ void ftFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool ftFrame::OpenFile(
+bool exFrameWithHistory::OpenFile(
   const exFileName& filename,
   int line_number,
   const wxString& match,
@@ -310,7 +310,7 @@ bool ftFrame::OpenFile(
   return false;
 }
 
-void ftFrame::SetRecentFile(const wxString& file) 
+void exFrameWithHistory::SetRecentFile(const wxString& file) 
 {
   if (!file.empty()) 
   {
@@ -318,14 +318,14 @@ void ftFrame::SetRecentFile(const wxString& file)
 
     if (m_FileHistoryList != NULL)
     {
-      ftListItem item(m_FileHistoryList, file);
+      exListItemWithFileName item(m_FileHistoryList, file);
       item.Insert((long)0);
 
       if (m_FileHistoryList->GetItemCount() > 1)
       {
         for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
         {
-          ftListItem item(m_FileHistoryList, i);
+          exListItemWithFileName item(m_FileHistoryList, i);
 
           if (item.GetFileName().GetFullPath() == file)
           {
@@ -337,7 +337,7 @@ void ftFrame::SetRecentFile(const wxString& file)
   }
 }
 
-void ftFrame::SetTitle(const wxString& file, const wxString& project)
+void exFrameWithHistory::SetTitle(const wxString& file, const wxString& project)
 {
   // If one of the strings is empty, try to get a better string.
   wxString better_file(file);
@@ -345,7 +345,7 @@ void ftFrame::SetTitle(const wxString& file, const wxString& project)
 
   if (better_file.empty())
   {
-    ftSTC* stc = GetCurrentSTC();
+    exSTCWithFrame* stc = GetCurrentSTC();
 
     if (stc != NULL)
     {
@@ -355,9 +355,9 @@ void ftFrame::SetTitle(const wxString& file, const wxString& project)
 
   if (better_project.empty())
   {
-    ftListView* lv = GetCurrentListView();
+    exListViewFile* lv = GetCurrentListView();
 
-    if (lv != NULL && lv->GetType() == ftListView::LIST_PROJECT)
+    if (lv != NULL && lv->GetType() == exListViewFile::LIST_PROJECT)
     {
       better_project = lv->GetFileName().GetName();
     }
@@ -379,7 +379,7 @@ void ftFrame::SetTitle(const wxString& file, const wxString& project)
   }
 }
 
-void ftFrame::UseFileHistory(wxWindowID id, wxMenu* menu)
+void exFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
 {
   UseHistory(id, menu, m_FileHistory);
 
@@ -387,7 +387,7 @@ void ftFrame::UseFileHistory(wxWindowID id, wxMenu* menu)
   m_FileHistory.Load(*exApp::GetConfig());
 }
 
-void ftFrame::UseFileHistoryList(ftListView* list)
+void exFrameWithHistory::UseFileHistoryList(exListViewFile* list)
 {
   m_FileHistoryList = list;
 
@@ -395,19 +395,19 @@ void ftFrame::UseFileHistoryList(ftListView* list)
   for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
   {
     const wxString file = m_FileHistory.GetHistoryFile(i);
-    ftListItem item(m_FileHistoryList, file);
+    exListItemWithFileName item(m_FileHistoryList, file);
     item.Insert();
   }
 }
 
-void ftFrame::UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history)
+void exFrameWithHistory::UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history)
 {
   wxMenu* submenu = new wxMenu;
   menu->Append(id, _("Open &Recent"), submenu);
   history.UseMenu(submenu);
 }
 
-void ftFrame::UseProjectHistory(wxWindowID id, wxMenu* menu)
+void exFrameWithHistory::UseProjectHistory(wxWindowID id, wxMenu* menu)
 {
   UseHistory(id, menu, m_ProjectHistory);
 

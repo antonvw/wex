@@ -17,7 +17,7 @@
 #include "defs.h"
 
 Frame::Frame(const wxString& project_wildcard)
-  : ftFrame(
+  : exFrameWithHistory(
       NULL, 
       wxID_ANY, 
       wxTheApp->GetAppName(), //title
@@ -241,25 +241,25 @@ Frame::Frame(const wxString& project_wildcard)
 
 bool Frame::AllowClose(wxWindowID id, wxWindow* page) 
 {
-  if (ftListView::ProcessIsRunning())
+  if (exListViewFile::ProcessIsRunning())
     return false;
   else if (id == NOTEBOOK_EDITORS)
-    return ((ftSTC*)page)->Continue();
+    return ((exSTCWithFrame*)page)->Continue();
   else if (id == NOTEBOOK_PROJECTS)
-    return ((ftListView*)page)->Continue();
+    return ((exListViewFile*)page)->Continue();
   else
-    return ftFrame::AllowClose(id, page);
+    return exFrameWithHistory::AllowClose(id, page);
 }
 
 void Frame::OnNotebook(wxWindowID id, wxWindow* page) 
 {
   if (id == NOTEBOOK_EDITORS)
   {
-    ((ftSTC*)page)->PropertiesMessage();
+    ((exSTCWithFrame*)page)->PropertiesMessage();
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
-    SetTitle(wxEmptyString, ((ftListView*)page)->GetFileName().GetName());
-    ((ftListView*)page)->GetFileName().StatusText();
+    SetTitle(wxEmptyString, ((exListViewFile*)page)->GetFileName().GetName());
+    ((exListViewFile*)page)->GetFileName().StatusText();
   }
 }

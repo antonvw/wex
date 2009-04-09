@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.h
-* Purpose:       Declaration of class 'ftSTC'
+* Purpose:       Declaration of class 'exSTCWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,13 +12,13 @@
 #ifndef _FTSTC_H
 #define _FTSTC_H
 
-class ftFrame;
+class exFrameWithHistory;
 
 #include <wx/extension/stc.h>
 
 /// Adds a frame and drag/drop to exSTC. 
 /// The frame is assigned in the Initialize.
-class ftSTC : public exSTC
+class exSTCWithFrame : public exSTC
 {
 public:
   /// Menu types, they determine how the context menu will appear.
@@ -38,7 +38,7 @@ public:
   };
 
   /// Constructor. Does not open a file, but sets text to specified value.
-  ftSTC(wxWindow* parent,
+  exSTCWithFrame(wxWindow* parent,
     long type = STC_MENU_DEFAULT,
     const wxString& value = wxEmptyString,
     wxWindowID id = wxID_ANY,
@@ -48,7 +48,7 @@ public:
     const wxString& name = wxSTCNameStr);
 
   /// Constructor, opens the file.
-  ftSTC(wxWindow* parent,
+  exSTCWithFrame(wxWindow* parent,
     const exFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
@@ -61,7 +61,7 @@ public:
     const wxString& name = wxSTCNameStr);
 
   /// Copy constructor from an exSTC.
-  ftSTC(const exSTC& stc);
+  exSTCWithFrame(const exSTC& stc);
 
   /// Calls base and sets recent file if base call succeeded.
   virtual bool Open(
@@ -81,7 +81,7 @@ protected:
   DECLARE_EVENT_TABLE()
 private:
   bool Initialize();
-  ftFrame* m_Frame;
+  exFrameWithHistory* m_Frame;
 };
 
 #endif

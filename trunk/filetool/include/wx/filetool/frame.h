@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          frame.h
-* Purpose:       Include file for ftFrame class
+* Purpose:       Include file for exFrameWithHistory class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -17,14 +17,14 @@
 /// Adds file and project history support to exManagedFrame.
 /// It also updates the title of the frame if you have a focused 
 /// STC file or listview project.
-class ftFrame : public exManagedFrame
+class exFrameWithHistory : public exManagedFrame
 {
 public:
   /// Constructor.
   /// Default it gives file history support to be used from the file menu.
   /// So you should call UseFileHistory somewhere to set it up.
   /// Default it does not use a recent project file.
-  ftFrame(wxWindow* parent, 
+  exFrameWithHistory(wxWindow* parent, 
     wxWindowID id, 
     const wxString& title, 
     size_t maxFiles = 9,
@@ -34,7 +34,7 @@ public:
 
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
-  virtual ftListView* Activate(int list_type, const exLexer* lexer = NULL);
+  virtual exListViewFile* Activate(int list_type, const exLexer* lexer = NULL);
 
   /// Shows a wxFileDialog dialog for files, 
   /// and opens all selected (depending on style) files if not cancelled.
@@ -50,20 +50,20 @@ public:
 
   /// If there is a listview somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
-  virtual ftListView* GetCurrentListView() {
+  virtual exListViewFile* GetCurrentListView() {
     return GetFocusedListView();}
 
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
-  virtual ftListView* GetCurrentProject() {
+  virtual exListViewFile* GetCurrentProject() {
     return GetFocusedListView();}
 
   /// If there is an STC somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedSTC.
-  virtual ftSTC* GetCurrentSTC();
+  virtual exSTCWithFrame* GetCurrentSTC();
 
   /// If the window that has focus is a listview, then returns that, otherwise returns NULL.
-  ftListView* GetFocusedListView();
+  exListViewFile* GetFocusedListView();
 
   /// Returns the recent opened file.
   const wxString GetRecentFile() const {
@@ -103,7 +103,7 @@ public:
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
-  void UseFileHistoryList(ftListView* list);
+  void UseFileHistoryList(exListViewFile* list);
 
   /// Adds a recent project menu to specified menu, and sets the project history to use it.
   void UseProjectHistory(wxWindowID id, wxMenu* menu);
@@ -118,7 +118,7 @@ private:
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxFileHistory m_FileHistory;
-  ftListView* m_FileHistoryList;
+  exListViewFile* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
 
   const wxString m_ProjectWildcard;

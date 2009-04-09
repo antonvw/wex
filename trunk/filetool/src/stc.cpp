@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.cpp
-* Purpose:       Implementation of class 'ftSTC'
+* Purpose:       Implementation of class 'exSTCWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,28 +12,28 @@
 #include <wx/extension/svn.h>
 #include <wx/filetool/filetool.h>
 
-BEGIN_EVENT_TABLE(ftSTC, exSTC)
-  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, ftSTC::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, ftSTC::OnCommand)
+BEGIN_EVENT_TABLE(exSTCWithFrame, exSTC)
+  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, exSTCWithFrame::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 #if wxUSE_DRAG_AND_DROP
 class ftSTCDropTarget : public wxFileDropTarget
 {
 public:
-  ftSTCDropTarget(ftFrame* owner) {m_Owner = owner;}
+  ftSTCDropTarget(exFrameWithHistory* owner) {m_Owner = owner;}
 private:
   virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
   {
-    ftOpenFiles(m_Owner, filenames);
+    exOpenFiles(m_Owner, filenames);
     return true;
   }
 
-  ftFrame* m_Owner;
+  exFrameWithHistory* m_Owner;
 };
 #endif
 
-ftSTC::ftSTC(wxWindow* parent,
+exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
   long type,
   const wxString& value,
   wxWindowID id,
@@ -46,7 +46,7 @@ ftSTC::ftSTC(wxWindow* parent,
   Initialize();
 }
 
-ftSTC::ftSTC(wxWindow* parent,
+exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
   const exFileName& filename,
   int line_number,
   const wxString& match,
@@ -65,13 +65,13 @@ ftSTC::ftSTC(wxWindow* parent,
   }
 }
 
-ftSTC::ftSTC(const exSTC& stc)
+exSTCWithFrame::exSTCWithFrame(const exSTC& stc)
   : exSTC(stc)
 {
   Initialize();
 }
 
-void ftSTC::BuildPopupMenu(exMenu& menu)
+void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
 {
   exSTC::BuildPopupMenu(menu);
 
@@ -124,14 +124,14 @@ void ftSTC::BuildPopupMenu(exMenu& menu)
   }
 }
 
-bool ftSTC::Initialize()
+bool exSTCWithFrame::Initialize()
 {
   wxWindow* window = wxTheApp->GetTopWindow();
-  m_Frame = wxDynamicCast(window, ftFrame);
+  m_Frame = wxDynamicCast(window, exFrameWithHistory);
 
   if (m_Frame == NULL)
   {
-    wxLogError("Cannot initialize ftSTC without ftFrame");
+    wxLogError("Cannot initialize exSTCWithFrame without exFrameWithHistory");
     return false;
   }
 
@@ -144,7 +144,7 @@ bool ftSTC::Initialize()
   return true;
 }
 
-void ftSTC::OnCommand(wxCommandEvent& command)
+void exSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
   if (!Continue())
   {
@@ -170,9 +170,9 @@ void ftSTC::OnCommand(wxCommandEvent& command)
     exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
     }
 
-    if (ftTextFile::SetupTool(tool))
+    if (exTextFileWithReport::SetupTool(tool))
     {
-      ftTextFile report(m_FileName);
+      exTextFileWithReport report(m_FileName);
       report.RunTool(tool);
       report.GetStatistics().Log(tool);
     }
@@ -185,8 +185,8 @@ void ftSTC::OnCommand(wxCommandEvent& command)
   case ID_STC_COMPARE:
     {
       wxFileName lastfile;
-      if (ftFindOtherFileName(m_FileName, NULL, &lastfile))
-        ftCompareFile(m_FileName, lastfile);
+      if (exFindOtherFileName(m_FileName, NULL, &lastfile))
+        exCompareFile(m_FileName, lastfile);
     }
     break;
 
@@ -207,12 +207,12 @@ void ftSTC::OnCommand(wxCommandEvent& command)
 
   case ID_STC_FIND_FILES:
     GetSearchText();
-    ftFindInFiles(m_Frame);
+    exFindInFiles(m_Frame);
     break;
 
   case ID_STC_REPLACE_FILES:
     GetSearchText();
-    ftFindInFiles(m_Frame, true);
+    exFindInFiles(m_Frame, true);
     break;
 
   default: wxLogError(FILE_INFO("Unhandled"));
@@ -220,7 +220,7 @@ void ftSTC::OnCommand(wxCommandEvent& command)
   }
 }
 
-bool ftSTC::Open(
+bool exSTCWithFrame::Open(
   const exFileName& filename,
   int line_number,
   const wxString& match,
@@ -245,7 +245,7 @@ bool ftSTC::Open(
   return retValue;
 }
 
-void ftSTC::PropertiesMessage()
+void exSTCWithFrame::PropertiesMessage()
 {
   exSTC::PropertiesMessage();
 

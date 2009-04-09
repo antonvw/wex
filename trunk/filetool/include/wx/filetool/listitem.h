@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listitem.h
-* Purpose:       Declaration of class 'ftListItem'
+* Purpose:       Declaration of class 'exListItemWithFileName'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,21 +15,21 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/textfile.h> // for exRCS
 
-class ftListView;
+class exListViewFile;
 
 /// Offers a list item associated with a file on an exListView.
 /// The item is coloured according to
 /// the modification time of the file it is associated with.
 /// It allows you to run tools on the item and keeps statistics when running.
-class ftListItem : public exListItem
+class exListItemWithFileName : public exListItem
 {
-  friend class ftDir; // ftDir uses m_Statistics directly.
+  friend class exDirWithReport; // exDirWithReport uses m_Statistics directly.
 public:
   /// Constructor.
-  ftListItem(exListView* listview, const int itemnumber);
+  exListItemWithFileName(exListView* listview, const int itemnumber);
 
   /// Constructor.
-  ftListItem(exListView* listview,
+  exListItemWithFileName(exListView* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
@@ -44,7 +44,7 @@ public:
   void Insert(long index = -1);
 
   /// Runs a tool on this item.
-  bool Run(const exTool& tool, ftListView* listview);
+  bool Run(const exTool& tool, exListViewFile* listview);
 
   /// Updates all attributes.
   void Update();

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.cpp
-* Purpose:       Implementation of class 'ftTextFile'
+* Purpose:       Implementation of class 'exTextFileWithReport'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -11,11 +11,11 @@
 
 #include <wx/filetool/filetool.h>
 
-ftListView* ftTextFile::m_Report = NULL;
-ftFrame* ftTextFile::m_Frame = NULL;
+exListViewFile* exTextFileWithReport::m_Report = NULL;
+exFrameWithHistory* exTextFileWithReport::m_Frame = NULL;
 
 void SetItemColumnStatistics(
-  ftListItem& item,
+  exListItemWithFileName& item,
   const wxString& col,
   exStatistics<long>& stat)
 {
@@ -25,7 +25,7 @@ void SetItemColumnStatistics(
 }
 
 #if USE_EMBEDDED_SQL
-otl_connect ftTextFile::m_db;
+otl_connect exTextFileWithReport::m_db;
 
 class Recordset
 {
@@ -47,7 +47,7 @@ private:
 };
 #endif
 
-ftTextFile::ftTextFile(const exFileName& filename)
+exTextFileWithReport::exTextFileWithReport(const exFileName& filename)
   : exTextFile(filename, exApp::GetConfig(), exApp::GetLexers())
 #if USE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
@@ -56,14 +56,14 @@ ftTextFile::ftTextFile(const exFileName& filename)
 }
 
 #if USE_EMBEDDED_SQL
-void ftTextFile::CleanUp()
+void exTextFileWithReport::CleanUp()
 {
   m_db.logoff();
 }
 #endif
 
 #if USE_EMBEDDED_SQL
-bool ftTextFile::ParseComments()
+bool exTextFileWithReport::ParseComments()
 {
   if (GetTool().GetId() == ID_TOOL_SQL || GetTool().GetId() == ID_TOOL_REPORT_SQL)
   {
@@ -111,7 +111,7 @@ bool ftTextFile::ParseComments()
 #endif
 
 #if USE_EMBEDDED_SQL
-bool ftTextFile::ParseSQL()
+bool exTextFileWithReport::ParseSQL()
 {
 /*
  ; SQL # ..
@@ -188,9 +188,9 @@ bool ftTextFile::ParseSQL()
 }
 #endif
 
-void ftTextFile::Report()
+void exTextFileWithReport::Report()
 {
-  ftListItem item(m_Report, GetFileName().GetFullPath());
+  exListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
   const int line = (GetTool().GetId() == ID_TOOL_REPORT_REVISION ? 
@@ -223,22 +223,22 @@ void ftTextFile::Report()
   }
 }
 
-void ftTextFile::ReportStatistics()
+void exTextFileWithReport::ReportStatistics()
 {
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
     m_Report = m_Frame->Activate(
-      ftListView::GetTypeTool(GetTool()), 
+      exListViewFile::GetTypeTool(GetTool()), 
       &GetFileName().GetLexer());
 
     if (m_Report == NULL)
     {
-      wxLogError("Report: %d is not activated", ftListView::GetTypeTool(GetTool()));
+      wxLogError("Report: %d is not activated", exListViewFile::GetTypeTool(GetTool()));
       return;
     }
   }
 
-  ftListItem item(m_Report, GetFileName().GetFullPath());
+  exListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
   switch (GetTool().GetId())
@@ -277,7 +277,7 @@ void ftTextFile::ReportStatistics()
 }
 
 #if USE_EMBEDDED_SQL
-bool ftTextFile::SetSQLQuery()
+bool exTextFileWithReport::SetSQLQuery()
 {
   const size_t pos_start_of_query = GetComments().find('#');
   const size_t pos_end_of_query = GetComments().rfind('#');
@@ -299,7 +299,7 @@ bool ftTextFile::SetSQLQuery()
 }
 #endif
 
-bool ftTextFile::SetupTool(const exTool& tool)
+bool exTextFileWithReport::SetupTool(const exTool& tool)
 {
 #if USE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
@@ -319,21 +319,21 @@ bool ftTextFile::SetupTool(const exTool& tool)
   if (tool.IsReportType())
   {
     wxWindow* window = wxTheApp->GetTopWindow();
-    m_Frame = wxDynamicCast(window, ftFrame);
+    m_Frame = wxDynamicCast(window, exFrameWithHistory);
 
     if (m_Frame == NULL)
     {
-      wxLogError("Cannot setup tool for ftTextFile without ftFrame");
+      wxLogError("Cannot setup tool for exTextFileWithReport without exFrameWithHistory");
       return false;
     }
 
     if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      m_Report = m_Frame->Activate(ftListView::GetTypeTool(tool));
+      m_Report = m_Frame->Activate(exListViewFile::GetTypeTool(tool));
 
       if (m_Report == NULL)
       {
-        wxLogError("Report: %d is not activated", ftListView::GetTypeTool(tool));
+        wxLogError("Report: %d is not activated", exListViewFile::GetTypeTool(tool));
         return false;
       }
     }

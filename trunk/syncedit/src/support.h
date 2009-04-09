@@ -14,8 +14,8 @@
 
 #include <wx/filetool/filetool.h>
 
-/// Adds a toolbar and checkboxes to ftFrame.
-class Frame : public ftFrame
+/// Adds a toolbar and checkboxes to exFrameWithHistory.
+class Frame : public exFrameWithHistory
 {
 public:
   /// Constructor.

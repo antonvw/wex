@@ -39,8 +39,8 @@ enum
   ID_LIST_SVN_DIFF,
   ID_LIST_SVN_LOG,
   ID_LIST_HIGHEST,
-  ID_LIST_ALL_ITEMS, // not a real command, used by ftForEach
-  ID_LIST_ALL_CLOSE, // not a real command, used by ftForEach
+  ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
+  ID_LIST_ALL_CLOSE, // not a real command, used by exForEach
   ID_PROJECT_OPEN,
   ID_PROJECT_SAVE,
   ID_RECENT_LOWEST,

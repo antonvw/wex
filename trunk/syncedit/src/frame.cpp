@@ -91,8 +91,8 @@ MDIFrame::MDIFrame(bool open_recent)
     this, this, (wxWindowID)NOTEBOOK_LISTS, wxDefaultPosition, wxDefaultSize, flag);
   m_NotebookWithProjects = new exNotebook(
     this, this, (wxWindowID)NOTEBOOK_PROJECTS, wxDefaultPosition, wxDefaultSize, flag);
-  m_History = new ftListView(this,
-    ftListView::LIST_HISTORY,
+  m_History = new exListViewFile(this,
+    exListViewFile::LIST_HISTORY,
     FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
@@ -100,7 +100,7 @@ MDIFrame::MDIFrame(bool open_recent)
   exSTC* asciiTable = new exSTC(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
-  ftFindToolBar* findbar = new ftFindToolBar(this, this);
+  exFindToolBar* findbar = new exFindToolBar(this, this);
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
@@ -153,7 +153,7 @@ MDIFrame::MDIFrame(bool open_recent)
           exFileName(GetRecentProject()),
           0,
           wxEmptyString,
-          ftSTC::STC_OPEN_IS_PROJECT);
+          exSTCWithFrame::STC_OPEN_IS_PROJECT);
       }
     }
   }
@@ -168,33 +168,33 @@ MDIFrame::MDIFrame(bool open_recent)
   wxLogTrace("SY_CALL", "-MDIFrame");
 }
 
-ftListView* MDIFrame::Activate(int type, const exLexer* lexer)
+exListViewFile* MDIFrame::Activate(int type, const exLexer* lexer)
 {
-  if (type == ftListView::LIST_PROJECT)
+  if (type == exListViewFile::LIST_PROJECT)
   {
     return GetCurrentProject();
   }
   else
   {
-    ftListView* list = AddPage(type, lexer);
+    exListViewFile* list = AddPage(type, lexer);
     GetManager().GetPane("OUTPUT").Show();
     GetManager().Update();
     return list;
   }
 }
 
-ftListView* MDIFrame::AddPage(int type, const exLexer* lexer)
+exListViewFile* MDIFrame::AddPage(int type, const exLexer* lexer)
 {
-  const wxString name = ftListView::GetTypeDescription((ftListView::ftListType)type) +
+  const wxString name = exListViewFile::GetTypeDescription((exListViewFile::ftListType)type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
-  ftListView* list = (ftListView*)m_NotebookWithLists->GetPageByKey(name);
+  exListViewFile* list = (exListViewFile*)m_NotebookWithLists->GetPageByKey(name);
 
-  if (list == NULL && type != ftListView::LIST_PROJECT)
+  if (list == NULL && type != exListViewFile::LIST_PROJECT)
   {
-    list = new ftListView(
+    list = new exListViewFile(
       m_NotebookWithLists,
-      (ftListView::ftListType)type,
+      (exListViewFile::ftListType)type,
       FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);
@@ -208,7 +208,7 @@ bool MDIFrame::AllowCloseAll(wxWindowID id)
   switch (id)
   {
   case NOTEBOOK_EDITORS: return m_NotebookWithEditors->ForEach(ID_ALL_STC_CLOSE); break;
-  case NOTEBOOK_PROJECTS: return ftForEach(m_NotebookWithProjects, ID_LIST_ALL_CLOSE); break;
+  case NOTEBOOK_PROJECTS: return exForEach(m_NotebookWithProjects, ID_LIST_ALL_CLOSE); break;
   }
 
   return true;
@@ -223,8 +223,8 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
   else if (dialogid == ID_OPTION_LIST_COLOUR)
   {
-    ftForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS);
-    ftForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS);
+    exForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS);
+    exForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS);
   }
 }
 
@@ -240,24 +240,24 @@ exListView* MDIFrame::GetListView()
   }
 }
 
-ftListView* MDIFrame::GetCurrentProject()
+exListViewFile* MDIFrame::GetCurrentProject()
 {
   if (!m_NotebookWithProjects->IsShown() || m_NotebookWithProjects->GetPageCount() == 0)
   {
     return NULL;
   }
 
-  return (ftListView*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
+  return (exListViewFile*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
 }
 
-ftSTC* MDIFrame::GetCurrentSTC()
+exSTCWithFrame* MDIFrame::GetCurrentSTC()
 {
   if (!m_NotebookWithEditors->IsShown() || m_NotebookWithEditors->GetPageCount() == 0)
   {
     return NULL;
   }
 
-  return (ftSTC*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
+  return (exSTCWithFrame*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
 }
 
 void MDIFrame::NewFile(bool as_project)
@@ -274,7 +274,7 @@ void MDIFrame::NewFile(bool as_project)
       wxStandardPaths::Get().GetUserDataDir(),
       text);
 
-    page = new ftListView(notebook,
+    page = new exListViewFile(notebook,
       fn.GetFullPath(),
       project_wildcard,
       FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
@@ -283,10 +283,10 @@ void MDIFrame::NewFile(bool as_project)
   }
   else
   {
-    page = new ftSTC(notebook);
+    page = new exSTCWithFrame(notebook);
 
-    ((ftSTC*)page)->FileNew(text);
-    ((ftSTC*)page)->PropertiesMessage();
+    ((exSTCWithFrame*)page)->FileNew(text);
+    ((exSTCWithFrame*)page)->PropertiesMessage();
   }
 
   notebook->AddPage(
@@ -340,8 +340,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  ftSTC* editor = GetCurrentSTC();
-  ftListView* project = GetCurrentProject();
+  exSTCWithFrame* editor = GetCurrentSTC();
+  exListViewFile* project = GetCurrentProject();
 
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
@@ -375,7 +375,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   // view commands
   else if (event.GetId() >= wxID_VIEW_DETAILS &&  event.GetId() <= wxID_VIEW_LIST)
   {
-    ftForEach(m_NotebookWithProjects, event.GetId());
+    exForEach(m_NotebookWithProjects, event.GetId());
 
     long view = 0;
     switch (event.GetId())
@@ -487,11 +487,11 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case wxID_EXECUTE: ftListView::ProcessRun(); break;
+  case wxID_EXECUTE: exListViewFile::ProcessRun(); break;
   case wxID_STOP:
-    if (ftListView::ProcessIsRunning())
+    if (exListViewFile::ProcessIsRunning())
     {
-      ftListView::ProcessStop();
+      exListViewFile::ProcessStop();
     }
     break;
 
@@ -551,8 +551,8 @@ and saved in the same directory as where the executable is."));
           false,
           exApp::GetConfig(wxString(_("List Font")) + "/Name"));
 
-        ftForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
-        ftForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
+        exForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
+        exForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
         m_History->SetFont(font);
         m_History->ItemsUpdate();
       }
@@ -566,7 +566,7 @@ and saved in the same directory as where the executable is."));
   case ID_OPTION_LIST_SORT_TOGGLE:
     exApp::SetConfig("List/SortMethod", SORT_TOGGLE); break;
 
-  case ID_PROCESS_SELECT: ftProcess::ConfigDialog(); break;
+  case ID_PROCESS_SELECT: exProcessWithListView::ConfigDialog(); break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)
@@ -618,7 +618,7 @@ and saved in the same directory as where the executable is."));
 
   case ID_SPLIT:
   {
-    ftSTC* stc = new ftSTC(*editor);
+    exSTCWithFrame* stc = new exSTCWithFrame(*editor);
 
     m_NotebookWithEditors->AddPage(
       stc,
@@ -651,7 +651,7 @@ and saved in the same directory as where the executable is."));
   {
     wxSetWorkingDirectory(wxFileName(m_DirCtrl->GetFilePath()).GetPath());
 
-    ftListView::ProcessRun(
+    exListViewFile::ProcessRun(
       exApp::GetConfig(_("Make")) + wxString(" ") +
       exApp::GetConfig("MakeSwitch", "-f") + wxString(" ") +
       m_DirCtrl->GetFilePath());
@@ -727,7 +727,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
 void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  ftListView* project = GetCurrentProject();
+  exListViewFile* project = GetCurrentProject();
 
   if (event.GetId() >= wxID_VIEW_DETAILS && event.GetId() <= wxID_VIEW_LIST)
   {
@@ -758,8 +758,8 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
   else switch (event.GetId())
     {
-    case wxID_EXECUTE: event.Enable(ftProcess::IsSelected()); break;
-    case wxID_STOP: event.Enable(ftListView::ProcessIsRunning()); break;
+    case wxID_EXECUTE: event.Enable(exProcessWithListView::IsSelected()); break;
+    case wxID_STOP: event.Enable(exListViewFile::ProcessIsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
     case ID_ALL_STC_PRINT:
@@ -834,7 +834,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     // the events are disabled.
     default:
     {
-      ftSTC* editor = GetCurrentSTC();
+      exSTCWithFrame* editor = GetCurrentSTC();
       if (editor == NULL || !editor->IsShown())
       {
         event.Enable(false);
@@ -901,7 +901,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       case wxID_PASTE:
         if (GetFocusedListView() != NULL)
         {
-          event.Enable(GetFocusedListView()->GetType() == ftListView::LIST_PROJECT);
+          event.Enable(GetFocusedListView()->GetType() == exListViewFile::LIST_PROJECT);
         }
         else
         {
@@ -945,7 +945,7 @@ bool MDIFrame::OpenFile(
 
   if (page == NULL)
   {
-    ftSTC* editor = new ftSTC(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
+    exSTCWithFrame* editor = new exSTCWithFrame(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 
     m_NotebookWithEditors->AddPage(
@@ -970,16 +970,16 @@ bool MDIFrame::OpenFile(
 {
   wxLogTrace("SY_CALL", "+OpenFile");
 
-  exNotebook* notebook = (flags & ftSTC::STC_OPEN_IS_PROJECT
+  exNotebook* notebook = (flags & exSTCWithFrame::STC_OPEN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
 
   wxWindow* page = notebook->GetPageByKey(filename.GetFullPath(), true);
 
-  if (flags & ftSTC::STC_OPEN_IS_PROJECT)
+  if (flags & exSTCWithFrame::STC_OPEN_IS_PROJECT)
   {
     if (page == NULL)
     {
-      ftListView* project = new ftListView(m_NotebookWithProjects,
+      exListViewFile* project = new exListViewFile(m_NotebookWithProjects,
         filename.GetFullPath(),
         project_wildcard,
         FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
@@ -1017,7 +1017,7 @@ bool MDIFrame::OpenFile(
       GetManager().Update();
     }
 
-    ftSTC* editor = (ftSTC*)page;
+    exSTCWithFrame* editor = (exSTCWithFrame*)page;
 
     if (page == NULL)
     {
@@ -1026,15 +1026,15 @@ bool MDIFrame::OpenFile(
         flags |= exSTC::STC_OPEN_HEX;
 #endif
 
-      wxLogTrace("SY_CALL", "+ftSTC");
+      wxLogTrace("SY_CALL", "+exSTCWithFrame");
 
-      editor = new ftSTC(m_NotebookWithEditors,
+      editor = new exSTCWithFrame(m_NotebookWithEditors,
         filename.GetFullPath(),
         line_number,
         match,
         flags);
 
-      wxLogTrace("SY_CALL", "-ftSTC");
+      wxLogTrace("SY_CALL", "-exSTCWithFrame");
 
       m_NotebookWithEditors->AddPage(
         editor,

@@ -55,7 +55,7 @@ bool Application::OnInit()
 
   if (m_Files.Count() > 0)
   {
-    ftOpenFiles(frame, m_Files);
+    exOpenFiles(frame, m_Files);
   }
 
   wxUpdateUIEvent::SetUpdateInterval(0);

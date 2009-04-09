@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.cpp
-* Purpose:       Implementation of class 'ftListView' and support classes
+* Purpose:       Implementation of class 'exListViewFile' and support classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,10 +19,10 @@
 class ftListViewDropTarget : public wxFileDropTarget
 {
 public:
-  ftListViewDropTarget(ftListView* owner) {m_Owner = owner;}
+  ftListViewDropTarget(exListViewFile* owner) {m_Owner = owner;}
 private:
   virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
-  ftListView* m_Owner;
+  exListViewFile* m_Owner;
 };
 #endif
 
@@ -30,7 +30,7 @@ private:
 class ftRBSFile : public exFile
 {
 public:
-  ftRBSFile(ftListView* listview);
+  ftRBSFile(exListViewFile* listview);
   void GenerateDialog();
 private:
   void Body(
@@ -46,15 +46,15 @@ private:
     const wxString& pattern,
     const wxString& new_pattern,
     const bool is_required);
-  ftListView* m_Owner;
+  exListViewFile* m_Owner;
   wxString m_Prompt;
 };
 #endif
 
-class ftToolThread : public wxThread
+class exToolThread : public wxThread
 {
 public:
-  ftToolThread(const exTool& tool, ftListView* list) 
+  exToolThread(const exTool& tool, exListViewFile* list) 
     : wxThread(wxTHREAD_JOINABLE)
     , m_ListView(list)
     , m_Tool(tool) {}
@@ -78,7 +78,7 @@ protected:
         if (i == -1) break;
       }
 
-      ftListItem item(m_ListView, i);
+      exListItemWithFileName item(m_ListView, i);
       item.Run(m_Tool, m_ListView);
 
       stats += item.GetStatistics();
@@ -94,28 +94,28 @@ protected:
     return NULL;
   };
 private:
-  ftListView* m_ListView;
+  exListViewFile* m_ListView;
   const exTool m_Tool;
 };
 
 const int ID_LISTVIEW = 100;
 
-BEGIN_EVENT_TABLE(ftListView, exListView)
-  EVT_IDLE(ftListView::OnIdle)
-  EVT_LIST_ITEM_ACTIVATED(ID_LISTVIEW, ftListView::OnList)
-  EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, ftListView::OnList)
-  EVT_MENU(wxID_ADD, ftListView::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, ftListView::OnCommand)
-  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, ftListView::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, ftListView::OnCommand)
-  EVT_LEFT_DOWN(ftListView::OnMouse)
-  EVT_RIGHT_DOWN(ftListView::OnMouse)
-  EVT_TIMER(-1, ftListView::OnTimer)
+BEGIN_EVENT_TABLE(exListViewFile, exListView)
+  EVT_IDLE(exListViewFile::OnIdle)
+  EVT_LIST_ITEM_ACTIVATED(ID_LISTVIEW, exListViewFile::OnList)
+  EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, exListViewFile::OnList)
+  EVT_MENU(wxID_ADD, exListViewFile::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, exListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exListViewFile::OnCommand)
+  EVT_LEFT_DOWN(exListViewFile::OnMouse)
+  EVT_RIGHT_DOWN(exListViewFile::OnMouse)
+  EVT_TIMER(-1, exListViewFile::OnTimer)
 END_EVENT_TABLE()
 
-ftProcess* ftListView::m_Process = NULL;
+exProcessWithListView* exListViewFile::m_Process = NULL;
 
-ftListView::ftListView(wxWindow* parent,
+exListViewFile::exListViewFile(wxWindow* parent,
   ftListType type,
   long menu_flags,
   const exLexer* lexer,
@@ -135,7 +135,7 @@ ftListView::ftListView(wxWindow* parent,
   Initialize(lexer);
 }
 
-ftListView::ftListView(wxWindow* parent,
+exListViewFile::exListViewFile(wxWindow* parent,
   const wxString& file,
   const wxString& wildcard,
   long menu_flags,
@@ -157,7 +157,7 @@ ftListView::ftListView(wxWindow* parent,
   FileOpen(file);
 }
 
-int ftListView::AddItems()
+int exListViewFile::AddItems()
 {
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
@@ -175,7 +175,7 @@ int ftListView::AddItems()
     return 0;
   }
 
-  ftDir dir(
+  exDirWithReport dir(
     this,
     exApp::GetConfig(_("In folder")),
     exApp::GetConfig(_("Add what")));
@@ -205,7 +205,7 @@ int ftListView::AddItems()
   return retValue;
 }
 
-void ftListView::AfterSorting()
+void exListViewFile::AfterSorting()
 {
   // Only if we are not sort syncing, set contents changed.
   if (!exApp::GetConfigBool("List/SortSync"))
@@ -214,7 +214,7 @@ void ftListView::AfterSorting()
   }
 }
 
-void ftListView::BuildPopupMenu(exMenu& menu)
+void exListViewFile::BuildPopupMenu(exMenu& menu)
 {
   bool add = false;
   bool exists = true;
@@ -224,7 +224,7 @@ void ftListView::BuildPopupMenu(exMenu& menu)
 
   if (GetSelectedItemCount() == 1)
   {
-    const ftListItem item(this, GetFirstSelected());
+    const exListItemWithFileName item(this, GetFirstSelected());
 
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
     exists = item.GetFileName().GetStat().IsOk();
@@ -254,13 +254,13 @@ void ftListView::BuildPopupMenu(exMenu& menu)
           !exApp::GetConfigBool("SVN") &&
           m_Frame != NULL && exists && !is_folder)
       {
-        ftListView* list = m_Frame->Activate(LIST_PROJECT);
+        exListViewFile* list = m_Frame->Activate(LIST_PROJECT);
         if (list != NULL && list->GetSelectedItemCount() == 1)
         {
-          ftListItem thislist(this, GetFirstSelected());
+          exListItemWithFileName thislist(this, GetFirstSelected());
           const wxString current_file = thislist.GetFileName().GetFullPath();
 
-          ftListItem otherlist(list, list->GetFirstSelected());
+          exListItemWithFileName otherlist(list, list->GetFirstSelected());
           const wxString with_file = otherlist.GetFileName().GetFullPath();
 
           if (current_file != with_file)
@@ -344,12 +344,12 @@ void ftListView::BuildPopupMenu(exMenu& menu)
   }
 }
 
-void ftListView::CleanUp()
+void exListViewFile::CleanUp()
 {
   wxDELETE(m_Process);
 }
 
-void ftListView::DeleteDoubles()
+void exListViewFile::DeleteDoubles()
 {
   wxDateTime mtime((time_t)0);
   wxString name;
@@ -357,7 +357,7 @@ void ftListView::DeleteDoubles()
 
   for (int i = itemcount - 1; i >= 0; i--)
   {
-    ftListItem item(this, i);
+    exListItemWithFileName item(this, i);
 
     // Delete this element if it has the same mtime
     // and the same name as the previous one.
@@ -379,7 +379,7 @@ void ftListView::DeleteDoubles()
 }
 
 
-bool ftListView::FileNew(const exFileName& filename)
+bool exListViewFile::FileNew(const exFileName& filename)
 {
   if (!exFile::FileNew(filename))
   {
@@ -390,7 +390,7 @@ bool ftListView::FileNew(const exFileName& filename)
   return true;
 }
 
-bool ftListView::FileOpen(const exFileName& filename)
+bool exListViewFile::FileOpen(const exFileName& filename)
 {
   if (!exFile::FileOpen(filename))
   {
@@ -427,7 +427,7 @@ bool ftListView::FileOpen(const exFileName& filename)
   return true;
 }
 
-bool ftListView::FileSave()
+bool exListViewFile::FileSave()
 {
   if (m_FileName.GetName().empty())
   {
@@ -451,7 +451,7 @@ bool ftListView::FileSave()
   return true;
 }
 
-const wxString ftListView::GetFindInCaption(int id)
+const wxString exListViewFile::GetFindInCaption(int id)
 {
   const wxString prefix =
     (id == ID_TOOL_REPORT_REPLACE ?
@@ -479,7 +479,7 @@ const wxString ftListView::GetFindInCaption(int id)
   }
 }
 
-int ftListView::GetTypeTool(const exTool& tool)
+int exListViewFile::GetTypeTool(const exTool& tool)
 {
   switch (tool.GetId())
   {
@@ -495,7 +495,7 @@ int ftListView::GetTypeTool(const exTool& tool)
   }
 }
 
-const wxString ftListView::GetTypeDescription(ftListType type)
+const wxString exListViewFile::GetTypeDescription(ftListType type)
 {
   wxString value;
 
@@ -518,7 +518,7 @@ const wxString ftListView::GetTypeDescription(ftListType type)
   return value;
 }
 
-void ftListView::Initialize(const exLexer* lexer)
+void exListViewFile::Initialize(const exLexer* lexer)
 {
   SetName(GetTypeDescription());
 
@@ -534,7 +534,7 @@ void ftListView::Initialize(const exLexer* lexer)
   }
 
   wxWindow* window = wxTheApp->GetTopWindow();
-  m_Frame = wxDynamicCast(window, ftFrame);
+  m_Frame = wxDynamicCast(window, exFrameWithHistory);
 
 #ifndef __WXMSW__
   // Under Linux this should be done before adding any columns, under MSW it does not matter!
@@ -555,7 +555,7 @@ void ftListView::Initialize(const exLexer* lexer)
   switch (m_Type)
   {
   case LIST_COUNT:
-    // See ftTextFile::Report, the order in which columns are set should be the same there.
+    // See exTextFileWithReport::Report, the order in which columns are set should be the same there.
     InsertColumn(_("Lines"));
     InsertColumn(_("Lines Of Code"));
     InsertColumn(_("Empty Lines"));
@@ -623,11 +623,11 @@ void ftListView::Initialize(const exLexer* lexer)
 #endif
 }
 
-bool ftListView::ItemOpenFile(int item_number)
+bool exListViewFile::ItemOpenFile(int item_number)
 {
   if (item_number < 0) return false;
 
-  ftListItem item(this, item_number);
+  exListItemWithFileName item(this, item_number);
 
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
   {
@@ -668,16 +668,16 @@ bool ftListView::ItemOpenFile(int item_number)
   }
 }
 
-void ftListView::ItemsUpdate()
+void exListViewFile::ItemsUpdate()
 {
   for (int i = 0; i < GetItemCount(); i++)
   {
-    ftListItem item(this, i);
+    exListItemWithFileName item(this, i);
     item.Update();
   }
 }
 
-bool ftListView::ItemFromText(const wxString& text)
+bool exListViewFile::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
@@ -693,7 +693,7 @@ bool ftListView::ItemFromText(const wxString& text)
 
     if (fn.FileExists())
     {
-      ftListItem item(this, value);
+      exListItemWithFileName item(this, value);
       item.Insert();
 
       // And try to set the rest of the columns (that are not already set by inserting).
@@ -720,13 +720,13 @@ bool ftListView::ItemFromText(const wxString& text)
       const wxString findfiles =
         (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
 
-      ftListItem dir(this, value, findfiles);
+      exListItemWithFileName dir(this, value, findfiles);
       dir.Insert();
     }
   }
   else
   {
-    ftListItem item(this, text);
+    exListItemWithFileName item(this, text);
     item.Insert();
   }
 
@@ -735,9 +735,9 @@ bool ftListView::ItemFromText(const wxString& text)
   return true;
 }
 
-const wxString ftListView::ItemToText(int item_number)
+const wxString exListViewFile::ItemToText(int item_number)
 {
-  ftListItem item(this, item_number);
+  exListItemWithFileName item(this, item_number);
 
   wxString text =
     (item.GetFileName().FileExists() ? item.GetFileName().GetFullPath(): item.GetFileName().GetFullName());
@@ -755,7 +755,7 @@ const wxString ftListView::ItemToText(int item_number)
   return text;
 }
 
-void ftListView::OnCommand(wxCommandEvent& event)
+void exListViewFile::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
@@ -789,13 +789,13 @@ void ftListView::OnCommand(wxCommandEvent& event)
   case wxID_ADD: AddItems(); break;
 
   case ID_LIST_SVN_CAT:
-    exSVN(SVN_CAT, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
+    exSVN(SVN_CAT, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
   break;
   case ID_LIST_SVN_DIFF:
-    exSVN(SVN_DIFF, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
+    exSVN(SVN_DIFF, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
   break;
   case ID_LIST_SVN_LOG:
-    exSVN(SVN_LOG, ftListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
+    exSVN(SVN_LOG, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
   break;
 
   case ID_LIST_COMPARE:
@@ -809,7 +809,7 @@ void ftListView::OnCommand(wxCommandEvent& event)
     int i = -1;
     bool found = false;
 
-    ftListView* list = NULL;
+    exListViewFile* list = NULL;
 
     if (event.GetId() == ID_LIST_VERSIONLIST)
     {
@@ -822,7 +822,7 @@ void ftListView::OnCommand(wxCommandEvent& event)
 
     while ((i = GetNextSelected(i)) != -1)
     {
-      ftListItem li(this, i);
+      exListItemWithFileName li(this, i);
       const wxFileName* filename = &li.GetFileName();
       if (wxFileName::DirExists(filename->GetFullPath())) continue;
       switch (event.GetId())
@@ -834,7 +834,7 @@ void ftListView::OnCommand(wxCommandEvent& event)
             list = m_Frame->Activate(LIST_PROJECT);
             if (list == NULL) return;
             int main_selected = list->GetFirstSelected();
-            ftCompareFile(ftListItem(list, main_selected).GetFileName(), *filename);
+            exCompareFile(exListItemWithFileName(list, main_selected).GetFileName(), *filename);
           }
           else
           {
@@ -848,21 +848,21 @@ void ftListView::OnCommand(wxCommandEvent& event)
               first = true;
               file2 = filename->GetFullPath();
             }
-            if (first) ftCompareFile(wxFileName(file1), wxFileName(file2));
+            if (first) exCompareFile(wxFileName(file1), wxFileName(file2));
           }
         }
         break;
         case ID_LIST_COMPARELAST:
         {
           wxFileName lastfile;
-          if (ftFindOtherFileName(*filename, NULL, &lastfile))
+          if (exFindOtherFileName(*filename, NULL, &lastfile))
           {
-            ftCompareFile(*filename, lastfile);
+            exCompareFile(*filename, lastfile);
           }
         }
         break;
         case ID_LIST_VERSIONLIST:
-          if (ftFindOtherFileName(*filename, list, NULL))
+          if (exFindOtherFileName(*filename, list, NULL))
           {
             found = true;
           }
@@ -890,7 +890,7 @@ void ftListView::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_RUN_MAKE:
   {
-    const ftListItem item(this, GetNextSelected(-1));
+    const exListItemWithFileName item(this, GetNextSelected(-1));
 
     wxSetWorkingDirectory(item.GetFileName().GetPath());
 
@@ -913,7 +913,7 @@ void ftListView::OnCommand(wxCommandEvent& event)
   UpdateStatusBar();
 }
 
-void ftListView::OnIdle(wxIdleEvent& event)
+void exListViewFile::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
@@ -927,7 +927,7 @@ void ftListView::OnIdle(wxIdleEvent& event)
 
   if (m_ItemNumber < GetItemCount())
   {
-    ftListItem item(this, m_ItemNumber);
+    exListItemWithFileName item(this, m_ItemNumber);
 
     if ( item.GetFileName().FileExists() &&
         (item.GetFileName().GetStat().GetModificationTime() != item.GetColumnText(_("Modified")) ||
@@ -963,7 +963,7 @@ void ftListView::OnIdle(wxIdleEvent& event)
   CheckSyncNeeded();
 }
 
-void ftListView::OnList(wxListEvent& event)
+void exListViewFile::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
   {
@@ -973,7 +973,7 @@ void ftListView::OnList(wxListEvent& event)
   {
     if (GetSelectedItemCount() == 1)
     {
-      ftListItem item(this, event.GetIndex());
+      exListItemWithFileName item(this, event.GetIndex());
 
       // The LIST_PROCESS is treated specially, since there will oexen be
       // entries that do not exist. We do not want a message in these cases.
@@ -988,7 +988,7 @@ void ftListView::OnList(wxListEvent& event)
   }
 }
 
-void ftListView::OnMouse(wxMouseEvent& event)
+void exListViewFile::OnMouse(wxMouseEvent& event)
 {
   if (event.LeftDown())
   {
@@ -1030,7 +1030,7 @@ void ftListView::OnMouse(wxMouseEvent& event)
   UpdateStatusBar();
 }
 
-const wxString ftListView::PrintHeader()
+const wxString exListViewFile::PrintHeader()
 {
   if (m_FileName.FileExists())
   {
@@ -1045,12 +1045,12 @@ const wxString ftListView::PrintHeader()
   }
 }
 
-bool ftListView::ProcessIsRunning()
+bool exListViewFile::ProcessIsRunning()
 {
   return m_Process != NULL && m_Process->IsRunning();
 }
 
-void ftListView::ProcessRun(const wxString& command)
+void exListViewFile::ProcessRun(const wxString& command)
 {
   if (m_Process != NULL)
   {
@@ -1060,13 +1060,13 @@ void ftListView::ProcessRun(const wxString& command)
 
   // This is a static method, we cannot use m_Frame here.
   wxWindow* window = wxTheApp->GetTopWindow();
-  ftFrame* frame= wxDynamicCast(window, ftFrame);
+  exFrameWithHistory* frame= wxDynamicCast(window, exFrameWithHistory);
   if (frame == NULL) return;
 
-  ftListView* listview = frame->Activate(LIST_PROCESS);
+  exListViewFile* listview = frame->Activate(LIST_PROCESS);
   if (listview == NULL) return;
 
-  if ((m_Process = new ftProcess(listview, command)) != NULL)
+  if ((m_Process = new exProcessWithListView(listview, command)) != NULL)
   {
     if (!m_Process->Run())
     {
@@ -1075,7 +1075,7 @@ void ftListView::ProcessRun(const wxString& command)
   }
 }
 
-void ftListView::ProcessStop()
+void exListViewFile::ProcessStop()
 {
   if (m_Process != NULL) 
   {
@@ -1083,13 +1083,13 @@ void ftListView::ProcessStop()
   }
 }
 
-void ftListView::ProcessTerminated()
+void exListViewFile::ProcessTerminated()
 {
   wxBell();
   wxDELETE(m_Process);
 }
 
-void ftListView::RunItems(const exTool& tool)
+void exListViewFile::RunItems(const exTool& tool)
 {
   if ((tool.GetId() == ID_TOOL_REPORT_COUNT && m_Type == LIST_COUNT) ||
       (tool.GetId() == ID_TOOL_REPORT_HEADER && m_Type == LIST_HEADER) ||
@@ -1116,7 +1116,7 @@ void ftListView::RunItems(const exTool& tool)
   {
     if (m_Frame != NULL)
     {
-      ftSTC* stc = m_Frame->GetCurrentSTC();
+      exSTCWithFrame* stc = m_Frame->GetCurrentSTC();
 
       if (stc != NULL)
       {
@@ -1156,17 +1156,17 @@ void ftListView::RunItems(const exTool& tool)
     exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
   }
     
-  if (!ftTextFile::SetupTool(tool))
+  if (!exTextFileWithReport::SetupTool(tool))
   {
     return;
   }
 
-  m_Thread = new ftToolThread(tool, this);
+  m_Thread = new exToolThread(tool, this);
   m_Thread->Create();
   m_Thread->Run();
 }
 
-void ftListView::ThreadTerminated()
+void exListViewFile::ThreadTerminated()
 {
   m_Thread = NULL;
   exFrame::StatusText(_("Ready"));
@@ -1194,7 +1194,7 @@ bool ftListViewDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString& fi
 #endif
 
 #ifdef __WXMSW__
-ftRBSFile::ftRBSFile(ftListView* listview)
+ftRBSFile::ftRBSFile(exListViewFile* listview)
   : exFile()
   , m_Owner(listview)
   , m_Prompt(exApp::GetConfig("RBS/Prompt", ">"))
@@ -1246,7 +1246,7 @@ void ftRBSFile::GenerateDialog()
   int i = -1;
   while ((i = m_Owner->GetNextSelected(i)) != -1)
   {
-    ftListItem li(m_Owner, i);
+    exListItemWithFileName li(m_Owner, i);
     const wxFileName* filename = &li.GetFileName();
     if (!wxFileName::DirExists(filename->GetFullPath()))
     {

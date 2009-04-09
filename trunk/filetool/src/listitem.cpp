@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listitem.cpp
-* Purpose:       Implementation of class 'ftListItem'
+* Purpose:       Implementation of class 'exListItemWithFileName'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -13,7 +13,7 @@
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
-ftListItem::ftListItem(exListView* lv, const int itemnumber)
+exListItemWithFileName::exListItemWithFileName(exListView* lv, const int itemnumber)
   : exListItem(lv, itemnumber)
   , m_Statistics(
       (!GetColumnText(_("File Name"), false).empty() ? 
@@ -24,7 +24,7 @@ ftListItem::ftListItem(exListView* lv, const int itemnumber)
 {
 }
 
-ftListItem::ftListItem(
+exListItemWithFileName::exListItemWithFileName(
   exListView* listview,
   const wxString& fullpath,
   const wxString& filespec)
@@ -34,7 +34,7 @@ ftListItem::ftListItem(
 {
 }
 
-void ftListItem::Insert(long index)
+void exListItemWithFileName::Insert(long index)
 {
   SetId(index == -1 ? GetListView()->GetItemCount(): index);
   const long col = GetListView()->FindColumn(_("File Name"), false);
@@ -62,13 +62,13 @@ void ftListItem::Insert(long index)
   }
 }
 
-bool ftListItem::Run(const exTool& tool, ftListView* listview)
+bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
 {
   exFrame::StatusText(m_Statistics.GetFullPath());
 
   if (m_Statistics.FileExists())
   {
-    ftTextFile file(m_Statistics);
+    exTextFileWithReport file(m_Statistics);
 
     if (file.RunTool(tool))
     {
@@ -88,7 +88,7 @@ bool ftListItem::Run(const exTool& tool, ftListView* listview)
   }
   else
   {
-    ftDir dir(listview, m_Statistics.GetFullPath(), m_FileSpec);
+    exDirWithReport dir(listview, m_Statistics.GetFullPath(), m_FileSpec);
 
     if (dir.RunTool(tool))
     {
@@ -109,7 +109,7 @@ bool ftListItem::Run(const exTool& tool, ftListView* listview)
   }
 }
 
-void ftListItem::Update()
+void exListItemWithFileName::Update()
 {
   SetBackgroundColour(m_Statistics.GetStat().GetColour());
 
@@ -152,7 +152,7 @@ void ftListItem::Update()
   }
 }
 
-void ftListItem::UpdateRevisionList(const exRCS& rcs)
+void exListItemWithFileName::UpdateRevisionList(const exRCS& rcs)
 {
   SetColumnText(_("Revision"), rcs.GetRevisionNumber());
   SetColumnText(_("Date"), rcs.GetRevisionTime().Format());

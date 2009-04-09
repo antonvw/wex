@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.h
-* Purpose:       Declaration of class 'ftListView'
+* Purpose:       Declaration of class 'exListViewFile'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,7 +15,7 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 
-/// Menu flags for ftListView, they determine how the context menu will appear.
+/// Menu flags for exListViewFile, they determine how the context menu will appear.
 enum
 {
   FT_LISTVIEW_REPORT_FIND = 0x0001, ///< for adding find and replace in files
@@ -26,13 +26,13 @@ enum
   FT_LISTVIEW_DEFAULT = FT_LISTVIEW_REPORT_FIND | FT_LISTVIEW_TOOL,
 };
 
-class ftFrame;
-class ftProcess;
-class ftToolThread;
+class exFrameWithHistory;
+class exProcessWithListView;
+class exToolThread;
 
 /// Combines exListView and exFile, giving you a list control with file
 /// synchronization support. Further it adds processing support.
-class ftListView : public exListView, public exFile
+class exListViewFile : public exListView, public exFile
 {
 public:
   /// The supported lists.
@@ -54,7 +54,7 @@ public:
   };
 
   /// Constructor.
-  ftListView(wxWindow* parent,
+  exListViewFile(wxWindow* parent,
     ftListType type,
     long menu_flags = FT_LISTVIEW_DEFAULT,
     const exLexer* lexer = NULL,
@@ -64,7 +64,7 @@ public:
     const wxValidator& validator = wxDefaultValidator);
 
   /// Constructor for a LIST_PROJECT, opens the file.
-  ftListView(wxWindow* parent,
+  exListViewFile(wxWindow* parent,
     const wxString& file,
     const wxString& wildcard,
     long menu_flags = FT_LISTVIEW_DEFAULT,
@@ -106,7 +106,7 @@ public:
   /// Returns colunm text for specified item.
   virtual const wxString ItemToText(int item_number);
 
-  // Called by ftFrame::OnClose. Not for doxygen.
+  // Called by exFrameWithHistory::OnClose. Not for doxygen.
   static void CleanUp();
 
   /// Gets the list type.
@@ -151,13 +151,13 @@ private:
   bool ItemOpenFile(int item_number);
   void RunItems(const exTool& tool);
 
-  static ftProcess* m_Process;
-  ftToolThread* m_Thread;
+  static exProcessWithListView* m_Process;
+  exToolThread* m_Thread;
 
   bool m_ContentsChanged;
   bool m_ItemUpdated;
   int m_ItemNumber;
-  ftFrame* m_Frame;
+  exFrameWithHistory* m_Frame;
   const long m_MenuFlags;
   const ftListType m_Type;
 

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.h
-* Purpose:       Declaration of class 'ftTextFile'
+* Purpose:       Declaration of class 'exTextFileWithReport'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,17 +16,17 @@
 #include <wx/extension/otl.h>
 
 /// Offers an exTextFile with reporting to a listview.
-class ftTextFile : public exTextFile
+class exTextFileWithReport : public exTextFile
 {
 public:
   /// Constructor.
-  ftTextFile(const exFileName& filename);
+  exTextFileWithReport(const exFileName& filename);
 
   /// Sets up the tool.
   static bool SetupTool(const exTool& tool);
 
 #if USE_EMBEDDED_SQL
-  // Called by ftFrame::OnClose.
+  // Called by exFrameWithHistory::OnClose.
   // Not for doxygen.
   static void CleanUp();
 #endif
@@ -35,8 +35,8 @@ private:
   virtual void Report();
   virtual void ReportStatistics();
 
-  static ftListView* m_Report;
-  static ftFrame* m_Frame;
+  static exListViewFile* m_Report;
+  static exFrameWithHistory* m_Frame;
 
 #if USE_EMBEDDED_SQL
   virtual bool ParseComments();

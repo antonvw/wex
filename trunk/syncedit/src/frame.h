@@ -29,10 +29,10 @@ protected:
   void OnTree(wxTreeEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  // Interface from ftFrame.
-  virtual ftListView* Activate(int type, const exLexer* lexer = NULL);
-  virtual ftListView* GetCurrentProject();
-  virtual ftSTC* GetCurrentSTC();
+  // Interface from exFrameWithHistory.
+  virtual exListViewFile* Activate(int type, const exLexer* lexer = NULL);
+  virtual exListViewFile* GetCurrentProject();
+  virtual exSTCWithFrame* GetCurrentSTC();
   // Interface from exFrame.
   virtual void ConfigDialogApplied(wxWindowID dialogid);
   virtual exSTC* GetSTC() {return GetCurrentSTC();}
@@ -44,7 +44,7 @@ private:
     long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
 
-  ftListView* AddPage(int type, const exLexer* lexer = NULL);
+  exListViewFile* AddPage(int type, const exLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);
   bool OpenFile(
@@ -55,7 +55,7 @@ private:
   int m_NewFileNo;
 
   wxGenericDirCtrl* m_DirCtrl;
-  ftListView* m_History;
+  exListViewFile* m_History;
   exNotebook* m_NotebookWithEditors;
   exNotebook* m_NotebookWithLists;
   exNotebook* m_NotebookWithProjects;

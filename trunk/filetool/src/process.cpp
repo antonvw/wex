@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.cpp
-* Purpose:       Implementation of class 'ftProcess' and support classes
+* Purpose:       Implementation of class 'exProcessWithListView' and support classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,10 +15,10 @@
 #include <wx/filetool/process.h>
 #include <wx/filetool/filetool.h>
 
-class ftThread : public wxThread
+class exThread : public wxThread
 {
 public:
-  ftThread(ftProcess* process) 
+  exThread(exProcessWithListView* process) 
     : wxThread(wxTHREAD_JOINABLE)
     , m_Process(process) {}
 protected:
@@ -35,12 +35,12 @@ protected:
     return NULL;
   };
 private:
-  ftProcess* m_Process;
+  exProcessWithListView* m_Process;
 };
 
-wxString ftProcess::m_Command;
+wxString exProcessWithListView::m_Command;
 
-ftProcess::ftProcess(ftListView* listview, const wxString& command)
+exProcessWithListView::exProcessWithListView(exListViewFile* listview, const wxString& command)
   : wxProcess(listview, -1)
   , m_Owner(listview)
   , m_Thread(NULL)
@@ -53,7 +53,7 @@ ftProcess::ftProcess(ftListView* listview, const wxString& command)
   Redirect();
 }
 
-void ftProcess::CheckInput()
+void exProcessWithListView::CheckInput()
 {
   bool hasInput = false;
 
@@ -114,14 +114,14 @@ void ftProcess::CheckInput()
 
     if (fn.FileExists())
     {
-      ftListItem item(m_Owner, fn.GetFullPath());
+      exListItemWithFileName item(m_Owner, fn.GetFullPath());
       item.Insert();
       item.SetColumnText(_("Line"), line);
       item.SetColumnText(_("Line No"), lineno);
     }
     else
     {
-      ftListItem item(m_Owner, wxEmptyString); // exListItem gives incorrect image
+      exListItemWithFileName item(m_Owner, wxEmptyString); // exListItem gives incorrect image
       item.Insert();
       item.SetColumnText(_("Line"), line);
     }
@@ -138,7 +138,7 @@ void ftProcess::CheckInput()
   }
 }
 
-int ftProcess::ConfigDialog()
+int exProcessWithListView::ConfigDialog()
 {
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
@@ -158,12 +158,12 @@ int ftProcess::ConfigDialog()
   return result;
 }
 
-bool ftProcess::IsRunning() const 
+bool exProcessWithListView::IsRunning() const 
 {
   return m_Thread != NULL && m_Thread->IsRunning();
 }
 
-void ftProcess::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
+void exProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
   exFrame::StatusText(_("Ready"));
 
@@ -176,7 +176,7 @@ void ftProcess::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
   m_Owner->ProcessTerminated();
 }
 
-bool ftProcess::Run()
+bool exProcessWithListView::Run()
 {
   if (m_Command.empty())
   {
@@ -190,7 +190,7 @@ bool ftProcess::Run()
   {
     SetPid(pid);
 
-    m_Thread = new ftThread(this);
+    m_Thread = new exThread(this);
 
     if (m_Thread->Create() == wxTHREAD_NO_ERROR)
     {
@@ -208,7 +208,7 @@ bool ftProcess::Run()
   return false;
 }
 
-void ftProcess::Stop()
+void exProcessWithListView::Stop()
 {
   if (m_Thread != NULL)
   {

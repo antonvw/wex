@@ -24,19 +24,19 @@
 #include <wx/filetool/version.h>
 
 /// Adds frame and listview interface to exDir.
-class ftDir : public exDir
+class exDirWithReport : public exDir
 {
 public:
   /// When using FindFiles each found file is added as listitem to the listview.
   /// When using RunTool findfiles is also used to get all matching files,
   /// and on these files RunTool is invoked.
-  ftDir(ftListView* listview,
+  exDirWithReport(exListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// Allows you to FindFiles on a frame.
   /// In the findfiles all found files are opened using OpenFile from frame.
-  ftDir(ftFrame* frame,
+  exDirWithReport(exFrameWithHistory* frame,
     const wxString& fullpath,
     const wxString& filespec,
     long flags = 0);
@@ -51,21 +51,21 @@ protected:
   virtual void OnFile(const wxString& file);
 private:
   exFileNameStatistics m_Statistics;
-  ftFrame* m_Frame;
-  ftListView* m_ListView;
+  exFrameWithHistory* m_Frame;
+  exListViewFile* m_ListView;
   const long m_Flags;
   bool m_RunningTool;
   exTool m_Tool;
 };
 
 /// Offers a find toolbar, containing a find combobox and checkboxes.
-/// The find combobox allows you to find in an ftSTC 
-/// component on the specified ftFrame.
-class ftFindToolBar : public wxAuiToolBar
+/// The find combobox allows you to find in an exSTCWithFrame 
+/// component on the specified exFrameWithHistory.
+class exFindToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
-  ftFindToolBar(wxWindow* parent, ftFrame* frame, wxWindowID id = wxID_ANY);
+  exFindToolBar(wxWindow* parent, exFrameWithHistory* frame, wxWindowID id = wxID_ANY);
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
@@ -80,23 +80,23 @@ private:
 // General tool methods.
 
 /// Compares the files, using wxExecute on comparator set in the config.
-bool ftCompareFile(const wxFileName& file1, const wxFileName& file2);
+bool exCompareFile(const wxFileName& file1, const wxFileName& file2);
 
 /// Shows a find in files dialog and finds or replaces text in files if chosen.
-void ftFindInFiles(ftFrame* frame, bool replace = false);
+void exFindInFiles(exFrameWithHistory* frame, bool replace = false);
 
 /// Finds other filenames from the one specified in the same dir structure.
 /// Results are put on the list if not null, or in the filename if not null.
-bool ftFindOtherFileName(
+bool exFindOtherFileName(
   const wxFileName& filename,
-  ftListView* listview,
+  exListViewFile* listview,
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Do something (id) for all pages on the notebook.
-bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
+bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
 /// Opens files and updates history, both for files and projects.
-void ftOpenFiles(ftFrame* frame,
+void exOpenFiles(exFrameWithHistory* frame,
   const wxArrayString& files,
   long flags = 0);
 #endif

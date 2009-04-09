@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.h
-* Purpose:       Declaration of class 'ftProcess'
+* Purpose:       Declaration of class 'exProcessWithListView'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,15 +14,15 @@
 
 #include <wx/process.h>
 
-class ftListView;
-class ftThread;
+class exListViewFile;
+class exThread;
 
 /// Offers a wxProcess with output to a listview.
-class ftProcess : public wxProcess
+class exProcessWithListView : public wxProcess
 {
 public:
   /// Constructor.
-  ftProcess(ftListView* listview, const wxString& command = wxEmptyString);
+  exProcessWithListView(exListViewFile* listview, const wxString& command = wxEmptyString);
 
   // Checks whether input is available from process and updates the listview.
   // You should call it regularly.
@@ -49,7 +49,7 @@ private:
   virtual void OnTerminate(int pid, int status); // overriden
 
   static wxString m_Command;
-  ftListView* m_Owner;
-  ftThread* m_Thread;
+  exListViewFile* m_Owner;
+  exThread* m_Thread;
 };
 #endif

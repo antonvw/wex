@@ -12,7 +12,7 @@
 #include <wx/extension/configdialog.h>
 #include <wx/filetool/filetool.h>
 
-bool ftCompareFile(const wxFileName& file1, const wxFileName& file2)
+bool exCompareFile(const wxFileName& file1, const wxFileName& file2)
 {
   const wxString comparator = exApp::GetConfig(_("Comparator"));
 
@@ -39,7 +39,7 @@ bool ftCompareFile(const wxFileName& file1, const wxFileName& file2)
   return true;
 }
 
-void ftFindInFiles(ftFrame* frame, bool replace)
+void exFindInFiles(exFrameWithHistory* frame, bool replace)
 {
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
@@ -57,8 +57,8 @@ void ftFindInFiles(ftFrame* frame, bool replace)
     return;
   }
 
-  ftListView* output =
-    frame->Activate(replace ? ftListView::LIST_REPLACE : ftListView::LIST_FIND);
+  exListViewFile* output =
+    frame->Activate(replace ? exListViewFile::LIST_REPLACE : exListViewFile::LIST_FIND);
   if (output == NULL) return;
 
   const exTool tool =
@@ -66,14 +66,14 @@ void ftFindInFiles(ftFrame* frame, bool replace)
        ID_TOOL_REPORT_REPLACE:
        ID_TOOL_REPORT_FIND);
 
-  if (!ftTextFile::SetupTool(tool))
+  if (!exTextFileWithReport::SetupTool(tool))
   {
     return;
   }
 
   exApp::Log(exApp::GetConfig()->GetFindReplaceData()->GetText(replace));
 
-  ftDir dir(
+  exDirWithReport dir(
     output,
     exApp::GetConfig(_("In folder")),
     exApp::GetConfig(_("In files")));
@@ -82,9 +82,9 @@ void ftFindInFiles(ftFrame* frame, bool replace)
   dir.GetStatistics().Log(tool);
 }
 
-bool ftFindOtherFileName(
+bool exFindOtherFileName(
   const wxFileName& filename,
-  ftListView* listview,
+  exListViewFile* listview,
   wxFileName* lastfile)
 {
   /* Add the base version if present. E.g.
@@ -150,7 +150,7 @@ bool ftFindOtherFileName(
 
       if (listview != NULL)
       {
-        ftListItem item(listview, fn.GetFullPath());
+        exListItemWithFileName item(listview, fn.GetFullPath());
         item.Insert();
       }
 
@@ -177,18 +177,18 @@ bool ftFindOtherFileName(
   return found;
 }
 
-bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
+bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 {
   for (
     size_t page = 0;
     page < notebook->GetPageCount();
     page++)
   {
-    ftListView* lv = (ftListView*)notebook->GetPage(page);
+    exListViewFile* lv = (exListViewFile*)notebook->GetPage(page);
 
     if (lv == NULL)
     {
-      wxLogError(FILE_INFO("Notebook page: %d (%s) is not an ftListView"),
+      wxLogError(FILE_INFO("Notebook page: %d (%s) is not an exListViewFile"),
         page,
         notebook->GetPageText(page).c_str());
       return false;
@@ -237,8 +237,8 @@ bool ftForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   return true;
 }
 
-void ftOpenFiles(
-  ftFrame* frame,
+void exOpenFiles(
+  exFrameWithHistory* frame,
   const wxArrayString& files,
   long flags)
 {
@@ -248,7 +248,7 @@ void ftOpenFiles(
 
     if (file.Contains("*") || file.Contains("?"))
     {
-      ftDir dir(frame, wxGetCwd(), file, flags);
+      exDirWithReport dir(frame, wxGetCwd(), file, flags);
       dir.FindFiles();
     }
     else
@@ -271,7 +271,7 @@ void ftOpenFiles(
   }
 }
 
-ftDir::ftDir(ftListView* listview,
+exDirWithReport::exDirWithReport(exListViewFile* listview,
   const wxString& fullpath, const wxString& filespec)
   : exDir(fullpath, filespec)
   , m_Statistics(fullpath)
@@ -283,7 +283,7 @@ ftDir::ftDir(ftListView* listview,
 {
 }
 
-ftDir::ftDir(ftFrame* frame,
+exDirWithReport::exDirWithReport(exFrameWithHistory* frame,
   const wxString& fullpath, const wxString& filespec, long flags)
   : exDir(fullpath, filespec)
   , m_Statistics(fullpath)
@@ -295,7 +295,7 @@ ftDir::ftDir(ftFrame* frame,
 {
 }
 
-void ftDir::OnFile(const wxString& file)
+void exDirWithReport::OnFile(const wxString& file)
 {
   if (m_RunningTool)
   {
@@ -303,7 +303,7 @@ void ftDir::OnFile(const wxString& file)
 
     if (filename.GetStat().IsOk())
     {
-      ftTextFile report(filename);
+      exTextFileWithReport report(filename);
       report.RunTool(m_Tool);
       m_Statistics += report.GetStatistics();
     }
@@ -319,15 +319,15 @@ void ftDir::OnFile(const wxString& file)
     {
       if (m_ListView != NULL)
       {
-        ftListItem item(m_ListView, file, GetFileSpec());
+        exListItemWithFileName item(m_ListView, file, GetFileSpec());
         item.Insert();
 
         // Don't move next code into insert, as it itself inserts!
-        if (m_ListView->GetType() == ftListView::LIST_VERSION)
+        if (m_ListView->GetType() == exListViewFile::LIST_VERSION)
         {
-          ftListItem item(m_ListView, m_ListView->GetItemCount() - 1);
+          exListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
 
-          ftTextFile report(item.m_Statistics);
+          exTextFileWithReport report(item.m_Statistics);
           if (report.SetupTool(ID_TOOL_REVISION_RECENT))
           {
             report.RunTool(ID_TOOL_REVISION_RECENT);
@@ -339,7 +339,7 @@ void ftDir::OnFile(const wxString& file)
   }
 }
 
-size_t ftDir::RunTool(const exTool& tool, int flags)
+size_t exDirWithReport::RunTool(const exTool& tool, int flags)
 {
   m_Tool = tool;
 
@@ -353,21 +353,21 @@ size_t ftDir::RunTool(const exTool& tool, int flags)
 }
 
 /// Offers a find combobox that allows you to find text
-/// on a current STC on an ftFrame.
+/// on a current STC on an exFrameWithHistory.
 class ComboBox : public wxComboBox
 {
 public:
   /// Constructor. Fills the combobox box with values from FindReplace from config.
   ComboBox(
     wxWindow* parent,
-    ftFrame* frame,
+    exFrameWithHistory* frame,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
 private:
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
-  ftFrame* m_Frame;
+  exFrameWithHistory* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };
@@ -379,7 +379,7 @@ END_EVENT_TABLE()
 
 ComboBox::ComboBox(
   wxWindow* parent,
-  ftFrame* frame,
+  exFrameWithHistory* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
@@ -427,7 +427,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    ftSTC* stc = m_Frame->GetCurrentSTC();
+    exSTCWithFrame* stc = m_Frame->GetCurrentSTC();
 
     if (stc != NULL)
     {
@@ -452,15 +452,15 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
-BEGIN_EVENT_TABLE(ftFindToolBar, wxAuiToolBar)
-  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, ftFindToolBar::OnCommand)
-  EVT_CHECKBOX(ID_MATCH_CASE, ftFindToolBar::OnCommand)
-  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, ftFindToolBar::OnCommand)
+BEGIN_EVENT_TABLE(exFindToolBar, wxAuiToolBar)
+  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, exFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_CASE, exFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, exFindToolBar::OnCommand)
 END_EVENT_TABLE()
 
-ftFindToolBar::ftFindToolBar(
+exFindToolBar::exFindToolBar(
   wxWindow* parent,
-  ftFrame* frame,
+  exFrameWithHistory* frame,
   wxWindowID id)
   : wxAuiToolBar(parent, id)
 {
@@ -486,7 +486,7 @@ ftFindToolBar::ftFindToolBar(
   Realize();
 }
 
-void ftFindToolBar::OnCommand(wxCommandEvent& event)
+void exFindToolBar::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
