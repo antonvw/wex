@@ -756,11 +756,13 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
 
         if (cb->GetName() == _("Find what"))
         {
-          m_Config->GetFindReplaceData()->SetFindString(text);
+          // The Get gets text before the ','!
+          m_Config->GetFindReplaceData()->SetFindString(m_Config->Get(_("Find what")));
         }
         else if (cb->GetName() == _("Replace with"))
         {
-          m_Config->GetFindReplaceData()->SetReplaceString(text);
+          // The Get gets text before the ','!
+          m_Config->GetFindReplaceData()->SetReplaceString(m_Config->Get(_("Replace with")));
         }
       }
       }
