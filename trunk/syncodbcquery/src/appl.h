@@ -33,7 +33,7 @@ private:
   DECLARE_NO_COPY_CLASS(MyApp)
 };
 
-class MyFrame: public ftFrame
+class MyFrame: public exFrameWithHistory
 {
 public:
   MyFrame(const wxString& title);
@@ -52,7 +52,7 @@ private:
   void RunQueries(const wxString& text);
   void UpdateStatistics(const wxStopWatch& sw, long rpc);
   exSTCShell* m_Shell;
-  ftSTC* m_Query;
+  exSTCWithFrame* m_Query;
   exGrid* m_Results;
   exStatistics <long> m_Statistics;
   otl_connect m_db;

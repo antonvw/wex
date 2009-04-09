@@ -37,7 +37,7 @@ bool MyApp::OnInit()
   return true;
 }
 
-BEGIN_EVENT_TABLE(MyFrame, ftFrame)
+BEGIN_EVENT_TABLE(MyFrame, exFrameWithHistory)
   EVT_CLOSE(MyFrame::OnClose)
   EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
   EVT_MENU(wxID_PREFERENCES, MyFrame::OnCommand)
@@ -58,7 +58,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString& title)
-  : ftFrame(NULL, wxID_ANY, title)
+  : exFrameWithHistory(NULL, wxID_ANY, title)
   , m_Running(false)
   , m_Stopped(false)
 {
@@ -104,7 +104,7 @@ MyFrame::MyFrame(const wxString& title)
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  m_Query = new ftSTC(this,
+  m_Query = new exSTCWithFrame(this,
     exSTC::STC_MENU_SIMPLE | exSTC::STC_MENU_FIND |
     exSTC::STC_MENU_REPLACE | exSTC::STC_MENU_INSERT);
   m_Query->SetLexer("sql");

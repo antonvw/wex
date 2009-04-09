@@ -34,7 +34,7 @@ bool MyApp::OnInit()
   return true;
 }
 
-BEGIN_EVENT_TABLE(MyFrame, ftFrame)
+BEGIN_EVENT_TABLE(MyFrame, exFrameWithHistory)
   EVT_CLOSE(MyFrame::OnClose)
   EVT_MENU(wxID_ABOUT, MyFrame::OnCommand)
   EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
@@ -68,7 +68,7 @@ BEGIN_EVENT_TABLE(MyFrame, ftFrame)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString& title)
-  : ftFrame(NULL, wxID_ANY, title)
+  : exFrameWithHistory(NULL, wxID_ANY, title)
   , m_Timer(this)
 {
   SetIcon(wxICON(appl));
@@ -89,11 +89,11 @@ MyFrame::MyFrame(const wxString& title)
   panes.push_back(exPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 
-  m_DataWindow = new ftSTC(
+  m_DataWindow = new exSTCWithFrame(
     this,
-    ftSTC::STC_MENU_SIMPLE | ftSTC::STC_MENU_FIND |
-    ftSTC::STC_MENU_REPLACE | ftSTC::STC_MENU_INSERT);
-  m_LogWindow = new ftSTC(this, ftSTC::STC_MENU_SIMPLE | ftSTC::STC_MENU_FIND);
+    exSTCWithFrame::STC_MENU_SIMPLE | exSTCWithFrame::STC_MENU_FIND |
+    exSTCWithFrame::STC_MENU_REPLACE | exSTCWithFrame::STC_MENU_INSERT);
+  m_LogWindow = new exSTCWithFrame(this, exSTCWithFrame::STC_MENU_SIMPLE | exSTCWithFrame::STC_MENU_FIND);
   m_Shell = new exSTCShell(this);
   m_Shell->SetLexer();
 
@@ -828,7 +828,7 @@ void MyFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
   }
   else
   {
-    ftFrame::StatusBarDoubleClicked(field, point);
+    exFrameWithHistory::StatusBarDoubleClicked(field, point);
   }
 }
 

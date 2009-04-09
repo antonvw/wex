@@ -25,7 +25,7 @@ public:
   virtual bool OnInit();
 };
 
-class MyFrame : public ftFrame
+class MyFrame : public exFrameWithHistory
 {
 public:
   MyFrame(const wxString& title);
@@ -61,8 +61,8 @@ private:
 
   std::list<wxSocketBase*> m_Clients;
 
-  ftSTC* m_DataWindow;
-  ftSTC* m_LogWindow;
+  exSTCWithFrame* m_DataWindow;
+  exSTCWithFrame* m_LogWindow;
   exSTCShell* m_Shell;
 
   exStatistics < long > m_Statistics;
