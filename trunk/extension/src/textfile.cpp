@@ -442,7 +442,8 @@ bool exTextFile::MatchLine(wxString& line)
     {
       if (frd->MatchWord())
       {
-        if (!IsWordCharacter(search_line[pos - 1]) &&
+        if ((pos == 0 || 
+             pos > 0 && !IsWordCharacter(search_line[pos - 1])) &&
             !IsWordCharacter(search_line[pos + frd->GetFindStringNoCase().length()]))
         {
           match = true;
