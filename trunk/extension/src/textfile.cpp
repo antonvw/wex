@@ -433,7 +433,7 @@ bool exTextFile::MatchLine(wxString& line)
 
   exFindReplaceData* frd = m_Config->GetFindReplaceData();
 
-  if (!frd->IsRegExp())
+  if (!frd->IsRegularExpression())
   {
     const wxString search_line = frd->MatchCase() ? line: line.Upper();
     const size_t pos = search_line.find(frd->GetFindStringNoCase());
@@ -462,12 +462,12 @@ bool exTextFile::MatchLine(wxString& line)
   }
   else
   {
-    match = frd->GetFindRegularExpression().Matches(line);
+    match = frd->GetRegularExpression().Matches(line);
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
       size_t start, len;
-      frd->GetFindRegularExpression().GetMatch(&start, &len);
+      frd->GetRegularExpression().GetMatch(&start, &len);
       line.replace(start, len, frd->GetReplaceString());
       m_Modified = true;
     }

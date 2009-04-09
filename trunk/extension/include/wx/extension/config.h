@@ -161,7 +161,7 @@ public:
   const std::set<wxString> & GetInfo() const {return m_Info;};
 
   /// Gets the regular expression.
-  const wxRegEx& GetFindRegularExpression() const {
+  const wxRegEx& GetRegularExpression() const {
     return m_FindRegularExpression;};
 
   /// Gets the case insensitive find string.
@@ -169,7 +169,7 @@ public:
     return m_FindStringNoCase;};
 
   /// Returns true if find text is a regular expression.
-  bool IsRegExp() const;
+  bool IsRegularExpression() const;
 
   /// Returns true if the flags have match case set.
   bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
