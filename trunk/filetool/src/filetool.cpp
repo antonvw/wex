@@ -470,7 +470,7 @@ ftFindToolBar::ftFindToolBar(
 
   m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
   m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
-  m_RegularExpression->SetValue(exApp::GetConfig()->GetFindReplaceData()->IsRegExp());
+  m_RegularExpression->SetValue(exApp::GetConfig()->GetFindReplaceData()->IsRegularExpression());
 
 #ifdef __WXMSW__
   const wxSize size(150, 20);

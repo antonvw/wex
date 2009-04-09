@@ -339,7 +339,7 @@ wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
     }
     else if (*it == _("Regular expression"))
     {
-      if (m_Config->GetFindReplaceData()->IsRegExp())
+      if (m_Config->GetFindReplaceData()->IsRegularExpression())
       {
         box->Check(item);
       }

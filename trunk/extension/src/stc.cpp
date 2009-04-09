@@ -1123,7 +1123,7 @@ int exSTC::FindReplaceDataFlags() const
 
   int flags = 0;
 
-  if (frd->IsRegExp())  flags |= wxSTC_FIND_REGEXP;
+  if (frd->IsRegularExpression())  flags |= wxSTC_FIND_REGEXP;
   if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
   if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
 
@@ -1681,7 +1681,7 @@ void exSTC::OnFindDialog(wxFindDialogEvent& event)
       if (SearchInTarget(frd->GetFindString()) == -1) return;
     }
 
-    if (frd->IsRegExp())
+    if (frd->IsRegularExpression())
       ReplaceTargetRE(frd->GetReplaceString());
     else
       ReplaceTarget(frd->GetReplaceString());
@@ -1747,7 +1747,7 @@ void exSTC::OnFindDialog(wxFindDialogEvent& event)
 
       if (!skip_replace)
       {
-        if (frd->IsRegExp())
+        if (frd->IsRegularExpression())
           length = ReplaceTargetRE(frd->GetReplaceString());
         else
           length = ReplaceTarget(frd->GetReplaceString());

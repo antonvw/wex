@@ -145,7 +145,7 @@ exFindReplaceData::~exFindReplaceData()
   m_Config->SetBool(_("Regular expression"), m_IsRegularExpression);
 }
 
-bool exFindReplaceData::IsRegExp() const
+bool exFindReplaceData::IsRegularExpression() const
 {
   return m_IsRegularExpression;
 }
@@ -155,7 +155,7 @@ bool exFindReplaceData::SetFindString(const wxString& value)
   wxFindReplaceData::SetFindString(value);
   m_FindStringNoCase = MatchCase() ? GetFindString(): GetFindString().Upper();
 
-  if (IsRegExp())
+  if (IsRegularExpression())
   {
     int flags = wxRE_DEFAULT;
     if (!MatchCase()) flags |= wxRE_ICASE;
