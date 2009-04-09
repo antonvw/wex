@@ -13,8 +13,6 @@
 #include <wx/generic/dirctrlg.h>
 #include <wx/extension/notebook.h>
 
-class ftSampleFrame;
-
 /// Derive your application from exApp.
 class ftSampleApp: public exApp
 {
@@ -25,16 +23,16 @@ private:
   DECLARE_NO_COPY_CLASS(ftSampleApp)
 };
 
-/// Use ftFrame.
-class ftSampleFrame: public ftFrame
+/// Use exFrameWithHistory.
+class ftSampleFrame: public exFrameWithHistory
 {
 public:
   /// Constructor.
   ftSampleFrame(const wxString& title);
 protected:
-  // Interface from ftFrame.
-  virtual ftListView* Activate(int type, const exLexer* lexer = NULL);
-  virtual ftSTC* GetCurrentSTC() {return m_STC;};
+  // Interface from exFrameWithHistory.
+  virtual exListViewFile* Activate(int type, const exLexer* lexer = NULL);
+  virtual exSTCWithFrame* GetCurrentSTC() {return m_STC;};
   virtual bool OpenFile(
     const exFileName& file, 
     int line_number = 0, 
@@ -44,7 +42,7 @@ protected:
   void OnTree(wxTreeEvent& event);
 private:
   exNotebook* m_NotebookWithLists; ///< all listviews
-  ftSTC* m_STC;                    ///< an stc
+  exSTCWithFrame* m_STC;           ///< an stc
   wxGenericDirCtrl* m_DirCtrl;
   DECLARE_EVENT_TABLE()
 };

@@ -22,7 +22,7 @@ bool ftTestApp::OnInit()
 
   exApp::OnInit();
 
-  ftFrame *frame = new ftFrame(NULL, wxID_ANY, "ftTestApp");
+  exFrameWithHistory *frame = new exFrameWithHistory(NULL, wxID_ANY, "ftTestApp");
   frame->Show(true);
 
   SetTopWindow(frame);

@@ -71,10 +71,10 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  ftDir* m_Dir;           ///< testing ftDir
-  ftListView* m_ListView; ///< testing ftListView
-  ftProcess* m_Process;   ///< testing ftProcess
-  ftSTC* m_STC;           ///< testing ftSTC
+  exDirWithReport* m_Dir;     ///< testing exDirWithReport
+  exListViewFile* m_ListView; ///< testing exListViewFile
+  exProcessWithListView* m_Process; ///< testing exProcessWithListView
+  exSTCWithFrame* m_STC;      ///< testing exSTCWithFrame
 };
 #endif
 

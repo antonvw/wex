@@ -26,7 +26,7 @@ enum
   ID_RECENTFILE_MENU,
 };
 
-BEGIN_EVENT_TABLE(ftSampleFrame, ftFrame)
+BEGIN_EVENT_TABLE(ftSampleFrame, exFrameWithHistory)
   EVT_MENU(ID_PROCESS_DIALOG, ftSampleFrame::OnCommand)
   EVT_MENU(ID_PROCESS_RUN, ftSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, ftSampleFrame::OnCommand)
@@ -52,7 +52,7 @@ bool ftSampleApp::OnInit()
 }
 
 ftSampleFrame::ftSampleFrame(const wxString& title)
-  : ftFrame(NULL, wxID_ANY, title)
+  : exFrameWithHistory(NULL, wxID_ANY, title)
 {
   SetIcon(wxICON(mondrian));
 
@@ -103,14 +103,14 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
     wxAUI_NB_WINDOWLIST_BUTTON);
   ftFindToolBar* findbar = new ftFindToolBar(this, this);
 
-  m_STC = new ftSTC(this); // use all flags (default)
+  m_STC = new exSTCWithFrame(this); // use all flags (default)
 
   for (
-    int i = ftListView::LIST_BEFORE_FIRST + 1;
-    i < ftListView::LIST_AFTER_LAST;
+    int i = exListViewFile::LIST_BEFORE_FIRST + 1;
+    i < exListViewFile::LIST_AFTER_LAST;
     i++)
   {
-    ftListView* vw = new ftListView(this, (ftListView::ftListType)i, 0xFF, &lexer); // set all flags
+    exListViewFile* vw = new exListViewFile(this, (exListViewFile::ftListType)i, 0xFF, &lexer); // set all flags
     m_NotebookWithLists->AddPage(vw, vw->GetTypeDescription(), vw->GetTypeDescription(), true);
   }
 
@@ -123,33 +123,33 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   GetManager().Update();
 
   ftDir dir(
-    (ftListView*)m_NotebookWithLists->GetPageByKey(
-      ftListView::GetTypeDescription(ftListView::LIST_PROJECT)),
+    (exListViewFile*)m_NotebookWithLists->GetPageByKey(
+      exListViewFile::GetTypeDescription(exListViewFile::LIST_PROJECT)),
     wxGetCwd(), 
     "*.cpp;*.h");
 
   dir.FindFiles();
 
   ftListItem item(
-    (ftListView*)m_NotebookWithLists->GetPageByKey(
-      ftListView::GetTypeDescription(ftListView::LIST_PROJECT)), 
+    (exListViewFile*)m_NotebookWithLists->GetPageByKey(
+      exListViewFile::GetTypeDescription(exListViewFile::LIST_PROJECT)), 
     "NOT EXISTING ITEM");
 
   item.Insert();
 }
 
-ftListView* ftSampleFrame::Activate(int type, const exLexer* lexer)
+exListViewFile* ftSampleFrame::Activate(int type, const exLexer* lexer)
 {
   for (
     size_t i = 0;
     i < m_NotebookWithLists->GetPageCount();
     i++)
   {
-    ftListView* vw = (ftListView*)m_NotebookWithLists->GetPage(i);
+    exListViewFile* vw = (exListViewFile*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetType() == type)
     {
-      if (type == ftListView::LIST_KEYWORD)
+      if (type == exListViewFile::LIST_KEYWORD)
       {
         if (lexer != NULL)
         {
@@ -190,7 +190,7 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
     }
     else
     {
-      ftListView* lv = GetFocusedListView();
+      exListViewFile* lv = GetFocusedListView();
 
       if (lv != NULL)
       {
@@ -200,7 +200,7 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
     break;
   case wxID_PRINT: 
     {
-      ftListView* lv = GetFocusedListView();
+      exListViewFile* lv = GetFocusedListView();
 
       if (lv != NULL)
       {
@@ -211,18 +211,18 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_PRINT_SETUP: exApp::GetPrinter()->PageSetup(); break;
 
   case wxID_STOP:
-    if (ftListView::ProcessIsRunning())
+    if (exListViewFile::ProcessIsRunning())
     {
-      ftListView::ProcessStop();
+      exListViewFile::ProcessStop();
     }
     break;
 
   case ID_PROCESS_DIALOG:
-    ftProcess::ConfigDialog(); 
+    exProcessWithListView::ConfigDialog(); 
     break;
 
   case ID_PROCESS_RUN:
-    ftListView::ProcessRun(); 
+    exListViewFile::ProcessRun(); 
     break;
 
   default: event.Skip();
@@ -244,7 +244,7 @@ bool ftSampleFrame::OpenFile(const exFileName& file,
   const wxString& match,
   long flags)
 {
-  // We cannot use the ftFrame::OpenFile, as that uses the focused STC.
+  // We cannot use the exFrameWithHistory::OpenFile, as that uses the focused STC.
   // Prevent recursion.
   if ((flags & exSTC::STC_OPEN_FROM_LINK) |
       (flags & exSTC::STC_OPEN_FROM_STATISTICS))

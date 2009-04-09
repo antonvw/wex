@@ -15,10 +15,10 @@
 
 void ftAppTestFixture::setUp()
 {
-  m_ListView = new ftListView(wxTheApp->GetTopWindow(), ftListView::LIST_PROCESS);
-  m_Dir = new ftDir(m_ListView, "./");
-  m_Process = new ftProcess(m_ListView, "wc test.h");
-  m_STC = new ftSTC(wxTheApp->GetTopWindow(), exFileName("test.h"));
+  m_ListView = new exListViewFile(wxTheApp->GetTopWindow(), exListViewFile::LIST_PROCESS);
+  m_Dir = new exDirWithReport(m_ListView, "./");
+  m_Process = new exProcessWithListView(m_ListView, "wc test.h");
+  m_STC = new exSTCWithFrame(wxTheApp->GetTopWindow(), exFileName("test.h"));
 }
 
 void ftAppTestFixture::testConstructors()
@@ -27,17 +27,17 @@ void ftAppTestFixture::testConstructors()
 
 void ftAppTestFixture::testMethods()
 {
-  // test ftDir
+  // test exDirWithReport
   CPPUNIT_ASSERT(m_Dir->FindFiles());
 
-  // test ftListView
+  // test exListViewFile
   CPPUNIT_ASSERT(m_ListView->FileOpen(exFileName("test.prj")));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
-  // test ftProcess
+  // test exProcessWithListView
   CPPUNIT_ASSERT(m_Process->Run());
 
-  // test ftSTC
+  // test exSTCWithFrame
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
 }
 
