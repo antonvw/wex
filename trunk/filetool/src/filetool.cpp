@@ -131,7 +131,7 @@ bool ftFindOtherFileName(
 
   bool found = false;
 
-  // TODO: Use a thread for this.
+  // Readme: Maybe use a thread for this.
   while (cont)
   {
     wxFileName fn(base + filename_string + append);
@@ -293,12 +293,6 @@ ftDir::ftDir(ftFrame* frame,
   , m_RunningTool(false)
   , m_Tool(ID_TOOL_LOWEST)
 {
-}
-
-bool ftDir::Cancelled()
-{
-  // TODO: Implement.
-  return false;
 }
 
 void ftDir::OnFile(const wxString& file)

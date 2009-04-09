@@ -48,7 +48,6 @@ public:
   /// Gets the statistics.
   const exFileNameStatistics& GetStatistics() {return m_Statistics;};
 protected:
-  virtual bool Cancelled();
   virtual void OnFile(const wxString& file);
 private:
   exFileNameStatistics m_Statistics;

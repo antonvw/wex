@@ -32,7 +32,6 @@ public:
 #endif
 private:
   // Implement interface from exTextFile.
-  virtual bool Cancelled();
   virtual void Report();
   virtual void ReportStatistics();
 

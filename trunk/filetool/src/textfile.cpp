@@ -55,12 +55,6 @@ ftTextFile::ftTextFile(const exFileName& filename)
 {
 }
 
-bool ftTextFile::Cancelled()
-{
-  // TODO: Implement this.
-  return false;
-}
-
 #if USE_EMBEDDED_SQL
 void ftTextFile::CleanUp()
 {
