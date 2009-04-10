@@ -795,14 +795,12 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
       if (!val.empty())
       {
         wxDateTime dt;
+        wxString::const_iterator end;
 
-        if (dt.ParseFormat(val, wxDefaultDateTimeFormat, wxDefaultDateTime, NULL) == NULL)
+        if (!dt.ParseDateTime(val, &end))
         {
-          if (dt.ParseFormat(val, "%Y%m%d %H:%M:%S", wxDefaultDateTime, NULL) == NULL)
-          {
-            wxLogError(FILE_INFO("Cannot sort, date not known format"));
-            return;
-          }
+          wxLogError(FILE_INFO("Cannot sort, date not known format"));
+          return;
         }
 
         longval = dt.GetTicks();
