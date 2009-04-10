@@ -13,11 +13,11 @@ without the written consent of the copyright owner.
 -->
 
 <!--
- Each lexer has a name atribute (scintilla lexer) and 
+ Each <lexer> has a name atribute (scintilla lexer) and 
  an extensions atribute (file extensions for files associated with this lexer).
  Extensions are separated by a semicolon (;).
  Each lexer might contain the next elements:
- 1) colourings. Colouring styles for this lexer. 
+ 1) <colourings>. Colouring styles for this lexer. 
     The attribute 'no' contains the scintilla styles.
     This attribute lists all styles that will have the style specifier that follows,
     separated by a comma sign (,).
@@ -30,25 +30,24 @@ without the written consent of the copyright owner.
     size:[num] sets the font size in points
     eol turns on eol filling
     underline turns on underlining
- 2) keywords. Keywords for this lexer. Default they are in set 0, but you can explicitly
+ 2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can explicitly
     express the set by adding :<setno> after the keyword.
- 3) properties. Properties for this lexer. This field
+ 3) <properties>. Properties for this lexer. This field
     is built of two fields, separated by an equal sign (=).
     The first field contains the scintilla property key.
     The second field contains the scintilla property value. 
- 4) A comments element.
+ 4) A <comments> element.
+ 
+ In addition to lexers, also <global> properties can be specified.
+ At this moment <style>, <indicator>, <marker> and <hex> styles are supported.
+ The marker element has a 'no' attribute and its value contains the next fields:
+ <marker symbol number><','><foreground colour><','><background colour>
 */
 -->
 
 <lexers>
-
   <global>
     <!--
-     Global properties
-     In addition to lexers, also global properties can be specified.
-     At this moment hex styles, indicators, markers and styles are supported.
-     The marker element has a 'no' attribute and its value contains the next fields:
-     <marker symbol number><','><foreground colour><','><background colour>
     #define wxSTC_MARK_CIRCLE 0
     #define wxSTC_MARK_ROUNDRECT 1
     #define wxSTC_MARK_ARROW 2
@@ -122,7 +121,6 @@ without the written consent of the copyright owner.
     <style no="36"> size:6 </style>
     <hex no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> fore:black,size:10,face:courier new </hex>
     <hex no="34"> fore:red </hex>
-
   </global>
   
   <lexer 
@@ -208,7 +206,6 @@ without the written consent of the copyright owner.
     </properties>
     
     <comments begin1="/*" end1="*/" begin2="//" />
-    
   </lexer>
   
   <lexer
@@ -245,7 +242,6 @@ without the written consent of the copyright owner.
     </properties>
     
     <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
-    
   </lexer>
   
   <lexer
@@ -298,7 +294,6 @@ without the written consent of the copyright owner.
     </properties>
     
     <comments begin1="#" />
-    
   </lexer>
   
   <lexer
@@ -313,7 +308,6 @@ without the written consent of the copyright owner.
       <colouring no="7"> fore:blue </colouring>
       <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol </colouring>
     </colourings>
-    
   </lexer>
   
   <lexer
@@ -362,7 +356,6 @@ without the written consent of the copyright owner.
     </keywords>
   
     <comments begin1=";" />
-  
   </lexer>
   
   <lexer
@@ -516,7 +509,6 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
       <property name="asp.default.language"> 4 </property>
     </properties>
-    
   </lexer>
   
   <lexer
@@ -618,7 +610,6 @@ without the written consent of the copyright owner.
       <property name="fold.comment"> 1 </property>
       <property name="fold.compact"> 1 </property>
     </properties>
-
   </lexer>
   
   <lexer
@@ -641,7 +632,5 @@ without the written consent of the copyright owner.
       <colouring no="5"> bold </colouring>
       <colouring no="9"> fore:brown </colouring>
     </colourings>
-  
   </lexer>
-
 </lexers>
