@@ -21,6 +21,29 @@ exLexers::exLexers(const wxFileName& filename)
 {
 }
 
+const wxString exLexers::BuildComboBox() const
+{
+  wxString combobox;
+
+  for (
+    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
+  {
+    if (!it->GetAssociations().empty())
+    {
+      if (!combobox.empty())
+      {
+        combobox += ",";
+      }
+      
+      combobox += it->GetAssociations();
+    }
+  }
+
+  return combobox;
+}
+
 const wxString exLexers::BuildWildCards(const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =

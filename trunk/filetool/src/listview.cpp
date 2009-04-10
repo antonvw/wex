@@ -159,6 +159,9 @@ exListViewFile::exListViewFile(wxWindow* parent,
 
 int exListViewFile::AddItems()
 {
+  // To initialize the combobox.
+  exApp::GetConfig(_("Add what"), exApp::GetLexers()->BuildComboBox());
+  
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));

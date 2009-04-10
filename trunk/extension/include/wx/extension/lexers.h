@@ -60,6 +60,9 @@ public:
   /// Constructor for lexers from specified filename.
   exLexers(const wxFileName& filename);
 
+  /// Builds a combobox string from available lexers.
+  const wxString BuildComboBox() const;
+
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
 

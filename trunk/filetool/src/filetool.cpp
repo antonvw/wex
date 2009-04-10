@@ -41,6 +41,9 @@ bool exCompareFile(const wxFileName& file1, const wxFileName& file2)
 
 void exFindInFiles(exFrameWithHistory* frame, bool replace)
 {
+  // To initialize the combobox.
+  exApp::GetConfig(_("In files"), exApp::GetLexers()->BuildComboBox());
+  
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
   if (replace) v.push_back(exConfigItem(_("Replace with"), CONFIG_COMBOBOX));
