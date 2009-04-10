@@ -17,7 +17,6 @@
 #include <wx/extension/file.h>
 #include <wx/extension/app.h> // for exApp
 #include <wx/extension/base.h> // for exFrame
-#include <wx/extension/util.h> // for exColourToLong
 
 exFile::exFile()
   : m_FileName()
@@ -287,13 +286,6 @@ void exFileName::StatusText(long flags) const
   exFrame::StatusText(text);
 }
 #endif // wxUSE_STATUSBAR
-
-wxString exStat::m_ColourGroup = "Colour/";
-
-const wxColour exStat::GetLinkColour() const
-{
-  return exApp::GetConfig(m_ColourGroup + _("link"), exColourToLong(*wxRED));
-}
 
 const wxString exStat::GetModificationTime(const wxString& format) const
 {

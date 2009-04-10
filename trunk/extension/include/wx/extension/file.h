@@ -33,9 +33,6 @@ public:
   /// Gets fullpath member.
   const wxString& GetFullPath() const {return m_FullPath;};
   
-  /// Returns a colour if this is a link.
-  const wxColour GetLinkColour() const;
-
   /// Gets the modification time.
   /// From wxFileName class GetModificationTime is available as well,
   /// this one returns string and only uses the stat member, and is fast.
@@ -68,8 +65,6 @@ public:
 private:
   wxString m_FullPath;
   bool m_IsOk;
-  // The colours are stored under this config group.
-  static wxString m_ColourGroup;
 };
 
 /// Flags for exStatusText.

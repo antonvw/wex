@@ -130,7 +130,7 @@ void exListItemWithFileName::Update()
 
   if (m_Statistics.GetStat().IsLink())
   {
-    SetTextColour(m_Statistics.GetStat().GetLinkColour());
+    // Do something if this is a link. Currently nothing is done.
   }
 
   if (m_Statistics.FileExists() ||
