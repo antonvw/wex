@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -22,7 +22,6 @@ enum
   ID_OPEN_LOGFILE,
   ID_OPTION_EDITOR,
   ID_OPTION_SVN_AND_COMPARATOR,
-  ID_OPTION_LIST_COLOUR,
   ID_OPTION_LIST_FONT,
   ID_OPTION_LIST_SORT_TOGGLE,
   ID_SVN_COMMIT,

@@ -16,7 +16,7 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
 #include <wx/extension/app.h> // for exApp
-#include <wx/extension/configdialog.h>
+#include <wx/extension/base.h> // for exFrame
 #include <wx/extension/util.h> // for exColourToLong
 
 exFile::exFile()
@@ -212,7 +212,7 @@ wxString* exFile::Read(wxFileOffset seek_position)
   }
   else
   {
-    wxLogError(FILE_INFO("Read error"));
+    wxLogError("Read error");
     return NULL;
   }
 }
@@ -288,77 +288,7 @@ void exFileName::StatusText(long flags) const
 }
 #endif // wxUSE_STATUSBAR
 
-#if wxUSE_GUI
-exConfigDialog* exStat::m_ConfigDialog = NULL;
-#endif
-
 wxString exStat::m_ColourGroup = "Colour/";
-
-#if wxUSE_GUI
-// This is a static method, cannot use normal members here.
-int exStat::ConfigDialog(
-  const wxString& title,
-  wxWindow* parent,
-  wxWindowID id)
-{
-  std::vector<exConfigItem> items;
-  items.push_back(exConfigItem(_("day"), CONFIG_COLOUR));
-  items.push_back(exConfigItem(_("week"), CONFIG_COLOUR));
-  items.push_back(exConfigItem(_("month"), CONFIG_COLOUR));
-  items.push_back(exConfigItem(_("year"), CONFIG_COLOUR));
-#ifndef __WXMSW__
-  // Links only used on Unix.
-  items.push_back(exConfigItem(_("link"), CONFIG_COLOUR));
-#endif
-
-  if (m_ConfigDialog == NULL)
-  {
-    m_ConfigDialog = new exConfigDialog(
-      parent,
-      exApp::GetConfig(),
-      items,
-      title,
-      m_ColourGroup,
-      0, 2,
-      wxOK | wxCANCEL | wxAPPLY,
-      id);
-  }
-
-  return m_ConfigDialog->Show();
-}
-#endif
-
-const wxColour exStat::GetColour() const
-{
-  if (IsOk())
-  {
-    const wxDateTime now = wxDateTime::Now();
-    const wxDateTime mtime = wxDateTime(st_mtime);
-
-    // within 1 day (12 hours)
-    if (mtime > now - 12 * wxTimeSpan::Hour())
-    {
-      return exApp::GetConfig(m_ColourGroup + _("day"), exColourToLong(*wxGREEN));
-    }
-    // within 1 week
-    else if (mtime > now - wxDateSpan::Week())
-    {
-      return exApp::GetConfig(m_ColourGroup + _("week"), exColourToLong(*wxBLUE));
-    }
-    // within 1 month (default colour is white, so not used)
-    else if (mtime > now - wxDateSpan::Month())
-    {
-      return exApp::GetConfig(m_ColourGroup + _("month"), exColourToLong(*wxWHITE));
-    }
-    // within 1 year (default colour is white, so not used)
-    else if (mtime > now - wxDateSpan::Year())
-    {
-      return exApp::GetConfig(m_ColourGroup + _("year"), exColourToLong(*wxWHITE));
-    }
-  }
-
-  return *wxWHITE;
-}
 
 const wxColour exStat::GetLinkColour() const
 {

@@ -221,11 +221,6 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   {
     m_NotebookWithEditors->ForEach(ID_ALL_STC_CONFIG_GET);
   }
-  else if (dialogid == ID_OPTION_LIST_COLOUR)
-  {
-    exForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS);
-    exForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS);
-  }
 }
 
 exListView* MDIFrame::GetListView()
@@ -524,11 +519,6 @@ and saved in the same directory as where the executable is."));
   case ID_OPTION_EDITOR:
     exSTC::ConfigDialog(_("Editor Options"),
       exSTC::STC_CONFIG_MODELESS | exSTC::STC_CONFIG_WITH_APPLY,
-      this,
-      event.GetId());
-    break;
-  case ID_OPTION_LIST_COLOUR:
-    exStat::ConfigDialog(_("Set List Colour"),
       this,
       event.GetId());
     break;

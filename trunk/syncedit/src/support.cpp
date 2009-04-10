@@ -148,7 +148,6 @@ Frame::Frame(const wxString& project_wildcard)
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(ID_OPTION_SVN_AND_COMPARATOR, exEllipsed(_("Set SVN And &Comparator")));
   menuOptions->AppendSeparator();
-  menuOptions->Append(ID_OPTION_LIST_COLOUR, exEllipsed(_("Set &List Colour")));
   menuOptions->Append(ID_OPTION_LIST_FONT, exEllipsed(_("Set &List Font")));
   wxMenu *menuListSort = new wxMenu;
   menuListSort->AppendCheckItem(wxID_SORT_ASCENDING, _("&Ascending"));

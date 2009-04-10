@@ -21,8 +21,6 @@
 #include <wx/filename.h>
 #include <wx/extension/lexer.h>
 
-class exConfigDialog;
-
 /// Adds IsOk to the stat base class, and several methods
 /// to get/update on the stat members.
 class exStat : public stat
@@ -31,21 +29,6 @@ public:
   /// Default constructor. Calls Update.
   exStat(const wxString& fullpath = wxEmptyString) {
     Update(fullpath);}
-
-#if wxUSE_GUI
-  /// Shows a dialog with colour options, returns dialog return code.
-  /// Always modeless, it uses the dialog id as specified,
-  /// so you can use that id in exFrame::ConfigDialogApplied.
-  static int ConfigDialog(
-    const wxString& title = _("Colour Options"),
-    wxWindow* parent = wxTheApp->GetTopWindow(),
-    wxWindowID id = wxID_ANY);
-#endif
-
-  /// Returns a colour depending on modification time.
-  /// Colour setup is taken from config.
-  /// Method GetColouring is available through exLexer, and returns syntax colouring.
-  const wxColour GetColour() const;
 
   /// Gets fullpath member.
   const wxString& GetFullPath() const {return m_FullPath;};
@@ -83,9 +66,6 @@ public:
     m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
     return m_IsOk;};
 private:
-#if wxUSE_GUI
-  static exConfigDialog* m_ConfigDialog;
-#endif
   wxString m_FullPath;
   bool m_IsOk;
   // The colours are stored under this config group.

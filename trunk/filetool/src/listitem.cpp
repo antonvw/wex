@@ -111,8 +111,6 @@ bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
 
 void exListItemWithFileName::Update()
 {
-  SetBackgroundColour(m_Statistics.GetStat().GetColour());
-
   // Update readonly state in listview item data.
   // SetData does not work, as list items are constructed/destructed a lot.
   GetListView()->SetItemData(GetId(), m_Statistics.GetStat().IsReadOnly());
