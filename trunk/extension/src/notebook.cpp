@@ -35,42 +35,42 @@ wxWindow* exNotebook::AddPage(
     const wxString& key,
     const wxString& text,
     bool select,
-    const wxBitmap& bitmap) 
+    const wxBitmap& bitmap)
 {
   if (GetPageByKey(key, select) != NULL)
   {
     wxLogError(FILE_INFO("Page with key: %s already exists"), key.c_str());
     return NULL;
   }
-  
+
   const wxString use_text = (text.empty() ? key: text);
-  
+
   if (!wxAuiNotebook::AddPage(page, use_text, select, bitmap))
   {
     wxLogError(FILE_INFO("Could not add page with text: %s"), use_text.c_str());
     return NULL;
   }
-  
+
   m_MapPages[key] = page;
-  
+
   return page;
 }
 
-bool exNotebook::DeletePage(const wxString& key) 
+bool exNotebook::DeletePage(const wxString& key)
 {
   wxWindow* page = GetPageByKey(key);
-  
+
   if (page == NULL)
-  { 
+  {
     wxLogError("DeletePage failed");
     return false;
   }
-  
+
   m_MapPages.erase(key);
-  
+
   return wxAuiNotebook::DeletePage(GetPageIndex(page));
 }
-  
+
 bool exNotebook::ErasePage(size_t n)
 {
   for (
@@ -85,7 +85,7 @@ bool exNotebook::ErasePage(size_t n)
     }
   }
 
-  wxLogError(FILE_INFO("Could not find page: %d to delete"), n);
+  wxLogError("Could not find page: %d to delete", n);
 
   return false;
 }
@@ -111,10 +111,10 @@ bool exNotebook::ForEach(int id)
 
     if (stc == NULL)
     {
-      wxLogError(FILE_INFO("Notebook page: %d (%s) cannot be cast to an exSTC"), 
-        page, 
+      wxLogError("Notebook page: %d (%s) cannot be cast to an exSTC",
+        page,
         GetPageText(page).c_str());
-        
+
       // Do not return false, otherwise close all would not finish.
       continue;
     }
@@ -128,14 +128,14 @@ bool exNotebook::ForEach(int id)
 
     case ID_ALL_STC_CLOSE:
       if (!stc->Continue()) return false;
-      
+
       ErasePage(page);
-        
+
       if (m_MapPages.empty() && m_Frame != NULL)
       {
         m_Frame->SyncCloseAll(GetId());
       }
-      
+
       if (!wxAuiNotebook::DeletePage(page)) return false;
       break;
 
@@ -177,7 +177,7 @@ const wxString exNotebook::GetKeyByPage(wxWindow* page) const
 const wxString exNotebook::GetKeys() const
 {
   wxString keys;
-  
+
   for (
     std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
     it != m_MapPages.end();
@@ -185,11 +185,11 @@ const wxString exNotebook::GetKeys() const
   {
     keys += it->first + "\n";
   }
-  
+
   return keys;
 }
 
-wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select) 
+wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select)
 {
   if (m_MapPages.empty()) return NULL;
 
@@ -225,19 +225,19 @@ void exNotebook::OnNotebook(wxAuiNotebookEvent& event)
       else
       {
         ErasePage(GetSelection());
-        
+
         if (m_MapPages.empty() && m_Frame != NULL)
         {
           m_Frame->SyncCloseAll(GetId());
         }
-        
+
         event.Skip(); // call base
       }
     }
   }
   else
   {
-    wxLogError(FILE_INFO("Unhandled"));
+    wxFAIL;
   }
 }
 

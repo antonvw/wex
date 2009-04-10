@@ -214,7 +214,7 @@ exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
   case COMMENT_INCOMPLETE:
     comment_type = (comment_type2 == COMMENT_NONE) ? COMMENT_INCOMPLETE: comment_type2;
     break;
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 
   if (comment_type == COMMENT_END)
@@ -389,7 +389,7 @@ void exTextFile::InsertUnFormattedText(
 
     if (line.length() + 1 + word.length() > line_length)
     {
-      const wxString& newline = 
+      const wxString& newline =
         (is_comment ? m_FileNameStatistics.GetLexer().MakeComment(line, true, true): line);
 
       InsertLine(newline);
@@ -403,7 +403,7 @@ void exTextFile::InsertUnFormattedText(
     }
   }
 
-  const wxString& newline = 
+  const wxString& newline =
     (is_comment ? m_FileNameStatistics.GetLexer().MakeComment(line, true, true): line);
 
   InsertLine(newline);
@@ -442,7 +442,7 @@ bool exTextFile::MatchLine(wxString& line)
     {
       if (frd->MatchWord())
       {
-        if (( pos == 0 || 
+        if (( pos == 0 ||
              (pos > 0 && !IsWordCharacter(search_line[pos - 1]))) &&
             !IsWordCharacter(search_line[pos + frd->GetFindStringNoCase().length()]))
         {

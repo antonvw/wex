@@ -89,7 +89,7 @@ bool exTextFileWithReport::ParseComments()
       if (GetTool().GetId() == ID_TOOL_REPORT_SQL &&
         GetComments().length() > Recordset::QueryRunTimeText().length() + 1 &&
         GetComments().substr(
-          1, 
+          1,
           Recordset::QueryRunTimeText().length()) == Recordset::QueryRunTimeText())
       {
         const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
@@ -193,8 +193,8 @@ void exTextFileWithReport::Report()
   exListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
-  const int line = (GetTool().GetId() == ID_TOOL_REPORT_REVISION ? 
-    GetCurrentLine(): 
+  const int line = (GetTool().GetId() == ID_TOOL_REPORT_REVISION ?
+    GetCurrentLine():
     GetCurrentLine() + 1);
 
   item.SetColumnText(_("Line No"), wxString::Format("%d", line));
@@ -219,7 +219,7 @@ void exTextFileWithReport::Report()
   break;
 #endif
 
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 }
 
@@ -228,7 +228,7 @@ void exTextFileWithReport::ReportStatistics()
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
     m_Report = m_Frame->Activate(
-      exListViewFile::GetTypeTool(GetTool()), 
+      exListViewFile::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());
 
     if (m_Report == NULL)
@@ -267,12 +267,12 @@ void exTextFileWithReport::ReportStatistics()
       total += value;
     }
     item.SetColumnText(
-      GetFileName().GetLexer().GetKeywords().size() + 1, 
+      GetFileName().GetLexer().GetKeywords().size() + 1,
       wxString::Format("%ld", total));
   }
   break;
 
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 }
 
@@ -282,14 +282,14 @@ bool exTextFileWithReport::SetSQLQuery()
   const size_t pos_start_of_query = GetComments().find('#');
   const size_t pos_end_of_query = GetComments().rfind('#');
 
-  if (pos_start_of_query == wxString::npos || 
+  if (pos_start_of_query == wxString::npos ||
       pos_start_of_query == pos_end_of_query)
   {
     return false;
   }
 
   m_SQLQuery = GetComments().substr(
-    pos_start_of_query + 1, 
+    pos_start_of_query + 1,
     pos_end_of_query - pos_start_of_query - 1);
 
   m_SQLQuery.Trim(false);

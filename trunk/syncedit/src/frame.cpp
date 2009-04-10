@@ -378,7 +378,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
     case wxID_VIEW_LIST: view = wxLC_LIST; break;
     case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
-    default: wxLogError(FILE_INFO("Unhandled"));
+    default: wxFAIL;
     }
 
     m_History->SetSingleStyle(view);
@@ -732,7 +732,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxLC_LIST: event.Check(event.GetId() == wxID_VIEW_LIST); break;
         case wxLC_REPORT: event.Check(event.GetId() == wxID_VIEW_DETAILS); break;
         case wxLC_SMALL_ICON: event.Check(event.GetId() == wxID_VIEW_SMALLICONS); break;
-        default: wxLogError(FILE_INFO("Unhandled"));
+        default: wxFAIL;
       }
     }
     else if (m_History->IsShown())
@@ -742,7 +742,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxLC_LIST: event.Check(event.GetId() == wxID_VIEW_LIST); break;
         case wxLC_REPORT: event.Check(event.GetId() == wxID_VIEW_DETAILS); break;
         case wxLC_SMALL_ICON: event.Check(event.GetId() == wxID_VIEW_SMALLICONS); break;
-        default: wxLogError(FILE_INFO("Unhandled"));
+        default: wxFAIL;
       }
     }
   }
@@ -1067,6 +1067,6 @@ void MDIFrame::SyncCloseAll(wxWindowID id)
     GetManager().GetPane("PROJECTS").Hide();
     GetManager().Update();
     break;
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 }

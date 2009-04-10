@@ -36,7 +36,7 @@ const wxString exLexer::GetKeywordsString(int keyword_set) const
 
     if (it == m_KeywordsSet.end())
     {
-      wxLogError("Illegal index in GetKeywordsString");
+      wxFAIL;
     }
     else
     {

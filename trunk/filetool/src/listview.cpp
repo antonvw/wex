@@ -54,7 +54,7 @@ private:
 class exToolThread : public wxThread
 {
 public:
-  exToolThread(const exTool& tool, exListViewFile* list) 
+  exToolThread(const exTool& tool, exListViewFile* list)
     : wxThread(wxTHREAD_JOINABLE)
     , m_ListView(list)
     , m_Tool(tool) {}
@@ -161,7 +161,7 @@ int exListViewFile::AddItems()
 {
   // To initialize the combobox.
   exApp::GetConfig(_("Add what"), exApp::GetLexers()->BuildComboBox());
-  
+
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
@@ -253,7 +253,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
     }
     else
     {
-      if (m_Type != LIST_PROJECT && 
+      if (m_Type != LIST_PROJECT &&
           !exApp::GetConfigBool("SVN") &&
           m_Frame != NULL && exists && !is_folder)
       {
@@ -494,7 +494,7 @@ int exListViewFile::GetTypeTool(const exTool& tool)
     case ID_TOOL_REPORT_REVISION: return LIST_REVISION; break;
     case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
     case ID_TOOL_REPORT_VERSION: return LIST_VERSION; break;
-    default: wxLogError(FILE_INFO("Unhandled id: %d"), tool.GetId()); return LIST_PROJECT;
+    default: wxFAIL; return LIST_PROJECT;
   }
 }
 
@@ -515,7 +515,7 @@ const wxString exListViewFile::GetTypeDescription(ftListType type)
   case LIST_REVISION: value = _("Revisions"); break;
   case LIST_SQL: value = _("SQL Queries"); break;
   case LIST_VERSION: value = _("Version List"); break;
-  default: wxLogError(FILE_INFO("Unhandled list type: %d"), type);
+  default: wxFAIL;
   }
 
   return value;
@@ -529,7 +529,7 @@ void exListViewFile::Initialize(const exLexer* lexer)
   {
     if (lexer == NULL)
     {
-      wxLogError(FILE_INFO("Lexer should be specified for a keyword list"));
+      wxLogError("Lexer should be specified for a keyword list");
       return;
     }
 
@@ -543,10 +543,10 @@ void exListViewFile::Initialize(const exLexer* lexer)
   // Under Linux this should be done before adding any columns, under MSW it does not matter!
   SetSingleStyle(wxLC_REPORT);
 #else
-  // Set initial style depending on type. 
+  // Set initial style depending on type.
   // Might be improved.
   SetSingleStyle((m_Type == LIST_PROJECT || m_Type == LIST_HISTORY ?
-    exApp::GetConfig("List/Style", wxLC_REPORT) : 
+    exApp::GetConfig("List/Style", wxLC_REPORT) :
     wxLC_REPORT));
 #endif
 
@@ -653,13 +653,13 @@ bool exListViewFile::ItemOpenFile(int item_number)
   {
     const wxString line_number_str = item.GetColumnText(_("Line No"), false);
     const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
-    const wxString match = 
-      (m_Type == LIST_REPLACE ? 
-         item.GetColumnText(_("Replaced")): 
+    const wxString match =
+      (m_Type == LIST_REPLACE ?
+         item.GetColumnText(_("Replaced")):
          item.GetColumnText(_("Match"), false));
 
     const bool retValue = m_Frame->OpenFile(
-      item.GetFileName().GetFullPath(), 
+      item.GetFileName().GetFullPath(),
       line_number, match);
 
     SetFocus();
@@ -684,7 +684,7 @@ bool exListViewFile::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
-    wxLogError(FILE_INFO("Text is empty"));
+    wxLogError("Text is empty");
     return false;
   }
 
@@ -816,7 +816,7 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
 
     if (event.GetId() == ID_LIST_VERSIONLIST)
     {
-      if ((list = m_Frame->Activate(LIST_VERSION)) == NULL) 
+      if ((list = m_Frame->Activate(LIST_VERSION)) == NULL)
       {
         wxLogError("Version list is not activated");
         return;
@@ -922,7 +922,7 @@ void exListViewFile::OnIdle(wxIdleEvent& event)
 
   if (
     !IsShown() ||
-     IsOpened() || 
+     IsOpened() ||
      GetItemCount() == 0)
   {
     return;
@@ -962,7 +962,7 @@ void exListViewFile::OnIdle(wxIdleEvent& event)
   }
 
   m_FileName.GetStat().Sync();
-  
+
   CheckSyncNeeded();
 }
 
@@ -1080,7 +1080,7 @@ void exListViewFile::ProcessRun(const wxString& command)
 
 void exListViewFile::ProcessStop()
 {
-  if (m_Process != NULL) 
+  if (m_Process != NULL)
   {
     m_Process->Stop();
   }
@@ -1158,7 +1158,7 @@ void exListViewFile::RunItems(const exTool& tool)
 
     exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
   }
-    
+
   if (!exTextFileWithReport::SetupTool(tool))
   {
     return;

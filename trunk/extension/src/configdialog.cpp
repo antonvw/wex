@@ -189,9 +189,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
       break;
 
     default:
-      wxLogError(FILE_INFO("Item: %s type: %d not handled"),
-        it->m_Name.c_str(),
-        it->m_Type);
+      wxFAIL;
       return;
       break;
     }
@@ -642,10 +640,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
     wxComboBox* cb = wxDynamicCast(
       FindWindowById(command.GetId() + 1, this), wxComboBox);
 
-    if (cb == NULL)
-    {
-      return wxLogError("Cannot find the combobox");
-    }
+    wxASSERT(cb != NULL);
 
     wxDirDialog dir_dlg(
       this,
@@ -847,7 +842,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       break;
 
     default:
-      wxLogError(FILE_INFO("Unhandled item type: %d"), it->m_Type);
+      wxFAIL;
       break;
     }
   }

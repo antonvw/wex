@@ -125,11 +125,11 @@ MyFrame::MyFrame(const wxString& title)
   menuServer->Append(wxID_STOP);
 
   exMenu* menuClient = new exMenu();
-  menuClient->AppendCheckItem(ID_CLIENT_ECHO, _("Echo"), 
+  menuClient->AppendCheckItem(ID_CLIENT_ECHO, _("Echo"),
     _("Echo's received data back to client"));
-  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"), 
+  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
     _("Logs data read from and written to client"));
-  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"), 
+  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"),
     _("Adds timestamp to logdata"));
   menuClient->AppendSeparator();
   menuClient->Append(ID_CLIENT_BUFFER_SIZE, exEllipsed(_("Buffer Size")),
@@ -139,7 +139,7 @@ MyFrame::MyFrame(const wxString& title)
     _("Repeats with timer writing last data to all clients"));
   menuClient->Append(ID_TIMER_STOP, _("Stop Timer"), _("Stops the timer"));
   menuClient->AppendSeparator();
-  menuClient->Append(ID_WRITE_DATA, _("Write"), 
+  menuClient->Append(ID_WRITE_DATA, _("Write"),
     _("Writes data to all clients"), wxART_GO_FORWARD);
 
   wxMenu* menuView = new wxMenu();
@@ -406,7 +406,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       m_SocketServer = NULL;
 
       const wxString text = _("server stopped");
-      
+
 #ifdef USE_TASKBARICON
       m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
@@ -460,7 +460,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   default:
-    wxLogError("Unhandled event");
+    wxFAIL;
   }
 }
 
@@ -510,7 +510,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
-#endif    
+#endif
   }
   else if (event.GetId() == ID_CLIENT)
   {
@@ -578,7 +578,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         StatusText(wxString::Format("%d,%d",
           m_Statistics.Get(_("Bytes Received")),
-          m_Statistics.Get(_("Bytes Sent"))), 
+          m_Statistics.Get(_("Bytes Sent"))),
           "PaneBytes");
 
         // Enable input events again.
@@ -605,14 +605,14 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         }
         break;
 
-      default: 
+      default:
         m_Statistics.Inc(_("Socket Client Unhandled Events"));
     }
   }
   else
   {
     m_Statistics.Inc(_("Socket Unhandled Events"));
-    wxLogError("Socket unhandled event");
+    wxFAIL;
   }
 }
 
@@ -646,8 +646,8 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Check(exApp::GetConfigBool(_("Add Timestamp")));
     break;
 
-  case ID_RECENT_FILE_MENU: 
-    event.Enable(!GetRecentFile().empty()); 
+  case ID_RECENT_FILE_MENU:
+    event.Enable(!GetRecentFile().empty());
     break;
 
   case ID_SERVER_CONFIG:
@@ -686,7 +686,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   default:
-    wxLogError(wxString::Format("Unhandled event: %d"), event.GetId());
+    wxFAIL;
   }
 }
 
@@ -746,7 +746,7 @@ bool MyFrame::SetupSocketServer()
 
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
-#endif    
+#endif
   }
 
   StatusText(text);

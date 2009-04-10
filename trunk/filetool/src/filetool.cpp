@@ -43,7 +43,7 @@ void exFindInFiles(exFrameWithHistory* frame, bool replace)
 {
   // To initialize the combobox.
   exApp::GetConfig(_("In files"), exApp::GetLexers()->BuildComboBox());
-  
+
   std::vector<exConfigItem> v;
   v.push_back(exConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
   if (replace) v.push_back(exConfigItem(_("Replace with"), CONFIG_COMBOBOX));
@@ -191,7 +191,7 @@ bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
     if (lv == NULL)
     {
-      wxLogError(FILE_INFO("Notebook page: %d (%s) is not an exListViewFile"),
+      wxLogError("Notebook page: %d (%s) is not an exListViewFile",
         page,
         notebook->GetPageText(page).c_str());
       return false;
@@ -205,7 +205,7 @@ bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
       case wxID_VIEW_LIST: view = wxLC_LIST; break;
       case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
-      default: wxLogError(FILE_INFO("Unhandled"));
+      default: wxFAIL;
       }
 
       lv->SetSingleStyle(view);
@@ -231,8 +231,7 @@ bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       if (!notebook->DeletePage(page)) return false;
       break;
 
-    default: wxLogError("Unhandled: %d (ID_TOOL_LOWEST: %d ID_TOOL_SQL: %d ID_LIST_LOWEST: %d",
-      id, (int)ID_TOOL_LOWEST, (int)ID_TOOL_SQL, (int)ID_LIST_LOWEST);
+    default: wxFAIL;
     }
     }
   }
@@ -479,7 +478,7 @@ exFindToolBar::exFindToolBar(
   const wxSize size(150, 20);
 #else
   const wxSize size(150, -1);
-#endif  
+#endif
   AddControl(new ComboBox(this, frame, ID_FIND_TEXT, wxDefaultPosition, size));
   AddSeparator();
   AddControl(m_MatchWholeWord);

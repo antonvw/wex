@@ -190,7 +190,7 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_STC_SVN_CAT: 
+  case ID_STC_SVN_CAT:
     {
     exSVN svn(SVN_CAT, m_FileName.GetFullPath());
 
@@ -215,7 +215,7 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     exFindInFiles(m_Frame, true);
     break;
 
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
     break;
   }
 }

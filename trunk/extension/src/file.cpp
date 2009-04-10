@@ -62,8 +62,8 @@ int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
 
 bool exFile::CheckSyncNeeded()
 {
-  if (IsOpened() || 
-     !m_FileName.GetStat().IsOk() || 
+  if (IsOpened() ||
+     !m_FileName.GetStat().IsOk() ||
      !exApp::GetConfigBool("AllowSync", true))
   {
     return false;
@@ -73,7 +73,7 @@ bool exFile::CheckSyncNeeded()
   {
     FileSync();
   }
-  
+
   return true;
 }
 
@@ -115,7 +115,7 @@ bool exFile::FileNew(const exFileName& filename)
   if (!Continue()) return false;
 
   m_FileName = filename;
-  
+
   // Do not make it absolute, the specified filename does not need
   // to exist.
   return true;
@@ -128,7 +128,7 @@ bool exFile::FileOpen(const exFileName& filename)
     !filename.FileExists()) return false;
 
   m_FileName = filename;
-  
+
   if (MakeAbsolute())
   {
     return Open(m_FileName.GetFullPath());
@@ -211,7 +211,7 @@ wxString* exFile::Read(wxFileOffset seek_position)
   }
   else
   {
-    wxLogError("Read error");
+    wxFAIL;
     return NULL;
   }
 }
@@ -228,7 +228,7 @@ int exFileName::GetIcon() const
     {
       return wxTheFileIconsTable->GetIconID(GetExt());
     }
-    else 
+    else
     {
       return wxFileIconsTable::computer;
     }

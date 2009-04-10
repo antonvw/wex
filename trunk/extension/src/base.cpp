@@ -236,14 +236,14 @@ wxStatusBar* exFrame::OnCreateStatusBar(
 #endif
 
 wxToolBar* exFrame::OnCreateToolBar(
-  long style, 
-  wxWindowID id, 
+  long style,
+  wxWindowID id,
   const wxString& name)
 {
-  m_ToolBar = new exToolBar(this, 
+  m_ToolBar = new exToolBar(this,
     id,
-    wxDefaultPosition, 
-    wxDefaultSize, 
+    wxDefaultPosition,
+    wxDefaultSize,
     style,
     wxSize(16, 15),
     name);
@@ -434,7 +434,7 @@ void exInterface::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    wxLogError(FILE_INFO("Unhandled"));
+    wxFAIL;
   }
 }
 
@@ -489,11 +489,7 @@ void exManagedFrame::TogglePane(const wxString& pane)
 {
   wxAuiPaneInfo& info = m_Manager.GetPane(pane);
 
-  if (!info.IsOk())
-  {
-    wxLogError("Invalid pane: " + pane);
-    return;
-  }
+  wxASSERT(info.IsOk());
 
   info.IsShown() ? info.Hide(): info.Show();
 
@@ -685,7 +681,7 @@ void exStatusBar::OnMouse(wxMouseEvent& event)
         }
         else
         {
-          wxLogError(FILE_INFO("Unhandled"));
+          wxFAIL;
         }
 
         found = true;

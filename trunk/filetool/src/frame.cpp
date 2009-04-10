@@ -67,7 +67,7 @@ exListViewFile* exFrameWithHistory::Activate(
 }
 
 bool exFrameWithHistory::DialogFileOpen(
-  long style, 
+  long style,
   const wxString wildcards,
   bool ask_for_continue)
 {
@@ -239,7 +239,7 @@ void exFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
 
     default:
-      wxLogError(FILE_INFO("Unhandled: %d"), event.GetId());
+      wxFAIL;
     }
   }
 }
@@ -291,7 +291,7 @@ void exFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   default:
-    wxLogError("Unhandled event");
+    wxFAIL;
   }
 }
 
@@ -310,9 +310,9 @@ bool exFrameWithHistory::OpenFile(
   return false;
 }
 
-void exFrameWithHistory::SetRecentFile(const wxString& file) 
+void exFrameWithHistory::SetRecentFile(const wxString& file)
 {
-  if (!file.empty()) 
+  if (!file.empty())
   {
     m_FileHistory.AddFileToHistory(file);
 

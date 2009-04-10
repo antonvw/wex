@@ -398,7 +398,7 @@ void exGrid::OnCommand(wxCommandEvent& event)
   case ID_EDIT_FIND_NEXT: FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString()); break;
   case ID_EDIT_FIND_PREVIOUS: FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); break;
   case ID_EDIT_SELECT_NONE: ClearSelection(); break;
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 }
 
@@ -493,7 +493,7 @@ void exGrid::OnGrid(wxGridEvent& event)
   }
   else
   {
-    wxLogError(FILE_INFO("Unhandled"));
+    wxFAIL;
   }
 }
 

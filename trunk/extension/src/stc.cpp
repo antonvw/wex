@@ -64,11 +64,7 @@ exPrintout::exPrintout(exSTC* owner)
 
 void exPrintout::CountPages()
 {
-  if (GetDC() == NULL)
-  {
-    wxLogError(FILE_INFO("Illegal wxDC"));
-    return;
-  }
+  wxASSERT(GetDC() != NULL);
 
   wxBusyCursor wait;
 
@@ -139,15 +135,11 @@ void exPrintout::OnPreparePrinting()
 
 bool exPrintout::OnPrintPage(int pageNum)
 {
-  if (GetDC() == NULL)
-  {
-    wxLogError(FILE_INFO("Illegal wxDC"));
-    return false;
-  }
+  wxASSERT(GetDC() != NULL);
 
   if (pageNum > (int)m_PageBreaks.size())
   {
-    wxLogError(FILE_INFO("Invalid page number"));
+    wxFAIL;
     return false;
   }
 
@@ -1163,7 +1155,7 @@ const wxString exSTC::GetEOL()
   case wxSTC_EOL_CR: return "\r"; break;
   case wxSTC_EOL_CRLF: return "\r\n"; break;
   case wxSTC_EOL_LF: return "\n"; break;
-  default: wxLogError(FILE_INFO("Unhandled")); break;
+  default: wxFAIL; break;
   }
 
   return "\r\n";
@@ -1660,7 +1652,7 @@ void exSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
-  default: wxLogError(FILE_INFO("Unhandled")); break;
+  default: wxFAIL; break;
   }
 }
 
@@ -1979,7 +1971,7 @@ void exSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else
   {
-    wxLogError(FILE_INFO("Unhandled"));
+    wxFAIL;
   }
 }
 
@@ -2403,7 +2395,7 @@ void exSTC::SetGlobalStyles()
     {
       SetStyle(*it);
     }
-    
+
     for (
       map<int, int>::const_iterator ind = exApp::GetLexers()->GetIndicators().begin();
       ind != exApp::GetLexers()->GetIndicators().end();
@@ -2466,7 +2458,7 @@ void exSTC::SetLexer(const wxString& lexer)
   }
 
   Colourise();
-  
+
   if (GetLineCount() > GetConfig(_("Auto fold"), -1))
   {
     FoldAll();
@@ -2606,7 +2598,7 @@ void exSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
 }
 
-void exSTC::StartRecord() 
+void exSTC::StartRecord()
 {
   if (m_MacroIsRecording)
   {
@@ -2622,7 +2614,7 @@ void exSTC::StartRecord()
   wxStyledTextCtrl::StartRecord();
 }
 
-void exSTC::StopRecord() 
+void exSTC::StopRecord()
 {
   if (!m_MacroIsRecording)
   {
@@ -2734,7 +2726,7 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
   }
 
   AddUserSizer(m_STC);
-  
+
   BuildSizers();
 }
 

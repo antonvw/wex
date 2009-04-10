@@ -28,7 +28,7 @@ void exColumn::SetIsSortedAscending(exSortType type)
   case SORT_DESCENDING: m_IsSortedAscending = false; break;
   case SORT_KEEP: break;
   case SORT_TOGGLE: m_IsSortedAscending = !m_IsSortedAscending; break;
-  default: wxLogError(FILE_INFO("Unhandled")); break;
+  default: wxFAIL; break;
   }
 }
 
@@ -65,7 +65,7 @@ bool exListItem::SetBackgroundColour(const wxColour& colour)
 
   if (!m_ListView->SetItem(*this))
   {
-    wxLogError(FILE_INFO("Could not set colour for item: %ld"), GetId());
+    wxFAIL;
     return false;
   }
 
@@ -76,7 +76,7 @@ void exListItem::SetColumnText(const int col_no, const wxString& text)
 {
   if (col_no >= m_ListView->GetColumnCount())
   {
-    wxLogError(FILE_INFO("Column no: %d exceeds count: %d"), col_no, m_ListView->GetColumnCount());
+    wxFAIL;
     return;
   }
 
@@ -96,7 +96,7 @@ void exListItem::SetColumnText(const int col_no, const wxString& text)
 
   if (!m_ListView->SetItem(*this))
   {
-    wxLogError(FILE_INFO("Could not set column text: %s at column: %d"), text.c_str(), col_no);
+    wxFAIL;
   }
 }
 
@@ -159,7 +159,7 @@ exListView::exListView(wxWindow* parent,
     }
     else
     {
-      wxLogError(FILE_INFO("Unhandled"));
+      wxFAIL;
     }
   }
 
@@ -438,7 +438,7 @@ unsigned int exListView::GetArtID(wxArtID artid)
       GetImageList(wxIMAGE_LIST_SMALL) == NULL ||
       m_ImageType != IMAGE_ART)
   {
-    wxLogError(FILE_INFO("Images are not allocated or wrong image type, you should not use this method"));
+    wxFAIL;
     return 0;
   }
 
@@ -513,9 +513,9 @@ bool exListView::GotoDialog(const wxString& caption)
 }
 
 void exListView::InsertColumn(
-  const wxString& name, 
+  const wxString& name,
   exColumn::exColumnType type,
-  int width) 
+  int width)
 {
   exColumn col;
 
@@ -530,7 +530,7 @@ void exListView::InsertColumn(
   case exColumn::COL_INT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
   case exColumn::COL_STRING: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 100; break;
   case exColumn::COL_DATE: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 150; break;
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 
   col.SetText(name);
@@ -617,47 +617,47 @@ void exListView::OnCommand(wxCommandEvent& event)
   case wxID_CLEAR:
     EditClearAll();
   break;
-  case wxID_CUT: 
-    CopySelectedItemsToClipboard(); 
-    EditDelete(); 
+  case wxID_CUT:
+    CopySelectedItemsToClipboard();
+    EditDelete();
     break;
-  case wxID_COPY: 
-    CopySelectedItemsToClipboard(); 
+  case wxID_COPY:
+    CopySelectedItemsToClipboard();
     break;
-  case wxID_DELETE: 
-    EditDelete(); 
+  case wxID_DELETE:
+    EditDelete();
     break;
-  case wxID_PASTE: 
-    PasteItemsFromClipboard(); 
+  case wxID_PASTE:
+    PasteItemsFromClipboard();
     break;
-  case wxID_SELECTALL: 
-    EditSelectAll(); 
+  case wxID_SELECTALL:
+    EditSelectAll();
     break;
-  case wxID_SORT_ASCENDING: 
-    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING); 
+  case wxID_SORT_ASCENDING:
+    SortColumn(m_ToBeSortedColumnNo, SORT_ASCENDING);
     break;
-  case wxID_SORT_DESCENDING: 
-    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING); 
+  case wxID_SORT_DESCENDING:
+    SortColumn(m_ToBeSortedColumnNo, SORT_DESCENDING);
     break;
-  case ID_EDIT_SELECT_INVERT: 
-    EditInvertAll(); 
+  case ID_EDIT_SELECT_INVERT:
+    EditInvertAll();
     break;
-  case ID_EDIT_SELECT_NONE: 
-    for (int i = 0; i < GetItemCount(); i++) 
+  case ID_EDIT_SELECT_NONE:
+    for (int i = 0; i < GetItemCount(); i++)
     {
-      Select(i, false); 
+      Select(i, false);
     }
     break;
-  case ID_LIST_FIND: 
-    FindDialog(this); 
+  case ID_LIST_FIND:
+    FindDialog(this);
     break;
-  case ID_LIST_FIND_NEXT: 
-    FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
+  case ID_LIST_FIND_NEXT:
+    FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString());
     break;
-  case ID_LIST_FIND_PREVIOUS: 
-    FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); 
+  case ID_LIST_FIND_PREVIOUS:
+    FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
     break;
-  default: wxLogError(FILE_INFO("Unhandled"));
+  default: wxFAIL;
   }
 
 #if wxUSE_STATUSBAR
@@ -812,9 +812,9 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
     SetItemData(i, longval);
   }
 
-  const long sortdata = 
-    (sorted_col->GetIsSortedAscending() ? 
-       sorted_col->GetType(): 
+  const long sortdata =
+    (sorted_col->GetIsSortedAscending() ?
+       sorted_col->GetType():
       (0 - sorted_col->GetType()));
 
   SortItems(CompareFunctionCB, sortdata);
@@ -825,7 +825,7 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
   // Otherwise the list items get a sorting image as well.
   if (!m_ArtIDs.empty())
   {
-    SetColumnImage(column_no, 
+    SetColumnImage(column_no,
       GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
   }
 
