@@ -250,7 +250,7 @@ public:
     if (m_ListView->m_ImageType == exListView::IMAGE_ART)
       return StoreImage(m_ListView->GetArtID(artid));
     else
-      wxLogError("ListView should have image type ART");
+       wxFAIL;
     };
 
   /// Sets the file icon image for this item.
@@ -258,7 +258,7 @@ public:
     if (m_ListView->m_ImageType == exListView::IMAGE_FILE_ICON)
       return StoreImage(iconid);
     else
-      wxLogError("ListView should have image type FILE_ICON");
+       wxFAIL;
     };
 private:
   void StoreImage(int image);
