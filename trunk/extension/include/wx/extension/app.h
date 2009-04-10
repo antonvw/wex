@@ -17,6 +17,7 @@
 #include <wx/html/htmprint.h>
 #include <wx/extension/config.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/util.h> // for exLog
 
 /// Offers the application, with a configuration, lexer, printer, logging
 /// and locale.
@@ -68,7 +69,8 @@ public:
 #endif
 
   /// Logs text (only if SetLogging() is called, default it is off).
-  static void Log(const wxString& text);
+  static void Log(const wxString& text) {
+    if (m_Logging) exLog(text);};
 
   /// Sets key as a long.
   static void SetConfig(const wxString& key, long value)
