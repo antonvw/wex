@@ -2082,7 +2082,7 @@ void exSTC::PathListAdd(const wxString& path)
 {
   if (!wxFileName::DirExists(path))
   {
-    wxLogError(FILE_INFO("path: %s does not exist"), path.c_str());
+    wxLogError("path: %s does not exist", path.c_str());
     return;
   }
 
@@ -2682,7 +2682,7 @@ void exSTC::UpdateStatusBar(const wxString& pane)
   }
   else
   {
-    wxLogError("Unhandled pane: " + pane);
+    wxFAIL;
   }
 
   exFrame::StatusText(text, pane);

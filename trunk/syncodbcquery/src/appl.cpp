@@ -346,8 +346,8 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Check(GetManager().GetPane("STATISTICS").IsShown());
     break;
 
-  default:  
-    wxLogError(wxString::Format("Unhandled event: %d"), event.GetId());
+  default: 
+    wxFAIL;
   }
 }
 

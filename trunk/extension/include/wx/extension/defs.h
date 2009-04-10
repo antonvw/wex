@@ -89,10 +89,4 @@ enum exToolId
   ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + 100,   // before this is the last report
   ID_TOOL_HIGHEST,
 };
-
-// This macro adds file and line info, useful when using wxLogError or wxLogDebug. __FUNCTION__ not used.
-#ifndef FILE_INFO
-#define FILE_INFO( arg ) __FILE__ ":%d. " arg, __LINE__
-#endif
-
 #endif

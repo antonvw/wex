@@ -39,7 +39,7 @@ wxWindow* exNotebook::AddPage(
 {
   if (GetPageByKey(key, select) != NULL)
   {
-    wxLogError(FILE_INFO("Page with key: %s already exists"), key.c_str());
+    wxLogError("Page with key: %s already exists", key.c_str());
     return NULL;
   }
 
@@ -47,7 +47,7 @@ wxWindow* exNotebook::AddPage(
 
   if (!wxAuiNotebook::AddPage(page, use_text, select, bitmap))
   {
-    wxLogError(FILE_INFO("Could not add page with text: %s"), use_text.c_str());
+    wxLogError("Could not add page with text: %s", use_text.c_str());
     return NULL;
   }
 
@@ -146,7 +146,7 @@ bool exNotebook::ForEach(int id)
       }
       break;
 
-    default: wxLogError(FILE_INFO("Unhandled")); break;
+    default: wxFAIL; break;
     }
   }
 

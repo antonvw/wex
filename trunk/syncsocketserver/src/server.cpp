@@ -606,12 +606,11 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         break;
 
       default:
-        m_Statistics.Inc(_("Socket Client Unhandled Events"));
+        wxFAIL;
     }
   }
   else
   {
-    m_Statistics.Inc(_("Socket Unhandled Events"));
     wxFAIL;
   }
 }
