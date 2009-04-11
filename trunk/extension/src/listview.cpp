@@ -113,6 +113,10 @@ void exListItem::StoreImage(int image)
   }
 }
 
+
+const int ID_COL_FIRST = 1000;
+const int ID_COL_LAST = ID_COL_FIRST + 255;
+
 BEGIN_EVENT_TABLE(exListView, wxListView)
   EVT_FIND(wxID_ANY, exListView::OnFindDialog)
   EVT_FIND_CLOSE(wxID_ANY, exListView::OnFindDialog)
@@ -125,6 +129,7 @@ BEGIN_EVENT_TABLE(exListView, wxListView)
   EVT_MENU(wxID_SORT_DESCENDING, exListView::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exListView::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, exListView::OnCommand)
+  EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, exListView::OnCommand)
   EVT_RIGHT_DOWN(exListView::OnMouse)
 END_EVENT_TABLE()
 
@@ -247,6 +252,20 @@ void exListView::BuildPopupMenu(exMenu& menu)
       wxEmptyString,
       wxART_FIND);
 
+    menu.AppendSeparator();
+    
+    wxMenu* menuSort = new wxMenu;
+    
+    for (
+      vector<exColumn>::const_iterator it = m_Columns.begin(), int i = COL_ID_FIRST;
+      it != m_Columns.end();
+      ++it, i++)
+    {
+      menuSort->Append(i, it->GetText();
+    }
+    
+    menu.AppendSubMenu(menuSort, _("Sort"));
+    
     menu.AppendSeparator();
   }
 
@@ -612,6 +631,12 @@ const wxString exListView::ItemToText(int item_number)
 
 void exListView::OnCommand(wxCommandEvent& event)
 {
+  if (event.GetId() >= ID_COL_FIRST && event.GetId() <= ID_COL_LAST)
+  {
+    SortColumn(event.GetId() - ID_COL_FIRST, SOR_TOGGLE);
+    return;
+  }
+  
   switch (event.GetId())
   {
   case wxID_CLEAR:
