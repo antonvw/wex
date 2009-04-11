@@ -100,14 +100,14 @@ const wxString exGrid::BuildPage()
 
   wxString text;
 
-  text << "<TABLE border=1 cellpadding=4 cellspacing=0 ";
+  text << "<TABLE ";
 
   if (GridLinesEnabled())
-    text << "rules=\"all\" ";
+    text << "border=1";
   else
-    text << "rules=\"none\" ";
-
-  text << ">" << wxTextFile::GetEOL();
+    text << "border=0";
+    
+  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
 
   text << "<tr>" << wxTextFile::GetEOL();
 
