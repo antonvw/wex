@@ -108,8 +108,7 @@ void exListItem::StoreImage(int image)
 
   if (!m_ListView->SetItem(*this))
   {
-    wxLogError(FILE_INFO("Could not set image: %d for item: %ld"),
-      GetImage(), GetId());
+    wxFAIL;
   }
 }
 
@@ -256,12 +255,13 @@ void exListView::BuildPopupMenu(exMenu& menu)
     
     wxMenu* menuSort = new wxMenu;
     
+    int i = ID_COL_FIRST;
     for (
-      vector<exColumn>::const_iterator it = m_Columns.begin(), int i = COL_ID_FIRST;
+      vector<exColumn>::const_iterator it = m_Columns.begin();
       it != m_Columns.end();
-      ++it, i++)
+      ++it)
     {
-      menuSort->Append(i, it->GetText();
+      menuSort->Append(i++, it->GetText());
     }
     
     menu.AppendSubMenu(menuSort, _("Sort"));
@@ -343,7 +343,7 @@ long exListView::FindColumn(const wxString& name, bool is_required) const
 
   if (is_required)
   {
-    wxLogError(FILE_INFO("Column: %s not found"), name.c_str());
+    wxLogError("Column: %s not found", name.c_str());
   }
 
   return -1;
@@ -581,7 +581,7 @@ bool exListView::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
-    wxLogError(FILE_INFO("Text is empty"));
+    wxLogError("Text is empty");
     return false;
   }
 
@@ -633,7 +633,7 @@ void exListView::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() >= ID_COL_FIRST && event.GetId() <= ID_COL_LAST)
   {
-    SortColumn(event.GetId() - ID_COL_FIRST, SOR_TOGGLE);
+    SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
     return;
   }
   
@@ -824,7 +824,7 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
 
         if (!dt.ParseDateTime(val, &end))
         {
-          wxLogError(FILE_INFO("Cannot sort, date not known format"));
+          wxLogError("Cannot sort, date not known format");
           return;
         }
 

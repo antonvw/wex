@@ -1711,7 +1711,7 @@ void exSTC::OnFindDialog(wxFindDialogEvent& event)
     {
       if (GetTargetStart() == GetTargetEnd())
       {
-        wxFAIL("Target start and end are equal");
+        wxFAIL_MSG("Target start and end are equal");
         break;
       }
 

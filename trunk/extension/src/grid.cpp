@@ -489,7 +489,7 @@ void exGrid::OnGrid(wxGridEvent& event)
   }
   else if (event.GetEventType() == wxEVT_GRID_CELL_BEGIN_DRAG)
   {
-    wxLogMessage(FILE_INFO("Begin drag"));
+    // Readme: Not yet implemented.
   }
   else
   {
@@ -508,11 +508,10 @@ void exGrid::OnGridRange(wxGridRangeSelectEvent& event)
 
 void exGrid::OnMouse(wxMouseEvent& event)
 {
-  // This event is not coming in as well.
-  // Could be used to trigger a real drag.
   if (event.Dragging())
   {
-    wxLogMessage(FILE_INFO("Is dragging"));
+    // Readme: This event is not coming in as well.
+    // Could be used to trigger a real drag.
   }
 
   event.Skip();
