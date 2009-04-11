@@ -816,11 +816,8 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
 
     if (event.GetId() == ID_LIST_VERSIONLIST)
     {
-      if ((list = m_Frame->Activate(LIST_VERSION)) == NULL)
-      {
-        wxLogError("Version list is not activated");
-        return;
-      }
+      list = m_Frame->Activate(LIST_VERSION);
+      wxASSERT(list != NULL);
     }
 
     while ((i = GetNextSelected(i)) != -1)
@@ -1055,11 +1052,7 @@ bool exListViewFile::ProcessIsRunning()
 
 void exListViewFile::ProcessRun(const wxString& command)
 {
-  if (m_Process != NULL)
-  {
-    wxLogError("Process not null");
-    return;
-  }
+  wxASSERT(m_Process == NULL);
 
   // This is a static method, we cannot use m_Frame here.
   wxWindow* window = wxTheApp->GetTopWindow();

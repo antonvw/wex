@@ -47,7 +47,7 @@ wxWindow* exNotebook::AddPage(
 
   if (!wxAuiNotebook::AddPage(page, use_text, select, bitmap))
   {
-    wxLogError("Could not add page with text: %s", use_text.c_str());
+    wxFAIL;
     return NULL;
   }
 
@@ -60,11 +60,7 @@ bool exNotebook::DeletePage(const wxString& key)
 {
   wxWindow* page = GetPageByKey(key);
 
-  if (page == NULL)
-  {
-    wxLogError("DeletePage failed");
-    return false;
-  }
+  wxASSERT(page != NULL);
 
   m_MapPages.erase(key);
 
@@ -168,7 +164,7 @@ const wxString exNotebook::GetKeyByPage(wxWindow* page) const
       }
     }
 
-    wxLogError("GetKeyByPage failed");
+    wxFAIL;
   }
 
   return wxEmptyString;

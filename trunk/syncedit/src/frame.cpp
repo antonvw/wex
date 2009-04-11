@@ -835,7 +835,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
       switch (event.GetId())
       {
-      case wxID_CLOSE: // nothing extra, just prevent wxLogError from happening
+      case wxID_CLOSE: // nothing extra, just prevent wxFAIL from happening
         break;
 
       case wxID_FIND:
