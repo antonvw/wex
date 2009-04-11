@@ -407,6 +407,7 @@ and saved in the same directory as where the executable is."));
     info.SetDescription(_("This program offers a text or binary editor with automatic syncing."));
 #endif
     info.SetCopyright("(c) 1998-2009, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
+    info.SetWebSite("http://svn.xp-dev.com/svn/antonvw-wxprojects/trunk/syncedit/release.htm");
     wxAboutBox(info);
     }
     break;
