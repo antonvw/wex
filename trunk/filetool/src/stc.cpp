@@ -18,10 +18,10 @@ BEGIN_EVENT_TABLE(exSTCWithFrame, exSTC)
 END_EVENT_TABLE()
 
 #if wxUSE_DRAG_AND_DROP
-class ftSTCDropTarget : public wxFileDropTarget
+class STCDropTarget : public wxFileDropTarget
 {
 public:
-  ftSTCDropTarget(exFrameWithHistory* owner) {m_Owner = owner;}
+  STCDropTarget(exFrameWithHistory* owner) {m_Owner = owner;}
 private:
   virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
   {
@@ -138,7 +138,7 @@ bool exSTCWithFrame::Initialize()
 #if wxUSE_DRAG_AND_DROP
   // Now DnD normal text inside the editor does not work.
   // Adding a wxTextDropTarget works a little, but does not move text.
-  SetDropTarget(new ftSTCDropTarget(m_Frame));
+  SetDropTarget(new STCDropTarget(m_Frame));
 #endif
 
   return true;

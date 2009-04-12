@@ -185,7 +185,7 @@ exListViewFile* MDIFrame::Activate(int type, const exLexer* lexer)
 
 exListViewFile* MDIFrame::AddPage(int type, const exLexer* lexer)
 {
-  const wxString name = exListViewFile::GetTypeDescription((exListViewFile::ftListType)type) +
+  const wxString name = exListViewFile::GetTypeDescription((exListViewFile::ListType)type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
   exListViewFile* list = (exListViewFile*)m_NotebookWithLists->GetPageByKey(name);
@@ -194,7 +194,7 @@ exListViewFile* MDIFrame::AddPage(int type, const exLexer* lexer)
   {
     list = new exListViewFile(
       m_NotebookWithLists,
-      (exListViewFile::ftListType)type,
+      (exListViewFile::ListType)type,
       FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);

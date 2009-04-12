@@ -116,7 +116,7 @@ END_EVENT_TABLE()
 exProcessWithListView* exListViewFile::m_Process = NULL;
 
 exListViewFile::exListViewFile(wxWindow* parent,
-  ftListType type,
+  ListType type,
   long menu_flags,
   const exLexer* lexer,
   const wxPoint& pos,
@@ -498,7 +498,7 @@ int exListViewFile::GetTypeTool(const exTool& tool)
   }
 }
 
-const wxString exListViewFile::GetTypeDescription(ftListType type)
+const wxString exListViewFile::GetTypeDescription(ListType type)
 {
   wxString value;
 

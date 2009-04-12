@@ -36,7 +36,7 @@ class exListViewFile : public exListView, public exFile
 {
 public:
   /// The supported lists.
-  enum ftListType
+  enum ListType
   {
     LIST_BEFORE_FIRST, ///< for iterating
     LIST_COUNT,        ///< a list to show statistics
@@ -55,7 +55,7 @@ public:
 
   /// Constructor.
   exListViewFile(wxWindow* parent,
-    ftListType type,
+    ListType type,
     long menu_flags = FT_LISTVIEW_DEFAULT,
     const exLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
@@ -110,13 +110,13 @@ public:
   static void CleanUp();
 
   /// Gets the list type.
-  const ftListType GetType() const {return m_Type;};
+  const ListType GetType() const {return m_Type;};
 
   /// Gets the list type as a string.
   const wxString GetTypeDescription() const {return GetTypeDescription(m_Type);};
 
   /// Gets the list type as a string for specified type.
-  static const wxString GetTypeDescription(ftListType type);
+  static const wxString GetTypeDescription(ListType type);
 
   /// Returns list type from tool id.
   static int GetTypeTool(const exTool& tool);
@@ -159,7 +159,7 @@ private:
   int m_ItemNumber;
   exFrameWithHistory* m_Frame;
   const long m_MenuFlags;
-  const ftListType m_Type;
+  const ListType m_Type;
 
   DECLARE_EVENT_TABLE()
 };
