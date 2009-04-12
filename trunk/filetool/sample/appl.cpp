@@ -101,7 +101,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
     wxID_ANY, wxDefaultPosition, wxDefaultSize,
     wxAUI_NB_DEFAULT_STYLE | 
     wxAUI_NB_WINDOWLIST_BUTTON);
-  ftFindToolBar* findbar = new ftFindToolBar(this, this);
+  exFindToolBar* findbar = new exFindToolBar(this, this);
 
   m_STC = new exSTCWithFrame(this); // use all flags (default)
 
@@ -110,7 +110,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
     i < exListViewFile::LIST_AFTER_LAST;
     i++)
   {
-    exListViewFile* vw = new exListViewFile(this, (exListViewFile::ftListType)i, 0xFF, &lexer); // set all flags
+    exListViewFile* vw = new exListViewFile(this, (exListViewFile::ListType)i, 0xFF, &lexer); // set all flags
     m_NotebookWithLists->AddPage(vw, vw->GetTypeDescription(), vw->GetTypeDescription(), true);
   }
 
@@ -122,7 +122,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
 
   GetManager().Update();
 
-  ftDir dir(
+  exDirWithReport dir(
     (exListViewFile*)m_NotebookWithLists->GetPageByKey(
       exListViewFile::GetTypeDescription(exListViewFile::LIST_PROJECT)),
     wxGetCwd(), 
@@ -130,7 +130,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
 
   dir.FindFiles();
 
-  ftListItem item(
+  exListItemWithFileName item(
     (exListViewFile*)m_NotebookWithLists->GetPageByKey(
       exListViewFile::GetTypeDescription(exListViewFile::LIST_PROJECT)), 
     "NOT EXISTING ITEM");
