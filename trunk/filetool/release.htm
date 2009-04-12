@@ -29,7 +29,7 @@ border: 1px #6699CC solid;
 
 <!--
 Wait for next wxWidgets:
-- In ftProcess::HasInput allow php script error messages to be able to be double clicked and goto line no.
+- In Process::HasInput allow php script error messages to be able to be double clicked and goto line no.
   Is already added, but the reg ex does not match, wait for next wxWidgets.
   Then also change the gcc check implemented by tokenizer into reg ex check.
 - wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
@@ -37,11 +37,9 @@ Wait for next wxWidgets:
   Or just hope better for next wxWidgets.
 
 Roadmap:
-- In ftSTC adding file drop causes text dragging not work.
+- In STC adding file drop causes text dragging not work.
   In scintilla v1.70 file drop is supported (how?), check and remove from here if okay.
   This can be tested in sample for wxextension.
-- In ftListView GTK a list view (lijst weergave) should be possible too.
-  Wait for new wxDataviewCtrl, then sort will probably work as well.
 - Make process and wxGTK can be improved: not always a valid file is found.
   And for each new Run clear the old contents??
 -->
