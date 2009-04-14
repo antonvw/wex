@@ -223,13 +223,11 @@ public:
   /// Returns the statistics log filename.
   static const wxFileName GetLogfileName();
 
-  /// For the last exTextFile::ToolRun logs the elements statistics to 
-  /// the statusbar (always), to the statistics logfile (if specified),
-  /// and open the statistics logfile (if specified) and the tool was a count type.
+  /// For the specified tool logs the elements statistics to 
+  /// the statusbar (always) and to the statistics logfile (if specified).
   void Log(
     const exTool& tool,
-    bool log_to_file = true,
-    bool open_file = true) const;
+    bool log_to_file = true) const;
 private:
   exStatistics<long> m_Elements;
   exStatistics<long> m_Keywords;

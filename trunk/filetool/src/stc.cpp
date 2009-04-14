@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/extension/extension.h>
 #include <wx/extension/svn.h>
 #include <wx/filetool/filetool.h>
 
@@ -175,6 +176,10 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
       exTextFileWithReport report(m_FileName);
       report.RunTool(tool);
       report.GetStatistics().Log(tool);
+      if (open_file)
+      {
+        exOpenFile(GetLogfileName(), exSTC::STC_OPEN_FROM_STATISTICS);
+      }
     }
 
     return;

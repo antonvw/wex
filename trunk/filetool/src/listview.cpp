@@ -11,6 +11,7 @@
 
 #include <wx/tokenzr.h>
 #include <wx/extension/configdialog.h>
+#include <wx/extension/extension.h>
 #include <wx/extension/svn.h>
 #include <wx/filetool/filetool.h>
 #include <wx/filetool/process.h>
@@ -1166,6 +1167,11 @@ void exListViewFile::ThreadTerminated()
 {
   m_Thread = NULL;
   exFrame::StatusText(_("Ready"));
+
+      if (open_file)
+      {
+        exOpenFile(GetLogfileName(), exSTC::STC_OPEN_FROM_STATISTICS);
+      }
 }
 
 #if wxUSE_DRAG_AND_DROP

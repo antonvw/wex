@@ -11,9 +11,9 @@
 
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
-#include <wx/extension/extension.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/app.h>
+#include <wx/extension/util.h>
 
 long exFileNameStatistics::Get(const wxString& key) const
 {
@@ -51,8 +51,7 @@ const wxFileName exFileNameStatistics::GetLogfileName()
 
 void exFileNameStatistics::Log(
   const exTool& tool,
-  bool log_to_file,
-  bool open_file) const
+  bool log_to_file) const
 {
   // This is no error, if you run a tool and you cancelled everything,
   // the elements will be empty, so just quit.
@@ -90,11 +89,6 @@ void exFileNameStatistics::Log(
         << wxTextFile::GetEOL();
 
       exLog(logtext, GetLogfileName());
-
-      if (open_file)
-      {
-        exOpenFile(GetLogfileName(), exSTC::STC_OPEN_FROM_STATISTICS);
-      }
     }
   }
 }
