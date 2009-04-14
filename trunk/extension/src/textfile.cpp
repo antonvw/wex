@@ -624,7 +624,7 @@ bool exTextFile::ParseForOther()
   {
     if (m_Config->GetFindReplaceData()->GetFindStringNoCase().empty())
     {
-      wxLogError("Find string is empty");
+      wxFAIL;
       return false;
     }
   }

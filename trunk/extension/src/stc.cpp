@@ -2321,7 +2321,7 @@ void exSTC::SequenceDialog()
 
     if (actual_line > lines)
     {
-      wxLogError("Sequence error");
+      wxFAIL;
       return;
     }
 
