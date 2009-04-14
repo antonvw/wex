@@ -93,7 +93,7 @@ MDIFrame::MDIFrame(bool open_recent)
     this, this, (wxWindowID)NOTEBOOK_PROJECTS, wxDefaultPosition, wxDefaultSize, flag);
   m_History = new exListViewFile(this,
     exListViewFile::LIST_HISTORY,
-    FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
+    exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS);
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
@@ -195,7 +195,7 @@ exListViewFile* MDIFrame::AddPage(int type, const exLexer* lexer)
     list = new exListViewFile(
       m_NotebookWithLists,
       (exListViewFile::ListType)type,
-      FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS,
+      exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);
   }
@@ -272,7 +272,7 @@ void MDIFrame::NewFile(bool as_project)
     page = new exListViewFile(notebook,
       fn.GetFullPath(),
       project_wildcard,
-      FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
+      exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS);
 
     SetTitle(wxEmptyString, text);
   }
@@ -973,7 +973,7 @@ bool MDIFrame::OpenFile(
       exListViewFile* project = new exListViewFile(m_NotebookWithProjects,
         filename.GetFullPath(),
         project_wildcard,
-        FT_LISTVIEW_DEFAULT | FT_LISTVIEW_RBS);
+        exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS);
 
       m_NotebookWithProjects->AddPage(
         project,

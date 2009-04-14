@@ -15,17 +15,6 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 
-/// Menu flags for exListViewFile, they determine how the context menu will appear.
-enum
-{
-  FT_LISTVIEW_REPORT_FIND = 0x0001, ///< for adding find and replace in files
-  FT_LISTVIEW_TOOL        = 0x0002, ///< for adding tool menu
-  FT_LISTVIEW_RBS         = 0x0004, ///< for adding RBS menu item
-
-  /// RBS is not part of default.
-  FT_LISTVIEW_DEFAULT = FT_LISTVIEW_REPORT_FIND | FT_LISTVIEW_TOOL,
-};
-
 class exFrameWithHistory;
 class exProcessWithListView;
 class exToolThread;
@@ -53,10 +42,21 @@ public:
     LIST_AFTER_LAST,   ///< for iterating
   };
 
+  /// Menu flags, they determine how the context menu will appear.
+  enum
+  {
+    LIST_MENU_REPORT_FIND = 0x0001, ///< for adding find and replace in files
+    LIST_MENU_TOOL        = 0x0002, ///< for adding tool menu
+    LIST_MENU_RBS         = 0x0004, ///< for adding RBS menu item
+
+    /// RBS is not part of default.
+    LIST_MENU_DEFAULT = LIST_MENU_REPORT_FIND | LIST_MENU_TOOL,
+  };
+
   /// Constructor.
   exListViewFile(wxWindow* parent,
     ListType type,
-    long menu_flags = FT_LISTVIEW_DEFAULT,
+    long menu_flags = LIST_MENU_DEFAULT,
     const exLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -67,7 +67,7 @@ public:
   exListViewFile(wxWindow* parent,
     const wxString& file,
     const wxString& wildcard,
-    long menu_flags = FT_LISTVIEW_DEFAULT,
+    long menu_flags = LIST_MENU_DEFAULT,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,

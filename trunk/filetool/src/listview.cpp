@@ -298,7 +298,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
     }
 
 #ifdef __WXMSW__
-    if (exists && !is_folder && (m_MenuFlags & FT_LISTVIEW_RBS))
+    if (exists && !is_folder && (m_MenuFlags & LIST_MENU_RBS))
     {
       menu.AppendSeparator();
       menu.Append(ID_LIST_SEND_ITEM, exEllipsed(_("&Build RBS File")));
@@ -325,7 +325,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
       m_Type != LIST_FIND && m_Type != LIST_REPLACE)
   {
     if (GetItemCount() > 0 && (
-        m_MenuFlags & FT_LISTVIEW_REPORT_FIND))
+        m_MenuFlags & LIST_MENU_REPORT_FIND))
     {
       menu.Append(ID_TOOL_REPORT_FIND, exEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
@@ -347,7 +347,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
   exListView::BuildPopupMenu(menu);
 
   if (m_Frame != NULL && GetItemCount() > 0 && exists &&
-     (m_MenuFlags & FT_LISTVIEW_TOOL))
+     (m_MenuFlags & LIST_MENU_TOOL))
   {
     menu.AppendSeparator();
     menu.AppendTools();
