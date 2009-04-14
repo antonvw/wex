@@ -136,7 +136,6 @@ protected:
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
-  void OnTimer(wxTimerEvent& WXUNUSED(event)) {wxWakeUpIdle();};
 private:
   int AddItems();
   void DeleteDoubles();

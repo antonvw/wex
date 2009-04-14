@@ -116,7 +116,6 @@ BEGIN_EVENT_TABLE(exListViewFile, exListView)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exListViewFile::OnCommand)
   EVT_LEFT_DOWN(exListViewFile::OnMouse)
   EVT_RIGHT_DOWN(exListViewFile::OnMouse)
-  EVT_TIMER(-1, exListViewFile::OnTimer)
 END_EVENT_TABLE()
 
 exProcessWithListView* exListViewFile::m_Process = NULL;
