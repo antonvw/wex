@@ -176,9 +176,12 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
       exTextFileWithReport report(m_FileName);
       report.RunTool(tool);
       report.GetStatistics().Log(tool);
-      if (open_file)
+
+      if (tool.IsCountType())
       {
-        exOpenFile(GetLogfileName(), exSTC::STC_OPEN_FROM_STATISTICS);
+        exOpenFile(
+          exFileNameStatistics::GetLogfileName(), 
+          STC_OPEN_FROM_STATISTICS);
       }
     }
 

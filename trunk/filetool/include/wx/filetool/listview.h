@@ -133,9 +133,6 @@ public:
 
   // Called after process has finished, not for doxygen.
   static void ProcessTerminated();
-  
-  // Called after tool thread has finished, not for doxygen.
-  void ThreadTerminated();
 protected:
   void BuildPopupMenu(exMenu& menu);
   void OnCommand(wxCommandEvent& event);

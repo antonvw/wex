@@ -52,6 +52,8 @@ private:
 };
 #endif
 
+const int ID_THREAD_TERMINATED = 1200;
+
 class exToolThread : public wxThread
 {
 public:
@@ -91,7 +93,10 @@ protected:
 
     stats.Log(m_Tool);
 
-    m_ListView->ThreadTerminated();
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_THREAD_TERMINATED);
+    event.SetExtraLong(m_Tool.GetId());
+    wxPostEvent(m_ListView, event);
+
     return NULL;
   };
 private:
@@ -106,6 +111,7 @@ BEGIN_EVENT_TABLE(exListViewFile, exListView)
   EVT_LIST_ITEM_ACTIVATED(ID_LISTVIEW, exListViewFile::OnList)
   EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, exListViewFile::OnList)
   EVT_MENU(wxID_ADD, exListViewFile::OnCommand)
+  EVT_MENU(ID_THREAD_TERMINATED, exListViewFile::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, exListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exListViewFile::OnCommand)
@@ -908,6 +914,21 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
     break;
 #endif
 
+  case ID_THREAD_TERMINATED:
+    {
+    exTool tool(event.GetExtraLong());
+    m_Thread = NULL;
+    exFrame::StatusText(_("Ready"));
+
+    if (tool.IsCountType())
+    {
+      exOpenFile(
+        exFileNameStatistics::GetLogfileName(), 
+        exSTC::STC_OPEN_FROM_STATISTICS);
+    }
+    }
+    break;
+
   default: event.Skip();
   }
 
@@ -1161,17 +1182,6 @@ void exListViewFile::RunItems(const exTool& tool)
   m_Thread = new exToolThread(tool, this);
   m_Thread->Create();
   m_Thread->Run();
-}
-
-void exListViewFile::ThreadTerminated()
-{
-  m_Thread = NULL;
-  exFrame::StatusText(_("Ready"));
-
-      if (open_file)
-      {
-        exOpenFile(GetLogfileName(), exSTC::STC_OPEN_FROM_STATISTICS);
-      }
 }
 
 #if wxUSE_DRAG_AND_DROP
