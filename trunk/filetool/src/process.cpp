@@ -40,7 +40,9 @@ private:
 
 wxString exProcessWithListView::m_Command;
 
-exProcessWithListView::exProcessWithListView(exListViewFile* listview, const wxString& command)
+exProcessWithListView::exProcessWithListView(
+  exListViewFile* listview, 
+  const wxString& command)
   : wxProcess(listview, -1)
   , m_Owner(listview)
   , m_Thread(NULL)
@@ -170,10 +172,11 @@ void exProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
   if (m_Thread != NULL)
   {
     m_Thread->Delete();
-    wxDELETE(m_Thread);
+    m_Thread = NULL;
   }
 
-  m_Owner->ProcessTerminated();
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
+  wxPostEvent(m_Owner, event);
 }
 
 bool exProcessWithListView::Run()
@@ -210,11 +213,6 @@ bool exProcessWithListView::Run()
 
 void exProcessWithListView::Stop()
 {
-  if (m_Thread != NULL)
-  {
-    m_Thread->Delete();
-  }
-
   Kill(GetPid(), wxSIGKILL);
 
   exFrame::StatusText(_("Stopped"));

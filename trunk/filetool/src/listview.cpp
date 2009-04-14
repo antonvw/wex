@@ -52,8 +52,6 @@ private:
 };
 #endif
 
-const int ID_THREAD_TERMINATED = 1200;
-
 class exToolThread : public wxThread
 {
 public:
@@ -93,7 +91,7 @@ protected:
 
     stats.Log(m_Tool);
 
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_THREAD_TERMINATED);
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_THREAD);
     event.SetExtraLong(m_Tool.GetId());
     wxPostEvent(m_ListView, event);
 
@@ -111,7 +109,8 @@ BEGIN_EVENT_TABLE(exListViewFile, exListView)
   EVT_LIST_ITEM_ACTIVATED(ID_LISTVIEW, exListViewFile::OnList)
   EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, exListViewFile::OnList)
   EVT_MENU(wxID_ADD, exListViewFile::OnCommand)
-  EVT_MENU(ID_THREAD_TERMINATED, exListViewFile::OnCommand)
+  EVT_MENU(ID_TERMINATED_PROCESS, exListViewFile::OnCommand)
+  EVT_MENU(ID_TERMINATED_THREAD, exListViewFile::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, exListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exListViewFile::OnCommand)
@@ -914,7 +913,12 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
     break;
 #endif
 
-  case ID_THREAD_TERMINATED:
+  case ID_TERMINATED_PROCESS:
+    wxBell();
+    wxDELETE(m_Process);
+    break;
+
+  case ID_TERMINATED_THREAD:
     {
     exTool tool(event.GetExtraLong());
     m_Thread = NULL;
@@ -1099,12 +1103,6 @@ void exListViewFile::ProcessStop()
   {
     m_Process->Stop();
   }
-}
-
-void exListViewFile::ProcessTerminated()
-{
-  wxBell();
-  wxDELETE(m_Process);
 }
 
 void exListViewFile::RunItems(const exTool& tool)

@@ -130,9 +130,6 @@ public:
 
   /// Stops all the processes.
   static void ProcessStop();
-
-  // Called after process has finished, not for doxygen.
-  static void ProcessTerminated();
 protected:
   void BuildPopupMenu(exMenu& menu);
   void OnCommand(wxCommandEvent& event);
