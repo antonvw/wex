@@ -15,6 +15,7 @@
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/renderer.h>
+#include <wx/extension/configdialog.h>
 #include "appl.h"
 #include "appl.xpm"
 
