@@ -350,13 +350,9 @@ void exFrame::StatusText(const wxString& text, const wxString& pane)
 
   if (field >= 0)
   {
-    // Especially with statusbar updating (in the OnIdle for exSTC or your application), most
-    // of the time the statusbar does not change.
-    // To avoid flicker, therefore only set if something changes.
-    if (m_StatusBar->GetStatusText(field) != text)
-    {
-      m_StatusBar->SetStatusText(text, field);
-    }
+    // wxStatusBar checks whether new text differs from current,
+    // and does nothing if the same to avoid flicker.
+    m_StatusBar->SetStatusText(text, field);
   }
 }
 #endif // wxUSE_STATUSBAR
