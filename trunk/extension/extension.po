@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-15 07:53+0100\n"
-"PO-Revision-Date: 2009-04-15 07:53+0100\n"
-"Last-Translator: Anton <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-04-15 21:06+0100\n"
+"PO-Revision-Date: 2009-04-15 21:06+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,45 +17,113 @@ msgstr ""
 "X-Poedit-SearchPath-0: include\n"
 "X-Poedit-SearchPath-1: src\n"
 
-#: src/base.cpp:402
-msgid "bottom"
-msgstr "einde"
+#: src/otl.cpp:28
+#: src/otl.cpp:55
+#: src/otl.cpp:67
+msgid "Datasource"
+msgstr "Datasource"
 
-#: src/base.cpp:402
-msgid "top"
-msgstr "begin"
+#: src/otl.cpp:33
+#: src/otl.cpp:53
+msgid "User"
+msgstr "Gebruiker"
 
-#: src/base.cpp:404
-msgid "Searching for"
-msgstr "Zoeken naar"
+#: src/otl.cpp:34
+#: src/otl.cpp:54
+msgid "Password"
+msgstr "Wachtwoord"
 
-#: src/base.cpp:404
-msgid "hit"
-msgstr "passeert"
+#: src/otl.cpp:40
+msgid "Open ODBC Database"
+msgstr "ODBC Database openen"
 
-#: src/base.cpp:412
-msgid "not found"
-msgstr "niet gevonden"
+#: src/otl.cpp:141
+#: src/otl.cpp:223
+msgid "<Skipped>"
+msgstr "<Overgeslagen>"
 
-#: src/base.cpp:570
-msgid "&Deselect All"
-msgstr "Alles &deselecteren"
+#: src/shell.cpp:253
+msgid "event not found"
+msgstr "gebeurtenis niet gevonden"
 
-#: src/base.cpp:583
-msgid "&Invert"
-msgstr "&Inverteren"
+#: src/tool.cpp:69
+msgid "Commited"
+msgstr "Gecommit"
 
-#: src/base.cpp:599
-msgid "Page &Setup"
-msgstr "Pagina-&instelling"
+#: src/tool.cpp:69
+msgid "&Commit"
+msgstr "&Commit"
 
-#: src/base.cpp:622
-msgid "&Report"
-msgstr "&Rapporteren"
+#: src/tool.cpp:70
+msgid "Recent revision from"
+msgstr "Laatste wijziging van"
 
-#: src/base.cpp:624
-msgid "&Tools"
-msgstr "&Extra"
+#: src/tool.cpp:71
+#, c-format
+msgid "Reported %ld revisions in"
+msgstr "%ld revisies gerapporteerd in"
+
+#: src/tool.cpp:71
+msgid "&Revision"
+msgstr "&Revisie"
+
+#: src/tool.cpp:74
+msgid "Edited header in"
+msgstr "Koptekst gewijzigd in "
+
+#: src/tool.cpp:74
+#: src/tool.cpp:81
+msgid "&Header"
+msgstr "&Koptekst"
+
+#: src/tool.cpp:75
+msgid "Parsed code lines"
+msgstr "Code regels"
+
+#: src/tool.cpp:76
+msgid "Parsed comment lines"
+msgstr "Commentaar regels"
+
+#: src/tool.cpp:78
+msgid "Counted"
+msgstr "Geteld"
+
+#: src/tool.cpp:78
+msgid "&Count"
+msgstr "&Statistieken"
+
+#: src/tool.cpp:79
+#, c-format
+msgid "Found %ld matches in"
+msgstr "%ld voorkomens gevonden in"
+
+#: src/tool.cpp:80
+#, c-format
+msgid "Replaced %ld matches in"
+msgstr "Vervangen: %ld voorkomens"
+
+#: src/tool.cpp:81
+#, c-format
+msgid "Reported %ld headers in"
+msgstr "%ld kopteksten gerapporteerd in"
+
+#: src/tool.cpp:82
+#, c-format
+msgid "Reported %ld keywords in"
+msgstr "%ld keywords gerapporteerd in"
+
+#: src/tool.cpp:82
+msgid "&Keyword"
+msgstr "&Keyword"
+
+#: src/lexers.cpp:50
+msgid "All Files"
+msgstr "Alle bestanden"
+
+#: src/lexers.cpp:423
+#: src/listview.cpp:513
+msgid "Input"
+msgstr "Invoer"
 
 #: src/config.cpp:121
 #: src/config.cpp:144
@@ -137,15 +205,6 @@ msgstr "Gesynchroniseerd"
 msgid "Modified"
 msgstr "Gewijzigd"
 
-#: src/lexers.cpp:50
-msgid "All Files"
-msgstr "Alle bestanden"
-
-#: src/lexers.cpp:423
-#: src/listview.cpp:513
-msgid "Input"
-msgstr "Invoer"
-
 #: src/listview.cpp:171
 #: src/listview.cpp:176
 msgid "List Font"
@@ -159,51 +218,116 @@ msgstr "Sorteren"
 msgid "Sorted on"
 msgstr "Gesorteerd op kolom"
 
-#: src/otl.cpp:28
-#: src/otl.cpp:55
-#: src/otl.cpp:67
-msgid "Datasource"
-msgstr "Datasource"
+#: src/base.cpp:398
+msgid "bottom"
+msgstr "einde"
 
-#: src/otl.cpp:33
-#: src/otl.cpp:53
-msgid "User"
-msgstr "Gebruiker"
+#: src/base.cpp:398
+msgid "top"
+msgstr "begin"
 
-#: src/otl.cpp:34
-#: src/otl.cpp:54
-msgid "Password"
-msgstr "Wachtwoord"
+#: src/base.cpp:400
+msgid "Searching for"
+msgstr "Zoeken naar"
 
-#: src/otl.cpp:40
-msgid "Open ODBC Database"
-msgstr "ODBC Database openen"
+#: src/base.cpp:400
+msgid "hit"
+msgstr "passeert"
 
-#: src/otl.cpp:141
-#: src/otl.cpp:223
-msgid "<Skipped>"
-msgstr "<Overgeslagen>"
+#: src/base.cpp:408
+msgid "not found"
+msgstr "niet gevonden"
 
-#: src/shell.cpp:253
-msgid "event not found"
-msgstr "gebeurtenis niet gevonden"
+#: src/base.cpp:566
+msgid "&Deselect All"
+msgstr "Alles &deselecteren"
 
-#: src/statistics.cpp:47
-msgid "statistics.log"
-msgstr "statistiek.log"
+#: src/base.cpp:579
+msgid "&Invert"
+msgstr "&Inverteren"
 
+#: src/base.cpp:595
+msgid "Page &Setup"
+msgstr "Pagina-&instelling"
+
+#: src/base.cpp:618
+msgid "&Report"
+msgstr "&Rapporteren"
+
+#: src/base.cpp:620
+msgid "&Tools"
+msgstr "&Extra"
+
+#: src/textfile.cpp:250
+msgid "Comments"
+msgstr "Commentaar woorden"
+
+#: src/textfile.cpp:252
+#: src/textfile.cpp:727
+#: src/textfile.cpp:863
+msgid "Comment Size"
+msgstr "Commentaar grootte"
+
+#: src/textfile.cpp:260
+#: src/textfile.cpp:642
+#: src/textfile.cpp:995
+#: src/textfile.cpp:1003
 #: src/statistics.cpp:67
 msgid "Actions Completed"
 msgstr "Acties uitgevoerd"
 
+#: src/textfile.cpp:279
+msgid "Header Description"
+msgstr "Koptekst omschrijving"
+
+#: src/textfile.cpp:310
+msgid "File created and header added."
+msgstr "Bestand gemaakt en koptekst toegevoegd."
+
+#: src/textfile.cpp:310
+msgid "Header added."
+msgstr "Koptekst toegevoegd."
+
+#: src/textfile.cpp:549
+#: src/textfile.cpp:811
+#: src/textfile.cpp:818
+#: src/textfile.cpp:834
+msgid "Lines Of Code"
+msgstr "Code regels"
+
+#: src/textfile.cpp:568
+#: src/textfile.cpp:572
+#: src/textfile.cpp:938
+#: src/svn.cpp:66
+#: src/svn.cpp:103
+msgid "Revision comment"
+msgstr "Commentaar"
+
+#: src/textfile.cpp:775
+msgid "Words Of Code"
+msgstr "Code woorden"
+
+#: src/textfile.cpp:850
+msgid "Empty Lines"
+msgstr "Lege regels"
+
+#: src/textfile.cpp:928
+msgid "Files"
+msgstr "Bestanden"
+
+#: src/textfile.cpp:932
+msgid "Total Size"
+msgstr "Totale grootte"
+
+#: src/textfile.cpp:933
+msgid "Lines"
+msgstr "Regels"
+
+#: src/textfile.cpp:987
 #: src/statistics.cpp:71
 #: src/statistics.cpp:78
 msgid "Files Passed"
 msgstr "Bestanden langs gelopen"
-
-#: src/statistics.cpp:71
-msgid "file(s)"
-msgstr "bestand(en)"
 
 #: src/stc.cpp:498
 msgid "Open"
@@ -352,7 +476,7 @@ msgid "Edge line"
 msgstr "Kantlijn regel"
 
 #: src/stc.cpp:762
-#: src/stc.cpp:2462
+#: src/stc.cpp:2463
 msgid "Auto fold"
 msgstr "Automatisch opvouwen"
 
@@ -457,37 +581,41 @@ msgstr "Vervangen: %d voorkomens van: %s"
 msgid "Opened"
 msgstr "Geopend"
 
-#: src/stc.cpp:2137
-#, c-format
-msgid "File: %s Modified: %s Printed: %s"
-msgstr "Bestand: %s Gewijzigd: %s Afgedrukt: %s"
+#: src/stc.cpp:2138
+msgid "File"
+msgstr "Bestand"
 
-#: src/stc.cpp:2271
+#: src/stc.cpp:2140
+#: include/wx/extension/base.h:111
+msgid "Printed"
+msgstr "Afgedrukt"
+
+#: src/stc.cpp:2272
 msgid "Start Of Sequence"
 msgstr "Begin van rij"
 
-#: src/stc.cpp:2283
+#: src/stc.cpp:2284
 msgid "End Of Sequence"
 msgstr "Einde van rij"
 
-#: src/stc.cpp:2293
+#: src/stc.cpp:2294
 msgid "Start and end sequence should have same length"
 msgstr "Begin en einde rij moeten gelijke lengte hebben"
 
-#: src/stc.cpp:2304
+#: src/stc.cpp:2305
 #, c-format
 msgid "Generate %ld lines"
 msgstr "Voeg %ld regels toe"
 
-#: src/stc.cpp:2368
+#: src/stc.cpp:2369
 msgid "Fold Flags"
 msgstr "Opvouw vlaggen"
 
-#: src/stc.cpp:2612
+#: src/stc.cpp:2613
 msgid "Macro recording"
 msgstr "Macro aan het opnemen"
 
-#: src/stc.cpp:2626
+#: src/stc.cpp:2627
 msgid "Macro is recorded"
 msgstr "Macro is opgenomen"
 
@@ -515,14 +643,6 @@ msgstr "SVN Log"
 msgid "SVN Stat"
 msgstr "SVN Stat"
 
-#: src/svn.cpp:66
-#: src/svn.cpp:103
-#: src/textfile.cpp:568
-#: src/textfile.cpp:572
-#: src/textfile.cpp:938
-msgid "Revision comment"
-msgstr "Commentaar"
-
 #: src/svn.cpp:71
 #: src/svn.cpp:92
 msgid "Base folder"
@@ -533,127 +653,15 @@ msgstr "Basis map"
 msgid "Flags"
 msgstr "Vlaggen"
 
-#: src/textfile.cpp:250
-msgid "Comments"
-msgstr "Commentaar woorden"
+#: src/statistics.cpp:47
+msgid "statistics.log"
+msgstr "statistiek.log"
 
-#: src/textfile.cpp:252
-#: src/textfile.cpp:727
-#: src/textfile.cpp:863
-msgid "Comment Size"
-msgstr "Commentaar grootte"
-
-#: src/textfile.cpp:279
-msgid "Header Description"
-msgstr "Koptekst omschrijving"
-
-#: src/textfile.cpp:310
-msgid "File created and header added."
-msgstr "Bestand gemaakt en koptekst toegevoegd."
-
-#: src/textfile.cpp:310
-msgid "Header added."
-msgstr "Koptekst toegevoegd."
-
-#: src/textfile.cpp:549
-#: src/textfile.cpp:811
-#: src/textfile.cpp:818
-#: src/textfile.cpp:834
-msgid "Lines Of Code"
-msgstr "Code regels"
-
-#: src/textfile.cpp:775
-msgid "Words Of Code"
-msgstr "Code woorden"
-
-#: src/textfile.cpp:850
-msgid "Empty Lines"
-msgstr "Lege regels"
-
-#: src/textfile.cpp:928
-msgid "Files"
-msgstr "Bestanden"
-
-#: src/textfile.cpp:932
-msgid "Total Size"
-msgstr "Totale grootte"
-
-#: src/textfile.cpp:933
-msgid "Lines"
-msgstr "Regels"
-
-#: src/tool.cpp:69
-msgid "Commited"
-msgstr "Gecommit"
-
-#: src/tool.cpp:69
-msgid "&Commit"
-msgstr "&Commit"
-
-#: src/tool.cpp:70
-msgid "Recent revision from"
-msgstr "Laatste wijziging van"
-
-#: src/tool.cpp:71
-#, c-format
-msgid "Reported %ld revisions in"
-msgstr "%ld revisies gerapporteerd in"
-
-#: src/tool.cpp:71
-msgid "&Revision"
-msgstr "&Revisie"
-
-#: src/tool.cpp:74
-msgid "Edited header in"
-msgstr "Koptekst gewijzigd in "
-
-#: src/tool.cpp:74
-#: src/tool.cpp:81
-msgid "&Header"
-msgstr "&Koptekst"
-
-#: src/tool.cpp:75
-msgid "Parsed code lines"
-msgstr "Code regels"
-
-#: src/tool.cpp:76
-msgid "Parsed comment lines"
-msgstr "Commentaar regels"
-
-#: src/tool.cpp:78
-msgid "Counted"
-msgstr "Geteld"
-
-#: src/tool.cpp:78
-msgid "&Count"
-msgstr "&Statistieken"
-
-#: src/tool.cpp:79
-#, c-format
-msgid "Found %ld matches in"
-msgstr "%ld voorkomens gevonden in"
-
-#: src/tool.cpp:80
-#, c-format
-msgid "Replaced %ld matches in"
-msgstr "Vervangen: %ld voorkomens"
-
-#: src/tool.cpp:81
-#, c-format
-msgid "Reported %ld headers in"
-msgstr "%ld kopteksten gerapporteerd in"
-
-#: src/tool.cpp:82
-#, c-format
-msgid "Reported %ld keywords in"
-msgstr "%ld keywords gerapporteerd in"
-
-#: src/tool.cpp:82
-msgid "&Keyword"
-msgstr "&Keyword"
+#: src/statistics.cpp:71
+msgid "file(s)"
+msgstr "bestand(en)"
 
 #: include/wx/extension/base.h:88
-#: include/wx/extension/grid.h:86
 msgid "Find"
 msgstr "Zoeken"
 
@@ -665,38 +673,13 @@ msgstr "Afdrukpagina"
 msgid "Page @PAGENUM@ of @PAGESCNT@"
 msgstr "Pagina @PAGENUM@ van @PAGESCNT@"
 
-#: include/wx/extension/base.h:111
-msgid "Printed"
-msgstr "Afgedrukt"
-
 #: include/wx/extension/base.h:117
 msgid "Replace"
 msgstr "Vervangen"
 
-#: include/wx/extension/config.h:156
-msgid "Replacing with"
-msgstr "Vervangen door"
-
 #: include/wx/extension/configdialog.h:191
 msgid "Options"
 msgstr "Opties"
-
-#: include/wx/extension/lexers.h:107
-#: include/wx/extension/stc.h:185
-msgid "Enter Lexer"
-msgstr "Geef lexer"
-
-#: include/wx/extension/listview.h:126
-msgid "Enter Item Number"
-msgstr "Geef item nummer"
-
-#: include/wx/extension/statistics.h:146
-msgid "Item"
-msgstr "Item"
-
-#: include/wx/extension/statistics.h:147
-msgid "Value"
-msgstr "Waarde"
 
 #: include/wx/extension/stc.h:134
 msgid "Editor Options"
@@ -710,10 +693,33 @@ msgstr "Geef controle karakter"
 msgid "Enter Line Number"
 msgstr "Geef regel nummer"
 
+#: include/wx/extension/stc.h:185
+#: include/wx/extension/lexers.h:107
+msgid "Enter Lexer"
+msgstr "Geef lexer"
+
 #: include/wx/extension/stc.h:220
 msgid "Enter Sort Position"
 msgstr "Geef sorteer positie"
 
+#: include/wx/extension/config.h:156
+msgid "Replacing with"
+msgstr "Vervangen door"
+
+#: include/wx/extension/listview.h:126
+msgid "Enter Item Number"
+msgstr "Geef item nummer"
+
+#: include/wx/extension/statistics.h:146
+msgid "Item"
+msgstr "Item"
+
+#: include/wx/extension/statistics.h:147
+msgid "Value"
+msgstr "Waarde"
+
+#~ msgid "File: %s Modified: %s Printed: %s"
+#~ msgstr "Bestand: %s Gewijzigd: %s Afgedrukt: %s"
 #~ msgid "day"
 #~ msgstr "dag"
 #~ msgid "week"
@@ -792,8 +798,6 @@ msgstr "Geef sorteer positie"
 #~ msgstr "Bestanden &toevoegen"
 #~ msgid "Add folder&s"
 #~ msgstr "&Mappen toevoegen"
-#~ msgid "File"
-#~ msgstr "Bestand"
 #~ msgid "Retrieved: %d records"
 #~ msgstr "%d records opgehaald"
 #~ msgid "Query: "
