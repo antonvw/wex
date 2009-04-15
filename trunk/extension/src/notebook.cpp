@@ -81,7 +81,7 @@ bool exNotebook::ErasePage(size_t n)
     }
   }
 
-  wxLogError("Could not find page: %d to delete", n);
+  wxFAIL;
 
   return false;
 }
