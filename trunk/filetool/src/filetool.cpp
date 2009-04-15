@@ -305,6 +305,7 @@ void exDirWithReport::OnFile(const wxString& file)
 
     if (filename.GetStat().IsOk())
     {
+      if (wxFileName::DirExists(file)) return;
       exTextFileWithReport report(filename);
       report.RunTool(m_Tool);
       m_Statistics += report.GetStatistics();
