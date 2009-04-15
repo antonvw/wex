@@ -159,7 +159,7 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     if (tool.GetId() == ID_TOOL_COMMIT)
     {
     wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
-      wxString(_("Input")) + wxT(":"),
+      _("Input") + ":",
       "Commit",
       exApp::GetConfig(_("Revision comment")));
 

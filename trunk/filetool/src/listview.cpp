@@ -1167,9 +1167,9 @@ void exListViewFile::RunItems(const exTool& tool)
   if (tool.GetId() == ID_TOOL_COMMIT)
   {
     wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
-    wxString(_("Input")) + wxT(":"),
-    "Commit",
-    exApp::GetConfig(_("Revision comment")));
+      _("Input") + ":",
+      "Commit",
+      exApp::GetConfig(_("Revision comment")));
 
     if (dlg.ShowModal() == wxID_CANCEL)
     {
@@ -1185,8 +1185,11 @@ void exListViewFile::RunItems(const exTool& tool)
   }
 
   m_Thread = new exToolThread(tool, this);
-  m_Thread->Create();
-  m_Thread->Run();
+
+  if (m_Thread->Create() == wxTHREAD_NO_ERROR)
+  {
+    m_Thread->Run();
+  }
 }
 
 #if wxUSE_DRAG_AND_DROP
