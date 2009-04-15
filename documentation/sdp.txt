@@ -22,9 +22,10 @@ General
 - database is OTL
     http://otl.sourceforge.net/
 
-- application icons are designed using GIMP
+- application icons are designed using GIMP (2.6.6)
     but menu and toolbar bitmaps are from wxWidgets, using wxArtProvider,
     or gtk stock items
+    http://www.gimp.org/
 
 - most documentation is generated using Doxygen
     however, some docs are in html format
@@ -33,7 +34,7 @@ General
 - automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
 
-- translation is done using poedit
+- translation is done using poedit (1.4.2)
     http://www.poedit.net/
 
 
