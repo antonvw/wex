@@ -172,6 +172,8 @@ void exProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
   if (m_Thread != NULL)
   {
     m_Thread->Delete();
+    // Joinable threads should be deleted explicitly
+    delete m_Thread;
     m_Thread = NULL;
   }
 

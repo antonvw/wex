@@ -86,7 +86,7 @@ protected:
 
       Yield();
 
-      Sleep(20);
+      Sleep(5);
     }
 
     stats.Log(m_Tool);
@@ -920,7 +920,15 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
   case ID_TERMINATED_THREAD:
     {
     exTool tool(event.GetExtraLong());
-    m_Thread = NULL;
+
+    if (m_Thread != NULL)
+    {
+      m_Thread->Delete();
+      // Joinable threads should be deleted explicitly
+      delete m_Thread;
+      m_Thread = NULL;
+    }
+
     exFrame::StatusText(_("Ready"));
 
     if (tool.IsCountType())
