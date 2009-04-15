@@ -2134,10 +2134,10 @@ const wxString exSTC::PrintHeader()
 {
   if (m_FileName.FileExists())
   {
-    return wxString::Format(_("File: %s Modified: %s Printed: %s"),
-      m_FileName.GetFullPath().c_str(),
-      m_FileName.GetStat().GetModificationTime().c_str(),
-      wxDateTime::Now().Format().c_str());
+    return 
+      _("File") + ": " + m_FileName.GetFullPath() + " " + 
+      _("Modified") + ": " + m_FileName.GetStat().GetModificationTime() + " " + 
+      _("Printed") + ": " + wxDateTime::Now().Format();
   }
   else
   {
@@ -2149,6 +2149,7 @@ const wxString exSTC::PrintHeader()
 void exSTC::PrintPreview()
 {
   wxPrintPreview* preview = new wxPrintPreview(new exPrintout(this), new exPrintout(this));
+
   if (!preview->Ok())
   {
     delete preview;
