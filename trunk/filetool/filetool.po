@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxfiletool v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-09 07:58+0100\n"
-"PO-Revision-Date: 2009-04-09 07:58+0100\n"
+"POT-Creation-Date: 2009-04-15 07:53+0100\n"
+"PO-Revision-Date: 2009-04-15 07:54+0100\n"
 "Last-Translator: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -31,54 +31,55 @@ msgid "Compared"
 msgstr "Vergeleken"
 
 #: src/filetool.cpp:45
-#: src/listview.cpp:1128
-msgid "Find what"
-msgstr "Zoeken naar"
-
-#: src/filetool.cpp:46
-#: src/listview.cpp:1129
-msgid "Replace with"
-msgstr "Vervangen door"
-
-#: src/filetool.cpp:47
-#: src/filetool.cpp:79
+#: src/filetool.cpp:50
+#: src/filetool.cpp:82
 msgid "In files"
 msgstr "In bestanden"
 
 #: src/filetool.cpp:48
-#: src/filetool.cpp:78
-#: src/listview.cpp:164
-#: src/listview.cpp:180
-#: src/process.cpp:145
-#: src/process.cpp:154
+#: src/listview.cpp:1143
+msgid "Find what"
+msgstr "Zoeken naar"
+
+#: src/filetool.cpp:49
+#: src/listview.cpp:1144
+msgid "Replace with"
+msgstr "Vervangen door"
+
+#: src/filetool.cpp:51
+#: src/filetool.cpp:81
+#: src/listview.cpp:172
+#: src/listview.cpp:188
+#: src/process.cpp:147
+#: src/process.cpp:156
 msgid "In folder"
 msgstr "In map"
 
-#: src/filetool.cpp:55
+#: src/filetool.cpp:58
 msgid "Replace In Files"
 msgstr "Vervangen in bestanden"
 
-#: src/filetool.cpp:55
+#: src/filetool.cpp:58
 msgid "Find In Files"
 msgstr "Zoeken in bestanden"
 
-#: src/filetool.cpp:101
+#: src/filetool.cpp:104
 msgid "No version information found"
 msgstr "Geen basis versie gevonden"
 
-#: src/filetool.cpp:174
+#: src/filetool.cpp:177
 msgid "No files found"
 msgstr "Geen bestanden gevonden"
 
-#: src/filetool.cpp:473
+#: src/filetool.cpp:469
 msgid "Match case"
 msgstr "Letter gevoelig"
 
-#: src/filetool.cpp:474
+#: src/filetool.cpp:470
 msgid "Match whole word"
 msgstr "Geheel woord"
 
-#: src/filetool.cpp:475
+#: src/filetool.cpp:471
 msgid "Regular expression"
 msgstr "Reguliere expressie"
 
@@ -124,389 +125,390 @@ msgstr "&Laatste openen"
 #: src/listitem.cpp:19
 #: src/listitem.cpp:21
 #: src/listitem.cpp:40
-#: src/listview.cpp:365
-#: src/listview.cpp:370
-#: src/listview.cpp:466
-#: src/listview.cpp:552
-#: src/listview.cpp:589
+#: src/listview.cpp:373
+#: src/listview.cpp:378
+#: src/listview.cpp:474
+#: src/listview.cpp:560
+#: src/listview.cpp:597
 msgid "File Name"
 msgstr "Bestand"
 
 #: src/listitem.cpp:20
-#: src/listitem.cpp:146
-#: src/listview.cpp:612
-#: src/listview.cpp:706
+#: src/listitem.cpp:144
+#: src/listview.cpp:620
+#: src/listview.cpp:714
 msgid "In Folder"
 msgstr "Map"
 
 #: src/listitem.cpp:23
-#: src/listitem.cpp:142
-#: src/listview.cpp:613
-#: src/listview.cpp:637
+#: src/listitem.cpp:140
+#: src/listview.cpp:621
 #: src/listview.cpp:645
-#: src/listview.cpp:705
-#: src/listview.cpp:747
+#: src/listview.cpp:653
+#: src/listview.cpp:713
+#: src/listview.cpp:755
 msgid "Type"
 msgstr "Type"
 
-#: src/listitem.cpp:123
-#: src/listitem.cpp:128
+#: src/listitem.cpp:121
+#: src/listitem.cpp:126
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: src/listitem.cpp:147
-#: src/listview.cpp:614
-#: src/listview.cpp:707
+#: src/listitem.cpp:145
+#: src/listview.cpp:622
+#: src/listview.cpp:715
 msgid "Size"
 msgstr "Grootte"
 
-#: src/listitem.cpp:151
-#: src/listview.cpp:198
-#: src/listview.cpp:423
-#: src/listview.cpp:611
-#: src/listview.cpp:708
-#: src/listview.cpp:875
-#: src/listview.cpp:933
-#: src/listview.cpp:954
-#: src/listview.cpp:1189
+#: src/listitem.cpp:149
+#: src/listview.cpp:206
+#: src/listview.cpp:431
+#: src/listview.cpp:619
+#: src/listview.cpp:716
+#: src/listview.cpp:880
+#: src/listview.cpp:958
+#: src/listview.cpp:979
+#: src/listview.cpp:1198
 msgid "Modified"
 msgstr "Gewijzigd"
 
-#: src/listitem.cpp:157
-#: src/listview.cpp:596
+#: src/listitem.cpp:155
+#: src/listview.cpp:604
 msgid "Revision"
 msgstr "Revisie"
 
-#: src/listitem.cpp:158
-#: src/listview.cpp:593
+#: src/listitem.cpp:156
+#: src/listview.cpp:601
 msgid "Date"
 msgstr "Datum"
 
-#: src/listitem.cpp:159
-#: src/listview.cpp:594
+#: src/listitem.cpp:157
+#: src/listview.cpp:602
 msgid "Initials"
 msgstr "Initialen"
 
-#: src/listitem.cpp:160
-#: src/listview.cpp:592
+#: src/listitem.cpp:158
+#: src/listview.cpp:600
 msgid "Revision Comment"
 msgstr "Revisie commentaar"
 
-#: src/listview.cpp:163
-#: src/listview.cpp:181
+#: src/listview.cpp:168
+#: src/listview.cpp:171
+#: src/listview.cpp:189
 msgid "Add what"
 msgstr "Toevoegen"
 
-#: src/listview.cpp:166
-#: src/listview.cpp:184
+#: src/listview.cpp:174
+#: src/listview.cpp:192
 msgid "Add files"
 msgstr "Bestanden toevoegen"
 
-#: src/listview.cpp:168
-#: src/listview.cpp:185
+#: src/listview.cpp:176
+#: src/listview.cpp:193
 msgid "Add folders"
 msgstr "Mappen toevoegen"
 
-#: src/listview.cpp:173
+#: src/listview.cpp:181
 msgid "Add Files"
 msgstr "Bestanden toevoegen"
 
-#: src/listview.cpp:201
+#: src/listview.cpp:209
 msgid "Added"
 msgstr "Toegevoegd"
 
-#: src/listview.cpp:201
+#: src/listview.cpp:209
 msgid "file(s)"
 msgstr "bestanden"
 
-#: src/listview.cpp:239
+#: src/listview.cpp:247
 msgid "&Open"
 msgstr "&Openen"
 
-#: src/listview.cpp:243
+#: src/listview.cpp:251
 msgid "&Make"
 msgstr "&Maken"
 
-#: src/listview.cpp:249
+#: src/listview.cpp:257
 msgid "C&ompare"
 msgstr "&Vergelijken"
 
-#: src/listview.cpp:268
+#: src/listview.cpp:276
 msgid "&Compare With"
 msgstr "Vergelijken &met"
 
-#: src/listview.cpp:277
-#: src/stc.cpp:111
+#: src/listview.cpp:285
+#: src/stc.cpp:112
 msgid "&Compare Recent Version"
 msgstr "&Vergelijken met laatste versie"
 
-#: src/listview.cpp:278
+#: src/listview.cpp:286
 msgid "&Version List"
 msgstr "&Versie lijst"
 
-#: src/listview.cpp:283
-#: src/stc.cpp:116
+#: src/listview.cpp:291
+#: src/stc.cpp:117
 msgid "&Diff"
 msgstr "&Diff"
 
-#: src/listview.cpp:284
-#: src/stc.cpp:117
+#: src/listview.cpp:292
+#: src/stc.cpp:118
 msgid "&Log"
 msgstr "&Log"
 
-#: src/listview.cpp:285
-#: src/stc.cpp:118
+#: src/listview.cpp:293
+#: src/stc.cpp:119
 msgid "&Cat"
 msgstr "&Cat"
 
-#: src/listview.cpp:294
+#: src/listview.cpp:302
 msgid "&Build RBS File"
 msgstr "&RBS Bestand maken"
 
-#: src/listview.cpp:458
+#: src/listview.cpp:466
 msgid "Replace In"
 msgstr "Vervangen in"
 
-#: src/listview.cpp:459
+#: src/listview.cpp:467
 msgid "Find In"
 msgstr "Zoeken in"
 
-#: src/listview.cpp:470
+#: src/listview.cpp:478
 msgid "Selection"
 msgstr "selectie"
 
-#: src/listview.cpp:504
+#: src/listview.cpp:512
 msgid "File Count"
 msgstr "Statistiek"
 
-#: src/listview.cpp:505
+#: src/listview.cpp:513
 msgid "Find Results"
 msgstr "Zoek resultaten"
 
-#: src/listview.cpp:506
+#: src/listview.cpp:514
 msgid "Headers"
 msgstr "Kopteksten"
 
-#: src/listview.cpp:507
+#: src/listview.cpp:515
 msgid "History"
 msgstr "Geschiedenis"
 
-#: src/listview.cpp:508
-#: src/listview.cpp:584
+#: src/listview.cpp:516
+#: src/listview.cpp:592
 msgid "Keywords"
 msgstr "Keywords"
 
-#: src/listview.cpp:509
+#: src/listview.cpp:517
 msgid "Process Output"
 msgstr "Proces uitvoer"
 
-#: src/listview.cpp:510
+#: src/listview.cpp:518
 msgid "Project"
 msgstr "Project"
 
-#: src/listview.cpp:511
+#: src/listview.cpp:519
 msgid "Replace Results"
 msgstr "Vervang resultaten"
 
-#: src/listview.cpp:512
+#: src/listview.cpp:520
 msgid "Revisions"
 msgstr "Revisies"
 
-#: src/listview.cpp:513
+#: src/listview.cpp:521
 msgid "SQL Queries"
 msgstr "SQL Queries"
 
-#: src/listview.cpp:514
+#: src/listview.cpp:522
 msgid "Version List"
 msgstr "Versie lijst"
 
-#: src/listview.cpp:559
-#: src/textfile.cpp:253
+#: src/listview.cpp:567
+#: src/textfile.cpp:247
 msgid "Lines"
 msgstr "Regels"
 
-#: src/listview.cpp:560
-#: src/textfile.cpp:254
+#: src/listview.cpp:568
+#: src/textfile.cpp:248
 msgid "Lines Of Code"
 msgstr "Coderegels"
 
-#: src/listview.cpp:561
-#: src/textfile.cpp:255
+#: src/listview.cpp:569
+#: src/textfile.cpp:249
 msgid "Empty Lines"
 msgstr "Lege regels"
 
-#: src/listview.cpp:562
-#: src/textfile.cpp:256
+#: src/listview.cpp:570
+#: src/textfile.cpp:250
 msgid "Words Of Code"
 msgstr "Codewoorden"
 
-#: src/listview.cpp:563
-#: src/textfile.cpp:257
+#: src/listview.cpp:571
+#: src/textfile.cpp:251
 msgid "Comments"
 msgstr "Commentaar"
 
-#: src/listview.cpp:564
-#: src/textfile.cpp:258
+#: src/listview.cpp:572
+#: src/textfile.cpp:252
 msgid "Comment Size"
 msgstr "Commentaar grootte"
 
-#: src/listview.cpp:568
-#: src/listview.cpp:587
-#: src/process.cpp:119
-#: src/process.cpp:126
-#: src/textfile.cpp:213
+#: src/listview.cpp:576
+#: src/listview.cpp:595
+#: src/process.cpp:121
+#: src/process.cpp:128
+#: src/textfile.cpp:207
 msgid "Line"
 msgstr "Regel"
 
-#: src/listview.cpp:569
-#: src/listview.cpp:656
-#: src/textfile.cpp:214
+#: src/listview.cpp:577
+#: src/listview.cpp:664
+#: src/textfile.cpp:208
 msgid "Match"
 msgstr "Zoektekst"
 
-#: src/listview.cpp:570
-#: src/listview.cpp:588
-#: src/listview.cpp:595
-#: src/listview.cpp:601
-#: src/listview.cpp:651
-#: src/process.cpp:120
-#: src/textfile.cpp:206
+#: src/listview.cpp:578
+#: src/listview.cpp:596
+#: src/listview.cpp:603
+#: src/listview.cpp:609
+#: src/listview.cpp:659
+#: src/process.cpp:122
+#: src/textfile.cpp:200
 msgid "Line No"
 msgstr "Regel nummer"
 
-#: src/listview.cpp:573
+#: src/listview.cpp:581
 msgid "Header Description"
 msgstr "Koptekst omschrijving"
 
-#: src/listview.cpp:599
-#: src/textfile.cpp:224
+#: src/listview.cpp:607
+#: src/textfile.cpp:218
 msgid "Run Time"
 msgstr "Uitvoertijd"
 
-#: src/listview.cpp:600
-#: src/textfile.cpp:223
+#: src/listview.cpp:608
+#: src/textfile.cpp:217
 msgid "Query"
 msgstr "Query"
 
-#: src/listview.cpp:608
-#: src/listview.cpp:655
-#: src/textfile.cpp:211
+#: src/listview.cpp:616
+#: src/listview.cpp:663
+#: src/textfile.cpp:205
 msgid "Replaced"
 msgstr "Vervangen"
 
-#: src/listview.cpp:635
-#: src/listview.cpp:1147
-#: src/stc.cpp:161
+#: src/listview.cpp:643
+#: src/listview.cpp:1162
+#: src/stc.cpp:162
 msgid "Input"
 msgstr "Invoer"
 
-#: src/listview.cpp:636
+#: src/listview.cpp:644
 msgid "Folder Type"
 msgstr "Map type"
 
-#: src/listview.cpp:898
+#: src/listview.cpp:903
 msgid "Make"
 msgstr "Maken"
 
-#: src/listview.cpp:1037
+#: src/listview.cpp:924
+#: src/process.cpp:170
+msgid "Ready"
+msgstr "Klaar"
+
+#: src/listview.cpp:1062
 #, c-format
 msgid "File: %s Modified: %s Printed: %s"
 msgstr "Bestand: %s Gewijzigd: %s Afgedrukt: %s"
 
-#: src/listview.cpp:1105
+#: src/listview.cpp:1120
 msgid "Already running, stop"
 msgstr "Proces al bezig, stop"
 
-#: src/listview.cpp:1106
+#: src/listview.cpp:1121
 msgid "Confirm"
 msgstr "Bevestig"
 
-#: src/listview.cpp:1149
-#: src/listview.cpp:1156
-#: src/stc.cpp:163
-#: src/stc.cpp:170
+#: src/listview.cpp:1164
+#: src/listview.cpp:1171
+#: src/stc.cpp:164
+#: src/stc.cpp:171
 msgid "Revision comment"
 msgstr "Revisie commentaar"
 
-#: src/listview.cpp:1172
-#: src/process.cpp:168
-msgid "Ready"
-msgstr "Klaar"
-
-#: src/listview.cpp:1229
-#: src/listview.cpp:1234
-#: src/listview.cpp:1275
+#: src/listview.cpp:1238
+#: src/listview.cpp:1243
+#: src/listview.cpp:1284
 msgid "RBS File"
 msgstr "RBS Bestand"
 
-#: src/listview.cpp:1230
-#: src/listview.cpp:1245
+#: src/listview.cpp:1239
+#: src/listview.cpp:1254
 msgid "RBS Pattern"
 msgstr "RBS Patroon"
 
-#: src/listview.cpp:1231
+#: src/listview.cpp:1240
 msgid "Build RBS File"
 msgstr "RBS Bestand maken"
 
-#: src/listview.cpp:1275
+#: src/listview.cpp:1284
 msgid "generated"
 msgstr "gegenereerd"
 
-#: src/process.cpp:144
-#: src/process.cpp:155
+#: src/process.cpp:146
+#: src/process.cpp:157
 msgid "Process"
 msgstr "Proces uitvoer"
 
-#: src/process.cpp:150
+#: src/process.cpp:152
 msgid "Select Process"
 msgstr "Proces selecteren"
 
-#: src/process.cpp:200
+#: src/process.cpp:203
 msgid "Running process"
 msgstr "Uitvoeren proces"
 
-#: src/process.cpp:220
+#: src/process.cpp:218
 msgid "Stopped"
 msgstr "Gestopt"
 
-#: src/stc.cpp:94
+#: src/stc.cpp:95
 msgid "Find &In Files"
 msgstr "&Zoeken in bestanden"
 
-#: src/stc.cpp:99
+#: src/stc.cpp:100
 msgid "&Replace In Files"
 msgstr "&Vervangen in bestanden"
 
-#: src/stc.cpp:120
+#: src/stc.cpp:121
 msgid "&Commit"
 msgstr "&Commit"
 
-#: src/stc.cpp:253
+#: src/stc.cpp:261
 msgid "Readonly"
 msgstr "Alleen lezen"
 
-#: src/textfile.cpp:148
+#: src/textfile.cpp:142
 msgid "File"
 msgstr "Bestand"
 
-#: src/textfile.cpp:156
+#: src/textfile.cpp:150
 #, c-format
 msgid "Retrieved: %d records"
 msgstr "%d records opgehaald"
 
-#: src/textfile.cpp:191
+#: src/textfile.cpp:185
 msgid "Actions Completed"
 msgstr "Acties uitgevoerd"
 
-#: src/textfile.cpp:370
+#: src/textfile.cpp:364
 msgid "Error"
 msgstr "Fout"
 
-#: src/textfile.cpp:371
+#: src/textfile.cpp:365
 msgid "ODBC Error"
 msgstr "ODBC Fout"
 
-#: src/textfile.cpp:383
+#: src/textfile.cpp:377
 msgid "Datasource"
 msgstr "Databron"
 
