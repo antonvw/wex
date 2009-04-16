@@ -2139,9 +2139,9 @@ const wxString exSTC::PrintHeader()
   if (m_FileName.FileExists())
   {
     return 
-      _("File") + ": " + m_FileName.GetFullPath() + " " + 
-      _("Modified") + ": " + m_FileName.GetStat().GetModificationTime() + " " + 
-      _("Printed") + ": " + wxDateTime::Now().Format();
+      exGetEndOfWord(m_FileName.GetFullPath()) + " " + 
+      m_FileName.GetStat().GetModificationTime() + " " + 
+      wxDateTime::Now().Format();
   }
   else
   {
