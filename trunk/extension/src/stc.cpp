@@ -115,6 +115,7 @@ void exPrintout::OnPreparePrinting()
 
   page.x = (int)(page.x * ppiScr.x / factor);
   page.y = (int)(page.y * ppiScr.y / factor);
+
   m_PageRect = wxRect(0, 0, page.x, page.y);
 
   wxPoint topleft(dlg_data->GetMarginTopLeft());
@@ -124,11 +125,17 @@ void exPrintout::OnPreparePrinting()
   int left = (int)(topleft.x * ppiScr.x / factor);
   int bottom = (int)(bottomright.y * ppiScr.y / factor);
   int right = (int)(bottomright.x * ppiScr.x / factor);
+
   if (top == 0) top += minimal_margin + 15; // so text from file is under the page header
   if (left == 0) left += minimal_left_margin;
   if (bottom == 0) bottom += minimal_margin;
   if (right == 0) right += minimal_right_margin;
-  m_PrintRect = wxRect(left, top, page.x - (left + right), page.y - (top + bottom));
+
+  m_PrintRect = wxRect(
+    left, 
+    top, 
+    page.x - (left + right), 
+    page.y - (top + bottom));
 
   CountPages();
 }
@@ -183,7 +190,7 @@ bool exPrintout::OnPrintPage(int pageNum)
   if (!footer.empty())
   {
     GetDC()->DrawText(
-      exTranslate(footer, pageNum, m_PageBreaks.size()),
+      exTranslate(footer, pageNum, m_PageBreaks.size() - 1),
       m_PrintRect.GetBottomRight().x / 2,
       m_PrintRect.GetBottomRight().y);
 
