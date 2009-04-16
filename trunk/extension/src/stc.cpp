@@ -42,7 +42,7 @@ private:
     return (pageNum >= 1 && pageNum <= (int)m_PageBreaks.size());};
   void OnPreparePrinting();
   bool OnPrintPage(int pageNum);
-  void SetScale();
+  void SetScale(wxDC *dc);
   wxRect m_PageRect, m_PrintRect;
   int m_CurrentPage;
   vector<int> m_PageBreaks;
@@ -74,7 +74,7 @@ void exPrintout::CountPages()
 
   while (pos < m_Owner->GetLength())
   {
-    SetScale();
+    SetScale(GetDC());
 
     pos = m_Owner->FormatRange(
       false,
@@ -100,7 +100,7 @@ void exPrintout::GetPageInfo(
 
 void exPrintout::OnPreparePrinting()
 {
-  const float factor = 22.0; //25.4;
+  const double factor = 22.4;
   wxSize ppiScr;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
@@ -118,18 +118,15 @@ void exPrintout::OnPreparePrinting()
 
   m_PageRect = wxRect(0, 0, page.x, page.y);
 
-  wxPoint topleft(dlg_data->GetMarginTopLeft());
-  wxPoint bottomright(dlg_data->GetMarginBottomRight());
+  int left = (int)(dlg_data->GetMarginTopLeft().x * ppiScr.x / factor);
+  int top = (int)(dlg_data->GetMarginTopLeft().y * ppiScr.y / factor);
+  int right = (int)(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
+  int bottom = (int)(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
 
-  int top = (int)(topleft.y * ppiScr.y / factor);
-  int left = (int)(topleft.x * ppiScr.x / factor);
-  int bottom = (int)(bottomright.y * ppiScr.y / factor);
-  int right = (int)(bottomright.x * ppiScr.x / factor);
-
-  if (top == 0) top += minimal_margin + 15; // so text from file is under the page header
   if (left == 0) left += minimal_left_margin;
-  if (bottom == 0) bottom += minimal_margin;
+  top += minimal_margin + 15; // so text from file is under the page header
   if (right == 0) right += minimal_right_margin;
+  if (bottom == 0) bottom += minimal_margin;
 
   m_PrintRect = wxRect(
     left, 
@@ -150,7 +147,7 @@ bool exPrintout::OnPrintPage(int pageNum)
     return false;
   }
 
-  SetScale();
+  SetScale(GetDC());
 
   m_Owner->FormatRange(
     true,
@@ -204,7 +201,7 @@ bool exPrintout::OnPrintPage(int pageNum)
   return true;
 }
 
-void exPrintout::SetScale()
+void exPrintout::SetScale(wxDC *dc)
 {
   wxSize ppiScr, ppiPrt;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
@@ -225,7 +222,7 @@ void exPrintout::SetScale()
     ppiPrt.y = ppiScr.y;
   }
 
-  const wxSize dcSize = GetDC()->GetSize();
+  const wxSize dcSize = dc->GetSize();
   wxSize pageSize;
   GetPageSizePixels(&pageSize.x, &pageSize.y);
 
@@ -233,7 +230,7 @@ void exPrintout::SetScale()
   const float scale_x = (float)(factor * ppiPrt.x * dcSize.x) / (float)(ppiScr.x * pageSize.x);
   const float scale_y = (float)(factor * ppiPrt.y * dcSize.y) / (float)(ppiScr.y * pageSize.y);
 
-  GetDC()->SetUserScale(scale_x, scale_y);
+  dc->SetUserScale(scale_x, scale_y);
 }
 #endif // wxUSE_PRINTING_ARCHITECTURE
 
