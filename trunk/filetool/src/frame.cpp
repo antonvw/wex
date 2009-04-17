@@ -4,13 +4,19 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
 #include <wx/stdpaths.h>
-#include <wx/filetool/filetool.h>
+#include <wx/extension/util.h>
+#include <wx/filetool/frame.h>
+#include <wx/filetool/defs.h>
+#include <wx/filetool/listitem.h>
+#include <wx/filetool/listview.h>
+#include <wx/filetool/stc.h>
+#include <wx/filetool/util.h>
 
 BEGIN_EVENT_TABLE(exFrameWithHistory, exManagedFrame)
   EVT_CLOSE(exFrameWithHistory::OnClose)

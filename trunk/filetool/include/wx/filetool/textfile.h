@@ -15,6 +15,9 @@
 #include <wx/extension/textfile.h>
 #include <wx/extension/otl.h>
 
+class exFrameWithHistory;
+class exListViewFile;
+
 /// Offers an exTextFile with reporting to a listview.
 class exTextFileWithReport : public exTextFile
 {

@@ -11,7 +11,12 @@
 
 #include <wx/extension/extension.h>
 #include <wx/extension/svn.h>
-#include <wx/filetool/filetool.h>
+#include <wx/filetool/stc.h>
+#include <wx/filetool/defs.h>
+#include <wx/filetool/frame.h>
+#include <wx/filetool/listview.h>
+#include <wx/filetool/textfile.h>
+#include <wx/filetool/util.h>
 
 BEGIN_EVENT_TABLE(exSTCWithFrame, exSTC)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, exSTCWithFrame::OnCommand)

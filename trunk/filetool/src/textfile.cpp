@@ -9,7 +9,11 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/filetool/filetool.h>
+#include <wx/filetool/textfile.h>
+#include <wx/filetool/defs.h>
+#include <wx/filetool/frame.h>
+#include <wx/filetool/listitem.h>
+#include <wx/filetool/listview.h>
 
 exListViewFile* exTextFileWithReport::m_Report = NULL;
 exFrameWithHistory* exTextFileWithReport::m_Frame = NULL;

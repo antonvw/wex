@@ -13,7 +13,9 @@
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/configdialog.h>
 #include <wx/filetool/process.h>
-#include <wx/filetool/filetool.h>
+#include <wx/filetool/defs.h>
+#include <wx/filetool/listitem.h>
+#include <wx/filetool/listview.h>
 
 class exThread : public wxThread
 {

@@ -187,6 +187,9 @@
 			<File
 				RelativePath=".\src\textfile.cpp">
 			</File>
+			<File
+				RelativePath=".\src\util.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -214,6 +217,9 @@
 			</File>
 			<File
 				RelativePath=".\include\wx\filetool\textfile.h">
+			</File>
+			<File
+				RelativePath=".\include\wx\filetool\util.h">
 			</File>
 			<File
 				RelativePath=".\include\wx\filetool\version.h">

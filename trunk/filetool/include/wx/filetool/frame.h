@@ -13,6 +13,10 @@
 #define _FTFRAME_H
 
 #include <wx/docview.h> // for wxFileHistory
+#include <wx/extension/base.h>
+
+class exListViewFile;
+class exSTCWithFrame;
 
 /// Adds file and project history support to exManagedFrame.
 /// It also updates the title of the frame if you have a focused 
@@ -62,7 +66,8 @@ public:
   /// Default it invokes GetFocusedSTC.
   virtual exSTCWithFrame* GetCurrentSTC();
 
-  /// If the window that has focus is a listview, then returns that, otherwise returns NULL.
+  /// If the window that has focus is a listview, then returns that, 
+  /// otherwise returns NULL.
   exListViewFile* GetFocusedListView();
 
   /// Returns the recent opened file.
@@ -98,14 +103,16 @@ public:
   /// Sets the title using file and project.
   void SetTitle(const wxString& file, const wxString& project);
 
-  /// Adds a recent file menu to specified menu, and sets the file history to use it.
+  /// Adds a recent file menu to specified menu, 
+  /// and sets the file history to use it.
   void UseFileHistory(wxWindowID id, wxMenu* menu);
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
   void UseFileHistoryList(exListViewFile* list);
 
-  /// Adds a recent project menu to specified menu, and sets the project history to use it.
+  /// Adds a recent project menu to specified menu, 
+  /// and sets the project history to use it.
   void UseProjectHistory(wxWindowID id, wxMenu* menu);
 protected:
   // Cleans up all as well.

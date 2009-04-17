@@ -9,7 +9,9 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/filetool/filetool.h>
+#include <wx/filetool/listitem.h>
+#include <wx/filetool/textfile.h>
+#include <wx/filetool/util.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.

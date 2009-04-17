@@ -12,6 +12,7 @@
 #ifndef _FTLISTITEM_H
 #define _FTLISTITEM_H
 
+#include <wx/extension/listview.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/textfile.h> // for exRCS
 
