@@ -2122,7 +2122,7 @@ void exSTC::Print(bool prompt)
 }
 #endif
 
-const wxString exSTC::PrintCaption()
+const wxString exSTC::PrintCaption() const
 {
   if (m_FileName.FileExists())
   {
@@ -2134,12 +2134,12 @@ const wxString exSTC::PrintCaption()
   }
 }
 
-const wxString exSTC::PrintHeader()
+const wxString exSTC::PrintHeader() const
 {
   if (m_FileName.FileExists())
   {
     return 
-      exGetEndOfWord(m_FileName.GetFullPath()) + " " + 
+      exGetEndOfWord(m_FileName.GetFullPath(), 20) + " " + 
       m_FileName.GetStat().GetModificationTime() + " " + 
       wxDateTime::Now().Format();
   }

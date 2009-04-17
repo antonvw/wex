@@ -98,16 +98,16 @@ public:
   void Print();
 
   /// Adds a caption.
-  virtual const wxString PrintCaption() {return _("Printout");};
+  virtual const wxString PrintCaption() const {return _("Printout");};
 
   /// You can use macros in PrintFooter and in PrintHeader:
   ///   @PAGENUM@ is replaced by page number
   ///   @PAGESCNT@ is replaced by total number of pages
-  virtual const wxString PrintFooter()
+  virtual const wxString PrintFooter() const
     {return _("Page @PAGENUM@ of @PAGESCNT@");};
 
   /// Adds a header.
-  virtual const wxString PrintHeader()
+  virtual const wxString PrintHeader() const
     {return _("Printed") + ": " + wxDateTime::Now().Format();};
 
   /// Invokes exApp PreviewText with BuildPage.

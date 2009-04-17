@@ -1063,14 +1063,14 @@ void exListViewFile::OnMouse(wxMouseEvent& event)
   UpdateStatusBar();
 }
 
-const wxString exListViewFile::PrintHeader()
+const wxString exListViewFile::PrintHeader() const
 {
   if (m_FileName.FileExists())
   {
-    return wxString::Format(_("File: %s Modified: %s Printed: %s"),
-      m_FileName.GetFullPath().c_str(),
-      m_FileName.GetStat().GetModificationTime().c_str(),
-      wxDateTime::Now().Format().c_str());
+    return 
+      exGetEndOfWord(m_FileName.GetFullPath(), 20) + " " + 
+      m_FileName.GetStat().GetModificationTime() + " " + 
+      wxDateTime::Now().Format();
   }
   else
   {

@@ -110,8 +110,8 @@ public:
   // Interface, for exInterface overriden methods.
   virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
   virtual bool FindNext(const wxString& text, bool find_next = true);
-  virtual const wxString PrintCaption();
-  virtual const wxString PrintHeader();
+  virtual const wxString PrintCaption() const;
+  virtual const wxString PrintHeader() const;
   virtual void ReplaceDialog(wxWindow* parent, const wxString& caption = _("Replace"));
 
   /// Adds an ascii table to current document.
