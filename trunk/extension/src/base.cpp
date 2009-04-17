@@ -474,6 +474,10 @@ exManagedFrame::exManagedFrame(wxWindow* parent,
   : exFrame(parent, id, title, style, name)
 {
   m_Manager.SetManagedWindow(this);
+
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  exApp::GetPrinter()->SetParentWindow(this);
+#endif
 }
 
 exManagedFrame::~exManagedFrame()
