@@ -205,15 +205,15 @@ const wxString exListView::BuildPage()
 
   wxString text;
 
-  text << "<TABLE border=1 cellpadding=4 cellspacing=0 ";
-
+  text << "<TABLE ";
+  
   if ((GetWindowStyle() & wxLC_HRULES) ||
       (GetWindowStyle() & wxLC_VRULES))
-    text << "rules=\"all\" ";
+    text << "border=1";
   else
-    text << "rules=\"none\" ";
+    text << "border=0";
 
-  text << ">" << wxTextFile::GetEOL();
+  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
 
   text << "<tr>" << wxTextFile::GetEOL();
 
