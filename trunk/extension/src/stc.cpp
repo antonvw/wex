@@ -49,10 +49,6 @@ private:
   exSTC* m_Owner;
 };
 
-const int minimal_margin = 30;
-const int minimal_left_margin = minimal_margin + 15;
-const int minimal_right_margin = minimal_margin + 15;
-
 exPrintout::exPrintout(exSTC* owner)
   : wxPrintout(owner->PrintCaption())
   , m_PageRect()
@@ -123,11 +119,6 @@ void exPrintout::OnPreparePrinting()
   int right = (int)(dlg_data->GetMarginBottomRight().x * ppiScr.x / factor);
   int bottom = (int)(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
 
-  if (left == 0) left += minimal_left_margin;
-  top += minimal_margin + 15; // so text from file is under the page header
-  if (right == 0) right += minimal_right_margin;
-  if (bottom == 0) bottom += minimal_margin;
-
   m_PrintRect = wxRect(
     left, 
     top, 
@@ -172,14 +163,14 @@ bool exPrintout::OnPrintPage(int pageNum)
   {
     GetDC()->DrawText(
       exTranslate(header, pageNum, m_PageBreaks.size()),
-      minimal_left_margin,
-      minimal_margin);
+      m_PrintRect.GetTopLeft().x,
+      m_PrintRect.GetTopLeft().y - 20);
 
     GetDC()->DrawLine(
       m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetTopLeft().y,
+      m_PrintRect.GetTopLeft().y - 10,
       m_PrintRect.GetBottomRight().x,
-      m_PrintRect.GetTopLeft().y);
+      m_PrintRect.GetTopLeft().y - 10);
   }
 
   // Print a footer
