@@ -273,7 +273,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
 
           if (current_file != with_file)
             menu.Append(ID_LIST_COMPARE,
-              _("&Compare With") + " " + exGetEndOfWord(with_file));
+              _("&Compare With") + " " + exGetEndOfText(with_file));
         }
       }
     }
@@ -1068,7 +1068,7 @@ const wxString exListViewFile::PrintHeader() const
   if (m_FileName.FileExists())
   {
     return 
-      exGetEndOfWord(m_FileName.GetFullPath(), 20) + " " + 
+      exGetEndOfText(m_FileName.GetFullPath(), 20) + " " + 
       m_FileName.GetStat().GetModificationTime() + " " + 
       wxDateTime::Now().Format();
   }

@@ -499,7 +499,7 @@ void exSTC::BuildPopupMenu(exMenu& menu)
   {
     if (LinkOpen(link, line_no, false))
     {
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + exGetEndOfWord(link));
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + exGetEndOfText(link));
       menu.AppendSeparator();
     }
   }
@@ -2139,7 +2139,7 @@ const wxString exSTC::PrintHeader() const
   if (m_FileName.FileExists())
   {
     return 
-      exGetEndOfWord(m_FileName.GetFullPath(), 20) + " " + 
+      exGetEndOfText(m_FileName.GetFullPath(), 20) + " " + 
       m_FileName.GetStat().GetModificationTime() + " " + 
       wxDateTime::Now().Format();
   }

@@ -130,7 +130,7 @@ const wxString exEllipsed(const wxString& text, const wxString& control)
   return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
-const wxString exGetEndOfWord(
+const wxString exGetEndOfText(
   const wxString& text,
   size_t max_chars)
 {
