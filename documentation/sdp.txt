@@ -11,10 +11,12 @@ General
     under windows TortoiseSVN is used,
     under Linux just the svn client
 
-- GUI library wxWidgets, currently svn (as there is not yet a base)
-    http://wxwidgets.org/
+- STL is used wherever possible
 
-- development 
+- GUI development library wxWidgets (2.9.0 branch)
+    http://www.wxwidgets.org/
+
+- IDE
   under windows using Mingw and codeblocks: 
   http://www.codeblocks.org/
   under using linux gcc and no IDE
