@@ -2,7 +2,7 @@
 * File:          util.h
 * Purpose:       Include file for wxextension report utilities
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: filetool.h 585 2009-04-09 13:06:33Z antonvw $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
