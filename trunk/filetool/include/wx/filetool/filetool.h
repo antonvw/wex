@@ -13,13 +13,14 @@
 #define _WXFILETOOL_H
 
 #include <wx/extension/extension.h>
-#include <wx/extension/dir.h>
 #include <wx/filetool/defs.h>
-#include <wx/filetool/listview.h>
-#include <wx/filetool/listitem.h>
-#include <wx/filetool/textfile.h>
-#include <wx/filetool/stc.h>
 #include <wx/filetool/frame.h>
+#include <wx/filetool/listitem.h>
+#include <wx/filetool/listview.h>
+#include <wx/filetool/process.h>
+#include <wx/filetool/stc.h>
+#include <wx/filetool/textfile.h>
+#include <wx/filetool/util.h>
 #include <wx/filetool/version.h>
 
 #endif

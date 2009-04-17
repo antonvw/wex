@@ -14,7 +14,6 @@
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/configdialog.h>
 #include <wx/extension/svn.h>
-#include <wx/filetool/process.h>
 #include "frame.h"
 #include "defs.h"
 #include "version.h"
