@@ -1,0 +1,67 @@
+<!--
+File:    release.htm
+Author:  Anton van Wezenbeek
+RCS-ID:  $Id$
+Purpose: Release info for wxfiletool
+-->
+
+<HEAD>
+<TITLE>
+wxfiletool Release Information
+</TITLE>
+</HEAD>
+
+<p>
+wxfiletool contains a collection of wxextension classes
+that are implemented for a list view component.
+
+<STYLE type="text/css">
+.TableStyle
+{
+<!-- font-family: Verdana; -->
+font-weight: normal;
+font-size: 9px;
+color: #404040;
+background-color: #fafafa;
+border: 1px #6699CC solid;
+}
+</STYLE>
+
+<!--
+Wait for next wxWidgets:
+- In Process::HasInput allow php script error messages to be able to be double clicked and goto line no.
+  Is already added, but the reg ex does not match, wait for next wxWidgets.
+  Then also change the gcc check implemented by tokenizer into reg ex check.
+- wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
+  found files as items to the list view, whereas that could be fast. Profiling necessary??
+  Or just hope better for next wxWidgets.
+
+Roadmap:
+- In STC adding file drop causes text dragging not work.
+  In scintilla v1.70 file drop is supported (how?), check and remove from here if okay.
+  This can be tested in sample for wxextension.
+- Make process and wxGTK can be improved: not always a valid file is found.
+  And for each new Run clear the old contents??
+-->
+
+<p>
+<TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
+<tr>
+<td><I>Version</I>
+<td><I>Released</I>
+<td><I>Description</I>
+<td><I>Uses</I>
+
+<tr>
+<td>
+v1.0
+<td>
+2009
+<td>
+<ul>
+<li> wxfiletool is under SVN.
+</ul>
+<td>
+wxWidgets-SVN, wxextension 1.0
+
+</TABLE>
