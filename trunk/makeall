@@ -18,6 +18,13 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
+echo "-- extension report --"
+cd $ORG/extension/buildgtk
+make $target
+if [ "$?" != "0" ]; then
+  exit 1
+fi
+
 echo "-- extension test base --"
 cd $ORG/extension/test/base
 make $target
@@ -32,14 +39,7 @@ if [ "$?" != "0" ]; then
   exit 1
 fi
 
-echo "-- filetool --"
-cd $ORG/filetool/buildgtk
-make $target
-if [ "$?" != "0" ]; then
-  exit 1
-fi
-
-echo "-- filetool test --"
+echo "-- extension test report --"
 cd $ORG/filetool/test
 make $target
 if [ "$?" != "0" ]; then
