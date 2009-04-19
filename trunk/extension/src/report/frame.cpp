@@ -11,12 +11,12 @@
 
 #include <wx/stdpaths.h>
 #include <wx/extension/util.h>
-#include <wx/filetool/frame.h>
-#include <wx/filetool/defs.h>
-#include <wx/filetool/listitem.h>
-#include <wx/filetool/listview.h>
-#include <wx/filetool/stc.h>
-#include <wx/filetool/util.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/listitem.h>
+#include <wx/extension/report/listview.h>
+#include <wx/extension/report/stc.h>
+#include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(exFrameWithHistory, exManagedFrame)
   EVT_CLOSE(exFrameWithHistory::OnClose)

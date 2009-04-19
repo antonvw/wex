@@ -12,10 +12,10 @@
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/configdialog.h>
-#include <wx/filetool/process.h>
-#include <wx/filetool/defs.h>
-#include <wx/filetool/listitem.h>
-#include <wx/filetool/listview.h>
+#include <wx/extension/report/process.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/listitem.h>
+#include <wx/extension/report/listview.h>
 
 class exThread : public wxThread
 {

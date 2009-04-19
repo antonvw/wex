@@ -13,14 +13,14 @@
 #include <wx/extension/configdialog.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/svn.h>
-#include <wx/filetool/listview.h>
-#include <wx/filetool/listitem.h>
-#include <wx/filetool/defs.h>
-#include <wx/filetool/frame.h>
-#include <wx/filetool/process.h>
-#include <wx/filetool/stc.h>
-#include <wx/filetool/textfile.h>
-#include <wx/filetool/util.h>
+#include <wx/extension/report/listview.h>
+#include <wx/extension/report/listitem.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/process.h>
+#include <wx/extension/report/stc.h>
+#include <wx/extension/report/textfile.h>
+#include <wx/extension/report/util.h>
 
 #if wxUSE_DRAG_AND_DROP
 class ListViewDropTarget : public wxFileDropTarget

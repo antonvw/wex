@@ -10,11 +10,11 @@
 \******************************************************************************/
 
 #include <wx/extension/configdialog.h>
-#include <wx/filetool/util.h>
-#include <wx/filetool/defs.h>
-#include <wx/filetool/filetool.h>
-#include <wx/filetool/frame.h>
-#include <wx/filetool/listview.h>
+#include <wx/extension/report/util.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/extension/report.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/listview.h>
 
 bool exCompareFile(const wxFileName& file1, const wxFileName& file2)
 {

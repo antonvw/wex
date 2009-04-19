@@ -9,4 +9,4 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/filetool/filetool.h>
+#include <wx/extension/report/filetool.h>
