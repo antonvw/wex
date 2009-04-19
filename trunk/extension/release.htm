@@ -11,6 +11,10 @@ wxextension Release Information
 </TITLE>
 </HEAD>
 
+<p>
+wxfiletool contains a collection of wxextension classes
+that are implemented for a list view component.
+
 <STYLE type="text/css">
 .TableStyle
 {
@@ -66,6 +70,23 @@ Roadmap:
 - When opening large file, allow open to be cancelled, and show progress.
   Maybe use a separate thread for this.
 - Add dialog for updating the include directory (with browsing for folders).
+
+Wait for next wxWidgets:
+- In Process::HasInput allow php script error messages to be able to be double clicked and goto line no.
+  Is already added, but the reg ex does not match, wait for next wxWidgets.
+  Then also change the gcc check implemented by tokenizer into reg ex check.
+- wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
+  found files as items to the list view, whereas that could be fast. Profiling necessary??
+  Or just hope better for next wxWidgets.
+
+Roadmap:
+- In STC adding file drop causes text dragging not work.
+  In scintilla v1.70 file drop is supported (how?), check and remove from here if okay.
+  This can be tested in sample for wxextension.
+- Make process and wxGTK can be improved: not always a valid file is found.
+  And for each new Run clear the old contents??
+
+
 -->
 
 <TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
