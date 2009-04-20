@@ -207,7 +207,7 @@ private:
   void ParseHeader();
   bool PrepareRevision();
   void RevisionAddComments(const wxString& m_FileNameStatistics);
-  bool WriteFileHeader();
+  void WriteFileHeader();
   void WriteTextWithPrefix(
     const wxString& text,
     const wxString& prefix,

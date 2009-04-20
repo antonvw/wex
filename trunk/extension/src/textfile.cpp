@@ -287,9 +287,11 @@ bool exTextFile::HeaderDialog()
 
   m_RCS.m_Description = ted.GetValue();
 
-  if (GetLineCount() > 0 && GetCurrentLine() > 1)
+  const size_t current = GetCurrentLine();
+
+  if (GetLineCount() > 0 &&  current > 1)
   {
-    for (size_t i = GetCurrentLine() - 1; i > 0; i--)
+    for (int i = current; i > 0; i--)
     {
       RemoveLine(i);
     }
@@ -297,10 +299,7 @@ bool exTextFile::HeaderDialog()
 
   GoToLine(0);
 
-  if (!WriteFileHeader())
-  {
-    return false;
-  }
+  WriteFileHeader();
 
   if (new_header)
   {
@@ -1034,7 +1033,7 @@ void exTextFile::WriteComment(
   InsertLine(m_FileNameStatistics.GetLexer().MakeComment(text, fill_out, fill_out_with_space));
 }
 
-bool exTextFile::WriteFileHeader()
+void exTextFile::WriteFileHeader()
 {
   const wxString actual_author = (m_RCS.m_Author.empty() ?
     m_Config->Get("Header/Author"):
@@ -1071,6 +1070,4 @@ bool exTextFile::WriteFileHeader()
   WriteComment(wxEmptyString, true);
 
   InsertLine(wxEmptyString);
-
-  return true;
 }
