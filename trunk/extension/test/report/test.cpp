@@ -13,7 +13,7 @@
 #include <TestCaller.h>
 #include "test.h"
 
-void ftAppTestFixture::setUp()
+void exReportAppTestFixture::setUp()
 {
   m_ListView = new exListViewFile(wxTheApp->GetTopWindow(), exListViewFile::LIST_PROCESS);
   m_Dir = new exDirWithReport(m_ListView, "./");
@@ -21,11 +21,11 @@ void ftAppTestFixture::setUp()
   m_STC = new exSTCWithFrame(wxTheApp->GetTopWindow(), exFileName("test.h"));
 }
 
-void ftAppTestFixture::testConstructors()
+void exReportAppTestFixture::testConstructors()
 {
 }
 
-void ftAppTestFixture::testMethods()
+void exReportAppTestFixture::testMethods()
 {
   // test exDirWithReport
   CPPUNIT_ASSERT(m_Dir->FindFiles());
@@ -41,19 +41,19 @@ void ftAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
 }
 
-void ftAppTestFixture::tearDown()
+void exReportAppTestFixture::tearDown()
 {
 }
 
-ftTestSuite::ftTestSuite()
+exReportTestSuite::exReportTestSuite()
   : CppUnit::TestSuite("wxfiletool test suite")
 {
-  addTest(new CppUnit::TestCaller<ftAppTestFixture>(
+  addTest(new CppUnit::TestCaller<exReportAppTestFixture>(
     "testConstructors",
-    &ftAppTestFixture::testConstructors));
+    &exReportAppTestFixture::testConstructors));
 
-  addTest(new CppUnit::TestCaller<ftAppTestFixture>(
+  addTest(new CppUnit::TestCaller<exReportAppTestFixture>(
     "testMethods",
-    &ftAppTestFixture::testMethods));
+    &exReportAppTestFixture::testMethods));
 }
 

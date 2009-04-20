@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          test.h
-* Purpose:       Declaration of classes for wxfiletool cpp unit testing
+* Purpose:       Declaration of classes for wxExReport cpp unit testing
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id: test.h 589 2009-04-09 13:43:53Z antonvw $
 * Created:       za 17 jan 2009 11:51:20 CET
@@ -15,23 +15,22 @@
 
 #include <TestFixture.h>
 #include <TestSuite.h>
-#include <wx/filetool/filetool.h>
-#include <wx/filetool/process.h>
+#include <wx/extension/report/filetool.h>
 
 /// CppUnit test suite.
-class ftTestSuite : public CppUnit::TestSuite
+class exReportTestSuite : public CppUnit::TestSuite
 {
 public:
   /// Default constructor.
-  ftTestSuite();
+  exReportTestSuite();
 };
 
 /// Derive your application from exApp.
-class ftTestApp: public exApp
+class exReportTestApp: public exApp
 {
 public:
   /// Constructor.
-  ftTestApp() {}
+  exReportTestApp() {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
@@ -39,11 +38,11 @@ private:
 
 /// CppUnit app test fixture.
 /// These classes require either an exApp object, or wx to be initialized.
-class ftAppTestFixture : public CppUnit::TestFixture
+class exReportAppTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  ftAppTestFixture() : TestFixture() {
+  exReportAppTestFixture() : TestFixture() {
 	m_Dir = NULL;
     m_ListView = NULL;
     m_Process = NULL;
@@ -51,7 +50,7 @@ public:
     };
 
   /// Destructor.
- ~ftAppTestFixture() {
+ ~exReportAppTestFixture() {
 	delete m_Dir;
     delete m_ListView;
     delete m_Process;
