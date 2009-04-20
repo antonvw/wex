@@ -29,7 +29,7 @@ General
     or gtk stock items
     http://www.gimp.org/
 
-- most documentation is generated using Doxygen
+- most documentation is generated using Doxygen (1.5.8)
     however, some docs are in html format
     http://www.stack.nl/~dimitri/doxygen/
 
@@ -42,7 +42,7 @@ General
 
 SVN hierarchy
 
-- development is in svn trunk, 
+- development is in svn trunk,
 
 - stable releases are in tags/branches
 
@@ -53,11 +53,11 @@ When adding functionality in trunk
 
 - add a test for it in 
     extension/test/base, 
-    extension/test/app, 
-    filetool/test, 
+    extension/test/app,
+    extension/test/report,
+
   where it has least dependancies
 
 - add a sample for it in
     extension/sample, 
-    filetool/sample, 
 
