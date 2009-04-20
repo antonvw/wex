@@ -15,8 +15,7 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/filetool/filetool.h>
-#include <wx/filetool/process.h>
+#include <wx/extension/report/filetool.h>
 #include "appl.h"
 
 enum
