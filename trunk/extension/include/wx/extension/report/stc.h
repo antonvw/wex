@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _FTSTC_H
-#define _FTSTC_H
+#ifndef _EX_REPORT_STC_H
+#define _EX_REPORT_STC_H
 
 class exFrameWithHistory;
 

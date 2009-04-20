@@ -4,12 +4,12 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
-#ifndef _FTDEFS_H
-#define _FTDEFS_H
+#ifndef _EX_REPORT_DEFS_H
+#define _EX_REPORT_DEFS_H
 
 // The maximal number of files and projects to be supported.
 #define NUMBER_RECENT_FILES 25

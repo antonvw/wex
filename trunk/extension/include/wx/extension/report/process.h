@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _FTPROCESS_H
-#define _FTPROCESS_H
+#ifndef _EX_REPORT_PROCESS_H
+#define _EX_REPORT_PROCESS_H
 
 #include <wx/process.h>
 

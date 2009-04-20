@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _FTFRAME_H
-#define _FTFRAME_H
+#ifndef _EX_REPORT_FRAME_H
+#define _EX_REPORT_FRAME_H
 
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/extension/base.h>

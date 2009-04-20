@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _FTLISTVIEW_H
-#define _FTLISTVIEW_H
+#ifndef _EX_REPORT_LISTVIEW_H
+#define _EX_REPORT_LISTVIEW_H
 
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>

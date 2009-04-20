@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _WXFILETOOL_H
-#define _WXFILETOOL_H
+#ifndef _EX_REPORT_FILETOOL_H
+#define _EX_REPORT_FILETOOL_H
 
 #include <wx/extension/extension.h>
 #include <wx/extension/report/defs.h>
@@ -21,6 +21,5 @@
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
-#include <wx/extension/report/version.h>
 
 #endif

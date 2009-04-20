@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _FTTEXTFILE_H
-#define _FTTEXTFILE_H
+#ifndef _EX_REPORT_TEXTFILE_H
+#define _EX_REPORT_TEXTFILE_H
 
 #include <wx/extension/textfile.h>
 #include <wx/extension/otl.h>
