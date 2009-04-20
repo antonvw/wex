@@ -12,7 +12,7 @@
 #include <wx/extension/configdialog.h>
 #include <wx/extension/report/util.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/extension/report.h>
+#include <wx/extension/report/filetool.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listview.h>
 

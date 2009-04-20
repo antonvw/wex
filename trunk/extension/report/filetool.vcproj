@@ -37,7 +37,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\libs\wxfiletoold.lib"
+				OutputFile="..\..\libs\wxfiletoold.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\libs\wxfiletool.lib"
+				OutputFile="..\..\libs\wxfiletool.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -136,7 +136,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\libs\wxfiletoolp.lib"
+				OutputFile="..\..\libs\wxfiletoolp.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -167,62 +167,62 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\src\filetool.cpp">
+				RelativePath="..\src\report\filetool.cpp">
 			</File>
 			<File
-				RelativePath=".\src\frame.cpp">
+				RelativePath="..\src\report\frame.cpp">
 			</File>
 			<File
-				RelativePath=".\src\listitem.cpp">
+				RelativePath="..\src\report\listitem.cpp">
 			</File>
 			<File
-				RelativePath=".\src\listview.cpp">
+				RelativePath="..\src\report\listview.cpp">
 			</File>
 			<File
-				RelativePath=".\src\process.cpp">
+				RelativePath="..\src\report\process.cpp">
 			</File>
 			<File
-				RelativePath=".\src\stc.cpp">
+				RelativePath="..\src\report\stc.cpp">
 			</File>
 			<File
-				RelativePath=".\src\textfile.cpp">
+				RelativePath="..\src\report\textfile.cpp">
 			</File>
 			<File
-				RelativePath=".\src\util.cpp">
+				RelativePath="..\src\report\util.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath=".\include\wx\filetool\defs.h">
+				RelativePath="..\include\wx\extension\report\defs.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\filetool.h">
+				RelativePath="..\include\wx\extension\report\filetool.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\frame.h">
+				RelativePath="..\include\wx\extension\report\frame.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\listitem.h">
+				RelativePath="..\include\wx\extension\report\listitem.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\listview.h">
+				RelativePath="..\include\wx\extension\report\listview.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\process.h">
+				RelativePath="..\include\wx\extension\report\process.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\stc.h">
+				RelativePath="..\include\wx\extension\report\stc.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\textfile.h">
+				RelativePath="..\include\wx\extension\report\textfile.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\util.h">
+				RelativePath="..\include\wx\extension\report\util.h">
 			</File>
 			<File
-				RelativePath=".\include\wx\filetool\version.h">
+				RelativePath="..\include\wx\extension\report\version.h">
 			</File>
 		</Filter>
 	</Files>
