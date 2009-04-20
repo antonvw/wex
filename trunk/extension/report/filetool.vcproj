@@ -221,9 +221,6 @@
 			<File
 				RelativePath="..\include\wx\extension\report\util.h">
 			</File>
-			<File
-				RelativePath="..\include\wx\extension\report\version.h">
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
