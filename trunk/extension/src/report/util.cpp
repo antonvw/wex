@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          util.cpp
-* Purpose:       Implementation of filetool classes
+* Purpose:       Implementation of wxextension report utility functions and classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

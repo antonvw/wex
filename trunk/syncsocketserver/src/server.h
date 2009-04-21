@@ -13,7 +13,7 @@
 #include <wx/socket.h>
 #include <wx/taskbar.h>
 #include <wx/extension/shell.h>
-#include <wx/extension/report/filetool.h>
+#include <wx/extension/report/report.h>
 
 #ifdef USE_TASKBARICON
 class MyTaskBarIcon;

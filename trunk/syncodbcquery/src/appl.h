@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #define USE_OTL 1
-#include <wx/extension/report/filetool.h>
+#include <wx/extension/report/report.h>
 
 enum
 {

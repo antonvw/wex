@@ -12,7 +12,7 @@
 #ifndef _SUPPORT_H
 #define _SUPPORT_H
 
-#include <wx/extension/report/filetool.h>
+#include <wx/extension/report/report.h>
 
 /// Adds a toolbar and checkboxes to exFrameWithHistory.
 class Frame : public exFrameWithHistory

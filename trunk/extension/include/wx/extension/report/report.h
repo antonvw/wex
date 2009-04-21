@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          filetool.h
-* Purpose:       Include file for all wxWidgets filetool classes
+* File:          report.h
+* Purpose:       Include file for all wxWidgets report classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _EX_REPORT_FILETOOL_H
-#define _EX_REPORT_FILETOOL_H
+#ifndef _EX_REPORT_H
+#define _EX_REPORT_H
 
 #include <wx/extension/extension.h>
 #include <wx/extension/report/defs.h>
