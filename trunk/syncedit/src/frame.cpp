@@ -391,7 +391,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetVersion(APPL_VERSION);
     info.AddDeveloper(wxVERSION_STRING);
-    info.AddDeveloper(EX_LIB_VERSION);
+    info.AddDeveloper(wxEX_VERSION_STRING);
 #ifdef USE_OTL
     info.AddDeveloper(exOTLVersion());
 #endif

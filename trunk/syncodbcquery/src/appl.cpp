@@ -200,7 +200,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     info.SetVersion("v1.0");
     info.SetCopyright("(c) 2008, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
-    info.AddDeveloper(EX_LIB_VERSION);
+    info.AddDeveloper(wxEX_VERSION_STRING);
     info.AddDeveloper(exOTLVersion());
     wxAboutBox(info);
     }
