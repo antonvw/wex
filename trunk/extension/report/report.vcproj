@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="filetool"
+	Name="report"
 	ProjectGUID="{87295A7E-093F-41F7-990E-A3C48C0DB1DF}"
 	SccProjectName=""
 	SccLocalPath="">
@@ -26,7 +26,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\buildmswd/filetool.pch"
+				PrecompiledHeaderFile=".\buildmswd/report.pch"
 				AssemblerListingLocation=".\buildmswd/"
 				ObjectFile=".\buildmswd/"
 				ProgramDataBaseFileName=".\buildmswd/"
@@ -37,7 +37,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\lib\wxfiletoold.lib"
+				OutputFile="..\lib\wxexrepd.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -76,7 +76,7 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\buildmsw/filetool.pch"
+				PrecompiledHeaderFile=".\buildmsw/report.pch"
 				AssemblerListingLocation=".\buildmsw/"
 				ObjectFile=".\buildmsw/"
 				ProgramDataBaseFileName=".\buildmsw/"
@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\lib\wxfiletool.lib"
+				OutputFile="..\lib\wxexrep.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -126,7 +126,7 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\buildmswp/filetool.pch"
+				PrecompiledHeaderFile=".\buildmswp/report.pch"
 				AssemblerListingLocation=".\buildmswp/"
 				ObjectFile=".\buildmswp/"
 				ProgramDataBaseFileName=".\buildmswp/"
@@ -136,7 +136,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\lib\wxfiletoolp.lib"
+				OutputFile="..\lib\wxexrepp.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -167,9 +167,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\src\report\filetool.cpp">
-			</File>
-			<File
 				RelativePath="..\src\report\frame.cpp">
 			</File>
 			<File
@@ -198,9 +195,6 @@
 				RelativePath="..\include\wx\extension\report\defs.h">
 			</File>
 			<File
-				RelativePath="..\include\wx\extension\report\filetool.h">
-			</File>
-			<File
 				RelativePath="..\include\wx\extension\report\frame.h">
 			</File>
 			<File
@@ -211,6 +205,9 @@
 			</File>
 			<File
 				RelativePath="..\include\wx\extension\report\process.h">
+			</File>
+			<File
+				RelativePath="..\include\wx\extension\report\report.h">
 			</File>
 			<File
 				RelativePath="..\include\wx\extension\report\stc.h">
