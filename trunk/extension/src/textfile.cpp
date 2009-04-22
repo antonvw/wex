@@ -426,6 +426,64 @@ bool exTextFile::MatchLine(wxString& line)
   return match;
 }
 
+bool exTextFile::Parse()
+{
+  if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
+  {
+    if (m_FileNameStatistics.GetStat().IsReadOnly())
+    {
+      return false;
+    }
+  }
+
+  if (m_Tool.IsFindType())
+  {
+    if (m_Config->GetFindReplaceData()->GetFindStringNoCase().empty())
+    {
+      wxFAIL;
+      return false;
+    }
+  }
+
+  GoToLine(0); // When using GetFirstLine, etc. replae in files does not work.
+
+  while (!Cancelled() && !m_FinishedAction)
+  {
+    wxString& line = GetLine(GetCurrentLine());
+
+    if (m_Tool.IsFindType())
+    {
+      if (MatchLine(line))
+      {
+        GetStatisticElements().Inc(_("Actions Completed"));
+        Report();
+      }
+    }
+    else
+    {
+      if (!ParseLine(line))
+      {
+        return false;
+      }
+    }
+
+    if (wxIsMainThread() && wxTheApp != NULL)
+    {
+      wxTheApp->Yield();
+    }
+    else
+    {
+      wxThread::This()->Yield();
+    }
+
+    if (Eof()) break;
+    if (GetCurrentLine() == GetLineCount() - 1) break;
+    else GoToLine(GetCurrentLine() + 1);
+  }
+
+  return true;
+}
+
 bool exTextFile::ParseComments()
 {
   if (m_Tool.IsRCSType())
@@ -506,64 +564,6 @@ bool exTextFile::ParseComments()
     }
 
     m_Comments.clear();
-  }
-
-  return true;
-}
-
-bool exTextFile::ParseForOther()
-{
-  if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
-  {
-    if (m_FileNameStatistics.GetStat().IsReadOnly())
-    {
-      return false;
-    }
-  }
-
-  if (m_Tool.IsFindType())
-  {
-    if (m_Config->GetFindReplaceData()->GetFindStringNoCase().empty())
-    {
-      wxFAIL;
-      return false;
-    }
-  }
-
-  GoToLine(0); // When using GetFirstLine, etc. replae in files does not work.
-
-  while (!Cancelled() && !m_FinishedAction)
-  {
-    wxString& line = GetLine(GetCurrentLine());
-
-    if (m_Tool.IsFindType())
-    {
-      if (MatchLine(line))
-      {
-        GetStatisticElements().Inc(_("Actions Completed"));
-        Report();
-      }
-    }
-    else
-    {
-      if (!ParseLine(line))
-      {
-        return false;
-      }
-    }
-
-    if (wxIsMainThread() && wxTheApp != NULL)
-    {
-      wxTheApp->Yield();
-    }
-    else
-    {
-      wxThread::This()->Yield();
-    }
-
-    if (Eof()) break;
-    if (GetCurrentLine() == GetLineCount() - 1) break;
-    else GoToLine(GetCurrentLine() + 1);
   }
 
   return true;
@@ -790,7 +790,7 @@ bool exTextFile::RunTool(const exTool& tool)
   {
     if (!m_Config->Get(_("Revision comment")).empty())
     {
-      if (!ParseForOther())
+      if (!Parse())
       {
         Close();
 
@@ -805,7 +805,7 @@ bool exTextFile::RunTool(const exTool& tool)
       m_FileNameStatistics.GetLexer() = m_Lexers->FindByText(GetLine(0));
     }
 
-    if (!ParseForOther())
+    if (!Parse())
     {
       Close();
 

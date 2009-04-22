@@ -101,7 +101,7 @@ public:
     const bool fill_out = false,
     const bool fill_out_with_space = false);
 
-  /// Adds a header.
+  /// Writes a header (opens the file, and closes it afterwards).
   bool WriteHeader(const wxString& description);
 protected:
   // Interface.
@@ -204,7 +204,7 @@ private:
   /// Returns true if char is alphanumeric or a _ sign.
   bool IsWordCharacter(int c) const;
   bool MatchLine(wxString& line);
-  bool ParseForOther();
+  bool Parse();
   bool PrepareRevision();
   void RevisionAddComments(const wxString& m_FileNameStatistics);
   void WriteFileHeader();
