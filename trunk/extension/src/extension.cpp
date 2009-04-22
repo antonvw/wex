@@ -38,7 +38,7 @@ const wxString GetUnFormattedText(
       const wxString& newline =
         (is_comment ? filename.GetLexer().MakeComment(line, true, true): line);
 
-      out << newline;
+      out << newline << "\n";
 
       line = header_with_spaces + word;
       at_begin = true;
