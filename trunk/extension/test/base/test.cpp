@@ -117,7 +117,6 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Lexer->UsableCharactersPerLine() == 74); // 80 - 4 (comments) - 2 (spaces)
 
   // test exRCS
-  CPPUNIT_ASSERT(m_RCS->GetAuthor().empty());
   CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
