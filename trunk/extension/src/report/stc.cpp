@@ -207,7 +207,9 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
       wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
 
     if (ted.ShowModal() == wxID_CANCEL) return;
-    AppendText(exHeader(m_FileName, exApp::GetConfig(), ted.GetValue()));
+
+    DocumentStart();
+    AddText(exHeader(m_FileName, exApp::GetConfig(), ted.GetValue()));
     }
     break;
 

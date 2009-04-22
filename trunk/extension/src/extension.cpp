@@ -125,30 +125,30 @@ const wxString exHeader(
 
   const exLexer l = filename.GetLexer();
 
-  header << l.MakeComment(wxEmptyString, true);
-  header << l.MakeComment("File:        " + filename.GetFullName(), true);
-  header << exGetTextWithPrefix(filename, description, "Purpose:     ");
-  header << l.MakeComment("Author:      " + author, true);
-  header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
+  header << l.MakeComment(wxEmptyString, true) << "\n";
+  header << l.MakeComment("File:        " + filename.GetFullName(), true) << "\n";
+  header << exGetTextWithPrefix(filename, description, "Purpose:     ") << "\n";
+  header << l.MakeComment("Author:      " + author, true) << "\n";
+  header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true) << "\n";
 
   if (config->GetBool("SVN"))
   {
     // Prevent the Id to be expanded by SVN itself here.
-    header << l.MakeComment("RCS-ID:      $" + wxString("Id$"), true);
+    header << l.MakeComment("RCS-ID:      $" + wxString("Id$"), true) << "\n";
   }
 
-  header << l.MakeComment(wxEmptyString, true, true);
+  header << l.MakeComment(wxEmptyString, true, true) << "\n";
   header << l.MakeComment(
     "Copyright (c) " + wxDateTime::Now().Format("%Y") + 
     (!company.empty() ? " " + company: wxString(wxEmptyString))
-      + ". All rights reserved.", true);
+      + ". All rights reserved.", true) << "\n";
 
   if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
   {
-    header << l.MakeComment(address + ", " + zipcode + " " + place + ", " + country, true);
+    header << l.MakeComment(address + ", " + zipcode + " " + place + ", " + country, true) << "\n";
   }
 
-  header << l.MakeComment(wxEmptyString, true);
+  header << l.MakeComment(wxEmptyString, true) << "\n";
 
   header << "\n";
 
@@ -158,9 +158,9 @@ const wxString exHeader(
     wxString argument = "__" + filename.GetName() + "_h";
 
     header << "\n";
-    header << "#if !defined (" << argument << ")";
-    header << "#define " << argument;
-    header << "#endif";
+    header << "#if !defined (" << argument << ")" << "\n";
+    header << "#define " << argument << "\n";
+    header << "#endif" << "\n";
   }
 
   return header;
