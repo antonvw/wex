@@ -29,9 +29,6 @@ public:
   /// Default constructor.
   exRCS();
 
-  /// Gets the author.
-  const wxString& GetAuthor() const {return m_Author;};
-
   /// Gets the description.
   const wxString& GetDescription() const {return m_Description;};
 
@@ -56,7 +53,6 @@ public:
   /// Sets revision info from specified text.
   bool SetRevision(wxString& text);
 private:
-  wxString m_Author;
   wxString m_Description;
   wxString m_RevisionFormat;
   wxString m_RevisionNumber;
@@ -100,9 +96,6 @@ public:
     const wxString& text,
     const bool fill_out = false,
     const bool fill_out_with_space = false);
-
-  /// Writes a header (opens the file, and closes it afterwards).
-  bool WriteHeader(const wxString& description);
 protected:
   // Interface.
   /// If it returns true, the operation is cancelled.
@@ -207,7 +200,6 @@ private:
   bool Parse();
   bool PrepareRevision();
   void RevisionAddComments(const wxString& m_FileNameStatistics);
-  void WriteFileHeader();
   void WriteTextWithPrefix(
     const wxString& text,
     const wxString& prefix,

@@ -854,75 +854,8 @@ void exTextFile::WriteComment(
   const bool fill_out,
   const bool fill_out_with_space)
 {
-  InsertLine(m_FileNameStatistics.GetLexer().MakeComment(text, fill_out, fill_out_with_space));
-}
-
-void exTextFile::WriteFileHeader()
-{
-  const wxString actual_author = (m_RCS.m_Author.empty() ?
-    m_Config->Get("Header/Author"):
-    m_RCS.m_Author);
-
-  const wxString address = m_Config->Get("Header/Address");
-  const wxString company = m_Config->Get("Header/Company");
-  const wxString country = m_Config->Get("Header/Country");
-  const wxString place = m_Config->Get("Header/Place");
-  const wxString zipcode = m_Config->Get("Header/Zipcode");
-
-  WriteComment(wxEmptyString, true);
-  WriteComment("File:        " + m_FileNameStatistics.GetFullName(), true);
-  WriteTextWithPrefix(m_RCS.m_Description, "Purpose:     ");
-  WriteComment("Author:      " + actual_author, true);
-  WriteComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
-
-  if (m_Config->GetBool("SVN"))
-  {
-    // Prevent the Id to be expanded by SVN itself here.
-    WriteComment("RCS-ID:      $" + wxString("Id$"), true);
-  }
-
-  WriteComment(wxEmptyString, true, true);
-  WriteComment(
-    "Copyright (c) " + wxDateTime::Now().Format("%Y") + (!company.empty() ? " " + company: wxString(wxEmptyString))
-    + ". All rights reserved.", true);
-
-  if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
-  {
-    WriteComment(address + ", " + zipcode + " " + place + ", " + country, true);
-  }
-
-  WriteComment(wxEmptyString, true);
-
-  InsertLine(wxEmptyString);
-}
-
-bool exTextFile::WriteHeader(const wxString& description)
-{
-  m_RCS.m_Description = description;
-
-  const size_t current = GetCurrentLine();
-
-  if (GetLineCount() > 0 &&  current > 1)
-  {
-    for (int i = current; i > 0; i--)
-    {
-      RemoveLine(i);
-    }
-  }
-
-  GoToLine(0);
-
-  WriteFileHeader();
-
-  if (m_FileNameStatistics.GetExt() == "h" && m_FileNameStatistics.GetStat().st_size == 0)
-  {
-    wxString argument = "__" + m_FileNameStatistics.GetName() + "_h";
-
-    InsertLine(wxEmptyString);
-    InsertLine("#if !defined (" + argument + ")");
-    InsertLine("#define " + argument);
-    InsertLine("#endif");
-  }
-
-  return true;
+  InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
+    text, 
+    fill_out, 
+    fill_out_with_space));
 }
