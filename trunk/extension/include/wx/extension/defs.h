@@ -70,7 +70,6 @@ enum exToolId
 {
   ID_TOOL_LOWEST = ID_EDIT_HIGHEST + 1,
   ID_TOOL_COMMIT,
-  ID_TOOL_HEADER,
   ID_TOOL_LINE,          // lines with code or empty lines
   ID_TOOL_LINE_COMMENT,  // only comments
   ID_TOOL_LINE_CODE,     // only lines with code
@@ -83,7 +82,6 @@ enum exToolId
   ID_TOOL_REPORT_COUNT,
   ID_TOOL_REPORT_VERSION,
   ID_TOOL_REPORT_REVISION,
-  ID_TOOL_REPORT_HEADER,
   ID_TOOL_REPORT_KEYWORD,
   ID_TOOL_REPORT_FIRST_USER, // after this your own report
   ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + 100,   // before this is the last report

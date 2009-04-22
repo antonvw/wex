@@ -71,13 +71,11 @@ void exTool::Initialize()
     AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("&Revision"), false);
   }
 
-  AddInfo(ID_TOOL_HEADER, _("Edited header in"), exEllipsed(_("&Header")));
   AddInfo(ID_TOOL_LINE_CODE, _("Parsed code lines"));
   AddInfo(ID_TOOL_LINE_COMMENT, _("Parsed comment lines"));
 
   AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("&Count"), false);
   AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
   AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
-  AddInfo(ID_TOOL_REPORT_HEADER, _("Reported %ld headers in"), _("&Header"), false);
   AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("&Keyword"), false);
 }

@@ -499,7 +499,6 @@ int exListViewFile::GetTypeTool(const exTool& tool)
   {
     case ID_TOOL_REPORT_COUNT: return LIST_COUNT; break;
     case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
-    case ID_TOOL_REPORT_HEADER:  return LIST_HEADER; break;
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
     case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
     case ID_TOOL_REPORT_REVISION: return LIST_REVISION; break;
@@ -1121,7 +1120,6 @@ void exListViewFile::ProcessStop()
 void exListViewFile::RunItems(const exTool& tool)
 {
   if ((tool.GetId() == ID_TOOL_REPORT_COUNT && m_Type == LIST_COUNT) ||
-      (tool.GetId() == ID_TOOL_REPORT_HEADER && m_Type == LIST_HEADER) ||
       (tool.GetId() == ID_TOOL_REPORT_KEYWORD && m_Type == LIST_KEYWORD) ||
       (tool.GetId() == ID_TOOL_REPORT_SQL && m_Type == LIST_SQL)
      )

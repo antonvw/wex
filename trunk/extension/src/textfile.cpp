@@ -268,61 +268,6 @@ void exTextFile::EndCurrentRevision()
   }
 }
 
-bool exTextFile::HeaderDialog()
-{
-  if (wxTheApp == NULL) return false;
-
-  const bool new_header = (m_RCS.m_Description.empty());
-
-  wxTextEntryDialog ted(wxTheApp->GetTopWindow(),
-    _("Input") + ":",
-    _("Header Description") + ": " + m_FileNameStatistics.GetFullName(),
-    m_RCS.m_Description,
-    wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
-
-  if (ted.ShowModal() == wxID_CANCEL)
-  {
-    return false;
-  }
-
-  m_RCS.m_Description = ted.GetValue();
-
-  const size_t current = GetCurrentLine();
-
-  if (GetLineCount() > 0 &&  current > 1)
-  {
-    for (int i = current; i > 0; i--)
-    {
-      RemoveLine(i);
-    }
-  }
-
-  GoToLine(0);
-
-  WriteFileHeader();
-
-  if (new_header)
-  {
-    if (!m_Config->GetBool("SVN"))
-    {
-      RevisionAddComments(wxString(
-        (m_FileNameStatistics.GetStat().st_size == 0) ? _("File created and header added.") : _("Header added.")));
-    }
-
-    if (m_FileNameStatistics.GetExt() == "h" && m_FileNameStatistics.GetStat().st_size == 0)
-    {
-      wxString argument = "__" + m_FileNameStatistics.GetName() + "_h";
-
-      InsertLine(wxEmptyString);
-      InsertLine("#if !defined (" + argument + ")");
-      InsertLine("#define " + argument);
-      InsertLine("#endif");
-    }
-  }
-
-  return true;
-}
-
 void exTextFile::InsertFormattedText(
   const wxString& lines,
   const wxString& header,
@@ -483,23 +428,7 @@ bool exTextFile::MatchLine(wxString& line)
 
 bool exTextFile::ParseComments()
 {
-  if (m_Tool.IsHeaderType())
-  {
-    if (!m_FinishedAction)
-    {
-      if (!m_IsCommentStatement && m_EmptyLine)
-      {
-        m_FinishedAction = true;
-      }
-      else
-      {
-        ParseHeader();
-      }
-    }
-
-    m_Comments.clear();
-  }
-  else if (m_Tool.IsRCSType())
+  if (m_Tool.IsRCSType())
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION || m_VersionLine <= 1)
     {
@@ -582,33 +511,6 @@ bool exTextFile::ParseComments()
   return true;
 }
 
-bool exTextFile::ParseForHeader()
-{
-  for (
-    wxString& line = GetFirstLine();
-    !Cancelled() && !m_FinishedAction;
-    line = GetNextLine())
-  {
-    if (!ParseLine(line))
-    {
-      return false;
-    }
-
-    if (wxIsMainThread() && wxTheApp != NULL)
-    {
-      wxTheApp->Yield();
-    }
-    else
-    {
-      wxThread::This()->Yield();
-    }
-
-    if (Eof()) break;
-  }
-
-  return true;
-}
-
 bool exTextFile::ParseForOther()
 {
   if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
@@ -665,49 +567,6 @@ bool exTextFile::ParseForOther()
   }
 
   return true;
-}
-
-void exTextFile::ParseHeader()
-{
-  wxString comments(m_Comments);
-  comments.Trim(false);
-
-  wxString word = GetWord(comments, true);
-  if (word == "Author")
-  {
-    comments.Trim();
-    m_RCS.m_Author = comments;
-  }
-  else
-  {
-    // This word contains the description. If length not large enough, try next one.
-    // Some descriptions start with * Purpose, or * Function.
-    if (word.length() < 7) word = GetWord(comments, true);
-    word.MakeLower();
-    if (word == "description" || word == "function" || word == "purpose" || m_AllowAction)
-    {
-      if (!m_AllowAction)
-      {
-        m_AllowAction = true;
-        comments.Trim();
-        m_RCS.m_Description = comments;
-      }
-      else
-      {
-        // This determines when the description ends.
-        wxString check = m_Comments.substr(0, 7);
-        check.Trim(false);
-        check.Trim();
-        m_Comments.Trim(false); // remove formatting
-        m_Comments.Trim();
-        if ((check.length() > 0 || m_Comments.empty()) && !m_RCS.m_Description.empty())
-          m_AllowAction = false;
-        else
-          m_RCS.m_Description =
-            (!m_RCS.m_Description.empty() ? m_RCS.m_Description + ' ': wxString(wxEmptyString)) + m_Comments;
-      }
-    }
-  }
 }
 
 bool exTextFile::ParseLine(const wxString& line)
@@ -808,11 +667,6 @@ bool exTextFile::ParseLine(const wxString& line)
   if (line_contains_code)
   {
     GetStatisticElements().Inc(_("Lines Of Code"));
-
-    if (m_Tool.IsHeaderType())
-    {
-      m_FinishedAction = true;
-    }
 
     if (GetStatisticElements().Get(_("Lines Of Code")) == 1 &&
         m_Tool.GetId() == ID_TOOL_COMMIT)
@@ -951,33 +805,11 @@ bool exTextFile::RunTool(const exTool& tool)
       m_FileNameStatistics.GetLexer() = m_Lexers->FindByText(GetLine(0));
     }
 
-    if (m_Tool.IsHeaderType())
+    if (!ParseForOther())
     {
-      if (ParseForHeader())
-      {
-        if (m_Tool.GetId() == ID_TOOL_HEADER)
-        {
-          if (!HeaderDialog())
-          {
-            Close();
+      Close();
 
-            return false;
-          }
-        }
-      }
-      else
-      {
-        return false;
-      }
-    }
-    else
-    {
-      if (!ParseForOther())
-      {
-        Close();
-
-        return false;
-      }
+      return false;
     }
   }
 
@@ -987,15 +819,7 @@ bool exTextFile::RunTool(const exTool& tool)
 
     if (m_Tool.IsStatisticsType())
     {
-      if (m_Tool.GetId() == ID_TOOL_REPORT_HEADER)
-      {
-        if (!m_RCS.m_Description.empty())
-        {
-          GetStatisticElements().Inc(_("Actions Completed"));
-        }
-
-      }
-      else if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
+      if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
       {
         if (!m_FileNameStatistics.GetLexer().GetKeywordsString().empty())
         {
@@ -1070,4 +894,35 @@ void exTextFile::WriteFileHeader()
   WriteComment(wxEmptyString, true);
 
   InsertLine(wxEmptyString);
+}
+
+bool exTextFile::WriteHeader(const wxString& description)
+{
+  m_RCS.m_Description = description;
+
+  const size_t current = GetCurrentLine();
+
+  if (GetLineCount() > 0 &&  current > 1)
+  {
+    for (int i = current; i > 0; i--)
+    {
+      RemoveLine(i);
+    }
+  }
+
+  GoToLine(0);
+
+  WriteFileHeader();
+
+  if (m_FileNameStatistics.GetExt() == "h" && m_FileNameStatistics.GetStat().st_size == 0)
+  {
+    wxString argument = "__" + m_FileNameStatistics.GetName() + "_h";
+
+    InsertLine(wxEmptyString);
+    InsertLine("#if !defined (" + argument + ")");
+    InsertLine("#define " + argument);
+    InsertLine("#endif");
+  }
+
+  return true;
 }

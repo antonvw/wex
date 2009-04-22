@@ -256,10 +256,6 @@ void exTextFileWithReport::ReportStatistics()
     SetItemColumnStatistics(item, _("Comment Size"), GetStatisticElements());
   break;
 
-  case ID_TOOL_REPORT_HEADER:
-    item.SetColumnText(1, GetRCS().GetDescription());
-  break;
-
   case ID_TOOL_REPORT_KEYWORD:
   {
     long total = 0;

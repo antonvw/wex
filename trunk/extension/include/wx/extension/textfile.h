@@ -100,6 +100,9 @@ public:
     const wxString& text,
     const bool fill_out = false,
     const bool fill_out_with_space = false);
+
+  /// Adds a header.
+  bool WriteHeader(const wxString& description);
 protected:
   // Interface.
   /// If it returns true, the operation is cancelled.
@@ -185,7 +188,6 @@ private:
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
-  bool HeaderDialog() ;
   void Initialize();
   void InsertFormattedText(
     const wxString& lines,
@@ -202,9 +204,7 @@ private:
   /// Returns true if char is alphanumeric or a _ sign.
   bool IsWordCharacter(int c) const;
   bool MatchLine(wxString& line);
-  bool ParseForHeader();
   bool ParseForOther();
-  void ParseHeader();
   bool PrepareRevision();
   void RevisionAddComments(const wxString& m_FileNameStatistics);
   void WriteFileHeader();

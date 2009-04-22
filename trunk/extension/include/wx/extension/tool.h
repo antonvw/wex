@@ -94,10 +94,6 @@ public:
   bool IsFindType() const {
     return m_Id == ID_TOOL_REPORT_FIND || m_Id == ID_TOOL_REPORT_REPLACE;}
 
-  /// Is this tool a header type.
-  bool IsHeaderType() const {
-    return m_Id == ID_TOOL_HEADER || m_Id == ID_TOOL_REPORT_HEADER;}
-
   /// Is this tool a report type.
   bool IsReportType() const {
     return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
@@ -114,7 +110,6 @@ public:
     return
       m_Id == ID_TOOL_REPORT_COUNT ||
       m_Id == ID_TOOL_REPORT_VERSION  ||
-      m_Id == ID_TOOL_REPORT_HEADER ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 private:
   int m_Id; // cannot be const, as we set tool id using operator= in exTextFile::SetupTool

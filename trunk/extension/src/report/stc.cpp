@@ -157,13 +157,26 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     return;
   }
 
+  /* TODO: add header.
+  wxTextEntryDialog ted(this,
+    _("Input") + ":",
+    _("Header Description") + ": " + m_FileNameStatistics.GetFullName(),
+    m_RCS.m_Description,
+    wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
+
+  if (ted.ShowModal() == wxID_CANCEL)
+  {
+    return false;
+  }
+  */
+
   if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
   {
     const exTool tool(command.GetId());
 
     if (tool.GetId() == ID_TOOL_COMMIT)
     {
-    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
+    wxTextEntryDialog dlg(this,
       _("Input") + ":",
       "Commit",
       exApp::GetConfig(_("Revision comment")));
