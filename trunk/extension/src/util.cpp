@@ -188,6 +188,22 @@ int exGetLineNumberFromText(const wxString& text)
   }
 }
 
+const wxString exGetWord(
+  wxString& text,
+  bool use_other_field_separators,
+  bool use_path_separator)
+{
+  wxString field_separators = " \t";
+  if (use_other_field_separators) field_separators += ":";
+  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
+  wxString token;
+  wxStringTokenizer tkz(text, field_separators);
+  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
+  text = tkz.GetString();
+  text.Trim(false);
+  return token;
+}
+
 bool exLog(const wxString& text, const wxFileName& filename)
 {
   return wxFile(

@@ -11,6 +11,104 @@
 
 #include <wx/extension/extension.h>
 
+const wxString GetUnFormattedText(
+  const exFileName& filename,
+  const wxString& lines,
+  const wxString& header,
+  bool is_comment)
+{
+  const size_t line_length = filename.GetLexer().UsableCharactersPerLine();
+
+  // Use the header, with one space extra to separate, or no header at all.
+  const wxString header_with_spaces =
+    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
+
+  wxString in = lines, line = header;
+
+  bool at_begin = true;
+
+  wxString out;
+
+  while (!in.empty())
+  {
+    const wxString word = exGetWord(in, false, false);
+
+    if (line.length() + 1 + word.length() > line_length)
+    {
+      const wxString& newline =
+        (is_comment ? filename.GetLexer().MakeComment(line, true, true): line);
+
+      out << newline;
+
+      line = header_with_spaces + word;
+      at_begin = true;
+    }
+    else
+    {
+      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
+      at_begin = false;
+    }
+  }
+
+  const wxString& newline =
+    (is_comment ? filename.GetLexer().MakeComment(line, true, true): line);
+
+  out << newline;
+
+  return out;
+}
+
+const wxString GetFormattedText(
+  const exFileName& filename,
+  const wxString& lines,
+  const wxString& header,
+  bool is_comment)
+{
+  wxString text = lines, header_to_use = header;
+  size_t nCharIndex;
+
+  wxString out;
+
+  // Process text between the carriage return line feeds.
+  while ((nCharIndex = text.find("\n")) != wxString::npos)
+  {
+    out << GetUnFormattedText(
+      filename,
+      text.substr(0, nCharIndex),
+      header_to_use,
+      is_comment);
+
+    text = text.substr(nCharIndex + 1);
+    header_to_use = wxString(' ', header.length());
+  }
+
+  if (!text.empty())
+  {
+    out << GetUnFormattedText(
+      filename,
+      text,
+      header_to_use,
+      is_comment);
+  }
+
+  return out;
+}
+
+const wxString exGetTextWithPrefix(
+  const exFileName& filename,
+  const wxString& text,
+  const wxString& prefix,
+  bool is_comment) 
+{
+  wxString out;
+
+  text.find("\n") != wxString::npos ?
+    out << GetFormattedText(filename, text, prefix, is_comment):
+    out << GetUnFormattedText(filename, text, prefix, is_comment);
+
+  return out;
+}
+
 const wxString exHeader(
   const exFileName& filename,
   exConfig* config,
@@ -29,8 +127,7 @@ const wxString exHeader(
 
   header << l.MakeComment(wxEmptyString, true);
   header << l.MakeComment("File:        " + filename.GetFullName(), true);
-// TODO: !!
-//  WriteTextWithPrefix(description, "Purpose:     ");
+  header << exGetTextWithPrefix(filename, description, "Purpose:     ");
   header << l.MakeComment("Author:      " + author, true);
   header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true);
 

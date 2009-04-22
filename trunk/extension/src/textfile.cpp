@@ -13,26 +13,11 @@
 #include <ctype.h> // for isspace
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
-#include <wx/extension/config.h>
-#include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
-
-/// Gets a word from a string.
-const wxString GetWord(
-  wxString& text,
-  bool use_other_field_separators = false,
-  bool use_path_separator = false)
-{
-  wxString field_separators = " \t";
-  if (use_other_field_separators) field_separators += ":";
-  if (use_path_separator) field_separators = wxFILE_SEP_PATH;
-  wxString token;
-  wxStringTokenizer tkz(text, field_separators);
-  if (tkz.HasMoreTokens()) token = tkz.GetNextToken();
-  text = tkz.GetString();
-  text.Trim(false);
-  return token;
-}
+#include <wx/extension/config.h>
+#include <wx/extension/extension.h>
+#include <wx/extension/lexers.h>
+#include <wx/extension/util.h>
 
 const wxString REV_DATE_FORMAT = "%y%m%d";
 
@@ -82,7 +67,7 @@ bool exRCS::SetRevision(wxString& text)
   // ClassBuilder lines start with '* ', these characters are skipped here.
   wxRegEx("^\\* ").ReplaceFirst(&text, wxEmptyString);
   // If there is a revision in the first word, store it.
-  wxString word = GetWord(text);
+  wxString word = exGetWord(text);
   if (word.find('.') != wxString::npos)
   {
     m_RevisionNumber = word;
@@ -111,7 +96,7 @@ bool exRCS::SetRevision(wxString& text)
   }
 
   text = wxString(end, text.end());
-  word = GetWord(text);
+  word = exGetWord(text);
   m_User = word;
   text.Trim();
   m_Description = text;
@@ -268,34 +253,6 @@ void exTextFile::EndCurrentRevision()
   }
 }
 
-void exTextFile::InsertFormattedText(
-  const wxString& lines,
-  const wxString& header,
-  bool is_comment)
-{
-  wxString text = lines, header_to_use = header;
-  size_t nCharIndex;
-
-  // Process text between the carriage return line feeds.
-  while ((nCharIndex = text.find("\n")) != wxString::npos)
-  {
-    InsertUnFormattedText(
-      text.substr(0, nCharIndex),
-      header_to_use,
-      is_comment);
-    text = text.substr(nCharIndex + 1);
-    header_to_use = wxString(' ', header.length());
-  }
-
-  if (!text.empty())
-  {
-    InsertUnFormattedText(
-      text,
-      header_to_use,
-      is_comment);
-  }
-}
-
 void exTextFile::InsertLine(const wxString& line)
 {
   if (GetCurrentLine() == GetLineCount())
@@ -310,47 +267,6 @@ void exTextFile::InsertLine(const wxString& line)
   m_Modified = true;
 
   GoToLine(GetCurrentLine() + 1);
-}
-
-void exTextFile::InsertUnFormattedText(
-  const wxString& lines,
-  const wxString& header,
-  bool is_comment)
-{
-  const size_t line_length = m_FileNameStatistics.GetLexer().UsableCharactersPerLine();
-
-  // Use the header, with one space extra to separate, or no header at all.
-  const wxString header_with_spaces =
-    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
-
-  wxString in = lines, line = header;
-
-  bool at_begin = true;
-
-  while (!in.empty())
-  {
-    const wxString word = GetWord(in, false, false);
-
-    if (line.length() + 1 + word.length() > line_length)
-    {
-      const wxString& newline =
-        (is_comment ? m_FileNameStatistics.GetLexer().MakeComment(line, true, true): line);
-
-      InsertLine(newline);
-      line = header_with_spaces + word;
-      at_begin = true;
-    }
-    else
-    {
-      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
-      at_begin = false;
-    }
-  }
-
-  const wxString& newline =
-    (is_comment ? m_FileNameStatistics.GetLexer().MakeComment(line, true, true): line);
-
-  InsertLine(newline);
 }
 
 bool exTextFile::IsBrace(int c) const
@@ -764,9 +680,11 @@ bool exTextFile::PrepareRevision()
 
 void exTextFile::RevisionAddComments(const wxString& comments)
 {
-  WriteTextWithPrefix(comments,
+  InsertLine(exGetTextWithPrefix(
+    m_FileNameStatistics,
+    comments,
     m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
-    m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement);
+    m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement));
 }
 
 bool exTextFile::RunTool(const exTool& tool)

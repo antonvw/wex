@@ -182,14 +182,6 @@ private:
   void CommentStatementStart();
   void EndCurrentRevision();
   void Initialize();
-  void InsertFormattedText(
-    const wxString& lines,
-    const wxString& header,
-    bool is_comment);
-  void InsertUnFormattedText(
-    const wxString& lines,
-    const wxString& header,
-    bool is_comment);
   /// Returns true if char is a brace open or close character.
   bool IsBrace(int c) const;
   /// Returns true if char is a code word separator.
@@ -200,13 +192,6 @@ private:
   bool Parse();
   bool PrepareRevision();
   void RevisionAddComments(const wxString& m_FileNameStatistics);
-  void WriteTextWithPrefix(
-    const wxString& text,
-    const wxString& prefix,
-    bool is_comment = true) {
-    text.find("\n") != wxString::npos ?
-      InsertFormattedText(text, prefix, is_comment):
-      InsertUnFormattedText(text, prefix, is_comment);};
 
   bool m_AllowAction;
   bool m_EmptyLine;

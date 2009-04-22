@@ -128,6 +128,9 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
       }
     }
   }
+
+  menu.AppendSeparator();
+  menu.Append(ID_STC_ADD_HEADER, exEllipsed(_("&Add Header")));
 }
 
 bool exSTCWithFrame::Initialize()
@@ -156,19 +159,6 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
     return;
   }
-
-  /* TODO: add header.
-  wxTextEntryDialog ted(this,
-    _("Input") + ":",
-    _("Header Description") + ": " + m_FileNameStatistics.GetFullName(),
-    m_RCS.m_Description,
-    wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
-
-  if (ted.ShowModal() == wxID_CANCEL)
-  {
-    return false;
-  }
-  */
 
   if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
   {
@@ -208,6 +198,19 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
 
   switch (command.GetId())
   {
+  case ID_STC_ADD_HEADER:
+    {
+    wxTextEntryDialog ted(this,
+      _("Input") + ":",
+      _("Header Description") + ": " + m_FileName.GetFullName(),
+      wxEmptyString,
+      wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
+
+    if (ted.ShowModal() == wxID_CANCEL) return;
+    AppendText(exHeader(m_FileName, exApp::GetConfig(), ted.GetValue()));
+    }
+    break;
+
   case ID_STC_COMPARE:
     {
       wxFileName lastfile;

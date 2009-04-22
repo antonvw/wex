@@ -47,6 +47,12 @@ int exGetNumberOfLines(const wxString& text);
 /// Gets a line number from a string.
 int exGetLineNumberFromText(const wxString& text);
 
+/// Gets a word from a string.
+const wxString exGetWord(
+  wxString& text,
+  bool use_other_field_separators = false,
+  bool use_path_separator = false);
+
 /// Returns the filename of the logfile.
 const wxFileName exLogfileName();
 
