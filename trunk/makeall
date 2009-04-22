@@ -19,7 +19,7 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "-- extension report --"
-cd $ORG/extension/buildgtk
+cd $ORG/extension/report/buildgtk
 make $target
 if [ "$?" != "0" ]; then
   exit 1
@@ -40,7 +40,7 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "-- extension test report --"
-cd $ORG/filetool/test
+cd $ORG/extension/test/report
 make $target
 if [ "$?" != "0" ]; then
   exit 1
