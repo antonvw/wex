@@ -151,17 +151,15 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
 
-  CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_HEADER));
-  CPPUNIT_ASSERT(m_TextFile->GetTool().GetId() == ID_TOOL_REPORT_HEADER);
-//wxLogMessage(m_TextFile->GetStatistics().Get() + m_TextFile->GetRCS().GetDescription());
-//  CPPUNIT_ASSERT(m_TextFile->GetRCS().GetDescription() ==
-//    "Declaration of classes for wxextension cpp unit testing");
-
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_KEYWORD));
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
   // test exTool
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
+
+  // test various exMethods
+  const wxString header = exHeader(m_TextFile->GetFileName(), m_Config, "test");
+  CPPUNIT_ASSERT(header.Contains("test"));
 }
 
 void exTestFixture::testTiming()
