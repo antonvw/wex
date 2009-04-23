@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          $URL$
+* File:          extension.cpp
 * Purpose:       Implementation of wxWidgets extension methods
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -123,25 +123,31 @@ const wxString exHeader(
   const wxString place = config->Get("Header/Place");
   const wxString zipcode = config->Get("Header/Zipcode");
 
+  if (author.empty())
+  {
+    wxLogError("Author is required");
+    return wxEmptyString;
+  }
+
   const exLexer l = filename.GetLexer();
 
   header << l.MakeComment(wxEmptyString, true) << "\n";
   header << l.MakeComment("File:        " + filename.GetFullName(), true) << "\n";
-  header << exGetTextWithPrefix(filename, description, "Purpose:     ") << "\n";
+  header << exGetTextWithPrefix(filename, description, 
+                          "Purpose:     ") << "\n";
   header << l.MakeComment("Author:      " + author, true) << "\n";
   header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true) << "\n";
 
   if (config->GetBool("SVN"))
-  {
-    // Prevent the Id to be expanded by SVN itself here.
-    header << l.MakeComment("RCS-ID:      $" + wxString("Id$"), true) << "\n";
-  }
+  // Prevent the Id to be expanded by SVN itself here.
+  header << l.MakeComment("RCS-ID:      $" + wxString("Id$"), true) << "\n";
 
   header << l.MakeComment(wxEmptyString, true, true) << "\n";
   header << l.MakeComment(
-    "Copyright (c) " + wxDateTime::Now().Format("%Y") + 
-    (!company.empty() ? " " + company: wxString(wxEmptyString))
-      + ". All rights reserved.", true) << "\n";
+    "Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + 
+    (!company.empty() ? company: author)
+      + ". All rights reserved. Reproduction in whole or part is prohibited " + 
+        "without the written consent of the copyright owner.", true) << "\n";
 
   if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
   {
