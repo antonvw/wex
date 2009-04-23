@@ -748,16 +748,14 @@ bool exTextFile::RunTool(const exTool& tool)
 
       ReportStatistics();
     }
-    else
-    {
-      if (m_Modified && !m_FileNameStatistics.GetStat().IsReadOnly())
-      {
-        if (!Write())
-        {
-          Close();
 
-          return false;
-        }
+    if (m_Modified && !m_FileNameStatistics.GetStat().IsReadOnly())
+    {
+      if (!Write())
+      {
+        Close();
+
+        return false;
       }
     }
   }

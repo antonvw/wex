@@ -191,7 +191,7 @@ private:
   bool MatchLine(wxString& line);
   bool Parse();
   bool PrepareRevision();
-  void RevisionAddComments(const wxString& m_FileNameStatistics);
+  void RevisionAddComments(const wxString& comments);
 
   bool m_AllowAction;
   bool m_EmptyLine;
