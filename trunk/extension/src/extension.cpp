@@ -143,17 +143,16 @@ const wxString exHeader(
   header << l.MakeComment("RCS-ID:      $" + wxString("Id$"), true) << "\n";
 
   header << l.MakeComment(wxEmptyString, true, true) << "\n";
-  header << l.MakeComment(
-    "Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + 
-    (!company.empty() ? company: author)
-      + ". All rights reserved. Reproduction in whole or part is prohibited " + 
-        "without the written consent of the copyright owner.", true) << "\n";
+  header << l.MakeComment("Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + 
+    (!company.empty() ? company: author), true) << "\n";
 
   if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
   {
     header << l.MakeComment(address + ", " + zipcode + " " + place + ", " + country, true) << "\n";
   }
 
+  header << l.MakeComment("All rights reserved. Reproduction in whole or part is prohibited without", true) << "\n";
+  header << l.MakeComment("the written consent of the copyright owner.", true) << "\n";
   header << l.MakeComment(wxEmptyString, true) << "\n";
 
   header << "\n";

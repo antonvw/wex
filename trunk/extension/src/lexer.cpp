@@ -84,7 +84,10 @@ const wxString exLexer::MakeComment(
   // First set the fill_out_character.
   wxChar fill_out_character;
 
-  if (fill_out_with_space)  fill_out_character = ' ';
+  if (fill_out_with_space)  
+  {
+    fill_out_character = ' ';
+  }
   else
   {
     if (text.empty())
@@ -98,11 +101,16 @@ const wxString exLexer::MakeComment(
 
   wxString out = m_CommentBegin + fill_out_character + text;
 
-  // Add fill out characters if necessary.
+  // Add fill out characters if requested.
   if (fill_out)
   {
-    const wxString fill_out(fill_out_character, UsableCharactersPerLine() - text.length());
-    out += fill_out;
+    const int fill_chars = UsableCharactersPerLine() - text.length();
+
+    if (fill_chars > 0)
+    {
+      const wxString fill_out(fill_out_character, fill_chars);
+      out += fill_out;
+    }
   }
 
   if (!m_CommentEnd.empty()) out += fill_out_character + m_CommentEnd;
