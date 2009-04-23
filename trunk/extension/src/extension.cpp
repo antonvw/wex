@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          $URL $
+* File:          $URL$
 * Purpose:       Implementation of wxWidgets extension methods
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
