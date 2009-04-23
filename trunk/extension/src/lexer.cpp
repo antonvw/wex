@@ -12,6 +12,7 @@
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/util.h> // for exGetWord
 
 using namespace std;
 
@@ -52,6 +53,85 @@ const wxString exLexer::GetKeywordsString(int keyword_set) const
   }
 
   return keywords;
+}
+
+const wxString exLexer::GetFormattedText(
+  const wxString& lines,
+  const wxString& header,
+  bool is_comment) const
+{
+  wxString text = lines, header_to_use = header;
+  size_t nCharIndex;
+
+  wxString out;
+
+  // Process text between the carriage return line feeds.
+  while ((nCharIndex = text.find("\n")) != wxString::npos)
+  {
+    out << GetUnFormattedText(
+      text.substr(0, nCharIndex),
+      header_to_use,
+      is_comment);
+
+    text = text.substr(nCharIndex + 1);
+    header_to_use = wxString(' ', header.length());
+  }
+
+  if (!text.empty())
+  {
+    out << GetUnFormattedText(
+      text,
+      header_to_use,
+      is_comment);
+  }
+
+  return out;
+}
+
+const wxString exLexer::GetUnFormattedText(
+  const wxString& lines,
+  const wxString& header,
+  bool is_comment) const
+{
+  const size_t line_length = UsableCharactersPerLine();
+
+  // Use the header, with one space extra to separate, or no header at all.
+  const wxString header_with_spaces =
+    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
+
+  wxString in = lines, line = header;
+
+  bool at_begin = true;
+
+  wxString out;
+
+  while (!in.empty())
+  {
+    const wxString word = exGetWord(in, false, false);
+
+    if (line.length() + 1 + word.length() > line_length)
+    {
+      const wxString& newline =
+        (is_comment ? MakeComment(line, true, true): line);
+
+      out << newline << "\n";
+
+      line = header_with_spaces + word;
+      at_begin = true;
+    }
+    else
+    {
+      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
+      at_begin = false;
+    }
+  }
+
+  const wxString& newline =
+    (is_comment ? MakeComment(line, true, true): line);
+
+  out << newline;
+
+  return out;
 }
 
 bool exLexer::IsKeyword(const wxString& word) const
@@ -114,6 +194,20 @@ const wxString exLexer::MakeComment(
   }
 
   if (!m_CommentEnd.empty()) out += fill_out_character + m_CommentEnd;
+
+  return out;
+}
+
+const wxString exLexer::MakeCommentWithPrefix(
+  const wxString& text,
+  const wxString& prefix,
+  bool is_comment) const
+{
+  wxString out;
+
+  text.find("\n") != wxString::npos ?
+    out << GetFormattedText(text, prefix, is_comment):
+    out << GetUnFormattedText(text, prefix, is_comment);
 
   return out;
 }

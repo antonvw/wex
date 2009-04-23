@@ -72,6 +72,12 @@ public:
     bool fill_out,
     bool fill_out_with_space = false) const;
 
+  /// Returns a lexer comment string with prefix.
+  const wxString MakeCommentWithPrefix(
+    const wxString& text,
+    const wxString& prefix,
+    bool is_comment = true) const;
+
   /// Adds the keywords from value to the keywords and the keywords set.
   /// The value might contain the keyword set after a ':'.
   /// Returns true if keyword could be added.
@@ -80,6 +86,15 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
+  const wxString exLexer::GetFormattedText(
+    const wxString& lines,
+    const wxString& header,
+    bool is_comment) const;
+  const wxString exLexer::GetUnFormattedText(
+    const wxString& lines,
+    const wxString& header,
+    bool is_comment) const;
+
   wxString m_Associations;
   wxString m_Colourings;
   wxString m_CommentBegin;

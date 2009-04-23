@@ -15,7 +15,6 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/config.h>
-#include <wx/extension/extension.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h>
 
@@ -680,9 +679,8 @@ bool exTextFile::PrepareRevision()
 
 void exTextFile::RevisionAddComments(const wxString& comments)
 {
-  InsertLine(exGetTextWithPrefix(
-    m_FileNameStatistics,
-    comments,
+  InsertLine(m_FileNameStatistics.GetLexer().MakeCommentWithPrefix(
+   comments,
     m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
     m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement));
 }

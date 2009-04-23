@@ -9,8 +9,10 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/extension/extension.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/app.h>
+#include <wx/extension/config.h>
+#include <wx/extension/util.h>
 
 std::map < int, const exToolInfo > exTool::m_ToolInfo;
 

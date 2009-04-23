@@ -20,12 +20,6 @@
 
 class exConfig;
 
-const wxString exGetTextWithPrefix(
-  const exFileName& filename,
-  const wxString& text,
-  const wxString& prefix,
-  bool is_comment = true);
-
 /// Returns a header.
 const wxString exHeader(
   const exFileName& filename,
