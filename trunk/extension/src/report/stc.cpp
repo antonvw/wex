@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/extension/configdialog.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/stc.h>
@@ -200,16 +201,14 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
   case ID_STC_ADD_HEADER:
     {
-    wxTextEntryDialog ted(this,
-      _("Input") + ":",
-      _("Header Description") + ": " + m_FileName.GetFullName(),
-      wxEmptyString,
-      wxOK | wxCANCEL | wxCENTRE | wxTE_MULTILINE);
-
-    if (ted.ShowModal() == wxID_CANCEL) return;
+    std::vector<exConfigItem> v;
+    v.push_back(exConfigItem(_("Description"), wxEmptyString, wxTE_MULTILINE, true));
+    v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
+    exConfigDialog dlg(this, exApp::GetConfig(), v, _("Add Header"));
+    if (dlg.ShowModal() == wxID_CANCEL) return;
 
     DocumentStart();
-    AddText(exHeader(m_FileName, exApp::GetConfig(), ted.GetValue()));
+    AddText(exHeader(m_FileName, exApp::GetConfig(), exApp::GetConfig(_("Description"))));
     }
     break;
 

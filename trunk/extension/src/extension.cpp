@@ -116,12 +116,12 @@ const wxString exHeader(
 {
   wxString header;
 
-  const wxString author = config->Get("Header/Author");
-  const wxString address = config->Get("Header/Address");
-  const wxString company = config->Get("Header/Company");
-  const wxString country = config->Get("Header/Country");
-  const wxString place = config->Get("Header/Place");
-  const wxString zipcode = config->Get("Header/Zipcode");
+  const wxString author = config->Get(_("Author"));
+  const wxString address = config->Get(_("Address"));
+  const wxString company = config->Get(_("Company"));
+  const wxString country = config->Get(_("Country"));
+  const wxString place = config->Get(_("Place"));
+  const wxString zipcode = config->Get(_("Zipcode"));
 
   if (author.empty())
   {
