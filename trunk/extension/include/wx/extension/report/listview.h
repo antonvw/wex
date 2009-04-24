@@ -30,7 +30,6 @@ public:
     LIST_BEFORE_FIRST, ///< for iterating
     LIST_COUNT,        ///< a list to show statistics
     LIST_FIND,         ///< a list to show find results
-    LIST_HEADER,       ///< a list to show headers
     LIST_HISTORY,      ///< a list to show history items
     LIST_KEYWORD,      ///< a list to show keywords
     LIST_REPLACE,      ///< a list to show replace results
