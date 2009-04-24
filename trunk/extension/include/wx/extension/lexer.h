@@ -73,9 +73,9 @@ public:
     bool fill_out = true) const;
 
   /// Returns a lexer comment string with prefix.
-  const wxString MakeCommentWithPrefix(
-    const wxString& text,
-    const wxString& prefix) const;
+  const wxString MakeComment(
+    const wxString& prefix,
+    const wxString& text) const;
 
   /// Adds the keywords from value to the keywords and the keywords set.
   /// The value might contain the keyword set after a ':'.

@@ -76,7 +76,7 @@ const wxString exLexer::GetFormattedText(
       fill_out);
 
     text = text.substr(nCharIndex + 1);
-    header_to_use = wxString(' ', header.length());
+    header_to_use = wxString(' ', header.size());
   }
 
   if (!text.empty())
@@ -101,7 +101,7 @@ const wxString exLexer::GetUnFormattedText(
 
   // Use the header, with one space extra to separate, or no header at all.
   const wxString header_with_spaces =
-    (header.length() == 0) ? wxString(wxEmptyString) : wxString(' ', header.length());
+    (header.size() == 0) ? wxString(wxEmptyString) : wxString(' ', header.size());
 
   wxString in = lines, line = header;
 
@@ -113,7 +113,7 @@ const wxString exLexer::GetUnFormattedText(
   {
     const wxString word = exGetWord(in, false, false);
 
-    if (line.length() + 1 + word.length() > line_length)
+    if (line.size() + 1 + word.size() > line_length)
     {
       out << MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
 
@@ -168,9 +168,9 @@ const wxString exLexer::MakeComment(
   return out;
 }
 
-const wxString exLexer::MakeCommentWithPrefix(
-  const wxString& text,
-  const wxString& prefix) const
+const wxString exLexer::MakeComment(
+  const wxString& prefix,
+  const wxString& text) const
 {
   wxString out;
 
@@ -199,7 +199,7 @@ const wxString exLexer::MakeSingleLineComment(
     {
       if (m_CommentBegin == m_CommentEnd || m_CommentEnd.empty())
            fill_out_character = '-';
-      else fill_out_character = m_CommentBegin[m_CommentBegin.length() - 1];
+      else fill_out_character = m_CommentBegin[m_CommentBegin.size() - 1];
     }
     else   fill_out_character = ' ';
   }
@@ -209,7 +209,7 @@ const wxString exLexer::MakeSingleLineComment(
   // Fill out characters.
   if (fill_out)
   {
-    const int fill_chars = UsableCharactersPerLine() - text.length();
+    const int fill_chars = UsableCharactersPerLine() - text.size();
 
     if (fill_chars > 0)
     {
@@ -281,6 +281,6 @@ int exLexer::UsableCharactersPerLine() const
   // We always use lines with 80 characters. We adjust this here for
   // the space the beginning and end of the comment characters occupy.
   return 80
-      -  (m_CommentBegin.length() + 1)
-      - ((m_CommentEnd.length() != 0) ? m_CommentEnd.length() + 1 : 0);
+      -  (m_CommentBegin.size() + 1)
+      - ((m_CommentEnd.size() != 0) ? m_CommentEnd.size() + 1 : 0);
 }

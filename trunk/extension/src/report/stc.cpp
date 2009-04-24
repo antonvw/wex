@@ -203,8 +203,13 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
     std::vector<exConfigItem> v;
     v.push_back(exConfigItem(_("Description"), wxEmptyString, wxTE_MULTILINE, true));
-    v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
-    exConfigDialog dlg(this, exApp::GetConfig(), v, _("Add Header"));
+
+    if (exApp::GetConfig(_("Author")).empty())
+    {
+      v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
+    }
+
+    exConfigDialog dlg(this, exApp::GetConfig(), v, _("Add Header Description"));
     if (dlg.ShowModal() == wxID_CANCEL) return;
 
     DocumentStart();

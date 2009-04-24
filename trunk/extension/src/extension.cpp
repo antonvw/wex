@@ -22,8 +22,11 @@ const wxString exHeader(
   const wxString address = config->Get(_("Address"));
   const wxString company = config->Get(_("Company"));
   const wxString country = config->Get(_("Country"));
+  const wxString email = config->Get(_("Email"));
   const wxString place = config->Get(_("Place"));
   const wxString zipcode = config->Get(_("Zipcode"));
+
+  const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
   if (author.empty())
   {
@@ -34,27 +37,28 @@ const wxString exHeader(
   const exLexer l = filename.GetLexer();
 
   header << l.MakeComment(wxEmptyString, false) << "\n";
-  header << l.MakeComment("File:        " + filename.GetFullName()) << "\n";
-  header << l.MakeCommentWithPrefix(description, 
-                          "Purpose:     ") << "\n";
-  header << l.MakeComment("Author:      " + author) << "\n";
-  header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S")) << "\n";
+  header << l.MakeComment("File:    ", filename.GetFullName()) << "\n";
+  header << l.MakeComment("Purpose: ", description) << "\n";
+  header << l.MakeComment("Author:  ", author) << "\n";
+  header << l.MakeComment("Created: ", wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S")) << "\n";
 
   if (config->GetBool("SVN"))
   // Prevent the Id to be expanded by SVN itself here.
-  header << l.MakeComment("RCS-ID:      $" + wxString("Id$")) << "\n";
+  header << l.MakeComment("RCS-ID:  $", wxString("Id$")) << "\n";
 
   header << l.MakeComment(wxEmptyString) << "\n";
-  header << l.MakeComment("Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + 
-    (!company.empty() ? company: author)) << "\n";
+  header << l.MakeComment("Copyright (c) " + wxDateTime::Now().Format("%Y") + " " +
+    (!company.empty() ? company: author) + email_field) << "\n";
 
   if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
   {
     header << l.MakeComment(address + ", " + zipcode + " " + place + ", " + country) << "\n";
   }
 
-  header << l.MakeComment("All rights reserved. Reproduction in whole or part is prohibited without") << "\n";
-  header << l.MakeComment("the written consent of the copyright owner.") << "\n";
+  header << l.MakeComment("\
+    All rights reserved. Reproduction in whole or part is prohibited without the \
+    written consent of the copyright owner.") << "\n";
+
   header << l.MakeComment(wxEmptyString, false) << "\n";
 
   header << "\n";
