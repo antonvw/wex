@@ -109,12 +109,14 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsString().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetProperties().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("class"));
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("const"));
   CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("cla"));
   CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xxx"));
   CPPUNIT_ASSERT(!m_Lexer->MakeComment("test", true).empty());
-  CPPUNIT_ASSERT(m_Lexer->UsableCharactersPerLine() == 74); // 80 - 4 (comments) - 2 (spaces)
+  CPPUNIT_ASSERT(!m_Lexer->MakeComment("test", "test").empty());
+  CPPUNIT_ASSERT(m_Lexer->SetKeywords("hello:1");
 
   // test exRCS
   CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
