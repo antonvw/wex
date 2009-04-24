@@ -151,21 +151,18 @@ bool exNotebook::ForEach(int id)
 
 const wxString exNotebook::GetKeyByPage(wxWindow* page) const
 {
-  if (!m_MapPages.empty())
+  for (
+    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
+    it != m_MapPages.end();
+    ++it)
   {
-    for (
-      std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
-      it != m_MapPages.end();
-      ++it)
+    if (it->second == page)
     {
-      if (it->second == page)
-      {
-        return it->first;
-      }
+      return it->first;
     }
-
-    wxFAIL;
   }
+
+  wxFAIL;
 
   return wxEmptyString;
 }

@@ -82,7 +82,7 @@ const wxString exLexers::BuildWildCards(const wxFileName& filename) const
 
 const exLexer exLexers::FindByFileName(const wxFileName& filename) const
 {
-  if (!filename.IsOk() || m_Lexers.empty())
+  if (!filename.IsOk())
   {
     return exLexer();
   }
@@ -103,23 +103,20 @@ const exLexer exLexers::FindByFileName(const wxFileName& filename) const
 
 const exLexer exLexers::FindByName(const wxString& name) const
 {
-  if (!m_Lexers.empty())
+  for (
+    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
   {
-    for (
-      std::vector<exLexer>::const_iterator it = m_Lexers.begin();
-      it != m_Lexers.end();
-      ++it)
+    if (name == it->GetScintillaLexer())
     {
-      if (name == it->GetScintillaLexer())
-      {
-        return *it;
-      }
+      return *it;
     }
-
-    // We did not find a lexer, so give an error.
-    // The same error is shown in exSTC::SetLexer as well.
-    wxLogError("Lexer is not known: " + name);
   }
+
+  // We did not find a lexer, so give an error.
+  // The same error is shown in exSTC::SetLexer as well.
+  wxLogError("Lexer is not known: " + name);
 
   return exLexer();
 }

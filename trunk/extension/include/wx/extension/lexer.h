@@ -81,9 +81,6 @@ public:
   /// The value might contain the keyword set after a ':'.
   /// Returns true if keyword could be added.
   bool SetKeywords(const wxString& value);
-
-  /// Returns number of chars that fit on a line, skipping comment chars.
-  int UsableCharactersPerLine() const;
 private:
   const wxString exLexer::GetFormattedText(
     const wxString& lines,
@@ -99,6 +96,8 @@ private:
     const wxString& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
+  /// Returns number of chars that fit on a line, skipping comment chars.
+  int UsableCharactersPerLine() const;
 
   wxString m_Associations;
   wxString m_Colourings;
