@@ -87,10 +87,18 @@ public:
 private:
   const wxString exLexer::GetFormattedText(
     const wxString& lines,
-    const wxString& header) const;
+    const wxString& header,
+    bool fill_out_with_space,
+    bool fill_out) const;
   const wxString exLexer::GetUnFormattedText(
     const wxString& lines,
-    const wxString& header) const;
+    const wxString& header,
+    bool fill_out_with_space,
+    bool fill_out) const;
+  const wxString MakeSingleLineComment(
+    const wxString& text,
+    bool fill_out_with_space = true,
+    bool fill_out = true) const;
 
   wxString m_Associations;
   wxString m_Colourings;
