@@ -82,12 +82,12 @@ public:
   /// Returns true if keyword could be added.
   bool SetKeywords(const wxString& value);
 private:
-  const wxString exLexer::GetFormattedText(
+  const wxString GetFormattedText(
     const wxString& lines,
     const wxString& header,
     bool fill_out_with_space,
     bool fill_out) const;
-  const wxString exLexer::GetUnFormattedText(
+  const wxString GetUnFormattedText(
     const wxString& lines,
     const wxString& header,
     bool fill_out_with_space,
