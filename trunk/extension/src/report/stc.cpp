@@ -202,18 +202,18 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   case ID_STC_ADD_HEADER:
     {
     std::vector<exConfigItem> v;
-    v.push_back(exConfigItem(_("Description"), wxEmptyString, wxTE_MULTILINE, true));
+    v.push_back(exConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
 
     if (exApp::GetConfig(_("Author")).empty())
     {
       v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
     }
 
-    exConfigDialog dlg(this, exApp::GetConfig(), v, _("Add Header Description"));
+    exConfigDialog dlg(this, exApp::GetConfig(), v, _("File Purpose"));
     if (dlg.ShowModal() == wxID_CANCEL) return;
 
     DocumentStart();
-    AddText(exHeader(m_FileName, exApp::GetConfig(), exApp::GetConfig(_("Description"))));
+    AddText(exHeader(m_FileName, exApp::GetConfig(), exApp::GetConfig(_("Purpose"))));
     }
     break;
 
