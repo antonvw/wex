@@ -29,7 +29,7 @@ bool ftTestApp::OnInit()
 
   CppUnit::TextUi::TestRunner runner;
 
-  ftTestSuite* suite = new ftTestSuite;
+  exReportTestSuite* suite = new exReportTestSuite;
 
   runner.addTest(suite);
   runner.run();
