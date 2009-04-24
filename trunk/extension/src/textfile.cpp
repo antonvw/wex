@@ -680,9 +680,9 @@ bool exTextFile::PrepareRevision()
 void exTextFile::RevisionAddComments(const wxString& comments)
 {
   InsertLine(m_FileNameStatistics.GetLexer().MakeCommentWithPrefix(
-   comments,
+    comments,
     m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
-    m_Config->Get("RCS/User", wxGetUserName()), !m_IsCommentStatement));
+    m_Config->Get("RCS/User", wxGetUserName())));
 }
 
 bool exTextFile::RunTool(const exTool& tool)

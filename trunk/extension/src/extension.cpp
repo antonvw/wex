@@ -33,29 +33,29 @@ const wxString exHeader(
 
   const exLexer l = filename.GetLexer();
 
-  header << l.MakeComment(wxEmptyString, true) << "\n";
-  header << l.MakeComment("File:        " + filename.GetFullName(), true) << "\n";
+  header << l.MakeComment(wxEmptyString, false) << "\n";
+  header << l.MakeComment("File:        " + filename.GetFullName()) << "\n";
   header << l.MakeCommentWithPrefix(description, 
                           "Purpose:     ") << "\n";
-  header << l.MakeComment("Author:      " + author, true) << "\n";
-  header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S"), true) << "\n";
+  header << l.MakeComment("Author:      " + author) << "\n";
+  header << l.MakeComment("Created:     " + wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S")) << "\n";
 
   if (config->GetBool("SVN"))
   // Prevent the Id to be expanded by SVN itself here.
-  header << l.MakeComment("RCS-ID:      $" + wxString("Id$"), true) << "\n";
+  header << l.MakeComment("RCS-ID:      $" + wxString("Id$")) << "\n";
 
-  header << l.MakeComment(wxEmptyString, true, true) << "\n";
+  header << l.MakeComment(wxEmptyString) << "\n";
   header << l.MakeComment("Copyright (c) " + wxDateTime::Now().Format("%Y") + " " + 
-    (!company.empty() ? company: author), true) << "\n";
+    (!company.empty() ? company: author)) << "\n";
 
   if (!address.empty() && !country.empty() && !place.empty() && !zipcode.empty())
   {
-    header << l.MakeComment(address + ", " + zipcode + " " + place + ", " + country, true) << "\n";
+    header << l.MakeComment(address + ", " + zipcode + " " + place + ", " + country) << "\n";
   }
 
-  header << l.MakeComment("All rights reserved. Reproduction in whole or part is prohibited without", true) << "\n";
-  header << l.MakeComment("the written consent of the copyright owner.", true) << "\n";
-  header << l.MakeComment(wxEmptyString, true) << "\n";
+  header << l.MakeComment("All rights reserved. Reproduction in whole or part is prohibited without") << "\n";
+  header << l.MakeComment("the written consent of the copyright owner.") << "\n";
+  header << l.MakeComment(wxEmptyString, false) << "\n";
 
   header << "\n";
 

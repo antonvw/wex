@@ -69,14 +69,13 @@ public:
   /// Returns a lexer comment string with text formatted.
   const wxString MakeComment(
     const wxString& text,
-    bool fill_out,
-    bool fill_out_with_space = false) const;
+    bool fill_out_with_space = true,
+    bool fill_out = true) const;
 
   /// Returns a lexer comment string with prefix.
   const wxString MakeCommentWithPrefix(
     const wxString& text,
-    const wxString& prefix,
-    bool is_comment = true) const;
+    const wxString& prefix) const;
 
   /// Adds the keywords from value to the keywords and the keywords set.
   /// The value might contain the keyword set after a ':'.
@@ -88,12 +87,10 @@ public:
 private:
   const wxString exLexer::GetFormattedText(
     const wxString& lines,
-    const wxString& header,
-    bool is_comment) const;
+    const wxString& header) const;
   const wxString exLexer::GetUnFormattedText(
     const wxString& lines,
-    const wxString& header,
-    bool is_comment) const;
+    const wxString& header) const;
 
   wxString m_Associations;
   wxString m_Colourings;
