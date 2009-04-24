@@ -516,7 +516,6 @@ const wxString exListViewFile::GetTypeDescription(ListType type)
   {
   case LIST_COUNT: value = _("File Count"); break;
   case LIST_FIND: value = _("Find Results"); break;
-  case LIST_HEADER: value = _("Headers"); break;
   case LIST_HISTORY: value = _("History"); break;
   case LIST_KEYWORD: value = _("Keywords"); break;
   case LIST_PROCESS: value = _("Process Output"); break;
@@ -581,9 +580,6 @@ void exListViewFile::Initialize(const exLexer* lexer)
     InsertColumn(_("Line"), exColumn::COL_STRING, 400);
     InsertColumn(_("Match"), exColumn::COL_STRING);
     InsertColumn(_("Line No"));
-  break;
-  case LIST_HEADER:
-    InsertColumn(_("Header Description"), exColumn::COL_STRING, 400);
   break;
   case LIST_KEYWORD:
     for (
