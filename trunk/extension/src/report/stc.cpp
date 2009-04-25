@@ -207,6 +207,11 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     if (exApp::GetConfig(_("Author")).empty())
     {
       v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
+      
+      if (exApp::GetConfig(_("Email")).empty())
+      {
+        v.push_back(exConfigItem(_("Email"), wxEmptyString, 0, true));
+      }
     }
 
     exConfigDialog dlg(this, exApp::GetConfig(), v, _("File Purpose"));

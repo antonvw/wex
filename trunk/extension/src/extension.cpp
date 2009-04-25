@@ -37,14 +37,14 @@ const wxString exHeader(
   const exLexer l = filename.GetLexer();
 
   header << l.MakeComment(wxEmptyString, false) << "\n";
-  header << l.MakeComment("File:    ", filename.GetFullName()) << "\n";
-  header << l.MakeComment("Purpose: ", description) << "\n";
-  header << l.MakeComment("Author:  ", author) << "\n";
-  header << l.MakeComment("Created: ", wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S")) << "\n";
+  header << l.MakeComment("File:       ", filename.GetFullName()) << "\n";
+  header << l.MakeComment("Purpose:    ", description) << "\n";
+  header << l.MakeComment("Author:     ", author) << "\n";
+  header << l.MakeComment("Created:    ", wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S")) << "\n";
 
   if (config->GetBool("SVN"))
   // Prevent the Id to be expanded by SVN itself here.
-  header << l.MakeComment("RCS-ID:  $", wxString("Id$")) << "\n";
+  header << l.MakeComment("RCS-ID:     $", wxString("Id$")) << "\n";
 
   header << l.MakeComment(wxEmptyString) << "\n";
   header << l.MakeComment("Copyright (c) " + wxDateTime::Now().Format("%Y") + " " +
@@ -56,8 +56,8 @@ const wxString exHeader(
   }
 
   header << l.MakeComment("\
-    All rights reserved. Reproduction in whole or part is prohibited without the \
-    written consent of the copyright owner.") << "\n";
+    All rights reserved. Reproduction in whole or part is prohibited without the\
+     written consent of the copyright owner.") << "\n";
 
   header << l.MakeComment(wxEmptyString, false) << "\n";
 
