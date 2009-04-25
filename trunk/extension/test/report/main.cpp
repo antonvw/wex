@@ -14,15 +14,15 @@
 #include <cppunit/TestRunner.h>
 #include "test.h"
 
-IMPLEMENT_APP(ftTestApp)
+IMPLEMENT_APP(exReportTestApp)
 
-bool ftTestApp::OnInit()
+bool exReportTestApp::OnInit()
 {
-  SetAppName("ftTestApp");
+  SetAppName("exReportTestApp");
 
   exApp::OnInit();
 
-  exFrameWithHistory *frame = new exFrameWithHistory(NULL, wxID_ANY, "ftTestApp");
+  exFrameWithHistory *frame = new exFrameWithHistory(NULL, wxID_ANY, "exReportTestApp");
   frame->Show(true);
 
   SetTopWindow(frame);
