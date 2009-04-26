@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 
 WXWIN_BASE_VERSION=$(shell wx-config --release)
-LIBS=-L../../../libs -lwxextension.v1.0.gtk `wx-config --libs all` -lodbc -lcppunit
+LIBS=-L../../../libs -lwxext.v1.0.gtk `wx-config --libs all` -lodbc -lcppunit
 CFLAGS=-DUSE_OTL `wx-config --cflags`
 LIBPATH=/usr/local/lib
 PROGRAM=test.v1.0
