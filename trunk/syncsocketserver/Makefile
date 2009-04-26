@@ -3,7 +3,7 @@
 # RCS-ID:        $Id$
 # Purpose:       Makefile for syncsocketserver gtk
 
-LIBS=-L../libs -lwxextension.v1.0.gtk -lwxfiletool.v1.0.gtk `wx-config --libs all` -lodbc
+LIBS=-L../extension/lib -lwxext.v1.0.gtk -lwxextrep.v1.0.gtk `wx-config --libs all` -lodbc
 BINPATH=/usr/local/bin
 CFLAGS=`wx-config --cflags`
 APP_VERSION=syncsocketserver.v1.0
@@ -16,7 +16,7 @@ WFLAGS=-Wall -Wpointer-arith
 
 # C environment flags, shared by all build dirs
 # Set tracing using DWXTRACE, and trace string (only in debug mode).
-EXTRAFLAGS=-DWXUSINGDLL -INONE -I../extension/include -I../filetool/include -O2
+EXTRAFLAGS=-DWXUSINGDLL -INONE -I../extension/include -O2
 
 OBJS=	server.o
 $(PROGRAM): $(OBJS)
