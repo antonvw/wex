@@ -954,7 +954,8 @@ void exListViewFile::OnIdle(wxIdleEvent& event)
   if (
     !IsShown() ||
      IsOpened() ||
-     GetItemCount() == 0)
+     GetItemCount() == 0 ||
+     !exApp::GetConfigBool("AllowSync", true))
   {
     return;
   }
