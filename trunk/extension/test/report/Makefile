@@ -2,7 +2,7 @@
 # File:    Makefile.env
 # Purpose: Makefile for cpp unit testing
 # Author:  Anton van Wezenbeek                                    
-# RCS-ID:  $Id: Makefile 440 2009-03-09 18:37:42Z antonvw $
+# RCS-ID:  $Id$
 #                                                                               
 # Copyright  2009, Anton van Wezenbeek
 # All rights are reserved. Reproduction in whole or part is prohibited

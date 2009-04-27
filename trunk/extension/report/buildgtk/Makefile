@@ -1,6 +1,6 @@
 # File:          Makefile
 # Author:        Anton van Wezenbeek
-# RCS-ID:        $Id: Makefile 30 2008-11-09 14:24:44Z anton $
+# RCS-ID:        $Id$
 # Purpose:       Makefile for gtk 
 
 LIBRARY=../../lib/$(APP_VERSION).gtk.so
