@@ -15,7 +15,7 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/extension/report/filetool.h>
+#include <wx/extension/report/report.h>
 #include "appl.h"
 
 enum
@@ -175,7 +175,7 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
     {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(FT_LIB_VERSION);
+    info.SetVersion(wxEX_VERSION_STRING);
     info.AddDeveloper(wxVERSION_STRING);
     info.SetCopyright(_("(c) 1998-2009 Anton van Wezenbeek."));
     wxAboutBox(info);
