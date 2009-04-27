@@ -106,7 +106,6 @@ const wxString exLexer::GetUnFormattedText(
   wxString in = lines, line = header;
 
   bool at_begin = true;
-
   wxString out;
 
   while (!in.empty())
@@ -118,7 +117,6 @@ const wxString exLexer::GetUnFormattedText(
       out << MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
 
       line = header_with_spaces + word;
-      at_begin = true;
     }
     else
     {
