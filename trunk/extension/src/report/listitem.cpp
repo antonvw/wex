@@ -90,9 +90,9 @@ bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
   }
   else
   {
-    exDirWithReport dir(listview, m_Statistics.GetFullPath(), m_FileSpec);
+    exDirWithReport dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
 
-    if (dir.RunTool(tool))
+    if (dir.RunTool())
     {
       m_Statistics += dir.GetStatistics();
 

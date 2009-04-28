@@ -66,10 +66,6 @@ void exFindInFiles(exFrameWithHistory* frame, bool replace)
     return;
   }
 
-  exListViewFile* output =
-    frame->Activate(replace ? exListViewFile::LIST_REPLACE : exListViewFile::LIST_FIND);
-  if (output == NULL) return;
-
   const exTool tool =
     (replace ?
        ID_TOOL_REPORT_REPLACE:
@@ -83,11 +79,11 @@ void exFindInFiles(exFrameWithHistory* frame, bool replace)
   exApp::Log(exApp::GetConfig()->GetFindReplaceData()->GetText(replace));
 
   exDirWithReport dir(
-    output,
+    tool,
     exApp::GetConfig(_("In folder")),
     exApp::GetConfig(_("In files")));
 
-  dir.RunTool(tool);
+  dir.RunTool();
   dir.GetStatistics().Log(tool);
 }
 
@@ -279,6 +275,17 @@ void exOpenFiles(
   }
 }
 
+exDirWithReport::exDirWithReport(const exTool& tool,
+  const wxString& fullpath, const wxString& filespec)
+  : exDir(fullpath, filespec)
+  , m_Statistics(fullpath)
+  , m_Frame(NULL)
+  , m_ListView(NULL)
+  , m_Flags(0)
+  , m_Tool(tool)
+{
+}
+
 exDirWithReport::exDirWithReport(exListViewFile* listview,
   const wxString& fullpath, const wxString& filespec)
   : exDir(fullpath, filespec)
@@ -286,7 +293,6 @@ exDirWithReport::exDirWithReport(exListViewFile* listview,
   , m_Frame(NULL)
   , m_ListView(listview)
   , m_Flags(0)
-  , m_RunningTool(false)
   , m_Tool(ID_TOOL_LOWEST)
 {
 }
@@ -298,14 +304,13 @@ exDirWithReport::exDirWithReport(exFrameWithHistory* frame,
   , m_Frame(frame)
   , m_ListView(NULL)
   , m_Flags(flags)
-  , m_RunningTool(false)
   , m_Tool(ID_TOOL_LOWEST)
 {
 }
 
 void exDirWithReport::OnFile(const wxString& file)
 {
-  if (m_RunningTool)
+  if (m_Frame == NULL && m_ListView == NULL)
   {
     const exFileName filename(file);
 
@@ -324,41 +329,30 @@ void exDirWithReport::OnFile(const wxString& file)
       if (wxFileName::DirExists(file)) return;
       m_Frame->OpenFile(file, 0, wxEmptyString, m_Flags);
     }
-    else
+    else if (m_ListView != NULL)
     {
-      if (m_ListView != NULL)
+      exListItemWithFileName item(m_ListView, file, GetFileSpec());
+      item.Insert();
+
+      // Don't move next code into insert, as it itself inserts!
+      if (m_ListView->GetType() == exListViewFile::LIST_VERSION)
       {
-        exListItemWithFileName item(m_ListView, file, GetFileSpec());
-        item.Insert();
+        exListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
 
-        // Don't move next code into insert, as it itself inserts!
-        if (m_ListView->GetType() == exListViewFile::LIST_VERSION)
+        exTextFileWithReport report(item.m_Statistics);
+        if (report.SetupTool(ID_TOOL_REVISION_RECENT))
         {
-          exListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
-
-          exTextFileWithReport report(item.m_Statistics);
-          if (report.SetupTool(ID_TOOL_REVISION_RECENT))
-          {
-            report.RunTool(ID_TOOL_REVISION_RECENT);
-            item.UpdateRevisionList(report.GetRCS());
-          }
+          report.RunTool(ID_TOOL_REVISION_RECENT);
+          item.UpdateRevisionList(report.GetRCS());
         }
       }
     }
   }
 }
 
-size_t exDirWithReport::RunTool(const exTool& tool, int flags)
+size_t exDirWithReport::RunTool(int flags)
 {
-  m_Tool = tool;
-
-  m_RunningTool = true;
-
-  size_t result = FindFiles(flags);
-
-  m_RunningTool = false;
-
-  return result;
+  return FindFiles(flags);
 }
 
 /// Offers a find combobox that allows you to find text

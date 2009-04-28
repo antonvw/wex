@@ -30,9 +30,13 @@ class exListViewFile;
 class exDirWithReport : public exDir
 {
 public:
-  /// When using FindFiles each found file is added as listitem to the listview.
   /// When using RunTool findfiles is also used to get all matching files,
   /// and on these files RunTool is invoked.
+  exDirWithReport(const exTool& tool,
+    const wxString& fullpath,
+    const wxString& filespec = wxEmptyString);
+
+  /// When using FindFiles each found file is added as listitem to the listview.
   exDirWithReport(exListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
@@ -46,7 +50,7 @@ public:
 
   /// Calls RunTool from exTextFile on all matching files.
   /// SetupTool from exTextFile should already be called.
-  size_t RunTool(const exTool& tool, int flags = wxDIR_DEFAULT);
+  size_t RunTool(int flags = wxDIR_DEFAULT);
 
   /// Gets the statistics.
   const exFileNameStatistics& GetStatistics() {return m_Statistics;};
@@ -57,7 +61,6 @@ private:
   exFrameWithHistory* m_Frame;
   exListViewFile* m_ListView;
   const long m_Flags;
-  bool m_RunningTool;
   exTool m_Tool;
 };
 
