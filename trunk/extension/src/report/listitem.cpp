@@ -92,7 +92,7 @@ bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
   {
     exDirWithReport dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
 
-    if (dir.RunTool())
+    if (dir.FindFiles())
     {
       m_Statistics += dir.GetStatistics();
 

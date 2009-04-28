@@ -26,31 +26,27 @@
 class exFrameWithHistory;
 class exListViewFile;
 
-/// Adds frame and listview interface to exDir.
+/// Adds reporting to exDir.
 class exDirWithReport : public exDir
 {
 public:
-  /// When using RunTool findfiles is also used to get all matching files,
-  /// and on these files RunTool is invoked.
+  /// SetupTool should already be called.
+  /// FindFiles invokes RunTool on all matching files.
   exDirWithReport(const exTool& tool,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
-  /// When using FindFiles each found file is added as listitem to the listview.
+  /// FindFiles causes each found file to be added as listitem to the listview.
   exDirWithReport(exListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
-  /// Allows you to FindFiles on a frame.
-  /// In the findfiles all found files are opened using OpenFile from frame.
+  /// FindFiles causes all found files to be opened using OpenFile from frame.
+  /// Flags are passed on to OpenFile.
   exDirWithReport(exFrameWithHistory* frame,
     const wxString& fullpath,
     const wxString& filespec,
     long flags = 0);
-
-  /// Calls RunTool from exTextFile on all matching files.
-  /// SetupTool from exTextFile should already be called.
-  size_t RunTool(int flags = wxDIR_DEFAULT);
 
   /// Gets the statistics.
   const exFileNameStatistics& GetStatistics() {return m_Statistics;};

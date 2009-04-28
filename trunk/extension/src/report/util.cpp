@@ -83,7 +83,7 @@ void exFindInFiles(exFrameWithHistory* frame, bool replace)
     exApp::GetConfig(_("In folder")),
     exApp::GetConfig(_("In files")));
 
-  dir.RunTool();
+  dir.FindFiles();
   dir.GetStatistics().Log(tool);
 }
 
@@ -348,11 +348,6 @@ void exDirWithReport::OnFile(const wxString& file)
       }
     }
   }
-}
-
-size_t exDirWithReport::RunTool(int flags)
-{
-  return FindFiles(flags);
 }
 
 /// Offers a find combobox that allows you to find text
