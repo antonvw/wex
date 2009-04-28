@@ -17,7 +17,6 @@
 
 class exFrameWithHistory;
 class exProcessWithListView;
-class exToolThread;
 
 /// Combines exListView and exFile, giving you a list control with file
 /// synchronization support. Further it adds processing support.
@@ -144,7 +143,6 @@ private:
   void RunItems(const exTool& tool);
 
   static exProcessWithListView* m_Process;
-  exToolThread* m_Thread;
 
   bool m_ContentsChanged;
   bool m_ItemUpdated;

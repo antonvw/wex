@@ -58,56 +58,6 @@ private:
 };
 #endif
 
-class exToolThread : public wxThread
-{
-public:
-  exToolThread(const exTool& tool, exListViewFile* list)
-    : wxThread(wxTHREAD_JOINABLE)
-    , m_ListView(list)
-    , m_Tool(tool) {}
-protected:
-  virtual ExitCode Entry()
-  {
-    int i = -1;
-
-    exFileNameStatistics stats(m_ListView->GetFileName().GetName());
-
-    while (!TestDestroy())
-    {
-      if (m_ListView->GetSelectedItemCount() == 0)
-      {
-        i = i + 1;
-        if (i >= m_ListView->GetItemCount()) break;
-      }
-      else
-      {
-        i = m_ListView->GetNextSelected(i);
-        if (i == -1) break;
-      }
-
-      exListItemWithFileName item(m_ListView, i);
-      item.Run(m_Tool, m_ListView);
-
-      stats += item.GetStatistics();
-
-      Yield();
-
-      Sleep(5);
-    }
-
-    stats.Log(m_Tool);
-
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_THREAD);
-    event.SetExtraLong(m_Tool.GetId());
-    wxPostEvent(m_ListView, event);
-
-    return NULL;
-  };
-private:
-  exListViewFile* m_ListView;
-  const exTool m_Tool;
-};
-
 const int ID_LISTVIEW = 100;
 
 BEGIN_EVENT_TABLE(exListViewFile, exListView)
@@ -116,7 +66,6 @@ BEGIN_EVENT_TABLE(exListViewFile, exListView)
   EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, exListViewFile::OnList)
   EVT_MENU(wxID_ADD, exListViewFile::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, exListViewFile::OnCommand)
-  EVT_MENU(ID_TERMINATED_THREAD, exListViewFile::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, exListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exListViewFile::OnCommand)
@@ -136,7 +85,6 @@ exListViewFile::exListViewFile(wxWindow* parent,
   const wxValidator& validator)
   : exListView(parent, ID_LISTVIEW, pos, size, style, validator, IMAGE_FILE_ICON)
   , exFile()
-  , m_Thread(NULL)
   , m_ContentsChanged(false)
   , m_ItemUpdated(false)
   , m_ItemNumber(0)
@@ -156,7 +104,6 @@ exListViewFile::exListViewFile(wxWindow* parent,
   const wxValidator& validator)
   : exListView(parent, ID_LISTVIEW, pos, size, style, validator, IMAGE_FILE_ICON)
   , exFile()
-  , m_Thread(NULL)
   , m_ContentsChanged(false)
   , m_ItemUpdated(false)
   , m_ItemNumber(0)
@@ -918,29 +865,6 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
     wxDELETE(m_Process);
     break;
 
-  case ID_TERMINATED_THREAD:
-    {
-    exTool tool(event.GetExtraLong());
-
-    if (m_Thread != NULL)
-    {
-      m_Thread->Delete();
-      // Joinable threads should be deleted explicitly
-      delete m_Thread;
-      m_Thread = NULL;
-    }
-
-    exFrame::StatusText(_("Ready"));
-
-    if (tool.IsCountType())
-    {
-      exOpenFile(
-        exFileNameStatistics::GetLogfileName(), 
-        exSTC::STC_OPEN_FROM_STATISTICS);
-    }
-    }
-    break;
-
   default: event.Skip();
   }
 
@@ -1124,18 +1048,6 @@ void exListViewFile::RunItems(const exTool& tool)
     return;
   }
 
-  if (m_Thread != NULL && m_Thread->IsRunning())
-  {
-    if (wxMessageBox(_("Already running, stop") + "?",
-      _("Confirm"),
-     wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-    {
-      return;
-    }
-
-    m_Thread->Delete();
-  }
-
   if (tool.IsFindType())
   {
     if (m_Frame != NULL)
@@ -1185,11 +1097,28 @@ void exListViewFile::RunItems(const exTool& tool)
     return;
   }
 
-  m_Thread = new exToolThread(tool, this);
+  int i = -1;
 
-  if (m_Thread->Create() == wxTHREAD_NO_ERROR)
+  exFileNameStatistics stats(GetFileName().GetName());
+
+  while ((i = GetNextSelected(i)) != -1)
   {
-    m_Thread->Run();
+    exListItemWithFileName item(this, i);
+    item.Run(tool, this);
+    stats += item.GetStatistics();
+
+    wxYield();
+  }
+
+  stats.Log(tool);
+
+  exFrame::StatusText(_("Ready"));
+
+  if (tool.IsCountType())
+  {
+    exOpenFile(
+      exFileNameStatistics::GetLogfileName(), 
+      exSTC::STC_OPEN_FROM_STATISTICS);
   }
 }
 
