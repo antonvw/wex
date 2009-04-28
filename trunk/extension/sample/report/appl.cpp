@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          appl.cpp
-* Purpose:       Implementation of sample classes for wxFileTool
+* Purpose:       Implementation of sample classes for wxExRep
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -25,23 +25,23 @@ enum
   ID_RECENTFILE_MENU,
 };
 
-BEGIN_EVENT_TABLE(ftSampleFrame, exFrameWithHistory)
-  EVT_MENU(ID_PROCESS_DIALOG, ftSampleFrame::OnCommand)
-  EVT_MENU(ID_PROCESS_RUN, ftSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, ftSampleFrame::OnCommand)
-  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, ftSampleFrame::OnTree)
+BEGIN_EVENT_TABLE(wxExRepSampleFrame, exFrameWithHistory)
+  EVT_MENU(ID_PROCESS_DIALOG, wxExRepSampleFrame::OnCommand)
+  EVT_MENU(ID_PROCESS_RUN, wxExRepSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, wxExRepSampleFrame::OnCommand)
+  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExRepSampleFrame::OnTree)
 END_EVENT_TABLE()
 
-IMPLEMENT_APP(ftSampleApp)
+IMPLEMENT_APP(wxExRepSampleApp)
 
-bool ftSampleApp::OnInit()
+bool wxExRepSampleApp::OnInit()
 {
-  SetAppName("ftSample");
+  SetAppName("wxExRepSample");
   SetLogging();
 
   exApp::OnInit();
 
-  ftSampleFrame *frame = new ftSampleFrame("ftSample");
+  wxExRepSampleFrame *frame = new wxExRepSampleFrame("wxExRepSample");
 
   frame->Show(true);
 
@@ -50,7 +50,7 @@ bool ftSampleApp::OnInit()
   return true;
 }
 
-ftSampleFrame::ftSampleFrame(const wxString& title)
+wxExRepSampleFrame::wxExRepSampleFrame(const wxString& title)
   : exFrameWithHistory(NULL, wxID_ANY, title)
 {
   SetIcon(wxICON(mondrian));
@@ -100,7 +100,6 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
     wxID_ANY, wxDefaultPosition, wxDefaultSize,
     wxAUI_NB_DEFAULT_STYLE | 
     wxAUI_NB_WINDOWLIST_BUTTON);
-  exFindToolBar* findbar = new exFindToolBar(this, this);
 
   m_STC = new exSTCWithFrame(this); // use all flags (default)
 
@@ -116,7 +115,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
   GetManager().AddPane(m_NotebookWithLists, wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
-  GetManager().AddPane(findbar,
+  GetManager().AddPane(new exFindToolBar(this, this),
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
   GetManager().Update();
@@ -137,7 +136,7 @@ ftSampleFrame::ftSampleFrame(const wxString& title)
   item.Insert();
 }
 
-exListViewFile* ftSampleFrame::Activate(int type, const exLexer* lexer)
+exListViewFile* wxExRepSampleFrame::Activate(int type, const exLexer* lexer)
 {
   for (
     size_t i = 0;
@@ -167,7 +166,7 @@ exListViewFile* ftSampleFrame::Activate(int type, const exLexer* lexer)
   return NULL;
 }
 
-void ftSampleFrame::OnCommand(wxCommandEvent& event)
+void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
@@ -228,7 +227,7 @@ void ftSampleFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void ftSampleFrame::OnTree(wxTreeEvent& event)
+void wxExRepSampleFrame::OnTree(wxTreeEvent& event)
 {
   const wxString selection = m_DirCtrl->GetFilePath();
 
@@ -238,7 +237,7 @@ void ftSampleFrame::OnTree(wxTreeEvent& event)
   }
 }
 
-bool ftSampleFrame::OpenFile(const exFileName& file, 
+bool wxExRepSampleFrame::OpenFile(const exFileName& file, 
   int line_number, 
   const wxString& match,
   long flags)

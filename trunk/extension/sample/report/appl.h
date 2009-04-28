@@ -1,10 +1,10 @@
 /******************************************************************************\
 * File:          appl.h
-* Purpose:       Declaration of sample classes for wxFileTool
+* Purpose:       Declaration of sample classes for wxExRep
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -14,21 +14,21 @@
 #include <wx/extension/notebook.h>
 
 /// Derive your application from exApp.
-class ftSampleApp: public exApp
+class wxExRepSampleApp: public exApp
 {
 public:
-  ftSampleApp() {}
+  wxExRepSampleApp() {}
 private:
   virtual bool OnInit();
-  DECLARE_NO_COPY_CLASS(ftSampleApp)
+  DECLARE_NO_COPY_CLASS(wxExRepSampleApp)
 };
 
 /// Use exFrameWithHistory.
-class ftSampleFrame: public exFrameWithHistory
+class wxExRepSampleFrame: public exFrameWithHistory
 {
 public:
   /// Constructor.
-  ftSampleFrame(const wxString& title);
+  wxExRepSampleFrame(const wxString& title);
 protected:
   // Interface from exFrameWithHistory.
   virtual exListViewFile* Activate(int type, const exLexer* lexer = NULL);
