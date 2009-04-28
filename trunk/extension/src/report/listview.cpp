@@ -270,23 +270,22 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
     }
   }
 
-  // The ID_TOOL_REPORT_FIND and REPLACE only work if there is a frame, so if not do not add them.
+  // The ID_TOOL_REPORT_FIND and REPLACE only work if there is a frame, 
+  // so if not do not add them.
   // Also, finding in the LIST_FIND and REPLACE would result in recursive calls.
-  if (m_Frame != NULL && exists &&
-      m_Type != LIST_FIND && m_Type != LIST_REPLACE)
+  if ( m_Frame != NULL && exists &&
+       m_Type != LIST_FIND && m_Type != LIST_REPLACE &&
+       GetSelectedItemCount() > 0 && 
+      (m_MenuFlags & LIST_MENU_REPORT_FIND))
   {
-    if (GetItemCount() > 0 && (
-        m_MenuFlags & LIST_MENU_REPORT_FIND))
+    menu.Append(ID_TOOL_REPORT_FIND, exEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
+
+    if (!read_only)
     {
-      menu.Append(ID_TOOL_REPORT_FIND, exEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
-
-      if (!read_only)
-      {
-        menu.Append(ID_TOOL_REPORT_REPLACE, exEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
-      }
-
-      menu.AppendSeparator();
+      menu.Append(ID_TOOL_REPORT_REPLACE, exEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
     }
+
+    menu.AppendSeparator();
   }
 
   if (add)
@@ -297,7 +296,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
 
   exListView::BuildPopupMenu(menu);
 
-  if (m_Frame != NULL && GetItemCount() > 0 && exists &&
+  if (m_Frame != NULL && GetSelectedItemCount() > 0 && exists &&
      (m_MenuFlags & LIST_MENU_TOOL))
   {
     menu.AppendSeparator();
