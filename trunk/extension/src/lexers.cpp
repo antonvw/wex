@@ -101,7 +101,9 @@ const exLexer exLexers::FindByFileName(const wxFileName& filename) const
   return exLexer();
 }
 
-const exLexer exLexers::FindByName(const wxString& name) const
+const exLexer exLexers::FindByName(
+  const wxString& name,
+  bool show_error_if_not_found) const
 {
   for (
     std::vector<exLexer>::const_iterator it = m_Lexers.begin();
@@ -114,9 +116,12 @@ const exLexer exLexers::FindByName(const wxString& name) const
     }
   }
 
-  // We did not find a lexer, so give an error.
-  // The same error is shown in exSTC::SetLexer as well.
-  wxLogError("Lexer is not known: " + name);
+  if (!m_Lexers.empty() && show_error_if_not_found)
+  {
+    // We did not find a lexer, so give an error.
+    // The same error is shown in exSTC::SetLexer as well.
+    wxLogError("Lexer is not known: " + name);
+  }
 
   return exLexer();
 }
@@ -130,19 +135,19 @@ const exLexer exLexers::FindByText(const wxString& text) const
       // .po files that do not have comment headers, start with msgid, so set them
       text_lowercase.StartsWith("msgid"))
   {
-    return FindByName("bash");
+    return FindByName("bash", false); // don't show error
   }
   else if (text_lowercase.StartsWith("<html>") ||
            text_lowercase.StartsWith("<?php") ||
            text_lowercase.StartsWith("<?xml"))
   {
-    return FindByName("hypertext");
+    return FindByName("hypertext", false); // don't show error
   }
   // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
   // so add here.
   else if (text_lowercase.StartsWith("//"))
   {
-    return FindByName("cpp");
+    return FindByName("cpp", false); // don't show error
   }
   
   return exLexer();

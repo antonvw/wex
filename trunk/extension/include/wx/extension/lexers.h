@@ -73,7 +73,9 @@ public:
   const exLexer FindByFileName(const wxFileName& filename) const;
 
   /// Finds a lexer specified by the (scintilla) name.
-  const exLexer FindByName(const wxString& name) const;
+  const exLexer FindByName(
+    const wxString& name, 
+    bool show_error_if_not_found = true) const;
 
   /// Finds a lexer if text starts with some special tokens.
   const exLexer FindByText(const wxString& text) const;
