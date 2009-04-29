@@ -184,16 +184,21 @@ const wxString exNotebook::GetKeys() const
 
 wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select)
 {
-  if (m_MapPages.empty()) return NULL;
-
   std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.find(key);
 
-  if (it == m_MapPages.end()) return NULL;
+  if (it != m_MapPages.end()) 
+  {
+    if (select)
+    {
+      SetSelection(GetPageIndex(it->second));
+    }
 
-  if (select)
-    SetSelection(GetPageIndex(it->second));
-
-  return it->second;
+    return it->second;
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 void exNotebook::OnNotebook(wxAuiNotebookEvent& event)
