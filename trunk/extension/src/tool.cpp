@@ -43,12 +43,6 @@ void exTool::AddInfo(
 
 const wxString exTool::Info() const
 {
-  if (m_ToolInfo.empty())
-  {
-    wxLogError("Toolinfo is empty");
-    return wxEmptyString;
-  }
-
   std::map < int, const exToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
 
   if (it != m_ToolInfo.end())
