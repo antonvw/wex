@@ -207,7 +207,10 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
 
     if (GetSelectedItemCount() > 1)
     {
-      menu.Append(ID_LIST_COMPARE, _("C&ompare"));
+      if (!exApp::GetConfig(_("Comparator")).empty())
+      {
+        menu.Append(ID_LIST_COMPARE, _("C&ompare"));
+      }
     }
     else
     {
@@ -216,6 +219,7 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
           m_Frame != NULL && exists && !is_folder)
       {
         exListViewFile* list = m_Frame->Activate(LIST_PROJECT);
+
         if (list != NULL && list->GetSelectedItemCount() == 1)
         {
           exListItemWithFileName thislist(this, GetFirstSelected());
@@ -224,9 +228,12 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
           exListItemWithFileName otherlist(list, list->GetFirstSelected());
           const wxString with_file = otherlist.GetFileName().GetFullPath();
 
-          if (current_file != with_file)
+          if (current_file != with_file &&
+              !exApp::GetConfig(_("Comparator")).empty())
+          {
             menu.Append(ID_LIST_COMPARE,
               _("&Compare With") + " " + exGetEndOfText(with_file));
+          }
         }
       }
     }
@@ -235,7 +242,11 @@ void exListViewFile::BuildPopupMenu(exMenu& menu)
     {
       if (!exApp::GetConfigBool("SVN"))
       {
-        menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
+        if (!exApp::GetConfig(_("Comparator")).empty())
+        {
+          menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
+        }
+
         menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
       }
       else if (GetSelectedItemCount() == 1)

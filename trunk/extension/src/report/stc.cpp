@@ -111,12 +111,11 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
   {
     if (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN)
     {
-      menu.AppendSeparator();
-
       if (!exApp::GetConfigBool("SVN"))
       {
         if (!exApp::GetConfig(_("Comparator")).empty())
         {
+          menu.AppendSeparator();
           menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
         }
       }
@@ -128,6 +127,7 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
         svnmenu->Append(ID_STC_SVN_CAT, exEllipsed(_("&Cat")));
         svnmenu->AppendSeparator();
         svnmenu->Append(ID_STC_SVN_COMMIT, exEllipsed(_("&Commit")));
+        menu.AppendSeparator();
         menu.AppendSubMenu(svnmenu, "&SVN");
       }
     }
