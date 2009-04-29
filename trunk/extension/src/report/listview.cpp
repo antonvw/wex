@@ -323,7 +323,9 @@ void exListViewFile::DeleteDoubles()
     // and the same name as the previous one.
     if (mtime == item.GetFileName().GetStat().st_mtime &&
         name == item.GetColumnText(_("File Name")))
+    {
       DeleteItem(i);
+    }
     else
     {
       mtime = item.GetFileName().GetStat().st_mtime;

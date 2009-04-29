@@ -137,7 +137,7 @@ protected:
 private:
   int AddItems();
   void DeleteDoubles();
-  const wxString GetFindInCaption(int id);
+  const wxString GetFindInCaption(int id); // cannot be const
   void Initialize(const exLexer* lexer);
   bool ItemOpenFile(int item_number);
   void RunItems(const exTool& tool);
