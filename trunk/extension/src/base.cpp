@@ -605,6 +605,7 @@ exMenu* exMenu::AppendTools()
 {
   exMenu* menuTool = new exMenu(*this);
   exMenu* menuReport = new exMenu(*this);
+  bool added_to_tool = false;
 
   for (
     map <int, const exToolInfo>::const_iterator it = exTool::GetToolInfo().begin();
@@ -615,10 +616,19 @@ exMenu* exMenu::AppendTools()
     {
       exMenu* menu = (it->second.GetIsBasic() ? menuTool: menuReport);
       menu->Append(it->first, it->second.GetText(), it->second.GetHelpText());
+
+      if (it->second.GetIsBasic())
+      {
+        added_to_tool = true;
+      }
     }
   }
 
-  menuTool->AppendSeparator();
+  if (added_to_tool)
+  {
+    menuTool->AppendSeparator();
+  }
+
   menuTool->AppendSubMenu(menuReport, _("&Report"));
 
   AppendSubMenu(menuTool, _("&Tools"));
