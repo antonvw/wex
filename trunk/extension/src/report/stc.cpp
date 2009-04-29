@@ -130,7 +130,8 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
     }
   }
 
-  if (!GetReadOnly())
+  if (!GetReadOnly() && 
+      !m_FileName.GetLexer().GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
     menu.Append(ID_STC_ADD_HEADER, exEllipsed(_("&Add Header")));
