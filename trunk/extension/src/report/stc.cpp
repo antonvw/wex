@@ -205,15 +205,18 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   case ID_STC_ADD_HEADER:
     {
     std::vector<exConfigItem> v;
+
+    // Purpose is required.
     v.push_back(exConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
 
     if (exApp::GetConfig(_("Author")).empty())
     {
+      // Author is required, but only presented if empty.
       v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
       
       if (exApp::GetConfig(_("Email")).empty())
       {
-        v.push_back(exConfigItem(_("Email"), wxEmptyString, 0, true));
+        v.push_back(exConfigItem(_("Email")));
       }
     }
 
