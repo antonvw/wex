@@ -24,7 +24,6 @@ bool exCompareFile(const wxFileName& file1, const wxFileName& file2)
 
   if (comparator.empty())
   {
-    wxLogMessage(_("Please add a comparator"));
     return false;
   }
 
@@ -110,7 +109,7 @@ bool exFindOtherFileName(
   size_t start, len;
   if (!reg.GetMatch(&start, &len))
   {
-    exFrame::StatusText("No match after all");
+    wxFAIL;
     return false;
   }
 
@@ -124,7 +123,7 @@ bool exFindOtherFileName(
 
   if (!dir.IsOpened())
   {
-    exFrame::StatusText("Could not open base dir: " + base);
+    wxFAIL;
     return false;
   }
 

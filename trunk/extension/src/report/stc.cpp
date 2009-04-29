@@ -115,7 +115,10 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
 
       if (!exApp::GetConfigBool("SVN"))
       {
-        menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
+        if (!exApp::GetConfig(_("Comparator")).empty())
+        {
+          menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
+        }
       }
       else
       {
@@ -232,8 +235,11 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   case ID_STC_COMPARE:
     {
       wxFileName lastfile;
+
       if (exFindOtherFileName(m_FileName, NULL, &lastfile))
+      {
         exCompareFile(m_FileName, lastfile);
+      }
     }
     break;
 
