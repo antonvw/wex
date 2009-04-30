@@ -9,7 +9,7 @@ General
 
 - Subversion access
     under windows TortoiseSVN is used,
-    under Linux just the svn client
+    under Linux just the svn client (svn, version 1.5.4 (r33841))
 
 - STL is used wherever possible
 
