@@ -495,6 +495,9 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
       <property name="asp.default.language"> 4 </property>
     </properties>
+    
+        
+    <comments begin1="<!--" end1="-->" />
   </lexer>
   
   <lexer
@@ -510,6 +513,7 @@ without the written consent of the copyright owner.
       <colouring no="7"> fore:blue </colouring>
       <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol </colouring>
     </colourings>
+    <comments begin1="<!--" end1="-->" />
   </lexer>
   
   <lexer
@@ -611,6 +615,8 @@ without the written consent of the copyright owner.
       <property name="fold.comment"> 1 </property>
       <property name="fold.compact"> 1 </property>
     </properties>
+    
+    <comments begin1="--" />
   </lexer>
   
   <lexer
@@ -633,5 +639,7 @@ without the written consent of the copyright owner.
       <colouring no="5"> bold </colouring>
       <colouring no="9"> fore:brown </colouring>
     </colourings>
+    
+    <comments begin1="#" />
   </lexer>
 </lexers>
