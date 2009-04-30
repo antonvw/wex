@@ -2518,11 +2518,16 @@ void exSTC::SetStyle(const wxString& style)
 
 void exSTC::SetText(const wxString& value)
 {
+  ClearDocument();
+  
   // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
   // So for text with nulls this is the only way for opening.
   SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
+  
   DocumentStart();
+  
   ResetContentsChanged();
+  
   // Do not allow the text specified to be undone.
   EmptyUndoBuffer();
 }
