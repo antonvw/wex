@@ -19,7 +19,7 @@ General
 - IDE
   under windows using Mingw and codeblocks: 
   http://www.codeblocks.org/
-  under using linux gcc and no IDE
+  under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
 
 - database is OTL
     http://otl.sourceforge.net/
