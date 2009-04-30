@@ -48,6 +48,8 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", true) == false);
   m_Config->Toggle("keybool");
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", false));
+  m_Config->Set("Author", "myauthor");
+  CPPUNIT_ASSERT(m_Config->Get("Author", "yourauthor") == "myauthor");
 
   // test exFile
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
@@ -109,7 +111,6 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsString().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetProperties().empty());
-  CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() != "cpp");
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("class"));
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("const"));
   CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("cla"));
