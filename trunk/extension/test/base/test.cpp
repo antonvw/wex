@@ -104,7 +104,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin2().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd2().empty());
+  CPPUNIT_ASSERT(m_Lexer->GetCommentEnd2().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsString().empty());
