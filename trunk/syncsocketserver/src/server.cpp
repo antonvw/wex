@@ -28,13 +28,13 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
   SetAppName("syncsocketserver");
-  exApp::OnInit();
+  wxExApp::OnInit();
   MyFrame *frame = new MyFrame("syncsocketserver");
   SetTopWindow(frame);
   return true;
 }
 
-BEGIN_EVENT_TABLE(MyFrame, exFrameWithHistory)
+BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
   EVT_CLOSE(MyFrame::OnClose)
   EVT_MENU(wxID_ABOUT, MyFrame::OnCommand)
   EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
@@ -68,7 +68,7 @@ BEGIN_EVENT_TABLE(MyFrame, exFrameWithHistory)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString& title)
-  : exFrameWithHistory(NULL, wxID_ANY, title)
+  : wxExFrameWithHistory(NULL, wxID_ANY, title)
   , m_Timer(this)
 {
   SetIcon(wxICON(appl));
@@ -80,28 +80,28 @@ MyFrame::MyFrame(const wxString& title)
   Show(); // otherwise statusbar is not placed correctly
 
   // Statusbar setup before STC construction.
-  std::vector<exPane> panes;
-  panes.push_back(exPane("PaneText", -3));
-  panes.push_back(exPane("PaneClients", 75, _("Number of clients connected")));
-  panes.push_back(exPane("PaneTimer", 75, _("Repeat timer")));
-  panes.push_back(exPane("PaneBytes", 150, _("Number of bytes received and sent")));
-  panes.push_back(exPane("PaneFileType", 50, _("File type")));
-  panes.push_back(exPane("PaneLines", 100, _("Lines in window")));
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneClients", 75, _("Number of clients connected")));
+  panes.push_back(wxExPane("PaneTimer", 75, _("Repeat timer")));
+  panes.push_back(wxExPane("PaneBytes", 150, _("Number of bytes received and sent")));
+  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 
-  m_DataWindow = new exSTCWithFrame(
+  m_DataWindow = new wxExSTCWithFrame(
     this,
-    exSTCWithFrame::STC_MENU_SIMPLE | exSTCWithFrame::STC_MENU_FIND |
-    exSTCWithFrame::STC_MENU_REPLACE | exSTCWithFrame::STC_MENU_INSERT);
-  m_LogWindow = new exSTCWithFrame(this, exSTCWithFrame::STC_MENU_SIMPLE | exSTCWithFrame::STC_MENU_FIND);
-  m_Shell = new exSTCShell(this);
+    wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND |
+    wxExSTCWithFrame::STC_MENU_REPLACE | wxExSTCWithFrame::STC_MENU_INSERT);
+  m_LogWindow = new wxExSTCWithFrame(this, wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
+  m_Shell = new wxExSTCShell(this);
   m_Shell->SetLexer();
 
   m_LogWindow->SetReadOnly(true);
   m_LogWindow->SetLexer();
   m_LogWindow->ResetMargins();
 
-  exMenu* menuFile = new exMenu();
+  wxExMenu* menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
@@ -119,12 +119,12 @@ MyFrame::MyFrame(const wxString& title)
 #endif
 
   wxMenu* menuServer = new wxMenu();
-  menuServer->Append(ID_SERVER_CONFIG, exEllipsed(_("Config")), _("Configures the server"));
+  menuServer->Append(ID_SERVER_CONFIG, wxExEllipsed(_("Config")), _("Configures the server"));
   menuServer->AppendSeparator();
   menuServer->Append(wxID_EXECUTE);
   menuServer->Append(wxID_STOP);
 
-  exMenu* menuClient = new exMenu();
+  wxExMenu* menuClient = new wxExMenu();
   menuClient->AppendCheckItem(ID_CLIENT_ECHO, _("Echo"),
     _("Echo's received data back to client"));
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
@@ -132,10 +132,10 @@ MyFrame::MyFrame(const wxString& title)
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"),
     _("Adds timestamp to logdata"));
   menuClient->AppendSeparator();
-  menuClient->Append(ID_CLIENT_BUFFER_SIZE, exEllipsed(_("Buffer Size")),
+  menuClient->Append(ID_CLIENT_BUFFER_SIZE, wxExEllipsed(_("Buffer Size")),
     _("Sets buffersize for data retrieved from client"));
   menuClient->AppendSeparator();
-  menuClient->Append(ID_TIMER_START, exEllipsed(_("Repeat Timer")),
+  menuClient->Append(ID_TIMER_START, wxExEllipsed(_("Repeat Timer")),
     _("Repeats with timer writing last data to all clients"));
   menuClient->Append(ID_TIMER_STOP, _("Stop Timer"), _("Stops the timer"));
   menuClient->AppendSeparator();
@@ -152,7 +152,7 @@ MyFrame::MyFrame(const wxString& title)
   menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(wxID_PREFERENCES, exEllipsed(_("Edit")));
+  menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Edit")));
 
   wxMenu* menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
@@ -190,7 +190,7 @@ MyFrame::MyFrame(const wxString& title)
       MaximizeButton(true).
       Caption(_("Statistics")).
       Name("STATISTICS"));
-  GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
+  GetManager().LoadPerspective(wxExApp::GetConfig("Perspective"));
 
   if (SetupSocketServer())
   {
@@ -199,10 +199,10 @@ MyFrame::MyFrame(const wxString& title)
 #endif
   }
 
-  if (exApp::GetConfig(_("Timer"), 0) > 0)
+  if (wxExApp::GetConfig(_("Timer"), 0) > 0)
   {
-    m_Timer.Start(1000 * exApp::GetConfig(_("Timer"), 0));
-    StatusText(wxString::Format("%ld", exApp::GetConfig(_("Timer"), 0)), "PaneTimer");
+    m_Timer.Start(1000 * wxExApp::GetConfig(_("Timer"), 0));
+    StatusText(wxString::Format("%ld", wxExApp::GetConfig(_("Timer"), 0)), "PaneTimer");
   }
 
   if (!GetRecentFile().empty() && GetManager().GetPane("DATA").IsShown())
@@ -260,7 +260,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  exApp::SetConfig("Perspective", GetManager().SavePerspective());
+  wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
   event.Skip();
 }
 
@@ -324,25 +324,25 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       _("Input:"),
       wxEmptyString,
       _("Buffer Size"),
-      exApp::GetConfig(_("Buffer Size"), 4096),
+      wxExApp::GetConfig(_("Buffer Size"), 4096),
       1,
       65536)) > 0)
     {
-      exApp::GetConfig()->Set(_("Buffer Size"), val);
+      wxExApp::GetConfig()->Set(_("Buffer Size"), val);
     }
     }
     break;
 
   case ID_CLIENT_ECHO:
-    exApp::ToggleConfig(_("Echo"));
+    wxExApp::ToggleConfig(_("Echo"));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    exApp::ToggleConfig(_("Log Data"));
+    wxExApp::ToggleConfig(_("Log Data"));
     break;
 
   case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
-    exApp::ToggleConfig(_("Add Timestamp"));
+    wxExApp::ToggleConfig(_("Add Timestamp"));
     break;
 
   case ID_HIDE:
@@ -350,23 +350,23 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_PREFERENCES:
-    exSTC::ConfigDialog(_("Editor Options"),
-      exSTC::STC_CONFIG_MODELESS | exSTC::STC_CONFIG_SIMPLE,
+    wxExSTC::ConfigDialog(_("Editor Options"),
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_SIMPLE,
       this);
     break;
 
   case ID_SERVER_CONFIG:
     {
-    std::vector<exConfigItem> v;
-    v.push_back(exConfigItem(_("Hostname"), wxEmptyString, 0, true));
-    v.push_back(exConfigItem(_("Port"), 1000, 65536));
+    std::vector<wxExConfigItem> v;
+    v.push_back(wxExConfigItem(_("Hostname"), wxEmptyString, 0, true));
+    v.push_back(wxExConfigItem(_("Port"), 1000, 65536));
 
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
     const long flags = (m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL);
 
-    exConfigDialog(this,
-      exApp::GetConfig(),
+    wxExConfigDialog(this,
+      wxExApp::GetConfig(),
       v,
       _("Server Config"),
       wxEmptyString,
@@ -505,7 +505,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     const wxString text =
       wxString::Format(_("%s connected at %d"),
         wxTheApp->GetAppName().c_str(),
-        exApp::GetConfig(_("Port"), 3000));
+        wxExApp::GetConfig(_("Port"), 3000));
 
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
@@ -525,7 +525,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         // wxSocketEvent again.
         sock->SetNotify(wxSOCKET_LOST_FLAG);
 
-        const int size = exApp::GetConfig(_("Buffer Size"), 4096);
+        const int size = wxExApp::GetConfig(_("Buffer Size"), 4096);
 
         if (size <= 0)
         {
@@ -540,7 +540,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         if (sock->LastCount() > 0)
         {
-          if (exApp::GetConfigBool(_("Echo")))
+          if (wxExApp::GetConfigBool(_("Echo")))
           {
             sock->Write(buffer, sock->LastCount());
             SocketCheckError(sock);
@@ -559,9 +559,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             }
           }
 
-          if (exApp::GetConfigBool(_("Log Data")))
+          if (wxExApp::GetConfigBool(_("Log Data")))
           {
-            if (exApp::GetConfigBool(_("Add Timestamp")))
+            if (wxExApp::GetConfigBool(_("Add Timestamp")))
             {
               m_LogWindow->AppendTextForced(
                 _("read: '") + text + wxString::Format("' (%d bytes)", sock->LastCount()));
@@ -596,7 +596,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         {
           const wxString text =
             wxString::Format(_("server listening at %d"),
-              exApp::GetConfig(_("Port"), 3000));
+              wxExApp::GetConfig(_("Port"), 3000));
 
 #ifdef USE_TASKBARICON
           m_TaskBarIcon->SetIcon(wxICON(ready), text);
@@ -632,16 +632,16 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_CLIENT_ECHO:
-    event.Check(exApp::GetConfigBool(_("Echo")));
+    event.Check(wxExApp::GetConfigBool(_("Echo")));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    event.Check(exApp::GetConfigBool(_("Log Data")));
+    event.Check(wxExApp::GetConfigBool(_("Log Data")));
     break;
 
   case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
-    event.Enable(exApp::GetConfigBool(_("Log Data")));
-    event.Check(exApp::GetConfigBool(_("Add Timestamp")));
+    event.Enable(wxExApp::GetConfigBool(_("Log Data")));
+    event.Check(wxExApp::GetConfigBool(_("Add Timestamp")));
     break;
 
   case ID_RECENT_FILE_MENU:
@@ -689,7 +689,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
 }
 
 bool MyFrame::OpenFile(
-  const exFileName& filename,
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -715,8 +715,8 @@ bool MyFrame::SetupSocketServer()
 {
   // Create the address - defaults to localhost and port as specified
   wxIPV4address addr;
-  addr.Hostname(exApp::GetConfig(_("Hostname"), "localhost"));
-  addr.Service(exApp::GetConfig(_("Port"), 3000));
+  addr.Hostname(wxExApp::GetConfig(_("Hostname"), "localhost"));
+  addr.Service(wxExApp::GetConfig(_("Port"), 3000));
 
   // Create the socket
   m_SocketServer = new wxSocketServer(addr);
@@ -726,7 +726,7 @@ bool MyFrame::SetupSocketServer()
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
-    text = wxString::Format(_("Could not listen at %d"), exApp::GetConfig(_("Port"), 3000));
+    text = wxString::Format(_("Could not listen at %d"), wxExApp::GetConfig(_("Port"), 3000));
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
@@ -740,7 +740,7 @@ bool MyFrame::SetupSocketServer()
   else
   {
     text =
-      wxString::Format(_("server listening at %d"), exApp::GetConfig(_("Port"), 3000));
+      wxString::Format(_("server listening at %d"), wxExApp::GetConfig(_("Port"), 3000));
 
 #ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
@@ -826,7 +826,7 @@ void MyFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
   }
   else
   {
-    exFrameWithHistory::StatusBarDoubleClicked(field, point);
+    wxExFrameWithHistory::StatusBarDoubleClicked(field, point);
   }
 }
 
@@ -836,13 +836,13 @@ void MyFrame::TimerDialog()
     _("Input (seconds):"),
     wxEmptyString,
     _("Repeat Timer"),
-    exApp::GetConfig(_("Timer"), 60),
+    wxExApp::GetConfig(_("Timer"), 60),
     1,
     3600 * 24);
 
   if (val != -1)
   {
-    exApp::GetConfig()->Set(_("Timer"), val);
+    wxExApp::GetConfig()->Set(_("Timer"), val);
   }
 
   if (val > 0)
@@ -882,9 +882,9 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
     m_Statistics.Inc(_("Bytes Sent"), client->LastCount())),
     "PaneBytes");
 
-  if (exApp::GetConfigBool(_("Log Data")))
+  if (wxExApp::GetConfigBool(_("Log Data")))
   {
-    if (exApp::GetConfigBool(_("Add Timestamp")))
+    if (wxExApp::GetConfigBool(_("Add Timestamp")))
     {
       m_LogWindow->AppendTextForced(
         wxString::Format(_("write: %d bytes to %s"),
@@ -928,7 +928,7 @@ END_EVENT_TABLE()
 
 wxMenu *MyTaskBarIcon::CreatePopupMenu()
 {
-  exMenu* menu = new exMenu;
+  wxExMenu* menu = new wxExMenu;
   menu->Append(ID_OPEN, _("Open"));
   menu->AppendSeparator();
   menu->Append(wxID_EXIT);

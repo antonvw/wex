@@ -23,16 +23,16 @@
 
 /// Adds IsOk to the stat base class, and several methods
 /// to get/update on the stat members.
-class exStat : public stat
+class wxExStat : public stat
 {
 public:
   /// Default constructor. Calls Update.
-  exStat(const wxString& fullpath = wxEmptyString) {
+  wxExStat(const wxString& fullpath = wxEmptyString) {
     Update(fullpath);}
 
   /// Gets fullpath member.
   const wxString& GetFullPath() const {return m_FullPath;};
-  
+
   /// Gets the modification time.
   /// From wxFileName class GetModificationTime is available as well,
   /// this one returns string and only uses the stat member, and is fast.
@@ -67,20 +67,20 @@ private:
   bool m_IsOk;
 };
 
-/// Flags for exStatusText.
-enum exStatusFlags
+/// Flags for wxExStatusText.
+enum wxExStatusFlags
 {
   STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
   STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
   STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
 };
 
-/// Adds an exStat and an exLexer member to wxFileName.
-class exFileName : public wxFileName
+/// Adds an wxExStat and an wxExLexer member to wxFileName.
+class wxExFileName : public wxFileName
 {
 public:
   /// Default constructor.
-  exFileName(
+  wxExFileName(
     const wxString& fullpath = wxEmptyString,
     wxPathFormat format = wxPATH_NATIVE)
     : wxFileName(fullpath, format)
@@ -88,8 +88,8 @@ public:
     SetLexer();}
 
   /// Copy constructor from a wxFileName.
-  exFileName(const wxFileName& filename)
-    : wxFileName(filename) 
+  wxExFileName(const wxFileName& filename)
+    : wxFileName(filename)
     , m_Stat(filename.GetFullPath()) {
     SetLexer();}
 
@@ -97,16 +97,16 @@ public:
   int GetIcon() const;
 
   /// Gets the lexer.
-  exLexer& GetLexer() {return m_Lexer;};
+  wxExLexer& GetLexer() {return m_Lexer;};
 
   /// Gets the lexer.
-  const exLexer& GetLexer() const {return m_Lexer;};
+  const wxExLexer& GetLexer() const {return m_Lexer;};
 
   /// Gets the stat.
-  const exStat& GetStat() const {return m_Stat;};
+  const wxExStat& GetStat() const {return m_Stat;};
 
   /// Gets the stat.
-  exStat& GetStat() {return m_Stat;};
+  wxExStat& GetStat() {return m_Stat;};
 
   /// If specified lexer is empty, use one of the lexers from config
   /// according to match on the file fullname.
@@ -123,32 +123,32 @@ public:
 #endif // wxUSE_STATUSBAR
 
 private:
-  exLexer m_Lexer;
-  exStat m_Stat;
+  wxExLexer m_Lexer;
+  wxExStat m_Stat;
 };
 
-/// Adds an exFileName, an exStat member that can be used for synchronization,
+/// Adds an wxExFileName, an wxExStat member that can be used for synchronization,
 /// and several File* methods to wxFile. All the File* methods update
-/// the exStat member.
-class exFile : public wxFile
+/// the wxExStat member.
+class wxExFile : public wxFile
 {
 public:
   /// Default constructor.
-  exFile();
+  wxExFile();
 
   /// Opens a file with a filename.
-  exFile(const wxString& filename, wxFile::OpenMode mode = wxFile::read);
+  wxExFile(const wxString& filename, wxFile::OpenMode mode = wxFile::read);
 
   /// Destructor.
   /// NB: for wxFile the destructor is not virtual so you should not use wxFile polymorphically.
   /// So do it here.
-  virtual ~exFile() {;};
+  virtual ~wxExFile() {;};
 
   /// Asks for continue, sets the filename member.
-  virtual bool FileNew(const exFileName& filename = exFileName());
+  virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Asks for continue, sets the filename member and opens the file.
-  virtual bool FileOpen(const exFileName& filename);
+  virtual bool FileOpen(const wxExFileName& filename);
 
   /// Invoked by FileSaveAs, allows you to save your file.
   /// The default closes the file.
@@ -160,7 +160,7 @@ public:
   /// Called if file needs to be synced.
   /// The default calls FileOpen, and updates status text.
   virtual void FileSync();
-  
+
   /// Returns whether contents have been changed.
   /// Default returns false.
   virtual bool GetContentsChanged() {return false;};
@@ -175,18 +175,18 @@ public:
   /// Invokes FileSync if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckSyncNeeded();
-  
+
   /// Shows dialog if file contents was changed, and returns true if
   /// you accepted to save changes.
   bool Continue();
 
   /// Gets the file name.
-  const exFileName& GetFileName() const {return m_FileName;}
+  const wxExFileName& GetFileName() const {return m_FileName;}
 
   /// Gets the stat.
   /// By comparing this with the stat from GetFileName
   /// you can detect whether the file needs to be synced.
-  const exStat& GetStat() const {return m_Stat;};
+  const wxExStat& GetStat() const {return m_Stat;};
 
   /// Reads this file into a buffer.
   /// The buffer is allocated by the lib, you should delete the string after using.
@@ -195,12 +195,12 @@ public:
   /// Sets the wild card member.
   void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};
 protected:
-  exFileName m_FileName; ///< the filename
+  wxExFileName m_FileName; ///< the filename
 private:
   // Take care that filename and stat are in sync.
   bool MakeAbsolute();
-  
-  exStat m_Stat;
+
+  wxExStat m_Stat;
   wxString m_Message;
   wxString m_Wildcard;
 };

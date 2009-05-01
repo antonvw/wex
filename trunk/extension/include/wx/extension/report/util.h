@@ -23,51 +23,51 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
 
-class exFrameWithHistory;
-class exListViewFile;
+class wxExFrameWithHistory;
+class wxExListViewFile;
 
-/// Adds reporting to exDir.
-class exDirWithReport : public exDir
+/// Adds reporting to wxExDir.
+class wxExDirWithReport : public wxExDir
 {
 public:
   /// SetupTool should already be called.
   /// FindFiles invokes RunTool on all matching files.
-  exDirWithReport(const exTool& tool,
+  wxExDirWithReport(const wxExTool& tool,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// FindFiles causes each found file to be added as listitem to the listview.
-  exDirWithReport(exListViewFile* listview,
+  wxExDirWithReport(wxExListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// FindFiles causes all found files to be opened using OpenFile from frame.
   /// Flags are passed on to OpenFile.
-  exDirWithReport(exFrameWithHistory* frame,
+  wxExDirWithReport(wxExFrameWithHistory* frame,
     const wxString& fullpath,
     const wxString& filespec,
     long flags = 0);
 
   /// Gets the statistics.
-  const exFileNameStatistics& GetStatistics() {return m_Statistics;};
+  const wxExFileNameStatistics& GetStatistics() {return m_Statistics;};
 protected:
   virtual void OnFile(const wxString& file);
 private:
-  exFileNameStatistics m_Statistics;
-  exFrameWithHistory* m_Frame;
-  exListViewFile* m_ListView;
+  wxExFileNameStatistics m_Statistics;
+  wxExFrameWithHistory* m_Frame;
+  wxExListViewFile* m_ListView;
   const long m_Flags;
-  exTool m_Tool;
+  wxExTool m_Tool;
 };
 
 /// Offers a find toolbar, containing a find combobox and checkboxes.
-/// The find combobox allows you to find in an exSTCWithFrame 
-/// component on the specified exFrameWithHistory.
-class exFindToolBar : public wxAuiToolBar
+/// The find combobox allows you to find in an wxExSTCWithFrame
+/// component on the specified wxExFrameWithHistory.
+class wxExFindToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
-  exFindToolBar(wxWindow* parent, exFrameWithHistory* frame, wxWindowID id = wxID_ANY);
+  wxExFindToolBar(wxWindow* parent, wxExFrameWithHistory* frame, wxWindowID id = wxID_ANY);
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
@@ -81,23 +81,23 @@ private:
 /*! \file */
 
 /// Compares the files, using wxExecute on comparator set in the config.
-bool exCompareFile(const wxFileName& file1, const wxFileName& file2);
+bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
 
 /// Shows a find in files dialog and finds or replaces text in files if chosen.
-void exFindInFiles(exFrameWithHistory* frame, bool replace = false);
+void wxExFindInFiles(wxExFrameWithHistory* frame, bool replace = false);
 
 /// Finds other filenames from the one specified in the same dir structure.
 /// Results are put on the list if not null, or in the filename if not null.
-bool exFindOtherFileName(
+bool wxExFindOtherFileName(
   const wxFileName& filename,
-  exListViewFile* listview,
+  wxExListViewFile* listview,
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Do something (id) for all pages on the notebook.
-bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
+bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
 /// Opens files and updates history, both for files and projects.
-void exOpenFiles(exFrameWithHistory* frame,
+void wxExOpenFiles(wxExFrameWithHistory* frame,
   const wxArrayString& files,
   long flags = 0);
 #endif

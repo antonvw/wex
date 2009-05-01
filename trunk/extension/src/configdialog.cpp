@@ -28,18 +28,18 @@ enum
   ID_BROWSE_FOLDER = 100,
 };
 
-BEGIN_EVENT_TABLE(exConfigDialog, exDialog)
-  EVT_BUTTON(wxID_APPLY, exConfigDialog::OnCommand)
-  EVT_BUTTON(wxID_OK, exConfigDialog::OnCommand)
-  EVT_BUTTON(ID_BROWSE_FOLDER, exConfigDialog::OnCommand)
-  EVT_UPDATE_UI(wxID_OK, exConfigDialog::OnUpdateUI)
+BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
+  EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
+  EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
+  EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
+  EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
 END_EVENT_TABLE()
 
 // wxPropertySheetDialog has been tried as well,
 // then you always have a notebook, and apply button is not supported.
-exConfigDialog::exConfigDialog(wxWindow* parent,
-  exConfig* config,
-  vector<exConfigItem> v,
+wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
+  wxExConfig* config,
+  vector<wxExConfigItem> v,
   const wxString& title,
   const wxString& configGroup,
   int rows,
@@ -49,7 +49,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : exDialog(parent, title, flags, id, pos, size, style)
+  : wxExDialog(parent, title, flags, id, pos, size, style)
   , m_Config(config)
   , m_ConfigGroup(configGroup)
 {
@@ -61,7 +61,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
   wxPanel* page_panel = NULL;
 
   for (
-    vector<exConfigItem>::iterator it = v.begin();
+    vector<wxExConfigItem>::iterator it = v.begin();
     it != v.end();
     ++it)
   {
@@ -229,7 +229,7 @@ exConfigDialog::exConfigDialog(wxWindow* parent,
   BuildSizers();
 }
 
-wxControl* exConfigDialog::Add(
+wxControl* wxExConfigDialog::Add(
   wxSizer* sizer,
   wxWindow* parent,
   wxControl* control,
@@ -245,7 +245,7 @@ wxControl* exConfigDialog::Add(
   return control;
 }
 
-wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
+wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxCheckBox* checkbox = new wxCheckBox(parent,
@@ -263,7 +263,7 @@ wxControl* exConfigDialog::AddCheckBox(wxWindow* parent,
   return checkbox;
 }
 
-wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
+wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
   wxSizer* sizer, const wxString& text, std::map<long, const wxString> & choices)
 {
   wxArrayString arraychoices;
@@ -298,7 +298,7 @@ wxControl* exConfigDialog::AddCheckListBox(wxWindow* parent,
   return Add(sizer, parent, box, text + ":");
 }
 
-wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
+wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
   wxSizer* sizer, std::set<wxString> & choices)
 {
   wxArrayString arraychoices;
@@ -357,7 +357,7 @@ wxControl* exConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
   return box;
 }
 
-wxControl* exConfigDialog::AddColourButton(wxWindow* parent,
+wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   return Add(
@@ -365,16 +365,16 @@ wxControl* exConfigDialog::AddColourButton(wxWindow* parent,
     parent,
     new wxColourPickerWidget(parent,
       wxID_ANY,
-      m_Config->Get(m_ConfigGroup + text, exColourToLong(*wxWHITE))),
+      m_Config->Get(m_ConfigGroup + text, wxExColourToLong(*wxWHITE))),
     text + ":",
     false); // do not expand
 }
 
-wxControl* exConfigDialog::AddComboBox(wxWindow* parent,
+wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxComboBox* cb = new wxComboBox(parent, wxID_ANY);
-  exComboBoxFromString(
+  wxExComboBoxFromString(
     cb,
     m_Config->Get(
       m_ConfigGroup + text,
@@ -411,11 +411,11 @@ wxControl* exConfigDialog::AddComboBox(wxWindow* parent,
   return Add(sizer, parent, cb, text + ":");
 }
 
-wxControl* exConfigDialog::AddComboBoxDir(wxWindow* parent,
+wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxComboBox* cb = new wxComboBox(parent, ID_BROWSE_FOLDER + 1);
-  exComboBoxFromString(
+  wxExComboBoxFromString(
     cb,
     m_Config->Get(
       m_ConfigGroup + text,
@@ -447,7 +447,7 @@ wxControl* exConfigDialog::AddComboBoxDir(wxWindow* parent,
   return cb;
 }
 
-wxControl* exConfigDialog::AddDirPickerCtrl(wxWindow* parent,
+wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
@@ -466,7 +466,7 @@ wxControl* exConfigDialog::AddDirPickerCtrl(wxWindow* parent,
   return Add(sizer, parent, pc, text + ":");
 }
 
-wxControl* exConfigDialog::AddFilePickerCtrl(wxWindow* parent,
+wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
@@ -486,7 +486,7 @@ wxControl* exConfigDialog::AddFilePickerCtrl(wxWindow* parent,
   return Add(sizer, parent, pc, text + ":");
 }
 
-wxControl* exConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
+wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxFont font(
@@ -512,7 +512,7 @@ wxControl* exConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
   return Add(sizer, parent, pc, text + ":");
 }
 
-wxControl* exConfigDialog::AddRadioBox(wxWindow* parent,
+wxControl* wxExConfigDialog::AddRadioBox(wxWindow* parent,
   wxSizer* sizer, const wxString& text, std::map<long, const wxString> & choices)
 {
   wxArrayString arraychoices;
@@ -537,7 +537,7 @@ wxControl* exConfigDialog::AddRadioBox(wxWindow* parent,
   return box;
 }
 
-wxControl* exConfigDialog::AddSpinCtrl(wxWindow* parent,
+wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text, int min, int max)
 {
   long style = wxSP_ARROW_KEYS;
@@ -563,7 +563,7 @@ wxControl* exConfigDialog::AddSpinCtrl(wxWindow* parent,
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
 
-wxControl* exConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
+wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
   wxSizer* sizer, const wxString& text, double min, double max, double inc)
 {
   long style = wxSP_ARROW_KEYS;
@@ -590,7 +590,7 @@ wxControl* exConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
 
-wxControl* exConfigDialog::AddTextCtrl(wxWindow* parent,
+wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text, bool is_numeric, long style)
 {
   const wxString value =
@@ -631,7 +631,7 @@ wxControl* exConfigDialog::AddTextCtrl(wxWindow* parent,
   return Add(sizer, parent, textctrl, text + ":", !is_numeric);
 }
 
-void exConfigDialog::OnCommand(wxCommandEvent& command)
+void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
   bool path_involved = false;
 
@@ -659,7 +659,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
   // For rest of the buttons (wxID_OK, wxID_APPLY)
   // save to config.
   for (
-    vector<exConfigItem>::const_iterator it = m_ConfigItems.begin();
+    vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {
@@ -736,7 +736,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
       m_Config->Set(
         m_ConfigGroup + gcb->GetName(),
-        exColourToLong(gcb->GetColour()));
+        wxExColourToLong(gcb->GetColour()));
       }
       break;
 
@@ -745,7 +745,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
       wxString text;
-      if (exComboBoxToString(cb, text, ',', it->m_MaxItems))
+      if (wxExComboBoxToString(cb, text, ',', it->m_MaxItems))
       {
         m_Config->Set(m_ConfigGroup + cb->GetName(), text);
 
@@ -853,7 +853,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
     if (wxTheApp != NULL)
     {
       wxWindow* window = wxTheApp->GetTopWindow();
-      exFrame* frame = wxDynamicCast(window, exFrame);
+      wxExFrame* frame = wxDynamicCast(window, wxExFrame);
 
       if (frame != NULL)
       {
@@ -861,7 +861,7 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
 
         if (path_involved)
         {
-          exSTC::PathListInit();
+          wxExSTC::PathListInit();
         }
       }
     }
@@ -871,17 +871,17 @@ void exConfigDialog::OnCommand(wxCommandEvent& command)
   {
     if (path_involved)
     {
-      exSTC::PathListInit();
+      wxExSTC::PathListInit();
     }
 
     EndDialog(wxID_OK);
   }
 }
 
-void exConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
+void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 {
   for (
-    vector<exConfigItem>::const_iterator it = m_ConfigItems.begin();
+    vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {

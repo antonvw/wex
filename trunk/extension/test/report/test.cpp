@@ -13,47 +13,47 @@
 #include <TestCaller.h>
 #include "test.h"
 
-void exReportAppTestFixture::setUp()
+void wxExReportAppTestFixture::setUp()
 {
-  m_ListView = new exListViewFile(wxTheApp->GetTopWindow(), exListViewFile::LIST_PROCESS);
-  m_Dir = new exDirWithReport(m_ListView, "./");
-  m_Process = new exProcessWithListView(m_ListView, "wc test.h");
-  m_STC = new exSTCWithFrame(wxTheApp->GetTopWindow(), exFileName("test.h"));
+  m_ListView = new wxExListViewFile(wxTheApp->GetTopWindow(), wxExListViewFile::LIST_PROCESS);
+  m_Dir = new wxExDirWithReport(m_ListView, "./");
+  m_Process = new wxExProcessWithListView(m_ListView, "wc test.h");
+  m_STC = new wxExSTCWithFrame(wxTheApp->GetTopWindow(), wxExFileName("test.h"));
 }
 
-void exReportAppTestFixture::testConstructors()
+void wxExReportAppTestFixture::testConstructors()
 {
 }
 
-void exReportAppTestFixture::testMethods()
+void wxExReportAppTestFixture::testMethods()
 {
-  // test exDirWithReport
+  // test wxExDirWithReport
   CPPUNIT_ASSERT(m_Dir->FindFiles());
 
-  // test exListViewFile
-  CPPUNIT_ASSERT(m_ListView->FileOpen(exFileName("test.prj")));
+  // test wxExListViewFile
+  CPPUNIT_ASSERT(m_ListView->FileOpen(wxExFileName("test.prj")));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
-  // test exProcessWithListView
+  // test wxExProcessWithListView
   CPPUNIT_ASSERT(m_Process->Run());
 
-  // test exSTCWithFrame
+  // test wxExSTCWithFrame
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
 }
 
-void exReportAppTestFixture::tearDown()
+void wxExReportAppTestFixture::tearDown()
 {
 }
 
-exReportTestSuite::exReportTestSuite()
+wxExReportTestSuite::wxExReportTestSuite()
   : CppUnit::TestSuite("wxfiletool test suite")
 {
-  addTest(new CppUnit::TestCaller<exReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
     "testConstructors",
-    &exReportAppTestFixture::testConstructors));
+    &wxExReportAppTestFixture::testConstructors));
 
-  addTest(new CppUnit::TestCaller<exReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
     "testMethods",
-    &exReportAppTestFixture::testMethods));
+    &wxExReportAppTestFixture::testMethods));
 }
 

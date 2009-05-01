@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          lexers.cpp
-* Purpose:       Implementation of exLexers classes
+* Purpose:       Implementation of wxExLexers classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,19 +14,19 @@
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/util.h> // for exMatchesOneOf
+#include <wx/extension/util.h> // for wxExMatchesOneOf
 
-exLexers::exLexers(const wxFileName& filename)
+wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
 {
 }
 
-const wxString exLexers::BuildComboBox() const
+const wxString wxExLexers::BuildComboBox() const
 {
   wxString combobox;
 
   for (
-    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -36,7 +36,7 @@ const wxString exLexers::BuildComboBox() const
       {
         combobox += ",";
       }
-      
+
       combobox += it->GetAssociations();
     }
   }
@@ -44,7 +44,7 @@ const wxString exLexers::BuildComboBox() const
   return combobox;
 }
 
-const wxString exLexers::BuildWildCards(const wxFileName& filename) const
+const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =
     _("All Files") + wxString::Format(" (%s)|%s",
@@ -55,7 +55,7 @@ const wxString exLexers::BuildWildCards(const wxFileName& filename) const
 
   // Build the wildcard string using all available lexers.
   for (
-    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -66,7 +66,7 @@ const wxString exLexers::BuildWildCards(const wxFileName& filename) const
         " (" + it->GetAssociations() + ") |" +
         it->GetAssociations();
 
-      if (exMatchesOneOf(filename, it->GetAssociations()))
+      if (wxExMatchesOneOf(filename, it->GetAssociations()))
       {
         wildcards = wildcard + "|" + wildcards;
       }
@@ -80,33 +80,33 @@ const wxString exLexers::BuildWildCards(const wxFileName& filename) const
   return wildcards;
 }
 
-const exLexer exLexers::FindByFileName(const wxFileName& filename) const
+const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
 {
   if (!filename.IsOk())
   {
-    return exLexer();
+    return wxExLexer();
   }
 
   for (
-    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
-    if (exMatchesOneOf(filename, it->GetAssociations()))
+    if (wxExMatchesOneOf(filename, it->GetAssociations()))
     {
       return *it;
     }
   }
 
-  return exLexer();
+  return wxExLexer();
 }
 
-const exLexer exLexers::FindByName(
+const wxExLexer wxExLexers::FindByName(
   const wxString& name,
   bool show_error_if_not_found) const
 {
   for (
-    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -119,14 +119,14 @@ const exLexer exLexers::FindByName(
   if (!m_Lexers.empty() && show_error_if_not_found)
   {
     // We did not find a lexer, so give an error.
-    // The same error is shown in exSTC::SetLexer as well.
+    // The same error is shown in wxExSTC::SetLexer as well.
     wxLogError("Lexer is not known: " + name);
   }
 
-  return exLexer();
+  return wxExLexer();
 }
 
-const exLexer exLexers::FindByText(const wxString& text) const
+const wxExLexer wxExLexers::FindByText(const wxString& text) const
 {
   // Add automatic lexers if text starts with some special tokens.
   const wxString text_lowercase = text.Lower();
@@ -149,54 +149,54 @@ const exLexer exLexers::FindByText(const wxString& text) const
   {
     return FindByName("cpp", false); // don't show error
   }
-  
-  return exLexer();
+
+  return wxExLexer();
 }
 
-const wxString exLexers::ParseTagColourings(const wxXmlNode* node) const
+const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
 {
   wxString text;
 
   wxXmlNode* child = node->GetChildren();
 
-  while (child) 
+  while (child)
   {
     if (child->GetName() == "colouring")
     {
-      text += 
-        child->GetAttribute("no", "0") + "=" + 
+      text +=
+        child->GetAttribute("no", "0") + "=" +
         child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
-    { 
+    {
       // Ignore comments.
     }
     else
     {
-      wxLogError("Undefined colourings tag: %s on: %d", 
+      wxLogError("Undefined colourings tag: %s on: %d",
         child->GetName().c_str(), child->GetLineNumber());
     }
-    
+
     child = child->GetNext();
   }
-  
+
   return text;
 }
 
-void exLexers::ParseTagGlobal(const wxXmlNode* node)
+void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
 
-  while (child) 
+  while (child)
   {
     if (child->GetName() == "comment")
-    { 
+    {
       // Ignore comments.
     }
     else if (child->GetName() == "hex")
     {
       m_StylesHex.push_back(
-        child->GetAttribute("no", "0") + "=" + 
+        child->GetAttribute("no", "0") + "=" +
         child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "indicator")
@@ -207,7 +207,7 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "marker")
     {
-      const exMarker marker(ParseTagMarker(
+      const wxExMarker marker(ParseTagMarker(
         child->GetAttribute("no", "0"),
         child->GetNodeContent().Strip(wxString::both)));
 
@@ -227,28 +227,28 @@ void exLexers::ParseTagGlobal(const wxXmlNode* node)
     else if (child->GetName() == "style")
     {
       m_Styles.push_back(
-        child->GetAttribute("no", "0") + "=" + 
+        child->GetAttribute("no", "0") + "=" +
         child->GetNodeContent().Strip(wxString::both));
     }
     else
     {
-      wxLogError("Undefined global tag: %s on: %d", 
+      wxLogError("Undefined global tag: %s on: %d",
         child->GetName().c_str(), child->GetLineNumber());
     }
-    
+
     child = child->GetNext();
   }
 }
 
-const exLexer exLexers::ParseTagLexer(const wxXmlNode* node) const
+const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
 {
-  exLexer lexer;
+  wxExLexer lexer;
   lexer.m_ScintillaLexer = node->GetAttribute("name", "");
   lexer.m_Associations = node->GetAttribute("extensions", "");
 
   wxXmlNode *child = node->GetChildren();
 
-  while (child) 
+  while (child)
   {
     if (child->GetName() == "colourings")
     {
@@ -273,29 +273,29 @@ const exLexer exLexers::ParseTagLexer(const wxXmlNode* node) const
       lexer.m_CommentEnd2 = child->GetAttribute("end2", "");
     }
     else if (child->GetName() == "comment")
-    { 
+    {
       // Ignore comments.
     }
     else
     {
-      wxLogError("Undefined lexer tag: %s on: %d", 
+      wxLogError("Undefined lexer tag: %s on: %d",
         child->GetName().c_str(), child->GetLineNumber());
     }
-    
+
     child = child->GetNext();
   }
 
   return lexer;
 }
 
-const exMarker exLexers::ParseTagMarker(
-  const wxString& number, 
+const wxExMarker wxExLexers::ParseTagMarker(
+  const wxString& number,
   const wxString& props) const
 {
   wxStringTokenizer prop_fields(props, ",");
 
   const wxString symbol = prop_fields.GetNextToken();
-  
+
   wxColour foreground;
   wxColour background;
 
@@ -314,59 +314,59 @@ const exMarker exLexers::ParseTagMarker(
 
   if (no <= wxSTC_MARKER_MAX && symbol_no <= wxSTC_MARKER_MAX)
   {
-    return exMarker(no, symbol_no, foreground, background);
+    return wxExMarker(no, symbol_no, foreground, background);
   }
   else
   {
     wxLogError("Illegal marker number: %d or symbol: %d", no, symbol_no);
-    return exMarker(0, 0, foreground, background);
+    return wxExMarker(0, 0, foreground, background);
   }
 }
 
-const wxString exLexers::ParseTagProperties(const wxXmlNode* node) const
+const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
 {
   wxString text;
-  
+
   wxXmlNode *child = node->GetChildren();
 
-  while (child) 
+  while (child)
   {
     if (child->GetName() == "property")
     {
-      text += 
-        child->GetAttribute("name", "0") + "=" + 
+      text +=
+        child->GetAttribute("name", "0") + "=" +
         child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
-    { 
+    {
       // Ignore comments.
     }
     else
     {
-      wxLogError("Undefined properties tag: %s on %d", 
+      wxLogError("Undefined properties tag: %s on %d",
         child->GetName().c_str(), child->GetLineNumber());
     }
-    
+
     child = child->GetNext();
   }
-  
+
   return text;
 }
 
-bool exLexers::Read()
+bool wxExLexers::Read()
 {
-  if (!m_FileName.FileExists()) 
+  if (!m_FileName.FileExists())
   {
     return false;
   }
 
   wxXmlDocument doc;
-  
+
   if (!doc.Load(m_FileName.GetFullPath()))
   {
     return false;
   }
- 
+
   // Initialize members.
   m_Indicators.clear();
   m_Lexers.clear();
@@ -376,31 +376,31 @@ bool exLexers::Read()
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
-  while (child) 
+  while (child)
   {
-    if (child->GetName() == "global") 
+    if (child->GetName() == "global")
     {
       ParseTagGlobal(child);
     }
-    else if (child->GetName() == "lexer") 
+    else if (child->GetName() == "lexer")
     {
-      const exLexer& lexer = ParseTagLexer(child);
+      const wxExLexer& lexer = ParseTagLexer(child);
 
       if (!lexer.GetScintillaLexer().empty())
       {
         m_Lexers.push_back(lexer);
       }
-    } 
+    }
 
     child = child->GetNext();
   }
 
-  return true; 
+  return true;
 }
 
-bool exLexers::ShowDialog(
+bool wxExLexers::ShowDialog(
   wxWindow* parent,
-  exLexer& lexer, 
+  wxExLexer& lexer,
   const wxString& caption) const
 {
   wxArrayString aChoices;
@@ -408,7 +408,7 @@ bool exLexers::ShowDialog(
   int index = 0;
 
   for (
-    std::vector<exLexer>::const_iterator it = m_Lexers.begin();
+    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {

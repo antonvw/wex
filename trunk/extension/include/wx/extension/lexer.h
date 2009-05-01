@@ -16,15 +16,15 @@
 #include <set>
 #include <vector>
 
-class exLexers;
+class wxExLexers;
 
 /// This class defines a lexer using file associations,
 /// syntax colouring and comment definitions.
 /// This lexer is one of the Scintilla lexers.
-/// The lexers are read by and kept in the exLexers class.
-class exLexer
+/// The lexers are read by and kept in the wxExLexers class.
+class wxExLexer
 {
-  friend class exLexers;
+  friend class wxExLexers;
 public:
   /// Gets the associations, e.g. *.cpp;*.c;*.cc;*.h;*.hpp;.
   const wxString& GetAssociations() const {return m_Associations;};

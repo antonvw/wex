@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          tool.h
-* Purpose:       Declaration of exTool classes
+* Purpose:       Declaration of wxExTool classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -20,12 +20,12 @@
 #include <wx/extension/defs.h>
 
 /// This class defines our tool info.
-/// It is stored in the tool info map available from the exTool class.
-class exToolInfo
+/// It is stored in the tool info map available from the wxExTool class.
+class wxExToolInfo
 {
 public:
   /// Constructor.
-  exToolInfo(
+  wxExToolInfo(
     const wxString& info,
     const wxString& text,
     bool is_basic = true,
@@ -54,12 +54,12 @@ private:
 };
 
 /// Offers tool methods and contains the tool info's.
-/// A tool with non empty text is used by exMenu::AppendTools.
-class exTool
+/// A tool with non empty text is used by wxExMenu::AppendTools.
+class wxExTool
 {
 public:
-  /// Constructor, specify the exToolId to use.
-  exTool(int id);
+  /// Constructor, specify the wxExToolId to use.
+  wxExTool(int id);
 
   /// Adds your own info to the tool.
   /// If you use a %ld in the info string, it is replaced by GetStatistics
@@ -75,13 +75,13 @@ public:
   int GetId() const {return m_Id;};
 
   /// Gets all the tool info.
-  static std::map < int, const exToolInfo > & GetToolInfo() {return m_ToolInfo;};
+  static std::map < int, const wxExToolInfo > & GetToolInfo() {return m_ToolInfo;};
 
   /// Gets info about current tool.
   const wxString Info() const;
 
   // Initializes the tool info map.
-  // This is done during exApp::OnInit.
+  // This is done during wxExApp::OnInit.
   // Not for doxygen.
   static void Initialize();
 
@@ -112,7 +112,7 @@ public:
       m_Id == ID_TOOL_REPORT_VERSION  ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 private:
-  int m_Id; // cannot be const, as we set tool id using operator= in exTextFile::SetupTool
-  static std::map < int, const exToolInfo > m_ToolInfo;
+  int m_Id; // cannot be const, as we set tool id using operator= in wxExTextFile::SetupTool
+  static std::map < int, const wxExToolInfo > m_ToolInfo;
 };
 #endif

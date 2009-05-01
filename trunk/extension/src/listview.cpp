@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.cpp
-* Purpose:       Implementation of exListView and related classes
+* Purpose:       Implementation of wxExListView and related classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -21,7 +21,7 @@
 
 using namespace std;
 
-void exColumn::SetIsSortedAscending(exSortType type)
+void wxExColumn::SetIsSortedAscending(wxExSortType type)
 {
   switch (type)
   {
@@ -33,7 +33,7 @@ void exColumn::SetIsSortedAscending(exSortType type)
   }
 }
 
-exListItem::exListItem(exListView* lv, const wxString& text)
+wxExListItem::wxExListItem(wxExListView* lv, const wxString& text)
   : m_ListView(lv)
 {
   SetId(m_ListView->GetItemCount());
@@ -41,13 +41,13 @@ exListItem::exListItem(exListView* lv, const wxString& text)
   SetText(text);
 }
 
-exListItem::exListItem(exListView* lv, const int itemnumber)
+wxExListItem::wxExListItem(wxExListView* lv, const int itemnumber)
   : m_ListView(lv)
 {
   SetId(itemnumber);
 }
 
-const wxString exListItem::GetColumnText(int col_no)
+const wxString wxExListItem::GetColumnText(int col_no)
 {
   if (col_no == -1) return wxEmptyString;
 
@@ -57,7 +57,7 @@ const wxString exListItem::GetColumnText(int col_no)
   return GetText();
 }
 
-bool exListItem::SetBackgroundColour(const wxColour& colour)
+bool wxExListItem::SetBackgroundColour(const wxColour& colour)
 {
   wxListItem::SetBackgroundColour(colour);
 
@@ -73,7 +73,7 @@ bool exListItem::SetBackgroundColour(const wxColour& colour)
   return true;
 }
 
-void exListItem::SetColumnText(const int col_no, const wxString& text)
+void wxExListItem::SetColumnText(const int col_no, const wxString& text)
 {
   if (col_no >= m_ListView->GetColumnCount())
   {
@@ -85,7 +85,7 @@ void exListItem::SetColumnText(const int col_no, const wxString& text)
   // Readme: 512 should be a constant from the wx lib.
   if (text.length() >= 512)
   {
-    exFrame::StatusText(
+    wxExFrame::StatusText(
       "Warning, column max size is 512, column text: ..." +
         text.substr(text.length() - 25) + " ignored");
   }
@@ -101,7 +101,7 @@ void exListItem::SetColumnText(const int col_no, const wxString& text)
   }
 }
 
-void exListItem::StoreImage(int image)
+void wxExListItem::StoreImage(int image)
 {
   wxListItem::SetImage(image);
   SetMask(wxLIST_MASK_IMAGE);
@@ -117,23 +117,23 @@ void exListItem::StoreImage(int image)
 const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
 
-BEGIN_EVENT_TABLE(exListView, wxListView)
-  EVT_FIND(wxID_ANY, exListView::OnFindDialog)
-  EVT_FIND_CLOSE(wxID_ANY, exListView::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, exListView::OnFindDialog)
-  EVT_LIST_COL_CLICK(wxID_ANY, exListView::OnList)
-  EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, exListView::OnList)
-  EVT_LIST_ITEM_DESELECTED(wxID_ANY, exListView::OnList)
-  EVT_LIST_ITEM_SELECTED(wxID_ANY, exListView::OnList)
-  EVT_MENU(wxID_SORT_ASCENDING, exListView::OnCommand)
-  EVT_MENU(wxID_SORT_DESCENDING, exListView::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exListView::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, exListView::OnCommand)
-  EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, exListView::OnCommand)
-  EVT_RIGHT_DOWN(exListView::OnMouse)
+BEGIN_EVENT_TABLE(wxExListView, wxListView)
+  EVT_FIND(wxID_ANY, wxExListView::OnFindDialog)
+  EVT_FIND_CLOSE(wxID_ANY, wxExListView::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExListView::OnFindDialog)
+  EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
+  EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
+  EVT_LIST_ITEM_DESELECTED(wxID_ANY, wxExListView::OnList)
+  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListView::OnList)
+  EVT_MENU(wxID_SORT_ASCENDING, wxExListView::OnCommand)
+  EVT_MENU(wxID_SORT_DESCENDING, wxExListView::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, wxExListView::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, wxExListView::OnCommand)
+  EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
+  EVT_RIGHT_DOWN(wxExListView::OnMouse)
 END_EVENT_TABLE()
 
-exListView::exListView(wxWindow* parent,
+wxExListView::wxExListView(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
@@ -141,7 +141,7 @@ exListView::exListView(wxWindow* parent,
   const wxValidator& validator,
   int image_type)
   : wxListView(parent, id, pos, size, style, validator)
-  , exInterface()
+  , wxExInterface()
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
   , m_ImageHeightSmall(16)
@@ -169,12 +169,12 @@ exListView::exListView(wxWindow* parent,
   }
 
   wxFont font(
-    exApp::GetConfig(_("List Font") + "/Size", 8),
+    wxExApp::GetConfig(_("List Font") + "/Size", 8),
     wxFONTFAMILY_DEFAULT,
     wxFONTSTYLE_NORMAL,
     wxFONTWEIGHT_NORMAL,
     false,
-    exApp::GetConfig(_("List Font") + "/Name"));
+    wxExApp::GetConfig(_("List Font") + "/Name"));
 
   SetFont(font);
 
@@ -192,22 +192,22 @@ exListView::exListView(wxWindow* parent,
   SetAcceleratorTable(accel);
 }
 
-exListView::~exListView()
+wxExListView::~wxExListView()
 {
   ItemsClear();
 }
 
-const wxString exListView::BuildPage()
+const wxString wxExListView::BuildPage()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  exApp::GetPrinter()->SetFooter(PrintFooter());
-  exApp::GetPrinter()->SetHeader(PrintHeader());
+  wxExApp::GetPrinter()->SetFooter(PrintFooter());
+  wxExApp::GetPrinter()->SetHeader(PrintHeader());
 #endif
 
   wxString text;
 
   text << "<TABLE ";
-  
+
   if ((GetWindowStyle() & wxLC_HRULES) ||
       (GetWindowStyle() & wxLC_VRULES))
     text << "border=1";
@@ -219,7 +219,7 @@ const wxString exListView::BuildPage()
   text << "<tr>" << wxTextFile::GetEOL();
 
   for (
-    vector<exColumn>::const_iterator it = m_Columns.begin();
+    vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
@@ -230,7 +230,7 @@ const wxString exListView::BuildPage()
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    exListItem item(this, i);
+    wxExListItem item(this, i);
 
     for (int col = 0; col < GetColumnCount(); col++)
     {
@@ -243,7 +243,7 @@ const wxString exListView::BuildPage()
   return text;
 }
 
-void exListView::BuildPopupMenu(exMenu& menu)
+void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
   if (GetItemCount() > 0)
   {
@@ -253,27 +253,27 @@ void exListView::BuildPopupMenu(exMenu& menu)
       wxART_FIND);
 
     menu.AppendSeparator();
-    
+
     wxMenu* menuSort = new wxMenu;
-    
+
     int i = ID_COL_FIRST;
     for (
-      vector<exColumn>::const_iterator it = m_Columns.begin();
+      vector<wxExColumn>::const_iterator it = m_Columns.begin();
       it != m_Columns.end();
       ++it)
     {
       menuSort->Append(i++, it->GetText());
     }
-    
+
     menu.AppendSubMenu(menuSort, _("Sort"));
-    
+
     menu.AppendSeparator();
   }
 
   menu.AppendEdit(true);
 }
 
-void exListView::CopySelectedItemsToClipboard()
+void wxExListView::CopySelectedItemsToClipboard()
 {
   if (GetSelectedItemCount() == 0) return;
 
@@ -286,10 +286,10 @@ void exListView::CopySelectedItemsToClipboard()
     clipboard = clipboard + ItemToText(i) + wxTextFile::GetEOL();
   }
 
-  exClipboardAdd(clipboard);
+  wxExClipboardAdd(clipboard);
 }
 
-void exListView::EditClearAll()
+void wxExListView::EditClearAll()
 {
   DeleteAllItems();
   ItemsClear();
@@ -298,7 +298,7 @@ void exListView::EditClearAll()
 #endif
 }
 
-void exListView::EditDelete()
+void wxExListView::EditDelete()
 {
   if (GetSelectedItemCount() == 0) return;
 
@@ -316,7 +316,7 @@ void exListView::EditDelete()
   ItemsUpdate();
 }
 
-void exListView::EditInvertAll()
+void wxExListView::EditInvertAll()
 {
   for (int i = 0; i < GetItemCount(); i++)
   {
@@ -324,15 +324,15 @@ void exListView::EditInvertAll()
   }
 }
 
-void exListView::EditSelectAll()
+void wxExListView::EditSelectAll()
 {
   SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
-long exListView::FindColumn(const wxString& name, bool is_required) const
+long wxExListView::FindColumn(const wxString& name, bool is_required) const
 {
   for (
-    vector<exColumn>::const_iterator it = m_Columns.begin();
+    vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
@@ -350,7 +350,7 @@ long exListView::FindColumn(const wxString& name, bool is_required) const
   return -1;
 }
 
-bool exListView::FindNext(const wxString& text, bool find_next)
+bool wxExListView::FindNext(const wxString& text, bool find_next)
 {
   if (text.empty())
   {
@@ -363,7 +363,7 @@ bool exListView::FindNext(const wxString& text, bool find_next)
 
   wxString text_use = text;
 
-  if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
+  if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
   {
     text_use.MakeUpper();
   }
@@ -404,18 +404,18 @@ bool exListView::FindNext(const wxString& text, bool find_next)
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
-    exListItem item(this, index);
+    wxExListItem item(this, index);
 
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
       wxString text = item.GetColumnText(col);
 
-      if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
+      if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
       {
         text.MakeUpper();
       }
 
-      if (exApp::GetConfig()->GetFindReplaceData()->MatchWord())
+      if (wxExApp::GetConfig()->GetFindReplaceData()->MatchWord())
       {
         if (text == text_use)
         {
@@ -452,7 +452,7 @@ bool exListView::FindNext(const wxString& text, bool find_next)
   }
 }
 
-unsigned int exListView::GetArtID(wxArtID artid)
+unsigned int wxExListView::GetArtID(wxArtID artid)
 {
   if (GetImageList(wxIMAGE_LIST_NORMAL) == NULL ||
       GetImageList(wxIMAGE_LIST_SMALL) == NULL ||
@@ -480,10 +480,10 @@ unsigned int exListView::GetArtID(wxArtID artid)
   }
 }
 
-const exColumn exListView::GetColumn(int column_no) const
+const wxExColumn wxExListView::GetColumn(int column_no) const
 {
   for (
-    vector<exColumn>::const_iterator it = m_Columns.begin();
+    vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
@@ -493,10 +493,10 @@ const exColumn exListView::GetColumn(int column_no) const
     }
   }
 
-  return exColumn();
+  return wxExColumn();
 }
 
-bool exListView::GotoDialog(const wxString& caption)
+bool wxExListView::GotoDialog(const wxString& caption)
 {
   long initial_value = GetFirstSelected();
 
@@ -532,12 +532,12 @@ bool exListView::GotoDialog(const wxString& caption)
   return true;
 }
 
-void exListView::InsertColumn(
+void wxExListView::InsertColumn(
   const wxString& name,
-  exColumn::exColumnType type,
+  wxExColumn::wxExColumnType type,
   int width)
 {
-  exColumn col;
+  wxExColumn col;
 
   col.m_Type = type;
   col.m_IsSortedAscending = false;
@@ -546,10 +546,10 @@ void exListView::InsertColumn(
 
   switch (type)
   {
-  case exColumn::COL_FLOAT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
-  case exColumn::COL_INT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
-  case exColumn::COL_STRING: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 100; break;
-  case exColumn::COL_DATE: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 150; break;
+  case wxExColumn::COL_FLOAT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
+  case wxExColumn::COL_INT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
+  case wxExColumn::COL_STRING: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 100; break;
+  case wxExColumn::COL_DATE: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 150; break;
   default: wxFAIL;
   }
 
@@ -565,10 +565,10 @@ void exListView::InsertColumn(
   m_Columns.push_back(col);
 }
 
-void exListView::ItemsClear()
+void wxExListView::ItemsClear()
 {
   for (
-    vector<exListItem*>::iterator it = m_Items.begin();
+    vector<wxExListItem*>::iterator it = m_Items.begin();
     it != m_Items.end();
     ++it)
   {
@@ -578,7 +578,7 @@ void exListView::ItemsClear()
   m_Items.clear();
 }
 
-bool exListView::ItemFromText(const wxString& text)
+bool wxExListView::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
@@ -591,7 +591,7 @@ bool exListView::ItemFromText(const wxString& text)
   {
     const wxString value = tkz.GetNextToken();
 
-    exListItem item(this, value);
+    wxExListItem item(this, value);
     item.Insert();
 
     // And set the rest of the columns.
@@ -604,18 +604,18 @@ bool exListView::ItemFromText(const wxString& text)
   }
   else
   {
-    exListItem item(this, text);
+    wxExListItem item(this, text);
     item.Insert();
   }
 
   return true;
 }
 
-const wxString exListView::ItemToText(int item_number)
+const wxString wxExListView::ItemToText(int item_number)
 {
   wxString text;
 
-  exListItem item(this, item_number);
+  wxExListItem item(this, item_number);
 
   for (int col = 0; col < GetColumnCount(); col++)
   {
@@ -630,14 +630,14 @@ const wxString exListView::ItemToText(int item_number)
   return text;
 }
 
-void exListView::OnCommand(wxCommandEvent& event)
+void wxExListView::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() >= ID_COL_FIRST && event.GetId() <= ID_COL_LAST)
   {
     SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
     return;
   }
-  
+
   switch (event.GetId())
   {
   case wxID_CLEAR:
@@ -678,10 +678,10 @@ void exListView::OnCommand(wxCommandEvent& event)
     FindDialog(this);
     break;
   case ID_LIST_FIND_NEXT:
-    FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString());
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
     break;
   case ID_LIST_FIND_PREVIOUS:
-    FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
     break;
   default: wxFAIL;
   }
@@ -691,24 +691,24 @@ void exListView::OnCommand(wxCommandEvent& event)
 #endif
 }
 
-void exListView::OnFindDialog(wxFindDialogEvent& event)
+void wxExListView::OnFindDialog(wxFindDialogEvent& event)
 {
-  exInterface::OnFindDialog(event);
+  wxExInterface::OnFindDialog(event);
 }
 
-void exListView::OnList(wxListEvent& event)
+void wxExListView::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_CLICK)
   {
     SortColumn(
       event.GetColumn(),
-      (exSortType)exApp::GetConfig("List/SortMethod", SORT_TOGGLE));
+      (wxExSortType)wxExApp::GetConfig("List/SortMethod", SORT_TOGGLE));
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_RIGHT_CLICK)
   {
     m_ToBeSortedColumnNo = event.GetColumn();
 
-    exMenu menu(GetSelectedItemCount() > 0 ? exMenu::MENU_IS_SELECTED: exMenu::MENU_DEFAULT);
+    wxExMenu menu(GetSelectedItemCount() > 0 ? wxExMenu::MENU_IS_SELECTED: wxExMenu::MENU_DEFAULT);
     menu.Append(wxID_SORT_ASCENDING);
     menu.Append(wxID_SORT_DESCENDING);
 
@@ -724,34 +724,34 @@ void exListView::OnList(wxListEvent& event)
   }
 }
 
-void exListView::OnMouse(wxMouseEvent& event)
+void wxExListView::OnMouse(wxMouseEvent& event)
 {
   if (event.RightDown())
   {
-    int style = exMenu::MENU_DEFAULT;
-    if (GetSelectedItemCount() > 0) style |= exMenu::MENU_IS_SELECTED;
-    if (GetItemCount() == 0) style |= exMenu::MENU_IS_EMPTY;
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= exMenu::MENU_ALLOW_CLEAR;
+    int style = wxExMenu::MENU_DEFAULT;
+    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
+    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= wxExMenu::MENU_ALLOW_CLEAR;
 
-    exMenu menu(style);
+    wxExMenu menu(style);
     BuildPopupMenu(menu);
 
     PopupMenu(&menu);
   }
 }
 
-void exListView::PasteItemsFromClipboard()
+void wxExListView::PasteItemsFromClipboard()
 {
-  wxStringTokenizer tkz(exClipboardGet(), wxTextFile::GetEOL());
+  wxStringTokenizer tkz(wxExClipboardGet(), wxTextFile::GetEOL());
 
   while (tkz.HasMoreTokens())
   {
     ItemFromText(tkz.GetNextToken());
   }
 
-  if (exApp::GetConfigBool("List/SortSync"))
+  if (wxExApp::GetConfigBool("List/SortSync"))
   {
-    SortColumn(exApp::GetConfig("List/SortColumn", FindColumn(_("Modified"))), SORT_KEEP);
+    SortColumn(wxExApp::GetConfig("List/SortColumn", FindColumn(_("Modified"))), SORT_KEEP);
   }
 }
 
@@ -760,16 +760,16 @@ int sorted_col_no = 0;
 int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
 {
   const bool ascending = (sortData > 0);
-  const exColumn::exColumnType type = (exColumn::exColumnType)abs(sortData);
+  const wxExColumn::wxExColumnType type = (wxExColumn::wxExColumnType)abs(sortData);
 
   switch (type)
   {
-  case exColumn::COL_STRING:
+  case wxExColumn::COL_STRING:
     {
-    const wxString& str1 = ((exListItem *)item1)->GetColumnText(sorted_col_no);
-    const wxString& str2 = ((exListItem *)item2)->GetColumnText(sorted_col_no);
+    const wxString& str1 = ((wxExListItem *)item1)->GetColumnText(sorted_col_no);
+    const wxString& str2 = ((wxExListItem *)item2)->GetColumnText(sorted_col_no);
 
-    if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
+    if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
     {
       if (ascending) return strcmp(str1.Upper(), str2.Upper());
       else           return strcmp(str2.Upper(), str1.Upper());
@@ -782,7 +782,7 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
     }
   break;
 
-  case exColumn::COL_DATE:
+  case wxExColumn::COL_DATE:
     if (ascending) return (unsigned long)item1 > (unsigned long)item2;
     else           return (unsigned long)item1 < (unsigned long)item2;
   break;
@@ -793,13 +793,13 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
   }
 }
 
-void exListView::SortColumn(int column_no, exSortType sort_method)
+void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
   sorted_col_no = column_no;
 
   SortColumnReset();
 
-  exColumn* sorted_col = &m_Columns[column_no];
+  wxExColumn* sorted_col = &m_Columns[column_no];
   sorted_col->SetIsSortedAscending(sort_method);
 
   wxBusyCursor wait;
@@ -807,17 +807,17 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
   for (long i = 0; i < GetItemCount(); i++)
   {
     // Keeping the items is necessary for sorting strings.
-    m_Items.push_back(new exListItem(this, i));
-    exListItem* li = m_Items.back();
+    m_Items.push_back(new wxExListItem(this, i));
+    wxExListItem* li = m_Items.back();
     const wxString& val = li->GetColumnText(column_no);
 
     long longval = 0;
 
     switch (sorted_col->GetType())
     {
-    case exColumn::COL_INT: longval = atoi(val.c_str()); break;
-    case exColumn::COL_FLOAT: longval = (long)atof(val.c_str()); break;
-    case exColumn::COL_DATE:
+    case wxExColumn::COL_INT: longval = atoi(val.c_str()); break;
+    case wxExColumn::COL_FLOAT: longval = (long)atof(val.c_str()); break;
+    case wxExColumn::COL_DATE:
       if (!val.empty())
       {
         wxDateTime dt;
@@ -869,10 +869,10 @@ void exListView::SortColumn(int column_no, exSortType sort_method)
     AfterSorting();
   }
 
-  exFrame::StatusText(_("Sorted on") + ": " + sorted_col->GetText());
+  wxExFrame::StatusText(_("Sorted on") + ": " + sorted_col->GetText());
 }
 
-void exListView::SortColumnReset()
+void wxExListView::SortColumnReset()
 {
   if (m_SortedColumnNo != -1 && !m_ArtIDs.empty()) // only if we are using images
   {
@@ -883,14 +883,14 @@ void exListView::SortColumnReset()
 }
 
 #if wxUSE_STATUSBAR
-void exListView::UpdateStatusBar()
+void wxExListView::UpdateStatusBar()
 {
   const wxString text = wxString::Format("%d", GetItemCount()) +
     wxString((GetSelectedItemCount() > 0) ?
       ("," + wxString::Format("%d", GetSelectedItemCount())):
       wxString(wxEmptyString));
 
-  exFrame::StatusText(text, "PaneItems");
+  wxExFrame::StatusText(text, "PaneItems");
 }
 #endif
 

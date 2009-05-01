@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.h
-* Purpose:       Declaration of class 'exProcessWithListView'
+* Purpose:       Declaration of class 'wxExProcessWithListView'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,15 +14,15 @@
 
 #include <wx/process.h>
 
-class exListViewFile;
-class exThread;
+class wxExListViewFile;
+class wxExThread;
 
 /// Offers a wxProcess with output to a listview.
-class exProcessWithListView : public wxProcess
+class wxExProcessWithListView : public wxProcess
 {
 public:
   /// Constructor.
-  exProcessWithListView(exListViewFile* listview, const wxString& command = wxEmptyString);
+  wxExProcessWithListView(wxExListViewFile* listview, const wxString& command = wxEmptyString);
 
   // Checks whether input is available from process and updates the listview.
   // You should call it regularly.
@@ -49,7 +49,7 @@ private:
   virtual void OnTerminate(int pid, int status); // overriden
 
   static wxString m_Command;
-  exListViewFile* m_Owner;
-  exThread* m_Thread;
+  wxExListViewFile* m_Owner;
+  wxExThread* m_Thread;
 };
 #endif

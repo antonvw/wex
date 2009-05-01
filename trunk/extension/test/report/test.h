@@ -18,31 +18,31 @@
 #include <wx/extension/report/report.h>
 
 /// CppUnit test suite.
-class exReportTestSuite : public CppUnit::TestSuite
+class wxExReportTestSuite : public CppUnit::TestSuite
 {
 public:
   /// Default constructor.
-  exReportTestSuite();
+  wxExReportTestSuite();
 };
 
-/// Derive your application from exApp.
-class exReportTestApp: public exApp
+/// Derive your application from wxExApp.
+class wxExReportTestApp: public wxExApp
 {
 public:
   /// Constructor.
-  exReportTestApp() {}
+  wxExReportTestApp() {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
 };
 
 /// CppUnit app test fixture.
-/// These classes require either an exApp object, or wx to be initialized.
-class exReportAppTestFixture : public CppUnit::TestFixture
+/// These classes require either an wxExApp object, or wx to be initialized.
+class wxExReportAppTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  exReportAppTestFixture() : TestFixture() {
+  wxExReportAppTestFixture() : TestFixture() {
 	m_Dir = NULL;
     m_ListView = NULL;
     m_Process = NULL;
@@ -50,7 +50,7 @@ public:
     };
 
   /// Destructor.
- ~exReportAppTestFixture() {
+ ~wxExReportAppTestFixture() {
 	delete m_Dir;
     delete m_ListView;
     delete m_Process;
@@ -70,10 +70,10 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  exDirWithReport* m_Dir;     ///< testing exDirWithReport
-  exListViewFile* m_ListView; ///< testing exListViewFile
-  exProcessWithListView* m_Process; ///< testing exProcessWithListView
-  exSTCWithFrame* m_STC;      ///< testing exSTCWithFrame
+  wxExDirWithReport* m_Dir;     ///< testing wxExDirWithReport
+  wxExListViewFile* m_ListView; ///< testing wxExListViewFile
+  wxExProcessWithListView* m_Process; ///< testing wxExProcessWithListView
+  wxExSTCWithFrame* m_STC;      ///< testing wxExSTCWithFrame
 };
 #endif
 

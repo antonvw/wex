@@ -18,17 +18,17 @@
 #include <wx/extension/file.h>
 #include <wx/extension/util.h>
 
-class exConfig;
+class wxExConfig;
 
 /// Returns a header.
-const wxString exHeader(
-  const exFileName& filename,
-  exConfig* config,
+const wxString wxExHeader(
+  const wxExFileName& filename,
+  wxExConfig* config,
   const wxString& description);
 
 #if wxUSE_GUI
-/// Calls OpenFile for exFrame, if this is your top window.
-void exOpenFile(const wxFileName& filename, long open_flags = 0);
+/// Calls OpenFile for wxExFrame, if this is your top window.
+void wxExOpenFile(const wxFileName& filename, long open_flags = 0);
 #endif // wxUSE_GUI
 #endif
 

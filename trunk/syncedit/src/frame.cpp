@@ -84,22 +84,22 @@ MDIFrame::MDIFrame(bool open_recent)
     wxAUI_NB_WINDOWLIST_BUTTON |
     wxAUI_NB_SCROLL_BUTTONS;
 
-  m_NotebookWithEditors = new exNotebook(
+  m_NotebookWithEditors = new wxExNotebook(
     this, this, (wxWindowID)NOTEBOOK_EDITORS, wxDefaultPosition, wxDefaultSize, flag);
-  m_NotebookWithLists = new exNotebook(
+  m_NotebookWithLists = new wxExNotebook(
     this, this, (wxWindowID)NOTEBOOK_LISTS, wxDefaultPosition, wxDefaultSize, flag);
-  m_NotebookWithProjects = new exNotebook(
+  m_NotebookWithProjects = new wxExNotebook(
     this, this, (wxWindowID)NOTEBOOK_PROJECTS, wxDefaultPosition, wxDefaultSize, flag);
-  m_History = new exListViewFile(this,
-    exListViewFile::LIST_HISTORY,
-    exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS);
+  m_History = new wxExListViewFile(this,
+    wxExListViewFile::LIST_HISTORY,
+    wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
-  exSTC* asciiTable = new exSTC(this);
+  wxExSTC* asciiTable = new wxExSTC(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
-  exFindToolBar* findbar = new exFindToolBar(this, this);
+  wxExFindToolBar* findbar = new wxExFindToolBar(this, this);
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
@@ -116,7 +116,7 @@ MDIFrame::MDIFrame(bool open_recent)
   GetManager().AddPane(findbar,
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
-  const wxString perspective = exApp::GetConfig("Perspective");
+  const wxString perspective = wxExApp::GetConfig("Perspective");
 
   if (perspective.empty())
   {
@@ -137,7 +137,7 @@ MDIFrame::MDIFrame(bool open_recent)
   {
     if (!GetRecentFile().empty())
     {
-      OpenFile(exFileName(GetRecentFile()));
+      OpenFile(wxExFileName(GetRecentFile()));
     }
     else
     {
@@ -149,10 +149,10 @@ MDIFrame::MDIFrame(bool open_recent)
       if (!GetRecentProject().empty())
       {
         OpenFile(
-          exFileName(GetRecentProject()),
+          wxExFileName(GetRecentProject()),
           0,
           wxEmptyString,
-          exSTCWithFrame::STC_OPEN_IS_PROJECT);
+          wxExSTCWithFrame::STC_OPEN_IS_PROJECT);
       }
     }
   }
@@ -167,34 +167,34 @@ MDIFrame::MDIFrame(bool open_recent)
   wxLogTrace("SY_CALL", "-MDIFrame");
 }
 
-exListViewFile* MDIFrame::Activate(int type, const exLexer* lexer)
+wxExListViewFile* MDIFrame::Activate(int type, const wxExLexer* lexer)
 {
-  if (type == exListViewFile::LIST_PROJECT)
+  if (type == wxExListViewFile::LIST_PROJECT)
   {
     return GetCurrentProject();
   }
   else
   {
-    exListViewFile* list = AddPage(type, lexer);
+    wxExListViewFile* list = AddPage(type, lexer);
     GetManager().GetPane("OUTPUT").Show();
     GetManager().Update();
     return list;
   }
 }
 
-exListViewFile* MDIFrame::AddPage(int type, const exLexer* lexer)
+wxExListViewFile* MDIFrame::AddPage(int type, const wxExLexer* lexer)
 {
-  const wxString name = exListViewFile::GetTypeDescription((exListViewFile::ListType)type) +
+  const wxString name = wxExListViewFile::GetTypeDescription((wxExListViewFile::ListType)type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
-  exListViewFile* list = (exListViewFile*)m_NotebookWithLists->GetPageByKey(name);
+  wxExListViewFile* list = (wxExListViewFile*)m_NotebookWithLists->GetPageByKey(name);
 
-  if (list == NULL && type != exListViewFile::LIST_PROJECT)
+  if (list == NULL && type != wxExListViewFile::LIST_PROJECT)
   {
-    list = new exListViewFile(
+    list = new wxExListViewFile(
       m_NotebookWithLists,
-      (exListViewFile::ListType)type,
-      exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS,
+      (wxExListViewFile::ListType)type,
+      wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);
   }
@@ -207,7 +207,7 @@ bool MDIFrame::AllowCloseAll(wxWindowID id)
   switch (id)
   {
   case NOTEBOOK_EDITORS: return m_NotebookWithEditors->ForEach(ID_ALL_STC_CLOSE); break;
-  case NOTEBOOK_PROJECTS: return exForEach(m_NotebookWithProjects, ID_LIST_ALL_CLOSE); break;
+  case NOTEBOOK_PROJECTS: return wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_CLOSE); break;
   }
 
   return true;
@@ -222,7 +222,7 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
-exListView* MDIFrame::GetListView()
+wxExListView* MDIFrame::GetListView()
 {
   if (GetCurrentListView() != NULL)
   {
@@ -234,24 +234,24 @@ exListView* MDIFrame::GetListView()
   }
 }
 
-exListViewFile* MDIFrame::GetCurrentProject()
+wxExListViewFile* MDIFrame::GetCurrentProject()
 {
   if (!m_NotebookWithProjects->IsShown() || m_NotebookWithProjects->GetPageCount() == 0)
   {
     return NULL;
   }
 
-  return (exListViewFile*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
+  return (wxExListViewFile*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
 }
 
-exSTCWithFrame* MDIFrame::GetCurrentSTC()
+wxExSTCWithFrame* MDIFrame::GetCurrentSTC()
 {
   if (!m_NotebookWithEditors->IsShown() || m_NotebookWithEditors->GetPageCount() == 0)
   {
     return NULL;
   }
 
-  return (exSTCWithFrame*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
+  return (wxExSTCWithFrame*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
 }
 
 void MDIFrame::NewFile(bool as_project)
@@ -259,7 +259,7 @@ void MDIFrame::NewFile(bool as_project)
   const wxString name = (as_project ? _("Project") : _("Textfile"));
   const wxString text = wxString::Format("%s%d", name.c_str(), m_NewFileNo++);
 
-  exNotebook* notebook = (as_project ? m_NotebookWithProjects : m_NotebookWithEditors);
+  wxExNotebook* notebook = (as_project ? m_NotebookWithProjects : m_NotebookWithEditors);
   wxWindow* page;
 
   if (as_project)
@@ -268,19 +268,19 @@ void MDIFrame::NewFile(bool as_project)
       wxStandardPaths::Get().GetUserDataDir(),
       text);
 
-    page = new exListViewFile(notebook,
+    page = new wxExListViewFile(notebook,
       fn.GetFullPath(),
       project_wildcard,
-      exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS);
+      wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
     SetTitle(wxEmptyString, text);
   }
   else
   {
-    page = new exSTCWithFrame(notebook);
+    page = new wxExSTCWithFrame(notebook);
 
-    ((exSTCWithFrame*)page)->FileNew(text);
-    ((exSTCWithFrame*)page)->PropertiesMessage();
+    ((wxExSTCWithFrame*)page)->FileNew(text);
+    ((wxExSTCWithFrame*)page)->PropertiesMessage();
   }
 
   notebook->AddPage(
@@ -310,9 +310,9 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   }
 
 #if wxUSE_CHECKBOX
-  exApp::SetConfigBool("HexMode", GetHexModeCheckBox()->GetValue());
+  wxExApp::SetConfigBool("HwxExMode", GetHwxExModeCheckBox()->GetValue());
 #endif
-  exApp::SetConfig("Perspective", GetManager().SavePerspective());
+  wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
   event.Skip();
 }
@@ -334,8 +334,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  exSTCWithFrame* editor = GetCurrentSTC();
-  exListViewFile* project = GetCurrentProject();
+  wxExSTCWithFrame* editor = GetCurrentSTC();
+  wxExListViewFile* project = GetCurrentProject();
 
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
@@ -369,7 +369,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   // view commands
   else if (event.GetId() >= wxID_VIEW_DETAILS &&  event.GetId() <= wxID_VIEW_LIST)
   {
-    exForEach(m_NotebookWithProjects, event.GetId());
+    wxExForEach(m_NotebookWithProjects, event.GetId());
 
     long view = 0;
     switch (event.GetId())
@@ -393,7 +393,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
 #ifdef USE_OTL
-    info.AddDeveloper(exOTLVersion());
+    info.AddDeveloper(wxExOTLVersion());
 #endif
 #ifdef EX_PORTABLE
     info.SetDescription(
@@ -449,7 +449,7 @@ and saved in the same directory as where the executable is."));
     }
     break;
   case wxID_PRINT_SETUP:
-    exApp::GetPrinter()->PageSetup();
+    wxExApp::GetPrinter()->PageSetup();
     break;
 
   case wxID_SAVE:
@@ -457,9 +457,9 @@ and saved in the same directory as where the executable is."));
     {
       editor->PropertiesMessage();
 
-      if (editor->GetFileName() == exApp::GetLexers()->GetFileName())
+      if (editor->GetFileName() == wxExApp::GetLexers()->GetFileName())
       {
-        exApp::GetLexers()->Read();
+        wxExApp::GetLexers()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);
         // As the lexer might have changed, update status bar field as well.
         editor->UpdateStatusBar("PaneLexer");
@@ -481,11 +481,11 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case wxID_EXECUTE: exListViewFile::ProcessRun(); break;
+  case wxID_EXECUTE: wxExListViewFile::ProcessRun(); break;
   case wxID_STOP:
-    if (exListViewFile::ProcessIsRunning())
+    if (wxExListViewFile::ProcessIsRunning())
     {
-      exListViewFile::ProcessStop();
+      wxExListViewFile::ProcessStop();
     }
     break;
 
@@ -493,55 +493,55 @@ and saved in the same directory as where the executable is."));
 #if wxUSE_CHECKBOX
       if (editor != NULL &&
          // Reopen the current file, in the new mode, if different from current mode.
-         (((editor->GetFlags() & exSTC::STC_OPEN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
+         (((editor->GetFlags() & wxExSTC::STC_OPEN_HEX) > 0) != GetHwxExModeCheckBox()->GetValue()))
       {
         long flags = 0;
-        if (GetHexModeCheckBox()->GetValue()) flags |= exSTC::STC_OPEN_HEX;
+        if (GetHwxExModeCheckBox()->GetValue()) flags |= wxExSTC::STC_OPEN_HEX;
         editor->Open(editor->GetFileName().GetFullPath(),
           0, wxEmptyString, flags);
       }
 #endif
     break;
 
-  case ID_OPEN_LEXERS: OpenFile(exApp::GetLexers()->GetFileName()); break;
-  case ID_OPEN_LOGFILE: OpenFile(exLogfileName()); break;
+  case ID_OPEN_LEXERS: OpenFile(wxExApp::GetLexers()->GetFileName()); break;
+  case ID_OPEN_LOGFILE: OpenFile(wxExLogfileName()); break;
 
   case ID_OPTION_SVN_AND_COMPARATOR:
     {
-    std::vector<exConfigItem> v;
-    v.push_back(exConfigItem()); // a spacer
-    v.push_back(exConfigItem("SVN", CONFIG_CHECKBOX));
-    v.push_back(exConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
-    exConfigDialog(this, exApp::GetConfig(), v, _("Set SVN And Comparator")).ShowModal();
+    std::vector<wxExConfigItem> v;
+    v.push_back(wxExConfigItem()); // a spacer
+    v.push_back(wxExConfigItem("SVN", CONFIG_CHECKBOX));
+    v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
+    wxExConfigDialog(this, wxExApp::GetConfig(), v, _("Set SVN And Comparator")).ShowModal();
     }
     break;
   case ID_OPTION_EDITOR:
-    exSTC::ConfigDialog(_("Editor Options"),
-      exSTC::STC_CONFIG_MODELESS | exSTC::STC_CONFIG_WITH_APPLY,
+    wxExSTC::ConfigDialog(_("Editor Options"),
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
       this,
       event.GetId());
     break;
   case ID_OPTION_LIST_FONT:
     {
-      std::vector<exConfigItem> v;
-      v.push_back(exConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL));
+      std::vector<wxExConfigItem> v;
+      v.push_back(wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL));
 
-      if (exConfigDialog(
+      if (wxExConfigDialog(
         this,
-        exApp::GetConfig(),
+        wxExApp::GetConfig(),
         v,
         _("Set List Font")).ShowModal() == wxID_OK)
       {
         wxFont font(
-          exApp::GetConfig(wxString(_("List Font")) + "/Size", 10),
+          wxExApp::GetConfig(wxString(_("List Font")) + "/Size", 10),
           wxFONTFAMILY_DEFAULT,
           wxFONTSTYLE_NORMAL,
           wxFONTWEIGHT_NORMAL,
           false,
-          exApp::GetConfig(wxString(_("List Font")) + "/Name"));
+          wxExApp::GetConfig(wxString(_("List Font")) + "/Name"));
 
-        exForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
-        exForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
+        wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
+        wxExForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
         m_History->SetFont(font);
         m_History->ItemsUpdate();
       }
@@ -549,13 +549,13 @@ and saved in the same directory as where the executable is."));
     break;
 
   case wxID_SORT_ASCENDING:
-    exApp::SetConfig("List/SortMethod", SORT_ASCENDING); break;
+    wxExApp::SetConfig("List/SortMethod", SORT_ASCENDING); break;
   case wxID_SORT_DESCENDING:
-    exApp::SetConfig("List/SortMethod", SORT_DESCENDING); break;
+    wxExApp::SetConfig("List/SortMethod", SORT_DESCENDING); break;
   case ID_OPTION_LIST_SORT_TOGGLE:
-    exApp::SetConfig("List/SortMethod", SORT_TOGGLE); break;
+    wxExApp::SetConfig("List/SortMethod", SORT_TOGGLE); break;
 
-  case ID_PROCESS_SELECT: exProcessWithListView::ConfigDialog(); break;
+  case ID_PROCESS_SELECT: wxExProcessWithListView::ConfigDialog(); break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)
@@ -603,11 +603,11 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case ID_SORT_SYNC: exApp::ToggleConfig("List/SortSync"); break;
+  case ID_SORT_SYNC: wxExApp::ToggleConfig("List/SortSync"); break;
 
   case ID_SPLIT:
   {
-    exSTCWithFrame* stc = new exSTCWithFrame(*editor);
+    wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor);
 
     m_NotebookWithEditors->AddPage(
       stc,
@@ -624,15 +624,15 @@ and saved in the same directory as where the executable is."));
   }
   break;
 
-  case ID_SVN_COMMIT: exSVN(SVN_COMMIT).ExecuteAndShowOutput(); break;
-  case ID_SVN_DIFF: exSVN(SVN_DIFF).ExecuteAndShowOutput(); break;
-  case ID_SVN_INFO: exSVN(SVN_INFO).ExecuteAndShowOutput(); break;
-  case ID_SVN_LOG: exSVN(SVN_LOG).ExecuteAndShowOutput(); break;
-  case ID_SVN_STAT: exSVN(SVN_STAT).ExecuteAndShowOutput(); break;
+  case ID_SVN_COMMIT: wxExSVN(SVN_COMMIT).ExecuteAndShowOutput(); break;
+  case ID_SVN_DIFF: wxExSVN(SVN_DIFF).ExecuteAndShowOutput(); break;
+  case ID_SVN_INFO: wxExSVN(SVN_INFO).ExecuteAndShowOutput(); break;
+  case ID_SVN_LOG: wxExSVN(SVN_LOG).ExecuteAndShowOutput(); break;
+  case ID_SVN_STAT: wxExSVN(SVN_STAT).ExecuteAndShowOutput(); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
-    exApp::SetConfigBool("AllowSync", GetSyncCheckBox()->GetValue());
+    wxExApp::SetConfigBool("AllowSync", GetSyncCheckBox()->GetValue());
 #endif
     break;
 
@@ -640,21 +640,21 @@ and saved in the same directory as where the executable is."));
   {
     wxSetWorkingDirectory(wxFileName(m_DirCtrl->GetFilePath()).GetPath());
 
-    exListViewFile::ProcessRun(
-      exApp::GetConfig(_("Make")) + wxString(" ") +
-      exApp::GetConfig("MakeSwitch", "-f") + wxString(" ") +
+    wxExListViewFile::ProcessRun(
+      wxExApp::GetConfig(_("Make")) + wxString(" ") +
+      wxExApp::GetConfig("MakeSwitch", "-f") + wxString(" ") +
       m_DirCtrl->GetFilePath());
   }
   break;
 
   case ID_TREE_SVN_CAT:
   {
-    exSVN svn(SVN_CAT, m_DirCtrl->GetFilePath());
+    wxExSVN svn(SVN_CAT, m_DirCtrl->GetFilePath());
     const int result = svn.Execute();
 
     if (result == 0)
     {
-      OpenFile(exFileName(m_DirCtrl->GetFilePath()), svn.GetOutput());
+      OpenFile(wxExFileName(m_DirCtrl->GetFilePath()), svn.GetOutput());
     }
     else if (result > 0)
     {
@@ -662,9 +662,9 @@ and saved in the same directory as where the executable is."));
     }
   }
   break;
-  case ID_TREE_SVN_DIFF: exSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).ExecuteAndShowOutput(); break;
-  case ID_TREE_SVN_LOG: exSVN(SVN_LOG, m_DirCtrl->GetFilePath()).ExecuteAndShowOutput(); break;
-  case ID_TREE_OPEN: OpenFile(exFileName(m_DirCtrl->GetFilePath())); break;
+  case ID_TREE_SVN_DIFF: wxExSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).ExecuteAndShowOutput(); break;
+  case ID_TREE_SVN_LOG: wxExSVN(SVN_LOG, m_DirCtrl->GetFilePath()).ExecuteAndShowOutput(); break;
+  case ID_TREE_OPEN: OpenFile(wxExFileName(m_DirCtrl->GetFilePath())); break;
 
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
@@ -683,26 +683,26 @@ void MDIFrame::OnTree(wxTreeEvent& event)
   const wxString selection = m_DirCtrl->GetFilePath();
   if (selection.empty()) return;
 
-  const exFileName filename(selection);
+  const wxExFileName filename(selection);
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
     wxMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
 
-    if (exApp::GetConfigBool("SVN"))
+    if (wxExApp::GetConfigBool("SVN"))
     {
       menu.AppendSeparator();
       wxMenu* svnmenu = new wxMenu;
-      svnmenu->Append(ID_TREE_SVN_DIFF, exEllipsed(_("&Diff")));
-      svnmenu->Append(ID_TREE_SVN_LOG, exEllipsed(_("&Log")));
-      svnmenu->Append(ID_TREE_SVN_CAT, exEllipsed(_("&Cat")));
+      svnmenu->Append(ID_TREE_SVN_DIFF, wxExEllipsed(_("&Diff")));
+      svnmenu->Append(ID_TREE_SVN_LOG, wxExEllipsed(_("&Log")));
+      svnmenu->Append(ID_TREE_SVN_CAT, wxExEllipsed(_("&Cat")));
       menu.AppendSubMenu(svnmenu, "&SVN");
 
       if (filename.GetLexer().GetScintillaLexer() == "makefile")
       {
         menu.AppendSeparator();
-        menu.Append(ID_TREE_RUN_MAKE, exEllipsed(_("&Make")));
+        menu.Append(ID_TREE_RUN_MAKE, wxExEllipsed(_("&Make")));
       }
     }
 
@@ -716,7 +716,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
 void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  exListViewFile* project = GetCurrentProject();
+  wxExListViewFile* project = GetCurrentProject();
 
   if (event.GetId() >= wxID_VIEW_DETAILS && event.GetId() <= wxID_VIEW_LIST)
   {
@@ -747,8 +747,8 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
   else switch (event.GetId())
     {
-    case wxID_EXECUTE: event.Enable(exProcessWithListView::IsSelected()); break;
-    case wxID_STOP: event.Enable(exListViewFile::ProcessIsRunning()); break;
+    case wxID_EXECUTE: event.Enable(wxExProcessWithListView::IsSelected()); break;
+    case wxID_STOP: event.Enable(wxExListViewFile::ProcessIsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
     case ID_ALL_STC_PRINT:
@@ -759,12 +759,12 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_SORT_ASCENDING:
     case wxID_SORT_DESCENDING:
       event.Check(
-        event.GetId() - wxID_SORT_ASCENDING == exApp::GetConfig("List/SortMethod",
+        event.GetId() - wxID_SORT_ASCENDING == wxExApp::GetConfig("List/SortMethod",
         SORT_TOGGLE) - SORT_ASCENDING);
       break;
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
-        event.GetId() - ID_OPTION_LIST_SORT_TOGGLE == exApp::GetConfig("List/SortMethod",
+        event.GetId() - ID_OPTION_LIST_SORT_TOGGLE == wxExApp::GetConfig("List/SortMethod",
         SORT_TOGGLE) - SORT_TOGGLE);
     break;
 
@@ -787,7 +787,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
 
     case ID_SORT_SYNC:
-      event.Check(exApp::GetConfigBool("List/SortSync"));
+      event.Check(wxExApp::GetConfigBool("List/SortSync"));
     break;
 
     case ID_VIEW_ASCII_TABLE:
@@ -823,7 +823,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     // the events are disabled.
     default:
     {
-      exSTCWithFrame* editor = GetCurrentSTC();
+      wxExSTCWithFrame* editor = GetCurrentSTC();
       if (editor == NULL || !editor->IsShown())
       {
         event.Enable(false);
@@ -890,7 +890,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       case wxID_PASTE:
         if (GetFocusedListView() != NULL)
         {
-          event.Enable(GetFocusedListView()->GetType() == exListViewFile::LIST_PROJECT);
+          event.Enable(GetFocusedListView()->GetType() == wxExListViewFile::LIST_PROJECT);
         }
         else
         {
@@ -924,23 +924,23 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 }
 
 bool MDIFrame::OpenFile(
-  const exFileName& filename,
+  const wxExFileName& filename,
   const wxString& contents,
   long flags)
 {
-  const wxString key = filename.GetFullPath()+ exApp::GetConfig(_("Flags"));
+  const wxString key = filename.GetFullPath()+ wxExApp::GetConfig(_("Flags"));
 
   wxWindow* page = m_NotebookWithEditors->GetPageByKey(key, true);
 
   if (page == NULL)
   {
-    exSTCWithFrame* editor = new exSTCWithFrame(m_NotebookWithEditors, exSTC::STC_MENU_DEFAULT, contents);
+    wxExSTCWithFrame* editor = new wxExSTCWithFrame(m_NotebookWithEditors, wxExSTC::STC_MENU_DEFAULT, contents);
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 
     m_NotebookWithEditors->AddPage(
       editor,
       key,
-      filename.GetFullName() + " " + exApp::GetConfig(_("Flags")),
+      filename.GetFullName() + " " + wxExApp::GetConfig(_("Flags")),
       true
 #ifdef USE_NOTEBOOK_IMAGE
       ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
@@ -952,26 +952,26 @@ bool MDIFrame::OpenFile(
 }
 
 bool MDIFrame::OpenFile(
-  const exFileName& filename,
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
 {
   wxLogTrace("SY_CALL", "+OpenFile");
 
-  exNotebook* notebook = (flags & exSTCWithFrame::STC_OPEN_IS_PROJECT
+  wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
 
   wxWindow* page = notebook->GetPageByKey(filename.GetFullPath(), true);
 
-  if (flags & exSTCWithFrame::STC_OPEN_IS_PROJECT)
+  if (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT)
   {
     if (page == NULL)
     {
-      exListViewFile* project = new exListViewFile(m_NotebookWithProjects,
+      wxExListViewFile* project = new wxExListViewFile(m_NotebookWithProjects,
         filename.GetFullPath(),
         project_wildcard,
-        exListViewFile::LIST_MENU_DEFAULT | exListViewFile::LIST_MENU_RBS);
+        wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
       m_NotebookWithProjects->AddPage(
         project,
@@ -1006,24 +1006,24 @@ bool MDIFrame::OpenFile(
       GetManager().Update();
     }
 
-    exSTCWithFrame* editor = (exSTCWithFrame*)page;
+    wxExSTCWithFrame* editor = (wxExSTCWithFrame*)page;
 
     if (page == NULL)
     {
 #if wxUSE_CHECKBOX
-      if (GetHexModeCheckBox()->GetValue())
-        flags |= exSTC::STC_OPEN_HEX;
+      if (GetHwxExModeCheckBox()->GetValue())
+        flags |= wxExSTC::STC_OPEN_HEX;
 #endif
 
-      wxLogTrace("SY_CALL", "+exSTCWithFrame");
+      wxLogTrace("SY_CALL", "+wxExSTCWithFrame");
 
-      editor = new exSTCWithFrame(m_NotebookWithEditors,
+      editor = new wxExSTCWithFrame(m_NotebookWithEditors,
         filename.GetFullPath(),
         line_number,
         match,
         flags);
 
-      wxLogTrace("SY_CALL", "-exSTCWithFrame");
+      wxLogTrace("SY_CALL", "-wxExSTCWithFrame");
 
       m_NotebookWithEditors->AddPage(
         editor,

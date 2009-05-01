@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listitem.cpp
-* Purpose:       Implementation of class 'exListItemWithFileName'
+* Purpose:       Implementation of class 'wxExListItemWithFileName'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,10 +16,10 @@
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
-exListItemWithFileName::exListItemWithFileName(exListView* lv, const int itemnumber)
-  : exListItem(lv, itemnumber)
+wxExListItemWithFileName::wxExListItemWithFileName(wxExListView* lv, const int itemnumber)
+  : wxExListItem(lv, itemnumber)
   , m_Statistics(
-      (!GetColumnText(_("File Name"), false).empty() ? 
+      (!GetColumnText(_("File Name"), false).empty() ?
           GetColumnText(_("In Folder"), false) + wxFileName::GetPathSeparator() +
           GetColumnText(_("File Name"), false) : wxString(wxEmptyString))
       )
@@ -27,23 +27,23 @@ exListItemWithFileName::exListItemWithFileName(exListView* lv, const int itemnum
 {
 }
 
-exListItemWithFileName::exListItemWithFileName(
-  exListView* listview,
+wxExListItemWithFileName::wxExListItemWithFileName(
+  wxExListView* listview,
   const wxString& fullpath,
   const wxString& filespec)
-  : exListItem(listview, -1)
+  : wxExListItem(listview, -1)
   , m_Statistics(fullpath)
   , m_FileSpec(filespec)
 {
 }
 
-void exListItemWithFileName::Insert(long index)
+void wxExListItemWithFileName::Insert(long index)
 {
   SetId(index == -1 ? GetListView()->GetItemCount(): index);
   const long col = GetListView()->FindColumn(_("File Name"), false);
   const wxString filename = (
-    m_Statistics.FileExists() || m_Statistics.DirExists() ? 
-      m_Statistics.GetFullName(): 
+    m_Statistics.FileExists() || m_Statistics.DirExists() ?
+      m_Statistics.GetFullName():
       m_Statistics.GetFullPath());
 
   if (col == 0)
@@ -65,13 +65,13 @@ void exListItemWithFileName::Insert(long index)
   }
 }
 
-bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
+bool wxExListItemWithFileName::Run(const wxExTool& tool, wxExListViewFile* listview)
 {
-  exFrame::StatusText(m_Statistics.GetFullPath());
+  wxExFrame::StatusText(m_Statistics.GetFullPath());
 
   if (m_Statistics.FileExists())
   {
-    exTextFileWithReport file(m_Statistics);
+    wxExTextFileWithReport file(m_Statistics);
 
     if (file.RunTool(tool))
     {
@@ -91,7 +91,7 @@ bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
   }
   else
   {
-    exDirWithReport dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
+    wxExDirWithReport dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
 
     if (dir.FindFiles())
     {
@@ -112,7 +112,7 @@ bool exListItemWithFileName::Run(const exTool& tool, exListViewFile* listview)
   }
 }
 
-void exListItemWithFileName::Update()
+void wxExListItemWithFileName::Update()
 {
   // Update readonly state in listview item data.
   // SetData does not work, as list items are constructed/destructed a lot.
@@ -121,12 +121,12 @@ void exListItemWithFileName::Update()
   const int fontstyle = (m_Statistics.GetStat().IsReadOnly() ? wxFONTSTYLE_ITALIC: wxFONTSTYLE_NORMAL);
 
   wxFont font(
-    exApp::GetConfig(_("List Font") + "/Size", 10),
+    wxExApp::GetConfig(_("List Font") + "/Size", 10),
     wxFONTFAMILY_DEFAULT,
     fontstyle,
     wxFONTWEIGHT_NORMAL,
     false,
-    exApp::GetConfig(_("List Font") + "/Name", "courier new"));
+    wxExApp::GetConfig(_("List Font") + "/Name", "courier new"));
 
   SetFont(font);
   GetListView()->SetItem(*this);
@@ -153,7 +153,7 @@ void exListItemWithFileName::Update()
   }
 }
 
-void exListItemWithFileName::UpdateRevisionList(const exRCS& rcs)
+void wxExListItemWithFileName::UpdateRevisionList(const wxExRCS& rcs)
 {
   SetColumnText(_("Revision"), rcs.GetRevisionNumber());
   SetColumnText(_("Date"), rcs.GetRevisionTime().Format());

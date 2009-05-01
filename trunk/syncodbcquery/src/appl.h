@@ -24,7 +24,7 @@ enum
   ID_LAST,
 };
 
-class MyApp: public exApp
+class MyApp: public wxExApp
 {
 public:
   MyApp() {}
@@ -33,7 +33,7 @@ private:
   DECLARE_NO_COPY_CLASS(MyApp)
 };
 
-class MyFrame: public exFrameWithHistory
+class MyFrame: public wxExFrameWithHistory
 {
 public:
   MyFrame(const wxString& title);
@@ -44,17 +44,17 @@ protected:
 private:
   virtual void  ConfigDialogApplied(wxWindowID dialogid);
   virtual bool OpenFile(
-    const exFileName& filename,
+    const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
   void RunQuery(const wxString& query, bool empty_results = false);
   void RunQueries(const wxString& text);
   void UpdateStatistics(const wxStopWatch& sw, long rpc);
-  exSTCShell* m_Shell;
-  exSTCWithFrame* m_Query;
-  exGrid* m_Results;
-  exStatistics <long> m_Statistics;
+  wxExSTCShell* m_Shell;
+  wxExSTCWithFrame* m_Query;
+  wxExGrid* m_Results;
+  wxExStatistics <long> m_Statistics;
   otl_connect m_db;
   bool m_Running;
   bool m_Stopped;

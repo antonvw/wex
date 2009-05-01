@@ -18,23 +18,23 @@
 #include <wx/extension/configdialog.h>
 
 #if USE_OTL
-bool exOTLDialog(
-  exConfig* config,
+bool wxExOTLDialog(
+  wxExConfig* config,
   otl_connect* db,
   int max_items)
 {
-  std::vector<exConfigItem> v;
+  std::vector<wxExConfigItem> v;
 
-  v.push_back(exConfigItem(_("Datasource"),
+  v.push_back(wxExConfigItem(_("Datasource"),
     CONFIG_COMBOBOX,
     wxEmptyString, // page
     true,          // is_required
     max_items));
-  v.push_back(exConfigItem(_("User")));
-  v.push_back(exConfigItem(_("Password"), wxEmptyString, wxTE_PASSWORD));
+  v.push_back(wxExConfigItem(_("User")));
+  v.push_back(wxExConfigItem(_("Password"), wxEmptyString, wxTE_PASSWORD));
 
   // Always show the dialog.
-  if (exConfigDialog(wxTheApp->GetTopWindow(),
+  if (wxExConfigDialog(wxTheApp->GetTopWindow(),
     config,
     v,
     _("Open ODBC Database")).ShowModal() == wxID_CANCEL)
@@ -71,7 +71,7 @@ bool exOTLDialog(
 }
 
 #if wxUSE_GRID
-long exOTLQueryToGrid(
+long wxExOTLQueryToGrid(
   otl_connect* db,
   const wxString& query,
   wxGrid* grid,
@@ -81,8 +81,8 @@ long exOTLQueryToGrid(
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
-    1024, 
-    query.c_str(), 
+    1024,
+    query.c_str(),
     *db,
     otl_implicit_select);
 
@@ -164,7 +164,7 @@ long exOTLQueryToGrid(
 }
 #endif //wxUSE_GRID
 
-long exOTLQueryToSTC(
+long wxExOTLQueryToSTC(
   otl_connect* db,
   const wxString& query,
   wxStyledTextCtrl* stc,
@@ -173,7 +173,7 @@ long exOTLQueryToSTC(
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
-    1024, 
+    1024,
     query.c_str(),
     *db,
     otl_implicit_select);
@@ -221,7 +221,7 @@ long exOTLQueryToSTC(
       {
         // Ignore error.
         line += _("<Skipped>");
-        line += wxString::Format(" (%d, %d)", 
+        line += wxString::Format(" (%d, %d)",
           desc[n].otl_var_dbtype, desc[n].dbsize);
       }
 
@@ -248,7 +248,7 @@ long exOTLQueryToSTC(
   return rows;
 }
 
-const wxString exOTLVersion()
+const wxString wxExOTLVersion()
 {
   const long version = OTL_VERSION_NUMBER;
   return wxString::Format("OTL v%d.%d.%d",

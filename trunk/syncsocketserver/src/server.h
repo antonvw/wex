@@ -19,13 +19,13 @@
 class MyTaskBarIcon;
 #endif
 
-class MyApp : public exApp
+class MyApp : public wxExApp
 {
 public:
   virtual bool OnInit();
 };
 
-class MyFrame : public exFrameWithHistory
+class MyFrame : public wxExFrameWithHistory
 {
 public:
   MyFrame(const wxString& title);
@@ -41,15 +41,15 @@ protected:
 private:
   virtual void ConfigDialogApplied(wxWindowID dialogid);
   virtual bool OpenFile(
-    const exFileName& filename,
-    int line_number = 0, 
-    const wxString& match = wxEmptyString, 
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
     long flags = 0);
   virtual void StatusBarDoubleClicked(int field, const wxPoint& point);
 
   void LogConnection(
-    wxSocketBase* sock, 
-    bool accepted = true, 
+    wxSocketBase* sock,
+    bool accepted = true,
     bool show_clients = true);
   bool SetupSocketServer();
   void SocketCheckError(wxSocketBase* sock);
@@ -61,11 +61,11 @@ private:
 
   std::list<wxSocketBase*> m_Clients;
 
-  exSTCWithFrame* m_DataWindow;
-  exSTCWithFrame* m_LogWindow;
-  exSTCShell* m_Shell;
+  wxExSTCWithFrame* m_DataWindow;
+  wxExSTCWithFrame* m_LogWindow;
+  wxExSTCShell* m_Shell;
 
-  exStatistics < long > m_Statistics;
+  wxExStatistics < long > m_Statistics;
 
   wxSocketServer* m_SocketServer;
   wxTimer m_Timer;

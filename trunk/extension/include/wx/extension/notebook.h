@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          notebook.h
-* Purpose:       Declaration of class exNotebook
+* Purpose:       Declaration of class wxExNotebook
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -13,17 +13,17 @@
 #define _EXNOTEBOOK_H
 
 #include <wx/aui/auibook.h>
-#include <wx/extension/base.h> //for exManagedFrame
+#include <wx/extension/base.h> //for wxExManagedFrame
 
 #if wxUSE_GUI
 
-/// Offers a notebook with page mapping and interfaces with exManagedFrame.
-class exNotebook : public wxAuiNotebook
+/// Offers a notebook with page mapping and interfaces with wxExManagedFrame.
+class wxExNotebook : public wxAuiNotebook
 {
 public:
   /// Constructor.
-  exNotebook(wxWindow* parent,
-    exManagedFrame* frame, // NULL is allowed
+  wxExNotebook(wxWindow* parent,
+    wxExManagedFrame* frame, // NULL is allowed
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -43,7 +43,7 @@ public:
   bool DeletePage(const wxString& key);
 
   /// Do something for each page in the notebook.
-  /// The pages should all be castable to exSTC pages.
+  /// The pages should all be castable to wxExSTC pages.
   /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
   bool ForEach(int id);
 
@@ -76,7 +76,7 @@ protected:
 private:
   bool ErasePage(size_t n); // remove from the map
 
-  exManagedFrame* m_Frame;
+  wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
   std::map<wxString, wxWindow*> m_MapPages;
 

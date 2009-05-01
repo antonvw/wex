@@ -13,29 +13,29 @@
 #include <TestCaller.h>
 #include "test.h"
 
-void exTestFixture::setUp()
+void wxExTestFixture::setUp()
 {
-  m_Config = new exConfig("test.cfg", wxCONFIG_USE_LOCAL_FILE);
-  m_File = new exFile("test.h");
-  m_FileName = new exFileName("test.h");
-  m_FileNameStatistics = new exFileNameStatistics("test.h");
-  m_Lexer = new exLexer();
-  m_Lexers = new exLexers(exFileName("../../data/lexers.xml"));
-  m_RCS = new exRCS();
-  m_Stat = new exStat("test.h");
-  m_Statistics = new exStatistics<long>();
-  m_TextFile = new exTextFile(exFileName("test.h"), m_Config, m_Lexers);
-  m_Tool = new exTool(ID_TOOL_REPORT_COUNT);
+  m_Config = new wxExConfig("test.cfg", wxCONFIG_USE_LOCAL_FILE);
+  m_File = new wxExFile("test.h");
+  m_FileName = new wxExFileName("test.h");
+  m_FileNameStatistics = new wxExFileNameStatistics("test.h");
+  m_Lexer = new wxExLexer();
+  m_Lexers = new wxExLexers(wxExFileName("../../data/lexers.xml"));
+  m_RCS = new wxExRCS();
+  m_Stat = new wxExStat("test.h");
+  m_Statistics = new wxExStatistics<long>();
+  m_TextFile = new wxExTextFile(wxExFileName("test.h"), m_Config, m_Lexers);
+  m_Tool = new wxExTool(ID_TOOL_REPORT_COUNT);
 }
 
-void exTestFixture::testConstructors()
+void wxExTestFixture::testConstructors()
 {
   CPPUNIT_ASSERT(m_File != NULL);
 }
 
-void exTestFixture::testMethods()
+void wxExTestFixture::testMethods()
 {
-  // test exConfig
+  // test wxExConfig
   CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val");
   CPPUNIT_ASSERT(m_Config->Get("keylong", 12) == 12);
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", true));
@@ -51,7 +51,7 @@ void exTestFixture::testMethods()
   m_Config->Set("Author", "myauthor");
   CPPUNIT_ASSERT(m_Config->Get("Author", "yourauthor") == "myauthor");
 
-  // test exFile
+  // test wxExFile
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
   CPPUNIT_ASSERT(m_File->GetStat().GetFullPath() == m_File->GetFileName().GetFullPath());
   // The fullpath should be normalized, test it.
@@ -59,24 +59,24 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(!m_File->CheckSyncNeeded());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(m_File->FileOpen(exFileName("test.bin")));
+  CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName("test.bin")));
   wxString* buffer = m_File->Read();
   CPPUNIT_ASSERT(buffer != NULL);
   CPPUNIT_ASSERT(buffer->size() == 40);
   delete buffer;
 
-  // test exFileName
+  // test wxExFileName
   CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
   m_FileName->Assign("xxx");
   m_FileName->GetStat().Update("xxx");
   CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
 
-  // test exFileNameStatistics
+  // test wxExFileNameStatistics
   CPPUNIT_ASSERT(m_FileNameStatistics->Get().empty());
   CPPUNIT_ASSERT(m_FileNameStatistics->Get("xx") == 0);
 
-  // test exLexer
+  // test wxExLexer
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
   m_Lexer->SetKeywords("test11 test21:1 test31:1 test12:2 test22:2");
@@ -89,7 +89,7 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
 
-  // test exLexers
+  // test wxExLexers
   CPPUNIT_ASSERT(m_Lexers->Read());
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() == "cpp");
@@ -119,18 +119,18 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->MakeComment("test", "test").empty());
   CPPUNIT_ASSERT(m_Lexer->SetKeywords("hello:1"));
 
-  // test exRCS
+  // test wxExRCS
   CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
-  // test exStat
+  // test wxExStat
   CPPUNIT_ASSERT(!m_Stat->IsLink());
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
   CPPUNIT_ASSERT(m_Stat->Update("testlink"));
 //  CPPUNIT_ASSERT(m_Stat->IsLink());
 
-  // test exStatistics
+  // test wxExStatistics
   m_Statistics->Inc("test");
   CPPUNIT_ASSERT(m_Statistics->Get("test") == 1);
   m_Statistics->Inc("test");
@@ -144,7 +144,7 @@ void exTestFixture::testMethods()
   m_Statistics->Clear();
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
 
-  // test exTextFile
+  // test wxExTextFile
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_COUNT));
   CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
@@ -156,17 +156,17 @@ void exTestFixture::testMethods()
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_KEYWORD));
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
-  // test exTool
+  // test wxExTool
   CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
 
-  // test various exMethods
-  const wxString header = exHeader(m_TextFile->GetFileName(), m_Config, "test");
+  // test various wxExMethods
+  const wxString header = wxExHeader(m_TextFile->GetFileName(), m_Config, "test");
   CPPUNIT_ASSERT(header.Contains("test"));
 }
 
-void exTestFixture::testTiming()
+void wxExTestFixture::testTiming()
 {
-  exFile file("test.h");
+  wxExFile file("test.h");
 
   CPPUNIT_ASSERT(file.IsOpened());
 
@@ -199,18 +199,18 @@ void exTestFixture::testTiming()
   const long file_read = sw.Time();
 
   printf(
-    "exFile::Read:%ld wxFile::Read:%ld\n",
+    "wxExFile::Read:%ld wxFile::Read:%ld\n",
     exfile_read,
     file_read);
 }
 
-void exTestFixture::testTimingAttrib()
+void wxExTestFixture::testTimingAttrib()
 {
   const int max = 1000;
 
   wxStopWatch sw;
 
-  const exFileName exfile("test.h");
+  const wxExFileName exfile("test.h");
 
   int checked = 0;
 
@@ -233,12 +233,12 @@ void exTestFixture::testTimingAttrib()
   const long file_time = sw.Time();
 
   printf(
-    "exFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld\n",
+    "wxExFileName::IsReadOnly:%ld wxFileName::IsFileWritable:%ld\n",
     exfile_time,
     file_time);
 }
 
-void exTestFixture::testTimingConfig()
+void wxExTestFixture::testTimingConfig()
 {
   const int max = 100000;
 
@@ -261,36 +261,36 @@ void exTestFixture::testTimingConfig()
   const long config = sw.Time();
 
   printf(
-    "exConfig::Get:%ld wxConfig::Read:%ld\n",
+    "wxExConfig::Get:%ld wxConfig::Read:%ld\n",
     exconfig,
     config);
 }
 
-void exTestFixture::tearDown()
+void wxExTestFixture::tearDown()
 {
 }
 
-exTestSuite::exTestSuite()
+wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxextension test suite")
 {
   // Add the tests.
-  addTest(new CppUnit::TestCaller<exTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testConstructors",
-    &exTestFixture::testConstructors));
+    &wxExTestFixture::testConstructors));
 
-  addTest(new CppUnit::TestCaller<exTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testMethods",
-    &exTestFixture::testMethods));
+    &wxExTestFixture::testMethods));
 
-  addTest(new CppUnit::TestCaller<exTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testTiming",
-    &exTestFixture::testTiming));
+    &wxExTestFixture::testTiming));
 
-  addTest(new CppUnit::TestCaller<exTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testTimingAttrib",
-    &exTestFixture::testTimingAttrib));
+    &wxExTestFixture::testTimingAttrib));
 
-  addTest(new CppUnit::TestCaller<exTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testTimingConfig",
-    &exTestFixture::testTimingConfig));
+    &wxExTestFixture::testTimingConfig));
 }

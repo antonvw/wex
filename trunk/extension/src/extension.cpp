@@ -11,9 +11,9 @@
 
 #include <wx/extension/extension.h>
 
-const wxString exHeader(
-  const exFileName& filename,
-  exConfig* config,
+const wxString wxExHeader(
+  const wxExFileName& filename,
+  wxExConfig* config,
   const wxString& description)
 {
   wxString header;
@@ -34,7 +34,7 @@ const wxString exHeader(
     return wxEmptyString;
   }
 
-  const exLexer l = filename.GetLexer();
+  const wxExLexer l = filename.GetLexer();
 
   header << l.MakeComment(wxEmptyString, false) << "\n";
   header << l.MakeComment("File:       ", filename.GetFullName()) << "\n";
@@ -63,7 +63,7 @@ const wxString exHeader(
 
   header << "\n";
 
-  if (filename.GetExt() == "h" && 
+  if (filename.GetExt() == "h" &&
       filename.GetStat().st_size == 0)
   {
     wxString argument = "__" + filename.GetName() + "_h";
@@ -77,7 +77,7 @@ const wxString exHeader(
   return header;
 }
 
-void exOpenFile(const wxFileName& filename, long open_flags)
+void wxExOpenFile(const wxFileName& filename, long open_flags)
 {
   if (wxTheApp == NULL)
   {
@@ -85,10 +85,10 @@ void exOpenFile(const wxFileName& filename, long open_flags)
   }
 
   wxWindow* window = wxTheApp->GetTopWindow();
-  exFrame* frame = wxDynamicCast(window, exFrame);
+  wxExFrame* frame = wxDynamicCast(window, wxExFrame);
 
   if (frame != NULL)
   {
-    frame->OpenFile(exFileName(filename.GetFullPath()), -1, wxEmptyString, open_flags);
+    frame->OpenFile(wxExFileName(filename.GetFullPath()), -1, wxEmptyString, open_flags);
   }
 }

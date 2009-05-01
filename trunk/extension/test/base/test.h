@@ -19,19 +19,19 @@
 #include <wx/extension/textfile.h>
 
 /// CppUnit test suite.
-class exTestSuite : public CppUnit::TestSuite
+class wxExTestSuite : public CppUnit::TestSuite
 {
 public:
   /// Default constructor.
-  exTestSuite();
+  wxExTestSuite();
 };
 
 /// CppUnit base test fixture.
-class exTestFixture : public CppUnit::TestFixture
+class wxExTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  exTestFixture() : TestFixture() {
+  wxExTestFixture() : TestFixture() {
     m_Config = NULL;
     m_File = NULL;
     m_FileName = NULL;
@@ -46,7 +46,7 @@ public:
     };
 
   /// Destructor.
- ~exTestFixture() {
+ ~wxExTestFixture() {
     delete m_Config;
     delete m_File;
     delete m_FileName;
@@ -82,17 +82,17 @@ public:
   /// Test timing of methods.
   void testTimingConfig();
 private:
-  exConfig* m_Config; ///< testing exConfig
-  exFile* m_File; ///< testing exFile
-  exFileName* m_FileName; ///< testing exFileName
-  exFileNameStatistics* m_FileNameStatistics; ///< testing exFileNameStatistics
-  exLexer* m_Lexer; ///< testing exLexer
-  exLexers* m_Lexers; ///< testing exLexers
-  exRCS* m_RCS; ///< testing exRCS
-  exStat* m_Stat; ///< testing exStat
-  exStatistics<long>* m_Statistics; ///< testing exStatstics
-  exTextFile* m_TextFile; ///< testing exTextFile
-  exTool* m_Tool; ///< testing exTool
+  wxExConfig* m_Config; ///< testing wxExConfig
+  wxExFile* m_File; ///< testing wxExFile
+  wxExFileName* m_FileName; ///< testing wxExFileName
+  wxExFileNameStatistics* m_FileNameStatistics; ///< testing wxExFileNameStatistics
+  wxExLexer* m_Lexer; ///< testing wxExLexer
+  wxExLexers* m_Lexers; ///< testing wxExLexers
+  wxExRCS* m_RCS; ///< testing wxExRCS
+  wxExStat* m_Stat; ///< testing wxExStat
+  wxExStatistics<long>* m_Statistics; ///< testing wxExStatstics
+  wxExTextFile* m_TextFile; ///< testing wxExTextFile
+  wxExTool* m_Tool; ///< testing wxExTool
 };
 
 #endif

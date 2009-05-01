@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.h
-* Purpose:       Declaration of exListView and related classes
+* Purpose:       Declaration of wxExListView and related classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,15 +15,15 @@
 #include <vector>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
-#include <wx/extension/base.h> // for exInterface
+#include <wx/extension/base.h> // for wxExInterface
 
 #if wxUSE_GUI
-class exListItem;
-class exListView;
+class wxExListItem;
+class wxExListView;
 
 /*! \file */
 /// Sort types.
-enum exSortType
+enum wxExSortType
 {
   SORT_KEEP = 1,   ///< keep current order, just resort
   SORT_ASCENDING,  ///< sort ascending
@@ -32,13 +32,13 @@ enum exSortType
 };
 
 /// Offers a column to be used in a wxListCtrl. Facilitates sorting.
-class exColumn : public wxListItem
+class wxExColumn : public wxListItem
 {
-  friend class exListView;
+  friend class wxExListView;
 
 public:
   /// Column types.
-  enum exColumnType
+  enum wxExColumnType
   {
     COL_INT = 1, ///< integer, should be different from 0, as inverse is used by sorting!
     COL_DATE,    ///< date
@@ -48,7 +48,7 @@ public:
 
   /// Assignment operator.
   /// Visual Studio needs this, though gcc does not.
-  exColumn& operator=(const exColumn& p)
+  wxExColumn& operator=(const wxExColumn& p)
   {
     m_Type = p.m_Type;
     m_ColumnNo = p.m_ColumnNo;
@@ -63,12 +63,12 @@ public:
   bool GetIsSortedAscending() const {return m_IsSortedAscending;}
 
   /// Gets the column type.
-  exColumnType GetType() const {return m_Type;}
+  wxExColumnType GetType() const {return m_Type;}
 
   /// Sets the sort ascending member.
-  void SetIsSortedAscending(exSortType type);
+  void SetIsSortedAscending(wxExSortType type);
 private:
-  exColumnType m_Type;
+  wxExColumnType m_Type;
   long m_ColumnNo;
   bool m_IsSortedAscending;
 };
@@ -76,9 +76,9 @@ private:
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
 /// Small images have size 16,16 and large images size 32,32.
-class exListView : public wxListView, public exInterface
+class wxExListView : public wxListView, public wxExInterface
 {
-  friend class exListItem;
+  friend class wxExListItem;
 public:
   /// Which images to use.
   enum
@@ -90,7 +90,7 @@ public:
   };
 
   /// Constructor.
-  exListView(wxWindow* parent,
+  wxExListView(wxWindow* parent,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -99,7 +99,7 @@ public:
     int image_type = IMAGE_ART);
 
   /// Destructor.
-  virtual ~exListView();
+  virtual ~wxExListView();
 
   // Interface.
   /// Implement this one if you have images that might be changed after sorting etc.
@@ -114,7 +114,7 @@ public:
   unsigned int GetArtID(wxArtID artid);
 
   /// Gets the specified column.
-  const exColumn GetColumn(int column_no) const;
+  const wxExColumn GetColumn(int column_no) const;
 
   /// Gets the field separator.
   const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
@@ -129,7 +129,7 @@ public:
   /// If you specify a width, that one is used.
   void InsertColumn(
     const wxString& name,
-    exColumn::exColumnType type = exColumn::COL_INT,
+    wxExColumn::wxExColumnType type = wxExColumn::COL_INT,
     int width = 0);
 
   /// Sorts on a column.
@@ -137,7 +137,7 @@ public:
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
   /// it is sorted ascending or descending.
   /// By using wxArtProvider CreateBitmap you can override this image to provide your own one.
-  void SortColumn(int column_no, exSortType sort_method = SORT_TOGGLE);
+  void SortColumn(int column_no, wxExSortType sort_method = SORT_TOGGLE);
 
   /// Updates pane items field on the statusbar.
   void UpdateStatusBar();
@@ -152,11 +152,11 @@ protected:
   /// Copies this item (all columns) to text.
   virtual const wxString ItemToText(int item_number);
 
-  /// Interface from exInterface.
+  /// Interface from wxExInterface.
   virtual bool FindNext(const wxString& text, bool find_next = true);
 
   /// Builds the popup menu.
-  void BuildPopupMenu(exMenu& menu);
+  void BuildPopupMenu(wxExMenu& menu);
 
   /// Clears all items.
   void EditClearAll();
@@ -179,7 +179,7 @@ protected:
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
-  // Interface, for exInterface overriden methods.
+  // Interface, for wxExInterface overriden methods.
   virtual const wxString BuildPage();
 
   void CopySelectedItemsToClipboard();
@@ -199,21 +199,21 @@ private:
 
   std::map<wxArtID, unsigned int> m_ArtIDs;
   // Do not make a const of it, does not compile on Linux.
-  std::vector<exColumn> m_Columns;
-  std::vector<exListItem*> m_Items;
+  std::vector<wxExColumn> m_Columns;
+  std::vector<wxExListItem*> m_Items;
 
   DECLARE_EVENT_TABLE()
 };
 
-/// Offers an item on an exListView.
-class exListItem: public wxListItem
+/// Offers an item on an wxExListView.
+class wxExListItem: public wxListItem
 {
 public:
   /// Constructor, sets the text for item at the end of the listview.
-  exListItem(exListView* lv, const wxString& text);
+  wxExListItem(wxExListView* lv, const wxString& text);
 
   /// Constructor, sets the id.
-  exListItem(exListView* lv, const int id);
+  wxExListItem(wxExListView* lv, const int id);
 
   /// Inserts the item on the list.
   long Insert() {
@@ -229,7 +229,7 @@ public:
     return GetColumnText(m_ListView->FindColumn(col_name, is_required));};
 
   /// Gets the list view.
-  exListView* GetListView() {return m_ListView;};
+  wxExListView* GetListView() {return m_ListView;};
 
   /// Sets background colour for this item.
   bool SetBackgroundColour(const wxColour& colour);
@@ -247,7 +247,7 @@ public:
   /// Sets the image for this item, using the image list from list view.
   /// If the listview does not already contain the image, it is added.
   void SetImage(wxArtID artid) {
-    if (m_ListView->m_ImageType == exListView::IMAGE_ART)
+    if (m_ListView->m_ImageType == wxExListView::IMAGE_ART)
       return StoreImage(m_ListView->GetArtID(artid));
     else
        wxFAIL;
@@ -255,7 +255,7 @@ public:
 
   /// Sets the file icon image for this item.
   void SetImage(int iconid) {
-    if (m_ListView->m_ImageType == exListView::IMAGE_FILE_ICON)
+    if (m_ListView->m_ImageType == wxExListView::IMAGE_FILE_ICON)
       return StoreImage(iconid);
     else
        wxFAIL;
@@ -263,7 +263,7 @@ public:
 private:
   void StoreImage(int image);
 
-  exListView* m_ListView; // cannot be a wxListCtrl, as FindColumn is used from exListView
+  wxExListView* m_ListView; // cannot be a wxListCtrl, as FindColumn is used from wxExListView
 };
 #endif // wx_USE_GUI
 #endif

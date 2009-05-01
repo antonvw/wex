@@ -12,11 +12,11 @@
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
-#include <wx/extension/util.h> // for exGetWord
+#include <wx/extension/util.h> // for wxExGetWord
 
 using namespace std;
 
-const wxString exLexer::GetKeywordsString(int keyword_set) const
+const wxString wxExLexer::GetKeywordsString(int keyword_set) const
 {
   wxString keywords;
 
@@ -55,7 +55,7 @@ const wxString exLexer::GetKeywordsString(int keyword_set) const
   return keywords;
 }
 
-const wxString exLexer::GetFormattedText(
+const wxString wxExLexer::GetFormattedText(
   const wxString& lines,
   const wxString& header,
   bool fill_out_with_space,
@@ -91,7 +91,7 @@ const wxString exLexer::GetFormattedText(
   return out;
 }
 
-const wxString exLexer::GetUnFormattedText(
+const wxString wxExLexer::GetUnFormattedText(
   const wxString& lines,
   const wxString& header,
   bool fill_out_with_space,
@@ -110,7 +110,7 @@ const wxString exLexer::GetUnFormattedText(
 
   while (!in.empty())
   {
-    const wxString word = exGetWord(in, false, false);
+    const wxString word = wxExGetWord(in, false, false);
 
     if (line.size() + 1 + word.size() > line_length)
     {
@@ -130,13 +130,13 @@ const wxString exLexer::GetUnFormattedText(
   return out;
 }
 
-bool exLexer::IsKeyword(const wxString& word) const
+bool wxExLexer::IsKeyword(const wxString& word) const
 {
   set<wxString>::const_iterator it = m_Keywords.find(word);
   return (it != m_Keywords.end());
 }
 
-bool exLexer::KeywordStartsWith(const wxString& word) const
+bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
   for (
     set<wxString>::const_iterator it = m_Keywords.begin();
@@ -152,7 +152,7 @@ bool exLexer::KeywordStartsWith(const wxString& word) const
   return false;
 }
 
-const wxString exLexer::MakeComment(
+const wxString wxExLexer::MakeComment(
   const wxString& text,
   bool fill_out_with_space,
   bool fill_out) const
@@ -166,7 +166,7 @@ const wxString exLexer::MakeComment(
   return out;
 }
 
-const wxString exLexer::MakeComment(
+const wxString wxExLexer::MakeComment(
   const wxString& prefix,
   const wxString& text) const
 {
@@ -179,7 +179,7 @@ const wxString exLexer::MakeComment(
   return out;
 }
 
-const wxString exLexer::MakeSingleLineComment(
+const wxString wxExLexer::MakeSingleLineComment(
   const wxString& text,
   bool fill_out_with_space,
   bool fill_out) const
@@ -189,11 +189,11 @@ const wxString exLexer::MakeSingleLineComment(
     wxLogError(_("No comments available for this lexer, cannot make comment"));
     return wxEmptyString;
   }
-  
+
   // First set the fill_out_character.
   wxChar fill_out_character;
 
-  if (fill_out_with_space)  
+  if (fill_out_with_space)
   {
     fill_out_character = ' ';
   }
@@ -227,7 +227,7 @@ const wxString exLexer::MakeSingleLineComment(
   return out;
 }
 
-bool exLexer::SetKeywords(const wxString& value)
+bool wxExLexer::SetKeywords(const wxString& value)
 {
   set<wxString> keywords_set;
 
@@ -280,7 +280,7 @@ bool exLexer::SetKeywords(const wxString& value)
   return true;
 }
 
-int exLexer::UsableCharactersPerLine() const
+int wxExLexer::UsableCharactersPerLine() const
 {
   // We always use lines with 80 characters. We adjust this here for
   // the space the beginning and end of the comment characters occupy.

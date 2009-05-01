@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.cpp
-* Purpose:       Implementation of class 'exTextFileWithReport'
+* Purpose:       Implementation of class 'wxExTextFileWithReport'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,13 +16,13 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
-exListViewFile* exTextFileWithReport::m_Report = NULL;
-exFrameWithHistory* exTextFileWithReport::m_Frame = NULL;
+wxExListViewFile* wxExTextFileWithReport::m_Report = NULL;
+wxExFrameWithHistory* wxExTextFileWithReport::m_Frame = NULL;
 
 void SetItemColumnStatistics(
-  exListItemWithFileName& item,
+  wxExListItemWithFileName& item,
   const wxString& col,
-  exStatistics<long>& stat)
+  wxExStatistics<long>& stat)
 {
   item.SetColumnText(
     col,
@@ -30,12 +30,12 @@ void SetItemColumnStatistics(
 }
 
 #if USE_EMBEDDED_SQL
-otl_connect exTextFileWithReport::m_db;
+otl_connect wxExTextFileWithReport::m_db;
 
 class Recordset
 {
 public:
-  Recordset(otl_connect* db, exTextFile* file)
+  Recordset(otl_connect* db, wxExTextFile* file)
     : m_db(db)
     , m_TextFile(file)
     , m_Records(0){}
@@ -46,14 +46,14 @@ private:
   void UpdateTextFileFromQuery();
   otl_connect* m_db;
   otl_stream m_stream;
-  exTextFile* m_TextFile;
+  wxExTextFile* m_TextFile;
   wxString m_Query;
   int m_Records;
 };
 #endif
 
-exTextFileWithReport::exTextFileWithReport(const exFileName& filename)
-  : exTextFile(filename, exApp::GetConfig(), exApp::GetLexers())
+wxExTextFileWithReport::wxExTextFileWithReport(const wxExFileName& filename)
+  : wxExTextFile(filename, wxExApp::GetConfig(), wxExApp::GetLexers())
 #if USE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
 #endif
@@ -61,14 +61,14 @@ exTextFileWithReport::exTextFileWithReport(const exFileName& filename)
 }
 
 #if USE_EMBEDDED_SQL
-void exTextFileWithReport::CleanUp()
+void wxExTextFileWithReport::CleanUp()
 {
   m_db.logoff();
 }
 #endif
 
 #if USE_EMBEDDED_SQL
-bool exTextFileWithReport::ParseComments()
+bool wxExTextFileWithReport::ParseComments()
 {
   if (GetTool().GetId() == ID_TOOL_SQL || GetTool().GetId() == ID_TOOL_REPORT_SQL)
   {
@@ -111,12 +111,12 @@ bool exTextFileWithReport::ParseComments()
     }
   }
 
-  return exTextFile::ParseComments();
+  return wxExTextFile::ParseComments();
 }
 #endif
 
 #if USE_EMBEDDED_SQL
-bool exTextFileWithReport::ParseSQL()
+bool wxExTextFileWithReport::ParseSQL()
 {
 /*
  ; SQL # ..
@@ -143,8 +143,8 @@ bool exTextFileWithReport::ParseSQL()
       return false;
     }
 
-    exApp::Log(
-      _("File") + ": " + GetFileName().GetFullName() + " Query: " + exSkipWhiteSpace(m_SQLQuery));
+    wxExApp::Log(
+      _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
     Recordset rs(&m_db, this);
     if (!rs.ExecQuery(m_SQLQuery))
@@ -153,8 +153,8 @@ bool exTextFileWithReport::ParseSQL()
     }
 
     const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
-    exApp::Log(msg);
-    exFrame::StatusText(msg);
+    wxExApp::Log(msg);
+    wxExFrame::StatusText(msg);
   }
 
   // Test for SQL end statement.
@@ -172,7 +172,7 @@ bool exTextFileWithReport::ParseSQL()
 
   if (m_SQLResultsParsing)
   {
-    wxLogError("Missing SQL END after query: " + exSkipWhiteSpace(m_SQLQuery));
+    wxLogError("Missing SQL END after query: " + wxExSkipWhiteSpace(m_SQLQuery));
     return false;
   }
 
@@ -193,9 +193,9 @@ bool exTextFileWithReport::ParseSQL()
 }
 #endif
 
-void exTextFileWithReport::Report()
+void wxExTextFileWithReport::Report()
 {
-  exListItemWithFileName item(m_Report, GetFileName().GetFullPath());
+  wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
   const int line = (GetTool().GetId() == ID_TOOL_REPORT_REVISION ?
@@ -207,10 +207,10 @@ void exTextFileWithReport::Report()
   switch (GetTool().GetId())
   {
   case ID_TOOL_REPORT_REPLACE:
-    item.SetColumnText(_("Replaced"), exApp::GetConfig()->GetFindReplaceData()->GetReplaceString());
+    item.SetColumnText(_("Replaced"), wxExApp::GetConfig()->GetFindReplaceData()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
     item.SetColumnText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
-    item.SetColumnText(_("Match"), exApp::GetConfig()->GetFindReplaceData()->GetFindString());
+    item.SetColumnText(_("Match"), wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
   break;
 
   case ID_TOOL_REPORT_REVISION:
@@ -228,22 +228,22 @@ void exTextFileWithReport::Report()
   }
 }
 
-void exTextFileWithReport::ReportStatistics()
+void wxExTextFileWithReport::ReportStatistics()
 {
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
     m_Report = m_Frame->Activate(
-      exListViewFile::GetTypeTool(GetTool()),
+      wxExListViewFile::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());
 
     if (m_Report == NULL)
     {
-      wxLogError("Report: %d is not activated", exListViewFile::GetTypeTool(GetTool()));
+      wxLogError("Report: %d is not activated", wxExListViewFile::GetTypeTool(GetTool()));
       return;
     }
   }
 
-  exListItemWithFileName item(m_Report, GetFileName().GetFullPath());
+  wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
   switch (GetTool().GetId())
@@ -278,7 +278,7 @@ void exTextFileWithReport::ReportStatistics()
 }
 
 #if USE_EMBEDDED_SQL
-bool exTextFileWithReport::SetSQLQuery()
+bool wxExTextFileWithReport::SetSQLQuery()
 {
   const size_t pos_start_of_query = GetComments().find('#');
   const size_t pos_end_of_query = GetComments().rfind('#');
@@ -300,7 +300,7 @@ bool exTextFileWithReport::SetSQLQuery()
 }
 #endif
 
-bool exTextFileWithReport::SetupTool(const exTool& tool)
+bool wxExTextFileWithReport::SetupTool(const wxExTool& tool)
 {
 #if USE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
@@ -310,7 +310,7 @@ bool exTextFileWithReport::SetupTool(const exTool& tool)
       m_db.logoff();
     }
 
-    if (!exOTLDialog(exApp::GetConfig(), &m_db))
+    if (!wxExOTLDialog(wxExApp::GetConfig(), &m_db))
     {
       return false;
     }
@@ -320,21 +320,21 @@ bool exTextFileWithReport::SetupTool(const exTool& tool)
   if (tool.IsReportType())
   {
     wxWindow* window = wxTheApp->GetTopWindow();
-    m_Frame = wxDynamicCast(window, exFrameWithHistory);
+    m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
 
     if (m_Frame == NULL)
     {
-      wxLogError("Cannot setup tool for exTextFileWithReport without exFrameWithHistory");
+      wxLogError("Cannot setup tool for wxExTextFileWithReport without wxExFrameWithHistory");
       return false;
     }
 
     if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      m_Report = m_Frame->Activate(exListViewFile::GetTypeTool(tool));
+      m_Report = m_Frame->Activate(wxExListViewFile::GetTypeTool(tool));
 
       if (m_Report == NULL)
       {
-        wxLogError("Report: %d is not activated", exListViewFile::GetTypeTool(tool));
+        wxLogError("Report: %d is not activated", wxExListViewFile::GetTypeTool(tool));
         return false;
       }
     }
@@ -366,7 +366,7 @@ bool Recordset::ExecQuery(const wxString& query)
       _("ODBC Error") + ":",
       p.msg,
       wxOK | wxCENTRE | wxTE_MULTILINE | wxRESIZE_BORDER).ShowModal();
-    exApp::Log(p.msg);
+    wxExApp::Log(p.msg);
     return false;
   }
 }
@@ -375,7 +375,7 @@ void Recordset::UpdateTextFileFromQuery()
 {
   m_TextFile->GoToLine(m_TextFile->GetCurrentLine() + 1);
   m_TextFile->WriteComment(QueryRunTimeText() + wxDateTime::Now().Format(EX_TIMESTAMP_FORMAT));
-  m_TextFile->WriteComment("USING ODBC DATABASE: " + exApp::GetConfig(_("Datasource")));
+  m_TextFile->WriteComment("USING ODBC DATABASE: " + wxExApp::GetConfig(_("Datasource")));
 
   // Get columns.
   int desc_len;

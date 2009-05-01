@@ -14,22 +14,22 @@
 #include <cppunit/TestRunner.h>
 #include "test.h"
 
-IMPLEMENT_APP(exTestApp)
+IMPLEMENT_APP(wxExTestApp)
 
-bool exTestApp::OnInit()
+bool wxExTestApp::OnInit()
 {
-  SetAppName("exTestApp");
+  SetAppName("wxExTestApp");
 
-  exApp::OnInit();
+  wxExApp::OnInit();
 
-  exFrame *frame = new exFrame(NULL, wxID_ANY, "exTestApp");
+  wxExFrame *frame = new wxExFrame(NULL, wxID_ANY, "wxExTestApp");
   frame->Show(true);
 
   SetTopWindow(frame);
 
   CppUnit::TextUi::TestRunner runner;
 
-  exTestSuite* suite = new exTestSuite;
+  wxExTestSuite* suite = new wxExTestSuite;
 
   runner.addTest(suite);
   runner.run();

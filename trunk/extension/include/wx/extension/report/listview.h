@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.h
-* Purpose:       Declaration of class 'exListViewFile'
+* Purpose:       Declaration of class 'wxExListViewFile'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,12 +15,12 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 
-class exFrameWithHistory;
-class exProcessWithListView;
+class wxExFrameWithHistory;
+class wxExProcessWithListView;
 
-/// Combines exListView and exFile, giving you a list control with file
+/// Combines wxExListView and wxExFile, giving you a list control with file
 /// synchronization support. Further it adds processing support.
-class exListViewFile : public exListView, public exFile
+class wxExListViewFile : public wxExListView, public wxExFile
 {
 public:
   /// The supported lists.
@@ -52,17 +52,17 @@ public:
   };
 
   /// Constructor.
-  exListViewFile(wxWindow* parent,
+  wxExListViewFile(wxWindow* parent,
     ListType type,
     long menu_flags = LIST_MENU_DEFAULT,
-    const exLexer* lexer = NULL,
+    const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator);
 
   /// Constructor for a LIST_PROJECT, opens the file.
-  exListViewFile(wxWindow* parent,
+  wxExListViewFile(wxWindow* parent,
     const wxString& file,
     const wxString& wildcard,
     long menu_flags = LIST_MENU_DEFAULT,
@@ -76,21 +76,21 @@ public:
   virtual const wxString PrintHeader() const;
 
   /// Invokes FileNew and clears the list.
-  virtual bool FileNew(const exFileName& filename = exFileName());
+  virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Opens the file and gets all data as list items.
-  virtual bool FileOpen(const exFileName& filename);
+  virtual bool FileOpen(const wxExFileName& filename);
 
   /// Saves list items to file.
   virtual bool FileSave();
-  
+
   /// Returns member.
   virtual bool GetContentsChanged() {return m_ContentsChanged;};
 
   /// Resets the member.
   virtual void ResetContentsChanged() {m_ContentsChanged = false;};
 
-  // Interface, for exListView overriden methods.
+  // Interface, for wxExListView overriden methods.
   /// Sets contents changed if we are not syncing.
   virtual void AfterSorting();
 
@@ -104,7 +104,7 @@ public:
   /// Returns colunm text for specified item.
   virtual const wxString ItemToText(int item_number);
 
-  // Called by exFrameWithHistory::OnClose. Not for doxygen.
+  // Called by wxExFrameWithHistory::OnClose. Not for doxygen.
   static void CleanUp();
 
   /// Gets the list type.
@@ -117,7 +117,7 @@ public:
   static const wxString GetTypeDescription(ListType type);
 
   /// Returns list type from tool id.
-  static int GetTypeTool(const exTool& tool);
+  static int GetTypeTool(const wxExTool& tool);
 
   /// Returns true if a process is running.
   static bool ProcessIsRunning();
@@ -129,7 +129,7 @@ public:
   /// Stops all the processes.
   static void ProcessStop();
 protected:
-  void BuildPopupMenu(exMenu& menu);
+  void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
@@ -138,16 +138,16 @@ private:
   int AddItems();
   void DeleteDoubles();
   const wxString GetFindInCaption(int id); // cannot be const
-  void Initialize(const exLexer* lexer);
+  void Initialize(const wxExLexer* lexer);
   bool ItemOpenFile(int item_number);
-  void RunItems(const exTool& tool);
+  void RunItems(const wxExTool& tool);
 
-  static exProcessWithListView* m_Process;
+  static wxExProcessWithListView* m_Process;
 
   bool m_ContentsChanged;
   bool m_ItemUpdated;
   int m_ItemNumber;
-  exFrameWithHistory* m_Frame;
+  wxExFrameWithHistory* m_Frame;
   const long m_MenuFlags;
   const ListType m_Type;
 

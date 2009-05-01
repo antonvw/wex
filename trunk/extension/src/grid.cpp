@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          grid.cpp
-* Purpose:       Implementation of exGrid class
+* Purpose:       Implementation of wxExGrid class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,22 +18,22 @@
 #if wxUSE_GRID
 #if wxUSE_DRAG_AND_DROP
 // A support class for implementing drag/drop on a grid.
-class exTextDropTarget : public wxTextDropTarget
+class wxExTextDropTarget : public wxTextDropTarget
 {
 public:
-  exTextDropTarget(exGrid* grid);
+  wxExTextDropTarget(wxExGrid* grid);
 private:
   virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
-  exGrid* m_Grid;
+  wxExGrid* m_Grid;
 };
 
-exTextDropTarget::exTextDropTarget(exGrid* grid)
+wxExTextDropTarget::wxExTextDropTarget(wxExGrid* grid)
   : wxTextDropTarget()
   , m_Grid(grid)
 {
 }
 
-bool exTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+bool wxExTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 {
   const int row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
   const int col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
@@ -54,31 +54,31 @@ bool exTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 }
 #endif // wxUSE_DRAG_AND_DROP
 
-BEGIN_EVENT_TABLE(exGrid, wxGrid)
-  EVT_FIND(wxID_ANY, exGrid::OnFindDialog)
-  EVT_FIND_CLOSE(wxID_ANY, exGrid::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, exGrid::OnFindDialog)
-  EVT_GRID_CELL_LEFT_CLICK(exGrid::OnGrid)
-  EVT_GRID_CELL_RIGHT_CLICK(exGrid::OnGrid)
-  EVT_GRID_CELL_BEGIN_DRAG(exGrid::OnGrid)
-  EVT_GRID_SELECT_CELL(exGrid::OnGrid)
-  EVT_GRID_RANGE_SELECT(exGrid::OnGridRange)
-  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exGrid::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, exGrid::OnCommand)
-  EVT_MOUSE_EVENTS(exGrid::OnMouse)
+BEGIN_EVENT_TABLE(wxExGrid, wxGrid)
+  EVT_FIND(wxID_ANY, wxExGrid::OnFindDialog)
+  EVT_FIND_CLOSE(wxID_ANY, wxExGrid::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExGrid::OnFindDialog)
+  EVT_GRID_CELL_LEFT_CLICK(wxExGrid::OnGrid)
+  EVT_GRID_CELL_RIGHT_CLICK(wxExGrid::OnGrid)
+  EVT_GRID_CELL_BEGIN_DRAG(wxExGrid::OnGrid)
+  EVT_GRID_SELECT_CELL(wxExGrid::OnGrid)
+  EVT_GRID_RANGE_SELECT(wxExGrid::OnGridRange)
+  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, wxExGrid::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, wxExGrid::OnCommand)
+  EVT_MOUSE_EVENTS(wxExGrid::OnMouse)
 END_EVENT_TABLE()
 
-exGrid::exGrid(wxWindow* parent,
+wxExGrid::wxExGrid(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
   : wxGrid(parent, id, pos, size, style, name)
-  , exInterface()
+  , wxExInterface()
 {
 #if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new exTextDropTarget(this));
+  SetDropTarget(new wxExTextDropTarget(this));
   m_UseDragAndDrop = true;
 #endif
 
@@ -91,11 +91,11 @@ exGrid::exGrid(wxWindow* parent,
   SetAcceleratorTable(accel);
 }
 
-const wxString exGrid::BuildPage()
+const wxString wxExGrid::BuildPage()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  exApp::GetPrinter()->SetFooter(PrintFooter());
-  exApp::GetPrinter()->SetHeader(PrintHeader());
+  wxExApp::GetPrinter()->SetFooter(PrintFooter());
+  wxExApp::GetPrinter()->SetHeader(PrintHeader());
 #endif
 
   wxString text;
@@ -106,7 +106,7 @@ const wxString exGrid::BuildPage()
     text << "border=1";
   else
     text << "border=0";
-    
+
   text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
 
   text << "<tr>" << wxTextFile::GetEOL();
@@ -136,26 +136,26 @@ const wxString exGrid::BuildPage()
 
   // This can be useful for testing, paste in a file and
   // check in your browser (there indeed rules are okay).
-  // exClipboardAdd(text);
+  // wxExClipboardAdd(text);
 
   return text;
 }
 
-void exGrid::BuildPopupMenu(exMenu& menu)
+void wxExGrid::BuildPopupMenu(wxExMenu& menu)
 {
   menu.Append(wxID_FIND);
   menu.AppendSeparator();
   menu.AppendEdit();
 }
 
-bool exGrid::CopySelectedCellsToClipboard()
+bool wxExGrid::CopySelectedCellsToClipboard()
 {
   wxBusyCursor wait;
-  return exClipboardAdd(GetSelectedCellsValue());
+  return wxExClipboardAdd(GetSelectedCellsValue());
 }
 
 #if wxUSE_DRAG_AND_DROP
-bool exGrid::DropSelection(const wxGridCellCoords& drop_coords, const wxString& data)
+bool wxExGrid::DropSelection(const wxGridCellCoords& drop_coords, const wxString& data)
 {
   SetCellsValue(drop_coords, data);
 
@@ -163,7 +163,7 @@ bool exGrid::DropSelection(const wxGridCellCoords& drop_coords, const wxString& 
 }
 #endif
 
-void exGrid::EmptySelection()
+void wxExGrid::EmptySelection()
 {
   wxBusyCursor wait;
 
@@ -179,7 +179,7 @@ void exGrid::EmptySelection()
   }
 }
 
-void exGrid::FindDialog(wxWindow* parent, const wxString& caption)
+void wxExGrid::FindDialog(wxWindow* parent, const wxString& caption)
 {
   if (IsSelection())
   {
@@ -192,14 +192,14 @@ void exGrid::FindDialog(wxWindow* parent, const wxString& caption)
     // Only if we have one cell, so one EOL.
     if (tkz.CountTokens() == 1)
     {
-      exApp::GetConfig()->GetFindReplaceData()->SetFindString(tkz.GetNextToken());
+      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(tkz.GetNextToken());
     }
   }
 
-  exInterface::FindDialog(parent, caption);
+  wxExInterface::FindDialog(parent, caption);
 }
 
-bool exGrid::FindNext(const wxString& text, bool find_next)
+bool wxExGrid::FindNext(const wxString& text, bool find_next)
 {
   if (text.empty())
   {
@@ -215,7 +215,7 @@ bool exGrid::FindNext(const wxString& text, bool find_next)
 
   wxString text_use = text;
 
-  if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
+  if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
   {
     text_use.MakeUpper();
   }
@@ -269,12 +269,12 @@ bool exGrid::FindNext(const wxString& text, bool find_next)
     {
       wxString text = GetCellValue(i, j);
 
-      if (!exApp::GetConfig()->GetFindReplaceData()->MatchCase())
+      if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
       {
         text.MakeUpper();
       }
 
-      if (exApp::GetConfig()->GetFindReplaceData()->MatchWord())
+      if (wxExApp::GetConfig()->GetFindReplaceData()->MatchWord())
       {
         if (text == text_use)
         {
@@ -304,7 +304,7 @@ bool exGrid::FindNext(const wxString& text, bool find_next)
   }
 }
 
-const wxString exGrid::GetSelectedCellsValue()
+const wxString wxExGrid::GetSelectedCellsValue()
 {
   // This does not work, only filled in for singly selected cells.
   // wxGridCellCoordsArray cells = GetSelectedCells();
@@ -339,14 +339,14 @@ const wxString exGrid::GetSelectedCellsValue()
 }
 
 #if wxUSE_DRAG_AND_DROP
-bool exGrid::IsAllowedDragSelection()
+bool wxExGrid::IsAllowedDragSelection()
 {
   return true;
 }
 #endif
 
 #if wxUSE_DRAG_AND_DROP
-bool exGrid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const wxString& data)
+bool wxExGrid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const wxString& data)
 {
   wxStringTokenizer tkz(data, wxTextFile::GetEOL());
 
@@ -385,7 +385,7 @@ bool exGrid::IsAllowedDropSelection(const wxGridCellCoords& drop_coords, const w
 }
 #endif
 
-void exGrid::OnCommand(wxCommandEvent& event)
+void wxExGrid::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
@@ -395,26 +395,26 @@ void exGrid::OnCommand(wxCommandEvent& event)
   case wxID_FIND: FindDialog(this); break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;
   case wxID_SELECTALL: SelectAll(); break;
-  case ID_EDIT_FIND_NEXT: FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString()); break;
-  case ID_EDIT_FIND_PREVIOUS: FindNext(exApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); break;
+  case ID_EDIT_FIND_NEXT: FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); break;
+  case ID_EDIT_FIND_PREVIOUS: FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); break;
   case ID_EDIT_SELECT_NONE: ClearSelection(); break;
   default: wxFAIL;
   }
 }
 
-void exGrid::OnFindDialog(wxFindDialogEvent& event)
+void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
 {
-  exInterface::OnFindDialog(event);
+  wxExInterface::OnFindDialog(event);
 }
 
-void exGrid::OnGrid(wxGridEvent& event)
+void wxExGrid::OnGrid(wxGridEvent& event)
 {
   if (event.GetEventType() == wxEVT_GRID_CELL_RIGHT_CLICK)
   {
-    int style = (IsEditable() ? exMenu::MENU_DEFAULT: exMenu::MENU_IS_READ_ONLY);
-    if (IsSelection()) style |= exMenu::MENU_IS_SELECTED;
+    int style = (IsEditable() ? wxExMenu::MENU_DEFAULT: wxExMenu::MENU_IS_READ_ONLY);
+    if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
 
-    exMenu menu(style);
+    wxExMenu menu(style);
     BuildPopupMenu(menu);
     PopupMenu(&menu);
   }
@@ -481,7 +481,7 @@ void exGrid::OnGrid(wxGridEvent& event)
   }
   else if (event.GetEventType() == wxEVT_GRID_SELECT_CELL)
   {
-    exFrame::StatusText(
+    wxExFrame::StatusText(
       wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
       "PaneCells");
 
@@ -497,16 +497,16 @@ void exGrid::OnGrid(wxGridEvent& event)
   }
 }
 
-void exGrid::OnGridRange(wxGridRangeSelectEvent& event)
+void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 {
   event.Skip();
 
-  exFrame::StatusText(
+  wxExFrame::StatusText(
     wxString::Format("%d", GetSelectedCells().GetCount()),
     "PaneCells");
 }
 
-void exGrid::OnMouse(wxMouseEvent& event)
+void wxExGrid::OnMouse(wxMouseEvent& event)
 {
   if (event.Dragging())
   {
@@ -517,17 +517,17 @@ void exGrid::OnMouse(wxMouseEvent& event)
   event.Skip();
 }
 
-void exGrid::PasteCellsFromClipboard()
+void wxExGrid::PasteCellsFromClipboard()
 {
-  SetCellsValue(wxGridCellCoords(GetGridCursorRow(), GetGridCursorCol()), exClipboardGet());
+  SetCellsValue(wxGridCellCoords(GetGridCursorRow(), GetGridCursorCol()), wxExClipboardGet());
 }
 
-void exGrid::SetGridCellValue(const wxGridCellCoords& coords, const wxString& data)
+void wxExGrid::SetGridCellValue(const wxGridCellCoords& coords, const wxString& data)
 {
   SetCellValue(coords, data);
 }
 
-void exGrid::SetCellsValue(const wxGridCellCoords& start_coords, const wxString& data)
+void wxExGrid::SetCellsValue(const wxGridCellCoords& start_coords, const wxString& data)
 {
   wxStringTokenizer tkz(data, wxTextFile::GetEOL());
 
@@ -558,7 +558,7 @@ void exGrid::SetCellsValue(const wxGridCellCoords& start_coords, const wxString&
 }
 
 #if wxUSE_DRAG_AND_DROP
-void exGrid::UseDragAndDrop(bool use)
+void wxExGrid::UseDragAndDrop(bool use)
 {
   m_UseDragAndDrop = use;
 }

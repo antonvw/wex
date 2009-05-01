@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          shell.h
-* Purpose:       Declaration of class exSTCShell
+* Purpose:       Declaration of class wxExSTCShell
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,7 +16,7 @@
 #include <list>
 
 #if wxUSE_GUI
-/// This class offers an exSTC with support for commands.
+/// This class offers an wxExSTC with support for commands.
 /// The commands are entered at the last line, and kept in a list of commands,
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
@@ -26,11 +26,11 @@
 /// - If you enter !<number> the previous <number> command is entered.
 /// - If you enter !<abbreviation> the last command starting with <abbreviation>
 ///   is entered.
-class exSTCShell: public exSTC
+class wxExSTCShell: public wxExSTC
 {
 public:
   /// Constructor.
-  exSTCShell(
+  wxExSTCShell(
     /// Parent.
     wxWindow* parent,
     /// Give the command used to end a line.
@@ -47,7 +47,7 @@ public:
     long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND);
 
   /// Destructor, keeps the commands in the config, if required.
- ~exSTCShell();
+ ~wxExSTCShell();
 
   /// Gets all history commands as a string, separated by a newline (for testing).
   const wxString GetHistory() const;
@@ -66,7 +66,7 @@ public:
     m_Prompt = prompt;
     if (do_prompt) Prompt();};
 protected:
-  /// Override the default from exSTC.
+  /// Override the default from wxExSTC.
   /// When you manipulate commands, this should not cause contents changed.
   virtual bool GetContentsChanged() {return false;};
   void OnCommand(wxCommandEvent& event);

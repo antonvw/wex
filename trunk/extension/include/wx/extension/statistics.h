@@ -17,18 +17,18 @@
 
 /// Offers base statistics. All statistics involve a key value pair,
 /// where the key is a wxString, and the value a template.
-template <class T> class exStatistics
+template <class T> class wxExStatistics
 {
 public:
   /// Constructor.
-  exStatistics() {
+  wxExStatistics() {
 #if wxUSE_GRID
     m_Grid = NULL;
 #endif
   };
 
   /// Adds other statistics.
-  exStatistics& operator+=(const exStatistics& s) {
+  wxExStatistics& operator+=(const wxExStatistics& s) {
     for (
       typename std::map<wxString, T>::const_iterator it = s.m_Items.begin();
       it != s.m_Items.end();
@@ -123,14 +123,14 @@ public:
   /// and col labels (Item, Value).
   /// Returns the window that is created, or is activated,
   /// if it already was created.
-  exGrid* Show(wxWindow* parent, 
+  wxExGrid* Show(wxWindow* parent,
     bool hide_row_labels = true,
     bool hide_col_labels = true,
     wxWindowID id = wxID_ANY)
     {
     if (m_Grid == NULL)
     {
-      m_Grid = new exGrid(parent, id);
+      m_Grid = new wxExGrid(parent, id);
       m_Grid->CreateGrid(0, 0);
       m_Grid->AppendCols(2);
       m_Grid->EnableEditing(false);
@@ -171,29 +171,29 @@ private:
   std::map<wxString, T> m_Items;
 #if wxUSE_GRID
   std::map<wxString, int> m_Rows;
-  exGrid* m_Grid;
+  wxExGrid* m_Grid;
 #endif
 };
 
-/// Offers filename statistics. 
-/// Adds element and keyword statistics to exFileName.
-/// Used in exTextFile to keep statistics like comments and lines of code.
+/// Offers filename statistics.
+/// Adds element and keyword statistics to wxExFileName.
+/// Used in wxExTextFile to keep statistics like comments and lines of code.
 /// These are stored as elements.
-class exFileNameStatistics : public exFileName
+class wxExFileNameStatistics : public wxExFileName
 {
 public:
   /// Constructor.
-  exFileNameStatistics(
+  wxExFileNameStatistics(
     const wxString& fullpath,
     wxPathFormat format = wxPATH_NATIVE)
-    : exFileName(fullpath, format){}
+    : wxExFileName(fullpath, format){}
 
-  /// Constructor from an exFileName.
-  exFileNameStatistics(const exFileName& filename)
-    : exFileName(filename){}
+  /// Constructor from an wxExFileName.
+  wxExFileNameStatistics(const wxExFileName& filename)
+    : wxExFileName(filename){}
 
   /// Adds other statistics.
-  exFileNameStatistics& operator+=(const exFileNameStatistics& s) {
+  wxExFileNameStatistics& operator+=(const wxExFileNameStatistics& s) {
     m_Elements += s.m_Elements;
     m_Keywords += s.m_Keywords;
     return *this;}
@@ -209,27 +209,27 @@ public:
   long Get(const wxString& key) const;
 
   /// Gets the elements.
-  exStatistics<long>& GetElements() {return m_Elements;};
+  wxExStatistics<long>& GetElements() {return m_Elements;};
 
   /// Gets the const elements.
-  const exStatistics<long>& GetElements() const {return m_Elements;};
+  const wxExStatistics<long>& GetElements() const {return m_Elements;};
 
   /// Gets the keywords.
-  exStatistics<long>& GetKeywords() {return m_Keywords;};
+  wxExStatistics<long>& GetKeywords() {return m_Keywords;};
 
   /// Gets the const keywords.
-  const exStatistics<long>& GetKeywords() const {return m_Keywords;};
+  const wxExStatistics<long>& GetKeywords() const {return m_Keywords;};
 
   /// Returns the statistics log filename.
   static const wxFileName GetLogfileName();
 
-  /// For the specified tool logs the elements statistics to 
+  /// For the specified tool logs the elements statistics to
   /// the statusbar (always) and to the statistics logfile (if specified).
   void Log(
-    const exTool& tool,
+    const wxExTool& tool,
     bool log_to_file = true) const;
 private:
-  exStatistics<long> m_Elements;
-  exStatistics<long> m_Keywords;
+  wxExStatistics<long> m_Elements;
+  wxExStatistics<long> m_Keywords;
 };
 #endif

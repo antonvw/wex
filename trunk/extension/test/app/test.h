@@ -26,31 +26,31 @@
 #include <wx/extension/textfile.h>
 
 /// CppUnit test suite.
-class exTestSuite : public CppUnit::TestSuite
+class wxExTestSuite : public CppUnit::TestSuite
 {
 public:
   /// Default constructor.
-  exTestSuite();
+  wxExTestSuite();
 };
 
-/// Derive your application from exApp.
-class exTestApp: public exApp
+/// Derive your application from wxExApp.
+class wxExTestApp: public wxExApp
 {
 public:
   /// Constructor.
-  exTestApp() {}
+  wxExTestApp() {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
 };
 
 /// CppUnit app test fixture.
-/// These classes require either an exApp object, or wx to be initialized.
-class exAppTestFixture : public CppUnit::TestFixture
+/// These classes require either an wxExApp object, or wx to be initialized.
+class wxExAppTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  exAppTestFixture() : TestFixture() {
+  wxExAppTestFixture() : TestFixture() {
     m_Grid = NULL;
     m_ListView = NULL;
     m_Notebook = NULL;
@@ -60,7 +60,7 @@ public:
     };
 
   /// Destructor.
- ~exAppTestFixture() {
+ ~wxExAppTestFixture() {
     delete m_Grid;
     delete m_ListView;
     delete m_Notebook;
@@ -82,11 +82,11 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  exGrid* m_Grid;   ///< testing exDir
-  exListView* m_ListView; ///< testing exDir
-  exNotebook* m_Notebook; ///< testing exNotebook
-  exSTCShell* m_STCShell; ///< testing exSTC
-  exSTC* m_STC;     ///< testing exSTC
-  exSVN* m_SVN;     ///< testing exSVN
+  wxExGrid* m_Grid;   ///< testing wxExDir
+  wxExListView* m_ListView; ///< testing wxExDir
+  wxExNotebook* m_Notebook; ///< testing wxExNotebook
+  wxExSTCShell* m_STCShell; ///< testing wxExSTC
+  wxExSTC* m_STC;     ///< testing wxExSTC
+  wxExSVN* m_SVN;     ///< testing wxExSVN
 };
 #endif

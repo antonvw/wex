@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.h
-* Purpose:       Declaration of class 'exSTCWithFrame'
+* Purpose:       Declaration of class 'wxExSTCWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,17 +12,17 @@
 #ifndef _EX_REPORT_STC_H
 #define _EX_REPORT_STC_H
 
-class exFrameWithHistory;
+class wxExFrameWithHistory;
 
 #include <wx/extension/stc.h>
 
-/// Adds a frame and drag/drop to exSTC. 
+/// Adds a frame and drag/drop to wxExSTC.
 /// The frame is assigned in the Initialize.
-class exSTCWithFrame : public exSTC
+class wxExSTCWithFrame : public wxExSTC
 {
 public:
   /// Menu types, they determine how the context menu will appear.
-  /// These values extend the menu types used by exSTC.
+  /// These values extend the menu types used by wxExSTC.
   enum
   {
     STC_MENU_TOOL           = 0x0100, ///< for adding tool menu
@@ -38,7 +38,7 @@ public:
   };
 
   /// Constructor. Does not open a file, but sets text to specified value.
-  exSTCWithFrame(wxWindow* parent,
+  wxExSTCWithFrame(wxWindow* parent,
     long type = STC_MENU_DEFAULT,
     const wxString& value = wxEmptyString,
     wxWindowID id = wxID_ANY,
@@ -48,8 +48,8 @@ public:
     const wxString& name = wxSTCNameStr);
 
   /// Constructor, opens the file.
-  exSTCWithFrame(wxWindow* parent,
-    const exFileName& filename,
+  wxExSTCWithFrame(wxWindow* parent,
+    const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0,
@@ -60,12 +60,12 @@ public:
     long style = 0,
     const wxString& name = wxSTCNameStr);
 
-  /// Copy constructor from an exSTC.
-  exSTCWithFrame(const exSTC& stc);
+  /// Copy constructor from an wxExSTC.
+  wxExSTCWithFrame(const wxExSTC& stc);
 
   /// Calls base and sets recent file if base call succeeded.
   virtual bool Open(
-    const exFileName& filename,
+    const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
@@ -74,14 +74,14 @@ public:
   virtual void PropertiesMessage();
 protected:
   /// Builds the popup menu.
-  virtual void BuildPopupMenu(exMenu& menu);
+  virtual void BuildPopupMenu(wxExMenu& menu);
 
   void OnCommand(wxCommandEvent& command);
 
   DECLARE_EVENT_TABLE()
 private:
   bool Initialize();
-  exFrameWithHistory* m_Frame;
+  wxExFrameWithHistory* m_Frame;
 };
 
 #endif

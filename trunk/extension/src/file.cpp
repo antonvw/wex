@@ -15,10 +15,10 @@
 #include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
-#include <wx/extension/app.h> // for exApp
-#include <wx/extension/base.h> // for exFrame
+#include <wx/extension/app.h> // for wxExApp
+#include <wx/extension/base.h> // for wxExFrame
 
-exFile::exFile()
+wxExFile::wxExFile()
   : m_FileName()
   , m_Stat()
   , m_Message(_("Select File"))
@@ -26,7 +26,7 @@ exFile::exFile()
 {
 }
 
-exFile::exFile(const wxString& filename, wxFile::OpenMode mode)
+wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   : wxFile(filename, mode)
   , m_FileName(filename)
   , m_Stat(filename)
@@ -36,7 +36,7 @@ exFile::exFile(const wxString& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
-int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
+int wxExFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
 {
   if (ask_for_continue)
   {
@@ -60,11 +60,11 @@ int exFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
   return dlg.ShowModal();
 }
 
-bool exFile::CheckSyncNeeded()
+bool wxExFile::CheckSyncNeeded()
 {
   if (IsOpened() ||
      !m_FileName.GetStat().IsOk() ||
-     !exApp::GetConfigBool("AllowSync", true))
+     !wxExApp::GetConfigBool("AllowSync", true))
   {
     return false;
   }
@@ -77,7 +77,7 @@ bool exFile::CheckSyncNeeded()
   return true;
 }
 
-bool exFile::Continue()
+bool wxExFile::Continue()
 {
   if (GetContentsChanged())
   {
@@ -110,7 +110,7 @@ bool exFile::Continue()
   return true;
 }
 
-bool exFile::FileNew(const exFileName& filename)
+bool wxExFile::FileNew(const wxExFileName& filename)
 {
   if (!Continue()) return false;
 
@@ -121,7 +121,7 @@ bool exFile::FileNew(const exFileName& filename)
   return true;
 }
 
-bool exFile::FileOpen(const exFileName& filename)
+bool wxExFile::FileOpen(const wxExFileName& filename)
 {
   if (
     !Continue() ||
@@ -139,14 +139,14 @@ bool exFile::FileOpen(const exFileName& filename)
   }
 }
 
-bool exFile::FileSave()
+bool wxExFile::FileSave()
 {
   wxFile::Close();
 
   return MakeAbsolute();
 }
 
-bool exFile::FileSaveAs()
+bool wxExFile::FileSaveAs()
 {
   wxFileDialog dlg(
     wxTheApp->GetTopWindow(),
@@ -173,7 +173,7 @@ bool exFile::FileSaveAs()
   return false;
 }
 
-void exFile::FileSync()
+void wxExFile::FileSync()
 {
   if (FileOpen(m_FileName))
   {
@@ -181,7 +181,7 @@ void exFile::FileSync()
   }
 }
 
-bool exFile::MakeAbsolute()
+bool wxExFile::MakeAbsolute()
 {
   if (m_FileName.MakeAbsolute())
   {
@@ -195,7 +195,7 @@ bool exFile::MakeAbsolute()
   }
 }
 
-wxString* exFile::Read(wxFileOffset seek_position)
+wxString* wxExFile::Read(wxFileOffset seek_position)
 {
   const wxFileOffset bytes_to_read = Length() - seek_position;
 
@@ -216,7 +216,7 @@ wxString* exFile::Read(wxFileOffset seek_position)
   }
 }
 
-int exFileName::GetIcon() const
+int wxExFileName::GetIcon() const
 {
   if (GetStat().IsOk())
   {
@@ -239,30 +239,30 @@ int exFileName::GetIcon() const
   }
 }
 
-void exFileName::SetLexer(
+void wxExFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)
 {
   // Of course, if the lexers are not yet constructed, skip the rest.
-  if (exApp::GetLexers() == NULL) return;
+  if (wxExApp::GetLexers() == NULL) return;
 
   if (lexer.empty())
   {
-    m_Lexer = exApp::GetLexers()->FindByFileName(*this);
+    m_Lexer = wxExApp::GetLexers()->FindByFileName(*this);
 
     if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
     {
-      m_Lexer = exApp::GetLexers()->FindByText(text);
+      m_Lexer = wxExApp::GetLexers()->FindByText(text);
     }
   }
   else
   {
-    m_Lexer = exApp::GetLexers()->FindByName(lexer);
+    m_Lexer = wxExApp::GetLexers()->FindByName(lexer);
   }
 }
 
 #if wxUSE_STATUSBAR
-void exFileName::StatusText(long flags) const
+void wxExFileName::StatusText(long flags) const
 {
   wxString text; // clear status bar for empty or not existing or not initialized file names
 
@@ -283,16 +283,16 @@ void exFileName::StatusText(long flags) const
     }
   }
 
-  exFrame::StatusText(text);
+  wxExFrame::StatusText(text);
 }
 #endif // wxUSE_STATUSBAR
 
-const wxString exStat::GetModificationTime(const wxString& format) const
+const wxString wxExStat::GetModificationTime(const wxString& format) const
 {
   return wxDateTime(st_mtime).Format(format);
 }
 
-bool exStat::IsLink() const
+bool wxExStat::IsLink() const
 {
 #ifdef __UNIX__
   return m_IsOk && (S_ISLNK(st_mode) != 0);
@@ -301,7 +301,7 @@ bool exStat::IsLink() const
 #endif
 }
 
-bool exStat::SetReadOnly(const bool read_only)
+bool wxExStat::SetReadOnly(const bool read_only)
 {
   if (IsOk())
   {

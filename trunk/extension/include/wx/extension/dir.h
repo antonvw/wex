@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dir.h
-* Purpose:       Declaration of class 'exDir'
+* Purpose:       Declaration of class 'wxExDir'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,18 +16,18 @@
 
 /// Adds FindFiles to a wxDir, by overriding OnFile you can take care
 /// of what to do with the result, and by overriding Cancelled to cancel traversing.
-class exDir : public wxDir
+class wxExDir : public wxDir
 {
 public:
   /// Constructor.
   /// Opens the wxDir and sets the filespec.
   /// This filespec specifies what files are found.
-  exDir(
+  wxExDir(
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString); // finds all
 
   /// Destructor.
-  virtual ~exDir();
+  virtual ~wxExDir();
 
   /// Allows you to cancel the FindFiles.
   virtual bool Cancelled() {return false;};
@@ -41,7 +41,7 @@ public:
 
   /// Gets the flags.
   int GetFlags() const {return m_Flags;};
-  
+
   /// Do something with the file.
   virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
 private:

@@ -29,36 +29,36 @@ protected:
   void OnTree(wxTreeEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  // Interface from exFrameWithHistory.
-  virtual exListViewFile* Activate(int type, const exLexer* lexer = NULL);
-  virtual exListViewFile* GetCurrentProject();
-  virtual exSTCWithFrame* GetCurrentSTC();
-  // Interface from exFrame.
+  // Interface from wxExFrameWithHistory.
+  virtual wxExListViewFile* Activate(int type, const wxExLexer* lexer = NULL);
+  virtual wxExListViewFile* GetCurrentProject();
+  virtual wxExSTCWithFrame* GetCurrentSTC();
+  // Interface from wxExFrame.
   virtual void ConfigDialogApplied(wxWindowID dialogid);
-  virtual exSTC* GetSTC() {return GetCurrentSTC();}
-  virtual exListView* GetListView();
+  virtual wxExSTC* GetSTC() {return GetCurrentSTC();}
+  virtual wxExListView* GetListView();
   virtual bool OpenFile(
-    const exFileName& filename,
+    const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
 
-  exListViewFile* AddPage(int type, const exLexer* lexer = NULL);
+  wxExListViewFile* AddPage(int type, const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);
   bool OpenFile(
-    const exFileName& filename,
+    const wxExFileName& filename,
     const wxString& contents,
     long flags = 0);
 
   int m_NewFileNo;
 
   wxGenericDirCtrl* m_DirCtrl;
-  exListViewFile* m_History;
-  exNotebook* m_NotebookWithEditors;
-  exNotebook* m_NotebookWithLists;
-  exNotebook* m_NotebookWithProjects;
+  wxExListViewFile* m_History;
+  wxExNotebook* m_NotebookWithEditors;
+  wxExNotebook* m_NotebookWithLists;
+  wxExNotebook* m_NotebookWithProjects;
 
   DECLARE_EVENT_TABLE()
 };

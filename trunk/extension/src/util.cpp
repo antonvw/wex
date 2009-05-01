@@ -17,22 +17,22 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
 
-bool exClipboardAdd(const wxString& text)
+bool wxExClipboardAdd(const wxString& text)
 {
   wxClipboardLocker locker;
   if (!locker) return false;
   if (!wxTheClipboard->AddData(new wxTextDataObject(text))) return false;
-  
+
   // Take care that clipboard data remain after exiting
-  // This is a boolean method as well, we don't check it, as 
+  // This is a boolean method as well, we don't check it, as
   // clipboard data is copied.
   // At least on Ubuntu 8.10 FLush returns false.
   wxTheClipboard->Flush();
-  
+
   return true;
 }
 
-const wxString exClipboardGet()
+const wxString wxExClipboardGet()
 {
   wxBusyCursor wait;
   wxClipboardLocker locker;
@@ -60,7 +60,7 @@ const wxString exClipboardGet()
 }
 
 #if wxUSE_GUI
-void exComboBoxFromString(
+void wxExComboBoxFromString(
   wxComboBox* cb,
   const wxString& text,
   const wxChar field_separator)
@@ -78,7 +78,7 @@ void exComboBoxFromString(
   if (cb->GetCount() > 0) cb->SetValue(cb->GetString(0));
 }
 
-bool exComboBoxToString(
+bool wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
   const wxChar field_separator,
@@ -120,17 +120,17 @@ bool exComboBoxToString(
 
 #endif // wxUSE_GUI
 
-long exColourToLong(const wxColour& c)
+long wxExColourToLong(const wxColour& c)
 {
   return c.Red() | (c.Green() << 8) | (c.Blue() << 16);
 }
 
-const wxString exEllipsed(const wxString& text, const wxString& control)
+const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
   return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
-const wxString exGetEndOfText(
+const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars)
 {
@@ -144,7 +144,7 @@ const wxString exGetEndOfText(
   return text_out;
 }
 
-int exGetNumberOfLines(const wxString& text)
+int wxExGetNumberOfLines(const wxString& text)
 {
   if (text.empty())
   {
@@ -164,7 +164,7 @@ int exGetNumberOfLines(const wxString& text)
   }
 }
 
-int exGetLineNumberFromText(const wxString& text)
+int wxExGetLineNumberFromText(const wxString& text)
 {
   // Get text after :.
   const size_t pos_char = text.rfind(":");
@@ -188,7 +188,7 @@ int exGetLineNumberFromText(const wxString& text)
   }
 }
 
-const wxString exGetWord(
+const wxString wxExGetWord(
   wxString& text,
   bool use_other_field_separators,
   bool use_path_separator)
@@ -204,15 +204,15 @@ const wxString exGetWord(
   return token;
 }
 
-bool exLog(const wxString& text, const wxFileName& filename)
+bool wxExLog(const wxString& text, const wxFileName& filename)
 {
   return wxFile(
-    filename.GetFullPath(), 
+    filename.GetFullPath(),
     wxFile::write_append).Write(
       wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
 }
 
-const wxFileName exLogfileName()
+const wxFileName wxExLogfileName()
 {
   if (wxTheApp == NULL)
   {
@@ -230,7 +230,7 @@ const wxFileName exLogfileName()
 #endif
 }
 
-bool exMatchesOneOf(const wxFileName& filename, const wxString& pattern)
+bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 {
   if (pattern == "*") return true; // asterix matches always.
 
@@ -245,14 +245,14 @@ bool exMatchesOneOf(const wxFileName& filename, const wxString& pattern)
   return false;
 }
 
-const wxString exSkipWhiteSpace(const wxString& text, const wxString& replace_with)
+const wxString wxExSkipWhiteSpace(const wxString& text, const wxString& replace_with)
 {
   wxString output = text;
   wxRegEx("[ \t\n]+").ReplaceAll(&output, replace_with);
   return output;
 }
 
-const wxString exTranslate(const wxString& text, int pageNum, int numPages)
+const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
 {
   wxString translation = text;
   wxString num;

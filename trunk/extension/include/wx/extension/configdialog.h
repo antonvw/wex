@@ -25,7 +25,7 @@ enum
 {
   /// A checklistbox (not mutually exclusive choices).
   /// Should be used to get/set individual bits in a long.
-  CONFIG_CHECKLISTBOX,   
+  CONFIG_CHECKLISTBOX,
 
   /// A checklistbox without a name (not mutually exclusive choices).
   /// Should be used to get/set several boolean values in one checklistbox.
@@ -33,7 +33,7 @@ enum
 
   /// A radiobox (mutually exclusive choices).
   /// Should be used when a long value can have a short set of possible individual values.
-  CONFIG_RADIOBOX,       
+  CONFIG_RADIOBOX,
 
   CONFIG_CHECKBOX,       ///< a checkbox (use GetBool to retrieve value)
   CONFIG_COLOUR,         ///< a colour button
@@ -49,20 +49,20 @@ enum
   CONFIG_STRING,         ///< a textctrl
 };
 
-/// Container class for using with exConfigDialog.
+/// Container class for using with wxExConfigDialog.
 /// If you specify a page, then all items are placed on that page in a notebook.
-class exConfigItem
+class wxExConfigItem
 {
-  friend class exConfigDialog;
+  friend class wxExConfigDialog;
 public:
   /// Contructor for a spacer item.
-  exConfigItem()
+  wxExConfigItem()
   : m_Name("spacer")
   , m_Page(wxEmptyString)
   , m_Type(CONFIG_SPACER) {;}
-  
+
   /// Constructor for a spin ctrl.
-  exConfigItem(const wxString& name,
+  wxExConfigItem(const wxString& name,
     int min,
     int max,
     const wxString& page = wxEmptyString)
@@ -76,7 +76,7 @@ public:
   , m_Type(CONFIG_SPINCTRL) {;};
 
   /// Constructor for a spin ctrl double.
-  exConfigItem(const wxString& name,
+  wxExConfigItem(const wxString& name,
     double min,
     double max,
     double inc = 1,
@@ -94,7 +94,7 @@ public:
   /// Constructor for a string.
   /// The extra style argument is the style for the wxTextCtrl used.
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
-  exConfigItem(const wxString& name,
+  wxExConfigItem(const wxString& name,
     const wxString& page = wxEmptyString,
     long style = 0,
     bool is_required = false)
@@ -109,7 +109,7 @@ public:
 
   /// Constructor for a radiobox or a checklistbox. Just specify
   /// the map with values and text.
-  exConfigItem(const wxString& name,
+  wxExConfigItem(const wxString& name,
     const std::map<long, const wxString> & choices,
     bool use_radiobox = true,
     const wxString& page = wxEmptyString)
@@ -125,7 +125,7 @@ public:
 
   /// Constructor for a checklistbox without a name. Just specify
   /// the map with values and text.
-  exConfigItem(const std::set<wxString> & choices,
+  wxExConfigItem(const std::set<wxString> & choices,
     const wxString& page = wxEmptyString)
   : m_IsRequired(false)
   , m_Min(0)
@@ -138,7 +138,7 @@ public:
   , m_ChoicesBool(choices) {;};
 
   /// Constuctor for other types.
-  exConfigItem(const wxString& name,
+  wxExConfigItem(const wxString& name,
     int type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
@@ -153,7 +153,7 @@ public:
   , m_Type(type) {;};
 private:
   // cannot be const, otherwise
-  // error C2582: 'operator =' function is unavailable in 'exConfigItem'
+  // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
   bool m_IsRequired;
   int m_Min;
   int m_Max;
@@ -175,9 +175,9 @@ private:
 /// Offers a dialog to set several items in the config.
 /// You can also use the dialog modeless (then you can use wxAPPLY
 /// to store the items in the config).
-/// When pressing the apply button ConfigDialogApplied is invoked from exFrame.
+/// When pressing the apply button ConfigDialogApplied is invoked from wxExFrame.
 /// If you only specify a wxCANCEL button, the dialog is readonly.
-class exConfigDialog: public exDialog
+class wxExConfigDialog: public wxExDialog
 {
 public:
   /// Constructor, specify the vector of config items
@@ -185,9 +185,9 @@ public:
   /// config items is saved in the config.
   /// \todo The dialog does not set it's window size correctly when
   /// notebooks are used, you have to specify size yourself.
-  exConfigDialog(wxWindow* parent,
-    exConfig* config,
-    std::vector<exConfigItem> v,
+  wxExConfigDialog(wxWindow* parent,
+    wxExConfig* config,
+    std::vector<wxExConfigItem> v,
     const wxString& title = _("Options"),
     const wxString& configGroup = wxEmptyString,
     int rows = 0,
@@ -269,9 +269,9 @@ private:
     bool is_numeric = false,
     long style = 0);
 
-  exConfig* m_Config;
+  wxExConfig* m_Config;
   const wxString m_ConfigGroup;
-  std::vector<exConfigItem> m_ConfigItems;
+  std::vector<wxExConfigItem> m_ConfigItems;
 
   DECLARE_EVENT_TABLE()
 };

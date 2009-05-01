@@ -21,65 +21,65 @@
 /*! \file */
 
 /// Adds data to the clipboard.
-bool exClipboardAdd(const wxString& text);
+bool wxExClipboardAdd(const wxString& text);
 
 /// Gets data from the clipboard.
-const wxString exClipboardGet();
+const wxString wxExClipboardGet();
 
 /// Converts a colour (it's red, green, blue components) to a long.
-long exColourToLong(const wxColour& c);
+long wxExColourToLong(const wxColour& c);
 
 /// Adds an ellipses after text.
-const wxString exEllipsed(
+const wxString wxExEllipsed(
   const wxString& text,
   const wxString& control = wxEmptyString);
 
-/// If text length exceeds max_chars, 
+/// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,
 /// otherwise just returns the text.
-const wxString exGetEndOfText(
+const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars = 15);
 
 /// Gets the number of lines in a string.
-int exGetNumberOfLines(const wxString& text);
+int wxExGetNumberOfLines(const wxString& text);
 
 /// Gets a line number from a string.
-int exGetLineNumberFromText(const wxString& text);
+int wxExGetLineNumberFromText(const wxString& text);
 
 /// Gets a word from a string.
-const wxString exGetWord(
+const wxString wxExGetWord(
   wxString& text,
   bool use_other_field_separators = false,
   bool use_path_separator = false);
 
 /// Returns the filename of the logfile.
-const wxFileName exLogfileName();
+const wxFileName wxExLogfileName();
 
 /// Logs text with a timestamp at the end of the file.
 /// Returns true if text was written succesfully.
-bool exLog(const wxString& text, const wxFileName& filename = exLogfileName());
+bool wxExLog(const wxString& text, const wxFileName& filename = wxExLogfileName());
 
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
-bool exMatchesOneOf(const wxFileName& filename, const wxString& patterns);
+bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 
 /// Returns a string without all white space in specified input.
-const wxString exSkipWhiteSpace(
+const wxString wxExSkipWhiteSpace(
   const wxString& text,
   const wxString& replace_with = " ");
 
 /// This takes care of the translation.
-const wxString exTranslate(const wxString& text, int pageNum, int numPages);
+const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
 
 #if wxUSE_GUI
 /// Adds entries from a combobox to a text string.
-void exComboBoxFromString(
+void wxExComboBoxFromString(
   wxComboBox* cb,
   const wxString& text,
   const wxChar field_separator = ',');
 /// Adds entries from combobox to a text string.
-bool exComboBoxToString(
+bool wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
   const wxChar field_separator = ',',

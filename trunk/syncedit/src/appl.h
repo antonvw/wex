@@ -18,14 +18,14 @@
 #endif
 #include <wx/extension/extension.h>
 
-/// Adds initialization to exApp.
-class Application : public exApp
+/// Adds initialization to wxExApp.
+class Application : public wxExApp
 {
 private:
   virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
   virtual bool OnInit();
   virtual void OnInitCmdLine(wxCmdLineParser& parser);
-  
+
   wxArrayString m_Files;
 };
 

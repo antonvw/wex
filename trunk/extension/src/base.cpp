@@ -18,7 +18,7 @@
 using namespace std;
 
 #if wxUSE_GUI
-exDialog::exDialog(wxWindow* parent,
+wxExDialog::wxExDialog(wxWindow* parent,
   const wxString& title,
   long flags,
   wxWindowID id,
@@ -33,7 +33,7 @@ exDialog::exDialog(wxWindow* parent,
 {
 }
 
-wxSizerItem* exDialog::AddUserSizer(
+wxSizerItem* wxExDialog::AddUserSizer(
   wxWindow* window,
   const wxSizerFlags& flags)
 {
@@ -47,7 +47,7 @@ wxSizerItem* exDialog::AddUserSizer(
   return item;
 }
 
-wxSizerItem* exDialog::AddUserSizer(
+wxSizerItem* wxExDialog::AddUserSizer(
   wxSizer* sizer,
   const wxSizerFlags& flags)
 {
@@ -62,7 +62,7 @@ wxSizerItem* exDialog::AddUserSizer(
 }
 
 
-void exDialog::BuildSizers()
+void wxExDialog::BuildSizers()
 {
   m_TopSizer->AddGrowableCol(0);
   m_UserSizer->AddGrowableCol(0);
@@ -92,18 +92,18 @@ void exDialog::BuildSizers()
 }
 
 #if wxUSE_STATUSBAR
-exStatusBar* exFrame::m_StatusBar = NULL;
-map<wxString, exPane> exFrame::m_Panes;
+wxExStatusBar* wxExFrame::m_StatusBar = NULL;
+map<wxString, wxExPane> wxExFrame::m_Panes;
 #endif
 
-BEGIN_EVENT_TABLE(exFrame, wxFrame)
-  EVT_CLOSE(exFrame::OnClose)
+BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
+  EVT_CLOSE(wxExFrame::OnClose)
 #if wxUSE_STATUSBAR
-  EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, exFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, wxExFrame::OnUpdateUI)
 #endif
 END_EVENT_TABLE()
 
-exFrame::exFrame(wxWindow* parent,
+wxExFrame::wxExFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
   long style,
@@ -111,19 +111,19 @@ exFrame::exFrame(wxWindow* parent,
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, name)
   , m_KeepPosAndSize(true)
 {
-  if (exApp::GetConfig("Frame/Maximized", 0l))
+  if (wxExApp::GetConfig("Frame/Maximized", 0l))
   {
     Maximize(true);
   }
 
   SetSize(
-    exApp::GetConfig("Frame/X", 100),
-    exApp::GetConfig("Frame/Y", 100),
-    exApp::GetConfig("Frame/Width", 450),
-    exApp::GetConfig("Frame/Height", 350));
+    wxExApp::GetConfig("Frame/X", 100),
+    wxExApp::GetConfig("Frame/Y", 100),
+    wxExApp::GetConfig("Frame/Width", 450),
+    wxExApp::GetConfig("Frame/Height", 350));
 }
 
-exFrame::exFrame(wxWindow* parent,
+wxExFrame::wxExFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
   const wxPoint& pos,
@@ -135,14 +135,14 @@ exFrame::exFrame(wxWindow* parent,
 {
 }
 
-exFrame::~exFrame()
+wxExFrame::~wxExFrame()
 {
 #if wxUSE_STATUSBAR
   delete m_StatusBar;
 #endif
 }
 
-exListView* exFrame::GetFocusedListView()
+wxExListView* wxExFrame::GetFocusedListView()
 {
   wxWindow* win = wxWindow::FindFocus();
 
@@ -151,10 +151,10 @@ exListView* exFrame::GetFocusedListView()
     return NULL;
   }
 
-  return wxDynamicCast(win, exListView);
+  return wxDynamicCast(win, wxExListView);
 }
 
-exSTC* exFrame::GetFocusedSTC()
+wxExSTC* wxExFrame::GetFocusedSTC()
 {
   wxWindow* win = wxWindow::FindFocus();
 
@@ -163,14 +163,14 @@ exSTC* exFrame::GetFocusedSTC()
     return NULL;
   }
 
-  return wxDynamicCast(win, exSTC);
+  return wxDynamicCast(win, wxExSTC);
 }
 
 #if wxUSE_STATUSBAR
-const exPane exFrame::GetPane(int pane) const
+const wxExPane wxExFrame::GetPane(int pane) const
 {
   for (
-    map<wxString, exPane>::const_iterator it = m_Panes.begin();
+    map<wxString, wxExPane>::const_iterator it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
@@ -180,14 +180,14 @@ const exPane exFrame::GetPane(int pane) const
     }
   }
 
-  return exPane();
+  return wxExPane();
 }
 
-int exFrame::GetPaneField(const wxString& pane)
+int wxExFrame::GetPaneField(const wxString& pane)
 {
   if (!m_Panes.empty())
   {
-    map<wxString, exPane>::const_iterator it = m_Panes.find(pane);
+    map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
 
     if (it != m_Panes.end())
     {
@@ -199,23 +199,23 @@ int exFrame::GetPaneField(const wxString& pane)
 }
 #endif // wxUSE_STATUSBAR
 
-void exFrame::OnClose(wxCloseEvent& event)
+void wxExFrame::OnClose(wxCloseEvent& event)
 {
   if (m_KeepPosAndSize)
   {
     // Set config values that might have changed.
     if (IsMaximized())
     {
-      exApp::SetConfig("Frame/Maximized", 1);
+      wxExApp::SetConfig("Frame/Maximized", 1);
     }
     else
     {
-      exApp::SetConfig("Frame/Maximized", 0);
+      wxExApp::SetConfig("Frame/Maximized", 0);
       const wxRect rect = GetRect();
-      exApp::SetConfig("Frame/X", rect.GetX());
-      exApp::SetConfig("Frame/Y", rect.GetY());
-      exApp::SetConfig("Frame/Width", rect.GetWidth());
-      exApp::SetConfig("Frame/Height", rect.GetHeight());
+      wxExApp::SetConfig("Frame/X", rect.GetX());
+      wxExApp::SetConfig("Frame/Y", rect.GetY());
+      wxExApp::SetConfig("Frame/Width", rect.GetWidth());
+      wxExApp::SetConfig("Frame/Height", rect.GetHeight());
     }
   }
 
@@ -223,24 +223,24 @@ void exFrame::OnClose(wxCloseEvent& event)
 }
 
 #if wxUSE_STATUSBAR
-wxStatusBar* exFrame::OnCreateStatusBar(
+wxStatusBar* wxExFrame::OnCreateStatusBar(
   int number,
   long style,
   wxWindowID id,
   const wxString& name)
 {
-  m_StatusBar = new exStatusBar(this, id, style, name);
+  m_StatusBar = new wxExStatusBar(this, id, style, name);
   m_StatusBar->SetFieldsCount(number);
   return m_StatusBar;
 }
 #endif
 
-wxToolBar* exFrame::OnCreateToolBar(
+wxToolBar* wxExFrame::OnCreateToolBar(
   long style,
   wxWindowID id,
   const wxString& name)
 {
-  m_ToolBar = new exToolBar(this,
+  m_ToolBar = new wxExToolBar(this,
     id,
     wxDefaultPosition,
     wxDefaultSize,
@@ -251,9 +251,9 @@ wxToolBar* exFrame::OnCreateToolBar(
   return m_ToolBar;
 }
 
-void exFrame::OnUpdateUI(wxUpdateUIEvent& event)
+void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  exSTC* stc = GetFocusedSTC();
+  wxExSTC* stc = GetFocusedSTC();
   if (stc == NULL) return;
 
   switch (event.GetId())
@@ -264,13 +264,13 @@ void exFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool exFrame::OpenFile(
-  const exFileName& filename,
+bool wxExFrame::OpenFile(
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
 {
-  exSTC* stc = GetFocusedSTC();
+  wxExSTC* stc = GetFocusedSTC();
 
   if (stc != NULL)
   {
@@ -283,8 +283,8 @@ bool exFrame::OpenFile(
 }
 
 #if wxUSE_STATUSBAR
-void exFrame::SetupStatusBar(
-  const vector<exPane>& panes,
+void wxExFrame::SetupStatusBar(
+  const vector<wxExPane>& panes,
   long style,
   wxWindowID id,
   const wxString& name)
@@ -295,7 +295,7 @@ void exFrame::SetupStatusBar(
   int* widths = new int[panes.size()];
 
   for (
-    vector<exPane>::const_iterator it = panes.begin();
+    vector<wxExPane>::const_iterator it = panes.begin();
     it != panes.end();
     ++it)
   {
@@ -313,32 +313,32 @@ void exFrame::SetupStatusBar(
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void exFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
+void wxExFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
 {
   if (field == GetPaneField("PaneLines"))
   {
-    exSTC* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
   else if (field == GetPaneField("PaneLexer"))
   {
-    exSTC* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->LexerDialog();
   }
   else if (field == GetPaneField("PaneFileType"))
   {
-    exSTC* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
   else if (field == GetPaneField("PaneItems"))
   {
-    exListView* list = GetListView();
+    wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
   }
 }
 
 // This is a static method, so you cannot call wxFrame::SetStatusText.
-void exFrame::StatusText(const wxString& text, const wxString& pane)
+void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
   if (m_StatusBar == NULL || m_Panes.empty())
   {
@@ -357,12 +357,12 @@ void exFrame::StatusText(const wxString& text, const wxString& pane)
 }
 #endif // wxUSE_STATUSBAR
 
-exInterface::exInterface()
+wxExInterface::wxExInterface()
 {
   m_FindReplaceDialog = NULL;
 }
 
-exInterface::~exInterface()
+wxExInterface::~wxExInterface()
 {
   if (m_FindReplaceDialog != NULL)
   {
@@ -370,7 +370,7 @@ exInterface::~exInterface()
   }
 }
 
-void exInterface::FindDialog(wxWindow* parent, const wxString& caption)
+void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)
   {
@@ -379,40 +379,40 @@ void exInterface::FindDialog(wxWindow* parent, const wxString& caption)
 
   m_FindReplaceDialog = new wxFindReplaceDialog(
     parent,
-    exApp::GetConfig()->GetFindReplaceData(),
+    wxExApp::GetConfig()->GetFindReplaceData(),
     caption);
 
   m_FindReplaceDialog->Show();
 }
 
-bool exInterface::FindNext(const wxString& text, bool find_next)
+bool wxExInterface::FindNext(const wxString& text, bool find_next)
 {
   return false;
 }
 
-bool exInterface::FindResult(const wxString& text, bool find_next, bool& recursive)
+bool wxExInterface::FindResult(const wxString& text, bool find_next, bool& recursive)
 {
   if (!recursive)
   {
     recursive = true;
     const wxString where = (find_next) ? _("bottom"): _("top");
-    exFrame::StatusText(
-      _("Searching for") + " '" + exSkipWhiteSpace(text) + "' " + _("hit") + " " + where);
+    wxExFrame::StatusText(
+      _("Searching for") + " '" + wxExSkipWhiteSpace(text) + "' " + _("hit") + " " + where);
     return FindNext(text, find_next);
   }
   else
   {
     recursive = false;
     wxBell();
-    // Same text also displayed in exSTC.
-    exFrame::StatusText("'" + exSkipWhiteSpace(text) + "' " + _("not found"));
+    // Same text also displayed in wxExSTC.
+    wxExFrame::StatusText("'" + wxExSkipWhiteSpace(text) + "' " + _("not found"));
     return false;
   }
 }
 
-void exInterface::OnFindDialog(wxFindDialogEvent& event)
+void wxExInterface::OnFindDialog(wxFindDialogEvent& event)
 {
-  exFindReplaceData* frd = exApp::GetConfig()->GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
 
   const bool find_next = (frd->GetFlags() & wxFR_DOWN);
 
@@ -434,23 +434,23 @@ void exInterface::OnFindDialog(wxFindDialogEvent& event)
   }
 }
 
-void exInterface::Print()
+void wxExInterface::Print()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  exApp::GetPrinter()->PrintText(BuildPage());
+  wxExApp::GetPrinter()->PrintText(BuildPage());
 #endif
 }
 
-void exInterface::PrintPreview()
+void wxExInterface::PrintPreview()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  exApp::GetPrinter()->PreviewText(BuildPage());
+  wxExApp::GetPrinter()->PreviewText(BuildPage());
 #endif
 }
 
-void exInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
+void wxExInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)
   {
@@ -459,33 +459,33 @@ void exInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
 
   m_FindReplaceDialog = new wxFindReplaceDialog(
     parent,
-    exApp::GetConfig()->GetFindReplaceData(),
+    wxExApp::GetConfig()->GetFindReplaceData(),
     caption,
     wxFR_REPLACEDIALOG);
 
   m_FindReplaceDialog->Show();
 }
 
-exManagedFrame::exManagedFrame(wxWindow* parent,
+wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
   long style,
   const wxString& name)
-  : exFrame(parent, id, title, style, name)
+  : wxExFrame(parent, id, title, style, name)
 {
   m_Manager.SetManagedWindow(this);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  exApp::GetPrinter()->SetParentWindow(this);
+  wxExApp::GetPrinter()->SetParentWindow(this);
 #endif
 }
 
-exManagedFrame::~exManagedFrame()
+wxExManagedFrame::~wxExManagedFrame()
 {
   m_Manager.UnInit();
 }
 
-void exManagedFrame::TogglePane(const wxString& pane)
+void wxExManagedFrame::TogglePane(const wxString& pane)
 {
   wxAuiPaneInfo& info = m_Manager.GetPane(pane);
 
@@ -496,17 +496,17 @@ void exManagedFrame::TogglePane(const wxString& pane)
   m_Manager.Update();
 }
 
-exMenu::exMenu(long style)
+wxExMenu::wxExMenu(long style)
   : m_Style(style)
 {
 }
 
-exMenu::exMenu(const exMenu& menu)
+wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
 {
 }
 
-wxMenuItem* exMenu::Append(
+wxMenuItem* wxExMenu::Append(
   int id,
   const wxString& name,
   const wxString& helptext,
@@ -532,7 +532,7 @@ wxMenuItem* exMenu::Append(
   return wxMenu::Append(item);
 }
 
-bool exMenu::AppendEdit(bool add_invert)
+bool wxExMenu::AppendEdit(bool add_invert)
 {
   bool added = false;
 
@@ -594,27 +594,27 @@ bool exMenu::AppendEdit(bool add_invert)
   return added;
 }
 
-void exMenu::AppendPrint()
+void wxExMenu::AppendPrint()
 {
-  Append(wxID_PRINT_SETUP, exEllipsed(_("Page &Setup")));
+  Append(wxID_PRINT_SETUP, wxExEllipsed(_("Page &Setup")));
   Append(wxID_PREVIEW);
   Append(wxID_PRINT);
 }
 
-exMenu* exMenu::AppendTools()
+wxExMenu* wxExMenu::AppendTools()
 {
-  exMenu* menuTool = new exMenu(*this);
-  exMenu* menuReport = new exMenu(*this);
+  wxExMenu* menuTool = new wxExMenu(*this);
+  wxExMenu* menuReport = new wxExMenu(*this);
   bool added_to_tool = false;
 
   for (
-    map <int, const exToolInfo>::const_iterator it = exTool::GetToolInfo().begin();
-    it != exTool::GetToolInfo().end();
+    map <int, const wxExToolInfo>::const_iterator it = wxExTool::GetToolInfo().begin();
+    it != wxExTool::GetToolInfo().end();
     ++it)
   {
     if (!it->second.GetText().empty())
     {
-      exMenu* menu = (it->second.GetIsBasic() ? menuTool: menuReport);
+      wxExMenu* menu = (it->second.GetIsBasic() ? menuTool: menuReport);
       menu->Append(it->first, it->second.GetText(), it->second.GetHelpText());
 
       if (it->second.GetIsBasic())
@@ -636,17 +636,17 @@ exMenu* exMenu::AppendTools()
   return menuTool;
 }
 
-int exPane::m_Total = 0;
+int wxExPane::m_Total = 0;
 
 #if wxUSE_STATUSBAR
-BEGIN_EVENT_TABLE(exStatusBar, wxStatusBar)
-  EVT_LEFT_DOWN(exStatusBar::OnMouse)
-  EVT_LEFT_DCLICK(exStatusBar::OnMouse)
-  EVT_MOTION(exStatusBar::OnMouse)
+BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
+  EVT_LEFT_DOWN(wxExStatusBar::OnMouse)
+  EVT_LEFT_DCLICK(wxExStatusBar::OnMouse)
+  EVT_MOTION(wxExStatusBar::OnMouse)
 END_EVENT_TABLE()
 
-exStatusBar::exStatusBar(
-  exFrame* parent,
+wxExStatusBar::wxExStatusBar(
+  wxExFrame* parent,
   wxWindowID id,
   long style,
   const wxString& name)
@@ -655,7 +655,7 @@ exStatusBar::exStatusBar(
 {
 }
 
-void exStatusBar::OnMouse(wxMouseEvent& event)
+void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   bool found = false;
 
@@ -703,9 +703,9 @@ void exStatusBar::OnMouse(wxMouseEvent& event)
 }
 #endif //wxUSE_STATUSBAR
 
-map<wxWindowID, wxArtID> exStockArt::m_StockArt;
+map<wxWindowID, wxArtID> wxExStockArt::m_StockArt;
 
-exStockArt::exStockArt()
+wxExStockArt::wxExStockArt()
 {
   if (m_StockArt.empty())
   {
@@ -734,7 +734,7 @@ exStockArt::exStockArt()
   }
 }
 
-void exStockArt::CheckStock(
+void wxExStockArt::CheckStock(
   int id,
   wxString& stock_label,
   wxBitmap& bitmap,
@@ -769,7 +769,7 @@ void exStockArt::CheckStock(
   }
 }
 
-exToolBar::exToolBar(wxWindow* parent,
+wxExToolBar::wxExToolBar(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
@@ -781,7 +781,7 @@ exToolBar::exToolBar(wxWindow* parent,
   SetToolBitmapSize(bitmap_size);
 }
 
-wxToolBarToolBase* exToolBar::AddTool(
+wxToolBarToolBase* wxExToolBar::AddTool(
   int toolId,
   const wxString& label,
   const wxBitmap& bitmap1,
@@ -794,7 +794,7 @@ wxToolBarToolBase* exToolBar::AddTool(
   return wxToolBar::AddTool(toolId, label, use_bitmap, use_help, kind);
 }
 
-wxToolBarToolBase* exToolBar::AddTool(
+wxToolBarToolBase* wxExToolBar::AddTool(
   int toolId,
   const wxString& longHelpString,
   const wxString& label,
@@ -818,7 +818,7 @@ wxToolBarToolBase* exToolBar::AddTool(
     clientData);
 }
 
-wxToolBarToolBase* exToolBar::AddCheckTool(
+wxToolBarToolBase* wxExToolBar::AddCheckTool(
   int toolId,
   const wxString& label,
   const wxBitmap& bitmap1,

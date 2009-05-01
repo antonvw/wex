@@ -15,7 +15,7 @@
 #include <wx/extension/app.h>
 #include <wx/extension/util.h>
 
-long exFileNameStatistics::Get(const wxString& key) const
+long wxExFileNameStatistics::Get(const wxString& key) const
 {
   std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);
 
@@ -36,7 +36,7 @@ long exFileNameStatistics::Get(const wxString& key) const
   return 0;
 }
 
-const wxFileName exFileNameStatistics::GetLogfileName()
+const wxFileName wxExFileNameStatistics::GetLogfileName()
 {
   wxFileName filename(
 #ifdef EX_PORTABLE
@@ -49,8 +49,8 @@ const wxFileName exFileNameStatistics::GetLogfileName()
   return filename;
 }
 
-void exFileNameStatistics::Log(
-  const exTool& tool,
+void wxExFileNameStatistics::Log(
+  const wxExTool& tool,
   bool log_to_file) const
 {
   // This is no error, if you run a tool and you cancelled everything,
@@ -67,28 +67,28 @@ void exFileNameStatistics::Log(
     logtext = logtext.Format(logtext, Get(_("Actions Completed")));
   }
 
-  logtext 
+  logtext
     << " " << Get(_("Files Passed")) << " " << _("file(s)")
     << (IsOk() ? ": " + GetFullPath(): "");
 
-  exFrame::StatusText(logtext);
+  wxExFrame::StatusText(logtext);
 
   if (!log_to_file) return;
 
   if (Get(_("Files Passed")) != 0)
   {
-    exApp::Log(logtext);
+    wxExApp::Log(logtext);
 
     if (tool.IsCountType())
     {
       wxString logtext;
 
-      logtext 
+      logtext
         << GetFullPath()
-        << m_Elements.Get() 
+        << m_Elements.Get()
         << wxTextFile::GetEOL();
 
-      exLog(logtext, GetLogfileName());
+      wxExLog(logtext, GetLogfileName());
     }
   }
 }

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.cpp
-* Purpose:       Implementation of class exSTC and related classes
+* Purpose:       Implementation of class wxExSTC and related classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -30,11 +30,11 @@ const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 10;
 
 #if wxUSE_PRINTING_ARCHITECTURE
-// Offers a print out to be used by exSTC.
-class exPrintout : public wxPrintout
+// Offers a print out to be used by wxExSTC.
+class wxExPrintout : public wxPrintout
 {
 public:
-  exPrintout(exSTC* owner);
+  wxExPrintout(wxExSTC* owner);
 private:
   void CountPages();
   void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo);
@@ -46,10 +46,10 @@ private:
   wxRect m_PageRect, m_PrintRect;
   int m_CurrentPage;
   vector<int> m_PageBreaks;
-  exSTC* m_Owner;
+  wxExSTC* m_Owner;
 };
 
-exPrintout::exPrintout(exSTC* owner)
+wxExPrintout::wxExPrintout(wxExSTC* owner)
   : wxPrintout(owner->PrintCaption())
   , m_PageRect()
   , m_PrintRect()
@@ -58,7 +58,7 @@ exPrintout::exPrintout(exSTC* owner)
 {
 }
 
-void exPrintout::CountPages()
+void wxExPrintout::CountPages()
 {
   wxASSERT(GetDC() != NULL);
 
@@ -85,7 +85,7 @@ void exPrintout::CountPages()
   }
 }
 
-void exPrintout::GetPageInfo(
+void wxExPrintout::GetPageInfo(
   int* minPage, int* maxPage, int* pageFrom, int* pageTo)
 {
   *minPage = 1;
@@ -94,13 +94,13 @@ void exPrintout::GetPageInfo(
   *pageTo = m_PageBreaks.size() - 1;
 }
 
-void exPrintout::OnPreparePrinting()
+void wxExPrintout::OnPreparePrinting()
 {
   const double factor = 22.4;
   wxSize ppiScr;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
-  wxPageSetupDialogData* dlg_data = exApp::GetPrinter()->GetPageSetupData();
+  wxPageSetupDialogData* dlg_data = wxExApp::GetPrinter()->GetPageSetupData();
   wxSize page = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)
@@ -120,15 +120,15 @@ void exPrintout::OnPreparePrinting()
   int bottom = (int)(dlg_data->GetMarginBottomRight().y * ppiScr.y / factor);
 
   m_PrintRect = wxRect(
-    left, 
-    top, 
-    page.x - (left + right), 
+    left,
+    top,
+    page.x - (left + right),
     page.y - (top + bottom));
 
   CountPages();
 }
 
-bool exPrintout::OnPrintPage(int pageNum)
+bool wxExPrintout::OnPrintPage(int pageNum)
 {
   wxASSERT(GetDC() != NULL);
 
@@ -162,7 +162,7 @@ bool exPrintout::OnPrintPage(int pageNum)
   if (!header.empty())
   {
     GetDC()->DrawText(
-      exTranslate(header, pageNum, m_PageBreaks.size()),
+      wxExTranslate(header, pageNum, m_PageBreaks.size()),
       m_PrintRect.GetTopLeft().x,
       m_PrintRect.GetTopLeft().y - 20);
 
@@ -178,7 +178,7 @@ bool exPrintout::OnPrintPage(int pageNum)
   if (!footer.empty())
   {
     GetDC()->DrawText(
-      exTranslate(footer, pageNum, m_PageBreaks.size() - 1),
+      wxExTranslate(footer, pageNum, m_PageBreaks.size() - 1),
       m_PrintRect.GetBottomRight().x / 2,
       m_PrintRect.GetBottomRight().y);
 
@@ -192,7 +192,7 @@ bool exPrintout::OnPrintPage(int pageNum)
   return true;
 }
 
-void exPrintout::SetScale(wxDC *dc)
+void wxExPrintout::SetScale(wxDC *dc)
 {
   wxSize ppiScr, ppiPrt;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
@@ -225,37 +225,37 @@ void exPrintout::SetScale(wxDC *dc)
 }
 #endif // wxUSE_PRINTING_ARCHITECTURE
 
-BEGIN_EVENT_TABLE(exSTC, wxStyledTextCtrl)
-  EVT_FIND(wxID_ANY, exSTC::OnFindDialog)
-  EVT_FIND_CLOSE(wxID_ANY, exSTC::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, exSTC::OnFindDialog)
-  EVT_FIND_REPLACE(wxID_ANY, exSTC::OnFindDialog)
-  EVT_FIND_REPLACE_ALL(wxID_ANY, exSTC::OnFindDialog)
-  EVT_IDLE(exSTC::OnIdle)
-  EVT_KEY_DOWN(exSTC::OnKey)
-  EVT_LEFT_UP(exSTC::OnMouse)
-  EVT_RIGHT_UP(exSTC::OnMouse)
-  EVT_MENU(wxID_JUMP_TO, exSTC::OnCommand)
-  EVT_MENU(wxID_SAVE, exSTC::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, exSTC::OnCommand)
-  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, exSTC::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, exSTC::OnCommand)
-  EVT_STC_DWELLEND(wxID_ANY, exSTC::OnStyledText)
-  EVT_STC_DWELLSTART(wxID_ANY, exSTC::OnStyledText)
-  EVT_STC_MACRORECORD(wxID_ANY, exSTC::OnStyledText)
-  EVT_STC_MARGINCLICK(wxID_ANY, exSTC::OnStyledText)
-  EVT_STC_MODIFIED(wxID_ANY, exSTC::OnStyledText)
+BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
+  EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_CLOSE(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_REPLACE(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_REPLACE_ALL(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_IDLE(wxExSTC::OnIdle)
+  EVT_KEY_DOWN(wxExSTC::OnKey)
+  EVT_LEFT_UP(wxExSTC::OnMouse)
+  EVT_RIGHT_UP(wxExSTC::OnMouse)
+  EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
+  EVT_MENU(wxID_SAVE, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
+  EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
-exConfigDialog* exSTC::m_ConfigDialog = NULL;
-vector <wxString> exSTC::m_Macro;
-wxPathList exSTC::m_PathList;
+wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
+vector <wxString> wxExSTC::m_Macro;
+wxPathList wxExSTC::m_PathList;
 
 #if wxUSE_PRINTING_ARCHITECTURE
-wxPrinter* exSTC::m_Printer = NULL;
+wxPrinter* wxExSTC::m_Printer = NULL;
 #endif
 
-exSTC::exSTC(wxWindow* parent,
+wxExSTC::wxExSTC(wxWindow* parent,
   long menu_flags,
   const wxString& value,
   wxWindowID id,
@@ -264,7 +264,7 @@ exSTC::exSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , exInterface()
+  , wxExInterface()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_LineNumber(1)
@@ -281,8 +281,8 @@ exSTC::exSTC(wxWindow* parent,
   PropertiesMessage();
 }
 
-exSTC::exSTC(wxWindow* parent,
-  const exFileName& filename,
+wxExSTC::wxExSTC(wxWindow* parent,
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags,
@@ -293,7 +293,7 @@ exSTC::exSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , exInterface()
+  , wxExInterface()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_MenuFlags(menu_flags)
@@ -304,7 +304,7 @@ exSTC::exSTC(wxWindow* parent,
   Open(filename, line_number, match, flags);
 }
 
-exSTC::exSTC(const exSTC& stc)
+wxExSTC::wxExSTC(const wxExSTC& stc)
 {
   wxStyledTextCtrl::Create(stc.GetParent());
 
@@ -324,7 +324,7 @@ exSTC::exSTC(const exSTC& stc)
   }
 }
 
-void exSTC::AddAsciiTable()
+void wxExSTC::AddAsciiTable()
 {
   // Do not show an edge, eol or whitespace for ascii table.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -344,7 +344,7 @@ void exSTC::AddAsciiTable()
   SetSavePoint();
 }
 
-void exSTC::AddBasePathToPathList()
+void wxExSTC::AddBasePathToPathList()
 {
   // First find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath:";
@@ -368,7 +368,7 @@ void exSTC::AddBasePathToPathList()
   PathListAdd(basepath);
 }
 
-void exSTC::AddTextHexMode(wxFileOffset start, long length, const wxChar* buffer)
+void wxExSTC::AddTextHwxExMode(wxFileOffset start, long length, const wxChar* buffer)
 /*
 e.g.:
 offset    hex field                                         ascii field
@@ -446,7 +446,7 @@ offset    hex field                                         ascii field
   AddText(text);
 }
 
-void exSTC::AppendTextForced(const wxString& text, bool withTimestamp)
+void wxExSTC::AppendTextForced(const wxString& text, bool withTimestamp)
 {
   const bool pos_at_end = (GetCurrentPos() == GetTextLength());
   const bool readonly = GetReadOnly();
@@ -480,17 +480,17 @@ void exSTC::AppendTextForced(const wxString& text, bool withTimestamp)
   }
 }
 
-void exSTC::BuildPopupMenu(exMenu& menu)
+void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
   const wxString link = GetTextAtCurrentPos();
-  const int line_no = (!sel.empty() ? exGetLineNumberFromText(sel): GetLineNumberAtCurrentPos());
+  const int line_no = (!sel.empty() ? wxExGetLineNumberFromText(sel): GetLineNumberAtCurrentPos());
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
     if (LinkOpen(link, line_no, false))
     {
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + exGetEndOfText(link));
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + wxExGetEndOfText(link));
       menu.AppendSeparator();
     }
   }
@@ -512,18 +512,18 @@ void exSTC::BuildPopupMenu(exMenu& menu)
 
   bool added = menu.AppendEdit();
 
-  exMenu* menuSelection = NULL;
+  wxExMenu* menuSelection = NULL;
 
   if (!GetReadOnly())
   {
     if (!sel.empty())
     {
-      menuSelection = new exMenu(menu);
+      menuSelection = new wxExMenu(menu);
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
       added = true;
 
-      if (exGetNumberOfLines(sel) > 1)
+      if (wxExGetNumberOfLines(sel) > 1)
       {
         menuSelection->AppendSeparator();
         menuSelection->Append(wxID_SORT_ASCENDING);
@@ -536,7 +536,7 @@ void exSTC::BuildPopupMenu(exMenu& menu)
       {
         if (added) menu.AppendSeparator();
         menu.Append(ID_EDIT_INSERT_DATE, _("Insert Timestamp"));
-        menu.Append(ID_EDIT_INSERT_SEQUENCE, exEllipsed(_("Insert Sequence")));
+        menu.Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
         added = true;
       }
 
@@ -577,7 +577,7 @@ void exSTC::BuildPopupMenu(exMenu& menu)
   }
 }
 
-bool exSTC::CheckAutoComp(int key)
+bool wxExSTC::CheckAutoComp(int key)
 {
   static wxString autoc;
 
@@ -609,7 +609,7 @@ bool exSTC::CheckAutoComp(int key)
   return AutoCompActive();
 }
 
-bool exSTC::CheckBrace(int pos)
+bool wxExSTC::CheckBrace(int pos)
 {
   const int brace_match = BraceMatch(pos);
 
@@ -625,7 +625,7 @@ bool exSTC::CheckBrace(int pos)
   }
 }
 
-bool exSTC::CheckSmartIndentation()
+bool wxExSTC::CheckSmartIndentation()
 {
   // At this moment a newline has been given (but not yet processed).
   const wxString line = GetLine(GetCurrentLine());
@@ -660,23 +660,23 @@ bool exSTC::CheckSmartIndentation()
   }
 }
 
-void exSTC::CleanUp()
+void wxExSTC::CleanUp()
 {
 #if wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;
 #endif
 }
 
-void exSTC::ClearDocument()
+void wxExSTC::ClearDocument()
 {
   SetReadOnly(false);
   ClearAll();
-  exFrame::StatusText(wxEmptyString, "PaneLines");
+  wxExFrame::StatusText(wxEmptyString, "PaneLines");
   EmptyUndoBuffer();
   SetSavePoint();
 }
 
-void exSTC::Colourise()
+void wxExSTC::Colourise()
 {
   SetKeyWords();
   SetGlobalStyles();
@@ -698,13 +698,13 @@ void exSTC::Colourise()
 }
 
 // This is a static method, cannot use normal members here.
-int exSTC::ConfigDialog(
+int wxExSTC::ConfigDialog(
   const wxString& title,
   long flags,
   wxWindow* parent,
   wxWindowID id)
 {
-  vector<exConfigItem> items;
+  vector<wxExConfigItem> items;
 
   wxString page;
 
@@ -717,46 +717,46 @@ int exSTC::ConfigDialog(
     page = _("Setting");
   }
 
-  items.push_back(exConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
-  items.push_back(exConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
+  items.push_back(wxExConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
+  items.push_back(wxExConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
 
   set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
-  items.push_back(exConfigItem(bchoices, page));
+  items.push_back(wxExConfigItem(bchoices, page));
 
   map<long, const wxString> choices;
   choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
   choices.insert(make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
-  items.push_back(exConfigItem(_("WhiteSpace"), choices, true, page));
+  items.push_back(wxExConfigItem(_("WhiteSpace"), choices, true, page));
 
   map<long, const wxString> wchoices;
   wchoices.insert(make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(make_pair(wxSTC_WRAP_WORD, _("Word")));
   wchoices.insert(make_pair(wxSTC_WRAP_CHAR, _("Char")));
-  items.push_back(exConfigItem(_("Wrap line"), wchoices, true, page));
+  items.push_back(wxExConfigItem(_("Wrap line"), wchoices, true, page));
 
   map<long, const wxString> vchoices;
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
   vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
-  items.push_back(exConfigItem(_("Wrap visual flags"), vchoices, true, page));
+  items.push_back(wxExConfigItem(_("Wrap visual flags"), vchoices, true, page));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
-    items.push_back(exConfigItem(_("Edge column"), CONFIG_INT, _("Edge")));
+    items.push_back(wxExConfigItem(_("Edge column"), CONFIG_INT, _("Edge")));
 
     map<long, const wxString> echoices;
     echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
     echoices.insert(make_pair(wxSTC_EDGE_LINE, _("Line")));
     echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
-    items.push_back(exConfigItem(_("Edge line"), echoices, true, _("Edge")));
+    items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
-    items.push_back(exConfigItem(_("Auto fold"), CONFIG_INT, _("Folding")));
-    items.push_back(exConfigItem()); // spacer
-    items.push_back(exConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
+    items.push_back(wxExConfigItem(_("Auto fold"), CONFIG_INT, _("Folding")));
+    items.push_back(wxExConfigItem()); // spacer
+    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
     map<long, const wxString> fchoices;
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
@@ -765,15 +765,15 @@ int exSTC::ConfigDialog(
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
     fchoices.insert(make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
-    items.push_back(exConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
+    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
-    items.push_back(exConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
 
-    items.push_back(exConfigItem(_("Divider"), CONFIG_INT, _("Margin")));
-    items.push_back(exConfigItem(_("Folding"), CONFIG_INT, _("Margin")));
-    items.push_back(exConfigItem(_("Line number"), CONFIG_INT, _("Margin")));
+    items.push_back(wxExConfigItem(_("Divider"), CONFIG_INT, _("Margin")));
+    items.push_back(wxExConfigItem(_("Folding"), CONFIG_INT, _("Margin")));
+    items.push_back(wxExConfigItem(_("Line number"), CONFIG_INT, _("Margin")));
 
-    items.push_back(exConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
+    items.push_back(wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
   }
 
   const wxSize size
@@ -792,9 +792,9 @@ int exSTC::ConfigDialog(
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
-    exConfigDialog dlg(
+    wxExConfigDialog dlg(
       parent,
-      exApp::GetConfig(),
+      wxExApp::GetConfig(),
       items,
       title,
       GetConfigKeyBase(),
@@ -811,9 +811,9 @@ int exSTC::ConfigDialog(
   {
     if (m_ConfigDialog == NULL)
     {
-      m_ConfigDialog = new exConfigDialog(
+      m_ConfigDialog = new wxExConfigDialog(
         parent,
-        exApp::GetConfig(),
+        wxExApp::GetConfig(),
         items,
         title,
         GetConfigKeyBase(),
@@ -829,9 +829,9 @@ int exSTC::ConfigDialog(
   }
 }
 
-void exSTC::ConfigGet()
+void wxExSTC::ConfigGet()
 {
-  CallTipSetBackground(GetConfig(_("CallTip"), exColourToLong(wxColour("YELLOW"))));
+  CallTipSetBackground(GetConfig(_("CallTip"), wxExColourToLong(wxColour("YELLOW"))));
 
   SetEdgeColumn(GetConfig(_("Edge column"), 80)); // see also lexer
   SetEdgeMode(GetConfig(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
@@ -854,7 +854,7 @@ void exSTC::ConfigGet()
   SetWrapVisualFlags(GetConfig(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 }
 
-void exSTC::ControlCharDialog(const wxString& caption)
+void wxExSTC::ControlCharDialog(const wxString& caption)
 {
   if (GetSelectedText().length() > 1)
   {
@@ -913,7 +913,7 @@ void exSTC::ControlCharDialog(const wxString& caption)
   }
 }
 
-void exSTC::EOLModeUpdate(int eol_mode)
+void wxExSTC::EOLModeUpdate(int eol_mode)
 {
   ConvertEOLs(eol_mode);
   SetEOLMode(eol_mode);
@@ -922,7 +922,7 @@ void exSTC::EOLModeUpdate(int eol_mode)
 #endif
 }
 
-void exSTC::EnsureLineVisible(int pos_start, int pos_end)
+void wxExSTC::EnsureLineVisible(int pos_start, int pos_end)
 {
   const int line_start = LineFromPosition(pos_start);
   const int line_end = LineFromPosition(pos_end);
@@ -938,9 +938,9 @@ void exSTC::EnsureLineVisible(int pos_start, int pos_end)
   }
 }
 
-bool exSTC::FileNew(const exFileName& filename)
+bool wxExSTC::FileNew(const wxExFileName& filename)
 {
-  if (!exFile::FileNew(filename))
+  if (!wxExFile::FileNew(filename))
   {
     return false;
   }
@@ -952,18 +952,18 @@ bool exSTC::FileNew(const exFileName& filename)
   return true;
 }
 
-bool exSTC::FileReadOnlyAttributeChanged()
+bool wxExSTC::FileReadOnlyAttributeChanged()
 {
   if (!(m_Flags & STC_OPEN_HEX))
   {
     SetReadOnly(m_FileName.GetStat().IsReadOnly()); // does not return anything
-    exFrame::StatusText(_("Readonly attribute changed"));
+    wxExFrame::StatusText(_("Readonly attribute changed"));
   }
 
   return true;
 }
 
-bool exSTC::FileSave()
+bool wxExSTC::FileSave()
 {
   if (m_FileName.GetFullPath().empty())
   {
@@ -979,20 +979,20 @@ bool exSTC::FileSave()
   Write((*buffer).c_str(), GetLength());
   delete buffer;
 
-  exFile::FileSave();
+  wxExFile::FileSave();
 
   SetSavePoint();
 
   const wxString msg = _("Saved") + ": " + m_FileName.GetFullPath();
-  exApp::Log(msg);
-  exFrame::StatusText(msg);
+  wxExApp::Log(msg);
+  wxExFrame::StatusText(msg);
 
   return true;
 }
 
-bool exSTC::FileSaveAs()
+bool wxExSTC::FileSaveAs()
 {
-  if (!exFile::FileSaveAs())
+  if (!wxExFile::FileSaveAs())
   {
     return false;
   }
@@ -1002,7 +1002,7 @@ bool exSTC::FileSaveAs()
   return true;
 }
 
-void exSTC::FileSync()
+void wxExSTC::FileSync()
 {
   // Reopen the file using current mode,
   // and adding sync flag if not modified.
@@ -1016,11 +1016,11 @@ void exSTC::FileSync()
   Open(m_FileName, 0, wxEmptyString, flags);
 }
 
-void exSTC::FileTypeMenu()
+void wxExSTC::FileTypeMenu()
 {
   if (GetReadOnly())
   {
-    exFrame::StatusText(_("Document is readonly"));
+    wxExFrame::StatusText(_("Document is readonly"));
     return;
   }
 
@@ -1036,14 +1036,14 @@ void exSTC::FileTypeMenu()
   PopupMenu(eol);
 }
 
-void exSTC::FindDialog(wxWindow* parent, const wxString& caption)
+void wxExSTC::FindDialog(wxWindow* parent, const wxString& caption)
 {
   GetSearchText();
 
-  exInterface::FindDialog(parent, caption);
+  wxExInterface::FindDialog(parent, caption);
 }
 
-bool exSTC::FindNext(const wxString& text, bool find_next)
+bool wxExSTC::FindNext(const wxString& text, bool find_next)
 {
   if (text.empty())
   {
@@ -1104,9 +1104,9 @@ bool exSTC::FindNext(const wxString& text, bool find_next)
   }
 }
 
-int exSTC::FindReplaceDataFlags() const
+int wxExSTC::FindReplaceDataFlags() const
 {
-  const exFindReplaceData* frd = exApp::GetConfig()->GetFindReplaceData();
+  const wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
 
   int flags = 0;
 
@@ -1117,7 +1117,7 @@ int exSTC::FindReplaceDataFlags() const
   return flags;
 }
 
-void exSTC::FoldAll()
+void wxExSTC::FoldAll()
 {
   wxBusyCursor wait;
 
@@ -1143,7 +1143,7 @@ void exSTC::FoldAll()
   GotoLine(current_line);
 }
 
-const wxString exSTC::GetEOL()
+const wxString wxExSTC::GetEOL()
 {
   switch (GetEOLMode())
   {
@@ -1156,7 +1156,7 @@ const wxString exSTC::GetEOL()
   return "\r\n";
 }
 
-int exSTC::GetLineNumberAtCurrentPos()
+int wxExSTC::GetLineNumberAtCurrentPos()
 {
   // This method is used by LinkOpen.
   // So, if no line number present return 0, otherwise link open jumps to last line.
@@ -1167,23 +1167,23 @@ int exSTC::GetLineNumberAtCurrentPos()
   // return correct number.
   const wxString text = GetTextRange(PositionFromLine(line_no), GetLineEndPosition(line_no));
 
-  return exGetLineNumberFromText(text);
+  return wxExGetLineNumberFromText(text);
 }
 
-const wxString exSTC::GetSearchText()
+const wxString wxExSTC::GetSearchText()
 {
   const wxString selection = GetSelectedText();
-  if (!selection.empty() && exGetNumberOfLines(selection) == 1)
-    exApp::GetConfig()->GetFindReplaceData()->SetFindString(selection);
-  return exApp::GetConfig()->GetFindReplaceData()->GetFindString();
+  if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
+    wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(selection);
+  return wxExApp::GetConfig()->GetFindReplaceData()->GetFindString();
 }
 
-const wxString exSTC::GetTextAtCurrentPos()
+const wxString wxExSTC::GetTextAtCurrentPos()
 {
   const wxString sel = GetSelectedText();
   if (!sel.empty())
   {
-    if (exGetNumberOfLines(sel) > 1)
+    if (wxExGetNumberOfLines(sel) > 1)
     {
       // wxPathList cannot handle links over several lines.
       return wxEmptyString;
@@ -1239,13 +1239,13 @@ const wxString exSTC::GetTextAtCurrentPos()
   }
 }
 
-wxString* exSTC::GetTextRaw()
+wxString* wxExSTC::GetTextRaw()
 {
   // Readme: For new svn, test and add length (wxCharBuffer, and scoped char).
   return new wxString(wxStyledTextCtrl::GetTextRaw());
 }
 
-const wxString exSTC::GetWordAtPos(int pos)
+const wxString wxExSTC::GetWordAtPos(int pos)
 {
   const int word_start = WordStartPosition(pos, true);
   const int word_end = WordEndPosition(pos, true);
@@ -1269,7 +1269,7 @@ const wxString exSTC::GetWordAtPos(int pos)
   }
 }
 
-bool exSTC::GotoDialog(const wxString& caption)
+bool wxExSTC::GotoDialog(const wxString& caption)
 {
   const long initial_value = (m_LineNumber <= GetLineCount() ? m_LineNumber: 1);
 
@@ -1290,7 +1290,7 @@ bool exSTC::GotoDialog(const wxString& caption)
   return true;
 }
 
-void exSTC::GotoLineAndSelect(int line_number, const wxString& text)
+void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
 {
   // line_number and m_LineNumber start with 1 and is allowed to be equal to number of lines.
   // Internally GotoLine starts with 0, therefore line_number - 1 is used afterwards.
@@ -1317,8 +1317,8 @@ void exSTC::GotoLineAndSelect(int line_number, const wxString& text)
     if (SearchInTarget(text) < 0)
     {
       wxBell();
-      // Same text also displayed in exInterface.
-      exFrame::StatusText("'" + exSkipWhiteSpace(text) + "' " + _("not found"));
+      // Same text also displayed in wxExInterface.
+      wxExFrame::StatusText("'" + wxExSkipWhiteSpace(text) + "' " + _("not found"));
       return;
     }
   }
@@ -1326,7 +1326,7 @@ void exSTC::GotoLineAndSelect(int line_number, const wxString& text)
   SetSelection(GetTargetStart(), GetTargetEnd());
 }
 
-void exSTC::GuessType()
+void wxExSTC::GuessType()
 {
   if (!(m_Flags & STC_OPEN_HEX))
   {
@@ -1345,7 +1345,7 @@ void exSTC::GuessType()
 #endif
 }
 
-void exSTC::HexDecCalltip(int pos)
+void wxExSTC::HwxExDecCalltip(int pos)
 {
   if (CallTipActive())
   {
@@ -1395,7 +1395,7 @@ void exSTC::HexDecCalltip(int pos)
   }
 }
 
-void exSTC::Initialize()
+void wxExSTC::Initialize()
 {
   m_MacroIsRecording = false;
   m_MarginDividerNumber = 1;
@@ -1458,17 +1458,17 @@ void exSTC::Initialize()
   SetGlobalStyles();
 }
 
-void exSTC::LexerDialog(const wxString& caption)
+void wxExSTC::LexerDialog(const wxString& caption)
 {
-  exLexer lexer = m_FileName.GetLexer();
+  wxExLexer lexer = m_FileName.GetLexer();
 
-  if (exApp::GetLexers()->ShowDialog(this, lexer, caption))
+  if (wxExApp::GetLexers()->ShowDialog(this, lexer, caption))
   {
     SetLexer(lexer.GetScintillaLexer());
   }
 }
 
-bool exSTC::LinkOpen(
+bool wxExSTC::LinkOpen(
   const wxString& link_with_line,
   int line_number,
   bool open_link)
@@ -1522,7 +1522,7 @@ bool exSTC::LinkOpen(
     if (fullpath.empty())
     {
       // README: Code added since wxWidgets 2.7.0, as that normalized the file.
-      //fullpath = exApp::GetConfig()->GetPathList().FindAbsoluteValidPath(link);
+      //fullpath = wxExApp::GetConfig()->GetPathList().FindAbsoluteValidPath(link);
       wxString strend = link;
 
       for (size_t i=0; i < m_PathList.GetCount() && fullpath.empty(); i++)
@@ -1545,7 +1545,7 @@ bool exSTC::LinkOpen(
   return !fullpath.empty();
 }
 
-void exSTC::MacroPlayback()
+void wxExSTC::MacroPlayback()
 {
   if (!MacroIsRecorded())
   {
@@ -1567,10 +1567,10 @@ void exSTC::MacroPlayback()
     SendMsg(msg, wp, (long)txt);
   }
 
-  exFrame::StatusText(_("Macro played back"));
+  wxExFrame::StatusText(_("Macro played back"));
 }
 
-void exSTC::OnCommand(wxCommandEvent& command)
+void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
@@ -1596,7 +1596,7 @@ void exSTC::OnCommand(wxCommandEvent& command)
     ControlCharDialog();
   break;
   case ID_EDIT_HEX_DEC_CALLTIP:
-    HexDecCalltip(GetCurrentPos());
+    HwxExDecCalltip(GetCurrentPos());
   break;
 
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
@@ -1624,7 +1624,7 @@ void exSTC::OnCommand(wxCommandEvent& command)
     const wxString sel = GetSelectedText();
     if (!sel.empty())
     {
-      LinkOpen(sel, exGetLineNumberFromText(sel));
+      LinkOpen(sel, wxExGetLineNumberFromText(sel));
     }
     else
     {
@@ -1651,9 +1651,9 @@ void exSTC::OnCommand(wxCommandEvent& command)
   }
 }
 
-void exSTC::OnFindDialog(wxFindDialogEvent& event)
+void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
-  exFindReplaceData* frd = exApp::GetConfig()->GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
 
   if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
   {
@@ -1685,7 +1685,7 @@ void exSTC::OnFindDialog(wxFindDialogEvent& event)
     const int selstart = GetSelectionStart();
     const int selend = GetSelectionEnd();
 
-    // We cannot use exGetNumberOfLines here if we have a rectangular selection.
+    // We cannot use wxExGetNumberOfLines here if we have a rectangular selection.
     // So do it the other way.
     if (!selection.empty() &&
          LineFromPosition(selend) > LineFromPosition(selstart))
@@ -1755,16 +1755,16 @@ void exSTC::OnFindDialog(wxFindDialogEvent& event)
 
     EndUndoAction();
 
-    exFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
+    wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
       nr_replacements, frd->GetFindString().c_str()));
   }
   else
   {
-    exInterface::OnFindDialog(event);
+    wxExInterface::OnFindDialog(event);
   }
 }
 
-void exSTC::OnIdle(wxIdleEvent& event)
+void wxExSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
@@ -1784,13 +1784,13 @@ void exSTC::OnIdle(wxIdleEvent& event)
   CheckSyncNeeded();
 }
 
-void exSTC::OnKey(wxKeyEvent& event)
+void wxExSTC::OnKey(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
 
   if (GetReadOnly() && isascii(key))
   {
-    exFrame::StatusText(_("Document is readonly"));
+    wxExFrame::StatusText(_("Document is readonly"));
     return;
   }
 
@@ -1872,7 +1872,7 @@ void exSTC::OnKey(wxKeyEvent& event)
   }
 }
 
-void exSTC::OnMouse(wxMouseEvent& event)
+void wxExSTC::OnMouse(wxMouseEvent& event)
 {
   if (event.RightUp())
   {
@@ -1883,12 +1883,12 @@ void exSTC::OnMouse(wxMouseEvent& event)
     else
     {
       int style = 0; // otherwise CAN_PASTE already on
-      if (GetReadOnly()) style |= exMenu::MENU_IS_READ_ONLY;
-      if (!GetSelectedText().empty()) style |= exMenu::MENU_IS_SELECTED;
-      if (GetTextLength() == 0) style |= exMenu::MENU_IS_EMPTY;
-      if (CanPaste()) style |= exMenu::MENU_CAN_PASTE;
+      if (GetReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
+      if (!GetSelectedText().empty()) style |= wxExMenu::MENU_IS_SELECTED;
+      if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+      if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
 
-      exMenu menu(style);
+      wxExMenu menu(style);
       BuildPopupMenu(menu);
       PopupMenu(&menu);
     }
@@ -1906,7 +1906,7 @@ void exSTC::OnMouse(wxMouseEvent& event)
   }
 }
 
-void exSTC::OnStyledText(wxStyledTextEvent& event)
+void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
   if (event.GetEventType() == wxEVT_STC_DWELLSTART)
   {
@@ -1917,7 +1917,7 @@ void exSTC::OnStyledText(wxStyledTextEvent& event)
 
     // FIXME: Calltips sometimes appear at wrong places, so not used.
     // const int pos = event.GetPosition();
-    // HexDecCalltip(pos);
+    // HwxExDecCalltip(pos);
   }
   else if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
@@ -1961,7 +1961,7 @@ void exSTC::OnStyledText(wxStyledTextEvent& event)
     // the OnIdle already does this.
     if (!m_FileName.IsOk())
     {
-      exFrame::StatusText(wxDateTime::Now().Format());
+      wxExFrame::StatusText(wxDateTime::Now().Format());
     }
   }
   else
@@ -1970,8 +1970,8 @@ void exSTC::OnStyledText(wxStyledTextEvent& event)
   }
 }
 
-bool exSTC::Open(
-  const exFileName& filename,
+bool wxExSTC::Open(
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -2050,8 +2050,8 @@ bool exSTC::Open(
   if (!real_sync)
   {
     const wxString msg = _("Opened") + ": " + m_FileName.GetFullPath();
-    exApp::Log(msg);
-    exFrame::StatusText(msg);
+    wxExApp::Log(msg);
+    wxExFrame::StatusText(msg);
     PropertiesMessage();
   }
   else
@@ -2062,7 +2062,7 @@ bool exSTC::Open(
 #endif
   }
 
-  if (m_FileName == exLogfileName())
+  if (m_FileName == wxExLogfileName())
   {
     DocumentEnd();
   }
@@ -2073,7 +2073,7 @@ bool exSTC::Open(
   return true;
 }
 
-void exSTC::PathListAdd(const wxString& path)
+void wxExSTC::PathListAdd(const wxString& path)
 {
   if (!wxFileName::DirExists(path))
   {
@@ -2089,7 +2089,7 @@ void exSTC::PathListAdd(const wxString& path)
   }
 }
 
-void exSTC::PathListInit()
+void wxExSTC::PathListInit()
 {
   m_PathList.Clear();
 
@@ -2105,15 +2105,15 @@ void exSTC::PathListInit()
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void exSTC::Print(bool prompt)
+void wxExSTC::Print(bool prompt)
 {
-  wxPrintData* data = exApp::GetPrinter()->GetPrintData();
+  wxPrintData* data = wxExApp::GetPrinter()->GetPrintData();
   m_Printer->GetPrintDialogData().SetPrintData(*data);
-  m_Printer->Print(this, new exPrintout(this), prompt);
+  m_Printer->Print(this, new wxExPrintout(this), prompt);
 }
 #endif
 
-const wxString exSTC::PrintCaption() const
+const wxString wxExSTC::PrintCaption() const
 {
   if (m_FileName.FileExists())
   {
@@ -2121,29 +2121,29 @@ const wxString exSTC::PrintCaption() const
   }
   else
   {
-    return exInterface::PrintCaption();
+    return wxExInterface::PrintCaption();
   }
 }
 
-const wxString exSTC::PrintHeader() const
+const wxString wxExSTC::PrintHeader() const
 {
   if (m_FileName.FileExists())
   {
-    return 
-      exGetEndOfText(m_FileName.GetFullPath(), 20) + " " + 
-      m_FileName.GetStat().GetModificationTime() + " " + 
+    return
+      wxExGetEndOfText(m_FileName.GetFullPath(), 20) + " " +
+      m_FileName.GetStat().GetModificationTime() + " " +
       wxDateTime::Now().Format();
   }
   else
   {
-    return exInterface::PrintHeader();
+    return wxExInterface::PrintHeader();
   }
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void exSTC::PrintPreview()
+void wxExSTC::PrintPreview()
 {
-  wxPrintPreview* preview = new wxPrintPreview(new exPrintout(this), new exPrintout(this));
+  wxPrintPreview* preview = new wxPrintPreview(new wxExPrintout(this), new wxExPrintout(this));
 
   if (!preview->Ok())
   {
@@ -2162,7 +2162,7 @@ void exSTC::PrintPreview()
 }
 #endif
 
-void exSTC::PropertiesMessage()
+void wxExSTC::PropertiesMessage()
 {
 #if wxUSE_STATUSBAR
   m_FileName.StatusText();
@@ -2172,7 +2172,7 @@ void exSTC::PropertiesMessage()
 #endif
 }
 
-void exSTC::ReadFromFile(bool get_only_new_data)
+void wxExSTC::ReadFromFile(bool get_only_new_data)
 {
   const bool pos_at_end = (GetCurrentPos() >= GetTextLength() - 1);
 
@@ -2210,7 +2210,7 @@ void exSTC::ReadFromFile(bool get_only_new_data)
   {
     SetControlCharSymbol('x');
 
-    AddTextHexMode(offset, buffer->length(), buffer->c_str());
+    AddTextHwxExMode(offset, buffer->length(), buffer->c_str());
   }
 
   delete buffer;
@@ -2235,19 +2235,19 @@ void exSTC::ReadFromFile(bool get_only_new_data)
   }
 }
 
-void exSTC::ReplaceDialog(wxWindow* parent, const wxString& caption)
+void wxExSTC::ReplaceDialog(wxWindow* parent, const wxString& caption)
 {
   GetSearchText();
 
-  exInterface::ReplaceDialog(parent, caption);
+  wxExInterface::ReplaceDialog(parent, caption);
 }
 
-void exSTC::ResetContentsChanged()
+void wxExSTC::ResetContentsChanged()
 {
   SetSavePoint();
 }
 
-void exSTC::ResetMargins(bool divider_margin)
+void wxExSTC::ResetMargins(bool divider_margin)
 {
   SetMarginWidth(m_MarginFoldingNumber, 0);
   SetMarginWidth(m_MarginLineNumber, 0);
@@ -2258,7 +2258,7 @@ void exSTC::ResetMargins(bool divider_margin)
   }
 }
 
-void exSTC::SequenceDialog()
+void wxExSTC::SequenceDialog()
 {
   static wxString start_previous;
 
@@ -2354,7 +2354,7 @@ void exSTC::SequenceDialog()
   AddText(sequence + GetEOL());
 }
 
-void exSTC::SetFolding()
+void wxExSTC::SetFolding()
 {
   if (GetProperty("fold") == "1")
   {
@@ -2378,23 +2378,23 @@ void exSTC::SetFolding()
   }
 }
 
-void exSTC::SetGlobalStyles()
+void wxExSTC::SetGlobalStyles()
 {
   StyleClearAll();
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
     for (
-      vector<wxString>::const_iterator it = exApp::GetLexers()->GetStyles().begin();
-      it != exApp::GetLexers()->GetStyles().end();
+      vector<wxString>::const_iterator it = wxExApp::GetLexers()->GetStyles().begin();
+      it != wxExApp::GetLexers()->GetStyles().end();
       ++it)
     {
       SetStyle(*it);
     }
 
     for (
-      map<int, int>::const_iterator ind = exApp::GetLexers()->GetIndicators().begin();
-      ind != exApp::GetLexers()->GetIndicators().end();
+      map<int, int>::const_iterator ind = wxExApp::GetLexers()->GetIndicators().begin();
+      ind != wxExApp::GetLexers()->GetIndicators().end();
       ++ind)
     {
       IndicatorSetStyle(ind->first, ind->second);
@@ -2403,8 +2403,8 @@ void exSTC::SetGlobalStyles()
   else
   {
     for (
-      vector<wxString>::const_iterator it = exApp::GetLexers()->GetStylesHex().begin();
-      it != exApp::GetLexers()->GetStylesHex().end();
+      vector<wxString>::const_iterator it = wxExApp::GetLexers()->GetStylesHex().begin();
+      it != wxExApp::GetLexers()->GetStylesHex().end();
       ++it)
     {
       SetStyle(*it);
@@ -2412,7 +2412,7 @@ void exSTC::SetGlobalStyles()
   }
 }
 
-void exSTC::SetKeyWords()
+void wxExSTC::SetKeyWords()
 {
   // Reset keywords, also if no lexer is available.
   for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
@@ -2432,7 +2432,7 @@ void exSTC::SetKeyWords()
   }
 }
 
-void exSTC::SetLexer(const wxString& lexer)
+void wxExSTC::SetLexer(const wxString& lexer)
 {
   m_FileName.SetLexer(lexer, GetLine(0));
 
@@ -2466,11 +2466,11 @@ void exSTC::SetLexer(const wxString& lexer)
   }
 }
 
-void exSTC::SetMarkers()
+void wxExSTC::SetMarkers()
 {
   for (
-    vector<exMarker>::const_iterator it = exApp::GetLexers()->GetMarkers().begin();
-    it != exApp::GetLexers()->GetMarkers().end();
+    vector<wxExMarker>::const_iterator it = wxExApp::GetLexers()->GetMarkers().begin();
+    it != wxExApp::GetLexers()->GetMarkers().end();
     ++it)
   {
      MarkerDefine(
@@ -2481,7 +2481,7 @@ void exSTC::SetMarkers()
   }
 }
 
-void exSTC::SetProperties()
+void wxExSTC::SetProperties()
 {
   wxStringTokenizer properties(
     m_FileName.GetLexer().GetProperties(),
@@ -2498,7 +2498,7 @@ void exSTC::SetProperties()
   }
 }
 
-void exSTC::SetStyle(const wxString& style)
+void wxExSTC::SetStyle(const wxString& style)
 {
   // E.g.
   // 1,2,3=fore:light steel blue,italic,size:8
@@ -2516,23 +2516,23 @@ void exSTC::SetStyle(const wxString& style)
   }
 }
 
-void exSTC::SetText(const wxString& value)
+void wxExSTC::SetText(const wxString& value)
 {
   ClearDocument();
-  
+
   // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
   // So for text with nulls this is the only way for opening.
   SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
-  
+
   DocumentStart();
-  
+
   ResetContentsChanged();
-  
+
   // Do not allow the text specified to be undone.
   EmptyUndoBuffer();
 }
 
-void exSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
+void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 {
   long val;
   if ((val = wxGetNumberFromUser(_("Input") + ":",
@@ -2599,7 +2599,7 @@ void exSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
 }
 
-void exSTC::StartRecord()
+void wxExSTC::StartRecord()
 {
   if (m_MacroIsRecording)
   {
@@ -2610,12 +2610,12 @@ void exSTC::StartRecord()
 
   m_Macro.clear();
 
-  exFrame::StatusText(_("Macro recording"));
+  wxExFrame::StatusText(_("Macro recording"));
 
   wxStyledTextCtrl::StartRecord();
 }
 
-void exSTC::StopRecord()
+void wxExSTC::StopRecord()
 {
   if (!m_MacroIsRecording)
   {
@@ -2624,13 +2624,13 @@ void exSTC::StopRecord()
 
   m_MacroIsRecording = false;
 
-  exFrame::StatusText(_("Macro is recorded"));
+  wxExFrame::StatusText(_("Macro is recorded"));
 
   wxStyledTextCtrl::StopRecord();
 }
 
 #if wxUSE_STATUSBAR
-void exSTC::UpdateStatusBar(const wxString& pane)
+void wxExSTC::UpdateStatusBar(const wxString& pane)
 {
   wxString text;
 
@@ -2671,7 +2671,7 @@ void exSTC::UpdateStatusBar(const wxString& pane)
       if (selection.empty()) text = wxString::Format("%d,%d", line, pos);
       else
       {
-        const int number_of_lines = exGetNumberOfLines(selection);
+        const int number_of_lines = wxExGetNumberOfLines(selection);
         if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
         else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
       }
@@ -2686,11 +2686,11 @@ void exSTC::UpdateStatusBar(const wxString& pane)
     wxFAIL;
   }
 
-  exFrame::StatusText(text, pane);
+  wxExFrame::StatusText(text, pane);
 }
 #endif // wxUSE_STATUSBAR
 
-exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
+wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& caption,
   const wxString& text,
   const wxString& prompt,
@@ -2699,14 +2699,14 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : exDialog(parent, caption, button_style, id, pos, size, style)
+  : wxExDialog(parent, caption, button_style, id, pos, size, style)
 {
   if (!prompt.empty())
   {
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
-  m_STC = new exSTC(this, exSTC::STC_MENU_SIMPLE, text, wxID_ANY, pos, size);
+  m_STC = new wxExSTC(this, wxExSTC::STC_MENU_SIMPLE, text, wxID_ANY, pos, size);
 
   // Override defaults from config.
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
@@ -2731,7 +2731,7 @@ exSTCEntryDialog::exSTCEntryDialog(wxWindow* parent,
   BuildSizers();
 }
 
-void exSTCEntryDialog::SetText(const wxString& text)
+void wxExSTCEntryDialog::SetText(const wxString& text)
 {
   bool readonly = false;
 

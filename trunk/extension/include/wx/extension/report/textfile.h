@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.h
-* Purpose:       Declaration of class 'exTextFileWithReport'
+* Purpose:       Declaration of class 'wxExTextFileWithReport'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,31 +15,31 @@
 #include <wx/extension/textfile.h>
 #include <wx/extension/otl.h>
 
-class exFrameWithHistory;
-class exListViewFile;
+class wxExFrameWithHistory;
+class wxExListViewFile;
 
-/// Offers an exTextFile with reporting to a listview.
-class exTextFileWithReport : public exTextFile
+/// Offers an wxExTextFile with reporting to a listview.
+class wxExTextFileWithReport : public wxExTextFile
 {
 public:
   /// Constructor.
-  exTextFileWithReport(const exFileName& filename);
+  wxExTextFileWithReport(const wxExFileName& filename);
 
   /// Sets up the tool.
-  static bool SetupTool(const exTool& tool);
+  static bool SetupTool(const wxExTool& tool);
 
 #if USE_EMBEDDED_SQL
-  // Called by exFrameWithHistory::OnClose.
+  // Called by wxExFrameWithHistory::OnClose.
   // Not for doxygen.
   static void CleanUp();
 #endif
 private:
-  // Implement interface from exTextFile.
+  // Implement interface from wxExTextFile.
   virtual void Report();
   virtual void ReportStatistics();
 
-  static exListViewFile* m_Report;
-  static exFrameWithHistory* m_Frame;
+  static wxExListViewFile* m_Report;
+  static wxExFrameWithHistory* m_Frame;
 
 #if USE_EMBEDDED_SQL
   virtual bool ParseComments();

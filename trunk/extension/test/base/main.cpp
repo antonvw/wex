@@ -14,15 +14,15 @@
 #include <cppunit/TestRunner.h>
 #include "test.h"
 
-int main (int argc, char* argv[]) 
+int main (int argc, char* argv[])
 {
   CppUnit::TextUi::TestRunner runner;
-  
-  exTestSuite* suite = new exTestSuite;
-  
+
+  wxExTestSuite* suite = new wxExTestSuite;
+
   runner.addTest(suite);
   runner.run();
-  
+
   return 0;
 }
 

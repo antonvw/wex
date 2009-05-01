@@ -13,7 +13,7 @@
 
 using namespace std;
 
-exConfig::exConfig(
+wxExConfig::wxExConfig(
   const wxString& filename,
   long style)
 #ifdef EX_PORTABLE
@@ -27,10 +27,10 @@ exConfig::exConfig(
       wxEmptyString,
       style)
 {
-  m_FindReplaceData = new exFindReplaceData(this);
+  m_FindReplaceData = new wxExFindReplaceData(this);
 }
 
-exConfig::~exConfig()
+wxExConfig::~wxExConfig()
 {
   delete m_FindReplaceData;
 
@@ -59,10 +59,10 @@ exConfig::~exConfig()
   }
 }
 
-const wxString exConfig::GetBoolKeys() const
+const wxString wxExConfig::GetBoolKeys() const
 {
   wxString text;
-  
+
   for (
     map<wxString, bool>::const_iterator itb = m_BoolValues.begin();
     itb != m_BoolValues.end();
@@ -70,14 +70,14 @@ const wxString exConfig::GetBoolKeys() const
   {
     text << itb->first << "\t" << itb->second << "\n";
   }
-  
+
   return text;
 }
-  
-const wxString exConfig::GetLongKeys() const
+
+const wxString wxExConfig::GetLongKeys() const
 {
   wxString text;
-  
+
   for (
     map<wxString, long>::const_iterator itb = m_LongValues.begin();
     itb != m_LongValues.end();
@@ -85,14 +85,14 @@ const wxString exConfig::GetLongKeys() const
   {
     text << itb->first << "\t" << itb->second << "\n";
   }
-  
+
   return text;
 }
-  
-const wxString exConfig::GetStringKeys() const
+
+const wxString wxExConfig::GetStringKeys() const
 {
   wxString text;
-  
+
   for (
     map<wxString, wxString>::const_iterator itb = m_StringValues.begin();
     itb != m_StringValues.end();
@@ -100,12 +100,12 @@ const wxString exConfig::GetStringKeys() const
   {
     text += itb->first + "\t" + itb->second + "\n";
   }
-  
+
   return text;
 }
-  
 
-void exConfig::SetFindReplaceData(
+
+void wxExConfig::SetFindReplaceData(
   bool matchword, bool matchcase, bool regularexpression)
 {
   m_FindReplaceData->SetMatchWord(matchword);
@@ -113,7 +113,7 @@ void exConfig::SetFindReplaceData(
   m_FindReplaceData->SetIsRegularExpression(regularexpression);
 }
 
-exFindReplaceData::exFindReplaceData(exConfig* config)
+wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
   : wxFindReplaceData()
   , m_Config(config)
 {
@@ -134,7 +134,7 @@ exFindReplaceData::exFindReplaceData(exConfig* config)
   m_Info.insert(_("Regular expression"));
 }
 
-exFindReplaceData::~exFindReplaceData()
+wxExFindReplaceData::~wxExFindReplaceData()
 {
   m_Config->Set(_("Find what"), GetFindString());
   m_Config->Set(_("Replace with"), GetReplaceString());
@@ -145,12 +145,12 @@ exFindReplaceData::~exFindReplaceData()
   m_Config->SetBool(_("Regular expression"), m_IsRegularExpression);
 }
 
-bool exFindReplaceData::IsRegularExpression() const
+bool wxExFindReplaceData::IsRegularExpression() const
 {
   return m_IsRegularExpression;
 }
 
-bool exFindReplaceData::SetFindString(const wxString& value)
+bool wxExFindReplaceData::SetFindString(const wxString& value)
 {
   wxFindReplaceData::SetFindString(value);
   m_FindStringNoCase = MatchCase() ? GetFindString(): GetFindString().Upper();
@@ -165,12 +165,12 @@ bool exFindReplaceData::SetFindString(const wxString& value)
   return true;
 }
 
-void exFindReplaceData::SetIsRegularExpression(bool value)
+void wxExFindReplaceData::SetIsRegularExpression(bool value)
 {
   m_IsRegularExpression = value;
 }
 
-void exFindReplaceData::SetMatchCase(bool value)
+void wxExFindReplaceData::SetMatchCase(bool value)
 {
   int flags = GetFlags();
   if (value) flags |= wxFR_MATCHCASE;
@@ -178,7 +178,7 @@ void exFindReplaceData::SetMatchCase(bool value)
   SetFlags(flags);
 }
 
-void exFindReplaceData::SetMatchWord(bool value)
+void wxExFindReplaceData::SetMatchWord(bool value)
 {
   int flags = GetFlags();
   if (value) flags |= wxFR_WHOLEWORD;

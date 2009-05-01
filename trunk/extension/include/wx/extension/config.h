@@ -17,27 +17,27 @@
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
 
-class exFindReplaceData;
+class wxExFindReplaceData;
 
 /// Offers a general configuration.
 /// Keys are read the first time accessed from the config.
 /// Next time they are retrieved from the maps, so access is fast.
 #ifdef EX_PORTABLE
 #include <wx/fileconf.h>
-class exConfig : public wxFileConfig
+class wxExConfig : public wxFileConfig
 #else
 #include <wx/config.h>
-class exConfig : public wxConfig
+class wxExConfig : public wxConfig
 #endif
 {
 public:
   /// Default constructor.
-  exConfig(
+  wxExConfig(
     const wxString& filename = wxEmptyString,
     long style = 0);
 
   /// Destructor, writes all keys.
- ~exConfig();
+ ~wxExConfig();
 
   /// Gets the key as a long. If the key is not present,
   /// it is added to the map of long values.
@@ -59,7 +59,7 @@ public:
 
   /// Gets all longs keys as one string.
   const wxString GetLongKeys() const;
-  
+
   /// Gets the key as a string. If the key is not present,
   /// it is added to the map of string values.
   /// This also works for comboboxes,
@@ -75,7 +75,7 @@ public:
     {
       const wxString value = it->second;
       return value.BeforeFirst(field_separator);
-    }  
+    }
     else
     {
       const wxString config_value = Read(key, default_value);
@@ -86,7 +86,7 @@ public:
 
   /// Gets all string keys as one string.
   const wxString GetStringKeys() const;
-  
+
   /// Gets the key as a bool. If the key is not present,
   /// it is added to the map of bool values.
   bool GetBool(
@@ -107,9 +107,9 @@ public:
 
   /// Gets all bool keys as one string.
   const wxString GetBoolKeys() const;
-  
+
   /// Gets the find replace data.
-  exFindReplaceData* GetFindReplaceData() const {
+  wxExFindReplaceData* GetFindReplaceData() const {
     return m_FindReplaceData;};
 
   /// Sets key as a long.
@@ -123,7 +123,7 @@ public:
   /// Sets key as a bool.
   void SetBool(const wxString& key, bool value) {
     m_BoolValues[key] = value;};
-  
+
   /// Sets flags in find replace data.
   void SetFindReplaceData(
     bool matchword, bool matchcase, bool regularexpression);
@@ -132,21 +132,21 @@ public:
   void Toggle(const wxString& key) {
     m_BoolValues[key] = !m_BoolValues[key];}
 private:
-  exFindReplaceData* m_FindReplaceData;
+  wxExFindReplaceData* m_FindReplaceData;
   std::map<wxString, bool> m_BoolValues;
   std::map<wxString, long> m_LongValues;
   std::map<wxString, wxString> m_StringValues;
 };
 
 /// Adds an existing config to wxFindReplaceData, and some members.
-class exFindReplaceData : public wxFindReplaceData
+class wxExFindReplaceData : public wxFindReplaceData
 {
 public:
   /// Constructor, gets members from config.
-  exFindReplaceData(exConfig* config);
+  wxExFindReplaceData(wxExConfig* config);
 
   /// Destructor, saves members to config.
- ~exFindReplaceData();
+ ~wxExFindReplaceData();
 
   /// Gets find/replace text.
   const wxString GetText(bool replace = false) const {
@@ -192,7 +192,7 @@ public:
   /// Sets flags for match word.
   void SetMatchWord(bool value);
 private:
-  exConfig* m_Config;
+  wxExConfig* m_Config;
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;

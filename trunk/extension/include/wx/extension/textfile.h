@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.h
-* Purpose:       Declaration of exTextFile class
+* Purpose:       Declaration of wxExTextFile class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -17,17 +17,17 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/tool.h>
 
-class exConfig;
-class exLexers;
-class exTextFile;
+class wxExConfig;
+class wxExLexers;
+class wxExTextFile;
 
 /// Class for keeping RCS information.
-class exRCS
+class wxExRCS
 {
-  friend class exTextFile;
+  friend class wxExTextFile;
 public:
   /// Default constructor.
-  exRCS();
+  wxExRCS();
 
   /// Gets the description.
   const wxString& GetDescription() const {return m_Description;};
@@ -63,33 +63,33 @@ private:
 /// Adds file tool methods to wxTextFile.
 /// In your derived class just implement the Report or ReportStatistics, and take
 /// care that the strings are added to your component.
-class exTextFile : public wxTextFile
+class wxExTextFile : public wxTextFile
 {
 public:
   /// Constructor.
-  exTextFile(
-    const exFileName& filename,
-    exConfig* config,
-    const exLexers* lexers);
+  wxExTextFile(
+    const wxExFileName& filename,
+    wxExConfig* config,
+    const wxExLexers* lexers);
 
   /// Gets the filename.
-  const exFileName& GetFileName() const {return m_FileNameStatistics;};
+  const wxExFileName& GetFileName() const {return m_FileNameStatistics;};
 
   /// Gets the RCS data.
-  const exRCS& GetRCS() const {return m_RCS;};
+  const wxExRCS& GetRCS() const {return m_RCS;};
 
   /// Gets the statistics.
-  const exFileNameStatistics& GetStatistics() const {return m_FileNameStatistics;}
+  const wxExFileNameStatistics& GetStatistics() const {return m_FileNameStatistics;}
 
   /// Gets the tool.
-  const exTool& GetTool() const {return m_Tool;};
+  const wxExTool& GetTool() const {return m_Tool;};
 
   /// Inserts a line at current line (or at end if at end),
   /// make that line current and sets modified.
   void InsertLine(const wxString& line);
 
   /// Runs the tool (opens the file before running and closes afterwards).
-  bool RunTool(const exTool& tool);
+  bool RunTool(const wxExTool& tool);
 
   /// Writes a comment to the current line.
   void WriteComment(
@@ -121,10 +121,10 @@ protected:
   void ClearComments() {m_Comments.clear();}
 
   /// Your derived class is allowed to update statistics.
-  exStatistics<long>& GetStatisticElements() {return m_FileNameStatistics.GetElements();};
+  wxExStatistics<long>& GetStatisticElements() {return m_FileNameStatistics.GetElements();};
 
   /// Your derived class is allowed to update statistics.
-  exStatistics<long>& GetStatisticKeywords() {return m_FileNameStatistics.GetKeywords();};
+  wxExStatistics<long>& GetStatisticKeywords() {return m_FileNameStatistics.GetKeywords();};
 
   /// Gets the current comments.
   const wxString& GetComments() const {return m_Comments;};
@@ -135,7 +135,7 @@ protected:
   bool ParseLine(const wxString& line);
 private:
   /// The comment type.
-  enum exCommentType
+  enum wxExCommentType
   {
     COMMENT_NONE = 0,  ///< no comment
     COMMENT_BEGIN,     ///< begin of comment
@@ -145,14 +145,14 @@ private:
   };
 
   /// The syntax type.
-  enum exSyntaxType
+  enum wxExSyntaxType
   {
     SYNTAX_NONE = 0, ///< no syntax
     SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
     SYNTAX_TWO,      ///< syntax according to comment begin2 and end2
   };
 
-  exCommentType CheckCommentSyntax(
+  wxExCommentType CheckCommentSyntax(
     const wxString& syntax_begin,
     const wxString& syntax_end,
     wxChar c1,
@@ -177,7 +177,7 @@ private:
       m_FileNameStatistics.GetLexer().GetCommentEnd2();};
 
   /// Check whether specified chars result in a comment.
-  exCommentType CheckForComment(wxChar c1, wxChar c2);
+  wxExCommentType CheckForComment(wxChar c1, wxChar c2);
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();
@@ -201,13 +201,13 @@ private:
   bool m_Modified;
   bool m_RevisionActive;
 
-  exFileNameStatistics m_FileNameStatistics;
-  exRCS m_RCS;
-  exSyntaxType m_LastSyntaxType;
-  exSyntaxType m_SyntaxType;
-  exTool m_Tool;
-  exConfig* m_Config;
-  const exLexers* m_Lexers;
+  wxExFileNameStatistics m_FileNameStatistics;
+  wxExRCS m_RCS;
+  wxExSyntaxType m_LastSyntaxType;
+  wxExSyntaxType m_SyntaxType;
+  wxExTool m_Tool;
+  wxExConfig* m_Config;
+  const wxExLexers* m_Lexers;
 
   size_t m_LineMarker;
   size_t m_LineMarkerEnd;

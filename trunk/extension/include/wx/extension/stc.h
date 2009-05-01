@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.h
-* Purpose:       Declaration of class exSTC and related classes
+* Purpose:       Declaration of class wxExSTC and related classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -13,22 +13,22 @@
 #define _EXSTC_H
 
 #include <wx/stc/stc.h>
-#include <wx/extension/app.h> // for exApp
-#include <wx/extension/base.h> // for exInterface
-#include <wx/extension/file.h> // for exFile, exInterface
+#include <wx/extension/app.h> // for wxExApp
+#include <wx/extension/base.h> // for wxExInterface
+#include <wx/extension/file.h> // for wxExFile, wxExInterface
 
-class exConfigDialog;
+class wxExConfigDialog;
 
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
 /// config support and syntax colouring. Also adds synchronizing to the window,
 /// and if the file is a logfile and
 /// the caret is at the end, it stays at the end after syncing.
-class exSTC : public wxStyledTextCtrl, public exFile, public exInterface
+class wxExSTC : public wxStyledTextCtrl, public wxExFile, public wxExInterface
 {
 public:
   /// Menu and tooltip flags (0 is used for no menu).
-  enum exSTCMenuFlags
+  enum wxExSTCMenuFlags
   {
     STC_MENU_TOOLTIP   = 0x0001, ///< for adding tooltip
     STC_MENU_SIMPLE    = 0x0002, ///< for adding copy/paste etc. menu
@@ -41,7 +41,7 @@ public:
   };
 
   /// Open flags (0 is used as default).
-  enum exSTCOpenFlags
+  enum wxExSTCOpenFlags
   {
     STC_OPEN_HEX             = 0x0001, ///< open in hex mode
     STC_OPEN_READ_ONLY       = 0x0002, ///< open as readonly, this mode overrides real mode from disk
@@ -53,7 +53,7 @@ public:
 
   /// Config dialog flags (0 gives
   /// a modal dialog with all options).
-  enum exSTCConfigFlags
+  enum wxExSTCConfigFlags
   {
     STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
     STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
@@ -63,7 +63,7 @@ public:
   /// Constructor. Does not open a file, but sets text to specified value,
   /// NULL's are allowed.
   /// This default value is overwritten by Open.
-  exSTC(wxWindow* parent,
+  wxExSTC(wxWindow* parent,
     long menu_flags = STC_MENU_DEFAULT,
     const wxString& value = wxEmptyString,
     wxWindowID id = wxID_ANY,
@@ -74,9 +74,9 @@ public:
 
   /// Constructor, opens the file.
   /// See also Open.
-  exSTC(wxWindow* parent,
-    const exFileName& filename,
-    int line_number = 0, 
+  wxExSTC(wxWindow* parent,
+    const wxExFileName& filename,
+    int line_number = 0,
     const wxString& match = wxEmptyString,
     long open_flags = 0,
     long menu_flags = STC_MENU_DEFAULT,
@@ -87,14 +87,14 @@ public:
     const wxString& name = wxSTCNameStr);
 
   /// Copy constructor.
-  exSTC(const exSTC& stc);
+  wxExSTC(const wxExSTC& stc);
 
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
   /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
   /// If you specify a match selects the text on that line.
   virtual bool Open(
-    const exFileName& filename,
+    const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
@@ -102,14 +102,14 @@ public:
   /// Shows properties on the statusbar.
   virtual void PropertiesMessage();
 
-  // Interface, for exFile overriden methods.
-  virtual bool FileNew(const exFileName& filename = exFileName());
+  // Interface, for wxExFile overriden methods.
+  virtual bool FileNew(const wxExFileName& filename = wxExFileName());
   virtual bool FileSave();
   virtual bool FileSaveAs();
   virtual bool GetContentsChanged() {return GetModify();};
   virtual void ResetContentsChanged();
 
-  // Interface, for exInterface overriden methods.
+  // Interface, for wxExInterface overriden methods.
   virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
   virtual bool FindNext(const wxString& text, bool find_next = true);
   virtual const wxString PrintCaption() const;
@@ -123,7 +123,7 @@ public:
   /// If caret was at end, it is repositioned at the end.
   void AppendTextForced(const wxString& text, bool withTimestamp = true);
 
-  // Called by exApp::OnExit, so not for doxygen.
+  // Called by wxExApp::OnExit, so not for doxygen.
   static void CleanUp();
 
   /// Colourises the document.
@@ -131,7 +131,7 @@ public:
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
-  /// so you can use that id in exFrame::ConfigDialogApplied.
+  /// so you can use that id in wxExFrame::ConfigDialogApplied.
   static int ConfigDialog(
     const wxString& title = _("Editor Options"),
     long flags = 0,
@@ -243,7 +243,7 @@ public:
 #endif
 protected:
   /// Builds the popup menu.
-  virtual void BuildPopupMenu(exMenu& menu);
+  virtual void BuildPopupMenu(wxExMenu& menu);
 
   void OnCommand(wxCommandEvent& event);
   void OnFindDialog(wxFindDialogEvent& event);
@@ -253,7 +253,7 @@ protected:
   void OnStyledText(wxStyledTextEvent& event);
   void OnTimer(wxTimerEvent& event);
 private:
-  void AddTextHexMode(wxFileOffset start, long length, const wxChar* buffer);
+  void AddTextHwxExMode(wxFileOffset start, long length, const wxChar* buffer);
   void AddBasePathToPathList();
   bool CheckAutoComp(int key);
   bool CheckBrace(int pos);
@@ -268,7 +268,7 @@ private:
   int FindReplaceDataFlags() const;
   void FoldAll();
   void GuessType();
-  void HexDecCalltip(int pos);
+  void HwxExDecCalltip(int pos);
   void Initialize();
   bool LinkOpen(const wxString& link, int line_number = 0, bool link_open = true);
   /// Adds a path to the path list, does not change it in the config.
@@ -281,19 +281,19 @@ private:
   void SetMarkers();
   void SetProperties();
   void SetStyle(const wxString& style);
-  
+
   // static access
   static long GetConfig(const wxString& key, long default_value) {
-    return exApp::GetConfig(GetConfigKeyBase() + key, default_value);};
+    return wxExApp::GetConfig(GetConfigKeyBase() + key, default_value);};
   static wxString GetConfig(const wxString& key, const wxString& default_value = wxEmptyString) {
-    return exApp::GetConfig(GetConfigKeyBase() + key, default_value);};
+    return wxExApp::GetConfig(GetConfigKeyBase() + key, default_value);};
   static bool GetConfigBool(const wxString& key, bool default_value = false) {
-    return exApp::GetConfigBool(GetConfigKeyBase() + key, default_value);};
+    return wxExApp::GetConfigBool(GetConfigKeyBase() + key, default_value);};
   static wxString GetConfigKeyBase() {
     return "Edit/";};
 
   // All objects share the following:
-  static exConfigDialog* m_ConfigDialog;
+  static wxExConfigDialog* m_ConfigDialog;
   static std::vector <wxString> m_Macro;
   static wxPathList m_PathList;
 #if wxUSE_PRINTING_ARCHITECTURE
@@ -313,13 +313,13 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-/// Offers an exSTC as a dialog (like wxTextEntryDialog).
+/// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt is allowed to be empty, in that case no sizer is used for it.
-class exSTCEntryDialog : public exDialog
+class wxExSTCEntryDialog : public wxExDialog
 {
 public:
   /// Constructor.
-  exSTCEntryDialog(
+  wxExSTCEntryDialog(
     wxWindow* parent,
     const wxString& caption,
     const wxString& text,
@@ -332,7 +332,7 @@ public:
 
   /// Gets the normal text value.
   const wxString GetText() const {return m_STC->GetText();};
-  
+
   /// Gets raw text value.
   wxString* GetTextRaw() const {return m_STC->GetTextRaw();};
 
@@ -342,7 +342,7 @@ public:
   /// Sets the text (either normal or raw).
   void SetText(const wxString& text);
 private:
-  exSTC* m_STC;
+  wxExSTC* m_STC;
 };
 
 #endif // wxUSE_GUI

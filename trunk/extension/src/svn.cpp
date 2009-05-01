@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          svn.cpp
-* Purpose:       Implementation of exSVN class
+* Purpose:       Implementation of wxExSVN class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,9 +15,9 @@
 
 #if wxUSE_GUI
 
-exSTCEntryDialog* exSVN::m_STCEntryDialog = NULL;
+wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
 
-exSVN::exSVN(exSvnType type, const wxString& fullpath)
+wxExSVN::wxExSVN(wxExSvnType type, const wxString& fullpath)
   : m_Type(type)
   , m_Output()
   , m_FullPath(fullpath)
@@ -25,28 +25,28 @@ exSVN::exSVN(exSvnType type, const wxString& fullpath)
 {
   switch (m_Type)
   {
-    case SVN_CAT: 
+    case SVN_CAT:
       m_Caption = _("SVN Cat");
       m_Command = "cat";
       break;
-    case SVN_COMMIT: 
+    case SVN_COMMIT:
       m_Caption = _("SVN Commit");
       m_Command = "commit";
       break;
-    case SVN_DIFF: 
-      m_Caption = _("SVN Diff"); 
+    case SVN_DIFF:
+      m_Caption = _("SVN Diff");
       m_Command = "diff";
       break;
-    case SVN_INFO: 
-      m_Caption = _("SVN Info"); 
+    case SVN_INFO:
+      m_Caption = _("SVN Info");
       m_Command = "info";
       break;
-    case SVN_LOG: 
-      m_Caption = _("SVN Log"); 
+    case SVN_LOG:
+      m_Caption = _("SVN Log");
       m_Command = "log";
       break;
-    case SVN_STAT: 
-      m_Caption = _("SVN Stat"); 
+    case SVN_STAT:
+      m_Caption = _("SVN Stat");
       m_Command = "stat";
       break;
     default:
@@ -55,26 +55,26 @@ exSVN::exSVN(exSvnType type, const wxString& fullpath)
   }
 }
 
-int exSVN::Execute(bool show_dialog)
+int wxExSVN::Execute(bool show_dialog)
 {
   if (show_dialog)
   {
-    std::vector<exConfigItem> v;
+    std::vector<wxExConfigItem> v;
 
     if (m_Type == SVN_COMMIT)
     {
-      v.push_back(exConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
+      v.push_back(wxExConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
     }
 
     if (m_FullPath.empty())
     {
-      v.push_back(exConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+      v.push_back(wxExConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
     }
 
-    v.push_back(exConfigItem(_("Flags")));
+    v.push_back(wxExConfigItem(_("Flags")));
 
-    if (exConfigDialog(wxTheApp->GetTopWindow(),
-      exApp::GetConfig(),
+    if (wxExConfigDialog(wxTheApp->GetTopWindow(),
+      wxExApp::GetConfig(),
       v,
       m_Caption).ShowModal() == wxID_CANCEL)
     {
@@ -89,7 +89,7 @@ int exSVN::Execute(bool show_dialog)
 
   if (m_FullPath.empty())
   {
-    wxSetWorkingDirectory(exApp::GetConfig(_("Base folder")));  
+    wxSetWorkingDirectory(wxExApp::GetConfig(_("Base folder")));
   }
   else
   {
@@ -97,18 +97,18 @@ int exSVN::Execute(bool show_dialog)
   }
 
   wxString arg;
-  
-  if (m_Type == SVN_COMMIT) 
+
+  if (m_Type == SVN_COMMIT)
   {
-    arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
+    arg = " -m \"" + wxExApp::GetConfig(_("Revision comment")) + "\"";
   }
 
-  const wxString command = 
-    "svn " + exApp::GetConfig(_("Flags")) + " " + m_Command + arg + file;
+  const wxString command =
+    "svn " + wxExApp::GetConfig(_("Flags")) + " " + m_Command + arg + file;
 
   wxArrayString output;
   wxArrayString errors;
-  
+
   if (wxExecute(
     command,
     output,
@@ -120,9 +120,9 @@ int exSVN::Execute(bool show_dialog)
 
   if (errors.GetCount() == 0)
   {
-    exApp::Log(command);
+    wxExApp::Log(command);
   }
-    
+
   if (m_FullPath.empty())
   {
     wxSetWorkingDirectory(cwd);
@@ -143,11 +143,11 @@ int exSVN::Execute(bool show_dialog)
   }
 
   m_ReturnCode = errors.GetCount();
-  
+
   return m_ReturnCode;
 }
 
-int exSVN::ExecuteAndShowOutput()
+int wxExSVN::ExecuteAndShowOutput()
 {
   if (Execute() >= 0)
   {
@@ -157,7 +157,7 @@ int exSVN::ExecuteAndShowOutput()
   return m_ReturnCode;
 }
 
-void exSVN::ShowOutput()
+void wxExSVN::ShowOutput()
 {
   // If we did not yet ask Execute, or cancelled, return.
   if (m_ReturnCode < 0)
@@ -165,17 +165,17 @@ void exSVN::ShowOutput()
     return;
   }
 
-  const wxString caption = m_Caption + 
+  const wxString caption = m_Caption +
     (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString));
 
   // Create a dialog for contents.
   if (m_STCEntryDialog == NULL)
   {
-    m_STCEntryDialog = new exSTCEntryDialog(
-      wxTheApp->GetTopWindow(), 
+    m_STCEntryDialog = new wxExSTCEntryDialog(
+      wxTheApp->GetTopWindow(),
       caption,
-      m_Output, 
-      wxEmptyString, 
+      m_Output,
+      wxEmptyString,
       wxOK,
       wxID_ANY,
       wxDefaultPosition, wxSize(550, 250));
@@ -188,14 +188,14 @@ void exSVN::ShowOutput()
 
   // Add a lexer if we specified a path, asked for cat and there were no errors.
   if (
-    !m_FullPath.empty() && 
+    !m_FullPath.empty() &&
      m_Type == SVN_CAT &&
      m_ReturnCode == 0)
-  { 
-    const exFileName fn(m_FullPath);
+  {
+    const wxExFileName fn(m_FullPath);
     m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
   }
-  
+
   m_STCEntryDialog->Show();
 }
 

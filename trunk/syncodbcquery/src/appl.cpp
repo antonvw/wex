@@ -27,7 +27,7 @@ bool MyApp::OnInit()
 {
   SetAppName("syncodbcquery");
 
-  exApp::OnInit();
+  wxExApp::OnInit();
 
   MyFrame *frame = new MyFrame("syncodbcquery");
   frame->Show(true);
@@ -37,7 +37,7 @@ bool MyApp::OnInit()
   return true;
 }
 
-BEGIN_EVENT_TABLE(MyFrame, exFrameWithHistory)
+BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
   EVT_CLOSE(MyFrame::OnClose)
   EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
   EVT_MENU(wxID_PREFERENCES, MyFrame::OnCommand)
@@ -58,13 +58,13 @@ BEGIN_EVENT_TABLE(MyFrame, exFrameWithHistory)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(const wxString& title)
-  : exFrameWithHistory(NULL, wxID_ANY, title)
+  : wxExFrameWithHistory(NULL, wxID_ANY, title)
   , m_Running(false)
   , m_Stopped(false)
 {
   SetIcon(appl_xpm);
 
-  exMenu* menuFile = new exMenu;
+  wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
@@ -73,11 +73,11 @@ MyFrame::MyFrame(const wxString& title)
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
-  exMenu* menuDatabase = new exMenu;
-  menuDatabase->Append(ID_DATABASE_OPEN, exEllipsed(_("&Open")));
+  wxExMenu* menuDatabase = new wxExMenu;
+  menuDatabase->Append(ID_DATABASE_OPEN, wxExEllipsed(_("&Open")));
   menuDatabase->Append(ID_DATABASE_CLOSE, _("&Close"));
 
-  exMenu* menuQuery = new exMenu;
+  wxExMenu* menuQuery = new wxExMenu;
   menuQuery->Append(wxID_EXECUTE);
   menuQuery->Append(wxID_STOP);
 
@@ -104,16 +104,16 @@ MyFrame::MyFrame(const wxString& title)
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  m_Query = new exSTCWithFrame(this,
-    exSTC::STC_MENU_SIMPLE | exSTC::STC_MENU_FIND |
-    exSTC::STC_MENU_REPLACE | exSTC::STC_MENU_INSERT);
+  m_Query = new wxExSTCWithFrame(this,
+    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND |
+    wxExSTC::STC_MENU_REPLACE | wxExSTC::STC_MENU_INSERT);
   m_Query->SetLexer("sql");
 
-  m_Results = new exGrid(this);
+  m_Results = new wxExGrid(this);
   m_Results->CreateGrid(0, 0);
   m_Results->EnableEditing(false); // this is a read-only grid
 
-  m_Shell = new exSTCShell(this, ">", ";", true, 50);
+  m_Shell = new wxExSTCShell(this, ">", ";", true, 50);
   m_Shell->SetFocus();
   m_Shell->DocumentEnd();
   m_Shell->SetLexer();
@@ -143,14 +143,14 @@ MyFrame::MyFrame(const wxString& title)
       Caption(_("Statistics")).
       Name("STATISTICS"));
 
-  GetManager().LoadPerspective(exApp::GetConfig("Perspective"));
+  GetManager().LoadPerspective(wxExApp::GetConfig("Perspective"));
   GetManager().GetPane("QUERY").Show(false);
 
   GetManager().Update();
 
-  std::vector<exPane> panes;
-  panes.push_back(exPane("PaneText", -3));
-  panes.push_back(exPane("PaneLines", 100, _("Lines in window")));
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 
   CreateToolBar();
@@ -181,7 +181,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  exApp::SetConfig("Perspective", GetManager().SavePerspective());
+  wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
   m_db.logoff();
 
@@ -201,7 +201,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     info.SetCopyright("(c) 2008, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
-    info.AddDeveloper(exOTLVersion());
+    info.AddDeveloper(wxExOTLVersion());
     wxAboutBox(info);
     }
     break;
@@ -248,13 +248,13 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_OPEN:
-    exOTLDialog(exApp::GetConfig(), &m_db);
-    m_Shell->SetPrompt((m_db.connected ? exApp::GetConfig(_("Datasource")): "") + ">");
+    wxExOTLDialog(wxExApp::GetConfig(), &m_db);
+    m_Shell->SetPrompt((m_db.connected ? wxExApp::GetConfig(_("Datasource")): "") + ">");
     break;
 
   case wxID_PREFERENCES:
-    exSTC::ConfigDialog(_("Editor Options"), 
-      exSTC::STC_CONFIG_SIMPLE | exSTC::STC_CONFIG_MODELESS);
+    wxExSTC::ConfigDialog(_("Editor Options"),
+      wxExSTC::STC_CONFIG_SIMPLE | wxExSTC::STC_CONFIG_MODELESS);
     break;
 
   case ID_SHELL_COMMAND:
@@ -329,8 +329,8 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Enable(!m_db.connected);
     break;
 
-  case ID_RECENTFILE_MENU: 
-    event.Enable(!GetRecentFile().empty()); 
+  case ID_RECENTFILE_MENU:
+    event.Enable(!GetRecentFile().empty());
     break;
 
   case ID_VIEW_QUERY:
@@ -345,13 +345,13 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Check(GetManager().GetPane("STATISTICS").IsShown());
     break;
 
-  default: 
+  default:
     wxFAIL;
   }
 }
 
 bool MyFrame::OpenFile(
-  const exFileName& filename,
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -384,11 +384,11 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
 
     if (m_Results->IsShown())
     {
-      rpc = exOTLQueryToGrid(&m_db, query, m_Results, m_Stopped, empty_results);
+      rpc = wxExOTLQueryToGrid(&m_db, query, m_Results, m_Stopped, empty_results);
     }
     else
     {
-      rpc = exOTLQueryToSTC(&m_db, query, m_Shell, m_Stopped);
+      rpc = wxExOTLQueryToSTC(&m_db, query, m_Shell, m_Stopped);
     }
 
     sw.Pause();

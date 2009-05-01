@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          lexers.h
-* Purpose:       Declaration of exLexers class
+* Purpose:       Declaration of wxExLexers class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,11 +19,11 @@
 #include <wx/extension/lexer.h>
 
 /// This class defines our markers, closely related to scintilla markers.
-class exMarker
+class wxExMarker
 {
 public:
   /// Constructor.
-  exMarker(
+  wxExMarker(
     int markerNumber,
     int markerSymbol,
     const wxColour& foreground = wxNullColour,
@@ -54,11 +54,11 @@ private:
 /// Reads the lexers, keywords, markers and styles
 /// from the configuration file and makes
 /// them available.
-class exLexers
+class wxExLexers
 {
 public:
   /// Constructor for lexers from specified filename.
-  exLexers(const wxFileName& filename);
+  wxExLexers(const wxFileName& filename);
 
   /// Builds a combobox string from available lexers.
   const wxString BuildComboBox() const;
@@ -68,26 +68,26 @@ public:
 
   /// Returns the number of lexers.
   const size_t Count() const {return m_Lexers.size();};
-  
+
   /// Finds a lexer specified by a filename.
-  const exLexer FindByFileName(const wxFileName& filename) const;
+  const wxExLexer FindByFileName(const wxFileName& filename) const;
 
   /// Finds a lexer specified by the (scintilla) name.
-  const exLexer FindByName(
-    const wxString& name, 
+  const wxExLexer FindByName(
+    const wxString& name,
     bool show_error_if_not_found = true) const;
 
   /// Finds a lexer if text starts with some special tokens.
-  const exLexer FindByText(const wxString& text) const;
+  const wxExLexer FindByText(const wxString& text) const;
 
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
-  
+
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};
 
   /// Gets the markers.
-  const std::vector<exMarker>& GetMarkers() const {return m_Markers;};
+  const std::vector<wxExMarker>& GetMarkers() const {return m_Markers;};
 
   /// Gets the styles.
   const std::vector<wxString>& GetStyles() const {return m_Styles;};
@@ -103,18 +103,18 @@ public:
   /// Returns true if you selected one.
   bool ShowDialog(
     wxWindow* parent,
-    exLexer& lexer,
+    wxExLexer& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
-  const exLexer ParseTagLexer(const wxXmlNode* node) const;
-  const exMarker ParseTagMarker(const wxString& number, const wxString& props) const;
+  const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
+  const wxExMarker ParseTagMarker(const wxString& number, const wxString& props) const;
   const wxString ParseTagProperties(const wxXmlNode* node) const;
 
   std::map<int, int> m_Indicators;
-  std::vector<exLexer> m_Lexers;
-  std::vector<exMarker> m_Markers;
+  std::vector<wxExLexer> m_Lexers;
+  std::vector<wxExMarker> m_Markers;
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
 

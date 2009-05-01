@@ -18,9 +18,9 @@
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/textfile.h>
 
-bool exCompareFile(const wxFileName& file1, const wxFileName& file2)
+bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 {
-  const wxString comparator = exApp::GetConfig(_("Comparator"));
+  const wxString comparator = wxExApp::GetConfig(_("Comparator"));
 
   if (comparator.empty())
   {
@@ -38,57 +38,57 @@ bool exCompareFile(const wxFileName& file1, const wxFileName& file2)
   }
 
   const wxString msg = _("Compared") + ": " + arguments;
-  exApp::Log(msg);
-  exFrame::StatusText(msg);
+  wxExApp::Log(msg);
+  wxExFrame::StatusText(msg);
 
   return true;
 }
 
-void exFindInFiles(exFrameWithHistory* frame, bool replace)
+void wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
 {
   // To initialize the combobox.
-  exApp::GetConfig(_("In files"), exApp::GetLexers()->BuildComboBox());
+  wxExApp::GetConfig(_("In files"), wxExApp::GetLexers()->BuildComboBox());
 
-  std::vector<exConfigItem> v;
-  v.push_back(exConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
-  if (replace) v.push_back(exConfigItem(_("Replace with"), CONFIG_COMBOBOX));
-  v.push_back(exConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
-  v.push_back(exConfigItem());
-  v.push_back(exConfigItem(exApp::GetConfig()->GetFindReplaceData()->GetInfo()));
+  std::vector<wxExConfigItem> v;
+  v.push_back(wxExConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
+  if (replace) v.push_back(wxExConfigItem(_("Replace with"), CONFIG_COMBOBOX));
+  v.push_back(wxExConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
+  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem());
+  v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetInfo()));
 
-  if (exConfigDialog(NULL,
-    exApp::GetConfig(),
+  if (wxExConfigDialog(NULL,
+    wxExApp::GetConfig(),
     v,
     (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
   {
     return;
   }
 
-  const exTool tool =
+  const wxExTool tool =
     (replace ?
        ID_TOOL_REPORT_REPLACE:
        ID_TOOL_REPORT_FIND);
 
-  if (!exTextFileWithReport::SetupTool(tool))
+  if (!wxExTextFileWithReport::SetupTool(tool))
   {
     return;
   }
 
-  exApp::Log(exApp::GetConfig()->GetFindReplaceData()->GetText(replace));
+  wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(replace));
 
-  exDirWithReport dir(
+  wxExDirWithReport dir(
     tool,
-    exApp::GetConfig(_("In folder")),
-    exApp::GetConfig(_("In files")));
+    wxExApp::GetConfig(_("In folder")),
+    wxExApp::GetConfig(_("In files")));
 
   dir.FindFiles();
   dir.GetStatistics().Log(tool);
 }
 
-bool exFindOtherFileName(
+bool wxExFindOtherFileName(
   const wxFileName& filename,
-  exListViewFile* listview,
+  wxExListViewFile* listview,
   wxFileName* lastfile)
 {
   /* Add the base version if present. E.g.
@@ -102,7 +102,7 @@ bool exFindOtherFileName(
 
   if (!reg.Matches(fullpath.Lower()))
   {
-    exFrame::StatusText(_("No version information found"));
+    wxExFrame::StatusText(_("No version information found"));
     return false;
   }
 
@@ -154,7 +154,7 @@ bool exFindOtherFileName(
 
       if (listview != NULL)
       {
-        exListItemWithFileName item(listview, fn.GetFullPath());
+        wxExListItemWithFileName item(listview, fn.GetFullPath());
         item.Insert();
       }
 
@@ -175,24 +175,24 @@ bool exFindOtherFileName(
 
   if (!found && (listview != NULL || lastfile != NULL))
   {
-    exFrame::StatusText(_("No files found"));
+    wxExFrame::StatusText(_("No files found"));
   }
 
   return found;
 }
 
-bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
+bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 {
   for (
     size_t page = 0;
     page < notebook->GetPageCount();
     page++)
   {
-    exListViewFile* lv = (exListViewFile*)notebook->GetPage(page);
+    wxExListViewFile* lv = (wxExListViewFile*)notebook->GetPage(page);
 
     if (lv == NULL)
     {
-      wxLogError("Notebook page: %d (%s) is not an exListViewFile",
+      wxLogError("Notebook page: %d (%s) is not an wxExListViewFile",
         page,
         notebook->GetPageText(page).c_str());
       return false;
@@ -210,7 +210,7 @@ bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       }
 
       lv->SetSingleStyle(view);
-      exApp::GetConfig()->Set("List/Style", view);
+      wxExApp::GetConfig()->Set("List/Style", view);
     }
     else
     {
@@ -240,8 +240,8 @@ bool exForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   return true;
 }
 
-void exOpenFiles(
-  exFrameWithHistory* frame,
+void wxExOpenFiles(
+  wxExFrameWithHistory* frame,
   const wxArrayString& files,
   long flags)
 {
@@ -251,7 +251,7 @@ void exOpenFiles(
 
     if (file.Contains("*") || file.Contains("?"))
     {
-      exDirWithReport dir(frame, wxGetCwd(), file, flags);
+      wxExDirWithReport dir(frame, wxGetCwd(), file, flags);
       dir.FindFiles();
     }
     else
@@ -268,15 +268,15 @@ void exOpenFiles(
         }
       }
 
-      const exFileName filename(file);
+      const wxExFileName filename(file);
       frame->OpenFile(filename, line, wxEmptyString, flags);
     }
   }
 }
 
-exDirWithReport::exDirWithReport(const exTool& tool,
+wxExDirWithReport::wxExDirWithReport(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec)
-  : exDir(fullpath, filespec)
+  : wxExDir(fullpath, filespec)
   , m_Statistics(fullpath)
   , m_Frame(NULL)
   , m_ListView(NULL)
@@ -285,9 +285,9 @@ exDirWithReport::exDirWithReport(const exTool& tool,
 {
 }
 
-exDirWithReport::exDirWithReport(exListViewFile* listview,
+wxExDirWithReport::wxExDirWithReport(wxExListViewFile* listview,
   const wxString& fullpath, const wxString& filespec)
-  : exDir(fullpath, filespec)
+  : wxExDir(fullpath, filespec)
   , m_Statistics(fullpath)
   , m_Frame(NULL)
   , m_ListView(listview)
@@ -296,9 +296,9 @@ exDirWithReport::exDirWithReport(exListViewFile* listview,
 {
 }
 
-exDirWithReport::exDirWithReport(exFrameWithHistory* frame,
+wxExDirWithReport::wxExDirWithReport(wxExFrameWithHistory* frame,
   const wxString& fullpath, const wxString& filespec, long flags)
-  : exDir(fullpath, filespec)
+  : wxExDir(fullpath, filespec)
   , m_Statistics(fullpath)
   , m_Frame(frame)
   , m_ListView(NULL)
@@ -307,16 +307,16 @@ exDirWithReport::exDirWithReport(exFrameWithHistory* frame,
 {
 }
 
-void exDirWithReport::OnFile(const wxString& file)
+void wxExDirWithReport::OnFile(const wxString& file)
 {
   if (m_Frame == NULL && m_ListView == NULL)
   {
-    const exFileName filename(file);
+    const wxExFileName filename(file);
 
     if (filename.GetStat().IsOk())
     {
       if (wxFileName::DirExists(file)) return;
-      exTextFileWithReport report(filename);
+      wxExTextFileWithReport report(filename);
       report.RunTool(m_Tool);
       m_Statistics += report.GetStatistics();
     }
@@ -330,15 +330,15 @@ void exDirWithReport::OnFile(const wxString& file)
     }
     else if (m_ListView != NULL)
     {
-      exListItemWithFileName item(m_ListView, file, GetFileSpec());
+      wxExListItemWithFileName item(m_ListView, file, GetFileSpec());
       item.Insert();
 
       // Don't move next code into insert, as it itself inserts!
-      if (m_ListView->GetType() == exListViewFile::LIST_VERSION)
+      if (m_ListView->GetType() == wxExListViewFile::LIST_VERSION)
       {
-        exListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
+        wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
 
-        exTextFileWithReport report(item.m_Statistics);
+        wxExTextFileWithReport report(item.m_Statistics);
         if (report.SetupTool(ID_TOOL_REVISION_RECENT))
         {
           report.RunTool(ID_TOOL_REVISION_RECENT);
@@ -350,21 +350,21 @@ void exDirWithReport::OnFile(const wxString& file)
 }
 
 /// Offers a find combobox that allows you to find text
-/// on a current STC on an exFrameWithHistory.
+/// on a current STC on an wxExFrameWithHistory.
 class ComboBox : public wxComboBox
 {
 public:
   /// Constructor. Fills the combobox box with values from FindReplace from config.
   ComboBox(
     wxWindow* parent,
-    exFrameWithHistory* frame,
+    wxExFrameWithHistory* frame,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
 private:
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
-  exFrameWithHistory* m_Frame;
+  wxExFrameWithHistory* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };
@@ -376,7 +376,7 @@ END_EVENT_TABLE()
 
 ComboBox::ComboBox(
   wxWindow* parent,
-  exFrameWithHistory* frame,
+  wxExFrameWithHistory* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
@@ -390,17 +390,17 @@ ComboBox::ComboBox(
   SetAcceleratorTable(accel);
 
   const wxFont font(
-    exApp::GetConfig("FindFont", 8),
+    wxExApp::GetConfig("FindFont", 8),
     wxFONTFAMILY_DEFAULT,
     wxFONTSTYLE_NORMAL,
     wxFONTWEIGHT_NORMAL);
 
   SetFont(font);
 
-  exComboBoxFromString(this, exApp::GetConfig("FindReplace/FindStrings"));
+  wxExComboBoxFromString(this, wxExApp::GetConfig("FindReplace/FindStrings"));
 
   // And override the value set by previous, as we want text to be same as in Find.
-  SetValue(exApp::GetConfig()->GetFindReplaceData()->GetFindString());
+  SetValue(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
 }
 
 void ComboBox::OnCommand(wxCommandEvent& event)
@@ -424,22 +424,22 @@ void ComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    exSTCWithFrame* stc = m_Frame->GetCurrentSTC();
+    wxExSTCWithFrame* stc = m_Frame->GetCurrentSTC();
 
     if (stc != NULL)
     {
       stc->FindNext(GetValue());
-      exApp::GetConfig()->GetFindReplaceData()->SetFindString(GetValue());
+      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(GetValue());
 
       // And keep the changed text in the combo box.
       wxString text;
 
-      if (exComboBoxToString(this, text))
+      if (wxExComboBoxToString(this, text))
       {
-        exApp::GetConfig()->Set("FindReplace/FindStrings", text);
-        Clear(); // so exComboBoxFromString can append again
-        exComboBoxFromString(this, text);
-        SetValue(exApp::GetConfig()->GetFindReplaceData()->GetFindString());
+        wxExApp::GetConfig()->Set("FindReplace/FindStrings", text);
+        Clear(); // so wxExComboBoxFromString can append again
+        wxExComboBoxFromString(this, text);
+        SetValue(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
       }
     }
   }
@@ -449,15 +449,15 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
-BEGIN_EVENT_TABLE(exFindToolBar, wxAuiToolBar)
-  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, exFindToolBar::OnCommand)
-  EVT_CHECKBOX(ID_MATCH_CASE, exFindToolBar::OnCommand)
-  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, exFindToolBar::OnCommand)
+BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
+  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
 END_EVENT_TABLE()
 
-exFindToolBar::exFindToolBar(
+wxExFindToolBar::wxExFindToolBar(
   wxWindow* parent,
-  exFrameWithHistory* frame,
+  wxExFrameWithHistory* frame,
   wxWindowID id)
   : wxAuiToolBar(parent, id)
 {
@@ -465,9 +465,9 @@ exFindToolBar::exFindToolBar(
   m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, _("Match whole word"));
   m_RegularExpression = new wxCheckBox(this, ID_REGULAR_EXPRESSION, _("Regular expression"));
 
-  m_MatchCase->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchCase());
-  m_MatchWholeWord->SetValue(exApp::GetConfig()->GetFindReplaceData()->MatchWord());
-  m_RegularExpression->SetValue(exApp::GetConfig()->GetFindReplaceData()->IsRegularExpression());
+  m_MatchCase->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->MatchCase());
+  m_MatchWholeWord->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->MatchWord());
+  m_RegularExpression->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->IsRegularExpression());
 
 #ifdef __WXMSW__
   const wxSize size(150, 20);
@@ -483,14 +483,14 @@ exFindToolBar::exFindToolBar(
   Realize();
 }
 
-void exFindToolBar::OnCommand(wxCommandEvent& event)
+void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
   case ID_MATCH_WHOLE_WORD:
   case ID_MATCH_CASE:
   case ID_REGULAR_EXPRESSION:
-    exApp::GetConfig()->SetFindReplaceData(
+    wxExApp::GetConfig()->SetFindReplaceData(
       m_MatchWholeWord->GetValue(),
       m_MatchCase->GetValue(),
       m_RegularExpression->GetValue());

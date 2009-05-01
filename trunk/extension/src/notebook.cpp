@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          notebook.cpp
-* Purpose:       Implementation of class exNotebook
+* Purpose:       Implementation of class wxExNotebook
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,13 +14,13 @@
 
 #if wxUSE_GUI
 
-BEGIN_EVENT_TABLE(exNotebook, wxAuiNotebook)
-  EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, exNotebook::OnNotebook)
-  EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, exNotebook::OnNotebook)
+BEGIN_EVENT_TABLE(wxExNotebook, wxAuiNotebook)
+  EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, wxExNotebook::OnNotebook)
+  EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, wxExNotebook::OnNotebook)
 END_EVENT_TABLE()
 
-exNotebook::exNotebook(wxWindow* parent,
-  exManagedFrame* frame,
+wxExNotebook::wxExNotebook(wxWindow* parent,
+  wxExManagedFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
@@ -30,7 +30,7 @@ exNotebook::exNotebook(wxWindow* parent,
 {
 }
 
-wxWindow* exNotebook::AddPage(
+wxWindow* wxExNotebook::AddPage(
     wxWindow* page,
     const wxString& key,
     const wxString& text,
@@ -56,7 +56,7 @@ wxWindow* exNotebook::AddPage(
   return page;
 }
 
-bool exNotebook::DeletePage(const wxString& key)
+bool wxExNotebook::DeletePage(const wxString& key)
 {
   wxWindow* page = GetPageByKey(key);
 
@@ -67,7 +67,7 @@ bool exNotebook::DeletePage(const wxString& key)
   return wxAuiNotebook::DeletePage(GetPageIndex(page));
 }
 
-bool exNotebook::ErasePage(size_t n)
+bool wxExNotebook::ErasePage(size_t n)
 {
   for (
     std::map<wxString,wxWindow*>::iterator it = m_MapPages.begin();
@@ -86,7 +86,7 @@ bool exNotebook::ErasePage(size_t n)
   return false;
 }
 
-bool exNotebook::ForEach(int id)
+bool wxExNotebook::ForEach(int id)
 {
   if (GetPageCount() == 0)
   {
@@ -97,17 +97,17 @@ bool exNotebook::ForEach(int id)
   // The page should be an int, otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
   {
-    // When trying to cast to exFile, there is an error:
-    // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const exFile *'
-    // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'exFile'
-    // E:\lib\wxExtension\v2.0\include\wx\extension\file.h(95) : see declaration of 'exFile'
+    // When trying to cast to wxExFile, there is an error:
+    // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const wxExFile *'
+    // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'wxExFile'
+    // E:\lib\wxExtension\v2.0\include\wx\extension\file.h(95) : see declaration of 'wxExFile'
 
-    // Try to get an exSTC out of the page.
-    exSTC* stc = wxDynamicCast(GetPage(page), exSTC);
+    // Try to get an wxExSTC out of the page.
+    wxExSTC* stc = wxDynamicCast(GetPage(page), wxExSTC);
 
     if (stc == NULL)
     {
-      wxLogError("Notebook page: %d (%s) cannot be cast to an exSTC",
+      wxLogError("Notebook page: %d (%s) cannot be cast to an wxExSTC",
         page,
         GetPageText(page).c_str());
 
@@ -149,7 +149,7 @@ bool exNotebook::ForEach(int id)
   return true;
 }
 
-const wxString exNotebook::GetKeyByPage(wxWindow* page) const
+const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 {
   for (
     std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
@@ -167,7 +167,7 @@ const wxString exNotebook::GetKeyByPage(wxWindow* page) const
   return wxEmptyString;
 }
 
-const wxString exNotebook::GetKeys() const
+const wxString wxExNotebook::GetKeys() const
 {
   wxString keys;
 
@@ -182,11 +182,11 @@ const wxString exNotebook::GetKeys() const
   return keys;
 }
 
-wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select)
+wxWindow* wxExNotebook::GetPageByKey(const wxString& key, bool select)
 {
   std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.find(key);
 
-  if (it != m_MapPages.end()) 
+  if (it != m_MapPages.end())
   {
     if (select)
     {
@@ -201,7 +201,7 @@ wxWindow* exNotebook::GetPageByKey(const wxString& key, bool select)
   }
 }
 
-void exNotebook::OnNotebook(wxAuiNotebookEvent& event)
+void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED)
   {
@@ -239,7 +239,7 @@ void exNotebook::OnNotebook(wxAuiNotebookEvent& event)
   }
 }
 
-bool exNotebook::SetPageText(
+bool wxExNotebook::SetPageText(
   const wxString& key,
   const wxString& text)
 {
@@ -253,7 +253,7 @@ bool exNotebook::SetPageText(
   return (page != NULL);
 }
 
-bool exNotebook::SetPageText(
+bool wxExNotebook::SetPageText(
   const wxString& key,
   const wxString& new_key,
   const wxString& text)

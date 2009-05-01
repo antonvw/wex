@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          renderer.h
-* Purpose:       Declaration of exRenderer class
+* Purpose:       Declaration of wxExRenderer class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,11 +19,11 @@
 #if wxUSE_GUI
 
 /// Offers a grid cell rendering.
-class exRenderer : public wxGridCellStringRenderer
+class wxExRenderer : public wxGridCellStringRenderer
 {
 public:
   /// Renderer flags.
-  enum exRendererFlags
+  enum wxExRendererFlags
   {
     CELL_UP               = 0x0001, ///< -
     CELL_DOWN             = 0x0002, ///< _
@@ -38,12 +38,12 @@ public:
   };
 
   /// Constructor.
-  exRenderer(
-    long flags,                           ///< the exRendererFlags
+  wxExRenderer(
+    long flags,                           ///< the wxExRendererFlags
     const wxPen& pen,                     ///< used for CELL_UP .. CELL_CROSS
     const wxPen& pen_outer,               ///< used for CELL_RECT (outline) etc.
     const wxBrush& brush = *wxBLACK_BRUSH ///< used for CELL_RECT filling
-    ); 
+    );
 
   /// Interface from wxGridCellRenderer.
   virtual void Draw(

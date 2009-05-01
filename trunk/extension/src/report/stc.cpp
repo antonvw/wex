@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.cpp
-* Purpose:       Implementation of class 'exSTCWithFrame'
+* Purpose:       Implementation of class 'wxExSTCWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,28 +19,28 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
-BEGIN_EVENT_TABLE(exSTCWithFrame, exSTC)
-  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, exSTCWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, exSTCWithFrame::OnCommand)
+BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
+  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, wxExSTCWithFrame::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 #if wxUSE_DRAG_AND_DROP
 class STCDropTarget : public wxFileDropTarget
 {
 public:
-  STCDropTarget(exFrameWithHistory* owner) {m_Owner = owner;}
+  STCDropTarget(wxExFrameWithHistory* owner) {m_Owner = owner;}
 private:
   virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
   {
-    exOpenFiles(m_Owner, filenames);
+    wxExOpenFiles(m_Owner, filenames);
     return true;
   }
 
-  exFrameWithHistory* m_Owner;
+  wxExFrameWithHistory* m_Owner;
 };
 #endif
 
-exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
+wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   long type,
   const wxString& value,
   wxWindowID id,
@@ -48,13 +48,13 @@ exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
   const wxSize& size,
   long style,
   const wxString& name)
-  : exSTC(parent, type, value, id, pos, size, style, name)
+  : wxExSTC(parent, type, value, id, pos, size, style, name)
 {
   Initialize();
 }
 
-exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
-  const exFileName& filename,
+wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags,
@@ -64,7 +64,7 @@ exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
   const wxSize& size,
   long style,
   const wxString& name)
-  : exSTC(parent, filename, line_number, match, flags, type, id, pos, size, style, name)
+  : wxExSTC(parent, filename, line_number, match, flags, type, id, pos, size, style, name)
 {
   if (Initialize())
   {
@@ -72,15 +72,15 @@ exSTCWithFrame::exSTCWithFrame(wxWindow* parent,
   }
 }
 
-exSTCWithFrame::exSTCWithFrame(const exSTC& stc)
-  : exSTC(stc)
+wxExSTCWithFrame::wxExSTCWithFrame(const wxExSTC& stc)
+  : wxExSTC(stc)
 {
   Initialize();
 }
 
-void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
+void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
-  exSTC::BuildPopupMenu(menu);
+  wxExSTC::BuildPopupMenu(menu);
 
   // Add tools if we have at least some text, the tool flag,
   // and a lexer.
@@ -98,12 +98,12 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
 
     if (GetMenuFlags() & STC_MENU_REPORT_FIND)
     {
-      menu.Append(ID_STC_FIND_FILES, exEllipsed(_("Find &In Files")));
+      menu.Append(ID_STC_FIND_FILES, wxExEllipsed(_("Find &In Files")));
     }
 
     if (GetMenuFlags() & STC_MENU_REPORT_REPLACE)
     {
-      menu.Append(ID_STC_REPLACE_FILES, exEllipsed(_("&Replace In Files")));
+      menu.Append(ID_STC_REPLACE_FILES, wxExEllipsed(_("&Replace In Files")));
     }
   }
 
@@ -111,44 +111,44 @@ void exSTCWithFrame::BuildPopupMenu(exMenu& menu)
   {
     if (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN)
     {
-      if (!exApp::GetConfigBool("SVN"))
+      if (!wxExApp::GetConfigBool("SVN"))
       {
-        if (!exApp::GetConfig(_("Comparator")).empty())
+        if (!wxExApp::GetConfig(_("Comparator")).empty())
         {
           menu.AppendSeparator();
-          menu.Append(ID_STC_COMPARE, exEllipsed(_("&Compare Recent Version")));
+          menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
         }
       }
       else
       {
         wxMenu* svnmenu = new wxMenu;
-        svnmenu->Append(ID_STC_SVN_DIFF, exEllipsed(_("&Diff")));
-        svnmenu->Append(ID_STC_SVN_LOG, exEllipsed(_("&Log")));
-        svnmenu->Append(ID_STC_SVN_CAT, exEllipsed(_("&Cat")));
+        svnmenu->Append(ID_STC_SVN_DIFF, wxExEllipsed(_("&Diff")));
+        svnmenu->Append(ID_STC_SVN_LOG, wxExEllipsed(_("&Log")));
+        svnmenu->Append(ID_STC_SVN_CAT, wxExEllipsed(_("&Cat")));
         svnmenu->AppendSeparator();
-        svnmenu->Append(ID_STC_SVN_COMMIT, exEllipsed(_("&Commit")));
+        svnmenu->Append(ID_STC_SVN_COMMIT, wxExEllipsed(_("&Commit")));
         menu.AppendSeparator();
         menu.AppendSubMenu(svnmenu, "&SVN");
       }
     }
   }
 
-  if (!GetReadOnly() && 
+  if (!GetReadOnly() &&
       !m_FileName.GetLexer().GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
-    menu.Append(ID_STC_ADD_HEADER, exEllipsed(_("&Add Header")));
+    menu.Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   }
 }
 
-bool exSTCWithFrame::Initialize()
+bool wxExSTCWithFrame::Initialize()
 {
   wxWindow* window = wxTheApp->GetTopWindow();
-  m_Frame = wxDynamicCast(window, exFrameWithHistory);
+  m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
 
   if (m_Frame == NULL)
   {
-    wxLogError("Cannot initialize exSTCWithFrame without exFrameWithHistory");
+    wxLogError("Cannot initialize wxExSTCWithFrame without wxExFrameWithHistory");
     return false;
   }
 
@@ -161,7 +161,7 @@ bool exSTCWithFrame::Initialize()
   return true;
 }
 
-void exSTCWithFrame::OnCommand(wxCommandEvent& command)
+void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
   if (!Continue())
   {
@@ -170,33 +170,33 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
 
   if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
   {
-    const exTool tool(command.GetId());
+    const wxExTool tool(command.GetId());
 
     if (tool.GetId() == ID_TOOL_COMMIT)
     {
     wxTextEntryDialog dlg(this,
       _("Input") + ":",
       "Commit",
-      exApp::GetConfig(_("Revision comment")));
+      wxExApp::GetConfig(_("Revision comment")));
 
     if (dlg.ShowModal() == wxID_CANCEL)
     {
       return;
     }
 
-    exApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
+    wxExApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
     }
 
-    if (exTextFileWithReport::SetupTool(tool))
+    if (wxExTextFileWithReport::SetupTool(tool))
     {
-      exTextFileWithReport report(m_FileName);
+      wxExTextFileWithReport report(m_FileName);
       report.RunTool(tool);
       report.GetStatistics().Log(tool);
 
       if (tool.IsCountType())
       {
-        exOpenFile(
-          exFileNameStatistics::GetLogfileName(), 
+        wxExOpenFile(
+          wxExFileNameStatistics::GetLogfileName(),
           STC_OPEN_FROM_STATISTICS);
       }
     }
@@ -208,27 +208,27 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
   case ID_STC_ADD_HEADER:
     {
-    std::vector<exConfigItem> v;
+    std::vector<wxExConfigItem> v;
 
     // Purpose is required.
-    v.push_back(exConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
+    v.push_back(wxExConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
 
-    if (exApp::GetConfig(_("Author")).empty())
+    if (wxExApp::GetConfig(_("Author")).empty())
     {
       // Author is required, but only presented if empty.
-      v.push_back(exConfigItem(_("Author"), wxEmptyString, 0, true));
-      
-      if (exApp::GetConfig(_("Email")).empty())
+      v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
+
+      if (wxExApp::GetConfig(_("Email")).empty())
       {
-        v.push_back(exConfigItem(_("Email")));
+        v.push_back(wxExConfigItem(_("Email")));
       }
     }
 
-    exConfigDialog dlg(this, exApp::GetConfig(), v, _("File Purpose"));
+    wxExConfigDialog dlg(this, wxExApp::GetConfig(), v, _("File Purpose"));
     if (dlg.ShowModal() == wxID_CANCEL) return;
 
     DocumentStart();
-    AddText(exHeader(m_FileName, exApp::GetConfig(), exApp::GetConfig(_("Purpose"))));
+    AddText(wxExHeader(m_FileName, wxExApp::GetConfig(), wxExApp::GetConfig(_("Purpose"))));
     }
     break;
 
@@ -236,16 +236,16 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
       wxFileName lastfile;
 
-      if (exFindOtherFileName(m_FileName, NULL, &lastfile))
+      if (wxExFindOtherFileName(m_FileName, NULL, &lastfile))
       {
-        exCompareFile(m_FileName, lastfile);
+        wxExCompareFile(m_FileName, lastfile);
       }
     }
     break;
 
   case ID_STC_SVN_CAT:
     {
-    exSVN svn(SVN_CAT, m_FileName.GetFullPath());
+    wxExSVN svn(SVN_CAT, m_FileName.GetFullPath());
 
     if (svn.Execute() == 0)
     {
@@ -254,18 +254,18 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_STC_SVN_COMMIT: exSVN(SVN_COMMIT, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
-  case ID_STC_SVN_DIFF: exSVN(SVN_DIFF, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
-  case ID_STC_SVN_LOG: exSVN(SVN_LOG, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
+  case ID_STC_SVN_COMMIT: wxExSVN(SVN_COMMIT, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
+  case ID_STC_SVN_DIFF: wxExSVN(SVN_DIFF, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
+  case ID_STC_SVN_LOG: wxExSVN(SVN_LOG, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
 
   case ID_STC_FIND_FILES:
     GetSearchText();
-    exFindInFiles(m_Frame);
+    wxExFindInFiles(m_Frame);
     break;
 
   case ID_STC_REPLACE_FILES:
     GetSearchText();
-    exFindInFiles(m_Frame, true);
+    wxExFindInFiles(m_Frame, true);
     break;
 
   default: wxFAIL;
@@ -273,8 +273,8 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
   }
 }
 
-bool exSTCWithFrame::Open(
-  const exFileName& filename,
+bool wxExSTCWithFrame::Open(
+  const wxExFileName& filename,
   int line_number,
   const wxString& match,
   long flags)
@@ -287,7 +287,7 @@ bool exSTCWithFrame::Open(
   }
   else
   {
-    retValue = exSTC::Open(filename, line_number, match, flags);
+    retValue = wxExSTC::Open(filename, line_number, match, flags);
 
     if (retValue)
     {
@@ -298,9 +298,9 @@ bool exSTCWithFrame::Open(
   return retValue;
 }
 
-void exSTCWithFrame::PropertiesMessage()
+void wxExSTCWithFrame::PropertiesMessage()
 {
-  exSTC::PropertiesMessage();
+  wxExSTC::PropertiesMessage();
 
   const wxString ro = (m_FileName.GetStat().IsReadOnly() ?
     " [" + _("Readonly") + "]":

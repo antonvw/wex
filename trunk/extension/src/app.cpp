@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          app.cpp
-* Purpose:       Implementation of exApp class
+* Purpose:       Implementation of wxExApp class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,19 +15,19 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 
-bool exApp::m_Logging = false;
-wxString exApp::m_CatalogDir;
-exConfig* exApp::m_Config = NULL;
-exLexers* exApp::m_Lexers = NULL;
-wxLocale exApp::m_Locale;
+bool wxExApp::m_Logging = false;
+wxString wxExApp::m_CatalogDir;
+wxExConfig* wxExApp::m_Config = NULL;
+wxExLexers* wxExApp::m_Lexers = NULL;
+wxLocale wxExApp::m_Locale;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-wxHtmlEasyPrinting* exApp::m_Printer = NULL;
+wxHtmlEasyPrinting* wxExApp::m_Printer = NULL;
 #endif
 
-int exApp::OnExit()
+int wxExApp::OnExit()
 {
 #if wxUSE_GUI
-  exSTC::CleanUp();
+  wxExSTC::CleanUp();
 #endif
 
   delete m_Lexers;
@@ -38,10 +38,10 @@ int exApp::OnExit()
   return wxApp::OnExit();
 }
 
-bool exApp::OnInit()
+bool wxExApp::OnInit()
 {
   // Init the localization, from now on things will be translated.
-  // So do this before constructing config and exTool::Initialize, as these use localization.
+  // So do this before constructing config and wxExTool::Initialize, as these use localization.
   if (m_Locale.Init())
   {
     // If there are catalogs in the catalog_dir, then add them to the locale.
@@ -77,7 +77,7 @@ bool exApp::OnInit()
 
   // Now construct the config, as most classes use it.
 #ifdef EX_PORTABLE
-  m_Config = new exConfig(
+  m_Config = new wxExConfig(
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
       GetAppName() + wxString(".cfg")).GetFullPath(),
@@ -85,13 +85,13 @@ bool exApp::OnInit()
 #else
   // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
   // (ignored on non-Unix system)
-  m_Config = new exConfig(
+  m_Config = new wxExConfig(
     wxEmptyString,
     wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
 
   // And construct and read the lexers.
-  m_Lexers = new exLexers(exFileName(
+  m_Lexers = new wxExLexers(wxExFileName(
 #ifdef EX_PORTABLE
       wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
 #else
@@ -111,8 +111,8 @@ bool exApp::OnInit()
 #endif
 
   // Finally call all available static initializers.
-  exTool::Initialize();
-  exSTC::PathListInit();
+  wxExTool::Initialize();
+  wxExSTC::PathListInit();
 
   return wxApp::OnInit();
 }

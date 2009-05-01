@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listitem.h
-* Purpose:       Declaration of class 'exListItemWithFileName'
+* Purpose:       Declaration of class 'wxExListItemWithFileName'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,46 +14,46 @@
 
 #include <wx/extension/listview.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/textfile.h> // for exRCS
+#include <wx/extension/textfile.h> // for wxExRCS
 
-class exListViewFile;
+class wxExListViewFile;
 
-/// Offers a list item associated with a file on an exListView.
+/// Offers a list item associated with a file on an wxExListView.
 /// The item is coloured according to
 /// the modification time of the file it is associated with.
 /// It allows you to run tools on the item and keeps statistics when running.
-class exListItemWithFileName : public exListItem
+class wxExListItemWithFileName : public wxExListItem
 {
-  friend class exDirWithReport; // exDirWithReport uses m_Statistics directly.
+  friend class wxExDirWithReport; // wxExDirWithReport uses m_Statistics directly.
 public:
   /// Constructor.
-  exListItemWithFileName(exListView* listview, const int itemnumber);
+  wxExListItemWithFileName(wxExListView* listview, const int itemnumber);
 
   /// Constructor.
-  exListItemWithFileName(exListView* listview,
+  wxExListItemWithFileName(wxExListView* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// Gets the filename.
-  const exFileName& GetFileName() const {return m_Statistics;};
+  const wxExFileName& GetFileName() const {return m_Statistics;};
 
   /// Gets the statistics.
-  const exFileNameStatistics& GetStatistics() const {return m_Statistics;};
+  const wxExFileNameStatistics& GetStatistics() const {return m_Statistics;};
 
   /// Inserts the item at index (if -1 at the end of the listview),
   /// and sets all attributes.
   void Insert(long index = -1);
 
   /// Runs a tool on this item.
-  bool Run(const exTool& tool, exListViewFile* listview);
+  bool Run(const wxExTool& tool, wxExListViewFile* listview);
 
   /// Updates all attributes.
   void Update();
 
   /// Sets revision list columns with data from specified rcs.
-  void UpdateRevisionList(const exRCS& rcs);
+  void UpdateRevisionList(const wxExRCS& rcs);
 private:
-  exFileNameStatistics m_Statistics;
+  wxExFileNameStatistics m_Statistics;
   const wxString m_FileSpec;
 };
 #endif

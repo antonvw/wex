@@ -20,7 +20,7 @@ bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
 {
   if (parser.GetParamCount() > 0)
   {
-  
+
     for (size_t i = 0; i < parser.GetParamCount(); i++)
     {
       m_Files.Add(parser.GetParam(i));
@@ -42,24 +42,24 @@ bool Application::OnInit()
   // Otherwise wxGTK gives problems.
   wxUpdateUIEvent::SetUpdateInterval(-1);
 
-  if (!exApp::OnInit())
+  if (!wxExApp::OnInit())
   {
     return false;
   }
-  
+
   SetLogging();
 
   MDIFrame* frame = new MDIFrame(m_Files.Count() == 0);
 
-  frame->Show();  
+  frame->Show();
 
   if (m_Files.Count() > 0)
   {
-    exOpenFiles(frame, m_Files);
+    wxExOpenFiles(frame, m_Files);
   }
 
   wxUpdateUIEvent::SetUpdateInterval(0);
-  
+
   return true;
 }
 
@@ -68,7 +68,7 @@ void Application::OnInitCmdLine(wxCmdLineParser& parser)
   wxApp::OnInitCmdLine(parser);
 
   parser.AddParam(
-    "input file:line number", 
+    "input file:line number",
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
 }

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          svn.h
-* Purpose:       Declaration of exSVN class
+* Purpose:       Declaration of wxExSVN class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,31 +18,31 @@
 #endif
 
 /// SVN types supported.
-enum exSvnType
-{ 
+enum wxExSvnType
+{
   SVN_CAT,    ///< svn cat
-  SVN_COMMIT, ///< svn commit 
-  SVN_DIFF,   ///< svn diff 
+  SVN_COMMIT, ///< svn commit
+  SVN_DIFF,   ///< svn diff
   SVN_INFO,   ///< svn info
-  SVN_LOG,    ///< svn log 
-  SVN_STAT,   ///< svn stat 
+  SVN_LOG,    ///< svn log
+  SVN_STAT,   ///< svn stat
 };
 
 #if wxUSE_GUI
 
-class exSTCEntryDialog;
+class wxExSTCEntryDialog;
 
 /// This class collects all svn handling.
-class exSVN
+class wxExSVN
 {
 public:
   /// Constructor, specify the command type and a fullpath.
-  exSVN(exSvnType command, const wxString& fullpath = wxEmptyString);
+  wxExSVN(wxExSvnType command, const wxString& fullpath = wxEmptyString);
 
   /// Execute the svn command.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
-  /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
+  /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors
   /// that were reported by svn otherwise.
   /// If you use show_dialog = false, then the dialog is not shown,
   /// and defaults from the config are used.
@@ -58,13 +58,13 @@ public:
   /// Shows output in a dialog only (Execute should already be called).
   void ShowOutput();
 private:
-  const exSvnType m_Type;
+  const wxExSvnType m_Type;
   wxString m_Caption;
   wxString m_Command;
   wxString m_Output;
   const wxString m_FullPath;
   int m_ReturnCode;
-  static exSTCEntryDialog* m_STCEntryDialog;
+  static wxExSTCEntryDialog* m_STCEntryDialog;
 };
 #endif
 #endif

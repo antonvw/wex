@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.cpp
-* Purpose:       Implementation of class 'exProcessWithListView' and support classes
+* Purpose:       Implementation of class 'wxExProcessWithListView' and support classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,10 +18,10 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
-class exThread : public wxThread
+class wxExThread : public wxThread
 {
 public:
-  exThread(exProcessWithListView* process) 
+  wxExThread(wxExProcessWithListView* process)
     : wxThread(wxTHREAD_JOINABLE)
     , m_Process(process) {}
 protected:
@@ -38,13 +38,13 @@ protected:
     return NULL;
   };
 private:
-  exProcessWithListView* m_Process;
+  wxExProcessWithListView* m_Process;
 };
 
-wxString exProcessWithListView::m_Command;
+wxString wxExProcessWithListView::m_Command;
 
-exProcessWithListView::exProcessWithListView(
-  exListViewFile* listview, 
+wxExProcessWithListView::wxExProcessWithListView(
+  wxExListViewFile* listview,
   const wxString& command)
   : wxProcess(listview, -1)
   , m_Owner(listview)
@@ -58,7 +58,7 @@ exProcessWithListView::exProcessWithListView(
   Redirect();
 }
 
-void exProcessWithListView::CheckInput()
+void wxExProcessWithListView::CheckInput()
 {
   bool hasInput = false;
 
@@ -119,14 +119,14 @@ void exProcessWithListView::CheckInput()
 
     if (fn.FileExists())
     {
-      exListItemWithFileName item(m_Owner, fn.GetFullPath());
+      wxExListItemWithFileName item(m_Owner, fn.GetFullPath());
       item.Insert();
       item.SetColumnText(_("Line"), line);
       item.SetColumnText(_("Line No"), lineno);
     }
     else
     {
-      exListItemWithFileName item(m_Owner, wxEmptyString); // exListItem gives incorrect image
+      wxExListItemWithFileName item(m_Owner, wxEmptyString); // wxExListItem gives incorrect image
       item.Insert();
       item.SetColumnText(_("Line"), line);
     }
@@ -143,34 +143,34 @@ void exProcessWithListView::CheckInput()
   }
 }
 
-int exProcessWithListView::ConfigDialog()
+int wxExProcessWithListView::ConfigDialog()
 {
-  std::vector<exConfigItem> v;
-  v.push_back(exConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(exConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  std::vector<wxExConfigItem> v;
+  v.push_back(wxExConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
+  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
-  const int result = exConfigDialog(NULL,
-    exApp::GetConfig(),
+  const int result = wxExConfigDialog(NULL,
+    wxExApp::GetConfig(),
     v,
     _("Select Process")).ShowModal();
 
   if (result == wxID_OK)
   {
-    wxSetWorkingDirectory(exApp::GetConfig(_("In folder")));
-    m_Command = exApp::GetConfig(_("Process"));
+    wxSetWorkingDirectory(wxExApp::GetConfig(_("In folder")));
+    m_Command = wxExApp::GetConfig(_("Process"));
   }
 
   return result;
 }
 
-bool exProcessWithListView::IsRunning() const 
+bool wxExProcessWithListView::IsRunning() const
 {
   return m_Thread != NULL && m_Thread->IsRunning();
 }
 
-void exProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
+void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
-  exFrame::StatusText(_("Ready"));
+  wxExFrame::StatusText(_("Ready"));
 
   if (m_Thread != NULL)
   {
@@ -184,7 +184,7 @@ void exProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
   wxPostEvent(m_Owner, event);
 }
 
-bool exProcessWithListView::Run()
+bool wxExProcessWithListView::Run()
 {
   if (m_Command.empty())
   {
@@ -198,14 +198,14 @@ bool exProcessWithListView::Run()
   {
     SetPid(pid);
 
-    m_Thread = new exThread(this);
+    m_Thread = new wxExThread(this);
 
     if (m_Thread->Create() == wxTHREAD_NO_ERROR)
     {
       if (m_Thread->Run() == wxTHREAD_NO_ERROR)
       {
-        exFrame::StatusText(m_Command);
-        exApp::Log(_("Running process") + ": " + m_Command);
+        wxExFrame::StatusText(m_Command);
+        wxExApp::Log(_("Running process") + ": " + m_Command);
         return true;
       }
     }
@@ -216,9 +216,9 @@ bool exProcessWithListView::Run()
   return false;
 }
 
-void exProcessWithListView::Stop()
+void wxExProcessWithListView::Stop()
 {
   Kill(GetPid(), wxSIGKILL);
 
-  exFrame::StatusText(_("Stopped"));
+  wxExFrame::StatusText(_("Stopped"));
 }

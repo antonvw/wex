@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          tool.cpp
-* Purpose:       Implementation of exTool classes
+* Purpose:       Implementation of wxExTool classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,21 +14,21 @@
 #include <wx/extension/config.h>
 #include <wx/extension/util.h>
 
-std::map < int, const exToolInfo > exTool::m_ToolInfo;
+std::map < int, const wxExToolInfo > wxExTool::m_ToolInfo;
 
-exTool::exTool(int type)
+wxExTool::wxExTool(int type)
   : m_Id(type)
 {
 }
 
-void exTool::AddInfo(
+void wxExTool::AddInfo(
   int tool_id,
   const wxString& info,
   const wxString& text,
   bool is_basic,
   const wxString& helptext)
 {
-  std::map < int, const exToolInfo >::const_iterator it = m_ToolInfo.find(tool_id);
+  std::map < int, const wxExToolInfo >::const_iterator it = m_ToolInfo.find(tool_id);
 
   if (it != m_ToolInfo.end())
   {
@@ -36,14 +36,14 @@ void exTool::AddInfo(
   }
   else
   {
-    const exToolInfo ti(info, text, is_basic, helptext);
+    const wxExToolInfo ti(info, text, is_basic, helptext);
     m_ToolInfo.insert(std::make_pair(tool_id, ti));
   }
 }
 
-const wxString exTool::Info() const
+const wxString wxExTool::Info() const
 {
-  std::map < int, const exToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
+  std::map < int, const wxExToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
 
   if (it != m_ToolInfo.end())
   {
@@ -56,13 +56,13 @@ const wxString exTool::Info() const
   }
 }
 
-void exTool::Initialize()
+void wxExTool::Initialize()
 {
-  // If you change these labels, don't forget to change in listview too 
+  // If you change these labels, don't forget to change in listview too
   // for title when checking in-out.
-  if (!exApp::GetConfigBool("SVN"))
+  if (!wxExApp::GetConfigBool("SVN"))
   {
-    AddInfo(ID_TOOL_COMMIT, _("Commited"), exEllipsed(_("&Commit")));
+    AddInfo(ID_TOOL_COMMIT, _("Commited"), wxExEllipsed(_("&Commit")));
     AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
     AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("&Revision"), false);
   }

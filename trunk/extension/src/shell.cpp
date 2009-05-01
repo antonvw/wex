@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          shell.cpp
-* Purpose:       Implementation of class exSTCShell
+* Purpose:       Implementation of class wxExSTCShell
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -17,19 +17,19 @@
 
 using namespace std;
 
-BEGIN_EVENT_TABLE(exSTCShell, exSTC)
-  EVT_KEY_DOWN(exSTCShell::OnKey)
-  EVT_MENU(wxID_PASTE, exSTCShell::OnCommand)
+BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
+  EVT_KEY_DOWN(wxExSTCShell::OnKey)
+  EVT_MENU(wxID_PASTE, wxExSTCShell::OnCommand)
 END_EVENT_TABLE()
 
-exSTCShell::exSTCShell(
+wxExSTCShell::wxExSTCShell(
   wxWindow* parent,
   const wxString& prompt,
   const wxString& command_end,
   bool echo,
   int commands_save_in_config,
   long menu_flags)
-  : exSTC(parent, menu_flags)
+  : wxExSTC(parent, menu_flags)
   , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)
@@ -54,7 +54,7 @@ exSTCShell::exSTCShell(
   else
   {
     // Get all previous commands.
-    wxStringTokenizer tkz(exApp::GetConfig("Shell"),
+    wxStringTokenizer tkz(wxExApp::GetConfig("Shell"),
       m_CommandsInConfigDelimiter);
 
     while (tkz.HasMoreTokens())
@@ -75,7 +75,7 @@ exSTCShell::exSTCShell(
   }
 }
 
-exSTCShell::~exSTCShell()
+wxExSTCShell::~wxExSTCShell()
 {
   if (m_CommandsSaveInConfig > 0)
   {
@@ -91,15 +91,15 @@ exSTCShell::~exSTCShell()
       items++;
     }
 
-    exApp::SetConfig("Shell", values);
+    wxExApp::SetConfig("Shell", values);
   }
 }
 
 
-const wxString exSTCShell::GetHistory() const
+const wxString wxExSTCShell::GetHistory() const
 {
   wxString commands;
-  
+
   for (
     list < wxString >::const_iterator it = m_Commands.begin();
     it != m_Commands.end();
@@ -107,11 +107,11 @@ const wxString exSTCShell::GetHistory() const
   {
     commands += *it + "\n";
   }
-  
+
   return commands;
 }
 
-bool exSTCShell::GetHistoryNo(const wxString& short_command)
+bool wxExSTCShell::GetHistoryNo(const wxString& short_command)
 {
   const int no_asked_for = atoi(short_command.c_str());
 
@@ -143,9 +143,9 @@ bool exSTCShell::GetHistoryNo(const wxString& short_command)
     }
     else
     {
-      short_command_check = 
+      short_command_check =
         short_command.substr(
-          0, 
+          0,
           short_command.length() - m_CommandEnd.length());
     }
 
@@ -156,7 +156,7 @@ bool exSTCShell::GetHistoryNo(const wxString& short_command)
       it++)
     {
       const wxString command = *it;
-      
+
       if (command.StartsWith(short_command_check))
       {
         m_Command = command;
@@ -168,7 +168,7 @@ bool exSTCShell::GetHistoryNo(const wxString& short_command)
   return false;
 }
 
-void exSTCShell::KeepCommand()
+void wxExSTCShell::KeepCommand()
 {
   m_Commands.remove(m_Command);
   m_Commands.push_back(m_Command);
@@ -179,7 +179,7 @@ void exSTCShell::KeepCommand()
   }
 }
 
-void exSTCShell::OnCommand(wxCommandEvent& command)
+void wxExSTCShell::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
@@ -198,7 +198,7 @@ void exSTCShell::OnCommand(wxCommandEvent& command)
   }
 }
 
-void exSTCShell::OnKey(wxKeyEvent& event)
+void wxExSTCShell::OnKey(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
 
@@ -341,7 +341,7 @@ void exSTCShell::OnKey(wxKeyEvent& event)
   }
 }
 
-void exSTCShell::Prompt(const wxString& text, bool add_eol)
+void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
 {
   if (!text.empty())
   {
@@ -362,7 +362,7 @@ void exSTCShell::Prompt(const wxString& text, bool add_eol)
   EmptyUndoBuffer();
 }
 
-void exSTCShell::ShowCommand(int key)
+void wxExSTCShell::ShowCommand(int key)
 {
   SetTargetStart(GetTextLength());
   SetTargetEnd(0);
@@ -400,7 +400,7 @@ void exSTCShell::ShowCommand(int key)
   }
 }
 
-void exSTCShell::ShowHistory()
+void wxExSTCShell::ShowHistory()
 {
   int command_no = 1;
 
@@ -410,8 +410,8 @@ void exSTCShell::ShowHistory()
     it++)
   {
     AppendText(
-      wxString::Format("\n%d %s", 
-        command_no++, 
+      wxString::Format("\n%d %s",
+        command_no++,
         wxString(*it).c_str()));
   }
 }

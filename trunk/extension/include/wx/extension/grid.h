@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          grid.h
-* Purpose:       Declaration of exGrid class
+* Purpose:       Declaration of wxExGrid class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,11 +19,11 @@
 
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
-class exGrid : public wxGrid, public exInterface
+class wxExGrid : public wxGrid, public wxExInterface
 {
 public:
   /// Constructor.
-  exGrid(wxWindow* parent,
+  wxExGrid(wxWindow* parent,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -75,17 +75,17 @@ public:
   void UseDragAndDrop(bool use);
 #endif
 protected:
-  // Interface from exInterface.
+  // Interface from wxExInterface.
   /// Builds the page used for printing.
   virtual const wxString BuildPage();
 
   /// Builds the popup menu.
-  virtual void BuildPopupMenu(exMenu& menu);
+  virtual void BuildPopupMenu(wxExMenu& menu);
 
   /// Shows a find dialog.
   virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
 
-  /// Interface from exInterface.
+  /// Interface from wxExInterface.
   virtual bool FindNext(const wxString& text, bool find_next = true);
 
   void OnCommand(wxCommandEvent& event);

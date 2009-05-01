@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          renderer.cpp
-* Purpose:       Implementation of exRenderer class
+* Purpose:       Implementation of wxExRenderer class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,9 +12,9 @@
 #include <wx/extension/renderer.h>
 
 #if wxUSE_GUI
-exRenderer::exRenderer(
-  long flags, 
-  const wxPen& pen, 
+wxExRenderer::wxExRenderer(
+  long flags,
+  const wxPen& pen,
   const wxPen& pen_outer,
   const wxBrush& brush)
   : m_Brush(brush)
@@ -24,13 +24,13 @@ exRenderer::exRenderer(
 {
 }
 
-void exRenderer::Draw(
-  wxGrid& grid, 
-  wxGridCellAttr& attr, 
-  wxDC& dc, 
-  const wxRect& rect, 
-  int row, 
-  int col, 
+void wxExRenderer::Draw(
+  wxGrid& grid,
+  wxGridCellAttr& attr,
+  wxDC& dc,
+  const wxRect& rect,
+  int row,
+  int col,
   bool isSelected)
 {
   wxGridCellStringRenderer::Draw(grid, attr, dc, rect, row, col, isSelected);

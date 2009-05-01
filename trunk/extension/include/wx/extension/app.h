@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          app.h
-* Purpose:       Include file for exApp class
+* Purpose:       Include file for wxExApp class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,22 +12,22 @@
 #ifndef _EXAPP_H
 #define _EXAPP_H
 
-#include <wx/app.h> 
+#include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
 #include <wx/extension/config.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/util.h> // for exLog
+#include <wx/extension/util.h> // for wxExLog
 
 /// Offers the application, with a configuration, lexer, printer, logging
 /// and locale.
 /// Your application should be derived from this class.
-class exApp : public wxApp
+class wxExApp : public wxApp
 {
 public:
   // Interface from wxApp.
   /// Constructs the config, lexers and printer (and reads the lexers).
-  /// Initializes the locale and exTool.
+  /// Initializes the locale and wxExTool.
   /// In your class first set the app name, as it uses this name for the config file.
 
     /// See for documentation the lexers.xml file.
@@ -36,7 +36,7 @@ public:
   /// This destroys (and so writes) the config, lexers, printer
   /// and cleans up things if necessary.
   virtual int OnExit();
-  
+
   /// Gets the dir where the catalogs are for the locale.
   static wxString& GetCatalogDir() {return m_CatalogDir;};
 
@@ -55,10 +55,10 @@ public:
     {return m_Config->GetBool(key, default_value);}
 
   /// Gets the config.
-  static exConfig* GetConfig() {return m_Config;};
+  static wxExConfig* GetConfig() {return m_Config;};
 
   /// Gets the lexers.
-  static exLexers* GetLexers() {return m_Lexers;};
+  static wxExLexers* GetLexers() {return m_Lexers;};
 
   /// Gets the locale.
   static wxLocale& GetLocale() {return m_Locale;};
@@ -70,7 +70,7 @@ public:
 
   /// Logs text (only if SetLogging() is called, default it is off).
   static void Log(const wxString& text) {
-    if (m_Logging) exLog(text);};
+    if (m_Logging) wxExLog(text);};
 
   /// Sets key as a long.
   static void SetConfig(const wxString& key, long value)
@@ -92,8 +92,8 @@ public:
     {m_Config->Toggle(key);}
 private:
   static bool m_Logging;
-  static exConfig* m_Config;
-  static exLexers* m_Lexers;
+  static wxExConfig* m_Config;
+  static wxExLexers* m_Lexers;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   static wxHtmlEasyPrinting* m_Printer;
 #endif

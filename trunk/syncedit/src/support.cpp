@@ -17,9 +17,9 @@
 #include "defs.h"
 
 Frame::Frame(const wxString& project_wildcard)
-  : exFrameWithHistory(
-      NULL, 
-      wxID_ANY, 
+  : wxExFrameWithHistory(
+      NULL,
+      wxID_ANY,
       wxTheApp->GetAppName(), //title
       NUMBER_RECENT_FILES, //maxFiles
       4,    // maxProjects
@@ -27,29 +27,29 @@ Frame::Frame(const wxString& project_wildcard)
 {
   SetIcon(wxICON(appl));
 
-  std::vector<exPane> panes;
-  panes.push_back(exPane("PaneText", -3));
-  panes.push_back(exPane("PaneFileType", 50, _("File Type")));
-  panes.push_back(exPane("PaneLines", 100, _("Lines")));
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneFileType", 50, _("File Type")));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
 
   // Add the lexer pane only if we have lexers.
-  if (exApp::GetLexers()->Count() > 0)
+  if (wxExApp::GetLexers()->Count() > 0)
   {
 #ifdef __WXMSW__
     const int lexer_size = 60;
 #else
     const int lexer_size = 75;
-#endif  
-    panes.push_back(exPane("PaneLexer", lexer_size, _("Lexer")));
+#endif
+    panes.push_back(wxExPane("PaneLexer", lexer_size, _("Lexer")));
   }
 
-  panes.push_back(exPane("PaneItems", 65, _("Items")));
+  panes.push_back(wxExPane("PaneItems", 65, _("Items")));
   SetupStatusBar(panes);
 
   wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE); // wxMB_DOCKABLE only used for GTK
   SetMenuBar(menubar);
 
-  exMenu *menuFile = new exMenu();
+  wxExMenu *menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
@@ -63,11 +63,11 @@ Frame::Frame(const wxString& project_wildcard)
   menuFile->Append(ID_ALL_STC_SAVE, _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
-  menuFile->Append(ID_ALL_STC_PRINT, exEllipsed(_("Print A&ll")), wxEmptyString, wxART_PRINT);
+  menuFile->Append(ID_ALL_STC_PRINT, wxExEllipsed(_("Print A&ll")), wxEmptyString, wxART_PRINT);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
-  
-  exMenu *menuEdit = new exMenu();
+
+  wxExMenu *menuEdit = new wxExMenu();
   menuEdit->Append(wxID_UNDO);
   menuEdit->Append(wxID_REDO);
   menuEdit->AppendSeparator();
@@ -78,24 +78,24 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(wxID_FIND);
   menuEdit->Append(ID_EDIT_FIND_NEXT, _("Find &Next\tF3"));
   menuEdit->Append(wxID_REPLACE);
-  menuEdit->Append(ID_SPECIAL_FIND_IN_FILES, exEllipsed(_("Find &In Files")));
+  menuEdit->Append(ID_SPECIAL_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
   menuEdit->AppendSeparator();
   menuEdit->AppendTools();
   menuEdit->AppendSeparator();
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
-  menuEdit->Append(ID_EDIT_CONTROL_CHAR, exEllipsed(_("&Control Char"), "Ctrl+H"));
+  menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
-  
-  if (exApp::GetConfigBool("SVN"))
+
+  if (wxExApp::GetConfigBool("SVN"))
   {
     wxMenu* menuSVN = new wxMenu;
-    menuSVN->Append(ID_SVN_STAT, exEllipsed(_("&Stat")));
-    menuSVN->Append(ID_SVN_INFO, exEllipsed(_("&Info")));
-    menuSVN->Append(ID_SVN_LOG, exEllipsed(_("&Log")));
-    menuSVN->Append(ID_SVN_DIFF, exEllipsed(_("&Diff")));
+    menuSVN->Append(ID_SVN_STAT, wxExEllipsed(_("&Stat")));
+    menuSVN->Append(ID_SVN_INFO, wxExEllipsed(_("&Info")));
+    menuSVN->Append(ID_SVN_LOG, wxExEllipsed(_("&Log")));
+    menuSVN->Append(ID_SVN_DIFF, wxExEllipsed(_("&Diff")));
     menuSVN->AppendSeparator();
-    menuSVN->Append(ID_SVN_COMMIT, exEllipsed(_("C&ommit")));
+    menuSVN->Append(ID_SVN_COMMIT, wxExEllipsed(_("C&ommit")));
     menuEdit->AppendSubMenu(menuSVN, "&SVN");
     menuEdit->AppendSeparator();
   }
@@ -103,7 +103,7 @@ Frame::Frame(const wxString& project_wildcard)
   menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
-  
+
   wxMenu *menuView = new wxMenu;
   menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
@@ -123,14 +123,14 @@ Frame::Frame(const wxString& project_wildcard)
   menuView->AppendSeparator();
   menuView->AppendSubMenu(menuListView, _("&Lists"));
 #endif
-  
+
   wxMenu *menuProcess = new wxMenu();
-  menuProcess->Append(ID_PROCESS_SELECT, exEllipsed(_("&Select")));
+  menuProcess->Append(ID_PROCESS_SELECT, wxExEllipsed(_("&Select")));
   menuProcess->AppendSeparator();
   menuProcess->Append(wxID_EXECUTE);
   menuProcess->Append(wxID_STOP);
-  
-  exMenu *menuProject = new exMenu();
+
+  wxExMenu *menuProject = new wxExMenu();
   menuProject->Append(ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
   menuProject->Append(ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
@@ -141,21 +141,21 @@ Frame::Frame(const wxString& project_wildcard)
   menuProject->Append(ID_PROJECT_SAVEAS, wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
-  
+
   wxMenu *menuWindow = new wxMenu();
   menuWindow->Append(ID_SPLIT, _("Split"));
-  
+
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(ID_OPTION_SVN_AND_COMPARATOR, exEllipsed(_("Set SVN And &Comparator")));
+  menuOptions->Append(ID_OPTION_SVN_AND_COMPARATOR, wxExEllipsed(_("Set SVN And &Comparator")));
   menuOptions->AppendSeparator();
-  menuOptions->Append(ID_OPTION_LIST_FONT, exEllipsed(_("Set &List Font")));
+  menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   wxMenu *menuListSort = new wxMenu;
   menuListSort->AppendCheckItem(wxID_SORT_ASCENDING, _("&Ascending"));
   menuListSort->AppendCheckItem(wxID_SORT_DESCENDING, _("&Descending"));
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
   menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
   menuOptions->AppendSeparator();
-  menuOptions->Append(ID_OPTION_EDITOR, exEllipsed(_("Set &Editor Options")));
+  menuOptions->Append(ID_OPTION_EDITOR, wxExEllipsed(_("Set &Editor Options")));
   wxMenu *menuHelp = new wxMenu();
   // Both wxART_HELP_BOOK, and wxART_HELP_PAGE do not fit nicely on menu item.
   menuHelp->Append(wxID_HELP_CONTENTS, _("&Contents"));
@@ -180,28 +180,28 @@ Frame::Frame(const wxString& project_wildcard)
   m_ToolBar->AddSeparator();
 
   m_ToolBar->AddTool(
-    ID_PROJECT_OPEN, 
-    wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()), 
+    ID_PROJECT_OPEN,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     _("Open project..."));
   m_ToolBar->AddTool(
-    ID_PROJECT_SAVE, 
-    wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()), 
+    ID_PROJECT_SAVE,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     _("Save project"));
 #ifdef __WXMSW__
   m_ToolBar->AddCheckTool(
-    wxID_VIEW_LIST, 
-    wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()), 
-    wxNullBitmap, 
+    wxID_VIEW_LIST,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
+    wxNullBitmap,
     _("View in list mode"));
   m_ToolBar->AddCheckTool(
-    wxID_VIEW_DETAILS, wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()), 
-    wxNullBitmap, 
+    wxID_VIEW_DETAILS, wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
+    wxNullBitmap,
     _("View in detail mode"));
-  
+
 #endif
 #if wxUSE_CHECKBOX
   m_ToolBar->AddSeparator();
@@ -212,53 +212,53 @@ Frame::Frame(const wxString& project_wildcard)
 #endif
 
   m_ToolBar->AddControl(
-    m_HexModeCheckBox = new wxCheckBox(
-      m_ToolBar, 
-      ID_EDIT_HEX_MODE, 
-      "Hex", 
-      wxDefaultPosition, 
-      size, 
+    m_HwxExModeCheckBox = new wxCheckBox(
+      m_ToolBar,
+      ID_EDIT_HEX_MODE,
+      "Hex",
+      wxDefaultPosition,
+      size,
       wxNO_BORDER));
 
   m_ToolBar->AddControl(
     m_SyncCheckBox = new wxCheckBox(
-      m_ToolBar, 
-      ID_SYNC_MODE, 
-      "Sync", 
-      wxDefaultPosition, 
-      size, 
+      m_ToolBar,
+      ID_SYNC_MODE,
+      "Sync",
+      wxDefaultPosition,
+      size,
       wxNO_BORDER));
 
-  m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_HexModeCheckBox->SetValue(exApp::GetConfigBool("HexMode", false)); // default no hex
+  m_HwxExModeCheckBox->SetToolTip(_("View in hex mode"));
+  m_HwxExModeCheckBox->SetValue(wxExApp::GetConfigBool("HwxExMode", false)); // default no hex
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
-  m_SyncCheckBox->SetValue(exApp::GetConfigBool("AllowSync"));
+  m_SyncCheckBox->SetValue(wxExApp::GetConfigBool("AllowSync"));
 #endif // wxUSE_CHECKBOX
 
   m_ToolBar->Realize();
 }
 
-bool Frame::AllowClose(wxWindowID id, wxWindow* page) 
+bool Frame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  if (exListViewFile::ProcessIsRunning())
+  if (wxExListViewFile::ProcessIsRunning())
     return false;
   else if (id == NOTEBOOK_EDITORS)
-    return ((exSTCWithFrame*)page)->Continue();
+    return ((wxExSTCWithFrame*)page)->Continue();
   else if (id == NOTEBOOK_PROJECTS)
-    return ((exListViewFile*)page)->Continue();
+    return ((wxExListViewFile*)page)->Continue();
   else
-    return exFrameWithHistory::AllowClose(id, page);
+    return wxExFrameWithHistory::AllowClose(id, page);
 }
 
-void Frame::OnNotebook(wxWindowID id, wxWindow* page) 
+void Frame::OnNotebook(wxWindowID id, wxWindow* page)
 {
   if (id == NOTEBOOK_EDITORS)
   {
-    ((exSTCWithFrame*)page)->PropertiesMessage();
+    ((wxExSTCWithFrame*)page)->PropertiesMessage();
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
-    SetTitle(wxEmptyString, ((exListViewFile*)page)->GetFileName().GetName());
-    ((exListViewFile*)page)->GetFileName().StatusText();
+    SetTitle(wxEmptyString, ((wxExListViewFile*)page)->GetFileName().GetName());
+    ((wxExListViewFile*)page)->GetFileName().StatusText();
   }
 }

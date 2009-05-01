@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.cpp
-* Purpose:       Implementation of exTextFile class
+* Purpose:       Implementation of wxExTextFile class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -20,14 +20,14 @@
 
 const wxString REV_DATE_FORMAT = "%y%m%d";
 
-exRCS::exRCS()
+wxExRCS::wxExRCS()
   : m_RevisionFormat(REV_DATE_FORMAT)
   // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
   , m_RevisionNumber("1.0")
 {
 }
 
-const wxString exRCS::GetRevision() const
+const wxString wxExRCS::GetRevision() const
 {
   wxString logtext;
 
@@ -39,7 +39,7 @@ const wxString exRCS::GetRevision() const
   return logtext;
 }
 
-const wxString exRCS::SetNextRevisionNumber()
+const wxString wxExRCS::SetNextRevisionNumber()
 {
   // If the m_RevisionNumber member is valid, and this is a new comment (check-in or out),
   // then the revision can be incremented. Always increment the rightmost part.
@@ -61,12 +61,12 @@ const wxString exRCS::SetNextRevisionNumber()
   return m_RevisionNumber;
 }
 
-bool exRCS::SetRevision(wxString& text)
+bool wxExRCS::SetRevision(wxString& text)
 {
   // ClassBuilder lines start with '* ', these characters are skipped here.
   wxRegEx("^\\* ").ReplaceFirst(&text, wxEmptyString);
   // If there is a revision in the first word, store it.
-  wxString word = exGetWord(text);
+  wxString word = wxExGetWord(text);
   if (word.find('.') != wxString::npos)
   {
     m_RevisionNumber = word;
@@ -95,7 +95,7 @@ bool exRCS::SetRevision(wxString& text)
   }
 
   text = wxString(end, text.end());
-  word = exGetWord(text);
+  word = wxExGetWord(text);
   m_User = word;
   text.Trim();
   m_Description = text;
@@ -103,10 +103,10 @@ bool exRCS::SetRevision(wxString& text)
   return true;
 }
 
-exTextFile::exTextFile(
-  const exFileName& filename,
-  exConfig* config,
-  const exLexers* lexers)
+wxExTextFile::wxExTextFile(
+  const wxExFileName& filename,
+  wxExConfig* config,
+  const wxExLexers* lexers)
   : m_FileNameStatistics(filename)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
@@ -126,7 +126,7 @@ exTextFile::exTextFile(
   m_VersionLine = 0;
 }
 
-exTextFile::exCommentType exTextFile::CheckCommentSyntax(
+wxExTextFile::wxExCommentType wxExTextFile::CheckCommentSyntax(
   const wxString& syntax_begin,
   const wxString& syntax_end,
   wxChar c1,
@@ -158,7 +158,7 @@ exTextFile::exCommentType exTextFile::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
+wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(wxChar c1, wxChar c2)
 {
   if (m_FileNameStatistics.GetLexer().GetCommentBegin2().empty())
   {
@@ -167,7 +167,7 @@ exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
       m_FileNameStatistics.GetLexer().GetCommentEnd(), c1, c2);
   }
 
-  exCommentType comment_type1 = COMMENT_NONE;
+  wxExCommentType comment_type1 = COMMENT_NONE;
 
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
   {
@@ -177,7 +177,7 @@ exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
       m_SyntaxType = SYNTAX_ONE;
   }
 
-  exCommentType comment_type2 = COMMENT_NONE;
+  wxExCommentType comment_type2 = COMMENT_NONE;
 
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
   {
@@ -187,7 +187,7 @@ exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
       m_SyntaxType = SYNTAX_TWO;
   }
 
-  exCommentType comment_type = COMMENT_NONE;
+  wxExCommentType comment_type = COMMENT_NONE;
 
   switch (comment_type1)
   {
@@ -214,7 +214,7 @@ exTextFile::exCommentType exTextFile::CheckForComment(wxChar c1, wxChar c2)
   return comment_type;
 }
 
-void exTextFile::CommentStatementEnd()
+void wxExTextFile::CommentStatementEnd()
 {
   m_IsCommentStatement = false;
 
@@ -227,7 +227,7 @@ void exTextFile::CommentStatementEnd()
     m_Comments.length() - CommentEndDetected().length());
 }
 
-void exTextFile::CommentStatementStart()
+void wxExTextFile::CommentStatementStart()
 {
   m_IsCommentStatement = true;
 
@@ -237,7 +237,7 @@ void exTextFile::CommentStatementStart()
     CommentBegin().length());
 }
 
-void exTextFile::EndCurrentRevision()
+void wxExTextFile::EndCurrentRevision()
 {
   if (m_RevisionActive)
   {
@@ -252,7 +252,7 @@ void exTextFile::EndCurrentRevision()
   }
 }
 
-void exTextFile::InsertLine(const wxString& line)
+void wxExTextFile::InsertLine(const wxString& line)
 {
   if (GetCurrentLine() == GetLineCount())
   {
@@ -268,7 +268,7 @@ void exTextFile::InsertLine(const wxString& line)
   GoToLine(GetCurrentLine() + 1);
 }
 
-bool exTextFile::IsBrace(int c) const
+bool wxExTextFile::IsBrace(int c) const
 {
   return c == '[' || c == ']' ||
          c == '(' || c == ')' ||
@@ -276,21 +276,21 @@ bool exTextFile::IsBrace(int c) const
          c == '<' || c == '>';
 };
 
-bool exTextFile::IsCodewordSeparator(int c) const
+bool wxExTextFile::IsCodewordSeparator(int c) const
 {
   return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');
 }
 
-bool exTextFile::IsWordCharacter(int c) const
+bool wxExTextFile::IsWordCharacter(int c) const
 {
   return isalnum(c) || c == '_';
 }
 
-bool exTextFile::MatchLine(wxString& line)
+bool wxExTextFile::MatchLine(wxString& line)
 {
   bool match = false;
 
-  exFindReplaceData* frd = m_Config->GetFindReplaceData();
+  wxExFindReplaceData* frd = m_Config->GetFindReplaceData();
 
   if (!frd->IsRegularExpression())
   {
@@ -341,7 +341,7 @@ bool exTextFile::MatchLine(wxString& line)
   return match;
 }
 
-bool exTextFile::Parse()
+bool wxExTextFile::Parse()
 {
   if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
   {
@@ -399,7 +399,7 @@ bool exTextFile::Parse()
   return true;
 }
 
-bool exTextFile::ParseComments()
+bool wxExTextFile::ParseComments()
 {
   if (m_Tool.IsRCSType())
   {
@@ -484,7 +484,7 @@ bool exTextFile::ParseComments()
   return true;
 }
 
-bool exTextFile::ParseLine(const wxString& line)
+bool wxExTextFile::ParseLine(const wxString& line)
 {
   bool line_contains_code = false, sequence = false;
   wxString codeword;
@@ -635,7 +635,7 @@ bool exTextFile::ParseLine(const wxString& line)
   return ParseComments();
 }
 
-bool exTextFile::PrepareRevision()
+bool wxExTextFile::PrepareRevision()
 {
   if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT ||
       m_Config->GetBool("RCS/RecentOnly"))
@@ -677,7 +677,7 @@ bool exTextFile::PrepareRevision()
   return true;
 }
 
-void exTextFile::RevisionAddComments(const wxString& comments)
+void wxExTextFile::RevisionAddComments(const wxString& comments)
 {
   InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
     m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
@@ -685,7 +685,7 @@ void exTextFile::RevisionAddComments(const wxString& comments)
     comments));
 }
 
-bool exTextFile::RunTool(const exTool& tool)
+bool wxExTextFile::RunTool(const wxExTool& tool)
 {
   m_Tool = tool;
 
@@ -763,13 +763,13 @@ bool exTextFile::RunTool(const exTool& tool)
   return true;
 }
 
-void exTextFile::WriteComment(
+void wxExTextFile::WriteComment(
   const wxString& text,
   const bool fill_out,
   const bool fill_out_with_space)
 {
   InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
-    text, 
-    fill_out, 
+    text,
+    fill_out,
     fill_out_with_space));
 }

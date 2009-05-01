@@ -14,8 +14,8 @@
 
 #include <wx/extension/report/report.h>
 
-/// Adds a toolbar and checkboxes to exFrameWithHistory.
-class Frame : public exFrameWithHistory
+/// Adds a toolbar and checkboxes to wxExFrameWithHistory.
+class Frame : public wxExFrameWithHistory
 {
 public:
   /// Constructor.
@@ -23,18 +23,18 @@ public:
 
 #if wxUSE_CHECKBOX
   /// Gets hex mode.
-  wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
+  wxCheckBox* GetHwxExModeCheckBox() const {return m_HwxExModeCheckBox;};
 
-  /// Gets sync mode.  
+  /// Gets sync mode.
   wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
 #endif
 private:
-  // Interface from exFrame.
+  // Interface from wxExFrame.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
 #if wxUSE_CHECKBOX
-  wxCheckBox* m_HexModeCheckBox;
+  wxCheckBox* m_HwxExModeCheckBox;
   wxCheckBox* m_SyncCheckBox;
 #endif
 };

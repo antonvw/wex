@@ -13,13 +13,13 @@
 #define _EXDEFS_H
 
 /// These are used as window event ID's. Therefore after the highest wxWidgets ID.
-enum exId
+enum wxExId
 {
   ID_EDIT_LOWEST = wxID_HIGHEST + 1,
 
   ID_EDIT_LIST_LOWEST,   // all list like commands after this one
-  ID_LIST_FIND,          // like wxID_FIND, but used inside exListView
-  ID_LIST_FIND_NEXT,     // 
+  ID_LIST_FIND,          // like wxID_FIND, but used inside wxExListView
+  ID_LIST_FIND_NEXT,     //
   ID_LIST_FIND_PREVIOUS, //
   ID_EDIT_LIST_HIGHEST,  // and before this one
 
@@ -27,7 +27,7 @@ enum exId
   ID_ALL_STC_CLOSE,
   ID_ALL_STC_COLOURISE,
   ID_ALL_STC_CONFIG_GET,
-  ID_ALL_STC_PRINT, 
+  ID_ALL_STC_PRINT,
   ID_ALL_STC_SAVE,
   ID_ALL_STC_SET_LEXER,
   ID_ALL_HIGHEST,        // and before this one
@@ -36,29 +36,29 @@ enum exId
   ID_SHELL_COMMAND_STOP,
 
   ID_EDIT_STC_LOWEST,    // all STC commands after this one
-  ID_EDIT_SELECT_NONE, 
+  ID_EDIT_SELECT_NONE,
   ID_EDIT_SELECT_INVERT,
-  ID_EDIT_FIND_NEXT, 
-  ID_EDIT_FIND_PREVIOUS, 
+  ID_EDIT_FIND_NEXT,
+  ID_EDIT_FIND_PREVIOUS,
   ID_EDIT_CONTROL_CHAR,
   ID_EDIT_HEX_DEC_CALLTIP,
-  ID_EDIT_UPPERCASE, 
-  ID_EDIT_LOWERCASE, 
+  ID_EDIT_UPPERCASE,
+  ID_EDIT_LOWERCASE,
   ID_EDIT_MACRO_PLAYBACK,
   ID_EDIT_MACRO_START_RECORD,
   ID_EDIT_MACRO_STOP_RECORD,
-  ID_EDIT_OPEN_LINK, 
+  ID_EDIT_OPEN_LINK,
   ID_EDIT_OPEN_BROWSER,
   ID_EDIT_SORT_TOGGLE,
   ID_EDIT_INSERT_DATE,
   ID_EDIT_INSERT_SEQUENCE,
-  ID_EDIT_TOGGLE_FOLD, 
-  ID_EDIT_FOLD_ALL, 
+  ID_EDIT_TOGGLE_FOLD,
+  ID_EDIT_FOLD_ALL,
   ID_EDIT_UNFOLD_ALL,
   ID_EDIT_STATUS_BAR,
-  ID_EDIT_EOL_DOS, 
-  ID_EDIT_EOL_UNIX, 
-  ID_EDIT_EOL_MAC, 
+  ID_EDIT_EOL_DOS,
+  ID_EDIT_EOL_UNIX,
+  ID_EDIT_EOL_MAC,
   ID_EDIT_STC_HIGHEST,
 
   ID_EDIT_HIGHEST,
@@ -66,7 +66,7 @@ enum exId
 
 /// The available tools.
 /// These are also used as window event ID's. Therefore after the highest edit ID.
-enum exToolId
+enum wxExToolId
 {
   ID_TOOL_LOWEST = ID_EDIT_HIGHEST + 1,
   ID_TOOL_COMMIT,
