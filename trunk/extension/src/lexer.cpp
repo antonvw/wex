@@ -186,7 +186,10 @@ const wxString wxExLexer::MakeSingleLineComment(
 {
   if (m_CommentBegin.empty())
   {
-    wxLogError(_("No comments available for this lexer, cannot make comment"));
+    wxLogError(wxString::Format(
+      _("No comments available for lexer: %s, cannot make comment"), 
+      m_ScintillaLexer.c_str());
+      
     return wxEmptyString;
   }
 
