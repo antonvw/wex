@@ -422,6 +422,9 @@ bool wxExLexers::ShowDialog(
     index++;
   }
 
+  aChoices.Add("<none>");
+  index++;
+
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, aChoices);
   dlg.SetSelection(choice);
 
@@ -430,7 +433,16 @@ bool wxExLexers::ShowDialog(
     return false;
   }
 
-  lexer = FindByName(dlg.GetStringSelection());
+  const wxString sel = dlg.GetStringSelection();
+
+  if (sel == "<none>")
+  {
+    lexer = wxExLexer();
+  }
+  else
+  {
+    lexer = FindByName(sel);
+  }
 
   return true;
 }

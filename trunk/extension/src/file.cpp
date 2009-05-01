@@ -248,11 +248,18 @@ void wxExFileName::SetLexer(
 
   if (lexer.empty())
   {
-    m_Lexer = wxExApp::GetLexers()->FindByFileName(*this);
-
-    if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
+    if (text != "forced")
     {
-      m_Lexer = wxExApp::GetLexers()->FindByText(text);
+      m_Lexer = wxExApp::GetLexers()->FindByFileName(*this);
+
+      if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
+      {
+        m_Lexer = wxExApp::GetLexers()->FindByText(text);
+      }
+    }
+    else
+    {
+      m_Lexer = wxExLexer();
     }
   }
   else

@@ -1464,7 +1464,7 @@ void wxExSTC::LexerDialog(const wxString& caption)
 
   if (wxExApp::GetLexers()->ShowDialog(this, lexer, caption))
   {
-    SetLexer(lexer.GetScintillaLexer());
+    SetLexer(lexer.GetScintillaLexer(), true); // forced
   }
 }
 
@@ -2432,25 +2432,31 @@ void wxExSTC::SetKeyWords()
   }
 }
 
-void wxExSTC::SetLexer(const wxString& lexer)
+void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 {
-  m_FileName.SetLexer(lexer, GetLine(0));
-
-  if (!m_FileName.GetLexer().GetScintillaLexer().empty())
+  if (forced)
   {
-  #if wxUSE_STATUSBAR
-    UpdateStatusBar("PaneLexer");
-  #endif
+    m_FileName.SetLexer(lexer, "forced");
+  }
+  else
+  {
+    m_FileName.SetLexer(lexer, GetLine(0));
+  }
 
-    // Update the lexer for scintilla.
-    SetLexerLanguage(m_FileName.GetLexer().GetScintillaLexer());
+#if wxUSE_STATUSBAR
+  UpdateStatusBar("PaneLexer");
+#endif
 
+  // Update the lexer for scintilla.
+  SetLexerLanguage(m_FileName.GetLexer().GetScintillaLexer());
+
+  if (
+    !m_FileName.GetLexer().GetScintillaLexer().empty() &&
     // And check whether the GetLexer from scintilla has a good value.
     // Otherwise it is not known, and we better show an error.
-    if (wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
-    {
-      wxLogError("Lexer is not known: " + m_FileName.GetLexer().GetScintillaLexer());
-    }
+    wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
+  {
+    wxLogError("Lexer is not known: " + m_FileName.GetLexer().GetScintillaLexer());
   }
 
   Colourise();

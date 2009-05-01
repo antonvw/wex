@@ -211,7 +211,7 @@ public:
   /// Set the (scintilla) lexer for this document using the current filename by
   /// default, or the explicit lexer if specified.
   /// Then colourises the document.
-  void SetLexer(const wxString& lexer = wxEmptyString);
+  void SetLexer(const wxString& lexer = wxEmptyString, bool forced = false);
 
   /// Sets the text.
   void SetText(const wxString& value);
