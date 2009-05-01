@@ -24,7 +24,6 @@ void wxExTestFixture::setUp()
   m_RCS = new wxExRCS();
   m_Stat = new wxExStat("test.h");
   m_Statistics = new wxExStatistics<long>();
-  m_TextFile = new wxExTextFile(wxExFileName("test.h"), m_Config, m_Lexers);
   m_Tool = new wxExTool(ID_TOOL_REPORT_COUNT);
 }
 
@@ -145,6 +144,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
 
   // test wxExTextFile
+  m_TextFile = new wxExTextFile(wxExFileName("test.h"), m_Config, m_Lexers);
   CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_COUNT));
   CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
