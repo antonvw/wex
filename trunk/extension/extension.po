@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-01 08:29+0100\n"
-"PO-Revision-Date: 2009-05-01 08:31+0100\n"
+"POT-Creation-Date: 2009-05-01 15:44+0100\n"
+"PO-Revision-Date: 2009-05-01 15:44+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -156,11 +156,11 @@ msgstr "Bevestigen"
 msgid "Save changes to"
 msgstr "Wijzigingen opslaan in"
 
-#: src/file.cpp:279
+#: src/file.cpp:286
 msgid "Synchronized"
 msgstr "Gesynchroniseerd"
 
-#: src/file.cpp:279
+#: src/file.cpp:286
 #: src/listview.cpp:754
 msgid "Modified"
 msgstr "Gewijzigd"
@@ -173,7 +173,7 @@ msgstr "Geen commentaar beschikbaar"
 msgid "All Files"
 msgstr "Alle bestanden"
 
-#: src/lexers.cpp:425
+#: src/lexers.cpp:428
 #: src/listview.cpp:514
 msgid "Input"
 msgstr "Invoer"
@@ -389,7 +389,7 @@ msgid "Edge line"
 msgstr "Kantlijn regel"
 
 #: src/stc.cpp:757
-#: src/stc.cpp:2458
+#: src/stc.cpp:2464
 msgid "Auto fold"
 msgstr "Automatisch opvouwen"
 
@@ -515,11 +515,11 @@ msgstr "Voeg %ld regels toe"
 msgid "Fold Flags"
 msgstr "Opvouw vlaggen"
 
-#: src/stc.cpp:2613
+#: src/stc.cpp:2619
 msgid "Macro recording"
 msgstr "Macro aan het opnemen"
 
-#: src/stc.cpp:2627
+#: src/stc.cpp:2633
 msgid "Macro is recorded"
 msgstr "Macro is opgenomen"
 
@@ -549,13 +549,6 @@ msgstr "SVN Stat"
 
 #: src/svn.cpp:66
 #: src/svn.cpp:103
-#: src/textfile.cpp:469
-#: src/textfile.cpp:473
-#: src/textfile.cpp:707
-#: src/report/listview.cpp:1097
-#: src/report/listview.cpp:1104
-#: src/report/stc.cpp:180
-#: src/report/stc.cpp:187
 msgid "Revision comment"
 msgstr "Commentaar"
 
@@ -576,102 +569,91 @@ msgid "Comments"
 msgstr "Commentaar woorden"
 
 #: src/textfile.cpp:236
-#: src/textfile.cpp:500
-#: src/textfile.cpp:631
+#: src/textfile.cpp:475
+#: src/textfile.cpp:594
 #: src/report/listview.cpp:535
 #: src/report/textfile.cpp:257
 msgid "Comment Size"
 msgstr "Commentaar grootte"
 
-#: src/textfile.cpp:450
-#: src/textfile.cpp:584
-#: src/textfile.cpp:586
-#: src/textfile.cpp:602
-#: src/report/listview.cpp:531
-#: src/report/textfile.cpp:253
-msgid "Lines Of Code"
-msgstr "Code regels"
-
-#: src/textfile.cpp:548
+#: src/textfile.cpp:520
 #: src/report/listview.cpp:533
 #: src/report/textfile.cpp:255
 msgid "Words Of Code"
 msgstr "Code woorden"
 
-#: src/textfile.cpp:618
+#: src/textfile.cpp:556
+#: src/textfile.cpp:565
+#: src/report/listview.cpp:531
+#: src/report/textfile.cpp:253
+msgid "Lines Of Code"
+msgstr "Code regels"
+
+#: src/textfile.cpp:581
 #: src/report/listview.cpp:532
 #: src/report/textfile.cpp:254
 msgid "Empty Lines"
 msgstr "Lege regels"
 
-#: src/textfile.cpp:697
+#: src/textfile.cpp:660
 msgid "Files"
 msgstr "Bestanden"
 
-#: src/textfile.cpp:701
+#: src/textfile.cpp:664
 msgid "Total Size"
 msgstr "Totale grootte"
 
-#: src/textfile.cpp:702
+#: src/textfile.cpp:665
 #: src/report/listview.cpp:530
 #: src/report/textfile.cpp:252
 msgid "Lines"
 msgstr "Regels"
 
 #: src/tool.cpp:65
-msgid "Commited"
-msgstr "Gecommit"
-
-#: src/tool.cpp:65
-#: src/report/stc.cpp:129
-msgid "&Commit"
-msgstr "&Commit"
-
-#: src/tool.cpp:66
 msgid "Recent revision from"
 msgstr "Laatste wijziging van"
 
-#: src/tool.cpp:67
+#: src/tool.cpp:66
 #, c-format
 msgid "Reported %ld revisions in"
 msgstr "%ld revisies gerapporteerd in"
 
-#: src/tool.cpp:67
+#: src/tool.cpp:66
 msgid "&Revision"
 msgstr "&Revisie"
 
-#: src/tool.cpp:70
+#: src/tool.cpp:69
 msgid "Parsed code lines"
 msgstr "Code regels"
 
-#: src/tool.cpp:71
+#: src/tool.cpp:70
 msgid "Parsed comment lines"
 msgstr "Commentaar regels"
 
-#: src/tool.cpp:73
+#: src/tool.cpp:72
 msgid "Counted"
 msgstr "Geteld"
 
-#: src/tool.cpp:73
+#: src/tool.cpp:72
 msgid "&Count"
 msgstr "&Statistieken"
 
-#: src/tool.cpp:74
+#: src/tool.cpp:73
 #, c-format
 msgid "Found %ld matches in"
 msgstr "%ld voorkomens gevonden in"
 
-#: src/tool.cpp:75
+#: src/tool.cpp:74
 #, c-format
 msgid "Replaced %ld matches in"
 msgstr "Vervangen: %ld voorkomens"
 
-#: src/tool.cpp:76
+#: src/tool.cpp:75
 #, c-format
 msgid "Reported %ld keywords in"
 msgstr "%ld keywords gerapporteerd in"
 
-#: src/tool.cpp:76
+#: src/tool.cpp:75
 msgid "&Keyword"
 msgstr "&Keyword"
 
@@ -946,27 +928,27 @@ msgstr "Map type"
 msgid "Make"
 msgstr "Maken"
 
-#: src/report/listview.cpp:1127
+#: src/report/listview.cpp:1112
 #: src/report/process.cpp:173
 msgid "Ready"
 msgstr "Klaar"
 
-#: src/report/listview.cpp:1191
-#: src/report/listview.cpp:1196
-#: src/report/listview.cpp:1237
+#: src/report/listview.cpp:1176
+#: src/report/listview.cpp:1181
+#: src/report/listview.cpp:1222
 msgid "RBS File"
 msgstr "RBS Bestand"
 
+#: src/report/listview.cpp:1177
 #: src/report/listview.cpp:1192
-#: src/report/listview.cpp:1207
 msgid "RBS Pattern"
 msgstr "RBS Patroon"
 
-#: src/report/listview.cpp:1193
+#: src/report/listview.cpp:1178
 msgid "Build RBS File"
 msgstr "RBS Bestand maken"
 
-#: src/report/listview.cpp:1237
+#: src/report/listview.cpp:1222
 msgid "generated"
 msgstr "gegenereerd"
 
@@ -995,20 +977,24 @@ msgstr "&Zoeken in bestanden"
 msgid "&Replace In Files"
 msgstr "&Vervangen in bestanden"
 
+#: src/report/stc.cpp:129
+msgid "&Commit"
+msgstr "&Commit"
+
 #: src/report/stc.cpp:140
 msgid "&Add Header"
 msgstr "&Voeg koptekst toe"
 
-#: src/report/stc.cpp:214
-#: src/report/stc.cpp:231
+#: src/report/stc.cpp:199
+#: src/report/stc.cpp:216
 msgid "Purpose"
 msgstr "Omschrijving"
 
-#: src/report/stc.cpp:227
+#: src/report/stc.cpp:212
 msgid "File Purpose"
 msgstr "Bestand omschrijving"
 
-#: src/report/stc.cpp:306
+#: src/report/stc.cpp:291
 msgid "Readonly"
 msgstr "Alleen lezen"
 
@@ -1116,6 +1102,8 @@ msgstr "Geef regel nummer"
 msgid "Enter Sort Position"
 msgstr "Geef sorteer positie"
 
+#~ msgid "Commited"
+#~ msgstr "Gecommit"
 #~ msgid "Please add a comparator"
 #~ msgstr "Voeg een vergelijker toe"
 #~ msgid "Already running, stop"
