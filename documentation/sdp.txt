@@ -17,6 +17,7 @@ General
     http://www.wxwidgets.org/
 
 - IDE
+  under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
   under windows using Mingw and codeblocks: 
   http://www.codeblocks.org/
   under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
@@ -29,9 +30,10 @@ General
     or gtk stock items
     http://www.gimp.org/
 
-- most documentation is generated using Doxygen (1.5.8)
-    however, some docs are in html format
+- API documentation is generated from the sources using Doxygen (1.5.8)
     http://www.stack.nl/~dimitri/doxygen/
+
+- Other docs are in html format using no special html editor
 
 - automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
@@ -50,6 +52,8 @@ SVN hierarchy
 
 
 When adding functionality in trunk
+
+- document it in the source in doxy way
 
 - add a test for it in 
     extension/test/base, 
