@@ -103,16 +103,24 @@ int exSVN::GetInfo(bool show_dialog)
     arg = " -m \"" + exApp::GetConfig(_("Revision comment")) + "\"";
   }
 
+  const wxString command = 
+    "svn " + exApp::GetConfig(_("Flags")) + " " + m_Command + arg + file;
+
   wxArrayString output;
   wxArrayString errors;
   
   if (wxExecute(
-    "svn " + exApp::GetConfig(_("Flags")) + " " + m_Command + arg + file,
+    command,
     output,
     errors) == -1)
   {
     m_ReturnCode = -1;
     return m_ReturnCode;
+  }
+
+  if (errors.GetCount() == 0)
+  {
+    exApp::Log(command);
   }
     
   if (m_FullPath.empty())
