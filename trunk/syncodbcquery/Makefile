@@ -3,7 +3,7 @@
 # RCS-ID:        $Id$
 # Purpose:       Makefile for syncodbcquery gtk
 
-LIBS=-L../extension/lib -lwxext.v1.0.gtk -lwxextrep.v1.0.gtk `wx-config --libs all` -lodbc
+LIBS=-L../extension/lib -lwxex.v1.0.gtk -lwxexrep.v1.0.gtk `wx-config --libs all` -lodbc
 BINPATH=/usr/local/bin
 CFLAGS=`wx-config --cflags`
 APP_VERSION=syncodbcquery.v1.0
