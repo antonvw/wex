@@ -62,7 +62,6 @@ void wxExTool::Initialize()
   // for title when checking in-out.
   if (!wxExApp::GetConfigBool("SVN"))
   {
-    AddInfo(ID_TOOL_COMMIT, _("Commited"), wxExEllipsed(_("&Commit")));
     AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
     AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("&Revision"), false);
   }

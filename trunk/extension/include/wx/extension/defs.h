@@ -69,7 +69,6 @@ enum wxExId
 enum wxExToolId
 {
   ID_TOOL_LOWEST = ID_EDIT_HIGHEST + 1,
-  ID_TOOL_COMMIT,
   ID_TOOL_LINE,          // lines with code or empty lines
   ID_TOOL_LINE_COMMENT,  // only comments
   ID_TOOL_LINE_CODE,     // only lines with code

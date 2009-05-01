@@ -442,12 +442,7 @@ bool wxExTextFile::ParseComments()
     if (  m_AllowAction ||
          // In case there is one revision comment, this is ended by an empty line.
         (m_Tool.GetId() == ID_TOOL_REVISION_RECENT &&
-         !m_FinishedAction && m_VersionLine == 1 && m_EmptyLine) ||
-
-         // In case commiting, if we have come at the code, there
-         // was not a revision, so create a new one.
-        (m_Tool.GetId () == ID_TOOL_COMMIT &&
-          GetStatisticElements().Get(_("Lines Of Code")) > 1)
+         !m_FinishedAction && m_VersionLine == 1 && m_EmptyLine)
        )
     {
       if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT)
@@ -455,26 +450,6 @@ bool wxExTextFile::ParseComments()
         m_AllowAction = false;
         // We are not yet finished, there might still be RCS keywords somewhere!
         // m_FinishedAction = true;
-      }
-
-      if (m_Tool.GetId() == ID_TOOL_COMMIT)
-      {
-        if (m_LineMarker > 1)
-        {
-          GoToLine(m_LineMarker);
-        }
-        else
-        {
-          wxLogError("Line marker not set, cannot add revision comments: "
-            + m_Config->Get(_("Revision comment")));
-          return false;
-        }
-
-        RevisionAddComments(m_Config->Get(_("Revision comment")));
-        m_AllowAction = false;
-
-        // We are not yet finished, there might still be RCS keywords somewhere!
-        m_FinishedAction = true;
       }
     }
 
@@ -500,10 +475,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
           GetStatisticElements().Inc(_("Comment Size"));
         }
 
-        if (m_Tool.GetId() >= ID_TOOL_COMMIT)
-        {
-          m_Comments += line[i];
-        }
+        m_Comments += line[i];
       }
     }
     else if (i < line.length() && line[i] == '"')
@@ -582,15 +554,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
   if (line_contains_code)
   {
     GetStatisticElements().Inc(_("Lines Of Code"));
-
-    if (GetStatisticElements().Get(_("Lines Of Code")) == 1 &&
-        m_Tool.GetId() == ID_TOOL_COMMIT)
-    {
-      if (m_LineMarker == 0)
-      {
-        m_LineMarker = GetCurrentLine();
-      }
-    }
 
     if (m_Tool.GetId() == ID_TOOL_LINE || m_Tool.GetId() == ID_TOOL_LINE_CODE)
     {
@@ -702,19 +665,7 @@ bool wxExTextFile::RunTool(const wxExTool& tool)
     GetStatisticElements().Inc(_("Lines"), GetLineCount());
   }
 
-  if (m_Tool.GetId() == ID_TOOL_COMMIT)
-  {
-    if (!m_Config->Get(_("Revision comment")).empty())
-    {
-      if (!Parse())
-      {
-        Close();
-
-        return false;
-      }
-    }
-  }
-  else if (GetLineCount() > 0)
+  if (GetLineCount() > 0)
   {
     if (m_FileNameStatistics.GetLexer().GetScintillaLexer().empty())
     {

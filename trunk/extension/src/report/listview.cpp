@@ -1089,21 +1089,6 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
     wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
-  if (tool.GetId() == ID_TOOL_COMMIT)
-  {
-    wxTextEntryDialog dlg(wxTheApp->GetTopWindow(),
-      _("Input") + ":",
-      "Commit",
-      wxExApp::GetConfig(_("Revision comment")));
-
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return;
-    }
-
-    wxExApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
-  }
-
   if (!wxExTextFileWithReport::SetupTool(tool))
   {
     return;

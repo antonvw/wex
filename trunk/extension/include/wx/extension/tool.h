@@ -101,7 +101,6 @@ public:
   /// Is this tool a RCS type.
   bool IsRCSType() const {
     return
-      m_Id == ID_TOOL_COMMIT ||
       m_Id == ID_TOOL_REVISION_RECENT ||
       m_Id == ID_TOOL_REPORT_REVISION;}
 

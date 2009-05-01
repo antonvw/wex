@@ -172,21 +172,6 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
     const wxExTool tool(command.GetId());
 
-    if (tool.GetId() == ID_TOOL_COMMIT)
-    {
-    wxTextEntryDialog dlg(this,
-      _("Input") + ":",
-      "Commit",
-      wxExApp::GetConfig(_("Revision comment")));
-
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return;
-    }
-
-    wxExApp::GetConfig()->Set(_("Revision comment"), dlg.GetValue());
-    }
-
     if (wxExTextFileWithReport::SetupTool(tool))
     {
       wxExTextFileWithReport report(m_FileName);
