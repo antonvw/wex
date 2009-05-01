@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/report/textfile.h>
+#include <wx/extension/app.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>

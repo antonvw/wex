@@ -757,13 +757,13 @@ void exListViewFile::OnCommand(wxCommandEvent& event)
   case wxID_ADD: AddItems(); break;
 
   case ID_LIST_SVN_CAT:
-    exSVN(SVN_CAT, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
+    exSVN(SVN_CAT, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).ExecuteAndShowContents();
   break;
   case ID_LIST_SVN_DIFF:
-    exSVN(SVN_DIFF, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
+    exSVN(SVN_DIFF, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).ExecuteAndShowContents();
   break;
   case ID_LIST_SVN_LOG:
-    exSVN(SVN_LOG, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).GetInfoAndShowContents();
+    exSVN(SVN_LOG, exListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).ExecuteAndShowContents();
   break;
 
   case ID_LIST_COMPARE:

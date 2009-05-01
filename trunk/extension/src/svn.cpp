@@ -17,8 +17,8 @@
 
 exSTCEntryDialog* exSVN::m_STCEntryDialog = NULL;
 
-exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
-  : m_Type(m_Type)
+exSVN::exSVN(exSvnType type, const wxString& fullpath)
+  : m_Type(type)
   , m_Contents()
   , m_FullPath(fullpath)
   , m_ReturnCode(-2)
@@ -55,7 +55,7 @@ exSVN::exSVN(exSvnType m_Type, const wxString& fullpath)
   }
 }
 
-int exSVN::GetInfo(bool show_dialog)
+int exSVN::Execute(bool show_dialog)
 {
   if (show_dialog)
   {
@@ -147,9 +147,9 @@ int exSVN::GetInfo(bool show_dialog)
   return m_ReturnCode;
 }
 
-int exSVN::GetInfoAndShowContents()
+int exSVN::ExecuteAndShowContents()
 {
-  if (GetInfo() >= 0)
+  if (Execute() >= 0)
   {
     ShowContents();
   }
@@ -159,7 +159,7 @@ int exSVN::GetInfoAndShowContents()
 
 void exSVN::ShowContents()
 {
-  // If we did not yet ask GetInfo, or cancelled, return.
+  // If we did not yet ask Execute, or cancelled, return.
   if (m_ReturnCode < 0)
   {
     return;

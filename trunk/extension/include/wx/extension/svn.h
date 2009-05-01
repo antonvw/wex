@@ -36,26 +36,26 @@ class exSTCEntryDialog;
 class exSVN
 {
 public:
-  /// Constructor, specify the type of what to get and a fullpath.
-  exSVN(exSvnType m_Type, const wxString& fullpath = wxEmptyString);
+  /// Constructor, specify the command type and a fullpath.
+  exSVN(exSvnType command, const wxString& fullpath = wxEmptyString);
 
-  /// Gets the contents (GetInfo should already be called).
-  const wxString& GetContents() const {return m_Contents;};
-
-  /// Gets info from svn.
+  /// Execute the svn command.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
   /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors 
   /// that were reported by svn otherwise.
   /// If you use show_dialog = false, then the dialog is not shown,
   /// and defaults from the config are used.
-  int GetInfo(bool show_dialog = true);
+  int Execute(bool show_dialog = true);
 
   /// Gets info and if not cancelled shows contents in a dialog.
   /// Returns return code from Get.
-  int GetInfoAndShowContents();
+  int ExecuteAndShowContents();
 
-  /// Shows contents in a dialog only, GetInfo should already be done.
+  /// Gets the contents (Execute should already be called).
+  const wxString& GetContents() const {return m_Contents;};
+
+  /// Shows contents in a dialog only, Execute should already be done.
   void ShowContents();
 private:
   const exSvnType m_Type;

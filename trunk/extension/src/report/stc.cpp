@@ -247,16 +247,16 @@ void exSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
     exSVN svn(SVN_CAT, m_FileName.GetFullPath());
 
-    if (svn.GetInfo() == 0)
+    if (svn.Execute() == 0)
     {
       m_Frame->OpenFile(m_FileName, svn.GetContents());
     }
     }
     break;
 
-  case ID_STC_SVN_COMMIT: exSVN(SVN_COMMIT, m_FileName.GetFullPath()).GetInfoAndShowContents(); break;
-  case ID_STC_SVN_DIFF: exSVN(SVN_DIFF, m_FileName.GetFullPath()).GetInfoAndShowContents(); break;
-  case ID_STC_SVN_LOG: exSVN(SVN_LOG, m_FileName.GetFullPath()).GetInfoAndShowContents(); break;
+  case ID_STC_SVN_COMMIT: exSVN(SVN_COMMIT, m_FileName.GetFullPath()).ExecuteAndShowContents(); break;
+  case ID_STC_SVN_DIFF: exSVN(SVN_DIFF, m_FileName.GetFullPath()).ExecuteAndShowContents(); break;
+  case ID_STC_SVN_LOG: exSVN(SVN_LOG, m_FileName.GetFullPath()).ExecuteAndShowContents(); break;
 
   case ID_STC_FIND_FILES:
     GetSearchText();
