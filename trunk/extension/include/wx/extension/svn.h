@@ -48,20 +48,20 @@ public:
   /// and defaults from the config are used.
   int Execute(bool show_dialog = true);
 
-  /// Gets info and if not cancelled shows contents in a dialog.
-  /// Returns return code from Get.
-  int ExecuteAndShowContents();
+  /// Execute and if not cancelled shows output in a dialog.
+  /// Returns return code from execute.
+  int ExecuteAndShowOutput();
 
-  /// Gets the contents (Execute should already be called).
-  const wxString& GetContents() const {return m_Contents;};
+  /// Gets the output (Execute should already be called).
+  const wxString& GetOutput() const {return m_Output;};
 
-  /// Shows contents in a dialog only, Execute should already be done.
-  void ShowContents();
+  /// Shows output in a dialog only (Execute should already be called).
+  void ShowOutput();
 private:
   const exSvnType m_Type;
   wxString m_Caption;
   wxString m_Command;
-  wxString m_Contents;
+  wxString m_Output;
   const wxString m_FullPath;
   int m_ReturnCode;
   static exSTCEntryDialog* m_STCEntryDialog;

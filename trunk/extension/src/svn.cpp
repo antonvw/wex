@@ -19,7 +19,7 @@ exSTCEntryDialog* exSVN::m_STCEntryDialog = NULL;
 
 exSVN::exSVN(exSvnType type, const wxString& fullpath)
   : m_Type(type)
-  , m_Contents()
+  , m_Output()
   , m_FullPath(fullpath)
   , m_ReturnCode(-2)
 {
@@ -128,18 +128,18 @@ int exSVN::Execute(bool show_dialog)
     wxSetWorkingDirectory(cwd);
   }
 
-  m_Contents.clear();
+  m_Output.clear();
 
   // First output the errors.
   for (size_t i = 0; i < errors.GetCount(); i++)
   {
-    m_Contents += errors[i] + "\n";
+    m_Output += errors[i] + "\n";
   }
 
   // Then the normal output, will be empty if there are errors.
   for (size_t j = 0; j < output.GetCount(); j++)
   {
-    m_Contents += output[j] + "\n";
+    m_Output += output[j] + "\n";
   }
 
   m_ReturnCode = errors.GetCount();
@@ -147,17 +147,17 @@ int exSVN::Execute(bool show_dialog)
   return m_ReturnCode;
 }
 
-int exSVN::ExecuteAndShowContents()
+int exSVN::ExecuteAndShowOutput()
 {
   if (Execute() >= 0)
   {
-    ShowContents();
+    ShowOutput();
   }
 
   return m_ReturnCode;
 }
 
-void exSVN::ShowContents()
+void exSVN::ShowOutput()
 {
   // If we did not yet ask Execute, or cancelled, return.
   if (m_ReturnCode < 0)
@@ -174,7 +174,7 @@ void exSVN::ShowContents()
     m_STCEntryDialog = new exSTCEntryDialog(
       wxTheApp->GetTopWindow(), 
       caption,
-      m_Contents, 
+      m_Output, 
       wxEmptyString, 
       wxOK,
       wxID_ANY,
@@ -182,7 +182,7 @@ void exSVN::ShowContents()
   }
   else
   {
-    m_STCEntryDialog->SetText(m_Contents);
+    m_STCEntryDialog->SetText(m_Output);
     m_STCEntryDialog->SetTitle(caption);
   }
 
