@@ -15,7 +15,7 @@
 #include <vector>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
-#include <wx/extension/extension.h> // for exInterface
+#include <wx/extension/base.h> // for exInterface
 
 #if wxUSE_GUI
 class exListItem;

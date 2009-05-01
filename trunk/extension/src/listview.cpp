@@ -15,6 +15,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/app.h>
 
 #if wxUSE_GUI
 

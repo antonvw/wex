@@ -13,7 +13,9 @@
 #define _EXSTC_H
 
 #include <wx/stc/stc.h>
-#include <wx/extension/extension.h> // for exApp (and exFile, exInterface)
+#include <wx/extension/app.h> // for exApp
+#include <wx/extension/base.h> // for exInterface
+#include <wx/extension/file.h> // for exFile, exInterface
 
 class exConfigDialog;
 
