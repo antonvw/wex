@@ -423,10 +423,20 @@ bool wxExLexers::ShowDialog(
   }
 
   aChoices.Add("<none>");
+  
+  if (lexer.GetScintillaLexer().empty())
+  {
+    choice = index;
+  }
+  
   index++;
 
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, aChoices);
-  dlg.SetSelection(choice);
+  
+  if (choice != -1)
+  {
+    dlg.SetSelection(choice);
+  }
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {
