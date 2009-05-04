@@ -502,12 +502,12 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     WriteDataToClient(buffer, sock);
     delete buffer;
 
+#ifdef USE_TASKBARICON
     const wxString text =
       wxString::Format(_("%s connected at %d"),
         wxTheApp->GetAppName().c_str(),
         wxExApp::GetConfig(_("Port"), 3000));
 
-#ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
 #endif
   }
@@ -758,18 +758,26 @@ bool MyFrame::SetupSocketServer()
   return true;
 }
 
-void MyFrame::SocketCheckError(wxSocketBase* sock)
+bool MyFrame::SocketCheckError(const wxSocketBase* sock)
 {
   if (sock->Error())
   {
-    const wxString error = wxString::Format(_("Socket error: %d"), sock->LastError());
+    const wxString error = wxString::Format(_("Socket Error: %d"), sock->LastError());
     StatusText(error);
     m_Statistics.Inc(error);
+    return true;
   }
+
+  return false;
 }
 
-const wxString MyFrame::SocketDetails(wxSocketBase* sock) const
+const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 {
+  if (sock == NULL)
+  {
+    wxFAIL;
+  }
+
   wxString localIPAddress = "";
   wxString peerIPAddress = "";
   int localPort = 0;
@@ -777,19 +785,16 @@ const wxString MyFrame::SocketDetails(wxSocketBase* sock) const
 
   wxIPV4address addr;
 
-  if (sock != NULL)
+  if (sock->GetPeer(addr))
   {
-    if (sock->GetPeer(addr))
-    {
-      peerIPAddress = addr.IPAddress();
-      peerPort = addr.Service();
-    }
+    peerIPAddress = addr.IPAddress();
+    peerPort = addr.Service();
+  }
 
-    if (sock->GetLocal(addr))
-    {
-      localIPAddress = addr.IPAddress();
-      localPort = addr.Service();
-    }
+  if (sock->GetLocal(addr))
+  {
+    localIPAddress = addr.IPAddress();
+    localPort = addr.Service();
   }
 
   wxString value;
@@ -868,7 +873,10 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
 
   client->Write((*buffer).c_str(), buffer->size());
 
-  SocketCheckError(client);
+  if (SocketCheckError(client))
+  {
+    return;
+  }
 
   if (client->LastCount() != buffer->size())
   {
