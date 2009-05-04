@@ -1119,6 +1119,8 @@ int wxExSTC::FindReplaceDataFlags() const
 
 void wxExSTC::FoldAll()
 {
+  if (GetProperty("fold") != "1") return;
+
   wxBusyCursor wait;
 
   const int current_line = GetCurrentLine();
@@ -2436,6 +2438,26 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 {
   if (forced)
   {
+    ClearDocumentStyle();
+
+    // Reset all old properties. 
+    // Should be before m_FileName.SetLexer().
+    wxStringTokenizer properties(
+      m_FileName.GetLexer().GetProperties(),
+      wxTextFile::GetEOL());
+
+    while (properties.HasMoreTokens())
+    {
+      wxStringTokenizer property(properties.GetNextToken(), "=");
+
+      // Don't put key, value into SetProperty, as that might parse value first,
+      // reversing the two.
+      const wxString key = property.GetNextToken();
+      const wxString value = property.GetNextToken(); // ignore
+
+      SetProperty(key, wxEmptyString);
+    }
+
     m_FileName.SetLexer(lexer, "forced");
   }
   else
@@ -2496,10 +2518,12 @@ void wxExSTC::SetProperties()
   while (properties.HasMoreTokens())
   {
     wxStringTokenizer property(properties.GetNextToken(), "=");
+
     // Don't put key, value into SetProperty, as that might parse value first,
     // reversing the two.
     const wxString key = property.GetNextToken();
     const wxString value = property.GetNextToken();
+
     SetProperty(key, value);
   }
 }
