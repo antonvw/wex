@@ -422,7 +422,7 @@ bool wxExLexers::ShowDialog(
     index++;
   }
 
-  const wxString no_lexer = "<none>";
+  const wxString no_lexer = _("<none>");
 
   aChoices.Add(no_lexer);
   
