@@ -38,7 +38,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxexpat.lib wxpng.lib wxjpeg.lib wxregexu.lib wxtiff.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxexrep.lib wxextension.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxexpat.lib wxpng.lib wxjpeg.lib wxregexu.lib wxtiff.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxexrep.lib wxex.lib"
 				OutputFile=".\buildmsw/syncedit.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -102,7 +102,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxpngd.lib wxzlibd.lib wxjpegd.lib wxexpatd.lib wxregexud.lib wxtiffd.lib wxbase29ud.lib wxbase29ud_net.lib wxbase29ud_xml.lib wxmsw29ud_adv.lib wxmsw29ud_core.lib wxmsw29ud_html.lib wxmsw29ud_stc.lib wxmsw29ud_aui.lib wxexrepd.lib wxextensiond.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxpngd.lib wxzlibd.lib wxjpegd.lib wxexpatd.lib wxregexud.lib wxtiffd.lib wxbase29ud.lib wxbase29ud_net.lib wxbase29ud_xml.lib wxmsw29ud_adv.lib wxmsw29ud_core.lib wxmsw29ud_html.lib wxmsw29ud_stc.lib wxmsw29ud_aui.lib wxexrepd.lib wxexd.lib"
 				OutputFile=".\buildmswd/syncedit.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -169,7 +169,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxexpat.lib wxpng.lib wxjpeg.lib wxregexu.lib wxtiff.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxexrepp.lib wxextensionp.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib winmm.lib wsock32.lib wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxexpat.lib wxpng.lib wxjpeg.lib wxregexu.lib wxtiff.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_stc.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxexrepp.lib wxexp.lib"
 				OutputFile=".\buildmswp/syncped.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

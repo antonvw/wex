@@ -40,7 +40,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxmsw29u_stc.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib wxextension.lib wxexrep.lib"
+				AdditionalDependencies="wxbase29u.lib wxbase29u_net.lib wxbase29u_xml.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxmsw29u_html.lib wxmsw29u_aui.lib wxmsw29u_stc.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib wxex.lib wxexrep.lib"
 				OutputFile="./buildmsw\syncodbcquery.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxbase29ud.lib wxbase29ud_net.lib wxbase29ud_xml.lib wxpngd.lib wxzlibd.lib wxjpegd.lib wxregexud.lib wxexpatd.lib wxtiffd.lib wxmsw29ud_adv.lib wxmsw29ud_aui.lib wxmsw29ud_core.lib wxmsw29ud_html.lib wxmsw29ud_stc.lib wxextensiond.lib wxexrepd.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxbase29ud.lib wxbase29ud_net.lib wxbase29ud_xml.lib wxpngd.lib wxzlibd.lib wxjpegd.lib wxregexud.lib wxexpatd.lib wxtiffd.lib wxmsw29ud_adv.lib wxmsw29ud_aui.lib wxmsw29ud_core.lib wxmsw29ud_html.lib wxmsw29ud_stc.lib wxexd.lib wxexrepd.lib"
 				OutputFile="buildmswd\test.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
