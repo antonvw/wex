@@ -51,9 +51,12 @@ SVN hierarchy
 - documentation contains all general docs
 
 
+
 When adding functionality in trunk
 
 - document it in the source in doxy way
+
+- if it needs to be translated, add _() around text strings, and update po file
 
 - add a test for it in 
     extension/test/base, 
@@ -64,4 +67,5 @@ When adding functionality in trunk
 
 - add a sample for it in
     extension/sample, 
+    extension/sample/report
 
