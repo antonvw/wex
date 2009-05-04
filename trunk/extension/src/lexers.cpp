@@ -422,7 +422,9 @@ bool wxExLexers::ShowDialog(
     index++;
   }
 
-  aChoices.Add("<none>");
+  const wxString no_lexer = "<none>";
+
+  aChoices.Add(no_lexer);
   
   if (lexer.GetScintillaLexer().empty())
   {
@@ -445,7 +447,7 @@ bool wxExLexers::ShowDialog(
 
   const wxString sel = dlg.GetStringSelection();
 
-  if (sel == "<none>")
+  if (sel == no_lexer)
   {
     lexer = wxExLexer();
   }
