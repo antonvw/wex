@@ -73,9 +73,7 @@ void wxExFileNameStatistics::Log(
 
   wxExFrame::StatusText(logtext);
 
-  if (!log_to_file) return;
-
-  if (Get(_("Files Passed")) != 0)
+  if (log_to_file && Get(_("Files Passed")) != 0)
   {
     wxExApp::Log(logtext);
 
