@@ -778,31 +778,28 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
     wxFAIL;
   }
 
-  wxString localIPAddress = "";
-  wxString peerIPAddress = "";
-  int localPort = 0;
-  int peerPort = 0;
+  wxIPV4address peer_addr;
 
-  wxIPV4address addr;
-
-  if (sock->GetPeer(addr))
+  if (!sock->GetPeer(peer_addr))
   {
-    peerIPAddress = addr.IPAddress();
-    peerPort = addr.Service();
+    wxLogError("Could not get peer");
+    return wxEmptyString;
   }
 
-  if (sock->GetLocal(addr))
+  wxIPV4address local_addr;
+
+  if (!sock->GetLocal(local_addr))
   {
-    localIPAddress = addr.IPAddress();
-    localPort = addr.Service();
+    wxLogError("Could not get local");
+    return wxEmptyString;
   }
 
   wxString value;
 
   value <<
     _("socket: ") <<
-    localIPAddress << "." << localPort << ", " <<
-    peerIPAddress << "." << peerPort;
+    local_addr.IPAddress() << "." << local_addr.Service() << ", " <<
+    peer_addr.IPAddress() << "." << peer_addr.Service();
 
   return value;
 }
@@ -845,10 +842,10 @@ void MyFrame::TimerDialog()
     1,
     3600 * 24);
 
-  if (val != -1)
-  {
-    wxExApp::GetConfig()->Set(_("Timer"), val);
-  }
+  // If cancelled, -1 is returned.
+  if (val == -1) return;
+
+  wxExApp::GetConfig()->Set(_("Timer"), val);
 
   if (val > 0)
   {
