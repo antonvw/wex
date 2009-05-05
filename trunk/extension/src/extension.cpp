@@ -22,6 +22,7 @@ const wxString wxExHeader(
   const wxString address = config->Get(_("Address"));
   const wxString company = config->Get(_("Company"));
   const wxString country = config->Get(_("Country"));
+  const wxString license = config->Get(_("License"));
   const wxString email = config->Get(_("Email"));
   const wxString place = config->Get(_("Place"));
   const wxString zipcode = config->Get(_("Zipcode"));
@@ -45,6 +46,8 @@ const wxString wxExHeader(
   if (config->GetBool("SVN"))
   // Prevent the Id to be expanded by SVN itself here.
   header << l.MakeComment("RCS-ID:     $", wxString("Id$")) << "\n";
+  if (!license.empty())
+  header << l.MakeComment("License:    ", license) << "\n";
 
   header << l.MakeComment(wxEmptyString) << "\n";
   header << l.MakeComment("Copyright (c) " + wxDateTime::Now().Format("%Y") + " " +

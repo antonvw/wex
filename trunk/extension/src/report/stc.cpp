@@ -198,14 +198,20 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     // Purpose is required.
     v.push_back(wxExConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
 
+    // Author is required, but only presented if empty.
+    // Email and License also are only presented if Author empty.
     if (wxExApp::GetConfig(_("Author")).empty())
     {
-      // Author is required, but only presented if empty.
       v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
 
       if (wxExApp::GetConfig(_("Email")).empty())
       {
         v.push_back(wxExConfigItem(_("Email")));
+      }
+
+      if (wxExApp::GetConfig(_("License")).empty())
+      {
+        v.push_back(wxExConfigItem(_("License")));
       }
     }
 
