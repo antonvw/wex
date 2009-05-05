@@ -47,9 +47,6 @@ public:
   /// Gets the user.
   const wxString& GetUser() const {return m_User;};
 
-  /// Increments the revision number, and returns the new number.
-  const wxString SetNextRevisionNumber();
-
   /// Sets revision info from specified text.
   bool SetRevision(wxString& text);
 private:
@@ -191,7 +188,6 @@ private:
   bool MatchLine(wxString& line);
   bool Parse();
   bool PrepareRevision();
-  void RevisionAddComments(const wxString& comments);
 
   bool m_AllowAction;
   bool m_EmptyLine;

@@ -39,28 +39,6 @@ const wxString wxExRCS::GetRevision() const
   return logtext;
 }
 
-const wxString wxExRCS::SetNextRevisionNumber()
-{
-  // If the m_RevisionNumber member is valid, and this is a new comment (check-in or out),
-  // then the revision can be incremented. Always increment the rightmost part.
-  // E.g.
-  // 1.1   -> 1.2
-  // 1.2.3 -> 1.2.4
-  if (!m_RevisionNumber.empty())
-  {
-    const int pos = m_RevisionNumber.rfind('.');
-
-    const wxString leftpart = m_RevisionNumber.substr(0, pos + 1);
-    const wxString rightpart = m_RevisionNumber.substr(pos + 1);
-    const int new_number = atoi(rightpart.c_str()) + 1;
-
-    m_RevisionNumber = leftpart + wxString::Format("%d", new_number);
-    m_RevisionNumber.Append(' ', 6 - m_RevisionNumber.length());
-  }
-
-  return m_RevisionNumber;
-}
-
 bool wxExRCS::SetRevision(wxString& text)
 {
   // ClassBuilder lines start with '* ', these characters are skipped here.
@@ -638,14 +616,6 @@ bool wxExTextFile::PrepareRevision()
   m_VersionLine++;
 
   return true;
-}
-
-void wxExTextFile::RevisionAddComments(const wxString& comments)
-{
-  InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
-    m_RCS.SetNextRevisionNumber() + wxDateTime::Now().Format(m_RCS.m_RevisionFormat) + " " +
-      m_Config->Get("RCS/User", wxGetUserName()),
-    comments));
 }
 
 bool wxExTextFile::RunTool(const wxExTool& tool)
