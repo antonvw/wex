@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-01 15:44+0100\n"
-"PO-Revision-Date: 2009-05-01 15:44+0100\n"
+"POT-Creation-Date: 2009-05-05 08:06+0100\n"
+"PO-Revision-Date: 2009-05-05 08:07+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -127,14 +127,18 @@ msgid "Country"
 msgstr "Land"
 
 #: src/extension.cpp:25
+msgid "License"
+msgstr "Licentie"
+
+#: src/extension.cpp:26
 msgid "Email"
 msgstr "Email"
 
-#: src/extension.cpp:26
+#: src/extension.cpp:27
 msgid "Place"
 msgstr "Plaats"
 
-#: src/extension.cpp:27
+#: src/extension.cpp:28
 msgid "Zipcode"
 msgstr "Postcode"
 
@@ -165,15 +169,20 @@ msgstr "Gesynchroniseerd"
 msgid "Modified"
 msgstr "Gewijzigd"
 
-#: src/lexer.cpp:189
-msgid "No comments available for this lexer, cannot make comment"
-msgstr "Geen commentaar beschikbaar"
+#: src/lexer.cpp:190
+#, c-format
+msgid "No comments available for lexer: %s, cannot make comment"
+msgstr "Geen commentaar beschikbaar voor lexer: %s"
 
 #: src/lexers.cpp:50
 msgid "All Files"
 msgstr "Alle bestanden"
 
-#: src/lexers.cpp:428
+#: src/lexers.cpp:425
+msgid "<none>"
+msgstr "<geen>"
+
+#: src/lexers.cpp:436
 #: src/listview.cpp:514
 msgid "Input"
 msgstr "Invoer"
@@ -389,7 +398,7 @@ msgid "Edge line"
 msgstr "Kantlijn regel"
 
 #: src/stc.cpp:757
-#: src/stc.cpp:2464
+#: src/stc.cpp:2486
 msgid "Auto fold"
 msgstr "Automatisch opvouwen"
 
@@ -477,49 +486,49 @@ msgid "Saved"
 msgstr "Opgeslagen"
 
 #: src/stc.cpp:1023
-#: src/stc.cpp:1793
+#: src/stc.cpp:1795
 msgid "Document is readonly"
 msgstr "Document is alleen lezen"
 
-#: src/stc.cpp:1570
+#: src/stc.cpp:1572
 msgid "Macro played back"
 msgstr "Macro afgespeeld"
 
-#: src/stc.cpp:1758
+#: src/stc.cpp:1760
 #, c-format
 msgid "Replaced: %d occurrences of: %s"
 msgstr "Vervangen: %d voorkomens van: %s"
 
-#: src/stc.cpp:2052
+#: src/stc.cpp:2054
 msgid "Opened"
 msgstr "Geopend"
 
-#: src/stc.cpp:2267
+#: src/stc.cpp:2269
 msgid "Start Of Sequence"
 msgstr "Begin van rij"
 
-#: src/stc.cpp:2279
+#: src/stc.cpp:2281
 msgid "End Of Sequence"
 msgstr "Einde van rij"
 
-#: src/stc.cpp:2289
+#: src/stc.cpp:2291
 msgid "Start and end sequence should have same length"
 msgstr "Begin en einde rij moeten gelijke lengte hebben"
 
-#: src/stc.cpp:2300
+#: src/stc.cpp:2302
 #, c-format
 msgid "Generate %ld lines"
 msgstr "Voeg %ld regels toe"
 
-#: src/stc.cpp:2364
+#: src/stc.cpp:2366
 msgid "Fold Flags"
 msgstr "Opvouw vlaggen"
 
-#: src/stc.cpp:2619
+#: src/stc.cpp:2643
 msgid "Macro recording"
 msgstr "Macro aan het opnemen"
 
-#: src/stc.cpp:2633
+#: src/stc.cpp:2657
 msgid "Macro is recorded"
 msgstr "Macro is opgenomen"
 
@@ -986,15 +995,15 @@ msgid "&Add Header"
 msgstr "&Voeg koptekst toe"
 
 #: src/report/stc.cpp:199
-#: src/report/stc.cpp:216
+#: src/report/stc.cpp:222
 msgid "Purpose"
 msgstr "Omschrijving"
 
-#: src/report/stc.cpp:212
+#: src/report/stc.cpp:218
 msgid "File Purpose"
 msgstr "Bestand omschrijving"
 
-#: src/report/stc.cpp:291
+#: src/report/stc.cpp:297
 msgid "Readonly"
 msgstr "Alleen lezen"
 
