@@ -396,7 +396,7 @@ bool wxExTextFile::Parse()
     else GoToLine(GetCurrentLine() + 1);
   }
 
-  return true;
+  return !Cancelled();
 }
 
 bool wxExTextFile::ParseComments()
@@ -680,32 +680,29 @@ bool wxExTextFile::RunTool(const wxExTool& tool)
     }
   }
 
-  if (!Cancelled())
+  GetStatisticElements().Set(_("Files Passed"), 1);
+
+  if (m_Tool.IsStatisticsType())
   {
-    GetStatisticElements().Set(_("Files Passed"), 1);
-
-    if (m_Tool.IsStatisticsType())
+    if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
     {
-      if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
+      if (!m_FileNameStatistics.GetLexer().GetKeywordsString().empty())
       {
-        if (!m_FileNameStatistics.GetLexer().GetKeywordsString().empty())
-        {
-          GetStatisticElements().Inc(_("Actions Completed"));
-        }
-
+        GetStatisticElements().Inc(_("Actions Completed"));
       }
 
-      ReportStatistics();
     }
 
-    if (m_Modified && !m_FileNameStatistics.GetStat().IsReadOnly())
-    {
-      if (!Write())
-      {
-        Close();
+    ReportStatistics();
+  }
 
-        return false;
-      }
+  if (m_Modified && !m_FileNameStatistics.GetStat().IsReadOnly())
+  {
+    if (!Write())
+    {
+      Close();
+
+      return false;
     }
   }
 
