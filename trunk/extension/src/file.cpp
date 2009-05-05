@@ -195,25 +195,21 @@ bool wxExFile::MakeAbsolute()
   }
 }
 
-wxString* wxExFile::Read(wxFileOffset seek_position)
+wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
 {
   const wxFileOffset bytes_to_read = Length() - seek_position;
 
   // Always do a seek, so you can do more Reads on the same object.
   Seek(seek_position);
 
-  wxMemoryBuffer buffer(bytes_to_read);
-  buffer.SetDataLen(bytes_to_read);
+  wxCharBuffer buffer(bytes_to_read);
 
-  if (wxFile::Read(buffer.GetData(), bytes_to_read) == bytes_to_read)
-  {
-    return new wxString(buffer, bytes_to_read);
-  }
-  else
+  if (wxFile::Read(buffer.data(), bytes_to_read) != bytes_to_read)
   {
     wxFAIL;
-    return NULL;
   }
+
+  return buffer;
 }
 
 int wxExFileName::GetIcon() const

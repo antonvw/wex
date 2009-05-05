@@ -368,7 +368,7 @@ void wxExSTC::AddBasePathToPathList()
   PathListAdd(basepath);
 }
 
-void wxExSTC::AddTextHwxExMode(wxFileOffset start, long length, const wxChar* buffer)
+void wxExSTC::AddTextHexMode(wxFileOffset start, long length, const wxChar* buffer)
 /*
 e.g.:
 offset    hex field                                         ascii field
@@ -2188,8 +2188,7 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  wxString* buffer = Read(offset);
-  if (buffer == NULL) return;
+  wxCharBuffer& buffer = Read(offset);
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
@@ -2199,16 +2198,14 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.
-    SendMsg(message, buffer->length(), (long)(const char *)buffer->c_str());
+    SendMsg(message, buffer.length(), (long)(const char *)buffer.data());
   }
   else
   {
     SetControlCharSymbol('x');
 
-    AddTextHwxExMode(offset, buffer->length(), buffer->c_str());
+    AddTextHexMode(offset, buffer.length(), (const wxChar *)buffer.data());
   }
-
-  delete buffer;
 
   if (get_only_new_data)
   {

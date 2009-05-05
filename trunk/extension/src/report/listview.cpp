@@ -372,11 +372,9 @@ bool wxExListViewFile::FileOpen(const wxExFileName& filename)
 
   EditClearAll();
 
-  wxString* buffer = Read();
-  if (buffer == NULL) return false;
+  wxCharBuffer& buffer = Read();
 
-  wxStringTokenizer tkz(*buffer, wxTextFile::GetEOL());
-  delete buffer;
+  wxStringTokenizer tkz(buffer.data(), wxTextFile::GetEOL());
 
   while (tkz.HasMoreTokens())
   {

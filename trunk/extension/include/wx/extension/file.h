@@ -189,8 +189,7 @@ public:
   const wxExStat& GetStat() const {return m_Stat;};
 
   /// Reads this file into a buffer.
-  /// The buffer is allocated by the lib, you should delete the string after using.
-  wxString* Read(wxFileOffset seek_position = 0);
+  wxCharBuffer Read(wxFileOffset seek_position = 0);
 
   /// Sets the wild card member.
   void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};

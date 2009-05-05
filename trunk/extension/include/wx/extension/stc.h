@@ -249,7 +249,7 @@ protected:
   void OnStyledText(wxStyledTextEvent& event);
   void OnTimer(wxTimerEvent& event);
 private:
-  void AddTextHwxExMode(wxFileOffset start, long length, const wxChar* buffer);
+  void AddTextHexMode(wxFileOffset start, long length, const wxChar* buffer);
   void AddBasePathToPathList();
   bool CheckAutoComp(int key);
   bool CheckBrace(int pos);
