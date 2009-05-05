@@ -240,10 +240,8 @@ void MyFrame::LogConnection(
   bool show_clients)
 {
   wxString text;
-  const wxString prefix = (accepted ? _("accepted"): _("lost"));
 
-  text <<
-    prefix << " " << SocketDetails(sock);
+  text << (accepted ? _("accepted"): _("lost")) << " " << SocketDetails(sock);
 
   if (show_clients)
   {
@@ -782,18 +780,18 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 
   if (!sock->GetPeer(peer_addr))
   {
-    wxLogError("Could not get peer");
+    wxLogError("Could not get peer address");
     return wxEmptyString;
   }
 
   wxIPV4address local_addr;
-
+/*
   if (!sock->GetLocal(local_addr))
   {
-    wxLogError("Could not get local");
+    wxLogError("Could not get local address");
     return wxEmptyString;
   }
-
+*/
   wxString value;
 
   value <<
