@@ -59,10 +59,8 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_File->CheckSyncNeeded());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName("test.bin")));
-  wxString* buffer = m_File->Read();
-  CPPUNIT_ASSERT(buffer != NULL);
-  CPPUNIT_ASSERT(buffer->size() == 40);
-  delete buffer;
+  wxCharBuffer buffer = m_File->Read();
+  CPPUNIT_ASSERT(buffer.length() == 40);
 
   // test wxExFileName
   CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
@@ -176,9 +174,8 @@ void wxExTestFixture::testTiming()
 
   for (int i = 0; i < max; i++)
   {
-    wxString* buffer = file.Read();
-    CPPUNIT_ASSERT(buffer != NULL);
-    delete buffer;
+    wxCharBuffer buffer = file.Read();
+    CPPUNIT_ASSERT(buffer.length() > 0);
   }
 
   const long exfile_read = sw.Time();
@@ -192,6 +189,7 @@ void wxExTestFixture::testTiming()
     char* charbuffer = new char[wxfile.Length()];
     wxfile.Read(charbuffer, wxfile.Length());
     wxString* buffer = new wxString(charbuffer, wxfile.Length());
+    CPPUNIT_ASSERT(buffer->length() > 0);
     delete charbuffer;
     delete buffer;
   }
