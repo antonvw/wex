@@ -169,10 +169,6 @@ public:
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos(); // cannot be const, it uses GetSelectedText
 
-  /// Gets the raw text, might contain NULL's.
-  /// You should delete the pointer after using.
-  wxString* GetTextRaw();
-
   /// Gets word at position.
   const wxString GetWordAtPos(int pos);
 
@@ -334,7 +330,7 @@ public:
   const wxString GetText() const {return m_STC->GetText();};
 
   /// Gets raw text value.
-  wxString* GetTextRaw() const {return m_STC->GetTextRaw();};
+  wxCharBuffer GetTextRaw() const {return m_STC->GetTextRaw();};
 
   /// Sets the STC lexer.
   void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};

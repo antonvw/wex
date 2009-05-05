@@ -56,7 +56,7 @@ private:
   const wxString SocketDetails(const wxSocketBase* sock) const;
   void SocketLost(wxSocketBase* sock, bool remove_from_clients);
   void TimerDialog();
-  void WriteDataToClient(wxString* data, wxSocketBase* client);
+  void WriteDataToClient(const wxCharBuffer& data, wxSocketBase* client);
   void WriteDataWindowToClients();
 
   std::list<wxSocketBase*> m_Clients;

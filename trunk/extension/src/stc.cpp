@@ -975,9 +975,8 @@ bool wxExSTC::FileSave()
     return false;
   }
 
-  wxString* buffer = GetTextRaw();
-  Write((*buffer).c_str(), GetLength());
-  delete buffer;
+  wxCharBuffer& buffer = GetTextRaw(); 
+  Write(buffer.data(), buffer.length());
 
   wxExFile::FileSave();
 
@@ -1239,12 +1238,6 @@ const wxString wxExSTC::GetTextAtCurrentPos()
     // And make sure we skip white space.
     return match.Strip(wxString::both);
   }
-}
-
-wxString* wxExSTC::GetTextRaw()
-{
-  // Readme: For new svn, test and add length (wxCharBuffer, and scoped char).
-  return new wxString(wxStyledTextCtrl::GetTextRaw());
 }
 
 const wxString wxExSTC::GetWordAtPos(int pos)

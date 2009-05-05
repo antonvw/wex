@@ -424,7 +424,8 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SHELL_COMMAND:
     {
-      wxString data = event.GetString() + m_Shell->GetEOL();
+      const wxString str = event.GetString() + m_Shell->GetEOL();
+      wxCharBuffer buffer(str.c_str());
 
       for (
         std::list<wxSocketBase*>::iterator it = m_Clients.begin();
@@ -432,7 +433,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
         ++it)
       {
         wxSocketBase* sock = *it;
-        WriteDataToClient(&data, sock);
+        WriteDataToClient(buffer, sock);
       }
 
       m_Shell->Prompt();
@@ -496,9 +497,8 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
     LogConnection(sock, true);
 
-    wxString* buffer = m_DataWindow->GetTextRaw();
+    wxCharBuffer buffer = m_DataWindow->GetTextRaw();
     WriteDataToClient(buffer, sock);
-    delete buffer;
 
 #ifdef USE_TASKBARICON
     const wxString text =
@@ -862,18 +862,18 @@ void MyFrame::TimerDialog()
   }
 }
 
-void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
+void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
 {
-  if (buffer->empty()) return;
+  if (buffer.length() == 0) return;
 
-  client->Write((*buffer).c_str(), buffer->size());
+  client->Write(buffer, buffer.length());
 
   if (SocketCheckError(client))
   {
     return;
   }
 
-  if (client->LastCount() != buffer->size())
+  if (client->LastCount() != buffer.length())
   {
     m_LogWindow->AppendTextForced(_("not all bytes sent to socket"));
   }
@@ -895,14 +895,14 @@ void MyFrame::WriteDataToClient(wxString* buffer, wxSocketBase* client)
     }
     else
     {
-      m_LogWindow->AppendTextForced(*buffer, false);
+      m_LogWindow->AppendTextForced(buffer, false);
     }
   }
 }
 
 void MyFrame::WriteDataWindowToClients()
 {
-  wxString* buffer = m_DataWindow->GetTextRaw();
+  wxCharBuffer buffer = m_DataWindow->GetTextRaw();
 
   for (
     std::list<wxSocketBase*>::iterator it = m_Clients.begin();
@@ -912,8 +912,6 @@ void MyFrame::WriteDataWindowToClients()
     wxSocketBase* sock = *it;
     WriteDataToClient(buffer, sock);
   }
-
-  delete buffer;
 }
 
 #ifdef USE_TASKBARICON
