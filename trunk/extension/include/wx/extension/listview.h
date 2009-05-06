@@ -231,9 +231,6 @@ public:
   /// Gets the list view.
   wxExListView* GetListView() {return m_ListView;};
 
-  /// Sets background colour for this item.
-  bool SetBackgroundColour(const wxColour& colour);
-
   /// Sets the column text using column number.
   void SetColumnText(const int col_no, const wxString& text);
 

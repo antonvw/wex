@@ -57,22 +57,6 @@ const wxString wxExListItem::GetColumnText(int col_no)
   return GetText();
 }
 
-bool wxExListItem::SetBackgroundColour(const wxColour& colour)
-{
-  wxListItem::SetBackgroundColour(colour);
-
-  SetColumn(0);
-  SetMask(0);
-
-  if (!m_ListView->SetItem(*this))
-  {
-    wxFAIL;
-    return false;
-  }
-
-  return true;
-}
-
 void wxExListItem::SetColumnText(const int col_no, const wxString& text)
 {
   if (col_no >= m_ListView->GetColumnCount())
@@ -854,12 +838,6 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     SetColumnImage(column_no,
       GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
   }
-
-  // Readme: Try to set colour for this sorted column. Does not work.
-  /*
-  wxListItem item;
-  item.SetBackgroundColour("blue");
-  SetColumn(m_SortedColumnNo, item);*/
 
   ItemsClear();
 
