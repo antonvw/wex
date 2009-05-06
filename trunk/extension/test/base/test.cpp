@@ -24,7 +24,6 @@ void wxExTestFixture::setUp()
   m_RCS = new wxExRCS();
   m_Stat = new wxExStat("test.h");
   m_Statistics = new wxExStatistics<long>();
-  m_Tool = new wxExTool(ID_TOOL_REPORT_COUNT);
 }
 
 void wxExTestFixture::testConstructors()
@@ -155,7 +154,12 @@ void wxExTestFixture::testMethods()
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
   // test wxExTool
-  CPPUNIT_ASSERT(m_Tool->IsStatisticsType() > 0);
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsCount());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
+  CPPUNIT_ASSERT(!wxExTool::GetToolInfo().empty());
 
   // test various wxExMethods
   const wxString header = wxExHeader(m_TextFile->GetFileName(), m_Config, "test");

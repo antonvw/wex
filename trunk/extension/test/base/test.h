@@ -42,7 +42,6 @@ public:
     m_Stat = NULL;
     m_Statistics = NULL;
     m_TextFile = NULL;
-    m_Tool = NULL;
     };
 
   /// Destructor.
@@ -57,7 +56,6 @@ public:
     delete m_Stat;
     delete m_Statistics;
     delete m_TextFile;
-    delete m_Tool;
     };
 
   /// From TestFixture.
@@ -92,7 +90,6 @@ private:
   wxExStat* m_Stat; ///< testing wxExStat
   wxExStatistics<long>* m_Statistics; ///< testing wxExStatstics
   wxExTextFile* m_TextFile; ///< testing wxExTextFile
-  wxExTool* m_Tool; ///< testing wxExTool
 };
 
 #endif
