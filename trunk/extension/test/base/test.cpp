@@ -141,16 +141,17 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
 
   // test wxExTextFile
-  m_TextFile = new wxExTextFile(wxExFileName("test.h"), m_Config, m_Lexers);
-  CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_COUNT));
-  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
+  wxExTextFile textFile(wxExFileName("test.h"), ID_TOOL_REPORT_COUNT, m_Config, m_Lexers);
+  CPPUNIT_ASSERT(textFile.RunTool());
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
-  CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_COUNT)); // do the same test
-  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetElements().GetItems().empty());
-  CPPUNIT_ASSERT(!m_TextFile->IsOpened()); // file should be closed after running tool
+  CPPUNIT_ASSERT(textFile.RunTool()); // do the same test
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+  CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
-  CPPUNIT_ASSERT(m_TextFile->RunTool(ID_TOOL_REPORT_KEYWORD));
+  wxExTextFile textFile2(wxExFileName("test.h"), ID_TOOL_REPORT_KEYWORD, m_Config, m_Lexers);
+  CPPUNIT_ASSERT(textFile2.RunTool());
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
   // test wxExTool
@@ -162,7 +163,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!wxExTool::GetToolInfo().empty());
 
   // test various wxExMethods
-  const wxString header = wxExHeader(m_TextFile->GetFileName(), m_Config, "test");
+  const wxString header = wxExHeader(textFile.GetFileName(), m_Config, "test");
   CPPUNIT_ASSERT(header.Contains("test"));
 }
 

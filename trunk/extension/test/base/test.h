@@ -41,7 +41,6 @@ public:
     m_RCS = NULL;
     m_Stat = NULL;
     m_Statistics = NULL;
-    m_TextFile = NULL;
     };
 
   /// Destructor.
@@ -55,7 +54,6 @@ public:
     delete m_RCS;
     delete m_Stat;
     delete m_Statistics;
-    delete m_TextFile;
     };
 
   /// From TestFixture.
@@ -89,7 +87,6 @@ private:
   wxExRCS* m_RCS; ///< testing wxExRCS
   wxExStat* m_Stat; ///< testing wxExStat
   wxExStatistics<long>* m_Statistics; ///< testing wxExStatstics
-  wxExTextFile* m_TextFile; ///< testing wxExTextFile
 };
 
 #endif
