@@ -975,7 +975,7 @@ bool wxExSTC::FileSave()
     return false;
   }
 
-  wxCharBuffer& buffer = GetTextRaw(); 
+  const wxCharBuffer& buffer = GetTextRaw(); 
   Write(buffer.data(), buffer.length());
 
   wxExFile::FileSave();
@@ -2188,7 +2188,7 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  wxCharBuffer& buffer = Read(offset);
+  const wxCharBuffer& buffer = Read(offset);
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
