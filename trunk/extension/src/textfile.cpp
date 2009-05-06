@@ -83,12 +83,13 @@ bool wxExRCS::SetRevision(wxString& text)
 
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
+  const wxExTool& tool,
   wxExConfig* config,
   const wxExLexers* lexers)
   : m_FileNameStatistics(filename)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
-  , m_Tool(ID_TOOL_LOWEST)
+  , m_Tool(tool)
   , m_Config(config)
   , m_Lexers(lexers)
 {
@@ -618,10 +619,8 @@ bool wxExTextFile::PrepareRevision()
   return true;
 }
 
-bool wxExTextFile::RunTool(const wxExTool& tool)
+bool wxExTextFile::RunTool()
 {
-  m_Tool = tool;
-
   if (!wxTextFile::Open(m_FileNameStatistics.GetFullPath()))
   {
     return false;

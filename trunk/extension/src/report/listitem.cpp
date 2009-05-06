@@ -71,9 +71,9 @@ bool wxExListItemWithFileName::Run(const wxExTool& tool, wxExListViewFile* listv
 
   if (m_Statistics.FileExists())
   {
-    wxExTextFileWithReport file(m_Statistics);
+    wxExTextFileWithReport file(m_Statistics, tool);
 
-    if (file.RunTool(tool))
+    if (file.RunTool())
     {
       if (tool.IsRCSType())
       {

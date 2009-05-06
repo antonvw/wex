@@ -174,8 +174,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
     if (wxExTextFileWithReport::SetupTool(tool))
     {
-      wxExTextFileWithReport report(m_FileName);
-      report.RunTool(tool);
+      wxExTextFileWithReport report(m_FileName, tool);
+      report.RunTool();
       report.GetStatistics().Log(tool);
 
       if (tool.IsCount())

@@ -23,7 +23,9 @@ class wxExTextFileWithReport : public wxExTextFile
 {
 public:
   /// Constructor.
-  wxExTextFileWithReport(const wxExFileName& filename);
+  wxExTextFileWithReport(
+    const wxExFileName& filename,
+    const wxExTool& tool);
 
   /// Sets up the tool.
   static bool SetupTool(const wxExTool& tool);

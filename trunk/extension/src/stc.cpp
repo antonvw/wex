@@ -778,7 +778,7 @@ int wxExSTC::ConfigDialog(
 
   const wxSize size
 #ifdef __WXMSW__
-    (320, 300);
+    (350, 300);
 #else
     (500, 350);
 #endif

@@ -52,8 +52,10 @@ private:
 };
 #endif
 
-wxExTextFileWithReport::wxExTextFileWithReport(const wxExFileName& filename)
-  : wxExTextFile(filename, wxExApp::GetConfig(), wxExApp::GetLexers())
+wxExTextFileWithReport::wxExTextFileWithReport(
+  const wxExFileName& filename,
+  const wxExTool& tool)
+  : wxExTextFile(filename, tool, wxExApp::GetConfig(), wxExApp::GetLexers())
 #if USE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
 #endif

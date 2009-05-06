@@ -316,8 +316,8 @@ void wxExDirWithReport::OnFile(const wxString& file)
     if (filename.GetStat().IsOk())
     {
       if (wxFileName::DirExists(file)) return;
-      wxExTextFileWithReport report(filename);
-      report.RunTool(m_Tool);
+      wxExTextFileWithReport report(filename, m_Tool);
+      report.RunTool();
       m_Statistics += report.GetStatistics();
     }
   }
@@ -338,10 +338,10 @@ void wxExDirWithReport::OnFile(const wxString& file)
       {
         wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
 
-        wxExTextFileWithReport report(item.m_Statistics);
+        wxExTextFileWithReport report(item.m_Statistics, ID_TOOL_REVISION_RECENT);
         if (report.SetupTool(ID_TOOL_REVISION_RECENT))
         {
-          report.RunTool(ID_TOOL_REVISION_RECENT);
+          report.RunTool();
           item.UpdateRevisionList(report.GetRCS());
         }
       }

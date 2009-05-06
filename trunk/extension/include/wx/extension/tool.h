@@ -103,7 +103,7 @@ public:
       m_Id == ID_TOOL_REPORT_COUNT ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 private:
-  int m_Id; // cannot be const, as we set tool id using operator= in wxExTextFile::SetupTool
+  const int m_Id;
   static std::map < int, const wxExToolInfo > m_ToolInfo;
 };
 #endif

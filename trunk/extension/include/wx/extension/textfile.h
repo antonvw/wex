@@ -66,6 +66,7 @@ public:
   /// Constructor.
   wxExTextFile(
     const wxExFileName& filename,
+    const wxExTool& tool,
     wxExConfig* config,
     const wxExLexers* lexers);
 
@@ -86,7 +87,7 @@ public:
   void InsertLine(const wxString& line);
 
   /// Runs the tool (opens the file before running and closes afterwards).
-  bool RunTool(const wxExTool& tool);
+  bool RunTool();
 
   /// Writes a comment to the current line.
   void WriteComment(
@@ -201,7 +202,7 @@ private:
   wxExRCS m_RCS;
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
-  wxExTool m_Tool;
+  const wxExTool m_Tool;
   wxExConfig* m_Config;
   const wxExLexers* m_Lexers;
 
