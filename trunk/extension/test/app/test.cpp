@@ -67,9 +67,9 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(m_STC->Open(wxExFileName("../base/test.bin")));
-  wxCharBuffer buffer = m_STC->GetTextRaw();
-  wxLogMessage(buffer.c_str());
-  CPPUNIT_ASSERT(buffer->length() == 40);
+  const wxCharBuffer& buffer = m_STC->GetTextRaw();
+  wxLogMessage(buffer.data());
+  CPPUNIT_ASSERT(buffer.length() == 40);
 
   // test wxExSTCShell
   m_STCShell->Prompt("test1");
