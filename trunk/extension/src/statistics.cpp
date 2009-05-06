@@ -77,7 +77,7 @@ void wxExFileNameStatistics::Log(
   {
     wxExApp::Log(logtext);
 
-    if (tool.IsCountType())
+    if (tool.IsCount())
     {
       wxString logtext;
 

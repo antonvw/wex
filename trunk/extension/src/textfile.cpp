@@ -448,7 +448,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     {
       if (i < line.length())
       {
-        if (m_Tool.IsCountType())
+        if (m_Tool.IsCount())
         {
           GetStatisticElements().Inc(_("Comment Size"));
         }
@@ -493,7 +493,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
           {
             if (!sequence)
             {
-              if (m_Tool.IsCountType())
+              if (m_Tool.IsCount())
               {
                 GetStatisticElements().Inc(_("Words Of Code"));
               }
@@ -567,7 +567,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     }
 
     // End of lines are included in comment size as well.
-    if (m_Tool.IsCountType())
+    if (m_Tool.IsCount())
     {
       GetStatisticElements().Inc(_("Comment Size"), wxString(GetEOL()).length());
     }
@@ -629,7 +629,7 @@ bool wxExTextFile::RunTool(const wxExTool& tool)
 
   GetStatisticElements().Set(_("Files"), 1);
 
-  if (m_Tool.IsCountType())
+  if (m_Tool.IsCount())
   {
     GetStatisticElements().Inc(_("Total Size"), m_FileNameStatistics.GetStat().st_size);
     GetStatisticElements().Inc(_("Lines"), GetLineCount());

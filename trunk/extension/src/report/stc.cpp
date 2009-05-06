@@ -178,7 +178,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       report.RunTool(tool);
       report.GetStatistics().Log(tool);
 
-      if (tool.IsCountType())
+      if (tool.IsCount())
       {
         wxExOpenFile(
           wxExFileNameStatistics::GetLogfileName(),

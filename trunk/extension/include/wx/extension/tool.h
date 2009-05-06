@@ -79,8 +79,8 @@ public:
   static void Initialize();
 
   // Type checking.
-  /// Is this tool a count type.
-  bool IsCountType() const {
+  /// Is this tool the report count.
+  bool IsCount() const {
     return m_Id == ID_TOOL_REPORT_COUNT;}
 
   /// Is this tool a find type.
@@ -101,7 +101,6 @@ public:
   bool IsStatisticsType() const {
     return
       m_Id == ID_TOOL_REPORT_COUNT ||
-      m_Id == ID_TOOL_REPORT_VERSION  ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 private:
   int m_Id; // cannot be const, as we set tool id using operator= in wxExTextFile::SetupTool

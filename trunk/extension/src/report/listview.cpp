@@ -1109,7 +1109,7 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
 
   wxExFrame::StatusText(_("Ready"));
 
-  if (tool.IsCountType())
+  if (tool.IsCount())
   {
     wxExOpenFile(
       wxExFileNameStatistics::GetLogfileName(),
