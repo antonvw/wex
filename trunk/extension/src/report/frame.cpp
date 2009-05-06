@@ -60,8 +60,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   wxExTool::AddInfo(
     ID_TOOL_REPORT_SQL,
     _("Reported %ld SQL queries in"),
-    _("SQL &Query Report"),
-    false);
+    _("Report SQL &Query"));
 #endif
 }
 

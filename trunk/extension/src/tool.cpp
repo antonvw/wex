@@ -25,7 +25,6 @@ void wxExTool::AddInfo(
   int tool_id,
   const wxString& info,
   const wxString& text,
-  bool is_basic,
   const wxString& helptext)
 {
   std::map < int, const wxExToolInfo >::const_iterator it = m_ToolInfo.find(tool_id);
@@ -36,7 +35,7 @@ void wxExTool::AddInfo(
   }
   else
   {
-    const wxExToolInfo ti(info, text, is_basic, helptext);
+    const wxExToolInfo ti(info, text, helptext);
     m_ToolInfo.insert(std::make_pair(tool_id, ti));
   }
 }
@@ -58,19 +57,17 @@ const wxString wxExTool::Info() const
 
 void wxExTool::Initialize()
 {
-  // If you change these labels, don't forget to change in listview too
-  // for title when checking in-out.
   if (!wxExApp::GetConfigBool("SVN"))
   {
     AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("&Revision"), false);
+    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
   }
 
   AddInfo(ID_TOOL_LINE_CODE, _("Parsed code lines"));
   AddInfo(ID_TOOL_LINE_COMMENT, _("Parsed comment lines"));
 
-  AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("&Count"), false);
+  AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
   AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
   AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
-  AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("&Keyword"), false);
+  AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
 }

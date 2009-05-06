@@ -28,11 +28,9 @@ public:
   wxExToolInfo(
     const wxString& info,
     const wxString& text,
-    bool is_basic = true,
     const wxString& helptext = wxEmptyString)
     : m_Info(info)
     , m_HelpText(helptext)
-    , m_IsBasic(is_basic)
     , m_Text(text){};
 
   /// Gets the info.
@@ -41,15 +39,11 @@ public:
   /// Gets the helptext.
   const wxString& GetHelpText() const {return m_HelpText;};
 
-  /// Gets the is basic.
-  bool GetIsBasic() const {return m_IsBasic;};
-
   /// Gets the text.
   const wxString& GetText() const {return m_Text;};
 private:
   const wxString m_Info;
   const wxString m_HelpText;
-  const bool m_IsBasic;
   const wxString m_Text;
 };
 
@@ -68,7 +62,6 @@ public:
     int tool_id,
     const wxString& info,
     const wxString& text = wxEmptyString,
-    bool is_basic = true,
     const wxString& helptext = wxEmptyString);
 
   /// Gets the tool id.

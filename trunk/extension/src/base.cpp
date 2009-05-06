@@ -604,8 +604,6 @@ void wxExMenu::AppendPrint()
 wxExMenu* wxExMenu::AppendTools()
 {
   wxExMenu* menuTool = new wxExMenu(*this);
-  wxExMenu* menuReport = new wxExMenu(*this);
-  bool added_to_tool = false;
 
   for (
     map <int, const wxExToolInfo>::const_iterator it = wxExTool::GetToolInfo().begin();
@@ -614,22 +612,9 @@ wxExMenu* wxExMenu::AppendTools()
   {
     if (!it->second.GetText().empty())
     {
-      wxExMenu* menu = (it->second.GetIsBasic() ? menuTool: menuReport);
-      menu->Append(it->first, it->second.GetText(), it->second.GetHelpText());
-
-      if (it->second.GetIsBasic())
-      {
-        added_to_tool = true;
-      }
+      menuTool->Append(it->first, it->second.GetText(), it->second.GetHelpText());
     }
   }
-
-  if (added_to_tool)
-  {
-    menuTool->AppendSeparator();
-  }
-
-  menuTool->AppendSubMenu(menuReport, _("&Report"));
 
   AppendSubMenu(menuTool, _("&Tools"));
 
