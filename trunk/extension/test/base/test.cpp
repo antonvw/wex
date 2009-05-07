@@ -75,28 +75,9 @@ void wxExTestFixture::testMethods()
   // test wxExLexer
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
-  m_Lexer->SetKeywords("test11 test21:1 test31:1 test12:2 test22:2");
-  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test11"));
-  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test21"));
-  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test12"));
-  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test22"));
-  CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("te"));
-  CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xx"));
-  CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
-
-  // test wxExLexers
+  // now read lexers
   CPPUNIT_ASSERT(m_Lexers->Read());
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
-  CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(m_Lexers->Count() > 0);
-  CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName("test.h")).empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetIndicators().empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetMarkers().empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetStyles().empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetStylesHex().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetAssociations().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetColourings().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin().empty());
@@ -114,6 +95,28 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->MakeComment("test", true).empty());
   CPPUNIT_ASSERT(!m_Lexer->MakeComment("test", "test").empty());
   CPPUNIT_ASSERT(m_Lexer->SetKeywords("hello:1"));
+  CPPUNIT_ASSERT(m_Lexer->SetKeywords("test11 test21:1 test31:1 test12:2 test22:2"));
+  CPPUNIT_ASSERT(!m_Lexer->IsKeyword("class")); // now overwritten
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test11"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test21"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test12"));
+  CPPUNIT_ASSERT(m_Lexer->IsKeyword("test22"));
+  CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("te"));
+  CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xx"));
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
+
+  // test wxExLexers
+  CPPUNIT_ASSERT(!m_Lexers->BuildComboBox(wxFileName("test.h")).empty());
+  CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName("test.h")).empty());
+  CPPUNIT_ASSERT(m_Lexers->Count() > 0);
+  CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(m_Lexers->FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(!m_Lexers->GetIndicators().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetMarkers().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetStyles().empty());
+  CPPUNIT_ASSERT(!m_Lexers->GetStylesHex().empty());
 
   // test wxExRCS
   CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
