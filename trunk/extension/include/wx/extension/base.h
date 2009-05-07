@@ -101,8 +101,8 @@ public:
   virtual const wxString PrintCaption() const {return _("Printout");};
 
   /// You can use macros in PrintFooter and in PrintHeader:
-  ///   @PAGENUM@ is replaced by page number
-  ///   @PAGESCNT@ is replaced by total number of pages
+  ///   \@PAGENUM\@ is replaced by page number
+  ///   \@PAGESCNT\@ is replaced by total number of pages
   virtual const wxString PrintFooter() const
     {return _("Page @PAGENUM@ of @PAGESCNT@");};
 

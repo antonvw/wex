@@ -23,8 +23,8 @@
 /// parent, with the command available as event.GetString().
 /// - If you press Ctrl-Q in the shell, a ID_SHELL_COMMAND_STOP is sent to the parent.
 /// - If you enter 'history', all previously entered commands are shown.
-/// - If you enter !<number> the previous <number> command is entered.
-/// - If you enter !<abbreviation> the last command starting with <abbreviation>
+/// - If you enter !\<number\> the previous \<number\> command is entered.
+/// - If you enter !\<abbreviatio\n> the last command starting with \<abbreviation\>
 ///   is entered.
 class wxExSTCShell: public wxExSTC
 {
