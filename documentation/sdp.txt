@@ -30,7 +30,7 @@ General
     or gtk stock items
     http://www.gimp.org/
 
-- API documentation is generated from the sources using Doxygen (1.5.8)
+- API documentation is generated from the sources using Doxygen (1.5.9)
     http://www.stack.nl/~dimitri/doxygen/
 
 - Other docs are in html format using no special html editor
