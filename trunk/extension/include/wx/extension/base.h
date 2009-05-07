@@ -335,7 +335,7 @@ public:
     MENU_DEFAULT      = MENU_CAN_PASTE, ///< default
   };
 
-  /// Constructor.
+  /// Default constructor.
   wxExMenu(long style = MENU_DEFAULT);
 
   /// Copy constructor.
@@ -355,7 +355,7 @@ public:
   /// This always adds some items, so no boolean return needed.
   void AppendPrint();
 
-  /// Appends a tools submenu consisting of the basic and report tools.
+  /// Appends a tools submenu.
   wxExMenu* AppendTools();
 
   /// Gets the style.
