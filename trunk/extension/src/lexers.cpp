@@ -355,11 +355,6 @@ const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
 
 bool wxExLexers::Read()
 {
-  if (!m_FileName.FileExists())
-  {
-    return false;
-  }
-
   wxXmlDocument doc;
 
   if (!doc.Load(m_FileName.GetFullPath()))
