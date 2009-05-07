@@ -24,10 +24,10 @@
 class wxExToolInfo
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExToolInfo(
-    const wxString& info,
-    const wxString& text,
+    const wxString& info = wxEmptyString,
+    const wxString& text = wxEmptyString,
     const wxString& helptext = wxEmptyString)
     : m_Info(info)
     , m_HelpText(helptext)
@@ -42,9 +42,9 @@ public:
   /// Gets the text.
   const wxString& GetText() const {return m_Text;};
 private:
-  const wxString m_Info;
-  const wxString m_HelpText;
-  const wxString m_Text;
+  wxString m_Info;
+  wxString m_HelpText;
+  wxString m_Text;
 };
 
 /// Offers tool methods and contains the tool info's.
@@ -62,13 +62,14 @@ public:
     int tool_id,
     const wxString& info,
     const wxString& text = wxEmptyString,
-    const wxString& helptext = wxEmptyString);
+    const wxString& helptext = wxEmptyString) {
+    m_ToolInfo[tool_id] = wxExToolInfo(info, text, helptext);};
 
   /// Gets the tool id.
   int GetId() const {return m_Id;};
 
   /// Gets all the tool info.
-  static std::map < int, const wxExToolInfo > & GetToolInfo() {return m_ToolInfo;};
+  static const std::map < int, wxExToolInfo > & GetToolInfo() {return m_ToolInfo;};
 
   /// Gets info about current tool.
   const wxString Info() const;
@@ -104,6 +105,6 @@ public:
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 private:
   const int m_Id;
-  static std::map < int, const wxExToolInfo > m_ToolInfo;
+  static std::map < int, wxExToolInfo > m_ToolInfo;
 };
 #endif

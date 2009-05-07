@@ -14,45 +14,25 @@
 #include <wx/extension/config.h>
 #include <wx/extension/util.h>
 
-std::map < int, const wxExToolInfo > wxExTool::m_ToolInfo;
+std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
 
 wxExTool::wxExTool(int type)
   : m_Id(type)
 {
 }
 
-void wxExTool::AddInfo(
-  int tool_id,
-  const wxString& info,
-  const wxString& text,
-  const wxString& helptext)
-{
-  std::map < int, const wxExToolInfo >::const_iterator it = m_ToolInfo.find(tool_id);
-
-  if (it != m_ToolInfo.end())
-  {
-    wxLogError("Toolinfo already exists");
-  }
-  else
-  {
-    const wxExToolInfo ti(info, text, helptext);
-    m_ToolInfo.insert(std::make_pair(tool_id, ti));
-  }
-}
-
 const wxString wxExTool::Info() const
 {
-  std::map < int, const wxExToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
+  std::map < int, wxExToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
 
   if (it != m_ToolInfo.end())
   {
     return it->second.GetInfo();
   }
-  else
-  {
-    wxLogError("Could not find tool: %d", m_Id);
-    return wxEmptyString;
-  }
+
+  wxFAIL;
+
+  return wxEmptyString;
 }
 
 void wxExTool::Initialize()

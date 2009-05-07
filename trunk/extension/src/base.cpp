@@ -602,7 +602,7 @@ wxExMenu* wxExMenu::AppendTools()
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (
-    map <int, const wxExToolInfo>::const_iterator it = wxExTool::GetToolInfo().begin();
+    map <int, wxExToolInfo>::const_iterator it = wxExTool::GetToolInfo().begin();
     it != wxExTool::GetToolInfo().end();
     ++it)
   {
