@@ -93,7 +93,11 @@ public:
   void WriteComment(
     const wxString& text,
     const bool fill_out = false,
-    const bool fill_out_with_space = false);
+    const bool fill_out_with_space = false) {
+    InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
+      text,
+      fill_out,
+      fill_out_with_space));};
 protected:
   // Interface.
   /// If it returns true, the operation is cancelled.
@@ -180,12 +184,20 @@ private:
   void CommentStatementStart();
   void EndCurrentRevision();
   void Initialize();
+
   /// Returns true if char is a brace open or close character.
-  bool IsBrace(int c) const;
+  bool IsBrace(int c) const {
+    return c == '[' || c == ']' ||
+           c == '(' || c == ')' ||
+           c == '{' || c == '}' ||
+           c == '<' || c == '>';};
   /// Returns true if char is a code word separator.
-  bool IsCodewordSeparator(int c) const;
+  bool IsCodewordSeparator(int c) const {
+    return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');};
   /// Returns true if char is alphanumeric or a _ sign.
-  bool IsWordCharacter(int c) const;
+  bool IsWordCharacter(int c) const {
+    return isalnum(c) || c == '_';};
+
   bool MatchLine(wxString& line);
   bool Parse();
   bool PrepareRevision();

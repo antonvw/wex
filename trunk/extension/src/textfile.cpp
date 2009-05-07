@@ -247,24 +247,6 @@ void wxExTextFile::InsertLine(const wxString& line)
   GoToLine(GetCurrentLine() + 1);
 }
 
-bool wxExTextFile::IsBrace(int c) const
-{
-  return c == '[' || c == ']' ||
-         c == '(' || c == ')' ||
-         c == '{' || c == '}' ||
-         c == '<' || c == '>';
-};
-
-bool wxExTextFile::IsCodewordSeparator(int c) const
-{
-  return (isspace(c) || IsBrace(c) || c == ',' || c == ';' || c == ':');
-}
-
-bool wxExTextFile::IsWordCharacter(int c) const
-{
-  return isalnum(c) || c == '_';
-}
-
 bool wxExTextFile::MatchLine(wxString& line)
 {
   bool match = false;
@@ -678,15 +660,4 @@ bool wxExTextFile::RunTool()
   Close();
 
   return true;
-}
-
-void wxExTextFile::WriteComment(
-  const wxString& text,
-  const bool fill_out,
-  const bool fill_out_with_space)
-{
-  InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
-    text,
-    fill_out,
-    fill_out_with_space));
 }
