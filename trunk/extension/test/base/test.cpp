@@ -160,7 +160,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
-  CPPUNIT_ASSERT(!wxExTool::GetToolInfo().empty());
+  CPPUNIT_ASSERT(wxExTool::GetToolInfo().empty()); // initialized by wxExApp, so not here
 
   // test various wxExMethods
   const wxString header = wxExHeader(textFile.GetFileName(), m_Config, "test");
@@ -179,8 +179,7 @@ void wxExTestFixture::testTiming()
 
   for (int i = 0; i < max; i++)
   {
-    wxCharBuffer buffer = file.Read();
-    CPPUNIT_ASSERT(buffer.length() > 0);
+    CPPUNIT_ASSERT(file.Read().length() > 0);
   }
 
   const long exfile_read = sw.Time();

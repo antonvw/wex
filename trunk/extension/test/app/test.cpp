@@ -33,6 +33,7 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExApp::GetConfig() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetLexers() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetPrinter() != NULL);
+  CPPUNIT_ASSERT(!wxExTool::GetToolInfo().empty());
 
   // test wxExGrid
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
