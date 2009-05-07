@@ -61,7 +61,6 @@ wxSizerItem* wxExDialog::AddUserSizer(
   return item;
 }
 
-
 void wxExDialog::BuildSizers()
 {
   m_TopSizer->AddGrowableCol(0);
@@ -185,14 +184,11 @@ const wxExPane wxExFrame::GetPane(int pane) const
 
 int wxExFrame::GetPaneField(const wxString& pane)
 {
-  if (!m_Panes.empty())
-  {
-    map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
+  map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
 
-    if (it != m_Panes.end())
-    {
-      return it->second.m_No;
-    }
+  if (it != m_Panes.end())
+  {
+    return it->second.m_No;
   }
 
   return -1;
