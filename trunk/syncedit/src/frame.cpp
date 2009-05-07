@@ -930,7 +930,7 @@ bool MDIFrame::OpenFile(
 {
   const wxString key = filename.GetFullPath()+ wxExApp::GetConfig(_("Flags"));
 
-  wxWindow* page = m_NotebookWithEditors->GetPageByKey(key, true);
+  wxWindow* page = m_NotebookWithEditors->GetPageByKey(key);
 
   if (page == NULL)
   {
@@ -947,6 +947,10 @@ bool MDIFrame::OpenFile(
 #endif
       );
   }
+  else
+  {
+    m_NotebookWithEditors->SetSelection(m_NotebookWithEditors->GetPageIndex(page));
+  }
 
   return true;
 }
@@ -962,7 +966,12 @@ bool MDIFrame::OpenFile(
   wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
 
-  wxWindow* page = notebook->GetPageByKey(filename.GetFullPath(), true);
+  wxWindow* page = notebook->GetPageByKey(filename.GetFullPath());
+
+  if (page != NULL)
+  {
+    notebook->SetSelection(notebook->GetPageIndex(page));
+  }
 
   if (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT)
   {

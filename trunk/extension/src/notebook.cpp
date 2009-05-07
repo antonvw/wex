@@ -4,12 +4,13 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
 #include <wx/extension/notebook.h>
+#include <wx/extension/base.h> // for wxExManagedFrame
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -37,9 +38,8 @@ wxWindow* wxExNotebook::AddPage(
     bool select,
     const wxBitmap& bitmap)
 {
-  if (GetPageByKey(key, select) != NULL)
+  if (GetPageByKey(key) != NULL)
   {
-    wxLogError("Page with key: %s already exists", key.c_str());
     return NULL;
   }
 
@@ -182,17 +182,12 @@ const wxString wxExNotebook::GetKeys() const
   return keys;
 }
 
-wxWindow* wxExNotebook::GetPageByKey(const wxString& key, bool select)
+wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
 {
   std::map<wxString,wxWindow*>::const_iterator it = m_MapPages.find(key);
 
   if (it != m_MapPages.end())
   {
-    if (select)
-    {
-      SetSelection(GetPageIndex(it->second));
-    }
-
     return it->second;
   }
   else

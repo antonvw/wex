@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -12,10 +12,12 @@
 #ifndef _EXNOTEBOOK_H
 #define _EXNOTEBOOK_H
 
+#include <map>
 #include <wx/aui/auibook.h>
-#include <wx/extension/base.h> //for wxExManagedFrame
 
 #if wxUSE_GUI
+
+class wxExManagedFrame;
 
 /// Offers a notebook with page mapping and interfaces with wxExManagedFrame.
 class wxExNotebook : public wxAuiNotebook
@@ -56,7 +58,7 @@ public:
 
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
-  wxWindow* GetPageByKey(const wxString& key, bool select = false);
+  wxWindow* GetPageByKey(const wxString& key) const;
 
   /// Sets the pagetext for the given key.
   /// If the key does not exist false is returned.
