@@ -65,7 +65,7 @@ void wxExListItemWithFileName::Insert(long index)
   }
 }
 
-bool wxExListItemWithFileName::Run(const wxExTool& tool, wxExListViewFile* listview)
+bool wxExListItemWithFileName::Run(const wxExTool& tool)
 {
   wxExFrame::StatusText(m_Statistics.GetFullPath());
 

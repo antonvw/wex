@@ -45,7 +45,7 @@ public:
   void Insert(long index = -1);
 
   /// Runs a tool on this item.
-  bool Run(const wxExTool& tool, wxExListViewFile* listview);
+  bool Run(const wxExTool& tool);
 
   /// Updates all attributes.
   void Update();

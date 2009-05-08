@@ -1099,7 +1099,7 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
   while ((i = GetNextSelected(i)) != -1)
   {
     wxExListItemWithFileName item(this, i);
-    item.Run(tool, this);
+    item.Run(tool);
     stats += item.GetStatistics();
 
     wxYield();
