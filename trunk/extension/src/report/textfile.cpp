@@ -139,12 +139,6 @@ bool wxExTextFileWithReport::ParseSQL()
 */
   if (GetTool().GetId() == ID_TOOL_SQL)
   {
-    if (GetFileName().GetStat().IsReadOnly())
-    {
-      wxLogError("File is readonly, cannot update");
-      return false;
-    }
-
     wxExApp::Log(
       _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
