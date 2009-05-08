@@ -69,7 +69,7 @@ bool wxExFile::CheckSyncNeeded()
     return false;
   }
 
-  if (m_FileName.GetStat().st_mtime != GetStat().st_mtime)
+  if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
   {
     FileSync();
   }
@@ -214,7 +214,7 @@ wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
 
 int wxExFileName::GetIcon() const
 {
-  if (GetStat().IsOk())
+  if (m_Stat.IsOk())
   {
     if (DirExists(GetFullPath()))
     {
@@ -276,12 +276,12 @@ void wxExFileName::StatusText(long flags) const
 
     text += path;
 
-    if (GetStat().IsOk())
+    if (m_Stat.IsOk())
     {
       const wxString what = (flags & STAT_SYNC
         ? _("Synchronized"): _("Modified"));
       const wxString time = (flags & STAT_SYNC
-        ? wxDateTime::Now().Format(): GetStat().GetModificationTime());
+        ? wxDateTime::Now().Format(): m_Stat.GetModificationTime());
       text += " " + what + " " + time;
     }
   }
