@@ -164,10 +164,6 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
   CPPUNIT_ASSERT(wxExTool::GetToolInfo().empty()); // initialized by wxExApp, so not here
-
-  // test various wxExMethods
-  const wxString header = wxExHeader(textFile.GetFileName(), m_Config, "test");
-  CPPUNIT_ASSERT(header.Contains("test"));
 }
 
 void wxExTestFixture::testTiming()
