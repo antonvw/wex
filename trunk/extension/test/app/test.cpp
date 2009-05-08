@@ -87,6 +87,10 @@ void wxExAppTestFixture::testMethods()
   // so do not assert on it.
   m_SVN->GetOutput();
 
+  // test various wxEx methods that need the app
+  const wxString header = wxExHeader(wxExFileName("test.h"), m_Config, "hello test");
+  CPPUNIT_ASSERT(header.Contains("hello test"));
+  
   // test util
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
