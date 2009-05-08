@@ -240,7 +240,7 @@ void wxExTextFileWithReport::ReportStatistics()
 
     if (m_Report == NULL)
     {
-      wxLogError("Report: %d is not activated", wxExListViewFile::GetTypeTool(GetTool()));
+      wxFAIL;
       return;
     }
   }
@@ -326,7 +326,7 @@ bool wxExTextFileWithReport::SetupTool(const wxExTool& tool)
 
     if (m_Frame == NULL)
     {
-      wxLogError("Cannot setup tool for wxExTextFileWithReport without wxExFrameWithHistory");
+      wxFAIL;
       return false;
     }
 
@@ -336,7 +336,7 @@ bool wxExTextFileWithReport::SetupTool(const wxExTool& tool)
 
       if (m_Report == NULL)
       {
-        wxLogError("Report: %d is not activated", wxExListViewFile::GetTypeTool(tool));
+        wxFAIL;
         return false;
       }
     }

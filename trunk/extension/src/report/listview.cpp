@@ -495,7 +495,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
   {
     if (lexer == NULL)
     {
-      wxLogError("Lexer should be specified for a keyword list");
+      wxFAIL;
       return;
     }
 

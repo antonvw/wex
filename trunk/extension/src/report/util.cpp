@@ -192,9 +192,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
     if (lv == NULL)
     {
-      wxLogError("Notebook page: %d (%s) is not an wxExListViewFile",
-        page,
-        notebook->GetPageText(page).c_str());
+      wxFAIL;
       return false;
     }
 

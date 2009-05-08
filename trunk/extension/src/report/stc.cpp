@@ -148,7 +148,7 @@ bool wxExSTCWithFrame::Initialize()
 
   if (m_Frame == NULL)
   {
-    wxLogError("Cannot initialize wxExSTCWithFrame without wxExFrameWithHistory");
+    wxFAIL;
     return false;
   }
 
