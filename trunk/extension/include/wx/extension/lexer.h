@@ -60,10 +60,11 @@ public:
   /// Gets the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
-  /// Is this word a keyword (allways all keywords).
+  /// Is this word a keyword (allways all keywords), case sensitive.
   bool IsKeyword(const wxString& word) const;
 
-  /// Does any keyword (allways all keywords) start with this word.
+  /// Does any keyword (allways all keywords) start with this word,
+  /// case insensitive.
   bool KeywordStartsWith(const wxString& word) const;
 
   /// Returns a lexer comment string with text formatted.
@@ -77,10 +78,11 @@ public:
     const wxString& prefix,
     const wxString& text) const;
 
-  /// Adds the keywords from value to the keywords and the keywords set.
-  /// The value might contain the keyword set after a ':'.
-  /// Returns true if keyword could be added.
-  bool SetKeywords(const wxString& value);
+  /// Adds the specified keywords to the keywords map and the keywords set.
+  /// The text might contain the keyword set after a ':'.
+  /// Returns true if keyword could be added and false if specified set is illegal.
+  /// Empties existing keywords.
+  bool SetKeywords(const wxString& text);
 private:
   const wxString GetFormattedText(
     const wxString& lines,

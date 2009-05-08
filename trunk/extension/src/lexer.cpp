@@ -232,6 +232,16 @@ const wxString wxExLexer::MakeSingleLineComment(
 
 bool wxExLexer::SetKeywords(const wxString& value)
 {
+  if (!m_Keywords.empty())
+  {
+    m_Keywords.clear();
+  }
+
+  if (!m_KeywordsSet.empty())
+  {
+    m_KeywordsSet.clear();
+  }
+
   set<wxString> keywords_set;
 
   wxStringTokenizer tkz(value, "\r\n ");
