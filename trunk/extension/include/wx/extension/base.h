@@ -75,11 +75,13 @@ private:
 class wxExInterface
 {
 public:
-  /// Constructor.
-  wxExInterface();
+  /// Default constructor.
+  wxExInterface()
+    : m_FindReplaceDialog(NULL) {;};
 
   /// Destructor.
-  virtual ~wxExInterface();
+  virtual ~wxExInterface() {
+    if (m_FindReplaceDialog != NULL) wxDELETE(m_FindReplaceDialog);};
 
   /// Build the page, for the htmleasyprinting.
   virtual const wxString BuildPage() {return wxEmptyString;};
@@ -89,7 +91,8 @@ public:
 
   /// Finds next (or previous) occurrence.
   /// Default returns false.
-  virtual bool FindNext(const wxString& text, bool find_next = true);
+  virtual bool FindNext(const wxString& text, bool find_next = true) {
+    return false;};
 
   /// Shows searching for in the statusbar, and calls FindNext.
   bool FindResult(const wxString& text, bool find_next, bool& recursive);

@@ -353,19 +353,6 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 }
 #endif // wxUSE_STATUSBAR
 
-wxExInterface::wxExInterface()
-{
-  m_FindReplaceDialog = NULL;
-}
-
-wxExInterface::~wxExInterface()
-{
-  if (m_FindReplaceDialog != NULL)
-  {
-    wxDELETE(m_FindReplaceDialog);
-  }
-}
-
 void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)
@@ -379,11 +366,6 @@ void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
     caption);
 
   m_FindReplaceDialog->Show();
-}
-
-bool wxExInterface::FindNext(const wxString& text, bool find_next)
-{
-  return false;
 }
 
 bool wxExInterface::FindResult(const wxString& text, bool find_next, bool& recursive)
