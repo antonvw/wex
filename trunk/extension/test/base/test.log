@@ -1,16 +1,9 @@
-..F.wxExFile::Read:211 wxFile::Read:175
-.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:13
-.wxExConfig::Get:515 wxConfig::Read:1232
+...wxExFile::Read:111 wxFile::Read:181
+.wxExFileName::IsReadOnly:1 wxFileName::IsFileWritable:13
+.wxExConfig::Get:521 wxConfig::Read:1274
 
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  5   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 170 test.cpp
-assertion failed
-- Expression: header.Contains("test")
+OK (5 tests)
 
 
