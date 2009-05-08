@@ -65,7 +65,7 @@ void wxExListItemWithFileName::Insert(long index)
   }
 }
 
-void wxExListItemWithFileName::Run(const wxExTool& tool)
+const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
 {
   wxExFrame::StatusText(m_Statistics.GetFullPath());
 
@@ -98,6 +98,8 @@ void wxExListItemWithFileName::Run(const wxExTool& tool)
       }
     }
   }
+
+  return m_Statistics;
 }
 
 void wxExListItemWithFileName::Update()

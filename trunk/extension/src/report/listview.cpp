@@ -1098,9 +1098,7 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
 
   while ((i = GetNextSelected(i)) != -1)
   {
-    wxExListItemWithFileName item(this, i);
-    item.Run(tool);
-    stats += item.GetStatistics();
+    stats += wxExListItemWithFileName(this, i).Run(tool);
 
     wxYield();
   }

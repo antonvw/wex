@@ -45,7 +45,7 @@ public:
   void Insert(long index = -1);
 
   /// Runs a tool on this item.
-  void Run(const wxExTool& tool);
+  const wxExFileNameStatistics Run(const wxExTool& tool);
 
   /// Updates all attributes.
   void Update();
