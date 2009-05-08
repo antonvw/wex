@@ -1111,7 +1111,7 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
   {
     wxExOpenFile(
       wxExFileNameStatistics::GetLogfileName(),
-      wxExSTC::STC_OPEN_FROM_STATISTICS);
+      wxExSTC::STC_OPEN_FROM_STATISTICS | wxExSTC::STC_OPEN_IS_SYNCED);
   }
 }
 

@@ -182,7 +182,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       {
         wxExOpenFile(
           wxExFileNameStatistics::GetLogfileName(),
-          STC_OPEN_FROM_STATISTICS);
+          STC_OPEN_FROM_STATISTICS | STC_OPEN_IS_SYNCED);
       }
     }
 
