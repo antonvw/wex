@@ -168,6 +168,27 @@ bool wxExProcessWithListView::IsRunning() const
   return m_Thread != NULL && m_Thread->IsRunning();
 }
 
+wxKillError wxExProcessWithListView::Kill()
+{
+  wxKillError output = wxKILL_OK;
+  
+  if (Exists(GetPid()))
+  {
+    output = wxProcess::Kill(GetPid(), wxSIGKILL);
+
+    wxExFrame::StatusText(_("Stopped"));
+  }
+  
+  if (IsRunning())
+  {
+    m_Thread->Delete();
+    // Joinable threads should be deleted explicitly
+    delete m_Thread;
+    m_Thread = NULL;
+  }
+  
+  return output;
+}
 void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
   wxExFrame::StatusText(_("Ready"));
@@ -214,11 +235,4 @@ bool wxExProcessWithListView::Run()
   wxLogError("Cannot run process: " + m_Command);
 
   return false;
-}
-
-void wxExProcessWithListView::Stop()
-{
-  Kill(GetPid(), wxSIGKILL);
-
-  wxExFrame::StatusText(_("Stopped"));
 }

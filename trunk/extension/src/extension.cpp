@@ -37,6 +37,12 @@ const wxString wxExHeader(
 
   const wxExLexer l = filename.GetLexer();
 
+  if (l.GetScintillaLexer().empty())
+  {
+    wxLogError("Lexer is empty");
+    return wxEmptyString;
+  }
+
   header << l.MakeComment(wxEmptyString, false) << "\n";
   header << l.MakeComment("File:       ", filename.GetFullName()) << "\n";
   header << l.MakeComment("Purpose:    ", description) << "\n";

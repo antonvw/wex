@@ -1044,7 +1044,7 @@ void wxExListViewFile::ProcessStop()
 {
   if (m_Process != NULL)
   {
-    m_Process->Stop();
+    m_Process->Kill();
   }
 }
 

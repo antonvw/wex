@@ -39,12 +39,12 @@ public:
   static bool IsSelected() {
     return !m_Command.empty();};
 
+  /// Kills the process (sends a wxSIGKILL if process still running).
+  wxKillError Kill();
+  
   /// Runs the process asynchronously (this call immediately returns).
   /// The process output is collected in a separate thread and added to the listview.
   bool Run();
-
-  /// Stops the process.
-  void Stop();
 private:
   virtual void OnTerminate(int pid, int status); // overriden
 
