@@ -48,6 +48,8 @@ void wxExReportAppTestFixture::testMethods()
   // test wxExProcessWithListView
   CPPUNIT_ASSERT(m_Process->Run());
   CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
+  CPPUNIT_ASSERT(m_Process->Run()); // repeat test
+  CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
   
   // test wxExSTCWithFrame
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");

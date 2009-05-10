@@ -44,7 +44,7 @@ private:
   wxExProcessWithListView* m_Process;
 };
 
-wxString wxExProcessWithListView::m_Command;
+wxString wxExProcessWithListView::m_Command = "";
 
 wxExProcessWithListView::wxExProcessWithListView(
   wxExListViewFile* listview,
