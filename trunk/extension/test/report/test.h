@@ -43,7 +43,8 @@ class wxExReportAppTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   wxExReportAppTestFixture() : TestFixture() {
-	m_Dir = NULL;
+    m_Dir = NULL;
+    m_Frame = NULL;
     m_ListView = NULL;
     m_Process = NULL;
     m_STC = NULL;
@@ -51,7 +52,8 @@ public:
 
   /// Destructor.
  ~wxExReportAppTestFixture() {
-	delete m_Dir;
+    delete m_Dir;
+    delete m_Frame;
     delete m_ListView;
     delete m_Process;
     delete m_STC;
@@ -71,6 +73,7 @@ public:
   void testMethods();
 private:
   wxExDirWithReport* m_Dir;     ///< testing wxExDirWithReport
+  wxExFrameWithHistory* m_Frame; ///< testing wxExFrameWithHistory
   wxExListViewFile* m_ListView; ///< testing wxExListViewFile
   wxExProcessWithListView* m_Process; ///< testing wxExProcessWithListView
   wxExSTCWithFrame* m_STC;      ///< testing wxExSTCWithFrame

@@ -15,10 +15,11 @@
 
 void wxExReportAppTestFixture::setUp()
 {
-  m_ListView = new wxExListViewFile(wxTheApp->GetTopWindow(), wxExListViewFile::LIST_PROCESS);
+  m_Frame = new wxExFrameWithHistory(wxTheApp->GetTopWindow(), wxID_ANY, "wxExRep");
+  m_ListView = new wxExListViewFile(m_Frame, wxExListViewFile::LIST_PROCESS);
   m_Dir = new wxExDirWithReport(m_ListView, "./");
   m_Process = new wxExProcessWithListView(m_ListView, "wc test.h");
-  m_STC = new wxExSTCWithFrame(wxTheApp->GetTopWindow(), wxExFileName("test.h"));
+  m_STC = new wxExSTCWithFrame(m_Frame, wxExFileName("test.h"));
 }
 
 void wxExReportAppTestFixture::testConstructors()
@@ -29,6 +30,16 @@ void wxExReportAppTestFixture::testMethods()
 {
   // test wxExDirWithReport
   CPPUNIT_ASSERT(m_Dir->FindFiles());
+
+  // test wxExFrameWithHistory
+  CPPUNIT_ASSERT(m_Frame->OpenFile(wxExFileName("test.h")));
+  CPPUNIT_ASSERT(m_Frame->GetRecentFile().Contains("test.h"));
+  CPPUNIT_ASSERT(m_Frame->OpenFile(
+    wxExFileName("test.h"),
+    0,
+    wxEmptyString,
+    wxExSTCWithFrame::STC_OPEN_IS_PROJECT));
+  CPPUNIT_ASSERT(m_Frame->GetRecentProject().Contains("test.h"));
 
   // test wxExListViewFile
   CPPUNIT_ASSERT(m_ListView->FileOpen(wxExFileName("test.prj")));
