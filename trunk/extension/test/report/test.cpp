@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          test.cpp
-* Purpose:       Implementation for wxfiletool cpp unit testing
+* Purpose:       Implementation for wxextension report cpp unit testing
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id: test.cpp 589 2009-04-09 13:43:53Z antonvw $
 * Created:       za 17 jan 2009 11:51:20 CET
@@ -47,7 +47,7 @@ void wxExReportAppTestFixture::tearDown()
 }
 
 wxExReportTestSuite::wxExReportTestSuite()
-  : CppUnit::TestSuite("wxfiletool test suite")
+  : CppUnit::TestSuite("wxexreport test suite")
 {
   addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
     "testConstructors",
