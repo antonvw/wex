@@ -168,13 +168,13 @@ bool wxExProcessWithListView::IsRunning() const
   return m_Thread != NULL && m_Thread->IsRunning();
 }
 
-wxKillError wxExProcessWithListView::Kill()
+wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 {
   wxKillError output = wxKILL_OK;
   
   if (Exists(GetPid()))
   {
-    output = wxProcess::Kill(GetPid(), wxSIGKILL);
+    output = wxProcess::Kill(GetPid(), sig);
 
     wxExFrame::StatusText(_("Stopped"));
   }

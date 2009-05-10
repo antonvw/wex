@@ -39,8 +39,8 @@ public:
   static bool IsSelected() {
     return !m_Command.empty();};
 
-  /// Kills the process (sends a wxSIGKILL if process still running).
-  wxKillError Kill();
+  /// Kills the process (sends specified signal if process still running).
+  wxKillError Kill(wxSignal sig = wxSIGTERM);
   
   /// Runs the process asynchronously (this call immediately returns).
   /// The process output is collected in a separate thread and added to the listview.
