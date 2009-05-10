@@ -65,6 +65,8 @@ When adding functionality in trunk
 
   where it has least dependancies
 
+  run the test and collect output in test.log
+
 - add a sample for it in
     extension/sample, 
     extension/sample/report
