@@ -18,12 +18,15 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
+// This class is declared forward in process.h. So if you
+// change it here, must also be done in process.h.
 class wxExThread : public wxThread
 {
 public:
   wxExThread(wxExProcessWithListView* process)
     : wxThread(wxTHREAD_JOINABLE)
     , m_Process(process) {}
+ ~wxExThread() {m_Process = NULL;}
 protected:
   virtual ExitCode Entry()
   {
