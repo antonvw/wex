@@ -368,7 +368,7 @@ void wxExSTC::AddBasePathToPathList()
   PathListAdd(basepath);
 }
 
-void wxExSTC::AddTextHexMode(wxFileOffset start, long length, const wxChar* buffer)
+void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
 /*
 e.g.:
 offset    hex field                                         ascii field
@@ -395,11 +395,16 @@ offset    hex field                                         ascii field
   // Allocate space for the string.
   // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, hex field 3 * length and the
   // ascii field just the length.
-  text.Alloc((start_hex_field + 1 + 1) * length / bytes_per_line + length * each_hex_field + length);
+  text.Alloc(
+    (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
+     buffer.length() * each_hex_field + buffer.length());
 
-  for (wxFileOffset offset = 0; offset < length; offset += bytes_per_line)
+  for (
+    wxFileOffset offset = 0; 
+    offset < buffer.length(); 
+    offset += bytes_per_line)
   {
-    long count = length - offset;
+    long count = buffer.length() - offset;
     count =
       (bytes_per_line < count ? bytes_per_line : count);
 
@@ -407,7 +412,7 @@ offset    hex field                                         ascii field
 
     for (register wxFileOffset byte = 0; byte < count; byte++)
     {
-      const char c = buffer[offset + byte];
+      const char c = buffer.data()[offset + byte];
 
       field_hex += wxString::Format("%02x ", (unsigned char)c);
 
@@ -2204,7 +2209,7 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
   {
     SetControlCharSymbol('x');
 
-    AddTextHexMode(offset, buffer.length(), (const wxChar *)buffer.data());
+    AddTextHexMode(offset, buffer);
   }
 
   if (get_only_new_data)
