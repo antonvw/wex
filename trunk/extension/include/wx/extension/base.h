@@ -87,11 +87,15 @@ public:
   virtual const wxString BuildPage() {return wxEmptyString;};
 
   /// Shows a find dialog.
-  virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
+  virtual void FindDialog(
+    wxWindow* parent, 
+    const wxString& caption = _("Find"));
 
   /// Finds next (or previous) occurrence.
   /// Default returns false.
-  virtual bool FindNext(const wxString& text, bool find_next = true) {
+  virtual bool FindNext(
+    const wxString& WXUNUSED(text), 
+    bool WXUNUSED(find_next) = true) {
     return false;};
 
   /// Shows searching for in the statusbar, and calls FindNext.
@@ -117,7 +121,9 @@ public:
   void PrintPreview();
 
   /// Shows a replace dialog.
-  virtual void ReplaceDialog(wxWindow* parent, const wxString& caption = _("Replace"));
+  virtual void ReplaceDialog(
+    wxWindow* parent, 
+    const wxString& caption = _("Replace"));
 protected:
   void OnFindDialog(wxFindDialogEvent& event);
 private:
@@ -175,7 +181,8 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
-/// Offers a frame with easy statusbar methods, and a toolbar if you call CreateToolBar.
+/// Offers a frame with easy statusbar methods, 
+/// and a toolbar if you call CreateToolBar.
 class wxExFrame : public wxFrame
 {
   friend class wxExStatusBar;
@@ -221,10 +228,12 @@ public:
     wxWindowID id = -1,
     const wxString& name = "toolBar") {return wxFrame::CreateToolBar(style, id, name);};
 
-  /// If the window that has focus is a ListView, then returns that, otherwise returns NULL.
+  /// If the window that has focus is a ListView, 
+  /// then returns that, otherwise returns NULL.
   wxExListView* GetFocusedListView();
 
-  /// If the window that has focus is an STC, then returns that, otherwise returns NULL.
+  /// If the window that has focus is an STC, then returns that, 
+  /// otherwise returns NULL.
   wxExSTC* GetFocusedSTC();
 
 #if wxUSE_STATUSBAR
@@ -237,7 +246,9 @@ public:
   static int GetPaneField(const wxString& pane);
 
   /// Do something when statusbar is clicked.
-  virtual void StatusBarClicked(int WXUNUSED(field), const wxPoint& WXUNUSED(point)) {};
+  virtual void StatusBarClicked(
+    int WXUNUSED(field), 
+    const wxPoint& WXUNUSED(point)) {};
 
   /// When double clicked, uses the GetSTC() for some dialogs.
   virtual void StatusBarDoubleClicked(int field, const wxPoint& point);
@@ -304,10 +315,14 @@ public:
 
   // Interface for notebooks.
   /// Returns true if the page can be closed.
-  virtual bool AllowClose(wxWindowID WXUNUSED(id), wxWindow* WXUNUSED(page)) {return true;}
+  virtual bool AllowClose(
+    wxWindowID WXUNUSED(id), 
+    wxWindow* WXUNUSED(page)) {return true;}
 
   /// Called if the notebook changed page.
-  virtual void OnNotebook(wxWindowID WXUNUSED(id), wxWindow* WXUNUSED(page)) {;};
+  virtual void OnNotebook(
+    wxWindowID WXUNUSED(id), 
+    wxWindow* WXUNUSED(page)) {;};
 
   /// Called after all pages from the notebooks are deleted.
   virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
