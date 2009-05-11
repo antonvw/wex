@@ -785,13 +785,13 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
   }
 
   wxIPV4address local_addr;
-/*
+
   if (!sock->GetLocal(local_addr))
   {
     wxLogError("Could not get local address");
     return wxEmptyString;
   }
-*/
+
   wxString value;
 
   value <<
@@ -804,6 +804,11 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 
 void MyFrame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
 {
+  if (sock == NULL)
+  {
+    wxFAIL;
+  }
+
   if (remove_from_clients)
   {
     m_Clients.remove(sock);
