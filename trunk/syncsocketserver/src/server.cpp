@@ -796,8 +796,8 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 
   value <<
     _("socket: ") <<
-    local_addr.IPAddress() << "." << local_addr.Service() << ", " <<
-    peer_addr.IPAddress() << "." << peer_addr.Service();
+    local_addr.IPAddress() << "." << (int)local_addr.Service() << ", " <<
+    peer_addr.IPAddress() << "." << (int)peer_addr.Service();
 
   return value;
 }
