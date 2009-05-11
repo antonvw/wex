@@ -18,31 +18,9 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
-// This class is declared forward in process.h. So if you
-// change it here, must also be done in process.h.
-class wxExThread : public wxThread
-{
-public:
-  wxExThread(wxExProcessWithListView* process)
-    : wxThread(wxTHREAD_JOINABLE)
-    , m_Process(process) {}
- ~wxExThread() {m_Process = NULL;}
-protected:
-  virtual ExitCode Entry()
-  {
-    while (!TestDestroy())
-    {
-      m_Process->CheckInput();
-
-      Yield();
-      Sleep(20);
-    }
-
-    return NULL;
-  };
-private:
-  wxExProcessWithListView* m_Process;
-};
+BEGIN_EVENT_TABLE(wxExProcessWithListView, wxProcess)
+  EVT_TIMER(-1, wxExProcessWithListView::OnTimer)
+END_EVENT_TABLE()
 
 wxString wxExProcessWithListView::m_Command = "";
 
@@ -51,7 +29,7 @@ wxExProcessWithListView::wxExProcessWithListView(
   const wxString& command)
   : wxProcess(listview, -1)
   , m_Owner(listview)
-  , m_Thread(NULL)
+  , m_Timer(this)
 {
   if (!command.empty())
   {
@@ -168,7 +146,7 @@ int wxExProcessWithListView::ConfigDialog()
 
 bool wxExProcessWithListView::IsRunning() const
 {
-  return Exists(GetPid()) && m_Thread != NULL && m_Thread->IsRunning();
+  return Exists(GetPid());
 }
 
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
@@ -181,31 +159,27 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 
     wxExFrame::StatusText(_("Stopped"));
   }
-  
-  if (IsRunning())
-  {
-    m_Thread->Delete();
-    // Joinable threads should be deleted explicitly
-    delete m_Thread;
-    m_Thread = NULL;
-  }
+
+  m_Timer.Stop();
   
   return output;
 }
 void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
-  wxExFrame::StatusText(_("Ready"));
+  m_Timer.Stop();
 
-  if (m_Thread != NULL)
-  {
-    m_Thread->Delete();
-    // Joinable threads should be deleted explicitly
-    delete m_Thread;
-    m_Thread = NULL;
-  }
+  // Collect remaining input.
+  CheckInput();
+
+  wxExFrame::StatusText(_("Ready"));
 
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
   wxPostEvent(m_Owner, event);
+}
+
+void wxExProcessWithListView::OnTimer(wxTimerEvent& event)
+{
+  CheckInput();
 }
 
 bool wxExProcessWithListView::Run()
@@ -222,17 +196,12 @@ bool wxExProcessWithListView::Run()
   {
     SetPid(pid);
 
-    m_Thread = new wxExThread(this);
+    wxExFrame::StatusText(m_Command);
+    wxExApp::Log(_("Running process") + ": " + m_Command);
 
-    if (m_Thread->Create() == wxTHREAD_NO_ERROR)
-    {
-      if (m_Thread->Run() == wxTHREAD_NO_ERROR)
-      {
-        wxExFrame::StatusText(m_Command);
-        wxExApp::Log(_("Running process") + ": " + m_Command);
-        return true;
-      }
-    }
+    m_Timer.Start(100); // each 100 milliseconds
+
+    return true;
   }
 
   wxLogError("Cannot run process: " + m_Command);
