@@ -247,7 +247,6 @@ protected:
   void OnKey(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
-  void OnTimer(wxTimerEvent& event);
 private:
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
   void AddBasePathToPathList();
