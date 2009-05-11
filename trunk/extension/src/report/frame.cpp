@@ -306,7 +306,7 @@ bool wxExFrameWithHistory::OpenFile(
   const wxString& match,
   long flags)
 {
-  if (wxExFrame::OpenFile(filename, line_number, match, flags))
+  if (wxExManagedFrame::OpenFile(filename, line_number, match, flags))
   {
     SetRecentFile(filename.GetFullPath());
     return true;
