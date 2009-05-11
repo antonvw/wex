@@ -168,7 +168,7 @@ int wxExProcessWithListView::ConfigDialog()
 
 bool wxExProcessWithListView::IsRunning() const
 {
-  return m_Thread != NULL && m_Thread->IsRunning();
+  return Exists(GetPid()) && m_Thread != NULL && m_Thread->IsRunning();
 }
 
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)

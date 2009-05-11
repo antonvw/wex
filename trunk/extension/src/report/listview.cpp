@@ -1052,9 +1052,10 @@ void wxExListViewFile::ProcessRun(const wxString& command)
 
 void wxExListViewFile::ProcessStop()
 {
-  if (m_Process != NULL)
+  if (ProcessIsRunning())
   {
     m_Process->Kill();
+    wxDELETE(m_Process);
   }
 }
 

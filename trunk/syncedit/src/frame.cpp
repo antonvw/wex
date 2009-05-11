@@ -482,12 +482,7 @@ and saved in the same directory as where the executable is."));
     break;
 
   case wxID_EXECUTE: wxExListViewFile::ProcessRun(); break;
-  case wxID_STOP:
-    if (wxExListViewFile::ProcessIsRunning())
-    {
-      wxExListViewFile::ProcessStop();
-    }
-    break;
+  case wxID_STOP: wxExListViewFile::ProcessStop(); break;
 
   case ID_EDIT_HEX_MODE:
 #if wxUSE_CHECKBOX
