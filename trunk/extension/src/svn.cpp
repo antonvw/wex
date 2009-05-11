@@ -25,34 +25,19 @@ wxExSVN::wxExSVN(wxExSvnType type, const wxString& fullpath)
 {
   switch (m_Type)
   {
-    case SVN_CAT:
-      m_Caption = _("SVN Cat");
-      m_Command = "cat";
-      break;
-    case SVN_COMMIT:
-      m_Caption = _("SVN Commit");
-      m_Command = "commit";
-      break;
-    case SVN_DIFF:
-      m_Caption = _("SVN Diff");
-      m_Command = "diff";
-      break;
-    case SVN_INFO:
-      m_Caption = _("SVN Info");
-      m_Command = "info";
-      break;
-    case SVN_LOG:
-      m_Caption = _("SVN Log");
-      m_Command = "log";
-      break;
-    case SVN_STAT:
-      m_Caption = _("SVN Stat");
-      m_Command = "stat";
-      break;
+    case SVN_BLAME:  m_Caption = "SVN Blame"; break;
+    case SVN_CAT:    m_Caption = "SVN Cat"; break;
+    case SVN_COMMIT: m_Caption = "SVN Commit"; break;
+    case SVN_DIFF:   m_Caption = "SVN Diff"; break;
+    case SVN_INFO:   m_Caption = "SVN Info"; break;
+    case SVN_LOG:    m_Caption = "SVN Log"; break;
+    case SVN_STAT:   m_Caption = "SVN Stat"; break;
     default:
       wxFAIL;
       break;
   }
+
+  m_Command = m_Caption.AfterFirst(' ').Lower();
 }
 
 int wxExSVN::Execute(bool show_dialog)
@@ -186,10 +171,10 @@ void wxExSVN::ShowOutput()
     m_STCEntryDialog->SetTitle(caption);
   }
 
-  // Add a lexer if we specified a path, asked for cat and there were no errors.
+  // Add a lexer if we specified a path, asked for cat or blame and there were no errors.
   if (
     !m_FullPath.empty() &&
-     m_Type == SVN_CAT &&
+    (m_Type == SVN_CAT || m_Type == SVN_BLAME) &&
      m_ReturnCode == 0)
   {
     const wxExFileName fn(m_FullPath);

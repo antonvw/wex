@@ -20,6 +20,7 @@
 /// SVN types supported.
 enum wxExSvnType
 {
+  SVN_BLAME,  ///< svn blame
   SVN_CAT,    ///< svn cat
   SVN_COMMIT, ///< svn commit
   SVN_DIFF,   ///< svn diff
