@@ -33,14 +33,14 @@ void wxExReportAppTestFixture::testMethods()
 
   // test wxExFrameWithHistory
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  CPPUNIT_ASSERT(frame->OpenFile(wxExFileName("test.h")));
+  CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName("test.h"))); // as we have no focused stc
   CPPUNIT_ASSERT(frame->GetRecentFile().Contains("test.h"));
-  CPPUNIT_ASSERT(frame->OpenFile(
-    wxExFileName("test.h"),
+  CPPUNIT_ASSERT(!frame->OpenFile(
+    wxExFileName("test.prj"),
     0,
     wxEmptyString,
     wxExSTCWithFrame::STC_OPEN_IS_PROJECT));
-  CPPUNIT_ASSERT(frame->GetRecentProject().Contains("test.h"));
+  CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test.prj"));
 
   // test wxExListViewFile
   CPPUNIT_ASSERT(m_ListView->FileOpen(wxExFileName("test.prj")));
