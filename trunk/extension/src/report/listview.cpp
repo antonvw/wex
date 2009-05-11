@@ -1026,10 +1026,20 @@ void wxExListViewFile::ProcessRun(const wxString& command)
   // This is a static method, we cannot use m_Frame here.
   wxWindow* window = wxTheApp->GetTopWindow();
   wxExFrameWithHistory* frame= wxDynamicCast(window, wxExFrameWithHistory);
-  if (frame == NULL) return;
+
+  if (frame == NULL) 
+  {
+    wxFAIL;
+    return;
+  }
 
   wxExListViewFile* listview = frame->Activate(LIST_PROCESS);
-  if (listview == NULL) return;
+
+  if (listview == NULL) 
+  {
+    wxFAIL;
+    return;
+  }
 
   if ((m_Process = new wxExProcessWithListView(listview, command)) != NULL)
   {
