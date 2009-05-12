@@ -1043,7 +1043,7 @@ void wxExListViewFile::ProcessRun(const wxString& command)
 
   if ((m_Process = new wxExProcessWithListView(listview, command)) != NULL)
   {
-    if (!m_Process->Run())
+    if (m_Process->Execute() <= 0)
     {
       wxDELETE(m_Process);
     }

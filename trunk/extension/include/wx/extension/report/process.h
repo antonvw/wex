@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -21,10 +21,18 @@ class wxExProcessWithListView : public wxProcess
 {
 public:
   /// Constructor.
-  wxExProcessWithListView(wxExListViewFile* listview, const wxString& command = wxEmptyString);
+  wxExProcessWithListView(
+    wxExListViewFile* listview, 
+    const wxString& command = wxEmptyString);
 
   /// Shows a config dialog, returns dialog return code.
   static int ConfigDialog();
+
+  /// Executes the process asynchronously (this call immediately returns).
+  /// The process output is added to the listview.
+  /// The return value is the process id and zero value indicates 
+  /// that the command could not be executed.
+  long Execute();
 
   /// Is the process running.
   bool IsRunning() const;
@@ -35,10 +43,6 @@ public:
 
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGTERM);
-  
-  /// Runs the process asynchronously (this call immediately returns).
-  /// The process output is collected in a separate thread and added to the listview.
-  bool Run();
 protected:
   void OnTimer(wxTimerEvent& event);
 private:

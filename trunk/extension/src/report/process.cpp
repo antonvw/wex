@@ -144,6 +144,27 @@ int wxExProcessWithListView::ConfigDialog()
   return result;
 }
 
+long wxExProcessWithListView::Execute()
+{
+  long pid;
+
+  if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
+  {
+    SetPid(pid);
+
+    wxExFrame::StatusText(m_Command);
+    wxExApp::Log(_("Running process") + ": " + m_Command);
+
+    m_Timer.Start(100); // each 100 milliseconds
+  }
+  else
+  {
+    wxLogError("Cannot run process: " + m_Command);
+  }
+
+  return pid;
+}
+
 bool wxExProcessWithListView::IsRunning() const
 {
   return Exists(GetPid());
@@ -180,31 +201,4 @@ void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status
 void wxExProcessWithListView::OnTimer(wxTimerEvent& event)
 {
   CheckInput();
-}
-
-bool wxExProcessWithListView::Run()
-{
-  if (m_Command.empty())
-  {
-    wxLogError("Process is empty");
-    return false;
-  }
-
-  long pid;
-
-  if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
-  {
-    SetPid(pid);
-
-    wxExFrame::StatusText(m_Command);
-    wxExApp::Log(_("Running process") + ": " + m_Command);
-
-    m_Timer.Start(100); // each 100 milliseconds
-
-    return true;
-  }
-
-  wxLogError("Cannot run process: " + m_Command);
-
-  return false;
 }
