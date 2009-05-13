@@ -111,63 +111,6 @@ const wxString wxExSTCShell::GetHistory() const
   return commands;
 }
 
-bool wxExSTCShell::GetHistoryNo(const wxString& short_command)
-{
-  const int no_asked_for = atoi(short_command.c_str());
-
-  if (no_asked_for > 0)
-  {
-    int no = 1;
-
-    for (
-      list < wxString >::const_iterator it = m_Commands.begin();
-      it != m_Commands.end();
-      it++)
-    {
-      if (no == no_asked_for)
-      {
-        m_Command = *it;
-        return true;
-      }
-
-      no++;
-    }
-  }
-  else
-  {
-    wxString short_command_check;
-
-    if (m_CommandEnd == GetEOL())
-    {
-      short_command_check = short_command;
-    }
-    else
-    {
-      short_command_check =
-        short_command.substr(
-          0,
-          short_command.length() - m_CommandEnd.length());
-    }
-
-    // using a const_reverse_iterator here does not compile under MSW
-    for (
-      list < wxString >::reverse_iterator it = m_Commands.rbegin();
-      it != m_Commands.rend();
-      it++)
-    {
-      const wxString command = *it;
-
-      if (command.StartsWith(short_command_check))
-      {
-        m_Command = command;
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 void wxExSTCShell::KeepCommand()
 {
   m_Commands.remove(m_Command);
@@ -240,7 +183,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       // !.. command, get it from history.
       else if (m_Command.StartsWith("!"))
       {
-        if (GetHistoryNo(m_Command.substr(1)))
+        if (SetCommandFromHistory(m_Command.substr(1)))
         {
           AppendText(m_Command);
           KeepCommand();
@@ -250,7 +193,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
         }
         else
         {
-          Prompt(_("event not found"));
+          Prompt(m_Command + ": " + _("event not found"));
         }
       }
       // Other command, send to parent.
@@ -360,6 +303,63 @@ void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
   m_CommandStartPosition = GetCurrentPos();
 
   EmptyUndoBuffer();
+}
+
+bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
+{
+  const int no_asked_for = atoi(short_command.c_str());
+
+  if (no_asked_for > 0)
+  {
+    int no = 1;
+
+    for (
+      list < wxString >::const_iterator it = m_Commands.begin();
+      it != m_Commands.end();
+      it++)
+    {
+      if (no == no_asked_for)
+      {
+        m_Command = *it;
+        return true;
+      }
+
+      no++;
+    }
+  }
+  else
+  {
+    wxString short_command_check;
+
+    if (m_CommandEnd == GetEOL())
+    {
+      short_command_check = short_command;
+    }
+    else
+    {
+      short_command_check =
+        short_command.substr(
+          0,
+          short_command.length() - m_CommandEnd.length());
+    }
+
+    // using a const_reverse_iterator here does not compile under MSW
+    for (
+      list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      it != m_Commands.rend();
+      it++)
+    {
+      const wxString command = *it;
+
+      if (command.StartsWith(short_command_check))
+      {
+        m_Command = command;
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 void wxExSTCShell::ShowCommand(int key)
