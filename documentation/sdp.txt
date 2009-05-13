@@ -22,7 +22,7 @@ General
   http://www.codeblocks.org/
   under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
 
-- database is OTL
+- database is OTL (Version 4.0.192)
     http://otl.sourceforge.net/
 
 - application icons are designed using GIMP (2.6.6)
