@@ -23,7 +23,7 @@ public:
 
 #if wxUSE_CHECKBOX
   /// Gets hex mode.
-  wxCheckBox* GetHwxExModeCheckBox() const {return m_HwxExModeCheckBox;};
+  wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
 
   /// Gets sync mode.
   wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
@@ -34,7 +34,7 @@ private:
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
 #if wxUSE_CHECKBOX
-  wxCheckBox* m_HwxExModeCheckBox;
+  wxCheckBox* m_HexModeCheckBox;
   wxCheckBox* m_SyncCheckBox;
 #endif
 };

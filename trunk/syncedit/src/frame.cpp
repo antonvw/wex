@@ -310,7 +310,7 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   }
 
 #if wxUSE_CHECKBOX
-  wxExApp::SetConfigBool("HwxExMode", GetHwxExModeCheckBox()->GetValue());
+  wxExApp::SetConfigBool("HwxExMode", GetHexModeCheckBox()->GetValue());
 #endif
   wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
@@ -488,10 +488,10 @@ and saved in the same directory as where the executable is."));
 #if wxUSE_CHECKBOX
       if (editor != NULL &&
          // Reopen the current file, in the new mode, if different from current mode.
-         (((editor->GetFlags() & wxExSTC::STC_OPEN_HEX) > 0) != GetHwxExModeCheckBox()->GetValue()))
+         (((editor->GetFlags() & wxExSTC::STC_OPEN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
       {
         long flags = 0;
-        if (GetHwxExModeCheckBox()->GetValue()) flags |= wxExSTC::STC_OPEN_HEX;
+        if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTC::STC_OPEN_HEX;
         editor->Open(editor->GetFileName().GetFullPath(),
           0, wxEmptyString, flags);
       }
@@ -1015,7 +1015,7 @@ bool MDIFrame::OpenFile(
     if (page == NULL)
     {
 #if wxUSE_CHECKBOX
-      if (GetHwxExModeCheckBox()->GetValue())
+      if (GetHexModeCheckBox()->GetValue())
         flags |= wxExSTC::STC_OPEN_HEX;
 #endif
 

@@ -212,7 +212,7 @@ Frame::Frame(const wxString& project_wildcard)
 #endif
 
   m_ToolBar->AddControl(
-    m_HwxExModeCheckBox = new wxCheckBox(
+    m_HexModeCheckBox = new wxCheckBox(
       m_ToolBar,
       ID_EDIT_HEX_MODE,
       "Hex",
@@ -229,8 +229,8 @@ Frame::Frame(const wxString& project_wildcard)
       size,
       wxNO_BORDER));
 
-  m_HwxExModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_HwxExModeCheckBox->SetValue(wxExApp::GetConfigBool("HwxExMode", false)); // default no hex
+  m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
+  m_HexModeCheckBox->SetValue(wxExApp::GetConfigBool("HwxExMode", false)); // default no hex
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
   m_SyncCheckBox->SetValue(wxExApp::GetConfigBool("AllowSync"));
 #endif // wxUSE_CHECKBOX
