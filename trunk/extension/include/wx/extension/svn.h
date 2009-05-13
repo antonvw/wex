@@ -18,7 +18,7 @@
 #endif
 
 /// SVN types supported.
-enum wxExSvnType
+enum wxExSVNType
 {
   SVN_BLAME,  ///< svn blame
   SVN_CAT,    ///< svn cat
@@ -38,7 +38,7 @@ class wxExSVN
 {
 public:
   /// Constructor, specify the command type and a fullpath.
-  wxExSVN(wxExSvnType command, const wxString& fullpath = wxEmptyString);
+  wxExSVN(wxExSVNType command, const wxString& fullpath = wxEmptyString);
 
   /// Execute the svn command.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
@@ -59,7 +59,7 @@ public:
   /// Shows output in a dialog only (Execute should already be called).
   void ShowOutput();
 private:
-  const wxExSvnType m_Type;
+  const wxExSVNType m_Type;
   wxString m_Caption;
   wxString m_Command;
   wxString m_Output;

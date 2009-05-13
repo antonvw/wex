@@ -17,7 +17,7 @@
 
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
 
-wxExSVN::wxExSVN(wxExSvnType type, const wxString& fullpath)
+wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   : m_Type(type)
   , m_Output()
   , m_FullPath(fullpath)
