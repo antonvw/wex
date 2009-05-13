@@ -508,7 +508,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
     LogConnection(sock, true);
 
-    wxCharBuffer buffer = m_DataWindow->GetTextRaw();
+    const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
     WriteDataToClient(buffer, sock);
 
 #ifdef USE_TASKBARICON
