@@ -357,7 +357,13 @@ bool wxExLexers::Read()
 {
   wxXmlDocument doc;
 
-  if (!doc.Load(m_FileName.GetFullPath()))
+  // This test is to prevent showing an error if the lexers files does not exist,
+  // as this is not required.
+  if (!m_FileName.FileExists())
+  {
+    return false;
+  } 
+  else if (!doc.Load(m_FileName.GetFullPath()))
   {
     return false;
   }
