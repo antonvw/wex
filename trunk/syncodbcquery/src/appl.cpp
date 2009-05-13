@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2008, Anton van Wezenbeek
+* Copyright (c) 2008-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -198,7 +198,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
     info.SetVersion("v1.0");
-    info.SetCopyright("(c) 2008, Anton van Wezenbeek");
+    info.SetCopyright("(c) 2008-2009, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
     info.AddDeveloper(wxExOTLVersion());
