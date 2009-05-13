@@ -258,6 +258,17 @@ void MyFrame::OnClose(wxCloseEvent& event)
     return;
   }
 
+  for (
+    std::list<wxSocketBase*>::iterator it = m_Clients.begin();
+    it != m_Clients.end();
+    ++it)
+  {
+    wxSocketBase* sock = *it;
+    sock->Destroy();
+  }
+
+  m_Clients.clear();
+
   wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
   event.Skip();
 }
