@@ -229,6 +229,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     DialogFileOpen(wxFD_OPEN | wxFD_CHANGE_DIR, "sql files (*.sql) | *.sql", true);
     break;
 
+  case wxID_PREFERENCES:
+    wxExSTC::ConfigDialog(_("Editor Options"),
+      wxExSTC::STC_CONFIG_SIMPLE | wxExSTC::STC_CONFIG_MODELESS);
+    break;
+
   case wxID_SAVE:
     m_Query->FileSave();
     break;
@@ -250,11 +255,6 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case ID_DATABASE_OPEN:
     wxExOTLDialog(wxExApp::GetConfig(), &m_db);
     m_Shell->SetPrompt((m_db.connected ? wxExApp::GetConfig(_("Datasource")): "") + ">");
-    break;
-
-  case wxID_PREFERENCES:
-    wxExSTC::ConfigDialog(_("Editor Options"),
-      wxExSTC::STC_CONFIG_SIMPLE | wxExSTC::STC_CONFIG_MODELESS);
     break;
 
   case ID_SHELL_COMMAND:
