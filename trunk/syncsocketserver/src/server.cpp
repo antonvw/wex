@@ -636,8 +636,12 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Enable(m_DataWindow->GetModify());
     break;
 
-  case ID_CLEAR_STATISTICS:
-    event.Enable(!m_Statistics.GetItems().empty());
+  case wxID_EXECUTE:
+    event.Enable(m_SocketServer == NULL);
+    break;
+
+  case wxID_STOP:
+    event.Enable(m_SocketServer != NULL);
     break;
 
   case ID_CLIENT_ECHO:
@@ -653,19 +657,15 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Check(wxExApp::GetConfigBool(_("Add Timestamp")));
     break;
 
+  case ID_CLEAR_STATISTICS:
+    event.Enable(!m_Statistics.GetItems().empty());
+    break;
+
   case ID_RECENT_FILE_MENU:
     event.Enable(!GetRecentFile().empty());
     break;
 
   case ID_SERVER_CONFIG:
-    break;
-
-  case wxID_STOP:
-    event.Enable(m_SocketServer != NULL);
-    break;
-
-  case wxID_EXECUTE:
-    event.Enable(m_SocketServer == NULL);
     break;
 
   case ID_TIMER_STOP:
