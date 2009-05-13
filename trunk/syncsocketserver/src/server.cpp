@@ -436,7 +436,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case ID_SHELL_COMMAND:
     {
       const wxString str = event.GetString() + m_Shell->GetEOL();
-      wxCharBuffer buffer(str.c_str());
+      const wxCharBuffer& buffer(str.c_str());
 
       for (
         std::list<wxSocketBase*>::iterator it = m_Clients.begin();
@@ -918,7 +918,7 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
 
 void MyFrame::WriteDataWindowToClients()
 {
-  wxCharBuffer buffer = m_DataWindow->GetTextRaw();
+  const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
 
   for (
     std::list<wxSocketBase*>::iterator it = m_Clients.begin();
