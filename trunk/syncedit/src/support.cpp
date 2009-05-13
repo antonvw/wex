@@ -183,7 +183,7 @@ Frame::Frame(const wxString& project_wildcard)
     ID_PROJECT_OPEN,
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    _("Open project..."));
+    wxExEllipsed(_("Open project")));
   m_ToolBar->AddTool(
     ID_PROJECT_SAVE,
     wxEmptyString,
