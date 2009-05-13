@@ -409,10 +409,14 @@ void wxExSTCShell::ShowHistory()
     it != m_Commands.end();
     it++)
   {
-    AppendText(
-      wxString::Format("\n%d %s",
+    const wxString command = *it;
+
+    if (!command.empty())
+    {
+      AppendText(wxString::Format("\n%d %s",
         command_no++,
-        wxString(*it).c_str()));
+        command.c_str()));
+    }
   }
 }
 
