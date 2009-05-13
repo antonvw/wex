@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-12 11:48+0100\n"
-"PO-Revision-Date: 2009-05-12 11:48+0100\n"
+"POT-Creation-Date: 2009-05-13 08:02+0100\n"
+"PO-Revision-Date: 2009-05-13 08:02+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -221,7 +221,7 @@ msgstr "ODBC database openen"
 msgid "<Skipped>"
 msgstr "<Overgeslagen>"
 
-#: src/shell.cpp:253
+#: src/shell.cpp:196
 msgid "event not found"
 msgstr "gebeurtenis niet gevonden"
 
@@ -910,7 +910,7 @@ msgid "Make"
 msgstr "Maken"
 
 #: src/report/listview.cpp:1119
-#: src/report/process.cpp:195
+#: src/report/process.cpp:196
 msgid "Ready"
 msgstr "Klaar"
 
@@ -945,6 +945,10 @@ msgstr "Proces selecteren"
 #: src/report/process.cpp:156
 msgid "Running process"
 msgstr "Uitvoeren proces"
+
+#: src/report/process.cpp:162
+msgid "Cannot run process"
+msgstr "Kan proces niet uitvoeren"
 
 #: src/report/process.cpp:181
 msgid "Stopped"

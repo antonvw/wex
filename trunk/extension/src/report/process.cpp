@@ -159,7 +159,7 @@ long wxExProcessWithListView::Execute()
   }
   else
   {
-    wxLogError("Cannot run process: " + m_Command);
+    wxLogError(_("Cannot run process") + ": " + m_Command);
   }
 
   return pid;
@@ -185,6 +185,7 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
   
   return output;
 }
+
 void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
   m_Timer.Stop();
