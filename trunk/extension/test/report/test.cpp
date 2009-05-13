@@ -47,9 +47,9 @@ void wxExReportAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
   // test wxExProcessWithListView
-  CPPUNIT_ASSERT(m_Process->Run());
+  CPPUNIT_ASSERT(m_Process->Execute());
   CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
-  CPPUNIT_ASSERT(m_Process->Run()); // repeat test
+  CPPUNIT_ASSERT(m_Process->Execute()); // repeat test
   CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
   
   // test wxExSTCWithFrame
