@@ -10,7 +10,9 @@
 \******************************************************************************/
 
 #define USE_OTL 1
-#include <wx/extension/report/report.h>
+#include <wx/extension/otl.h>
+#include <wx/extension/statistics.h>
+#include <wx/extension/report/frame.h>
 
 enum
 {
@@ -23,6 +25,10 @@ enum
   ID_VIEW_STATISTICS,
   ID_LAST,
 };
+
+class wxExGrid;
+class wxExSTCShell;
+class wxExSTCWithFrame;
 
 class MyApp: public wxExApp
 {
