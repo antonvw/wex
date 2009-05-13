@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2008 Anton van Wezenbeek
+* Copyright (c) 2008-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -23,6 +23,8 @@ bool wxExOTLDialog(
   otl_connect* db,
   int max_items)
 {
+  wxASSERT(db != NULL && config != NULL);
+
   std::vector<wxExConfigItem> v;
 
   v.push_back(wxExConfigItem(_("Datasource"),
@@ -40,11 +42,6 @@ bool wxExOTLDialog(
     _("Open ODBC Database")).ShowModal() == wxID_CANCEL)
   {
     return false;
-  }
-
-  if (db == NULL)
-  {
-    return true;
   }
 
   try
@@ -95,18 +92,22 @@ long wxExOTLQueryToGrid(
 
   if (empty_results)
   {
-    grid->DeleteCols(0, grid->GetNumberCols());
+    if (grid->GetNumberCols() > 0)
+    {
+      grid->DeleteCols(0, grid->GetNumberCols());
+    }
+
     grid->AppendCols(desc_len);
 
     for (int n = 0; n < desc_len; n++)
     {
       grid->SetColLabelValue(n, desc[n].name);
     }
-  }
 
-  if (empty_results)
-  {
-    grid->DeleteRows(0, grid->GetNumberRows());
+    if (grid->GetNumberRows() > 0)
+    {
+      grid->DeleteRows(0, grid->GetNumberRows());
+    }
   }
 
   grid->BeginBatch();
