@@ -50,8 +50,9 @@ bool Application::OnInit()
   SetLogging();
 
   MDIFrame* frame = new MDIFrame(m_Files.Count() == 0);
-
   frame->Show();
+
+  SetTopWindow(frame);
 
   if (m_Files.Count() > 0)
   {
