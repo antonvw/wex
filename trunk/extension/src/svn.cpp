@@ -163,7 +163,7 @@ void wxExSVN::ShowOutput()
       wxEmptyString,
       wxOK,
       wxID_ANY,
-      wxDefaultPosition, wxSize(550, 250));
+      wxDefaultPosition, wxSize(575, 250));
   }
   else
   {
