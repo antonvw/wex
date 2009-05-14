@@ -174,7 +174,7 @@ MyFrame::MyFrame(const wxString& title)
   otl_connect::otl_initialize();
 }
 
-void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
+void MyFrame::ConfigDialogApplied(wxWindowID WXUNUSED(dialogid))
 {
   m_Query->ConfigGet();
   m_Shell->ConfigGet();
@@ -328,7 +328,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_DATABASE_CLOSE:
-    event.Enable(m_db.connected);
+    event.Enable(m_db.connected > 0);
     break;
 
   case ID_DATABASE_OPEN:
