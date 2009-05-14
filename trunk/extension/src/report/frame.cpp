@@ -177,7 +177,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
   wxExListViewFile::CleanUp();
 #ifdef EMBEDDED_SQL
-  wxExTextFileWithReport::CleanUp();
+  wxExTextFileWithListView::CleanUp();
 #endif
 
   m_FileHistory.Save(*wxExApp::GetConfig());

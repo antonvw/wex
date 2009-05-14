@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.h
-* Purpose:       Declaration of class 'wxExTextFileWithReport'
+* Purpose:       Declaration of class 'wxExTextFileWithListView'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,12 +18,12 @@
 class wxExFrameWithHistory;
 class wxExListViewFile;
 
-/// Offers an wxExTextFile with reporting to a listview.
-class wxExTextFileWithReport : public wxExTextFile
+/// Offers a wxExTextFile with reporting to a listview.
+class wxExTextFileWithListView : public wxExTextFile
 {
 public:
   /// Constructor.
-  wxExTextFileWithReport(
+  wxExTextFileWithListView(
     const wxExFileName& filename,
     const wxExTool& tool);
 

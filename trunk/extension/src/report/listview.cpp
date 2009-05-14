@@ -136,7 +136,7 @@ int wxExListViewFile::AddItems()
     return 0;
   }
 
-  wxExDirWithReport dir(
+  wxExDirWithListView dir(
     this,
     wxExApp::GetConfig(_("In folder")),
     wxExApp::GetConfig(_("Add what")));
@@ -524,7 +524,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
   switch (m_Type)
   {
   case LIST_COUNT:
-    // See wxExTextFileWithReport::Report, the order in which columns are set should be the same there.
+    // See wxExTextFileWithListView::Report, the order in which columns are set should be the same there.
     InsertColumn(_("Lines"));
     InsertColumn(_("Lines Of Code"));
     InsertColumn(_("Empty Lines"));
@@ -1098,7 +1098,7 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
     wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
-  if (!wxExTextFileWithReport::SetupTool(tool))
+  if (!wxExTextFileWithListView::SetupTool(tool))
   {
     return;
   }

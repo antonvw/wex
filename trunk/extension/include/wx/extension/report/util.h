@@ -26,24 +26,24 @@
 class wxExFrameWithHistory;
 class wxExListViewFile;
 
-/// Adds reporting to wxExDir.
-class wxExDirWithReport : public wxExDir
+/// Offers a wxExDir with reporting to a listview.
+class wxExDirWithListView : public wxExDir
 {
 public:
   /// SetupTool should already be called.
   /// FindFiles invokes RunTool on all matching files.
-  wxExDirWithReport(const wxExTool& tool,
+  wxExDirWithListView(const wxExTool& tool,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// FindFiles causes each found file to be added as listitem to the listview.
-  wxExDirWithReport(wxExListViewFile* listview,
+  wxExDirWithListView(wxExListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 
   /// FindFiles causes all found files to be opened using OpenFile from frame.
   /// Flags are passed on to OpenFile.
-  wxExDirWithReport(wxExFrameWithHistory* frame,
+  wxExDirWithListView(wxExFrameWithHistory* frame,
     const wxString& fullpath,
     const wxString& filespec,
     long flags = 0);

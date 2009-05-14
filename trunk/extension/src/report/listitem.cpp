@@ -71,7 +71,7 @@ const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
 
   if (m_Statistics.FileExists())
   {
-    wxExTextFileWithReport file(m_Statistics, tool);
+    wxExTextFileWithListView file(m_Statistics, tool);
 
     if (file.RunTool())
     {
@@ -85,7 +85,7 @@ const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
   }
   else
   {
-    wxExDirWithReport dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
+    wxExDirWithListView dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
 
     if (dir.FindFiles())
     {

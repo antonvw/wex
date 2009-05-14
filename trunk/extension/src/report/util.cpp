@@ -70,14 +70,14 @@ void wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
        ID_TOOL_REPORT_REPLACE:
        ID_TOOL_REPORT_FIND);
 
-  if (!wxExTextFileWithReport::SetupTool(tool))
+  if (!wxExTextFileWithListView::SetupTool(tool))
   {
     return;
   }
 
   wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(replace));
 
-  wxExDirWithReport dir(
+  wxExDirWithListView dir(
     tool,
     wxExApp::GetConfig(_("In folder")),
     wxExApp::GetConfig(_("In files")));
@@ -249,7 +249,7 @@ void wxExOpenFiles(
 
     if (file.Contains("*") || file.Contains("?"))
     {
-      wxExDirWithReport dir(frame, wxGetCwd(), file, flags);
+      wxExDirWithListView dir(frame, wxGetCwd(), file, flags);
       dir.FindFiles();
     }
     else
@@ -272,7 +272,7 @@ void wxExOpenFiles(
   }
 }
 
-wxExDirWithReport::wxExDirWithReport(const wxExTool& tool,
+wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec)
   : wxExDir(fullpath, filespec)
   , m_Statistics(fullpath)
@@ -283,7 +283,7 @@ wxExDirWithReport::wxExDirWithReport(const wxExTool& tool,
 {
 }
 
-wxExDirWithReport::wxExDirWithReport(wxExListViewFile* listview,
+wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
   const wxString& fullpath, const wxString& filespec)
   : wxExDir(fullpath, filespec)
   , m_Statistics(fullpath)
@@ -294,7 +294,7 @@ wxExDirWithReport::wxExDirWithReport(wxExListViewFile* listview,
 {
 }
 
-wxExDirWithReport::wxExDirWithReport(wxExFrameWithHistory* frame,
+wxExDirWithListView::wxExDirWithListView(wxExFrameWithHistory* frame,
   const wxString& fullpath, const wxString& filespec, long flags)
   : wxExDir(fullpath, filespec)
   , m_Statistics(fullpath)
@@ -305,7 +305,7 @@ wxExDirWithReport::wxExDirWithReport(wxExFrameWithHistory* frame,
 {
 }
 
-void wxExDirWithReport::OnFile(const wxString& file)
+void wxExDirWithListView::OnFile(const wxString& file)
 {
   if (m_Frame == NULL && m_ListView == NULL)
   {
@@ -314,7 +314,7 @@ void wxExDirWithReport::OnFile(const wxString& file)
     if (filename.GetStat().IsOk())
     {
       if (wxFileName::DirExists(file)) return;
-      wxExTextFileWithReport report(filename, m_Tool);
+      wxExTextFileWithListView report(filename, m_Tool);
       report.RunTool();
       m_Statistics += report.GetStatistics();
     }
@@ -336,7 +336,7 @@ void wxExDirWithReport::OnFile(const wxString& file)
       {
         wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
 
-        wxExTextFileWithReport report(item.m_Statistics, ID_TOOL_REVISION_RECENT);
+        wxExTextFileWithListView report(item.m_Statistics, ID_TOOL_REVISION_RECENT);
         if (report.SetupTool(ID_TOOL_REVISION_RECENT))
         {
           report.RunTool();

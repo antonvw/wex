@@ -172,9 +172,9 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
     const wxExTool tool(command.GetId());
 
-    if (wxExTextFileWithReport::SetupTool(tool))
+    if (wxExTextFileWithListView::SetupTool(tool))
     {
-      wxExTextFileWithReport report(m_FileName, tool);
+      wxExTextFileWithListView report(m_FileName, tool);
       report.RunTool();
       report.GetStatistics().Log(tool);
 

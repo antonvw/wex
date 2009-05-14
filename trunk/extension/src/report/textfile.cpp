@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          textfile.cpp
-* Purpose:       Implementation of class 'wxExTextFileWithReport'
+* Purpose:       Implementation of class 'wxExTextFileWithListView'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,8 +16,8 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
-wxExListViewFile* wxExTextFileWithReport::m_Report = NULL;
-wxExFrameWithHistory* wxExTextFileWithReport::m_Frame = NULL;
+wxExListViewFile* wxExTextFileWithListView::m_Report = NULL;
+wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
 
 void SetItemColumnStatistics(
   wxExListItemWithFileName& item,
@@ -30,7 +30,7 @@ void SetItemColumnStatistics(
 }
 
 #if USE_EMBEDDED_SQL
-otl_connect wxExTextFileWithReport::m_db;
+otl_connect wxExTextFileWithListView::m_db;
 
 class Recordset
 {
@@ -52,7 +52,7 @@ private:
 };
 #endif
 
-wxExTextFileWithReport::wxExTextFileWithReport(
+wxExTextFileWithListView::wxExTextFileWithListView(
   const wxExFileName& filename,
   const wxExTool& tool)
   : wxExTextFile(filename, tool, wxExApp::GetConfig(), wxExApp::GetLexers())
@@ -63,14 +63,14 @@ wxExTextFileWithReport::wxExTextFileWithReport(
 }
 
 #if USE_EMBEDDED_SQL
-void wxExTextFileWithReport::CleanUp()
+void wxExTextFileWithListView::CleanUp()
 {
   m_db.logoff();
 }
 #endif
 
 #if USE_EMBEDDED_SQL
-bool wxExTextFileWithReport::ParseComments()
+bool wxExTextFileWithListView::ParseComments()
 {
   if (GetTool().GetId() == ID_TOOL_SQL || GetTool().GetId() == ID_TOOL_REPORT_SQL)
   {
@@ -118,7 +118,7 @@ bool wxExTextFileWithReport::ParseComments()
 #endif
 
 #if USE_EMBEDDED_SQL
-bool wxExTextFileWithReport::ParseSQL()
+bool wxExTextFileWithListView::ParseSQL()
 {
 /*
  ; SQL # ..
@@ -189,7 +189,7 @@ bool wxExTextFileWithReport::ParseSQL()
 }
 #endif
 
-void wxExTextFileWithReport::Report()
+void wxExTextFileWithListView::Report()
 {
   wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
@@ -224,7 +224,7 @@ void wxExTextFileWithReport::Report()
   }
 }
 
-void wxExTextFileWithReport::ReportStatistics()
+void wxExTextFileWithListView::ReportStatistics()
 {
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
@@ -274,7 +274,7 @@ void wxExTextFileWithReport::ReportStatistics()
 }
 
 #if USE_EMBEDDED_SQL
-bool wxExTextFileWithReport::SetSQLQuery()
+bool wxExTextFileWithListView::SetSQLQuery()
 {
   const size_t pos_start_of_query = GetComments().find('#');
   const size_t pos_end_of_query = GetComments().rfind('#');
@@ -296,7 +296,7 @@ bool wxExTextFileWithReport::SetSQLQuery()
 }
 #endif
 
-bool wxExTextFileWithReport::SetupTool(const wxExTool& tool)
+bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 {
 #if USE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)

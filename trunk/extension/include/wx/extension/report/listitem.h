@@ -24,7 +24,7 @@ class wxExListViewFile;
 /// It allows you to run tools on the item and keeps statistics when running.
 class wxExListItemWithFileName : public wxExListItem
 {
-  friend class wxExDirWithReport; // wxExDirWithReport uses m_Statistics directly.
+  friend class wxExDirWithListView; // wxExDirWithListView uses m_Statistics directly.
 public:
   /// Constructor.
   wxExListItemWithFileName(wxExListView* listview, const int itemnumber);
