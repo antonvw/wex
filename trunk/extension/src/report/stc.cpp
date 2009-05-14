@@ -125,6 +125,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
         svnmenu->Append(ID_STC_SVN_DIFF, wxExEllipsed(_("&Diff")));
         svnmenu->Append(ID_STC_SVN_LOG, wxExEllipsed(_("&Log")));
         svnmenu->Append(ID_STC_SVN_CAT, wxExEllipsed(_("&Cat")));
+        svnmenu->Append(ID_STC_SVN_BLAME, wxExEllipsed(_("&Blame")));
         svnmenu->AppendSeparator();
         svnmenu->Append(ID_STC_SVN_COMMIT, wxExEllipsed(_("&Commit")));
         menu.AppendSeparator();
@@ -245,6 +246,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
+  case ID_STC_SVN_BLAME: wxExSVN(SVN_BLAME, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
   case ID_STC_SVN_COMMIT: wxExSVN(SVN_COMMIT, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
   case ID_STC_SVN_DIFF: wxExSVN(SVN_DIFF, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;
   case ID_STC_SVN_LOG: wxExSVN(SVN_LOG, m_FileName.GetFullPath()).ExecuteAndShowOutput(); break;

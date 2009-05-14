@@ -624,6 +624,7 @@ and saved in the same directory as where the executable is."));
   case ID_SVN_INFO: wxExSVN(SVN_INFO).ExecuteAndShowOutput(); break;
   case ID_SVN_LOG: wxExSVN(SVN_LOG).ExecuteAndShowOutput(); break;
   case ID_SVN_STAT: wxExSVN(SVN_STAT).ExecuteAndShowOutput(); break;
+  case ID_SVN_UPDATE: wxExSVN(SVN_UPDATE).ExecuteAndShowOutput(); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
