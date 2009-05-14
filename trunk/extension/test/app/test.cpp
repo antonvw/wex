@@ -89,8 +89,16 @@ void wxExAppTestFixture::testMethods()
   m_SVN->GetOutput();
 
   // test various wxEx methods that need the app
-  const wxString header = wxExHeader(wxExFileName("test.h"), wxExApp::GetConfig(), "hello test");
-  CPPUNIT_ASSERT(header.Contains("hello test"));
+  // Only usefull if the lexers file was present
+  if (wxExApp::GetConfig()->GetLexers()->Count() > 0)
+  {
+    const wxString header = wxExHeader(wxExFileName("test.h"), wxExApp::GetConfig(), "hello test");
+    CPPUNIT_ASSERT(header.Contains("hello test"));
+  }
+  else
+  {
+    wxLogMessage("No lexers available");
+  }
   
   // test util
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
