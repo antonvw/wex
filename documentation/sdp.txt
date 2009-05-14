@@ -8,7 +8,7 @@ General
     https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
 - Subversion access
-    under windows TortoiseSVN is used,
+    under windows TortoiseSVN is used (TortoiseSVN 1.6.2),
     under Linux just the svn client (svn, version 1.5.4 (r33841))
 
 - STL is used wherever possible
@@ -35,11 +35,13 @@ General
 
 - Other docs are in html format using no special html editor
 
-- automated testing is done using cppunit
+- Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
 
-- translation is done using poedit (1.4.2)
+- Translation is done using poedit (1.4.2)
     http://www.poedit.net/
+    
+- The SVN support in wxExSVN works with SVN client 1.6.2 (e.g. from http://www.sliksvn.com/en/download)
 
 
 SVN hierarchy
