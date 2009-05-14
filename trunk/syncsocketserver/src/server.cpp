@@ -579,7 +579,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             if (wxExApp::GetConfigBool(_("Add Timestamp")))
             {
               m_LogWindow->AppendTextForced(
-                _("read: '") + text + wxString::Format("' (%d bytes)", sock->LastCount()));
+                _("read") + ": '" + text + wxString::Format("' (%d bytes)", sock->LastCount()));
             }
             else
             {
