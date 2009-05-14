@@ -32,6 +32,7 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
     case SVN_INFO:   m_Caption = "SVN Info"; break;
     case SVN_LOG:    m_Caption = "SVN Log"; break;
     case SVN_STAT:   m_Caption = "SVN Stat"; break;
+    case SVN_UPDATE: m_Caption = "SVN Update"; break;
     default:
       wxFAIL;
       break;
@@ -42,7 +43,9 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
 
 int wxExSVN::Execute(bool show_dialog)
 {
-  if (show_dialog)
+  // Show dialog if asked for, and no SVN_UPDATE, as that has no flags to ask for.
+  if (show_dialog && 
+      m_Type != SVN_UPDATE)
   {
     std::vector<wxExConfigItem> v;
 

@@ -27,6 +27,7 @@ enum wxExSVNType
   SVN_INFO,   ///< svn info
   SVN_LOG,    ///< svn log
   SVN_STAT,   ///< svn stat
+  SVN_UPDATE, ///< svn update
 };
 
 #if wxUSE_GUI
