@@ -182,6 +182,7 @@ const wxExPane wxExFrame::GetPane(int pane) const
   return wxExPane();
 }
 
+// This is a static method, so no const possible.
 int wxExFrame::GetPaneField(const wxString& pane)
 {
   map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
@@ -357,7 +358,7 @@ void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)
   {
-    wxDELETE(m_FindReplaceDialog);
+    m_FindReplaceDialog->Destroy();
   }
 
   m_FindReplaceDialog = new wxFindReplaceDialog(
@@ -396,7 +397,8 @@ void wxExInterface::OnFindDialog(wxFindDialogEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
-    wxDELETE(m_FindReplaceDialog);
+    m_FindReplaceDialog->Destroy();
+    m_FindReplaceDialog = NULL;
   }
   else if (event.GetEventType() == wxEVT_COMMAND_FIND)
   {
@@ -432,7 +434,7 @@ void wxExInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)
   {
-    wxDELETE(m_FindReplaceDialog);
+    m_FindReplaceDialog->Destroy();
   }
 
   m_FindReplaceDialog = new wxFindReplaceDialog(

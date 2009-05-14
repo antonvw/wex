@@ -81,7 +81,11 @@ public:
 
   /// Destructor.
   virtual ~wxExInterface() {
-    if (m_FindReplaceDialog != NULL) wxDELETE(m_FindReplaceDialog);};
+    if (m_FindReplaceDialog != NULL) 
+    {
+      m_FindReplaceDialog->Destroy();
+      m_FindReplaceDialog = NULL;
+    };};
 
   /// Build the page, for the htmleasyprinting.
   virtual const wxString BuildPage() {return wxEmptyString;};
