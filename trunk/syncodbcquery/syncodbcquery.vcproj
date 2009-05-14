@@ -81,7 +81,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\buildmswd"
-			IntermediateDirectory=".\buildmswd\test"
+			IntermediateDirectory=".\buildmswd"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
@@ -94,7 +94,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\buildmswd\test/listview.pch"
+				PrecompiledHeaderFile=".\buildmswd\syncodbcquery.pch"
 				AssemblerListingLocation=".\buildmswd/"
 				ObjectFile=".\buildmswd/"
 				ProgramDataBaseFileName=".\buildmswd/"
