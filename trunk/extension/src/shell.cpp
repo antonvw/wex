@@ -196,7 +196,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
         }
         else
         {
-          Prompt(m_Command + ": " + _("event not found"));
+          Prompt(GetEOL() + m_Command + ": " + _("event not found"));
         }
       }
       // Other command, send to parent.
