@@ -90,7 +90,7 @@ void wxExAppTestFixture::testMethods()
 
   // test various wxEx methods that need the app
   // Only usefull if the lexers file was present
-  if (wxExApp::GetConfig()->GetLexers()->Count() > 0)
+  if (wxExApp::GetLexers()->Count() > 0)
   {
     const wxString header = wxExHeader(wxExFileName("test.h"), wxExApp::GetConfig(), "hello test");
     CPPUNIT_ASSERT(header.Contains("hello test"));
