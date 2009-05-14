@@ -30,7 +30,10 @@ bool MyApp::OnInit()
 {
   SetAppName("syncodbcquery");
 
-  wxExApp::OnInit();
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
 
   MyFrame *frame = new MyFrame("syncodbcquery");
   frame->Show(true);

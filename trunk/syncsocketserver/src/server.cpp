@@ -28,9 +28,15 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
   SetAppName("syncsocketserver");
-  wxExApp::OnInit();
+
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
+
   MyFrame *frame = new MyFrame("syncsocketserver");
   SetTopWindow(frame);
+
   return true;
 }
 
