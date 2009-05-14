@@ -185,8 +185,11 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       {
         if (SetCommandFromHistory(m_Command.substr(1)))
         {
-          AppendText(m_Command);
-          KeepCommand();
+          AppendText(GetEOL() + m_Command);
+
+          // We don't keep the command, so commands are not rearranged and
+          // repeatingly calling !5 always gives the same command, just as bash does.
+
           wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
           event.SetString(m_Command);
           wxPostEvent(GetParent(), event);
@@ -311,7 +314,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 
   if (no_asked_for > 0)
   {
-    int no = 1;
+    int no = 0;
 
     for (
       list < wxString >::const_iterator it = m_Commands.begin();
