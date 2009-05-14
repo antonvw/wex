@@ -39,9 +39,6 @@ bool Application::OnInit()
   SetAppName("syncedit");
 #endif
 
-  // Otherwise wxGTK gives problems.
-  wxUpdateUIEvent::SetUpdateInterval(-1);
-
   if (!wxExApp::OnInit())
   {
     return false;
@@ -58,8 +55,6 @@ bool Application::OnInit()
   {
     wxExOpenFiles(frame, m_Files);
   }
-
-  wxUpdateUIEvent::SetUpdateInterval(0);
 
   return true;
 }
