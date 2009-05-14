@@ -1,13 +1,6 @@
-..F
+..
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  2   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 93 test.cpp
-assertion failed
-- Expression: header.Contains("hello test")
+OK (2 tests)
 
 
