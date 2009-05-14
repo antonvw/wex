@@ -295,7 +295,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SHELL_COMMAND_STOP:
     m_Stopped = true;
-    m_Shell->Prompt("Cancelled");
+    m_Shell->Prompt(_("cancelled"));
     break;
 
   case ID_VIEW_QUERY: TogglePane("QUERY"); break;
