@@ -160,6 +160,8 @@ wxExSVNType wxExSVN::GetType(int command_id) const
       wxFAIL;
       break;
   }
+  
+  return SVN_STAT;
 }
 
 void wxExSVN::Initialize()
