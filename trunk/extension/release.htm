@@ -28,9 +28,28 @@ border: 1px #6699CC solid;
 </STYLE>
 
 <!--
-Wait for wxWidgets 3.0:
+Wait for next wxWidgets:
+- Print All (i.e. exSTC Print(false)) does not work, same problem as with IP Gateway (when prompt false, nothing is printed).
+  Then the lib can be used for building a spooler as well.
+- Print prints empty page.
+  Maybe:
+  In exPrintout check on page.x == 0 etc. and the 0.8 factor should be as in Code::Blocks.
+  Done, no change, also Print Preview missing lines.
+- Copy/paste between msw exSTC and gtk exSTC is not possible. There was a change in wxWidgets 2.9.
+- In exSTC you cannot place the cursor inside the () pair for cpp lexer (bug in Scintilla?).
+- In exNotebook add a SyncCloseAll for close complete notebook (if the event can be catched).
+- In exGrid add rules for html tables (not yet implemented in html/m_tables.cpp 'The tables handler:').
+- Improve embedded html lexers, like Scite does (wait for next scintilla version??).
+  And check the scite sources how.
+- In Process::HasInput allow php script error messages to be able to be double clicked and goto line no.
+  Is already added, but the reg ex does not match, wait for next wxWidgets.
+  Then also change the gcc check implemented by tokenizer into reg ex check.
+- wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
+  found files as items to the list view, whereas that could be fast. Profiling necessary??
+  Or just hope better for next wxWidgets.
+
+Roadmap:
 - Make exDir multi threaded.
-- Add WXDLLEXPORT.
 - No longer use iterate on strings by index, but use iterators instead.
   See in stc.cpp::SequenceDialog
   for (int pos = end.length() - 1; pos >= 0; pos--)
@@ -46,38 +65,13 @@ Wait for wxWidgets 3.0:
     wxChar ch = uni_ch;
      // same as wxChar ch  = *i;
   }
-- Find in Grid and SetGridCursor does not work?
-- Print All (i.e. exSTC Print(false)) does not work, same problem as with IP Gateway (when prompt false, nothing is printed).
-  Then the lib can be used for building a spooler as well.
-- Print prints empty page.
-  Maybe:
-  In exPrintout check on page.x == 0 etc. and the 0.8 factor should be as in Code::Blocks.
-  Done, no change, also Print Preview missing lines.
-- Copy/paste between msw exSTC and gtk exSTC is not possible. There was a change in wxWidgets 2.9.
-
-- In exSTC you cannot place the cursor inside the () pair for cpp lexer (bug in Scintilla?).
-- In exNotebook add a SyncCloseAll for close complete notebook (if the event can be catched).
-- In exGrid add rules for html tables (not yet implemented in html/m_tables.cpp 'The tables handler:').
-- Improve embedded html lexers, like Scite does (wait for next scintilla version??).
-  And check the scite sources how.
-
-Roadmap:
+- Add WXDLLEXPORT.
 - Added platform switches to lexers.xml.
 - Making the find/replace dialog a static member of exInterface does not work for Linux.
   Test again in 1.1.
 - When opening large file, allow open to be cancelled, and show progress.
   Maybe use a separate thread for this.
 - Add dialog for updating the include directory (with browsing for folders).
-
-Wait for next wxWidgets:
-- In Process::HasInput allow php script error messages to be able to be double clicked and goto line no.
-  Is already added, but the reg ex does not match, wait for next wxWidgets.
-  Then also change the gcc check implemented by tokenizer into reg ex check.
-- wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
-  found files as items to the list view, whereas that could be fast. Profiling necessary??
-  Or just hope better for next wxWidgets.
-
-Roadmap:
 - In STC adding file drop causes text dragging not work.
   In scintilla v1.70 file drop is supported (how?), check and remove from here if okay.
   This can be tested in sample for wxextension.
@@ -107,6 +101,6 @@ v1.0
 <li> Directory structure similar to wx.
 </ul>
 <td>
-wxWidgets-2.9.0-RC1 (scintilla 1.75)
+wxWidgets-2.9.0-RC3 (scintilla 1.75)
 
 </TABLE>
