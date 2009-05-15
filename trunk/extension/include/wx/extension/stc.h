@@ -145,9 +145,6 @@ public:
   /// add a new control char.
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
 
-  /// Makes all linse visible.
-  void EnsureLineVisible(int pos_start, int pos_end);
-
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
 
