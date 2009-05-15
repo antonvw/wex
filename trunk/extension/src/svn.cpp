@@ -91,8 +91,14 @@ int wxExSVN::Execute(bool show_dialog)
     arg = " -m \"" + wxExApp::GetConfig(_("Revision comment")) + "\"";
   }
 
-  const wxString command =
-    "svn " + wxExApp::GetConfig(_("Flags")) + " " + m_Command + arg + file;
+  wxString flags = wxExApp::GetConfig(_("Flags"));
+
+  if (!flags.empty())
+  {
+    flags += " ";
+  }
+
+  const wxString command = "svn " + flags + m_Command + arg + file;
 
   wxArrayString output;
   wxArrayString errors;
