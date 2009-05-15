@@ -111,15 +111,10 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN)
     {
-      if (!wxExApp::GetConfigBool("SVN"))
-      {
-        if (!wxExApp::GetConfig(_("Comparator")).empty())
-        {
-          menu.AppendSeparator();
-          menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
-        }
-      }
-      else
+      wxFileName path (GetFileName().GetPath());
+      path.AppendDir(".svn");
+        
+      if (path.DirExists())
       {
         wxMenu* svnmenu = new wxMenu;
         svnmenu->Append(ID_STC_SVN_DIFF, wxExEllipsed(_("&Diff")));
@@ -130,6 +125,11 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
         svnmenu->Append(ID_STC_SVN_COMMIT, wxExEllipsed(_("&Commit")));
         menu.AppendSeparator();
         menu.AppendSubMenu(svnmenu, "&SVN");
+      }
+      else if (!wxExApp::GetConfig(_("Comparator")).empty())
+      {
+        menu.AppendSeparator();
+        menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
       }
     }
   }

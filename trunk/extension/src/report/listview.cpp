@@ -251,11 +251,18 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
       }
       else if (GetSelectedItemCount() == 1)
       {
-        wxMenu* svnmenu = new wxMenu;
-        svnmenu->Append(ID_LIST_SVN_DIFF, wxExEllipsed(_("&Diff")));
-        svnmenu->Append(ID_LIST_SVN_LOG, wxExEllipsed(_("&Log")));
-        svnmenu->Append(ID_LIST_SVN_CAT, wxExEllipsed(_("&Cat")));
-        menu.AppendSubMenu(svnmenu, "&SVN");
+        wxExListItemWithFileName item(this, GetFirstSelected());
+        wxFileName path (item.GetFileName().GetPath());
+        path.AppendDir(".svn");
+        
+        if (path.DirExists())
+        {
+          wxMenu* svnmenu = new wxMenu;
+          svnmenu->Append(ID_LIST_SVN_DIFF, wxExEllipsed(_("&Diff")));
+          svnmenu->Append(ID_LIST_SVN_LOG, wxExEllipsed(_("&Log")));
+          svnmenu->Append(ID_LIST_SVN_CAT, wxExEllipsed(_("&Cat")));
+          menu.AppendSubMenu(svnmenu, "&SVN");
+        }
       }
     }
 
