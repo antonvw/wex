@@ -41,6 +41,9 @@ public:
   /// Constructor, specify the command type and a fullpath.
   wxExSVN(wxExSVNType command, const wxString& fullpath = wxEmptyString);
 
+  /// Constructor, specify the command id and a fullpath.
+  wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
+
   /// Execute the svn command.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
@@ -58,8 +61,11 @@ public:
   const wxString& GetOutput() const {return m_Output;};
 
   /// Shows output in a dialog only (Execute should already be called).
-  void ShowOutput();
+  void ShowOutput() const;
 private:
+  wxExSVNType GetType(int command_id) const;
+  void Initialize();
+
   const wxExSVNType m_Type;
   wxString m_Caption;
   wxString m_Command;

@@ -67,6 +67,7 @@ BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
   EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_PROPERTIES, wxExListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewFile::OnCommand)
   EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
@@ -252,17 +253,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
       else if (GetSelectedItemCount() == 1)
       {
         wxExListItemWithFileName item(this, GetFirstSelected());
-        wxFileName path (item.GetFileName().GetPath());
-        path.AppendDir(".svn");
-        
-        if (path.DirExists())
-        {
-          wxMenu* svnmenu = new wxMenu;
-          svnmenu->Append(ID_LIST_SVN_DIFF, wxExEllipsed(_("&Diff")));
-          svnmenu->Append(ID_LIST_SVN_LOG, wxExEllipsed(_("&Log")));
-          svnmenu->Append(ID_LIST_SVN_CAT, wxExEllipsed(_("&Cat")));
-          menu.AppendSubMenu(svnmenu, "&SVN");
-        }
+        menu.AppendSVN(item.GetFileName());
       }
     }
 
@@ -736,6 +727,15 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     return;
   }
 
+  if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
+  {
+    wxExSVN svn(
+      event.GetId(), 
+      wxExListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+    svn.ExecuteAndShowOutput();
+    return;
+  }
+
   switch (event.GetId())
   {
   // These are added to disable changing this listview if it is read-only,
@@ -760,16 +760,6 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   break;
 
   case wxID_ADD: AddItems(); break;
-
-  case ID_LIST_SVN_CAT:
-    wxExSVN(SVN_CAT, wxExListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).ExecuteAndShowOutput();
-  break;
-  case ID_LIST_SVN_DIFF:
-    wxExSVN(SVN_DIFF, wxExListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).ExecuteAndShowOutput();
-  break;
-  case ID_LIST_SVN_LOG:
-    wxExSVN(SVN_LOG, wxExListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath()).ExecuteAndShowOutput();
-  break;
 
   case ID_LIST_COMPARE:
   case ID_LIST_COMPARELAST:

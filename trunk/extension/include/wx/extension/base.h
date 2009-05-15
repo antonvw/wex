@@ -377,6 +377,10 @@ public:
   /// This always adds some items, so no boolean return needed.
   void AppendPrint();
 
+  /// Appends SVN menu items.
+  /// Returns true if at least one item has been added.
+  bool AppendSVN(const wxFileName& file);
+
   /// Appends a tools submenu.
   wxExMenu* AppendTools();
 

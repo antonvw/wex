@@ -581,6 +581,29 @@ void wxExMenu::AppendPrint()
   Append(wxID_PRINT);
 }
 
+bool wxExMenu::AppendSVN(const wxFileName& file)
+{
+  wxFileName path (file.GetPath());
+  path.AppendDir(".svn");
+        
+  if (path.DirExists())
+  {
+    wxMenu* svnmenu = new wxMenu;
+    svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed(_("&Diff")));
+    svnmenu->Append(ID_EDIT_SVN_LOG, wxExEllipsed(_("&Log")));
+    svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed(_("&Cat")));
+    svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed(_("&Blame")));
+    svnmenu->AppendSeparator();
+    svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed(_("&Commit")));
+    AppendSeparator();
+    AppendSubMenu(svnmenu, "&SVN");
+
+    return true;
+  }
+
+  return false;
+}
+
 wxExMenu* wxExMenu::AppendTools()
 {
   wxExMenu* menuTool = new wxExMenu(*this);

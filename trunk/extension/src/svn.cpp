@@ -17,28 +17,22 @@
 
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
 
+wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
+  : m_Type(GetType(command_id))
+  , m_Output()
+  , m_FullPath(fullpath)
+  , m_ReturnCode(-2)
+{
+  Initialize();
+}
+
 wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   : m_Type(type)
   , m_Output()
   , m_FullPath(fullpath)
   , m_ReturnCode(-2)
 {
-  switch (m_Type)
-  {
-    case SVN_BLAME:  m_Caption = "SVN Blame"; break;
-    case SVN_CAT:    m_Caption = "SVN Cat"; break;
-    case SVN_COMMIT: m_Caption = "SVN Commit"; break;
-    case SVN_DIFF:   m_Caption = "SVN Diff"; break;
-    case SVN_INFO:   m_Caption = "SVN Info"; break;
-    case SVN_LOG:    m_Caption = "SVN Log"; break;
-    case SVN_STAT:   m_Caption = "SVN Stat"; break;
-    case SVN_UPDATE: m_Caption = "SVN Update"; break;
-    default:
-      wxFAIL;
-      break;
-  }
-
-  m_Command = m_Caption.AfterFirst(' ').Lower();
+  Initialize();
 }
 
 int wxExSVN::Execute(bool show_dialog)
@@ -153,7 +147,42 @@ int wxExSVN::ExecuteAndShowOutput()
   return m_ReturnCode;
 }
 
-void wxExSVN::ShowOutput()
+wxExSVNType wxExSVN::GetType(int command_id) const
+{
+  switch (command_id)
+  {
+    case ID_EDIT_SVN_BLAME: return SVN_BLAME; break;
+    case ID_EDIT_SVN_CAT: return SVN_CAT; break;
+    case ID_EDIT_SVN_COMMIT: return SVN_COMMIT; break;
+    case ID_EDIT_SVN_DIFF: return SVN_DIFF; break;
+    case ID_EDIT_SVN_LOG: return SVN_LOG; break;
+    default:
+      wxFAIL;
+      break;
+  }
+}
+
+void wxExSVN::Initialize()
+{
+  switch (m_Type)
+  {
+    case SVN_BLAME:  m_Caption = "SVN Blame"; break;
+    case SVN_CAT:    m_Caption = "SVN Cat"; break;
+    case SVN_COMMIT: m_Caption = "SVN Commit"; break;
+    case SVN_DIFF:   m_Caption = "SVN Diff"; break;
+    case SVN_INFO:   m_Caption = "SVN Info"; break;
+    case SVN_LOG:    m_Caption = "SVN Log"; break;
+    case SVN_STAT:   m_Caption = "SVN Stat"; break;
+    case SVN_UPDATE: m_Caption = "SVN Update"; break;
+    default:
+      wxFAIL;
+      break;
+  }
+
+  m_Command = m_Caption.AfterFirst(' ').Lower();
+}
+
+void wxExSVN::ShowOutput() const
 {
   // If we did not yet ask Execute, or cancelled, return.
   if (m_ReturnCode < 0)
