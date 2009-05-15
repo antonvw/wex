@@ -1072,6 +1072,9 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
     else
     {
       start_pos = GetCurrentPos();
+      if (GetSelectionStart() != -1)
+        start_pos = GetSelectionStart();
+
       end_pos = 0;
     }
   }
@@ -1090,18 +1093,13 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
     if (GetTargetStart() != GetTargetEnd())
     {
-      EnsureLineVisible(GetTargetStart(), GetTargetEnd());
-
-      if (find_next)
-        SetSelection(GetTargetStart(), GetTargetEnd());
-      else
-        SetSelection(GetTargetEnd(), GetTargetStart());
+      SetSelection(GetTargetStart(), GetTargetEnd());
+      EnsureCaretVisible();
     }
     else
     {
-      // This should not occur, so give an error.
-      wxLogError("Target start and end are equal");
-      return false;//GotoPos(GetTargetEnd());
+      wxFAIL;
+      return false;
     }
 
     return true;
