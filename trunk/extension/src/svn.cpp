@@ -43,9 +43,7 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
 
 int wxExSVN::Execute(bool show_dialog)
 {
-  // Show dialog if asked for, and no SVN_UPDATE, as that has no flags to ask for.
-  if (show_dialog && 
-      m_Type != SVN_UPDATE)
+  if (show_dialog)
   {
     std::vector<wxExConfigItem> v;
 
@@ -59,7 +57,11 @@ int wxExSVN::Execute(bool show_dialog)
       v.push_back(wxExConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
     }
 
-    v.push_back(wxExConfigItem(_("Flags")));
+    // SVN_UPDATE has no flags to ask for.
+    if (m_Type != SVN_UPDATE)
+    {
+      v.push_back(wxExConfigItem(_("Flags")));
+    }
 
     if (wxExConfigDialog(wxTheApp->GetTopWindow(),
       wxExApp::GetConfig(),
