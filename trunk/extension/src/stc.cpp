@@ -1131,7 +1131,7 @@ void wxExSTC::FoldAll()
   GotoLine(current_line);
 }
 
-const wxString wxExSTC::GetEOL()
+const wxString wxExSTC::GetEOL() const
 {
   switch (GetEOLMode())
   {

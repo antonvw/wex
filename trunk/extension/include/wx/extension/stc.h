@@ -149,7 +149,7 @@ public:
   void FileTypeMenu();
 
   /// Gets EOL string.
-  const wxString GetEOL();
+  const wxString GetEOL() const;
 
   /// Gets current flags (used by Open).
   long GetFlags() const {return m_Flags;};
