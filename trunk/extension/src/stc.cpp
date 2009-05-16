@@ -493,9 +493,10 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
-    if (LinkOpen(link, line_no, false))
+    wxString filename;
+    if (LinkOpen(link, filename, line_no, false))
     {
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + wxExGetEndOfText(link));
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
       menu.AppendSeparator();
     }
   }
@@ -1452,6 +1453,7 @@ void wxExSTC::LexerDialog(const wxString& caption)
 
 bool wxExSTC::LinkOpen(
   const wxString& link_with_line,
+  wxString& filename,
   int line_number,
   bool open_link)
 {
@@ -1524,6 +1526,8 @@ bool wxExSTC::LinkOpen(
     return Open(fullpath, line_number, wxEmptyString, m_Flags | STC_OPEN_FROM_LINK);
   }
 
+  filename = wxFileName(fullpath).GetFullName();
+  
   return !fullpath.empty();
 }
 
@@ -1606,11 +1610,13 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     const wxString sel = GetSelectedText();
     if (!sel.empty())
     {
-      LinkOpen(sel, wxExGetLineNumberFromText(sel));
+      wxString filename;
+      LinkOpen(sel, filename, wxExGetLineNumberFromText(sel));
     }
     else
     {
-      LinkOpen(GetTextAtCurrentPos(), GetLineNumberAtCurrentPos());
+      wxString filename;
+      LinkOpen(GetTextAtCurrentPos(), filename, GetLineNumberAtCurrentPos());
     }
     }
     break;

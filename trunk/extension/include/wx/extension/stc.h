@@ -262,7 +262,11 @@ private:
   void GuessType();
   void HwxExDecCalltip(int pos);
   void Initialize();
-  bool LinkOpen(const wxString& link, int line_number = 0, bool link_open = true);
+  bool LinkOpen(
+    const wxString& link,
+    wxString& filename, // name of found file
+    int line_number = 0, 
+    bool link_open = true);
   /// Adds a path to the path list, does not change it in the config.
   void PathListAdd(const wxString& path);
   void ReadFromFile(bool get_only_new_data);
