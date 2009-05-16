@@ -70,7 +70,7 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  wxExDirWithReport* m_Dir;     ///< testing wxExDirWithReport
+  wxExDirWithListView* m_Dir;     ///< testing wxExDirWithReport
   wxExListViewFile* m_ListView; ///< testing wxExListViewFile
   wxExProcessWithListView* m_Process; ///< testing wxExProcessWithListView
   wxExSTCWithFrame* m_STC;      ///< testing wxExSTCWithFrame
