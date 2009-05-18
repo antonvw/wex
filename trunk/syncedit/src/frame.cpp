@@ -742,7 +742,10 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
   else switch (event.GetId())
     {
-    case wxID_EXECUTE: event.Enable(wxExProcessWithListView::IsSelected()); break;
+    case wxID_EXECUTE: 
+      event.Enable( wxExProcessWithListView::IsSelected() &&
+                   !wxExListViewFile::ProcessIsRunning()); 
+      break;
     case wxID_STOP: event.Enable(wxExListViewFile::ProcessIsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
