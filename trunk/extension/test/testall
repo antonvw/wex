@@ -1,0 +1,29 @@
+# bash
+# File:    testall
+# Purpose: script to test all
+# RCS-ID:  $Id$
+
+target=$1
+PROGRAM=./test.v1.0
+
+ORG=$PWD
+
+if [ "$1" = "all" ]; then
+  target=""
+fi
+
+echo "-- test base --"
+cd $ORG/base
+$PROGRAM > $ORG/base/test.log
+
+echo "-- test app --"
+cd $ORG/app
+$PROGRAM > $ORG/app/test.log
+
+echo "-- test report --"
+cd $ORG/report
+$PROGRAM > $ORG/report/test.log
+
+cd $ORG
+
+svn commit -m "results of running testall"
