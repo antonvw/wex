@@ -39,7 +39,7 @@ wxExProcessWithListView::wxExProcessWithListView(
   Redirect();
 }
 
-void wxExProcessWithListView::CheckInput()
+bool wxExProcessWithListView::CheckInput()
 {
   bool hasInput = false;
 
@@ -122,6 +122,8 @@ void wxExProcessWithListView::CheckInput()
 
     m_Owner->UpdateStatusBar();
   }
+
+  return hasInput;
 }
 
 int wxExProcessWithListView::ConfigDialog()
@@ -191,7 +193,10 @@ void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status
   m_Timer.Stop();
 
   // Collect remaining input.
-  CheckInput();
+  while (CheckInput())
+  {
+    // Do nothing.
+  }
 
   wxExFrame::StatusText(_("Ready"));
 
@@ -201,5 +206,8 @@ void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status
 
 void wxExProcessWithListView::OnTimer(wxTimerEvent& event)
 {
-  CheckInput();
+  while (CheckInput())
+  {
+    // Do nothing.
+  }
 }

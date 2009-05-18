@@ -48,8 +48,7 @@ protected:
 private:
   // Checks whether input is available from process and updates the listview.
   // You should call it regularly.
-  // This is done by the internal thread, so not for doxygen.
-  void CheckInput();
+  bool CheckInput();
 
   virtual void OnTerminate(int pid, int status); // overriden
 
