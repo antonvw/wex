@@ -334,6 +334,31 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
+  if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
+  {
+    wxExSVN svn(event.GetId(), m_DirCtrl->GetFilePath());
+
+    if (event.GetId() == ID_EDIT_SVN_CAT)
+    {
+      const int result = svn.Execute();
+
+      if (result == 0)
+      {
+        OpenFile(wxExFileName(m_DirCtrl->GetFilePath()), svn.GetOutput());
+      }
+      else if (result > 0)
+      {
+        svn.ShowOutput();
+      }
+    }
+    else
+    {
+      svn.ExecuteAndShowOutput();
+    }
+
+    return;
+  }
+
   wxExSTCWithFrame* editor = GetCurrentSTC();
   wxExListViewFile* project = GetCurrentProject();
 
@@ -643,23 +668,6 @@ and saved in the same directory as where the executable is."));
   }
   break;
 
-  case ID_TREE_SVN_CAT:
-  {
-    wxExSVN svn(SVN_CAT, m_DirCtrl->GetFilePath());
-    const int result = svn.Execute();
-
-    if (result == 0)
-    {
-      OpenFile(wxExFileName(m_DirCtrl->GetFilePath()), svn.GetOutput());
-    }
-    else if (result > 0)
-    {
-      svn.ShowOutput();
-    }
-  }
-  break;
-  case ID_TREE_SVN_DIFF: wxExSVN(SVN_DIFF, m_DirCtrl->GetFilePath()).ExecuteAndShowOutput(); break;
-  case ID_TREE_SVN_LOG: wxExSVN(SVN_LOG, m_DirCtrl->GetFilePath()).ExecuteAndShowOutput(); break;
   case ID_TREE_OPEN: OpenFile(wxExFileName(m_DirCtrl->GetFilePath())); break;
 
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
@@ -683,23 +691,14 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
-    wxMenu menu;
+    wxExMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
+    menu.AppendSVN(filename);
 
-    if (wxExApp::GetConfigBool("SVN"))
+    if (filename.GetLexer().GetScintillaLexer() == "makefile")
     {
       menu.AppendSeparator();
-      wxMenu* svnmenu = new wxMenu;
-      svnmenu->Append(ID_TREE_SVN_DIFF, wxExEllipsed("&Diff"));
-      svnmenu->Append(ID_TREE_SVN_LOG, wxExEllipsed("&Log"));
-      svnmenu->Append(ID_TREE_SVN_CAT, wxExEllipsed("&Cat"));
-      menu.AppendSubMenu(svnmenu, "&SVN");
-
-      if (filename.GetLexer().GetScintillaLexer() == "makefile")
-      {
-        menu.AppendSeparator();
-        menu.Append(ID_TREE_RUN_MAKE, wxExEllipsed("&Make"));
-      }
+      menu.Append(ID_TREE_RUN_MAKE, wxExEllipsed("&Make"));
     }
 
     PopupMenu(&menu);

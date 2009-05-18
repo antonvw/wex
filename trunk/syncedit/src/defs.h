@@ -41,9 +41,6 @@ enum
   ID_SPLIT,
   ID_TREE_OPEN,
   ID_TREE_RUN_MAKE,
-  ID_TREE_SVN_CAT,
-  ID_TREE_SVN_DIFF,
-  ID_TREE_SVN_LOG,
   ID_VIEW_PANE_FIRST, // put all your panes from here
   ID_VIEW_FILES,
   ID_VIEW_PROJECTS,
