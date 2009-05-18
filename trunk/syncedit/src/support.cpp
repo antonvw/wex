@@ -95,8 +95,8 @@ Frame::Frame(const wxString& project_wildcard)
     menuSVN->Append(ID_SVN_LOG, wxExEllipsed("&Log"));
     menuSVN->Append(ID_SVN_DIFF, wxExEllipsed("&Diff"));
     menuSVN->AppendSeparator();
-    menuSVN->Append(ID_SVN_UPDATE, wxExEllipsed(_("&Update")));
-    menuSVN->Append(ID_SVN_COMMIT, wxExEllipsed(_("C&ommit")));
+    menuSVN->Append(ID_SVN_UPDATE, wxExEllipsed("&Update"));
+    menuSVN->Append(ID_SVN_COMMIT, wxExEllipsed("C&ommit"));
     menuEdit->AppendSubMenu(menuSVN, "&SVN");
     menuEdit->AppendSeparator();
   }
