@@ -90,10 +90,10 @@ Frame::Frame(const wxString& project_wildcard)
   if (wxExApp::GetConfigBool("SVN"))
   {
     wxMenu* menuSVN = new wxMenu;
-    menuSVN->Append(ID_SVN_STAT, wxExEllipsed(_("&Stat")));
-    menuSVN->Append(ID_SVN_INFO, wxExEllipsed(_("&Info")));
-    menuSVN->Append(ID_SVN_LOG, wxExEllipsed(_("&Log")));
-    menuSVN->Append(ID_SVN_DIFF, wxExEllipsed(_("&Diff")));
+    menuSVN->Append(ID_SVN_STAT, wxExEllipsed("&Stat"));
+    menuSVN->Append(ID_SVN_INFO, wxExEllipsed("&Info"));
+    menuSVN->Append(ID_SVN_LOG, wxExEllipsed("&Log"));
+    menuSVN->Append(ID_SVN_DIFF, wxExEllipsed("&Diff"));
     menuSVN->AppendSeparator();
     menuSVN->Append(ID_SVN_UPDATE, wxExEllipsed(_("&Update")));
     menuSVN->Append(ID_SVN_COMMIT, wxExEllipsed(_("C&ommit")));

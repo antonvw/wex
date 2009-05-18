@@ -690,15 +690,15 @@ void MDIFrame::OnTree(wxTreeEvent& event)
     {
       menu.AppendSeparator();
       wxMenu* svnmenu = new wxMenu;
-      svnmenu->Append(ID_TREE_SVN_DIFF, wxExEllipsed(_("&Diff")));
-      svnmenu->Append(ID_TREE_SVN_LOG, wxExEllipsed(_("&Log")));
-      svnmenu->Append(ID_TREE_SVN_CAT, wxExEllipsed(_("&Cat")));
+      svnmenu->Append(ID_TREE_SVN_DIFF, wxExEllipsed("&Diff"));
+      svnmenu->Append(ID_TREE_SVN_LOG, wxExEllipsed("&Log"));
+      svnmenu->Append(ID_TREE_SVN_CAT, wxExEllipsed("&Cat"));
       menu.AppendSubMenu(svnmenu, "&SVN");
 
       if (filename.GetLexer().GetScintillaLexer() == "makefile")
       {
         menu.AppendSeparator();
-        menu.Append(ID_TREE_RUN_MAKE, wxExEllipsed(_("&Make")));
+        menu.Append(ID_TREE_RUN_MAKE, wxExEllipsed("&Make"));
       }
     }
 
