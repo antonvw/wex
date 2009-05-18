@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-18 08:01+0100\n"
-"PO-Revision-Date: 2009-05-18 08:01+0100\n"
+"POT-Creation-Date: 2009-05-18 10:52+0100\n"
+"PO-Revision-Date: 2009-05-18 10:52+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -65,7 +65,7 @@ msgstr "Alle bestanden afdrukken"
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: src/frame.cpp:400
+#: src/frame.cpp:425
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -75,46 +75,46 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: src/frame.cpp:405
+#: src/frame.cpp:430
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: src/frame.cpp:407
+#: src/frame.cpp:432
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: src/frame.cpp:509
+#: src/frame.cpp:534
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: src/frame.cpp:510
+#: src/frame.cpp:535
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: src/frame.cpp:514
+#: src/frame.cpp:539
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: src/frame.cpp:522
-#: src/frame.cpp:531
-#: src/frame.cpp:536
+#: src/frame.cpp:547
+#: src/frame.cpp:556
+#: src/frame.cpp:561
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: src/frame.cpp:528
+#: src/frame.cpp:553
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: src/frame.cpp:640
+#: src/frame.cpp:665
 msgid "Make"
 msgstr "Maken"
 
-#: src/frame.cpp:687
+#: src/frame.cpp:695
 msgid "&Open"
 msgstr "&Openen"
 
-#: src/frame.cpp:927
-#: src/frame.cpp:939
+#: src/frame.cpp:926
+#: src/frame.cpp:938
 msgid "Flags"
 msgstr "Vlaggen"
 
@@ -165,14 +165,6 @@ msgstr "&Zoeken in bestanden"
 #: src/support.cpp:87
 msgid "&Control Char"
 msgstr "&Controle karakter"
-
-#: src/support.cpp:98
-msgid "&Update"
-msgstr "&Update"
-
-#: src/support.cpp:99
-msgid "C&ommit"
-msgstr "C&ommit"
 
 #: src/support.cpp:104
 msgid "Start Record"
@@ -338,6 +330,10 @@ msgstr "Bekijk hexadecimaal"
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
 
+#~ msgid "&Update"
+#~ msgstr "&Update"
+#~ msgid "C&ommit"
+#~ msgstr "C&ommit"
 #~ msgid "&Diff"
 #~ msgstr "&Diff"
 #~ msgid "&Log"
