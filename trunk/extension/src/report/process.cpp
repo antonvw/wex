@@ -27,7 +27,7 @@ wxString wxExProcessWithListView::m_Command = "";
 wxExProcessWithListView::wxExProcessWithListView(
   wxExListViewFile* listview,
   const wxString& command)
-  : wxProcess(listview, -1)
+  : wxProcess(NULL, -1)
   , m_Owner(listview)
   , m_Timer(this)
 {
@@ -165,15 +165,6 @@ long wxExProcessWithListView::Execute()
   }
 
   return pid;
-}
-
-wxKillError wxExProcessWithListView::Kill(wxSignal sig)
-{
-  m_Timer.Stop();
-  
-  wxExFrame::StatusText(_("Stopped"));
-
-  return wxProcess::Kill(GetPid(), sig);
 }
 
 void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))

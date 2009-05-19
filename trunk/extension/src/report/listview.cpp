@@ -1013,7 +1013,7 @@ const wxString wxExListViewFile::PrintHeader() const
 
 bool wxExListViewFile::ProcessIsRunning()
 {
-  return m_Process != NULL && m_Process->Exists();
+  return m_Process != NULL && wxProcess::Exists(m_Process->GetPid());
 }
 
 void wxExListViewFile::ProcessRun(const wxString& command)
@@ -1051,8 +1051,17 @@ void wxExListViewFile::ProcessStop()
 {
   if (ProcessIsRunning())
   {
-    m_Process->Kill();
-    wxDELETE(m_Process);
+    if (wxProcess::Kill(m_Process->GetPid(), wxSIGKILL) == wxKILL_ERROR)
+    {
+      // If the process could not be killed, do not delete it.
+      wxFAIL;
+      return;
+    }
+
+    // Readme: This is a memory leak, but using wxDELETE(m_Process) causes a crash.
+    m_Process = NULL;
+
+    wxExFrame::StatusText(_("Stopped"));
   }
 }
 

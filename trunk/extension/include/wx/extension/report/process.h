@@ -34,16 +34,9 @@ public:
   /// that the command could not be executed.
   long Execute();
 
-  /// Returns true if this process exists in the system.
-  bool Exists() const {
-    return wxProcess::Exists(GetPid());}
-
   /// Returns whether a process has been selected.
   static bool IsSelected() {
     return !m_Command.empty();};
-
-  /// Kills the process (sends specified signal if process still running).
-  wxKillError Kill(wxSignal sig = wxSIGTERM);
 protected:
   void OnTimer(wxTimerEvent& event);
 private:
