@@ -37,6 +37,9 @@ General
 
 - Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
+    
+- Test coverage done by gcov.
+    http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 
 - Translation is done using poedit (1.4.2)
     http://www.poedit.net/
