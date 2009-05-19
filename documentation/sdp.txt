@@ -58,7 +58,7 @@ When adding functionality in trunk
 
 - document it in the source in doxy way
 
-- if it needs to be translated, add _() around text strings, and update po file
+- if it needs to be translated, add _() around text strings, and update po file(s)
 
 - add a test for it in 
     extension/test/base, 
@@ -67,7 +67,7 @@ When adding functionality in trunk
 
   where it has least dependancies
 
-  run the test and collect output in test.log
+  run testall from extension/test, which collects output in test.log, and commits automatically.
 
 - add a sample for it in
     extension/sample, 
