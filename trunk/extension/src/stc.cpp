@@ -1533,10 +1533,7 @@ bool wxExSTC::LinkOpen(
 
 void wxExSTC::MacroPlayback()
 {
-  if (!MacroIsRecorded())
-  {
-    return;
-  }
+  wxASSERT(MacroIsRecorded());
 
   for (
     vector<wxString>::const_iterator it = m_Macro.begin();
@@ -2614,10 +2611,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
 void wxExSTC::StartRecord()
 {
-  if (m_MacroIsRecording)
-  {
-    return;
-  }
+  wxASSERT(!m_MacroIsRecording);
 
   m_MacroIsRecording = true;
 
@@ -2630,10 +2624,7 @@ void wxExSTC::StartRecord()
 
 void wxExSTC::StopRecord()
 {
-  if (!m_MacroIsRecording)
-  {
-    return;
-  }
+  wxASSERT(m_MacroIsRecording);
 
   m_MacroIsRecording = false;
 
