@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.cpp
-* Purpose:       Implementation of class 'wxExProcessWithListView' and support classes
+* Purpose:       Implementation of class 'wxExProcessWithListView'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
