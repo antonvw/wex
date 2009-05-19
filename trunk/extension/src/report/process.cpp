@@ -167,25 +167,13 @@ long wxExProcessWithListView::Execute()
   return pid;
 }
 
-bool wxExProcessWithListView::IsRunning() const
-{
-  return Exists(GetPid());
-}
-
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 {
-  wxKillError output = wxKILL_OK;
-  
-  if (Exists(GetPid()))
-  {
-    output = wxProcess::Kill(GetPid(), sig);
-
-    wxExFrame::StatusText(_("Stopped"));
-  }
-
   m_Timer.Stop();
   
-  return output;
+  wxExFrame::StatusText(_("Stopped"));
+
+  return wxProcess::Kill(GetPid(), sig);
 }
 
 void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))

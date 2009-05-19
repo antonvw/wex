@@ -34,8 +34,9 @@ public:
   /// that the command could not be executed.
   long Execute();
 
-  /// Is the process running.
-  bool IsRunning() const;
+  /// Returns true if this process exists in the system.
+  bool Exists() const {
+    return wxProcess::Exists(GetPid());}
 
   /// Returns whether a process has been selected.
   static bool IsSelected() {

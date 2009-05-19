@@ -1013,7 +1013,7 @@ const wxString wxExListViewFile::PrintHeader() const
 
 bool wxExListViewFile::ProcessIsRunning()
 {
-  return m_Process != NULL && m_Process->IsRunning();
+  return m_Process != NULL && m_Process->Exists();
 }
 
 void wxExListViewFile::ProcessRun(const wxString& command)
