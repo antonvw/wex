@@ -36,22 +36,22 @@ enum
   ID_LAST,
 };
 
-BEGIN_EVENT_TABLE(exSampleFrame, exFrame)
-  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, exSampleFrame::OnCommand)
-  EVT_MENU_RANGE(ID_FIRST, ID_LAST, exSampleFrame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, exSampleFrame::OnCommand)
+BEGIN_EVENT_TABLE(wxExSampleFrame, wxExFrame)
+  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, wxExSampleFrame::OnCommand)
+  EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
 END_EVENT_TABLE()
 
-IMPLEMENT_APP(exSampleApp)
+IMPLEMENT_APP(wxExSampleApp)
 
-bool exSampleApp::OnInit()
+bool wxExSampleApp::OnInit()
 {
-  SetAppName("exSample");
+  SetAppName("wxExSample");
   SetLogging();
 
-  exApp::OnInit();
+  wxExApp::OnInit();
 
-  exSampleFrame *frame = new exSampleFrame("exSample");
+  wxExSampleFrame *frame = new wxExSampleFrame("wxExSample");
   frame->Show(true);
 
   SetTopWindow(frame);
@@ -60,20 +60,20 @@ bool exSampleApp::OnInit()
 }
 
 #if wxUSE_GRID
-exSampleDir::exSampleDir(const wxString& fullpath, const wxString& findfiles, exGrid* grid)
-  : exDir(fullpath, findfiles)
+wxExSampleDir::wxExSampleDir(const wxString& fullpath, const wxString& findfiles, wxExGrid* grid)
+  : wxExDir(fullpath, findfiles)
   , m_Grid(grid)
 {
 }
 
-void exSampleDir::OnFile(const wxString& file)
+void wxExSampleDir::OnFile(const wxString& file)
 {
   m_Grid->AppendRows(1);
   const int no = m_Grid->GetNumberRows() - 1;
   m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
   m_Grid->SetCellValue(no, 1, file);
 
-  exRenderer* renderer = new exRenderer(exRenderer::CELL_CROSS, *wxGREEN_PEN, *wxRED_PEN);
+  wxExRenderer* renderer = new wxExRenderer(wxExRenderer::CELL_CROSS, *wxGREEN_PEN, *wxRED_PEN);
   m_Grid->SetCellRenderer(no, 0, renderer);
 
   // Let's make these cells readonly and colour them, so we can test
@@ -83,13 +83,13 @@ void exSampleDir::OnFile(const wxString& file)
 }
 #endif
 
-exSampleFrame::exSampleFrame(const wxString& title)
-  : exManagedFrame(NULL, wxID_ANY, title)
+wxExSampleFrame::wxExSampleFrame(const wxString& title)
+  : wxExManagedFrame(NULL, wxID_ANY, title)
   , m_FlagsSTC(0)
 {
   SetIcon(appl_xpm);
 
-  exMenu* menuFile = new exMenu;
+  wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
@@ -103,16 +103,16 @@ exSampleFrame::exSampleFrame(const wxString& title)
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
-  exMenu* menuConfig = new exMenu;
-  menuConfig->Append(ID_CONFIG_DLG, exEllipsed(_("Config Dialog")));
-  menuConfig->Append(ID_CONFIG_DLG_READONLY, exEllipsed(_("Config Dialog Readonly")));
+  wxExMenu* menuConfig = new wxExMenu;
+  menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
+  menuConfig->Append(ID_CONFIG_DLG_READONLY, wxExEllipsed(_("Config Dialog Readonly")));
 
-  exMenu* menuSTC = new exMenu;
-  menuSTC->Append(ID_STC_FLAGS, exEllipsed(_("Open Flag")));
+  wxExMenu* menuSTC = new wxExMenu;
+  menuSTC->Append(ID_STC_FLAGS, wxExEllipsed(_("Open Flag")));
   menuSTC->AppendSeparator();
-  menuSTC->Append(ID_STC_CONFIG_DLG, exEllipsed(_("Config Dialog")));
-  menuSTC->Append(ID_STC_GOTO, exEllipsed(_("Goto Dialog")));
-  menuSTC->Append(ID_STC_LEXER, exEllipsed(_("Lexer Dialog")));
+  menuSTC->Append(ID_STC_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
+  menuSTC->Append(ID_STC_GOTO, wxExEllipsed(_("Goto Dialog")));
+  menuSTC->Append(ID_STC_LEXER, wxExEllipsed(_("Lexer Dialog")));
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_SPLIT, _("Split"));
   menuSTC->AppendSeparator();
@@ -120,7 +120,7 @@ exSampleFrame::exSampleFrame(const wxString& title)
   menuSTC->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuSTC->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback"));
 
-  exMenu* menuHelp = new exMenu;
+  wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menubar = new wxMenuBar;
@@ -130,45 +130,45 @@ exSampleFrame::exSampleFrame(const wxString& title)
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  m_Notebook = new exNotebook(this, NULL);
+  m_Notebook = new wxExNotebook(this, NULL);
 #if wxUSE_GRID
-  m_Grid = new exGrid(m_Notebook);
+  m_Grid = new wxExGrid(m_Notebook);
 #endif
-  m_ListView = new exListView(m_Notebook);
-  m_STC = new exSTC(this);
-  m_STCShell = new exSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
+  m_ListView = new wxExListView(m_Notebook);
+  m_STC = new wxExSTC(this);
+  m_STCShell = new wxExSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
-  GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("exSTC"));
+  GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTC"));
   GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().Update();
 
-  assert(exApp::GetLexers());
-  
-  exSTC* st = new exSTC(this, exApp::GetLexers()->GetFileName().GetFullPath());
-  m_Notebook->AddPage(st, exApp::GetLexers()->GetFileName().GetFullName());
-  m_Notebook->AddPage(m_ListView, "exListView");
-  
+  assert(wxExApp::GetLexers());
+
+  wxExSTC* st = new wxExSTC(this, wxExApp::GetLexers()->GetFileName().GetFullPath());
+  m_Notebook->AddPage(st, wxExApp::GetLexers()->GetFileName().GetFullName());
+  m_Notebook->AddPage(m_ListView, "wxExListView");
+
 #if wxUSE_GRID
-  m_Notebook->AddPage(m_Grid, "exGrid");
+  m_Notebook->AddPage(m_Grid, "wxExGrid");
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
-  exSampleDir dir(wxGetCwd(), "appl.*", m_Grid);
+  wxExSampleDir dir(wxGetCwd(), "appl.*", m_Grid);
   dir.FindFiles();
   m_Grid->AutoSizeColumns();
 #endif
 
   m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
-  m_ListView->InsertColumn("String", exColumn::COL_STRING);
-  m_ListView->InsertColumn("Number", exColumn::COL_INT);
-  m_ListView->InsertColumn("Float", exColumn::COL_FLOAT);
-  m_ListView->InsertColumn("Date", exColumn::COL_DATE);
+  m_ListView->InsertColumn("String", wxExColumn::COL_STRING);
+  m_ListView->InsertColumn("Number", wxExColumn::COL_INT);
+  m_ListView->InsertColumn("Float", wxExColumn::COL_FLOAT);
+  m_ListView->InsertColumn("Date", wxExColumn::COL_DATE);
 
   const int items = 50;
 
   for (int i = 0; i < items; i++)
   {
-    exListItem item(m_ListView, wxString::Format("item%d", i));
+    wxExListItem item(m_ListView, wxString::Format("item%d", i));
     item.Insert();
     item.SetColumnText(1, wxString::Format("%d", i));
     item.SetColumnText(2, wxString::Format("%f", (float)i / 2.0));
@@ -185,13 +185,13 @@ exSampleFrame::exSampleFrame(const wxString& title)
     else             item.SetImage(wxART_TICK_MARK);
   }
 
-  std::vector<exPane> panes;
-  panes.push_back(exPane("PaneText", -3));
-  panes.push_back(exPane("PaneFileType", 50, _("File type")));
-  panes.push_back(exPane("PaneCells", 60, _("Cells")));
-  panes.push_back(exPane("PaneItems", 60, _("Items")));
-  panes.push_back(exPane("PaneLines", 100, _("Lines")));
-  panes.push_back(exPane("PaneLexer", 60, _("Lexer")));
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
+  panes.push_back(wxExPane("PaneCells", 60, _("Cells")));
+  panes.push_back(wxExPane("PaneItems", 60, _("Items")));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
+  panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
   SetupStatusBar(panes);
 
   CreateToolBar();
@@ -202,13 +202,13 @@ exSampleFrame::exSampleFrame(const wxString& title)
   m_ToolBar->Realize();
 }
 
-void exSampleFrame::ConfigDialogApplied(wxWindowID id)
+void wxExSampleFrame::ConfigDialogApplied(wxWindowID id)
 {
   m_STC->ConfigGet();
   m_STCShell->ConfigGet();
 }
 
-void exSampleFrame::OnCommand(wxCommandEvent& event)
+void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 {
   m_Statistics.Inc(wxString::Format("%d", event.GetId()));
 
@@ -218,7 +218,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(EX_LIB_VERSION);
+    info.SetVersion(wxEX_VERSION_STRING);
     info.AddDeveloper(wxVERSION_STRING);
     info.SetCopyright(_("(c) 1998-2009 Anton van Wezenbeek."));
     wxAboutBox(info);
@@ -240,22 +240,22 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
     const long stop = sw.Time();
 
-    StatusText(wxString::Format("exSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+    StatusText(wxString::Format("wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
     }
     break;
 
   case wxID_PREVIEW: m_ListView->PrintPreview(); break;
   case wxID_PRINT: m_ListView->Print(); break;
-  case wxID_PRINT_SETUP: exApp::GetPrinter()->PageSetup(); break;
+  case wxID_PRINT_SETUP: wxExApp::GetPrinter()->PageSetup(); break;
 
-  case wxID_SAVE: 
+  case wxID_SAVE:
     m_STC->FileSave();
 
-    if (m_STC->GetFileName().GetFullPath() == exApp::GetLexers()->GetFileName().GetFullPath())
+    if (m_STC->GetFileName().GetFullPath() == wxExApp::GetLexers()->GetFileName().GetFullPath())
     {
-      if (exApp::GetLexers()->Read())
+      if (wxExApp::GetLexers()->Read())
       {
-        wxLogMessage("file contains: %d lexers", exApp::GetLexers()->Count());
+        wxLogMessage("file contains: %d lexers", wxExApp::GetLexers()->Count());
         m_STC->SetLexer();
         // As the lexer might have changed, update status bar field as well.
         m_STC->UpdateStatusBar("PaneLexer");
@@ -265,44 +265,44 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_CONFIG_DLG:
     {
-    std::vector<exConfigItem> v;
+    std::vector<wxExConfigItem> v;
 
     for (size_t h = 1; h <= 25; h++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("check%d"), h), CONFIG_CHECKBOX, "Checkboxes"));
+      v.push_back(wxExConfigItem(wxString::Format(_("check%d"), h), CONFIG_CHECKBOX, "Checkboxes"));
     }
 
     for (size_t i = 1; i <= 25; i++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("colour%d"), i), CONFIG_COLOUR, "Colours"));
+      v.push_back(wxExConfigItem(wxString::Format(_("colour%d"), i), CONFIG_COLOUR, "Colours"));
     }
 
     for (size_t j = 1; j <= 10; j++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT, "Integers", true));
+      v.push_back(wxExConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT, "Integers", true));
     }
 
     for (size_t k = 1; k <= 10; k++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("spin%d"), k), 1, k, wxString("Spin controls")));
+      v.push_back(wxExConfigItem(wxString::Format(_("spin%d"), k), 1, k, wxString("Spin controls")));
     }
 
     for (size_t l = 1; l <= 10; l++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("string%d"), l), CONFIG_STRING, "Strings"));
+      v.push_back(wxExConfigItem(wxString::Format(_("string%d"), l), CONFIG_STRING, "Strings"));
     }
 
     for (size_t m = 1; m <= 10; m++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("combobox%d"), m), CONFIG_COMBOBOX, "Comboboxes"));
+      v.push_back(wxExConfigItem(wxString::Format(_("combobox%d"), m), CONFIG_COMBOBOX, "Comboboxes"));
     }
 
-    v.push_back(exConfigItem(_("dirpicker"), CONFIG_DIRPICKERCTRL, "Pickers"));
-    v.push_back(exConfigItem(_("filepicker"), CONFIG_FILEPICKERCTRL, "Pickers"));
+    v.push_back(wxExConfigItem(_("dirpicker"), CONFIG_DIRPICKERCTRL, "Pickers"));
+    v.push_back(wxExConfigItem(_("filepicker"), CONFIG_FILEPICKERCTRL, "Pickers"));
 
-    exConfigDialog* dlg = new exConfigDialog(
+    wxExConfigDialog* dlg = new wxExConfigDialog(
       this,
-      exApp::GetConfig(),
+      wxExApp::GetConfig(),
       v,
       _("Config Dialog"),
       wxEmptyString,
@@ -323,18 +323,18 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_CONFIG_DLG_READONLY:
     {
-    std::vector<exConfigItem> v;
+    std::vector<wxExConfigItem> v;
 
-    v.push_back(exConfigItem(_("filepicker"), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem(_("filepicker"), CONFIG_FILEPICKERCTRL));
 
     for (size_t j = 1; j <= 10; j++)
     {
-      v.push_back(exConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT));
+      v.push_back(wxExConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT));
     }
 
-    exConfigDialog* dlg = new exConfigDialog(
+    wxExConfigDialog* dlg = new wxExConfigDialog(
       this,
-      exApp::GetConfig(),
+      wxExApp::GetConfig(),
       v,
       _("Config Dialog Readonly"),
       wxEmptyString,
@@ -348,7 +348,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_PRINT_SPECIAL:
     {
-    wxHtmlEasyPrinting* print = exApp::GetPrinter();
+    wxHtmlEasyPrinting* print = wxExApp::GetPrinter();
 
     wxPrintDialogData printDialogData(*print->GetPrintData());
     wxPrinter printer(&printDialogData);
@@ -365,7 +365,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
 
     /*
     // This could be made better, immediately hide etc.
-    exSTC* stc = new exSTC(this, "mondrian.xpm");
+    wxExSTC* stc = new wxExSTC(this, "mondrian.xpm");
     stc->Hide();
     stc->Print(false);// however stc->Print(false) does not print
     delete stc;
@@ -374,7 +374,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_LOCALE_SHOW_DIR:
-    wxLogMessage(exApp::GetCatalogDir());
+    wxLogMessage(wxExApp::GetCatalogDir());
     break;
 
   case ID_SHELL_COMMAND:
@@ -390,9 +390,9 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_STC_CONFIG_DLG:
-    exSTC::ConfigDialog(
+    wxExSTC::ConfigDialog(
       _("Editor Options"),
-      exSTC::STC_CONFIG_MODELESS | exSTC::STC_CONFIG_WITH_APPLY);
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
     break;
   case ID_STC_FLAGS:
     {
@@ -402,7 +402,7 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
       "STC Open Flag",
       m_FlagsSTC,
       0,
-      2 * exSTC::STC_OPEN_FROM_URL);
+      2 * wxExSTC::STC_OPEN_FROM_URL);
 
     if (value != -1)
     {
@@ -412,11 +412,11 @@ void exSampleFrame::OnCommand(wxCommandEvent& event)
     break;
   case ID_STC_GOTO: m_STC->GotoDialog(); break;
   case ID_STC_LEXER: m_STC->LexerDialog(); break;
-  case ID_STC_SPLIT: 
-    { 
-    exSTC* stc = new exSTC(*m_STC);
+  case ID_STC_SPLIT:
+    {
+    wxExSTC* stc = new wxExSTC(*m_STC);
     m_Notebook->AddPage(
-      stc, 
+      stc,
       wxString::Format("stc%d", stc->GetId()),
       m_STC->GetFileName().GetFullName());
     stc->SetDocPointer(m_STC->GetDocPointer());

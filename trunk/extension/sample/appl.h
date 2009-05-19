@@ -18,54 +18,54 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/shell.h>
 
-/// Derive your application from exApp.
-class exSampleApp: public exApp
+/// Derive your application from wxExApp.
+class wxExSampleApp: public wxExApp
 {
 public:
   /// Constructor.
-  exSampleApp() {}
+  wxExSampleApp() {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
-  DECLARE_NO_COPY_CLASS(exSampleApp)
+  DECLARE_NO_COPY_CLASS(wxExSampleApp)
 };
 
 #if wxUSE_GRID
-/// Use exDir.
-class exSampleDir: public exDir
+/// Use wxExDir.
+class wxExSampleDir: public wxExDir
 {
 public:
   /// Constructor.
-  exSampleDir(const wxString& fullpath, const wxString& findfiles, exGrid* grid);
+  wxExSampleDir(const wxString& fullpath, const wxString& findfiles, wxExGrid* grid);
 private:
   /// Override the OnFile.
   virtual void OnFile(const wxString& file);
-  exGrid* m_Grid; ///< put it in a grid
+  wxExGrid* m_Grid; ///< put it in a grid
 };
 #endif
 
-/// Use exManagedFrame.
-class exSampleFrame: public exManagedFrame
+/// Use wxExManagedFrame.
+class wxExSampleFrame: public wxExManagedFrame
 {
 public:
   /// Constructor.
-  exSampleFrame(const wxString& title);
+  wxExSampleFrame(const wxString& title);
 protected:
   virtual void ConfigDialogApplied(wxWindowID id);
   /// Do something.
   void OnCommand(wxCommandEvent& event);
 private:
 #if wxUSE_GRID
-  exGrid* m_Grid;         ///< a grid
-#endif  
-  exListView* m_ListView; ///< a listview
-  exNotebook* m_Notebook; ///< a notebook
-  exSTCShell* m_STCShell; ///< an stc shell
-  exSTC* m_STC;           ///< an stc
+  wxExGrid* m_Grid;         ///< a grid
+#endif
+  wxExListView* m_ListView; ///< a listview
+  wxExNotebook* m_Notebook; ///< a notebook
+  wxExSTCShell* m_STCShell; ///< an stc shell
+  wxExSTC* m_STC;           ///< an stc
 
   long m_FlagsSTC;        ///< keep current flags
-  exStatistics <long> m_Statistics; ///< keep some statistics
+  wxExStatistics <long> m_Statistics; ///< keep some statistics
 
-  DECLARE_NO_COPY_CLASS(exSampleFrame)
+  DECLARE_NO_COPY_CLASS(wxExSampleFrame)
   DECLARE_EVENT_TABLE()
 };
