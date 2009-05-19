@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxbase29ud.lib wxbase29ud_net.lib wxpngd.lib wxzlib.lib wxjpegd.lib wxregexud.lib wxtiffd.lib wxmsw29ud_adv.lib wxmsw29ud_aui.lib wxmsw29ud_core.lib wxmsw29ud_html.lib wxmsw29ud_stc.lib wxexd.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxbase29ud.lib wxbase29ud_net.lib wxbase29ud_xml.lib wxpngd.lib wxzlib.lib wxjpegd.lib wxexpatd.lib wxregexud.lib wxtiffd.lib wxmsw29ud_adv.lib wxmsw29ud_aui.lib wxmsw29ud_core.lib wxmsw29ud_html.lib wxmsw29ud_stc.lib wxexd.lib"
 				OutputFile="buildmswd\test.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
