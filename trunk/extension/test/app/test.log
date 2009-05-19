@@ -1,6 +1,13 @@
-..
+..F
 
 
-OK (2 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  2   Failures: 1   Errors: 0
+
+
+1) test: testMethods (F) line: 82 test.cpp
+assertion failed
+- Expression: m_STC->MacroIsRecorded()
 
 
