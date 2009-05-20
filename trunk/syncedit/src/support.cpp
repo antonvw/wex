@@ -63,7 +63,6 @@ Frame::Frame(const wxString& project_wildcard)
   menuFile->Append(ID_ALL_STC_SAVE, _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
-  menuFile->Append(ID_ALL_STC_PRINT, wxExEllipsed(_("Print A&ll")), wxEmptyString, wxART_PRINT);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 

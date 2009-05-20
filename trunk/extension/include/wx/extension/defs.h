@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -27,7 +27,6 @@ enum wxExId
   ID_ALL_STC_CLOSE,
   ID_ALL_STC_COLOURISE,
   ID_ALL_STC_CONFIG_GET,
-  ID_ALL_STC_PRINT,
   ID_ALL_STC_SAVE,
   ID_ALL_STC_SET_LEXER,
   ID_ALL_HIGHEST,        // and before this one

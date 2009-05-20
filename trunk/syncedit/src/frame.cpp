@@ -34,7 +34,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_ALL_STC_PRINT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CLOSE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_COPY, MDIFrame::OnUpdateUI)
@@ -320,16 +319,8 @@ void MDIFrame::OnClose(wxCloseEvent& event)
 void MDIFrame::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() == ID_ALL_STC_CLOSE ||
-      event.GetId() == ID_ALL_STC_PRINT ||
       event.GetId() == ID_ALL_STC_SAVE)
   {
-    if (event.GetId() == ID_ALL_STC_PRINT)
-    {
-      if (wxMessageBox(wxString(_("Print all files")) + "?",
-        _("Confirm"), wxOK | wxCANCEL | wxICON_QUESTION) != wxOK)
-        return;
-    }
-
     m_NotebookWithEditors->ForEach(event.GetId());
     return;
   }
@@ -749,7 +740,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_STOP: event.Enable(wxExListViewFile::ProcessIsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
-    case ID_ALL_STC_PRINT:
     case ID_ALL_STC_SAVE:
       event.Enable(m_NotebookWithEditors->GetPageCount() > 2);
     break;

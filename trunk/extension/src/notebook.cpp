@@ -119,7 +119,6 @@ bool wxExNotebook::ForEach(int id)
     {
     case ID_ALL_STC_COLOURISE: stc->Colourise(); break;
     case ID_ALL_STC_CONFIG_GET: stc->ConfigGet(); break;
-    case ID_ALL_STC_PRINT: stc->Print(false); break;
     case ID_ALL_STC_SET_LEXER: stc->SetLexer(); break;
 
     case ID_ALL_STC_CLOSE:
