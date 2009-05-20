@@ -79,7 +79,7 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_STC->MacroIsRecorded());
   m_STC->StopRecord();
   CPPUNIT_ASSERT(!m_STC->MacroIsRecording());
-  CPPUNIT_ASSERT( m_STC->MacroIsRecorded());
+  CPPUNIT_ASSERT(!m_STC->MacroIsRecorded()); // still no macro
 
   // test wxExSTCShell
   m_STCShell->Prompt("test1");
