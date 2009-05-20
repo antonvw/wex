@@ -177,15 +177,21 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  if (command.GetId() > ID_EDIT_SVN_LOWEST && command.GetId() < ID_EDIT_SVN_HIGHEST)
+  if (command.GetId() > ID_EDIT_SVN_LOWEST && 
+      command.GetId() < ID_EDIT_SVN_HIGHEST)
   {
     wxExSVN svn(command.GetId(), m_FileName.GetFullPath());
 
-    if (command.GetId() == ID_EDIT_SVN_CAT)
+    if (command.GetId() == ID_EDIT_SVN_CAT ||
+        command.GetId() == ID_EDIT_SVN_BLAME)
     {
       if (svn.Execute() == 0)
       {
         m_Frame->OpenFile(m_FileName, svn.GetOutput());
+      }
+      else
+      {
+        svn.ShowOutput();
       }
     }
     else

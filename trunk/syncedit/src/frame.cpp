@@ -325,19 +325,19 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
+  if (event.GetId() > ID_EDIT_SVN_LOWEST && 
+      event.GetId() < ID_EDIT_SVN_HIGHEST)
   {
     wxExSVN svn(event.GetId(), m_DirCtrl->GetFilePath());
 
-    if (event.GetId() == ID_EDIT_SVN_CAT)
+    if (event.GetId() == ID_EDIT_SVN_CAT ||
+        event.GetId() == ID_EDIT_SVN_BLAME)
     {
-      const int result = svn.Execute();
-
-      if (result == 0)
+      if (svn.Execute() == 0)
       {
         OpenFile(wxExFileName(m_DirCtrl->GetFilePath()), svn.GetOutput());
       }
-      else if (result > 0)
+      else
       {
         svn.ShowOutput();
       }
