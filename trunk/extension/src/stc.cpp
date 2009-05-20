@@ -1328,7 +1328,7 @@ void wxExSTC::GuessType()
 #endif
 }
 
-void wxExSTC::HwxExDecCalltip(int pos)
+void wxExSTC::HexDecCalltip(int pos)
 {
   if (CallTipActive())
   {
@@ -1579,7 +1579,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     ControlCharDialog();
   break;
   case ID_EDIT_HEX_DEC_CALLTIP:
-    HwxExDecCalltip(GetCurrentPos());
+    HexDecCalltip(GetCurrentPos());
   break;
 
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
@@ -1902,7 +1902,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
     // FIXME: Calltips sometimes appear at wrong places, so not used.
     // const int pos = event.GetPosition();
-    // HwxExDecCalltip(pos);
+    // HexDecCalltip(pos);
   }
   else if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {

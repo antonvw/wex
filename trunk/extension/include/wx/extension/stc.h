@@ -260,7 +260,7 @@ private:
   int FindReplaceDataFlags() const;
   void FoldAll();
   void GuessType();
-  void HwxExDecCalltip(int pos);
+  void HexDecCalltip(int pos);
   void Initialize();
   bool LinkOpen(
     const wxString& link,
