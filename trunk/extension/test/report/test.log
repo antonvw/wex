@@ -1,13 +1,1 @@
-..F
-
-
-!!!FAILURES!!!
-Test Results:
-Run:  2   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 51 test.cpp
-assertion failed
-- Expression: !wxProcess::Exists(m_Process->GetPid())
-
-
+..
