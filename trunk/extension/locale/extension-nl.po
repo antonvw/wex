@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-18 15:02+0100\n"
-"PO-Revision-Date: 2009-05-18 15:02+0100\n"
+"POT-Creation-Date: 2009-05-20 08:26+0100\n"
+"PO-Revision-Date: 2009-05-20 08:26+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -394,7 +394,7 @@ msgid "Edge line"
 msgstr "Kantlijn regel"
 
 #: ../src/stc.cpp:763
-#: ../src/stc.cpp:2469
+#: ../src/stc.cpp:2466
 msgid "Auto fold"
 msgstr "Automatisch opvouwen"
 
@@ -482,49 +482,49 @@ msgid "Saved"
 msgstr "Opgeslagen"
 
 #: ../src/stc.cpp:1012
-#: ../src/stc.cpp:1781
+#: ../src/stc.cpp:1778
 msgid "Document is readonly"
 msgstr "Document is alleen lezen"
 
-#: ../src/stc.cpp:1556
+#: ../src/stc.cpp:1553
 msgid "Macro played back"
 msgstr "Macro afgespeeld"
 
-#: ../src/stc.cpp:1746
+#: ../src/stc.cpp:1743
 #, c-format
 msgid "Replaced: %d occurrences of: %s"
 msgstr "Vervangen: %d voorkomens van: %s"
 
-#: ../src/stc.cpp:2040
+#: ../src/stc.cpp:2037
 msgid "Opened"
 msgstr "Geopend"
 
-#: ../src/stc.cpp:2252
+#: ../src/stc.cpp:2249
 msgid "Start Of Sequence"
 msgstr "Begin van rij"
 
-#: ../src/stc.cpp:2264
+#: ../src/stc.cpp:2261
 msgid "End Of Sequence"
 msgstr "Einde van rij"
 
-#: ../src/stc.cpp:2274
+#: ../src/stc.cpp:2271
 msgid "Start and end sequence should have same length"
 msgstr "Begin en einde rij moeten gelijke lengte hebben"
 
-#: ../src/stc.cpp:2285
+#: ../src/stc.cpp:2282
 #, c-format
 msgid "Generate %ld lines"
 msgstr "Voeg %ld regels toe"
 
-#: ../src/stc.cpp:2349
+#: ../src/stc.cpp:2346
 msgid "Fold Flags"
 msgstr "Opvouw vlaggen"
 
-#: ../src/stc.cpp:2626
+#: ../src/stc.cpp:2620
 msgid "Macro recording"
 msgstr "Macro aan het opnemen"
 
-#: ../src/stc.cpp:2640
+#: ../src/stc.cpp:2631
 msgid "Macro is recorded"
 msgstr "Macro is opgenomen"
 
@@ -739,8 +739,8 @@ msgstr "Toevoegen"
 
 #: ../src/report/listview.cpp:126
 #: ../src/report/listview.cpp:142
-#: ../src/report/process.cpp:131
-#: ../src/report/process.cpp:140
+#: ../src/report/process.cpp:133
+#: ../src/report/process.cpp:142
 #: ../src/report/util.cpp:56
 #: ../src/report/util.cpp:82
 msgid "In folder"
@@ -894,50 +894,50 @@ msgstr "Map type"
 msgid "Make"
 msgstr "Maken"
 
-#: ../src/report/listview.cpp:1116
-#: ../src/report/process.cpp:196
+#: ../src/report/listview.cpp:1064
+msgid "Stopped"
+msgstr "Gestopt"
+
+#: ../src/report/listview.cpp:1125
+#: ../src/report/process.cpp:180
 msgid "Ready"
 msgstr "Klaar"
 
-#: ../src/report/listview.cpp:1180
-#: ../src/report/listview.cpp:1185
-#: ../src/report/listview.cpp:1226
+#: ../src/report/listview.cpp:1189
+#: ../src/report/listview.cpp:1194
+#: ../src/report/listview.cpp:1235
 msgid "RBS File"
 msgstr "RBS bestand"
 
-#: ../src/report/listview.cpp:1181
-#: ../src/report/listview.cpp:1196
+#: ../src/report/listview.cpp:1190
+#: ../src/report/listview.cpp:1205
 msgid "RBS Pattern"
 msgstr "RBS patroon"
 
-#: ../src/report/listview.cpp:1182
+#: ../src/report/listview.cpp:1191
 msgid "Build RBS File"
 msgstr "RBS bestand maken"
 
-#: ../src/report/listview.cpp:1226
+#: ../src/report/listview.cpp:1235
 msgid "generated"
 msgstr "gegenereerd"
 
-#: ../src/report/process.cpp:130
-#: ../src/report/process.cpp:141
+#: ../src/report/process.cpp:132
+#: ../src/report/process.cpp:143
 msgid "Process"
 msgstr "Proces"
 
-#: ../src/report/process.cpp:136
+#: ../src/report/process.cpp:138
 msgid "Select Process"
 msgstr "Proces selecteren"
 
-#: ../src/report/process.cpp:156
+#: ../src/report/process.cpp:158
 msgid "Running process"
 msgstr "Uitvoeren proces"
 
-#: ../src/report/process.cpp:162
+#: ../src/report/process.cpp:164
 msgid "Cannot run process"
 msgstr "Kan proces niet uitvoeren"
-
-#: ../src/report/process.cpp:181
-msgid "Stopped"
-msgstr "Gestopt"
 
 #: ../src/report/stc.cpp:102
 msgid "Find &In Files"
