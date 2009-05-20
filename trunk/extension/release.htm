@@ -29,12 +29,6 @@ border: 1px #6699CC solid;
 
 <!--
 Wait for next wxWidgets:
-- Print All (i.e. exSTC Print(false)) does not work, same problem as with IP Gateway (when prompt false, nothing is printed).
-  Then the lib can be used for building a spooler as well.
-- Print prints empty page.
-  Maybe:
-  In exPrintout check on page.x == 0 etc. and the 0.8 factor should be as in Code::Blocks.
-  Done, no change, also Print Preview missing lines.
 - Copy/paste between msw exSTC and gtk exSTC is not possible. There was a change in wxWidgets 2.9.
 - In exSTC you cannot place the cursor inside the () pair for cpp lexer (bug in Scintilla?).
 - In exNotebook add a SyncCloseAll for close complete notebook (if the event can be catched).
@@ -77,8 +71,6 @@ Roadmap:
   This can be tested in sample for wxextension.
 - Make process and wxGTK can be improved: not always a valid file is found.
   And for each new Run clear the old contents??
-
-
 -->
 
 <TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
