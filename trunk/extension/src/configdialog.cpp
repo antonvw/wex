@@ -196,7 +196,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 
     if (sizer != NULL)
     {
-      if (sizer->GetRows() > 0)
+      if ( sizer->GetRows() > 0 && 
+          !sizer->IsRowGrowable(sizer->GetRows() - 1))
       {
         sizer->AddGrowableRow(sizer->GetRows() - 1);
       }
