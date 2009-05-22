@@ -37,6 +37,9 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
 
 int wxExSVN::Execute(bool show_dialog)
 {
+  const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);
+  const wxString svn_flags_contents = wxExApp::GetConfig(svn_flags_name);
+
   if (show_dialog)
   {
     std::vector<wxExConfigItem> v;
@@ -54,6 +57,7 @@ int wxExSVN::Execute(bool show_dialog)
     // SVN_UPDATE has no flags to ask for.
     if (m_Type != SVN_UPDATE)
     {
+      wxExApp::SetConfig(_("Flags"), svn_flags_contents);
       v.push_back(wxExConfigItem(_("Flags")));
     }
 
@@ -92,6 +96,8 @@ int wxExSVN::Execute(bool show_dialog)
   if (!flags.empty())
   {
     flags += " ";
+
+    wxExApp::SetConfig(svn_flags_name, flags);
   }
 
   const wxString command = "svn " + flags + m_Command + arg + file;
