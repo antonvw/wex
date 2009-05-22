@@ -46,12 +46,7 @@ wxExSTCShell::wxExSTCShell(
   // Start with a prompt.
   Prompt();
 
-  if (m_CommandsSaveInConfig == -1)
-  {
-    // Fill the list with an empty command.
-    KeepCommand();
-  }
-  else
+  if (m_CommandsSaveInConfig > 0)
   {
     // Get all previous commands.
     wxStringTokenizer tkz(wxExApp::GetConfig("Shell"),
@@ -62,17 +57,10 @@ wxExSTCShell::wxExSTCShell(
       const wxString val = tkz.GetNextToken();
       m_Commands.push_front(val);
     }
-
-    // Take care that m_CommandsIterator is valid.
-    if (!m_Commands.empty())
-    {
-      m_CommandsIterator = m_Commands.end();
-    }
-    else
-    {
-      KeepCommand();
-    }
   }
+
+  // Take care that m_CommandsIterator is valid.
+  m_CommandsIterator = m_Commands.end();
 }
 
 wxExSTCShell::~wxExSTCShell()
@@ -95,7 +83,6 @@ wxExSTCShell::~wxExSTCShell()
   }
 }
 
-
 const wxString wxExSTCShell::GetHistory() const
 {
   wxString commands;
@@ -115,11 +102,6 @@ void wxExSTCShell::KeepCommand()
 {
   m_Commands.remove(m_Command);
   m_Commands.push_back(m_Command);
-
-  if (m_Commands.size() == 1)
-  {
-    m_CommandsIterator = m_Commands.end();
-  }
 }
 
 void wxExSTCShell::OnCommand(wxCommandEvent& command)
@@ -314,7 +296,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 
   if (no_asked_for > 0)
   {
-    int no = 0;
+    int no = 1;
 
     for (
       list < wxString >::const_iterator it = m_Commands.begin();
@@ -414,12 +396,9 @@ void wxExSTCShell::ShowHistory()
   {
     const wxString command = *it;
 
-    if (!command.empty())
-    {
-      AppendText(wxString::Format("\n%d %s",
-        command_no++,
-        command.c_str()));
-    }
+    AppendText(wxString::Format("\n%d %s",
+      command_no++,
+      command.c_str()));
   }
 }
 
