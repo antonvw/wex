@@ -1,6 +1,6 @@
-...wxExFile::Read:106 wxFile::Read:160
-.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:14
-.wxExConfig::Get:517 wxConfig::Read:1250
+...wxExFile::Read:105 wxFile::Read:158
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:13
+.wxExConfig::Get:515 wxConfig::Read:1241
 
 
 
