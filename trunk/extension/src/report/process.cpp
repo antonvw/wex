@@ -173,6 +173,10 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
   
   wxExFrame::StatusText(_("Stopped"));
 
+  DeletePendingEvents();
+
+  delete this;
+
   return wxProcess::Kill(GetPid(), sig);
 }
 
