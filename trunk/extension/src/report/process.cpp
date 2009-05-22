@@ -167,6 +167,15 @@ long wxExProcessWithListView::Execute()
   return pid;
 }
 
+wxKillError wxExProcessWithListView::Kill(wxSignal sig)
+{
+  m_Timer.Stop();
+  
+  wxExFrame::StatusText(_("Stopped"));
+
+  return wxProcess::Kill(GetPid(), sig);
+}
+
 void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
 {
   m_Timer.Stop();

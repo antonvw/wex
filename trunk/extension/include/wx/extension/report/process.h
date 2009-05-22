@@ -37,6 +37,9 @@ public:
   /// Returns whether a process has been selected.
   static bool IsSelected() {
     return !m_Command.empty();};
+    
+  /// Kills the process (sends specified signal if process still running).
+  wxKillError Kill(wxSignal sig = wxSIGKILL);
 protected:
   void OnTimer(wxTimerEvent& event);
 private:

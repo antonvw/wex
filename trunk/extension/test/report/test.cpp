@@ -49,10 +49,10 @@ void wxExReportAppTestFixture::testMethods()
   // test wxExProcessWithListView
   CPPUNIT_ASSERT(m_Process->IsSelected());
   CPPUNIT_ASSERT(m_Process->Execute());
-  CPPUNIT_ASSERT(wxProcess::Exists(m_Process->GetPid()));
-  CPPUNIT_ASSERT(wxProcess::Kill(m_Process->GetPid()) == wxKILL_OK);
-  CPPUNIT_ASSERT(m_Process->Execute()); // repeat test
-  CPPUNIT_ASSERT(wxProcess::Kill(m_Process->GetPid()) == wxKILL_OK);
+  const long pid = m_Process->GetPid();
+  CPPUNIT_ASSERT(wxProcess::Exists(pid));
+  CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
+//  CPPUNIT_ASSERT(!wxProcess::Exists(pid));
   
   // test wxExSTCWithFrame
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
