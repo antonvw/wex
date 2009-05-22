@@ -99,7 +99,11 @@ MyFrame::MyFrame(const wxString& title)
     this,
     wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND |
     wxExSTCWithFrame::STC_MENU_REPLACE | wxExSTCWithFrame::STC_MENU_INSERT);
-  m_LogWindow = new wxExSTCWithFrame(this, wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
+
+  m_LogWindow = new wxExSTCWithFrame(
+    this, 
+    wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
+
   m_Shell = new wxExSTCShell(this);
   m_Shell->SetLexer();
 
