@@ -306,7 +306,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       v,
       _("Config Dialog"),
       wxEmptyString,
-      5,
+      10,
       6,
       wxAPPLY | wxCANCEL,
       wxID_ANY,
