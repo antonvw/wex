@@ -124,10 +124,12 @@ public:
 
   /// Runs the process.
   /// Outputs to a listview LIST_PROCESS.
-  static void ProcessRun(const wxString& command = wxEmptyString);
+  /// Returns true if the process executes.
+  static bool ProcessRun(const wxString& command = wxEmptyString);
 
-  /// Stops all the processes.
-  static void ProcessStop();
+  /// Stops the process.
+  /// Return true if process could be stopped, or if it was not running at all.
+  static bool ProcessStop();
 protected:
   void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);

@@ -1016,7 +1016,7 @@ bool wxExListViewFile::ProcessIsRunning()
   return m_Process != NULL && wxProcess::Exists(m_Process->GetPid());
 }
 
-void wxExListViewFile::ProcessRun(const wxString& command)
+bool wxExListViewFile::ProcessRun(const wxString& command)
 {
   wxASSERT(m_Process == NULL);
 
@@ -1027,7 +1027,7 @@ void wxExListViewFile::ProcessRun(const wxString& command)
   if (frame == NULL) 
   {
     wxFAIL;
-    return;
+    return false;
   }
 
   wxExListViewFile* listview = frame->Activate(LIST_PROCESS);
@@ -1035,7 +1035,7 @@ void wxExListViewFile::ProcessRun(const wxString& command)
   if (listview == NULL) 
   {
     wxFAIL;
-    return;
+    return false;
   }
 
   if ((m_Process = new wxExProcessWithListView(listview, command)) != NULL)
@@ -1043,11 +1043,18 @@ void wxExListViewFile::ProcessRun(const wxString& command)
     if (m_Process->Execute() <= 0)
     {
       wxDELETE(m_Process);
+      return false;
+    }
+    else
+    {
+      return true;
     }
   }
+
+  return false;
 }
 
-void wxExListViewFile::ProcessStop()
+bool wxExListViewFile::ProcessStop()
 {
   if (ProcessIsRunning())
   {
@@ -1055,7 +1062,7 @@ void wxExListViewFile::ProcessStop()
     {
       // If the process could not be killed, do not delete it.
       wxFAIL;
-      return;
+      return false;
     }
 
     // Readme: This is a memory leak, but using wxDELETE(m_Process) causes a crash.
@@ -1063,6 +1070,8 @@ void wxExListViewFile::ProcessStop()
 
     wxExFrame::StatusText(_("Stopped"));
   }
+
+  return true;
 }
 
 void wxExListViewFile::RunItems(const wxExTool& tool)
