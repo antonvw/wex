@@ -37,6 +37,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "syncsocketserver", "syncsoc
 		{87295A7E-093F-41F7-990E-A3C48C0DB1DF} = {87295A7E-093F-41F7-990E-A3C48C0DB1DF}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "extension\sample\sample.vcproj", "{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -44,6 +48,12 @@ Global
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Debug.ActiveCfg = Debug|Win32
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Debug.Build.0 = Debug|Win32
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Portable.ActiveCfg = Portable|Win32
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Portable.Build.0 = Portable|Win32
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Release.ActiveCfg = Release|Win32
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Release.Build.0 = Release|Win32
 		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Debug.ActiveCfg = Debug|Win32
 		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Debug.Build.0 = Debug|Win32
 		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Portable.ActiveCfg = Portable|Win32
@@ -68,12 +78,12 @@ Global
 		{FCA3C7BC-A0DE-40D0-A38B-8E583B94711D}.Portable.Build.0 = Debug|Win32
 		{FCA3C7BC-A0DE-40D0-A38B-8E583B94711D}.Release.ActiveCfg = Release|Win32
 		{FCA3C7BC-A0DE-40D0-A38B-8E583B94711D}.Release.Build.0 = Release|Win32
-		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Debug.ActiveCfg = Debug|Win32
-		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Debug.Build.0 = Debug|Win32
-		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Portable.ActiveCfg = Portable|Win32
-		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Portable.Build.0 = Portable|Win32
-		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Release.ActiveCfg = Release|Win32
-		{87295A7E-093F-41F7-990E-A3C48C0DB1DF}.Release.Build.0 = Release|Win32
+		{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}.Debug.ActiveCfg = Debug|Win32
+		{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}.Debug.Build.0 = Debug|Win32
+		{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}.Portable.ActiveCfg = Debug|Win32
+		{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}.Portable.Build.0 = Debug|Win32
+		{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}.Release.ActiveCfg = Release|Win32
+		{120AFDEB-52AE-4988-8B6D-90F62C78C0FF}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
