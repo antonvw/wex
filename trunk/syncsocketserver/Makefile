@@ -3,7 +3,7 @@
 # RCS-ID:        $Id$
 # Purpose:       Makefile for syncsocketserver gtk
 
-LIBS=-L../extension/lib -lwxex.v1.0.gtk -lwxexrep.v1.0.gtk `wx-config --libs all` -lodbc
+LIBS=-L../extension/lib -lwxex.v0.9.0.gtk -lwxexrep.v0.9.0.gtk `wx-config --libs all` -lodbc
 BINPATH=/usr/local/bin
 CFLAGS=`wx-config --cflags`
 APP_VERSION=syncsocketserver.v1.0
