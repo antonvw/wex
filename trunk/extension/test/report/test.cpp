@@ -48,8 +48,8 @@ void wxExReportAppTestFixture::testMethods()
 
   // test wxExProcessWithListView
   CPPUNIT_ASSERT(m_Process->IsSelected());
-  CPPUNIT_ASSERT(m_Process->Execute());
-  const long pid = m_Process->GetPid();
+  long pid;
+  CPPUNIT_ASSERT((pid = m_Process->Execute()) > 0);
   CPPUNIT_ASSERT(wxProcess::Exists(pid));
   CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
 //  CPPUNIT_ASSERT(!wxProcess::Exists(pid));
