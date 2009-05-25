@@ -24,7 +24,7 @@ $(PROGRAM): $(OBJS)
 
 # General rule.
 %.o: src/%.cpp src/appl.xpm
-	$(CC) $(WFLAGS) $(EXTRAFLAGS) $(CFLAGS) -c $<
+	$(CC) $(WFLAGS) $(EXTRAFLAGS) $(CFLAGS) -Wno-write-strings -c $<
 
 clean:
 	rm -f *.o $(PROGRAM)
