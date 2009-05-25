@@ -851,13 +851,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   case ID_LIST_RUN_MAKE:
   {
     const wxExListItemWithFileName item(this, GetNextSelected(-1));
-
-    wxSetWorkingDirectory(item.GetFileName().GetPath());
-
-    ProcessRun(
-      wxExApp::GetConfig("Make", "make") + " " +
-      wxExApp::GetConfig("MakeSwitch", "-f") + " " +
-      item.GetFileName().GetFullPath());
+    wxExMake(item.GetFileName());
   }
   break;
 

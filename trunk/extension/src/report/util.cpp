@@ -238,6 +238,16 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   return true;
 }
 
+bool wxExMake(const wxFileName& makefile)
+{
+  wxSetWorkingDirectory(makefile.GetPath());
+
+  return wxExListViewFile::ProcessRun(
+    wxExApp::GetConfig("Make", "make") + " " +
+    wxExApp::GetConfig("MakeSwitch", "-f") + " " +
+    makefile.GetFullPath());
+}
+
 void wxExOpenFiles(
   wxExFrameWithHistory* frame,
   const wxArrayString& files,

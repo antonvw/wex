@@ -648,18 +648,8 @@ and saved in the same directory as where the executable is."));
 #endif
     break;
 
-  case ID_TREE_RUN_MAKE:
-  {
-    wxSetWorkingDirectory(wxFileName(m_DirCtrl->GetFilePath()).GetPath());
-
-    wxExListViewFile::ProcessRun(
-      wxExApp::GetConfig("Make", "make") + " " +
-      wxExApp::GetConfig("MakeSwitch", "-f") + " " +
-      m_DirCtrl->GetFilePath());
-  }
-  break;
-
   case ID_TREE_OPEN: OpenFile(wxExFileName(m_DirCtrl->GetFilePath())); break;
+  case ID_TREE_RUN_MAKE: wxExMake(wxFileName(m_DirCtrl->GetFilePath())); break;
 
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
