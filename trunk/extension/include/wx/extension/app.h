@@ -85,7 +85,8 @@ public:
     {m_Config->SetBool(key, value);}
 
   /// Sets logging as specified.
-  static void SetLogging(bool logging = true) {m_Logging = logging;};
+  /// If the logging is true and the logfile does not exist, it is created.
+  static bool SetLogging(bool logging = true);
 
   /// Toggles boolean key.
   static void ToggleConfig(const wxString& key)

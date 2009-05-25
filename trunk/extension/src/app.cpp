@@ -116,3 +116,33 @@ bool wxExApp::OnInit()
 
   return wxApp::OnInit();
 }
+
+bool wxExApp::SetLogging(bool logging) 
+{
+  if (logging)
+  {
+    wxExFile file(wxExLogfileName().GetFullPath());
+
+    if (!file.GetFileName().FileExists())
+    {
+      if (file.Create(file.GetFileName().GetFullPath()))
+      {
+        m_Logging = true;
+      }
+      else
+      {
+        m_Logging = false;
+      }
+    }
+    else
+    {
+      m_Logging = true;
+    }
+  }
+  else
+  {
+    m_Logging = false;
+  }
+
+  return m_Logging;
+}
