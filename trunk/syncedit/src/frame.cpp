@@ -653,8 +653,8 @@ and saved in the same directory as where the executable is."));
     wxSetWorkingDirectory(wxFileName(m_DirCtrl->GetFilePath()).GetPath());
 
     wxExListViewFile::ProcessRun(
-      wxExApp::GetConfig(_("Make")) + wxString(" ") +
-      wxExApp::GetConfig("MakeSwitch", "-f") + wxString(" ") +
+      wxExApp::GetConfig("Make", "make") + " " +
+      wxExApp::GetConfig("MakeSwitch", "-f") + " " +
       m_DirCtrl->GetFilePath());
   }
   break;
@@ -689,7 +689,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
     if (filename.GetLexer().GetScintillaLexer() == "makefile")
     {
       menu.AppendSeparator();
-      menu.Append(ID_TREE_RUN_MAKE, wxExEllipsed("&Make"));
+      menu.Append(ID_TREE_RUN_MAKE, "&Make");
     }
 
     PopupMenu(&menu);
