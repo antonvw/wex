@@ -121,7 +121,8 @@ MyFrame::MyFrame(const wxString& title)
 #endif
 
   wxMenu* menuServer = new wxMenu();
-  menuServer->Append(ID_SERVER_CONFIG, wxExEllipsed(_("Config")), _("Configures the server"));
+  menuServer->Append(ID_SERVER_CONFIG, 
+    wxExEllipsed(_("Config")), _("Configures the server"));
   menuServer->AppendSeparator();
   menuServer->Append(wxID_EXECUTE);
   menuServer->Append(wxID_STOP);
