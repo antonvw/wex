@@ -855,8 +855,8 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     wxSetWorkingDirectory(item.GetFileName().GetPath());
 
     ProcessRun(
-      wxExApp::GetConfig(_("Make")) + wxString(" ") +
-      wxExApp::GetConfig("MakeSwitch", "-f") + wxString(" ") +
+      wxExApp::GetConfig("Make", "make") + " " +
+      wxExApp::GetConfig("MakeSwitch", "-f") + " " +
       item.GetFileName().GetFullPath());
   }
   break;
