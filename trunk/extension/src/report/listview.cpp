@@ -1060,15 +1060,17 @@ bool wxExListViewFile::ProcessStop()
   {
     if (wxProcess::Kill(m_Process->GetPid(), wxSIGKILL) == wxKILL_ERROR)
     {
-      // If the process could not be killed, do not delete it.
+      // Even if the process could not be killed, set it to NULL, as it is deleted.
       wxFAIL;
+      m_Process = NULL;
       return false;
     }
-
-    // Readme: This is a memory leak, but using wxDELETE(m_Process) causes a crash.
-    m_Process = NULL;
-
-    wxExFrame::StatusText(_("Stopped"));
+    else
+    {
+      m_Process = NULL;
+      wxExFrame::StatusText(_("Stopped"));
+      return true;
+    }
   }
 
   return true;
