@@ -60,7 +60,7 @@ bool wxExOTLDialog(
   catch (otl_exception& p)
   {
     wxLogError("'%s' during opening database: %s",
-      wxString(p.msg).c_str(),
+      p.msg,
       config->Get(_("Datasource")).c_str());
   }
 
@@ -75,6 +75,8 @@ long wxExOTLQueryToGrid(
   bool& stopped,
   bool empty_results)
 {
+  wxASSERT(db != NULL && grid != NULL);
+
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
