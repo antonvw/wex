@@ -35,7 +35,10 @@ public:
 
     if (wxIsMainThread())
     {
-      wxTheApp->Yield();
+      if (wxTheApp != NULL)
+      {
+        wxTheApp->Yield();
+      }
     }
     else
     {
@@ -60,9 +63,12 @@ public:
       m_Dir.OnFile(filename);
     }
 
-    if (wxIsMainThread() && wxTheApp != NULL)
+    if (wxIsMainThread())
     {
-      wxTheApp->Yield();
+      if (wxTheApp != NULL)
+      {
+        wxTheApp->Yield();
+      }
     }
     else
     {

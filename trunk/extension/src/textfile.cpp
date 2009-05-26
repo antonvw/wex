@@ -343,9 +343,12 @@ bool wxExTextFile::Parse()
       }
     }
 
-    if (wxIsMainThread() && wxTheApp != NULL)
+    if (wxIsMainThread())
     {
-      wxTheApp->Yield();
+      if (wxTheApp != NULL)
+      {
+        wxTheApp->Yield();
+      }
     }
     else
     {

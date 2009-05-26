@@ -149,7 +149,10 @@ long wxExOTLQueryToGrid(
     {
       if (wxIsMainThread())
       {
-        wxTheApp->Yield();
+        if (wxTheApp != NULL)
+        {
+          wxTheApp->Yield();
+        }
       }
       else
       {
@@ -237,7 +240,10 @@ long wxExOTLQueryToSTC(
     {
       if (wxIsMainThread())
       {
-        wxTheApp->Yield();
+        if (wxTheApp != NULL)
+        {
+          wxTheApp->Yield();
+        }
       }
       else
       {

@@ -170,7 +170,10 @@ bool wxExFindOtherFileName(
 
     cont = dir.GetNext(&filename_string);
 
-    wxTheApp->Yield();
+    if (wxTheApp != NULL)
+    {
+      wxTheApp->Yield();
+    }
   }
 
   if (!found && (listview != NULL || lastfile != NULL))
