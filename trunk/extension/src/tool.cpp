@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -12,7 +12,6 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/app.h>
 #include <wx/extension/config.h>
-#include <wx/extension/util.h>
 
 std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
 
