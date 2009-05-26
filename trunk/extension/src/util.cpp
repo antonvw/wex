@@ -65,6 +65,8 @@ void wxExComboBoxFromString(
   const wxString& text,
   const wxChar field_separator)
 {
+  wxASSERT(cb != NULL);
+
   wxStringTokenizer tkz(text, field_separator);
   while (tkz.HasMoreTokens())
   {
@@ -84,10 +86,7 @@ bool wxExComboBoxToString(
   const wxChar field_separator,
   size_t max_items)
 {
-  if (cb == NULL)
-  {
-    return false;
-  }
+  wxASSERT(cb != NULL);
 
   text = cb->GetValue();
   switch (cb->FindString(cb->GetValue()))
