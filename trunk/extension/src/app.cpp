@@ -121,11 +121,11 @@ bool wxExApp::SetLogging(bool logging)
 {
   if (logging)
   {
-    wxExFile file(wxExLogfileName().GetFullPath());
+    wxExFileName filename(wxExLogfileName().GetFullPath());
 
-    if (!file.GetFileName().FileExists())
+    if (!filename.FileExists())
     {
-      if (file.Create(file.GetFileName().GetFullPath()))
+      if (wxFile().Create(filename.GetFullPath()))
       {
         m_Logging = true;
       }
