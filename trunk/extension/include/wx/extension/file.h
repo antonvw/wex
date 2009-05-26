@@ -189,7 +189,7 @@ public:
   const wxExStat& GetStat() const {return m_Stat;};
 
   /// Reads this file into a buffer.
-  wxCharBuffer Read(wxFileOffset seek_position = 0);
+  const wxCharBuffer Read(wxFileOffset seek_position = 0);
 
   /// Sets the wild card member.
   void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};

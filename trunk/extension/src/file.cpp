@@ -195,7 +195,7 @@ bool wxExFile::MakeAbsolute()
   }
 }
 
-wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
+const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
 {
   const wxFileOffset bytes_to_read = Length() - seek_position;
 
