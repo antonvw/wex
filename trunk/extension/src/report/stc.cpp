@@ -206,33 +206,12 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
   case ID_STC_ADD_HEADER:
     {
-    std::vector<wxExConfigItem> v;
-
-    // Purpose is required.
-    v.push_back(wxExConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
-
-    // Author is required, but only presented if empty.
-    // Email and License also are only presented if Author empty.
-    if (wxExApp::GetConfig(_("Author")).empty())
+    wxString purpose;
+    if (wxExHeaderDialog(this, purpose) != wxID_CANCEL)
     {
-      v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
-
-      if (wxExApp::GetConfig(_("Email")).empty())
-      {
-        v.push_back(wxExConfigItem(_("Email")));
-      }
-
-      if (wxExApp::GetConfig(_("License")).empty())
-      {
-        v.push_back(wxExConfigItem(_("License")));
-      }
+      DocumentStart();
+      AddText(wxExHeader(m_FileName, wxExApp::GetConfig(), purpose));
     }
-
-    wxExConfigDialog dlg(this, wxExApp::GetConfig(), v, _("File Purpose"));
-    if (dlg.ShowModal() == wxID_CANCEL) return;
-
-    DocumentStart();
-    AddText(wxExHeader(m_FileName, wxExApp::GetConfig(), wxExApp::GetConfig(_("Purpose"))));
     }
     break;
 

@@ -24,11 +24,15 @@ class wxExConfig;
 const wxString wxExHeader(
   const wxExFileName& filename,
   wxExConfig* config,
-  const wxString& description);
+  const wxString& purpose);
+
+/// Shows a dialog for getting the purpose for a header.
+int wxExHeaderDialog(
+  wxWindow* parent,
+  wxString& purpose);
 
 #if wxUSE_GUI
 /// Calls OpenFile for wxExFrame, if this is your top window.
 void wxExOpenFile(const wxFileName& filename, long open_flags = 0);
 #endif // wxUSE_GUI
 #endif
-

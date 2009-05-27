@@ -10,11 +10,12 @@
 \******************************************************************************/
 
 #include <wx/extension/extension.h>
+#include <wx/extension/configdialog.h>
 
 const wxString wxExHeader(
   const wxExFileName& filename,
   wxExConfig* config,
-  const wxString& description)
+  const wxString& purpose)
 {
   wxString header;
 
@@ -45,7 +46,7 @@ const wxString wxExHeader(
 
   header << l.MakeComment(wxEmptyString, false) << "\n";
   header << l.MakeComment("File:       ", filename.GetFullName()) << "\n";
-  header << l.MakeComment("Purpose:    ", description) << "\n";
+  header << l.MakeComment("Purpose:    ", purpose) << "\n";
   header << l.MakeComment("Author:     ", author) << "\n";
   header << l.MakeComment("Created:    ", wxDateTime::Now().Format("%Y/%m/%d %H:%M:%S")) << "\n";
 
@@ -86,12 +87,47 @@ const wxString wxExHeader(
   return header;
 }
 
+int wxExHeaderDialog(
+  wxWindow* parent,
+  wxString& purpose)
+{
+  std::vector<wxExConfigItem> v;
+
+  // Purpose is required.
+  v.push_back(wxExConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
+
+  // Author is required, but only presented if empty.
+  // Email and License also are only presented if Author empty.
+  if (wxExApp::GetConfig(_("Author")).empty())
+  {
+    v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
+
+    if (wxExApp::GetConfig(_("Email")).empty())
+    {
+      v.push_back(wxExConfigItem(_("Email")));
+    }
+
+    if (wxExApp::GetConfig(_("License")).empty())
+    {
+      v.push_back(wxExConfigItem(_("License")));
+    }
+  }
+
+  wxExConfigDialog dlg(parent, wxExApp::GetConfig(), v, _("File Purpose"));
+
+  int retValue = dlg.ShowModal();
+  
+  if (retValue != wxID_CANCEL)
+  {
+    purpose = wxExApp::GetConfig(_("Purpose"));
+  }
+
+  return retValue;
+}
+
 void wxExOpenFile(const wxFileName& filename, long open_flags)
 {
-  if (wxTheApp == NULL)
-  {
-    return;
-  }
+  wxASSERT(wxTheApp != NULL);
 
   wxWindow* window = wxTheApp->GetTopWindow();
   wxExFrame* frame = wxDynamicCast(window, wxExFrame);
