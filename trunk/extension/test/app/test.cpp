@@ -97,12 +97,17 @@ void wxExAppTestFixture::testMethods()
   // so do not assert on it.
   m_SVN->GetOutput();
 
-  // test various wxEx methods that need the app
+  // test util
+  CPPUNIT_ASSERT(wxExClipboardAdd("test"));
+  CPPUNIT_ASSERT(wxExClipboardGet() == "test");
+  CPPUNIT_ASSERT(wxExGetNumberOfLines("test\ntest\n") == 3);
+  CPPUNIT_ASSERT(wxExGetLineNumberFromText("test on line: 1200") == 1200);
+
   // Only usefull if the lexers file was present
   if (wxExApp::GetLexers()->Count() > 0)
   {
 	wxExApp::GetConfig()->Set(_("Purpose"), "hello test");
-    const wxString header = wxExHeader(wxExFileName("test.h"), wxExApp::GetConfig());
+    const wxString header = wxExHeader(&wxExFileName("test.h"), wxExApp::GetConfig());
     CPPUNIT_ASSERT(header.Contains("hello test"));
   }
   else
@@ -110,15 +115,12 @@ void wxExAppTestFixture::testMethods()
     wxLogMessage("No lexers available");
   }
 
-  // test util
-  CPPUNIT_ASSERT(wxExClipboardAdd("test"));
-  CPPUNIT_ASSERT(wxExClipboardGet() == "test");
-  CPPUNIT_ASSERT(wxExGetNumberOfLines("test\ntest\n") == 3);
-  CPPUNIT_ASSERT(wxExGetLineNumberFromText("test on line: 1200") == 1200);
   CPPUNIT_ASSERT(wxExLog("hello from wxextension test"));
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("t     es   t") == "t es t");
+  CPPUNIT_ASSERT(!wxExTranslate("hello @PAGENUM@ from @PAGESCNT@").Contains("@"));
+  CPPUNIT_ASSERT(wxExOpenFile(wxFileName("test.txt")));
 }
 
 void wxExAppTestFixture::tearDown()
