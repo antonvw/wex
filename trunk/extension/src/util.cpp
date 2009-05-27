@@ -351,7 +351,7 @@ bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 }
 
 #if wxUSE_GUI
-void wxExOpenFile(const wxFileName& filename, long open_flags)
+bool wxExOpenFile(const wxFileName& filename, long open_flags)
 {
   wxASSERT(wxTheApp != NULL);
 
@@ -360,7 +360,12 @@ void wxExOpenFile(const wxFileName& filename, long open_flags)
 
   if (frame != NULL)
   {
-    frame->OpenFile(wxExFileName(filename.GetFullPath()), -1, wxEmptyString, open_flags);
+    return frame->OpenFile(
+      wxExFileName(filename.GetFullPath()), -1, wxEmptyString, open_flags);
+  }
+  else
+  {
+    return false;
   }
 }
 #endif

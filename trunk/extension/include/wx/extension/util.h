@@ -98,7 +98,7 @@ bool wxExComboBoxToString(
   size_t max_items = 25);
 
 /// Calls OpenFile for wxExFrame, if this is your top window.
-void wxExOpenFile(const wxFileName& filename, long open_flags = 0);
+bool wxExOpenFile(const wxFileName& filename, long open_flags = 0);
 #endif // wxUSE_GUI
 
 #endif
