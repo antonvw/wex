@@ -17,19 +17,4 @@
 #include <wx/extension/app.h>
 #include <wx/extension/file.h>
 #include <wx/extension/util.h>
-
-class wxExConfig;
-
-/// Returns a header.
-const wxString wxExHeader(
-  const wxExFileName& filename,
-  wxExConfig* config);
-
-/// Shows a dialog for getting the purpose for a header.
-int wxExHeaderDialog(wxWindow* parent, wxExConfig* config);
-
-#if wxUSE_GUI
-/// Calls OpenFile for wxExFrame, if this is your top window.
-void wxExOpenFile(const wxFileName& filename, long open_flags = 0);
-#endif // wxUSE_GUI
 #endif

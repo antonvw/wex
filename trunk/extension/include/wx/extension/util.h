@@ -20,6 +20,9 @@
 
 /*! \file */
 
+class wxExConfig;
+class wxExFileName;
+
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);
 
@@ -43,6 +46,14 @@ const wxString wxExGetEndOfText(
 
 /// Gets the number of lines in a string.
 int wxExGetNumberOfLines(const wxString& text);
+
+/// Returns a header.
+const wxString wxExHeader(
+  const wxExFileName* filename,
+  wxExConfig* config);
+
+/// Shows a dialog for getting the purpose for a header.
+int wxExHeaderDialog(wxWindow* parent, wxExConfig* config);
 
 /// Gets a line number from a string.
 int wxExGetLineNumberFromText(const wxString& text);
@@ -78,12 +89,16 @@ void wxExComboBoxFromString(
   wxComboBox* cb,
   const wxString& text,
   const wxChar field_separator = ',');
+
 /// Adds entries from combobox to a text string.
 bool wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
   const wxChar field_separator = ',',
   size_t max_items = 25);
+
+/// Calls OpenFile for wxExFrame, if this is your top window.
+void wxExOpenFile(const wxFileName& filename, long open_flags = 0);
 #endif // wxUSE_GUI
 
 #endif

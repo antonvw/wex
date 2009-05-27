@@ -182,9 +182,6 @@
 				RelativePath=".\src\dir.cpp">
 			</File>
 			<File
-				RelativePath=".\src\extension.cpp">
-			</File>
-			<File
 				RelativePath=".\src\file.cpp">
 			</File>
 			<File

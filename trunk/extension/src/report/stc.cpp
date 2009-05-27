@@ -208,7 +208,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     if (wxExHeaderDialog(this, wxExApp::GetConfig()) != wxID_CANCEL)
     {
       DocumentStart();
-      AddText(wxExHeader(m_FileName, wxExApp::GetConfig()));
+      AddText(wxExHeader(&m_FileName, wxExApp::GetConfig()));
     }
     break;
 
