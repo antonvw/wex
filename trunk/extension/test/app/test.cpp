@@ -101,14 +101,15 @@ void wxExAppTestFixture::testMethods()
   // Only usefull if the lexers file was present
   if (wxExApp::GetLexers()->Count() > 0)
   {
-    const wxString header = wxExHeader(wxExFileName("test.h"), wxExApp::GetConfig(), "hello test");
+	wxExApp::GetConfig()->Set(_("Purpose"), "hello test");
+    const wxString header = wxExHeader(wxExFileName("test.h"), wxExApp::GetConfig());
     CPPUNIT_ASSERT(header.Contains("hello test"));
   }
   else
   {
     wxLogMessage("No lexers available");
   }
-  
+
   // test util
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
