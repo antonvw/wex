@@ -14,8 +14,7 @@
 
 const wxString wxExHeader(
   const wxExFileName& filename,
-  wxExConfig* config,
-  const wxString& purpose)
+  wxExConfig* config)
 {
   wxString header;
 
@@ -26,6 +25,7 @@ const wxString wxExHeader(
   const wxString license = config->Get(_("License"));
   const wxString email = config->Get(_("Email"));
   const wxString place = config->Get(_("Place"));
+  const wxString purpose = config->Get(_("Purpose"));
   const wxString zipcode = config->Get(_("Zipcode"));
 
   const wxString email_field = (!email.empty() ? " < " + email + ">": email);
@@ -87,9 +87,7 @@ const wxString wxExHeader(
   return header;
 }
 
-int wxExHeaderDialog(
-  wxWindow* parent,
-  wxString& purpose)
+int wxExHeaderDialog(wxWindow* parent, wxExConfig* config)
 {
   std::vector<wxExConfigItem> v;
 
@@ -98,31 +96,24 @@ int wxExHeaderDialog(
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
-  if (wxExApp::GetConfig(_("Author")).empty())
+  if (config->Get(_("Author")).empty())
   {
     v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
 
-    if (wxExApp::GetConfig(_("Email")).empty())
+    if (config->Get(_("Email")).empty())
     {
       v.push_back(wxExConfigItem(_("Email")));
     }
 
-    if (wxExApp::GetConfig(_("License")).empty())
+    if (config->Get(_("License")).empty())
     {
       v.push_back(wxExConfigItem(_("License")));
     }
   }
 
-  wxExConfigDialog dlg(parent, wxExApp::GetConfig(), v, _("File Purpose"));
-
-  int retValue = dlg.ShowModal();
-  
-  if (retValue != wxID_CANCEL)
-  {
-    purpose = wxExApp::GetConfig(_("Purpose"));
-  }
-
-  return retValue;
+  return wxExConfigDialog(
+    parent, 
+    config, v, _("File Purpose")).ShowModal();
 }
 
 void wxExOpenFile(const wxFileName& filename, long open_flags)

@@ -23,13 +23,10 @@ class wxExConfig;
 /// Returns a header.
 const wxString wxExHeader(
   const wxExFileName& filename,
-  wxExConfig* config,
-  const wxString& purpose);
+  wxExConfig* config);
 
 /// Shows a dialog for getting the purpose for a header.
-int wxExHeaderDialog(
-  wxWindow* parent,
-  wxString& purpose);
+int wxExHeaderDialog(wxWindow* parent, wxExConfig* config);
 
 #if wxUSE_GUI
 /// Calls OpenFile for wxExFrame, if this is your top window.
