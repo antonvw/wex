@@ -512,5 +512,8 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       m_MatchCase->GetValue(),
       m_RegularExpression->GetValue());
     break;
+  default:
+    wxFAIL;
+    break;
   }
 }

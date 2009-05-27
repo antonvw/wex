@@ -258,6 +258,9 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
   case ID_EDIT_STATUS_BAR: stc->UpdateStatusBar("PaneLines"); break;
 #endif
+  default:
+    wxFAIL;
+    break;
   }
 }
 
