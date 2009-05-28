@@ -60,20 +60,28 @@ private:
   wxExTool m_Tool;
 };
 
-/// Offers a find toolbar, containing a find combobox and checkboxes.
+class ComboBox;
+
+/// Offers a find toolbar, containing a find combobox, up and down arrows
+/// and checkboxes.
 /// The find combobox allows you to find in an wxExSTCWithFrame
 /// component on the specified wxExFrameWithHistory.
 class wxExFindToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
-  wxExFindToolBar(wxWindow* parent, wxExFrameWithHistory* frame, wxWindowID id = wxID_ANY);
+  wxExFindToolBar(
+    wxWindow* parent, 
+    wxExFrameWithHistory* frame, 
+    wxWindowID id = wxID_ANY);
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
   wxCheckBox* m_RegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
+  wxExFrameWithHistory* m_Frame;
+  ComboBox* m_ComboBox;
 
   DECLARE_EVENT_TABLE()
 };

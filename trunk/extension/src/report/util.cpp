@@ -470,6 +470,8 @@ BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
   EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
+  EVT_MENU(wxID_DOWN, wxExFindToolBar::OnCommand)
+  EVT_MENU(wxID_UP, wxExFindToolBar::OnCommand)
 END_EVENT_TABLE()
 
 wxExFindToolBar::wxExFindToolBar(
@@ -477,6 +479,7 @@ wxExFindToolBar::wxExFindToolBar(
   wxExFrameWithHistory* frame,
   wxWindowID id)
   : wxAuiToolBar(parent, id)
+  , m_Frame(frame)
 {
   m_MatchCase = new wxCheckBox(this, ID_MATCH_CASE, _("Match case"));
   m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, _("Match whole word"));
@@ -491,7 +494,11 @@ wxExFindToolBar::wxExFindToolBar(
 #else
   const wxSize size(150, -1);
 #endif
-  AddControl(new ComboBox(this, frame, ID_FIND_TEXT, wxDefaultPosition, size));
+  m_ComboBox = new ComboBox(this, frame, ID_FIND_TEXT, wxDefaultPosition, size);
+  AddControl(m_ComboBox);
+  AddSeparator();
+  AddTool(wxID_DOWN, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()));
+  AddTool(wxID_UP, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()));
   AddSeparator();
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
@@ -504,6 +511,18 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
+  case wxID_DOWN:
+  case wxID_UP:
+    {
+      wxExSTCWithFrame* stc = m_Frame->GetCurrentSTC();
+
+      if (stc != NULL)
+      {
+       stc->FindNext(m_ComboBox->GetValue(), (event.GetId() == wxID_DOWN));
+      }
+    }
+    break;
+
   case ID_MATCH_WHOLE_WORD:
   case ID_MATCH_CASE:
   case ID_REGULAR_EXPRESSION:
@@ -512,6 +531,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       m_MatchCase->GetValue(),
       m_RegularExpression->GetValue());
     break;
+
   default:
     wxFAIL;
     break;
