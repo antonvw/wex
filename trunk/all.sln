@@ -5,6 +5,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extension", "extension\exte
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "report", "extension\report\report.vcproj", "{87295A7E-093F-41F7-990E-A3C48C0DB1DF}"
 	ProjectSection(ProjectDependencies) = postProject
+		{87295A7E-093F-41F7-990E-A3C48C0DB1DF} = {87295A7E-093F-41F7-990E-A3C48C0DB1DF}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "syncedit", "syncedit\syncedit.vcproj", "{F3126830-2BC0-4B18-A360-E8C5810760AD}"
