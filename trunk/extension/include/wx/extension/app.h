@@ -25,12 +25,10 @@
 class wxExApp : public wxApp
 {
 public:
-  // Interface from wxApp.
   /// Constructs the config, lexers and printer (and reads the lexers).
   /// Initializes the locale and wxExTool.
   /// In your class first set the app name, as it uses this name for the config file.
-
-    /// See for documentation the lexers.xml file.
+  /// See for documentation the lexers.xml file.
   virtual bool OnInit();
 
   /// This destroys (and so writes) the config, lexers, printer
@@ -68,9 +66,11 @@ public:
   static wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
 #endif
 
-  /// Logs text (only if SetLogging() is called, default it is off).
-  static void Log(const wxString& text) {
-    if (m_Logging) wxExLog(text);};
+  /// Logs text (only if SetLogging(true) is called, default it is off).
+  /// Returns true if logging was on and write was successfull.
+  static bool Log(const wxString& text) {
+    if (m_Logging) return wxExLog(text);
+    else           return false;};
 
   /// Sets key as a long.
   static void SetConfig(const wxString& key, long value)
