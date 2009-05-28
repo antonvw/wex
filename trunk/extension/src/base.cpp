@@ -594,7 +594,7 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
     wxMenu* svnmenu = new wxMenu;
     svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed("&Diff"));
     svnmenu->Append(ID_EDIT_SVN_LOG, wxExEllipsed("&Log"));
-    svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("&Cat"));
+    svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("Ca&t"));
     svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed("&Blame"));
     svnmenu->AppendSeparator();
     svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed("&Commit"));
