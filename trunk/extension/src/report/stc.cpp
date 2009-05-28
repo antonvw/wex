@@ -225,12 +225,12 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
   case ID_STC_FIND_FILES:
     GetSearchText();
-    wxExFindInFiles(m_Frame);
+    wxExFindInFiles();
     break;
 
   case ID_STC_REPLACE_FILES:
     GetSearchText();
-    wxExFindInFiles(m_Frame, true);
+    wxExFindInFiles(true);
     break;
 
   default: wxFAIL;

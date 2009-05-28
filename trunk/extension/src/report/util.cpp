@@ -44,7 +44,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   return true;
 }
 
-void wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
+void wxExFindInFiles(bool replace)
 {
   // To initialize the combobox.
   wxExApp::GetConfig(_("In files"), wxExApp::GetLexers()->BuildComboBox());

@@ -230,7 +230,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
 
     case ID_SPECIAL_FIND_IN_FILES:
-      wxExFindInFiles(this);
+      wxExFindInFiles();
       break;
 
     case ID_VIEW_STATUSBAR:
