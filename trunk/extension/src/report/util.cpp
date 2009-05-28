@@ -497,8 +497,16 @@ wxExFindToolBar::wxExFindToolBar(
   m_ComboBox = new ComboBox(this, frame, ID_FIND_TEXT, wxDefaultPosition, size);
   AddControl(m_ComboBox);
   AddSeparator();
-  AddTool(wxID_DOWN, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()));
-  AddTool(wxID_UP, wxEmptyString, wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()));
+  AddTool(
+    wxID_DOWN, 
+    wxEmptyString, 
+    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()),
+    _("Find next"));
+  AddTool(
+    wxID_UP, 
+    wxEmptyString, 
+    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()),
+    _("Find previous"));
   AddSeparator();
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
