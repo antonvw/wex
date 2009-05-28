@@ -227,7 +227,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void wxExRepSampleFrame::OnTree(wxTreeEvent& event)
+void wxExRepSampleFrame::OnTree(wxTreeEvent& /* event */)
 {
   const wxString selection = m_DirCtrl->GetFilePath();
 
