@@ -137,7 +137,7 @@ protected:
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
-  int AddItems();
+  size_t AddItems();
   void DeleteDoubles();
   const wxString GetFindInCaption(int id); // cannot be const
   void Initialize(const wxExLexer* lexer);

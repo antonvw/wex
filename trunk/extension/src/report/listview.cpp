@@ -116,7 +116,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   FileOpen(file);
 }
 
-int wxExListViewFile::AddItems()
+size_t wxExListViewFile::AddItems()
 {
   // To initialize the combobox.
   wxExApp::GetConfig(_("Add what"), wxExApp::GetLexers()->BuildComboBox());
@@ -147,7 +147,7 @@ int wxExListViewFile::AddItems()
     wxExApp::GetConfig(_("Add what")),
     flags);
 
-  const int retValue = dir.FindFiles();
+  const size_t retValue = dir.FindFiles();
 
   if (retValue > 0)
   {
