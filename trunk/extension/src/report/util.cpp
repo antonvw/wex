@@ -285,8 +285,7 @@ void wxExOpenFiles(
         }
       }
 
-      const wxExFileName filename(file);
-      frame->OpenFile(filename, line, wxEmptyString, flags);
+      frame->OpenFile(file, line, wxEmptyString, flags);
     }
   }
 }
