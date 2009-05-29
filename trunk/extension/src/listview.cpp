@@ -249,7 +249,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
       menuSort->Append(i++, it->GetText());
     }
 
-    menu.AppendSubMenu(menuSort, _("Sort"));
+    menu.AppendSubMenu(menuSort, _("Sort On"));
 
     menu.AppendSeparator();
   }
