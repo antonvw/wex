@@ -30,7 +30,7 @@ public:
     if (m_Dir.GetFlags() & wxDIR_DIRS)
     {
       m_Files++;
-      m_Dir.OnFile(dirname);
+      m_Dir.OnDir(dirname);
     }
 
     if (wxIsMainThread())
@@ -87,10 +87,6 @@ wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec)
   : wxDir(fullpath)
   , m_FileSpec(filespec)
   , m_Flags(wxDIR_DEFAULT)
-{
-}
-
-wxExDir::~wxExDir()
 {
 }
 

@@ -323,6 +323,14 @@ wxExDirWithListView::wxExDirWithListView(wxExFrameWithHistory* frame,
 {
 }
 
+void wxExDirWithListView::OnDir(const wxString& dir)
+{
+  if (m_ListView != NULL)
+  {
+    wxExListItemWithFileName(m_ListView, dir, GetFileSpec()).Insert();
+  }
+}
+
 void wxExDirWithListView::OnFile(const wxString& file)
 {
   if (m_Frame == NULL && m_ListView == NULL)
@@ -331,7 +339,6 @@ void wxExDirWithListView::OnFile(const wxString& file)
 
     if (filename.GetStat().IsOk())
     {
-      if (wxFileName::DirExists(file)) return;
       wxExTextFileWithListView report(filename, m_Tool);
       report.RunTool();
       m_Statistics += report.GetStatistics();
@@ -341,7 +348,6 @@ void wxExDirWithListView::OnFile(const wxString& file)
   {
     if (m_Frame != NULL)
     {
-      if (wxFileName::DirExists(file)) return;
       m_Frame->OpenFile(file, 0, wxEmptyString, m_Flags);
     }
     else if (m_ListView != NULL)

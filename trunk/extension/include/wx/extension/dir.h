@@ -27,7 +27,7 @@ public:
     const wxString& filespec = wxEmptyString); // finds all
 
   /// Destructor.
-  virtual ~wxExDir();
+  virtual ~wxExDir() {;};
 
   /// Allows you to cancel the FindFiles.
   virtual bool Cancelled() {return false;};
@@ -41,6 +41,9 @@ public:
 
   /// Gets the flags.
   int GetFlags() const {return m_Flags;};
+
+  /// Do something with the dir.
+  virtual void OnDir(const wxString& WXUNUSED(dir)){};
 
   /// Do something with the file.
   virtual void OnFile(const wxString& WXUNUSED(file)) = 0;

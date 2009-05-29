@@ -51,6 +51,7 @@ public:
   /// Gets the statistics.
   const wxExFileNameStatistics& GetStatistics() {return m_Statistics;};
 protected:
+  virtual void OnDir(const wxString& dir);
   virtual void OnFile(const wxString& file);
 private:
   wxExFileNameStatistics m_Statistics;
