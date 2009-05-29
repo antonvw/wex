@@ -495,8 +495,11 @@ wxExFindToolBar::wxExFindToolBar(
   const wxSize size(150, -1);
 #endif
   m_ComboBox = new ComboBox(this, frame, ID_FIND_TEXT, wxDefaultPosition, size);
+
+  // And place the controls on the toolbar.
   AddControl(m_ComboBox);
   AddSeparator();
+
   AddTool(
     wxID_DOWN, 
     wxEmptyString, 
@@ -508,6 +511,7 @@ wxExFindToolBar::wxExFindToolBar(
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()),
     _("Find previous"));
   AddSeparator();
+
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
   AddControl(m_RegularExpression);
