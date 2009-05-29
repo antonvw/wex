@@ -239,7 +239,7 @@ const wxString wxExHeader(
   if (config->GetBool("SVN"))
   // Prevent the Id to be expanded by SVN itself here.
   header << l.MakeComment("RCS-ID:     $", wxString("Id$")) << "\n";
-  header << l.MakeComment("Copyright:  (c) " + wxDateTime::Now().Format("%Y") + " " +
+  header << l.MakeComment("Copyright:   (c) " + wxDateTime::Now().Format("%Y") + " " +
     (!company.empty() ? company: author) + email_field) << "\n";
   if (!license.empty())
   header << l.MakeComment("License:    ", license) << "\n";
