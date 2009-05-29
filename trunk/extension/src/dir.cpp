@@ -98,7 +98,10 @@ size_t wxExDir::FindFiles()
 
   // Using m_FileSpec here does not work, as it might
   // contain several specs (*.cpp;*.h), wxDir does not handle that.
-  Traverse(wxExDirTraverser(*this, files), wxEmptyString, m_Flags);
+  // contain several specs (*.cpp;*.h), wxDir does not handle that.
+  wxExDirTraverser traverser(*this, files);
+  Traverse(traverser, wxEmptyString, m_Flags);
 
   return files;
 }
+
