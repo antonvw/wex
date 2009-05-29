@@ -83,26 +83,22 @@ private:
   size_t& m_Files;
 };
 
-wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec)
+wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
   : wxDir(fullpath)
   , m_FileSpec(filespec)
-  , m_Flags(wxDIR_DEFAULT)
+  , m_Flags(flags)
 {
 }
 
-size_t wxExDir::FindFiles(int flags)
+size_t wxExDir::FindFiles()
 {
   if (!IsOpened()) return 0;
 
   size_t files = 0;
 
-  m_Flags = flags;
-
-  wxExDirTraverser traverser(*this, files);
-
   // Using m_FileSpec here does not work, as it might
   // contain several specs (*.cpp;*.h), wxDir does not handle that.
-  Traverse(traverser, wxEmptyString, m_Flags);
+  Traverse(wxExDirTraverser(*this, files), wxEmptyString, m_Flags);
 
   return files;
 }

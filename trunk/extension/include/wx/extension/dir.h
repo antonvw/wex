@@ -24,7 +24,8 @@ public:
   /// This filespec specifies what files are found.
   wxExDir(
     const wxString& fullpath,
-    const wxString& filespec = wxEmptyString); // finds all
+    const wxString& filespec = wxEmptyString, // finds all
+    int flags = wxDIR_DEFAULT);
 
   /// Destructor.
   virtual ~wxExDir() {;};
@@ -33,8 +34,8 @@ public:
   virtual bool Cancelled() {return false;};
 
   /// Finds matching files.
-  /// This results in recursive calls for OnFile.
-  size_t FindFiles(int flags = wxDIR_DEFAULT);
+  /// This results in recursive calls for OnDir and OnFile.
+  size_t FindFiles();
 
   /// Gets the file spec.
   const wxString& GetFileSpec() const {return m_FileSpec;};
@@ -49,6 +50,6 @@ public:
   virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
 private:
   const wxString m_FileSpec;
-  int m_Flags;
+  const int m_Flags;
 };
 #endif

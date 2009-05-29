@@ -137,16 +137,17 @@ int wxExListViewFile::AddItems()
     return 0;
   }
 
-  wxExDirWithListView dir(
-    this,
-    wxExApp::GetConfig(_("In folder")),
-    wxExApp::GetConfig(_("Add what")));
-
   int flags = 0;
   if (wxExApp::GetConfigBool(_("Add files"))) flags |= wxDIR_FILES;
   if (wxExApp::GetConfigBool(_("Add folders"))) flags |= wxDIR_DIRS;
 
-  const int retValue = dir.FindFiles(flags);
+  wxExDirWithListView dir(
+    this,
+    wxExApp::GetConfig(_("In folder")),
+    wxExApp::GetConfig(_("Add what")),
+    flags);
+
+  const int retValue = dir.FindFiles();
 
   if (retValue > 0)
   {

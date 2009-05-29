@@ -34,12 +34,14 @@ public:
   /// FindFiles invokes RunTool on all matching files.
   wxExDirWithListView(const wxExTool& tool,
     const wxString& fullpath,
-    const wxString& filespec = wxEmptyString);
+    const wxString& filespec = wxEmptyString,
+    int flags = wxDIR_DEFAULT);
 
   /// FindFiles causes each found file to be added as listitem to the listview.
   wxExDirWithListView(wxExListViewFile* listview,
     const wxString& fullpath,
-    const wxString& filespec = wxEmptyString);
+    const wxString& filespec = wxEmptyString,
+    int flags = wxDIR_DEFAULT);
 
   /// FindFiles causes all found files to be opened using OpenFile from frame.
   /// Flags are passed on to OpenFile.

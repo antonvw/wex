@@ -291,8 +291,8 @@ void wxExOpenFiles(
 }
 
 wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
-  const wxString& fullpath, const wxString& filespec)
-  : wxExDir(fullpath, filespec)
+  const wxString& fullpath, const wxString& filespec, int flags)
+  : wxExDir(fullpath, filespec, flags)
   , m_Statistics(fullpath)
   , m_Frame(NULL)
   , m_ListView(NULL)
@@ -302,8 +302,8 @@ wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
 }
 
 wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
-  const wxString& fullpath, const wxString& filespec)
-  : wxExDir(fullpath, filespec)
+  const wxString& fullpath, const wxString& filespec, int flags)
+  : wxExDir(fullpath, filespec, flags)
   , m_Statistics(fullpath)
   , m_Frame(NULL)
   , m_ListView(listview)
