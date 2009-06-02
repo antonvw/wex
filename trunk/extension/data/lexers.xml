@@ -205,7 +205,7 @@ without the written consent of the copyright owner.
       <property name="fold.preprocessor"> 0 </property>
     </properties>
     
-    <comments begin1="/*" end1="*/" begin2="//" />
+    <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
   
   <lexer
