@@ -204,7 +204,7 @@ const wxString wxExLexer::MakeSingleLineComment(
   {
     if (text.empty())
     {
-      if (m_CommentBegin == m_CommentEnd || m_CommentEnd.empty())
+      if (m_CommentBegin == m_CommentEnd)
            fill_out_character = '-';
       else fill_out_character = m_CommentBegin[m_CommentBegin.size() - 1];
     }
