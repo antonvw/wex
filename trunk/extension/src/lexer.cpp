@@ -216,12 +216,16 @@ const wxString wxExLexer::MakeSingleLineComment(
   // Fill out characters.
   if (fill_out)
   {
-    const int fill_chars = UsableCharactersPerLine() - text.size();
-
-    if (fill_chars > 0)
+    // To prevent filling out spaces
+    if (fill_out_character != ' ' || !m_CommentEnd.empty())
     {
-      const wxString fill_out(fill_out_character, fill_chars);
-      out += fill_out;
+      const int fill_chars = UsableCharactersPerLine() - text.size();
+
+      if (fill_chars > 0)
+      {
+        const wxString fill_out(fill_out_character, fill_chars);
+        out += fill_out;
+      }
     }
   }
 
