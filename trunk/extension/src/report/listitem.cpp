@@ -119,7 +119,12 @@ void wxExListItemWithFileName::Update()
     wxExApp::GetConfig(_("List Font") + "/Name", "courier new"));
 
   SetFont(font);
-  GetListView()->SetItem(*this);
+
+  if (!GetListView()->SetItem(*this))
+  {
+    wxFAIL;
+    return;
+  }
 
   if (m_Statistics.GetStat().IsLink())
   {

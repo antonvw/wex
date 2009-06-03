@@ -53,7 +53,13 @@ const wxString wxExListItem::GetColumnText(int col_no)
 
   SetColumn(col_no);
   SetMask(wxLIST_MASK_TEXT);
-  m_ListView->GetItem(*this);
+
+  if (!m_ListView->GetItem(*this))
+  {
+    wxFAIL;
+    return wxEmptyString;
+  }
+
   return GetText();
 }
 
