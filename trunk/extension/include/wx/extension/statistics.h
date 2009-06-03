@@ -221,7 +221,7 @@ public:
   const wxExStatistics<long>& GetKeywords() const {return m_Keywords;};
 
   /// Returns the statistics log filename.
-  static const wxFileName GetLogfileName();
+  const wxFileName GetLogfileName() const;
 
   /// For the specified tool logs the elements statistics to
   /// the statusbar (always) and to the statistics logfile (if specified).

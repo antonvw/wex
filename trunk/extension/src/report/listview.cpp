@@ -1133,7 +1133,7 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
   if (tool.IsCount())
   {
     wxExOpenFile(
-      wxExFileNameStatistics::GetLogfileName(),
+      stats.GetLogfileName(),
       wxExSTC::STC_OPEN_FROM_STATISTICS | wxExSTC::STC_OPEN_IS_SYNCED);
   }
 }

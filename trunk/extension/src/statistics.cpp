@@ -36,7 +36,7 @@ long wxExFileNameStatistics::Get(const wxString& key) const
   return 0;
 }
 
-const wxFileName wxExFileNameStatistics::GetLogfileName()
+const wxFileName wxExFileNameStatistics::GetLogfileName() const
 {
   wxFileName filename(
 #ifdef EX_PORTABLE
