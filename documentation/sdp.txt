@@ -77,3 +77,8 @@ When adding functionality in trunk
     extension/sample, 
     extension/sample/report
 
+
+Roadmap:
+- Add ctags (like Exuberant CTAGS).
+- Add gdb front-end.
+- Use Boost, Ultimate++ or OMGUI (very later).

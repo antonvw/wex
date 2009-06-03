@@ -12,7 +12,9 @@ wxextension Release Information
 </HEAD>
 
 <p>
-wxfiletool contains a collection of wxextension classes
+wxex contains a collection of wxWidget extension classes.
+<p>
+wxexrep contains a collection of wxextension classes
 that are implemented for a list view component.
 
 <STYLE type="text/css">
@@ -26,52 +28,6 @@ background-color: #fafafa;
 border: 1px #6699CC solid;
 }
 </STYLE>
-
-<!--
-Wait for next wxWidgets:
-- Copy/paste between msw exSTC and gtk exSTC is not possible. There was a change in wxWidgets 2.9.
-- In exSTC you cannot place the cursor inside the () pair for cpp lexer (bug in Scintilla?).
-- In exNotebook add a SyncCloseAll for close complete notebook (if the event can be catched).
-- In exGrid add rules for html tables (not yet implemented in html/m_tables.cpp 'The tables handler:').
-- Improve embedded html lexers, like Scite does (wait for next scintilla version??).
-  And check the scite sources how.
-- In Process::HasInput allow php script error messages to be able to be double clicked and goto line no.
-  Is already added, but the reg ex does not match, wait for next wxWidgets.
-  Then also change the gcc check implemented by tokenizer into reg ex check.
-- wxGTK find in files is slow. It seems exDir is okay, but time consuming is adding the
-  found files as items to the list view, whereas that could be fast. Profiling necessary??
-  Or just hope better for next wxWidgets.
-
-Roadmap:
-- Make exDir multi threaded.
-- No longer use iterate on strings by index, but use iterators instead.
-  See in stc.cpp::SequenceDialog
-  for (int pos = end.length() - 1; pos >= 0; pos--)
-  {
-    lines *= abs(end[pos] - start[pos]) + 1;
-  }
-  And in textfile.cpp::ParseLine.
-  wxString s = "hello";
-  wxString::iterator i;
-  for (i = s.begin(); i != s.end(); ++i)
-  {
-    wxUniChar uni_ch = *i;
-    wxChar ch = uni_ch;
-     // same as wxChar ch  = *i;
-  }
-- Add WXDLLEXPORT.
-- Added platform switches to lexers.xml.
-- Making the find/replace dialog a static member of exInterface does not work for Linux.
-  Test again in 1.1.
-- When opening large file, allow open to be cancelled, and show progress.
-  Maybe use a separate thread for this.
-- Add dialog for updating the include directory (with browsing for folders).
-- In STC adding file drop causes text dragging not work.
-  In scintilla v1.70 file drop is supported (how?), check and remove from here if okay.
-  This can be tested in sample for wxextension.
-- Make process and wxGTK can be improved: not always a valid file is found.
-  And for each new Run clear the old contents??
--->
 
 <TABLE BORDER=2 CELLPADDING=4 CELLSPACING=1 class="TableStyle">
 <tr>
