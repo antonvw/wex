@@ -197,20 +197,13 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       if (m_Echo) event.Skip();
     }
 
-    if (m_Commands.size() > 1)
-    {
-      m_CommandsIterator = m_Commands.end();
-    }
+    m_CommandsIterator = m_Commands.end();
   }
   // Up or down key pressed, and at the end of document.
   else if ((key == WXK_UP || key == WXK_DOWN) &&
             GetCurrentPos() == GetTextLength())
   {
-    // There is always an empty command in the list.
-    if (m_Commands.size() > 1)
-    {
-      ShowCommand(key);
-    }
+    ShowCommand(key);
   }
   // Home key pressed.
   else if (key == WXK_HOME)
@@ -260,10 +253,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       DocumentEnd();
     }
 
-    if (m_Commands.size() > 1)
-    {
-      m_CommandsIterator = m_Commands.end();
-    }
+    m_CommandsIterator = m_Commands.end();
 
     if (m_Echo) event.Skip();
   }
