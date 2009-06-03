@@ -219,14 +219,19 @@ void wxExSVN::ShowOutput() const
     m_STCEntryDialog->SetTitle(caption);
   }
 
-  // Add a lexer if we specified a path, asked for cat or blame and there were no errors.
+  // Add a lexer if we specified a path, asked for cat or blame 
+  // and there were no errors, and there is a lexer.
   if (
     !m_FullPath.empty() &&
     (m_Type == SVN_CAT || m_Type == SVN_BLAME) &&
      m_ReturnCode == 0)
   {
     const wxExFileName fn(m_FullPath);
-    m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
+
+    if (!fn.GetLexer().GetScintillaLexer().empty())
+    {
+      m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
+    }
   }
 
   m_STCEntryDialog->Show();
