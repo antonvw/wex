@@ -895,7 +895,8 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         }
         break;
 
-      default: event.Skip();
+      default:
+        wxFAIL;
       }
     }
   }
