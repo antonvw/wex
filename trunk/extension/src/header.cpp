@@ -20,19 +20,6 @@ wxExHeader::wxExHeader(wxExConfig* config)
 
 const wxString wxExHeader::Get(const wxExFileName* filename) const
 {
-  const wxString author = m_Config->Get(_("Author"));
-  const wxString company = m_Config->Get(_("Company"));
-  const wxString license = m_Config->Get(_("License"));
-  const wxString email = m_Config->Get(_("Email"));
-  const wxString purpose = m_Config->Get(_("Purpose"));
-  const wxString email_field = (!email.empty() ? " < " + email + ">": email);
-
-  if (author.empty())
-  {
-    wxLogError("Author is required");
-    return wxEmptyString;
-  }
-
   const wxExLexer l = filename->GetLexer();
 
   if (l.GetScintillaLexer().empty())
@@ -40,6 +27,13 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     wxLogError("Lexer is empty");
     return wxEmptyString;
   }
+
+  const wxString author = m_Config->Get(_("Author"));
+  const wxString company = m_Config->Get(_("Company"));
+  const wxString license = m_Config->Get(_("License"));
+  const wxString email = m_Config->Get(_("Email"));
+  const wxString purpose = m_Config->Get(_("Purpose"));
+  const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
   wxString header;
   header << l.MakeComment(wxEmptyString, false) << "\n";
