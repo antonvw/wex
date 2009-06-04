@@ -48,9 +48,9 @@ private:
   bool ParseSQL();
   bool SetSQLQuery();
 
-  static otl_connect m_db;
-
   bool m_SQLResultsParsing;
+
+  static wxExOTL m_otl;
 
   wxString m_SQLQuery;
   wxString m_SQLQueryRunTime;

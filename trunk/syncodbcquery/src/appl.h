@@ -61,7 +61,7 @@ private:
   wxExSTCWithFrame* m_Query;
   wxExGrid* m_Results;
   wxExStatistics <long> m_Statistics;
-  otl_connect m_db;
+  wxExOTL m_otl;
   bool m_Running;
   bool m_Stopped;
 

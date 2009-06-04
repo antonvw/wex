@@ -170,8 +170,6 @@ MyFrame::MyFrame(const wxString& title)
 #endif
 
   m_ToolBar->Realize();
-
-  otl_connect::otl_initialize();
 }
 
 void MyFrame::ConfigDialogApplied(wxWindowID WXUNUSED(dialogid))
@@ -189,7 +187,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
 
   wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
-  m_db.logoff();
+  m_otl.GetDb().logoff();
 
   event.Skip();
 }
@@ -254,17 +252,17 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_CLOSE:
-    m_db.logoff();
+    m_otl.GetDb().logoff();
     m_Shell->SetPrompt(">");
     break;
 
   case ID_DATABASE_OPEN:
-    wxExOTL(&m_db).Logon(wxExApp::GetConfig());
-    m_Shell->SetPrompt((m_db.connected ? wxExApp::GetConfig(_("Datasource")): "") + ">");
+    m_otl.Logon(wxExApp::GetConfig());
+    m_Shell->SetPrompt((m_otl.GetDb().connected ? wxExApp::GetConfig(_("Datasource")): "") + ">");
     break;
 
   case ID_SHELL_COMMAND:
-    if (m_db.connected)
+    if (m_otl.GetDb().connected)
     {
       try
       {
@@ -312,7 +310,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
   {
   case wxID_EXECUTE:
     // If we have a query, you can hide it, but still run it.
-    event.Enable(m_Query->GetLength() > 0 && m_db.connected);
+    event.Enable(m_Query->GetLength() > 0 && m_otl.GetDb().connected);
     break;
 
   case wxID_SAVE:
@@ -328,11 +326,11 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_DATABASE_CLOSE:
-    event.Enable(m_db.connected > 0);
+    event.Enable(m_otl.GetDb().connected > 0);
     break;
 
   case ID_DATABASE_OPEN:
-    event.Enable(!m_db.connected);
+    event.Enable(!m_otl.GetDb().connected);
     break;
 
   case ID_RECENTFILE_MENU:
@@ -388,15 +386,13 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
   {
     long rpc;
 
-    wxExOTL otl(&m_db);
-
     if (m_Results->IsShown())
     {
-      rpc = otl.QueryToGrid(query, m_Results, m_Stopped, empty_results);
+      rpc = m_otl.QueryToGrid(query, m_Results, m_Stopped, empty_results);
     }
     else
     {
-      rpc = otl.QueryToSTC(query, m_Shell, m_Stopped);
+      rpc = m_otl.QueryToSTC(query, m_Shell, m_Stopped);
     }
 
     sw.Pause();
@@ -405,7 +401,7 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
   }
   else
   {
-    const long rpc = otl_cursor::direct_exec(m_db, query.c_str());
+    const long rpc = otl_cursor::direct_exec(m_otl.GetDb(), query.c_str());
     sw.Pause();
 
     UpdateStatistics(sw, rpc);

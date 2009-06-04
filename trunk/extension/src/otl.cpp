@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          otl.cpp
-* Purpose:       Implementation of otl related things
+* Purpose:       Implementation of wxExOTL class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,9 +19,14 @@
 
 #if USE_OTL
 
-wxExOTL::wxExOTL(otl_connect* db)
-  : m_db(db)
+wxExOTL::wxExOTL()
 {
+  otl_connect::otl_initialize();
+}
+
+wxExOTL::~wxExOTL()
+{
+  m_db.logoff();
 }
 
 bool wxExOTL::Logon(wxExConfig* config, int max_items)
@@ -54,7 +59,7 @@ bool wxExOTL::Logon(wxExConfig* config, int max_items)
       config->Get(_("Password")) + "@" +
       config->Get(_("Datasource"));
 
-    m_db->rlogon(
+    m_db.rlogon(
       connect.c_str(),
       1); // autocommit-flag
 
@@ -84,7 +89,7 @@ long wxExOTL::QueryToGrid(
   i.open(
     1024,
     query.c_str(),
-    *m_db,
+    m_db,
     otl_implicit_select);
 
   long rows = 0;
@@ -182,7 +187,7 @@ long wxExOTL::QueryToSTC(
   i.open(
     1024,
     query.c_str(),
-    *m_db,
+    m_db,
     otl_implicit_select);
 
   stc->AppendText(wxTextFile::GetEOL());

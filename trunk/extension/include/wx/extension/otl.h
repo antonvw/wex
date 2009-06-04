@@ -1,10 +1,10 @@
 /******************************************************************************\
 * File:          otl.h
-* Purpose:       Declaration of otl related things
+* Purpose:       Declaration of wxExOTL class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2008, Anton van Wezenbeek
+* Copyright (c) 2008-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -31,7 +31,15 @@ class wxExOTL
 {
 public:
   /// Constructor.
-  wxExOTL(otl_connect* db);
+  /// Initializes the otl connection.
+  wxExOTL();
+
+  /// Destructor.
+  /// Logs off.
+ ~wxExOTL();
+
+  /// Returns member.
+  otl_connect& GetDb() {return m_db;};
 
   /// Logons to the database (shows a database dialog).
   /// max_items specifies max number of datasources in the combobox and config.
@@ -55,7 +63,7 @@ public:
   /// Returns the OTL version as a string.
   static const wxString Version();
 private:
-  otl_connect* m_db;
+  otl_connect m_db;
 };
 
 #endif // USE_OTL

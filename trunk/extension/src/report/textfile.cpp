@@ -30,7 +30,7 @@ void SetItemColumnStatistics(
 }
 
 #if USE_EMBEDDED_SQL
-otl_connect wxExTextFileWithListView::m_db;
+wxExOTL wxExTextFileWithListView::m_otl;
 
 class Recordset
 {
@@ -61,13 +61,6 @@ wxExTextFileWithListView::wxExTextFileWithListView(
 #endif
 {
 }
-
-#if USE_EMBEDDED_SQL
-void wxExTextFileWithListView::CleanUp()
-{
-  m_db.logoff();
-}
-#endif
 
 #if USE_EMBEDDED_SQL
 bool wxExTextFileWithListView::ParseComments()
@@ -142,7 +135,7 @@ bool wxExTextFileWithListView::ParseSQL()
     wxExApp::Log(
       _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
-    Recordset rs(&m_db, this);
+    Recordset rs(&m_otl.GetDb(), this);
     if (!rs.ExecQuery(m_SQLQuery))
     {
       return false;
@@ -301,12 +294,12 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 #if USE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
   {
-    if (m_db.connected)
+    if (m_otl.GetDb().connected)
     {
-      m_db.logoff();
+      m_otl.GetDb().logoff();
     }
 
-    if (!wxExOTL(&m_db).Logon(wxExApp::GetConfig()))
+    if (!m_otl.Logon(wxExApp::GetConfig()))
     {
       return false;
     }
