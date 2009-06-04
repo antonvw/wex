@@ -306,7 +306,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
       m_db.logoff();
     }
 
-    if (!wxExOTLDialog(wxExApp::GetConfig(), &m_db))
+    if (!wxExOTL(&m_db).Logon(wxExApp::GetConfig()))
     {
       return false;
     }

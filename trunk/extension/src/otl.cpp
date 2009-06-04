@@ -18,12 +18,15 @@
 #include <wx/extension/configdialog.h>
 
 #if USE_OTL
-bool wxExOTLDialog(
-  wxExConfig* config,
-  otl_connect* db,
-  int max_items)
+
+wxExOTL::wxExOTL(otl_connect* db)
+  : m_db(db)
 {
-  wxASSERT(db != NULL && config != NULL);
+}
+
+bool wxExOTL::Logon(wxExConfig* config, int max_items)
+{
+  wxASSERT(config != NULL);
 
   std::vector<wxExConfigItem> v;
 
@@ -51,7 +54,7 @@ bool wxExOTLDialog(
       config->Get(_("Password")) + "@" +
       config->Get(_("Datasource"));
 
-    db->rlogon(
+    m_db->rlogon(
       connect.c_str(),
       1); // autocommit-flag
 
@@ -68,21 +71,20 @@ bool wxExOTLDialog(
 }
 
 #if wxUSE_GRID
-long wxExOTLQueryToGrid(
-  otl_connect* db,
+long wxExOTL::QueryToGrid(
   const wxString& query,
   wxGrid* grid,
   bool& stopped,
   bool empty_results)
 {
-  wxASSERT(db != NULL && grid != NULL);
+  wxASSERT(grid != NULL);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
     1024,
     query.c_str(),
-    *db,
+    *m_db,
     otl_implicit_select);
 
   long rows = 0;
@@ -170,8 +172,7 @@ long wxExOTLQueryToGrid(
 }
 #endif //wxUSE_GRID
 
-long wxExOTLQueryToSTC(
-  otl_connect* db,
+long wxExOTL::QueryToSTC(
   const wxString& query,
   wxStyledTextCtrl* stc,
   bool& stopped)
@@ -181,7 +182,7 @@ long wxExOTLQueryToSTC(
   i.open(
     1024,
     query.c_str(),
-    *db,
+    *m_db,
     otl_implicit_select);
 
   stc->AppendText(wxTextFile::GetEOL());
@@ -257,7 +258,7 @@ long wxExOTLQueryToSTC(
   return rows;
 }
 
-const wxString wxExOTLVersion()
+const wxString wxExOTL::Version()
 {
   const long version = OTL_VERSION_NUMBER;
   return wxString::Format("OTL v%d.%d.%d",

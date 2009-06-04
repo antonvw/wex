@@ -409,7 +409,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
 #ifdef USE_OTL
-    info.AddDeveloper(wxExOTLVersion());
+    info.AddDeveloper(wxExOTL::Version());
 #endif
 #ifdef EX_PORTABLE
     info.SetDescription(

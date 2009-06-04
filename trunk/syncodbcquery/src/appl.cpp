@@ -207,7 +207,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     info.SetCopyright("(c) 2008-2009, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
-    info.AddDeveloper(wxExOTLVersion());
+    info.AddDeveloper(wxExOTL::Version());
     wxAboutBox(info);
     }
     break;
@@ -259,7 +259,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_OPEN:
-    wxExOTLDialog(wxExApp::GetConfig(), &m_db);
+    wxExOTL(&m_db).Logon(wxExApp::GetConfig());
     m_Shell->SetPrompt((m_db.connected ? wxExApp::GetConfig(_("Datasource")): "") + ">");
     break;
 
@@ -388,13 +388,15 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
   {
     long rpc;
 
+    wxExOTL otl(&m_db);
+
     if (m_Results->IsShown())
     {
-      rpc = wxExOTLQueryToGrid(&m_db, query, m_Results, m_Stopped, empty_results);
+      rpc = otl.QueryToGrid(query, m_Results, m_Stopped, empty_results);
     }
     else
     {
-      rpc = wxExOTLQueryToSTC(&m_db, query, m_Shell, m_Stopped);
+      rpc = otl.QueryToSTC(query, m_Shell, m_Stopped);
     }
 
     sw.Pause();

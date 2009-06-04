@@ -26,35 +26,37 @@
 
 class wxExConfig;
 
-/*! \file */
-/// Shows a database dialog, and if db is specified also tries to login.
-/// max_items specifies max number of datasources in the combobox and config.
-bool wxExOTLDialog(
-  wxExConfig* config,
-  otl_connect* db = NULL,
-  int max_items = 4);
+/// Offers methods to the otl database.
+class wxExOTL
+{
+public:
+  /// Constructor.
+  wxExOTL(otl_connect* db);
 
-/// Returns the OTL version as a string.
-const wxString wxExOTLVersion();
+  /// Logons to the database (shows a database dialog).
+  /// max_items specifies max number of datasources in the combobox and config.
+  /// Returns false if dialog cancelled or logon fails.
+  bool Logon(wxExConfig* config, int max_items = 4);
 
 #if wxUSE_GRID
-/// Run the query using db and put results on the grid (if the grid is shown).
-/// If empty_results then the grid is cleared first.
-long wxExOTLQueryToGrid(
-  otl_connect* db,
-  const wxString& query,
-  wxGrid* grid,
-  bool& stopped,
-  bool empty_results = true);
+  /// Run the query and put results on the grid (if the grid is shown).
+  /// If empty_results then the grid is cleared first.
+  long QueryToGrid(const wxString& query,
+    wxGrid* grid,
+    bool& stopped,
+    bool empty_results = true);
 #endif // wxUSE_GRID
 
-/// Run the query using db and append results to the stc.
-long wxExOTLQueryToSTC(
-  otl_connect* db,
-  const wxString& query,
-  wxStyledTextCtrl* stc,
-  bool& stopped);
+  /// Run the query and append results to the stc.
+  long QueryToSTC(const wxString& query,
+    wxStyledTextCtrl* stc,
+    bool& stopped);
+
+  /// Returns the OTL version as a string.
+  static const wxString Version();
+private:
+  otl_connect* m_db;
+};
 
 #endif // USE_OTL
-
 #endif
