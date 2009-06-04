@@ -188,6 +188,9 @@
 				RelativePath=".\src\grid.cpp">
 			</File>
 			<File
+				RelativePath=".\src\header.cpp">
+			</File>
+			<File
 				RelativePath=".\src\lexer.cpp">
 			</File>
 			<File
@@ -256,6 +259,9 @@
 			</File>
 			<File
 				RelativePath=".\include\wx\extension\grid.h">
+			</File>
+			<File
+				RelativePath=".\include\wx\extension\header.h">
 			</File>
 			<File
 				RelativePath=".\include\wx\extension\lexer.h">
