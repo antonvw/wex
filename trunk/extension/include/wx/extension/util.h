@@ -20,9 +20,6 @@
 
 /*! \file */
 
-class wxExConfig;
-class wxExFileName;
-
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);
 

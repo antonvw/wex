@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          header.cpp
-* Purpose:       Implementation of wxextension utility methods
+* Purpose:       Implementation of wxExHeader class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,13 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/clipbrd.h>
-#include <wx/file.h>
-#include <wx/regex.h>
-#include <wx/stdpaths.h>
-#include <wx/textfile.h> // for wxTextFile::GetEOL()
-#include <wx/tokenzr.h>
-#include <wx/extension/util.h>
+#include <wx/extension/header.h>
 #include <wx/extension/configdialog.h>
 #include <wx/extension/file.h>
 

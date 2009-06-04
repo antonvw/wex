@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          header.h
-* Purpose:       Include file for wxextension utility functions
+* Purpose:       Declaration of wxExHeader class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,7 +16,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/filename.h>
 
 class wxExConfig;
 class wxExFileName;

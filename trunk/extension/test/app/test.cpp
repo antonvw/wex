@@ -11,6 +11,7 @@
 \******************************************************************************/
 
 #include <TestCaller.h>
+#include <wx/extension/header.h>
 #include "test.h"
 
 void wxExAppTestFixture::setUp()

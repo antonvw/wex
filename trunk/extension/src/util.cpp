@@ -16,8 +16,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
-#include <wx/extension/configdialog.h>
-#include <wx/extension/file.h>
+#include <wx/extension/base.h>
 
 bool wxExClipboardAdd(const wxString& text)
 {
