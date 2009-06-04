@@ -286,12 +286,12 @@ void wxExFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
   case ID_VIEW_STATUSBAR:
-    if (GetStatusBar() == NULL) return;
+    wxASSERT(GetStatusBar() != NULL);
     event.Check(GetStatusBar()->IsShown());
     break;
 
   case ID_VIEW_TOOLBAR:
-    if (GetToolBar() == NULL) return;
+    wxASSERT(GetToolBar() != NULL) ;
     event.Check(GetToolBar()->IsShown());
     break;
 
