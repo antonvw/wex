@@ -13,15 +13,18 @@
 #include <wx/extension/configdialog.h>
 #include <wx/extension/file.h>
 
-const wxString wxExHeader(
-  const wxExFileName* filename,
-  wxExConfig* config)
+wxExHeader::wxExHeader(wxExConfig* config)
+  : m_Config(config)
 {
-  const wxString author = config->Get(_("Author"));
-  const wxString company = config->Get(_("Company"));
-  const wxString license = config->Get(_("License"));
-  const wxString email = config->Get(_("Email"));
-  const wxString purpose = config->Get(_("Purpose"));
+}
+
+const wxString wxExHeader::Get(const wxExFileName* filename) const
+{
+  const wxString author = m_Config->Get(_("Author"));
+  const wxString company = m_Config->Get(_("Company"));
+  const wxString license = m_Config->Get(_("License"));
+  const wxString email = m_Config->Get(_("Email"));
+  const wxString purpose = m_Config->Get(_("Purpose"));
   const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
   if (author.empty())
@@ -44,7 +47,7 @@ const wxString wxExHeader(
   header << l.MakeComment("Purpose:    ", purpose) << "\n";
   header << l.MakeComment("Author:     ", author) << "\n";
   header << l.MakeComment("Created:    ", wxDateTime::Now().FormatISODate()) << "\n";
-  if (config->GetBool("SVN"))
+  if (m_Config->GetBool("SVN"))
   // Prevent the Id to be expanded by SVN itself here.
   header << l.MakeComment("RCS-ID:     $", wxString("Id$")) << "\n";
   header << l.MakeComment("Copyright:   (c) " + wxDateTime::Now().Format("%Y") + " " +
@@ -69,7 +72,7 @@ const wxString wxExHeader(
   return header;
 }
 
-int wxExHeaderDialog(wxWindow* parent, wxExConfig* config)
+int wxExHeader::ShowDialog(wxWindow* parent) const
 {
   std::vector<wxExConfigItem> v;
 
@@ -78,16 +81,16 @@ int wxExHeaderDialog(wxWindow* parent, wxExConfig* config)
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
-  if (config->Get(_("Author")).empty())
+  if (m_Config->Get(_("Author")).empty())
   {
     v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
 
-    if (config->Get(_("Email")).empty())
+    if (m_Config->Get(_("Email")).empty())
     {
       v.push_back(wxExConfigItem(_("Email")));
     }
 
-    if (config->Get(_("License")).empty())
+    if (m_Config->Get(_("License")).empty())
     {
       v.push_back(wxExConfigItem(_("License")));
     }
@@ -95,5 +98,5 @@ int wxExHeaderDialog(wxWindow* parent, wxExConfig* config)
 
   return wxExConfigDialog(
     parent, 
-    config, v, _("File Purpose")).ShowModal();
+    m_Config, v, _("File Purpose")).ShowModal();
 }

@@ -206,10 +206,14 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case ID_STC_ADD_HEADER:
-    if (wxExHeaderDialog(this, wxExApp::GetConfig()) != wxID_CANCEL)
     {
-      DocumentStart();
-      AddText(wxExHeader(&m_FileName, wxExApp::GetConfig()));
+      wxExHeader header(wxExApp::GetConfig());
+
+      if (header.ShowDialog(this) != wxID_CANCEL)
+      {
+        DocumentStart();
+        AddText(header.Get(&m_FileName));
+      }
     }
     break;
 

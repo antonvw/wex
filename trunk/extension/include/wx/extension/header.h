@@ -20,11 +20,24 @@
 class wxExConfig;
 class wxExFileName;
 
-/// Returns a header.
-const wxString wxExHeader(
-  const wxExFileName* filename,
-  wxExConfig* config);
+/// This class offers methods to make a file header.
+class wxExHeader
+{
+public:
+  /// Constructor.
+  wxExHeader(wxExConfig* config);
 
-/// Shows a dialog for getting the purpose for a header.
-int wxExHeaderDialog(wxWindow* parent, wxExConfig* config);
+  /// Returns the header.
+  const wxString Get(const wxExFileName* filename) const;
+
+  /// Shows a dialog for getting the purpose for a header.
+  int ShowDialog(wxWindow* parent) const;
+
+  /// Shows a dialog, and returns the header if OK.
+  const wxString ShowDialog(const wxExFileName* filename, wxWindow* parent) const {
+    if (ShowDialog(parent) == wxID_OK) return Get(filename);
+    else return wxEmptyString;}
+private:
+  wxExConfig* m_Config;
+};
 #endif

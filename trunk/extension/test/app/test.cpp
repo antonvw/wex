@@ -108,8 +108,8 @@ void wxExAppTestFixture::testMethods()
   if (wxExApp::GetLexers()->Count() > 0)
   {
     wxExApp::GetConfig()->Set(_("Purpose"), "hello test");
-    wxExFileName fn("test.h");
-    const wxString header = wxExHeader(&fn, wxExApp::GetConfig());
+    const wxExFileName fn("test.h");
+    const wxString header = wxExHeader(wxExApp::GetConfig()).Get(&fn));
     CPPUNIT_ASSERT(header.Contains("hello test"));
   }
   else
