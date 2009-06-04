@@ -47,14 +47,6 @@ const wxString wxExGetEndOfText(
 /// Gets the number of lines in a string.
 int wxExGetNumberOfLines(const wxString& text);
 
-/// Returns a header.
-const wxString wxExHeader(
-  const wxExFileName* filename,
-  wxExConfig* config);
-
-/// Shows a dialog for getting the purpose for a header.
-int wxExHeaderDialog(wxWindow* parent, wxExConfig* config);
-
 /// Gets a line number from a string.
 int wxExGetLineNumberFromText(const wxString& text);
 
