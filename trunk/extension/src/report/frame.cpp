@@ -64,13 +64,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
 #endif
 }
 
-wxExListViewFile* wxExFrameWithHistory::Activate(
-  int WXUNUSED(type),
-  const wxExLexer* WXUNUSED(lexer))
-{
-  return NULL;
-}
-
 bool wxExFrameWithHistory::DialogFileOpen(
   long style,
   const wxString wildcards,

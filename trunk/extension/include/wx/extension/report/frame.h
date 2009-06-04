@@ -38,7 +38,10 @@ public:
 
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
-  virtual wxExListViewFile* Activate(int list_type, const wxExLexer* lexer = NULL);
+  virtual wxExListViewFile* Activate(
+    int list_type, 
+    const wxExLexer* lexer = NULL) {
+    return NULL;};
 
   /// Shows a wxFileDialog dialog for files,
   /// and opens all selected (depending on style) files if not cancelled.
