@@ -21,16 +21,16 @@
 BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_BUTTON(wxID_STOP, MDIFrame::OnCommand)
   EVT_BUTTON(wxID_EXECUTE, MDIFrame::OnCommand)
+#if wxUSE_CHECKBOX
+  EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
+  EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
+#endif
   EVT_CLOSE(MDIFrame::OnClose)
   EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, MDIFrame::OnCommand)
-#if wxUSE_CHECKBOX
-  EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
-  EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
-#endif
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, MDIFrame::OnUpdateUI)
@@ -211,7 +211,6 @@ bool MDIFrame::AllowCloseAll(wxWindowID id)
 
   return true;
 }
-
 
 void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
 {
@@ -433,7 +432,7 @@ and saved in the same directory as where the executable is."));
   case wxID_EXIT: Close(true); break;
   case wxID_HELP_CONTENTS:
     {
-    wxFileName fn(
+    const wxFileName fn(
 #ifdef EX_PORTABLE
       wxStandardPaths::Get().GetExecutablePath(),
 #else
