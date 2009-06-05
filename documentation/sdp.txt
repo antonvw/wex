@@ -17,13 +17,7 @@ General
 - GUI development library wxWidgets (2.9.0 branch)
     http://www.wxwidgets.org/
 
-- IDE
-  under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
-  under windows using Mingw and codeblocks: 
-  http://www.codeblocks.org/
-  under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
-
-- database is OTL (Version 4.0.192)
+- database is OTL (Version 4.0.196)
     http://otl.sourceforge.net/
 
 - application icons are designed using GIMP (2.6.6)
@@ -46,6 +40,12 @@ General
     http://www.poedit.net/
     
 - The SVN support in wxExSVN works with SVN client 1.6.2 (e.g. from http://www.sliksvn.com/en/download)
+
+- IDE
+  under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
+  under windows using Mingw and codeblocks: 
+  http://www.codeblocks.org/
+  under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
 
 
 SVN hierarchy
@@ -78,7 +78,10 @@ When adding functionality in trunk
     extension/sample/report
 
 
-Roadmap:
+Roadmap
+
 - Add ctags (like Exuberant CTAGS).
+
 - Add gdb front-end.
+
 - Use Boost, Ultimate++ or OMGUI (very later).
