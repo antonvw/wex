@@ -49,13 +49,13 @@ int wxExSVN::Execute(bool show_dialog)
       v.push_back(wxExConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
     }
 
-    if (m_FullPath.empty())
+    if (m_FullPath.empty() && m_Type != SVN_HELP)
     {
       v.push_back(wxExConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
     }
 
-    // SVN_UPDATE has no flags to ask for.
-    if (m_Type != SVN_UPDATE)
+    // SVN_UPDATE and SVN_HELP have no flags to ask for.
+    if (m_Type != SVN_UPDATE && m_Type != SVN_UPDATE)
     {
       wxExApp::SetConfig(_("Flags"), svn_flags_contents);
       v.push_back(wxExConfigItem(_("Flags")));
@@ -161,13 +161,16 @@ wxExSVNType wxExSVN::GetType(int command_id) const
     case ID_EDIT_SVN_CAT: return SVN_CAT; break;
     case ID_EDIT_SVN_COMMIT: return SVN_COMMIT; break;
     case ID_EDIT_SVN_DIFF: return SVN_DIFF; break;
+    case ID_EDIT_SVN_HELP: return SVN_HELP; break;
+    case ID_EDIT_SVN_INFO: return SVN_INFO; break;
     case ID_EDIT_SVN_LOG: return SVN_LOG; break;
+    case ID_EDIT_SVN_STAT: return SVN_STAT; break;
+    case ID_EDIT_SVN_UPDATE: return SVN_UPDATE; break;
     default:
       wxFAIL;
+      return SVN_STAT;
       break;
   }
-  
-  return SVN_STAT;
 }
 
 void wxExSVN::Initialize()
@@ -178,6 +181,7 @@ void wxExSVN::Initialize()
     case SVN_CAT:    m_Caption = "SVN Cat"; break;
     case SVN_COMMIT: m_Caption = "SVN Commit"; break;
     case SVN_DIFF:   m_Caption = "SVN Diff"; break;
+    case SVN_HELP:   m_Caption = "SVN Help"; break;
     case SVN_INFO:   m_Caption = "SVN Info"; break;
     case SVN_LOG:    m_Caption = "SVN Log"; break;
     case SVN_STAT:   m_Caption = "SVN Stat"; break;
