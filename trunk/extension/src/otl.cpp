@@ -19,9 +19,9 @@
 
 #if USE_OTL
 
-wxExOTL::wxExOTL()
+wxExOTL::wxExOTL(const int  threaded_mode)
 {
-  otl_connect::otl_initialize();
+  otl_connect::otl_initialize(threaded_mode);
 }
 
 wxExOTL::~wxExOTL()

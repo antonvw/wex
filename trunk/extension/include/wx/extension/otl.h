@@ -30,9 +30,9 @@ class wxExConfig;
 class wxExOTL
 {
 public:
-  /// Constructor.
-  /// Initializes the otl connection.
-  wxExOTL();
+  /// Default constructor.
+  /// Initializes the otl connection using threaded mode.
+  wxExOTL(const int  threaded_mode = 0);
 
   /// Destructor.
   /// Logs off.
