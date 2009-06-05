@@ -187,8 +187,6 @@ void MyFrame::OnClose(wxCloseEvent& event)
 
   wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
-  m_otl.GetDb().logoff();
-
   event.Skip();
 }
 
