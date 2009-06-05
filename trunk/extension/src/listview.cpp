@@ -244,20 +244,22 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
     menu.AppendSeparator();
 
-    wxMenu* menuSort = new wxMenu;
-
-    int i = ID_COL_FIRST;
-    for (
-      vector<wxExColumn>::const_iterator it = m_Columns.begin();
-      it != m_Columns.end();
-      ++it)
+    if (GetSelectedItemCount() == 0)
     {
-      menuSort->Append(i++, it->GetText());
+      wxMenu* menuSort = new wxMenu;
+
+      int i = ID_COL_FIRST;
+      for (
+        vector<wxExColumn>::const_iterator it = m_Columns.begin();
+        it != m_Columns.end();
+        ++it)
+      {
+        menuSort->Append(i++, it->GetText());
+      }
+
+      menu.AppendSubMenu(menuSort, _("Sort On"));
+      menu.AppendSeparator();
     }
-
-    menu.AppendSubMenu(menuSort, _("Sort On"));
-
-    menu.AppendSeparator();
   }
 
   menu.AppendEdit(true);
