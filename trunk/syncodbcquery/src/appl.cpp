@@ -400,7 +400,8 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
   }
   else
   {
-    const long rpc = otl_cursor::direct_exec(m_otl.GetDb(), query.c_str());
+    const long rpc = m_otl.Query(query);
+
     sw.Pause();
 
     UpdateStatistics(sw, rpc);

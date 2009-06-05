@@ -46,6 +46,9 @@ public:
   /// Returns false if dialog cancelled or logon fails.
   bool Logon(wxExConfig* config, int max_items = 4);
 
+  /// Run the query and return results.
+  long Query(const wxString& query);
+
 #if wxUSE_GRID
   /// Run the query and put results on the grid (if the grid is shown).
   /// If empty_results then the grid is cleared first.

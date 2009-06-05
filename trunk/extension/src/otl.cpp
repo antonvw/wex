@@ -19,7 +19,7 @@
 
 #if USE_OTL
 
-wxExOTL::wxExOTL(const int  threaded_mode)
+wxExOTL::wxExOTL(const int threaded_mode)
 {
   otl_connect::otl_initialize(threaded_mode);
 }
@@ -73,6 +73,11 @@ bool wxExOTL::Logon(wxExConfig* config, int max_items)
   }
 
   return false;
+}
+
+long wxExOTL::Query(const wxString& query)
+{
+  return otl_cursor::direct_exec(m_db, query.c_str());
 }
 
 #if wxUSE_GRID
@@ -182,6 +187,8 @@ long wxExOTL::Query(
   wxStyledTextCtrl* stc,
   bool& stopped)
 {
+  wxASSERT(stc != NULL);
+
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
