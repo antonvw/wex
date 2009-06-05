@@ -49,14 +49,14 @@ public:
 #if wxUSE_GRID
   /// Run the query and put results on the grid (if the grid is shown).
   /// If empty_results then the grid is cleared first.
-  long QueryToGrid(const wxString& query,
+  long Query(const wxString& query,
     wxGrid* grid,
     bool& stopped,
     bool empty_results = true);
 #endif // wxUSE_GRID
 
   /// Run the query and append results to the stc.
-  long QueryToSTC(const wxString& query,
+  long Query(const wxString& query,
     wxStyledTextCtrl* stc,
     bool& stopped);
 

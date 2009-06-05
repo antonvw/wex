@@ -388,11 +388,11 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
 
     if (m_Results->IsShown())
     {
-      rpc = m_otl.QueryToGrid(query, m_Results, m_Stopped, empty_results);
+      rpc = m_otl.Query(query, m_Results, m_Stopped, empty_results);
     }
     else
     {
-      rpc = m_otl.QueryToSTC(query, m_Shell, m_Stopped);
+      rpc = m_otl.Query(query, m_Shell, m_Stopped);
     }
 
     sw.Pause();

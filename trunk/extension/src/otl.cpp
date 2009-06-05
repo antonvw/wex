@@ -76,7 +76,7 @@ bool wxExOTL::Logon(wxExConfig* config, int max_items)
 }
 
 #if wxUSE_GRID
-long wxExOTL::QueryToGrid(
+long wxExOTL::Query(
   const wxString& query,
   wxGrid* grid,
   bool& stopped,
@@ -177,7 +177,7 @@ long wxExOTL::QueryToGrid(
 }
 #endif //wxUSE_GRID
 
-long wxExOTL::QueryToSTC(
+long wxExOTL::Query(
   const wxString& query,
   wxStyledTextCtrl* stc,
   bool& stopped)
