@@ -98,12 +98,6 @@ void wxExNotebook::ErasePage(size_t n)
 
 bool wxExNotebook::ForEach(int id)
 {
-  if (GetPageCount() == 0)
-  {
-    // Nothing to do.
-    return true;
-  }
-
   // The page should be an int, otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
   {
