@@ -67,23 +67,33 @@ bool wxExNotebook::DeletePage(const wxString& key)
   return wxAuiNotebook::DeletePage(GetPageIndex(page));
 }
 
-bool wxExNotebook::ErasePage(size_t n)
+void wxExNotebook::ErasePage(size_t n)
 {
+  bool found = false;
+
   for (
     std::map<wxString,wxWindow*>::iterator it = m_MapPages.begin();
-    it != m_MapPages.end();
+    it != m_MapPages.end() && !found;
     ++it)
   {
     if (it->second == GetPage(n))
     {
       m_MapPages.erase(it);
-      return true;
+      found = true;
     }
   }
 
-  wxFAIL;
-
-  return false;
+  if (found)
+  {
+    if (m_MapPages.empty() && m_Frame != NULL)
+    {
+      m_Frame->SyncCloseAll(GetId());
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 bool wxExNotebook::ForEach(int id)
@@ -125,11 +135,6 @@ bool wxExNotebook::ForEach(int id)
       if (!stc->Continue()) return false;
 
       ErasePage(page);
-
-      if (m_MapPages.empty() && m_Frame != NULL)
-      {
-        m_Frame->SyncCloseAll(GetId());
-      }
 
       if (!wxAuiNotebook::DeletePage(page)) return false;
       break;
@@ -217,12 +222,6 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
       else
       {
         ErasePage(GetSelection());
-
-        if (m_MapPages.empty() && m_Frame != NULL)
-        {
-          m_Frame->SyncCloseAll(GetId());
-        }
-
         event.Skip(); // call base
       }
     }
