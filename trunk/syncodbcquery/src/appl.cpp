@@ -298,7 +298,8 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case ID_VIEW_RESULTS: TogglePane("RESULTS"); break;
   case ID_VIEW_STATISTICS: TogglePane("STATISTICS"); break;
 
-  default: event.Skip();
+  default: 
+    wxFAIL;
   }
 }
 
