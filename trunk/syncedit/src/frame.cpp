@@ -115,7 +115,7 @@ MDIFrame::MDIFrame(bool open_recent)
   GetManager().AddPane(findbar,
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
-  const wxString perspective = wxExApp::GetConfig("Perspective");
+  const wxString perspective = wxExApp::GetConfig(_("Perspective"));
 
   if (perspective.empty())
   {
