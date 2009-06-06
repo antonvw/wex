@@ -636,6 +636,7 @@ and saved in the same directory as where the executable is."));
 
   case ID_SVN_COMMIT: wxExSVN(SVN_COMMIT).ExecuteAndShowOutput(); break;
   case ID_SVN_DIFF: wxExSVN(SVN_DIFF).ExecuteAndShowOutput(); break;
+  case ID_SVN_HELP: wxExSVN(SVN_HELP).ExecuteAndShowOutput(); break;
   case ID_SVN_INFO: wxExSVN(SVN_INFO).ExecuteAndShowOutput(); break;
   case ID_SVN_LOG: wxExSVN(SVN_LOG).ExecuteAndShowOutput(); break;
   case ID_SVN_STAT: wxExSVN(SVN_STAT).ExecuteAndShowOutput(); break;

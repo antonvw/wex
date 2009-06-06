@@ -93,6 +93,7 @@ Frame::Frame(const wxString& project_wildcard)
     menuSVN->Append(ID_SVN_INFO, wxExEllipsed("&Info"));
     menuSVN->Append(ID_SVN_LOG, wxExEllipsed("&Log"));
     menuSVN->Append(ID_SVN_DIFF, wxExEllipsed("&Diff"));
+    menuSVN->Append(ID_SVN_HELP, wxExEllipsed("&Help"));
     menuSVN->AppendSeparator();
     menuSVN->Append(ID_SVN_UPDATE, wxExEllipsed("&Update"));
     menuSVN->Append(ID_SVN_COMMIT, wxExEllipsed("C&ommit"));
