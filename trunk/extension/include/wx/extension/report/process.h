@@ -33,6 +33,9 @@ public:
   /// The return value is the process id and zero value indicates 
   /// that the command could not be executed.
   long Execute();
+  
+  /// Initializes the command from config.
+  static void InitCommandFromConfig();
 
   /// Returns whether a process has been selected.
   static bool IsSelected() {

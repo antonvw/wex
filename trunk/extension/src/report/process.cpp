@@ -167,6 +167,11 @@ long wxExProcessWithListView::Execute()
   return pid;
 }
 
+void wxExProcessWithListView::InitCommandFromConfig()
+{
+  m_Command = wxExApp::GetConfig(_("Process"));
+}
+
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 {
   m_Timer.Stop();

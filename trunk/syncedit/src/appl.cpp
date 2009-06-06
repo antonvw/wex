@@ -44,6 +44,8 @@ bool Application::OnInit()
     return false;
   }
 
+  wxExProcessWithListView::InitCommandFromConfig();
+
   SetLogging();
 
   MDIFrame* frame = new MDIFrame(m_Files.Count() == 0);
