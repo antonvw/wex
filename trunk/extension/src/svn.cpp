@@ -62,11 +62,17 @@ int wxExSVN::Execute(bool show_dialog)
         true)); // required
     }
 
-    // SVN_UPDATE has no flags to ask for.
-    if (m_Type != SVN_UPDATE)
+    // SVN_UPDATE and SVN_HELP have no flags to ask for.
+    if (m_Type != SVN_UPDATE && m_Type != SVN_HELP)
     {
       wxExApp::SetConfig(_("Flags"), svn_flags_contents);
       v.push_back(wxExConfigItem(_("Flags")));
+    }
+
+    // Instead, SVN_HELP has an extra subcommand.
+    if (m_Type == SVN_HELP)
+    {
+      v.push_back(wxExConfigItem(_("Subcommand")));
     }
 
     if (wxExConfigDialog(wxTheApp->GetTopWindow(),
@@ -108,7 +114,19 @@ int wxExSVN::Execute(bool show_dialog)
     wxExApp::SetConfig(svn_flags_name, flags);
   }
 
-  const wxString command = "svn " + flags + m_Command + arg + file;
+  wxString subcommand;
+  
+  if (m_Type == SVN_HELP)
+  {
+    subcommand = wxExApp::GetConfig(_("Subcommand"));
+
+    if (!subcommand.empty())
+    {
+      subcommand = " " + subcommand;
+    }
+  }
+
+  const wxString command = "svn " + flags + m_Command + subcommand + arg + file;
 
   wxArrayString output;
   wxArrayString errors;
