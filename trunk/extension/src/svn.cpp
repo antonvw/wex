@@ -46,16 +46,24 @@ int wxExSVN::Execute(bool show_dialog)
 
     if (m_Type == SVN_COMMIT)
     {
-      v.push_back(wxExConfigItem(_("Revision comment"), CONFIG_COMBOBOX));
+      v.push_back(wxExConfigItem(
+        _("Revision comment"), 
+        CONFIG_COMBOBOX,
+        wxEmptyString,
+        true)); // required
     }
 
     if (m_FullPath.empty() && m_Type != SVN_HELP)
     {
-      v.push_back(wxExConfigItem(_("Base folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+      v.push_back(wxExConfigItem(
+        _("Base folder"), 
+        CONFIG_COMBOBOXDIR, 
+        wxEmptyString, 
+        true)); // required
     }
 
-    // SVN_UPDATE and SVN_HELP have no flags to ask for.
-    if (m_Type != SVN_UPDATE && m_Type != SVN_UPDATE)
+    // SVN_UPDATE has no flags to ask for.
+    if (m_Type != SVN_UPDATE)
     {
       wxExApp::SetConfig(_("Flags"), svn_flags_contents);
       v.push_back(wxExConfigItem(_("Flags")));
@@ -114,10 +122,7 @@ int wxExSVN::Execute(bool show_dialog)
     return m_ReturnCode;
   }
 
-  if (errors.GetCount() == 0)
-  {
-    wxExApp::Log(command);
-  }
+  wxExApp::Log(command);
 
   if (m_FullPath.empty())
   {
