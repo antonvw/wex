@@ -515,6 +515,8 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
     wxLC_REPORT));
 #endif
 
+  const int col_line_width = 750;
+
   if (m_Type != LIST_PROCESS)
   {
     InsertColumn(_("File Name"), wxExColumn::COL_STRING);
@@ -533,7 +535,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
   break;
   case LIST_FIND:
   case LIST_REPLACE:
-    InsertColumn(_("Line"), wxExColumn::COL_STRING, 400);
+    InsertColumn(_("Line"), wxExColumn::COL_STRING, col_line_width);
     InsertColumn(_("Match"), wxExColumn::COL_STRING);
     InsertColumn(_("Line No"));
   break;
@@ -549,7 +551,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
     InsertColumn(_("Keywords"));
   break;
   case LIST_PROCESS:
-    InsertColumn(_("Line"), wxExColumn::COL_STRING, 500);
+    InsertColumn(_("Line"), wxExColumn::COL_STRING, col_line_width);
     InsertColumn(_("Line No"));
     InsertColumn(_("File Name"), wxExColumn::COL_STRING);
   break;
