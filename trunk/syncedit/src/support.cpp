@@ -202,15 +202,15 @@ Frame::Frame(const wxString& project_wildcard)
     wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     wxNullBitmap,
     _("View in detail mode"));
+#endif //__WXMSW__
 
-#endif
 #if wxUSE_CHECKBOX
   m_ToolBar->AddSeparator();
 #ifndef __WXMSW__
   wxSize size(55, 25);
 #else
   wxSize size = wxDefaultSize;
-#endif
+#endif // __WXMSW__
 
   m_ToolBar->AddControl(
     m_HexModeCheckBox = new wxCheckBox(
