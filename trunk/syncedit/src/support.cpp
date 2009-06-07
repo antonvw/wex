@@ -179,6 +179,13 @@ Frame::Frame(const wxString& project_wildcard)
   m_ToolBar->AddSeparator();
   m_ToolBar->AddTool(wxID_FIND);
   m_ToolBar->AddSeparator();
+  
+#ifdef __WXGTK__
+  // wxID_EXECUTE is not part of art provider, but GTK directly,
+  // so the following does not present a bitmap.
+  //m_ToolBar->AddTool(wxID_EXECUTE);
+  //m_ToolBar->AddSeparator();
+#endif
 
   m_ToolBar->AddTool(
     ID_PROJECT_OPEN,
