@@ -592,8 +592,10 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
   if (path.DirExists())
   {
     wxMenu* svnmenu = new wxMenu;
-    svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed("&Diff"));
     svnmenu->Append(ID_EDIT_SVN_LOG, wxExEllipsed("&Log"));
+    svnmenu->Append(ID_EDIT_SVN_STAT, wxExEllipsed("&Stat"));
+    svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed("&Diff"));
+    svnmenu->AppendSeparator();
     svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("Ca&t"));
     svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed("&Blame"));
     svnmenu->AppendSeparator();
