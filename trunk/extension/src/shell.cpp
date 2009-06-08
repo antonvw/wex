@@ -118,7 +118,8 @@ void wxExSTCShell::OnCommand(wxCommandEvent& command)
       Paste();
       break;
 
-    default: command.Skip();
+    default: 
+      wxFAIL;
       break;
   }
 }
