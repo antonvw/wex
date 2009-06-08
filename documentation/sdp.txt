@@ -44,7 +44,9 @@ General
 - IDE
   under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
   under windows using Mingw and codeblocks: 
-  http://www.codeblocks.org/
+  Microsoft Visual Studio 2008
+  Version 9.0.30729.1 SP
+  Microsoft .NET Framework
   under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
 
 
