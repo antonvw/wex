@@ -10,9 +10,7 @@
 \******************************************************************************/
 
 #include <wx/aboutdlg.h>
-#include <wx/busyinfo.h>
 #include <wx/numdlg.h>
-#include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/renderer.h>
 #include <wx/extension/configdialog.h>
