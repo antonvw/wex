@@ -422,5 +422,9 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     stc->SetDocPointer(m_STC->GetDocPointer());
     }
     break;
+
+  default:
+    wxFAIL;
+    break;
   }
 }

@@ -223,7 +223,9 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     wxExListViewFile::ProcessRun();
     break;
 
-  default: event.Skip();
+  default: 
+    wxFAIL;
+    break;
   }
 }
 
