@@ -965,6 +965,9 @@ void MyTaskBarIcon::OnCommand(wxCommandEvent& event)
   case ID_OPEN:
     m_Frame->Show();
     break;
+  default:
+    wxFAIL;
+    break;
   }
 }
 #endif
