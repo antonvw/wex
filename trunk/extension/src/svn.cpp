@@ -105,15 +105,7 @@ int wxExSVN::Execute(bool show_dialog)
     arg = " -m \"" + wxExApp::GetConfig(_("Revision comment")) + "\"";
   }
 
-  wxString flags = wxExApp::GetConfig(_("Flags"));
-
-  if (!flags.empty())
-  {
-    flags += " ";
-
-    wxExApp::SetConfig(svn_flags_name, flags);
-  }
-
+  wxString flags;
   wxString subcommand;
   
   if (m_Type == SVN_HELP)
@@ -123,6 +115,17 @@ int wxExSVN::Execute(bool show_dialog)
     if (!subcommand.empty())
     {
       subcommand = " " + subcommand;
+    }
+  }
+  else
+  {
+    flags = wxExApp::GetConfig(_("Flags"));
+
+    if (!flags.empty())
+    {
+      flags += " ";
+
+      wxExApp::SetConfig(svn_flags_name, flags);
     }
   }
 
