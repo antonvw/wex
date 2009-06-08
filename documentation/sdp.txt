@@ -42,12 +42,12 @@ General
 - The SVN support in wxExSVN works with SVN client 1.6.2 (e.g. from http://www.sliksvn.com/en/download)
 
 - IDE
-  under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
-  under windows using Mingw and codeblocks: 
-  Microsoft Visual Studio 2008
-  Version 9.0.30729.1 SP
-  Microsoft .NET Framework
-  under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
+  - under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
+  - under windows using Microsoft Visual Studio 2008
+    Version 9.0.30729.1 SP
+    Microsoft .NET Framework
+    
+  - under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
 
 
 SVN hierarchy
