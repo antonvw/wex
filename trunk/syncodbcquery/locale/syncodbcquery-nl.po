@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-24 16:26+0100\n"
-"PO-Revision-Date: 2009-05-24 16:26+0100\n"
-"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-06-08 22:08+0100\n"
+"PO-Revision-Date: 2009-06-08 22:08+0100\n"
+"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -76,20 +76,20 @@ msgstr "&Help"
 msgid "Lines in window"
 msgstr "Regels in scherm"
 
-#: ../src/appl.cpp:205
+#: ../src/appl.cpp:201
 msgid "This program offers a general ODBC query."
 msgstr "Dit programma biedt algemene ODBC query"
 
-#: ../src/appl.cpp:239
+#: ../src/appl.cpp:235
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/appl.cpp:263
+#: ../src/appl.cpp:259
 msgid "Datasource"
 msgstr "Databron"
 
-#: ../src/appl.cpp:285
-#: ../src/appl.cpp:451
+#: ../src/appl.cpp:281
+#: ../src/appl.cpp:449
 msgid ""
 "\n"
 "error: "
@@ -97,7 +97,7 @@ msgstr ""
 "\n"
 "fout: "
 
-#: ../src/appl.cpp:290
+#: ../src/appl.cpp:286
 msgid ""
 "\n"
 "not connected"
@@ -105,19 +105,19 @@ msgstr ""
 "\n"
 "geen verbinding"
 
-#: ../src/appl.cpp:298
+#: ../src/appl.cpp:294
 msgid "cancelled"
 msgstr "geannuleerd"
 
-#: ../src/appl.cpp:450
+#: ../src/appl.cpp:448
 msgid "Number of query errors"
 msgstr "Aantal query fouten"
 
-#: ../src/appl.cpp:451
+#: ../src/appl.cpp:449
 msgid " in: "
 msgstr " in: "
 
-#: ../src/appl.cpp:456
+#: ../src/appl.cpp:454
 #, c-format
 msgid ""
 "\n"
@@ -126,7 +126,7 @@ msgstr ""
 "\n"
 "%d queries (%.3f seconden)"
 
-#: ../src/appl.cpp:465
+#: ../src/appl.cpp:463
 #, c-format
 msgid ""
 "\n"
@@ -135,23 +135,23 @@ msgstr ""
 "\n"
 "%d records opgehaald (%.3f seconden)"
 
-#: ../src/appl.cpp:469
+#: ../src/appl.cpp:467
 msgid "Rows processed"
 msgstr "Records opgehaald"
 
-#: ../src/appl.cpp:470
+#: ../src/appl.cpp:468
 msgid "Query runtime"
 msgstr "Query uitvoertijd"
 
-#: ../src/appl.cpp:472
+#: ../src/appl.cpp:470
 msgid "Total number of queries run"
 msgstr "Totaal aantal uitgevoerde queries"
 
-#: ../src/appl.cpp:473
+#: ../src/appl.cpp:471
 msgid "Total query runtime"
 msgstr "Totaal query uitvoertijd"
 
-#: ../src/appl.cpp:474
+#: ../src/appl.cpp:472
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
 
