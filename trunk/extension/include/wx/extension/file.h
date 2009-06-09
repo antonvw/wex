@@ -53,15 +53,10 @@ public:
   bool SetReadOnly(const bool read_only);
 
   /// Updates stat only, returns result and keeps result in IsOk.
-  bool Sync() {
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-    return m_IsOk;};
+  bool Sync();
 
   /// Updates fullpath member, returns result and keeps result in IsOk.
-  bool Update(const wxString& fullpath) {
-    m_FullPath = fullpath;
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-    return m_IsOk;};
+  bool Update(const wxString& fullpath);
 private:
   wxString m_FullPath;
   bool m_IsOk;
