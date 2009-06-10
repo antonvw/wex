@@ -256,11 +256,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_DATABASE_OPEN:
     m_otl.Logon(wxExApp::GetConfig());
-    m_Shell->SetPrompt((m_otl.GetConnect().connected ? wxExApp::GetConfig(_("Datasource")): "") + ">");
+    m_Shell->SetPrompt((m_otl.IsConnected() ? wxExApp::GetConfig(_("Datasource")): "") + ">");
     break;
 
   case ID_SHELL_COMMAND:
-    if (m_otl.GetConnect().connected)
+    if (m_otl.IsConnected())
     {
       try
       {
@@ -309,7 +309,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
   {
   case wxID_EXECUTE:
     // If we have a query, you can hide it, but still run it.
-    event.Enable(m_Query->GetLength() > 0 && m_otl.GetConnect().connected);
+    event.Enable(m_Query->GetLength() > 0 && m_otl.IsConnected());
     break;
 
   case wxID_SAVE:
@@ -325,11 +325,11 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_DATABASE_CLOSE:
-    event.Enable(m_otl.GetConnect().connected > 0);
+    event.Enable(m_otl.IsConnected());
     break;
 
   case ID_DATABASE_OPEN:
-    event.Enable(!m_otl.GetConnect().connected);
+    event.Enable(!m_otl.IsConnected());
     break;
 
   case ID_RECENTFILE_MENU:
