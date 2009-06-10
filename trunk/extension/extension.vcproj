@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="extension"
-	ProjectGUID="{87295A7E-093F-41F7-990E-A3C48C0DB1DF}"
+	ProjectGUID="{E123BBDA-4406-4622-B810-397DF5DCF686}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
