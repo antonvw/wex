@@ -205,8 +205,15 @@ bool MDIFrame::AllowCloseAll(wxWindowID id)
 {
   switch (id)
   {
-  case NOTEBOOK_EDITORS: return m_NotebookWithEditors->ForEach(ID_ALL_STC_CLOSE); break;
-  case NOTEBOOK_PROJECTS: return wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_CLOSE); break;
+  case NOTEBOOK_EDITORS: 
+    return m_NotebookWithEditors->ForEach(ID_ALL_STC_CLOSE); 
+    break;
+  case NOTEBOOK_PROJECTS: 
+    return wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_CLOSE); 
+    break;
+  default:
+    wxFAIL;
+    break;
   }
 
   return true;
@@ -659,7 +666,9 @@ and saved in the same directory as where the executable is."));
   case ID_VIEW_OUTPUT: TogglePane("OUTPUT"); break;
   case ID_VIEW_PROJECTS: TogglePane("PROJECTS"); break;
 
-  default: event.Skip();
+  default: 
+    wxFAIL;
+    break;
   }
 }
 
