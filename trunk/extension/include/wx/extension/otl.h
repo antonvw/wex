@@ -12,9 +12,6 @@
 #ifndef _EXOTL_H
 #define _EXOTL_H
 
-#include <wx/grid.h>
-#include <wx/stc/stc.h>
-
 #if USE_OTL
 #define OTL_ODBC
 #define OTL_STL
@@ -25,6 +22,8 @@
 #include <otlv4.h>
 
 class wxExConfig;
+class wxGrid;
+class wxStyledTextCtrl;
 
 /// Offers methods to the otl database.
 class wxExOTL
@@ -39,7 +38,10 @@ public:
  ~wxExOTL();
 
   /// Returns member.
-  otl_connect& GetDb() {return m_db;};
+  otl_connect& GetConnect() {return m_Connect;};
+
+  /// Returns connected member from the connection.
+  bool IsConnected() const {return m_Connect.connected > 0;};
 
   /// Logons to the database (shows a database dialog).
   /// max_items specifies max number of datasources in the combobox and config.
@@ -66,7 +68,7 @@ public:
   /// Returns the OTL version as a string.
   static const wxString Version();
 private:
-  otl_connect m_db;
+  otl_connect m_Connect;
 };
 
 #endif // USE_OTL

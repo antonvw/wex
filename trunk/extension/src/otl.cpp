@@ -13,6 +13,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/grid.h>
+#include <wx/stc/stc.h>
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
 #include <wx/extension/configdialog.h>
@@ -26,7 +28,7 @@ wxExOTL::wxExOTL(const int threaded_mode)
 
 wxExOTL::~wxExOTL()
 {
-  m_db.logoff();
+  m_Connect.logoff();
 }
 
 bool wxExOTL::Logon(wxExConfig* config, int max_items)
@@ -59,7 +61,7 @@ bool wxExOTL::Logon(wxExConfig* config, int max_items)
       config->Get(_("Password")) + "@" +
       config->Get(_("Datasource"));
 
-    m_db.rlogon(
+    m_Connect.rlogon(
       connect.c_str(),
       1); // autocommit-flag
 
@@ -77,7 +79,7 @@ bool wxExOTL::Logon(wxExConfig* config, int max_items)
 
 long wxExOTL::Query(const wxString& query)
 {
-  return otl_cursor::direct_exec(m_db, query.c_str());
+  return otl_cursor::direct_exec(m_Connect, query.c_str());
 }
 
 #if wxUSE_GRID
@@ -94,7 +96,7 @@ long wxExOTL::Query(
   i.open(
     1024,
     query.c_str(),
-    m_db,
+    m_Connect,
     otl_implicit_select);
 
   long rows = 0;
@@ -194,7 +196,7 @@ long wxExOTL::Query(
   i.open(
     1024,
     query.c_str(),
-    m_db,
+    m_Connect,
     otl_implicit_select);
 
   stc->AppendText(wxTextFile::GetEOL());

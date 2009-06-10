@@ -135,7 +135,7 @@ bool wxExTextFileWithListView::ParseSQL()
     wxExApp::Log(
       _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
-    Recordset rs(&m_otl.GetDb(), this);
+    Recordset rs(&m_otl.GetConnect(), this);
     if (!rs.ExecQuery(m_SQLQuery))
     {
       return false;
@@ -294,9 +294,9 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 #if USE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
   {
-    if (m_otl.GetDb().connected)
+    if (m_otl.GetConnect().connected)
     {
-      m_otl.GetDb().logoff();
+      m_otl.GetConnect().logoff();
     }
 
     if (!m_otl.Logon(wxExApp::GetConfig()))
