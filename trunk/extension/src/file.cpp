@@ -323,13 +323,13 @@ bool wxExStat::SetReadOnly(const bool read_only)
 
 bool wxExStat::Sync() 
 {
-  if (::stat(m_FullPath.c_str(), this) != -1)
+  if (stat(m_FullPath.c_str(), this) != -1)
   {
-	m_IsOk = true;
+    m_IsOk = true;
   }
   else
   {
-	m_IsOk = false;
+    m_IsOk = false;
   }
 
   return m_IsOk;
@@ -338,6 +338,6 @@ bool wxExStat::Sync()
 bool wxExStat::Update(const wxString& fullpath) 
 {
   m_FullPath = fullpath;
-  m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
+  m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
   return m_IsOk;
 }
