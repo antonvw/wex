@@ -213,65 +213,7 @@ E.g. an embedded query in PDP-11 assembler:
 <hr>
 <A NAME="SVN"></A><B>SVN</B>
 <P>
-This handles local revision.
-TODO: svn explain.
-A file that is checked in will have its Windows or UNIX read-only attribute set.
-
-<P>
-When checking in you can
-add comments to the file(s) being checked in. The check-in comment is placed in
-the source file
-directly after the first empty line that is found, and always consists of the
-time and date the check-in is
-made (the format used is explained below), followed by the RCS/User option,
-followed by the entered comment.
-The check-in comment is always split up into lines containing 'Edit/EdgeColumn' characters.
-syncedit
-takes care that no words are split over two lines if the entered comment exceeds
-this amount of characters.
-
-<P>
-Supported revision time formats:
-
-<P>
-<TABLE BORDER=2 CELLPADDING=3 CELLSPACING=1 class="TableStyle">
-
-<TR><TD> <I>Format</I><TD> <I>Example</I>
-<tr><td>%2y%2m%2d %2H%2M%2S<td>990826 152624
-<tr><td>%2y%2m%2d<td>990826
-<tr><td>%B %d, %Y %H:%M<td>January 12, 2001 12:32
-</TABLE>
-
-<P>
-E.g. a check-in comment that is placed into a PDP-11 Assembler file:
-
-<P>
-<PRE>
-;*********************************************************************
-; MODULE NAME  : TPHONY
-; FILE NAME    : FSMLRP.MAC
-; DATE         : 04-MARS-89
-; FUNCTION     : FSM-DATA FOR LRP AND TEMPORARY TABLES
-;*********************************************************************
-
-; 990826 152311 AvW Added defaults to the table by using SQL connect.
-</PRE>
-
-<P>
-E.g. a check-in comment that is placed into a PASCAL file:
-
-<P>
-<PRE>
-(****************************************************************************
-** MODULE NAME       : STATIS
-** FILE NAME         : STAPRITB.PAS
-** TYPE              : TABLE DEFINITION FILE FOR STATIS TASK
-** DATE              : 22-MAR-89
-** CONTENT OF FILE   : DEFINITIONS OF ORDER OF PHYSICAL POSITION NAMES
-***************************************************************************)
-
-(* 990826 152624 AvW Added SQL connect and now sorted on equipment NAM.       *)
-</PRE>
+This handles the SVN interface using a svn client.
 
 <hr>
 <A NAME="UPL"></A><B>Build RBS File</B>
