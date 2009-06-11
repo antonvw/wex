@@ -1889,6 +1889,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       CheckBrace(GetCurrentPos() - 1);
     }
   }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)
