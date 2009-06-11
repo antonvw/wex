@@ -31,7 +31,11 @@ wxExOTL::~wxExOTL()
   m_Connect.logoff();
 }
 
-bool wxExOTL::Logon(wxExConfig* config, int max_items)
+bool wxExOTL::Logon(
+  wxExConfig* config, 
+  int max_items,
+  wxWindow* parent,
+  const wxString& title)
 {
   wxASSERT(config != NULL);
 
@@ -46,10 +50,10 @@ bool wxExOTL::Logon(wxExConfig* config, int max_items)
   v.push_back(wxExConfigItem(_("Password"), wxEmptyString, wxTE_PASSWORD));
 
   // Always show the dialog.
-  if (wxExConfigDialog(wxTheApp->GetTopWindow(),
+  if (wxExConfigDialog(parent,
     config,
     v,
-    _("Open ODBC Database")).ShowModal() == wxID_CANCEL)
+    title).ShowModal() == wxID_CANCEL)
   {
     return false;
   }

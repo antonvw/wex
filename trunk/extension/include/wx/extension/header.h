@@ -31,7 +31,9 @@ public:
   const wxString Get(const wxExFileName* filename) const;
 
   /// Shows a dialog for getting the purpose for a header.
-  int ShowDialog(wxWindow* parent) const;
+  int ShowDialog(
+    wxWindow* parent = wxTheApp->GetTopWindow(),
+    const wxString& title = _("File Purpose")) const;
 
   /// Shows a dialog, and returns the header if OK.
   const wxString ShowDialog(const wxExFileName* filename, wxWindow* parent) const {

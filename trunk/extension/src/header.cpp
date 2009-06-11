@@ -66,7 +66,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   return header;
 }
 
-int wxExHeader::ShowDialog(wxWindow* parent) const
+int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 {
   std::vector<wxExConfigItem> v;
 
@@ -92,5 +92,5 @@ int wxExHeader::ShowDialog(wxWindow* parent) const
 
   return wxExConfigDialog(
     parent, 
-    m_Config, v, _("File Purpose")).ShowModal();
+    m_Config, v, title).ShowModal();
 }
