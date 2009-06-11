@@ -450,6 +450,7 @@ and saved in the same directory as where the executable is."));
     }
     break;
   case wxID_NEW: NewFile(); break;
+  case wxID_OPEN: event.Skip(); break;
   case wxID_PREVIEW:
     if (GetFocusedSTC() != NULL)
     {
