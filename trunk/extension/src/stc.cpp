@@ -2737,11 +2737,10 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
 
 void wxExSTCEntryDialog::SetText(const wxString& text)
 {
-  bool readonly = false;
+  const bool readonly = m_STC->GetReadOnly();
 
-  if (m_STC->GetReadOnly())
+  if (readonly)
   {
-    readonly = true;
     m_STC->SetReadOnly(false);
   }
 
