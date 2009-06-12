@@ -76,8 +76,8 @@ public:
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:
+  void DeletePage(size_t n);
   void ErasePage(const wxString& key); // remove from the map
-  void ErasePage(size_t n, bool delete_page);
 
   wxExManagedFrame* m_Frame;
   // In bookctrl.h: m_pages
