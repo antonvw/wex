@@ -15,7 +15,9 @@
 #include <wx/extension/renderer.h>
 #include <wx/extension/configdialog.h>
 #include "appl.h"
+#ifndef __WXMSW__
 #include "appl.xpm"
+#endif
 
 enum
 {
@@ -85,7 +87,7 @@ wxExSampleFrame::wxExSampleFrame(const wxString& title)
   : wxExManagedFrame(NULL, wxID_ANY, title)
   , m_FlagsSTC(0)
 {
-  SetIcon(appl_xpm);
+  SetIcon(wxICON(appl));
 
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
