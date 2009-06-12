@@ -263,6 +263,7 @@ void MDIFrame::NewFile(bool as_project)
 {
   const wxString name = (as_project ? _("Project") : _("Textfile"));
   const wxString text = wxString::Format("%s%d", name.c_str(), m_NewFileNo++);
+  wxString key;
 
   wxExNotebook* notebook = (as_project ? m_NotebookWithProjects : m_NotebookWithEditors);
   wxWindow* page;
@@ -273,8 +274,10 @@ void MDIFrame::NewFile(bool as_project)
       wxStandardPaths::Get().GetUserDataDir(),
       text);
 
+    key = fn.GetFullPath();
+
     page = new wxExListViewFile(notebook,
-      fn.GetFullPath(),
+      key,
       project_wildcard,
       wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
@@ -282,6 +285,7 @@ void MDIFrame::NewFile(bool as_project)
   }
   else
   {
+    key = text;
     page = new wxExSTCWithFrame(notebook);
 
     ((wxExSTCWithFrame*)page)->FileNew(text);
@@ -290,7 +294,7 @@ void MDIFrame::NewFile(bool as_project)
 
   notebook->AddPage(
     page,
-    text,
+    key,
     text,
     true
 #ifdef USE_NOTEBOOK_IMAGE
@@ -315,7 +319,7 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   }
 
 #if wxUSE_CHECKBOX
-  wxExApp::SetConfigBool("HwxExMode", GetHexModeCheckBox()->GetValue());
+  wxExApp::SetConfigBool("HexMode", GetHexModeCheckBox()->GetValue());
 #endif
   wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
