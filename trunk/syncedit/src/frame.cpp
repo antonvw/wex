@@ -433,8 +433,10 @@ and saved in the same directory as where the executable is."));
     break;
   case wxID_CLOSE:
     if (editor != NULL)
+    {
       m_NotebookWithEditors->DeletePage(editor->GetFileName().GetFullPath());
-    SetTitle(wxEmptyString, wxEmptyString);
+      SetTitle(wxEmptyString, wxEmptyString);
+    }
     break;
   case wxID_EXIT: Close(true); break;
   case wxID_HELP_CONTENTS:
@@ -577,8 +579,10 @@ and saved in the same directory as where the executable is."));
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)
+    {
       m_NotebookWithProjects->DeletePage(project->GetFileName().GetFullPath());
-    SetTitle(wxEmptyString, wxEmptyString);
+      SetTitle(wxEmptyString, wxEmptyString);
+    }
     break;
   case ID_PROJECT_NEW: NewFile(true); break;
   case ID_PROJECT_OPENTEXT:
