@@ -1,3 +1,2 @@
-aaaa     ICON "mondrian.ico"
-mondrian ICON "mondrian.ico"
+appl ICON "appl.ico"
 #include "wx/msw/wx.rc"

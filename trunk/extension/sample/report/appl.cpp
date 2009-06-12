@@ -9,14 +9,13 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef __WXMSW__
-  #include "mondrian.xpm"
-#endif
-
 #include <wx/aboutdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/report/report.h>
 #include "appl.h"
+#ifndef __WXMSW__
+#include "appl.xpm"
+#endif
 
 enum
 {
@@ -53,7 +52,7 @@ bool wxExRepSampleApp::OnInit()
 wxExRepSampleFrame::wxExRepSampleFrame(const wxString& title)
   : wxExFrameWithHistory(NULL, wxID_ANY, title)
 {
-  SetIcon(wxICON(mondrian));
+  SetIcon(wxICON(appl));
 
   wxExMenu *menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
