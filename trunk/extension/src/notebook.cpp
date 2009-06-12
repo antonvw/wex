@@ -62,9 +62,21 @@ bool wxExNotebook::DeletePage(const wxString& key)
 
   wxASSERT(page != NULL);
 
-  m_MapPages.erase(key);
+  if (wxAuiNotebook::DeletePage(GetPageIndex(page)))
+  {
+    m_MapPages.erase(key);
 
-  return wxAuiNotebook::DeletePage(GetPageIndex(page));
+    if (m_MapPages.empty() && m_Frame != NULL)
+    {
+      m_Frame->SyncCloseAll(GetId());
+    }
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void wxExNotebook::ErasePage(size_t n, bool delete_page)
@@ -83,11 +95,11 @@ void wxExNotebook::ErasePage(size_t n, bool delete_page)
     else
     {
       m_MapPages.erase(key);
-    }
 
-    if (m_MapPages.empty() && m_Frame != NULL)
-    {
-      m_Frame->SyncCloseAll(GetId());
+      if (m_MapPages.empty() && m_Frame != NULL)
+      {
+        m_Frame->SyncCloseAll(GetId());
+      }
     }
   }
   else
