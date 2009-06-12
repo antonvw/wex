@@ -67,24 +67,24 @@ bool wxExNotebook::DeletePage(const wxString& key)
   return wxAuiNotebook::DeletePage(GetPageIndex(page));
 }
 
-void wxExNotebook::ErasePage(size_t n)
+void wxExNotebook::ErasePage(size_t n, bool delete_page)
 {
-  bool found = false;
+  const wxString key = GetKeyByPage(GetPage(n));
 
-  for (
-    std::map<wxString,wxWindow*>::iterator it = m_MapPages.begin();
-    it != m_MapPages.end() && !found;
-    ++it)
+  if (!key.empty())
   {
-    if (it->second == GetPage(n))
+    if (delete_page)
     {
-      m_MapPages.erase(it);
-      found = true;
+      if (!DeletePage(key))
+      {
+        wxFAIL;
+      }
     }
-  }
+    else
+    {
+      m_MapPages.erase(key);
+    }
 
-  if (found)
-  {
     if (m_MapPages.empty() && m_Frame != NULL)
     {
       m_Frame->SyncCloseAll(GetId());
@@ -127,10 +127,7 @@ bool wxExNotebook::ForEach(int id)
 
     case ID_ALL_STC_CLOSE:
       if (!stc->Continue()) return false;
-
-      ErasePage(page);
-
-      if (!wxAuiNotebook::DeletePage(page)) return false;
+      ErasePage(page, true); // delete as well
       break;
 
     case ID_ALL_STC_SAVE:
@@ -215,7 +212,7 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
       }
       else
       {
-        ErasePage(GetSelection());
+        ErasePage(GetSelection(), false); // do not delete
         event.Skip(); // call base
       }
     }
