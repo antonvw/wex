@@ -123,11 +123,12 @@ bool wxExFile::FileNew(const wxExFileName& filename)
 
 bool wxExFile::FileOpen(const wxExFileName& filename)
 {
-  if (
-    !Continue() ||
-    !filename.FileExists()) return false;
+  if (!Continue()) return false;
 
+  // First set the member, even if filename does not exist.
   m_FileName = filename;
+
+  if (!m_FileName.FileExists()) return false;
 
   if (MakeAbsolute())
   {
