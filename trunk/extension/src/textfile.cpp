@@ -428,21 +428,18 @@ bool wxExTextFile::ParseLine(const wxString& line)
   bool line_contains_code = false, sequence = false;
   wxString codeword;
 
-  for (size_t i = 0; i <= line.length(); i++)
+  for (size_t i = 0; i < line.length(); i++)
   {
     if (m_IsCommentStatement)
     {
-      if (i < line.length())
+      if (m_Tool.IsCount())
       {
-        if (m_Tool.IsCount())
-        {
-          GetStatisticElements().Inc(_("Comment Size"));
-        }
-
-        m_Comments += line[i];
+        GetStatisticElements().Inc(_("Comment Size"));
       }
+
+      m_Comments += line[i];
     }
-    else if (i < line.length() && line[i] == '"')
+    else if (line[i] == '"')
     {
       m_IsString = !m_IsString;
     }
@@ -495,7 +492,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
       default: break;
       }
 
-      if (sequence && (IsCodewordSeparator(cc) || i == line.length()))
+      if (sequence && (IsCodewordSeparator(cc) || i == line.length() - 1))
       {
         if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
         {
