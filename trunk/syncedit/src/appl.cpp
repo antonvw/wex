@@ -49,11 +49,8 @@ bool Application::OnInit()
 
   SetTopWindow(frame);
 
-  if (m_Files.Count() > 0)
-  {
-    wxExOpenFiles(frame, m_Files);
-  }
-
+  wxExOpenFiles(frame, m_Files);
+ 
   return true;
 }
 
