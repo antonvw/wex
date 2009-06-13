@@ -18,13 +18,9 @@ IMPLEMENT_APP(Application)
 
 bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
 {
-  if (parser.GetParamCount() > 0)
+  for (size_t i = 0; i < parser.GetParamCount(); i++)
   {
-
-    for (size_t i = 0; i < parser.GetParamCount(); i++)
-    {
-      m_Files.Add(parser.GetParam(i));
-    }
+    m_Files.Add(parser.GetParam(i));
   }
 
   return wxApp::OnCmdLineParsed(parser);
