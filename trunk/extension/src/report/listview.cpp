@@ -846,7 +846,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     int i = -1;
     while ((i = GetNextSelected(i)) != -1)
     {
-      if (!ItemOpenFile(i)) break;
+      ItemOpenFile(i);
     }
   }
   break;
