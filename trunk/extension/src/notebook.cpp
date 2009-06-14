@@ -65,22 +65,12 @@ bool wxExNotebook::DeletePage(const wxString& key)
   if (wxAuiNotebook::DeletePage(GetPageIndex(page)))
   {
     ErasePage(key);
-
     return true;
   }
   else
   {
-    return false;
-  }
-}
-
-void wxExNotebook::DeletePage(size_t n)
-{
-  const wxString key = GetKeyByPage(GetPage(n));
-
-  if (!DeletePage(key))
-  {
     wxFAIL;
+    return false;
   }
 }
 
@@ -125,7 +115,7 @@ bool wxExNotebook::ForEach(int id)
 
     case ID_ALL_STC_CLOSE:
       if (!stc->Continue()) return false;
-      DeletePage(page);
+      DeletePage(GetKeyByPage(GetPage(page)));
       break;
 
     case ID_ALL_STC_SAVE:

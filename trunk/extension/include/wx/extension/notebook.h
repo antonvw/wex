@@ -76,7 +76,6 @@ public:
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:
-  void DeletePage(size_t n);
   void ErasePage(const wxString& key); // remove from the map
 
   wxExManagedFrame* m_Frame;
