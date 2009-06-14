@@ -324,7 +324,11 @@ bool wxExStat::SetReadOnly(const bool read_only)
 
 bool wxExStat::Sync() 
 {
+#ifdef __WXGTK__
+  if (::stat(m_FullPath.c_str(), this) != -1)
+#else
   if (stat(m_FullPath.c_str(), this) != -1)
+#endif
   {
     m_IsOk = true;
   }
@@ -339,6 +343,10 @@ bool wxExStat::Sync()
 bool wxExStat::Update(const wxString& fullpath) 
 {
   m_FullPath = fullpath;
+#ifdef __WXGTK__
+  m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
+#else
   m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
+#endif
   return m_IsOk;
 }
