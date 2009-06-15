@@ -38,7 +38,10 @@ bool wxExRepSampleApp::OnInit()
   SetAppName("wxExRepSample");
   SetLogging();
 
-  wxExApp::OnInit();
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
 
   wxExRepSampleFrame *frame = new wxExRepSampleFrame("wxExRepSample");
 

@@ -49,7 +49,10 @@ bool wxExSampleApp::OnInit()
   SetAppName("wxExSample");
   SetLogging();
 
-  wxExApp::OnInit();
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
 
   wxExSampleFrame *frame = new wxExSampleFrame("wxExSample");
   frame->Show(true);
