@@ -785,10 +785,7 @@ bool MyFrame::SocketCheckError(const wxSocketBase* sock)
 
 const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 {
-  if (sock == NULL)
-  {
-    wxFAIL;
-  }
+  wxASSERT(sock != NULL);
 
   wxIPV4address peer_addr;
 
@@ -818,10 +815,7 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 
 void MyFrame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
 {
-  if (sock == NULL)
-  {
-    wxFAIL;
-  }
+  wxASSERT(sock != NULL);
 
   if (remove_from_clients)
   {
