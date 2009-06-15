@@ -3,7 +3,7 @@ Software Development Plan
 
 General
 
-- Subversion Repository is on xp-dev.com, 
+- Subversion Repository is on xp-dev.com
     http://svn.xp-dev.com/svn/antonvw-wxprojects/
     https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
@@ -33,7 +33,7 @@ General
 - Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
     
-- Test coverage done by gcov.
+- Test coverage done by gcov
     http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 
 - Translation is done using poedit (1.4.2)
@@ -47,12 +47,12 @@ General
     Version 9.0.30729.1 SP
     Microsoft .NET Framework
     
-  - under using linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
+  - under linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
 
 
 SVN hierarchy
 
-- development is in svn trunk,
+- development is in svn trunk
 
 - stable releases are in tags/branches
 
@@ -82,8 +82,8 @@ When adding functionality in trunk
 
 Roadmap
 
-- Add ctags (like Exuberant CTAGS).
+- Add ctags (like Exuberant CTAGS)
 
-- Add gdb front-end.
+- Add gdb front-end
 
-- Use Boost, Ultimate++ or OMGUI (very later).
+- Use Boost
