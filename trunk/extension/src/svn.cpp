@@ -121,11 +121,11 @@ int wxExSVN::Execute(bool show_dialog)
   {
     flags = wxExApp::GetConfig(_("Flags"));
 
+    wxExApp::SetConfig(svn_flags_name, flags);
+
     if (!flags.empty())
     {
       flags += " ";
-
-      wxExApp::SetConfig(svn_flags_name, flags);
     }
   }
 
