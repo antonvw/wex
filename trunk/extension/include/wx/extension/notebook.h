@@ -60,12 +60,6 @@ public:
   /// If the key does not exist NULL is returned.
   wxWindow* GetPageByKey(const wxString& key) const;
 
-  /// Sets the pagetext for the given key.
-  /// If the key does not exist false is returned.
-  bool SetPageText(
-    const wxString& key,
-    const wxString& text);
-
   /// Sets the pagetext for the given new key,
   /// on the page for the given key.
   /// If the key does not exist false is returned.
