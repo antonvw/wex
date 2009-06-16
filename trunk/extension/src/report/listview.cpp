@@ -869,7 +869,9 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     wxDELETE(m_Process);
     break;
 
-  default: event.Skip();
+  default: 
+    wxFAIL;
+    break;
   }
 
   UpdateStatusBar();
@@ -948,6 +950,10 @@ void wxExListViewFile::OnList(wxListEvent& event)
     }
 
     event.Skip();
+  }
+  else
+  {
+    wxFAIL;
   }
 }
 
