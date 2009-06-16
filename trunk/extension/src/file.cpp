@@ -227,7 +227,7 @@ int wxExFileName::GetIcon() const
     }
     else
     {
-      return wxFileIconsTable::computer;
+      return wxFileIconsTable::file;
     }
   }
   else
