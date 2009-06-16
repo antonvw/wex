@@ -389,7 +389,19 @@ bool wxExLexers::Read()
 
       if (!lexer.GetScintillaLexer().empty())
       {
-        m_Lexers.push_back(lexer);
+        if (lexer.GetScintillaLexer() == "hypertext")
+        {
+          // As our lexers.xml files cannot use xml comments,
+          // add them here.
+          wxExLexer l(lexer);
+          l.m_CommentBegin = "<!--";
+          l.m_CommentEnd = "-->";
+          m_Lexers.push_back(l);
+        }
+        else
+        {
+          m_Lexers.push_back(lexer);
+        }
       }
     }
 
