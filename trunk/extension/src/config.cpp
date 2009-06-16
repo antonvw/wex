@@ -124,10 +124,10 @@ wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
 
   SetFlags(flags);
 
+  // Start with this one, as it is used by SetFindString.
+  SetIsRegularExpression(m_Config->GetBool(_("Regular expression")));
   SetFindString(m_Config->Get(_("Find what")));
   SetReplaceString(m_Config->Get(_("Replace with")));
-
-  m_IsRegularExpression = m_Config->GetBool(_("Regular expression"));
 
   m_Info.insert(_("Match whole word"));
   m_Info.insert(_("Match case"));
