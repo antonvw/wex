@@ -184,15 +184,6 @@ const wxString wxExLexer::MakeSingleLineComment(
   bool fill_out_with_space,
   bool fill_out) const
 {
-  if (m_CommentBegin.empty())
-  {
-    wxLogError(wxString::Format(
-      _("No comments available for lexer: %s, cannot make comment"), 
-      m_ScintillaLexer.c_str()));
-      
-    return wxEmptyString;
-  }
-
   // First set the fill_out_character.
   wxChar fill_out_character;
 
