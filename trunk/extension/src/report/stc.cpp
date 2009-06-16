@@ -211,7 +211,15 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
       if (header.ShowDialog(this) != wxID_CANCEL)
       {
-        DocumentStart();
+        if (m_FileName.GetLexer().GetScintillaLexer() == "hypertext")
+        {
+          GotoLine(1);
+        }
+        else
+        {
+          DocumentStart();
+        }
+
         AddText(header.Get(&m_FileName));
       }
     }
