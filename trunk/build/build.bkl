@@ -8,6 +8,12 @@
 <!-- Copyright: (c) 2009 Anton van Wezenbeek                                 -->
 <!--                                                                         -->
 
+<!--
+Added the wxpresets folder containing the wx.bkl file to the bakefile path,
+or as includwe dir using I option:
+bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
+-->
+
 <makefile>
 
   <include file="presets/wx.bkl"/>
