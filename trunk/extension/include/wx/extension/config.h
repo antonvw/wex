@@ -169,7 +169,7 @@ public:
     return m_FindStringNoCase;};
 
   /// Returns true if find text is a regular expression.
-  bool IsRegularExpression() const;
+  bool IsRegularExpression() const {return m_IsRegularExpression;};
 
   /// Returns true if the flags have match case set.
   bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
@@ -178,13 +178,13 @@ public:
   bool MatchWord() const {return (GetFlags() & wxFR_WHOLEWORD) > 0;};
 
   /// Sets the find string.
-  /// If IsRegExp also sets the  and regular expression, if it returns false,
-  /// no valid regular expression has been entered.
+  /// If IsRegularExpression also sets the regular expression.
   /// This string is used for tool find in files and replace in files.
-  bool SetFindString(const wxString& value);
+  void SetFindString(const wxString& value);
 
   /// Sets member.
-  void SetIsRegularExpression(bool value);
+  void SetIsRegularExpression(bool value) {
+    m_IsRegularExpression = value;};
 
   /// Sets flags for match case.
   void SetMatchCase(bool value);
