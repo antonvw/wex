@@ -9,9 +9,10 @@
 <!--                                                                         -->
 
 <!--
-Added the wxpresets folder containing the wx.bkl file to the bakefile path,
-or as includwe dir using I option:
-bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
+Run this bakefile directly in the trunk (or tags, branches) folder.
+Add the wxpresets folder containing the wx.bkl file to the bakefile path,
+or as include dir using -I option:
+bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build/build.bkl
 -->
 
 <makefile>
@@ -20,7 +21,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <include file="presets/simple.bkl"/>
   
   <!-- libs -->
-  <lib id="wxex" template="simple">
+  <lib id="wxex" template="wx-lib,wxlike">
     <sources>extension/src/app.cpp</sources>
     <sources>extension/src/base.cpp</sources>
     <sources>extension/src/config.cpp</sources>
@@ -44,7 +45,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>extension/src/util.cpp</sources>
   </lib>
 
-  <lib id="wxexrep" template="simple">
+  <lib id="wxexrep" template="wx-lib,wxlike">
     <sources>extension/src/report/frame.cpp</sources>
     <sources>extension/src/report/listitem.cpp</sources>
     <sources>extension/src/report/listview.cpp</sources>
@@ -59,64 +60,74 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <exe id="ex-sample" template="wxgui,simple">
     <sources>extension/sample/appl.cpp</sources>
     <library>wxex</library>
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <!-- not necessary: expat png.lib wxjpeg.lib wxregexu.lib wxtiff.lib 
+          see in wx.bkl:
+          NOTE: as a reference here is a list of all wxWidgets libraries satisfying
+          the dependency constraints mentioned in <wx-lib> description:
+      -->
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
-    <!-- expat png.lib wxjpeg.lib wxregexu.lib wxtiff.lib -->
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="ex-rep-sample" template="wxgui,simple">
+  <exe id="ex-sample-rep" template="wxgui,simple">
     <sources>extension/sample/report/appl.cpp</sources>
     <library>wxex</library>
     <library>wxexrep</library>
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
   <!-- tests -->
   <exe id="ex-test-base" template="simple">
     <sources>extension/test/base/test.cpp</sources>
     <library>wxex</library>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
   <exe id="ex-test-app" template="wxgui,simple">
     <sources>extension/test/app/test.cpp</sources>
     <library>wxex</library>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
   <exe id="ex-test-report" template="wxgui,simple">
     <sources>extension/test/report/test.cpp</sources>
     <library>wxex</library>
     <library>wxexrep</library>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
   <!-- applications -->
@@ -126,14 +137,14 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>syncedit/src/support.cpp</sources>
     <library>wxex</library>
     <library>wxexrep</library>
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
   <exe id="syncodbcquery" template="wxgui,simple">
@@ -142,14 +153,14 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>syncodbcquery/src/support.cpp</sources>
     <library>wxex</library>
     <library>wxexrep</library>
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
   <exe id="syncsocketserver" template="wxgui,simple">
@@ -158,14 +169,14 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>syncsocketserver/src/support.cpp</sources>
     <library>wxex</library>
     <library>wxexrep</library>
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>adv</wx-lib>
+    <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
-    <wx-lib>aui</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
   </exe>
   
 </makefile>
