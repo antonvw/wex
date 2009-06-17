@@ -593,10 +593,11 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
 #endif
 }
 
-bool wxExListViewFile::ItemOpenFile(int item_number)
+bool wxExListViewFile::ItemActivated(int item_number)
 {
-  if (item_number < 0) return false;
-
+  wxASSERT(item_number >= 0);
+ 
+  // Cannot be const because of SetColumnText later on.
   wxExListItemWithFileName item(this, item_number);
 
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
@@ -849,7 +850,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     int i = -1;
     while ((i = GetNextSelected(i)) != -1)
     {
-      ItemOpenFile(i);
+      ItemActivated(i);
     }
   }
   break;
@@ -935,7 +936,7 @@ void wxExListViewFile::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
   {
-    ItemOpenFile(event.GetIndex());
+    ItemActivated(event.GetIndex());
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {

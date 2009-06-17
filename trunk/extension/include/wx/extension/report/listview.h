@@ -141,7 +141,7 @@ private:
   void DeleteDoubles();
   const wxString GetFindInCaption(int id); // cannot be const
   void Initialize(const wxExLexer* lexer);
-  bool ItemOpenFile(int item_number);
+  bool ItemActivated(int item_number);
   void RunItems(const wxExTool& tool);
 
   static wxExProcessWithListView* m_Process;
