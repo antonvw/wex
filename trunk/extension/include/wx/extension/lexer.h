@@ -78,28 +78,25 @@ public:
     const wxString& prefix,
     const wxString& text) const;
 
+  const wxString MakeSingleLineComment(
+    const wxString& text,
+    bool fill_out_with_space = true,
+    bool fill_out = true) const;
+
   /// Adds the specified keywords to the keywords map and the keywords set.
   /// The text might contain the keyword set after a ':'.
   /// Returns true if keyword could be added and false if specified set is illegal.
   /// Empties existing keywords.
   bool SetKeywords(const wxString& text);
+
+  /// Returns number of chars that fit on a line, skipping comment chars.
+  int UsableCharactersPerLine() const;
 private:
   const wxString GetFormattedText(
     const wxString& lines,
     const wxString& header,
     bool fill_out_with_space,
     bool fill_out) const;
-  const wxString GetUnFormattedText(
-    const wxString& lines,
-    const wxString& header,
-    bool fill_out_with_space,
-    bool fill_out) const;
-  const wxString MakeSingleLineComment(
-    const wxString& text,
-    bool fill_out_with_space = true,
-    bool fill_out = true) const;
-  /// Returns number of chars that fit on a line, skipping comment chars.
-  int UsableCharactersPerLine() const;
 
   wxString m_Associations;
   wxString m_Colourings;

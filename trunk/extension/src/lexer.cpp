@@ -69,11 +69,12 @@ const wxString wxExLexer::GetFormattedText(
   // Process text between the carriage return line feeds.
   while ((nCharIndex = text.find("\n")) != wxString::npos)
   {
-    out << GetUnFormattedText(
+    out << wxExAlignText(
       text.substr(0, nCharIndex),
       header_to_use,
       fill_out_with_space,
-      fill_out);
+      fill_out,
+      this);
 
     text = text.substr(nCharIndex + 1);
     header_to_use = wxString(' ', header.size());
@@ -81,51 +82,13 @@ const wxString wxExLexer::GetFormattedText(
 
   if (!text.empty())
   {
-    out << GetUnFormattedText(
+    out << wxExAlignText(
       text,
       header_to_use,
       fill_out_with_space,
-      fill_out);
+      fill_out,
+      this);
   }
-
-  return out;
-}
-
-const wxString wxExLexer::GetUnFormattedText(
-  const wxString& lines,
-  const wxString& header,
-  bool fill_out_with_space,
-  bool fill_out) const
-{
-  const size_t line_length = UsableCharactersPerLine();
-
-  // Use the header, with one space extra to separate, or no header at all.
-  const wxString header_with_spaces =
-    (header.size() == 0) ? wxString(wxEmptyString) : wxString(' ', header.size());
-
-  wxString in = lines, line = header;
-
-  bool at_begin = true;
-  wxString out;
-
-  while (!in.empty())
-  {
-    const wxString word = wxExGetWord(in, false, false);
-
-    if (line.size() + 1 + word.size() > line_length)
-    {
-      out << MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
-
-      line = header_with_spaces + word;
-    }
-    else
-    {
-      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
-      at_begin = false;
-    }
-  }
-
-  out << MakeSingleLineComment(line, fill_out_with_space, fill_out);
 
   return out;
 }
@@ -161,7 +124,7 @@ const wxString wxExLexer::MakeComment(
 
   text.find("\n") != wxString::npos ?
     out << GetFormattedText(text, wxEmptyString, fill_out_with_space, fill_out):
-    out << GetUnFormattedText(text, wxEmptyString, fill_out_with_space, fill_out);
+    out << wxExAlignText(text, wxEmptyString, fill_out_with_space, fill_out, this);
 
   return out;
 }
@@ -174,7 +137,7 @@ const wxString wxExLexer::MakeComment(
 
   text.find("\n") != wxString::npos ?
     out << GetFormattedText(text, prefix, true, true):
-    out << GetUnFormattedText(text, prefix, true, true);
+    out << wxExAlignText(text, prefix, true, true, this);
 
   return out;
 }

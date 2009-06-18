@@ -18,6 +18,60 @@
 #include <wx/extension/util.h>
 #include <wx/extension/base.h>
 
+const wxString wxExAlignText(
+  const wxString& lines,
+  const wxString& header,
+  bool fill_out_with_space,
+  bool fill_out,
+  const wxExLexer* lexer)
+{
+  const size_t line_length = (lexer == NULL ? 80: lexer->UsableCharactersPerLine());
+
+  // Use the header, with one space extra to separate, or no header at all.
+  const wxString header_with_spaces =
+    (header.size() == 0) ? wxString(wxEmptyString) : wxString(' ', header.size());
+
+  wxString in = lines, line = header;
+
+  bool at_begin = true;
+  wxString out;
+
+  while (!in.empty())
+  {
+    const wxString word = wxExGetWord(in, false, false);
+
+    if (line.size() + 1 + word.size() > line_length)
+    {
+      if (lexer != NULL)
+      {
+        out << lexer->MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
+      }
+      else
+      {
+        out << line << "\n";
+      }
+
+      line = header_with_spaces + word;
+    }
+    else
+    {
+      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
+      at_begin = false;
+    }
+  }
+
+  if (lexer != NULL)
+  {
+    out << lexer->MakeSingleLineComment(line, fill_out_with_space, fill_out);
+  }
+  else
+  {
+    out << line << "\n";
+  }
+
+  return out;
+}
+
 bool wxExClipboardAdd(const wxString& text)
 {
   wxClipboardLocker locker;

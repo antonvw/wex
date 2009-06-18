@@ -12,6 +12,7 @@
 #include <wx/extension/header.h>
 #include <wx/extension/configdialog.h>
 #include <wx/extension/file.h>
+#include <wx/extension/util.h>
 
 wxExHeader::wxExHeader(wxExConfig* config)
   : m_Config(config)
@@ -41,7 +42,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   {
     header << l.GetCommentBegin() << "\n";
     header << "Name:      " << filename->GetFullName() << "\n";
-    header << "Purpose:   " << purpose << "\n";
+    header << wxExAlignText("Purpose:   ", purpose) << "\n";
     header << "Author:    " << author << "\n";
     header << "Created:   " << wxDateTime::Now().FormatISODate() << "\n";
     if (m_Config->GetBool("SVN"))
