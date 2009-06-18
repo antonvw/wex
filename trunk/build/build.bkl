@@ -21,7 +21,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
-    <libname>wxex-0.9.0</libname>
+    <libname>wxex09</libname>
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/base.cpp</sources>
     <sources>../extension/src/config.cpp</sources>
@@ -68,7 +68,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </lib>
 
   <lib id="wxexrep" template="wx-lib,wxlike">
-    <libname>wxexrep-0.9.0</libname>
+    <libname>wxexrep09</libname>
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
@@ -167,7 +167,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
-    <exename>syncedit.v1.0</exename>
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
@@ -187,7 +186,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncodbcquery" template="wxgui,wxlike">
-    <exename>syncodbcquery.v1.0</exename>
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <sources>../syncodbcquery/src/frame.cpp</sources>
     <sources>../syncodbcquery/src/support.cpp</sources>
@@ -207,7 +205,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncsocketserver" template="wxgui,wxlike">
-    <exename>syncsocketserver.v1.0</exename>
     <sources>../syncsocketserver/src/appl.cpp</sources>
     <sources>../syncsocketserver/src/frame.cpp</sources>
     <sources>../syncsocketserver/src/support.cpp</sources>
