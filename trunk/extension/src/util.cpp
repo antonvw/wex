@@ -66,7 +66,7 @@ const wxString wxExAlignText(
   }
   else
   {
-    out << line << "\n";
+    out << line;
   }
 
   return out;
