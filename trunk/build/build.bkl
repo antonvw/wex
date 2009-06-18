@@ -44,27 +44,27 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/tool.cpp</sources>
     <sources>../extension/src/util.cpp</sources>
     
-    <headers>../extension/include/wx/extension/app.cpp</headers>
-    <headers>../extension/include/wx/extension/base.cpp</headers>
-    <headers>../extension/include/wx/extension/config.cpp</headers>
-    <headers>../extension/include/wx/extension/configdialog.cpp</headers>
-    <headers>../extension/include/wx/extension/dir.cpp</headers>
-    <headers>../extension/include/wx/extension/file.cpp</headers>
-    <headers>../extension/include/wx/extension/grid.cpp</headers>
-    <headers>../extension/include/wx/extension/header.cpp</headers>
-    <headers>../extension/include/wx/extension/lexer.cpp</headers>
-    <headers>../extension/include/wx/extension/lexers.cpp</headers>
-    <headers>../extension/include/wx/extension/listview.cpp</headers>
-    <headers>../extension/include/wx/extension/notebook.cpp</headers>
-    <headers>../extension/include/wx/extension/otl.cpp</headers>
-    <headers>../extension/include/wx/extension/renderer.cpp</headers>
-    <headers>../extension/include/wx/extension/shell.cpp</headers>
-    <headers>../extension/include/wx/extension/statistics.cpp</headers>
-    <headers>../extension/include/wx/extension/stc.cpp</headers>
-    <headers>../extension/include/wx/extension/svn.cpp</headers>
-    <headers>../extension/include/wx/extension/textfile.cpp</headers>
-    <headers>../extension/include/wx/extension/tool.cpp</headers>
-    <headers>../extension/include/wx/extension/util.cpp</headers>
+    <headers>../extension/include/wx/extension/app.h</headers>
+    <headers>../extension/include/wx/extension/base.h</headers>
+    <headers>../extension/include/wx/extension/config.h</headers>
+    <headers>../extension/include/wx/extension/configdialog.h</headers>
+    <headers>../extension/include/wx/extension/dir.h</headers>
+    <headers>../extension/include/wx/extension/file.h</headers>
+    <headers>../extension/include/wx/extension/grid.h</headers>
+    <headers>../extension/include/wx/extension/header.h</headers>
+    <headers>../extension/include/wx/extension/lexer.h</headers>
+    <headers>../extension/include/wx/extension/lexers.h</headers>
+    <headers>../extension/include/wx/extension/listview.h</headers>
+    <headers>../extension/include/wx/extension/notebook.h</headers>
+    <headers>../extension/include/wx/extension/otl.h</headers>
+    <headers>../extension/include/wx/extension/renderer.h</headers>
+    <headers>../extension/include/wx/extension/shell.h</headers>
+    <headers>../extension/include/wx/extension/statistics.h</headers>
+    <headers>../extension/include/wx/extension/stc.h</headers>
+    <headers>../extension/include/wx/extension/svn.h</headers>
+    <headers>../extension/include/wx/extension/textfile.h</headers>
+    <headers>../extension/include/wx/extension/tool.h</headers>
+    <headers>../extension/include/wx/extension/util.h</headers>
   </lib>
 
   <lib id="wxexrep" template="wx-lib,wxlike">
