@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<!--                                                                         -->
-<!-- Name:      build.bkl                                                    -->
-<!-- Purpose:   Bakefile for wxextension libraries                           -->
-<!-- Author:    Anton van Wezenbeek                                          -->
-<!-- Created:   2009-06-17                                                   -->
-<!-- RCS-ID:    $Id$           -->
-<!-- Copyright: (c) 2009 Anton van Wezenbeek                                 -->
-<!--                                                                         -->
+<!--
+Name:      build.bkl
+Purpose:   Bakefile for wxextension libraries
+Author:    Anton van Wezenbeek
+Created:   2009-06-17
+RCS-ID:    $Id$
+Copyright: (c) 2009 Anton van Wezenbeek
+-->
 
 <!--
 Run this bakefile directly in the build folder.
