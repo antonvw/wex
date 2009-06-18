@@ -999,6 +999,10 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     BuildPopupMenu(menu);
     PopupMenu(&menu);
   }
+  else
+  {
+    wxFAIL;
+  }
 
   UpdateStatusBar();
 }
