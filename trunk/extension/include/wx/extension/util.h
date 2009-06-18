@@ -21,6 +21,9 @@
 class wxExLexer;
 
 /*! \file */
+
+/// Aligns text, if lexer is speecified 
+/// fills out over lexer comment lines.
 const wxString wxExAlignText(
   const wxString& lines,
   const wxString& header,

@@ -78,6 +78,7 @@ public:
     const wxString& prefix,
     const wxString& text) const;
 
+  /// Returns a lexer comment string filled out over one line.
   const wxString MakeSingleLineComment(
     const wxString& text,
     bool fill_out_with_space = true,
