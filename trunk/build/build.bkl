@@ -21,6 +21,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
+    <libname>wxex-0.9.0</libname>
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/base.cpp</sources>
     <sources>../extension/src/config.cpp</sources>
@@ -42,9 +43,32 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/textfile.cpp</sources>
     <sources>../extension/src/tool.cpp</sources>
     <sources>../extension/src/util.cpp</sources>
+    
+    <headers>../extension/include/wx/extension/app.cpp</headers>
+    <headers>../extension/include/wx/extension/base.cpp</headers>
+    <headers>../extension/include/wx/extension/config.cpp</headers>
+    <headers>../extension/include/wx/extension/configdialog.cpp</headers>
+    <headers>../extension/include/wx/extension/dir.cpp</headers>
+    <headers>../extension/include/wx/extension/file.cpp</headers>
+    <headers>../extension/include/wx/extension/grid.cpp</headers>
+    <headers>../extension/include/wx/extension/header.cpp</headers>
+    <headers>../extension/include/wx/extension/lexer.cpp</headers>
+    <headers>../extension/include/wx/extension/lexers.cpp</headers>
+    <headers>../extension/include/wx/extension/listview.cpp</headers>
+    <headers>../extension/include/wx/extension/notebook.cpp</headers>
+    <headers>../extension/include/wx/extension/otl.cpp</headers>
+    <headers>../extension/include/wx/extension/renderer.cpp</headers>
+    <headers>../extension/include/wx/extension/shell.cpp</headers>
+    <headers>../extension/include/wx/extension/statistics.cpp</headers>
+    <headers>../extension/include/wx/extension/stc.cpp</headers>
+    <headers>../extension/include/wx/extension/svn.cpp</headers>
+    <headers>../extension/include/wx/extension/textfile.cpp</headers>
+    <headers>../extension/include/wx/extension/tool.cpp</headers>
+    <headers>../extension/include/wx/extension/util.cpp</headers>
   </lib>
 
   <lib id="wxexrep" template="wx-lib,wxlike">
+    <libname>wxexrep-0.9.0</libname>
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
@@ -52,6 +76,15 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/report/stc.cpp</sources>
     <sources>../extension/src/report/textfile.cpp</sources>
     <sources>../extension/src/report/util.cpp</sources>
+    
+    <headers>../extension/include/wx/extension//report/frame.cpp</headers>
+    <headers>../extension/include/wx/extension//report/listitem.cpp</headers>
+    <headers>../extension/include/wx/extension//report/listview.cpp</headers>
+    <headers>../extension/include/wx/extension//report/process.cpp</headers>
+    <headers>../extension/include/wx/extension//report/stc.cpp</headers>
+    <headers>../extension/include/wx/extension//report/textfile.cpp</headers>
+    <headers>../extension/include/wx/extension//report/util.cpp</headers>
+    
     <depends>wxex</depends>
   </lib>
   
@@ -76,6 +109,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="ex-sample-rep" template="wxgui,wxlike">
     <sources>../extension/sample/report/appl.cpp</sources>
+    <headers>../extension/sample/report/appl.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
@@ -91,6 +125,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- tests -->
   <exe id="ex-test-base" template="wxlike">
     <sources>../extension/test/base/test.cpp</sources>
+    <headers>../extension/test/base/test.h</headers>
     <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
@@ -117,6 +152,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="ex-test-report" template="wxgui,wxlike">
     <sources>../extension/test/report/test.cpp</sources>
+    <headers>../extension/test/report/test.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
@@ -131,9 +167,13 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
+    <exename>syncedit.v1.0</exename>
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
+    <headers>../syncedit/src/appl.h</headers>
+    <headers>../syncedit/src/frame.h</headers>
+    <headers>../syncedit/src/support.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
@@ -147,9 +187,13 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncodbcquery" template="wxgui,wxlike">
+    <exename>syncodbcquery.v1.0</exename>
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <sources>../syncodbcquery/src/frame.cpp</sources>
     <sources>../syncodbcquery/src/support.cpp</sources>
+    <headers>../syncodbcquery/src/appl.h</headers>
+    <headers>../syncodbcquery/src/frame.h</headers>
+    <headers>../syncodbcquery/src/support.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
@@ -163,9 +207,13 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncsocketserver" template="wxgui,wxlike">
+    <exename>syncsocketserver.v1.0</exename>
     <sources>../syncsocketserver/src/appl.cpp</sources>
     <sources>../syncsocketserver/src/frame.cpp</sources>
     <sources>../syncsocketserver/src/support.cpp</sources>
+    <headers>../syncsocketserver/src/appl.h</headers>
+    <headers>../syncsocketserver/src/frame.h</headers>
+    <headers>../syncsocketserver/src/support.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
