@@ -42,7 +42,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   {
     header << l.GetCommentBegin() << "\n";
     header << "Name:      " << filename->GetFullName() << "\n";
-    header << wxExAlignText("Purpose:   ", purpose) << "\n";
+    header << wxExAlignText(purpose, "Purpose:   ") << "\n";
     header << "Author:    " << author << "\n";
     header << "Created:   " << wxDateTime::Now().FormatISODate() << "\n";
     if (m_Config->GetBool("SVN"))
