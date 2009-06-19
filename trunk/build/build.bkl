@@ -91,6 +91,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- samples -->
   <exe id="ex-sample" template="wxgui,wxlike">
     <sources>../extension/sample/appl.cpp</sources>
+    <headers>../extension/sample/appl.h</headers>
     <library>wxex</library>
     <!-- not necessary: expat png.lib wxjpeg.lib wxregexu.lib wxtiff.lib 
           see in wx.bkl:
@@ -139,6 +140,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="ex-test-app" template="wxgui,wxlike">
     <sources>../extension/test/app/test.cpp</sources>
+    <headers>../extension/test/app/test.h</headers>
     <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
