@@ -915,7 +915,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText,
     // InsertTextRaw do not add the length.
     // To be able to add NULLs this is the only way.
-    SendMsg(SCI_ADDTEXT, 1, (long)buffer);
+    SendMsg(SCI_ADDTEXT, 1, (wxIntPtr)buffer);
   }
 }
 
@@ -1547,7 +1547,7 @@ void wxExSTC::MacroPlayback()
 		txt[0] = c;
 		txt[1] = '\0';
 
-    SendMsg(msg, wp, (long)txt);
+    SendMsg(msg, wp, (wxIntPtr)txt);
   }
 
   wxExFrame::StatusText(_("Macro played back"));
@@ -1921,7 +1921,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
     if (event.GetLParam() != 0)
     {
-      char* txt = (char *)event.GetLParam();
+      char* txt = (char *)(wxIntPtr)event.GetLParam();
       msg += txt;
     }
     else
@@ -2192,7 +2192,7 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.
-    SendMsg(message, buffer.length(), (long)(const char *)buffer.data());
+    SendMsg(message, buffer.length(), (wxIntPtr)(const char *)buffer.data());
   }
   else
   {
@@ -2536,7 +2536,7 @@ void wxExSTC::SetText(const wxString& value)
 
   // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
   // So for text with nulls this is the only way for opening.
-  SendMsg(SCI_ADDTEXT, value.length(), (long)(const char *)value.c_str());
+  SendMsg(SCI_ADDTEXT, value.length(), (wxIntPtr)(const char *)value.c_str());
 
   DocumentStart();
 
