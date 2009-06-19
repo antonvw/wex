@@ -189,11 +189,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="syncodbcquery" template="wxgui,wxlike">
     <sources>../syncodbcquery/src/appl.cpp</sources>
-    <sources>../syncodbcquery/src/frame.cpp</sources>
-    <sources>../syncodbcquery/src/support.cpp</sources>
     <headers>../syncodbcquery/src/appl.h</headers>
-    <headers>../syncodbcquery/src/frame.h</headers>
-    <headers>../syncodbcquery/src/support.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
@@ -207,12 +203,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncsocketserver" template="wxgui,wxlike">
-    <sources>../syncsocketserver/src/appl.cpp</sources>
-    <sources>../syncsocketserver/src/frame.cpp</sources>
-    <sources>../syncsocketserver/src/support.cpp</sources>
-    <headers>../syncsocketserver/src/appl.h</headers>
-    <headers>../syncsocketserver/src/frame.h</headers>
-    <headers>../syncsocketserver/src/support.h</headers>
+    <sources>../syncsocketserver/src/server.cpp</sources>
+    <headers>../syncsocketserver/src/server.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
     <wx-lib>aui</wx-lib>
