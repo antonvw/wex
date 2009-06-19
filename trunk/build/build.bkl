@@ -77,13 +77,13 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/report/textfile.cpp</sources>
     <sources>../extension/src/report/util.cpp</sources>
     
-    <headers>../extension/include/wx/extension//report/frame.cpp</headers>
-    <headers>../extension/include/wx/extension//report/listitem.cpp</headers>
-    <headers>../extension/include/wx/extension//report/listview.cpp</headers>
-    <headers>../extension/include/wx/extension//report/process.cpp</headers>
-    <headers>../extension/include/wx/extension//report/stc.cpp</headers>
-    <headers>../extension/include/wx/extension//report/textfile.cpp</headers>
-    <headers>../extension/include/wx/extension//report/util.cpp</headers>
+    <headers>../extension/include/wx/extension/report/frame.h</headers>
+    <headers>../extension/include/wx/extension/report/listitem.h</headers>
+    <headers>../extension/include/wx/extension/report/listview.h</headers>
+    <headers>../extension/include/wx/extension/report/process.h</headers>
+    <headers>../extension/include/wx/extension/report/stc.h</headers>
+    <headers>../extension/include/wx/extension/report/textfile.h</headers>
+    <headers>../extension/include/wx/extension/report/util.h</headers>
     
     <depends>wxex</depends>
   </lib>
