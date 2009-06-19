@@ -29,6 +29,14 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     return wxEmptyString;
   }
 
+  const wxString h_name      = "Name:      "; 
+  const wxString h_purpose   = "Purpose:   "; 
+  const wxString h_author    = "Author:    "; 
+  const wxString h_created   = "Created:   "; 
+  const wxString h_rcs       = "RCS-ID:    $"; 
+  const wxString h_copyright = "Copyright: "; 
+  const wxString h_license   = "License:   "; 
+
   const wxString author = m_Config->Get(_("Author"));
   const wxString company = m_Config->Get(_("Company"));
   const wxString license = m_Config->Get(_("License"));
@@ -41,33 +49,33 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   if (!l.GetCommentEnd().empty())
   {
     header << l.GetCommentBegin() << "\n";
-    header << "Name:      " << filename->GetFullName() << "\n";
-    header << wxExAlignText(purpose, "Purpose:   ") << "\n";
-    header << "Author:    " << author << "\n";
-    header << "Created:   " << wxDateTime::Now().FormatISODate() << "\n";
+    header << h_name << filename->GetFullName() << "\n";
+    header << wxExAlignText(purpose, h_purpose) << "\n";
+    header << h_author << author << "\n";
+    header << h_created << wxDateTime::Now().FormatISODate() << "\n";
     if (m_Config->GetBool("SVN"))
     // Prevent the Id to be expanded by SVN itself here.
-    header << "RCS-ID:    $" << wxString("Id$") << "\n";
-    header << "Copyright: " << "(c) " << wxDateTime::Now().Format("%Y") << " " <<
+    header << h_rcs << wxString("Id$") << "\n";
+    header << h_copyright << "(c) " << wxDateTime::Now().Format("%Y") << " " <<
       (!company.empty() ? company: author) << email_field << "\n";
     if (!license.empty())
-    header << "License:   " << license << "\n";
+    header << h_license << license << "\n";
     header << l.GetCommentEnd() << "\n";
   }
   else
   {
     header << l.MakeComment(wxEmptyString, false) << "\n";
-    header << l.MakeComment("Name:      ", filename->GetFullName()) << "\n";
-    header << l.MakeComment("Purpose:   ", purpose) << "\n";
-    header << l.MakeComment("Author:    ", author) << "\n";
-    header << l.MakeComment("Created:   ", wxDateTime::Now().FormatISODate()) << "\n";
+    header << l.MakeComment(h_name, filename->GetFullName()) << "\n";
+    header << l.MakeComment(h_purpose, purpose) << "\n";
+    header << l.MakeComment(h_author, author) << "\n";
+    header << l.MakeComment(h_created, wxDateTime::Now().FormatISODate()) << "\n";
     if (m_Config->GetBool("SVN"))
     // Prevent the Id to be expanded by SVN itself here.
-    header << l.MakeComment("RCS-ID:    $", wxString("Id$")) << "\n";
-    header << l.MakeComment("Copyright: ", "(c) " + wxDateTime::Now().Format("%Y") + " " +
+    header << l.MakeComment(h_rcs, wxString("Id$")) << "\n";
+    header << l.MakeComment(h_copyright, "(c) " + wxDateTime::Now().Format("%Y") + " " +
       (!company.empty() ? company: author) + email_field) << "\n";
     if (!license.empty())
-    header << l.MakeComment("License:   ", license) << "\n";
+    header << l.MakeComment(h_license, license) << "\n";
     header << l.MakeComment(wxEmptyString, false) << "\n";
   }
 
