@@ -91,6 +91,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- samples -->
   <exe id="ex-sample" template="wxgui,wxlike">
     <sources>../extension/sample/appl.cpp</sources>
+    <win32-res>../extension/sample/appl.rc</win32-res>
     <headers>../extension/sample/appl.h</headers>
     <library>wxex</library>
     <!-- not necessary: expat png.lib wxjpeg.lib wxregexu.lib wxtiff.lib 
@@ -110,6 +111,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="ex-sample-rep" template="wxgui,wxlike">
     <sources>../extension/sample/report/appl.cpp</sources>
+    <win32-res>../extension/sample/report/appl.rc</win32-res>
     <headers>../extension/sample/report/appl.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
@@ -172,6 +174,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
+    <win32-res>../syncedit/src/appl.rc</win32-res>
     <headers>../syncedit/src/appl.h</headers>
     <headers>../syncedit/src/frame.h</headers>
     <headers>../syncedit/src/support.h</headers>
@@ -189,6 +192,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="syncodbcquery" template="wxgui,wxlike">
     <sources>../syncodbcquery/src/appl.cpp</sources>
+    <win32-res>../syncodbcquery/src/appl.rc</win32-res>
     <headers>../syncodbcquery/src/appl.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
@@ -204,6 +208,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <exe id="syncsocketserver" template="wxgui,wxlike">
     <sources>../syncsocketserver/src/server.cpp</sources>
+    <win32-res>../syncsocketserver/src/server.rc</win32-res>
     <headers>../syncsocketserver/src/server.h</headers>
     <library>wxex</library>
     <library>wxexrep</library>
