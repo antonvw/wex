@@ -113,8 +113,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/sample/report/appl.cpp</sources>
     <win32-res>../extension/sample/report/appl.rc</win32-res>
     <headers>../extension/sample/report/appl.h</headers>
-    <library>wxex</library>
     <library>wxexrep</library>
+    <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
