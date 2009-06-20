@@ -157,8 +157,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <exe id="ex-test-report" template="wxgui,wxlike">
     <sources>../extension/test/report/test.cpp</sources>
     <headers>../extension/test/report/test.h</headers>
-    <library>wxex</library>
     <library>wxexrep</library>
+    <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -178,8 +178,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../syncedit/src/appl.h</headers>
     <headers>../syncedit/src/frame.h</headers>
     <headers>../syncedit/src/support.h</headers>
-    <library>wxex</library>
     <library>wxexrep</library>
+    <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -194,8 +194,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <win32-res>../syncodbcquery/src/appl.rc</win32-res>
     <headers>../syncodbcquery/src/appl.h</headers>
-    <library>wxex</library>
     <library>wxexrep</library>
+    <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -210,8 +210,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../syncsocketserver/src/server.cpp</sources>
     <win32-res>../syncsocketserver/src/server.rc</win32-res>
     <headers>../syncsocketserver/src/server.h</headers>
-    <library>wxex</library>
     <library>wxexrep</library>
+    <library>wxex</library>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
