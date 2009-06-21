@@ -22,6 +22,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
+    <define>USE_OTL</define>
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/base.cpp</sources>
     <sources>../extension/src/config.cpp</sources>
@@ -177,6 +178,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
+    <define>USE_OTL</define>
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
@@ -197,6 +199,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncodbcquery" template="wxgui,wxlike">
+    <define>USE_OTL</define>
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <win32-res>../syncodbcquery/src/appl.rc</win32-res>
     <headers>../syncodbcquery/src/appl.h</headers>
