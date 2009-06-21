@@ -131,6 +131,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/test/base/test.h</headers>
     <lib-path>/usr/include/cppunit/</lib-path>
     <library>wxex</library>
+    <sys-lib>cppunit</sys-lib>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -146,6 +147,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/test/app/test.h</headers>
     <lib-path>/usr/include/cppunit/</lib-path>
     <library>wxex</library>
+    <sys-lib>cppunit</sys-lib>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -162,6 +164,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <lib-path>/usr/include/cppunit/</lib-path>
     <library>wxexrep</library>
     <library>wxex</library>
+    <sys-lib>cppunit</sys-lib>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
