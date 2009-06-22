@@ -15,9 +15,8 @@
 class wxExDirTraverser: public wxDirTraverser
 {
 public:
-  wxExDirTraverser(wxExDir& dir, size_t& files)
+  wxExDirTraverser(wxExDir& dir)
     : m_Dir(dir)
-    , m_Files(files)
     {}
 
   virtual wxDirTraverseResult OnDir(const wxString& dirname)
@@ -29,7 +28,6 @@ public:
 
     if (m_Dir.GetFlags() & wxDIR_DIRS)
     {
-      m_Files++;
       m_Dir.OnDir(dirname);
     }
 
@@ -59,7 +57,6 @@ public:
 
     if (wxExMatchesOneOf(file, m_Dir.GetFileSpec()))
     {
-      m_Files++;
       m_Dir.OnFile(filename);
     }
 
@@ -80,7 +77,6 @@ public:
 
 private:
   wxExDir& m_Dir;
-  size_t& m_Files;
 };
 
 wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
@@ -94,12 +90,9 @@ size_t wxExDir::FindFiles()
 {
   if (!IsOpened()) return 0;
 
-  size_t files = 0;
-
   // Using m_FileSpec here does not work, as it might
   // contain several specs (*.cpp;*.h), wxDir does not handle that.
-  wxExDirTraverser traverser(*this, files);
-  Traverse(traverser, wxEmptyString, m_Flags);
-
-  return files;
+  // Do not combine into one, Ubuntu complains.
+  wxExDirTraverser traverser(*this);
+  return Traverse(traverser, wxEmptyString, m_Flags);
 }
