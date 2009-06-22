@@ -169,7 +169,9 @@ long wxExProcessWithListView::Execute()
 
 void wxExProcessWithListView::InitCommandFromConfig()
 {
-  m_Command = wxExApp::GetConfig(_("Process"));
+  // The process is a combobox, we want only the first from the list,
+  // so use the separator.
+  m_Command = wxExApp::GetConfig(_("Process"), wxEmptyString, '@');
 }
 
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
