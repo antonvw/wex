@@ -19,10 +19,12 @@ It uses wxWidgets 2.9.0 and STL classes.
 \section install_sec Installation from svn checkout
 
 \subsection step1 Linux
-Just do a makeall and a makeall install in the trunk directory.
+Use the build.bkl in the trunk/build directory file to create a GNUMakefile and
+do make.
 
 \subsection step2 Windows
-Use the Visual Studio project file all.sln in the trunk directory.
+Use the build.bkl in the trunk/build directory file to create a msvs2003 or 2008 
+project files use the Visual Studio build.sln in the trunk directory to build.
 
 
 \section example_sec Examples
