@@ -41,9 +41,10 @@ General
     
 - The SVN support in wxExSVN works with SVN client 1.6.2 (e.g. from http://www.sliksvn.com/en/download)
 
-- IDE
-  - Project files are generated using Bakefile 0.2.6, see the build dir
+- Build process/IDE
+  - Project and make files are generated using Bakefile 0.2.6
     http://www.bakefile.org/
+    this is done in the build dir, directly under trunk
     
   - under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
     here is a bug in the Studio, you have to manually delete from the Linker files wxex and wxexrep
