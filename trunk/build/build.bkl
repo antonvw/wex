@@ -118,6 +118,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/sample/report/appl.h</headers>
     <library>wxexrep</library>
     <library>wxex</library>
+    <sys-lib>odbc</sys-lib>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -190,6 +191,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../syncedit/src/support.h</headers>
     <library>wxexrep</library>
     <library>wxex</library>
+    <sys-lib>odbc</sys-lib>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
