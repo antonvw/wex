@@ -14,7 +14,6 @@
 
 #include <map>
 #include <set>
-#include <vector>
 
 class wxExLexers;
 
