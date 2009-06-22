@@ -70,6 +70,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 
   <lib id="wxexrep" template="wx-lib,wxlike">
     <libname>wxexrep09</libname>
+    <define>USE_EMBEDDED_SQL</define>
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
