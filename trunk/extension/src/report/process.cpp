@@ -107,7 +107,8 @@ bool wxExProcessWithListView::CheckInput()
     }
     else
     {
-      wxExListItemWithFileName item(m_Owner, wxEmptyString); // wxExListItem gives incorrect image
+      // wxExListItem gives incorrect image
+      wxExListItemWithFileName item(m_Owner, wxEmptyString);
       item.Insert();
       item.SetColumnText(_("Line"), line);
     }
@@ -170,8 +171,8 @@ long wxExProcessWithListView::Execute()
 void wxExProcessWithListView::InitCommandFromConfig()
 {
   // The process is a combobox, we want only the first from the list,
-  // so use the separator.
-  m_Command = wxExApp::GetConfig(_("Process"), wxEmptyString, '@');
+  // so use the default separator, causing only first field to be returned.
+  m_Command = wxExApp::GetConfig(_("Process"));
 }
 
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
@@ -187,7 +188,9 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
   return wxProcess::Kill(GetPid(), sig);
 }
 
-void wxExProcessWithListView::OnTerminate(int WXUNUSED(pid), int WXUNUSED(status))
+void wxExProcessWithListView::OnTerminate(
+  int WXUNUSED(pid), 
+  int WXUNUSED(status))
 {
   m_Timer.Stop();
 
