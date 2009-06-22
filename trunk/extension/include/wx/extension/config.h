@@ -78,9 +78,9 @@ public:
     }
     else
     {
-      const wxString config_value = Read(key, default_value);
-      m_StringValues.insert(std::make_pair(key, config_value));
-      return config_value;
+      const wxString value = Read(key, default_value);
+      m_StringValues.insert(std::make_pair(key, value));
+      return value.BeforeFirst(field_separator);
     }
   }
 
