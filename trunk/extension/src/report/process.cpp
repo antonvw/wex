@@ -131,7 +131,7 @@ int wxExProcessWithListView::ConfigDialog()
 {
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem(_("Process folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
   const int result = wxExConfigDialog(NULL,
     wxExApp::GetConfig(),
@@ -140,7 +140,7 @@ int wxExProcessWithListView::ConfigDialog()
 
   if (result == wxID_OK)
   {
-    wxSetWorkingDirectory(wxExApp::GetConfig(_("In folder")));
+    wxSetWorkingDirectory(wxExApp::GetConfig(_("Process folder")));
     m_Command = wxExApp::GetConfig(_("Process"));
   }
 
