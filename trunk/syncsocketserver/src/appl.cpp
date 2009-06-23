@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          server.cpp
-* Purpose:       General socket server
+* File:          appl.cpp
+* Purpose:       Implementation of classes for syncsocketserver
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -12,7 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/extension/configdialog.h>
-#include "server.h"
+#include "appl.h"
 
 #ifndef __WXMSW__
 #include "appl.xpm"
@@ -93,7 +93,7 @@ MyFrame::MyFrame(const wxString& title)
     wxExSTCWithFrame::STC_MENU_REPLACE | wxExSTCWithFrame::STC_MENU_INSERT);
 
   m_LogWindow = new wxExSTCWithFrame(
-    this, 
+    this,
     wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
 
   m_Shell = new wxExSTCShell(this);
@@ -121,7 +121,7 @@ MyFrame::MyFrame(const wxString& title)
 #endif
 
   wxMenu* menuServer = new wxMenu();
-  menuServer->Append(ID_SERVER_CONFIG, 
+  menuServer->Append(ID_SERVER_CONFIG,
     wxExEllipsed(_("Config")), _("Configures the server"));
   menuServer->AppendSeparator();
   menuServer->Append(wxID_EXECUTE);

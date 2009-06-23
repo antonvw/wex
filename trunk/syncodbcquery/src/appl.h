@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          appl.h
-* Purpose:       Declaration of classes for syncquery
+* Purpose:       Declaration of classes for syncodbcquery
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

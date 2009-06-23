@@ -1,10 +1,10 @@
 /******************************************************************************\
-* File:          server.h
-* Purpose:       General socket server
+* File:          appl.h
+* Purpose:       Declaration of classes for syncsocketserver
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 2007-2008, Anton van Wezenbeek
+* Copyright (c) 2007-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
