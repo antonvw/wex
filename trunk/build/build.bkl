@@ -221,9 +221,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncsocketserver" template="wxgui,wxlike">
-    <sources>../syncsocketserver/src/server.cpp</sources>
-    <win32-res>../syncsocketserver/src/server.rc</win32-res>
-    <headers>../syncsocketserver/src/server.h</headers>
+    <sources>../syncsocketserver/src/appl.cpp</sources>
+    <win32-res>../syncsocketserver/src/appl.rc</win32-res>
+    <headers>../syncsocketserver/src/appl.h</headers>
     <library>wxexrep</library>
     <library>wxex</library>
     <wx-lib>aui</wx-lib>
