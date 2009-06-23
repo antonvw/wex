@@ -74,7 +74,7 @@ const wxString wxExLexer::GetFormattedText(
       header_to_use,
       fill_out_with_space,
       fill_out,
-      this);
+      *this);
 
     text = text.substr(nCharIndex + 1);
     header_to_use = wxString(' ', header.size());
@@ -87,7 +87,7 @@ const wxString wxExLexer::GetFormattedText(
       header_to_use,
       fill_out_with_space,
       fill_out,
-      this);
+      *this);
   }
 
   return out;
@@ -124,7 +124,7 @@ const wxString wxExLexer::MakeComment(
 
   text.find("\n") != wxString::npos ?
     out << GetFormattedText(text, wxEmptyString, fill_out_with_space, fill_out):
-    out << wxExAlignText(text, wxEmptyString, fill_out_with_space, fill_out, this);
+    out << wxExAlignText(text, wxEmptyString, fill_out_with_space, fill_out, *this);
 
   return out;
 }
@@ -137,7 +137,7 @@ const wxString wxExLexer::MakeComment(
 
   text.find("\n") != wxString::npos ?
     out << GetFormattedText(text, prefix, true, true):
-    out << wxExAlignText(text, prefix, true, true, this);
+    out << wxExAlignText(text, prefix, true, true, *this);
 
   return out;
 }
@@ -147,6 +147,11 @@ const wxString wxExLexer::MakeSingleLineComment(
   bool fill_out_with_space,
   bool fill_out) const
 {
+  if (m_CommentBegin.empty() && m_CommentEnd.empty())
+  {
+    return text;
+  }
+
   // First set the fill_out_character.
   wxChar fill_out_character;
 
@@ -256,6 +261,6 @@ int wxExLexer::UsableCharactersPerLine() const
   // We always use lines with 80 characters. We adjust this here for
   // the space the beginning and end of the comment characters occupy.
   return 80
-      -  (m_CommentBegin.size() + 1)
-      - ((m_CommentEnd.size() != 0) ? m_CommentEnd.size() + 1 : 0);
+    - ((m_CommentBegin.size() != 0) ? m_CommentBegin.size() + 1 : 0)
+    - ((m_CommentEnd.size() != 0) ? m_CommentEnd.size() + 1 : 0);
 }

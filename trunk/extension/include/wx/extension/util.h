@@ -17,8 +17,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/filename.h>
-
-class wxExLexer;
+#include <wx/extension/lexer.h>
 
 /*! \file */
 
@@ -29,7 +28,7 @@ const wxString wxExAlignText(
   const wxString& header,
   bool fill_out_with_space = false,
   bool fill_out = false,
-  const wxExLexer* lexer = NULL);
+  const wxExLexer& lexer = wxExLexer());
 
 /// Adds data to the clipboard.
 bool wxExClipboardAdd(const wxString& text);

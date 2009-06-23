@@ -23,9 +23,9 @@ const wxString wxExAlignText(
   const wxString& header,
   bool fill_out_with_space,
   bool fill_out,
-  const wxExLexer* lexer)
+  const wxExLexer& lexer)
 {
-  const size_t line_length = (lexer == NULL ? 80: lexer->UsableCharactersPerLine());
+  const size_t line_length = lexer.UsableCharactersPerLine();
 
   // Use the header, with one space extra to separate, or no header at all.
   const wxString header_with_spaces =
@@ -42,14 +42,7 @@ const wxString wxExAlignText(
 
     if (line.size() + 1 + word.size() > line_length)
     {
-      if (lexer != NULL)
-      {
-        out << lexer->MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
-      }
-      else
-      {
-        out << line << "\n";
-      }
+      out << lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out) << "\n";
 
       line = header_with_spaces + word;
     }
@@ -60,14 +53,7 @@ const wxString wxExAlignText(
     }
   }
 
-  if (lexer != NULL)
-  {
-    out << lexer->MakeSingleLineComment(line, fill_out_with_space, fill_out);
-  }
-  else
-  {
-    out << line;
-  }
+  out << lexer.MakeSingleLineComment(line, fill_out_with_space, fill_out);
 
   return out;
 }
