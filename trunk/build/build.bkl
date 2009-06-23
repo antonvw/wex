@@ -18,6 +18,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 <makefile>
 
   <include file="presets/wx.bkl"/>
+  <set-wxlike-builddir/>
   
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
