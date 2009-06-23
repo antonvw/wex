@@ -21,14 +21,6 @@ wxExHeader::wxExHeader(wxExConfig* config)
 
 const wxString wxExHeader::Get(const wxExFileName* filename) const
 {
-  const wxExLexer l = filename->GetLexer();
-
-  if (l.GetScintillaLexer().empty())
-  {
-    wxLogError("Lexer is empty");
-    return wxEmptyString;
-  }
-
   const wxString h_name      = "Name:      "; 
   const wxString h_purpose   = "Purpose:   "; 
   const wxString h_author    = "Author:    "; 
@@ -45,6 +37,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
   wxString header;
+  const wxExLexer l = filename->GetLexer();
 
   if (!l.GetCommentEnd().empty())
   {
