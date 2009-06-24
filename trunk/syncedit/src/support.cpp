@@ -157,11 +157,10 @@ Frame::Frame(const wxString& project_wildcard)
   menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_EDITOR, wxExEllipsed(_("Set &Editor Options")));
+
   wxMenu *menuHelp = new wxMenu();
-  // Both wxART_HELP_BOOK, and wxART_HELP_PAGE do not fit nicely on menu item.
-  menuHelp->Append(wxID_HELP_CONTENTS, _("&Contents"));
-  menuHelp->AppendSeparator();
   menuHelp->Append(wxID_ABOUT);
+
   menubar->Append(menuFile, _("&File"));
   menubar->Append(menuEdit, _("&Edit"));
   menubar->Append(menuView, _("&View"));

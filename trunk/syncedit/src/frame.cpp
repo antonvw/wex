@@ -443,18 +443,6 @@ and saved in the same directory as where the executable is."));
     }
     break;
   case wxID_EXIT: Close(true); break;
-  case wxID_HELP_CONTENTS:
-    {
-    const wxFileName fn(
-#ifdef EX_PORTABLE
-      wxStandardPaths::Get().GetExecutablePath(),
-#else
-      wxStandardPaths::Get().GetDataDir(),
-#endif
-      wxTheApp->GetAppName() + ".htm");
-    wxLaunchDefaultBrowser(fn.GetFullPath());
-    }
-    break;
   case wxID_NEW: NewFile(); break;
   case wxID_OPEN: event.Skip(); break;
   case wxID_PREVIEW:
