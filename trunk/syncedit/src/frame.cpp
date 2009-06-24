@@ -702,9 +702,13 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
     PopupMenu(&menu);
   }
-  else
+  else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
   {
     OpenFile(filename);
+  }
+  else
+  {
+    wxFAIL;
   }
 }
 
