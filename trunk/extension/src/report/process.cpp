@@ -140,7 +140,6 @@ int wxExProcessWithListView::ConfigDialog()
 
   if (result == wxID_OK)
   {
-    wxSetWorkingDirectory(wxExApp::GetConfig(_("Process folder")));
     m_Command = wxExApp::GetConfig(_("Process"));
   }
 
@@ -149,6 +148,10 @@ int wxExProcessWithListView::ConfigDialog()
 
 long wxExProcessWithListView::Execute()
 {
+  const wxString cwd = wxGetCwd();
+
+  wxSetWorkingDirectory(wxExApp::GetConfig(_("Process folder")));
+
   long pid;
 
   if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
@@ -164,6 +167,8 @@ long wxExProcessWithListView::Execute()
   {
     wxLogError(_("Cannot run process") + ": " + m_Command);
   }
+
+  wxSetWorkingDirectory(cwd);
 
   return pid;
 }
