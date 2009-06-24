@@ -20,6 +20,15 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <include file="presets/wx.bkl"/>
   <set-wxlike-builddir/>
   
+  <option name="EX_PORTABLE">
+     <values>0,1</values>
+     <values-description>Uses registry etc.,Uses local files only
+     </values-description>
+     <default-value>0</default-value>
+     <description>Use portable build of wxex library?
+     </description>
+  </option>
+        
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
