@@ -20,29 +20,50 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <include file="presets/wx.bkl"/>
   <set-wxlike-builddir/>
   
-  <option name="EX_PORTABLE">
+  <!-- options -->
+  <option name="PORTABLE">
      <values>0,1</values>
-     <values-description>Uses registry etc.,Uses local files only
-     </values-description>
+     <values-description>Uses registry etc.,Uses local files only</values-description>
      <default-value>0</default-value>
-     <description>Use portable build of wxex library?
-     </description>
+     <description>Use portable build of wxex library?</description>
   </option>
         
-  <!-- only used by syncedit, but putting it there gvies bake error -->      
+  <option name="USE_EMBEDDED_SQL">
+     <values>0,1</values>
+     <values-description>No Embedded SQL,Uses Embedded SQL</values-description>
+     <default-value>1</default-value>
+     <description>Use embedded SQL?</description>
+  </option>
+
+  <option name="USE_OTL">
+     <values>0,1</values>
+     <values-description>No OTL,Uses OTL</values-description>
+     <default-value>1</default-value>
+     <description>Use images in notebooks?</description>
+  </option>
+
   <option name="USE_NOTEBOOK_IMAGE">
      <values>0,1</values>
-     <values-description>No images in notebooks,Uses images in notebooks
-     </values-description>
+     <values-description>No images in notebooks,Uses images in notebooks</values-description>
      <default-value>1</default-value>
-     <description>Use images in notebooks?
-     </description>
+     <description>Use images in notebooks?</description>
   </option>
+  
+  <!-- variables derived from options, so they can be used in the targets as weak conditions -->
+  <set var="VAR_PORTABLE" cond="PORTABLE=='1'">1</set>
+  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">1</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='1'">1</set>
+  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">1</set>
 
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
-    <define>USE_OTL</define>
+    <if cond="VAR_PORTABLE=='1'">
+      <define>EX_PORTABLE</define>
+    </if>
+    <if cond="VAR_USE_OTL=='1'">
+      <define>USE_OTL</define>
+    </if>
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/base.cpp</sources>
     <sources>../extension/src/config.cpp</sources>
@@ -90,8 +111,15 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 
   <lib id="wxexrep" template="wx-lib,wxlike">
     <libname>wxexrep09</libname>
-    <define>USE_OTL</define>
-    <define>USE_EMBEDDED_SQL</define>
+    <if cond="VAR_PORTABLE=='1'">
+      <define>EX_PORTABLE</define>
+    </if>
+    <if cond="VAR_USE_EMBEDDED_SQL=='1'">
+      <define>USE_EMBEDDED_SQL</define>
+    </if>
+    <if cond="VAR_USE_OTL=='1'">
+      <define>USE_OTL</define>
+    </if>
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
@@ -201,7 +229,15 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
-    <define>USE_OTL</define>
+    <if cond="VAR_PORTABLE=='1'">
+      <define>EX_PORTABLE</define>
+    </if>
+    <if cond="VAR_USE_OTL=='1'">
+      <define>USE_OTL</define>
+    </if>
+    <if cond="VAR_USE_NOTEBOOK_IMAGE=='1'">
+      <define>USE_NOTEBOOK_IMAGE</define>
+    </if>
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
@@ -211,7 +247,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../syncedit/src/support.h</headers>
     <library>wxexrep</library>
     <library>wxex</library>
-    <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
+    <if cond="PLATFORM_UNIX=='1'">
+      <sys-lib>odbc</sys-lib>
+    </if>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -223,6 +261,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncodbcquery" template="wxgui,wxlike">
+    <if cond="VAR_USE_OTL=='0'">
+      <error>Requires OTL</error>
+    </if>
     <define>USE_OTL</define>
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <win32-res>../syncodbcquery/src/appl.rc</win32-res>
