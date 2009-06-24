@@ -19,11 +19,6 @@
 #include "appl.h"
 #include "appl.xpm"
 
-const wxString Quoted(const wxString& text)
-{
-  return "'" + text + "'";
-}
-
 IMPLEMENT_APP(MyApp)
 
 bool MyApp::OnInit()
@@ -278,7 +273,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
           m_Results->EndBatch();
         }
 
-        m_Shell->AppendText(_("\nerror: ") + Quoted(p.msg));
+        m_Shell->AppendText(_("\nerror: ") + wxExQuoted(p.msg));
       }
     }
     else
@@ -446,7 +441,9 @@ void MyFrame::RunQueries(const wxString& text)
       catch (otl_exception& p)
       {
         m_Statistics.Inc(_("Number of query errors"));
-        m_Shell->AppendText(_("\nerror: ") +  Quoted(p.msg) + _(" in: ") + Quoted(query));
+        m_Shell->AppendText(
+          _("\nerror: ") +  wxExQuoted(p.msg) + 
+          _(" in: ") + wxExQuoted(query));
       }
     }
   }

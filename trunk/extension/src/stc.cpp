@@ -1301,7 +1301,7 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
     {
       wxBell();
       // Same text also displayed in wxExInterface.
-      wxExFrame::StatusText("'" + wxExSkipWhiteSpace(text) + "' " + _("not found"));
+      wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + _("not found"));
       return;
     }
   }

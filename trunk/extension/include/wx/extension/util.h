@@ -74,6 +74,9 @@ bool wxExLog(const wxString& text, const wxFileName& filename = wxExLogfileName(
 /// fields in specified pattern (fields separated by ; sign).
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 
+/// Returns quotes around the text.
+const wxString wxExQuoted(const wxString& text);
+
 /// Returns a string without all white space in specified input.
 const wxString wxExSkipWhiteSpace(
   const wxString& text,

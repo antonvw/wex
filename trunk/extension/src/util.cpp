@@ -305,6 +305,11 @@ bool wxExOpenFile(const wxFileName& filename, long open_flags)
 }
 #endif
 
+const wxString wxExQuoted(const wxString& text)
+{
+  return "'" + text + "'";
+}
+
 const wxString wxExSkipWhiteSpace(const wxString& text, const wxString& replace_with)
 {
   wxString output = text;

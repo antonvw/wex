@@ -387,7 +387,7 @@ bool wxExInterface::FindResult(const wxString& text, bool find_next, bool& recur
     recursive = false;
     wxBell();
     // Same text also displayed in wxExSTC.
-    wxExFrame::StatusText("'" + wxExSkipWhiteSpace(text) + "' " + _("not found"));
+    wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + _("not found"));
     return false;
   }
 }
