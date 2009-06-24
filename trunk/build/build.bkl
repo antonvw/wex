@@ -29,6 +29,16 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
      </description>
   </option>
         
+  <!-- only used by syncedit, but putting it there gvies bake error -->      
+  <option name="USE_NOTEBOOK_IMAGE">
+     <values>0,1</values>
+     <values-description>No images in notebooks,Uses images in notebooks
+     </values-description>
+     <default-value>1</default-value>
+     <description>Use images in notebooks?
+     </description>
+  </option>
+
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
