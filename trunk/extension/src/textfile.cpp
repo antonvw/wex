@@ -448,47 +448,60 @@ bool wxExTextFile::ParseLine(const wxString& line)
         m_FileNameStatistics.GetLexer().GetCommentBegin().Length();
       const size_t check_size = (i > max_check_size ? max_check_size: i);
 
-      if (i < check_size) continue;
-
-      const wxString text = line.substr(i - check_size, check_size);
-
-      switch (CheckForComment(text))
+      if (i >= check_size) 
       {
-      case COMMENT_BEGIN:
-        if (!m_IsCommentStatement) CommentStatementStart();
-        break;
+        const wxString text = line.substr(i - check_size, check_size);
 
-      case COMMENT_END:
-        CommentStatementEnd();
-        break;
-
-      case COMMENT_BOTH:
-        !m_IsCommentStatement ? CommentStatementStart(): CommentStatementEnd();
-        break;
-
-      case COMMENT_NONE:
-        if (line[i] > 0 && !isspace(line[i]) && !m_IsCommentStatement)
+        switch (CheckForComment(text))
         {
-          line_contains_code = true;
+        case COMMENT_BEGIN:
+          if (!m_IsCommentStatement) CommentStatementStart();
+          break;
 
-          if (!IsCodewordSeparator(line[i]))
+        case COMMENT_END:
+          CommentStatementEnd();
+          break;
+
+        case COMMENT_BOTH:
+          !m_IsCommentStatement ? CommentStatementStart(): CommentStatementEnd();
+          break;
+
+        case COMMENT_NONE:
+          if (line[i] > 0 && !isspace(line[i]) && !m_IsCommentStatement)
           {
-            if (!sequence)
+            line_contains_code = true;
+
+            if (!IsCodewordSeparator(line[i]))
             {
-              if (m_Tool.IsCount())
+              if (!sequence)
               {
-                GetStatisticElements().Inc(_("Words Of Code"));
+                if (m_Tool.IsCount())
+                {
+                  GetStatisticElements().Inc(_("Words Of Code"));
+                }
+
+                sequence = true;
               }
 
-              sequence = true;
+              codeword += line[i];
             }
-
-            codeword += line[i];
           }
-        }
-      break;
+        break;
 
-      default: break;
+        case COMMENT_INCOMPLETE:
+          break;
+
+        default: 
+          wxFAIL;
+          break;
+        }
+      }
+      else
+      {
+        if (!m_IsCommentStatement)
+        {
+          codeword += line[i];
+        }
       }
 
       if (sequence && (IsCodewordSeparator(line[i]) || i == line.length() - 1))
