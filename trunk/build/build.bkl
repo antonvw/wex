@@ -97,7 +97,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/base.h</headers>
     <headers>../extension/include/wx/extension/config.h</headers>
     <headers>../extension/include/wx/extension/configdialog.h</headers>
+    <headers>../extension/include/wx/extension/defs.h</headers>
     <headers>../extension/include/wx/extension/dir.h</headers>
+    <headers>../extension/include/wx/extension/extension.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
     <headers>../extension/include/wx/extension/grid.h</headers>
     <headers>../extension/include/wx/extension/header.h</headers>
@@ -114,6 +116,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/textfile.h</headers>
     <headers>../extension/include/wx/extension/tool.h</headers>
     <headers>../extension/include/wx/extension/util.h</headers>
+    <headers>../extension/include/wx/extension/version.h</headers>
   </lib>
 
   <lib id="wxexrep" template="wx-lib,wxlike">
@@ -135,10 +138,12 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/report/textfile.cpp</sources>
     <sources>../extension/src/report/util.cpp</sources>
     
+    <headers>../extension/include/wx/extension/report/defs.h</headers>
     <headers>../extension/include/wx/extension/report/frame.h</headers>
     <headers>../extension/include/wx/extension/report/listitem.h</headers>
     <headers>../extension/include/wx/extension/report/listview.h</headers>
     <headers>../extension/include/wx/extension/report/process.h</headers>
+    <headers>../extension/include/wx/extension/report/report.h</headers>
     <headers>../extension/include/wx/extension/report/stc.h</headers>
     <headers>../extension/include/wx/extension/report/textfile.h</headers>
     <headers>../extension/include/wx/extension/report/util.h</headers>
