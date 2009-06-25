@@ -157,8 +157,7 @@ private:
   wxExCommentType CheckCommentSyntax(
     const wxString& syntax_begin,
     const wxString& syntax_end,
-    wxChar c1,
-    wxChar c2) const;
+    const wxString& text) const;
 
   /// Gets the actual begin of comment, depending on the syntax type.
   const wxString CommentBegin() const {
@@ -178,8 +177,8 @@ private:
       m_FileNameStatistics.GetLexer().GetCommentEnd() :
       m_FileNameStatistics.GetLexer().GetCommentEnd2();};
 
-  /// Check whether specified chars result in a comment.
-  wxExCommentType CheckForComment(wxChar c1, wxChar c2);
+  /// Check whether specified text result in a comment.
+  wxExCommentType CheckForComment(const wxString& text);
   void CommentStatementEnd();
   void CommentStatementStart();
   void EndCurrentRevision();

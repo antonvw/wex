@@ -108,28 +108,22 @@ wxExTextFile::wxExTextFile(
 wxExTextFile::wxExCommentType wxExTextFile::CheckCommentSyntax(
   const wxString& syntax_begin,
   const wxString& syntax_end,
-  wxChar c1,
-  wxChar c2) const
+  const wxString& text) const
 {
-  const wxString comp = ((syntax_begin.length() == 1) ? wxString(c1) : wxString(c2) + wxString(c1));
-
-  if (syntax_begin == comp)
+  if (syntax_begin == text)
   {
-    return (syntax_end == comp) ? COMMENT_BOTH: COMMENT_BEGIN;
+    return (syntax_end == text) ? COMMENT_BOTH: COMMENT_BEGIN;
   }
   else
   {
-    if (syntax_end == comp ||
-        // If syntax_end was empty, we assume the terminating 0 ends the comment.
-       (syntax_end.empty() && c1 == 0))
+    if (syntax_end == text ||
+       (syntax_end.empty() && text.empty()))
     {
       return COMMENT_END;
     }
   }
 
-  if ((syntax_begin.length() > 1 && syntax_begin[0] == c1) ||
-      (syntax_end.length() > 1 && syntax_end[0] == c1) ||
-      (c1 == 0))
+  if (text.StartsWith(syntax_begin) || text.StartsWith(syntax_end))
   {
     return COMMENT_INCOMPLETE;
   }
@@ -137,13 +131,14 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckCommentSyntax(
   return COMMENT_NONE;
 }
 
-wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(wxChar c1, wxChar c2)
+wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(
+  const wxString& text)
 {
   if (m_FileNameStatistics.GetLexer().GetCommentBegin2().empty())
   {
     return CheckCommentSyntax(
       m_FileNameStatistics.GetLexer().GetCommentBegin(),
-      m_FileNameStatistics.GetLexer().GetCommentEnd(), c1, c2);
+      m_FileNameStatistics.GetLexer().GetCommentEnd(), text);
   }
 
   wxExCommentType comment_type1 = COMMENT_NONE;
@@ -152,7 +147,7 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(wxChar c1, wxChar c2
   {
     if ((comment_type1 = CheckCommentSyntax(
       m_FileNameStatistics.GetLexer().GetCommentBegin(),
-      m_FileNameStatistics.GetLexer().GetCommentEnd(), c1, c2)) == COMMENT_BEGIN)
+      m_FileNameStatistics.GetLexer().GetCommentEnd(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_ONE;
   }
 
@@ -162,7 +157,7 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(wxChar c1, wxChar c2
   {
     if ((comment_type2 = CheckCommentSyntax(
       m_FileNameStatistics.GetLexer().GetCommentBegin2(),
-      m_FileNameStatistics.GetLexer().GetCommentEnd2(), c1, c2)) == COMMENT_BEGIN)
+      m_FileNameStatistics.GetLexer().GetCommentEnd2(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_TWO;
   }
 
@@ -449,11 +444,11 @@ bool wxExTextFile::ParseLine(const wxString& line)
     {
       if (line.length() == 0) continue;
 
-      wxChar cc = line[i];
-      wxChar pc = 0;
-      if (i > 0) pc = line[i - 1];
+      const size_t max_check_size = 3;
+      const size_t check_size = (i > max_check_size ? max_check_size: i + 1);
+      const wxString text = line.substr(i - check_size);
 
-      switch (CheckForComment(cc, pc))
+      switch (CheckForComment(text))
       {
       case COMMENT_BEGIN:
         if (!m_IsCommentStatement) CommentStatementStart();
@@ -468,11 +463,11 @@ bool wxExTextFile::ParseLine(const wxString& line)
         break;
 
       case COMMENT_NONE:
-        if (cc > 0 && !isspace(cc) && !m_IsCommentStatement)
+        if (line[i] > 0 && !isspace(line[i]) && !m_IsCommentStatement)
         {
           line_contains_code = true;
 
-          if (!IsCodewordSeparator(cc))
+          if (!IsCodewordSeparator(line[i]))
           {
             if (!sequence)
             {
@@ -484,7 +479,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
               sequence = true;
             }
 
-            codeword += cc;
+            codeword += line[i];
           }
         }
       break;
@@ -492,7 +487,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
       default: break;
       }
 
-      if (sequence && (IsCodewordSeparator(cc) || i == line.length() - 1))
+      if (sequence && (IsCodewordSeparator(line[i]) || i == line.length() - 1))
       {
         if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
         {
@@ -510,6 +505,11 @@ bool wxExTextFile::ParseLine(const wxString& line)
     {
       line_contains_code = true;
     }
+  }
+
+  if (CheckForComment(wxEmptyString) == COMMENT_END)
+  {
+    CommentStatementEnd();
   }
 
   if (line_contains_code)
