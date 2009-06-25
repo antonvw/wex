@@ -296,15 +296,6 @@ const wxString wxExStat::GetModificationTime(const wxString& format) const
   return wxDateTime(st_mtime).Format(format);
 }
 
-bool wxExStat::IsLink() const
-{
-#ifdef __UNIX__
-  return m_IsOk && (S_ISLNK(st_mode) != 0);
-#else // S_ISLNK not known
-  return false;
-#endif
-}
-
 bool wxExStat::SetReadOnly(const bool read_only)
 {
   if (IsOk())

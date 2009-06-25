@@ -123,11 +123,9 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
 
   // test wxExStat
-  CPPUNIT_ASSERT(!m_Stat->IsLink());
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
   CPPUNIT_ASSERT(m_Stat->Update("testlink"));
-//  CPPUNIT_ASSERT(m_Stat->IsLink());
 
   // test wxExStatistics
   m_Statistics->Inc("test");

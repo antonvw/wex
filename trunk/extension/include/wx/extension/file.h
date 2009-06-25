@@ -39,9 +39,6 @@ public:
   const wxString GetModificationTime(
     const wxString& format = wxDefaultDateTimeFormat) const;
 
-  /// Returns true if this stat is a link.
-  bool IsLink() const;
-
   /// Returns true if the stat is okay (last update was okay).
   bool IsOk() const {return m_IsOk;};
 

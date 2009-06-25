@@ -126,11 +126,6 @@ void wxExListItemWithFileName::Update()
     return;
   }
 
-  if (m_Statistics.GetStat().IsLink())
-  {
-    // Do something if this is a link. Currently nothing is done.
-  }
-
   if (m_Statistics.FileExists() ||
       wxFileName::DirExists(m_Statistics.GetFullPath()))
   {
