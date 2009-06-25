@@ -20,7 +20,7 @@ void wxExTestFixture::setUp()
   m_FileName = new wxExFileName("test.h");
   m_FileNameStatistics = new wxExFileNameStatistics("test.h");
   m_Lexer = new wxExLexer();
-  m_Lexers = new wxExLexers(wxExFileName("../../data/lexers.xml"));
+  m_Lexers = new wxExLexers(wxFileName("../../data/lexers.xml"));
   m_RCS = new wxExRCS();
   m_Stat = new wxExStat("test.h");
   m_Statistics = new wxExStatistics<long>();
