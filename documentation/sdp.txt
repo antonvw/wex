@@ -44,17 +44,18 @@ General
 - Build process/IDE
   - Project and make files are generated using Bakefile 0.2.6
     http://www.bakefile.org/
-    this is done in the build dir, directly under trunk
+    this is done in the build dir, directly under trunk:
     
-  - under windows using Microsoft Visual Studio C++ (Version 7.1.3088) project files,
-    here is a bug in the Studio, you have to manually delete from the Linker files wxex and wxexrep
-    the prefix SolutionDir and ConfigurationName, and add this dir using the Option Project
+  - under windows using Microsoft Visual Studio C++ (Version 7.1.3088) and files generated
+    using format msvs2003prj
     
   - under windows using Microsoft Visual Studio 2008
     Version 9.0.30729.1 SP
-    Microsoft .NET Framework
+    Microsoft .NET Framework files generated 
+    using format msvs2008prj
     
   - under linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
+    GNUMakefile generated using format gnu
 
 
 SVN hierarchy
