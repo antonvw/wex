@@ -256,7 +256,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
       }
       else if (GetSelectedItemCount() == 1)
       {
-        wxExListItemWithFileName item(this, GetFirstSelected());
+        const wxExListItemWithFileName item(this, GetFirstSelected());
         menu.AppendSVN(item.GetFileName());
       }
     }
