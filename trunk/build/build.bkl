@@ -24,7 +24,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <option name="PORTABLE">
      <values>0,1</values>
      <values-description>Uses registry etc.,Uses local files only</values-description>
-     <default-value>1</default-value>
+     <default-value>0</default-value>
      <description>Use portable build of wxex library?</description>
   </option>
         
@@ -54,15 +54,19 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set var="VAR_PORTABLE" cond="PORTABLE=='0'">0</set>
   
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">1</set>
+  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'">0</set>
+  
   <set var="VAR_USE_OTL" cond="USE_OTL=='1'">1</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='0'">0</set>
+  
   <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">1</set>
+  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='0'">0</set>
 
   <!-- libs -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
     <if cond="VAR_PORTABLE=='1'">
       <define>EX_PORTABLE</define>
-      <echo>portable</echo>
     </if>
     <if cond="VAR_USE_OTL=='1'">
       <define>USE_OTL</define>
