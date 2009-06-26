@@ -298,9 +298,14 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <win32-res>../syncodbcquery/src/appl.rc</win32-res>
     <headers>../syncodbcquery/src/appl.h</headers>
+    
     <library>wxexrep</library>
     <library>wxex</library>
+    
+    <install-to>/usr/local/bin/</install-to>
+    
     <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
+    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -315,8 +320,12 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../syncsocketserver/src/appl.cpp</sources>
     <win32-res>../syncsocketserver/src/appl.rc</win32-res>
     <headers>../syncsocketserver/src/appl.h</headers>
+    
     <library>wxexrep</library>
     <library>wxex</library>
+    
+    <install-to>/usr/local/bin/</install-to>
+    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
