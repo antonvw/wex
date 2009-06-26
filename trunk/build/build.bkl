@@ -186,9 +186,12 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/sample/report/appl.cpp</sources>
     <win32-res>../extension/sample/report/appl.rc</win32-res>
     <headers>../extension/sample/report/appl.h</headers>
+    
     <library>wxexrep</library>
     <library>wxex</library>
+    
     <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
+    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -204,8 +207,11 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/test/base/main.cpp</sources>
     <sources>../extension/test/base/test.cpp</sources>
     <headers>../extension/test/base/test.h</headers>
-    <include>/usr/include/cppunit</include>
+    
+    <include>/usr/include/cppunit ../extension/include</include>
+    
     <library>wxex</library>
+    
     <sys-lib>cppunit</sys-lib>
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
@@ -220,10 +226,15 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <exe id="ex-test-app" template="wxgui,wxlike">
     <sources>../extension/test/app/main.cpp</sources>
     <sources>../extension/test/app/test.cpp</sources>
+    
     <headers>../extension/test/app/test.h</headers>
-    <include>/usr/include/cppunit</include>
+    
+    <include>/usr/include/cppunit ../extension/include</include>
+    
     <library>wxex</library>
+    
     <sys-lib>cppunit</sys-lib>
+    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -238,10 +249,13 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/test/report/main.cpp</sources>
     <sources>../extension/test/report/test.cpp</sources>
     <headers>../extension/test/report/test.h</headers>
-    <include>/usr/include/cppunit</include>
+    
+    <include>/usr/include/cppunit ../extension/include</include>
     <library>wxexrep</library>
     <library>wxex</library>
+    
     <sys-lib>cppunit</sys-lib>
+    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
