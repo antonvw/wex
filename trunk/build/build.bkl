@@ -75,6 +75,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
       <define>_CRT_SECURE_NO_WARNINGS</define>
       <define>_CRT_NONSTDC_NO_WARNINGS</define>
     </if>
+    
+    <include>../extension/include</include>
+    
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/base.cpp</sources>
     <sources>../extension/src/config.cpp</sources>
@@ -134,6 +137,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <if cond="VAR_USE_OTL=='1'">
       <define>USE_OTL</define>
     </if>
+    
+    <include>../extension/include</include>
+    
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
