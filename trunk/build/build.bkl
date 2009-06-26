@@ -260,18 +260,26 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <if cond="VAR_USE_NOTEBOOK_IMAGE=='1'">
       <define>USE_NOTEBOOK_IMAGE</define>
     </if>
+    
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
+    
     <win32-res>../syncedit/src/appl.rc</win32-res>
+    
     <headers>../syncedit/src/appl.h</headers>
     <headers>../syncedit/src/frame.h</headers>
     <headers>../syncedit/src/support.h</headers>
+    
+    <install-to>/usr/local/bin/</install-to>
+    
     <library>wxexrep</library>
     <library>wxex</library>
+    
     <if cond="PLATFORM_UNIX=='1'">
       <sys-lib>odbc</sys-lib>
     </if>
+    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
