@@ -200,7 +200,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <!-- tests -->
-  <exe id="ex-test-base" template="wxgui,wxlike">
+  <exe id="ex-test-base" template="wxlike">
+    <sources>../extension/test/base/main.cpp</sources>
     <sources>../extension/test/base/test.cpp</sources>
     <headers>../extension/test/base/test.h</headers>
     <include>/usr/include/cppunit</include>
@@ -217,6 +218,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="ex-test-app" template="wxgui,wxlike">
+    <sources>../extension/test/app/main.cpp</sources>
     <sources>../extension/test/app/test.cpp</sources>
     <headers>../extension/test/app/test.h</headers>
     <include>/usr/include/cppunit</include>
@@ -233,6 +235,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="ex-test-report" template="wxgui,wxlike">
+    <sources>../extension/test/report/main.cpp</sources>
     <sources>../extension/test/report/test.cpp</sources>
     <headers>../extension/test/report/test.h</headers>
     <include>/usr/include/cppunit</include>
