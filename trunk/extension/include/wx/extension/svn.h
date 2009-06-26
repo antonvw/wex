@@ -27,6 +27,7 @@ enum wxExSVNType
   SVN_HELP,   ///< svn help
   SVN_INFO,   ///< svn info
   SVN_LOG,    ///< svn log
+  SVN_REVERT, ///< svn revert
   SVN_STAT,   ///< svn stat
   SVN_UPDATE, ///< svn update
 };

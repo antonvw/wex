@@ -190,6 +190,7 @@ wxExSVNType wxExSVN::GetType(int command_id) const
     case ID_EDIT_SVN_HELP: return SVN_HELP; break;
     case ID_EDIT_SVN_INFO: return SVN_INFO; break;
     case ID_EDIT_SVN_LOG: return SVN_LOG; break;
+    case ID_EDIT_SVN_REVERT: return SVN_REVERT; break;
     case ID_EDIT_SVN_STAT: return SVN_STAT; break;
     case ID_EDIT_SVN_UPDATE: return SVN_UPDATE; break;
     default:
@@ -210,6 +211,7 @@ void wxExSVN::Initialize()
     case SVN_HELP:   m_Caption = "SVN Help"; break;
     case SVN_INFO:   m_Caption = "SVN Info"; break;
     case SVN_LOG:    m_Caption = "SVN Log"; break;
+    case SVN_REVERT: m_Caption = "SVN Revert"; break;
     case SVN_STAT:   m_Caption = "SVN Stat"; break;
     case SVN_UPDATE: m_Caption = "SVN Update"; break;
     default:
