@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 Name:      build.bkl
-Purpose:   Bakefile for wxextension libraries
+Purpose:   Bakefile for wxextension libraries, samples, tests, and applications
 Author:    Anton van Wezenbeek
 Created:   2009-06-17
 RCS-ID:    $Id$
@@ -62,7 +62,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">1</set>
   <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='0'">0</set>
 
-  <!-- libs -->
+  <!-- libraries -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
     <if cond="VAR_PORTABLE=='1'">
