@@ -123,7 +123,8 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckCommentSyntax(
     }
   }
 
-  if (text.StartsWith(syntax_begin) || text.StartsWith(syntax_end))
+  if ( syntax_begin.StartsWith(text) || 
+      (!syntax_end.empty() && syntax_end.StartsWith(text)))
   {
     return COMMENT_INCOMPLETE;
   }
@@ -444,64 +445,60 @@ bool wxExTextFile::ParseLine(const wxString& line)
     {
       if (line.length() == 0) continue;
 
+      if (i == 0) 
+      {
+        codeword = line[i];
+        continue;
+      }
+
       const size_t max_check_size = 
         m_FileNameStatistics.GetLexer().GetCommentBegin().Length();
       const size_t check_size = (i > max_check_size ? max_check_size: i);
 
-      if (i >= check_size) 
+      const wxString text = line.substr(i - check_size, check_size);
+
+      switch (CheckForComment(text))
       {
-        const wxString text = line.substr(i - check_size, check_size);
-
-        switch (CheckForComment(text))
-        {
-        case COMMENT_BEGIN:
-          if (!m_IsCommentStatement) CommentStatementStart();
-          break;
-
-        case COMMENT_END:
-          CommentStatementEnd();
-          break;
-
-        case COMMENT_BOTH:
-          !m_IsCommentStatement ? CommentStatementStart(): CommentStatementEnd();
-          break;
-
-        case COMMENT_NONE:
-          if (line[i] > 0 && !isspace(line[i]) && !m_IsCommentStatement)
-          {
-            line_contains_code = true;
-
-            if (!IsCodewordSeparator(line[i]))
-            {
-              if (!sequence)
-              {
-                if (m_Tool.IsCount())
-                {
-                  GetStatisticElements().Inc(_("Words Of Code"));
-                }
-
-                sequence = true;
-              }
-
-              codeword += line[i];
-            }
-          }
+      case COMMENT_BEGIN:
+        if (!m_IsCommentStatement) CommentStatementStart();
         break;
 
-        case COMMENT_INCOMPLETE:
-          break;
+      case COMMENT_END:
+        CommentStatementEnd();
+        break;
 
-        default: 
-          wxFAIL;
-          break;
-        }
-      }
-      else
-      {
-        if (!m_IsCommentStatement)
+      case COMMENT_BOTH:
+        !m_IsCommentStatement ? CommentStatementStart(): CommentStatementEnd();
+        break;
+
+      case COMMENT_NONE:
+        if (!isspace(line[i]) && !m_IsCommentStatement)
         {
-          codeword += line[i];
+          line_contains_code = true;
+
+          if (!IsCodewordSeparator(line[i]))
+          {
+            if (!sequence)
+            {
+              if (m_Tool.IsCount())
+              {
+                GetStatisticElements().Inc(_("Words Of Code"));
+              }
+
+              sequence = true;
+            }
+
+            codeword += line[i];
+          }
         }
+      break;
+
+      case COMMENT_INCOMPLETE:
+        break;
+
+      default: 
+        wxFAIL;
+        break;
       }
 
       if (sequence && (IsCodewordSeparator(line[i]) || i == line.length() - 1))
