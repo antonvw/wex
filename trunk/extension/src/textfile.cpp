@@ -193,13 +193,9 @@ void wxExTextFile::CommentStatementEnd()
 {
   m_IsCommentStatement = false;
 
-  // Remove the end of comment characters from the buffer.
-  // The special function CommentEndDetected is used here,
-  // as we might already have parsed a new line, and syntax type is
-  // already reset, whereas in the buffer the really used end
-  // of comment characters should be removed.
+  // Remove the end of comment characters (as last used) from the buffer.
   m_Comments = m_Comments.Left(
-    m_Comments.length() - CommentEndDetected().length());
+    m_Comments.length() - CommentEnd().length());
 }
 
 void wxExTextFile::CommentStatementStart()

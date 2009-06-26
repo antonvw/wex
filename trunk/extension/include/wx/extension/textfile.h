@@ -165,14 +165,8 @@ private:
       m_FileNameStatistics.GetLexer().GetCommentBegin() :
       m_FileNameStatistics.GetLexer().GetCommentBegin2();};
 
-  /// Gets the actual end of comment, depending on the syntax type.
-  const wxString CommentEnd() const {
-    return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE ) ?
-      m_FileNameStatistics.GetLexer().GetCommentEnd() :
-      m_FileNameStatistics.GetLexer().GetCommentEnd2();};
-
   /// Gets the last end of comment detected, depending on the last syntax type.
-  const wxString CommentEndDetected() const {
+  const wxString CommentEnd() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
       m_FileNameStatistics.GetLexer().GetCommentEnd() :
       m_FileNameStatistics.GetLexer().GetCommentEnd2();};
