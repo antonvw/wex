@@ -203,7 +203,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <!-- tests -->
-  <exe id="ex-test-base" template="wxlike">
+  <exe id="ex-test-base" template="wxgui,wxlike">
     <sources>../extension/test/base/main.cpp</sources>
     <sources>../extension/test/base/test.cpp</sources>
     <headers>../extension/test/base/test.h</headers>
