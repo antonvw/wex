@@ -208,7 +208,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/test/base/test.cpp</sources>
     <headers>../extension/test/base/test.h</headers>
     
-    <include>/usr/include/cppunit ../extension/include</include>
+    <include>/usr/include/cppunit</include>
+    <include>../extension/include</include>
     
     <library>wxex</library>
     
@@ -229,7 +230,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <headers>../extension/test/app/test.h</headers>
     
-    <include>/usr/include/cppunit ../extension/include</include>
+    <include>/usr/include/cppunit</include>
+    <include>../extension/include</include>
     
     <library>wxex</library>
     
@@ -250,7 +252,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/test/report/test.cpp</sources>
     <headers>../extension/test/report/test.h</headers>
     
-    <include>/usr/include/cppunit ../extension/include</include>
+    <include>/usr/include/cppunit</include>
+    <include>../extension/include</include>
+    
     <library>wxexrep</library>
     <library>wxex</library>
     
