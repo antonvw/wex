@@ -149,6 +149,8 @@ bool wxExFile::FileSave()
 
 bool wxExFile::FileSaveAs()
 {
+  wxASSERT(wxTheApp != NULL);
+
   wxFileDialog dlg(
     wxTheApp->GetTopWindow(),
     m_Message,

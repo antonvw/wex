@@ -308,6 +308,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 
   if (tool.IsReportType())
   {
+    wxASSERT(wxTheApp != NULL);
     wxWindow* window = wxTheApp->GetTopWindow();
     m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
 

@@ -131,6 +131,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 
 bool wxExSTCWithFrame::Initialize()
 {
+  wxASSERT(wxTheApp != NULL);
   wxWindow* window = wxTheApp->GetTopWindow();
   m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
 

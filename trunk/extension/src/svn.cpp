@@ -75,6 +75,8 @@ int wxExSVN::Execute(bool show_dialog)
       v.push_back(wxExConfigItem(_("Subcommand")));
     }
 
+    wxASSERT(wxTheApp != NULL);
+
     if (wxExConfigDialog(wxTheApp->GetTopWindow(),
       wxExApp::GetConfig(),
       v,
