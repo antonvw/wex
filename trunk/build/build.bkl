@@ -320,6 +320,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <win32-res>../syncodbcquery/src/appl.rc</win32-res>
     <headers>../syncodbcquery/src/appl.h</headers>
     
+    <include>../extension/include</include>
+
     <library>wxexrep</library>
     <library>wxex</library>
     
