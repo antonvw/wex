@@ -20,6 +20,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <include file="presets/wx.bkl"/>
   <set-wxlike-builddir/>
   
+  <set var="DEFAULT_CXXFLAGS">-Wno-write-strings</set>
+  
   <!-- options -->
   <option name="PORTABLE">
      <values>0,1</values>
