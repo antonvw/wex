@@ -4,9 +4,9 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#define wxEX_VERSION_STRING "wxextension v.0.9.0"
+#define wxEX_VERSION_STRING "wxextension v0.9.0"
