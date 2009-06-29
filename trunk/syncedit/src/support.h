@@ -14,18 +14,14 @@
 
 #include <wx/extension/report/report.h>
 
-/// Adds a toolbar and checkboxes to wxExFrameWithHistory.
 class Frame : public wxExFrameWithHistory
 {
 public:
-  /// Constructor.
   Frame(const wxString& project_wildcard);
 
 #if wxUSE_CHECKBOX
-  /// Gets hex mode.
   wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
 
-  /// Gets sync mode.
   wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
 #endif
 private:

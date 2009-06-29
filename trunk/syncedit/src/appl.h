@@ -18,7 +18,6 @@
 #endif
 #include <wx/extension/extension.h>
 
-/// Adds initialization to wxExApp.
 class Application : public wxExApp
 {
 private:
