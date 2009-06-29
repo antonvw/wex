@@ -53,9 +53,7 @@ public:
       return wxDIR_STOP;
     }
 
-    wxFileName file(filename);
-
-    if (wxExMatchesOneOf(file, m_Dir.GetFileSpec()))
+    if (wxExMatchesOneOf(filename, m_Dir.GetFileSpec()))
     {
       m_Dir.OnFile(filename);
     }
