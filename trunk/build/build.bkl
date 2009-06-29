@@ -295,6 +295,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <win32-res>../syncedit/src/appl.rc</win32-res>
     
     <headers>../syncedit/src/appl.h</headers>
+    <headers>../syncedit/src/defs.h</headers>
     <headers>../syncedit/src/frame.h</headers>
     <headers>../syncedit/src/support.h</headers>
     
