@@ -69,7 +69,8 @@ bool wxExOTL::Logon(
       connect.c_str(),
       1); // autocommit-flag
 
-    return true;
+    // We cannot use rlogon return value, that is a void.
+    return IsConnected();
   }
   catch (otl_exception& p)
   {
