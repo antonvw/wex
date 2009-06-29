@@ -300,6 +300,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../syncedit/src/support.h</headers>
     <headers>../syncedit/src/version.h</headers>
     
+    <include>../extension/include</include>
+    
     <install-to>/usr/local/bin/</install-to>
     
     <library>wxexrep</library>
@@ -351,6 +353,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../syncsocketserver/src/appl.cpp</sources>
     <win32-res>../syncsocketserver/src/appl.rc</win32-res>
     <headers>../syncsocketserver/src/appl.h</headers>
+    
+    <include>../extension/include</include>
     
     <library>wxexrep</library>
     <library>wxex</library>
