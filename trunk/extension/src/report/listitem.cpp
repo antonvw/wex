@@ -16,7 +16,9 @@
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
-wxExListItemWithFileName::wxExListItemWithFileName(wxExListView* lv, const int itemnumber)
+wxExListItemWithFileName::wxExListItemWithFileName(
+  wxExListView* lv, 
+  const int itemnumber)
   : wxExListItem(lv, itemnumber)
   , m_Statistics(
       (!GetColumnText(_("File Name"), false).empty() ?
@@ -108,7 +110,9 @@ void wxExListItemWithFileName::Update()
   // SetData does not work, as list items are constructed/destructed a lot.
   GetListView()->SetItemData(GetId(), m_Statistics.GetStat().IsReadOnly());
 
-  const int fontstyle = (m_Statistics.GetStat().IsReadOnly() ? wxFONTSTYLE_ITALIC: wxFONTSTYLE_NORMAL);
+  const int fontstyle = (m_Statistics.GetStat().IsReadOnly() ? 
+    wxFONTSTYLE_ITALIC: 
+    wxFONTSTYLE_NORMAL);
 
   wxFont font(
     wxExApp::GetConfig(_("List Font") + "/Size", 10),
