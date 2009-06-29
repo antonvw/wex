@@ -298,6 +298,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../syncedit/src/defs.h</headers>
     <headers>../syncedit/src/frame.h</headers>
     <headers>../syncedit/src/support.h</headers>
+    <headers>../syncedit/src/version.h</headers>
     
     <install-to>/usr/local/bin/</install-to>
     
