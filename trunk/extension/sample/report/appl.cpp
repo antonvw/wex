@@ -11,7 +11,6 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/extension/report/report.h>
 #include "appl.h"
 #ifndef __WXMSW__
 #include "appl.xpm"

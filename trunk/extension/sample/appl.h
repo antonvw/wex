@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -36,7 +36,10 @@ class wxExSampleDir: public wxExDir
 {
 public:
   /// Constructor.
-  wxExSampleDir(const wxString& fullpath, const wxString& findfiles, wxExGrid* grid);
+  wxExSampleDir(
+    const wxString& fullpath, 
+    const wxString& findfiles, 
+    wxExGrid* grid);
 private:
   /// Override the OnFile.
   virtual void OnFile(const wxString& file);
@@ -63,7 +66,7 @@ private:
   wxExSTCShell* m_STCShell; ///< an stc shell
   wxExSTC* m_STC;           ///< an stc
 
-  long m_FlagsSTC;        ///< keep current flags
+  long m_FlagsSTC;          ///< keep current flags
   wxExStatistics <long> m_Statistics; ///< keep some statistics
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)

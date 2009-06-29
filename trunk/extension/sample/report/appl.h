@@ -11,6 +11,7 @@
 
 #include <wx/treectrl.h>
 #include <wx/generic/dirctrlg.h>
+#include <wx/extension/report/report.h>
 #include <wx/extension/notebook.h>
 
 /// Derive your application from wxExApp.
@@ -19,6 +20,7 @@ class wxExRepSampleApp: public wxExApp
 public:
   wxExRepSampleApp() {}
 private:
+  /// Override the OnInit.
   virtual bool OnInit();
   DECLARE_NO_COPY_CLASS(wxExRepSampleApp)
 };
