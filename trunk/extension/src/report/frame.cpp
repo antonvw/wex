@@ -341,7 +341,7 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
     return false;
   }
 
-  if ((m_Process = new wxExProcessWithListView(listview, command)) != NULL)
+  if ((m_Process = new wxExProcessWithListView(this, listview, command)) != NULL)
   {
     if (m_Process->Execute() <= 0)
     {

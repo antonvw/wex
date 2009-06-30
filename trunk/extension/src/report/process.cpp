@@ -15,6 +15,7 @@
 #include <wx/extension/configdialog.h>
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
@@ -25,9 +26,11 @@ END_EVENT_TABLE()
 wxString wxExProcessWithListView::m_Command = "";
 
 wxExProcessWithListView::wxExProcessWithListView(
+  wxExFrameWithHistory* frame,
   wxExListViewFile* listview,
   const wxString& command)
   : wxProcess(NULL, -1)
+  , m_Frame(frame)
   , m_Owner(listview)
   , m_Timer(this)
 {
@@ -208,7 +211,7 @@ void wxExProcessWithListView::OnTerminate(
   wxExFrame::StatusText(_("Ready"));
 
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
-  wxPostEvent(m_Owner, event);
+  wxPostEvent(m_Frame, event);
 }
 
 void wxExProcessWithListView::OnTimer(wxTimerEvent& event)
