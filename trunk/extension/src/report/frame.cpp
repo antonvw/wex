@@ -32,8 +32,6 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExFrameWithHistory::OnUpdateUI)
 END_EVENT_TABLE()
 
-wxExProcessWithListView* wxExFrameWithHistory::m_Process = NULL;
-
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
@@ -326,7 +324,7 @@ bool wxExFrameWithHistory::OpenFile(
   return false;
 }
 
-bool wxExFrameWithHistory::ProcessIsRunning()
+bool wxExFrameWithHistory::ProcessIsRunning() const
 {
   return m_Process != NULL && wxProcess::Exists(m_Process->GetPid());
 }

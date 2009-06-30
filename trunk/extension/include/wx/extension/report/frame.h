@@ -98,7 +98,7 @@ public:
     long flags = 0);
 
   /// Returns true if a process is running.
-  static bool ProcessIsRunning();
+  bool ProcessIsRunning() const;
 
   /// Runs the process.
   /// Outputs to a listview LIST_PROCESS.
@@ -107,7 +107,7 @@ public:
 
   /// Stops the process.
   /// Return true if process could be stopped, or if it was not running at all.
-  static bool ProcessStop();
+  bool ProcessStop();
 
   /// Updates file history.
   void SetRecentFile(const wxString& file);
@@ -143,10 +143,9 @@ private:
   wxFileHistory m_FileHistory;
   wxExListViewFile* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
+  wxExProcessWithListView* m_Process;
 
   const wxString m_ProjectWildcard;
-
-  static wxExProcessWithListView* m_Process;
 
   DECLARE_EVENT_TABLE()
 };
