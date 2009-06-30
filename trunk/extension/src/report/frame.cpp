@@ -22,7 +22,10 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(wxID_OPEN, wxExFrameWithHistory::OnCommand)
-  EVT_MENU_RANGE(ID_EXTENSION_REPORT_LOWEST, ID_EXTENSION_REPORT_HIGHEST, wxExFrameWithHistory::OnCommand)
+  EVT_MENU_RANGE(
+    ID_EXTENSION_REPORT_LOWEST, 
+    ID_EXTENSION_REPORT_HIGHEST, 
+    wxExFrameWithHistory::OnCommand)
   EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrameWithHistory::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExFrameWithHistory::OnUpdateUI)
 END_EVENT_TABLE()
@@ -47,7 +50,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   {
     for (int i = maxProjects - 1 ; i >=0 ; i--)
     {
-      SetRecentProject(wxExApp::GetConfig(wxString::Format("RecentProject%d", i)));
+      SetRecentProject(
+        wxExApp::GetConfig(wxString::Format("RecentProject%d", i)));
     }
   }
 
@@ -119,7 +123,10 @@ bool wxExFrameWithHistory::DialogProjectOpen(long style)
   return true;
 }
 
-void wxExFrameWithHistory::DoRecent(wxFileHistory& history, int index, long flags)
+void wxExFrameWithHistory::DoRecent(
+  wxFileHistory& history, 
+  int index, 
+  long flags)
 {
   if (history.GetCount() > 0)
   {
@@ -128,7 +135,8 @@ void wxExFrameWithHistory::DoRecent(wxFileHistory& history, int index, long flag
     if (!wxFileExists(file))
     {
       history.RemoveFileFromHistory(index);
-      wxLogMessage(_("Removed not existing file: %s from history"), file.c_str());
+      wxLogMessage(_("Removed not existing file: %s from history"), 
+        file.c_str());
     }
     else
     {
@@ -335,7 +343,9 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
   }
 }
 
-void wxExFrameWithHistory::SetTitle(const wxString& file, const wxString& project)
+void wxExFrameWithHistory::SetTitle(
+  const wxString& file, 
+  const wxString& project)
 {
   // If one of the strings is empty, try to get a better string.
   wxString better_file(file);
@@ -392,13 +402,18 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListViewFile* list)
   // Add all items from FileHistory.
   for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
   {
-    const wxString file = m_FileHistory.GetHistoryFile(i);
-    wxExListItemWithFileName item(m_FileHistoryList, file);
+    wxExListItemWithFileName item(
+      m_FileHistoryList, 
+      m_FileHistory.GetHistoryFile(i));
+
     item.Insert();
   }
 }
 
-void wxExFrameWithHistory::UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history)
+void wxExFrameWithHistory::UseHistory(
+  wxWindowID id, 
+  wxMenu* menu, 
+  wxFileHistory& history)
 {
   wxMenu* submenu = new wxMenu;
   menu->Append(id, _("Open &Recent"), submenu);
