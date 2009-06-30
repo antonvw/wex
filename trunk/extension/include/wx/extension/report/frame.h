@@ -16,6 +16,7 @@
 #include <wx/extension/base.h>
 
 class wxExListViewFile;
+class wxExProcessWithListView;
 class wxExSTCWithFrame;
 
 /// Adds file and project history support to wxExManagedFrame.
@@ -96,6 +97,18 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
+  /// Returns true if a process is running.
+  static bool ProcessIsRunning();
+
+  /// Runs the process.
+  /// Outputs to a listview LIST_PROCESS.
+  /// Returns true if the process executes.
+  bool ProcessRun(const wxString& command = wxEmptyString);
+
+  /// Stops the process.
+  /// Return true if process could be stopped, or if it was not running at all.
+  static bool ProcessStop();
+
   /// Updates file history.
   void SetRecentFile(const wxString& file);
 
@@ -132,6 +145,8 @@ private:
   wxFileHistory m_ProjectHistory;
 
   const wxString m_ProjectWildcard;
+
+  static wxExProcessWithListView* m_Process;
 
   DECLARE_EVENT_TABLE()
 };

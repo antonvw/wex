@@ -249,7 +249,7 @@ Frame::Frame(const wxString& project_wildcard)
 
 bool Frame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  if (wxExListViewFile::ProcessIsRunning())
+  if (ProcessIsRunning())
     return false;
   else if (id == NOTEBOOK_EDITORS)
     return ((wxExSTCWithFrame*)page)->Continue();

@@ -15,6 +15,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
+#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 
@@ -22,6 +23,7 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(wxID_OPEN, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     ID_EXTENSION_REPORT_LOWEST, 
     ID_EXTENSION_REPORT_HIGHEST, 
@@ -29,6 +31,8 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrameWithHistory::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExFrameWithHistory::OnUpdateUI)
 END_EVENT_TABLE()
+
+wxExProcessWithListView* wxExFrameWithHistory::m_Process = NULL;
 
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   wxWindowID id,
@@ -168,7 +172,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
-    if (wxExListViewFile::ProcessIsRunning())
+    if (ProcessIsRunning())
     {
       wxLogMessage(_("Process is running"));
       event.Veto();
@@ -176,7 +180,8 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
     }
   }
 
-  wxExListViewFile::CleanUp();
+  wxDELETE(m_Process);
+
 #ifdef EMBEDDED_SQL
   wxExTextFileWithListView::CleanUp();
 #endif
@@ -233,6 +238,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     case ID_SPECIAL_FIND_IN_FILES:
       wxExFindInFiles();
       break;
+
+    case ID_TERMINATED_PROCESS:
+      wxBell();
+      wxDELETE(m_Process);
+    break;
 
     case ID_VIEW_STATUSBAR:
       GetStatusBar()->Show(!GetStatusBar()->IsShown());
@@ -314,6 +324,61 @@ bool wxExFrameWithHistory::OpenFile(
   }
 
   return false;
+}
+
+bool wxExFrameWithHistory::ProcessIsRunning()
+{
+  return m_Process != NULL && wxProcess::Exists(m_Process->GetPid());
+}
+
+bool wxExFrameWithHistory::ProcessRun(const wxString& command)
+{
+  wxASSERT(m_Process == NULL);
+
+  wxExListViewFile* listview = Activate(wxExListViewFile::LIST_PROCESS);
+
+  if (listview == NULL) 
+  {
+    wxFAIL;
+    return false;
+  }
+
+  if ((m_Process = new wxExProcessWithListView(listview, command)) != NULL)
+  {
+    if (m_Process->Execute() <= 0)
+    {
+      wxDELETE(m_Process);
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool wxExFrameWithHistory::ProcessStop()
+{
+  if (ProcessIsRunning())
+  {
+    if (wxProcess::Kill(m_Process->GetPid(), wxSIGKILL) == wxKILL_ERROR)
+    {
+      // Even if the process could not be killed, set it to NULL, as it is deleted.
+      wxFAIL;
+      m_Process = NULL;
+      return false;
+    }
+    else
+    {
+      m_Process = NULL;
+      wxExFrame::StatusText(_("Stopped"));
+      return true;
+    }
+  }
+
+  return true;
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)

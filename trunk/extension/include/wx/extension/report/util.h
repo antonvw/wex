@@ -108,7 +108,7 @@ bool wxExFindOtherFileName(
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
 /// Run make on specified makefile.
-bool wxExMake(const wxFileName& makefile);
+bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
 
 /// Opens files and updates history, both for files and projects.
 void wxExOpenFiles(wxExFrameWithHistory* frame,

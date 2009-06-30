@@ -210,9 +210,9 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_PRINT_SETUP: wxExApp::GetPrinter()->PageSetup(); break;
 
   case wxID_STOP:
-    if (wxExListViewFile::ProcessIsRunning())
+    if (ProcessIsRunning())
     {
-      wxExListViewFile::ProcessStop();
+      ProcessStop();
     }
     break;
 
@@ -221,7 +221,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_PROCESS_RUN:
-    wxExListViewFile::ProcessRun();
+    ProcessRun();
     break;
 
   default: 

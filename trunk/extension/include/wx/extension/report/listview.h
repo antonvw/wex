@@ -16,7 +16,6 @@
 #include <wx/extension/tool.h>
 
 class wxExFrameWithHistory;
-class wxExProcessWithListView;
 
 /// Combines wxExListView and wxExFile, giving you a list control with file
 /// synchronization support. Further it adds processing support.
@@ -104,9 +103,6 @@ public:
   /// Returns colunm text for specified item.
   virtual const wxString ItemToText(int item_number);
 
-  // Called by wxExFrameWithHistory::OnClose. Not for doxygen.
-  static void CleanUp();
-
   /// Gets the list type.
   const ListType GetType() const {return m_Type;};
 
@@ -118,18 +114,6 @@ public:
 
   /// Returns list type from tool id.
   static int GetTypeTool(const wxExTool& tool);
-
-  /// Returns true if a process is running.
-  static bool ProcessIsRunning();
-
-  /// Runs the process.
-  /// Outputs to a listview LIST_PROCESS.
-  /// Returns true if the process executes.
-  static bool ProcessRun(const wxString& command = wxEmptyString);
-
-  /// Stops the process.
-  /// Return true if process could be stopped, or if it was not running at all.
-  static bool ProcessStop();
 protected:
   void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
@@ -143,8 +127,6 @@ private:
   void Initialize(const wxExLexer* lexer);
   bool ItemActivated(int item_number);
   void RunItems(const wxExTool& tool);
-
-  static wxExProcessWithListView* m_Process;
 
   bool m_ContentsChanged;
   bool m_ItemUpdated;

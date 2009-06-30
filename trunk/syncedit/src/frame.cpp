@@ -498,8 +498,8 @@ and saved in the same directory as where the executable is."));
     }
     break;
 
-  case wxID_EXECUTE: wxExListViewFile::ProcessRun(); break;
-  case wxID_STOP: wxExListViewFile::ProcessStop(); break;
+  case wxID_EXECUTE: ProcessRun(); break;
+  case wxID_STOP: ProcessStop(); break;
 
   case ID_EDIT_HEX_MODE:
 #if wxUSE_CHECKBOX
@@ -653,7 +653,7 @@ and saved in the same directory as where the executable is."));
     break;
 
   case ID_TREE_OPEN: OpenFile(wxExFileName(m_DirCtrl->GetFilePath())); break;
-  case ID_TREE_RUN_MAKE: wxExMake(wxFileName(m_DirCtrl->GetFilePath())); break;
+  case ID_TREE_RUN_MAKE: wxExMake(this, wxFileName(m_DirCtrl->GetFilePath())); break;
 
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
@@ -735,9 +735,9 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     {
     case wxID_EXECUTE: 
       event.Enable( wxExProcessWithListView::IsSelected() &&
-                   !wxExListViewFile::ProcessIsRunning()); 
+                   !ProcessIsRunning()); 
       break;
-    case wxID_STOP: event.Enable(wxExListViewFile::ProcessIsRunning()); break;
+    case wxID_STOP: event.Enable(ProcessIsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
     case ID_ALL_STC_SAVE:

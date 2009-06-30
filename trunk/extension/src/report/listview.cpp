@@ -17,7 +17,6 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
@@ -69,15 +68,12 @@ BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
-  EVT_MENU(ID_TERMINATED_PROCESS, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewFile::OnCommand)
   EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
   EVT_RIGHT_DOWN(wxExListViewFile::OnMouse)
 END_EVENT_TABLE()
-
-wxExProcessWithListView* wxExListViewFile::m_Process = NULL;
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
   ListType type,
@@ -315,11 +311,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.AppendTools();
   }
-}
-
-void wxExListViewFile::CleanUp()
-{
-  wxDELETE(m_Process);
 }
 
 void wxExListViewFile::DeleteDoubles()
@@ -858,8 +849,11 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_RUN_MAKE:
   {
-    const wxExListItemWithFileName item(this, GetNextSelected(-1));
-    wxExMake(item.GetFileName());
+    if (m_Frame != NULL)
+    {
+      const wxExListItemWithFileName item(this, GetNextSelected(-1));
+      wxExMake(m_Frame, item.GetFileName());
+    }
   }
   break;
 
@@ -868,11 +862,6 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     RBSFile(this).GenerateDialog();
     break;
 #endif
-
-  case ID_TERMINATED_PROCESS:
-    wxBell();
-    wxDELETE(m_Process);
-    break;
 
   default: 
     wxFAIL;
@@ -1021,72 +1010,6 @@ const wxString wxExListViewFile::PrintHeader() const
   {
     return GetTypeDescription() + " " + wxDateTime::Now().Format();
   }
-}
-
-bool wxExListViewFile::ProcessIsRunning()
-{
-  return m_Process != NULL && wxProcess::Exists(m_Process->GetPid());
-}
-
-bool wxExListViewFile::ProcessRun(const wxString& command)
-{
-  wxASSERT(m_Process == NULL);
-
-  // This is a static method, we cannot use m_Frame here.
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxExFrameWithHistory* frame= wxDynamicCast(window, wxExFrameWithHistory);
-
-  if (frame == NULL) 
-  {
-    wxFAIL;
-    return false;
-  }
-
-  wxExListViewFile* listview = frame->Activate(LIST_PROCESS);
-
-  if (listview == NULL) 
-  {
-    wxFAIL;
-    return false;
-  }
-
-  if ((m_Process = new wxExProcessWithListView(listview, command)) != NULL)
-  {
-    if (m_Process->Execute() <= 0)
-    {
-      wxDELETE(m_Process);
-      return false;
-    }
-    else
-    {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-bool wxExListViewFile::ProcessStop()
-{
-  if (ProcessIsRunning())
-  {
-    if (wxProcess::Kill(m_Process->GetPid(), wxSIGKILL) == wxKILL_ERROR)
-    {
-      // Even if the process could not be killed, set it to NULL, as it is deleted.
-      wxFAIL;
-      m_Process = NULL;
-      return false;
-    }
-    else
-    {
-      m_Process = NULL;
-      wxExFrame::StatusText(_("Stopped"));
-      return true;
-    }
-  }
-
-  return true;
 }
 
 void wxExListViewFile::RunItems(const wxExTool& tool)
