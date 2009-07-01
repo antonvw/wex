@@ -39,7 +39,7 @@ public:
     : m_db(db)
     , m_TextFile(file)
     , m_Records(0){}
-  int GetRecords() const {return m_Records;};
+  size_t GetRecords() const {return m_Records;};
   bool ExecQuery(const wxString& query);
   static const wxString QueryRunTimeText() {return "QUERY RUN TIME: ";};
 private:
@@ -48,7 +48,7 @@ private:
   otl_stream m_stream;
   wxExTextFile* m_TextFile;
   wxString m_Query;
-  int m_Records;
+  size_t m_Records;
 };
 #endif
 
