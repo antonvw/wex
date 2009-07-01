@@ -63,7 +63,8 @@ bool wxExSampleApp::OnInit()
 }
 
 #if wxUSE_GRID
-wxExSampleDir::wxExSampleDir(const wxString& fullpath, const wxString& findfiles, wxExGrid* grid)
+wxExSampleDir::wxExSampleDir(
+  const wxString& fullpath, const wxString& findfiles, wxExGrid* grid)
   : wxExDir(fullpath, findfiles)
   , m_Grid(grid)
 {
@@ -76,7 +77,8 @@ void wxExSampleDir::OnFile(const wxString& file)
   m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
   m_Grid->SetCellValue(no, 1, file);
 
-  wxExRenderer* renderer = new wxExRenderer(wxExRenderer::CELL_CROSS, *wxGREEN_PEN, *wxRED_PEN);
+  wxExRenderer* renderer = new wxExRenderer(
+    wxExRenderer::CELL_CROSS, *wxGREEN_PEN, *wxRED_PEN);
   m_Grid->SetCellRenderer(no, 0, renderer);
 
   // Let's make these cells readonly and colour them, so we can test
@@ -394,6 +396,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_STC_CONFIG_DLG:
     wxExSTC::ConfigDialog(
+      this,
       _("Editor Options"),
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
     break;
