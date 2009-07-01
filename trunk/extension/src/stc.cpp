@@ -705,9 +705,9 @@ void wxExSTC::Colourise()
 
 // This is a static method, cannot use normal members here.
 int wxExSTC::ConfigDialog(
+  wxWindow* parent,
   const wxString& title,
   long flags,
-  wxWindow* parent,
   wxWindowID id)
 {
   vector<wxExConfigItem> items;

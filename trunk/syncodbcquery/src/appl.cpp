@@ -227,7 +227,8 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_PREFERENCES:
-    wxExSTC::ConfigDialog(_("Editor Options"),
+    wxExSTC::ConfigDialog(this,
+      _("Editor Options"),
       wxExSTC::STC_CONFIG_SIMPLE | wxExSTC::STC_CONFIG_MODELESS);
     break;
 
@@ -250,7 +251,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_OPEN:
-    m_otl.Logon(wxExApp::GetConfig());
+    m_otl.Logon(this, wxExApp::GetConfig());
     m_Shell->SetPrompt((m_otl.IsConnected() ? wxExApp::GetConfig(_("Datasource")): "") + ">");
     break;
 

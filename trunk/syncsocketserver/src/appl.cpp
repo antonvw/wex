@@ -362,9 +362,9 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_PREFERENCES:
-    wxExSTC::ConfigDialog(_("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_SIMPLE,
-      this);
+    wxExSTC::ConfigDialog(this,
+      _("Editor Options"),
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_SIMPLE);
     break;
 
   case ID_SERVER_CONFIG:

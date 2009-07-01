@@ -32,9 +32,9 @@ wxExOTL::~wxExOTL()
 }
 
 bool wxExOTL::Logon(
+  wxWindow* parent,
   wxExConfig* config, 
   int max_items,
-  wxWindow* parent,
   const wxString& title)
 {
   wxASSERT(config != NULL);

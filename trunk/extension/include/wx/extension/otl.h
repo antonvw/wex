@@ -47,9 +47,9 @@ public:
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.
   bool Logon(
+    wxWindow* parent,
     wxExConfig* config, 
     int max_items = 4,
-    wxWindow* parent = wxTheApp->GetTopWindow(),
     const wxString& title = _("Open ODBC Database"));
 
   /// Run the query and return results.

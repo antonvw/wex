@@ -299,7 +299,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
       m_otl.GetConnect().logoff();
     }
 
-    if (!m_otl.Logon(wxExApp::GetConfig()))
+    if (!m_otl.Logon(this, wxExApp::GetConfig()))
     {
       return false;
     }

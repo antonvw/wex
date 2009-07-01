@@ -133,9 +133,9 @@ public:
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in wxExFrame::ConfigDialogApplied.
   static int ConfigDialog(
+    wxWindow* parent,
     const wxString& title = _("Editor Options"),
     long flags = 0,
-    wxWindow* parent = wxTheApp->GetTopWindow(),
     wxWindowID id = wxID_ANY);
 
   /// Sets the configurable parameters to values currently in config.

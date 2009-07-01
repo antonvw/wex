@@ -32,7 +32,7 @@ public:
 
   /// Shows a dialog for getting the purpose for a header.
   int ShowDialog(
-    wxWindow* parent = wxTheApp->GetTopWindow(),
+    wxWindow* parent,
     const wxString& title = _("File Purpose")) const;
 
   /// Shows a dialog, and returns the header if OK.

@@ -528,9 +528,9 @@ and saved in the same directory as where the executable is."));
     }
     break;
   case ID_OPTION_EDITOR:
-    wxExSTC::ConfigDialog(_("Editor Options"),
+    wxExSTC::ConfigDialog(this,
+      _("Editor Options"),
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
-      this,
       event.GetId());
     break;
   case ID_OPTION_LIST_FONT:
