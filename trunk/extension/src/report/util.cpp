@@ -430,13 +430,14 @@ void ComboBox::OnCommand(wxCommandEvent& event)
   // README: The delete key default behaviour does not delete the char right from insertion point.
   // Instead, the event is sent to the editor and a char is deleted from the editor.
   // Therefore implement the delete here.
-  if (event.GetId() == wxID_DELETE)
+  switch (event.GetId())
   {
+  case wxID_DELETE:
     Remove(GetInsertionPoint(), GetInsertionPoint() + 1);
-  }
-  else
-  {
-    event.Skip();
+    break;
+  default:
+    wxFAIL;
+    break;
   }
 }
 
