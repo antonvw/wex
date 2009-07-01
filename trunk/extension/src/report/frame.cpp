@@ -43,6 +43,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   , m_FileHistory(maxFiles, ID_RECENT_FILE_LOWEST)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
+  , m_Process(NULL)
   , m_ProjectWildcard(project_wildcard)
 {
   // There is only support for one history in the config.
