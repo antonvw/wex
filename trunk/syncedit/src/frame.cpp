@@ -567,7 +567,7 @@ and saved in the same directory as where the executable is."));
   case ID_OPTION_LIST_SORT_TOGGLE:
     wxExApp::SetConfig("List/SortMethod", SORT_TOGGLE); break;
 
-  case ID_PROCESS_SELECT: wxExProcessWithListView::ConfigDialog(); break;
+  case ID_PROCESS_SELECT: wxExProcessWithListView::ConfigDialog(this); break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)

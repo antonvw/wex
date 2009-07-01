@@ -130,16 +130,18 @@ bool wxExProcessWithListView::CheckInput()
   return hasInput;
 }
 
-int wxExProcessWithListView::ConfigDialog()
+int wxExProcessWithListView::ConfigDialog(
+  wxWindow* parent,
+  const wxString& title)
 {
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("Process folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
-  const int result = wxExConfigDialog(NULL,
+  const int result = wxExConfigDialog(parent,
     wxExApp::GetConfig(),
     v,
-    _("Select Process")).ShowModal();
+    title).ShowModal();
 
   if (result == wxID_OK)
   {

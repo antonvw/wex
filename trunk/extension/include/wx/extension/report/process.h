@@ -28,7 +28,9 @@ public:
     const wxString& command = wxEmptyString);
 
   /// Shows a config dialog, returns dialog return code.
-  static int ConfigDialog();
+  static int ConfigDialog(
+    wxWindow* parent,
+    const wxString& title = _("Select Process"));
 
   /// Executes the process asynchronously (this call immediately returns).
   /// The process output is added to the listview.
