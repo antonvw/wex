@@ -52,17 +52,19 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </option>
   
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
-  <set var="VAR_PORTABLE" cond="USE_EMBEDDED_SQL=='1'">EX_PORTABLE</set>
-  <set var="VAR_PORTABLE" cond="USE_EMBEDDED_SQL=='0'"></set>
+  <!-- Todo: there is a bug (in bakefile), when making one var of these, bakefile hangs,
+              doing it as is written here, only uses the last line -->
+  <set var="VAR_PORTABLE" cond="PORTABLE=='1'">EX_PORTABLE</set>
+  <set var="VAR_PORTABLE" cond="PORTABLE=='0'"></set>
   
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">USE_EMBEDDED_SQL</set>
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
+  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">USE_EMBEDDED_SQL</set>
   
-  <set var="VAR_USE_OTL" cond="USE_OTL=='0'">USE_OTL</set>
-  <set var="VAR_USE_OTL" cond="USE_OTL=='1'"></set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='1'">USE_OTL</set>
   
-  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">USE_NOTEBOOK_IMAGE</set>
   <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='0'"></set>
+  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">USE_NOTEBOOK_IMAGE</set>
 
   <!-- libraries -->
   <lib id="wxex" template="wx-lib,wxlike">
