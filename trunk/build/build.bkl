@@ -52,27 +52,25 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </option>
   
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
-  <set var="VAR_PORTABLE" cond="PORTABLE=='1'">1</set>
-  <set var="VAR_PORTABLE" cond="PORTABLE=='0'">0</set>
+  <set var="VAR_PORTABLE" cond="USE_EMBEDDED_SQL=='1'">EX_PORTABLE</set>
+  <set var="VAR_PORTABLE" cond="USE_EMBEDDED_SQL=='0'"></set>
   
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">1</set>
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'">0</set>
+  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">USE_EMBEDDED_SQL</set>
+  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
   
-  <set var="VAR_USE_OTL" cond="USE_OTL=='0'">0</set>
-  <set var="VAR_USE_OTL" cond="USE_OTL=='1'">1</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='0'">USE_OTL</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='1'"></set>
   
-  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">1</set>
-  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='0'">0</set>
+  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='1'">USE_NOTEBOOK_IMAGE</set>
+  <set var="VAR_USE_NOTEBOOK_IMAGE" cond="USE_NOTEBOOK_IMAGE=='0'"></set>
 
   <!-- libraries -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
-    <if cond="VAR_PORTABLE=='1'">
-      <define>EX_PORTABLE</define>
-    </if>
-    <if cond="VAR_USE_OTL=='1'">
-      <define>USE_OTL</define>
-    </if>
+    
+    <define>$(VAR_PORTABLE)</define>
+    <define>$(VAR_USE_OTL)</define>
+    
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
       <define>_CRT_NONSTDC_NO_WARNINGS</define>
@@ -130,15 +128,11 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 
   <lib id="wxexrep" template="wx-lib,wxlike">
     <libname>wxexrep09</libname>
-    <if cond="VAR_PORTABLE=='1'">
-      <define>EX_PORTABLE</define>
-    </if>
-    <if cond="VAR_USE_EMBEDDED_SQL=='1'">
-      <define>USE_EMBEDDED_SQL</define>
-    </if>
-    <if cond="VAR_USE_OTL=='1'">
-      <define>USE_OTL</define>
-    </if>
+    
+    <define>$(VAR_PORTABLE)</define>
+    <define>$(VAR_USE_EMBEDDED_SQL)</define>
+    <define>$(VAR_USE_OTL)</define>
+    
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
       <define>_CRT_NONSTDC_NO_WARNINGS</define>
@@ -278,15 +272,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
-    <if cond="VAR_PORTABLE=='1'">
-      <define>EX_PORTABLE</define>
-    </if>
-    <if cond="VAR_USE_OTL=='1'">
-      <define>USE_OTL</define>
-    </if>
-    <if cond="VAR_USE_NOTEBOOK_IMAGE=='1'">
-      <define>USE_NOTEBOOK_IMAGE</define>
-    </if>
+    <define>$(VAR_PORTABLE)</define>
+    <define>$(VAR_USE_OTL)</define>
+    <define>$(VAR_USE_NOTEBOOK_IMAGE)</define>
     
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
@@ -320,12 +308,11 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
   </exe>
-  
+
+  <!-- Todo: only add this target if USE_OTL is defined
+    -->  
   <exe id="syncodbcquery" template="wxgui,wxlike">
-    <if cond="VAR_USE_OTL=='0'">
-      <error>Requires OTL</error>
-    </if>
-    <define>USE_OTL</define>
+    <define>$(VAR_USE_OTL)</define>
     <sources>../syncodbcquery/src/appl.cpp</sources>
     <win32-res>../syncodbcquery/src/appl.rc</win32-res>
     <headers>../syncodbcquery/src/appl.h</headers>
