@@ -57,12 +57,10 @@ private:
 };
 #endif
 
-const int ID_LISTVIEW = 100;
-
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
   EVT_IDLE(wxExListViewFile::OnIdle)
-  EVT_LIST_ITEM_ACTIVATED(ID_LISTVIEW, wxExListViewFile::OnList)
-  EVT_LIST_ITEM_SELECTED(ID_LISTVIEW, wxExListViewFile::OnList)
+  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFile::OnList)
+  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFile::OnList)
   EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
@@ -77,13 +75,14 @@ END_EVENT_TABLE()
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
   ListType type,
+  wxWindowID id,
   long menu_flags,
   const wxExLexer* lexer,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxValidator& validator)
-  : wxExListView(parent, ID_LISTVIEW, pos, size, style, validator, IMAGE_FILE_ICON)
+  : wxExListView(parent, id, pos, size, style, validator, IMAGE_FILE_ICON)
   , wxExFile()
   , m_ContentsChanged(false)
   , m_ItemUpdated(false)
@@ -97,12 +96,13 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
   const wxString& file,
   const wxString& wildcard,
+  wxWindowID id,
   long menu_flags,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxValidator& validator)
-  : wxExListView(parent, ID_LISTVIEW, pos, size, style, validator, IMAGE_FILE_ICON)
+  : wxExListView(parent, id, pos, size, style, validator, IMAGE_FILE_ICON)
   , wxExFile()
   , m_ContentsChanged(false)
   , m_ItemUpdated(false)

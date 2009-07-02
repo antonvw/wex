@@ -53,6 +53,7 @@ public:
   /// Constructor.
   wxExListViewFile(wxWindow* parent,
     ListType type,
+    wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
     const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
@@ -64,6 +65,7 @@ public:
   wxExListViewFile(wxWindow* parent,
     const wxString& file,
     const wxString& wildcard,
+    wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
