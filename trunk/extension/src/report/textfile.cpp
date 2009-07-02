@@ -299,7 +299,10 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
       m_otl.GetConnect().logoff();
     }
 
-    if (!m_otl.Logon(this, wxExApp::GetConfig()))
+	// This is a static function, we cannot use this pointer.
+    wxASSERT(wxTheApp != NULL);
+
+    if (!m_otl.Logon(wxTheApp->GetTopWindow(), wxExApp::GetConfig()))
     {
       return false;
     }
