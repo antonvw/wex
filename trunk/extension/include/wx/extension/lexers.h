@@ -45,6 +45,8 @@ public:
   /// Gets the marker symbol.
   unsigned int GetMarkerSymbol() const {return m_MarkerSymbol;};
 private:
+  // When making const, Visual Studio complains:
+  // error C2582: 'operator =' function is unavailable in 'wxExMarker'
   unsigned int m_MarkerNumber;
   unsigned int m_MarkerSymbol;
   wxColour m_BackgroundColour;
