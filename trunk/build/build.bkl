@@ -168,7 +168,11 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/sample/appl.cpp</sources>
     <win32-res>../extension/sample/appl.rc</win32-res>
     <headers>../extension/sample/appl.h</headers>
+    
+    <include>../extension/include</include>
+    
     <library>wxex</library>
+    
     <!-- not necessary: expat png.lib wxjpeg.lib wxregexu.lib wxtiff.lib 
           see in wx.bkl:
           NOTE: as a reference here is a list of all wxWidgets libraries satisfying
@@ -188,6 +192,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/sample/report/appl.cpp</sources>
     <win32-res>../extension/sample/report/appl.rc</win32-res>
     <headers>../extension/sample/report/appl.h</headers>
+    
+    <include>../extension/include</include>
     
     <library>wxexrep</library>
     <library>wxex</library>
