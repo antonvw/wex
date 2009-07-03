@@ -193,6 +193,7 @@ wxExListViewFile* MDIFrame::AddPage(int type, const wxExLexer* lexer)
     list = new wxExListViewFile(
       m_NotebookWithLists,
       (wxExListViewFile::ListType)type,
+      wxID_ANY,
       wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);
@@ -279,6 +280,7 @@ void MDIFrame::NewFile(bool as_project)
     page = new wxExListViewFile(notebook,
       key,
       project_wildcard,
+      wxID_ANY,
       wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
     SetTitle(wxEmptyString, text);
@@ -969,6 +971,7 @@ bool MDIFrame::OpenFile(
       wxExListViewFile* project = new wxExListViewFile(m_NotebookWithProjects,
         filename.GetFullPath(),
         project_wildcard,
+        wxID_ANY,
         wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
       m_NotebookWithProjects->AddPage(

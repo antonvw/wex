@@ -109,7 +109,13 @@ wxExRepSampleFrame::wxExRepSampleFrame(const wxString& title)
     i < wxExListViewFile::LIST_AFTER_LAST;
     i++)
   {
-    wxExListViewFile* vw = new wxExListViewFile(this, (wxExListViewFile::ListType)i, 0xFF, &lexer); // set all flags
+    wxExListViewFile* vw = new wxExListViewFile(
+      this, 
+      (wxExListViewFile::ListType)i, 
+      wxID_ANY,
+      0xFF, 
+      &lexer); // set all flags
+
     m_NotebookWithLists->AddPage(vw, vw->GetTypeDescription(), vw->GetTypeDescription(), true);
   }
 
