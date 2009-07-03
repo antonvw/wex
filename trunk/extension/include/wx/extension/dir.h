@@ -51,5 +51,6 @@ public:
 private:
   const wxString m_FileSpec;
   const int m_Flags;
+  static bool m_IsBusy;
 };
 #endif

@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/dir.h>
+#include <wx/extension/base.h> // for wxExFrame::StatusText
 #include <wx/extension/util.h>
 
 class wxExDirTraverser: public wxDirTraverser
@@ -77,6 +78,8 @@ private:
   wxExDir& m_Dir;
 };
 
+bool wxExDir::m_IsBusy = false;
+
 wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
   : wxDir(fullpath)
   , m_FileSpec(filespec)
@@ -88,9 +91,21 @@ size_t wxExDir::FindFiles()
 {
   if (!IsOpened()) return 0;
 
+  if (m_IsBusy)
+  {
+    wxExFrame::StatusText(_("Already busy finding files"));
+    return 0;
+  }
+
+  m_IsBusy = true;
+
   // Using m_FileSpec here does not work, as it might
   // contain several specs (*.cpp;*.h), wxDir does not handle that.
   // Do not combine into one, Ubuntu complains.
   wxExDirTraverser traverser(*this);
-  return Traverse(traverser, wxEmptyString, m_Flags);
+  const size_t retValue = Traverse(traverser, wxEmptyString, m_Flags);
+
+  m_IsBusy = false;
+
+  return retValue;
 }
