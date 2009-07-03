@@ -20,10 +20,15 @@ General
 - database is OTL (Version 4.0.197)
     http://otl.sourceforge.net/
 
-- application icons are designed using GIMP (2.6.6)
+- application icons were designed using GIMP (2.6.6)
+    http://www.gimp.org/
     but menu and toolbar bitmaps are from wxWidgets, using wxArtProvider,
     or gtk stock items
-    http://www.gimp.org/
+    
+    they are now used from
+    http://www.famfamfam.com/lab/icons/silk/
+    and converted to ico using
+    http://www.convertico.com/
 
 - API documentation is generated from the sources using Doxygen (1.5.9)
     http://www.stack.nl/~dimitri/doxygen/
