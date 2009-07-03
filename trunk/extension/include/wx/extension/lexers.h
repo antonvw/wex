@@ -69,7 +69,7 @@ public:
   const wxString BuildWildCards(const wxFileName& filename) const;
 
   /// Returns the number of lexers.
-  const size_t Count() const {return m_Lexers.size();};
+  size_t Count() const {return m_Lexers.size();};
 
   /// Finds a lexer specified by a filename.
   const wxExLexer FindByFileName(const wxFileName& filename) const;
