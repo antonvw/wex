@@ -47,7 +47,7 @@ public:
   virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
 
   /// Allows you to cancel the FindFiles.
-  static Cancel() {m_Cancelled = true;}
+  static void Cancel() {m_Cancelled = true;}
 
   /// Check whether operation was cancelled.
   static bool Cancelled() {return m_Cancelled;};
