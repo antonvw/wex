@@ -18,7 +18,7 @@ void wxExReportAppTestFixture::setUp()
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   m_ListView = new wxExListViewFile(frame, wxExListViewFile::LIST_PROCESS);
   m_Dir = new wxExDirWithListView(m_ListView, "./");
-  m_Process = new wxExProcessWithListView(m_ListView, "wc test.h");
+  m_Process = new wxExProcessWithListView(frame, m_ListView, "wc test.h");
   m_STC = new wxExSTCWithFrame(frame, wxExFileName("test.h"));
 }
 
