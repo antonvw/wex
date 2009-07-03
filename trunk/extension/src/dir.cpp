@@ -78,6 +78,7 @@ private:
   wxExDir& m_Dir;
 };
 
+bool wxExDir::m_Cancelled = false;
 bool wxExDir::m_IsBusy = false;
 
 wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
@@ -97,6 +98,7 @@ size_t wxExDir::FindFiles()
     return 0;
   }
 
+  m_Cancelled = false;
   m_IsBusy = true;
 
   // Using m_FileSpec here does not work, as it might

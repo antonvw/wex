@@ -46,6 +46,12 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 
 void wxExFindInFiles(bool replace)
 {
+  if (wxExDir::GetIsBusy())
+  {
+    wxExDir::Cancel();
+    wxExFrame::StatusText(_("Cancelled previous find files"));
+  }
+
   // To initialize the combobox.
   wxExApp::GetConfig(_("In files"), wxExApp::GetLexers()->BuildComboBox());
 

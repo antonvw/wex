@@ -14,8 +14,8 @@
 
 #include <wx/dir.h>
 
-/// Adds FindFiles to a wxDir, by overriding OnFile you can take care
-/// of what to do with the result, and by overriding Cancelled to cancel traversing.
+/// Adds FindFiles to a wxDir, by overriding OnDir and OnFile you can take care
+/// of what to do with the result.
 class wxExDir : public wxDir
 {
 public:
@@ -29,9 +29,6 @@ public:
 
   /// Destructor.
   virtual ~wxExDir() {;};
-
-  /// Allows you to cancel the FindFiles.
-  virtual bool Cancelled() {return false;};
 
   /// Finds matching files.
   /// This results in recursive calls for OnDir and OnFile.
@@ -48,9 +45,19 @@ public:
 
   /// Do something with the file.
   virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
+
+  /// Allows you to cancel the FindFiles.
+  static Cancel() {m_Cancelled = true;}
+
+  /// Check whether operation was cancelled.
+  static bool Cancelled() {return m_Cancelled;};
+
+  /// Is FindFiles already active.
+  static bool GetIsBusy() {return m_IsBusy;};
 private:
   const wxString m_FileSpec;
   const int m_Flags;
+  static bool m_Cancelled;
   static bool m_IsBusy;
 };
 #endif
