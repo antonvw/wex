@@ -334,9 +334,11 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxexrep</library>
     <library>wxex</library>
     
-    <install-to>/usr/local/bin/</install-to>
+    <if cond="PLATFORM_UNIX=='1'">
+      <sys-lib>odbc</sys-lib>
+    </if>
     
-    <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
+    <install-to>/usr/local/bin/</install-to>
     
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
