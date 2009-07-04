@@ -357,6 +357,11 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <library>wxexrep</library>
     <library>wxex</library>
+
+    <!-- strangely odbc is needed by sss as well -->    
+    <if cond="PLATFORM_UNIX=='1'">
+      <sys-lib>odbc</sys-lib>
+    </if>
     
     <install-to>/usr/local/bin/</install-to>
     
