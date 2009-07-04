@@ -266,6 +266,10 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxexrep</library>
     <library>wxex</library>
     
+    <if cond="PLATFORM_UNIX=='1'">
+      <sys-lib>odbc</sys-lib>
+    </if>
+    
     <sys-lib>cppunit</sys-lib>
     
     <wx-lib>aui</wx-lib>
