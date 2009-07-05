@@ -3,16 +3,15 @@
 # Purpose: script to test all
 # RCS-ID:  $Id$
 
-target=$1
-TESTDIR=./gccgtk2_dll
+export TESTDIR=./gccgtk2_dll
 
-echo "-- test base --"
+echo "-- ex-test base --"
 $TESTDIR/ex-test-base > test.log
 
-echo "-- test app --"
+echo "-- ex-test app --"
 $TESTDIR/ex-test-app >> test.log
 
-echo "-- test report --"
+echo "-- ex-test report --"
 $TESTDIR/ex-test-report >> test.log
 
-svn commit -m "results of running testall"
+#svn commit -m "results of running testall"
