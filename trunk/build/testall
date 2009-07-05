@@ -4,26 +4,15 @@
 # RCS-ID:  $Id$
 
 target=$1
-TESTDIR=./vcmswud/
-
-ORG=$PWD
-
-if [ "$1" = "all" ]; then
-  target=""
-fi
+TESTDIR=./gccgtk2_dll
 
 echo "-- test base --"
-cd $ORG/base
-$TESTDIR­­/ex-test-base > $ORG/base/test.log
+$TESTDIR/ex-test-base > test.log
 
 echo "-- test app --"
-cd $ORG/app
-$TESTDIR­­/ex-test-app > $ORG/app/test.log
+$TESTDIR/ex-test-app >> test.log
 
 echo "-- test report --"
-cd $ORG/report
-$TESTDIR­­/ex-test-report > $ORG/report/test.log
-
-cd $ORG
+$TESTDIR/ex-test-report >> test.log
 
 svn commit -m "results of running testall"
