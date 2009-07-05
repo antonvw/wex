@@ -4,7 +4,7 @@
 # RCS-ID:  $Id$
 
 target=$1
-PROGRAM=./test.v1.0
+TESTDIR=./vcmswud/
 
 ORG=$PWD
 
@@ -14,15 +14,15 @@ fi
 
 echo "-- test base --"
 cd $ORG/base
-$PROGRAM > $ORG/base/test.log
+$TESTDIR­­/ex-test-base > $ORG/base/test.log
 
 echo "-- test app --"
 cd $ORG/app
-$PROGRAM > $ORG/app/test.log
+$TESTDIR­­/ex-test-app > $ORG/app/test.log
 
 echo "-- test report --"
 cd $ORG/report
-$PROGRAM > $ORG/report/test.log
+$TESTDIR­­/ex-test-report > $ORG/report/test.log
 
 cd $ORG
 
