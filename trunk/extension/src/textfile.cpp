@@ -81,6 +81,8 @@ bool wxExRCS::SetRevision(wxString& text)
   return true;
 }
 
+bool wxExTextFile::m_Cancelled = false;
+
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
   const wxExTool& tool,

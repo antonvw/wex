@@ -70,6 +70,12 @@ public:
     wxExConfig* config,
     const wxExLexers* lexers);
 
+  /// Allows you to cancel the RunTool.
+  static void Cancel() {m_Cancelled = true;}
+
+  /// Check whether operation was cancelled.
+  static bool Cancelled() {return m_Cancelled;};
+
   /// Gets the filename.
   const wxExFileName& GetFileName() const {return m_FileNameStatistics;};
 
@@ -100,9 +106,6 @@ public:
       fill_out_with_space));};
 protected:
   // Interface.
-  /// If it returns true, the operation is cancelled.
-  virtual bool Cancelled() {return false;};
-
   /// Called after comments have been found.
   virtual bool ParseComments();
 
@@ -211,6 +214,7 @@ private:
   wxExConfig* m_Config;
   const wxExLexers* m_Lexers;
 
+  static bool m_Cancelled;
   size_t m_LineMarker;
   size_t m_LineMarkerEnd;
   size_t m_VersionLine;
