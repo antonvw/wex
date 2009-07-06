@@ -57,7 +57,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(!m_File->CheckSyncNeeded());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName("test.bin")));
+  CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName("../test.bin")));
   wxCharBuffer buffer = m_File->Read();
   CPPUNIT_ASSERT(buffer.length() == 40);
 
