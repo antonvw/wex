@@ -372,14 +372,17 @@ void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
   m_FindReplaceDialog->Show();
 }
 
-bool wxExInterface::FindResult(const wxString& text, bool find_next, bool& recursive)
+bool wxExInterface::FindResult(
+  const wxString& text, 
+  bool find_next, 
+  bool& recursive)
 {
   if (!recursive)
   {
     recursive = true;
     const wxString where = (find_next) ? _("bottom"): _("top");
     wxExFrame::StatusText(
-      _("Searching for") + " '" + wxExSkipWhiteSpace(text) + "' " + _("hit") + " " + where);
+      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("hit") + " " + where);
     return FindNext(text, find_next);
   }
   else
@@ -387,7 +390,7 @@ bool wxExInterface::FindResult(const wxString& text, bool find_next, bool& recur
     recursive = false;
     wxBell();
     // Same text also displayed in wxExSTC.
-    wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + _("not found"));
+    wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("not found"));
     return false;
   }
 }
