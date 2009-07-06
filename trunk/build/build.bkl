@@ -282,6 +282,16 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
+  <!-- run the tests -->
+  <if cond="PLATFORM_UNIX=='1'">
+    <action id ="test-all">
+      <command>./ex-test-base > base-test-log</command>
+      <command>./ex-test-app > app-test-log</command>
+      <command>./ex-test-report > report-test-log</command>
+      <command>svn commit -m "results of running test-all"</command>
+    </action>
+  </if>
+  
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
     <define>$(VAR_PORTABLE)</define>
