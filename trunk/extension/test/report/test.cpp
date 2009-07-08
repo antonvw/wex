@@ -12,6 +12,7 @@
 
 #include <TestCaller.h>
 #include "test.h"
+#define TEST_FILE "../test.h"
 
 void wxExReportAppTestFixture::setUp()
 {
@@ -19,7 +20,7 @@ void wxExReportAppTestFixture::setUp()
   m_ListView = new wxExListViewFile(frame, wxExListViewFile::LIST_PROCESS);
   m_Dir = new wxExDirWithListView(m_ListView, "./");
   m_Process = new wxExProcessWithListView(frame, m_ListView, "wc test.h");
-  m_STC = new wxExSTCWithFrame(frame, wxExFileName("test.h"));
+  m_STC = new wxExSTCWithFrame(frame, wxExFileName(TEST_FILE));
 }
 
 void wxExReportAppTestFixture::testConstructors()
@@ -33,8 +34,8 @@ void wxExReportAppTestFixture::testMethods()
 
   // test wxExFrameWithHistory
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName("test.h"))); // as we have no focused stc
-  CPPUNIT_ASSERT(frame->GetRecentFile().Contains("test.h"));
+  CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE))); // as we have no focused stc
+  CPPUNIT_ASSERT(frame->GetRecentFile().Contains(TEST_FILE));
   CPPUNIT_ASSERT(!frame->OpenFile(
     wxExFileName("../test.prj"),
     0,
@@ -55,7 +56,7 @@ void wxExReportAppTestFixture::testMethods()
 //  CPPUNIT_ASSERT(!wxProcess::Exists(pid));
 
   // test wxExSTCWithFrame
-  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
+  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == TEST_FILE);
 }
 
 void wxExReportAppTestFixture::tearDown()

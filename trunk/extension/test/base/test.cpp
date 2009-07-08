@@ -12,17 +12,18 @@
 
 #include <TestCaller.h>
 #include "test.h"
+#define TEST_FILE "../test.h"
 
 void wxExTestFixture::setUp()
 {
   m_Config = new wxExConfig("test.cfg", wxCONFIG_USE_LOCAL_FILE);
-  m_File = new wxExFile("test.h");
-  m_FileName = new wxExFileName("test.h");
-  m_FileNameStatistics = new wxExFileNameStatistics("test.h");
+  m_File = new wxExFile(TEST_FILE);
+  m_FileName = new wxExFileName(TEST_FILE);
+  m_FileNameStatistics = new wxExFileNameStatistics(TEST_FILE);
   m_Lexer = new wxExLexer();
   m_Lexers = new wxExLexers(wxFileName("../../data/lexers.xml"));
   m_RCS = new wxExRCS();
-  m_Stat = new wxExStat("test.h");
+  m_Stat = new wxExStat(TEST_FILE);
   m_Statistics = new wxExStatistics<long>();
 }
 
@@ -53,7 +54,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_File->GetStat().IsOk());
   CPPUNIT_ASSERT(m_File->GetStat().GetFullPath() == m_File->GetFileName().GetFullPath());
   // The fullpath should be normalized, test it.
-  CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() != "test.h");
+  CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() != TEST_FILE);
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(!m_File->CheckSyncNeeded());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
@@ -108,9 +109,9 @@ void wxExTestFixture::testMethods()
 
   // test wxExLexers
   CPPUNIT_ASSERT(!m_Lexers->BuildComboBox().empty());
-  CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName("test.h")).empty());
+  CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName(TEST_FILE)).empty());
   CPPUNIT_ASSERT(m_Lexers->Count() > 0);
-  CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName("test.h")).GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(!m_Lexers->GetIndicators().empty());
@@ -142,7 +143,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
 
   // test wxExTextFile
-  wxExTextFile textFile(wxExFileName("test.h"), ID_TOOL_REPORT_COUNT, m_Config, m_Lexers);
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT, m_Config, m_Lexers);
   CPPUNIT_ASSERT(textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
@@ -151,7 +152,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
-  wxExTextFile textFile2(wxExFileName("test.h"), ID_TOOL_REPORT_KEYWORD, m_Config, m_Lexers);
+  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD, m_Config, m_Lexers);
   CPPUNIT_ASSERT(textFile2.RunTool());
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 
@@ -166,7 +167,7 @@ void wxExTestFixture::testMethods()
 
 void wxExTestFixture::testTiming()
 {
-  wxExFile file("test.h");
+  wxExFile file(TEST_FILE);
 
   CPPUNIT_ASSERT(file.IsOpened());
 
@@ -183,7 +184,7 @@ void wxExTestFixture::testTiming()
 
   sw.Start();
 
-  wxFile wxfile("test.h");
+  wxFile wxfile(TEST_FILE);
 
   for (int j = 0; j < max; j++)
   {
@@ -209,7 +210,7 @@ void wxExTestFixture::testTimingAttrib()
 
   wxStopWatch sw;
 
-  const wxExFileName exfile("test.h");
+  const wxExFileName exfile(TEST_FILE);
 
   int checked = 0;
 
@@ -222,7 +223,7 @@ void wxExTestFixture::testTimingAttrib()
 
   sw.Start();
 
-  const wxFileName file("test.h");
+  const wxFileName file(TEST_FILE);
 
   for (int j = 0; j < max; j++)
   {

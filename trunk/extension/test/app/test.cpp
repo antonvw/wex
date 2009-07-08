@@ -13,15 +13,16 @@
 #include <TestCaller.h>
 #include <wx/extension/header.h>
 #include "test.h"
+#define TEST_FILE "../test.h"
 
 void wxExAppTestFixture::setUp()
 {
   m_Grid = new wxExGrid(wxTheApp->GetTopWindow());
   m_ListView = new wxExListView(wxTheApp->GetTopWindow());
   m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
-  m_STC = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName("test.h"));
+  m_STC = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  m_SVN = new wxExSVN(SVN_STAT, "test.h");
+  m_SVN = new wxExSVN(SVN_STAT, TEST_FILE);
 }
 
 void wxExAppTestFixture::testConstructors()
@@ -66,7 +67,7 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL);
 
   // test wxExSTC
-  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == "test.h");
+  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == TEST_FILE);
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(m_STC->Open(wxExFileName("../test.bin")));
   CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
@@ -108,7 +109,7 @@ void wxExAppTestFixture::testMethods()
   if (wxExApp::GetLexers()->Count() > 0)
   {
     wxExApp::GetConfig()->Set(_("Purpose"), "hello test");
-    const wxExFileName fn("test.h");
+    const wxExFileName fn(TEST_FILE);
     const wxString header = wxExHeader(wxExApp::GetConfig()).Get(&fn);
     CPPUNIT_ASSERT(header.Contains("hello test"));
   }
