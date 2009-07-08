@@ -919,10 +919,14 @@ bool MDIFrame::OpenFile(
   const wxString& contents,
   long flags)
 {
-  const wxString svn_flags = wxExApp::GetConfig(_("Flags"));
-  const wxString key = filename.GetFullPath() + svn_flags;
+  // Normally the flags are not empty, but it could be,
+  // so check for it here.
+  const wxString svn_flags = 
+    (!wxExApp::GetConfig(_("Flags")).empty() ? 
+        " " + wxExApp::GetConfig(_("Flags")) : 
+        wxEmptyString);
 
-  wxASSERT(!svn_flags.empty());
+  const wxString key = filename.GetFullPath() + svn_flags;
 
   wxWindow* page = m_NotebookWithEditors->GetPageByKey(key);
 
@@ -938,7 +942,7 @@ bool MDIFrame::OpenFile(
     m_NotebookWithEditors->AddPage(
       editor,
       key,
-      filename.GetFullName() + " " + svn_flags,
+      filename.GetFullName() + svn_flags,
       true
 #ifdef USE_NOTEBOOK_IMAGE
       ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
