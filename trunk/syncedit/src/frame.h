@@ -31,6 +31,10 @@ private:
   virtual wxExListViewFile* Activate(int type, const wxExLexer* lexer = NULL);
   virtual wxExListViewFile* GetCurrentProject();
   virtual wxExSTCWithFrame* GetCurrentSTC();
+  virtual bool OpenFile(
+    const wxExFileName& filename,
+    const wxString& contents,
+    long flags = 0);
   // Interface from wxExFrame.
   virtual void ConfigDialogApplied(wxWindowID dialogid);
   virtual wxExSTC* GetSTC() {return GetCurrentSTC();}
@@ -45,10 +49,6 @@ private:
   wxExListViewFile* AddPage(int type, const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);
-  bool OpenFile(
-    const wxExFileName& filename,
-    const wxString& contents,
-    long flags = 0);
 
   int m_NewFileNo;
 

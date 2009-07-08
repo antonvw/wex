@@ -919,19 +919,26 @@ bool MDIFrame::OpenFile(
   const wxString& contents,
   long flags)
 {
-  const wxString key = filename.GetFullPath()+ wxExApp::GetConfig(_("Flags"));
+  const wxString svn_flags = wxExApp::GetConfig(_("Flags"));
+  const wxString key = filename.GetFullPath() + svn_flags;
+
+  wxASSERT(!svn_flags.empty());
 
   wxWindow* page = m_NotebookWithEditors->GetPageByKey(key);
 
   if (page == NULL)
   {
-    wxExSTCWithFrame* editor = new wxExSTCWithFrame(m_NotebookWithEditors, wxExSTC::STC_MENU_DEFAULT, contents);
+    wxExSTCWithFrame* editor = new wxExSTCWithFrame(
+      m_NotebookWithEditors, 
+      wxExSTC::STC_MENU_DEFAULT, 
+      contents);
+
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 
     m_NotebookWithEditors->AddPage(
       editor,
       key,
-      filename.GetFullName() + " " + wxExApp::GetConfig(_("Flags")),
+      filename.GetFullName() + " " + svn_flags,
       true
 #ifdef USE_NOTEBOOK_IMAGE
       ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
