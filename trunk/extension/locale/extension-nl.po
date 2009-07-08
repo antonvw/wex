@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-03 15:46+0100\n"
-"PO-Revision-Date: 2009-07-03 15:47+0100\n"
+"POT-Creation-Date: 2009-07-08 13:02+0100\n"
+"PO-Revision-Date: 2009-07-08 13:02+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,39 +17,39 @@ msgstr ""
 "X-Poedit-SearchPath-0: ../include\n"
 "X-Poedit-SearchPath-1: ../src\n"
 
-#: ../src/base.cpp:380
+#: ../src/base.cpp:383
 msgid "bottom"
 msgstr "einde"
 
-#: ../src/base.cpp:380
+#: ../src/base.cpp:383
 msgid "top"
 msgstr "begin"
 
-#: ../src/base.cpp:382
+#: ../src/base.cpp:385
 msgid "Searching for"
 msgstr "Zoeken naar"
 
-#: ../src/base.cpp:382
+#: ../src/base.cpp:385
 msgid "hit"
 msgstr "passeert"
 
-#: ../src/base.cpp:390
+#: ../src/base.cpp:393
 msgid "not found"
 msgstr "niet gevonden"
 
-#: ../src/base.cpp:553
+#: ../src/base.cpp:556
 msgid "&Deselect All"
 msgstr "Alles &deselecteren"
 
-#: ../src/base.cpp:566
+#: ../src/base.cpp:569
 msgid "&Invert"
 msgstr "&Inverteren"
 
-#: ../src/base.cpp:582
+#: ../src/base.cpp:585
 msgid "Page &Setup"
 msgstr "Pagina-&instelling"
 
-#: ../src/base.cpp:629
+#: ../src/base.cpp:632
 msgid "&Tools"
 msgstr "&Extra"
 
@@ -168,6 +168,10 @@ msgstr "Omschrijving"
 msgid "All Files"
 msgstr "Alle bestanden"
 
+#: ../src/lexers.cpp:123
+msgid "Lexer is not known"
+msgstr "Onbekende lexer"
+
 #: ../src/lexers.cpp:438
 msgid "<none>"
 msgstr "<geen>"
@@ -206,8 +210,8 @@ msgstr "Gebruiker"
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: ../src/otl.cpp:163
-#: ../src/otl.cpp:249
+#: ../src/otl.cpp:164
+#: ../src/otl.cpp:251
 msgid "<Skipped>"
 msgstr "<Overgeslagen>"
 
@@ -539,48 +543,48 @@ msgstr "Vlaggen"
 msgid "Subcommand"
 msgstr "Subcommand"
 
-#: ../src/textfile.cpp:205
+#: ../src/textfile.cpp:207
 #: ../src/report/listview.cpp:528
 #: ../src/report/textfile.cpp:245
 msgid "Comments"
 msgstr "Commentaar woorden"
 
-#: ../src/textfile.cpp:207
-#: ../src/textfile.cpp:429
-#: ../src/textfile.cpp:565
+#: ../src/textfile.cpp:209
+#: ../src/textfile.cpp:431
+#: ../src/textfile.cpp:567
 #: ../src/report/listview.cpp:529
 #: ../src/report/textfile.cpp:246
 msgid "Comment Size"
 msgstr "Commentaar grootte"
 
-#: ../src/textfile.cpp:481
+#: ../src/textfile.cpp:483
 #: ../src/report/listview.cpp:527
 #: ../src/report/textfile.cpp:244
 msgid "Words Of Code"
 msgstr "Code woorden"
 
-#: ../src/textfile.cpp:527
-#: ../src/textfile.cpp:536
+#: ../src/textfile.cpp:529
+#: ../src/textfile.cpp:538
 #: ../src/report/listview.cpp:525
 #: ../src/report/textfile.cpp:242
 msgid "Lines Of Code"
 msgstr "Code regels"
 
-#: ../src/textfile.cpp:552
+#: ../src/textfile.cpp:554
 #: ../src/report/listview.cpp:526
 #: ../src/report/textfile.cpp:243
 msgid "Empty Lines"
 msgstr "Lege regels"
 
-#: ../src/textfile.cpp:621
+#: ../src/textfile.cpp:623
 msgid "Files"
 msgstr "Bestanden"
 
-#: ../src/textfile.cpp:625
+#: ../src/textfile.cpp:627
 msgid "Total Size"
 msgstr "Totale grootte"
 
-#: ../src/textfile.cpp:626
+#: ../src/textfile.cpp:628
 #: ../src/report/listview.cpp:524
 #: ../src/report/textfile.cpp:241
 msgid "Lines"
