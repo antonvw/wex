@@ -120,7 +120,7 @@ const wxExLexer wxExLexers::FindByName(
   {
     // We did not find a lexer, so give an error.
     // The same error is shown in wxExSTC::SetLexer as well.
-    wxLogError("Lexer is not known: " + name);
+    wxLogError(_("Lexer is not known") + ": " + name);
   }
 
   return wxExLexer();

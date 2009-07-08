@@ -2462,7 +2462,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
     // Otherwise it is not known, and we better show an error.
     wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
   {
-    wxLogError("Lexer is not known: " + m_FileName.GetLexer().GetScintillaLexer());
+    wxLogError(_("Lexer is not known") + ": " + m_FileName.GetLexer().GetScintillaLexer());
   }
 
   Colourise();
@@ -2714,7 +2714,13 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
-  m_STC = new wxExSTC(this, wxExSTC::STC_MENU_SIMPLE, text, wxID_ANY, pos, size);
+  m_STC = new wxExSTC(
+    this, 
+    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND, 
+    text, 
+    wxID_ANY, 
+    pos, 
+    size);
 
   // Override defaults from config.
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
