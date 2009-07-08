@@ -61,13 +61,15 @@ public:
   long Query(const wxString& query,
     wxGrid* grid,
     bool& stopped,
-    bool empty_results = true);
+    bool empty_results = true,
+    int buffer_size = 1024);
 #endif // wxUSE_GRID
 
   /// Run the query and append results to the stc.
   long Query(const wxString& query,
     wxStyledTextCtrl* stc,
-    bool& stopped);
+    bool& stopped,
+    int buffer_size = 1024);
 
   /// Returns the OTL version as a string.
   static const wxString Version();

@@ -92,14 +92,15 @@ long wxExOTL::Query(
   const wxString& query,
   wxGrid* grid,
   bool& stopped,
-  bool empty_results)
+  bool empty_results,
+  int buffer_size)
 {
   wxASSERT(grid != NULL);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
-    1024,
+    buffer_size,
     query.c_str(),
     m_Connect,
     otl_implicit_select);
@@ -192,14 +193,15 @@ long wxExOTL::Query(
 long wxExOTL::Query(
   const wxString& query,
   wxStyledTextCtrl* stc,
-  bool& stopped)
+  bool& stopped,
+  int buffer_size)
 {
   wxASSERT(stc != NULL);
 
   otl_stream i;
   i.set_all_column_types(otl_all_num2str | otl_all_date2str);
   i.open(
-    1024,
+    buffer_size,
     query.c_str(),
     m_Connect,
     otl_implicit_select);
