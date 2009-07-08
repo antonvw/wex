@@ -135,6 +135,7 @@ int wxExSVN::Execute(bool show_dialog)
 
   wxArrayString output;
   wxArrayString errors;
+  m_Output.clear();
 
   if (wxExecute(
     command,
@@ -151,8 +152,6 @@ int wxExSVN::Execute(bool show_dialog)
   {
     wxSetWorkingDirectory(cwd);
   }
-
-  m_Output.clear();
 
   // First output the errors.
   for (size_t i = 0; i < errors.GetCount(); i++)
