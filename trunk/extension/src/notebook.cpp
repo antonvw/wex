@@ -90,18 +90,16 @@ bool wxExNotebook::ForEach(int id)
   for (int page = GetPageCount() - 1; page >= 0; page--)
   {
     // When trying to cast to wxExFile, there is an error:
-    // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const wxExFile *'
-    // e:\lib\wxExtension\v2.0\src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'wxExFile'
-    // E:\lib\wxExtension\v2.0\include\wx\extension\file.h(95) : see declaration of 'wxExFile'
+    // src\notebook.cpp(96): error C2440: 'static_cast' : cannot convert from 'wxWindow *' to 'const wxExFile *'
+    // src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'wxExFile'
+    // include\wx\extension\file.h(95) : see declaration of 'wxExFile'
 
     // Try to get an wxExSTC out of the page.
     wxExSTC* stc = wxDynamicCast(GetPage(page), wxExSTC);
 
     if (stc == NULL)
     {
-      wxLogError("Notebook page: %d (%s) cannot be cast to an wxExSTC",
-        page,
-        GetPageText(page).c_str());
+      wxFAIL;
 
       // Do not return false, otherwise close all would not finish.
       continue;
