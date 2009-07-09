@@ -100,11 +100,11 @@ int wxExSVN::Execute(bool show_dialog)
     file = " \"" + m_FullPath + "\"";
   }
 
-  wxString arg;
+  wxString comment;
 
   if (m_Type == SVN_COMMIT)
   {
-    arg = " -m \"" + wxExApp::GetConfig(_("Revision comment")) + "\"";
+    comment = " -m \"" + wxExApp::GetConfig(_("Revision comment")) + "\"";
   }
 
   wxString flags;
@@ -131,7 +131,8 @@ int wxExSVN::Execute(bool show_dialog)
     }
   }
 
-  const wxString command = "svn " + flags + m_Command + subcommand + arg + file;
+  const wxString command = 
+    "svn " + flags + m_Command + subcommand + comment + file;
 
   wxArrayString output;
   wxArrayString errors;
@@ -145,6 +146,8 @@ int wxExSVN::Execute(bool show_dialog)
     m_ReturnCode = -1;
     return m_ReturnCode;
   }
+
+  m_CommandWithFlags = flags + m_Command;
 
   wxExApp::Log(command);
 
@@ -221,6 +224,9 @@ void wxExSVN::Initialize()
   }
 
   m_Command = m_Caption.AfterFirst(' ').Lower();
+
+  // Currently no flags, as no command was executed.
+  m_CommandWithFlags = m_Command;
 }
 
 void wxExSVN::ShowOutput() const

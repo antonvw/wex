@@ -59,6 +59,9 @@ public:
   /// Returns return code from execute.
   int ExecuteAndShowOutput();
 
+  /// Gets the flags and command (without the 'svn') used to get the output.
+  const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
+
   /// Gets the output (Execute should already be called).
   const wxString& GetOutput() const {return m_Output;};
 
@@ -71,6 +74,7 @@ private:
   const wxExSVNType m_Type;
   wxString m_Caption;
   wxString m_Command;
+  wxString m_CommandWithFlags;
   wxString m_Output;
   const wxString m_FullPath;
   int m_ReturnCode;
