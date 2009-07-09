@@ -125,6 +125,8 @@ int wxExSVN::Execute(bool show_dialog)
 
     wxExApp::SetConfig(svn_flags_name, flags);
 
+    m_CommandWithFlags = m_Command + " " + flags;
+
     if (!flags.empty())
     {
       flags += " ";
@@ -146,8 +148,6 @@ int wxExSVN::Execute(bool show_dialog)
     m_ReturnCode = -1;
     return m_ReturnCode;
   }
-
-  m_CommandWithFlags = flags + m_Command;
 
   wxExApp::Log(command);
 
