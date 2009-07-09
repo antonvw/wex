@@ -48,10 +48,7 @@ public:
 
     if (m_Grid != NULL)
     {
-      m_Grid->DeleteCols(0, m_Grid->GetNumberCols());
-      m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
-      m_Grid->CreateGrid(0, 0);
-      m_Grid->AppendCols(2);
+      m_Grid->ClearGrid();
     }
 #endif
   };
