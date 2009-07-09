@@ -188,7 +188,10 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
       if (svn.Execute() == 0)
       {
-        m_Frame->OpenFile(m_FileName, svn.GetOutput());
+        m_Frame->OpenFile(
+          m_FileName, 
+          svn.GetCommandWithFlags(), 
+          svn.GetOutput());
       }
       else
       {

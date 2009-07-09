@@ -33,6 +33,7 @@ private:
   virtual wxExSTCWithFrame* GetCurrentSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
+    const wxString& unique,
     const wxString& contents);
   // Interface from wxExFrame.
   virtual void ConfigDialogApplied(wxWindowID dialogid);

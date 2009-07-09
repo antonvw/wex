@@ -85,8 +85,10 @@ public:
     return m_ProjectHistory.GetHistoryFile(0);}
 
   /// Allows you to open a filename with specified contents.
+  /// The unique argument can be used as addition for a key in the notebook.
   virtual bool OpenFile(
     const wxExFileName& WXUNUSED(filename),
+    const wxString& WXUNUSED(unique),
     const wxString& WXUNUSED(contents)) {return false;};
 
   /// Interface from wxExFrame.
