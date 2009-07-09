@@ -105,9 +105,7 @@ MyFrame::MyFrame(const wxString& title)
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  m_Query = new wxExSTCWithFrame(this,
-    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND |
-    wxExSTC::STC_MENU_REPLACE | wxExSTC::STC_MENU_INSERT);
+  m_Query = new wxExSTCWithFrame(this);
   m_Query->SetLexer("sql");
 
   m_Results = new wxExGrid(this);

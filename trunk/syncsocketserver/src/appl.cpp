@@ -87,13 +87,11 @@ MyFrame::MyFrame(const wxString& title)
   panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 
-  m_DataWindow = new wxExSTCWithFrame(
-    this,
-    wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND |
-    wxExSTCWithFrame::STC_MENU_REPLACE | wxExSTCWithFrame::STC_MENU_INSERT);
+  m_DataWindow = new wxExSTCWithFrame(this);
 
   m_LogWindow = new wxExSTCWithFrame(
     this,
+    wxEmptyString,
     wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
 
   m_Shell = new wxExSTCShell(this);
