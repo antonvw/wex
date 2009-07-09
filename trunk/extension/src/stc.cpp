@@ -256,8 +256,8 @@ wxPrinter* wxExSTC::m_Printer = NULL;
 #endif
 
 wxExSTC::wxExSTC(wxWindow* parent,
-  long menu_flags,
   const wxString& value,
+  long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
@@ -2716,8 +2716,8 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
 
   m_STC = new wxExSTC(
     this, 
-    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND, 
     text, 
+    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND, 
     wxID_ANY, 
     pos, 
     size);

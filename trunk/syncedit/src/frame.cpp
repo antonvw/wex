@@ -924,7 +924,6 @@ bool MDIFrame::OpenFile(
   {
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
       m_NotebookWithEditors, 
-      wxExSTC::STC_MENU_DEFAULT, 
       contents);
 
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());

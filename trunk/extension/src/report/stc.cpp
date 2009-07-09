@@ -43,14 +43,14 @@ private:
 #endif
 
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
-  long type,
   const wxString& value,
+  long type,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
-  : wxExSTC(parent, type, value, id, pos, size, style, name)
+  : wxExSTC(parent, value, type, id, pos, size, style, name)
 {
   Initialize();
 }

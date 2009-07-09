@@ -39,8 +39,8 @@ public:
 
   /// Constructor. Does not open a file, but sets text to specified value.
   wxExSTCWithFrame(wxWindow* parent,
+    const wxString& value,
     long type = STC_MENU_DEFAULT,
-    const wxString& value = wxEmptyString,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
