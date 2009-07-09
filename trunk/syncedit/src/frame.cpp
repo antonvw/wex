@@ -298,11 +298,8 @@ void MDIFrame::NewFile(bool as_project)
     page,
     key,
     text,
-    true
-#ifdef USE_NOTEBOOK_IMAGE
-    ,wxArtProvider::GetBitmap(wxART_NORMAL_FILE)
-#endif
-    );
+    true,
+    wxArtProvider::GetBitmap(wxART_NORMAL_FILE));
 
   const wxString pane = (as_project ? "PROJECTS" : "FILES");
   GetManager().GetPane(pane).Show();
@@ -633,11 +630,8 @@ and saved in the same directory as where the executable is."));
       // key should be unique
       wxString::Format("stc%d", stc->GetId()),
       stc->GetFileName().GetFullName(),
-      true
-#ifdef USE_NOTEBOOK_IMAGE
-      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIcon())
-#endif
-      );
+      true,
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIcon()));
 
     stc->SetDocPointer(editor->GetDocPointer());
   }
@@ -939,11 +933,8 @@ bool MDIFrame::OpenFile(
       editor,
       key,
       filename.GetFullName() + " " + unique,
-      true
-#ifdef USE_NOTEBOOK_IMAGE
-      ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
-#endif
-      );
+      true,
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon()));
   }
   else
   {
@@ -985,11 +976,8 @@ bool MDIFrame::OpenFile(
         project,
         filename.GetFullPath(),
         filename.GetName(),
-        true
-#ifdef USE_NOTEBOOK_IMAGE
-        ,wxArtProvider::GetBitmap(wxART_NORMAL_FILE)
-#endif
-        );
+        true,
+        wxArtProvider::GetBitmap(wxART_NORMAL_FILE));
     }
 
     if (!GetManager().GetPane("PROJECTS").IsShown())
@@ -1037,11 +1025,8 @@ bool MDIFrame::OpenFile(
         editor,
         filename.GetFullPath(),
         filename.GetFullName(),
-        true
-#ifdef USE_NOTEBOOK_IMAGE
-        ,wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon())
-#endif
-        );
+        true,
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon()));
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
