@@ -87,8 +87,7 @@ public:
   /// Allows you to open a filename with specified contents.
   virtual bool OpenFile(
     const wxExFileName& WXUNUSED(filename),
-    const wxString& WXUNUSED(contents),
-    long WXUNUSED(flags) = 0) {return false;};
+    const wxString& WXUNUSED(contents)) {return false;};
 
   /// Interface from wxExFrame.
   virtual bool OpenFile(

@@ -916,8 +916,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 bool MDIFrame::OpenFile(
   const wxExFileName& filename,
-  const wxString& contents,
-  long flags)
+  const wxString& contents)
 {
   // Normally the flags are not empty, but it could be,
   // so check for it here.
