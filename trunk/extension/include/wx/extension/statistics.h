@@ -49,7 +49,7 @@ public:
     if (m_Grid != NULL)
     {
       m_Grid->ClearGrid();
-      m_Grid->DeleteRows(0, GetNumberRows());
+      m_Grid->DeleteRows(0, m_Grid->GetNumberRows());
     }
 #endif
   };
