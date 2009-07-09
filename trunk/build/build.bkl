@@ -118,8 +118,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/version.h</headers>
   </lib>
 
-  <lib id="wxexrep" template="wx-lib,wxlike">
-    <libname>wxexrep09</libname>
+  <lib id="wxex-rep" template="wx-lib,wxlike">
+    <libname>wxex-rep09</libname>
     
     <define>$(VAR_PORTABLE)</define>
     <define>$(VAR_USE_EMBEDDED_SQL)</define>
@@ -154,7 +154,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </lib>
   
   <!-- samples -->
-  <exe id="ex-sample" template="wxgui,wxlike">
+  <exe id="wxex-sample" template="wxgui,wxlike">
     <sources>../extension/sample/appl.cpp</sources>
     <win32-res>../extension/sample/appl.rc</win32-res>
     <headers>../extension/sample/appl.h</headers>
@@ -178,14 +178,14 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="ex-sample-rep" template="wxgui,wxlike">
+  <exe id="wxex-rep-sample" template="wxgui,wxlike">
     <sources>../extension/sample/report/appl.cpp</sources>
     <win32-res>../extension/sample/report/appl.rc</win32-res>
     <headers>../extension/sample/report/appl.h</headers>
     
     <include>../extension/include</include>
     
-    <library>wxexrep</library>
+    <library>wxex-rep</library>
     <library>wxex</library>
     
     <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
@@ -201,7 +201,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <!-- tests -->
-  <exe id="ex-test-base" template="wxgui,wxlike">
+  <exe id="wxex-test-base" template="wxgui,wxlike">
     <sources>../extension/test/base/main.cpp</sources>
     <sources>../extension/test/base/test.cpp</sources>
     <headers>../extension/test/base/test.h</headers>
@@ -222,7 +222,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="ex-test-app" template="wxgui,wxlike">
+  <exe id="wxex-test-app" template="wxgui,wxlike">
     <sources>../extension/test/app/main.cpp</sources>
     <sources>../extension/test/app/test.cpp</sources>
     
@@ -245,7 +245,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="ex-test-report" template="wxgui,wxlike">
+  <exe id="wxex-rep-test" template="wxgui,wxlike">
     <sources>../extension/test/report/main.cpp</sources>
     <sources>../extension/test/report/test.cpp</sources>
     <headers>../extension/test/report/test.h</headers>
@@ -253,7 +253,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <include>/usr/include/cppunit</include>
     <include>../extension/include</include>
     
-    <library>wxexrep</library>
+    <library>wxex-rep</library>
     <library>wxex</library>
     
     <if cond="PLATFORM_UNIX=='1'">
@@ -275,9 +275,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- run the tests -->
   <if cond="PLATFORM_UNIX=='1'">
     <action id ="test-all">
-      <command>./ex-test-base > base-test-log</command>
-      <command>./ex-test-app > app-test-log</command>
-      <command>./ex-test-report > report-test-log</command>
+      <command>./wxex-test-base > base-test-log</command>
+      <command>./wxex-test-app > app-test-log</command>
+      <command>./wxex-rep-test > report-test-log</command>
       <command>svn commit -m "results of running test-all"</command>
     </action>
   </if>
@@ -303,7 +303,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <install-to>/usr/local/bin/</install-to>
     
-    <library>wxexrep</library>
+    <library>wxex-rep</library>
     <library>wxex</library>
     
     <if cond="PLATFORM_UNIX=='1'">
@@ -330,7 +330,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <include>../extension/include</include>
 
-    <library>wxexrep</library>
+    <library>wxex-rep</library>
     <library>wxex</library>
     
     <if cond="PLATFORM_UNIX=='1'">
@@ -356,7 +356,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <include>../extension/include</include>
     
-    <library>wxexrep</library>
+    <library>wxex-rep</library>
     <library>wxex</library>
 
     <!-- strangely odbc is needed by sss as well -->    
