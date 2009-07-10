@@ -114,7 +114,6 @@ MyFrame::MyFrame(const wxString& title)
 
   m_Shell = new wxExSTCShell(this, ">", ";", true, 50);
   m_Shell->SetFocus();
-  m_Shell->DocumentEnd();
   m_Shell->SetLexer();
 
   GetManager().AddPane(m_Shell,
