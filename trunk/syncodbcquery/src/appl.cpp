@@ -17,7 +17,10 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/stc.h>
 #include "appl.h"
+
+#ifndef __WXMSW__
 #include "appl.xpm"
+#endif
 
 IMPLEMENT_APP(MyApp)
 
@@ -63,7 +66,7 @@ MyFrame::MyFrame(const wxString& title)
   , m_Running(false)
   , m_Stopped(false)
 {
-  SetIcon(appl_xpm);
+  SetIcon(wxICON(appl));
 
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
