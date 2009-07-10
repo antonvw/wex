@@ -16,11 +16,9 @@
 
 #ifndef __WXMSW__
 #include "appl.xpm"
-#ifdef USE_TASKBARICON
 #include "connect.xpm"
 #include "notready.xpm"
 #include "ready.xpm"
-#endif
 #endif
 
 IMPLEMENT_APP(MyApp)
@@ -71,9 +69,7 @@ MyFrame::MyFrame(const wxString& title)
 {
   SetIcon(wxICON(appl));
 
-#ifdef USE_TASKBARICON
   m_TaskBarIcon = new MyTaskBarIcon(this);
-#endif
 
   Show(); // otherwise statusbar is not placed correctly
 
@@ -111,12 +107,7 @@ MyFrame::MyFrame(const wxString& title)
   menuFile->AppendSeparator();
   menuFile->Append(ID_CLEAR_STATISTICS, _("Clear Statistics"), _("Clears the statistics"));
   menuFile->AppendSeparator();
-
-#ifdef USE_TASKBARICON
   menuFile->Append(ID_HIDE, _("Hide"), _("Puts back in the task bar"));
-#else
-  menuFile->Append(wxID_EXIT);
-#endif
 
   wxMenu* menuServer = new wxMenu();
   menuServer->Append(ID_SERVER_CONFIG,
@@ -195,9 +186,7 @@ MyFrame::MyFrame(const wxString& title)
 
   if (SetupSocketServer())
   {
-#ifdef USE_TASKBARICON
     Hide();
-#endif
   }
 
   if (wxExApp::GetConfig(_("Timer"), 0) > 0)
@@ -222,9 +211,7 @@ MyFrame::MyFrame(const wxString& title)
 
 MyFrame::~MyFrame()
 {
-#ifdef USE_TASKBARICON
   delete m_TaskBarIcon;
-#endif
   delete m_SocketServer;
 }
 
@@ -416,9 +403,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
       const wxString text = _("server stopped");
 
-#ifdef USE_TASKBARICON
       m_TaskBarIcon->SetIcon(wxICON(notready), text);
-#endif
       StatusText(
         wxString::Format(_("%d clients"), m_Clients.size()),
         "PaneClients");
@@ -512,14 +497,12 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
     WriteDataToClient(buffer, sock);
 
-#ifdef USE_TASKBARICON
     const wxString text =
       wxString::Format(_("%s connected at %d"),
         wxTheApp->GetAppName().c_str(),
         wxExApp::GetConfig(_("Port"), 3000));
 
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
-#endif
   }
   else if (event.GetId() == ID_CLIENT)
   {
@@ -608,9 +591,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             wxString::Format(_("server listening at %d"),
               wxExApp::GetConfig(_("Port"), 3000));
 
-#ifdef USE_TASKBARICON
           m_TaskBarIcon->SetIcon(wxICON(ready), text);
-#endif
         }
         break;
 
@@ -737,9 +718,7 @@ bool MyFrame::SetupSocketServer()
   if (!m_SocketServer->Ok())
   {
     text = wxString::Format(_("could not listen at %d"), wxExApp::GetConfig(_("Port"), 3000));
-#ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(notready), text);
-#endif
     m_SocketServer->Destroy();
     delete m_SocketServer;
     m_SocketServer = NULL;
@@ -752,9 +731,7 @@ bool MyFrame::SetupSocketServer()
     text =
       wxString::Format(_("server listening at %d"), wxExApp::GetConfig(_("Port"), 3000));
 
-#ifdef USE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
-#endif
   }
 
   StatusText(text);
@@ -925,7 +902,6 @@ void MyFrame::WriteDataWindowToClients()
   }
 }
 
-#ifdef USE_TASKBARICON
 enum
 {
   ID_OPEN = ID_CLIENT + 1,
@@ -962,4 +938,3 @@ void MyTaskBarIcon::OnCommand(wxCommandEvent& event)
     break;
   }
 }
-#endif

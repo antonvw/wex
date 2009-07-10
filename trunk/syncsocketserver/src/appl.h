@@ -15,9 +15,7 @@
 #include <wx/extension/shell.h>
 #include <wx/extension/report/report.h>
 
-#ifdef USE_TASKBARICON
 class MyTaskBarIcon;
-#endif
 
 class MyApp : public wxExApp
 {
@@ -70,14 +68,11 @@ private:
   wxSocketServer* m_SocketServer;
   wxTimer m_Timer;
 
-#ifdef USE_TASKBARICON
   MyTaskBarIcon* m_TaskBarIcon;
-#endif
 
   DECLARE_EVENT_TABLE()
 };
 
-#ifdef USE_TASKBARICON
 class MyTaskBarIcon: public wxTaskBarIcon
 {
 public:
@@ -88,14 +83,13 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnTaskBarIcon(wxTaskBarIconEvent&) {
     m_Frame->Show();}
-  void OnUpdateUI(wxUpdateUIEvent&) {
+  void OnUpdateUI(wxUpdateUIEvent& event) {
     event.Enable(m_Frame->ServerNotListening());}
 private:
   MyFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };
-#endif
 
 enum
 {
