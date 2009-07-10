@@ -241,6 +241,12 @@ void MyFrame::LogConnection(
 
 void MyFrame::OnClose(wxCloseEvent& event)
 {
+  if (event.CanVeto())
+  {
+    Hide();
+    return;
+  }
+
   if (!m_DataWindow->Continue())
   {
     return;
