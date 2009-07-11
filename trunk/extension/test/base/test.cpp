@@ -21,7 +21,7 @@ void wxExTestFixture::setUp()
   m_FileName = new wxExFileName(TEST_FILE);
   m_FileNameStatistics = new wxExFileNameStatistics(TEST_FILE);
   m_Lexer = new wxExLexer();
-  m_Lexers = new wxExLexers(wxFileName("../../data/lexers.xml"));
+  m_Lexers = new wxExLexers(wxFileName("../../extension/data/lexers.xml"));
   m_RCS = new wxExRCS();
   m_Stat = new wxExStat(TEST_FILE);
   m_Statistics = new wxExStatistics<long>();
@@ -83,8 +83,8 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetColourings().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin2().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd().empty());
-  CPPUNIT_ASSERT(m_Lexer->GetCommentEnd2().empty());
+  CPPUNIT_ASSERT(m_Lexer->GetCommentEnd().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd2().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsString().empty());
