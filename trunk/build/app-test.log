@@ -1,13 +1,6 @@
-..F
+..
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  2   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 125 test.cpp
-assertion failed
-- Expression: wxExOpenFile(wxFileName("test.txt"))
+OK (2 tests)
 
 

@@ -1,16 +1,9 @@
-..F.wxExFile::Read:109 wxFile::Read:206
-.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:13
-.wxExConfig::Get:518 wxConfig::Read:1335
+...wxExFile::Read:108 wxFile::Read:159
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:19
+.wxExConfig::Get:511 wxConfig::Read:1200
 
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  5   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 85 test.cpp
-assertion failed
-- Expression: !m_Lexer->GetCommentEnd().empty()
+OK (5 tests)
 
 
