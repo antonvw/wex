@@ -67,7 +67,6 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL);
 
   // test wxExSTC
-  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullName() == TEST_FILE);
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(m_STC->Open(wxExFileName("../test.bin")));
   CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
@@ -123,7 +122,6 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("t     es   t") == "t es t");
   CPPUNIT_ASSERT(!wxExTranslate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
-  CPPUNIT_ASSERT(wxExOpenFile(wxFileName("test.txt")));
 }
 
 void wxExAppTestFixture::tearDown()
