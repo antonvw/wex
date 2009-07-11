@@ -126,7 +126,7 @@ void wxExTestFixture::testMethods()
   // test wxExStat
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
-  CPPUNIT_ASSERT(m_Stat->Update("testlink"));
+  CPPUNIT_ASSERT(m_Stat->Update("../base-test.link"));
 
   // test wxExStatistics
   m_Statistics->Inc("test");
