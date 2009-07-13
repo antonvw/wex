@@ -69,7 +69,9 @@ MyFrame::MyFrame(const wxString& title)
 {
   SetIcon(wxICON(appl));
 
+#if wxUSE_TASKBARICON
   m_TaskBarIcon = new MyTaskBarIcon(this);
+#endif
 
   Show(); // otherwise statusbar is not placed correctly
 
@@ -211,7 +213,9 @@ MyFrame::MyFrame(const wxString& title)
 
 MyFrame::~MyFrame()
 {
+#if wxUSE_TASKBARICON
   delete m_TaskBarIcon;
+#endif
   delete m_SocketServer;
 }
 
@@ -409,7 +413,9 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
       const wxString text = _("server stopped");
 
+#if wxUSE_TASKBARICON
       m_TaskBarIcon->SetIcon(wxICON(notready), text);
+#endif
       StatusText(
         wxString::Format(_("%d clients"), m_Clients.size()),
         "PaneClients");
@@ -508,7 +514,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         wxTheApp->GetAppName().c_str(),
         wxExApp::GetConfig(_("Port"), 3000));
 
+#if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
+#endif
   }
   else if (event.GetId() == ID_CLIENT)
   {
@@ -597,7 +605,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             wxString::Format(_("server listening at %d"),
               wxExApp::GetConfig(_("Port"), 3000));
 
+#if wxUSE_TASKBARICON
           m_TaskBarIcon->SetIcon(wxICON(ready), text);
+#endif
         }
         break;
 
@@ -724,7 +734,9 @@ bool MyFrame::SetupSocketServer()
   if (!m_SocketServer->Ok())
   {
     text = wxString::Format(_("could not listen at %d"), wxExApp::GetConfig(_("Port"), 3000));
+#if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(notready), text);
+#endif
     m_SocketServer->Destroy();
     delete m_SocketServer;
     m_SocketServer = NULL;
@@ -737,7 +749,9 @@ bool MyFrame::SetupSocketServer()
     text =
       wxString::Format(_("server listening at %d"), wxExApp::GetConfig(_("Port"), 3000));
 
+#if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
+#endif
   }
 
   StatusText(text);
@@ -913,6 +927,7 @@ enum
   ID_OPEN = ID_CLIENT + 1,
 };
 
+#if wxUSE_TASKBARICON
 BEGIN_EVENT_TABLE(MyTaskBarIcon, wxTaskBarIcon)
   EVT_MENU(wxID_EXIT, MyTaskBarIcon::OnCommand)
   EVT_MENU(ID_OPEN, MyTaskBarIcon::OnCommand)
@@ -944,3 +959,4 @@ void MyTaskBarIcon::OnCommand(wxCommandEvent& event)
     break;
   }
 }
+#endif // wxUSE_TASKBARICON

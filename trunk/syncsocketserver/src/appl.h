@@ -15,7 +15,9 @@
 #include <wx/extension/shell.h>
 #include <wx/extension/report/report.h>
 
+#if wxUSE_TASKBARICON
 class MyTaskBarIcon;
+#endif
 
 class MyApp : public wxExApp
 {
@@ -68,11 +70,14 @@ private:
   wxSocketServer* m_SocketServer;
   wxTimer m_Timer;
 
+#if wxUSE_TASKBARICON
   MyTaskBarIcon* m_TaskBarIcon;
+#endif
 
   DECLARE_EVENT_TABLE()
 };
 
+#if wxUSE_TASKBARICON
 class MyTaskBarIcon: public wxTaskBarIcon
 {
 public:
@@ -90,6 +95,7 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
+#endif
 
 enum
 {
