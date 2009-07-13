@@ -109,7 +109,11 @@ MyFrame::MyFrame(const wxString& title)
   menuFile->AppendSeparator();
   menuFile->Append(ID_CLEAR_STATISTICS, _("Clear Statistics"), _("Clears the statistics"));
   menuFile->AppendSeparator();
+#if wxUSE_TASKBARICON
   menuFile->Append(ID_HIDE, _("Hide"), _("Puts back in the task bar"));
+#else
+  menuFile->Append(wxID_EXIT);
+#endif
 
   wxMenu* menuServer = new wxMenu();
   menuServer->Append(ID_SERVER_CONFIG,
@@ -188,7 +192,11 @@ MyFrame::MyFrame(const wxString& title)
 
   if (SetupSocketServer())
   {
+#if wxUSE_TASKBARICON
     Hide();
+#else
+    Show();
+#endif
   }
 
   if (wxExApp::GetConfig(_("Timer"), 0) > 0)
