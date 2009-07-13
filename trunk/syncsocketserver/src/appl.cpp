@@ -192,8 +192,6 @@ MyFrame::MyFrame(const wxString& title)
   {
 #if wxUSE_TASKBARICON
     Hide();
-#else
-    Show();
 #endif
   }
 
