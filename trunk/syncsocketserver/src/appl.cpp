@@ -93,10 +93,8 @@ MyFrame::MyFrame(const wxString& title)
     wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
 
   m_Shell = new wxExSTCShell(this);
-  m_Shell->SetLexer();
 
   m_LogWindow->SetReadOnly(true);
-  m_LogWindow->SetLexer();
   m_LogWindow->ResetMargins();
 
   wxExMenu* menuFile = new wxExMenu();

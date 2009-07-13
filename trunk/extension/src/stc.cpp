@@ -277,6 +277,10 @@ wxExSTC::wxExSTC(wxWindow* parent,
   {
     SetText(value);
   }
+  else
+  {
+    SetLexer();
+  }
 
   PropertiesMessage();
 }
