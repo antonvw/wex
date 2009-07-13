@@ -16,45 +16,6 @@
 
 using namespace std;
 
-const wxString wxExLexer::GetKeywordsString(int keyword_set) const
-{
-  wxString keywords;
-
-  if (keyword_set == -1)
-  {
-    for (
-      set<wxString>::const_iterator it = m_Keywords.begin();
-      it != m_Keywords.end();
-      ++it)
-    {
-      keywords += *it + " ";
-    }
-  }
-  else
-  {
-    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.find(keyword_set);
-
-    if (it == m_KeywordsSet.end())
-    {
-      wxFAIL;
-    }
-    else
-    {
-      set<wxString> theset = it->second;
-
-      for (
-        set<wxString>::const_iterator it = theset.begin();
-        it != theset.end();
-        ++it)
-      {
-        keywords += *it + " ";
-      }
-    }
-  }
-
-  return keywords;
-}
-
 const wxString wxExLexer::GetFormattedText(
   const wxString& lines,
   const wxString& header,
@@ -91,6 +52,46 @@ const wxString wxExLexer::GetFormattedText(
   }
 
   return out;
+}
+
+const wxString wxExLexer::GetKeywordsString(int keyword_set) const
+{
+  if (keyword_set == -1)
+  {
+    return GetKeywordsStringSet(m_Keywords);
+  }
+  else
+  {
+    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.find(keyword_set);
+
+    if (it == m_KeywordsSet.end())
+    {
+      wxFAIL;
+    }
+    else
+    {
+      set<wxString> theset = it->second;
+
+      return GetKeywordsStringSet(theset);
+    }
+  }
+
+  return wxEmptyString;
+}
+
+const wxString wxExLexer::GetKeywordsStringSet(const std::set<wxString>& kset) const
+{
+  wxString keywords;
+
+  for (
+    set<wxString>::const_iterator it = kset.begin();
+    it != kset.end();
+    ++it)
+  {
+    keywords += *it + " ";
+  }
+
+  return keywords;
 }
 
 bool wxExLexer::IsKeyword(const wxString& word) const

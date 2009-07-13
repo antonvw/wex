@@ -97,6 +97,7 @@ private:
     const wxString& header,
     bool fill_out_with_space,
     bool fill_out) const;
+  const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
 
   wxString m_Associations;
   wxString m_Colourings;
