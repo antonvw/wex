@@ -178,7 +178,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="wxex-rep-sample" template="wxgui,wxlike">
+  <exe id="wxex-sample-rep" template="wxgui,wxlike">
     <sources>../extension/sample/report/appl.cpp</sources>
     <win32-res>../extension/sample/report/appl.rc</win32-res>
     <headers>../extension/sample/report/appl.h</headers>
@@ -245,7 +245,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="wxex-rep-test" template="wxgui,wxlike">
+  <exe id="wxex-test-rep" template="wxgui,wxlike">
     <sources>../extension/test/report/main.cpp</sources>
     <sources>../extension/test/report/test.cpp</sources>
     <headers>../extension/test/report/test.h</headers>
@@ -275,9 +275,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- run the tests -->
   <if cond="PLATFORM_UNIX=='1'">
     <action id ="test-all">
-      <command>./wxex-test-base > base-test-log</command>
-      <command>./wxex-test-app > app-test-log</command>
-      <command>./wxex-rep-test > report-test-log</command>
+      <command>./wxex-test-base > test-base.log</command>
+      <command>./wxex-test-app > test-app.log</command>
+      <command>./wxex-test-rep > test-rep.log</command>
       <command>svn commit -m "results of running test-all"</command>
     </action>
   </if>
