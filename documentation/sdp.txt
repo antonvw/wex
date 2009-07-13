@@ -8,7 +8,7 @@ General
     https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
 - Subversion access
-    under windows TortoiseSVN is used (TortoiseSVN 1.6.2)
+    under windows TortoiseSVN is used (TortoiseSVN 1.6.3)
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.5.4 (r33841))
 
@@ -20,15 +20,14 @@ General
 - database is OTL (Version 4.0.197)
     http://otl.sourceforge.net/
 
-- application icons were designed using GIMP (2.6.6)
-    http://www.gimp.org/
-    but menu and toolbar bitmaps are from wxWidgets, using wxArtProvider,
-    or gtk stock items
-    
-    they are now used from
+- icons and bitmaps
+    menu and toolbar bitmaps are from wxWidgets, using wxArtProvider, or gtk stock items
+    application icons are from
     http://www.famfamfam.com/lab/icons/silk/
     and converted to ico using
     http://www.convertico.com/
+    and converted to xpm using GIMP (2.6.6)    
+    http://www.gimp.org/
 
 - API documentation is generated from the sources using Doxygen (1.5.9)
     http://www.stack.nl/~dimitri/doxygen/
@@ -38,13 +37,14 @@ General
 - Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
     
-- Test coverage done by gcov
+- Test coverage is not yet done, it might be done using gcov
     http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 
 - Translation is done using poedit (1.4.2)
     http://www.poedit.net/
     
-- The SVN support in wxExSVN works with SVN client 1.6.2 (e.g. from http://www.sliksvn.com/en/download)
+- The SVN support in wxExSVN works with SVN client 1.6.2 
+    (e.g. from http://www.sliksvn.com/en/download)
 
 - Build process/IDE
   - Project and make files are generated using Bakefile 0.2.6
@@ -86,7 +86,7 @@ When adding functionality in trunk
 
   where it has least dependancies
 
-  run testall from extension/test, which collects output in test.log, and commits automatically.
+  run test.all from extension/test, which collects output in test.log, and commits automatically.
 
 - add a sample for it in
     extension/sample, 
