@@ -296,6 +296,10 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
+  case wxID_EXECUTE:
+    SetupSocketServer();
+    break;
+
   case wxID_EXIT:
     Close(true);
     break;
@@ -312,6 +316,12 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     DialogFileOpen(wxFD_OPEN | wxFD_CHANGE_DIR, wxEmptyString, true);
     break;
 
+  case wxID_PREFERENCES:
+    wxExSTC::ConfigDialog(this,
+      _("Editor Options"),
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_SIMPLE);
+    break;
+
   case wxID_SAVE:
     if (m_DataWindow->FileSave())
     {
@@ -326,73 +336,6 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       m_LogWindow->AppendTextForced(
         _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     }
-    break;
-
-  case ID_CLEAR_STATISTICS:
-    m_Statistics.Clear();
-    break;
-
-  case ID_CLIENT_BUFFER_SIZE:
-    {
-    long val;
-    if ((val = wxGetNumberFromUser(
-      _("Input:"),
-      wxEmptyString,
-      _("Buffer Size"),
-      wxExApp::GetConfig(_("Buffer Size"), 4096),
-      1,
-      65536)) > 0)
-    {
-      wxExApp::GetConfig()->Set(_("Buffer Size"), val);
-    }
-    }
-    break;
-
-  case ID_CLIENT_ECHO:
-    wxExApp::ToggleConfig(_("Echo"));
-    break;
-
-  case ID_CLIENT_LOG_DATA:
-    wxExApp::ToggleConfig(_("Log Data"));
-    break;
-
-  case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
-    wxExApp::ToggleConfig(_("Add Timestamp"));
-    break;
-
-  case ID_HIDE:
-    Close(false);
-    break;
-
-  case wxID_PREFERENCES:
-    wxExSTC::ConfigDialog(this,
-      _("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_SIMPLE);
-    break;
-
-  case ID_SERVER_CONFIG:
-    {
-    std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem(_("Hostname"), wxEmptyString, 0, true));
-    v.push_back(wxExConfigItem(_("Port"), 1000, 65536));
-
-    // Configuring only possible if server is stopped,
-    // otherwise just show settings readonly mode.
-    const long flags = (m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL);
-
-    wxExConfigDialog(this,
-      wxExApp::GetConfig(),
-      v,
-      _("Server Config"),
-      wxEmptyString,
-      0,
-      2,
-      flags).ShowModal();
-    }
-    break;
-
-  case wxID_EXECUTE:
-    SetupSocketServer();
     break;
 
   case wxID_STOP:
@@ -436,6 +379,63 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       {
         m_LogWindow->AppendTextForced(statistics);
       }
+    }
+    break;
+
+  case ID_CLEAR_STATISTICS:
+    m_Statistics.Clear();
+    break;
+
+  case ID_CLIENT_BUFFER_SIZE:
+    {
+    long val;
+    if ((val = wxGetNumberFromUser(
+      _("Input:"),
+      wxEmptyString,
+      _("Buffer Size"),
+      wxExApp::GetConfig(_("Buffer Size"), 4096),
+      1,
+      65536)) > 0)
+    {
+      wxExApp::GetConfig()->Set(_("Buffer Size"), val);
+    }
+    }
+    break;
+
+  case ID_CLIENT_ECHO:
+    wxExApp::ToggleConfig(_("Echo"));
+    break;
+
+  case ID_CLIENT_LOG_DATA:
+    wxExApp::ToggleConfig(_("Log Data"));
+    break;
+
+  case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
+    wxExApp::ToggleConfig(_("Add Timestamp"));
+    break;
+
+  case ID_HIDE:
+    Close(false);
+    break;
+
+  case ID_SERVER_CONFIG:
+    {
+    std::vector<wxExConfigItem> v;
+    v.push_back(wxExConfigItem(_("Hostname"), wxEmptyString, 0, true));
+    v.push_back(wxExConfigItem(_("Port"), 1000, 65536));
+
+    // Configuring only possible if server is stopped,
+    // otherwise just show settings readonly mode.
+    const long flags = (m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL);
+
+    wxExConfigDialog(this,
+      wxExApp::GetConfig(),
+      v,
+      _("Server Config"),
+      wxEmptyString,
+      0,
+      2,
+      flags).ShowModal();
     }
     break;
 
