@@ -45,8 +45,6 @@ bool wxExApp::OnInit()
   if (m_Locale.Init())
   {
     // If there are catalogs in the catalog_dir, then add them to the locale.
-    wxArrayString files;
-
     // README: We use the canonical name, also for windows, not sure whether that is
     // the best.
     m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
@@ -56,6 +54,7 @@ bool wxExApp::OnInit()
 
     if (wxFileName::DirExists(m_CatalogDir))
     {
+      wxArrayString files;
       wxDir::GetAllFiles(m_CatalogDir, &files);
 
       for (size_t i = 0 ; i < files.GetCount(); i++)
