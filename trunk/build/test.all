@@ -3,26 +3,18 @@
 # Purpose: script to test all
 # RCS-ID:  $Id$
 
-target=$1
 TESTDIR=./vcmswud/
 
 ORG=$PWD
 
-if [ "$1" = "all" ]; then
-  target=""
-fi
-
 echo "-- test base --"
-cd $ORG/base
-$TESTDIR­­/ex-test-base > $ORG/base/test.log
+$TESTDIR/wxex-test-base > $ORG/test-base.log
 
 echo "-- test app --"
-cd $ORG/app
-$TESTDIR­­/ex-test-app > $ORG/app/test.log
+$TESTDIR/wxex-test-app > $ORG/test-app.log
 
 echo "-- test report --"
-cd $ORG/report
-$TESTDIR­­/ex-test-report > $ORG/report/test.log
+$TESTDIR/wxex-test-rep > $ORG/test-rep.log
 
 cd $ORG
 
