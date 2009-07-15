@@ -93,9 +93,7 @@ void wxExAppTestFixture::testMethods()
 
   // test wxExSVN
   CPPUNIT_ASSERT(m_SVN->Execute() == 0); // do not use a dialog
-  // The output depends on the svn stat, of course,
-  // so do not assert on it.
-  m_SVN->GetOutput(wxTheApp->GetTopWindow());
+  CPPUNIT_ASSERT(!m_SVN->GetOutput(wxTheApp->GetTopWindow().empty());
 
   // test util
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
