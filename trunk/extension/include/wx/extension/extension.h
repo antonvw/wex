@@ -15,6 +15,5 @@
 #include <wx/extension/version.h>
 #include <wx/extension/base.h>
 #include <wx/extension/app.h>
-#include <wx/extension/file.h>
 #include <wx/extension/util.h>
 #endif
