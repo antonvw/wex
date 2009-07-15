@@ -16,14 +16,12 @@
 #include <TestFixture.h>
 #include <TestSuite.h>
 #include <wx/extension/extension.h>
-#include <wx/extension/dir.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/shell.h>
-#include <wx/extension/textfile.h>
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite
@@ -82,10 +80,10 @@ public:
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:
-  wxExGrid* m_Grid;   ///< testing wxExDir
-  wxExListView* m_ListView; ///< testing wxExDir
+  wxExGrid* m_Grid;   ///< testing wxExGrid
+  wxExListView* m_ListView; ///< testing wxExListView
   wxExNotebook* m_Notebook; ///< testing wxExNotebook
-  wxExSTCShell* m_STCShell; ///< testing wxExSTC
+  wxExSTCShell* m_STCShell; ///< testing wxExSTCShell
   wxExSTC* m_STC;     ///< testing wxExSTC
   wxExSVN* m_SVN;     ///< testing wxExSVN
 };
