@@ -12,7 +12,7 @@
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
-#include <wx/extension/util.h> // for wxExGetWord
+#include <wx/extension/util.h> // for wxExAlignText
 
 using namespace std;
 
