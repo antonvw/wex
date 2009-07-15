@@ -15,7 +15,6 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/base.h> // for wxExInterface
-#include <wx/extension/file.h> // for wxExFile, wxExInterface
 
 class wxExConfigDialog;
 
