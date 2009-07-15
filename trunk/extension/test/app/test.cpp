@@ -22,7 +22,7 @@ void wxExAppTestFixture::setUp()
   m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
   m_STC = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  m_SVN = new wxExSVN(SVN_STAT, TEST_FILE);
+  m_SVN = new wxExSVN(SVN_INFO, TEST_FILE);
 }
 
 void wxExAppTestFixture::testConstructors()
