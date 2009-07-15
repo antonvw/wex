@@ -20,9 +20,7 @@
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 {
-  const wxString comparator = wxExApp::GetConfig(_("Comparator"));
-
-  if (comparator.empty())
+  if (wxExApp::GetConfig(_("Comparator")).empty())
   {
     return false;
   }
@@ -32,7 +30,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
        "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
        "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
 
-  if (wxExecute(comparator + " " + arguments) == 0)
+  if (wxExecute(wxExApp::GetConfig(_("Comparator")) + " " + arguments) == 0)
   {
     return false;
   }
