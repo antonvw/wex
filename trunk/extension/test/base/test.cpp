@@ -66,7 +66,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
   m_FileName->Assign("xxx");
-  m_FileName->GetStat().Update("xxx");
+  m_FileName->GetStat().Sync("xxx");
   CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
 
   // test wxExFileNameStatistics
@@ -126,7 +126,7 @@ void wxExTestFixture::testMethods()
   // test wxExStat
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
-  CPPUNIT_ASSERT(m_Stat->Update("../test-base.link"));
+  CPPUNIT_ASSERT(m_Stat->Sync("../test-base.link"));
 
   // test wxExStatistics
   m_Statistics->Inc("test");
