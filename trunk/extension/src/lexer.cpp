@@ -62,24 +62,20 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.find(keyword_set);
+    std::map< int, std::set<wxString> >::const_iterator it = 
+      m_KeywordsSet.find(keyword_set);
 
-    if (it == m_KeywordsSet.end())
+    if (it != m_KeywordsSet.end())
     {
-      wxFAIL;
-    }
-    else
-    {
-      set<wxString> theset = it->second;
-
-      return GetKeywordsStringSet(theset);
+      return GetKeywordsStringSet(it->second);
     }
   }
 
   return wxEmptyString;
 }
 
-const wxString wxExLexer::GetKeywordsStringSet(const std::set<wxString>& kset) const
+const wxString wxExLexer::GetKeywordsStringSet(
+  const std::set<wxString>& kset) const
 {
   wxString keywords;
 
@@ -91,7 +87,7 @@ const wxString wxExLexer::GetKeywordsStringSet(const std::set<wxString>& kset) c
     keywords += *it + " ";
   }
 
-  return keywords;
+  return keywords.Trim(); // remove the ending space
 }
 
 bool wxExLexer::IsKeyword(const wxString& word) const
