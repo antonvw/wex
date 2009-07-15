@@ -185,9 +185,9 @@ bool wxExFile::MakeAbsolute()
 {
   if (m_FileName.MakeAbsolute())
   {
-    m_FileName.GetStat().Update(m_FileName.GetFullPath());
-    m_Stat.Update(m_FileName.GetFullPath());
-    return true;
+    return 
+	  m_FileName.GetStat().Sync(m_FileName.GetFullPath()) &&
+      m_Stat.Sync(m_FileName.GetFullPath());
   }
   else
   {
@@ -298,28 +298,15 @@ const wxString wxExStat::GetModificationTime(const wxString& format) const
 bool wxExStat::Sync() 
 {
 #ifdef __WXGTK__
-  if (::stat(m_FullPath.c_str(), this) != -1)
-#else
-  if (stat(m_FullPath.c_str(), this) != -1)
-#endif
-  {
-    m_IsOk = true;
-  }
-  else
-  {
-    m_IsOk = false;
-  }
-
-  return m_IsOk;
-}
-
-bool wxExStat::Update(const wxString& fullpath) 
-{
-  m_FullPath = fullpath;
-#ifdef __WXGTK__
   m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
 #else
   m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
 #endif
   return m_IsOk;
+}
+
+bool wxExStat::Sync(const wxString& fullpath) 
+{
+  m_FullPath = fullpath;
+  return Sync();
 }

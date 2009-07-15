@@ -28,7 +28,7 @@ class wxExStat : public stat
 public:
   /// Default constructor. Calls Update.
   wxExStat(const wxString& fullpath = wxEmptyString) {
-    Update(fullpath);}
+    Sync(fullpath);}
 
   /// Gets fullpath member.
   const wxString& GetFullPath() const {return m_FullPath;};
@@ -46,11 +46,11 @@ public:
   bool IsReadOnly() const {
     return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
 
-  /// Updates stat only, returns result and keeps result in IsOk.
+  /// Updates this stat, returns result and keeps it in IsOk.
   bool Sync();
 
-  /// Updates fullpath member, returns result and keeps result in IsOk.
-  bool Update(const wxString& fullpath);
+  /// Updates fullpath member, then Syncs.
+  bool Sync(const wxString& fullpath);
 private:
   wxString m_FullPath;
   bool m_IsOk;
