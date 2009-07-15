@@ -49,15 +49,15 @@ public:
   /// Execute the svn command.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
+  /// If you use don't specify a parent, then the dialog is not shown,
+  /// and defaults from the config are used.
   /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors
   /// that were reported by svn otherwise.
-  /// If you use show_dialog = false, then the dialog is not shown,
-  /// and defaults from the config are used.
-  int Execute(bool show_dialog = true);
+  int Execute(wxWindow* parent = NULL);
 
   /// Execute and if not cancelled shows output in a dialog.
   /// Returns return code from execute.
-  int ExecuteAndShowOutput();
+  int ExecuteAndShowOutput(wxWindow* parent);
 
   /// Gets the flags and command (without the 'svn') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
@@ -66,7 +66,7 @@ public:
   const wxString& GetOutput() const {return m_Output;};
 
   /// Shows output in a dialog only (Execute should already be called).
-  void ShowOutput() const;
+  void ShowOutput(wxWindow* parent) const;
 private:
   wxExSVNType GetType(int command_id) const;
   void Initialize();

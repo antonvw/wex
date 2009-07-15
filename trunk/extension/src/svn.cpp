@@ -35,12 +35,12 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   Initialize();
 }
 
-int wxExSVN::Execute(bool show_dialog)
+int wxExSVN::Execute(wxWindow* parent)
 {
   const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);
   const wxString svn_flags_contents = wxExApp::GetConfig(svn_flags_name);
 
-  if (show_dialog)
+  if (parent != NULL)
   {
     std::vector<wxExConfigItem> v;
 
@@ -75,9 +75,7 @@ int wxExSVN::Execute(bool show_dialog)
       v.push_back(wxExConfigItem(_("Subcommand")));
     }
 
-    wxASSERT(wxTheApp != NULL);
-
-    if (wxExConfigDialog(wxTheApp->GetTopWindow(),
+    if (wxExConfigDialog(parent,
       wxExApp::GetConfig(),
       v,
       m_Caption).ShowModal() == wxID_CANCEL)
@@ -173,11 +171,11 @@ int wxExSVN::Execute(bool show_dialog)
   return m_ReturnCode;
 }
 
-int wxExSVN::ExecuteAndShowOutput()
+int wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
-  if (Execute() >= 0)
+  if (Execute(parent) >= 0)
   {
-    ShowOutput();
+    ShowOutput(parent);
   }
 
   return m_ReturnCode;
@@ -229,7 +227,7 @@ void wxExSVN::Initialize()
   m_CommandWithFlags = m_Command;
 }
 
-void wxExSVN::ShowOutput() const
+void wxExSVN::ShowOutput(wxWindow* parent) const
 {
   // If we did not yet ask Execute, or cancelled, return.
   if (m_ReturnCode < 0)
@@ -244,7 +242,7 @@ void wxExSVN::ShowOutput() const
   if (m_STCEntryDialog == NULL)
   {
     m_STCEntryDialog = new wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(),
+      parent,
       caption,
       m_Output,
       wxEmptyString,
