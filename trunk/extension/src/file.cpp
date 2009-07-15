@@ -9,9 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifdef __WXMSW__
-#include <io.h> // for chmod
-#endif
 #include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
@@ -296,23 +293,6 @@ void wxExFileName::StatusText(long flags) const
 const wxString wxExStat::GetModificationTime(const wxString& format) const
 {
   return wxDateTime(st_mtime).Format(format);
-}
-
-bool wxExStat::SetReadOnly(const bool read_only)
-{
-  if (IsOk())
-  {
-    if (chmod(m_FullPath.c_str(),
-          read_only ?
-            st_mode & ~wxS_IWUSR:
-            st_mode | wxS_IWUSR) == 0)
-    {
-      Update(m_FullPath);
-      return IsOk();
-    }
-  }
-
-  return false;
 }
 
 bool wxExStat::Sync() 

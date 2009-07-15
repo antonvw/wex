@@ -46,9 +46,6 @@ public:
   bool IsReadOnly() const {
     return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
 
-  /// Sets readonly as specified.
-  bool SetReadOnly(const bool read_only);
-
   /// Updates stat only, returns result and keeps result in IsOk.
   bool Sync();
 
