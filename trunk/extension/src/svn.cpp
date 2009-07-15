@@ -19,18 +19,14 @@ wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
 
 wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
   : m_Type(GetType(command_id))
-  , m_Output()
   , m_FullPath(fullpath)
-  , m_ReturnCode(-2)
 {
   Initialize();
 }
 
 wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   : m_Type(type)
-  , m_Output()
   , m_FullPath(fullpath)
-  , m_ReturnCode(-2)
 {
   Initialize();
 }
@@ -225,6 +221,11 @@ void wxExSVN::Initialize()
 
   // Currently no flags, as no command was executed.
   m_CommandWithFlags = m_Command;
+
+  m_Output.clear();
+  m_ReturnCode = -2;
+
+  wxASSERT(wxExApp::GetConfig() != NULL);
 }
 
 void wxExSVN::ShowOutput(wxWindow* parent) const
