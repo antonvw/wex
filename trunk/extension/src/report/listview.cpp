@@ -731,7 +731,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     wxExSVN svn(
       event.GetId(), 
       wxExListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath());
-    svn.ExecuteAndShowOutput();
+    svn.ExecuteAndShowOutput(this);
     return;
   }
 

@@ -351,12 +351,12 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       }
       else
       {
-        svn.ShowOutput();
+        svn.ShowOutput(this);
       }
     }
     else
     {
-      svn.ExecuteAndShowOutput();
+      svn.ExecuteAndShowOutput(this);
     }
 
     return;
@@ -637,13 +637,13 @@ and saved in the same directory as where the executable is."));
   }
   break;
 
-  case ID_SVN_COMMIT: wxExSVN(SVN_COMMIT).ExecuteAndShowOutput(); break;
-  case ID_SVN_DIFF: wxExSVN(SVN_DIFF).ExecuteAndShowOutput(); break;
-  case ID_SVN_HELP: wxExSVN(SVN_HELP).ExecuteAndShowOutput(); break;
-  case ID_SVN_INFO: wxExSVN(SVN_INFO).ExecuteAndShowOutput(); break;
-  case ID_SVN_LOG: wxExSVN(SVN_LOG).ExecuteAndShowOutput(); break;
-  case ID_SVN_STAT: wxExSVN(SVN_STAT).ExecuteAndShowOutput(); break;
-  case ID_SVN_UPDATE: wxExSVN(SVN_UPDATE).ExecuteAndShowOutput(); break;
+  case ID_SVN_COMMIT: wxExSVN(SVN_COMMIT).ExecuteAndShowOutput(this); break;
+  case ID_SVN_DIFF: wxExSVN(SVN_DIFF).ExecuteAndShowOutput(this); break;
+  case ID_SVN_HELP: wxExSVN(SVN_HELP).ExecuteAndShowOutput(this); break;
+  case ID_SVN_INFO: wxExSVN(SVN_INFO).ExecuteAndShowOutput(this); break;
+  case ID_SVN_LOG: wxExSVN(SVN_LOG).ExecuteAndShowOutput(this); break;
+  case ID_SVN_STAT: wxExSVN(SVN_STAT).ExecuteAndShowOutput(this); break;
+  case ID_SVN_UPDATE: wxExSVN(SVN_UPDATE).ExecuteAndShowOutput(this); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX

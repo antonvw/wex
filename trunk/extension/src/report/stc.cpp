@@ -195,12 +195,12 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       }
       else
       {
-        svn.ShowOutput();
+        svn.ShowOutput(this);
       }
     }
     else
     {
-      svn.ExecuteAndShowOutput();
+      svn.ExecuteAndShowOutput(this);
     }
 
     return;
