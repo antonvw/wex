@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #define USE_OTL 1
+#include <wx/extension/app.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/report/frame.h>
