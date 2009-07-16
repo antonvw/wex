@@ -47,6 +47,7 @@ wxExConfig::~wxExConfig()
       Write(it->first, var.GetLong());
     else if (var.GetType() == "string")
       Write(it->first, var.GetString());
+	else wxFAIL;
   }
 }
 
