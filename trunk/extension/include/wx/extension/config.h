@@ -86,9 +86,7 @@ public:
   void Toggle(const wxString& key);
 private:
   wxExFindReplaceData* m_FindReplaceData;
-  std::map<wxString, bool> m_BoolValues;
-  std::map<wxString, long> m_LongValues;
-  std::map<wxString, wxString> m_StringValues;
+  std::map<wxString, wxVariant> m_Values;
 };
 
 /// Adds an existing config to wxFindReplaceData, and some members.

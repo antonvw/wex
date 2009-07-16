@@ -35,42 +35,33 @@ wxExConfig::~wxExConfig()
   delete m_FindReplaceData;
 
   for (
-    map<wxString, long>::const_iterator it = m_LongValues.begin();
-    it != m_LongValues.end();
+    map<wxString, wxVariant>::const_iterator it = m_Values.begin();
+    it != m_Values.end();
     ++it)
   {
-    Write(it->first, it->second);
-  }
+    const wxVariant var = it->second;
 
-  for (
-    map<wxString, wxString>::const_iterator its = m_StringValues.begin();
-    its != m_StringValues.end();
-    ++its)
-  {
-    Write(its->first, its->second);
-  }
-
-  for (
-    map<wxString, bool>::const_iterator itb = m_BoolValues.begin();
-    itb != m_BoolValues.end();
-    ++itb)
-  {
-    Write(itb->first, itb->second);
+    if (var.GetType() == "bool")
+      Write(it->first, var.GetBool());
+    else if (var.GetType() == "long")
+      Write(it->first, var.GetLong());
+    else if (var.GetType() == "string")
+      Write(it->first, var.GetString());
   }
 }
 
 long wxExConfig::Get(const wxString& key, long default_value) 
 {
-  std::map<wxString, long>::const_iterator it = m_LongValues.find(key);
+  std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
 
-  if (it != m_LongValues.end())
+  if (it != m_Values.end())
   {
-    return it->second;
+    return it->second.GetLong();
   }
   else
   {
     const long config_value = Read(key, default_value);
-    m_LongValues.insert(std::make_pair(key, config_value));
+    m_Values.insert(std::make_pair(key, config_value));
     return config_value;
   }
 }
@@ -78,9 +69,9 @@ long wxExConfig::Get(const wxString& key, long default_value)
 const wxString wxExConfig::Get(
   const wxString& key, const wxString& default_value, const wxChar field_separator) 
 {
-  std::map<wxString, wxString>::const_iterator it = m_StringValues.find(key);
+  std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
 
-  if (it != m_StringValues.end())
+  if (it != m_Values.end())
   {
     const wxString value = it->second;
     return value.BeforeFirst(field_separator);
@@ -88,23 +79,23 @@ const wxString wxExConfig::Get(
   else
   {
     const wxString value = Read(key, default_value);
-    m_StringValues.insert(std::make_pair(key, value));
+    m_Values.insert(std::make_pair(key, value));
     return value.BeforeFirst(field_separator);
   }
 }
 
 bool wxExConfig::GetBool(const wxString& key, bool default_value) 
 {
-  std::map<wxString, bool>::const_iterator it = m_BoolValues.find(key);
+  std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
 
-  if (it != m_BoolValues.end())
+  if (it != m_Values.end())
   {
-    return it->second;
+    return it->second.GetBool();
   }
   else
   {
     const bool config_value = ReadBool(key, default_value);
-    m_BoolValues.insert(std::make_pair(key, config_value));
+    m_Values.insert(std::make_pair(key, config_value));
     return config_value;
   }
 }
@@ -114,11 +105,11 @@ const wxString wxExConfig::GetBoolKeys() const
   wxString text;
 
   for (
-    map<wxString, bool>::const_iterator itb = m_BoolValues.begin();
-    itb != m_BoolValues.end();
+    map<wxString, wxVariant>::const_iterator itb = m_Values.begin();
+    itb != m_Values.end();
     ++itb)
   {
-    text << itb->first << "\t" << itb->second << "\n";
+    text << itb->first << "\t" << itb->second.GetBool() << "\n";
   }
 
   return text;
@@ -129,11 +120,11 @@ const wxString wxExConfig::GetLongKeys() const
   wxString text;
 
   for (
-    map<wxString, long>::const_iterator itb = m_LongValues.begin();
-    itb != m_LongValues.end();
+    map<wxString, wxVariant>::const_iterator itb = m_Values.begin();
+    itb != m_Values.end();
     ++itb)
   {
-    text << itb->first << "\t" << itb->second << "\n";
+    text << itb->first << "\t" << itb->second.GetLong() << "\n";
   }
 
   return text;
@@ -144,11 +135,11 @@ const wxString wxExConfig::GetStringKeys() const
   wxString text;
 
   for (
-    map<wxString, wxString>::const_iterator itb = m_StringValues.begin();
-    itb != m_StringValues.end();
+    map<wxString, wxVariant>::const_iterator itb = m_Values.begin();
+    itb != m_Values.end();
     ++itb)
   {
-    text += itb->first + "\t" + itb->second + "\n";
+    text += itb->first + "\t" + itb->second.GetString() + "\n";
   }
 
   return text;
@@ -156,22 +147,22 @@ const wxString wxExConfig::GetStringKeys() const
 
 void wxExConfig::Set(const wxString& key, long value) 
 {
-  m_LongValues[key] = value;
+  m_Values[key] = value;
 }
 
 void wxExConfig::Set(const wxString& key, const wxString& value) 
 {
-  m_StringValues[key] = value;
+  m_Values[key] = value;
 }
 
 void wxExConfig::SetBool(const wxString& key, bool value) 
 {
-  m_BoolValues[key] = value;
+  m_Values[key] = value;
 }
 
 void wxExConfig::Toggle(const wxString& key) 
 {
-  m_BoolValues[key] = !m_BoolValues[key];
+  m_Values[key] = !m_Values[key].GetBool();
 }
 
 void wxExConfig::SetFindReplaceData(
