@@ -13,12 +13,7 @@
 #include <wx/extension/extension.h>
 #include <wx/extension/header.h>
 #include <wx/extension/svn.h>
-#include <wx/extension/report/stc.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/frame.h>
-#include <wx/extension/report/listview.h>
-#include <wx/extension/report/textfile.h>
-#include <wx/extension/report/util.h>
+#include <wx/extension/report/report.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
   EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExSTCWithFrame::OnCommand)

@@ -10,14 +10,7 @@
 \******************************************************************************/
 
 #include <wx/stdpaths.h>
-#include <wx/extension/util.h>
-#include <wx/extension/report/frame.h>
-#include <wx/extension/report/defs.h>
-#include <wx/extension/report/listitem.h>
-#include <wx/extension/report/listview.h>
-#include <wx/extension/report/process.h>
-#include <wx/extension/report/stc.h>
-#include <wx/extension/report/util.h>
+#include <wx/extension/report/report.h>
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
