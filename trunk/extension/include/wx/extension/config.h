@@ -57,14 +57,8 @@ public:
   /// it is added to the map of bool values.
   bool GetBool(const wxString& key, bool default_value = true); 
 
-  /// Gets all longs keys as one string.
-  const wxString GetLongKeys() const;
-
-  /// Gets all string keys as one string.
-  const wxString GetStringKeys() const;
-
-  /// Gets all bool keys as one string.
-  const wxString GetBoolKeys() const;
+  /// Gets all keys as one string.
+  const wxString GetKeys() const;
 
   /// Gets the find replace data.
   wxExFindReplaceData* GetFindReplaceData() const {

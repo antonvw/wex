@@ -101,37 +101,7 @@ bool wxExConfig::GetBool(const wxString& key, bool default_value)
   }
 }
 
-const wxString wxExConfig::GetBoolKeys() const
-{
-  wxString text;
-
-  for (
-    map<wxString, wxVariant>::const_iterator itb = m_Values.begin();
-    itb != m_Values.end();
-    ++itb)
-  {
-    text << itb->first << "\t" << itb->second.GetBool() << "\n";
-  }
-
-  return text;
-}
-
-const wxString wxExConfig::GetLongKeys() const
-{
-  wxString text;
-
-  for (
-    map<wxString, wxVariant>::const_iterator itb = m_Values.begin();
-    itb != m_Values.end();
-    ++itb)
-  {
-    text << itb->first << "\t" << itb->second.GetLong() << "\n";
-  }
-
-  return text;
-}
-
-const wxString wxExConfig::GetStringKeys() const
+const wxString wxExConfig::GetKeys() const
 {
   wxString text;
 
