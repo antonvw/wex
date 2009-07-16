@@ -16,6 +16,7 @@
 #include <wx/spinctrl.h>
 #include <wx/extension/configdialog.h>
 #include <wx/extension/stc.h> // for PathListInit
+#include <wx/extension/util.h>
 
 using namespace std;
 

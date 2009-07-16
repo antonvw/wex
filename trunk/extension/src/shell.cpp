@@ -11,6 +11,7 @@
 
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/app.h> // for wxExApp
 
 #if wxUSE_GUI
 
