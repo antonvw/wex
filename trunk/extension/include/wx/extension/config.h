@@ -41,24 +41,7 @@ public:
 
   /// Gets the key as a long. If the key is not present,
   /// it is added to the map of long values.
-  long Get(
-    const wxString& key, long default_value) {
-    std::map<wxString, long>::const_iterator it = m_LongValues.find(key);
-
-    if (it != m_LongValues.end())
-    {
-      return it->second;
-    }
-    else
-    {
-      const long config_value = Read(key, default_value);
-      m_LongValues.insert(std::make_pair(key, config_value));
-      return config_value;
-    }
-  }
-
-  /// Gets all longs keys as one string.
-  const wxString GetLongKeys() const;
+  long Get(const wxString& key, long default_value);
 
   /// Gets the key as a string. If the key is not present,
   /// it is added to the map of string values.
@@ -68,42 +51,17 @@ public:
   const wxString Get(
     const wxString& key,
     const wxString& default_value = wxEmptyString,
-    const wxChar field_separator = ',') {
-    std::map<wxString, wxString>::const_iterator it = m_StringValues.find(key);
-
-    if (it != m_StringValues.end())
-    {
-      const wxString value = it->second;
-      return value.BeforeFirst(field_separator);
-    }
-    else
-    {
-      const wxString value = Read(key, default_value);
-      m_StringValues.insert(std::make_pair(key, value));
-      return value.BeforeFirst(field_separator);
-    }
-  }
-
-  /// Gets all string keys as one string.
-  const wxString GetStringKeys() const;
+    const wxChar field_separator = ',');
 
   /// Gets the key as a bool. If the key is not present,
   /// it is added to the map of bool values.
-  bool GetBool(
-    const wxString& key, bool default_value = true) {
-    std::map<wxString, bool>::const_iterator it = m_BoolValues.find(key);
+  bool GetBool(const wxString& key, bool default_value = true); 
 
-    if (it != m_BoolValues.end())
-    {
-      return it->second;
-    }
-    else
-    {
-      const bool config_value = ReadBool(key, default_value);
-      m_BoolValues.insert(std::make_pair(key, config_value));
-      return config_value;
-    }
-  }
+  /// Gets all longs keys as one string.
+  const wxString GetLongKeys() const;
+
+  /// Gets all string keys as one string.
+  const wxString GetStringKeys() const;
 
   /// Gets all bool keys as one string.
   const wxString GetBoolKeys() const;
@@ -113,24 +71,19 @@ public:
     return m_FindReplaceData;};
 
   /// Sets key as a long.
-  void Set(const wxString& key, long value) {
-    m_LongValues[key] = value;};
+  void Set(const wxString& key, long value);
 
   /// Sets key as a string.
-  void Set(const wxString& key, const wxString& value) {
-    m_StringValues[key] = value;};
+  void Set(const wxString& key, const wxString& value);
 
   /// Sets key as a bool.
-  void SetBool(const wxString& key, bool value) {
-    m_BoolValues[key] = value;};
+  void SetBool(const wxString& key, bool value);
 
   /// Sets flags in find replace data.
-  void SetFindReplaceData(
-    bool matchword, bool matchcase, bool regularexpression);
+  void SetFindReplaceData(bool matchword, bool matchcase, bool regularexpression);
 
   /// Toggles boolean key value.
-  void Toggle(const wxString& key) {
-    m_BoolValues[key] = !m_BoolValues[key];}
+  void Toggle(const wxString& key);
 private:
   wxExFindReplaceData* m_FindReplaceData;
   std::map<wxString, bool> m_BoolValues;
