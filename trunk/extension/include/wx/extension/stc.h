@@ -12,8 +12,8 @@
 #ifndef _EXSTC_H
 #define _EXSTC_H
 
+#include <wx/print.h> 
 #include <wx/stc/stc.h>
-#include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/base.h> // for wxExInterface
 
 class wxExConfigDialog;
@@ -278,14 +278,7 @@ private:
   void SetStyle(const wxString& style);
 
   // static access
-  static long GetConfig(const wxString& key, long default_value) {
-    return wxExApp::GetConfig(GetConfigKeyBase() + key, default_value);};
-  static wxString GetConfig(const wxString& key, const wxString& default_value = wxEmptyString) {
-    return wxExApp::GetConfig(GetConfigKeyBase() + key, default_value);};
-  static bool GetConfigBool(const wxString& key, bool default_value = false) {
-    return wxExApp::GetConfigBool(GetConfigKeyBase() + key, default_value);};
-  static wxString GetConfigKeyBase() {
-    return "Edit/";};
+  static wxString GetConfigKeyBase() {return "Edit/";};
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;

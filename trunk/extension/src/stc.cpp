@@ -14,6 +14,7 @@
 #include <wx/tokenzr.h>
 #include <wx/url.h> // for wxURL
 #include <wx/extension/stc.h>
+#include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/configdialog.h>
 #include <wx/extension/textfile.h>
 
@@ -727,8 +728,10 @@ int wxExSTC::ConfigDialog(
     page = _("Setting");
   }
 
-  items.push_back(wxExConfigItem(_("Tab width"), 1, (int)GetConfig(_("Edge Column"), 80), page));
-  items.push_back(wxExConfigItem(_("Indent"), 1, (int)GetConfig(_("Edge Column"), 80), page));
+  items.push_back(wxExConfigItem(
+    _("Tab width"), 1, (int)wxExApp::GetConfig(GetConfigKeyBase() + _("Edge Column"), 80), page));
+  items.push_back(wxExConfigItem(
+    _("Indent"), 1, (int)wxExApp::GetConfig(GetConfigKeyBase() + _("Edge Column"), 80), page));
 
   set<wxString> bchoices;
   bchoices.insert(_("End of line"));
@@ -841,27 +844,28 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet()
 {
-  CallTipSetBackground(GetConfig(_("CallTip"), wxExColourToLong(wxColour("YELLOW"))));
+  CallTipSetBackground(wxExApp::GetConfig(
+    GetConfigKeyBase() + _("CallTip"), wxExColourToLong(wxColour("YELLOW"))));
 
-  SetEdgeColumn(GetConfig(_("Edge column"), 80)); // see also lexer
-  SetEdgeMode(GetConfig(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
-  SetFoldFlags(GetConfig(_("Fold flags"),
+  SetEdgeColumn(wxExApp::GetConfig(GetConfigKeyBase() + _("Edge column"), 80)); // see also lexer
+  SetEdgeMode(wxExApp::GetConfig(GetConfigKeyBase() + _("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
+  SetFoldFlags(wxExApp::GetConfig(GetConfigKeyBase() + _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  SetIndent(GetConfig(_("Indent"), 4));
-  SetIndentationGuides(GetConfigBool(_("Indentation guide"), false));
+  SetIndent(wxExApp::GetConfig(GetConfigKeyBase() + _("Indent"), 4));
+  SetIndentationGuides(wxExApp::GetConfigBool(GetConfigKeyBase() + _("Indentation guide"), false));
 
-  SetMarginWidth(m_MarginDividerNumber, GetConfig(_("Divider"), 16));
-  SetMarginWidth(m_MarginFoldingNumber, GetConfig(_("Folding"), 16));
+  SetMarginWidth(m_MarginDividerNumber, wxExApp::GetConfig(GetConfigKeyBase() + _("Divider"), 16));
+  SetMarginWidth(m_MarginFoldingNumber, wxExApp::GetConfig(GetConfigKeyBase() + _("Folding"), 16));
   SetMarginWidth(m_MarginLineNumber,
-    (GetConfigBool(_("Line numbers"), false) ?
-      GetConfig(_("Line number"), TextWidth(m_MarginLineNumber, "999999")): 0));
+    (wxExApp::GetConfigBool(GetConfigKeyBase() + _("Line numbers"), false) ?
+      wxExApp::GetConfig(GetConfigKeyBase() + _("Line number"), TextWidth(m_MarginLineNumber, "999999")): 0));
 
-  SetTabWidth(GetConfig(_("Tab width"), 4));
-  SetUseTabs(GetConfigBool(_("Use tabs"), false));
-  SetViewEOL(GetConfigBool(_("End of line"), false));
-  SetViewWhiteSpace(GetConfig(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
-  SetWrapMode(GetConfig(_("Wrap line"), wxSTC_WRAP_NONE));
-  SetWrapVisualFlags(GetConfig(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
+  SetTabWidth(wxExApp::GetConfig(GetConfigKeyBase() + _("Tab width"), 4));
+  SetUseTabs(wxExApp::GetConfigBool(GetConfigKeyBase() + _("Use tabs"), false));
+  SetViewEOL(wxExApp::GetConfigBool(GetConfigKeyBase() + _("End of line"), false));
+  SetViewWhiteSpace(wxExApp::GetConfig(GetConfigKeyBase() + _("WhiteSpace"), wxSTC_WS_INVISIBLE));
+  SetWrapMode(wxExApp::GetConfig(GetConfigKeyBase() + _("Wrap line"), wxSTC_WRAP_NONE));
+  SetWrapVisualFlags(wxExApp::GetConfig(GetConfigKeyBase() + _("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 }
 
 void wxExSTC::ControlCharDialog(const wxString& caption)
@@ -2087,7 +2091,7 @@ void wxExSTC::PathListInit()
   m_PathList.Clear();
 
   wxStringTokenizer tkz(
-    GetConfig(_("Include directory")),
+    wxExApp::GetConfig(GetConfigKeyBase() + _("Include directory")),
     ";");
 
   while (tkz.HasMoreTokens())
@@ -2348,10 +2352,10 @@ void wxExSTC::SetFolding()
 {
   if (GetProperty("fold") == "1")
   {
-    SetMarginWidth(m_MarginFoldingNumber, GetConfig("Folding", 16));
+    SetMarginWidth(m_MarginFoldingNumber, wxExApp::GetConfig(GetConfigKeyBase() + "Folding", 16));
 
     SetFoldFlags(
-      GetConfig(_("Fold Flags"),
+      wxExApp::GetConfig(GetConfigKeyBase() + _("Fold Flags"),
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
 
     // C Header files usually contain #ifdef statements.
@@ -2471,7 +2475,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 
   Colourise();
 
-  if (GetLineCount() > GetConfig(_("Auto fold"), -1))
+  if (GetLineCount() > wxExApp::GetConfig(GetConfigKeyBase() + _("Auto fold"), -1))
   {
     FoldAll();
   }
