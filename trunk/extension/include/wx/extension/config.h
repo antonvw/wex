@@ -65,7 +65,8 @@ public:
   const wxString GetKeys() const;
 
   /// Sets key to value.
-  void Set(const wxString& key, const wxVariant& value);
+  void Set(const wxString& key, const wxVariant& value) {
+    m_Values[key] = value;};
 
   /// Sets flags in find replace data.
   void SetFindReplaceData(

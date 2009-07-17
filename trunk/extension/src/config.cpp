@@ -118,18 +118,15 @@ const wxString wxExConfig::GetKeys() const
   return text;
 }
 
-void wxExConfig::Set(const wxString& key, const wxVariant& value)
-{
-  m_Values[key] = value;
-}
-
 void wxExConfig::Toggle(const wxString& key) 
 {
   m_Values[key] = !m_Values[key].GetBool();
 }
 
 void wxExConfig::SetFindReplaceData(
-  bool matchword, bool matchcase, bool regularexpression)
+  bool matchword, 
+  bool matchcase, 
+  bool regularexpression)
 {
   m_FindReplaceData->SetMatchWord(matchword);
   m_FindReplaceData->SetMatchCase(matchcase);
