@@ -731,13 +731,16 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 
   switch (event.GetId())
   {
-  // These are added to disable changing this listview if it is read-only,
-  // or if there is no file involved.
+  // These are added to disable changing this listview if it is read-only etc.
   case wxID_CLEAR:
   case wxID_CUT:
   case wxID_DELETE:
   case wxID_PASTE:
-    if (m_FileName.GetStat().IsOk())
+    if (m_Type == LIST_HISTORY)
+    {
+      // Do nothing.
+    }
+    else if (m_FileName.GetStat().IsOk())
     {
       if (!m_FileName.GetStat().IsReadOnly())
       {
@@ -974,10 +977,22 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
       style = 0;
     }
 
-    if (m_FileName.FileExists() && m_FileName.GetStat().IsReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
+    if ((m_FileName.FileExists() && m_FileName.GetStat().IsReadOnly()) ||
+         m_Type == LIST_HISTORY)
+    {
+      style |= wxExMenu::MENU_IS_READ_ONLY;
+    }
+
     if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
     if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= wxExMenu::MENU_ALLOW_CLEAR;
+
+    if (GetSelectedItemCount() == 0 && 
+        GetItemCount() > 0 &&
+        m_Type != LIST_HISTORY) 
+    {
+      style |= wxExMenu::MENU_ALLOW_CLEAR;
+    }
+
     wxExMenu menu(style);
 
     BuildPopupMenu(menu);
