@@ -43,7 +43,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val2");
   m_Config->Set("keylong", 15);
   CPPUNIT_ASSERT(m_Config->Get("keylong", 7) == 15);
-  m_Config->SetBool("keybool", false);
+  m_Config->Set("keybool", false);
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", true) == false);
   m_Config->Toggle("keybool");
   CPPUNIT_ASSERT(m_Config->GetBool("keybool", false));

@@ -47,7 +47,7 @@ wxExConfig::~wxExConfig()
       Write(it->first, var.GetLong());
     else if (var.GetType() == "string")
       Write(it->first, var.GetString());
-	else wxFAIL;
+    else wxFAIL;
   }
 }
 
@@ -68,7 +68,9 @@ long wxExConfig::Get(const wxString& key, long default_value)
 }
 
 const wxString wxExConfig::Get(
-  const wxString& key, const wxString& default_value, const wxChar field_separator) 
+  const wxString& key, 
+  const wxString& default_value, 
+  const wxChar field_separator) 
 {
   std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
 
@@ -116,17 +118,7 @@ const wxString wxExConfig::GetKeys() const
   return text;
 }
 
-void wxExConfig::Set(const wxString& key, long value) 
-{
-  m_Values[key] = value;
-}
-
-void wxExConfig::Set(const wxString& key, const wxString& value) 
-{
-  m_Values[key] = value;
-}
-
-void wxExConfig::SetBool(const wxString& key, bool value) 
+void wxExConfig::Set(const wxString& key, const wxVariant& value)
 {
   m_Values[key] = value;
 }
@@ -170,10 +162,10 @@ wxExFindReplaceData::~wxExFindReplaceData()
   m_Config->Set(_("Find what"), GetFindString());
   m_Config->Set(_("Replace with"), GetReplaceString());
 
-  m_Config->SetBool(_("Match case"), MatchCase());
-  m_Config->SetBool(_("Match whole word"), MatchWord());
-  m_Config->SetBool(_("Search down"), (GetFlags() & wxFR_DOWN) > 0);
-  m_Config->SetBool(_("Regular expression"), m_IsRegularExpression);
+  m_Config->Set(_("Match case"), MatchCase());
+  m_Config->Set(_("Match whole word"), MatchWord());
+  m_Config->Set(_("Search down"), (GetFlags() & wxFR_DOWN) > 0);
+  m_Config->Set(_("Regular expression"), m_IsRegularExpression);
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)

@@ -318,7 +318,7 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   }
 
 #if wxUSE_CHECKBOX
-  wxExApp::SetConfigBool("HexMode", GetHexModeCheckBox()->GetValue());
+  wxExApp::SetConfig("HexMode", GetHexModeCheckBox()->GetValue());
 #endif
   wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
 
@@ -647,7 +647,7 @@ and saved in the same directory as where the executable is."));
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
-    wxExApp::SetConfigBool("AllowSync", GetSyncCheckBox()->GetValue());
+    wxExApp::SetConfig("AllowSync", GetSyncCheckBox()->GetValue());
 #endif
     break;
 

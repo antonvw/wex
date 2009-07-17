@@ -670,7 +670,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)it->m_Control;
-      m_Config->SetBool(m_ConfigGroup + cb->GetName(), cb->GetValue());
+      m_Config->Set(m_ConfigGroup + cb->GetName(), cb->GetValue());
       }
       break;
 
@@ -724,7 +724,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         }
         else
         {
-          m_Config->SetBool(m_ConfigGroup + *b, clb->IsChecked(item));
+          m_Config->Set(m_ConfigGroup + *b, clb->IsChecked(item));
         }
 
         item++;

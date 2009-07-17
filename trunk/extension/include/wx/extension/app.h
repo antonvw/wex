@@ -72,17 +72,9 @@ public:
     if (m_Logging) return wxExLog(text);
     else           return false;};
 
-  /// Sets key as a long.
-  static void SetConfig(const wxString& key, long value)
+  /// Sets key.
+  static void SetConfig(const wxString& key, const wxVariant& value)
     {m_Config->Set(key, value);}
-
-  /// Sets key as a string.
-  static void SetConfig(const wxString& key, const wxString& value)
-    {m_Config->Set(key, value);}
-
-  /// Sets key as a bool.
-  static void SetConfigBool(const wxString& key, bool value = true)
-    {m_Config->SetBool(key, value);}
 
   /// Sets logging as specified.
   /// If the logging is true and the logfile does not exist, it is created.

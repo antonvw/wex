@@ -40,11 +40,11 @@ public:
  ~wxExConfig();
 
   /// Gets the key as a long. If the key is not present,
-  /// it is added to the map of long values.
+  /// it is added to the map.
   long Get(const wxString& key, long default_value);
 
   /// Gets the key as a string. If the key is not present,
-  /// it is added to the map of string values.
+  /// it is added to the map.
   /// This also works for comboboxes,
   /// as long as the values are separated by default row delimiter,
   /// as then it returns value before this delimiter.
@@ -54,27 +54,24 @@ public:
     const wxChar field_separator = ',');
 
   /// Gets the key as a bool. If the key is not present,
-  /// it is added to the map of bool values.
+  /// it is added to the map.
   bool GetBool(const wxString& key, bool default_value = true); 
-
-  /// Gets all keys as one string.
-  const wxString GetKeys() const;
 
   /// Gets the find replace data.
   wxExFindReplaceData* GetFindReplaceData() const {
     return m_FindReplaceData;};
 
-  /// Sets key as a long.
-  void Set(const wxString& key, long value);
+  /// Gets all keys as one string.
+  const wxString GetKeys() const;
 
-  /// Sets key as a string.
-  void Set(const wxString& key, const wxString& value);
-
-  /// Sets key as a bool.
-  void SetBool(const wxString& key, bool value);
+  /// Sets key to value.
+  void Set(const wxString& key, const wxVariant& value);
 
   /// Sets flags in find replace data.
-  void SetFindReplaceData(bool matchword, bool matchcase, bool regularexpression);
+  void SetFindReplaceData(
+    bool matchword, 
+    bool matchcase, 
+    bool regularexpression);
 
   /// Toggles boolean key value.
   void Toggle(const wxString& key);
