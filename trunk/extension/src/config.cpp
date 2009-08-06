@@ -51,58 +51,6 @@ wxExConfig::~wxExConfig()
   }
 }
 
-long wxExConfig::Get(const wxString& key, long default_value) 
-{
-  std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-  if (it != m_Values.end())
-  {
-    return it->second.GetLong();
-  }
-  else
-  {
-    const long config_value = Read(key, default_value);
-    m_Values.insert(std::make_pair(key, config_value));
-    return config_value;
-  }
-}
-
-const wxString wxExConfig::Get(
-  const wxString& key, 
-  const wxString& default_value, 
-  const wxChar field_separator) 
-{
-  std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-  if (it != m_Values.end())
-  {
-    const wxString value = it->second;
-    return value.BeforeFirst(field_separator);
-   }
-  else
-  {
-    const wxString value = Read(key, default_value);
-    m_Values.insert(std::make_pair(key, value));
-    return value.BeforeFirst(field_separator);
-  }
-}
-
-bool wxExConfig::GetBool(const wxString& key, bool default_value) 
-{
-  std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-  if (it != m_Values.end())
-  {
-    return it->second.GetBool();
-  }
-  else
-  {
-    const bool config_value = ReadBool(key, default_value);
-    m_Values.insert(std::make_pair(key, config_value));
-    return config_value;
-  }
-}
-
 const wxString wxExConfig::GetKeys() const
 {
   wxString text;
