@@ -342,7 +342,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (event.GetId() == ID_EDIT_SVN_CAT ||
         event.GetId() == ID_EDIT_SVN_BLAME)
     {
-      if (svn.Execute() == 0)
+      if (svn.Execute(this) == 0)
       {
         OpenFile(
           wxExFileName(m_DirCtrl->GetFilePath()), 
