@@ -181,7 +181,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     if (command.GetId() == ID_EDIT_SVN_CAT ||
         command.GetId() == ID_EDIT_SVN_BLAME)
     {
-      if (svn.Execute() == 0)
+      if (svn.Execute(this) == 0)
       {
         m_Frame->OpenFile(
           m_FileName, 
