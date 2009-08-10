@@ -56,11 +56,11 @@ const wxString wxExConfig::GetKeys() const
   wxString text;
 
   for (
-    map<wxString, wxVariant>::const_iterator itb = m_Values.begin();
-    itb != m_Values.end();
-    ++itb)
+    map<wxString, wxVariant>::const_iterator it = m_Values.begin();
+    it != m_Values.end();
+    ++it)
   {
-    text += itb->first + "\t" + itb->second.GetString() + "\n";
+    text += it->first + "\t" + it->second.GetString() + "\n";
   }
 
   return text;
