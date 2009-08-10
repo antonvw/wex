@@ -3,7 +3,7 @@
 # Purpose: script to test all
 # RCS-ID:  $Id$
 
-TESTDIR=./vcmswud/
+TESTDIR=./gccgtk2_dll/
 
 ORG=$PWD
 
