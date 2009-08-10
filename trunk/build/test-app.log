@@ -1,0 +1,13 @@
+..F
+
+
+!!!FAILURES!!!
+Test Results:
+Run:  2   Failures: 1   Errors: 0
+
+
+1) test: testMethods (F) line: 72 ../extension/test/app/test.cpp
+assertion failed
+- Expression: m_STC->Open(wxExFileName("../test.bin"))
+
+

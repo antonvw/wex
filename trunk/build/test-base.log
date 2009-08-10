@@ -1,0 +1,20 @@
+..F.F.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:74
+.wxExConfig::Get:1298 wxConfig::Read:1198
+
+
+
+!!!FAILURES!!!
+Test Results:
+Run:  5   Failures: 2   Errors: 0
+
+
+1) test: testMethods (F) line: 54 ../extension/test/base/test.cpp
+assertion failed
+- Expression: m_File->GetStat().IsOk()
+
+
+2) test: testTiming (F) line: 172 ../extension/test/base/test.cpp
+assertion failed
+- Expression: file.IsOpened()
+
+
