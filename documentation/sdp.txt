@@ -8,7 +8,7 @@ General
     https://svn.xp-dev.com/svn/antonvw-wxprojects/
 
 - Subversion access
-    under windows TortoiseSVN is used (TortoiseSVN 1.6.3)
+    under windows TortoiseSVN is used (TortoiseSVN 1.6.4)
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.5.4 (r33841))
 
