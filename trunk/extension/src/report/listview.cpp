@@ -638,7 +638,6 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
-    wxLogError("Text is empty");
     return false;
   }
 
