@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -574,7 +574,6 @@ bool wxExListView::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
-    wxLogError("Text is empty");
     return false;
   }
 
