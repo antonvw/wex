@@ -16,6 +16,4 @@ $TESTDIR/wxex-test-app > $ORG/test-app.log
 echo "-- test report --"
 $TESTDIR/wxex-test-rep > $ORG/test-rep.log
 
-cd $ORG
-
 svn commit -m "results of running testall"
