@@ -226,6 +226,10 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   {
     m_NotebookWithEditors->ForEach(ID_ALL_STC_CONFIG_GET);
   }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 wxExListView* MDIFrame::GetListView()
