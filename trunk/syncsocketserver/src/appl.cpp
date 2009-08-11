@@ -540,7 +540,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         if (size <= 0)
         {
-          wxLogMessage("Illegal buffer size, skipping socket input data");
+          wxLogError("Illegal buffer size, skipping socket input data");
           return;
         }
 
