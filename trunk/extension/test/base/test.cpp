@@ -12,7 +12,7 @@
 
 #include <TestCaller.h>
 #include "test.h"
-#define TEST_FILE "../test.h"
+#define TEST_FILE "./test.h"
 
 void wxExTestFixture::setUp()
 {

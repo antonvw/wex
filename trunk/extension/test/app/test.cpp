@@ -14,7 +14,7 @@
 #include <wx/extension/header.h>
 #include <wx/extension/tool.h>
 #include "test.h"
-#define TEST_FILE "../test.h"
+#define TEST_FILE "./test.h"
 
 void wxExAppTestFixture::setUp()
 {
