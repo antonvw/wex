@@ -21,7 +21,7 @@ void wxExTestFixture::setUp()
   m_FileName = new wxExFileName(TEST_FILE);
   m_FileNameStatistics = new wxExFileNameStatistics(TEST_FILE);
   m_Lexer = new wxExLexer();
-  m_Lexers = new wxExLexers(wxFileName("../../extension/data/lexers.xml"));
+  m_Lexers = new wxExLexers(wxFileName("../extension/data/lexers.xml"));
   m_RCS = new wxExRCS();
   m_Stat = new wxExStat(TEST_FILE);
   m_Statistics = new wxExStatistics<long>();
