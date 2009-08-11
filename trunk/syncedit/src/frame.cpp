@@ -429,9 +429,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 #endif
 #ifdef EX_PORTABLE
     info.SetDescription(
-_("This program offers a portable text or binary editor\n\
-with automatic syncing. All its config files are read\n\
-and saved in the same directory as where the executable is."));
+      _("This program offers a portable text or binary editor\n"
+        "with automatic syncing. All its config files are read\n"
+        "and saved in the same directory as where the executable is."));
 
 #else
     info.SetDescription(_("This program offers a text or binary editor with automatic syncing."));
