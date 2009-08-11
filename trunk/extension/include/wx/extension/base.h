@@ -185,6 +185,14 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
+/// Flags for wxExStatusText.
+enum wxExStatusFlags
+{
+  STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
+  STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
+  STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
+};
+
 /// Offers a frame with easy statusbar methods, 
 /// and a toolbar if you call CreateToolBar.
 class wxExFrame : public wxFrame
@@ -260,7 +268,10 @@ public:
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane = "PaneText");
-#endif
+
+  /// Shows filename info on the statusbar.
+  static void StatusText(const wxExFileName& filename, long flags = STAT_DEFAULT);
+#endif // wxUSE_STATUSBAR
 protected:
   /// Writes the current frame size and position to the config.
   void OnClose(wxCloseEvent& event);

@@ -890,7 +890,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
         )
     {
       item.Update();
-      item.GetFileName().StatusText(STAT_SYNC | STAT_FULLPATH);
+      wxExFrame::StatusText(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
       m_ItemUpdated = true;
     }
 
@@ -935,7 +935,7 @@ void wxExListViewFile::OnList(wxListEvent& event)
       if ((m_Type != LIST_PROCESS) ||
           (m_Type == LIST_PROCESS && item.GetFileName().FileExists()))
       {
-        item.GetFileName().StatusText(STAT_FULLPATH);
+        wxExFrame::StatusText(item.GetFileName(), STAT_FULLPATH);
       }
     }
 
@@ -958,7 +958,7 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     {
       if (m_FileName.FileExists())
       {
-        m_FileName.StatusText();
+        wxExFrame::StatusText(m_FileName);
       }
     }
   }

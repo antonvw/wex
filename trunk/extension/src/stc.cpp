@@ -2054,7 +2054,7 @@ bool wxExSTC::Open(
   else
   {
 #if wxUSE_STATUSBAR
-    m_FileName.StatusText(STAT_SYNC);
+    wxExFrame::StatusText(m_FileName, STAT_SYNC);
     UpdateStatusBar("PaneLines");
 #endif
   }
@@ -2162,7 +2162,7 @@ void wxExSTC::PrintPreview()
 void wxExSTC::PropertiesMessage()
 {
 #if wxUSE_STATUSBAR
-  m_FileName.StatusText();
+  wxExFrame::StatusText(m_FileName);
   UpdateStatusBar("PaneFileType");
   UpdateStatusBar("PaneLexer");
   UpdateStatusBar("PaneLines");

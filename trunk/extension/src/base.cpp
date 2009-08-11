@@ -355,6 +355,31 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
     m_StatusBar->SetStatusText(text, field);
   }
 }
+
+void wxExFrame::StatusText(const wxExFileName& filename, long flags)
+{
+  wxString text; // clear status bar for empty or not existing or not initialized file names
+
+  if (filename.IsOk())
+  {
+    const wxString path = (flags & STAT_FULLPATH
+      ? filename.GetFullPath(): filename.GetFullName());
+
+    text += path;
+
+    if (filename.GetStat().IsOk())
+    {
+      const wxString what = (flags & STAT_SYNC
+        ? _("Synchronized"): _("Modified"));
+      const wxString time = (flags & STAT_SYNC
+        ? wxDateTime::Now().Format(): filename.GetStat().GetModificationTime());
+      text += " " + what + " " + time;
+    }
+  }
+
+  StatusText(text);
+}
+
 #endif // wxUSE_STATUSBAR
 
 void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)

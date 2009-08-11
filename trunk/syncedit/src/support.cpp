@@ -268,6 +268,6 @@ void Frame::OnNotebook(wxWindowID id, wxWindow* page)
   else if (id == NOTEBOOK_PROJECTS)
   {
     SetTitle(wxEmptyString, ((wxExListViewFile*)page)->GetFileName().GetName());
-    ((wxExListViewFile*)page)->GetFileName().StatusText();
+    wxExFrame::StatusText(((wxExListViewFile*)page)->GetFileName());
   }
 }

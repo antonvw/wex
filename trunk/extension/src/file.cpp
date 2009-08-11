@@ -177,7 +177,7 @@ void wxExFile::FileSync()
 {
   if (FileOpen(m_FileName))
   {
-    m_FileName.StatusText(STAT_SYNC | STAT_FULLPATH);
+    wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
   }
 }
 
@@ -263,32 +263,6 @@ void wxExFileName::SetLexer(
     m_Lexer = wxExApp::GetLexers()->FindByName(lexer);
   }
 }
-
-#if wxUSE_STATUSBAR
-void wxExFileName::StatusText(long flags) const
-{
-  wxString text; // clear status bar for empty or not existing or not initialized file names
-
-  if (IsOk())
-  {
-    const wxString path = (flags & STAT_FULLPATH
-      ? GetFullPath(): GetFullName());
-
-    text += path;
-
-    if (m_Stat.IsOk())
-    {
-      const wxString what = (flags & STAT_SYNC
-        ? _("Synchronized"): _("Modified"));
-      const wxString time = (flags & STAT_SYNC
-        ? wxDateTime::Now().Format(): m_Stat.GetModificationTime());
-      text += " " + what + " " + time;
-    }
-  }
-
-  wxExFrame::StatusText(text);
-}
-#endif // wxUSE_STATUSBAR
 
 const wxString wxExStat::GetModificationTime(const wxString& format) const
 {
