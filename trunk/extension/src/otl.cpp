@@ -74,7 +74,7 @@ bool wxExOTL::Logon(
   }
   catch (otl_exception& p)
   {
-    wxLogError("'%s' during opening database: %s",
+    wxLogError("Exception: '%s' while logon to database: %s",
       p.msg,
       config->Get(_("Datasource")).c_str());
   }

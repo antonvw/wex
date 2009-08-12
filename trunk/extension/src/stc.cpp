@@ -2074,7 +2074,7 @@ void wxExSTC::PathListAdd(const wxString& path)
 {
   if (!wxFileName::DirExists(path))
   {
-    wxLogError("path: %s does not exist", path.c_str());
+    wxLogError("Path: %s does not exist", path.c_str());
     return;
   }
 
