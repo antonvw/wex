@@ -36,6 +36,8 @@ public:
   /// The process output is added to the listview.
   /// The return value is the process id and zero value indicates 
   /// that the command could not be executed.
+  /// When the process is finished, a ID_TERMINATED_PROCESS command event
+  /// is sent to the frame as specified in the constructor.
   long Execute();
   
   /// Initializes the command from config.
@@ -51,7 +53,6 @@ protected:
   void OnTimer(wxTimerEvent& event);
 private:
   // Checks whether input is available from process and updates the listview.
-  // You should call it regularly.
   bool CheckInput();
 
   virtual void OnTerminate(int pid, int status); // overriden
