@@ -52,7 +52,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
   EVT_UPDATE_UI(ID_CLEAR_STATISTICS, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_ECHO, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, MyFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_COUNT_ONLY, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SERVER_CONFIG, MyFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_TIMER_STOP, MyFrame::OnUpdateUI)
@@ -125,7 +125,7 @@ MyFrame::MyFrame(const wxString& title)
     _("Echo's received data back to client"));
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
     _("Logs data read from and written to client"));
-  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_WITH_TIMESTAMP, _("Add Timestamp"),
+  menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_COUNT_ONLY, _("Count Only"),
     _("Adds timestamp to logdata"));
   menuClient->AppendSeparator();
   menuClient->Append(ID_CLIENT_BUFFER_SIZE, wxExEllipsed(_("Buffer Size")),
@@ -406,8 +406,8 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     wxExApp::ToggleConfig(_("Log Data"));
     break;
 
-  case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
-    wxExApp::ToggleConfig(_("Add Timestamp"));
+  case ID_CLIENT_LOG_DATA_COUNT_ONLY:
+    wxExApp::ToggleConfig(_("Count Only"));
     break;
 
   case ID_HIDE:
@@ -568,14 +568,15 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
           if (wxExApp::GetConfigBool(_("Log Data")))
           {
-            if (wxExApp::GetConfigBool(_("Add Timestamp")))
+            if (wxExApp::GetConfigBool(_("Count Only")))
             {
               m_LogWindow->AppendTextForced(
-                _("read") + ": '" + text + wxString::Format("' (%d bytes)", sock->LastCount()));
+                wxString::Format(_("read: %d bytes to: %s"), 
+                  sock->LastCount(), SocketDetails(sock).c_str()));
             }
             else
             {
-              m_LogWindow->AppendTextForced(text, false);
+              m_LogWindow->AppendTextForced(text);
             }
           }
         }
@@ -650,9 +651,9 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     event.Check(wxExApp::GetConfigBool(_("Log Data")));
     break;
 
-  case ID_CLIENT_LOG_DATA_WITH_TIMESTAMP:
+  case ID_CLIENT_LOG_DATA_COUNT_ONLY:
     event.Enable(wxExApp::GetConfigBool(_("Log Data")));
-    event.Check(wxExApp::GetConfigBool(_("Add Timestamp")));
+    event.Check(wxExApp::GetConfigBool(_("Count Only")));
     break;
 
   case ID_CLEAR_STATISTICS:
@@ -895,15 +896,15 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
 
   if (wxExApp::GetConfigBool(_("Log Data")))
   {
-    if (wxExApp::GetConfigBool(_("Add Timestamp")))
+    if (wxExApp::GetConfigBool(_("Count Only")))
     {
       m_LogWindow->AppendTextForced(
-        wxString::Format(_("write: %d bytes to %s"),
+        wxString::Format(_("write: %d bytes to: %s"),
           client->LastCount(), SocketDetails(client).c_str()));
     }
     else
     {
-      m_LogWindow->AppendTextForced(buffer, false);
+      m_LogWindow->AppendTextForced(buffer);
     }
   }
 }
