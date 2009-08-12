@@ -241,7 +241,7 @@ void MyFrame::LogConnection(
 
   if (show_clients)
   {
-    text << " " << _("Clients: ") << m_Clients.size();
+    text << " " << _("clients: ") << m_Clients.size();
   }
 
   m_LogWindow->AppendTextForced(text);
@@ -481,8 +481,6 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
   if (event.GetId() == ID_SERVER)
   {
-    m_Statistics.Inc(_("Socket Server Events"));
-
     // Accept new connection if there is one in the pending
     // connections queue, else exit. We use Accept(false) for
     // non-blocking accept (although if we got here, there
@@ -496,7 +494,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
       return;
     }
 
-    m_Statistics.Inc(_("Socket Server Accepted Connections"));
+    m_Statistics.Inc(_("Connections Accepted"));
 
     sock->SetEventHandler(*this, ID_CLIENT);
     sock->SetNotify(wxSOCKET_INPUT_FLAG | wxSOCKET_LOST_FLAG);
@@ -524,13 +522,11 @@ void MyFrame::OnSocket(wxSocketEvent& event)
   }
   else if (event.GetId() == ID_CLIENT)
   {
-    m_Statistics.Inc(_("Socket Client Events"));
-
     switch (event.GetSocketEvent())
     {
       case wxSOCKET_INPUT:
       {
-        m_Statistics.Inc(_("Socket Client Input Events"));
+        m_Statistics.Inc(_("Input Events"));
 
         // We disable input events, so that the test doesn't trigger
         // wxSocketEvent again.
@@ -597,7 +593,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
       }
 
       case wxSOCKET_LOST:
-        m_Statistics.Inc(_("Socket Client Lost Events"));
+        m_Statistics.Inc(_("Connections Lost"));
         SocketLost(sock, true);
         StatusText(
           wxString::Format(_("%d clients"), m_Clients.size()),
@@ -890,11 +886,11 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
     m_LogWindow->AppendTextForced(_("not all bytes sent to socket"));
   }
 
+  m_Statistics.Inc(_("Bytes Sent"), client->LastCount());
   m_Statistics.Inc(_("Messages Sent"));
 
   StatusText(wxString::Format("%d,%d",
-    m_Statistics.Get(_("Bytes Received")),
-    m_Statistics.Inc(_("Bytes Sent"), client->LastCount())),
+    m_Statistics.Get(_("Bytes Received")), m_Statistics.Get(_("Bytes Sent"))),
     "PaneBytes");
 
   if (wxExApp::GetConfigBool(_("Log Data")))
