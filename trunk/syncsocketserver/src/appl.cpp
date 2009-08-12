@@ -386,7 +386,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     {
     long val;
     if ((val = wxGetNumberFromUser(
-      _("Input:"),
+		_("Input") + ":",
       wxEmptyString,
       _("Buffer Size"),
       wxExApp::GetConfig(_("Buffer Size"), 4096),
