@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-12 11:51+0100\n"
-"PO-Revision-Date: 2009-08-12 12:54+0100\n"
+"POT-Creation-Date: 2009-08-12 13:27+0100\n"
+"PO-Revision-Date: 2009-08-12 13:28+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -64,7 +64,7 @@ msgstr "Server configuratie"
 #: ../src/appl.cpp:124
 #: ../src/appl.cpp:402
 #: ../src/appl.cpp:550
-#: ../src/appl.cpp:646
+#: ../src/appl.cpp:647
 msgid "Echo"
 msgstr "Echo"
 
@@ -75,9 +75,9 @@ msgstr "Echo terug naar klant"
 #: ../src/appl.cpp:126
 #: ../src/appl.cpp:406
 #: ../src/appl.cpp:569
-#: ../src/appl.cpp:650
-#: ../src/appl.cpp:654
-#: ../src/appl.cpp:896
+#: ../src/appl.cpp:651
+#: ../src/appl.cpp:655
+#: ../src/appl.cpp:897
 msgid "Log Data"
 msgstr "Log data"
 
@@ -88,10 +88,10 @@ msgstr "Logs gelezen en geschreven data"
 #: ../src/appl.cpp:128
 #: ../src/appl.cpp:410
 #: ../src/appl.cpp:571
-#: ../src/appl.cpp:655
-#: ../src/appl.cpp:898
-msgid "Add Timestamp"
-msgstr "Voeg tijd toe"
+#: ../src/appl.cpp:656
+#: ../src/appl.cpp:899
+msgid "Count Only"
+msgstr "Alleen totalen"
 
 #: ../src/appl.cpp:129
 msgid "Adds timestamp to logdata"
@@ -110,7 +110,7 @@ msgid "Sets buffersize for data retrieved from client"
 msgstr "Stel buffer grootte in voor klant data"
 
 #: ../src/appl.cpp:134
-#: ../src/appl.cpp:846
+#: ../src/appl.cpp:847
 msgid "Repeat Timer"
 msgstr "Herhaal timer"
 
@@ -196,8 +196,8 @@ msgstr "Schrijf data"
 #: ../src/appl.cpp:198
 #: ../src/appl.cpp:200
 #: ../src/appl.cpp:201
-#: ../src/appl.cpp:847
-#: ../src/appl.cpp:854
+#: ../src/appl.cpp:848
+#: ../src/appl.cpp:855
 msgid "Timer"
 msgstr "Timer"
 
@@ -240,7 +240,7 @@ msgstr "server gestopt"
 
 #: ../src/appl.cpp:367
 #: ../src/appl.cpp:506
-#: ../src/appl.cpp:599
+#: ../src/appl.cpp:600
 #, c-format
 msgid "%d clients"
 msgstr "%d klanten"
@@ -250,16 +250,16 @@ msgid "Input:"
 msgstr "Invoer:"
 
 #: ../src/appl.cpp:420
-#: ../src/appl.cpp:725
+#: ../src/appl.cpp:726
 msgid "Hostname"
 msgstr "Hostnaam"
 
 #: ../src/appl.cpp:421
 #: ../src/appl.cpp:517
-#: ../src/appl.cpp:606
-#: ../src/appl.cpp:726
-#: ../src/appl.cpp:736
-#: ../src/appl.cpp:750
+#: ../src/appl.cpp:607
+#: ../src/appl.cpp:727
+#: ../src/appl.cpp:737
+#: ../src/appl.cpp:751
 msgid "Port"
 msgstr "Poort"
 
@@ -268,7 +268,7 @@ msgid "Server Config"
 msgstr "Server configuratie"
 
 #: ../src/appl.cpp:460
-#: ../src/appl.cpp:868
+#: ../src/appl.cpp:869
 msgid "timer stopped"
 msgstr "timer gestopt"
 
@@ -290,76 +290,81 @@ msgid "Input Events"
 msgstr "Invoer gebeurtenissen"
 
 #: ../src/appl.cpp:546
-#: ../src/appl.cpp:586
-#: ../src/appl.cpp:893
+#: ../src/appl.cpp:587
+#: ../src/appl.cpp:894
 msgid "Bytes Received"
 msgstr "Bytes ontvangen"
 
 #: ../src/appl.cpp:554
-#: ../src/appl.cpp:587
-#: ../src/appl.cpp:889
-#: ../src/appl.cpp:893
+#: ../src/appl.cpp:588
+#: ../src/appl.cpp:890
+#: ../src/appl.cpp:894
 msgid "Bytes Sent"
 msgstr "Bytes verstuurd"
 
 #: ../src/appl.cpp:574
-msgid "read"
-msgstr "gelezen"
+#, c-format
+msgid "read: %d bytes from: %s"
+msgstr "gelezen: %d bytes van: %s"
 
-#: ../src/appl.cpp:596
+#: ../src/appl.cpp:597
 msgid "Connections Lost"
 msgstr "Verbindingen verbroken"
 
-#: ../src/appl.cpp:605
-#: ../src/appl.cpp:750
+#: ../src/appl.cpp:606
+#: ../src/appl.cpp:751
 #, c-format
 msgid "server listening at %d"
 msgstr "server luistert op %d"
 
-#: ../src/appl.cpp:710
+#: ../src/appl.cpp:711
 msgid "opened: "
 msgstr "geopend:"
 
-#: ../src/appl.cpp:736
+#: ../src/appl.cpp:737
 #, c-format
 msgid "could not listen at %d"
 msgstr "kan niet luisteren op socket %d"
 
-#: ../src/appl.cpp:772
+#: ../src/appl.cpp:773
 #, c-format
 msgid "Socket Error: %d"
 msgstr "Socket fout: %d"
 
-#: ../src/appl.cpp:804
+#: ../src/appl.cpp:805
 msgid "socket: "
 msgstr "socket:"
 
-#: ../src/appl.cpp:844
+#: ../src/appl.cpp:845
 msgid "Input (seconds):"
 msgstr "Invoer (seconden):"
 
-#: ../src/appl.cpp:860
+#: ../src/appl.cpp:861
 #, c-format
 msgid "timer set to: %d seconds (%s)"
 msgstr "timer gezet op: %d seconden (%s)"
 
-#: ../src/appl.cpp:886
+#: ../src/appl.cpp:887
 msgid "not all bytes sent to socket"
 msgstr "niet alle bytes verstuurd"
 
-#: ../src/appl.cpp:890
+#: ../src/appl.cpp:891
 msgid "Messages Sent"
 msgstr "Berichten verstuurd"
 
-#: ../src/appl.cpp:901
+#: ../src/appl.cpp:902
 #, c-format
-msgid "write: %d bytes to %s"
-msgstr "geschreven: %d bytes naar %s"
+msgid "write: %d bytes to: %s"
+msgstr "geschreven: %d bytes naar: %s"
 
-#: ../src/appl.cpp:941
+#: ../src/appl.cpp:942
 msgid "Open"
 msgstr "Openen"
 
+#~ msgid "Add Timestamp"
+#~ msgstr "Voeg tijd toe"
+#~ msgid "read"
+#~ msgstr "gelezen"
 #~ msgid "Socket Server Events"
 #~ msgstr "Socket server gebeurtenissen"
 #~ msgid "Socket Server Accepted Connections"
