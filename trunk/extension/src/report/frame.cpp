@@ -355,7 +355,7 @@ bool wxExFrameWithHistory::ProcessStop()
 {
   if (ProcessIsRunning())
   {
-    if (wxProcess::Kill(m_Process->GetPid(), wxSIGKILL) == wxKILL_ERROR)
+    if (m_Process->Kill() == wxKILL_ERROR)
     {
       // Even if the process could not be killed, set it to NULL, as it is deleted.
       wxFAIL;
@@ -365,7 +365,6 @@ bool wxExFrameWithHistory::ProcessStop()
     else
     {
       m_Process = NULL;
-      wxExFrame::StatusText(_("Stopped"));
       return true;
     }
   }
