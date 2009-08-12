@@ -571,7 +571,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             if (wxExApp::GetConfigBool(_("Count Only")))
             {
               m_LogWindow->AppendTextForced(
-                wxString::Format(_("read: %d bytes to: %s"), 
+                wxString::Format(_("read: %d bytes from: %s"), 
                   sock->LastCount(), SocketDetails(sock).c_str()));
             }
             else
