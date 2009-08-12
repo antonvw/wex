@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-12 11:51+0100\n"
-"PO-Revision-Date: 2009-08-12 11:55+0100\n"
+"PO-Revision-Date: 2009-08-12 12:54+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -207,7 +207,7 @@ msgstr "geaccepteerd"
 
 #: ../src/appl.cpp:240
 msgid "lost"
-msgstr "verloren"
+msgstr "verbroken"
 
 #: ../src/appl.cpp:244
 msgid "clients: "
