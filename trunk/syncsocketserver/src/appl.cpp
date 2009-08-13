@@ -781,7 +781,12 @@ bool MyFrame::SocketCheckError(const wxSocketBase* sock)
 
 const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
 {
-  wxASSERT(sock != NULL);
+  // See invocation at SocketLost.
+  // If that is solved we can wxASSERT(sock != NULL) again.
+  if (sock == NULL)
+  {
+    return wxEmptyString;
+  }
 
   wxIPV4address peer_addr;
 
