@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-26 11:43+0100\n"
-"PO-Revision-Date: 2009-06-26 11:43+0100\n"
+"POT-Creation-Date: 2009-08-13 07:58+0100\n"
+"PO-Revision-Date: 2009-08-13 07:58+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -53,15 +53,15 @@ msgstr "Zoekbalk"
 msgid "Perspective"
 msgstr "Perspektief"
 
-#: ../src/frame.cpp:264
+#: ../src/frame.cpp:269
 msgid "Project"
 msgstr "Project"
 
-#: ../src/frame.cpp:264
+#: ../src/frame.cpp:269
 msgid "Textfile"
 msgstr "Bestand"
 
-#: ../src/frame.cpp:426
+#: ../src/frame.cpp:432
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -71,44 +71,39 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../src/frame.cpp:431
+#: ../src/frame.cpp:437
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: ../src/frame.cpp:433
+#: ../src/frame.cpp:439
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: ../src/frame.cpp:526
+#: ../src/frame.cpp:532
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../src/frame.cpp:527
+#: ../src/frame.cpp:533
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: ../src/frame.cpp:531
+#: ../src/frame.cpp:538
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/frame.cpp:539
-#: ../src/frame.cpp:548
-#: ../src/frame.cpp:553
+#: ../src/frame.cpp:545
+#: ../src/frame.cpp:554
+#: ../src/frame.cpp:559
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../src/frame.cpp:545
+#: ../src/frame.cpp:551
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../src/frame.cpp:682
+#: ../src/frame.cpp:685
 msgid "&Open"
 msgstr "&Openen"
-
-#: ../src/frame.cpp:920
-#: ../src/frame.cpp:932
-msgid "Flags"
-msgstr "Vlaggen"
 
 #: ../src/support.cpp:32
 msgid "File Type"
@@ -314,6 +309,8 @@ msgstr "Bekijk hexadecimaal"
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
 
+#~ msgid "Flags"
+#~ msgstr "Vlaggen"
 #~ msgid "&Contents"
 #~ msgstr "Inhoud"
 #~ msgid "Make"
