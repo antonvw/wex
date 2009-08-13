@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/extension/dir.h>
-#include <wx/extension/base.h> // for wxExFrame::StatusText
 #include <wx/extension/util.h>
 
 class wxExDirTraverser: public wxDirTraverser
@@ -94,7 +93,6 @@ size_t wxExDir::FindFiles()
 
   if (m_IsBusy)
   {
-    wxExFrame::StatusText(_("Already busy finding files"));
     return 0;
   }
 
