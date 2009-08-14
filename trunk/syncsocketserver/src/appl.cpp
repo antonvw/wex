@@ -605,6 +605,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
           if (m_Timer.IsRunning())
           {
             m_Timer.Stop();
+            StatusText(wxEmptyString, "PaneTimer");
           }
 
 #if wxUSE_TASKBARICON
