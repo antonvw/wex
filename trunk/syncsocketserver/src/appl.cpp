@@ -195,12 +195,6 @@ MyFrame::MyFrame(const wxString& title)
 #endif
   }
 
-  if (wxExApp::GetConfig(_("Timer"), 0) > 0)
-  {
-    m_Timer.Start(1000 * wxExApp::GetConfig(_("Timer"), 0));
-    StatusText(wxString::Format("%ld", wxExApp::GetConfig(_("Timer"), 0)), "PaneTimer");
-  }
-
   if (!GetRecentFile().empty() && GetManager().GetPane("DATA").IsShown())
   {
     OpenFile(GetRecentFile());
@@ -510,6 +504,12 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
     const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
     WriteDataToClient(buffer, sock);
+
+    if (wxExApp::GetConfig(_("Timer"), 0) > 0 && !m_Timer.IsRunning())
+    {
+      m_Timer.Start(1000 * wxExApp::GetConfig(_("Timer"), 0));
+      StatusText(wxString::Format("%ld", wxExApp::GetConfig(_("Timer"), 0)), "PaneTimer");
+    }
 
     const wxString text =
       wxString::Format(_("%s connected at %d"),
