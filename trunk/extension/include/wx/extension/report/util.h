@@ -44,11 +44,12 @@ public:
     int flags = wxDIR_DEFAULT);
 
   /// FindFiles causes all found files to be opened using OpenFile from frame.
-  /// Flags are passed on to OpenFile.
+  /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
   wxExDirWithListView(wxExFrameWithHistory* frame,
     const wxString& fullpath,
     const wxString& filespec,
-    long flags = 0);
+    long file_flags = 0,
+    int dir_flags = wxDIR_DEFAULT);
 
   /// Gets the statistics.
   const wxExFileNameStatistics& GetStatistics() {return m_Statistics;};

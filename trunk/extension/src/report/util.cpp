@@ -311,12 +311,15 @@ wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
 }
 
 wxExDirWithListView::wxExDirWithListView(wxExFrameWithHistory* frame,
-  const wxString& fullpath, const wxString& filespec, long flags)
-  : wxExDir(fullpath, filespec)
+  const wxString& fullpath, 
+  const wxString& filespec, 
+  long file_flags,
+  int dir_flags)
+  : wxExDir(fullpath, filespec, dir_flags)
   , m_Statistics(fullpath)
   , m_Frame(frame)
   , m_ListView(NULL)
-  , m_Flags(flags)
+  , m_Flags(file_flags)
   , m_Tool(ID_TOOL_LOWEST)
 {
 }
