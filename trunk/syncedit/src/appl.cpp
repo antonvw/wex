@@ -49,7 +49,7 @@ bool Application::OnInit()
 
   SetTopWindow(frame);
 
-  wxExOpenFiles(frame, m_Files);
+  wxExOpenFiles(frame, m_Files, 0, wxDIR_FILES); // only files in this dir
  
   return true;
 }

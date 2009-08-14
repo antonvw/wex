@@ -114,5 +114,6 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
 /// Opens files and updates history, both for files and projects.
 void wxExOpenFiles(wxExFrameWithHistory* frame,
   const wxArrayString& files,
-  long flags = 0);
+  long file_flags = 0,
+  int dir_flags = wxDIR_DEFAULT);
 #endif

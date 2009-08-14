@@ -258,7 +258,8 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
 void wxExOpenFiles(
   wxExFrameWithHistory* frame,
   const wxArrayString& files,
-  long flags)
+  long file_flags,
+  int dir_flags)
 {
   for (size_t i = 0; i < files.GetCount(); i++)
   {
@@ -266,7 +267,7 @@ void wxExOpenFiles(
 
     if (file.Contains("*") || file.Contains("?"))
     {
-      wxExDirWithListView dir(frame, wxGetCwd(), file, flags);
+      wxExDirWithListView dir(frame, wxGetCwd(), file, file_flags, dir_flags);
       dir.FindFiles();
     }
     else
@@ -283,7 +284,7 @@ void wxExOpenFiles(
         }
       }
 
-      frame->OpenFile(file, line, wxEmptyString, flags);
+      frame->OpenFile(file, line, wxEmptyString, file_flags);
     }
   }
 }
