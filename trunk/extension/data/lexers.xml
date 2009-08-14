@@ -510,6 +510,12 @@ without the written consent of the copyright owner.
       <colouring no="7"> fore:blue </colouring>
       <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol </colouring>
     </colourings>
+    
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.html"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+    </properties>
   </lexer>
   
   <lexer
