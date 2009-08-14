@@ -602,12 +602,16 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         if (m_Clients.size() == 0)
         {
-          const wxString text =
-            wxString::Format(_("server listening at %d"),
-              wxExApp::GetConfig(_("Port"), 3000));
+          if (m_Timer.IsRunning())
+          {
+            m_Timer.Stop();
+          }
 
 #if wxUSE_TASKBARICON
-          m_TaskBarIcon->SetIcon(wxICON(ready), text);
+          m_TaskBarIcon->SetIcon(
+            wxICON(ready), 
+            wxString::Format(_("server listening at %d"), 
+              wxExApp::GetConfig(_("Port"), 3000)));
 #endif
         }
         break;
