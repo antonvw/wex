@@ -43,8 +43,6 @@ bool MyApp::OnInit()
 
 BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
   EVT_CLOSE(MyFrame::OnClose)
-  EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
-  EVT_MENU(wxID_PREFERENCES, MyFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, MyFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND_STOP, MyFrame::OnCommand)
   EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, MyFrame::OnCommand)
