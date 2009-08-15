@@ -166,10 +166,17 @@ MyFrame::MyFrame(const wxString& title)
   m_ToolBar->Realize();
 }
 
-void MyFrame::ConfigDialogApplied(wxWindowID WXUNUSED(dialogid))
+void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
 {
-  m_Query->ConfigGet();
-  m_Shell->ConfigGet();
+  if (dialogid == wxID_PREFERENCES)
+  {
+    m_Query->ConfigGet();
+    m_Shell->ConfigGet();
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void MyFrame::OnClose(wxCloseEvent& event)
@@ -228,7 +235,10 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case wxID_PREFERENCES:
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
-      wxExSTC::STC_CONFIG_SIMPLE | wxExSTC::STC_CONFIG_MODELESS);
+      wxExSTC::STC_CONFIG_MODELESS |
+      wxExSTC::STC_CONFIG_SIMPLE | 
+      wxExSTC::STC_CONFIG_WITH_APPLY,
+      event.GetId());
     break;
 
   case wxID_SAVE:
