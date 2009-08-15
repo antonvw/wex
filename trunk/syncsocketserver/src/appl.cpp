@@ -217,11 +217,18 @@ MyFrame::~MyFrame()
   delete m_SocketServer;
 }
 
-void MyFrame::ConfigDialogApplied(wxWindowID /* dialogid */)
+void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
 {
-  m_DataWindow->ConfigGet();
-  m_LogWindow->ConfigGet();
-  m_Shell->ConfigGet();
+  if (dialogid == wxID_PREFERENCES)
+  {
+    m_DataWindow->ConfigGet();
+    m_LogWindow->ConfigGet();
+    m_Shell->ConfigGet();
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void MyFrame::LogConnection(
@@ -309,7 +316,10 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case wxID_PREFERENCES:
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_SIMPLE);
+      wxExSTC::STC_CONFIG_MODELESS | 
+      wxExSTC::STC_CONFIG_SIMPLE |
+      wxExSTC::STC_CONFIG_WITH_APPLY,
+      event.GetId());
     break;
 
   case wxID_SAVE:
