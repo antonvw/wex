@@ -231,12 +231,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_PREFERENCES:
-    wxExSTC::ConfigDialog(this,
-      _("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS |
-      wxExSTC::STC_CONFIG_SIMPLE | 
-      wxExSTC::STC_CONFIG_WITH_APPLY,
-      event.GetId());
+    event.Skip();
     break;
 
   case wxID_SAVE:

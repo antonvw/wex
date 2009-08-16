@@ -16,6 +16,7 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(wxID_OPEN, wxExFrameWithHistory::OnCommand)
+  EVT_MENU(wxID_PREFERENCES, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     ID_EXTENSION_REPORT_LOWEST, 
@@ -212,6 +213,15 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     case wxID_OPEN:
       DialogFileOpen();
       break;
+      
+    case wxID_PREFERENCES:
+      wxExSTC::ConfigDialog(this,
+        _("Editor Options"),
+        wxExSTC::STC_CONFIG_MODELESS | 
+        wxExSTC::STC_CONFIG_SIMPLE |
+        wxExSTC::STC_CONFIG_WITH_APPLY,
+        event.GetId());
+    break;
 
     case ID_PROJECT_OPEN:
       DialogProjectOpen();
