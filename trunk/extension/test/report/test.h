@@ -51,10 +51,11 @@ public:
 
   /// Destructor.
  ~wxExReportAppTestFixture() {
-    delete m_Dir;
-    delete m_ListView;
+    // Do not delete objects, as process needs a listview.
+    //delete m_Dir;
+    //delete m_ListView;
     //delete m_Process;
-    delete m_STC;
+    //delete m_STC;
     };
 
   /// From TestFixture.

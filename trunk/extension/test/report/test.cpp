@@ -37,7 +37,7 @@ void wxExReportAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE))); // as we have no focused stc
   CPPUNIT_ASSERT(frame->GetRecentFile().Contains("test.h"));
   CPPUNIT_ASSERT(!frame->OpenFile(
-    wxExFileName("../test-rep.prj"),
+    wxExFileName("test-rep.prj"),
     0,
     wxEmptyString,
     wxExSTCWithFrame::STC_OPEN_IS_PROJECT));
