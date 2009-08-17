@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-17 09:47+0100\n"
-"PO-Revision-Date: 2009-08-17 09:47+0100\n"
+"POT-Creation-Date: 2009-08-17 09:56+0100\n"
+"PO-Revision-Date: 2009-08-17 09:56+0100\n"
 "Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -160,10 +160,6 @@ msgstr "Opdrachtprompt"
 #: ../src/appl.cpp:187
 msgid "Statistics"
 msgstr "Statistieken"
-
-#: ../src/appl.cpp:151
-msgid "Edit"
-msgstr "&Bewerken"
 
 #: ../src/appl.cpp:157
 msgid "&File"
@@ -357,6 +353,8 @@ msgstr "geschreven: %d bytes naar: %s"
 msgid "Open"
 msgstr "Openen"
 
+#~ msgid "Edit"
+#~ msgstr "&Bewerken"
 #~ msgid "Editor Options"
 #~ msgstr "Editor opties"
 #~ msgid "Add Timestamp"
