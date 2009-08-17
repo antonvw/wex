@@ -188,6 +188,11 @@ void wxExProcessWithListView::InitCommandFromConfig()
 
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 {
+  if (!Exists(GetPid()))
+  {
+    return wxKILL_NO_PROCESS;
+  }
+
   m_Timer.Stop();
   
   wxExFrame::StatusText(_("Stopped"));
