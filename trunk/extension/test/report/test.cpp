@@ -52,7 +52,7 @@ void wxExReportAppTestFixture::testMethods()
   long pid;
   CPPUNIT_ASSERT((pid = m_Process->Execute()) > 0);
   CPPUNIT_ASSERT(wxProcess::Exists(pid));
-  CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
+//  CPPUNIT_ASSERT(m_Process->Kill() == wxKILL_OK);
 //  CPPUNIT_ASSERT(!wxProcess::Exists(pid));
 
   // test wxExSTCWithFrame

@@ -53,7 +53,7 @@ public:
  ~wxExReportAppTestFixture() {
     delete m_Dir;
     delete m_ListView;
-    delete m_Process;
+    //delete m_Process;
     delete m_STC;
     };
 
