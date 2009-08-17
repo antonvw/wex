@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          test.h
-* Purpose:       Declaration of classes for wxExReport cpp unit testing
+* Purpose:       Declaration of classes for wxextension report cpp unit testing
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 * Created:       za 17 jan 2009 11:51:20 CET
