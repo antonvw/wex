@@ -148,7 +148,7 @@ MyFrame::MyFrame(const wxString& title)
   menuView->AppendCheckItem(ID_VIEW_STATISTICS, _("Statistics"));
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(wxID_PREFERENCES, wxExEllipsed(_("Edit")));
+  menuOptions->Append(wxID_PREFERENCES);
 
   wxMenu* menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
