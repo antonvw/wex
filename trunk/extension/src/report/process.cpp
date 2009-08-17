@@ -199,7 +199,10 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 
   DeletePendingEvents();
 
+  // Next statement causes wxGTK to crash, so outcommented.
+#ifndef __WXGTK__
   delete this;
+#endif
 
   return wxProcess::Kill(GetPid(), sig);
 }
