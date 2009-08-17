@@ -47,10 +47,10 @@ public:
   /// Constructor, specify the command id and a fullpath.
   wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
 
-  /// Execute the svn command.
+  /// Execute the svn command, and collects the output.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
-  /// If you use don't specify a parent, then the dialog is not shown,
+  /// If you use parent NULL, then the dialog is not shown,
   /// and defaults from the config are used.
   /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors
   /// that were reported by svn otherwise.
@@ -63,10 +63,10 @@ public:
   /// Gets the flags and command (without the 'svn') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
 
-  /// Gets the output (Execute should already be called).
+  /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
 
-  /// Shows output in a dialog only (Execute should already be called).
+  /// Shows output from Execute in a dialog only.
   void ShowOutput(wxWindow* parent) const;
 private:
   wxExSVNType GetType(int command_id) const;
