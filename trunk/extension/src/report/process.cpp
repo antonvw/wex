@@ -149,11 +149,16 @@ int wxExProcessWithListView::ConfigDialog(
 
 long wxExProcessWithListView::Execute()
 {
+  if (m_Command.empty())
+  {
+    return 0;
+  }
+
   const wxString cwd = wxGetCwd();
 
   wxSetWorkingDirectory(wxExApp::GetConfig(_("Process folder")));
 
-  long pid;
+  long pid = 0;
 
   if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
   {
