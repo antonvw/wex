@@ -27,16 +27,23 @@ public:
   /// Constructor.
   wxExHeader(wxExConfig* config);
 
-  /// Returns the header.
+  /// Returns a file header for specified filename,
+  /// using it's lexer and data from config,
+  /// among which the file purpose.
   const wxString Get(const wxExFileName* filename) const;
 
-  /// Shows a dialog for getting the purpose for a header.
+  /// Shows a dialog for getting the purpose for a header,
+  /// some other fields are presented as well (if author is empty
+  /// in the config).
   int ShowDialog(
     wxWindow* parent,
     const wxString& title = _("File Purpose")) const;
 
-  /// Shows a dialog, and returns the header if OK.
-  const wxString ShowDialog(const wxExFileName* filename, wxWindow* parent) const {
+  /// Shows a dialog for getting the puropse, 
+  /// and returns the header if OK.
+  const wxString ShowDialog(
+    const wxExFileName* filename, 
+    wxWindow* parent) const {
     if (ShowDialog(parent) == wxID_OK) return Get(filename);
     else return wxEmptyString;}
 private:
