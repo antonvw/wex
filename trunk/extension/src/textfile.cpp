@@ -632,7 +632,7 @@ bool wxExTextFile::RunTool()
   {
     if (m_FileNameStatistics.GetLexer().GetScintillaLexer().empty())
     {
-      m_FileNameStatistics.GetLexer() = m_Lexers->FindByText(GetLine(0));
+      m_FileNameStatistics.SetLexer(wxEmptyString, GetLine(0));
     }
 
     if (!Parse())

@@ -78,9 +78,6 @@ public:
   int GetIcon() const;
 
   /// Gets the lexer.
-  wxExLexer& GetLexer() {return m_Lexer;};
-
-  /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
 
   /// Gets the stat.
