@@ -55,7 +55,11 @@ void wxExListItemWithFileName::Insert(long index)
   }
 
   GetListView()->InsertItem(*this);
-  GetListView()->UpdateStatusBar();
+  
+  if (GetListView()->IsShown())
+  {
+    GetListView()->UpdateStatusBar();
+  }
 
   SetImage(m_Statistics.GetIcon());
 
