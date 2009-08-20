@@ -464,6 +464,7 @@ void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
 void wxExFrameWithHistory::UseFileHistoryList(wxExListViewFile* list)
 {
   m_FileHistoryList = list;
+  m_FileHistoryList->Hide();
 
   // Add all items from FileHistory.
   for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
