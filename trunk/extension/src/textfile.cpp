@@ -15,7 +15,6 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/config.h>
-#include <wx/extension/lexers.h>
 #include <wx/extension/util.h>
 
 const wxString REV_DATE_FORMAT = "%y%m%d";
