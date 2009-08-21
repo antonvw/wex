@@ -103,7 +103,6 @@ void wxExListItem::StoreImage(int image)
   }
 }
 
-
 const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
 
@@ -121,6 +120,7 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, wxExListView::OnCommand)
   EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
   EVT_RIGHT_DOWN(wxExListView::OnMouse)
+  EVT_SHOW(wxExListView::OnShow)
 END_EVENT_TABLE()
 
 wxExListView::wxExListView(wxWindow* parent,
@@ -728,6 +728,18 @@ void wxExListView::OnMouse(wxMouseEvent& event)
     BuildPopupMenu(menu);
 
     PopupMenu(&menu);
+  }
+}
+
+void wxExListView::OnShow(wxShowEvent& event)
+{
+  if (event.IsShown())
+  {
+    UpdateStatusBar();
+  }
+  else
+  {
+    wxExFrame::StatusText(wxEmptyString, "PaneItems");
   }
 }
 

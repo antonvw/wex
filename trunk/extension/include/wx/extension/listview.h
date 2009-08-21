@@ -178,6 +178,7 @@ protected:
   void OnFindDialog(wxFindDialogEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
+  void OnShow(wxShowEvent& event);
 private:
   // Interface, for wxExInterface overriden methods.
   virtual const wxString BuildPage();
