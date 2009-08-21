@@ -103,10 +103,9 @@ bool wxExApp::OnInit()
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
 
-  const int fontsizes[] = {4, 6, 8, 10, 12, 16, 22};
-  GetPrinter()->SetFonts(wxEmptyString, wxEmptyString, fontsizes);
-  GetPrinter()->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
-  GetPrinter()->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
+  m_Printer->SetFonts(wxEmptyString, wxEmptyString); // use defaults
+  m_Printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
+  m_Printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 #endif
 
   // Finally call all available static initializers.
