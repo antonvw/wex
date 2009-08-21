@@ -55,7 +55,7 @@ private:
 wxExTextFileWithListView::wxExTextFileWithListView(
   const wxExFileName& filename,
   const wxExTool& tool)
-  : wxExTextFile(filename, tool, wxExApp::GetConfig(), wxExApp::GetLexers())
+  : wxExTextFile(filename, tool, wxExApp::GetConfig())
 #if USE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
 #endif

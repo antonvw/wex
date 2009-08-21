@@ -18,7 +18,6 @@
 #include <wx/extension/tool.h>
 
 class wxExConfig;
-class wxExLexers;
 class wxExTextFile;
 
 /// Class for keeping RCS information.
@@ -67,8 +66,7 @@ public:
   wxExTextFile(
     const wxExFileName& filename,
     const wxExTool& tool,
-    wxExConfig* config,
-    const wxExLexers* lexers);
+    wxExConfig* config);
 
   /// Allows you to cancel the RunTool.
   static void Cancel() {m_Cancelled = true;}
@@ -212,7 +210,6 @@ private:
   wxExSyntaxType m_SyntaxType;
   const wxExTool m_Tool;
   wxExConfig* m_Config;
-  const wxExLexers* m_Lexers;
 
   static bool m_Cancelled;
   size_t m_LineMarker;

@@ -86,14 +86,12 @@ bool wxExTextFile::m_Cancelled = false;
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
   const wxExTool& tool,
-  wxExConfig* config,
-  const wxExLexers* lexers)
+  wxExConfig* config)
   : m_FileNameStatistics(filename)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(tool)
   , m_Config(config)
-  , m_Lexers(lexers)
 {
   m_AllowAction = false;
   m_EmptyLine = false;
