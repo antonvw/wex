@@ -516,6 +516,8 @@ without the written consent of the copyright owner.
       <property name="fold.html"> 1 </property>
       <property name="fold.compact"> 1 </property>
     </properties>
+    
+    <!-- xml comments cannot be added, but don't need to, they are added in the source -->
   </lexer>
   
   <lexer
