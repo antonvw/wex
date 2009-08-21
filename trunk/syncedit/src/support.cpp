@@ -271,4 +271,8 @@ void Frame::OnNotebook(wxWindowID id, wxWindow* page)
     wxExFrame::StatusText(((wxExListViewFile*)page)->GetFileName());
     ((wxExListViewFile*)page)->UpdateStatusBar();
   }
+  else
+  {
+    wxFAIL;
+  }
 }

@@ -733,6 +733,10 @@ void wxExListView::OnMouse(wxMouseEvent& event)
 
 void wxExListView::OnShow(wxShowEvent& event)
 {
+  // Next code does not work if list are part of a notebook,
+  // then if you select another page, the old is seems to be hidden the last,
+  // and therefore items pane will be empty.
+  /* 
   if (event.IsShown())
   {
     UpdateStatusBar();
@@ -741,6 +745,7 @@ void wxExListView::OnShow(wxShowEvent& event)
   {
     wxExFrame::StatusText(wxEmptyString, "PaneItems");
   }
+  */
 }
 
 void wxExListView::PasteItemsFromClipboard()

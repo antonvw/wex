@@ -662,7 +662,18 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
   case ID_VIEW_FILES: TogglePane("FILES"); break;
   case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
-  case ID_VIEW_HISTORY: TogglePane("HISTORY"); break;
+  case ID_VIEW_HISTORY: 
+    TogglePane("HISTORY");
+
+    if (GetManager().GetPane("HISTORY").IsShown())
+    {
+      m_History->UpdateStatusBar();
+    }
+    else
+    {
+      wxExFrame::StatusText(wxEmptyString, "PaneItems");
+    }
+    break;
   case ID_VIEW_OUTPUT: TogglePane("OUTPUT"); break;
   case ID_VIEW_PROJECTS: TogglePane("PROJECTS"); break;
 
