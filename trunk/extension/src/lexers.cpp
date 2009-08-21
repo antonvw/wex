@@ -138,10 +138,13 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
     return FindByName("bash", false); // don't show error
   }
   else if (text_lowercase.StartsWith("<html>") ||
-           text_lowercase.StartsWith("<?php") ||
-           text_lowercase.StartsWith("<?xml"))
+           text_lowercase.StartsWith("<?php"))
   {
     return FindByName("hypertext", false); // don't show error
+  }
+  else if (text_lowercase.StartsWith("<?xml"))
+  {
+    return FindByName("xml", false); // don't show error
   }
   // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
   // so add here.
