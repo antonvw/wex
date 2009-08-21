@@ -26,7 +26,7 @@
 class wxExStat : public stat
 {
 public:
-  /// Default constructor. Calls Update.
+  /// Default constructor. Calls Sync.
   wxExStat(const wxString& fullpath = wxEmptyString) {
     Sync(fullpath);}
 
@@ -83,7 +83,7 @@ public:
   /// Gets the stat.
   const wxExStat& GetStat() const {return m_Stat;};
 
-  /// Gets the stat.
+  /// Gets the stat (allowing you to call Sync for it).
   wxExStat& GetStat() {return m_Stat;};
 
   /// If specified lexer is empty, use one of the lexers from config
