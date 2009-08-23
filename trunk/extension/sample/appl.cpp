@@ -54,7 +54,7 @@ bool wxExSampleApp::OnInit()
     return false;
   }
 
-  wxExSampleFrame *frame = new wxExSampleFrame("wxExSample");
+  wxExSampleFrame *frame = new wxExSampleFrame();
   frame->Show(true);
 
   SetTopWindow(frame);
@@ -88,8 +88,8 @@ void wxExSampleDir::OnFile(const wxString& file)
 }
 #endif
 
-wxExSampleFrame::wxExSampleFrame(const wxString& title)
-  : wxExManagedFrame(NULL, wxID_ANY, title)
+wxExSampleFrame::wxExSampleFrame()
+  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppName()
   , m_FlagsSTC(0)
 {
   SetIcon(wxICON(appl));

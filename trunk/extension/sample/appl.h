@@ -52,7 +52,7 @@ class wxExSampleFrame: public wxExManagedFrame
 {
 public:
   /// Constructor.
-  wxExSampleFrame(const wxString& title);
+  wxExSampleFrame();
 protected:
   virtual void ConfigDialogApplied(wxWindowID id);
   /// Do something.

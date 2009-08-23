@@ -30,7 +30,7 @@ class wxExRepSampleFrame: public wxExFrameWithHistory
 {
 public:
   /// Constructor.
-  wxExRepSampleFrame(const wxString& title);
+  wxExRepSampleFrame();
 protected:
   // Interface from wxExFrameWithHistory.
   virtual wxExListViewFile* Activate(int type, const wxExLexer* lexer = NULL);

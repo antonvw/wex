@@ -42,7 +42,7 @@ bool wxExRepSampleApp::OnInit()
     return false;
   }
 
-  wxExRepSampleFrame *frame = new wxExRepSampleFrame("wxExRepSample");
+  wxExRepSampleFrame *frame = new wxExRepSampleFrame();
 
   frame->Show(true);
 
@@ -51,8 +51,8 @@ bool wxExRepSampleApp::OnInit()
   return true;
 }
 
-wxExRepSampleFrame::wxExRepSampleFrame(const wxString& title)
-  : wxExFrameWithHistory(NULL, wxID_ANY, title)
+wxExRepSampleFrame::wxExRepSampleFrame()
+  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
 {
   SetIcon(wxICON(appl));
 
