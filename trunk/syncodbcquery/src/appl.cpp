@@ -33,7 +33,7 @@ bool MyApp::OnInit()
     return false;
   }
 
-  MyFrame *frame = new MyFrame("syncodbcquery");
+  MyFrame *frame = new MyFrame();
   frame->Show(true);
 
   SetTopWindow(frame);
@@ -59,8 +59,8 @@ BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
   EVT_UPDATE_UI(ID_VIEW_STATISTICS, MyFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame(const wxString& title)
-  : wxExFrameWithHistory(NULL, wxID_ANY, title)
+MyFrame::MyFrame()
+  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_Running(false)
   , m_Stopped(false)
 {

@@ -32,7 +32,7 @@ bool MyApp::OnInit()
     return false;
   }
 
-  MyFrame *frame = new MyFrame("syncsocketserver");
+  MyFrame *frame = new MyFrame();
   SetTopWindow(frame);
 
   return true;
@@ -63,8 +63,8 @@ BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
   EVT_UPDATE_UI(ID_WRITE_DATA, MyFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame(const wxString& title)
-  : wxExFrameWithHistory(NULL, wxID_ANY, title)
+MyFrame::MyFrame()
+  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_Timer(this)
 {
   SetIcon(wxICON(appl));

@@ -28,7 +28,7 @@ public:
 class MyFrame : public wxExFrameWithHistory
 {
 public:
-  MyFrame(const wxString& title);
+  MyFrame();
  ~MyFrame();
   bool ServerNotListening() const {
     return m_SocketServer == NULL;}

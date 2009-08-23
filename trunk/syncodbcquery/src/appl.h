@@ -43,7 +43,7 @@ private:
 class MyFrame: public wxExFrameWithHistory
 {
 public:
-  MyFrame(const wxString& title);
+  MyFrame();
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
