@@ -1068,10 +1068,12 @@ void MDIFrame::SyncCloseAll(wxWindowID id)
   case NOTEBOOK_LISTS:
     GetManager().GetPane("OUTPUT").Hide();
     GetManager().Update();
+    wxExFrame::StatusText(wxEmptyString, "PaneItems");
     break;
   case NOTEBOOK_PROJECTS:
     GetManager().GetPane("PROJECTS").Hide();
     GetManager().Update();
+    wxExFrame::StatusText(wxEmptyString, "PaneItems");
     break;
   default: wxFAIL;
   }
