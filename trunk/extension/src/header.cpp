@@ -30,7 +30,6 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxString h_license   = "License:   "; 
 
   const wxString author = m_Config->Get(_("Author"));
-  const wxString company = m_Config->Get(_("Company"));
   const wxString license = m_Config->Get(_("License"));
   const wxString email = m_Config->Get(_("Email"));
   const wxString purpose = m_Config->Get(_("Purpose"));
@@ -50,7 +49,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     // Prevent the Id to be expanded by SVN itself here.
     header << h_rcs << wxString("Id$") << "\n";
     header << h_copyright << "(c) " << wxDateTime::Now().Format("%Y") << " " <<
-      (!company.empty() ? company: author) << email_field << "\n";
+      author << email_field << "\n";
     if (!license.empty())
     header << h_license << license << "\n";
     header << l.GetCommentEnd() << "\n";
@@ -66,7 +65,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     // Prevent the Id to be expanded by SVN itself here.
     header << l.MakeComment(h_rcs, wxString("Id$")) << "\n";
     header << l.MakeComment(h_copyright, "(c) " + wxDateTime::Now().Format("%Y") + " " +
-      (!company.empty() ? company: author) + email_field) << "\n";
+      author + email_field) << "\n";
     if (!license.empty())
     header << l.MakeComment(h_license, license) << "\n";
     header << l.MakeComment(wxEmptyString, false) << "\n";
