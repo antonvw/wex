@@ -71,7 +71,9 @@ void wxExFileNameStatistics::Log(
     << " " << Get(_("Files Passed")) << " " << _("file(s)")
     << (IsOk() ? ": " + GetFullPath(): "");
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(logtext);
+#endif
 
   if (log_to_file && Get(_("Files Passed")) != 0)
   {

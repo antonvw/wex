@@ -709,11 +709,15 @@ void wxExListView::OnList(wxListEvent& event)
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_DESELECTED)
   {
+#if wxUSE_STATUSBAR
     UpdateStatusBar();
+#endif
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {
+#if wxUSE_STATUSBAR
     UpdateStatusBar();
+#endif
   }
 }
 
@@ -741,7 +745,9 @@ void wxExListView::OnShow(wxShowEvent& event)
   /* 
   if (event.IsShown())
   {
+#if wxUSE_STATUSBAR
     UpdateStatusBar();
+#endif
   }
   else
   {

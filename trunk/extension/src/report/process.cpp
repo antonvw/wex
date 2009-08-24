@@ -120,7 +120,9 @@ bool wxExProcessWithListView::CheckInput()
       m_Owner->EnsureVisible(m_Owner->GetItemCount() - 1);
     }
 
+#if wxUSE_STATUSBAR
     m_Owner->UpdateStatusBar();
+#endif
   }
 
   return hasInput;
@@ -164,7 +166,9 @@ long wxExProcessWithListView::Execute()
   {
     SetPid(pid);
 
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_Command);
+#endif
     wxExApp::Log(_("Running process") + ": " + m_Command);
 
     m_Timer.Start(100); // each 100 milliseconds
@@ -195,7 +199,9 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
 
   m_Timer.Stop();
   
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Stopped"));
+#endif
 
   DeletePendingEvents();
 
@@ -219,7 +225,9 @@ void wxExProcessWithListView::OnTerminate(
     // Do nothing.
   }
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Ready"));
+#endif
 
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
   wxPostEvent(m_Frame, event);

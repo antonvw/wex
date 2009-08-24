@@ -482,9 +482,11 @@ void wxExGrid::OnGrid(wxGridEvent& event)
   }
   else if (event.GetEventType() == wxEVT_GRID_SELECT_CELL)
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(
       wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
       "PaneCells");
+#endif
 
     event.Skip();
   }
@@ -502,9 +504,11 @@ void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 {
   event.Skip();
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(
     wxString::Format("%d", GetSelectedCells().GetCount()),
     "PaneCells");
+#endif
 }
 
 void wxExGrid::OnMouse(wxMouseEvent& event)

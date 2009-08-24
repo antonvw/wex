@@ -485,7 +485,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
         wxExApp::GetLexers()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);
         // As the lexer might have changed, update status bar field as well.
+#if wxUSE_STATUSBAR
         editor->UpdateStatusBar("PaneLexer");
+#endif
       }
     }
     break;
@@ -667,11 +669,15 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
     if (GetManager().GetPane("HISTORY").IsShown())
     {
+#if wxUSE_STATUSBAR
       m_History->UpdateStatusBar();
+#endif
     }
     else
     {
+#if wxUSE_STATUSBAR
       wxExFrame::StatusText(wxEmptyString, "PaneItems");
+#endif
     }
     break;
   case ID_VIEW_OUTPUT: TogglePane("OUTPUT"); break;
@@ -1068,12 +1074,16 @@ void MDIFrame::SyncCloseAll(wxWindowID id)
   case NOTEBOOK_LISTS:
     GetManager().GetPane("OUTPUT").Hide();
     GetManager().Update();
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxEmptyString, "PaneItems");
+#endif
     break;
   case NOTEBOOK_PROJECTS:
     GetManager().GetPane("PROJECTS").Hide();
     GetManager().Update();
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxEmptyString, "PaneItems");
+#endif
     break;
   default: wxFAIL;
   }

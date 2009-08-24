@@ -31,7 +31,9 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 
   const wxString msg = _("Compared") + ": " + arguments;
   wxExApp::Log(msg);
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
+#endif
 
   return true;
 }
@@ -41,7 +43,9 @@ void wxExFindInFiles(bool replace)
   if (wxExDir::GetIsBusy())
   {
     wxExDir::Cancel();
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Cancelled previous find files"));
+#endif
   }
 
   // To initialize the combobox.
@@ -100,7 +104,9 @@ bool wxExFindOtherFileName(
 
   if (!reg.Matches(fullpath.Lower()))
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("No version information found"));
+#endif
     return false;
   }
 
@@ -176,7 +182,9 @@ bool wxExFindOtherFileName(
 
   if (!found && (listview != NULL || lastfile != NULL))
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("No files found"));
+#endif
   }
 
   return found;

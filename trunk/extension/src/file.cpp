@@ -177,7 +177,9 @@ void wxExFile::FileSync()
 {
   if (FileOpen(m_FileName))
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
+#endif
   }
 }
 

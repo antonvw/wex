@@ -156,7 +156,9 @@ size_t wxExListViewFile::AddItems()
 
   const wxString text = _("Added") + wxString::Format(" %d ", retValue) + _("file(s)");
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(text);
+#endif
 
   return retValue;
 }
@@ -864,7 +866,9 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     break;
   }
 
+#if wxUSE_STATUSBAR
   UpdateStatusBar();
+#endif
 }
 
 void wxExListViewFile::OnIdle(wxIdleEvent& event)
@@ -890,7 +894,9 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
         )
     {
       item.Update();
+#if wxUSE_STATUSBAR
       wxExFrame::StatusText(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
+#endif
       m_ItemUpdated = true;
     }
 
@@ -935,7 +941,9 @@ void wxExListViewFile::OnList(wxListEvent& event)
       if ((m_Type != LIST_PROCESS) ||
           (m_Type == LIST_PROCESS && item.GetFileName().FileExists()))
       {
+#if wxUSE_STATUSBAR
         wxExFrame::StatusText(item.GetFileName(), STAT_FULLPATH);
+#endif
       }
     }
 
@@ -958,7 +966,9 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     {
       if (m_FileName.FileExists())
       {
+#if wxUSE_STATUSBAR
         wxExFrame::StatusText(m_FileName);
+#endif
       }
     }
   }
@@ -1002,7 +1012,9 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     wxFAIL;
   }
 
+#if wxUSE_STATUSBAR
   UpdateStatusBar();
+#endif
 }
 
 const wxString wxExListViewFile::PrintHeader() const
@@ -1075,7 +1087,9 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
 
   stats.Log(tool);
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Ready"));
+#endif
 
   if (tool.IsCount())
   {

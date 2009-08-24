@@ -406,16 +406,20 @@ bool wxExInterface::FindResult(
   {
     recursive = true;
     const wxString where = (find_next) ? _("bottom"): _("top");
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(
       _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("hit") + " " + where);
+#endif
     return FindNext(text, find_next);
   }
   else
   {
     recursive = false;
     wxBell();
+#if wxUSE_STATUSBAR
     // Same text also displayed in wxExSTC.
     wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("not found"));
+#endif
     return false;
   }
 }

@@ -58,7 +58,9 @@ void wxExListItemWithFileName::Insert(long index)
   
   if (GetListView()->IsShown())
   {
+#if wxUSE_STATUSBAR
     GetListView()->UpdateStatusBar();
+#endif
   }
 
   SetImage(m_Statistics.GetIcon());
@@ -73,7 +75,9 @@ void wxExListItemWithFileName::Insert(long index)
 
 const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
 {
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(m_Statistics.GetFullPath());
+#endif
 
   if (m_Statistics.FileExists())
   {
