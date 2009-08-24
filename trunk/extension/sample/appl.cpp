@@ -89,7 +89,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 #endif
 
 wxExSampleFrame::wxExSampleFrame()
-  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppName()
+  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_FlagsSTC(0)
 {
   SetIcon(wxICON(appl));
