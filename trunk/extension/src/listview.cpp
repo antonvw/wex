@@ -75,9 +75,11 @@ void wxExListItem::SetColumnText(const int col_no, const wxString& text)
   // Readme: 512 should be a constant from the wx lib.
   if (text.length() >= 512)
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(
       "Warning, column max size is 512, column text: ..." +
         text.substr(text.length() - 25) + " ignored");
+#endif
   }
 #endif
 
@@ -743,7 +745,9 @@ void wxExListView::OnShow(wxShowEvent& event)
   }
   else
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxEmptyString, "PaneItems");
+#endif
   }
   */
 }
@@ -871,7 +875,9 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     AfterSorting();
   }
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Sorted on") + ": " + sorted_col->GetText());
+#endif
 }
 
 void wxExListView::SortColumnReset()

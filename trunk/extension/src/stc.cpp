@@ -684,7 +684,9 @@ void wxExSTC::ClearDocument()
 {
   SetReadOnly(false);
   ClearAll();
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(wxEmptyString, "PaneLines");
+#endif
   EmptyUndoBuffer();
   SetSavePoint();
 }
@@ -957,7 +959,9 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   if (!(m_Flags & STC_OPEN_HEX))
   {
     SetReadOnly(m_FileName.GetStat().IsReadOnly()); // does not return anything
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Readonly attribute changed"));
+#endif
   }
 
   return true;
@@ -984,7 +988,9 @@ bool wxExSTC::FileSave()
 
   const wxString msg = _("Saved") + ": " + m_FileName.GetFullPath();
   wxExApp::Log(msg);
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
+#endif
 
   return true;
 }
@@ -1019,7 +1025,9 @@ void wxExSTC::FileTypeMenu()
 {
   if (GetReadOnly())
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Document is readonly"));
+#endif
     return;
   }
 
@@ -1310,8 +1318,10 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
     if (SearchInTarget(text) < 0)
     {
       wxBell();
+#if wxUSE_STATUSBAR
       // Same text also displayed in wxExInterface.
       wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + _("not found"));
+#endif
       return;
     }
   }
@@ -1560,7 +1570,9 @@ void wxExSTC::MacroPlayback()
     SendMsg(msg, wp, (wxIntPtr)txt);
   }
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Macro played back"));
+#endif
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
@@ -1750,8 +1762,10 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 
     EndUndoAction();
 
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
       nr_replacements, frd->GetFindString().c_str()));
+#endif
   }
   else
   {
@@ -1785,7 +1799,9 @@ void wxExSTC::OnKey(wxKeyEvent& event)
 
   if (GetReadOnly() && isascii(key))
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Document is readonly"));
+#endif
     return;
   }
 
@@ -1960,7 +1976,9 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     // the OnIdle already does this.
     if (!m_FileName.IsOk())
     {
+#if wxUSE_STATUSBAR
       wxExFrame::StatusText(wxDateTime::Now().Format());
+#endif
     }
   }
   else
@@ -2050,7 +2068,9 @@ bool wxExSTC::Open(
   {
     const wxString msg = _("Opened") + ": " + m_FileName.GetFullPath();
     wxExApp::Log(msg);
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(msg);
+#endif
     PropertiesMessage();
   }
   else
@@ -2631,7 +2651,9 @@ void wxExSTC::StartRecord()
 
   m_Macro.clear();
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Macro recording"));
+#endif
 
   wxStyledTextCtrl::StartRecord();
 }
@@ -2642,7 +2664,9 @@ void wxExSTC::StopRecord()
 
   m_MacroIsRecording = false;
 
+#if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Macro is recorded"));
+#endif
 
   wxStyledTextCtrl::StopRecord();
 }
