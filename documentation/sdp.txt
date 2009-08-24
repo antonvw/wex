@@ -67,9 +67,11 @@ SVN hierarchy
 
 - development is in svn trunk
 
-- stable releases are in tags/branches
+- tags are in svn tags
 
-- documentation contains all general docs
+- stable releases are in svn branches
+
+- documentation contains all general docs (this document)
 
 
 
@@ -86,7 +88,7 @@ When adding functionality in trunk
 
   where it has least dependancies
 
-  run test.all from extension/test, which collects output in test.log, and commits automatically.
+  run test.all from the build dir, which collects output in test.log, and commits automatically.
 
 - add a sample for it in
     extension/sample, 
