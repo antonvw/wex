@@ -2674,22 +2674,19 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
     if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
     else
     {
-      // There might be NULL's inside selection.
-      // So use the GetSelectedTextRaw variant.
-      // However getting the length from a wxCharBuffer does not seem possible,
-      // so added too (from the wxWidgets stc GetSelectedTextRaw source).
       int start;
       int end;
       GetSelection(&start, &end);
       const int len  = end - start;
-      const wxString selection = wxString((const char *)GetSelectedTextRaw(), len);
       const int line = GetCurrentLine() + 1;
       const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
 
-      if (selection.empty()) text = wxString::Format("%d,%d", line, pos);
+      if (len == 0) text = wxString::Format("%d,%d", line, pos);
       else
       {
-        const int number_of_lines = wxExGetNumberOfLines(selection);
+        // There might be NULL's inside selection.
+        // So use the GetSelectedTextRaw variant.
+        const int number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
         if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
         else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
       }
