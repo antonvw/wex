@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-17 09:46+0100\n"
-"PO-Revision-Date: 2009-08-17 09:46+0100\n"
-"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-08-25 11:25+0100\n"
+"PO-Revision-Date: 2009-08-25 11:25+0100\n"
+"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,75 +17,75 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/appl.cpp:79
+#: ../src/appl.cpp:80
 msgid "&Open"
 msgstr "&Openen"
 
-#: ../src/appl.cpp:80
+#: ../src/appl.cpp:81
 msgid "&Close"
 msgstr "&Sluiten"
 
-#: ../src/appl.cpp:90
+#: ../src/appl.cpp:91
 msgid "&Statusbar"
 msgstr "&Statusregel"
 
-#: ../src/appl.cpp:91
+#: ../src/appl.cpp:92
 msgid "&Toolbar"
 msgstr "&Werkbalk"
 
-#: ../src/appl.cpp:93
-#: ../src/appl.cpp:134
+#: ../src/appl.cpp:94
+#: ../src/appl.cpp:135
 msgid "Query"
 msgstr "Query"
 
-#: ../src/appl.cpp:94
-#: ../src/appl.cpp:127
+#: ../src/appl.cpp:95
+#: ../src/appl.cpp:128
 msgid "Results"
 msgstr "Uitvoer"
 
-#: ../src/appl.cpp:95
-#: ../src/appl.cpp:141
+#: ../src/appl.cpp:96
+#: ../src/appl.cpp:142
 msgid "Statistics"
 msgstr "Statistiek"
 
-#: ../src/appl.cpp:101
+#: ../src/appl.cpp:102
 msgid "&File"
 msgstr "&Bestand"
 
-#: ../src/appl.cpp:102
+#: ../src/appl.cpp:103
 msgid "&View"
 msgstr "&Beeld"
 
-#: ../src/appl.cpp:103
-msgid "&Database"
-msgstr "&Database"
-
 #: ../src/appl.cpp:104
+msgid "&Connection"
+msgstr "&Verbinding"
+
+#: ../src/appl.cpp:105
 msgid "&Query"
 msgstr "&Query"
 
-#: ../src/appl.cpp:105
+#: ../src/appl.cpp:106
 msgid "&Options"
 msgstr "&Opties"
 
-#: ../src/appl.cpp:106
+#: ../src/appl.cpp:107
 msgid "&Help"
 msgstr "&Help"
 
-#: ../src/appl.cpp:151
+#: ../src/appl.cpp:152
 msgid "Lines in window"
 msgstr "Regels in scherm"
 
-#: ../src/appl.cpp:200
+#: ../src/appl.cpp:201
 msgid "This program offers a general ODBC query."
 msgstr "Dit programma biedt algemene ODBC query"
 
-#: ../src/appl.cpp:257
+#: ../src/appl.cpp:258
 msgid "Datasource"
 msgstr "Databron"
 
-#: ../src/appl.cpp:279
-#: ../src/appl.cpp:448
+#: ../src/appl.cpp:280
+#: ../src/appl.cpp:449
 msgid ""
 "\n"
 "error: "
@@ -93,7 +93,7 @@ msgstr ""
 "\n"
 "fout: "
 
-#: ../src/appl.cpp:284
+#: ../src/appl.cpp:285
 msgid ""
 "\n"
 "not connected"
@@ -101,19 +101,19 @@ msgstr ""
 "\n"
 "geen verbinding"
 
-#: ../src/appl.cpp:292
+#: ../src/appl.cpp:293
 msgid "cancelled"
 msgstr "geannuleerd"
 
-#: ../src/appl.cpp:446
+#: ../src/appl.cpp:447
 msgid "Number of query errors"
 msgstr "Aantal query fouten"
 
-#: ../src/appl.cpp:449
+#: ../src/appl.cpp:450
 msgid " in: "
 msgstr " in: "
 
-#: ../src/appl.cpp:454
+#: ../src/appl.cpp:455
 #, c-format
 msgid ""
 "\n"
@@ -122,7 +122,7 @@ msgstr ""
 "\n"
 "%d queries (%.3f seconden)"
 
-#: ../src/appl.cpp:463
+#: ../src/appl.cpp:464
 #, c-format
 msgid ""
 "\n"
@@ -131,26 +131,28 @@ msgstr ""
 "\n"
 "%d records opgehaald (%.3f seconden)"
 
-#: ../src/appl.cpp:467
+#: ../src/appl.cpp:468
 msgid "Rows processed"
 msgstr "Records opgehaald"
 
-#: ../src/appl.cpp:468
+#: ../src/appl.cpp:469
 msgid "Query runtime"
 msgstr "Query uitvoertijd"
 
-#: ../src/appl.cpp:470
+#: ../src/appl.cpp:471
 msgid "Total number of queries run"
 msgstr "Totaal aantal uitgevoerde queries"
 
-#: ../src/appl.cpp:471
+#: ../src/appl.cpp:472
 msgid "Total query runtime"
 msgstr "Totaal query uitvoertijd"
 
-#: ../src/appl.cpp:472
+#: ../src/appl.cpp:473
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
 
+#~ msgid "&Database"
+#~ msgstr "&Database"
 #~ msgid "Editor Options"
 #~ msgstr "Editor opties"
 #~ msgid "&Run"
@@ -299,8 +301,6 @@ msgstr "Totaal aantal records opgehaald"
 #~ msgstr "&Afwisselen"
 #~ msgid "Set &List Sort Method"
 #~ msgstr "&Lijst sorteer methode instellen"
-#~ msgid "&Contents"
-#~ msgstr "Inhoud"
 #~ msgid "&Process"
 #~ msgstr "&Proces"
 #~ msgid "&Project"
