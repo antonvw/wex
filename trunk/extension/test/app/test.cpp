@@ -33,6 +33,7 @@ void wxExAppTestFixture::testConstructors()
 void wxExAppTestFixture::testMethods()
 {
   // test wxExApp
+  CPPUNIT_ASSERT(!wxExApp::GetCatalogDir().empty());
   CPPUNIT_ASSERT(wxExApp::GetConfig() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetLexers() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetPrinter() != NULL);
@@ -40,8 +41,9 @@ void wxExAppTestFixture::testMethods()
 
   // test wxExGrid
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
-  m_Grid->SelectAll();
   m_Grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
+  m_Grid->SelectAll();
+  CPPUNIT_ASSERT(!m_Grid->GetSelectedCellsValue().empty());
   CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test");
   m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test1");
@@ -56,7 +58,6 @@ void wxExAppTestFixture::testMethods()
   // test wxExNotebook (parent should not be NULL)
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") != NULL);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page2, "key2") != NULL);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") == NULL);
@@ -71,6 +72,7 @@ void wxExAppTestFixture::testMethods()
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(m_STC->Open(wxExFileName("../test.bin")));
   CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
+  CPPUNIT_ASSERT(m_STC->GetMenuFlags() == wxExSTC::STC_MENU_DEFAULT);
   const wxCharBuffer& buffer = m_STC->GetTextRaw();
   wxLogMessage(buffer.data());
   CPPUNIT_ASSERT(buffer.length() == 40);
@@ -88,9 +90,17 @@ void wxExAppTestFixture::testMethods()
   m_STCShell->Prompt("test2");
   m_STCShell->Prompt("test3");
   m_STCShell->Prompt("test4");
-  // Prompting does not add a command to history...
-  // TODO: Make a better test.
+  // Prompting does not add a command to history.
   CPPUNIT_ASSERT(!m_STCShell->GetHistory().Contains("test4"));
+  // Post 3 'a' chars to the shell, and check whether it comes in the history.
+  wxKeyEvent event(wxEVT_CHAR);
+  event.m_keyCode = 97; // one char 'a'
+  wxPostEvent(m_STCShell, event);
+  wxPostEvent(m_STCShell, event);
+  wxPostEvent(m_STCShell, event);
+  event.m_keyCode = WXK_RETURN;
+  wxPostEvent(m_STCShell, event);
+  CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
 
   // test wxExSVN
   CPPUNIT_ASSERT(m_SVN->Execute(NULL) == 0); // do not use a dialog
