@@ -67,6 +67,7 @@ MyFrame::MyFrame()
   SetIcon(wxICON(appl));
 
   wxExMenu* menuFile = new wxExMenu;
+  menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENTFILE_MENU, menuFile);
   menuFile->AppendSeparator();
@@ -100,7 +101,7 @@ MyFrame::MyFrame()
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menuFile, _("&File"));
   menubar->Append(menuView, _("&View"));
-  menubar->Append(menuDatabase, _("&Database"));
+  menubar->Append(menuDatabase, _("&Connection"));
   menubar->Append(menuQuery, _("&Query"));
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, _("&Help"));
