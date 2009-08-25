@@ -30,7 +30,7 @@ class wxExOTL
 {
 public:
   /// Default constructor.
-  /// Initializes the otl connection using threaded mode.
+  /// Initializes the otl connection using specified threaded mode.
   wxExOTL(const int  threaded_mode = 0);
 
   /// Destructor.
@@ -40,24 +40,25 @@ public:
   /// Returns member.
   otl_connect& GetConnect() {return m_Connect;};
 
-  /// Returns connected member from the connection.
+  /// Returns true if we are connected.
   bool IsConnected() const {return m_Connect.connected > 0;};
 
-  /// Logons to the database (shows a database dialog).
+  /// Logons to the datasource (shows a connection dialog).
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.
   bool Logon(
     wxWindow* parent,
     wxExConfig* config, 
     int max_items = 4,
-    const wxString& title = _("Open ODBC Database"));
+    const wxString& title = _("Open ODBC Connection"));
 
-  /// Run the query and return results.
+  /// Runs the query using direct_exec and returns result.
   long Query(const wxString& query);
 
 #if wxUSE_GRID
-  /// Run the query and put results on the grid (if the grid is shown).
+  /// Runs the query and puts results on the grid (if the grid is shown).
   /// If empty_results then the grid is cleared first.
+  /// Returns number of rows appended.
   long Query(const wxString& query,
     wxGrid* grid,
     bool& stopped,
@@ -65,7 +66,8 @@ public:
     int buffer_size = 1024);
 #endif // wxUSE_GRID
 
-  /// Run the query and append results to the stc.
+  /// Runs the query and appends results to the stc.
+  /// Returns number of lines added.
   long Query(const wxString& query,
     wxStyledTextCtrl* stc,
     bool& stopped,
