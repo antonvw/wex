@@ -63,10 +63,9 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxString& name)
   : wxExSTC(parent, filename, line_number, match, flags, type, id, pos, size, style, name)
 {
-  if (Initialize())
-  {
-    m_Frame->SetRecentFile(GetFileName().GetFullPath());
-  }
+  Initialize();
+
+  m_Frame->SetRecentFile(GetFileName().GetFullPath());
 }
 
 wxExSTCWithFrame::wxExSTCWithFrame(const wxExSTC& stc)
@@ -124,25 +123,19 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-bool wxExSTCWithFrame::Initialize()
+void wxExSTCWithFrame::Initialize()
 {
   wxASSERT(wxTheApp != NULL);
   wxWindow* window = wxTheApp->GetTopWindow();
+  wxASSERT(window != NULL);
   m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
-
-  if (m_Frame == NULL)
-  {
-    wxFAIL;
-    return false;
-  }
+  wxASSERT(m_Frame != NULL);
 
 #if wxUSE_DRAG_AND_DROP
   // Now DnD normal text inside the editor does not work.
   // Adding a wxTextDropTarget works a little, but does not move text.
   SetDropTarget(new STCDropTarget(m_Frame));
 #endif
-
-  return true;
 }
 
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)

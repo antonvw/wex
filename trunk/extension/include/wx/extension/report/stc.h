@@ -80,7 +80,7 @@ protected:
 
   DECLARE_EVENT_TABLE()
 private:
-  bool Initialize();
+  void Initialize();
   wxExFrameWithHistory* m_Frame;
 };
 
