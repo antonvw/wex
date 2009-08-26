@@ -172,7 +172,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
@@ -194,7 +193,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
@@ -216,7 +214,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
@@ -239,7 +236,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
@@ -266,7 +262,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
@@ -314,7 +309,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
@@ -343,7 +337,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
     <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
