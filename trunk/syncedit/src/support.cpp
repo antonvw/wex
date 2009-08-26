@@ -273,6 +273,10 @@ void Frame::OnNotebook(wxWindowID id, wxWindow* page)
     ((wxExListViewFile*)page)->UpdateStatusBar();
 #endif
   }
+  else if (id == NOTEBOOK_LISTS)
+  {
+    // Do nothing special.
+  }
   else
   {
     wxFAIL;
