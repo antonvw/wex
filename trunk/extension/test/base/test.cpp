@@ -58,7 +58,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(!m_File->CheckSyncNeeded());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName("../test.bin")));
+  CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName("./test.bin")));
   wxCharBuffer buffer = m_File->Read();
   CPPUNIT_ASSERT(buffer.length() == 40);
 
@@ -126,7 +126,7 @@ void wxExTestFixture::testMethods()
   // test wxExStat
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
-  CPPUNIT_ASSERT(m_Stat->Sync("../test-base.link"));
+  CPPUNIT_ASSERT(m_Stat->Sync("./test-base.link"));
 
   // test wxExStatistics
   m_Statistics->Inc("test");
