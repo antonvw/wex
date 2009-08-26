@@ -47,7 +47,6 @@ public:
     STC_OPEN_IS_SYNCED       = 0x0004, ///< added as file is synced from disk
     STC_OPEN_FROM_LINK       = 0x0008, ///< opened from within a link
     STC_OPEN_FROM_STATISTICS = 0x0010, ///< opened from statistics
-    STC_OPEN_FROM_URL        = 0x0020, ///< opened from a url
   };
 
   /// Config dialog flags (0 gives

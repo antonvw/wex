@@ -409,7 +409,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       "STC Open Flag",
       m_FlagsSTC,
       0,
-      2 * wxExSTC::STC_OPEN_FROM_URL);
+      0xFFFF);
 
     if (value != -1)
     {

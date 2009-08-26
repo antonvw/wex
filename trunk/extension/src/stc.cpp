@@ -12,7 +12,6 @@
 #include <wx/numdlg.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/tokenzr.h>
-#include <wx/url.h> // for wxURL
 #include <wx/extension/stc.h>
 #include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/configdialog.h>
@@ -1485,18 +1484,6 @@ bool wxExSTC::LinkOpen(
   if (link.empty())
   {
     return false;
-  }
-
-  const wxURL url(link);
-
-  if (url.GetError() == wxURL_NOERR)
-  {
-    if (open_link)
-    {
-      return Open(link, line_number, wxEmptyString, m_Flags | STC_OPEN_FROM_URL);
-    }
-
-    return true;
   }
 
   wxFileName file(link);
