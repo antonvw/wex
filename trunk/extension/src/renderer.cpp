@@ -12,6 +12,8 @@
 #include <wx/extension/renderer.h>
 
 #if wxUSE_GUI
+#if wxUSE_GRID
+
 wxExRenderer::wxExRenderer(
   long flags,
   const wxPen& pen,
@@ -115,4 +117,6 @@ void wxExRenderer::Draw(
     dc.DrawLine(rect.GetBottomLeft(), rect.GetTopRight());
   }
 }
+
+#endif // wxUSE_GRID
 #endif // wxUSE_GUI

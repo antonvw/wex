@@ -17,6 +17,7 @@
 #include <wx/dc.h>
 
 #if wxUSE_GUI
+#if wxUSE_GRID
 
 /// Offers a grid cell rendering.
 class wxExRenderer : public wxGridCellStringRenderer
@@ -61,5 +62,6 @@ private:
   const long m_Flags;
 };
 
+#endif // wxUSE_GRID
 #endif // wxUSE_GUI
 #endif
