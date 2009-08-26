@@ -774,6 +774,7 @@ void wxExListView::PasteItemsFromClipboard()
 }
 
 int sorted_col_no = 0;
+std::vector<wxExListItem*>* items;
 
 int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
 {
@@ -784,8 +785,8 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
   {
   case wxExColumn::COL_STRING:
     {
-    const wxString& str1 = ((wxExListItem *)item1)->GetColumnText(sorted_col_no);
-    const wxString& str2 = ((wxExListItem *)item2)->GetColumnText(sorted_col_no);
+    const wxString& str1 = (*items)[item1]->GetColumnText(sorted_col_no);
+    const wxString& str2 = (*items)[item2]->GetColumnText(sorted_col_no);
 
     if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
     {
@@ -829,12 +830,10 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     wxExListItem* li = m_Items.back();
     const wxString& val = li->GetColumnText(column_no);
 
-    long longval = 0;
-
     switch (sorted_col->GetType())
     {
-    case wxExColumn::COL_INT: longval = atoi(val.c_str()); break;
-    case wxExColumn::COL_FLOAT: longval = (long)atof(val.c_str()); break;
+    case wxExColumn::COL_INT: SetItemData(i, atoi(val.c_str())); break;
+    case wxExColumn::COL_FLOAT: SetItemData(i, (long)atof(val.c_str())); break;
     case wxExColumn::COL_DATE:
       if (!val.empty())
       {
@@ -847,19 +846,19 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
           return;
         }
 
-        longval = dt.GetTicks();
+        SetItemData(i, dt.GetTicks());
       }
     break;
-    default: longval = (long)li;
+    default: SetItemData(i, i);
     }
-
-    SetItemData(i, longval);
   }
 
   const long sortdata =
     (sorted_col->GetIsSortedAscending() ?
        sorted_col->GetType():
       (0 - sorted_col->GetType()));
+
+  items = &m_Items;
 
   SortItems(CompareFunctionCB, sortdata);
 
