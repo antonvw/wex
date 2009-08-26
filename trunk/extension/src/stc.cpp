@@ -301,6 +301,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , wxExInterface()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
+  , m_LineNumber(line_number)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
 {
@@ -1272,14 +1273,14 @@ const wxString wxExSTC::GetWordAtPos(int pos)
 
 bool wxExSTC::GotoDialog(const wxString& caption)
 {
-  const long initial_value = (m_LineNumber <= GetLineCount() ? m_LineNumber: 1);
+  wxASSERT(m_LineNumber <= GetLineCount() && m_LineNumber > 0);
 
   long val;
   if ((val = wxGetNumberFromUser(
     _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
     wxEmptyString,
     caption,
-    initial_value,
+    m_LineNumber, // initial value
     1,
     GetLineCount())) < 0)
   {
@@ -1295,11 +1296,7 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
 {
   // line_number and m_LineNumber start with 1 and is allowed to be equal to number of lines.
   // Internally GotoLine starts with 0, therefore line_number - 1 is used afterwards.
-
-  if (line_number > GetLineCount())
-  {
-    return;
-  }
+  wxASSERT(line_number <= GetLineCount() && line_number > 0);
 
   GotoLine(line_number - 1);
   EnsureVisible(line_number - 1);
