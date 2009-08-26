@@ -6,8 +6,8 @@ Test Results:
 Run:  2   Failures: 1   Errors: 0
 
 
-1) test: testMethods (F) line: 73 ../extension/test/app/test.cpp
+1) test: testMethods (F) line: 103 ../extension/test/app/test.cpp
 assertion failed
-- Expression: m_STC->Open(wxExFileName("../test.bin"))
+- Expression: m_STCShell->GetHistory().Contains("aaa")
 
 
