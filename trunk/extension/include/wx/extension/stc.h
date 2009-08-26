@@ -290,7 +290,7 @@ private:
 
   bool m_FileSaveInMenu;
   long m_Flags; // open flags
-  long m_LineNumber;
+  long m_GotoLineNumber;
   bool m_MacroIsRecording;
   int m_MarginDividerNumber;
   int m_MarginFoldingNumber;

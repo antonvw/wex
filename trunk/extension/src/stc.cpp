@@ -268,7 +268,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , wxExInterface()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
-  , m_LineNumber(1)
+  , m_GotoLineNumber(1)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
 {
@@ -301,7 +301,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , wxExInterface()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
-  , m_LineNumber(line_number)
+  , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
 {
@@ -318,7 +318,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   // And m_Macro is shared, so not necessary.
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
   m_Flags = stc.m_Flags;
-  m_LineNumber = stc.m_LineNumber;
+  m_GotoLineNumber = stc.m_GotoLineNumber;
   m_PreviousLength = stc.m_PreviousLength;
   m_MenuFlags = stc.m_MenuFlags;
 
@@ -326,7 +326,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
   if (stc.m_FileName.IsOk())
   {
-    Open(stc.m_FileName, m_LineNumber, wxEmptyString, m_Flags);
+    Open(stc.m_FileName, m_GotoLineNumber, wxEmptyString, m_Flags);
   }
 }
 
@@ -1273,14 +1273,14 @@ const wxString wxExSTC::GetWordAtPos(int pos)
 
 bool wxExSTC::GotoDialog(const wxString& caption)
 {
-  wxASSERT(m_LineNumber <= GetLineCount() && m_LineNumber > 0);
+  wxASSERT(m_GotoLineNumber <= GetLineCount() && m_GotoLineNumber > 0);
 
   long val;
   if ((val = wxGetNumberFromUser(
     _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
     wxEmptyString,
     caption,
-    m_LineNumber, // initial value
+    m_GotoLineNumber, // initial value
     1,
     GetLineCount())) < 0)
   {
@@ -1294,14 +1294,14 @@ bool wxExSTC::GotoDialog(const wxString& caption)
 
 void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
 {
-  // line_number and m_LineNumber start with 1 and is allowed to be equal to number of lines.
+  // line_number and m_GotoLineNumber start with 1 and is allowed to be equal to number of lines.
   // Internally GotoLine starts with 0, therefore line_number - 1 is used afterwards.
   wxASSERT(line_number <= GetLineCount() && line_number > 0);
 
   GotoLine(line_number - 1);
   EnsureVisible(line_number - 1);
 
-  m_LineNumber = line_number;
+  m_GotoLineNumber = line_number;
 
   const int start_pos = PositionFromLine(line_number - 1);
   const int end_pos = GetLineEndPosition(line_number - 1);
