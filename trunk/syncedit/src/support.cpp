@@ -151,8 +151,8 @@ Frame::Frame(const wxString& project_wildcard)
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   wxMenu *menuListSort = new wxMenu;
-  menuListSort->AppendCheckItem(wxID_SORT_ASCENDING, _("&Ascending"));
-  menuListSort->AppendCheckItem(wxID_SORT_DESCENDING, _("&Descending"));
+  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
+  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
   menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
   menuOptions->AppendSeparator();
