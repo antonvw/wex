@@ -14,7 +14,9 @@
 #include <wx/extension/header.h>
 #include <wx/extension/tool.h>
 #include "test.h"
+
 #define TEST_FILE "./test.h"
+#define TEST_BIN "./test.bin"
 
 void wxExAppTestFixture::setUp()
 {
@@ -70,7 +72,7 @@ void wxExAppTestFixture::testMethods()
 
   // test wxExSTC
   // do the same test as with wxExFile in base for a binary file
-  CPPUNIT_ASSERT(m_STC->Open(wxExFileName("./test.bin")));
+  CPPUNIT_ASSERT(m_STC->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
   CPPUNIT_ASSERT(m_STC->GetMenuFlags() == wxExSTC::STC_MENU_DEFAULT);
   const wxCharBuffer& buffer = m_STC->GetTextRaw();

@@ -12,7 +12,9 @@
 
 #include <TestCaller.h>
 #include "test.h"
+
 #define TEST_FILE "./test.h"
+#define TEST_PRJ "./test-rep.prj"
 
 void wxExReportAppTestFixture::setUp()
 {
@@ -37,14 +39,14 @@ void wxExReportAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE))); // as we have no focused stc
   CPPUNIT_ASSERT(frame->GetRecentFile().Contains("test.h"));
   CPPUNIT_ASSERT(!frame->OpenFile(
-    wxExFileName("test-rep.prj"),
+    wxExFileName(TEST_PRJ),
     0,
     wxEmptyString,
     wxExSTCWithFrame::STC_OPEN_IS_PROJECT));
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
 
   // test wxExListViewFile
-  CPPUNIT_ASSERT(m_ListView->FileOpen(wxExFileName("test-rep.prj")));
+  CPPUNIT_ASSERT(m_ListView->FileOpen(wxExFileName(TEST_PRJ)));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
   // test wxExProcessWithListView
