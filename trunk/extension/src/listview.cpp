@@ -759,8 +759,7 @@ void wxExListView::PasteItemsFromClipboard()
   }
 }
 
-int sorted_col_no = 0;
-std::vector<wxExListItem*>* pitems;
+std::vector<wxString>* pitems;
 
 int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
 {
@@ -771,8 +770,8 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
   {
   case wxExColumn::COL_STRING:
     {
-    const wxString& str1 = (*pitems)[item1]->GetColumnText(sorted_col_no);
-    const wxString& str2 = (*pitems)[item2]->GetColumnText(sorted_col_no);
+    const wxString& str1 = (*pitems)[item1];
+    const wxString& str2 = (*pitems)[item2];
 
     if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
     {
@@ -800,8 +799,6 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
 
 void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
-  sorted_col_no = column_no;
-
   SortColumnReset();
 
   wxExColumn* sorted_col = &m_Columns[column_no];
@@ -810,14 +807,13 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   wxBusyCursor wait;
 
   // Keeping the items is necessary for sorting strings.
-  std::vector<wxExListItem*> items;
+  std::vector<wxString> items;
   pitems = &items;
 
   for (long i = 0; i < GetItemCount(); i++)
   {
-    items.push_back(new wxExListItem(this, i));
-    wxExListItem* li = items.back();
-    const wxString& val = li->GetColumnText(column_no);
+    const wxString val = wxExListItem(this, i).GetColumnText(column_no);
+    items.push_back(val);
 
     switch (sorted_col->GetType())
     {
@@ -857,14 +853,6 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   {
     SetColumnImage(column_no,
       GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
-  }
-
-  for (
-    vector<wxExListItem*>::iterator it = items.begin();
-    it != items.end();
-    ++it)
-  {
-    delete *it;
   }
 
   items.clear();
