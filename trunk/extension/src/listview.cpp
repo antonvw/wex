@@ -186,7 +186,6 @@ wxExListView::wxExListView(wxWindow* parent,
 
 wxExListView::~wxExListView()
 {
-  ItemsClear();
 }
 
 const wxString wxExListView::BuildPage()
@@ -286,7 +285,7 @@ void wxExListView::CopySelectedItemsToClipboard()
 void wxExListView::EditClearAll()
 {
   DeleteAllItems();
-  ItemsClear();
+
 #if wxUSE_STATUSBAR
   UpdateStatusBar();
 #endif
@@ -559,19 +558,6 @@ void wxExListView::InsertColumn(
   m_Columns.push_back(col);
 }
 
-void wxExListView::ItemsClear()
-{
-  for (
-    vector<wxExListItem*>::iterator it = m_Items.begin();
-    it != m_Items.end();
-    ++it)
-  {
-    delete *it;
-  }
-
-  m_Items.clear();
-}
-
 bool wxExListView::ItemFromText(const wxString& text)
 {
   if (text.empty())
@@ -774,7 +760,7 @@ void wxExListView::PasteItemsFromClipboard()
 }
 
 int sorted_col_no = 0;
-std::vector<wxExListItem*>* items;
+std::vector<wxExListItem*>* pitems;
 
 int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
 {
@@ -785,8 +771,8 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
   {
   case wxExColumn::COL_STRING:
     {
-    const wxString& str1 = (*items)[item1]->GetColumnText(sorted_col_no);
-    const wxString& str2 = (*items)[item2]->GetColumnText(sorted_col_no);
+    const wxString& str1 = (*pitems)[item1]->GetColumnText(sorted_col_no);
+    const wxString& str2 = (*pitems)[item2]->GetColumnText(sorted_col_no);
 
     if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
     {
@@ -823,11 +809,14 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   wxBusyCursor wait;
 
+  // Keeping the items is necessary for sorting strings.
+  std::vector<wxExListItem*> items;
+  pitems = &items;
+
   for (long i = 0; i < GetItemCount(); i++)
   {
-    // Keeping the items is necessary for sorting strings.
-    m_Items.push_back(new wxExListItem(this, i));
-    wxExListItem* li = m_Items.back();
+    items.push_back(new wxExListItem(this, i));
+    wxExListItem* li = items.back();
     const wxString& val = li->GetColumnText(column_no);
 
     switch (sorted_col->GetType())
@@ -858,8 +847,6 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
        sorted_col->GetType():
       (0 - sorted_col->GetType()));
 
-  items = &m_Items;
-
   SortItems(CompareFunctionCB, sortdata);
 
   m_SortedColumnNo = column_no;
@@ -872,7 +859,15 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
       GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
   }
 
-  ItemsClear();
+  for (
+    vector<wxExListItem*>::iterator it = items.begin();
+    it != items.end();
+    ++it)
+  {
+    delete *it;
+  }
+
+  items.clear();
 
   if (GetItemCount() > 0)
   {

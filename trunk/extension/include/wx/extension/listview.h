@@ -187,7 +187,6 @@ private:
 
   void CopySelectedItemsToClipboard();
   void PasteItemsFromClipboard();
-  void ItemsClear();
 
   const wxChar m_FieldSeparator;
 
@@ -203,7 +202,6 @@ private:
   std::map<wxArtID, unsigned int> m_ArtIDs;
   // Do not make a const of it, does not compile on Linux.
   std::vector<wxExColumn> m_Columns;
-  std::vector<wxExListItem*> m_Items;
 
   DECLARE_EVENT_TABLE()
 };
