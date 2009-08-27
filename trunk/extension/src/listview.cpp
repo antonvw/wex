@@ -833,8 +833,14 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
         SetItemData(i, dt.GetTicks());
       }
+      else
+      {
+        SetItemData(i, 0);
+      }
     break;
-    default: SetItemData(i, i);
+    case wxExColumn::COL_STRING: SetItemData(i, i); break;
+    default: 
+      wxFAIL;
     }
   }
 
