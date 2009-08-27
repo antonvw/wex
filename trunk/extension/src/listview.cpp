@@ -131,7 +131,7 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxSize& size,
   long style,
   const wxValidator& validator,
-  int image_type)
+  wxExImageType image_type)
   : wxListView(parent, id, pos, size, style, validator)
   , wxExInterface()
   , m_FieldSeparator('\t')
@@ -854,8 +854,6 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     SetColumnImage(column_no,
       GetArtID(sorted_col->GetIsSortedAscending() ? wxART_GO_DOWN: wxART_GO_UP));
   }
-
-  items.clear();
 
   if (GetItemCount() > 0)
   {

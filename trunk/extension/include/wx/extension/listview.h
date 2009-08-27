@@ -35,7 +35,6 @@ enum wxExSortType
 class wxExColumn : public wxListItem
 {
   friend class wxExListView;
-
 public:
   /// Column types.
   enum wxExColumnType
@@ -78,10 +77,9 @@ private:
 /// Small images have size 16,16 and large images size 32,32.
 class wxExListView : public wxListView, public wxExInterface
 {
-  friend class wxExListItem;
 public:
   /// Which images to use.
-  enum
+  enum wxExImageType
   {
     IMAGE_NONE,
     IMAGE_ART,       ///< using wxArtProvider
@@ -96,7 +94,7 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
-    int image_type = IMAGE_ART);
+    wxExImageType image_type = IMAGE_ART);
 
   /// Destructor.
   virtual ~wxExListView();
@@ -118,6 +116,9 @@ public:
 
   /// Gets the field separator.
   const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
+
+  /// Gets image type.
+  wxExImageType GetImageType() const {return m_ImageType;};
 
   /// Gets the sorted column.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
@@ -190,7 +191,7 @@ private:
 
   const wxChar m_FieldSeparator;
 
-  const int m_ImageType;
+  const wxExImageType m_ImageType;
   const int m_ImageHeightSmall;
   const int m_ImageWidthSmall;
   const int m_ImageHeightLarge;
@@ -245,7 +246,7 @@ public:
   /// Sets the image for this item, using the image list from list view.
   /// If the listview does not already contain the image, it is added.
   void SetImage(wxArtID artid) {
-    if (m_ListView->m_ImageType == wxExListView::IMAGE_ART)
+    if (m_ListView->GetImageType() == wxExListView::IMAGE_ART)
       return StoreImage(m_ListView->GetArtID(artid));
     else
        wxFAIL;
@@ -253,7 +254,7 @@ public:
 
   /// Sets the file icon image for this item.
   void SetImage(int iconid) {
-    if (m_ListView->m_ImageType == wxExListView::IMAGE_FILE_ICON)
+    if (m_ListView->GetImageType() == wxExListView::IMAGE_FILE_ICON)
       return StoreImage(iconid);
     else
        wxFAIL;
