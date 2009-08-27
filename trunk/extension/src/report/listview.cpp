@@ -934,7 +934,7 @@ void wxExListViewFile::OnList(wxListEvent& event)
   {
     if (GetSelectedItemCount() == 1)
     {
-      wxExListItemWithFileName item(this, event.GetIndex());
+      const wxExListItemWithFileName item(this, event.GetIndex());
 
       // The LIST_PROCESS is treated specially, since there will oexen be
       // entries that do not exist. We do not want a message in these cases.
