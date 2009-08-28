@@ -241,28 +241,32 @@ void wxExFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)
 {
-  // Of course, if the lexers are not yet constructed, skip the rest.
-  if (wxExApp::GetLexers() == NULL) return;
-
-  if (lexer.empty())
+  if (wxExApp::GetLexers() == NULL) 
   {
-    if (text != "forced")
+    m_Lexer = wxExLexer();
+  }
+  else
+  {
+    if (lexer.empty())
     {
-      m_Lexer = wxExApp::GetLexers()->FindByFileName(*this);
-
-      if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
+      if (text != "forced")
       {
-        m_Lexer = wxExApp::GetLexers()->FindByText(text);
+        m_Lexer = wxExApp::GetLexers()->FindByFileName(*this);
+
+        if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
+        {
+          m_Lexer = wxExApp::GetLexers()->FindByText(text);
+        }
+      }
+      else
+      {
+        m_Lexer = wxExLexer();
       }
     }
     else
     {
-      m_Lexer = wxExLexer();
+      m_Lexer = wxExApp::GetLexers()->FindByName(lexer);
     }
-  }
-  else
-  {
-    m_Lexer = wxExApp::GetLexers()->FindByName(lexer);
   }
 }
 
