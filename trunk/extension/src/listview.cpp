@@ -800,6 +800,8 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
   default:
     wxFAIL;
   }
+
+  return 0;
 }
 
 void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
