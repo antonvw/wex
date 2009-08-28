@@ -62,10 +62,9 @@ void wxExAppTestFixture::testMethods()
   item2.Insert();
   wxExListItem item3(m_ListView, "a item"); ///< testing wxExListItem
   item3.Insert();
-  m_ListView->SortColumn(0, SORT_ASCENDING);
+  m_ListView->SortColumn("String", SORT_ASCENDING);
   wxExListItem test(m_ListView, 0);
-  CPPUNIT_ASSERT(test.GetColumnText(0) == "a item");
-  
+  CPPUNIT_ASSERT(test.GetColumnText("String") == "a item");
 
   // test wxExNotebook (parent should not be NULL)
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
