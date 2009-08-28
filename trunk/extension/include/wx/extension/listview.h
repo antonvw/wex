@@ -140,6 +140,9 @@ public:
   /// By using wxArtProvider CreateBitmap you can override this image to provide your own one.
   void SortColumn(int column_no, wxExSortType sort_method = SORT_TOGGLE);
 
+  /// Sorts on a column specified by column name.
+  void SortColumn(const wxString& column_name, wxExSortType sort_method = SORT_TOGGLE);
+  
 #if wxUSE_STATUSBAR
   /// Updates pane items field on the statusbar.
   void UpdateStatusBar();

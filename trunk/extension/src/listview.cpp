@@ -888,6 +888,18 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 #endif
 }
 
+void wxExListView::SortColumn(const wxString& column_name, wxExSortType sort_method)
+{
+  const long col_no = FindColumn(column_name, true);
+  
+  if (col_no == -1)
+  {
+    return;
+  }
+  
+  SortColumn(col_no, sort_method);
+}
+
 void wxExListView::SortColumnReset()
 {
   if (m_SortedColumnNo != -1 && !m_ArtIDs.empty()) // only if we are using images
