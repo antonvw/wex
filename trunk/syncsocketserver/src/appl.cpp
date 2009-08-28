@@ -126,7 +126,7 @@ MyFrame::MyFrame()
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
     _("Logs data read from and written to client"));
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_COUNT_ONLY, _("Count Only"),
-    _("Adds timestamp to logdata"));
+    _("Logs only byte counts, no text"));
   menuClient->AppendSeparator();
   menuClient->Append(ID_CLIENT_BUFFER_SIZE, wxExEllipsed(_("Buffer Size")),
     _("Sets buffersize for data retrieved from client"));
