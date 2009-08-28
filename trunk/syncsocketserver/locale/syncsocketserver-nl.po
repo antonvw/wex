@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncsocketserver v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-17 09:56+0100\n"
-"PO-Revision-Date: 2009-08-17 09:56+0100\n"
+"POT-Creation-Date: 2009-08-28 14:35+0100\n"
+"PO-Revision-Date: 2009-08-28 14:36+0100\n"
 "Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -94,8 +94,8 @@ msgid "Count Only"
 msgstr "Alleen totalen"
 
 #: ../src/appl.cpp:129
-msgid "Adds timestamp to logdata"
-msgstr "Voeg tijdstip toe aan logdata"
+msgid "Logs only byte counts, no text"
+msgstr "Logs alleen aantallen bytes, geen tekst"
 
 #: ../src/appl.cpp:131
 #: ../src/appl.cpp:390
@@ -353,6 +353,8 @@ msgstr "geschreven: %d bytes naar: %s"
 msgid "Open"
 msgstr "Openen"
 
+#~ msgid "Adds timestamp to logdata"
+#~ msgstr "Voeg tijdstip toe aan logdata"
 #~ msgid "Edit"
 #~ msgstr "&Bewerken"
 #~ msgid "Editor Options"
