@@ -486,6 +486,8 @@ const wxExColumn wxExListView::GetColumn(int column_no) const
     }
   }
 
+  wxFAIL;
+
   return wxExColumn();
 }
 
