@@ -165,8 +165,10 @@ size_t wxExListViewFile::AddItems()
 
 void wxExListViewFile::AfterSorting()
 {
-  // Only if we are not sort syncing, set contents changed.
-  if (!wxExApp::GetConfigBool("List/SortSync"))
+  // Only if we are a project list and not sort syncing, 
+  // set contents changed.
+  if ( m_Type == LIST_PROJECT &&
+      !wxExApp::GetConfigBool("List/SortSync"))
   {
     m_ContentsChanged = true;
   }
