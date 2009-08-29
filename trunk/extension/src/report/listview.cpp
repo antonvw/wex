@@ -829,7 +829,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 
     if (event.GetId() == ID_LIST_VERSIONLIST && found)
     {
-      list->SortColumn(list->FindColumn(_("Modified")), SORT_DESCENDING);
+      list->SortColumn(_("Modified"), SORT_DESCENDING);
       list->DeleteDoubles();
     }
   }
