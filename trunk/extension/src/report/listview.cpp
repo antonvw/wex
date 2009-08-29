@@ -149,9 +149,7 @@ size_t wxExListViewFile::AddItems()
 
   if (wxExApp::GetConfigBool("List/SortSync") && m_Type == LIST_PROJECT)
   {
-    SortColumn(wxExApp::GetConfig(
-      "List/SortColumn",
-      FindColumn(_("Modified"))), SORT_KEEP);
+    SortColumn(_("Modified"), SORT_KEEP);
   }
 
   const wxString text = _("Added") + wxString::Format(" %d ", retValue) + _("file(s)");
@@ -382,7 +380,7 @@ bool wxExListViewFile::FileOpen(const wxExFileName& filename)
   m_ContentsChanged = false; // override behaviour from ItemFromText
 
   if (wxExApp::GetConfigBool("List/SortSync"))
-    SortColumn(wxExApp::GetConfig("List/SortColumn", FindColumn(_("Modified"))), SORT_KEEP);
+    SortColumn(_("Modified"), SORT_KEEP);
   else
     SortColumnReset();
 
@@ -912,9 +910,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     {
       if (wxExApp::GetConfigBool("List/SortSync") && m_Type == LIST_PROJECT)
       {
-        SortColumn(wxExApp::GetConfig(
-          "List/SortColumn",
-          FindColumn(_("Modified"))), SORT_KEEP);
+        SortColumn(_("Modified"), SORT_KEEP);
       }
 
       m_ItemUpdated = false;
@@ -1113,9 +1109,7 @@ bool ListViewDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString& file
 
   if (wxExApp::GetConfigBool("List/SortSync"))
   {
-    m_Owner->SortColumn(
-      wxExApp::GetConfig("List/SortColumn",
-      m_Owner->FindColumn(_("Modified"))), SORT_KEEP);
+    m_Owner->SortColumn(_("Modified"), SORT_KEEP);
   }
 
   return true;

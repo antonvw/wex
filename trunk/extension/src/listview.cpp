@@ -755,7 +755,7 @@ void wxExListView::PasteItemsFromClipboard()
 
   if (wxExApp::GetConfigBool("List/SortSync"))
   {
-    SortColumn(wxExApp::GetConfig("List/SortColumn", FindColumn(_("Modified"))), SORT_KEEP);
+    SortColumn(_("Modified"), SORT_KEEP);
   }
 }
 
