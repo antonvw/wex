@@ -337,7 +337,7 @@ long wxExListView::FindColumn(const wxString& name, bool is_required) const
 
   if (is_required)
   {
-    wxLogError("Column: %s not found", name.c_str());
+    wxFAIL;
   }
 
   return -1;

@@ -103,8 +103,11 @@ public:
   /// Implement this one if you have images that might be changed after sorting etc.
   virtual void ItemsUpdate() {;};
 
-  /// If column is not found, -1 is returned.
-  long FindColumn(const wxString& name, bool is_required = true) const;
+  /// If column is not found, -1 is returned,
+  /// if column is not found and is_required, wxFAIL is invoked.
+  long FindColumn(
+    const wxString& name, 
+    bool is_required = true) const;
 
   /// Returns the index of the bitmap in the image list used by this list view.
   /// If the artid is not yet on the image lists, it is added to both image lists.
@@ -138,10 +141,14 @@ public:
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
   /// it is sorted ascending or descending.
   /// By using wxArtProvider CreateBitmap you can override this image to provide your own one.
-  void SortColumn(int column_no, wxExSortType sort_method = SORT_TOGGLE);
+  void SortColumn(
+    int column_no, 
+    wxExSortType sort_method = SORT_TOGGLE);
 
   /// Sorts on a column specified by column name.
-  void SortColumn(const wxString& column_name, wxExSortType sort_method = SORT_TOGGLE);
+  void SortColumn(
+    const wxString& column_name, 
+    wxExSortType sort_method = SORT_TOGGLE);
   
 #if wxUSE_STATUSBAR
   /// Updates pane items field on the statusbar.
