@@ -21,6 +21,30 @@
 
 using namespace std;
 
+wxExColumn::wxExColumn(
+  const wxString& name,
+  wxExColumn::wxExColumnType type,
+  int width)
+  : wxListItem()
+  , m_Type(type)
+  , m_IsSortedAscending(false)
+{
+  wxListColumnFormat align = wxLIST_FORMAT_RIGHT;
+
+  switch (m_Type)
+  {
+  case wxExColumn::COL_FLOAT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
+  case wxExColumn::COL_INT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
+  case wxExColumn::COL_STRING: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 100; break;
+  case wxExColumn::COL_DATE: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 150; break;
+  default: wxFAIL;
+  }
+
+  SetText(name);
+  SetAlign(align);
+  SetWidth(width);
+}
+
 void wxExColumn::SetIsSortedAscending(wxExSortType type)
 {
   switch (type)
@@ -331,7 +355,7 @@ int wxExListView::FindColumn(const wxString& name, bool is_required) const
   {
     if (it->GetText() == name)
     {
-      return it->GetColumnNo();
+      return it->GetColumn();
     }
   }
 
@@ -473,14 +497,14 @@ unsigned int wxExListView::GetArtID(wxArtID artid)
   }
 }
 
-const wxExColumn wxExListView::GetColumn(int column_no) const
+const wxExColumn wxExListView::GetColumn(const wxString& name) const
 {
   for (
     vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
-    if (it->GetColumnNo() == column_no)
+    if (it->GetText() == name)
     {
       return *it;
     }
@@ -527,35 +551,10 @@ bool wxExListView::GotoDialog(const wxString& caption)
   return true;
 }
 
-void wxExListView::InsertColumn(
-  const wxString& name,
-  wxExColumn::wxExColumnType type,
-  int width)
+void wxExListView::InsertColumn(wxExColumn& col)
 {
-  wxExColumn col;
-
-  col.m_Type = type;
-  col.m_IsSortedAscending = false;
-
-  wxListColumnFormat align = wxLIST_FORMAT_RIGHT;
-
-  switch (type)
-  {
-  case wxExColumn::COL_FLOAT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
-  case wxExColumn::COL_INT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
-  case wxExColumn::COL_STRING: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 100; break;
-  case wxExColumn::COL_DATE: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 150; break;
-  default: wxFAIL;
-  }
-
-  col.SetText(name);
-  col.SetAlign(align);
-  col.SetWidth(width);
-
   wxListView::InsertColumn(GetColumnCount(), col);
-
-  // Using return value of listctrl->InsertColumn does not work for wxGTK!
-  col.m_ColumnNo = GetColumnCount() - 1;
+  col.SetColumn(GetColumnCount() - 1);
 
   m_Columns.push_back(col);
 }

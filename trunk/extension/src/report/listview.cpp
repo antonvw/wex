@@ -510,25 +510,25 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
 
   if (m_Type != LIST_PROCESS)
   {
-    InsertColumn(_("File Name"), wxExColumn::COL_STRING);
+    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
   }
 
   switch (m_Type)
   {
   case LIST_COUNT:
     // See wxExTextFileWithListView::Report, the order in which columns are set should be the same there.
-    InsertColumn(_("Lines"));
-    InsertColumn(_("Lines Of Code"));
-    InsertColumn(_("Empty Lines"));
-    InsertColumn(_("Words Of Code"));
-    InsertColumn(_("Comments"));
-    InsertColumn(_("Comment Size"));
+    InsertColumn(wxExColumn(_("Lines")));
+    InsertColumn(wxExColumn(_("Lines Of Code")));
+    InsertColumn(wxExColumn(_("Empty Lines")));
+    InsertColumn(wxExColumn(_("Words Of Code")));
+    InsertColumn(wxExColumn(_("Comments")));
+    InsertColumn(wxExColumn(_("Comment Size")));
   break;
   case LIST_FIND:
   case LIST_REPLACE:
-    InsertColumn(_("Line"), wxExColumn::COL_STRING, col_line_width);
-    InsertColumn(_("Match"), wxExColumn::COL_STRING);
-    InsertColumn(_("Line No"));
+    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    InsertColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Line No")));
   break;
   case LIST_KEYWORD:
     for (
@@ -536,40 +536,40 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
       it != lexer->GetKeywords().end();
       ++it)
     {
-      InsertColumn(*it);
+      InsertColumn(wxExColumn(*it));
     }
 
-    InsertColumn(_("Keywords"));
+    InsertColumn(wxExColumn(_("Keywords")));
   break;
   case LIST_PROCESS:
-    InsertColumn(_("Line"), wxExColumn::COL_STRING, col_line_width);
-    InsertColumn(_("Line No"));
-    InsertColumn(_("File Name"), wxExColumn::COL_STRING);
+    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    InsertColumn(wxExColumn(_("Line No")));
+    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
   break;
   case LIST_REVISION:
-    InsertColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400);
-    InsertColumn(_("Date"), wxExColumn::COL_DATE);
-    InsertColumn(_("Initials"), wxExColumn::COL_STRING);
-    InsertColumn(_("Line No"));
-    InsertColumn(_("Revision"), wxExColumn::COL_STRING);
+    InsertColumn(wxExColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400));
+    InsertColumn(wxExColumn(_("Date"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("Initials"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Line No")));
+    InsertColumn(wxExColumn(_("Revision"), wxExColumn::COL_STRING));
   break;
   case LIST_SQL:
-    InsertColumn(_("Run Time"), wxExColumn::COL_DATE);
-    InsertColumn(_("Query"), wxExColumn::COL_STRING, 400);
-    InsertColumn(_("Line No"));
+    InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
+    InsertColumn(wxExColumn(_("Line No")));
   break;
   default: break; // to prevent warnings
   }
 
   if (m_Type == LIST_REPLACE)
   {
-    InsertColumn(_("Replaced"));
+    InsertColumn(wxExColumn(_("Replaced")));
   }
 
-  InsertColumn(_("Modified"), wxExColumn::COL_DATE);
-  InsertColumn(_("In Folder"), wxExColumn::COL_STRING, 175);
-  InsertColumn(_("Type"), wxExColumn::COL_STRING);
-  InsertColumn(_("Size"));
+  InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
+  InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
+  InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
+  InsertColumn(wxExColumn(_("Size")));
 
   if (m_Type == LIST_HISTORY && m_Frame != NULL)
   {

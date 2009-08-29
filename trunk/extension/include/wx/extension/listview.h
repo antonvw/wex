@@ -34,7 +34,6 @@ enum wxExSortType
 /// Offers a column to be used in a wxListCtrl. Facilitates sorting.
 class wxExColumn : public wxListItem
 {
-  friend class wxExListView;
 public:
   /// Column types.
   enum wxExColumnType
@@ -45,18 +44,22 @@ public:
     COL_STRING,  ///< string
   };
 
+  /// Constructor.
+  /// Default width is set by the column type.
+  /// If you specify a width, that one is used.
+  wxExColumn(
+    const wxString& name = wxEmptyString,
+    wxExColumnType type = COL_INT,
+    int width = 0);
+
   /// Assignment operator.
   /// Visual Studio needs this, though gcc does not.
   wxExColumn& operator=(const wxExColumn& p)
   {
     m_Type = p.m_Type;
-    m_ColumnNo = p.m_ColumnNo;
     m_IsSortedAscending = p.m_IsSortedAscending;
     return *this;
   };
-
-  /// Gets the column no.
-  int GetColumnNo() const {return m_ColumnNo;}
 
   /// Returns whether sorting is ascending.
   bool GetIsSortedAscending() const {return m_IsSortedAscending;}
@@ -68,7 +71,6 @@ public:
   void SetIsSortedAscending(wxExSortType type);
 private:
   wxExColumnType m_Type;
-  int m_ColumnNo;
   bool m_IsSortedAscending;
 };
 
@@ -115,7 +117,7 @@ public:
   unsigned int GetArtID(wxArtID artid);
 
   /// Gets the specified column.
-  const wxExColumn GetColumn(int column_no) const;
+  const wxExColumn GetColumn(const wxString& name) const;
 
   /// Gets the field separator.
   const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
@@ -129,12 +131,8 @@ public:
   /// Asks for an item number and goes to the item.
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
 
-  /// Inserts a column, default width is set by the column type.
-  /// If you specify a width, that one is used.
-  void InsertColumn(
-    const wxString& name,
-    wxExColumn::wxExColumnType type = wxExColumn::COL_INT,
-    int width = 0);
+  /// Inserts a column.
+  void InsertColumn(wxExColumn& col);
 
   /// Sorts on a column.
   /// If you specified use_images,
