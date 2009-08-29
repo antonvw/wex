@@ -42,7 +42,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
 void wxExListItemWithFileName::Insert(long index)
 {
   SetId(index == -1 ? GetListView()->GetItemCount(): index);
-  const long col = GetListView()->FindColumn(_("File Name"), false);
+  const int col = GetListView()->FindColumn(_("File Name"), false);
   const wxString filename = (
     m_Statistics.FileExists() || m_Statistics.DirExists() ?
       m_Statistics.GetFullName():

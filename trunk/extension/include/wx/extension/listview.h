@@ -56,7 +56,7 @@ public:
   };
 
   /// Gets the column no.
-  long GetColumnNo() const {return m_ColumnNo;}
+  int GetColumnNo() const {return m_ColumnNo;}
 
   /// Returns whether sorting is ascending.
   bool GetIsSortedAscending() const {return m_IsSortedAscending;}
@@ -68,7 +68,7 @@ public:
   void SetIsSortedAscending(wxExSortType type);
 private:
   wxExColumnType m_Type;
-  long m_ColumnNo;
+  int m_ColumnNo;
   bool m_IsSortedAscending;
 };
 
@@ -105,7 +105,7 @@ public:
 
   /// If column is not found, -1 is returned,
   /// if column is not found and is_required, wxFAIL is invoked.
-  long FindColumn(
+  int FindColumn(
     const wxString& name, 
     bool is_required = true) const;
 

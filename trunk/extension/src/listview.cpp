@@ -322,7 +322,7 @@ void wxExListView::EditSelectAll()
   SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
-long wxExListView::FindColumn(const wxString& name, bool is_required) const
+int wxExListView::FindColumn(const wxString& name, bool is_required) const
 {
   for (
     vector<wxExColumn>::const_iterator it = m_Columns.begin();
@@ -892,7 +892,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
 void wxExListView::SortColumn(const wxString& column_name, wxExSortType sort_method)
 {
-  const long col_no = FindColumn(column_name, true);
+  const int col_no = FindColumn(column_name, true);
   
   if (col_no == -1)
   {
