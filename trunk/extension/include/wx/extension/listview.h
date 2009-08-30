@@ -116,7 +116,10 @@ public:
   /// Use only if you setup for IMAGE_ART.
   unsigned int GetArtID(wxArtID artid);
 
-  /// Gets the specified column.
+  /// Gets the specified column by column number.
+  const wxExColumn GetColumn(int col_no) const;
+
+  /// Gets the specified column by column name.
   const wxExColumn GetColumn(const wxString& name) const;
 
   /// Gets the field separator.

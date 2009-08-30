@@ -497,6 +497,24 @@ unsigned int wxExListView::GetArtID(wxArtID artid)
   }
 }
 
+const wxExColumn wxExListView::GetColumn(int col_no) const
+{
+  for (
+    vector<wxExColumn>::const_iterator it = m_Columns.begin();
+    it != m_Columns.end();
+    ++it)
+  {
+    if (it->GetColumn() == col_no)
+    {
+      return *it;
+    }
+  }
+
+  wxFAIL;
+
+  return wxExColumn();
+}
+
 const wxExColumn wxExListView::GetColumn(const wxString& name) const
 {
   for (
