@@ -65,7 +65,7 @@ wxExListItem::wxExListItem(wxExListView* lv, const wxString& text)
   SetText(text);
 }
 
-wxExListItem::wxExListItem(wxExListView* lv, const int itemnumber)
+wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
   : m_ListView(lv)
 {
   SetId(itemnumber);
@@ -87,7 +87,7 @@ const wxString wxExListItem::GetColumnText(int col_no)
   return GetText();
 }
 
-void wxExListItem::SetColumnText(const int col_no, const wxString& text)
+void wxExListItem::SetColumnText(int col_no, const wxString& text)
 {
   if (col_no >= m_ListView->GetColumnCount())
   {

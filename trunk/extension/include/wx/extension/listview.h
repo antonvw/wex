@@ -226,7 +226,7 @@ public:
   wxExListItem(wxExListView* lv, const wxString& text);
 
   /// Constructor, sets the id.
-  wxExListItem(wxExListView* lv, const int id);
+  wxExListItem(wxExListView* lv, int id);
 
   /// Inserts the item on the list.
   long Insert() {
@@ -245,7 +245,7 @@ public:
   wxExListView* GetListView() {return m_ListView;};
 
   /// Sets the column text using column number.
-  void SetColumnText(const int col_no, const wxString& text);
+  void SetColumnText(int col_no, const wxString& text);
 
   /// Sets the column text using column name.
   void SetColumnText(
