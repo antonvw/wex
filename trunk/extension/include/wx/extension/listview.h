@@ -135,7 +135,7 @@ public:
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
 
   /// Inserts a column.
-  void InsertColumn(wxExColumn& col);
+  void InsertColumn(const wxExColumn& col);
 
   /// Sorts on a column.
   /// If you specified use_images,

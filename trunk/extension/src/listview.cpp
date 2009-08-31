@@ -573,12 +573,13 @@ bool wxExListView::GotoDialog(const wxString& caption)
   return true;
 }
 
-void wxExListView::InsertColumn(wxExColumn& col)
+void wxExListView::InsertColumn(const wxExColumn& col)
 {
-  wxListView::InsertColumn(GetColumnCount(), col);
-  col.SetColumn(GetColumnCount() - 1);
-
-  m_Columns.push_back(col);
+  wxExColumn mycol(col);
+  
+  wxListView::InsertColumn(GetColumnCount(), mycol);
+  mycol.SetColumn(GetColumnCount() - 1);
+  m_Columns.push_back(mycol);
 }
 
 bool wxExListView::ItemFromText(const wxString& text)
