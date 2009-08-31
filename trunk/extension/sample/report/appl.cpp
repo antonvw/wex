@@ -84,6 +84,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->Realize();
 
+#if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));
   panes.push_back(wxExPane("PaneFileType", 50));
@@ -91,6 +92,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   panes.push_back(wxExPane("PaneLexer", 60));
   panes.push_back(wxExPane("PaneItems", 60));
   SetupStatusBar(panes);
+#endif
 
   const wxExLexer lexer = wxExApp::GetLexers()->FindByName("cpp");
 

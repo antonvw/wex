@@ -190,6 +190,7 @@ wxExSampleFrame::wxExSampleFrame()
     else             item.SetImage(wxART_TICK_MARK);
   }
 
+#if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));
   panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
@@ -198,6 +199,7 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
   panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
   SetupStatusBar(panes);
+#endif
 
   CreateToolBar();
   m_ToolBar->AddTool(wxID_OPEN);
@@ -245,7 +247,9 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
     const long stop = sw.Time();
 
+#if wxUSE_STATUSBAR
     StatusText(wxString::Format("wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+#endif
     }
     break;
 
