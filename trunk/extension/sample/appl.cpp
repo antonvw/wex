@@ -150,7 +150,7 @@ wxExSampleFrame::wxExSampleFrame()
 
   assert(wxExApp::GetLexers());
 
-  wxExSTC* st = new wxExSTC(this, wxExApp::GetLexers()->GetFileName().GetFullPath());
+  wxExSTC* st = new wxExSTC(this, wxExApp::GetLexers()->GetFileName());
   m_Notebook->AddPage(st, wxExApp::GetLexers()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "wxExListView");
 
