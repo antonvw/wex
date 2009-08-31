@@ -73,7 +73,11 @@ wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
 
 const wxString wxExListItem::GetColumnText(int col_no)
 {
-  if (col_no == -1) return wxEmptyString;
+  if (col_no < 0) 
+  {
+    wxFAIL;
+    return wxEmptyString;
+  }
 
   SetColumn(col_no);
   SetMask(wxLIST_MASK_TEXT);
