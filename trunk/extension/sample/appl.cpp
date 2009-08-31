@@ -164,10 +164,10 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
 
   m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
-  m_ListView->InsertColumn("String", wxExColumn::COL_STRING);
-  m_ListView->InsertColumn("Number", wxExColumn::COL_INT);
-  m_ListView->InsertColumn("Float", wxExColumn::COL_FLOAT);
-  m_ListView->InsertColumn("Date", wxExColumn::COL_DATE);
+  m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
+  m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+  m_ListView->InsertColumn(wxExColumn("Float", wxExColumn::COL_FLOAT));
+  m_ListView->InsertColumn(wxExColumn("Date", wxExColumn::COL_DATE));
 
   const int items = 50;
 
