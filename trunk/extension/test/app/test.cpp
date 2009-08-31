@@ -52,8 +52,8 @@ void wxExAppTestFixture::testMethods()
 
   // test wxExListView
   m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
-  m_ListView->InsertColumn("String", wxExColumn::COL_STRING);
-  m_ListView->InsertColumn("Number", wxExColumn::COL_INT);
+  m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
+  m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
   CPPUNIT_ASSERT(m_ListView->FindColumn("String") == 0);
   CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
   wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
