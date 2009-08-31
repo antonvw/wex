@@ -47,12 +47,13 @@ IMPLEMENT_APP(wxExSampleApp)
 bool wxExSampleApp::OnInit()
 {
   SetAppName("wxExSample");
-  SetLogging();
 
   if (!wxExApp::OnInit())
   {
     return false;
   }
+
+  SetLogging();
 
   wxExSampleFrame *frame = new wxExSampleFrame();
   frame->Show(true);

@@ -35,12 +35,13 @@ IMPLEMENT_APP(wxExRepSampleApp)
 bool wxExRepSampleApp::OnInit()
 {
   SetAppName("wxExRepSample");
-  SetLogging();
 
   if (!wxExApp::OnInit())
   {
     return false;
   }
+
+  SetLogging();
 
   wxExRepSampleFrame *frame = new wxExRepSampleFrame();
 
