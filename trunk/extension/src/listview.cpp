@@ -40,6 +40,7 @@ wxExColumn::wxExColumn(
   default: wxFAIL;
   }
 
+  SetColumn(-1); // set a default value, should be overriden when inserting the col
   SetText(name);
   SetAlign(align);
   SetWidth(width);
@@ -352,23 +353,14 @@ void wxExListView::EditSelectAll()
 
 int wxExListView::FindColumn(const wxString& name, bool is_required) const
 {
-  for (
-    vector<wxExColumn>::const_iterator it = m_Columns.begin();
-    it != m_Columns.end();
-    ++it)
-  {
-    if (it->GetText() == name)
-    {
-      return it->GetColumn();
-    }
-  }
+  const wxExColumn col(GetColumn(name));
 
-  if (is_required)
+  if (is_required && col.GetColumn() == -1)
   {
     wxFAIL;
   }
 
-  return -1;
+  return col.GetColumn();
 }
 
 bool wxExListView::FindNext(const wxString& text, bool find_next)
