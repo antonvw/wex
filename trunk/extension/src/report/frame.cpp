@@ -241,6 +241,10 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       wxExFindInFiles();
       break;
 
+    case ID_SPECIAL_REPLACE_IN_FILES:
+      wxExFindInFiles(false);
+      break;
+
     case ID_TERMINATED_PROCESS:
       wxBell();
       wxDELETE(m_Process);
