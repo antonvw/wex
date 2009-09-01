@@ -513,6 +513,8 @@ const wxExColumn wxExListView::GetColumn(int col_no) const
 
 const wxExColumn wxExListView::GetColumn(const wxString& name) const
 {
+  // This method does not fail if name could not be found,
+  // test for col no in wxExColumn to check for that.
   for (
     vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
@@ -523,8 +525,6 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
       return *it;
     }
   }
-
-  wxFAIL;
 
   return wxExColumn();
 }
