@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-13 07:58+0100\n"
-"PO-Revision-Date: 2009-08-13 07:58+0100\n"
+"POT-Creation-Date: 2009-09-01 07:24+0100\n"
+"PO-Revision-Date: 2009-09-01 07:26+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,51 +17,51 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/frame.cpp:70
+#: ../src/frame.cpp:69
 msgid "Project Files"
 msgstr "Project bestanden"
 
-#: ../src/frame.cpp:104
+#: ../src/frame.cpp:103
 msgid "Files"
 msgstr "Bestanden"
 
-#: ../src/frame.cpp:106
+#: ../src/frame.cpp:105
 msgid "Projects"
 msgstr "Projecten"
 
-#: ../src/frame.cpp:108
+#: ../src/frame.cpp:107
 msgid "Output"
 msgstr "Resultaten"
 
-#: ../src/frame.cpp:110
+#: ../src/frame.cpp:109
 msgid "Explorer"
 msgstr "Verkenner"
 
-#: ../src/frame.cpp:112
+#: ../src/frame.cpp:111
 msgid "Ascii Table"
 msgstr "Ascii tabel"
 
-#: ../src/frame.cpp:114
+#: ../src/frame.cpp:113
 msgid "History"
 msgstr "Geschiedenis"
 
-#: ../src/frame.cpp:116
+#: ../src/frame.cpp:115
 msgid "Findbar"
 msgstr "Zoekbalk"
 
-#: ../src/frame.cpp:118
+#: ../src/frame.cpp:117
 msgid "Perspective"
 msgstr "Perspektief"
 
-#: ../src/frame.cpp:269
+#: ../src/frame.cpp:268
 msgid "Project"
 msgstr "Project"
 
-#: ../src/frame.cpp:269
+#: ../src/frame.cpp:268
 msgid "Textfile"
 msgstr "Bestand"
 
-#: ../src/frame.cpp:432
+#: ../src/frame.cpp:431
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -71,37 +71,37 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../src/frame.cpp:437
+#: ../src/frame.cpp:436
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: ../src/frame.cpp:439
+#: ../src/frame.cpp:438
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: ../src/frame.cpp:532
+#: ../src/frame.cpp:533
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../src/frame.cpp:533
+#: ../src/frame.cpp:534
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: ../src/frame.cpp:538
+#: ../src/frame.cpp:539
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/frame.cpp:545
-#: ../src/frame.cpp:554
-#: ../src/frame.cpp:559
+#: ../src/frame.cpp:546
+#: ../src/frame.cpp:555
+#: ../src/frame.cpp:560
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../src/frame.cpp:551
+#: ../src/frame.cpp:552
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../src/frame.cpp:685
+#: ../src/frame.cpp:701
 msgid "&Open"
 msgstr "&Openen"
 
@@ -145,167 +145,171 @@ msgstr "&Volgende zoeken\tF3"
 msgid "Find &In Files"
 msgstr "&Zoeken in bestanden"
 
-#: ../src/support.cpp:86
+#: ../src/support.cpp:81
+msgid "Replace In File&s"
+msgstr "Vervangen in bestande&n"
+
+#: ../src/support.cpp:87
 msgid "&Control Char"
 msgstr "&Controle karakter"
 
-#: ../src/support.cpp:104
+#: ../src/support.cpp:105
 msgid "Start Record"
 msgstr "Start opname"
 
-#: ../src/support.cpp:105
+#: ../src/support.cpp:106
 msgid "Stop Record"
 msgstr "Stop opname"
 
-#: ../src/support.cpp:106
+#: ../src/support.cpp:107
 msgid "Playback\tCtrl+M"
 msgstr "Afspelen\tCtrl+M"
 
-#: ../src/support.cpp:109
+#: ../src/support.cpp:110
 msgid "&Statusbar"
 msgstr "&Statusbalk"
 
-#: ../src/support.cpp:110
+#: ../src/support.cpp:111
 msgid "&Toolbar"
 msgstr "&Werkbalk"
 
-#: ../src/support.cpp:111
+#: ../src/support.cpp:112
 msgid "&Findbar"
 msgstr "&Zoekbalk"
 
-#: ../src/support.cpp:113
+#: ../src/support.cpp:114
 msgid "&Files"
 msgstr "&Bestanden"
 
-#: ../src/support.cpp:114
+#: ../src/support.cpp:115
 msgid "&Projects"
 msgstr "&Projecten"
 
-#: ../src/support.cpp:115
+#: ../src/support.cpp:116
 msgid "&Explorer"
 msgstr "&Verkenner"
 
-#: ../src/support.cpp:116
+#: ../src/support.cpp:117
 msgid "&Output"
 msgstr "&Resultaten"
 
-#: ../src/support.cpp:117
+#: ../src/support.cpp:118
 msgid "&Ascii Table"
 msgstr "&Ascii tabel"
 
-#: ../src/support.cpp:118
+#: ../src/support.cpp:119
 msgid "&History"
 msgstr "&Geschiedenis"
 
-#: ../src/support.cpp:121
+#: ../src/support.cpp:122
 msgid "&List"
 msgstr "&Lijst"
 
-#: ../src/support.cpp:122
+#: ../src/support.cpp:123
 msgid "&Detail"
 msgstr "&Details"
 
-#: ../src/support.cpp:123
+#: ../src/support.cpp:124
 msgid "&Small Icon"
 msgstr "&Pictogrammen"
 
-#: ../src/support.cpp:125
+#: ../src/support.cpp:126
 msgid "&Lists"
 msgstr "&Lijstweergave"
 
-#: ../src/support.cpp:129
+#: ../src/support.cpp:130
 msgid "&Select"
 msgstr "&Selecteren"
 
-#: ../src/support.cpp:138
+#: ../src/support.cpp:139
 msgid "&Open As Text"
 msgstr "&Als tekst openen"
 
-#: ../src/support.cpp:144
+#: ../src/support.cpp:145
 msgid "&Auto Sort"
 msgstr "&Automatisch sorteren"
 
-#: ../src/support.cpp:147
+#: ../src/support.cpp:148
 msgid "Split"
 msgstr "Splitsen"
 
-#: ../src/support.cpp:150
+#: ../src/support.cpp:151
 msgid "Set SVN And &Comparator"
 msgstr "SVN en vergelijker &instellen"
 
-#: ../src/support.cpp:152
+#: ../src/support.cpp:153
 msgid "Set &List Font"
 msgstr "&Lijst lettertype instellen"
 
-#: ../src/support.cpp:154
+#: ../src/support.cpp:155
 msgid "&Ascending"
 msgstr "&Oplopend"
 
-#: ../src/support.cpp:155
+#: ../src/support.cpp:156
 msgid "&Descending"
 msgstr "&Aflopend"
 
-#: ../src/support.cpp:156
+#: ../src/support.cpp:157
 msgid "&Toggle"
 msgstr "&Afwisselen"
 
-#: ../src/support.cpp:157
+#: ../src/support.cpp:158
 msgid "Set &List Sort Method"
 msgstr "&Lijst sorteer methode instellen"
 
-#: ../src/support.cpp:159
+#: ../src/support.cpp:160
 msgid "Set &Editor Options"
 msgstr "&Editor opties"
 
-#: ../src/support.cpp:164
+#: ../src/support.cpp:165
 msgid "&File"
 msgstr "&Bestand"
 
-#: ../src/support.cpp:165
+#: ../src/support.cpp:166
 msgid "&Edit"
 msgstr "Be&werken"
 
-#: ../src/support.cpp:166
+#: ../src/support.cpp:167
 msgid "&View"
 msgstr "&Beeld"
 
-#: ../src/support.cpp:167
+#: ../src/support.cpp:168
 msgid "&Process"
 msgstr "&Proces"
 
-#: ../src/support.cpp:168
+#: ../src/support.cpp:169
 msgid "&Project"
 msgstr "&Project"
 
-#: ../src/support.cpp:169
+#: ../src/support.cpp:170
 msgid "&Window"
 msgstr "&Venster"
 
-#: ../src/support.cpp:170
+#: ../src/support.cpp:171
 msgid "&Options"
 msgstr "&Opties"
 
-#: ../src/support.cpp:193
+#: ../src/support.cpp:194
 msgid "Open project"
 msgstr "Project openen"
 
-#: ../src/support.cpp:198
+#: ../src/support.cpp:199
 msgid "Save project"
 msgstr "Project opslaan"
 
-#: ../src/support.cpp:207
+#: ../src/support.cpp:208
 msgid "View in list mode"
 msgstr "Lijst weergave"
 
-#: ../src/support.cpp:212
+#: ../src/support.cpp:213
 msgid "View in detail mode"
 msgstr "Details weergave"
 
-#: ../src/support.cpp:241
+#: ../src/support.cpp:242
 msgid "View in hex mode"
 msgstr "Bekijk hexadecimaal"
 
-#: ../src/support.cpp:243
+#: ../src/support.cpp:244
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
 
