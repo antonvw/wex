@@ -76,7 +76,8 @@ const wxString wxExListItem::GetColumnText(int col_no)
 {
   if (col_no < 0) 
   {
-    wxFAIL;
+    // We cannot wxFAIL here, as e.g. "Line No" column is used
+    // to get line number, in several lists, als in lists without that column.
     return wxEmptyString;
   }
 
