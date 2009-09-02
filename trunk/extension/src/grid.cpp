@@ -33,7 +33,10 @@ wxExTextDropTarget::wxExTextDropTarget(wxExGrid* grid)
 {
 }
 
-bool wxExTextDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+bool wxExTextDropTarget::OnDropText(
+  wxCoord x, 
+  wxCoord y, 
+  const wxString& data)
 {
   const int row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
   const int col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
@@ -155,7 +158,9 @@ bool wxExGrid::CopySelectedCellsToClipboard()
 }
 
 #if wxUSE_DRAG_AND_DROP
-bool wxExGrid::DropSelection(const wxGridCellCoords& drop_coords, const wxString& data)
+bool wxExGrid::DropSelection(
+  const wxGridCellCoords& drop_coords, 
+  const wxString& data)
 {
   SetCellsValue(drop_coords, data);
 
@@ -396,8 +401,15 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   case wxID_FIND: FindDialog(this); break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;
   case wxID_SELECTALL: SelectAll(); break;
-  case ID_EDIT_FIND_NEXT: FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); break;
-  case ID_EDIT_FIND_PREVIOUS: FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); break;
+
+  case ID_EDIT_FIND_NEXT: 
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
+    break;
+
+  case ID_EDIT_FIND_PREVIOUS: 
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); 
+    break;
+
   case ID_EDIT_SELECT_NONE: ClearSelection(); break;
   default: wxFAIL;
   }
@@ -524,15 +536,23 @@ void wxExGrid::OnMouse(wxMouseEvent& event)
 
 void wxExGrid::PasteCellsFromClipboard()
 {
-  SetCellsValue(wxGridCellCoords(GetGridCursorRow(), GetGridCursorCol()), wxExClipboardGet());
+  SetCellsValue(
+    wxGridCellCoords(
+      GetGridCursorRow(), 
+      GetGridCursorCol()), 
+    wxExClipboardGet());
 }
 
-void wxExGrid::SetGridCellValue(const wxGridCellCoords& coords, const wxString& data)
+void wxExGrid::SetGridCellValue(
+  const wxGridCellCoords& coords, 
+  const wxString& data)
 {
   SetCellValue(coords, data);
 }
 
-void wxExGrid::SetCellsValue(const wxGridCellCoords& start_coords, const wxString& data)
+void wxExGrid::SetCellsValue(
+  const wxGridCellCoords& start_coords, 
+  const wxString& data)
 {
   wxStringTokenizer tkz(data, wxTextFile::GetEOL());
 
