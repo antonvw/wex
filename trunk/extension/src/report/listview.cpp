@@ -439,7 +439,7 @@ const wxString wxExListViewFile::GetFindInCaption(int id)
   }
 }
 
-int wxExListViewFile::GetTypeTool(const wxExTool& tool)
+wxExListViewFile::ListType wxExListViewFile::GetTypeTool(const wxExTool& tool)
 {
   switch (tool.GetId())
   {

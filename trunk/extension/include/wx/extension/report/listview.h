@@ -115,7 +115,7 @@ public:
   static const wxString GetTypeDescription(ListType type);
 
   /// Returns list type from tool id.
-  static int GetTypeTool(const wxExTool& tool);
+  static ListType GetTypeTool(const wxExTool& tool);
 protected:
   void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);

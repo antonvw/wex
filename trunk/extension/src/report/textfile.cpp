@@ -12,9 +12,9 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/app.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/listview.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
-#include <wx/extension/report/listview.h>
 
 wxExListViewFile* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;

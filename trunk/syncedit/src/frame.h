@@ -28,7 +28,9 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   // Interface from wxExFrameWithHistory.
-  virtual wxExListViewFile* Activate(int type, const wxExLexer* lexer = NULL);
+  virtual wxExListViewFile* Activate(
+    wxExListViewFile::ListType type, 
+    const wxExLexer* lexer = NULL);
   virtual wxExListViewFile* GetCurrentProject();
   virtual wxExSTCWithFrame* GetCurrentSTC();
   virtual bool OpenFile(
@@ -46,7 +48,9 @@ private:
     long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
 
-  wxExListViewFile* AddPage(int type, const wxExLexer* lexer = NULL);
+  wxExListViewFile* AddPage(
+    wxExListViewFile::ListType type, 
+    const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);
 

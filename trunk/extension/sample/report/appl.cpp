@@ -146,7 +146,9 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   item.Insert();
 }
 
-wxExListViewFile* wxExRepSampleFrame::Activate(int type, const wxExLexer* lexer)
+wxExListViewFile* wxExRepSampleFrame::Activate(
+  wxExListViewFile::ListType type, 
+  const wxExLexer* lexer)
 {
   for (
     size_t i = 0;

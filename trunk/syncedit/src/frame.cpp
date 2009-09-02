@@ -165,7 +165,9 @@ MDIFrame::MDIFrame(bool open_recent)
   wxLogTrace("SY_CALL", "-MDIFrame");
 }
 
-wxExListViewFile* MDIFrame::Activate(int type, const wxExLexer* lexer)
+wxExListViewFile* MDIFrame::Activate(
+  wxExListViewFile::ListType type, 
+  const wxExLexer* lexer)
 {
   if (type == wxExListViewFile::LIST_PROJECT)
   {
@@ -180,7 +182,9 @@ wxExListViewFile* MDIFrame::Activate(int type, const wxExLexer* lexer)
   }
 }
 
-wxExListViewFile* MDIFrame::AddPage(int type, const wxExLexer* lexer)
+wxExListViewFile* MDIFrame::AddPage(
+  wxExListViewFile::ListType type, 
+  const wxExLexer* lexer)
 {
   const wxString name = wxExListViewFile::GetTypeDescription((wxExListViewFile::ListType)type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
