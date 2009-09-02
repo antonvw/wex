@@ -73,6 +73,13 @@ bool wxExApp::OnInit()
       }
     }
   }
+  else
+  {
+    m_CatalogDir = wxString::Format(
+      "Could not initialize locale name: %s canonical name: %s",
+      m_Locale.GetName(),
+      m_Locale.GetCanonicalName ());
+  }
 
   // Now construct the config, as most classes use it.
 #ifdef EX_PORTABLE
@@ -98,6 +105,7 @@ bool wxExApp::OnInit()
 #endif
       + wxFileName::GetPathSeparator() + "lexers.xml")
     );
+
   m_Lexers->Read();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
