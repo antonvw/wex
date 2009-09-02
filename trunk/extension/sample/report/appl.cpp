@@ -190,7 +190,13 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     wxAboutBox(info);
     }
     break;
+    
   case wxID_EXIT: Close(true); break;
+  
+  case wxID_OPEN:
+    event.Skip();
+    break;
+    
   case wxID_PREVIEW:
     if (m_STC->HasCapture())
     {
@@ -206,6 +212,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
       }
     }
     break;
+    
   case wxID_PRINT:
     {
       wxExListViewFile* lv = GetFocusedListView();
@@ -216,7 +223,9 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
       }
     }
     break;
-  case wxID_PRINT_SETUP: wxExApp::GetPrinter()->PageSetup(); break;
+    
+  case wxID_PRINT_SETUP: wxExApp::GetPrinter()->PageSetup(); 
+    break;
 
   case wxID_STOP:
     if (ProcessIsRunning())
