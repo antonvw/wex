@@ -24,7 +24,6 @@ enum
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
-  ID_PRINT_SPECIAL,
   ID_LOCALE_SHOW_DIR,
   ID_STATISTICS_CLEAR,
   ID_STATISTICS_SHOW,
@@ -99,8 +98,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->Append(wxID_OPEN);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
-  menuFile->AppendSeparator();
-  menuFile->Append(ID_PRINT_SPECIAL, _("Print Test")); // test to print without a window
   menuFile->AppendSeparator();
   menuFile->Append(ID_LOCALE_SHOW_DIR, _("Show Locale Dir"));
   menuFile->AppendSeparator();
@@ -354,33 +351,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       wxCANCEL);
 
       dlg->Show();
-    }
-    break;
-
-  case ID_PRINT_SPECIAL:
-    {
-    wxHtmlEasyPrinting* print = wxExApp::GetPrinter();
-
-    wxPrintDialogData printDialogData(*print->GetPrintData());
-    wxPrinter printer(&printDialogData);
-
-    wxHtmlPrintout printout;
-    printout.SetHtmlFile("appl.xpm");
-    printer.Print(this, &printout, false);
-
-    /*
-    // This is the simplest, but
-    // asks for printing always (in lib source).
-    print->PrintFile("mondrian.xpm");
-    */
-
-    /*
-    // This could be made better, immediately hide etc.
-    wxExSTC* stc = new wxExSTC(this, "mondrian.xpm");
-    stc->Hide();
-    stc->Print(false);// however stc->Print(false) does not print
-    delete stc;
-    */
     }
     break;
 
