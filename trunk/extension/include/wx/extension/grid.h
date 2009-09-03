@@ -25,6 +25,7 @@ public:
   /// Constructor.
   wxExGrid(wxWindow* parent,
     wxWindowID id = wxID_ANY,
+    bool add_menu = false,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxWANTS_CHARS,
@@ -97,6 +98,8 @@ private:
 #if wxUSE_DRAG_AND_DROP
   bool m_UseDragAndDrop;
 #endif
+
+  const bool m_AddMenu;
 
   DECLARE_EVENT_TABLE()
 };

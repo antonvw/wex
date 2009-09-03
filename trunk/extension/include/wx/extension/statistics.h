@@ -121,14 +121,17 @@ public:
   /// and col labels (Item, Value).
   /// Returns the window that is created, or is activated,
   /// if it already was created.
+  /// You can also specify wehther you want a menu, and the id of 
+  /// the grid component.
   wxExGrid* Show(wxWindow* parent,
     bool hide_row_labels = true,
-    bool hide_col_labels = true,
+    bool hide_col_labels = true
+    bool add_menu = false,
     wxWindowID id = wxID_ANY)
     {
     if (m_Grid == NULL)
     {
-      m_Grid = new wxExGrid(parent, id);
+      m_Grid = new wxExGrid(parent, id, add_menu);
       m_Grid->CreateGrid(0, 0);
       m_Grid->AppendCols(2);
       m_Grid->EnableEditing(false);
