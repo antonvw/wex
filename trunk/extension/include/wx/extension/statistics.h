@@ -33,13 +33,13 @@ public:
     : wxExGrid(parent, id, pos, size, style, name)
     , m_Statistics(statistics)
   {
-    Connect(100, wxEVT_GRID_CELL_RIGHT_CLICK, wxCommandEventHandler(wxExGridStatistics::OnGrid));
+    Connect(100, wxEVT_GRID_CELL_RIGHT_CLICK, wxGridEventHandler(wxExGridStatistics::OnGrid));
     Connect(wxID_CLEAR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(wxExGridStatistics::OnCommand));
   }
 protected:
   void OnCommand(wxCommandEvent& event) {
     m_Statistics->Clear();};
-  void OnGid(wxGridEvent& event) {
+  void OnGrid(wxGridEvent& event) {
     wxMenu menu;
     menu.Append(wxID_CLEAR);
     PopupMenu(&menu);};
