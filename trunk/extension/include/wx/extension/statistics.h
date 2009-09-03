@@ -15,6 +15,39 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/tool.h>
 
+#if wxUSE_GRID
+template <class T> class wxExStatistics;
+
+/// Helper class for adding empty menu.
+template <class T> class wxExGridStatistics: public wxExGrid
+{
+public:
+  /// Constructor.
+  wxExGridStatistics(wxWindow* parent,
+    wxExStatistics <T> * statistics,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxWANTS_CHARS,
+    const wxString& name = wxPanelNameStr)
+    : wxExGrid(parent, id, pos, size, style, name)
+    , m_Statistics(statistics)
+  {
+    Connect(100, wxEVT_RIGHT_DOWN, wxCommandEventHandler(wxExGridStatistics::OnMouse));
+    Connect(wxID_CLEAR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(wxExGridStatistics::OnCommand));
+  }
+protected:
+  void OnCommand(wxCommandEvent& event) {
+    m_Statistics->Clear();};
+  void OnMouse(wxMouseEvent& event) {
+    wxMenu menu;
+    menu.Append(wxID_CLEAR);
+    PopupMenu(&menu);};
+private:
+  wxExStatistics <T> * m_Statistics;
+};
+#endif
+
 /// Offers base statistics. All statistics involve a key value pair,
 /// where the key is a wxString, and the value a template.
 template <class T> class wxExStatistics
@@ -125,7 +158,7 @@ public:
   /// the grid component.
   wxExGrid* Show(wxWindow* parent,
     bool hide_row_labels = true,
-    bool hide_col_labels = true
+    bool hide_col_labels = true,
     bool add_menu = false,
     wxWindowID id = wxID_ANY)
     {

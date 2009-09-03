@@ -73,14 +73,12 @@ END_EVENT_TABLE()
 
 wxExGrid::wxExGrid(wxWindow* parent,
   wxWindowID id,
-  bool add_menu,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
   : wxGrid(parent, id, pos, size, style, name)
   , wxExInterface()
-  , m_AddMenu(add_menu)
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new wxExTextDropTarget(this));
