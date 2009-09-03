@@ -18,7 +18,8 @@
 #if wxUSE_GRID
 template <class T> class wxExStatistics;
 
-/// Helper class for adding empty menu.
+/// Helper class for adding clear menu to the grid, and 
+/// calling Clear for the statistics.
 template <class T> class wxExGridStatistics: public wxExGrid
 {
 public:
@@ -33,14 +34,29 @@ public:
     : wxExGrid(parent, id, pos, size, style, name)
     , m_Statistics(statistics)
   {
-    Connect(100, wxEVT_GRID_CELL_RIGHT_CLICK, wxGridEventHandler(wxExGridStatistics::OnGrid));
-    Connect(wxID_CLEAR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(wxExGridStatistics::OnCommand));
+    Connect(
+      wxEVT_GRID_CELL_RIGHT_CLICK, 
+      wxGridEventHandler(wxExGridStatistics::OnGrid));
+
+    Connect(
+      wxID_CLEAR, 
+      wxEVT_COMMAND_MENU_SELECTED, 
+      wxCommandEventHandler(wxExGridStatistics::OnCommand));
   }
 protected:
   void OnCommand(wxCommandEvent& event) {
-    m_Statistics->Clear();};
+    if (event.GetId() == wxID_CLEAR)
+    {
+      m_Statistics->Clear();
+    }
+    else
+    {
+      event.Skip();
+    }};
   void OnGrid(wxGridEvent& event) {
-    wxMenu menu;
+    wxExMenu menu;
+    BuildPopupMenu(menu);
+    menu.AppendSeparator();
     menu.Append(wxID_CLEAR);
     PopupMenu(&menu);};
 private:
