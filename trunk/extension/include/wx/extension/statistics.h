@@ -164,7 +164,7 @@ public:
     {
     if (m_Grid == NULL)
     {
-      m_Grid = new wxExGrid(parent, id, add_menu);
+      m_Grid = new wxExGrid(parent, id);
       m_Grid->CreateGrid(0, 0);
       m_Grid->AppendCols(2);
       m_Grid->EnableEditing(false);
