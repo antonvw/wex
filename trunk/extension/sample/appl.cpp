@@ -25,7 +25,6 @@ enum
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
   ID_LOCALE_SHOW_DIR,
-  ID_STATISTICS_CLEAR,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
   ID_STC_FLAGS,
@@ -102,7 +101,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->Append(ID_LOCALE_SHOW_DIR, _("Show Locale Dir"));
   menuFile->AppendSeparator();
   menuFile->Append(ID_STATISTICS_SHOW, _("Show Statistics"));
-  menuFile->Append(ID_STATISTICS_CLEAR, _("Clear Statistics"));
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
@@ -365,9 +363,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_STATISTICS_SHOW:
     m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
-    break;
-  case ID_STATISTICS_CLEAR:
-    m_Statistics.Clear();
     break;
 
   case ID_STC_CONFIG_DLG:
