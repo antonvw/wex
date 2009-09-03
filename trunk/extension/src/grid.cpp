@@ -200,6 +200,18 @@ void wxExGrid::FindDialog(wxWindow* parent, const wxString& caption)
       wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(tkz.GetNextToken());
     }
   }
+  else
+  {
+    // Just take current cell value, if not empty.
+    const int row = GetGridCursorRow();
+    const int col = GetGridCursorCol();
+    const wxString val = GetCellValue(row, col);
+
+    if (!val.empty())
+    {
+      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(val);
+    }
+  }
 
   wxExInterface::FindDialog(parent, caption);
 }
