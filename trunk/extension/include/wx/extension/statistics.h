@@ -54,10 +54,8 @@ protected:
       event.Skip();
     }};
   void OnGrid(wxGridEvent& event) {
-    wxExMenu menu;
+    wxExMenu menu(wxExMenu::MENU_ALLOW_CLEAR);
     BuildPopupMenu(menu);
-    menu.AppendSeparator();
-    menu.Append(wxID_CLEAR);
     PopupMenu(&menu);};
 private:
   wxExStatistics <T> * m_Statistics;
