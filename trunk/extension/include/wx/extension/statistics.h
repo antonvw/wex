@@ -33,13 +33,13 @@ public:
     : wxExGrid(parent, id, pos, size, style, name)
     , m_Statistics(statistics)
   {
-    Connect(100, wxEVT_RIGHT_DOWN, wxCommandEventHandler(wxExGridStatistics::OnMouse));
+    Connect(100, wxEVT_GRID_CELL_RIGHT_CLICK, wxCommandEventHandler(wxExGridStatistics::OnGrid));
     Connect(wxID_CLEAR, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(wxExGridStatistics::OnCommand));
   }
 protected:
   void OnCommand(wxCommandEvent& event) {
     m_Statistics->Clear();};
-  void OnMouse(wxMouseEvent& event) {
+  void OnGid(wxGridEvent& event) {
     wxMenu menu;
     menu.Append(wxID_CLEAR);
     PopupMenu(&menu);};
@@ -164,7 +164,7 @@ public:
     {
     if (m_Grid == NULL)
     {
-      m_Grid = new wxExGrid(parent, id);
+      m_Grid = new wxExGridStatistics<T>(parent, this, id);
       m_Grid->CreateGrid(0, 0);
       m_Grid->AppendCols(2);
       m_Grid->EnableEditing(false);
@@ -205,7 +205,7 @@ private:
   std::map<wxString, T> m_Items;
 #if wxUSE_GRID
   std::map<wxString, int> m_Rows;
-  wxExGrid* m_Grid;
+  wxExGridStatistics<T>* m_Grid;
 #endif
 };
 
