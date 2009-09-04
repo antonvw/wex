@@ -296,7 +296,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 #if USE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
   {
-    if (m_otl.GetConnect().connected)
+    if (m_otl.IsConnected())
     {
       m_otl.GetConnect().logoff();
     }
