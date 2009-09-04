@@ -197,7 +197,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 
     if (sizer != NULL)
     {
-      if ( sizer->GetRows() > 0 && 
+      if ( sizer->GetRows() > 0 &&
           !sizer->IsRowGrowable(sizer->GetRows() - 1))
       {
         sizer->AddGrowableRow(sizer->GetRows() - 1);
@@ -455,7 +455,7 @@ wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
   wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
     wxID_ANY,
     m_Config->Get(m_ConfigGroup + text),
-    wxEmptyString,
+    wxDirSelectorPromptStr,
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
 
@@ -474,8 +474,8 @@ wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
   wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
     wxID_ANY,
     m_Config->Get(m_ConfigGroup + text),
-    wxEmptyString,
-    wxEmptyString,
+    wxFileSelectorPromptStr,
+    wxFileSelectorDefaultWildcardStr,
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
 
