@@ -9,8 +9,9 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/tooltip.h>
-#include <wx/extension/extension.h>
+#include <wx/tooltip.h> // for GetTip
+#include <wx/extension/base.h>
+#include <wx/extension/app.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>

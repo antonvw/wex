@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/extension/configdialog.h>
-#include <wx/extension/extension.h>
 #include <wx/extension/header.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>

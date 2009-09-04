@@ -13,7 +13,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/grid.h>
-#include <wx/extension/extension.h>
+#include <wx/extension/app.h>
 
 #if wxUSE_GRID
 #if wxUSE_DRAG_AND_DROP
