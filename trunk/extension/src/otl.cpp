@@ -28,7 +28,7 @@ wxExOTL::wxExOTL(const int threaded_mode)
 
 wxExOTL::~wxExOTL()
 {
-  m_Connect.logoff();
+  Logoff();
 }
 
 bool wxExOTL::Logon(

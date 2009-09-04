@@ -249,7 +249,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_CLOSE:
-    m_otl.GetConnect().logoff();
+    m_otl.Logoff();
     m_Shell->SetPrompt(">");
     break;
 

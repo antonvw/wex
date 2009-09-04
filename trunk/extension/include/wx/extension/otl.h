@@ -43,6 +43,9 @@ public:
   /// Returns true if we are connected.
   bool IsConnected() const {return m_Connect.connected > 0;};
 
+  /// Logs off.
+  void Logoff() {m_Connect.logoff();};
+
   /// Logons to the datasource (shows a connection dialog).
   /// max_items specifies max number of datasources in the combobox and config.
   /// Returns false if dialog cancelled or logon fails.

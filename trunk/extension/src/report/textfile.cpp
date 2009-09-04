@@ -298,7 +298,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
   {
     if (m_otl.IsConnected())
     {
-      m_otl.GetConnect().logoff();
+      m_otl.Logoff();
     }
 
     // This is a static function, we cannot use this pointer.
