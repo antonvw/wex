@@ -29,12 +29,6 @@ public:
 
   /// Sets up the tool.
   static bool SetupTool(const wxExTool& tool);
-
-#if USE_EMBEDDED_SQL
-  // Called by wxExFrameWithHistory::OnClose.
-  // Not for doxygen.
-  static void CleanUp();
-#endif
 private:
   // Implement interface from wxExTextFile.
   virtual void Report();
