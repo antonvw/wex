@@ -9,7 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>

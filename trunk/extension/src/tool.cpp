@@ -11,7 +11,6 @@
 
 #include <wx/extension/tool.h>
 #include <wx/extension/app.h>
-#include <wx/extension/config.h>
 
 std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
 
