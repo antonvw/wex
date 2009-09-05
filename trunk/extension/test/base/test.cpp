@@ -143,6 +143,8 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->Get("test2") == 1);
   m_Statistics->Clear();
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
+  const wxExStatistics<long> copy(*m_Statistics);
+  CPPUNIT_ASSERT(copy.Get("test2") == 1);
 
   // test wxExTextFile
   wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT, m_Config);
