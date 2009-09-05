@@ -120,7 +120,7 @@ public:
 
   /// Gets value for specified key.
   T Get(const wxString& key) const {
-    std::map<wxString,T>::const_iterator it = m_Items.find(key);
+    typename std::map<wxString,T>::const_iterator it = m_Items.find(key);
 
     if (it != m_Items.end())
     {
