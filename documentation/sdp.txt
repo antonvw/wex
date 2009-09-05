@@ -17,7 +17,7 @@ General
 - GUI development library wxWidgets (2.9.0 branch)
     http://www.wxwidgets.org/
 
-- database is OTL (Version 4.0.199)
+- database is OTL (Version 4.0.201)
     http://otl.sourceforge.net/
 
 - icons and bitmaps
