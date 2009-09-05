@@ -1,16 +1,9 @@
-..F.wxExFile::Read:209 wxFile::Read:186
-.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:16
-.wxExConfig::Get:1162 wxConfig::Read:1225
+...wxExFile::Read:102 wxFile::Read:164
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:18
+.wxExConfig::Get:1147 wxConfig::Read:1228
 
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  5   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 147 ../extension/test/base/test.cpp
-assertion failed
-- Expression: copy.Get("test2") == 1
+OK (5 tests)
 
 
