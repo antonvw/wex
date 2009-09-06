@@ -280,7 +280,7 @@ void MDIFrame::NewFile(bool as_project)
   {
     const wxFileName fn(
       wxStandardPaths::Get().GetUserDataDir(),
-      text);
+      text + ".prj");
 
     key = fn.GetFullPath();
 
