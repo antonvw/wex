@@ -13,7 +13,11 @@
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/app.h>
 #include <wx/extension/configdialog.h>
-#include <wx/extension/report/report.h>
+#include <wx/extension/extension.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/listitem.h>
+#include <wx/extension/report/process.h>
 
 BEGIN_EVENT_TABLE(wxExProcessWithListView, wxProcess)
   EVT_TIMER(-1, wxExProcessWithListView::OnTimer)
