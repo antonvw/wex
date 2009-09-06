@@ -88,7 +88,7 @@ bool wxExFrameWithHistory::DialogFileOpen(
 
   if (stc != NULL)
   {
-    if (stc->AskFileOpen(dlg, ask_for_continue) == wxID_CANCEL) return false;
+    if (stc->ShowFileDialog(dlg, ask_for_continue) == wxID_CANCEL) return false;
   }
   else
   {

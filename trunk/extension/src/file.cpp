@@ -31,7 +31,7 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
-int wxExFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
+int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
 {
   if (ask_for_continue)
   {
@@ -153,7 +153,7 @@ bool wxExFile::FileSaveAs()
     m_Wildcard,
     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-  if (AskFileOpen(dlg, false) == wxID_CANCEL)
+  if (ShowFileDialog(dlg, false) == wxID_CANCEL)
   {
     return false;
   }

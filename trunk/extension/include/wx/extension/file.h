@@ -141,9 +141,6 @@ public:
   /// Default does nothing.
   virtual void ResetContentsChanged() {;};
 
-  /// Invoked ShowModal on dialog, and returns dialog return code.
-  int AskFileOpen(wxFileDialog& dlg, bool ask_for_continue = true);
-
   /// Invokes FileSync if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckSyncNeeded();
@@ -165,6 +162,9 @@ public:
 
   /// Sets the wild card member.
   void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};
+
+  /// Invoked ShowModal on dialog, and returns dialog return code.
+  int ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue = true);
 protected:
   wxExFileName m_FileName; ///< the filename
 private:
