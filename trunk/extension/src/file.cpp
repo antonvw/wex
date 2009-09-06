@@ -18,7 +18,6 @@
 wxExFile::wxExFile()
   : m_FileName()
   , m_Stat()
-  , m_Message(_("Select File"))
   , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
 }
@@ -27,7 +26,6 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   : wxFile(filename, mode)
   , m_FileName(filename)
   , m_Stat(filename)
-  , m_Message(_("Select File"))
   , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
   MakeAbsolute();
@@ -51,7 +49,6 @@ int wxExFile::AskFileOpen(wxFileDialog& dlg, bool ask_for_continue)
     dlg.SetDirectory(m_FileName.GetPath());
   }
 
-  m_Message = dlg.GetMessage();
   m_Wildcard = dlg.GetWildcard();
 
   return dlg.ShowModal();
@@ -150,7 +147,7 @@ bool wxExFile::FileSaveAs()
 
   wxFileDialog dlg(
     wxTheApp->GetTopWindow(),
-    m_Message,
+    wxFileSelectorPromptStr,
     wxEmptyString,
     wxEmptyString,
     m_Wildcard,

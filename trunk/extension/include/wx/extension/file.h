@@ -172,7 +172,6 @@ private:
   bool MakeAbsolute();
 
   wxExStat m_Stat;
-  wxString m_Message;
   wxString m_Wildcard;
 };
 #endif
