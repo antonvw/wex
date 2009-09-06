@@ -31,29 +31,6 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
-int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
-{
-  if (ask_for_continue)
-  {
-    if (!Continue())
-    {
-      return wxID_CANCEL;
-    }
-  }
-
-  // Take care that if current filename exists, we set
-  // the directory member and filename, so that is where the dialog will open.
-  if (m_FileName.FileExists())
-  {
-    dlg.SetFilename(m_FileName.GetFullPath());
-    dlg.SetDirectory(m_FileName.GetPath());
-  }
-
-  m_Wildcard = dlg.GetWildcard();
-
-  return dlg.ShowModal();
-}
-
 bool wxExFile::CheckSyncNeeded()
 {
   if (IsOpened() ||
@@ -209,6 +186,29 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   }
 
   return buffer;
+}
+
+int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
+{
+  if (ask_for_continue)
+  {
+    if (!Continue())
+    {
+      return wxID_CANCEL;
+    }
+  }
+
+  // Take care that if current filename exists, we set
+  // the directory member and filename, so that is where the dialog will open.
+  if (m_FileName.FileExists())
+  {
+    dlg.SetFilename(m_FileName.GetFullPath());
+    dlg.SetDirectory(m_FileName.GetPath());
+  }
+
+  m_Wildcard = dlg.GetWildcard();
+
+  return dlg.ShowModal();
 }
 
 int wxExFileName::GetIcon() const
