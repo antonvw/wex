@@ -290,6 +290,7 @@ void MDIFrame::NewFile(bool as_project)
       wxID_ANY,
       wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
+    ((wxExListViewFile*)page)->FileNew(fn);
     SetTitle(wxEmptyString, text);
   }
   else
