@@ -108,7 +108,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   FileOpen(file);
 }
 
-size_t wxExListViewFile::AddItems()
+void wxExListViewFile::AddItems()
 {
   // To initialize the combobox.
   wxExApp::GetConfig(_("Add what"), wxExApp::GetLexers()->BuildComboBox());
@@ -126,7 +126,7 @@ size_t wxExListViewFile::AddItems()
     v,
     _("Add Files")).ShowModal() == wxID_CANCEL)
   {
-    return 0;
+    return;
   }
 
   int flags = 0;
@@ -139,9 +139,11 @@ size_t wxExListViewFile::AddItems()
     wxExApp::GetConfig(_("Add what")),
     flags);
 
-  const size_t retValue = dir.FindFiles();
+  const int old_count = GetItemCount();
+  dir.FindFiles();
+  const int new_count = GetItemCount();
 
-  if (retValue > 0)
+  if (new_count - old_count > 0)
   {
     m_ContentsChanged = true;
   }
@@ -151,13 +153,12 @@ size_t wxExListViewFile::AddItems()
     SortColumn(_("Modified"), SORT_KEEP);
   }
 
-  const wxString text = _("Added") + wxString::Format(" %d ", retValue) + _("file(s)");
+  const wxString text = 
+    _("Added") + wxString::Format(" %d ", new_count - old_count) + _("file(s)");
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(text);
 #endif
-
-  return retValue;
 }
 
 void wxExListViewFile::AfterSorting()
