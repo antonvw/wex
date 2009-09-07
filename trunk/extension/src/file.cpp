@@ -162,7 +162,7 @@ bool wxExFile::MakeAbsolute()
   if (m_FileName.MakeAbsolute())
   {
     return 
-	  m_FileName.GetStat().Sync(m_FileName.GetFullPath()) &&
+      m_FileName.GetStat().Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());
   }
   else
@@ -198,14 +198,8 @@ int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
     }
   }
 
-  // Take care that if current filename exists, we set
-  // the directory member and filename, so that is where the dialog will open.
-  if (m_FileName.FileExists())
-  {
-    dlg.SetFilename(m_FileName.GetFullPath());
-    dlg.SetDirectory(m_FileName.GetPath());
-  }
-
+  dlg.SetFilename(m_FileName.GetFullPath());
+  dlg.SetDirectory(m_FileName.GetPath());
   m_Wildcard = dlg.GetWildcard();
 
   return dlg.ShowModal();
