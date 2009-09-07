@@ -74,6 +74,15 @@ public:
     , m_Stat(filename.GetFullPath()) {
     SetLexer();}
 
+  /// Assignment operator.
+  wxExFileName& operator=(const wxExFileName& f)
+  {
+    m_Lexer = f.m_Lexer;
+    m_Stat = f.m_Stat;
+    Assign(f);
+    return *this;
+  };
+
   /// Gets the icon index for this filename (uses the file extension to get it).
   int GetIcon() const;
 
