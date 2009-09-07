@@ -611,9 +611,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_PROJECT_SAVEAS:
     if (project != NULL)
     {
-      const wxString dir = wxGetCwd();
-      wxSetWorkingDirectory(wxStandardPaths::Get().GetUserDataDir());
-
       const wxString old_key = m_NotebookWithProjects->GetKeyByPage(project);
 
       if (project->FileSaveAs())
@@ -624,8 +621,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
           project->GetFileName().GetName());
         SetTitle(wxEmptyString, project->GetFileName().GetName());
       }
-
-      wxSetWorkingDirectory(dir);
     }
     break;
 
