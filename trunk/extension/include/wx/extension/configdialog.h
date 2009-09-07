@@ -197,6 +197,11 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+
+  /// If you specified some checkboxes, calling this method
+  /// requires that one of them should be checked for OK button
+  /// to be enabled.
+  void ForceCheckBoxChecked() {m_ForceCheckBoxChecked = true;};
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -272,6 +277,7 @@ private:
   wxExConfig* m_Config;
   const wxString m_ConfigGroup;
   std::vector<wxExConfigItem> m_ConfigItems;
+  bool m_ForceCheckBoxChecked;
 
   DECLARE_EVENT_TABLE()
 };

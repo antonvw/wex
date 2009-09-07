@@ -121,10 +121,15 @@ void wxExListViewFile::AddItems()
   v.push_back(wxExConfigItem());
   v.push_back(wxExConfigItem(_("Add folders"), CONFIG_CHECKBOX));
 
-  if (wxExConfigDialog(NULL,
+  wxExConfigDialog dlg(NULL,
     wxExApp::GetConfig(),
     v,
-    _("Add Files")).ShowModal() == wxID_CANCEL)
+    _("Add Files"));
+
+  // Force one the checkboxes to be checked.
+  dlg.ForceCheckBoxChecked();
+
+  if (dlg.ShowModal() == wxID_CANCEL)
   {
     return;
   }

@@ -53,6 +53,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   : wxExDialog(parent, title, flags, id, pos, size, style)
   , m_Config(config)
   , m_ConfigGroup(configGroup)
+  , m_ForceCheckBoxChecked(false)
 {
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
@@ -882,6 +883,8 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
 void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 {
+  bool one_checkbox_checked = false;
+
   for (
     vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
@@ -889,6 +892,18 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   {
     switch (it->m_Type)
     {
+    case CONFIG_CHECKBOX:
+      if (m_ForceCheckBoxChecked)
+      {
+        wxCheckBox* cb = (wxCheckBox*)it->m_Control;
+
+        if (cb->GetValue())
+        {
+          one_checkbox_checked = true;
+        }
+      }
+      break;
+
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
       {
@@ -949,6 +964,13 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     }
   }
 
-  event.Enable(true);
+  if (m_ForceCheckBoxChecked)
+  {
+    event.Enable(one_checkbox_checked);
+  }
+  else
+  {
+    event.Enable(true);
+  }
 }
 #endif // wxUSE_GUI
