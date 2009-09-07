@@ -231,7 +231,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_OPEN:
     {
     wxFileDialog dlg(this,
-      _("Select File"),
+      wxFileSelectorPromptStr,
       wxEmptyString,
       wxEmptyString,
       wxFileSelectorDefaultWildcardStr,
