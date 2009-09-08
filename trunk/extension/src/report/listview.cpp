@@ -1092,10 +1092,6 @@ void wxExListViewFile::RunItems(const wxExTool& tool)
 
   stats.Log(tool);
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Ready"));
-#endif
-
   if (tool.IsCount())
   {
     wxExOpenFile(
