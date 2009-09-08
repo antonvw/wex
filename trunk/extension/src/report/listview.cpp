@@ -498,7 +498,9 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
 
   wxASSERT(wxTheApp != NULL);
   wxWindow* window = wxTheApp->GetTopWindow();
+  wxASSERT(window != NULL);
   m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
+  wxASSERT(m_Frame != NULL);
 
 #ifndef __WXMSW__
   // Under Linux this should be done before adding any columns, under MSW it does not matter!
