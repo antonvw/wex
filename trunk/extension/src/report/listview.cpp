@@ -126,7 +126,7 @@ void wxExListViewFile::AddItems()
     v,
     _("Add Files"));
 
-  // Force one the checkboxes to be checked.
+  // Force at least one of the checkboxes to be checked.
   dlg.ForceCheckBoxChecked();
 
   if (dlg.ShowModal() == wxID_CANCEL)
@@ -151,17 +151,17 @@ void wxExListViewFile::AddItems()
   if (new_count - old_count > 0)
   {
     m_ContentsChanged = true;
+
+    if (wxExApp::GetConfigBool("List/SortSync") && m_Type == LIST_PROJECT)
+    {
+      SortColumn(_("Modified"), SORT_KEEP);
+    }
   }
 
-  if (wxExApp::GetConfigBool("List/SortSync") && m_Type == LIST_PROJECT)
-  {
-    SortColumn(_("Modified"), SORT_KEEP);
-  }
-
+#if wxUSE_STATUSBAR
   const wxString text = 
     _("Added") + wxString::Format(" %d ", new_count - old_count) + _("file(s)");
 
-#if wxUSE_STATUSBAR
   wxExFrame::StatusText(text);
 #endif
 }
