@@ -181,6 +181,8 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   bool exists = true;
   bool is_folder = false;
 
+  wxExListView::BuildPopupMenu(menu);
+
   if (GetSelectedItemCount() == 1)
   {
     const wxExListItemWithFileName item(this, GetFirstSelected());
@@ -196,7 +198,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
     {
       menu.AppendSeparator();
       menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
-      menu.AppendSeparator();
     }
 #endif
   }
@@ -215,11 +216,9 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (add)
   {
-    menu.Append(wxID_ADD);
     menu.AppendSeparator();
+    menu.Append(wxID_ADD);
   }
-
-  wxExListView::BuildPopupMenu(menu);
 }
 
 bool wxExListViewFile::FileNew(const wxExFileName& filename)
@@ -865,9 +864,9 @@ bool RBSFile::Substitute(
 #endif
 
 BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFile)
-  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFile::OnList)
-  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewFile::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewFile::OnCommand)
+  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
+  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
@@ -985,14 +984,13 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
        GetSelectedItemCount() > 0 &&
       (GetMenuFlags() & LIST_MENU_REPORT_FIND))
   {
+    menu.AppendSeparator();
     menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
     if (!read_only)
     {
       menu.Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
     }
-
-    menu.AppendSeparator();
   }
 
   if (GetSelectedItemCount() > 0 && exists &&
