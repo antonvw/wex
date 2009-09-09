@@ -1247,6 +1247,10 @@ void wxExListViewWithFrame::OnList(wxListEvent& event)
   {
     ItemActivated(event.GetIndex());
   }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExListViewWithFrame::RunItems(const wxExTool& tool)
