@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.cpp
-* Purpose:       Implementation of class 'wxExListViewWithFrame' and support classes
+* Purpose:       Implementation of class 'wxExListViewFile' and support classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,10 +18,10 @@
 class ListViewDropTarget : public wxFileDropTarget
 {
 public:
-  ListViewDropTarget(wxExListViewWithFrame* owner) {m_Owner = owner;}
+  ListViewDropTarget(wxExListViewFile* owner) {m_Owner = owner;}
 private:
   virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
-  wxExListViewWithFrame* m_Owner;
+  wxExListViewFile* m_Owner;
 };
 #endif
 
@@ -29,7 +29,7 @@ private:
 class RBSFile : public wxExFile
 {
 public:
-  RBSFile(wxExListViewWithFrame* listview);
+  RBSFile(wxExListViewFile* listview);
   void GenerateDialog();
 private:
   void Body(
@@ -45,28 +45,27 @@ private:
     const wxString& pattern,
     const wxString& new_pattern,
     const bool is_required);
-  wxExListViewWithFrame* m_Owner;
+  wxExListViewFile* m_Owner;
   wxString m_Prompt;
 };
 #endif
 
-BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListView)
-  EVT_IDLE(wxExListViewWithFrame::OnIdle)
-  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
-  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewWithFrame::OnList)
-  EVT_MENU(wxID_ADD, wxExListViewWithFrame::OnCommand)
-  EVT_MENU(wxID_CUT, wxExListViewWithFrame::OnCommand)
-  EVT_MENU(wxID_CLEAR, wxExListViewWithFrame::OnCommand)
-  EVT_MENU(wxID_DELETE, wxExListViewWithFrame::OnCommand)
-  EVT_MENU(wxID_PASTE, wxExListViewWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
-  EVT_LEFT_DOWN(wxExListViewWithFrame::OnMouse)
-  EVT_RIGHT_DOWN(wxExListViewWithFrame::OnMouse)
+BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
+  EVT_IDLE(wxExListViewFile::OnIdle)
+  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFile::OnList)
+  EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewFile::OnCommand)
+  EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
+  EVT_RIGHT_DOWN(wxExListViewFile::OnMouse)
 END_EVENT_TABLE()
 
-wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
+wxExListViewFile::wxExListViewFile(wxWindow* parent,
   ListType type,
   wxWindowID id,
   long menu_flags,
@@ -86,7 +85,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   Initialize(lexer);
 }
 
-wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
+wxExListViewFile::wxExListViewFile(wxWindow* parent,
   const wxString& file,
   const wxString& wildcard,
   wxWindowID id,
@@ -108,7 +107,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   FileOpen(file);
 }
 
-void wxExListViewWithFrame::AddItems()
+void wxExListViewFile::AddItems()
 {
   // To initialize the combobox.
   wxExApp::GetConfig(_("Add what"), wxExApp::GetLexers()->BuildComboBox());
@@ -166,7 +165,7 @@ void wxExListViewWithFrame::AddItems()
 #endif
 }
 
-void wxExListViewWithFrame::AfterSorting()
+void wxExListViewFile::AfterSorting()
 {
   // Only if we are a project list and not sort syncing, 
   // set contents changed.
@@ -177,7 +176,7 @@ void wxExListViewWithFrame::AfterSorting()
   }
 }
 
-void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
+void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
   bool add = false;
   bool exists = true;
@@ -212,31 +211,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       if (!wxExApp::GetConfig(_("Comparator")).empty())
       {
         menu.Append(ID_LIST_COMPARE, _("C&ompare"));
-      }
-    }
-    else
-    {
-      if (m_Type != LIST_PROJECT &&
-          !wxExApp::GetConfigBool("SVN") &&
-          m_Frame != NULL && exists && !is_folder)
-      {
-        wxExListViewWithFrame* list = m_Frame->Activate(LIST_PROJECT);
-
-        if (list != NULL && list->GetSelectedItemCount() == 1)
-        {
-          wxExListItemWithFileName thislist(this, GetFirstSelected());
-          const wxString current_file = thislist.GetFileName().GetFullPath();
-
-          wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
-          const wxString with_file = otherlist.GetFileName().GetFullPath();
-
-          if (current_file != with_file &&
-              !wxExApp::GetConfig(_("Comparator")).empty())
-          {
-            menu.Append(ID_LIST_COMPARE,
-              _("&Compare With") + " " + wxExGetEndOfText(with_file));
-          }
-        }
       }
     }
 
@@ -280,24 +254,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  // The ID_TOOL_REPORT_FIND and REPLACE only work if there is a frame,
-  // so if not do not add them.
-  // Also, finding in the LIST_FIND and REPLACE would result in recursive calls.
-  if ( m_Frame != NULL && exists &&
-       m_Type != LIST_FIND && m_Type != LIST_REPLACE &&
-       GetSelectedItemCount() > 0 &&
-      (m_MenuFlags & LIST_MENU_REPORT_FIND))
-  {
-    menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
-
-    if (!read_only)
-    {
-      menu.Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
-    }
-
-    menu.AppendSeparator();
-  }
-
   if (add)
   {
     menu.Append(wxID_ADD);
@@ -305,48 +261,9 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   }
 
   wxExListView::BuildPopupMenu(menu);
-
-  if (m_Frame != NULL && GetSelectedItemCount() > 0 && exists &&
-     (m_MenuFlags & LIST_MENU_TOOL))
-  {
-    menu.AppendSeparator();
-    menu.AppendTools();
-  }
 }
 
-void wxExListViewWithFrame::DeleteDoubles()
-{
-  wxDateTime mtime((time_t)0);
-  wxString name;
-  const int itemcount = GetItemCount();
-
-  for (int i = itemcount - 1; i >= 0; i--)
-  {
-    wxExListItemWithFileName item(this, i);
-
-    // Delete this element if it has the same mtime
-    // and the same name as the previous one.
-    if (mtime == item.GetFileName().GetStat().st_mtime &&
-        name == item.GetColumnText(_("File Name")))
-    {
-      DeleteItem(i);
-    }
-    else
-    {
-      mtime = item.GetFileName().GetStat().st_mtime;
-      name = item.GetColumnText(_("File Name"));
-    }
-  }
-
-  if (itemcount != GetItemCount())
-  {
-    ItemsUpdate();
-    m_ContentsChanged = true;
-  }
-}
-
-
-bool wxExListViewWithFrame::FileNew(const wxExFileName& filename)
+bool wxExListViewFile::FileNew(const wxExFileName& filename)
 {
   if (!wxExFile::FileNew(filename))
   {
@@ -357,7 +274,7 @@ bool wxExListViewWithFrame::FileNew(const wxExFileName& filename)
   return true;
 }
 
-bool wxExListViewWithFrame::FileOpen(const wxExFileName& filename)
+bool wxExListViewFile::FileOpen(const wxExFileName& filename)
 {
   if (!wxExFile::FileOpen(filename))
   {
@@ -377,11 +294,6 @@ bool wxExListViewWithFrame::FileOpen(const wxExFileName& filename)
 
   wxFile::Close();
 
-  if (m_Frame != NULL)
-  {
-    m_Frame->SetRecentProject(filename.GetFullPath());
-  }
-
   m_ContentsChanged = false; // override behaviour from ItemFromText
 
   if (wxExApp::GetConfigBool("List/SortSync"))
@@ -392,7 +304,7 @@ bool wxExListViewWithFrame::FileOpen(const wxExFileName& filename)
   return true;
 }
 
-bool wxExListViewWithFrame::FileSave()
+bool wxExListViewFile::FileSave()
 {
   if (m_FileName.GetName().empty())
   {
@@ -416,35 +328,7 @@ bool wxExListViewWithFrame::FileSave()
   return true;
 }
 
-const wxString wxExListViewWithFrame::GetFindInCaption(int id)
-{
-  const wxString prefix =
-    (id == ID_TOOL_REPORT_REPLACE ?
-       _("Replace In"):
-       _("Find In")) + " ";
-
-  if (GetSelectedItemCount() == 1)
-  {
-    wxExListItem item(this, GetFirstSelected());
-
-    // The File Name is better than using 0, as it can be another column as well.
-    return prefix + item.GetColumnText(_("File Name"));
-  }
-  else if (GetSelectedItemCount() > 1)
-  {
-    return prefix + _("Selection");
-  }
-  else if (!m_FileName.GetName().empty())
-  {
-    return prefix + m_FileName.GetName();
-  }
-  else
-  {
-    return prefix + GetName();
-  }
-}
-
-wxExListViewWithFrame::ListType wxExListViewWithFrame::GetTypeTool(const wxExTool& tool)
+wxExListViewFile::ListType wxExListViewFile::GetTypeTool(const wxExTool& tool)
 {
   switch (tool.GetId())
   {
@@ -459,7 +343,7 @@ wxExListViewWithFrame::ListType wxExListViewWithFrame::GetTypeTool(const wxExToo
   }
 }
 
-const wxString wxExListViewWithFrame::GetTypeDescription(ListType type)
+const wxString wxExListViewFile::GetTypeDescription(ListType type)
 {
   wxString value;
 
@@ -481,7 +365,7 @@ const wxString wxExListViewWithFrame::GetTypeDescription(ListType type)
   return value;
 }
 
-void wxExListViewWithFrame::Initialize(const wxExLexer* lexer)
+void wxExListViewFile::Initialize(const wxExLexer* lexer)
 {
   SetName(GetTypeDescription());
 
@@ -495,12 +379,6 @@ void wxExListViewWithFrame::Initialize(const wxExLexer* lexer)
 
     SetName(GetName() + " " + lexer->GetScintillaLexer());
   }
-
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxASSERT(window != NULL);
-  m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
-  wxASSERT(m_Frame != NULL);
 
 #ifndef __WXMSW__
   // Under Linux this should be done before adding any columns, under MSW it does not matter!
@@ -578,63 +456,12 @@ void wxExListViewWithFrame::Initialize(const wxExLexer* lexer)
   InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
   InsertColumn(wxExColumn(_("Size")));
 
-  if (m_Type == LIST_HISTORY && m_Frame != NULL)
-  {
-    m_Frame->UseFileHistoryList(this);
-  }
-
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new ListViewDropTarget(this));
 #endif
 }
 
-bool wxExListViewWithFrame::ItemActivated(int item_number)
-{
-  wxASSERT(item_number >= 0);
- 
-  // Cannot be const because of SetColumnText later on.
-  wxExListItemWithFileName item(this, item_number);
-
-  if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
-  {
-    wxTextEntryDialog dlg(this,
-      _("Input") + ":",
-      _("Folder Type"),
-      item.GetColumnText(_("Type")));
-
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-    else
-    {
-      item.SetColumnText(_("Type"), dlg.GetValue());
-      return true;
-    }
-  }
-  else if (item.GetFileName().FileExists() && m_Frame != NULL)
-  {
-    const wxString line_number_str = item.GetColumnText(_("Line No"), false);
-    const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
-    const wxString match =
-      (m_Type == LIST_REPLACE ?
-         item.GetColumnText(_("Replaced")):
-         item.GetColumnText(_("Match"), false));
-
-    const bool retValue = m_Frame->OpenFile(
-      item.GetFileName().GetFullPath(),
-      line_number, match);
-
-    SetFocus();
-    return retValue;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-void wxExListViewWithFrame::ItemsUpdate()
+void wxExListViewFile::ItemsUpdate()
 {
   for (int i = 0; i < GetItemCount(); i++)
   {
@@ -643,7 +470,7 @@ void wxExListViewWithFrame::ItemsUpdate()
   }
 }
 
-bool wxExListViewWithFrame::ItemFromText(const wxString& text)
+bool wxExListViewFile::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
@@ -700,7 +527,7 @@ bool wxExListViewWithFrame::ItemFromText(const wxString& text)
   return true;
 }
 
-const wxString wxExListViewWithFrame::ItemToText(int item_number)
+const wxString wxExListViewFile::ItemToText(int item_number)
 {
   wxExListItemWithFileName item(this, item_number);
 
@@ -720,14 +547,8 @@ const wxString wxExListViewWithFrame::ItemToText(int item_number)
   return text;
 }
 
-void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
+void wxExListViewFile::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
-  {
-    RunItems(event.GetId());
-    return;
-  }
-
   if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
   {
     wxExSVN svn(
@@ -765,103 +586,6 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
   case wxID_ADD: AddItems(); break;
 
-  case ID_LIST_COMPARE:
-  case ID_LIST_COMPARELAST:
-  case ID_LIST_VERSIONLIST:
-  {
-    if (m_Frame == NULL) return;
-
-    bool first = true;
-    wxString file1,file2;
-    int i = -1;
-    bool found = false;
-
-    wxExListViewWithFrame* list = NULL;
-
-    if (event.GetId() == ID_LIST_VERSIONLIST)
-    {
-      list = m_Frame->Activate(LIST_VERSION);
-      wxASSERT(list != NULL);
-    }
-
-    while ((i = GetNextSelected(i)) != -1)
-    {
-      wxExListItemWithFileName li(this, i);
-      const wxFileName* filename = &li.GetFileName();
-      if (wxFileName::DirExists(filename->GetFullPath())) continue;
-      switch (event.GetId())
-      {
-        case ID_LIST_COMPARE:
-        {
-          if (GetSelectedItemCount() == 1)
-          {
-            list = m_Frame->Activate(LIST_PROJECT);
-            if (list == NULL) return;
-            int main_selected = list->GetFirstSelected();
-            wxExCompareFile(wxExListItemWithFileName(list, main_selected).GetFileName(), *filename);
-          }
-          else
-          {
-            if (first)
-            {
-              first = false;
-              file1 = filename->GetFullPath();
-            }
-            else
-            {
-              first = true;
-              file2 = filename->GetFullPath();
-            }
-            if (first) wxExCompareFile(wxFileName(file1), wxFileName(file2));
-          }
-        }
-        break;
-        case ID_LIST_COMPARELAST:
-        {
-          wxFileName lastfile;
-          if (wxExFindOtherFileName(*filename, NULL, &lastfile))
-          {
-            wxExCompareFile(*filename, lastfile);
-          }
-        }
-        break;
-        case ID_LIST_VERSIONLIST:
-          if (wxExFindOtherFileName(*filename, list, NULL))
-          {
-            found = true;
-          }
-        break;
-      }
-    }
-
-    if (event.GetId() == ID_LIST_VERSIONLIST && found)
-    {
-      list->SortColumn(_("Modified"), SORT_DESCENDING);
-      list->DeleteDoubles();
-    }
-  }
-  break;
-
-  case ID_LIST_OPEN_ITEM:
-  {
-    int i = -1;
-    while ((i = GetNextSelected(i)) != -1)
-    {
-      ItemActivated(i);
-    }
-  }
-  break;
-
-  case ID_LIST_RUN_MAKE:
-  {
-    if (m_Frame != NULL)
-    {
-      const wxExListItemWithFileName item(this, GetNextSelected(-1));
-      wxExMake(m_Frame, item.GetFileName());
-    }
-  }
-  break;
-
 #ifdef __WXMSW__
   case ID_LIST_SEND_ITEM:
     RBSFile(this).GenerateDialog();
@@ -878,7 +602,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 #endif
 }
 
-void wxExListViewWithFrame::OnIdle(wxIdleEvent& event)
+void wxExListViewFile::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
@@ -929,13 +653,9 @@ void wxExListViewWithFrame::OnIdle(wxIdleEvent& event)
   CheckSyncNeeded();
 }
 
-void wxExListViewWithFrame::OnList(wxListEvent& event)
+void wxExListViewFile::OnList(wxListEvent& event)
 {
-  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
-  {
-    ItemActivated(event.GetIndex());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
+  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {
     if (GetSelectedItemCount() == 1)
     {
@@ -960,7 +680,7 @@ void wxExListViewWithFrame::OnList(wxListEvent& event)
   }
 }
 
-void wxExListViewWithFrame::OnMouse(wxMouseEvent& event)
+void wxExListViewFile::OnMouse(wxMouseEvent& event)
 {
   if (event.LeftDown())
   {
@@ -1022,7 +742,7 @@ void wxExListViewWithFrame::OnMouse(wxMouseEvent& event)
 #endif
 }
 
-const wxString wxExListViewWithFrame::PrintHeader() const
+const wxString wxExListViewFile::PrintHeader() const
 {
   if (m_FileName.FileExists())
   {
@@ -1034,69 +754,6 @@ const wxString wxExListViewWithFrame::PrintHeader() const
   else
   {
     return GetTypeDescription() + " " + wxDateTime::Now().Format();
-  }
-}
-
-void wxExListViewWithFrame::RunItems(const wxExTool& tool)
-{
-  if ((tool.GetId() == ID_TOOL_REPORT_COUNT && m_Type == LIST_COUNT) ||
-      (tool.GetId() == ID_TOOL_REPORT_KEYWORD && m_Type == LIST_KEYWORD) ||
-      (tool.GetId() == ID_TOOL_REPORT_SQL && m_Type == LIST_SQL)
-     )
-  {
-    return;
-  }
-
-  if (tool.IsFindType())
-  {
-    if (m_Frame != NULL)
-    {
-      wxExSTCWithFrame* stc = m_Frame->GetCurrentSTC();
-
-      if (stc != NULL)
-      {
-        stc->GetSearchText();
-      }
-    }
-
-    std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
-    if (tool.GetId() == ID_TOOL_REPORT_REPLACE) v.push_back(wxExConfigItem(_("Replace with"), CONFIG_COMBOBOX));
-    v.push_back(wxExConfigItem());
-    v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetInfo()));
-
-    if (wxExConfigDialog(NULL,
-      wxExApp::GetConfig(),
-      v,
-      GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
-    {
-      return;
-    }
-
-    wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
-  }
-
-  if (!wxExTextFileWithListView::SetupTool(tool))
-  {
-    return;
-  }
-
-  int i = -1;
-
-  wxExFileNameStatistics stats(GetFileName().GetName());
-
-  while ((i = GetNextSelected(i)) != -1)
-  {
-    stats += wxExListItemWithFileName(this, i).Run(tool);
-  }
-
-  stats.Log(tool);
-
-  if (tool.IsCount())
-  {
-    wxExOpenFile(
-      stats.GetLogfileName(),
-      wxExSTC::STC_OPEN_FROM_STATISTICS | wxExSTC::STC_OPEN_IS_SYNCED);
   }
 }
 
@@ -1120,7 +777,7 @@ bool ListViewDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString& file
 #endif
 
 #ifdef __WXMSW__
-RBSFile::RBSFile(wxExListViewWithFrame* listview)
+RBSFile::RBSFile(wxExListViewFile* listview)
   : wxExFile()
   , m_Owner(listview)
   , m_Prompt(wxExApp::GetConfig("RBS/Prompt", ">"))
@@ -1247,3 +904,410 @@ bool RBSFile::Substitute(
   return true;
 }
 #endif
+
+BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFile)
+  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFile::OnList)
+  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewFile::OnCommand)
+END_EVENT_TABLE()
+
+wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
+  ListType type,
+  wxWindowID id,
+  long menu_flags,
+  const wxExLexer* lexer,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxValidator& validator)
+  : wxExListViewFile(parent, type, id, menu_flags, lexer, pos, size, style, validator)
+{
+  Initialize();
+}
+
+wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
+  const wxString& file,
+  const wxString& wildcard,
+  wxWindowID id,
+  long menu_flags,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxValidator& validator)
+  : wxExListViewFile(parent, file, wildcard, id, menu_flags, pos, size, style, validator)
+{
+  Initialize();
+}
+
+void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
+{
+  bool exists = true;
+  bool is_folder = false;
+  bool read_only = false;
+
+  wxExListViewFile::BuildPopupMenu(menu);
+
+  if (GetSelectedItemCount() == 1)
+  {
+    const wxExListItemWithFileName item(this, GetFirstSelected());
+
+    is_folder = wxDirExists(item.GetFileName().GetFullPath());
+    exists = item.GetFileName().GetStat().IsOk();
+    read_only = item.GetFileName().GetStat().IsReadOnly();
+
+    if (GetType() != LIST_PROJECT &&
+        !wxExApp::GetConfigBool("SVN") &&
+        exists && !is_folder)
+    {
+      wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
+
+      if (list != NULL && list->GetSelectedItemCount() == 1)
+      {
+        wxExListItemWithFileName thislist(this, GetFirstSelected());
+        const wxString current_file = thislist.GetFileName().GetFullPath();
+
+        wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
+        const wxString with_file = otherlist.GetFileName().GetFullPath();
+
+        if (current_file != with_file &&
+            !wxExApp::GetConfig(_("Comparator")).empty())
+        {
+          menu.Append(ID_LIST_COMPARE,
+            _("&Compare With") + " " + wxExGetEndOfText(with_file));
+        }
+      }
+    }
+  }
+
+  // The ID_TOOL_REPORT_FIND and REPLACE only work if there is a frame,
+  // so if not do not add them.
+  // Also, finding in the LIST_FIND and REPLACE would result in recursive calls.
+  if ( exists &&
+       GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
+       GetSelectedItemCount() > 0 &&
+      (GetMenuFlags() & LIST_MENU_REPORT_FIND))
+  {
+    menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
+
+    if (!read_only)
+    {
+      menu.Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+    }
+
+    menu.AppendSeparator();
+  }
+
+  if (GetSelectedItemCount() > 0 && exists &&
+     (GetMenuFlags() & LIST_MENU_TOOL))
+  {
+    menu.AppendSeparator();
+    menu.AppendTools();
+  }
+}
+
+void wxExListViewWithFrame::DeleteDoubles()
+{
+  wxDateTime mtime((time_t)0);
+  wxString name;
+  const int itemcount = GetItemCount();
+
+  for (int i = itemcount - 1; i >= 0; i--)
+  {
+    wxExListItemWithFileName item(this, i);
+
+    // Delete this element if it has the same mtime
+    // and the same name as the previous one.
+    if (mtime == item.GetFileName().GetStat().st_mtime &&
+        name == item.GetColumnText(_("File Name")))
+    {
+      DeleteItem(i);
+    }
+    else
+    {
+      mtime = item.GetFileName().GetStat().st_mtime;
+      name = item.GetColumnText(_("File Name"));
+    }
+  }
+
+  if (itemcount != GetItemCount())
+  {
+    ItemsUpdate();
+    // Next gives compile error, but is not needed.
+    // m_ContentsChanged = true;
+  }
+}
+
+const wxString wxExListViewWithFrame::GetFindInCaption(int id)
+{
+  const wxString prefix =
+    (id == ID_TOOL_REPORT_REPLACE ?
+       _("Replace In"):
+       _("Find In")) + " ";
+
+  if (GetSelectedItemCount() == 1)
+  {
+    wxExListItem item(this, GetFirstSelected());
+
+    // The File Name is better than using 0, as it can be another column as well.
+    return prefix + item.GetColumnText(_("File Name"));
+  }
+  else if (GetSelectedItemCount() > 1)
+  {
+    return prefix + _("Selection");
+  }
+  else if (!m_FileName.GetName().empty())
+  {
+    return prefix + m_FileName.GetName();
+  }
+  else
+  {
+    return prefix + GetName();
+  }
+}
+
+bool wxExListViewWithFrame::FileOpen(const wxExFileName& filename)
+{
+  if (wxExListViewFile::FileOpen(filename))
+  {
+    m_Frame->SetRecentProject(filename.GetFullPath());
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void wxExListViewWithFrame::Initialize()
+{
+  wxASSERT(wxTheApp != NULL);
+  wxWindow* window = wxTheApp->GetTopWindow();
+  wxASSERT(window != NULL);
+  m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
+  wxASSERT(m_Frame != NULL);
+
+  if (GetType() == LIST_HISTORY)
+  {
+    m_Frame->UseFileHistoryList(this);
+  }
+}
+
+bool wxExListViewWithFrame::ItemActivated(int item_number)
+{
+  wxASSERT(item_number >= 0);
+ 
+  // Cannot be const because of SetColumnText later on.
+  wxExListItemWithFileName item(this, item_number);
+
+  if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
+  {
+    wxTextEntryDialog dlg(this,
+      _("Input") + ":",
+      _("Folder Type"),
+      item.GetColumnText(_("Type")));
+
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
+    else
+    {
+      item.SetColumnText(_("Type"), dlg.GetValue());
+      return true;
+    }
+  }
+  else if (item.GetFileName().FileExists())
+  {
+    const wxString line_number_str = item.GetColumnText(_("Line No"), false);
+    const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
+    const wxString match =
+      (GetType() == LIST_REPLACE ?
+         item.GetColumnText(_("Replaced")):
+         item.GetColumnText(_("Match"), false));
+
+    const bool retValue = m_Frame->OpenFile(
+      item.GetFileName().GetFullPath(),
+      line_number, match);
+
+    SetFocus();
+    return retValue;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
+{
+  if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
+  {
+    RunItems(event.GetId());
+    return;
+  }
+
+  switch (event.GetId())
+  {
+  case ID_LIST_OPEN_ITEM:
+  {
+    int i = -1;
+    while ((i = GetNextSelected(i)) != -1)
+    {
+      ItemActivated(i);
+    }
+  }
+  break;
+
+  case ID_LIST_COMPARE:
+  case ID_LIST_COMPARELAST:
+  case ID_LIST_VERSIONLIST:
+  {
+    bool first = true;
+    wxString file1,file2;
+    int i = -1;
+    bool found = false;
+
+    wxExListViewWithFrame* list = NULL;
+
+    if (event.GetId() == ID_LIST_VERSIONLIST)
+    {
+      list = m_Frame->Activate(LIST_VERSION);
+      wxASSERT(list != NULL);
+    }
+
+    while ((i = GetNextSelected(i)) != -1)
+    {
+      wxExListItemWithFileName li(this, i);
+      const wxFileName* filename = &li.GetFileName();
+      if (wxFileName::DirExists(filename->GetFullPath())) continue;
+      switch (event.GetId())
+      {
+        case ID_LIST_COMPARE:
+        {
+          if (GetSelectedItemCount() == 1)
+          {
+            list = m_Frame->Activate(LIST_PROJECT);
+            if (list == NULL) return;
+            int main_selected = list->GetFirstSelected();
+            wxExCompareFile(wxExListItemWithFileName(list, main_selected).GetFileName(), *filename);
+          }
+          else
+          {
+            if (first)
+            {
+              first = false;
+              file1 = filename->GetFullPath();
+            }
+            else
+            {
+              first = true;
+              file2 = filename->GetFullPath();
+            }
+            if (first) wxExCompareFile(wxFileName(file1), wxFileName(file2));
+          }
+        }
+        break;
+        case ID_LIST_COMPARELAST:
+        {
+          wxFileName lastfile;
+          if (wxExFindOtherFileName(*filename, NULL, &lastfile))
+          {
+            wxExCompareFile(*filename, lastfile);
+          }
+        }
+        break;
+        case ID_LIST_VERSIONLIST:
+          if (wxExFindOtherFileName(*filename, list, NULL))
+          {
+            found = true;
+          }
+        break;
+      }
+    }
+    if (event.GetId() == ID_LIST_VERSIONLIST && found)
+    {
+      list->SortColumn(_("Modified"), SORT_DESCENDING);
+      list->DeleteDoubles();
+    }
+  }
+  break;
+
+  case ID_LIST_RUN_MAKE:
+  {
+    const wxExListItemWithFileName item(this, GetNextSelected(-1));
+    wxExMake(m_Frame, item.GetFileName());
+  }
+  break;
+  }
+}
+
+void wxExListViewWithFrame::OnList(wxListEvent& event)
+{
+  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
+  {
+    ItemActivated(event.GetIndex());
+  }
+}
+
+void wxExListViewWithFrame::RunItems(const wxExTool& tool)
+{
+  if ((tool.GetId() == ID_TOOL_REPORT_COUNT && GetType() == LIST_COUNT) ||
+      (tool.GetId() == ID_TOOL_REPORT_KEYWORD && GetType() == LIST_KEYWORD) ||
+      (tool.GetId() == ID_TOOL_REPORT_SQL && GetType() == LIST_SQL)
+     )
+  {
+    return;
+  }
+
+  if (tool.IsFindType())
+  {
+    if (m_Frame != NULL)
+    {
+      wxExSTCWithFrame* stc = m_Frame->GetCurrentSTC();
+
+      if (stc != NULL)
+      {
+        stc->GetSearchText();
+      }
+    }
+
+    std::vector<wxExConfigItem> v;
+    v.push_back(wxExConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
+    if (tool.GetId() == ID_TOOL_REPORT_REPLACE) v.push_back(wxExConfigItem(_("Replace with"), CONFIG_COMBOBOX));
+    v.push_back(wxExConfigItem());
+    v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetInfo()));
+
+    if (wxExConfigDialog(NULL,
+      wxExApp::GetConfig(),
+      v,
+      GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
+    {
+      return;
+    }
+
+    wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
+  }
+
+  if (!wxExTextFileWithListView::SetupTool(tool))
+  {
+    return;
+  }
+
+  int i = -1;
+
+  wxExFileNameStatistics stats(GetFileName().GetName());
+
+  while ((i = GetNextSelected(i)) != -1)
+  {
+    stats += wxExListItemWithFileName(this, i).Run(tool);
+  }
+
+  stats.Log(tool);
+
+  if (tool.IsCount())
+  {
+    wxExOpenFile(
+      stats.GetLogfileName(),
+      wxExSTC::STC_OPEN_FROM_STATISTICS | wxExSTC::STC_OPEN_IS_SYNCED);
+  }
+}

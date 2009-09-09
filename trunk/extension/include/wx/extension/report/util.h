@@ -24,7 +24,7 @@
 #include <wx/extension/statistics.h>
 
 class wxExFrameWithHistory;
-class wxExListViewWithFrame;
+class wxExListViewFile;
 
 /// Offers a wxExDir with reporting to a listview.
 class wxExDirWithListView : public wxExDir
@@ -38,7 +38,7 @@ public:
     int flags = wxDIR_DEFAULT);
 
   /// FindFiles causes each found file to be added as listitem to the listview.
-  wxExDirWithListView(wxExListViewWithFrame* listview,
+  wxExDirWithListView(wxExListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString,
     int flags = wxDIR_DEFAULT);
@@ -59,7 +59,7 @@ protected:
 private:
   wxExFileNameStatistics m_Statistics;
   wxExFrameWithHistory* m_Frame;
-  wxExListViewWithFrame* m_ListView;
+  wxExListViewFile* m_ListView;
   const long m_Flags;
   wxExTool m_Tool;
 };

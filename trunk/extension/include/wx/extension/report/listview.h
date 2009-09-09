@@ -19,7 +19,7 @@ class wxExFrameWithHistory;
 
 /// Combines wxExListView and wxExFile, giving you a list control with file
 /// synchronization support. Further it adds processing support.
-class wxExListViewWithFrame : public wxExListView, public wxExFile
+class wxExListViewFile : public wxExListView, public wxExFile
 {
 public:
   /// The supported lists.
@@ -51,7 +51,7 @@ public:
   };
 
   /// Constructor.
-  wxExListViewWithFrame(wxWindow* parent,
+  wxExListViewFile(wxWindow* parent,
     ListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
@@ -62,7 +62,7 @@ public:
     const wxValidator& validator = wxDefaultValidator);
 
   /// Constructor for a LIST_PROJECT, opens the file.
-  wxExListViewWithFrame(wxWindow* parent,
+  wxExListViewFile(wxWindow* parent,
     const wxString& file,
     const wxString& wildcard,
     wxWindowID id = wxID_ANY,
@@ -105,6 +105,9 @@ public:
   /// Returns colunm text for specified item.
   virtual const wxString ItemToText(int item_number);
 
+  /// Gets the menu flags.
+  long GetMenuFlags() const {return m_MenuFlags;}
+
   /// Gets the list type.
   const ListType GetType() const {return m_Type;};
 
@@ -117,25 +120,62 @@ public:
   /// Returns list type from tool id.
   static ListType GetTypeTool(const wxExTool& tool);
 protected:
-  void BuildPopupMenu(wxExMenu& menu);
+  virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
   void AddItems();
-  void DeleteDoubles();
-  const wxString GetFindInCaption(int id); // cannot be const
   void Initialize(const wxExLexer* lexer);
-  bool ItemActivated(int item_number);
-  void RunItems(const wxExTool& tool);
 
   bool m_ContentsChanged;
   bool m_ItemUpdated;
   int m_ItemNumber;
-  wxExFrameWithHistory* m_Frame;
   const long m_MenuFlags;
   const ListType m_Type;
+
+  DECLARE_EVENT_TABLE()
+};
+
+/// Adds a frame to wxExListViewFile.
+class wxExListViewWithFrame : public wxExListViewFile
+{
+public:
+  /// Constructor.
+  wxExListViewWithFrame(wxWindow* parent,
+    ListType type,
+    wxWindowID id = wxID_ANY,
+    long menu_flags = LIST_MENU_DEFAULT,
+    const wxExLexer* lexer = NULL,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
+    const wxValidator& validator = wxDefaultValidator);
+
+  /// Constructor for a LIST_PROJECT, opens the file.
+  wxExListViewWithFrame(wxWindow* parent,
+    const wxString& file,
+    const wxString& wildcard,
+    wxWindowID id = wxID_ANY,
+    long menu_flags = LIST_MENU_DEFAULT,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
+    const wxValidator& validator = wxDefaultValidator);
+
+  virtual bool FileOpen(const wxExFileName& filename);
+protected:
+  virtual void BuildPopupMenu(wxExMenu& menu);
+  void OnCommand(wxCommandEvent& event);
+  void OnList(wxListEvent& event);
+private:
+  void DeleteDoubles();
+  const wxString GetFindInCaption(int id); // cannot be const
+  void Initialize();
+  bool ItemActivated(int item_number);
+  void RunItems(const wxExTool& tool);
+  wxExFrameWithHistory* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };

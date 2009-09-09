@@ -308,7 +308,7 @@ wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
 {
 }
 
-wxExDirWithListView::wxExDirWithListView(wxExListViewWithFrame* listview,
+wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
   , m_Statistics(fullpath)
