@@ -58,9 +58,8 @@ BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
+  EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
-  EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewFile::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewFile::OnCommand)
   EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
   EVT_RIGHT_DOWN(wxExListViewFile::OnMouse)
 END_EVENT_TABLE()
@@ -181,8 +180,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   bool add = false;
   bool exists = true;
   bool is_folder = false;
-  bool is_make = false;
-  bool read_only = false;
 
   if (GetSelectedItemCount() == 1)
   {
@@ -190,48 +187,10 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
     exists = item.GetFileName().GetStat().IsOk();
-    read_only = item.GetFileName().GetStat().IsReadOnly();
-    is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }
 
   if (GetSelectedItemCount() >= 1)
   {
-    if (exists)
-    {
-      menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
-
-      if (is_make)
-      {
-        menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
-      }
-    }
-
-    if (GetSelectedItemCount() > 1)
-    {
-      if (!wxExApp::GetConfig(_("Comparator")).empty())
-      {
-        menu.Append(ID_LIST_COMPARE, _("C&ompare"));
-      }
-    }
-
-    if (exists && !is_folder)
-    {
-      if (!wxExApp::GetConfigBool("SVN"))
-      {
-        if (!wxExApp::GetConfig(_("Comparator")).empty())
-        {
-          menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
-        }
-
-        menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
-      }
-      else if (GetSelectedItemCount() == 1)
-      {
-        const wxExListItemWithFileName item(this, GetFirstSelected());
-        menu.AppendSVN(item.GetFileName());
-      }
-    }
-
 #ifdef __WXMSW__
     if (exists && !is_folder && (m_MenuFlags & LIST_MENU_RBS))
     {
@@ -944,6 +903,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   bool exists = true;
   bool is_folder = false;
   bool read_only = false;
+  bool is_make = false;
 
   wxExListViewFile::BuildPopupMenu(menu);
 
@@ -954,6 +914,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
     exists = item.GetFileName().GetStat().IsOk();
     read_only = item.GetFileName().GetStat().IsReadOnly();
+    is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
 
     if (GetType() != LIST_PROJECT &&
         !wxExApp::GetConfigBool("SVN") &&
@@ -979,9 +940,46 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  // The ID_TOOL_REPORT_FIND and REPLACE only work if there is a frame,
-  // so if not do not add them.
-  // Also, finding in the LIST_FIND and REPLACE would result in recursive calls.
+  if (GetSelectedItemCount() >= 1)
+  {
+    if (exists)
+    {
+      menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
+
+      if (is_make)
+      {
+        menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
+      }
+    }
+
+    if (GetSelectedItemCount() > 1)
+    {
+      if (!wxExApp::GetConfig(_("Comparator")).empty())
+      {
+        menu.Append(ID_LIST_COMPARE, _("C&ompare"));
+      }
+    }
+
+    if (exists && !is_folder)
+    {
+      if (!wxExApp::GetConfigBool("SVN"))
+      {
+        if (!wxExApp::GetConfig(_("Comparator")).empty())
+        {
+          menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
+        }
+
+        menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
+      }
+      else if (GetSelectedItemCount() == 1)
+      {
+        const wxExListItemWithFileName item(this, GetFirstSelected());
+        menu.AppendSVN(item.GetFileName());
+      }
+    }
+  }
+
+  // Finding in the LIST_FIND and REPLACE would result in recursive calls, do not add them.
   if ( exists &&
        GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
        GetSelectedItemCount() > 0 &&
@@ -1238,6 +1236,10 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     wxExMake(m_Frame, item.GetFileName());
   }
   break;
+
+  default: 
+    wxFAIL;
+    break;
   }
 }
 
@@ -1286,7 +1288,8 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       return;
     }
 
-    wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(tool.GetId() == ID_TOOL_REPORT_REPLACE));
+    wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(
+      tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool))
