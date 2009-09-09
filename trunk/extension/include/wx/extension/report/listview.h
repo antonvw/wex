@@ -164,6 +164,7 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator);
 
+  /// Opens the file and updated recent project from frame.
   virtual bool FileOpen(const wxExFileName& filename);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
