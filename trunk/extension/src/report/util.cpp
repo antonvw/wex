@@ -90,7 +90,7 @@ void wxExFindInFiles(bool replace)
 
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListViewFile* listview,
+  wxExListViewWithFrame* listview,
   wxFileName* lastfile)
 {
   /* Add the base version if present. E.g.
@@ -197,7 +197,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
     page < notebook->GetPageCount();
     page++)
   {
-    wxExListViewFile* lv = (wxExListViewFile*)notebook->GetPage(page);
+    wxExListViewWithFrame* lv = (wxExListViewWithFrame*)notebook->GetPage(page);
 
     if (lv == NULL)
     {
@@ -308,7 +308,7 @@ wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
 {
 }
 
-wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
+wxExDirWithListView::wxExDirWithListView(wxExListViewWithFrame* listview,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
   , m_Statistics(fullpath)
@@ -366,7 +366,7 @@ void wxExDirWithListView::OnFile(const wxString& file)
       item.Insert();
 
       // Don't move next code into insert, as it itself inserts!
-      if (m_ListView->GetType() == wxExListViewFile::LIST_VERSION)
+      if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
       {
         wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
 

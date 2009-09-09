@@ -16,7 +16,7 @@
 #include <wx/extension/otl.h>
 
 class wxExFrameWithHistory;
-class wxExListViewFile;
+class wxExListViewWithFrame;
 
 /// Offers a wxExTextFile with reporting to a listview.
 class wxExTextFileWithListView : public wxExTextFile
@@ -34,7 +34,7 @@ private:
   virtual void Report();
   virtual void ReportStatistics();
 
-  static wxExListViewFile* m_Report;
+  static wxExListViewWithFrame* m_Report;
   static wxExFrameWithHistory* m_Frame;
 
 #if USE_EMBEDDED_SQL

@@ -149,7 +149,7 @@ wxExSTCWithFrame* wxExFrameWithHistory::GetCurrentSTC()
   return wxDynamicCast(stc, wxExSTCWithFrame);
 }
 
-wxExListViewFile* wxExFrameWithHistory::GetFocusedListView()
+wxExListViewWithFrame* wxExFrameWithHistory::GetFocusedListView()
 {
   wxWindow* win = wxWindow::FindFocus();
 
@@ -158,7 +158,7 @@ wxExListViewFile* wxExFrameWithHistory::GetFocusedListView()
     return NULL;
   }
 
-  return wxDynamicCast(win, wxExListViewFile);
+  return wxDynamicCast(win, wxExListViewWithFrame);
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
@@ -225,7 +225,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
     case ID_PROJECT_SAVE:
       {
-        wxExListViewFile* project = GetCurrentProject();
+        wxExListViewWithFrame* project = GetCurrentProject();
         if (project != NULL && project->FileSave())
         {
           SetTitle(wxEmptyString, project->GetFileName().GetName());
@@ -270,7 +270,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   if (win == NULL) return;
 
   wxExSTCWithFrame* editor = wxDynamicCast(win, wxExSTCWithFrame);
-  wxExListViewFile* project = wxDynamicCast(win, wxExListViewFile);
+  wxExListViewWithFrame* project = wxDynamicCast(win, wxExListViewWithFrame);
 
   const wxString title(GetTitle());
   const wxChar indicator('*');
@@ -337,7 +337,7 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 {
   wxASSERT(m_Process == NULL);
 
-  wxExListViewFile* listview = Activate(wxExListViewFile::LIST_PROCESS);
+  wxExListViewWithFrame* listview = Activate(wxExListViewWithFrame::LIST_PROCESS);
 
   if (listview == NULL) 
   {
@@ -429,9 +429,9 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_project.empty())
   {
-    wxExListViewFile* lv = GetCurrentListView();
+    wxExListViewWithFrame* lv = GetCurrentListView();
 
-    if (lv != NULL && lv->GetType() == wxExListViewFile::LIST_PROJECT)
+    if (lv != NULL && lv->GetType() == wxExListViewWithFrame::LIST_PROJECT)
     {
       better_project = lv->GetFileName().GetName();
     }
@@ -461,7 +461,7 @@ void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
   m_FileHistory.Load(*wxExApp::GetConfig());
 }
 
-void wxExFrameWithHistory::UseFileHistoryList(wxExListViewFile* list)
+void wxExFrameWithHistory::UseFileHistoryList(wxExListViewWithFrame* list)
 {
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();

@@ -28,10 +28,10 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   // Interface from wxExFrameWithHistory.
-  virtual wxExListViewFile* Activate(
-    wxExListViewFile::ListType type, 
+  virtual wxExListViewWithFrame* Activate(
+    wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
-  virtual wxExListViewFile* GetCurrentProject();
+  virtual wxExListViewWithFrame* GetCurrentProject();
   virtual wxExSTCWithFrame* GetCurrentSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
@@ -48,8 +48,8 @@ private:
     long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
 
-  wxExListViewFile* AddPage(
-    wxExListViewFile::ListType type, 
+  wxExListViewWithFrame* AddPage(
+    wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);
@@ -57,7 +57,7 @@ private:
   int m_NewFileNo;
 
   wxGenericDirCtrl* m_DirCtrl;
-  wxExListViewFile* m_History;
+  wxExListViewWithFrame* m_History;
   wxExNotebook* m_NotebookWithEditors;
   wxExNotebook* m_NotebookWithLists;
   wxExNotebook* m_NotebookWithProjects;

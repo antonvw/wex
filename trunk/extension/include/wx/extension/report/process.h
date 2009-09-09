@@ -15,7 +15,7 @@
 #include <wx/process.h>
 
 class wxExFrameWithHistory;
-class wxExListViewFile;
+class wxExListViewWithFrame;
 
 /// Offers a wxProcess with output to a listview.
 class wxExProcessWithListView : public wxProcess
@@ -24,7 +24,7 @@ public:
   /// Constructor.
   wxExProcessWithListView(
     wxExFrameWithHistory* frame,
-    wxExListViewFile* listview, 
+    wxExListViewWithFrame* listview, 
     const wxString& command = wxEmptyString);
 
   /// Shows a config dialog, returns dialog return code.
@@ -59,7 +59,7 @@ private:
 
   static wxString m_Command;
   wxExFrameWithHistory* m_Frame;
-  wxExListViewFile* m_Owner;
+  wxExListViewWithFrame* m_Owner;
   wxTimer m_Timer;
 
   DECLARE_EVENT_TABLE()

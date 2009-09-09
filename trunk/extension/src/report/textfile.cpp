@@ -16,7 +16,7 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 
-wxExListViewFile* wxExTextFileWithListView::m_Report = NULL;
+wxExListViewWithFrame* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
 
 void SetItemColumnStatistics(
@@ -224,7 +224,7 @@ void wxExTextFileWithListView::ReportStatistics()
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
     m_Report = m_Frame->Activate(
-      wxExListViewFile::GetTypeTool(GetTool()),
+      wxExListViewWithFrame::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());
 
     if (m_Report == NULL)
@@ -325,7 +325,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 
     if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      m_Report = m_Frame->Activate(wxExListViewFile::GetTypeTool(tool));
+      m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
 
       if (m_Report == NULL)
       {

@@ -14,9 +14,9 @@
 
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/extension/base.h>
-#include <wx/extension/report/listview.h> // for wxExListViewFile::ListType 
+#include <wx/extension/report/listview.h> // for wxExListViewWithFrame::ListType 
 
-class wxExListViewFile;
+class wxExListViewWithFrame;
 class wxExProcessWithListView;
 class wxExSTCWithFrame;
 
@@ -40,8 +40,8 @@ public:
 
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
-  virtual wxExListViewFile* Activate(
-    wxExListViewFile::ListType WXUNUSED(list_type), 
+  virtual wxExListViewWithFrame* Activate(
+    wxExListViewWithFrame::ListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
@@ -59,12 +59,12 @@ public:
 
   /// If there is a listview somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
-  virtual wxExListViewFile* GetCurrentListView() {
+  virtual wxExListViewWithFrame* GetCurrentListView() {
     return GetFocusedListView();}
 
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
-  virtual wxExListViewFile* GetCurrentProject() {
+  virtual wxExListViewWithFrame* GetCurrentProject() {
     return GetFocusedListView();}
 
   /// If there is an STC somewhere, your implementation should return that one.
@@ -73,7 +73,7 @@ public:
 
   /// If the window that has focus is a listview, then returns that,
   /// otherwise returns NULL.
-  wxExListViewFile* GetFocusedListView();
+  wxExListViewWithFrame* GetFocusedListView();
 
   /// Returns the recent opened file.
   const wxString GetRecentFile() const {
@@ -127,7 +127,7 @@ public:
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
-  void UseFileHistoryList(wxExListViewFile* list);
+  void UseFileHistoryList(wxExListViewWithFrame* list);
 
   /// Adds a recent project menu to specified menu,
   /// and sets the project history to use it.
@@ -143,7 +143,7 @@ private:
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxFileHistory m_FileHistory;
-  wxExListViewFile* m_FileHistoryList;
+  wxExListViewWithFrame* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
   wxExProcessWithListView* m_Process;
 

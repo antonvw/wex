@@ -27,7 +27,7 @@ wxString wxExProcessWithListView::m_Command = "";
 
 wxExProcessWithListView::wxExProcessWithListView(
   wxExFrameWithHistory* frame,
-  wxExListViewFile* listview,
+  wxExListViewWithFrame* listview,
   const wxString& command)
   : wxProcess(NULL, -1)
   , m_Frame(frame)

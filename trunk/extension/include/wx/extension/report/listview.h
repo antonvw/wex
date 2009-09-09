@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listview.h
-* Purpose:       Declaration of class 'wxExListViewFile'
+* Purpose:       Declaration of class 'wxExListViewWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,7 +19,7 @@ class wxExFrameWithHistory;
 
 /// Combines wxExListView and wxExFile, giving you a list control with file
 /// synchronization support. Further it adds processing support.
-class wxExListViewFile : public wxExListView, public wxExFile
+class wxExListViewWithFrame : public wxExListView, public wxExFile
 {
 public:
   /// The supported lists.
@@ -51,7 +51,7 @@ public:
   };
 
   /// Constructor.
-  wxExListViewFile(wxWindow* parent,
+  wxExListViewWithFrame(wxWindow* parent,
     ListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
@@ -62,7 +62,7 @@ public:
     const wxValidator& validator = wxDefaultValidator);
 
   /// Constructor for a LIST_PROJECT, opens the file.
-  wxExListViewFile(wxWindow* parent,
+  wxExListViewWithFrame(wxWindow* parent,
     const wxString& file,
     const wxString& wildcard,
     wxWindowID id = wxID_ANY,

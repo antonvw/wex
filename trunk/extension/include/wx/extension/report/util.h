@@ -24,7 +24,7 @@
 #include <wx/extension/statistics.h>
 
 class wxExFrameWithHistory;
-class wxExListViewFile;
+class wxExListViewWithFrame;
 
 /// Offers a wxExDir with reporting to a listview.
 class wxExDirWithListView : public wxExDir
@@ -38,7 +38,7 @@ public:
     int flags = wxDIR_DEFAULT);
 
   /// FindFiles causes each found file to be added as listitem to the listview.
-  wxExDirWithListView(wxExListViewFile* listview,
+  wxExDirWithListView(wxExListViewWithFrame* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString,
     int flags = wxDIR_DEFAULT);
@@ -59,7 +59,7 @@ protected:
 private:
   wxExFileNameStatistics m_Statistics;
   wxExFrameWithHistory* m_Frame;
-  wxExListViewFile* m_ListView;
+  wxExListViewWithFrame* m_ListView;
   const long m_Flags;
   wxExTool m_Tool;
 };
@@ -102,7 +102,7 @@ void wxExFindInFiles(bool replace = false);
 /// Results are put on the list if not null, or in the filename if not null.
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListViewFile* listview,
+  wxExListViewWithFrame* listview,
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Do something (id) for all pages on the notebook.

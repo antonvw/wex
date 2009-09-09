@@ -108,13 +108,13 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   m_STC = new wxExSTCWithFrame(this); // use all flags (default)
 
   for (
-    int i = wxExListViewFile::LIST_BEFORE_FIRST + 1;
-    i < wxExListViewFile::LIST_AFTER_LAST;
+    int i = wxExListViewWithFrame::LIST_BEFORE_FIRST + 1;
+    i < wxExListViewWithFrame::LIST_AFTER_LAST;
     i++)
   {
-    wxExListViewFile* vw = new wxExListViewFile(
+    wxExListViewWithFrame* vw = new wxExListViewWithFrame(
       this, 
-      (wxExListViewFile::ListType)i, 
+      (wxExListViewWithFrame::ListType)i, 
       wxID_ANY,
       0xFF, 
       &lexer); // set all flags
@@ -131,23 +131,23 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   GetManager().Update();
 
   wxExDirWithListView dir(
-    (wxExListViewFile*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewFile::GetTypeDescription(wxExListViewFile::LIST_PROJECT)),
+    (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
+      wxExListViewWithFrame::GetTypeDescription(wxExListViewWithFrame::LIST_PROJECT)),
     wxGetCwd(),
     "*.cpp;*.h");
 
   dir.FindFiles();
 
   wxExListItemWithFileName item(
-    (wxExListViewFile*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewFile::GetTypeDescription(wxExListViewFile::LIST_PROJECT)),
+    (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
+      wxExListViewWithFrame::GetTypeDescription(wxExListViewWithFrame::LIST_PROJECT)),
     "NOT EXISTING ITEM");
 
   item.Insert();
 }
 
-wxExListViewFile* wxExRepSampleFrame::Activate(
-  wxExListViewFile::ListType type, 
+wxExListViewWithFrame* wxExRepSampleFrame::Activate(
+  wxExListViewWithFrame::ListType type, 
   const wxExLexer* lexer)
 {
   for (
@@ -155,11 +155,11 @@ wxExListViewFile* wxExRepSampleFrame::Activate(
     i < m_NotebookWithLists->GetPageCount();
     i++)
   {
-    wxExListViewFile* vw = (wxExListViewFile*)m_NotebookWithLists->GetPage(i);
+    wxExListViewWithFrame* vw = (wxExListViewWithFrame*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetType() == type)
     {
-      if (type == wxExListViewFile::LIST_KEYWORD)
+      if (type == wxExListViewWithFrame::LIST_KEYWORD)
       {
         if (lexer != NULL)
         {
@@ -206,7 +206,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     }
     else
     {
-      wxExListViewFile* lv = GetFocusedListView();
+      wxExListViewWithFrame* lv = GetFocusedListView();
 
       if (lv != NULL)
       {
@@ -217,7 +217,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     
   case wxID_PRINT:
     {
-      wxExListViewFile* lv = GetFocusedListView();
+      wxExListViewWithFrame* lv = GetFocusedListView();
 
       if (lv != NULL)
       {

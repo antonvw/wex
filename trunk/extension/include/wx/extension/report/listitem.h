@@ -16,7 +16,7 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/textfile.h> // for wxExRCS
 
-class wxExListViewFile;
+class wxExListViewWithFrame;
 
 /// Offers a list item associated with a file on an wxExListView.
 /// The item is coloured according to
