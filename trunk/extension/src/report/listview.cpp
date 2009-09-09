@@ -895,6 +895,11 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   : wxExListViewFile(parent, file, wildcard, id, menu_flags, pos, size, style, validator)
 {
   Initialize();
+
+  if (m_FileName.GetStat().IsOk())
+  {
+    m_Frame->SetRecentProject(file);
+  }
 }
 
 void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
