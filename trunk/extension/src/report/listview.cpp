@@ -716,7 +716,10 @@ const wxString wxExListViewFile::PrintHeader() const
 }
 
 #if wxUSE_DRAG_AND_DROP
-bool ListViewDropTarget::OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames)
+bool ListViewDropTarget::OnDropFiles(
+  wxCoord, 
+  wxCoord, 
+  const wxArrayString& filenames)
 {
   size_t nFiles = filenames.GetCount();
 
@@ -915,8 +918,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     const wxExListItemWithFileName item(this, GetFirstSelected());
 
-    is_folder = wxDirExists(item.GetFileName().GetFullPath());
     exists = item.GetFileName().GetStat().IsOk();
+    is_folder = wxDirExists(item.GetFileName().GetFullPath());
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
 
