@@ -975,8 +975,6 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
           menu.AppendSeparator();
           menu.Append(ID_LIST_COMPARE,
             _("&Compare With") + " " + wxExGetEndOfText(with_file));
-
-          added = true;
         }
       }
     }
