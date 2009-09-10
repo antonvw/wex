@@ -921,9 +921,6 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   bool is_folder = false;
   bool read_only = false;
   bool is_make = false;
-  bool added = false;
-
-  added = wxExListViewFile::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() == 1)
   {
@@ -933,7 +930,21 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
+  }
 
+  if (GetSelectedItemCount() >= 1)
+  {
+    if (exists)
+    {
+      menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
+      menu.AppendSeparator();
+    }
+  }
+
+  const bool added = wxExListViewFile::BuildPopupMenu(menu);
+
+  if (GetSelectedItemCount() == 1)
+  {
     if (is_make)
     {
       if (added)
@@ -942,8 +953,6 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       }
 
       menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
-
-      added = true;
     }
 
     if (GetType() != LIST_PROJECT &&
@@ -975,12 +984,6 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
   if (GetSelectedItemCount() >= 1)
   {
-    if (exists)
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
-    }
-
     if (GetSelectedItemCount() > 1)
     {
       if (!wxExApp::GetConfig(_("Comparator")).empty())

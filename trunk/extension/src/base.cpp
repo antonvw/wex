@@ -514,11 +514,13 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
 wxExMenu::wxExMenu(long style)
   : m_Style(style)
+  , m_ItemsAppended(0)
 {
 }
 
 wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
+  , m_ItemsAppended(menu.m_ItemsAppended)
 {
 }
 
@@ -528,6 +530,8 @@ wxMenuItem* wxExMenu::Append(
   const wxString& helptext,
   wxArtID artid)
 {
+  m_ItemsAppended++;
+
   wxString use_name = name;
   wxBitmap bitmap;
 
@@ -550,52 +554,45 @@ wxMenuItem* wxExMenu::Append(
 
 bool wxExMenu::AppendEdit(bool add_invert)
 {
-  bool added = false;
+  const int old_items = m_ItemsAppended;
 
   if (!(m_Style & MENU_IS_READ_ONLY) &&
        (m_Style & MENU_IS_SELECTED))
   {
-    added = true;
     Append(wxID_CUT);
   }
 
   if (m_Style & MENU_IS_SELECTED)
   {
-    added = true;
     Append(wxID_COPY);
   }
 
   if (!(m_Style & MENU_IS_READ_ONLY) &&
        (m_Style & MENU_CAN_PASTE))
   {
-    added = true;
     Append(wxID_PASTE);
   }
 
   if (!(m_Style & MENU_IS_SELECTED) &&
       !(m_Style & MENU_IS_EMPTY))
   {
-    added = true;
     Append(wxID_SELECTALL);
   }
   else
   {
     if (add_invert && !(m_Style & MENU_IS_EMPTY))
     {
-      added = true;
       Append(ID_EDIT_SELECT_NONE, _("&Deselect All"));
     }
   }
 
   if (m_Style & MENU_ALLOW_CLEAR)
   {
-    added = true;
     Append(wxID_CLEAR);
   }
 
   if (add_invert && !(m_Style & MENU_IS_EMPTY))
   {
-    added = true;
     Append(ID_EDIT_SELECT_INVERT, _("&Invert"));
   }
 
@@ -603,11 +600,10 @@ bool wxExMenu::AppendEdit(bool add_invert)
        (m_Style & MENU_IS_SELECTED) &&
       !(m_Style & MENU_IS_EMPTY))
   {
-    added = true;
     Append(wxID_DELETE);
   }
 
-  return added;
+  return m_ItemsAppended > old_items;
 }
 
 void wxExMenu::AppendPrint()
@@ -638,6 +634,8 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
     AppendSeparator();
     AppendSubMenu(svnmenu, "&SVN");
 
+    m_ItemsAppended++; // count submenu as one
+
     return true;
   }
 
@@ -646,6 +644,8 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
 
 wxExMenu* wxExMenu::AppendTools()
 {
+  m_ItemsAppended++; // count submenu as one
+
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (

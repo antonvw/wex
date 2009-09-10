@@ -395,10 +395,14 @@ public:
   /// Appends a tools submenu.
   wxExMenu* AppendTools();
 
+  /// Returns the numebr of items appended.
+  int GetItemsAppended() const {return m_ItemsAppended;};
+
   /// Gets the style.
   long GetStyle() const {return m_Style;};
 private:
   const long m_Style;
+  int m_ItemsAppended;
 };
 
 #if wxUSE_STATUSBAR

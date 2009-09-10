@@ -268,17 +268,27 @@ bool wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
   bool added = false;
 
+  if (menu.AppendEdit(true))
+  {
+    added = true;
+  }
+
   if (GetItemCount() > 0)
   {
-    menu.Append(ID_LIST_FIND,
-      wxGetStockLabel(wxID_FIND, wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR),
-      wxEmptyString,
-      wxART_FIND);
-
-    menu.AppendSeparator();
-
     if (GetSelectedItemCount() == 0)
     {
+      if (added)
+      {
+        menu.AppendSeparator();
+      }
+
+      menu.Append(ID_LIST_FIND,
+        wxGetStockLabel(wxID_FIND, wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR),
+        wxEmptyString,
+        wxART_FIND);
+
+      menu.AppendSeparator();
+
       wxMenu* menuSort = new wxMenu;
 
       int i = ID_COL_FIRST;
@@ -291,14 +301,8 @@ bool wxExListView::BuildPopupMenu(wxExMenu& menu)
       }
 
       menu.AppendSubMenu(menuSort, _("Sort On"));
-      menu.AppendSeparator();
     }
 
-    added = true;
-  }
-
-  if (menu.AppendEdit(true))
-  {
     added = true;
   }
 
