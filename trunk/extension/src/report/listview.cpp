@@ -175,13 +175,14 @@ void wxExListViewFile::AfterSorting()
   }
 }
 
-void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
+bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
   bool add = false;
   bool exists = true;
   bool is_folder = false;
+  bool added = false;
 
-  wxExListView::BuildPopupMenu(menu);
+  added = wxExListView::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() == 1)
   {
@@ -196,8 +197,14 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 #ifdef __WXMSW__
     if (exists && !is_folder && (m_MenuFlags & LIST_MENU_RBS))
     {
-      menu.AppendSeparator();
+      if (added)
+      {
+        menu.AppendSeparator();
+      }
+
       menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
+
+      added = true;
     }
 #endif
   }
@@ -218,7 +225,10 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
+    added = true;
   }
+
+  return added;
 }
 
 bool wxExListViewFile::FileNew(const wxExFileName& filename)
@@ -905,14 +915,15 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   }
 }
 
-void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
+bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
   bool exists = true;
   bool is_folder = false;
   bool read_only = false;
   bool is_make = false;
+  bool added = false;
 
-  wxExListViewFile::BuildPopupMenu(menu);
+  added = wxExListViewFile::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() == 1)
   {
@@ -922,6 +933,18 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
+
+    if (is_make)
+    {
+      if (added)
+      {
+        menu.AppendSeparator();
+      }
+
+      menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
+
+      added = true;
+    }
 
     if (GetType() != LIST_PROJECT &&
         !wxExApp::GetConfigBool("SVN") &&
@@ -940,8 +963,11 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         if (current_file != with_file &&
             !wxExApp::GetConfig(_("Comparator")).empty())
         {
+          menu.AppendSeparator();
           menu.Append(ID_LIST_COMPARE,
             _("&Compare With") + " " + wxExGetEndOfText(with_file));
+
+          added = true;
         }
       }
     }
@@ -951,12 +977,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists)
     {
+      menu.AppendSeparator();
       menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
-
-      if (is_make)
-      {
-        menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
-      }
     }
 
     if (GetSelectedItemCount() > 1)
@@ -1007,6 +1029,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.AppendTools();
   }
+
+  return added;
 }
 
 void wxExListViewWithFrame::DeleteDoubles()

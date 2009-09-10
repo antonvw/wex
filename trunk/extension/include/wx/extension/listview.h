@@ -170,7 +170,7 @@ protected:
   virtual bool FindNext(const wxString& text, bool find_next = true);
 
   /// Builds the popup menu.
-  void BuildPopupMenu(wxExMenu& menu);
+  bool BuildPopupMenu(wxExMenu& menu);
 
   /// Clears all items.
   void EditClearAll();

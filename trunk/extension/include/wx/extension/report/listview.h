@@ -120,7 +120,7 @@ public:
   /// Returns list type from tool id.
   static ListType GetTypeTool(const wxExTool& tool);
 protected:
-  virtual void BuildPopupMenu(wxExMenu& menu);
+  virtual bool BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
@@ -167,7 +167,7 @@ public:
   /// Opens the file and updated recent project from frame.
   virtual bool FileOpen(const wxExFileName& filename);
 protected:
-  virtual void BuildPopupMenu(wxExMenu& menu);
+  virtual bool BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:

@@ -264,8 +264,10 @@ const wxString wxExListView::BuildPage()
   return text;
 }
 
-void wxExListView::BuildPopupMenu(wxExMenu& menu)
+bool wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
+  bool added = false;
+
   if (GetItemCount() > 0)
   {
     menu.Append(ID_LIST_FIND,
@@ -291,9 +293,16 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
       menu.AppendSubMenu(menuSort, _("Sort On"));
       menu.AppendSeparator();
     }
+
+    added = true;
   }
 
-  menu.AppendEdit(true);
+  if (menu.AppendEdit(true))
+  {
+    added = true;
+  }
+
+  return added;
 }
 
 void wxExListView::CopySelectedItemsToClipboard()
