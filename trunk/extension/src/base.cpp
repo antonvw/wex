@@ -657,6 +657,7 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
 wxExMenu* wxExMenu::AppendTools()
 {
   m_ItemsAppended++; // count submenu as one
+  m_IsSeparator = false;
 
   wxExMenu* menuTool = new wxExMenu(*this);
 
