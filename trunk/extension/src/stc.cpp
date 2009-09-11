@@ -521,7 +521,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  bool added = menu.AppendEdit();
+  menu.AppendEdit();
 
   wxExMenu* menuSelection = NULL;
 
@@ -532,7 +532,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       menuSelection = new wxExMenu(menu);
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
-      added = true;
 
       if (wxExGetNumberOfLines(sel) > 1)
       {
@@ -545,24 +544,22 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     {
       if (m_MenuFlags & STC_MENU_INSERT)
       {
-        if (added) menu.AppendSeparator();
+        menu.AppendSeparator();
         menu.Append(ID_EDIT_INSERT_DATE, _("Insert Timestamp"));
         menu.Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
-        added = true;
       }
 
       if (m_FileSaveInMenu && GetModify())
       {
         menu.AppendSeparator();
         menu.Append(wxID_SAVE);
-        added = true;
       }
     }
   }
 
   if (sel.empty() && GetProperty("fold") == "1")
   {
-    if (added) menu.AppendSeparator();
+    menu.AppendSeparator();
     menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl+T"));
     menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
     menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
