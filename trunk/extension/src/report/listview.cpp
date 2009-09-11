@@ -943,13 +943,14 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  const bool added = wxExListViewFile::BuildPopupMenu(menu);
+  bool seperator_needed = wxExListViewFile::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() >= 1)
   {
-    if (added)
+    if (seperator_needed)
     {
       menu.AppendSeparator();
+      seperator_needed = false;
     }
 
     if (GetSelectedItemCount() == 1)
@@ -982,53 +983,58 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         }
       }
     }
-    else
+
+    if (!wxExApp::GetConfig(_("Comparator")).empty())
     {
-      if (!wxExApp::GetConfig(_("Comparator")).empty())
+      if (seperator_needed)
       {
         menu.AppendSeparator();
-        menu.Append(ID_LIST_COMPARE, _("C&ompare"));
+        seperator_needed = false;
       }
 
-      if (exists && !is_folder)
-      {
-        if (!wxExApp::GetConfigBool("SVN"))
-        {
-          if (!wxExApp::GetConfig(_("Comparator")).empty())
-          {
-            menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
-          }
+      menu.Append(ID_LIST_COMPARE, _("C&ompare"));
+    }
 
-          menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
-        }
-        else if (GetSelectedItemCount() == 1)
+    if (exists && !is_folder)
+    {
+      if (!wxExApp::GetConfigBool("SVN"))
+      {
+        if (!wxExApp::GetConfig(_("Comparator")).empty())
         {
-          const wxExListItemWithFileName item(this, GetFirstSelected());
-          menu.AppendSVN(item.GetFileName());
+          menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
         }
+
+        menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
+      }
+      else if (GetSelectedItemCount() == 1)
+      {
+        const wxExListItemWithFileName item(this, GetFirstSelected());
+        menu.AppendSVN(item.GetFileName());
       }
     }
-  }
 
-  // Finding in the LIST_FIND and REPLACE would result in recursive calls, do not add them.
-  if ( exists &&
-       GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
-       GetSelectedItemCount() > 0 &&
-      (GetMenuFlags() & LIST_MENU_REPORT_FIND))
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
-
-    if (!read_only)
+    // Finding in the LIST_FIND and REPLACE would result in recursive calls, do not add them.
+    if ( exists &&
+         GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
+        (GetMenuFlags() & LIST_MENU_REPORT_FIND))
     {
-      menu.Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+      menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
+
+      if (!read_only)
+      {
+        menu.Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+      }
     }
   }
 
   if (GetSelectedItemCount() > 0 && exists &&
      (GetMenuFlags() & LIST_MENU_TOOL))
   {
-    menu.AppendSeparator();
+    if (seperator_needed)
+    {
+      menu.AppendSeparator();
+    }
+
     menu.AppendTools();
   }
 
