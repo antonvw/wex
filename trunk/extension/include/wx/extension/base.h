@@ -381,8 +381,7 @@ public:
     wxArtID artid = wxEmptyString);
 
   /// Appends edit menu items, depending on the style specified during construction.
-  /// Returns true if at least one item has been added.
-  bool AppendEdit(bool add_invert = false);
+  void AppendEdit(bool add_invert = false);
 
   /// Appends print menu items.
   /// This always adds some items, so no boolean return needed.
@@ -394,8 +393,8 @@ public:
   void AppendSeparator();
 
   /// Appends SVN menu items.
-  /// Returns true if at least one item has been added.
-  bool AppendSVN(const wxFileName& file);
+  /// Returns true if filename contains a subversion subdirectory.
+  bool AppendSVN(const wxFileName& filename);
 
   /// Appends a tools submenu.
   wxExMenu* AppendTools();

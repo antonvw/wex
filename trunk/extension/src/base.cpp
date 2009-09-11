@@ -555,10 +555,8 @@ wxMenuItem* wxExMenu::Append(
   return wxMenu::Append(item);
 }
 
-bool wxExMenu::AppendEdit(bool add_invert)
+void wxExMenu::AppendEdit(bool add_invert)
 {
-  const int old_items = m_ItemsAppended;
-
   if (!(m_Style & MENU_IS_READ_ONLY) &&
        (m_Style & MENU_IS_SELECTED))
   {
@@ -605,8 +603,6 @@ bool wxExMenu::AppendEdit(bool add_invert)
   {
     Append(wxID_DELETE);
   }
-
-  return m_ItemsAppended > old_items;
 }
 
 void wxExMenu::AppendPrint()
