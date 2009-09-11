@@ -997,6 +997,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
          GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
         (GetMenuFlags() & LIST_MENU_REPORT_FIND))
     {
+      menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
       if (!read_only)
