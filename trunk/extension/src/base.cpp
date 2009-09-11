@@ -621,6 +621,17 @@ void wxExMenu::AppendSeparator()
   m_IsSeparator = true;
 }
 
+wxMenuItem* wxExMenu::AppendSubMenu(
+  wxMenu *submenu,
+  const wxString& text,
+  const wxString& help)
+{
+  m_ItemsAppended++; // count submenu as one
+  m_IsSeparator = false;
+
+  return wxMenu::AppendSubMenu(submenu, text, help);
+}
+
 bool wxExMenu::AppendSVN(const wxFileName& file)
 {
   wxFileName path (file.GetPath());
@@ -639,10 +650,9 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
     svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed("&Commit"));
     svnmenu->AppendSeparator();
     svnmenu->Append(ID_EDIT_SVN_REVERT, wxExEllipsed("&Revert"));
+
     AppendSeparator();
     AppendSubMenu(svnmenu, "&SVN");
-
-    m_ItemsAppended++; // count submenu as one
 
     return true;
   }
@@ -652,9 +662,6 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
 
 wxExMenu* wxExMenu::AppendTools()
 {
-  m_ItemsAppended++; // count submenu as one
-  m_IsSeparator = false;
-
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (
