@@ -175,13 +175,11 @@ void wxExListViewFile::AfterSorting()
   }
 }
 
-bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
+void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
   bool add = false;
   bool exists = true;
   bool is_folder = false;
-
-  const int items_old = menu.GetItemsAppended();
 
   wxExListView::BuildPopupMenu(menu);
 
@@ -221,8 +219,6 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
   }
-
-  return menu.GetItemsAppended() > items_old;
 }
 
 bool wxExListViewFile::FileNew(const wxExFileName& filename)
@@ -909,13 +905,12 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   }
 }
 
-bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
+void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
   bool exists = true;
   bool is_folder = false;
   bool read_only = false;
   bool is_make = false;
-  const int items_old = menu.GetItemsAppended();
 
   if (GetSelectedItemCount() == 1)
   {
@@ -1017,8 +1012,6 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.AppendTools();
   }
-
-  return menu.GetItemsAppended() > items_old;
 }
 
 void wxExListViewWithFrame::DeleteDoubles()
