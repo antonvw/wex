@@ -621,15 +621,14 @@ void wxExMenu::AppendSeparator()
   m_IsSeparator = true;
 }
 
-wxMenuItem* wxExMenu::AppendSubMenu(
+void wxExMenu::AppendSubMenu(
   wxMenu *submenu,
   const wxString& text,
   const wxString& help)
 {
   m_ItemsAppended++; // count submenu as one
   m_IsSeparator = false;
-
-  return wxMenu::AppendSubMenu(submenu, text, help);
+  wxMenu::AppendSubMenu(submenu, text, help);
 }
 
 bool wxExMenu::AppendSVN(const wxFileName& file)
@@ -660,7 +659,7 @@ bool wxExMenu::AppendSVN(const wxFileName& file)
   return false;
 }
 
-wxExMenu* wxExMenu::AppendTools()
+void wxExMenu::AppendTools()
 {
   wxExMenu* menuTool = new wxExMenu(*this);
 
@@ -676,8 +675,6 @@ wxExMenu* wxExMenu::AppendTools()
   }
 
   AppendSubMenu(menuTool, _("&Tools"));
-
-  return menuTool;
 }
 
 int wxExPane::m_Total = 0;

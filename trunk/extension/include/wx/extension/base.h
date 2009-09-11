@@ -397,13 +397,13 @@ public:
   bool AppendSVN(const wxFileName& filename);
 
   /// Appends a submenu (and resets the is separator member).
-  wxMenuItem* AppendSubMenu(
+  void AppendSubMenu(
     wxMenu *submenu,
     const wxString& text,
     const wxString& help = wxEmptyString);
 
   /// Appends a tools submenu.
-  wxExMenu* AppendTools();
+  void AppendTools();
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};
