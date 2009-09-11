@@ -922,58 +922,55 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }
 
-  if (GetSelectedItemCount() >= 1)
+  if (GetSelectedItemCount() >= 1 && exists)
   {
-    if (exists)
-    {
-      menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
-      menu.AppendSeparator();
-    }
+    menu.Append(ID_LIST_OPEN_ITEM, _("&Open"), wxART_FILE_OPEN);
+    menu.AppendSeparator();
   }
 
   wxExListViewFile::BuildPopupMenu(menu);
 
-  if (GetSelectedItemCount() >= 1)
+  if (GetSelectedItemCount() > 1 && !wxExApp::GetConfig(_("Comparator")).empty())
   {
     menu.AppendSeparator();
+    menu.Append(ID_LIST_COMPARE, _("C&ompare"));
+  }
 
-    if (GetSelectedItemCount() == 1)
+  if (GetSelectedItemCount() == 1)
+  {
+    if (is_make)
     {
-      if (is_make)
-      {
-        menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
-      }
+      menu.AppendSeparator();
+      menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
+    }
 
-      if (GetType() != LIST_PROJECT &&
-          !wxExApp::GetConfigBool("SVN") &&
-          exists && !is_folder)
-      {
-        wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
+    if (GetType() != LIST_PROJECT &&
+        !wxExApp::GetConfigBool("SVN") &&
+        exists && !is_folder)
+    {
+      wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
 
-        if (list != NULL && list->GetSelectedItemCount() == 1)
+      if (list != NULL && list->GetSelectedItemCount() == 1)
+      {
+        wxExListItemWithFileName thislist(this, GetFirstSelected());
+        const wxString current_file = thislist.GetFileName().GetFullPath();
+
+        wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
+        const wxString with_file = otherlist.GetFileName().GetFullPath();
+
+        if (current_file != with_file &&
+            !wxExApp::GetConfig(_("Comparator")).empty())
         {
-          wxExListItemWithFileName thislist(this, GetFirstSelected());
-          const wxString current_file = thislist.GetFileName().GetFullPath();
-
-          wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
-          const wxString with_file = otherlist.GetFileName().GetFullPath();
-
-          if (current_file != with_file &&
-              !wxExApp::GetConfig(_("Comparator")).empty())
-          {
-            menu.Append(ID_LIST_COMPARE,
-              _("&Compare With") + " " + wxExGetEndOfText(with_file));
-          }
+          menu.AppendSeparator();
+          menu.Append(ID_LIST_COMPARE,
+            _("&Compare With") + " " + wxExGetEndOfText(with_file));
         }
       }
     }
+  }
 
-    if (!wxExApp::GetConfig(_("Comparator")).empty())
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_LIST_COMPARE, _("C&ompare"));
-    }
-
+  if (GetSelectedItemCount() >= 1)
+  {
     if (exists && !is_folder)
     {
       if (!wxExApp::GetConfigBool("SVN"))
@@ -988,6 +985,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       else if (GetSelectedItemCount() == 1)
       {
         const wxExListItemWithFileName item(this, GetFirstSelected());
+        menu.AppendSeparator();
         menu.AppendSVN(item.GetFileName());
       }
     }
@@ -1007,8 +1005,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (GetSelectedItemCount() > 0 && exists &&
-     (GetMenuFlags() & LIST_MENU_TOOL))
+  if (GetSelectedItemCount() > 0 && exists && (GetMenuFlags() & LIST_MENU_TOOL))
   {
     menu.AppendSeparator();
     menu.AppendTools();
