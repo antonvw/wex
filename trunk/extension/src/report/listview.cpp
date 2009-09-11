@@ -180,9 +180,9 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   bool add = false;
   bool exists = true;
   bool is_folder = false;
-  bool added = false;
 
-  added = wxExListView::BuildPopupMenu(menu);
+  const int items_old = menu.GetItemsAppended();
+  const bool added = wxExListView::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() == 1)
   {
@@ -203,8 +203,6 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
       }
 
       menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
-
-      added = true;
     }
 #endif
   }
@@ -223,12 +221,15 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (add)
   {
-    menu.AppendSeparator();
+    if (added)
+    {
+      menu.AppendSeparator();
+    }
+
     menu.Append(wxID_ADD);
-    added = true;
   }
 
-  return added;
+  return menu.GetItemsAppended() > items_old;
 }
 
 bool wxExListViewFile::FileNew(const wxExFileName& filename)
@@ -921,6 +922,7 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   bool is_folder = false;
   bool read_only = false;
   bool is_make = false;
+  const int items_old = menu.GetItemsAppended();
 
   if (GetSelectedItemCount() == 1)
   {
@@ -943,68 +945,67 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
   const bool added = wxExListViewFile::BuildPopupMenu(menu);
 
-  if (GetSelectedItemCount() == 1)
+  if (GetSelectedItemCount() >= 1)
   {
-    if (is_make)
+    if (added)
     {
-      if (added)
-      {
-        menu.AppendSeparator();
-      }
-
-      menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
+      menu.AppendSeparator();
     }
 
-    if (GetType() != LIST_PROJECT &&
-        !wxExApp::GetConfigBool("SVN") &&
-        exists && !is_folder)
+    if (GetSelectedItemCount() == 1)
     {
-      wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
-
-      if (list != NULL && list->GetSelectedItemCount() == 1)
+      if (is_make)
       {
-        wxExListItemWithFileName thislist(this, GetFirstSelected());
-        const wxString current_file = thislist.GetFileName().GetFullPath();
+        menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
+      }
 
-        wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
-        const wxString with_file = otherlist.GetFileName().GetFullPath();
+      if (GetType() != LIST_PROJECT &&
+          !wxExApp::GetConfigBool("SVN") &&
+          exists && !is_folder)
+      {
+        wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
 
-        if (current_file != with_file &&
-            !wxExApp::GetConfig(_("Comparator")).empty())
+        if (list != NULL && list->GetSelectedItemCount() == 1)
         {
-          menu.AppendSeparator();
-          menu.Append(ID_LIST_COMPARE,
-            _("&Compare With") + " " + wxExGetEndOfText(with_file));
+          wxExListItemWithFileName thislist(this, GetFirstSelected());
+          const wxString current_file = thislist.GetFileName().GetFullPath();
+
+          wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
+          const wxString with_file = otherlist.GetFileName().GetFullPath();
+
+          if (current_file != with_file &&
+              !wxExApp::GetConfig(_("Comparator")).empty())
+          {
+            menu.Append(ID_LIST_COMPARE,
+              _("&Compare With") + " " + wxExGetEndOfText(with_file));
+          }
         }
       }
     }
-  }
-
-  if (GetSelectedItemCount() >= 1)
-  {
-    if (GetSelectedItemCount() > 1)
+    else
     {
       if (!wxExApp::GetConfig(_("Comparator")).empty())
       {
+        menu.AppendSeparator();
         menu.Append(ID_LIST_COMPARE, _("C&ompare"));
       }
-    }
 
-    if (exists && !is_folder)
-    {
-      if (!wxExApp::GetConfigBool("SVN"))
+      if (exists && !is_folder)
       {
-        if (!wxExApp::GetConfig(_("Comparator")).empty())
+        if (!wxExApp::GetConfigBool("SVN"))
         {
-          menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
-        }
+          if (!wxExApp::GetConfig(_("Comparator")).empty())
+          {
+            menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
+          }
 
-        menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
-      }
-      else if (GetSelectedItemCount() == 1)
-      {
-        const wxExListItemWithFileName item(this, GetFirstSelected());
-        menu.AppendSVN(item.GetFileName());
+          menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
+        }
+        else if (GetSelectedItemCount() == 1)
+        {
+          const wxExListItemWithFileName item(this, GetFirstSelected());
+          menu.AppendSVN(item.GetFileName());
+        }
       }
     }
   }
@@ -1031,7 +1032,7 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendTools();
   }
 
-  return added;
+  return menu.GetItemsAppended() > items_old;
 }
 
 void wxExListViewWithFrame::DeleteDoubles()

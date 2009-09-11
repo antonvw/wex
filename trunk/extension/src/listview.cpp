@@ -266,47 +266,38 @@ const wxString wxExListView::BuildPage()
 
 bool wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
-  bool added = false;
+  const int items_old = menu.GetItemsAppended();
+  const bool added = menu.AppendEdit(true);
 
-  if (menu.AppendEdit(true))
+  if (GetItemCount() && GetSelectedItemCount() == 0)
   {
-    added = true;
-  }
-
-  if (GetItemCount() > 0)
-  {
-    if (GetSelectedItemCount() == 0)
+    if (added)
     {
-      if (added)
-      {
-        menu.AppendSeparator();
-      }
-
-      menu.Append(ID_LIST_FIND,
-        wxGetStockLabel(wxID_FIND, wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR),
-        wxEmptyString,
-        wxART_FIND);
-
       menu.AppendSeparator();
-
-      wxMenu* menuSort = new wxMenu;
-
-      int i = ID_COL_FIRST;
-      for (
-        vector<wxExColumn>::const_iterator it = m_Columns.begin();
-        it != m_Columns.end();
-        ++it)
-      {
-        menuSort->Append(i++, it->GetText());
-      }
-
-      menu.AppendSubMenu(menuSort, _("Sort On"));
     }
 
-    added = true;
+    menu.Append(ID_LIST_FIND,
+      wxGetStockLabel(wxID_FIND, wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR),
+      wxEmptyString,
+      wxART_FIND);
+
+    menu.AppendSeparator();
+
+    wxMenu* menuSort = new wxMenu;
+
+    int i = ID_COL_FIRST;
+    for (
+      vector<wxExColumn>::const_iterator it = m_Columns.begin();
+      it != m_Columns.end();
+      ++it)
+    {
+      menuSort->Append(i++, it->GetText());
+    }
+
+    menu.AppendSubMenu(menuSort, _("Sort On"));
   }
 
-  return added;
+  return menu.GetItemsAppended() > items_old;
 }
 
 void wxExListView::CopySelectedItemsToClipboard()
