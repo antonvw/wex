@@ -388,6 +388,11 @@ public:
   /// This always adds some items, so no boolean return needed.
   void AppendPrint();
 
+  /// Appends a separator.
+  /// If previous item was a separator, it ignores this one.
+  /// If no items have yet been appended, it ignores this one.
+  void AppendSeparator();
+
   /// Appends SVN menu items.
   /// Returns true if at least one item has been added.
   bool AppendSVN(const wxFileName& file);
@@ -403,6 +408,7 @@ public:
 private:
   const long m_Style;
   int m_ItemsAppended;
+  bool m_IsSeparator;
 };
 
 #if wxUSE_STATUSBAR

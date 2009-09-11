@@ -182,7 +182,8 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   bool is_folder = false;
 
   const int items_old = menu.GetItemsAppended();
-  const bool added = wxExListView::BuildPopupMenu(menu);
+
+  wxExListView::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() == 1)
   {
@@ -197,11 +198,7 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 #ifdef __WXMSW__
     if (exists && !is_folder && (m_MenuFlags & LIST_MENU_RBS))
     {
-      if (added)
-      {
-        menu.AppendSeparator();
-      }
-
+      menu.AppendSeparator();
       menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
     }
 #endif
@@ -221,11 +218,7 @@ bool wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (add)
   {
-    if (added)
-    {
-      menu.AppendSeparator();
-    }
-
+    menu.AppendSeparator();
     menu.Append(wxID_ADD);
   }
 
@@ -943,15 +936,11 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  bool seperator_needed = wxExListViewFile::BuildPopupMenu(menu);
+  wxExListViewFile::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() >= 1)
   {
-    if (seperator_needed)
-    {
-      menu.AppendSeparator();
-      seperator_needed = false;
-    }
+    menu.AppendSeparator();
 
     if (GetSelectedItemCount() == 1)
     {
@@ -986,12 +975,7 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
     if (!wxExApp::GetConfig(_("Comparator")).empty())
     {
-      if (seperator_needed)
-      {
-        menu.AppendSeparator();
-        seperator_needed = false;
-      }
-
+      menu.AppendSeparator();
       menu.Append(ID_LIST_COMPARE, _("C&ompare"));
     }
 
@@ -1030,11 +1014,7 @@ bool wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   if (GetSelectedItemCount() > 0 && exists &&
      (GetMenuFlags() & LIST_MENU_TOOL))
   {
-    if (seperator_needed)
-    {
-      menu.AppendSeparator();
-    }
-
+    menu.AppendSeparator();
     menu.AppendTools();
   }
 

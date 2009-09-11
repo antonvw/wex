@@ -515,12 +515,14 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 wxExMenu::wxExMenu(long style)
   : m_Style(style)
   , m_ItemsAppended(0)
+  , m_IsSeparator(false)
 {
 }
 
 wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
   , m_ItemsAppended(menu.m_ItemsAppended)
+  , m_IsSeparator(menu.m_IsSeparator)
 {
 }
 
@@ -531,6 +533,7 @@ wxMenuItem* wxExMenu::Append(
   wxArtID artid)
 {
   m_ItemsAppended++;
+  m_IsSeparator = false;
 
   wxString use_name = name;
   wxBitmap bitmap;
@@ -611,6 +614,15 @@ void wxExMenu::AppendPrint()
   Append(wxID_PRINT_SETUP, wxExEllipsed(_("Page &Setup")));
   Append(wxID_PREVIEW);
   Append(wxID_PRINT);
+}
+
+void wxExMenu::AppendSeparator()
+{
+  if (m_ItemsAppended == 0 || m_IsSeparator) return;
+
+  wxMenu::AppendSeparator();
+
+  m_IsSeparator = true;
 }
 
 bool wxExMenu::AppendSVN(const wxFileName& file)
