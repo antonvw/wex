@@ -71,7 +71,7 @@ wxExSTCShell::~wxExSTCShell()
     int items = 0;
 
     for (
-      list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      list < wxString >::const_reverse_iterator it = m_Commands.rbegin();
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
       it++)
     {
@@ -381,7 +381,7 @@ void wxExSTCShell::ShowHistory()
   int command_no = 1;
 
   for (
-    list < wxString >::iterator it = m_Commands.begin();
+    list < wxString >::const_iterator it = m_Commands.begin();
     it != m_Commands.end();
     it++)
   {
