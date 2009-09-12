@@ -268,7 +268,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
   menu.AppendEdit(true);
 
-  if (GetItemCount() && GetSelectedItemCount() == 0)
+  if (GetItemCount() > 0 && GetSelectedItemCount() == 0)
   {
     menu.AppendSeparator();
     menu.Append(ID_LIST_FIND,

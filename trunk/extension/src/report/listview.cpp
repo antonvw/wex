@@ -177,7 +177,6 @@ void wxExListViewFile::AfterSorting()
 
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
-  bool add = false;
   bool exists = true;
   bool is_folder = false;
 
@@ -209,15 +208,10 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
           !m_FileName.FileExists() ||
           (m_FileName.FileExists() && !m_FileName.GetStat().IsReadOnly()))
       {
-        add = true;
+        menu.AppendSeparator();
+        menu.Append(wxID_ADD);
       }
     }
-  }
-
-  if (add)
-  {
-    menu.AppendSeparator();
-    menu.Append(wxID_ADD);
   }
 }
 
