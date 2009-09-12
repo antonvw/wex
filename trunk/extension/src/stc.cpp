@@ -523,13 +523,11 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   menu.AppendEdit();
 
-  wxExMenu* menuSelection = NULL;
-
   if (!GetReadOnly())
   {
     if (!sel.empty())
     {
-      menuSelection = new wxExMenu(menu);
+      wxExMenu* menuSelection = menuSelection = new wxExMenu(menu);
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
 
@@ -539,6 +537,9 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
         menuSelection->Append(wxID_SORT_ASCENDING);
         menuSelection->Append(wxID_SORT_DESCENDING);
       }
+
+      menu.AppendSeparator();
+      menu.AppendSubMenu(menuSelection, _("&Selection"));
     }
     else
     {
@@ -563,12 +564,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl+T"));
     menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
     menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
-  }
-
-  if (menuSelection != NULL)
-  {
-    menu.AppendSeparator();
-    menu.AppendSubMenu(menuSelection, _("&Selection"));
   }
 
   if (sel.empty() && 
