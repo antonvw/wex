@@ -501,23 +501,23 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     wxString filename;
     if (LinkOpen(link, filename, line_no, false))
     {
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
       menu.AppendSeparator();
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
     }
   }
 
   if (m_MenuFlags & STC_MENU_FIND && GetTextLength() > 0)
   {
-    menu.Append(wxID_FIND);
     menu.AppendSeparator();
+    menu.Append(wxID_FIND);
   }
 
   if (!GetReadOnly())
   {
     if (m_MenuFlags & STC_MENU_REPLACE && GetTextLength() > 0)
     {
-      menu.Append(wxID_REPLACE);
       menu.AppendSeparator();
+      menu.Append(wxID_REPLACE);
     }
   }
 
