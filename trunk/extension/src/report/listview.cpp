@@ -483,8 +483,9 @@ const wxString wxExListViewFile::ItemToText(int item_number)
 {
   wxExListItemWithFileName item(this, item_number);
 
-  wxString text =
-    (item.GetFileName().FileExists() ? item.GetFileName().GetFullPath(): item.GetFileName().GetFullName());
+  wxString text = (item.GetFileName().GetStat().IsOk() ? 
+    item.GetFileName().GetFullPath(): 
+    item.GetFileName().GetFullName());
 
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
   {
