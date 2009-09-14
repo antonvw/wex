@@ -104,7 +104,7 @@ MyFrame::MyFrame()
   menubar->Append(menuDatabase, _("&Connection"));
   menubar->Append(menuQuery, _("&Query"));
   menubar->Append(menuOptions, _("&Options"));
-  menubar->Append(menuHelp, _("&Help"));
+  menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menubar);
 
   m_Query = new wxExSTCWithFrame(this);

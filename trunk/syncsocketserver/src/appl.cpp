@@ -159,7 +159,7 @@ MyFrame::MyFrame()
   menuBar->Append(menuServer, _("&Server"));
   menuBar->Append(menuClient, _("&Client"));
   menuBar->Append(menuOptions, _("&Options"));
-  menuBar->Append(menuHelp, _("&Help"));
+  menuBar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menuBar);
 
   CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
