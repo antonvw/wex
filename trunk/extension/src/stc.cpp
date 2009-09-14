@@ -516,11 +516,11 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     if (m_MenuFlags & STC_MENU_REPLACE && GetTextLength() > 0)
     {
-      menu.AppendSeparator();
       menu.Append(wxID_REPLACE);
     }
   }
 
+  menu.AppendSeparator();
   menu.AppendEdit();
 
   if (!GetReadOnly())
