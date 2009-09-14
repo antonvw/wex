@@ -14,7 +14,7 @@ General
 
 - STL is used wherever possible
 
-- GUI development library wxWidgets (2.9.0 branch)
+- GUI development library wxWidgets (2.9 branch)
     http://www.wxwidgets.org/
 
 - database is OTL (Version 4.0.201)
