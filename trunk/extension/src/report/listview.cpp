@@ -180,8 +180,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   bool exists = true;
   bool is_folder = false;
 
-  wxExListView::BuildPopupMenu(menu);
-
   if (GetSelectedItemCount() == 1)
   {
     const wxExListItemWithFileName item(this, GetFirstSelected());
@@ -192,6 +190,8 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (GetSelectedItemCount() >= 1)
   {
+    wxExListView::BuildPopupMenu(menu);
+
 #ifdef __WXMSW__
     if (exists && !is_folder && (m_MenuFlags & LIST_MENU_RBS))
     {
@@ -212,6 +212,9 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
         menu.Append(wxID_ADD);
       }
     }
+
+    menu.AppendSeparator();
+    wxExListView::BuildPopupMenu(menu);
   }
 }
 
