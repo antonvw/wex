@@ -224,7 +224,7 @@ void wxExTextFileWithListView::ReportStatistics()
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
     m_Report = m_Frame->Activate(
-      wxExListViewWithFrame::GetTypeTool(GetTool()),
+      wxExListViewFile::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());
 
     if (m_Report == NULL)
@@ -325,7 +325,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 
     if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
+      m_Report = m_Frame->Activate(wxExListViewFile::GetTypeTool(tool));
 
       if (m_Report == NULL)
       {

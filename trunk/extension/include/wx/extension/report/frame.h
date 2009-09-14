@@ -14,7 +14,7 @@
 
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/extension/base.h>
-#include <wx/extension/report/listview.h> // for wxExListViewWithFrame::ListType 
+#include <wx/extension/report/listview.h> // for wxExListViewFile::ListType 
 
 class wxExListViewWithFrame;
 class wxExProcessWithListView;
@@ -41,7 +41,7 @@ public:
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
   virtual wxExListViewWithFrame* Activate(
-    wxExListViewWithFrame::ListType WXUNUSED(list_type), 
+    wxExListViewFile::ListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 

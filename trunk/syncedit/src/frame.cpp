@@ -89,8 +89,8 @@ MDIFrame::MDIFrame(bool open_recent)
   m_NotebookWithProjects = new wxExNotebook(
     this, this, (wxWindowID)NOTEBOOK_PROJECTS, wxDefaultPosition, wxDefaultSize, flag);
   m_History = new wxExListViewWithFrame(this,
-    wxExListViewWithFrame::LIST_HISTORY,
-    wxExListViewWithFrame::LIST_MENU_DEFAULT | wxExListViewWithFrame::LIST_MENU_RBS);
+    wxExListViewFile::LIST_HISTORY,
+    wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
@@ -166,10 +166,10 @@ MDIFrame::MDIFrame(bool open_recent)
 }
 
 wxExListViewWithFrame* MDIFrame::Activate(
-  wxExListViewWithFrame::ListType type, 
+  wxExListViewFile::ListType type, 
   const wxExLexer* lexer)
 {
-  if (type == wxExListViewWithFrame::LIST_PROJECT)
+  if (type == wxExListViewFile::LIST_PROJECT)
   {
     return GetCurrentProject();
   }
@@ -183,21 +183,21 @@ wxExListViewWithFrame* MDIFrame::Activate(
 }
 
 wxExListViewWithFrame* MDIFrame::AddPage(
-  wxExListViewWithFrame::ListType type, 
+  wxExListViewFile::ListType type, 
   const wxExLexer* lexer)
 {
-  const wxString name = wxExListViewWithFrame::GetTypeDescription((wxExListViewWithFrame::ListType)type) +
+  const wxString name = wxExListViewFile::GetTypeDescription((wxExListViewFile::ListType)type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
   wxExListViewWithFrame* list = (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(name);
 
-  if (list == NULL && type != wxExListViewWithFrame::LIST_PROJECT)
+  if (list == NULL && type != wxExListViewFile::LIST_PROJECT)
   {
     list = new wxExListViewWithFrame(
       m_NotebookWithLists,
-      (wxExListViewWithFrame::ListType)type,
+      (wxExListViewFile::ListType)type,
       wxID_ANY,
-      wxExListViewWithFrame::LIST_MENU_DEFAULT | wxExListViewWithFrame::LIST_MENU_RBS,
+      wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);
   }
@@ -288,7 +288,7 @@ void MDIFrame::NewFile(bool as_project)
       key,
       project_wildcard,
       wxID_ANY,
-      wxExListViewWithFrame::LIST_MENU_DEFAULT | wxExListViewWithFrame::LIST_MENU_RBS);
+      wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
     ((wxExListViewWithFrame*)page)->FileNew(fn);
     SetTitle(wxEmptyString, text);
@@ -890,7 +890,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       case wxID_PASTE:
         if (GetFocusedListView() != NULL)
         {
-          event.Enable(GetFocusedListView()->GetType() == wxExListViewWithFrame::LIST_PROJECT);
+          event.Enable(GetFocusedListView()->GetType() == wxExListViewFile::LIST_PROJECT);
         }
         else
         {
@@ -982,7 +982,7 @@ bool MDIFrame::OpenFile(
         filename.GetFullPath(),
         project_wildcard,
         wxID_ANY,
-        wxExListViewWithFrame::LIST_MENU_DEFAULT | wxExListViewWithFrame::LIST_MENU_RBS);
+        wxExListViewFile::LIST_MENU_DEFAULT | wxExListViewFile::LIST_MENU_RBS);
 
       m_NotebookWithProjects->AddPage(
         project,
