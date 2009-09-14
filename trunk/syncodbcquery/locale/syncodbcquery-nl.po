@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-25 11:25+0100\n"
-"PO-Revision-Date: 2009-08-25 11:25+0100\n"
-"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-09-14 19:37+0100\n"
+"PO-Revision-Date: 2009-09-14 19:37+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -67,10 +67,6 @@ msgstr "&Query"
 #: ../src/appl.cpp:106
 msgid "&Options"
 msgstr "&Opties"
-
-#: ../src/appl.cpp:107
-msgid "&Help"
-msgstr "&Help"
 
 #: ../src/appl.cpp:152
 msgid "Lines in window"
@@ -151,6 +147,8 @@ msgstr "Totaal query uitvoertijd"
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
 
+#~ msgid "&Help"
+#~ msgstr "&Help"
 #~ msgid "&Database"
 #~ msgstr "&Database"
 #~ msgid "Editor Options"
