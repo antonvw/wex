@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-01 07:24+0100\n"
-"PO-Revision-Date: 2009-09-01 07:26+0100\n"
+"POT-Creation-Date: 2009-09-15 07:59+0100\n"
+"PO-Revision-Date: 2009-09-15 08:00+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -53,15 +53,15 @@ msgstr "Zoekbalk"
 msgid "Perspective"
 msgstr "Perspektief"
 
-#: ../src/frame.cpp:268
-msgid "Project"
-msgstr "Project"
+#: ../src/frame.cpp:272
+msgid "project"
+msgstr "project"
 
-#: ../src/frame.cpp:268
-msgid "Textfile"
-msgstr "Bestand"
+#: ../src/frame.cpp:272
+msgid "textfile"
+msgstr "bestand"
 
-#: ../src/frame.cpp:431
+#: ../src/frame.cpp:436
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -71,37 +71,37 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../src/frame.cpp:436
+#: ../src/frame.cpp:441
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: ../src/frame.cpp:438
+#: ../src/frame.cpp:443
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: ../src/frame.cpp:533
+#: ../src/frame.cpp:538
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../src/frame.cpp:534
+#: ../src/frame.cpp:539
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: ../src/frame.cpp:539
+#: ../src/frame.cpp:544
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/frame.cpp:546
-#: ../src/frame.cpp:555
+#: ../src/frame.cpp:551
 #: ../src/frame.cpp:560
+#: ../src/frame.cpp:565
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../src/frame.cpp:552
+#: ../src/frame.cpp:557
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../src/frame.cpp:701
+#: ../src/frame.cpp:698
 msgid "&Open"
 msgstr "&Openen"
 
