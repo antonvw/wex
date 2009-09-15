@@ -814,9 +814,8 @@ void RBSFile::GenerateDialog()
   Footer();
   Close();
 
-  wxExApp::Log(_("RBS File") + ": " + script + " " + _("generated"));
+  wxExApp::Log("RBS " + _("File") + ": " + script + " " + _("generated"));
 }
-
 
 void RBSFile::GenerateTransmit(const wxString& text)
 {
