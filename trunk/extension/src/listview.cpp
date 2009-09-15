@@ -152,7 +152,6 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, wxExListView::OnCommand)
   EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
   EVT_RIGHT_DOWN(wxExListView::OnMouse)
-  EVT_SHOW(wxExListView::OnShow)
 END_EVENT_TABLE()
 
 wxExListView::wxExListView(wxWindow* parent,
@@ -734,27 +733,6 @@ void wxExListView::OnMouse(wxMouseEvent& event)
 
     PopupMenu(&menu);
   }
-}
-
-void wxExListView::OnShow(wxShowEvent& event)
-{
-  // Next code does not work if list are part of a notebook,
-  // then if you select another page, the old is seems to be hidden the last,
-  // and therefore items pane will be empty.
-  /* 
-  if (event.IsShown())
-  {
-#if wxUSE_STATUSBAR
-    UpdateStatusBar();
-#endif
-  }
-  else
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxEmptyString, "PaneItems");
-#endif
-  }
-  */
 }
 
 void wxExListView::PasteItemsFromClipboard()
