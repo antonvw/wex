@@ -164,6 +164,7 @@ protected:
   virtual bool ItemFromText(const wxString& text);
 
   /// Copies this item (all columns) to text.
+  // Cannot be const.
   virtual const wxString ItemToText(int item_number);
 
   /// Interface from wxExInterface.
@@ -273,7 +274,9 @@ public:
 private:
   void StoreImage(int image);
 
-  wxExListView* m_ListView; // cannot be a wxListCtrl, as FindColumn is used from wxExListView
+  // Cannot be a wxListCtrl, as FindColumn is used from wxExListView,
+  // and cannot be const, as it calls InsertItem on the list.
+  wxExListView* m_ListView;
 };
 #endif // wx_USE_GUI
 #endif
