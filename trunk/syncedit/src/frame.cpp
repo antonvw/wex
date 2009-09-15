@@ -71,6 +71,7 @@ const wxString project_wildcard = wxString(_("Project Files")) + " (*.prj)|*.prj
 MDIFrame::MDIFrame(bool open_recent)
   : Frame(project_wildcard)
   , m_NewFileNo(1)
+  , m_NewProjectNo(1)
   , m_History(NULL)
 {
   wxLogTrace("SY_CALL", "+MDIFrame");
@@ -270,7 +271,8 @@ wxExSTCWithFrame* MDIFrame::GetCurrentSTC()
 void MDIFrame::NewFile(bool as_project)
 {
   const wxString name = (as_project ? _("project") : _("textfile"));
-  const wxString text = wxString::Format("%s%d", name.c_str(), m_NewFileNo++);
+  const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
+  const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
   wxString key;
 
   wxExNotebook* notebook = (as_project ? m_NotebookWithProjects : m_NotebookWithEditors);
@@ -292,6 +294,8 @@ void MDIFrame::NewFile(bool as_project)
 
     ((wxExListViewWithFrame*)page)->FileNew(fn);
     SetTitle(wxEmptyString, text);
+
+    m_NewProjectNo++;
   }
   else
   {
@@ -300,6 +304,8 @@ void MDIFrame::NewFile(bool as_project)
 
     ((wxExSTCWithFrame*)page)->FileNew(text);
     ((wxExSTCWithFrame*)page)->PropertiesMessage();
+
+    m_NewFileNo++;
   }
 
   notebook->AddPage(

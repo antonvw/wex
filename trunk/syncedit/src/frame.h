@@ -55,6 +55,7 @@ private:
   void NewFile(bool as_project = false);
 
   int m_NewFileNo;
+  int m_NewProjectNo;
 
   wxGenericDirCtrl* m_DirCtrl;
   wxExListViewWithFrame* m_History;
