@@ -797,6 +797,11 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
 
 void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 {
+  if (column_no == -1)
+  {
+    return;
+  }
+
   SortColumnReset();
 
   wxExColumn* sorted_col = &m_Columns[column_no];
@@ -877,18 +882,6 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Sorted on") + ": " + sorted_col->GetText());
 #endif
-}
-
-void wxExListView::SortColumn(const wxString& column_name, wxExSortType sort_method)
-{
-  const int col_no = FindColumn(column_name, true);
-  
-  if (col_no == -1)
-  {
-    return;
-  }
-  
-  SortColumn(col_no, sort_method);
 }
 
 void wxExListView::SortColumnReset()

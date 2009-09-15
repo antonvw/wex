@@ -149,7 +149,8 @@ public:
   /// Sorts on a column specified by column name.
   void SortColumn(
     const wxString& column_name, 
-    wxExSortType sort_method = SORT_TOGGLE);
+    wxExSortType sort_method = SORT_TOGGLE) {  
+      SortColumn(FindColumn(column_name, true), sort_method);};
   
 #if wxUSE_STATUSBAR
   /// Updates pane items field on the statusbar.
