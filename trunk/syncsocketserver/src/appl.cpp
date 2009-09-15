@@ -154,7 +154,7 @@ MyFrame::MyFrame()
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar* menuBar = new wxMenuBar();
-  menuBar->Append(menuFile, _("&File"));
+  menuBar->Append(menuFile, wxGetStockLabel(wxID_FILE));
   menuBar->Append(menuView, _("&View"));
   menuBar->Append(menuServer, _("&Server"));
   menuBar->Append(menuClient, _("&Client"));

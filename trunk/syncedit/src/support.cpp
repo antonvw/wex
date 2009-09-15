@@ -162,8 +162,8 @@ Frame::Frame(const wxString& project_wildcard)
   wxMenu *menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
 
-  menubar->Append(menuFile, _("&File"));
-  menubar->Append(menuEdit, _("&Edit"));
+  menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
+  menubar->Append(menuEdit, wxGetStockLabel(wxID_EDIT));
   menubar->Append(menuView, _("&View"));
   menubar->Append(menuProcess, _("&Process"));
   menubar->Append(menuProject, _("&Project"));
