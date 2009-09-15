@@ -1097,7 +1097,7 @@ void wxExListViewWithFrame::Initialize()
   }
 }
 
-bool wxExListViewWithFrame::ItemActivated(int item_number)
+void wxExListViewWithFrame::ItemActivated(int item_number)
 {
   wxASSERT(item_number >= 0);
  
@@ -1111,14 +1111,9 @@ bool wxExListViewWithFrame::ItemActivated(int item_number)
       _("Folder Type"),
       item.GetColumnText(_("Type")));
 
-    if (dlg.ShowModal() == wxID_CANCEL)
-    {
-      return false;
-    }
-    else
+    if (dlg.ShowModal() == wxID_OK)
     {
       item.SetColumnText(_("Type"), dlg.GetValue());
-      return true;
     }
   }
   else if (item.GetFileName().FileExists())
@@ -1130,16 +1125,11 @@ bool wxExListViewWithFrame::ItemActivated(int item_number)
          item.GetColumnText(_("Replaced")):
          item.GetColumnText(_("Match"), false));
 
-    const bool retValue = m_Frame->OpenFile(
+    m_Frame->OpenFile(
       item.GetFileName().GetFullPath(),
       line_number, match);
 
     SetFocus();
-    return retValue;
-  }
-  else
-  {
-    return false;
   }
 }
 

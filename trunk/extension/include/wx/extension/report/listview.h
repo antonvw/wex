@@ -174,7 +174,7 @@ private:
   void DeleteDoubles();
   const wxString GetFindInCaption(int id); // cannot be const
   void Initialize();
-  bool ItemActivated(int item_number);
+  void ItemActivated(int item_number);
   void RunItems(const wxExTool& tool);
   wxExFrameWithHistory* m_Frame;
 
