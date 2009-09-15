@@ -269,7 +269,7 @@ wxExSTCWithFrame* MDIFrame::GetCurrentSTC()
 
 void MDIFrame::NewFile(bool as_project)
 {
-  const wxString name = (as_project ? _("Project") : _("Textfile"));
+  const wxString name = (as_project ? _("project") : _("textfile"));
   const wxString text = wxString::Format("%s%d", name.c_str(), m_NewFileNo++);
   wxString key;
 
