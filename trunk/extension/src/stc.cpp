@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/numdlg.h>
-#include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/app.h> // for wxExApp
