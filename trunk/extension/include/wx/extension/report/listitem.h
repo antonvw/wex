@@ -16,8 +16,6 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/textfile.h> // for wxExRCS
 
-class wxExListViewWithFrame;
-
 /// Offers a list item associated with a file on an wxExListView.
 /// The item is coloured according to
 /// the modification time of the file it is associated with.
