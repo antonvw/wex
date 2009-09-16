@@ -18,7 +18,7 @@
 class wxExFrameWithHistory;
 
 /// Combines wxExListView and wxExFile, giving you a list control with file
-/// synchronization support. Further it adds processing support.
+/// synchronization support. Further it adds some standard lists.
 class wxExListViewFile : public wxExListView, public wxExFile
 {
 public:
@@ -138,7 +138,9 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-/// Adds a frame to wxExListViewFile.
+/// Adds a wxExFrameWithHistory to wxExListViewFile.
+/// This frame member is initialized in the contructor, your main window
+/// should be castable to such a frame. It also adds a tool menu if appropriate.
 class wxExListViewWithFrame : public wxExListViewFile
 {
 public:
@@ -164,7 +166,7 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator);
 
-  /// Opens the file and updated recent project from frame.
+  /// Opens the file and updates recent project from frame.
   virtual bool FileOpen(const wxExFileName& filename);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
