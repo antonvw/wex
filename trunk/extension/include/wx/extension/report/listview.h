@@ -44,13 +44,10 @@ public:
   {
     LIST_MENU_REPORT_FIND = 0x0001, ///< for adding find and replace in files
     LIST_MENU_TOOL        = 0x0002, ///< for adding tool menu
-    LIST_MENU_RBS         = 0x0004, ///< for adding RBS menu item
 
-    /// RBS is part of default.
     LIST_MENU_DEFAULT = 
       LIST_MENU_REPORT_FIND | 
-      LIST_MENU_TOOL |
-      LIST_MENU_RBS
+      LIST_MENU_TOOL
   };
 
   /// Constructor.

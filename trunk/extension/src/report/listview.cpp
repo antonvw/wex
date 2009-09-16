@@ -26,6 +26,7 @@ private:
 #endif
 
 #ifdef __WXMSW__
+#ifdef USE_RBS
 class RBSFile : public wxExFile
 {
 public:
@@ -48,6 +49,7 @@ private:
   wxExListViewFile* m_Owner;
   wxString m_Prompt;
 };
+#endif
 #endif
 
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
@@ -193,11 +195,13 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
     wxExListView::BuildPopupMenu(menu);
 
 #ifdef __WXMSW__
-    if (exists && !is_folder && (m_MenuFlags & LIST_MENU_RBS))
+#ifdef USE_RBS
+    if (exists && !is_folder)
     {
       menu.AppendSeparator();
       menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
     }
+#endif
 #endif
   }
   else
@@ -543,9 +547,11 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   case wxID_ADD: AddItems(); break;
 
 #ifdef __WXMSW__
+#ifdef USE_RBS
   case ID_LIST_SEND_ITEM:
     RBSFile(this).GenerateDialog();
     break;
+#endif
 #endif
 
   default: 
@@ -736,6 +742,7 @@ bool ListViewDropTarget::OnDropFiles(
 #endif
 
 #ifdef __WXMSW__
+#ifdef USE_RBS
 RBSFile::RBSFile(wxExListViewFile* listview)
   : wxExFile()
   , m_Owner(listview)
@@ -861,6 +868,7 @@ bool RBSFile::Substitute(
 
   return true;
 }
+#endif
 #endif
 
 BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFile)
