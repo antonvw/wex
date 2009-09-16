@@ -24,7 +24,7 @@ public:
   /// Constructor.
   wxExProcessWithListView(
     wxExFrameWithHistory* frame,
-    wxExListViewWithFrame* listview, 
+    wxExListView* listview, 
     const wxString& command = wxEmptyString);
 
   /// Shows a config dialog, returns dialog return code.
@@ -59,7 +59,7 @@ private:
 
   static wxString m_Command;
   wxExFrameWithHistory* m_Frame;
-  wxExListViewWithFrame* m_Owner;
+  wxExListView* m_Owner;
   wxTimer m_Timer;
 
   DECLARE_EVENT_TABLE()
