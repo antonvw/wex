@@ -437,17 +437,17 @@ bool wxExLexers::ShowDialog(
     index++;
   }
 
+  // Add the <none> lexer (index is already incremented).
   const wxString no_lexer = _("<none>");
 
   aChoices.Add(no_lexer);
-  
+
+  // And set the choice if we do not have a lexer.
   if (lexer.GetScintillaLexer().empty())
   {
     choice = index;
   }
   
-  index++;
-
   wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, aChoices);
   
   if (choice != -1)
