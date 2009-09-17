@@ -21,14 +21,14 @@ using namespace std;
 #if wxUSE_GUI
 wxExDialog::wxExDialog(wxWindow* parent,
   const wxString& title,
-  long flags,
+  long button_flags,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
   : wxDialog(parent, id, title, pos, size, style, name)
-  , m_Flags(flags)
+  , m_ButtonFlags(button_flags)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
@@ -78,7 +78,7 @@ void wxExDialog::BuildSizers()
   m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
 
   // Then the button sizer.
-  wxSizer* sbz = CreateSeparatedButtonSizer(m_Flags);
+  wxSizer* sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
 
   if (sbz != NULL)
   {

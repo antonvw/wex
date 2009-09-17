@@ -40,10 +40,10 @@ class wxExDialog : public wxDialog
 public:
   /// Constructor.
   /// Flags is a bit list of the following flags:
-  /// wxOK, wxCANCEL, wxYES, wxNO, wxHELP, wxNO_DEFAULT.
+  /// wxOK, wxCANCEL, wxYES, wxNO, wxAPPLY, wxCLOSE, wxHELP, wxNO_DEFAULT.
   wxExDialog(wxWindow* parent,
     const wxString& title,
-    long flags = wxOK | wxCANCEL,
+    long button_flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -64,9 +64,9 @@ protected:
   void BuildSizers();
 
   /// Gets the flags (as specified in constructor).
-  long GetFlags() const {return m_Flags;};
+  long GetButtonFlags() const {return m_ButtonFlags;};
 private:
-  const long m_Flags;
+  const long m_ButtonFlags;
   wxFlexGridSizer* m_TopSizer;
   wxFlexGridSizer* m_UserSizer;
 };

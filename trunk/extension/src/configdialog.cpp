@@ -31,6 +31,7 @@ enum
 
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
+  EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
   EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
   EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
@@ -461,7 +462,7 @@ wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
     wxSize(width, wxDefaultCoord));
 
   // If only cancel button, make readonly.
-  if (pc->GetTextCtrl() != NULL && GetFlags() == wxCANCEL)
+  if (pc->GetTextCtrl() != NULL && GetButtonFlags() == wxCANCEL)
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
   }
@@ -481,7 +482,7 @@ wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
     wxSize(width, wxDefaultCoord));
 
   // If only cancel button, make readonly.
-  if (pc->GetTextCtrl() != NULL && GetFlags() == wxCANCEL)
+  if (pc->GetTextCtrl() != NULL && GetButtonFlags() == wxCANCEL)
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
   }
@@ -507,7 +508,7 @@ wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
     wxSize(width, wxDefaultCoord));
 
   // If only cancel button, make readonly.
-  if (pc->GetTextCtrl() != NULL && GetFlags() == wxCANCEL)
+  if (pc->GetTextCtrl() != NULL && GetButtonFlags() == wxCANCEL)
   {
     pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
   }
@@ -546,7 +547,7 @@ wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
   long style = wxSP_ARROW_KEYS;
 
   // If only cancel button, make readonly.
-  if (GetFlags() == wxCANCEL)
+  if (GetButtonFlags() == wxCANCEL)
   {
     style |= wxTE_READONLY;
   }
@@ -572,7 +573,7 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
   long style = wxSP_ARROW_KEYS;
 
   // If only cancel button, make readonly.
-  if (GetFlags() == wxCANCEL)
+  if (GetButtonFlags() == wxCANCEL)
   {
     style |= wxTE_READONLY;
   }
@@ -612,7 +613,7 @@ wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
   }
 
   // If only cancel button, make readonly.
-  if (GetFlags() == wxCANCEL)
+  if (GetButtonFlags() == wxCANCEL)
   {
     actual_style |= wxTE_READONLY;
   }
@@ -659,7 +660,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  // For rest of the buttons (wxID_OK, wxID_APPLY)
+  // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
   // save to config.
   for (
     vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
@@ -853,24 +854,22 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   if ( command.GetId() == wxID_APPLY ||
       (command.GetId() == wxID_OK && !IsModal()))
   {
-    if (wxTheApp != NULL)
+    wxASSERT(wxTheApp != NULL);
+    wxWindow* window = wxTheApp->GetTopWindow();
+    wxASSERT(window != NULL);
+    wxExFrame* frame = wxDynamicCast(window, wxExFrame);
+    wxASSERT(frame != NULL);
+
+    frame->ConfigDialogApplied(GetId());
+
+    if (path_involved)
     {
-      wxWindow* window = wxTheApp->GetTopWindow();
-      wxExFrame* frame = wxDynamicCast(window, wxExFrame);
-
-      if (frame != NULL)
-      {
-        frame->ConfigDialogApplied(GetId());
-
-        if (path_involved)
-        {
-          wxExSTC::PathListInit();
-        }
-      }
+      wxExSTC::PathListInit();
+      path_involved = false;
     }
   }
 
-  if (command.GetId() == wxID_OK)
+  if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)
   {
     if (path_involved)
     {
