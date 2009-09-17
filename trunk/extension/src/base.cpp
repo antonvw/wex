@@ -336,6 +336,10 @@ void wxExFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
     wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
   }
+  else
+  {
+    // Clicking on another field, do nothing. 
+  }
 }
 
 // This is a static method, so you cannot call wxFrame::SetStatusText.
