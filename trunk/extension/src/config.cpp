@@ -84,33 +84,41 @@ void wxExConfig::SetFindReplaceData(
 wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
   : wxFindReplaceData()
   , m_Config(config)
+  , m_TextFindWhat(_("Find what"))
+  , m_TextMatchCase(_("Match case"))
+  , m_TextMatchWholeWord(_("Match whole word"))
+  , m_TextRegEx(_("Regular expression"))
+  , m_TextReplaceWith(_("Replace with"))
+  , m_TextSearchDown(_("Search down"))
 {
   int flags = 0;
-  flags |= wxFR_DOWN *      (m_Config->GetBool(_("Search down")));
-  flags |= wxFR_MATCHCASE * (m_Config->GetBool(_("Match case")));
-  flags |= wxFR_WHOLEWORD * (m_Config->GetBool(_("Match whole word")));
+  flags |= wxFR_DOWN *      (m_Config->GetBool(m_TextSearchDown));
+  flags |= wxFR_MATCHCASE * (m_Config->GetBool(m_TextMatchCase));
+  flags |= wxFR_WHOLEWORD * (m_Config->GetBool(m_TextMatchWholeWord));
 
   SetFlags(flags);
 
   // Start with this one, as it is used by SetFindString.
-  SetIsRegularExpression(m_Config->GetBool(_("Regular expression")));
-  SetFindString(m_Config->Get(_("Find what")));
-  SetReplaceString(m_Config->Get(_("Replace with")));
+  SetIsRegularExpression(m_Config->GetBool(m_TextRegEx));
+  SetFindString(m_Config->Get(m_TextFindWhat));
+  SetReplaceString(m_Config->Get(m_TextReplaceWith));
 
-  m_Info.insert(_("Match whole word"));
-  m_Info.insert(_("Match case"));
-  m_Info.insert(_("Regular expression"));
+  // This set determines what fields are placed on the Find Files dialogs
+  // as a list of checkboxes.
+  m_Info.insert(m_TextMatchWholeWord);
+  m_Info.insert(m_TextMatchCase);
+  m_Info.insert(m_TextRegEx);
 }
 
 wxExFindReplaceData::~wxExFindReplaceData()
 {
-  m_Config->Set(_("Find what"), GetFindString());
-  m_Config->Set(_("Replace with"), GetReplaceString());
+  m_Config->Set(m_TextFindWhat, GetFindString());
+  m_Config->Set(m_TextReplaceWith, GetReplaceString());
 
-  m_Config->Set(_("Match case"), MatchCase());
-  m_Config->Set(_("Match whole word"), MatchWord());
-  m_Config->Set(_("Search down"), (GetFlags() & wxFR_DOWN) > 0);
-  m_Config->Set(_("Regular expression"), m_IsRegularExpression);
+  m_Config->Set(m_TextMatchCase, MatchCase());
+  m_Config->Set(m_TextMatchWholeWord, MatchWord());
+  m_Config->Set(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
+  m_Config->Set(m_TextRegEx, m_IsRegularExpression);
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)

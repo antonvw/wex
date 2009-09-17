@@ -180,5 +180,11 @@ private:
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;
+  const wxString m_TextFindWhat;
+  const wxString m_TextMatchCase;
+  const wxString m_TextMatchWholeWord;
+  const wxString m_TextRegEx;
+  const wxString m_TextReplaceWith;
+  const wxString m_TextSearchDown;
 };
 #endif
