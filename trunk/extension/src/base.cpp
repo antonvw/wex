@@ -233,6 +233,7 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
 }
 #endif
 
+#if wxUSE_TOOLBAR
 wxToolBar* wxExFrame::OnCreateToolBar(
   long style,
   wxWindowID id,
@@ -248,6 +249,7 @@ wxToolBar* wxExFrame::OnCreateToolBar(
 
   return m_ToolBar;
 }
+#endif
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {

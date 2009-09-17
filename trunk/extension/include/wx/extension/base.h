@@ -234,12 +234,6 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
-  /// Override from base, we use a different style.
-  virtual wxToolBar* CreateToolBar(
-    long style = wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE,
-    wxWindowID id = wxID_ANY,
-    const wxString& name = "toolBar") {return wxFrame::CreateToolBar(style, id, name);};
-
   /// If the window that has focus is a ListView, 
   /// then returns that, otherwise returns NULL.
   wxExListView* GetFocusedListView();
@@ -272,6 +266,7 @@ public:
   /// Shows filename info on the statusbar.
   static void StatusText(const wxExFileName& filename, long flags = STAT_DEFAULT);
 #endif // wxUSE_STATUSBAR
+
 protected:
   /// Writes the current frame size and position to the config.
   void OnClose(wxCloseEvent& event);
@@ -284,15 +279,7 @@ protected:
     long style,
     wxWindowID id,
     const wxString& name);
-#endif
 
-  // Interface from wxFrame.
-  virtual wxToolBar* OnCreateToolBar(
-    long style,
-    wxWindowID id,
-    const wxString& name);
-
-#if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
   void SetupStatusBar(
     const std::vector<wxExPane>& panes,
@@ -300,8 +287,20 @@ protected:
     wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");
 #endif
+
+#if wxUSE_TOOLBAR
+  // Interface from wxFrame.
+  virtual wxToolBar* OnCreateToolBar(
+    long style,
+    wxWindowID id,
+    const wxString& name);
+#endif
+
 protected:
+#if wxUSE_TOOLBAR
   wxExToolBar* m_ToolBar;
+#endif
+
 private:
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
