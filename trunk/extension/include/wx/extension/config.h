@@ -151,6 +151,24 @@ public:
   const wxString& GetFindStringNoCase() const {
     return m_FindStringNoCase;};
 
+  /// Gets text.
+  const wxString GetTextFindWhat() const {return m_TextFindWhat;};
+
+  /// Gets text.
+  const wxString GetTextMatchCase() const {return m_TextMatchCase;};
+
+  /// Gets text.
+  const wxString GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
+
+  /// Gets text.
+  const wxString GetTextRegEx() const {return m_TextRegEx;};
+
+  /// Gets text.
+  const wxString GetTextReplaceWith() const {return m_TextReplaceWith;};
+
+  /// Gets text.
+  const wxString GetTextSearchDown() const {return m_TextSearchDown;};
+
   /// Returns true if find text is a regular expression.
   bool IsRegularExpression() const {return m_IsRegularExpression;};
 

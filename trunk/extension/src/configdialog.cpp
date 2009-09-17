@@ -325,21 +325,21 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
     ++it)
   {
     // Special cases, should be taken from the find replace data.
-    if (*it == _("Match whole word"))
+    if (*it == m_Config->GetFindReplaceData()->GetTextMatchWholeWord())
     {
       if (m_Config->GetFindReplaceData()->MatchWord())
       {
         box->Check(item);
       }
     }
-    else if (*it == _("Match case"))
+    else if (*it == m_Config->GetFindReplaceData()->GetTextMatchCase())
     {
       if (m_Config->GetFindReplaceData()->MatchCase())
       {
         box->Check(item);
       }
     }
-    else if (*it == _("Regular expression"))
+    else if (*it == m_Config->GetFindReplaceData()->GetTextRegEx())
     {
       if (m_Config->GetFindReplaceData()->IsRegularExpression())
       {
@@ -385,7 +385,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
       wxEmptyString,
       '@')); // no delimiter!
 
-  if (text == _("Find what"))
+  if (text == m_Config->GetFindReplaceData()->GetTextFindWhat())
   {
     const wxString frd = m_Config->GetFindReplaceData()->GetFindString();
     if (!frd.empty())
@@ -398,7 +398,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
       cb->SetValue(frd);
     }
   }
-  else if (text == _("Replace with"))
+  else if (text == m_Config->GetFindReplaceData()->GetTextReplaceWith())
   {
     const wxString frd = m_Config->GetFindReplaceData()->GetReplaceString();
     if (!frd.empty())
@@ -712,15 +712,15 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         ++b)
       {
         // Special case, should be taken from find replace data.
-        if (*b == _("Match whole word"))
+        if (*b == m_Config->GetFindReplaceData()->GetTextMatchWholeWord())
         {
           m_Config->GetFindReplaceData()->SetMatchWord(clb->IsChecked(item));
         }
-        else if (*b == _("Match case"))
+        else if (*b == m_Config->GetFindReplaceData()->GetTextMatchCase())
         {
           m_Config->GetFindReplaceData()->SetMatchCase(clb->IsChecked(item));
         }
-        else if (*b == _("Regular expression"))
+        else if (*b == m_Config->GetFindReplaceData()->GetTextRegEx())
         {
           m_Config->GetFindReplaceData()->SetIsRegularExpression(clb->IsChecked(item));
         }
@@ -753,15 +753,15 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       {
         m_Config->Set(m_ConfigGroup + cb->GetName(), text);
 
-        if (cb->GetName() == _("Find what"))
+        if (cb->GetName() == m_Config->GetFindReplaceData()->GetTextFindWhat())
         {
           // The Get gets text before the ','!
-          m_Config->GetFindReplaceData()->SetFindString(m_Config->Get(_("Find what")));
+          m_Config->GetFindReplaceData()->SetFindString(m_Config->Get(m_Config->GetFindReplaceData()->GetTextFindWhat()));
         }
-        else if (cb->GetName() == _("Replace with"))
+        else if (cb->GetName() == m_Config->GetFindReplaceData()->GetTextReplaceWith())
         {
           // The Get gets text before the ','!
-          m_Config->GetFindReplaceData()->SetReplaceString(m_Config->Get(_("Replace with")));
+          m_Config->GetFindReplaceData()->SetReplaceString(m_Config->Get(m_Config->GetFindReplaceData()->GetTextReplaceWith()));
         }
       }
       }

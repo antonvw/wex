@@ -52,8 +52,8 @@ void wxExFindInFiles(bool replace)
   wxExApp::GetConfig(_("In files"), wxExApp::GetLexers()->BuildComboBox());
 
   std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem(_("Find what"), CONFIG_COMBOBOX, wxEmptyString, true));
-  if (replace) v.push_back(wxExConfigItem(_("Replace with"), CONFIG_COMBOBOX));
+  v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), CONFIG_COMBOBOX, wxEmptyString, true));
+  if (replace) v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), CONFIG_COMBOBOX));
   v.push_back(wxExConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());
@@ -497,9 +497,9 @@ wxExFindToolBar::wxExFindToolBar(
   : wxAuiToolBar(parent, id)
   , m_Frame(frame)
 {
-  m_MatchCase = new wxCheckBox(this, ID_MATCH_CASE, _("Match case"));
-  m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, _("Match whole word"));
-  m_RegularExpression = new wxCheckBox(this, ID_REGULAR_EXPRESSION, _("Regular expression"));
+  m_MatchCase = new wxCheckBox(this, ID_MATCH_CASE, wxExApp::GetConfig()->GetFindReplaceData()->GetTextMatchCase());
+  m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, wxExApp::GetConfig()->GetFindReplaceData()->GetTextMatchWholeWord());
+  m_RegularExpression = new wxCheckBox(this, ID_REGULAR_EXPRESSION, wxExApp::GetConfig()->GetFindReplaceData()->GetTextRegEx());
 
   m_MatchCase->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->MatchCase());
   m_MatchWholeWord->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->MatchWord());
