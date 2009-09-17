@@ -237,7 +237,7 @@ public:
   /// Override from base, we use a different style.
   virtual wxToolBar* CreateToolBar(
     long style = wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE,
-    wxWindowID id = -1,
+    wxWindowID id = wxID_ANY,
     const wxString& name = "toolBar") {return wxFrame::CreateToolBar(style, id, name);};
 
   /// If the window that has focus is a ListView, 
