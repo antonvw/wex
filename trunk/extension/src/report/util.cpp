@@ -52,8 +52,19 @@ void wxExFindInFiles(bool replace)
   wxExApp::GetConfig(_("In files"), wxExApp::GetLexers()->BuildComboBox());
 
   std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), CONFIG_COMBOBOX, wxEmptyString, true));
-  if (replace) v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), CONFIG_COMBOBOX));
+  v.push_back(
+    wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+
+  if (replace) 
+  {
+    v.push_back(wxExConfigItem(
+      wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), 
+      CONFIG_COMBOBOX));
+  }
+
   v.push_back(wxExConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());

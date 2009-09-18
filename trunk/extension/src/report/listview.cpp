@@ -1279,8 +1279,20 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     }
 
     std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), CONFIG_COMBOBOX, wxEmptyString, true));
-    if (tool.GetId() == ID_TOOL_REPORT_REPLACE) v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), CONFIG_COMBOBOX));
+
+    v.push_back(wxExConfigItem(
+      wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true));
+
+    if (tool.GetId() == ID_TOOL_REPORT_REPLACE) 
+    {
+      v.push_back(wxExConfigItem(
+        wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), 
+        CONFIG_COMBOBOX));
+    }
+
     v.push_back(wxExConfigItem());
     v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetInfo()));
 

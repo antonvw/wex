@@ -756,12 +756,14 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         if (cb->GetName() == m_Config->GetFindReplaceData()->GetTextFindWhat())
         {
           // The Get gets text before the ','!
-          m_Config->GetFindReplaceData()->SetFindString(m_Config->Get(m_Config->GetFindReplaceData()->GetTextFindWhat()));
+          m_Config->GetFindReplaceData()->SetFindString(
+            m_Config->Get(m_Config->GetFindReplaceData()->GetTextFindWhat()));
         }
         else if (cb->GetName() == m_Config->GetFindReplaceData()->GetTextReplaceWith())
         {
           // The Get gets text before the ','!
-          m_Config->GetFindReplaceData()->SetReplaceString(m_Config->Get(m_Config->GetFindReplaceData()->GetTextReplaceWith()));
+          m_Config->GetFindReplaceData()->SetReplaceString(
+            m_Config->Get(m_Config->GetFindReplaceData()->GetTextReplaceWith()));
         }
       }
       }

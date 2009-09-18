@@ -131,13 +131,15 @@ public:
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
 
-  /// Gets find/replace text.
+  /// Gets find/replace info text.
   const wxString GetText(bool replace = false) const {
-    wxString log = _("Searching for") + ": " + m_Config->Get(_("Find what"));
+    wxString log = _("Searching for") + ": " + m_TextFindWhat;
+
     if (replace)
     {
-      log += " " + _("Replacing with") + ": " + m_Config->Get(_("Replace with"));
+      log += " " + _("Replacing with") + ": " + m_TextReplaceWith;
     }
+
     return log;};
 
   /// Gets the text for the check boxes.
