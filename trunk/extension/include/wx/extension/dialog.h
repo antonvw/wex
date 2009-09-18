@@ -2,7 +2,7 @@
 * File:          dialog.h
 * Purpose:       Declaration of wxWidgets base extension classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: base.h 1647 2009-09-17 09:52:27Z antonvw $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
