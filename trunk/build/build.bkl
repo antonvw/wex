@@ -74,6 +74,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/base.cpp</sources>
     <sources>../extension/src/config.cpp</sources>
     <sources>../extension/src/configdialog.cpp</sources>
+    <sources>../extension/src/dialog.cpp</sources>
     <sources>../extension/src/dir.cpp</sources>
     <sources>../extension/src/file.cpp</sources>
     <sources>../extension/src/grid.cpp</sources>
@@ -97,6 +98,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/config.h</headers>
     <headers>../extension/include/wx/extension/configdialog.h</headers>
     <headers>../extension/include/wx/extension/defs.h</headers>
+    <headers>../extension/include/wx/extension/dialog.h</headers>
     <headers>../extension/include/wx/extension/dir.h</headers>
     <headers>../extension/include/wx/extension/extension.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
