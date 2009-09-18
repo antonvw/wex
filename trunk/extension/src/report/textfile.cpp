@@ -11,6 +11,7 @@
 
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/app.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/frame.h>
