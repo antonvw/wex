@@ -13,7 +13,6 @@
 #define _EXCONFIG_H
 
 #include <map>
-#include <set>
 #include <wx/variant.h> 
 
 class wxExFindReplaceData;

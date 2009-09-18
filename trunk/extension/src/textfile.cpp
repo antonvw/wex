@@ -11,10 +11,12 @@
 
 #include <algorithm>
 #include <ctype.h> // for isspace
+#include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/config.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
 const wxString REV_DATE_FORMAT = "%y%m%d";

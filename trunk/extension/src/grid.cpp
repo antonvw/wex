@@ -14,6 +14,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/app.h>
+#include <wx/extension/frd.h>
 
 #if wxUSE_GRID
 #if wxUSE_DRAG_AND_DROP

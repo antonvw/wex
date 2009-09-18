@@ -12,6 +12,7 @@
 #include <wx/tooltip.h> // for GetTip
 #include <wx/extension/base.h>
 #include <wx/extension/app.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
