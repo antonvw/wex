@@ -666,8 +666,16 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_TREE_RUN_MAKE: wxExMake(this, wxFileName(m_DirCtrl->GetFilePath())); break;
 
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
-  case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL");   break;
-  case ID_VIEW_FILES: TogglePane("FILES"); break;
+  case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
+  case ID_VIEW_FILES: TogglePane("FILES"); 
+    if (!GetManager().GetPane("FILES").IsShown())
+    {
+      if (GetManager().GetPane("PROJECTS").IsShown())
+      {
+        GetManager().GetPane("PROJECTS").Maximize();
+      }
+    }
+    break;
   case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
   case ID_VIEW_HISTORY: 
     TogglePane("HISTORY");
