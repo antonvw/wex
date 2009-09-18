@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dialog.h
-* Purpose:       Declaration of wxWidgets base extension classes
+* Purpose:       Declaration of wxExDialog class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,7 +18,6 @@
 #endif
 #include <wx/dialog.h>
 
-// Only if we have a gui.
 #if wxUSE_GUI
 
 /// Offers a general dialog, with a separated button sizer at the bottom.
@@ -48,7 +47,7 @@ protected:
     wxSizer* sizer,
     const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
 
-  /// BUild the sizers. Should be invoked after adding to sizers.
+  /// Builds the sizers. Should be invoked after adding to sizers.
   void BuildSizers();
 
   /// Gets the flags (as specified in constructor).

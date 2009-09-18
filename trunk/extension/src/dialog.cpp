@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dialog.cpp
-* Purpose:       Implementation of wxWidgets base extension classes
+* Purpose:       Implementation of wxExDialog class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

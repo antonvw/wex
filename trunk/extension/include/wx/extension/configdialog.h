@@ -15,7 +15,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <wx/extension/base.h>
+#include <wx/extension/dialog.h>
 #include <wx/extension/config.h>
 
 #if wxUSE_GUI
