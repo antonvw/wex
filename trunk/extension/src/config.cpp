@@ -131,32 +131,12 @@ void wxExFindReplaceData::CreateAndFill(
 
 void wxExFindReplaceData::FromFindString(wxComboBox* cb)
 {
-  const wxString frd = GetFindString();
-
-  if (!frd.empty())
-  {
-    if (cb->FindString(frd) == wxNOT_FOUND)
-    {
-      cb->Append(frd);
-    }
-
-    cb->SetValue(frd);
-  }
+  Update(cb, GetFindString());
 }
 
 void wxExFindReplaceData::FromReplaceString(wxComboBox* cb)
 {
-  const wxString frd = GetReplaceString();
-
-  if (!frd.empty())
-  {
-    if (cb->FindString(frd) == wxNOT_FOUND)
-    {
-      cb->Append(frd);
-    }
-
-    cb->SetValue(frd);
-  }
+  Update(cb, GetReplaceString());
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
@@ -196,4 +176,17 @@ void wxExFindReplaceData::SetMatchWord(bool value)
   if (value) flags |= wxFR_WHOLEWORD;
   else       flags &= ~wxFR_WHOLEWORD;
   SetFlags(flags);
+}
+
+void wxExFindReplaceData::Update(wxComboBox* cb, const wxString& value) const
+{
+  if (!value.empty())
+  {
+    if (cb->FindString(value) == wxNOT_FOUND)
+    {
+      cb->Append(value);
+    }
+
+    cb->SetValue(value);
+  }
 }

@@ -213,6 +213,7 @@ public:
   /// Sets flags for match word.
   void SetMatchWord(bool value);
 private:
+  void Update(wxComboBox* cb, const wxString& value) const;
   wxExConfig* m_Config;
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
