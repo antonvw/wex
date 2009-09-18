@@ -2,7 +2,7 @@
 * File:          config.h
 * Purpose:       Declaration of wxWidgets config extension classes
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: config.h 1654 2009-09-18 11:05:29Z antonvw $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
