@@ -110,12 +110,6 @@ public:
   void Set(const wxString& key, const wxVariant& value) {
     m_Values[key] = value;};
 
-  /// Sets flags in find replace data.
-  void SetFindReplaceData(
-    bool matchword, 
-    bool matchcase, 
-    bool regularexpression);
-
   /// Toggles boolean key value.
   void Toggle(const wxString& key);
 private:
@@ -141,12 +135,12 @@ public:
     wxCheckBox* matchwholeword,
     int matchwholeword_id,
     wxCheckBox* regex,
-    int regex_id);
+    int regex_id) const;
 
-  /// Fills a combobox with the find string.
+  /// Fills a combobox with the find string (cannot be const as FindString is no const).
   void FromFindString(wxComboBox* cb);
 
-  /// Fills a combobox with the replace string.
+  /// Fills a combobox with the replace string (see above).
   void FromReplaceString(wxComboBox* cb);
 
   /// Gets find/replace info text.
@@ -203,7 +197,13 @@ public:
   /// This string is used for tool find in files and replace in files.
   void SetFindString(const wxString& value);
 
-  /// Sets member.
+  /// Sets flags for all three from the checkboxes.
+  void SetFromCheckBoxes(
+    const wxCheckBox* matchword, 
+    const wxCheckBox* matchcase, 
+    const wxCheckBox* regularexpression);
+
+  /// Sets regular expression.
   void SetIsRegularExpression(bool value) {
     m_IsRegularExpression = value;};
 
@@ -218,6 +218,7 @@ private:
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;
+
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;
   const wxString m_TextMatchWholeWord;

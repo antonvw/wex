@@ -71,16 +71,6 @@ void wxExConfig::Toggle(const wxString& key)
   m_Values[key] = !m_Values[key].GetBool();
 }
 
-void wxExConfig::SetFindReplaceData(
-  bool matchword, 
-  bool matchcase, 
-  bool regularexpression)
-{
-  m_FindReplaceData->SetMatchWord(matchword);
-  m_FindReplaceData->SetMatchCase(matchcase);
-  m_FindReplaceData->SetIsRegularExpression(regularexpression);
-}
-
 wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
   : wxFindReplaceData()
   , m_Config(config)
@@ -128,7 +118,7 @@ void wxExFindReplaceData::CreateAndFill(
   wxCheckBox* matchwholeword,
   int matchwholeword_id,
   wxCheckBox* regex,
-  int regex_id)
+  int regex_id) const
 {
   matchcase->Create(parent, matchcase_id, m_TextMatchCase);
   matchwholeword->Create(parent, matchwholeword_id, m_TextMatchWholeWord);
@@ -180,6 +170,16 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
     if (!MatchCase()) flags |= wxRE_ICASE;
     m_FindRegularExpression.Compile(GetFindString(), flags);
   }
+}
+
+void wxExFindReplaceData::SetFromCheckBoxes(
+  const wxCheckBox* matchword, 
+  const wxCheckBox* matchcase, 
+  const wxCheckBox* regularexpression)
+{
+  SetMatchWord(matchword->GetValue());
+  SetMatchCase(matchcase->GetValue());
+  SetIsRegularExpression(regularexpression->GetValue());
 }
 
 void wxExFindReplaceData::SetMatchCase(bool value)

@@ -569,10 +569,10 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case ID_MATCH_WHOLE_WORD:
   case ID_MATCH_CASE:
   case ID_REGULAR_EXPRESSION:
-    wxExApp::GetConfig()->SetFindReplaceData(
-      m_MatchWholeWord->GetValue(),
-      m_MatchCase->GetValue(),
-      m_RegularExpression->GetValue());
+    wxExApp::GetConfig()->GetFindReplaceData()->SetFromCheckBoxes(
+      m_MatchWholeWord,
+      m_MatchCase,
+      m_RegularExpression);
     break;
 
   default:
