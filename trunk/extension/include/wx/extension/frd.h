@@ -1,0 +1,230 @@
+/******************************************************************************\
+* File:          config.h
+* Purpose:       Declaration of wxWidgets config extension classes
+* Author:        Anton van Wezenbeek
+* RCS-ID:        $Id: config.h 1654 2009-09-18 11:05:29Z antonvw $
+*
+* Copyright (c) 1998-2009, Anton van Wezenbeek
+* All rights are reserved. Reproduction in whole or part is prohibited
+* without the written consent of the copyright owner.
+\******************************************************************************/
+
+#ifndef _EXCONFIG_H
+#define _EXCONFIG_H
+
+#include <map>
+#include <set>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/regex.h>
+#include <wx/fdrepdlg.h> // for wxFindReplaceData
+
+class wxExFindReplaceData;
+
+/// Offers a general configuration.
+/// Keys are read the first time accessed from the config.
+/// Next time they are retrieved from the maps, so access is fast.
+#ifdef EX_PORTABLE
+#include <wx/fileconf.h>
+class wxExConfig : public wxFileConfig
+#else
+#include <wx/config.h>
+class wxExConfig : public wxConfig
+#endif
+{
+public:
+  /// Default constructor.
+  wxExConfig(
+    const wxString& filename = wxEmptyString,
+    long style = 0);
+
+  /// Destructor, writes all keys.
+ ~wxExConfig();
+
+  /// Gets the key as a long. If the key is not present,
+  /// it is added to the map.
+  long Get(const wxString& key, long default_value) {
+    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
+
+    if (it != m_Values.end())
+    {
+      return it->second.GetLong();
+    }
+    else
+    {
+      const long config_value = Read(key, default_value);
+      m_Values.insert(std::make_pair(key, config_value));
+      return config_value;
+    }
+  };
+
+  /// Gets the key as a string. If the key is not present,
+  /// it is added to the map.
+  /// This also works for comboboxes,
+  /// as long as the values are separated by default row delimiter,
+  /// as then it returns value before this delimiter.
+  const wxString Get(
+    const wxString& key,
+    const wxString& default_value = wxEmptyString,
+    const wxChar field_separator = ',')	{
+    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
+
+    if (it != m_Values.end())
+    {
+      const wxString value = it->second;
+      return value.BeforeFirst(field_separator);
+     }
+    else
+    {
+      const wxString value = Read(key, default_value);
+      m_Values.insert(std::make_pair(key, value));
+      return value.BeforeFirst(field_separator);
+    }
+  };
+
+  /// Gets the key as a bool. If the key is not present,
+  /// it is added to the map.
+  bool GetBool(const wxString& key, bool default_value = true) {
+    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
+
+    if (it != m_Values.end())
+    {
+      return it->second.GetBool();
+    }
+    else
+    {
+      const bool config_value = ReadBool(key, default_value);
+      m_Values.insert(std::make_pair(key, config_value));
+      return config_value;
+    }
+  };
+
+  /// Gets the find replace data.
+  wxExFindReplaceData* GetFindReplaceData() const {
+    return m_FindReplaceData;};
+
+  /// Gets all keys as one string.
+  const wxString GetKeys() const;
+
+  /// Sets key to value.
+  void Set(const wxString& key, const wxVariant& value) {
+    m_Values[key] = value;};
+
+  /// Toggles boolean key value.
+  void Toggle(const wxString& key);
+private:
+  wxExFindReplaceData* m_FindReplaceData;
+  std::map<wxString, wxVariant> m_Values;
+};
+
+/// Adds an existing config to wxFindReplaceData, and some members.
+class wxExFindReplaceData : public wxFindReplaceData
+{
+public:
+  /// Constructor, gets members from config.
+  wxExFindReplaceData(wxExConfig* config);
+
+  /// Destructor, saves members to config.
+ ~wxExFindReplaceData();
+
+  /// Creates and fills checkboxes from find replace data.
+  void CreateAndFill(
+    wxWindow* parent,
+    wxCheckBox* matchcase,
+    int matchcase_id,
+    wxCheckBox* matchwholeword,
+    int matchwholeword_id,
+    wxCheckBox* regex,
+    int regex_id) const;
+
+  /// Fills a combobox with the find string (cannot be const as FindString is no const).
+  void FromFindString(wxComboBox* cb);
+
+  /// Fills a combobox with the replace string (see above).
+  void FromReplaceString(wxComboBox* cb);
+
+  /// Gets find/replace info text.
+  const wxString GetText(bool replace = false) const {
+    wxString log = _("Searching for") + ": " + m_TextFindWhat;
+
+    if (replace)
+    {
+      log += " " + _("Replacing with") + ": " + m_TextReplaceWith;
+    }
+
+    return log;};
+
+  /// Gets the text for the check boxes.
+  const std::set<wxString> & GetInfo() const {return m_Info;};
+
+  /// Gets the regular expression.
+  const wxRegEx& GetRegularExpression() const {
+    return m_FindRegularExpression;};
+
+  /// Gets the case insensitive find string.
+  const wxString& GetFindStringNoCase() const {
+    return m_FindStringNoCase;};
+
+  /// Gets text.
+  const wxString GetTextFindWhat() const {return m_TextFindWhat;};
+
+  /// Gets text.
+  const wxString GetTextMatchCase() const {return m_TextMatchCase;};
+
+  /// Gets text.
+  const wxString GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
+
+  /// Gets text.
+  const wxString GetTextRegEx() const {return m_TextRegEx;};
+
+  /// Gets text.
+  const wxString GetTextReplaceWith() const {return m_TextReplaceWith;};
+
+  /// Gets text.
+  const wxString GetTextSearchDown() const {return m_TextSearchDown;};
+
+  /// Returns true if find text is a regular expression.
+  bool IsRegularExpression() const {return m_IsRegularExpression;};
+
+  /// Returns true if the flags have match case set.
+  bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
+
+  /// Returns true if the flags have whole word set.
+  bool MatchWord() const {return (GetFlags() & wxFR_WHOLEWORD) > 0;};
+
+  /// Sets the find string.
+  /// If IsRegularExpression also sets the regular expression.
+  /// This string is used for tool find in files and replace in files.
+  void SetFindString(const wxString& value);
+
+  /// Sets flags for all three from the checkboxes.
+  void SetFromCheckBoxes(
+    const wxCheckBox* matchword, 
+    const wxCheckBox* matchcase, 
+    const wxCheckBox* regularexpression);
+
+  /// Sets regular expression.
+  void SetIsRegularExpression(bool value) {
+    m_IsRegularExpression = value;};
+
+  /// Sets flags for match case.
+  void SetMatchCase(bool value);
+
+  /// Sets flags for match word.
+  void SetMatchWord(bool value);
+private:
+  void Update(wxComboBox* cb, const wxString& value) const;
+  wxExConfig* m_Config;
+  wxRegEx m_FindRegularExpression;
+  wxString m_FindStringNoCase; // same as the FindString, but case insensitive
+  bool m_IsRegularExpression;
+  std::set<wxString> m_Info;
+
+  const wxString m_TextFindWhat;
+  const wxString m_TextMatchCase;
+  const wxString m_TextMatchWholeWord;
+  const wxString m_TextRegEx;
+  const wxString m_TextReplaceWith;
+  const wxString m_TextSearchDown;
+};
+#endif
