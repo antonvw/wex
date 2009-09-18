@@ -387,29 +387,11 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
 
   if (text == m_Config->GetFindReplaceData()->GetTextFindWhat())
   {
-    const wxString frd = m_Config->GetFindReplaceData()->GetFindString();
-    if (!frd.empty())
-    {
-      if (cb->FindString(frd) == wxNOT_FOUND)
-      {
-        cb->Append(frd);
-      }
-
-      cb->SetValue(frd);
-    }
+    m_Config->GetFindReplaceData()->FromFindString(cb);
   }
   else if (text == m_Config->GetFindReplaceData()->GetTextReplaceWith())
   {
-    const wxString frd = m_Config->GetFindReplaceData()->GetReplaceString();
-    if (!frd.empty())
-    {
-      if (cb->FindString(frd) == wxNOT_FOUND)
-      {
-        cb->Append(frd);
-      }
-
-      cb->SetValue(frd);
-    }
+    m_Config->GetFindReplaceData()->FromReplaceString(cb);
   }
 
   return Add(sizer, parent, cb, text + ":");

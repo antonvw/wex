@@ -507,14 +507,18 @@ wxExFindToolBar::wxExFindToolBar(
   wxWindowID id)
   : wxAuiToolBar(parent, id)
   , m_Frame(frame)
+  , m_MatchCase(new wxCheckBox())
+  , m_MatchWholeWord(new wxCheckBox())
+  , m_RegularExpression(new wxCheckBox())
 {
-  m_MatchCase = new wxCheckBox(this, ID_MATCH_CASE, wxExApp::GetConfig()->GetFindReplaceData()->GetTextMatchCase());
-  m_MatchWholeWord = new wxCheckBox(this, ID_MATCH_WHOLE_WORD, wxExApp::GetConfig()->GetFindReplaceData()->GetTextMatchWholeWord());
-  m_RegularExpression = new wxCheckBox(this, ID_REGULAR_EXPRESSION, wxExApp::GetConfig()->GetFindReplaceData()->GetTextRegEx());
-
-  m_MatchCase->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->MatchCase());
-  m_MatchWholeWord->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->MatchWord());
-  m_RegularExpression->SetValue(wxExApp::GetConfig()->GetFindReplaceData()->IsRegularExpression());
+  wxExApp::GetConfig()->GetFindReplaceData()->CreateAndFill(
+    this,
+    m_MatchCase,
+    ID_MATCH_CASE,
+    m_MatchWholeWord,
+    ID_MATCH_WHOLE_WORD,
+    m_RegularExpression,
+    ID_REGULAR_EXPRESSION);
 
 #ifdef __WXMSW__
   const wxSize size(150, 20);

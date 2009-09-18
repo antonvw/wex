@@ -14,6 +14,8 @@
 
 #include <map>
 #include <set>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
 
@@ -130,6 +132,22 @@ public:
 
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
+
+  /// Creates and fills checkboxes from find replace data.
+  void CreateAndFill(
+    wxWindow* parent,
+    wxCheckBox* matchcase,
+    int matchcase_id,
+    wxCheckBox* matchwholeword,
+    int matchwholeword_id,
+    wxCheckBox* regex,
+    int regex_id);
+
+  /// Fills a combobox with the find string.
+  void FromFindString(wxComboBox* cb);
+
+  /// Fills a combobox with the replace string.
+  void FromReplaceString(wxComboBox* cb);
 
   /// Gets find/replace info text.
   const wxString GetText(bool replace = false) const {

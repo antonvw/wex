@@ -121,6 +121,54 @@ wxExFindReplaceData::~wxExFindReplaceData()
   m_Config->Set(m_TextRegEx, m_IsRegularExpression);
 }
 
+void wxExFindReplaceData::CreateAndFill(
+  wxWindow* parent,
+  wxCheckBox* matchcase,
+  int matchcase_id,
+  wxCheckBox* matchwholeword,
+  int matchwholeword_id,
+  wxCheckBox* regex,
+  int regex_id)
+{
+  matchcase->Create(parent, matchcase_id, m_TextMatchCase);
+  matchwholeword->Create(parent, matchwholeword_id, m_TextMatchWholeWord);
+  regex->Create(parent, regex_id, m_TextRegEx);
+
+  matchcase->SetValue(MatchCase());
+  matchwholeword->SetValue(MatchWord());
+  regex->SetValue(IsRegularExpression());
+}
+
+void wxExFindReplaceData::FromFindString(wxComboBox* cb)
+{
+  const wxString frd = GetFindString();
+
+  if (!frd.empty())
+  {
+    if (cb->FindString(frd) == wxNOT_FOUND)
+    {
+      cb->Append(frd);
+    }
+
+    cb->SetValue(frd);
+  }
+}
+
+void wxExFindReplaceData::FromReplaceString(wxComboBox* cb)
+{
+  const wxString frd = GetReplaceString();
+
+  if (!frd.empty())
+  {
+    if (cb->FindString(frd) == wxNOT_FOUND)
+    {
+      cb->Append(frd);
+    }
+
+    cb->SetValue(frd);
+  }
+}
+
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
   wxFindReplaceData::SetFindString(value);
