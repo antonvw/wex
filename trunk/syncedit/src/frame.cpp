@@ -825,106 +825,105 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         (GetFocusedListView() != NULL && GetFocusedListView()->GetItemCount() > 0));
       break;
 
-    // The rest here depends on a current editor window. If none,
-    // the events are disabled.
     default:
     {
       wxExSTCWithFrame* editor = GetCurrentSTC();
-      if (editor == NULL || !editor->IsShown())
+      wxExListViewFile* list = GetFocusedListView();
+
+      if (list == NULL && editor != NULL && editor->IsShown())
       {
-        event.Enable(false);
-        return;
-      }
+        event.Enable(true);
 
-      event.Enable(true);
-
-      switch (event.GetId())
-      {
-      case wxID_CLOSE: // nothing extra, just prevent wxFAIL from happening
-        break;
-
-      case wxID_FIND:
-      case wxID_JUMP_TO:
-      case wxID_REPLACE:
-      case wxID_SAVEAS:
-      case ID_EDIT_FIND_NEXT:
-      case ID_EDIT_FOLD_ALL:
-      case ID_EDIT_UNFOLD_ALL:
-        event.Enable(editor->GetLength() > 0);
-        break;
-
-      case ID_EDIT_MACRO_PLAYBACK:
-        event.Enable(editor->MacroIsRecorded() && !editor->MacroIsRecording());
-        break;
-      case ID_EDIT_MACRO_START_RECORD:
-        event.Enable(editor->GetLength() > 0 && !editor->MacroIsRecording());
-        break;
-      case ID_EDIT_MACRO_STOP_RECORD:
-        event.Enable(editor->MacroIsRecording());
-        break;
-
-      case ID_EDIT_TOGGLE_FOLD:
-        event.Enable(
-          editor->GetTextLength() > 0 &&
-          editor->GetFoldLevel(editor->GetCurrentLine()) > wxSTC_FOLDLEVELBASE);
-        break;
-
-      case wxID_COPY:
-        if (GetFocusedListView() != NULL)
+        switch (event.GetId())
         {
-          event.Enable(GetFocusedListView()->GetSelectedItemCount() > 0);
-        }
-        else
-        {
+        case wxID_CLOSE: // nothing extra, just prevent wxFAIL from happening
+          break;
+
+        case wxID_FIND:
+        case wxID_JUMP_TO:
+        case wxID_REPLACE:
+        case wxID_SAVEAS:
+        case ID_EDIT_FIND_NEXT:
+        case ID_EDIT_FOLD_ALL:
+        case ID_EDIT_UNFOLD_ALL:
+          event.Enable(editor->GetLength() > 0);
+          break;
+
+        case ID_EDIT_MACRO_PLAYBACK:
+          event.Enable(editor->MacroIsRecorded() && !editor->MacroIsRecording());
+        break;
+        case ID_EDIT_MACRO_START_RECORD:
+          event.Enable(editor->GetLength() > 0 && !editor->MacroIsRecording());
+          break;
+        case ID_EDIT_MACRO_STOP_RECORD:
+          event.Enable(editor->MacroIsRecording());
+          break;
+
+        case ID_EDIT_TOGGLE_FOLD:
+          event.Enable(
+            editor->GetTextLength() > 0 &&
+            editor->GetFoldLevel(editor->GetCurrentLine()) > wxSTC_FOLDLEVELBASE);
+          break;
+
+        case wxID_COPY:
           event.Enable(!editor->GetSelectedText().empty());
-        }
-        break;
+          break;
 
-      case wxID_CUT:
-        if (GetFocusedListView() != NULL)
-        {
-          event.Enable(GetFocusedListView()->GetSelectedItemCount() > 0);
-        }
-        else
-        {
+        case wxID_CUT:
           event.Enable(
             !editor->GetReadOnly() &&
             !editor->GetSelectedText().empty());
-        }
-        break;
+          break;
 
-      case wxID_PASTE:
-        if (GetFocusedListView() != NULL)
-        {
-          event.Enable(GetFocusedListView()->GetType() == wxExListViewFile::LIST_PROJECT);
-        }
-        else
-        {
+        case wxID_PASTE:
           event.Enable(editor->CanPaste());
+          break;
+
+        case wxID_SAVE:
+          event.Enable(
+            !editor->GetFileName().GetFullPath().empty() &&
+             editor->GetModify());
+          break;
+        case wxID_REDO:
+          event.Enable(editor->CanRedo());
+          break;
+        case wxID_UNDO:
+          event.Enable(editor->CanUndo());
+          break;
+
+        case ID_EDIT_CONTROL_CHAR:
+          if (editor->GetReadOnly() && editor->GetSelectedText().length() != 1)
+          {
+            event.Enable(false);
+          }
+          break;
+
+        default:
+          wxFAIL;
         }
-        break;
+      }
+      else if (list != NULL)
+      {
+        event.Enable(false);
 
-      case wxID_SAVE:
-        event.Enable(
-          !editor->GetFileName().GetFullPath().empty() &&
-           editor->GetModify());
-        break;
-      case wxID_REDO:
-        event.Enable(editor->CanRedo());
-        break;
-      case wxID_UNDO:
-        event.Enable(editor->CanUndo());
-        break;
-
-      case ID_EDIT_CONTROL_CHAR:
-        if (editor->GetReadOnly() && editor->GetSelectedText().length() != 1)
+        if (list != NULL)
         {
-          event.Enable(false);
-        }
-        break;
+          switch (event.GetId())
+          {
+          case wxID_COPY:
+          case wxID_CUT:
+            event.Enable(list->GetSelectedItemCount() > 0);
+            break;
 
-      default:
-        wxFAIL;
+          case wxID_PASTE:
+            event.Enable(list->GetType() == wxExListViewFile::LIST_PROJECT);
+            break;
+
+          default:
+            // No wxFAIL;, too many events here.
+            ;
+          }
+        }
       }
     }
   }
