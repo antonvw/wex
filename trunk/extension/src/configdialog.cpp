@@ -230,7 +230,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
     AddUserSizer(sizer);
   }
 
-  BuildSizers();
+  LayoutSizers();
 }
 
 wxControl* wxExConfigDialog::Add(

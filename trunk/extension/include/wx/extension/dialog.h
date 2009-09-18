@@ -47,11 +47,11 @@ protected:
     wxSizer* sizer,
     const wxSizerFlags& flags = wxSizerFlags().Expand().Center());
 
-  /// Builds the sizers. Should be invoked after adding to sizers.
-  void BuildSizers();
-
-  /// Gets the flags (as specified in constructor).
+  /// Gets the button flags (as specified in the constructor).
   long GetButtonFlags() const {return m_ButtonFlags;};
+
+  /// Layouts the sizers. Should be invoked after adding to sizers.
+  void LayoutSizers();
 private:
   const long m_ButtonFlags;
   wxFlexGridSizer* m_TopSizer;

@@ -55,7 +55,7 @@ wxSizerItem* wxExDialog::AddUserSizer(
   return item;
 }
 
-void wxExDialog::BuildSizers()
+void wxExDialog::LayoutSizers()
 {
   m_TopSizer->AddGrowableCol(0);
   m_UserSizer->AddGrowableCol(0);

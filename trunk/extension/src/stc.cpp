@@ -2748,7 +2748,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
 
   AddUserSizer(m_STC);
 
-  BuildSizers();
+  LayoutSizers();
 }
 
 void wxExSTCEntryDialog::SetText(const wxString& text)
