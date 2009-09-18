@@ -77,6 +77,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/dialog.cpp</sources>
     <sources>../extension/src/dir.cpp</sources>
     <sources>../extension/src/file.cpp</sources>
+    <sources>../extension/src/frd.cpp</sources>
     <sources>../extension/src/grid.cpp</sources>
     <sources>../extension/src/header.cpp</sources>
     <sources>../extension/src/lexer.cpp</sources>
@@ -102,6 +103,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/dir.h</headers>
     <headers>../extension/include/wx/extension/extension.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
+    <headers>../extension/include/wx/extension/frd.h</headers>
     <headers>../extension/include/wx/extension/grid.h</headers>
     <headers>../extension/include/wx/extension/header.h</headers>
     <headers>../extension/include/wx/extension/lexer.h</headers>
