@@ -30,7 +30,7 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxWANTS_CHARS,
-    const wxString& name = wxPanelNameStr)
+    const wxString& name = wxGridNameStr)
     : wxExGrid(parent, id, pos, size, style, name)
     , m_Statistics(statistics)
   {
