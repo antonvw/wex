@@ -51,8 +51,9 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style)
-  : wxExDialog(parent, title, flags, id, pos, size, style)
+  long style,
+  const wxString& name)
+  : wxExDialog(parent, title, flags, id, pos, size, style, name)
   , m_Config(config)
   , m_ConfigGroup(configGroup)
   , m_ForceCheckBoxChecked(false)

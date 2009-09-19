@@ -196,7 +196,8 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    const wxString& name = wxDialogNameStr);
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for OK button

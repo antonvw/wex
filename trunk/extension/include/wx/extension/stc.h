@@ -316,7 +316,8 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    const wxString& name = wxDialogNameStr);
 
   /// Gets the normal text value.
   const wxString GetText() const {return m_STC->GetText();};

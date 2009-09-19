@@ -2713,8 +2713,9 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style)
-  : wxExDialog(parent, caption, button_style, id, pos, size, style)
+  long style,
+  const wxString& name)
+  : wxExDialog(parent, caption, button_style, id, pos, size, style, name)
 {
   if (!prompt.empty())
   {
