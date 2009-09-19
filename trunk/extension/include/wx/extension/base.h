@@ -21,7 +21,6 @@
 #include <wx/artprov.h> // for wxArtID
 #include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/datetime.h>
-#include <wx/fdrepdlg.h> // for wxFindReplaceDialog
 #include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
@@ -32,69 +31,6 @@ class wxExListView;
 class wxExStatusBar;
 class wxExSTC;
 class wxExToolBar;
-
-/// Offers a general find and printer interface.
-class wxExInterface
-{
-public:
-  /// Default constructor.
-  wxExInterface()
-    : m_FindReplaceDialog(NULL) {;};
-
-  /// Destructor.
-  virtual ~wxExInterface() {
-    if (m_FindReplaceDialog != NULL) 
-    {
-      m_FindReplaceDialog->Destroy();
-      m_FindReplaceDialog = NULL;
-    };};
-
-  /// Build the page, for the htmleasyprinting.
-  virtual const wxString BuildPage() {return wxEmptyString;};
-
-  /// Shows a find dialog.
-  virtual void FindDialog(
-    wxWindow* parent, 
-    const wxString& caption = _("Find"));
-
-  /// Finds next (or previous) occurrence.
-  /// Default returns false.
-  virtual bool FindNext(
-    const wxString& WXUNUSED(text), 
-    bool WXUNUSED(find_next) = true) {
-    return false;};
-
-  /// Shows searching for in the statusbar, and calls FindNext.
-  bool FindResult(const wxString& text, bool find_next, bool& recursive);
-
-  /// Invokes wxExApp PrintText with BuildPage.
-  void Print();
-
-  /// Adds a caption.
-  virtual const wxString PrintCaption() const {return _("Printout");};
-
-  /// You can use macros in PrintFooter and in PrintHeader:
-  ///   \@PAGENUM\@ is replaced by page number
-  ///   \@PAGESCNT\@ is replaced by total number of pages
-  virtual const wxString PrintFooter() const
-    {return _("Page @PAGENUM@ of @PAGESCNT@");};
-
-  /// Adds a header.
-  virtual const wxString PrintHeader() const
-    {return _("Printed") + ": " + wxDateTime::Now().Format();};
-
-  /// Invokes wxExApp PreviewText with BuildPage.
-  void PrintPreview();
-
-  /// Shows a replace dialog.
-  virtual void ReplaceDialog(
-    wxWindow* parent, 
-    const wxString& caption = _("Replace"));
-protected:
-  void OnFindDialog(wxFindDialogEvent& event);
-private:
-  wxFindReplaceDialog* m_FindReplaceDialog;
-};
 
 /// Offers a collection of art, mapping stock id's to art id's.
 class wxExStockArt

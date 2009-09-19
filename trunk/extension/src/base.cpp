@@ -12,7 +12,6 @@
 #include <wx/tooltip.h> // for GetTip
 #include <wx/extension/base.h>
 #include <wx/extension/app.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -318,105 +317,6 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 }
 
 #endif // wxUSE_STATUSBAR
-
-void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
-{
-  if (m_FindReplaceDialog != NULL)
-  {
-    m_FindReplaceDialog->Destroy();
-  }
-
-  m_FindReplaceDialog = new wxFindReplaceDialog(
-    parent,
-    wxExApp::GetConfig()->GetFindReplaceData(),
-    caption);
-
-  m_FindReplaceDialog->Show();
-}
-
-bool wxExInterface::FindResult(
-  const wxString& text, 
-  bool find_next, 
-  bool& recursive)
-{
-  if (!recursive)
-  {
-    recursive = true;
-    const wxString where = (find_next) ? _("bottom"): _("top");
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("hit") + " " + where);
-#endif
-    return FindNext(text, find_next);
-  }
-  else
-  {
-    recursive = false;
-    wxBell();
-#if wxUSE_STATUSBAR
-    // Same text also displayed in wxExSTC.
-    wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("not found"));
-#endif
-    return false;
-  }
-}
-
-void wxExInterface::OnFindDialog(wxFindDialogEvent& event)
-{
-  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
-
-  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
-
-  if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
-  {
-    m_FindReplaceDialog->Destroy();
-    m_FindReplaceDialog = NULL;
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND)
-  {
-    FindNext(frd->GetFindString(), find_next);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    FindNext(frd->GetFindString(), find_next);
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExInterface::Print()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxBusyCursor wait;
-  wxExApp::GetPrinter()->PrintText(BuildPage());
-#endif
-}
-
-void wxExInterface::PrintPreview()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxBusyCursor wait;
-  wxExApp::GetPrinter()->PreviewText(BuildPage());
-#endif
-}
-
-void wxExInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
-{
-  if (m_FindReplaceDialog != NULL)
-  {
-    m_FindReplaceDialog->Destroy();
-  }
-
-  m_FindReplaceDialog = new wxFindReplaceDialog(
-    parent,
-    wxExApp::GetConfig()->GetFindReplaceData(),
-    caption,
-    wxFR_REPLACEDIALOG);
-
-  m_FindReplaceDialog->Show();
-}
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,

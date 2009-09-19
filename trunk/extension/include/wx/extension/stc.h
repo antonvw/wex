@@ -14,7 +14,8 @@
 
 #include <wx/print.h> 
 #include <wx/stc/stc.h>
-#include <wx/extension/base.h> // for wxExInterface
+#include <wx/extension/interface.h> // for wxExInterface
+#include <wx/extension/base.h> // for wxExMenu, wxExFile
 #include <wx/extension/dialog.h> // for wxExDialog
 
 class wxExConfigDialog;
