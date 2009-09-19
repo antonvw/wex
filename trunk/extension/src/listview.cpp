@@ -160,9 +160,10 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style,
+  wxExImageType image_type,
   const wxValidator& validator,
-  wxExImageType image_type)
-  : wxListView(parent, id, pos, size, style, validator)
+  const wxString &name)
+  : wxListView(parent, id, pos, size, style, validator, name)
   , wxExInterface()
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)

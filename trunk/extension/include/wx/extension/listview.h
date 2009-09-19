@@ -95,8 +95,9 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
+    wxExImageType image_type = IMAGE_ART,
     const wxValidator& validator = wxDefaultValidator,
-    wxExImageType image_type = IMAGE_ART);
+    const wxString &name = wxListCtrlNameStr);
 
   /// Destructor.
   virtual ~wxExListView();

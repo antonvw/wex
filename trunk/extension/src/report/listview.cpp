@@ -74,8 +74,9 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style,
-  const wxValidator& validator)
-  : wxExListView(parent, id, pos, size, style, validator, IMAGE_FILE_ICON)
+  const wxValidator& validator,
+  const wxString &name)
+  : wxExListView(parent, id, pos, size, style, IMAGE_FILE_ICON, validator, name)
   , wxExFile()
   , m_ContentsChanged(false)
   , m_ItemUpdated(false)
@@ -94,8 +95,9 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style,
-  const wxValidator& validator)
-  : wxExListView(parent, id, pos, size, style, validator, IMAGE_FILE_ICON)
+  const wxValidator& validator,
+  const wxString& name)
+  : wxExListView(parent, id, pos, size, style, IMAGE_FILE_ICON, validator, name)
   , wxExFile()
   , m_ContentsChanged(false)
   , m_ItemUpdated(false)
@@ -885,8 +887,9 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style,
-  const wxValidator& validator)
-  : wxExListViewFile(parent, type, id, menu_flags, lexer, pos, size, style, validator)
+  const wxValidator& validator,
+  const wxString &name)
+  : wxExListViewFile(parent, type, id, menu_flags, lexer, pos, size, style, validator, name)
 {
   Initialize();
 }
@@ -899,8 +902,9 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style,
-  const wxValidator& validator)
-  : wxExListViewFile(parent, file, wildcard, id, menu_flags, pos, size, style, validator)
+  const wxValidator& validator,
+  const wxString &name)
+  : wxExListViewFile(parent, file, wildcard, id, menu_flags, pos, size, style, validator, name)
 {
   Initialize();
 

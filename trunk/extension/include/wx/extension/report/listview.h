@@ -59,7 +59,8 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator);
+    const wxValidator& validator = wxDefaultValidator,
+    const wxString &name = wxListCtrlNameStr);
 
   /// Constructor for a LIST_PROJECT, opens the file.
   wxExListViewFile(wxWindow* parent,
@@ -70,7 +71,8 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator);
+    const wxValidator& validator = wxDefaultValidator,
+    const wxString &name = wxListCtrlNameStr);
 
   /// Returns a print header depending on whether we have an associated file
   /// or the type description.
@@ -153,7 +155,8 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator);
+    const wxValidator& validator = wxDefaultValidator,
+    const wxString &name = wxListCtrlNameStr);
 
   /// Constructor for a LIST_PROJECT, opens the file.
   wxExListViewWithFrame(wxWindow* parent,
@@ -164,7 +167,8 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator);
+    const wxValidator& validator = wxDefaultValidator,
+    const wxString &name = wxListCtrlNameStr);
 
   /// Opens the file and updates recent project from frame.
   virtual bool FileOpen(const wxExFileName& filename);
