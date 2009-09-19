@@ -383,7 +383,7 @@ public:
   wxExStatusBar(wxExFrame* parent,
     wxWindowID id = wxID_ANY,
     long style = wxST_SIZEGRIP,
-    const wxString& name = wxPanelNameStr);
+    const wxString& name = wxStatusBarNameStr);
 protected:
   void OnMouse(wxMouseEvent& event);
 private:
@@ -404,7 +404,7 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxTB_HORIZONTAL | wxNO_BORDER,
     const wxSize& bitmap_size = wxSize(16, 15),
-    const wxString& name = wxPanelNameStr);
+    const wxString& name = wxToolBarNameStr);
 
   /// Adds automatic naming (for stock menu id's) and art id for toolbar items.
   wxToolBarToolBase* AddTool(
