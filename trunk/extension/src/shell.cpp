@@ -28,8 +28,13 @@ wxExSTCShell::wxExSTCShell(
   const wxString& command_end,
   bool echo,
   int commands_save_in_config,
-  long menu_flags)
-  : wxExSTC(parent, wxEmptyString, menu_flags)
+  long menu_flags,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxString& name)
+  : wxExSTC(parent, wxEmptyString, menu_flags, id, pos, size, style, name)
   , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)

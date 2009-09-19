@@ -44,7 +44,12 @@ public:
     /// Default -1, no commands are kept.
     int commands_save_in_config = -1,
     /// The stc menu flags.
-    long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND);
+    long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = 0,
+    const wxString& name = wxSTCNameStr);
 
   /// Destructor, keeps the commands in the config, if required.
  ~wxExSTCShell();
