@@ -16,9 +16,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/filename.h>
+#include <wx/filename.h> // for wxExFileName
 #include <wx/menu.h>
-#include <wx/extension/art.h>// for wxExFileName
+#include <wx/extension/art.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
