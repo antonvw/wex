@@ -11,8 +11,8 @@
 
 #include <map>
 #include <wx/extension/menu.h>
-#include <wx/extension/app.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/util.h> // for wxExEllipsed
 
 using namespace std;
 
@@ -139,7 +139,7 @@ void wxExMenu::AppendSubMenu(
 
 bool wxExMenu::AppendSVN(const wxFileName& file)
 {
-  wxFileName path (file.GetPath());
+  wxFileName path(file);
   path.AppendDir(".svn");
         
   if (path.DirExists())
