@@ -12,6 +12,7 @@
 #include <wx/extension/svn.h>
 #include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/configdialog.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI

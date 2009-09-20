@@ -12,6 +12,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/app.h> // for wxExApp
+#include <wx/extension/defs.h> // for ID_SHELL_COMMAND
 
 #if wxUSE_GUI
 

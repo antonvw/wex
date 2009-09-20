@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/aboutdlg.h>
+#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>

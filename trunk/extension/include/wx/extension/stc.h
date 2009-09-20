@@ -12,10 +12,12 @@
 #ifndef _EXSTC_H
 #define _EXSTC_H
 
+#include <vector> 
 #include <wx/print.h> 
 #include <wx/stc/stc.h>
 #include <wx/extension/interface.h> // for wxExInterface
-#include <wx/extension/base.h> // for wxExMenu, wxExFile
+#include <wx/extension/file.h> // for wxExFile
+#include <wx/extension/menu.h> // for wxExMenu
 #include <wx/extension/dialog.h> // for wxExDialog
 
 class wxExConfigDialog;

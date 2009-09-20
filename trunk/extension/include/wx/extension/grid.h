@@ -14,7 +14,7 @@
 
 #include <wx/grid.h>
 #include <wx/extension/interface.h>
-#include <wx/extension/base.h> // for wxExMenu
+#include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GRID
 

@@ -11,6 +11,8 @@
 #ifndef _EX_REPORT_DEFS_H
 #define _EX_REPORT_DEFS_H
 
+#include <wx/extension/defs.h>
+
 // The maximal number of files and projects to be supported.
 #define NUMBER_RECENT_FILES 25
 #define NUMBER_RECENT_PROJECTS 25

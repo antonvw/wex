@@ -12,6 +12,7 @@
 #ifndef _EXSTATISTICS_H
 #define _EXSTATISTICS_H
 
+#include <wx/extension/file.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/tool.h>
 
