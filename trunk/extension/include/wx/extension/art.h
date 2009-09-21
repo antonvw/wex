@@ -36,7 +36,7 @@ protected:
     wxString& stock_label,
     wxBitmap& bitmap,
     long flags = wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR,
-    const wxSize& bitmap_size = wxSize(16, 15));
+    const wxSize& bitmap_size = wxSize(16, 15)) const;
 private:
   static std::map<wxWindowID, wxArtID> m_StockArt;
 };

@@ -51,7 +51,7 @@ void wxExStockArt::CheckStock(
   wxString& stock_label,
   wxBitmap& bitmap,
   long flags,
-  const wxSize& bitmap_size)
+  const wxSize& bitmap_size) const
 {
   if (wxIsStockID(id))
   {
