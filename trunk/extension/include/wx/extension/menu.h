@@ -16,7 +16,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/filename.h> // for wxExFileName
+#include <wx/filename.h>
 #include <wx/menu.h>
 #include <wx/extension/art.h>
 
