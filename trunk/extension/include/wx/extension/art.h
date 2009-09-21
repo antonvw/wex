@@ -2,7 +2,7 @@
 * File:          art.h
 * Purpose:       Declaration of wxExStockArt class
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: base.h 1677 2009-09-19 18:02:00Z antonvw $
+* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
