@@ -14,8 +14,6 @@
 #include <wx/extension/base.h>
 #include <wx/extension/frd.h>
 
-using namespace std;
-
 #if wxUSE_GUI
 
 void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
