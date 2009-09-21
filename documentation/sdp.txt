@@ -4,8 +4,7 @@ Software Development Plan
 General
 
 - Subversion Repository is on xp-dev.com
-    http://svn.xp-dev.com/svn/antonvw-wxprojects/
-    https://svn.xp-dev.com/svn/antonvw-wxprojects/
+    http://svn.xp-dev.com/svn/wxextension/
 
 - Subversion access
     under windows TortoiseSVN is used (TortoiseSVN 1.6.5)
