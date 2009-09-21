@@ -16,6 +16,10 @@
 
 wxExHeader::wxExHeader(wxExConfig* config)
   : m_Config(config)
+  , m_TextAuthor(_("Author"))
+  , m_TextEmail(_("Email"))
+  , m_TextLicense(_("License"))
+  , m_TextPurpose(_("Purpose"))
 {
 }
 
@@ -29,10 +33,11 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxString h_copyright = "Copyright: "; 
   const wxString h_license   = "License:   "; 
 
-  const wxString author = m_Config->Get(_("Author"));
-  const wxString license = m_Config->Get(_("License"));
-  const wxString email = m_Config->Get(_("Email"));
-  const wxString purpose = m_Config->Get(_("Purpose"));
+  const wxString author = m_Config->Get(m_TextAuthor);
+  const wxString license = m_Config->Get(m_TextLicense);
+  const wxString email = m_Config->Get(m_TextEmail);
+  const wxString purpose = m_Config->Get(m_TextPurpose);
+
   const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
   wxString header;
@@ -92,22 +97,22 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
   std::vector<wxExConfigItem> v;
 
   // Purpose is required.
-  v.push_back(wxExConfigItem(_("Purpose"), wxEmptyString, wxTE_MULTILINE, true));
+  v.push_back(wxExConfigItem(m_TextPurpose, wxEmptyString, wxTE_MULTILINE, true));
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
-  if (m_Config->Get(_("Author")).empty())
+  if (m_Config->Get(m_TextAuthor).empty())
   {
-    v.push_back(wxExConfigItem(_("Author"), wxEmptyString, 0, true));
+    v.push_back(wxExConfigItem(m_TextAuthor, wxEmptyString, 0, true));
 
-    if (m_Config->Get(_("Email")).empty())
+    if (m_Config->Get(m_TextEmail).empty())
     {
-      v.push_back(wxExConfigItem(_("Email")));
+      v.push_back(wxExConfigItem(m_TextEmail));
     }
 
-    if (m_Config->Get(_("License")).empty())
+    if (m_Config->Get(m_TextLicense).empty())
     {
-      v.push_back(wxExConfigItem(_("License")));
+      v.push_back(wxExConfigItem(m_TextLicense));
     }
   }
 

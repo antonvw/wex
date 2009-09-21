@@ -48,5 +48,10 @@ public:
     else return wxEmptyString;}
 private:
   wxExConfig* m_Config;
+
+  const wxString m_TextAuthor;
+  const wxString m_TextEmail;
+  const wxString m_TextLicense;
+  const wxString m_TextPurpose;
 };
 #endif
