@@ -27,18 +27,18 @@
 class wxExStockArt
 {
 public:
-  /// Default constructor, fills the map first time it is invoked.
-  wxExStockArt();
+  /// Constructor, fills the map first time it is invoked.
+  wxExStockArt(int id);
 
-  /// If id is a stock id, fills stock_label and bitmap.
-  void GetStock(
-    int id,
-    wxString& stock_label,
-    wxBitmap& bitmap,
-    long flags = wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR,
-    const wxSize& bitmap_size = wxSize(16, 15)) const;
+  /// If id is a stock id, returns stock bitmap.
+  const wxBitmap GetBitmap(const wxSize& bitmap_size = wxSize(16, 15)) const;
+
+  /// If id is a stock id, returns stock label.
+  const wxString GetLabel(
+    long flags = wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR) const;
 private:
   static std::map<wxWindowID, wxArtID> m_StockArt;
+  const int m_Id;
 };
 #endif // wxUSE_GUI
 #endif

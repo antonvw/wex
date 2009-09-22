@@ -17,7 +17,8 @@ using namespace std;
 
 map<wxWindowID, wxArtID> wxExStockArt::m_StockArt;
 
-wxExStockArt::wxExStockArt()
+wxExStockArt::wxExStockArt(int id)
+  : m_Id(id)
 {
   if (m_StockArt.empty())
   {
@@ -46,38 +47,33 @@ wxExStockArt::wxExStockArt()
   }
 }
 
-void wxExStockArt::GetStock(
-  int id,
-  wxString& stock_label,
-  wxBitmap& bitmap,
-  long flags,
-  const wxSize& bitmap_size) const
+const wxBitmap wxExStockArt::GetBitmap(const wxSize& bitmap_size) const
 {
-  if (wxIsStockID(id))
+  wxBitmap bitmap;
+
+  if (wxIsStockID(m_Id))
   {
-    if (!stock_label.empty())
-    {
-      wxLogWarning(wxString::Format(
-        "You specified a label: %s, though there is a stock label for it",
-        stock_label.c_str()));
-    }
-
-    stock_label = wxGetStockLabel(id, flags);
-
     // Check if there is art for this id.
-    map<wxWindowID, wxArtID>::const_iterator art_it = m_StockArt.find(id);
+    map<wxWindowID, wxArtID>::const_iterator art_it = m_StockArt.find(m_Id);
 
     if (art_it != m_StockArt.end())
     {
-      if (bitmap.IsOk())
-      {
-        wxLogWarning(wxString::Format(
-          "You specified art: %s, though there is stock art for it",
-          stock_label.c_str()));
-      }
-
       bitmap = wxArtProvider::GetBitmap(art_it->second, wxART_MENU, bitmap_size);
     }
   }
+
+  return bitmap;
+}
+
+const wxString wxExStockArt::GetLabel(long flags) const
+{
+  wxString stock_label;
+
+  if (wxIsStockID(m_Id))
+  {
+    stock_label = wxGetStockLabel(m_Id, flags);
+  }
+
+  return stock_label;
 }
 #endif // wxUSE_GUI
