@@ -37,11 +37,8 @@ public:
       m_FindReplaceDialog = NULL;
     };};
 
-  /// Build the page, for the htmleasyprinting.
-  virtual const wxString BuildPage() {return wxEmptyString;};
-
   /// Shows a find dialog.
-  virtual void FindDialog(
+  void FindDialog(
     wxWindow* parent, 
     const wxString& caption = _("Find"));
 
@@ -54,6 +51,18 @@ public:
 
   /// Shows searching for in the statusbar, and calls FindNext.
   bool FindResult(const wxString& text, bool find_next, bool& recursive);
+
+  /// Shows a replace dialog.
+  void ReplaceDialog(
+    wxWindow* parent, 
+    const wxString& caption = _("Replace"));
+
+  /// Allows you to update the find and replace data before Find or
+  /// Replace Dialog is shown.
+  virtual void SetFindReplaceData() {;};
+
+  /// Build the page, for the htmleasyprinting.
+  virtual const wxString BuildPage() {return wxEmptyString;};
 
   /// Invokes wxExApp PrintText with BuildPage.
   void Print();
@@ -73,11 +82,6 @@ public:
 
   /// Invokes wxExApp PreviewText with BuildPage.
   void PrintPreview();
-
-  /// Shows a replace dialog.
-  virtual void ReplaceDialog(
-    wxWindow* parent, 
-    const wxString& caption = _("Replace"));
 protected:
   void OnFindDialog(wxFindDialogEvent& event);
 private:

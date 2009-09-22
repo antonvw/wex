@@ -112,11 +112,10 @@ public:
   virtual void ResetContentsChanged();
 
   // Interface, for wxExInterface overriden methods.
-  virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
   virtual bool FindNext(const wxString& text, bool find_next = true);
+  virtual void SetFindReplaceData() {GetSearchText();};
   virtual const wxString PrintCaption() const;
   virtual const wxString PrintHeader() const;
-  virtual void ReplaceDialog(wxWindow* parent, const wxString& caption = _("Replace"));
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();

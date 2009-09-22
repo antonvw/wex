@@ -186,38 +186,6 @@ void wxExGrid::EmptySelection()
   }
 }
 
-void wxExGrid::FindDialog(wxWindow* parent, const wxString& caption)
-{
-  if (IsSelection())
-  {
-    // This does not work (if single cell selected, array count is 0!
-    // const wxGridCellCoordsArray cells(GetSelectedCells());
-    const wxString data = GetSelectedCellsValue();
-
-    wxStringTokenizer tkz(data, wxTextFile::GetEOL());
-
-    // Only if we have one cell, so one EOL.
-    if (tkz.CountTokens() == 1)
-    {
-      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(tkz.GetNextToken());
-    }
-  }
-  else
-  {
-    // Just take current cell value, if not empty.
-    const int row = GetGridCursorRow();
-    const int col = GetGridCursorCol();
-    const wxString val = GetCellValue(row, col);
-
-    if (!val.empty())
-    {
-      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(val);
-    }
-  }
-
-  wxExInterface::FindDialog(parent, caption);
-}
-
 bool wxExGrid::FindNext(const wxString& text, bool find_next)
 {
   if (text.empty())
@@ -593,6 +561,36 @@ void wxExGrid::SetCellsValue(
     }
 
     start_at_row++;
+  }
+}
+
+void wxExGrid::SetFindReplaceData()
+{
+  if (IsSelection())
+  {
+    // This does not work (if single cell selected, array count is 0!
+    // const wxGridCellCoordsArray cells(GetSelectedCells());
+    const wxString data = GetSelectedCellsValue();
+
+    wxStringTokenizer tkz(data, wxTextFile::GetEOL());
+
+    // Only if we have one cell, so one EOL.
+    if (tkz.CountTokens() == 1)
+    {
+      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(tkz.GetNextToken());
+    }
+  }
+  else
+  {
+    // Just take current cell value, if not empty.
+    const int row = GetGridCursorRow();
+    const int col = GetGridCursorCol();
+    const wxString val = GetCellValue(row, col);
+
+    if (!val.empty())
+    {
+      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(val);
+    }
   }
 }
 

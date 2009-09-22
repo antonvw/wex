@@ -83,11 +83,11 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
 
-  /// Shows a find dialog.
-  virtual void FindDialog(wxWindow* parent, const wxString& caption = _("Find"));
-
   /// Interface from wxExInterface.
   virtual bool FindNext(const wxString& text, bool find_next = true);
+
+  /// Updates find replace text.
+  virtual void SetFindReplaceData();
 
   void OnCommand(wxCommandEvent& event);
   void OnFindDialog(wxFindDialogEvent& event);

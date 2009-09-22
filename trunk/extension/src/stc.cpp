@@ -1036,13 +1036,6 @@ void wxExSTC::FileTypeMenu()
   PopupMenu(eol);
 }
 
-void wxExSTC::FindDialog(wxWindow* parent, const wxString& caption)
-{
-  GetSearchText();
-
-  wxExInterface::FindDialog(parent, caption);
-}
-
 bool wxExSTC::FindNext(const wxString& text, bool find_next)
 {
   if (text.empty())
@@ -2226,13 +2219,6 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
     // TODO: This does not seem to work.
     SetSelection(startPos, endPos);
   }
-}
-
-void wxExSTC::ReplaceDialog(wxWindow* parent, const wxString& caption)
-{
-  GetSearchText();
-
-  wxExInterface::ReplaceDialog(parent, caption);
 }
 
 void wxExSTC::ResetContentsChanged()

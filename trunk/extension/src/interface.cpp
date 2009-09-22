@@ -18,6 +18,8 @@
 
 void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
 {
+  SetFindReplaceData();
+
   if (m_FindReplaceDialog != NULL)
   {
     m_FindReplaceDialog->Destroy();
