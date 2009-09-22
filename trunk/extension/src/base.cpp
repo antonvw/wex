@@ -436,7 +436,8 @@ wxToolBarToolBase* wxExToolBar::AddTool(
 {
   wxString use_help = shortHelpString;
   wxBitmap use_bitmap = bitmap1;
-  CheckStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+  m_Art.GetStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+
   return wxToolBar::AddTool(toolId, label, use_bitmap, use_help, kind);
 }
 
@@ -452,7 +453,8 @@ wxToolBarToolBase* wxExToolBar::AddTool(
 {
   wxString use_help = shortHelpString;
   wxBitmap use_bitmap = bitmap1;
-  CheckStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+  m_Art.GetStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+
   return wxToolBar::AddTool(
     toolId,
     label,
@@ -475,7 +477,8 @@ wxToolBarToolBase* wxExToolBar::AddCheckTool(
 {
   wxString use_help = shortHelpString;
   wxBitmap use_bitmap = bitmap1;
-  CheckStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+  m_Art.GetStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+
   return wxToolBar::AddCheckTool(
     toolId,
     label,

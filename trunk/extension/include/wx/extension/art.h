@@ -27,11 +27,11 @@
 class wxExStockArt
 {
 public:
-  /// Constructor, fills the map first time it is invoked.
+  /// Default constructor, fills the map first time it is invoked.
   wxExStockArt();
-protected:
+
   /// If id is a stock id, fills stock_label and bitmap.
-  void CheckStock(
+  void GetStock(
     int id,
     wxString& stock_label,
     wxBitmap& bitmap,

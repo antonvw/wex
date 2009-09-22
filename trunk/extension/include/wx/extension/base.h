@@ -249,7 +249,7 @@ private:
 #endif // wxUSE_STATUSBAR
 
 /// Offers a toolbar together with stock art.
-class wxExToolBar : public wxExStockArt, public wxToolBar
+class wxExToolBar : public wxToolBar
 {
 public:
   /// Constructor.
@@ -289,6 +289,8 @@ public:
     const wxString& shortHelpString = wxEmptyString,
     const wxString& longHelpString = wxEmptyString,
     wxObject* clientData = NULL);
+private:
+  wxExStockArt m_Art;
 };
 #endif // wxUSE_GUI
 #endif

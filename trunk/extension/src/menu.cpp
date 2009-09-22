@@ -11,6 +11,7 @@
 
 #include <map>
 #include <wx/extension/menu.h>
+#include <wx/extension/art.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h> // for wxExEllipsed
 
@@ -49,7 +50,7 @@ wxMenuItem* wxExMenu::Append(
     bitmap = wxArtProvider::GetBitmap(artid, wxART_MENU, wxSize(16, 15));
   }
 
-  CheckStock(id, use_name, bitmap);
+  wxExStockArt().GetStock(id, use_name, bitmap);
 
   wxMenuItem* item = new wxMenuItem(this, id, use_name, helptext);
 

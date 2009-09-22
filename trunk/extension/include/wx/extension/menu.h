@@ -16,15 +16,15 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/artprov.h> // for wxArtID
 #include <wx/filename.h>
 #include <wx/menu.h>
-#include <wx/extension/art.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
 
 /// Adds artid, edit, printing and tool menu items to wxMenu.
-class wxExMenu : public wxExStockArt, public wxMenu
+class wxExMenu : public wxMenu
 {
 public:
   /// The menu styles.

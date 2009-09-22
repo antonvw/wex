@@ -46,7 +46,7 @@ wxExStockArt::wxExStockArt()
   }
 }
 
-void wxExStockArt::CheckStock(
+void wxExStockArt::GetStock(
   int id,
   wxString& stock_label,
   wxBitmap& bitmap,
