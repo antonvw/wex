@@ -167,7 +167,7 @@ MyFrame::MyFrame()
   m_ToolBar->AddTool(wxID_NEW);
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);
-  m_ToolBar->AddTool(
+  ((wxToolBar*)m_ToolBar)->AddTool(
     ID_WRITE_DATA,
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
