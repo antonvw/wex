@@ -53,7 +53,6 @@ bool wxExInterface::FindResult(
     recursive = false;
     wxBell();
 #if wxUSE_STATUSBAR
-    // Same text also displayed in wxExSTC.
     wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("not found"));
 #endif
     return false;

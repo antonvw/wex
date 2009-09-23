@@ -1290,6 +1290,7 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
 
   const int start_pos = PositionFromLine(line_number - 1);
   const int end_pos = GetLineEndPosition(line_number - 1);
+
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
 
@@ -1299,11 +1300,8 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
 
     if (SearchInTarget(text) < 0)
     {
-      wxBell();
-#if wxUSE_STATUSBAR
-      // Same text also displayed in wxExInterface.
-      wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + _("not found"));
-#endif
+      bool recursive = true;
+      FindResult(text, true, recursive);
       return;
     }
   }
