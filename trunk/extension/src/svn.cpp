@@ -33,7 +33,7 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   Initialize();
 }
 
-int wxExSVN::Execute(wxWindow* parent)
+wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
   const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);
   const wxString svn_flags_contents = wxExApp::GetConfig(svn_flags_name);
@@ -78,7 +78,7 @@ int wxExSVN::Execute(wxWindow* parent)
       v,
       m_Caption).ShowModal() == wxID_CANCEL)
     {
-      m_ReturnCode = -1;
+      m_ReturnCode = wxID_CANCEL;
       return m_ReturnCode;
     }
   }
@@ -141,7 +141,7 @@ int wxExSVN::Execute(wxWindow* parent)
     output,
     errors) == -1)
   {
-    m_ReturnCode = -1;
+    m_ReturnCode = wxID_ABORT;
     return m_ReturnCode;
   }
 
@@ -164,18 +164,13 @@ int wxExSVN::Execute(wxWindow* parent)
     m_Output += output[j] + "\n";
   }
 
-  m_ReturnCode = errors.GetCount();
-
-  return m_ReturnCode;
+  return wxID_OK;
 }
 
-int wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
+wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
-  if (Execute(parent) >= 0)
-  {
-    ShowOutput(parent);
-  }
-
+  Execute(parent);
+  ShowOutput(parent);
   return m_ReturnCode;
 }
 
@@ -225,15 +220,14 @@ void wxExSVN::Initialize()
   m_CommandWithFlags = m_Command;
 
   m_Output.clear();
-  m_ReturnCode = -2;
+  m_ReturnCode = wxID_NONE;
 
   wxASSERT(wxExApp::GetConfig() != NULL);
 }
 
 void wxExSVN::ShowOutput(wxWindow* parent) const
 {
-  // If we did not yet ask Execute, or cancelled, return.
-  if (m_ReturnCode < 0)
+  if (m_ReturnCode != wxID_OK)
   {
     return;
   }

@@ -52,13 +52,13 @@ public:
   /// the specified fullpath is used for getting svn contents from.
   /// If you use parent NULL, then the dialog is not shown,
   /// and defaults from the config are used.
-  /// Returns -1 if dialog was cancelled, 0 if okay, or the number of errors
-  /// that were reported by svn otherwise.
-  int Execute(wxWindow* parent);
+  /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, or wxID_ABORT if errors
+  /// were reported by svn otherwise.
+  wxStandardID Execute(wxWindow* parent);
 
   /// Execute and if not cancelled shows output in a dialog.
   /// Returns return code from execute.
-  int ExecuteAndShowOutput(wxWindow* parent);
+  wxStandardID ExecuteAndShowOutput(wxWindow* parent);
 
   /// Gets the flags and command (without the 'svn') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
@@ -81,7 +81,7 @@ private:
 
   const wxString m_FullPath;
 
-  int m_ReturnCode;
+  wxStandardID m_ReturnCode;
   static wxExSTCEntryDialog* m_STCEntryDialog;
 };
 #endif
