@@ -30,7 +30,8 @@ public:
   /// Constructor, fills the map first time it is invoked.
   wxExStockArt(int id);
 
-  /// If id is a stock id, returns stock bitmap.
+  /// If id is a stock id, returns stock bitmap from the stock art map.
+  /// Check GetBitmap().IsOk for valid bitmap.
   const wxBitmap GetBitmap(const wxSize& bitmap_size = wxSize(16, 15)) const;
 
   /// If id is a stock id, returns stock label.

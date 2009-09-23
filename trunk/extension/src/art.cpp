@@ -73,6 +73,10 @@ const wxString wxExStockArt::GetLabel(long flags) const
   {
     stock_label = wxGetStockLabel(m_Id, flags);
   }
+  else
+  {
+    wxFAIL;
+  }
 
   return stock_label;
 }

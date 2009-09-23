@@ -47,8 +47,11 @@ public:
   wxExMenu(const wxExMenu& menu);
 
   /// Adds automatic naming (for stock menu id's) and art id for menu items.
-  wxMenuItem* Append(int id, // this can be a stock item, then name and art is derived from it
-    const wxString& name = wxEmptyString,
+  wxMenuItem* Append(int id);
+
+  /// Appends a menu item, possibly with art.
+  wxMenuItem* Append(int id,
+    const wxString& name,
     const wxString& helptext = wxEmptyString,
     wxArtID artid = wxEmptyString);
 
