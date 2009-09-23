@@ -20,7 +20,6 @@
 #endif
 #include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/datetime.h>
-#include <wx/extension/art.h>
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
 
@@ -261,13 +260,12 @@ public:
     const wxSize& bitmap_size = wxSize(16, 15),
     const wxString& name = wxToolBarNameStr);
 
-  /// Adds automatic naming (for stock menu id's) and art id for toolbar items.
-  wxToolBarToolBase* AddTool(
-    int toolId, // this can be a stock item, then shortHelpString and bitmap (art) is derived from it
-    const wxString& label = wxEmptyString,
-    const wxBitmap& bitmap1 = wxNullBitmap,
-    const wxString& shortHelpString = wxEmptyString,
-    wxItemKind kind = wxITEM_NORMAL);
+  /// Adds automatic naming (for stock menu id's) and art id for toolbar check items.
+  /// And for check tools as well.
+  wxToolBarToolBase* AddCheckTool(int toolId);
+
+  /// Adds automatic naming (for stock menu id's) and art id for toolbar normal items.
+  wxToolBarToolBase* AddTool(int toolId);
 
   /// As above.
   wxToolBarToolBase* AddTool(
@@ -279,18 +277,6 @@ public:
     wxItemKind kind = wxITEM_NORMAL,
     const wxString& shortHelpString = wxEmptyString,
     wxObject* clientData = NULL);
-
-  /// And for check tools as well.
-  wxToolBarToolBase* AddCheckTool(
-    int toolId,
-    const wxString& label = wxEmptyString,
-    const wxBitmap& bitmap1 = wxNullBitmap,
-    const wxBitmap& bitmap2 = wxNullBitmap,
-    const wxString& shortHelpString = wxEmptyString,
-    const wxString& longHelpString = wxEmptyString,
-    wxObject* clientData = NULL);
-private:
-  wxExStockArt m_Art;
 };
 #endif // wxUSE_GUI
 #endif

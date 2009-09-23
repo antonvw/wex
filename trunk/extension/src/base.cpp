@@ -12,6 +12,7 @@
 #include <wx/tooltip.h> // for GetTip
 #include <wx/extension/base.h>
 #include <wx/extension/app.h>
+#include <wx/extension/art.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -427,65 +428,26 @@ wxExToolBar::wxExToolBar(wxWindow* parent,
   SetToolBitmapSize(bitmap_size);
 }
 
-wxToolBarToolBase* wxExToolBar::AddTool(
-  int toolId,
-  const wxString& label,
-  const wxBitmap& bitmap1,
-  const wxString& shortHelpString,
-  wxItemKind kind)
+wxToolBarToolBase* wxExToolBar::AddCheckTool(int toolId)
 {
-  wxString use_help = shortHelpString;
-  wxBitmap use_bitmap = bitmap1;
-  m_Art.GetStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
-
-  return wxToolBar::AddTool(toolId, label, use_bitmap, use_help, kind);
-}
-
-wxToolBarToolBase* wxExToolBar::AddTool(
-  int toolId,
-  const wxString& longHelpString,
-  const wxString& label,
-  const wxBitmap& bitmap1,
-  const wxBitmap& bitmap2,
-  wxItemKind kind,
-  const wxString& shortHelpString,
-  wxObject* clientData)
-{
-  wxString use_help = shortHelpString;
-  wxBitmap use_bitmap = bitmap1;
-  m_Art.GetStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
-
-  return wxToolBar::AddTool(
-    toolId,
-    label,
-    use_bitmap,
-    bitmap2,
-    kind,
-    use_help,
-    longHelpString,
-    clientData);
-}
-
-wxToolBarToolBase* wxExToolBar::AddCheckTool(
-  int toolId,
-  const wxString& label,
-  const wxBitmap& bitmap1,
-  const wxBitmap& bitmap2,
-  const wxString& shortHelpString,
-  const wxString& longHelpString,
-  wxObject* clientData)
-{
-  wxString use_help = shortHelpString;
-  wxBitmap use_bitmap = bitmap1;
-  m_Art.GetStock(toolId, use_help, use_bitmap, wxSTOCK_NOFLAGS, GetToolBitmapSize());
+  const wxExStockArt art(toolId);
 
   return wxToolBar::AddCheckTool(
     toolId,
-    label,
-    use_bitmap,
-    bitmap2,
-    use_help,
-    longHelpString,
-    clientData);
+    wxEmptyString,
+    art.GetBitmap(GetToolBitmapSize()),
+    wxNullBitmap,
+    art.GetLabel(wxSTOCK_NOFLAGS));
+}
+
+wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
+{
+  const wxExStockArt art(toolId);
+
+  return wxToolBar::AddTool(
+    toolId, 
+    wxEmptyString,
+    art.GetBitmap(GetToolBitmapSize()),
+    art.GetLabel(wxSTOCK_NOFLAGS));
 }
 #endif // wxUSE_GUI
