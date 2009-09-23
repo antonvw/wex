@@ -187,12 +187,12 @@ Frame::Frame(const wxString& project_wildcard)
 #endif
 
   m_ToolBar->AddSeparator();
-  m_ToolBar->AddTool(
+  ((wxToolBar*)m_ToolBar)->AddTool(
     ID_PROJECT_OPEN,
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     wxExEllipsed(_("Open project")));
-  m_ToolBar->AddTool(
+  ((wxToolBar*)m_ToolBar)->AddTool(
     ID_PROJECT_SAVE,
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
@@ -200,17 +200,8 @@ Frame::Frame(const wxString& project_wildcard)
 
 #ifdef __WXMSW__
   m_ToolBar->AddSeparator();
-  m_ToolBar->AddCheckTool(
-    wxID_VIEW_LIST,
-    wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    wxNullBitmap,
-    _("View in list mode"));
-  m_ToolBar->AddCheckTool(
-    wxID_VIEW_DETAILS, wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    wxNullBitmap,
-    _("View in detail mode"));
+  m_ToolBar->AddCheckTool(wxID_VIEW_LIST);
+  m_ToolBar->AddCheckTool(wxID_VIEW_DETAILS);
 #endif //__WXMSW__
 
 #if wxUSE_CHECKBOX

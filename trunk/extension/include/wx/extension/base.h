@@ -266,17 +266,6 @@ public:
 
   /// Adds automatic naming (for stock menu id's) and art id for toolbar normal items.
   wxToolBarToolBase* AddTool(int toolId);
-
-  /// As above.
-  wxToolBarToolBase* AddTool(
-    int toolId,
-    const wxString& longHelpString,
-    const wxString& label = wxEmptyString,
-    const wxBitmap& bitmap1 = wxNullBitmap,
-    const wxBitmap& bitmap2 = wxNullBitmap,
-    wxItemKind kind = wxITEM_NORMAL,
-    const wxString& shortHelpString = wxEmptyString,
-    wxObject* clientData = NULL);
 };
 #endif // wxUSE_GUI
 #endif
