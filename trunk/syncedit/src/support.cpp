@@ -200,8 +200,17 @@ Frame::Frame(const wxString& project_wildcard)
 
 #ifdef __WXMSW__
   m_ToolBar->AddSeparator();
-  m_ToolBar->AddCheckTool(wxID_VIEW_LIST);
-  m_ToolBar->AddCheckTool(wxID_VIEW_DETAILS);
+  ((wxToolBar*)m_ToolBar)->AddCheckTool(
+    wxID_VIEW_LIST,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
+    wxNullBitmap,
+    _("View in list mode"));
+  ((wxToolBar*)m_ToolBar)->AddCheckTool(
+    wxID_VIEW_DETAILS, wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
+    wxNullBitmap,
+    _("View in detail mode"));
 #endif //__WXMSW__
 
 #if wxUSE_CHECKBOX
