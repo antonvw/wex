@@ -13,7 +13,7 @@
 #define _EX_REPORT_FRAME_H
 
 #include <wx/docview.h> // for wxFileHistory
-#include <wx/extension/base.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/report/listview.h> // for wxExListViewFile::ListType 
 
 class wxExListViewWithFrame;

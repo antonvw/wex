@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          base.h
-* Purpose:       Declaration of wxWidgets base extension classes
+* File:          frame.h
+* Purpose:       Declaration of wxexFrame class and support classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _EXBASE_H
-#define _EXBASE_H
+#ifndef _EXFRAME_H
+#define _EXFRAME_H
 
 #include <map>
 #include <vector>

@@ -13,7 +13,7 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
 #include <wx/extension/app.h> // for wxExApp
-#include <wx/extension/base.h> // for wxExFrame
+#include <wx/extension/frame.h> // for wxExFrame
 
 wxExFile::wxExFile()
   : m_FileName()

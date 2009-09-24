@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          base.cpp
-* Purpose:       Implementation of wxWidgets base extension classes
+* File:          frame.cpp
+* Purpose:       Implementation of wxExFrame class and support classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/tooltip.h> // for GetTip
-#include <wx/extension/base.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
 #include <wx/extension/listview.h>

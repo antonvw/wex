@@ -16,7 +16,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
-#include <wx/extension/base.h>
+#include <wx/extension/frame.h>
 
 const wxString wxExAlignText(
   const wxString& lines,

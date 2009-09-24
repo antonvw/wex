@@ -16,7 +16,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/app.h>
-#include <wx/extension/base.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 
 #if wxUSE_GUI

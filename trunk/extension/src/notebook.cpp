@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/notebook.h>
-#include <wx/extension/base.h> // for wxExManagedFrame
+#include <wx/extension/frame.h> // for wxExManagedFrame
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
