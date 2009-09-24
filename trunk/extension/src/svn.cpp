@@ -73,12 +73,13 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
       v.push_back(wxExConfigItem(_("Subcommand")));
     }
 
-    if (wxExConfigDialog(parent,
+    m_ReturnCode = (wxStandardID)wxExConfigDialog(parent,
       wxExApp::GetConfig(),
       v,
-      m_Caption).ShowModal() == wxID_CANCEL)
+      m_Caption).ShowModal();
+
+    if (m_ReturnCode == wxID_CANCEL)
     {
-      m_ReturnCode = wxID_CANCEL;
       return m_ReturnCode;
     }
   }
@@ -141,6 +142,11 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     output,
     errors) == -1)
   {
+    if (m_Output.empty())
+    {
+      m_Output = "Could not execute: " + command;
+    }
+
     m_ReturnCode = wxID_ABORT;
     return m_ReturnCode;
   }
@@ -227,54 +233,66 @@ void wxExSVN::Initialize()
 
 void wxExSVN::ShowOutput(wxWindow* parent) const
 {
-  if (m_ReturnCode != wxID_OK)
+  switch (m_ReturnCode)
   {
-    return;
-  }
+    case wxID_CANCEL:
+      break;
 
-  const wxString caption = m_Caption +
-    (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString));
+    case wxID_ABORT:
+      wxMessageBox(m_Output);
+      break;
 
-  // Create a dialog for contents.
-  if (m_STCEntryDialog == NULL)
-  {
-    m_STCEntryDialog = new wxExSTCEntryDialog(
-      parent,
-      caption,
-      m_Output,
-      wxEmptyString,
-      wxOK,
-      wxID_ANY,
-      wxDefaultPosition, wxSize(575, 250));
-  }
-  else
-  {
-    m_STCEntryDialog->SetText(m_Output);
-    m_STCEntryDialog->SetTitle(caption);
-
-    // Reset a previous lexer.
-    if (!m_STCEntryDialog->GetLexer().empty())
+    case wxID_OK:
     {
-      m_STCEntryDialog->SetLexer(wxEmptyString);
+      const wxString caption = m_Caption +
+        (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString));
+
+      // Create a dialog for contents.
+      if (m_STCEntryDialog == NULL)
+      {
+        m_STCEntryDialog = new wxExSTCEntryDialog(
+          parent,
+          caption,
+          m_Output,
+          wxEmptyString,
+          wxOK,
+          wxID_ANY,
+          wxDefaultPosition, wxSize(575, 250));
+      }
+      else
+      {
+        m_STCEntryDialog->SetText(m_Output);
+        m_STCEntryDialog->SetTitle(caption);
+  
+        // Reset a previous lexer.
+        if (!m_STCEntryDialog->GetLexer().empty())
+        {
+          m_STCEntryDialog->SetLexer(wxEmptyString);
+        }
+      }
+
+      // Add a lexer if we specified a path, asked for cat or blame 
+      // and there is a lexer.
+      if (
+        !m_FullPath.empty() &&
+        (m_Type == SVN_CAT || m_Type == SVN_BLAME))
+      {
+        const wxExFileName fn(m_FullPath);
+ 
+        if (!fn.GetLexer().GetScintillaLexer().empty())
+        {
+          m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
+        }
+      }
+
+      m_STCEntryDialog->Show();
     }
+    break;
+
+    default:
+      wxFAIL;
+      break;
   }
-
-  // Add a lexer if we specified a path, asked for cat or blame 
-  // and there were no errors, and there is a lexer.
-  if (
-    !m_FullPath.empty() &&
-    (m_Type == SVN_CAT || m_Type == SVN_BLAME) &&
-     m_ReturnCode == 0)
-  {
-    const wxExFileName fn(m_FullPath);
-
-    if (!fn.GetLexer().GetScintillaLexer().empty())
-    {
-      m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
-    }
-  }
-
-  m_STCEntryDialog->Show();
 }
 
 #endif
