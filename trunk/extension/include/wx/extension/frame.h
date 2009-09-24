@@ -247,6 +247,7 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
+#if wxUSE_TOOLBAR
 /// Offers a toolbar together with stock art.
 class wxExToolBar : public wxToolBar
 {
@@ -267,5 +268,6 @@ public:
   /// Adds automatic naming (for stock menu id's) and art id for toolbar normal items.
   wxToolBarToolBase* AddTool(int toolId);
 };
+#endif // wxUSE_TOOLBAR
 #endif // wxUSE_GUI
 #endif

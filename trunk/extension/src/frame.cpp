@@ -416,6 +416,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 }
 #endif //wxUSE_STATUSBAR
 
+#if wxUSE_TOOLBAR
 wxExToolBar::wxExToolBar(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
@@ -450,4 +451,5 @@ wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
     art.GetBitmap(GetToolBitmapSize()),
     art.GetLabel(wxSTOCK_NOFLAGS));
 }
+#endif wxUSE_TOOLBAR
 #endif // wxUSE_GUI
