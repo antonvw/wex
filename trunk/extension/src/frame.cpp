@@ -451,5 +451,5 @@ wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
     art.GetBitmap(GetToolBitmapSize()),
     art.GetLabel(wxSTOCK_NOFLAGS));
 }
-#endif wxUSE_TOOLBAR
+#endif // wxUSE_TOOLBAR
 #endif // wxUSE_GUI
