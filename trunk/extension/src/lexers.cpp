@@ -102,7 +102,7 @@ const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
 
 const wxExLexer wxExLexers::FindByName(
   const wxString& name,
-  bool show_error_if_not_found) const
+  bool fail_if_not_found) const
 {
   for (
     std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
@@ -115,11 +115,9 @@ const wxExLexer wxExLexers::FindByName(
     }
   }
 
-  if (!m_Lexers.empty() && show_error_if_not_found)
+  if (!m_Lexers.empty() && fail_if_not_found)
   {
-    // We did not find a lexer, so give an error.
-    // The same error is shown in wxExSTC::SetLexer as well.
-    wxLogError(_("Lexer is not known") + ": " + name);
+    wxFAIL;
   }
 
   return wxExLexer();
