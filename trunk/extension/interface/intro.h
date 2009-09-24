@@ -23,8 +23,8 @@ Use the build.bkl in the trunk/build directory file to create a GNUMakefile and
 do make.
 
 \subsection step2 Windows
-Use the build.bkl in the trunk/build directory file to create a msvs2003 or 2008 
-project files use the Visual Studio build.sln in the trunk directory to build.
+Use the build.bkl in the trunk/build directory file to create a msvc2003 or 2008 
+project file. Use the generated Visual Studio build.sln file in the trunk directory to build.
 
 
 \section example_sec Examples
@@ -33,5 +33,5 @@ This shows you how to use most of the classes.
 
 
 \section release_sec Release Information
-See <a href="../release.htm">releases</a>
+See <a href="../documentation/release.htm">releases</a>
 */
