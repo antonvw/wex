@@ -322,8 +322,8 @@ public:
     const wxString& name = wxDialogNameStr);
 
   /// Gets the STC lexer.
-  const wxString GetLexer(const wxString& lexer) const {
-    m_STC->GetFileName().GetLexer().GetScintillaLexer();};
+  const wxString GetLexer() const {
+    return m_STC->GetFileName().GetLexer().GetScintillaLexer();};
 
   /// Gets the normal text value.
   const wxString GetText() const {return m_STC->GetText();};

@@ -251,6 +251,12 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
   {
     m_STCEntryDialog->SetText(m_Output);
     m_STCEntryDialog->SetTitle(caption);
+
+    // Reset a previous lexer.
+    if (!m_STCEntryDialog->GetLexer().empty())
+    {
+      m_STCEntryDialog->SetLexer(wxEmptyString);
+    }
   }
 
   // Add a lexer if we specified a path, asked for cat or blame 
