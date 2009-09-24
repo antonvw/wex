@@ -2721,16 +2721,13 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 
-  if (!text.empty())
+  if ((button_style & wxCANCEL) == 0 &&
+      (button_style & wxNO) == 0)
   {
-    if ((button_style & wxCANCEL) == 0 &&
-        (button_style & wxNO) == 0)
-    {
-      // You did not specify one of these buttons,
-      // so you cannot cancel the operation.
-      // Therefore make the component readonly.
-      m_STC->SetReadOnly(true);
-    }
+    // You did not specify one of these buttons,
+    // so you cannot cancel the operation.
+    // Therefore make the component readonly.
+    m_STC->SetReadOnly(true);
   }
 
   AddUserSizer(m_STC);
