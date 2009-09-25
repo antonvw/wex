@@ -51,7 +51,7 @@ private:
 };
 
 wxExPrintout::wxExPrintout(wxExSTC* owner)
-  : wxPrintout(owner->PrintCaption())
+: wxPrintout(wxExPrintCaption(owner->GetFileName()))
   , m_PageRect()
   , m_PrintRect()
   , m_PageBreaks()
@@ -159,7 +159,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   GetDC()->SetPen(*wxBLACK_PEN);
 
   // Print a header.
-  const wxString header = m_Owner->PrintHeader();
+  const wxString header = wxExPrintHeader(m_Owner->GetFileName());
   if (!header.empty())
   {
     GetDC()->DrawText(
@@ -175,7 +175,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   }
 
   // Print a footer
-  const wxString footer = m_Owner->PrintFooter();
+  const wxString footer = wxExPrintFooter();
   if (!footer.empty())
   {
     GetDC()->DrawText(
@@ -2115,7 +2115,7 @@ void wxExSTC::PrintPreview()
   wxPreviewFrame* frame = new wxPreviewFrame(
     preview,
     this,
-    PrintCaption());
+    wxExPrintCaption(m_FileName));
 
   frame->Initialize();
   frame->Show();

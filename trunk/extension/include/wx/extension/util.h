@@ -77,6 +77,17 @@ bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 /// Returns quotes around the text.
 const wxString wxExQuoted(const wxString& text);
 
+/// Adds a caption.
+const wxString wxExPrintCaption(const wxFileName& filename);
+
+/// You can use macros in PrintFooter and in PrintHeader:
+///   \@PAGENUM\@ is replaced by page number
+///   \@PAGESCNT\@ is replaced by total number of pages
+const wxString wxExPrintFooter();
+
+/// Adds a header.
+const wxString wxExPrintHeader(const wxFileName& filename);
+
 /// Returns a string without all white space in specified input.
 const wxString wxExSkipWhiteSpace(
   const wxString& text,

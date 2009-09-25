@@ -67,6 +67,12 @@ public:
   /// Paste starting at current grid cursor.
   void PasteCellsFromClipboard();
 
+  /// Invokes wxExApp PrintText with BuildPage.
+  void Print();
+
+  /// Invokes wxExApp PreviewText with BuildPage.
+  void PrintPreview();
+
   /// Fill cells with text starting at a cel.
   void SetCellsValue(const wxGridCellCoords& start_coords, const wxString& data);
 
@@ -76,9 +82,8 @@ public:
   void UseDragAndDrop(bool use);
 #endif
 protected:
-  // Interface from wxExInterface.
   /// Builds the page used for printing.
-//  virtual const wxString BuildPage();
+  const wxString BuildPage();
 
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);

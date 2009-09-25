@@ -181,49 +181,6 @@ void wxExListViewFile::AfterSorting()
   }
 }
 
-const wxString wxExListViewFile::BuildPage()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExApp::GetPrinter()->SetFooter(PrintFooter());
-  wxExApp::GetPrinter()->SetHeader(PrintHeader());
-#endif
-
-  wxString text;
-
-  text << "<TABLE ";
-
-  if ((GetWindowStyle() & wxLC_HRULES) ||
-      (GetWindowStyle() & wxLC_VRULES))
-    text << "border=1";
-  else
-    text << "border=0";
-
-  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
-
-  text << "<tr>" << wxTextFile::GetEOL();
-
-  for (int c = 0; c < GetColumnCount(); c++)
-  {
-    text << "<td><i>" << GetColumn(c).GetText() << "</i>" << wxTextFile::GetEOL();
-  }
-
-  for (long i = 0; i < GetItemCount(); i++)
-  {
-    text << "<tr>" << wxTextFile::GetEOL();
-
-    wxExListItem item(this, i);
-
-    for (int col = 0; col < GetColumnCount(); col++)
-    {
-      text << "<td>" << item.GetColumnText(col) << wxTextFile::GetEOL();
-    }
-  }
-
-  text << "</TABLE>" << wxTextFile::GetEOL();
-
-  return text;
-}
-
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
   bool exists = true;

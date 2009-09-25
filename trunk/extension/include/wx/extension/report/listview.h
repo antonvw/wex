@@ -118,7 +118,6 @@ public:
   /// Returns list type from tool id.
   static ListType GetTypeTool(const wxExTool& tool);
 protected:
-  virtual const wxString BuildPage();
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);

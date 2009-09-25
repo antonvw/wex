@@ -96,12 +96,11 @@ wxExGrid::wxExGrid(wxWindow* parent,
   SetAcceleratorTable(accel);
 }
 
-/*
 const wxString wxExGrid::BuildPage()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExApp::GetPrinter()->SetFooter(PrintFooter());
-  wxExApp::GetPrinter()->SetHeader(PrintHeader());
+  wxExApp::GetPrinter()->SetFooter(wxExPrintFooter());
+  wxExApp::GetPrinter()->SetHeader(wxExPrintHeader(wxFileName()));
 #endif
 
   wxString text;
@@ -146,7 +145,7 @@ const wxString wxExGrid::BuildPage()
 
   return text;
 }
-*/
+
 void wxExGrid::BuildPopupMenu(wxExMenu& menu)
 {
   menu.Append(wxID_FIND);
@@ -524,6 +523,22 @@ void wxExGrid::PasteCellsFromClipboard()
       GetGridCursorRow(), 
       GetGridCursorCol()), 
     wxExClipboardGet());
+}
+
+void wxExGrid::Print()
+{
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  wxBusyCursor wait;
+  wxExApp::GetPrinter()->PrintText(BuildPage());
+#endif
+}
+
+void wxExGrid::PrintPreview()
+{
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  wxBusyCursor wait;
+  wxExApp::GetPrinter()->PreviewText(BuildPage());
+#endif
 }
 
 void wxExGrid::SetGridCellValue(

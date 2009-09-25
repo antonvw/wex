@@ -174,26 +174,6 @@ public:
 
   /// Invoked ShowModal on dialog, and returns dialog return code.
   int ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue = true);
-
-  /// Build the page, for the htmleasyprinting.
-  virtual const wxString BuildPage() {return wxEmptyString;};
-
-  /// Invokes wxExApp PrintText with BuildPage.
-  void Print();
-
-  /// Adds a caption.
-  const wxString PrintCaption() const;
-
-  /// You can use macros in PrintFooter and in PrintHeader:
-  ///   \@PAGENUM\@ is replaced by page number
-  ///   \@PAGESCNT\@ is replaced by total number of pages
-  const wxString PrintFooter() const;
-
-  /// Adds a header.
-  const wxString PrintHeader() const;
-
-  /// Invokes wxExApp PreviewText with BuildPage.
-  void PrintPreview();
 protected:
   wxExFileName m_FileName; ///< the filename
 private:

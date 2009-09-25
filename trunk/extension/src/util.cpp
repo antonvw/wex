@@ -305,6 +305,38 @@ bool wxExOpenFile(const wxFileName& filename, long open_flags)
 }
 #endif
 
+const wxString wxExPrintCaption(const wxFileName& filename)
+{
+  if (filename.FileExists())
+  {
+    return filename.GetFullPath();
+  }
+  else
+  {
+    return _("Printout");
+  }
+}
+
+const wxString wxExPrintFooter()
+{
+  return _("Page @PAGENUM@ of @PAGESCNT@");
+}
+
+const wxString wxExPrintHeader(const wxFileName& filename)
+{
+  if (filename.FileExists())
+  {
+    return
+      wxExGetEndOfText(filename.GetFullPath(), 20) + " " +
+      filename.GetModificationTime().Format() + " " +
+      wxDateTime::Now().Format();
+  }
+  else
+  {
+    return _("Printed") + ": " + wxDateTime::Now().Format();
+  }
+}
+
 const wxString wxExQuoted(const wxString& text)
 {
   return "'" + text + "'";

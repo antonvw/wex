@@ -205,54 +205,6 @@ int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
   return dlg.ShowModal();
 }
 
-void wxExFile::Print()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxBusyCursor wait;
-  wxExApp::GetPrinter()->PrintText(BuildPage());
-#endif
-}
-
-const wxString wxExFile::PrintCaption() const
-{
-  if (m_FileName.FileExists())
-  {
-    return m_FileName.GetFullPath();
-  }
-  else
-  {
-    return _("Printout");
-  }
-}
-
-const wxString wxExFile::PrintFooter() const
-{
-  return _("Page @PAGENUM@ of @PAGESCNT@");
-}
-
-const wxString wxExFile::PrintHeader() const
-{
-  if (m_FileName.FileExists())
-  {
-    return
-      wxExGetEndOfText(m_FileName.GetFullPath(), 20) + " " +
-      m_FileName.GetStat().GetModificationTime() + " " +
-      wxDateTime::Now().Format();
-  }
-  else
-  {
-    return _("Printed") + ": " + wxDateTime::Now().Format();
-  }
-}
-
-void wxExFile::PrintPreview()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxBusyCursor wait;
-  wxExApp::GetPrinter()->PreviewText(BuildPage());
-#endif
-}
-
 int wxExFileName::GetIcon() const
 {
   if (m_Stat.IsOk())

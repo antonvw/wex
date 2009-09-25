@@ -140,6 +140,12 @@ public:
   /// Inserts a column.
   void InsertColumn(const wxExColumn& col);
 
+  /// Invokes wxExApp PrintText with BuildPage.
+  void Print();
+
+  /// Invokes wxExApp PreviewText with BuildPage.
+  void PrintPreview();
+
   /// Sorts on a column.
   /// If you specified use_images,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
@@ -198,6 +204,7 @@ protected:
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
+  const wxString BuildPage();
   void CopySelectedItemsToClipboard();
   void PasteItemsFromClipboard();
 
