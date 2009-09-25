@@ -198,9 +198,6 @@ protected:
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
-  // Interface, for wxExInterface overriden methods.
-  virtual const wxString BuildPage();
-
   void CopySelectedItemsToClipboard();
   void PasteItemsFromClipboard();
 

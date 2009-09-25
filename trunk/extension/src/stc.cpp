@@ -2100,33 +2100,6 @@ void wxExSTC::Print(bool prompt)
 }
 #endif
 
-const wxString wxExSTC::PrintCaption() const
-{
-  if (m_FileName.FileExists())
-  {
-    return m_FileName.GetFullPath();
-  }
-  else
-  {
-    return wxExInterface::PrintCaption();
-  }
-}
-
-const wxString wxExSTC::PrintHeader() const
-{
-  if (m_FileName.FileExists())
-  {
-    return
-      wxExGetEndOfText(m_FileName.GetFullPath(), 20) + " " +
-      m_FileName.GetStat().GetModificationTime() + " " +
-      wxDateTime::Now().Format();
-  }
-  else
-  {
-    return wxExInterface::PrintHeader();
-  }
-}
-
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::PrintPreview()
 {

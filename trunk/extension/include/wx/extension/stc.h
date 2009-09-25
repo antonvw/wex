@@ -114,8 +114,6 @@ public:
   // Interface, for wxExInterface overriden methods.
   virtual bool FindNext(const wxString& text, bool find_next = true);
   virtual void SetFindReplaceData() {GetSearchText();};
-  virtual const wxString PrintCaption() const;
-  virtual const wxString PrintHeader() const;
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();

@@ -84,22 +84,6 @@ void wxExInterface::OnFindDialog(wxFindDialogEvent& event)
   }
 }
 
-void wxExInterface::Print()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxBusyCursor wait;
-  wxExApp::GetPrinter()->PrintText(BuildPage());
-#endif
-}
-
-void wxExInterface::PrintPreview()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxBusyCursor wait;
-  wxExApp::GetPrinter()->PreviewText(BuildPage());
-#endif
-}
-
 void wxExInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)

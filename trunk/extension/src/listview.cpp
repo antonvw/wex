@@ -220,52 +220,6 @@ wxExListView::~wxExListView()
 {
 }
 
-const wxString wxExListView::BuildPage()
-{
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExApp::GetPrinter()->SetFooter(PrintFooter());
-  wxExApp::GetPrinter()->SetHeader(PrintHeader());
-#endif
-
-  wxString text;
-
-  text << "<TABLE ";
-
-  if ((GetWindowStyle() & wxLC_HRULES) ||
-      (GetWindowStyle() & wxLC_VRULES))
-    text << "border=1";
-  else
-    text << "border=0";
-
-  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
-
-  text << "<tr>" << wxTextFile::GetEOL();
-
-  for (
-    vector<wxExColumn>::const_iterator it = m_Columns.begin();
-    it != m_Columns.end();
-    ++it)
-  {
-    text << "<td><i>" << it->GetText() << "</i>" << wxTextFile::GetEOL();
-  }
-
-  for (long i = 0; i < GetItemCount(); i++)
-  {
-    text << "<tr>" << wxTextFile::GetEOL();
-
-    wxExListItem item(this, i);
-
-    for (int col = 0; col < GetColumnCount(); col++)
-    {
-      text << "<td>" << item.GetColumnText(col) << wxTextFile::GetEOL();
-    }
-  }
-
-  text << "</TABLE>" << wxTextFile::GetEOL();
-
-  return text;
-}
-
 void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
   menu.AppendEdit(true);

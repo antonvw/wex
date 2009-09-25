@@ -78,7 +78,7 @@ public:
 protected:
   // Interface from wxExInterface.
   /// Builds the page used for printing.
-  virtual const wxString BuildPage();
+//  virtual const wxString BuildPage();
 
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);

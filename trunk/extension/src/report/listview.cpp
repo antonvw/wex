@@ -14,6 +14,8 @@
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>
 
+using namespace std;
+
 #if wxUSE_DRAG_AND_DROP
 class ListViewDropTarget : public wxFileDropTarget
 {
@@ -177,6 +179,49 @@ void wxExListViewFile::AfterSorting()
   {
     m_ContentsChanged = true;
   }
+}
+
+const wxString wxExListViewFile::BuildPage()
+{
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  wxExApp::GetPrinter()->SetFooter(PrintFooter());
+  wxExApp::GetPrinter()->SetHeader(PrintHeader());
+#endif
+
+  wxString text;
+
+  text << "<TABLE ";
+
+  if ((GetWindowStyle() & wxLC_HRULES) ||
+      (GetWindowStyle() & wxLC_VRULES))
+    text << "border=1";
+  else
+    text << "border=0";
+
+  text << " cellpadding=4 cellspacing=0 >" << wxTextFile::GetEOL();
+
+  text << "<tr>" << wxTextFile::GetEOL();
+
+  for (int c = 0; c < GetColumnCount(); c++)
+  {
+    text << "<td><i>" << GetColumn(c).GetText() << "</i>" << wxTextFile::GetEOL();
+  }
+
+  for (long i = 0; i < GetItemCount(); i++)
+  {
+    text << "<tr>" << wxTextFile::GetEOL();
+
+    wxExListItem item(this, i);
+
+    for (int col = 0; col < GetColumnCount(); col++)
+    {
+      text << "<td>" << item.GetColumnText(col) << wxTextFile::GetEOL();
+    }
+  }
+
+  text << "</TABLE>" << wxTextFile::GetEOL();
+
+  return text;
 }
 
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
@@ -704,21 +749,6 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
 #if wxUSE_STATUSBAR
   UpdateStatusBar();
 #endif
-}
-
-const wxString wxExListViewFile::PrintHeader() const
-{
-  if (m_FileName.FileExists())
-  {
-    return
-      wxExGetEndOfText(m_FileName.GetFullPath(), 20) + " " +
-      m_FileName.GetStat().GetModificationTime() + " " +
-      wxDateTime::Now().Format();
-  }
-  else
-  {
-    return GetTypeDescription() + " " + wxDateTime::Now().Format();
-  }
 }
 
 #if wxUSE_DRAG_AND_DROP

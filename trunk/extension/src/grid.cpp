@@ -96,6 +96,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   SetAcceleratorTable(accel);
 }
 
+/*
 const wxString wxExGrid::BuildPage()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
@@ -145,7 +146,7 @@ const wxString wxExGrid::BuildPage()
 
   return text;
 }
-
+*/
 void wxExGrid::BuildPopupMenu(wxExMenu& menu)
 {
   menu.Append(wxID_FIND);

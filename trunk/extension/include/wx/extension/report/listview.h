@@ -74,10 +74,6 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
-  /// Returns a print header depending on whether we have an associated file
-  /// or the type description.
-  virtual const wxString PrintHeader() const;
-
   /// Invokes FileNew and clears the list.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
@@ -122,6 +118,7 @@ public:
   /// Returns list type from tool id.
   static ListType GetTypeTool(const wxExTool& tool);
 protected:
+  virtual const wxString BuildPage();
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);

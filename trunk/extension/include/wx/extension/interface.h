@@ -21,7 +21,7 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-/// Offers a general find and printer interface.
+/// Offers a general find interface.
 class wxExInterface
 {
 public:
@@ -60,28 +60,6 @@ public:
   /// Allows you to update the find and replace data before Find or
   /// Replace Dialog is shown.
   virtual void SetFindReplaceData() {;};
-
-  /// Build the page, for the htmleasyprinting.
-  virtual const wxString BuildPage() {return wxEmptyString;};
-
-  /// Invokes wxExApp PrintText with BuildPage.
-  void Print();
-
-  /// Adds a caption.
-  virtual const wxString PrintCaption() const {return _("Printout");};
-
-  /// You can use macros in PrintFooter and in PrintHeader:
-  ///   \@PAGENUM\@ is replaced by page number
-  ///   \@PAGESCNT\@ is replaced by total number of pages
-  virtual const wxString PrintFooter() const
-    {return _("Page @PAGENUM@ of @PAGESCNT@");};
-
-  /// Adds a header.
-  virtual const wxString PrintHeader() const
-    {return _("Printed") + ": " + wxDateTime::Now().Format();};
-
-  /// Invokes wxExApp PreviewText with BuildPage.
-  void PrintPreview();
 protected:
   void OnFindDialog(wxFindDialogEvent& event);
 private:
