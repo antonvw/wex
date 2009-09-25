@@ -265,7 +265,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , wxExInterface()
+  , wxExFindReplaceDialog()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1)
@@ -298,7 +298,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , wxExInterface()
+  , wxExFindReplaceDialog()
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
@@ -1737,7 +1737,7 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    wxExInterface::OnFindDialog(event);
+    wxExFindReplaceDialog::OnFindDialog(event);
   }
 }
 

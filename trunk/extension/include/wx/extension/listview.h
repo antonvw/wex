@@ -16,7 +16,7 @@
 #include <vector>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
-#include <wx/extension/fdrepdlg.h> // for wxExInterface
+#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GUI
@@ -79,7 +79,7 @@ private:
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
 /// Small images have size 16,16 and large images size 32,32.
-class wxExListView : public wxListView, public wxExInterface
+class wxExListView : public wxListView, public wxExFindReplaceDialog
 {
 public:
   /// Which images to use.
@@ -177,7 +177,7 @@ protected:
   // Cannot be const.
   virtual const wxString ItemToText(int item_number);
 
-  /// Interface from wxExInterface.
+  /// Interface from wxExFindReplaceDialog.
   virtual bool FindNext(const wxString& text, bool find_next = true);
 
   /// Builds the popup menu.

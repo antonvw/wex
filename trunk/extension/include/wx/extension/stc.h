@@ -15,7 +15,7 @@
 #include <vector> 
 #include <wx/print.h> 
 #include <wx/stc/stc.h>
-#include <wx/extension/fdrepdlg.h> // for wxExInterface
+#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/file.h> // for wxExFile
 #include <wx/extension/menu.h> // for wxExMenu
 #include <wx/extension/dialog.h> // for wxExDialog
@@ -27,7 +27,7 @@ class wxExConfigDialog;
 /// config support and syntax colouring. Also adds synchronizing to the window,
 /// and if the file is a logfile and
 /// the caret is at the end, it stays at the end after syncing.
-class wxExSTC : public wxStyledTextCtrl, public wxExFile, public wxExInterface
+class wxExSTC : public wxStyledTextCtrl, public wxExFile, public wxExFindReplaceDialog
 {
 public:
   /// Menu and tooltip flags (0 is used for no menu).
@@ -111,7 +111,7 @@ public:
   virtual bool GetContentsChanged() {return GetModify();};
   virtual void ResetContentsChanged();
 
-  // Interface, for wxExInterface overriden methods.
+  // Interface, for wxExFindReplaceDialog overriden methods.
   virtual bool FindNext(const wxString& text, bool find_next = true);
   virtual void SetFindReplaceData() {GetSearchText();};
 

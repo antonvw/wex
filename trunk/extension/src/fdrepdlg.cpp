@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          fdrepdlg.cpp
-* Purpose:       Implementation of wxExInterface class
+* Purpose:       Implementation of wxExFindReplaceDialog class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,7 +16,7 @@
 
 #if wxUSE_GUI
 
-void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
+void wxExFindReplaceDialog::FindDialog(wxWindow* parent, const wxString& caption)
 {
   SetFindReplaceData();
 
@@ -33,7 +33,7 @@ void wxExInterface::FindDialog(wxWindow* parent, const wxString& caption)
   m_FindReplaceDialog->Show();
 }
 
-bool wxExInterface::FindResult(
+bool wxExFindReplaceDialog::FindResult(
   const wxString& text, 
   bool find_next, 
   bool& recursive)
@@ -59,7 +59,7 @@ bool wxExInterface::FindResult(
   }
 }
 
-void wxExInterface::OnFindDialog(wxFindDialogEvent& event)
+void wxExFindReplaceDialog::OnFindDialog(wxFindDialogEvent& event)
 {
   wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
 
@@ -84,7 +84,7 @@ void wxExInterface::OnFindDialog(wxFindDialogEvent& event)
   }
 }
 
-void wxExInterface::ReplaceDialog(wxWindow* parent, const wxString& caption)
+void wxExFindReplaceDialog::ReplaceDialog(wxWindow* parent, const wxString& caption)
 {
   if (m_FindReplaceDialog != NULL)
   {

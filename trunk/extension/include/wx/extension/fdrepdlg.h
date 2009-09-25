@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          fdrepdlg.h
-* Purpose:       Declaration of wxExInterface class
+* Purpose:       Declaration of wxExFindReplaceDialog class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _EXINTERFACE_H
-#define _EXINTERFACE_H
+#ifndef _EXFDREPDLG_H
+#define _EXFDREPDLG_H
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -22,15 +22,15 @@
 #if wxUSE_GUI
 
 /// Offers a general find interface.
-class wxExInterface
+class wxExFindReplaceDialog
 {
 public:
   /// Default constructor.
-  wxExInterface()
+  wxExFindReplaceDialog()
     : m_FindReplaceDialog(NULL) {;};
 
   /// Destructor.
-  virtual ~wxExInterface() {
+  virtual ~wxExFindReplaceDialog() {
     if (m_FindReplaceDialog != NULL) 
     {
       m_FindReplaceDialog->Destroy();

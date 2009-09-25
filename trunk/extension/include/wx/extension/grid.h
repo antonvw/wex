@@ -20,7 +20,7 @@
 
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
-class wxExGrid : public wxGrid, public wxExInterface
+class wxExGrid : public wxGrid, public wxExFindReplaceDialog
 {
 public:
   /// Constructor.
@@ -88,7 +88,7 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
 
-  /// Interface from wxExInterface.
+  /// Interface from wxExFindReplaceDialog.
   virtual bool FindNext(const wxString& text, bool find_next = true);
 
   /// Updates find replace text.

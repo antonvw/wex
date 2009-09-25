@@ -165,7 +165,7 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxValidator& validator,
   const wxString &name)
   : wxListView(parent, id, pos, size, style, validator, name)
-  , wxExInterface()
+  , wxExFindReplaceDialog()
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
   , m_ImageHeightSmall(16)
@@ -684,7 +684,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 
 void wxExListView::OnFindDialog(wxFindDialogEvent& event)
 {
-  wxExInterface::OnFindDialog(event);
+  wxExFindReplaceDialog::OnFindDialog(event);
 }
 
 void wxExListView::OnList(wxListEvent& event)
