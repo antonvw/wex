@@ -16,7 +16,7 @@
 #include <vector>
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
-#include <wx/extension/interface.h> // for wxExInterface
+#include <wx/extension/fdrepdlg.h> // for wxExInterface
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GUI

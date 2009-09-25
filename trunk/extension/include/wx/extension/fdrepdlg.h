@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          interface.h
+* File:          fdrepdlg.h
 * Purpose:       Declaration of wxExInterface class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$

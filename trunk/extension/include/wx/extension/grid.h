@@ -13,7 +13,7 @@
 #define _EXGRID_H
 
 #include <wx/grid.h>
-#include <wx/extension/interface.h>
+#include <wx/extension/fdrepdlg.h>
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GRID
