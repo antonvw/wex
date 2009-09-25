@@ -22,32 +22,16 @@
 #if wxUSE_GUI
 
 /// Offers a general find interface.
-class wxExFindReplaceDialog
+class wxExFindReplaceDialog : public wxFindReplaceDialog
 {
 public:
   /// Default constructor.
-  wxExFindReplaceDialog()
-    : m_FindReplaceDialog(NULL) {;};
-
-  /// Destructor.
-  virtual ~wxExFindReplaceDialog() {
-    if (m_FindReplaceDialog != NULL) 
-    {
-      m_FindReplaceDialog->Destroy();
-      m_FindReplaceDialog = NULL;
-    };};
+  wxExFindReplaceDialog();
 
   /// Shows a find dialog.
   void FindDialog(
     wxWindow* parent, 
-    const wxString& caption = _("Find"));
-
-  /// Finds next (or previous) occurrence.
-  /// Default returns false.
-  virtual bool FindNext(
-    const wxString& WXUNUSED(text), 
-    bool WXUNUSED(find_next) = true) {
-    return false;};
+    const wxString& title = _("Find"));
 
   /// Shows searching for in the statusbar, and calls FindNext.
   bool FindResult(const wxString& text, bool find_next, bool& recursive);
@@ -55,15 +39,7 @@ public:
   /// Shows a replace dialog.
   void ReplaceDialog(
     wxWindow* parent, 
-    const wxString& caption = _("Replace"));
-
-  /// Allows you to update the find and replace data before Find or
-  /// Replace Dialog is shown.
-  virtual void SetFindReplaceData() {;};
-protected:
-  void OnFindDialog(wxFindDialogEvent& event);
-private:
-  wxFindReplaceDialog* m_FindReplaceDialog;
+    const wxString& title = _("Replace"));
 };
 #endif // wxUSE_GUI
 #endif

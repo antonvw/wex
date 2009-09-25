@@ -16,21 +16,20 @@
 
 #if wxUSE_GUI
 
-void wxExFindReplaceDialog::FindDialog(wxWindow* parent, const wxString& caption)
+wxExFindReplaceDialog::wxExFindReplaceDialog()
 {
-  SetFindReplaceData();
+}
 
-  if (m_FindReplaceDialog != NULL)
-  {
-    m_FindReplaceDialog->Destroy();
-  }
+void wxExFindReplaceDialog::FindDialog(wxWindow* parent, const wxString& title)
+{
+  Destroy();
 
-  m_FindReplaceDialog = new wxFindReplaceDialog(
+  Create(
     parent,
     wxExApp::GetConfig()->GetFindReplaceData(),
-    caption);
+    title);
 
-  m_FindReplaceDialog->Show();
+  Show();
 }
 
 bool wxExFindReplaceDialog::FindResult(
@@ -46,7 +45,7 @@ bool wxExFindReplaceDialog::FindResult(
     wxExFrame::StatusText(
       _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("hit") + " " + where);
 #endif
-    return FindNext(text, find_next);
+    return true;
   }
   else
   {
@@ -59,45 +58,17 @@ bool wxExFindReplaceDialog::FindResult(
   }
 }
 
-void wxExFindReplaceDialog::OnFindDialog(wxFindDialogEvent& event)
+void wxExFindReplaceDialog::ReplaceDialog(wxWindow* parent, const wxString& title)
 {
-  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  Destroy();
 
-  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
-
-  if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
-  {
-    m_FindReplaceDialog->Destroy();
-    m_FindReplaceDialog = NULL;
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND)
-  {
-    FindNext(frd->GetFindString(), find_next);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    FindNext(frd->GetFindString(), find_next);
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExFindReplaceDialog::ReplaceDialog(wxWindow* parent, const wxString& caption)
-{
-  if (m_FindReplaceDialog != NULL)
-  {
-    m_FindReplaceDialog->Destroy();
-  }
-
-  m_FindReplaceDialog = new wxFindReplaceDialog(
+  Create(
     parent,
     wxExApp::GetConfig()->GetFindReplaceData(),
-    caption,
+    title,
     wxFR_REPLACEDIALOG);
 
-  m_FindReplaceDialog->Show();
+  Show();
 }
 
 #endif // wxUSE_GUI

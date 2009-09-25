@@ -80,7 +80,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   long style,
   const wxString& name)
   : wxGrid(parent, id, pos, size, style, name)
-  , wxExFindReplaceDialog()
+  , m_ExFindReplaceDialog(new wxExFindReplaceDialog)
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new wxExTextDropTarget(this));
@@ -399,7 +399,8 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
 
 void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
 {
-  wxExFindReplaceDialog::OnFindDialog(event);
+  SetFindReplaceData();
+  FindNext(m_FindReplaceData->GetFindString());
 }
 
 void wxExGrid::OnGrid(wxGridEvent& event)

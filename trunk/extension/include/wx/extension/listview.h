@@ -79,7 +79,7 @@ private:
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
 /// Small images have size 16,16 and large images size 32,32.
-class wxExListView : public wxListView, public wxExFindReplaceDialog
+class wxExListView : public wxListView
 {
 public:
   /// Which images to use.
@@ -218,6 +218,8 @@ private:
 
   int m_SortedColumnNo;
   int m_ToBeSortedColumnNo;
+  
+  wxExFindReplaceDialog* m_ExFindReplaceDialog;
 
   std::map<wxArtID, unsigned int> m_ArtIDs;
   // Do not make a const of it, does not compile on Linux.

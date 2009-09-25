@@ -27,7 +27,7 @@ class wxExConfigDialog;
 /// config support and syntax colouring. Also adds synchronizing to the window,
 /// and if the file is a logfile and
 /// the caret is at the end, it stays at the end after syncing.
-class wxExSTC : public wxStyledTextCtrl, public wxExFile, public wxExFindReplaceDialog
+class wxExSTC : public wxStyledTextCtrl, public wxExFile
 {
 public:
   /// Menu and tooltip flags (0 is used for no menu).
@@ -287,6 +287,8 @@ private:
 #if wxUSE_PRINTING_ARCHITECTURE
   static wxPrinter* m_Printer;
 #endif
+
+  wxExFindReplaceDialog* m_ExFindReplaceDialog;
 
   bool m_FileSaveInMenu;
   long m_Flags; // open flags
