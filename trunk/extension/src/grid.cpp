@@ -412,7 +412,8 @@ void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
   }
   else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
-    m_FindReplaceDialog->Hide();
+    m_FindReplaceDialog->Destroy();
+    m_FindReplaceDialog = NULL;
   }
   else
   {

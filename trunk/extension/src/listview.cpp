@@ -687,13 +687,18 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 
 void wxExListView::OnFindDialog(wxFindDialogEvent& event)
 {
-  if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  if (event.GetEventType() == wxEVT_COMMAND_FIND)
+  {
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
   {
     FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
   }
   else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
-    m_FindReplaceDialog->Hide();
+    m_FindReplaceDialog->Destroy();
+    m_FindReplaceDialog = NULL;
   }
   else
   {

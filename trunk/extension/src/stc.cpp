@@ -1639,8 +1639,17 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
   wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
 
-  if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  if (event.GetEventType() == wxEVT_COMMAND_FIND)
+  {
+    FindNext(frd->GetFindString(), find_next);
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    FindNext(frd->GetFindString(), find_next);
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
   {
     if (!GetSelectedText().empty())
     {
@@ -1658,7 +1667,6 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
     else
       ReplaceTarget(frd->GetReplaceString());
 
-    const bool find_next = (frd->GetFlags() & wxFR_DOWN);
     FindNext(frd->GetFindString(), find_next);
   }
   else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
