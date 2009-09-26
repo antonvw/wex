@@ -30,9 +30,6 @@ public:
     wxWindow *parent,
     const wxString& title,
 		int style = 0);
-
-  /// Shows searching for in the statusbar, and calls FindNext.
-  bool FindResult(const wxString& text, bool find_next, bool& recursive);
 };
 #endif // wxUSE_GUI
 #endif

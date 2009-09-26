@@ -458,7 +458,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    return m_FindReplaceDialog->FindResult(text, find_next, recursive);
+    return wxExFindResult(text, find_next, recursive);
   }
 }
 

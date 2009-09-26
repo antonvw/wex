@@ -281,7 +281,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
   if (!match)
   {
-    return m_FindReplaceDialog->FindResult(text, find_next, recursive);
+    return wxExFindResult(text, find_next, recursive);
   }
   else
   {

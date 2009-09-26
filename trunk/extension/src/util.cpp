@@ -170,6 +170,32 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
   return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
+bool wxExFindResult(
+  const wxString& text, 
+  bool find_next, 
+  bool& recursive)
+{
+  if (!recursive)
+  {
+    recursive = true;
+    const wxString where = (find_next) ? _("bottom"): _("top");
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(
+      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("hit") + " " + where);
+#endif
+    return true;
+  }
+  else
+  {
+    recursive = false;
+    wxBell();
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("not found"));
+#endif
+    return false;
+  }
+}
+
 const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars)

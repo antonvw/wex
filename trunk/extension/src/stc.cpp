@@ -1076,7 +1076,7 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
   if (SearchInTarget(text) < 0)
   {
-    return m_FindReplaceDialog->FindResult(text, find_next, recursive);
+    return wxExFindResult(text, find_next, recursive);
   }
   else
   {
@@ -1303,7 +1303,7 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
     if (SearchInTarget(text) < 0)
     {
       bool recursive = true;
-      m_FindReplaceDialog->FindResult(text, true, recursive);
+      wxExFindResult(text, true, recursive);
       return;
     }
   }
