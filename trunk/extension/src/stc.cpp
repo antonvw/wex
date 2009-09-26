@@ -1553,15 +1553,23 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_CUT: Cut(); break;
   case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
   case wxID_FIND: 
-    if (m_FindReplaceDialog == NULL)
-      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    if (m_FindReplaceDialog != NULL)
+    {
+      m_FindReplaceDialog->Destroy();
+    }
+    
+    m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
     m_FindReplaceDialog->Show();
     break;
   case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
   case wxID_REPLACE: 
-    if (m_FindReplaceDialog == NULL)
-      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Replace"), wxFR_REPLACEDIALOG); 
+    if (m_FindReplaceDialog != NULL)
+    {
+      m_FindReplaceDialog->Destroy();
+    }
+    
+    m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Replace"), wxFR_REPLACEDIALOG); 
     m_FindReplaceDialog->Show();
     break;
   case wxID_SELECTALL: SelectAll(); break;
