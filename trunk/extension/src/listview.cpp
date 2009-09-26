@@ -166,7 +166,7 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxValidator& validator,
   const wxString &name)
   : wxListView(parent, id, pos, size, style, validator, name)
-  , m_FindReplaceDialog(new wxExFindReplaceDialog())
+  , m_FindReplaceDialog(NULL)
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
   , m_ImageHeightSmall(16)
@@ -667,7 +667,9 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     }
     break;
   case ID_LIST_FIND:
-    m_FindReplaceDialog->FindDialog(this);
+    if (m_FindReplaceDialog == NULL)
+      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    m_FindReplaceDialog->Show();
     break;
   case ID_LIST_FIND_NEXT:
     FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
@@ -685,7 +687,18 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 
 void wxExListView::OnFindDialog(wxFindDialogEvent& event)
 {
-  FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+  if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  {
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
+  {
+    m_FindReplaceDialog->Hide();
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExListView::OnList(wxListEvent& event)

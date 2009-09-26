@@ -25,21 +25,14 @@
 class wxExFindReplaceDialog : public wxFindReplaceDialog
 {
 public:
-  /// Default constructor.
-  wxExFindReplaceDialog();
-
-  /// Shows a find dialog.
-  void FindDialog(
-    wxWindow* parent, 
-    const wxString& title = _("Find"));
+  /// Constructor.
+  wxExFindReplaceDialog(
+    wxWindow *parent,
+    const wxString& title,
+		int style = 0);
 
   /// Shows searching for in the statusbar, and calls FindNext.
   bool FindResult(const wxString& text, bool find_next, bool& recursive);
-
-  /// Shows a replace dialog.
-  void ReplaceDialog(
-    wxWindow* parent, 
-    const wxString& title = _("Replace"));
 };
 #endif // wxUSE_GUI
 #endif

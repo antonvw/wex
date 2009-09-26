@@ -81,7 +81,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   long style,
   const wxString& name)
   : wxGrid(parent, id, pos, size, style, name)
-  , m_FindReplaceDialog(new wxExFindReplaceDialog)
+  , m_FindReplaceDialog(NULL)
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new wxExTextDropTarget(this));
@@ -381,7 +381,11 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   case wxID_COPY: CopySelectedCellsToClipboard(); break;
   case wxID_CUT: CopySelectedCellsToClipboard(); EmptySelection(); break;
   case wxID_DELETE: EmptySelection(); break;
-  case wxID_FIND: m_FindReplaceDialog->FindDialog(this); break;
+  case wxID_FIND: 
+    if (m_FindReplaceDialog == NULL)
+      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    m_FindReplaceDialog->Show();
+    break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;
   case wxID_SELECTALL: SelectAll(); break;
 
@@ -401,7 +405,19 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
 void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
 {
   SetFindReplaceData();
-  FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+
+  if (event.GetEventType() == wxEVT_COMMAND_FIND)
+  {
+    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
+  {
+    m_FindReplaceDialog->Hide();
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExGrid::OnGrid(wxGridEvent& event)

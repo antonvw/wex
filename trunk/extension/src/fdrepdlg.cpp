@@ -16,20 +16,12 @@
 
 #if wxUSE_GUI
 
-wxExFindReplaceDialog::wxExFindReplaceDialog()
+wxExFindReplaceDialog::wxExFindReplaceDialog(
+    wxWindow *parent,
+    const wxString& title,
+		int style)
+  : wxFindReplaceDialog(parent, wxExApp::GetConfig()->GetFindReplaceData(), title, style)
 {
-}
-
-void wxExFindReplaceDialog::FindDialog(wxWindow* parent, const wxString& title)
-{
-  Destroy();
-
-  Create(
-    parent,
-    wxExApp::GetConfig()->GetFindReplaceData(),
-    title);
-
-  Show();
 }
 
 bool wxExFindReplaceDialog::FindResult(
@@ -57,18 +49,4 @@ bool wxExFindReplaceDialog::FindResult(
     return false;
   }
 }
-
-void wxExFindReplaceDialog::ReplaceDialog(wxWindow* parent, const wxString& title)
-{
-  Destroy();
-
-  Create(
-    parent,
-    wxExApp::GetConfig()->GetFindReplaceData(),
-    title,
-    wxFR_REPLACEDIALOG);
-
-  Show();
-}
-
 #endif // wxUSE_GUI

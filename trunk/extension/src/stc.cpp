@@ -266,7 +266,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , m_FindReplaceDialog(new wxExFindReplaceDialog())
+  , m_FindReplaceDialog(NULL)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1)
@@ -299,7 +299,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , m_FindReplaceDialog(new wxExFindReplaceDialog())
+  , m_FindReplaceDialog(NULL)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
@@ -312,6 +312,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
+  : m_FindReplaceDialog(NULL)
 {
   wxStyledTextCtrl::Create(stc.GetParent());
 
@@ -1551,10 +1552,18 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
   case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
-  case wxID_FIND: m_FindReplaceDialog->FindDialog(this); break;
+  case wxID_FIND: 
+    if (m_FindReplaceDialog == NULL)
+      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    m_FindReplaceDialog->Show();
+    break;
   case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
-  case wxID_REPLACE: m_FindReplaceDialog->ReplaceDialog(this); break;
+  case wxID_REPLACE: 
+    if (m_FindReplaceDialog == NULL)
+      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Replace"), wxFR_REPLACEDIALOG); 
+    m_FindReplaceDialog->Show();
+    break;
   case wxID_SELECTALL: SelectAll(); break;
   case wxID_UNDO: Undo(); break;
   case wxID_REDO: Redo(); break;
@@ -1735,6 +1744,11 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
     wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
       nr_replacements, frd->GetFindString().c_str()));
 #endif
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
+  {
+    m_FindReplaceDialog->Destroy();
+    m_FindReplaceDialog = NULL;
   }
   else
   {
