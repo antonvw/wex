@@ -13,14 +13,15 @@
 #define _EXSTC_H
 
 #include <vector> 
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/print.h> 
 #include <wx/stc/stc.h>
-#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/file.h> // for wxExFile
 #include <wx/extension/menu.h> // for wxExMenu
 #include <wx/extension/dialog.h> // for wxExDialog
 
 class wxExConfigDialog;
+class wxExFindReplaceDialog;
 
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
@@ -111,10 +112,6 @@ public:
   virtual bool GetContentsChanged() {return GetModify();};
   virtual void ResetContentsChanged();
 
-  // Interface, for wxExFindReplaceDialog overriden methods.
-  virtual bool FindNext(const wxString& text, bool find_next = true);
-  virtual void SetFindReplaceData() {GetSearchText();};
-
   /// Adds an ascii table to current document.
   void AddAsciiTable();
 
@@ -146,6 +143,9 @@ public:
 
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
+
+  // Finds next.
+  bool FindNext(const wxString& text, bool find_next = true);
 
   /// Gets EOL string.
   const wxString GetEOL() const;
@@ -204,6 +204,9 @@ public:
   /// default, or the explicit lexer if specified.
   /// Then colourises the document.
   void SetLexer(const wxString& lexer = wxEmptyString, bool forced = false);
+
+  /// TODO: not necessary, just use GetSearchText.
+  void SetFindReplaceData() {GetSearchText();};
 
   /// Sets the text.
   void SetText(const wxString& value);
@@ -288,7 +291,7 @@ private:
   static wxPrinter* m_Printer;
 #endif
 
-  wxExFindReplaceDialog* m_ExFindReplaceDialog;
+  wxExFindReplaceDialog* m_FindReplaceDialog;
 
   bool m_FileSaveInMenu;
   long m_Flags; // open flags

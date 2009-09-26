@@ -13,9 +13,10 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/app.h> // for wxExApp
-#include <wx/extension/frame.h>
 #include <wx/extension/configdialog.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/textfile.h>
 
 #if wxUSE_GUI
@@ -265,7 +266,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , wxExFindReplaceDialog()
+  , m_FindReplaceDialog(new wxExFindReplaceDialog())
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1)
@@ -298,7 +299,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , wxExFindReplaceDialog()
+  , m_FindReplaceDialog(new wxExFindReplaceDialog())
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
@@ -1074,7 +1075,7 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
   if (SearchInTarget(text) < 0)
   {
-    return FindResult(text, find_next, recursive);
+    return m_FindReplaceDialog->FindResult(text, find_next, recursive);
   }
   else
   {
@@ -1301,7 +1302,7 @@ void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
     if (SearchInTarget(text) < 0)
     {
       bool recursive = true;
-      FindResult(text, true, recursive);
+      m_FindReplaceDialog->FindResult(text, true, recursive);
       return;
     }
   }
@@ -1550,10 +1551,10 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
   case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
-  case wxID_FIND: FindDialog(this); break;
+  case wxID_FIND: m_FindReplaceDialog->FindDialog(this); break;
   case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
-  case wxID_REPLACE: ReplaceDialog(this); break;
+  case wxID_REPLACE: m_FindReplaceDialog->ReplaceDialog(this); break;
   case wxID_SELECTALL: SelectAll(); break;
   case wxID_UNDO: Undo(); break;
   case wxID_REDO: Redo(); break;
@@ -1737,7 +1738,7 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    wxExFindReplaceDialog::OnFindDialog(event);
+    wxFAIL;
   }
 }
 

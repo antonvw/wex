@@ -16,6 +16,7 @@
 #include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/fdrepdlg.h>
 
 #if wxUSE_GRID
 #if wxUSE_DRAG_AND_DROP
@@ -80,7 +81,7 @@ wxExGrid::wxExGrid(wxWindow* parent,
   long style,
   const wxString& name)
   : wxGrid(parent, id, pos, size, style, name)
-  , m_ExFindReplaceDialog(new wxExFindReplaceDialog)
+  , m_FindReplaceDialog(new wxExFindReplaceDialog)
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new wxExTextDropTarget(this));
@@ -280,7 +281,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
   if (!match)
   {
-    return FindResult(text, find_next, recursive);
+    return m_FindReplaceDialog->FindResult(text, find_next, recursive);
   }
   else
   {
@@ -380,7 +381,7 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   case wxID_COPY: CopySelectedCellsToClipboard(); break;
   case wxID_CUT: CopySelectedCellsToClipboard(); EmptySelection(); break;
   case wxID_DELETE: EmptySelection(); break;
-  case wxID_FIND: FindDialog(this); break;
+  case wxID_FIND: m_FindReplaceDialog->FindDialog(this); break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;
   case wxID_SELECTALL: SelectAll(); break;
 
@@ -400,7 +401,7 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
 void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
 {
   SetFindReplaceData();
-  FindNext(m_FindReplaceData->GetFindString());
+  FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
 }
 
 void wxExGrid::OnGrid(wxGridEvent& event)

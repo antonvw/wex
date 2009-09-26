@@ -14,9 +14,9 @@
 
 #include <map>
 #include <vector>
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
-#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GUI
@@ -75,6 +75,8 @@ private:
   wxExColumnType m_Type;
   bool m_IsSortedAscending;
 };
+
+class wxExFindReplaceDialog;
 
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
@@ -177,9 +179,6 @@ protected:
   // Cannot be const.
   virtual const wxString ItemToText(int item_number);
 
-  /// Interface from wxExFindReplaceDialog.
-  virtual bool FindNext(const wxString& text, bool find_next = true);
-
   /// Builds the popup menu.
   void BuildPopupMenu(wxExMenu& menu);
 
@@ -194,6 +193,9 @@ protected:
 
   /// Selects all items.
   void EditSelectAll();
+
+  /// Finds next.
+  bool FindNext(const wxString& text, bool find_next = true);
 
   /// Resets column that was used for sorting.
   void SortColumnReset();
@@ -219,7 +221,7 @@ private:
   int m_SortedColumnNo;
   int m_ToBeSortedColumnNo;
   
-  wxExFindReplaceDialog* m_ExFindReplaceDialog;
+  wxExFindReplaceDialog* m_FindReplaceDialog;
 
   std::map<wxArtID, unsigned int> m_ArtIDs;
   // Do not make a const of it, does not compile on Linux.

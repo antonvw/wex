@@ -13,10 +13,12 @@
 #define _EXGRID_H
 
 #include <wx/grid.h>
-#include <wx/extension/fdrepdlg.h>
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GRID
+
+class wxExFindReplaceDialog;
 
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
@@ -104,7 +106,7 @@ private:
   bool m_UseDragAndDrop;
 #endif
 
-  wxExFindReplaceDialog* m_ExFindReplaceDialog;
+  wxExFindReplaceDialog* m_FindReplaceDialog;
 
   DECLARE_EVENT_TABLE()
 };

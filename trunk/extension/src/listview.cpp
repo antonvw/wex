@@ -18,6 +18,7 @@
 #include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 
 #if wxUSE_GUI
 
@@ -165,7 +166,7 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxValidator& validator,
   const wxString &name)
   : wxListView(parent, id, pos, size, style, validator, name)
-  , wxExFindReplaceDialog()
+  , m_FindReplaceDialog(new wxExFindReplaceDialog())
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
   , m_ImageHeightSmall(16)
@@ -457,7 +458,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    return FindResult(text, find_next, recursive);
+    return m_FindReplaceDialog->FindResult(text, find_next, recursive);
   }
 }
 
@@ -666,7 +667,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     }
     break;
   case ID_LIST_FIND:
-    FindDialog(this);
+    m_FindReplaceDialog->FindDialog(this);
     break;
   case ID_LIST_FIND_NEXT:
     FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
@@ -684,7 +685,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 
 void wxExListView::OnFindDialog(wxFindDialogEvent& event)
 {
-  wxExFindReplaceDialog::OnFindDialog(event);
+  FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
 }
 
 void wxExListView::OnList(wxListEvent& event)
