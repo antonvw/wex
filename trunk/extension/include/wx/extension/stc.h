@@ -205,9 +205,6 @@ public:
   /// Then colourises the document.
   void SetLexer(const wxString& lexer = wxEmptyString, bool forced = false);
 
-  /// TODO: not necessary, just use GetSearchText.
-  void SetFindReplaceData() {GetSearchText();};
-
   /// Sets the text.
   void SetText(const wxString& value);
 

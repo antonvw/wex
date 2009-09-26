@@ -1638,6 +1638,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
+  GetSearchText();
+  
   wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
   const bool find_next = (frd->GetFlags() & wxFR_DOWN);
 
