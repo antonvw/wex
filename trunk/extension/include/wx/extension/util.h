@@ -44,9 +44,8 @@ const wxString wxExEllipsed(
   const wxString& text,
   const wxString& control = wxEmptyString);
 
-
 /// Shows searching for in the statusbar.
-bool wxExFindResult(const wxString& text, bool find_next, bool& recursive);
+bool wxExFindResult(const wxString& find_text, bool find_next, bool& recursive);
 
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,

@@ -171,7 +171,7 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
 }
 
 bool wxExFindResult(
-  const wxString& text, 
+  const wxString& find_text,
   bool find_next, 
   bool& recursive)
 {
@@ -179,9 +179,11 @@ bool wxExFindResult(
   {
     recursive = true;
     const wxString where = (find_next) ? _("bottom"): _("top");
+
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
-      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("hit") + " " + where);
+      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
+      _("hit") + " " + where);
 #endif
     return true;
   }
@@ -189,8 +191,10 @@ bool wxExFindResult(
   {
     recursive = false;
     wxBell();
+
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxExQuoted(wxExSkipWhiteSpace(text)) + " " + _("not found"));
+    wxExFrame::StatusText(
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
 #endif
     return false;
   }
