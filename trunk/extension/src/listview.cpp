@@ -223,11 +223,6 @@ wxExListView::~wxExListView()
 
 const wxString wxExListView::BuildPage()
 {
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExApp::GetPrinter()->SetFooter(wxExPrintFooter());
-  wxExApp::GetPrinter()->SetHeader(wxExPrintHeader(wxFileName()));
-#endif
-
   wxString text;
 
   text << "<TABLE ";

@@ -114,6 +114,9 @@ bool wxExApp::OnInit()
   m_Printer->SetFonts(wxEmptyString, wxEmptyString); // use defaults
   m_Printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
   m_Printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
+
+  m_Printer->SetHeader(wxExPrintHeader(wxFileName()));
+  m_Printer->SetFooter(wxExPrintFooter());
 #endif
 
   // Finally call all available static initializers.
