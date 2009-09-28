@@ -384,6 +384,7 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   case wxID_FIND: 
     if (m_FindReplaceDialog == NULL)
       m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    SetFindReplaceData();
     m_FindReplaceDialog->Show();
     break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;

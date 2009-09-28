@@ -1558,6 +1558,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       m_FindReplaceDialog->Destroy();
     }
     
+    GetSearchText();
     m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
     m_FindReplaceDialog->Show();
     break;
@@ -1569,7 +1570,11 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       m_FindReplaceDialog->Destroy();
     }
     
-    m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Replace"), wxFR_REPLACEDIALOG); 
+    GetSearchText();
+    m_FindReplaceDialog = new wxExFindReplaceDialog(
+      this, 
+      _("Replace"), 
+      wxFR_REPLACEDIALOG); 
     m_FindReplaceDialog->Show();
     break;
   case wxID_SELECTALL: SelectAll(); break;
