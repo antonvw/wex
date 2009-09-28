@@ -13,6 +13,7 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
+#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -28,6 +29,11 @@ map<wxString, wxExPane> wxExFrame::m_Panes;
 
 BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_CLOSE(wxExFrame::OnClose)
+  EVT_FIND(wxID_ANY, wxExFrame::OnFindDialog)
+  EVT_FIND_CLOSE(wxID_ANY, wxExFrame::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExFrame::OnFindDialog)
+  EVT_FIND_REPLACE(wxID_ANY, wxExFrame::OnFindDialog)
+  EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
 #if wxUSE_STATUSBAR
   EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, wxExFrame::OnUpdateUI)
 #endif
@@ -150,6 +156,39 @@ void wxExFrame::OnClose(wxCloseEvent& event)
   event.Skip();
 }
 
+
+void wxExFrame::OnCommand(wxCommandEvent& command)
+{
+  switch (command.GetId())
+  {
+  case wxID_FIND: 
+    if (m_FindReplaceDialog != NULL)
+    {
+      m_FindReplaceDialog->Destroy();
+    }
+    
+    GetSearchText();
+    m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    m_FindReplaceDialog->Show();
+    break;
+    
+  case wxID_REPLACE: 
+    if (m_FindReplaceDialog != NULL)
+    {
+      m_FindReplaceDialog->Destroy();
+    }
+    
+    GetSearchText();
+    m_FindReplaceDialog = new wxExFindReplaceDialog(
+      this, 
+      _("Replace"), 
+      wxFR_REPLACEDIALOG); 
+    m_FindReplaceDialog->Show();
+    break;
+    
+  default: wxFAIL; break;
+}
+
 #if wxUSE_STATUSBAR
 wxStatusBar* wxExFrame::OnCreateStatusBar(
   int number,
@@ -180,6 +219,42 @@ wxToolBar* wxExFrame::OnCreateToolBar(
   return m_ToolBar;
 }
 #endif
+
+void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
+{
+  wxExSTC* stc = getCurrentSTC();
+  if (stc == NULL) return;
+  stc->GetSearchText();
+  
+  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
+
+  if (event.GetEventType() == wxEVT_COMMAND_FIND)
+  {
+    stc->FindNext(frd->GetFindString(), find_next);
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    stc->FindNext(frd->GetFindString(), find_next);
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  {
+    stc->Replace(, find_next);
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
+  {
+    stc->ReplaceAll();
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
+  {
+    m_FindReplaceDialog->Destroy();
+    m_FindReplaceDialog = NULL;
+  }
+  else
+  {
+    wxFAIL;
+  }
+}
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {

@@ -13,7 +13,6 @@
 #define _EXSTC_H
 
 #include <vector> 
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/print.h> 
 #include <wx/stc/stc.h>
 #include <wx/extension/file.h> // for wxExFile
@@ -21,8 +20,6 @@
 #include <wx/extension/dialog.h> // for wxExDialog
 
 class wxExConfigDialog;
-class wxExFindReplaceDialog;
-
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
 /// config support and syntax colouring. Also adds synchronizing to the window,
@@ -194,6 +191,12 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
+  /// Replaces text.
+  void Replace(bool find_next);
+  
+  /// Replaces all text.
+  void ReplaceAll();
+  
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.
   /// Default it is off.
@@ -238,7 +241,6 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
 
   void OnCommand(wxCommandEvent& event);
-  void OnFindDialog(wxFindDialogEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKey(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
@@ -287,8 +289,6 @@ private:
 #if wxUSE_PRINTING_ARCHITECTURE
   static wxPrinter* m_Printer;
 #endif
-
-  wxExFindReplaceDialog* m_FindReplaceDialog;
 
   bool m_FileSaveInMenu;
   long m_Flags; // open flags

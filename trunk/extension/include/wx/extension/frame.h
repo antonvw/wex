@@ -20,11 +20,13 @@
 #endif
 #include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/datetime.h>
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
 
 // Only if we have a gui.
 #if wxUSE_GUI
+class wxExFindReplaceDialog;
 class wxExListView;
 class wxExStatusBar;
 class wxExSTC;
@@ -72,7 +74,7 @@ enum wxExStatusFlags
 };
 
 /// Offers a frame with easy statusbar methods, 
-/// and a toolbar if you call CreateToolBar.
+/// find/replace, and a toolbar if you call CreateToolBar.
 class wxExFrame : public wxFrame
 {
   friend class wxExStatusBar;
@@ -148,22 +150,13 @@ public:
 protected:
   /// Writes the current frame size and position to the config.
   void OnClose(wxCloseEvent& event);
-  /// If there is a focused STC, updates the status bar.
-  void OnUpdateUI(wxUpdateUIEvent& event);
-
+  
 #if wxUSE_STATUSBAR
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
     long style,
     wxWindowID id,
     const wxString& name);
-
-  /// Sets up the status bar if you want to use StatusText.
-  void SetupStatusBar(
-    const std::vector<wxExPane>& panes,
-    long style = wxST_SIZEGRIP,
-    wxWindowID id = ID_EDIT_STATUS_BAR,
-    const wxString& name = "statusBar");
 #endif
 
 #if wxUSE_TOOLBAR
@@ -174,6 +167,20 @@ protected:
     const wxString& name);
 #endif
 
+  /// If there is a STC, calls find.
+  void OnFindDialog(wxFindDialogEvent& event);
+  
+  /// If there is a focused STC, updates the status bar.
+  void OnUpdateUI(wxUpdateUIEvent& event);
+  
+#if wxUSE_STATUSBAR
+  /// Sets up the status bar if you want to use StatusText.
+  void SetupStatusBar(
+    const std::vector<wxExPane>& panes,
+    long style = wxST_SIZEGRIP,
+    wxWindowID id = ID_EDIT_STATUS_BAR,
+    const wxString& name = "statusBar");
+#endif
 protected:
 #if wxUSE_TOOLBAR
   wxExToolBar* m_ToolBar;
@@ -184,6 +191,8 @@ private:
   static wxExStatusBar* m_StatusBar;
   static std::map<wxString, wxExPane> m_Panes;
 #endif
+
+  wxExFindReplaceDialog* m_FindReplaceDialog;
 
   const bool m_KeepPosAndSize;
 
