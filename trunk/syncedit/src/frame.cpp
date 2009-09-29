@@ -26,7 +26,9 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
 #endif
   EVT_CLOSE(MDIFrame::OnClose)
-  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, MDIFrame::OnCommand)
+  EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
+  EVT_MENU(wxID_SELECTALL, MDIFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, MDIFrame::OnCommand)
@@ -385,8 +387,10 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   // That causes appl to hang.
   if ((event.GetId() == wxID_UNDO ||
        event.GetId() == wxID_REDO ||
+       event.GetId() == wxID_DELETE ||
+       event.GetId() == wxID_SELECTALL ||
        event.GetId() == wxID_JUMP_TO) ||
-      (event.GetId() >= wxID_CUT && event.GetId() <= wxID_PROPERTIES) ||
+      (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR) ||
       (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST)||
       (event.GetId() >= ID_STC_LOWEST && event.GetId() <= ID_STC_HIGHEST))
   {
