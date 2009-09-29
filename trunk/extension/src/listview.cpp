@@ -208,7 +208,6 @@ wxExListView::wxExListView(wxWindow* parent,
   entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
   entries[4].Set(wxACCEL_NORMAL, WXK_F3, ID_LIST_FIND_NEXT);
   entries[5].Set(wxACCEL_NORMAL, WXK_F4, ID_LIST_FIND_PREVIOUS);
-  entries[6].Set(wxACCEL_NORMAL, WXK_F5, ID_LIST_FIND);
 
   wxAcceleratorTable accel(7, entries);
   SetAcceleratorTable(accel);
@@ -263,10 +262,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
   if (GetItemCount() > 0 && GetSelectedItemCount() == 0)
   {
     menu.AppendSeparator();
-    menu.Append(ID_LIST_FIND,
-      wxGetStockLabel(wxID_FIND, wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR),
-      wxEmptyString,
-      wxART_FIND);
+    menu.Append(wxID_FIND);
     menu.AppendSeparator();
 
     wxMenu* menuSort = new wxMenu;
