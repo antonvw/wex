@@ -35,6 +35,8 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_FIND_NEXT(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_FIND_REPLACE(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
+  EVT_MENU(wxID_FIND, wxExFrame::OnCommand)
+  EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
 #if wxUSE_STATUSBAR
   EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, wxExFrame::OnUpdateUI)
 #endif
@@ -46,6 +48,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   long style,
   const wxString& name)
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, name)
+  , m_FindReplaceDialog(NULL)
   , m_KeepPosAndSize(true)
 {
   if (wxExApp::GetConfig("Frame/Maximized", 0l))
@@ -68,6 +71,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   long style,
   const wxString& name)
   : wxFrame(parent, id, title, pos, size, style, name)
+  , m_FindReplaceDialog(NULL)
   , m_KeepPosAndSize(false)
 {
 }
