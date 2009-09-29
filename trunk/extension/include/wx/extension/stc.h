@@ -192,10 +192,17 @@ public:
   void ResetMargins(bool divider_margin = true);
 
   /// Replaces text.
-  void Replace(bool find_next);
+  void Replace(
+    const wxString& find_text, 
+    const wxString& replace_text,
+    bool is_regular_expression,
+    bool find_next);
   
   /// Replaces all text.
-  void ReplaceAll();
+  void ReplaceAll(
+    const wxString& find_text, 
+    const wxString& replace_text,
+    bool is_regular_expression);
   
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.

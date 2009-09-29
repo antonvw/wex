@@ -14,7 +14,6 @@
 
 #include <map>
 #include <vector>
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/extension/menu.h> // for wxExMenu
@@ -76,8 +75,6 @@ private:
   bool m_IsSortedAscending;
 };
 
-class wxExFindReplaceDialog;
-
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
 /// Small images have size 16,16 and large images size 32,32.
@@ -120,6 +117,9 @@ public:
   /// If the artid is not yet on the image lists, it is added to both image lists.
   /// Use only if you setup for IMAGE_ART.
   unsigned int GetArtID(wxArtID artid);
+
+  /// Finds next.
+  bool FindNext(const wxString& text, bool find_next = true);
 
   /// Gets the specified column by column number.
   const wxExColumn GetColumn(int col_no) const;
@@ -194,15 +194,11 @@ protected:
   /// Selects all items.
   void EditSelectAll();
 
-  /// Finds next.
-  bool FindNext(const wxString& text, bool find_next = true);
-
   /// Resets column that was used for sorting.
   void SortColumnReset();
 
   // Events.
   void OnCommand(wxCommandEvent& event);
-  void OnFindDialog(wxFindDialogEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
@@ -221,8 +217,6 @@ private:
   int m_SortedColumnNo;
   int m_ToBeSortedColumnNo;
   
-  wxExFindReplaceDialog* m_FindReplaceDialog;
-
   std::map<wxArtID, unsigned int> m_ArtIDs;
   // Do not make a const of it, does not compile on Linux.
   std::vector<wxExColumn> m_Columns;

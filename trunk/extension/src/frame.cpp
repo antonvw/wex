@@ -14,6 +14,7 @@
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
 #include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
+#include <wx/extension/frd.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -119,6 +120,11 @@ const wxExPane wxExFrame::GetPane(int pane) const
   return wxExPane();
 }
 
+// TODO: Implement this.
+void wxExFrame::GetSearchText()
+{
+}
+
 // This is a static method, so no const possible.
 int wxExFrame::GetPaneField(const wxString& pane)
 {
@@ -156,7 +162,6 @@ void wxExFrame::OnClose(wxCloseEvent& event)
   event.Skip();
 }
 
-
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -187,6 +192,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   default: wxFAIL; break;
+  }
 }
 
 #if wxUSE_STATUSBAR
@@ -222,38 +228,67 @@ wxToolBar* wxExFrame::OnCreateToolBar(
 
 void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 {
-  wxExSTC* stc = getCurrentSTC();
-  if (stc == NULL) return;
-  stc->GetSearchText();
-  
-  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
-  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
-
-  if (event.GetEventType() == wxEVT_COMMAND_FIND)
-  {
-    stc->FindNext(frd->GetFindString(), find_next);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    stc->FindNext(frd->GetFindString(), find_next);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
-  {
-    stc->Replace(, find_next);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
-  {
-    stc->ReplaceAll();
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
+  if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = NULL;
+    return;
   }
-  else
+
+  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
+
+  wxExSTC* stc = GetSTC();
+
+  if (stc != NULL)
   {
-    wxFAIL;
+    stc->GetSearchText();
+  
+    if (event.GetEventType() == wxEVT_COMMAND_FIND)
+    {
+      stc->FindNext(frd->GetFindString(), find_next);
+    }
+    else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+    {
+      stc->FindNext(frd->GetFindString(), find_next);
+    }
+    else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+    {
+      stc->Replace(
+        frd->GetFindString(), 
+        frd->GetReplaceString(), 
+        frd->IsRegularExpression(), 
+        find_next);
+    }
+    else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
+    {
+      stc->ReplaceAll(frd->GetFindString(), frd->GetReplaceString(), frd->IsRegularExpression());
+    }
+    else
+    {
+      wxFAIL;
+    }
   }
+
+  wxExListView* lv = GetListView();
+
+  if (lv != NULL)
+  {
+    if (event.GetEventType() == wxEVT_COMMAND_FIND)
+    {
+      lv ->FindNext(frd->GetFindString(), find_next);
+    }
+    else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+    {
+      lv->FindNext(frd->GetFindString(), find_next);
+    }
+    else
+    {
+      wxFAIL;
+    }
+  }
+
+  // TODO: Add grid.
 }
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)

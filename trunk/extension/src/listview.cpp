@@ -18,7 +18,6 @@
 #include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 
 #if wxUSE_GUI
 
@@ -142,9 +141,6 @@ const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
 
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
-  EVT_FIND(wxID_ANY, wxExListView::OnFindDialog)
-  EVT_FIND_CLOSE(wxID_ANY, wxExListView::OnFindDialog)
-  EVT_FIND_NEXT(wxID_ANY, wxExListView::OnFindDialog)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_ITEM_DESELECTED(wxID_ANY, wxExListView::OnList)
@@ -166,7 +162,6 @@ wxExListView::wxExListView(wxWindow* parent,
   const wxValidator& validator,
   const wxString &name)
   : wxListView(parent, id, pos, size, style, validator, name)
-  , m_FindReplaceDialog(NULL)
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
   , m_ImageHeightSmall(16)
@@ -661,11 +656,6 @@ void wxExListView::OnCommand(wxCommandEvent& event)
       Select(i, false);
     }
     break;
-  case ID_LIST_FIND:
-    if (m_FindReplaceDialog == NULL)
-      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
-    m_FindReplaceDialog->Show();
-    break;
   case ID_LIST_FIND_NEXT:
     FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
     break;
@@ -678,27 +668,6 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 #if wxUSE_STATUSBAR
   UpdateStatusBar();
 #endif
-}
-
-void wxExListView::OnFindDialog(wxFindDialogEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_FIND)
-  {
-    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
-  {
-    m_FindReplaceDialog->Destroy();
-    m_FindReplaceDialog = NULL;
-  }
-  else
-  {
-    wxFAIL;
-  }
 }
 
 void wxExListView::OnList(wxListEvent& event)

@@ -150,7 +150,9 @@ public:
 protected:
   /// Writes the current frame size and position to the config.
   void OnClose(wxCloseEvent& event);
-  
+  /// Handles command event.
+  void OnCommand(wxCommandEvent& command);
+
 #if wxUSE_STATUSBAR
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
@@ -187,6 +189,8 @@ protected:
 #endif
 
 private:
+  void GetSearchText();
+
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
   static std::map<wxString, wxExPane> m_Panes;

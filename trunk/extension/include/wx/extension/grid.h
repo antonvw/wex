@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2008, Anton van Wezenbeek
+* Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -13,12 +13,9 @@
 #define _EXGRID_H
 
 #include <wx/grid.h>
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GRID
-
-class wxExFindReplaceDialog;
 
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
@@ -60,6 +57,9 @@ public:
   /// Empties selected cells.
   void EmptySelection();
 
+  /// Finds next.
+  bool FindNext(const wxString& text, bool find_next = true);
+
   /// Get text from selected cells,
   const wxString GetSelectedCellsValue();
 
@@ -90,14 +90,10 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
 
-  /// Finds next.
-  bool FindNext(const wxString& text, bool find_next = true);
-
   /// Updates find replace text.
   void SetFindReplaceData();
 
   void OnCommand(wxCommandEvent& event);
-  void OnFindDialog(wxFindDialogEvent& event);
   void OnGrid(wxGridEvent& event);
   void OnGridRange(wxGridRangeSelectEvent& event);
   void OnMouse(wxMouseEvent& event);
@@ -105,8 +101,6 @@ private:
 #if wxUSE_DRAG_AND_DROP
   bool m_UseDragAndDrop;
 #endif
-
-  wxExFindReplaceDialog* m_FindReplaceDialog;
 
   DECLARE_EVENT_TABLE()
 };

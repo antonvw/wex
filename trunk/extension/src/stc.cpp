@@ -260,7 +260,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , m_FindReplaceDialog(NULL)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1)
@@ -293,7 +292,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
-  , m_FindReplaceDialog(NULL)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
@@ -306,7 +304,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
-  : m_FindReplaceDialog(NULL)
 {
   wxStyledTextCtrl::Create(stc.GetParent());
 
@@ -2087,109 +2084,115 @@ void wxExSTC::ResetMargins(bool divider_margin)
   }
 }
 
-void wxExSTC::Replace(bool find_next)
+void wxExSTC::Replace(
+  const wxString& find_text, 
+  const wxString& replace_text,
+  bool is_regular_expression,
+  bool find_next)
 {
-    if (!GetSelectedText().empty())
-    {
-      TargetFromSelection();
-    }
-    else
-    {
-      SetTargetStart(GetCurrentPos());
-      SetTargetEnd(GetLength());
-      if (SearchInTarget(frd->GetFindString()) == -1) return;
-    }
+  if (!GetSelectedText().empty())
+  {
+    TargetFromSelection();
+  }
+  else
+  {
+    SetTargetStart(GetCurrentPos());
+    SetTargetEnd(GetLength());
+    if (SearchInTarget(find_text) == -1) return;
+  }
 
-    if (frd->IsRegularExpression())
-      ReplaceTargetRE(frd->GetReplaceString());
-    else
-      ReplaceTarget(frd->GetReplaceString());
+  if (is_regular_expression)
+    ReplaceTargetRE(replace_text);
+  else
+    ReplaceTarget(replace_text);
 
-    FindNext(frd->GetFindString(), find_next);
+  FindNext(find_text, find_next);
 }
   
-void wxExSTC::ReplaceAll()
+void wxExSTC::ReplaceAll(
+  const wxString& find_text,
+  const wxString& replace_text,
+  bool is_regular_expression)
 {
-    const wxString selection = GetSelectedText();
-    int selection_from_end = 0;
-    const int selstart = GetSelectionStart();
-    const int selend = GetSelectionEnd();
+  const wxString selection = GetSelectedText();
+  int selection_from_end = 0;
+  const int selstart = GetSelectionStart();
+  const int selend = GetSelectionEnd();
 
-    // We cannot use wxExGetNumberOfLines here if we have a rectangular selection.
-    // So do it the other way.
-    if (!selection.empty() &&
-         LineFromPosition(selend) > LineFromPosition(selstart))
+  // We cannot use wxExGetNumberOfLines here if we have a rectangular selection.
+  // So do it the other way.
+  if (!selection.empty() &&
+       LineFromPosition(selend) > LineFromPosition(selstart))
+  {
+    TargetFromSelection();
+    selection_from_end = GetLength() - GetTargetEnd();
+  }
+  else
+  {
+    SetTargetStart(0);
+    SetTargetEnd(GetLength());
+  }
+
+  SetSearchFlags(FindReplaceDataFlags());
+  int nr_replacements = 0;
+
+  while (SearchInTarget(find_text) != -1)
+  {
+    if (GetTargetStart() == GetTargetEnd())
     {
-      TargetFromSelection();
-      selection_from_end = GetLength() - GetTargetEnd();
-    }
-    else
-    {
-      SetTargetStart(0);
-      SetTargetEnd(GetLength());
-    }
-
-    SetSearchFlags(FindReplaceDataFlags());
-    int nr_replacements = 0;
-
-    while (SearchInTarget(frd->GetFindString()) != -1)
-    {
-      if (GetTargetStart() == GetTargetEnd())
-      {
-        wxFAIL_MSG("Target start and end are equal");
-        break;
-      }
-
-      const int target_start = GetTargetStart();
-      int length;
-      bool skip_replace = false;
-
-      // Check that the target is within the rectangular selection.
-      // If not just continue without replacing.
-      if (SelectionIsRectangle() && selection_from_end != 0)
-      {
-        const int line = LineFromPosition(target_start);
-        const int start_pos = GetLineSelStartPosition(line);
-        const int end_pos = GetLineSelEndPosition(line);
-        length = GetTargetEnd() - target_start;
-
-        if (start_pos == wxSTC_INVALID_POSITION ||
-            end_pos == wxSTC_INVALID_POSITION ||
-            target_start < start_pos ||
-            target_start + length > end_pos)
-        {
-          skip_replace = true;
-        }
-      }
-
-      if (!skip_replace)
-      {
-        if (frd->IsRegularExpression())
-          length = ReplaceTargetRE(frd->GetReplaceString());
-        else
-          length = ReplaceTarget(frd->GetReplaceString());
-
-        nr_replacements++;
-      }
-
-      if (length == -1)
-      {
-        break;
-      }
-
-      if (target_start + length >= GetLength() - 1) break;
-
-      SetTargetStart(target_start + length);
-      SetTargetEnd(GetLength() - selection_from_end);
+      wxFAIL_MSG("Target start and end are equal");
+      break;
     }
 
-    EndUndoAction();
+    const int target_start = GetTargetStart();
+    int length;
+    bool skip_replace = false;
+
+    // Check that the target is within the rectangular selection.
+    // If not just continue without replacing.
+    if (SelectionIsRectangle() && selection_from_end != 0)
+    {
+      const int line = LineFromPosition(target_start);
+      const int start_pos = GetLineSelStartPosition(line);
+      const int end_pos = GetLineSelEndPosition(line);
+      length = GetTargetEnd() - target_start;
+
+      if (start_pos == wxSTC_INVALID_POSITION ||
+          end_pos == wxSTC_INVALID_POSITION ||
+          target_start < start_pos ||
+          target_start + length > end_pos)
+      {
+        skip_replace = true;
+      }
+    }
+
+    if (!skip_replace)
+    {
+      if (is_regular_expression)
+        length = ReplaceTargetRE(replace_text);
+      else
+        length = ReplaceTarget(replace_text);
+
+      nr_replacements++;
+    }
+
+    if (length == -1)
+    {
+      break;
+    }
+
+    if (target_start + length >= GetLength() - 1) break;
+
+    SetTargetStart(target_start + length);
+    SetTargetEnd(GetLength() - selection_from_end);
+  }
+
+  EndUndoAction();
 
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
-      nr_replacements, frd->GetFindString().c_str()));
+  wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
+    nr_replacements, find_text.c_str()));
 #endif
-  }
 }
 
 void wxExSTC::SequenceDialog()
