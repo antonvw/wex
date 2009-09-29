@@ -15,6 +15,7 @@
 #include <wx/extension/art.h>
 #include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/frd.h>
+#include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -124,9 +125,14 @@ const wxExPane wxExFrame::GetPane(int pane) const
   return wxExPane();
 }
 
-// TODO: Implement this.
 void wxExFrame::GetSearchText()
 {
+  wxExSTC* stc = GetSTC();
+
+  if (stc != NULL)
+  {
+    stc->GetSearchText();
+  }
 }
 
 // This is a static method, so no const possible.
@@ -234,6 +240,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
+    wxASSERT(m_FindReplaceDialog != NULL);
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = NULL;
     return;
@@ -266,7 +273,10 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
     {
-      stc->ReplaceAll(frd->GetFindString(), frd->GetReplaceString(), frd->IsRegularExpression());
+      stc->ReplaceAll(
+        frd->GetFindString(), 
+        frd->GetReplaceString(), 
+        frd->IsRegularExpression());
     }
     else
     {
@@ -292,7 +302,17 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     }
   }
 
-  // TODO: Add grid.
+  wxWindow* win = wxWindow::FindFocus();
+
+  if (win != NULL)
+  {
+    wxExGrid* grid = wxDynamicCast(win, wxExGrid);
+
+    if (grid != NULL)
+    {
+      grid->FindNext(frd->GetFindString(), find_next);
+    }
+  }
 }
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
