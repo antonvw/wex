@@ -84,14 +84,6 @@ wxExGrid::wxExGrid(wxWindow* parent,
   SetDropTarget(new wxExTextDropTarget(this));
   m_UseDragAndDrop = true;
 #endif
-
-  wxAcceleratorEntry entries[3];
-  entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
-  entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
-  entries[2].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
-
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
 }
 
 const wxString wxExGrid::BuildPage()
@@ -375,14 +367,6 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   case wxID_DELETE: EmptySelection(); break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;
   case wxID_SELECTALL: SelectAll(); break;
-
-  case ID_EDIT_FIND_NEXT: 
-    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
-    break;
-
-  case ID_EDIT_FIND_PREVIOUS: 
-    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); 
-    break;
 
   case ID_EDIT_SELECT_NONE: ClearSelection(); break;
   default: wxFAIL;

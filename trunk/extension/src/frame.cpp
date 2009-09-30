@@ -62,6 +62,17 @@ wxExFrame::wxExFrame(wxWindow* parent,
     wxExApp::GetConfig("Frame/Y", 100),
     wxExApp::GetConfig("Frame/Width", 450),
     wxExApp::GetConfig("Frame/Height", 350));
+
+  // TODO: Add initialize.
+  // TODO: Remove flags FIND and REPLACE for menu??
+  wxAcceleratorEntry entries[4];
+  entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
+  entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
+  entries[2].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
+  entries[3].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
+
+  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
+  SetAcceleratorTable(accel);
 }
 
 wxExFrame::wxExFrame(wxWindow* parent,
@@ -174,6 +185,10 @@ void wxExFrame::OnClose(wxCloseEvent& event)
 
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
+  wxExSTC* stc = GetSTC();
+  wxExListView* lv = GetListView();
+  wxExGrid* grid = wxDynamicCast(wxWindow::FindFocus(), wxExGrid);
+
   switch (command.GetId())
   {
   case wxID_FIND: 
@@ -201,6 +216,36 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     m_FindReplaceDialog->Show();
     break;
     
+  case ID_EDIT_FIND_NEXT: 
+    if (stc != NULL)
+    {
+      stc->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
+    }
+    if (lv != NULL)
+    {
+      lv->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
+    }
+    if (grid != NULL)
+    {
+      grid->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
+    }
+    break;
+
+  case ID_EDIT_FIND_PREVIOUS: 
+    if (stc != NULL)
+    {
+      stc->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
+    }
+    if (lv != NULL)
+    {
+      lv->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
+    }
+    if (grid != NULL)
+    {
+      grid->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false); 
+    }
+    break;
+
   default: wxFAIL; break;
   }
 }

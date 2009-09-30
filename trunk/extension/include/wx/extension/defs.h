@@ -17,11 +17,6 @@ enum wxExId
 {
   ID_EDIT_LOWEST = wxID_HIGHEST + 1,
 
-  ID_EDIT_LIST_LOWEST,   // all list like commands after this one
-  ID_LIST_FIND_NEXT,     //
-  ID_LIST_FIND_PREVIOUS, //
-  ID_EDIT_LIST_HIGHEST,  // and before this one
-
   ID_ALL_LOWEST,         // all ALL commands after this one
   ID_ALL_STC_CLOSE,
   ID_ALL_STC_COLOURISE,

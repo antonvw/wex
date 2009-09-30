@@ -1401,7 +1401,7 @@ void wxExSTC::Initialize()
 
   SetMouseDwellTime(1000);
 
-  const int accels = 19; // take max number of entries
+  const int accels = 15; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1421,14 +1421,6 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-
-  if (m_MenuFlags & (STC_MENU_FIND | STC_MENU_REPLACE))
-  {
-    entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
-    entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
-    entries[i++].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
-    entries[i++].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
-  }
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
@@ -1609,8 +1601,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxLaunchDefaultBrowser(m_FileName.GetFullPath());
   break;
 
-  case ID_EDIT_FIND_NEXT: FindNext(GetSearchText(), true); break;
-  case ID_EDIT_FIND_PREVIOUS: FindNext(GetSearchText(), false); break;
   case ID_EDIT_INSERT_DATE: AddText(wxDateTime::Now().Format()); break;
   case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
   case ID_EDIT_LOWERCASE: LowerCase(); break;

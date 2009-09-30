@@ -206,10 +206,8 @@ wxExListView::wxExListView(wxWindow* parent,
   entries[1].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[2].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[3].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[4].Set(wxACCEL_NORMAL, WXK_F3, ID_LIST_FIND_NEXT);
-  entries[5].Set(wxACCEL_NORMAL, WXK_F4, ID_LIST_FIND_PREVIOUS);
 
-  wxAcceleratorTable accel(7, entries);
+  wxAcceleratorTable accel(4, entries);
   SetAcceleratorTable(accel);
 }
 
@@ -653,12 +651,6 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     {
       Select(i, false);
     }
-    break;
-  case ID_LIST_FIND_NEXT:
-    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
-    break;
-  case ID_LIST_FIND_PREVIOUS:
-    FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
     break;
   default: wxFAIL;
   }
