@@ -67,8 +67,8 @@ BEGIN_EVENT_TABLE(wxExGrid, wxGrid)
   EVT_GRID_RANGE_SELECT(wxExGrid::OnGridRange)
   EVT_MENU(wxID_DELETE, wxExGrid::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExGrid::OnCommand)
+  EVT_MENU(ID_EDIT_SELECT_NONE, wxExGrid::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExGrid::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_LOWEST, ID_EDIT_HIGHEST, wxExGrid::OnCommand)
   EVT_MOUSE_EVENTS(wxExGrid::OnMouse)
 END_EVENT_TABLE()
 
@@ -367,7 +367,6 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   case wxID_DELETE: EmptySelection(); break;
   case wxID_PASTE: PasteCellsFromClipboard(); break;
   case wxID_SELECTALL: SelectAll(); break;
-
   case ID_EDIT_SELECT_NONE: ClearSelection(); break;
   default: wxFAIL;
   }
