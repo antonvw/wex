@@ -54,6 +54,8 @@ wxExFrame::wxExFrame(wxWindow* parent,
   , m_FindReplaceDialog(NULL)
   , m_KeepPosAndSize(true)
 {
+  Initialize();
+
   if (wxExApp::GetConfig("Frame/Maximized", 0l))
   {
     Maximize(true);
@@ -64,17 +66,6 @@ wxExFrame::wxExFrame(wxWindow* parent,
     wxExApp::GetConfig("Frame/Y", 100),
     wxExApp::GetConfig("Frame/Width", 450),
     wxExApp::GetConfig("Frame/Height", 350));
-
-  // TODO: Add initialize.
-  // TODO: Remove flags FIND and REPLACE for menu??
-  wxAcceleratorEntry entries[4];
-  entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
-  entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
-  entries[2].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
-  entries[3].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
-
-  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
-  SetAcceleratorTable(accel);
 }
 
 wxExFrame::wxExFrame(wxWindow* parent,
@@ -88,6 +79,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   , m_FindReplaceDialog(NULL)
   , m_KeepPosAndSize(false)
 {
+  Initialize();
 }
 
 wxExFrame::~wxExFrame()
@@ -161,6 +153,18 @@ int wxExFrame::GetPaneField(const wxString& pane)
   return -1;
 }
 #endif // wxUSE_STATUSBAR
+
+void wxExFrame::Initialize()
+{
+  wxAcceleratorEntry entries[4];
+  entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
+  entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
+  entries[2].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
+  entries[3].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
+
+  wxAcceleratorTable accel(WXSIZEOF(entries), entries);
+  SetAcceleratorTable(accel);
+}
 
 void wxExFrame::OnClose(wxCloseEvent& event)
 {

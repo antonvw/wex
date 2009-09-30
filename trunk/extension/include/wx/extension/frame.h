@@ -190,6 +190,7 @@ protected:
 
 private:
   void GetSearchText();
+  void Initialize();
 
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
