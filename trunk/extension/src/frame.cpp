@@ -38,6 +38,8 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_MENU(wxID_FIND, wxExFrame::OnCommand)
   EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
+  EVT_MENU(ID_EDIT_FIND_NEXT, wxExFrame::OnCommand)
+  EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExFrame::OnCommand)
 #if wxUSE_STATUSBAR
   EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, wxExFrame::OnUpdateUI)
 #endif
