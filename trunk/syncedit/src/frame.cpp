@@ -42,8 +42,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(wxID_CUT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_FIND, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_REPLACE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PRINT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PREVIEW, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REPLACE, MDIFrame::OnUpdateUI)
@@ -851,9 +849,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxID_CLOSE: // nothing extra, just prevent wxFAIL from happening
           break;
 
-        case wxID_FIND:
         case wxID_JUMP_TO:
-        case wxID_REPLACE:
         case wxID_SAVEAS:
         case ID_EDIT_FIND_NEXT:
         case ID_EDIT_FOLD_ALL:
