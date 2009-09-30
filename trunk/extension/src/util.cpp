@@ -173,7 +173,7 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
 void wxExFindResult(
   const wxString& find_text,
   bool find_next, 
-  bool& recursive)
+  bool recursive)
 {
   if (!recursive)
   {
