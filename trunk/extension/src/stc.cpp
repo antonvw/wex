@@ -1069,7 +1069,16 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
   if (SearchInTarget(text) < 0)
   {
-    return wxExFindResult(text, find_next, recursive);
+    wxExFindResult(text, find_next, recursive);
+    
+    if (!recursive)
+    {
+      recursive = true;
+      FindNext(text, find_next);
+      recursive = false;
+    }
+    
+    return false;
   }
   else
   {

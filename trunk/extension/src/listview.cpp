@@ -445,7 +445,16 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
   else
   {
-    return wxExFindResult(text, find_next, recursive);
+    wxExFindResult(text, find_next, recursive);
+    
+    if (!recursive)
+    {
+      recursive = true;
+      FindNext(text, find_next);
+      recursive = false;
+    }
+    
+    return false;
   }
 }
 
