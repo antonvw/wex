@@ -198,27 +198,45 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_FIND: 
+    GetSearchText();
+    
     if (m_FindReplaceDialog != NULL)
     {
-      m_FindReplaceDialog->Destroy();
+      if (m_FindReplaceDialog->GetWindowStyle() & wxFR_REPLACEDIALOG)
+      {
+        m_FindReplaceDialog->Destroy();
+        m_FindReplaceDialog = NULL;
+      }
     }
     
-    GetSearchText();
-    m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    if (m_FindReplaceDialog == NULL)
+    {
+      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+    }
+    
     m_FindReplaceDialog->Show();
     break;
     
   case wxID_REPLACE: 
+    GetSearchText();
+    
     if (m_FindReplaceDialog != NULL)
     {
-      m_FindReplaceDialog->Destroy();
+      if (!(m_FindReplaceDialog->GetWindowStyle() & wxFR_REPLACEDIALOG))
+      {
+        m_FindReplaceDialog->Destroy();
+        m_FindReplaceDialog = NULL;
+      }
     }
     
-    GetSearchText();
-    m_FindReplaceDialog = new wxExFindReplaceDialog(
-      this, 
-      _("Replace"), 
-      wxFR_REPLACEDIALOG); 
+    if (m_FindReplaceDialog == NULL)
+    {
+      m_FindReplaceDialog = new wxExFindReplaceDialog(
+        this, 
+        _("Replace"), 
+        wxFR_REPLACEDIALOG); 
+    }
+      
     m_FindReplaceDialog->Show();
     break;
     
