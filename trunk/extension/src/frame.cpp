@@ -56,9 +56,11 @@ wxExFrame::wxExFrame(wxWindow* parent,
   , m_KeepPosAndSize(true)
 {
   Initialize();
-  SetName("wxExFrame");
 
+  // The wxPersistenceManager might be usefull in the future.
+  //SetName("wxExFrame");
   //wxPersistenceManager::Get().RegisterAndRestore(this, this);
+
   if (wxExApp::GetConfig("Frame/Maximized", 0l))
   {
     Maximize(true);
