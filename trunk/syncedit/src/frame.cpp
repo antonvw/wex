@@ -26,7 +26,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
 #endif
   EVT_CLOSE(MDIFrame::OnClose)
-  EVT_MENU(wxID_ABOUT, MDIFrame::OnCommand)
   EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
   EVT_MENU(wxID_SELECTALL, MDIFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MDIFrame::OnCommand)

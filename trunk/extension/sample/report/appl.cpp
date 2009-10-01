@@ -24,9 +24,11 @@ enum
 };
 
 BEGIN_EVENT_TABLE(wxExRepSampleFrame, wxExFrameWithHistory)
+  EVT_MENU(wxID_STOP, wxExRepSampleFrame::OnCommand)
   EVT_MENU(ID_PROCESS_DIALOG, wxExRepSampleFrame::OnCommand)
   EVT_MENU(ID_PROCESS_RUN, wxExRepSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, wxExRepSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExRepSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExRepSampleFrame::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExRepSampleFrame::OnTree)
 END_EVENT_TABLE()
 

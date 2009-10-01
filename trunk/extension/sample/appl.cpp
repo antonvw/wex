@@ -35,7 +35,8 @@ enum
 };
 
 BEGIN_EVENT_TABLE(wxExSampleFrame, wxExFrame)
-  EVT_MENU_RANGE(wxID_LOWEST, wxID_HIGHEST, wxExSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
 END_EVENT_TABLE()
