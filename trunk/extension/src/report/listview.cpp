@@ -1262,7 +1262,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   if (tool.IsFindType())
   {
-    wxExSTCWithFrame* stc = m_Frame->GetSTC();
+    wxExSTC* stc = m_Frame->GetSTC();
 
     if (stc != NULL)
     {

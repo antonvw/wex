@@ -238,18 +238,6 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
-wxExListView* MDIFrame::GetListView()
-{
-  if (GetListView() != NULL)
-  {
-    return GetListView();
-  }
-  else
-  {
-    return GetProject();
-  }
-}
-
 wxExListViewWithFrame* MDIFrame::GetProject()
 {
   if (!m_NotebookWithProjects->IsShown() || m_NotebookWithProjects->GetPageCount() == 0)
@@ -260,14 +248,14 @@ wxExListViewWithFrame* MDIFrame::GetProject()
   return (wxExListViewWithFrame*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
 }
 
-wxExSTCWithFrame* MDIFrame::GetSTC()
+wxExSTC* MDIFrame::GetSTC()
 {
   if (!m_NotebookWithEditors->IsShown() || m_NotebookWithEditors->GetPageCount() == 0)
   {
     return NULL;
   }
 
-  return (wxExSTCWithFrame*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
+  return (wxExSTC*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
 }
 
 void MDIFrame::NewFile(bool as_project)
@@ -378,7 +366,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  wxExSTCWithFrame* editor = GetSTC();
+  wxExSTC* editor = GetSTC();
   wxExListViewWithFrame* project = GetProject();
 
   // edit commands
@@ -839,8 +827,8 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
     default:
     {
-      wxExSTCWithFrame* editor = GetSTC();
-      wxExListViewFile* list = GetFocusedListView();
+      wxExSTC* editor = GetSTC();
+      wxExListViewFile* list = (wxExListViewFile*)GetFocusedListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())
       {
