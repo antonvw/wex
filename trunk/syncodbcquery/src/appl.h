@@ -49,7 +49,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual void  ConfigDialogApplied(wxWindowID dialogid);
+  virtual void ConfigDialogApplied(wxWindowID dialogid);
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
