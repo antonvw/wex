@@ -60,6 +60,9 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
+  /// Updates find replace text.
+  void GetSearchText();
+
   /// Get text from selected cells,
   const wxString GetSelectedCellsValue();
 
@@ -89,9 +92,6 @@ protected:
 
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
-
-  /// Updates find replace text.
-  void SetFindReplaceData();
 
   void OnCommand(wxCommandEvent& event);
   void OnGrid(wxGridEvent& event);

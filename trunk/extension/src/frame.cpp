@@ -133,16 +133,6 @@ const wxExPane wxExFrame::GetPane(int pane) const
   return wxExPane();
 }
 
-void wxExFrame::GetSearchText()
-{
-  wxExSTC* stc = GetSTC();
-
-  if (stc != NULL)
-  {
-    stc->GetSearchText();
-  }
-}
-
 // This is a static method, so no const possible.
 int wxExFrame::GetPaneField(const wxString& pane)
 {
@@ -156,6 +146,23 @@ int wxExFrame::GetPaneField(const wxString& pane)
   return -1;
 }
 #endif // wxUSE_STATUSBAR
+
+void wxExFrame::GetSearchText()
+{
+  wxExSTC* stc = GetSTC();
+
+  if (stc != NULL)
+  {
+    stc->GetSearchText();
+  }
+
+  wxExGrid* grid = wxDynamicCast(wxWindow::FindFocus(), wxExGrid);
+
+  if (grid != NULL)
+  {
+    grid->GetSearchText();
+  }
+}
 
 void wxExFrame::Initialize()
 {
