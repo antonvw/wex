@@ -149,18 +149,6 @@ wxExSTCWithFrame* wxExFrameWithHistory::GetCurrentSTC()
   return wxDynamicCast(stc, wxExSTCWithFrame);
 }
 
-wxExListViewWithFrame* wxExFrameWithHistory::GetFocusedListView()
-{
-  wxWindow* win = wxWindow::FindFocus();
-
-  if (win == NULL)
-  {
-    return NULL;
-  }
-
-  return wxDynamicCast(win, wxExListViewWithFrame);
-}
-
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())

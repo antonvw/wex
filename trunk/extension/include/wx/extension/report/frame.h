@@ -71,10 +71,6 @@ public:
   /// Default it invokes GetFocusedSTC.
   virtual wxExSTCWithFrame* GetCurrentSTC();
 
-  /// If the window that has focus is a listview, then returns that,
-  /// otherwise returns NULL.
-  wxExListViewWithFrame* GetFocusedListView();
-
   /// Returns the recent opened file.
   const wxString GetRecentFile() const {
     if (m_FileHistory.GetCount() == 0) return wxEmptyString;
