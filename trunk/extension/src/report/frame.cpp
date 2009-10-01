@@ -70,7 +70,7 @@ bool wxExFrameWithHistory::DialogFileOpen(
   const wxString wildcards,
   bool ask_for_continue)
 {
-  wxExSTCWithFrame* stc = GetCurrentSTC();
+  wxExSTC* stc = GetSTC();
 
   wxString use_wildcards = wildcards;
 
@@ -142,11 +142,9 @@ void wxExFrameWithHistory::DoRecent(
   }
 }
 
-wxExSTCWithFrame* wxExFrameWithHistory::GetCurrentSTC()
+wxExListViewWithFrame* wxExFrameWithHistory::GetProject()
 {
-  wxExSTC* stc = GetFocusedSTC();
-  if (stc == NULL) return NULL;
-  return wxDynamicCast(stc, wxExSTCWithFrame);
+  return (wxExListViewWithFrame*)GetFocusedListView();
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
@@ -213,7 +211,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
     case ID_PROJECT_SAVE:
       {
-        wxExListViewWithFrame* project = GetCurrentProject();
+        wxExListViewWithFrame* project = GetProject();
         if (project != NULL && project->FileSave())
         {
           SetTitle(wxEmptyString, project->GetFileName().GetName());
@@ -407,7 +405,7 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_file.empty())
   {
-    wxExSTCWithFrame* stc = GetCurrentSTC();
+    wxExSTC* stc = GetSTC();
 
     if (stc != NULL)
     {
@@ -417,7 +415,7 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_project.empty())
   {
-    wxExListViewWithFrame* lv = GetCurrentListView();
+    wxExListViewWithFrame* lv = (wxExListViewWithFrame*)GetListView();
 
     if (lv != NULL && lv->GetType() == wxExListViewWithFrame::LIST_PROJECT)
     {

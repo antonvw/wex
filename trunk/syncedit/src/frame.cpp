@@ -174,7 +174,7 @@ wxExListViewWithFrame* MDIFrame::Activate(
 {
   if (type == wxExListViewFile::LIST_PROJECT)
   {
-    return GetCurrentProject();
+    return GetProject();
   }
   else
   {
@@ -240,17 +240,17 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
 
 wxExListView* MDIFrame::GetListView()
 {
-  if (GetCurrentListView() != NULL)
+  if (GetListView() != NULL)
   {
-    return GetCurrentListView();
+    return GetListView();
   }
   else
   {
-    return GetCurrentProject();
+    return GetProject();
   }
 }
 
-wxExListViewWithFrame* MDIFrame::GetCurrentProject()
+wxExListViewWithFrame* MDIFrame::GetProject()
 {
   if (!m_NotebookWithProjects->IsShown() || m_NotebookWithProjects->GetPageCount() == 0)
   {
@@ -260,7 +260,7 @@ wxExListViewWithFrame* MDIFrame::GetCurrentProject()
   return (wxExListViewWithFrame*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
 }
 
-wxExSTCWithFrame* MDIFrame::GetCurrentSTC()
+wxExSTCWithFrame* MDIFrame::GetSTC()
 {
   if (!m_NotebookWithEditors->IsShown() || m_NotebookWithEditors->GetPageCount() == 0)
   {
@@ -378,8 +378,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  wxExSTCWithFrame* editor = GetCurrentSTC();
-  wxExListViewWithFrame* project = GetCurrentProject();
+  wxExSTCWithFrame* editor = GetSTC();
+  wxExListViewWithFrame* project = GetProject();
 
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
@@ -736,7 +736,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
 void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  wxExListViewWithFrame* project = GetCurrentProject();
+  wxExListViewWithFrame* project = GetProject();
 
   if (event.GetId() >= wxID_VIEW_DETAILS && event.GetId() <= wxID_VIEW_LIST)
   {
@@ -839,7 +839,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
     default:
     {
-      wxExSTCWithFrame* editor = GetCurrentSTC();
+      wxExSTCWithFrame* editor = GetSTC();
       wxExListViewFile* list = GetFocusedListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())

@@ -57,19 +57,9 @@ public:
   /// and opens all selected (depending on style) files if not cancelled.
   bool DialogProjectOpen(long style = wxFD_OPEN | wxFD_MULTIPLE);
 
-  /// If there is a listview somewhere, your implementation should return that one.
-  /// Default it invokes GetFocusedListView.
-  virtual wxExListViewWithFrame* GetCurrentListView() {
-    return GetFocusedListView();}
-
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
-  virtual wxExListViewWithFrame* GetCurrentProject() {
-    return GetFocusedListView();}
-
-  /// If there is an STC somewhere, your implementation should return that one.
-  /// Default it invokes GetFocusedSTC.
-  virtual wxExSTCWithFrame* GetCurrentSTC();
+  virtual wxExListViewWithFrame* GetProject();
 
   /// Returns the recent opened file.
   const wxString GetRecentFile() const {

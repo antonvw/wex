@@ -31,15 +31,14 @@ private:
   virtual wxExListViewWithFrame* Activate(
     wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
-  virtual wxExListViewWithFrame* GetCurrentProject();
-  virtual wxExSTCWithFrame* GetCurrentSTC();
+  virtual wxExListViewWithFrame* GetProject();
+  virtual wxExSTCWithFrame* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxString& unique,
     const wxString& contents);
   // Interface from wxExFrame.
   virtual void ConfigDialogApplied(wxWindowID dialogid);
-  virtual wxExSTC* GetSTC() {return GetCurrentSTC();}
   virtual wxExListView* GetListView();
   virtual bool OpenFile(
     const wxExFileName& filename,

@@ -36,7 +36,7 @@ protected:
   virtual wxExListViewWithFrame* Activate(
     wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
-  virtual wxExSTCWithFrame* GetCurrentSTC() {return m_STC;};
+  virtual wxExSTCWithFrame* GetSTC() {return m_STC;};
   virtual bool OpenFile(
     const wxExFileName& file,
     int line_number = 0,
