@@ -94,6 +94,18 @@ wxExFrame::~wxExFrame()
 #endif
 }
 
+wxExGrid* wxExFrame::GetFocusedGrid()
+{
+  wxWindow* win = wxWindow::FindFocus();
+
+  if (win == NULL)
+  {
+    return NULL;
+  }
+
+  return wxDynamicCast(win, wxExGrid);
+}
+
 wxExListView* wxExFrame::GetFocusedListView()
 {
   wxWindow* win = wxWindow::FindFocus();
@@ -157,12 +169,14 @@ void wxExFrame::GetSearchText()
   {
     stc->GetSearchText();
   }
-
-  wxExGrid* grid = wxDynamicCast(wxWindow::FindFocus(), wxExGrid);
-
-  if (grid != NULL)
+  else
   {
-    grid->GetSearchText();
+    wxExGrid* grid = GetGrid();
+
+    if (grid != NULL)
+    {
+      grid->GetSearchText();
+    }
   }
 }
 
@@ -203,9 +217,9 @@ void wxExFrame::OnClose(wxCloseEvent& event)
 
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
+  wxExGrid* grid = GetGrid();
   wxExSTC* stc = GetSTC();
   wxExListView* lv = GetListView();
-  wxExGrid* grid = wxDynamicCast(wxWindow::FindFocus(), wxExGrid);
 
   switch (command.GetId())
   {
@@ -367,6 +381,8 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     {
       wxFAIL;
     }
+
+    return;
   }
 
   wxExListView* lv = GetListView();
@@ -385,18 +401,24 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     {
       wxFAIL;
     }
+
+    return;
   }
 
-  wxWindow* win = wxWindow::FindFocus();
+  wxExGrid* grid = GetGrid();
 
-  if (win != NULL)
+  if (grid != NULL)
   {
-    wxExGrid* grid = wxDynamicCast(win, wxExGrid);
-
-    if (grid != NULL)
+    if (event.GetEventType() == wxEVT_COMMAND_FIND)
     {
       grid->FindNext(frd->GetFindString(), find_next);
     }
+    else
+    {
+      wxFAIL;
+    }
+
+    return;
   }
 }
 

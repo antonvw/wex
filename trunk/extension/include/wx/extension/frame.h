@@ -26,7 +26,9 @@
 
 // Only if we have a gui.
 #if wxUSE_GUI
+
 class wxExFindReplaceDialog;
+class wxExGrid;
 class wxExListView;
 class wxExStatusBar;
 class wxExSTC;
@@ -101,6 +103,9 @@ public:
   /// Called when a config dialog apply button was pressed.
   virtual void ConfigDialogApplied(wxWindowID WXUNUSED(dialogid)) {};
 
+  /// Returns a grid, default returns the focused grid.
+  virtual wxExGrid* GetGrid() {return GetFocusedGrid();};
+
   /// Returns a listview, default returns the focused listview.
   virtual wxExListView* GetListView() {return GetFocusedListView();};
 
@@ -113,6 +118,10 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
+
+  /// If the window that has focus is a Grid, then returns that, 
+  /// otherwise returns NULL.
+  wxExGrid* GetFocusedGrid();
 
   /// If the window that has focus is a ListView, 
   /// then returns that, otherwise returns NULL.
