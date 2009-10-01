@@ -241,6 +241,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case ID_EDIT_FIND_NEXT: 
+    GetSearchText();
+
     if (stc != NULL)
     {
       stc->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString()); 
@@ -256,6 +258,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_EDIT_FIND_PREVIOUS: 
+    GetSearchText();
+
     if (stc != NULL)
     {
       stc->FindNext(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString(), false);
