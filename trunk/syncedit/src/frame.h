@@ -27,18 +27,17 @@ protected:
   void OnTree(wxTreeEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  // Interface from wxExFrameWithHistory.
   virtual wxExListViewWithFrame* Activate(
     wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
+  virtual void ConfigDialogApplied(wxWindowID dialogid);
+  virtual wxExListView* GetListView();
   virtual wxExListViewWithFrame* GetProject();
   virtual wxExSTC* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxString& unique,
     const wxString& contents);
-  // Interface from wxExFrame.
-  virtual void ConfigDialogApplied(wxWindowID dialogid);
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

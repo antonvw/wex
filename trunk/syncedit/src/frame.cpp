@@ -238,6 +238,16 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
+wxExListView* MDIFrame::GetListView()
+{
+  if (!m_NotebookWithLists->IsShown() || m_NotebookWithLists->GetPageCount() == 0)
+  {
+    return NULL;
+  }
+
+  return (wxExListView*)m_NotebookWithLists->GetPage(m_NotebookWithLists->GetSelection());
+}
+
 wxExListViewWithFrame* MDIFrame::GetProject()
 {
   if (!m_NotebookWithProjects->IsShown() || m_NotebookWithProjects->GetPageCount() == 0)
