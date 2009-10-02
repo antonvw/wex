@@ -354,11 +354,9 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   {
     stc->GetSearchText();
   
-    if (event.GetEventType() == wxEVT_COMMAND_FIND)
-    {
-      stc->FindNext(frd->GetFindString(), find_next);
-    }
-    else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+    if (
+      event.GetEventType() == wxEVT_COMMAND_FIND ||
+      event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
       stc->FindNext(frd->GetFindString(), find_next);
     }
@@ -389,11 +387,9 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   if (lv != NULL && lv->IsShown())
   {
-    if (event.GetEventType() == wxEVT_COMMAND_FIND)
-    {
-      lv ->FindNext(frd->GetFindString(), find_next);
-    }
-    else if (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+    if (
+      event.GetEventType() == wxEVT_COMMAND_FIND ||
+      event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
       lv->FindNext(frd->GetFindString(), find_next);
     }
@@ -409,7 +405,9 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   if (grid != NULL && grid->IsShown())
   {
-    if (event.GetEventType() == wxEVT_COMMAND_FIND)
+    if (
+      event.GetEventType() == wxEVT_COMMAND_FIND ||
+      event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
       grid->FindNext(frd->GetFindString(), find_next);
     }
