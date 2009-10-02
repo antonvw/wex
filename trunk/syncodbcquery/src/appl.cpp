@@ -190,7 +190,16 @@ wxExGrid* MyFrame::GetGrid()
   }
   else
   {
-    return NULL;
+    const wxExGrid* grid = m_Statistics.GetGrid();
+
+    if (grid != NULL && grid->IsShown())
+    {
+      return (wxExGrid*)grid;
+    }
+    else
+    {
+      return NULL;
+    }
   }
 }
 

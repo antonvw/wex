@@ -40,6 +40,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual void ConfigDialogApplied(wxWindowID dialogid);
+  virtual wxExGrid* GetGrid();
   virtual wxExSTC* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,

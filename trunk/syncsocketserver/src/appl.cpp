@@ -234,6 +234,20 @@ void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
+wxExGrid* MyFrame::GetGrid()
+{
+  const wxExGrid* grid = m_Statistics.GetGrid();
+
+  if (grid != NULL && grid->IsShown())
+  {
+    return (wxExGrid*)grid;
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
 wxExSTC* MyFrame::GetSTC()
 {
   if (m_DataWindow->IsShown())
