@@ -27,6 +27,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
 #endif
   EVT_CLOSE(MDIFrame::OnClose)
   EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
+  EVT_MENU(wxID_EXECUTE, MDIFrame::OnCommand)
   EVT_MENU(wxID_SELECTALL, MDIFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MDIFrame::OnCommand)
   EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, MDIFrame::OnCommand)
