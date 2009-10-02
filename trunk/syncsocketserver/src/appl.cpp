@@ -242,7 +242,7 @@ wxExSTC* MyFrame::GetSTC()
   }
   else if (m_LogWindow->IsShown())
   {
-    return m_DataWindow;
+    return m_LogWindow;
   }
   else if (m_Shell->IsShown())
   {
