@@ -240,32 +240,51 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
 
 wxExListView* MDIFrame::GetListView()
 {
-  if (!m_NotebookWithLists->IsShown() || m_NotebookWithLists->GetPageCount() == 0)
+  if (m_History->HasFocus())
+  {
+    return m_History;
+  }
+  else if (
+    !m_NotebookWithLists->IsShown() || 
+     m_NotebookWithLists->GetPageCount() == 0)
   {
     return NULL;
   }
-
-  return (wxExListView*)m_NotebookWithLists->GetPage(m_NotebookWithLists->GetSelection());
+  else
+  {
+    return (wxExListView*)m_NotebookWithLists->GetPage(
+      m_NotebookWithLists->GetSelection());
+  }
 }
 
 wxExListViewWithFrame* MDIFrame::GetProject()
 {
-  if (!m_NotebookWithProjects->IsShown() || m_NotebookWithProjects->GetPageCount() == 0)
+  if (
+    !m_NotebookWithProjects->IsShown() || 
+     m_NotebookWithProjects->GetPageCount() == 0)
   {
     return NULL;
   }
-
-  return (wxExListViewWithFrame*)m_NotebookWithProjects->GetPage(m_NotebookWithProjects->GetSelection());
+  else
+  {
+    return (wxExListViewWithFrame*)m_NotebookWithProjects->
+      GetPage(m_NotebookWithProjects->GetSelection());
+  }
 }
 
 wxExSTC* MDIFrame::GetSTC()
 {
-  if (!m_NotebookWithEditors->IsShown() || m_NotebookWithEditors->GetPageCount() == 0)
+  if (
+    !m_NotebookWithEditors->IsShown() || 
+     m_NotebookWithEditors->GetPageCount() == 0)
   {
     return NULL;
   }
-
-  return (wxExSTC*)m_NotebookWithEditors->GetPage(m_NotebookWithEditors->GetSelection());
+  else
+  {
+    return (wxExSTC*)m_NotebookWithEditors->GetPage(
+      m_NotebookWithEditors->GetSelection());
+  }
 }
 
 void MDIFrame::NewFile(bool as_project)
