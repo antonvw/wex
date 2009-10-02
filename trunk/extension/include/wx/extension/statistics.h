@@ -229,6 +229,9 @@ public:
     }
     m_Grid->Show();
     return m_Grid;}
+
+    /// Access to the grid, returns NULL if has not been shown yet.
+    const wxExGrid* GetGrid() const {return m_Grid;}
 #endif
 private:
   std::map<wxString, T> m_Items;
