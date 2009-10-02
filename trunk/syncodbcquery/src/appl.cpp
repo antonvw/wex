@@ -181,6 +181,32 @@ void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
+wxExGrid* MyFrame::GetGrid()
+{
+  if (m_Results->IsShown())
+  {
+    return m_Results;
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+wxExSTC* MyFrame::GetSTC()
+{
+  if (m_Query->IsShown())
+  {
+    return m_Query;
+  }
+  else if (m_Shell->IsShown())
+  {
+    return m_Shell;
+  }
+
+  return NULL;
+}
+
 void MyFrame::OnClose(wxCloseEvent& event)
 {
   if (!m_Query->Continue())

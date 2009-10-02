@@ -233,6 +233,24 @@ void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
+wxExSTC* MyFrame::GetSTC()
+{
+  if (m_DataWindow->IsShown())
+  {
+    return m_DataWindow;
+  }
+  else if (m_LogWindow->IsShown())
+  {
+    return m_DataWindow;
+  }
+  else if (m_Shell->IsShown())
+  {
+    return m_Shell;
+  }
+
+  return m_LogWindow;
+}
+
 void MyFrame::LogConnection(
   wxSocketBase* sock,
   bool accepted,
