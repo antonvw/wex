@@ -165,7 +165,7 @@ void wxExFrame::GetSearchText()
 {
   wxExSTC* stc = GetSTC();
 
-  if (stc != NULL)
+  if (stc != NULL && stc->IsShown())
   {
     stc->GetSearchText();
   }
@@ -173,7 +173,7 @@ void wxExFrame::GetSearchText()
   {
     wxExGrid* grid = GetGrid();
 
-    if (grid != NULL)
+    if (grid != NULL && grid->IsShown() )
     {
       grid->GetSearchText();
     }
