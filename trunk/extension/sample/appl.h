@@ -58,6 +58,10 @@ protected:
   /// Do something.
   void OnCommand(wxCommandEvent& event);
 private:
+  virtual wxExGrid* GetGrid();
+  virtual wxExListView* GetListView();
+  virtual wxExSTC* GetSTC();
+  
 #if wxUSE_GRID
   wxExGrid* m_Grid;         ///< a grid
 #endif

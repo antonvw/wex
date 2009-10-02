@@ -212,6 +212,30 @@ void wxExSampleFrame::ConfigDialogApplied(wxWindowID /* id */)
   m_STCShell->ConfigGet();
 }
 
+wxExGrid* wxExSampleFrame::GetGrid()
+{
+  return m_Grid;
+}
+
+wxExListView* wxExSampleFrame::GetListView()
+{
+  return m_ListView;
+}
+
+wxExSTC* wxExSampleFrame::GetSTC()
+{
+  if (m_STC->IsShown()
+  {
+    return m_STC;
+  }
+  else if (m_STCShell->IsShown())
+  {
+    return m_STCShell;
+  }
+  
+  return NULL;
+}
+  
 void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 {
   m_Statistics.Inc(wxString::Format("%d", event.GetId()));

@@ -180,6 +180,18 @@ wxExListViewWithFrame* wxExRepSampleFrame::Activate(
   return NULL;
 }
 
+wxExListView* wxExRepSampleFrame::GetListView()
+{
+  return (wxExListView*)m_NotebookWithLists->GetPage(
+    m_NotebookWithLists->GetSelection());
+}
+
+
+wxExSTC* wxExRepSampleFrame::GetSTC()
+{
+  return m_STC;
+}
+  
 void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
