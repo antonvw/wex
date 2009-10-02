@@ -350,7 +350,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   wxExSTC* stc = GetSTC();
 
-  if (stc != NULL)
+  if (stc != NULL && stc->IsShown())
   {
     stc->GetSearchText();
   
@@ -387,7 +387,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   wxExListView* lv = GetListView();
 
-  if (lv != NULL)
+  if (lv != NULL && lv->IsShown())
   {
     if (event.GetEventType() == wxEVT_COMMAND_FIND)
     {
@@ -407,7 +407,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   wxExGrid* grid = GetGrid();
 
-  if (grid != NULL)
+  if (grid != NULL && grid->IsShown())
   {
     if (event.GetEventType() == wxEVT_COMMAND_FIND)
     {
