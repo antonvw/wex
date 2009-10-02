@@ -224,7 +224,7 @@ wxExListView* wxExSampleFrame::GetListView()
 
 wxExSTC* wxExSampleFrame::GetSTC()
 {
-  if (m_STC->IsShown()
+  if (m_STC->IsShown())
   {
     return m_STC;
   }
