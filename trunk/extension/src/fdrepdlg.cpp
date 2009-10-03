@@ -16,8 +16,9 @@
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExFindReplaceDialog, wxFindReplaceDialog)
-  EVT_BUTTON(wxEVT_COMMAND_FIND_NEXT, wxExFindReplaceDialog::OnCommand)
-  EVT_BUTTON(wxEVT_COMMAND_FIND_REPLACE, wxExFindReplaceDialog::OnCommand)
+// See comment at OnCommand
+//  EVT_BUTTON(wxEVT_COMMAND_FIND_NEXT, wxExFindReplaceDialog::OnCommand)
+//  EVT_BUTTON(wxEVT_COMMAND_FIND_REPLACE, wxExFindReplaceDialog::OnCommand)
 END_EVENT_TABLE()
 
 wxExFindReplaceDialog::wxExFindReplaceDialog(
@@ -36,15 +37,7 @@ void wxExFindReplaceDialog::OnCommand(wxCommandEvent& event)
 {
   event.Skip();
 
-  if (
-    event.GetId() == wxID_FIND ||
-    event.GetId() == wxID_REPLACE)
-  {
-    // Match word and regular expression do not work together.
-    if (wxExApp::GetConfig()->GetFindReplaceData()->MatchWord())
-    {
-      wxExApp::GetConfig()->GetFindReplaceData()->SetIsRegularExpression(false);
-    }
-  }
+  // Tried to set match word and regular expression here,
+  // seems not to be getting here, removed it (see v.1784).
 }
 #endif // wxUSE_GUI
