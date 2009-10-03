@@ -15,11 +15,36 @@
 
 #if wxUSE_GUI
 
+BEGIN_EVENT_TABLE(wxExFindReplaceDialog, wxFindReplaceDialog)
+  EVT_BUTTON(wxID_FIND, wxExFindReplaceDialog::OnCommand)
+  EVT_BUTTON(wxID_REPLACE, wxExFindReplaceDialog::OnCommand)
+END_EVENT_TABLE()
+
 wxExFindReplaceDialog::wxExFindReplaceDialog(
     wxWindow *parent,
     const wxString& title,
 		int style)
-  : wxFindReplaceDialog(parent, wxExApp::GetConfig()->GetFindReplaceData(), title, style)
+  : wxFindReplaceDialog(
+      parent, 
+      wxExApp::GetConfig()->GetFindReplaceData(), 
+      title, 
+      style)
 {
+}
+
+void wxExFindReplaceDialog::OnCommand(wxCommandEvent& event)
+{
+  event.Skip();
+
+  if (
+    event.GetId() == wxID_FIND ||
+    event.GetId() == wxID_REPLACE)
+  {
+    // Match word and regular expression do not work together.
+    if (wxExApp::GetConfig()->GetFindReplaceData()->MatchWord())
+    {
+      wxExApp::GetConfig()->GetFindReplaceData()->SetIsRegularExpression(false);
+    }
+  }
 }
 #endif // wxUSE_GUI

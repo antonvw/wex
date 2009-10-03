@@ -30,6 +30,10 @@ public:
     wxWindow *parent,
     const wxString& title,
 		int style = 0);
+protected:
+  void OnCommand(wxCommandEvent& event);
+private:
+  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
 #endif
