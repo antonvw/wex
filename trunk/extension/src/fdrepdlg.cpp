@@ -16,8 +16,8 @@
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExFindReplaceDialog, wxFindReplaceDialog)
-  EVT_BUTTON(wxID_FIND, wxExFindReplaceDialog::OnCommand)
-  EVT_BUTTON(wxID_REPLACE, wxExFindReplaceDialog::OnCommand)
+  EVT_BUTTON(wxEVT_COMMAND_FIND_NEXT, wxExFindReplaceDialog::OnCommand)
+  EVT_BUTTON(wxEVT_COMMAND_FIND_REPLACE, wxExFindReplaceDialog::OnCommand)
 END_EVENT_TABLE()
 
 wxExFindReplaceDialog::wxExFindReplaceDialog(
