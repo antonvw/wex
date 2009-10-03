@@ -89,6 +89,11 @@ wxExFrame::wxExFrame(wxWindow* parent,
 
 wxExFrame::~wxExFrame()
 {
+  if (m_FindReplaceDialog != NULL)
+  {
+    m_FindReplaceDialog->Destroy();
+  }
+
 #if wxUSE_STATUSBAR
   delete m_StatusBar;
 #endif
@@ -337,9 +342,12 @@ wxToolBar* wxExFrame::OnCreateToolBar(
 
 void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 {
+  wxASSERT(m_FindReplaceDialog != NULL);
+
   if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
-    wxASSERT(m_FindReplaceDialog != NULL);
+    // Hiding instead of destroying, does not 
+    // show the dialog next time.
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = NULL;
     return;
