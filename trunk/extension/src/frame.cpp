@@ -14,7 +14,6 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
-#include <wx/extension/fdrepdlg.h> // for wxExFindReplaceDialog
 #include <wx/extension/frd.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
@@ -243,7 +242,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     
     if (m_FindReplaceDialog == NULL)
     {
-      m_FindReplaceDialog = new wxExFindReplaceDialog(this, _("Find")); 
+      m_FindReplaceDialog = new wxFindReplaceDialog(this, frd, _("Find")); 
     }
     
     m_FindReplaceDialog->Show();
@@ -263,8 +262,9 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     
     if (m_FindReplaceDialog == NULL)
     {
-      m_FindReplaceDialog = new wxExFindReplaceDialog(
+      m_FindReplaceDialog = new wxFindReplaceDialog(
         this, 
+        frd,
         _("Replace"), 
         wxFR_REPLACEDIALOG); 
     }

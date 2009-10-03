@@ -20,14 +20,13 @@
 #endif
 #include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/datetime.h>
-#include <wx/fdrepdlg.h> // for wxFindDialogEvent
+#include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
 
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxExFindReplaceDialog;
 class wxExGrid;
 class wxExListView;
 class wxExStatusBar;
@@ -206,7 +205,7 @@ private:
   static std::map<wxString, wxExPane> m_Panes;
 #endif
 
-  wxExFindReplaceDialog* m_FindReplaceDialog;
+  wxFindReplaceDialog* m_FindReplaceDialog;
 
   const bool m_KeepPosAndSize;
 
