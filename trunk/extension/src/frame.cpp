@@ -277,12 +277,6 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
     if (stc != NULL)
     {
-      // Match word and regular expression do not work together.
-      if (frd->MatchWord())
-      {
-        frd->SetIsRegularExpression(false);
-      }
-
       stc->FindNext(frd->GetFindString()); 
     }
     if (lv != NULL)
@@ -300,12 +294,6 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
     if (stc != NULL)
     {
-      // Match word and regular expression do not work together.
-      if (frd->MatchWord())
-      {
-        frd->SetIsRegularExpression(false);
-      }
-
       stc->FindNext(frd->GetFindString(), false);
     }
     if (lv != NULL)
@@ -375,6 +363,12 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   {
     stc->GetSearchText();
   
+    // Match word and regular expression do not work together.
+    if (frd->MatchWord())
+    {
+      frd->SetIsRegularExpression(false);
+    }
+
     if (
       event.GetEventType() == wxEVT_COMMAND_FIND ||
       event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
