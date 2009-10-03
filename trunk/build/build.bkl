@@ -76,7 +76,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/configdialog.cpp</sources>
     <sources>../extension/src/dialog.cpp</sources>
     <sources>../extension/src/dir.cpp</sources>
-    <sources>../extension/src/fdrepdlg.cpp</sources>
     <sources>../extension/src/file.cpp</sources>
     <sources>../extension/src/frame.cpp</sources>
     <sources>../extension/src/frd.cpp</sources>
@@ -105,7 +104,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/dialog.h</headers>
     <headers>../extension/include/wx/extension/dir.h</headers>
     <headers>../extension/include/wx/extension/extension.h</headers>
-    <headers>../extension/include/wx/extension/fdrepdlg.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
     <headers>../extension/include/wx/extension/frame.h</headers>
     <headers>../extension/include/wx/extension/frd.h</headers>
