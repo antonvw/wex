@@ -31,7 +31,6 @@ public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExSTCMenuFlags
   {
-    STC_MENU_TOOLTIP   = 0x0001, ///< for adding tooltip
     STC_MENU_SIMPLE    = 0x0002, ///< for adding copy/paste etc. menu
     STC_MENU_FIND      = 0x0004, ///< for adding find menu
     STC_MENU_REPLACE   = 0x0008, ///< for adding replace menu

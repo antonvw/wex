@@ -1768,18 +1768,7 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
-  if (event.GetEventType() == wxEVT_STC_DWELLSTART)
-  {
-    if (!(m_MenuFlags & STC_MENU_TOOLTIP))
-    {
-      return;
-    }
-
-    // FIXME: Calltips sometimes appear at wrong places, so not used.
-    // const int pos = event.GetPosition();
-    // HexDecCalltip(pos);
-  }
-  else if (event.GetEventType() == wxEVT_STC_DWELLEND)
+  if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
     if (CallTipActive())
     {
