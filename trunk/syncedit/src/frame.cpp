@@ -457,20 +457,22 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     info.SetVersion(APPL_VERSION);
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
+
 #ifdef USE_OTL
     info.AddDeveloper(wxExOTL::Version());
 #endif
+
 #ifdef EX_PORTABLE
     info.SetDescription(
       _("This program offers a portable text or binary editor\n"
         "with automatic syncing. All its config files are read\n"
         "and saved in the same directory as where the executable is."));
-
 #else
     info.SetDescription(_("This program offers a text or binary editor with automatic syncing."));
 #endif
+
     info.SetCopyright("(c) 1998-2009, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
-    info.SetWebSite("http://svn.xp-dev.com/svn/syncedit/index.htm");
+    info.SetWebSite("http://syncedit.1.xpdev-hosted.com/index.htm");
     wxAboutBox(info);
     }
     break;
