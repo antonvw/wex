@@ -1539,6 +1539,48 @@ void wxExSTC::MacroPlayback()
 #endif
 }
 
+void wxExSTC::MatchHexBrace()
+{
+    const int col = GetColumn(GetCurrentPos());
+    const wxFileOffset start_ascii_field =
+      start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
+
+    if (col >= start_ascii_field)
+    {
+      const int offset = col - start_ascii_field;
+      int space = 0;
+
+      if (col >= start_ascii_field + bytes_per_line / 2)
+      {
+        space++;
+      }
+
+      BraceHighlight(GetCurrentPos(),
+        PositionFromLine(GetCurrentLine()) + start_hex_field + each_hex_field * offset + space);
+    }
+    else if (col >= start_hex_field)
+    {
+      if (GetCharAt(GetCurrentPos()) != ' ')
+      {
+        int space = 0;
+
+        if (col >= start_hex_field + space_between_fields + (bytes_per_line * each_hex_field) / 2)
+        {
+          space++;
+        }
+
+        const int offset = (col - (start_hex_field + space)) / each_hex_field;
+
+        BraceHighlight(GetCurrentPos(),
+          PositionFromLine(GetCurrentLine()) + start_ascii_field + offset);
+      }
+    }
+    else
+    {
+      BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+    }
+}
+
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -1653,46 +1695,7 @@ void wxExSTC::OnKey(wxKeyEvent& event)
   if (m_Flags & STC_OPEN_HEX)
   {
     event.Skip();
-
-    const int col = GetColumn(GetCurrentPos());
-    const wxFileOffset start_ascii_field =
-      start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
-
-    if (col >= start_ascii_field)
-    {
-      const int offset = col - start_ascii_field;
-      int space = 0;
-
-      if (col >= start_ascii_field + bytes_per_line / 2)
-      {
-        space++;
-      }
-
-      BraceHighlight(GetCurrentPos(),
-        PositionFromLine(GetCurrentLine()) + start_hex_field + each_hex_field * offset + space);
-    }
-    else if (col >= start_hex_field)
-    {
-      if (GetCharAt(GetCurrentPos()) != ' ')
-      {
-        int space = 0;
-
-        if (col >= start_hex_field + space_between_fields + (bytes_per_line * each_hex_field) / 2)
-        {
-          space++;
-        }
-
-        const int offset = (col - (start_hex_field + space)) / each_hex_field;
-
-        BraceHighlight(GetCurrentPos(),
-          PositionFromLine(GetCurrentLine()) + start_ascii_field + offset);
-      }
-    }
-    else
-    {
-      BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    }
-
+    MatchHexBrace();
     return;
   }
 
