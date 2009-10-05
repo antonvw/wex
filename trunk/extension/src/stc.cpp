@@ -2660,10 +2660,14 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
+  // Currently we cannot find in the component,
+  // so no wxExSTC::STC_MENU_FIND flag,
+  // as this requires the component to be visible to public interface,
+  // and the applications to forward the find events.
   m_STC = new wxExSTC(
     this, 
     text, 
-    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND, 
+    wxExSTC::STC_MENU_SIMPLE,
     wxID_ANY, 
     pos, 
     size);
