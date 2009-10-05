@@ -84,7 +84,7 @@ public:
   };
 
   /// Gets the icon index for this filename (uses the file extension to get it).
-  int GetIcon() const;
+  int GetIconID() const;
 
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};

@@ -64,7 +64,7 @@ void wxExListItemWithFileName::Insert(long index)
 #endif
   }
 
-  SetImage(m_Statistics.GetIcon());
+  SetImage(m_Statistics.GetIconID());
 
   Update();
 

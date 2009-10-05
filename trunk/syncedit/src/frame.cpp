@@ -665,7 +665,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       wxString::Format("stc%d", stc->GetId()),
       stc->GetFileName().GetFullName(),
       true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIcon()));
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIconID()));
 
     stc->SetDocPointer(editor->GetDocPointer());
   }
@@ -985,7 +985,7 @@ bool MDIFrame::OpenFile(
       key,
       filename.GetFullName() + " " + unique,
       true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon()));
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIconID()));
   }
   else
   {
@@ -1077,7 +1077,7 @@ bool MDIFrame::OpenFile(
         filename.GetFullPath(),
         filename.GetFullName(),
         true,
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIcon()));
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIconID()));
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {

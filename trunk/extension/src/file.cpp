@@ -205,7 +205,7 @@ int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
   return dlg.ShowModal();
 }
 
-int wxExFileName::GetIcon() const
+int wxExFileName::GetIconID() const
 {
   if (m_Stat.IsOk())
   {
