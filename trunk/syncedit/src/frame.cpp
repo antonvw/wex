@@ -19,8 +19,6 @@
 #include "version.h"
 
 BEGIN_EVENT_TABLE(MDIFrame, Frame)
-  EVT_BUTTON(wxID_STOP, MDIFrame::OnCommand)
-  EVT_BUTTON(wxID_EXECUTE, MDIFrame::OnCommand)
 #if wxUSE_CHECKBOX
   EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
   EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
