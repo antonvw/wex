@@ -103,12 +103,17 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   }
 
   if ( m_FileName.FileExists() && GetSelectedText().empty() &&
-      (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN) &&
-       !menu.AppendSVN(GetFileName()) &&
-       !wxExApp::GetConfig(_("Comparator")).empty())
+      (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN))
   {
-    menu.AppendSeparator();
-    menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
+    if (wxExSVN::DirExists(GetFileName()))
+    {
+      menu.AppendSVN();
+    }
+    else if (!wxExApp::GetConfig(_("Comparator")).empty())
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
+    }
   }
 
   if (!GetReadOnly())

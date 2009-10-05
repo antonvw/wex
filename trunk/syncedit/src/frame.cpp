@@ -733,7 +733,12 @@ void MDIFrame::OnTree(wxTreeEvent& event)
   {
     wxExMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
-    menu.AppendSVN(filename);
+
+    if (wxExSVN::DirExists(filename))
+    {
+      menu.AppendSeparator();
+      menu.AppendSVN();
+    }
 
     if (filename.GetLexer().GetScintillaLexer() == "makefile")
     {

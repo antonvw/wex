@@ -982,7 +982,11 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       {
         const wxExListItemWithFileName item(this, GetFirstSelected());
         menu.AppendSeparator();
-        menu.AppendSVN(item.GetFileName());
+
+        if (wxExSVN::DirExists(item.GetFileName()))
+        {
+          menu.AppendSVN();
+        }
       }
     }
 
