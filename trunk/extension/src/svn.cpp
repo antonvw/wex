@@ -33,6 +33,13 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   Initialize();
 }
 
+bool wxExSVN::DirExists(const wxFileName& filename)
+{
+  wxFileName path(filename);
+  path.AppendDir(".svn");
+  return path.DirExists();
+}
+
 wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
   const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);

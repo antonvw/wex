@@ -17,7 +17,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/artprov.h> // for wxArtID
-#include <wx/filename.h>
 #include <wx/menu.h>
 
 // Only if we have a gui.
@@ -67,8 +66,7 @@ public:
   void AppendSeparator();
 
   /// Appends SVN menu items.
-  /// Returns true if filename contains a subversion subdirectory.
-  bool AppendSVN(const wxFileName& filename);
+  void AppendSVN();
 
   /// Appends a submenu (and resets the is separator member).
   void AppendSubMenu(

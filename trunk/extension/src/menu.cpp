@@ -151,32 +151,22 @@ void wxExMenu::AppendSubMenu(
   wxMenu::AppendSubMenu(submenu, text, help);
 }
 
-bool wxExMenu::AppendSVN(const wxFileName& file)
+void wxExMenu::AppendSVN()
 {
-  wxFileName path(file);
-  path.AppendDir(".svn");
-        
-  if (path.DirExists())
-  {
-    wxMenu* svnmenu = new wxMenu;
-    svnmenu->Append(ID_EDIT_SVN_LOG, wxExEllipsed("&Log"));
-    svnmenu->Append(ID_EDIT_SVN_STAT, wxExEllipsed("&Stat"));
-    svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed("&Diff"));
-    svnmenu->AppendSeparator();
-    svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("Ca&t"));
-    svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed("&Blame"));
-    svnmenu->AppendSeparator();
-    svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed("&Commit"));
-    svnmenu->AppendSeparator();
-    svnmenu->Append(ID_EDIT_SVN_REVERT, wxExEllipsed("&Revert"));
+  wxMenu* svnmenu = new wxMenu;
+  svnmenu->Append(ID_EDIT_SVN_LOG, wxExEllipsed("&Log"));
+  svnmenu->Append(ID_EDIT_SVN_STAT, wxExEllipsed("&Stat"));
+  svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed("&Diff"));
+  svnmenu->AppendSeparator();
+  svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("Ca&t"));
+  svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed("&Blame"));
+  svnmenu->AppendSeparator();
+  svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed("&Commit"));
+  svnmenu->AppendSeparator();
+  svnmenu->Append(ID_EDIT_SVN_REVERT, wxExEllipsed("&Revert"));
 
-    AppendSeparator();
-    AppendSubMenu(svnmenu, "&SVN");
-
-    return true;
-  }
-
-  return false;
+  AppendSeparator();
+  AppendSubMenu(svnmenu, "&SVN");
 }
 
 void wxExMenu::AppendTools()

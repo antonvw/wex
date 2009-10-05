@@ -16,6 +16,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/filename.h>
 
 /// SVN types supported.
 enum wxExSVNType
@@ -46,6 +47,9 @@ public:
 
   /// Constructor, specify the command id and a fullpath.
   wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
+
+  /// Returns true if specified filename (a path) is a svn directory.
+  static bool DirExists(const wxFileName& filename);
 
   /// Execute the svn command, and collects the output.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
