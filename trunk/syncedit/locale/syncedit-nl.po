@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 07:59+0100\n"
-"PO-Revision-Date: 2009-09-15 08:00+0100\n"
+"POT-Creation-Date: 2009-10-05 11:23+0100\n"
+"PO-Revision-Date: 2009-10-05 11:23+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,51 +17,47 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/frame.cpp:69
+#: ../src/frame.cpp:71
 msgid "Project Files"
 msgstr "Project bestanden"
 
-#: ../src/frame.cpp:103
+#: ../src/frame.cpp:106
 msgid "Files"
 msgstr "Bestanden"
 
-#: ../src/frame.cpp:105
+#: ../src/frame.cpp:108
 msgid "Projects"
 msgstr "Projecten"
 
-#: ../src/frame.cpp:107
+#: ../src/frame.cpp:110
 msgid "Output"
 msgstr "Resultaten"
 
-#: ../src/frame.cpp:109
+#: ../src/frame.cpp:112
 msgid "Explorer"
 msgstr "Verkenner"
 
-#: ../src/frame.cpp:111
+#: ../src/frame.cpp:114
 msgid "Ascii Table"
 msgstr "Ascii tabel"
 
-#: ../src/frame.cpp:113
+#: ../src/frame.cpp:116
 msgid "History"
 msgstr "Geschiedenis"
 
-#: ../src/frame.cpp:115
+#: ../src/frame.cpp:118
 msgid "Findbar"
 msgstr "Zoekbalk"
 
-#: ../src/frame.cpp:117
-msgid "Perspective"
-msgstr "Perspektief"
-
-#: ../src/frame.cpp:272
+#: ../src/frame.cpp:292
 msgid "project"
 msgstr "project"
 
-#: ../src/frame.cpp:272
+#: ../src/frame.cpp:292
 msgid "textfile"
 msgstr "bestand"
 
-#: ../src/frame.cpp:436
+#: ../src/frame.cpp:465
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -71,37 +67,37 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../src/frame.cpp:441
+#: ../src/frame.cpp:469
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: ../src/frame.cpp:443
+#: ../src/frame.cpp:472
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: ../src/frame.cpp:538
+#: ../src/frame.cpp:567
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../src/frame.cpp:539
+#: ../src/frame.cpp:568
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: ../src/frame.cpp:544
+#: ../src/frame.cpp:573
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/frame.cpp:551
-#: ../src/frame.cpp:560
-#: ../src/frame.cpp:565
+#: ../src/frame.cpp:580
+#: ../src/frame.cpp:589
+#: ../src/frame.cpp:594
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../src/frame.cpp:557
+#: ../src/frame.cpp:586
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../src/frame.cpp:698
+#: ../src/frame.cpp:735
 msgid "&Open"
 msgstr "&Openen"
 
@@ -261,14 +257,6 @@ msgstr "&Lijst sorteer methode instellen"
 msgid "Set &Editor Options"
 msgstr "&Editor opties"
 
-#: ../src/support.cpp:165
-msgid "&File"
-msgstr "&Bestand"
-
-#: ../src/support.cpp:166
-msgid "&Edit"
-msgstr "Be&werken"
-
 #: ../src/support.cpp:167
 msgid "&View"
 msgstr "&Beeld"
@@ -313,6 +301,12 @@ msgstr "Bekijk hexadecimaal"
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
 
+#~ msgid "Perspective"
+#~ msgstr "Perspektief"
+#~ msgid "&File"
+#~ msgstr "&Bestand"
+#~ msgid "&Edit"
+#~ msgstr "Be&werken"
 #~ msgid "Flags"
 #~ msgstr "Vlaggen"
 #~ msgid "&Contents"
