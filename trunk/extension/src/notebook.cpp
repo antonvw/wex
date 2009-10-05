@@ -221,7 +221,11 @@ bool wxExNotebook::SetPageText(
   {
     m_MapPages.erase(key);
     m_MapPages[new_key] = page;
-    wxAuiNotebook::SetPageText(GetPageIndex(page), text);
+
+    if (!wxAuiNotebook::SetPageText(GetPageIndex(page), text))
+    {
+      wxFAIL;
+    }
   }
 
   return (page != NULL);
