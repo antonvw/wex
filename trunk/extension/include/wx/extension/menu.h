@@ -59,7 +59,6 @@ public:
   void AppendEdit(bool add_invert = false);
 
   /// Appends print menu items.
-  /// This always adds some items, so no boolean return needed.
   void AppendPrint();
 
   /// Appends a separator.
