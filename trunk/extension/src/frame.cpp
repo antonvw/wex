@@ -692,7 +692,7 @@ wxToolBarToolBase* wxExToolBar::AddCheckTool(int toolId)
     wxEmptyString,
     art.GetBitmap(GetToolBitmapSize()),
     wxNullBitmap,
-    art.GetLabel(wxSTOCK_NOFLAGS));
+    wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
 }
 
 wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
@@ -703,7 +703,7 @@ wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
     toolId, 
     wxEmptyString,
     art.GetBitmap(GetToolBitmapSize()),
-    art.GetLabel(wxSTOCK_NOFLAGS));
+    wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
 }
 #endif // wxUSE_TOOLBAR
 #endif // wxUSE_GUI

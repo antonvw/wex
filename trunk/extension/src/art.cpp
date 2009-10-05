@@ -17,7 +17,7 @@ using namespace std;
 
 map<wxWindowID, wxArtID> wxExStockArt::m_StockArt;
 
-wxExStockArt::wxExStockArt(int id)
+wxExStockArt::wxExStockArt(wxWindowID id)
   : m_Id(id)
 {
   if (m_StockArt.empty())
@@ -63,21 +63,5 @@ const wxBitmap wxExStockArt::GetBitmap(const wxSize& bitmap_size) const
   }
 
   return bitmap;
-}
-
-const wxString wxExStockArt::GetLabel(long flags) const
-{
-  wxString stock_label;
-
-  if (wxIsStockID(m_Id))
-  {
-    stock_label = wxGetStockLabel(m_Id, flags);
-  }
-  else
-  {
-    wxFAIL;
-  }
-
-  return stock_label;
 }
 #endif // wxUSE_GUI

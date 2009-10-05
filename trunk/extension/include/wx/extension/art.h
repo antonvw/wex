@@ -18,7 +18,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/artprov.h> // for wxArtID
-#include <wx/stockitem.h> // for wxGetStockLabel and MNEMONIC
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -28,18 +27,14 @@ class wxExStockArt
 {
 public:
   /// Constructor, fills the map first time it is invoked.
-  wxExStockArt(int id);
+  wxExStockArt(wxWindowID id);
 
   /// If id is a stock id, returns stock bitmap from the stock art map.
   /// Check GetBitmap().IsOk for valid bitmap.
   const wxBitmap GetBitmap(const wxSize& bitmap_size = wxSize(16, 15)) const;
-
-  /// If id is a stock id, returns stock label.
-  const wxString GetLabel(
-    long flags = wxSTOCK_WITH_MNEMONIC | wxSTOCK_WITH_ACCELERATOR) const;
 private:
   static std::map<wxWindowID, wxArtID> m_StockArt;
-  const int m_Id;
+  const wxWindowID m_Id;
 };
 #endif // wxUSE_GUI
 #endif

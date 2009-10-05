@@ -40,7 +40,7 @@ wxMenuItem* wxExMenu::Append(int id)
 
   const wxExStockArt art(id);
 
-  wxMenuItem* item = new wxMenuItem(this, id, art.GetLabel());
+  wxMenuItem* item = new wxMenuItem(this, id, wxGetStockLabel(id));
 
   if (art.GetBitmap().IsOk())
   {
