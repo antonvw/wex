@@ -45,10 +45,15 @@ public:
     int commands_save_in_config = -1,
     /// The stc menu flags.
     long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND,
+    /// The window id.
     wxWindowID id = wxID_ANY,
+    /// Position.
     const wxPoint& pos = wxDefaultPosition,
+    /// Size.
     const wxSize& size = wxDefaultSize,
+    /// Window style.
     long style = 0,
+    /// Name of the component.
     const wxString& name = wxSTCNameStr);
 
   /// Destructor, keeps the commands in the config, if required.
