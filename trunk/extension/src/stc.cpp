@@ -995,7 +995,7 @@ bool wxExSTC::FileSaveAs()
   return true;
 }
 
-void wxExSTC::FileSync()
+bool wxExSTC::FileSync()
 {
   // Reopen the file using current mode,
   // and adding sync flag if not modified.
@@ -1006,7 +1006,7 @@ void wxExSTC::FileSync()
     flags |= STC_OPEN_IS_SYNCED;
   }
 
-  Open(m_FileName, 0, wxEmptyString, flags);
+  return Open(m_FileName, 0, wxEmptyString, flags);
 }
 
 void wxExSTC::FileTypeMenu()
@@ -1677,7 +1677,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
     FileReadOnlyAttributeChanged();
   }
 
-  CheckSyncNeeded();
+  CheckFileSync();
 }
 
 void wxExSTC::OnKey(wxKeyEvent& event)

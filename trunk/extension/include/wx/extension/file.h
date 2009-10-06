@@ -140,7 +140,7 @@ public:
 
   /// Called if file needs to be synced.
   /// The default calls FileOpen, and updates status text.
-  virtual void FileSync();
+  virtual bool FileSync();
 
   /// Returns whether contents have been changed.
   /// Default returns false.
@@ -152,7 +152,7 @@ public:
 
   /// Invokes FileSync if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
-  bool CheckSyncNeeded();
+  bool CheckFileSync();
 
   /// Shows dialog if file contents was changed, and returns true if
   /// you accepted to save changes.

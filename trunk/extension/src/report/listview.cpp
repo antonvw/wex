@@ -616,7 +616,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
   m_FileName.GetStat().Sync();
 
-  CheckSyncNeeded();
+  CheckFileSync();
 }
 
 void wxExListViewFile::OnList(wxListEvent& event)

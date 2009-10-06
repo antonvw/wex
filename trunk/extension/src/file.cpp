@@ -31,7 +31,7 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
-bool wxExFile::CheckSyncNeeded()
+bool wxExFile::CheckFileSync()
 {
   if (IsOpened() ||
      !m_FileName.GetStat().IsOk() ||
@@ -42,10 +42,10 @@ bool wxExFile::CheckSyncNeeded()
 
   if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
   {
-    FileSync();
+    return FileSync();
   }
 
-  return true;
+  return false;
 }
 
 bool wxExFile::Continue()
@@ -147,14 +147,19 @@ bool wxExFile::FileSaveAs()
   return false;
 }
 
-void wxExFile::FileSync()
+bool wxExFile::FileSync()
 {
   if (FileOpen(m_FileName))
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
 #endif
+    return true;
   }
+  else
+  {
+    return false;
+  } 
 }
 
 bool wxExFile::MakeAbsolute()
