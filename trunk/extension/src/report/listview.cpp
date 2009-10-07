@@ -269,11 +269,6 @@ bool wxExListViewFile::FileOpen(const wxExFileName& filename)
 
 bool wxExListViewFile::FileSave()
 {
-  if (m_FileName.GetName().empty())
-  {
-    return FileSaveAs();
-  }
-
   if (!wxFile::Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;

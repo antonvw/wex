@@ -957,11 +957,6 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
 
 bool wxExSTC::FileSave()
 {
-  if (m_FileName.GetFullPath().empty())
-  {
-    return FileSaveAs();
-  }
-
   if (!wxFile::Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
@@ -979,18 +974,6 @@ bool wxExSTC::FileSave()
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
 #endif
-
-  return true;
-}
-
-bool wxExSTC::FileSaveAs()
-{
-  if (!wxExFile::FileSaveAs())
-  {
-    return false;
-  }
-
-  SetLexer();
 
   return true;
 }

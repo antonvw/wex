@@ -125,10 +125,10 @@ public:
   /// So do it here.
   virtual ~wxExFile() {;};
 
-  /// Asks for continue, sets the filename member.
+  /// Sets the filename member.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
-  /// Asks for continue, sets the filename member and opens the file.
+  /// Sets the filename member and opens the file.
   virtual bool FileOpen(const wxExFileName& filename);
 
   /// Invoked by FileSaveAs, allows you to save your file.
