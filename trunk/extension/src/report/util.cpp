@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/configdialog.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/report/report.h>
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)

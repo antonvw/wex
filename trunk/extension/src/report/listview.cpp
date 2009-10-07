@@ -91,7 +91,6 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
   const wxString& file,
-  const wxString& wildcard,
   wxWindowID id,
   long menu_flags,
   const wxPoint& pos,
@@ -108,7 +107,6 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_Type(LIST_PROJECT)
 {
   Initialize(NULL);
-  SetWildcard(wildcard);
   FileOpen(file);
 }
 
@@ -878,7 +876,6 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   const wxString& file,
-  const wxString& wildcard,
   wxWindowID id,
   long menu_flags,
   const wxPoint& pos,
@@ -886,7 +883,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString &name)
-  : wxExListViewFile(parent, file, wildcard, id, menu_flags, pos, size, style, validator, name)
+  : wxExListViewFile(parent, file, id, menu_flags, pos, size, style, validator, name)
 {
   Initialize();
 

@@ -65,7 +65,6 @@ public:
   /// Constructor for a LIST_PROJECT, opens the file.
   wxExListViewFile(wxWindow* parent,
     const wxString& file,
-    const wxString& wildcard,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
     const wxPoint& pos = wxDefaultPosition,
@@ -157,7 +156,6 @@ public:
   /// Constructor for a LIST_PROJECT, opens the file.
   wxExListViewWithFrame(wxWindow* parent,
     const wxString& file,
-    const wxString& wildcard,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
     const wxPoint& pos = wxDefaultPosition,
