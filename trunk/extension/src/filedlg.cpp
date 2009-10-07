@@ -24,7 +24,7 @@ wxExFileDialog::wxExFileDialog(
       message, 
       file->GetFileName().GetPath(), 
       file->GetFileName().GetFullName(), 
-      wxExApp::GetLexers()->BuildWildCards(file->GetFileName()), 
+      wxFileSelectorDefaultWildcardStr, 
       style, 
       pos, 
       size, 
@@ -96,7 +96,7 @@ int wxExFileDialog::ShowModal(bool ask_for_continue)
   // First set actual filename etc. according to filename.
   SetFilename(m_File->GetFileName().GetFullPath());
   SetDirectory(m_File->GetFileName().GetPath());
-  SetWildcard(m_File->GetWildcard());
+  SetWildcard(wxExApp::GetLexers()->BuildWildCards(m_File->GetFileName()));
 
   const int result = wxFileDialog::ShowModal();
 
