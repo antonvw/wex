@@ -12,6 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/version.h>
@@ -219,7 +220,9 @@ wxExSTC* MyFrame::GetSTC()
 
 void MyFrame::OnClose(wxCloseEvent& event)
 {
-  if (!m_Query->Continue())
+  wxExFileDialog dlg(this, m_Query);
+
+  if (!dlg.Continue())
   {
     return;
   }

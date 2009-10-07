@@ -12,6 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/extension/configdialog.h>
+#include <wx/extension/filedlg.h>
 #include "appl.h"
 
 #ifndef __WXMSW__
@@ -291,7 +292,9 @@ void MyFrame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  if (!m_DataWindow->Continue())
+  wxExFileDialog dlg(this, m_DataWindow);
+
+  if (!dlg.Continue())
   {
     return;
   }
