@@ -18,7 +18,6 @@
 wxExFile::wxExFile()
   : m_FileName()
   , m_Stat()
-  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
 }
 
@@ -26,7 +25,6 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   : wxFile(filename, mode)
   , m_FileName(filename)
   , m_Stat(filename)
-  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
   MakeAbsolute();
 }

@@ -162,14 +162,8 @@ public:
   /// you can detect whether the file needs to be synced.
   const wxExStat& GetStat() const {return m_Stat;};
 
-  /// Gets the wildcard.
-  const wxString& GetWildcard() const {return m_Wildcard;}
-
   /// Reads this file into a buffer.
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
-
-  /// Sets the wild card member.
-  void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};
 protected:
   wxExFileName m_FileName; ///< the filename
 private:
@@ -177,6 +171,5 @@ private:
   bool MakeAbsolute();
 
   wxExStat m_Stat;
-  wxString m_Wildcard;
 };
 #endif
