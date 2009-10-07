@@ -135,9 +135,6 @@ public:
   /// The default closes the file.
   virtual bool FileSave();
 
-  /// Shows file dialog and calls FileSave.
-  virtual bool FileSaveAs();
-
   /// Called if file needs to be synced.
   /// The default calls FileOpen, and updates status text.
   virtual bool FileSync();
@@ -168,12 +165,6 @@ public:
 
   /// Reads this file into a buffer.
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
-
-  /// Sets the wild card member.
-  void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};
-
-  /// Invoked ShowModal on dialog, and returns dialog return code.
-  int ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue = true);
 protected:
   wxExFileName m_FileName; ///< the filename
 private:
@@ -181,6 +172,5 @@ private:
   bool MakeAbsolute();
 
   wxExStat m_Stat;
-  wxString m_Wildcard;
 };
 #endif

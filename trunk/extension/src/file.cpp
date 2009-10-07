@@ -18,7 +18,6 @@
 wxExFile::wxExFile()
   : m_FileName()
   , m_Stat()
-  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
 }
 
@@ -26,7 +25,6 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   : wxFile(filename, mode)
   , m_FileName(filename)
   , m_Stat(filename)
-  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
   MakeAbsolute();
 }
@@ -118,35 +116,6 @@ bool wxExFile::FileSave()
   return MakeAbsolute();
 }
 
-bool wxExFile::FileSaveAs()
-{
-  wxASSERT(wxTheApp != NULL);
-
-  wxFileDialog dlg(
-    wxTheApp->GetTopWindow(),
-    wxFileSelectorPromptStr,
-    wxEmptyString,
-    wxEmptyString,
-    m_Wildcard,
-    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-  if (ShowFileDialog(dlg, false) == wxID_CANCEL)
-  {
-    return false;
-  }
-
-  const wxString filename = dlg.GetPath();
-
-  if (!filename.empty())
-  {
-    m_FileName.Assign(filename);
-    m_FileName.SetLexer();
-    return FileSave();
-  }
-
-  return false;
-}
-
 bool wxExFile::FileSync()
 {
   if (FileOpen(m_FileName))
@@ -191,23 +160,6 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   }
 
   return buffer;
-}
-
-int wxExFile::ShowFileDialog(wxFileDialog& dlg, bool ask_for_continue)
-{
-  if (ask_for_continue)
-  {
-    if (!Continue())
-    {
-      return wxID_CANCEL;
-    }
-  }
-
-  dlg.SetFilename(m_FileName.GetFullPath());
-  dlg.SetDirectory(m_FileName.GetPath());
-  m_Wildcard = dlg.GetWildcard();
-
-  return dlg.ShowModal();
 }
 
 int wxExFileName::GetIconID() const
