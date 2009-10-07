@@ -79,6 +79,7 @@ bool wxExFrameWithHistory::DialogFileOpen(
     wxExFileDialog dlg(this,
       stc,
       _("Select Files"),
+      wxFileSelectorDefaultWildcardStr,
       style);
 
     if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return false;
