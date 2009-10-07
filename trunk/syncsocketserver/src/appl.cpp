@@ -366,7 +366,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVEAS:
     {
       wxExFileDialog dlg(this, m_DataWindow, _("File Save As"), wxFD_SAVE);
-      if (dlg.ShowModal())
+      if (dlg.ShowModal(false))
       {
         m_LogWindow->AppendTextForced(
           _("saved: ") + m_DataWindow->GetFileName().GetFullPath());

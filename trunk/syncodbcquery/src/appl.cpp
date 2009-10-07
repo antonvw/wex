@@ -284,7 +284,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVEAS:
     {
       wxExFileDialog dlg(this, m_Query, _("File Save As"), wxFD_SAVE);
-      dlg.ShowModal();
+      dlg.ShowModal(false);
     }
     break;
 
