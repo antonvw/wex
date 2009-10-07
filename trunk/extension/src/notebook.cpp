@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/notebook.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h> // for wxExManagedFrame
 #include <wx/extension/stc.h>
 
@@ -112,8 +113,11 @@ bool wxExNotebook::ForEach(int id)
     case ID_ALL_STC_SET_LEXER: stc->SetLexer(); break;
 
     case ID_ALL_STC_CLOSE:
-      if (!stc->Continue()) return false;
+      {
+      wxExFileDialog dlg(this, stc);
+      if (!dlg.Continue()) return false;
       DeletePage(GetKeyByPage(GetPage(page)));
+      }
       break;
 
     case ID_ALL_STC_SAVE:
