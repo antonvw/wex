@@ -308,7 +308,6 @@ void MDIFrame::NewFile(bool as_project)
 
     page = new wxExListViewWithFrame(notebook,
       key,
-      project_wildcard,
       wxID_ANY,
       wxExListViewFile::LIST_MENU_DEFAULT);
 
@@ -1022,7 +1021,6 @@ bool MDIFrame::OpenFile(
     {
       wxExListViewWithFrame* project = new wxExListViewWithFrame(m_NotebookWithProjects,
         filename.GetFullPath(),
-        project_wildcard,
         wxID_ANY,
         wxExListViewFile::LIST_MENU_DEFAULT);
 
