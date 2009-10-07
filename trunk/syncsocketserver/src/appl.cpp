@@ -364,10 +364,13 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_SAVEAS:
-    if (m_DataWindow->FileSaveAs())
     {
-      m_LogWindow->AppendTextForced(
-        _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
+      wxExFileDialog dlg(this, m_DataWindow, _("File Save As"), wxFD_SAVE);
+      if (dlg.ShowModal())
+      {
+        m_LogWindow->AppendTextForced(
+          _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
+      }
     }
     break;
 
