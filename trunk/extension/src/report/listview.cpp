@@ -277,7 +277,7 @@ bool wxExListViewFile::FileSave()
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }
 
-  wxExFile::FileSave();
+  wxExFile::Close();
 
   m_ContentsChanged = false;
 

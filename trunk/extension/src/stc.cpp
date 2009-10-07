@@ -1907,7 +1907,7 @@ bool wxExSTC::Open(
   }
 
   // Close file as late as possible, to prevent OnIdle from interfering.
-  wxFile::Close();
+  wxExFile::Close();
 
   return true;
 }

@@ -132,8 +132,7 @@ public:
   virtual bool FileOpen(const wxExFileName& filename);
 
   /// Invoked by FileSaveAs, allows you to save your file.
-  /// The default closes the file.
-  virtual bool FileSave();
+  virtual bool FileSave() {return false;};
 
   /// Saves under different name.
   bool FileSaveAs(const wxString filename);
