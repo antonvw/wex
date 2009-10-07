@@ -18,6 +18,7 @@
 wxExFile::wxExFile()
   : m_FileName()
   , m_Stat()
+  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
 }
 
@@ -25,6 +26,7 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   : wxFile(filename, mode)
   , m_FileName(filename)
   , m_Stat(filename)
+  , m_Wildcard(wxFileSelectorDefaultWildcardStr)
 {
   MakeAbsolute();
 }
@@ -46,43 +48,8 @@ bool wxExFile::CheckFileSync()
   return false;
 }
 
-bool wxExFile::Continue()
-{
-  if (GetContentsChanged())
-  {
-    if (!m_FileName.FileExists())
-    {
-      switch (wxMessageBox(
-        _("Save changes") + "?",
-        _("Confirm"),
-        wxYES_NO | wxCANCEL | wxICON_QUESTION))
-      {
-        case wxYES:    if (!FileSaveAs()) return false; break;
-        case wxNO:     ResetContentsChanged(); break;
-        case wxCANCEL: return false; break;
-      }
-    }
-    else
-    {
-      switch (wxMessageBox(
-        _("Save changes to") + ": " + m_FileName.GetFullPath() + "?",
-        _("Confirm"),
-        wxYES_NO | wxCANCEL | wxICON_QUESTION))
-      {
-        case wxYES:    FileSave(); break;
-        case wxNO:     ResetContentsChanged(); break;
-        case wxCANCEL: return false; break;
-      }
-    }
-  }
-
-  return true;
-}
-
 bool wxExFile::FileNew(const wxExFileName& filename)
 {
-  if (!Continue()) return false;
-
   m_FileName = filename;
 
   // Do not make it absolute, the specified filename does not need
@@ -92,8 +59,6 @@ bool wxExFile::FileNew(const wxExFileName& filename)
 
 bool wxExFile::FileOpen(const wxExFileName& filename)
 {
-  if (!Continue()) return false;
-
   // First set the member, even if filename does not exist.
   m_FileName = filename;
 
@@ -114,6 +79,18 @@ bool wxExFile::FileSave()
   wxFile::Close();
 
   return MakeAbsolute();
+}
+
+bool wxExFile::FileSaveAs(const wxString filename)
+{
+  if (!filename.empty())
+  {
+    m_FileName.Assign(filename);
+    m_FileName.SetLexer();
+    return FileSave();
+  }
+
+  return false;
 }
 
 bool wxExFile::FileSync()

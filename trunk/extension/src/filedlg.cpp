@@ -8,64 +8,108 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/filedlg.h>
+#include <wx/extension/file.h>
 
 wxExFileDialog::wxExFileDialog(
-  wxWindow *parent, 
+  wxWindow *parent,
+  wxExFile* file,
   const wxString &message, 
-  const wxString &defaultDir, 
-  const wxString &defaultFile, 
-  const wxString &wildcard, 
   long style, 
   const wxPoint &pos, 
   const wxSize &size, 
   const wxString &name)
-  : wxFileDialog(parent, message, defaultDir, defaultFile, wildcard, style, pos, size, name)
-  , m_Wildcard(wildcard)
+  : wxFileDialog(
+      parent, 
+      message, 
+      file->GetFileName().GetPath(), 
+      file->GetFileName().GetFullName(), 
+      file->GetWildcard(), 
+      style, 
+      pos, 
+      size, 
+      name)
+  , m_File(file)
 {
 }
 
-bool wxExFileDialog::FileSaveAs()
+bool wxExFileDialog::Continue()
 {
-  wxASSERT(wxTheApp != NULL);
-
-  wxFileDialog dlg(
-    wxTheApp->GetTopWindow(),
-    wxFileSelectorPromptStr,
-    wxEmptyString,
-    wxEmptyString,
-    m_Wildcard,
-    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-  if (ShowFileDialog(dlg, false) == wxID_CANCEL)
+  if (m_File->GetContentsChanged())
   {
-    return false;
+    if (!m_File->GetFileName().FileExists())
+    {
+      switch (wxMessageBox(
+        _("Save changes") + "?",
+        _("Confirm"),
+        wxYES_NO | wxCANCEL | wxICON_QUESTION))
+      {
+        case wxYES: 
+          // This should be a save dialog.
+          wxASSERT(GetWindowStyle() & wxFD_SAVE);
+
+          if (ShowModal(false) != wxID_OK) return false; 
+          break;
+
+        case wxNO:     
+          m_File->ResetContentsChanged(); 
+          break;
+
+        case wxCANCEL: return false; break;
+      }
+    }
+    else
+    {
+      switch (wxMessageBox(
+        _("Save changes to") + ": " + m_File->GetFileName().GetFullPath() + "?",
+        _("Confirm"),
+        wxYES_NO | wxCANCEL | wxICON_QUESTION))
+      {
+        case wxYES:    
+          m_File->FileSave(); 
+          break;
+
+        case wxNO:     
+          m_File->ResetContentsChanged(); 
+          break;
+
+        case wxCANCEL: 
+          return false; 
+          break;
+      }
+    }
   }
 
-  const wxString filename = dlg.GetPath();
-
-  if (!filename.empty())
-  {
-    m_FileName.Assign(filename);
-    m_FileName.SetLexer();
-    return FileSave();
-  }
-
-  return false;
+  return true;
 }
 
 int wxExFileDialog::ShowModal(bool ask_for_continue)
 {
   if (ask_for_continue)
   {
-    if (!m_File.Continue())
+    if (!Continue())
     {
       return wxID_CANCEL;
     }
   }
 
-  SetFilename(m_File.GetFileName().GetFullPath());
-  SetDirectory(m_File.GetFileName().GetPath());
-  m_Wildcard = GetWildcard();
+  // First set actual filename etc. according to filename.
+  SetFilename(m_File->GetFileName().GetFullPath());
+  SetDirectory(m_File->GetFileName().GetPath());
+  SetWildcard(m_File->GetWildcard());
 
-  return wxFileDialog::ShowModal();
+  const int result = wxFileDialog::ShowModal();
+
+  if (result == wxID_OK)
+  {
+    if (GetWindowStyle() & wxFD_SAVE)
+    {
+      m_File->FileSaveAs(GetPath());
+    }
+    else
+    {
+      m_File->FileOpen(wxExFileName(GetPath()));
+    }
+  }
+
+  return result;
 }

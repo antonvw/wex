@@ -135,6 +135,9 @@ public:
   /// The default closes the file.
   virtual bool FileSave();
 
+  /// Saves under different name.
+  bool FileSaveAs(const wxString filename);
+
   /// Called if file needs to be synced.
   /// The default calls FileOpen, and updates status text.
   virtual bool FileSync();
@@ -151,10 +154,6 @@ public:
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckFileSync();
 
-  /// Shows dialog if file contents was changed, and returns true if
-  /// you accepted to save changes.
-  bool Continue();
-
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}
 
@@ -163,8 +162,14 @@ public:
   /// you can detect whether the file needs to be synced.
   const wxExStat& GetStat() const {return m_Stat;};
 
+  /// Gets the wildcard.
+  const wxString& GetWildcard() const {return m_Wildcard;}
+
   /// Reads this file into a buffer.
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
+
+  /// Sets the wild card member.
+  void SetWildcard(const wxString& wildcard) {m_Wildcard = wildcard;};
 protected:
   wxExFileName m_FileName; ///< the filename
 private:
@@ -172,5 +177,6 @@ private:
   bool MakeAbsolute();
 
   wxExStat m_Stat;
+  wxString m_Wildcard;
 };
 #endif
