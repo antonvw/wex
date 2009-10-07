@@ -13,6 +13,7 @@
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/configdialog.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/svn.h>
 #include "frame.h"
 #include "defs.h"
@@ -528,6 +529,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (editor != NULL)
     {
       const wxString old_key = editor->GetFileName().GetFullPath(); // before FileSaveAs
+
       if (editor->FileSaveAs())
       {
         m_NotebookWithEditors->SetPageText(
@@ -623,7 +625,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     {
       if (project->GetContentsChanged())
       {
-        if (project->Continue())
+        wxExFileDialog dlg(this, project);
+        if (!dlg.Continue())
         {
           project->FileSave();
           SetTitle(wxEmptyString, project->GetFileName().GetName());

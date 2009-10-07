@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/stockitem.h> // for wxGetStockLabel
+#include <wx/extension/filedlg.h>
 #ifndef __WXMSW__
 #include "appl.xpm"
 #endif
@@ -251,13 +252,23 @@ Frame::Frame(const wxString& project_wildcard)
 bool Frame::AllowClose(wxWindowID id, wxWindow* page)
 {
   if (ProcessIsRunning())
+  {
     return false;
+  }
   else if (id == NOTEBOOK_EDITORS)
-    return ((wxExSTCWithFrame*)page)->Continue();
+  {
+    wxExFileDialog dlg(this, (wxExSTCWithFrame*)page);
+    return dlg.Continue();
+  }
   else if (id == NOTEBOOK_PROJECTS)
-    return ((wxExListViewWithFrame*)page)->Continue();
+  {
+    wxExFileDialog dlg(this, (wxExListViewWithFrame*)page);
+    return dlg.Continue();
+  }
   else
+  {
     return wxExFrameWithHistory::AllowClose(id, page);
+  }
 }
 
 void Frame::OnNotebook(wxWindowID id, wxWindow* page)

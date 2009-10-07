@@ -255,14 +255,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_EXIT: Close(true); break;
   case wxID_OPEN:
     {
-    wxFileDialog dlg(this,
-      wxFileSelectorPromptStr,
-      wxEmptyString,
-      wxEmptyString,
-      wxFileSelectorDefaultWildcardStr,
-      wxFD_OPEN | wxFD_CHANGE_DIR);
-
-    if (m_STC->ShowFileDialog(dlg) == wxID_CANCEL) return;
+    wxExFileDialog dlg(this, m_STC);
+    if (dlg.ShowModal() == wxID_CANCEL) return;
 
     wxStopWatch sw;
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);

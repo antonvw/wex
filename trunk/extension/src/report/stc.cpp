@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/configdialog.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/header.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>
@@ -140,7 +141,8 @@ void wxExSTCWithFrame::Initialize()
 
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
-  if (!Continue())
+  wxExFileDialog dlg(this, this);
+  if (!dlg.Continue()) 
   {
     return;
   }

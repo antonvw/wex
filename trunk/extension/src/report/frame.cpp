@@ -11,6 +11,7 @@
 
 #include <wx/stdpaths.h>
 #include <wx/extension/report/report.h>
+#include <wx/extension/filedlg.h>
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
@@ -71,32 +72,30 @@ bool wxExFrameWithHistory::DialogFileOpen(
   bool ask_for_continue)
 {
   wxExSTC* stc = GetSTC();
-
-  wxString use_wildcards = wildcards;
-
-  if (stc != NULL && use_wildcards.empty())
-  {
-    use_wildcards = wxExApp::GetLexers()->BuildWildCards(stc->GetFileName());
-  }
-
-  wxFileDialog dlg(this,
-    _("Select Files"),
-    wxEmptyString,
-    wxEmptyString,
-    use_wildcards,
-    style);
+  wxArrayString files;
 
   if (stc != NULL)
   {
-    if (stc->ShowFileDialog(dlg, ask_for_continue) == wxID_CANCEL) return false;
+    wxExFileDialog dlg(this,
+      stc,
+      _("Select Files"),
+      style);
+
+    if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return false;
+    dlg.GetPaths(files);
   }
   else
   {
+    wxFileDialog dlg(this,
+      _("Select Files"),
+      wxEmptyString,
+      wxEmptyString,
+      wildcards,
+      style);
     if (dlg.ShowModal() == wxID_CANCEL) return false;
+    dlg.GetPaths(files);
   }
 
-  wxArrayString files;
-  dlg.GetPaths(files);
   wxExOpenFiles(this, files);
 
   return true;

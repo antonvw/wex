@@ -8,6 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/filedlg.h>
+#include <wx/extension/app.h>
 #include <wx/extension/file.h>
 
 wxExFileDialog::wxExFileDialog(
@@ -23,7 +24,7 @@ wxExFileDialog::wxExFileDialog(
       message, 
       file->GetFileName().GetPath(), 
       file->GetFileName().GetFullName(), 
-      file->GetWildcard(), 
+      wxExApp::GetLexers()->BuildWildCards(file->GetFileName()), 
       style, 
       pos, 
       size, 
