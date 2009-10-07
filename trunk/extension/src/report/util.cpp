@@ -248,7 +248,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
     case ID_LIST_ALL_CLOSE:
       {
-      wxExFileDialog dlg(this, lv);
+      wxExFileDialog dlg(notebook, lv);
       if (!dlg.Continue()) return false;
       if (!notebook->DeletePage(page)) return false;
       }
