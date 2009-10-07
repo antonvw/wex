@@ -12,8 +12,9 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/textfile.h>
-#include <wx/extension/renderer.h>
 #include <wx/extension/configdialog.h>
+#include <wx/extension/filedlg.h>
+#include <wx/extension/renderer.h>
 #include "appl.h"
 #ifndef __WXMSW__
 #include "appl.xpm"
