@@ -528,7 +528,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (editor != NULL)
     {
       const wxString old_key = editor->GetFileName().GetFullPath();
-      wxExFileDialog dlg(this, editor, _("File Save As"), wxFD_SAVE);
+      wxExFileDialog dlg(this, editor, _("File Save As"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE);
       if (dlg.ShowModal(false) == wxID_OK)
       {
         m_NotebookWithEditors->SetPageText(
@@ -643,7 +643,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (project != NULL)
     {
       const wxString old_key = m_NotebookWithProjects->GetKeyByPage(project);
-      wxExFileDialog dlg(this, project, _("Project Save As"), wxFD_SAVE);
+      wxExFileDialog dlg(this, project, _("Project Save As"), project_wildcard, wxFD_SAVE);
       if (dlg.ShowModal(false) == wxID_OK)
       {
         m_NotebookWithProjects->SetPageText(

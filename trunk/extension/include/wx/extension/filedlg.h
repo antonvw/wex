@@ -27,6 +27,7 @@ public:
     wxWindow *parent,
     wxExFile* file,
     const wxString &message=wxFileSelectorPromptStr, 
+    const wxString &wildcard=wxFileSelectorDefaultWildcardStr,
     long style=wxFD_DEFAULT_STYLE, 
     const wxPoint &pos=wxDefaultPosition, 
     const wxSize &size=wxDefaultSize, 

@@ -15,6 +15,7 @@ wxExFileDialog::wxExFileDialog(
   wxWindow *parent,
   wxExFile* file,
   const wxString &message, 
+  const wxString &wildcard,
   long style, 
   const wxPoint &pos, 
   const wxSize &size, 
@@ -24,7 +25,7 @@ wxExFileDialog::wxExFileDialog(
       message, 
       file->GetFileName().GetPath(), 
       file->GetFileName().GetFullName(), 
-      wxFileSelectorDefaultWildcardStr, 
+      wildcard, 
       style, 
       pos, 
       size, 
@@ -93,10 +94,15 @@ int wxExFileDialog::ShowModal(bool ask_for_continue)
     }
   }
 
-  // First set actual filename etc. according to filename.
+  // First set actual filename etc. according to file.
   SetFilename(m_File->GetFileName().GetFullPath());
   SetDirectory(m_File->GetFileName().GetPath());
-  SetWildcard(wxExApp::GetLexers()->BuildWildCards(m_File->GetFileName()));
+
+  // Override wildcard only if it is default.
+  if (GetWildcard() == wxFileSelectorDefaultWildcardStr)
+  {
+    SetWildcard(wxExApp::GetLexers()->BuildWildCards(m_File->GetFileName()));
+  }
 
   const int result = wxFileDialog::ShowModal();
 
