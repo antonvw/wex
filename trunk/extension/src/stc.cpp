@@ -1037,6 +1037,8 @@ bool wxExSTC::FileLoad(bool synced)
   {
     DocumentEnd();
   }
+
+  return true;
 }
 
 void wxExSTC::FileTypeMenu()
