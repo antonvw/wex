@@ -31,6 +31,7 @@ wxExFileDialog::wxExFileDialog(
       size, 
       name)
   , m_File(file)
+  , m_OriginalWildcard(wildcard)
 {
 }
 
@@ -99,7 +100,7 @@ int wxExFileDialog::ShowModal(bool ask_for_continue)
   SetDirectory(m_File->GetFileName().GetPath());
 
   // Override wildcard only if it is default.
-  if (GetWildcard() == wxFileSelectorDefaultWildcardStr)
+  if (m_OriginalWildcard == wxFileSelectorDefaultWildcardStr)
   {
     SetWildcard(wxExApp::GetLexers()->BuildWildCards(m_File->GetFileName()));
   }

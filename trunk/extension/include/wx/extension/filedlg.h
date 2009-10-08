@@ -40,5 +40,6 @@ public:
   int ShowModal(bool ask_for_continue = true);
 private:
   wxExFile* m_File;
+  const wxString m_OriginalWildcard;
 };
 #endif
