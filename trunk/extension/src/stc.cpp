@@ -978,18 +978,65 @@ bool wxExSTC::FileSave()
   return true;
 }
 
-bool wxExSTC::FileSync()
+bool wxExSTC::FileLoad(bool synced)
 {
-  // Reopen the file using current mode,
-  // and adding sync flag if not modified.
-  long flags = m_Flags;
+  wxBusyCursor wait;
 
-  if (!GetModify())
+  // Synchronizing by appending only new data only works for log files.
+  // Other kind of files might get new data anywhere inside the file,
+  // we cannot sync that by keeping pos. Also only do it for reasonably large files,
+  // so small log files are synced always (e.g. COM LIB report.log).
+  const bool log_sync =
+    synced &&
+    m_FileName.GetExt().CmpNoCase("log") == 0 &&
+    GetTextLength() > 1024;
+
+  // Be sure we can add text.
+  SetReadOnly(false);
+
+  ReadFromFile(log_sync);
+
+  if (!(m_Flags & STC_OPEN_HEX))
   {
-    flags |= STC_OPEN_IS_SYNCED;
+    SetLexer();
+  }
+  else
+  {
+    SetMarkers();
   }
 
-  return Open(m_FileName, 0, wxEmptyString, flags);
+  if (m_Flags & STC_OPEN_READ_ONLY ||
+      m_FileName.GetStat().IsReadOnly() ||
+      // At this moment we do not allow to write in hex mode.
+      m_Flags & STC_OPEN_HEX)
+  {
+    SetReadOnly(true);
+  }
+
+  EmptyUndoBuffer();
+  SetSavePoint();
+
+  if (!synced)
+  {
+    const wxString msg = _("Opened") + ": " + m_FileName.GetFullPath();
+    wxExApp::Log(msg);
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(msg);
+#endif
+    PropertiesMessage();
+  }
+  else
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(m_FileName, STAT_SYNC);
+    UpdateStatusBar("PaneLines");
+#endif
+  }
+
+  if (m_FileName == wxExLogfileName())
+  {
+    DocumentEnd();
+  }
 }
 
 void wxExSTC::FileTypeMenu()
@@ -1813,103 +1860,34 @@ bool wxExSTC::Open(
   const wxString& match,
   long flags)
 {
-  if (!(flags & STC_OPEN_IS_SYNCED) && m_FileName == filename && line_number > 0)
+  if (m_FileName == filename && line_number > 0)
   {
     GotoLineAndSelect(line_number, match);
     PropertiesMessage();
     return true;
   }
 
-  // This test should be before opening, afterwards m_FileName equals filename.
-  const bool real_sync = (flags & STC_OPEN_IS_SYNCED) && m_FileName == filename;
+  if (FileLoad())
+  {
+    // This should be after folding, and this one unfolds the line to go to.
+    if (line_number > 0)
+    {
+      GotoLineAndSelect(line_number, match);
+    }
+    else
+    {
+      if (line_number == -1)
+      {
+        DocumentEnd();
+      }
+    }
 
-  if (!FileOpen(filename))
+    return true;
+  }
+  else
   {
     return false;
   }
-
-  if (!real_sync)
-  {
-    // Set the modes as specified. Not for syncing,
-    // so we keep the original mode specified when for the first time opening the file.
-    m_Flags = flags;
-  }
-
-  wxBusyCursor wait;
-
-  // Synchronizing by appending only new data only works for log files.
-  // Other kind of files might get new data anywhere inside the file,
-  // we cannot sync that by keeping pos. Also only do it for reasonably large files,
-  // so small log files are synced always (e.g. COM LIB report.log).
-  const bool log_sync =
-    real_sync &&
-    m_FileName.GetExt().CmpNoCase("log") == 0 &&
-    GetTextLength() > 1024;
-
-  // Be sure we can add text.
-  SetReadOnly(false);
-
-  ReadFromFile(log_sync);
-
-  if (!(flags & STC_OPEN_HEX))
-  {
-    SetLexer();
-  }
-  else
-  {
-    SetMarkers();
-  }
-
-  // This should be after folding, and this one unfolds the line to go to.
-  if (line_number > 0)
-  {
-    GotoLineAndSelect(line_number, match);
-  }
-  else
-  {
-    if (line_number == -1)
-    {
-      DocumentEnd();
-    }
-  }
-
-  if (flags & STC_OPEN_READ_ONLY ||
-      m_FileName.GetStat().IsReadOnly() ||
-      // At this moment we do not allow to write in hex mode.
-      flags & STC_OPEN_HEX)
-  {
-    SetReadOnly(true);
-  }
-
-  EmptyUndoBuffer();
-  SetSavePoint();
-
-  if (!real_sync)
-  {
-    const wxString msg = _("Opened") + ": " + m_FileName.GetFullPath();
-    wxExApp::Log(msg);
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(msg);
-#endif
-    PropertiesMessage();
-  }
-  else
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(m_FileName, STAT_SYNC);
-    UpdateStatusBar("PaneLines");
-#endif
-  }
-
-  if (m_FileName == wxExLogfileName())
-  {
-    DocumentEnd();
-  }
-
-  // Close file as late as possible, to prevent OnIdle from interfering.
-  wxExFile::Close();
-
-  return true;
 }
 
 void wxExSTC::PathListAdd(const wxString& path)

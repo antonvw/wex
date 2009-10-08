@@ -115,7 +115,7 @@ int wxExFileDialog::ShowModal(bool ask_for_continue)
     }
     else
     {
-      m_File->FileOpen(wxExFileName(GetPath()));
+      m_File->FileLoad(wxExFileName(GetPath()));
     }
   }
 

@@ -55,7 +55,7 @@ bool wxExFile::FileNew(const wxExFileName& filename)
   return true;
 }
 
-bool wxExFile::FileOpen(const wxExFileName& filename)
+bool wxExFile::FileLoad(const wxExFileName& filename)
 {
   // First set the member, even if filename does not exist.
   m_FileName = filename;
@@ -64,12 +64,15 @@ bool wxExFile::FileOpen(const wxExFileName& filename)
 
   if (MakeAbsolute())
   {
-    return Open(m_FileName.GetFullPath());
+    if (Open(m_FileName.GetFullPath()))
+    {
+      FileLoad();
+      Close();
+      return true;
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 bool wxExFile::FileSaveAs(const wxString filename)
@@ -89,7 +92,7 @@ bool wxExFile::FileSaveAs(const wxString filename)
 
 bool wxExFile::FileSync()
 {
-  if (FileOpen(m_FileName))
+  if (FileLoad(true))
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);

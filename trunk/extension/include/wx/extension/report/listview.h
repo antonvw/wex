@@ -76,8 +76,8 @@ public:
   /// Invokes FileNew and clears the list.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
-  /// Opens the file and gets all data as list items.
-  virtual bool FileOpen(const wxExFileName& filename);
+  /// Loads the file and gets all data as list items.
+  virtual bool FileLoad(bool synced = false);
 
   /// Saves list items to file.
   virtual bool FileSave();
@@ -165,7 +165,7 @@ public:
     const wxString &name = wxListCtrlNameStr);
 
   /// Opens the file and updates recent project from frame.
-  virtual bool FileOpen(const wxExFileName& filename);
+  virtual bool FileLoad();
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);

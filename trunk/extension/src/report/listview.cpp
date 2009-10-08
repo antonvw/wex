@@ -107,7 +107,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_Type(LIST_PROJECT)
 {
   Initialize(NULL);
-  FileOpen(file);
+  wxExFile::FileLoad(file);
 }
 
 void wxExListViewFile::AddItems()
@@ -235,13 +235,8 @@ bool wxExListViewFile::FileNew(const wxExFileName& filename)
   return true;
 }
 
-bool wxExListViewFile::FileOpen(const wxExFileName& filename)
+bool wxExListViewFile::FileLoad(bool synced)
 {
-  if (!wxExFile::FileOpen(filename))
-  {
-    return false;
-  }
-
   EditClearAll();
 
   const wxCharBuffer& buffer = Read();
@@ -252,8 +247,6 @@ bool wxExListViewFile::FileOpen(const wxExFileName& filename)
   {
     ItemFromText(tkz.GetNextToken());
   }
-
-  wxFile::Close();
 
   m_ContentsChanged = false; // override behaviour from ItemFromText
 
@@ -1064,17 +1057,10 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   }
 }
 
-bool wxExListViewWithFrame::FileOpen(const wxExFileName& filename)
+bool wxExListViewWithFrame::FileLoad()
 {
-  if (wxExListViewFile::FileOpen(filename))
-  {
-    m_Frame->SetRecentProject(filename.GetFullPath());
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  m_Frame->SetRecentProject(m_FileName.GetFullPath());
+  return true;
 }
 
 void wxExListViewWithFrame::Initialize()
@@ -1315,6 +1301,6 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
   {
     wxExOpenFile(
       stats.GetLogfileName(),
-      wxExSTC::STC_OPEN_FROM_STATISTICS | wxExSTC::STC_OPEN_IS_SYNCED);
+      wxExSTC::STC_OPEN_FROM_STATISTICS);
   }
 }

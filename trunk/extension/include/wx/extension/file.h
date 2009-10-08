@@ -128,17 +128,14 @@ public:
   /// Sets the filename member.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
-  /// Sets the filename member and opens the file.
-  virtual bool FileOpen(const wxExFileName& filename);
+  /// Invoked by FileLoad, allows you to load in the file.
+  virtual bool FileLoad(bool synced = false) {return false;};
 
   /// Invoked by FileSaveAs, allows you to save your file.
   virtual bool FileSave() {return false;};
 
-  /// Saves under different name.
-  bool FileSaveAs(const wxString filename);
-
   /// Called if file needs to be synced.
-  /// The default calls FileOpen, and updates status text.
+  /// The default calls FileLoad, and updates status text.
   virtual bool FileSync();
 
   /// Returns whether contents have been changed.
@@ -152,6 +149,12 @@ public:
   /// Invokes FileSync if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckFileSync();
+
+  /// Sets the filename member and reads the file.
+  bool FileLoad(const wxExFileName& filename);
+
+  /// Saves under different name.
+  bool FileSaveAs(const wxString filename);
 
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}

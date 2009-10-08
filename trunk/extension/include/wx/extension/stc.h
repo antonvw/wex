@@ -45,7 +45,6 @@ public:
   {
     STC_OPEN_HEX             = 0x0001, ///< open in hex mode
     STC_OPEN_READ_ONLY       = 0x0002, ///< open as readonly, this mode overrides real mode from disk
-    STC_OPEN_IS_SYNCED       = 0x0004, ///< added as file is synced from disk
     STC_OPEN_FROM_LINK       = 0x0008, ///< opened from within a link
     STC_OPEN_FROM_STATISTICS = 0x0010, ///< opened from statistics
   };
@@ -103,6 +102,7 @@ public:
 
   // Interface, for wxExFile overriden methods.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
+  virtual bool FileLoad(bool synced = false);
   virtual bool FileSave();
   virtual bool GetContentsChanged() {return GetModify();};
   virtual void ResetContentsChanged();
@@ -261,7 +261,6 @@ private:
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
   void EOLModeUpdate(int eol_mode);
-  virtual bool FileSync();
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   int FindReplaceDataFlags() const;
   void FoldAll();
