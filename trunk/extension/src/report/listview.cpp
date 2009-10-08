@@ -235,7 +235,7 @@ bool wxExListViewFile::FileNew(const wxExFileName& filename)
   return true;
 }
 
-bool wxExListViewFile::FileLoad(bool synced)
+void wxExListViewFile::FileLoad(bool synced)
 {
   EditClearAll();
 
@@ -254,8 +254,6 @@ bool wxExListViewFile::FileLoad(bool synced)
     SortColumn(_("Modified"), SORT_KEEP);
   else
     SortColumnReset();
-
-  return true;
 }
 
 bool wxExListViewFile::FileSave()
@@ -1057,11 +1055,10 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   }
 }
 
-bool wxExListViewWithFrame::FileLoad()
+void wxExListViewWithFrame::FileLoad(bool synced)
 {
-  wxExListViewFile::FileLoad();
+  wxExListViewFile::FileLoad(synced);
   m_Frame->SetRecentProject(m_FileName.GetFullPath());
-  return true;
 }
 
 void wxExListViewWithFrame::Initialize()

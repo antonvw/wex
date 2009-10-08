@@ -129,7 +129,7 @@ public:
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Invoked by FileLoad, allows you to load in the file.
-  virtual bool FileLoad(bool synced = false) {return false;};
+  virtual void FileLoad(bool synced = false) {;};
 
   /// Invoked by FileSaveAs, allows you to save your file.
   virtual bool FileSave() {return false;};
@@ -166,7 +166,7 @@ protected:
   wxExFileName m_FileName; ///< the filename
 private:
   /// Called if file needs to be synced.
-  bool FileSync();
+  void FileSync();
 
   // Take care that filename and stat are in sync.
   bool MakeAbsolute();

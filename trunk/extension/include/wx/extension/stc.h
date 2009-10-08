@@ -102,7 +102,7 @@ public:
 
   // Interface, for wxExFile overriden methods.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
-  virtual bool FileLoad(bool synced = false);
+  virtual void FileLoad(bool synced = false);
   virtual bool FileSave();
   virtual bool GetContentsChanged() {return GetModify();};
   virtual void ResetContentsChanged();

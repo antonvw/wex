@@ -90,19 +90,12 @@ bool wxExFile::FileSaveAs(const wxString filename)
   return false;
 }
 
-bool wxExFile::FileSync()
+void wxExFile::FileSync()
 {
-  if (FileLoad(true))
-  {
+  FileLoad(true);
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
+  wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
 #endif
-    return true;
-  }
-  else
-  {
-    return false;
-  } 
 }
 
 bool wxExFile::MakeAbsolute()

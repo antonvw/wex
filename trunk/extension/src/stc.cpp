@@ -928,57 +928,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 #endif
 }
 
-bool wxExSTC::FileNew(const wxExFileName& filename)
-{
-  if (!wxExFile::FileNew(filename))
-  {
-    return false;
-  }
-
-  ClearDocument();
-
-  SetLexer();
-
-  return true;
-}
-
-bool wxExSTC::FileReadOnlyAttributeChanged()
-{
-  if (!(m_Flags & STC_OPEN_HEX))
-  {
-    SetReadOnly(m_FileName.GetStat().IsReadOnly()); // does not return anything
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Readonly attribute changed"));
-#endif
-  }
-
-  return true;
-}
-
-bool wxExSTC::FileSave()
-{
-  if (!wxFile::Open(m_FileName.GetFullPath(), wxFile::write))
-  {
-    return false;
-  }
-
-  const wxCharBuffer& buffer = GetTextRaw(); 
-  Write(buffer.data(), buffer.length());
-
-  wxExFile::FileSave();
-
-  SetSavePoint();
-
-  const wxString msg = _("Saved") + ": " + m_FileName.GetFullPath();
-  wxExApp::Log(msg);
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(msg);
-#endif
-
-  return true;
-}
-
-bool wxExSTC::FileLoad(bool synced)
+void wxExSTC::FileLoad(bool synced)
 {
   wxBusyCursor wait;
 
@@ -1037,6 +987,54 @@ bool wxExSTC::FileLoad(bool synced)
   {
     DocumentEnd();
   }
+}
+
+bool wxExSTC::FileNew(const wxExFileName& filename)
+{
+  if (!wxExFile::FileNew(filename))
+  {
+    return false;
+  }
+
+  ClearDocument();
+
+  SetLexer();
+
+  return true;
+}
+
+bool wxExSTC::FileReadOnlyAttributeChanged()
+{
+  if (!(m_Flags & STC_OPEN_HEX))
+  {
+    SetReadOnly(m_FileName.GetStat().IsReadOnly()); // does not return anything
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("Readonly attribute changed"));
+#endif
+  }
+
+  return true;
+}
+
+bool wxExSTC::FileSave()
+{
+  if (!wxFile::Open(m_FileName.GetFullPath(), wxFile::write))
+  {
+    return false;
+  }
+
+  const wxCharBuffer& buffer = GetTextRaw(); 
+  Write(buffer.data(), buffer.length());
+
+  wxExFile::FileSave();
+
+  SetSavePoint();
+
+  const wxString msg = _("Saved") + ": " + m_FileName.GetFullPath();
+  wxExApp::Log(msg);
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(msg);
+#endif
 
   return true;
 }
