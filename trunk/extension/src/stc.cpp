@@ -1869,7 +1869,7 @@ bool wxExSTC::Open(
     return true;
   }
 
-  if (FileLoad())
+  if (wxExFile::FileLoad(filename))
   {
     // This should be after folding, and this one unfolds the line to go to.
     if (line_number > 0)
