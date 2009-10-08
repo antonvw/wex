@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/tokenzr.h>
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>
 

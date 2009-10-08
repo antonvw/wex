@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          configdialog.cpp
+* File:          configdlg.cpp
 * Purpose:       Implementation of wxWidgets config dialog classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -14,7 +14,7 @@
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
 #include <wx/spinctrl.h>
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h> // for PathListInit

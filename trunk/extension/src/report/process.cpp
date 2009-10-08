@@ -12,7 +12,7 @@
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/app.h>
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>

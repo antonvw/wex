@@ -13,7 +13,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/app.h> // for wxExApp
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/textfile.h>

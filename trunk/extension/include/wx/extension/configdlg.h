@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          configdialog.h
+* File:          configdlg.h
 * Purpose:       Declaration of wxWidgets config dialog classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$

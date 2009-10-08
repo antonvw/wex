@@ -11,7 +11,7 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include "appl.h"
 

@@ -9,7 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/report/report.h>
 

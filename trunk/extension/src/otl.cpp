@@ -17,7 +17,7 @@
 #include <wx/stc/stc.h>
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
-#include <wx/extension/configdialog.h>
+#include <wx/extension/configdlg.h>
 
 #if USE_OTL
 
