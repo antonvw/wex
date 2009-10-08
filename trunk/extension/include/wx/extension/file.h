@@ -134,10 +134,6 @@ public:
   /// Invoked by FileSaveAs, allows you to save your file.
   virtual bool FileSave() {return false;};
 
-  /// Called if file needs to be synced.
-  /// The default calls FileLoad, and updates status text.
-  virtual bool FileSync();
-
   /// Returns whether contents have been changed.
   /// Default returns false.
   virtual bool GetContentsChanged() {return false;};
@@ -169,6 +165,9 @@ public:
 protected:
   wxExFileName m_FileName; ///< the filename
 private:
+  /// Called if file needs to be synced.
+  bool FileSync();
+
   // Take care that filename and stat are in sync.
   bool MakeAbsolute();
 
