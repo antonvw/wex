@@ -131,7 +131,7 @@ public:
   /// Invoked by FileLoad, allows you to load in the file.
   virtual void FileLoad(bool synced = false) {;};
 
-  /// Invoked by FileSaveAs, allows you to save your file.
+  /// Invoked by FileSave, allows you to save your file.
   virtual bool FileSave() {return false;};
 
   /// Returns whether contents have been changed.
@@ -146,11 +146,11 @@ public:
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckFileSync();
 
-  /// Sets the filename member and reads the file.
+  /// Sets the filename member and invokes FileLoad().
   bool FileLoad(const wxExFileName& filename);
 
-  /// Saves under different name.
-  bool FileSaveAs(const wxString filename);
+  /// Sets the filename member and invokes FileSave().
+  bool FileSave(const wxString filename);
 
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}

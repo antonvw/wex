@@ -76,19 +76,16 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
   return false;
 }
 
-bool wxExFile::FileSaveAs(const wxString filename)
+bool wxExFile::FileSave(const wxString filename)
 {
-  if (!filename.empty())
-  {
-    m_FileName.Assign(filename);
-    m_FileName.SetLexer();
+  wxASSERT(!filename.empty());
 
-    return 
-      FileSave() &&
-      MakeAbsolute();
-  }
+  m_FileName.Assign(filename);
+  m_FileName.SetLexer();
 
-  return false;
+  return 
+    FileSave() &&
+    MakeAbsolute();
 }
 
 void wxExFile::FileSync()
