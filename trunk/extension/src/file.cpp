@@ -38,8 +38,11 @@ bool wxExFile::CheckFileSync()
   }
   else if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
   {
+    
     FileSync();
-    return true;
+
+    // Next time no sync.
+    return m_FileName.GetStat().Sync();
   }
   else
   {
