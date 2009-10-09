@@ -126,18 +126,16 @@ public:
   virtual ~wxExFile() {;};
 
   /// Invoked by FileLoad, allows you to load the file.
-  virtual void FileLoad(bool synced = false) {;};
+  virtual void FileLoad(bool synced = false) = 0;
 
   /// Invoked by FileSave, allows you to save the file.
-  virtual void FileSave() {;};
+  virtual void FileSave() = 0;
 
   /// Returns whether contents have been changed.
-  /// Default returns false.
-  virtual bool GetContentsChanged() {return false;};
+  virtual bool GetContentsChanged() = 0;
 
   /// Reset contents changed.
-  /// Default does nothing.
-  virtual void ResetContentsChanged() {;};
+  virtual void ResetContentsChanged() = 0;
 
   /// Invokes FileSync if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
