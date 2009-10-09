@@ -97,7 +97,11 @@ bool wxExFile::FileSave(const wxString filename)
 
 void wxExFile::FileSync()
 {
-  FileLoad(true);
+  if (Open(m_FileName.GetFullPath()))
+  {
+    FileLoad(true);
+    Close();
+  }
 }
 
 bool wxExFile::MakeAbsolute()
