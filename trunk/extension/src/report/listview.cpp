@@ -254,6 +254,13 @@ void wxExListViewFile::FileLoad(bool synced)
     SortColumn(_("Modified"), SORT_KEEP);
   else
     SortColumnReset();
+
+  if (synced)
+  {
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
+#endif
+  }
 }
 
 bool wxExListViewFile::FileSave()

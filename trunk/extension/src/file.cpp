@@ -13,7 +13,6 @@
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
 #include <wx/extension/app.h> // for wxExApp
-#include <wx/extension/frame.h> // for wxExFrame
 
 wxExFile::wxExFile()
   : m_FileName()
@@ -37,13 +36,15 @@ bool wxExFile::CheckFileSync()
   {
     return false;
   }
-
-  if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
+  else if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
   {
-    return FileSync();
+    FileSync();
+    return true;
   }
-
-  return false;
+  else
+  {
+    return false;
+  }
 }
 
 bool wxExFile::FileNew(const wxExFileName& filename)
@@ -93,9 +94,6 @@ bool wxExFile::FileSaveAs(const wxString filename)
 void wxExFile::FileSync()
 {
   FileLoad(true);
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
-#endif
 }
 
 bool wxExFile::MakeAbsolute()
