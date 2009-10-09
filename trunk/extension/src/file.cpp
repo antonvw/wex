@@ -47,13 +47,12 @@ bool wxExFile::CheckFileSync()
   }
 }
 
-bool wxExFile::FileNew(const wxExFileName& filename)
+void wxExFile::FileNew(const wxExFileName& filename)
 {
   m_FileName = filename;
 
   // Do not make it absolute, the specified filename does not need
   // to exist.
-  return true;
 }
 
 bool wxExFile::FileLoad(const wxExFileName& filename)

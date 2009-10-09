@@ -125,9 +125,6 @@ public:
   /// So do it here.
   virtual ~wxExFile() {;};
 
-  /// Sets the filename member.
-  virtual bool FileNew(const wxExFileName& filename = wxExFileName());
-
   /// Invoked by FileLoad, allows you to load the file.
   virtual void FileLoad(bool synced = false) {;};
 
@@ -148,6 +145,9 @@ public:
 
   /// Sets the filename member and invokes FileLoad().
   bool FileLoad(const wxExFileName& filename);
+
+  /// Sets the filename member.
+  void FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Sets the filename member and invokes FileSave().
   bool FileSave(const wxString filename);

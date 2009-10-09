@@ -989,18 +989,13 @@ void wxExSTC::FileLoad(bool synced)
   }
 }
 
-bool wxExSTC::FileNew(const wxExFileName& filename)
+void wxExSTC::FileNew(const wxExFileName& filename)
 {
-  if (!wxExFile::FileNew(filename))
-  {
-    return false;
-  }
+  wxExFile::FileNew(filename);
 
   ClearDocument();
 
   SetLexer();
-
-  return true;
 }
 
 bool wxExSTC::FileReadOnlyAttributeChanged()

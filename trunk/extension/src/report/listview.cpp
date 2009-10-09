@@ -224,15 +224,10 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-bool wxExListViewFile::FileNew(const wxExFileName& filename)
+void wxExListViewFile::FileNew(const wxExFileName& filename)
 {
-  if (!wxExFile::FileNew(filename))
-  {
-    return false;
-  }
-
+  wxExFile::FileNew(filename);
   EditClearAll();
-  return true;
 }
 
 void wxExListViewFile::FileLoad(bool synced)

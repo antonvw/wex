@@ -73,9 +73,6 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
-  /// Invokes FileNew and clears the list.
-  virtual bool FileNew(const wxExFileName& filename = wxExFileName());
-
   /// Loads the file and gets all data as list items.
   virtual void FileLoad(bool synced = false);
 
@@ -101,6 +98,9 @@ public:
 
   /// Returns colunm text for specified item.
   virtual const wxString ItemToText(int item_number);
+
+  /// Invokes base and clears the list.
+  void FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;}

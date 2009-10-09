@@ -101,7 +101,6 @@ public:
   virtual void PropertiesMessage();
 
   // Interface, for wxExFile overriden methods.
-  virtual bool FileNew(const wxExFileName& filename = wxExFileName());
   virtual void FileLoad(bool synced = false);
   virtual void FileSave();
   virtual bool GetContentsChanged() {return GetModify();};
@@ -135,6 +134,9 @@ public:
   /// Edit the current selected char as a control char, or if nothing selected,
   /// add a new control char.
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
+
+  /// Invokes base and clears document.
+  void FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
