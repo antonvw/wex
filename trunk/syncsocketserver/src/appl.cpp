@@ -356,11 +356,9 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_SAVE:
-    if (m_DataWindow->FileSave())
-    {
-      m_LogWindow->AppendTextForced(
-        _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
-    }
+    m_DataWindow->FileSave();
+    m_LogWindow->AppendTextForced(
+      _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     break;
 
   case wxID_SAVEAS:

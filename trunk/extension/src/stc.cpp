@@ -1016,17 +1016,10 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   return true;
 }
 
-bool wxExSTC::FileSave()
+void wxExSTC::FileSave()
 {
-  if (!wxFile::Open(m_FileName.GetFullPath(), wxFile::write))
-  {
-    return false;
-  }
-
   const wxCharBuffer& buffer = GetTextRaw(); 
   Write(buffer.data(), buffer.length());
-
-  wxExFile::FileSave();
 
   SetSavePoint();
 
@@ -1035,8 +1028,6 @@ bool wxExSTC::FileSave()
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
 #endif
-
-  return true;
 }
 
 void wxExSTC::FileTypeMenu()
@@ -1676,7 +1667,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_OPEN_BROWSER:
     if (GetModify())
     {
-      if (!FileSave()) return;
+      FileSave();
     }
 
     wxLaunchDefaultBrowser(m_FileName.GetFullPath());

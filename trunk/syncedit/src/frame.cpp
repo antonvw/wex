@@ -509,8 +509,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_SAVE:
-    if (editor != NULL && editor->FileSave())
+    if (editor != NULL)
     {
+      editor->FileSave();
       editor->PropertiesMessage();
 
       if (editor->GetFileName() == wxExApp::GetLexers()->GetFileName())

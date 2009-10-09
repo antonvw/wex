@@ -263,23 +263,14 @@ void wxExListViewFile::FileLoad(bool synced)
   }
 }
 
-bool wxExListViewFile::FileSave()
+void wxExListViewFile::FileSave()
 {
-  if (!wxFile::Open(m_FileName.GetFullPath(), wxFile::write))
-  {
-    return false;
-  }
-
   for (int i = 0; i < GetItemCount(); i++)
   {
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }
 
-  wxExFile::Close();
-
   m_ContentsChanged = false;
-
-  return true;
 }
 
 wxExListViewFile::ListType wxExListViewFile::GetTypeTool(const wxExTool& tool)

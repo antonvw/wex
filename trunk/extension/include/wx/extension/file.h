@@ -128,11 +128,11 @@ public:
   /// Sets the filename member.
   virtual bool FileNew(const wxExFileName& filename = wxExFileName());
 
-  /// Invoked by FileLoad, allows you to load in the file.
+  /// Invoked by FileLoad, allows you to load the file.
   virtual void FileLoad(bool synced = false) {;};
 
-  /// Invoked by FileSave, allows you to save your file.
-  virtual bool FileSave() {return false;};
+  /// Invoked by FileSave, allows you to save the file.
+  virtual void FileSave() {;};
 
   /// Returns whether contents have been changed.
   /// Default returns false.

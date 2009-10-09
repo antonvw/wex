@@ -80,7 +80,7 @@ public:
   virtual void FileLoad(bool synced = false);
 
   /// Saves list items to file.
-  virtual bool FileSave();
+  virtual void FileSave();
 
   /// Returns member.
   virtual bool GetContentsChanged() {return m_ContentsChanged;};

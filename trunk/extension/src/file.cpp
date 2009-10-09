@@ -83,9 +83,17 @@ bool wxExFile::FileSave(const wxString filename)
   m_FileName.Assign(filename);
   m_FileName.SetLexer();
 
-  return 
-    FileSave() &&
-    MakeAbsolute();
+  if (!Open(m_FileName.GetFullPath(), wxFile::write))
+  {
+    return false;
+  }
+
+  FileSave();
+  MakeAbsolute();
+
+  Close();
+
+  return true;
 }
 
 void wxExFile::FileSync()

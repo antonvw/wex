@@ -212,8 +212,9 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     case ID_PROJECT_SAVE:
       {
         wxExListViewWithFrame* project = GetProject();
-        if (project != NULL && project->FileSave())
+        if (project != NULL)
         {
+          project->FileSave();
           SetTitle(wxEmptyString, project->GetFileName().GetName());
         }
       }
