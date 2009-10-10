@@ -230,7 +230,7 @@ void wxExListViewFile::FileNew(const wxExFileName& filename)
   EditClearAll();
 }
 
-void wxExListViewFile::FileLoad(bool synced)
+void wxExListViewFile::DoFileLoad(bool synced)
 {
   EditClearAll();
 
@@ -258,7 +258,7 @@ void wxExListViewFile::FileLoad(bool synced)
   }
 }
 
-void wxExListViewFile::FileSave()
+void wxExListViewFile::DoFileSave()
 {
   for (int i = 0; i < GetItemCount(); i++)
   {
@@ -1048,7 +1048,7 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   }
 }
 
-void wxExListViewWithFrame::FileLoad(bool synced)
+void wxExListViewWithFrame::DoFileLoad(bool synced)
 {
   wxExListViewFile::FileLoad(synced);
   m_Frame->SetRecentProject(m_FileName.GetFullPath());

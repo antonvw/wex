@@ -928,7 +928,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 #endif
 }
 
-void wxExSTC::FileLoad(bool synced)
+void wxExSTC::DoFileLoad(bool synced)
 {
   wxBusyCursor wait;
 
@@ -1011,7 +1011,7 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   return true;
 }
 
-void wxExSTC::FileSave()
+void wxExSTC::DoFileSave()
 {
   const wxCharBuffer& buffer = GetTextRaw(); 
   Write(buffer.data(), buffer.length());

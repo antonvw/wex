@@ -97,15 +97,6 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
-  /// Shows properties on the statusbar.
-  virtual void PropertiesMessage();
-
-  // Interface, for wxExFile overriden methods.
-  virtual void FileLoad(bool synced = false);
-  virtual void FileSave();
-  virtual bool GetContentsChanged() {return GetModify();};
-  virtual void ResetContentsChanged();
-
   /// Adds an ascii table to current document.
   void AddAsciiTable();
 
@@ -143,6 +134,10 @@ public:
 
   // Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
+
+  virtual bool GetContentsChanged() {return GetModify();};
+
+  virtual void ResetContentsChanged();
 
   /// Gets EOL string.
   const wxString GetEOL() const;
@@ -186,6 +181,9 @@ public:
   /// Shows a print preview.
   void PrintPreview();
 #endif
+
+  /// Shows properties on the statusbar.
+  virtual void PropertiesMessage();
 
   /// Reset all margins.
   /// Default also resets the divider margin.
@@ -263,6 +261,8 @@ private:
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
   void EOLModeUpdate(int eol_mode);
+  virtual void DoFileLoad(bool synced = false);
+  virtual void DoFileSave();
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   int FindReplaceDataFlags() const;
   void FoldAll();

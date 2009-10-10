@@ -69,7 +69,7 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
   {
     if (Open(m_FileName.GetFullPath()))
     {
-      FileLoad();
+      DoFileLoad();
       Close();
       return true;
     }
@@ -80,17 +80,18 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
 
 bool wxExFile::FileSave(const wxString filename)
 {
-  wxASSERT(!filename.empty());
-
-  m_FileName.Assign(filename);
-  m_FileName.SetLexer();
+  if (!filename.empty())
+  {
+    m_FileName.Assign(filename);
+    m_FileName.SetLexer();
+  }
 
   if (!Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
   }
 
-  FileSave();
+  DoFileSave();
   MakeAbsolute();
 
   Close();
@@ -102,7 +103,7 @@ void wxExFile::FileSync()
 {
   if (Open(m_FileName.GetFullPath()))
   {
-    FileLoad(true);
+    DoFileLoad(true);
     Close();
   }
 }

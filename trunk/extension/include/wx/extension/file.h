@@ -125,30 +125,21 @@ public:
   /// So do it here.
   virtual ~wxExFile() {;};
 
-  /// Invoked by FileLoad, allows you to load the file.
-  virtual void FileLoad(bool synced = false) = 0;
-
-  /// Invoked by FileSave, allows you to save the file.
-  virtual void FileSave() = 0;
-
-  /// Returns whether contents have been changed.
-  virtual bool GetContentsChanged() = 0;
-
-  /// Reset contents changed.
-  virtual void ResetContentsChanged() = 0;
-
   /// Invokes FileSync if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckFileSync();
 
-  /// Sets the filename member and invokes FileLoad().
+  /// Sets the filename member and invokes DoFileLoad().
   bool FileLoad(const wxExFileName& filename);
 
   /// Sets the filename member.
   void FileNew(const wxExFileName& filename = wxExFileName());
 
-  /// Sets the filename member and invokes FileSave().
-  bool FileSave(const wxString filename);
+  /// Sets the filename member and invokes DoFileSave().
+  bool FileSave(const wxString filename = wxEmptyString);
+
+  /// Returns whether contents have been changed.
+  virtual bool GetContentsChanged() = 0;
 
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}
@@ -160,7 +151,16 @@ public:
 
   /// Reads this file into a buffer.
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
+
+  /// Reset contents changed.
+  virtual void ResetContentsChanged() = 0;
 protected:
+  /// Invoked by FileLoad, allows you to load the file.
+  virtual void DoFileLoad(bool synced = false) = 0;
+
+  /// Invoked by FileSave, allows you to save the file.
+  virtual void DoFileSave() = 0;
+
   wxExFileName m_FileName; ///< the filename
 private:
   /// Called if file needs to be synced.

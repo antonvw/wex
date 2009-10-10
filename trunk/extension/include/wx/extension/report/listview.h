@@ -73,21 +73,12 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
-  /// Loads the file and gets all data as list items.
-  virtual void FileLoad(bool synced = false);
-
-  /// Saves list items to file.
-  virtual void FileSave();
-
-  /// Returns member.
-  virtual bool GetContentsChanged() {return m_ContentsChanged;};
-
-  /// Resets the member.
-  virtual void ResetContentsChanged() {m_ContentsChanged = false;};
-
   // Interface, for wxExListView overriden methods.
   /// Sets contents changed if we are not syncing.
   virtual void AfterSorting();
+
+  /// Returns member.
+  virtual bool GetContentsChanged() {return m_ContentsChanged;};
 
   /// Updates all items.
   virtual void ItemsUpdate();
@@ -116,6 +107,9 @@ public:
 
   /// Returns list type from tool id.
   static ListType GetTypeTool(const wxExTool& tool);
+
+  /// Resets the member.
+  virtual void ResetContentsChanged() {m_ContentsChanged = false;};
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
@@ -124,6 +118,10 @@ protected:
   void OnMouse(wxMouseEvent& event);
 private:
   void AddItems();
+  /// Loads the file and gets all data as list items.
+  virtual void DoFileLoad(bool synced = false);
+  /// Saves list items to file.
+  virtual void DoFileSave();
   void Initialize(const wxExLexer* lexer);
 
   bool m_ContentsChanged;
@@ -165,7 +163,7 @@ public:
     const wxString &name = wxListCtrlNameStr);
 
   /// Opens the file and updates recent project from frame.
-  virtual void FileLoad(bool synced = false);
+  virtual void DoFileLoad(bool synced = false);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
