@@ -68,7 +68,7 @@ bool wxExFileDialog::Continue()
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
         case wxYES:    
-          m_File->FileSave(); 
+          m_File->FileSave(m_File->GetFileName().GetFullPath()); 
           break;
 
         case wxNO:     

@@ -511,7 +511,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     if (editor != NULL)
     {
-      editor->FileSave();
+      editor->FileSave(editor->GetFileName().GetFullPath());
       editor->PropertiesMessage();
 
       if (editor->GetFileName() == wxExApp::GetLexers()->GetFileName())
