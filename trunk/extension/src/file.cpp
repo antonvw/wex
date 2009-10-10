@@ -42,7 +42,7 @@ bool wxExFile::CheckFileSync()
     FileSync();
 
     // Next time no sync.
-    return m_FileName.GetStat().Sync();
+    return m_Stat.Sync();
   }
   else
   {
