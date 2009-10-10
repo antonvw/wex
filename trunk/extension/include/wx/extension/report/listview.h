@@ -112,14 +112,14 @@ public:
   virtual void ResetContentsChanged() {m_ContentsChanged = false;};
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
+  /// Loads the file and gets all data as list items.
+  virtual void DoFileLoad(bool synced = false);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
   void AddItems();
-  /// Loads the file and gets all data as list items.
-  virtual void DoFileLoad(bool synced = false);
   /// Saves list items to file.
   virtual void DoFileSave();
   void Initialize(const wxExLexer* lexer);
@@ -161,15 +161,14 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
-
-  /// Opens the file and updates recent project from frame.
-  virtual void DoFileLoad(bool synced = false);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:
   void DeleteDoubles();
+  /// Opens the file and updates recent project from frame.
+  virtual void DoFileLoad(bool synced = false);
   const wxString GetFindInCaption(int id); // cannot be const
   void Initialize();
   void ItemActivated(int item_number);

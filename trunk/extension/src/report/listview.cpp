@@ -1050,7 +1050,7 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
 
 void wxExListViewWithFrame::DoFileLoad(bool synced)
 {
-  wxExListViewFile::FileLoad(synced);
+  wxExListViewFile::DoFileLoad(synced);
   m_Frame->SetRecentProject(m_FileName.GetFullPath());
 }
 
