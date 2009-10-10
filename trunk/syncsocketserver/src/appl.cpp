@@ -340,11 +340,9 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    if (m_DataWindow->FileNew())
-    {
-      GetManager().GetPane("DATA").Show();
-      GetManager().Update();
-    }
+    m_DataWindow->FileNew();
+    GetManager().GetPane("DATA").Show();
+    GetManager().Update();
     break;
 
   case wxID_OPEN:

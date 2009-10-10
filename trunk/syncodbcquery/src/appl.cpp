@@ -260,13 +260,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    if (m_Query->FileNew())
-    {
-      m_Query->SetLexer("sql");
-      m_Query->SetFocus();
-      GetManager().GetPane("QUERY").Show();
-      GetManager().Update();
-    }
+    m_Query->FileNew();
+    m_Query->SetLexer("sql");
+    m_Query->SetFocus();
+    GetManager().GetPane("QUERY").Show();
+    GetManager().Update();
     break;
 
   case wxID_OPEN:
