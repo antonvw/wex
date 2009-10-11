@@ -309,7 +309,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 {
   wxStyledTextCtrl::Create(stc.GetParent());
 
-  // Do not yet set m_FileName, this is done by Open.
+  // Do not yet set GetFileName(), this is done by Open.
   // And m_Macro is shared, so not necessary.
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
   m_Flags = stc.m_Flags;
@@ -319,9 +319,9 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
   Initialize();
 
-  if (stc.m_FileName.IsOk())
+  if (stc.GetFileName().IsOk())
   {
-    Open(stc.m_FileName, m_GotoLineNumber, wxEmptyString, m_Flags);
+    Open(stc.GetFileName(), m_GotoLineNumber, wxEmptyString, m_Flags);
   }
 }
 
@@ -563,8 +563,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 
   if (sel.empty() && 
-      (m_FileName.GetLexer().GetScintillaLexer() == "hypertext" ||
-       m_FileName.GetLexer().GetScintillaLexer() == "xml"))
+      (GetFileName().GetLexer().GetScintillaLexer() == "hypertext" ||
+       GetFileName().GetLexer().GetScintillaLexer() == "xml"))
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
@@ -598,10 +598,10 @@ bool wxExSTC::CheckAutoComp(int key)
         AutoCompSetAutoHide(false);
       }
 
-      if (m_FileName.GetLexer().KeywordStartsWith(autoc))
+      if (GetFileName().GetLexer().KeywordStartsWith(autoc))
         AutoCompShow(
           autoc.length() - 1,
-          m_FileName.GetLexer().GetKeywordsString());
+          GetFileName().GetLexer().GetKeywordsString());
       else
         AutoCompCancel();
     }
@@ -688,7 +688,7 @@ void wxExSTC::Colourise()
   SetFolding();
 
   wxStringTokenizer tkz(
-    m_FileName.GetLexer().GetColourings(),
+    GetFileName().GetLexer().GetColourings(),
     wxTextFile::GetEOL());
 
   while (tkz.HasMoreTokens())
@@ -938,7 +938,7 @@ void wxExSTC::DoFileLoad(bool synced)
   // so small log files are synced always (e.g. COM LIB report.log).
   const bool log_sync =
     synced &&
-    m_FileName.GetExt().CmpNoCase("log") == 0 &&
+    GetFileName().GetExt().CmpNoCase("log") == 0 &&
     GetTextLength() > 1024;
 
   // Be sure we can add text.
@@ -956,7 +956,7 @@ void wxExSTC::DoFileLoad(bool synced)
   }
 
   if (m_Flags & STC_OPEN_READ_ONLY ||
-      m_FileName.GetStat().IsReadOnly() ||
+      GetFileName().GetStat().IsReadOnly() ||
       // At this moment we do not allow to write in hex mode.
       m_Flags & STC_OPEN_HEX)
   {
@@ -968,7 +968,7 @@ void wxExSTC::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    const wxString msg = _("Opened") + ": " + m_FileName.GetFullPath();
+    const wxString msg = _("Opened") + ": " + GetFileName().GetFullPath();
     wxExApp::Log(msg);
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(msg);
@@ -978,12 +978,12 @@ void wxExSTC::DoFileLoad(bool synced)
   else
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(m_FileName, STAT_SYNC);
+    wxExFrame::StatusText(GetFileName(), STAT_SYNC);
     UpdateStatusBar("PaneLines");
 #endif
   }
 
-  if (m_FileName == wxExLogfileName())
+  if (GetFileName() == wxExLogfileName())
   {
     DocumentEnd();
   }
@@ -1002,7 +1002,7 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
 {
   if (!(m_Flags & STC_OPEN_HEX))
   {
-    SetReadOnly(m_FileName.GetStat().IsReadOnly()); // does not return anything
+    SetReadOnly(GetFileName().GetStat().IsReadOnly()); // does not return anything
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Readonly attribute changed"));
 #endif
@@ -1018,7 +1018,7 @@ void wxExSTC::DoFileSave()
 
   SetSavePoint();
 
-  const wxString msg = _("Saved") + ": " + m_FileName.GetFullPath();
+  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   wxExApp::Log(msg);
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
@@ -1455,7 +1455,7 @@ void wxExSTC::Initialize()
 
 void wxExSTC::LexerDialog(const wxString& caption)
 {
-  wxExLexer lexer = m_FileName.GetLexer();
+  wxExLexer lexer = GetFileName().GetLexer();
 
   if (wxExApp::GetLexers()->ShowDialog(this, lexer, caption))
   {
@@ -1494,7 +1494,7 @@ bool wxExSTC::LinkOpen(
   {
     if (file.IsRelative())
     {
-      if (file.MakeAbsolute(m_FileName.GetPath()))
+      if (file.MakeAbsolute(GetFileName().GetPath()))
       {
         if (file.FileExists())
         {
@@ -1665,7 +1665,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       FileSave();
     }
 
-    wxLaunchDefaultBrowser(m_FileName.GetFullPath());
+    wxLaunchDefaultBrowser(GetFileName().GetFullPath());
   break;
 
   case ID_EDIT_INSERT_DATE: AddText(wxDateTime::Now().Format()); break;
@@ -1687,8 +1687,8 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(m_Flags & STC_OPEN_READ_ONLY) &&
-    m_FileName.GetStat().IsOk() &&
-    m_FileName.GetStat().IsReadOnly() != GetReadOnly())
+    GetFileName().GetStat().IsOk() &&
+    GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
   }
@@ -1825,7 +1825,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     // Only useful if this is not a file on disk, otherwise
     // the OnIdle already does this.
-    if (!m_FileName.IsOk())
+    if (!GetFileName().IsOk())
     {
 #if wxUSE_STATUSBAR
       wxExFrame::StatusText(wxDateTime::Now().Format());
@@ -1844,7 +1844,7 @@ bool wxExSTC::Open(
   const wxString& match,
   long flags)
 {
-  if (m_FileName == filename && line_number > 0)
+  if (GetFileName() == filename && line_number > 0)
   {
     GotoLineAndSelect(line_number, match);
     PropertiesMessage();
@@ -1929,7 +1929,7 @@ void wxExSTC::PrintPreview()
   wxPreviewFrame* frame = new wxPreviewFrame(
     preview,
     this,
-    wxExPrintCaption(m_FileName));
+    wxExPrintCaption(GetFileName()));
 
   frame->Initialize();
   frame->Show();
@@ -1939,7 +1939,7 @@ void wxExSTC::PrintPreview()
 void wxExSTC::PropertiesMessage()
 {
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_FileName);
+  wxExFrame::StatusText(GetFileName());
   UpdateStatusBar("PaneFileType");
   UpdateStatusBar("PaneLexer");
   UpdateStatusBar("PaneLines");
@@ -2241,8 +2241,8 @@ void wxExSTC::SetFolding()
 
     // C Header files usually contain #ifdef statements.
     // Folding them might fold the entire file. Therefore don't fold preprocessor.
-    if (m_FileName.GetLexer().GetScintillaLexer() == "cpp" &&
-        m_FileName.GetExt() == "h")
+    if (GetFileName().GetLexer().GetScintillaLexer() == "cpp" &&
+        GetFileName().GetExt() == "h")
     {
       SetProperty("fold.preprocessor", "0");
     }
@@ -2297,13 +2297,13 @@ void wxExSTC::SetKeyWords()
 
   // Readme: The Scintilla lexer only recognized lower case words, apparently.
   for (
-    std::map< int, std::set<wxString> >::const_iterator it = m_FileName.GetLexer().GetKeywordsSet().begin();
-    it != m_FileName.GetLexer().GetKeywordsSet().end();
+    std::map< int, std::set<wxString> >::const_iterator it = GetFileName().GetLexer().GetKeywordsSet().begin();
+    it != GetFileName().GetLexer().GetKeywordsSet().end();
     ++it)
   {
     wxStyledTextCtrl::SetKeyWords(
       it->first,
-      m_FileName.GetLexer().GetKeywordsString(it->first).Lower());
+      GetFileName().GetLexer().GetKeywordsString(it->first).Lower());
   }
 }
 
@@ -2314,9 +2314,9 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
     ClearDocumentStyle();
 
     // Reset all old properties. 
-    // Should be before m_FileName.SetLexer().
+    // Should be before GetFileName().SetLexer().
     wxStringTokenizer properties(
-      m_FileName.GetLexer().GetProperties(),
+      GetFileName().GetLexer().GetProperties(),
       wxTextFile::GetEOL());
 
     while (properties.HasMoreTokens())
@@ -2331,11 +2331,11 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
       SetProperty(key, wxEmptyString);
     }
 
-    m_FileName.SetLexer(lexer, "forced");
+    GetFileName().SetLexer(lexer, "forced");
   }
   else
   {
-    m_FileName.SetLexer(lexer, GetLine(0));
+    GetFileName().SetLexer(lexer, GetLine(0));
   }
 
 #if wxUSE_STATUSBAR
@@ -2343,15 +2343,15 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 #endif
 
   // Update the lexer for scintilla.
-  SetLexerLanguage(m_FileName.GetLexer().GetScintillaLexer());
+  SetLexerLanguage(GetFileName().GetLexer().GetScintillaLexer());
 
   if (
-    !m_FileName.GetLexer().GetScintillaLexer().empty() &&
+    !GetFileName().GetLexer().GetScintillaLexer().empty() &&
     // And check whether the GetLexer from scintilla has a good value.
     // Otherwise it is not known, and we better show an error.
     wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
   {
-    wxLogError(_("Lexer is not known") + ": " + m_FileName.GetLexer().GetScintillaLexer());
+    wxLogError(_("Lexer is not known") + ": " + GetFileName().GetLexer().GetScintillaLexer());
   }
 
   Colourise();
@@ -2361,7 +2361,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
     FoldAll();
   }
 
-  if (m_FileName.GetExt() == "po")
+  if (GetFileName().GetExt() == "po")
   {
     AddBasePathToPathList();
   }
@@ -2385,7 +2385,7 @@ void wxExSTC::SetMarkers()
 void wxExSTC::SetProperties()
 {
   wxStringTokenizer properties(
-    m_FileName.GetLexer().GetProperties(),
+    GetFileName().GetLexer().GetProperties(),
     wxTextFile::GetEOL());
 
   while (properties.HasMoreTokens())
@@ -2577,7 +2577,7 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
   }
   else if (pane == "PaneLexer")
   {
-    text = m_FileName.GetLexer().GetScintillaLexer();
+    text = GetFileName().GetLexer().GetScintillaLexer();
   }
   else
   {
