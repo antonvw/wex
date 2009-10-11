@@ -2331,11 +2331,11 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
       SetProperty(key, wxEmptyString);
     }
 
-    GetFileName().SetLexer(lexer, "forced");
+    SetFileNameLexer(lexer, "forced");
   }
   else
   {
-    GetFileName().SetLexer(lexer, GetLine(0));
+    SetFileNameLexer(lexer, GetLine(0));
   }
 
 #if wxUSE_STATUSBAR

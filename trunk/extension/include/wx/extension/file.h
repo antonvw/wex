@@ -154,6 +154,12 @@ public:
 
   /// Reset contents changed.
   virtual void ResetContentsChanged() = 0;
+
+  /// Sets specified lexer for filename.
+  void SetFileNameLexer(
+    const wxString& lexer = wxEmptyString,
+    const wxString& text = wxEmptyString) {
+      m_FileName.SetLexer(lexer, text);};
 protected:
   /// Invoked by FileLoad, allows you to load the file.
   virtual void DoFileLoad(bool synced = false) = 0;
