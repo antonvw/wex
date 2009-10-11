@@ -125,7 +125,7 @@ public:
   /// So do it here.
   virtual ~wxExFile() {;};
 
-  /// Invokes FileSync if this file needs to be synced.
+  /// Invokes DoFileLoad if this file needs to be synced.
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckFileSync();
 
@@ -160,8 +160,6 @@ protected:
 
   /// Invoked by FileSave, allows you to save the file.
   virtual void DoFileSave() = 0;
-
-  wxExFileName m_FileName; ///< the filename
 private:
   /// Called if file needs to be synced.
   void FileSync();
@@ -169,6 +167,7 @@ private:
   // Take care that filename and stat are in sync.
   bool MakeAbsolute();
 
+  wxExFileName m_FileName;
   wxExStat m_Stat;
 };
 #endif

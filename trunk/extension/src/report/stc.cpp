@@ -103,7 +103,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if ( m_FileName.FileExists() && GetSelectedText().empty() &&
+  if ( GetFileName().FileExists() && GetSelectedText().empty() &&
       (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN))
   {
     if (wxExSVN::DirExists(GetFileName()))
@@ -153,7 +153,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
     if (wxExTextFileWithListView::SetupTool(tool))
     {
-      wxExTextFileWithListView report(m_FileName, tool);
+      wxExTextFileWithListView report(GetFileName(), tool);
       report.RunTool();
       report.GetStatistics().Log(tool);
 
@@ -171,7 +171,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   if (command.GetId() > ID_EDIT_SVN_LOWEST && 
       command.GetId() < ID_EDIT_SVN_HIGHEST)
   {
-    wxExSVN svn(command.GetId(), m_FileName.GetFullPath());
+    wxExSVN svn(command.GetId(), GetFileName().GetFullPath());
 
     if (command.GetId() == ID_EDIT_SVN_CAT ||
         command.GetId() == ID_EDIT_SVN_BLAME)
@@ -179,7 +179,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       if (svn.Execute(this) == 0)
       {
         m_Frame->OpenFile(
-          m_FileName, 
+          GetFileName(), 
           svn.GetCommandWithFlags(), 
           svn.GetOutput());
       }
@@ -204,7 +204,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
       if (header.ShowDialog(this) != wxID_CANCEL)
       {
-        if (m_FileName.GetLexer().GetScintillaLexer() == "hypertext")
+        if (GetFileName().GetLexer().GetScintillaLexer() == "hypertext")
         {
           GotoLine(1);
         }
@@ -213,7 +213,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
           DocumentStart();
         }
 
-        AddText(header.Get(&m_FileName));
+        AddText(header.Get(&GetFileName()));
       }
     }
     break;
@@ -222,9 +222,9 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
       wxFileName lastfile;
 
-      if (wxExFindOtherFileName(m_FileName, NULL, &lastfile))
+      if (wxExFindOtherFileName(GetFileName(), NULL, &lastfile))
       {
-        wxExCompareFile(m_FileName, lastfile);
+        wxExCompareFile(GetFileName(), lastfile);
       }
     }
     break;
@@ -273,9 +273,9 @@ void wxExSTCWithFrame::PropertiesMessage()
 {
   wxExSTC::PropertiesMessage();
 
-  const wxString ro = (m_FileName.GetStat().IsReadOnly() ?
+  const wxString ro = (GetFileName().GetStat().IsReadOnly() ?
     " [" + _("Readonly") + "]":
     wxString(wxEmptyString));
 
-  m_Frame->SetTitle(m_FileName.GetFullPath() + ro, wxEmptyString);
+  m_Frame->SetTitle(GetFileName().GetFullPath() + ro, wxEmptyString);
 }

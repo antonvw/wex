@@ -1680,7 +1680,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  m_FileName.GetStat().Sync();
+  CheckFileSync();
 
   if (
     !IsOpened() &&
@@ -1692,8 +1692,6 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   {
     FileReadOnlyAttributeChanged();
   }
-
-  CheckFileSync();
 }
 
 void wxExSTC::OnKey(wxKeyEvent& event)

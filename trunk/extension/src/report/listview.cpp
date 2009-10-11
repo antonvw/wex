@@ -210,9 +210,9 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   {
     if (m_Type == LIST_PROJECT)
     {
-      if (!m_FileName.IsOk() ||
-          !m_FileName.FileExists() ||
-          (m_FileName.FileExists() && !m_FileName.GetStat().IsReadOnly()))
+      if (!GetFileName().IsOk() ||
+          !GetFileName().FileExists() ||
+          (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
       {
         menu.AppendSeparator();
         menu.Append(wxID_ADD);
@@ -253,7 +253,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
   if (synced)
   {
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_FileName, STAT_SYNC | STAT_FULLPATH);
+  wxExFrame::StatusText(GetFileName(), STAT_SYNC | STAT_FULLPATH);
 #endif
   }
 }
@@ -510,9 +510,9 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     {
       // Do nothing.
     }
-    else if (m_FileName.GetStat().IsOk())
+    else if (GetFileName().GetStat().IsOk())
     {
-      if (!m_FileName.GetStat().IsReadOnly())
+      if (!GetFileName().GetStat().IsReadOnly())
       {
         event.Skip();
         m_ContentsChanged = true;
@@ -591,8 +591,6 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     }
   }
 
-  m_FileName.GetStat().Sync();
-
   CheckFileSync();
 }
 
@@ -632,10 +630,10 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     const long index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
     if (index < 0)
     {
-      if (m_FileName.FileExists())
+      if (GetFileName().FileExists())
       {
 #if wxUSE_STATUSBAR
-        wxExFrame::StatusText(m_FileName);
+        wxExFrame::StatusText(GetFileName());
 #endif
       }
     }
@@ -654,7 +652,7 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
       style = 0;
     }
 
-    if ((m_FileName.FileExists() && m_FileName.GetStat().IsReadOnly()) ||
+    if ((GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly()) ||
          m_Type == LIST_HISTORY)
     {
       style |= wxExMenu::MENU_IS_READ_ONLY;
@@ -871,7 +869,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
 {
   Initialize();
 
-  if (m_FileName.GetStat().IsOk())
+  if (GetFileName().GetStat().IsOk())
   {
     m_Frame->SetRecentProject(file);
   }
@@ -1038,9 +1036,9 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   {
     return prefix + _("Selection");
   }
-  else if (!m_FileName.GetName().empty())
+  else if (!GetFileName().GetName().empty())
   {
-    return prefix + m_FileName.GetName();
+    return prefix + GetFileName().GetName();
   }
   else
   {
@@ -1051,7 +1049,7 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
 void wxExListViewWithFrame::DoFileLoad(bool synced)
 {
   wxExListViewFile::DoFileLoad(synced);
-  m_Frame->SetRecentProject(m_FileName.GetFullPath());
+  m_Frame->SetRecentProject(GetFileName().GetFullPath());
 }
 
 void wxExListViewWithFrame::Initialize()
