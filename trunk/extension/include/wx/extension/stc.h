@@ -87,16 +87,6 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Opens the file, reads the content into the window, then closes the file
-  /// and sets the lexer.
-  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
-  /// If you specify a match selects the text on that line.
-  virtual bool Open(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    long flags = 0);
-
   /// Adds an ascii table to current document.
   void AddAsciiTable();
 
@@ -169,6 +159,16 @@ public:
   /// Asks for a lexer for this document, choosing from a dialog of
   /// all available lexers. Then colours the document.
   void LexerDialog(const wxString& caption = _("Enter Lexer"));
+
+  /// Opens the file, reads the content into the window, then closes the file
+  /// and sets the lexer.
+  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
+  /// If you specify a match selects the text on that line.
+  virtual bool Open(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long flags = 0);
 
   // Sets the path list from config.
   // Handled by framework, so not for doxygen.

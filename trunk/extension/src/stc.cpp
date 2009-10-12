@@ -919,15 +919,6 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   }
 }
 
-void wxExSTC::EOLModeUpdate(int eol_mode)
-{
-  ConvertEOLs(eol_mode);
-  SetEOLMode(eol_mode);
-#if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
-#endif
-}
-
 void wxExSTC::DoFileLoad(bool synced)
 {
   wxBusyCursor wait;
@@ -989,6 +980,29 @@ void wxExSTC::DoFileLoad(bool synced)
   }
 }
 
+void wxExSTC::DoFileSave()
+{
+  const wxCharBuffer& buffer = GetTextRaw(); 
+  Write(buffer.data(), buffer.length());
+
+  SetSavePoint();
+
+  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
+  wxExApp::Log(msg);
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(msg);
+#endif
+}
+
+void wxExSTC::EOLModeUpdate(int eol_mode)
+{
+  ConvertEOLs(eol_mode);
+  SetEOLMode(eol_mode);
+#if wxUSE_STATUSBAR
+  UpdateStatusBar("PaneFileType");
+#endif
+}
+
 void wxExSTC::FileNew(const wxExFileName& filename)
 {
   wxExFile::FileNew(filename);
@@ -1009,20 +1023,6 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   }
 
   return true;
-}
-
-void wxExSTC::DoFileSave()
-{
-  const wxCharBuffer& buffer = GetTextRaw(); 
-  Write(buffer.data(), buffer.length());
-
-  SetSavePoint();
-
-  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
-  wxExApp::Log(msg);
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(msg);
-#endif
 }
 
 void wxExSTC::FileTypeMenu()
