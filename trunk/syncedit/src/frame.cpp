@@ -532,6 +532,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(this, editor, _("File Save As"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE);
       if (dlg.ShowModal(false) == wxID_OK)
       {
+        editor->FileSave(dlg.GetPath());
+
         m_NotebookWithEditors->SetPageText(
           old_key,
           editor->GetFileName().GetFullPath(),
@@ -626,7 +628,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       if (project->GetContentsChanged())
       {
         wxExFileDialog dlg(this, project);
-        if (!dlg.Continue())
+        if (dlg.Continue())
         {
           project->FileSave();
           SetTitle(wxEmptyString, project->GetFileName().GetName());
@@ -647,6 +649,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(this, project, _("Project Save As"), project_wildcard, wxFD_SAVE);
       if (dlg.ShowModal(false) == wxID_OK)
       {
+        project->FileSave(dlg.GetPath());
+
         m_NotebookWithProjects->SetPageText(
           old_key,
           project->GetFileName().GetFullPath(),

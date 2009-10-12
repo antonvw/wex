@@ -105,19 +105,5 @@ int wxExFileDialog::ShowModal(bool ask_for_continue)
     SetWildcard(wxExApp::GetLexers()->BuildWildCards(m_File->GetFileName()));
   }
 
-  const int result = wxFileDialog::ShowModal();
-
-  if (result == wxID_OK)
-  {
-    if (GetWindowStyle() & wxFD_SAVE)
-    {
-      m_File->FileSave(GetPath());
-    }
-    else
-    {
-      m_File->FileLoad(wxExFileName(GetPath()));
-    }
-  }
-
-  return result;
+  return wxFileDialog::ShowModal();
 }
