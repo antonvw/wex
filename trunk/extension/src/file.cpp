@@ -37,20 +37,21 @@ bool wxExFile::CheckFileSync()
     return false;
   }
 
-  m_FileName.GetStat().Sync();
-
-  if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
+  if (m_FileName.GetStat().Sync())
   {
-    
-    FileSync();
+    if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
+    {
+      FileSync();
 
-    // Next time no sync.
-    return m_Stat.Sync();
+      // Update the stat member, so next time no sync.
+      m_Stat.Sync();
+
+      // Now we synced, so always return true.
+      return true;
+    }
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 void wxExFile::FileNew(const wxExFileName& filename)
