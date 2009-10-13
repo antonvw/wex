@@ -30,7 +30,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_MENU(wxID_SELECTALL, MDIFrame::OnCommand)
   EVT_MENU(wxID_STOP, MDIFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, MDIFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_CLOSE, wxID_PREFERENCES, MDIFrame::OnCommand)
   EVT_MENU_RANGE(wxID_VIEW_DETAILS, wxID_VIEW_SORTTYPE, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, MDIFrame::OnCommand)
@@ -483,7 +483,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     break;
   case wxID_EXIT: Close(true); break;
   case wxID_NEW: NewFile(); break;
-  case wxID_OPEN: event.Skip(); break;
   case wxID_PREVIEW:
     if (GetFocusedSTC() != NULL)
     {
