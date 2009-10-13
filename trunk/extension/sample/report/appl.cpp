@@ -287,12 +287,5 @@ bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
     flags = 0;
   }
 
-  bool result = m_STC->Open(file, line_number, match, flags);
-
-  if (result)
-  {
-    m_STC->PropertiesMessage();
-  }
-
-  return result;
+  return m_STC->Open(file, line_number, match, flags);
 }

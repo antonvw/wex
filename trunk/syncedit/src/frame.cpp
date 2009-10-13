@@ -322,7 +322,6 @@ void MDIFrame::NewFile(bool as_project)
     page = new wxExSTCWithFrame(notebook);
 
     ((wxExSTCWithFrame*)page)->FileNew(text);
-    ((wxExSTCWithFrame*)page)->PropertiesMessage();
 
     m_NewFileNo++;
   }
@@ -511,7 +510,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (editor != NULL)
     {
       editor->FileSave();
-      editor->PropertiesMessage();
 
       if (editor->GetFileName() == wxExApp::GetLexers()->GetFileName())
       {
@@ -537,7 +535,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
           old_key,
           editor->GetFileName().GetFullPath(),
           editor->GetFileName().GetFullName());
-        editor->PropertiesMessage();
       }
     }
     break;

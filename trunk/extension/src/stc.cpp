@@ -1007,6 +1007,8 @@ void wxExSTC::FileNew(const wxExFileName& filename)
 {
   wxExFile::FileNew(filename);
 
+  PropertiesMessage();
+
   ClearDocument();
 
   SetLexer();
