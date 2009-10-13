@@ -712,7 +712,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     else
     {
-      wxExFrame::StatusText(wxEmptyString, "PaneItems");
+      StatusText(wxEmptyString, "PaneItems");
     }
 #endif
     break;
@@ -1108,14 +1108,14 @@ void MDIFrame::SyncCloseAll(wxWindowID id)
     GetManager().GetPane("OUTPUT").Hide();
     GetManager().Update();
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxEmptyString, "PaneItems");
+    StatusText(wxEmptyString, "PaneItems");
 #endif
     break;
   case NOTEBOOK_PROJECTS:
     GetManager().GetPane("PROJECTS").Hide();
     GetManager().Update();
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxEmptyString, "PaneItems");
+    StatusText(wxEmptyString, "PaneItems");
 #endif
     break;
   default: wxFAIL;

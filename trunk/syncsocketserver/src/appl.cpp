@@ -400,9 +400,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 #if wxUSE_TASKBARICON
       m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
+#if wxUSE_STATUSBAR
       StatusText(
         wxString::Format(_("%d clients"), m_Clients.size()),
         "PaneClients");
+#endif
 
       m_LogWindow->AppendTextForced(text);
 
@@ -495,7 +497,9 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   case ID_TIMER_STOP:
     m_Timer.Stop();
     m_LogWindow->AppendTextForced(_("timer stopped"));
+#if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
+#endif
     break;
 
   case ID_VIEW_DATA: TogglePane("DATA"); break;
@@ -539,9 +543,11 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
     m_Clients.push_back(sock);
 
+#if wxUSE_STATUSBAR
     StatusText(
       wxString::Format(_("%d clients"), m_Clients.size()),
       "PaneClients");
+#endif
 
     LogConnection(sock, true);
 
@@ -551,7 +557,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     if (wxExApp::GetConfig(_("Timer"), 0) > 0 && !m_Timer.IsRunning())
     {
       m_Timer.Start(1000 * wxExApp::GetConfig(_("Timer"), 0));
+#if wxUSE_STATUSBAR
       StatusText(wxString::Format("%ld", wxExApp::GetConfig(_("Timer"), 0)), "PaneTimer");
+#endif
     }
 
     const wxString text =
@@ -626,10 +634,12 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         delete [] buffer;
 
+#if wxUSE_STATUSBAR
         StatusText(wxString::Format("%d,%d",
           m_Statistics.Get(_("Bytes Received")),
           m_Statistics.Get(_("Bytes Sent"))),
           "PaneBytes");
+#endif
 
         // Enable input events again.
         sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
@@ -639,16 +649,20 @@ void MyFrame::OnSocket(wxSocketEvent& event)
       case wxSOCKET_LOST:
         m_Statistics.Inc(_("Connections Lost"));
         SocketLost(sock, true);
+#if wxUSE_STATUSBAR
         StatusText(
           wxString::Format(_("%d clients"), m_Clients.size()),
           "PaneClients");
+#endif
 
         if (m_Clients.size() == 0)
         {
           if (m_Timer.IsRunning())
           {
             m_Timer.Stop();
+#if wxUSE_STATUSBAR
             StatusText(wxEmptyString, "PaneTimer");
+#endif
           }
 
 #if wxUSE_TASKBARICON
@@ -789,7 +803,9 @@ bool MyFrame::SetupSocketServer()
     m_SocketServer->Destroy();
     delete m_SocketServer;
     m_SocketServer = NULL;
+#if wxUSE_STATUSBAR
     StatusText(text);
+#endif
     m_LogWindow->AppendTextForced(text);
     return false;
   }
@@ -803,7 +819,9 @@ bool MyFrame::SetupSocketServer()
 #endif
   }
 
+#if wxUSE_STATUSBAR
   StatusText(text);
+#endif
   m_LogWindow->AppendTextForced(text);
 
   // Setup the event handler and subscribe to connection events
@@ -819,7 +837,9 @@ bool MyFrame::SocketCheckError(const wxSocketBase* sock)
   if (sock->Error())
   {
     const wxString error = wxString::Format(_("Socket Error: %d"), sock->LastError());
+#if wxUSE_STATUSBAR
     StatusText(error);
+#endif
     m_Statistics.Inc(error);
     return true;
   }
@@ -914,13 +934,17 @@ void MyFrame::TimerDialog()
       wxString::Format(_("timer set to: %d seconds (%s)"),
       val,
       wxTimeSpan(0, 0, val, 0).Format().c_str()));
+#if wxUSE_STATUSBAR
     StatusText(wxString::Format("%ld", val), "PaneTimer");
+#endif
   }
   else if (val == 0)
   {
     m_Timer.Stop();
     m_LogWindow->AppendTextForced(_("timer stopped"));
+#if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
+#endif
   }
 }
 
@@ -943,9 +967,11 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
   m_Statistics.Inc(_("Bytes Sent"), client->LastCount());
   m_Statistics.Inc(_("Messages Sent"));
 
+#if wxUSE_STATUSBAR
   StatusText(wxString::Format("%d,%d",
     m_Statistics.Get(_("Bytes Received")), m_Statistics.Get(_("Bytes Sent"))),
     "PaneBytes");
+#endif
 
   if (wxExApp::GetConfigBool(_("Log Data")))
   {

@@ -281,7 +281,7 @@ void Frame::OnNotebook(wxWindowID id, wxWindow* page)
   {
     SetTitle(wxEmptyString, ((wxExListViewWithFrame*)page)->GetFileName().GetName());
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(((wxExListViewWithFrame*)page)->GetFileName());
+    StatusText(((wxExListViewWithFrame*)page)->GetFileName());
     ((wxExListViewWithFrame*)page)->UpdateStatusBar();
 #endif
   }
