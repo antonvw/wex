@@ -182,8 +182,12 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
 wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
-  Execute(parent);
-  ShowOutput(parent);
+  // If an error occurred, already shown by wxExecute itself.
+  if (Execute(parent) == wxID_OK)
+  {
+    ShowOutput(parent);
+  }
+
   return m_ReturnCode;
 }
 
