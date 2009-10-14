@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncedit v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-05 11:23+0100\n"
-"PO-Revision-Date: 2009-10-05 11:23+0100\n"
-"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-10-14 10:41+0100\n"
+"PO-Revision-Date: 2009-10-14 10:43+0100\n"
+"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/frame.cpp:71
+#: ../src/frame.cpp:77
 msgid "Project Files"
 msgstr "Project bestanden"
 
@@ -49,15 +49,19 @@ msgstr "Geschiedenis"
 msgid "Findbar"
 msgstr "Zoekbalk"
 
-#: ../src/frame.cpp:292
+#: ../src/frame.cpp:244
+msgid "Select Projects"
+msgstr "Projecten selecteren"
+
+#: ../src/frame.cpp:310
 msgid "project"
 msgstr "project"
 
-#: ../src/frame.cpp:292
+#: ../src/frame.cpp:310
 msgid "textfile"
 msgstr "bestand"
 
-#: ../src/frame.cpp:465
+#: ../src/frame.cpp:481
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing. All its config files are read\n"
@@ -67,37 +71,45 @@ msgstr ""
 "automatische synchronisatie. Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../src/frame.cpp:469
+#: ../src/frame.cpp:485
 msgid "This program offers a text or binary editor with automatic syncing."
 msgstr "Dit programma biedt een text of binaire editor met automatische synchronisatie."
 
-#: ../src/frame.cpp:472
+#: ../src/frame.cpp:488
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: ../src/frame.cpp:567
+#: ../src/frame.cpp:546
+msgid "File Save As"
+msgstr "Opslaan als"
+
+#: ../src/frame.cpp:584
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../src/frame.cpp:568
+#: ../src/frame.cpp:585
 msgid "Set SVN And Comparator"
 msgstr "SVN en vergelijker instellen"
 
-#: ../src/frame.cpp:573
+#: ../src/frame.cpp:590
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/frame.cpp:580
-#: ../src/frame.cpp:589
-#: ../src/frame.cpp:594
+#: ../src/frame.cpp:597
+#: ../src/frame.cpp:606
+#: ../src/frame.cpp:611
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../src/frame.cpp:586
+#: ../src/frame.cpp:603
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../src/frame.cpp:735
+#: ../src/frame.cpp:668
+msgid "Project Save As"
+msgstr "Project opslaan als"
+
+#: ../src/frame.cpp:764
 msgid "&Open"
 msgstr "&Openen"
 
