@@ -17,14 +17,13 @@
 #include "support.h"
 #include "defs.h"
 
-Frame::Frame(const wxString& project_wildcard)
+Frame::Frame()
   : wxExFrameWithHistory(
       NULL,
       wxID_ANY,
       wxTheApp->GetAppName(), //title
-      NUMBER_RECENT_FILES, //maxFiles
-      4,    // maxProjects
-      project_wildcard)
+      NUMBER_RECENT_FILES,    //maxFiles
+      4)                      // maxProjects
 {
   SetIcon(wxICON(appl));
 

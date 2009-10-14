@@ -40,7 +40,6 @@ enum
   ID_LIST_SEND_ITEM, // only for wxExListViewFile
   ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
   ID_LIST_ALL_CLOSE, // not a real command, used by exForEach
-  ID_PROJECT_OPEN,
   ID_PROJECT_SAVE,
   ID_RECENT_LOWEST,
   ID_RECENT_FILE_LOWEST,

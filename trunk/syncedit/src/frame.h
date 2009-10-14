@@ -31,6 +31,7 @@ private:
     wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
   virtual void ConfigDialogApplied(wxWindowID dialogid);
+  bool DialogProjectOpen();
   virtual wxExListView* GetListView();
   virtual wxExListViewWithFrame* GetProject();
   virtual wxExSTC* GetSTC();
@@ -59,6 +60,8 @@ private:
   wxExNotebook* m_NotebookWithEditors;
   wxExNotebook* m_NotebookWithLists;
   wxExNotebook* m_NotebookWithProjects;
+
+  const wxString m_ProjectWildcard;
 
   DECLARE_EVENT_TABLE()
 };

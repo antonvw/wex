@@ -32,14 +32,12 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   const wxString& title,
   size_t maxFiles,
   size_t maxProjects,
-  const wxString& project_wildcard,
   int style)
   : wxExManagedFrame(parent, id, title, style)
   , m_FileHistory(maxFiles, ID_RECENT_FILE_LOWEST)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
   , m_Process(NULL)
-  , m_ProjectWildcard(project_wildcard)
 {
   // There is only support for one history in the config.
   // We use file history for this, so update project history ourselves.
@@ -98,24 +96,6 @@ bool wxExFrameWithHistory::DialogFileOpen(
   }
 
   wxExOpenFiles(this, files);
-
-  return true;
-}
-
-bool wxExFrameWithHistory::DialogProjectOpen(long style)
-{
-  wxFileDialog dlg(this,
-    _("Select Projects"),
-    wxStandardPaths::Get().GetUserDataDir(),
-    wxEmptyString,
-    m_ProjectWildcard,
-    style);
-
-  if (dlg.ShowModal() == wxID_CANCEL) return false;
-
-  wxArrayString files;
-  dlg.GetPaths(files);
-  wxExOpenFiles(this, files, wxExSTCWithFrame::STC_OPEN_IS_PROJECT);
 
   return true;
 }
@@ -204,10 +184,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         wxExSTC::STC_CONFIG_WITH_APPLY,
         event.GetId());
     break;
-
-    case ID_PROJECT_OPEN:
-      DialogProjectOpen();
-      break;
 
     case ID_PROJECT_SAVE:
       {

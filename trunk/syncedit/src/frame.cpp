@@ -69,13 +69,12 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, MDIFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
-const wxString project_wildcard = wxString(_("Project Files")) + " (*.prj)|*.prj";
-
 MDIFrame::MDIFrame(bool open_recent)
-  : Frame(project_wildcard)
+  : Frame()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_History(NULL)
+  , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
 {
   wxLogTrace("SY_CALL", "+MDIFrame");
 
@@ -237,6 +236,24 @@ void MDIFrame::ConfigDialogApplied(wxWindowID dialogid)
   {
     wxFAIL;
   }
+}
+
+bool MDIFrame::DialogProjectOpen()
+{
+  wxFileDialog dlg(this,
+    _("Select Projects"),
+    wxStandardPaths::Get().GetUserDataDir(),
+    wxEmptyString,
+    m_ProjectWildcard,
+    wxFD_OPEN | wxFD_MULTIPLE);
+
+  if (dlg.ShowModal() == wxID_CANCEL) return false;
+
+  wxArrayString files;
+  dlg.GetPaths(files);
+  wxExOpenFiles(this, files, wxExSTCWithFrame::STC_OPEN_IS_PROJECT);
+
+  return true;
 }
 
 wxExListView* MDIFrame::GetListView()
@@ -618,6 +635,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     break;
   case ID_PROJECT_NEW: NewFile(true); break;
+    case ID_PROJECT_OPEN:
+      DialogProjectOpen();
+      break;
   case ID_PROJECT_OPENTEXT:
     if (project != NULL)
     {
@@ -642,7 +662,13 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (project != NULL)
     {
       const wxString old_key = m_NotebookWithProjects->GetKeyByPage(project);
-      wxExFileDialog dlg(this, project, _("Project Save As"), project_wildcard, wxFD_SAVE);
+
+      wxExFileDialog dlg(
+        this, project, 
+        _("Project Save As"), 
+        m_ProjectWildcard, 
+        wxFD_SAVE);
+
       if (dlg.ShowModal(false) == wxID_OK)
       {
         project->FileSave(dlg.GetPath());

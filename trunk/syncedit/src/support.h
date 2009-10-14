@@ -17,7 +17,7 @@
 class Frame : public wxExFrameWithHistory
 {
 public:
-  Frame(const wxString& project_wildcard);
+  Frame();
 
 #if wxUSE_CHECKBOX
   wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};

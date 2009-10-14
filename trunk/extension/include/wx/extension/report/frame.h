@@ -35,7 +35,6 @@ public:
     const wxString& title,
     size_t maxFiles = 9,
     size_t maxProjects = 0,
-    const wxString& project_wildcard = wxEmptyString,
     int style = wxDEFAULT_FRAME_STYLE);
 
   /// This method is called to activate a certain listview.
@@ -52,10 +51,6 @@ public:
     long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
     const wxString wildcards = wxEmptyString,
     bool ask_for_continue = false);
-
-  /// Shows a wxFileDialog dialog for projects,
-  /// and opens all selected (depending on style) files if not cancelled.
-  bool DialogProjectOpen(long style = wxFD_OPEN | wxFD_MULTIPLE);
 
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
@@ -132,8 +127,6 @@ private:
   wxExListViewWithFrame* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
   wxExProcessWithListView* m_Process;
-
-  const wxString m_ProjectWildcard;
 
   DECLARE_EVENT_TABLE()
 };
