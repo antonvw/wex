@@ -1,16 +1,9 @@
-..F.wxExFile::Read:254 wxFile::Read:151
-.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:17
-.wxExConfig::Get:1168 wxConfig::Read:1253
+...wxExFile::Read:222 wxFile::Read:166
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:18
+.wxExConfig::Get:1317 wxConfig::Read:1234
 
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  5   Failures: 1   Errors: 0
-
-
-1) test: testMethods (F) line: 76 ../extension/test/base/test.cpp
-assertion failed
-- Expression: buffer.length() == 40
+OK (5 tests)
 
 
