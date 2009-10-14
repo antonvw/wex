@@ -16,6 +16,17 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+class wxExFileTest: public wxExFile
+{
+public :
+  wxExFileTest() {;};
+private:
+  virtual bool GetContentsChanged() {return false;};
+  virtual void ResetContentsChanged() {;};
+  virtual void DoFileLoad(bool) {;};
+  virtual void DoFileSave() {;};
+};
+
 void wxExTestFixture::setUp()
 {
   m_Config = new wxExConfig("test.cfg", wxCONFIG_USE_LOCAL_FILE);
@@ -60,7 +71,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
   CPPUNIT_ASSERT(!m_File->CheckFileSync());
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(m_File->FileOpen(wxExFileName(TEST_BIN)));
+  CPPUNIT_ASSERT(m_File->FileLoad(wxExFileName(TEST_BIN)));
   wxCharBuffer buffer = m_File->Read();
   CPPUNIT_ASSERT(buffer.length() == 40);
 
