@@ -312,7 +312,7 @@ void wxExOpenFiles(
   }
 }
 
-bool wxExOpenFilesDialog(
+void wxExOpenFilesDialog(
   wxExFrameWithHistory* frame,
   long style,
   const wxString wildcards,
@@ -329,7 +329,7 @@ bool wxExOpenFilesDialog(
       wxFileSelectorDefaultWildcardStr,
       style);
 
-    if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return false;
+    if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return;
     dlg.GetPaths(files);
   }
   else
@@ -340,13 +340,11 @@ bool wxExOpenFilesDialog(
       wxEmptyString,
       wildcards,
       style);
-    if (dlg.ShowModal() == wxID_CANCEL) return false;
+    if (dlg.ShowModal() == wxID_CANCEL) return;
     dlg.GetPaths(files);
   }
 
   wxExOpenFiles(frame, files);
-
-  return true;
 }
 
 wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
