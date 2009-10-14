@@ -21,7 +21,7 @@ class wxExFileTest: public wxExFile
 public :
   wxExFileTest(const wxString& filename) : wxExFile(filename) {;};
 private:
-  virtual bool GetContentsChanged() {return false;};
+  virtual bool GetContentsChanged() const {return false;};
   virtual void ResetContentsChanged() {;};
   virtual void DoFileLoad(bool) {;};
   virtual void DoFileSave() {;};

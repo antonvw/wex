@@ -125,7 +125,7 @@ public:
   // Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
-  virtual bool GetContentsChanged() {return GetModify();};
+  virtual bool GetContentsChanged() const {return GetModify();};
 
   virtual void ResetContentsChanged();
 

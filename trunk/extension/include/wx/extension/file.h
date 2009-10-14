@@ -139,7 +139,7 @@ public:
   bool FileSave(const wxString filename = wxEmptyString);
 
   /// Returns whether contents have been changed.
-  virtual bool GetContentsChanged() = 0;
+  virtual bool GetContentsChanged() const = 0;
 
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}

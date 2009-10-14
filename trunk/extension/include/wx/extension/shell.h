@@ -78,7 +78,7 @@ public:
 protected:
   /// Override the default from wxExSTC.
   /// When you manipulate commands, this should not cause contents changed.
-  virtual bool GetContentsChanged() {return false;};
+  virtual bool GetContentsChanged() const {return false;};
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
 private:
