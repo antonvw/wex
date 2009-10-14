@@ -102,7 +102,7 @@ void wxExFindInFiles(bool replace)
 
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListViewWithFrame* listview,
+  wxExListViewFile* listview,
   wxFileName* lastfile)
 {
   /* Add the base version if present. E.g.

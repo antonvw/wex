@@ -102,7 +102,7 @@ void wxExFindInFiles(bool replace = false);
 /// Results are put on the list if not null, or in the filename if not null.
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListViewWithFrame* listview,
+  wxExListViewFile* listview,
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Do something (id) for all pages on the notebook.
