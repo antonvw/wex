@@ -46,7 +46,7 @@ void wxExReportAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
 
   // test wxExListViewWithFrame
-  CPPUNIT_ASSERT(m_ListView->FileOpen(wxExFileName(TEST_PRJ)));
+  CPPUNIT_ASSERT(m_ListView->FileLoad(wxExFileName(TEST_PRJ)));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
   // test wxExProcessWithListView
