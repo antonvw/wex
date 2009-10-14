@@ -204,10 +204,15 @@ bool wxExFindOtherFileName(
 
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 {
+  if (notebook->GetPageCount() == 0)
+  {
+    return true;
+  }
+
   for (
-    size_t page = 0;
-    page < notebook->GetPageCount();
-    page++)
+    int page = notebook->GetPageCount() - 1;
+    page >= 0;
+    page--)
   {
     wxExListViewWithFrame* lv = (wxExListViewWithFrame*)notebook->GetPage(page);
 
