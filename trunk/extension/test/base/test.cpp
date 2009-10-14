@@ -19,7 +19,7 @@
 class wxExFileTest: public wxExFile
 {
 public :
-  wxExFileTest() {;};
+  wxExFileTest(const wxString& filename) : wxExFile(filename) {;};
 private:
   virtual bool GetContentsChanged() {return false;};
   virtual void ResetContentsChanged() {;};
@@ -30,7 +30,7 @@ private:
 void wxExTestFixture::setUp()
 {
   m_Config = new wxExConfig("test.cfg", wxCONFIG_USE_LOCAL_FILE);
-  m_File = new wxExFile(TEST_FILE);
+  m_File = new wxExFileTest(TEST_FILE);
   m_FileName = new wxExFileName(TEST_FILE);
   m_FileNameStatistics = new wxExFileNameStatistics(TEST_FILE);
   m_Lexer = new wxExLexer();
@@ -182,7 +182,7 @@ void wxExTestFixture::testMethods()
 
 void wxExTestFixture::testTiming()
 {
-  wxExFile file(TEST_FILE);
+  wxExFileTest file(TEST_FILE);
 
   CPPUNIT_ASSERT(file.IsOpened());
 
