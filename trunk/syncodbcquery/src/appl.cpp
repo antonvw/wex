@@ -18,6 +18,7 @@
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/stc.h>
+#include <wx/extension/report/util.h>
 #include "appl.h"
 
 #ifndef __WXMSW__
