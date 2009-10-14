@@ -44,14 +44,6 @@ public:
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
-  /// Shows a wxFileDialog dialog for files,
-  /// and opens all selected (depending on style) files if not cancelled.
-  /// If wildcards are empty, they are retrieved from the wxExApp lexers.
-  bool DialogFileOpen(
-    long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
-    const wxString wildcards = wxEmptyString,
-    bool ask_for_continue = false);
-
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it invokes GetFocusedListView.
   virtual wxExListViewWithFrame* GetProject();

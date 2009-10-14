@@ -312,6 +312,43 @@ void wxExOpenFiles(
   }
 }
 
+bool wxExOpenFilesDialog(
+  wxExFrameWithHistory* frame,
+  long style,
+  const wxString wildcards,
+  bool ask_for_continue)
+{
+  wxExSTC* stc = frame->GetSTC();
+  wxArrayString files;
+
+  if (stc != NULL)
+  {
+    wxExFileDialog dlg(frame,
+      stc,
+      _("Select Files"),
+      wxFileSelectorDefaultWildcardStr,
+      style);
+
+    if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return false;
+    dlg.GetPaths(files);
+  }
+  else
+  {
+    wxFileDialog dlg(frame,
+      _("Select Files"),
+      wxEmptyString,
+      wxEmptyString,
+      wildcards,
+      style);
+    if (dlg.ShowModal() == wxID_CANCEL) return false;
+    dlg.GetPaths(files);
+  }
+
+  wxExOpenFiles(frame, files);
+
+  return true;
+}
+
 wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)

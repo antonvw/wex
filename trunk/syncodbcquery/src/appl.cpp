@@ -268,7 +268,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_OPEN:
-    DialogFileOpen(wxFD_OPEN | wxFD_CHANGE_DIR, "sql files (*.sql) | *.sql", true);
+    wxExOpenFilesDialog(this, wxFD_OPEN | wxFD_CHANGE_DIR, "sql files (*.sql) | *.sql", true);
     break;
 
   case wxID_PREFERENCES:
@@ -407,7 +407,7 @@ bool MyFrame::OpenFile(
   GetManager().GetPane("QUERY").Show(true);
   GetManager().Update();
 
-  // Take care that DialogFileOpen always results in opening in the query.
+  // Take care that wxExOpenFilesDialog always results in opening in the query.
   // Otherwise if results are focused, the file is opened in the results.
   return m_Query->Open(filename, line_number, match, flags);
 }

@@ -116,4 +116,11 @@ void wxExOpenFiles(wxExFrameWithHistory* frame,
   const wxArrayString& files,
   long file_flags = 0,
   int dir_flags = wxDIR_DEFAULT);
+
+/// Shows a dialog and opens selected files and updates history, 
+/// both for files and projects.
+bool wxExOpenFilesDialog(wxExFrameWithHistory* frame,
+  long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
+  const wxString wildcards = wxEmptyString,
+  bool ask_for_continue = false);
 #endif

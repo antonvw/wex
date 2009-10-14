@@ -346,7 +346,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_OPEN:
-    DialogFileOpen(wxFD_OPEN | wxFD_CHANGE_DIR, wxEmptyString, true);
+    wxExOpenFilesDialog(this, wxFD_OPEN | wxFD_CHANGE_DIR, wxEmptyString, true);
     break;
 
   case wxID_PREFERENCES:

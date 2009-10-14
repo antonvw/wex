@@ -11,7 +11,6 @@
 
 #include <wx/stdpaths.h>
 #include <wx/extension/report/report.h>
-#include <wx/extension/filedlg.h>
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
@@ -62,42 +61,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     _("Reported %ld SQL queries in"),
     _("Report SQL &Query"));
 #endif
-}
-
-bool wxExFrameWithHistory::DialogFileOpen(
-  long style,
-  const wxString wildcards,
-  bool ask_for_continue)
-{
-  wxExSTC* stc = GetSTC();
-  wxArrayString files;
-
-  if (stc != NULL)
-  {
-    wxExFileDialog dlg(this,
-      stc,
-      _("Select Files"),
-      wxFileSelectorDefaultWildcardStr,
-      style);
-
-    if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return false;
-    dlg.GetPaths(files);
-  }
-  else
-  {
-    wxFileDialog dlg(this,
-      _("Select Files"),
-      wxEmptyString,
-      wxEmptyString,
-      wildcards,
-      style);
-    if (dlg.ShowModal() == wxID_CANCEL) return false;
-    dlg.GetPaths(files);
-  }
-
-  wxExOpenFiles(this, files);
-
-  return true;
 }
 
 void wxExFrameWithHistory::DoRecent(
@@ -173,7 +136,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     switch (event.GetId())
     {
     case wxID_OPEN:
-      DialogFileOpen();
+      wxExOpenFilesDialog(this);
       break;
       
     case wxID_PREFERENCES:
