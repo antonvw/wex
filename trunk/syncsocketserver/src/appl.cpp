@@ -323,7 +323,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general socket server."));
-    info.SetVersion("v1.0");
+    info.SetVersion("v1.0.0");
     info.SetCopyright("(c) 2007-2009, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
