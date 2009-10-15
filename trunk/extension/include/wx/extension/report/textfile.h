@@ -37,7 +37,7 @@ private:
   static wxExListViewWithFrame* m_Report;
   static wxExFrameWithHistory* m_Frame;
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
   virtual bool ParseComments();
   bool ParseSQL();
   bool SetSQLQuery();

@@ -472,11 +472,11 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
 
-#ifdef USE_OTL
+#ifdef wxExUSE_OTL
     info.AddDeveloper(wxExOTL::Version());
 #endif
 
-#ifdef EX_PORTABLE
+#ifdef wxExUSE_PORTABLE
     info.SetDescription(
       _("This program offers a portable text or binary editor\n"
         "with automatic syncing. All its config files are read\n"

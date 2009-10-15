@@ -50,7 +50,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     }
   }
 
-#ifdef USE_EMBEDDED_SQL
+#ifdef wxExUSE_EMBEDDED_SQL
   wxExTool::AddInfo(
     ID_TOOL_SQL,
     _("Executed %ld SQL queries in"),

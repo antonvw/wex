@@ -285,7 +285,7 @@ const wxFileName wxExLogfileName()
     return wxFileName("app.log");
   }
 
-#ifdef EX_PORTABLE
+#ifdef wxExUSE_PORTABLE
   return wxFileName(
     wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
     wxTheApp->GetAppName().Lower() + ".log");

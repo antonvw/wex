@@ -19,7 +19,7 @@
 #include <wx/extension/otl.h>
 #include <wx/extension/configdlg.h>
 
-#if USE_OTL
+#if wxExUSE_OTL
 
 wxExOTL::wxExOTL(const int threaded_mode)
 {
@@ -287,4 +287,4 @@ const wxString wxExOTL::Version()
     (version >> 8) & 0xff,
     (version & 0xff));
 }
-#endif // USE_OTL
+#endif // wxExUSE_OTL

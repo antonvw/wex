@@ -20,7 +20,7 @@ class wxExFindReplaceData;
 /// Offers a general configuration.
 /// Keys are read the first time accessed from the config.
 /// Next time they are retrieved from the maps, so access is fast.
-#ifdef EX_PORTABLE
+#ifdef wxExUSE_PORTABLE
 #include <wx/fileconf.h>
 class wxExConfig : public wxFileConfig
 #else

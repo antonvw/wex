@@ -82,7 +82,7 @@ bool wxExApp::OnInit()
   }
 
   // Now construct the config, as most classes use it.
-#ifdef EX_PORTABLE
+#ifdef wxExUSE_PORTABLE
   m_Config = new wxExConfig(
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
@@ -98,7 +98,7 @@ bool wxExApp::OnInit()
 
   // And construct and read the lexers.
   m_Lexers = new wxExLexers(wxExFileName(
-#ifdef EX_PORTABLE
+#ifdef wxExUSE_PORTABLE
       wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
 #else
       wxStandardPaths::Get().GetUserDataDir()

@@ -17,7 +17,7 @@ using namespace std;
 wxExConfig::wxExConfig(
   const wxString& filename,
   long style)
-#ifdef EX_PORTABLE
+#ifdef wxExUSE_PORTABLE
   : wxFileConfig(
 #else
   : wxConfig(

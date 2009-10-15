@@ -30,7 +30,7 @@ void SetItemColumnStatistics(
     wxString::Format("%ld", stat.Get(col)));
 }
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
 wxExOTL wxExTextFileWithListView::m_otl;
 
 class Recordset
@@ -57,13 +57,13 @@ wxExTextFileWithListView::wxExTextFileWithListView(
   const wxExFileName& filename,
   const wxExTool& tool)
   : wxExTextFile(filename, tool, wxExApp::GetConfig())
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
 #endif
 {
 }
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::ParseComments()
 {
   if (GetTool().GetId() == ID_TOOL_SQL || GetTool().GetId() == ID_TOOL_REPORT_SQL)
@@ -111,7 +111,7 @@ bool wxExTextFileWithListView::ParseComments()
 }
 #endif
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::ParseSQL()
 {
 /*
@@ -209,7 +209,7 @@ void wxExTextFileWithListView::Report()
     item.UpdateRevisionList(GetRCS());
   break;
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
   case ID_TOOL_REPORT_SQL:
     item.SetColumnText(_("Query"), m_SQLQuery);
     item.SetColumnText(_("Run Time"), m_SQLQueryRunTime);
@@ -269,7 +269,7 @@ void wxExTextFileWithListView::ReportStatistics()
   }
 }
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::SetSQLQuery()
 {
   const size_t pos_start_of_query = GetComments().find('#');
@@ -294,7 +294,7 @@ bool wxExTextFileWithListView::SetSQLQuery()
 
 bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 {
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
   {
     if (m_otl.IsConnected())
@@ -339,7 +339,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
   return true;
 }
 
-#if USE_EMBEDDED_SQL
+#if wxExUSE_EMBEDDED_SQL
 bool Recordset::ExecQuery(const wxString& query)
 {
   // If the query does not contain any space,

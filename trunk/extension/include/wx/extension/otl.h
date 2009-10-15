@@ -12,7 +12,7 @@
 #ifndef _EXOTL_H
 #define _EXOTL_H
 
-#if USE_OTL
+#if wxExUSE_OTL
 #define OTL_ODBC
 #define OTL_STL
 //#define OTL_UNICODE
@@ -82,5 +82,5 @@ private:
   otl_connect m_Connect;
 };
 
-#endif // USE_OTL
+#endif // wxExUSE_OTL
 #endif

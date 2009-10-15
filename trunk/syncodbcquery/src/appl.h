@@ -9,7 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#define USE_OTL 1
+#define wxExUSE_OTL 1
 #include <wx/extension/app.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/statistics.h>
