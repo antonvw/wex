@@ -835,11 +835,12 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
         if (!dt.ParseDateTime(val, &end))
         {
-          wxLogError("Cannot sort, date not known format");
-          return;
+          SetItemData(i, 0);
         }
-
-        SetItemData(i, dt.GetTicks());
+        else
+        {
+          SetItemData(i, dt.GetTicks());
+        }
       }
       else
       {
