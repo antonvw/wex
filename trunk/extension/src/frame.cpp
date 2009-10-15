@@ -461,9 +461,7 @@ bool wxExFrame::OpenFile(
 
   if (stc != NULL)
   {
-    // Remove link flags;
-    const long new_flags = 0;
-    return stc->Open(filename, line_number, match, new_flags);
+    return stc->Open(filename, line_number, match, flags);
   }
 
   return false;

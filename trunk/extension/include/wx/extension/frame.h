@@ -111,13 +111,6 @@ public:
   /// Returns an STC, default returns the focused STC.
   virtual wxExSTC* GetSTC() {return GetFocusedSTC();};
 
-  /// Default opens the file using the GetFocusedSTC.
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    long flags = 0);
-
   /// If the window that has focus is a Grid, then returns that, 
   /// otherwise returns NULL.
   wxExGrid* GetFocusedGrid();
@@ -129,6 +122,13 @@ public:
   /// If the window that has focus is an STC, then returns that, 
   /// otherwise returns NULL.
   wxExSTC* GetFocusedSTC();
+
+  /// Default opens the file using the GetFocusedSTC.
+  virtual bool OpenFile(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long flags = 0);
 
 #if wxUSE_STATUSBAR
   /// Returns the status bar pane.
