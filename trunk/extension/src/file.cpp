@@ -75,6 +75,7 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
     {
       DoFileLoad();
       Close();
+      ResetContentsChanged();
       return true;
     }
   }
@@ -97,8 +98,8 @@ bool wxExFile::FileSave(const wxString filename)
 
   DoFileSave();
   MakeAbsolute();
-
   Close();
+  ResetContentsChanged();
 
   return true;
 }

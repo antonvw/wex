@@ -243,8 +243,6 @@ void wxExListViewFile::DoFileLoad(bool synced)
     ItemFromText(tkz.GetNextToken());
   }
 
-  m_ContentsChanged = false; // override behaviour from ItemFromText
-
   if (wxExApp::GetConfigBool("List/SortSync"))
     SortColumn(_("Modified"), SORT_KEEP);
   else
@@ -264,8 +262,6 @@ void wxExListViewFile::DoFileSave()
   {
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }
-
-  m_ContentsChanged = false;
 }
 
 wxExListViewFile::ListType wxExListViewFile::GetTypeTool(const wxExTool& tool)

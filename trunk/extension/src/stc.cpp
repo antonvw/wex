@@ -955,7 +955,6 @@ void wxExSTC::DoFileLoad(bool synced)
   }
 
   EmptyUndoBuffer();
-  SetSavePoint();
 
   if (!synced)
   {
@@ -984,8 +983,6 @@ void wxExSTC::DoFileSave()
 {
   const wxCharBuffer& buffer = GetTextRaw(); 
   Write(buffer.data(), buffer.length());
-
-  SetSavePoint();
 
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   wxExApp::Log(msg);
