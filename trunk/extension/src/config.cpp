@@ -43,7 +43,7 @@ wxExConfig::~wxExConfig()
     const wxVariant var = it->second;
 
     if (var.GetType() == "bool")
-      Write(it->first, var.GetBool());
+      Write(it->first, var.ReadBool());
     else if (var.GetType() == "long")
       Write(it->first, var.GetLong());
     else if (var.GetType() == "string")
@@ -69,5 +69,5 @@ const wxString wxExConfig::GetKeys() const
 
 void wxExConfig::Toggle(const wxString& key) 
 {
-  m_Values[key] = !m_Values[key].GetBool();
+  m_Values[key] = !m_Values[key].ReadBool();
 }

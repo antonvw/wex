@@ -37,29 +37,12 @@ public:
   /// Destructor, writes all keys.
  ~wxExConfig();
 
-  /// Gets the key as a long. If the key is not present,
-  /// it is added to the map.
-  long Get(const wxString& key, long default_value) {
-    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-    if (it != m_Values.end())
-    {
-      return it->second.GetLong();
-    }
-    else
-    {
-      const long config_value = Read(key, default_value);
-      m_Values.insert(std::make_pair(key, config_value));
-      return config_value;
-    }
-  };
-
-  /// Gets the key as a string. If the key is not present,
+  /// Reads the key as a string. If the key is not present,
   /// it is added to the map.
   /// This also works for comboboxes,
   /// as long as the values are separated by default row delimiter,
   /// as then it returns value before this delimiter.
-  const wxString Get(
+  const wxString Read(
     const wxString& key,
     const wxString& default_value = wxEmptyString,
     const wxChar field_separator = ',')	{
@@ -72,15 +55,15 @@ public:
      }
     else
     {
-      const wxString value = Read(key, default_value);
+      const wxString value = wxConfig::Read(key, default_value);
       m_Values.insert(std::make_pair(key, value));
       return value.BeforeFirst(field_separator);
     }
   };
 
-  /// Gets the key as a bool. If the key is not present,
+  /// Reads the key as a bool. If the key is not present,
   /// it is added to the map.
-  bool GetBool(const wxString& key, bool default_value = true) {
+  bool ReadBool(const wxString& key, bool default_value = true) {
     std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
 
     if (it != m_Values.end())
@@ -89,7 +72,24 @@ public:
     }
     else
     {
-      const bool config_value = ReadBool(key, default_value);
+      const bool config_value = wxConfig::ReadBool(key, default_value);
+      m_Values.insert(std::make_pair(key, config_value));
+      return config_value;
+    }
+  };
+
+  /// Reads the key as a long. If the key is not present,
+  /// it is added to the map.
+  long ReadLong(const wxString& key, long default_value) {
+    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
+
+    if (it != m_Values.end())
+    {
+      return it->second.GetLong();
+    }
+    else
+    {
+      const long config_value = wxConfig::Read(key, default_value);
       m_Values.insert(std::make_pair(key, config_value));
       return config_value;
     }

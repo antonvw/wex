@@ -261,7 +261,7 @@ wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(125, wxDefaultCoord));
 
-  checkbox->SetValue(m_Config->GetBool(m_ConfigGroup + text, false));
+  checkbox->SetValue(m_Config->ReadBool(m_ConfigGroup + text, false));
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -286,7 +286,7 @@ wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
   wxCheckListBox* box = new wxCheckListBox(parent,
     wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
 
-  const long value = m_Config->Get(m_ConfigGroup + text, 0);
+  const long value = m_Config->ReadLong(m_ConfigGroup + text, 0);
 
   int item = 0;
   for (
@@ -349,7 +349,7 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
         box->Check(item);
       }
     }
-    else if (m_Config->GetBool(m_ConfigGroup + *it))
+    else if (m_Config->ReadBool(m_ConfigGroup + *it))
     {
       box->Check(item);
     }
@@ -372,7 +372,7 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
     parent,
     new wxColourPickerWidget(parent,
       wxID_ANY,
-      m_Config->Get(m_ConfigGroup + text, wxExColourToLong(*wxWHITE))),
+      m_Config->ReadLong(m_ConfigGroup + text, wxExColourToLong(*wxWHITE))),
     text + ":",
     false); // do not expand
 }
@@ -383,7 +383,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
   wxComboBox* cb = new wxComboBox(parent, wxID_ANY);
   wxExComboBoxFromString(
     cb,
-    m_Config->Get(
+    m_Config->Read(
       m_ConfigGroup + text,
       wxEmptyString,
       '@')); // no delimiter!
@@ -406,7 +406,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   wxComboBox* cb = new wxComboBox(parent, ID_BROWSE_FOLDER + 1);
   wxExComboBoxFromString(
     cb,
-    m_Config->Get(
+    m_Config->Read(
       m_ConfigGroup + text,
       wxEmptyString,
       '@')); // no delimiter!
@@ -441,7 +441,7 @@ wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
 {
   wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
     wxID_ANY,
-    m_Config->Get(m_ConfigGroup + text),
+    m_Config->Read(m_ConfigGroup + text),
     wxDirSelectorPromptStr,
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
@@ -460,7 +460,7 @@ wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
 {
   wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
     wxID_ANY,
-    m_Config->Get(m_ConfigGroup + text),
+    m_Config->Read(m_ConfigGroup + text),
     wxFileSelectorPromptStr,
     wxFileSelectorDefaultWildcardStr,
     wxDefaultPosition,
@@ -479,12 +479,12 @@ wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
   wxFont font(
-    m_Config->Get(m_ConfigGroup + text + "/Size", 10),
+    m_Config->ReadLong(m_ConfigGroup + text + "/Size", 10),
     wxFONTFAMILY_DEFAULT,
     wxFONTSTYLE_NORMAL,
     wxFONTWEIGHT_NORMAL,
     false,
-    m_Config->Get(m_ConfigGroup + text + "/Name", "courier new"));
+    m_Config->Read(m_ConfigGroup + text + "/Name", "courier new"));
 
   wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
     wxID_ANY,
@@ -517,7 +517,7 @@ wxControl* wxExConfigDialog::AddRadioBox(wxWindow* parent,
   wxRadioBox* box = new wxRadioBox(parent,
     wxID_ANY, text, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
 
-  box->SetStringSelection(choices[m_Config->Get(m_ConfigGroup + text, 0)]);
+  box->SetStringSelection(choices[m_Config->ReadLong(m_ConfigGroup + text, 0)]);
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -545,9 +545,9 @@ wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
     style,
     min,
     max,
-    m_Config->Get(m_ConfigGroup + text, min));
+    m_Config->ReadLong(m_ConfigGroup + text, min));
 
-  spinctrl->SetValue(m_Config->Get(m_ConfigGroup + text, min));
+  spinctrl->SetValue(m_Config->ReadLong(m_ConfigGroup + text, min));
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
@@ -572,9 +572,9 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
     min,
     max,
     inc,
-    m_Config->Get(m_ConfigGroup + text, min));
+    m_Config->ReadLong(m_ConfigGroup + text, min));
 
-  spinctrl->SetValue(m_Config->Get(m_ConfigGroup + text, min));
+  spinctrl->SetValue(m_Config->ReadLong(m_ConfigGroup + text, min));
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
@@ -584,8 +584,8 @@ wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
 {
   const wxString value =
     (!is_numeric ?
-        m_Config->Get(m_ConfigGroup + text):
-        wxString::Format("%ld", m_Config->Get(m_ConfigGroup + text, 0)));
+        m_Config->Read(m_ConfigGroup + text):
+        wxString::Format("%ld", m_Config->ReadLong(m_ConfigGroup + text, 0)));
 
   long actual_style = style;
   int actual_width = width;
@@ -742,13 +742,13 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         {
           // The Get gets text before the ','!
           m_Config->GetFindReplaceData()->SetFindString(
-            m_Config->Get(m_Config->GetFindReplaceData()->GetTextFindWhat()));
+            m_Config->Read(m_Config->GetFindReplaceData()->GetTextFindWhat()));
         }
         else if (cb->GetName() == m_Config->GetFindReplaceData()->GetTextReplaceWith())
         {
           // The Get gets text before the ','!
           m_Config->GetFindReplaceData()->SetReplaceString(
-            m_Config->Get(m_Config->GetFindReplaceData()->GetTextReplaceWith()));
+            m_Config->Read(m_Config->GetFindReplaceData()->GetTextReplaceWith()));
         }
       }
       }

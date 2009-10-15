@@ -50,16 +50,16 @@ void wxExTestFixture::testMethods()
   // test wxExConfig
   CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val");
   CPPUNIT_ASSERT(m_Config->Get("keylong", 12) == 12);
-  CPPUNIT_ASSERT(m_Config->GetBool("keybool", true));
+  CPPUNIT_ASSERT(m_Config->ReadBool("keybool", true));
   CPPUNIT_ASSERT(m_Config->GetFindReplaceData() != NULL);
   m_Config->Set("keystring", "val2");
   CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val2");
   m_Config->Set("keylong", 15);
   CPPUNIT_ASSERT(m_Config->Get("keylong", 7) == 15);
   m_Config->Set("keybool", false);
-  CPPUNIT_ASSERT(m_Config->GetBool("keybool", true) == false);
+  CPPUNIT_ASSERT(m_Config->ReadBool("keybool", true) == false);
   m_Config->Toggle("keybool");
-  CPPUNIT_ASSERT(m_Config->GetBool("keybool", false));
+  CPPUNIT_ASSERT(m_Config->ReadBool("keybool", false));
   m_Config->Set("Author", "myauthor");
   CPPUNIT_ASSERT(m_Config->Get("Author", "yourauthor") == "myauthor");
 

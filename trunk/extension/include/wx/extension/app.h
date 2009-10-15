@@ -40,17 +40,17 @@ public:
 
   /// Gets key as a long.
   static long GetConfig(const wxString& key, long default_value)
-    {return m_Config->Get(key, default_value);}
+    {return m_Config->ReadLong(key, default_value);}
 
   /// Gets key as a string.
   static const wxString GetConfig(const wxString& key,
     const wxString& default_value = wxEmptyString,
     const wxChar field_separator = ',')
-    {return m_Config->Get(key, default_value, field_separator);}
+    {return m_Config->Read(key, default_value, field_separator);}
 
   /// Gets key as a bool.
   static bool GetConfigBool(const wxString& key, bool default_value = true)
-    {return m_Config->GetBool(key, default_value);}
+    {return m_Config->ReadBool(key, default_value);}
 
   /// Gets the config.
   static wxExConfig* GetConfig() {return m_Config;};

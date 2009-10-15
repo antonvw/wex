@@ -35,7 +35,7 @@ enum
   /// Should be used when a long value can have a short set of possible individual values.
   CONFIG_RADIOBOX,
 
-  CONFIG_CHECKBOX,       ///< a checkbox (use GetBool to retrieve value)
+  CONFIG_CHECKBOX,       ///< a checkbox (use ReadBool to retrieve value)
   CONFIG_COLOUR,         ///< a colour button
   CONFIG_COMBOBOX,       ///< a combobox
   CONFIG_COMBOBOXDIR,    ///< a combobox with a browse button
