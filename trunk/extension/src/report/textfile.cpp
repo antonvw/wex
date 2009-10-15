@@ -370,7 +370,7 @@ bool Recordset::ExecQuery(const wxString& query)
 void Recordset::UpdateTextFileFromQuery()
 {
   m_TextFile->GoToLine(m_TextFile->GetCurrentLine() + 1);
-  m_TextFile->WriteComment(QueryRunTimeText() + wxDateTime::Now().Format(EX_TIMESTAMP_FORMAT));
+  m_TextFile->WriteComment(QueryRunTimeText() + wxDateTime::Now().FormatISOCombined(' '));
   m_TextFile->WriteComment("USING ODBC DATABASE: " + wxExApp::GetConfig(_("Datasource")));
 
   // Get columns.

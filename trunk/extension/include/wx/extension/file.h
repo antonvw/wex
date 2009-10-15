@@ -36,8 +36,7 @@ public:
   /// Gets the modification time.
   /// From wxFileName class GetModificationTime is available as well,
   /// this one returns string and only uses the stat member, and is fast.
-  const wxString GetModificationTime(
-    const wxString& format = wxDefaultDateTimeFormat) const;
+  const wxString GetModificationTime() const;
 
   /// Returns true if the stat is okay (last update was okay).
   bool IsOk() const {return m_IsOk;};

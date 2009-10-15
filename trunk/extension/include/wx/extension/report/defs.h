@@ -17,8 +17,6 @@
 #define NUMBER_RECENT_FILES 25
 #define NUMBER_RECENT_PROJECTS 25
 
-#define EX_TIMESTAMP_FORMAT "%d %B %Y %H:%M:%S"
-
 // Commands supported by wxextension report.
 enum
 {

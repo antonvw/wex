@@ -159,7 +159,7 @@ void wxExListItemWithFileName::Update()
 void wxExListItemWithFileName::UpdateRevisionList(const wxExRCS& rcs)
 {
   SetColumnText(_("Revision"), rcs.GetRevisionNumber());
-  SetColumnText(_("Date"), rcs.GetRevisionTime().Format());
+  SetColumnText(_("Date"), rcs.GetRevisionTime().FormatISOCombined(' '));
   SetColumnText(_("Initials"), rcs.GetUser());
   SetColumnText(_("Revision Comment"), rcs.GetDescription());
 }

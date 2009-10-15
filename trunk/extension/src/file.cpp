@@ -200,9 +200,9 @@ void wxExFileName::SetLexer(
   }
 }
 
-const wxString wxExStat::GetModificationTime(const wxString& format) const
+const wxString wxExStat::GetModificationTime() const
 {
-  return wxDateTime(st_mtime).Format(format);
+  return wxDateTime(st_mtime).FormatISOCombined(' ');
 }
 
 bool wxExStat::Sync() 
