@@ -831,9 +831,8 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
       if (!val.empty())
       {
         wxDateTime dt;
-        wxString::const_iterator end;
 
-        if (!dt.ParseDateTime(val, &end))
+        if (!dt.ParseISOCombined(val, ' '))
         {
           SetItemData(i, 0);
         }
