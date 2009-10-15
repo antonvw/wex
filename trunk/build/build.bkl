@@ -23,13 +23,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set var="DEFAULT_CXXFLAGS">-Wno-write-strings</set>
   
   <!-- options -->
-  <option name="PORTABLE">
-     <values>0,1</values>
-     <values-description>Uses registry etc.,Uses local files only</values-description>
-     <default-value>0</default-value>
-     <description>Use portable build of wxex library?</description>
-  </option>
-        
   <option name="USE_EMBEDDED_SQL">
      <values>0,1</values>
      <values-description>No Embedded SQL,Uses Embedded SQL</values-description>
@@ -44,24 +37,31 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
      <description>Use images in notebooks?</description>
   </option>
 
+  <option name="USE_PORTABLE">
+     <values>0,1</values>
+     <values-description>Uses registry etc.,Uses local files only</values-description>
+     <default-value>0</default-value>
+     <description>Use portable build of wxex library?</description>
+  </option>
+        
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
   <!-- Todo: there is a bug (in bakefile), when making one var of these, bakefile hangs,
               doing it as is written here, only uses the last line -->
-  <set var="VAR_PORTABLE" cond="PORTABLE=='1'">EX_PORTABLE</set>
-  <set var="VAR_PORTABLE" cond="PORTABLE=='0'"></set>
-  
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
-  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">USE_EMBEDDED_SQL</set>
+  <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">wxExUSE_EMBEDDED_SQL</set>
   
   <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
-  <set var="VAR_USE_OTL" cond="USE_OTL=='1'">USE_OTL</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='1'">wxExUSE_OTL</set>
+  
+  <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
+  <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='0'"></set>
   
   <!-- libraries -->
   <lib id="wxex" template="wx-lib,wxlike">
     <libname>wxex09</libname>
     
-    <define>$(VAR_PORTABLE)</define>
     <define>$(VAR_USE_OTL)</define>
+    <define>$(VAR_USE_PORTABLE)</define>
     
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
@@ -131,9 +131,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <lib id="wxex-rep" template="wx-lib,wxlike">
     <libname>wxex-rep09</libname>
     
-    <define>$(VAR_PORTABLE)</define>
     <define>$(VAR_USE_EMBEDDED_SQL)</define>
     <define>$(VAR_USE_OTL)</define>
+    <define>$(VAR_USE_PORTABLE)</define>
     
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
@@ -289,8 +289,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- applications -->
   <exe id="syncedit" template="wxgui,wxlike">
-    <define>$(VAR_PORTABLE)</define>
     <define>$(VAR_USE_OTL)</define>
+    <define>$(VAR_USE_PORTABLE)</define>
     
     <sources>../syncedit/src/appl.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
