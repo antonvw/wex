@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          config.cpp
-* Purpose:       Implementation of wxWidgets config extension classes
+* Purpose:       Implementation of wxExtension config class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

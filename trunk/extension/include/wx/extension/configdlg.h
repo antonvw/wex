@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          configdlg.h
-* Purpose:       Declaration of wxWidgets config dialog classes
+* Purpose:       Declaration of wxExtension config dialog classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

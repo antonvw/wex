@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          defs.h
-* Purpose:       Common defs for all wxWidgets extension classes
+* Purpose:       Common defs for all wxExtension classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          configdlg.cpp
-* Purpose:       Implementation of wxWidgets config dialog classes
+* Purpose:       Implementation of wxExtension config dialog classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

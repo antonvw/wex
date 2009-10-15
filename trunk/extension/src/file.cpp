@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          file.cpp
-* Purpose:       Implementation of wxWidgets file extension classes
+* Purpose:       Implementation of wxExtension file classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

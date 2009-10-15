@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          config.h
-* Purpose:       Declaration of wxWidgets config extension classes
+* Purpose:       Declaration of wxExtension config class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

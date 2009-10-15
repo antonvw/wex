@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          extension.h
-* Purpose:       Include file for most wxWidgets extension classes
+* Purpose:       Include file for most wxExtension classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

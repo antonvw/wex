@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          file.h
-* Purpose:       Declaration of wxWidgets file extension classes
+* Purpose:       Declaration of wxExtension file classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
