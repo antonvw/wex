@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          util.cpp
-* Purpose:       Implementation of wxextension report utility functions and classes
+* Purpose:       Implementation of wxExtension report utility functions and classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

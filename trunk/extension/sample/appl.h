@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          appl.h
-* Purpose:       Declaration of sample classes for wxextension
+* Purpose:       Declaration of sample classes for wxExtension
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          util.h
-* Purpose:       Include file for wxextension utility functions
+* Purpose:       Include file for wxExtension utility functions
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          test.cpp
-* Purpose:       Implementation for wxextension cpp unit testing
+* Purpose:       Implementation for wxExtension cpp unit testing
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 * Created:       za 17 jan 2009 11:51:20 CET
@@ -137,7 +137,7 @@ void wxExAppTestFixture::testMethods()
     wxLogMessage("No lexers available");
   }
 
-  CPPUNIT_ASSERT(wxExLog("hello from wxextension test"));
+  CPPUNIT_ASSERT(wxExLog("hello from wxExtension test"));
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("t     es   t") == "t es t");
@@ -149,7 +149,7 @@ void wxExAppTestFixture::tearDown()
 }
 
 wxExTestSuite::wxExTestSuite()
-  : CppUnit::TestSuite("wxextension test suite")
+  : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testConstructors",

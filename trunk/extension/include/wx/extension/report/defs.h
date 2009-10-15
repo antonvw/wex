@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          defs.h
-* Purpose:       Common definitions for wxextension report
+* Purpose:       Common definitions for wxExtension report
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -17,7 +17,7 @@
 #define NUMBER_RECENT_FILES 25
 #define NUMBER_RECENT_PROJECTS 25
 
-// Commands supported by wxextension report.
+// Commands supported by wxExtension report.
 enum
 {
   ID_EXTENSION_REPORT_LOWEST = ID_TOOL_FIRST_USER + 1,

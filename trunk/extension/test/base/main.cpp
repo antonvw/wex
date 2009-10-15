@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          main.cpp
-* Purpose:       main for wxextension cpp unit testing
+* Purpose:       main for wxExtension cpp unit testing
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id: main.cpp 406 2009-02-27 18:47:53Z antonvw $
 * Created:       za 17 jan 2009 11:51:20 CET

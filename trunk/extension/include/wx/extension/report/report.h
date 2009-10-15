@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          report.h
-* Purpose:       Include file for most wxextension report classes
+* Purpose:       Include file for most wxExtension report classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
