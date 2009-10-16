@@ -858,7 +858,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
 
     case ID_SORT_SYNC:
-      event.Check(wxConfigBase::Get()->ReadBool("List/SortSync"));
+      event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
     break;
 
     case ID_VIEW_ASCII_TABLE:

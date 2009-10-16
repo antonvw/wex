@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          tool.cpp
-* Purpose:       Implementation of wxExTool classes
+* Purpose:       Implementation of wxExTool class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/extension/tool.h>
 
 std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
