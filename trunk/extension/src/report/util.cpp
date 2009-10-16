@@ -229,7 +229,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       }
 
       lv->SetSingleStyle(view);
-      wxExApp::GetConfig()->Set("List/Style", view);
+      wxExApp::GetConfig()->Write("List/Style", view);
     }
     else
     {
@@ -519,7 +519,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
 
       if (wxExComboBoxToString(this, text))
       {
-        wxExApp::GetConfig()->Set("FindReplace/FindStrings", text);
+        wxExApp::GetConfig()->Write("FindReplace/FindStrings", text);
         Clear(); // so wxExComboBoxFromString can append again
         wxExComboBoxFromString(this, text);
         SetValue(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());

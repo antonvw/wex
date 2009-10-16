@@ -74,7 +74,7 @@ public:
 
   /// Sets key.
   static void SetConfig(const wxString& key, const wxVariant& value)
-    {m_Config->Set(key, value);}
+    {m_Config->Write(key, value);}
 
   /// Sets logging as specified.
   /// If the logging is true and the logfile does not exist, it is created.

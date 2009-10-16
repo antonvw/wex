@@ -103,7 +103,7 @@ public:
   const wxString GetKeys() const;
 
   /// Sets key to value.
-  void Set(const wxString& key, const wxVariant& value) {
+  void Write(const wxString& key, const wxVariant& value) {
     m_Values[key] = value;};
 
   /// Toggles boolean key value.

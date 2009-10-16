@@ -432,7 +432,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       1,
       65536)) > 0)
     {
-      wxExApp::GetConfig()->Set(_("Buffer Size"), val);
+      wxExApp::GetConfig()->Write(_("Buffer Size"), val);
     }
     }
     break;
@@ -925,7 +925,7 @@ void MyFrame::TimerDialog()
   // If cancelled, -1 is returned.
   if (val == -1) return;
 
-  wxExApp::GetConfig()->Set(_("Timer"), val);
+  wxExApp::GetConfig()->Write(_("Timer"), val);
 
   if (val > 0)
   {

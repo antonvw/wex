@@ -657,7 +657,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + cb->GetName(), cb->GetValue());
+      m_Config->Write(m_ConfigGroup + cb->GetName(), cb->GetValue());
       }
       break;
 
@@ -681,7 +681,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         item++;
       }
 
-      m_Config->Set(m_ConfigGroup + clb->GetName(), value);
+      m_Config->Write(m_ConfigGroup + clb->GetName(), value);
       }
       break;
 
@@ -711,7 +711,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         }
         else
         {
-          m_Config->Set(m_ConfigGroup + *b, clb->IsChecked(item));
+          m_Config->Write(m_ConfigGroup + *b, clb->IsChecked(item));
         }
 
         item++;
@@ -723,7 +723,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_COLOUR:
       {
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
-      m_Config->Set(
+      m_Config->Write(
         m_ConfigGroup + gcb->GetName(),
         wxExColourToLong(gcb->GetColour()));
       }
@@ -736,7 +736,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       wxString text;
       if (wxExComboBoxToString(cb, text, ',', it->m_MaxItems))
       {
-        m_Config->Set(m_ConfigGroup + cb->GetName(), text);
+        m_Config->Write(m_ConfigGroup + cb->GetName(), text);
 
         if (cb->GetName() == m_Config->GetFindReplaceData()->GetTextFindWhat())
         {
@@ -757,24 +757,24 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_DIRPICKERCTRL:
       {
       wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + pc->GetName(), pc->GetPath());
+      m_Config->Write(m_ConfigGroup + pc->GetName(), pc->GetPath());
       }
       break;
 
     case CONFIG_FILEPICKERCTRL:
       {
       wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + pc->GetName(), pc->GetPath());
+      m_Config->Write(m_ConfigGroup + pc->GetName(), pc->GetPath());
       }
       break;
 
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)it->m_Control;
-      m_Config->Set(
+      m_Config->Write(
         m_ConfigGroup + pc->GetName() + "/Size",
         pc->GetSelectedFont().GetPointSize());
-      m_Config->Set(
+      m_Config->Write(
         m_ConfigGroup + pc->GetName() + "/Name",
         pc->GetSelectedFont().GetFaceName());
       }
@@ -783,7 +783,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_INT:
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + tc->GetName(), atol(tc->GetValue().c_str()));
+      m_Config->Write(m_ConfigGroup + tc->GetName(), atol(tc->GetValue().c_str()));
       }
       break;
 
@@ -798,7 +798,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       {
         if (b->second == rb->GetStringSelection())
         {
-          m_Config->Set(m_ConfigGroup + rb->GetName(), b->first);
+          m_Config->Write(m_ConfigGroup + rb->GetName(), b->first);
         }
       }
       }
@@ -810,7 +810,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_STRING:
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + tc->GetName(), tc->GetValue());
+      m_Config->Write(m_ConfigGroup + tc->GetName(), tc->GetValue());
       if (tc->GetName() == _("Include directory"))
       {
         path_involved = true;
@@ -821,14 +821,14 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_SPINCTRL:
       {
       wxSpinCtrl* sc = (wxSpinCtrl*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + sc->GetName(), sc->GetValue());
+      m_Config->Write(m_ConfigGroup + sc->GetName(), sc->GetValue());
       }
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
       {
       wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)it->m_Control;
-      m_Config->Set(m_ConfigGroup + sc->GetName(), sc->GetValue());
+      m_Config->Write(m_ConfigGroup + sc->GetName(), sc->GetValue());
       }
       break;
 

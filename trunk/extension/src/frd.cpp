@@ -45,13 +45,13 @@ wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
 
 wxExFindReplaceData::~wxExFindReplaceData()
 {
-  m_Config->Set(m_TextFindWhat, GetFindString());
-  m_Config->Set(m_TextReplaceWith, GetReplaceString());
+  m_Config->Write(m_TextFindWhat, GetFindString());
+  m_Config->Write(m_TextReplaceWith, GetReplaceString());
 
-  m_Config->Set(m_TextMatchCase, MatchCase());
-  m_Config->Set(m_TextMatchWholeWord, MatchWord());
-  m_Config->Set(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
-  m_Config->Set(m_TextRegEx, m_IsRegularExpression);
+  m_Config->Write(m_TextMatchCase, MatchCase());
+  m_Config->Write(m_TextMatchWholeWord, MatchWord());
+  m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
+  m_Config->Write(m_TextRegEx, m_IsRegularExpression);
 }
 
 void wxExFindReplaceData::CreateAndFill(
