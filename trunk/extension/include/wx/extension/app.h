@@ -68,7 +68,6 @@ public:
   static void ToggleConfig(const wxString& key);
 private:
   static bool m_Logging;
-  static wxConfigBase* m_Config;
   static wxExFindReplaceData* m_FindReplaceData;
   static wxExLexers* m_Lexers;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE

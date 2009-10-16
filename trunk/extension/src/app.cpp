@@ -44,7 +44,6 @@ public:
 
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
-wxConfigBase* wxExApp::m_Config = NULL;
 wxExFindReplaceData* wxExApp::m_FindReplaceData = NULL;
 wxExLexers* wxExApp::m_Lexers = NULL;
 wxLocale wxExApp::m_Locale;
@@ -63,9 +62,6 @@ int wxExApp::OnExit()
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;
 #endif
-
-  // Should be the last, other destructors might write to the config.
-  delete m_Config;
 
   return wxApp::OnExit();
 }
@@ -114,8 +110,9 @@ bool wxExApp::OnInit()
   }
 
   // Now construct the config, as most classes use it.
+  wxExConfig* config;
 #ifdef wxExUSE_PORTABLE
-  m_Config = new wxExConfig(
+  config = new wxExConfig(
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
       GetAppName() + wxString(".cfg")).GetFullPath(),
@@ -123,10 +120,11 @@ bool wxExApp::OnInit()
 #else
   // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
   // (ignored on non-Unix system)
-  m_Config = new wxExConfig(
+  config = new wxExConfig(
     wxEmptyString,
     wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
+  wxConfigBase::Set(config);
 
   // And construct and read the lexers.
   m_Lexers = new wxExLexers(wxExFileName(
@@ -140,7 +138,7 @@ bool wxExApp::OnInit()
 
   m_Lexers->Read();
 
-  m_FindReplaceData = new wxExFindReplaceData(m_Config);
+  m_FindReplaceData = new wxExFindReplaceData(config);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
@@ -183,6 +181,6 @@ bool wxExApp::SetLogging(bool logging)
 
 void wxExApp::ToggleConfig(const wxString& key)
 {
-  const bool val = m_Config->ReadBool(key, true);
-  m_Config->Write(key, !val);
+  const bool val = wxConfigBase::Get()->ReadBool(key, true);
+  wxConfigBase::Get()->Write(key, !val);
 }
