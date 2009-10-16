@@ -33,10 +33,10 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxString h_copyright = "Copyright: "; 
   const wxString h_license   = "License:   "; 
 
-  const wxString author = m_Config->Get(m_TextAuthor);
-  const wxString license = m_Config->Get(m_TextLicense);
-  const wxString email = m_Config->Get(m_TextEmail);
-  const wxString purpose = m_Config->Get(m_TextPurpose);
+  const wxString author = m_Config->Read(m_TextAuthor);
+  const wxString license = m_Config->Read(m_TextLicense);
+  const wxString email = m_Config->Read(m_TextEmail);
+  const wxString purpose = m_Config->Read(m_TextPurpose);
 
   const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
@@ -101,16 +101,16 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
-  if (m_Config->Get(m_TextAuthor).empty())
+  if (m_Config->Read(m_TextAuthor).empty())
   {
     v.push_back(wxExConfigItem(m_TextAuthor, wxEmptyString, 0, true));
 
-    if (m_Config->Get(m_TextEmail).empty())
+    if (m_Config->Read(m_TextEmail).empty())
     {
       v.push_back(wxExConfigItem(m_TextEmail));
     }
 
-    if (m_Config->Get(m_TextLicense).empty())
+    if (m_Config->Read(m_TextLicense).empty())
     {
       v.push_back(wxExConfigItem(m_TextLicense));
     }

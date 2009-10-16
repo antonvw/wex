@@ -61,9 +61,9 @@ bool wxExOTL::Logon(
   try
   {
     const wxString connect =
-      config->Get(_("User")) + "/" +
-      config->Get(_("Password")) + "@" +
-      config->Get(_("Datasource"));
+      config->Read(_("User")) + "/" +
+      config->Read(_("Password")) + "@" +
+      config->Read(_("Datasource"));
 
     m_Connect.rlogon(
       connect.c_str(),
@@ -76,7 +76,7 @@ bool wxExOTL::Logon(
   {
     wxLogError("Exception: '%s' while logon to database: %s",
       p.msg,
-      config->Get(_("Datasource")).c_str());
+      config->Read(_("Datasource")).c_str());
   }
 
   return false;

@@ -43,7 +43,7 @@ wxExConfig::~wxExConfig()
     const wxVariant var = it->second;
 
     if (var.GetType() == "bool")
-      Write(it->first, var.ReadBool());
+      Write(it->first, var.GetBool());
     else if (var.GetType() == "long")
       Write(it->first, var.GetLong());
     else if (var.GetType() == "string")

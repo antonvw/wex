@@ -33,8 +33,8 @@ wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
 
   // Start with this one, as it is used by SetFindString.
   SetIsRegularExpression(m_Config->ReadBool(m_TextRegEx));
-  SetFindString(m_Config->Get(m_TextFindWhat));
-  SetReplaceString(m_Config->Get(m_TextReplaceWith));
+  SetFindString(m_Config->Read(m_TextFindWhat));
+  SetReplaceString(m_Config->Read(m_TextReplaceWith));
 
   // This set determines what fields are placed on the Find Files dialogs
   // as a list of checkboxes.
