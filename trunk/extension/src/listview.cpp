@@ -191,15 +191,7 @@ wxExListView::wxExListView(wxWindow* parent,
     }
   }
 
-  wxFont font(
-    wxConfigBase::Get()->ReadLong(_("List Font") + "/Size", 8),
-    wxFONTFAMILY_DEFAULT,
-    wxFONTSTYLE_NORMAL,
-    wxFONTWEIGHT_NORMAL,
-    false,
-    wxConfigBase::Get()->Read(_("List Font") + "/Name"));
-
-  SetFont(font);
+  SetFont(wxConfigBase::Get()->ReadObject(_("List Font"), wxFont()));
 
   wxAcceleratorEntry entries[7];
 

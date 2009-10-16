@@ -471,13 +471,7 @@ ComboBox::ComboBox(
   wxAcceleratorTable accel(accels, entries);
   SetAcceleratorTable(accel);
 
-  const wxFont font(
-    wxConfigBase::Get()->ReadLong("FindFont", 8),
-    wxFONTFAMILY_DEFAULT,
-    wxFONTSTYLE_NORMAL,
-    wxFONTWEIGHT_NORMAL);
-
-  SetFont(font);
+  SetFont(wxConfigBase::Get()->ReadObject("FindFont", wxFont()));
 
   wxExComboBoxFromString(this, wxConfigBase::Get()->Read("FindReplace/FindStrings"));
 

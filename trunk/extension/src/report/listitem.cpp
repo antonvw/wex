@@ -122,15 +122,7 @@ void wxExListItemWithFileName::Update()
     wxFONTSTYLE_ITALIC: 
     wxFONTSTYLE_NORMAL);
 
-  wxFont font(
-    wxConfigBase::Get()->ReadLong(_("List Font") + "/Size", 10),
-    wxFONTFAMILY_DEFAULT,
-    fontstyle,
-    wxFONTWEIGHT_NORMAL,
-    false,
-    wxConfigBase::Get()->Read(_("List Font") + "/Name", "courier new"));
-
-  SetFont(font);
+  SetFont(wxConfigBase::Get()->ReadObject(_("List Font"), wxFont()));
 
   if (!GetListView()->SetItem(*this))
   {

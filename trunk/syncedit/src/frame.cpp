@@ -602,14 +602,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
         v,
         _("Set List Font")).ShowModal() == wxID_OK)
       {
-        wxFont font(
-          wxConfigBase::Get()->ReadLong(wxString(_("List Font")) + "/Size", 10),
-          wxFONTFAMILY_DEFAULT,
-          wxFONTSTYLE_NORMAL,
-          wxFONTWEIGHT_NORMAL,
-          false,
-          wxConfigBase::Get()->Read(wxString(_("List Font")) + "/Name"));
-
+        const wxFont font(wxConfigBase::Get()->ReadObject(_("List Font"), wxFont()));
         wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
         wxExForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
         m_History->SetFont(font);

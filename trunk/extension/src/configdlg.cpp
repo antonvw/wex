@@ -472,17 +472,9 @@ wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
 wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
-  wxFont font(
-    m_Config->ReadLong(m_ConfigGroup + text + "/Size", 10),
-    wxFONTFAMILY_DEFAULT,
-    wxFONTSTYLE_NORMAL,
-    wxFONTWEIGHT_NORMAL,
-    false,
-    m_Config->Read(m_ConfigGroup + text + "/Name", "courier new"));
-
   wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
     wxID_ANY,
-    font,
+    m_Config->ReadObject(m_ConfigGroup + text, wxFont()),
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
 
@@ -763,12 +755,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)it->m_Control;
-      m_Config->Write(
-        m_ConfigGroup + pc->GetName() + "/Size",
-        pc->GetSelectedFont().GetPointSize());
-      m_Config->Write(
-        m_ConfigGroup + pc->GetName() + "/Name",
-        pc->GetSelectedFont().GetFaceName());
+      m_Config->Write(m_ConfigGroup + pc->GetName(), pc->GetSelectedFont());
       }
       break;
 
