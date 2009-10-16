@@ -118,11 +118,13 @@ void wxExListItemWithFileName::Update()
   // SetData does not work, as list items are constructed/destructed a lot.
   GetListView()->SetItemData(GetId(), m_Statistics.GetStat().IsReadOnly());
 
-  const int fontstyle = (m_Statistics.GetStat().IsReadOnly() ? 
-    wxFONTSTYLE_ITALIC: 
-    wxFONTSTYLE_NORMAL);
+  wxFont font(wxConfigBase::Get()->ReadObject(_("List Font"), wxFont()));
 
-  SetFont(wxConfigBase::Get()->ReadObject(_("List Font"), wxFont()));
+  font.SetStyle((m_Statistics.GetStat().IsReadOnly() ? 
+    wxFONTSTYLE_ITALIC: 
+    wxFONTSTYLE_NORMAL));
+
+  SetFont(font);
 
   if (!GetListView()->SetItem(*this))
   {
