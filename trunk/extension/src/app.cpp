@@ -12,10 +12,35 @@
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
-#include <wx/extension/config.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
+
+/// Offers a general configuration.
+#ifdef wxExUSE_PORTABLE
+#include <wx/fileconf.h>
+class wxExConfig : public wxFileConfig
+#else
+#include <wx/config.h>
+class wxExConfig : public wxConfig
+#endif
+{
+public:
+  /// Default constructor.
+  wxExConfig(
+    const wxString& filename = wxEmptyString,
+    long style = 0)
+#ifdef wxExUSE_PORTABLE
+  : wxFileConfig(
+#else
+  : wxConfig(
+#endif
+      wxEmptyString,
+      wxEmptyString,
+      filename,
+      wxEmptyString,
+      style) {}
+};
 
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
