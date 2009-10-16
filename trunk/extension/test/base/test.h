@@ -78,7 +78,7 @@ public:
   /// Test timing of methods.
   void testTimingConfig();
 private:
-  wxExConfig* m_Config; ///< testing wxExConfig
+  wxConfig* m_Config; ///< testing wxConfig
   wxExFile* m_File; ///< testing wxExFile
   wxExFileName* m_FileName; ///< testing wxExFileName
   wxExFileNameStatistics* m_FileNameStatistics; ///< testing wxExFileNameStatistics
