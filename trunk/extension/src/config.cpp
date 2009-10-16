@@ -69,5 +69,5 @@ const wxString wxExConfig::GetKeys() const
 
 void wxExConfig::Toggle(const wxString& key) 
 {
-  m_Values[key] = !m_Values[key].ReadBool();
+  m_Values[key] = !m_Values[key].GetBool();
 }
