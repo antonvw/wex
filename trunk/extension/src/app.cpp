@@ -58,12 +58,15 @@ int wxExApp::OnExit()
   wxExSTC::CleanUp();
 #endif
 
-  delete m_Lexers;
-  delete m_Config;
   delete m_FindReplaceData;
+  delete m_Lexers;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;
 #endif
+
+  // Should be the last, other destructors might write to the config.
+  delete m_Config;
+
   return wxApp::OnExit();
 }
 
