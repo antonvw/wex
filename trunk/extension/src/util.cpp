@@ -160,11 +160,6 @@ bool wxExComboBoxToString(
 
 #endif // wxUSE_GUI
 
-long wxExColourToLong(const wxColour& c)
-{
-  return c.Red() | (c.Green() << 8) | (c.Blue() << 16);
-}
-
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
   return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));

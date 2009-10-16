@@ -36,9 +36,6 @@ bool wxExClipboardAdd(const wxString& text);
 /// Gets data from the clipboard.
 const wxString wxExClipboardGet();
 
-/// Converts a colour (it's red, green, blue components) to a long.
-long wxExColourToLong(const wxColour& c);
-
 /// Adds an ellipses after text.
 const wxString wxExEllipsed(
   const wxString& text,

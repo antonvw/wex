@@ -836,8 +836,8 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet()
 {
-  CallTipSetBackground(wxConfigBase::Get()->ReadLong(
-    GetConfigKeyBase() + _("CallTip"), wxExColourToLong(wxColour("YELLOW"))));
+  CallTipSetBackground(wxConfigBase::Get()->ReadObject(
+    GetConfigKeyBase() + _("CallTip"), wxColour("YELLOW")));
 
   SetEdgeColumn(wxConfigBase::Get()->ReadLong(GetConfigKeyBase() + _("Edge column"), 80)); // see also lexer
   SetEdgeMode(wxConfigBase::Get()->ReadLong(GetConfigKeyBase() + _("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);

@@ -19,7 +19,6 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h> // for PathListInit
-#include <wx/extension/util.h> // for wxExColourToLong etc.
 
 using namespace std;
 
@@ -373,7 +372,7 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
     parent,
     new wxColourPickerWidget(parent,
       wxID_ANY,
-      m_Config->ReadLong(m_ConfigGroup + text, wxExColourToLong(*wxWHITE))),
+      m_Config->ReadObject(m_ConfigGroup + text, *wxWHITE)),
     text + ":",
     false); // do not expand
 }
@@ -718,9 +717,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_COLOUR:
       {
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
-      m_Config->Write(
-        m_ConfigGroup + gcb->GetName(),
-        wxExColourToLong(gcb->GetColour()));
+      m_Config->Write(m_ConfigGroup + gcb->GetName(), gcb->GetColour());
       }
       break;
 
