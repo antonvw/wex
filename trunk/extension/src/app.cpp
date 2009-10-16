@@ -146,3 +146,9 @@ bool wxExApp::SetLogging(bool logging)
 
   return m_Logging;
 }
+
+void wxExApp::ToggleConfig(const wxString& key)
+{
+  const bool val = m_Config->ReadBool(key, true);
+  m_Config->Write(key, !val);
+}

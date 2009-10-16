@@ -34,40 +34,4 @@ wxExConfig::wxExConfig(
 wxExConfig::~wxExConfig()
 {
   delete m_FindReplaceData;
-
-  for (
-    map<wxString, wxVariant>::const_iterator it = m_Values.begin();
-    it != m_Values.end();
-    ++it)
-  {
-    const wxVariant var = it->second;
-
-    if (var.GetType() == "bool")
-      Write(it->first, var.GetBool());
-    else if (var.GetType() == "long")
-      Write(it->first, var.GetLong());
-    else if (var.GetType() == "string")
-      Write(it->first, var.GetString());
-    else wxFAIL;
-  }
-}
-
-const wxString wxExConfig::GetKeys() const
-{
-  wxString text;
-
-  for (
-    map<wxString, wxVariant>::const_iterator it = m_Values.begin();
-    it != m_Values.end();
-    ++it)
-  {
-    text += it->first + "\t" + it->second.GetString() + "\n";
-  }
-
-  return text;
-}
-
-void wxExConfig::Toggle(const wxString& key) 
-{
-  m_Values[key] = !m_Values[key].GetBool();
 }

@@ -73,7 +73,11 @@ public:
     else           return false;};
 
   /// Sets key.
-  static void SetConfig(const wxString& key, const wxVariant& value)
+  static void SetConfig(const wxString& key, bool value)
+    {m_Config->Write(key, value);}
+  static void SetConfig(const wxString& key, long value)
+    {m_Config->Write(key, value);}
+  static void SetConfig(const wxString& key, const wxString& value)
     {m_Config->Write(key, value);}
 
   /// Sets logging as specified.
@@ -81,8 +85,7 @@ public:
   static bool SetLogging(bool logging = true);
 
   /// Toggles boolean key.
-  static void ToggleConfig(const wxString& key)
-    {m_Config->Toggle(key);}
+  static void ToggleConfig(const wxString& key);
 private:
   static bool m_Logging;
   static wxExConfig* m_Config;

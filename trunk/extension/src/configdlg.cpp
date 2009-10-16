@@ -349,7 +349,7 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
         box->Check(item);
       }
     }
-    else if (m_Config->ReadBool(m_ConfigGroup + *it))
+    else if (m_Config->ReadBool(m_ConfigGroup + *it, false))
     {
       box->Check(item);
     }

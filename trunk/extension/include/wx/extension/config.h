@@ -12,9 +12,6 @@
 #ifndef _EXCONFIG_H
 #define _EXCONFIG_H
 
-#include <map>
-#include <wx/variant.h> 
-
 class wxExFindReplaceData;
 
 /// Offers a general configuration.
@@ -37,8 +34,7 @@ public:
   /// Destructor, writes all keys.
  ~wxExConfig();
 
-  /// Reads the key as a string. If the key is not present,
-  /// it is added to the map.
+  /// Reads the key as a string.
   /// This also works for comboboxes,
   /// as long as the values are separated by default row delimiter,
   /// as then it returns value before this delimiter.
@@ -46,70 +42,14 @@ public:
     const wxString& key,
     const wxString& default_value = wxEmptyString,
     const wxChar field_separator = ',')	{
-    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-    if (it != m_Values.end())
-    {
-      const wxString value = it->second;
-      return value.BeforeFirst(field_separator);
-     }
-    else
-    {
       const wxString value = wxConfig::Read(key, default_value);
-      m_Values.insert(std::make_pair(key, value));
       return value.BeforeFirst(field_separator);
-    }
-  };
-
-  /// Reads the key as a bool. If the key is not present,
-  /// it is added to the map.
-  bool ReadBool(const wxString& key, bool default_value = true) {
-    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-    if (it != m_Values.end())
-    {
-      return it->second.GetBool();
-    }
-    else
-    {
-      const bool config_value = wxConfig::ReadBool(key, default_value);
-      m_Values.insert(std::make_pair(key, config_value));
-      return config_value;
-    }
-  };
-
-  /// Reads the key as a long. If the key is not present,
-  /// it is added to the map.
-  long ReadLong(const wxString& key, long default_value) {
-    std::map<wxString, wxVariant>::const_iterator it = m_Values.find(key);
-
-    if (it != m_Values.end())
-    {
-      return it->second.GetLong();
-    }
-    else
-    {
-      const long config_value = wxConfig::Read(key, default_value);
-      m_Values.insert(std::make_pair(key, config_value));
-      return config_value;
-    }
-  };
+    };
 
   /// Gets the find replace data.
   wxExFindReplaceData* GetFindReplaceData() const {
     return m_FindReplaceData;};
-
-  /// Gets all keys as one string.
-  const wxString GetKeys() const;
-
-  /// Sets key to value.
-  void Write(const wxString& key, const wxVariant& value) {
-    m_Values[key] = value;};
-
-  /// Toggles boolean key value.
-  void Toggle(const wxString& key);
 private:
   wxExFindReplaceData* m_FindReplaceData;
-  std::map<wxString, wxVariant> m_Values;
 };
 #endif

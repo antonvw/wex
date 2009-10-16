@@ -25,14 +25,14 @@ wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
   , m_TextSearchDown(_("Search down"))
 {
   int flags = 0;
-  flags |= wxFR_DOWN *      (m_Config->ReadBool(m_TextSearchDown));
-  flags |= wxFR_MATCHCASE * (m_Config->ReadBool(m_TextMatchCase));
-  flags |= wxFR_WHOLEWORD * (m_Config->ReadBool(m_TextMatchWholeWord));
+  flags |= wxFR_DOWN *      (m_Config->ReadBool(m_TextSearchDown, true));
+  flags |= wxFR_MATCHCASE * (m_Config->ReadBool(m_TextMatchCase, false));
+  flags |= wxFR_WHOLEWORD * (m_Config->ReadBool(m_TextMatchWholeWord, false));
 
   SetFlags(flags);
 
   // Start with this one, as it is used by SetFindString.
-  SetIsRegularExpression(m_Config->ReadBool(m_TextRegEx));
+  SetIsRegularExpression(m_Config->ReadBool(m_TextRegEx, false));
   SetFindString(m_Config->Read(m_TextFindWhat));
   SetReplaceString(m_Config->Read(m_TextReplaceWith));
 

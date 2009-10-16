@@ -573,7 +573,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
 bool wxExTextFile::PrepareRevision()
 {
   if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT ||
-      m_Config->ReadBool("RCS/RecentOnly"))
+      m_Config->ReadBool("RCS/RecentOnly", false))
   {
     if (m_VersionLine == 1)
     {

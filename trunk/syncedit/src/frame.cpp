@@ -619,11 +619,11 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPTION_LIST_SORT_ASCENDING:
-    wxExApp::SetConfig("List/SortMethod", SORT_ASCENDING); break;
+    wxExApp::SetConfig("List/SortMethod", (long)SORT_ASCENDING); break;
   case ID_OPTION_LIST_SORT_DESCENDING:
-    wxExApp::SetConfig("List/SortMethod", SORT_DESCENDING); break;
+    wxExApp::SetConfig("List/SortMethod", (long)SORT_DESCENDING); break;
   case ID_OPTION_LIST_SORT_TOGGLE:
-    wxExApp::SetConfig("List/SortMethod", SORT_TOGGLE); break;
+    wxExApp::SetConfig("List/SortMethod", (long)SORT_TOGGLE); break;
 
   case ID_PROCESS_SELECT: wxExProcessWithListView::ConfigDialog(this); break;
 
