@@ -192,12 +192,12 @@ wxExListView::wxExListView(wxWindow* parent,
   }
 
   wxFont font(
-    wxExApp::GetConfig(_("List Font") + "/Size", 8),
+    wxConfigBase::Get()->ReadLong(_("List Font") + "/Size", 8),
     wxFONTFAMILY_DEFAULT,
     wxFONTSTYLE_NORMAL,
     wxFONTWEIGHT_NORMAL,
     false,
-    wxExApp::GetConfig(_("List Font") + "/Name"));
+    wxConfigBase::Get()->Read(_("List Font") + "/Name"));
 
   SetFont(font);
 
@@ -676,7 +676,7 @@ void wxExListView::OnList(wxListEvent& event)
   {
     SortColumn(
       event.GetColumn(),
-      (wxExSortType)wxExApp::GetConfig("List/SortMethod", SORT_TOGGLE));
+      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE));
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_RIGHT_CLICK)
   {

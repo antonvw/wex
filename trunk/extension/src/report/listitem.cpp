@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/extension/report/listitem.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
@@ -124,12 +123,12 @@ void wxExListItemWithFileName::Update()
     wxFONTSTYLE_NORMAL);
 
   wxFont font(
-    wxExApp::GetConfig(_("List Font") + "/Size", 10),
+    wxConfigBase::Get()->ReadLong(_("List Font") + "/Size", 10),
     wxFONTFAMILY_DEFAULT,
     fontstyle,
     wxFONTWEIGHT_NORMAL,
     false,
-    wxExApp::GetConfig(_("List Font") + "/Name", "courier new"));
+    wxConfigBase::Get()->Read(_("List Font") + "/Name", "courier new"));
 
   SetFont(font);
 

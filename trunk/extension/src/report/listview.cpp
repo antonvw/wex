@@ -113,7 +113,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
 void wxExListViewFile::AddItems()
 {
   // To initialize the combobox.
-  wxExApp::GetConfig(_("Add what"), wxExApp::GetLexers()->BuildComboBox());
+  wxConfigBase::Get()->Read(_("Add what"), wxExApp::GetLexers()->BuildComboBox());
 
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
@@ -137,13 +137,13 @@ void wxExListViewFile::AddItems()
   }
 
   int flags = 0;
-  if (wxConfigBase::Get()->ReadBool(_("Add files", true))) flags |= wxDIR_FILES;
-  if (wxConfigBase::Get()->ReadBool(_("Add folders", false))) flags |= wxDIR_DIRS;
+  if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
+  if (wxConfigBase::Get()->ReadBool(_("Add folders"), false)) flags |= wxDIR_DIRS;
 
   wxExDirWithListView dir(
     this,
-    wxExApp::GetConfig(_("In folder")),
-    wxExApp::GetConfig(_("Add what")),
+    wxConfigBase::Get()->Read(_("In folder")),
+    wxConfigBase::Get()->Read(_("Add what")),
     flags);
 
   const int old_count = GetItemCount();
@@ -154,7 +154,7 @@ void wxExListViewFile::AddItems()
   {
     m_ContentsChanged = true;
 
-    if (wxConfigBase::Get()->ReadBool("List/SortSync") && m_Type == LIST_PROJECT)
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && m_Type == LIST_PROJECT)
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -323,7 +323,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
   // Set initial style depending on type.
   // Might be improved.
   SetSingleStyle((m_Type == LIST_PROJECT || m_Type == LIST_HISTORY ?
-    wxExApp::GetConfig("List/Style", wxLC_REPORT) :
+    wxConfigBase::Get()->ReadLong("List/Style", wxLC_REPORT) :
     wxLC_REPORT));
 #endif
 
@@ -706,7 +706,7 @@ bool ListViewDropTarget::OnDropFiles(
 RBSFile::RBSFile(wxExListViewFile* listview)
   : wxExFile()
   , m_Owner(listview)
-  , m_Prompt(wxExApp::GetConfig("RBS/Prompt", ">"))
+  , m_Prompt(wxConfigBase::Get()->Read("RBS/Prompt", ">"))
 {
 }
 
@@ -740,7 +740,7 @@ void RBSFile::GenerateDialog()
   wxExConfigDialog dlg(NULL, wxConfigBase::Get(), v, _("Build RBS File"));
   if (dlg.ShowModal() == wxID_CANCEL) return;
 
-  const wxString script = wxExApp::GetConfig(_("RBS File"));
+  const wxString script = wxConfigBase::Get()->Read(_("RBS File"));
 
   if (!Open(script, wxFile::write))
   {
@@ -751,7 +751,7 @@ void RBSFile::GenerateDialog()
 
   Header();
 
-  const wxString rsx_pattern = wxExApp::GetConfig(_("RBS Pattern")) + wxFILE_SEP_PATH;
+  const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
   int i = -1;
   while ((i = m_Owner->GetNextSelected(i)) != -1)
   {
@@ -764,7 +764,7 @@ void RBSFile::GenerateDialog()
       if (source.find(rsx_pattern) != wxString::npos)
       {
         pattern = rsx_pattern;
-        with = wxExApp::GetConfig("RBS/With");
+        with = wxConfigBase::Get()->Read("RBS/With");
       }
       else
       {
@@ -896,7 +896,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
   wxExListViewFile::BuildPopupMenu(menu);
 
-  if (GetSelectedItemCount() > 1 && !wxExApp::GetConfig(_("Comparator")).empty())
+  if (GetSelectedItemCount() > 1 && !wxConfigBase::Get()->Read(_("Comparator")).empty())
   {
     menu.AppendSeparator();
     menu.Append(ID_LIST_COMPARE, _("C&ompare"));
@@ -911,7 +911,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
 
     if (GetType() != LIST_PROJECT &&
-        !wxConfigBase::Get()->ReadBool("SVN") &&
+        !wxConfigBase::Get()->ReadBool("SVN", true) &&
         exists && !is_folder)
     {
       wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
@@ -925,7 +925,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         const wxString with_file = otherlist.GetFileName().GetFullPath();
 
         if (current_file != with_file &&
-            !wxExApp::GetConfig(_("Comparator")).empty())
+            !wxConfigBase::Get()->Read(_("Comparator")).empty())
         {
           menu.AppendSeparator();
           menu.Append(ID_LIST_COMPARE,
@@ -939,9 +939,9 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists && !is_folder)
     {
-      if (!wxConfigBase::Get()->ReadBool("SVN"))
+      if (!wxConfigBase::Get()->ReadBool("SVN", true))
       {
-        if (!wxExApp::GetConfig(_("Comparator")).empty())
+        if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
         {
           menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
         }

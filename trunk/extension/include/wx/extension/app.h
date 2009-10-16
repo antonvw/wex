@@ -40,15 +40,6 @@ public:
   /// Gets the dir where the catalogs are for the locale.
   static wxString& GetCatalogDir() {return m_CatalogDir;};
 
-  /// Gets key as a long.
-  static long GetConfig(const wxString& key, long default_value)
-    {return m_Config->ReadLong(key, default_value);}
-
-  /// Gets key as a string.
-  static const wxString GetConfig(const wxString& key,
-    const wxString& default_value = wxEmptyString)
-    {return m_Config->Read(key, default_value);}
-
   /// Gets the find replace data.
   static wxExFindReplaceData* GetFindReplaceData() {return m_FindReplaceData;};
 

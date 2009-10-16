@@ -46,7 +46,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     for (int i = maxProjects - 1 ; i >=0 ; i--)
     {
       SetRecentProject(
-        wxExApp::GetConfig(wxString::Format("RecentProject%d", i)));
+        wxConfigBase::Get()->Read(wxString::Format("RecentProject%d", i)));
     }
   }
 

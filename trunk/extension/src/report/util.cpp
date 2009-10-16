@@ -15,7 +15,7 @@
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 {
-  if (wxExApp::GetConfig(_("Comparator")).empty())
+  if (wxConfigBase::Get()->Read(_("Comparator")).empty())
   {
     return false;
   }
@@ -25,7 +25,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
        "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
        "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
 
-  if (wxExecute(wxExApp::GetConfig(_("Comparator")) + " " + arguments) == 0)
+  if (wxExecute(wxConfigBase::Get()->Read(_("Comparator")) + " " + arguments) == 0)
   {
     return false;
   }
@@ -50,7 +50,7 @@ void wxExFindInFiles(bool replace)
   }
 
   // To initialize the combobox.
-  wxExApp::GetConfig(_("In files"), wxExApp::GetLexers()->BuildComboBox());
+  wxConfigBase::Get()->Read(_("In files"), wxExApp::GetLexers()->BuildComboBox());
 
   std::vector<wxExConfigItem> v;
   v.push_back(
@@ -93,8 +93,8 @@ void wxExFindInFiles(bool replace)
 
   wxExDirWithListView dir(
     tool,
-    wxExApp::GetConfig(_("In folder")),
-    wxExApp::GetConfig(_("In files")));
+    wxConfigBase::Get()->Read(_("In folder")),
+    wxConfigBase::Get()->Read(_("In files")));
 
   dir.FindFiles();
   dir.GetStatistics().Log(tool);
@@ -269,8 +269,8 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
   wxSetWorkingDirectory(makefile.GetPath());
 
   const bool ret = frame->ProcessRun(
-    wxExApp::GetConfig("Make", "make") + " " +
-    wxExApp::GetConfig("MakeSwitch", "-f") + " " +
+    wxConfigBase::Get()->Read("Make", "make") + " " +
+    wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
     makefile.GetFullPath());
 
   wxSetWorkingDirectory(cwd);
@@ -472,14 +472,14 @@ ComboBox::ComboBox(
   SetAcceleratorTable(accel);
 
   const wxFont font(
-    wxExApp::GetConfig("FindFont", 8),
+    wxConfigBase::Get()->ReadLong("FindFont", 8),
     wxFONTFAMILY_DEFAULT,
     wxFONTSTYLE_NORMAL,
     wxFONTWEIGHT_NORMAL);
 
   SetFont(font);
 
-  wxExComboBoxFromString(this, wxExApp::GetConfig("FindReplace/FindStrings"));
+  wxExComboBoxFromString(this, wxConfigBase::Get()->Read("FindReplace/FindStrings"));
 
   // And override the value set by previous, as we want text to be same as in Find.
   SetValue(wxExApp::GetFindReplaceData()->GetFindString());

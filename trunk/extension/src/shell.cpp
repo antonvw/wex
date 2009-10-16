@@ -9,9 +9,9 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
-#include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/defs.h> // for ID_SHELL_COMMAND
 
 #if wxUSE_GUI
@@ -55,7 +55,7 @@ wxExSTCShell::wxExSTCShell(
   if (m_CommandsSaveInConfig > 0)
   {
     // Get all previous commands.
-    wxStringTokenizer tkz(wxExApp::GetConfig("Shell"),
+    wxStringTokenizer tkz(wxConfigBase::Get()->Read("Shell"),
       m_CommandsInConfigDelimiter);
 
     while (tkz.HasMoreTokens())
@@ -86,7 +86,7 @@ wxExSTCShell::~wxExSTCShell()
       items++;
     }
 
-    wxExApp::SetConfig("Shell", values);
+    wxConfigBase::Get()->Write("Shell", values);
   }
 }
 

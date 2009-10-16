@@ -110,7 +110,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
     {
       menu.AppendSVN();
     }
-    else if (!wxExApp::GetConfig(_("Comparator")).empty())
+    else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
     {
       menu.AppendSeparator();
       menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));

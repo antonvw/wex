@@ -60,16 +60,16 @@ wxExFrame::wxExFrame(wxWindow* parent,
   //SetName("wxExFrame");
   //wxPersistenceManager::Get().RegisterAndRestore(this, this);
 
-  if (wxExApp::GetConfig("Frame/Maximized", 0l))
+  if (wxConfigBase::Get()->ReadLong("Frame/Maximized", 0l))
   {
     Maximize(true);
   }
 
   SetSize(
-    wxExApp::GetConfig("Frame/X", 100),
-    wxExApp::GetConfig("Frame/Y", 100),
-    wxExApp::GetConfig("Frame/Width", 450),
-    wxExApp::GetConfig("Frame/Height", 350));
+    wxConfigBase::Get()->ReadLong("Frame/X", 100),
+    wxConfigBase::Get()->ReadLong("Frame/Y", 100),
+    wxConfigBase::Get()->ReadLong("Frame/Width", 450),
+    wxConfigBase::Get()->ReadLong("Frame/Height", 350));
 }
 
 wxExFrame::wxExFrame(wxWindow* parent,

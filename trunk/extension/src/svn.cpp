@@ -43,7 +43,7 @@ bool wxExSVN::DirExists(const wxFileName& filename)
 wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
   const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);
-  const wxString svn_flags_contents = wxExApp::GetConfig(svn_flags_name);
+  const wxString svn_flags_contents = wxConfigBase::Get()->Read(svn_flags_name);
 
   if (parent != NULL)
   {
@@ -97,7 +97,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   if (m_FullPath.empty())
   {
-    wxSetWorkingDirectory(wxExApp::GetConfig(_("Base folder")));
+    wxSetWorkingDirectory(wxConfigBase::Get()->Read(_("Base folder")));
   }
   else
   {
@@ -108,7 +108,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   if (m_Type == SVN_COMMIT)
   {
-    comment = " -m \"" + wxExApp::GetConfig(_("Revision comment")) + "\"";
+    comment = " -m \"" + wxConfigBase::Get()->Read(_("Revision comment")) + "\"";
   }
 
   wxString flags;
@@ -116,7 +116,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   
   if (m_Type == SVN_HELP)
   {
-    subcommand = wxExApp::GetConfig(_("Subcommand"));
+    subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
 
     if (!subcommand.empty())
     {
@@ -125,7 +125,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   }
   else
   {
-    flags = wxExApp::GetConfig(_("Flags"));
+    flags = wxConfigBase::Get()->Read(_("Flags"));
 
     wxExApp::SetConfig(svn_flags_name, flags);
 

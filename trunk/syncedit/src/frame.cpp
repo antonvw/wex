@@ -117,7 +117,7 @@ MDIFrame::MDIFrame(bool open_recent)
   GetManager().AddPane(findbar,
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
-  const wxString perspective = wxExApp::GetConfig("Perspective");
+  const wxString perspective = wxConfigBase::Get()->Read("Perspective");
 
   if (perspective.empty())
   {
@@ -603,12 +603,12 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
         _("Set List Font")).ShowModal() == wxID_OK)
       {
         wxFont font(
-          wxExApp::GetConfig(wxString(_("List Font")) + "/Size", 10),
+          wxConfigBase::Get()->ReadLong(wxString(_("List Font")) + "/Size", 10),
           wxFONTFAMILY_DEFAULT,
           wxFONTSTYLE_NORMAL,
           wxFONTWEIGHT_NORMAL,
           false,
-          wxExApp::GetConfig(wxString(_("List Font")) + "/Name"));
+          wxConfigBase::Get()->Read(wxString(_("List Font")) + "/Name"));
 
         wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
         wxExForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
@@ -836,7 +836,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
         event.GetId() - ID_OPTION_LIST_SORT_ASCENDING == 
-        wxExApp::GetConfig("List/SortMethod", SORT_TOGGLE) - SORT_ASCENDING);
+        wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE) - SORT_ASCENDING);
     break;
 
     case ID_PROJECT_CLOSE:

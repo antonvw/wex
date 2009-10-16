@@ -147,7 +147,7 @@ int wxExProcessWithListView::ConfigDialog(
 
   if (result == wxID_OK)
   {
-    m_Command = wxExApp::GetConfig(_("Process"));
+    m_Command = wxConfigBase::Get()->Read(_("Process"));
   }
 
   return result;
@@ -162,7 +162,7 @@ long wxExProcessWithListView::Execute()
 
   const wxString cwd = wxGetCwd();
 
-  wxSetWorkingDirectory(wxExApp::GetConfig(_("Process folder")));
+  wxSetWorkingDirectory(wxConfigBase::Get()->Read(_("Process folder")));
 
   long pid = 0;
 
@@ -191,7 +191,7 @@ void wxExProcessWithListView::InitCommandFromConfig()
 {
   // The process is a combobox, we want only the first from the list,
   // so use the default separator, causing only first field to be returned.
-  m_Command = wxExApp::GetConfig(_("Process"));
+  m_Command = wxConfigBase::Get()->Read(_("Process"));
 }
 
 wxKillError wxExProcessWithListView::Kill(wxSignal sig)
