@@ -20,6 +20,7 @@
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
 wxConfigBase* wxExApp::m_Config = NULL;
+wxExFindReplaceData* wxExApp::m_FindReplaceData = NULL;
 wxExLexers* wxExApp::m_Lexers = NULL;
 wxLocale wxExApp::m_Locale;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
