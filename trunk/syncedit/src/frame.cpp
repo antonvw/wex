@@ -367,9 +367,9 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   }
 
 #if wxUSE_CHECKBOX
-  wxExApp::SetConfig("HexMode", GetHexModeCheckBox()->GetValue());
+  wxConfigBase::Get()->Write("HexMode", GetHexModeCheckBox()->GetValue());
 #endif
-  wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
+  wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
   event.Skip();
 }
@@ -619,11 +619,11 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPTION_LIST_SORT_ASCENDING:
-    wxExApp::SetConfig("List/SortMethod", (long)SORT_ASCENDING); break;
+    wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_ASCENDING); break;
   case ID_OPTION_LIST_SORT_DESCENDING:
-    wxExApp::SetConfig("List/SortMethod", (long)SORT_DESCENDING); break;
+    wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_DESCENDING); break;
   case ID_OPTION_LIST_SORT_TOGGLE:
-    wxExApp::SetConfig("List/SortMethod", (long)SORT_TOGGLE); break;
+    wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
   case ID_PROCESS_SELECT: wxExProcessWithListView::ConfigDialog(this); break;
 
@@ -710,7 +710,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
-    wxExApp::SetConfig("AllowSync", GetSyncCheckBox()->GetValue());
+    wxConfigBase::Get()->Write("AllowSync", GetSyncCheckBox()->GetValue());
 #endif
     break;
 

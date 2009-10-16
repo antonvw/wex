@@ -310,7 +310,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
 
   m_Clients.clear();
 
-  wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
+  wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
   event.Skip();
 }
 

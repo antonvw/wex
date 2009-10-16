@@ -70,7 +70,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     // SVN_UPDATE and SVN_HELP have no flags to ask for.
     if (m_Type != SVN_UPDATE && m_Type != SVN_HELP)
     {
-      wxExApp::SetConfig(_("Flags"), svn_flags_contents);
+      wxConfigBase::Get()->Write(_("Flags"), svn_flags_contents);
       v.push_back(wxExConfigItem(_("Flags")));
     }
 
@@ -127,7 +127,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   {
     flags = wxConfigBase::Get()->Read(_("Flags"));
 
-    wxExApp::SetConfig(svn_flags_name, flags);
+    wxConfigBase::Get()->Write(svn_flags_name, flags);
 
     m_CommandWithFlags = m_Command + " " + flags;
 

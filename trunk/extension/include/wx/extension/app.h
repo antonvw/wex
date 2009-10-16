@@ -27,16 +27,6 @@ class wxExFindReplaceData;
 class wxExApp : public wxApp
 {
 public:
-  /// Constructs the config, lexers and printer (and reads the lexers).
-  /// Initializes the locale and wxExTool.
-  /// In your class first set the app name, as it uses this name for the config file.
-  /// See for documentation the lexers.xml file.
-  virtual bool OnInit();
-
-  /// This destroys (and so writes) the config, lexers, printer
-  /// and cleans up things if necessary.
-  virtual int OnExit();
-
   /// Gets the dir where the catalogs are for the locale.
   static wxString& GetCatalogDir() {return m_CatalogDir;};
 
@@ -60,13 +50,15 @@ public:
     if (m_Logging) return wxExLog(text);
     else           return false;};
 
-  /// Sets key.
-  static void SetConfig(const wxString& key, bool value)
-    {m_Config->Write(key, value);}
-  static void SetConfig(const wxString& key, long value)
-    {m_Config->Write(key, value);}
-  static void SetConfig(const wxString& key, const wxString& value)
-    {m_Config->Write(key, value);}
+  /// Constructs the config, lexers and printer (and reads the lexers).
+  /// Initializes the locale and wxExTool.
+  /// In your class first set the app name, as it uses this name for the config file.
+  /// See for documentation the lexers.xml file.
+  virtual bool OnInit();
+
+  /// This destroys (and so writes) the config, lexers, printer
+  /// and cleans up things if necessary.
+  virtual int OnExit();
 
   /// Sets logging as specified.
   /// If the logging is true and the logfile does not exist, it is created.

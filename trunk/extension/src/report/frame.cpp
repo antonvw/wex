@@ -108,7 +108,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
   for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
   {
-    wxExApp::SetConfig(
+    wxConfigBase::Get()->Write(
       wxString::Format("RecentProject%d", i),
       m_ProjectHistory.GetHistoryFile(i));
   }

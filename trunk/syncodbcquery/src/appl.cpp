@@ -228,7 +228,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  wxExApp::SetConfig("Perspective", GetManager().SavePerspective());
+  wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
   event.Skip();
 }
