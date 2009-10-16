@@ -200,7 +200,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
   case ID_STC_ADD_HEADER:
     {
-      const wxExHeader header(wxExApp::GetConfig());
+      const wxExHeader header(wxConfigBase::Get());
 
       if (header.ShowDialog(this) != wxID_CANCEL)
       {

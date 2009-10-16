@@ -81,7 +81,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     }
 
     m_ReturnCode = (wxStandardID)wxExConfigDialog(parent,
-      wxExApp::GetConfig(),
+      wxConfigBase::Get(),
       v,
       m_Caption).ShowModal();
 
@@ -239,7 +239,7 @@ void wxExSVN::Initialize()
   m_Output.clear();
   m_ReturnCode = wxID_NONE;
 
-  wxASSERT(wxExApp::GetConfig() != NULL);
+  wxASSERT(wxConfigBase::Get() != NULL);
 }
 
 void wxExSVN::ShowOutput(wxWindow* parent) const

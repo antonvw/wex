@@ -12,11 +12,7 @@
 #ifndef _EXCONFIG_H
 #define _EXCONFIG_H
 
-class wxExFindReplaceData;
-
 /// Offers a general configuration.
-/// Keys are read the first time accessed from the config.
-/// Next time they are retrieved from the maps, so access is fast.
 #ifdef wxExUSE_PORTABLE
 #include <wx/fileconf.h>
 class wxExConfig : public wxFileConfig
@@ -30,26 +26,5 @@ public:
   wxExConfig(
     const wxString& filename = wxEmptyString,
     long style = 0);
-
-  /// Destructor, writes all keys.
- ~wxExConfig();
-
-  /// Reads the key as a string.
-  /// This also works for comboboxes,
-  /// as long as the values are separated by default row delimiter,
-  /// as then it returns value before this delimiter.
-  const wxString Read(
-    const wxString& key,
-    const wxString& default_value = wxEmptyString,
-    const wxChar field_separator = ',')	{
-      const wxString value = wxConfig::Read(key, default_value);
-      return value.BeforeFirst(field_separator);
-    };
-
-  /// Gets the find replace data.
-  wxExFindReplaceData* GetFindReplaceData() const {
-    return m_FindReplaceData;};
-private:
-  wxExFindReplaceData* m_FindReplaceData;
 };
 #endif

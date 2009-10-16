@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/extension/tool.h>
-#include <wx/extension/app.h>
 
 std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
 
@@ -35,7 +34,7 @@ const wxString wxExTool::Info() const
 
 void wxExTool::Initialize()
 {
-  if (!wxExApp::GetConfigBool("SVN"))
+  if (!wxConfigBase::Get()->ReadBool("SVN", true))
   {
     AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
     AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));

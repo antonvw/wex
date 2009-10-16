@@ -15,8 +15,8 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <wx/config.h>
 #include <wx/extension/dialog.h>
-#include <wx/extension/config.h>
 
 #if wxUSE_GUI
 /*! \file */
@@ -186,7 +186,7 @@ public:
   /// \todo The dialog does not set it's window size correctly when
   /// notebooks are used, you have to specify size yourself.
   wxExConfigDialog(wxWindow* parent,
-    wxExConfig* config,
+    wxConfigBase* config,
     std::vector<wxExConfigItem> v,
     const wxString& title = _("Options"),
     const wxString& configGroup = wxEmptyString,
@@ -275,7 +275,7 @@ private:
     bool is_numeric = false,
     long style = 0);
 
-  wxExConfig* m_Config;
+  wxConfigBase* m_Config;
   const wxString m_ConfigGroup;
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;

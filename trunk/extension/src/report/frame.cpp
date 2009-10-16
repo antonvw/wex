@@ -104,7 +104,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
   wxDELETE(m_Process);
 
-  m_FileHistory.Save(*wxExApp::GetConfig());
+  m_FileHistory.Save(*wxConfigBase::Get());
 
   for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
   {
@@ -384,7 +384,7 @@ void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
   UseHistory(id, menu, m_FileHistory);
 
   // We can load file history now.
-  m_FileHistory.Load(*wxExApp::GetConfig());
+  m_FileHistory.Load(*wxConfigBase::Get());
 }
 
 void wxExFrameWithHistory::UseFileHistoryList(wxExListViewWithFrame* list)

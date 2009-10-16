@@ -799,7 +799,7 @@ int wxExSTC::ConfigDialog(
   {
     wxExConfigDialog dlg(
       parent,
-      wxExApp::GetConfig(),
+      wxConfigBase::Get(),
       items,
       title,
       GetConfigKeyBase(),
@@ -818,7 +818,7 @@ int wxExSTC::ConfigDialog(
     {
       m_ConfigDialog = new wxExConfigDialog(
         parent,
-        wxExApp::GetConfig(),
+        wxConfigBase::Get(),
         items,
         title,
         GetConfigKeyBase(),
@@ -844,17 +844,17 @@ void wxExSTC::ConfigGet()
   SetFoldFlags(wxExApp::GetConfig(GetConfigKeyBase() + _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
   SetIndent(wxExApp::GetConfig(GetConfigKeyBase() + _("Indent"), 4));
-  SetIndentationGuides(wxExApp::GetConfigBool(GetConfigKeyBase() + _("Indentation guide"), false));
+  SetIndentationGuides(wxConfigBase::Get()->ReadBool(GetConfigKeyBase() + _("Indentation guide"), false));
 
   SetMarginWidth(m_MarginDividerNumber, wxExApp::GetConfig(GetConfigKeyBase() + _("Divider"), 16));
   SetMarginWidth(m_MarginFoldingNumber, wxExApp::GetConfig(GetConfigKeyBase() + _("Folding"), 16));
   SetMarginWidth(m_MarginLineNumber,
-    (wxExApp::GetConfigBool(GetConfigKeyBase() + _("Line numbers"), false) ?
+    (wxConfigBase::Get()->ReadBool(GetConfigKeyBase() + _("Line numbers"), false) ?
       wxExApp::GetConfig(GetConfigKeyBase() + _("Line number"), TextWidth(m_MarginLineNumber, "999999")): 0));
 
   SetTabWidth(wxExApp::GetConfig(GetConfigKeyBase() + _("Tab width"), 4));
-  SetUseTabs(wxExApp::GetConfigBool(GetConfigKeyBase() + _("Use tabs"), false));
-  SetViewEOL(wxExApp::GetConfigBool(GetConfigKeyBase() + _("End of line"), false));
+  SetUseTabs(wxConfigBase::Get()->ReadBool(GetConfigKeyBase() + _("Use tabs"), false));
+  SetViewEOL(wxConfigBase::Get()->ReadBool(GetConfigKeyBase() + _("End of line"), false));
   SetViewWhiteSpace(wxExApp::GetConfig(GetConfigKeyBase() + _("WhiteSpace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxExApp::GetConfig(GetConfigKeyBase() + _("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(wxExApp::GetConfig(GetConfigKeyBase() + _("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
@@ -1116,7 +1116,7 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
 int wxExSTC::FindReplaceDataFlags() const
 {
-  const wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  const wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
 
   int flags = 0;
 
@@ -1186,8 +1186,8 @@ const wxString wxExSTC::GetSearchText()
 {
   const wxString selection = GetSelectedText();
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
-    wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(selection);
-  return wxExApp::GetConfig()->GetFindReplaceData()->GetFindString();
+    wxExApp::GetFindReplaceData()->SetFindString(selection);
+  return wxExApp::GetFindReplaceData()->GetFindString();
 }
 
 const wxString wxExSTC::GetTextAtCurrentPos()
@@ -1505,7 +1505,7 @@ bool wxExSTC::LinkOpen(
     if (fullpath.empty())
     {
       // README: Code added since wxWidgets 2.7.0, as that normalized the file.
-      //fullpath = wxExApp::GetConfig()->GetPathList().FindAbsoluteValidPath(link);
+      //fullpath = wxConfigBase::Get()->GetPathList().FindAbsoluteValidPath(link);
       wxString strend = link;
 
       for (size_t i=0; i < m_PathList.GetCount() && fullpath.empty(); i++)

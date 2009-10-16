@@ -33,7 +33,7 @@ wxExOTL::~wxExOTL()
 
 bool wxExOTL::Logon(
   wxWindow* parent,
-  wxExConfig* config, 
+  wxConfigBase* config, 
   int max_items,
   const wxString& title)
 {

@@ -56,7 +56,7 @@ private:
 wxExTextFileWithListView::wxExTextFileWithListView(
   const wxExFileName& filename,
   const wxExTool& tool)
-  : wxExTextFile(filename, tool, wxExApp::GetConfig())
+  : wxExTextFile(filename, tool, wxConfigBase::Get())
 #if wxExUSE_EMBEDDED_SQL
   , m_SQLResultsParsing(false)
 #endif
@@ -199,10 +199,10 @@ void wxExTextFileWithListView::Report()
   switch (GetTool().GetId())
   {
   case ID_TOOL_REPORT_REPLACE:
-    item.SetColumnText(_("Replaced"), wxExApp::GetConfig()->GetFindReplaceData()->GetReplaceString());
+    item.SetColumnText(_("Replaced"), wxExApp::GetFindReplaceData()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
     item.SetColumnText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
-    item.SetColumnText(_("Match"), wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+    item.SetColumnText(_("Match"), wxExApp::GetFindReplaceData()->GetFindString());
   break;
 
   case ID_TOOL_REPORT_REVISION:
@@ -305,7 +305,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
     // This is a static function, we cannot use this pointer.
     wxASSERT(wxTheApp != NULL);
 
-    if (!m_otl.Logon(wxTheApp->GetTopWindow(), wxExApp::GetConfig()))
+    if (!m_otl.Logon(wxTheApp->GetTopWindow(), wxConfigBase::Get()))
     {
       return false;
     }

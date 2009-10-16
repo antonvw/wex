@@ -54,7 +54,7 @@ void wxExFindInFiles(bool replace)
 
   std::vector<wxExConfigItem> v;
   v.push_back(
-    wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), 
+    wxExConfigItem(wxExApp::GetFindReplaceData()->GetTextFindWhat(), 
     CONFIG_COMBOBOX, 
     wxEmptyString, 
     true));
@@ -62,17 +62,17 @@ void wxExFindInFiles(bool replace)
   if (replace) 
   {
     v.push_back(wxExConfigItem(
-      wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), 
+      wxExApp::GetFindReplaceData()->GetTextReplaceWith(), 
       CONFIG_COMBOBOX));
   }
 
   v.push_back(wxExConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());
-  v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetInfo()));
+  v.push_back(wxExConfigItem(wxExApp::GetFindReplaceData()->GetInfo()));
 
   if (wxExConfigDialog(NULL,
-    wxExApp::GetConfig(),
+    wxConfigBase::Get(),
     v,
     (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
   {
@@ -89,7 +89,7 @@ void wxExFindInFiles(bool replace)
     return;
   }
 
-  wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(replace));
+  wxExApp::Log(wxExApp::GetFindReplaceData()->GetText(replace));
 
   wxExDirWithListView dir(
     tool,
@@ -229,7 +229,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       }
 
       lv->SetSingleStyle(view);
-      wxExApp::GetConfig()->Write("List/Style", view);
+      wxConfigBase::Get()->Write("List/Style", view);
     }
     else
     {
@@ -482,7 +482,7 @@ ComboBox::ComboBox(
   wxExComboBoxFromString(this, wxExApp::GetConfig("FindReplace/FindStrings"));
 
   // And override the value set by previous, as we want text to be same as in Find.
-  SetValue(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+  SetValue(wxExApp::GetFindReplaceData()->GetFindString());
 }
 
 void ComboBox::OnCommand(wxCommandEvent& event)
@@ -512,17 +512,17 @@ void ComboBox::OnKey(wxKeyEvent& event)
     if (stc != NULL)
     {
       stc->FindNext(GetValue());
-      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(GetValue());
+      wxExApp::GetFindReplaceData()->SetFindString(GetValue());
 
       // And keep the changed text in the combo box.
       wxString text;
 
       if (wxExComboBoxToString(this, text))
       {
-        wxExApp::GetConfig()->Write("FindReplace/FindStrings", text);
+        wxConfigBase::Get()->Write("FindReplace/FindStrings", text);
         Clear(); // so wxExComboBoxFromString can append again
         wxExComboBoxFromString(this, text);
-        SetValue(wxExApp::GetConfig()->GetFindReplaceData()->GetFindString());
+        SetValue(wxExApp::GetFindReplaceData()->GetFindString());
       }
     }
   }
@@ -550,7 +550,7 @@ wxExFindToolBar::wxExFindToolBar(
   , m_MatchWholeWord(new wxCheckBox())
   , m_RegularExpression(new wxCheckBox())
 {
-  wxExApp::GetConfig()->GetFindReplaceData()->CreateAndFill(
+  wxExApp::GetFindReplaceData()->CreateAndFill(
     this,
     m_MatchCase,
     ID_MATCH_CASE,
@@ -608,7 +608,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case ID_MATCH_WHOLE_WORD:
   case ID_MATCH_CASE:
   case ID_REGULAR_EXPRESSION:
-    wxExApp::GetConfig()->GetFindReplaceData()->SetFromCheckBoxes(
+    wxExApp::GetFindReplaceData()->SetFromCheckBoxes(
       m_MatchWholeWord,
       m_MatchCase,
       m_RegularExpression);

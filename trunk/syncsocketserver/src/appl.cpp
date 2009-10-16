@@ -432,7 +432,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
       1,
       65536)) > 0)
     {
-      wxExApp::GetConfig()->Write(_("Buffer Size"), val);
+      wxConfigBase::Get()->Write(_("Buffer Size"), val);
     }
     }
     break;
@@ -464,7 +464,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     const long flags = (m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL);
 
     wxExConfigDialog(this,
-      wxExApp::GetConfig(),
+      wxConfigBase::Get(),
       v,
       _("Server Config"),
       wxEmptyString,
@@ -598,7 +598,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         if (sock->LastCount() > 0)
         {
-          if (wxExApp::GetConfigBool(_("Echo")))
+          if (wxConfigBase::Get()->ReadBool(_("Echo")))
           {
             sock->Write(buffer, sock->LastCount());
             SocketCheckError(sock);
@@ -617,9 +617,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             }
           }
 
-          if (wxExApp::GetConfigBool(_("Log Data")))
+          if (wxConfigBase::Get()->ReadBool(_("Log Data")))
           {
-            if (wxExApp::GetConfigBool(_("Count Only")))
+            if (wxConfigBase::Get()->ReadBool(_("Count Only")))
             {
               m_LogWindow->AppendTextForced(
                 wxString::Format(_("read: %d bytes from: %s"), 
@@ -706,16 +706,16 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_CLIENT_ECHO:
-    event.Check(wxExApp::GetConfigBool(_("Echo")));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Echo")));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    event.Check(wxExApp::GetConfigBool(_("Log Data")));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data")));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    event.Enable(wxExApp::GetConfigBool(_("Log Data")));
-    event.Check(wxExApp::GetConfigBool(_("Count Only")));
+    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data")));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Count Only")));
     break;
 
   case ID_CLEAR_STATISTICS:
@@ -925,7 +925,7 @@ void MyFrame::TimerDialog()
   // If cancelled, -1 is returned.
   if (val == -1) return;
 
-  wxExApp::GetConfig()->Write(_("Timer"), val);
+  wxConfigBase::Get()->Write(_("Timer"), val);
 
   if (val > 0)
   {
@@ -973,9 +973,9 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
     "PaneBytes");
 #endif
 
-  if (wxExApp::GetConfigBool(_("Log Data")))
+  if (wxConfigBase::Get()->ReadBool(_("Log Data")))
   {
-    if (wxExApp::GetConfigBool(_("Count Only")))
+    if (wxConfigBase::Get()->ReadBool(_("Count Only")))
     {
       m_LogWindow->AppendTextForced(
         wxString::Format(_("write: %d bytes to: %s"),

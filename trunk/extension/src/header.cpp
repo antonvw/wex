@@ -14,7 +14,7 @@
 #include <wx/extension/file.h>
 #include <wx/extension/util.h>
 
-wxExHeader::wxExHeader(wxExConfig* config)
+wxExHeader::wxExHeader(wxConfigBase* config)
   : m_Config(config)
   , m_TextAuthor(_("Author"))
   , m_TextEmail(_("Email"))

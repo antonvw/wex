@@ -36,7 +36,7 @@ void wxExAppTestFixture::testMethods()
 {
   // test wxExApp
   CPPUNIT_ASSERT(!wxExApp::GetCatalogDir().empty());
-  CPPUNIT_ASSERT(wxExApp::GetConfig() != NULL);
+  CPPUNIT_ASSERT(wxConfigBase::Get() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetLexers() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetPrinter() != NULL);
   CPPUNIT_ASSERT(!wxExTool::GetToolInfo().empty());
@@ -127,9 +127,9 @@ void wxExAppTestFixture::testMethods()
   // Only usefull if the lexers file was present
   if (wxExApp::GetLexers()->Count() > 0)
   {
-    wxExApp::GetConfig()->Write(_("Purpose"), "hello test");
+    wxConfigBase::Get()->Write(_("Purpose"), "hello test");
     const wxExFileName fn(TEST_FILE);
-    const wxString header = wxExHeader(wxExApp::GetConfig()).Get(&fn);
+    const wxString header = wxExHeader(wxConfigBase::Get()).Get(&fn);
     CPPUNIT_ASSERT(header.Contains("hello test"));
   }
   else

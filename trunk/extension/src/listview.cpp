@@ -360,7 +360,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
 
   wxString text_use = text;
 
-  if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
+  if (!wxExApp::GetFindReplaceData()->MatchCase())
   {
     text_use.MakeUpper();
   }
@@ -407,12 +407,12 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
     {
       wxString text = item.GetColumnText(col);
 
-      if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
+      if (!wxExApp::GetFindReplaceData()->MatchCase())
       {
         text.MakeUpper();
       }
 
-      if (wxExApp::GetConfig()->GetFindReplaceData()->MatchWord())
+      if (wxExApp::GetFindReplaceData()->MatchWord())
       {
         if (text == text_use)
         {
@@ -727,7 +727,7 @@ void wxExListView::PasteItemsFromClipboard()
     ItemFromText(tkz.GetNextToken());
   }
 
-  if (wxExApp::GetConfigBool("List/SortSync"))
+  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
   {
     SortColumn(_("Modified"), SORT_KEEP);
   }
@@ -763,7 +763,7 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
     const wxString& str1 = (*pitems)[item1];
     const wxString& str2 = (*pitems)[item2];
 
-    if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
+    if (!wxExApp::GetFindReplaceData()->MatchCase())
     {
       if (ascending) return strcmp(str1.Upper(), str2.Upper());
       else           return strcmp(str2.Upper(), str1.Upper());

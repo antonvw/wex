@@ -187,7 +187,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
   wxString text_use = text;
 
-  if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
+  if (!wxExApp::GetFindReplaceData()->MatchCase())
   {
     text_use.MakeUpper();
   }
@@ -241,12 +241,12 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
     {
       wxString text = GetCellValue(i, j);
 
-      if (!wxExApp::GetConfig()->GetFindReplaceData()->MatchCase())
+      if (!wxExApp::GetFindReplaceData()->MatchCase())
       {
         text.MakeUpper();
       }
 
-      if (wxExApp::GetConfig()->GetFindReplaceData()->MatchWord())
+      if (wxExApp::GetFindReplaceData()->MatchWord())
       {
         if (text == text_use)
         {
@@ -299,7 +299,7 @@ void wxExGrid::GetSearchText()
     // Only if we have one cell, so one EOL.
     if (tkz.CountTokens() == 1)
     {
-      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(tkz.GetNextToken());
+      wxExApp::GetFindReplaceData()->SetFindString(tkz.GetNextToken());
     }
   }
   else
@@ -311,7 +311,7 @@ void wxExGrid::GetSearchText()
 
     if (!val.empty())
     {
-      wxExApp::GetConfig()->GetFindReplaceData()->SetFindString(val);
+      wxExApp::GetFindReplaceData()->SetFindString(val);
     }
   }
 }

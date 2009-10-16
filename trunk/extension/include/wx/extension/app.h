@@ -15,9 +15,11 @@
 #include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
-#include <wx/extension/config.h>
+#include <wx/config.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExLog
+
+class wxExFindReplaceData;
 
 /// Offers the application, with a configuration, lexer, printer, logging
 /// and locale.
@@ -44,16 +46,11 @@ public:
 
   /// Gets key as a string.
   static const wxString GetConfig(const wxString& key,
-    const wxString& default_value = wxEmptyString,
-    const wxChar field_separator = ',')
-    {return m_Config->Read(key, default_value, field_separator);}
+    const wxString& default_value = wxEmptyString)
+    {return m_Config->Read(key, default_value);}
 
-  /// Gets key as a bool.
-  static bool GetConfigBool(const wxString& key, bool default_value = true)
-    {return m_Config->ReadBool(key, default_value);}
-
-  /// Gets the config.
-  static wxExConfig* GetConfig() {return m_Config;};
+  /// Gets the find replace data.
+  static wxExFindReplaceData* GetFindReplaceData() {return m_FindReplaceData;};
 
   /// Gets the lexers.
   static wxExLexers* GetLexers() {return m_Lexers;};
@@ -88,7 +85,8 @@ public:
   static void ToggleConfig(const wxString& key);
 private:
   static bool m_Logging;
-  static wxExConfig* m_Config;
+  static wxConfigBase* m_Config;
+  static wxExFindReplaceData* m_FindReplaceData;
   static wxExLexers* m_Lexers;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   static wxHtmlEasyPrinting* m_Printer;

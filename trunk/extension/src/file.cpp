@@ -32,7 +32,7 @@ bool wxExFile::CheckFileSync()
 {
   if (IsOpened() ||
      !m_FileName.GetStat().IsOk() ||
-     !wxExApp::GetConfigBool("AllowSync", true))
+     !wxConfigBase::Get()->ReadBool("AllowSync", true))
   {
     return false;
   }

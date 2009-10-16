@@ -224,7 +224,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   wxExGrid* grid = GetGrid();
   wxExSTC* stc = GetSTC();
   wxExListView* lv = GetListView();
-  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
 
   switch (command.GetId())
   {
@@ -354,7 +354,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     return;
   }
 
-  wxExFindReplaceData* frd = wxExApp::GetConfig()->GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
   const bool find_next = (frd->GetFlags() & wxFR_DOWN);
 
   wxExSTC* stc = GetSTC();

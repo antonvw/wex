@@ -301,7 +301,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_OPEN:
-    m_otl.Logon(this, wxExApp::GetConfig());
+    m_otl.Logon(this, wxConfigBase::Get());
     m_Shell->SetPrompt((m_otl.IsConnected() ? wxExApp::GetConfig(_("Datasource")): "") + ">");
     break;
 

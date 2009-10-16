@@ -10,11 +10,10 @@
 \******************************************************************************/
 
 #include <wx/extension/frd.h>
-#include <wx/extension/config.h>
 
 using namespace std;
 
-wxExFindReplaceData::wxExFindReplaceData(wxExConfig* config)
+wxExFindReplaceData::wxExFindReplaceData(wxConfigBase* config)
   : wxFindReplaceData()
   , m_Config(config)
   , m_TextFindWhat(_("Find what"))

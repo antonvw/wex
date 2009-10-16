@@ -15,17 +15,16 @@
 #include <set>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/config.h> 
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
-
-class wxExConfig;
 
 /// Adds an existing config to wxFindReplaceData, and some members.
 class wxExFindReplaceData : public wxFindReplaceData
 {
 public:
   /// Constructor, gets members from config.
-  wxExFindReplaceData(wxExConfig* config);
+  wxExFindReplaceData(wxConfigBase* config);
 
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
@@ -117,7 +116,7 @@ public:
   void SetMatchWord(bool value);
 private:
   void Update(wxComboBox* cb, const wxString& value) const;
-  wxExConfig* m_Config;
+  wxConfigBase* m_Config;
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;

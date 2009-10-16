@@ -141,7 +141,7 @@ int wxExProcessWithListView::ConfigDialog(
   v.push_back(wxExConfigItem(_("Process folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
 
   const int result = wxExConfigDialog(parent,
-    wxExApp::GetConfig(),
+    wxConfigBase::Get(),
     v,
     title).ShowModal();
 

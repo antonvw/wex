@@ -15,7 +15,7 @@
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/textfile.h>
-#include <wx/extension/config.h>
+#include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
@@ -87,7 +87,7 @@ bool wxExTextFile::m_Cancelled = false;
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
   const wxExTool& tool,
-  wxExConfig* config)
+  wxConfigBase* config)
   : m_FileNameStatistics(filename)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
@@ -244,7 +244,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 {
   bool match = false;
 
-  wxExFindReplaceData* frd = m_Config->GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
 
   if (!frd->IsRegularExpression())
   {
@@ -307,7 +307,7 @@ bool wxExTextFile::Parse()
 
   if (m_Tool.IsFindType())
   {
-    if (m_Config->GetFindReplaceData()->GetFindStringNoCase().empty())
+    if (wxExApp::GetFindReplaceData()->GetFindStringNoCase().empty())
     {
       wxFAIL;
       return false;

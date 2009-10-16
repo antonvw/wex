@@ -51,7 +51,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val");
   CPPUNIT_ASSERT(m_Config->Get("keylong", 12) == 12);
   CPPUNIT_ASSERT(m_Config->ReadBool("keybool", true));
-  CPPUNIT_ASSERT(m_Config->GetFindReplaceData() != NULL);
+  CPPUNIT_ASSERT(wxExApp::GetFindReplaceData() != NULL);
   m_Config->Set("keystring", "val2");
   CPPUNIT_ASSERT(m_Config->Get("keystring", "val") == "val2");
   m_Config->Set("keylong", 15);

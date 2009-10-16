@@ -124,7 +124,7 @@ void wxExListViewFile::AddItems()
   v.push_back(wxExConfigItem(_("Add folders"), CONFIG_CHECKBOX));
 
   wxExConfigDialog dlg(NULL,
-    wxExApp::GetConfig(),
+    wxConfigBase::Get(),
     v,
     _("Add Files"));
 
@@ -137,8 +137,8 @@ void wxExListViewFile::AddItems()
   }
 
   int flags = 0;
-  if (wxExApp::GetConfigBool(_("Add files"))) flags |= wxDIR_FILES;
-  if (wxExApp::GetConfigBool(_("Add folders"))) flags |= wxDIR_DIRS;
+  if (wxConfigBase::Get()->ReadBool(_("Add files"))) flags |= wxDIR_FILES;
+  if (wxConfigBase::Get()->ReadBool(_("Add folders"))) flags |= wxDIR_DIRS;
 
   wxExDirWithListView dir(
     this,
@@ -154,7 +154,7 @@ void wxExListViewFile::AddItems()
   {
     m_ContentsChanged = true;
 
-    if (wxExApp::GetConfigBool("List/SortSync") && m_Type == LIST_PROJECT)
+    if (wxConfigBase::Get()->ReadBool("List/SortSync") && m_Type == LIST_PROJECT)
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -173,7 +173,7 @@ void wxExListViewFile::AfterSorting()
   // Only if we are a project list and not sort syncing, 
   // set contents changed.
   if ( m_Type == LIST_PROJECT &&
-      !wxExApp::GetConfigBool("List/SortSync"))
+      !wxConfigBase::Get()->ReadBool("List/SortSync"))
   {
     m_ContentsChanged = true;
   }
@@ -243,7 +243,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
     ItemFromText(tkz.GetNextToken());
   }
 
-  if (wxExApp::GetConfigBool("List/SortSync"))
+  if (wxConfigBase::Get()->ReadBool("List/SortSync"))
     SortColumn(_("Modified"), SORT_KEEP);
   else
     SortColumnReset();
@@ -549,7 +549,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     !IsShown() ||
      IsOpened() ||
      GetItemCount() == 0 ||
-     !wxExApp::GetConfigBool("AllowSync", true))
+     !wxConfigBase::Get()->ReadBool("AllowSync", true))
   {
     return;
   }
@@ -578,7 +578,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
     if (m_ItemUpdated)
     {
-      if (wxExApp::GetConfigBool("List/SortSync") && m_Type == LIST_PROJECT)
+      if (wxConfigBase::Get()->ReadBool("List/SortSync") && m_Type == LIST_PROJECT)
       {
         SortColumn(_("Modified"), SORT_KEEP);
       }
@@ -692,7 +692,7 @@ bool ListViewDropTarget::OnDropFiles(
     m_Owner->ItemFromText(filenames[n]);
   }
 
-  if (wxExApp::GetConfigBool("List/SortSync"))
+  if (wxConfigBase::Get()->ReadBool("List/SortSync"))
   {
     m_Owner->SortColumn(_("Modified"), SORT_KEEP);
   }
@@ -737,7 +737,7 @@ void RBSFile::GenerateDialog()
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem(_("RBS File"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("RBS Pattern"), CONFIG_DIRPICKERCTRL));
-  wxExConfigDialog dlg(NULL, wxExApp::GetConfig(), v, _("Build RBS File"));
+  wxExConfigDialog dlg(NULL, wxConfigBase::Get(), v, _("Build RBS File"));
   if (dlg.ShowModal() == wxID_CANCEL) return;
 
   const wxString script = wxExApp::GetConfig(_("RBS File"));
@@ -911,7 +911,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
 
     if (GetType() != LIST_PROJECT &&
-        !wxExApp::GetConfigBool("SVN") &&
+        !wxConfigBase::Get()->ReadBool("SVN") &&
         exists && !is_folder)
     {
       wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
@@ -939,7 +939,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists && !is_folder)
     {
-      if (!wxExApp::GetConfigBool("SVN"))
+      if (!wxConfigBase::Get()->ReadBool("SVN"))
       {
         if (!wxExApp::GetConfig(_("Comparator")).empty())
         {
@@ -1239,7 +1239,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     std::vector<wxExConfigItem> v;
 
     v.push_back(wxExConfigItem(
-      wxExApp::GetConfig()->GetFindReplaceData()->GetTextFindWhat(), 
+      wxExApp::GetFindReplaceData()->GetTextFindWhat(), 
       CONFIG_COMBOBOX, 
       wxEmptyString, 
       true));
@@ -1247,22 +1247,22 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     if (tool.GetId() == ID_TOOL_REPORT_REPLACE) 
     {
       v.push_back(wxExConfigItem(
-        wxExApp::GetConfig()->GetFindReplaceData()->GetTextReplaceWith(), 
+        wxExApp::GetFindReplaceData()->GetTextReplaceWith(), 
         CONFIG_COMBOBOX));
     }
 
     v.push_back(wxExConfigItem());
-    v.push_back(wxExConfigItem(wxExApp::GetConfig()->GetFindReplaceData()->GetInfo()));
+    v.push_back(wxExConfigItem(wxExApp::GetFindReplaceData()->GetInfo()));
 
     if (wxExConfigDialog(NULL,
-      wxExApp::GetConfig(),
+      wxConfigBase::Get(),
       v,
       GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
     {
       return;
     }
 
-    wxExApp::Log(wxExApp::GetConfig()->GetFindReplaceData()->GetText(
+    wxExApp::Log(wxExApp::GetFindReplaceData()->GetText(
       tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 

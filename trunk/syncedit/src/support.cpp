@@ -87,7 +87,7 @@ Frame::Frame()
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
 
-  if (wxExApp::GetConfigBool("SVN"))
+  if (wxConfigBase::Get()->ReadBool("SVN"))
   {
     wxMenu* menuSVN = new wxMenu;
     menuSVN->Append(ID_SVN_STAT, wxExEllipsed("&Stat"));
@@ -240,9 +240,9 @@ Frame::Frame()
       wxNO_BORDER));
 
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_HexModeCheckBox->SetValue(wxExApp::GetConfigBool("HexMode", false)); // default no hex
+  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
-  m_SyncCheckBox->SetValue(wxExApp::GetConfigBool("AllowSync"));
+  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync"));
 #endif // wxUSE_CHECKBOX
 
   m_ToolBar->Realize();

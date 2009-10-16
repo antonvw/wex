@@ -10,9 +10,6 @@
 \******************************************************************************/
 
 #include <wx/extension/config.h>
-#include <wx/extension/frd.h>
-
-using namespace std;
 
 wxExConfig::wxExConfig(
   const wxString& filename,
@@ -28,10 +25,4 @@ wxExConfig::wxExConfig(
       wxEmptyString,
       style)
 {
-  m_FindReplaceData = new wxExFindReplaceData(this);
-}
-
-wxExConfig::~wxExConfig()
-{
-  delete m_FindReplaceData;
 }

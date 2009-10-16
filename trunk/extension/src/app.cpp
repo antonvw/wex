@@ -12,12 +12,14 @@
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
+#include <wx/extension/config.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
-wxExConfig* wxExApp::m_Config = NULL;
+wxConfigBase* wxExApp::m_Config = NULL;
 wxExLexers* wxExApp::m_Lexers = NULL;
 wxLocale wxExApp::m_Locale;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
@@ -32,6 +34,7 @@ int wxExApp::OnExit()
 
   delete m_Lexers;
   delete m_Config;
+  delete m_FindReplaceData;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;
 #endif
@@ -107,6 +110,8 @@ bool wxExApp::OnInit()
     );
 
   m_Lexers->Read();
+
+  m_FindReplaceData = new wxExFindReplaceData(m_Config);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
