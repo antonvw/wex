@@ -72,7 +72,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/art.cpp</sources>
-    <sources>../extension/src/config.cpp</sources>
     <sources>../extension/src/configdlg.cpp</sources>
     <sources>../extension/src/dialog.cpp</sources>
     <sources>../extension/src/dir.cpp</sources>
@@ -99,7 +98,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <headers>../extension/include/wx/extension/app.h</headers>
     <headers>../extension/include/wx/extension/art.h</headers>
-    <headers>../extension/include/wx/extension/config.h</headers>
     <headers>../extension/include/wx/extension/configdlg.h</headers>
     <headers>../extension/include/wx/extension/defs.h</headers>
     <headers>../extension/include/wx/extension/dialog.h</headers>
