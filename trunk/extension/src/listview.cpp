@@ -191,7 +191,8 @@ wxExListView::wxExListView(wxWindow* parent,
     }
   }
 
-  SetFont(wxConfigBase::Get()->ReadObject(_("List Font"), wxFont()));
+  SetFont(wxConfigBase::Get()->ReadObject(
+    _("List Font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
   wxAcceleratorEntry entries[7];
 

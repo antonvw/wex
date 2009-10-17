@@ -474,7 +474,9 @@ wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
 {
   wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
     wxID_ANY,
-    m_Config->ReadObject(m_ConfigGroup + text, wxFont()),
+    m_Config->ReadObject(
+      m_ConfigGroup + text, 
+      wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)),
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
 
