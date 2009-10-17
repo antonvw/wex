@@ -60,7 +60,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   //SetName("wxExFrame");
   //wxPersistenceManager::Get().RegisterAndRestore(this, this);
 
-  if (wxConfigBase::Get()->ReadLong("Frame/Maximized", 0l))
+  if (wxConfigBase::Get()->ReadBool("Frame/Maximized", false))
   {
     Maximize(true);
   }
@@ -203,11 +203,11 @@ void wxExFrame::OnClose(wxCloseEvent& event)
     // Set config values that might have changed.
     if (IsMaximized())
     {
-      wxConfigBase::Get()->Write("Frame/Maximized", (bool)1);
+      wxConfigBase::Get()->Write("Frame/Maximized", true);
     }
     else
     {
-      wxConfigBase::Get()->Write("Frame/Maximized", (bool)0);
+      wxConfigBase::Get()->Write("Frame/Maximized", false);
       const wxRect rect = GetRect();
       wxConfigBase::Get()->Write("Frame/X", (long)rect.GetX());
       wxConfigBase::Get()->Write("Frame/Y", (long)rect.GetY());
