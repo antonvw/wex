@@ -16,32 +16,6 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 
-/// Offers a general configuration.
-#ifdef wxExUSE_PORTABLE
-#include <wx/fileconf.h>
-class wxExConfig : public wxFileConfig
-#else
-#include <wx/config.h>
-class wxExConfig : public wxConfig
-#endif
-{
-public:
-  /// Default constructor.
-  wxExConfig(
-    const wxString& filename = wxEmptyString,
-    long style = 0)
-#ifdef wxExUSE_PORTABLE
-  : wxFileConfig(
-#else
-  : wxConfig(
-#endif
-      wxEmptyString,
-      wxEmptyString,
-      filename,
-      wxEmptyString,
-      style) {}
-};
-
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
 wxExFindReplaceData* wxExApp::m_FindReplaceData = NULL;
@@ -110,17 +84,23 @@ bool wxExApp::OnInit()
   }
 
   // Now construct the config, as most classes use it.
-  wxExConfig* config;
+  wxConfigBase* config;
 #ifdef wxExUSE_PORTABLE
-  config = new wxExConfig(
+  config = new wxFileConfig(
+    wxEmptyString,
+    wxEmptyString,
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
       GetAppName() + wxString(".cfg")).GetFullPath(),
+    wxEmptyString,
     wxCONFIG_USE_LOCAL_FILE);
 #else
   // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
   // (ignored on non-Unix system)
-  config = new wxExConfig(
+  config = new wxConfig(
+    wxEmptyString,
+    wxEmptyString,
+    wxEmptyString,
     wxEmptyString,
     wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
