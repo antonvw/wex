@@ -148,7 +148,7 @@ MyFrame::MyFrame()
       Caption(_("Statistics")).
       Name("STATISTICS"));
 
-  GetManager().LoadPerspective(wxExApp::GetConfig("Perspective"));
+  GetManager().LoadPerspective(wxConfigBase::Get()->Read("Perspective"));
   GetManager().GetPane("QUERY").Show(false);
 
   GetManager().Update();
@@ -302,7 +302,8 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case ID_DATABASE_OPEN:
     m_otl.Logon(this, wxConfigBase::Get());
-    m_Shell->SetPrompt((m_otl.IsConnected() ? wxExApp::GetConfig(_("Datasource")): "") + ">");
+    m_Shell->SetPrompt(
+      (m_otl.IsConnected() ? wxConfigBase::Get()->Read(_("Datasource")): "") + ">");
     break;
 
   case ID_SHELL_COMMAND:

@@ -190,7 +190,7 @@ MyFrame::MyFrame()
       MaximizeButton(true).
       Caption(_("Statistics")).
       Name("STATISTICS"));
-  GetManager().LoadPerspective(wxExApp::GetConfig("Perspective"));
+  GetManager().LoadPerspective(wxConfigBase::Get()->Read("Perspective"));
 
   if (SetupSocketServer())
   {
@@ -428,7 +428,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 		_("Input") + ":",
       wxEmptyString,
       _("Buffer Size"),
-      wxExApp::GetConfig(_("Buffer Size"), 4096),
+      wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096),
       1,
       65536)) > 0)
     {
@@ -554,18 +554,18 @@ void MyFrame::OnSocket(wxSocketEvent& event)
     const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
     WriteDataToClient(buffer, sock);
 
-    if (wxExApp::GetConfig(_("Timer"), 0) > 0 && !m_Timer.IsRunning())
+    if (wxConfigBase::Get()->ReadLong(_("Timer"), 0) > 0 && !m_Timer.IsRunning())
     {
-      m_Timer.Start(1000 * wxExApp::GetConfig(_("Timer"), 0));
+      m_Timer.Start(1000 * wxConfigBase::Get()->ReadLong(_("Timer"), 0));
 #if wxUSE_STATUSBAR
-      StatusText(wxString::Format("%ld", wxExApp::GetConfig(_("Timer"), 0)), "PaneTimer");
+      StatusText(wxString::Format("%ld", wxConfigBase::Get()->ReadLong(_("Timer"), 0)), "PaneTimer");
 #endif
     }
 
     const wxString text =
       wxString::Format(_("%s connected at %d"),
         wxTheApp->GetAppName().c_str(),
-        wxExApp::GetConfig(_("Port"), 3000));
+        wxConfigBase::Get()->ReadLong(_("Port"), 3000));
 
 #if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
@@ -583,7 +583,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
         // wxSocketEvent again.
         sock->SetNotify(wxSOCKET_LOST_FLAG);
 
-        const int size = wxExApp::GetConfig(_("Buffer Size"), 4096);
+        const int size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
 
         if (size <= 0)
         {
@@ -598,7 +598,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
 
         if (sock->LastCount() > 0)
         {
-          if (wxConfigBase::Get()->ReadBool(_("Echo")))
+          if (wxConfigBase::Get()->ReadBool(_("Echo"), true))
           {
             sock->Write(buffer, sock->LastCount());
             SocketCheckError(sock);
@@ -617,9 +617,9 @@ void MyFrame::OnSocket(wxSocketEvent& event)
             }
           }
 
-          if (wxConfigBase::Get()->ReadBool(_("Log Data")))
+          if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
           {
-            if (wxConfigBase::Get()->ReadBool(_("Count Only")))
+            if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
             {
               m_LogWindow->AppendTextForced(
                 wxString::Format(_("read: %d bytes from: %s"), 
@@ -669,7 +669,7 @@ void MyFrame::OnSocket(wxSocketEvent& event)
           m_TaskBarIcon->SetIcon(
             wxICON(ready), 
             wxString::Format(_("server listening at %d"), 
-              wxExApp::GetConfig(_("Port"), 3000)));
+              wxConfigBase::Get()->ReadLong(_("Port"), 3000)));
 #endif
         }
         break;
@@ -706,16 +706,16 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_CLIENT_ECHO:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Echo")));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Echo"), true));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data")));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data")));
-    event.Check(wxConfigBase::Get()->ReadBool(_("Count Only")));
+    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));
     break;
 
   case ID_CLEAR_STATISTICS:
@@ -785,8 +785,8 @@ bool MyFrame::SetupSocketServer()
 {
   // Create the address - defaults to localhost and port as specified
   wxIPV4address addr;
-  addr.Hostname(wxExApp::GetConfig(_("Hostname"), "localhost"));
-  addr.Service(wxExApp::GetConfig(_("Port"), 3000));
+  addr.Hostname(wxConfigBase::Get()->Read(_("Hostname"), "localhost"));
+  addr.Service(wxConfigBase::Get()->ReadLong(_("Port"), 3000));
 
   // Create the socket
   m_SocketServer = new wxSocketServer(addr);
@@ -796,7 +796,7 @@ bool MyFrame::SetupSocketServer()
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
-    text = wxString::Format(_("could not listen at %d"), wxExApp::GetConfig(_("Port"), 3000));
+    text = wxString::Format(_("could not listen at %d"), wxConfigBase::Get()->ReadLong(_("Port"), 3000));
 #if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
@@ -812,7 +812,7 @@ bool MyFrame::SetupSocketServer()
   else
   {
     text =
-      wxString::Format(_("server listening at %d"), wxExApp::GetConfig(_("Port"), 3000));
+      wxString::Format(_("server listening at %d"), wxConfigBase::Get()->ReadLong(_("Port"), 3000));
 
 #if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
@@ -918,7 +918,7 @@ void MyFrame::TimerDialog()
     _("Input (seconds):"),
     wxEmptyString,
     _("Repeat Timer"),
-    wxExApp::GetConfig(_("Timer"), 60),
+    wxConfigBase::Get()->ReadLong(_("Timer"), 60),
     1,
     3600 * 24);
 
@@ -973,9 +973,9 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
     "PaneBytes");
 #endif
 
-  if (wxConfigBase::Get()->ReadBool(_("Log Data")))
+  if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
   {
-    if (wxConfigBase::Get()->ReadBool(_("Count Only")))
+    if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
     {
       m_LogWindow->AppendTextForced(
         wxString::Format(_("write: %d bytes to: %s"),
