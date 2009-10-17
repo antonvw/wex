@@ -15,7 +15,6 @@
 #include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
-#include <wx/config.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExLog
 
