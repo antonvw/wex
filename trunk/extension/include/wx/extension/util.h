@@ -107,7 +107,7 @@ void wxExComboBoxFromString(
   const wxChar field_separator = ',');
 
 /// Adds entries from combobox to a text string.
-bool wxExComboBoxToString(
+void wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
   const wxChar field_separator = ',',

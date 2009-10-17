@@ -118,10 +118,13 @@ void wxExComboBoxFromString(
     }
   }
 
-  if (cb->GetCount() > 0) cb->SetValue(cb->GetString(0));
+  if (cb->GetCount() > 0) 
+  {
+    cb->SetValue(cb->GetString(0));
+  }
 }
 
-bool wxExComboBoxToString(
+void wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
   const wxChar field_separator,
@@ -141,8 +144,10 @@ bool wxExComboBoxToString(
           text += field_separator + cb->GetString(i);
     }
     break;
+
     // No change necessary, the string is already present as the first one.
     case 0: break;
+
     default:
     {
       // Reorder. The new first element already present, just add all others.
@@ -154,8 +159,6 @@ bool wxExComboBoxToString(
       }
     }
   }
-
-  return true;
 }
 
 #endif // wxUSE_GUI
