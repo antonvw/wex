@@ -142,7 +142,7 @@ bool wxExComboBoxToString(
     }
     break;
     // No change necessary, the string is already present as the first one.
-    case 0: return false; break;
+    case 0: break;
     default:
     {
       // Reorder. The new first element already present, just add all others.

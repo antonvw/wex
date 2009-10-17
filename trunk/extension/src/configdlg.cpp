@@ -718,22 +718,20 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
       wxString text;
-      if (wxExComboBoxToString(cb, text, ',', it->m_MaxItems))
-      {
-        m_Config->Write(m_ConfigGroup + cb->GetName(), text);
+      wxExComboBoxToString(cb, text, ',', it->m_MaxItems);
+      m_Config->Write(m_ConfigGroup + cb->GetName(), text);
 
-        if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextFindWhat())
-        {
-          // The Get gets text before the ','!
-          wxExApp::GetFindReplaceData()->SetFindString(
-            m_Config->Read(wxExApp::GetFindReplaceData()->GetTextFindWhat()));
-        }
-        else if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextReplaceWith())
-        {
-          // The Get gets text before the ','!
-          wxExApp::GetFindReplaceData()->SetReplaceString(
-            m_Config->Read(wxExApp::GetFindReplaceData()->GetTextReplaceWith()));
-        }
+      if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextFindWhat())
+      {
+        // The Get gets text before the ','!
+        wxExApp::GetFindReplaceData()->SetFindString(
+          m_Config->Read(wxExApp::GetFindReplaceData()->GetTextFindWhat()));
+      }
+      else if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextReplaceWith())
+      {
+        // The Get gets text before the ','!
+        wxExApp::GetFindReplaceData()->SetReplaceString(
+          m_Config->Read(wxExApp::GetFindReplaceData()->GetTextReplaceWith()));
       }
       }
       break;
