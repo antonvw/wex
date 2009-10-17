@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
