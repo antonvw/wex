@@ -562,7 +562,7 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
     inc,
     m_Config->ReadLong(m_ConfigGroup + text, min));
 
-  spinctrl->SetValue(m_Config->ReadLong(m_ConfigGroup + text, min));
+  spinctrl->SetValue(m_Config->ReadDouble(m_ConfigGroup + text, min));
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
