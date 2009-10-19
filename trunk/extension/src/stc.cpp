@@ -751,7 +751,7 @@ int wxExSTC::ConfigDialog(
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
-    items.push_back(wxExConfigItem(_("Edge column"), CONFIG_INT, _("Edge")));
+    items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
 
     map<long, const wxString> echoices;
     echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
@@ -774,9 +774,9 @@ int wxExSTC::ConfigDialog(
 
     items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
 
-    items.push_back(wxExConfigItem(_("Divider"), CONFIG_INT, _("Margin")));
-    items.push_back(wxExConfigItem(_("Folding"), CONFIG_INT, _("Margin")));
-    items.push_back(wxExConfigItem(_("Line number"), CONFIG_INT, _("Margin")));
+    items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
+    items.push_back(wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
+    items.push_back(wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
 
     items.push_back(wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
   }
