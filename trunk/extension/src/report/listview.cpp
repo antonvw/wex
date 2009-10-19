@@ -560,7 +560,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
     if ( item.GetFileName().FileExists() &&
         (item.GetFileName().GetStat().GetModificationTime() != item.GetColumnText(_("Modified")) ||
-        (size_t)item.GetFileName().GetStat().IsReadOnly() != GetItemData(m_ItemNumber))
+         item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
         )
     {
       item.Update();

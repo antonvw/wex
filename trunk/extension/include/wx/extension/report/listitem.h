@@ -40,6 +40,9 @@ public:
   /// and sets all attributes.
   void Insert(long index = -1);
 
+  /// Returns true if this item is readonly (on the listview).
+  bool IsReadOnly() const {return m_IsReadOnly;};
+
   /// Runs a tool on this item.
   const wxExFileNameStatistics Run(const wxExTool& tool);
 
@@ -49,7 +52,10 @@ public:
   /// Sets revision list columns with data from specified rcs.
   void UpdateRevisionList(const wxExRCS& rcs);
 private:
+  void SetReadOnly(bool readonly);
+
   wxExFileNameStatistics m_Statistics;
   const wxString m_FileSpec;
+  bool m_IsReadOnly;
 };
 #endif

@@ -27,6 +27,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
       )
   , m_FileSpec(GetColumnText(_("Type"), false))
 {
+  m_IsReadOnly = (GetListView()->GetItemData(itemnumber) > 0);
 }
 
 wxExListItemWithFileName::wxExListItemWithFileName(
@@ -112,13 +113,9 @@ const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
   return m_Statistics;
 }
 
-void wxExListItemWithFileName::Update()
+void wxExListItemWithFileName::SetReadOnly(bool readonly)
 {
-  // Update readonly state in listview item data.
-  // SetData does not work, as list items are constructed/destructed a lot.
-  GetListView()->SetItemData(GetId(), m_Statistics.GetStat().IsReadOnly());
-
-  if (m_Statistics.GetStat().IsReadOnly())
+  if (readonly)
   {
     SetTextColour(*wxRED);
   }
@@ -126,6 +123,15 @@ void wxExListItemWithFileName::Update()
   {
     SetTextColour(*wxBLACK);
   }
+
+  // Using GetTextColour did not work, so keep state in boolean.
+  m_IsReadOnly = readonly;
+  GetListView()->SetItemData(GetId(), m_IsReadOnly);
+}
+
+void wxExListItemWithFileName::Update()
+{
+  SetReadOnly(m_Statistics.GetStat().IsReadOnly());
 
   if (!GetListView()->SetItem(*this))
   {
