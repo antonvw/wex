@@ -94,7 +94,7 @@ void wxExFindInFiles(bool replace)
   wxExDirWithListView dir(
     tool,
     wxConfigBase::Get()->Read(_("In folder")),
-    wxConfigBase::Get()->Read(_("In files")));
+    wxConfigBase::Get()->Read(_("In files"), wxExApp::GetLexers()->BuildComboBox()));
 
   dir.FindFiles();
   dir.GetStatistics().Log(tool);
