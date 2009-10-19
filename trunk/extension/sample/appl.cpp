@@ -308,9 +308,14 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       v.push_back(wxExConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT, "Integers", true));
     }
 
-    for (size_t k = 1; k <= 10; k++)
+    for (size_t s = 1; s <= 10; s++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("spin%d"), k), 1, k, wxString("Spin controls")));
+      v.push_back(wxExConfigItem(wxString::Format(_("spin%d"), s), 1, s, wxString("Spin controls")));
+    }
+
+    for (size_t sd = 1; sd <= 10; sd++)
+    {
+      v.push_back(wxExConfigItem(wxString::Format(_("spin%d"), sd), 1, sd, 1, wxString("Spin controls double")));
     }
 
     for (size_t l = 1; l <= 10; l++)
