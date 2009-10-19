@@ -17,8 +17,6 @@
 #include <wx/extension/textfile.h> // for wxExRCS
 
 /// Offers a list item associated with a file on an wxExListView.
-/// The item is coloured according to
-/// the modification time of the file it is associated with.
 /// It allows you to run tools on the item and keeps statistics when running.
 class wxExListItemWithFileName : public wxExListItem
 {
