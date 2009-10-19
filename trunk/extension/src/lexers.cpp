@@ -21,29 +21,6 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 {
 }
 
-const wxString wxExLexers::BuildComboBox() const
-{
-  wxString combobox;
-
-  for (
-    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
-  {
-    if (!it->GetAssociations().empty())
-    {
-      if (!combobox.empty())
-      {
-        combobox += ",";
-      }
-
-      combobox += it->GetAssociations();
-    }
-  }
-
-  return combobox;
-}
-
 const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =
@@ -152,6 +129,29 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   }
 
   return wxExLexer();
+}
+
+const wxString wxExLexers::GetLexerAssociations() const
+{
+  wxString text;
+
+  for (
+    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
+  {
+    if (!it->GetAssociations().empty())
+    {
+      if (!text.empty())
+      {
+        text += ",";
+      }
+
+      text += it->GetAssociations();
+    }
+  }
+
+  return text;
 }
 
 const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
@@ -412,12 +412,12 @@ bool wxExLexers::Read()
   // Initialize the config.
   if (!wxConfigBase::Get()->Exists(_("In files")))
   {
-    wxConfigBase::Get()->Write(_("In files"), BuildComboBox());
+    wxConfigBase::Get()->Write(_("In files"), GetLexerAssociations());
   }
 
   if (!wxConfigBase::Get()->Exists(_("Add what")))
   {
-    wxConfigBase::Get()->Read(_("Add what"), BuildComboBox());
+    wxConfigBase::Get()->Read(_("Add what"), GetLexerAssociations());
   }
 
   return true;

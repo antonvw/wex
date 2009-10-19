@@ -105,8 +105,7 @@ public:
     wxExLexer& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
-  /// Builds a combobox string from available lexers.
-  const wxString BuildComboBox() const;
+  const wxString GetLexerAssociations() const;
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
   const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
