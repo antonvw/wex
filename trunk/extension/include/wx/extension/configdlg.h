@@ -186,7 +186,6 @@ public:
   /// \todo The dialog does not set it's window size correctly when
   /// notebooks are used, you have to specify size yourself.
   wxExConfigDialog(wxWindow* parent,
-    wxConfigBase* config,
     std::vector<wxExConfigItem> v,
     const wxString& title = _("Options"),
     const wxString& configGroup = wxEmptyString,

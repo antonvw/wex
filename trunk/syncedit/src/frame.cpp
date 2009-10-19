@@ -582,7 +582,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     v.push_back(wxExConfigItem()); // a spacer
     v.push_back(wxExConfigItem("SVN", CONFIG_CHECKBOX));
     v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
-    wxExConfigDialog(this, wxConfigBase::Get(), v, _("Set SVN And Comparator")).ShowModal();
+    wxExConfigDialog(this, v, _("Set SVN And Comparator")).ShowModal();
     }
     break;
   case ID_OPTION_EDITOR:
@@ -598,7 +598,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
       if (wxExConfigDialog(
         this,
-        wxConfigBase::Get(),
         v,
         _("Set List Font")).ShowModal() == wxID_OK)
       {

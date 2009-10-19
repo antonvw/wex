@@ -799,7 +799,6 @@ int wxExSTC::ConfigDialog(
   {
     wxExConfigDialog dlg(
       parent,
-      wxConfigBase::Get(),
       items,
       title,
       GetConfigKeyBase(),
@@ -818,7 +817,6 @@ int wxExSTC::ConfigDialog(
     {
       m_ConfigDialog = new wxExConfigDialog(
         parent,
-        wxConfigBase::Get(),
         items,
         title,
         GetConfigKeyBase(),

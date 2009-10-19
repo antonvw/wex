@@ -51,7 +51,6 @@ bool wxExOTL::Logon(
 
   // Always show the dialog.
   if (wxExConfigDialog(parent,
-    config,
     v,
     title).ShowModal() == wxID_CANCEL)
   {

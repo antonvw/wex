@@ -121,7 +121,6 @@ void wxExListViewFile::AddItems()
   v.push_back(wxExConfigItem(_("Add folders"), CONFIG_CHECKBOX));
 
   wxExConfigDialog dlg(NULL,
-    wxConfigBase::Get(),
     v,
     _("Add Files"));
 
@@ -734,7 +733,7 @@ void RBSFile::GenerateDialog()
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem(_("RBS File"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("RBS Pattern"), CONFIG_DIRPICKERCTRL));
-  wxExConfigDialog dlg(NULL, wxConfigBase::Get(), v, _("Build RBS File"));
+  wxExConfigDialog dlg(NULL, v, _("Build RBS File"));
   if (dlg.ShowModal() == wxID_CANCEL) return;
 
   const wxString script = wxConfigBase::Get()->Read(_("RBS File"));
@@ -1252,7 +1251,6 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     v.push_back(wxExConfigItem(wxExApp::GetFindReplaceData()->GetInfo()));
 
     if (wxExConfigDialog(NULL,
-      wxConfigBase::Get(),
       v,
       GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
     {

@@ -464,7 +464,6 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     const long flags = (m_SocketServer == NULL ? wxOK|wxCANCEL: wxCANCEL);
 
     wxExConfigDialog(this,
-      wxConfigBase::Get(),
       v,
       _("Server Config"),
       wxEmptyString,

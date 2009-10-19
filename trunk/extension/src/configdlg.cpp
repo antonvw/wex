@@ -42,7 +42,6 @@ END_EVENT_TABLE()
 // wxPropertySheetDialog has been tried as well,
 // then you always have a notebook, and apply button is not supported.
 wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
-  wxConfigBase* config,
   vector<wxExConfigItem> v,
   const wxString& title,
   const wxString& configGroup,
@@ -55,7 +54,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   long style,
   const wxString& name)
   : wxExDialog(parent, title, flags, id, pos, size, style, name)
-  , m_Config(config)
+  , m_Config(wxConfigBase::Get())
   , m_ConfigGroup(configGroup)
   , m_ForceCheckBoxChecked(false)
 {

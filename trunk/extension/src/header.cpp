@@ -118,5 +118,5 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 
   return wxExConfigDialog(
     parent, 
-    m_Config, v, title).ShowModal();
+    v, title).ShowModal();
 }

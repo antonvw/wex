@@ -69,7 +69,6 @@ void wxExFindInFiles(bool replace)
   v.push_back(wxExConfigItem(wxExApp::GetFindReplaceData()->GetInfo()));
 
   if (wxExConfigDialog(NULL,
-    wxConfigBase::Get(),
     v,
     (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
   {

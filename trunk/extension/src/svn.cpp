@@ -81,7 +81,6 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     }
 
     m_ReturnCode = (wxStandardID)wxExConfigDialog(parent,
-      wxConfigBase::Get(),
       v,
       m_Caption).ShowModal();
 
