@@ -418,7 +418,7 @@ void wxExLexers::Read()
 
   if (!wxConfigBase::Get()->Exists(_("Add what")))
   {
-    wxConfigBase::Get()->Read(_("Add what"), GetLexerAssociations());
+    wxConfigBase::Get()->Write(_("Add what"), GetLexerAssociations());
   }
 }
 
