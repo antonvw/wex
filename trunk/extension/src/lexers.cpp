@@ -356,15 +356,16 @@ const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
 
 bool wxExLexers::Read()
 {
-  wxXmlDocument doc;
-
   // This test is to prevent showing an error if the lexers files does not exist,
   // as this is not required.
   if (!m_FileName.FileExists())
   {
     return false;
   } 
-  else if (!doc.Load(m_FileName.GetFullPath()))
+
+  wxXmlDocument doc;
+
+  if (!doc.Load(m_FileName.GetFullPath()))
   {
     return false;
   }
