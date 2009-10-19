@@ -354,20 +354,20 @@ const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
   return text;
 }
 
-bool wxExLexers::Read()
+void wxExLexers::Read()
 {
-  // This test is to prevent showing an error if the lexers files does not exist,
+  // This test is to prevent showing an error if the lexers file does not exist,
   // as this is not required.
   if (!m_FileName.FileExists())
   {
-    return false;
+    return;
   } 
 
   wxXmlDocument doc;
 
   if (!doc.Load(m_FileName.GetFullPath()))
   {
-    return false;
+    return;
   }
 
   // Initialize members.
@@ -420,8 +420,6 @@ bool wxExLexers::Read()
   {
     wxConfigBase::Get()->Read(_("Add what"), GetLexerAssociations());
   }
-
-  return true;
 }
 
 bool wxExLexers::ShowDialog(

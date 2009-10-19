@@ -95,8 +95,7 @@ public:
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
   /// Reads the lexers, keywords, markers and styles from file.
-  /// Returns true if file exists and is valid xml document.
-  bool Read();
+  void Read();
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.
