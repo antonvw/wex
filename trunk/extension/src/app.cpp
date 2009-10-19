@@ -119,6 +119,12 @@ bool wxExApp::OnInit()
 
   m_Lexers->Read();
 
+  // Initialize the config.
+  if (!wxConfigBase::Get()->Exists(_("In files")))
+  {
+    wxConfigBase::Get()->Write(_("In files"), m_Lexers->BuildComboBox());
+  }
+
   m_FindReplaceData = new wxExFindReplaceData(config);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE

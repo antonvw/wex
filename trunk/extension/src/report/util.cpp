@@ -49,9 +49,6 @@ void wxExFindInFiles(bool replace)
 #endif
   }
 
-  // To initialize the combobox.
-  wxConfigBase::Get()->Read(_("In files"), wxExApp::GetLexers()->BuildComboBox());
-
   std::vector<wxExConfigItem> v;
   v.push_back(
     wxExConfigItem(wxExApp::GetFindReplaceData()->GetTextFindWhat(), 
@@ -94,7 +91,7 @@ void wxExFindInFiles(bool replace)
   wxExDirWithListView dir(
     tool,
     wxConfigBase::Get()->Read(_("In folder")),
-    wxConfigBase::Get()->Read(_("In files"), wxExApp::GetLexers()->BuildComboBox()));
+    wxConfigBase::Get()->Read(_("In files")));
 
   dir.FindFiles();
   dir.GetStatistics().Log(tool);
