@@ -107,7 +107,6 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
 
   // test wxExLexers
-  CPPUNIT_ASSERT(!m_Lexers->BuildComboBox().empty());
   CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName(TEST_FILE)).empty());
   CPPUNIT_ASSERT(m_Lexers->Count() > 0);
   CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");

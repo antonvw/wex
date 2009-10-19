@@ -62,9 +62,6 @@ public:
   /// Constructor for lexers from specified filename.
   wxExLexers(const wxFileName& filename);
 
-  /// Builds a combobox string from available lexers.
-  const wxString BuildComboBox() const;
-
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
 
@@ -108,6 +105,8 @@ public:
     wxExLexer& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
+  /// Builds a combobox string from available lexers.
+  const wxString BuildComboBox() const;
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
   const wxExLexer ParseTagLexer(const wxXmlNode* node) const;

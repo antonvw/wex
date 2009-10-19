@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
@@ -406,6 +407,17 @@ bool wxExLexers::Read()
     }
 
     child = child->GetNext();
+  }
+
+  // Initialize the config.
+  if (!wxConfigBase::Get()->Exists(_("In files")))
+  {
+    wxConfigBase::Get()->Write(_("In files"), BuildComboBox());
+  }
+
+  if (!wxConfigBase::Get()->Exists(_("Add what")))
+  {
+    wxConfigBase::Get()->Read(_("Add what"), BuildComboBox());
   }
 
   return true;
