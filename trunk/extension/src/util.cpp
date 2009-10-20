@@ -16,7 +16,9 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
+#include <wx/extension/app.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/frd.h>
 
 const wxString wxExAlignText(
   const wxString& lines,
@@ -103,12 +105,14 @@ const wxString wxExClipboardGet()
 #if wxUSE_GUI
 void wxExComboBoxFromString(
   wxComboBox* cb,
-  const wxString& text,
-  const wxChar field_separator)
+  const wxString& text)
 {
   wxASSERT(cb != NULL);
 
-  wxStringTokenizer tkz(text, field_separator);
+  wxStringTokenizer tkz(
+    text, 
+    wxExApp::GetFindReplaceData()->GetFieldSeparator());
+
   while (tkz.HasMoreTokens())
   {
     const wxString val = tkz.GetNextToken();
@@ -127,7 +131,6 @@ void wxExComboBoxFromString(
 void wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
-  const wxChar field_separator,
   size_t max_items)
 {
   wxASSERT(cb != NULL);
@@ -141,7 +144,7 @@ void wxExComboBoxToString(
       // simply by appending all combobox items.
       for (size_t i = 0; i < max_items; i++)
         if (i < max_items - 1 && i < cb->GetCount())
-          text += field_separator + cb->GetString(i);
+          text += wxExApp::GetFindReplaceData()->GetFieldSeparator() + cb->GetString(i);
     }
     break;
 
@@ -155,7 +158,7 @@ void wxExComboBoxToString(
       {
         const wxString cb_element = cb->GetString(i);
         if (cb_element != cb->GetValue())
-          text += field_separator + cb_element;
+          text += wxExApp::GetFindReplaceData()->GetFieldSeparator() + cb_element;
       }
     }
   }

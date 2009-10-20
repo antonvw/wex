@@ -103,14 +103,12 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
 /// Adds entries from a combobox to a text string.
 void wxExComboBoxFromString(
   wxComboBox* cb,
-  const wxString& text,
-  const wxChar field_separator = ',');
+  const wxString& text);
 
 /// Adds entries from combobox to a text string.
 void wxExComboBoxToString(
   const wxComboBox* cb,
   wxString& text,
-  const wxChar field_separator = ',',
   size_t max_items = 25);
 
 /// Calls OpenFile for wxExFrame, if this is your top window.

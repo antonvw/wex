@@ -16,6 +16,7 @@ using namespace std;
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
   , m_Config(wxConfigBase::Get())
+  , m_FieldSeparator('\xFF')
   , m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
@@ -83,7 +84,7 @@ void wxExFindReplaceData::FromReplaceString(wxComboBox* cb)
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
-  wxFindReplaceData::SetFindString(value.BeforeFirst(','));
+  wxFindReplaceData::SetFindString(value.BeforeFirst(m_FieldSeparator));
 
   m_FindStringNoCase = MatchCase() ? GetFindString(): GetFindString().Upper();
 
@@ -123,7 +124,7 @@ void wxExFindReplaceData::SetMatchWord(bool value)
 
 void wxExFindReplaceData::SetReplaceString(const wxString& value)
 {
-  wxFindReplaceData::SetReplaceString(value.BeforeFirst(','));
+  wxFindReplaceData::SetReplaceString(value.BeforeFirst(m_FieldSeparator));
 }
 
 void wxExFindReplaceData::Update(wxComboBox* cb, const wxString& value) const

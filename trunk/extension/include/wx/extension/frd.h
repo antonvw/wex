@@ -45,6 +45,9 @@ public:
   /// Fills a combobox with the replace string (see above).
   void FromReplaceString(wxComboBox* cb);
 
+  /// Gets the field separator.
+  const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
+
   /// Gets find/replace info text.
   const wxString GetText(bool replace = false) const {
     wxString log = _("Searching for") + ": " + m_TextFindWhat;
@@ -119,11 +122,15 @@ public:
   void SetReplaceString(const wxString& value);
 private:
   void Update(wxComboBox* cb, const wxString& value) const;
-  wxConfigBase* m_Config;
+
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;
+
+  wxConfigBase* m_Config;
+
+  const wxChar m_FieldSeparator;
 
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;

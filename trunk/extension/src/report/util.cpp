@@ -470,7 +470,9 @@ ComboBox::ComboBox(
   SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
     wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
-  wxExComboBoxFromString(this, wxConfigBase::Get()->Read("FindReplace/FindStrings"));
+  wxExComboBoxFromString(
+    this, 
+    wxConfigBase::Get()->Read(wxExApp::GetFindReplaceData()->GetTextFindWhat()));
 
   // And override the value set by previous, as we want text to be same as in Find.
   SetValue(wxExApp::GetFindReplaceData()->GetFindString());

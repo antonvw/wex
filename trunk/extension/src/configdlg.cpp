@@ -719,7 +719,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
       wxString text;
-      wxExComboBoxToString(cb, text, ',', it->m_MaxItems);
+      wxExComboBoxToString(cb, text, it->m_MaxItems);
       m_Config->Write(m_ConfigGroup + cb->GetName(), text);
 
       if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextFindWhat())
