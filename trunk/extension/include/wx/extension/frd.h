@@ -114,6 +114,9 @@ public:
 
   /// Sets flags for match word.
   void SetMatchWord(bool value);
+
+  /// Sets the replace string.
+  void SetReplaceString(const wxString& value);
 private:
   void Update(wxComboBox* cb, const wxString& value) const;
   wxConfigBase* m_Config;

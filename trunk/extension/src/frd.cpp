@@ -83,7 +83,7 @@ void wxExFindReplaceData::FromReplaceString(wxComboBox* cb)
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
-  wxFindReplaceData::SetFindString(value);
+  wxFindReplaceData::SetFindString(value.BeforeFirst(','));
 
   m_FindStringNoCase = MatchCase() ? GetFindString(): GetFindString().Upper();
 
@@ -119,6 +119,11 @@ void wxExFindReplaceData::SetMatchWord(bool value)
   if (value) flags |= wxFR_WHOLEWORD;
   else       flags &= ~wxFR_WHOLEWORD;
   SetFlags(flags);
+}
+
+void wxExFindReplaceData::SetReplaceString(const wxString& value)
+{
+  wxFindReplaceData::SetReplaceString(value.BeforeFirst(','));
 }
 
 void wxExFindReplaceData::Update(wxComboBox* cb, const wxString& value) const
