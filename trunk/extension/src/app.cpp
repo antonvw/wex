@@ -107,6 +107,9 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
 
+  // Should be after constructing the config.
+  m_FindReplaceData = new wxExFindReplaceData();
+
   // And construct and read the lexers.
   m_Lexers = new wxExLexers(wxExFileName(
 #ifdef wxExUSE_PORTABLE
@@ -118,9 +121,6 @@ bool wxExApp::OnInit()
     );
 
   m_Lexers->Read();
-
-  // Should be after constructing the config.
-  m_FindReplaceData = new wxExFindReplaceData();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();

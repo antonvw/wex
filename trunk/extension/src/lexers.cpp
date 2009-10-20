@@ -14,6 +14,8 @@
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/app.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 
 wxExLexers::wxExLexers(const wxFileName& filename)
@@ -133,6 +135,9 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
 
 const wxString wxExLexers::GetLexerAssociations() const
 {
+  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
+  wxASSERT(frd != NULL);
+
   wxString text;
 
   for (
@@ -144,7 +149,7 @@ const wxString wxExLexers::GetLexerAssociations() const
     {
       if (!text.empty())
       {
-        text += ",";
+        text += frd->GetFieldSeparator();
       }
 
       text += it->GetAssociations();
