@@ -13,9 +13,9 @@
 
 using namespace std;
 
-wxExFindReplaceData::wxExFindReplaceData(wxConfigBase* config)
+wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
-  , m_Config(config)
+  , m_Config(wxConfigBase::Get())
   , m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
@@ -49,8 +49,8 @@ wxExFindReplaceData::~wxExFindReplaceData()
 
   m_Config->Write(m_TextMatchCase, MatchCase());
   m_Config->Write(m_TextMatchWholeWord, MatchWord());
-  m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
   m_Config->Write(m_TextRegEx, m_IsRegularExpression);
+  m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
 }
 
 void wxExFindReplaceData::CreateAndFill(
@@ -84,6 +84,7 @@ void wxExFindReplaceData::FromReplaceString(wxComboBox* cb)
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
   wxFindReplaceData::SetFindString(value);
+
   m_FindStringNoCase = MatchCase() ? GetFindString(): GetFindString().Upper();
 
   if (IsRegularExpression())

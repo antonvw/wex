@@ -24,7 +24,7 @@ class wxExFindReplaceData : public wxFindReplaceData
 {
 public:
   /// Constructor, gets members from config.
-  wxExFindReplaceData(wxConfigBase* config);
+  wxExFindReplaceData();
 
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();

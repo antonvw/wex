@@ -119,7 +119,8 @@ bool wxExApp::OnInit()
 
   m_Lexers->Read();
 
-  m_FindReplaceData = new wxExFindReplaceData(config);
+  // Should be after constructing the config.
+  m_FindReplaceData = new wxExFindReplaceData();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
