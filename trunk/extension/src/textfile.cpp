@@ -452,7 +452,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
         m_FileNameStatistics.GetLexer().GetCommentBegin().Length();
       const size_t check_size = (i > max_check_size ? max_check_size: i);
 
-      const wxString text = line.substr(i - check_size, check_size);
+      const wxString text = line.substr(i - check_size + 1, check_size);
 
       switch (CheckForComment(text))
       {
