@@ -31,7 +31,9 @@ public:
 
   /// If id is a stock id, returns stock bitmap from the stock art map.
   /// Check GetBitmap().IsOk for valid bitmap.
-  const wxBitmap GetBitmap(const wxSize& bitmap_size = wxSize(16, 15)) const;
+  const wxBitmap GetBitmap(
+    const wxArtClient& client = wxART_OTHER, 
+    const wxSize& bitmap_size = wxDefaultSize) const;
 private:
   static std::map<wxWindowID, wxArtID> m_StockArt;
   const wxWindowID m_Id;

@@ -688,7 +688,7 @@ wxToolBarToolBase* wxExToolBar::AddCheckTool(int toolId)
   return wxToolBar::AddCheckTool(
     toolId,
     wxEmptyString,
-    art.GetBitmap(GetToolBitmapSize()),
+    art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
     wxNullBitmap,
     wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
 }
@@ -700,7 +700,7 @@ wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
   return wxToolBar::AddTool(
     toolId, 
     wxEmptyString,
-    art.GetBitmap(GetToolBitmapSize()),
+    art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
     wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
 }
 #endif // wxUSE_TOOLBAR

@@ -47,7 +47,9 @@ wxExStockArt::wxExStockArt(wxWindowID id)
   }
 }
 
-const wxBitmap wxExStockArt::GetBitmap(const wxSize& bitmap_size) const
+const wxBitmap wxExStockArt::GetBitmap(
+  const wxArtClient& client,
+  const wxSize& bitmap_size) const
 {
   wxBitmap bitmap;
 
@@ -58,7 +60,10 @@ const wxBitmap wxExStockArt::GetBitmap(const wxSize& bitmap_size) const
 
     if (art_it != m_StockArt.end())
     {
-      bitmap = wxArtProvider::GetBitmap(art_it->second, wxART_MENU, bitmap_size);
+      bitmap = wxArtProvider::GetBitmap(
+        art_it->second, 
+        client, 
+        bitmap_size);
     }
   }
 
