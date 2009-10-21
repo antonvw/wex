@@ -117,7 +117,8 @@ void wxExListItemWithFileName::SetReadOnly(bool readonly)
 {
   if (readonly)
   {
-    SetTextColour(*wxRED);
+    SetTextColour(wxConfigBase::Get()->ReadObject(
+      _("List Colour"), wxColour("RED")));
   }
   else
   {

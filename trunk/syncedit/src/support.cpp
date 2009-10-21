@@ -151,6 +151,7 @@ Frame::Frame()
   menuOptions->Append(ID_OPTION_SVN_AND_COMPARATOR, wxExEllipsed(_("Set SVN And &Comparator")));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
+  menuOptions->Append(ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set &List Read Only Colour")));
   wxMenu *menuListSort = new wxMenu;
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));

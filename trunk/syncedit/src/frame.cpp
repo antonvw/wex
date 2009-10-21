@@ -613,6 +613,18 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
+  case ID_OPTION_LIST_READONLY_COLOUR:
+    {
+      std::vector<wxExConfigItem> v;
+      v.push_back(wxExConfigItem(_("List Colour"), CONFIG_COLOUR));
+
+      wxExConfigDialog(
+        this,
+        v,
+        _("Set List Read Only Colour")).ShowModal();
+    }
+    break;
+
   case ID_OPTION_LIST_SORT_ASCENDING:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_ASCENDING); break;
   case ID_OPTION_LIST_SORT_DESCENDING:
