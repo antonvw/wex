@@ -2228,7 +2228,7 @@ void wxExSTC::SetFolding()
 {
   if (GetProperty("fold") == "1")
   {
-    SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong("Folding", 16));
+    SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
 
     SetFoldFlags(
       wxConfigBase::Get()->ReadLong(_("Fold Flags"),
