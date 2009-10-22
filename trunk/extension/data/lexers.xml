@@ -151,7 +151,7 @@ without the written consent of the copyright owner.
     currently they show underlined lines if doing so.
     -->
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
+      <colouring no="0"> fore:black,size:8,face:courier new </colouring>
       <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
       <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,size:8,eol </colouring>
       <colouring no="4"> fore:red </colouring>
