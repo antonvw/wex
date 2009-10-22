@@ -862,6 +862,9 @@ void wxExSTC::ConfigGet()
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
+    // Set defaults only.
+    wxConfigBase::Get()->ReadLong(_("Auto fold"), 2500);
+
     wxConfigBase::Get()->SetRecordDefaults(false);
   }
 }
