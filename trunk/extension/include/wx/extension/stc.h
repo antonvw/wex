@@ -286,9 +286,6 @@ private:
   void SetProperties();
   void SetStyle(const wxString& style);
 
-  // static access
-  static wxString GetConfigKeyBase() {return "Edit/";};
-
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
   static std::vector <wxString> m_Macro;
