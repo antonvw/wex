@@ -840,7 +840,9 @@ void wxExSTC::ConfigGet()
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("CallTip"), wxColour("YELLOW")));
 
-  SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80)); // see also lexer
+ // See also lexer, don't know why 3 is necessary.
+ SetEdgeColumn(3 * wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
+ 
   SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
