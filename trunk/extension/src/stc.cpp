@@ -832,6 +832,11 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet()
 {
+  if (!wxConfigBase::Get()->Exists(_("CallTip")))
+  {
+    wxConfigBase::Get()->SetRecordDefaults(true);
+  }
+
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("CallTip"), wxColour("YELLOW")));
 
@@ -854,6 +859,11 @@ void wxExSTC::ConfigGet()
   SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
+
+  if (wxConfigBase::Get()->IsRecordingDefaults())
+  {
+    wxConfigBase::Get()->SetRecordDefaults(false);
+  }
 }
 
 void wxExSTC::ControlCharDialog(const wxString& caption)
