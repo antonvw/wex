@@ -188,7 +188,6 @@ public:
   wxExConfigDialog(wxWindow* parent,
     std::vector<wxExConfigItem> v,
     const wxString& title = _("Options"),
-    const wxString& configGroup = wxEmptyString,
     int rows = 0,
     int cols = 2,
     long flags = wxOK | wxCANCEL,
@@ -275,7 +274,6 @@ private:
     long style = 0);
 
   wxConfigBase* m_Config;
-  const wxString m_ConfigGroup;
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
 
