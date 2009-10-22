@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <ctype.h> // for isspace
+#include <wx/config.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
@@ -86,13 +87,11 @@ bool wxExTextFile::m_Cancelled = false;
 
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
-  const wxExTool& tool,
-  wxConfigBase* config)
+  const wxExTool& tool)
   : m_FileNameStatistics(filename)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(tool)
-  , m_Config(config)
 {
   m_AllowAction = false;
   m_EmptyLine = false;
@@ -573,7 +572,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
 bool wxExTextFile::PrepareRevision()
 {
   if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT ||
-      m_Config->ReadBool("RCS/RecentOnly", false))
+      wxConfigBase::Get()->ReadBool("RCS/RecentOnly", false))
   {
     if (m_VersionLine == 1)
     {

@@ -143,7 +143,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
 
   // test wxExTextFile
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT, m_Config);
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
   CPPUNIT_ASSERT(textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
@@ -152,7 +152,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
-  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD, m_Config);
+  wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
   CPPUNIT_ASSERT(textFile2.RunTool());
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
 

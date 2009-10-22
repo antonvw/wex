@@ -12,7 +12,6 @@
 #ifndef _EXTEXTFILE_H
 #define _EXTEXTFILE_H
 
-#include <wx/config.h>
 #include <wx/datetime.h>
 #include <wx/textfile.h>
 #include <wx/extension/statistics.h>
@@ -65,8 +64,7 @@ public:
   /// Constructor.
   wxExTextFile(
     const wxExFileName& filename,
-    const wxExTool& tool,
-    wxConfigBase* config);
+    const wxExTool& tool);
 
   /// Allows you to cancel the RunTool.
   static void Cancel() {m_Cancelled = true;}
@@ -209,7 +207,6 @@ private:
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
   const wxExTool m_Tool;
-  wxConfigBase* m_Config;
 
   static bool m_Cancelled;
   size_t m_LineMarker;
