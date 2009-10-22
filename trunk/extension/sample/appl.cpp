@@ -333,7 +333,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       this,
       v,
       _("Config Dialog"),
-      wxEmptyString,
       10,
       6,
       wxAPPLY | wxCANCEL,
