@@ -364,7 +364,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       this,
       v,
       _("Config Dialog Readonly"),
-      wxEmptyString,
       0,
       2,
       wxCANCEL);

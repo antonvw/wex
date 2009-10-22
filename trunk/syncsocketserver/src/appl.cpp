@@ -466,7 +466,6 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     wxExConfigDialog(this,
       v,
       _("Server Config"),
-      wxEmptyString,
       0,
       2,
       flags).ShowModal();
