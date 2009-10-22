@@ -125,6 +125,7 @@ MDIFrame::MDIFrame(bool open_recent)
     GetManager().GetPane("DIRCTRL").Hide();
     GetManager().GetPane("ASCIITABLE").Hide();
     GetManager().GetPane("HISTORY").Hide();
+    GetManager().GetPane("FINDBAR").Hide();
   }
   else
   {
