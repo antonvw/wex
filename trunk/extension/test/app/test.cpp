@@ -129,7 +129,7 @@ void wxExAppTestFixture::testMethods()
   {
     wxConfigBase::Get()->Write(_("Purpose"), "hello test");
     const wxExFileName fn(TEST_FILE);
-    const wxString header = wxExHeader(wxConfigBase::Get()).Get(&fn);
+    const wxString header = wxExHeader().Get(&fn);
     CPPUNIT_ASSERT(header.Contains("hello test"));
   }
   else

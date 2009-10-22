@@ -16,7 +16,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 
 class wxExFileName;
 
@@ -24,8 +23,8 @@ class wxExFileName;
 class wxExHeader
 {
 public:
-  /// Constructor.
-  wxExHeader(wxConfigBase* config);
+  /// Default constructor.
+  wxExHeader();
 
   /// Returns a file header for specified filename,
   /// using it's lexer and data from config,
@@ -47,8 +46,6 @@ public:
     if (ShowDialog(parent) == wxID_OK) return Get(filename);
     else return wxEmptyString;}
 private:
-  wxConfigBase* m_Config;
-
   const wxString m_TextAuthor;
   const wxString m_TextEmail;
   const wxString m_TextLicense;

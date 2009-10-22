@@ -9,14 +9,14 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/extension/header.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/file.h>
 #include <wx/extension/util.h>
 
-wxExHeader::wxExHeader(wxConfigBase* config)
-  : m_Config(config)
-  , m_TextAuthor(_("Author"))
+wxExHeader::wxExHeader()
+  : m_TextAuthor(_("Author"))
   , m_TextEmail(_("Email"))
   , m_TextLicense(_("License"))
   , m_TextPurpose(_("Purpose"))
@@ -33,10 +33,10 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxString h_copyright = "Copyright: "; 
   const wxString h_license   = "License:   "; 
 
-  const wxString author = m_Config->Read(m_TextAuthor);
-  const wxString license = m_Config->Read(m_TextLicense);
-  const wxString email = m_Config->Read(m_TextEmail);
-  const wxString purpose = m_Config->Read(m_TextPurpose);
+  const wxString author = wxConfigBase::Get()->Read(m_TextAuthor);
+  const wxString license = wxConfigBase::Get()->Read(m_TextLicense);
+  const wxString email = wxConfigBase::Get()->Read(m_TextEmail);
+  const wxString purpose = wxConfigBase::Get()->Read(m_TextPurpose);
 
   const wxString email_field = (!email.empty() ? " < " + email + ">": email);
 
@@ -50,7 +50,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << wxExAlignText(purpose, h_purpose) << "\n";
     header << h_author << author << "\n";
     header << h_created << wxDateTime::Now().FormatISODate() << "\n";
-    if (m_Config->ReadBool("SVN", true))
+    if (wxConfigBase::Get()->ReadBool("SVN", true))
     // Prevent the Id to be expanded by SVN itself here.
     header << h_rcs << wxString("Id$") << "\n";
     header << h_copyright << "(c) " << wxDateTime::Now().Format("%Y") << " " <<
@@ -66,7 +66,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << l.MakeComment(h_purpose, purpose) << "\n";
     header << l.MakeComment(h_author, author) << "\n";
     header << l.MakeComment(h_created, wxDateTime::Now().FormatISODate()) << "\n";
-    if (m_Config->ReadBool("SVN", true))
+    if (wxConfigBase::Get()->ReadBool("SVN", true))
     // Prevent the Id to be expanded by SVN itself here.
     header << l.MakeComment(h_rcs, wxString("Id$")) << "\n";
     header << l.MakeComment(h_copyright, "(c) " + wxDateTime::Now().Format("%Y") + " " +
@@ -101,16 +101,16 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
-  if (m_Config->Read(m_TextAuthor).empty())
+  if (wxConfigBase::Get()->Read(m_TextAuthor).empty())
   {
     v.push_back(wxExConfigItem(m_TextAuthor, wxEmptyString, 0, true));
 
-    if (m_Config->Read(m_TextEmail).empty())
+    if (wxConfigBase::Get()->Read(m_TextEmail).empty())
     {
       v.push_back(wxExConfigItem(m_TextEmail));
     }
 
-    if (m_Config->Read(m_TextLicense).empty())
+    if (wxConfigBase::Get()->Read(m_TextLicense).empty())
     {
       v.push_back(wxExConfigItem(m_TextLicense));
     }
