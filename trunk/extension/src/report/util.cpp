@@ -435,14 +435,14 @@ public:
   /// Constructor. Fills the combobox box with values from FindReplace from config.
   ComboBox(
     wxWindow* parent,
-    wxExFrameWithHistory* frame,
+    wxExFrame* frame,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
 private:
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
-  wxExFrameWithHistory* m_Frame;
+  wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };
@@ -454,7 +454,7 @@ END_EVENT_TABLE()
 
 ComboBox::ComboBox(
   wxWindow* parent,
-  wxExFrameWithHistory* frame,
+  wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
@@ -532,7 +532,7 @@ END_EVENT_TABLE()
 
 wxExFindToolBar::wxExFindToolBar(
   wxWindow* parent,
-  wxExFrameWithHistory* frame,
+  wxExFrame* frame,
   wxWindowID id)
   : wxAuiToolBar(parent, id)
   , m_Frame(frame)
