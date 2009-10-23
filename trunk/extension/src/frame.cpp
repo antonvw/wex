@@ -334,7 +334,6 @@ wxToolBar* wxExFrame::OnCreateToolBar(
     wxDefaultPosition,
     wxDefaultSize,
     style,
-    wxSize(16, 15),
     name);
 
   return m_ToolBar;
@@ -674,11 +673,9 @@ wxExToolBar::wxExToolBar(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style,
-  const wxSize& bitmap_size,
   const wxString& name)
   : wxToolBar(parent, id, pos, size, style, name)
 {
-  SetToolBitmapSize(bitmap_size);
 }
 
 wxToolBarToolBase* wxExToolBar::AddCheckTool(int toolId)

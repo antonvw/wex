@@ -280,8 +280,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxTB_HORIZONTAL | wxNO_BORDER,
-    const wxSize& bitmap_size = wxSize(16, 15),
+    long style = wxTB_HORIZONTAL,
     const wxString& name = wxToolBarNameStr);
 
   /// Adds automatic naming (for stock menu id's) and art id for toolbar check items.
