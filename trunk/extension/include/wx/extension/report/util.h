@@ -23,6 +23,7 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
 
+class wxExFrame;
 class wxExFrameWithHistory;
 class wxExListViewFile;
 
