@@ -16,14 +16,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h>
 #include <wx/filename.h>
 
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
 
-class wxExFrame;
 class wxExFrameWithHistory;
 class wxExListViewFile;
 
@@ -63,32 +61,6 @@ private:
   wxExListViewFile* m_ListView;
   const long m_Flags;
   wxExTool m_Tool;
-};
-
-class ComboBox;
-
-/// Offers a find toolbar, containing a find combobox, up and down arrows
-/// and checkboxes.
-/// The find combobox allows you to find in an wxExSTC
-/// component on the specified wxExFrame.
-class wxExFindToolBar : public wxAuiToolBar
-{
-public:
-  /// Constructor.
-  wxExFindToolBar(
-    wxWindow* parent, 
-    wxExFrame* frame, 
-    wxWindowID id = wxID_ANY);
-protected:
-  void OnCommand(wxCommandEvent& event);
-private:
-  wxCheckBox* m_RegularExpression;
-  wxCheckBox* m_MatchCase;
-  wxCheckBox* m_MatchWholeWord;
-  wxExFrame* m_Frame;
-  ComboBox* m_ComboBox;
-
-  DECLARE_EVENT_TABLE()
 };
 
 /*! \file */

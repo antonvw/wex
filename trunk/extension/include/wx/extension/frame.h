@@ -18,6 +18,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/datetime.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
@@ -291,5 +292,31 @@ public:
   wxToolBarToolBase* AddTool(int toolId);
 };
 #endif // wxUSE_TOOLBAR
+
+class ComboBox;
+
+/// Offers a find toolbar, containing a find combobox, up and down arrows
+/// and checkboxes.
+/// The find combobox allows you to find in an wxExSTC
+/// component on the specified wxExFrame.
+class wxExFindToolBar : public wxAuiToolBar
+{
+public:
+  /// Constructor.
+  wxExFindToolBar(
+    wxWindow* parent, 
+    wxExFrame* frame, 
+    wxWindowID id = wxID_ANY);
+protected:
+  void OnCommand(wxCommandEvent& event);
+private:
+  wxCheckBox* m_RegularExpression;
+  wxCheckBox* m_MatchCase;
+  wxCheckBox* m_MatchWholeWord;
+  wxExFrame* m_Frame;
+  ComboBox* m_ComboBox;
+
+  DECLARE_EVENT_TABLE()
+};
 #endif // wxUSE_GUI
 #endif

@@ -704,4 +704,187 @@ wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
     wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
 }
 #endif // wxUSE_TOOLBAR
+
+/// Offers a find combobox that allows you to find text
+/// on a current STC on an wxExFrameWithHistory.
+class ComboBox : public wxComboBox
+{
+public:
+  /// Constructor. Fills the combobox box with values from FindReplace from config.
+  ComboBox(
+    wxWindow* parent,
+    wxExFrame* frame,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize);
+private:
+  void OnCommand(wxCommandEvent& event);
+  void OnKey(wxKeyEvent& event);
+  wxExFrame* m_Frame;
+
+  DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(ComboBox, wxComboBox)
+  EVT_CHAR(ComboBox::OnKey)
+  EVT_MENU(wxID_DELETE, ComboBox::OnCommand)
+END_EVENT_TABLE()
+
+ComboBox::ComboBox(
+  wxWindow* parent,
+  wxExFrame* frame,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size)
+  : wxComboBox(parent, id, wxEmptyString, pos, size)
+  , m_Frame(frame)
+{
+  const int accels = 1;
+  wxAcceleratorEntry entries[accels];
+  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
+  wxAcceleratorTable accel(accels, entries);
+  SetAcceleratorTable(accel);
+
+  SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
+    wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+
+  wxExComboBoxFromString(
+    this, 
+    wxConfigBase::Get()->Read(wxExApp::GetFindReplaceData()->GetTextFindWhat()));
+
+  // And override the value set by previous, as we want text to be same as in Find.
+  SetValue(wxExApp::GetFindReplaceData()->GetFindString());
+}
+
+void ComboBox::OnCommand(wxCommandEvent& event)
+{
+  // README: The delete key default behaviour does not delete the char right from insertion point.
+  // Instead, the event is sent to the editor and a char is deleted from the editor.
+  // Therefore implement the delete here.
+  switch (event.GetId())
+  {
+  case wxID_DELETE:
+    Remove(GetInsertionPoint(), GetInsertionPoint() + 1);
+    break;
+  default:
+    wxFAIL;
+    break;
+  }
+}
+
+void ComboBox::OnKey(wxKeyEvent& event)
+{
+  const int key = event.GetKeyCode();
+
+  if (key == WXK_RETURN)
+  {
+    wxExSTC* stc = m_Frame->GetSTC();
+
+    if (stc != NULL)
+    {
+      stc->FindNext(GetValue());
+      wxExApp::GetFindReplaceData()->SetFindString(GetValue());
+
+      // And keep the changed text in the combo box.
+      wxString text;
+      wxExComboBoxToString(this, text);
+      wxConfigBase::Get()->Write("FindReplace/FindStrings", text);
+      Clear(); // so wxExComboBoxFromString can append again
+      wxExComboBoxFromString(this, text);
+      SetValue(wxExApp::GetFindReplaceData()->GetFindString());
+    }
+  }
+  else
+  {
+    event.Skip();
+  }
+}
+
+BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
+  EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
+  EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
+  EVT_MENU(wxID_DOWN, wxExFindToolBar::OnCommand)
+  EVT_MENU(wxID_UP, wxExFindToolBar::OnCommand)
+END_EVENT_TABLE()
+
+wxExFindToolBar::wxExFindToolBar(
+  wxWindow* parent,
+  wxExFrame* frame,
+  wxWindowID id)
+  : wxAuiToolBar(parent, id)
+  , m_Frame(frame)
+  , m_MatchCase(new wxCheckBox())
+  , m_MatchWholeWord(new wxCheckBox())
+  , m_RegularExpression(new wxCheckBox())
+{
+  wxExApp::GetFindReplaceData()->CreateAndFill(
+    this,
+    m_MatchCase,
+    ID_MATCH_CASE,
+    m_MatchWholeWord,
+    ID_MATCH_WHOLE_WORD,
+    m_RegularExpression,
+    ID_REGULAR_EXPRESSION);
+
+#ifdef __WXMSW__
+  const wxSize size(150, 20);
+#else
+  const wxSize size(150, -1);
+#endif
+  m_ComboBox = new ComboBox(this, frame, wxID_ANY, wxDefaultPosition, size);
+
+  // And place the controls on the toolbar.
+  AddControl(m_ComboBox);
+  AddSeparator();
+
+  AddTool(
+    wxID_DOWN, 
+    wxEmptyString, 
+    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()),
+    _("Find next"));
+  AddTool(
+    wxID_UP, 
+    wxEmptyString, 
+    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()),
+    _("Find previous"));
+  AddSeparator();
+
+  AddControl(m_MatchWholeWord);
+  AddControl(m_MatchCase);
+  AddControl(m_RegularExpression);
+
+  Realize();
+}
+
+void wxExFindToolBar::OnCommand(wxCommandEvent& event)
+{
+  switch (event.GetId())
+  {
+  case wxID_DOWN:
+  case wxID_UP:
+    {
+      wxExSTC* stc = m_Frame->GetSTC();
+
+      if (stc != NULL)
+      {
+        stc->FindNext(m_ComboBox->GetValue(), (event.GetId() == wxID_DOWN));
+      }
+    }
+    break;
+
+  case ID_MATCH_WHOLE_WORD:
+  case ID_MATCH_CASE:
+  case ID_REGULAR_EXPRESSION:
+    wxExApp::GetFindReplaceData()->SetFromCheckBoxes(
+      m_MatchWholeWord,
+      m_MatchCase,
+      m_RegularExpression);
+    break;
+
+  default:
+    wxFAIL;
+    break;
+  }
+}
 #endif // wxUSE_GUI
