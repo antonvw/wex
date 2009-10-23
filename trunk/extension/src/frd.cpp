@@ -54,24 +54,6 @@ wxExFindReplaceData::~wxExFindReplaceData()
   m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
 }
 
-void wxExFindReplaceData::CreateAndFill(
-  wxWindow* parent,
-  wxCheckBox* matchcase,
-  int matchcase_id,
-  wxCheckBox* matchwholeword,
-  int matchwholeword_id,
-  wxCheckBox* regex,
-  int regex_id) const
-{
-  matchcase->Create(parent, matchcase_id, m_TextMatchCase);
-  matchwholeword->Create(parent, matchwholeword_id, m_TextMatchWholeWord);
-  regex->Create(parent, regex_id, m_TextRegEx);
-
-  matchcase->SetValue(MatchCase());
-  matchwholeword->SetValue(MatchWord());
-  regex->SetValue(IsRegularExpression());
-}
-
 void wxExFindReplaceData::FromFindString(wxComboBox* cb)
 {
   Update(cb, GetFindString());

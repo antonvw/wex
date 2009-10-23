@@ -815,14 +815,7 @@ wxExFindToolBar::wxExFindToolBar(
   , m_MatchWholeWord(new wxCheckBox())
   , m_RegularExpression(new wxCheckBox())
 {
-  wxExApp::GetFindReplaceData()->CreateAndFill(
-    this,
-    m_MatchCase,
-    ID_MATCH_CASE,
-    m_MatchWholeWord,
-    ID_MATCH_WHOLE_WORD,
-    m_RegularExpression,
-    ID_REGULAR_EXPRESSION);
+  CreateAndSetValue(this);
 
 #ifdef __WXMSW__
   const wxSize size(150, 20);
@@ -852,6 +845,17 @@ wxExFindToolBar::wxExFindToolBar(
   AddControl(m_RegularExpression);
 
   Realize();
+}
+
+void wxExFindToolBar::CreateAndSetValue(wxWindow* parent) const
+{
+  m_MatchCase->Create(parent, ID_MATCH_CASE, wxExApp::GetFindReplaceData()->GetTextMatchCase());
+  m_MatchWholeWord->Create(parent, ID_MATCH_WHOLE_WORD, wxExApp::GetFindReplaceData()->GetTextMatchWholeWord());
+  m_RegularExpression->Create(parent, ID_REGULAR_EXPRESSION, wxExApp::GetFindReplaceData()->GetTextRegEx());
+
+  m_MatchCase->SetValue(wxExApp::GetFindReplaceData()->MatchCase());
+  m_MatchWholeWord->SetValue(wxExApp::GetFindReplaceData()->MatchWord());
+  m_RegularExpression->SetValue(wxExApp::GetFindReplaceData()->IsRegularExpression());
 }
 
 void wxExFindToolBar::OnCommand(wxCommandEvent& event)

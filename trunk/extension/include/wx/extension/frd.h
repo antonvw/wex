@@ -29,16 +29,6 @@ public:
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
 
-  /// Creates and fills checkboxes from find replace data.
-  void CreateAndFill(
-    wxWindow* parent,
-    wxCheckBox* matchcase,
-    int matchcase_id,
-    wxCheckBox* matchwholeword,
-    int matchwholeword_id,
-    wxCheckBox* regex,
-    int regex_id) const;
-
   /// Fills a combobox with the find string (cannot be const as FindString is no const).
   void FromFindString(wxComboBox* cb);
 
