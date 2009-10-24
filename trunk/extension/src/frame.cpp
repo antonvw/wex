@@ -811,18 +811,8 @@ wxExFindToolBar::wxExFindToolBar(
   wxWindowID id)
   : wxAuiToolBar(parent, id)
   , m_Frame(frame)
-  , m_MatchCase(new wxCheckBox())
-  , m_MatchWholeWord(new wxCheckBox())
-  , m_RegularExpression(new wxCheckBox())
 {
-  CreateAndSetValue(this);
-
-#ifdef __WXMSW__
-  const wxSize size(150, 20);
-#else
-  const wxSize size(150, -1);
-#endif
-  m_ComboBox = new ComboBox(this, frame, wxID_ANY, wxDefaultPosition, size);
+  Initialize(this);
 
   // And place the controls on the toolbar.
   AddControl(m_ComboBox);
@@ -847,11 +837,23 @@ wxExFindToolBar::wxExFindToolBar(
   Realize();
 }
 
-void wxExFindToolBar::CreateAndSetValue(wxWindow* parent) const
+void wxExFindToolBar::Initialize(wxWindow* parent)
 {
-  m_MatchCase->Create(parent, ID_MATCH_CASE, wxExApp::GetFindReplaceData()->GetTextMatchCase());
-  m_MatchWholeWord->Create(parent, ID_MATCH_WHOLE_WORD, wxExApp::GetFindReplaceData()->GetTextMatchWholeWord());
-  m_RegularExpression->Create(parent, ID_REGULAR_EXPRESSION, wxExApp::GetFindReplaceData()->GetTextRegEx());
+#ifdef __WXMSW__
+  const wxSize size(150, 20);
+#else
+  const wxSize size(150, -1);
+#endif
+  m_ComboBox = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
+
+  m_MatchCase = new wxCheckBox(parent, 
+    ID_MATCH_CASE, wxExApp::GetFindReplaceData()->GetTextMatchCase());
+
+  m_MatchWholeWord = new wxCheckBox(parent, 
+    ID_MATCH_WHOLE_WORD, wxExApp::GetFindReplaceData()->GetTextMatchWholeWord());
+
+  m_RegularExpression= new wxCheckBox(parent, 
+    ID_REGULAR_EXPRESSION, wxExApp::GetFindReplaceData()->GetTextRegEx());
 
   m_MatchCase->SetValue(wxExApp::GetFindReplaceData()->MatchCase());
   m_MatchWholeWord->SetValue(wxExApp::GetFindReplaceData()->MatchWord());
@@ -875,12 +877,16 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_MATCH_WHOLE_WORD:
+    wxExApp::GetFindReplaceData()->SetMatchWord(
+      m_MatchWholeWord->GetValue());
+    break;
   case ID_MATCH_CASE:
+    wxExApp::GetFindReplaceData()->SetMatchCase(
+      m_MatchCase->GetValue());
+    break;
   case ID_REGULAR_EXPRESSION:
-    wxExApp::GetFindReplaceData()->SetFromCheckBoxes(
-      m_MatchWholeWord,
-      m_MatchCase,
-      m_RegularExpression);
+    wxExApp::GetFindReplaceData()->SetIsRegularExpression(
+      m_RegularExpression->GetValue());
     break;
 
   default:
@@ -888,4 +894,5 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     break;
   }
 }
+
 #endif // wxUSE_GUI

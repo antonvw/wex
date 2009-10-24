@@ -309,8 +309,8 @@ public:
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
-  /// Creates and fills checkboxes from find replace data.
-  void CreateAndSetValue(wxWindow* parent) const;
+  /// Initializes checkboxes from find replace data.
+  void Initialize(wxWindow* parent);
 
   wxCheckBox* m_RegularExpression;
   wxCheckBox* m_MatchCase;

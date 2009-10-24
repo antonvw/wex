@@ -92,12 +92,6 @@ public:
   /// This string is used for tool find in files and replace in files.
   void SetFindString(const wxString& value);
 
-  /// Sets flags for all three from the checkboxes.
-  void SetFromCheckBoxes(
-    const wxCheckBox* matchword, 
-    const wxCheckBox* matchcase, 
-    const wxCheckBox* regularexpression);
-
   /// Sets regular expression.
   void SetIsRegularExpression(bool value) {
     m_IsRegularExpression = value;};

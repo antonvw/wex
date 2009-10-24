@@ -78,16 +78,6 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   }
 }
 
-void wxExFindReplaceData::SetFromCheckBoxes(
-  const wxCheckBox* matchword, 
-  const wxCheckBox* matchcase, 
-  const wxCheckBox* regularexpression)
-{
-  SetMatchWord(matchword->GetValue());
-  SetMatchCase(matchcase->GetValue());
-  SetIsRegularExpression(regularexpression->GetValue());
-}
-
 void wxExFindReplaceData::SetMatchCase(bool value)
 {
   int flags = GetFlags();
