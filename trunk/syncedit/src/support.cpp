@@ -201,13 +201,13 @@ Frame::Frame()
 
 #ifdef __WXMSW__
   m_ToolBar->AddSeparator();
-  ((wxToolBar*)m_ToolBar)->AddCheckTool(
+  m_ToolBar->AddCheckTool(
     wxID_VIEW_LIST,
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     wxNullBitmap,
     _("View in list mode"));
-  ((wxToolBar*)m_ToolBar)->AddCheckTool(
+  m_ToolBar->AddCheckTool(
     wxID_VIEW_DETAILS, wxEmptyString,
     wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     wxNullBitmap,

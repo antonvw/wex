@@ -13,7 +13,6 @@
 #define _EXFRD_H
 
 #include <set>
-#include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/config.h> 
 #include <wx/regex.h>

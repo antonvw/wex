@@ -283,10 +283,6 @@ public:
     long style = wxTB_HORIZONTAL,
     const wxString& name = wxToolBarNameStr);
 
-  /// Adds automatic naming (for stock menu id's) and art id for toolbar check items.
-  /// And for check tools as well.
-  wxToolBarToolBase* AddCheckTool(int toolId);
-
   /// Adds automatic naming (for stock menu id's) and art id for toolbar normal items.
   wxToolBarToolBase* AddTool(int toolId);
 };

@@ -678,18 +678,6 @@ wxExToolBar::wxExToolBar(wxWindow* parent,
 {
 }
 
-wxToolBarToolBase* wxExToolBar::AddCheckTool(int toolId)
-{
-  const wxExStockArt art(toolId);
-
-  return wxToolBar::AddCheckTool(
-    toolId,
-    wxEmptyString,
-    art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
-    wxNullBitmap,
-    wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
-}
-
 wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
 {
   const wxExStockArt art(toolId);
