@@ -16,6 +16,7 @@
 #include <TestFixture.h>
 #include <TestSuite.h>
 #include <wx/extension/report/report.h>
+#include <wx/extension/report/dir.h>
 
 /// CppUnit test suite.
 class wxExReportTestSuite : public CppUnit::TestSuite

@@ -76,7 +76,7 @@ void wxExTestFixture::testMethods()
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
   // now read lexers
-  CPPUNIT_ASSERT(m_Lexers->Read());
+  m_Lexers->Read();
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(!m_Lexer->GetAssociations().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetColourings().empty());
