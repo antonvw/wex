@@ -140,6 +140,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <include>../extension/include</include>
     
+    <sources>../extension/src/report/dir.cpp</sources>
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
@@ -149,6 +150,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/report/util.cpp</sources>
     
     <headers>../extension/include/wx/extension/report/defs.h</headers>
+    <headers>../extension/include/wx/extension/report/dir.h</headers>
     <headers>../extension/include/wx/extension/report/frame.h</headers>
     <headers>../extension/include/wx/extension/report/listitem.h</headers>
     <headers>../extension/include/wx/extension/report/listview.h</headers>
