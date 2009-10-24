@@ -365,7 +365,7 @@ wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
 {
 }
 
-wxExDirWithListView::wxExDirWithListView(wxExFrameWithHistory* frame,
+wxExDirWithListView::wxExDirWithListView(wxExFrame* frame,
   const wxString& fullpath, 
   const wxString& filespec, 
   long file_flags,

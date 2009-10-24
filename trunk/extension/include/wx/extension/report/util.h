@@ -44,7 +44,7 @@ public:
 
   /// FindFiles causes all found files to be opened using OpenFile from frame.
   /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
-  wxExDirWithListView(wxExFrameWithHistory* frame,
+  wxExDirWithListView(wxExFrame* frame,
     const wxString& fullpath,
     const wxString& filespec,
     long file_flags = 0,
@@ -57,7 +57,7 @@ protected:
   virtual void OnFile(const wxString& file);
 private:
   wxExFileNameStatistics m_Statistics;
-  wxExFrameWithHistory* m_Frame;
+  wxExFrame* m_Frame;
   wxExListViewFile* m_ListView;
   const long m_Flags;
   wxExTool m_Tool;
