@@ -13,6 +13,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>
+#include <wx/extension/report/dir.h>
 
 using namespace std;
 
