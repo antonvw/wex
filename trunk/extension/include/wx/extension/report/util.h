@@ -17,51 +17,11 @@
 #include <wx/wx.h>
 #endif
 #include <wx/aui/auibook.h>
+#include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filename.h>
-
-#include <wx/extension/dir.h>
-#include <wx/extension/statistics.h>
 
 class wxExFrameWithHistory;
 class wxExListViewFile;
-
-/// Offers a wxExDir with reporting to a listview.
-class wxExDirWithListView : public wxExDir
-{
-public:
-  /// SetupTool should already be called.
-  /// FindFiles invokes RunTool on all matching files.
-  wxExDirWithListView(const wxExTool& tool,
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString,
-    int flags = wxDIR_DEFAULT);
-
-  /// FindFiles causes each found file to be added as listitem to the listview.
-  wxExDirWithListView(wxExListViewFile* listview,
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString,
-    int flags = wxDIR_DEFAULT);
-
-  /// FindFiles causes all found files to be opened using OpenFile from frame.
-  /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
-  wxExDirWithListView(wxExFrame* frame,
-    const wxString& fullpath,
-    const wxString& filespec,
-    long file_flags = 0,
-    int dir_flags = wxDIR_DEFAULT);
-
-  /// Gets the statistics.
-  const wxExFileNameStatistics& GetStatistics() const {return m_Statistics;};
-protected:
-  virtual void OnDir(const wxString& dir);
-  virtual void OnFile(const wxString& file);
-private:
-  wxExFileNameStatistics m_Statistics;
-  wxExFrame* m_Frame;
-  wxExListViewFile* m_ListView;
-  const long m_Flags;
-  wxExTool m_Tool;
-};
 
 /*! \file */
 
