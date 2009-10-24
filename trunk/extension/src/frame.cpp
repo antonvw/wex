@@ -773,9 +773,14 @@ void ComboBox::OnKey(wxKeyEvent& event)
       // And keep the changed text in the combo box.
       wxString text;
       wxExComboBoxToString(this, text);
-      wxConfigBase::Get()->Write("FindReplace/FindStrings", text);
+
+      wxConfigBase::Get()->Write(
+        wxExApp::GetFindReplaceData()->GetTextFindWhat(), 
+        text);
+
       Clear(); // so wxExComboBoxFromString can append again
       wxExComboBoxFromString(this, text);
+
       SetValue(wxExApp::GetFindReplaceData()->GetFindString());
     }
   }
