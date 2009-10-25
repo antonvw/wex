@@ -16,7 +16,7 @@ using namespace std;
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
   , m_Config(wxConfigBase::Get())
-  , m_FieldSeparator('\xFF')
+  , m_FieldSeparator('\x0B')
   , m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
