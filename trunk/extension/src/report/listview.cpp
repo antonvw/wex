@@ -120,6 +120,8 @@ void wxExListViewFile::AddItems()
   v.push_back(wxExConfigItem(_("Add files"), CONFIG_CHECKBOX));
   v.push_back(wxExConfigItem());
   v.push_back(wxExConfigItem(_("Add folders"), CONFIG_CHECKBOX));
+  v.push_back(wxExConfigItem());
+  v.push_back(wxExConfigItem(_("Recursive"), CONFIG_CHECKBOX));
 
   wxExConfigDialog dlg(NULL,
     v,
@@ -135,7 +137,7 @@ void wxExListViewFile::AddItems()
 
   int flags = 0;
   if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
-  if (wxConfigBase::Get()->ReadBool(_("Add folders"), false)) flags |= wxDIR_DIRS;
+  if (wxConfigBase::Get()->ReadBool(_("Recursive"), false)) flags |= wxDIR_DIRS;
 
   wxExDirWithListView dir(
     this,
