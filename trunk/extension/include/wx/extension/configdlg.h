@@ -35,7 +35,9 @@ enum
   /// Should be used when a long value can have a short set of possible individual values.
   CONFIG_RADIOBOX,
 
-  CONFIG_CHECKBOX,       ///< a checkbox (use ReadBool to retrieve value)
+  /// A normal, single, checkbox (use ReadBool to retrieve value).
+  CONFIG_CHECKBOX,       
+
   CONFIG_COLOUR,         ///< a colour button
   CONFIG_COMBOBOX,       ///< a combobox
   CONFIG_COMBOBOXDIR,    ///< a combobox with a browse button
@@ -45,8 +47,9 @@ enum
   CONFIG_INT,            ///< a textctrl that only accepts an integer (a long integer)
   CONFIG_SPINCTRL,       ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
-  CONFIG_SPACER,         ///< a spacer only, no config item
   CONFIG_STRING,         ///< a textctrl
+
+  CONFIG_SPACER,         ///< a spacer only, no config item
 };
 
 /// Container class for using with wxExConfigDialog.
@@ -198,9 +201,11 @@ public:
     const wxString& name = wxDialogNameStr);
 
   /// If you specified some checkboxes, calling this method
-  /// requires that one of them should be checked for OK button
+  /// requires that one of them should be checked for the OK button
   /// to be enabled.
-  void ForceCheckBoxChecked() {m_ForceCheckBoxChecked = true;};
+  void ForceCheckBoxChecked(const wxString contains = wxEmptyString) {
+    m_ForceCheckBoxChecked = true;
+    m_Contains = contains;};
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -276,6 +281,7 @@ private:
   wxConfigBase* m_Config;
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
+  wxString m_Contains;
 
   DECLARE_EVENT_TABLE()
 };

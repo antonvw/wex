@@ -128,7 +128,7 @@ void wxExListViewFile::AddItems()
     _("Add Files"));
 
   // Force at least one of the checkboxes to be checked.
-  dlg.ForceCheckBoxChecked();
+  dlg.ForceCheckBoxChecked(_("Add"));
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {

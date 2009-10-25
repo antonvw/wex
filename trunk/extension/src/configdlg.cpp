@@ -859,7 +859,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
       {
         wxCheckBox* cb = (wxCheckBox*)it->m_Control;
 
-        if (cb->GetValue())
+        if (cb->GetName().Contains(m_Contains) && cb->GetValue())
         {
           one_checkbox_checked = true;
         }
