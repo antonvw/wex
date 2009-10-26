@@ -138,7 +138,7 @@ int wxExProcessWithListView::ConfigDialog(
 {
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("Process folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem(_("Process folder"), CONFIG_COMBOBOXDIR, wxEmptyString));
 
   const int result = wxExConfigDialog(parent,
     v,
@@ -156,12 +156,17 @@ long wxExProcessWithListView::Execute()
 {
   if (m_Command.empty())
   {
-    return 0;
+    wxFAIL;
   }
 
-  const wxString cwd = wxGetCwd();
+  wxString cwd;
+  const wxString dir = wxConfigBase::Get()->Read(_("Process folder"));
 
-  wxSetWorkingDirectory(wxConfigBase::Get()->Read(_("Process folder")));
+  if (!dir.empty())
+  {
+    cwd = wxGetCwd();
+    wxSetWorkingDirectory(dir);
+  }
 
   long pid = 0;
 
@@ -181,7 +186,10 @@ long wxExProcessWithListView::Execute()
     wxLogError(_("Cannot run process") + ": " + m_Command);
   }
 
-  wxSetWorkingDirectory(cwd);
+  if (!cwd.empty())
+  {
+    wxSetWorkingDirectory(cwd);
+  }
 
   return pid;
 }
