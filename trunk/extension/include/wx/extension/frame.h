@@ -305,8 +305,7 @@ public:
 protected:
   void OnCommand(wxCommandEvent& event);
 private:
-  /// Initializes checkboxes from find replace data.
-  void Initialize(wxWindow* parent);
+  void Initialize();
 
   wxCheckBox* m_RegularExpression;
   wxCheckBox* m_MatchCase;

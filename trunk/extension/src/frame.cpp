@@ -812,7 +812,7 @@ wxExFindToolBar::wxExFindToolBar(
   : wxAuiToolBar(parent, id)
   , m_Frame(frame)
 {
-  Initialize(this);
+  Initialize();
 
   // And place the controls on the toolbar.
   AddControl(m_ComboBox);
@@ -837,7 +837,7 @@ wxExFindToolBar::wxExFindToolBar(
   Realize();
 }
 
-void wxExFindToolBar::Initialize(wxWindow* parent)
+void wxExFindToolBar::Initialize()
 {
 #ifdef __WXMSW__
   const wxSize size(150, 20);
@@ -846,13 +846,13 @@ void wxExFindToolBar::Initialize(wxWindow* parent)
 #endif
   m_ComboBox = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
 
-  m_MatchCase = new wxCheckBox(parent, 
+  m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExApp::GetFindReplaceData()->GetTextMatchCase());
 
-  m_MatchWholeWord = new wxCheckBox(parent, 
+  m_MatchWholeWord = new wxCheckBox(this, 
     ID_MATCH_WHOLE_WORD, wxExApp::GetFindReplaceData()->GetTextMatchWholeWord());
 
-  m_RegularExpression= new wxCheckBox(parent, 
+  m_RegularExpression= new wxCheckBox(this, 
     ID_REGULAR_EXPRESSION, wxExApp::GetFindReplaceData()->GetTextRegEx());
 
   m_MatchCase->SetValue(wxExApp::GetFindReplaceData()->MatchCase());
