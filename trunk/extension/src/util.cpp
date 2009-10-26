@@ -166,6 +166,13 @@ const wxString wxExComboBoxToString(
   return text;
 }
 
+const wxString wxExConfigFirstOf(const wxString& key)
+{
+  const wxString value = wxConfigBase::Get()->Read(key);
+
+  return value.BeforeFirst(wxExApp::GetFindReplaceData()->GetFieldSeparator());
+}
+
 #endif // wxUSE_GUI
 
 const wxString wxExEllipsed(const wxString& text, const wxString& control)

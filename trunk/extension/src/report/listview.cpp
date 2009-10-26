@@ -141,8 +141,8 @@ void wxExListViewFile::AddItems()
 
   wxExDirWithListView dir(
     this,
-    wxConfigBase::Get()->Read(_("In folder")),
-    wxConfigBase::Get()->Read(_("Add what")),
+    wxExConfigFirstOf(_("In folder")),
+    wxExConfigFirstOf(_("Add what")),
     flags);
 
   const int old_count = GetItemCount();
