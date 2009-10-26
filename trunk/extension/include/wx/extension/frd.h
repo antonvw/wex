@@ -13,7 +13,6 @@
 #define _EXFRD_H
 
 #include <set>
-#include <wx/combobox.h>
 #include <wx/config.h> 
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
@@ -27,12 +26,6 @@ public:
 
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
-
-  /// Fills a combobox with the find string (cannot be const as FindString is no const).
-  void FromFindString(wxComboBox* cb);
-
-  /// Fills a combobox with the replace string (see above).
-  void FromReplaceString(wxComboBox* cb);
 
   /// Gets the field separator.
   const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
@@ -104,8 +97,6 @@ public:
   /// Sets the replace string.
   void SetReplaceString(const wxString& value);
 private:
-  void Update(wxComboBox* cb, const wxString& value) const;
-
   wxRegEx m_FindRegularExpression;
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;

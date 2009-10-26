@@ -384,11 +384,11 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
 
   if (text == wxExApp::GetFindReplaceData()->GetTextFindWhat())
   {
-    wxExApp::GetFindReplaceData()->FromFindString(cb);
+    Update(cb, wxExApp::GetFindReplaceData()->GetFindString());
   }
   else if (text == wxExApp::GetFindReplaceData()->GetTextReplaceWith())
   {
-    wxExApp::GetFindReplaceData()->FromReplaceString(cb);
+    Update(cb, wxExApp::GetFindReplaceData()->GetReplaceString());
   }
 
   return Add(sizer, parent, cb, text + ":");
@@ -931,6 +931,19 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   else
   {
     event.Enable(true);
+  }
+}
+
+void wxExConfigDialog::Update(wxComboBox* cb, const wxString& value) const
+{
+  if (!value.empty())
+  {
+    if (cb->FindString(value) == wxNOT_FOUND)
+    {
+      cb->Append(value);
+    }
+
+    cb->SetValue(value);
   }
 }
 #endif // wxUSE_GUI

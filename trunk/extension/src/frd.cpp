@@ -54,16 +54,6 @@ wxExFindReplaceData::~wxExFindReplaceData()
   m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
 }
 
-void wxExFindReplaceData::FromFindString(wxComboBox* cb)
-{
-  Update(cb, GetFindString());
-}
-
-void wxExFindReplaceData::FromReplaceString(wxComboBox* cb)
-{
-  Update(cb, GetReplaceString());
-}
-
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
   wxFindReplaceData::SetFindString(value.BeforeFirst(m_FieldSeparator));
@@ -97,17 +87,4 @@ void wxExFindReplaceData::SetMatchWord(bool value)
 void wxExFindReplaceData::SetReplaceString(const wxString& value)
 {
   wxFindReplaceData::SetReplaceString(value.BeforeFirst(m_FieldSeparator));
-}
-
-void wxExFindReplaceData::Update(wxComboBox* cb, const wxString& value) const
-{
-  if (!value.empty())
-  {
-    if (cb->FindString(value) == wxNOT_FOUND)
-    {
-      cb->Append(value);
-    }
-
-    cb->SetValue(value);
-  }
 }

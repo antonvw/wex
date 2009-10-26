@@ -278,6 +278,8 @@ private:
     bool is_numeric = false,
     long style = 0);
 
+  void Update(wxComboBox* cb, const wxString& value) const;
+
   wxConfigBase* m_Config;
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
