@@ -38,7 +38,6 @@ enum wxExSVNType
 class wxExSTCEntryDialog;
 
 /// This class collects all svn handling.
-/// Your application should be derived from wxExApp when using this class.
 class wxExSVN
 {
 public:
