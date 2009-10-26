@@ -128,14 +128,14 @@ void wxExComboBoxFromString(
   }
 }
 
-void wxExComboBoxToString(
+const wxString wxExComboBoxToString(
   const wxComboBox* cb,
-  wxString& text,
   size_t max_items)
 {
   wxASSERT(cb != NULL);
 
-  text = cb->GetValue();
+  wxString text = cb->GetValue();
+
   switch (cb->FindString(cb->GetValue()))
   {
     case wxNOT_FOUND:
@@ -162,6 +162,8 @@ void wxExComboBoxToString(
       }
     }
   }
+
+  return text;
 }
 
 #endif // wxUSE_GUI
