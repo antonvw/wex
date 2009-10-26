@@ -797,6 +797,13 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
+enum
+{
+  ID_MATCH_WHOLE_WORD = 100,
+  ID_MATCH_CASE,
+  ID_REGULAR_EXPRESSION,
+};
+
 BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
   EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
