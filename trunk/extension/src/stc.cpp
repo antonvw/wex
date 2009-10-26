@@ -759,7 +759,7 @@ int wxExSTC::ConfigDialog(
     echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
     items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
-    items.push_back(wxExConfigItem(_("Auto fold"), CONFIG_INT, _("Folding")));
+    items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
     items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
