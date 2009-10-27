@@ -17,8 +17,8 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/util.h>
 
-bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
 wxLocale wxExApp::m_Locale;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
@@ -123,27 +123,6 @@ bool wxExApp::OnInit()
   wxExSTC::PathListInit();
 
   return wxApp::OnInit();
-}
-
-bool wxExApp::SetLogging(bool logging) 
-{
-  if (logging)
-  {
-    if (!wxExLogfileName().FileExists())
-    {
-      m_Logging = wxFile().Create(wxExLogfileName().GetFullPath());
-    }
-    else
-    {
-      m_Logging = true;
-    }
-  }
-  else
-  {
-    m_Logging = false;
-  }
-
-  return m_Logging;
 }
 
 void wxExApp::ToggleConfig(const wxString& key)

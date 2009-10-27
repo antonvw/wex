@@ -66,13 +66,6 @@ const wxString wxExGetWord(
   bool use_other_field_separators = false,
   bool use_path_separator = false);
 
-/// Returns the filename of the logfile.
-const wxFileName wxExLogfileName();
-
-/// Logs text with a timestamp at the end of the file.
-/// Returns true if text was written succesfully.
-bool wxExLog(const wxString& text, const wxFileName& filename = wxExLogfileName());
-
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);

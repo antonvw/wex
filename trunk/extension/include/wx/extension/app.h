@@ -15,12 +15,10 @@
 #include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
-#include <wx/extension/util.h> // for wxExLog
 
 class wxExFindReplaceData;
 
-/// Offers the application, with a configuration, lexer, printer, logging
-/// and locale.
+/// Offers the application, with a configuration, lexer, printer and locale.
 /// Your application should be derived from this class.
 class wxExApp : public wxApp
 {
@@ -36,12 +34,6 @@ public:
   static wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
 #endif
 
-  /// Logs text (only if SetLogging(true) is called, default it is off).
-  /// Returns true if logging was on and write was successfull.
-  static bool Log(const wxString& text) {
-    if (m_Logging) return wxExLog(text);
-    else           return false;};
-
   /// Constructs the config, lexers and printer (and reads the lexers).
   /// Initializes the locale and wxExTool.
   /// In your class first set the app name, as it uses this name for the config file.
@@ -52,14 +44,9 @@ public:
   /// and cleans up things if necessary.
   virtual int OnExit();
 
-  /// Sets logging as specified.
-  /// If the logging is true and the logfile does not exist, it is created.
-  static bool SetLogging(bool logging = true);
-
   /// Toggles boolean key.
   static void ToggleConfig(const wxString& key);
 private:
-  static bool m_Logging;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   static wxHtmlEasyPrinting* m_Printer;
 #endif

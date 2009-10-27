@@ -279,32 +279,6 @@ const wxString wxExGetWord(
   return token;
 }
 
-bool wxExLog(const wxString& text, const wxFileName& filename)
-{
-  return wxFile(
-    filename.GetFullPath(),
-    wxFile::write_append).Write(
-      wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
-}
-
-const wxFileName wxExLogfileName()
-{
-  if (wxTheApp == NULL)
-  {
-    return wxFileName("app.log");
-  }
-
-#ifdef wxExUSE_PORTABLE
-  return wxFileName(
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-    wxTheApp->GetAppName().Lower() + ".log");
-#else
-  return wxFileName(
-    wxStandardPaths::Get().GetUserDataDir(),
-    wxTheApp->GetAppName().Lower() + ".log");
-#endif
-}
-
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 {
   if (pattern == "*") return true; // asterix matches always.
