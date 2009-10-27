@@ -152,6 +152,8 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 #endif
       + wxFileName::GetPathSeparator() + "lexers.xml")
     );
+
+    m_Self->Read();
   }
 
   return m_Self;

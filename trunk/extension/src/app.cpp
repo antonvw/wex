@@ -107,8 +107,6 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
 
-  wxExLexers::Get()->Read();
-
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
 
