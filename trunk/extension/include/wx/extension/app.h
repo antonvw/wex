@@ -28,9 +28,6 @@ public:
   /// Gets the dir where the catalogs are for the locale.
   static wxString& GetCatalogDir() {return m_CatalogDir;};
 
-  /// Gets the find replace data.
-  static wxExFindReplaceData* GetFindReplaceData() {return m_FindReplaceData;};
-
   /// Gets the locale.
   static wxLocale& GetLocale() {return m_Locale;};
 
@@ -63,7 +60,6 @@ public:
   static void ToggleConfig(const wxString& key);
 private:
   static bool m_Logging;
-  static wxExFindReplaceData* m_FindReplaceData;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   static wxHtmlEasyPrinting* m_Printer;
 #endif

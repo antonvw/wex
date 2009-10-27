@@ -20,7 +20,6 @@
 
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
-wxExFindReplaceData* wxExApp::m_FindReplaceData = NULL;
 wxLocale wxExApp::m_Locale;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
 wxHtmlEasyPrinting* wxExApp::m_Printer = NULL;
@@ -32,8 +31,7 @@ int wxExApp::OnExit()
   wxExSTC::CleanUp();
 #endif
 
-  delete m_FindReplaceData;
-
+  wxExFindReplaceData::Destroy();
   wxExLexers::Destroy();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
@@ -108,9 +106,6 @@ bool wxExApp::OnInit()
     wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
   wxConfigBase::Set(config);
-
-  // Should be after constructing the config.
-  m_FindReplaceData = new wxExFindReplaceData();
 
   wxExLexers::Get()->Read();
 

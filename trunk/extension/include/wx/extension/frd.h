@@ -27,6 +27,12 @@ public:
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
 
+  /// Destroys the frd object.
+  static void Destroy();
+
+  /// Gets the find replace data.
+  static wxExFindReplaceData* Get(bool createOnDemand = true);
+
   /// Gets the field separator.
   const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
 
@@ -112,5 +118,7 @@ private:
   const wxString m_TextRegEx;
   const wxString m_TextReplaceWith;
   const wxString m_TextSearchDown;
+
+  static wxExFindReplaceData* m_Self;
 };
 #endif

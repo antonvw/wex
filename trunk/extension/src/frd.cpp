@@ -13,6 +13,8 @@
 
 using namespace std;
 
+wxExFindReplaceData* wxExFindReplaceData::m_Self = NULL;
+
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
   , m_Config(wxConfigBase::Get())
@@ -52,6 +54,21 @@ wxExFindReplaceData::~wxExFindReplaceData()
   m_Config->Write(m_TextMatchWholeWord, MatchWord());
   m_Config->Write(m_TextRegEx, m_IsRegularExpression);
   m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
+}
+
+void wxExFindReplaceData::Destroy()
+{
+  delete m_Self;
+}
+
+wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
+{
+  if (m_Self == NULL)
+  {
+    m_Self = new wxExFindReplaceData();
+  }
+
+  return m_Self;
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
