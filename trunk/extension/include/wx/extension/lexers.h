@@ -68,6 +68,9 @@ public:
   /// Returns the number of lexers.
   size_t Count() const {return m_Lexers.size();};
 
+  /// Destroys the lexers object.
+  static void Destroy();
+
   /// Finds a lexer specified by a filename.
   const wxExLexer FindByFileName(const wxFileName& filename) const;
 
@@ -78,6 +81,9 @@ public:
 
   /// Finds a lexer if text starts with some special tokens.
   const wxExLexer FindByText(const wxString& text) const;
+
+  /// Returns the lexers object.
+  static wxExLexers* Get(bool createOnDemand = true);
 
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
@@ -118,5 +124,7 @@ private:
   std::vector<wxString> m_StylesHex;
 
   const wxFileName m_FileName;
+
+  static wxExLexers* m_Self;
 };
 #endif

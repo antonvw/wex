@@ -13,7 +13,7 @@
 #include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/file.h>
-#include <wx/extension/app.h> // for wxExApp
+#include <wx/extension/lexers.h>
 
 wxExFile::wxExFile()
   : m_FileName()
@@ -172,7 +172,7 @@ void wxExFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)
 {
-  if (wxExApp::GetLexers() == NULL) 
+  if (wxExLexers::Get() == NULL) 
   {
     m_Lexer = wxExLexer();
   }
@@ -182,11 +182,11 @@ void wxExFileName::SetLexer(
     {
       if (text != "forced")
       {
-        m_Lexer = wxExApp::GetLexers()->FindByFileName(*this);
+        m_Lexer = wxExLexers::Get()->FindByFileName(*this);
 
         if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
         {
-          m_Lexer = wxExApp::GetLexers()->FindByText(text);
+          m_Lexer = wxExLexers::Get()->FindByText(text);
         }
       }
       else
@@ -196,7 +196,7 @@ void wxExFileName::SetLexer(
     }
     else
     {
-      m_Lexer = wxExApp::GetLexers()->FindByName(lexer);
+      m_Lexer = wxExLexers::Get()->FindByName(lexer);
     }
   }
 }

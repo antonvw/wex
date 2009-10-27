@@ -15,7 +15,6 @@
 #include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
-#include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExLog
 
 class wxExFindReplaceData;
@@ -31,9 +30,6 @@ public:
 
   /// Gets the find replace data.
   static wxExFindReplaceData* GetFindReplaceData() {return m_FindReplaceData;};
-
-  /// Gets the lexers.
-  static wxExLexers* GetLexers() {return m_Lexers;};
 
   /// Gets the locale.
   static wxLocale& GetLocale() {return m_Locale;};
@@ -68,7 +64,6 @@ public:
 private:
   static bool m_Logging;
   static wxExFindReplaceData* m_FindReplaceData;
-  static wxExLexers* m_Lexers;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   static wxHtmlEasyPrinting* m_Printer;
 #endif

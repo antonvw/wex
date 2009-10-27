@@ -16,6 +16,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
 
 #if wxUSE_GUI
@@ -1467,7 +1468,7 @@ void wxExSTC::LexerDialog(const wxString& caption)
 {
   wxExLexer lexer = GetFileName().GetLexer();
 
-  if (wxExApp::GetLexers()->ShowDialog(this, lexer, caption))
+  if (wxExLexers::Get()->ShowDialog(this, lexer, caption))
   {
     SetLexer(lexer.GetScintillaLexer(), true); // forced
   }
@@ -2270,16 +2271,16 @@ void wxExSTC::SetGlobalStyles()
   if (!(m_Flags & STC_OPEN_HEX))
   {
     for (
-      vector<wxString>::const_iterator it = wxExApp::GetLexers()->GetStyles().begin();
-      it != wxExApp::GetLexers()->GetStyles().end();
+      vector<wxString>::const_iterator it = wxExLexers::Get()->GetStyles().begin();
+      it != wxExLexers::Get()->GetStyles().end();
       ++it)
     {
       SetStyle(*it);
     }
 
     for (
-      map<int, int>::const_iterator ind = wxExApp::GetLexers()->GetIndicators().begin();
-      ind != wxExApp::GetLexers()->GetIndicators().end();
+      map<int, int>::const_iterator ind = wxExLexers::Get()->GetIndicators().begin();
+      ind != wxExLexers::Get()->GetIndicators().end();
       ++ind)
     {
       IndicatorSetStyle(ind->first, ind->second);
@@ -2288,8 +2289,8 @@ void wxExSTC::SetGlobalStyles()
   else
   {
     for (
-      vector<wxString>::const_iterator it = wxExApp::GetLexers()->GetStylesHex().begin();
-      it != wxExApp::GetLexers()->GetStylesHex().end();
+      vector<wxString>::const_iterator it = wxExLexers::Get()->GetStylesHex().begin();
+      it != wxExLexers::Get()->GetStylesHex().end();
       ++it)
     {
       SetStyle(*it);
@@ -2380,8 +2381,8 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 void wxExSTC::SetMarkers()
 {
   for (
-    vector<wxExMarker>::const_iterator it = wxExApp::GetLexers()->GetMarkers().begin();
-    it != wxExApp::GetLexers()->GetMarkers().end();
+    vector<wxExMarker>::const_iterator it = wxExLexers::Get()->GetMarkers().begin();
+    it != wxExLexers::Get()->GetMarkers().end();
     ++it)
   {
      MarkerDefine(

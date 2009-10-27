@@ -99,7 +99,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   SetupStatusBar(panes);
 #endif
 
-  const wxExLexer lexer = wxExApp::GetLexers()->FindByName("cpp");
+  const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
   m_DirCtrl = new wxGenericDirCtrl(this, wxID_ANY, wxStandardPaths::Get().GetDocumentsDir());
 

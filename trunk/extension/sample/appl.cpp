@@ -146,10 +146,10 @@ wxExSampleFrame::wxExSampleFrame()
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().Update();
 
-  assert(wxExApp::GetLexers());
+  assert(wxExLexers::Get());
 
-  wxExSTC* st = new wxExSTC(this, wxExApp::GetLexers()->GetFileName());
-  m_Notebook->AddPage(st, wxExApp::GetLexers()->GetFileName().GetFullName());
+  wxExSTC* st = new wxExSTC(this, wxExLexers::Get()->GetFileName());
+  m_Notebook->AddPage(st, wxExLexers::Get()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "wxExListView");
 
 #if wxUSE_GRID
@@ -276,10 +276,10 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     m_STC->FileSave();
 
-    if (m_STC->GetFileName().GetFullPath() == wxExApp::GetLexers()->GetFileName().GetFullPath())
+    if (m_STC->GetFileName().GetFullPath() == wxExLexers::Get()->GetFileName().GetFullPath())
     {
-      wxExApp::GetLexers()->Read();
-      wxLogMessage("File contains: %d lexers", wxExApp::GetLexers()->Count());
+      wxExLexers::Get()->Read();
+      wxLogMessage("File contains: %d lexers", wxExLexers::Get()->Count());
         // As the lexer might have changed, update status bar field as well.
 #if wxUSE_STATUSBAR
       m_STC->UpdateStatusBar("PaneLexer");

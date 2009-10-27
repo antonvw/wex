@@ -37,7 +37,7 @@ void wxExAppTestFixture::testMethods()
   // test wxExApp
   CPPUNIT_ASSERT(!wxExApp::GetCatalogDir().empty());
   CPPUNIT_ASSERT(wxConfigBase::Get() != NULL);
-  CPPUNIT_ASSERT(wxExApp::GetLexers() != NULL);
+  CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetPrinter() != NULL);
   CPPUNIT_ASSERT(!wxExTool::GetToolInfo().empty());
 
@@ -125,7 +125,7 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExGetLineNumberFromText("test on line: 1200") == 1200);
 
   // Only usefull if the lexers file was present
-  if (wxExApp::GetLexers()->Count() > 0)
+  if (wxExLexers::Get()->Count() > 0)
   {
     wxConfigBase::Get()->Write(_("Purpose"), "hello test");
     const wxExFileName fn(TEST_FILE);

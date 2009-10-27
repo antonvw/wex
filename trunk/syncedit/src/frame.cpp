@@ -14,6 +14,7 @@
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/svn.h>
 #include "frame.h"
 #include "defs.h"
@@ -529,9 +530,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     {
       editor->FileSave();
 
-      if (editor->GetFileName() == wxExApp::GetLexers()->GetFileName())
+      if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
-        wxExApp::GetLexers()->Read();
+        wxExLexers::Get()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);
         // As the lexer might have changed, update status bar field as well.
 #if wxUSE_STATUSBAR
@@ -574,7 +575,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 #endif
     break;
 
-  case ID_OPEN_LEXERS: OpenFile(wxExApp::GetLexers()->GetFileName()); break;
+  case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLogfileName()); break;
 
   case ID_OPTION_SVN_AND_COMPARATOR:

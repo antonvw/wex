@@ -14,13 +14,13 @@
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 
 bool wxExApp::m_Logging = false;
 wxString wxExApp::m_CatalogDir;
 wxExFindReplaceData* wxExApp::m_FindReplaceData = NULL;
-wxExLexers* wxExApp::m_Lexers = NULL;
 wxLocale wxExApp::m_Locale;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
 wxHtmlEasyPrinting* wxExApp::m_Printer = NULL;
@@ -33,7 +33,9 @@ int wxExApp::OnExit()
 #endif
 
   delete m_FindReplaceData;
-  delete m_Lexers;
+
+  wxExLexers::Destroy();
+
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;
 #endif
@@ -110,17 +112,7 @@ bool wxExApp::OnInit()
   // Should be after constructing the config.
   m_FindReplaceData = new wxExFindReplaceData();
 
-  // And construct and read the lexers.
-  m_Lexers = new wxExLexers(wxExFileName(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "lexers.xml")
-    );
-
-  m_Lexers->Read();
+  wxExLexers::Get()->Read();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();

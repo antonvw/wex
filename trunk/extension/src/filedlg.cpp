@@ -10,6 +10,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/app.h>
 #include <wx/extension/file.h>
+#include <wx/extension/lexers.h>
 
 wxExFileDialog::wxExFileDialog(
   wxWindow *parent,
@@ -102,7 +103,7 @@ int wxExFileDialog::ShowModal(bool ask_for_continue)
   // Override wildcard only if it is default.
   if (m_OriginalWildcard == wxFileSelectorDefaultWildcardStr)
   {
-    SetWildcard(wxExApp::GetLexers()->BuildWildCards(m_File->GetFileName()));
+    SetWildcard(wxExLexers::Get()->BuildWildCards(m_File->GetFileName()));
   }
 
   return wxFileDialog::ShowModal();

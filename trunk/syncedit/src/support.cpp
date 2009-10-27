@@ -11,6 +11,7 @@
 
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
+#include <wx/extension/lexers.h>
 #ifndef __WXMSW__
 #include "appl.xpm"
 #endif
@@ -33,7 +34,7 @@ Frame::Frame()
   panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
 
   // Add the lexer pane only if we have lexers.
-  if (wxExApp::GetLexers()->Count() > 0)
+  if (wxExLexers::Get()->Count() > 0)
   {
 #ifdef __WXMSW__
     const int lexer_size = 60;

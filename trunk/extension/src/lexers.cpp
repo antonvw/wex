@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
@@ -17,6 +18,8 @@
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
+
+wxExLexers* wxExLexers::m_Self = NULL;
 
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
@@ -57,6 +60,11 @@ const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
   }
 
   return wildcards;
+}
+
+void wxExLexers::Destroy()
+{
+  delete m_Self;
 }
 
 const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
@@ -131,6 +139,23 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   }
 
   return wxExLexer();
+}
+
+wxExLexers* wxExLexers::Get(bool createOnDemand)
+{
+  if (m_Self == NULL)
+  {
+    m_Self = new wxExLexers(wxFileName(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + "lexers.xml")
+    );
+  }
+
+  return m_Self;
 }
 
 const wxString wxExLexers::GetLexerAssociations() const
