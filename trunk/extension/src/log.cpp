@@ -14,15 +14,7 @@
 
 bool wxExLog::m_Logging = false;
 
-bool wxExLog(const wxString& text, const wxFileName& filename)
-{
-  return wxFile(
-    filename.GetFullPath(),
-    wxFile::write_append).Write(
-      wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
-}
-
-const wxFileName wxExLogfileName()
+const wxFileName wxExLog::GetFileName()
 {
   if (wxTheApp == NULL)
   {
@@ -40,11 +32,25 @@ const wxFileName wxExLogfileName()
 #endif
 }
 
+bool wxExLog::Log(const wxString& text) 
+{
+  if (m_Logging) return Log(text, GetFileName());
+  else           return false;
+}
+
+bool wxExLog::Log(const wxString& text, const wxFileName& filename)
+{
+  return wxFile(
+    filename.GetFullPath(),
+    wxFile::write_append).Write(
+      wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
+}
+
 bool wxExLog::SetLogging(bool logging) 
 {
   if (logging)
   {
-    if (!wxExLogfileName().FileExists())
+    if (!GetFileName().FileExists())
     {
       m_Logging = wxFile().Create(wxExLogfileName().GetFullPath());
     }
