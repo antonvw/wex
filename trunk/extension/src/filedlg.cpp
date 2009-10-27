@@ -8,7 +8,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/filedlg.h>
-#include <wx/extension/app.h>
 #include <wx/extension/file.h>
 #include <wx/extension/lexers.h>
 

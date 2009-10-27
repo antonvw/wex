@@ -199,10 +199,10 @@ void wxExTextFileWithListView::Report()
   switch (GetTool().GetId())
   {
   case ID_TOOL_REPORT_REPLACE:
-    item.SetColumnText(_("Replaced"), wxExApp::GetFindReplaceData()->GetReplaceString());
+    item.SetColumnText(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
     item.SetColumnText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
-    item.SetColumnText(_("Match"), wxExApp::GetFindReplaceData()->GetFindString());
+    item.SetColumnText(_("Match"), wxExFindReplaceData::Get()->GetFindString());
   break;
 
   case ID_TOOL_REPORT_REVISION:

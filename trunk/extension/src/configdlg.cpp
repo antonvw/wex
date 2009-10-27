@@ -15,10 +15,10 @@
 #include <wx/fontpicker.h>
 #include <wx/spinctrl.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h> // for PathListInit
+#include <wx/extension/util.h>
 
 using namespace std;
 
@@ -325,23 +325,23 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
     ++it)
   {
     // Special cases, should be taken from the find replace data.
-    if (*it == wxExApp::GetFindReplaceData()->GetTextMatchWholeWord())
+    if (*it == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
     {
-      if (wxExApp::GetFindReplaceData()->MatchWord())
+      if (wxExFindReplaceData::Get()->MatchWord())
       {
         box->Check(item);
       }
     }
-    else if (*it == wxExApp::GetFindReplaceData()->GetTextMatchCase())
+    else if (*it == wxExFindReplaceData::Get()->GetTextMatchCase())
     {
-      if (wxExApp::GetFindReplaceData()->MatchCase())
+      if (wxExFindReplaceData::Get()->MatchCase())
       {
         box->Check(item);
       }
     }
-    else if (*it == wxExApp::GetFindReplaceData()->GetTextRegEx())
+    else if (*it == wxExFindReplaceData::Get()->GetTextRegEx())
     {
-      if (wxExApp::GetFindReplaceData()->IsRegularExpression())
+      if (wxExFindReplaceData::Get()->IsRegularExpression())
       {
         box->Check(item);
       }
@@ -382,13 +382,13 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
     cb,
     m_Config->Read(text)); // no delimiter!
 
-  if (text == wxExApp::GetFindReplaceData()->GetTextFindWhat())
+  if (text == wxExFindReplaceData::Get()->GetTextFindWhat())
   {
-    Update(cb, wxExApp::GetFindReplaceData()->GetFindString());
+    Update(cb, wxExFindReplaceData::Get()->GetFindString());
   }
-  else if (text == wxExApp::GetFindReplaceData()->GetTextReplaceWith())
+  else if (text == wxExFindReplaceData::Get()->GetTextReplaceWith())
   {
-    Update(cb, wxExApp::GetFindReplaceData()->GetReplaceString());
+    Update(cb, wxExFindReplaceData::Get()->GetReplaceString());
   }
 
   return Add(sizer, parent, cb, text + ":");
@@ -682,17 +682,17 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         ++b)
       {
         // Special case, should be taken from find replace data.
-        if (*b == wxExApp::GetFindReplaceData()->GetTextMatchWholeWord())
+        if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
         {
-          wxExApp::GetFindReplaceData()->SetMatchWord(clb->IsChecked(item));
+          wxExFindReplaceData::Get()->SetMatchWord(clb->IsChecked(item));
         }
-        else if (*b == wxExApp::GetFindReplaceData()->GetTextMatchCase())
+        else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
         {
-          wxExApp::GetFindReplaceData()->SetMatchCase(clb->IsChecked(item));
+          wxExFindReplaceData::Get()->SetMatchCase(clb->IsChecked(item));
         }
-        else if (*b == wxExApp::GetFindReplaceData()->GetTextRegEx())
+        else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
         {
-          wxExApp::GetFindReplaceData()->SetIsRegularExpression(clb->IsChecked(item));
+          wxExFindReplaceData::Get()->SetIsRegularExpression(clb->IsChecked(item));
         }
         else
         {
@@ -718,17 +718,17 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       wxComboBox* cb = (wxComboBox*)it->m_Control;
       m_Config->Write(cb->GetName(), wxExComboBoxToString(cb, it->m_MaxItems));
 
-      if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextFindWhat())
+      if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
       {
         // The Get gets text before the ','!
-        wxExApp::GetFindReplaceData()->SetFindString(
-          m_Config->Read(wxExApp::GetFindReplaceData()->GetTextFindWhat()));
+        wxExFindReplaceData::Get()->SetFindString(
+          m_Config->Read(wxExFindReplaceData::Get()->GetTextFindWhat()));
       }
-      else if (cb->GetName() == wxExApp::GetFindReplaceData()->GetTextReplaceWith())
+      else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
       {
         // The Get gets text before the ','!
-        wxExApp::GetFindReplaceData()->SetReplaceString(
-          m_Config->Read(wxExApp::GetFindReplaceData()->GetTextReplaceWith()));
+        wxExFindReplaceData::Get()->SetReplaceString(
+          m_Config->Read(wxExFindReplaceData::Get()->GetTextReplaceWith()));
       }
       }
       break;

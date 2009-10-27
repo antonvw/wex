@@ -224,7 +224,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   wxExGrid* grid = GetGrid();
   wxExSTC* stc = GetSTC();
   wxExListView* lv = GetListView();
-  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   switch (command.GetId())
   {
@@ -353,7 +353,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     return;
   }
 
-  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
   const bool find_next = (frd->GetFlags() & wxFR_DOWN);
 
   wxExSTC* stc = GetSTC();
@@ -742,10 +742,10 @@ ComboBox::ComboBox(
 
   wxExComboBoxFromString(
     this, 
-    wxConfigBase::Get()->Read(wxExApp::GetFindReplaceData()->GetTextFindWhat()));
+    wxConfigBase::Get()->Read(wxExFindReplaceData::Get()->GetTextFindWhat()));
 
   // And override the value set by previous, as we want text to be same as in Find.
-  SetValue(wxExApp::GetFindReplaceData()->GetFindString());
+  SetValue(wxExFindReplaceData::Get()->GetFindString());
 }
 
 void ComboBox::OnCommand(wxCommandEvent& event)
@@ -775,19 +775,19 @@ void ComboBox::OnKey(wxKeyEvent& event)
     if (stc != NULL)
     {
       stc->FindNext(GetValue());
-      wxExApp::GetFindReplaceData()->SetFindString(GetValue());
+      wxExFindReplaceData::Get()->SetFindString(GetValue());
 
       // And keep the changed text in the combo box.
       const wxString text = wxExComboBoxToString(this);
 
       wxConfigBase::Get()->Write(
-        wxExApp::GetFindReplaceData()->GetTextFindWhat(), 
+        wxExFindReplaceData::Get()->GetTextFindWhat(), 
         text);
 
       Clear(); // so wxExComboBoxFromString can append again
       wxExComboBoxFromString(this, text);
 
-      SetValue(wxExApp::GetFindReplaceData()->GetFindString());
+      SetValue(wxExFindReplaceData::Get()->GetFindString());
     }
   }
   else
@@ -853,17 +853,17 @@ void wxExFindToolBar::Initialize()
   m_ComboBox = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
 
   m_MatchCase = new wxCheckBox(this, 
-    ID_MATCH_CASE, wxExApp::GetFindReplaceData()->GetTextMatchCase());
+    ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
 
   m_MatchWholeWord = new wxCheckBox(this, 
-    ID_MATCH_WHOLE_WORD, wxExApp::GetFindReplaceData()->GetTextMatchWholeWord());
+    ID_MATCH_WHOLE_WORD, wxExFindReplaceData::Get()->GetTextMatchWholeWord());
 
   m_RegularExpression= new wxCheckBox(this, 
-    ID_REGULAR_EXPRESSION, wxExApp::GetFindReplaceData()->GetTextRegEx());
+    ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
 
-  m_MatchCase->SetValue(wxExApp::GetFindReplaceData()->MatchCase());
-  m_MatchWholeWord->SetValue(wxExApp::GetFindReplaceData()->MatchWord());
-  m_RegularExpression->SetValue(wxExApp::GetFindReplaceData()->IsRegularExpression());
+  m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
+  m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
+  m_RegularExpression->SetValue(wxExFindReplaceData::Get()->IsRegularExpression());
 }
 
 void wxExFindToolBar::OnCommand(wxCommandEvent& event)
@@ -883,15 +883,15 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_MATCH_WHOLE_WORD:
-    wxExApp::GetFindReplaceData()->SetMatchWord(
+    wxExFindReplaceData::Get()->SetMatchWord(
       m_MatchWholeWord->GetValue());
     break;
   case ID_MATCH_CASE:
-    wxExApp::GetFindReplaceData()->SetMatchCase(
+    wxExFindReplaceData::Get()->SetMatchCase(
       m_MatchCase->GetValue());
     break;
   case ID_REGULAR_EXPRESSION:
-    wxExApp::GetFindReplaceData()->SetIsRegularExpression(
+    wxExFindReplaceData::Get()->SetIsRegularExpression(
       m_RegularExpression->GetValue());
     break;
 

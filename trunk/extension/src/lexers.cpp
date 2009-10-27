@@ -15,7 +15,6 @@
 #include <wx/stc/stc.h>
 #include <wx/textfile.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 
@@ -160,7 +159,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 
 const wxString wxExLexers::GetLexerAssociations() const
 {
-  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
   wxASSERT(frd != NULL);
 
   wxString text;

@@ -16,7 +16,6 @@
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/textfile.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
@@ -243,7 +242,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 {
   bool match = false;
 
-  wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   if (!frd->IsRegularExpression())
   {
@@ -306,7 +305,7 @@ bool wxExTextFile::Parse()
 
   if (m_Tool.IsFindType())
   {
-    if (wxExApp::GetFindReplaceData()->GetFindStringNoCase().empty())
+    if (wxExFindReplaceData::Get()->GetFindStringNoCase().empty())
     {
       wxFAIL;
       return false;

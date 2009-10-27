@@ -16,7 +16,6 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 
@@ -111,7 +110,7 @@ void wxExComboBoxFromString(
 
   wxStringTokenizer tkz(
     text, 
-    wxExApp::GetFindReplaceData()->GetFieldSeparator());
+    wxExFindReplaceData::Get()->GetFieldSeparator());
 
   while (tkz.HasMoreTokens())
   {
@@ -144,7 +143,7 @@ const wxString wxExComboBoxToString(
       // simply by appending all combobox items.
       for (size_t i = 0; i < max_items; i++)
         if (i < max_items - 1 && i < cb->GetCount())
-          text += wxExApp::GetFindReplaceData()->GetFieldSeparator() + cb->GetString(i);
+          text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
     }
     break;
 
@@ -158,7 +157,7 @@ const wxString wxExComboBoxToString(
       {
         const wxString cb_element = cb->GetString(i);
         if (cb_element != cb->GetValue())
-          text += wxExApp::GetFindReplaceData()->GetFieldSeparator() + cb_element;
+          text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb_element;
       }
     }
   }
@@ -170,7 +169,7 @@ const wxString wxExConfigFirstOf(const wxString& key)
 {
   const wxString value = wxConfigBase::Get()->Read(key);
 
-  return value.BeforeFirst(wxExApp::GetFindReplaceData()->GetFieldSeparator());
+  return value.BeforeFirst(wxExFindReplaceData::Get()->GetFieldSeparator());
 }
 
 #endif // wxUSE_GUI

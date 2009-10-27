@@ -52,7 +52,7 @@ void wxExFindInFiles(bool replace)
 
   std::vector<wxExConfigItem> v;
   v.push_back(
-    wxExConfigItem(wxExApp::GetFindReplaceData()->GetTextFindWhat(), 
+    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
     CONFIG_COMBOBOX, 
     wxEmptyString, 
     true));
@@ -60,14 +60,14 @@ void wxExFindInFiles(bool replace)
   if (replace) 
   {
     v.push_back(wxExConfigItem(
-      wxExApp::GetFindReplaceData()->GetTextReplaceWith(), 
+      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
       CONFIG_COMBOBOX));
   }
 
   v.push_back(wxExConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());
-  v.push_back(wxExConfigItem(wxExApp::GetFindReplaceData()->GetInfo()));
+  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
 
   if (wxExConfigDialog(NULL,
     v,
@@ -86,7 +86,7 @@ void wxExFindInFiles(bool replace)
     return;
   }
 
-  wxExApp::Log(wxExApp::GetFindReplaceData()->GetText(replace));
+  wxExApp::Log(wxExFindReplaceData::Get()->GetText(replace));
 
   wxExDirWithListView dir(
     tool,

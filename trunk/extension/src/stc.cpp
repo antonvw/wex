@@ -1128,7 +1128,7 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
 int wxExSTC::FindReplaceDataFlags() const
 {
-  const wxExFindReplaceData* frd = wxExApp::GetFindReplaceData();
+  const wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   int flags = 0;
 
@@ -1198,8 +1198,8 @@ const wxString wxExSTC::GetSearchText()
 {
   const wxString selection = GetSelectedText();
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
-    wxExApp::GetFindReplaceData()->SetFindString(selection);
-  return wxExApp::GetFindReplaceData()->GetFindString();
+    wxExFindReplaceData::Get()->SetFindString(selection);
+  return wxExFindReplaceData::Get()->GetFindString();
 }
 
 const wxString wxExSTC::GetTextAtCurrentPos()
