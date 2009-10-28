@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/app.h>
 #include <wx/file.h>
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
