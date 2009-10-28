@@ -14,7 +14,7 @@
 
 bool wxExLog::m_Logging = false;
 
-const wxFileName wxExLog::GetFileName()
+const wxFileName wxExLog::GetFileName() const
 {
   if (wxTheApp == NULL)
   {
@@ -34,15 +34,20 @@ const wxFileName wxExLog::GetFileName()
 
 bool wxExLog::Log(const wxString& text) 
 {
-  if (m_Logging) return Log(text, GetFileName());
-  else           return false;
+  if (m_Logging) 
+  {
+    return Log(text, GetFileName());
+  }
+  else
+  {
+    return false;
+  }
 }
 
 bool wxExLog::Log(const wxString& text, const wxFileName& filename)
 {
-  return wxFile(
-    filename.GetFullPath(),
-    wxFile::write_append).Write(
+  return 
+    wxFile(filename.GetFullPath(), wxFile::write_append).Write(
       wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
 }
 

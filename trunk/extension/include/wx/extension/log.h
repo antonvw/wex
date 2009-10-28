@@ -16,6 +16,7 @@
 class wxExLog
 {
 public:
+  /// Constructor.
   wxExLog();
 
   /// Returns the filename of the logfile.
