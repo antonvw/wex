@@ -172,7 +172,7 @@ void wxExFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)
 {
-  if (wxExLexers::Get() == NULL) 
+  if (wxExLexers::Get(false) == NULL) 
   {
     m_Lexer = wxExLexer();
   }

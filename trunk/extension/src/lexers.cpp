@@ -142,7 +142,7 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
 
 wxExLexers* wxExLexers::Get(bool createOnDemand)
 {
-  if (m_Self == NULL)
+  if (m_Self == NULL && createOnDemand)
   {
     m_Self = new wxExLexers(wxFileName(
 #ifdef wxExUSE_PORTABLE
