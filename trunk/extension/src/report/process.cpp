@@ -14,6 +14,7 @@
 #include <wx/extension/app.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/extension.h>
+#include <wx/extension/log.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
@@ -177,7 +178,7 @@ long wxExProcessWithListView::Execute()
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_Command);
 #endif
-    wxExApp::Log(_("Running process") + ": " + m_Command);
+    wxExLog::Get()->(_("Running process") + ": " + m_Command);
 
     m_Timer.Start(100); // each 100 milliseconds
   }

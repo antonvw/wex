@@ -11,6 +11,7 @@
 
 #include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/log.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>
 #include <wx/extension/report/dir.h>
@@ -780,7 +781,7 @@ void RBSFile::GenerateDialog()
   Footer();
   Close();
 
-  wxExApp::Log("RBS " + _("File") + ": " + script + " " + _("generated"));
+  wxExLog::Get()->("RBS " + _("File") + ": " + script + " " + _("generated"));
 }
 
 void RBSFile::GenerateTransmit(const wxString& text)
@@ -1260,7 +1261,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       return;
     }
 
-    wxExApp::Log(wxExFindReplaceData::Get()->GetText(
+    wxExLog::Get()->(wxExFindReplaceData::Get()->GetText(
       tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 

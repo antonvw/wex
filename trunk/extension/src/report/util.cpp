@@ -11,6 +11,7 @@
 
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/log.h>
 #include <wx/extension/report/report.h>
 #include <wx/extension/report/dir.h>
 
@@ -32,7 +33,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   }
 
   const wxString msg = _("Compared") + ": " + arguments;
-  wxExApp::Log(msg);
+  wxExLog::Get()->(msg);
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
 #endif
@@ -86,7 +87,7 @@ void wxExFindInFiles(bool replace)
     return;
   }
 
-  wxExApp::Log(wxExFindReplaceData::Get()->GetText(replace));
+  wxExLog::Get()->(wxExFindReplaceData::Get()->GetText(replace));
 
   wxExDirWithListView dir(
     tool,

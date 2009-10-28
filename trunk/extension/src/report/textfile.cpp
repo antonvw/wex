@@ -12,6 +12,7 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/log.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/frame.h>
@@ -133,7 +134,7 @@ bool wxExTextFileWithListView::ParseSQL()
 */
   if (GetTool().GetId() == ID_TOOL_SQL)
   {
-    wxExApp::Log(
+    wxExLog::Get()->(
       _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
     Recordset rs(&m_otl.GetConnect(), this);
@@ -143,7 +144,7 @@ bool wxExTextFileWithListView::ParseSQL()
     }
 
     const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
-    wxExApp::Log(msg);
+    wxExLog::Get()->(msg);
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(msg);
 #endif
@@ -362,7 +363,7 @@ bool Recordset::ExecQuery(const wxString& query)
       _("ODBC Error") + ":",
       p.msg,
       wxOK | wxCENTRE | wxTE_MULTILINE | wxRESIZE_BORDER).ShowModal();
-    wxExApp::Log(p.msg);
+    wxExLog::Get()->(p.msg);
     return false;
   }
 }

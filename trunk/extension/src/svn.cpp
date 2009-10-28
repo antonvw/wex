@@ -10,9 +10,9 @@
 \******************************************************************************/
 
 #include <wx/extension/svn.h>
-#include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -157,7 +157,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     return m_ReturnCode;
   }
 
-  wxExApp::Log(command);
+  wxExLog::Get()->(command);
 
   if (m_FullPath.empty())
   {
