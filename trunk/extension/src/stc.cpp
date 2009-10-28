@@ -12,12 +12,12 @@
 #include <wx/numdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/app.h> // for wxExApp
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/util.h>
 
@@ -104,7 +104,7 @@ void wxExPrintout::OnPreparePrinting()
   wxSize ppiScr;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
-  wxPageSetupDialogData* dlg_data = wxExApp::GetPrinter()->GetPageSetupData();
+  wxPageSetupDialogData* dlg_data = wxExPrinting::Get()->GetPrinter()->GetPageSetupData();
   wxSize page = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)
@@ -1921,7 +1921,7 @@ void wxExSTC::PathListInit()
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::Print(bool prompt)
 {
-  wxPrintData* data = wxExApp::GetPrinter()->GetPrintData();
+  wxPrintData* data = wxExPrinting::Get()->GetPrinter()->GetPrintData();
   m_Printer->GetPrintDialogData().SetPrintData(*data);
   m_Printer->Print(this, new wxExPrintout(this), prompt);
 }

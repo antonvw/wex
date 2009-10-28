@@ -12,11 +12,11 @@
 //#include <wx/persist.h> 
 #include <wx/tooltip.h> // for GetTip
 #include <wx/extension/frame.h>
-#include <wx/extension/app.h>
 #include <wx/extension/art.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
@@ -588,7 +588,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.SetManagedWindow(this);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExApp::GetPrinter()->SetParentWindow(this);
+  wxExPrinting::Get()->GetPrinter()->SetParentWindow(this);
 #endif
 }
 

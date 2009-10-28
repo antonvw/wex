@@ -9,100 +9,13 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/config.h>
-#include <wx/dir.h>
-#include <wx/intl.h> // for wxLocale
-#include <wx/stdpaths.h>
-#include <wx/extension/app.h>
-#include <wx/extension/frd.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/tool.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-wxHtmlEasyPrinting* wxExApp::m_Printer = NULL;
-#endif
+wxExPrinting* wxExPrinting::m_Self = NULL;
 
-int wxExApp::OnExit()
+wxExPrinting::wxExPrinting()
 {
-#if wxUSE_GUI
-  wxExSTC::CleanUp();
-#endif
-
-  wxExFindReplaceData::Destroy();
-  wxExLexers::Destroy();
-  wxExLog::Destroy();
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  delete m_Printer;
-#endif
-
-  return wxApp::OnExit();
-}
-
-bool wxExApp::OnInit()
-{
-  // Init the localization, from now on things will be translated.
-  // So do this before constructing config and wxExTool::Initialize, as these use localization.
-  wxLocale locale;
-
-  if (locale.Init())
-  {
-    // If there are catalogs in the catalog_dir, then add them to the locale.
-    // README: We use the canonical name, also for windows, not sure whether that is
-    // the best.
-    const wxString catalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-      locale.GetCanonicalName(),
-      // This seems to be necessarty for wxGTK. For wxMSW it isn't used.
-      wxStandardPaths::ResourceCat_Messages);
-
-    if (wxFileName::DirExists(catalogDir))
-    {
-      wxArrayString files;
-      wxDir::GetAllFiles(catalogDir, &files);
-
-      for (size_t i = 0 ; i < files.GetCount(); i++)
-      {
-        // Default the wxstd is already loaded by locale.Init(),
-        // so do not do it twice.
-        const wxFileName fn(files.Item(i));
-
-        if (!locale.IsLoaded(fn.GetName()))
-        {
-          if (!locale.AddCatalog(fn.GetName()))
-          {
-            wxLogError("Catalog could not be added: " + fn.GetName());
-          }
-        }
-      }
-    }
-  }
-
-  // Now construct the config, as most classes use it.
-  wxConfigBase* config;
-#ifdef wxExUSE_PORTABLE
-  config = new wxFileConfig(
-    wxEmptyString,
-    wxEmptyString,
-    wxFileName(
-      wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
-      GetAppName() + wxString(".cfg")).GetFullPath(),
-    wxEmptyString,
-    wxCONFIG_USE_LOCAL_FILE);
-#else
-  // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
-  // (ignored on non-Unix system)
-  config = new wxConfig(
-    wxEmptyString,
-    wxEmptyString,
-    wxEmptyString,
-    wxEmptyString,
-    wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
-#endif
-  wxConfigBase::Set(config);
-
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   m_Printer = new wxHtmlEasyPrinting();
 
@@ -113,16 +26,26 @@ bool wxExApp::OnInit()
   m_Printer->SetHeader(wxExPrintHeader(wxFileName()));
   m_Printer->SetFooter(wxExPrintFooter());
 #endif
-
-  // Finally call all available static initializers.
-  wxExTool::Initialize();
-  wxExSTC::PathListInit();
-
-  return wxApp::OnInit();
 }
 
-void wxExApp::ToggleConfig(const wxString& key)
+wxExPrinting::~wxExPrinting()
 {
-  const bool val = wxConfigBase::Get()->ReadBool(key, true);
-  wxConfigBase::Get()->Write(key, !val);
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  delete m_Printer;
+#endif
+}
+
+void wxExPrinting::Destroy()
+{
+  delete m_Self;
+}
+
+wxExPrinting* wxExPrinting::Get(bool createOnDemand)
+{
+  if (m_Self == NULL)
+  {
+    m_Self = new wxExPrinting();
+  }
+
+  return m_Self;
 }

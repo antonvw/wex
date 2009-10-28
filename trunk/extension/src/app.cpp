@@ -17,13 +17,9 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/util.h>
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-wxHtmlEasyPrinting* wxExApp::m_Printer = NULL;
-#endif
 
 int wxExApp::OnExit()
 {
@@ -34,10 +30,7 @@ int wxExApp::OnExit()
   wxExFindReplaceData::Destroy();
   wxExLexers::Destroy();
   wxExLog::Destroy();
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  delete m_Printer;
-#endif
+  wxExPrinting::Destroy();
 
   return wxApp::OnExit();
 }
@@ -102,17 +95,6 @@ bool wxExApp::OnInit()
     wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
   wxConfigBase::Set(config);
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  m_Printer = new wxHtmlEasyPrinting();
-
-  m_Printer->SetFonts(wxEmptyString, wxEmptyString); // use defaults
-  m_Printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
-  m_Printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
-
-  m_Printer->SetHeader(wxExPrintHeader(wxFileName()));
-  m_Printer->SetFooter(wxExPrintFooter());
-#endif
 
   // Finally call all available static initializers.
   wxExTool::Initialize();

@@ -15,9 +15,9 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -731,7 +731,7 @@ void wxExListView::Print()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  wxExApp::GetPrinter()->PrintText(BuildPage());
+  wxExPrinting::Get()->GetPrinter()->PrintText(BuildPage());
 #endif
 }
 
@@ -739,7 +739,7 @@ void wxExListView::PrintPreview()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  wxExApp::GetPrinter()->PreviewText(BuildPage());
+  wxExPrinting::Get()->GetPrinter()->PreviewText(BuildPage());
 #endif
 }
 

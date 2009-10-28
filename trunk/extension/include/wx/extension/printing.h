@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          app.h
-* Purpose:       Include file for wxExApp class
+* File:          printing.h
+* Purpose:       Include file for wxExPrinting class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,37 +9,37 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _EXAPP_H
-#define _EXAPP_H
+#ifndef _EXPRINTING_H
+#define _EXPRINTING_H
 
-#include <wx/app.h>
 #include <wx/html/htmprint.h>
 
-/// Offers the application, with a configuration, lexer, printer and locale.
-/// Your application should be derived from this class.
-class wxExApp : public wxApp
+/// Offers a printing support.
+class wxExPrinting
 {
 public:
+  /// Constructor.
+  wxExPrinting();
+
+  /// Destructor.
+ ~wxExPrinting();
+
+  /// Destroys the printing object.
+  static void Destroy();
+
+  /// Returns the printing object.
+  static wxExPrinting* Get(bool createOnDemand = true);
+
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   /// Gets the printer.
-  static wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
+  wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
 #endif
 
-  /// Constructs the config, lexers and printer (and reads the lexers).
-  /// Initializes the locale and wxExTool.
-  /// In your class first set the app name, as it uses this name for the config file.
-  /// See for documentation the lexers.xml file.
-  virtual bool OnInit();
-
-  /// This destroys (and so writes) the config, lexers, printer
-  /// and cleans up things if necessary.
-  virtual int OnExit();
-
-  /// Toggles boolean key.
-  static void ToggleConfig(const wxString& key);
 private:
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  static wxHtmlEasyPrinting* m_Printer;
+  wxHtmlEasyPrinting* m_Printer;
 #endif
+
+  static wxExPrinting* m_Self;
 };
 #endif

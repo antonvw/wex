@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          app.cpp
-* Purpose:       Implementation of wxExApp class
+* File:          log.cpp
+* Purpose:       Implementation of wxExLog class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,7 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/app.h>
 #include <wx/file.h>
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>

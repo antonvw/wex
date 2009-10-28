@@ -13,18 +13,12 @@
 #define _EXAPP_H
 
 #include <wx/app.h>
-#include <wx/html/htmprint.h>
 
 /// Offers the application, with a configuration, lexer, printer and locale.
 /// Your application should be derived from this class.
 class wxExApp : public wxApp
 {
 public:
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  /// Gets the printer.
-  static wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
-#endif
-
   /// Constructs the config, lexers and printer (and reads the lexers).
   /// Initializes the locale and wxExTool.
   /// In your class first set the app name, as it uses this name for the config file.
@@ -37,9 +31,5 @@ public:
 
   /// Toggles boolean key.
   static void ToggleConfig(const wxString& key);
-private:
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  static wxHtmlEasyPrinting* m_Printer;
-#endif
 };
 #endif

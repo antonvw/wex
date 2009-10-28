@@ -12,6 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
+#include <wx/extension/app.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
@@ -523,7 +524,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     break;
   case wxID_PRINT_SETUP:
-    wxExApp::GetPrinter()->PageSetup();
+    wxExPrinting::Get()->GetPrinter()->PageSetup();
     break;
 
   case wxID_SAVE:
