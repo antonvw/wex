@@ -20,9 +20,6 @@
 class wxExApp : public wxApp
 {
 public:
-  /// Gets the dir where the catalogs are for the locale.
-  static wxString& GetCatalogDir() {return m_CatalogDir;};
-
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   /// Gets the printer.
   static wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
@@ -44,7 +41,5 @@ private:
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   static wxHtmlEasyPrinting* m_Printer;
 #endif
-
-  static wxString m_CatalogDir;
 };
 #endif

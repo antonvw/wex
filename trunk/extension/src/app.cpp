@@ -21,7 +21,6 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
 
-wxString wxExApp::m_CatalogDir;
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
 wxHtmlEasyPrinting* wxExApp::m_Printer = NULL;
 #endif
@@ -54,15 +53,15 @@ bool wxExApp::OnInit()
     // If there are catalogs in the catalog_dir, then add them to the locale.
     // README: We use the canonical name, also for windows, not sure whether that is
     // the best.
-    m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
+    const wxString catalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
       locale.GetCanonicalName(),
       // This seems to be necessarty for wxGTK. For wxMSW it isn't used.
       wxStandardPaths::ResourceCat_Messages);
 
-    if (wxFileName::DirExists(m_CatalogDir))
+    if (wxFileName::DirExists(catalogDir))
     {
       wxArrayString files;
-      wxDir::GetAllFiles(m_CatalogDir, &files);
+      wxDir::GetAllFiles(catalogDir, &files);
 
       for (size_t i = 0 ; i < files.GetCount(); i++)
       {
@@ -79,13 +78,6 @@ bool wxExApp::OnInit()
         }
       }
     }
-  }
-  else
-  {
-    m_CatalogDir = wxString::Format(
-      "Could not initialize locale name: %s canonical name: %s",
-      locale.GetName(),
-      locale.GetCanonicalName ());
   }
 
   // Now construct the config, as most classes use it.
