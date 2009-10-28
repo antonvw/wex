@@ -13,7 +13,6 @@
 #define _EXAPP_H
 
 #include <wx/app.h>
-#include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
 
 /// Offers the application, with a configuration, lexer, printer and locale.
@@ -46,7 +45,6 @@ private:
   static wxHtmlEasyPrinting* m_Printer;
 #endif
 
-  static wxLocale m_Locale; ///< your locale
   static wxString m_CatalogDir;
 };
 #endif
