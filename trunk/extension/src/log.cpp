@@ -38,16 +38,18 @@ wxExLog* wxExLog::Get(bool createOnDemand)
     {
       filename = wxFileName("app.log");
     }
-
+    else
+    {
 #ifdef wxExUSE_PORTABLE
-    filename = wxFileName(
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-      wxTheApp->GetAppName().Lower() + ".log");
+      filename = wxFileName(
+        wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+        wxTheApp->GetAppName().Lower() + ".log");
 #else
-    filename = wxFileName(
-      wxStandardPaths::Get().GetUserDataDir(),
-      wxTheApp->GetAppName().Lower() + ".log");
+      filename = wxFileName(
+        wxStandardPaths::Get().GetUserDataDir(),
+        wxTheApp->GetAppName().Lower() + ".log");
 #endif
+    }
 
     m_Self = new wxExLog(filename);
     m_Self->m_Logging = false;

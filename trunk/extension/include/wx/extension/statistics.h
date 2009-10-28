@@ -253,12 +253,10 @@ public:
   /// Constructor.
   wxExFileNameStatistics(
     const wxString& fullpath,
-    wxPathFormat format = wxPATH_NATIVE)
-    : wxExFileName(fullpath, format){}
+    wxPathFormat format = wxPATH_NATIVE);
 
   /// Constructor from an wxExFileName.
-  wxExFileNameStatistics(const wxExFileName& filename)
-    : wxExFileName(filename){}
+  wxExFileNameStatistics(const wxExFileName& filename);
 
   /// Adds other statistics.
   wxExFileNameStatistics& operator+=(const wxExFileNameStatistics& s) {
@@ -299,6 +297,6 @@ public:
 private:
   wxExStatistics<long> m_Elements;
   wxExStatistics<long> m_Keywords;
-  wxExLog* m_FileName;
+  wxExLog* m_Log;
 };
 #endif

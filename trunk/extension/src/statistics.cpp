@@ -12,10 +12,22 @@
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/app.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/log.h>
-#include <wx/extension/util.h>
+
+wxExFileNameStatistics::wxExFileNameStatistics(
+  const wxString& fullpath,
+  wxPathFormat format)
+  : wxExFileName(fullpath, format)
+  , m_Log(new wxExLog(GetLogfileName()))
+{
+}
+
+wxExFileNameStatistics::wxExFileNameStatistics(const wxExFileName& filename)
+  : wxExFileName(filename)
+  , m_Log(new wxExLog(GetLogfileName()))
+{
+}
 
 long wxExFileNameStatistics::Get(const wxString& key) const
 {

@@ -11,7 +11,6 @@
 
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
-#include <wx/extension/app.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/extension.h>
 #include <wx/extension/log.h>

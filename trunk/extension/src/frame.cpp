@@ -19,6 +19,7 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/util.h>
 
 using namespace std;
 

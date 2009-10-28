@@ -16,8 +16,6 @@
 #include <wx/intl.h> // for wxLocale
 #include <wx/html/htmprint.h>
 
-class wxExFindReplaceData;
-
 /// Offers the application, with a configuration, lexer, printer and locale.
 /// Your application should be derived from this class.
 class wxExApp : public wxApp
@@ -25,9 +23,6 @@ class wxExApp : public wxApp
 public:
   /// Gets the dir where the catalogs are for the locale.
   static wxString& GetCatalogDir() {return m_CatalogDir;};
-
-  /// Gets the locale.
-  static wxLocale& GetLocale() {return m_Locale;};
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   /// Gets the printer.
