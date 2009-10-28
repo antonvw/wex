@@ -147,6 +147,8 @@ wxExSampleFrame::wxExSampleFrame()
   GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTC"));
   GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
+  GetManager().AddPane(new wxExFindToolBar(this, this),
+    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
   GetManager().Update();
 
   assert(wxExLexers::Get());
