@@ -178,7 +178,7 @@ long wxExProcessWithListView::Execute()
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_Command);
 #endif
-    wxExLog::Get()->(_("Running process") + ": " + m_Command);
+    wxExLog::Get()->Log(_("Running process") + ": " + m_Command);
 
     m_Timer.Start(100); // each 100 milliseconds
   }

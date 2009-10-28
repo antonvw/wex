@@ -15,6 +15,7 @@
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
@@ -33,6 +34,7 @@ int wxExApp::OnExit()
 
   wxExFindReplaceData::Destroy();
   wxExLexers::Destroy();
+  wxExLog::Destroy();
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;

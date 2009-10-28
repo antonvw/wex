@@ -33,7 +33,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   }
 
   const wxString msg = _("Compared") + ": " + arguments;
-  wxExLog::Get()->(msg);
+  wxExLog::Get()->Log(msg);
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
 #endif
@@ -87,7 +87,7 @@ void wxExFindInFiles(bool replace)
     return;
   }
 
-  wxExLog::Get()->(wxExFindReplaceData::Get()->GetText(replace));
+  wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
 
   wxExDirWithListView dir(
     tool,

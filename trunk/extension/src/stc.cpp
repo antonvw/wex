@@ -973,7 +973,7 @@ void wxExSTC::DoFileLoad(bool synced)
   if (!synced)
   {
     const wxString msg = _("Opened") + ": " + GetFileName().GetFullPath();
-    wxExLog::Get()->(msg);
+    wxExLog::Get()->Log(msg);
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(msg);
 #endif
@@ -999,7 +999,7 @@ void wxExSTC::DoFileSave()
   Write(buffer.data(), buffer.length());
 
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
-  wxExLog::Get()->(msg);
+  wxExLog::Get()->Log(msg);
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
 #endif

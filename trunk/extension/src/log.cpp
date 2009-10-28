@@ -61,7 +61,7 @@ bool wxExLog::Log(const wxString& text)
   if (m_Logging) 
   {
     return 
-      wxFile(GetFileName().GetFullPath(), wxFile::write_append).Write(
+      wxFile(m_FileName.GetFullPath(), wxFile::write_append).Write(
         wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
   }
   else
@@ -74,9 +74,9 @@ bool wxExLog::SetLogging(bool logging)
 {
   if (logging)
   {
-    if (!GetFileName().FileExists())
+    if (!m_FileName.FileExists())
     {
-      m_Logging = wxFile().Create(GetFileName().GetFullPath());
+      m_Logging = wxFile().Create(m_FileName.GetFullPath());
     }
     else
     {

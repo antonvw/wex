@@ -157,7 +157,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     return m_ReturnCode;
   }
 
-  wxExLog::Get()->(command);
+  wxExLog::Get()->Log(command);
 
   if (m_FullPath.empty())
   {
