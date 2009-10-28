@@ -12,6 +12,9 @@
 
 #include <TestCaller.h>
 #include <wx/extension/header.h>
+#include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/tool.h>
 #include "test.h"
 
@@ -136,7 +139,7 @@ void wxExAppTestFixture::testMethods()
     wxLogMessage("No lexers available");
   }
 
-  CPPUNIT_ASSERT(wxExLog("hello from wxExtension test"));
+  CPPUNIT_ASSERT(wxExLog::Get()->Log("hello from wxExtension test"));
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("t     es   t") == "t es t");

@@ -16,6 +16,7 @@
 #include <TestFixture.h>
 #include <TestSuite.h>
 #include <wx/extension/extension.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/textfile.h>
 
 /// CppUnit test suite.
