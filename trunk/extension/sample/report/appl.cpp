@@ -11,6 +11,9 @@
 
 #include <wx/aboutdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
+#include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/report/dir.h>
 #include "appl.h"
 
@@ -45,7 +48,7 @@ bool wxExRepSampleApp::OnInit()
     return false;
   }
 
-  SetLogging();
+  wxExLog::Get()->SetLogging();
 
   wxExRepSampleFrame *frame = new wxExRepSampleFrame();
 

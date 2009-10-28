@@ -15,6 +15,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/stc.h>

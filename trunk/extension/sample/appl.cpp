@@ -14,6 +14,9 @@
 #include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/renderer.h>
 #include "appl.h"
 #ifndef __WXMSW__
@@ -53,7 +56,7 @@ bool wxExSampleApp::OnInit()
     return false;
   }
 
-  SetLogging();
+  wxExLog::Get()->SetLogging();
 
   wxExSampleFrame *frame = new wxExSampleFrame();
   frame->Show(true);
