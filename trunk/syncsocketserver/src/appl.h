@@ -12,6 +12,7 @@
 #include <list>
 #include <wx/socket.h>
 #include <wx/taskbar.h>
+#include <wx/extension/app.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/report/report.h>
 

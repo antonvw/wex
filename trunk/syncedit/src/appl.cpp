@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/cmdline.h> // for wxCmdLineParser
+#include <wx/extension/log.h>
 #include "appl.h"
 #include "frame.h"
 
@@ -42,7 +43,7 @@ bool Application::OnInit()
 
   wxExProcessWithListView::InitCommandFromConfig();
 
-  SetLogging();
+  wxExLog::Get()->SetLogging();
 
   MDIFrame* frame = new MDIFrame(m_Files.Count() == 0);
   frame->Show();

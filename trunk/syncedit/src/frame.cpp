@@ -16,6 +16,8 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/util.h>
 #include "frame.h"
