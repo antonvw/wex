@@ -14,6 +14,7 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 
 long wxExFileNameStatistics::Get(const wxString& key) const
@@ -78,7 +79,7 @@ void wxExFileNameStatistics::Log(
 
   if (log_to_file && Get(_("Files Passed")) != 0)
   {
-    wxExApp::Log(logtext);
+    wxExLog::Get()->Log(logtext);
 
     if (tool.IsCount())
     {
@@ -89,7 +90,7 @@ void wxExFileNameStatistics::Log(
         << m_Elements.Get()
         << wxTextFile::GetEOL();
 
-      wxExLog(logtext, GetLogfileName());
+      m_Log->Log(logtext);
     }
   }
 }

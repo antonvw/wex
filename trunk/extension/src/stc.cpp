@@ -17,7 +17,9 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/textfile.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -985,7 +987,7 @@ void wxExSTC::DoFileLoad(bool synced)
 #endif
   }
 
-  if (GetFileName() == wxExLogfileName())
+  if (GetFileName() == wxExLog::Get()->GetFileName())
   {
     DocumentEnd();
   }

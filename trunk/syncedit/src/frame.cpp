@@ -16,6 +16,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/svn.h>
+#include <wx/extension/util.h>
 #include "frame.h"
 #include "defs.h"
 #include "version.h"
@@ -576,7 +577,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
-  case ID_OPEN_LOGFILE: OpenFile(wxExLogfileName()); break;
+  case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 
   case ID_OPTION_SVN_AND_COMPARATOR:
     {

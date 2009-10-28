@@ -12,28 +12,36 @@
 #ifndef _EXLOG_H
 #define _EXLOG_H
 
+#include <wx/filename.h>
+
 /// Offers logging.
 class wxExLog
 {
 public:
   /// Constructor.
-  wxExLog();
+  wxExLog(const wxFileName& filename);
+
+  /// Destroys the log object.
+  static void Destroy();
+
+  /// Returns the log object.
+  static wxExLog* Get(bool createOnDemand = true);
 
   /// Returns the filename of the logfile.
-  const wxFileName GetFileName() const; // wxExLogfileName
+  const wxFileName GetFileName() const {return m_FileName;};
 
+  /// Logs text with a timestamp at the end of the file.
   /// Logs text (only if SetLogging(true) is called, default it is off).
   /// Returns true if logging was on and write was successfull.
   bool Log(const wxString& text);
-
-  /// Logs text with a timestamp at the end of the file.
-  /// Returns true if text was written succesfully.
-  bool Log(const wxString& text, const wxFileName& filename);
 
   /// Sets logging as specified.
   /// If the logging is true and the logfile does not exist, it is created.
   bool SetLogging(bool logging = true);
 private:
   bool m_Logging;
+  const wxFileName m_FileName;
+
+  static wxExLog* m_Self;
 };
 #endif

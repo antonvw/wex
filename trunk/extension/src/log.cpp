@@ -9,46 +9,65 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/app.h>
 #include <wx/file.h>
+#include <wx/stdpaths.h>
+#include <wx/textfile.h>
 #include <wx/extension/log.h>
 
-bool wxExLog::m_Logging = false;
+wxExLog* wxExLog::m_Self = NULL;
 
-const wxFileName wxExLog::GetFileName() const
+wxExLog::wxExLog(const wxFileName& filename)
+  : m_Logging(true)
+  , m_FileName(filename)
 {
-  if (wxTheApp == NULL)
+}
+
+void wxExLog::Destroy()
+{
+  delete m_Self;
+}
+
+wxExLog* wxExLog::Get(bool createOnDemand)
+{
+  if (m_Self == NULL)
   {
-    return wxFileName("app.log");
-  }
+    wxFileName filename;
+
+    if (wxTheApp == NULL)
+    {
+      filename = wxFileName("app.log");
+    }
 
 #ifdef wxExUSE_PORTABLE
-  return wxFileName(
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-    wxTheApp->GetAppName().Lower() + ".log");
+    filename = wxFileName(
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+      wxTheApp->GetAppName().Lower() + ".log");
 #else
-  return wxFileName(
-    wxStandardPaths::Get().GetUserDataDir(),
-    wxTheApp->GetAppName().Lower() + ".log");
+    filename = wxFileName(
+      wxStandardPaths::Get().GetUserDataDir(),
+      wxTheApp->GetAppName().Lower() + ".log");
 #endif
+
+    m_Self = new wxExLog(filename);
+    m_Self->m_Logging = false;
+  }
+
+  return m_Self;
 }
 
 bool wxExLog::Log(const wxString& text) 
 {
   if (m_Logging) 
   {
-    return Log(text, GetFileName());
+    return 
+      wxFile(GetFileName().GetFullPath(), wxFile::write_append).Write(
+        wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
   }
   else
   {
     return false;
   }
-}
-
-bool wxExLog::Log(const wxString& text, const wxFileName& filename)
-{
-  return 
-    wxFile(filename.GetFullPath(), wxFile::write_append).Write(
-      wxDateTime::Now().Format() + " " + text + wxTextFile::GetEOL());
 }
 
 bool wxExLog::SetLogging(bool logging) 
@@ -57,7 +76,7 @@ bool wxExLog::SetLogging(bool logging)
   {
     if (!GetFileName().FileExists())
     {
-      m_Logging = wxFile().Create(wxExLogfileName().GetFullPath());
+      m_Logging = wxFile().Create(GetFileName().GetFullPath());
     }
     else
     {
