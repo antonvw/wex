@@ -11,7 +11,6 @@
 
 #include <wx/config.h>
 #include <wx/dir.h>
-#include <wx/intl.h> // for wxLocale
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
@@ -39,15 +38,13 @@ bool wxExApp::OnInit()
 {
   // Init the localization, from now on things will be translated.
   // So do this before constructing config and wxExTool::Initialize, as these use localization.
-  wxLocale locale;
-
-  if (locale.Init())
+  if (m_Locale.Init())
   {
-    // If there are catalogs in the catalog_dir, then add them to the locale.
+    // If there are catalogs in the catalog_dir, then add them to the m_Locale.
     // README: We use the canonical name, also for windows, not sure whether that is
     // the best.
     const wxString catalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-      locale.GetCanonicalName(),
+      m_Locale.GetCanonicalName(),
       // This seems to be necessarty for wxGTK. For wxMSW it isn't used.
       wxStandardPaths::ResourceCat_Messages);
 
@@ -58,13 +55,13 @@ bool wxExApp::OnInit()
 
       for (size_t i = 0 ; i < files.GetCount(); i++)
       {
-        // Default the wxstd is already loaded by locale.Init(),
+        // Default the wxstd is already loaded by m_Locale.Init(),
         // so do not do it twice.
         const wxFileName fn(files.Item(i));
 
-        if (!locale.IsLoaded(fn.GetName()))
+        if (!m_Locale.IsLoaded(fn.GetName()))
         {
-          if (!locale.AddCatalog(fn.GetName()))
+          if (!m_Locale.AddCatalog(fn.GetName()))
           {
             wxLogError("Catalog could not be added: " + fn.GetName());
           }

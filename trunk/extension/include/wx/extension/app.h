@@ -13,8 +13,9 @@
 #define _EXAPP_H
 
 #include <wx/app.h>
+#include <wx/intl.h> // for wxLocale
 
-/// Offers the application, with a configuration, lexer, printer and locale.
+/// Offers the application, with wxExtension specific init and exit and keeps the locale.
 /// Your application should be derived from this class.
 class wxExApp : public wxApp
 {
@@ -31,5 +32,7 @@ public:
 
   /// Toggles boolean key.
   static void ToggleConfig(const wxString& key);
+private:
+  wxLocale m_Locale;
 };
 #endif
