@@ -14,6 +14,7 @@
 
 #include <map>
 #include <vector>
+#include <wx/colour.h> 
 #include <wx/filename.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
