@@ -35,7 +35,6 @@ void wxExAppTestFixture::testConstructors()
 void wxExAppTestFixture::testMethods()
 {
   // test wxExApp
-  CPPUNIT_ASSERT(!wxExApp::GetCatalogDir().empty());
   CPPUNIT_ASSERT(wxConfigBase::Get() != NULL);
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExApp::GetPrinter() != NULL);

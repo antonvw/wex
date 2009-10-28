@@ -372,7 +372,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_LOCALE_SHOW_DIR:
-    wxLogMessage(wxExApp::GetCatalogDir());
+    // TODO: other method?
+    // wxLogMessage(wxExApp::GetCatalogDir());
     break;
 
   case ID_SHELL_COMMAND:
