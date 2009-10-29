@@ -237,8 +237,6 @@ void wxExSVN::Initialize()
 
   m_Output.clear();
   m_ReturnCode = wxID_NONE;
-
-  wxASSERT(wxConfigBase::Get() != NULL);
 }
 
 void wxExSVN::ShowOutput(wxWindow* parent) const

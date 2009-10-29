@@ -26,8 +26,6 @@ wxExFindReplaceData::wxExFindReplaceData()
   , m_TextReplaceWith(_("Replace with"))
   , m_TextSearchDown(_("Search down"))
 {
-  wxASSERT(m_Config != NULL);
-
   int flags = 0;
   flags |= wxFR_DOWN *      (m_Config->ReadBool(m_TextSearchDown, true));
   flags |= wxFR_MATCHCASE * (m_Config->ReadBool(m_TextMatchCase, false));
