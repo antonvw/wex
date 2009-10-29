@@ -37,7 +37,7 @@ wxExPrinting::~wxExPrinting()
 
 wxExPrinting* wxExPrinting::Get(bool createOnDemand)
 {
-  if (m_Self == NULL)
+  if (m_Self == NULL && createOnDemand)
   {
     m_Self = new wxExPrinting();
   }

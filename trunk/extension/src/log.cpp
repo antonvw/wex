@@ -25,7 +25,7 @@ wxExLog::wxExLog(const wxFileName& filename)
 
 wxExLog* wxExLog::Get(bool createOnDemand)
 {
-  if (m_Self == NULL)
+  if (m_Self == NULL && createOnDemand)
   {
     wxFileName filename;
 
