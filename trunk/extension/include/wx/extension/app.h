@@ -20,6 +20,9 @@
 class wxExApp : public wxApp
 {
 public:
+  /// Gets the locale.
+  const wxLocale& GetLocale() const {return m_Locale;};
+
   /// Constructs the config, lexers and printer (and reads the lexers).
   /// Initializes the locale and wxExTool.
   /// In your class first set the app name, as it uses this name for the config file.
