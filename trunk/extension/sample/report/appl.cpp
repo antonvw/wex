@@ -19,6 +19,10 @@
 
 #ifndef __WXMSW__
 #include "appl.xpm"
+#else
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #endif
 
 enum
