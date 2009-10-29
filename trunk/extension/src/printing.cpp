@@ -35,11 +35,6 @@ wxExPrinting::~wxExPrinting()
 #endif
 }
 
-void wxExPrinting::Destroy()
-{
-  delete m_Self;
-}
-
 wxExPrinting* wxExPrinting::Get(bool createOnDemand)
 {
   if (m_Self == NULL)
@@ -48,4 +43,11 @@ wxExPrinting* wxExPrinting::Get(bool createOnDemand)
   }
 
   return m_Self;
+}
+
+wxExPrinting* wxExPrinting::Set(wxExPrinting* printing)
+{
+  wxExPrinting* old = m_Self;
+  m_Self = printing;
+  return old;
 }

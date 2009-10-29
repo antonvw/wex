@@ -23,11 +23,6 @@ wxExLog::wxExLog(const wxFileName& filename)
 {
 }
 
-void wxExLog::Destroy()
-{
-  delete m_Self;
-}
-
 wxExLog* wxExLog::Get(bool createOnDemand)
 {
   if (m_Self == NULL)
@@ -70,6 +65,13 @@ bool wxExLog::Log(const wxString& text)
   {
     return false;
   }
+}
+
+wxExLog* wxExLog::Set(wxExLog* log)
+{
+  wxExLog* old = m_Self;
+  m_Self = log;
+  return old;
 }
 
 bool wxExLog::SetLogging(bool logging) 

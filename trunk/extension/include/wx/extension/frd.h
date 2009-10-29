@@ -27,9 +27,6 @@ public:
   /// Destructor, saves members to config.
  ~wxExFindReplaceData();
 
-  /// Destroys the frd object.
-  static void Destroy();
-
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
@@ -84,6 +81,10 @@ public:
 
   /// Returns true if the flags have whole word set.
   bool MatchWord() const {return (GetFlags() & wxFR_WHOLEWORD) > 0;};
+
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExFindReplaceData* Set(wxExFindReplaceData* frd);
 
   /// Sets the find string.
   /// If IsRegularExpression also sets the regular expression.

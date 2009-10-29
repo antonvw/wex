@@ -21,9 +21,6 @@ public:
   /// Constructor.
   wxExLog(const wxFileName& filename);
 
-  /// Destroys the log object.
-  static void Destroy();
-
   /// Returns the log object.
   static wxExLog* Get(bool createOnDemand = true);
 
@@ -34,6 +31,10 @@ public:
   /// Logs text (only if SetLogging(true) is called, default it is off).
   /// Returns true if logging was on and write was successfull.
   bool Log(const wxString& text);
+
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExLog* Set(wxExLog* log);
 
   /// Sets logging as specified.
   /// If the logging is true and the logfile does not exist, it is created.

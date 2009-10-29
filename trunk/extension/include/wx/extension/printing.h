@@ -24,9 +24,6 @@ public:
   /// Destructor.
  ~wxExPrinting();
 
-  /// Destroys the printing object.
-  static void Destroy();
-
   /// Returns the printing object.
   static wxExPrinting* Get(bool createOnDemand = true);
 
@@ -35,6 +32,9 @@ public:
   wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
 #endif
 
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExPrinting* Set(wxExPrinting* printing);
 private:
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxHtmlEasyPrinting* m_Printer;

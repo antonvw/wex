@@ -69,9 +69,6 @@ public:
   /// Returns the number of lexers.
   size_t Count() const {return m_Lexers.size();};
 
-  /// Destroys the lexers object.
-  static void Destroy();
-
   /// Finds a lexer specified by a filename.
   const wxExLexer FindByFileName(const wxFileName& filename) const;
 
@@ -103,6 +100,10 @@ public:
 
   /// Reads the lexers, keywords, markers and styles from file.
   void Read();
+
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExLexers* Set(wxExLexers* lexers);
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.

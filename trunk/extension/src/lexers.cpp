@@ -61,11 +61,6 @@ const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
   return wildcards;
 }
 
-void wxExLexers::Destroy()
-{
-  delete m_Self;
-}
-
 const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
 {
   if (!filename.IsOk())
@@ -456,6 +451,13 @@ void wxExLexers::Read()
       wxConfigBase::Get()->Write(_("Add what"), GetLexerAssociations());
     }
   }
+}
+
+wxExLexers* wxExLexers::Set(wxExLexers* lexers)
+{
+  wxExLexers* old = m_Self;
+  m_Self = lexers;
+  return old;
 }
 
 bool wxExLexers::ShowDialog(

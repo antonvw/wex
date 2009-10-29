@@ -58,11 +58,6 @@ wxExFindReplaceData::~wxExFindReplaceData()
   m_Config->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
 }
 
-void wxExFindReplaceData::Destroy()
-{
-  delete m_Self;
-}
-
 wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
 {
   if (m_Self == NULL)
@@ -71,6 +66,13 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   }
 
   return m_Self;
+}
+
+wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
+{
+  wxExFindReplaceData* old = m_Self;
+  m_Self = frd;
+  return old;
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)

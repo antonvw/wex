@@ -26,10 +26,10 @@ int wxExApp::OnExit()
   wxExSTC::CleanUp();
 #endif
 
-  wxExFindReplaceData::Destroy();
-  wxExLexers::Destroy();
-  wxExLog::Destroy();
-  wxExPrinting::Destroy();
+  delete wxExFindReplaceData::Set(NULL);
+  delete wxExLexers::Set(NULL);
+  delete wxExLog::Set(NULL);
+  delete wxExPrinting::Set(NULL);
 
   return wxApp::OnExit();
 }
