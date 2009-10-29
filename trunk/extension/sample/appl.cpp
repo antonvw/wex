@@ -28,7 +28,6 @@ enum
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
-  ID_LOCALE_SHOW_DIR,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
   ID_STC_FLAGS,
@@ -60,6 +59,7 @@ bool wxExSampleApp::OnInit()
 
   wxExSampleFrame *frame = new wxExSampleFrame();
   frame->Show(true);
+  frame->StatusText("Locale: " + GetLocale().GetLocale());
 
   SetTopWindow(frame);
 
@@ -102,8 +102,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->Append(wxID_OPEN);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
-  menuFile->AppendSeparator();
-  menuFile->Append(ID_LOCALE_SHOW_DIR, _("Show Locale Dir"));
   menuFile->AppendSeparator();
   menuFile->Append(ID_STATISTICS_SHOW, _("Show Statistics"));
   menuFile->AppendSeparator();
@@ -374,11 +372,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
       dlg->Show();
     }
-    break;
-
-  case ID_LOCALE_SHOW_DIR:
-    // TODO: other method?
-    // wxLogMessage(wxExApp::GetCatalogDir());
     break;
 
   case ID_SHELL_COMMAND:
