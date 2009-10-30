@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable

@@ -217,17 +217,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
     if (id >= wxID_VIEW_DETAILS &&  id <= wxID_VIEW_LIST)
     {
-      long view = 0;
-      switch (id)
-      {
-      case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
-      case wxID_VIEW_LIST: view = wxLC_LIST; break;
-      case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
-      default: wxFAIL;
-      }
-
-      lv->SetSingleStyle(view);
-      wxConfigBase::Get()->Write("List/Style", view);
+      lv->SetStyle(view);
     }
     else
     {

@@ -455,17 +455,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   else if (event.GetId() >= wxID_VIEW_DETAILS &&  event.GetId() <= wxID_VIEW_LIST)
   {
     wxExForEach(m_NotebookWithProjects, event.GetId());
-
-    long view = 0;
-    switch (event.GetId())
-    {
-    case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
-    case wxID_VIEW_LIST: view = wxLC_LIST; break;
-    case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
-    default: wxFAIL;
-    }
-
-    m_History->SetSingleStyle(view);
+    m_History->SetStyle(event.GetId());
   }
   // the rest
   else switch (event.GetId())

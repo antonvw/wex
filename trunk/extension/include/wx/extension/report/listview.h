@@ -110,6 +110,9 @@ public:
 
   /// Resets the member.
   virtual void ResetContentsChanged() {m_ContentsChanged = false;};
+
+  /// Sets style acoording to event id.
+  void SetStyle(int id);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   /// Loads the file and gets all data as list items.

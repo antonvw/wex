@@ -679,6 +679,21 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
 #endif
 }
 
+void wxExListViewFile::SetStyle(int id)
+{
+  long view = 0;
+  switch (id)
+  {
+  case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
+  case wxID_VIEW_LIST: view = wxLC_LIST; break;
+  case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
+  default: wxFAIL;
+  }
+
+  SetSingleStyle(view);
+  wxConfigBase::Get()->Write("List/Style", view);
+}
+
 #if wxUSE_DRAG_AND_DROP
 bool ListViewDropTarget::OnDropFiles(
   wxCoord, 

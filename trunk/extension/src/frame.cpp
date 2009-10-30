@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 //#include <wx/persist.h> 
+#include <wx/config.h>
 #include <wx/tooltip.h> // for GetTip
 #include <wx/extension/frame.h>
 #include <wx/extension/art.h>
