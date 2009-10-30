@@ -247,7 +247,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case wxID_PRINT_SETUP: wxExPrinting::Get()->GetPrinter()->PageSetup(); 
+  case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); 
     break;
 
   case wxID_STOP:

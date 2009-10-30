@@ -274,7 +274,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
   case wxID_PREVIEW: m_ListView->PrintPreview(); break;
   case wxID_PRINT: m_ListView->Print(); break;
-  case wxID_PRINT_SETUP: wxExPrinting::Get()->GetPrinter()->PageSetup(); break;
+  case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); break;
 
   case wxID_SAVE:
     m_STC->FileSave();

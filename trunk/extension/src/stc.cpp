@@ -1725,7 +1725,7 @@ void wxExSTC::PathListInit()
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::Print(bool prompt)
 {
-  wxPrintData* data = wxExPrinting::Get()->GetPrinter()->GetPrintData();
+  wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
   m_Printer->GetPrintDialogData().SetPrintData(*data);
   m_Printer->Print(this, new wxExPrintout(this), prompt);
 }

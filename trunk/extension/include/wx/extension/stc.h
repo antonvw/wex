@@ -290,9 +290,6 @@ private:
   static wxExConfigDialog* m_ConfigDialog;
   static std::vector <wxString> m_Macro;
   static wxPathList m_PathList;
-#if wxUSE_PRINTING_ARCHITECTURE
-  static wxPrinter* m_Printer;
-#endif
 
   bool m_FileSaveInMenu;
   long m_Flags; // open flags

@@ -588,7 +588,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.SetManagedWindow(this);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExPrinting::Get()->GetPrinter()->SetParentWindow(this);
+  wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif
 }
 

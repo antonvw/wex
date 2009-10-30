@@ -539,7 +539,7 @@ void wxExGrid::Print()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  wxExPrinting::Get()->GetPrinter()->PrintText(BuildPage());
+  wxExPrinting::Get()->GetHtmlPrinter()->PrintText(BuildPage());
 #endif
 }
 
@@ -547,7 +547,7 @@ void wxExGrid::PrintPreview()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxBusyCursor wait;
-  wxExPrinting::Get()->GetPrinter()->PreviewText(BuildPage());
+  wxExPrinting::Get()->GetHtmlPrinter()->PreviewText(BuildPage());
 #endif
 }
 

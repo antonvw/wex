@@ -526,7 +526,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     break;
   case wxID_PRINT_SETUP:
-    wxExPrinting::Get()->GetPrinter()->PageSetup();
+    wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();
     break;
 
   case wxID_SAVE:

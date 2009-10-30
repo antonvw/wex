@@ -41,6 +41,10 @@ private:
   wxHtmlEasyPrinting* m_Printer;
 #endif
 
+#if wxUSE_PRINTING_ARCHITECTURE
+  wxPrinter* m_Printer;
+#endif
+
   static wxExPrinting* m_Self;
 };
 
