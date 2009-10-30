@@ -13,7 +13,6 @@
 #define _EXFRD_H
 
 #include <set>
-#include <wx/config.h> 
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
 
@@ -108,8 +107,6 @@ private:
   wxString m_FindStringNoCase; // same as the FindString, but case insensitive
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;
-
-  wxConfigBase* m_Config;
 
   const wxChar m_FieldSeparator;
 
