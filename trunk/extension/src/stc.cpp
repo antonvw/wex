@@ -728,8 +728,6 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
 
 void wxExSTC::DoFileLoad(bool synced)
 {
-  wxBusyCursor wait;
-
   // Synchronizing by appending only new data only works for log files.
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos. Also only do it for reasonably large files,
@@ -937,8 +935,6 @@ int wxExSTC::FindReplaceDataFlags() const
 void wxExSTC::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
-
-  wxBusyCursor wait;
 
   const int current_line = GetCurrentLine();
 
@@ -1427,10 +1423,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
   case ID_EDIT_UNFOLD_ALL:
-    {
-      wxBusyCursor wait;
-      for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
-    }
+    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
   break;
   case ID_EDIT_TOGGLE_FOLD:
   {
