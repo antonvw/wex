@@ -217,7 +217,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
     if (id >= wxID_VIEW_DETAILS &&  id <= wxID_VIEW_LIST)
     {
-      lv->SetStyle(view);
+      lv->SetStyle(id);
     }
     else
     {
