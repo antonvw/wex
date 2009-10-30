@@ -94,9 +94,6 @@ public:
   /// If caret was at end, it is repositioned at the end.
   void AppendTextForced(const wxString& text, bool withTimestamp = true);
 
-  // Called by wxExApp::OnExit, so not for doxygen.
-  static void CleanUp();
-
   /// Colourises the document.
   void Colourise();
 

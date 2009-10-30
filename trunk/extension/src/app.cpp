@@ -22,10 +22,6 @@
 
 int wxExApp::OnExit()
 {
-#if wxUSE_GUI
-  wxExSTC::CleanUp();
-#endif
-
   delete wxExFindReplaceData::Set(NULL);
   delete wxExLexers::Set(NULL);
   delete wxExLog::Set(NULL);

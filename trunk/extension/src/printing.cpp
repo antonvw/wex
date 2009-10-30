@@ -18,20 +18,28 @@ wxExPrinting* wxExPrinting::m_Self = NULL;
 wxExPrinting::wxExPrinting()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  m_Printer = new wxHtmlEasyPrinting();
+  m_HtmlPrinter = new wxHtmlEasyPrinting();
 
-  m_Printer->SetFonts(wxEmptyString, wxEmptyString); // use defaults
-  m_Printer->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
-  m_Printer->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
+  m_HtmlPrinter->SetFonts(wxEmptyString, wxEmptyString); // use defaults
+  m_HtmlPrinter->GetPageSetupData()->SetMarginBottomRight(wxPoint(15, 5));
+  m_HtmlPrinter->GetPageSetupData()->SetMarginTopLeft(wxPoint(15, 5));
 
-  m_Printer->SetHeader(wxExPrintHeader(wxFileName()));
-  m_Printer->SetFooter(wxExPrintFooter());
+  m_HtmlPrinter->SetHeader(wxExPrintHeader(wxFileName()));
+  m_HtmlPrinter->SetFooter(wxExPrintFooter());
+#endif
+
+#if wxUSE_PRINTING_ARCHITECTURE
+  m_Printer = new wxPrinter;
 #endif
 }
 
 wxExPrinting::~wxExPrinting()
 {
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  delete m_HtmlPrinter;
+#endif
+
+#if wxUSE_PRINTING_ARCHITECTURE
   delete m_Printer;
 #endif
 }

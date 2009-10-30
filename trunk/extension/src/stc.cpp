@@ -56,10 +56,6 @@ wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
 vector <wxString> wxExSTC::m_Macro;
 wxPathList wxExSTC::m_PathList;
 
-#if wxUSE_PRINTING_ARCHITECTURE
-wxPrinter* wxExSTC::m_Printer = NULL;
-#endif
-
 wxExSTC::wxExSTC(wxWindow* parent,
   const wxString& value,
   long menu_flags,
@@ -466,13 +462,6 @@ bool wxExSTC::CheckSmartIndentation()
   {
     return false;
   }
-}
-
-void wxExSTC::CleanUp()
-{
-#if wxUSE_PRINTING_ARCHITECTURE
-  delete m_Printer;
-#endif
 }
 
 void wxExSTC::ClearDocument()
@@ -1222,11 +1211,6 @@ void wxExSTC::Initialize()
   m_MarginFoldingNumber = 2;
   m_MarginLineNumber = 0;
 
-#if wxUSE_PRINTING_ARCHITECTURE
-  if (m_Printer == NULL)
-    m_Printer = new wxPrinter;
-#endif
-
   UsePopUp(false);
 #ifdef __WXMSW__
   EOLModeUpdate(wxSTC_EOL_CRLF);
@@ -1726,8 +1710,8 @@ void wxExSTC::PathListInit()
 void wxExSTC::Print(bool prompt)
 {
   wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
-  m_Printer->GetPrintDialogData().SetPrintData(*data);
-  m_Printer->Print(this, new wxExPrintout(this), prompt);
+  wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
+  wxExPrinting::Get()->GetPrinter()->Print(this, new wxExPrintout(this), prompt);
 }
 #endif
 

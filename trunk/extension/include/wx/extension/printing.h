@@ -15,7 +15,7 @@
 #include <wx/html/htmprint.h>
 #include <wx/print.h> 
 
-/// Offers a printing support.
+/// Offers printing support.
 class wxExPrinting
 {
 public:
@@ -29,8 +29,13 @@ public:
   static wxExPrinting* Get(bool createOnDemand = true);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  /// Gets the html printer.
+  wxHtmlEasyPrinting* GetHtmlPrinter() {return m_HtmlPrinter;};
+#endif
+
+#if wxUSE_PRINTING_ARCHITECTURE
   /// Gets the printer.
-  wxHtmlEasyPrinting* GetPrinter() {return m_Printer;};
+  wxPrinter* GetPrinter() {return m_Printer;};
 #endif
 
   /// Sets the object as the current one, returns the pointer 
@@ -38,7 +43,7 @@ public:
   static wxExPrinting* Set(wxExPrinting* printing);
 private:
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxHtmlEasyPrinting* m_Printer;
+  wxHtmlEasyPrinting* m_HtmlPrinter;
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
