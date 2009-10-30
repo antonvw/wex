@@ -13,6 +13,7 @@
 #define _EXPRINTING_H
 
 #include <wx/html/htmprint.h>
+#include <wx/print.h> 
 
 /// Offers a printing support.
 class wxExPrinting
@@ -42,4 +43,28 @@ private:
 
   static wxExPrinting* m_Self;
 };
+
+#if wxUSE_PRINTING_ARCHITECTURE
+class wxExSTC;
+
+// Offers a print out to be used by wxExSTC.
+class wxExPrintout : public wxPrintout
+{
+public:
+  /// Constructor.
+  wxExPrintout(wxExSTC* owner);
+private:
+  void CountPages();
+  void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo);
+  bool HasPage(int pageNum) {
+    return (pageNum >= 1 && pageNum <= (int)m_PageBreaks.size());};
+  void OnPreparePrinting();
+  bool OnPrintPage(int pageNum);
+  void SetScale(wxDC *dc);
+  wxRect m_PageRect, m_PrintRect;
+  int m_CurrentPage;
+  vector<int> m_PageBreaks;
+  wxExSTC* m_Owner;
+};
+#endif
 #endif
