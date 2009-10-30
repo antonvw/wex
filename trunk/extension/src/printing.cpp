@@ -113,7 +113,7 @@ void wxExPrintout::OnPreparePrinting()
   wxSize ppiScr;
   GetPPIScreen(&ppiScr.x, &ppiScr.y);
 
-  wxPageSetupDialogData* dlg_data = wxExPrinting::Get()->GetPrinter()->GetPageSetupData();
+  wxPageSetupDialogData* dlg_data = wxExPrinting::Get()->GetHtmlPrinter()->GetPageSetupData();
   wxSize page = dlg_data->GetPaperSize();
 
   if (page.x == 0 || page.y == 0)

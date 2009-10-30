@@ -12,6 +12,7 @@
 #ifndef _EXPRINTING_H
 #define _EXPRINTING_H
 
+#include <vector> 
 #include <wx/html/htmprint.h>
 #include <wx/print.h> 
 
@@ -72,7 +73,7 @@ private:
   void SetScale(wxDC *dc);
   wxRect m_PageRect, m_PrintRect;
   int m_CurrentPage;
-  vector<int> m_PageBreaks;
+  std::vector<int> m_PageBreaks;
   wxExSTC* m_Owner;
 };
 #endif

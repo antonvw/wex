@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/clipbrd.h>
+#include <wx/config.h>
 #include <wx/file.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
@@ -168,7 +169,6 @@ const wxString wxExComboBoxToString(
 const wxString wxExConfigFirstOf(const wxString& key)
 {
   const wxString value = wxConfigBase::Get()->Read(key);
-
   return value.BeforeFirst(wxExFindReplaceData::Get()->GetFieldSeparator());
 }
 
