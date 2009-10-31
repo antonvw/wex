@@ -66,13 +66,14 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExFindReplaceData::GetText(bool replace) const
+// wx 2.9.0 GetFindString is no const.
+const wxString wxExFindReplaceData::GetText(bool replace)
 {
-  wxString log = _("Searching for") + ": " + m_TextFindWhat;
+  wxString log = _("Searching for") + ": " + GetFindString();
 
   if (replace)
   {
-    log += " " + _("Replacing with") + ": " + m_TextReplaceWith;
+    log += " " + _("Replacing with") + ": " + GetReplaceString();
   }
 
   return log;
