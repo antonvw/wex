@@ -436,20 +436,14 @@ void wxExLexers::Read()
     child = child->GetNext();
   }
 
-  // Initialize the config if it is constructed.
-  wxConfigBase* config = wxConfigBase::Get(false);
-
-  if (config != NULL)
+  if (!wxConfigBase::Get()->Exists(_("In files")))
   {
-    if (!wxConfigBase::Get()->Exists(_("In files")))
-    {
-      wxConfigBase::Get()->Write(_("In files"), GetLexerAssociations());
-    }
+    wxConfigBase::Get()->Write(_("In files"), GetLexerAssociations());
+  }
 
-    if (!wxConfigBase::Get()->Exists(_("Add what")))
-    {
-      wxConfigBase::Get()->Write(_("Add what"), GetLexerAssociations());
-    }
+  if (!wxConfigBase::Get()->Exists(_("Add what")))
+  {
+    wxConfigBase::Get()->Write(_("Add what"), GetLexerAssociations());
   }
 }
 
