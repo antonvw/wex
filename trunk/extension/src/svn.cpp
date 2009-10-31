@@ -33,6 +33,11 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   Initialize();
 }
 
+void wxExSVN::Cleanup()
+{
+  delete m_STCEntryDialog;
+}
+
 bool wxExSVN::DirExists(const wxFileName& filename)
 {
   wxFileName path(filename);

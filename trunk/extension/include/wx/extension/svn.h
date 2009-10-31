@@ -47,6 +47,9 @@ public:
   /// Constructor, specify the command id and a fullpath.
   wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
 
+  /// Cleans up the dialog. 
+  static void Cleanup();
+
   /// Returns true if specified filename (a path) is a svn directory.
   static bool DirExists(const wxFileName& filename);
 

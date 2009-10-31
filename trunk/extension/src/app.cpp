@@ -18,10 +18,14 @@
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/svn.h>
 #include <wx/extension/tool.h>
 
 int wxExApp::OnExit()
 {
+  wxExSTC::Cleanup();
+  wxExSVN::Cleanup();
+
   delete wxExFindReplaceData::Set(NULL);
   delete wxExLexers::Set(NULL);
   delete wxExLog::Set(NULL);
