@@ -66,6 +66,18 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
+const wxString wxExFindReplaceData::GetText(bool replace) const
+{
+  wxString log = _("Searching for") + ": " + m_TextFindWhat;
+
+  if (replace)
+  {
+    log += " " + _("Replacing with") + ": " + m_TextReplaceWith;
+  }
+
+  return log;
+}
+
 wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 {
   wxExFindReplaceData* old = m_Self;
