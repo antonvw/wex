@@ -720,15 +720,11 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
       if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
       {
-        // The Get gets text before the ','!
-        wxExFindReplaceData::Get()->SetFindString(
-          m_Config->Read(wxExFindReplaceData::Get()->GetTextFindWhat()));
+        wxExFindReplaceData::Get()->SetFindString(cb->GetValue());
       }
       else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
       {
-        // The Get gets text before the ','!
-        wxExFindReplaceData::Get()->SetReplaceString(
-          m_Config->Read(wxExFindReplaceData::Get()->GetTextReplaceWith()));
+        wxExFindReplaceData::Get()->SetReplaceString(cb->GetValue());
       }
       }
       break;
