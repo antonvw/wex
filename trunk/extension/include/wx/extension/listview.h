@@ -142,10 +142,10 @@ public:
   /// Inserts a column.
   void InsertColumn(const wxExColumn& col);
 
-  /// Invokes wxExApp PrintText with BuildPage.
+  /// Prints the list.
   void Print();
 
-  /// Invokes wxExApp PreviewText with BuildPage.
+  /// Previews the lis.
   void PrintPreview();
 
   /// Sorts on a column.

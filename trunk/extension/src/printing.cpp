@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          app.cpp
-* Purpose:       Implementation of wxExApp class
+* Purpose:       Implementation of wxExPrinting class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

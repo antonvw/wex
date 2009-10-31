@@ -72,10 +72,10 @@ public:
   /// Paste starting at current grid cursor.
   void PasteCellsFromClipboard();
 
-  /// Invokes wxExApp PrintText with BuildPage.
+  /// Prints the grid.
   void Print();
 
-  /// Invokes wxExApp PreviewText with BuildPage.
+  /// Previews the grid.
   void PrintPreview();
 
   /// Fill cells with text starting at a cel.
