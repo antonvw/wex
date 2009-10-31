@@ -138,21 +138,23 @@ const wxString wxExComboBoxToString(
 
   switch (cb->FindString(cb->GetValue()))
   {
+    case 0: 
+      text.clear();
+      // No change necessary, the string is already present as the first one.
+      for (size_t i = 0; i < max_items; i++)
+        if (i < cb->GetCount())
+          text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
+      break;
+
     case wxNOT_FOUND:
-    {
       // Add the string, as it is not in the combo box, to the text,
       // simply by appending all combobox items.
       for (size_t i = 0; i < max_items; i++)
         if (i < max_items - 1 && i < cb->GetCount())
           text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
-    }
     break;
 
-    // No change necessary, the string is already present as the first one.
-    case 0: break;
-
     default:
-    {
       // Reorder. The new first element already present, just add all others.
       for (size_t i = 0; i < cb->GetCount(); i++)
       {
@@ -160,7 +162,6 @@ const wxString wxExComboBoxToString(
         if (cb_element != cb->GetValue())
           text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb_element;
       }
-    }
   }
 
   return text;
