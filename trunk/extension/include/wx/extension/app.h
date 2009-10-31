@@ -32,9 +32,6 @@ public:
   /// This destroys (and so writes) the config, lexers, printer
   /// and cleans up things if necessary.
   virtual int OnExit();
-
-  /// Toggles boolean key.
-  static void ToggleConfig(const wxString& key);
 private:
   wxLocale m_Locale;
 };

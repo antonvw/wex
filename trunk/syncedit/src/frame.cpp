@@ -12,7 +12,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/extension/app.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
@@ -685,7 +684,10 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_SORT_SYNC: wxExApp::ToggleConfig("List/SortSync"); break;
+  case ID_SORT_SYNC: 
+    wxConfigBase::Get()->Write("List/SortSync", 
+      !wxConfigBase::Get()->ReadBool("List/SortSync", true)); 
+    break;
 
   case ID_SPLIT:
   {

@@ -438,15 +438,18 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_CLIENT_ECHO:
-    wxExApp::ToggleConfig(_("Echo"));
+    wxConfigBase::Get()->Write(_("Echo"), 
+      !wxConfigBase::Get()->ReadBool(_("Echo"), true));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    wxExApp::ToggleConfig(_("Log Data"));
+    wxConfigBase::Get()->Write(_("Log Data"), 
+      !wxConfigBase::Get()->ReadBool(_("Log Data"), true));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    wxExApp::ToggleConfig(_("Count Only"));
+    wxConfigBase::Get()->Write(_("Count Only"), 
+      !wxConfigBase::Get()->ReadBool(_("Count Only"), true));
     break;
 
   case ID_HIDE:

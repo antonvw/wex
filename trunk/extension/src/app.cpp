@@ -95,9 +95,3 @@ bool wxExApp::OnInit()
 
   return wxApp::OnInit();
 }
-
-void wxExApp::ToggleConfig(const wxString& key)
-{
-  const bool val = wxConfigBase::Get()->ReadBool(key, true);
-  wxConfigBase::Get()->Write(key, !val);
-}
