@@ -12,11 +12,35 @@
 #include <wx/config.h>
 #include <wx/extension/tool.h>
 
-std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
+wxExTool* wxExTool::m_Self = NULL;
 
 wxExTool::wxExTool(int type)
   : m_Id(type)
 {
+}
+
+wxExTool* wxExTool::Get(bool createOnDemand)
+{
+  if (m_Self == NULL && createOnDemand)
+  {
+    m_Self = new wxExTool(0);
+
+    if (!wxConfigBase::Get()->ReadBool("SVN", true))
+    {
+      m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
+      m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
+    }
+
+    m_Self->AddInfo(ID_TOOL_LINE_CODE, _("Parsed code lines"));
+    m_Self->AddInfo(ID_TOOL_LINE_COMMENT, _("Parsed comment lines"));
+
+    m_Self->AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
+    m_Self->AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
+    m_Self->AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
+    m_Self->AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
+  }
+
+  return m_Self;
 }
 
 const wxString wxExTool::Info() const
@@ -33,19 +57,9 @@ const wxString wxExTool::Info() const
   return wxEmptyString;
 }
 
-void wxExTool::Initialize()
+wxExTool* wxExTool::Set(wxExTool* tool)
 {
-  if (!wxConfigBase::Get()->ReadBool("SVN", true))
-  {
-    AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
-  }
-
-  AddInfo(ID_TOOL_LINE_CODE, _("Parsed code lines"));
-  AddInfo(ID_TOOL_LINE_COMMENT, _("Parsed comment lines"));
-
-  AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
-  AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
-  AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
-  AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
+  wxExTool* old = m_Self;
+  m_Self = tool;
+  return old;
 }

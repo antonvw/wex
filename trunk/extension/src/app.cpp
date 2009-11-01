@@ -30,6 +30,7 @@ int wxExApp::OnExit()
   delete wxExLexers::Set(NULL);
   delete wxExLog::Set(NULL);
   delete wxExPrinting::Set(NULL);
+  delete wxExTool::Set(NULL);
 
   return wxApp::OnExit();
 }
@@ -94,7 +95,6 @@ bool wxExApp::OnInit()
   wxConfigBase::Set(config);
 
   // Finally call all available static initializers.
-  wxExTool::Initialize();
   wxExSTC::PathListInit();
 
   return wxApp::OnInit();

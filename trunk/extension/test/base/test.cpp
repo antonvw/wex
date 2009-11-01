@@ -162,7 +162,6 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
   CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
-  CPPUNIT_ASSERT(wxExTool::GetToolInfo().empty()); // initialized by wxExApp, so not here
 }
 
 void wxExTestFixture::testTiming()

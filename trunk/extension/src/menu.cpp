@@ -174,8 +174,8 @@ void wxExMenu::AppendTools()
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (
-    map <int, wxExToolInfo>::const_iterator it = wxExTool::GetToolInfo().begin();
-    it != wxExTool::GetToolInfo().end();
+    map <int, wxExToolInfo>::const_iterator it = wxExTool::Get()->GetToolInfo().begin();
+    it != wxExTool::Get()->GetToolInfo().end();
     ++it)
   {
     if (!it->second.GetText().empty())

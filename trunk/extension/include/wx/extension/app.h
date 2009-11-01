@@ -23,14 +23,11 @@ public:
   /// Gets the locale.
   const wxLocale& GetLocale() const {return m_Locale;};
 
-  /// Constructs the config, lexers and printer (and reads the lexers).
-  /// Initializes the locale and wxExTool.
-  /// In your class first set the app name, as it uses this name for the config file.
-  /// See for documentation the lexers.xml file.
+  /// Constructs the config, and initializes the locale.
+  /// In your class first set the app name, as it uses this name for the config.
   virtual bool OnInit();
 
-  /// This destroys (and so writes) the config, lexers, printer
-  /// and cleans up things if necessary.
+  /// This deletes all global objects and cleans up things if necessary.
   virtual int OnExit();
 private:
   wxLocale m_Locale;

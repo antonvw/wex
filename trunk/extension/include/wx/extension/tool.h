@@ -58,26 +58,24 @@ public:
   /// Adds your own info to the tool.
   /// If you use a %ld in the info string, it is replaced by GetStatistics
   /// with the Actions Completed element.
-  static void AddInfo(
+  void AddInfo(
     int tool_id,
     const wxString& info,
     const wxString& text = wxEmptyString,
     const wxString& helptext = wxEmptyString) {
     m_ToolInfo[tool_id] = wxExToolInfo(info, text, helptext);};
 
+  /// Gets the tool object.
+  static wxExTool* Get(bool createOnDemand = true);
+
   /// Gets the tool id.
   int GetId() const {return m_Id;};
 
   /// Gets all the tool info.
-  static const std::map < int, wxExToolInfo > & GetToolInfo() {return m_ToolInfo;};
+  const std::map < int, wxExToolInfo > & GetToolInfo() const {return m_ToolInfo;};
 
   /// Gets info about current tool.
   const wxString Info() const;
-
-  // Initializes the tool info map.
-  // This is done during wxExApp::OnInit.
-  // Not for doxygen.
-  static void Initialize();
 
   // Type checking.
   /// Is this tool the report count.
@@ -103,8 +101,13 @@ public:
     return
       m_Id == ID_TOOL_REPORT_COUNT ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
+
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExTool* Set(wxExTool* tool);
 private:
   const int m_Id;
-  static std::map < int, wxExToolInfo > m_ToolInfo;
+  std::map < int, wxExToolInfo > m_ToolInfo;
+  static wxExTool* m_Self;
 };
 #endif
