@@ -45,9 +45,9 @@ wxExTool* wxExTool::Get(bool createOnDemand)
 
 const wxString wxExTool::Info() const
 {
-  std::map < int, wxExToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
+  std::map < int, wxExToolInfo >::const_iterator it = m_Self->m_ToolInfo.find(m_Id);
 
-  if (it != m_ToolInfo.end())
+  if (it != m_Self->m_ToolInfo.end())
   {
     return it->second.GetInfo();
   }
