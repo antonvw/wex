@@ -143,14 +143,14 @@ const wxString wxExComboBoxToString(
       // No change necessary, the string is already present as the first one.
       for (size_t i = 0; i < max_items; i++)
         if (i < cb->GetCount())
-          text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
+          text += cb->GetString(i) + wxExFindReplaceData::Get()->GetFieldSeparator();
       break;
 
     case wxNOT_FOUND:
       // Add the string, as it is not in the combo box, to the text,
       // simply by appending all combobox items.
-      for (size_t i = 0; i < max_items; i++)
-        if (i < max_items - 1 && i < cb->GetCount())
+      for (size_t i = 0; i < max_items - 1; i++)
+        if (i < cb->GetCount())
           text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
     break;
 
