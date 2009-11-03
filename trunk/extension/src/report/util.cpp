@@ -306,7 +306,7 @@ void wxExOpenFiles(
 void wxExOpenFilesDialog(
   wxExFrameWithHistory* frame,
   long style,
-  const wxString wildcards,
+  const wxString& wildcards,
   bool ask_for_continue)
 {
   wxExSTC* stc = frame->GetSTC();
