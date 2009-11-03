@@ -64,9 +64,12 @@ void wxExFindInFiles(bool replace)
       wxExFindReplaceData::Get()->GetTextReplaceWith(), 
       CONFIG_COMBOBOX));
   }
+  
+  const wxString in_files = _("In files");
+  const wxString in_folder = _("In folder");
 
-  v.push_back(wxExConfigItem(_("In files"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem(in_files, CONFIG_COMBOBOX, wxEmptyString, true));
+  v.push_back(wxExConfigItem(in_folder, CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());
   v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
 
@@ -91,8 +94,8 @@ void wxExFindInFiles(bool replace)
 
   wxExDirWithListView dir(
     tool,
-    wxExConfigFirstOf(_("In folder")),
-    wxExConfigFirstOf(_("In files")));
+    wxExConfigFirstOf(in_folder),
+    wxExConfigFirstOf(in_files));
 
   dir.FindFiles();
   dir.GetStatistics().Log(tool);
