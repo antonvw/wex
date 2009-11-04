@@ -37,11 +37,12 @@ void wxExAppTestFixture::testConstructors()
 
 void wxExAppTestFixture::testMethods()
 {
-  // test wxExApp
-  CPPUNIT_ASSERT(wxConfigBase::Get() != NULL);
+  // test global objects
+  CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get()->GetHtmlPrinter() != NULL);
-  CPPUNIT_ASSERT(!wxExTool::Get()->GetToolInfo().empty());
+  CPPUNIT_ASSERT(wxExLog::Get() != NULL);
+  CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
+  CPPUNIT_ASSERT(wxExTool::Get() != NULL);
 
   // test wxExGrid
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
