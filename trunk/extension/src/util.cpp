@@ -177,7 +177,7 @@ const wxString wxExConfigFirstOf(const wxString& key)
 
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
-  return text + "..." + (!control.empty() ? "\t" + control: wxEmptyString);
+  return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
 void wxExFindResult(
