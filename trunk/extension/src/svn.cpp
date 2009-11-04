@@ -14,6 +14,7 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -113,7 +114,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   if (m_Type == SVN_COMMIT)
   {
     comment = 
-      " -m \"" + wxConfigBase::Get()->Read(_("Revision comment")) 
+      " -m \"" + wxExConfigFirstOf(wxConfigBase::Get()->Read(_("Revision comment"))) 
       + "\"";
   }
 
