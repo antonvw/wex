@@ -188,6 +188,9 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
 wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
+  // We must have a parent.
+  wxASSERT(parent != NULL);
+
   // If an error occurred, already shown by wxExecute itself.
   if (Execute(parent) == wxID_OK)
   {
