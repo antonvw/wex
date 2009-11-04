@@ -77,7 +77,7 @@ size_t wxExFindInFiles(bool replace)
     v,
     (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
   {
-    return;
+    return 0;
   }
 
   const wxExTool tool =
