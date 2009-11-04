@@ -16,8 +16,6 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/tool.h>
 
-class wxExLog;
-
 #if wxUSE_GRID
 template <class T> class wxExStatistics;
 
@@ -297,6 +295,5 @@ public:
 private:
   wxExStatistics<long> m_Elements;
   wxExStatistics<long> m_Keywords;
-  wxExLog* m_Log;
 };
 #endif

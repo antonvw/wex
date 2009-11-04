@@ -19,13 +19,11 @@ wxExFileNameStatistics::wxExFileNameStatistics(
   const wxString& fullpath,
   wxPathFormat format)
   : wxExFileName(fullpath, format)
-  , m_Log(new wxExLog(GetLogfileName()))
 {
 }
 
 wxExFileNameStatistics::wxExFileNameStatistics(const wxExFileName& filename)
   : wxExFileName(filename)
-  , m_Log(new wxExLog(GetLogfileName()))
 {
 }
 
@@ -102,7 +100,8 @@ void wxExFileNameStatistics::Log(
         << m_Elements.Get()
         << wxTextFile::GetEOL();
 
-      m_Log->Log(logtext);
+      wxExLog log(GetLogfileName());
+      log.Log(logtext);
     }
   }
 }
