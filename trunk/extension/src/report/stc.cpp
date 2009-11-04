@@ -275,7 +275,7 @@ void wxExSTCWithFrame::PropertiesMessage()
 
   const wxString ro = (GetFileName().GetStat().IsReadOnly() ?
     " [" + _("Readonly") + "]":
-    wxEmptyString);
+    wxString(wxEmptyString));
 
   m_Frame->SetTitle(GetFileName().GetFullPath() + ro, wxEmptyString);
 }
