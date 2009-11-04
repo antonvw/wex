@@ -77,6 +77,8 @@ public:
 private:
   wxExSVNType GetType(int command_id) const;
   void Initialize();
+  bool UseFlags() const;
+  bool UseSubcommand() const;
 
   const wxExSVNType m_Type;
 

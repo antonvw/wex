@@ -73,15 +73,13 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
         true)); // required
     }
 
-    // SVN_UPDATE and SVN_HELP have no flags to ask for.
-    if (m_Type != SVN_UPDATE && m_Type != SVN_HELP)
+    if (UseFlags())
     {
       wxConfigBase::Get()->Write(_("Flags"), svn_flags_contents);
       v.push_back(wxExConfigItem(_("Flags")));
     }
 
-    // Instead, SVN_HELP has an extra subcommand.
-    if (m_Type == SVN_HELP)
+    if (UseSubcommand())
     {
       v.push_back(wxExConfigItem(_("Subcommand")));
     }
@@ -102,7 +100,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   if (m_FullPath.empty())
   {
-    wxSetWorkingDirectory(wxConfigBase::Get()->Read(_("Base folder")));
+    wxSetWorkingDirectory(wxExConfigFirstOf(wxConfigBase::Get()->Read(_("Base folder"))));
   }
   else
   {
@@ -121,20 +119,17 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   wxString flags;
   wxString subcommand;
   
-  // SVN_UPDATE and SVN_HELP have no flags to ask for.
-  if (m_Type == SVN_UPDATE || m_Type == SVN_HELP)
+  if (UseSubcommand())
   {
-    if (m_Type == SVN_HELP)
-    {
-      subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
+    subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
 
-      if (!subcommand.empty())
-      {
-        subcommand = " " + subcommand;
-      }
+    if (!subcommand.empty())
+    {
+      subcommand = " " + subcommand;
     }
   }
-  else
+
+  if (UseFlags())
   {
     flags = wxConfigBase::Get()->Read(_("Flags"));
 
@@ -315,6 +310,16 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
       wxFAIL;
       break;
   }
+}
+
+bool wxExSVN::UseFlags() const
+{
+  return m_Type != SVN_UPDATE && m_Type != SVN_HELP;
+}
+
+bool wxExSVN::UseSubcommand() const
+{
+  return m_Type == SVN_HELP;
 }
 
 #endif
