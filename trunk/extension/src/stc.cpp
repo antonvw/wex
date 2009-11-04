@@ -464,11 +464,6 @@ bool wxExSTC::CheckSmartIndentation()
   }
 }
 
-void wxExSTC::Cleanup()
-{
-  delete m_ConfigDialog;
-}
-
 void wxExSTC::ClearDocument()
 {
   SetReadOnly(false);
