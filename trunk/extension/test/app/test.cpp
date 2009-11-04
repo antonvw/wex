@@ -11,6 +11,7 @@
 \******************************************************************************/
 
 #include <TestCaller.h>
+#include <wx/config.h>
 #include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
