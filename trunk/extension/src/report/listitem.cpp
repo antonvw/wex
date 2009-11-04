@@ -24,7 +24,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
   , m_Statistics(
       (!GetColumnText(_("File Name"), false).empty() ?
           GetColumnText(_("In Folder"), false) + wxFileName::GetPathSeparator() +
-          GetColumnText(_("File Name"), false) : wxString(wxEmptyString))
+          GetColumnText(_("File Name"), false) : wxEmptyString)
       )
   , m_FileSpec(GetColumnText(_("Type"), false))
 {
@@ -153,7 +153,7 @@ void wxExListItemWithFileName::Update()
     SetColumnText(_("Size"),
       (!wxFileName::DirExists(m_Statistics.GetFullPath()) ?
          (wxString::Format("%lu", size)):
-          wxString(wxEmptyString)));
+          wxEmptyString));
     SetColumnText(_("Modified"), m_Statistics.GetStat().GetModificationTime());
   }
 }

@@ -195,7 +195,7 @@ wxExListViewWithFrame* MDIFrame::AddPage(
   const wxExLexer* lexer)
 {
   const wxString name = wxExListViewFile::GetTypeDescription((wxExListViewFile::ListType)type) +
-    (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
+    (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxEmptyString);
 
   wxExListViewWithFrame* list = (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(name);
 

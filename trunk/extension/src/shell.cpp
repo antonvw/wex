@@ -164,7 +164,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
 
       // History command.
       if (m_Command == wxString("history") +
-         (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
+         (m_CommandEnd == GetEOL() ? wxEmptyString: m_CommandEnd))
       {
         KeepCommand();
         ShowHistory();

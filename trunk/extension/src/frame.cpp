@@ -654,7 +654,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
           if (!m_Frame->m_Panes.empty())
           {
             const wxString tooltip =
-              (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
+              (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxEmptyString);
 
             if (tooltip != m_Frame->GetPane(i).m_Helptext)
             {

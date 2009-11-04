@@ -31,7 +31,7 @@ const wxString wxExAlignText(
 
   // Use the header, with one space extra to separate, or no header at all.
   const wxString header_with_spaces =
-    (header.size() == 0) ? wxString(wxEmptyString) : wxString(' ', header.size());
+    (header.size() == 0) ? wxEmptyString : wxString(' ', header.size());
 
   wxString in = lines, line = header;
 
@@ -50,7 +50,7 @@ const wxString wxExAlignText(
     }
     else
     {
-      line += (!line.empty() && !at_begin ? " ": wxString(wxEmptyString)) + word;
+      line += (!line.empty() && !at_begin ? " ": wxEmptyString) + word;
       at_begin = false;
     }
   }
@@ -177,7 +177,7 @@ const wxString wxExConfigFirstOf(const wxString& key)
 
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
-  return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));
+  return text + "..." + (!control.empty() ? "\t" + control: wxEmptyString);
 }
 
 void wxExFindResult(

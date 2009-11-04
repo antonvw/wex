@@ -373,7 +373,7 @@ void wxExFrameWithHistory::SetTitle(
     const wxString sep =
       (!better_file.empty() && !better_project.empty() ?
           " - ":
-          wxString(wxEmptyString));
+          wxEmptyString);
 
     wxExFrame::SetTitle(better_file + sep + better_project);
   }
