@@ -112,19 +112,25 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   if (m_Type == SVN_COMMIT)
   {
-    comment = " -m \"" + wxConfigBase::Get()->Read(_("Revision comment")) + "\"";
+    comment = 
+      " -m \"" + wxConfigBase::Get()->Read(_("Revision comment")) 
+      + "\"";
   }
 
   wxString flags;
   wxString subcommand;
   
-  if (m_Type == SVN_HELP)
+  // SVN_UPDATE and SVN_HELP have no flags to ask for.
+  if (m_Type == SVN_UPDATE || m_Type == SVN_HELP)
   {
-    subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
-
-    if (!subcommand.empty())
+    if (m_Type == SVN_HELP)
     {
-      subcommand = " " + subcommand;
+      subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
+
+      if (!subcommand.empty())
+      {
+        subcommand = " " + subcommand;
+      }
     }
   }
   else
@@ -258,7 +264,9 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
     case wxID_OK:
     {
       const wxString caption = m_Caption +
-        (!m_FullPath.empty() ? " " + wxFileName(m_FullPath).GetFullName(): wxString(wxEmptyString));
+        (!m_FullPath.empty() ? " " + 
+            wxFileName(m_FullPath).GetFullName(): 
+            wxString(wxEmptyString));
 
       // Create a dialog for contents.
       if (m_STCEntryDialog == NULL)
