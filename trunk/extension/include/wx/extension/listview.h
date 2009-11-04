@@ -128,7 +128,7 @@ public:
   const wxExColumn GetColumn(const wxString& name) const;
 
   /// Gets the field separator.
-  const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
+  const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Gets image type.
   wxExImageType GetImageType() const {return m_ImageType;};
@@ -206,7 +206,7 @@ private:
   void CopySelectedItemsToClipboard();
   void PasteItemsFromClipboard();
 
-  const wxChar m_FieldSeparator;
+  const wxUniChar m_FieldSeparator;
 
   const wxExImageType m_ImageType;
   const int m_ImageHeightSmall;

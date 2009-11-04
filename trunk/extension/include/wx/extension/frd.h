@@ -30,7 +30,7 @@ public:
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
   /// Gets the field separator.
-  const wxChar GetFieldSeparator() const {return m_FieldSeparator;};
+  const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Gets find/replace info text.
   const wxString GetText(bool replace = false);
@@ -100,7 +100,7 @@ private:
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;
 
-  const wxChar m_FieldSeparator;
+  const wxUniChar m_FieldSeparator;
 
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;

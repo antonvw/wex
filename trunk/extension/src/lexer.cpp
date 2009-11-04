@@ -150,7 +150,7 @@ const wxString wxExLexer::MakeSingleLineComment(
   }
 
   // First set the fill_out_character.
-  wxChar fill_out_character;
+  wxUniChar fill_out_character;
 
   if (fill_out_with_space || m_ScintillaLexer == "hypertext")
   {

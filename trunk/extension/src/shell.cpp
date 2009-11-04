@@ -41,7 +41,7 @@ wxExSTCShell::wxExSTCShell(
   , m_CommandStartPosition(0)
   , m_Echo(echo)
   // take a char that is not likely to appear inside commands
-  , m_CommandsInConfigDelimiter(wxChar(0x03))
+  , m_CommandsInConfigDelimiter(wxUniChar(0x03))
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
 {

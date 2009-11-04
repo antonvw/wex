@@ -226,13 +226,13 @@ int wxExGetNumberOfLines(const wxString& text)
   {
     return 0;
   }
-  else if (text.Find(wxChar('\r')) != wxNOT_FOUND)
+  else if (text.Find(wxUniChar('\r')) != wxNOT_FOUND)
   {
-    return text.Freq(wxChar('\r')) + 1;
+    return text.Freq(wxUniChar('\r')) + 1;
   }
-  else if (text.Find(wxChar('\n')) != wxNOT_FOUND)
+  else if (text.Find(wxUniChar('\n')) != wxNOT_FOUND)
   {
-    return text.Freq(wxChar('\n')) + 1;
+    return text.Freq(wxUniChar('\n')) + 1;
   }
   else
   {

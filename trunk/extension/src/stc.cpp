@@ -140,7 +140,7 @@ void wxExSTC::AddAsciiTable()
 
   for (int i = 1; i <= 255; i++)
   {
-    AddText(wxString::Format("%d\t%c", i, (wxChar)i));
+    AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
     AddText((i % 5 == 0) ? GetEOL(): "\t");
   }
 
@@ -387,11 +387,11 @@ bool wxExSTC::CheckAutoComp(int key)
 
   if (isspace(GetCharAt(GetCurrentPos() - 1)))
   {
-    autoc = (wxChar)key;
+    autoc = (wxUniChar)key;
   }
   else
   {
-    autoc += (wxChar)key;
+    autoc += (wxUniChar)key;
 
     if (autoc.length() >= 3) // Only autocompletion for large words
     {
@@ -444,12 +444,12 @@ bool wxExSTC::CheckSmartIndentation()
   // Using isspace is not okay, as that copies the CR and LF too, these
   // are already copied.
   int i = 0;
-  if (line[i] == wxChar('\t') || line[i] == wxChar(' '))
+  if (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
   {
     InsertText(GetCurrentPos(), GetEOL());
     GotoLine(GetCurrentLine() + 1);
 
-    while (line[i] == wxChar('\t') || line[i] == wxChar(' '))
+    while (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
     {
       InsertText(GetCurrentPos(), line[i]);
       GotoPos(GetCurrentPos() + 1);
@@ -714,7 +714,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   {
     if (value != new_value)
     {
-      ReplaceSelection(wxString::Format("%c", (wxChar)new_value));
+      ReplaceSelection(wxString::Format("%c", (wxUniChar)new_value));
     }
 
     SetSelection(GetCurrentPos(), GetCurrentPos() + 1);
