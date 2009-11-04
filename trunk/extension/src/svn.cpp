@@ -44,7 +44,6 @@ bool wxExSVN::DirExists(const wxFileName& filename)
 wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
   const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);
-  const wxString svn_flags_contents = wxConfigBase::Get()->Read(svn_flags_name);
 
   if (parent != NULL)
   {
@@ -70,7 +69,10 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
     if (UseFlags())
     {
-      wxConfigBase::Get()->Write(_("Flags"), svn_flags_contents);
+      wxConfigBase::Get()->Write(
+        _("Flags"), 
+        wxConfigBase::Get()->Read(svn_flags_name));
+
       v.push_back(wxExConfigItem(_("Flags")));
     }
 
