@@ -53,7 +53,7 @@ wxExLog* wxExLog::Get(bool createOnDemand)
   return m_Self;
 }
 
-bool wxExLog::Log(const wxString& text) 
+bool wxExLog::Log(const wxString& text) const
 {
   if (m_Logging) 
   {

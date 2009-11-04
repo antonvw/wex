@@ -30,7 +30,7 @@ public:
   /// Logs text with a timestamp at the end of the file.
   /// Logs text (only if SetLogging(true) is called, default it is off).
   /// Returns true if logging was on and write was successfull.
-  bool Log(const wxString& text);
+  bool Log(const wxString& text) const;
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object (both the parameter and returned value may be NULL). 
