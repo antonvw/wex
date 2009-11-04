@@ -383,7 +383,7 @@ bool wxExTextFile::ParseComments()
           if (m_VersionLine >= 1 && GetCurrentLine() == m_LineMarkerEnd + 1)
           {
             m_LineMarkerEnd = GetCurrentLine();
-            m_RCS.m_Description += (!m_RCS.m_Description.empty() ? " ": wxEmptyString) + m_Comments;
+            m_RCS.m_Description += (!m_RCS.m_Description.empty() ? wxString(" "): wxEmptyString) + m_Comments;
           }
           else
           {

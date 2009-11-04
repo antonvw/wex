@@ -50,7 +50,7 @@ const wxString wxExAlignText(
     }
     else
     {
-      line += (!line.empty() && !at_begin ? " ": wxEmptyString) + word;
+      line += (!line.empty() && !at_begin ? wxString(" "): wxEmptyString) + word;
       at_begin = false;
     }
   }
