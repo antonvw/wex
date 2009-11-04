@@ -41,7 +41,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   return true;
 }
 
-void wxExFindInFiles(bool replace)
+size_t wxExFindInFiles(bool replace)
 {
   if (wxExDir::GetIsBusy())
   {
@@ -87,7 +87,7 @@ void wxExFindInFiles(bool replace)
 
   if (!wxExTextFileWithListView::SetupTool(tool))
   {
-    return;
+    return 0;
   }
 
   wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
@@ -97,8 +97,10 @@ void wxExFindInFiles(bool replace)
     wxExConfigFirstOf(in_folder),
     wxExConfigFirstOf(in_files));
 
-  dir.FindFiles();
+  const size_t result = dir.FindFiles();
   dir.GetStatistics().Log(tool);
+  
+  return result;
 }
 
 bool wxExFindOtherFileName(
