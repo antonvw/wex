@@ -97,7 +97,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   if (m_FullPath.empty())
   {
-    if (!wxSetWorkingDirectory(wxExConfigFirstOf(wxConfigBase::Get()->Read(_("Base folder")))))
+    if (!wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder"))))
     {
       m_Output = _("Cannot set working directory");
       return wxID_ABORT;
@@ -113,8 +113,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   if (m_Type == SVN_COMMIT)
   {
     comment = 
-      " -m \"" + wxExConfigFirstOf(wxConfigBase::Get()->Read(_("Revision comment"))) 
-      + "\"";
+      " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
   }
 
   wxString flags;
