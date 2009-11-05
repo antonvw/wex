@@ -259,7 +259,11 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
 {
   const wxString cwd = wxGetCwd();
 
-  wxSetWorkingDirectory(makefile.GetPath());
+  if (!wxSetWorkingDirectory(makefile.GetPath()))
+  {
+      wxLogError(_("Cannot set working directory"));
+      return false;
+  }
 
   const bool ret = frame->ProcessRun(
     wxConfigBase::Get()->Read("Make", "make") + " " +

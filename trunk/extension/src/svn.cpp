@@ -97,7 +97,11 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   if (m_FullPath.empty())
   {
-    wxSetWorkingDirectory(wxExConfigFirstOf(wxConfigBase::Get()->Read(_("Base folder"))));
+    if (!wxSetWorkingDirectory(wxExConfigFirstOf(wxConfigBase::Get()->Read(_("Base folder")))))
+    {
+      m_Output = _("Cannot set working directory");
+      return wxID_ABORT;
+    }
   }
   else
   {

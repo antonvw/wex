@@ -165,7 +165,11 @@ long wxExProcessWithListView::Execute()
   if (!dir.empty())
   {
     cwd = wxGetCwd();
-    wxSetWorkingDirectory(dir);
+    if (!wxSetWorkingDirectory(dir))
+    {
+      wxLogError(_("Cannot set working directory");
+      return 0;
+    }
   }
 
   long pid = 0;
