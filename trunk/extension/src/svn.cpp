@@ -204,6 +204,7 @@ wxExSVNType wxExSVN::GetType(int command_id) const
 {
   switch (command_id)
   {
+    case ID_EDIT_SVN_ADD: return SVN_ADD; break;
     case ID_EDIT_SVN_BLAME: return SVN_BLAME; break;
     case ID_EDIT_SVN_CAT: return SVN_CAT; break;
     case ID_EDIT_SVN_COMMIT: return SVN_COMMIT; break;
@@ -225,6 +226,7 @@ void wxExSVN::Initialize()
 {
   switch (m_Type)
   {
+    case SVN_ADD:    m_Caption = "SVN Add"; break;
     case SVN_BLAME:  m_Caption = "SVN Blame"; break;
     case SVN_CAT:    m_Caption = "SVN Cat"; break;
     case SVN_COMMIT: m_Caption = "SVN Commit"; break;
@@ -232,6 +234,7 @@ void wxExSVN::Initialize()
     case SVN_HELP:   m_Caption = "SVN Help"; break;
     case SVN_INFO:   m_Caption = "SVN Info"; break;
     case SVN_LOG:    m_Caption = "SVN Log"; break;
+    case SVN_LS:     m_Caption = "SVN Ls"; break;
     case SVN_REVERT: m_Caption = "SVN Revert"; break;
     case SVN_STAT:   m_Caption = "SVN Stat"; break;
     case SVN_UPDATE: m_Caption = "SVN Update"; break;
