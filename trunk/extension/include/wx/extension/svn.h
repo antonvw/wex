@@ -21,6 +21,7 @@
 /// SVN types supported.
 enum wxExSVNType
 {
+  SVN_ADD,    ///< svn add
   SVN_BLAME,  ///< svn blame
   SVN_CAT,    ///< svn cat
   SVN_COMMIT, ///< svn commit
@@ -28,6 +29,7 @@ enum wxExSVNType
   SVN_HELP,   ///< svn help
   SVN_INFO,   ///< svn info
   SVN_LOG,    ///< svn log
+  SVN_LS,      ///< svn ls
   SVN_REVERT, ///< svn revert
   SVN_STAT,   ///< svn stat
   SVN_UPDATE, ///< svn update
