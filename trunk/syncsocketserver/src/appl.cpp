@@ -274,7 +274,14 @@ void MyFrame::LogConnection(
 {
   wxString text;
 
-  text << (accepted ? _("accepted"): _("lost")) << " " << SocketDetails(sock);
+  if (sock != NULL)
+  {
+    text << (accepted ? _("accepted"): _("lost")) << " " << SocketDetails(sock);
+  }
+  else
+  {
+    text << (accepted ? _("accepted"): _("lost")) << " " << _("connection");
+  }
 
   if (show_clients)
   {
