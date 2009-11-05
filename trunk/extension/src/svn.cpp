@@ -132,36 +132,36 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
     wxConfigBase::Get()->Write(svn_flags_name, flags);
 
-    m_CommandWithFlags = m_Command + " " + flags;
-
     if (!flags.empty())
     {
-      flags += " ";
+      flags = " " + flags;
     }
   }
 
-  const wxString command = 
-    "svn " + flags + m_Command + subcommand + comment + file;
+  m_CommandWithFlags = m_Command + flags;
+
+  const wxString commandline = 
+    "svn " + m_Command + subcommand + flags + comment + file;
 
   wxArrayString output;
   wxArrayString errors;
   m_Output.clear();
 
   if (wxExecute(
-    command,
+    commandline,
     output,
     errors) == -1)
   {
     if (m_Output.empty())
     {
-      m_Output = "Could not execute: " + command;
+      m_Output = "Could not execute: " + commandline;
     }
 
     m_ReturnCode = wxID_ABORT;
     return m_ReturnCode;
   }
 
-  wxExLog::Get()->Log(command);
+  wxExLog::Get()->Log(commandline);
 
   if (m_FullPath.empty())
   {
