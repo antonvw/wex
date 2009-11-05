@@ -705,11 +705,13 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   }
   break;
 
+  case ID_SVN_ADD: wxExSVN(SVN_ADD).ExecuteAndShowOutput(this); break;
   case ID_SVN_COMMIT: wxExSVN(SVN_COMMIT).ExecuteAndShowOutput(this); break;
   case ID_SVN_DIFF: wxExSVN(SVN_DIFF).ExecuteAndShowOutput(this); break;
   case ID_SVN_HELP: wxExSVN(SVN_HELP).ExecuteAndShowOutput(this); break;
   case ID_SVN_INFO: wxExSVN(SVN_INFO).ExecuteAndShowOutput(this); break;
   case ID_SVN_LOG: wxExSVN(SVN_LOG).ExecuteAndShowOutput(this); break;
+  case ID_SVN_LS: wxExSVN(SVN_LS).ExecuteAndShowOutput(this); break;
   case ID_SVN_STAT: wxExSVN(SVN_STAT).ExecuteAndShowOutput(this); break;
   case ID_SVN_UPDATE: wxExSVN(SVN_UPDATE).ExecuteAndShowOutput(this); break;
 
