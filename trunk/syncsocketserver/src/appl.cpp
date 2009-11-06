@@ -368,7 +368,13 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case wxID_SAVEAS:
     {
-      wxExFileDialog dlg(this, m_DataWindow, _("File Save As"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE);
+      wxExFileDialog dlg(
+        this, 
+        m_DataWindow, 
+        _("File Save As"), 
+        wxFileSelectorDefaultWildcardStr, 
+        wxFD_SAVE);
+        
       if (dlg.ShowModal(false))
       {
         m_DataWindow->FileSave(dlg.GetPath());
