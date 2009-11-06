@@ -46,7 +46,7 @@ General
     (e.g. from http://www.sliksvn.com/en/download)
 
 - Build process/IDE
-  - Project and make files are generated using Bakefile 0.2.6
+  - Project and make files are generated using Bakefile 0.2.8
     http://www.bakefile.org/
     this is done in the build dir, directly under trunk:
     
