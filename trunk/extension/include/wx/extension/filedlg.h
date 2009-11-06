@@ -33,13 +33,9 @@ public:
     const wxSize &size=wxDefaultSize, 
     const wxString &name=wxFileDialogNameStr);
 
-  /// Shows the dialog, and returns dialog return code.
-  int ShowModal(bool ask_for_continue = true);
-
   /// Shows the dialog depending on the changes on the file.
   int ShowModalIfChanged();
 private:
   wxExFile* m_File;
-  const wxString m_OriginalWildcard;
 };
 #endif

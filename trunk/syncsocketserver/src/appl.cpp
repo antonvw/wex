@@ -375,7 +375,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
         wxFileSelectorDefaultWildcardStr, 
         wxFD_SAVE);
         
-      if (dlg.ShowModal(false))
+      if (dlg.ShowModal())
       {
         m_DataWindow->FileSave(dlg.GetPath());
         m_LogWindow->AppendTextForced(

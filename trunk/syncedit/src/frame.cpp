@@ -539,7 +539,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     {
       const wxString old_key = editor->GetFileName().GetFullPath();
       wxExFileDialog dlg(this, editor, _("File Save As"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE);
-      if (dlg.ShowModal(false) == wxID_OK)
+      if (dlg.ShowModal() == wxID_OK)
       {
         editor->FileSave(dlg.GetPath());
 
@@ -671,7 +671,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
         m_ProjectWildcard, 
         wxFD_SAVE);
 
-      if (dlg.ShowModal(false) == wxID_OK)
+      if (dlg.ShowModal() == wxID_OK)
       {
         project->FileSave(dlg.GetPath());
 

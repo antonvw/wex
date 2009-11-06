@@ -31,28 +31,12 @@ wxExFileDialog::wxExFileDialog(
       size, 
       name)
   , m_File(file)
-  , m_OriginalWildcard(wildcard)
 {
-}
-
-int wxExFileDialog::ShowModal(bool ask_for_continue)
-{
-  if (ask_for_continue)
-  {
-    return ShowModalIfChanged();
-  }
-
-  // First set actual filename etc. according to file.
-  SetFilename(m_File->GetFileName().GetFullPath());
-  SetDirectory(m_File->GetFileName().GetPath());
-
   // Override wildcard only if it is default.
-  if (m_OriginalWildcard == wxFileSelectorDefaultWildcardStr)
+  if (wildcard == wxFileSelectorDefaultWildcardStr)
   {
     SetWildcard(wxExLexers::Get()->BuildWildCards(m_File->GetFileName()));
   }
-
-  return wxFileDialog::ShowModal();
 }
 
 int wxExFileDialog::ShowModalIfChanged()
@@ -69,15 +53,14 @@ int wxExFileDialog::ShowModalIfChanged()
         case wxYES: 
           // This should be a save dialog.
           wxASSERT(GetWindowStyle() & wxFD_SAVE);
-
-          if (ShowModal(false) != wxID_OK) return false; 
+          return ShowModal();
           break;
 
         case wxNO:     
           m_File->ResetContentsChanged(); 
           break;
 
-        case wxCANCEL: return false; break;
+        case wxCANCEL: return wxID_CANCEL; break;
       }
     }
     else
@@ -96,11 +79,11 @@ int wxExFileDialog::ShowModalIfChanged()
           break;
 
         case wxCANCEL: 
-          return false; 
+          return wxID_CANCEL;
           break;
       }
     }
   }
 
-  return true;
+  return wxID_OK;
 }
