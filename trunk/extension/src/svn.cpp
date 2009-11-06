@@ -265,10 +265,10 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
 
     case wxID_OK:
     {
-      const wxString caption = m_Caption +
-        (!m_FullPath.empty() ? " " + 
+      const wxString caption = m_Caption + " " +
+        (!m_FullPath.empty() ?  
             wxFileName(m_FullPath).GetFullName(): 
-            wxString(wxEmptyString));
+            wxExConfigFirstOf(_("Base folder")));
 
       // Create a dialog for contents.
       if (m_STCEntryDialog == NULL)
