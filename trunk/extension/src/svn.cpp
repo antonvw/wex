@@ -65,6 +65,15 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
         CONFIG_COMBOBOXDIR, 
         wxEmptyString, 
         true)); // required
+
+      if (m_Type == SVN_ADD)
+      {
+        v.push_back(wxExConfigItem(
+          _("Path"), 
+          CONFIG_COMBOBOX,
+          wxEmptyString, 
+          true)); // required
+      }
     }
 
     if (UseFlags())
@@ -101,6 +110,11 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     {
       m_Output = _("Cannot set working directory");
       return wxID_ABORT;
+    }
+
+    if (m_Type == SVN_ADD)
+    {
+      file = wxExConfigFirstOf(_("Path"));
     }
   }
   else
