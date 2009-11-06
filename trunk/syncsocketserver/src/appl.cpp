@@ -264,7 +264,7 @@ wxExSTC* MyFrame::GetSTC()
     return m_Shell;
   }
 
-  return m_LogWindow;
+  return NULL;
 }
 
 void MyFrame::LogConnection(
