@@ -54,6 +54,6 @@ void wxExOpenFiles(wxExFrameWithHistory* frame,
 /// both for files and projects.
 void wxExOpenFilesDialog(wxExFrameWithHistory* frame,
   long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
-  const wxString& wildcards = wxEmptyString,
+  const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
   bool ask_for_continue = false);
 #endif
