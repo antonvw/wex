@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-03 09:34+0100\n"
-"PO-Revision-Date: 2009-10-03 09:35+0100\n"
-"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-11-06 14:27+0100\n"
+"PO-Revision-Date: 2009-11-06 14:27+0100\n"
+"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,67 +17,71 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/appl.cpp:84
+#: ../src/appl.cpp:87
 msgid "&Open"
 msgstr "&Openen"
 
-#: ../src/appl.cpp:85
+#: ../src/appl.cpp:88
 msgid "&Close"
 msgstr "&Sluiten"
 
-#: ../src/appl.cpp:95
+#: ../src/appl.cpp:98
 msgid "&Statusbar"
 msgstr "&Statusregel"
 
-#: ../src/appl.cpp:96
+#: ../src/appl.cpp:99
 msgid "&Toolbar"
 msgstr "&Werkbalk"
 
-#: ../src/appl.cpp:98
-#: ../src/appl.cpp:139
+#: ../src/appl.cpp:101
+#: ../src/appl.cpp:142
 msgid "Query"
 msgstr "Query"
 
-#: ../src/appl.cpp:99
-#: ../src/appl.cpp:132
+#: ../src/appl.cpp:102
+#: ../src/appl.cpp:135
 msgid "Results"
 msgstr "Uitvoer"
 
-#: ../src/appl.cpp:100
-#: ../src/appl.cpp:146
+#: ../src/appl.cpp:103
+#: ../src/appl.cpp:149
 msgid "Statistics"
 msgstr "Statistiek"
 
-#: ../src/appl.cpp:107
+#: ../src/appl.cpp:110
 msgid "&View"
 msgstr "&Beeld"
 
-#: ../src/appl.cpp:108
+#: ../src/appl.cpp:111
 msgid "&Connection"
 msgstr "&Verbinding"
 
-#: ../src/appl.cpp:109
+#: ../src/appl.cpp:112
 msgid "&Query"
 msgstr "&Query"
 
-#: ../src/appl.cpp:110
+#: ../src/appl.cpp:113
 msgid "&Options"
 msgstr "&Opties"
 
-#: ../src/appl.cpp:156
+#: ../src/appl.cpp:159
 msgid "Lines in window"
 msgstr "Regels in scherm"
 
-#: ../src/appl.cpp:240
+#: ../src/appl.cpp:245
 msgid "This program offers a general ODBC query."
 msgstr "Dit programma biedt algemene ODBC query"
 
-#: ../src/appl.cpp:297
+#: ../src/appl.cpp:286
+msgid "File Save As"
+msgstr "Bestand opslaan als"
+
+#: ../src/appl.cpp:307
 msgid "Datasource"
 msgstr "Databron"
 
-#: ../src/appl.cpp:319
-#: ../src/appl.cpp:488
+#: ../src/appl.cpp:329
+#: ../src/appl.cpp:498
 msgid ""
 "\n"
 "error: "
@@ -85,7 +89,7 @@ msgstr ""
 "\n"
 "fout: "
 
-#: ../src/appl.cpp:324
+#: ../src/appl.cpp:334
 msgid ""
 "\n"
 "not connected"
@@ -93,19 +97,19 @@ msgstr ""
 "\n"
 "geen verbinding"
 
-#: ../src/appl.cpp:332
+#: ../src/appl.cpp:342
 msgid "cancelled"
 msgstr "geannuleerd"
 
-#: ../src/appl.cpp:486
+#: ../src/appl.cpp:496
 msgid "Number of query errors"
 msgstr "Aantal query fouten"
 
-#: ../src/appl.cpp:489
+#: ../src/appl.cpp:499
 msgid " in: "
 msgstr " in: "
 
-#: ../src/appl.cpp:494
+#: ../src/appl.cpp:504
 #, c-format
 msgid ""
 "\n"
@@ -114,7 +118,7 @@ msgstr ""
 "\n"
 "%d queries (%.3f seconden)"
 
-#: ../src/appl.cpp:503
+#: ../src/appl.cpp:513
 #, c-format
 msgid ""
 "\n"
@@ -123,23 +127,23 @@ msgstr ""
 "\n"
 "%d records opgehaald (%.3f seconden)"
 
-#: ../src/appl.cpp:507
+#: ../src/appl.cpp:517
 msgid "Rows processed"
 msgstr "Records opgehaald"
 
-#: ../src/appl.cpp:508
+#: ../src/appl.cpp:518
 msgid "Query runtime"
 msgstr "Query uitvoertijd"
 
-#: ../src/appl.cpp:510
+#: ../src/appl.cpp:520
 msgid "Total number of queries run"
 msgstr "Totaal aantal uitgevoerde queries"
 
-#: ../src/appl.cpp:511
+#: ../src/appl.cpp:521
 msgid "Total query runtime"
 msgstr "Totaal query uitvoertijd"
 
-#: ../src/appl.cpp:512
+#: ../src/appl.cpp:522
 msgid "Total rows processed"
 msgstr "Totaal aantal records opgehaald"
 
