@@ -326,7 +326,15 @@ void wxExOpenFilesDialog(
       wxFileSelectorDefaultWildcardStr,
       style);
 
-    if (dlg.ShowModal(ask_for_continue) == wxID_CANCEL) return;
+    if (ask_for_continue)
+    {
+      if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
+    }
+    else
+    {
+      if (dlg.ShowModal() == wxID_CANCEL) return;
+    }
+
     dlg.GetPaths(files);
   }
   else
