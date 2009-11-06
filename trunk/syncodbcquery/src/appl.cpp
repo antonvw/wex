@@ -224,7 +224,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
 {
   wxExFileDialog dlg(this, m_Query);
 
-  if (!dlg.Continue())
+  if (dlg.ShowModalIfChanged()  == wxID_CANCEL)
   {
     return;
   }

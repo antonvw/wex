@@ -115,7 +115,7 @@ bool wxExNotebook::ForEach(int id)
     case ID_ALL_STC_CLOSE:
       {
       wxExFileDialog dlg(this, stc);
-      if (!dlg.Continue()) return false;
+      if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
       DeletePage(GetKeyByPage(GetPage(page)));
       }
       break;

@@ -262,12 +262,12 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
   else if (id == NOTEBOOK_EDITORS)
   {
     wxExFileDialog dlg(this, (wxExSTCWithFrame*)page);
-    return dlg.Continue();
+    return dlg.ShowModalIfChanged() == wxID_OK;
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
     wxExFileDialog dlg(this, (wxExListViewWithFrame*)page);
-    return dlg.Continue();
+    return dlg.ShowModalIfChanged() == wxID_OK;
   }
   else
   {

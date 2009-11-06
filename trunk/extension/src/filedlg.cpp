@@ -35,7 +35,27 @@ wxExFileDialog::wxExFileDialog(
 {
 }
 
-bool wxExFileDialog::Continue()
+int wxExFileDialog::ShowModal(bool ask_for_continue)
+{
+  if (ask_for_continue)
+  {
+    return ShowModalIfChanged();
+  }
+
+  // First set actual filename etc. according to file.
+  SetFilename(m_File->GetFileName().GetFullPath());
+  SetDirectory(m_File->GetFileName().GetPath());
+
+  // Override wildcard only if it is default.
+  if (m_OriginalWildcard == wxFileSelectorDefaultWildcardStr)
+  {
+    SetWildcard(wxExLexers::Get()->BuildWildCards(m_File->GetFileName()));
+  }
+
+  return wxFileDialog::ShowModal();
+}
+
+int wxExFileDialog::ShowModalIfChanged()
 {
   if (m_File->GetContentsChanged())
   {
@@ -83,27 +103,4 @@ bool wxExFileDialog::Continue()
   }
 
   return true;
-}
-
-int wxExFileDialog::ShowModal(bool ask_for_continue)
-{
-  if (ask_for_continue)
-  {
-    if (!Continue())
-    {
-      return wxID_CANCEL;
-    }
-  }
-
-  // First set actual filename etc. according to file.
-  SetFilename(m_File->GetFileName().GetFullPath());
-  SetDirectory(m_File->GetFileName().GetPath());
-
-  // Override wildcard only if it is default.
-  if (m_OriginalWildcard == wxFileSelectorDefaultWildcardStr)
-  {
-    SetWildcard(wxExLexers::Get()->BuildWildCards(m_File->GetFileName()));
-  }
-
-  return wxFileDialog::ShowModal();
 }

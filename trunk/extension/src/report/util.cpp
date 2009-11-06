@@ -242,7 +242,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
     case ID_LIST_ALL_CLOSE:
       {
       wxExFileDialog dlg(notebook, lv);
-      if (!dlg.Continue()) return false;
+      if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
       if (!notebook->DeletePage(page)) return false;
       }
       break;

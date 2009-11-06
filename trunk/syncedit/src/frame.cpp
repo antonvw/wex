@@ -646,7 +646,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       if (project->GetContentsChanged())
       {
         wxExFileDialog dlg(this, project);
-        if (dlg.Continue())
+        if (dlg.ShowModalIfChanged() != wxID_CANCEL)
         {
           project->FileSave();
           SetTitle(wxEmptyString, project->GetFileName().GetName());
