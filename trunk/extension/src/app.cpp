@@ -33,8 +33,12 @@ int wxExApp::OnExit()
 
 bool wxExApp::OnInit()
 {
+  if (!wxApp::OnInit())
+  {
+    return false;
+  }
+
   // Init the localization, from now on things will be translated.
-  // So do this before constructing config and wxExTool::Initialize, as these use localization.
   if (m_Locale.Init())
   {
     // If there are catalogs in the catalog_dir, then add them to the m_Locale.
@@ -98,5 +102,5 @@ bool wxExApp::OnInit()
   // Finally call all available static initializers.
   wxExSTC::PathListInit();
 
-  return wxApp::OnInit();
+  return true;
 }

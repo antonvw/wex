@@ -43,7 +43,8 @@ bool wxExSVN::DirExists(const wxFileName& filename)
 
 wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
-  const wxString svn_flags_name = wxString::Format("svn/flags%d", m_Type);
+  // Key SVN is already used, so use other name.
+  const wxString svn_flags_name = wxString::Format("svnflags/name%d", m_Type);
 
   if (parent != NULL)
   {
