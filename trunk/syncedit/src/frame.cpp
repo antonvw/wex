@@ -643,21 +643,13 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_PROJECT_OPENTEXT:
     if (project != NULL)
     {
-      if (project->GetContentsChanged())
+      wxExFileDialog dlg(this, project);
+      if (dlg.ShowModalIfChanged() != wxID_CANCEL)
       {
-        wxExFileDialog dlg(this, project);
-        if (dlg.ShowModalIfChanged() != wxID_CANCEL)
-        {
-          project->FileSave();
-          SetTitle(wxEmptyString, project->GetFileName().GetName());
-        }
-        else
-        {
-          return;
-        }
+        project->FileSave();
+        SetTitle(wxEmptyString, project->GetFileName().GetName());
+        OpenFile(project->GetFileName());
       }
-
-      OpenFile(project->GetFileName());
     }
     break;
   case ID_PROJECT_SAVEAS:
