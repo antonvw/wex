@@ -90,9 +90,9 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
 
-  if (!wxConfigBase::Get()->Exists("SVN"))
+  if (!config->Exists("SVN"))
   {
-    wxConfigBase::Get()->Write("SVN", true);
+    config->Write("SVN", true);
   }
 
   // Finally call all available static initializers.
