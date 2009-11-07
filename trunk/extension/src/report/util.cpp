@@ -323,12 +323,12 @@ void wxExOpenFilesDialog(
     wxExFileDialog dlg(frame,
       stc,
       _("Select Files"),
-      wxFileSelectorDefaultWildcardStr,
+      wildcards,
       style);
 
     if (ask_for_continue)
     {
-      if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
+      if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
     }
     else
     {

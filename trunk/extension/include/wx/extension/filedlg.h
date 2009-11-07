@@ -34,7 +34,8 @@ public:
     const wxString &name=wxFileDialogNameStr);
 
   /// Shows the dialog depending on the changes on the file.
-  int ShowModalIfChanged();
+  /// If you specify show_modal then dialog is always shown.
+  int ShowModalIfChanged(bool show_modal = false);
 private:
   wxExFile* m_File;
 };

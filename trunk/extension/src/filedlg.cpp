@@ -39,7 +39,7 @@ wxExFileDialog::wxExFileDialog(
   }
 }
 
-int wxExFileDialog::ShowModalIfChanged()
+int wxExFileDialog::ShowModalIfChanged(bool show_modal)
 {
   if (m_File->GetContentsChanged())
   {
@@ -51,8 +51,6 @@ int wxExFileDialog::ShowModalIfChanged()
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
         case wxYES: 
-          // This should be a save dialog.
-          wxASSERT(GetWindowStyle() & wxFD_SAVE);
           return ShowModal();
           break;
 
@@ -71,7 +69,12 @@ int wxExFileDialog::ShowModalIfChanged()
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
         case wxYES:    
-          m_File->FileSave(); 
+          m_File->FileSave();
+
+          if (show_modal)
+          {
+            return ShowModal();
+          }
           break;
 
         case wxNO:     
@@ -82,6 +85,13 @@ int wxExFileDialog::ShowModalIfChanged()
           return wxID_CANCEL;
           break;
       }
+    }
+  }
+  else
+  {
+    if (show_modal)
+    {
+      return ShowModal();
     }
   }
 
