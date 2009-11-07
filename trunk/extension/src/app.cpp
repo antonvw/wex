@@ -90,6 +90,11 @@ bool wxExApp::OnInit()
 #endif
   wxConfigBase::Set(config);
 
+  if (!wxConfigBase::Get()->Exists("SVN"))
+  {
+    wxConfigBase::Get()->Write("SVN", true);
+  }
+
   // Finally call all available static initializers.
   wxExSTC::PathListInit();
 
