@@ -70,11 +70,6 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
       {
         case wxYES:    
           m_File->FileSave();
-
-          if (show_modal)
-          {
-            return ShowModal();
-          }
           break;
 
         case wxNO:     
@@ -87,12 +82,10 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
       }
     }
   }
-  else
+
+  if (show_modal)
   {
-    if (show_modal)
-    {
-      return ShowModal();
-    }
+    return ShowModal();
   }
 
   return wxID_OK;
