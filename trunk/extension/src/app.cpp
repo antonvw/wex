@@ -96,7 +96,10 @@ bool wxExApp::OnInit()
 
   if (!config->Exists("SVN"))
   {
-    config->Write("SVN", true);
+    if (!config->Write("SVN", true))
+    {
+      wxFAIL;
+    }
   }
 
   // Finally call all available static initializers.
