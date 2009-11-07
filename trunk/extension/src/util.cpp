@@ -337,9 +337,8 @@ const wxString wxExPrintHeader(const wxFileName& filename)
   if (filename.FileExists())
   {
     return
-      wxExGetEndOfText(filename.GetFullPath(), 20) + " " +
-      filename.GetModificationTime().Format() + " " +
-      wxDateTime::Now().Format();
+      wxExGetEndOfText(filename.GetFullPath(), 30) + " " +
+      filename.GetModificationTime().Format();
   }
   else
   {
