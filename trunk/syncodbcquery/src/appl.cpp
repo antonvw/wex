@@ -270,7 +270,11 @@ void MyFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_OPEN:
-    wxExOpenFilesDialog(this, wxFD_OPEN | wxFD_CHANGE_DIR, "sql files (*.sql) | *.sql", true);
+    wxExOpenFilesDialog(
+      this, 
+      wxFD_OPEN | wxFD_CHANGE_DIR, 
+      "sql files (*.sql) | *.sql", 
+      true);
     break;
 
   case wxID_PREFERENCES:
@@ -283,7 +287,12 @@ void MyFrame::OnCommand(wxCommandEvent& event)
 
   case wxID_SAVEAS:
     {
-      wxExFileDialog dlg(this, m_Query, _("File Save As"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE);
+      wxExFileDialog dlg(
+        this, m_Query, 
+        _("File Save As"), 
+        wxFileSelectorDefaultWildcardStr, 
+        wxFD_SAVE);
+
       if (dlg.ShowModal() == wxID_OK)
       {
          m_Query->FileSave(dlg.GetPath());
