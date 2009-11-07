@@ -762,7 +762,7 @@ msgstr "Bestanden toevoegen"
 
 #: ../src/report/listview.cpp:132
 msgid "Add"
-msgstr "Toegevoegen"
+msgstr "Toevoegen"
 
 #: ../src/report/listview.cpp:165
 msgid "Added"
