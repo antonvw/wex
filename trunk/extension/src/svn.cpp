@@ -20,7 +20,7 @@
 
 wxExSVN* wxExSVN::m_Self = NULL;
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
-wxString wxExSVN::m_UsageKey = _("Use SVN");
+wxString wxExSVN::m_UsageKey;
 
 wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
   : m_Type(GetType(command_id))
@@ -234,6 +234,8 @@ wxExSVN* wxExSVN::Get(bool createOnDemand)
   if (m_Self == NULL && createOnDemand)
   {
     m_Self = new wxExSVN(SVN_ADD);
+
+    m_UsageKey = _("Use SVN");
 
     if (!wxConfigBase::Get()->Exists(m_UsageKey))
     {
