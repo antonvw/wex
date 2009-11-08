@@ -106,7 +106,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   if ( GetFileName().FileExists() && GetSelectedText().empty() &&
       (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN))
   {
-    if (wxExSVN::DirExists(GetFileName()))
+    if (wxExSVN::Get()->DirExists(GetFileName()))
     {
       menu.AppendSVN();
     }

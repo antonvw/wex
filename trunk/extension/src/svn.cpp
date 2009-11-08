@@ -18,7 +18,9 @@
 
 #if wxUSE_GUI
 
+wxExSVN* wxExSVN::m_Self = NULL;
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
+wxString wxExSVN::m_UsageKey = "svn_usage";
 
 wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
   : m_Type(GetType(command_id))
@@ -34,7 +36,19 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   Initialize();
 }
 
-bool wxExSVN::DirExists(const wxFileName& filename)
+int wxExSVN::ConfigDialog(
+  wxWindow* parent,
+  const wxString& title)
+{
+  std::vector<wxExConfigItem> v;
+  v.push_back(wxExConfigItem()); // a spacer
+  v.push_back(wxExConfigItem(m_UsageKey, CONFIG_CHECKBOX));
+  v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
+
+  return wxExConfigDialog(parent, v, title).ShowModal();
+}
+
+bool wxExSVN::DirExists(const wxFileName& filename) const
 {
   wxFileName path(filename);
   path.AppendDir(".svn");
@@ -215,6 +229,24 @@ wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
   return m_ReturnCode;
 }
 
+wxExSVN* wxExSVN::Get(bool createOnDemand)
+{
+  if (m_Self == NULL && createOnDemand)
+  {
+    m_Self = new wxExSVN(SVN_ADD);
+
+    if (!wxConfigBase::Get()->Exists(m_UsageKey))
+    {
+      if (!wxConfigBase::Get()->Write(m_UsageKey, true))
+      {
+        wxFAIL;
+      }
+    }
+  }
+
+  return m_Self;
+}
+
 wxExSVNType wxExSVN::GetType(int command_id) const
 {
   switch (command_id)
@@ -265,6 +297,13 @@ void wxExSVN::Initialize()
 
   m_Output.clear();
   m_ReturnCode = wxID_NONE;
+}
+
+wxExSVN* wxExSVN::Set(wxExSVN* svn)
+{
+  wxExSVN* old = m_Self;
+  m_Self = svn;
+  return old;
 }
 
 void wxExSVN::ShowOutput(wxWindow* parent) const
@@ -335,6 +374,11 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
       wxFAIL;
       break;
   }
+}
+
+bool wxExSVN::Use() const
+{
+  return wxConfigBase::Get()->ReadBool(m_UsageKey, true);
 }
 
 bool wxExSVN::UseFlags() const

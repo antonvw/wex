@@ -29,7 +29,7 @@ enum wxExSVNType
   SVN_HELP,   ///< svn help
   SVN_INFO,   ///< svn info
   SVN_LOG,    ///< svn log
-  SVN_LS,      ///< svn ls
+  SVN_LS,     ///< svn ls
   SVN_REVERT, ///< svn revert
   SVN_STAT,   ///< svn stat
   SVN_UPDATE, ///< svn update
@@ -49,8 +49,13 @@ public:
   /// Constructor, specify the command id and a fullpath.
   wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
 
+  /// Shows a dialog with options, returns dialog return code.
+  int ConfigDialog(
+    wxWindow* parent,
+    const wxString& title = _("Set SVN And Comparator"));
+
   /// Returns true if specified filename (a path) is a svn directory.
-  static bool DirExists(const wxFileName& filename);
+  bool DirExists(const wxFileName& filename) const;
 
   /// Execute the svn command, and collects the output.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
@@ -65,14 +70,24 @@ public:
   /// Returns return code from execute.
   wxStandardID ExecuteAndShowOutput(wxWindow* parent);
 
+  /// Returns the svn object.
+  static wxExSVN* Get(bool createOnDemand = true);
+
   /// Gets the flags and command (without the 'svn') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
 
   /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
 
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExSVN* Set(wxExSVN* svn);
+
   /// Shows output from Execute in a dialog only.
   void ShowOutput(wxWindow* parent) const;
+
+  /// Returns true if SVN usage is set in the config.
+  bool Use() const;
 private:
   wxExSVNType GetType(int command_id) const;
   void Initialize();
@@ -89,7 +104,9 @@ private:
   const wxString m_FullPath;
 
   wxStandardID m_ReturnCode;
+  static wxExSVN* m_Self;
   static wxExSTCEntryDialog* m_STCEntryDialog;
+  static wxString m_UsageKey;
 };
 #endif
 #endif

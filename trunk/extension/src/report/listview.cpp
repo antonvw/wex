@@ -925,9 +925,9 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
     }
 
-    if (GetType() != LIST_PROJECT &&
-        !wxConfigBase::Get()->ReadBool("SVN", true) &&
-        exists && !is_folder)
+    if ( GetType() != LIST_PROJECT &&
+        !wxExSVN::Get()->Use() &&
+         exists && !is_folder)
     {
       wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
 
@@ -954,7 +954,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists && !is_folder)
     {
-      if (!wxConfigBase::Get()->ReadBool("SVN", true))
+      if (!wxExSVN::Get()->Use())
       {
         if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
         {
@@ -968,7 +968,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         const wxExListItemWithFileName item(this, GetFirstSelected());
         menu.AppendSeparator();
 
-        if (wxExSVN::DirExists(item.GetFileName()))
+        if (wxExSVN::Get()->DirExists(item.GetFileName()))
         {
           menu.AppendSVN();
         }

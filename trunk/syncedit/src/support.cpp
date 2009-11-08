@@ -88,7 +88,7 @@ Frame::Frame()
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
 
-  if (wxConfigBase::Get()->ReadBool("SVN", true))
+  if (wxExSVN::Get()->Use())
   {
     wxMenu* menuSVN = new wxMenu;
     menuSVN->Append(ID_SVN_STAT, wxExEllipsed("&Stat"));

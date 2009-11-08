@@ -571,15 +571,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 
-  case ID_OPTION_SVN_AND_COMPARATOR:
-    {
-    std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem()); // a spacer
-    v.push_back(wxExConfigItem("SVN", CONFIG_CHECKBOX));
-    v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
-    wxExConfigDialog(this, v, _("Set SVN And Comparator")).ShowModal();
-    }
+  case ID_OPTION_SVN_AND_COMPARATOR: wxExSVN::Get()->ConfigDialog(this);
     break;
+
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
@@ -762,7 +756,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
     wxExMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
 
-    if (wxExSVN::DirExists(filename))
+    if (wxExSVN::Get()->DirExists(filename))
     {
       menu.AppendSeparator();
       menu.AppendSVN();

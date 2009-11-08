@@ -25,7 +25,7 @@ wxExTool* wxExTool::Get(bool createOnDemand)
   {
     m_Self = new wxExTool(0);
 
-    if (!wxConfigBase::Get()->ReadBool("SVN", true))
+    if (!wxExSVN::Get()->Use())
     {
       m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
       m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
