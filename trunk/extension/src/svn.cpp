@@ -20,7 +20,7 @@
 
 wxExSVN* wxExSVN::m_Self = NULL;
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
-wxString wxExSVN::m_UsageKey = "svn_usage";
+wxString wxExSVN::m_UsageKey = _("Use SVN");
 
 wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
   : m_Type(GetType(command_id))
