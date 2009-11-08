@@ -11,6 +11,7 @@
 
 #include <wx/config.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/svn.h>
 
 wxExTool* wxExTool::m_Self = NULL;
 

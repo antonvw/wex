@@ -12,6 +12,7 @@
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/svn.h>
 #ifndef __WXMSW__
 #include "appl.xpm"
 #endif
