@@ -65,69 +65,9 @@ bool wxExSVN::DirExists(const wxFileName& filename) const
   return path.DirExists();
 }
 
-wxStandardID wxExSVN::Execute(wxWindow* parent)
+wxStandardID wxExSVN::Execute()
 {
   wxASSERT(m_Type != SVN_NONE);
-
-  // Key SVN is already used, so use other name.
-  const wxString svn_flags_name = wxString::Format("svnflags/name%d", m_Type);
-
-#if wxUSE_GUI
-  if (parent != NULL)
-  {
-    std::vector<wxExConfigItem> v;
-
-    if (m_Type == SVN_COMMIT)
-    {
-      v.push_back(wxExConfigItem(
-        _("Revision comment"), 
-        CONFIG_COMBOBOX,
-        wxEmptyString,
-        true)); // required
-    }
-
-    if (m_FullPath.empty() && m_Type != SVN_HELP)
-    {
-      v.push_back(wxExConfigItem(
-        _("Base folder"), 
-        CONFIG_COMBOBOXDIR, 
-        wxEmptyString, 
-        true)); // required
-
-      if (m_Type == SVN_ADD)
-      {
-        v.push_back(wxExConfigItem(
-          _("Path"), 
-          CONFIG_COMBOBOX,
-          wxEmptyString, 
-          true)); // required
-      }
-    }
-
-    if (UseFlags())
-    {
-      wxConfigBase::Get()->Write(
-        _("Flags"), 
-        wxConfigBase::Get()->Read(svn_flags_name));
-
-      v.push_back(wxExConfigItem(_("Flags")));
-    }
-
-    if (UseSubcommand())
-    {
-      v.push_back(wxExConfigItem(_("Subcommand")));
-    }
-
-    m_ReturnCode = (wxStandardID)wxExConfigDialog(parent,
-      v,
-      m_Caption).ShowModal();
-
-    if (m_ReturnCode == wxID_CANCEL)
-    {
-      return m_ReturnCode;
-    }
-  }
-#endif
 
   const wxString cwd = wxGetCwd();
 
@@ -175,8 +115,6 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   if (UseFlags())
   {
     flags = wxConfigBase::Get()->Read(_("Flags"));
-
-    wxConfigBase::Get()->Write(svn_flags_name, flags);
 
     if (!flags.empty())
     {
@@ -228,6 +166,76 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 
   return wxID_OK;
 }
+
+#if wxUSE_GUI
+wxStandardID wxExSVN::Execute(wxWindow* parent)
+{
+  wxASSERT(parent != NULL);
+
+  // Key SVN is already used, so use other name.
+  const wxString svn_flags_name = wxString::Format("svnflags/name%d", m_Type);
+
+  std::vector<wxExConfigItem> v;
+
+  if (m_Type == SVN_COMMIT)
+  {
+    v.push_back(wxExConfigItem(
+      _("Revision comment"), 
+      CONFIG_COMBOBOX,
+      wxEmptyString,
+      true)); // required
+  }
+
+  if (m_FullPath.empty() && m_Type != SVN_HELP)
+  {
+    v.push_back(wxExConfigItem(
+      _("Base folder"), 
+      CONFIG_COMBOBOXDIR, 
+      wxEmptyString, 
+      true)); // required
+
+    if (m_Type == SVN_ADD)
+    {
+      v.push_back(wxExConfigItem(
+        _("Path"), 
+        CONFIG_COMBOBOX,
+        wxEmptyString, 
+        true)); // required
+    }
+  }
+
+  if (UseFlags())
+  {
+    wxConfigBase::Get()->Write(
+      _("Flags"), 
+      wxConfigBase::Get()->Read(svn_flags_name));
+
+    v.push_back(wxExConfigItem(_("Flags")));
+  }
+
+  if (UseSubcommand())
+  {
+    v.push_back(wxExConfigItem(_("Subcommand")));
+  }
+
+  m_ReturnCode = (wxStandardID)wxExConfigDialog(parent,
+    v,
+    m_Caption).ShowModal();
+
+  if (m_ReturnCode == wxID_CANCEL)
+  {
+    return m_ReturnCode;
+  }
+
+  if (UseFlags())
+  {
+    wxConfigBase::Get()->Write(svn_flags_name, 
+      wxConfigBase::Get()->Read(svn_flags_name));
+  }
+
+  return Execute();
+}
+#endif
 
 #if wxUSE_GUI
 wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)

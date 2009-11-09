@@ -63,17 +63,20 @@ public:
   /// Returns true if specified filename (a path) is a svn directory.
   bool DirExists(const wxFileName& filename) const;
 
-  /// Execute the svn command, and collects the output.
+  /// Executes the svn command, and collects the output.
+  wxStandardID Execute();
+
+#if wxUSE_GUI
+  /// Executes the svn command, after showing a dialog.
   /// If no fullpath was specified, a dialog with base folder is shown, otherwise
   /// the specified fullpath is used for getting svn contents from.
-  /// If you use parent NULL, then the dialog is not shown,
-  /// and defaults from the config are used.
   /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, or wxID_ABORT if errors
   /// were reported by svn otherwise.
   wxStandardID Execute(wxWindow* parent);
+#endif    
 
 #if wxUSE_GUI
-  /// Execute and if not cancelled shows output in a dialog.
+  /// Executes and if not cancelled shows output in a dialog.
   /// Returns return code from execute.
   wxStandardID ExecuteAndShowOutput(wxWindow* parent);
 #endif  
