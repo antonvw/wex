@@ -84,7 +84,7 @@ wxStandardID wxExSVN::Execute()
 
     if (m_Type == SVN_ADD)
     {
-      file = wxExConfigFirstOf(_("Path"));
+      file = " " + wxExConfigFirstOf(_("Path"));
     }
   }
   else
@@ -100,7 +100,6 @@ wxStandardID wxExSVN::Execute()
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
   }
 
-  wxString flags;
   wxString subcommand;
   
   if (UseSubcommand())
@@ -112,6 +111,8 @@ wxStandardID wxExSVN::Execute()
       subcommand = " " + subcommand;
     }
   }
+
+  wxString flags;
 
   if (UseFlags())
   {
