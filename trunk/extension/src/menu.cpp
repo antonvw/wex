@@ -161,6 +161,9 @@ void wxExMenu::AppendSVN()
   svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("Ca&t"));
   svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed("&Blame"));
   svnmenu->AppendSeparator();
+  svnmenu->Append(ID_EDIT_SVN_PROPLIST, wxExEllipsed("&Proplist"));
+  svnmenu->Append(ID_EDIT_SVN_PROPSET, wxExEllipsed("&Propset"));
+  svnmenu->AppendSeparator();
   svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed("&Commit"));
   svnmenu->AppendSeparator();
   svnmenu->Append(ID_EDIT_SVN_REVERT, wxExEllipsed("&Revert"));

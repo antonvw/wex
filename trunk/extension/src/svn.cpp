@@ -275,6 +275,8 @@ wxExSVNType wxExSVN::GetType(int command_id) const
     case ID_EDIT_SVN_HELP: return SVN_HELP; break;
     case ID_EDIT_SVN_INFO: return SVN_INFO; break;
     case ID_EDIT_SVN_LOG: return SVN_LOG; break;
+    case ID_EDIT_SVN_PROPLIST: return SVN_PROPLIST; break;
+    case ID_EDIT_SVN_PROPSET: return SVN_PROPSET; break;
     case ID_EDIT_SVN_REVERT: return SVN_REVERT; break;
     case ID_EDIT_SVN_STAT: return SVN_STAT; break;
     case ID_EDIT_SVN_UPDATE: return SVN_UPDATE; break;
@@ -289,19 +291,21 @@ void wxExSVN::Initialize()
 {
   switch (m_Type)
   {
-    case SVN_NONE:   m_Caption = ""; break;
-    case SVN_ADD:    m_Caption = "SVN Add"; break;
-    case SVN_BLAME:  m_Caption = "SVN Blame"; break;
-    case SVN_CAT:    m_Caption = "SVN Cat"; break;
-    case SVN_COMMIT: m_Caption = "SVN Commit"; break;
-    case SVN_DIFF:   m_Caption = "SVN Diff"; break;
-    case SVN_HELP:   m_Caption = "SVN Help"; break;
-    case SVN_INFO:   m_Caption = "SVN Info"; break;
-    case SVN_LOG:    m_Caption = "SVN Log"; break;
-    case SVN_LS:     m_Caption = "SVN Ls"; break;
-    case SVN_REVERT: m_Caption = "SVN Revert"; break;
-    case SVN_STAT:   m_Caption = "SVN Stat"; break;
-    case SVN_UPDATE: m_Caption = "SVN Update"; break;
+    case SVN_NONE:     m_Caption = ""; break;
+    case SVN_ADD:      m_Caption = "SVN Add"; break;
+    case SVN_BLAME:    m_Caption = "SVN Blame"; break;
+    case SVN_CAT:      m_Caption = "SVN Cat"; break;
+    case SVN_COMMIT:   m_Caption = "SVN Commit"; break;
+    case SVN_DIFF:     m_Caption = "SVN Diff"; break;
+    case SVN_HELP:     m_Caption = "SVN Help"; break;
+    case SVN_INFO:     m_Caption = "SVN Info"; break;
+    case SVN_LOG:      m_Caption = "SVN Log"; break;
+    case SVN_LS:       m_Caption = "SVN Ls"; break;
+    case SVN_PROPLIST: m_Caption = "SVN Proplist"; break;
+    case SVN_PROPSET:  m_Caption = "SVN Propset"; break;
+    case SVN_REVERT:   m_Caption = "SVN Revert"; break;
+    case SVN_STAT:     m_Caption = "SVN Stat"; break;
+    case SVN_UPDATE:   m_Caption = "SVN Update"; break;
     default:
       wxFAIL;
       break;

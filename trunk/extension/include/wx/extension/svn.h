@@ -31,6 +31,8 @@ enum wxExSVNType
   SVN_INFO,   ///< svn info
   SVN_LOG,    ///< svn log
   SVN_LS,     ///< svn ls
+  SVN_PROPLIST, ///< svn prop list
+  SVN_PROPSET,  ///< svn prop set
   SVN_REVERT, ///< svn revert
   SVN_STAT,   ///< svn stat
   SVN_UPDATE, ///< svn update
