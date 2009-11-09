@@ -119,4 +119,3 @@ private:
   static wxString m_UsageKey;
 };
 #endif
-#endif

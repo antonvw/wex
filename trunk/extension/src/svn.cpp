@@ -409,5 +409,3 @@ bool wxExSVN::UseSubcommand() const
 {
   return m_Type == SVN_HELP;
 }
-
-#endif
