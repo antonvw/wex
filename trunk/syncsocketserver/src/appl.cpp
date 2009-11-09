@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/aboutdlg.h>
+#include <wx/config.h>
 #include <wx/numdlg.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
