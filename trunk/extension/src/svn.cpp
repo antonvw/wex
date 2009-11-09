@@ -232,7 +232,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   if (UseFlags())
   {
     wxConfigBase::Get()->Write(svn_flags_name, 
-      wxConfigBase::Get()->Read(svn_flags_name));
+      wxConfigBase::Get()->Read(_("Flags")));
   }
 
   return Execute();
