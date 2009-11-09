@@ -36,8 +36,6 @@ enum wxExSVNType
   SVN_UPDATE, ///< svn update
 };
 
-#if wxUSE_GUI
-
 class wxExSTCEntryDialog;
 
 /// This class collects all svn handling.
@@ -53,10 +51,12 @@ public:
   /// Constructor, specify the command id and a fullpath.
   wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
 
+#if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
     const wxString& title = _("Set SVN And Comparator")) const;
+#endif    
 
   /// Returns true if specified filename (a path) is a svn directory.
   bool DirExists(const wxFileName& filename) const;
@@ -70,9 +70,11 @@ public:
   /// were reported by svn otherwise.
   wxStandardID Execute(wxWindow* parent);
 
+#if wxUSE_GUI
   /// Execute and if not cancelled shows output in a dialog.
   /// Returns return code from execute.
   wxStandardID ExecuteAndShowOutput(wxWindow* parent);
+#endif  
 
   /// Returns the svn object.
   static wxExSVN* Get(bool createOnDemand = true);
@@ -87,8 +89,10 @@ public:
   /// to the previous current object (both the parameter and returned value may be NULL). 
   static wxExSVN* Set(wxExSVN* svn);
 
+#if wxUSE_GUI
   /// Shows output from Execute in a dialog only.
   void ShowOutput(wxWindow* parent) const;
+#endif  
 
   /// Returns true if SVN usage is set in the config.
   bool Use() const;
@@ -109,7 +113,9 @@ private:
 
   wxStandardID m_ReturnCode;
   static wxExSVN* m_Self;
+#if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;
+#endif  
   static wxString m_UsageKey;
 };
 #endif

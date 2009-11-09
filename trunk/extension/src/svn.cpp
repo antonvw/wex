@@ -16,10 +16,10 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
-#if wxUSE_GUI
-
 wxExSVN* wxExSVN::m_Self = NULL;
+#if wxUSE_GUI
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
+#endif
 wxString wxExSVN::m_UsageKey;
 
 wxExSVN::wxExSVN()
@@ -43,6 +43,7 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
   Initialize();
 }
 
+#if wxUSE_GUI
 int wxExSVN::ConfigDialog(
   wxWindow* parent,
   const wxString& title) const
@@ -54,6 +55,7 @@ int wxExSVN::ConfigDialog(
 
   return wxExConfigDialog(parent, v, title).ShowModal();
 }
+#endif
 
 bool wxExSVN::DirExists(const wxFileName& filename) const
 {
@@ -69,6 +71,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   // Key SVN is already used, so use other name.
   const wxString svn_flags_name = wxString::Format("svnflags/name%d", m_Type);
 
+#if wxUSE_GUI
   if (parent != NULL)
   {
     std::vector<wxExConfigItem> v;
@@ -123,6 +126,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
       return m_ReturnCode;
     }
   }
+#endif
 
   const wxString cwd = wxGetCwd();
 
@@ -224,6 +228,7 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
   return wxID_OK;
 }
 
+#if wxUSE_GUI
 wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
   // We must have a parent.
@@ -237,6 +242,7 @@ wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 
   return m_ReturnCode;
 }
+#endif
 
 wxExSVN* wxExSVN::Get(bool createOnDemand)
 {
@@ -317,6 +323,7 @@ wxExSVN* wxExSVN::Set(wxExSVN* svn)
   return old;
 }
 
+#if wxUSE_GUI
 void wxExSVN::ShowOutput(wxWindow* parent) const
 {
   switch (m_ReturnCode)
@@ -386,6 +393,7 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
       break;
   }
 }
+#endif
 
 bool wxExSVN::Use() const
 {
