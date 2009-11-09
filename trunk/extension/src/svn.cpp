@@ -78,7 +78,8 @@ wxStandardID wxExSVN::Execute()
     if (!wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder"))))
     {
       m_Output = _("Cannot set working directory");
-      return wxID_ABORT;
+      m_ReturnCode = wxID_ABORT;
+      return m_ReturnCode;
     }
 
     if (m_Type == SVN_ADD)
@@ -164,7 +165,8 @@ wxStandardID wxExSVN::Execute()
     m_Output += output[j] + "\n";
   }
 
-  return wxID_OK;
+  m_ReturnCode = wxID_OK;
+  return m_ReturnCode;
 }
 
 #if wxUSE_GUI
