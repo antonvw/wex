@@ -15,7 +15,6 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <wx/config.h>
 #include <wx/extension/dialog.h>
 
 #if wxUSE_GUI
@@ -58,41 +57,18 @@ class wxExConfigItem
 {
   friend class wxExConfigDialog;
 public:
-  /// Contructor for a spacer item.
-  wxExConfigItem()
-  : m_Name("spacer")
-  , m_Page(wxEmptyString)
-  , m_Type(CONFIG_SPACER) {;}
+  /// Default contructor (for a spacer item).
+  wxExConfigItem();
 
   /// Constructor for a spin ctrl.
   wxExConfigItem(const wxString& name,
-    int min,
-    int max,
-    const wxString& page = wxEmptyString)
-  : m_IsRequired(false)
-  , m_Min(min)
-  , m_Max(max)
-  , m_MaxItems(0)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(CONFIG_SPINCTRL) {;};
+    int min, int max,
+    const wxString& page = wxEmptyString);
 
   /// Constructor for a spin ctrl double.
   wxExConfigItem(const wxString& name,
-    double min,
-    double max,
-    double inc = 1,
-    const wxString& page = wxEmptyString)
-  : m_IsRequired(false)
-  , m_MaxItems(0)
-  , m_MinDouble(min)
-  , m_MaxDouble(max)
-  , m_Inc(inc)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(CONFIG_SPINCTRL_DOUBLE) {;};
+    double min, double max, double inc = 1,
+    const wxString& page = wxEmptyString);
 
   /// Constructor for a string.
   /// The extra style argument is the style for the wxTextCtrl used.
@@ -100,60 +76,26 @@ public:
   wxExConfigItem(const wxString& name,
     const wxString& page = wxEmptyString,
     long style = 0,
-    bool is_required = false)
-  : m_IsRequired(is_required)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(0)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(style)
-  , m_Type(CONFIG_STRING) {;};
+    bool is_required = false);
 
   /// Constructor for a radiobox or a checklistbox. Just specify
   /// the map with values and text.
   wxExConfigItem(const wxString& name,
     const std::map<long, const wxString> & choices,
     bool use_radiobox = true,
-    const wxString& page = wxEmptyString)
-  : m_IsRequired(false)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(0)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
-  , m_Choices(choices) {;};
+    const wxString& page = wxEmptyString);
 
   /// Constructor for a checklistbox without a name. Just specify
   /// the map with values and text.
   wxExConfigItem(const std::set<wxString> & choices,
-    const wxString& page = wxEmptyString)
-  : m_IsRequired(false)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(0)
-  , m_Name("checklistbox_noname")
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(CONFIG_CHECKLISTBOX_NONAME)
-  , m_ChoicesBool(choices) {;};
+    const wxString& page = wxEmptyString);
 
   /// Constuctor for other types.
   wxExConfigItem(const wxString& name,
     int type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
-    int max_items = 25) // used by CONFIG_COMBOBOX
-  : m_IsRequired(is_required)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(max_items)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(type) {;};
+    int max_items = 25); // used by CONFIG_COMBOBOX
 private:
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
@@ -203,9 +145,7 @@ public:
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
   /// to be enabled.
-  void ForceCheckBoxChecked(const wxString contains = wxEmptyString) {
-    m_ForceCheckBoxChecked = true;
-    m_Contains = contains;};
+  void ForceCheckBoxChecked(const wxString contains = wxEmptyString);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -280,7 +220,6 @@ private:
 
   void Update(wxComboBox* cb, const wxString& value) const;
 
-  wxConfigBase* m_Config;
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
   wxString m_Contains;
