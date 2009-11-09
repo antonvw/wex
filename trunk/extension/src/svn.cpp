@@ -22,6 +22,13 @@ wxExSVN* wxExSVN::m_Self = NULL;
 wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
 wxString wxExSVN::m_UsageKey;
 
+wxExSVN::wxExSVN()
+  : m_Type(SVN_NONE)
+  , m_FullPath(wxEmptyString)
+{
+  Initialize();
+}
+
 wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
   : m_Type(GetType(command_id))
   , m_FullPath(fullpath)
@@ -38,7 +45,7 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
 
 int wxExSVN::ConfigDialog(
   wxWindow* parent,
-  const wxString& title)
+  const wxString& title) const
 {
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem()); // a spacer
@@ -57,6 +64,8 @@ bool wxExSVN::DirExists(const wxFileName& filename) const
 
 wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
+  wxASSERT(m_Type != SVN_NONE);
+
   // Key SVN is already used, so use other name.
   const wxString svn_flags_name = wxString::Format("svnflags/name%d", m_Type);
 
@@ -233,9 +242,7 @@ wxExSVN* wxExSVN::Get(bool createOnDemand)
 {
   if (m_Self == NULL && createOnDemand)
   {
-    m_Self = new wxExSVN(SVN_ADD);
-
-    m_UsageKey = _("Use SVN");
+    m_Self = new wxExSVN;
 
     if (!wxConfigBase::Get()->Exists(m_UsageKey))
     {
@@ -266,7 +273,7 @@ wxExSVNType wxExSVN::GetType(int command_id) const
     case ID_EDIT_SVN_UPDATE: return SVN_UPDATE; break;
     default:
       wxFAIL;
-      return SVN_STAT;
+      return SVN_NONE;
       break;
   }
 }
@@ -275,6 +282,7 @@ void wxExSVN::Initialize()
 {
   switch (m_Type)
   {
+    case SVN_NONE:   m_Caption = ""; break;
     case SVN_ADD:    m_Caption = "SVN Add"; break;
     case SVN_BLAME:  m_Caption = "SVN Blame"; break;
     case SVN_CAT:    m_Caption = "SVN Cat"; break;
@@ -299,6 +307,7 @@ void wxExSVN::Initialize()
 
   m_Output.clear();
   m_ReturnCode = wxID_NONE;
+  m_UsageKey = _("Use SVN");
 }
 
 wxExSVN* wxExSVN::Set(wxExSVN* svn)

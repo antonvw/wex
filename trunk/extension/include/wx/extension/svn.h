@@ -21,6 +21,7 @@
 /// SVN types supported.
 enum wxExSVNType
 {
+  SVN_NONE,   ///< not ok value
   SVN_ADD,    ///< svn add
   SVN_BLAME,  ///< svn blame
   SVN_CAT,    ///< svn cat
@@ -43,6 +44,9 @@ class wxExSTCEntryDialog;
 class wxExSVN
 {
 public:
+  /// Default constructor.
+  wxExSVN();
+
   /// Constructor, specify the command type and a fullpath.
   wxExSVN(wxExSVNType command, const wxString& fullpath = wxEmptyString);
 
@@ -52,7 +56,7 @@ public:
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
-    const wxString& title = _("Set SVN And Comparator"));
+    const wxString& title = _("Set SVN And Comparator")) const;
 
   /// Returns true if specified filename (a path) is a svn directory.
   bool DirExists(const wxFileName& filename) const;
