@@ -82,7 +82,7 @@ public:
     const wxString& page = wxEmptyString);
 
   /// Constructor for a checklistbox without a name. Just specify
-  /// the map with values and text.
+  /// the set with names of boolean items.
   wxExConfigItem(const std::set<wxString> & choices,
     const wxString& page = wxEmptyString);
 
