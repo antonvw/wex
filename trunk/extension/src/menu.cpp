@@ -168,7 +168,7 @@ void wxExMenu::AppendSVN()
   svnmenu->AppendSeparator();
   svnmenu->Append(ID_EDIT_SVN_REVERT, wxExEllipsed("&Revert"));
   svnmenu->AppendSeparator();
-  svnmenu->Append(ID_EDIT_SVN_ADD, wxExEllipsed("&Revert"));
+  svnmenu->Append(ID_EDIT_SVN_ADD, wxExEllipsed("&Add"));
 
   AppendSeparator();
   AppendSubMenu(svnmenu, "&SVN");
