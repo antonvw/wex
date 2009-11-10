@@ -22,13 +22,11 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
 
-using namespace std;
-
 #if wxUSE_GUI
 
 #if wxUSE_STATUSBAR
 wxExStatusBar* wxExFrame::m_StatusBar = NULL;
-map<wxString, wxExPane> wxExFrame::m_Panes;
+std::map<wxString, wxExPane> wxExFrame::m_Panes;
 #endif
 
 BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
@@ -140,7 +138,7 @@ wxExSTC* wxExFrame::GetFocusedSTC()
 const wxExPane wxExFrame::GetPane(int pane) const
 {
   for (
-    map<wxString, wxExPane>::const_iterator it = m_Panes.begin();
+    std::map<wxString, wxExPane>::const_iterator it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
@@ -156,7 +154,7 @@ const wxExPane wxExFrame::GetPane(int pane) const
 // This is a static method, so no const possible.
 int wxExFrame::GetPaneField(const wxString& pane)
 {
-  map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
+  std::map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
 
   if (it != m_Panes.end())
   {
@@ -477,7 +475,7 @@ bool wxExFrame::OpenFile(
 
 #if wxUSE_STATUSBAR
 void wxExFrame::SetupStatusBar(
-  const vector<wxExPane>& panes,
+  const std::vector<wxExPane>& panes,
   long style,
   wxWindowID id,
   const wxString& name)
@@ -488,7 +486,7 @@ void wxExFrame::SetupStatusBar(
   int* widths = new int[panes.size()];
 
   for (
-    vector<wxExPane>::const_iterator it = panes.begin();
+    std::vector<wxExPane>::const_iterator it = panes.begin();
     it != panes.end();
     ++it)
   {

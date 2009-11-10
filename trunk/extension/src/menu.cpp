@@ -15,8 +15,6 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h> // for wxExEllipsed
 
-using namespace std;
-
 #if wxUSE_GUI
 
 wxExMenu::wxExMenu(long style)
@@ -179,7 +177,7 @@ void wxExMenu::AppendTools()
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (
-    map <int, wxExToolInfo>::const_iterator it = wxExTool::Get()->GetToolInfo().begin();
+    std::map <int, wxExToolInfo>::const_iterator it = wxExTool::Get()->GetToolInfo().begin();
     it != wxExTool::Get()->GetToolInfo().end();
     ++it)
   {

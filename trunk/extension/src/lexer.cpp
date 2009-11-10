@@ -14,8 +14,6 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
-using namespace std;
-
 const wxString wxExLexer::GetFormattedText(
   const wxString& lines,
   const wxString& header,
@@ -80,7 +78,7 @@ const wxString wxExLexer::GetKeywordsStringSet(
   wxString keywords;
 
   for (
-    set<wxString>::const_iterator it = kset.begin();
+    std::set<wxString>::const_iterator it = kset.begin();
     it != kset.end();
     ++it)
   {
@@ -92,14 +90,14 @@ const wxString wxExLexer::GetKeywordsStringSet(
 
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
-  set<wxString>::const_iterator it = m_Keywords.find(word);
+  std::set<wxString>::const_iterator it = m_Keywords.find(word);
   return (it != m_Keywords.end());
 }
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
   for (
-    set<wxString>::const_iterator it = m_Keywords.begin();
+    std::set<wxString>::const_iterator it = m_Keywords.begin();
     it != m_Keywords.end();
     ++it)
   {
@@ -202,7 +200,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
     m_KeywordsSet.clear();
   }
 
-  set<wxString> keywords_set;
+  std::set<wxString> keywords_set;
 
   wxStringTokenizer tkz(value, "\r\n ");
 

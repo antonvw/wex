@@ -16,8 +16,6 @@
 
 #if wxUSE_GUI
 
-using namespace std;
-
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
   EVT_MENU(wxID_PASTE, wxExSTCShell::OnCommand)
@@ -78,7 +76,7 @@ wxExSTCShell::~wxExSTCShell()
 
     // using a const_reverse_iterator here does not compile under Visual Studio 2003
     for (
-      list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
       it++)
     {
@@ -95,7 +93,7 @@ const wxString wxExSTCShell::GetHistory() const
   wxString commands;
 
   for (
-    list < wxString >::const_iterator it = m_Commands.begin();
+    std::list < wxString >::const_iterator it = m_Commands.begin();
     it != m_Commands.end();
     it++)
   {
@@ -297,7 +295,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
     int no = 1;
 
     for (
-      list < wxString >::const_iterator it = m_Commands.begin();
+      std::list < wxString >::const_iterator it = m_Commands.begin();
       it != m_Commands.end();
       it++)
     {
@@ -328,7 +326,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 
     // using a const_reverse_iterator here does not compile under Visual Studio 2003
     for (
-      list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
       it != m_Commands.rend();
       it++)
     {
@@ -388,7 +386,7 @@ void wxExSTCShell::ShowHistory()
   int command_no = 1;
 
   for (
-    list < wxString >::const_iterator it = m_Commands.begin();
+    std::list < wxString >::const_iterator it = m_Commands.begin();
     it != m_Commands.end();
     it++)
   {
