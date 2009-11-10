@@ -12,8 +12,6 @@
 #include <wx/config.h> 
 #include <wx/extension/frd.h>
 
-using namespace std;
-
 wxExFindReplaceData* wxExFindReplaceData::m_Self = NULL;
 
 wxExFindReplaceData::wxExFindReplaceData()
