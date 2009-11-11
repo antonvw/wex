@@ -281,6 +281,7 @@ void wxExOpenFiles(
   long file_flags,
   int dir_flags)
 {
+  // std::vector gives compile error.
   for (size_t i = 0; i < files.GetCount(); i++)
   {
     wxString file = files[i]; // cannot be const because of file = later on
@@ -296,7 +297,7 @@ void wxExOpenFiles(
 
       if (file.Contains(":"))
       {
-        line = atoi(files[i].AfterFirst(':').c_str());
+        line = atoi(file.AfterFirst(':').c_str());
 
         if (line != 0) // this indicates an error in the number
         {
