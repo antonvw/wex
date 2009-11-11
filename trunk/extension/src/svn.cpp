@@ -159,20 +159,20 @@ long wxExSVN::Execute()
 
   // First output the errors.
   for (
-    std::vector<wxString>::const_iterator it = errors.begin();
-    it != errors.end();
-    ++it)
+    size_t i = 0;
+    i < errors.GetCount();
+    i++)
   {
-    m_Output += *it + "\n";
+    m_Output += errors[i] + "\n";
   }
 
   // Then the normal output, will be empty if there are errors.
   for (
-    std::vector<wxString>::const_iterator it2 = output.begin();
-    it2 != output.end();
-    ++it2)
+    size_t j = 0;
+    j < output.GetCount();
+    j++)
   {
-    m_Output += *it2 + "\n";
+    m_Output += output[j] + "\n";
   }
 
   return retValue;
