@@ -43,7 +43,7 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
 {
   if (m_File->GetContentsChanged())
   {
-    if (!m_File->GetFileName().FileExists())
+    if (!m_File->GetFileName().IsOk())
     {
       switch (wxMessageBox(
         _("Save changes") + "?",
