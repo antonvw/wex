@@ -38,7 +38,7 @@ bool wxExFile::CheckFileSync()
     return false;
   }
 
-  if (m_FileName.GetStat().Sync())
+  if (m_FileName.m_Stat.Sync())
   {
     if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
     {
@@ -122,7 +122,7 @@ bool wxExFile::MakeAbsolute()
   if (m_FileName.MakeAbsolute())
   {
     return 
-      m_FileName.GetStat().Sync(m_FileName.GetFullPath()) &&
+      m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());
   }
   else

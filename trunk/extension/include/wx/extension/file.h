@@ -58,6 +58,7 @@ private:
 /// Adds an wxExStat and an wxExLexer member to wxFileName.
 class wxExFileName : public wxFileName
 {
+  friend class wxExFile; // it might update stat
 public:
   /// Default constructor.
   wxExFileName(
@@ -90,9 +91,6 @@ public:
 
   /// Gets the stat.
   const wxExStat& GetStat() const {return m_Stat;};
-
-  /// Gets the stat (allowing you to call Sync for it).
-  wxExStat& GetStat() {return m_Stat;};
 
   /// If specified lexer is empty, use one of the lexers from config
   /// according to match on the file fullname.
