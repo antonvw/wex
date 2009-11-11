@@ -135,7 +135,6 @@ long wxExSVN::Execute()
 
   wxArrayString output;
   wxArrayString errors;
-  m_Output.clear();
   long retValue;
 
   if ((retValue = wxExecute(
@@ -145,16 +144,18 @@ long wxExSVN::Execute()
   {
     // See also process, same log is shown.
     wxLogError(_("Cannot execute") + ": " + commandline);
-
-    return retValue;
   }
-
-  wxExLog::Get()->Log(commandline);
+  else
+  {
+    wxExLog::Get()->Log(commandline);
+  }
 
   if (m_FullPath.empty())
   {
     wxSetWorkingDirectory(cwd);
   }
+
+  m_Output.clear();
 
   // First output the errors.
   for (
@@ -250,10 +251,6 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 #if wxUSE_GUI
 wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
-  // We must have a parent.
-  wxASSERT(parent != NULL);
-
-  // If an error occurred, already shown by wxExecute itself.
   wxStandardID retValue;
   if ((retValue = Execute(parent)) == wxID_OK)
   {
