@@ -143,17 +143,10 @@ long wxExSVN::Execute()
     output,
     errors)) == -1)
   {
-    if (m_Output.empty())
-    {
-      // See also process, same text is shown.
-      m_Output = _("Cannot execute") + ": " + commandline;
-    }
+    // See also process, same log is shown.
+    wxLogError(_("Cannot execute") + ": " + commandline);
 
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(m_Output);
-#endif
-
-    return -1;
+    return retValue;
   }
 
   wxExLog::Get()->Log(commandline);
@@ -174,10 +167,6 @@ long wxExSVN::Execute()
   {
     m_Output += output[j] + "\n";
   }
-
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Ready"));
-#endif
 
   return retValue;
 }
