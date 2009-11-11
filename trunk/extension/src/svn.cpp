@@ -66,7 +66,7 @@ bool wxExSVN::DirExists(const wxFileName& filename) const
   return path.DirExists();
 }
 
-wxStandardID wxExSVN::Execute()
+long wxExSVN::Execute()
 {
   wxASSERT(m_Type != SVN_NONE);
 
@@ -79,8 +79,7 @@ wxStandardID wxExSVN::Execute()
     if (!wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder"))))
     {
       m_Output = _("Cannot set working directory");
-      m_ReturnCode = wxID_ABORT;
-      return m_ReturnCode;
+      return -1;
     }
 
     if (m_Type == SVN_ADD)
@@ -137,11 +136,12 @@ wxStandardID wxExSVN::Execute()
   wxArrayString output;
   wxArrayString errors;
   m_Output.clear();
+  long retValue;
 
-  if (wxExecute(
+  if ((retValue = wxExecute(
     commandline,
     output,
-    errors) == -1)
+    errors)) == -1)
   {
     if (m_Output.empty())
     {
@@ -153,8 +153,7 @@ wxStandardID wxExSVN::Execute()
     wxExFrame::StatusText(m_Output);
 #endif
 
-    m_ReturnCode = wxID_ABORT;
-    return m_ReturnCode;
+    return -1;
   }
 
   wxExLog::Get()->Log(commandline);
@@ -180,8 +179,7 @@ wxStandardID wxExSVN::Execute()
   wxExFrame::StatusText(_("Ready"));
 #endif
 
-  m_ReturnCode = wxID_OK;
-  return m_ReturnCode;
+  return retValue;
 }
 
 #if wxUSE_GUI
@@ -235,13 +233,11 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
     v.push_back(wxExConfigItem(_("Subcommand")));
   }
 
-  m_ReturnCode = (wxStandardID)wxExConfigDialog(parent,
+  if (wxExConfigDialog(parent,
     v,
-    m_Caption).ShowModal();
-
-  if (m_ReturnCode == wxID_CANCEL)
+    m_Caption).ShowModal() == wxID_CANCEL)
   {
-    return m_ReturnCode;
+    return wxID_CANCEL;
   }
 
   if (UseFlags())
@@ -250,7 +246,9 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
       wxConfigBase::Get()->Read(_("Flags")));
   }
 
-  return Execute();
+  Execute();
+  
+  return wxID_OK;
 }
 #endif
 
@@ -261,12 +259,13 @@ wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
   wxASSERT(parent != NULL);
 
   // If an error occurred, already shown by wxExecute itself.
-  if (Execute(parent) == wxID_OK)
+  wxStandardID retValue;
+  if ((retValue = Execute(parent)) == wxID_OK)
   {
     ShowOutput(parent);
   }
 
-  return m_ReturnCode;
+  return retValue;
 }
 #endif
 
@@ -342,7 +341,6 @@ void wxExSVN::Initialize()
   m_CommandWithFlags = m_Command;
 
   m_Output.clear();
-  m_ReturnCode = wxID_NONE;
   m_UsageKey = _("Use SVN");
 }
 
@@ -356,72 +354,54 @@ wxExSVN* wxExSVN::Set(wxExSVN* svn)
 #if wxUSE_GUI
 void wxExSVN::ShowOutput(wxWindow* parent) const
 {
-  switch (m_ReturnCode)
-  {
-    case wxID_CANCEL:
-      break;
-
-    case wxID_ABORT:
-      wxMessageBox(m_Output);
-      break;
-
-    case wxID_OK:
-    {
-      wxString caption = m_Caption;
+  wxString caption = m_Caption;
       
-      if (m_Type != SVN_HELP)
-      {
-        caption += " " + (!m_FullPath.empty() ?  
-          wxFileName(m_FullPath).GetFullName(): 
-          wxExConfigFirstOf(_("Base folder")));
-      }
-
-      // Create a dialog for contents.
-      if (m_STCEntryDialog == NULL)
-      {
-        m_STCEntryDialog = new wxExSTCEntryDialog(
-          parent,
-          caption,
-          m_Output,
-          wxEmptyString,
-          wxOK,
-          wxID_ANY,
-          wxDefaultPosition, wxSize(575, 250));
-      }
-      else
-      {
-        m_STCEntryDialog->SetText(m_Output);
-        m_STCEntryDialog->SetTitle(caption);
-  
-        // Reset a previous lexer.
-        if (!m_STCEntryDialog->GetLexer().empty())
-        {
-          m_STCEntryDialog->SetLexer(wxEmptyString);
-        }
-      }
-
-      // Add a lexer if we specified a path, asked for cat or blame 
-      // and there is a lexer.
-      if (
-        !m_FullPath.empty() &&
-        (m_Type == SVN_CAT || m_Type == SVN_BLAME))
-      {
-        const wxExFileName fn(m_FullPath);
- 
-        if (!fn.GetLexer().GetScintillaLexer().empty())
-        {
-          m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
-        }
-      }
-
-      m_STCEntryDialog->Show();
-    }
-    break;
-
-    default:
-      wxFAIL;
-      break;
+  if (m_Type != SVN_HELP)
+  {
+    caption += " " + (!m_FullPath.empty() ?  
+      wxFileName(m_FullPath).GetFullName(): 
+      wxExConfigFirstOf(_("Base folder")));
   }
+
+  // Create a dialog for contents.
+  if (m_STCEntryDialog == NULL)
+  {
+    m_STCEntryDialog = new wxExSTCEntryDialog(
+      parent,
+      caption,
+      m_Output,
+      wxEmptyString,
+      wxOK,
+      wxID_ANY,
+      wxDefaultPosition, wxSize(575, 250));
+  }
+  else
+  {
+    m_STCEntryDialog->SetText(m_Output);
+    m_STCEntryDialog->SetTitle(caption);
+  
+    // Reset a previous lexer.
+    if (!m_STCEntryDialog->GetLexer().empty())
+    {
+      m_STCEntryDialog->SetLexer(wxEmptyString);
+    }
+  }
+
+  // Add a lexer if we specified a path, asked for cat or blame 
+  // and there is a lexer.
+  if (
+    !m_FullPath.empty() &&
+    (m_Type == SVN_CAT || m_Type == SVN_BLAME))
+  {
+    const wxExFileName fn(m_FullPath);
+ 
+    if (!fn.GetLexer().GetScintillaLexer().empty())
+    {
+      m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
+    }
+  }
+
+  m_STCEntryDialog->Show();
 }
 #endif
 

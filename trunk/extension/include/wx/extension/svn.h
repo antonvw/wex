@@ -64,7 +64,7 @@ public:
   bool DirExists(const wxFileName& filename) const;
 
   /// Executes the svn command, and collects the output.
-  wxStandardID Execute();
+  long Execute();
 
 #if wxUSE_GUI
   /// Executes the svn command, after showing a dialog.
@@ -116,7 +116,6 @@ private:
 
   const wxString m_FullPath;
 
-  wxStandardID m_ReturnCode;
   static wxExSVN* m_Self;
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;
