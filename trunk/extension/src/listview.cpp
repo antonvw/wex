@@ -23,8 +23,6 @@
 
 #if wxUSE_GUI
 
-using namespace std;
-
 wxExColumn::wxExColumn(
   const wxString& name,
   wxExColumn::wxExColumnType type,
@@ -263,7 +261,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
     int i = ID_COL_FIRST;
     for (
-      vector<wxExColumn>::const_iterator it = m_Columns.begin();
+      std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
       it != m_Columns.end();
       ++it)
     {
@@ -463,7 +461,7 @@ unsigned int wxExListView::GetArtID(wxArtID artid)
     return 0;
   }
 
-  map<wxArtID, unsigned int>::const_iterator it = m_ArtIDs.find(artid);
+  std::map<wxArtID, unsigned int>::const_iterator it = m_ArtIDs.find(artid);
 
   if (it != m_ArtIDs.end())
   {
@@ -471,7 +469,7 @@ unsigned int wxExListView::GetArtID(wxArtID artid)
   }
   else
   {
-    m_ArtIDs.insert(make_pair(artid, GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
+    m_ArtIDs.insert(std::make_pair(artid, GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
 
     const wxSize largesize(m_ImageWidthLarge, m_ImageHeightLarge);
     const wxSize smallsize(m_ImageWidthSmall, m_ImageHeightSmall);
@@ -484,7 +482,7 @@ unsigned int wxExListView::GetArtID(wxArtID artid)
 const wxExColumn wxExListView::GetColumn(int col_no) const
 {
   for (
-    vector<wxExColumn>::const_iterator it = m_Columns.begin();
+    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
@@ -504,7 +502,7 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
   // This method does not fail if name could not be found,
   // test for col no in wxExColumn to check for that.
   for (
-    vector<wxExColumn>::const_iterator it = m_Columns.begin();
+    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {

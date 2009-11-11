@@ -24,8 +24,6 @@
 
 #if wxUSE_GUI
 
-using namespace std;
-
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
@@ -54,7 +52,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
-vector <wxString> wxExSTC::m_Macro;
+std::vector <wxString> wxExSTC::m_Macro;
 wxPathList wxExSTC::m_PathList;
 
 wxExSTC::wxExSTC(wxWindow* parent,
@@ -504,7 +502,7 @@ int wxExSTC::ConfigDialog(
   long flags,
   wxWindowID id)
 {
-  vector<wxExConfigItem> items;
+  std::vector<wxExConfigItem> items;
 
   wxString page;
 
@@ -522,51 +520,51 @@ int wxExSTC::ConfigDialog(
   items.push_back(wxExConfigItem(
     _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge Column"), 80), page));
 
-  set<wxString> bchoices;
+  std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
   items.push_back(wxExConfigItem(bchoices, page));
 
-  map<long, const wxString> choices;
-  choices.insert(make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
-  choices.insert(make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
-  choices.insert(make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
+  std::map<long, const wxString> choices;
+  choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
+  choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
+  choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
   items.push_back(wxExConfigItem(_("WhiteSpace"), choices, true, page));
 
-  map<long, const wxString> wchoices;
-  wchoices.insert(make_pair(wxSTC_WRAP_NONE, _("None")));
-  wchoices.insert(make_pair(wxSTC_WRAP_WORD, _("Word")));
-  wchoices.insert(make_pair(wxSTC_WRAP_CHAR, _("Char")));
+  std::map<long, const wxString> wchoices;
+  wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
+  wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
+  wchoices.insert(std::make_pair(wxSTC_WRAP_CHAR, _("Char")));
   items.push_back(wxExConfigItem(_("Wrap line"), wchoices, true, page));
 
-  map<long, const wxString> vchoices;
-  vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
-  vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
-  vchoices.insert(make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
+  std::map<long, const wxString> vchoices;
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
   items.push_back(wxExConfigItem(_("Wrap visual flags"), vchoices, true, page));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
     items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
 
-    map<long, const wxString> echoices;
-    echoices.insert(make_pair(wxSTC_EDGE_NONE, _("None")));
-    echoices.insert(make_pair(wxSTC_EDGE_LINE, _("Line")));
-    echoices.insert(make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
+    std::map<long, const wxString> echoices;
+    echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
+    echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
+    echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
     items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
     items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
     items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
-    map<long, const wxString> fchoices;
-    fchoices.insert(make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
-    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")));
-    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));
-    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
-    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
-    fchoices.insert(make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
+    std::map<long, const wxString> fchoices;
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
     items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
@@ -1334,7 +1332,7 @@ void wxExSTC::MacroPlayback()
   wxASSERT(MacroIsRecorded());
 
   for (
-    vector<wxString>::const_iterator it = m_Macro.begin();
+    std::vector<wxString>::const_iterator it = m_Macro.begin();
     it != m_Macro.end();
     ++it)
   {
@@ -2055,7 +2053,7 @@ void wxExSTC::SetGlobalStyles()
   if (!(m_Flags & STC_OPEN_HEX))
   {
     for (
-      vector<wxString>::const_iterator it = wxExLexers::Get()->GetStyles().begin();
+      std::vector<wxString>::const_iterator it = wxExLexers::Get()->GetStyles().begin();
       it != wxExLexers::Get()->GetStyles().end();
       ++it)
     {
@@ -2063,7 +2061,7 @@ void wxExSTC::SetGlobalStyles()
     }
 
     for (
-      map<int, int>::const_iterator ind = wxExLexers::Get()->GetIndicators().begin();
+      std::map<int, int>::const_iterator ind = wxExLexers::Get()->GetIndicators().begin();
       ind != wxExLexers::Get()->GetIndicators().end();
       ++ind)
     {
@@ -2073,7 +2071,7 @@ void wxExSTC::SetGlobalStyles()
   else
   {
     for (
-      vector<wxString>::const_iterator it = wxExLexers::Get()->GetStylesHex().begin();
+      std::vector<wxString>::const_iterator it = wxExLexers::Get()->GetStylesHex().begin();
       it != wxExLexers::Get()->GetStylesHex().end();
       ++it)
     {
@@ -2165,7 +2163,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 void wxExSTC::SetMarkers()
 {
   for (
-    vector<wxExMarker>::const_iterator it = wxExLexers::Get()->GetMarkers().begin();
+    std::vector<wxExMarker>::const_iterator it = wxExLexers::Get()->GetMarkers().begin();
     it != wxExLexers::Get()->GetMarkers().end();
     ++it)
   {
@@ -2252,7 +2250,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   // Empty lines are not kept after sorting, as they are used as separator.
   wxStringTokenizer tkz(GetSelectedText(), GetEOL());
-  multimap<wxString, wxString> mm;
+  std::multimap<wxString, wxString> mm;
   while (tkz.HasMoreTokens())
   {
     const wxString line = tkz.GetNextToken() + GetEOL();
@@ -2265,7 +2263,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
       key = line.substr(val - 1);
     }
 
-    mm.insert(make_pair(key, line));
+    mm.insert(std::make_pair(key, line));
   }
 
   // The multimap is already sorted, just iterate to get all lines back.
@@ -2273,7 +2271,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   if (sort_ascending)
   {
     for (
-      multimap<wxString, wxString>::const_iterator it = mm.begin();
+      std::multimap<wxString, wxString>::const_iterator it = mm.begin();
       it != mm.end();
       ++it)
     {
@@ -2283,7 +2281,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   else
   {
     for (
-      multimap<wxString, wxString>::reverse_iterator it = mm.rbegin();
+      std::multimap<wxString, wxString>::reverse_iterator it = mm.rbegin();
       it != mm.rend();
       ++it)
     {

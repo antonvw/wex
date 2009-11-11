@@ -16,8 +16,6 @@
 #include <wx/extension/report/report.h>
 #include <wx/extension/report/dir.h>
 
-using namespace std;
-
 #if wxUSE_DRAG_AND_DROP
 class ListViewDropTarget : public wxFileDropTarget
 {

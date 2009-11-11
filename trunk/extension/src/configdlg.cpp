@@ -21,8 +21,6 @@
 #include <wx/extension/stc.h> // for PathListInit
 #include <wx/extension/util.h>
 
-using namespace std;
-
 #if wxUSE_GUI
 const int width = 200;
 const int width_numeric = 75;
@@ -43,7 +41,7 @@ END_EVENT_TABLE()
 // wxPropertySheetDialog has been tried as well,
 // then you always have a notebook, and apply button is not supported.
 wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
-  vector<wxExConfigItem> v,
+  std::vector<wxExConfigItem> v,
   const wxString& title,
   int rows,
   int cols,
@@ -64,7 +62,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   wxPanel* page_panel = NULL;
 
   for (
-    vector<wxExConfigItem>::iterator it = v.begin();
+    std::vector<wxExConfigItem>::iterator it = v.begin();
     it != v.end();
     ++it)
   {
@@ -639,7 +637,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
   // save to config.
   for (
-    vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {
@@ -848,7 +846,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   bool one_checkbox_checked = false;
 
   for (
-    vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {
