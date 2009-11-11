@@ -13,6 +13,7 @@
 #include <wx/extension/svn.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -129,6 +130,10 @@ wxStandardID wxExSVN::Execute()
   const wxString commandline = 
     "svn " + m_Command + subcommand + flags + comment + file;
 
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(commandline);
+#endif
+
   wxArrayString output;
   wxArrayString errors;
   m_Output.clear();
@@ -140,8 +145,13 @@ wxStandardID wxExSVN::Execute()
   {
     if (m_Output.empty())
     {
-      m_Output = "Could not execute: " + commandline;
+      // See also process, same text is shown.
+      m_Output = _("Cannot execute") + ": " + commandline;
     }
+
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(m_Output);
+#endif
 
     m_ReturnCode = wxID_ABORT;
     return m_ReturnCode;
@@ -165,6 +175,10 @@ wxStandardID wxExSVN::Execute()
   {
     m_Output += output[j] + "\n";
   }
+
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(_("Ready"));
+#endif
 
   m_ReturnCode = wxID_OK;
   return m_ReturnCode;

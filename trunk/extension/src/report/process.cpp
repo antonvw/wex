@@ -187,7 +187,7 @@ long wxExProcessWithListView::Execute()
   }
   else
   {
-    wxLogError(_("Cannot run process") + ": " + m_Command);
+    wxLogError(_("Cannot execute") + ": " + m_Command);
   }
 
   if (!cwd.empty())

@@ -460,14 +460,7 @@ bool wxExFrame::OpenFile(
 
   if (stc != NULL)
   {
-    const bool result = stc->Open(filename, line_number, match, flags);
-    
-    if (!result)
-    {
-      wxLogMessage("Could not open: " + filename.GetFullPath());
-    }
-    
-    return result;
+    return stc->Open(filename, line_number, match, flags);
   }
 
   return false;
