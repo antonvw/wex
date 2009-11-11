@@ -86,10 +86,13 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
 
 bool wxExFile::FileSave(const wxString filename)
 {
+  bool save_as = false;
+
   if (!filename.empty())
   {
     m_FileName.Assign(filename);
     m_FileName.SetLexer();
+    save_as = true;
   }
 
   if (!Open(m_FileName.GetFullPath(), wxFile::write))
@@ -97,7 +100,7 @@ bool wxExFile::FileSave(const wxString filename)
     return false;
   }
 
-  DoFileSave();
+  DoFileSave(save_as);
   MakeAbsolute();
   Close();
   ResetContentsChanged();

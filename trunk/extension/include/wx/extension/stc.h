@@ -259,7 +259,7 @@ private:
   void ClearDocument();
   void EOLModeUpdate(int eol_mode);
   virtual void DoFileLoad(bool synced = false);
-  virtual void DoFileSave();
+  virtual void DoFileSave(bool save_as = false);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   int FindReplaceDataFlags() const;
   void FoldAll();

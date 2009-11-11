@@ -783,10 +783,15 @@ void wxExSTC::DoFileLoad(bool synced)
   }
 }
 
-void wxExSTC::DoFileSave()
+void wxExSTC::DoFileSave(bool save_as)
 {
   const wxCharBuffer& buffer = GetTextRaw(); 
   Write(buffer.data(), buffer.length());
+
+  if (save_as)
+  {
+    Colourise();
+  }
 
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   wxExLog::Get()->Log(msg);

@@ -24,7 +24,7 @@ private:
   virtual bool GetContentsChanged() const {return false;};
   virtual void ResetContentsChanged() {;};
   virtual void DoFileLoad(bool) {;};
-  virtual void DoFileSave() {;};
+  virtual void DoFileSave(bool) {;};
 };
 
 void wxExTestFixture::setUp()

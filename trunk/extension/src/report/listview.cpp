@@ -254,7 +254,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
   }
 }
 
-void wxExListViewFile::DoFileSave()
+void wxExListViewFile::DoFileSave(bool save_as)
 {
   for (int i = 0; i < GetItemCount(); i++)
   {

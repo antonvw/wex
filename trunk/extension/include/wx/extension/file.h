@@ -107,9 +107,9 @@ private:
   wxExStat m_Stat;
 };
 
-/// Adds an wxExFileName, an wxExStat member that can be used for synchronization,
-/// and several File* methods to wxFile. All the File* methods update
-/// the wxExStat member.
+/// Adds several File* methods to wxFile. All the File* methods update
+/// the wxExStat member. Also takes care of synchronization,
+/// all you have to do is call CheckFileSync once in a while.
 class wxExFile : public wxFile
 {
 public:
@@ -144,8 +144,6 @@ public:
   const wxExFileName& GetFileName() const {return m_FileName;}
 
   /// Gets the stat.
-  /// By comparing this with the stat from GetFileName
-  /// you can detect whether the file needs to be synced.
   const wxExStat& GetStat() const {return m_Stat;};
 
   /// Reads this file into a buffer.
@@ -164,7 +162,7 @@ protected:
   virtual void DoFileLoad(bool synced = false) = 0;
 
   /// Invoked by FileSave, allows you to save the file.
-  virtual void DoFileSave() = 0;
+  virtual void DoFileSave(bool save_as = false) = 0;
 private:
   /// Called if file needs to be synced.
   void FileSync();

@@ -124,7 +124,7 @@ protected:
 private:
   void AddItems();
   /// Saves list items to file.
-  virtual void DoFileSave();
+  virtual void DoFileSave(bool save_as = false);
   void Initialize(const wxExLexer* lexer);
 
   bool m_ContentsChanged;
