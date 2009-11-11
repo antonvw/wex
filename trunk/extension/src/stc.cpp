@@ -1481,7 +1481,6 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   CheckFileSync();
 
   if (
-    !IsOpened() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(m_Flags & STC_OPEN_READ_ONLY) &&
