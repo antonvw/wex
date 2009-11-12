@@ -552,8 +552,8 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
     style,
     min,
     max,
-    inc,
-    wxConfigBase::Get()->ReadDouble(text, min));
+    wxConfigBase::Get()->ReadDouble(text, min),
+    inc);
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
