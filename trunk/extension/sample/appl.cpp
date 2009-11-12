@@ -149,10 +149,8 @@ wxExSampleFrame::wxExSampleFrame()
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
   GetManager().Update();
 
-  assert(wxExLexers::Get());
-
-  wxExSTC* st = new wxExSTC(this, wxExLexers::Get()->GetFileName());
-  m_Notebook->AddPage(st, wxExLexers::Get()->GetFileName().GetFullName());
+  m_STCLexers = new wxExSTC(this, wxExLexers::Get()->GetFileName());
+  m_Notebook->AddPage(m_STCLexers, wxExLexers::Get()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "wxExListView");
 
 #if wxUSE_GRID
@@ -228,13 +226,31 @@ wxExListView* wxExSampleFrame::GetListView()
 
 wxExSTC* wxExSampleFrame::GetSTC()
 {
-  if (m_STC->IsShown())
+  // First if we have a focus somewhere.
+  if (m_STC->HasFocus())
+  {
+    return m_STC;
+  }
+  else if (m_STCShell->HasFocus())
+  {
+    return m_STCShell;
+  }
+  else if (m_STCLexers->HasFocus())
+  {
+    return m_STCLexers;
+  }
+  // Then if shown.
+  else if (m_STC->IsShown())
   {
     return m_STC;
   }
   else if (m_STCShell->IsShown())
   {
     return m_STCShell;
+  }
+  else if (m_STCLexers->IsShown())
+  {
+    return m_STCLexers;
   }
   
   return NULL;

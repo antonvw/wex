@@ -69,6 +69,7 @@ private:
   wxExNotebook* m_Notebook; ///< a notebook
   wxExSTCShell* m_STCShell; ///< an stc shell
   wxExSTC* m_STC;           ///< an stc
+  wxExSTC* m_STCLexers;     ///< an stc
 
   long m_FlagsSTC;          ///< keep current flags
   wxExStatistics <long> m_Statistics; ///< keep some statistics
