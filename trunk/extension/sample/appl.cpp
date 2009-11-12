@@ -360,10 +360,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       wxSize(400,300));
 
       dlg->Show();
-
-      // Dialog is not placed nicely.
-      //GetManager().GetPane("NOTEBOOK"));
-      //GetManager().Update();
     }
     break;
 
