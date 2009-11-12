@@ -310,43 +310,84 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     {
     std::vector<wxExConfigItem> v;
 
-    for (size_t h = 1; h <= 25; h++)
+    // CONFIG_CHECKLISTBOX
+    std::map<long, const wxString> clb;
+    clb.insert(std::make_pair(0, _("Zero")));
+    clb.insert(std::make_pair(1, _("One")));
+    clb.insert(std::make_pair(2, _("Two")));
+    clb.insert(std::make_pair(4, _("Fout")));
+    v.push_back(wxExConfigItem(_("Bin Choices"), clb, true, _("Check list box")));
+
+    // CONFIG_CHECKLISTBOX_NONAME
+    std::set<wxString> bchoices;
+    bchoices.insert(_("This"));
+    bchoices.insert(_("Or"));
+    bchoices.insert(_("Other"));
+    v.push_back(wxExConfigItem(bchoices, "Radio box special"));
+
+    // CONFIG_RADIOBOX
+    std::map<long, const wxString> echoices;
+    echoices.insert(std::make_pair(0, _("Zero")));
+    echoices.insert(std::make_pair(1, _("One")));
+    echoices.insert(std::make_pair(2, _("Two")));
+    v.push_back(wxExConfigItem(_("More Choices"), echoices, false, _("Radio box")));
+
+    // CONFIG_CHECKBOX
+    for (size_t h = 1; h <= 5; h++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("check%d"), h), CONFIG_CHECKBOX, "Checkboxes"));
+      v.push_back(wxExConfigItem(wxString::Format(_("Check%d"), h), CONFIG_CHECKBOX, "Checkboxes"));
     }
 
-    for (size_t i = 1; i <= 25; i++)
+    // CONFIG_COLOUR
+    for (size_t i = 1; i <= 5; i++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("colour%d"), i), CONFIG_COLOUR, "Colours"));
+      v.push_back(wxExConfigItem(wxString::Format(_("Colour%d"), i), CONFIG_COLOUR, "Colours"));
     }
 
-    for (size_t j = 1; j <= 10; j++)
+    // CONFIG_COMBOBOX
+    for (size_t m = 1; m <= 5; m++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT, "Integers", true));
+      v.push_back(wxExConfigItem(wxString::Format(_("Combobox%d"), m), CONFIG_COMBOBOX, "Comboboxes"));
     }
 
-    for (size_t s = 1; s <= 10; s++)
+    // CONFIG_COMBOBOXDIR
+    v.push_back(wxExConfigItem(_("Process Folder"), CONFIG_COMBOBOXDIR, "Comboboxes"));
+
+    // CONFIG_DIRPICKERCTRL
+    v.push_back(wxExConfigItem(_("Dir Picker"), CONFIG_DIRPICKERCTRL, "Pickers"));
+
+    // CONFIG_FILEPICKERCTRL
+    v.push_back(wxExConfigItem(_("File Picker"), CONFIG_FILEPICKERCTRL, "Pickers"));
+
+    // CONFIG_FONTPICKERCTRL
+    v.push_back(wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL, "Pickers"));
+
+    // CONFIG_INT
+    for (size_t j = 1; j <= 5; j++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("spin%d"), s), 1, s, wxString("Spin controls")));
+      v.push_back(wxExConfigItem(wxString::Format(_("Integer%d"), j), CONFIG_INT, "Integers", true));
     }
 
-    for (size_t sd = 1; sd <= 10; sd++)
+    // CONFIG_SPINCTRL
+    for (size_t s = 1; s <= 5; s++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("spindouble%d"), sd), 1, sd, 1, wxString("Spin controls double")));
+      v.push_back(wxExConfigItem(wxString::Format(_("Spin%d"), s), 1, s, wxString("Spin controls")));
     }
 
-    for (size_t l = 1; l <= 10; l++)
+    // CONFIG_SPINCTRL_DOUBLE
+    for (size_t sd = 1; sd <= 5; sd++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("string%d"), l), CONFIG_STRING, "Strings"));
+      v.push_back(wxExConfigItem(wxString::Format(_("Spindouble%d"), sd), 1, sd, 1, wxString("Spin controls double")));
     }
 
-    for (size_t m = 1; m <= 10; m++)
+    // CONFIG_STRING
+    for (size_t l = 1; l <= 5; l++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("combobox%d"), m), CONFIG_COMBOBOX, "Comboboxes"));
-    }
+      v.push_back(wxExConfigItem(wxString::Format(_("String%d"), l), CONFIG_STRING, "Strings"));
 
-    v.push_back(wxExConfigItem(_("dirpicker"), CONFIG_DIRPICKERCTRL, "Pickers"));
-    v.push_back(wxExConfigItem(_("filepicker"), CONFIG_FILEPICKERCTRL, "Pickers"));
+      // CONFIG_SPACER
+      v.push_back(wxExConfigItem());
+    }
 
     wxExConfigDialog* dlg = new wxExConfigDialog(
       this,
@@ -367,11 +408,11 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     {
     std::vector<wxExConfigItem> v;
 
-    v.push_back(wxExConfigItem(_("filepicker"), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem(_("File Picker"), CONFIG_FILEPICKERCTRL));
 
     for (size_t j = 1; j <= 10; j++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("integer%d"), j), CONFIG_INT));
+      v.push_back(wxExConfigItem(wxString::Format(_("Integer%d"), j), CONFIG_INT));
     }
 
     wxExConfigDialog* dlg = new wxExConfigDialog(
