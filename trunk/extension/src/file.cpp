@@ -32,7 +32,7 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
 bool wxExFile::CheckFileSync()
 {
   if (IsOpened() ||
-     !m_FileName.GetStat().IsOk() ||
+     !m_FileName.m_Stat.IsOk() ||
      !wxConfigBase::Get()->ReadBool("AllowSync", true))
   {
     return false;
@@ -40,7 +40,7 @@ bool wxExFile::CheckFileSync()
 
   if (m_FileName.m_Stat.Sync())
   {
-    if (m_FileName.GetStat().st_mtime != m_Stat.st_mtime)
+    if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
     {
       FileSync();
 
