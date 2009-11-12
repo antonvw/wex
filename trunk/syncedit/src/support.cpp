@@ -29,6 +29,7 @@ Frame::Frame()
 {
   SetIcon(wxICON(appl));
 
+#if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));
   panes.push_back(wxExPane("PaneFileType", 50, _("File Type")));
@@ -47,6 +48,7 @@ Frame::Frame()
 
   panes.push_back(wxExPane("PaneItems", 65, _("Items")));
   SetupStatusBar(panes);
+#endif
 
   wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE); // wxMB_DOCKABLE only used for GTK
   SetMenuBar(menubar);

@@ -80,6 +80,7 @@ MyFrame::MyFrame()
 
   Show(); // otherwise statusbar is not placed correctly
 
+#if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));
@@ -89,6 +90,7 @@ MyFrame::MyFrame()
   panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
   panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
+#endif
 
   m_DataWindow = new wxExSTCWithFrame(this);
 

@@ -154,10 +154,12 @@ MyFrame::MyFrame()
 
   GetManager().Update();
 
+#if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));
   panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
+#endif
 
   CreateToolBar();
 
