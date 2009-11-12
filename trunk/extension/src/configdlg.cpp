@@ -530,8 +530,6 @@ wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
     max,
     wxConfigBase::Get()->ReadLong(text, min));
 
-  spinctrl->SetValue(wxConfigBase::Get()->ReadLong(text, min));
-
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
 
@@ -555,9 +553,7 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
     min,
     max,
     inc,
-    wxConfigBase::Get()->ReadLong(text, min));
-
-  spinctrl->SetValue(wxConfigBase::Get()->ReadDouble(text, min));
+    wxConfigBase::Get()->ReadDouble(text, min));
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
