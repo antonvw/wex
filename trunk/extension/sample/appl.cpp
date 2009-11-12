@@ -260,7 +260,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_OPEN:
     {
     wxExFileDialog dlg(this, m_STC);
-    if (dlg.ShowModal() == wxID_CANCEL) return;
+    if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
 
     wxStopWatch sw;
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
