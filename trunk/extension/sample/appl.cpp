@@ -332,7 +332,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
     for (size_t sd = 1; sd <= 10; sd++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("spin%d"), sd), 1, sd, 1, wxString("Spin controls double")));
+      v.push_back(wxExConfigItem(wxString::Format(_("spindouble%d"), sd), 1, sd, 1, wxString("Spin controls double")));
     }
 
     for (size_t l = 1; l <= 10; l++)
