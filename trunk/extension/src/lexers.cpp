@@ -156,9 +156,6 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
 
 const wxString wxExLexers::GetLexerAssociations() const
 {
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-  wxASSERT(frd != NULL);
-
   wxString text;
 
   for (
@@ -170,7 +167,7 @@ const wxString wxExLexers::GetLexerAssociations() const
     {
       if (!text.empty())
       {
-        text += frd->GetFieldSeparator();
+        text += wxExFindReplaceData::Get()->GetFieldSeparator();
       }
 
       text += it->GetAssociations();
