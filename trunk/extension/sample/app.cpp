@@ -398,7 +398,7 @@ void wxExSampleFrame::ShowConfigItems()
     _("Bin Choices"), 
     clb, 
     false, 
-    _("Check list boxes")));
+    "Lists"));
 
   // CONFIG_CHECKLISTBOX_NONAME
   std::set<wxString> bchoices;
@@ -407,7 +407,7 @@ void wxExSampleFrame::ShowConfigItems()
   bchoices.insert(_("Other"));
   v.push_back(wxExConfigItem(
     bchoices, 
-    "Check list box special"));
+    "Lists"));
 
   // CONFIG_RADIOBOX
   std::map<long, const wxString> echoices;
@@ -418,7 +418,7 @@ void wxExSampleFrame::ShowConfigItems()
     _("Radio Box"), 
     echoices, 
     true, 
-    _("Radio boxes")));
+    "Lists"));
 
   // CONFIG_CHECKBOX
   for (size_t h = 1; h <= 5; h++)
@@ -482,7 +482,7 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_SPINCTRL
-  for (size_t s = 1; s <= 5; s++)
+  for (size_t s = 1; s <= 3; s++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("Spin Control%d"), s), 
@@ -492,7 +492,7 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_SPINCTRL_DOUBLE
-  for (size_t sd = 1; sd <= 5; sd++)
+  for (size_t sd = 1; sd <= 3; sd++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("Spin Control Double%d"), sd), 
