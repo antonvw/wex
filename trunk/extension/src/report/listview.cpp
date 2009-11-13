@@ -591,20 +591,17 @@ void wxExListViewFile::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {
+#if wxUSE_STATUSBAR
     if (GetSelectedItemCount() == 1)
     {
       const wxExListItemWithFileName item(this, event.GetIndex());
 
-      // The LIST_PROCESS is treated specially, since there will oexen be
-      // entries that do not exist. We do not want a message in these cases.
-      if ((m_Type != LIST_PROCESS) ||
-          (m_Type == LIST_PROCESS && item.GetFileName().FileExists()))
+      if (item.GetFileName().GetStat().IsOk())
       {
-#if wxUSE_STATUSBAR
         wxExFrame::StatusText(item.GetFileName(), STAT_FULLPATH);
-#endif
       }
     }
+#endif
 
     event.Skip();
   }
@@ -621,6 +618,8 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     event.Skip();
     int flags = wxLIST_HITTEST_ONITEM;
     const long index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+
+    // If no item has been selected, then show filename mod time in the statusbar.
     if (index < 0)
     {
       if (GetFileName().FileExists())
