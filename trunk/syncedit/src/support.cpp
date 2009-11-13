@@ -14,7 +14,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/svn.h>
 #ifndef __WXMSW__
-#include "appl.xpm"
+#include "app.xpm"
 #endif
 #include "support.h"
 #include "defs.h"
@@ -27,7 +27,7 @@ Frame::Frame()
       NUMBER_RECENT_FILES,    //maxFiles
       4)                      // maxProjects
 {
-  SetIcon(wxICON(appl));
+  SetIcon(wxICON(app));
 
 #if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;

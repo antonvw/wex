@@ -1,4 +1,4 @@
-appl ICON "appl.ico"
+app ICON "app.ico"
 connect ICON "connect.ico"
 notready ICON "notready.ico"
 ready ICON "ready.ico"

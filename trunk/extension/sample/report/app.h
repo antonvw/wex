@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.h
+* File:          app.h
 * Purpose:       Declaration of sample classes for wxExRep
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$

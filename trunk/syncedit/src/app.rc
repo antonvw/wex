@@ -1,2 +1,2 @@
-appl ICON "appl.ico"
+app ICON "app.ico"
 #include "wx/msw/wx.rc"

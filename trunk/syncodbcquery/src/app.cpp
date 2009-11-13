@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.cpp
+* File:          app.cpp
 * Purpose:       Implementation of classes for syncodbcquery
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -20,10 +20,10 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
-#include "appl.h"
+#include "app.h"
 
 #ifndef __WXMSW__
-#include "appl.xpm"
+#include "app.xpm"
 #endif
 
 IMPLEMENT_APP(MyApp)
@@ -71,7 +71,7 @@ MyFrame::MyFrame()
   , m_Running(false)
   , m_Stopped(false)
 {
-  SetIcon(wxICON(appl));
+  SetIcon(wxICON(app));
 
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_NEW);

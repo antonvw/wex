@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.cpp
+* File:          app.cpp
 * Purpose:       Implementation of sample classes for wxExRep
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -15,10 +15,10 @@
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/report/dir.h>
-#include "appl.h"
+#include "app.h"
 
 #ifndef __WXMSW__
-#include "appl.xpm"
+#include "app.xpm"
 #else
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -66,7 +66,7 @@ bool wxExRepSampleApp::OnInit()
 wxExRepSampleFrame::wxExRepSampleFrame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
 {
-  SetIcon(wxICON(appl));
+  SetIcon(wxICON(app));
 
   wxExMenu *menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);

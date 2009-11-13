@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.cpp
+* File:          app.cpp
 * Purpose:       Implementation of classes for syncsocketserver
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -14,10 +14,10 @@
 #include <wx/numdlg.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
-#include "appl.h"
+#include "app.h"
 
 #ifndef __WXMSW__
-#include "appl.xpm"
+#include "app.xpm"
 #include "connect.xpm"
 #include "notready.xpm"
 #include "ready.xpm"
@@ -72,7 +72,7 @@ MyFrame::MyFrame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_Timer(this)
 {
-  SetIcon(wxICON(appl));
+  SetIcon(wxICON(app));
 
 #if wxUSE_TASKBARICON
   m_TaskBarIcon = new MyTaskBarIcon(this);

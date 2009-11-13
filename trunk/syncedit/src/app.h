@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.h
+* File:          app.h
 * Purpose:       Declaration of class 'Application'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _APPL_H
-#define _APPL_H
+#ifndef _APP_H
+#define _APP_H
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -27,5 +27,4 @@ private:
 
   wxArrayString m_Files;
 };
-
 #endif

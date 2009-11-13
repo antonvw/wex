@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.cpp
+* File:          app.cpp
 * Purpose:       Implementation of class 'Application'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -11,7 +11,7 @@
 
 #include <wx/cmdline.h> // for wxCmdLineParser
 #include <wx/extension/log.h>
-#include "appl.h"
+#include "app.h"
 #include "frame.h"
 
 DECLARE_APP(Application)

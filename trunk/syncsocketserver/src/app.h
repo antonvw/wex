@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.h
+* File:          app.h
 * Purpose:       Declaration of classes for syncsocketserver
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$

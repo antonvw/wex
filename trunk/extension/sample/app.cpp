@@ -1,5 +1,5 @@
 /******************************************************************************\
-* File:          appl.cpp
+* File:          app.cpp
 * Purpose:       Implementation of sample classes for wxExtension
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
@@ -18,9 +18,9 @@
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/renderer.h>
-#include "appl.h"
+#include "app.h"
 #ifndef __WXMSW__
-#include "appl.xpm"
+#include "app.xpm"
 #endif
 
 enum
@@ -96,7 +96,7 @@ wxExSampleFrame::wxExSampleFrame()
   : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_FlagsSTC(0)
 {
-  SetIcon(wxICON(appl));
+  SetIcon(wxICON(app));
 
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
@@ -160,7 +160,7 @@ wxExSampleFrame::wxExSampleFrame()
   m_Notebook->AddPage(m_Grid, "wxExGrid");
   m_Grid->CreateGrid(0, 0);
   m_Grid->AppendCols(2);
-  wxExSampleDir dir(wxGetCwd(), "appl.*", m_Grid);
+  wxExSampleDir dir(wxGetCwd(), "app.*", m_Grid);
   dir.FindFiles();
   m_Grid->AutoSizeColumns();
 #endif

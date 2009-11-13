@@ -1,5 +1,5 @@
 /* XPM */
-static char * appl_xpm[] = {
+static char * app_xpm[] = {
 "16 16 167 2",
 "  	c None",
 ". 	c #4D8BC8",
