@@ -28,7 +28,7 @@ General
     and converted to xpm using GIMP (2.6.6)    
     http://www.gimp.org/
 
-- API documentation is generated from the sources using Doxygen (1.6.0)
+- API documentation is generated from the sources using Doxygen (1.6.1)
     http://www.stack.nl/~dimitri/doxygen/
 
 - Other docs are in html format using no special html editor
