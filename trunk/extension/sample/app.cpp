@@ -499,7 +499,7 @@ void wxExSampleFrame::ShowConfigItems()
       1, 
       sd, 
       1, 
-      "Spin controls double"));
+      "Spin controls"));
   }
 
   // CONFIG_STRING
@@ -511,6 +511,7 @@ void wxExSampleFrame::ShowConfigItems()
       "Strings"));
 
     // CONFIG_SPACER
+    v.push_back(wxExConfigItem());
     v.push_back(wxExConfigItem());
   }
 
@@ -525,5 +526,5 @@ void wxExSampleFrame::ShowConfigItems()
     wxDefaultPosition,
     wxSize(400,300));
 
-    dlg->Show();
+  dlg->Show();
 }
