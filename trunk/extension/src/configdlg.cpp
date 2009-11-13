@@ -378,7 +378,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
   wxComboBox* cb = new wxComboBox(parent, wxID_ANY);
   wxExComboBoxFromString(
     cb,
-    wxConfigBase::Get()->Read(text)); // no delimiter!
+    wxConfigBase::Get()->Read(text));
 
   if (text == wxExFindReplaceData::Get()->GetTextFindWhat())
   {
@@ -398,7 +398,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   wxComboBox* cb = new wxComboBox(parent, ID_BROWSE_FOLDER + 1);
   wxExComboBoxFromString(
     cb,
-    wxConfigBase::Get()->Read(text)); // no delimiter!
+    wxConfigBase::Get()->Read(text));
 
   wxSizerFlags flag;
 
@@ -411,7 +411,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   // And the text box that is used is not resizable as well.
   browse->Add(
     new wxButton(
-      this,
+      parent,
       ID_BROWSE_FOLDER,
       "...",
       wxDefaultPosition,
@@ -419,7 +419,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
       wxBU_EXACTFIT),
     flag.Center().Border(wxLEFT));
 
-  sizer->Add(new wxStaticText(this, wxID_ANY, text + ":"), flag.Right().Border());
+  sizer->Add(new wxStaticText(parent, wxID_ANY, text + ":"), flag.Right().Border());
   sizer->Add(browse, flag.Center().Border());
 
   return cb;
