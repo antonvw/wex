@@ -61,6 +61,7 @@ private:
   virtual wxExGrid* GetGrid();
   virtual wxExListView* GetListView();
   virtual wxExSTC* GetSTC();
+  void ShowConfigItems();
   
 #if wxUSE_GRID
   wxExGrid* m_Grid;         ///< a grid

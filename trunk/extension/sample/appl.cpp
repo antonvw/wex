@@ -109,7 +109,9 @@ wxExSampleFrame::wxExSampleFrame()
 
   wxExMenu* menuConfig = new wxExMenu;
   menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
-  menuConfig->Append(ID_CONFIG_DLG_READONLY, wxExEllipsed(_("Config Dialog Readonly")));
+  menuConfig->Append(
+    ID_CONFIG_DLG_READONLY, 
+    wxExEllipsed(_("Config Dialog Readonly")));
 
   wxExMenu* menuSTC = new wxExMenu;
   menuSTC->Append(ID_STC_FLAGS, wxExEllipsed(_("Open Flag")));
@@ -142,7 +144,8 @@ wxExSampleFrame::wxExSampleFrame()
   m_STC = new wxExSTC(this);
   m_STCShell = new wxExSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
-  GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTC"));
+  GetManager().AddPane(m_STC, 
+    wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTC"));
   GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
   GetManager().AddPane(new wxExFindToolBar(this, this),
@@ -283,7 +286,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     const long stop = sw.Time();
 
 #if wxUSE_STATUSBAR
-    StatusText(wxString::Format("wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+    StatusText(wxString::Format(
+      "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
 #endif
     }
     break;
@@ -295,7 +299,8 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     m_STC->FileSave();
 
-    if (m_STC->GetFileName().GetFullPath() == wxExLexers::Get()->GetFileName().GetFullPath())
+    if (m_STC->GetFileName().GetFullPath() == 
+        wxExLexers::Get()->GetFileName().GetFullPath())
     {
       wxExLexers::Get()->Read();
       wxLogMessage("File contains: %d lexers", wxExLexers::Get()->Count());
@@ -306,104 +311,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_CONFIG_DLG:
-    {
-    std::vector<wxExConfigItem> v;
-
-    // CONFIG_CHECKLISTBOX
-    std::map<long, const wxString> clb;
-    clb.insert(std::make_pair(0, _("Zero")));
-    clb.insert(std::make_pair(1, _("One")));
-    clb.insert(std::make_pair(2, _("Two")));
-    clb.insert(std::make_pair(4, _("Fout")));
-    v.push_back(wxExConfigItem(_("Bin Choices"), clb, true, _("Check list box")));
-
-    // CONFIG_CHECKLISTBOX_NONAME
-    std::set<wxString> bchoices;
-    bchoices.insert(_("This"));
-    bchoices.insert(_("Or"));
-    bchoices.insert(_("Other"));
-    v.push_back(wxExConfigItem(bchoices, "Radio box special"));
-
-    // CONFIG_RADIOBOX
-    std::map<long, const wxString> echoices;
-    echoices.insert(std::make_pair(0, _("Zero")));
-    echoices.insert(std::make_pair(1, _("One")));
-    echoices.insert(std::make_pair(2, _("Two")));
-    v.push_back(wxExConfigItem(_("More Choices"), echoices, false, _("Radio box")));
-
-    // CONFIG_CHECKBOX
-    for (size_t h = 1; h <= 5; h++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("Check%d"), h), CONFIG_CHECKBOX, "Checkboxes"));
-    }
-
-    // CONFIG_COLOUR
-    for (size_t i = 1; i <= 5; i++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("Colour%d"), i), CONFIG_COLOUR, "Colours"));
-    }
-
-    // CONFIG_COMBOBOX
-    for (size_t m = 1; m <= 5; m++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("Combobox%d"), m), CONFIG_COMBOBOX, "Comboboxes"));
-    }
-
-    // CONFIG_COMBOBOXDIR
-    v.push_back(wxExConfigItem(_("Process Folder"), CONFIG_COMBOBOXDIR, "Comboboxes"));
-
-    // CONFIG_DIRPICKERCTRL
-    v.push_back(wxExConfigItem(_("Dir Picker"), CONFIG_DIRPICKERCTRL, "Pickers"));
-
-    // CONFIG_FILEPICKERCTRL
-    v.push_back(wxExConfigItem(_("File Picker"), CONFIG_FILEPICKERCTRL, "Pickers"));
-
-    // CONFIG_FONTPICKERCTRL
-    v.push_back(wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL, "Pickers"));
-
-    // CONFIG_INT
-    for (size_t j = 1; j <= 5; j++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("Integer%d"), j), CONFIG_INT, "Integers", true));
-    }
-
-    // CONFIG_SPINCTRL
-    for (size_t s = 1; s <= 5; s++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("Spin%d"), s), 1, s, wxString("Spin controls")));
-    }
-
-    // CONFIG_SPINCTRL_DOUBLE
-    for (size_t sd = 1; sd <= 5; sd++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("Spindouble%d"), sd), 1, sd, 1, wxString("Spin controls double")));
-    }
-
-    // CONFIG_STRING
-    for (size_t l = 1; l <= 5; l++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format(_("String%d"), l), CONFIG_STRING, "Strings"));
-
-      // CONFIG_SPACER
-      v.push_back(wxExConfigItem());
-    }
-
-    wxExConfigDialog* dlg = new wxExConfigDialog(
-      this,
-      v,
-      _("Config Dialog"),
-      10,
-      6,
-      wxAPPLY | wxCANCEL,
-      wxID_ANY,
-      wxDefaultPosition,
-      wxSize(400,300));
-
-      dlg->Show();
-    }
-    break;
-
+  case ID_CONFIG_DLG: ShowConfigItems(); break;
   case ID_CONFIG_DLG_READONLY:
     {
     std::vector<wxExConfigItem> v;
@@ -474,4 +382,148 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     wxFAIL;
     break;
   }
+}
+
+void wxExSampleFrame::ShowConfigItems()
+{
+  std::vector<wxExConfigItem> v;
+
+  // CONFIG_CHECKLISTBOX
+  std::map<long, const wxString> clb;
+  clb.insert(std::make_pair(0, _("Bit One")));
+  clb.insert(std::make_pair(1, _("Bit Two")));
+  clb.insert(std::make_pair(2, _("Bit Three")));
+  clb.insert(std::make_pair(4, _("Bit Four")));
+  v.push_back(wxExConfigItem(
+    _("Bin Choices"), 
+    clb, 
+    false, 
+    _("Check list boxes")));
+
+  // CONFIG_CHECKLISTBOX_NONAME
+  std::set<wxString> bchoices;
+  bchoices.insert(_("This"));
+  bchoices.insert(_("Or"));
+  bchoices.insert(_("Other"));
+  v.push_back(wxExConfigItem(
+    bchoices, 
+    "Check list box special"));
+
+  // CONFIG_RADIOBOX
+  std::map<long, const wxString> echoices;
+  echoices.insert(std::make_pair(0, _("Zero")));
+  echoices.insert(std::make_pair(1, _("One")));
+  echoices.insert(std::make_pair(2, _("Two")));
+  v.push_back(wxExConfigItem(
+    _("Radio Box"), 
+    echoices, 
+    true, 
+    _("Radio boxes")));
+
+  // CONFIG_CHECKBOX
+  for (size_t h = 1; h <= 5; h++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("Checkbox%d"), h), 
+      CONFIG_CHECKBOX, 
+      "Checkboxes"));
+  }
+
+  // CONFIG_COLOUR
+  for (size_t i = 1; i <= 5; i++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("Colour%d"), i), 
+      CONFIG_COLOUR, 
+      "Colours"));
+  }
+
+  // CONFIG_COMBOBOX
+  for (size_t m = 1; m <= 5; m++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("Combobox%d"), m), 
+      CONFIG_COMBOBOX, 
+      "Comboboxes"));
+  }
+
+  // CONFIG_COMBOBOXDIR
+  v.push_back(wxExConfigItem(
+    _("Combobox Dir"), 
+    CONFIG_COMBOBOXDIR, 
+    "Comboboxes"));
+
+  // CONFIG_DIRPICKERCTRL
+  v.push_back(wxExConfigItem(
+    _("Dir Picker"), 
+    CONFIG_DIRPICKERCTRL, 
+    "Pickers"));
+
+  // CONFIG_FILEPICKERCTRL
+  v.push_back(wxExConfigItem(
+    _("File Picker"), 
+    CONFIG_FILEPICKERCTRL, 
+    "Pickers"));
+
+  // CONFIG_FONTPICKERCTRL
+  v.push_back(wxExConfigItem(
+    _("Font Picker"), 
+    CONFIG_FONTPICKERCTRL, 
+    "Pickers"));
+
+  // CONFIG_INT
+  for (size_t j = 1; j <= 5; j++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("Integer%d"), j), 
+      CONFIG_INT, 
+      "Integers", 
+      true));
+  }
+
+  // CONFIG_SPINCTRL
+  for (size_t s = 1; s <= 5; s++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("Spin Control%d"), s), 
+      1, 
+      s, 
+      wxString("Spin controls")));
+  }
+
+  // CONFIG_SPINCTRL_DOUBLE
+  for (size_t sd = 1; sd <= 5; sd++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("Spin Control Double%d"), sd), 
+      1, 
+      sd, 
+      1, 
+      "Spin controls double"));
+  }
+
+  // CONFIG_STRING
+  for (size_t l = 1; l <= 5; l++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format(_("String%d"), l), 
+      CONFIG_STRING, 
+      "Strings"));
+
+    // CONFIG_SPACER
+    v.push_back(wxExConfigItem());
+  }
+
+  wxExConfigDialog* dlg = new wxExConfigDialog(
+    this,
+    v,
+    _("Config Dialog"),
+    10,
+    2,
+    wxAPPLY | wxCANCEL,
+    wxID_ANY,
+    wxDefaultPosition,
+    wxSize(400,300));
+
+    dlg->Show();
 }
