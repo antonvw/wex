@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 Name:      build.bkl
-Purpose:   Bakefile for wxextension libraries, samples, tests, and applications
+Purpose:   Bakefile for wxextension libraries, samples, tests and applications
 Author:    Anton van Wezenbeek
 Created:   2009-06-17
 RCS-ID:    $Id$
@@ -171,9 +171,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- samples -->
   <exe id="wxex-sample" template="wxgui,wxlike">
-    <sources>../extension/sample/appl.cpp</sources>
-    <win32-res>../extension/sample/appl.rc</win32-res>
-    <headers>../extension/sample/appl.h</headers>
+    <sources>../extension/sample/app.cpp</sources>
+    <win32-res>../extension/sample/app.rc</win32-res>
+    <headers>../extension/sample/app.h</headers>
     
     <include>../extension/include</include>
     
@@ -194,9 +194,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="wxex-sample-rep" template="wxgui,wxlike">
-    <sources>../extension/sample/report/appl.cpp</sources>
-    <win32-res>../extension/sample/report/appl.rc</win32-res>
-    <headers>../extension/sample/report/appl.h</headers>
+    <sources>../extension/sample/report/app.cpp</sources>
+    <win32-res>../extension/sample/report/app.rc</win32-res>
+    <headers>../extension/sample/report/app.h</headers>
     
     <include>../extension/include</include>
     
@@ -298,13 +298,13 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
     
-    <sources>../syncedit/src/appl.cpp</sources>
+    <sources>../syncedit/src/app.cpp</sources>
     <sources>../syncedit/src/frame.cpp</sources>
     <sources>../syncedit/src/support.cpp</sources>
     
-    <win32-res>../syncedit/src/appl.rc</win32-res>
+    <win32-res>../syncedit/src/app.rc</win32-res>
     
-    <headers>../syncedit/src/appl.h</headers>
+    <headers>../syncedit/src/app.h</headers>
     <headers>../syncedit/src/defs.h</headers>
     <headers>../syncedit/src/frame.h</headers>
     <headers>../syncedit/src/support.h</headers>
@@ -334,9 +334,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     -->  
   <exe id="syncodbcquery" template="wxgui,wxlike">
     <define>$(VAR_USE_OTL)</define>
-    <sources>../syncodbcquery/src/appl.cpp</sources>
-    <win32-res>../syncodbcquery/src/appl.rc</win32-res>
-    <headers>../syncodbcquery/src/appl.h</headers>
+    <sources>../syncodbcquery/src/app.cpp</sources>
+    <win32-res>../syncodbcquery/src/app.rc</win32-res>
+    <headers>../syncodbcquery/src/app.h</headers>
     
     <include>../extension/include</include>
 
@@ -359,9 +359,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <exe id="syncsocketserver" template="wxgui,wxlike">
-    <sources>../syncsocketserver/src/appl.cpp</sources>
-    <win32-res>../syncsocketserver/src/appl.rc</win32-res>
-    <headers>../syncsocketserver/src/appl.h</headers>
+    <sources>../syncsocketserver/src/app.cpp</sources>
+    <win32-res>../syncsocketserver/src/app.rc</win32-res>
+    <headers>../syncsocketserver/src/app.h</headers>
     
     <include>../extension/include</include>
     
