@@ -188,6 +188,8 @@ bool wxExTextFileWithListView::ParseSQL()
 
 void wxExTextFileWithListView::Report()
 {
+  wxASSERT(m_Report != NULL);
+
   wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
@@ -231,7 +233,6 @@ void wxExTextFileWithListView::ReportStatistics()
 
     if (m_Report == NULL)
     {
-      wxFAIL;
       return;
     }
   }
@@ -331,7 +332,6 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 
       if (m_Report == NULL)
       {
-        wxFAIL;
         return false;
       }
     }
