@@ -1289,8 +1289,7 @@ PREDEFINED             = wxUSE_DRAG_AND_DROP \
                          wxUSE_HTML \
                          wxUSE_PRINTING_ARCHITECTURE \
                          wxUSE_STATUSBAR \
-                         USE_OTL \
-                         USE_SHELL
+                         wxExUSE_OTL
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then 
 # this tag can be used to specify a list of macro names that should be expanded. 
