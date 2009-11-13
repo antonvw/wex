@@ -413,7 +413,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
     new wxButton(
       parent,
       ID_BROWSE_FOLDER,
-      "...",
+      wxDirPickerWidgetLabel,
       wxDefaultPosition,
       wxDefaultSize,
       wxBU_EXACTFIT),
