@@ -860,6 +860,24 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
       }
       break;
 
+    case CONFIG_CHECKLISTBOX_NONAME:
+      if (m_ForceCheckBoxChecked)
+      {
+        wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+
+        for (
+          size_t i = 0;
+          i < clb->GetCount();
+          i++)
+        {
+          if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && clb->IsChecked(i))
+          {
+            one_checkbox_checked = true;
+          }
+        }
+      }
+      break;
+
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
       {

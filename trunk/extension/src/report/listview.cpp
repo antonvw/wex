@@ -116,11 +116,11 @@ void wxExListViewFile::AddItems()
   v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());
-  v.push_back(wxExConfigItem(_("Add files"), CONFIG_CHECKBOX));
-  v.push_back(wxExConfigItem());
-  v.push_back(wxExConfigItem(_("Add folders"), CONFIG_CHECKBOX));
-  v.push_back(wxExConfigItem());
-  v.push_back(wxExConfigItem(_("Recursive"), CONFIG_CHECKBOX));
+  std::set<wxString> set;
+  set.insert(_("Add files"));
+  set.insert(_("Add folders"));
+  set.insert(_("Recursive"));
+  v.push_back(wxExConfigItem(set));
 
   wxExConfigDialog dlg(NULL,
     v,
