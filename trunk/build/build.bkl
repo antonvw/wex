@@ -294,21 +294,21 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </if>
   
   <!-- applications -->
-  <exe id="syncedit" template="wxgui,wxlike">
+  <exe id="syncped" template="wxgui,wxlike">
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
     
-    <sources>../syncedit/src/app.cpp</sources>
-    <sources>../syncedit/src/frame.cpp</sources>
-    <sources>../syncedit/src/support.cpp</sources>
+    <sources>../syncped/src/app.cpp</sources>
+    <sources>../syncped/src/frame.cpp</sources>
+    <sources>../syncped/src/support.cpp</sources>
     
-    <win32-res>../syncedit/src/app.rc</win32-res>
+    <win32-res>../syncped/src/app.rc</win32-res>
     
-    <headers>../syncedit/src/app.h</headers>
-    <headers>../syncedit/src/defs.h</headers>
-    <headers>../syncedit/src/frame.h</headers>
-    <headers>../syncedit/src/support.h</headers>
-    <headers>../syncedit/src/version.h</headers>
+    <headers>../syncped/src/app.h</headers>
+    <headers>../syncped/src/defs.h</headers>
+    <headers>../syncped/src/frame.h</headers>
+    <headers>../syncped/src/support.h</headers>
+    <headers>../syncped/src/version.h</headers>
     
     <include>../extension/include</include>
     
