@@ -23,6 +23,7 @@
 
 #if wxUSE_GUI
 const int width = 200;
+const int width_combo = 250;
 const int width_numeric = 75;
 
 enum
@@ -182,7 +183,12 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
-      control = AddSpinCtrlDouble(parent, sizer, it->m_Name, it->m_MinDouble, it->m_MaxDouble, it->m_Inc);
+      control = AddSpinCtrlDouble(
+        parent, sizer, 
+        it->m_Name, 
+        it->m_MinDouble, 
+        it->m_MaxDouble, 
+        it->m_Inc);
       break;
 
     case CONFIG_STRING:
@@ -375,7 +381,13 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
 wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
-  wxComboBox* cb = new wxComboBox(parent, wxID_ANY);
+  wxComboBox* cb = new wxComboBox(
+    parent, 
+    wxID_ANY,
+    wxEmptyString,
+    wxDefaultPosition,
+    wxSize(width_combo, wxDefaultCoord));
+
   wxExComboBoxFromString(
     cb,
     wxConfigBase::Get()->Read(text));
@@ -395,7 +407,13 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
 wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
-  wxComboBox* cb = new wxComboBox(parent, ID_BROWSE_FOLDER + 1);
+  wxComboBox* cb = new wxComboBox(
+    parent, 
+    ID_BROWSE_FOLDER + 1,
+    wxEmptyString,
+    wxDefaultPosition,
+    wxSize(width_combo, wxDefaultCoord));
+
   wxExComboBoxFromString(
     cb,
     wxConfigBase::Get()->Read(text));
