@@ -477,11 +477,13 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
         "with automatic syncing. All its config files are read\n"
         "and saved in the same directory as where the executable is."));
 #else
-    info.SetDescription(_("This program offers a text or binary editor with automatic syncing."));
+    info.SetDescription(
+      _("This program offers a portable text or binary editor\n"
+        "with automatic syncing."));
 #endif
 
     info.SetCopyright("(c) 1998-2009, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
-    info.SetWebSite("http://syncedit.1.xpdev-hosted.com/index.htm");
+    info.SetWebSite("http://syncped.1.xpdev-hosted.com/index.htm");
     wxAboutBox(info);
     }
     break;

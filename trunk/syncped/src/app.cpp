@@ -30,11 +30,7 @@ bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
 bool Application::OnInit()
 {
   // This must be the first statement, other methods might use the name.
-#ifdef wxExUSE_PORTABLE
   SetAppName("syncped");
-#else
-  SetAppName("syncedit");
-#endif
 
   if (!wxExApp::OnInit())
   {
