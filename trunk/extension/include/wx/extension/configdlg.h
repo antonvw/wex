@@ -47,7 +47,9 @@ public:
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
   /// to be enabled.
-  void ForceCheckBoxChecked(const wxString contains = wxEmptyString);
+  void ForceCheckBoxChecked(
+    const wxString& contains = wxEmptyString,
+    const wxString& page = wxEmptyString);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -125,6 +127,7 @@ private:
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
   wxString m_Contains;
+  wxString m_Page;
 
   DECLARE_EVENT_TABLE()
 };

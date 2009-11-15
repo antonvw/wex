@@ -54,6 +54,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   const wxString& name)
   : wxExDialog(parent, title, flags, id, pos, size, style, name)
   , m_ForceCheckBoxChecked(false)
+  , m_Page(wxEmptyString)
 {
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
@@ -617,10 +618,13 @@ wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
   return Add(sizer, parent, textctrl, text + ":", !is_numeric);
 }
 
-void wxExConfigDialog::ForceCheckBoxChecked(const wxString contains)
+void wxExConfigDialog::ForceCheckBoxChecked(
+  const wxString& contains,
+  const wxString& page)
 {
   m_ForceCheckBoxChecked = true;
   m_Contains = contains;
+  m_Page = page;
 }
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)
@@ -871,7 +875,9 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
       {
         wxCheckBox* cb = (wxCheckBox*)it->m_Control;
 
-        if (cb->GetName().Lower().Contains(m_Contains.Lower()) && cb->GetValue())
+        if (cb->GetName().Lower().Contains(m_Contains.Lower()) && 
+            cb->GetValue() &&
+            it->m_Page == m_Page)
         {
           one_checkbox_checked = true;
         }
@@ -888,7 +894,9 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
           i < clb->GetCount();
           i++)
         {
-          if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && clb->IsChecked(i))
+          if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
+              clb->IsChecked(i) &&
+              it->m_Page == m_Page)
           {
             one_checkbox_checked = true;
           }

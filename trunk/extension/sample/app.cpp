@@ -421,13 +421,23 @@ void wxExSampleFrame::ShowConfigItems()
     "Lists"));
 
   // CONFIG_CHECKBOX
-  for (size_t h = 1; h <= 5; h++)
+  for (size_t h = 1; h <= 3; h++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("Checkbox%d"), h), 
       CONFIG_CHECKBOX, 
       "Checkboxes"));
   }
+
+  v.push_back(wxExConfigItem(
+    "Required Checkbox1", 
+    CONFIG_CHECKBOX, 
+    "Checkboxes"));
+
+  v.push_back(wxExConfigItem(
+    "Required Checkbox2", 
+    CONFIG_CHECKBOX, 
+    "Checkboxes"));
 
   // CONFIG_COLOUR
   for (size_t i = 1; i <= 5; i++)
@@ -526,5 +536,6 @@ void wxExSampleFrame::ShowConfigItems()
     wxDefaultPosition,
     wxSize(400,300));
 
+  dlg->ForceCheckBoxChecked("Required", "Checkboxes");
   dlg->Show();
 }
