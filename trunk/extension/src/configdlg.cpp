@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
   EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
+  EVT_UPDATE_UI(wxID_APPLY, wxExConfigDialog::OnUpdateUI)
   EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
 END_EVENT_TABLE()
 
