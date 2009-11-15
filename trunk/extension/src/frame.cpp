@@ -802,6 +802,8 @@ BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
   EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
   EVT_MENU(wxID_DOWN, wxExFindToolBar::OnCommand)
   EVT_MENU(wxID_UP, wxExFindToolBar::OnCommand)
+  EVT_UPDATE_UI(wxID_DOWN, wxExFindToolBar::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_UP, wxExFindToolBar::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExFindToolBar::wxExFindToolBar(
@@ -892,6 +894,11 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     wxFAIL;
     break;
   }
+}
+
+void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
+{
+  event.Enable(!m_ComboBox->GetValue().empty());
 }
 
 #endif // wxUSE_GUI

@@ -304,6 +304,7 @@ public:
     wxWindowID id = wxID_ANY);
 protected:
   void OnCommand(wxCommandEvent& event);
+  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void Initialize();
 
