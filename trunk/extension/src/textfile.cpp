@@ -247,15 +247,15 @@ bool wxExTextFile::MatchLine(wxString& line)
   if (!frd->IsRegularExpression())
   {
     const wxString search_line = frd->MatchCase() ? line: line.Upper();
-    const size_t pos = search_line.find(frd->GetFindStringNoCase());
+    const size_t start = search_line.find(frd->GetFindStringNoCase());
 
-    if (pos != wxString::npos)
+    if (start != wxString::nstart)
     {
       if (frd->MatchWord())
       {
-        if (( pos == 0 ||
-             (pos > 0 && !IsWordCharacter(search_line[pos - 1]))) &&
-            !IsWordCharacter(search_line[pos + frd->GetFindStringNoCase().length()]))
+        if (( start == 0 ||
+             (start > 0 && !IsWordCharacter(search_line[start - 1]))) &&
+            !IsWordCharacter(search_line[start + frd->GetFindStringNoCase().length()]))
         {
           match = true;
         }
@@ -267,7 +267,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
       if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
       {
-        line.replace(pos, frd->GetReplaceString().length(), frd->GetReplaceString());
+        line.replace(start, frd->GetFindString().length(), frd->GetReplaceString());
         m_Modified = true;
       }
     }
