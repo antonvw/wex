@@ -108,7 +108,10 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
-  m_DirCtrl = new wxGenericDirCtrl(this, wxID_ANY, wxStandardPaths::Get().GetDocumentsDir());
+  m_DirCtrl = new wxGenericDirCtrl(
+    this, 
+    wxID_ANY, 
+    wxStandardPaths::Get().GetDocumentsDir());
 
   m_NotebookWithLists = new wxExNotebook(
     this, this,
@@ -130,12 +133,24 @@ wxExRepSampleFrame::wxExRepSampleFrame()
       0xFF, 
       &lexer); // set all flags
 
-    m_NotebookWithLists->AddPage(vw, vw->GetTypeDescription(), vw->GetTypeDescription(), true);
+    m_NotebookWithLists->AddPage(
+      vw, 
+      vw->GetTypeDescription(), 
+      vw->GetTypeDescription(), 
+      true);
   }
 
-  GetManager().AddPane(m_STC, wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
-  GetManager().AddPane(m_NotebookWithLists, wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
-  GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
+  GetManager().AddPane(
+    m_STC, 
+    wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true));
+
+  GetManager().AddPane(
+    m_NotebookWithLists, 
+    wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
+
+  GetManager().AddPane(
+    m_DirCtrl, 
+    wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
@@ -251,10 +266,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_STOP:
-    if (ProcessIsRunning())
-    {
-      ProcessStop();
-    }
+    ProcessStop();
     break;
 
   case ID_PROCESS_DIALOG:
