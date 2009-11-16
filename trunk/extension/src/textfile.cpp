@@ -249,7 +249,7 @@ bool wxExTextFile::MatchLine(wxString& line)
     const wxString search_line = frd->MatchCase() ? line: line.Upper();
     const size_t start = search_line.find(frd->GetFindStringNoCase());
 
-    if (start != wxString::nstart)
+    if (start != wxString::npos)
     {
       if (frd->MatchWord())
       {
