@@ -471,17 +471,17 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     info.AddDeveloper(wxExOTL::Version());
 #endif
 
-#ifdef wxExUSE_PORTABLE
-    info.SetDescription(
-      _("This program offers a portable text or binary editor\n"
-        "with automatic syncing. All its config files are read\n"
-        "and saved in the same directory as where the executable is."));
-#else
-    info.SetDescription(
+    wxString description(
       _("This program offers a portable text or binary editor\n"
         "with automatic syncing."));
+
+#ifdef wxExUSE_PORTABLE
+    description +=
+      _(" All its config files are read\n"
+        "and saved in the same directory as where the executable is."));
 #endif
 
+    info.SetDescription(description);
     info.SetCopyright("(c) 1998-2009, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
     info.SetWebSite("http://syncped.1.xpdev-hosted.com/index.htm");
     wxAboutBox(info);
