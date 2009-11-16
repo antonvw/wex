@@ -267,7 +267,8 @@ bool wxExTextFile::MatchLine(wxString& line)
 
       if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
       {
-        line.Replace(frd->GetFindString(), frd->GetReplaceString());
+        const size_t count = line.Replace(frd->GetFindString(), frd->GetReplaceString());
+        GetStatisticElements().Inc(_("Actions Completed"), count);
         m_Modified = true;
       }
     }
@@ -278,7 +279,8 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
-      frd->GetRegularExpression().ReplaceAll(&line, frd->GetReplaceString());
+      const int count = frd->GetRegularExpression().ReplaceAll(&line, frd->GetReplaceString());
+      GetStatisticElements().Inc(_("Actions Completed"), count);
       m_Modified = true;
     }
   }
@@ -286,6 +288,11 @@ bool wxExTextFile::MatchLine(wxString& line)
   if (match)
   {
     m_RCS.m_Description = line;
+
+    if (m_Tool.GetId() != ID_TOOL_REPORT_REPLACE)
+    {
+      GetStatisticElements().Inc(_("Actions Completed"));
+    }
   }
 
   return match;
@@ -320,7 +327,6 @@ bool wxExTextFile::Parse()
     {
       if (MatchLine(line))
       {
-        GetStatisticElements().Inc(_("Actions Completed"));
         Report();
       }
     }
