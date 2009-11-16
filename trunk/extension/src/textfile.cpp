@@ -267,7 +267,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
       if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
       {
-        line.replace(start, frd->GetFindString().length(), frd->GetReplaceString());
+        line.Replace(frd->GetFindString(), frd->GetReplaceString());
         m_Modified = true;
       }
     }
@@ -278,9 +278,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
-      size_t start, len;
-      frd->GetRegularExpression().GetMatch(&start, &len);
-      line.replace(start, len, frd->GetReplaceString());
+      frd->GetRegularExpression().ReplaceAll(&line, frd->GetReplaceString());
       m_Modified = true;
     }
   }
