@@ -62,7 +62,10 @@ wxMenuItem* wxExMenu::Append(
   if (!artid.empty())
   {
     const wxBitmap bitmap = 
-      wxArtProvider::GetBitmap(artid, wxART_MENU, wxSize(16, 15));
+      wxArtProvider::GetBitmap(
+        artid, 
+        wxART_MENU, 
+        wxArtProvider::GetSizeHint(wxART_MENU, true));
 
     if (bitmap.IsOk())
     {
