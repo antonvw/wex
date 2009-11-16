@@ -305,7 +305,7 @@ bool wxExTextFile::Parse()
 
   if (m_Tool.IsFindType())
   {
-    if (wxExFindReplaceData::Get()->GetFindStringNoCase().empty())
+    if (wxExFindReplaceData::Get()->GetFindString().empty())
     {
       wxFAIL;
       return false;
