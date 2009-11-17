@@ -71,7 +71,19 @@ size_t wxExFindInFiles(bool replace)
   v.push_back(wxExConfigItem(in_files, CONFIG_COMBOBOX, wxEmptyString, true));
   v.push_back(wxExConfigItem(in_folder, CONFIG_COMBOBOXDIR, wxEmptyString, true));
   v.push_back(wxExConfigItem());
-  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+
+  if (replace) 
+  {
+    // Match whole word does not work with replace.
+    std::set<wxString> s;
+    s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
+    s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
+    v.push_back(wxExConfigItem(s));
+  }
+  else
+  {
+    v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+  }
 
   if (wxExConfigDialog(NULL,
     v,
