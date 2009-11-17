@@ -952,6 +952,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     {
       if (!wxExSVN::Get()->Use())
       {
+        menu.AppendSeparator();
+
         if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
         {
           menu.Append(ID_LIST_COMPARELAST, _("&Compare Recent Version"));
