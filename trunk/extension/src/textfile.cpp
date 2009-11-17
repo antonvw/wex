@@ -251,7 +251,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (start != wxString::npos)
     {
-      if (frd->MatchWord())
+      if (frd->MatchWord() && m_Tool.GetId() == ID_TOOL_REPORT_FIND)
       {
         if (( start == 0 ||
              (start > 0 && !IsWordCharacter(search_line[start - 1]))) &&
