@@ -13,7 +13,6 @@
 #define _EXSTC_H
 
 #include <vector> 
-#include <wx/print.h> 
 #include <wx/stc/stc.h>
 #include <wx/extension/file.h> // for wxExFile
 #include <wx/extension/menu.h> // for wxExMenu
