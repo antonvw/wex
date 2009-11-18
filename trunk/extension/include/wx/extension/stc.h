@@ -17,7 +17,6 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/file.h> // for wxExFile
 #include <wx/extension/menu.h> // for wxExMenu
-#include <wx/extension/dialog.h> // for wxExDialog
 
 class wxExConfigDialog;
 #if wxUSE_GUI
@@ -299,43 +298,6 @@ private:
   wxFileOffset m_PreviousLength;
 
   DECLARE_EVENT_TABLE()
-};
-
-/// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
-/// The prompt is allowed to be empty, in that case no sizer is used for it.
-class wxExSTCEntryDialog : public wxExDialog
-{
-public:
-  /// Constructor.
-  wxExSTCEntryDialog(
-    wxWindow* parent,
-    const wxString& caption,
-    const wxString& text,
-    const wxString& prompt = wxEmptyString,
-    long button_style = wxOK | wxCANCEL,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    const wxString& name = wxDialogNameStr);
-
-  /// Gets the STC lexer.
-  const wxString GetLexer() const {
-    return m_STC->GetFileName().GetLexer().GetScintillaLexer();};
-
-  /// Gets the normal text value.
-  const wxString GetText() const {return m_STC->GetText();};
-
-  /// Gets raw text value.
-  wxCharBuffer GetTextRaw() const {return m_STC->GetTextRaw();};
-
-  /// Sets the STC lexer.
-  void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};
-
-  /// Sets the text (either normal or raw).
-  void SetText(const wxString& text);
-private:
-  wxExSTC* m_STC;
 };
 
 #endif // wxUSE_GUI
