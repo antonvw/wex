@@ -18,6 +18,7 @@
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/renderer.h>
+#include <wx/extension/stcdlg.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -30,6 +31,7 @@ enum
   ID_CONFIG_DLG_READONLY,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
+  ID_STC_ENTRY_DLG,
   ID_STC_FLAGS,
   ID_STC_GOTO,
   ID_STC_SPLIT,
@@ -349,6 +351,26 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       _("Editor Options"),
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
     break;
+    
+  case ID_STC_ENTRY_DLG:
+    {
+    wxString text;
+    
+    for (int i = 0; i < 100; i++)
+    {
+      text += wxString::Format("Hello from line: %d\n", i);
+    }
+    
+    wxExSTCEntryDialog dlg(
+      this,
+      "Hello world",
+      text,      
+      "Greetings from\nwxextension");
+      
+      dlg.ShowModal();
+    }
+    break;
+    
   case ID_STC_FLAGS:
     {
     long value = wxGetNumberFromUser(
@@ -365,8 +387,10 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     }
     }
     break;
+    
   case ID_STC_GOTO: m_STC->GotoDialog(); break;
   case ID_STC_LEXER: m_STC->LexerDialog(); break;
+  
   case ID_STC_SPLIT:
     {
     wxExSTC* stc = new wxExSTC(*m_STC);
