@@ -101,7 +101,7 @@ bool wxExLexer::KeywordStartsWith(const wxString& word) const
     it != m_Keywords.end();
     ++it)
   {
-    if (it->Upper().StartsWith(word.Upper()))
+    if (it->StartsWith(word))
     {
       return true;
     }
