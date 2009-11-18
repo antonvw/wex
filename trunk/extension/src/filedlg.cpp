@@ -34,7 +34,7 @@ wxExFileDialog::wxExFileDialog(
 {
   // Override wildcard if it is default and file is initialized.
   if (wildcard == wxFileSelectorDefaultWildcardStr &&
-      m_FileName->GetFileName().IsOk())
+      m_File->GetFileName().IsOk())
   {
     SetWildcard(wxExLexers::Get()->BuildWildCards(m_File->GetFileName()));
   }
