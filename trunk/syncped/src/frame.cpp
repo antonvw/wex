@@ -45,7 +45,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_CLOSE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_COPY, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CUT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, MDIFrame::OnUpdateUI)
@@ -896,9 +895,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
         switch (event.GetId())
         {
-        case wxID_CLOSE: // nothing extra, just prevent wxFAIL from happening
-          break;
-
         case wxID_JUMP_TO:
         case wxID_SAVEAS:
         case ID_EDIT_FIND_NEXT:
