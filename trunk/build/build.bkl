@@ -94,6 +94,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/shell.cpp</sources>
     <sources>../extension/src/statistics.cpp</sources>
     <sources>../extension/src/stc.cpp</sources>
+    <sources>../extension/src/stcdlg.cpp</sources>
     <sources>../extension/src/svn.cpp</sources>
     <sources>../extension/src/textfile.cpp</sources>
     <sources>../extension/src/tool.cpp</sources>
@@ -125,6 +126,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/shell.h</headers>
     <headers>../extension/include/wx/extension/statistics.h</headers>
     <headers>../extension/include/wx/extension/stc.h</headers>
+    <headers>../extension/include/wx/extension/stcdlg.h</headers>
     <headers>../extension/include/wx/extension/svn.h</headers>
     <headers>../extension/include/wx/extension/textfile.h</headers>
     <headers>../extension/include/wx/extension/tool.h</headers>
