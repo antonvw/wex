@@ -32,7 +32,7 @@ public:
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
     const wxString& name = wxDialogNameStr);
 
-  /// Gets the STC lexer.
+  /// Gets the STC scintilla lexer.
   const wxString GetLexer() const {
     return m_STC->GetFileName().GetLexer().GetScintillaLexer();};
 
@@ -46,7 +46,8 @@ public:
   void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};
 
   /// Sets the text (either normal or raw).
-  void SetText(const wxString& text);
+  /// Resets a previous lexer if asked for.
+  void SetText(const wxString& text, bool reset_lexer = true);
 private:
   wxExSTC* m_STC;
 };

@@ -60,7 +60,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   LayoutSizers();
 }
 
-void wxExSTCEntryDialog::SetText(const wxString& text)
+void wxExSTCEntryDialog::SetText(const wxString& text, bool reset_lexer)
 {
   const bool readonly = m_STC->GetReadOnly();
 
@@ -74,6 +74,14 @@ void wxExSTCEntryDialog::SetText(const wxString& text)
   if (readonly)
   {
     m_STC->SetReadOnly(true);
+  }
+
+  if (reset_lexer)
+  {
+    if (!GetLexer().empty())
+    {
+      SetLexer(wxEmptyString);
+    }
   }
 }
 
