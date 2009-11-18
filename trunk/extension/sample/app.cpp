@@ -119,6 +119,7 @@ wxExSampleFrame::wxExSampleFrame()
   menuSTC->Append(ID_STC_FLAGS, wxExEllipsed(_("Open Flag")));
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
+  menuSTC->Append(ID_STC_ENTRY_DLG, wxExEllipsed(_("Entry Dialog")));
   menuSTC->Append(ID_STC_GOTO, wxExEllipsed(_("Goto Dialog")));
   menuSTC->Append(ID_STC_LEXER, wxExEllipsed(_("Lexer Dialog")));
   menuSTC->AppendSeparator();
