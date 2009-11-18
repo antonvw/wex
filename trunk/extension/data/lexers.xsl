@@ -82,7 +82,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       <th align="left">colourings</th>
       <th align="left">properties</th>
       <th align="left">comments</th>
-      <th align="left">keywords</th>
+      <th align="left" width="100">keywords</th>
     </tr>
     
     <xsl:for-each select="lexers/lexer">
