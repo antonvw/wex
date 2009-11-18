@@ -23,9 +23,9 @@
 #include "ready.xpm"
 #endif
 
-IMPLEMENT_APP(MyApp)
+IMPLEMENT_APP(App)
 
-bool MyApp::OnInit()
+bool App::OnInit()
 {
   SetAppName("syncsocketserver");
 
@@ -34,48 +34,48 @@ bool MyApp::OnInit()
     return false;
   }
 
-  MyFrame *frame = new MyFrame();
+  Frame *frame = new Frame();
   SetTopWindow(frame);
 
   return true;
 }
 
-BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
-  EVT_CLOSE(MyFrame::OnClose)
-  EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
-  EVT_MENU(wxID_STOP, MyFrame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, MyFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MyFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, MyFrame::OnCommand)
-  EVT_MENU_RANGE(ID_MENU_FIRST, ID_MENU_LAST, MyFrame::OnCommand)
-  EVT_SOCKET(ID_SERVER, MyFrame::OnSocket)
-  EVT_SOCKET(ID_CLIENT, MyFrame::OnSocket)
-  EVT_TIMER(-1, MyFrame::OnTimer)
-  EVT_UPDATE_UI(wxID_EXECUTE, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_SAVE, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_STOP, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLEAR_STATISTICS, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_ECHO, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_COUNT_ONLY, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_SERVER_CONFIG, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_TIMER_STOP, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_DATA, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_LOG, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_SHELL, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATISTICS, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_WRITE_DATA, MyFrame::OnUpdateUI)
+BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
+  EVT_CLOSE(Frame::OnClose)
+  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
+  EVT_MENU(wxID_STOP, Frame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_MENU_FIRST, ID_MENU_LAST, Frame::OnCommand)
+  EVT_SOCKET(ID_SERVER, Frame::OnSocket)
+  EVT_SOCKET(ID_CLIENT, Frame::OnSocket)
+  EVT_TIMER(-1, Frame::OnTimer)
+  EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_CLEAR_STATISTICS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_CLIENT_ECHO, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_COUNT_ONLY, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_SERVER_CONFIG, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_TIMER_STOP, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_DATA, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_LOG, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_SHELL, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_STATISTICS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_WRITE_DATA, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame()
+Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_Timer(this)
 {
   SetIcon(wxICON(app));
 
 #if wxUSE_TASKBARICON
-  m_TaskBarIcon = new MyTaskBarIcon(this);
+  m_TaskBarIcon = new TaskBarIcon(this);
 #endif
 
   Show(); // otherwise statusbar is not placed correctly
@@ -216,7 +216,7 @@ MyFrame::MyFrame()
   GetManager().Update();
 }
 
-MyFrame::~MyFrame()
+Frame::~Frame()
 {
 #if wxUSE_TASKBARICON
   delete m_TaskBarIcon;
@@ -224,7 +224,7 @@ MyFrame::~MyFrame()
   delete m_SocketServer;
 }
 
-void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
+void Frame::ConfigDialogApplied(wxWindowID dialogid)
 {
   if (dialogid == wxID_PREFERENCES)
   {
@@ -238,7 +238,7 @@ void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
-wxExGrid* MyFrame::GetGrid()
+wxExGrid* Frame::GetGrid()
 {
   const wxExGrid* grid = m_Statistics.GetGrid();
 
@@ -252,7 +252,7 @@ wxExGrid* MyFrame::GetGrid()
   }
 }
 
-wxExSTC* MyFrame::GetSTC()
+wxExSTC* Frame::GetSTC()
 {
   if (m_DataWindow->IsShown())
   {
@@ -270,7 +270,7 @@ wxExSTC* MyFrame::GetSTC()
   return NULL;
 }
 
-void MyFrame::LogConnection(
+void Frame::LogConnection(
   wxSocketBase* sock,
   bool accepted,
   bool show_clients)
@@ -294,7 +294,7 @@ void MyFrame::LogConnection(
   m_LogWindow->AppendTextForced(text);
 }
 
-void MyFrame::OnClose(wxCloseEvent& event)
+void Frame::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
@@ -324,7 +324,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
   event.Skip();
 }
 
-void MyFrame::OnCommand(wxCommandEvent& event)
+void Frame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
@@ -537,7 +537,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void MyFrame::OnSocket(wxSocketEvent& event)
+void Frame::OnSocket(wxSocketEvent& event)
 {
   wxSocketBase *sock = event.GetSocket();
 
@@ -705,12 +705,12 @@ void MyFrame::OnSocket(wxSocketEvent& event)
   }
 }
 
-void MyFrame::OnTimer(wxTimerEvent& /* event */)
+void Frame::OnTimer(wxTimerEvent& /* event */)
 {
   WriteDataWindowToClients();
 }
 
-void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
+void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
@@ -779,7 +779,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool MyFrame::OpenFile(
+bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
@@ -802,7 +802,7 @@ bool MyFrame::OpenFile(
   }
 }
 
-bool MyFrame::SetupSocketServer()
+bool Frame::SetupSocketServer()
 {
   // Create the address - defaults to localhost and port as specified
   wxIPV4address addr;
@@ -853,7 +853,7 @@ bool MyFrame::SetupSocketServer()
   return true;
 }
 
-bool MyFrame::SocketCheckError(const wxSocketBase* sock)
+bool Frame::SocketCheckError(const wxSocketBase* sock)
 {
   if (sock->Error())
   {
@@ -868,7 +868,7 @@ bool MyFrame::SocketCheckError(const wxSocketBase* sock)
   return false;
 }
 
-const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
+const wxString Frame::SocketDetails(const wxSocketBase* sock) const
 {
   // See invocation at SocketLost.
   // If that is solved we can wxASSERT(sock != NULL) again.
@@ -903,7 +903,7 @@ const wxString MyFrame::SocketDetails(const wxSocketBase* sock) const
   return value;
 }
 
-void MyFrame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
+void Frame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
 {
   wxASSERT(sock != NULL);
 
@@ -921,7 +921,7 @@ void MyFrame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
   sock->Destroy();
 }
 
-void MyFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
+void Frame::StatusBarDoubleClicked(int field, const wxPoint& point)
 {
   if (field == GetPaneField("PaneTimer"))
   {
@@ -933,7 +933,7 @@ void MyFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
   }
 }
 
-void MyFrame::TimerDialog()
+void Frame::TimerDialog()
 {
   const long val = wxGetNumberFromUser(
     _("Input (seconds):"),
@@ -969,7 +969,7 @@ void MyFrame::TimerDialog()
   }
 }
 
-void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
+void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
 {
   if (buffer.length() == 0) return;
 
@@ -1009,7 +1009,7 @@ void MyFrame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client
   }
 }
 
-void MyFrame::WriteDataWindowToClients()
+void Frame::WriteDataWindowToClients()
 {
   const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
 
@@ -1029,14 +1029,14 @@ enum
 };
 
 #if wxUSE_TASKBARICON
-BEGIN_EVENT_TABLE(MyTaskBarIcon, wxTaskBarIcon)
-  EVT_MENU(wxID_EXIT, MyTaskBarIcon::OnCommand)
-  EVT_MENU(ID_OPEN, MyTaskBarIcon::OnCommand)
-  EVT_TASKBAR_LEFT_DCLICK(MyTaskBarIcon::OnTaskBarIcon)
-  EVT_UPDATE_UI(wxID_EXIT, MyTaskBarIcon::OnUpdateUI)
+BEGIN_EVENT_TABLE(TaskBarIcon, wxTaskBarIcon)
+  EVT_MENU(wxID_EXIT, TaskBarIcon::OnCommand)
+  EVT_MENU(ID_OPEN, TaskBarIcon::OnCommand)
+  EVT_TASKBAR_LEFT_DCLICK(TaskBarIcon::OnTaskBarIcon)
+  EVT_UPDATE_UI(wxID_EXIT, TaskBarIcon::OnUpdateUI)
 END_EVENT_TABLE()
 
-wxMenu *MyTaskBarIcon::CreatePopupMenu()
+wxMenu *TaskBarIcon::CreatePopupMenu()
 {
   wxExMenu* menu = new wxExMenu;
   menu->Append(ID_OPEN, _("Open"));
@@ -1045,7 +1045,7 @@ wxMenu *MyTaskBarIcon::CreatePopupMenu()
   return menu;
 }
 
-void MyTaskBarIcon::OnCommand(wxCommandEvent& event)
+void TaskBarIcon::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          app.h
-* Purpose:       Declaration of class 'Application'
+* Purpose:       Declaration of class 'App'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,7 +18,7 @@
 #endif
 #include <wx/extension/app.h>
 
-class Application : public wxExApp
+class App : public wxExApp
 {
 private:
   virtual bool OnCmdLineParsed(wxCmdLineParser& parser);

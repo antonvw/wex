@@ -17,20 +17,20 @@
 #include <wx/extension/report/report.h>
 
 #if wxUSE_TASKBARICON
-class MyTaskBarIcon;
+class TaskBarIcon;
 #endif
 
-class MyApp : public wxExApp
+class App : public wxExApp
 {
 public:
   virtual bool OnInit();
 };
 
-class MyFrame : public wxExFrameWithHistory
+class Frame : public wxExFrameWithHistory
 {
 public:
-  MyFrame();
- ~MyFrame();
+  Frame();
+ ~Frame();
   bool ServerNotListening() const {
     return m_SocketServer == NULL;}
 protected:
@@ -74,17 +74,17 @@ private:
   wxTimer m_Timer;
 
 #if wxUSE_TASKBARICON
-  MyTaskBarIcon* m_TaskBarIcon;
+  TaskBarIcon* m_TaskBarIcon;
 #endif
 
   DECLARE_EVENT_TABLE()
 };
 
 #if wxUSE_TASKBARICON
-class MyTaskBarIcon: public wxTaskBarIcon
+class TaskBarIcon: public wxTaskBarIcon
 {
 public:
-  MyTaskBarIcon(MyFrame* frame)
+  TaskBarIcon(Frame* frame)
     : m_Frame(frame) {}
 protected:
   virtual wxMenu* CreatePopupMenu();
@@ -94,7 +94,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event) {
     event.Enable(m_Frame->ServerNotListening());}
 private:
-  MyFrame* m_Frame;
+  Frame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };

@@ -31,19 +31,19 @@ class wxExGrid;
 class wxExSTCShell;
 class wxExSTCWithFrame;
 
-class MyApp: public wxExApp
+class App: public wxExApp
 {
 public:
-  MyApp() {}
+  App() {}
   virtual bool OnInit();
 private:
-  DECLARE_NO_COPY_CLASS(MyApp)
+  DECLARE_NO_COPY_CLASS(App)
 };
 
-class MyFrame: public wxExFrameWithHistory
+class Frame: public wxExFrameWithHistory
 {
 public:
-  MyFrame();
+  Frame();
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
@@ -68,6 +68,6 @@ private:
   bool m_Running;
   bool m_Stopped;
 
-  DECLARE_NO_COPY_CLASS(MyFrame)
+  DECLARE_NO_COPY_CLASS(Frame)
   DECLARE_EVENT_TABLE()
 };

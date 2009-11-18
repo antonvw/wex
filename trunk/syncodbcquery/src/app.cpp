@@ -26,9 +26,9 @@
 #include "app.xpm"
 #endif
 
-IMPLEMENT_APP(MyApp)
+IMPLEMENT_APP(App)
 
-bool MyApp::OnInit()
+bool App::OnInit()
 {
   SetAppName("syncodbcquery");
 
@@ -37,7 +37,7 @@ bool MyApp::OnInit()
     return false;
   }
 
-  MyFrame *frame = new MyFrame();
+  Frame *frame = new Frame();
   frame->Show(true);
 
   SetTopWindow(frame);
@@ -45,28 +45,28 @@ bool MyApp::OnInit()
   return true;
 }
 
-BEGIN_EVENT_TABLE(MyFrame, wxExFrameWithHistory)
-  EVT_CLOSE(MyFrame::OnClose)
-  EVT_MENU(wxID_EXECUTE, MyFrame::OnCommand)
-  EVT_MENU(wxID_STOP, MyFrame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, MyFrame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND_STOP, MyFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MyFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, MyFrame::OnCommand)
-  EVT_MENU_RANGE(ID_FIRST, ID_LAST, MyFrame::OnCommand)
-  EVT_UPDATE_UI(wxID_SAVE, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_SAVEAS, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_STOP, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_DATABASE_CLOSE, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_DATABASE_OPEN, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_EXECUTE, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_RECENTFILE_MENU, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_QUERY, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_RESULTS, MyFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATISTICS, MyFrame::OnUpdateUI)
+BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
+  EVT_CLOSE(Frame::OnClose)
+  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
+  EVT_MENU(wxID_STOP, Frame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_FIRST, ID_LAST, Frame::OnCommand)
+  EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_SAVEAS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_DATABASE_CLOSE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_DATABASE_OPEN, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_RECENTFILE_MENU, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_QUERY, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_RESULTS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_STATISTICS, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame()
+Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
   , m_Running(false)
   , m_Stopped(false)
@@ -174,7 +174,7 @@ MyFrame::MyFrame()
   m_ToolBar->Realize();
 }
 
-void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
+void Frame::ConfigDialogApplied(wxWindowID dialogid)
 {
   if (dialogid == wxID_PREFERENCES)
   {
@@ -187,7 +187,7 @@ void MyFrame::ConfigDialogApplied(wxWindowID dialogid)
   }
 }
 
-wxExGrid* MyFrame::GetGrid()
+wxExGrid* Frame::GetGrid()
 {
   if (m_Results->IsShown())
   {
@@ -208,7 +208,7 @@ wxExGrid* MyFrame::GetGrid()
   }
 }
 
-wxExSTC* MyFrame::GetSTC()
+wxExSTC* Frame::GetSTC()
 {
   if (m_Query->IsShown())
   {
@@ -222,7 +222,7 @@ wxExSTC* MyFrame::GetSTC()
   return NULL;
 }
 
-void MyFrame::OnClose(wxCloseEvent& event)
+void Frame::OnClose(wxCloseEvent& event)
 {
   wxExFileDialog dlg(this, m_Query);
 
@@ -236,7 +236,7 @@ void MyFrame::OnClose(wxCloseEvent& event)
   event.Skip();
 }
 
-void MyFrame::OnCommand(wxCommandEvent& event)
+void Frame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
@@ -362,7 +362,7 @@ void MyFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
+void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
@@ -412,7 +412,7 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool MyFrame::OpenFile(
+bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
@@ -426,7 +426,7 @@ bool MyFrame::OpenFile(
   return m_Query->Open(filename, line_number, match, flags);
 }
 
-void MyFrame::RunQuery(const wxString& query, bool empty_results)
+void Frame::RunQuery(const wxString& query, bool empty_results)
 {
   wxStopWatch sw;
 
@@ -469,7 +469,7 @@ void MyFrame::RunQuery(const wxString& query, bool empty_results)
   m_Shell->DocumentEnd();
 }
 
-void MyFrame::RunQueries(const wxString& text)
+void Frame::RunQueries(const wxString& text)
 {
   if (m_Results->IsShown())
   {
@@ -519,7 +519,7 @@ void MyFrame::RunQueries(const wxString& text)
   m_Running = false;
 }
 
-void MyFrame::UpdateStatistics(const wxStopWatch& sw, long rpc)
+void Frame::UpdateStatistics(const wxStopWatch& sw, long rpc)
 {
   m_Shell->AppendText(wxString::Format(_("\n%d rows processed (%.3f seconds)"),
     rpc,

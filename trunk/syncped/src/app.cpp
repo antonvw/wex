@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          app.cpp
-* Purpose:       Implementation of class 'Application'
+* Purpose:       Implementation of class 'App'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,10 +14,10 @@
 #include "app.h"
 #include "frame.h"
 
-DECLARE_APP(Application)
-IMPLEMENT_APP(Application)
+DECLARE_APP(App)
+IMPLEMENT_APP(App)
 
-bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
+bool App::OnCmdLineParsed(wxCmdLineParser& parser)
 {
   for (size_t i = 0; i < parser.GetParamCount(); i++)
   {
@@ -27,7 +27,7 @@ bool Application::OnCmdLineParsed(wxCmdLineParser& parser)
   return wxApp::OnCmdLineParsed(parser);
 }
 
-bool Application::OnInit()
+bool App::OnInit()
 {
   // This must be the first statement, other methods might use the name.
   SetAppName("syncped");
@@ -56,7 +56,7 @@ bool Application::OnInit()
   return true;
 }
 
-void Application::OnInitCmdLine(wxCmdLineParser& parser)
+void App::OnInitCmdLine(wxCmdLineParser& parser)
 {
   wxApp::OnInitCmdLine(parser);
 
