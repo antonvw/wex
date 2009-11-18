@@ -23,8 +23,6 @@ const wxString REV_DATE_FORMAT = "%y%m%d";
 
 wxExRCS::wxExRCS()
   : m_RevisionFormat(REV_DATE_FORMAT)
-  // By default rev 1.1 is the first revision of a file, so start with 1.0 here.
-  , m_RevisionNumber("1.0")
 {
 }
 
@@ -52,7 +50,7 @@ bool wxExRCS::SetRevision(wxString& text)
   }
   else
   {
-    m_RevisionNumber = wxEmptyString;
+    m_RevisionNumber.clear();
     text = word + " " + text; // put back the word!
   }
 
@@ -367,7 +365,9 @@ bool wxExTextFile::ParseComments()
       // this is the minimal prefix
       if (m_Comments.length() >= 3)
       {
-        const bool insert = (wxRegEx("^[\\*| ]   *").ReplaceFirst(&m_Comments, wxEmptyString) == 0);
+        const bool insert = 
+          (wxRegEx("^[\\*| ]   *").ReplaceFirst(&m_Comments, wxEmptyString) == 0);
+
         m_Comments.Trim(); // from right, default
 
         if (insert)
@@ -387,7 +387,8 @@ bool wxExTextFile::ParseComments()
           if (m_VersionLine >= 1 && GetCurrentLine() == m_LineMarkerEnd + 1)
           {
             m_LineMarkerEnd = GetCurrentLine();
-            m_RCS.m_Description += (!m_RCS.m_Description.empty() ? wxString(" "): wxString(wxEmptyString)) + m_Comments;
+            m_RCS.m_Description += 
+              (!m_RCS.m_Description.empty() ? wxString(" "): wxString(wxEmptyString)) + m_Comments;
           }
           else
           {
@@ -534,8 +535,9 @@ bool wxExTextFile::ParseLine(const wxString& line)
       ReportLine(line);
     }
 
-    // Finish action here for REVISION_TOOL_REPORT.
-    // However, some sources might contain revisions at the end of the file, these are not reported.
+    // Finish action.
+    // However, some sources might contain revisions at the end of the file, 
+    // so these are not reported.
     if (GetStatisticElements().Get(_("Lines Of Code")) > 5 &&
         m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
