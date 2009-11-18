@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.h
-* Purpose:       Declaration of class wxExSTC and related classes
+* Purpose:       Declaration of class wxExSTC
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -19,6 +19,7 @@
 #include <wx/extension/menu.h> // for wxExMenu
 
 class wxExConfigDialog;
+
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
 /// config support and syntax colouring. Also adds synchronizing to the window,

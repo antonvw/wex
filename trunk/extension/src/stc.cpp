@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.cpp
-* Purpose:       Implementation of class wxExSTC and related classes
+* Purpose:       Implementation of class wxExSTC
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

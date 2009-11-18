@@ -15,7 +15,7 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/log.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
 wxExSVN* wxExSVN::m_Self = NULL;
