@@ -1358,44 +1358,44 @@ void wxExSTC::MacroPlayback()
 
 void wxExSTC::MatchHexBrace()
 {
-    const int col = GetColumn(GetCurrentPos());
-    const wxFileOffset start_ascii_field =
-      start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
+  const int col = GetColumn(GetCurrentPos());
+  const wxFileOffset start_ascii_field =
+    start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
 
-    if (col >= start_ascii_field)
+  if (col >= start_ascii_field)
+  {
+    const int offset = col - start_ascii_field;
+    int space = 0;
+
+    if (col >= start_ascii_field + bytes_per_line / 2)
     {
-      const int offset = col - start_ascii_field;
+      space++;
+    }
+
+    BraceHighlight(GetCurrentPos(),
+      PositionFromLine(GetCurrentLine()) + start_hex_field + each_hex_field * offset + space);
+  }
+  else if (col >= start_hex_field)
+  {
+    if (GetCharAt(GetCurrentPos()) != ' ')
+    {
       int space = 0;
 
-      if (col >= start_ascii_field + bytes_per_line / 2)
+      if (col >= start_hex_field + space_between_fields + (bytes_per_line * each_hex_field) / 2)
       {
         space++;
       }
 
+      const int offset = (col - (start_hex_field + space)) / each_hex_field;
+
       BraceHighlight(GetCurrentPos(),
-        PositionFromLine(GetCurrentLine()) + start_hex_field + each_hex_field * offset + space);
+        PositionFromLine(GetCurrentLine()) + start_ascii_field + offset);
     }
-    else if (col >= start_hex_field)
-    {
-      if (GetCharAt(GetCurrentPos()) != ' ')
-      {
-        int space = 0;
-
-        if (col >= start_hex_field + space_between_fields + (bytes_per_line * each_hex_field) / 2)
-        {
-          space++;
-        }
-
-        const int offset = (col - (start_hex_field + space)) / each_hex_field;
-
-        BraceHighlight(GetCurrentPos(),
-          PositionFromLine(GetCurrentLine()) + start_ascii_field + offset);
-      }
-    }
-    else
-    {
-      BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    }
+  }
+  else
+  {
+    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+  }
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
@@ -1445,14 +1445,13 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_OPEN_LINK:
     {
     const wxString sel = GetSelectedText();
+    wxString filename;
     if (!sel.empty())
     {
-      wxString filename;
       LinkOpen(sel, filename, wxExGetLineNumberFromText(sel));
     }
     else
     {
-      wxString filename;
       LinkOpen(GetTextAtCurrentPos(), filename, GetLineNumberAtCurrentPos());
     }
     }
