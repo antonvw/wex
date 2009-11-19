@@ -1619,9 +1619,9 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       // Reverse case current char.
       case '~':
         {
-        char c(GetCharAt(GetCurrentPos()));
-        islower(c) ? toupper(c): tolower(c);
-        wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, c);
+        wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
+        islower(text[0]) ? text.UpperCase(): text.LowerCase();
+        wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
         CharRight();
         }
         break;
