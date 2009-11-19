@@ -296,6 +296,7 @@ private:
   int m_MarginLineNumber;
   long m_MenuFlags;
   wxFileOffset m_PreviousLength;
+  bool m_viMode;
 
   DECLARE_EVENT_TABLE()
 };

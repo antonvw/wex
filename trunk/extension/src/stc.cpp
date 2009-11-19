@@ -526,6 +526,7 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
+  bchoices.insert(_("vi mode"));
   items.push_back(wxExConfigItem(bchoices, page));
 
   std::map<long, const wxString> choices;
@@ -637,8 +638,8 @@ void wxExSTC::ConfigGet()
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("CallTip"), wxColour("YELLOW")));
 
- // See also lexer, don't know why 3 is necessary.
- SetEdgeColumn(3 * wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
+  // See also lexer, don't know why 3 is necessary.
+  SetEdgeColumn(3 * wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
  
   SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
@@ -658,6 +659,8 @@ void wxExSTC::ConfigGet()
   SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
+
+  m_viMode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
@@ -1213,6 +1216,8 @@ void wxExSTC::Initialize()
   m_MarginFoldingNumber = 2;
   m_MarginLineNumber = 0;
 
+  m_viMode = false;
+
   UsePopUp(false);
 #ifdef __WXMSW__
   EOLModeUpdate(wxSTC_EOL_CRLF);
@@ -1538,8 +1543,21 @@ void wxExSTC::OnKey(wxKeyEvent& event)
   }
   else
   {
-    event.Skip();
-    CheckAutoComp(key);
+    if (m_viMode)
+    {
+      switch (key)
+      {
+        case 'h': CharLeft(); break;
+        case 'j': LineDown(); break;
+        case 'k': LineUp(); break;
+        case 'l': CharRight(); break;
+      }
+    }
+    else
+    {
+      event.Skip();
+      CheckAutoComp(key);
+    }
   }
 }
 
