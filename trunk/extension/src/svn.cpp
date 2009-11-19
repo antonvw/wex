@@ -269,10 +269,7 @@ wxExSVN* wxExSVN::Get(bool createOnDemand)
 
     if (!wxConfigBase::Get()->Exists(m_UsageKey))
     {
-      if (!wxConfigBase::Get()->Write(m_UsageKey, true))
-      {
-        wxFAIL;
-      }
+      wxConfigBase::Get()->Write(m_UsageKey, true);
     }
   }
 
