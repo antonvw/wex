@@ -97,13 +97,9 @@ bool wxExLexer::IsKeyword(const wxString& word) const
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
   std::set<wxString>::const_iterator it = m_Keywords.lower_bound(word.Lower());
-
-  if (it != m_Keywords.end())
-  {
-    return it->StartsWith(word.Lower());
-  }
-
-  return false;
+  return 
+    it != m_Keywords.end() &&
+    it->StartsWith(word.Lower());
 }
 
 const wxString wxExLexer::MakeComment(
