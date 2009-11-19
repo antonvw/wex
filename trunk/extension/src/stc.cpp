@@ -1571,7 +1571,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
 
   if (isdigit(key))
   {
-    m_viNumber += key;
+    m_viCommand += key;
   }
   
   if (!m_viInsertMode)
@@ -1636,7 +1636,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         break;
 
       default:
-        m_viNumber.clear();
+        m_viCommand.clear();
     }
   }
   else
