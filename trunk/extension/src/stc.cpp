@@ -1568,10 +1568,20 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
 void wxExSTC::OnKeyVi(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
+  long repeat = 1;
 
-  if (isdigit(key))
+  if (isdigit(event.GetUnicodeKey()))
   {
-    m_viCommand += key;
+    m_viCommand += event.GetUnicodeKey();
+  }
+  else
+  {
+    long number;
+
+    if (m_viCommand.ToLong(&number))
+    {
+      repeat = number;
+    }
   }
   
   if (!m_viInsertMode)
@@ -1604,7 +1614,12 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
           WordLeft(); 
         }
         break;
-      case 'W': WordRight(); break;
+      case 'W': 
+        for (int i = 0; i < repeat; i++)
+        {
+          WordRight(); 
+        }
+        break;
 
       case 'G':
         !event.ShiftDown() ? DocumentStart(): DocumentEnd();
