@@ -244,6 +244,8 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKey(wxKeyEvent& event);
+  void OnKeyNormal(wxKeyEvent& event);
+  void OnKeyVi(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
@@ -296,6 +298,7 @@ private:
   int m_MarginLineNumber;
   long m_MenuFlags;
   wxFileOffset m_PreviousLength;
+  bool m_viInsertMode;
   bool m_viMode;
 
   DECLARE_EVENT_TABLE()

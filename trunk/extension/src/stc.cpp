@@ -1216,6 +1216,7 @@ void wxExSTC::Initialize()
   m_MarginFoldingNumber = 2;
   m_MarginLineNumber = 0;
 
+  m_viInsertMode = false;
   m_viMode = false;
 
   UsePopUp(false);
@@ -1499,6 +1500,18 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 
 void wxExSTC::OnKey(wxKeyEvent& event)
 {
+  if (m_viMode)
+  {
+    OnKeyVi(event);
+  }
+  else
+  {
+    OnKeyNormal(event);
+  }
+}
+
+void wxExSTC::OnKeyNormal(wxKeyEvent& event)
+{
   const int key = event.GetKeyCode();
 
   if (GetReadOnly() && isascii(key))
@@ -1515,8 +1528,12 @@ void wxExSTC::OnKey(wxKeyEvent& event)
     MatchHexBrace();
     return;
   }
-
-  if (key == WXK_RETURN)
+  
+  if (key == WXK_ESCAPE)
+  {
+    m_viInsertMode = false;
+  }
+  else if (key == WXK_RETURN)
   {
     if (AutoCompActive())
     {
@@ -1543,23 +1560,36 @@ void wxExSTC::OnKey(wxKeyEvent& event)
   }
   else
   {
-    if (m_viMode)
-    {
-      switch (key)
-      {
-        case 'h': CharLeft(); break;
-        case 'j': LineDown(); break;
-        case 'k': LineUp(); break;
-        case 'l': CharRight(); break;
-      }
-    }
-    else
-    {
-      event.Skip();
-      CheckAutoComp(key);
-    }
+    event.Skip();
+    CheckAutoComp(key);
   }
 }
+
+void wxExSTC::OnKeyVi(wxKeyEvent& event)
+{
+  const int key = event.GetKeyCode();
+  
+  if (!m_viInsertMode)
+  {
+    switch (key)
+    {
+      case '0': Home(); break;
+      case '$': LineEnd(); break;
+
+      case 'A': m_viInsertMode = true; break;
+      case 'I': m_viInsertMode = true; break;
+        
+      case 'H': CharLeft(); break;
+      case 'J': LineDown(); break;
+      case 'K': LineUp(); break;
+      case 'L': CharRight(); break;
+    }
+  }
+  else
+  {
+    OnKeyNormal(event);
+  }
+}  
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
 {
