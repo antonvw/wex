@@ -1573,9 +1573,6 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
   {
     switch (key)
     {
-      case '0': Home(); break;
-      case '$': LineEnd(); break;
-
       case 'A': m_viInsertMode = true; break;
       case 'I': m_viInsertMode = true; break;
         
@@ -1583,6 +1580,50 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       case 'J': LineDown(); break;
       case 'K': LineUp(); break;
       case 'L': CharRight(); break;
+
+      case '0': Home(); break;
+      case '$': LineEnd(); break;
+
+      case 'B': 
+        if (event.ControlDown())
+        {
+          PageUp();
+        }
+        else
+        {
+          WordLeft(); 
+        }
+        break;
+      case 'W': WordRight(); break;
+
+      case 'G':
+        !event.ShiftDown() ? DocumentStart(): DocumentEnd();
+        break;
+
+      case 'F':
+        if (event.ControlDown())
+        {
+          PageDown();
+        }
+        break;
+
+      case 'N': 
+        FindNext(wxExFindReplaceData::Get()->GetFindString(), !event.ShiftDown());
+        break;
+
+      // Reverse case current char.
+      case '~':
+        {
+        char c(GetCharAt(GetCurrentPos()));
+        islower(c) ? toupper(c): tolower(c);
+        wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, c);
+        CharRight();
+        }
+        break;
+
+      // Repeat last text changing command.
+      case '.': 
+        break;
     }
   }
   else
