@@ -508,7 +508,7 @@ without the written consent of the copyright owner.
       <colouring no="5"> fore:red </colouring>
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol </colouring>
+      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
     </colourings>
     
     <properties>
