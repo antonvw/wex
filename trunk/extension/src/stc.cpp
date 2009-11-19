@@ -1573,8 +1573,13 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
   {
     switch (key)
     {
-      case 'A': m_viInsertMode = true; break;
-      case 'I': m_viInsertMode = true; break;
+      case 'A': 
+        m_viInsertMode = true; 
+        CharRight();
+        break;
+      case 'I': 
+        m_viInsertMode = true; 
+        break;
         
       case 'H': CharLeft(); break;
       case 'J': LineDown(); break;
