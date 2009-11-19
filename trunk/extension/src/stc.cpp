@@ -1568,6 +1568,11 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
 void wxExSTC::OnKeyVi(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
+
+  if (isdigit(key))
+  {
+    m_viNumber += key;
+  }
   
   if (!m_viInsertMode)
   {
@@ -1629,6 +1634,9 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       // Repeat last text changing command.
       case '.': 
         break;
+
+      default:
+        m_viNumber.clear();
     }
   }
   else

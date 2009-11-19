@@ -300,6 +300,7 @@ private:
   wxFileOffset m_PreviousLength;
   bool m_viInsertMode;
   bool m_viMode;
+  wxString m_viNumber;
 
   DECLARE_EVENT_TABLE()
 };
