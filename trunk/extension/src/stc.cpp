@@ -1570,9 +1570,11 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
   const int key = event.GetKeyCode();
   long repeat = 1;
 
-  if (isdigit(event.GetUnicodeKey()))
+  m_viCommand += event.GetUnicodeKey();
+
+  if (wxIsdigit(event.GetUnicodeKey()))
   {
-    m_viCommand += event.GetUnicodeKey();
+    return;
   }
   else
   {
@@ -1586,6 +1588,19 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
   
   if (!m_viInsertMode)
   {
+    if (m_viCommand.size() > 1)
+    {
+      if (m_viCommand.EndsWith("DD"))
+      {
+        for (int i = 0; i < repeat; i++) LineDelete();
+      }
+
+      m_viCommand.clear();
+      return;
+    }
+
+    bool handled_command = true;
+
     switch (key)
     {
       case 'A': 
@@ -1596,10 +1611,10 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         m_viInsertMode = true; 
         break;
         
-      case 'H': CharLeft(); break;
-      case 'J': LineDown(); break;
-      case 'K': LineUp(); break;
-      case 'L': CharRight(); break;
+      case 'H': for (int i = 0; i < repeat; i++) CharLeft(); break;
+      case 'J': for (int i = 0; i < repeat; i++) LineDown(); break;
+      case 'K': for (int i = 0; i < repeat; i++) LineUp(); break;
+      case 'L': for (int i = 0; i < repeat; i++) CharRight(); break;
 
       case '0': Home(); break;
       case '$': LineEnd(); break;
@@ -1607,19 +1622,14 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       case 'B': 
         if (event.ControlDown())
         {
-          PageUp();
+          for (int i = 0; i < repeat; i++) PageUp();
         }
         else
         {
-          WordLeft(); 
+          for (int i = 0; i < repeat; i++) WordLeft(); 
         }
         break;
-      case 'W': 
-        for (int i = 0; i < repeat; i++)
-        {
-          WordRight(); 
-        }
-        break;
+      case 'W': for (int i = 0; i < repeat; i++) WordRight(); break;
 
       case 'G':
         !event.ShiftDown() ? DocumentStart(): DocumentEnd();
@@ -1628,12 +1638,13 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       case 'F':
         if (event.ControlDown())
         {
-          PageDown();
+          for (int i = 0; i < repeat; i++) PageDown();
         }
         break;
 
       case 'N': 
-        FindNext(wxExFindReplaceData::Get()->GetFindString(), !event.ShiftDown());
+        for (int i = 0; i < repeat; i++) 
+          FindNext(wxExFindReplaceData::Get()->GetFindString(), !event.ShiftDown());
         break;
 
       // Reverse case current char.
@@ -1650,8 +1661,17 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       case '.': 
         break;
 
+      case 'P': 
+        Paste();
+        break;
+
       default:
-        m_viCommand.clear();
+        handled_command = false;
+    }
+
+    if (handled_command)
+    {
+      m_viCommand.clear();
     }
   }
   else
