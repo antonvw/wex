@@ -1605,94 +1605,101 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
   }
   else
   {
-    switch (event.GetKeyCode())
+    if (!event.ShiftDown() && !event.ControlDown())
     {
-      case 'A': 
-        m_viInsertMode = true; 
-        CharRight();
-        break;
-      case 'I': 
-        m_viInsertMode = true; 
-        break;
-        
-      case 'H': for (int i = 0; i < repeat; i++) CharLeft(); break;
-      case 'J': for (int i = 0; i < repeat; i++) LineDown(); break;
-      case 'K': for (int i = 0; i < repeat; i++) LineUp(); break;
-      case 'L': for (int i = 0; i < repeat; i++) CharRight(); break;
+      switch (event.GetKeyCode())
+      {
+        case 'A': m_viInsertMode = true; CharRight(); break;
+        case 'B': for (int i = 0; i < repeat; i++) WordLeft(); break;
+        case 'G': DocumentStart() break;
+        case 'H': for (int i = 0; i < repeat; i++) CharLeft(); break;
+        case 'I': m_viInsertMode = true; break;
+        case 'J': for (int i = 0; i < repeat; i++) LineDown(); break;
+        case 'K': for (int i = 0; i < repeat; i++) LineUp(); break;
+        case 'L': for (int i = 0; i < repeat; i++) CharRight(); break;
+        case 'N': 
+          for (int i = 0; i < repeat; i++) 
+            FindNext(wxExFindReplaceData::Get()->GetFindString());
+        case 'P': 
+          {
+          const int pos = GetCurrentPos();
+          LineDown();
+          Home();
+          Paste();
+          GotoPos(pos);
+          }
+          break;
+          
+        case 'W': for (int i = 0; i < repeat; i++) WordRight(); break;
+        case 'U': Undo(); break;
+        case 'X': DeleteBack(); break;
 
-      case '6': if (event.ShiftDown()) Home(); break; // ^
-      case '4': if (event.ShiftDown()) LineEnd(); break; // $
+        // Repeat last text changing command.
+        case '.': 
+          break;
 
-      case 'D':
-        if (event.ShiftDown())
-        {
-          DelLineRight();
-        }
-        else
-        {
+        default:
           handled_command = false;
-        }
-        break;
+      }
+    }
+    else if (event.ShiftDown() && !event.ControlDown())
+    {
+      switch (event.GetKeyCode())
+      { 
+        case 'D': DelLineRight(); break;
+        case 'G': DocumentEnd(); break;
+        case 'N': 
+          for (int i = 0; i < repeat; i++) 
+            FindNext(wxExFindReplaceData::Get()->GetFindString(), false);
+          break;
 
-      case 'B': 
-        if (event.ControlDown())
-        {
+        case '6': Home(); break; // ^
+        case '4': LineEnd(); break; // $
+      
+        case '[': ParaDown(); break; // {
+        case ']': ParaUp(); break; // }
+
+        // Reverse case current char.
+        case '~': // ~
+          {
+            wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
+            wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
+            wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
+            CharRight();
+          }
+          break;
+
+        default:
+          handled_command = false;
+      }
+    }
+    else (event.ControlDown())
+    {
+      switch (event.GetKeyCode())
+      {
+        case 'B': 
           for (int i = 0; i < repeat; i++) PageUp();
-        }
-        else
-        {
-          for (int i = 0; i < repeat; i++) WordLeft(); 
-        }
-        break;
-      case 'W': for (int i = 0; i < repeat; i++) WordRight(); break;
+          break;
+          
+        case 'E':
+          for (int i = 0; i < repeat; i++) LineScrollUp();
+          break;
 
-      case 'G':
-        !event.ShiftDown() ? DocumentStart(): DocumentEnd();
-        break;
-
-      case 'F':
-        if (event.ControlDown())
-        {
+        case 'F':
           for (int i = 0; i < repeat; i++) PageDown();
-        }
-        break;
+          break;
+        
+        case 'Y':
+          for (int i = 0; i < repeat; i++) LineScrollDown();
+          break;
 
-      case 'N': 
-        for (int i = 0; i < repeat; i++) 
-          FindNext(wxExFindReplaceData::Get()->GetFindString(), !event.ShiftDown());
-        break;
-
-      // Reverse case current char.
-      case '~': // ~
-        if (event.ShiftDown()) 
-        {
-          wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
-          wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-          wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
-          CharRight();
-        }
-        break;
-
-      // Repeat last text changing command.
-      case '.': 
-        break;
-
-      case 'P': 
-        {
-        const int pos = GetCurrentPos();
-        LineDown();
-        Home();
-        Paste();
-        GotoPos(pos);
-        }
-        break;
-
-      case 'U': 
-        Undo();
-        break;
-
-      default:
-        handled_command = false;
+        default:
+          handled_command = false;
+      }
+    }
+    else
+    {
+      wxFAIL;
     }
   }
 
