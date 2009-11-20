@@ -1500,7 +1500,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 
 void wxExSTC::OnKey(wxKeyEvent& event)
 {
-  if (m_viMode)
+  if (m_viMode && !m_viInsertMode)
   {
     OnKeyVi(event);
   }
@@ -1567,41 +1567,39 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
 
 void wxExSTC::OnKeyVi(wxKeyEvent& event)
 {
-  const int key = event.GetKeyCode();
-  long repeat = 1;
-
   m_viCommand += event.GetUnicodeKey();
 
   if (wxIsdigit(event.GetUnicodeKey()))
   {
     return;
   }
-  else
-  {
-    long number;
+  
+  int repeat = atoi(m_viCommand.c_str());
 
-    if (m_viCommand.ToLong(&number))
-    {
-      repeat = number;
-    }
+  if (repeat == 0)
+  {
+    repeat++;
   }
   
-  if (!m_viInsertMode)
+  if (m_viCommand.size() > 1)
   {
-    if (m_viCommand.size() > 1)
+    if (m_viCommand.EndsWith("DD"))
     {
-      if (m_viCommand.EndsWith("DD"))
-      {
-        for (int i = 0; i < repeat; i++) LineDelete();
-      }
-
-      m_viCommand.clear();
-      return;
+      for (int i = 0; i < repeat; i++) LineDelete();
+    }
+    else if (m_viCommand.EndsWith("YY"))
+    {
+      const int start = PositionFromLine(LineFromPosition(GetCurrentPos()));
+      CopyRange(start, start + repeat);
     }
 
+    m_viCommand.clear();
+  }
+  else
+  {
     bool handled_command = true;
 
-    switch (key)
+    switch (event.GetKeyCode())
     {
       case 'A': 
         m_viInsertMode = true; 
@@ -1651,7 +1649,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       case '~':
         {
         wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
-        islower(text[0]) ? text.UpperCase(): text.LowerCase();
+        wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
         wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
         CharRight();
         }
@@ -1673,10 +1671,6 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
     {
       m_viCommand.clear();
     }
-  }
-  else
-  {
-    OnKeyNormal(event);
   }
 }  
 
