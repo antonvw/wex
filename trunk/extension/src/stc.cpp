@@ -1514,7 +1514,7 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
 {
   const int key = event.GetKeyCode();
 
-  if (GetReadOnly() && wxIsascii(key))
+  if (GetReadOnly() && wxIsalnum(key))
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Document is readonly"));
