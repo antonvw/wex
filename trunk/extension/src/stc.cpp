@@ -1639,13 +1639,23 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
           GotoPos(pos);
           }
           break;
-          
         case 'W': for (int i = 0; i < repeat; i++) WordRight(); break;
         case 'U': Undo(); break;
         case 'X': DeleteBack(); break;
 
         // Repeat last text changing command.
         case '.': 
+          break;
+
+        case '[':
+        case ']':
+          {
+          const int brace_match = BraceMatch(GetCurrentPos());
+          if (brace_match != wxSTC_INVALID_POSITION)
+          {
+            GotoPos(brace_match);
+          }
+          }
           break;
 
         default:
@@ -1672,7 +1682,13 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
           for (int i = 0; i < repeat; i++) 
             FindNext(wxExFindReplaceData::Get()->GetFindString(), false);
           break;
-
+        case 'P': 
+          {
+          LineUp();
+          Home();
+          Paste();
+          }
+          break;
         // Reverse case current char.
         case '1': // TODO: Should be ~, that does not work
           {
@@ -1684,7 +1700,6 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
           break;
 
         case '4': LineEnd(); break; // $
-      
         case '[': ParaUp(); break; // {
         case ']': ParaDown(); break; // }
 
