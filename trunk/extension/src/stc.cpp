@@ -1567,11 +1567,16 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
 
 void wxExSTC::OnKeyVi(wxKeyEvent& event)
 {
-  m_viCommand += event.GetUnicodeKey();
-
-  if (wxIsdigit(event.GetUnicodeKey()))
+  if(
+    !event.ShiftDown() &&
+    !event.ControlDown())
   {
-    return;
+    m_viCommand += event.GetUnicodeKey();
+
+    if (wxIsdigit(event.GetUnicodeKey()))
+    {
+      return;
+    }
   }
   
   int repeat = atoi(m_viCommand.c_str());
@@ -1581,24 +1586,25 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
     repeat++;
   }
   
-  if (m_viCommand.size() > 1)
-  {
-    if (m_viCommand.EndsWith("DD"))
-    {
-      for (int i = 0; i < repeat; i++) LineDelete();
-    }
-    else if (m_viCommand.EndsWith("YY"))
-    {
-      const int start = PositionFromLine(LineFromPosition(GetCurrentPos()));
-      CopyRange(start, start + repeat);
-    }
+  bool handled_command = true;
 
-    m_viCommand.clear();
+  if (m_viCommand.EndsWith("DD"))
+  {
+    for (int i = 0; i < repeat; i++) LineDelete();
+  }
+  if (m_viCommand.EndsWith("DW"))
+  {
+    for (int i = 0; i < repeat; i++) DelWordRight();
+  }
+  else if (m_viCommand.EndsWith("YY"))
+  {
+    const int line = LineFromPosition(GetCurrentPos());
+    const int start = PositionFromLine(line);
+    const int end = GetLineEndPosition(line + repeat);
+    CopyRange(start, end);
   }
   else
   {
-    bool handled_command = true;
-
     switch (event.GetKeyCode())
     {
       case 'A': 
@@ -1614,8 +1620,19 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
       case 'K': for (int i = 0; i < repeat; i++) LineUp(); break;
       case 'L': for (int i = 0; i < repeat; i++) CharRight(); break;
 
-      case '0': Home(); break;
-      case '$': LineEnd(); break;
+      case '6': if (event.ShiftDown()) Home(); break; // ^
+      case '4': if (event.ShiftDown()) LineEnd(); break; // $
+
+      case 'D':
+        if (event.ShiftDown())
+        {
+          DelLineRight();
+        }
+        else
+        {
+          handled_command = false;
+        }
+        break;
 
       case 'B': 
         if (event.ControlDown())
@@ -1646,12 +1663,13 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         break;
 
       // Reverse case current char.
-      case '~':
+      case '~': // ~
+        if (event.ShiftDown()) 
         {
-        wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
-        wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-        wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
-        CharRight();
+          wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
+          wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
+          wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
+          CharRight();
         }
         break;
 
@@ -1660,17 +1678,27 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         break;
 
       case 'P': 
+        {
+        const int pos = GetCurrentPos();
+        LineDown();
+        Home();
         Paste();
+        GotoPos(pos);
+        }
+        break;
+
+      case 'U': 
+        Undo();
         break;
 
       default:
         handled_command = false;
     }
+  }
 
-    if (handled_command)
-    {
-      m_viCommand.clear();
-    }
+  if (handled_command)
+  {
+    m_viCommand.clear();
   }
 }  
 
