@@ -298,8 +298,6 @@ private:
   int m_MarginLineNumber;
   long m_MenuFlags;
   wxFileOffset m_PreviousLength;
-  wxString m_viCommand;
-  bool m_viInsertMode;
   bool m_viMode;
 
   DECLARE_EVENT_TABLE()

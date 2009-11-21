@@ -133,6 +133,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/tool.h</headers>
     <headers>../extension/include/wx/extension/util.h</headers>
     <headers>../extension/include/wx/extension/version.h</headers>
+    <headers>../extension/include/wx/extension/vi.h</headers>
   </lib>
 
   <lib id="wxex-rep" template="wx-lib,wxlike">

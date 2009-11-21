@@ -13,7 +13,25 @@
 
 #if wxUSE_GUI
 
-void wxExSTC::OnKeyVi(wxKeyEvent& event)
+class wxExVi
+{
+public:
+  wxExVi(wxExSTC* stc);
+  bool GetInsertMode() const {return m_InsertMode;};
+  void OnKey(wxKeyEvent& event);
+private:
+  void Run(const wxString& command);
+  wxExSTC* m_STC;
+  wxString m_viCommand;
+  bool m_InsertMode;
+};
+
+wxExVi::wxExVi(wxExSTC* stc)
+  : m_STC(stc)
+{
+}
+
+void wxExVi::OnKey(wxKeyEvent& event)
 {
   if(
     !event.ShiftDown() &&
@@ -33,23 +51,23 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
 
   if (m_viCommand.EndsWith("CW"))
   {
-    for (int i = 0; i < repeat; i++) WordRightExtend();
-    m_viInsertMode = true;
+    for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
+    m_InsertMode = true;
   }
   else if (m_viCommand.EndsWith("DD"))
   {
-    for (int i = 0; i < repeat; i++) LineDelete();
+    for (int i = 0; i < repeat; i++) m_STC->LineDelete();
   }
   else if (m_viCommand.EndsWith("DW"))
   {
-    for (int i = 0; i < repeat; i++) DelWordRight();
+    for (int i = 0; i < repeat; i++) m_STC->DelWordRight();
   }
   else if (m_viCommand.EndsWith("YY"))
   {
-    const int line = LineFromPosition(GetCurrentPos());
-    const int start = PositionFromLine(line);
-    const int end = GetLineEndPosition(line + repeat);
-    CopyRange(start, end);
+    const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+    const int start = m_STC->PositionFromLine(line);
+    const int end = m_STC->GetLineEndPosition(line + repeat);
+    m_STC->CopyRange(start, end);
   }
   else
   {
@@ -60,49 +78,49 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case '0': 
           if (m_viCommand.length() == 1)
           {
-            Home(); 
+            m_STC->Home(); 
           }
           else
           {
             handled_command = false;
           }
           break;
-        case 'A': m_viInsertMode = true; CharRight(); break;
-        case 'B': for (int i = 0; i < repeat; i++) WordLeft(); break;
-        case 'G': DocumentStart(); break;
-        case 'H': for (int i = 0; i < repeat; i++) CharLeft(); break;
-        case 'I': m_viInsertMode = true; break;
-        case 'J': for (int i = 0; i < repeat; i++) LineDown(); break;
-        case 'K': for (int i = 0; i < repeat; i++) LineUp(); break;
-        case 'L': for (int i = 0; i < repeat; i++) CharRight(); break;
+        case 'A': m_InsertMode = true; m_STC->CharRight(); break;
+        case 'B': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
+        case 'G': m_STC->DocumentStart(); break;
+        case 'H': for (int i = 0; i < repeat; i++) m_STC->CharLeft(); break;
+        case 'I': m_InsertMode = true; break;
+        case 'J': for (int i = 0; i < repeat; i++) m_STC->LineDown(); break;
+        case 'K': for (int i = 0; i < repeat; i++) m_STC->LineUp(); break;
+        case 'L': for (int i = 0; i < repeat; i++) m_STC->CharRight(); break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            FindNext(GetSearchText());
+            m_STC->FindNext(m_STC->GetSearchText());
           break;
         case 'P': 
           {
-          const int pos = GetCurrentPos();
-          LineDown();
-          Home();
-          Paste();
-          GotoPos(pos);
+          const int pos = m_STC->GetCurrentPos();
+          m_STC->LineDown();
+          m_STC->Home();
+          m_STC->Paste();
+          m_STC->GotoPos(pos);
           }
           break;
-        case 'W': for (int i = 0; i < repeat; i++) WordRight(); break;
-        case 'U': Undo(); break;
-        case 'X': DeleteBack(); break;
+        case 'W': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
+        case 'U': m_STC->Undo(); break;
+        case 'X': m_STC->DeleteBack(); break;
 
         case '/': 
           {
             wxTextEntryDialog dlg(
-              this, 
+              m_STC, 
               "/", 
               "vi",
-              GetSearchText());
+              m_STC->GetSearchText());
 
             if (dlg.ShowModal())
             {
-              FindNext(dlg.GetValue());
+              m_STC->FindNext(dlg.GetValue());
             }
           }
           break;
@@ -114,10 +132,10 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case '[':
         case ']':
           {
-          const int brace_match = BraceMatch(GetCurrentPos());
+          const int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
           if (brace_match != wxSTC_INVALID_POSITION)
           {
-            GotoPos(brace_match);
+            m_STC->GotoPos(brace_match);
           }
           }
           break;
@@ -130,53 +148,50 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
     {
       switch (event.GetKeyCode())
       { 
-        case 'A': m_viInsertMode = true; LineEnd(); break;
-        case 'D': DelLineRight(); break;
+        case 'A': m_InsertMode = true; m_STC->LineEnd(); break;
+        case 'D': m_STC->DelLineRight(); break;
         case 'G': 
           if (repeat > 1)
           {
-            GotoLine(repeat - 1);
+            m_STC->GotoLine(repeat - 1);
           }
           else
           {
-            DocumentEnd();
+            m_STC->DocumentEnd();
           }
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            FindNext(GetSearchText(), false);
+            m_STC->FindNext(m_STC->GetSearchText(), false);
           break;
         case 'P': 
           {
-          LineUp();
-          Home();
-          Paste();
+          m_STC->LineUp();
+          m_STC->Home();
+          m_STC->Paste();
           }
           break;
         // Reverse case current char.
         case '1': // TODO: Should be ~, that does not work
           {
-            wxString text(GetTextRange(GetCurrentPos(), GetCurrentPos() + 1));
+            wxString text(m_STC->GetTextRange(m_STC->GetCurrentPos(), m_STC->GetCurrentPos() + 1));
             wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-            wxStyledTextCtrl::Replace(GetCurrentPos(), GetCurrentPos() + 1, text);
-            CharRight();
+            m_STC->wxStyledTextCtrl::Replace(m_STC->GetCurrentPos(), m_STC->GetCurrentPos() + 1, text);
+            m_STC->CharRight();
           }
           break;
 
-        case '4': LineEnd(); break; // $
-        case '[': ParaUp(); break; // {
-        case ']': ParaDown(); break; // }
+        case '4': m_STC->LineEnd(); break; // $
+        case '[': m_STC->ParaUp(); break; // {
+        case ']': m_STC->ParaDown(); break; // }
 
         case ';': // :
           {
-            wxTextEntryDialog dlg(this, ":", "vi");
+            wxTextEntryDialog dlg(m_STC, ":", "vi");
+
             if (dlg.ShowModal())
             {
-              const wxString value = dlg.GetValue();
-              if (atoi(value.c_str()) != 0)
-              {
-                GotoLine(atoi(value.c_str()));
-              }
+              Run(dlg.GetValue());
             }
           }
           break;
@@ -184,14 +199,14 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case '/': 
           {
             wxTextEntryDialog dlg(
-              this, 
+              m_STC, 
               "?", 
               "vi",
-              GetSearchText());
+              m_STC->GetSearchText());
 
             if (dlg.ShowModal())
             {
-              FindNext(dlg.GetValue(), false);
+              m_STC->FindNext(dlg.GetValue(), false);
             }
           }
           break;
@@ -204,10 +219,10 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
     {
       switch (event.GetKeyCode())
       {
-        case 'B': for (int i = 0; i < repeat; i++) PageUp(); break;
-        case 'E': for (int i = 0; i < repeat; i++) LineScrollUp(); break;
-        case 'F': for (int i = 0; i < repeat; i++) PageDown(); break;
-        case 'Y': for (int i = 0; i < repeat; i++) LineScrollDown(); break;
+        case 'B': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
+        case 'E': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;
+        case 'F': for (int i = 0; i < repeat; i++) m_STC->PageDown(); break;
+        case 'Y': for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); break;
         default:
           handled_command = false;
       }
@@ -222,6 +237,16 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
   {
     m_viCommand.clear();
   }
+}
+
+void wxExViRun(const wxString& command)
+{
+}
+
+void wxExSTC::OnKeyVi(wxKeyEvent& event)
+{
+  wxExVi vi(this);
+  vi.OnKey(event);
 }  
 
 #endif // wxUSE_GUI
