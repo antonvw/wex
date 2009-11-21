@@ -1643,6 +1643,18 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case 'U': Undo(); break;
         case 'X': DeleteBack(); break;
 
+        case '/': 
+          {
+          wxASSERT(wxTheApp != NULL);
+          wxWindow* window = wxTheApp->GetTopWindow();
+          wxASSERT(window != NULL);
+          wxFrame* frame = wxDynamicCast(window, wxFrame);
+          wxASSERT(frame != NULL);
+          wxPostEvent(frame, 
+            wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_FIND));
+          }
+          break;
+
         // Repeat last text changing command.
         case '.': 
           break;
