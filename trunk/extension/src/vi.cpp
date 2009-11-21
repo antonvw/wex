@@ -26,10 +26,10 @@ void wxExVi::OnKey(wxKeyEvent& event)
     !event.ShiftDown() &&
     !event.ControlDown())
   {
-    m_viCommand += event.GetUnicodeKey();
+    m_Command += event.GetUnicodeKey();
   }
   
-  int repeat = atoi(m_viCommand.c_str());
+  int repeat = atoi(m_Command.c_str());
 
   if (repeat == 0)
   {
@@ -38,20 +38,20 @@ void wxExVi::OnKey(wxKeyEvent& event)
   
   bool handled_command = true;
 
-  if (m_viCommand.EndsWith("CW"))
+  if (m_Command.EndsWith("CW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
     m_InsertMode = true;
   }
-  else if (m_viCommand.EndsWith("DD"))
+  else if (m_Command.EndsWith("DD"))
   {
     for (int i = 0; i < repeat; i++) m_STC->LineDelete();
   }
-  else if (m_viCommand.EndsWith("DW"))
+  else if (m_Command.EndsWith("DW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->DelWordRight();
   }
-  else if (m_viCommand.EndsWith("YY"))
+  else if (m_Command.EndsWith("YY"))
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
     const int start = m_STC->PositionFromLine(line);
@@ -65,7 +65,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
       switch (event.GetKeyCode())
       {
         case '0': 
-          if (m_viCommand.length() == 1)
+          if (m_Command.length() == 1)
           {
             m_STC->Home(); 
           }
@@ -224,11 +224,50 @@ void wxExVi::OnKey(wxKeyEvent& event)
 
   if (handled_command)
   {
-    m_viCommand.clear();
+    m_Command.clear();
   }
 }
 
 void wxExVi::Run(const wxString& command)
 {
+  if (command.IsNumber())
+  {
+    m_STC->GotoLine(atoi(command.c_str());
+  }
+  else if (command.StartsWith("w"))
+  {
+    m_STC->FileSave();
+  }
+  else
+  {
+    wxRegEx regex("\([0-9]+\),\([0-9]+\)\([sm]\)/\([a-z]+\)/\([a-z]+\)");
+
+    if (regex.Matches(command))
+    {
+      size_t start, len;
+
+      if (regex.GetMatch(&start, &len, 1))
+      {
+        begin_line = command.substr(start, len);
+      }
+
+      if (regex.GetMatch(&start, &len, 2))
+      {
+        end_line = command.substr(start, len);
+      }
+
+      if (regex.GetMatch(&start, &len, 3))
+      {
+        cmd = command.substr(start, len);
+      }
+
+      if (cmd.StartsWith("m"))
+      {
+      }
+      else if (cmd.StartsWith("s"))
+      {
+      }
+    }
+  }
 }
 #endif // wxUSE_GUI

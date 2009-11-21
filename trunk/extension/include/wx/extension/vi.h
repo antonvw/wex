@@ -37,7 +37,7 @@ public:
 private:
   void Run(const wxString& command);
   wxExSTC* m_STC;
-  wxString m_viCommand;
+  wxString m_Command;
   bool m_InsertMode;
 };
 

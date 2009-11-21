@@ -1508,73 +1508,63 @@ void wxExSTC::OnKey(wxKeyEvent& event)
 {
   if (m_viMode && !m_vi->GetInsertMode())
   {
-    OnKeyVi(event);
+    m_vi->OnKey(event);
   }
   else
   {
-    OnKeyNormal(event);
-  }
-}
+    const int key = event.GetKeyCode();
 
-void wxExSTC::OnKeyNormal(wxKeyEvent& event)
-{
-  const int key = event.GetKeyCode();
-
-  if (GetReadOnly() && wxIsalnum(key))
-  {
+   if (GetReadOnly() && wxIsalnum(key))
+    {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Document is readonly"));
+      wxExFrame::StatusText(_("Document is readonly"));
 #endif
-    return;
-  }
+      return;
+    }
 
-  if (m_Flags & STC_OPEN_HEX)
-  {
-    event.Skip();
-    MatchHexBrace();
-    return;
-  }
+    if (m_Flags & STC_OPEN_HEX)
+    {
+      event.Skip();
+      MatchHexBrace();
+      return;
+    }
   
-  if (key == WXK_ESCAPE)
-  {
-    m_vi->ResetInsertMode();
-  }
-  else if (key == WXK_RETURN)
-  {
-    if (AutoCompActive())
+    if (key == WXK_ESCAPE)
+    {
+      m_vi->ResetInsertMode();
+    }
+    else if (key == WXK_RETURN)
+    {
+      if (AutoCompActive())
+      {
+        event.Skip();
+      }
+      else if (!CheckSmartIndentation())
+      {
+        event.Skip();
+      }
+    }
+    else if (key == WXK_LEFT || key == WXK_RIGHT)
     {
       event.Skip();
-    }
-    else if (!CheckSmartIndentation())
-    {
-      event.Skip();
-    }
-  }
-  else if (key == WXK_LEFT || key == WXK_RIGHT)
-  {
-    event.Skip();
 
-    if (key == WXK_LEFT)
-    {
-      if (!CheckBrace(GetCurrentPos() - 1))
-        CheckBrace(GetCurrentPos() - 2);
+      if (key == WXK_LEFT)
+      {
+        if (!CheckBrace(GetCurrentPos() - 1))
+          CheckBrace(GetCurrentPos() - 2);
+      }
+      else if (!CheckBrace(GetCurrentPos()))
+      {
+        CheckBrace(GetCurrentPos() + 1);
+      }
     }
-    else if (!CheckBrace(GetCurrentPos()))
+    else
     {
-      CheckBrace(GetCurrentPos() + 1);
+     event.Skip();
+      CheckAutoComp(key);
     }
-  }
-  else
-  {
-    event.Skip();
-    CheckAutoComp(key);
   }
 }
-
-void wxExSTC::OnKeyVi(wxKeyEvent& event)
-{
-  m_vi->OnKey(event);
-}  
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
 {
