@@ -77,7 +77,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case 'L': for (int i = 0; i < repeat; i++) CharRight(); break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            FindNext(wxExFindReplaceData::Get()->GetFindString());
+            FindNext(GetSearchText());
           break;
         case 'P': 
           {
@@ -98,7 +98,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
               this, 
               "/", 
               "vi",
-              wxExFindReplaceData::Get()->GetFindString());
+              GetSearchText());
 
             if (dlg.ShowModal())
             {
@@ -144,7 +144,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            FindNext(wxExFindReplaceData::Get()->GetFindString(), false);
+            FindNext(GetSearchText(), false);
           break;
         case 'P': 
           {
@@ -187,7 +187,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
               this, 
               "?", 
               "vi",
-              wxExFindReplaceData::Get()->GetFindString());
+              GetSearchText());
 
             if (dlg.ShowModal())
             {
