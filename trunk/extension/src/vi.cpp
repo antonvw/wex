@@ -7,6 +7,7 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/textdlg.h> 
 #include <wx/extension/stc.h>
 #include <wx/extension/frd.h>
 
@@ -162,6 +163,18 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case '[': ParaUp(); break; // {
         case ']': ParaDown(); break; // }
 
+        case ';': // :
+          {
+            wxTextEntryDialog dlg(this, ":", "vi");
+            if (dlg.ShowModal())
+            {
+              const wxString value = dlg.GetValue();
+              if (atoi(value.c_str()) != 0)
+              {
+                GotoLine(atoi(value.c_str()));
+              }
+            }
+          }
         default:
           handled_command = false;
       }
