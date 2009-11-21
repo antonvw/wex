@@ -228,7 +228,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
   }
 }
 
-void wxExViRun(const wxString& command)
+void wxExVi::Run(const wxString& command)
 {
 }
 #endif // wxUSE_GUI
