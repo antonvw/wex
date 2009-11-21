@@ -99,6 +99,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/textfile.cpp</sources>
     <sources>../extension/src/tool.cpp</sources>
     <sources>../extension/src/util.cpp</sources>
+    <sources>../extension/src/vi.cpp</sources>
     
     <headers>../extension/include/wx/extension/app.h</headers>
     <headers>../extension/include/wx/extension/art.h</headers>
