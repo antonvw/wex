@@ -21,6 +21,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
@@ -127,6 +128,11 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   {
     Open(stc.GetFileName(), m_GotoLineNumber, wxEmptyString, m_Flags);
   }
+}
+
+wxExSTC::~wxExSTC()
+{
+  delete m_vi;
 }
 
 void wxExSTC::AddAsciiTable()
@@ -1216,8 +1222,8 @@ void wxExSTC::Initialize()
   m_MarginFoldingNumber = 2;
   m_MarginLineNumber = 0;
 
-  m_viInsertMode = false;
   m_viMode = false;
+  m_vi = new wxExVi(this);
 
   UsePopUp(false);
 #ifdef __WXMSW__
@@ -1500,7 +1506,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 
 void wxExSTC::OnKey(wxKeyEvent& event)
 {
-  if (m_viMode && !m_viInsertMode)
+  if (m_viMode && !m_vi->GetInsertMode())
   {
     OnKeyVi(event);
   }
@@ -1531,7 +1537,7 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
   
   if (key == WXK_ESCAPE)
   {
-    m_viInsertMode = false;
+    m_vi->ResetInsertMode();
   }
   else if (key == WXK_RETURN)
   {
@@ -1564,6 +1570,11 @@ void wxExSTC::OnKeyNormal(wxKeyEvent& event)
     CheckAutoComp(key);
   }
 }
+
+void wxExSTC::OnKeyVi(wxKeyEvent& event)
+{
+  m_vi->OnKey(event);
+}  
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
 {

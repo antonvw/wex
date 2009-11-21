@@ -8,26 +8,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/textdlg.h> 
+#include <wx/extension/vi.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/frd.h>
 
 #if wxUSE_GUI
 
-class wxExVi
-{
-public:
-  wxExVi(wxExSTC* stc);
-  bool GetInsertMode() const {return m_InsertMode;};
-  void OnKey(wxKeyEvent& event);
-private:
-  void Run(const wxString& command);
-  wxExSTC* m_STC;
-  wxString m_viCommand;
-  bool m_InsertMode;
-};
-
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
+  , m_InsertMode(false)
 {
 }
 
@@ -242,11 +231,4 @@ void wxExVi::OnKey(wxKeyEvent& event)
 void wxExViRun(const wxString& command)
 {
 }
-
-void wxExSTC::OnKeyVi(wxKeyEvent& event)
-{
-  wxExVi vi(this);
-  vi.OnKey(event);
-}  
-
 #endif // wxUSE_GUI

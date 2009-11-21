@@ -18,6 +18,7 @@
 #include <wx/extension/menu.h> // for wxExMenu
 
 class wxExConfigDialog;
+class wxExVi;
 
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
@@ -82,6 +83,9 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = 0,
     const wxString& name = wxSTCNameStr);
+
+  /// Destructor.
+ ~wxExSTC();
 
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
@@ -299,6 +303,7 @@ private:
   long m_MenuFlags;
   wxFileOffset m_PreviousLength;
   bool m_viMode;
+  wxExVi* m_vi;
 
   DECLARE_EVENT_TABLE()
 };
