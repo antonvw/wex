@@ -1,13 +1,11 @@
-/******************************************************************************\
-* File:          stc.cpp
-* Purpose:       Implementation of class wxExSTC
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id: stc.cpp 2228 2009-11-21 09:00:23Z antonvw $
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      vi.cpp
+// Purpose:   Implementation of class wxExSTC vi mode
+// Author:    Anton van Wezenbeek
+// Created:   2009-11-21
+// RCS-ID:    $Id$
+// Copyright: (c) 2009 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stc.h>
 
