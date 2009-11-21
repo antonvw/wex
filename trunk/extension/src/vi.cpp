@@ -78,6 +78,7 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
         case 'N': 
           for (int i = 0; i < repeat; i++) 
             FindNext(wxExFindReplaceData::Get()->GetFindString());
+          break;
         case 'P': 
           {
           const int pos = GetCurrentPos();
@@ -93,13 +94,16 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
 
         case '/': 
           {
-          wxASSERT(wxTheApp != NULL);
-          wxWindow* window = wxTheApp->GetTopWindow();
-          wxASSERT(window != NULL);
-          wxFrame* frame = wxDynamicCast(window, wxFrame);
-          wxASSERT(frame != NULL);
-          wxPostEvent(frame, 
-            wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_FIND));
+            wxTextEntryDialog dlg(
+              this, 
+              "/", 
+              "vi",
+              wxExFindReplaceData::Get()->GetFindString());
+
+            if (dlg.ShowModal())
+            {
+              FindNext(dlg.GetValue());
+            }
           }
           break;
 
@@ -175,6 +179,23 @@ void wxExSTC::OnKeyVi(wxKeyEvent& event)
               }
             }
           }
+          break;
+
+        case '/': 
+          {
+            wxTextEntryDialog dlg(
+              this, 
+              "?", 
+              "vi",
+              wxExFindReplaceData::Get()->GetFindString());
+
+            if (dlg.ShowModal())
+            {
+              FindNext(dlg.GetValue(), false);
+            }
+          }
+          break;
+
         default:
           handled_command = false;
       }
