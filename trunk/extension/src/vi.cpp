@@ -242,6 +242,10 @@ void wxExVi::LineEditor(const wxString& command)
   {
     m_STC->DocumentEnd();
   }
+  else if (command == ".=")
+  {
+    wxMessageBox(m_STC->GetLineCount())
+  }
   else if (command.IsNumber())
   {
     m_STC->GotoLine(atoi(command.c_str()));
@@ -309,8 +313,9 @@ bool wxExVi::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address)
 {
-  int begin_line = atoi(begin_address.c_str());
-  int end_line = atoi(end_address.c_str());
+  const int begin_line = atoi(begin_address.c_str());
+  const int end_line = 
+    (end_address == "." ? m_STC->GetLineCount(): atoi(end_address.c_str()));
 
   if (begin_line == 0 || end_line == 0)
   {
