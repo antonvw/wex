@@ -35,7 +35,20 @@ public:
   /// Resets insert mode.
   void ResetInsertMode() {m_InsertMode = false;};
 private:
-  void Run(const wxString& command);
+  void LineEditor(const wxString& command);
+  void Move(
+    const wxString& begin_address, 
+    const wxString& end_address, 
+    const wxString& destination);
+  bool SetSelection(
+    const wxString& begin_address, 
+    const wxString& end_address);
+  void Substitute(
+    const wxString& begin_address, 
+    const wxString& end_address, 
+    const wxString& pattern,
+    const wxString& replacement);
+
   wxExSTC* m_STC;
   wxString m_Command;
   bool m_InsertMode;

@@ -7,10 +7,10 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/regex.h> 
 #include <wx/textdlg.h> 
 #include <wx/extension/vi.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/frd.h>
 
 #if wxUSE_GUI
 
@@ -163,9 +163,17 @@ void wxExVi::OnKey(wxKeyEvent& event)
         // Reverse case current char.
         case '1': // TODO: Should be ~, that does not work
           {
-            wxString text(m_STC->GetTextRange(m_STC->GetCurrentPos(), m_STC->GetCurrentPos() + 1));
+            wxString text(m_STC->GetTextRange(
+              m_STC->GetCurrentPos(), 
+              m_STC->GetCurrentPos() + 1));
+
             wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-            m_STC->wxStyledTextCtrl::Replace(m_STC->GetCurrentPos(), m_STC->GetCurrentPos() + 1, text);
+
+            m_STC->wxStyledTextCtrl::Replace(
+              m_STC->GetCurrentPos(), 
+              m_STC->GetCurrentPos() + 1, 
+              text);
+
             m_STC->CharRight();
           }
           break;
@@ -180,7 +188,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
 
             if (dlg.ShowModal())
             {
-              Run(dlg.GetValue());
+              LineEditor(dlg.GetValue());
             }
           }
           break;
@@ -228,11 +236,15 @@ void wxExVi::OnKey(wxKeyEvent& event)
   }
 }
 
-void wxExVi::Run(const wxString& command)
+void wxExVi::LineEditor(const wxString& command)
 {
-  if (command.IsNumber())
+  if (command == "$")
   {
-    m_STC->GotoLine(atoi(command.c_str());
+    m_STC->DocumentEnd();
+  }
+  else if (command.IsNumber())
+  {
+    m_STC->GotoLine(atoi(command.c_str()));
   }
   else if (command.StartsWith("w"))
   {
@@ -240,34 +252,116 @@ void wxExVi::Run(const wxString& command)
   }
   else
   {
-    wxRegEx regex("\([0-9]+\),\([0-9]+\)\([sm]\)/\([a-z]+\)/\([a-z]+\)");
+    // [address] m destination
+    wxRegEx m("\\([0-9]+\\),\\([0-9]+\\)m\\([0-9]+\\)");
 
-    if (regex.Matches(command))
+    // [address] s [/pattern/replacement/] [options] [count]
+    wxRegEx s("\\([0-9]+\\),\\([0-9]+\\)s/\\([a-z]+\\)/\\([a-z]+\\)");
+
+    if (m.Matches(command))
     {
       size_t start, len;
 
-      if (regex.GetMatch(&start, &len, 1))
+      wxString begin_address, end_address, destination;
+
+      if (m.GetMatch(&start, &len, 1))
       {
-        begin_line = command.substr(start, len);
+        begin_address = command.substr(start, len);
       }
 
-      if (regex.GetMatch(&start, &len, 2))
+      if (m.GetMatch(&start, &len, 2))
       {
-        end_line = command.substr(start, len);
+        end_address = command.substr(start, len);
       }
 
-      if (regex.GetMatch(&start, &len, 3))
+      if (m.GetMatch(&start, &len, 3))
       {
-        cmd = command.substr(start, len);
+        destination = command.substr(start, len);
       }
 
-      if (cmd.StartsWith("m"))
+      Move(begin_address, end_address, destination);
+    }
+    else if (s.Matches(command))
+    {
+      size_t start, len;
+
+      wxString begin_address, end_address, pattern, replacement;
+
+      if (s.GetMatch(&start, &len, 1))
       {
+        begin_address = command.substr(start, len);
       }
-      else if (cmd.StartsWith("s"))
+
+      if (s.GetMatch(&start, &len, 2))
       {
+        end_address = command.substr(start, len);
       }
+
+      if (s.GetMatch(&start, &len, 3))
+      {
+        pattern = command.substr(start, len);
+      }
+
+      if (s.GetMatch(&start, &len, 4))
+      {
+        replacement = command.substr(start, len);
+      }
+
+      Substitute(begin_address, end_address, pattern, replacement);
     }
   }
 }
+
+void wxExVi::Move(
+  const wxString& begin_address, 
+  const wxString& end_address, 
+  const wxString& destination)
+{
+  if (!SetSelection(begin_address, end_address))
+  {
+    return;
+  }
+
+  if (destination.IsNumber())
+  {
+    int dest_line = atoi(destination.c_str());
+    m_STC->GotoLine(dest_line);
+  }
+
+  m_STC->Cut();
+  m_STC->Paste();
+}
+
+bool wxExVi::SetSelection(
+  const wxString& begin_address, 
+  const wxString& end_address)
+{
+  int begin_line = atoi(begin_address.c_str());
+  int end_line = atoi(end_address.c_str());
+
+  if (begin_line == 0 || end_line == 0)
+  {
+    return false;
+  }
+
+  m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line));
+  m_STC->SetSelectionEnd(m_STC->PositionFromLine(end_line));
+
+  return true;
+}
+
+void wxExVi::Substitute(
+  const wxString& begin_address, 
+  const wxString& end_address, 
+  const wxString& pattern,
+  const wxString& replacement)
+{
+  if (!SetSelection(begin_address, end_address))
+  {
+    return;
+  }
+
+  m_STC->ReplaceAll(pattern, replacement, true);
+}
+
 #endif // wxUSE_GUI
