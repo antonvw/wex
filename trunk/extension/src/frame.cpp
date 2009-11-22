@@ -273,6 +273,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case ID_EDIT_FIND_NEXT: 
+    GetSearchText();
+
     if (stc != NULL)
     {
       stc->FindNext(frd->GetFindString()); 
@@ -288,6 +290,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_EDIT_FIND_PREVIOUS: 
+    GetSearchText();
+
     if (stc != NULL)
     {
       stc->FindNext(frd->GetFindString(), false);
@@ -356,8 +360,6 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   if (stc != NULL && stc->IsShown())
   {
-    stc->GetSearchText();
-  
     // Match word and regular expression do not work together.
     if (frd->MatchWord())
     {
