@@ -7,8 +7,8 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/regex.h> 
 #include <wx/textdlg.h> 
+#include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
 #include <wx/extension/stc.h>
 
@@ -253,59 +253,31 @@ void wxExVi::LineEditor(const wxString& command)
   else
   {
     // [address] m destination
-    wxRegEx m("\\([0-9]+\\),\\([0-9]+\\)m\\([0-9]+\\)", wxRE_ADVANCED);
 
     // [address] s [/pattern/replacement/] [options] [count]
-    wxRegEx s("\\([0-9]+\\),\\([0-9]+\\)s/\\([a-z]+\\)/\\([a-z]+\\)", wxRE_ADVANCED);
 
-    if (m.Matches(command))
+    const wxString begin_address = command.BeforeFirst(',');
+
+    wxString rest = command.AfterFirst(',');
+
+    wxStringTokenizer tkz(rest, "mb");
+
+    const wxString end_address = tkz.GetNextToken();
+
+    const wxChar cmd = tkz.GetLastDelimiter();
+
+    rest = tkz.GetString();
+
+    if (cmd == 'm')
     {
-      size_t start, len;
-
-      wxString begin_address, end_address, destination;
-
-      if (m.GetMatch(&start, &len, 1))
-      {
-        begin_address = command.substr(start, len);
-      }
-
-      if (m.GetMatch(&start, &len, 2))
-      {
-        end_address = command.substr(start, len);
-      }
-
-      if (m.GetMatch(&start, &len, 3))
-      {
-        destination = command.substr(start, len);
-      }
-
-      Move(begin_address, end_address, destination);
+      Move(begin_address, end_address, rest);
     }
-    else if (s.Matches(command))
+    else if (cmd == 'c')
     {
-      size_t start, len;
+      wxStringTokenizer tkz(rest, "/");
 
-      wxString begin_address, end_address, pattern, replacement;
-
-      if (s.GetMatch(&start, &len, 1))
-      {
-        begin_address = command.substr(start, len);
-      }
-
-      if (s.GetMatch(&start, &len, 2))
-      {
-        end_address = command.substr(start, len);
-      }
-
-      if (s.GetMatch(&start, &len, 3))
-      {
-        pattern = command.substr(start, len);
-      }
-
-      if (s.GetMatch(&start, &len, 4))
-      {
-        replacement = command.substr(start, len);
-      }
+      const wxString pattern = tkz.GetNextToken();
+      const wxString replacement = tkz.GetNextToken();
 
       Substitute(begin_address, end_address, pattern, replacement);
     }
@@ -322,13 +294,14 @@ void wxExVi::Move(
     return;
   }
 
+  m_STC->Cut();
+
   if (destination.IsNumber())
   {
     int dest_line = atoi(destination.c_str());
     m_STC->GotoLine(dest_line);
   }
 
-  m_STC->Cut();
   m_STC->Paste();
 }
 
