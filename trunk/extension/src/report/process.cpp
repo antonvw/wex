@@ -68,7 +68,7 @@ bool wxExProcessWithListView::CheckInput()
     wxString path;
 
     // Check on error in php script output.
-    wxRegEx regex(".*in \\(.*\\) on line \\(.*\\)");
+    wxRegEx regex(".*in \\(.*\\) on line \\(.*\\)", wxRE_ADVANCED);
 
     if (regex.Matches(line))
     {

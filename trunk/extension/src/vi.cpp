@@ -107,7 +107,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
               "vi",
               m_STC->GetSearchText());
 
-            if (dlg.ShowModal())
+            if (dlg.ShowModal() == wxID_OK)
             {
               m_STC->FindNext(dlg.GetValue());
             }
@@ -186,7 +186,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
           {
             wxTextEntryDialog dlg(m_STC, ":", "vi");
 
-            if (dlg.ShowModal())
+            if (dlg.ShowModal() == wxID_OK)
             {
               LineEditor(dlg.GetValue());
             }
@@ -201,7 +201,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
               "vi",
               m_STC->GetSearchText());
 
-            if (dlg.ShowModal())
+            if (dlg.ShowModal() == wxID_OK)
             {
               m_STC->FindNext(dlg.GetValue(), false);
             }
@@ -253,10 +253,10 @@ void wxExVi::LineEditor(const wxString& command)
   else
   {
     // [address] m destination
-    wxRegEx m("\\([0-9]+\\),\\([0-9]+\\)m\\([0-9]+\\)");
+    wxRegEx m("\\([0-9]+\\),\\([0-9]+\\)m\\([0-9]+\\)", wxRE_ADVANCED);
 
     // [address] s [/pattern/replacement/] [options] [count]
-    wxRegEx s("\\([0-9]+\\),\\([0-9]+\\)s/\\([a-z]+\\)/\\([a-z]+\\)");
+    wxRegEx s("\\([0-9]+\\),\\([0-9]+\\)s/\\([a-z]+\\)/\\([a-z]+\\)", wxRE_ADVANCED);
 
     if (m.Matches(command))
     {
