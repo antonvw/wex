@@ -401,7 +401,14 @@ int wxExVi::ToLineNumber(const wxString& address) const
     if (!filtered_address.IsNumber()) return 0;
   }
 
-  return dot + atoi(filtered_address.c_str());
+  const int line_no = dot + atoi(filtered_address.c_str());
+  
+  if (line_no < 0)
+  {
+    return 0;
+  }
+  
+  return line_no;
 }
 
 void wxExVi::Yank(
