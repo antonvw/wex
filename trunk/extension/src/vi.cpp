@@ -381,12 +381,17 @@ void wxExVi::Substitute(
   const wxString& pattern,
   const wxString& replacement)
 {
-  if (!SetSelection(begin_address, end_address))
-  {
-    return;
-  }
+  m_STC->SetTargetStart(m_STC->PositionFromLine(ToLineNumber(begin_address)));
+  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(ToLineNumber(end_address)));
 
-  m_STC->ReplaceAll(pattern, replacement, true);
+  while (m_STC->SearchInTarget(pattern) != -1)
+  {
+    const int start = m_STC->GetTargetStart();
+    const int end = m_STC->GetTargetEnd();
+    const int length = m_STC->ReplaceTargetRE(replacement);
+    m_STC->SetTargetStart(start + length);
+    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(ToLineNumber(end_address)));
+  }
 }
 
 int wxExVi::ToLineNumber(const wxString& address) const
