@@ -144,7 +144,12 @@ void wxExVi::OnKey(wxKeyEvent& event)
   }
   else if (m_Command.EndsWith("DD"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->LineDelete();
+    const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+    const int start = m_STC->PositionFromLine(line);
+    const int end = m_STC->GetLineEndPosition(line + repeat - 1);
+    m_STC->SetSelectionStart(start);
+    m_STC->SetSelectionEnd(end);
+    m_STC->Delete();
   }
   else if (m_Command.EndsWith("DW"))
   {
@@ -158,7 +163,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
     const int start = m_STC->PositionFromLine(line);
-    const int end = m_STC->GetLineEndPosition(line + repeat);
+    const int end = m_STC->GetLineEndPosition(line + repeat - 1);
     m_STC->CopyRange(start, end);
   }
   else
