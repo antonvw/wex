@@ -40,11 +40,11 @@ void wxExVi::LineEditor(const wxString& command)
   }
   else if (command == ".=")
   {
-    wxMessageBox(wxString::Format("%d", m_STC->GetLineCount()));
+    wxMessageBox(wxString::Format("%d", m_STC->GetCurrentLine() + 1));
   }
   else if (command.IsNumber())
   {
-    m_STC->GotoLine(atoi(command.c_str()));
+    m_STC->GotoLine(atoi(command.c_str()) - 1);
   }
   else if (command.StartsWith("w"))
   {
@@ -102,7 +102,7 @@ void wxExVi::Move(
   if (destination.IsNumber())
   {
     int dest_line = atoi(destination.c_str());
-    m_STC->GotoLine(dest_line);
+    m_STC->GotoLine(dest_line - 1);
   }
 
   m_STC->Paste();
