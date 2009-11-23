@@ -16,8 +16,9 @@
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
-  , m_InsertMode(false)
+  , m_InsertMode(true)
 {
+  ResetInsertMode();
 }
 
 void wxExVi::Delete(
@@ -130,7 +131,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
   if (m_Command.EndsWith("CW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
-    m_InsertMode = true;
+    SetInsertMode();
   }
   else if (m_Command.EndsWith("DD"))
   {
@@ -167,11 +168,11 @@ void wxExVi::OnKey(wxKeyEvent& event)
             handled_command = false;
           }
           break;
-        case 'A': m_InsertMode = true; m_STC->CharRight(); break;
+        case 'A': SetInsertMode(); m_STC->CharRight(); break;
         case 'B': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
         case 'G': m_STC->DocumentStart(); break;
         case 'H': for (int i = 0; i < repeat; i++) m_STC->CharLeft(); break;
-        case 'I': m_InsertMode = true; break;
+        case 'I': SetInsertMode(); break;
         case 'J': for (int i = 0; i < repeat; i++) m_STC->LineDown(); break;
         case 'K': for (int i = 0; i < repeat; i++) m_STC->LineUp(); break;
         case 'L': for (int i = 0; i < repeat; i++) m_STC->CharRight(); break;
@@ -230,7 +231,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
     {
       switch (event.GetKeyCode())
       { 
-        case 'A': m_InsertMode = true; m_STC->LineEnd(); break;
+        case 'A': SetInsertMode(); m_STC->LineEnd(); break;
         case 'D': m_STC->DelLineRight(); break;
         case 'G': 
           if (repeat > 1)
@@ -326,6 +327,24 @@ void wxExVi::OnKey(wxKeyEvent& event)
   if (handled_command)
   {
     m_Command.clear();
+  }
+}
+
+void wxExVi::ResetInsertMode() 
+{
+  if (m_InsertMode)
+  {
+    m_InsertMode = false;
+    m_STC->SetReadOnly(true);
+  }
+}
+
+void wxExVi::SetInsertMode()
+{
+  if (!m_STC->GetFileName().GetStat().IsReadOnly())
+  {
+    m_InsertMode = true;
+    m_STC->SetReadOnly(false);
   }
 }
 

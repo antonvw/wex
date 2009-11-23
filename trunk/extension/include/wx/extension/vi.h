@@ -33,7 +33,7 @@ public:
   void OnKey(wxKeyEvent& event);
 
   /// Resets insert mode.
-  void ResetInsertMode() {m_InsertMode = false;};
+  void ResetInsertMode();
 private:
   void Delete(
     const wxString& begin_address, 
@@ -43,6 +43,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& destination);
+  void SetInsertMode();
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address);
