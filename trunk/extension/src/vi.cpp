@@ -53,41 +53,36 @@ void wxExVi::LineEditor(const wxString& command)
   else
   {
     // [address] m destination
-
     // [address] s [/pattern/replacement/] [options] [count]
-
     const wxString begin_address = command.BeforeFirst(',');
-
     wxString rest = command.AfterFirst(',');
-
     wxStringTokenizer tkz(rest, "mb");
-
     const wxString end_address = tkz.GetNextToken();
-
     const wxChar cmd = tkz.GetLastDelimiter();
 
     rest = tkz.GetString();
 
-    if (cmd == 'm')
+    switch (cmd)
     {
-      Move(begin_address, end_address, rest);
-    }
-    else if (cmd == 'c')
-    {
+    case 'c':
+      {
       wxStringTokenizer tkz(rest, "/");
 
       const wxString pattern = tkz.GetNextToken();
       const wxString replacement = tkz.GetNextToken();
 
       Substitute(begin_address, end_address, pattern, replacement);
-    }
-    else if (cmd == 'd')
-    {
+      }
+      break;
+    case 'd':
       Delete(begin_address, end_address);
-    }
-    else if (cmd == 'y')
-    {
+      break;
+    case 'm':
+      Move(begin_address, end_address, rest);
+      break;
+    case 'y':
       Yank(begin_address, end_address);
+      break;
     }
   }
 }
