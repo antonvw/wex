@@ -71,7 +71,13 @@ void wxExVi::LineEditor(const wxString& command)
 
     switch (cmd)
     {
-    case 'c':
+    case 'd':
+      Delete(begin_address, end_address);
+      break;
+    case 'm':
+      Move(begin_address, end_address, rest);
+      break;
+    case 's':
       {
       wxStringTokenizer tkz(rest, "/");
 
@@ -80,12 +86,6 @@ void wxExVi::LineEditor(const wxString& command)
 
       Substitute(begin_address, end_address, pattern, replacement);
       }
-      break;
-    case 'd':
-      Delete(begin_address, end_address);
-      break;
-    case 'm':
-      Move(begin_address, end_address, rest);
       break;
     case 'y':
       Yank(begin_address, end_address);
