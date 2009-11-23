@@ -63,7 +63,8 @@ void wxExVi::LineEditor(const wxString& command)
     // [address] s [/pattern/replacement/] [options] [count]
     const wxString begin_address = command.BeforeFirst(',');
     wxString rest = command.AfterFirst(',');
-    wxStringTokenizer tkz(rest, "mb");
+
+    wxStringTokenizer tkz(rest, "dmsy");
     const wxString end_address = tkz.GetNextToken();
     const wxChar cmd = tkz.GetLastDelimiter();
 
@@ -81,6 +82,7 @@ void wxExVi::LineEditor(const wxString& command)
       {
       wxStringTokenizer tkz(rest, "/");
 
+      tkz.GetNextToken(); // skip empty token
       const wxString pattern = tkz.GetNextToken();
       const wxString replacement = tkz.GetNextToken();
 
