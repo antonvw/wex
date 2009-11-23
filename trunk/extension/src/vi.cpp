@@ -244,7 +244,7 @@ void wxExVi::LineEditor(const wxString& command)
   }
   else if (command == ".=")
   {
-    wxMessageBox(m_STC->GetLineCount())
+    wxMessageBox(wxString::Format("%d", m_STC->GetLineCount()));
   }
   else if (command.IsNumber())
   {
