@@ -20,6 +20,99 @@ wxExVi::wxExVi(wxExSTC* stc)
 {
 }
 
+void wxExVi::Delete(
+  const wxString& begin_address, 
+  const wxString& end_address)
+{
+  if (!SetSelection(begin_address, end_address))
+  {
+    return;
+  }
+
+  m_STC->Cut();
+}
+
+void wxExVi::LineEditor(const wxString& command)
+{
+  if (command == "$")
+  {
+    m_STC->DocumentEnd();
+  }
+  else if (command == ".=")
+  {
+    wxMessageBox(wxString::Format("%d", m_STC->GetLineCount()));
+  }
+  else if (command.IsNumber())
+  {
+    m_STC->GotoLine(atoi(command.c_str()));
+  }
+  else if (command.StartsWith("w"))
+  {
+    m_STC->FileSave();
+  }
+  else
+  {
+    // [address] m destination
+
+    // [address] s [/pattern/replacement/] [options] [count]
+
+    const wxString begin_address = command.BeforeFirst(',');
+
+    wxString rest = command.AfterFirst(',');
+
+    wxStringTokenizer tkz(rest, "mb");
+
+    const wxString end_address = tkz.GetNextToken();
+
+    const wxChar cmd = tkz.GetLastDelimiter();
+
+    rest = tkz.GetString();
+
+    if (cmd == 'm')
+    {
+      Move(begin_address, end_address, rest);
+    }
+    else if (cmd == 'c')
+    {
+      wxStringTokenizer tkz(rest, "/");
+
+      const wxString pattern = tkz.GetNextToken();
+      const wxString replacement = tkz.GetNextToken();
+
+      Substitute(begin_address, end_address, pattern, replacement);
+    }
+    else if (cmd == 'd')
+    {
+      Delete(begin_address, end_address);
+    }
+    else if (cmd == 'y')
+    {
+      Yank(begin_address, end_address);
+    }
+  }
+}
+
+void wxExVi::Move(
+  const wxString& begin_address, 
+  const wxString& end_address, 
+  const wxString& destination)
+{
+  if (!SetSelection(begin_address, end_address))
+  {
+    return;
+  }
+
+  m_STC->Cut();
+
+  if (destination.IsNumber())
+  {
+    int dest_line = atoi(destination.c_str());
+    m_STC->GotoLine(dest_line);
+  }
+
+  m_STC->Paste();
+}
+
 void wxExVi::OnKey(wxKeyEvent& event)
 {
   if(
@@ -236,79 +329,6 @@ void wxExVi::OnKey(wxKeyEvent& event)
   }
 }
 
-void wxExVi::LineEditor(const wxString& command)
-{
-  if (command == "$")
-  {
-    m_STC->DocumentEnd();
-  }
-  else if (command == ".=")
-  {
-    wxMessageBox(wxString::Format("%d", m_STC->GetLineCount()));
-  }
-  else if (command.IsNumber())
-  {
-    m_STC->GotoLine(atoi(command.c_str()));
-  }
-  else if (command.StartsWith("w"))
-  {
-    m_STC->FileSave();
-  }
-  else
-  {
-    // [address] m destination
-
-    // [address] s [/pattern/replacement/] [options] [count]
-
-    const wxString begin_address = command.BeforeFirst(',');
-
-    wxString rest = command.AfterFirst(',');
-
-    wxStringTokenizer tkz(rest, "mb");
-
-    const wxString end_address = tkz.GetNextToken();
-
-    const wxChar cmd = tkz.GetLastDelimiter();
-
-    rest = tkz.GetString();
-
-    if (cmd == 'm')
-    {
-      Move(begin_address, end_address, rest);
-    }
-    else if (cmd == 'c')
-    {
-      wxStringTokenizer tkz(rest, "/");
-
-      const wxString pattern = tkz.GetNextToken();
-      const wxString replacement = tkz.GetNextToken();
-
-      Substitute(begin_address, end_address, pattern, replacement);
-    }
-  }
-}
-
-void wxExVi::Move(
-  const wxString& begin_address, 
-  const wxString& end_address, 
-  const wxString& destination)
-{
-  if (!SetSelection(begin_address, end_address))
-  {
-    return;
-  }
-
-  m_STC->Cut();
-
-  if (destination.IsNumber())
-  {
-    int dest_line = atoi(destination.c_str());
-    m_STC->GotoLine(dest_line);
-  }
-
-  m_STC->Paste();
-}
-
 bool wxExVi::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address)
@@ -340,6 +360,18 @@ void wxExVi::Substitute(
   }
 
   m_STC->ReplaceAll(pattern, replacement, true);
+}
+
+void wxExVi::Yank(
+  const wxString& begin_address, 
+  const wxString& end_address)
+{
+  if (!SetSelection(begin_address, end_address))
+  {
+    return;
+  }
+
+  m_STC->Copy();
 }
 
 #endif // wxUSE_GUI
