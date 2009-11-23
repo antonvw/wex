@@ -149,7 +149,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
     const int end = m_STC->GetLineEndPosition(line + repeat - 1);
     m_STC->SetSelectionStart(start);
     m_STC->SetSelectionEnd(end);
-    m_STC->Delete();
+    m_STC->Cut();
   }
   else if (m_Command.EndsWith("DW"))
   {
