@@ -52,6 +52,7 @@ private:
     const wxString& end_address, 
     const wxString& pattern,
     const wxString& replacement);
+  int ToLineNumber(const wxString& address) const;
   void Yank(
     const wxString& begin_address, 
     const wxString& end_address);

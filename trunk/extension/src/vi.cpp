@@ -35,13 +35,19 @@ void wxExVi::Delete(
 
 void wxExVi::LineEditor(const wxString& command)
 {
+  if (command.empty())
+  {
+    // Do nothing.
+  }
   if (command == "$")
   {
     m_STC->DocumentEnd();
   }
   else if (command == ".=")
   {
-    wxMessageBox(wxString::Format("%d", m_STC->GetCurrentLine() + 1));
+    m_STC->CallTipShow(
+      m_STC->GetCurrentPos(), 
+      wxString::Format("%d", m_STC->GetCurrentLine() + 1));
   }
   else if (command.IsNumber())
   {
@@ -93,19 +99,20 @@ void wxExVi::Move(
   const wxString& end_address, 
   const wxString& destination)
 {
+  const int dest_line = ToLineNumber(destination);
+
+  if (dest_line == 0)
+  {
+    return;
+  }
+
   if (!SetSelection(begin_address, end_address))
   {
     return;
   }
 
   m_STC->Cut();
-
-  if (destination.IsNumber())
-  {
-    int dest_line = atoi(destination.c_str());
-    m_STC->GotoLine(dest_line - 1);
-  }
-
+  m_STC->GotoLine(dest_line);
   m_STC->Paste();
 }
 
@@ -335,26 +342,20 @@ void wxExVi::ResetInsertMode()
   if (m_InsertMode)
   {
     m_InsertMode = false;
-    m_STC->SetReadOnly(true);
   }
 }
 
 void wxExVi::SetInsertMode()
 {
-  if (!m_STC->GetFileName().GetStat().IsReadOnly())
-  {
-    m_InsertMode = true;
-    m_STC->SetReadOnly(false);
-  }
+  m_InsertMode = true;
 }
 
 bool wxExVi::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address)
 {
-  const int begin_line = atoi(begin_address.c_str());
-  const int end_line = 
-    (end_address == "." ? m_STC->GetLineCount(): atoi(end_address.c_str()));
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0)
   {
@@ -362,7 +363,7 @@ bool wxExVi::SetSelection(
   }
 
   m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line));
-  m_STC->SetSelectionEnd(m_STC->PositionFromLine(end_line));
+  m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(end_line));
 
   return true;
 }
@@ -379,6 +380,21 @@ void wxExVi::Substitute(
   }
 
   m_STC->ReplaceAll(pattern, replacement, true);
+}
+
+int wxExVi::ToLineNumber(const wxString& address) const
+{
+  wxString filtered_address(address);
+  int dot = 0;
+
+  if (filtered_address.Contains("."))
+  {
+    dot = m_STC->GetCurrentLine();
+    filtered_address.Replace(".", "");
+    if (!filtered_address.IsNumber()) return 0;
+  }
+
+  return dot + atoi(filtered_address.c_str());
 }
 
 void wxExVi::Yank(
