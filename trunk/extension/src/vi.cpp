@@ -126,6 +126,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
   
   bool handled_command = true;
 
+  // Handle multichar commands.
   if (m_Command.EndsWith("CW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
@@ -138,6 +139,10 @@ void wxExVi::OnKey(wxKeyEvent& event)
   else if (m_Command.EndsWith("DW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->DelWordRight();
+  }
+  else if (m_Command.Matches("*F?"))
+  {
+    for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last());
   }
   else if (m_Command.EndsWith("YY"))
   {
