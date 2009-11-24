@@ -191,11 +191,24 @@ void wxExVi::OnKey(wxKeyEvent& event)
         case 'A': SetInsertMode(); m_STC->CharRight(); break;
         case 'B': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
         case 'G': m_STC->DocumentStart(); break;
-        case 'H': for (int i = 0; i < repeat; i++) m_STC->CharLeft(); break;
+        case 'H': 
+        case WXK_LEFT:
+          for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
+          break;
         case 'I': SetInsertMode(); break;
-        case 'J': for (int i = 0; i < repeat; i++) m_STC->LineDown(); break;
-        case 'K': for (int i = 0; i < repeat; i++) m_STC->LineUp(); break;
-        case 'L': for (int i = 0; i < repeat; i++) m_STC->CharRight(); break;
+        case 'J': 
+        case WXK_DOWN:
+          for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
+          break;
+        case 'K': 
+        case WXK_UP:
+          for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
+          break;
+        case 'L': 
+        case ' ': 
+        case WXK_RIGHT:
+          for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
+          break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
             m_STC->FindNext(m_STC->GetSearchText());
@@ -241,6 +254,10 @@ void wxExVi::OnKey(wxKeyEvent& event)
             m_STC->GotoPos(brace_match);
           }
           }
+          break;
+          
+        case WXK_RETURN:
+          m_STC->LineDown();
           break;
 
         default:
