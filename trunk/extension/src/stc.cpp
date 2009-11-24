@@ -1422,8 +1422,9 @@ bool wxExSTC::MatchHexBrace()
   else
   {
     BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
   }
+
+  return false;
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
