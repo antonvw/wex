@@ -1381,7 +1381,7 @@ void wxExSTC::MacroPlayback()
 #endif
 }
 
-void wxExSTC::MatchHexBrace()
+bool wxExSTC::MatchHexBrace()
 {
   const int col = GetColumn(GetCurrentPos());
   const wxFileOffset start_ascii_field =
@@ -1399,6 +1399,7 @@ void wxExSTC::MatchHexBrace()
 
     BraceHighlight(GetCurrentPos(),
       PositionFromLine(GetCurrentLine()) + start_hex_field + each_hex_field * offset + space);
+    return true;
   }
   else if (col >= start_hex_field)
   {
@@ -1415,11 +1416,13 @@ void wxExSTC::MatchHexBrace()
 
       BraceHighlight(GetCurrentPos(),
         PositionFromLine(GetCurrentLine()) + start_ascii_field + offset);
+      return true;
     }
   }
   else
   {
     BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+    return false;
   }
 }
 
@@ -1534,12 +1537,25 @@ void wxExSTC::OnKey(wxKeyEvent& event)
 #endif
     return;
   }
-  
-  if (skip && m_Flags & STC_OPEN_HEX)
+
+  bool brace_match = false;
+
+  if (m_Flags & STC_OPEN_HEX)
   {
-    event.Skip();
-    MatchHexBrace();
-    return;
+    brace_match = MatchHexBrace();
+  }
+
+  if (!brace_match)
+  {
+    if (key == WXK_LEFT)
+    {
+      if (!CheckBrace(GetCurrentPos() - 1))
+        CheckBrace(GetCurrentPos() - 2);
+    }
+    else if (!CheckBrace(GetCurrentPos()))
+    {
+      CheckBrace(GetCurrentPos() + 1);
+    }
   }
   
   if (skip)
@@ -1551,16 +1567,6 @@ void wxExSTC::OnKey(wxKeyEvent& event)
     
     event.Skip();
     CheckAutoComp(key);
-  }
-  
-  if (key == WXK_LEFT)
-  {
-    if (!CheckBrace(GetCurrentPos() - 1))
-      CheckBrace(GetCurrentPos() - 2);
-  }
-  else if (!CheckBrace(GetCurrentPos()))
-  {
-    CheckBrace(GetCurrentPos() + 1);
   }
 }
 
@@ -1669,6 +1675,8 @@ bool wxExSTC::Open(
     PropertiesMessage();
     return true;
   }
+
+  m_Flags = flags;
 
   if (wxExFile::FileLoad(filename))
   {
