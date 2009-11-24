@@ -866,7 +866,18 @@ void wxExSTC::FileTypeMenu()
   PopupMenu(eol);
 }
 
-bool wxExSTC::FindNext(const wxString& text, bool find_next)
+bool wxExSTC::FindNext(bool find_next)
+{
+  return FindNext(
+    wxExFindReplaceData::Get()->GetFindString(),
+    FindReplaceDataFlags(),
+    find_next);
+}
+
+bool wxExSTC::FindNext(
+  const wxString& text, 
+  int search_flags,
+  bool find_next)
 {
   if (text.empty())
   {
@@ -900,7 +911,7 @@ bool wxExSTC::FindNext(const wxString& text, bool find_next)
 
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
-  SetSearchFlags(FindReplaceDataFlags());
+  SetSearchFlags(search_flags);
 
   if (SearchInTarget(text) < 0)
   {

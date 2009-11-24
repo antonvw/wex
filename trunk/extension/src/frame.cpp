@@ -277,7 +277,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
     if (stc != NULL)
     {
-      stc->FindNext(frd->GetFindString()); 
+      stc->FindNext(); 
     }
     if (lv != NULL)
     {
@@ -294,7 +294,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
     if (stc != NULL)
     {
-      stc->FindNext(frd->GetFindString(), false);
+      stc->FindNext(false);
     }
     if (lv != NULL)
     {
@@ -370,7 +370,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
       event.GetEventType() == wxEVT_COMMAND_FIND ||
       event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
-      stc->FindNext(frd->GetFindString(), find_next);
+      stc->FindNext(find_next);
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
     {

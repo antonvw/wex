@@ -177,7 +177,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
   }
   else if (m_Command.Matches("*F?"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last());
+    for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last(), wxSTC_FIND_REGEXP);
   }
   else if (m_Command.EndsWith("YY"))
   {
@@ -225,7 +225,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_STC->GetSearchText());
+            m_STC->FindNext(m_STC->GetSearchText(), wxSTC_FIND_REGEXP);
           break;
         case 'P': 
           {
@@ -250,7 +250,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
 
             if (dlg.ShowModal() == wxID_OK)
             {
-              m_STC->FindNext(dlg.GetValue());
+              m_STC->FindNext(dlg.GetValue(), wxSTC_FIND_REGEXP);
             }
           }
           break;
@@ -296,7 +296,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_STC->GetSearchText(), false);
+            m_STC->FindNext(m_STC->GetSearchText(), wxSTC_FIND_REGEXP, false);
           break;
         case 'P': 
           {
@@ -348,7 +348,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
 
             if (dlg.ShowModal() == wxID_OK)
             {
-              m_STC->FindNext(dlg.GetValue(), false);
+              m_STC->FindNext(dlg.GetValue(), wxSTC_FIND_REGEXP, false);
             }
           }
           break;

@@ -122,8 +122,14 @@ public:
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
 
+  // Finds next with settings from find replace data.
+  bool FindNext(bool find_next = true);
+
   // Finds next.
-  bool FindNext(const wxString& text, bool find_next = true);
+  bool FindNext(
+    const wxString& text, 
+    int search_flags = 0,
+    bool find_next = true);
 
   virtual bool GetContentsChanged() const {return GetModify();};
 
