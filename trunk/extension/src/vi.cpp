@@ -114,7 +114,7 @@ void wxExVi::Move(
   }
 
   m_STC->Cut();
-  m_STC->GotoLine(dest_line);
+  m_STC->GotoLine(dest_line - 1);
   m_STC->Paste();
 }
 
@@ -369,8 +369,8 @@ bool wxExVi::SetSelection(
     return false;
   }
 
-  m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line));
-  m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(end_line));
+  m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line - 1));
+  m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(end_line - 1));
 
   return true;
 }
@@ -383,20 +383,33 @@ void wxExVi::Substitute(
 {
   m_STC->SetSearchFlags(wxSTC_FIND_REGEXP);
 
-  m_STC->SetTargetStart(m_STC->PositionFromLine(ToLineNumber(begin_address)));
-  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(ToLineNumber(end_address)));
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
+
+  if (begin_line == 0 || end_line == 0)
+  {
+    return;
+  }
+
+  m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
+  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
     const int start = m_STC->GetTargetStart();
     const int length = m_STC->ReplaceTarget(replacement);
     m_STC->SetTargetStart(start + length);
-    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(ToLineNumber(end_address)));
+    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
   }
 }
 
 int wxExVi::ToLineNumber(const wxString& address) const
 {
+  if (address == "$")
+  {
+    return m_STC->GetLineCount();
+  }
+
   wxString filtered_address(address);
   int dot = 0;
 
