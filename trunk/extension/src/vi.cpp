@@ -90,11 +90,11 @@ void wxExVi::LineEditor(const wxString& command)
       Delete(begin_address, end_address);
       break;
     case 'm':
-      Move(begin_address, end_address, tkz.GetNextToken());
+      Move(begin_address, end_address, tkz.GetString());
       break;
     case 's':
       {
-      wxStringTokenizer tkz(tkz.GetNextToken(), "/");
+      wxStringTokenizer tkz(tkz.GetString(), "/");
 
       tkz.GetNextToken(); // skip empty token
       const wxString pattern = tkz.GetNextToken();
@@ -447,7 +447,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 {
   if (address == "$")
   {
-    return m_STC->GetLineCount();
+    return m_STC->GetLineCount() + 1;
   }
 
   wxString filtered_address(address);
@@ -455,7 +455,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
   if (filtered_address.Contains("."))
   {
-    dot = m_STC->GetCurrentLine();
+    dot = m_STC->GetCurrentLine() + 1;
     filtered_address.Replace(".", "");
     if (!filtered_address.IsNumber()) return 0;
   }
