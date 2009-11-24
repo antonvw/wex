@@ -1527,7 +1527,7 @@ void wxExSTC::OnKey(wxKeyEvent& event)
   
   const int key = event.GetKeyCode();
 
-  if (GetReadOnly() && wxIsalnum(key))
+  if (skip && GetReadOnly() && wxIsalnum(key))
   {
 #if wxUSE_STATUSBAR
       wxExFrame::StatusText(_("Document is readonly"));
@@ -1535,7 +1535,7 @@ void wxExSTC::OnKey(wxKeyEvent& event)
     return;
   }
   
-  if (m_Flags & STC_OPEN_HEX)
+  if (skip && m_Flags & STC_OPEN_HEX)
   {
     event.Skip();
     MatchHexBrace();
