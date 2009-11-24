@@ -113,9 +113,13 @@ void wxExVi::Move(
     return;
   }
 
+  m_STC->BeginUndoAction();
+
   m_STC->Cut();
   m_STC->GotoLine(dest_line - 1);
   m_STC->Paste();
+
+  m_STC->EndUndoAction();
 }
 
 void wxExVi::OnKey(wxKeyEvent& event)
@@ -394,7 +398,6 @@ void wxExVi::Substitute(
   }
 
   m_STC->BeginUndoAction();
-
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
 
