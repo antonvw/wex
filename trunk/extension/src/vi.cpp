@@ -17,6 +17,7 @@
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_InsertMode(true)
+  , m_SearchText(stc->GetSearchText())
 {
   ResetInsertMode();
 }
@@ -225,7 +226,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_STC->GetSearchText(), wxSTC_FIND_REGEXP);
+            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP);
           break;
         case 'P': 
           {
@@ -246,11 +247,12 @@ void wxExVi::OnKey(wxKeyEvent& event)
               m_STC, 
               "/", 
               "vi",
-              m_STC->GetSearchText());
+              m_SearchText);
 
             if (dlg.ShowModal() == wxID_OK)
             {
-              m_STC->FindNext(dlg.GetValue(), wxSTC_FIND_REGEXP);
+              m_SearchText = dlg.GetValue();
+              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP);
             }
           }
           break;
@@ -296,7 +298,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_STC->GetSearchText(), wxSTC_FIND_REGEXP, false);
+            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
           break;
         case 'P': 
           {
@@ -344,11 +346,12 @@ void wxExVi::OnKey(wxKeyEvent& event)
               m_STC, 
               "?", 
               "vi",
-              m_STC->GetSearchText());
+              m_SearchText);
 
             if (dlg.ShowModal() == wxID_OK)
             {
-              m_STC->FindNext(dlg.GetValue(), wxSTC_FIND_REGEXP, false);
+              m_SearchText = dlg.GetValue();
+              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
             }
           }
           break;

@@ -57,9 +57,10 @@ private:
     const wxString& begin_address, 
     const wxString& end_address);
 
+  bool m_InsertMode;
   wxExSTC* m_STC;
   wxString m_Command;
-  bool m_InsertMode;
+  wxString m_SearchText;
 };
 
 #endif // wxUSE_GUI
