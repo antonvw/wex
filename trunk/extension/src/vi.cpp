@@ -71,7 +71,12 @@ void wxExVi::LineEditor(const wxString& command)
     if (address == ".")
     {
       begin_address = address;
-      begin_address = address;
+      end_address = address;
+    }
+    else if (address == "%")
+    {
+      begin_address = "1";
+      end_address = "$";
     }
     else
     {
