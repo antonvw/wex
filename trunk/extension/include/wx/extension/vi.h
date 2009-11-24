@@ -26,14 +26,9 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
 
-  /// Access to the insert mode.
-  bool GetInsertMode() const {return m_InsertMode;};
-
   /// Handle key events.
-  void OnKey(wxKeyEvent& event);
-
-  /// Resets insert mode.
-  void ResetInsertMode();
+  /// Returns true if event is allowed to be skipped.
+  bool OnKey(wxKeyEvent& event);
 private:
   void Delete(
     const wxString& begin_address, 
@@ -43,7 +38,6 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& destination);
-  void SetInsertMode();
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address);

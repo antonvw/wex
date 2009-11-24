@@ -1517,63 +1517,50 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 
 void wxExSTC::OnKey(wxKeyEvent& event)
 {
-  if (m_viMode && !m_vi->GetInsertMode())
-  {
-    m_vi->OnKey(event);
-  }
-  else
-  {
-    const int key = event.GetKeyCode();
+  const int key = event.GetKeyCode();
 
-   if (GetReadOnly() && wxIsalnum(key))
-    {
+  if (GetReadOnly() && wxIsalnum(key))
+  {
 #if wxUSE_STATUSBAR
       wxExFrame::StatusText(_("Document is readonly"));
 #endif
-      return;
-    }
-
-    if (m_Flags & STC_OPEN_HEX)
-    {
-      event.Skip();
-      MatchHexBrace();
-      return;
-    }
+    return;
+  }
   
-    if (key == WXK_ESCAPE)
-    {
-      m_vi->ResetInsertMode();
-    }
-    else if (key == WXK_RETURN)
-    {
-      if (AutoCompActive())
-      {
-        event.Skip();
-      }
-      else if (!CheckSmartIndentation())
-      {
-        event.Skip();
-      }
-    }
-    else if (key == WXK_LEFT || key == WXK_RIGHT)
-    {
-      event.Skip();
+  if (m_Flags & STC_OPEN_HEX)
+  {
+    event.Skip();
+    MatchHexBrace();
+    return;
+  }
+  
+  bool skip = true;
 
-      if (key == WXK_LEFT)
-      {
-        if (!CheckBrace(GetCurrentPos() - 1))
-          CheckBrace(GetCurrentPos() - 2);
-      }
-      else if (!CheckBrace(GetCurrentPos()))
-      {
-        CheckBrace(GetCurrentPos() + 1);
-      }
-    }
-    else
+  if (m_viMode)
+  {
+    // Let vi handle all keys.
+    skip = m_vi->OnKey(event);
+  }
+  
+  if (skip)
+  {
+    if (key == WXK_RETURN)
     {
-     event.Skip();
-      CheckAutoComp(key);
+      CheckSmartIndentation();
     }
+    
+    event.Skip();
+    CheckAutoComp(key);
+  }
+  
+  if (key == WXK_LEFT)
+  {
+    if (!CheckBrace(GetCurrentPos() - 1))
+      CheckBrace(GetCurrentPos() - 2);
+  }
+  else if (!CheckBrace(GetCurrentPos()))
+  {
+    CheckBrace(GetCurrentPos() + 1);
   }
 }
 

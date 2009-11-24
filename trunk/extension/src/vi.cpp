@@ -16,10 +16,9 @@
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
-  , m_InsertMode(true)
+  , m_InsertMode(false)
   , m_SearchText(stc->GetSearchText())
 {
-  ResetInsertMode();
 }
 
 void wxExVi::Delete(
@@ -137,8 +136,18 @@ void wxExVi::Move(
   m_STC->EndUndoAction();
 }
 
-void wxExVi::OnKey(wxKeyEvent& event)
+bool wxExVi::OnKey(wxKeyEvent& event)
 {
+  if (m_InsertMode)
+  {
+    if (event.GetKeyCode() == WXK_ESCAPE)
+    {
+      m_InsertMode = false;
+    }
+    
+    return true;
+  }
+  
   if(
     !event.ShiftDown() &&
     !event.ControlDown())
@@ -159,7 +168,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
   if (m_Command.EndsWith("CW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
-    SetInsertMode();
+    m_InsertMode = true;
   }
   else if (m_Command.EndsWith("DD"))
   {
@@ -203,14 +212,14 @@ void wxExVi::OnKey(wxKeyEvent& event)
             handled_command = false;
           }
           break;
-        case 'A': SetInsertMode(); m_STC->CharRight(); break;
+        case 'A': m_InsertMode = true; m_STC->CharRight(); break;
         case 'B': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
         case 'G': m_STC->DocumentStart(); break;
         case 'H': 
         case WXK_LEFT:
           for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
           break;
-        case 'I': SetInsertMode(); break;
+        case 'I': m_InsertMode = true; break;
         case 'J': 
         case WXK_DOWN:
           for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
@@ -284,7 +293,7 @@ void wxExVi::OnKey(wxKeyEvent& event)
     {
       switch (event.GetKeyCode())
       { 
-        case 'A': SetInsertMode(); m_STC->LineEnd(); break;
+        case 'A': m_InsertMode = true; m_STC->LineEnd(); break;
         case 'D': m_STC->DelLineRight(); break;
         case 'G': 
           if (repeat > 1)
@@ -382,19 +391,8 @@ void wxExVi::OnKey(wxKeyEvent& event)
   {
     m_Command.clear();
   }
-}
-
-void wxExVi::ResetInsertMode() 
-{
-  if (m_InsertMode)
-  {
-    m_InsertMode = false;
-  }
-}
-
-void wxExVi::SetInsertMode()
-{
-  m_InsertMode = true;
+  
+  return false;
 }
 
 bool wxExVi::SetSelection(
