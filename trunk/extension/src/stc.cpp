@@ -1517,6 +1517,14 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 
 void wxExSTC::OnKey(wxKeyEvent& event)
 {
+  bool skip = true;
+
+  if (m_viMode)
+  {
+    // Let vi handle all keys.
+    skip = m_vi->OnKey(event);
+  }
+  
   const int key = event.GetKeyCode();
 
   if (GetReadOnly() && wxIsalnum(key))
@@ -1532,14 +1540,6 @@ void wxExSTC::OnKey(wxKeyEvent& event)
     event.Skip();
     MatchHexBrace();
     return;
-  }
-  
-  bool skip = true;
-
-  if (m_viMode)
-  {
-    // Let vi handle all keys.
-    skip = m_vi->OnKey(event);
   }
   
   if (skip)
