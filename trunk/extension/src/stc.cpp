@@ -1869,6 +1869,8 @@ void wxExSTC::ReplaceAll(
   SetSearchFlags(FindReplaceDataFlags());
   int nr_replacements = 0;
 
+  BeginUndoAction();
+
   while (SearchInTarget(find_text) > 0)
   {
     if (GetTargetStart() == GetTargetEnd())

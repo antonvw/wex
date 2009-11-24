@@ -153,7 +153,9 @@ void wxExVi::OnKey(wxKeyEvent& event)
   }
   else if (m_Command.EndsWith("DW"))
   {
+    m_STC->BeginUndoAction();
     for (int i = 0; i < repeat; i++) m_STC->DelWordRight();
+    m_STC->EndUndoAction();
   }
   else if (m_Command.Matches("*F?"))
   {
@@ -391,6 +393,8 @@ void wxExVi::Substitute(
     return;
   }
 
+  m_STC->BeginUndoAction();
+
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
 
@@ -401,6 +405,8 @@ void wxExVi::Substitute(
     m_STC->SetTargetStart(start + length);
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
   }
+
+  m_STC->EndUndoAction();
 }
 
 int wxExVi::ToLineNumber(const wxString& address) const
