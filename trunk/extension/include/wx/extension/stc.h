@@ -189,18 +189,20 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
-  /// Replaces text.
-  void Replace(
-    const wxString& find_text, 
-    const wxString& replace_text,
-    bool is_regular_expression,
-    bool find_next);
-  
   /// Replaces all text.
+  /// It there is a selection, it replaces in the selection, otherwise
+  /// in the entire document.
   void ReplaceAll(
     const wxString& find_text, 
+    const wxString& replace_text);
+  
+  /// Replaces text and calls find next.
+  /// It there is a selection, it replaces in the selection, otherwise
+  /// it starts at current position.
+  void ReplaceNext(
+    const wxString& find_text, 
     const wxString& replace_text,
-    bool is_regular_expression);
+    bool find_next);
   
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.

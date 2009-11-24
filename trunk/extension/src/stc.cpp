@@ -1843,35 +1843,9 @@ void wxExSTC::ResetMargins(bool divider_margin)
   }
 }
 
-void wxExSTC::Replace(
-  const wxString& find_text, 
-  const wxString& replace_text,
-  bool is_regular_expression,
-  bool find_next)
-{
-  if (!GetSelectedText().empty())
-  {
-    TargetFromSelection();
-  }
-  else
-  {
-    SetTargetStart(GetCurrentPos());
-    SetTargetEnd(GetLength());
-    if (SearchInTarget(find_text) == -1) return;
-  }
-
-  if (is_regular_expression)
-    ReplaceTargetRE(replace_text);
-  else
-    ReplaceTarget(replace_text);
-
-  FindNext(find_text, find_next);
-}
-  
 void wxExSTC::ReplaceAll(
   const wxString& find_text,
-  const wxString& replace_text,
-  bool is_regular_expression)
+  const wxString& replace_text)
 {
   const wxString selection = GetSelectedText();
   int selection_from_end = 0;
@@ -1895,7 +1869,7 @@ void wxExSTC::ReplaceAll(
   SetSearchFlags(FindReplaceDataFlags());
   int nr_replacements = 0;
 
-  while (SearchInTarget(find_text) != -1)
+  while (SearchInTarget(find_text) > 0)
   {
     if (GetTargetStart() == GetTargetEnd())
     {
@@ -1927,7 +1901,7 @@ void wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      if (is_regular_expression)
+      if (replace_text.Contains("\\1"))
         length = ReplaceTargetRE(replace_text);
       else
         length = ReplaceTarget(replace_text);
@@ -1954,6 +1928,30 @@ void wxExSTC::ReplaceAll(
 #endif
 }
 
+void wxExSTC::ReplaceNext(
+  const wxString& find_text, 
+  const wxString& replace_text,
+  bool find_next)
+{
+  if (!GetSelectedText().empty())
+  {
+    TargetFromSelection();
+  }
+  else
+  {
+    SetTargetStart(GetCurrentPos());
+    SetTargetEnd(GetLength());
+    if (SearchInTarget(find_text) == -1) return;
+  }
+
+  if (replace_text.Contains("\\1"))
+    ReplaceTargetRE(replace_text);
+  else
+    ReplaceTarget(replace_text);
+
+  FindNext(find_text, find_next);
+}
+  
 void wxExSTC::SequenceDialog()
 {
   static wxString start_previous;

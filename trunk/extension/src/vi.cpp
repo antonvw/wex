@@ -389,7 +389,6 @@ void wxExVi::Substitute(
   while (m_STC->SearchInTarget(pattern) > 0)
   {
     const int start = m_STC->GetTargetStart();
-    const int end = m_STC->GetTargetEnd();
     const int length = m_STC->ReplaceTarget(replacement);
     m_STC->SetTargetStart(start + length);
     m_STC->SetTargetEnd(m_STC->GetLineEndPosition(ToLineNumber(end_address)));

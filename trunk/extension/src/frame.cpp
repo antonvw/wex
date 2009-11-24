@@ -374,18 +374,16 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
     {
-      stc->Replace(
+      stc->ReplaceNext(
         frd->GetFindString(), 
         frd->GetReplaceString(), 
-        frd->IsRegularExpression(), 
         find_next);
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
     {
       stc->ReplaceAll(
         frd->GetFindString(), 
-        frd->GetReplaceString(), 
-        frd->IsRegularExpression());
+        frd->GetReplaceString());
     }
     else
     {
