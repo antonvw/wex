@@ -178,15 +178,10 @@ void wxExVi::Move(
   m_STC->EndUndoAction();
 }
 
-bool wxExVi::OnKey(wxKeyEvent& event)
+bool wxExVi::OnChar(wxKeyEvent& event)
 {
   if (m_InsertMode)
   {
-    if (event.GetKeyCode() == WXK_ESCAPE)
-    {
-      m_InsertMode = false;
-    }
-
     if (wxIsalnum(event.GetKeyCode()))
     {
       m_InsertText += 
@@ -195,7 +190,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
     
     return true;
   }
-  
+
   if(
     !event.ShiftDown() &&
     !event.ControlDown())
@@ -213,12 +208,12 @@ bool wxExVi::OnKey(wxKeyEvent& event)
   bool handled_command = true;
 
   // Handle multichar commands.
-  if (m_Command.EndsWith("CW"))
+  if (m_Command.EndsWith("cw"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
     InsertMode();
   }
-  else if (m_Command.EndsWith("DD"))
+  else if (m_Command.EndsWith("dd"))
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
     const int start = m_STC->PositionFromLine(line);
@@ -227,17 +222,17 @@ bool wxExVi::OnKey(wxKeyEvent& event)
     m_STC->SetSelectionEnd(end);
     m_STC->Cut();
   }
-  else if (m_Command.EndsWith("DW"))
+  else if (m_Command.EndsWith("dw"))
   {
     m_STC->BeginUndoAction();
     for (int i = 0; i < repeat; i++) m_STC->DelWordRight();
     m_STC->EndUndoAction();
   }
-  else if (m_Command.Matches("*F?"))
+  else if (m_Command.Matches("*f?"))
   {
     for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last(), wxSTC_FIND_REGEXP);
   }
-  else if (m_Command.Matches("M?"))
+  else if (m_Command.Matches("m?"))
   {
 	m_Markers[m_Command.Last()] = m_STC->GetCurrentLine();
   }
@@ -250,7 +245,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
 	  m_STC->GotoLine(it->second);
 	}
   }
-  else if (m_Command.EndsWith("YY"))
+  else if (m_Command.EndsWith("yy"))
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
     const int start = m_STC->PositionFromLine(line);
@@ -273,32 +268,32 @@ bool wxExVi::OnKey(wxKeyEvent& event)
             handled_command = false;
           }
           break;
-        case 'A': InsertMode(); m_STC->CharRight(); break;
-        case 'B': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
-        case 'G': m_STC->DocumentStart(); break;
-        case 'H': 
+        case 'a': InsertMode(); m_STC->CharRight(); break;
+        case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
+        case 'g': m_STC->DocumentStart(); break;
+        case 'h': 
         case WXK_LEFT:
           for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
           break;
-        case 'I': InsertMode(); break;
-        case 'J': 
+        case 'i': InsertMode(); break;
+        case 'j': 
         case WXK_DOWN:
           for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
           break;
-        case 'K': 
+        case 'k': 
         case WXK_UP:
           for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
           break;
-        case 'L': 
+        case 'l': 
         case ' ': 
         case WXK_RIGHT:
           for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
           break;
-        case 'N': 
+        case 'n': 
           for (int i = 0; i < repeat; i++) 
             m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP);
           break;
-        case 'P': 
+        case 'p': 
           {
           const int pos = m_STC->GetCurrentPos();
           m_STC->LineDown();
@@ -307,9 +302,9 @@ bool wxExVi::OnKey(wxKeyEvent& event)
           m_STC->GotoPos(pos);
           }
           break;
-        case 'W': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
-        case 'U': m_STC->Undo(); break;
-        case 'X': m_STC->DeleteBack(); break;
+        case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
+        case 'u': m_STC->Undo(); break;
+        case 'x': m_STC->DeleteBack(); break;
 
         case '/': 
           {
@@ -386,7 +381,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
           }
           break;
         // Reverse case current char.
-        case '1': // TODO: Should be ~, that does not work
+        case '~': // TODO: Should be ~, that does not work
           {
             wxString text(m_STC->GetTextRange(
               m_STC->GetCurrentPos(), 
@@ -403,11 +398,11 @@ bool wxExVi::OnKey(wxKeyEvent& event)
           }
           break;
 
-        case '4': m_STC->LineEnd(); break; // $
-        case '[': m_STC->ParaUp(); break; // {
-        case ']': m_STC->ParaDown(); break; // }
+        case '$': m_STC->LineEnd(); break; // $
+        case '{': m_STC->ParaUp(); break; // {
+        case '}': m_STC->ParaDown(); break; // }
 
-        case ';': // :
+        case ':': // :
           {
             wxTextEntryDialog dlg(m_STC, ":", "vi");
 
@@ -442,10 +437,10 @@ bool wxExVi::OnKey(wxKeyEvent& event)
     {
       switch (event.GetKeyCode())
       {
-        case 'B': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
-        case 'E': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;
-        case 'F': for (int i = 0; i < repeat; i++) m_STC->PageDown(); break;
-        case 'Y': for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); break;
+        case 'b': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
+        case 'e': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;
+        case 'f': for (int i = 0; i < repeat; i++) m_STC->PageDown(); break;
+        case 'y': for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); break;
         default:
           handled_command = false;
       }
@@ -462,6 +457,16 @@ bool wxExVi::OnKey(wxKeyEvent& event)
   }
   
   return false;
+}
+
+bool wxExVi::OnKeyDown(wxKeyEvent& event)
+{
+  if (event.GetKeyCode() == WXK_ESCAPE)
+  {
+    m_InsertMode = false;
+  }
+
+  return true;
 }
 
 bool wxExVi::SetSelection(

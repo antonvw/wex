@@ -34,8 +34,9 @@ const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
+  EVT_CHAR(wxExSTC::OnChar)
   EVT_IDLE(wxExSTC::OnIdle)
-  EVT_KEY_DOWN(wxExSTC::OnKey)
+  EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
@@ -1434,6 +1435,30 @@ bool wxExSTC::MatchHexBrace()
   return false;
 }
 
+void wxExSTC::OnChar(wxKeyEvent& event)
+{
+  bool skip = true;
+
+  if (m_viMode)
+  {
+    // Let vi handle all keys.
+    skip = m_vi->OnChar(event);
+  }
+
+  if (skip && GetReadOnly() && wxIsalnum(event.GetUnicodeKey()))
+  {
+#if wxUSE_STATUSBAR
+      wxExFrame::StatusText(_("Document is readonly"));
+#endif
+    return;
+  }
+
+  if (skip)
+  {
+    event.Skip();
+  }
+}
+
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -1525,25 +1550,17 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExSTC::OnKey(wxKeyEvent& event)
+void wxExSTC::OnKeyDown(wxKeyEvent& event)
 {
   bool skip = true;
 
   if (m_viMode)
   {
     // Let vi handle all keys.
-    skip = m_vi->OnKey(event);
+    skip = m_vi->OnKeyDown(event);
   }
   
   const int key = event.GetKeyCode();
-
-  if (skip && GetReadOnly() && wxIsalnum(key))
-  {
-#if wxUSE_STATUSBAR
-      wxExFrame::StatusText(_("Document is readonly"));
-#endif
-    return;
-  }
 
   bool brace_match = false;
 

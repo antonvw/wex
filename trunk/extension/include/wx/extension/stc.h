@@ -252,9 +252,10 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
 
+  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
-  void OnKey(wxKeyEvent& event);
+  void OnKeyDown(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:

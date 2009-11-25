@@ -27,9 +27,13 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
 
-  /// Handle key events.
+  /// Handle char events.
   /// Returns true if event is allowed to be skipped.
-  bool OnKey(wxKeyEvent& event);
+  bool OnChar(wxKeyEvent& event);
+
+  /// Handle keydown events.
+  /// Returns true if event is allowed to be skipped.
+  bool OnKeyDown(wxKeyEvent& event);
 private:
   void Delete(
     const wxString& begin_address, 
