@@ -254,7 +254,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
   else
   {
-    if (!event.ShiftDown() && !event.ControlDown())
+    if (!event.ControlDown())
     {
       switch (event.GetKeyCode())
       {
@@ -306,6 +306,30 @@ bool wxExVi::OnChar(wxKeyEvent& event)
         case 'u': m_STC->Undo(); break;
         case 'x': m_STC->DeleteBack(); break;
 
+        case 'A': InsertMode(); m_STC->LineEnd(); break;
+        case 'D': m_STC->DelLineRight(); break;
+        case 'G': 
+          if (repeat > 1)
+          {
+            m_STC->GotoLine(repeat - 1);
+          }
+          else
+          {
+            m_STC->DocumentEnd();
+          }
+          break;
+        case 'N': 
+          for (int i = 0; i < repeat; i++) 
+            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
+          break;
+        case 'P': 
+          {
+          m_STC->LineUp();
+          m_STC->Home();
+          m_STC->Paste();
+          }
+          break;
+
         case '/': 
           {
             wxTextEntryDialog dlg(
@@ -349,37 +373,6 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           m_STC->LineDown();
           break;
 
-        default:
-          handled_command = false;
-      }
-    }
-    else if (event.ShiftDown() && !event.ControlDown())
-    {
-      switch (event.GetKeyCode())
-      { 
-        case 'A': InsertMode(); m_STC->LineEnd(); break;
-        case 'D': m_STC->DelLineRight(); break;
-        case 'G': 
-          if (repeat > 1)
-          {
-            m_STC->GotoLine(repeat - 1);
-          }
-          else
-          {
-            m_STC->DocumentEnd();
-          }
-          break;
-        case 'N': 
-          for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
-          break;
-        case 'P': 
-          {
-          m_STC->LineUp();
-          m_STC->Home();
-          m_STC->Paste();
-          }
-          break;
         // Reverse case current char.
         case '~':
           {
@@ -433,7 +426,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           handled_command = false;
       }
     }
-    else if (event.ControlDown())
+    else
     {
       switch (event.GetKeyCode())
       {
@@ -444,10 +437,6 @@ bool wxExVi::OnChar(wxKeyEvent& event)
         default:
           handled_command = false;
       }
-    }
-    else
-    {
-      wxFAIL;
     }
   }
 
@@ -526,17 +515,17 @@ int wxExVi::ToLineNumber(const wxString& address) const
   }
   else if (address.StartsWith("'"))
   {
-	// This should be a defined marker.
+    // This should be a defined marker.
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(address.Last());
 
     if (it != m_Markers.end())
-	{
-	  return it->second + 1;
-	}
-	else
-	{
-	  return 0;
-	}
+	  {
+	    return it->second + 1;
+	  }
+	  else
+    {
+      return 0;
+    }
   }
 
   wxString filtered_address(address);
