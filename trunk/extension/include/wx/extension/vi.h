@@ -33,7 +33,7 @@ private:
   void Delete(
     const wxString& begin_address, 
     const wxString& end_address) const;
-  void DoCommand(const wxString& command) const;
+  bool DoCommand(const wxString& command) const;
   void InsertMode();
   void LineEditor(const wxString& command);
   void Move(

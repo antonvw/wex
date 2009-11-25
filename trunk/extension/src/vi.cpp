@@ -33,7 +33,7 @@ void wxExVi::Delete(
   m_STC->Cut();
 }
 
-void wxExVi::DoCommand(const wxString& command) const
+bool wxExVi::DoCommand(const wxString& command) const
 {
   // [address] m destination
   // [address] s [/pattern/replacement/] [options] [count]
@@ -59,6 +59,8 @@ void wxExVi::DoCommand(const wxString& command) const
     begin_address = address.BeforeFirst(',');
     end_address = address.AfterFirst(',');
   }
+
+  bool handled = true;
       
   switch (cmd)
   {
@@ -82,7 +84,11 @@ void wxExVi::DoCommand(const wxString& command) const
   case 'y':
     Yank(begin_address, end_address);
     break;
+  default:
+    handled = false;
   }
+
+  return false;
 }
 
 void wxExVi::InsertMode()
@@ -138,9 +144,11 @@ void wxExVi::LineEditor(const wxString& command)
   }
   else
   {
-    m_LastCommand = command;
-    m_InsertText.clear();
-    DoCommand(command);
+    if (DoCommand(command))
+    {
+      m_LastCommand = command;
+      m_InsertText.clear();
+    }
   }
 }
 
