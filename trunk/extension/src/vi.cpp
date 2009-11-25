@@ -111,7 +111,9 @@ void wxExVi::LineEditor(const wxString& command)
   {
     m_STC->CallTipShow(
       m_STC->GetCurrentPos(), 
-      wxString::Format("%d", ToLineNumber(command.BeforeLast('='))));
+      wxString::Format("%s%d",
+        command.c_str(), 
+        ToLineNumber(command.BeforeLast('='))));
   }
   else if (command.IsNumber())
   {
@@ -191,9 +193,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
     return true;
   }
 
-  if(
-    !event.ShiftDown() &&
-    !event.ControlDown())
+  if (!event.ControlDown())
   {
     m_Command += event.GetUnicodeKey();
   }
@@ -234,16 +234,16 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
   else if (m_Command.Matches("m?"))
   {
-	m_Markers[m_Command.Last()] = m_STC->GetCurrentLine();
+    m_Markers[m_Command.Last()] = m_STC->GetCurrentLine();
   }
   else if (m_Command.Matches("'?"))
   {
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(m_Command.Last());
 
     if (it != m_Markers.end())
-	{
-	  m_STC->GotoLine(it->second);
-	}
+  	{
+	    m_STC->GotoLine(it->second);
+	  }
   }
   else if (m_Command.EndsWith("yy"))
   {
@@ -381,7 +381,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           }
           break;
         // Reverse case current char.
-        case '~': // TODO: Should be ~, that does not work
+        case '~':
           {
             wxString text(m_STC->GetTextRange(
               m_STC->GetCurrentPos(), 
@@ -398,11 +398,11 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           }
           break;
 
-        case '$': m_STC->LineEnd(); break; // $
-        case '{': m_STC->ParaUp(); break; // {
-        case '}': m_STC->ParaDown(); break; // }
+        case '$': m_STC->LineEnd(); break;
+        case '{': m_STC->ParaUp(); break;
+        case '}': m_STC->ParaDown(); break;
 
-        case ':': // :
+        case ':':
           {
             wxTextEntryDialog dlg(m_STC, ":", "vi");
 
