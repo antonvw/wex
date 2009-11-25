@@ -88,7 +88,7 @@ bool wxExVi::DoCommand(const wxString& command) const
     handled = false;
   }
 
-  return false;
+  return handled;
 }
 
 void wxExVi::InsertMode()
