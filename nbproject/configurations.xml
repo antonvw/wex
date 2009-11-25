@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="51">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="trunk" displayName="trunk" projectFiles="true">
+      <logicalFolder name="build" displayName="build" projectFiles="true">
+        <itemPath>trunk/build/test.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="extension" displayName="extension" projectFiles="true">
+        <logicalFolder name="include" displayName="include" projectFiles="true">
+          <logicalFolder name="wx" displayName="wx" projectFiles="true">
+            <logicalFolder name="extension" displayName="extension" projectFiles="true">
+              <logicalFolder name="report" displayName="report" projectFiles="true">
+                <itemPath>trunk/extension/include/wx/extension/report/defs.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/dir.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/frame.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/listitem.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/listview.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/process.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/report.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/stc.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/textfile.h</itemPath>
+                <itemPath>trunk/extension/include/wx/extension/report/util.h</itemPath>
+              </logicalFolder>
+              <itemPath>trunk/extension/include/wx/extension/app.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/art.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/configdlg.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/configitem.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/defs.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/dialog.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/dir.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/extension.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/file.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/filedlg.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/frame.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/frd.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/grid.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/header.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/lexer.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/lexers.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/listview.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/log.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/menu.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/notebook.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/otl.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/printing.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/renderer.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/shell.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/statistics.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/stc.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/stcdlg.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/svn.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/textfile.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/tool.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/util.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/version.h</itemPath>
+              <itemPath>trunk/extension/include/wx/extension/vi.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="interface" displayName="interface" projectFiles="true">
+          <itemPath>trunk/extension/interface/intro.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="sample" displayName="sample" projectFiles="true">
+          <logicalFolder name="report" displayName="report" projectFiles="true">
+            <itemPath>trunk/extension/sample/report/app.cpp</itemPath>
+            <itemPath>trunk/extension/sample/report/app.h</itemPath>
+          </logicalFolder>
+          <itemPath>trunk/extension/sample/app.cpp</itemPath>
+          <itemPath>trunk/extension/sample/app.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <logicalFolder name="report" displayName="report" projectFiles="true">
+            <itemPath>trunk/extension/src/report/dir.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/frame.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/listitem.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/listview.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/process.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/stc.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/textfile.cpp</itemPath>
+            <itemPath>trunk/extension/src/report/util.cpp</itemPath>
+          </logicalFolder>
+          <itemPath>trunk/extension/src/app.cpp</itemPath>
+          <itemPath>trunk/extension/src/art.cpp</itemPath>
+          <itemPath>trunk/extension/src/configdlg.cpp</itemPath>
+          <itemPath>trunk/extension/src/configitem.cpp</itemPath>
+          <itemPath>trunk/extension/src/dialog.cpp</itemPath>
+          <itemPath>trunk/extension/src/dir.cpp</itemPath>
+          <itemPath>trunk/extension/src/file.cpp</itemPath>
+          <itemPath>trunk/extension/src/filedlg.cpp</itemPath>
+          <itemPath>trunk/extension/src/frame.cpp</itemPath>
+          <itemPath>trunk/extension/src/frd.cpp</itemPath>
+          <itemPath>trunk/extension/src/grid.cpp</itemPath>
+          <itemPath>trunk/extension/src/header.cpp</itemPath>
+          <itemPath>trunk/extension/src/lexer.cpp</itemPath>
+          <itemPath>trunk/extension/src/lexers.cpp</itemPath>
+          <itemPath>trunk/extension/src/listview.cpp</itemPath>
+          <itemPath>trunk/extension/src/log.cpp</itemPath>
+          <itemPath>trunk/extension/src/menu.cpp</itemPath>
+          <itemPath>trunk/extension/src/notebook.cpp</itemPath>
+          <itemPath>trunk/extension/src/otl.cpp</itemPath>
+          <itemPath>trunk/extension/src/printing.cpp</itemPath>
+          <itemPath>trunk/extension/src/renderer.cpp</itemPath>
+          <itemPath>trunk/extension/src/shell.cpp</itemPath>
+          <itemPath>trunk/extension/src/statistics.cpp</itemPath>
+          <itemPath>trunk/extension/src/stc.cpp</itemPath>
+          <itemPath>trunk/extension/src/stcdlg.cpp</itemPath>
+          <itemPath>trunk/extension/src/svn.cpp</itemPath>
+          <itemPath>trunk/extension/src/textfile.cpp</itemPath>
+          <itemPath>trunk/extension/src/tool.cpp</itemPath>
+          <itemPath>trunk/extension/src/util.cpp</itemPath>
+          <itemPath>trunk/extension/src/vi.cpp</itemPath>
+        </logicalFolder>
+        <logicalFolder name="test" displayName="test" projectFiles="true">
+          <logicalFolder name="app" displayName="app" projectFiles="true">
+            <itemPath>trunk/extension/test/app/main.cpp</itemPath>
+            <itemPath>trunk/extension/test/app/test.cpp</itemPath>
+            <itemPath>trunk/extension/test/app/test.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="base" displayName="base" projectFiles="true">
+            <itemPath>trunk/extension/test/base/main.cpp</itemPath>
+            <itemPath>trunk/extension/test/base/test.cpp</itemPath>
+            <itemPath>trunk/extension/test/base/test.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="report" displayName="report" projectFiles="true">
+            <itemPath>trunk/extension/test/report/main.cpp</itemPath>
+            <itemPath>trunk/extension/test/report/test.cpp</itemPath>
+            <itemPath>trunk/extension/test/report/test.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="syncodbcquery"
+                     displayName="syncodbcquery"
+                     projectFiles="true">
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>trunk/syncodbcquery/src/app.cpp</itemPath>
+          <itemPath>trunk/syncodbcquery/src/app.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="syncped" displayName="syncped" projectFiles="true">
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>trunk/syncped/src/app.cpp</itemPath>
+          <itemPath>trunk/syncped/src/app.h</itemPath>
+          <itemPath>trunk/syncped/src/defs.h</itemPath>
+          <itemPath>trunk/syncped/src/frame.cpp</itemPath>
+          <itemPath>trunk/syncped/src/frame.h</itemPath>
+          <itemPath>trunk/syncped/src/support.cpp</itemPath>
+          <itemPath>trunk/syncped/src/support.h</itemPath>
+          <itemPath>trunk/syncped/src/version.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="syncsocketserver"
+                     displayName="syncsocketserver"
+                     projectFiles="true">
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>trunk/syncsocketserver/src/app.cpp</itemPath>
+          <itemPath>trunk/syncsocketserver/src/app.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>0</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="trunk/build/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/art.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/configdlg.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/configitem.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/defs.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/dialog.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/dir.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/extension.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/file.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/filedlg.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/frame.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/frd.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/grid.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/header.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/lexer.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/lexers.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/listview.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/log.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/menu.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/notebook.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/otl.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/printing.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/renderer.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/defs.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/dir.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/frame.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/listitem.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/listview.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/process.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/report.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/stc.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/textfile.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/util.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/shell.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/statistics.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/stc.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/stcdlg.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/svn.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/textfile.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/tool.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/util.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/version.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/vi.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/interface/intro.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/sample/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/sample/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/sample/report/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/sample/report/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/art.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/configdlg.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/configitem.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/dialog.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/dir.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/file.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/filedlg.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/frame.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/frd.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/grid.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/header.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/lexer.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/lexers.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/listview.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/log.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/menu.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/notebook.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/otl.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/printing.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/renderer.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/dir.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/frame.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/listitem.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/listview.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/process.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/stc.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/textfile.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/util.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/shell.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/statistics.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/stc.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/stcdlg.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/svn.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/textfile.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/tool.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/util.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/vi.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/app/main.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/app/test.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/app/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/test/base/main.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/base/test.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/base/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/test/report/main.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/report/test.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/report/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncodbcquery/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncodbcquery/src/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncped/src/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/defs.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/frame.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncped/src/frame.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/support.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncped/src/support.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/version.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncsocketserver/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncsocketserver/src/app.h">
+        <itemTool>3</itemTool>
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>0</platform>
+      </toolsSet>
+      <compileType>
+        <cCompilerTool>
+          <developmentMode>5</developmentMode>
+        </cCompilerTool>
+        <ccCompilerTool>
+          <developmentMode>5</developmentMode>
+        </ccCompilerTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="trunk/build/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/art.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/configdlg.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/configitem.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/defs.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/dialog.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/dir.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/extension.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/file.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/filedlg.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/frame.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/frd.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/grid.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/header.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/lexer.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/lexers.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/listview.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/log.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/menu.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/notebook.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/otl.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/printing.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/renderer.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/defs.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/dir.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/frame.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/listitem.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/listview.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/process.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/report.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/stc.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/textfile.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/report/util.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/shell.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/statistics.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/stc.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/stcdlg.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/svn.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/textfile.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/tool.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/util.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/version.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/include/wx/extension/vi.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/interface/intro.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/sample/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/sample/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/sample/report/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/sample/report/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/art.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/configdlg.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/configitem.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/dialog.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/dir.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/file.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/filedlg.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/frame.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/frd.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/grid.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/header.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/lexer.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/lexers.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/listview.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/log.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/menu.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/notebook.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/otl.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/printing.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/renderer.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/dir.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/frame.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/listitem.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/listview.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/process.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/stc.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/textfile.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/report/util.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/shell.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/statistics.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/stc.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/stcdlg.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/svn.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/textfile.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/tool.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/util.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/src/vi.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/app/main.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/app/test.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/app/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/test/base/main.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/base/test.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/base/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/extension/test/report/main.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/report/test.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/extension/test/report/test.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncodbcquery/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncodbcquery/src/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncped/src/app.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/defs.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/frame.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncped/src/frame.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/support.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncped/src/support.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncped/src/version.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="trunk/syncsocketserver/src/app.cpp">
+        <itemTool>1</itemTool>
+      </item>
+      <item path="trunk/syncsocketserver/src/app.h">
+        <itemTool>3</itemTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

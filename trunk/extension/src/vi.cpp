@@ -519,6 +519,20 @@ int wxExVi::ToLineNumber(const wxString& address) const
   {
     return m_STC->GetLineCount() + 1;
   }
+  else if (address.StartsWith("'"))
+  {
+	// This should be a defined marker.
+    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(address.Last());
+
+    if (it != m_Markers.end())
+	{
+	  return it->second + 1;
+	}
+	else
+	{
+	  return 0;
+	}
+  }
 
   wxString filtered_address(address);
   int dot = 0;
