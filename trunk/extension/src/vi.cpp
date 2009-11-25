@@ -57,7 +57,7 @@ void wxExVi::DoCommand(const wxString& command) const
   else
   {
     begin_address = address.BeforeFirst(',');
-     end_address = address.AfterFirst(',');
+    end_address = address.AfterFirst(',');
   }
       
   switch (cmd)
@@ -456,7 +456,7 @@ bool wxExVi::SetSelection(
   }
 
   m_STC->SetSelectionStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(end_line - 1));
+  m_STC->SetSelectionEnd(m_STC->PositionFromLine(end_line));
 
   return true;
 }
@@ -479,14 +479,14 @@ void wxExVi::Substitute(
 
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
+  m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
     const int start = m_STC->GetTargetStart();
     const int length = m_STC->ReplaceTarget(replacement);
     m_STC->SetTargetStart(start + length);
-    m_STC->SetTargetEnd(m_STC->GetLineEndPosition(end_line - 1));
+    m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
   }
 
   m_STC->EndUndoAction();
