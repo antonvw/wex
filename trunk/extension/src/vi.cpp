@@ -111,9 +111,30 @@ void wxExVi::LineEditor(const wxString& command)
   {
     m_STC->GotoLine(atoi(command.c_str()) - 1);
   }
-  else if (command.StartsWith("w"))
+  else if (command == "w")
   {
     m_STC->FileSave();
+  }
+  else if (command == "x")
+  {
+    if (m_STC->GetContentsChanged())
+    {
+      m_STC->FileSave();
+    }
+
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "q")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "q!")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    event.SetCanVeto(false); 
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else
   {
