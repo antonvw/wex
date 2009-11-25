@@ -101,11 +101,11 @@ void wxExVi::LineEditor(const wxString& command)
   {
     m_STC->DocumentEnd();
   }
-  else if (command == ".=")
+  else if (command.Last() == '=')
   {
     m_STC->CallTipShow(
       m_STC->GetCurrentPos(), 
-      wxString::Format("%d", m_STC->GetCurrentLine() + 1));
+      wxString::Format("%d", ToLineNumber(command.BeforeLast('='))));
   }
   else if (command.IsNumber())
   {
