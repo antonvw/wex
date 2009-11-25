@@ -513,10 +513,16 @@ int wxExVi::ToLineNumber(const wxString& address) const
   
   if (line_no < 0)
   {
-    return 0;
+    return 1;
   }
-  
-  return line_no;
+  else if (line_no > m_STC->GetLineCount())
+  {
+    return m_STC->GetLineCount() + 1;
+  }  
+  else
+  {
+    return line_no;
+  }
 }
 
 void wxExVi::Yank(
