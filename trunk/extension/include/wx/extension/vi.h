@@ -32,26 +32,26 @@ public:
 private:
   void Delete(
     const wxString& begin_address, 
-    const wxString& end_address);
-  void DoCommand(const wxString& command);
+    const wxString& end_address) const;
+  void DoCommand(const wxString& command) const;
   void InsertMode();
   void LineEditor(const wxString& command);
   void Move(
     const wxString& begin_address, 
     const wxString& end_address, 
-    const wxString& destination);
+    const wxString& destination) const;
   bool SetSelection(
     const wxString& begin_address, 
-    const wxString& end_address);
+    const wxString& end_address) const;
   void Substitute(
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& pattern,
-    const wxString& replacement);
+    const wxString& replacement) const;
   int ToLineNumber(const wxString& address) const;
   void Yank(
     const wxString& begin_address, 
-    const wxString& end_address);
+    const wxString& end_address) const;
 
   bool m_InsertMode;
   wxExSTC* m_STC;

@@ -23,7 +23,7 @@ wxExVi::wxExVi(wxExSTC* stc)
 
 void wxExVi::Delete(
   const wxString& begin_address, 
-  const wxString& end_address)
+  const wxString& end_address) const
 {
   if (!SetSelection(begin_address, end_address))
   {
@@ -33,7 +33,7 @@ void wxExVi::Delete(
   m_STC->Cut();
 }
 
-void wxExVi::DoCommand(const wxString& command)
+void wxExVi::DoCommand(const wxString& command) const
 {
   // [address] m destination
   // [address] s [/pattern/replacement/] [options] [count]
@@ -126,7 +126,7 @@ void wxExVi::LineEditor(const wxString& command)
 void wxExVi::Move(
   const wxString& begin_address, 
   const wxString& end_address, 
-  const wxString& destination)
+  const wxString& destination) const
 {
   const int dest_line = ToLineNumber(destination);
 
@@ -424,7 +424,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
 
 bool wxExVi::SetSelection(
   const wxString& begin_address, 
-  const wxString& end_address)
+  const wxString& end_address) const
 {
   const int begin_line = ToLineNumber(begin_address);
   const int end_line = ToLineNumber(end_address);
@@ -444,7 +444,7 @@ void wxExVi::Substitute(
   const wxString& begin_address, 
   const wxString& end_address, 
   const wxString& pattern,
-  const wxString& replacement)
+  const wxString& replacement) const
 {
   m_STC->SetSearchFlags(wxSTC_FIND_REGEXP);
 
@@ -500,7 +500,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
 void wxExVi::Yank(
   const wxString& begin_address, 
-  const wxString& end_address)
+  const wxString& end_address) const
 {
   if (!SetSelection(begin_address, end_address))
   {
