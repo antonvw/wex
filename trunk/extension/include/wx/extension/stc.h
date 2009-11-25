@@ -34,19 +34,18 @@ public:
     STC_MENU_SIMPLE    = 0x0002, ///< for adding copy/paste etc. menu
     STC_MENU_FIND      = 0x0004, ///< for adding find menu
     STC_MENU_REPLACE   = 0x0008, ///< for adding replace menu
-    STC_MENU_INSERT    = 0x0010, ///< for adding insert timestamp, sequence menu
+    STC_MENU_INSERT    = 0x0010, ///< for adding sequence menu
     STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
 
-    STC_MENU_DEFAULT  =  0xFFFF, ///< all
+    STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };
 
   /// Open flags (0 is used as default).
   enum wxExSTCOpenFlags
   {
-    STC_OPEN_HEX             = 0x0001, ///< open in hex mode
-    STC_OPEN_READ_ONLY       = 0x0002, ///< open as readonly, this mode overrides real mode from disk
-    STC_OPEN_FROM_LINK       = 0x0008, ///< opened from within a link
-    STC_OPEN_FROM_STATISTICS = 0x0010, ///< opened from statistics
+    STC_OPEN_HEX         = 0x0001, ///< open in hex mode
+    STC_OPEN_READ_ONLY   = 0x0002, ///< open as readonly, this mode overrides real mode from disk
+    STC_OPEN_FROM_OTHER  = 0x0008, ///< opened from within another file (e.g. a link)
   };
 
   /// Config dialog flags (0 gives

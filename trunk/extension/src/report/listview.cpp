@@ -1298,6 +1298,6 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
   {
     wxExOpenFile(
       stats.GetLogfileName(),
-      wxExSTC::STC_OPEN_FROM_STATISTICS);
+      wxExSTC::STC_OPEN_FROM_OTHER);
   }
 }

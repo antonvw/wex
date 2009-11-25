@@ -1212,9 +1212,12 @@ void wxExSTC::HexDecCalltip(int pos)
   {
     wxString text;
 
-    if      ( base10_ok && !base16_ok) text = wxString::Format("hex: %lx", base10_val);
-    else if (!base10_ok &&  base16_ok) text = wxString::Format("dec: %ld", base16_val);
-    else if ( base10_ok &&  base16_ok) text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
+    if      ( base10_ok && !base16_ok) 
+      text = wxString::Format("hex: %lx", base10_val);
+    else if (!base10_ok &&  base16_ok) 
+      text = wxString::Format("dec: %ld", base16_val);
+    else if ( base10_ok &&  base16_ok) 
+      text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
 
     CallTipShow(pos, text);
   }
@@ -1337,18 +1340,23 @@ bool wxExSTC::LinkOpen(
       for (size_t i=0; i < m_PathList.GetCount() && fullpath.empty(); i++)
       {
         wxString strstart = m_PathList.Item(i);
-        if (!strstart.IsEmpty() && strstart.Last() != wxFileName::GetPathSeparator())
-            strstart += wxFileName::GetPathSeparator();
+        if (!strstart.IsEmpty() && 
+             strstart.Last() != wxFileName::GetPathSeparator())
+          strstart += wxFileName::GetPathSeparator();
 
         if (wxFileExists(strstart + strend))
-            fullpath = strstart + strend;
+          fullpath = strstart + strend;
       }
     }
   }
 
   if (!fullpath.empty() && open_link)
   {
-    return Open(fullpath, line_number, wxEmptyString, m_Flags | STC_OPEN_FROM_LINK);
+    return Open(
+      fullpath, 
+      line_number, 
+      wxEmptyString, 
+      m_Flags | STC_OPEN_FROM_OTHER);
   }
 
   filename = wxFileName(fullpath).GetFullName();

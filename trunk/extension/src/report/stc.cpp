@@ -162,7 +162,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       {
         wxExOpenFile(
           report.GetStatistics().GetLogfileName(),
-          STC_OPEN_FROM_STATISTICS);
+          STC_OPEN_FROM_OTHER);
       }
     }
 
@@ -253,7 +253,7 @@ bool wxExSTCWithFrame::Open(
 {
   bool retValue;
 
-  if (flags & (STC_OPEN_FROM_LINK | STC_OPEN_FROM_STATISTICS))
+  if (flags & STC_OPEN_FROM_OTHER)
   {
     retValue = m_Frame->OpenFile(filename, line_number, match, flags);
   }
