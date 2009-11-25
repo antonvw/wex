@@ -214,7 +214,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
     const int start = m_STC->PositionFromLine(line);
-    const int end = m_STC->GetLineEndPosition(line + repeat - 1);
+    const int end = m_STC->PositionFromLine(line + repeat);
     m_STC->SetSelectionStart(start);
     m_STC->SetSelectionEnd(end);
     m_STC->Cut();
@@ -233,7 +233,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
     const int start = m_STC->PositionFromLine(line);
-    const int end = m_STC->GetLineEndPosition(line + repeat - 1);
+    const int end = m_STC->PositionFromLine(line + repeat);
     m_STC->CopyRange(start, end);
   }
   else
