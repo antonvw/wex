@@ -237,6 +237,19 @@ bool wxExVi::OnKey(wxKeyEvent& event)
   {
     for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last(), wxSTC_FIND_REGEXP);
   }
+  else if (m_Command.Matches("M?"))
+  {
+	m_Markers[m_Command.Last()] = m_STC->GetCurrentLine();
+  }
+  else if (m_Command.Matches("'?"))
+  {
+    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(m_Command.Last());
+
+    if (it != m_Markers.end())
+	{
+	  m_STC->GotoLine(it->second);
+	}
+  }
   else if (m_Command.EndsWith("YY"))
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
