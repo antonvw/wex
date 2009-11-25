@@ -10,6 +10,7 @@
 #ifndef _EXVI_H
 #define _EXVI_H
 
+#include <map>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -53,6 +54,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
 
+  std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
   wxExSTC* m_STC;
   wxString m_Command;
