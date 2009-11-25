@@ -33,13 +33,71 @@ void wxExVi::Delete(
   m_STC->Cut();
 }
 
+void wxExVi::DoCommand(const wxString& command)
+{
+  // [address] m destination
+  // [address] s [/pattern/replacement/] [options] [count]
+  wxStringTokenizer tkz(command, "dmsy");
+  const wxString address = tkz.GetNextToken();
+  const wxChar cmd = tkz.GetLastDelimiter();
+    
+  wxString begin_address;
+  wxString end_address;
+    
+  if (address == ".")
+  {
+    begin_address = address;
+    end_address = address;
+  }
+  else if (address == "%")
+  {
+    begin_address = "1";
+    end_address = "$";
+  }
+  else
+  {
+    begin_address = address.BeforeFirst(',');
+     end_address = address.AfterFirst(',');
+  }
+      
+  switch (cmd)
+  {
+  case 'd':
+    Delete(begin_address, end_address);
+    break;
+  case 'm':
+    Move(begin_address, end_address, tkz.GetString());
+    break;
+  case 's':
+    {
+    wxStringTokenizer tkz(tkz.GetString(), "/");
+
+    tkz.GetNextToken(); // skip empty token
+    const wxString pattern = tkz.GetNextToken();
+    const wxString replacement = tkz.GetNextToken();
+  
+    Substitute(begin_address, end_address, pattern, replacement);
+    }
+    break;
+  case 'y':
+    Yank(begin_address, end_address);
+    break;
+  }
+}
+
+void wxExVi::InsertMode()
+{
+  m_InsertMode = true;
+  m_InsertText.clear();
+}
+
 void wxExVi::LineEditor(const wxString& command)
 {
   if (command.empty())
   {
     // Do nothing.
   }
-  if (command == "$")
+  else if (command == "$")
   {
     m_STC->DocumentEnd();
   }
@@ -59,54 +117,9 @@ void wxExVi::LineEditor(const wxString& command)
   }
   else
   {
-    // [address] m destination
-    // [address] s [/pattern/replacement/] [options] [count]
-    wxStringTokenizer tkz(command, "dmsy");
-    const wxString address = tkz.GetNextToken();
-    const wxChar cmd = tkz.GetLastDelimiter();
-    
-    wxString begin_address;
-    wxString end_address;
-    
-    if (address == ".")
-    {
-      begin_address = address;
-      end_address = address;
-    }
-    else if (address == "%")
-    {
-      begin_address = "1";
-      end_address = "$";
-    }
-    else
-    {
-      begin_address = address.BeforeFirst(',');
-      end_address = address.AfterFirst(',');
-    }
-      
-    switch (cmd)
-    {
-    case 'd':
-      Delete(begin_address, end_address);
-      break;
-    case 'm':
-      Move(begin_address, end_address, tkz.GetString());
-      break;
-    case 's':
-      {
-      wxStringTokenizer tkz(tkz.GetString(), "/");
-
-      tkz.GetNextToken(); // skip empty token
-      const wxString pattern = tkz.GetNextToken();
-      const wxString replacement = tkz.GetNextToken();
-  
-      Substitute(begin_address, end_address, pattern, replacement);
-      }
-      break;
-    case 'y':
-      Yank(begin_address, end_address);
-      break;
-    }
+    m_LastCommand = command;
+    m_InsertText.clear();
+    DoCommand(command);
   }
 }
 
@@ -144,6 +157,12 @@ bool wxExVi::OnKey(wxKeyEvent& event)
     {
       m_InsertMode = false;
     }
+
+    if (wxIsalnum(event.GetKeyCode()))
+    {
+      m_InsertText += 
+        (!event.ShiftDown() ? wxTolower(event.GetUnicodeKey()): event.GetUnicodeKey());
+    }
     
     return true;
   }
@@ -168,7 +187,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
   if (m_Command.EndsWith("CW"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
-    m_InsertMode = true;
+    InsertMode();
   }
   else if (m_Command.EndsWith("DD"))
   {
@@ -212,14 +231,14 @@ bool wxExVi::OnKey(wxKeyEvent& event)
             handled_command = false;
           }
           break;
-        case 'A': m_InsertMode = true; m_STC->CharRight(); break;
+        case 'A': InsertMode(); m_STC->CharRight(); break;
         case 'B': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
         case 'G': m_STC->DocumentStart(); break;
         case 'H': 
         case WXK_LEFT:
           for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
           break;
-        case 'I': m_InsertMode = true; break;
+        case 'I': InsertMode(); break;
         case 'J': 
         case WXK_DOWN:
           for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
@@ -268,6 +287,14 @@ bool wxExVi::OnKey(wxKeyEvent& event)
 
         // Repeat last text changing command.
         case '.': 
+          if (!m_InsertText.empty())
+          {
+            m_STC->AddText(m_InsertText);
+          }
+          else
+          {
+            DoCommand(m_LastCommand);
+          }
           break;
 
         case '[':
@@ -293,7 +320,7 @@ bool wxExVi::OnKey(wxKeyEvent& event)
     {
       switch (event.GetKeyCode())
       { 
-        case 'A': m_InsertMode = true; m_STC->LineEnd(); break;
+        case 'A': InsertMode(); m_STC->LineEnd(); break;
         case 'D': m_STC->DelLineRight(); break;
         case 'G': 
           if (repeat > 1)
