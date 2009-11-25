@@ -352,7 +352,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       if (m_MenuFlags & STC_MENU_INSERT)
       {
         menu.AppendSeparator();
-        menu.Append(ID_EDIT_INSERT_DATE, _("Insert Timestamp"));
         menu.Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
       }
 
@@ -1494,7 +1493,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxLaunchDefaultBrowser(GetFileName().GetFullPath());
   break;
 
-  case ID_EDIT_INSERT_DATE: AddText(wxDateTime::Now().Format()); break;
   case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
