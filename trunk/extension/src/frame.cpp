@@ -374,10 +374,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
     {
-      stc->ReplaceNext(
-        frd->GetFindString(), 
-        frd->GetReplaceString(), 
-        find_next);
+      stc->ReplaceNext(find_next);
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
     {

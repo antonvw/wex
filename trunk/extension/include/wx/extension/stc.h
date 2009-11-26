@@ -202,12 +202,17 @@ public:
     const wxString& replace_text);
   
   /// Replaces text and calls find next.
+  /// Uses settings from find replace data.
+  void ReplaceNext(bool find_next);
+
+  /// Replaces text and calls find next.
   /// It there is a selection, it replaces in the selection, otherwise
   /// it starts at current position.
   void ReplaceNext(
     const wxString& find_text, 
     const wxString& replace_text,
-    bool find_next);
+    int search_flags = 0,
+    bool find_next = true);
   
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.

@@ -920,7 +920,7 @@ bool wxExSTC::FindNext(
     if (!recursive)
     {
       recursive = true;
-      FindNext(text, find_next);
+      FindNext(text, search_flags, find_next);
       recursive = false;
     }
     
@@ -1960,9 +1960,19 @@ void wxExSTC::ReplaceAll(
 #endif
 }
 
+void wxExSTC::ReplaceNext(bool find_next)
+{
+  return ReplaceNext(
+    wxExFindReplaceData::Get()->GetFindString(),
+    wxExFindReplaceData::Get()->GetReplaceString(),
+    FindReplaceDataFlags(),
+    find_next);
+}
+
 void wxExSTC::ReplaceNext(
   const wxString& find_text, 
   const wxString& replace_text,
+  int search_flags,
   bool find_next)
 {
   if (!GetSelectedText().empty())
@@ -1981,7 +1991,7 @@ void wxExSTC::ReplaceNext(
   else
     ReplaceTarget(replace_text);
 
-  FindNext(find_text, find_next);
+  FindNext(find_text, search_flags, find_next);
 }
   
 void wxExSTC::SequenceDialog()
