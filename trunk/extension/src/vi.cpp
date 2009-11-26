@@ -27,6 +27,11 @@ void wxExVi::Delete(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
+  if (m_STC->GetReadOnly())
+  {
+    return;
+  }
+
   if (!SetSelection(begin_address, end_address))
   {
     return;
@@ -102,8 +107,11 @@ bool wxExVi::DoCommand(const wxString& command) const
 
 void wxExVi::InsertMode()
 {
-  m_InsertMode = true;
-  m_InsertText.clear();
+  if (!m_STC->GetReadOnly())
+  {
+    m_InsertMode = true;
+    m_InsertText.clear();
+  }
 }
 
 void wxExVi::LineEditor(const wxString& command)
@@ -168,6 +176,11 @@ void wxExVi::Move(
   const wxString& end_address, 
   const wxString& destination) const
 {
+  if (m_STC->GetReadOnly())
+  {
+    return;
+  }
+
   const int dest_line = ToLineNumber(destination);
 
   if (dest_line == 0)
@@ -251,6 +264,13 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   {
     m_Markers[m_Command.Last()] = m_STC->GetCurrentLine();
   }
+  else if (m_Command.Matches("r?"))
+  {
+    m_STC->wxStyledTextCtrl::Replace(
+      m_STC->GetCurrentPos(), 
+      m_STC->GetCurrentPos() + 1, 
+      m_Command.Last());
+  }
   else if (m_Command.Matches("'?"))
   {
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(m_Command.Last());
@@ -312,14 +332,12 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           for (int i = 0; i < repeat; i++) 
             m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP);
           break;
-        case 'p': 
-          {
-          const int pos = m_STC->GetCurrentPos();
-          m_STC->LineDown();
-          m_STC->Home();
-          m_STC->Paste();
-          m_STC->GotoPos(pos);
-          }
+        case 'o': 
+          m_STC->LineEnd(); 
+          m_STC->NewLine(); 
+          InsertMode(); 
+          break;
+        case 'p': m_STC->Paste();
           break;
         case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
         case 'u': m_STC->Undo(); break;
@@ -337,16 +355,28 @@ bool wxExVi::OnChar(wxKeyEvent& event)
             m_STC->DocumentEnd();
           }
           break;
+        case 'H': 
+            m_STC->GotoLine(m_STC->GetFirstVisibleLine());
+          break;
+        case 'M': 
+            m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
+          break;
+        case 'L': 
+            m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen());
+          break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
             m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
           break;
-        case 'P': 
-          {
-          m_STC->LineUp();
-          m_STC->Home();
+        case 'O': 
+          m_STC->Home(); 
+          m_STC->NewLine(); 
+          m_STC->LineUp(); 
+          InsertMode(); 
+          break;
+        case 'P':
+          m_STC->GotoPos(m_STC->GetCurrentPos() - wxExClipboardGet().length());
           m_STC->Paste();
-          }
           break;
 
         case '/': 
@@ -486,6 +516,11 @@ void wxExVi::Substitute(
   const wxString& pattern,
   const wxString& replacement) const
 {
+  if (m_STC->GetReadOnly())
+  {
+    return;
+  }
+
   m_STC->SetSearchFlags(wxSTC_FIND_REGEXP);
 
   const int begin_line = ToLineNumber(begin_address);
@@ -570,6 +605,11 @@ void wxExVi::Yank(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
+  if (m_STC->GetReadOnly())
+  {
+    return;
+  }
+
   if (!SetSelection(begin_address, end_address))
   {
     return;
