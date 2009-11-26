@@ -331,17 +331,18 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           break;
 
         case '/': 
+        case '?': 
           {
             wxTextEntryDialog dlg(
               m_STC, 
-              "/", 
+              event.GetUnicodeKey(), 
               "vi",
               m_SearchText);
 
             if (dlg.ShowModal() == wxID_OK)
             {
               m_SearchText = dlg.GetValue();
-              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP);
+              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, event.GetKeyCode() == '/');
             }
           }
           break;
@@ -402,22 +403,6 @@ bool wxExVi::OnChar(wxKeyEvent& event)
             if (dlg.ShowModal() == wxID_OK)
             {
               LineEditor(dlg.GetValue());
-            }
-          }
-          break;
-
-        case '/': 
-          {
-            wxTextEntryDialog dlg(
-              m_STC, 
-              "?", 
-              "vi",
-              m_SearchText);
-
-            if (dlg.ShowModal() == wxID_OK)
-            {
-              m_SearchText = dlg.GetValue();
-              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
             }
           }
           break;
@@ -511,7 +496,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 {
   if (address == "$")
   {
-    return m_STC->GetLineCount() + 1;
+    return m_STC->GetLineCount();
   }
   else if (address.StartsWith("'"))
   {
@@ -546,7 +531,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
   }
   else if (line_no > m_STC->GetLineCount())
   {
-    return m_STC->GetLineCount() + 1;
+    return m_STC->GetLineCount();
   }  
   else
   {
