@@ -19,8 +19,32 @@
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_InsertMode(false)
+  , m_SearchForward(true)
   , m_SearchText(stc->GetSearchText())
 {
+}
+
+void wxExVi::Delete(int lines) const
+{
+  if (m_STC->GetReadOnly())
+  {
+    return;
+  }
+
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const int start = m_STC->PositionFromLine(line);
+  const int end = m_STC->PositionFromLine(line + lines);
+
+  m_STC->SetSelectionStart(start);
+  m_STC->SetSelectionEnd(end);
+  m_STC->Cut();
+
+  if (lines > 2)
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(wxString::Format("%d fewer lines", lines));
+#endif
+  }
 }
 
 void wxExVi::Delete(
@@ -39,12 +63,14 @@ void wxExVi::Delete(
 
   const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   
+  m_STC->Cut();
+
   if (lines > 2)
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format("%d fewer lines", lines));
+#endif
   }
-  
-  m_STC->Cut();
 }
 
 bool wxExVi::DoCommand(const wxString& command) const
@@ -127,6 +153,14 @@ void wxExVi::LineEditor(const wxString& command)
   {
     m_STC->DocumentEnd();
   }
+  else if (command == "d")
+  {
+    Delete(1);
+  }
+  else if (command == "y")
+  {
+    Yank(1);
+  }
   else if (command.Last() == '=')
   {
     m_STC->CallTipShow(
@@ -208,7 +242,9 @@ void wxExVi::Move(
   
   if (lines > 2)
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format("%d lines moved", lines));
+#endif
   }
 }
 
@@ -248,16 +284,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
   else if (m_Command.EndsWith("dd"))
   {
-    const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-    const int start = m_STC->PositionFromLine(line);
-    const int end = m_STC->PositionFromLine(line + repeat);
-    m_STC->SetSelectionStart(start);
-    m_STC->SetSelectionEnd(end);
-    m_STC->Cut();
-    if (repeat > 2)
-    {
-      wxExFrame::StatusText(wxString::Format("%d fewer lines", repeat));
-    }
+    Delete(repeat);
   }
   else if (m_Command.EndsWith("dw"))
   {
@@ -268,6 +295,10 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   else if (m_Command.Matches("*f?"))
   {
     for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last(), wxSTC_FIND_REGEXP);
+  }
+  else if (m_Command.Matches("*F?"))
+  {
+    for (int i = 0; i < repeat; i++) m_STC->FindNext(m_Command.Last(), wxSTC_FIND_REGEXP, false);
   }
   else if (m_Command.Matches("m?"))
   {
@@ -291,14 +322,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
   else if (m_Command.EndsWith("yy"))
   {
-    const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-    const int start = m_STC->PositionFromLine(line);
-    const int end = m_STC->PositionFromLine(line + repeat);
-    m_STC->CopyRange(start, end);
-    if (repeat > 2)
-    {
-      wxExFrame::StatusText(wxString::Format("%d lines yanked", repeat));
-    }
+    Yank(repeat);
   }
   else
   {
@@ -340,7 +364,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           break;
         case 'n': 
           for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP);
+            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
           break;
         case 'o': 
           m_STC->LineEnd(); 
@@ -351,7 +375,13 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           break;
         case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
         case 'u': m_STC->Undo(); break;
-        case 'x': m_STC->DeleteBack(); break;
+        case 'x': 
+          {
+          wxKeyEvent event(wxEVT_KEY_DOWN);
+          event.SetId(WXK_DELETE);
+          wxPostEvent(m_STC, event);
+          }
+          break;
 
         case 'A': InsertMode(); m_STC->LineEnd(); break;
         case 'C': 
@@ -373,6 +403,10 @@ bool wxExVi::OnChar(wxKeyEvent& event)
         case 'H': 
             m_STC->GotoLine(m_STC->GetFirstVisibleLine());
           break;
+        case 'I': 
+          m_STC->Home(); 
+          InsertMode(); 
+          break;
         case 'J': 
           m_STC->SetTargetStart(m_STC->PositionFromLine(m_STC->GetCurrentLine()));
           m_STC->SetTargetEnd(m_STC->PositionFromLine(m_STC->GetCurrentLine() + 1));
@@ -386,7 +420,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           break;
         case 'N': 
           for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, false);
+            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, !m_SearchForward);
           break;
         case 'O': 
           m_STC->Home(); 
@@ -399,6 +433,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           m_STC->Paste();
           break;
         case 'R': InsertMode(true); break;
+        case 'X': m_STC->DeleteBack(); break;
 
         case '/': 
         case '?': 
@@ -411,8 +446,9 @@ bool wxExVi::OnChar(wxKeyEvent& event)
 
             if (dlg.ShowModal() == wxID_OK)
             {
+              m_SearchForward = event.GetKeyCode() == '/';
               m_SearchText = dlg.GetValue();
-              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, event.GetKeyCode() == '/');
+              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
             }
           }
           break;
@@ -444,7 +480,6 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           m_STC->LineDown();
           break;
 
-        // Reverse case current char.
         case '~':
           {
             wxString text(m_STC->GetTextRange(
@@ -556,6 +591,8 @@ void wxExVi::Substitute(
     return;
   }
 
+  int nr_replacements = 0;
+
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
@@ -566,9 +603,15 @@ void wxExVi::Substitute(
     const int length = m_STC->ReplaceTarget(replacement);
     m_STC->SetTargetStart(start + length);
     m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
+    nr_replacements++;
   }
 
   m_STC->EndUndoAction();
+
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
+    nr_replacements, pattern.c_str()));
+#endif
 }
 
 int wxExVi::ToLineNumber(const wxString& address) const
@@ -626,27 +669,46 @@ int wxExVi::ToLineNumber(const wxString& address) const
   }
 }
 
+void wxExVi::Yank(int lines) const
+{
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const int start = m_STC->PositionFromLine(line);
+  const int end = m_STC->PositionFromLine(line + lines);
+
+  m_STC->CopyRange(start, end);
+
+  if (lines > 2)
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(wxString::Format("%d lines yanked", lines));
+#endif
+  }
+}
+
 void wxExVi::Yank(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
-  if (m_STC->GetReadOnly())
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
+
+  if (begin_line == 0 || end_line == 0)
   {
     return;
   }
 
-  if (!SetSelection(begin_address, end_address))
-  {
-    return;
-  }
+  const int start = m_STC->PositionFromLine(begin_line);
+  const int end = m_STC->PositionFromLine(end_line);
 
-  m_STC->Copy();
+  m_STC->CopyRange(start, end);
   
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  
+  const int lines = end_line - begin_line;
+
   if (lines > 2)
   {
+#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format("%d lines yanked", lines));
+#endif
   }
 }
 

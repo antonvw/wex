@@ -35,6 +35,7 @@ public:
   /// Returns true if event is allowed to be skipped.
   bool OnKeyDown(wxKeyEvent& event);
 private:
+  void Delete(int lines) const;
   void Delete(
     const wxString& begin_address, 
     const wxString& end_address) const;
@@ -54,12 +55,14 @@ private:
     const wxString& pattern,
     const wxString& replacement) const;
   int ToLineNumber(const wxString& address) const;
+  void Yank(int lines) const;
   void Yank(
     const wxString& begin_address, 
     const wxString& end_address) const;
 
   std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
+  bool m_SearchForward;
   wxExSTC* m_STC;
   wxString m_Command;
   wxString m_InsertText;
