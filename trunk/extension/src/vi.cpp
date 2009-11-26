@@ -494,13 +494,9 @@ void wxExVi::Substitute(
 
 int wxExVi::ToLineNumber(const wxString& address) const
 {
-  if (address == "$")
+  // Check if we are referring to a defined marker.
+  if (address.StartsWith("'"))
   {
-    return m_STC->GetLineCount();
-  }
-  else if (address.StartsWith("'"))
-  {
-    // This should be a defined marker.
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(address.Last());
 
     if (it != m_Markers.end())
@@ -513,6 +509,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
     }
   }
 
+  // Calculate and filter out a dot or a dollar.
   wxString filtered_address(address);
   int dot = 0;
 
@@ -520,11 +517,22 @@ int wxExVi::ToLineNumber(const wxString& address) const
   {
     dot = m_STC->GetCurrentLine() + 1;
     filtered_address.Replace(".", "");
-    if (!filtered_address.IsNumber()) return 0;
   }
 
-  const int line_no = dot + atoi(filtered_address.c_str());
+  int dollar = 0;
+
+  if (filtered_address.Contains("$"))
+  {
+    dollar = m_STC->GetLineCount();
+    filtered_address.Replace("$", "");
+  }
+
+  if (!filtered_address.IsNumber()) return 0;
+
+  // Calculate the line.
+  const int line_no = dot + dollar + atoi(filtered_address.c_str());
   
+  // Limit the range of what is returned.
   if (line_no < 0)
   {
     return 1;
