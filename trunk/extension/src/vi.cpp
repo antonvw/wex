@@ -10,7 +10,9 @@
 #include <wx/textdlg.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
@@ -30,6 +32,13 @@ void wxExVi::Delete(
     return;
   }
 
+  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  
+  if (lines > 2)
+  {
+    wxExFrame::StatusText("%d fewer lines", lines);
+  }
+  
   m_STC->Cut();
 }
 
@@ -178,6 +187,13 @@ void wxExVi::Move(
   m_STC->Paste();
 
   m_STC->EndUndoAction();
+  
+  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  
+  if (lines > 2)
+  {
+    wxExFrame::StatusText("%d lines moved", lines);
+  }
 }
 
 bool wxExVi::OnChar(wxKeyEvent& event)
@@ -221,6 +237,10 @@ bool wxExVi::OnChar(wxKeyEvent& event)
     m_STC->SetSelectionStart(start);
     m_STC->SetSelectionEnd(end);
     m_STC->Cut();
+    if (repeat > 2)
+    {
+      wxExFrame::StatusText("%d fewer lines", lines);
+    }
   }
   else if (m_Command.EndsWith("dw"))
   {
@@ -251,6 +271,10 @@ bool wxExVi::OnChar(wxKeyEvent& event)
     const int start = m_STC->PositionFromLine(line);
     const int end = m_STC->PositionFromLine(line + repeat);
     m_STC->CopyRange(start, end);
+    if (repeat > 2)
+    {
+      wxExFrame::StatusText("%d lines yanked", lines);
+    }
   }
   else
   {
@@ -557,6 +581,13 @@ void wxExVi::Yank(
   }
 
   m_STC->Copy();
+  
+  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  
+  if (lines > 2)
+  {
+    wxExFrame::StatusText("%d lines yanked", lines);
+  }
 }
 
 #endif // wxUSE_GUI
