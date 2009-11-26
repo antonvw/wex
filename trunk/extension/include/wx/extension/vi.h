@@ -39,7 +39,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
   bool DoCommand(const wxString& command) const;
-  void InsertMode();
+  void InsertMode(bool overtype = false);
   void LineEditor(const wxString& command);
   void Move(
     const wxString& begin_address, 

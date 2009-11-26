@@ -105,12 +105,15 @@ bool wxExVi::DoCommand(const wxString& command) const
   return handled;
 }
 
-void wxExVi::InsertMode()
+void wxExVi::InsertMode(bool overtype)
 {
   if (!m_STC->GetReadOnly())
   {
     m_InsertMode = true;
     m_InsertText.clear();
+
+    m_STC->SetOvertype(overtype);
+    m_STC->BeginUndoAction();
   }
 }
 
@@ -140,7 +143,7 @@ void wxExVi::LineEditor(const wxString& command)
   {
     m_STC->FileSave();
   }
-  else if (command == "x")
+  else if (command == "x" || command == "ZZ")
   {
     if (m_STC->GetContentsChanged())
     {
@@ -237,6 +240,12 @@ bool wxExVi::OnChar(wxKeyEvent& event)
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
     InsertMode();
   }
+  else if (m_Command == "cc")
+  {
+    m_STC->Home();
+    m_STC->DelLineRight();
+    InsertMode();
+  }
   else if (m_Command.EndsWith("dd"))
   {
     const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
@@ -309,6 +318,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           break;
         case 'a': InsertMode(); m_STC->CharRight(); break;
         case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
+        case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
         case 'g': m_STC->DocumentStart(); break;
         case 'h': 
         case WXK_LEFT:
@@ -344,6 +354,11 @@ bool wxExVi::OnChar(wxKeyEvent& event)
         case 'x': m_STC->DeleteBack(); break;
 
         case 'A': InsertMode(); m_STC->LineEnd(); break;
+        case 'C': 
+          InsertMode(); 
+          m_STC->SetSelectionStart(m_STC->GetCurrentPos());
+          m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
+          break;
         case 'D': m_STC->DelLineRight(); break;
         case 'G': 
           if (repeat > 1)
@@ -357,6 +372,11 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           break;
         case 'H': 
             m_STC->GotoLine(m_STC->GetFirstVisibleLine());
+          break;
+        case 'J': 
+          m_STC->SetTargetStart(m_STC->PositionFromLine(m_STC->GetCurrentLine()));
+          m_STC->SetTargetEnd(m_STC->PositionFromLine(m_STC->GetCurrentLine() + 1));
+          m_STC->LinesJoin();
           break;
         case 'M': 
             m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
@@ -378,6 +398,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
           m_STC->GotoPos(m_STC->GetCurrentPos() - wxExClipboardGet().length());
           m_STC->Paste();
           break;
+        case 'R': InsertMode(true); break;
 
         case '/': 
         case '?': 
@@ -486,7 +507,11 @@ bool wxExVi::OnKeyDown(wxKeyEvent& event)
 {
   if (event.GetKeyCode() == WXK_ESCAPE)
   {
-    m_InsertMode = false;
+    if (m_InsertMode)
+    {
+      m_STC->BeginUndoAction();
+      m_InsertMode = false;
+    }
   }
 
   return true;
