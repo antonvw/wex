@@ -36,7 +36,7 @@ void wxExVi::Delete(
   
   if (lines > 2)
   {
-    wxExFrame::StatusText("%d fewer lines", lines);
+    wxExFrame::StatusText(wxString::Format("%d fewer lines", lines));
   }
   
   m_STC->Cut();
@@ -192,7 +192,7 @@ void wxExVi::Move(
   
   if (lines > 2)
   {
-    wxExFrame::StatusText("%d lines moved", lines);
+    wxExFrame::StatusText(wxString::Format("%d lines moved", lines));
   }
 }
 
@@ -200,12 +200,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
 {
   if (m_InsertMode)
   {
-    if (wxIsalnum(event.GetKeyCode()))
-    {
-      m_InsertText += 
-        (!event.ShiftDown() ? wxTolower(event.GetUnicodeKey()): event.GetUnicodeKey());
-    }
-    
+    m_InsertText += event.GetUnicodeKey();
     return true;
   }
 
@@ -239,7 +234,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
     m_STC->Cut();
     if (repeat > 2)
     {
-      wxExFrame::StatusText("%d fewer lines", lines);
+      wxExFrame::StatusText(wxString::Format("%d fewer lines", repeat));
     }
   }
   else if (m_Command.EndsWith("dw"))
@@ -273,7 +268,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
     m_STC->CopyRange(start, end);
     if (repeat > 2)
     {
-      wxExFrame::StatusText("%d lines yanked", lines);
+      wxExFrame::StatusText(wxString::Format("%d lines yanked", repeat));
     }
   }
   else
@@ -586,7 +581,7 @@ void wxExVi::Yank(
   
   if (lines > 2)
   {
-    wxExFrame::StatusText("%d lines yanked", lines);
+    wxExFrame::StatusText(wxString::Format("%d lines yanked", lines));
   }
 }
 
