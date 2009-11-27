@@ -417,7 +417,7 @@ void wxExVi::DoCommandLine(const wxString& command)
         command.AfterFirst(':').c_str(), 
         ToLineNumber(command.AfterFirst(':').BeforeLast('='))));
   }
-  else if (real_command.IsNumber())
+  else if (command.AfterFirst(':').IsNumber())
   {
     m_STC->GotoLine(atoi(command.AfterFirst(':').c_str()) - 1);
   }
