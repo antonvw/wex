@@ -340,6 +340,26 @@ bool wxExVi::DoCommand(const wxString& command)
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
       case '}': m_STC->ParaDown(); break;
+      
+      case '%':
+        {
+          int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
+          
+          if (brace_match != wxSTC_INVALID_POSITION)
+          {
+            m_STC->GotoPos(brace_match);
+          }
+          else
+          {
+            brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos() - 1);
+            
+            if (brace_match != wxSTC_INVALID_POSITION)
+            {
+              m_STC->GotoPos(brace_match);
+            }
+          }
+        }
+        break;
 
       case ':':
         {
