@@ -76,6 +76,11 @@ void wxExVi::Delete(
 
 bool wxExVi::DoCommand(const wxString& command)
 {
+  if (command.StartsWith(":"))
+  {
+    return DoCommandRange(command);
+  }
+          
   int repeat = atoi(command.c_str());
 
   if (repeat == 0)
@@ -294,14 +299,7 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         else
         {
-          if (m_LastCommand.StartsWith(":"))
-          {
-            DoCommandRange(m_LastCommand);
-          }
-          else
-          {
-            DoCommand(m_LastCommand);
-          }
+          DoCommand(m_LastCommand);
         }
         break;
 
