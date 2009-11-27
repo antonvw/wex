@@ -76,7 +76,7 @@ void wxExVi::Delete(
 
 bool wxExVi::DoCommand(const wxString& command)
 {
-  if (command.StartsWith(":"))
+  if (command.StartsWith(":") && command.length() > 1)
   {
     return DoCommandRange(command);
   }
@@ -359,16 +359,7 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
 
-      case ':':
-        {
-          wxTextEntryDialog dlg(m_STC, ":", "vi");
-
-          if (dlg.ShowModal() == wxID_OK)
-          {
-            DoCommandLine(":" + dlg.GetValue());
-          }
-        }
-        break;
+      case ':': DoCommandLine(); break;
 
       case 2:  // ^b
         for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
@@ -391,13 +382,18 @@ bool wxExVi::DoCommand(const wxString& command)
   return handled;
 }
 
-void wxExVi::DoCommandLine(const wxString& command)
+void wxExVi::DoCommandLine()
 {
-  if (command == ":")
+  wxTextEntryDialog dlg(m_STC, ":", "vi");
+
+  if (dlg.ShowModal() == wxID_CANCEL)
   {
-    // Do nothing.
+    return;
   }
-  else if (command == ":$")
+
+  const wxString command = ":" + dlg.GetValue();
+
+  if (command == ":$")
   {
     m_STC->DocumentEnd();
   }

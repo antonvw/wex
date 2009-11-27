@@ -40,7 +40,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
   bool DoCommand(const wxString& command);
-  void DoCommandLine(const wxString& command);
+  void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
   void InsertMode(bool overtype = false);
   void Move(
