@@ -568,6 +568,8 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   if (m_InsertMode)
   {
     m_InsertText += event.GetUnicodeKey();
+
+    return true;
   }
   else
   {
@@ -584,9 +586,9 @@ bool wxExVi::OnChar(wxKeyEvent& event)
 
       m_Command.clear();
     }
+
+    return false;
   }
-  
-  return m_InsertMode;
 }
 
 bool wxExVi::OnKeyDown(wxKeyEvent& event)
