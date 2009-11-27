@@ -563,6 +563,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       {
         long flags = 0;
         if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTC::STC_OPEN_HEX;
+        wxExFileDialog dlg(this, editor);
+        if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         editor->Open(editor->GetFileName().GetFullPath(),
           0, wxEmptyString, flags);
       }
