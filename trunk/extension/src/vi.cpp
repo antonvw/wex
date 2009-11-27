@@ -372,6 +372,19 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
 
+      case 2:  // ^b
+        for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
+        break;
+      case 5:  // ^e
+        for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
+        break;
+      case 6:  // ^f
+        for (int i = 0; i < repeat; i++) m_STC->PageDown(); 
+        break;
+      case 25: // ^y
+        for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
+        break;
+
       default:
         handled = false;
     }
@@ -563,10 +576,8 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   if (m_InsertMode)
   {
     m_InsertText += event.GetUnicodeKey();
-    return true;
   }
-
-  if (!event.ControlDown())
+  else
   {
     m_Command += event.GetUnicodeKey();
 
@@ -582,27 +593,8 @@ bool wxExVi::OnChar(wxKeyEvent& event)
       m_Command.clear();
     }
   }
-  else
-  {
-    int repeat = atoi(m_Command.c_str());
-
-    if (repeat == 0)
-    {
-      repeat++;
-    }
   
-    switch (event.GetUnicodeKey())
-    {
-      case 'b': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
-      case 'e': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;
-      case 'f': for (int i = 0; i < repeat; i++) m_STC->PageDown(); break;
-      case 'y': for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); break;
-    }
-    
-    m_Command.clear();
-  }
-  
-  return false;
+  return m_InsertMode;
 }
 
 bool wxExVi::OnKeyDown(wxKeyEvent& event)
