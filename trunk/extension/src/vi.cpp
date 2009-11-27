@@ -362,9 +362,10 @@ bool wxExVi::DoCommand(const wxString& command)
 
 bool wxExVi::DoCommandRange(const wxString& command) const
 {
-  // [address] m destination
-  // [address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command, "dmsy");
+  // :[address] m destination
+  // :[address] s [/pattern/replacement/] [options] [count]
+  wxStringTokenizer tkz(command.AfterFirst(':'), "dmsy");
+
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
     
@@ -489,7 +490,7 @@ void wxExVi::LineEditor(const wxString& command)
   }
   else
   {
-    if (DoCommandRange(real_command))
+    if (DoCommandRange(command))
     {
       m_LastCommand = command;
       m_InsertText.clear();
