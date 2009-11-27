@@ -266,7 +266,7 @@ protected:
 private:
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
   void AddBasePathToPathList();
-  bool CheckAutoComp(int key);
+  bool CheckAutoComp(const wxUniChar c);
   bool CheckBrace(int pos);
   bool CheckSmartIndentation();
   // Clears the component: all text is cleared and all styles are reset.

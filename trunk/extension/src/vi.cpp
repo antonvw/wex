@@ -591,7 +591,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
       repeat++;
     }
   
-    switch (event.GetKeyCode())
+    switch (event.GetUnicodeKey())
     {
       case 'b': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
       case 'e': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;

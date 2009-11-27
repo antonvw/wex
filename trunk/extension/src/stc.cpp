@@ -388,17 +388,17 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-bool wxExSTC::CheckAutoComp(int key)
+bool wxExSTC::CheckAutoComp(const wxUniChar c)
 {
   static wxString autoc;
 
   if (isspace(GetCharAt(GetCurrentPos() - 1)))
   {
-    autoc = (wxUniChar)key;
+    autoc = c;
   }
   else
   {
-    autoc += (wxUniChar)key;
+    autoc += c;
 
     if (autoc.length() >= 3) // Only autocompletion for large words
     {
@@ -1456,6 +1456,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   if (skip)
   {
     event.Skip();
+
+    CheckAutoComp(event.GetUnicodeKey());
   }
 }
 
@@ -1560,7 +1562,15 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
     skip = m_vi->OnKeyDown(event);
   }
   
-  const int key = event.GetKeyCode();
+  if (skip)
+  {
+    if (event.GetKeyCode() == WXK_RETURN)
+    {
+      CheckSmartIndentation();
+    }
+    
+    event.Skip();
+  }
 
   bool brace_match = false;
 
@@ -1571,26 +1581,10 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
 
   if (!brace_match)
   {
-    if (key == WXK_LEFT)
+    if (!CheckBrace(GetCurrentPos()))
     {
-      if (!CheckBrace(GetCurrentPos() - 1))
-        CheckBrace(GetCurrentPos() - 2);
+      CheckBrace(GetCurrentPos() - 1);
     }
-    else if (!CheckBrace(GetCurrentPos()))
-    {
-      CheckBrace(GetCurrentPos() + 1);
-    }
-  }
-  
-  if (skip)
-  {
-    if (key == WXK_RETURN)
-    {
-      CheckSmartIndentation();
-    }
-    
-    event.Skip();
-    CheckAutoComp(key);
   }
 }
 
