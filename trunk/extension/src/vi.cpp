@@ -365,7 +365,7 @@ bool wxExVi::DoCommand(const wxString& command)
 
           if (dlg.ShowModal() == wxID_OK)
           {
-            LineEditor(":" + dlg.GetValue());
+            DoCommandLine(":" + dlg.GetValue());
           }
         }
         break;
@@ -389,6 +389,71 @@ bool wxExVi::DoCommand(const wxString& command)
   }
 
   return handled;
+}
+
+void wxExVi::DoCommandLine(const wxString& command)
+{
+  if (command == ":")
+  {
+    // Do nothing.
+  }
+  else if (command == ":$")
+  {
+    m_STC->DocumentEnd();
+  }
+  else if (command == ":d")
+  {
+    Delete(1);
+  }
+  else if (command == ":y")
+  {
+    Yank(1);
+  }
+  else if (command.Last() == '=')
+  {
+    m_STC->CallTipShow(
+      m_STC->GetCurrentPos(), 
+      wxString::Format("%s%d",
+        command.AfterFirst(':').c_str(), 
+        ToLineNumber(command.AfterFirst(':').BeforeLast('='))));
+  }
+  else if (real_command.IsNumber())
+  {
+    m_STC->GotoLine(atoi(command.AfterFirst(':').c_str()) - 1);
+  }
+  else if (command == ":w")
+  {
+    m_STC->FileSave();
+  }
+  else if (command == ":x")
+  {
+    if (m_STC->GetContentsChanged())
+    {
+      m_STC->FileSave();
+    }
+
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == ":q")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == ":q!")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    event.SetCanVeto(false); 
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else
+  {
+    if (DoCommandRange(command))
+    {
+      m_LastCommand = command;
+      m_InsertText.clear();
+    }
+  }
 }
 
 bool wxExVi::DoCommandRange(const wxString& command) const
@@ -459,73 +524,6 @@ void wxExVi::InsertMode(bool overtype)
 
     m_STC->SetOvertype(overtype);
     m_STC->BeginUndoAction();
-  }
-}
-
-void wxExVi::LineEditor(const wxString& command)
-{
-  const wxString real_command = command.AfterFirst(':');
-
-  if (command == ":")
-  {
-    // Do nothing.
-  }
-  else if (command == ":$")
-  {
-    m_STC->DocumentEnd();
-  }
-  else if (command == ":d")
-  {
-    Delete(1);
-  }
-  else if (command == ":y")
-  {
-    Yank(1);
-  }
-  else if (command.Last() == '=')
-  {
-    m_STC->CallTipShow(
-      m_STC->GetCurrentPos(), 
-      wxString::Format("%s%d",
-        real_command.c_str(), 
-        ToLineNumber(real_command.BeforeLast('='))));
-  }
-  else if (real_command.IsNumber())
-  {
-    m_STC->GotoLine(atoi(real_command.c_str()) - 1);
-  }
-  else if (command == ":w")
-  {
-    m_STC->FileSave();
-  }
-  else if (command == ":x")
-  {
-    if (m_STC->GetContentsChanged())
-    {
-      m_STC->FileSave();
-    }
-
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":q")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":q!")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    event.SetCanVeto(false); 
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else
-  {
-    if (DoCommandRange(command))
-    {
-      m_LastCommand = command;
-      m_InsertText.clear();
-    }
   }
 }
 
