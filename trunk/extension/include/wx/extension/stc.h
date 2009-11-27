@@ -269,6 +269,7 @@ private:
   void AddBasePathToPathList();
   bool CheckAutoComp(const wxUniChar c);
   bool CheckBrace(int pos);
+  bool CheckBraceHex(int pos);
   bool CheckSmartIndentation();
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and FileNew.
@@ -288,7 +289,6 @@ private:
     wxString& filename, // name of found file
     int line_number = 0, 
     bool link_open = true);
-  bool MatchHexBrace();
   /// Adds a path to the path list, does not change it in the config.
   void PathListAdd(const wxString& path);
   void ReadFromFile(bool get_only_new_data);
