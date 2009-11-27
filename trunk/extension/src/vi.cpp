@@ -83,7 +83,7 @@ bool wxExVi::DoCommand(const wxString& command)
     repeat++;
   }
   
-  bool handled_command = true;
+  bool handled = true;
 
   // Handle multichar commands.
   if (command.EndsWith("cw"))
@@ -146,6 +146,16 @@ bool wxExVi::DoCommand(const wxString& command)
   {
     Yank(repeat);
   }
+  else if (command == "ZZ")
+  {
+    if (m_STC->GetContentsChanged())
+    {
+      m_STC->FileSave();
+    }
+
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
   else if (command.Matches("'?"))
   {
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
@@ -157,191 +167,197 @@ bool wxExVi::DoCommand(const wxString& command)
   }
   else
   {
-      switch (command.Last())
-      {
-        case '0': 
-          if (command.length() == 1)
+    switch ((int)command.Last())
+    {
+      case '0': 
+        if (command.length() == 1)
+        {
+          m_STC->Home(); 
+        }
+        else
+        {
+          handled = false;
+        }
+        break;
+      case 'a': InsertMode(); m_STC->CharRight(); break;
+      case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
+      case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
+      case 'g': m_STC->DocumentStart(); break;
+      case 'h': 
+      case WXK_LEFT:
+        for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
+        break;
+      case 'i': InsertMode(); break;
+      case 'j': 
+      case WXK_DOWN:
+        for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
+        break;
+      case 'k': 
+      case WXK_UP:
+        for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
+        break;
+      case 'l': 
+      case ' ': 
+      case WXK_RIGHT:
+        for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
+        break;
+      case 'n': 
+        for (int i = 0; i < repeat; i++) 
+          m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
+        break;
+      case 'o': 
+        m_STC->LineEnd(); 
+        m_STC->NewLine(); 
+        InsertMode(); 
+        break;
+      case 'p': m_STC->Paste();
+        break;
+      case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
+      case 'u': m_STC->Undo(); break;
+      case 'x': 
+        {
+        wxKeyEvent event(wxEVT_KEY_DOWN);
+        event.SetId(WXK_DELETE);
+        wxPostEvent(m_STC, event);
+        }
+        break;
+
+      case 'A': InsertMode(); m_STC->LineEnd(); break;
+      case 'C': 
+        InsertMode(); 
+        m_STC->SetSelectionStart(m_STC->GetCurrentPos());
+        m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
+        break;
+      case 'D': m_STC->DelLineRight(); break;
+      case 'G': 
+        if (repeat > 1)
+        {
+          m_STC->GotoLine(repeat - 1);
+        }
+        else
+        {
+          m_STC->DocumentEnd();
+        }
+        break;
+      case 'H': 
+          m_STC->GotoLine(m_STC->GetFirstVisibleLine());
+        break;
+      case 'I': 
+        m_STC->Home(); 
+        InsertMode(); 
+        break;
+      case 'M': 
+          m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
+        break;
+      case 'L': 
+          m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen());
+        break;
+      case 'N': 
+        for (int i = 0; i < repeat; i++) 
+          m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, !m_SearchForward);
+        break;
+      case 'O': 
+        m_STC->Home(); 
+        m_STC->NewLine(); 
+        m_STC->LineUp(); 
+        InsertMode(); 
+        break;
+      case 'P':
+        m_STC->GotoPos(m_STC->GetCurrentPos() - wxExClipboardGet().length());
+        m_STC->Paste();
+        break;
+      case 'R': InsertMode(true); break;
+      case 'X': m_STC->DeleteBack(); break;
+
+      case '/': 
+      case '?': 
+        {
+          wxTextEntryDialog dlg(
+            m_STC, 
+            command.Last(), 
+            "vi",
+            m_SearchText);
+
+          if (dlg.ShowModal() == wxID_OK)
           {
-            m_STC->Home(); 
-          }
-          else
-          {
-            handled_command = false;
-          }
-          break;
-        case 'a': InsertMode(); m_STC->CharRight(); break;
-        case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
-        case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
-        case 'g': m_STC->DocumentStart(); break;
-        case 'h': 
-        case WXK_LEFT:
-          for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
-          break;
-        case 'i': InsertMode(); break;
-        case 'j': 
-        case WXK_DOWN:
-          for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
-          break;
-        case 'k': 
-        case WXK_UP:
-          for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
-          break;
-        case 'l': 
-        case ' ': 
-        case WXK_RIGHT:
-          for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
-          break;
-        case 'n': 
-          for (int i = 0; i < repeat; i++) 
+            m_SearchForward = command.Last() == '/';
+            m_SearchText = dlg.GetValue();
             m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
-          break;
-        case 'o': 
-          m_STC->LineEnd(); 
-          m_STC->NewLine(); 
-          InsertMode(); 
-          break;
-        case 'p': m_STC->Paste();
-          break;
-        case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
-        case 'u': m_STC->Undo(); break;
-        case 'x': 
-          {
-          wxKeyEvent event(wxEVT_KEY_DOWN);
-          event.SetId(WXK_DELETE);
-          wxPostEvent(m_STC, event);
           }
-          break;
+        }
+        break;
 
-        case 'A': InsertMode(); m_STC->LineEnd(); break;
-        case 'C': 
-          InsertMode(); 
-          m_STC->SetSelectionStart(m_STC->GetCurrentPos());
-          m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
-          break;
-        case 'D': m_STC->DelLineRight(); break;
-        case 'G': 
-          if (repeat > 1)
+      case '.': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          if (m_LastCommand.StartsWith(":"))
           {
-            m_STC->GotoLine(repeat - 1);
-          }
-          else
-          {
-            m_STC->DocumentEnd();
-          }
-          break;
-        case 'H': 
-            m_STC->GotoLine(m_STC->GetFirstVisibleLine());
-          break;
-        case 'I': 
-          m_STC->Home(); 
-          InsertMode(); 
-          break;
-        case 'M': 
-            m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
-          break;
-        case 'L': 
-            m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen());
-          break;
-        case 'N': 
-          for (int i = 0; i < repeat; i++) 
-            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, !m_SearchForward);
-          break;
-        case 'O': 
-          m_STC->Home(); 
-          m_STC->NewLine(); 
-          m_STC->LineUp(); 
-          InsertMode(); 
-          break;
-        case 'P':
-          m_STC->GotoPos(m_STC->GetCurrentPos() - wxExClipboardGet().length());
-          m_STC->Paste();
-          break;
-        case 'R': InsertMode(true); break;
-        case 'X': m_STC->DeleteBack(); break;
-
-        case '/': 
-        case '?': 
-          {
-            wxTextEntryDialog dlg(
-              m_STC, 
-              command.Last(), 
-              "vi",
-              m_SearchText);
-
-            if (dlg.ShowModal() == wxID_OK)
-            {
-              m_SearchForward = command.Last() == '/';
-              m_SearchText = dlg.GetValue();
-              m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
-            }
-          }
-          break;
-
-        case '.': 
-          if (!m_InsertText.empty())
-          {
-            m_STC->AddText(m_InsertText);
+            DoCommandRange(m_LastCommand);
           }
           else
           {
             DoCommand(m_LastCommand);
           }
-          break;
+        }
+        break;
 
-        case '[':
-        case ']':
-          {
-          const int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
-          if (brace_match != wxSTC_INVALID_POSITION)
-          {
-            m_STC->GotoPos(brace_match);
-          }
-          }
-          break;
+      case '[':
+      case ']':
+        {
+        const int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
+        if (brace_match != wxSTC_INVALID_POSITION)
+        {
+          m_STC->GotoPos(brace_match);
+        }
+        }
+        break;
           
-        case WXK_RETURN:
-          m_STC->LineDown();
-          break;
+      case WXK_RETURN:
+        m_STC->LineDown();
+        break;
 
-        case '~':
+      case '~':
+        {
+          wxString text(m_STC->GetTextRange(
+            m_STC->GetCurrentPos(), 
+            m_STC->GetCurrentPos() + 1));
+
+          wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
+
+          m_STC->wxStyledTextCtrl::Replace(
+            m_STC->GetCurrentPos(), 
+            m_STC->GetCurrentPos() + 1, 
+            text);
+
+          m_STC->CharRight();
+        }
+        break;
+
+      case '$': m_STC->LineEnd(); break;
+      case '{': m_STC->ParaUp(); break;
+      case '}': m_STC->ParaDown(); break;
+
+      case ':':
+        {
+          wxTextEntryDialog dlg(m_STC, ":", "vi");
+
+          if (dlg.ShowModal() == wxID_OK)
           {
-            wxString text(m_STC->GetTextRange(
-              m_STC->GetCurrentPos(), 
-              m_STC->GetCurrentPos() + 1));
-
-            wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-
-            m_STC->wxStyledTextCtrl::Replace(
-              m_STC->GetCurrentPos(), 
-              m_STC->GetCurrentPos() + 1, 
-              text);
-
-            m_STC->CharRight();
+            LineEditor(":" + dlg.GetValue());
           }
-          break;
+        }
+        break;
 
-        case '$': m_STC->LineEnd(); break;
-        case '{': m_STC->ParaUp(); break;
-        case '}': m_STC->ParaDown(); break;
-
-        case ':':
-          {
-            wxTextEntryDialog dlg(m_STC, ":", "vi");
-
-            if (dlg.ShowModal() == wxID_OK)
-            {
-              LineEditor(dlg.GetValue());
-            }
-          }
-          break;
-
-        default:
-          handled_command = false;
-      }
+      default:
+        handled = false;
     }
   }
 
-  return handled_command;
+  return handled;
 }
 
 bool wxExVi::DoCommandRange(const wxString& command) const
@@ -416,19 +432,21 @@ void wxExVi::InsertMode(bool overtype)
 
 void wxExVi::LineEditor(const wxString& command)
 {
-  if (command.empty())
+  const wxString real_command = command.AfterFirst(':');
+
+  if (command == ":")
   {
     // Do nothing.
   }
-  else if (command == "$")
+  else if (command == ":$")
   {
     m_STC->DocumentEnd();
   }
-  else if (command == "d")
+  else if (command == ":d")
   {
     Delete(1);
   }
-  else if (command == "y")
+  else if (command == ":y")
   {
     Yank(1);
   }
@@ -437,18 +455,18 @@ void wxExVi::LineEditor(const wxString& command)
     m_STC->CallTipShow(
       m_STC->GetCurrentPos(), 
       wxString::Format("%s%d",
-        command.c_str(), 
-        ToLineNumber(command.BeforeLast('='))));
+        real_command.c_str(), 
+        ToLineNumber(real_command.BeforeLast('='))));
   }
-  else if (command.IsNumber())
+  else if (real_command.IsNumber())
   {
-    m_STC->GotoLine(atoi(command.c_str()) - 1);
+    m_STC->GotoLine(atoi(real_command.c_str()) - 1);
   }
-  else if (command == "w")
+  else if (command == ":w")
   {
     m_STC->FileSave();
   }
-  else if (command == "x" || command == "ZZ")
+  else if (command == ":x")
   {
     if (m_STC->GetContentsChanged())
     {
@@ -458,12 +476,12 @@ void wxExVi::LineEditor(const wxString& command)
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == "q")
+  else if (command == ":q")
   {
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == "q!")
+  else if (command == ":q!")
   {
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     event.SetCanVeto(false); 
@@ -471,7 +489,7 @@ void wxExVi::LineEditor(const wxString& command)
   }
   else
   {
-    if (DoCommandRange(command))
+    if (DoCommandRange(real_command))
     {
       m_LastCommand = command;
       m_InsertText.clear();
@@ -533,6 +551,13 @@ bool wxExVi::OnChar(wxKeyEvent& event)
 
     if (DoCommand(m_Command))
     {
+      // Prevent motion command and the .dot command
+      // to be stored as last command.
+      if (m_Command.length() > 1 || m_Command == "p")
+      {
+        m_LastCommand = m_Command;
+      }
+
       m_Command.clear();
     }
   }
@@ -540,12 +565,10 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   {
     switch (event.GetKeyCode())
     {
-      case 'b': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
-      case 'e': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;
-      case 'f': for (int i = 0; i < repeat; i++) m_STC->PageDown(); break;
-      case 'y': for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); break;
-      default:
-        handled_command = false;
+      case 'b': m_STC->PageUp(); break;
+      case 'e': m_STC->LineScrollUp(); break;
+      case 'f': m_STC->PageDown(); break;
+      case 'y': m_STC->LineScrollDown(); break;
     }
   }
   
