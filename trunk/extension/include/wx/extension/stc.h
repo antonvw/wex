@@ -261,6 +261,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKeyDown(wxKeyEvent& event);
+  void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:

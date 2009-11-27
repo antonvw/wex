@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
   EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
+  EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
@@ -1571,19 +1572,20 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
     
     event.Skip();
   }
+}
 
-  bool brace_match = false;
+void wxExSTC::OnKeyUp(wxKeyEvent& event)
+{
+  event.Skip();
 
-  if (m_Flags & STC_OPEN_HEX)
+  if (!CheckBrace(GetCurrentPos()))
   {
-    brace_match = MatchHexBrace();
-  }
-
-  if (!brace_match)
-  {
-    if (!CheckBrace(GetCurrentPos()))
+    if (!CheckBrace(GetCurrentPos() - 1))
     {
-      CheckBrace(GetCurrentPos() - 1);
+      if (m_Flags & STC_OPEN_HEX)
+      {
+        MatchHexBrace();
+      }
     }
   }
 }
