@@ -584,13 +584,22 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
   else
   {
+    int repeat = atoi(m_Command.c_str());
+
+    if (repeat == 0)
+    {
+      repeat++;
+    }
+  
     switch (event.GetKeyCode())
     {
-      case 'b': m_STC->PageUp(); break;
-      case 'e': m_STC->LineScrollUp(); break;
-      case 'f': m_STC->PageDown(); break;
-      case 'y': m_STC->LineScrollDown(); break;
+      case 'b': for (int i = 0; i < repeat; i++) m_STC->PageUp(); break;
+      case 'e': for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); break;
+      case 'f': for (int i = 0; i < repeat; i++) m_STC->PageDown(); break;
+      case 'y': for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); break;
     }
+    
+    m_Command.clear();
   }
   
   return false;
