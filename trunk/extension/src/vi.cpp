@@ -611,7 +611,7 @@ bool wxExVi::OnKeyDown(wxKeyEvent& event)
   {
     if (m_InsertMode)
     {
-      m_STC->BeginUndoAction();
+      m_STC->EndUndoAction();
       m_InsertMode = false;
     }
   }
