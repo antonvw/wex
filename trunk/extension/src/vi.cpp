@@ -206,21 +206,17 @@ bool wxExVi::DoCommand(const wxString& command)
       case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
       case 'g': m_STC->DocumentStart(); break;
       case 'h': 
-      case WXK_LEFT:
         for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
         break;
       case 'i': InsertMode(); break;
       case 'j': 
-      case WXK_DOWN:
         for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
         break;
       case 'k': 
-      case WXK_UP:
         for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
         break;
       case 'l': 
       case ' ': 
-      case WXK_RIGHT:
         for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
         break;
       case 'n': 
@@ -331,10 +327,6 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
           
-      case WXK_RETURN:
-        m_STC->LineDown();
-        break;
-
       case '~':
         {
           wxString text(m_STC->GetTextRange(
@@ -610,16 +602,24 @@ bool wxExVi::OnChar(wxKeyEvent& event)
 
 bool wxExVi::OnKeyDown(wxKeyEvent& event)
 {
-  if (event.GetKeyCode() == WXK_ESCAPE)
+  bool handled = true;
+
+  switch (event.GetKeyCode())
   {
-    if (m_InsertMode)
-    {
-      m_STC->EndUndoAction();
-      m_InsertMode = false;
-    }
+    case WXK_ESCAPE:
+      if (m_InsertMode)
+      {
+        m_STC->EndUndoAction();
+        m_InsertMode = false;
+      }
+      break;
+   case WXK_RETURN:
+      m_STC->LineDown();
+      break;
+   default: handled = false;
   }
 
-  return true;
+  return !handled;
 }
 
 bool wxExVi::SetSelection(
