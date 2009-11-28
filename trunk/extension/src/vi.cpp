@@ -614,7 +614,14 @@ bool wxExVi::OnKeyDown(wxKeyEvent& event)
       }
       break;
    case WXK_RETURN:
-      m_STC->LineDown();
+      if (!m_InsertMode)
+      {
+        m_STC->LineDown();
+      }
+      else
+      {
+        handled = false;
+      }
       break;
    default: handled = false;
   }
