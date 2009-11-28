@@ -106,6 +106,14 @@ bool wxExVi::DoCommand(const wxString& command)
   {
     Delete(repeat);
   }
+  else if (command == "d0")
+  {
+    m_STC->DelLineLeft();
+  }
+  else if (command == "d$")
+  {
+    m_STC->DelLineRight();
+  }
   else if (command.EndsWith("dw"))
   {
     m_STC->BeginUndoAction();
@@ -146,6 +154,15 @@ bool wxExVi::DoCommand(const wxString& command)
       m_STC->WordRight();
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
     m_STC->GotoPos(start);
+  }
+  // This is a sepcial one, not really vi.
+  else if (command.EndsWith("Yw"))
+  {
+    const int start = m_STC->GetCurrentPos();
+    for (int i = 0; i < repeat; i++) 
+      m_STC->WordRight();
+    m_STC->CopyRange(start, m_STC->GetCurrentPos());
+    m_SearchText = m_STC->GetTextRange(start, m_STC->GetCurrentPos()).Trim();
   }
   else if (command.EndsWith("yy"))
   {
