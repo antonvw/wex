@@ -233,10 +233,10 @@ bool wxExVi::DoCommand(const wxString& command)
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
       case 'x': 
+        for (int i = 0; i < repeat; i++) 
         {
-        wxKeyEvent event(wxEVT_KEY_DOWN);
-        event.SetId(WXK_DELETE);
-        wxPostEvent(m_STC, event);
+          m_STC->CharRight();
+          m_STC->DeleteBack(); 
         }
         break;
 
@@ -285,7 +285,7 @@ bool wxExVi::DoCommand(const wxString& command)
         m_STC->Paste();
         break;
       case 'R': InsertMode(true); break;
-      case 'X': m_STC->DeleteBack(); break;
+      case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
       case '?': 
