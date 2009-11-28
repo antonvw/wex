@@ -65,8 +65,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
   m_FileName->Assign("xxx");
-  m_FileName->GetStat().Sync("xxx");
-  CPPUNIT_ASSERT(!m_FileName->GetStat().IsOk());
+  CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
 
   // test wxExFileNameStatistics
   CPPUNIT_ASSERT(m_FileNameStatistics->Get().empty());
