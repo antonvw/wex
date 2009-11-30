@@ -295,17 +295,6 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
 
-      case '[':
-      case ']':
-        {
-        const int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
-        if (brace_match != wxSTC_INVALID_POSITION)
-        {
-          m_STC->GotoPos(brace_match);
-        }
-        }
-        break;
-          
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
