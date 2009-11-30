@@ -42,7 +42,9 @@ wxMenuItem* wxExMenu::Append(int id)
 
   if (art.GetBitmap().IsOk())
   {
-    item->SetBitmap(art.GetBitmap(wxART_MENU));
+    item->SetBitmap(art.GetBitmap(
+      wxART_MENU, 
+      wxArtProvider::GetSizeHint(wxART_MENU, true)));
   }
 
   return wxMenu::Append(item);
