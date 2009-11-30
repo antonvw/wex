@@ -66,6 +66,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
 
+  static wxString m_LastCommand;
   std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
   bool m_SearchForward;
@@ -73,7 +74,6 @@ private:
   wxExSTC* m_STC;
   wxString m_Command;
   wxString m_InsertText;
-  wxString m_LastCommand;
   wxString m_SearchText;
 };
 

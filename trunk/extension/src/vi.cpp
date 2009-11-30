@@ -16,6 +16,8 @@
 
 #if wxUSE_GUI
 
+wxString wxExVi::m_LastCommand;
+
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_InsertMode(false)
@@ -73,7 +75,6 @@ void wxExVi::Delete(
 #endif
   }
 }
-
 
 bool wxExVi::DoCommand(const wxString& command)
 {
