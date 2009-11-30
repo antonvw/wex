@@ -42,7 +42,7 @@ private:
   bool DoCommand(const wxString& command);
   void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
-  void InsertMode(bool overtype = false);
+  void InsertMode(const wxUniChar c = 'i', bool overtype = false);
   void Move(
     const wxString& begin_address, 
     const wxString& end_address, 
