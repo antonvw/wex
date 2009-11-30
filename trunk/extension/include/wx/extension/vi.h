@@ -43,7 +43,10 @@ private:
   void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
   void GotoBrace();
-  void InsertMode(const wxUniChar c = 'i', bool overtype = false);
+  void InsertMode(
+    const wxUniChar c = 'i', 
+    int repeat,
+    bool overtype = false);
   void Move(
     const wxString& begin_address, 
     const wxString& end_address, 
@@ -66,6 +69,7 @@ private:
   std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
   bool m_SearchForward;
+  int m_InsertRepeatCount;
   wxExSTC* m_STC;
   wxString m_Command;
   wxString m_InsertText;
