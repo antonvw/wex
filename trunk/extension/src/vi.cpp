@@ -290,7 +290,7 @@ bool wxExVi::DoCommand(const wxString& command)
         {
           m_STC->AddText(m_InsertText);
         }
-        else
+        else if (!m_LastCommand.empty())
         {
           DoCommand(m_LastCommand);
         }
