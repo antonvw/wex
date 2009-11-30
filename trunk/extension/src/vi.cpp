@@ -141,7 +141,7 @@ bool wxExVi::DoCommand(const wxString& command)
   {
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
   }
-  else if (command.EndsWith("r?"))
+  else if (command.Matches("*r?"))
   {
     m_STC->wxStyledTextCtrl::Replace(
       m_STC->GetCurrentPos(), 
