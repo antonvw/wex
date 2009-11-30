@@ -45,7 +45,7 @@ private:
   void GotoBrace();
   void InsertMode(
     const wxUniChar c = 'i', 
-    int repeat,
+    int repeat = 1,
     bool overtype = false);
   void Move(
     const wxString& begin_address, 
