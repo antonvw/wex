@@ -141,12 +141,12 @@ bool wxExVi::DoCommand(const wxString& command)
   {
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
   }
-  else if (command.Matches("r?"))
+  else if (command.EndsWith("r?"))
   {
     m_STC->wxStyledTextCtrl::Replace(
       m_STC->GetCurrentPos(), 
-      m_STC->GetCurrentPos() + 1, 
-      command.Last());
+      m_STC->GetCurrentPos() + repeat, 
+      wxString(command.Last(), repeat));
   }
   else if (command.EndsWith("yw"))
   {
