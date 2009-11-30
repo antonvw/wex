@@ -42,7 +42,7 @@ wxMenuItem* wxExMenu::Append(int id)
 
   if (art.GetBitmap().IsOk())
   {
-    item->SetBitmap(art.GetBitmap());
+    item->SetBitmap(art.GetBitmap(wxART_MENU));
   }
 
   return wxMenu::Append(item);
@@ -180,13 +180,17 @@ void wxExMenu::AppendTools()
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (
-    std::map <int, wxExToolInfo>::const_iterator it = wxExTool::Get()->GetToolInfo().begin();
+    std::map <int, wxExToolInfo>::const_iterator it = 
+      wxExTool::Get()->GetToolInfo().begin();
     it != wxExTool::Get()->GetToolInfo().end();
     ++it)
   {
     if (!it->second.GetText().empty())
     {
-      menuTool->Append(it->first, it->second.GetText(), it->second.GetHelpText());
+      menuTool->Append(
+        it->first, 
+        it->second.GetText(), 
+        it->second.GetHelpText());
     }
   }
 
