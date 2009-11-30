@@ -154,10 +154,7 @@ int wxExProcessWithListView::ConfigDialog(
 
 long wxExProcessWithListView::Execute()
 {
-  if (m_Command.empty())
-  {
-    wxFAIL;
-  }
+  wxASSERT(!m_Command.empty());
 
   wxString cwd;
   const wxString dir = wxExConfigFirstOf(_("Process folder"));
