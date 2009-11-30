@@ -249,16 +249,10 @@ bool wxExVi::DoCommand(const wxString& command)
           m_STC->DocumentEnd();
         }
         break;
-      case 'H': 
-          m_STC->GotoLine(m_STC->GetFirstVisibleLine());
-        break;
+      case 'H': m_STC->GotoLine(m_STC->GetFirstVisibleLine()); break;
       case 'I': InsertMode(command.Last()); break;
-      case 'M': 
-          m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
-        break;
-      case 'L': 
-          m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen());
-        break;
+      case 'M': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2); break;
+      case 'L': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, !m_SearchForward);
@@ -311,47 +305,11 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
           
-      case '~':
-        {
-          wxString text(m_STC->GetTextRange(
-            m_STC->GetCurrentPos(), 
-            m_STC->GetCurrentPos() + 1));
-
-          wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-
-          m_STC->wxStyledTextCtrl::Replace(
-            m_STC->GetCurrentPos(), 
-            m_STC->GetCurrentPos() + 1, 
-            text);
-
-          m_STC->CharRight();
-        }
-        break;
-
+      case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
       case '}': m_STC->ParaDown(); break;
-      
-      case '%':
-        {
-          int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
-          
-          if (brace_match != wxSTC_INVALID_POSITION)
-          {
-            m_STC->GotoPos(brace_match);
-          }
-          else
-          {
-            brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos() - 1);
-            
-            if (brace_match != wxSTC_INVALID_POSITION)
-            {
-              m_STC->GotoPos(brace_match);
-            }
-          }
-        }
-        break;
-
+      case '%': GotoBrace(); break;
       case ':': DoCommandLine(); break;
 
       case 2:  // ^b
@@ -502,6 +460,25 @@ bool wxExVi::DoCommandRange(const wxString& command) const
   }
 
   return handled;
+}
+
+void wxExVi::GotoBrace()
+{
+  int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
+          
+  if (brace_match != wxSTC_INVALID_POSITION)
+  {
+    m_STC->GotoPos(brace_match);
+  }
+  else
+  {
+    brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos() - 1);
+            
+    if (brace_match != wxSTC_INVALID_POSITION)
+    {
+      m_STC->GotoPos(brace_match);
+    }
+  }
 }
 
 void wxExVi::InsertMode(const wxUniChar c, bool overtype)
@@ -699,6 +676,22 @@ void wxExVi::Substitute(
   wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
 #endif
+}
+
+void wxExVi::ToggleCase() const
+{
+  wxString text(m_STC->GetTextRange(
+    m_STC->GetCurrentPos(), 
+    m_STC->GetCurrentPos() + 1));
+
+  wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
+
+  m_STC->wxStyledTextCtrl::Replace(
+    m_STC->GetCurrentPos(), 
+    m_STC->GetCurrentPos() + 1, 
+    text);
+
+  m_STC->CharRight();
 }
 
 int wxExVi::ToLineNumber(const wxString& address) const

@@ -42,6 +42,7 @@ private:
   bool DoCommand(const wxString& command);
   void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
+  void GotoBrace();
   void InsertMode(const wxUniChar c = 'i', bool overtype = false);
   void Move(
     const wxString& begin_address, 
@@ -55,6 +56,7 @@ private:
     const wxString& end_address, 
     const wxString& pattern,
     const wxString& replacement) const;
+  void ToggleCase() const;
   int ToLineNumber(const wxString& address) const;
   void Yank(int lines) const;
   void Yank(
