@@ -28,7 +28,7 @@ wxExProcess::wxExProcess(
   wxExListView* listview,
   const wxString& command)
   : wxProcess(NULL, -1)
-  , m_Owner(listview)
+  , m_ListView(listview)
   , m_Timer(this)
 {
   if (!command.empty())
@@ -100,7 +100,7 @@ bool wxExProcess::CheckInput()
 
     if (fn.FileExists())
     {
-      wxExListItemWithFileName item(m_Owner, fn.GetFullPath());
+      wxExListItemWithFileName item(m_ListView, fn.GetFullPath());
       item.Insert();
       item.SetColumnText(_("Line"), line);
       item.SetColumnText(_("Line No"), lineno);
@@ -108,7 +108,7 @@ bool wxExProcess::CheckInput()
     else
     {
       // wxExListItem gives incorrect image
-      wxExListItemWithFileName item(m_Owner, wxEmptyString);
+      wxExListItemWithFileName item(m_ListView, wxEmptyString);
       item.Insert();
       item.SetColumnText(_("Line"), line);
     }
@@ -116,13 +116,13 @@ bool wxExProcess::CheckInput()
     // If nothing selected, then ensure last line is visible.
     // Otherwise you are busy inspecting some line, and
     // it would be irritating to get it out of view.
-    if (m_Owner->GetSelectedItemCount() == 0)
+    if (m_ListView->GetSelectedItemCount() == 0)
     {
-      m_Owner->EnsureVisible(m_Owner->GetItemCount() - 1);
+      m_ListView->EnsureVisible(m_ListView->GetItemCount() - 1);
     }
 
 #if wxUSE_STATUSBAR
-    m_Owner->UpdateStatusBar();
+    m_ListView->UpdateStatusBar();
 #endif
   }
 

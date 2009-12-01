@@ -46,15 +46,14 @@ public:
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
 protected:
+  virtual void OnTerminate(int pid, int status); // overriden
   void OnTimer(wxTimerEvent& event);
 private:
   // Checks whether input is available from process and updates the listview.
   bool CheckInput();
 
-  virtual void OnTerminate(int pid, int status); // overriden
-
   static wxString m_Command;
-  wxExListView* m_Owner;
+  wxExListView* m_ListView;
   wxTimer m_Timer;
 
   DECLARE_EVENT_TABLE()
