@@ -77,6 +77,7 @@ enum wxExStatusFlags
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and a toolbar if you call CreateToolBar.
+/// Allows for file dropping as well.
 class wxExFrame : public wxFrame
 {
   friend class wxExStatusBar;

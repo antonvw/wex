@@ -29,6 +29,24 @@ wxExStatusBar* wxExFrame::m_StatusBar = NULL;
 std::map<wxString, wxExPane> wxExFrame::m_Panes;
 #endif
 
+#if wxUSE_DRAG_AND_DROP
+class FileDropTarget : public wxFileDropTarget
+{
+public:
+  FileDropTarget(wxExFrame* frame) 
+    : m_Frame(frame){;};
+private:
+  virtual bool OnDropFiles(
+    wxCoord x, 
+    wxCoord y, 
+    const wxArrayString& filenames) {
+    wxExOpenFiles(m_Frame, filenames);
+    return true;}
+
+  wxExFrame* m_Frame;
+};
+#endif
+
 BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_CLOSE(wxExFrame::OnClose)
   EVT_FIND(wxID_ANY, wxExFrame::OnFindDialog)
@@ -186,6 +204,10 @@ void wxExFrame::GetSearchText()
 
 void wxExFrame::Initialize()
 {
+#if wxUSE_DRAG_AND_DROP
+  SetDropTarget(new FileDropTarget(this));
+#endif
+
   wxAcceleratorEntry entries[4];
   entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
   entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);

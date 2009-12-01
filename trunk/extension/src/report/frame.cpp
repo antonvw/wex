@@ -12,24 +12,6 @@
 #include <wx/stdpaths.h>
 #include <wx/extension/report/report.h>
 
-#if wxUSE_DRAG_AND_DROP
-class FileDropTarget : public wxFileDropTarget
-{
-public:
-  FileDropTarget(wxExFrameWithHistory* frame) 
-    : m_Frame(frame){;};
-private:
-  virtual bool OnDropFiles(
-    wxCoord x, 
-    wxCoord y, 
-    const wxArrayString& filenames) {
-    wxExOpenFiles(m_Frame, filenames);
-    return true;}
-
-  wxExFrameWithHistory* m_Frame;
-};
-#endif
-
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
@@ -78,10 +60,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     ID_TOOL_REPORT_SQL,
     _("Reported %ld SQL queries in"),
     _("Report SQL &Query"));
-#endif
-
-#if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new FileDropTarget(this));
 #endif
 }
 
