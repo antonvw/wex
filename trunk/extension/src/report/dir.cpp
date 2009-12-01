@@ -14,6 +14,26 @@
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/textfile.h>
 
+wxExDirTool::wxExDirTool(const wxExTool& tool,
+  const wxString& fullpath, const wxString& filespec, int flags)
+  : wxExDir(fullpath, filespec, flags)
+  , m_Statistics(fullpath)
+  , m_Tool(tool)
+{
+}
+
+void wxExDirTool::OnFile(const wxString& file)
+{
+  const wxExFileName filename(file);
+
+  if (filename.GetStat().IsOk())
+  {
+    wxExTextFileWithListView report(filename, m_Tool);
+    report.RunTool();
+    m_Statistics += report.GetStatistics();
+  }
+}
+
 wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
@@ -37,33 +57,18 @@ void wxExDirWithListView::OnFile(const wxString& file)
   // Don't move next code into insert, as it itself inserts!
   if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
   {
-    wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
+    wxExListItemWithFileName item(
+      m_ListView, 
+      m_ListView->GetItemCount() - 1);
 
-    wxExTextFileWithListView report(item.m_Statistics, ID_TOOL_REVISION_RECENT);
+    wxExTextFileWithListView report(
+      item.m_Statistics, 
+      ID_TOOL_REVISION_RECENT);
+    
     if (report.SetupTool(ID_TOOL_REVISION_RECENT))
     {
       report.RunTool();
-       item.UpdateRevisionList(report.GetRCS());
+      item.UpdateRevisionList(report.GetRCS());
     }
-  }
-}
-
-wxExDirTool::wxExDirTool(const wxExTool& tool,
-  const wxString& fullpath, const wxString& filespec, int flags)
-  : wxExDir(fullpath, filespec, flags)
-  , m_Statistics(fullpath)
-  , m_Tool(tool)
-{
-}
-
-void wxExDirTool::OnFile(const wxString& file)
-{
-  const wxExFileName filename(file);
-
-  if (filename.GetStat().IsOk())
-  {
-    wxExTextFileWithListView report(filename, m_Tool);
-    report.RunTool();
-    m_Statistics += report.GetStatistics();
   }
 }

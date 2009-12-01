@@ -20,30 +20,13 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
 
-class wxExListViewFile;
-
-/// Offers a wxExDir with reporting to a listview.
-class wxExDirWithListView : public wxExDir
-{
-public:
-  /// FindFiles causes each found file to be added as listitem to the listview.
-  wxExDirWithListView(wxExListViewFile* listview,
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString,
-    int flags = wxDIR_DEFAULT);
-protected:
-  virtual void OnDir(const wxString& dir);
-  virtual void OnFile(const wxString& file);
-private:
-  wxExListViewFile* m_ListView;
-};
-
 /// Offers a wxExDir with tool support.
+/// RunTool is FindFiles invoked on all matching files.
 class wxExDirTool : public wxExDir
 {
 public:
+  /// Constructor, provide your tool and a path.
   /// SetupTool should already be called.
-  /// FindFiles invokes RunTool on all matching files.
   wxExDirTool(const wxExTool& tool,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString,
@@ -58,4 +41,22 @@ private:
   const wxExTool m_Tool;
 };
 
+class wxExListViewFile;
+
+/// Offers a wxExDir with reporting to a listview.
+/// All matching files and folders are added as listitem to the listview.
+class wxExDirWithListView : public wxExDir
+{
+public:
+  /// Constructor, provide your listview and a path.
+  wxExDirWithListView(wxExListViewFile* listview,
+    const wxString& fullpath,
+    const wxString& filespec = wxEmptyString,
+    int flags = wxDIR_DEFAULT);
+protected:
+  virtual void OnDir(const wxString& dir);
+  virtual void OnFile(const wxString& file);
+private:
+  wxExListViewFile* m_ListView;
+};
 #endif
