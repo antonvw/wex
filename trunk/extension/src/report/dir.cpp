@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dir.cpp
-* Purpose:       Implementation of wxExDirWithListView class
+* Purpose:       Implementation of wxExDirWithListView and wxExDirTool classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,29 +14,16 @@
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/textfile.h>
 
-wxExDirWithListView::wxExDirWithListView(const wxExTool& tool,
-  const wxString& fullpath, const wxString& filespec, int flags)
-  : wxExDir(fullpath, filespec, flags)
-  , m_Statistics(fullpath)
-  , m_ListView(NULL)
-  , m_Tool(tool)
-{
-}
-
 wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
-  , m_Statistics(fullpath)
   , m_ListView(listview)
-  , m_Tool(ID_TOOL_LOWEST)
 {
 }
 
 void wxExDirWithListView::OnDir(const wxString& dir)
 {
-  if (
-    wxConfigBase::Get()->ReadBool(_("Add folders"), true) &&
-    m_ListView != NULL)
+  if (wxConfigBase::Get()->ReadBool(_("Add folders"), true))
   {
     wxExListItemWithFileName(m_ListView, dir, GetFileSpec()).Insert();
   }
@@ -44,33 +31,39 @@ void wxExDirWithListView::OnDir(const wxString& dir)
 
 void wxExDirWithListView::OnFile(const wxString& file)
 {
-  if (m_ListView == NULL)
-  {
-    const wxExFileName filename(file);
+  wxExListItemWithFileName item(m_ListView, file, GetFileSpec());
+  item.Insert();
 
-    if (filename.GetStat().IsOk())
+  // Don't move next code into insert, as it itself inserts!
+  if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
+  {
+    wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
+
+    wxExTextFileWithListView report(item.m_Statistics, ID_TOOL_REVISION_RECENT);
+    if (report.SetupTool(ID_TOOL_REVISION_RECENT))
     {
-      wxExTextFileWithListView report(filename, m_Tool);
       report.RunTool();
-      m_Statistics += report.GetStatistics();
+       item.UpdateRevisionList(report.GetRCS());
     }
   }
-  else
+}
+
+wxExDirTool::wxExDirTool(const wxExTool& tool,
+  const wxString& fullpath, const wxString& filespec, int flags)
+  : wxExDir(fullpath, filespec, flags)
+  , m_Statistics(fullpath)
+  , m_Tool(tool)
+{
+}
+
+void wxExDirTool::OnFile(const wxString& file)
+{
+  const wxExFileName filename(file);
+
+  if (filename.GetStat().IsOk())
   {
-    wxExListItemWithFileName item(m_ListView, file, GetFileSpec());
-    item.Insert();
-
-    // Don't move next code into insert, as it itself inserts!
-    if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
-    {
-      wxExListItemWithFileName item(m_ListView, m_ListView->GetItemCount() - 1);
-
-      wxExTextFileWithListView report(item.m_Statistics, ID_TOOL_REVISION_RECENT);
-      if (report.SetupTool(ID_TOOL_REVISION_RECENT))
-      {
-        report.RunTool();
-         item.UpdateRevisionList(report.GetRCS());
-      }
-    }
+    wxExTextFileWithListView report(filename, m_Tool);
+    report.RunTool();
+    m_Statistics += report.GetStatistics();
   }
 }

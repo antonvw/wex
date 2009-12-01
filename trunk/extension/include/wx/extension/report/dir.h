@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dir.h
-* Purpose:       Include file for wxExDirWithListView class
+* Purpose:       Include file for wxExDirWithListView and wxExDirTool classes
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -26,28 +26,36 @@ class wxExListViewFile;
 class wxExDirWithListView : public wxExDir
 {
 public:
-  /// SetupTool should already be called.
-  /// FindFiles invokes RunTool on all matching files.
-  wxExDirWithListView(const wxExTool& tool,
-    const wxString& fullpath,
-    const wxString& filespec = wxEmptyString,
-    int flags = wxDIR_DEFAULT);
-
   /// FindFiles causes each found file to be added as listitem to the listview.
   wxExDirWithListView(wxExListViewFile* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString,
     int flags = wxDIR_DEFAULT);
-
-  /// Gets the statistics.
-  const wxExFileNameStatistics& GetStatistics() const {return m_Statistics;};
 protected:
   virtual void OnDir(const wxString& dir);
   virtual void OnFile(const wxString& file);
 private:
-  wxExFileNameStatistics m_Statistics;
   wxExListViewFile* m_ListView;
-  wxExTool m_Tool;
+};
+
+/// Offers a wxExDir with tool support.
+class wxExDirTool : public wxExDir
+{
+public:
+  /// SetupTool should already be called.
+  /// FindFiles invokes RunTool on all matching files.
+  wxExDirTool(const wxExTool& tool,
+    const wxString& fullpath,
+    const wxString& filespec = wxEmptyString,
+    int flags = wxDIR_DEFAULT);
+    
+  /// Gets the statistics.
+  const wxExFileNameStatistics& GetStatistics() const {return m_Statistics;};
+protected:  
+  void OnFile(const wxString& file);
+private:    
+  wxExFileNameStatistics m_Statistics;
+  const wxExTool m_Tool;
 };
 
 #endif

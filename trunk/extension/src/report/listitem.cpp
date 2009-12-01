@@ -97,7 +97,7 @@ const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
   }
   else
   {
-    wxExDirWithListView dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
+    wxExDirTool dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
 
     if (dir.FindFiles())
     {

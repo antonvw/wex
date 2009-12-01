@@ -104,7 +104,7 @@ size_t wxExFindInFiles(bool replace)
 
   wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
 
-  wxExDirWithListView dir(
+  wxExDirTool dir(
     tool,
     wxExConfigFirstOf(in_folder),
     wxExConfigFirstOf(in_files));
