@@ -217,6 +217,7 @@ wxExSampleFrame::wxExSampleFrame()
 void wxExSampleFrame::ConfigDialogApplied(wxWindowID /* id */)
 {
   m_STC->ConfigGet();
+  m_STCLexers->ConfigGet();
   m_STCShell->ConfigGet();
 }
 
