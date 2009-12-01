@@ -17,7 +17,7 @@
 #include <wx/extension/report/listview.h> // for wxExListViewFile::ListType 
 
 class wxExListViewWithFrame;
-class wxExProcessWithListView;
+class wxExProcess;
 class wxExSTCWithFrame;
 
 /// Adds file and project history support to wxExManagedFrame.
@@ -119,7 +119,7 @@ private:
   wxFileHistory m_FileHistory;
   wxExListViewWithFrame* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
-  wxExProcessWithListView* m_Process;
+  wxExProcess* m_Process;
 
   DECLARE_EVENT_TABLE()
 };

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.h
-* Purpose:       Declaration of class 'wxExProcessWithListView'
+* Purpose:       Declaration of class 'wxExProcess'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,16 +14,14 @@
 
 #include <wx/process.h>
 
-class wxExFrameWithHistory;
 class wxExListViewWithFrame;
 
 /// Offers a wxProcess with output to a listview.
-class wxExProcessWithListView : public wxProcess
+class wxExProcess : public wxProcess
 {
 public:
   /// Constructor.
-  wxExProcessWithListView(
-    wxExFrameWithHistory* frame,
+  wxExProcess(
     wxExListView* listview, 
     const wxString& command = wxEmptyString);
 
@@ -58,7 +56,6 @@ private:
   virtual void OnTerminate(int pid, int status); // overriden
 
   static wxString m_Command;
-  wxExFrameWithHistory* m_Frame;
   wxExListView* m_Owner;
   wxTimer m_Timer;
 

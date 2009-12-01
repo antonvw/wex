@@ -21,7 +21,7 @@ void wxExReportAppTestFixture::setUp()
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   m_ListView = new wxExListViewWithFrame(frame, wxExListViewWithFrame::LIST_PROCESS);
   m_Dir = new wxExDirWithListView(m_ListView, "./");
-  m_Process = new wxExProcessWithListView(frame, m_ListView, "wc test.h");
+  m_Process = new wxExProcess(m_ListView, "wc test.h");
   m_STC = new wxExSTCWithFrame(frame, wxExFileName(TEST_FILE));
 }
 
@@ -49,7 +49,7 @@ void wxExReportAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_ListView->FileLoad(wxExFileName(TEST_PRJ)));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
-  // test wxExProcessWithListView
+  // test wxExProcess
   CPPUNIT_ASSERT(m_Process->IsSelected());
   long pid;
   CPPUNIT_ASSERT((pid = m_Process->Execute()) > 0);

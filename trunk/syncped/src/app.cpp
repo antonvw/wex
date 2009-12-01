@@ -42,7 +42,7 @@ bool App::OnInit()
     wxConfigBase::Get()->Write(_("List Colour"), wxColour("RED"));
   }
 
-  wxExProcessWithListView::InitCommandFromConfig();
+  wxExProcess::InitCommandFromConfig();
 
   wxExLog::Get()->SetLogging();
 

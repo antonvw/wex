@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          process.cpp
-* Purpose:       Implementation of class 'wxExProcessWithListView'
+* Purpose:       Implementation of class 'wxExProcess'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -15,22 +15,19 @@
 #include <wx/extension/extension.h>
 #include <wx/extension/log.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/process.h>
 
-BEGIN_EVENT_TABLE(wxExProcessWithListView, wxProcess)
-  EVT_TIMER(-1, wxExProcessWithListView::OnTimer)
+BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
+  EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
-wxString wxExProcessWithListView::m_Command = "";
+wxString wxExProcess::m_Command = "";
 
-wxExProcessWithListView::wxExProcessWithListView(
-  wxExFrameWithHistory* frame,
+wxExProcess::wxExProcess(
   wxExListView* listview,
   const wxString& command)
   : wxProcess(NULL, -1)
-  , m_Frame(frame)
   , m_Owner(listview)
   , m_Timer(this)
 {
@@ -42,7 +39,7 @@ wxExProcessWithListView::wxExProcessWithListView(
   Redirect();
 }
 
-bool wxExProcessWithListView::CheckInput()
+bool wxExProcess::CheckInput()
 {
   bool hasInput = false;
 
@@ -132,7 +129,7 @@ bool wxExProcessWithListView::CheckInput()
   return hasInput;
 }
 
-int wxExProcessWithListView::ConfigDialog(
+int wxExProcess::ConfigDialog(
   wxWindow* parent,
   const wxString& title)
 {
@@ -152,7 +149,7 @@ int wxExProcessWithListView::ConfigDialog(
   return result;
 }
 
-long wxExProcessWithListView::Execute()
+long wxExProcess::Execute()
 {
   wxASSERT(!m_Command.empty());
 
@@ -195,14 +192,14 @@ long wxExProcessWithListView::Execute()
   return pid;
 }
 
-void wxExProcessWithListView::InitCommandFromConfig()
+void wxExProcess::InitCommandFromConfig()
 {
   // The process is a combobox, we want only the first from the list,
   // so use the default separator, causing only first field to be returned.
   m_Command = wxExConfigFirstOf(_("Process"));
 }
 
-wxKillError wxExProcessWithListView::Kill(wxSignal sig)
+wxKillError wxExProcess::Kill(wxSignal sig)
 {
   if (!Exists(GetPid()))
   {
@@ -225,7 +222,7 @@ wxKillError wxExProcessWithListView::Kill(wxSignal sig)
   return wxProcess::Kill(GetPid(), sig);
 }
 
-void wxExProcessWithListView::OnTerminate(
+void wxExProcess::OnTerminate(
   int WXUNUSED(pid), 
   int WXUNUSED(status))
 {
@@ -242,10 +239,10 @@ void wxExProcessWithListView::OnTerminate(
 #endif
 
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
-  wxPostEvent(m_Frame, event);
+  wxPostEvent(wxTheApp->GetTopWindow(), event);
 }
 
-void wxExProcessWithListView::OnTimer(wxTimerEvent& event)
+void wxExProcess::OnTimer(wxTimerEvent& event)
 {
   while (CheckInput())
   {

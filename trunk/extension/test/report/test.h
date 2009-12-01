@@ -74,7 +74,7 @@ public:
 private:
   wxExDirWithListView* m_Dir;     ///< testing wxExDirWithReport
   wxExListViewWithFrame* m_ListView; ///< testing wxExListViewWithFrame
-  wxExProcessWithListView* m_Process; ///< testing wxExProcessWithListView
+  wxExProcess* m_Process; ///< testing wxExProcess
   wxExSTCWithFrame* m_STC;      ///< testing wxExSTCWithFrame
 };
 #endif
