@@ -16,7 +16,7 @@ class wxExFrameWithHistory;
 
 #include <wx/extension/stc.h>
 
-/// Adds a frame and drag/drop to wxExSTC.
+/// Adds a frame to wxExSTC.
 /// The frame is assigned in the Initialize.
 class wxExSTCWithFrame : public wxExSTC
 {

@@ -21,6 +21,7 @@ class wxExProcessWithListView;
 class wxExSTCWithFrame;
 
 /// Adds file and project history support to wxExManagedFrame.
+/// Allows for file dropping as well.
 /// It also updates the title of the frame if you have a focused
 /// STC file or listview project.
 class wxExFrameWithHistory : public wxExManagedFrame
