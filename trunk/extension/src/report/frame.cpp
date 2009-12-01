@@ -16,15 +16,17 @@
 class FileDropTarget : public wxFileDropTarget
 {
 public:
-  FileDropTarget(wxExFrameWithHistory* owner) {m_Owner = owner;}
+  FileDropTarget(wxExFrameWithHistory* frame) 
+    : m_Frame(frame){;};
 private:
-  virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
-  {
-    wxExOpenFiles(m_Owner, filenames);
-    return true;
-  }
+  virtual bool OnDropFiles(
+    wxCoord x, 
+    wxCoord y, 
+    const wxArrayString& filenames) {
+    wxExOpenFiles(m_Frame, filenames);
+    return true;}
 
-  wxExFrameWithHistory* m_Owner;
+  wxExFrameWithHistory* m_Frame;
 };
 #endif
 

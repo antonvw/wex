@@ -310,11 +310,7 @@ void wxExOpenFiles(
       if (file.Contains(":"))
       {
         line = atoi(file.AfterFirst(':').c_str());
-
-        if (line != 0) // this indicates an error in the number
-        {
-          file = file.BeforeFirst(':');
-        }
+        file = file.BeforeFirst(':');
       }
 
       frame->OpenFile(file, line, wxEmptyString, file_flags);
@@ -331,11 +327,13 @@ void wxExOpenFilesDialog(
   wxExSTC* stc = frame->GetSTC();
   wxArrayString files;
 
+  const wxString caption(_("Select Files"));
+      
   if (stc != NULL)
   {
     wxExFileDialog dlg(frame,
       stc,
-      _("Select Files"),
+      caption,
       wildcards,
       style);
 
@@ -353,7 +351,7 @@ void wxExOpenFilesDialog(
   else
   {
     wxFileDialog dlg(frame,
-      _("Select Files"),
+      caption,
       wxEmptyString,
       wxEmptyString,
       wildcards,
