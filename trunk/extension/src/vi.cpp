@@ -561,21 +561,27 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
   else
   {
-    m_Command += event.GetUnicodeKey();
-
-    if (DoCommand(m_Command))
+    if (!(event.GetModifiers() & wxMOD_ALT))
     {
-      // Prevent motion command and the .dot command
-      // to be stored as last command.
-      if (m_Command.length() > 1 || m_Command == "p")
+      m_Command += event.GetUnicodeKey();
+
+      if (DoCommand(m_Command))
       {
-        m_LastCommand = m_Command;
+        // Prevent motion command and the .dot command
+        // to be stored as last command.
+        if (m_Command.length() > 1 || m_Command == "p")
+        {
+          m_LastCommand = m_Command;
+        }
+
+        m_Command.clear();
       }
-
-      m_Command.clear();
+      return false;
     }
-
-    return false;
+    else
+    {
+      return true;
+    }
   }
 }
 
