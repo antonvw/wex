@@ -57,10 +57,6 @@ void wxExDirWithListView::OnFile(const wxString& file)
   // Don't move next code into insert, as it itself inserts!
   if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
   {
-    wxExListItemWithFileName item(
-      m_ListView, 
-      m_ListView->GetItemCount() - 1);
-
     wxExTextFileWithListView report(
       item.m_Statistics, 
       ID_TOOL_REVISION_RECENT);
