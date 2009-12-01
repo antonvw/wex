@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/dir.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/util.h>
 
 class wxExDirTraverser: public wxDirTraverser
@@ -108,4 +109,20 @@ size_t wxExDir::FindFiles()
   m_IsBusy = false;
 
   return retValue;
+}
+
+wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
+  const wxString& fullpath, 
+  const wxString& filespec, 
+  long file_flags,
+  int dir_flags)
+  : wxExDir(fullpath, filespec, dir_flags)
+  , m_Frame(frame)
+  , m_Flags(file_flags)
+{
+}
+
+void wxExDirOpenFile::OnFile(const wxString& file)
+{
+  m_Frame->OpenFile(file, 0, wxEmptyString, m_Flags);
 }

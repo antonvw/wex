@@ -20,7 +20,6 @@
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
 
-class wxExFrame;
 class wxExListViewFile;
 
 /// Offers a wxExDir with reporting to a listview.
@@ -40,14 +39,6 @@ public:
     const wxString& filespec = wxEmptyString,
     int flags = wxDIR_DEFAULT);
 
-  /// FindFiles causes all found files to be opened using OpenFile from frame.
-  /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
-  wxExDirWithListView(wxExFrame* frame,
-    const wxString& fullpath,
-    const wxString& filespec,
-    long file_flags = 0,
-    int dir_flags = wxDIR_DEFAULT);
-
   /// Gets the statistics.
   const wxExFileNameStatistics& GetStatistics() const {return m_Statistics;};
 protected:
@@ -55,9 +46,7 @@ protected:
   virtual void OnFile(const wxString& file);
 private:
   wxExFileNameStatistics m_Statistics;
-  wxExFrame* m_Frame;
   wxExListViewFile* m_ListView;
-  const long m_Flags;
   wxExTool m_Tool;
 };
 

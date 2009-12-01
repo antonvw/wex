@@ -43,17 +43,4 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont())
 
 /// Run make on specified makefile.
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
-
-/// Opens files and updates history, both for files and projects.
-void wxExOpenFiles(wxExFrameWithHistory* frame,
-  const wxArrayString& files,
-  long file_flags = 0,
-  int dir_flags = wxDIR_DEFAULT);
-
-/// Shows a dialog and opens selected files and updates history, 
-/// both for files and projects.
-void wxExOpenFilesDialog(wxExFrameWithHistory* frame,
-  long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
-  const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
-  bool ask_for_continue = false);
 #endif

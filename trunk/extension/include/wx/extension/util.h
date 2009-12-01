@@ -16,8 +16,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filename.h>
 #include <wx/extension/lexer.h>
+
+class wxExFrame;
 
 /*! \file */
 
@@ -108,6 +111,18 @@ const wxString wxExConfigFirstOf(const wxString& key);
 
 /// Calls OpenFile for wxExFrame, if this is your top window.
 bool wxExOpenFile(const wxFileName& filename, long open_flags = 0);
+
+/// Opens files.
+void wxExOpenFiles(wxExFrame* frame,
+  const wxArrayString& files,
+  long file_flags = 0,
+  int dir_flags = wxDIR_DEFAULT);
+
+/// Shows a dialog and opens selected files.
+void wxExOpenFilesDialog(wxExFrame* frame,
+  long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
+  const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
+  bool ask_for_continue = false);
 #endif // wxUSE_GUI
 
 #endif

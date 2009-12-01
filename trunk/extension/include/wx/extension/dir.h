@@ -60,4 +60,27 @@ private:
   static bool m_Cancelled;
   static bool m_IsBusy;
 };
+
+class wxExFrame;
+
+/// Adds FindFiles to a wxDir, by overriding OnDir and OnFile you can take care
+/// of what to do with the result.
+class wxExDirOpenFile : public wxExDir
+{
+public:
+  /// Constructor.
+  /// FindFiles causes all found files to be opened using OpenFile from frame.
+  /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
+  wxExDirOpenFile(wxExFrame* frame,
+    const wxString& fullpath,
+    const wxString& filespec,
+    long file_flags = 0,
+    int dir_flags = wxDIR_DEFAULT);
+
+  /// Opens each found file.
+  virtual void OnFile(const wxString& file);
+private:
+  wxExFrame* m_Frame;
+  const long m_Flags;
+};
 #endif

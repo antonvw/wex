@@ -17,8 +17,11 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
+#include <wx/extension/dir.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/stc.h>
 
 const wxString wxExAlignText(
   const wxString& lines,
@@ -313,7 +316,83 @@ bool wxExOpenFile(const wxFileName& filename, long open_flags)
     return false;
   }
 }
-#endif
+
+void wxExOpenFiles(
+  wxExFrame* frame,
+  const wxArrayString& files,
+  long file_flags,
+  int dir_flags)
+{
+  // std::vector gives compile error.
+  for (size_t i = 0; i < files.GetCount(); i++)
+  {
+    wxString file = files[i]; // cannot be const because of file = later on
+
+    if (file.Contains("*") || file.Contains("?"))
+    {
+      wxExDirOpenFile dir(frame, wxGetCwd(), file, file_flags, dir_flags);
+      dir.FindFiles();
+    }
+    else
+    {
+      int line = 0;
+
+      if (file.Contains(":"))
+      {
+        line = atoi(file.AfterFirst(':').c_str());
+        file = file.BeforeFirst(':');
+      }
+
+      frame->OpenFile(file, line, wxEmptyString, file_flags);
+    }
+  }
+}
+
+void wxExOpenFilesDialog(
+  wxExFrame* frame,
+  long style,
+  const wxString& wildcards,
+  bool ask_for_continue)
+{
+  wxExSTC* stc = frame->GetSTC();
+  wxArrayString files;
+
+  const wxString caption(_("Select Files"));
+      
+  if (stc != NULL)
+  {
+    wxExFileDialog dlg(frame,
+      stc,
+      caption,
+      wildcards,
+      style);
+
+    if (ask_for_continue)
+    {
+      if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
+    }
+    else
+    {
+      if (dlg.ShowModal() == wxID_CANCEL) return;
+    }
+
+    dlg.GetPaths(files);
+  }
+  else
+  {
+    wxFileDialog dlg(frame,
+      caption,
+      wxEmptyString,
+      wxEmptyString,
+      wildcards,
+      style);
+    if (dlg.ShowModal() == wxID_CANCEL) return;
+    dlg.GetPaths(files);
+  }
+
+  wxExOpenFiles(frame, files);
+}
+#endif // wxUSE_GUI
 
 const wxString wxExPrintCaption(const wxFileName& filename)
 {
