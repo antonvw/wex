@@ -109,9 +109,6 @@ const wxString wxExComboBoxToString(
 /// Returns first of a list of values from config key.
 const wxString wxExConfigFirstOf(const wxString& key);
 
-/// Calls OpenFile for wxExFrame, if this is your top window.
-bool wxExOpenFile(const wxFileName& filename, long open_flags = 0);
-
 /// Opens files.
 void wxExOpenFiles(wxExFrame* frame,
   const wxArrayString& files,

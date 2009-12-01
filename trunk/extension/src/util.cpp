@@ -299,24 +299,6 @@ bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 }
 
 #if wxUSE_GUI
-bool wxExOpenFile(const wxFileName& filename, long open_flags)
-{
-  wxASSERT(wxTheApp != NULL);
-
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxExFrame* frame = wxDynamicCast(window, wxExFrame);
-
-  if (frame != NULL)
-  {
-    return frame->OpenFile(
-      wxExFileName(filename.GetFullPath()), -1, wxEmptyString, open_flags);
-  }
-  else
-  {
-    return false;
-  }
-}
-
 void wxExOpenFiles(
   wxExFrame* frame,
   const wxArrayString& files,
@@ -337,7 +319,7 @@ void wxExOpenFiles(
     {
       int line = 0;
 
-      if (file.Contains(":"))
+      if (!wxFileName(file).FileExists() && file.Contains(":"))
       {
         line = atoi(file.AfterFirst(':').c_str());
         file = file.BeforeFirst(':');
