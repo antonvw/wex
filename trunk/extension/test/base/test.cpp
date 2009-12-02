@@ -32,7 +32,7 @@ void wxExTestFixture::setUp()
   m_Config = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
   m_File = new wxExFileTest(TEST_FILE);
   m_FileName = new wxExFileName(TEST_FILE);
-  m_FileStatistics = new wxExFileStatistics(TEST_FILE);
+  m_FileStatistics = new wxExFileStatistics();
   m_Lexer = new wxExLexer();
   m_Lexers = new wxExLexers(wxFileName("../extension/data/lexers.xml"));
   m_RCS = new wxExRCS();
