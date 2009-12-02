@@ -343,6 +343,11 @@ void wxExVi::DoCommandLine()
   {
     Delete(1);
   }
+  else if (command == ":e")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
   else if (command == ":y")
   {
     Yank(1);
