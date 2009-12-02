@@ -20,8 +20,6 @@
 #include <wx/extension/defs.h>
 #include <wx/filename.h>
 
-class wxExFileStatistics;
-
 /// This class defines our tool info.
 /// It is stored in the tool info map available from the wxExTool class.
 class wxExToolInfo
@@ -50,6 +48,8 @@ private:
   wxString m_Text;
 };
 
+template <class T> class wxExStatistics;
+
 /// Offers tool methods and contains the tool info's.
 /// A tool with non empty text is used by wxExMenu::AppendTools.
 class wxExTool
@@ -73,6 +73,9 @@ public:
 
   /// Gets the tool id.
   int GetId() const {return m_Id;};
+
+  /// Returns the log filename.
+  const wxFileName GetLogfileName() const;
 
   /// Gets all the tool info.
   const std::map < int, wxExToolInfo > & GetToolInfo() const {return m_ToolInfo;};
@@ -105,15 +108,12 @@ public:
       m_Id == ID_TOOL_REPORT_COUNT ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 
-  /// Logs the elements statistics to
+  /// Logs the statistics to
   /// the statusbar (always) and to the statistics logfile (if specified).
   void Log(
-    const wxExFileStatistics* stat, 
+    const wxExStatistics<long>* stat, 
     const wxString& caption = wxEmptyString, 
     bool log_to_file = true) const;
-
-  /// Returns the log filename.
-  const wxFileName GetLogfileName() const;
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object (both the parameter and returned value may be NULL). 

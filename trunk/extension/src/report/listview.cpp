@@ -1292,7 +1292,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     stats += wxExListItemWithFileName(this, i).Run(tool);
   }
 
-  tool.Log(&stats, GetFileName().GetName());
+  tool.Log(&stats.GetElements(), GetFileName().GetName());
 
   if (tool.IsCount())
   {

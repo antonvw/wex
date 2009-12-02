@@ -64,13 +64,13 @@ const wxString wxExTool::Info() const
 }
 
 void wxExTool::Log(
-  const wxExFileStatistics* stat, 
+  const wxExStatistics<long>* stat, 
   const wxString& caption, 
   bool log_to_file) const
 {
   // This is no error, if you run a tool and you cancelled everything,
   // the elements will be empty, so just quit.
-  if (stat->GetElements().GetItems().empty())
+  if (stat->GetItems().empty())
   {
     return;
   }
@@ -100,7 +100,7 @@ void wxExTool::Log(
 
       logtext
         << caption
-        << stat->GetElements().Get()
+        << stat->Get()
         << wxTextFile::GetEOL();
 
       wxExLog log(GetLogfileName());
