@@ -246,9 +246,6 @@ private:
 class wxExFileStatistics
 {
 public:
-  /// Constructor.
-  wxExFileStatistics();
-
   /// Adds other statistics.
   wxExFileStatistics& operator+=(const wxExFileStatistics& s) {
     m_Elements += s.m_Elements;

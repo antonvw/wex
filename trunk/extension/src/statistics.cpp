@@ -11,10 +11,6 @@
 
 #include <wx/extension/statistics.h>
 
-wxExFileStatistics::wxExFileStatistics()
-{
-}
-
 long wxExFileStatistics::Get(const wxString& key) const
 {
   std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);
