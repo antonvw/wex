@@ -17,7 +17,7 @@
 wxExDirTool::wxExDirTool(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
-  , m_Statistics(fullpath)
+  , m_Statistics()
   , m_Tool(tool)
 {
 }
@@ -58,7 +58,7 @@ void wxExDirWithListView::OnFile(const wxString& file)
   if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
   {
     wxExTextFileWithListView report(
-      item.m_Statistics, 
+      item.m_FileName, 
       ID_TOOL_REVISION_RECENT);
     
     if (report.SetupTool(ID_TOOL_REVISION_RECENT))

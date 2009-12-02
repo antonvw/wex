@@ -31,10 +31,10 @@ public:
     const wxString& filespec = wxEmptyString);
 
   /// Gets the filename.
-  const wxExFileName& GetFileName() const {return m_Statistics;};
+  const wxExFileName& GetFileName() const {return m_FileName;};
 
   /// Gets the statistics.
-  const wxExFileNameStatistics& GetStatistics() const {return m_Statistics;};
+  const wxExFileStatistics& GetStatistics() const {return m_Statistics;};
 
   /// Inserts the item at index (if -1 at the end of the listview),
   /// and sets all attributes.
@@ -44,7 +44,7 @@ public:
   bool IsReadOnly() const {return m_IsReadOnly;};
 
   /// Runs a tool on this item.
-  const wxExFileNameStatistics Run(const wxExTool& tool);
+  const wxExFileStatistics& Run(const wxExTool& tool);
 
   /// Updates all attributes.
   void Update();
@@ -54,7 +54,8 @@ public:
 private:
   void SetReadOnly(bool readonly);
 
-  wxExFileNameStatistics m_Statistics;
+  wxExFileName m_FileName;
+  wxExFileStatistics m_Statistics;
   const wxString m_FileSpec;
   bool m_IsReadOnly;
 };

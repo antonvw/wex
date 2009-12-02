@@ -32,7 +32,7 @@ void wxExTestFixture::setUp()
   m_Config = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
   m_File = new wxExFileTest(TEST_FILE);
   m_FileName = new wxExFileName(TEST_FILE);
-  m_FileNameStatistics = new wxExFileNameStatistics(TEST_FILE);
+  m_FileStatistics = new wxExFileStatistics(TEST_FILE);
   m_Lexer = new wxExLexer();
   m_Lexers = new wxExLexers(wxFileName("../extension/data/lexers.xml"));
   m_RCS = new wxExRCS();
@@ -67,9 +67,9 @@ void wxExTestFixture::testMethods()
   m_FileName->Assign("xxx");
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
 
-  // test wxExFileNameStatistics
-  CPPUNIT_ASSERT(m_FileNameStatistics->Get().empty());
-  CPPUNIT_ASSERT(m_FileNameStatistics->Get("xx") == 0);
+  // test wxExFileStatistics
+  CPPUNIT_ASSERT(m_FileStatistics->Get().empty());
+  CPPUNIT_ASSERT(m_FileStatistics->Get("xx") == 0);
 
   // test wxExLexer
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");

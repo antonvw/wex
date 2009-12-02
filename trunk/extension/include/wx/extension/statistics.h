@@ -12,7 +12,7 @@
 #ifndef _EXSTATISTICS_H
 #define _EXSTATISTICS_H
 
-#include <wx/extension/file.h>
+#include <wx/filename.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/tool.h>
 
@@ -241,23 +241,17 @@ private:
 #endif
 };
 
-/// Offers filename statistics.
-/// Adds element and keyword statistics to wxExFileName.
+/// Offers file statistics for elements and keywords.
 /// Used in wxExTextFile to keep statistics like comments and lines of code.
 /// These are stored as elements.
-class wxExFileNameStatistics : public wxExFileName
+class wxExFileStatistics
 {
 public:
   /// Constructor.
-  wxExFileNameStatistics(
-    const wxString& fullpath,
-    wxPathFormat format = wxPATH_NATIVE);
-
-  /// Constructor from an wxExFileName.
-  wxExFileNameStatistics(const wxExFileName& filename);
+  wxExFileStatistics();
 
   /// Adds other statistics.
-  wxExFileNameStatistics& operator+=(const wxExFileNameStatistics& s) {
+  wxExFileStatistics& operator+=(const wxExFileStatistics& s) {
     m_Elements += s.m_Elements;
     m_Keywords += s.m_Keywords;
     return *this;}
@@ -286,12 +280,6 @@ public:
 
   /// Returns the statistics log filename.
   const wxFileName GetLogfileName() const;
-
-  /// For the specified tool logs the elements statistics to
-  /// the statusbar (always) and to the statistics logfile (if specified).
-  void Log(
-    const wxExTool& tool,
-    bool log_to_file = true) const;
 private:
   wxExStatistics<long> m_Elements;
   wxExStatistics<long> m_Keywords;

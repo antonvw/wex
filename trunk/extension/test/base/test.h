@@ -37,7 +37,7 @@ public:
     m_Config = NULL;
     m_File = NULL;
     m_FileName = NULL;
-    m_FileNameStatistics = NULL;
+    m_FileStatistics = NULL;
     m_Lexer = NULL;
     m_Lexers = NULL;
     m_RCS = NULL;
@@ -50,7 +50,7 @@ public:
     delete m_Config;
     delete m_File;
     delete m_FileName;
-    delete m_FileNameStatistics;
+    delete m_FileStatistics;
     delete m_Lexer;
     delete m_Lexers;
     delete m_RCS;
@@ -83,7 +83,7 @@ private:
   wxConfig* m_Config; ///< testing wxConfig
   wxExFile* m_File; ///< testing wxExFile
   wxExFileName* m_FileName; ///< testing wxExFileName
-  wxExFileNameStatistics* m_FileNameStatistics; ///< testing wxExFileNameStatistics
+  wxExFileStatistics* m_FileStatistics; ///< testing wxExFileStatistics
   wxExLexer* m_Lexer; ///< testing wxExLexer
   wxExLexers* m_Lexers; ///< testing wxExLexers
   wxExRCS* m_RCS; ///< testing wxExRCS

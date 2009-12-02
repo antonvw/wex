@@ -19,6 +19,8 @@
 #endif
 #include <wx/extension/defs.h>
 
+class wxExFileStatistics;
+
 /// This class defines our tool info.
 /// It is stored in the tool info map available from the wxExTool class.
 class wxExToolInfo
@@ -101,6 +103,13 @@ public:
     return
       m_Id == ID_TOOL_REPORT_COUNT ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
+
+  /// Logs the elements statistics to
+  /// the statusbar (always) and to the statistics logfile (if specified).
+  void Log(
+    const wxExFileStatistics* stat, 
+    const wxString& caption = wxEmptyString, 
+    bool log_to_file = true) const;
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object (both the parameter and returned value may be NULL). 

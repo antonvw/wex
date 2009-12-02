@@ -14,6 +14,7 @@
 
 #include <wx/datetime.h>
 #include <wx/textfile.h>
+#include <wx/extension/file.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/tool.h>
 
@@ -73,13 +74,13 @@ public:
   static bool Cancelled() {return m_Cancelled;};
 
   /// Gets the filename.
-  const wxExFileName& GetFileName() const {return m_FileNameStatistics;};
+  const wxExFileName& GetFileName() const {return m_FileName;};
 
   /// Gets the RCS data.
   const wxExRCS& GetRCS() const {return m_RCS;};
 
   /// Gets the statistics.
-  const wxExFileNameStatistics& GetStatistics() const {return m_FileNameStatistics;}
+  const wxExFileStatistics& GetStatistics() const {return m_FileStatistics;}
 
   /// Gets the tool.
   const wxExTool& GetTool() const {return m_Tool;};
@@ -96,7 +97,7 @@ public:
     const wxString& text,
     const bool fill_out = false,
     const bool fill_out_with_space = false) {
-    InsertLine(m_FileNameStatistics.GetLexer().MakeComment(
+    InsertLine(m_FileName.GetLexer().MakeComment(
       text,
       fill_out,
       fill_out_with_space));};
@@ -122,10 +123,10 @@ protected:
   void ClearComments() {m_Comments.clear();}
 
   /// Your derived class is allowed to update statistics.
-  wxExStatistics<long>& GetStatisticElements() {return m_FileNameStatistics.GetElements();};
+  wxExStatistics<long>& GetStatisticElements() {return m_FileStatistics.GetElements();};
 
   /// Your derived class is allowed to update statistics.
-  wxExStatistics<long>& GetStatisticKeywords() {return m_FileNameStatistics.GetKeywords();};
+  wxExStatistics<long>& GetStatisticKeywords() {return m_FileStatistics.GetKeywords();};
 
   /// Gets the current comments.
   const wxString& GetComments() const {return m_Comments;};
@@ -161,14 +162,14 @@ private:
   /// Gets the actual begin of comment, depending on the syntax type.
   const wxString CommentBegin() const {
     return (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE) ?
-      m_FileNameStatistics.GetLexer().GetCommentBegin() :
-      m_FileNameStatistics.GetLexer().GetCommentBegin2();};
+      m_FileName.GetLexer().GetCommentBegin() :
+      m_FileName.GetLexer().GetCommentBegin2();};
 
   /// Gets the last end of comment detected, depending on the last syntax type.
   const wxString CommentEnd() const {
     return (m_LastSyntaxType == SYNTAX_NONE || m_LastSyntaxType == SYNTAX_ONE) ?
-      m_FileNameStatistics.GetLexer().GetCommentEnd() :
-      m_FileNameStatistics.GetLexer().GetCommentEnd2();};
+      m_FileName.GetLexer().GetCommentEnd() :
+      m_FileName.GetLexer().GetCommentEnd2();};
 
   /// Check whether specified text result in a comment.
   wxExCommentType CheckForComment(const wxString& text);
@@ -202,7 +203,8 @@ private:
   bool m_Modified;
   bool m_RevisionActive;
 
-  wxExFileNameStatistics m_FileNameStatistics;
+  wxExFileName m_FileName;
+  wxExFileStatistics m_FileStatistics;
   wxExRCS m_RCS;
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;

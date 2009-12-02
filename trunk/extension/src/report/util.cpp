@@ -110,7 +110,7 @@ size_t wxExFindInFiles(bool replace)
     wxExConfigFirstOf(in_files));
 
   const size_t result = dir.FindFiles();
-  dir.GetStatistics().Log(tool);
+  tool.Log(&dir.GetStatistics(), wxExConfigFirstOf(in_folder));
   
   return result;
 }

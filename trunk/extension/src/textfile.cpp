@@ -85,7 +85,7 @@ bool wxExTextFile::m_Cancelled = false;
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
   const wxExTool& tool)
-  : m_FileNameStatistics(filename)
+  : m_FileName(filename)
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(tool)
@@ -132,11 +132,11 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckCommentSyntax(
 wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(
   const wxString& text)
 {
-  if (m_FileNameStatistics.GetLexer().GetCommentBegin2().empty())
+  if (m_FileName.GetLexer().GetCommentBegin2().empty())
   {
     return CheckCommentSyntax(
-      m_FileNameStatistics.GetLexer().GetCommentBegin(),
-      m_FileNameStatistics.GetLexer().GetCommentEnd(), text);
+      m_FileName.GetLexer().GetCommentBegin(),
+      m_FileName.GetLexer().GetCommentEnd(), text);
   }
 
   wxExCommentType comment_type1 = COMMENT_NONE;
@@ -144,8 +144,8 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_ONE)
   {
     if ((comment_type1 = CheckCommentSyntax(
-      m_FileNameStatistics.GetLexer().GetCommentBegin(),
-      m_FileNameStatistics.GetLexer().GetCommentEnd(), text)) == COMMENT_BEGIN)
+      m_FileName.GetLexer().GetCommentBegin(),
+      m_FileName.GetLexer().GetCommentEnd(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_ONE;
   }
 
@@ -154,8 +154,8 @@ wxExTextFile::wxExCommentType wxExTextFile::CheckForComment(
   if (m_SyntaxType == SYNTAX_NONE || m_SyntaxType == SYNTAX_TWO)
   {
     if ((comment_type2 = CheckCommentSyntax(
-      m_FileNameStatistics.GetLexer().GetCommentBegin2(),
-      m_FileNameStatistics.GetLexer().GetCommentEnd2(), text)) == COMMENT_BEGIN)
+      m_FileName.GetLexer().GetCommentBegin2(),
+      m_FileName.GetLexer().GetCommentEnd2(), text)) == COMMENT_BEGIN)
       m_SyntaxType = SYNTAX_TWO;
   }
 
@@ -300,7 +300,7 @@ bool wxExTextFile::Parse()
 {
   if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
   {
-    if (m_FileNameStatistics.GetStat().IsReadOnly())
+    if (m_FileName.GetStat().IsReadOnly())
     {
       return false;
     }
@@ -452,7 +452,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
       }
 
       const size_t max_check_size = 
-        m_FileNameStatistics.GetLexer().GetCommentBegin().Length();
+        m_FileName.GetLexer().GetCommentBegin().Length();
       const size_t check_size = (i > max_check_size ? max_check_size: i + 1);
 
       const wxString text = line.substr(i + 1 - check_size, check_size);
@@ -505,7 +505,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
       {
         if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (m_FileNameStatistics.GetLexer().IsKeyword(codeword))
+          if (m_FileName.GetLexer().IsKeyword(codeword))
           {
             GetStatisticKeywords().Inc(codeword);
           }
@@ -618,7 +618,7 @@ bool wxExTextFile::PrepareRevision()
 
 bool wxExTextFile::RunTool()
 {
-  if (!wxTextFile::Open(m_FileNameStatistics.GetFullPath()))
+  if (!wxTextFile::Open(m_FileName.GetFullPath()))
   {
     return false;
   }
@@ -627,15 +627,15 @@ bool wxExTextFile::RunTool()
 
   if (m_Tool.IsCount())
   {
-    GetStatisticElements().Inc(_("Total Size"), m_FileNameStatistics.GetStat().st_size);
+    GetStatisticElements().Inc(_("Total Size"), m_FileName.GetStat().st_size);
     GetStatisticElements().Inc(_("Lines"), GetLineCount());
   }
 
   if (GetLineCount() > 0)
   {
-    if (m_FileNameStatistics.GetLexer().GetScintillaLexer().empty())
+    if (m_FileName.GetLexer().GetScintillaLexer().empty())
     {
-      m_FileNameStatistics.SetLexer(wxEmptyString, GetLine(0));
+      m_FileName.SetLexer(wxEmptyString, GetLine(0));
     }
 
     if (!Parse())
@@ -652,7 +652,7 @@ bool wxExTextFile::RunTool()
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
     {
-      if (!m_FileNameStatistics.GetLexer().GetKeywordsString().empty())
+      if (!m_FileName.GetLexer().GetKeywordsString().empty())
       {
         GetStatisticElements().Inc(_("Actions Completed"));
       }
@@ -662,7 +662,7 @@ bool wxExTextFile::RunTool()
     ReportStatistics();
   }
 
-  if (m_Modified && !m_FileNameStatistics.GetStat().IsReadOnly())
+  if (m_Modified && !m_FileName.GetStat().IsReadOnly())
   {
     if (!Write())
     {

@@ -10,7 +10,11 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#include <wx/textfile.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/frame.h>
+#include <wx/extension/log.h>
+#include <wx/extension/statistics.h>
 #include <wx/extension/svn.h>
 
 wxExTool* wxExTool::m_Self = NULL;
@@ -56,6 +60,52 @@ const wxString wxExTool::Info() const
   wxFAIL;
 
   return wxEmptyString;
+}
+
+void wxExTool::Log(
+  const wxExFileStatistics* stat, 
+  const wxString& caption, 
+  bool log_to_file) const
+{
+  // This is no error, if you run a tool and you cancelled everything,
+  // the elements will be empty, so just quit.
+  if (stat->GetElements().GetItems().empty())
+  {
+    return;
+  }
+
+  wxString logtext(Info());
+
+  if (logtext.Contains("%ld"))
+  {
+    logtext = logtext.Format(logtext, stat->Get(_("Actions Completed")));
+  }
+
+  logtext
+    << " " << stat->Get(_("Files Passed")) << " " << _("file(s)")
+    << (!caption.empty() ? ": " + caption: "");
+
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(logtext);
+#endif
+
+  if (log_to_file && stat->Get(_("Files Passed")) != 0)
+  {
+    wxExLog::Get()->Log(logtext);
+
+    if (IsCount())
+    {
+      wxString logtext;
+
+      logtext
+        << caption
+        << stat->GetElements().Get()
+        << wxTextFile::GetEOL();
+
+      wxExLog log(stat->GetLogfileName());
+      log.Log(logtext);
+    }
+  }
 }
 
 wxExTool* wxExTool::Set(wxExTool* tool)

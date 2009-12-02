@@ -10,24 +10,13 @@
 \******************************************************************************/
 
 #include <wx/stdpaths.h>
-#include <wx/textfile.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/log.h>
 
-wxExFileNameStatistics::wxExFileNameStatistics(
-  const wxString& fullpath,
-  wxPathFormat format)
-  : wxExFileName(fullpath, format)
+wxExFileStatistics::wxExFileStatistics()
 {
 }
 
-wxExFileNameStatistics::wxExFileNameStatistics(const wxExFileName& filename)
-  : wxExFileName(filename)
-{
-}
-
-long wxExFileNameStatistics::Get(const wxString& key) const
+long wxExFileStatistics::Get(const wxString& key) const
 {
   std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);
 
@@ -48,7 +37,7 @@ long wxExFileNameStatistics::Get(const wxString& key) const
   return 0;
 }
 
-const wxFileName wxExFileNameStatistics::GetLogfileName() const
+const wxFileName wxExFileStatistics::GetLogfileName() const
 {
   wxFileName filename(
 #ifdef wxExUSE_PORTABLE
@@ -56,52 +45,7 @@ const wxFileName wxExFileNameStatistics::GetLogfileName() const
 #else
     wxStandardPaths::Get().GetUserDataDir()
 #endif
-    + GetPathSeparator() + _("statistics.log"));
+    + wxFileName::GetPathSeparator() + _("statistics.log"));
 
   return filename;
-}
-
-void wxExFileNameStatistics::Log(
-  const wxExTool& tool,
-  bool log_to_file) const
-{
-  // This is no error, if you run a tool and you cancelled everything,
-  // the elements will be empty, so just quit.
-  if (m_Elements.GetItems().empty())
-  {
-    return;
-  }
-
-  wxString logtext(tool.Info());
-
-  if (logtext.Contains("%ld"))
-  {
-    logtext = logtext.Format(logtext, Get(_("Actions Completed")));
-  }
-
-  logtext
-    << " " << Get(_("Files Passed")) << " " << _("file(s)")
-    << (IsOk() ? ": " + GetFullPath(): "");
-
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(logtext);
-#endif
-
-  if (log_to_file && Get(_("Files Passed")) != 0)
-  {
-    wxExLog::Get()->Log(logtext);
-
-    if (tool.IsCount())
-    {
-      wxString logtext;
-
-      logtext
-        << GetFullPath()
-        << m_Elements.Get()
-        << wxTextFile::GetEOL();
-
-      wxExLog log(GetLogfileName());
-      log.Log(logtext);
-    }
-  }
 }

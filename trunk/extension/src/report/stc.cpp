@@ -134,7 +134,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
       wxExTextFileWithListView report(GetFileName(), tool);
       report.RunTool();
-      report.GetStatistics().Log(tool);
+      tool.Log(&report.GetStatistics(), GetFileName().GetFullPath());
 
       if (tool.IsCount())
       {

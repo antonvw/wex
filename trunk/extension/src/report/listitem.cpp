@@ -21,7 +21,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
   wxExListView* lv, 
   const int itemnumber)
   : wxExListItem(lv, itemnumber)
-  , m_Statistics(
+  , m_FileName(
       (!GetColumnText(_("File Name"), false).empty() ?
           GetColumnText(_("In Folder"), false) + wxFileName::GetPathSeparator() +
           GetColumnText(_("File Name"), false) : wxString(wxEmptyString))
@@ -36,7 +36,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
   const wxString& fullpath,
   const wxString& filespec)
   : wxExListItem(listview, -1)
-  , m_Statistics(fullpath)
+  , m_FileName(fullpath)
   , m_FileSpec(filespec)
 {
 }
@@ -46,9 +46,9 @@ void wxExListItemWithFileName::Insert(long index)
   SetId(index == -1 ? GetListView()->GetItemCount(): index);
   const int col = GetListView()->FindColumn(_("File Name"), false);
   const wxString filename = (
-    m_Statistics.FileExists() || m_Statistics.DirExists() ?
-      m_Statistics.GetFullName():
-      m_Statistics.GetFullPath());
+    m_FileName.FileExists() || m_FileName.DirExists() ?
+      m_FileName.GetFullName():
+      m_FileName.GetFullPath());
 
   if (col == 0)
   {
@@ -65,7 +65,7 @@ void wxExListItemWithFileName::Insert(long index)
 #endif
   }
 
-  SetImage(m_Statistics.GetIconID());
+  SetImage(m_FileName.GetIconID());
 
   Update();
 
@@ -75,15 +75,15 @@ void wxExListItemWithFileName::Insert(long index)
   }
 }
 
-const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
+const wxExFileStatistics& wxExListItemWithFileName::Run(const wxExTool& tool)
 {
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_Statistics.GetFullPath());
+  wxExFrame::StatusText(m_FileName.GetFullPath());
 #endif
 
-  if (m_Statistics.FileExists())
+  if (m_FileName.FileExists())
   {
-    wxExTextFileWithListView file(m_Statistics, tool);
+    wxExTextFileWithListView file(m_FileName, tool);
 
     if (file.RunTool())
     {
@@ -97,7 +97,7 @@ const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
   }
   else
   {
-    wxExDirTool dir(tool, m_Statistics.GetFullPath(), m_FileSpec);
+    wxExDirTool dir(tool, m_FileName.GetFullPath(), m_FileSpec);
 
     if (dir.FindFiles())
     {
@@ -106,7 +106,7 @@ const wxExFileNameStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
       // Here we show the counts of individual folders on the top level.
       if (tool.IsCount() && GetListView()->GetSelectedItemCount() > 1)
       {
-        m_Statistics.Log(tool);
+        tool.Log(&m_Statistics, m_FileName.GetFullPath());
       }
     }
   }
@@ -133,7 +133,7 @@ void wxExListItemWithFileName::SetReadOnly(bool readonly)
 
 void wxExListItemWithFileName::Update()
 {
-  SetReadOnly(m_Statistics.GetStat().IsReadOnly());
+  SetReadOnly(m_FileName.GetStat().IsReadOnly());
 
   if (!GetListView()->SetItem(*this))
   {
@@ -141,20 +141,20 @@ void wxExListItemWithFileName::Update()
     return;
   }
 
-  if (m_Statistics.FileExists() ||
-      wxFileName::DirExists(m_Statistics.GetFullPath()))
+  if (m_FileName.FileExists() ||
+      wxFileName::DirExists(m_FileName.GetFullPath()))
   {
-    const unsigned long size = m_Statistics.GetStat().st_size; // to prevent warning
+    const unsigned long size = m_FileName.GetStat().st_size; // to prevent warning
     SetColumnText(_("Type"),
-      (wxFileName::DirExists(m_Statistics.GetFullPath()) ?
+      (wxFileName::DirExists(m_FileName.GetFullPath()) ?
          m_FileSpec:
-         m_Statistics.GetExt()));
-    SetColumnText(_("In Folder"), m_Statistics.GetPath());
+         m_FileName.GetExt()));
+    SetColumnText(_("In Folder"), m_FileName.GetPath());
     SetColumnText(_("Size"),
-      (!wxFileName::DirExists(m_Statistics.GetFullPath()) ?
+      (!wxFileName::DirExists(m_FileName.GetFullPath()) ?
          (wxString::Format("%lu", size)):
           wxString(wxEmptyString)));
-    SetColumnText(_("Modified"), m_Statistics.GetStat().GetModificationTime());
+    SetColumnText(_("Modified"), m_FileName.GetStat().GetModificationTime());
   }
 }
 
