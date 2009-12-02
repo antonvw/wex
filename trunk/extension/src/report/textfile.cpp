@@ -24,7 +24,7 @@ wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
 void SetItemColumnStatistics(
   wxExListItemWithFileName& item,
   const wxString& col,
-  wxExStatistics<long>& stat)
+  const wxExStatistics<long>& stat)
 {
   item.SetColumnText(
     col,
@@ -180,7 +180,7 @@ bool wxExTextFileWithListView::ParseSQL()
     GoToLine(marker);
   }
 
-  GetStatisticElements().Inc(_("Actions Completed"));
+  IncActionsCompleted();
 
   return true;
 }
@@ -243,12 +243,12 @@ void wxExTextFileWithListView::ReportStatistics()
   switch (GetTool().GetId())
   {
   case ID_TOOL_REPORT_COUNT:
-    SetItemColumnStatistics(item, _("Lines"), GetStatisticElements());
-    SetItemColumnStatistics(item, _("Lines Of Code"), GetStatisticElements());
-    SetItemColumnStatistics(item, _("Empty Lines"), GetStatisticElements());
-    SetItemColumnStatistics(item, _("Words Of Code"), GetStatisticElements());
-    SetItemColumnStatistics(item, _("Comments"), GetStatisticElements());
-    SetItemColumnStatistics(item, _("Comment Size"), GetStatisticElements());
+    SetItemColumnStatistics(item, _("Lines"), GetStatistics().GetElements());
+    SetItemColumnStatistics(item, _("Lines Of Code"), GetStatistics().GetElements());
+    SetItemColumnStatistics(item, _("Empty Lines"), GetStatistics().GetElements());
+    SetItemColumnStatistics(item, _("Words Of Code"), GetStatistics().GetElements());
+    SetItemColumnStatistics(item, _("Comments"), GetStatistics().GetElements());
+    SetItemColumnStatistics(item, _("Comment Size"), GetStatistics().GetElements());
   break;
 
   case ID_TOOL_REPORT_KEYWORD:
@@ -257,7 +257,7 @@ void wxExTextFileWithListView::ReportStatistics()
     for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
     {
       const wxString name = m_Report->GetColumn(i + 1).GetText();
-      const long value = GetStatisticKeywords().Get(name);
+      const long value = GetStatistics().GetKeywords().Get(name);
       item.SetColumnText(i + 1, wxString::Format("%ld", value));
       total += value;
     }

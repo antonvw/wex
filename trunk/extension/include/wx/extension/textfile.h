@@ -80,7 +80,7 @@ public:
   const wxExRCS& GetRCS() const {return m_RCS;};
 
   /// Gets the statistics.
-  const wxExFileStatistics& GetStatistics() const {return m_FileStatistics;}
+  const wxExFileStatistics& GetStatistics() const {return m_Stats;}
 
   /// Gets the tool.
   const wxExTool& GetTool() const {return m_Tool;};
@@ -122,14 +122,12 @@ protected:
   /// Clears the comments.
   void ClearComments() {m_Comments.clear();}
 
-  /// Your derived class is allowed to update statistics.
-  wxExStatistics<long>& GetStatisticElements() {return m_FileStatistics.GetElements();};
-
-  /// Your derived class is allowed to update statistics.
-  wxExStatistics<long>& GetStatisticKeywords() {return m_FileStatistics.GetKeywords();};
-
   /// Gets the current comments.
   const wxString& GetComments() const {return m_Comments;};
+
+  /// Increments the actions completed.
+  void IncActionsCompleted() {
+    m_Stats.GetElements().Inc(_("Actions Completed"));};
 
   /// Parses the specified line, and invokes actions depending on the tool,
   /// and fills the comments if any on the line.
@@ -204,7 +202,7 @@ private:
   bool m_RevisionActive;
 
   wxExFileName m_FileName;
-  wxExFileStatistics m_FileStatistics;
+  wxExFileStatistics m_Stats;
   wxExRCS m_RCS;
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;

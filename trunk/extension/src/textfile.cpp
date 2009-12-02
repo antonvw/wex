@@ -199,8 +199,8 @@ void wxExTextFile::CommentStatementStart()
 {
   m_IsCommentStatement = true;
 
-  GetStatisticElements().Inc(_("Comments"));
-  GetStatisticElements().Inc(
+  m_Stats.GetElements().Inc(_("Comments"));
+  m_Stats.GetElements().Inc(
     _("Comment Size"),
     CommentBegin().length());
 }
@@ -209,7 +209,7 @@ void wxExTextFile::EndCurrentRevision()
 {
   if (m_RevisionActive)
   {
-    GetStatisticElements().Inc(_("Actions Completed"));
+    m_Stats.GetElements().Inc(_("Actions Completed"));
 
     if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
@@ -266,7 +266,7 @@ bool wxExTextFile::MatchLine(wxString& line)
       if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
       {
         const size_t count = line.Replace(frd->GetFindString(), frd->GetReplaceString());
-        GetStatisticElements().Inc(_("Actions Completed"), count);
+        m_Stats.GetElements().Inc(_("Actions Completed"), count);
         m_Modified = true;
       }
     }
@@ -278,7 +278,7 @@ bool wxExTextFile::MatchLine(wxString& line)
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
       const int count = frd->GetRegularExpression().ReplaceAll(&line, frd->GetReplaceString());
-      GetStatisticElements().Inc(_("Actions Completed"), count);
+      m_Stats.GetElements().Inc(_("Actions Completed"), count);
       m_Modified = true;
     }
   }
@@ -289,7 +289,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (m_Tool.GetId() != ID_TOOL_REPORT_REPLACE)
     {
-      GetStatisticElements().Inc(_("Actions Completed"));
+      m_Stats.GetElements().Inc(_("Actions Completed"));
     }
   }
 
@@ -430,7 +430,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     {
       if (m_Tool.IsCount())
       {
-        GetStatisticElements().Inc(_("Comment Size"));
+        m_Stats.GetElements().Inc(_("Comment Size"));
       }
 
       m_Comments += line[i];
@@ -482,7 +482,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
             {
               if (m_Tool.IsCount())
               {
-                GetStatisticElements().Inc(_("Words Of Code"));
+                m_Stats.GetElements().Inc(_("Words Of Code"));
               }
 
               sequence = true;
@@ -507,7 +507,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
         {
           if (m_FileName.GetLexer().IsKeyword(codeword))
           {
-            GetStatisticKeywords().Inc(codeword);
+            m_Stats.GetKeywords().Inc(codeword);
           }
         }
 
@@ -528,7 +528,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
 
   if (line_contains_code)
   {
-    GetStatisticElements().Inc(_("Lines Of Code"));
+    m_Stats.GetElements().Inc(_("Lines Of Code"));
 
     if (m_Tool.GetId() == ID_TOOL_LINE || m_Tool.GetId() == ID_TOOL_LINE_CODE)
     {
@@ -538,7 +538,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     // Finish action.
     // However, some sources might contain revisions at the end of the file, 
     // so these are not reported.
-    if (GetStatisticElements().Get(_("Lines Of Code")) > 5 &&
+    if (m_Stats.GetElements().Get(_("Lines Of Code")) > 5 &&
         m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
       m_FinishedAction = true;
@@ -554,7 +554,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
       ReportLine(line);
     }
 
-    GetStatisticElements().Inc(_("Empty Lines"));
+    m_Stats.GetElements().Inc(_("Empty Lines"));
   }
 
   if (m_IsCommentStatement && GetCurrentLine() < GetLineCount() - 1)
@@ -567,7 +567,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     // End of lines are included in comment size as well.
     if (m_Tool.IsCount())
     {
-      GetStatisticElements().Inc(_("Comment Size"), wxString(GetEOL()).length());
+      m_Stats.GetElements().Inc(_("Comment Size"), wxString(GetEOL()).length());
     }
   }
 
@@ -623,12 +623,12 @@ bool wxExTextFile::RunTool()
     return false;
   }
 
-  GetStatisticElements().Set(_("Files"), 1);
+  m_Stats.GetElements().Set(_("Files"), 1);
 
   if (m_Tool.IsCount())
   {
-    GetStatisticElements().Inc(_("Total Size"), m_FileName.GetStat().st_size);
-    GetStatisticElements().Inc(_("Lines"), GetLineCount());
+    m_Stats.GetElements().Inc(_("Total Size"), m_FileName.GetStat().st_size);
+    m_Stats.GetElements().Inc(_("Lines"), GetLineCount());
   }
 
   if (GetLineCount() > 0)
@@ -646,7 +646,7 @@ bool wxExTextFile::RunTool()
     }
   }
 
-  GetStatisticElements().Set(_("Files Passed"), 1);
+  m_Stats.GetElements().Set(_("Files Passed"), 1);
 
   if (m_Tool.IsStatisticsType())
   {
@@ -654,7 +654,7 @@ bool wxExTextFile::RunTool()
     {
       if (!m_FileName.GetLexer().GetKeywordsString().empty())
       {
-        GetStatisticElements().Inc(_("Actions Completed"));
+        m_Stats.GetElements().Inc(_("Actions Completed"));
       }
 
     }
