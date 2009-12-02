@@ -1285,14 +1285,14 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   int i = -1;
 
-  wxExFileStatistics stats;
+  wxExStatistics<long> stats;
 
   while ((i = GetNextSelected(i)) != -1)
   {
-    stats += wxExListItemWithFileName(this, i).Run(tool);
+    stats += wxExListItemWithFileName(this, i).Run(tool).GetElements();
   }
 
-  tool.Log(&stats.GetElements(), GetFileName().GetName());
+  tool.Log(&stats, GetFileName().GetName());
 
   if (tool.IsCount())
   {

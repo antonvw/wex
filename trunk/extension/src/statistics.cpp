@@ -10,24 +10,3 @@
 \******************************************************************************/
 
 #include <wx/extension/statistics.h>
-
-long wxExFileStatistics::Get(const wxString& key) const
-{
-  std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);
-
-  if (it != m_Elements.GetItems().end())
-  {
-    return it->second;
-  }
-  else
-  {
-    std::map<wxString, long>::const_iterator it = m_Keywords.GetItems().find(key);
-
-    if (it != m_Keywords.GetItems().end())
-    {
-      return it->second;
-    }
-  }
-
-  return 0;
-}

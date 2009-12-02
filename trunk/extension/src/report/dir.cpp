@@ -12,7 +12,6 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
-#include <wx/extension/report/textfile.h>
 
 wxExDirTool::wxExDirTool(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec, int flags)

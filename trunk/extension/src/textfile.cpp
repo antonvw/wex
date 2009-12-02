@@ -19,6 +19,27 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
 
+long wxExFileStatistics::Get(const wxString& key) const
+{
+  std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);
+
+  if (it != m_Elements.GetItems().end())
+  {
+    return it->second;
+  }
+  else
+  {
+    std::map<wxString, long>::const_iterator it = m_Keywords.GetItems().find(key);
+
+    if (it != m_Keywords.GetItems().end())
+    {
+      return it->second;
+    }
+  }
+
+  return 0;
+}
+
 const wxString REV_DATE_FORMAT = "%y%m%d";
 
 wxExRCS::wxExRCS()
@@ -199,8 +220,8 @@ void wxExTextFile::CommentStatementStart()
 {
   m_IsCommentStatement = true;
 
-  m_Stats.GetElements().Inc(_("Comments"));
-  m_Stats.GetElements().Inc(
+  m_Stats.m_Elements.Inc(_("Comments"));
+  m_Stats.m_Elements.Inc(
     _("Comment Size"),
     CommentBegin().length());
 }
@@ -209,7 +230,7 @@ void wxExTextFile::EndCurrentRevision()
 {
   if (m_RevisionActive)
   {
-    m_Stats.GetElements().Inc(_("Actions Completed"));
+    m_Stats.m_Elements.Inc(_("Actions Completed"));
 
     if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
@@ -266,7 +287,7 @@ bool wxExTextFile::MatchLine(wxString& line)
       if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
       {
         const size_t count = line.Replace(frd->GetFindString(), frd->GetReplaceString());
-        m_Stats.GetElements().Inc(_("Actions Completed"), count);
+        m_Stats.m_Elements.Inc(_("Actions Completed"), count);
         m_Modified = true;
       }
     }
@@ -278,7 +299,7 @@ bool wxExTextFile::MatchLine(wxString& line)
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
       const int count = frd->GetRegularExpression().ReplaceAll(&line, frd->GetReplaceString());
-      m_Stats.GetElements().Inc(_("Actions Completed"), count);
+      m_Stats.m_Elements.Inc(_("Actions Completed"), count);
       m_Modified = true;
     }
   }
@@ -289,7 +310,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (m_Tool.GetId() != ID_TOOL_REPORT_REPLACE)
     {
-      m_Stats.GetElements().Inc(_("Actions Completed"));
+      m_Stats.m_Elements.Inc(_("Actions Completed"));
     }
   }
 
@@ -430,7 +451,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     {
       if (m_Tool.IsCount())
       {
-        m_Stats.GetElements().Inc(_("Comment Size"));
+        m_Stats.m_Elements.Inc(_("Comment Size"));
       }
 
       m_Comments += line[i];
@@ -482,7 +503,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
             {
               if (m_Tool.IsCount())
               {
-                m_Stats.GetElements().Inc(_("Words Of Code"));
+                m_Stats.m_Elements.Inc(_("Words Of Code"));
               }
 
               sequence = true;
@@ -507,7 +528,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
         {
           if (m_FileName.GetLexer().IsKeyword(codeword))
           {
-            m_Stats.GetKeywords().Inc(codeword);
+            m_Stats.m_Keywords.Inc(codeword);
           }
         }
 
@@ -528,7 +549,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
 
   if (line_contains_code)
   {
-    m_Stats.GetElements().Inc(_("Lines Of Code"));
+    m_Stats.m_Elements.Inc(_("Lines Of Code"));
 
     if (m_Tool.GetId() == ID_TOOL_LINE || m_Tool.GetId() == ID_TOOL_LINE_CODE)
     {
@@ -538,7 +559,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     // Finish action.
     // However, some sources might contain revisions at the end of the file, 
     // so these are not reported.
-    if (m_Stats.GetElements().Get(_("Lines Of Code")) > 5 &&
+    if (m_Stats.m_Elements.Get(_("Lines Of Code")) > 5 &&
         m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
       m_FinishedAction = true;
@@ -554,7 +575,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
       ReportLine(line);
     }
 
-    m_Stats.GetElements().Inc(_("Empty Lines"));
+    m_Stats.m_Elements.Inc(_("Empty Lines"));
   }
 
   if (m_IsCommentStatement && GetCurrentLine() < GetLineCount() - 1)
@@ -567,7 +588,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
     // End of lines are included in comment size as well.
     if (m_Tool.IsCount())
     {
-      m_Stats.GetElements().Inc(_("Comment Size"), wxString(GetEOL()).length());
+      m_Stats.m_Elements.Inc(_("Comment Size"), wxString(GetEOL()).length());
     }
   }
 
@@ -623,12 +644,12 @@ bool wxExTextFile::RunTool()
     return false;
   }
 
-  m_Stats.GetElements().Set(_("Files"), 1);
+  m_Stats.m_Elements.Set(_("Files"), 1);
 
   if (m_Tool.IsCount())
   {
-    m_Stats.GetElements().Inc(_("Total Size"), m_FileName.GetStat().st_size);
-    m_Stats.GetElements().Inc(_("Lines"), GetLineCount());
+    m_Stats.m_Elements.Inc(_("Total Size"), m_FileName.GetStat().st_size);
+    m_Stats.m_Elements.Inc(_("Lines"), GetLineCount());
   }
 
   if (GetLineCount() > 0)
@@ -646,7 +667,7 @@ bool wxExTextFile::RunTool()
     }
   }
 
-  m_Stats.GetElements().Set(_("Files Passed"), 1);
+  m_Stats.m_Elements.Set(_("Files Passed"), 1);
 
   if (m_Tool.IsStatisticsType())
   {
@@ -654,7 +675,7 @@ bool wxExTextFile::RunTool()
     {
       if (!m_FileName.GetLexer().GetKeywordsString().empty())
       {
-        m_Stats.GetElements().Inc(_("Actions Completed"));
+        m_Stats.m_Elements.Inc(_("Actions Completed"));
       }
 
     }

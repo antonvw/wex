@@ -239,42 +239,4 @@ private:
   wxExGridStatistics<T>* m_Grid;
 #endif
 };
-
-/// Offers file statistics for elements and keywords.
-/// Used in wxExTextFile to keep statistics like comments and lines of code.
-/// These are stored as elements.
-class wxExFileStatistics
-{
-public:
-  /// Adds other statistics.
-  wxExFileStatistics& operator+=(const wxExFileStatistics& s) {
-    m_Elements += s.m_Elements;
-    m_Keywords += s.m_Keywords;
-    return *this;}
-
-  /// Gets all items as a string. All items are returned as a string,
-  /// with newlines separating items.
-  const wxString Get() const {
-    return m_Elements.Get() + m_Keywords.Get();};
-
-  /// Gets the key, first the elements are tried,
-  /// if not present, the keywords are tried, if not present
-  /// 0 is returned.
-  long Get(const wxString& key) const;
-
-  /// Gets the elements.
-  wxExStatistics<long>& GetElements() {return m_Elements;};
-
-  /// Gets the const elements.
-  const wxExStatistics<long>& GetElements() const {return m_Elements;};
-
-  /// Gets the keywords.
-  wxExStatistics<long>& GetKeywords() {return m_Keywords;};
-
-  /// Gets the const keywords.
-  const wxExStatistics<long>& GetKeywords() const {return m_Keywords;};
-private:
-  wxExStatistics<long> m_Elements;
-  wxExStatistics<long> m_Keywords;
-};
 #endif
