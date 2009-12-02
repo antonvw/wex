@@ -25,7 +25,7 @@ public:
   static wxExLog* Get(bool createOnDemand = true);
 
   /// Returns the filename of the logfile.
-  const wxFileName GetFileName() const {return m_FileName;};
+  const wxFileName& GetFileName() const {return m_FileName;};
 
   /// Logs text with a timestamp at the end of the file.
   /// Logs text (only if SetLogging(true) is called, default it is off).
