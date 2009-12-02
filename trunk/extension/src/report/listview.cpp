@@ -1297,6 +1297,6 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
   if (tool.IsCount())
   {
     m_Frame->OpenFile(
-      stats.GetLogfileName(), 0 , wxEmptyString, wxExSTC::STC_OPEN_FROM_OTHER);
+      tool.GetLogfileName(), 0 , wxEmptyString, wxExSTC::STC_OPEN_FROM_OTHER);
   }
 }

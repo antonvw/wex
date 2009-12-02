@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/frame.h>
@@ -102,10 +103,23 @@ void wxExTool::Log(
         << stat->GetElements().Get()
         << wxTextFile::GetEOL();
 
-      wxExLog log(stat->GetLogfileName());
+      wxExLog log(GetLogfileName());
       log.Log(logtext);
     }
   }
+}
+
+const wxFileName wxExTool::GetLogfileName() const
+{
+  wxFileName filename(
+#ifdef wxExUSE_PORTABLE
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+    wxStandardPaths::Get().GetUserDataDir()
+#endif
+    + wxFileName::GetPathSeparator() + _("statistics.log"));
+
+  return filename;
 }
 
 wxExTool* wxExTool::Set(wxExTool* tool)

@@ -12,9 +12,8 @@
 #ifndef _EXSTATISTICS_H
 #define _EXSTATISTICS_H
 
-#include <wx/filename.h>
+#include <map>
 #include <wx/extension/grid.h>
-#include <wx/extension/tool.h>
 
 #if wxUSE_GRID
 template <class T> class wxExStatistics;
@@ -277,9 +276,6 @@ public:
 
   /// Gets the const keywords.
   const wxExStatistics<long>& GetKeywords() const {return m_Keywords;};
-
-  /// Returns the statistics log filename.
-  const wxFileName GetLogfileName() const;
 private:
   wxExStatistics<long> m_Elements;
   wxExStatistics<long> m_Keywords;

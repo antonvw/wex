@@ -18,6 +18,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/defs.h>
+#include <wx/filename.h>
 
 class wxExFileStatistics;
 
@@ -110,6 +111,9 @@ public:
     const wxExFileStatistics* stat, 
     const wxString& caption = wxEmptyString, 
     bool log_to_file = true) const;
+
+  /// Returns the log filename.
+  const wxFileName GetLogfileName() const;
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object (both the parameter and returned value may be NULL). 

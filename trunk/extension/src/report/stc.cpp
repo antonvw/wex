@@ -139,7 +139,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       if (tool.IsCount())
       {
         m_Frame->OpenFile(
-          report.GetStatistics().GetLogfileName(), 0, wxEmptyString, STC_OPEN_FROM_OTHER);
+          tool.GetLogfileName(), 0, wxEmptyString, STC_OPEN_FROM_OTHER);
       }
     }
 

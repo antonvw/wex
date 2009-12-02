@@ -19,6 +19,7 @@
 
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
+#include <wx/extension/tool.h>
 
 /// Offers a wxExDir with tool support.
 /// RunTool is FindFiles invoked on all matching files.

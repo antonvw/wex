@@ -9,7 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/stdpaths.h>
 #include <wx/extension/statistics.h>
 
 wxExFileStatistics::wxExFileStatistics()
@@ -35,17 +34,4 @@ long wxExFileStatistics::Get(const wxString& key) const
   }
 
   return 0;
-}
-
-const wxFileName wxExFileStatistics::GetLogfileName() const
-{
-  wxFileName filename(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-    wxStandardPaths::Get().GetUserDataDir()
-#endif
-    + wxFileName::GetPathSeparator() + _("statistics.log"));
-
-  return filename;
 }
