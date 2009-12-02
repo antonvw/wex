@@ -92,7 +92,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/printing.cpp</sources>
     <sources>../extension/src/renderer.cpp</sources>
     <sources>../extension/src/shell.cpp</sources>
-    <sources>../extension/src/statistics.cpp</sources>
     <sources>../extension/src/stc.cpp</sources>
     <sources>../extension/src/stcdlg.cpp</sources>
     <sources>../extension/src/svn.cpp</sources>
