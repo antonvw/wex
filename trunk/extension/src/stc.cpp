@@ -1932,7 +1932,16 @@ void wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      if (replace_text.Contains("\\1"))
+      if (
+         replace_text.Contains("\\1") || 
+         replace_text.Contains("\\2") || 
+         replace_text.Contains("\\3") || 
+         replace_text.Contains("\\4") || 
+         replace_text.Contains("\\5") || 
+         replace_text.Contains("\\6") || 
+         replace_text.Contains("\\7") || 
+         replace_text.Contains("\\8") || 
+         replace_text.Contains("\\9"))
         length = ReplaceTargetRE(replace_text);
       else
         length = ReplaceTarget(replace_text);
@@ -1985,7 +1994,16 @@ void wxExSTC::ReplaceNext(
     if (SearchInTarget(find_text) == -1) return;
   }
 
-  if (replace_text.Contains("\\1"))
+  if (
+    replace_text.Contains("\\1") ||
+    replace_text.Contains("\\2") ||
+    replace_text.Contains("\\3") ||
+    replace_text.Contains("\\4") ||
+    replace_text.Contains("\\5") ||
+    replace_text.Contains("\\6") ||
+    replace_text.Contains("\\7") ||
+    replace_text.Contains("\\8") ||
+    replace_text.Contains("\\9"))
     ReplaceTargetRE(replace_text);
   else
     ReplaceTarget(replace_text);
