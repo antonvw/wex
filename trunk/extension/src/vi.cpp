@@ -78,9 +78,19 @@ void wxExVi::Delete(
 
 bool wxExVi::DoCommand(const wxString& command)
 {
-  if (command.StartsWith(":") && command.length() > 1)
+  if (command.StartsWith(":"))
   {
-    return DoCommandRange(command);
+    if (command.length() > 1)
+    {
+      // This is a previous entered command.
+      return DoCommandRange(command);
+    }
+    else
+    {
+      // A command will follow.
+      DoCommandLine();
+      return true;
+    }
   }
           
   int repeat = atoi(command.c_str());
@@ -301,7 +311,6 @@ bool wxExVi::DoCommand(const wxString& command)
       case '{': m_STC->ParaUp(); break;
       case '}': m_STC->ParaDown(); break;
       case '%': GotoBrace(); break;
-      case ':': DoCommandLine(); break;
 
       case 2:  // ^b
         for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
