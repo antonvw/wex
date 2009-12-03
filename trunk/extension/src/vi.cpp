@@ -361,8 +361,6 @@ void wxExVi::DoCommandLine()
     return;
   }
 
-  m_CommandLine = val;
-
   const wxString command = ":" + val;
 
   if (command == ":$")
@@ -446,6 +444,7 @@ void wxExVi::DoCommandLine()
   {
     if (DoCommandRange(command))
     {
+      m_CommandLine = val;
       m_LastCommand = command;
       m_InsertText.clear();
     }
