@@ -418,6 +418,17 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   wxExSTC* editor = GetSTC();
   wxExListViewWithFrame* project = GetProject();
 
+  if (event.GetId() == ID_EDIT_NEXT)
+  {
+    m_NotebookWithEditors->AdvanceSelection();
+    return;
+  }
+  else if (event.GetId() == ID_EDIT_PREVIOUS)
+  {
+    m_NotebookWithEditors->AdvanceSelection(false);
+    return;
+  }
+
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
   // as wxID_ABOUT etc. is used here and not in the editor.
