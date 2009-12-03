@@ -348,6 +348,16 @@ void wxExVi::DoCommandLine()
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
+  else if (command == ":n")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_NEXT);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == ":prev")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_PREVIOUS);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
   else if (command == ":y")
   {
     Yank(1);
