@@ -342,7 +342,14 @@ void wxExVi::DoCommandLine()
     return;
   }
 
-  const wxString command = ":" + dlg.GetValue();
+  const wxString val = dlg.GetValue();
+
+  if (val.empty())
+  {
+    return;
+  }
+
+  const wxString command = ":" + val;
 
   if (command == ":$")
   {
