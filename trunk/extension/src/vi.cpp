@@ -7,7 +7,7 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/regex.h> 
+#include <wx/config.h>
 #include <wx/textdlg.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
@@ -27,6 +27,12 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchForward(true)
   , m_SearchText(stc->GetSearchText())
 {
+  m_CommandLine = wxConfigBase::Get()->Read("commandline");
+}
+
+wxExVi::~wxExVi()
+{
+  wxConfigBase::Get()->Write("commandline", m_CommandLine);
 }
 
 void wxExVi::Delete(int lines) const

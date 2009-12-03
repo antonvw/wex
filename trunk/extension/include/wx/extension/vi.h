@@ -27,6 +27,9 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
 
+  /// Destructor.
+ ~wxExVi();
+
   /// Gets the last  command.
   static const wxString& GetLastCommand() {return m_LastCommand;};
 
