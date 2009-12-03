@@ -335,8 +335,8 @@ void wxExOpenFilesDialog(
   long style,
   const wxString& wildcards,
   bool ask_for_continue,
-  long file_flags ,
-  int dir_flags);
+  long file_flags,
+  int dir_flags)
 {
   wxExSTC* stc = frame->GetSTC();
   wxArrayString files;
