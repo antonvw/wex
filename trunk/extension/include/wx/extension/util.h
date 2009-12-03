@@ -119,7 +119,9 @@ void wxExOpenFiles(wxExFrame* frame,
 void wxExOpenFilesDialog(wxExFrame* frame,
   long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
   const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
-  bool ask_for_continue = false);
+  bool ask_for_continue = false,
+  long file_flags = 0,
+  int dir_flags = wxDIR_DEFAULT);
 #endif // wxUSE_GUI
 
 #endif

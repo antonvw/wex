@@ -334,7 +334,9 @@ void wxExOpenFilesDialog(
   wxExFrame* frame,
   long style,
   const wxString& wildcards,
-  bool ask_for_continue)
+  bool ask_for_continue,
+  long file_flags ,
+  int dir_flags);
 {
   wxExSTC* stc = frame->GetSTC();
   wxArrayString files;
@@ -372,7 +374,7 @@ void wxExOpenFilesDialog(
     dlg.GetPaths(files);
   }
 
-  wxExOpenFiles(frame, files);
+  wxExOpenFiles(frame, files, file_flags, dir_flags);
 }
 #endif // wxUSE_GUI
 
