@@ -26,10 +26,7 @@ const int width = 200;
 const int width_combo = 250;
 const int width_numeric = 75;
 
-enum
-{
-  ID_BROWSE_FOLDER = 100,
-};
+const long ID_BROWSE_FOLDER = wxNewId();
 
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)

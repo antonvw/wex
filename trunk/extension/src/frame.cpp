@@ -804,6 +804,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
+// Cannot use wxNewId here, as these are used in a switch statement.
 enum
 {
   ID_MATCH_WHOLE_WORD = 100,

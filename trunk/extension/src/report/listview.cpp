@@ -65,7 +65,6 @@ BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
   EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
   EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
-  EVT_RIGHT_DOWN(wxExListViewFile::OnMouse)
 END_EVENT_TABLE()
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
@@ -179,6 +178,36 @@ void wxExListViewFile::AfterSorting()
 
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
+  long style;
+
+  if (m_Type == LIST_PROJECT)
+  {
+    // This contains the CAN_PASTE flag, only for these types.
+    style = wxExMenu::MENU_DEFAULT;
+  }
+  else
+  {
+    style = 0;
+  }
+
+  if ((GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly()) ||
+       m_Type == LIST_HISTORY)
+  {
+    style |= wxExMenu::MENU_IS_READ_ONLY;
+  }
+
+  if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
+  if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+
+  if (GetSelectedItemCount() == 0 && 
+      GetItemCount() > 0 &&
+      m_Type != LIST_HISTORY) 
+  {
+    style |= wxExMenu::MENU_ALLOW_CLEAR;
+  }
+
+  menu.SetStyle(style);
+
   bool exists = true;
   bool is_folder = false;
 
@@ -629,41 +658,6 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
 #endif
       }
     }
-  }
-  else if (event.RightDown())
-  {
-    long style;
-
-    if (m_Type == LIST_PROJECT)
-    {
-      // This contains the CAN_PASTE flag, only for these types.
-      style = wxExMenu::MENU_DEFAULT;
-    }
-    else
-    {
-      style = 0;
-    }
-
-    if ((GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly()) ||
-         m_Type == LIST_HISTORY)
-    {
-      style |= wxExMenu::MENU_IS_READ_ONLY;
-    }
-
-    if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
-    if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-
-    if (GetSelectedItemCount() == 0 && 
-        GetItemCount() > 0 &&
-        m_Type != LIST_HISTORY) 
-    {
-      style |= wxExMenu::MENU_ALLOW_CLEAR;
-    }
-
-    wxExMenu menu(style);
-
-    BuildPopupMenu(menu);
-    PopupMenu(&menu);
   }
   else
   {

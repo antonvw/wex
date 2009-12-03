@@ -172,15 +172,15 @@ protected:
   /// Invoked after sorting, allows you to do something extra.
   virtual void AfterSorting() {;};
 
+  /// Builds the popup menu.
+  virtual void BuildPopupMenu(wxExMenu& menu);
+
   /// Inserts a new item with column values from text.
   virtual bool ItemFromText(const wxString& text);
 
   /// Copies this item (all columns) to text.
   // Cannot be const.
   virtual const wxString ItemToText(int item_number);
-
-  /// Builds the popup menu.
-  void BuildPopupMenu(wxExMenu& menu);
 
   /// Clears all items.
   void EditClearAll();
