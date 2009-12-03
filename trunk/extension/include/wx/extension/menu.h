@@ -79,8 +79,11 @@ public:
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};
+
+  /// Sets the style.
+  void SetStyle(long style) {m_Style = style;};
 private:
-  const long m_Style;
+  long m_Style;
   int m_ItemsAppended;
   bool m_IsSeparator;
 };
