@@ -359,10 +359,23 @@ void wxExVi::DoCommandLine()
   {
     Delete(1);
   }
-  else if (command == ":e")
+  else if (command.StartsWith(":e"))
   {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    if (command.Contains(" "))
+    {
+      wxArrayString files;
+      wxStringTokenizer tkz(command.AfterFirst(' '));
+      while (tkz.HasMoreTokens())
+      {
+        files.Add(tkz.GetNextToken());
+      }
+      wxExOpenFiles(wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame), files);
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
   }
   else if (command == ":n")
   {
