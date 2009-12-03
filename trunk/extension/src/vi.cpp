@@ -7,6 +7,7 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/regex.h> 
 #include <wx/textdlg.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
@@ -16,6 +17,7 @@
 
 #if wxUSE_GUI
 
+wxString wxExVi::m_CommandLine;
 wxString wxExVi::m_LastCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -335,7 +337,11 @@ bool wxExVi::DoCommand(const wxString& command)
 
 void wxExVi::DoCommandLine()
 {
-  wxTextEntryDialog dlg(m_STC, ":", "vi");
+  wxTextEntryDialog dlg(
+    m_STC, 
+    ":", 
+    "vi",
+    m_CommandLine);
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {
@@ -348,6 +354,8 @@ void wxExVi::DoCommandLine()
   {
     return;
   }
+
+  m_CommandLine = val;
 
   const wxString command = ":" + val;
 
@@ -709,12 +717,19 @@ void wxExVi::Substitute(
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
 
+  const wxRegEx r("\\[1-9]");
+  const bool is_re = r.Matches(replacement);
+
   while (m_STC->SearchInTarget(pattern) > 0)
   {
     const int start = m_STC->GetTargetStart();
-    const int length = m_STC->ReplaceTarget(replacement);
+    const int length = (is_re ? 
+      m_STC->ReplaceTargetRE(replacement): 
+      m_STC->ReplaceTarget(replacement));
+
     m_STC->SetTargetStart(start + length);
     m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
+
     nr_replacements++;
   }
 

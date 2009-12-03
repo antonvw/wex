@@ -72,6 +72,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
 
+  static wxString m_CommandLine;
   static wxString m_LastCommand;
   std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
