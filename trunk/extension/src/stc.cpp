@@ -134,7 +134,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 wxExSTC::~wxExSTC()
 {
-  const wxString text = vi->GetSearchText(); 
+  const wxString text = m_vi->GetSearchText(); 
 
   if (!text.empty())
   {
