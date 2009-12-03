@@ -32,7 +32,10 @@ wxExVi::wxExVi(wxExSTC* stc)
 
 wxExVi::~wxExVi()
 {
-  wxConfigBase::Get()->Write("commandline", m_CommandLine);
+  if (!m_CommandLine.empty())
+  {
+    wxConfigBase::Get()->Write("commandline", m_CommandLine);
+  }
 }
 
 void wxExVi::Delete(int lines) const
