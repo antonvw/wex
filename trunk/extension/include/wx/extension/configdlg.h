@@ -59,7 +59,8 @@ private:
     wxWindow* parent,
     wxControl* control,
     const wxString& text,
-    bool expand = true);
+    bool expand = true,
+    bool hide = false);
   wxControl* AddCheckBox(
     wxWindow* parent,
     wxSizer* sizer,
@@ -80,7 +81,8 @@ private:
   wxControl* AddComboBox(
     wxWindow* parent,
     wxSizer* sizer,
-    const wxString& text);
+    const wxString& text,
+    bool hide);
   wxControl* AddComboBoxDir(
     wxWindow* parent,
     wxSizer* sizer,

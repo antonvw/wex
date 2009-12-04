@@ -7,10 +7,10 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/config.h>
 #include <wx/textdlg.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
@@ -27,18 +27,10 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchForward(true)
   , m_SearchText(stc->GetSearchText())
 {
-  if (m_CommandLine.empty())
-  {
-    m_CommandLine = wxConfigBase::Get()->Read("commandline");
-  }
 }
 
 wxExVi::~wxExVi()
 {
-  if (!m_CommandLine.empty())
-  {
-    wxConfigBase::Get()->Write("commandline", m_CommandLine);
-  }
 }
 
 void wxExVi::Delete(int lines) const
@@ -349,18 +341,24 @@ bool wxExVi::DoCommand(const wxString& command)
 
 void wxExVi::DoCommandLine()
 {
-  wxTextEntryDialog dlg(
-    m_STC, 
-    ":", 
-    "vi",
-    m_CommandLine);
+  std::vector<wxExConfigItem> v;
 
-  if (dlg.ShowModal() == wxID_CANCEL)
+  v.push_back(wxExConfigItem(
+    "commandline", 
+    CONFIG_COMBOBOX_NONAME, 
+    wxEmptyString, 
+    true));
+
+  const int result = wxExConfigDialog(m_STC,
+    v,
+    "vi").ShowModal();
+
+  if (result == wxID_CANCEL)
   {
     return;
   }
 
-  const wxString val = dlg.GetValue();
+  const wxString val = wxExConfigFirstOf("commandline");
 
   if (val.empty())
   {
@@ -472,7 +470,6 @@ void wxExVi::DoCommandLine()
   {
     if (DoCommandRange(command))
     {
-      m_CommandLine = val;
       m_LastCommand = command;
       m_InsertText.clear();
     }

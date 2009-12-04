@@ -146,11 +146,15 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
       break;
 
     case CONFIG_COMBOBOX:
-      control = AddComboBox(parent, sizer, it->m_Name);
+      control = AddComboBox(parent, sizer, it->m_Name, false);
       break;
 
     case CONFIG_COMBOBOXDIR:
       control = AddComboBoxDir(parent, sizer, it->m_Name);
+      break;
+
+    case CONFIG_COMBOBOX_NONAME:
+      control = AddComboBox(parent, sizer, it->m_Name, it->m_HideName);
       break;
 
     case CONFIG_DIRPICKERCTRL:
@@ -241,12 +245,17 @@ wxControl* wxExConfigDialog::Add(
   wxWindow* parent,
   wxControl* control,
   const wxString& text,
-  bool expand)
+  bool expand,
+  bool hide)
 {
   wxSizerFlags flags;
   flags.Border();
 
-  sizer->Add(new wxStaticText(parent, wxID_ANY, text), flags.Right());
+  if (!hide)
+  {
+    sizer->Add(new wxStaticText(parent, wxID_ANY, text), flags.Right());
+  }
+
   sizer->Add(control, (expand ? flags.Left().Expand(): flags.Left()));
 
   return control;
@@ -378,7 +387,7 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
 }
 
 wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
+  wxSizer* sizer, const wxString& text, bool hide)
 {
   wxComboBox* cb = new wxComboBox(
     parent, 
@@ -400,7 +409,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
     Update(cb, wxExFindReplaceData::Get()->GetReplaceString());
   }
 
-  return Add(sizer, parent, cb, text + ":");
+  return Add(sizer, parent, cb, text + ":", hide);
 }
 
 wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,

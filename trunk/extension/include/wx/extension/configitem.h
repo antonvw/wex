@@ -37,16 +37,17 @@ enum
   /// A normal, single, checkbox (use ReadBool to retrieve value).
   CONFIG_CHECKBOX,       
 
-  CONFIG_COLOUR,         ///< a colour button
-  CONFIG_COMBOBOX,       ///< a combobox
-  CONFIG_COMBOBOXDIR,    ///< a combobox with a browse button
-  CONFIG_DIRPICKERCTRL,  ///< a dirpicker ctrl
-  CONFIG_FILEPICKERCTRL, ///< a filepicker ctrl
-  CONFIG_FONTPICKERCTRL, ///< a fontpicker ctrl
-  CONFIG_INT,            ///< a textctrl that only accepts an integer (a long integer)
-  CONFIG_SPINCTRL,       ///< a spinctrl
+  CONFIG_COLOUR,          ///< a colour button
+  CONFIG_COMBOBOX,        ///< a combobox
+  CONFIG_COMBOBOX_NONAME, ///< a combobox without a name
+  CONFIG_COMBOBOXDIR,     ///< a combobox with a browse button
+  CONFIG_DIRPICKERCTRL,   ///< a dirpicker ctrl
+  CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
+  CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
+  CONFIG_INT,             ///< a textctrl that only accepts an integer (a long integer)
+  CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
-  CONFIG_STRING,         ///< a textctrl
+  CONFIG_STRING,          ///< a textctrl
 
   CONFIG_SPACER,         ///< a spacer only, no config item
 };
@@ -106,6 +107,7 @@ private:
   double m_MinDouble;
   double m_MaxDouble;
   double m_Inc;
+  bool m_HideName;
   wxString m_Name;
   wxString m_Page;
   long m_Style;
