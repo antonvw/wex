@@ -348,11 +348,13 @@ void wxExVi::DoCommandLine()
     wxEmptyString, 
     true));
 
-  const int result = wxExConfigDialog(m_STC,
+  wxExConfigDialog dlg(m_STC,
     v,
-    "vi").ShowModal();
+    "vi");
 
-  if (result == wxID_CANCEL)
+  dlg.SetFocus();
+
+  if (dlg.ShowModal() == wxID_CANCEL)
   {
     return;
   }
