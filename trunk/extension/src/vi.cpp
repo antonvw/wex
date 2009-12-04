@@ -737,16 +737,7 @@ void wxExVi::Substitute(
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
 
-  const bool is_re = 
-    replacement.Contains("\\1") ||
-    replacement.Contains("\\2") ||
-    replacement.Contains("\\3") ||
-    replacement.Contains("\\4") ||
-    replacement.Contains("\\5") ||
-    replacement.Contains("\\6") ||
-    replacement.Contains("\\7") ||
-    replacement.Contains("\\8") ||
-    replacement.Contains("\\9");
+  const bool is_re = m_STC->IsTargetRE(replacement);
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {

@@ -161,6 +161,10 @@ public:
   /// Goes to line and selects the specified text in it.
   void GotoLineAndSelect(int line_number, const wxString& text);
 
+  /// Returns true if specified target is a RE, to be used by
+  /// ReplaceTargetRE.
+  bool IsTargetRE(const wxString& target) const;
+
   /// Asks for a lexer for this document, choosing from a dialog of
   /// all available lexers. Then colours the document.
   void LexerDialog(const wxString& caption = _("Enter Lexer"));

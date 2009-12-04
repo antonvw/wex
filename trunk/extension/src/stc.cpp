@@ -1336,6 +1336,20 @@ void wxExSTC::Initialize()
   SetGlobalStyles();
 }
 
+bool wxExSTC::IsTargetRE(const wxString& target) const
+{
+  return 
+    target.Contains("\\1") ||
+    target.Contains("\\2") ||
+    target.Contains("\\3") ||
+    target.Contains("\\4") ||
+    target.Contains("\\5") ||
+    target.Contains("\\6") ||
+    target.Contains("\\7") ||
+    target.Contains("\\8") ||
+    target.Contains("\\9");
+}
+
 void wxExSTC::LexerDialog(const wxString& caption)
 {
   wxExLexer lexer = GetFileName().GetLexer();
@@ -1902,12 +1916,6 @@ void wxExSTC::ReplaceAll(
 
   while (SearchInTarget(find_text) > 0)
   {
-    if (GetTargetStart() == GetTargetEnd())
-    {
-      wxFAIL_MSG("Target start and end are equal");
-      break;
-    }
-
     const int target_start = GetTargetStart();
     int length;
     bool skip_replace = false;
@@ -1932,29 +1940,12 @@ void wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
-      if (
-         replace_text.Contains("\\1") || 
-         replace_text.Contains("\\2") || 
-         replace_text.Contains("\\3") || 
-         replace_text.Contains("\\4") || 
-         replace_text.Contains("\\5") || 
-         replace_text.Contains("\\6") || 
-         replace_text.Contains("\\7") || 
-         replace_text.Contains("\\8") || 
-         replace_text.Contains("\\9"))
-        length = ReplaceTargetRE(replace_text);
-      else
-        length = ReplaceTarget(replace_text);
+      length = (IsTargetRE(replace_text) ?
+        ReplaceTargetRE(replace_text):
+        ReplaceTarget(replace_text));
 
       nr_replacements++;
     }
-
-    if (length == -1)
-    {
-      break;
-    }
-
-    if (target_start + length >= GetLength() - 1) break;
 
     SetTargetStart(target_start + length);
     SetTargetEnd(GetLength() - selection_from_end);
@@ -1994,18 +1985,8 @@ void wxExSTC::ReplaceNext(
     if (SearchInTarget(find_text) == -1) return;
   }
 
-  if (
-    replace_text.Contains("\\1") ||
-    replace_text.Contains("\\2") ||
-    replace_text.Contains("\\3") ||
-    replace_text.Contains("\\4") ||
-    replace_text.Contains("\\5") ||
-    replace_text.Contains("\\6") ||
-    replace_text.Contains("\\7") ||
-    replace_text.Contains("\\8") ||
-    replace_text.Contains("\\9"))
-    ReplaceTargetRE(replace_text);
-  else
+  IsTargetRE(replace_text) ?
+    ReplaceTargetRE(replace_text):
     ReplaceTarget(replace_text);
 
   FindNext(find_text, search_flags, find_next);
