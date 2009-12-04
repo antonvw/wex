@@ -984,6 +984,16 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
+void wxExConfigDialog::SetFocus()
+{
+  std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+
+  if (it != m_ConfigItems.end())
+  {
+    it->m_Control->SetFocus();
+  }
+}
+
 void wxExConfigDialog::Update(wxComboBox* cb, const wxString& value) const
 {
   if (!value.empty())

@@ -50,6 +50,9 @@ public:
   void ForceCheckBoxChecked(
     const wxString& contains = wxEmptyString,
     const wxString& page = wxEmptyString);
+
+  /// Sets the focus to the first config item.
+  void SetFocus();
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
