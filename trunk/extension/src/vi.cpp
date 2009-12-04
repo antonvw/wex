@@ -27,7 +27,10 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchForward(true)
   , m_SearchText(stc->GetSearchText())
 {
-  m_CommandLine = wxConfigBase::Get()->Read("commandline");
+  if (m_CommandLine.empty())
+  {
+    m_CommandLine = wxConfigBase::Get()->Read("commandline");
+  }
 }
 
 wxExVi::~wxExVi()
@@ -380,10 +383,19 @@ void wxExVi::DoCommandLine()
     {
       wxArrayString files;
       wxStringTokenizer tkz(command.AfterFirst(' '));
+
       while (tkz.HasMoreTokens())
       {
-        files.Add(tkz.GetNextToken());
+        wxFileName file(tkz.GetNextToken());
+
+        if (file.IsRelative())
+        {
+          file.MakeAbsolute(m_STC->GetFileName().GetPath());
+        }
+
+        files.Add(file.GetFullPath());
       }
+
       wxExOpenFiles(wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame), files);
     }
     else
@@ -611,7 +623,7 @@ void wxExVi::Move(
   }
 }
 
-bool wxExVi::OnChar(wxKeyEvent& event)
+bool wxExVi::OnChar(const wxKeyEvent& event)
 {
   if (m_InsertMode)
   {
@@ -645,7 +657,7 @@ bool wxExVi::OnChar(wxKeyEvent& event)
   }
 }
 
-bool wxExVi::OnKeyDown(wxKeyEvent& event)
+bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
   bool handled = true;
 

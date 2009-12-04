@@ -30,19 +30,16 @@ public:
   /// Destructor.
  ~wxExVi();
 
-  /// Gets the last  command.
-  static const wxString& GetLastCommand() {return m_LastCommand;};
-
   /// Gets the search text.
   const wxString& GetSearchText() const {return m_SearchText;};
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
-  bool OnChar(wxKeyEvent& event);
+  bool OnChar(const wxKeyEvent& event);
 
   /// Handles keydown events.
   /// Returns true if event is allowed to be skipped.
-  bool OnKeyDown(wxKeyEvent& event);
+  bool OnKeyDown(const wxKeyEvent& event);
 private:
   void Delete(int lines) const;
   void Delete(
