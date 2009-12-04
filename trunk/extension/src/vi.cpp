@@ -17,7 +17,6 @@
 
 #if wxUSE_GUI
 
-wxString wxExVi::m_CommandLine;
 wxString wxExVi::m_LastCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
