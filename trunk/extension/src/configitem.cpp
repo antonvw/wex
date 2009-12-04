@@ -114,6 +114,5 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(type) 
 {
-  m_HideName = (m_Type == CONFIG_COMBOBOX_NONAME);
 }
 #endif // wxUSE_GUI

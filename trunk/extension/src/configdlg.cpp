@@ -154,7 +154,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
       break;
 
     case CONFIG_COMBOBOX_NONAME:
-      control = AddComboBox(parent, sizer, it->m_Name, it->m_HideName);
+      control = AddComboBox(parent, sizer, it->m_Name, true);
       break;
 
     case CONFIG_DIRPICKERCTRL:
@@ -409,7 +409,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
     Update(cb, wxExFindReplaceData::Get()->GetReplaceString());
   }
 
-  return Add(sizer, parent, cb, text + ":", hide);
+  return Add(sizer, parent, cb, text + ":", true, hide);
 }
 
 wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
@@ -743,9 +743,12 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
+    case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
-      wxConfigBase::Get()->Write(cb->GetName(), wxExComboBoxToString(cb, it->m_MaxItems));
+      wxConfigBase::Get()->Write(
+        cb->GetName(), 
+        wxExComboBoxToString(cb, it->m_MaxItems));
 
       if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
       {

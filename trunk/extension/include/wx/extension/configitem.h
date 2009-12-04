@@ -107,7 +107,6 @@ private:
   double m_MinDouble;
   double m_MaxDouble;
   double m_Inc;
-  bool m_HideName;
   wxString m_Name;
   wxString m_Page;
   long m_Style;
