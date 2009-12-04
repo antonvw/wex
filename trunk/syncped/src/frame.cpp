@@ -1036,6 +1036,12 @@ bool MDIFrame::OpenFile(
 {
   wxLogTrace("SY_CALL", "+OpenFile");
 
+  if (!filename.GetStat().IsOk())
+  {
+    wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
+    return false;
+  }
+
   wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
 

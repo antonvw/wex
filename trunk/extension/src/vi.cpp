@@ -386,14 +386,27 @@ void wxExVi::DoCommandLine()
 
       while (tkz.HasMoreTokens())
       {
-        wxFileName file(tkz.GetNextToken());
+        const wxString token = tkz.GetNextToken();
+
+        wxFileName file(token);
 
         if (file.IsRelative())
         {
           file.MakeAbsolute(m_STC->GetFileName().GetPath());
-        }
 
-        files.Add(file.GetFullPath());
+          if (!file.FileExists())
+          {
+            wxLogError(_("Cannot locate file") + ": " + token);
+          }
+          else
+          {
+            files.Add(file.GetFullPath());
+          }
+        }
+        else
+        {
+          files.Add(file.GetFullPath());
+        }
       }
 
       wxExOpenFiles(wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame), files);
