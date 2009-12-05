@@ -359,7 +359,10 @@ void wxExVi::DoCommandLine()
 
   wxExConfigDialog dlg(m_STC,
     v,
-    "vi");
+    "vi",
+    0,
+    1,
+    0);
 
   dlg.SetFocus();
 

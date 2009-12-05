@@ -55,6 +55,7 @@ public:
   void SetFocus();
 protected:
   void OnCommand(wxCommandEvent& event);
+  void OnKeyDown(wxKeyEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxControl* Add(

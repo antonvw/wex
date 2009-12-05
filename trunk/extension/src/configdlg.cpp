@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
   EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
+  EVT_KEY_DOWN(wxExConfigDialog::OnKeyDown)
   EVT_UPDATE_UI(wxID_APPLY, wxExConfigDialog::OnUpdateUI)
   EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
 END_EVENT_TABLE()
@@ -866,6 +867,24 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     }
 
     EndDialog(wxID_OK);
+  }
+}
+
+void wxExConfigDialog::OnKeyDown(wxKeyEvent& event)
+{
+  if (event.GetKeyCode() == WXK_RETURN)
+  {
+    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
+    wxPostEvent(this, event);
+  }
+  if (event.GetKeyCode() == WXK_ESCAPE)
+  {
+    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
+    wxPostEvent(this, event);
+  }
+  else
+  {
+    event.Skip();
   }
 }
 
