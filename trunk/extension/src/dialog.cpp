@@ -71,11 +71,14 @@ void wxExDialog::LayoutSizers()
   m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
 
   // Then the button sizer.
-  wxSizer* sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
-
-  if (sbz != NULL)
+  if (m_ButtonFlags != 0)
   {
-    m_TopSizer->Add(sbz, flag);
+    wxSizer* sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
+
+    if (sbz != NULL)
+    {
+      m_TopSizer->Add(sbz, flag);
+    }
   }
 
   // The top sizer ends with a spacer as well.
