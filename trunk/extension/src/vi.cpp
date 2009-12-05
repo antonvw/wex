@@ -290,20 +290,7 @@ bool wxExVi::DoCommand(const wxString& command)
 
       case '/': 
       case '?': 
-        {
-          wxTextEntryDialog dlg(
-            m_STC, 
-            command.Last(), 
-            "vi",
-            m_SearchText);
-
-          if (dlg.ShowModal() == wxID_OK)
-          {
-            m_SearchForward = command.Last() == '/';
-            m_SearchText = dlg.GetValue();
-            m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
-          }
-        }
+        DoCommandFind(command.Last());
         break;
 
       case '.': 
@@ -342,6 +329,22 @@ bool wxExVi::DoCommand(const wxString& command)
   }
 
   return handled;
+}
+
+void wxExVi::DoCommandFind(const wxUniChar& c)
+{
+  wxTextEntryDialog dlg(
+    m_STC, 
+    c, 
+    "vi",
+    m_SearchText);
+
+  if (dlg.ShowModal() == wxID_OK)
+  {
+    m_SearchForward = c == '/';
+    m_SearchText = dlg.GetValue();
+    m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
+  }
 }
 
 void wxExVi::DoCommandLine()
