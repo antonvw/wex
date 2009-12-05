@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
   EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
+  EVT_CHAR_HOOK(wxExConfigDialog::OnKeyDown)
   EVT_KEY_DOWN(wxExConfigDialog::OnKeyDown)
   EVT_UPDATE_UI(wxID_APPLY, wxExConfigDialog::OnUpdateUI)
   EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
@@ -1009,7 +1010,7 @@ void wxExConfigDialog::SetFocus()
 
   if (it != m_ConfigItems.end())
   {
-    it->m_Control->SetFocus();
+//    it->m_Control->SetFocus();
   }
 }
 
