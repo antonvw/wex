@@ -134,7 +134,11 @@ bool wxExVi::DoCommand(const wxString& command)
   else if (command.EndsWith("dw"))
   {
     m_STC->BeginUndoAction();
-    for (int i = 0; i < repeat; i++) m_STC->DelWordRight();
+    const int start = m_STC->GetCurrentPos();
+    for (int i = 0; i < repeat; i++) 
+      m_STC->WordRight();
+    m_STC->SetSelection(start, m_STC->GetCurrentPos());
+    m_STC->Cut();
     m_STC->EndUndoAction();
   }
   else if (command.Matches("*f?"))
