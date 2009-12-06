@@ -31,7 +31,6 @@ wxExVi::wxExVi(wxExSTC* stc)
 
 wxExVi::~wxExVi()
 {
-  delete m_CommandDialog;
 }
 
 void wxExVi::Delete(int lines) const
@@ -335,18 +334,38 @@ bool wxExVi::DoCommand(const wxString& command)
 
 void wxExVi::DoCommandFind(const wxUniChar& c)
 {
-  wxTextEntryDialog dlg(
-    m_STC, 
-    c, 
-    "vi",
-    m_SearchText);
+  std::vector<wxExConfigItem> v;
 
-  if (dlg.ShowModal() == wxID_OK)
+  v.push_back(wxExConfigItem(
+    "searchline", 
+    CONFIG_COMBOBOX_NONAME, 
+    wxEmptyString, 
+    true));
+
+  wxExConfigDialog dlg(m_STC,
+    v,
+    "vi " + wxString(c),
+    0,
+    1,
+    0);
+
+  dlg.SetFocus();
+
+  if (dlg.ShowModal() == wxID_CANCEL)
   {
-    m_SearchForward = c == '/';
-    m_SearchText = dlg.GetValue();
-    m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
+    return;
   }
+
+  const wxString val = wxExConfigFirstOf("searchline");
+
+  if (val.empty())
+  {
+    return;
+  }
+
+  m_SearchForward = c == '/';
+  m_SearchText = val;
+  m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
 }
 
 void wxExVi::DoCommandLine()
