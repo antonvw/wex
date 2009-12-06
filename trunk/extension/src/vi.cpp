@@ -31,6 +31,7 @@ wxExVi::wxExVi(wxExSTC* stc)
 
 wxExVi::~wxExVi()
 {
+  delete m_CommandDialog;
 }
 
 void wxExVi::Delete(int lines) const
