@@ -75,6 +75,7 @@ private:
     const wxString& end_address) const;
 
   static wxExConfigDialog* m_CommandDialog;
+  static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
   std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
