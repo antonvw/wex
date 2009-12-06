@@ -17,6 +17,7 @@
 
 #if wxUSE_GUI
 
+wxExConfigDialog* wxExVi::m_CommandDialog = NULL;
 wxString wxExVi::m_LastCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
@@ -349,24 +350,27 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 
 void wxExVi::DoCommandLine()
 {
-  std::vector<wxExConfigItem> v;
+  if (m_CommandDialog == NULL)
+  {
+    std::vector<wxExConfigItem> v;
 
-  v.push_back(wxExConfigItem(
-    "commandline", 
-    CONFIG_COMBOBOX_NONAME, 
-    wxEmptyString, 
-    true));
+    v.push_back(wxExConfigItem(
+      "commandline", 
+      CONFIG_COMBOBOX_NONAME, 
+      wxEmptyString, 
+      true));
 
-  wxExConfigDialog dlg(m_STC,
-    v,
-    "vi",
-    0,
-    1,
-    0);
+    m_CommandDialog = new wxExConfigDialog(m_STC,
+      v,
+      "vi",
+      0,
+      1,
+      0);
+  }
 
-  dlg.SetFocus();
+  m_CommandDialog->SetFocus();
 
-  if (dlg.ShowModal() == wxID_CANCEL)
+  if (m_CommandDialog->ShowModal() == wxID_CANCEL)
   {
     return;
   }

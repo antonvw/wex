@@ -18,6 +18,7 @@
 
 #if wxUSE_GUI
 
+class wxExConfigDialog;
 class wxExSTC;
 
 /// Offers a class that extends STC with vi behaviour.
@@ -73,6 +74,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
 
+  static wxExConfigDialog* m_CommandDialog;
   static wxString m_LastCommand;
   std::map<wxUniChar, int> m_Markers;
   bool m_InsertMode;
