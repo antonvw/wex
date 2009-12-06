@@ -386,7 +386,7 @@ void wxExVi::DoCommandLine()
 
     m_CommandDialog = new wxExConfigDialog(m_STC,
       v,
-      "vi",
+      "vi :",
       0,
       1,
       0);
