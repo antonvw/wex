@@ -12,6 +12,10 @@
 #include <wx/extension/dialog.h>
 
 #if wxUSE_GUI
+BEGIN_EVENT_TABLE(wxExDialog, wxDialog)
+  EVT_CHAR_HOOK(wxExDialog::OnKeyDown)
+END_EVENT_TABLE()
+
 wxExDialog::wxExDialog(wxWindow* parent,
   const wxString& title,
   long button_flags,
@@ -86,4 +90,23 @@ void wxExDialog::LayoutSizers()
 
   SetSizerAndFit(m_TopSizer);
 }
+
+void wxExDialog::OnKeyDown(wxKeyEvent& event)
+{
+  if (event.GetKeyCode() == WXK_RETURN)
+  {
+    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
+    wxPostEvent(this, event);
+  }
+  if (event.GetKeyCode() == WXK_ESCAPE)
+  {
+    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
+    wxPostEvent(this, event);
+  }
+  else
+  {
+    event.Skip();
+  }
+}
+
 #endif // wxUSE_GUI

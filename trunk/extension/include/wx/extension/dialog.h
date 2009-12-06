@@ -52,10 +52,14 @@ protected:
 
   /// Layouts the sizers. Should be invoked after adding to sizers.
   void LayoutSizers();
+
+  void OnKeyDown(wxKeyEvent& event);
 private:
   const long m_ButtonFlags;
   wxFlexGridSizer* m_TopSizer;
   wxFlexGridSizer* m_UserSizer;
+
+  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
 #endif
