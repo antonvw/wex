@@ -746,9 +746,14 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
+      const wxString values = wxExComboBoxToString(cb, it->m_MaxItems);
       wxConfigBase::Get()->Write(
-        cb->GetName(), 
-        wxExComboBoxToString(cb, it->m_MaxItems));
+        cb->GetName(), values);
+
+      // This seems not necessary, but when using static dialogs,
+      // the init is already done, but we want the combo to be updated
+      // with new values as well.
+      wxExComboBoxFromString(cb, values);
 
       if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
       {
