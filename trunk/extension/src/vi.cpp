@@ -355,7 +355,6 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
       0);
   }
 
-  m_FindDialog->SetFocus();
   m_FindDialog->SetTitle(title);
 
   if (m_FindDialog->ShowModal() == wxID_CANCEL)
@@ -394,8 +393,6 @@ void wxExVi::DoCommandLine()
       1,
       0);
   }
-
-  m_CommandDialog->SetFocus();
 
   if (m_CommandDialog->ShowModal() == wxID_CANCEL)
   {
