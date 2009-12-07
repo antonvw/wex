@@ -23,14 +23,9 @@ wxExDirTool::wxExDirTool(const wxExTool& tool,
 
 void wxExDirTool::OnFile(const wxString& file)
 {
-  const wxExFileName filename(file);
-
-  if (filename.GetStat().IsOk())
-  {
-    wxExTextFileWithListView report(filename, m_Tool);
-    report.RunTool();
-    m_Statistics += report.GetStatistics();
-  }
+  wxExTextFileWithListView report(file, m_Tool);
+  report.RunTool();
+  m_Statistics += report.GetStatistics();
 }
 
 wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
