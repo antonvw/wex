@@ -74,7 +74,7 @@ void wxExDialog::LayoutSizers()
   m_TopSizer->Add(m_UserSizer, flag);
   m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
 
-  // Then the button sizer.
+  // Then, if buttons were specified, the button sizer.
   if (m_ButtonFlags != 0)
   {
     wxSizer* sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
@@ -93,15 +93,24 @@ void wxExDialog::LayoutSizers()
 
 void wxExDialog::OnKeyDown(wxKeyEvent& event)
 {
-  if (event.GetKeyCode() == WXK_RETURN)
+  // If we did not specify any buttons, then 
+  // use the RETURN key as OK and ESCAPE key as CANCEL.
+  if (m_ButtonFlags == 0)
   {
-    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
-    wxPostEvent(this, event);
-  }
-  if (event.GetKeyCode() == WXK_ESCAPE)
-  {
-    wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
-    wxPostEvent(this, event);
+    if (event.GetKeyCode() == WXK_RETURN)
+    {
+      wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
+      wxPostEvent(this, event);
+    }
+    if (event.GetKeyCode() == WXK_ESCAPE)
+    {
+      wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
+      wxPostEvent(this, event);
+    }
+    else
+    {
+      event.Skip();
+    }
   }
   else
   {
