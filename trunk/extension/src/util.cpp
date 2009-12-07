@@ -144,17 +144,15 @@ const wxString wxExComboBoxToString(
     case 0: 
       text.clear();
       // No change necessary, the string is already present as the first one.
-      for (size_t i = 0; i < max_items; i++)
-        if (i < cb->GetCount())
-          text += cb->GetString(i) + wxExFindReplaceData::Get()->GetFieldSeparator();
+      for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
+        text += cb->GetString(i) + wxExFindReplaceData::Get()->GetFieldSeparator();
       break;
 
     case wxNOT_FOUND:
       // Add the string, as it is not in the combo box, to the text,
       // simply by appending all combobox items.
-      for (size_t i = 0; i < max_items - 1; i++)
-        if (i < cb->GetCount())
-          text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
+      for (size_t i = 0; i < cb->GetCount() && i < max_items - 1; i++)
+        text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
     break;
 
     default:
