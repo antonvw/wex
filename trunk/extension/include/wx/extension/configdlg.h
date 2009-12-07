@@ -133,5 +133,17 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
+
+/// Returns a special config dialog using only one combobox.
+wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
+  const wxString& title,
+  const wxString& item,
+  long flags = wxOK | wxCANCEL,
+  wxWindowID id = wxID_ANY,
+  const wxPoint& pos = wxDefaultPosition,
+  const wxSize& size = wxDefaultSize,
+  long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+  const wxString& name = wxDialogNameStr);
+
 #endif // wxUSE_GUI
 #endif

@@ -22,6 +22,37 @@
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
+
+wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
+  const wxString& title,
+  const wxString& item,
+  long flags,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxString& name)
+{
+  std::vector<wxExConfigItem> v;
+
+  v.push_back(wxExConfigItem(
+    item, 
+    CONFIG_COMBOBOX_NONAME));
+
+  return new wxExConfigDialog(
+    parent, 
+    v,
+    title, 
+    0, 
+    1, 
+    flags, 
+    id, 
+    pos, 
+    size, 
+    style, 
+    name);
+}
+
 const int width = 200;
 const int width_combo = 250;
 const int width_numeric = 75;

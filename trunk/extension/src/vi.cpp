@@ -342,20 +342,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 
   if (m_FindDialog == NULL)
   {
-    std::vector<wxExConfigItem> v;
-
-    v.push_back(wxExConfigItem(
-      "searchline", 
-      CONFIG_COMBOBOX_NONAME, 
-      wxEmptyString, 
-      true));
-
-    m_FindDialog = new wxExConfigDialog(m_STC,
-      v,
-      title,
-      0,
-      1,
-      0);
+    m_FindDialog = wxExConfigComboBoxDialog(m_STC, title, "searchline", 0);
   }
 
   m_FindDialog->SetTitle(title);
@@ -381,20 +368,7 @@ void wxExVi::DoCommandLine()
 {
   if (m_CommandDialog == NULL)
   {
-    std::vector<wxExConfigItem> v;
-
-    v.push_back(wxExConfigItem(
-      "commandline", 
-      CONFIG_COMBOBOX_NONAME, 
-      wxEmptyString, 
-      true));
-
-    m_CommandDialog = new wxExConfigDialog(m_STC,
-      v,
-      "vi :",
-      0,
-      1,
-      0);
+    m_CommandDialog = wxExConfigComboBoxDialog(m_STC, "vi :", "commandline", 0);
   }
 
   if (m_CommandDialog->ShowModal() == wxID_CANCEL)
