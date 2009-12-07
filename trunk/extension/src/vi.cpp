@@ -335,6 +335,8 @@ bool wxExVi::DoCommand(const wxString& command)
 
 void wxExVi::DoCommandFind(const wxUniChar& c)
 {
+  const wxString title = "vi " + wxString(c);
+
   if (m_FindDialog == NULL)
   {
     std::vector<wxExConfigItem> v;
@@ -347,13 +349,14 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 
     m_FindDialog = new wxExConfigDialog(m_STC,
       v,
-      "vi " + wxString(c),
+      title,
       0,
       1,
       0);
   }
 
   m_FindDialog->SetFocus();
+  m_FindDialog->SetTitle(title);
 
   if (m_FindDialog->ShowModal() == wxID_CANCEL)
   {
