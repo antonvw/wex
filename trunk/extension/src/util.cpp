@@ -112,17 +112,15 @@ void wxExComboBoxFromString(
 {
   wxASSERT(cb != NULL);
 
+  cb->Clear();
+
   wxStringTokenizer tkz(
     text, 
     wxExFindReplaceData::Get()->GetFieldSeparator());
 
   while (tkz.HasMoreTokens())
   {
-    const wxString val = tkz.GetNextToken();
-    if (cb->FindString(val) == wxNOT_FOUND)
-    {
-      cb->Append(val);
-    }
+    cb->Append(tkz.GetNextToken());
   }
 
   if (cb->GetCount() > 0) 
