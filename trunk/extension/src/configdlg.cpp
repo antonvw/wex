@@ -921,6 +921,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
+    case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
       if (it->m_IsRequired)
