@@ -9,7 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/stdpaths.h>
 #include <wx/extension/report/report.h>
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
