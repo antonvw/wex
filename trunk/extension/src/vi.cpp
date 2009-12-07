@@ -248,7 +248,7 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
       case 'o': InsertMode(command.Last(), repeat); break;
       case 'p': 
-        if (wxExGetNumberOfLines(wxExClipboardGet() > 1))
+        if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
         {
           m_STC->Home();
         }
