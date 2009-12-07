@@ -248,7 +248,10 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
       case 'o': InsertMode(command.Last(), repeat); break;
       case 'p': 
-        m_STC->Home();
+        if (wxExGetNumberOfLines(wxExClipboardGet() > 1))
+        {
+          m_STC->Home();
+        }
         m_STC->Paste();
         break;
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
