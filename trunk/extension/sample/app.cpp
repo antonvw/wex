@@ -447,7 +447,7 @@ void wxExSampleFrame::ShowConfigItems()
     "Lists"));
 
   // CONFIG_CHECKBOX
-  for (size_t h = 1; h <= 3; h++)
+  for (size_t h = 1; h <= 4; h++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("Checkbox%d"), h), 
@@ -456,12 +456,12 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   v.push_back(wxExConfigItem(
-    "Required Checkbox1", 
+    "Group Checkbox1",
     CONFIG_CHECKBOX, 
     "Checkboxes"));
 
   v.push_back(wxExConfigItem(
-    "Required Checkbox2", 
+    "Group Checkbox2",
     CONFIG_CHECKBOX, 
     "Checkboxes"));
 
@@ -484,6 +484,7 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_COMBOBOX_NONAME
+  v.push_back(wxExConfigItem());
   v.push_back(wxExConfigItem(
     _("Combobox No Name"),
     CONFIG_COMBOBOX_NONAME, 
@@ -568,6 +569,6 @@ void wxExSampleFrame::ShowConfigItems()
     wxDefaultPosition,
     wxSize(400,300));
 
-  dlg->ForceCheckBoxChecked("Required", "Checkboxes");
+  dlg->ForceCheckBoxChecked("Group", "Checkboxes");
   dlg->Show();
 }
