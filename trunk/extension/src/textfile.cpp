@@ -336,11 +336,9 @@ bool wxExTextFile::Parse()
     }
   }
 
-  GoToLine(0); // When using GetFirstLine, etc. replae in files does not work.
-
-  while (!Cancelled() && !m_FinishedAction)
+  for (int i = 0; i < GetLineCount() && !Cancelled() && !m_FinishedAction; i++)
   {
-    wxString& line = GetLine(GetCurrentLine());
+    wxString& line = GetLine(i);
 
     if (m_Tool.IsFindType())
     {
@@ -351,6 +349,8 @@ bool wxExTextFile::Parse()
     }
     else
     {
+      GoToLine(i);
+      
       if (!ParseLine(line))
       {
         return false;
@@ -368,10 +368,6 @@ bool wxExTextFile::Parse()
     {
       wxThread::This()->Yield();
     }
-
-    if (Eof()) break;
-    if (GetCurrentLine() == GetLineCount() - 1) break;
-    else GoToLine(GetCurrentLine() + 1);
   }
 
   return !Cancelled();
