@@ -158,6 +158,9 @@ public:
 #endif // wxUSE_STATUSBAR
 
 protected:
+  /// Invokes GetSearchText on one of the controls.
+  void GetSearchText();
+
   /// Writes the current frame size and position to the config.
   void OnClose(wxCloseEvent& event);
   /// Handles command event.
@@ -199,7 +202,6 @@ protected:
 #endif
 
 private:
-  void GetSearchText();
   void Initialize();
 
 #if wxUSE_STATUSBAR
