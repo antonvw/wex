@@ -483,6 +483,12 @@ void wxExSampleFrame::ShowConfigItems()
       "Comboboxes"));
   }
 
+  // CONFIG_COMBOBOX_NONAME
+  v.push_back(wxExConfigItem(
+    _("Combobox No Name"),
+    CONFIG_COMBOBOX_NONAME, 
+    "Comboboxes"));
+
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
     _("Combobox Dir"), 
