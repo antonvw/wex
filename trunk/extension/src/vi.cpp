@@ -287,7 +287,7 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
       case 'O': InsertMode(command.Last(), repeat); break;
       case 'P':
-        m_STC->GotoPos(m_STC->GetCurrentPos() - wxExClipboardGet().length());
+        m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
         m_STC->Paste();
         break;
       case 'R': InsertMode(command.Last(), repeat, true); break;
