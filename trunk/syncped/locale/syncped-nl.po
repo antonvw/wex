@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-14 10:03+0100\n"
-"PO-Revision-Date: 2009-11-14 10:03+0100\n"
-"Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"POT-Creation-Date: 2009-12-08 08:10+0100\n"
+"PO-Revision-Date: 2009-12-08 08:11+0100\n"
+"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,6 +16,109 @@ msgstr ""
 "X-Poedit-Basepath: ./\n"
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
+
+#: ../src/app.cpp:40
+#: ../src/app.cpp:42
+#: ../src/frame.cpp:622
+msgid "List Colour"
+msgstr "Lijst kleuren"
+
+#: ../src/frame.cpp:80
+msgid "Project Files"
+msgstr "Project bestanden"
+
+#: ../src/frame.cpp:109
+msgid "Files"
+msgstr "Bestanden"
+
+#: ../src/frame.cpp:111
+msgid "Projects"
+msgstr "Projecten"
+
+#: ../src/frame.cpp:113
+msgid "Output"
+msgstr "Resultaten"
+
+#: ../src/frame.cpp:115
+msgid "Explorer"
+msgstr "Verkenner"
+
+#: ../src/frame.cpp:117
+msgid "Ascii Table"
+msgstr "Ascii tabel"
+
+#: ../src/frame.cpp:119
+msgid "History"
+msgstr "Geschiedenis"
+
+#: ../src/frame.cpp:121
+msgid "Findbar"
+msgstr "Zoekbalk"
+
+#: ../src/frame.cpp:248
+msgid "Select Projects"
+msgstr "Projecten selecteren"
+
+#: ../src/frame.cpp:314
+msgid "project"
+msgstr "project"
+
+#: ../src/frame.cpp:314
+msgid "textfile"
+msgstr "bestand"
+
+#: ../src/frame.cpp:485
+msgid ""
+"This program offers a portable text or binary editor\n"
+"with automatic syncing."
+msgstr ""
+"Dit programma biedt een text of binaire editor\n"
+"met automatische synchronisatie."
+
+#: ../src/frame.cpp:490
+msgid ""
+" All its config files are read\n"
+"and saved in the same directory as where the executable is."
+msgstr ""
+" Alle configuratie bestanden worden\n"
+"bewaard en gelezen in dezelfde map als waar het programma zelf staat."
+
+#: ../src/frame.cpp:495
+msgid "All rights reserved."
+msgstr "Alle rechten voorbehouden."
+
+#: ../src/frame.cpp:553
+msgid "File Save As"
+msgstr "Opslaan als"
+
+#: ../src/frame.cpp:593
+msgid "Editor Options"
+msgstr "Editor opties"
+
+#: ../src/frame.cpp:600
+#: ../src/frame.cpp:608
+msgid "List Font"
+msgstr "Lijst lettertype"
+
+#: ../src/frame.cpp:605
+msgid "Set List Font"
+msgstr "Lijst lettertype instellen"
+
+#: ../src/frame.cpp:627
+msgid "Set List Read Only Colour"
+msgstr "Lijst kleuren instellen"
+
+#: ../src/frame.cpp:670
+msgid "Project Save As"
+msgstr "Project opslaan als"
+
+#: ../src/frame.cpp:771
+msgid "&Open"
+msgstr "&Openen"
+
+#: ../src/frame.cpp:1041
+msgid "Cannot open file"
+msgstr "Kan bestand niet openen"
 
 #: ../src/support.cpp:35
 msgid "File Type"
@@ -220,105 +323,6 @@ msgstr "Bekijk hexadecimaal"
 #: ../src/support.cpp:252
 msgid "Synchronize modified files"
 msgstr "Synchronizeer gewijzigde bestanden"
-
-#: ../src/frame.cpp:81
-msgid "Project Files"
-msgstr "Project bestanden"
-
-#: ../src/frame.cpp:110
-msgid "Files"
-msgstr "Bestanden"
-
-#: ../src/frame.cpp:112
-msgid "Projects"
-msgstr "Projecten"
-
-#: ../src/frame.cpp:114
-msgid "Output"
-msgstr "Resultaten"
-
-#: ../src/frame.cpp:116
-msgid "Explorer"
-msgstr "Verkenner"
-
-#: ../src/frame.cpp:118
-msgid "Ascii Table"
-msgstr "Ascii tabel"
-
-#: ../src/frame.cpp:120
-msgid "History"
-msgstr "Geschiedenis"
-
-#: ../src/frame.cpp:122
-msgid "Findbar"
-msgstr "Zoekbalk"
-
-#: ../src/frame.cpp:249
-msgid "Select Projects"
-msgstr "Projecten selecteren"
-
-#: ../src/frame.cpp:315
-msgid "project"
-msgstr "project"
-
-#: ../src/frame.cpp:315
-msgid "textfile"
-msgstr "bestand"
-
-#: ../src/frame.cpp:476
-msgid ""
-"This program offers a portable text or binary editor\n"
-"with automatic syncing. All its config files are read\n"
-"and saved in the same directory as where the executable is."
-msgstr ""
-"Dit programma biedt een portable text of binaire editor met\n"
-"automatische synchronisatie. Alle configuratie bestanden worden\n"
-"bewaard en gelezen in dezelfde map als waar het programma zelf staat."
-
-#: ../src/frame.cpp:481
-msgid ""
-"This program offers a portable text or binary editor\n"
-"with automatic syncing."
-msgstr ""
-"Dit programma biedt een text of binaire editor\n"
-"met automatische synchronisatie."
-
-#: ../src/frame.cpp:485
-msgid "All rights reserved."
-msgstr "Alle rechten voorbehouden."
-
-#: ../src/frame.cpp:543
-msgid "File Save As"
-msgstr "Opslaan als"
-
-#: ../src/frame.cpp:581
-msgid "Editor Options"
-msgstr "Editor opties"
-
-#: ../src/frame.cpp:588
-#: ../src/frame.cpp:596
-msgid "List Font"
-msgstr "Lijst lettertype"
-
-#: ../src/frame.cpp:593
-msgid "Set List Font"
-msgstr "Lijst lettertype instellen"
-
-#: ../src/frame.cpp:610
-msgid "List Colour"
-msgstr "Lijst kleuren"
-
-#: ../src/frame.cpp:615
-msgid "Set List Read Only Colour"
-msgstr "Lijst kleuren instellen"
-
-#: ../src/frame.cpp:658
-msgid "Project Save As"
-msgstr "Project opslaan als"
-
-#: ../src/frame.cpp:759
-msgid "&Open"
-msgstr "&Openen"
 
 #~ msgid "Comparator"
 #~ msgstr "Vergelijker"
