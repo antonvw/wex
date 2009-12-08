@@ -64,7 +64,7 @@ const wxString wxExTool::Info() const
 }
 
 void wxExTool::Log(
-  const wxExStatistics<long>* stat, 
+  wxExStatistics<long>* stat, 
   const wxString& caption, 
   bool log_to_file) const
 {

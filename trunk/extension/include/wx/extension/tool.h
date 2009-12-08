@@ -111,7 +111,7 @@ public:
   /// Logs the statistics to
   /// the statusbar (always) and to the statistics logfile (if specified).
   void Log(
-    const wxExStatistics<long>* stat, 
+    wxExStatistics<long>* stat, 
     const wxString& caption = wxEmptyString, 
     bool log_to_file = true) const;
 

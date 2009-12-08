@@ -119,20 +119,6 @@ public:
   const std::map<wxString, T> & GetItems() const {return m_Items;};
 
   /// Gets value for specified key.
-  T Get(const wxString& key) const {
-    typename std::map<wxString,T>::const_iterator it = m_Items.find(key);
-
-    if (it != m_Items.end())
-    {
-      return it->second;
-    }
-    else
-    {
-      T not_found;
-      return not_found;
-    }};
-
-  /// Gets value for specified key.
   /// If the key is not in the items it is added.
   T Get(const wxString& key) {return m_Items[key];};
 

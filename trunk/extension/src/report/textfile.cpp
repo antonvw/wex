@@ -26,9 +26,14 @@ void SetItemColumnStatistics(
   const wxString& col,
   const wxExStatistics<long>& stat)
 {
-  item.SetColumnText(
-    col,
-    wxString::Format("%ld", stat.Get(col)));
+  std::map<wxString,long>::const_iterator it = stat.GetItems().find(col);
+
+  if (it != stat.GetItems().end())
+  {
+    item.SetColumnText(
+      col,
+      wxString::Format("%ld", it->second));
+  }
 }
 
 #if wxExUSE_EMBEDDED_SQL
@@ -253,9 +258,13 @@ void wxExTextFileWithListView::ReportStatistics()
     for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
     {
       const wxString name = m_Report->GetColumn(i + 1).GetText();
-      const long value = GetStatistics().GetKeywords().Get(name);
-      item.SetColumnText(i + 1, wxString::Format("%ld", value));
-      total += value;
+      const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
+      std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
+      if (it != stat.GetItems().end())
+      {
+        item.SetColumnText(i + 1, wxString::Format("%ld", it->second));
+        total += it->second;
+      }
     }
     item.SetColumnText(
       GetFileName().GetLexer().GetKeywords().size() + 1,

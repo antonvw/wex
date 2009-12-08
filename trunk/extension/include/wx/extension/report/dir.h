@@ -35,7 +35,7 @@ public:
     int flags = wxDIR_DEFAULT);
     
   /// Gets the statistics.
-  const wxExFileStatistics& GetStatistics() const {return m_Statistics;};
+  wxExFileStatistics& GetStatistics() {return m_Statistics;};
 protected:  
   void OnFile(const wxString& file);
 private:    

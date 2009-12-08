@@ -119,7 +119,7 @@ public:
   const wxExRCS& GetRCS() const {return m_RCS;};
 
   /// Gets the statistics.
-  const wxExFileStatistics& GetStatistics() const {return m_Stats;}
+  wxExFileStatistics& GetStatistics() {return m_Stats;}
 
   /// Gets the tool.
   const wxExTool& GetTool() const {return m_Tool;};
