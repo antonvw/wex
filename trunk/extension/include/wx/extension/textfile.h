@@ -147,7 +147,7 @@ protected:
 
   // Virtual report generators.
   /// This one is invoked during parsing of lines.
-  virtual void Report() {;};
+  virtual void Report(size_t WXUNUSED(line)) {;};
 
   /// This one is invoked for ID_TOOL_LINE_CODE,
   /// for each line that contains code, or

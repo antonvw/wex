@@ -31,7 +31,7 @@ public:
   static bool SetupTool(const wxExTool& tool);
 private:
   // Implement interface from wxExTextFile.
-  virtual void Report();
+  virtual void Report(size_t line);
   virtual void ReportStatistics();
 
   static wxExListViewWithFrame* m_Report;

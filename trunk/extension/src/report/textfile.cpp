@@ -186,18 +186,14 @@ bool wxExTextFileWithListView::ParseSQL()
 }
 #endif
 
-void wxExTextFileWithListView::Report()
+void wxExTextFileWithListView::Report(size_t line)
 {
   wxASSERT(m_Report != NULL);
 
   wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
-  const int line = (GetTool().GetId() == ID_TOOL_REPORT_REVISION ?
-    GetCurrentLine():
-    GetCurrentLine() + 1);
-
-  item.SetColumnText(_("Line No"), wxString::Format("%d", line));
+  item.SetColumnText(_("Line No"), wxString::Format("%d", line + 1));
 
   switch (GetTool().GetId())
   {

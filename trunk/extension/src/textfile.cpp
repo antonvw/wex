@@ -234,7 +234,7 @@ void wxExTextFile::EndCurrentRevision()
 
     if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
-      Report();
+      Report(GetCurrentLine() - 1);
     }
 
     m_RevisionActive = false;
@@ -344,7 +344,7 @@ bool wxExTextFile::Parse()
     {
       if (MatchLine(line))
       {
-        Report();
+        Report(i);
       }
     }
     else
