@@ -336,7 +336,7 @@ bool wxExTextFile::Parse()
     }
   }
 
-  for (int i = 0; i < GetLineCount() && !Cancelled() && !m_FinishedAction; i++)
+  for (size_t i = 0; i < GetLineCount() && !Cancelled() && !m_FinishedAction; i++)
   {
     wxString& line = GetLine(i);
 
