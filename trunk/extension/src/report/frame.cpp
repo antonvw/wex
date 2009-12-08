@@ -159,10 +159,12 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
 
     case ID_SPECIAL_FIND_IN_FILES:
+      GetSearchText();
       wxExFindInFiles();
       break;
 
     case ID_SPECIAL_REPLACE_IN_FILES:
+      GetSearchText();
       wxExFindInFiles(true);
       break;
 
