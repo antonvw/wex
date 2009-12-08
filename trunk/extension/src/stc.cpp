@@ -743,7 +743,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   {
     if (GetSelectedText().length() == 1)
     {
-      const char value = GetSelectedText().GetChar(0);
+      const wxUniChar value = GetSelectedText().GetChar(0);
       wxMessageBox(wxString::Format("hex: %x dec: %d", value, value), _("Control Character"));
     }
 
@@ -1250,8 +1250,7 @@ void wxExSTC::HexDecCalltip(int pos)
 
   if (word.empty()) return;
 
-  // TODO: This is not unicode compatible.
-  const unsigned char c = word.GetChar(0);
+  const wxUniChar c = word.GetChar(0);
 
   if (c < 32 || c > 125)
   {
