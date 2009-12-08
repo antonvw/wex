@@ -39,6 +39,9 @@ bool wxExClipboardAdd(const wxString& text);
 /// Gets data from the clipboard.
 const wxString wxExClipboardGet();
 
+/// Returns first of a list of values from config key.
+const wxString wxExConfigFirstOf(const wxString& key);
+
 /// Adds an ellipses after text.
 const wxString wxExEllipsed(
   const wxString& text,
@@ -96,6 +99,7 @@ const wxString wxExSkipWhiteSpace(
 const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
 
 #if wxUSE_GUI
+
 /// Adds entries to a combobox from a text string.
 void wxExComboBoxFromString(
   wxComboBox* cb,
@@ -105,9 +109,6 @@ void wxExComboBoxFromString(
 const wxString wxExComboBoxToString(
   const wxComboBox* cb,
   size_t max_items = 25);
-
-/// Returns first of a list of values from config key.
-const wxString wxExConfigFirstOf(const wxString& key);
 
 /// Opens files.
 void wxExOpenFiles(wxExFrame* frame,
@@ -122,6 +123,7 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   bool ask_for_continue = false,
   long file_flags = 0,
   int dir_flags = wxDIR_DEFAULT);
+
 #endif // wxUSE_GUI
 
 #endif
