@@ -96,7 +96,7 @@ bool wxExTextFileWithListView::ParseComments()
       {
         const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
         m_SQLQueryRunTime = GetComments().substr(start_of_runtime);
-        Report();
+        Report(GetCurrentLine());
       }
 
       if (GetComments().substr(0, 8) == " SQL END")
