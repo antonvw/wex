@@ -121,7 +121,7 @@ void wxExListViewFile::AddItems()
   set.insert(_("Recursive"));
   v.push_back(wxExConfigItem(set));
 
-  wxExConfigDialog dlg(NULL,
+  wxExConfigDialog dlg(this,
     v,
     _("Add Files"));
 
@@ -1259,7 +1259,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     v.push_back(wxExConfigItem());
     v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
 
-    if (wxExConfigDialog(NULL,
+    if (wxExConfigDialog(this,
       v,
       GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
     {

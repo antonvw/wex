@@ -87,7 +87,7 @@ size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
     v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
   }
 
-  if (wxExConfigDialog(NULL,
+  if (wxExConfigDialog(frame,
     v,
     (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
   {
