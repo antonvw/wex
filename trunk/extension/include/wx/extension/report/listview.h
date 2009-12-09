@@ -15,8 +15,6 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 
-class wxExFrameWithHistory;
-
 /// Combines wxExListView and wxExFile, giving you a list control with file
 /// synchronization support. Further it adds some standard lists.
 class wxExListViewFile : public wxExListView, public wxExFile
@@ -136,6 +134,8 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
+class wxExFrameWithHistory;
+
 /// Adds a wxExFrameWithHistory to wxExListViewFile.
 /// This frame member is initialized in the contructor, your main window
 /// should be castable to such a frame. It also adds a tool menu if appropriate.
@@ -144,6 +144,7 @@ class wxExListViewWithFrame : public wxExListViewFile
 public:
   /// Constructor.
   wxExListViewWithFrame(wxWindow* parent,
+    wxExFrameWithHistory* frame,
     ListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
@@ -156,6 +157,7 @@ public:
 
   /// Constructor for a LIST_PROJECT, opens the file.
   wxExListViewWithFrame(wxWindow* parent,
+    wxExFrameWithHistory* frame,
     const wxString& file,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,

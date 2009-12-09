@@ -299,8 +299,12 @@ bool wxExTextFileWithListView::SetSQLQuery()
 }
 #endif
 
-bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
+bool wxExTextFileWithListView::SetupTool(
+  const wxExTool& tool, 
+  wxExFrameWithHistory* frame)
 {
+  m_Frame = frame;
+
 #if wxExUSE_EMBEDDED_SQL
   if (tool.GetId() == ID_TOOL_SQL)
   {
@@ -312,7 +316,7 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
     // This is a static function, we cannot use this pointer.
     wxASSERT(wxTheApp != NULL);
 
-    if (!m_otl.Logon(wxTheApp->GetTopWindow(), wxConfigBase::Get()))
+    if (!m_otl.Logon(frame, wxConfigBase::Get()))
     {
       return false;
     }
@@ -321,16 +325,6 @@ bool wxExTextFileWithListView::SetupTool(const wxExTool& tool)
 
   if (tool.IsReportType())
   {
-    wxASSERT(wxTheApp != NULL);
-    wxWindow* window = wxTheApp->GetTopWindow();
-    m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
-
-    if (m_Frame == NULL)
-    {
-      wxFAIL;
-      return false;
-    }
-
     if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
       m_Report = m_Frame->Activate(wxExListViewFile::GetTypeTool(tool));

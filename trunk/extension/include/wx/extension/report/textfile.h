@@ -28,7 +28,7 @@ public:
     const wxExTool& tool);
 
   /// Sets up the tool.
-  static bool SetupTool(const wxExTool& tool);
+  static bool SetupTool(const wxExTool& tool, wxExFrameWithHistory* frame);
 private:
   // Implement interface from wxExTextFile.
   virtual void Report(size_t line);

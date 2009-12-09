@@ -160,12 +160,12 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
     case ID_SPECIAL_FIND_IN_FILES:
       GetSearchText();
-      wxExFindInFiles();
+      wxExFindInFiles(this);
       break;
 
     case ID_SPECIAL_REPLACE_IN_FILES:
       GetSearchText();
-      wxExFindInFiles(true);
+      wxExFindInFiles(this, true);
       break;
 
     case ID_TERMINATED_PROCESS:

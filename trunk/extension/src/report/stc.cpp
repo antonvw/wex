@@ -130,7 +130,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
     const wxExTool tool(command.GetId());
 
-    if (wxExTextFileWithListView::SetupTool(tool))
+    if (wxExTextFileWithListView::SetupTool(tool, m_Frame))
     {
       wxExTextFileWithListView report(GetFileName(), tool);
       report.RunTool();
@@ -209,12 +209,12 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
   case ID_STC_FIND_FILES:
     GetSearchText();
-    wxExFindInFiles();
+    wxExFindInFiles(m_Frame);
     break;
 
   case ID_STC_REPLACE_FILES:
     GetSearchText();
-    wxExFindInFiles(true);
+    wxExFindInFiles(m_Frame, true);
     break;
 
   default: wxFAIL;

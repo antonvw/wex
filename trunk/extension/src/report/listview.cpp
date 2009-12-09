@@ -843,6 +843,7 @@ BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFile)
 END_EVENT_TABLE()
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
+  wxExFrameWithHistory* frame,
   ListType type,
   wxWindowID id,
   long menu_flags,
@@ -853,11 +854,13 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   const wxValidator& validator,
   const wxString &name)
   : wxExListViewFile(parent, type, id, menu_flags, lexer, pos, size, style, validator, name)
+  , m_Frame(frame)
 {
   Initialize();
 }
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
+  wxExFrameWithHistory* frame,
   const wxString& file,
   wxWindowID id,
   long menu_flags,
@@ -867,6 +870,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   const wxValidator& validator,
   const wxString &name)
   : wxExListViewFile(parent, file, id, menu_flags, pos, size, style, validator, name)
+  , m_Frame(frame)
 {
   Initialize();
 
@@ -1057,12 +1061,6 @@ void wxExListViewWithFrame::DoFileLoad(bool synced)
 
 void wxExListViewWithFrame::Initialize()
 {
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxASSERT(window != NULL);
-  m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
-  wxASSERT(m_Frame != NULL);
-
   if (GetType() == LIST_HISTORY)
   {
     m_Frame->UseFileHistoryList(this);
@@ -1272,7 +1270,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
-  if (!wxExTextFileWithListView::SetupTool(tool))
+  if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))
   {
     return;
   }

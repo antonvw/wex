@@ -41,7 +41,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   return true;
 }
 
-size_t wxExFindInFiles(bool replace)
+size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
 {
   if (wxExDir::GetIsBusy())
   {
@@ -97,7 +97,7 @@ size_t wxExFindInFiles(bool replace)
        ID_TOOL_REPORT_REPLACE:
        ID_TOOL_REPORT_FIND);
 
-  if (!wxExTextFileWithListView::SetupTool(tool))
+  if (!wxExTextFileWithListView::SetupTool(tool, frame))
   {
     return 0;
   }
