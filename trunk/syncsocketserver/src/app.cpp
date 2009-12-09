@@ -92,9 +92,10 @@ Frame::Frame()
   SetupStatusBar(panes);
 #endif
 
-  m_DataWindow = new wxExSTCWithFrame(this);
+  m_DataWindow = new wxExSTCWithFrame(this, this);
 
   m_LogWindow = new wxExSTCWithFrame(
+    this,
     this,
     wxEmptyString,
     wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);

@@ -114,7 +114,7 @@ Frame::Frame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menubar);
 
-  m_Query = new wxExSTCWithFrame(this);
+  m_Query = new wxExSTCWithFrame(this, this);
   m_Query->SetLexer("sql");
 
   m_Results = new wxExGrid(this);
