@@ -298,27 +298,7 @@ bool wxExVi::DoCommand(const wxString& command)
         DoCommandFind(command.Last());
         break;
 
-      case '.': 
-        if (!m_InsertText.empty())
-        {
-          int repeat = atoi(m_LastCommand.c_str());
-
-          if (repeat == 0)
-          {
-            repeat++;
-          }
-  
-          for (int i = 0; i < repeat; i++)
-          {
-            m_STC->AddText(m_InsertText);
-          }
-        }
-        else if (!m_LastCommand.empty())
-        {
-          DoCommand(m_LastCommand);
-        }
-        break;
-
+      case '.': Repeat(); break;
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
@@ -732,6 +712,28 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   }
 
   return !handled;
+}
+
+void wxExVi::Repeat()
+{
+  if (!m_InsertText.empty())
+  {
+    int repeat = atoi(m_LastCommand.c_str());
+
+    if (repeat == 0)
+    {
+      repeat++;
+    }
+  
+    for (int i = 0; i < repeat; i++)
+    {
+      m_STC->AddText(m_InsertText);
+    }
+  }
+  else if (!m_LastCommand.empty())
+  {
+    DoCommand(m_LastCommand);
+  }
 }
 
 bool wxExVi::SetSelection(

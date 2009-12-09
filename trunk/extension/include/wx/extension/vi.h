@@ -59,6 +59,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& destination) const;
+  void Repeat();
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
