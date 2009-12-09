@@ -856,7 +856,10 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   : wxExListViewFile(parent, type, id, menu_flags, lexer, pos, size, style, validator, name)
   , m_Frame(frame)
 {
-  Initialize();
+  if (GetType() == LIST_HISTORY)
+  {
+    m_Frame->UseFileHistoryList(this);
+  }
 }
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
@@ -872,8 +875,6 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   : wxExListViewFile(parent, file, id, menu_flags, pos, size, style, validator, name)
   , m_Frame(frame)
 {
-  Initialize();
-
   if (GetFileName().GetStat().IsOk())
   {
     m_Frame->SetRecentProject(file);
@@ -1057,14 +1058,6 @@ void wxExListViewWithFrame::DoFileLoad(bool synced)
 {
   wxExListViewFile::DoFileLoad(synced);
   m_Frame->SetRecentProject(GetFileName().GetFullPath());
-}
-
-void wxExListViewWithFrame::Initialize()
-{
-  if (GetType() == LIST_HISTORY)
-  {
-    m_Frame->UseFileHistoryList(this);
-  }
 }
 
 void wxExListViewWithFrame::ItemActivated(int item_number)

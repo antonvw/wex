@@ -9,19 +9,22 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/header.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/report/report.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
-  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExSTCWithFrame::OnCommand)
+  EVT_MENU_RANGE(
+    ID_EDIT_SVN_LOWEST, 
+    ID_EDIT_SVN_HIGHEST, 
+    wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
+  wxExFrameWithHistory* frame,
   const wxString& value,
   long type,
   wxWindowID id,
@@ -30,11 +33,12 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   long style,
   const wxString& name)
   : wxExSTC(parent, value, type, id, pos, size, style, name)
+  , m_Frame(frame)
 {
-  Initialize();
 }
 
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
+  wxExFrameWithHistory* frame,
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
@@ -45,17 +49,29 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxSize& size,
   long style,
   const wxString& name)
-  : wxExSTC(parent, filename, line_number, match, flags, type, id, pos, size, style, name)
+  : wxExSTC(
+      parent, 
+      filename, 
+      line_number, 
+      match, 
+      flags, 
+      type, 
+      id, 
+      pos, 
+      size, 
+      style, 
+      name)
+  , m_Frame(frame)
 {
-  Initialize();
-
   m_Frame->SetRecentFile(GetFileName().GetFullPath());
 }
 
-wxExSTCWithFrame::wxExSTCWithFrame(const wxExSTC& stc)
+wxExSTCWithFrame::wxExSTCWithFrame(
+  const wxExSTC& stc, 
+  wxExFrameWithHistory* frame)
   : wxExSTC(stc)
+  , m_Frame(frame)
 {
-  Initialize();
 }
 
 void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
@@ -106,15 +122,6 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   }
-}
-
-void wxExSTCWithFrame::Initialize()
-{
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxASSERT(window != NULL);
-  m_Frame = wxDynamicCast(window, wxExFrameWithHistory);
-  wxASSERT(m_Frame != NULL);
 }
 
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)

@@ -341,7 +341,7 @@ void MDIFrame::NewFile(bool as_project)
   else
   {
     key = text;
-    page = new wxExSTCWithFrame(notebook);
+    page = new wxExSTCWithFrame(notebook, this);
 
     ((wxExSTCWithFrame*)page)->FileNew(text);
 
@@ -692,7 +692,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SPLIT:
   {
-    wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor);
+    wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
 
     m_NotebookWithEditors->AddPage(
       stc,
@@ -1010,6 +1010,7 @@ bool MDIFrame::OpenFile(
   {
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
       m_NotebookWithEditors, 
+      this,
       contents);
 
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
@@ -1105,6 +1106,7 @@ bool MDIFrame::OpenFile(
       wxLogTrace("SY_CALL", "+wxExSTCWithFrame");
 
       editor = new wxExSTCWithFrame(m_NotebookWithEditors,
+        this,
         filename.GetFullPath(),
         line_number,
         match,

@@ -137,8 +137,7 @@ private:
 class wxExFrameWithHistory;
 
 /// Adds a wxExFrameWithHistory to wxExListViewFile.
-/// This frame member is initialized in the contructor, your main window
-/// should be castable to such a frame. It also adds a tool menu if appropriate.
+/// It also adds a tool menu if appropriate.
 class wxExListViewWithFrame : public wxExListViewFile
 {
 public:
@@ -175,7 +174,6 @@ private:
   /// Opens the file and updates recent project from frame.
   virtual void DoFileLoad(bool synced = false);
   const wxString GetFindInCaption(int id); // cannot be const
-  void Initialize();
   void ItemActivated(int item_number);
   void RunItems(const wxExTool& tool);
   wxExFrameWithHistory* m_Frame;

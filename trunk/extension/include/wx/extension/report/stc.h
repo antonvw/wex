@@ -39,6 +39,7 @@ public:
 
   /// Constructor. Does not open a file, but sets text to specified value.
   wxExSTCWithFrame(wxWindow* parent,
+    wxExFrameWithHistory* frame,
     const wxString& value,
     long type = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
@@ -49,6 +50,7 @@ public:
 
   /// Constructor, opens the file.
   wxExSTCWithFrame(wxWindow* parent,
+    wxExFrameWithHistory* frame,
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
@@ -60,8 +62,8 @@ public:
     long style = 0,
     const wxString& name = wxSTCNameStr);
 
-  /// Copy constructor from an wxExSTC.
-  wxExSTCWithFrame(const wxExSTC& stc);
+  /// Copy constructor from another wxExSTC.
+  wxExSTCWithFrame(const wxExSTC& stc, wxExFrameWithHistory* frame);
 
   /// Calls base and sets recent file if base call succeeded.
   virtual bool Open(
@@ -80,7 +82,6 @@ protected:
 
   DECLARE_EVENT_TABLE()
 private:
-  void Initialize();
   wxExFrameWithHistory* m_Frame;
 };
 
