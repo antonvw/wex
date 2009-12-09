@@ -443,21 +443,16 @@ void wxExVi::DoCommandLine()
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_PREVIOUS);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == ":y")
+  else if (command == ":q")
   {
-    Yank(1);
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.Last() == '=')
+  else if (command == ":q!")
   {
-    m_STC->CallTipShow(
-      m_STC->GetCurrentPos(), 
-      wxString::Format("%s%d",
-        command.AfterFirst(':').c_str(), 
-        ToLineNumber(command.AfterFirst(':').BeforeLast('='))));
-  }
-  else if (command.AfterFirst(':').IsNumber())
-  {
-    m_STC->GotoLine(atoi(command.AfterFirst(':').c_str()) - 1);
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    event.SetCanVeto(false); 
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else if (command == ":w")
   {
@@ -473,16 +468,21 @@ void wxExVi::DoCommandLine()
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == ":q")
+  else if (command == ":y")
   {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    Yank(1);
   }
-  else if (command == ":q!")
+  else if (command.Last() == '=')
   {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    event.SetCanVeto(false); 
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    m_STC->CallTipShow(
+      m_STC->GetCurrentPos(), 
+      wxString::Format("%s%d",
+        command.AfterFirst(':').c_str(), 
+        ToLineNumber(command.AfterFirst(':').BeforeLast('='))));
+  }
+  else if (command.AfterFirst(':').IsNumber())
+  {
+    m_STC->GotoLine(atoi(command.AfterFirst(':').c_str()) - 1);
   }
   else
   {
