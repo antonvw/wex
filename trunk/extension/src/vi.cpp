@@ -301,7 +301,17 @@ bool wxExVi::DoCommand(const wxString& command)
       case '.': 
         if (!m_InsertText.empty())
         {
-          m_STC->AddText(m_InsertText);
+          int repeat = atoi(m_LastCommand.c_str());
+
+          if (repeat == 0)
+          {
+            repeat++;
+          }
+  
+          for (int i = 0; i < repeat; i++)
+          {
+            m_STC->AddText(m_InsertText);
+          }
         }
         else if (!m_LastCommand.empty())
         {
