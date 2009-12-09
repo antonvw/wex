@@ -119,7 +119,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxAUI_NB_DEFAULT_STYLE |
     wxAUI_NB_WINDOWLIST_BUTTON);
 
-  m_STC = new wxExSTCWithFrame(this); // use all flags (default)
+  m_STC = new wxExSTCWithFrame(this, this); // use all flags (default)
 
   for (
     int i = wxExListViewWithFrame::LIST_BEFORE_FIRST + 1;
