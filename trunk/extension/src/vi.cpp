@@ -718,14 +718,7 @@ void wxExVi::Repeat()
 {
   if (!m_InsertText.empty())
   {
-    int repeat = atoi(m_LastCommand.c_str());
-
-    if (repeat == 0)
-    {
-      repeat++;
-    }
-  
-    for (int i = 0; i < repeat; i++)
+    for (int i = 0; i < m_InsertRepeatCount; i++)
     {
       m_STC->AddText(m_InsertText);
     }
