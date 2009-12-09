@@ -491,6 +491,10 @@ void wxExVi::DoCommandLine()
       m_LastCommand = command;
       m_InsertText.clear();
     }
+    else
+    {
+      wxBell();
+    }
   }
 }
 
