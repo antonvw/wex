@@ -51,6 +51,8 @@ size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
 #endif
   }
 
+  frame->GetSearchText();
+
   std::vector<wxExConfigItem> v;
   v.push_back(
     wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 

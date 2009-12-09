@@ -208,12 +208,10 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_STC_FIND_FILES:
-    GetSearchText();
     wxExFindInFiles(m_Frame);
     break;
 
   case ID_STC_REPLACE_FILES:
-    GetSearchText();
     wxExFindInFiles(m_Frame, true);
     break;
 
