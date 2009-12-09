@@ -127,6 +127,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     i++)
   {
     wxExListViewWithFrame* vw = new wxExListViewWithFrame(
+      this,
       this, 
       (wxExListViewWithFrame::ListType)i, 
       wxID_ANY,
