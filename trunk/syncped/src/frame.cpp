@@ -551,16 +551,32 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (editor != NULL)
     {
       const wxString old_key = editor->GetFileName().GetFullPath();
-      wxExFileDialog dlg(this, editor, _("File Save As"), wxFileSelectorDefaultWildcardStr, wxFD_SAVE);
-      if (dlg.ShowModal() == wxID_OK)
-      {
-        editor->FileSave(dlg.GetPath());
 
-        m_NotebookWithEditors->SetPageText(
-          old_key,
-          editor->GetFileName().GetFullPath(),
-          editor->GetFileName().GetFullName());
+      if (!event.GetString().empty())
+      {
+        editor->FileSave(event.GetString());
       }
+      else
+      {
+        wxExFileDialog dlg(
+          this, 
+          editor, 
+          _("File Save As"), 
+          wxFileSelectorDefaultWildcardStr, 
+          wxFD_SAVE);
+
+        if (dlg.ShowModal() != wxID_OK)
+        {
+          return;
+        }
+
+        editor->FileSave(dlg.GetPath());
+      }
+
+      m_NotebookWithEditors->SetPageText(
+        old_key,
+        editor->GetFileName().GetFullPath(),
+        editor->GetFileName().GetFullName());
     }
     break;
 

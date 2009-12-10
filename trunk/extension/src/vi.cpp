@@ -448,11 +448,14 @@ void wxExVi::DoCommandLine()
   {
     if (command.Contains(" "))
     {
-      m_STC->FileSave(command.AfterFirst(' '));
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
+      event.SetString(command.AfterFirst(' '));
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
     else
     {
-      m_STC->FileSave();
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
   }
   else if (command == ":x")
