@@ -100,7 +100,7 @@ public:
 
   /// Uses specified history list, and adds all elements from file history
   /// to the list.
-  void UseFileHistoryList(wxExListViewWithFrame* list);
+  void UseFileHistoryList(wxExListView* list);
 
   /// Adds a recent project menu to specified menu,
   /// and sets the project history to use it.
@@ -116,7 +116,7 @@ private:
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxFileHistory m_FileHistory;
-  wxExListViewWithFrame* m_FileHistoryList;
+  wxExListView* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
   wxExProcess* m_Process;
 

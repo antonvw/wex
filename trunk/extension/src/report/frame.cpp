@@ -423,7 +423,7 @@ void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
   m_FileHistory.Load(*wxConfigBase::Get());
 }
 
-void wxExFrameWithHistory::UseFileHistoryList(wxExListViewWithFrame* list)
+void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
 {
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();
