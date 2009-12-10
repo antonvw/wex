@@ -45,21 +45,5 @@ void wxExDirWithListView::OnDir(const wxString& dir)
 
 void wxExDirWithListView::OnFile(const wxString& file)
 {
-  wxExListItemWithFileName item(m_ListView, file, GetFileSpec());
-  item.Insert();
-/*
-  // Don't move next code into insert, as it itself inserts!
-  if (m_ListView->GetType() == wxExListViewWithFrame::LIST_VERSION)
-  {
-    wxExTextFileWithListView report(
-      item.m_FileName, 
-      ID_TOOL_REVISION_RECENT);
-    
-    if (report.SetupTool(ID_TOOL_REVISION_RECENT, m_ListView->GetFrame()))
-    {
-      report.RunTool();
-      item.UpdateRevisionList(report.GetRCS());
-    }
-  }
-*/
+  wxExListItemWithFileName(m_ListView, file, GetFileSpec()).Insert();
 }
