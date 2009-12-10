@@ -151,7 +151,7 @@ bool wxExVi::DoCommand(const wxString& command)
   {
     for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), wxSTC_FIND_REGEXP, false);
   }
-  else if (command.Matches("*J?"))
+  else if (command.Matches("*J"))
   {
     m_STC->BeginUndoAction();
     m_STC->SetTargetStart(m_STC->PositionFromLine(m_STC->GetCurrentLine()));
@@ -250,9 +250,14 @@ bool wxExVi::DoCommand(const wxString& command)
       case 'p': 
         if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
         {
+          m_STC->LineDown();
           m_STC->Home();
         }
         m_STC->Paste();
+        if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
+        {
+          m_STC->LineUp();
+        }
         break;
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
@@ -287,7 +292,14 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
       case 'O': InsertMode(command.Last(), repeat); break;
       case 'P':
-        m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
+        if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
+        {
+          m_STC->Home();
+        }
+        else
+        {
+          m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
+        }
         m_STC->Paste();
         break;
       case 'R': InsertMode(command.Last(), repeat, true); break;
