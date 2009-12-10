@@ -18,7 +18,6 @@
 
 class wxExListViewWithFrame;
 class wxExProcess;
-class wxExSTCWithFrame;
 
 /// Adds file and project history support to wxExManagedFrame.
 /// It also updates the title of the frame if you have a focused
