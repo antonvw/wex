@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/tokenzr.h> 
 #include <wx/extension/report/report.h>
 
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
@@ -135,7 +136,43 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
     switch (event.GetId())
     {
     case wxID_OPEN:
-      wxExOpenFilesDialog(this);
+      if (!event.GetString().empty())
+      {
+        wxArrayString files;
+        wxStringTokenizer tkz(event.GetString().AfterFirst(' '));
+        wxExSTC* stc = GetSTC();
+
+        while (tkz.HasMoreTokens())
+        {
+          const wxString token = tkz.GetNextToken();
+
+          wxFileName file(token);
+  
+          if (file.IsRelative() && stc != NULL)
+          {
+            file.MakeAbsolute(stc->GetFileName().GetPath());
+
+            if (!file.FileExists())
+            {
+              wxLogError(_("Cannot locate file") + ": " + token);
+            }
+            else
+            {
+              files.Add(file.GetFullPath());
+            }
+          }
+          else
+          {
+            files.Add(file.GetFullPath());
+          }
+        }
+
+        wxExOpenFiles(this, files);
+      }
+      else
+      {
+        wxExOpenFilesDialog(this);
+      }
       break;
       
     case wxID_PREFERENCES:

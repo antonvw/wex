@@ -387,35 +387,9 @@ void wxExVi::DoCommandLine()
   {
     if (command.Contains(" "))
     {
-      wxArrayString files;
-      wxStringTokenizer tkz(command.AfterFirst(' '));
-
-      while (tkz.HasMoreTokens())
-      {
-        const wxString token = tkz.GetNextToken();
-
-        wxFileName file(token);
-
-        if (file.IsRelative())
-        {
-          file.MakeAbsolute(m_STC->GetFileName().GetPath());
-
-          if (!file.FileExists())
-          {
-            wxLogError(_("Cannot locate file") + ": " + token);
-          }
-          else
-          {
-            files.Add(file.GetFullPath());
-          }
-        }
-        else
-        {
-          files.Add(file.GetFullPath());
-        }
-      }
-
-      wxExOpenFiles(wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame), files);
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+      event.SetString(command.AfterFirst(' '));
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
     else
     {
