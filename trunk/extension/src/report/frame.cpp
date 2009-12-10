@@ -139,7 +139,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       if (!event.GetString().empty())
       {
         wxArrayString files;
-        wxStringTokenizer tkz(event.GetString().AfterFirst(' '));
+        wxStringTokenizer tkz(event.GetString());
         wxExSTC* stc = GetSTC();
 
         while (tkz.HasMoreTokens())
