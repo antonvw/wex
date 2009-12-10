@@ -809,23 +809,24 @@ void wxExVi::ToggleCase() const
 
 int wxExVi::ToLineNumber(const wxString& address) const
 {
+  wxString filtered_address(address);
+
   // Check if we are referring to a defined marker.
+  int marker = 0;
+
   if (address.StartsWith("'"))
   {
-    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(address.Last());
+    std::map<wxUniChar, int>::const_iterator it = 
+      m_Markers.find(address.GetChar(1));
 
     if (it != m_Markers.end())
 	  {
-	    return it->second + 1;
+	    marker = it->second + 1;
 	  }
-	  else
-    {
-      return 0;
-    }
+
+    filtered_address = filtered_address.substr(2);
   }
 
-  // Calculate and filter out a dot or a dollar.
-  wxString filtered_address(address);
   int dot = 0;
 
   if (filtered_address.Contains("."))
@@ -845,7 +846,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
   if (!filtered_address.IsNumber()) return 0;
 
   // Calculate the line.
-  const int line_no = dot + dollar + atoi(filtered_address.c_str());
+  const int line_no = marker + dot + dollar + atoi(filtered_address.c_str());
   
   // Limit the range of what is returned.
   if (line_no < 0)
