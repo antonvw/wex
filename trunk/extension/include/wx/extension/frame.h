@@ -20,7 +20,6 @@
 #endif
 #include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h> // for wxAuiManager
-#include <wx/datetime.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
@@ -55,7 +54,9 @@ public:
     /// The style.
     int style = wxSB_NORMAL)
     : wxStatusBarPane(style, width)
-    , m_Helptext(helptext.empty() && name != "PaneText" ? name.AfterFirst('e'): helptext)
+    , m_Helptext(
+        helptext.empty() && name != "PaneText" ? 
+          name.AfterFirst('e'): helptext)
     , m_Name(name)
     , m_No(m_Total)
     {m_Total++;};
@@ -141,7 +142,7 @@ public:
   const wxExPane GetPane(int pane) const;
 
   /// Returns the field number of status bar pane.
-  /// If pane could not be fonud, returns -1.
+  /// If pane could not be found, returns -1.
   static int GetPaneField(const wxString& pane);
 
   /// Do something when statusbar is clicked.
@@ -154,10 +155,14 @@ public:
 
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
-  static void StatusText(const wxString& text, const wxString& pane = "PaneText");
+  static void StatusText(
+    const wxString& text, 
+    const wxString& pane = "PaneText");
 
   /// Shows filename info on the statusbar.
-  static void StatusText(const wxExFileName& filename, long flags = STAT_DEFAULT);
+  static void StatusText(
+    const wxExFileName& filename, 
+    long flags = STAT_DEFAULT);
 #endif // wxUSE_STATUSBAR
 
 protected:

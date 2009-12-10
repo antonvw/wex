@@ -543,7 +543,7 @@ void wxExFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
 // This is a static method, so you cannot call wxFrame::SetStatusText.
 void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
-  if (m_StatusBar == NULL || m_Panes.empty())
+  if (m_StatusBar == NULL)
   {
     // You did not ask for a status bar, so ignore all.
     return;
