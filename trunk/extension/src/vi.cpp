@@ -444,9 +444,16 @@ void wxExVi::DoCommandLine()
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command == ":w")
+  else if (command.StartsWith(":w"))
   {
-    m_STC->FileSave();
+    if (command.Contains(" "))
+    {
+      m_STC->FileSave(command.AfterFirst(' '));
+    }
+    else
+    {
+      m_STC->FileSave();
+    }
   }
   else if (command == ":x")
   {
