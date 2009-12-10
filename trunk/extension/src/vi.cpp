@@ -385,17 +385,12 @@ void wxExVi::DoCommandLine()
   }
   else if (command.StartsWith(":e"))
   {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
     if (command.Contains(" "))
     {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
       event.SetString(command.AfterFirst(' '));
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
     }
-    else
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else if (command == ":n")
   {
@@ -477,6 +472,11 @@ bool wxExVi::DoCommandRange(const wxString& command) const
   // :[address] m destination
   // :[address] s [/pattern/replacement/] [options] [count]
   wxStringTokenizer tkz(command.AfterFirst(':'), "dmsy");
+  
+  if (!tkz.HasMoreTokens())
+  {
+    return false;
+  }
 
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
@@ -500,8 +500,6 @@ bool wxExVi::DoCommandRange(const wxString& command) const
     end_address = address.AfterFirst(',');
   }
 
-  bool handled = true;
-      
   switch (cmd)
   {
   case 'd':
@@ -525,10 +523,10 @@ bool wxExVi::DoCommandRange(const wxString& command) const
     Yank(begin_address, end_address);
     break;
   default:
-    handled = false;
+    wxFAIL;
   }
 
-  return handled;
+  return true;
 }
 
 void wxExVi::GotoBrace()
