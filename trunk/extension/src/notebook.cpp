@@ -33,11 +33,11 @@ wxExNotebook::wxExNotebook(wxWindow* parent,
 }
 
 wxWindow* wxExNotebook::AddPage(
-    wxWindow* page,
-    const wxString& key,
-    const wxString& text,
-    bool select,
-    const wxBitmap& bitmap)
+  wxWindow* page,
+  const wxString& key,
+  const wxString& text,
+  bool select,
+  const wxBitmap& bitmap)
 {
   if (GetPageByKey(key) != NULL)
   {
