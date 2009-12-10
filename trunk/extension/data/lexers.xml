@@ -260,35 +260,20 @@ without the written consent of the copyright owner.
     
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
-      <colouring no="3"> fore:red </colouring>
       <colouring no="1"> bold </colouring>
+      <colouring no="3"> fore:red </colouring>
       <colouring no="7"> fore:blue </colouring>
+      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
     </colourings>
     
     <keywords>    
-abort else new return  
-abs elsif not reverse  
-abstract (Ada 95) end null   
-accept entry  select  
-access exception of separate  
-aliased (Ada 95) exit or subtype  
-all  others synchronized (Ada 2005)  
-and for out   
-array function overriding (Ada 2005) tagged (Ada 95)  
-at   task  
- generic package terminate  
-begin goto pragma then  
-body  private type  
- if procedure   
-case in protected (Ada 95) until (Ada 95)  
-constant interface (Ada 2005)  use  
- is raise   
-declare  range when  
-delay limited record while  
-delta loop rem with  
-digits  renames   
-do mod requeue (Ada 95) xor 
+      abort abs abstract accept access ackage aliased all and array at
+      begin body case constant declare delay delta digits do else elsif
+      end entry exception exit for function generic goto if in interface
+      israise limited loop mod new not null of or others out
+      overriding pragma private procedure protected range record rem renames requeue return reverse
+      select separate subtype synchronized tagged task terminate then type until use
+      when while with xor
     </keywords>    
     
     <properties>
