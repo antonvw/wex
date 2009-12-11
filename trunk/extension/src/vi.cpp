@@ -344,7 +344,12 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 
   if (m_FindDialog == NULL)
   {
-    m_FindDialog = wxExConfigComboBoxDialog(m_STC, title, "searchline", 0);
+    // Do not use stc as parent, as that might be destroyed.
+    m_FindDialog = wxExConfigComboBoxDialog(
+      wxTheApp->GetTopWindow(), 
+      title, 
+      "searchline", 
+      0);
   }
 
   m_FindDialog->SetTitle(title);
@@ -370,7 +375,11 @@ void wxExVi::DoCommandLine()
 {
   if (m_CommandDialog == NULL)
   {
-    m_CommandDialog = wxExConfigComboBoxDialog(m_STC, "vi :", "commandline", 0);
+    m_CommandDialog = wxExConfigComboBoxDialog(
+      wxTheApp->GetTopWindow(), 
+      "vi :", 
+      "commandline", 
+      0);
   }
 
   if (m_CommandDialog->ShowModal() == wxID_CANCEL)
@@ -390,6 +399,11 @@ void wxExVi::DoCommandLine()
   if (command == ":$")
   {
     m_STC->DocumentEnd();
+  }
+  else if (command == ":close")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else if (command == ":d")
   {
