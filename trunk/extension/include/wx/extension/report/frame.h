@@ -48,11 +48,13 @@ public:
   virtual wxExListViewWithFrame* GetProject();
 
   /// Returns the recent opened file.
+  // Returning a reference here gives a warning.
   const wxString GetRecentFile() const {
     if (m_FileHistory.GetCount() == 0) return wxEmptyString;
     return m_FileHistory.GetHistoryFile(0);}
 
   /// Returns the recent opened project.
+  // Returning a reference here gives a warning.
   const wxString GetRecentProject() const {
     if (m_ProjectHistory.GetCount() == 0) return wxEmptyString;
     return m_ProjectHistory.GetHistoryFile(0);}
