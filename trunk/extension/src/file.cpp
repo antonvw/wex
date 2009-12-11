@@ -203,24 +203,3 @@ void wxExFileName::SetLexer(
     }
   }
 }
-
-const wxString wxExStat::GetModificationTime() const
-{
-  return wxDateTime(st_mtime).FormatISOCombined(' ');
-}
-
-bool wxExStat::Sync() 
-{
-#ifdef __WXGTK__
-  m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-#else
-  m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
-#endif
-  return m_IsOk;
-}
-
-bool wxExStat::Sync(const wxString& fullpath) 
-{
-  m_FullPath = fullpath;
-  return Sync();
-}
