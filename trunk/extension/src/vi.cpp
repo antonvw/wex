@@ -7,7 +7,6 @@
 // Copyright: (c) 2009 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/textdlg.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
 #include <wx/extension/configdlg.h>
