@@ -307,8 +307,8 @@ bool wxExVi::DoCommand(const wxString& command)
       case '}': m_STC->ParaDown(); break;
       case '%': GotoBrace(); break;
 
-      case: '#': FindWord(); break;
-      case: '*': FindWord(false); break;
+      case '#': FindWord(); break;
+      case '*': FindWord(false); break;
       
       case 2:  // ^b
         for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
@@ -553,8 +553,7 @@ bool wxExVi::DoCommandRange(const wxString& command) const
   return true;
 }
 
-
-wxExVi::FindWord(bool find_next)
+void wxExVi::FindWord(bool find_next)
 {
   const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
   const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
