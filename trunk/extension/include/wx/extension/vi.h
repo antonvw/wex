@@ -50,6 +50,7 @@ private:
   void DoCommandFind(const wxUniChar& c);
   void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
+  void FindWord(bool find_next = true);
   void GotoBrace();
   void InsertMode(
     const wxUniChar c = 'i', 
@@ -78,11 +79,16 @@ private:
   static wxExConfigDialog* m_CommandDialog;
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
+  
   std::map<wxUniChar, int> m_Markers;
+  
   bool m_InsertMode;
   bool m_SearchForward;
+  
   int m_InsertRepeatCount;
+  
   wxExSTC* m_STC;
+  
   wxString m_Command;
   wxString m_InsertText;
   wxString m_SearchText;

@@ -178,15 +178,6 @@ bool wxExVi::DoCommand(const wxString& command)
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
     m_STC->GotoPos(start);
   }
-  // This is a sepcial one, not really vi.
-  else if (command.EndsWith("Yw"))
-  {
-    const int start = m_STC->GetCurrentPos();
-    for (int i = 0; i < repeat; i++) 
-      m_STC->WordRight();
-    m_STC->CopyRange(start, m_STC->GetCurrentPos());
-    m_SearchText = m_STC->GetTextRange(start, m_STC->GetCurrentPos()).Trim();
-  }
   else if (command.EndsWith("yy"))
   {
     Yank(repeat);
@@ -317,6 +308,9 @@ bool wxExVi::DoCommand(const wxString& command)
       case '}': m_STC->ParaDown(); break;
       case '%': GotoBrace(); break;
 
+      case: '#': FindWord(); break;
+      case: '*': FindWord(false); break;
+      
       case 2:  // ^b
         for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
         break;
@@ -558,6 +552,15 @@ bool wxExVi::DoCommandRange(const wxString& command) const
   }
 
   return true;
+}
+
+
+wxExVi::FindWord(bool find_next)
+{
+  const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
+  const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
+  m_SearchText = m_STC->GetTextRange(start, end);
+  m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, find_next);
 }
 
 void wxExVi::GotoBrace()
