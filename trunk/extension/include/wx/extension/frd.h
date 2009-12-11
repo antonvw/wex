@@ -30,7 +30,7 @@ public:
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
   /// Gets the field separator.
-  const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};
+  const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Gets find/replace info text.
   const wxString GetText(bool replace = false);
@@ -47,22 +47,22 @@ public:
     return m_FindStringNoCase;};
 
   /// Gets text.
-  const wxString GetTextFindWhat() const {return m_TextFindWhat;};
+  const wxString& GetTextFindWhat() const {return m_TextFindWhat;};
 
   /// Gets text.
-  const wxString GetTextMatchCase() const {return m_TextMatchCase;};
+  const wxString& GetTextMatchCase() const {return m_TextMatchCase;};
 
   /// Gets text.
-  const wxString GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
+  const wxString& GetTextMatchWholeWord() const {return m_TextMatchWholeWord;};
 
   /// Gets text.
-  const wxString GetTextRegEx() const {return m_TextRegEx;};
+  const wxString& GetTextRegEx() const {return m_TextRegEx;};
 
   /// Gets text.
-  const wxString GetTextReplaceWith() const {return m_TextReplaceWith;};
+  const wxString& GetTextReplaceWith() const {return m_TextReplaceWith;};
 
   /// Gets text.
-  const wxString GetTextSearchDown() const {return m_TextSearchDown;};
+  const wxString& GetTextSearchDown() const {return m_TextSearchDown;};
 
   /// Returns true if find text is a regular expression.
   bool IsRegularExpression() const {return m_IsRegularExpression;};
