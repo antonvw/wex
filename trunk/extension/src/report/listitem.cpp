@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/report/dir.h>
