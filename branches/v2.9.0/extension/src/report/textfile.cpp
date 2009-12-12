@@ -316,7 +316,7 @@ bool wxExTextFileWithListView::SetupTool(
     // This is a static function, we cannot use this pointer.
     wxASSERT(wxTheApp != NULL);
 
-    if (!m_otl.Logon(frame, wxConfigBase::Get()))
+    if (!m_otl.Logon(frame))
     {
       return false;
     }
