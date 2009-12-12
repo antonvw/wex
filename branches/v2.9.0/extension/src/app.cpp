@@ -11,6 +11,9 @@
 
 #include <wx/config.h>
 #include <wx/dir.h>
+#ifdef wxExUSE_PORTABLE
+#include <wx/fileconf.h> 
+#endif
 #include <wx/stdpaths.h>
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
