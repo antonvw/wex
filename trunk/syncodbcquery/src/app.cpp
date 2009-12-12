@@ -313,7 +313,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_OPEN:
-    m_otl.Logon(this, wxConfigBase::Get());
+    m_otl.Logon(this);
     m_Shell->SetPrompt(
       (m_otl.IsConnected() ? wxConfigBase::Get()->Read(_("Datasource")): "") + ">");
     break;

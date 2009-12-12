@@ -13,6 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/grid.h>
 #include <wx/stc/stc.h>
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
@@ -33,11 +34,10 @@ wxExOTL::~wxExOTL()
 
 bool wxExOTL::Logon(
   wxWindow* parent,
-  wxConfigBase* config, 
   int max_items,
   const wxString& title)
 {
-  wxASSERT(config != NULL);
+  wxConfigBase* config = wxConfigBase::Get(); 
 
   std::vector<wxExConfigItem> v;
 

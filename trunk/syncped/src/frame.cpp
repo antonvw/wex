@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/aboutdlg.h>
+#include <wx/config.h>
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/configdlg.h>
@@ -489,7 +490,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 #ifdef wxExUSE_PORTABLE
     description +=
       _(" All its config files are read\n"
-        "and saved in the same directory as where the executable is."));
+        "and saved in the same directory as where the executable is.");
 #endif
 
     info.SetDescription(description);

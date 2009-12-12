@@ -20,7 +20,6 @@
 #define OTL_ODBC_UNIX
 #endif
 #include <otlv4.h>
-#include <wx/config.h>
 
 class wxGrid;
 class wxStyledTextCtrl;
@@ -51,7 +50,6 @@ public:
   /// Returns false if dialog cancelled or logon fails.
   bool Logon(
     wxWindow* parent,
-    wxConfigBase* config, 
     int max_items = 4,
     const wxString& title = _("Open ODBC Connection"));
 
