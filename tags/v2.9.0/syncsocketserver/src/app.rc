@@ -1,5 +1,0 @@
-app ICON "app.ico"
-connect ICON "connect.ico"
-notready ICON "notready.ico"
-ready ICON "ready.ico"
-#include "wx/msw/wx.rc"
