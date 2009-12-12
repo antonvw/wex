@@ -86,6 +86,7 @@ private:
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
+  int m_SearchFlags;
   
   wxExSTC* m_STC;
   

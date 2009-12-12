@@ -24,6 +24,7 @@ wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
+  , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_SearchText(stc->GetSearchText())
 {
@@ -144,11 +145,11 @@ bool wxExVi::DoCommand(const wxString& command)
   }
   else if (command.Matches("*f?"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), wxSTC_FIND_REGEXP);
+    for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), m_SearchFlags);
   }
   else if (command.Matches("*F?"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), wxSTC_FIND_REGEXP, false);
+    for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), m_SearchFlags, false);
   }
   else if (command.Matches("*J"))
   {
@@ -234,7 +235,7 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
       case 'n': 
         for (int i = 0; i < repeat; i++) 
-          m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
+          m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
         break;
       case 'o': InsertMode(command.Last(), repeat); break;
       case 'p': 
@@ -278,7 +279,7 @@ bool wxExVi::DoCommand(const wxString& command)
       case 'L': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
-          m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, !m_SearchForward);
+          m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);
         break;
       case 'O': InsertMode(command.Last(), repeat); break;
       case 'P':
@@ -361,7 +362,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 
   m_SearchForward = c == '/';
   m_SearchText = val;
-  m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, m_SearchForward);
+  m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
 }
 
 void wxExVi::DoCommandLine()
@@ -558,7 +559,7 @@ void wxExVi::FindWord(bool find_next)
   const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
   const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
   m_SearchText = m_STC->GetTextRange(start, end);
-  m_STC->FindNext(m_SearchText, wxSTC_FIND_REGEXP, find_next);
+  m_STC->FindNext(m_SearchText, m_SearchFlags, find_next);
 }
 
 void wxExVi::GotoBrace()
