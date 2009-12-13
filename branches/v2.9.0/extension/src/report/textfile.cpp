@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/log.h>
