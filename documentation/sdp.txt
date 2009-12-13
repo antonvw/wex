@@ -68,7 +68,7 @@ SVN hierarchy
 
 - tags are in svn tags
 
-- stable releases are in svn branches
+- stable releases are in svn branches, and follow the wxWidgets branches
 
 - documentation contains all general docs (this document)
 
