@@ -137,7 +137,9 @@ const wxString wxExComboBoxToString(
 
   wxString text = cb->GetValue();
 
-  switch (cb->FindString(cb->GetValue()))
+  switch (cb->FindString(
+    cb->GetValue(),
+    true)) // case sensitive
   {
     case 0: 
       text.clear();
