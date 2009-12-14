@@ -744,7 +744,7 @@ void wxExListView::PrintPreview()
 
 std::vector<wxString>* pitems;
 
-int wxCALLBACK CompareFunctionCB(long item1, long item2, long sortData)
+int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
 {
   const bool ascending = (sortData > 0);
   const wxExColumn::wxExColumnType type = (wxExColumn::wxExColumnType)abs(sortData);
@@ -848,7 +848,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     }
   }
 
-  const long sortdata =
+  const wxIntPtr sortdata =
     (sorted_col->GetIsSortedAscending() ?
        sorted_col->GetType():
       (0 - sorted_col->GetType()));
