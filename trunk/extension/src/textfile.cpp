@@ -516,7 +516,8 @@ bool wxExTextFile::ParseLine(const wxString& line)
         break;
       }
 
-      if (sequence && (IsCodewordSeparator(line[i]) || i == line.length() - 1))
+      if ( sequence && 
+          (IsCodewordSeparator(line[i]) || i ==0 || i == line.length() - 1))
       {
         if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
         {
