@@ -252,9 +252,13 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
   wxStandardID retValue;
+
   if ((retValue = Execute(parent)) == wxID_OK)
   {
-    ShowOutput(parent);
+    if (!m_Output.empty())
+    {
+      ShowOutput(parent);
+    }
   }
 
   return retValue;
