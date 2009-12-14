@@ -462,7 +462,11 @@ bool wxExTextFile::ParseLine(const wxString& line)
 
       if (i == 0) 
       {
-        codeword = line[i];
+        if (!isspace(line[0]))
+        {
+          codeword = line[i];
+        }
+
         continue;
       }
 
