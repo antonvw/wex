@@ -68,6 +68,10 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- libraries -->
   <lib id="wxex" template="wx-lib,wxlike">
+    <!-- we could add sources depending on variables using this construct:
+    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
+    </if>
+    -->
     <libname>wxex09</libname>
     
     <define>$(VAR_USE_OTL)</define>
@@ -130,7 +134,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/log.h</headers>
     <headers>../extension/include/wx/extension/menu.h</headers>
     <headers>../extension/include/wx/extension/notebook.h</headers>
-    <headers>../extension/include/wx/extension/otl.h</headers>
     <headers>../extension/include/wx/extension/printing.h</headers>
     <headers>../extension/include/wx/extension/renderer.h</headers>
     <headers>../extension/include/wx/extension/shell.h</headers>
