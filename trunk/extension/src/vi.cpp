@@ -52,7 +52,7 @@ void wxExVi::Delete(int lines) const
   if (lines > 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format("%d fewer lines", lines));
+    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
 #endif
   }
 }
@@ -78,7 +78,7 @@ void wxExVi::Delete(
   if (lines > 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format("%d fewer lines", lines));
+    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
 #endif
   }
 }
@@ -655,7 +655,7 @@ void wxExVi::Move(
   if (lines > 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format("%d lines moved", lines));
+    wxExFrame::StatusText(wxString::Format(_("%d lines moved"), lines));
 #endif
   }
 }
@@ -895,7 +895,7 @@ void wxExVi::Yank(int lines) const
   if (lines > 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format("%d lines yanked", lines));
+    wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
 #endif
   }
 }
@@ -922,7 +922,7 @@ void wxExVi::Yank(
   if (lines > 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format("%d lines yanked", lines));
+    wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
 #endif
   }
 }
