@@ -300,11 +300,11 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     {
       stc->FindNext(); 
     }
-    if (lv != NULL)
+    else if (lv != NULL)
     {
       lv->FindNext(frd->GetFindString()); 
     }
-    if (grid != NULL)
+    else if (grid != NULL)
     {
       grid->FindNext(frd->GetFindString()); 
     }
