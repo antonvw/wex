@@ -225,7 +225,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetVersion(wxEX_VERSION_STRING);
     info.AddDeveloper(wxVERSION_STRING);
-    info.SetCopyright(_("(c) 1998-2009 Anton van Wezenbeek."));
+    info.SetCopyright("(c) 1998-2009 Anton van Wezenbeek");
     wxAboutBox(info);
     }
     break;
