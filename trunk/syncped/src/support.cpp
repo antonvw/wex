@@ -145,7 +145,7 @@ Frame::Frame()
   menuProject->Append(ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open As Text"));
-  menuProject->Append(ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE));
+  menuProject->Append(ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
   menuProject->AppendSeparator();
   menuProject->Append(ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxART_FILE_SAVE);
   menuProject->Append(ID_PROJECT_SAVEAS, wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);

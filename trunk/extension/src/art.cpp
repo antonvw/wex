@@ -21,6 +21,7 @@ wxExStockArt::wxExStockArt(wxWindowID id)
   if (m_StockArt.empty())
   {
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_BACKWARD, wxART_GO_BACK));
+    m_StockArt.insert(std::make_pair((wxWindowID)wxID_CLOSE, wxART_CLOSE));
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_COPY, wxART_COPY));
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_CUT, wxART_CUT));
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_DELETE, wxART_DELETE));
