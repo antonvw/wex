@@ -12,7 +12,7 @@
 #ifndef _SUPPORT_H
 #define _SUPPORT_H
 
-#include <wx/extension/report/report.h>
+#include <wx/extension/report/frame.h>
 
 class Frame : public wxExFrameWithHistory
 {

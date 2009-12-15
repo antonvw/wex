@@ -14,6 +14,8 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/svn.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/stc.h>
 #ifndef __WXMSW__
 #include "app.xpm"
 #endif

@@ -17,9 +17,14 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
+#include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/util.h>
+#include <wx/extension/version.h>
+#include <wx/extension/report/process.h>
+#include <wx/extension/report/stc.h>
+#include <wx/extension/report/util.h>
 #include "frame.h"
 #include "defs.h"
 #include "version.h"

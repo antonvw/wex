@@ -12,6 +12,8 @@
 #include <wx/cmdline.h> // for wxCmdLineParser
 #include <wx/config.h>
 #include <wx/extension/log.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/process.h>
 #include "app.h"
 #include "frame.h"
 

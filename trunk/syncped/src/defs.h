@@ -12,6 +12,8 @@
 #ifndef _SYNCDEFS_H
 #define _SYNCDEFS_H
 
+#include <wx/extension/report/defs.h>
+
 // Command id's used.
 enum
 {

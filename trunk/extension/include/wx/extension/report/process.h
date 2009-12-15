@@ -14,6 +14,8 @@
 
 #include <wx/process.h>
 
+class wxExListView;
+
 /// Offers a wxProcess with output to a listview.
 class wxExProcess : public wxProcess
 {
