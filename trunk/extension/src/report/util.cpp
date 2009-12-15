@@ -10,11 +10,17 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#include <wx/regex.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/log.h>
-#include <wx/extension/report/report.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/util.h>
+#include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/listitem.h>
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 {

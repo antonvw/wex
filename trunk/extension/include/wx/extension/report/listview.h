@@ -12,6 +12,7 @@
 #ifndef _EX_REPORT_LISTVIEW_H
 #define _EX_REPORT_LISTVIEW_H
 
+#include <wx/extension/file.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 

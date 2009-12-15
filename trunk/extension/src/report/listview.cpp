@@ -12,10 +12,18 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/frame.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/log.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/svn.h>
-#include <wx/extension/report/report.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/listview.h>
+#include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/listitem.h>
+#include <wx/extension/report/util.h>
 
 #if wxUSE_DRAG_AND_DROP
 class ListViewDropTarget : public wxFileDropTarget

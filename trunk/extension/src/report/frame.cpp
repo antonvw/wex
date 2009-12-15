@@ -11,7 +11,13 @@
 
 #include <wx/config.h>
 #include <wx/tokenzr.h> 
-#include <wx/extension/report/report.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/listitem.h>
+#include <wx/extension/report/process.h>
+#include <wx/extension/report/stc.h>
+#include <wx/extension/report/util.h>
 
 // The maximal number of files and projects to be supported.
 const int NUMBER_RECENT_FILES = 25;

@@ -10,8 +10,8 @@
 \******************************************************************************/
 
 #include <wx/config.h>
-#include <wx/extension/report/listitem.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/report/listitem.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>

@@ -13,7 +13,12 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/header.h>
 #include <wx/extension/svn.h>
-#include <wx/extension/report/report.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/stc.h>
+#include <wx/extension/report/defs.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/textfile.h>
+#include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
   EVT_MENU_RANGE(
