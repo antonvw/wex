@@ -13,12 +13,23 @@
 #include <wx/tokenzr.h> 
 #include <wx/extension/report/report.h>
 
+// The maximal number of files and projects to be supported.
+const int NUMBER_RECENT_FILES = 25;
+const int NUMBER_RECENT_PROJECTS = 25;
+const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
+
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(wxID_OPEN, wxExFrameWithHistory::OnCommand)
   EVT_MENU(wxID_PREFERENCES, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
+  EVT_MENU_RANGE(
+    wxID_FILE1, 
+    wxID_FILE1 + NUMBER_RECENT_FILES, wxExFrameWithHistory::OnCommand)
+  EVT_MENU_RANGE(
+    ID_RECENT_PROJECT_LOWEST, 
+    ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     ID_EXTENSION_REPORT_LOWEST, 
     ID_EXTENSION_REPORT_HIGHEST, 
@@ -34,7 +45,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   size_t maxProjects,
   int style)
   : wxExManagedFrame(parent, id, title, style)
-  , m_FileHistory(maxFiles, ID_RECENT_FILE_LOWEST)
+  , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
   , m_Process(NULL)
@@ -44,7 +55,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   // The order should be inverted, as the last one added is the most recent used.
   if (maxProjects > 0)
   {
-    for (int i = maxProjects - 1 ; i >=0 ; i--)
+    for (int i = m_ProjectHistory.GetMaxFiles() - 1 ; i >=0 ; i--)
     {
       SetRecentProject(
         wxConfigBase::Get()->Read(wxString::Format("RecentProject%d", i)));
@@ -119,14 +130,14 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
 void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() >= ID_RECENT_FILE_LOWEST &&
-      event.GetId() <= ID_RECENT_FILE_HIGHEST)
+  if (event.GetId() >= wxID_FILE1 &&
+      event.GetId() <= wxID_FILE1 + NUMBER_RECENT_FILES)
   {
     DoRecent(m_FileHistory,
-      event.GetId() - ID_RECENT_FILE_LOWEST);
+      event.GetId() - wxID_FILE1);
   }
   else if (event.GetId() >= ID_RECENT_PROJECT_LOWEST &&
-           event.GetId() <= ID_RECENT_PROJECT_HIGHEST)
+           event.GetId() <= ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS)
   {
     DoRecent(m_ProjectHistory,
       event.GetId() - ID_RECENT_PROJECT_LOWEST,

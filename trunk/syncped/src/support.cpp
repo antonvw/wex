@@ -24,8 +24,8 @@ Frame::Frame()
   : wxExFrameWithHistory(
       NULL,
       wxID_ANY,
-      wxTheApp->GetAppName(), //title
-      NUMBER_RECENT_FILES,    //maxFiles
+      wxTheApp->GetAppName(), // title
+      25,                     // maxFiles
       4)                      // maxProjects
 {
   SetIcon(wxICON(app));

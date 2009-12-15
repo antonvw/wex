@@ -13,10 +13,6 @@
 
 #include <wx/extension/defs.h>
 
-// The maximal number of files and projects to be supported.
-#define NUMBER_RECENT_FILES 25
-#define NUMBER_RECENT_PROJECTS 25
-
 // Commands supported by wxExtension report.
 enum
 {
@@ -35,12 +31,6 @@ enum
   ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
   ID_LIST_ALL_CLOSE, // not a real command, used by exForEach
   ID_PROJECT_SAVE,
-  ID_RECENT_LOWEST,
-  ID_RECENT_FILE_LOWEST,
-  ID_RECENT_FILE_HIGHEST = ID_RECENT_FILE_LOWEST + NUMBER_RECENT_FILES,
-  ID_RECENT_PROJECT_LOWEST,
-  ID_RECENT_PROJECT_HIGHEST = ID_RECENT_PROJECT_LOWEST + NUMBER_RECENT_PROJECTS,
-  ID_RECENT_HIGHEST,
   ID_SPECIAL_FIND_IN_FILES,
   ID_SPECIAL_REPLACE_IN_FILES,
   ID_STC_LOWEST,
