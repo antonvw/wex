@@ -66,9 +66,9 @@ SVN hierarchy
 
 - development is in svn trunk
 
-- tags are in svn tags
-
 - stable releases are in svn branches, and follow the wxWidgets branches
+
+- tags are in svn tags
 
 - documentation contains all general docs (this document)
 
