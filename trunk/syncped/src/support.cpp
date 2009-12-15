@@ -224,11 +224,6 @@ Frame::Frame()
 
 #if wxUSE_CHECKBOX
   m_ToolBar->AddSeparator();
-#ifndef __WXMSW__
-  wxSize size(55, 25);
-#else
-  wxSize size = wxDefaultSize;
-#endif // __WXMSW__
 
   m_ToolBar->AddControl(
     m_HexModeCheckBox = new wxCheckBox(
@@ -236,8 +231,7 @@ Frame::Frame()
       ID_EDIT_HEX_MODE,
       "Hex",
       wxDefaultPosition,
-      size,
-      wxNO_BORDER));
+      wxSize(-1, m_ToolBar->GetToolSize().GetHeight())));
 
   m_ToolBar->AddControl(
     m_SyncCheckBox = new wxCheckBox(
@@ -245,8 +239,7 @@ Frame::Frame()
       ID_SYNC_MODE,
       "Sync",
       wxDefaultPosition,
-      size,
-      wxNO_BORDER));
+      wxSize(-1, m_ToolBar->GetToolSize().GetHeight())));
 
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
   m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
