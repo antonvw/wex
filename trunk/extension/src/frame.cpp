@@ -645,6 +645,11 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
     {
       if (rect.Contains(event.GetPosition()))
       {
+        found = true;
+
+        // Handle the event, don't fail if none is true here,
+        // it seems that moving and clicking almost at the same time
+        // could cause assertions.
         if (event.ButtonDClick())
         {
           m_Frame->StatusBarDoubleClicked(i, event.GetPosition());
@@ -667,12 +672,6 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             }
           }
         }
-        else
-        {
-          wxFAIL;
-        }
-
-        found = true;
       }
     }
   }
