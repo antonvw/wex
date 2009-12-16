@@ -38,7 +38,6 @@ class wxExToolBar;
 /// It just adds some members to the base class, and keeps a static total.
 class wxExPane : public wxStatusBarPane
 {
-  friend class wxExFrame;
   friend class wxExStatusBar;
 public:
   /// Default constructor.
@@ -137,21 +136,15 @@ public:
     long flags = 0);
 
 #if wxUSE_STATUSBAR
-  /// Returns the status bar pane.
-  /// If pane could not be found, returns empty pane.
-  const wxExPane GetPane(int pane) const;
-
-  /// Returns the field number of status bar pane.
-  /// If pane could not be found, returns -1.
-  static int GetPaneField(const wxString& pane);
-
   /// Do something when statusbar is clicked.
   virtual void StatusBarClicked(
-    int WXUNUSED(field), 
+    const wxString& WXUNUSED(pane), 
     const wxPoint& WXUNUSED(point)) {};
 
   /// When double clicked, uses the GetSTC() for some dialogs.
-  virtual void StatusBarDoubleClicked(int field, const wxPoint& point);
+  virtual void StatusBarDoubleClicked(
+    const wxString& pane, 
+    const wxPoint& point);
 
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
@@ -211,7 +204,6 @@ private:
 
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
-  static std::map<wxString, wxExPane> m_Panes;
 #endif
 
   wxFindReplaceDialog* m_FindReplaceDialog;
@@ -269,10 +261,22 @@ public:
     wxWindowID id = wxID_ANY,
     long style = wxST_SIZEGRIP,
     const wxString& name = wxStatusBarNameStr);
+
+  /// Returns the status bar pane.
+  /// If pane could not be found, returns empty pane.
+  const wxExPane GetPane(int pane) const;
+
+  /// Returns the field number of status bar pane.
+  /// If pane could not be found, returns -1.
+  int GetPaneField(const wxString& pane) const;
+
+  /// Sets the panes.
+  void SetPanes(const std::vector<wxExPane>& panes);
 protected:
   void OnMouse(wxMouseEvent& event);
 private:
   wxExFrame* m_Frame;
+  std::map<wxString, wxExPane> m_Panes;
 
   DECLARE_EVENT_TABLE()
 };

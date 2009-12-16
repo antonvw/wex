@@ -25,7 +25,6 @@
 
 #if wxUSE_STATUSBAR
 wxExStatusBar* wxExFrame::m_StatusBar = NULL;
-std::map<wxString, wxExPane> wxExFrame::m_Panes;
 #endif
 
 #if wxUSE_DRAG_AND_DROP
@@ -150,37 +149,6 @@ wxExSTC* wxExFrame::GetFocusedSTC()
 
   return wxDynamicCast(win, wxExSTC);
 }
-
-#if wxUSE_STATUSBAR
-const wxExPane wxExFrame::GetPane(int pane) const
-{
-  for (
-    std::map<wxString, wxExPane>::const_iterator it = m_Panes.begin();
-    it != m_Panes.end();
-    ++it)
-  {
-    if (it->second.m_No == pane)
-    {
-      return it->second;
-    }
-  }
-
-  return wxExPane();
-}
-
-// This is a static method, so no const possible.
-int wxExFrame::GetPaneField(const wxString& pane)
-{
-  std::map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
-
-  if (it != m_Panes.end())
-  {
-    return it->second.m_No;
-  }
-
-  return -1;
-}
-#endif // wxUSE_STATUSBAR
 
 void wxExFrame::GetSearchText()
 {
@@ -488,47 +456,31 @@ void wxExFrame::SetupStatusBar(
   const wxString& name)
 {
   wxFrame::CreateStatusBar(panes.size(), style, id, name);
-
-  int* styles = new int[panes.size()];
-  int* widths = new int[panes.size()];
-
-  for (
-    std::vector<wxExPane>::const_iterator it = panes.begin();
-    it != panes.end();
-    ++it)
-  {
-    m_Panes[it->m_Name] = *it;
-    styles[it->m_No] = it->GetStyle();
-    widths[it->m_No] = it->GetWidth();
-  }
-
-  m_StatusBar->SetStatusStyles(panes.size(), styles);
-  m_StatusBar->SetStatusWidths(panes.size(), widths);
-
-  delete[] styles;
-  delete[] widths;
+  m_StatusBar->SetPanes(panes);
 }
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void wxExFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
+void wxExFrame::StatusBarDoubleClicked(
+  const wxString& field, 
+  const wxPoint& point)
 {
-  if (field == GetPaneField("PaneLines"))
+  if (field == "PaneLines")
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
-  else if (field == GetPaneField("PaneLexer"))
+  else if (field == "PaneLexer")
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->LexerDialog();
   }
-  else if (field == GetPaneField("PaneFileType"))
+  else if (field == "PaneFileType")
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
-  else if (field == GetPaneField("PaneItems"))
+  else if (field == "PaneItems")
   {
     wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
@@ -548,7 +500,7 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
     return;
   }
 
-  const int field = GetPaneField(pane);
+  const int field = m_StatusBar->GetPaneField(pane);
 
   if (field >= 0)
   {
@@ -633,6 +585,34 @@ wxExStatusBar::wxExStatusBar(
 {
 }
 
+const wxExPane wxExStatusBar::GetPane(int pane) const
+{
+  for (
+    std::map<wxString, wxExPane>::const_iterator it = m_Panes.begin();
+    it != m_Panes.end();
+    ++it)
+  {
+    if (it->second.m_No == pane)
+    {
+      return it->second;
+    }
+  }
+
+  return wxExPane();
+}
+
+int wxExStatusBar::GetPaneField(const wxString& pane) const
+{
+  std::map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
+
+  if (it != m_Panes.end())
+  {
+    return it->second.m_No;
+  }
+
+  return -1;
+}
+
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   bool found = false;
@@ -652,23 +632,27 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         // could cause assertions.
         if (event.ButtonDClick())
         {
-          m_Frame->StatusBarDoubleClicked(i, event.GetPosition());
+          m_Frame->StatusBarDoubleClicked(
+            GetPane(i).m_Name, 
+            event.GetPosition());
         }
         else if (event.ButtonDown())
         {
-          m_Frame->StatusBarClicked(i, event.GetPosition());
+          m_Frame->StatusBarClicked(
+            GetPane(i).m_Name, 
+            event.GetPosition());
         }
         // Show tooltip if tooltip is available, and not yet tooltip presented.
         else if (event.Moving())
         {
-          if (!m_Frame->m_Panes.empty())
+          if (!m_Panes.empty())
           {
             const wxString tooltip =
               (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
 
-            if (tooltip != m_Frame->GetPane(i).m_Helptext)
+            if (tooltip != GetPane(i).m_Helptext)
             {
-              SetToolTip(m_Frame->GetPane(i).m_Helptext);
+              SetToolTip(GetPane(i).m_Helptext);
             }
           }
         }
@@ -677,6 +661,28 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 
   event.Skip();
+}
+
+void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
+{
+  int* styles = new int[panes.size()];
+  int* widths = new int[panes.size()];
+
+  for (
+    std::vector<wxExPane>::const_iterator it = panes.begin();
+    it != panes.end();
+    ++it)
+  {
+    m_Panes[it->m_Name] = *it;
+    styles[it->m_No] = it->GetStyle();
+    widths[it->m_No] = it->GetWidth();
+  }
+
+  SetStatusStyles(panes.size(), styles);
+  SetStatusWidths(panes.size(), widths);
+
+  delete[] styles;
+  delete[] widths;
 }
 #endif //wxUSE_STATUSBAR
 

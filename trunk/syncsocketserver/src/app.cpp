@@ -922,15 +922,17 @@ void Frame::SocketLost(wxSocketBase* sock, bool remove_from_clients)
   sock->Destroy();
 }
 
-void Frame::StatusBarDoubleClicked(int field, const wxPoint& point)
+void Frame::StatusBarDoubleClicked(
+  const wxString& pane, 
+  const wxPoint& point)
 {
-  if (field == GetPaneField("PaneTimer"))
+  if (pane == "PaneTimer")
   {
     TimerDialog();
   }
   else
   {
-    wxExFrameWithHistory::StatusBarDoubleClicked(field, point);
+    wxExFrameWithHistory::StatusBarDoubleClicked(pane, point);
   }
 }
 

@@ -48,7 +48,9 @@ private:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
-  virtual void StatusBarDoubleClicked(int field, const wxPoint& point);
+  virtual void StatusBarDoubleClicked(
+    const wxString& pane, 
+    const wxPoint& point);
 
   void LogConnection(
     wxSocketBase* sock,
