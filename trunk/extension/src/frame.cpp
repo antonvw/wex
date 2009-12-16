@@ -462,25 +462,25 @@ void wxExFrame::SetupStatusBar(
 
 #if wxUSE_STATUSBAR
 void wxExFrame::StatusBarDoubleClicked(
-  const wxString& field, 
+  const wxString& pane, 
   const wxPoint& point)
 {
-  if (field == "PaneLines")
+  if (pane == "PaneLines")
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
-  else if (field == "PaneLexer")
+  else if (pane == "PaneLexer")
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->LexerDialog();
   }
-  else if (field == "PaneFileType")
+  else if (pane == "PaneFileType")
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
-  else if (field == "PaneItems")
+  else if (pane == "PaneItems")
   {
     wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
@@ -494,19 +494,9 @@ void wxExFrame::StatusBarDoubleClicked(
 // This is a static method, so you cannot call wxFrame::SetStatusText.
 void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
-  if (m_StatusBar == NULL)
+  if (m_StatusBar != NULL)
   {
-    // You did not ask for a status bar, so ignore all.
-    return;
-  }
-
-  const int field = m_StatusBar->GetPaneField(pane);
-
-  if (field >= 0)
-  {
-    // wxStatusBar checks whether new text differs from current,
-    // and does nothing if the same to avoid flicker.
-    m_StatusBar->SetStatusText(text, field);
+    m_StatusBar->SetStatusText(text, pane);
   }
 }
 
@@ -684,6 +674,19 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
   delete[] styles;
   delete[] widths;
 }
+
+void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
+{
+  const int field = GetPaneField(pane);
+
+  if (field >= 0)
+  {
+    // wxStatusBar checks whether new text differs from current,
+    // and does nothing if the same to avoid flicker.
+    wxStatusBar::SetStatusText(text, field);
+  }
+}
+
 #endif //wxUSE_STATUSBAR
 
 #if wxUSE_TOOLBAR
