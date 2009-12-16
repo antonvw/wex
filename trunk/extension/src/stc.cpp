@@ -721,7 +721,14 @@ void wxExSTC::ConfigGet()
 
   m_viMode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
 
-  PathListInit();
+  wxStringTokenizer tkz(
+    wxConfigBase::Get()->Read(_("Include directory")),
+    ";");
+
+  while (tkz.HasMoreTokens())
+  {
+    m_PathList.Add(tkz.GetNextToken());
+  }
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
@@ -1735,21 +1742,6 @@ bool wxExSTC::Open(
   else
   {
     return false;
-  }
-}
-
-void wxExSTC::PathListInit()
-{
-  m_PathList.Clear();
-
-  wxStringTokenizer tkz(
-    wxConfigBase::Get()->Read(_("Include directory")),
-    ";");
-
-  while (tkz.HasMoreTokens())
-  {
-    const wxString includedir = tkz.GetNextToken();
-    m_PathList.Add(includedir);
   }
 }
 

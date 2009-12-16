@@ -289,8 +289,6 @@ private:
     wxString& filename, // name of found file
     int line_number = 0, 
     bool link_open = true);
-  // Sets the path list from config.
-  void PathListInit();
   void ReadFromFile(bool get_only_new_data);
   void SequenceDialog();
   void SetFolding();
