@@ -1409,20 +1409,7 @@ bool wxExSTC::LinkOpen(
 
     if (fullpath.empty())
     {
-      // README: Code added since wxWidgets 2.7.0, as that normalized the file.
-      //fullpath = wxConfigBase::Get()->GetPathList().FindAbsoluteValidPath(link);
-      wxString strend = link;
-
-      for (size_t i = 0; i < m_PathList.GetCount() && fullpath.empty(); i++)
-      {
-        wxString strstart = m_PathList.Item(i);
-        if (!strstart.IsEmpty() && 
-             strstart.Last() != wxFileName::GetPathSeparator())
-          strstart += wxFileName::GetPathSeparator();
-
-        if (wxFileExists(strstart + strend))
-          fullpath = strstart + strend;
-      }
+      fullpath = m_PathList.FindAbsoluteValidPath(link);
     }
   }
 
