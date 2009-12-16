@@ -20,7 +20,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/svn.h>
 
@@ -101,9 +100,6 @@ bool wxExApp::OnInit()
     wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
 #endif
   wxConfigBase::Set(config);
-
-  // Finally call all available static initializers.
-  wxExSTC::PathListInit();
 
   return true;
 }

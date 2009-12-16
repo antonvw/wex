@@ -58,7 +58,6 @@ END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
 std::vector <wxString> wxExSTC::m_Macro;
-wxPathList wxExSTC::m_PathList;
 
 wxExSTC::wxExSTC(wxWindow* parent,
   const wxString& value,
@@ -185,7 +184,7 @@ void wxExSTC::AddBasePathToPathList()
     find + basepath_text.length() + 1,
     GetLineEndPosition(line) - 3);
 
-  PathListAdd(basepath);
+  m_PathList.Add(basepath);
 }
 
 void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
@@ -721,6 +720,8 @@ void wxExSTC::ConfigGet()
   SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 
   m_viMode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
+
+  PathListInit();
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
@@ -1405,7 +1406,7 @@ bool wxExSTC::LinkOpen(
       //fullpath = wxConfigBase::Get()->GetPathList().FindAbsoluteValidPath(link);
       wxString strend = link;
 
-      for (size_t i=0; i < m_PathList.GetCount() && fullpath.empty(); i++)
+      for (size_t i = 0; i < m_PathList.GetCount() && fullpath.empty(); i++)
       {
         wxString strstart = m_PathList.Item(i);
         if (!strstart.IsEmpty() && 
@@ -1734,22 +1735,6 @@ bool wxExSTC::Open(
   else
   {
     return false;
-  }
-}
-
-void wxExSTC::PathListAdd(const wxString& path)
-{
-  if (!wxFileName::DirExists(path))
-  {
-    wxLogError("Path: %s does not exist", path.c_str());
-    return;
-  }
-
-  if (m_PathList.Index(path) == wxNOT_FOUND)
-  {
-    // README: Changed normal Add into this one for wxWidgets 2.7.
-    // It seems the normal Add normalizes the path, we do not want that.
-    ((wxArrayString *)&m_PathList)->Add(path);
   }
 }
 

@@ -18,7 +18,6 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/stc.h> // for PathListInit
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -667,8 +666,6 @@ void wxExConfigDialog::ForceCheckBoxChecked(
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
-  bool path_involved = false;
-
   if (command.GetId() == ID_BROWSE_FOLDER)
   {
     wxComboBox* cb = wxDynamicCast(
@@ -849,10 +846,6 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
       wxConfigBase::Get()->Write(tc->GetName(), tc->GetValue());
-      if (tc->GetName() == _("Include directory"))
-      {
-        path_involved = true;
-      }
       }
       break;
 
@@ -886,21 +879,10 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     wxASSERT(frame != NULL);
 
     frame->ConfigDialogApplied(GetId());
-
-    if (path_involved)
-    {
-      wxExSTC::PathListInit();
-      path_involved = false;
-    }
   }
 
   if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)
   {
-    if (path_involved)
-    {
-      wxExSTC::PathListInit();
-    }
-
     EndDialog(wxID_OK);
   }
 }

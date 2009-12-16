@@ -179,10 +179,6 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
-  // Sets the path list from config.
-  // Handled by framework, so not for doxygen.
-  static void PathListInit();
-
 #if wxUSE_PRINTING_ARCHITECTURE
   /// Prints the document.
   void Print(bool prompt = true);
@@ -293,8 +289,8 @@ private:
     wxString& filename, // name of found file
     int line_number = 0, 
     bool link_open = true);
-  /// Adds a path to the path list, does not change it in the config.
-  void PathListAdd(const wxString& path);
+  // Sets the path list from config.
+  void PathListInit();
   void ReadFromFile(bool get_only_new_data);
   void SequenceDialog();
   void SetFolding();
@@ -307,19 +303,19 @@ private:
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
   static std::vector <wxString> m_Macro;
-  static wxPathList m_PathList;
 
   bool m_FileSaveInMenu;
+  bool m_MacroIsRecording;
+  bool m_viMode;
   long m_Flags; // open flags
   long m_GotoLineNumber;
-  bool m_MacroIsRecording;
+  long m_MenuFlags;
   int m_MarginDividerNumber;
   int m_MarginFoldingNumber;
   int m_MarginLineNumber;
-  long m_MenuFlags;
-  wxFileOffset m_PreviousLength;
-  bool m_viMode;
   wxExVi* m_vi;
+  wxFileOffset m_PreviousLength;
+  wxPathList m_PathList;
 
   DECLARE_EVENT_TABLE()
 };
