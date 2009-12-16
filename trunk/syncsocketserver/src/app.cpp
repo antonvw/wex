@@ -14,6 +14,11 @@
 #include <wx/numdlg.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/grid.h>
+#include <wx/extension/statistics.h>
+#include <wx/extension/util.h>
+#include <wx/extension/version.h>
+#include <wx/extension/report/defs.h>
 #include "app.h"
 
 #ifndef __WXMSW__

@@ -14,7 +14,8 @@
 #include <wx/taskbar.h>
 #include <wx/extension/app.h>
 #include <wx/extension/shell.h>
-#include <wx/extension/report/report.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/stc.h>
 
 #if wxUSE_TASKBARICON
 class TaskBarIcon;
@@ -22,7 +23,7 @@ class TaskBarIcon;
 
 class App : public wxExApp
 {
-public:
+private:
   virtual bool OnInit();
 };
 
