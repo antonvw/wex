@@ -347,9 +347,11 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
       if (wxExGetNumberOfLines(sel) > 1)
       {
+        wxExMenu* menuSort = new wxExMenu(menu);
+        menuSort->Append(wxID_SORT_ASCENDING);
+        menuSort->Append(wxID_SORT_DESCENDING);
         menuSelection->AppendSeparator();
-        menuSelection->Append(wxID_SORT_ASCENDING);
-        menuSelection->Append(wxID_SORT_DESCENDING);
+        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
       }
 
       menu.AppendSeparator();
