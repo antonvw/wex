@@ -14,6 +14,7 @@
 #include <wx/extension/art.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h> // for wxExEllipsed
+#include <wx/extension/svn.h>
 
 #if wxUSE_GUI
 
@@ -157,24 +158,32 @@ void wxExMenu::AppendSubMenu(
 void wxExMenu::AppendSVN()
 {
   wxMenu* svnmenu = new wxMenu;
-  svnmenu->Append(ID_EDIT_SVN_LOG, wxExEllipsed("&Log"));
-  svnmenu->Append(ID_EDIT_SVN_STAT, wxExEllipsed("&Stat"));
-  svnmenu->Append(ID_EDIT_SVN_DIFF, wxExEllipsed("&Diff"));
+  AppendSVN(svnmenu, ID_EDIT_SVN_LOG);
+  AppendSVN(svnmenu, ID_EDIT_SVN_STAT);
+  AppendSVN(svnmenu, ID_EDIT_SVN_DIFF);
   svnmenu->AppendSeparator();
-  svnmenu->Append(ID_EDIT_SVN_COMMIT, wxExEllipsed("&Commit"));
+  AppendSVN(svnmenu, ID_EDIT_SVN_COMMIT);
   svnmenu->AppendSeparator();
-  svnmenu->Append(ID_EDIT_SVN_CAT, wxExEllipsed("Ca&t"));
-  svnmenu->Append(ID_EDIT_SVN_BLAME, wxExEllipsed("&Blame"));
+  AppendSVN(svnmenu, ID_EDIT_SVN_CAT);
+  AppendSVN(svnmenu, ID_EDIT_SVN_BLAME);
   svnmenu->AppendSeparator();
-  svnmenu->Append(ID_EDIT_SVN_PROPLIST, wxExEllipsed("&Proplist"));
-  svnmenu->Append(ID_EDIT_SVN_PROPSET, wxExEllipsed("&Propset"));
+  AppendSVN(svnmenu, ID_EDIT_SVN_PROPLIST);
+  AppendSVN(svnmenu, ID_EDIT_SVN_PROPSET);
   svnmenu->AppendSeparator();
-  svnmenu->Append(ID_EDIT_SVN_REVERT, wxExEllipsed("&Revert"));
+  AppendSVN(svnmenu, ID_EDIT_SVN_REVERT);
   svnmenu->AppendSeparator();
-  svnmenu->Append(ID_EDIT_SVN_ADD, wxExEllipsed("&Add"));
+  AppendSVN(svnmenu, ID_EDIT_SVN_ADD);
 
   AppendSeparator();
   AppendSubMenu(svnmenu, "&SVN");
+}
+
+void wxExMenu::AppendSVN(wxMenu* menu, int id)
+{
+  const wxString text(
+    wxExEllipsed("&" + wxExSVN(id).GetCommandWithFlags()));
+
+  menu->Append(id, text);
 }
 
 void wxExMenu::AppendTools()

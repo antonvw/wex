@@ -83,6 +83,7 @@ public:
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};
 private:
+  void AppendSVN(wxMenu*, int id);
   long m_Style;
   int m_ItemsAppended;
   bool m_IsSeparator;
