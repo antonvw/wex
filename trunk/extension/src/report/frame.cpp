@@ -314,25 +314,14 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 {
   wxASSERT(m_Process == NULL);
 
-  wxExListViewWithFrame* listview = Activate(wxExListViewWithFrame::LIST_PROCESS);
-
-  if (listview == NULL) 
+  if ((m_Process = new wxExProcess(this, command)) != NULL)
   {
-    wxFAIL;
-    return false;
-  }
-
-  if ((m_Process = new wxExProcess(listview, command)) != NULL)
-  {
-    if (m_Process->Execute() <= 0)
-    {
-      wxDELETE(m_Process);
-      return false;
-    }
-    else
+    if (m_Process->Execute() > 0)
     {
       return true;
     }
+
+    wxDELETE(m_Process);
   }
 
   return false;

@@ -18,7 +18,9 @@
 #include <wx/extension/util.h>
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
+#include <wx/extension/report/listview.h>
 
 BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)
@@ -27,10 +29,11 @@ END_EVENT_TABLE()
 wxString wxExProcess::m_Command = "";
 
 wxExProcess::wxExProcess(
-  wxExListView* listview,
+  wxExFrameWithHistory* frame,
   const wxString& command)
   : wxProcess(NULL, -1)
-  , m_ListView(listview)
+  , m_Frame(frame)
+  , m_ListView(NULL)
   , m_Timer(this)
 {
   if (!command.empty())
@@ -43,6 +46,8 @@ wxExProcess::wxExProcess(
 
 bool wxExProcess::CheckInput()
 {
+  wxASSERT(m_ListView != NULL); 
+
   bool hasInput = false;
 
   // This assumes that the output is always line buffered.
@@ -172,6 +177,8 @@ long wxExProcess::Execute()
 
   if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
   {
+    m_ListView = m_Frame->Activate(wxExListViewFile::LIST_PROCESS);
+
     SetPid(pid);
 
 #if wxUSE_STATUSBAR

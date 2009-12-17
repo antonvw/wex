@@ -14,6 +14,7 @@
 
 #include <wx/process.h>
 
+class wxExFrameWithHistory;
 class wxExListView;
 
 /// Offers a wxProcess with output to a listview.
@@ -22,7 +23,7 @@ class wxExProcess : public wxProcess
 public:
   /// Constructor.
   wxExProcess(
-    wxExListView* listview, 
+    wxExFrameWithHistory* frame, 
     const wxString& command = wxEmptyString);
 
   /// Shows a config dialog, returns dialog return code.
@@ -55,7 +56,10 @@ private:
   bool CheckInput();
 
   static wxString m_Command;
+
+  wxExFrameWithHistory* m_Frame;
   wxExListView* m_ListView;
+
   wxTimer m_Timer;
 
   DECLARE_EVENT_TABLE()
