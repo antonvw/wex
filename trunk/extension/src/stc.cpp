@@ -1264,7 +1264,9 @@ void wxExSTC::HexDecCalltip(int pos)
 
   if (c < 32 || c > 125)
   {
-    CallTipShow(pos, wxString::Format("hex: %x dec: %d", c, c));
+    const wxString text(wxString::Format("hex: %x dec: %d", c, c));
+    CallTipShow(pos, text);
+    wxExClipboardAdd(text);
     return;
   }
 
@@ -1284,11 +1286,7 @@ void wxExSTC::HexDecCalltip(int pos)
       text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
 
     CallTipShow(pos, text);
-  }
-  else
-  {
-    // If this word can be found locally, show the data type.
-    // This was still present in v1.3.
+    wxExClipboardAdd(text);
   }
 }
 

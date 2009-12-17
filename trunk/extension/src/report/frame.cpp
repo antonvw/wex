@@ -443,14 +443,17 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   m_FileHistoryList = list;
   m_FileHistoryList->Hide();
 
-  // Add all items from FileHistory.
+  // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
   {
     wxExListItemWithFileName item(
       m_FileHistoryList, 
       m_FileHistory.GetHistoryFile(i));
 
-    item.Insert();
+    if (item.GetFileName().IsOk())
+    {
+      item.Insert();
+    }
   }
 }
 
