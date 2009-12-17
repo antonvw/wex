@@ -117,7 +117,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/defs.h</headers>
     <headers>../extension/include/wx/extension/dialog.h</headers>
     <headers>../extension/include/wx/extension/dir.h</headers>
-    <headers>../extension/include/wx/extension/extension.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
     <headers>../extension/include/wx/extension/filedlg.h</headers>
     <headers>../extension/include/wx/extension/frame.h</headers>
@@ -175,7 +174,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/report/listitem.h</headers>
     <headers>../extension/include/wx/extension/report/listview.h</headers>
     <headers>../extension/include/wx/extension/report/process.h</headers>
-    <headers>../extension/include/wx/extension/report/report.h</headers>
     <headers>../extension/include/wx/extension/report/stc.h</headers>
     <headers>../extension/include/wx/extension/report/textfile.h</headers>
     <headers>../extension/include/wx/extension/report/util.h</headers>
