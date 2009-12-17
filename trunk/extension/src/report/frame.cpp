@@ -450,7 +450,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
       m_FileHistoryList, 
       m_FileHistory.GetHistoryFile(i));
 
-    if (item.GetFileName().IsOk())
+    if (item.GetFileName().GetStat().IsOk())
     {
       item.Insert();
     }
