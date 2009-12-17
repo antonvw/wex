@@ -284,19 +284,50 @@ wxExSVNType wxExSVN::GetType(int command_id) const
 {
   switch (command_id)
   {
-    case ID_EDIT_SVN_ADD: return SVN_ADD; break;
+    case ID_EDIT_SVN_ADD: 
+      return SVN_ADD; break;
+
     case ID_EDIT_SVN_BLAME: return SVN_BLAME; break;
+
     case ID_EDIT_SVN_CAT: return SVN_CAT; break;
-    case ID_EDIT_SVN_COMMIT: return SVN_COMMIT; break;
-    case ID_EDIT_SVN_DIFF: return SVN_DIFF; break;
-    case ID_EDIT_SVN_HELP: return SVN_HELP; break;
-    case ID_EDIT_SVN_INFO: return SVN_INFO; break;
-    case ID_EDIT_SVN_LOG: return SVN_LOG; break;
+
+    case ID_EDIT_SVN_COMMIT: 
+    case ID_SVN_COMMIT:
+      return SVN_COMMIT; break;
+
+    case ID_EDIT_SVN_DIFF: 
+    case ID_SVN_DIFF:
+      return SVN_DIFF; break;
+
+    case ID_EDIT_SVN_HELP: 
+    case ID_SVN_HELP:
+      return SVN_HELP; break;
+
+    case ID_EDIT_SVN_INFO: 
+    case ID_SVN_INFO:
+      return SVN_INFO; break;
+
+    case ID_EDIT_SVN_LOG: 
+    case ID_SVN_LOG:
+      return SVN_LOG; break;
+
+    case ID_SVN_LS:
+      return SVN_LS; break;
+
     case ID_EDIT_SVN_PROPLIST: return SVN_PROPLIST; break;
+
     case ID_EDIT_SVN_PROPSET: return SVN_PROPSET; break;
+
     case ID_EDIT_SVN_REVERT: return SVN_REVERT; break;
-    case ID_EDIT_SVN_STAT: return SVN_STAT; break;
-    case ID_EDIT_SVN_UPDATE: return SVN_UPDATE; break;
+
+    case ID_EDIT_SVN_STAT: 
+    case ID_SVN_STAT:
+      return SVN_STAT; break;
+
+    case ID_EDIT_SVN_UPDATE: 
+    case ID_SVN_UPDATE:
+      return SVN_UPDATE; break;
+
     default:
       wxFAIL;
       return SVN_NONE;

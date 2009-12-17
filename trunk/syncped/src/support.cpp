@@ -96,18 +96,18 @@ Frame::Frame()
 
   if (wxExSVN::Get()->Use())
   {
-    wxMenu* menuSVN = new wxMenu;
-    menuSVN->Append(ID_SVN_STAT, wxExEllipsed("&Stat"));
-    menuSVN->Append(ID_SVN_INFO, wxExEllipsed("&Info"));
-    menuSVN->Append(ID_SVN_LOG, wxExEllipsed("&Log"));
-    menuSVN->Append(ID_SVN_LS, wxExEllipsed("&Ls"));
-    menuSVN->Append(ID_SVN_DIFF, wxExEllipsed("&Diff"));
-    menuSVN->Append(ID_SVN_HELP, wxExEllipsed("&Help"));
+    wxExMenu* menuSVN = new wxExMenu;
+    menuSVN->AppendSVN(ID_SVN_STAT);
+    menuSVN->AppendSVN(ID_SVN_INFO);
+    menuSVN->AppendSVN(ID_SVN_LOG);
+    menuSVN->AppendSVN(ID_SVN_LS);
+    menuSVN->AppendSVN(ID_SVN_DIFF);
+    menuSVN->AppendSVN(ID_SVN_HELP);
     menuSVN->AppendSeparator();
-    menuSVN->Append(ID_SVN_UPDATE, wxExEllipsed("&Update"));
-    menuSVN->Append(ID_SVN_COMMIT, wxExEllipsed("C&ommit"));
+    menuSVN->AppendSVN(ID_SVN_UPDATE);
+    menuSVN->AppendSVN(ID_SVN_COMMIT);
     menuSVN->AppendSeparator();
-    menuSVN->Append(ID_SVN_ADD, wxExEllipsed("&Add"));
+    menuSVN->AppendSVN(ID_SVN_ADD);
     menuEdit->AppendSubMenu(menuSVN, "&SVN");
     menuEdit->AppendSeparator();
   }

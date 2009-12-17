@@ -68,8 +68,8 @@ public:
   /// Appends SVN menu items.
   void AppendSVN();
 
-  /// Appends SVN menu item to specified menu.
-  void AppendSVN(wxMenu*, int id) const;
+  /// Appends specified SVN menu item.
+  void AppendSVN(int id);
 
   /// Appends a submenu (and resets the is separator member).
   void AppendSubMenu(
