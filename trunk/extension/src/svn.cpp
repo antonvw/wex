@@ -285,11 +285,15 @@ wxExSVNType wxExSVN::GetType(int command_id) const
   switch (command_id)
   {
     case ID_EDIT_SVN_ADD: 
+    case ID_SVN_ADD:
       return SVN_ADD; break;
 
-    case ID_EDIT_SVN_BLAME: return SVN_BLAME; break;
+    case ID_EDIT_SVN_BLAME: 
+    case ID_SVN_BLAME:
+      return SVN_BLAME; break;
 
-    case ID_EDIT_SVN_CAT: return SVN_CAT; break;
+    case ID_EDIT_SVN_CAT: 
+      return SVN_CAT; break;
 
     case ID_EDIT_SVN_COMMIT: 
     case ID_SVN_COMMIT:
@@ -311,14 +315,21 @@ wxExSVNType wxExSVN::GetType(int command_id) const
     case ID_SVN_LOG:
       return SVN_LOG; break;
 
+    case ID_EDIT_SVN_LS: 
     case ID_SVN_LS:
       return SVN_LS; break;
 
-    case ID_EDIT_SVN_PROPLIST: return SVN_PROPLIST; break;
+    case ID_EDIT_SVN_PROPLIST: 
+    case ID_SVN_PROPLIST:
+      return SVN_PROPLIST; break;
 
-    case ID_EDIT_SVN_PROPSET: return SVN_PROPSET; break;
+    case ID_EDIT_SVN_PROPSET: 
+    case ID_SVN_PROPSET:
+      return SVN_PROPSET; break;
 
-    case ID_EDIT_SVN_REVERT: return SVN_REVERT; break;
+    case ID_EDIT_SVN_REVERT: 
+    case ID_SVN_REVERT:
+      return SVN_REVERT; break;
 
     case ID_EDIT_SVN_STAT: 
     case ID_SVN_STAT:
