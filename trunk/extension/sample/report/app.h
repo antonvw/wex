@@ -11,8 +11,10 @@
 
 #include <wx/treectrl.h>
 #include <wx/generic/dirctrlg.h>
-#include <wx/extension/report/report.h>
+#include <wx/extension/app.h>
 #include <wx/extension/notebook.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/stc.h>
 
 /// Derive your application from wxExApp.
 class wxExRepSampleApp: public wxExApp

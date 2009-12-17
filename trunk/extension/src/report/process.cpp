@@ -9,14 +9,16 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/configdlg.h>
-#include <wx/extension/extension.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/log.h>
+#include <wx/extension/util.h>
+#include <wx/extension/report/process.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/listitem.h>
-#include <wx/extension/report/process.h>
 
 BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)

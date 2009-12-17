@@ -9,7 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <wx/extension/extension.h>
+#include <wx/extension/app.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/grid.h>
