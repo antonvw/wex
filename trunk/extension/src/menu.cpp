@@ -178,7 +178,7 @@ void wxExMenu::AppendSVN()
   AppendSubMenu(svnmenu, "&SVN");
 }
 
-void wxExMenu::AppendSVN(wxMenu* menu, int id)
+void wxExMenu::AppendSVN(wxMenu* menu, int id) const
 {
   const wxString text(
     wxExEllipsed("&" + wxExSVN(id).GetCommandWithFlags()));

@@ -68,6 +68,9 @@ public:
   /// Appends SVN menu items.
   void AppendSVN();
 
+  /// Appends SVN menu item to specified menu.
+  void AppendSVN(wxMenu*, int id) const;
+
   /// Appends a submenu (and resets the is separator member).
   void AppendSubMenu(
     wxMenu *submenu,
@@ -83,7 +86,6 @@ public:
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};
 private:
-  void AppendSVN(wxMenu*, int id);
   long m_Style;
   int m_ItemsAppended;
   bool m_IsSeparator;
