@@ -579,9 +579,9 @@ int wxExSTC::ConfigDialog(
   }
 
   items.push_back(wxExConfigItem(
-    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge Column"), 80), page));
+    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
   items.push_back(wxExConfigItem(
-    _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge Column"), 80), page));
+    _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
 
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
@@ -632,6 +632,7 @@ int wxExSTC::ConfigDialog(
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
     items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
 
     items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
     items.push_back(wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
@@ -699,10 +700,10 @@ void wxExSTC::ConfigGet()
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("CallTip"), wxColour("YELLOW")));
 
-  // See also lexer, don't know why 3 is necessary.
-  SetEdgeColumn(3 * wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
- 
-  SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
+  SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
+  SetEdgeColour(wxConfigBase::Get()->ReadObject(
+    _("Edge colour"), wxColour("GREY"))); 
+  SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
   SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), 4));

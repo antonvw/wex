@@ -57,18 +57,18 @@ void wxExVi::Delete(int lines) const
   }
 }
 
-void wxExVi::Delete(
+bool wxExVi::Delete(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
   if (m_STC->GetReadOnly())
   {
-    return;
+    return false;
   }
 
   if (!SetSelection(begin_address, end_address))
   {
-    return;
+    return false;
   }
 
   const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
@@ -81,6 +81,8 @@ void wxExVi::Delete(
     wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
 #endif
   }
+
+  return true;
 }
 
 bool wxExVi::DoCommand(const wxString& command)
@@ -528,30 +530,34 @@ bool wxExVi::DoCommandRange(const wxString& command) const
   switch (cmd)
   {
   case 'd':
-    Delete(begin_address, end_address);
+    return Delete(begin_address, end_address);
     break;
   case 'm':
-    Move(begin_address, end_address, tkz.GetString());
+    return Move(begin_address, end_address, tkz.GetString());
     break;
   case 's':
     {
     wxStringTokenizer tkz(tkz.GetString(), "/");
 
+    if (!tkz.HasMoreTokens())
+    {
+      return false;
+    }
+
     tkz.GetNextToken(); // skip empty token
     const wxString pattern = tkz.GetNextToken();
     const wxString replacement = tkz.GetNextToken();
   
-    Substitute(begin_address, end_address, pattern, replacement);
+    return Substitute(begin_address, end_address, pattern, replacement);
     }
     break;
   case 'y':
-    Yank(begin_address, end_address);
+    return Yank(begin_address, end_address);
     break;
   default:
     wxFAIL;
+    return false;
   }
-
-  return true;
 }
 
 void wxExVi::FindWord(bool find_next)
@@ -620,26 +626,26 @@ void wxExVi::InsertMode(const wxUniChar c, int repeat, bool overtype)
   }
 }
 
-void wxExVi::Move(
+bool wxExVi::Move(
   const wxString& begin_address, 
   const wxString& end_address, 
   const wxString& destination) const
 {
   if (m_STC->GetReadOnly())
   {
-    return;
+    return false;
   }
 
   const int dest_line = ToLineNumber(destination);
 
   if (dest_line == 0)
   {
-    return;
+    return false;
   }
 
   if (!SetSelection(begin_address, end_address))
   {
-    return;
+    return false;
   }
 
   m_STC->BeginUndoAction();
@@ -658,6 +664,8 @@ void wxExVi::Move(
     wxExFrame::StatusText(wxString::Format(_("%d lines moved"), lines));
 #endif
   }
+
+  return true;
 }
 
 bool wxExVi::OnChar(const wxKeyEvent& event)
@@ -762,7 +770,7 @@ bool wxExVi::SetSelection(
   return true;
 }
 
-void wxExVi::Substitute(
+bool wxExVi::Substitute(
   const wxString& begin_address, 
   const wxString& end_address, 
   const wxString& pattern,
@@ -770,7 +778,7 @@ void wxExVi::Substitute(
 {
   if (m_STC->GetReadOnly())
   {
-    return;
+    return false;
   }
 
   m_STC->SetSearchFlags(wxSTC_FIND_REGEXP);
@@ -780,7 +788,7 @@ void wxExVi::Substitute(
 
   if (begin_line == 0 || end_line == 0)
   {
-    return;
+    return false;
   }
 
   int nr_replacements = 0;
@@ -810,6 +818,8 @@ void wxExVi::Substitute(
   wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
 #endif
+
+  return true;
 }
 
 void wxExVi::ToggleCase() const
@@ -900,7 +910,7 @@ void wxExVi::Yank(int lines) const
   }
 }
 
-void wxExVi::Yank(
+bool wxExVi::Yank(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
@@ -909,7 +919,7 @@ void wxExVi::Yank(
 
   if (begin_line == 0 || end_line == 0)
   {
-    return;
+    return false;
   }
 
   const int start = m_STC->PositionFromLine(begin_line);
@@ -925,6 +935,8 @@ void wxExVi::Yank(
     wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
 #endif
   }
+
+  return true;
 }
 
 #endif // wxUSE_GUI
