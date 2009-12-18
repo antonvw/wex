@@ -43,7 +43,7 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 private:
   void Delete(int lines) const;
-  void Delete(
+  bool Delete(
     const wxString& begin_address, 
     const wxString& end_address) const;
   bool DoCommand(const wxString& command);
@@ -56,7 +56,7 @@ private:
     const wxUniChar c = 'i', 
     int repeat = 1,
     bool overtype = false);
-  void Move(
+  bool Move(
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& destination) const;
@@ -64,7 +64,7 @@ private:
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
-  void Substitute(
+  bool Substitute(
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& pattern,
@@ -72,7 +72,7 @@ private:
   void ToggleCase() const;
   int ToLineNumber(const wxString& address) const;
   void Yank(int lines) const;
-  void Yank(
+  bool Yank(
     const wxString& begin_address, 
     const wxString& end_address) const;
 
