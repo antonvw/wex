@@ -728,6 +728,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       }
       else
       {
+        m_InsertText += event.GetUnicodeKey();
         handled = false;
       }
       break;
