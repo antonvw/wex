@@ -633,6 +633,7 @@ int wxExSTC::ConfigDialog(
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
     items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
 
     items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
     items.push_back(wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
@@ -701,8 +702,9 @@ void wxExSTC::ConfigGet()
     _("CallTip"), wxColour("YELLOW")));
 
   SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
-  SetEdgeColour(*wxGREEN); 
-  SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
+  SetEdgeColour(wxConfigBase::Get()->ReadObject(
+    _("Edge colour"), wxColour("GREY"))); 
+  SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
   SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), 4));
