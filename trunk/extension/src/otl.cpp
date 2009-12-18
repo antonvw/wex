@@ -19,6 +19,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/util.h>
 
 #if wxExUSE_OTL
 
@@ -135,6 +136,8 @@ long wxExOTL::Query(
 
   const long startrow = grid->GetNumberRows();
 
+  wxWindow* window = wxExSetYieldWindow();
+
   // Get all rows.
   while (!i.eof() && !stopped)
   {
@@ -166,17 +169,10 @@ long wxExOTL::Query(
 
     if ((rows & 0xff) == 0)
     {
-      if (wxIsMainThread())
+      if (window != NULL)
       {
-        if (wxTheApp != NULL)
-        {
-          wxTheApp->Yield();
-        }
-      }
-      else
-      {
-        wxThread::This()->Yield();
-      }
+        wxTheApp->SafeYield(window, true);
+      } 
     }
 
     rows++;
@@ -222,6 +218,8 @@ long wxExOTL::Query(
 
   stc->AppendText(wxTextFile::GetEOL());
 
+  wxWindow* window = wxExSetYieldWindow();
+
   // Get all rows.
   while (!i.eof() && !stopped)
   {
@@ -259,17 +257,10 @@ long wxExOTL::Query(
 
     if ((rows & 0xff) == 0)
     {
-      if (wxIsMainThread())
+      if (window != NULL)
       {
-        if (wxTheApp != NULL)
-        {
-          wxTheApp->Yield();
-        }
-      }
-      else
-      {
-        wxThread::This()->Yield();
-      }
+        wxTheApp->SafeYield(window, true);
+      } 
     }
 
     rows++;

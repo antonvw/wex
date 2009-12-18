@@ -501,7 +501,6 @@ void Frame::RunQueries(const wxString& text)
       {
         RunQuery(query, no_queries == 0);
         no_queries++;
-        wxTheApp->Yield();
       }
       catch (otl_exception& p)
       {

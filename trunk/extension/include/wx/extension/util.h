@@ -124,6 +124,9 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   long file_flags = 0,
   int dir_flags = wxDIR_DEFAULT);
 
+/// Sets a window to be used for safe yields.
+wxWindow* wxExSetYieldWindow();
+
 #endif // wxUSE_GUI
 
 #endif

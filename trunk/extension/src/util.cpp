@@ -374,6 +374,21 @@ void wxExOpenFilesDialog(
 
   wxExOpenFiles(frame, files, file_flags, dir_flags);
 }
+
+wxWindow* wxExSetYieldWindow()
+{
+  if (wxTheApp != NULL)
+  {
+    wxFrame* frame = (wxFrame*)wxTheApp->GetTopWindow();
+
+    if (frame != NULL)
+    {
+      return frame->GetMenuBar();
+    }
+  }
+
+  return NULL;
+}
 #endif // wxUSE_GUI
 
 const wxString wxExPrintCaption(const wxFileName& filename)

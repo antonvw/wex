@@ -334,6 +334,8 @@ bool wxExTextFile::Parse()
     }
   }
 
+  wxWindow* window = wxExSetYieldWindow();
+
   for (size_t i = 0; i < GetLineCount() && !Cancelled() && !m_FinishedAction; i++)
   {
     wxString& line = GetLine(i);
@@ -355,16 +357,9 @@ bool wxExTextFile::Parse()
       }
     }
 
-    if (wxIsMainThread())
+    if (window != NULL)
     {
-      if (wxTheApp != NULL)
-      {
-        wxTheApp->Yield();
-      }
-    }
-    else
-    {
-      wxThread::This()->Yield();
+      wxTheApp->SafeYield(window, true);
     }
   }
 
