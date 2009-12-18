@@ -312,6 +312,8 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
       <property name="fold.preprocessor"> 0 </property>
     </properties>
+
+    <comments begin1="--" />
   </lexer>
     
   <lexer
