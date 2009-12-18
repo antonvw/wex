@@ -3,7 +3,8 @@
 <!--
 File:    lexers.xml
 Purpose: Lexers configuration for wxextension.
-         See scintilla v1.75 (www.scintilla.org) for explanation of style numbers.
+         See scintilla v1.75 (www.scintilla.org) for explanation of 
+         style numbers.
 Author:  Anton van Wezenbeek
 RCS-ID:  $Id$
 
@@ -19,9 +20,10 @@ without the written consent of the copyright owner.
  Each lexer might contain the next elements:
  1) <colourings>. Colouring styles for this lexer. 
     The attribute 'no' contains the scintilla styles.
-    This attribute lists all styles that will have the style specifier that follows,
-    separated by a comma sign (,).
-    The value contains the scintilla style specifier. It can have the next values:
+    This attribute lists all styles that will have the style specifier that 
+    follows, separated by a comma sign (,).
+    The value contains the scintilla style specifier. 
+    It can have the next values:
     bold turns on bold
     italic turns on italics
     fore:[name or #RRGGBB] sets the foreground colour
@@ -30,8 +32,8 @@ without the written consent of the copyright owner.
     size:[num] sets the font size in points
     eol turns on eol filling
     underline turns on underlining
- 2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can explicitly
-    express the set by adding :<setno> after the keyword.
+ 2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
+    explicitly express the set by adding :<setno> after the keyword.
  3) <properties>. Properties for this lexer. This field
     is built of two fields, separated by an equal sign (=).
     The first field contains the scintilla property key.
@@ -116,12 +118,15 @@ without the written consent of the copyright owner.
     <marker no="30"> 2,light grey,white </marker>
     <marker no="31"> 6,light grey,white </marker>
     <indicator no="3"> 6 </indicator>
-    <style no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> fore:black,size:10,face:courier new </style>
-    <!-- this style is used for placing edge line, font should equal font used for code -->
+    <style no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> 
+      fore:black,size:10,face:courier new </style>
+    <!-- this style is used for placing edge line, 
+         font should equal font used for code -->
     <style no="32"> size:10,face:courier new </style>
     <style no="34"> back:yellow,size:10,face:courier new </style>
     <style no="36"> size:6 </style>
-    <hex no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> fore:black,size:10,face:courier new </hex>
+    <hex no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> 
+      fore:black,size:10,face:courier new </hex>
     <hex no="34"> back:red,size:10,face:courier new </hex>
   </global>
   
@@ -149,13 +154,15 @@ without the written consent of the copyright owner.
     #define wxSTC_C_COMMENTDOCKEYWORD 17
     #define wxSTC_C_COMMENTDOCKEYWORDERROR 18
     #define wxSTC_C_GLOBALCLASS 19
-    TODO the php, js and asp files should be parsed as embedded hypertext. However
-    currently they show underlined lines if doing so.
+    TODO the php, js and asp files should be parsed as embedded hypertext. 
+    However currently they show underlined lines if doing so.
     -->
     <colourings>
       <colouring no="0"> fore:black,size:8,face:courier new </colouring>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
-      <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,size:8,eol </colouring>
+      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
+      <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,size:8,eol 
+      </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
       <colouring no="6"> fore:blue </colouring>
@@ -174,30 +181,40 @@ without the written consent of the copyright owner.
     ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
     return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
     template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
-    union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 wmain:0
-    adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 binary_search:1
-    bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 copy_backward:1
-    count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 equal_to:1
-    erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 for_each:1
-    front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 greater:1
+    union:0 unsigned:0 using:0 virtual:0 void:0 volatile:0 wchar_t:0 while:0 
+    wmain:0
+    adjacent_find:1 array:1 at:1 back:1 back_insert_iterator:1 begin:1 
+    binary_search:1
+    bind1st:1 bind2nd:1 bitset:1 capacity:1 clear:1 const_iterator:1 copy:1 
+    copy_backward:1
+    count:1 count_if:1 deque:1 divides:1 empty:1 end:1 equal:1 equal_range:1 
+    equal_to:1
+    erase:1 fill:1 fill_n:1 find:1 find_end:1 find_first_of:1 find_if:1 
+    for_each:1
+    front:1 front_insert_iterator:1 generate:1 generate_n:1 get_allocator:1 
+    greater:1
     greater_equal:1 includes:1 inplace_merge:1 insert:1 istream_iterator:1 
-    istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 lexicographical_compare:1
-    list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 make_pair:1
+    istreambuf_iterator:1 iter_swap:1 iterator:1 less:1 less_equal:1 
+    lexicographical_compare:1
+    list:1 logical_and:1 logical_not:1 logical_or:1 lower_bound:1 make_heap:1 
+    make_pair:1
     map:1 max:1 max_element:1 max_size:1  mem_fun:1 mem_fun_ref:1 merge:1
-    min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 multiset:1
+    min:1 min_element:1 minus:1 mismatch:1 modulus:1 multimap:1 multiplies:1 
+    multiset:1
     negate:1 next_permutation:1 not1:1 not2:1 not_equal_to:1 nth_element:1
     ostream_iterator:1 ostreambuf_iterator:1
     partial_sort:1 partial_sort_copy:1 partition:1
     plus:1 pop_back:1 pop_front:1 pop_heap:1 prev_permutation:1 priority_queue:1
     ptr_fun:1 push_back:1 push_front:1 push_heap:1 queue:1
-    random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 remove_if:1
+    random_shuffle:1 rbegin:1 remove:1 remove_copy:1 remove_copy_if:1 
+    remove_if:1
     rend:1 replace:1 replace_copy:1 replace_copy_if:1 replace_if:1 reserve:1
     reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
     search:1 search_n:1 set:1
     set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
     size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
-    swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 valarray:1
-    vector:1
+    swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
+    valarray:1 vector:1
     </keywords>
   
     <properties>
@@ -216,7 +233,8 @@ without the written consent of the copyright owner.
   
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
       <colouring no="6"> fore:blue </colouring>
@@ -226,14 +244,22 @@ without the written consent of the copyright owner.
     </colourings>
   
     <keywords>    
-    ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL CLASS CONST
-    CONSTRUCTOR CONTAINS DEFAULT DESTRUCTOR DISPID DISPINTERFACE DIV DO DOWNTO DYNAMIC
-    ELSE END EXCEPT EXPORT EXPORTS EXTERNAL FAR FILE FINALIZATION FINALLY FOR FORWARD
-    FUNCTION GOTO IF IMPLEMENTATION IMPLEMENTS IN INDEX INHERITED INITIALIZATION INLINE INTERFACE
-    IS LABEL LIBRARY MESSAGE MOD NAME NEAR NIL NODEFAULT NOT OBJECT OF OR OUT OVERLOAD
-    OVERRIDE PACKAGE PACKED PASCAL PRIVATE PROCEDURE PROGRAM PROPERTY PROTECTED PUBLIC PUBLISHED RAISE
-    READ READONLY RECORD REGISTER REINTRODUCE REPEAT REQUIRES RESIDENT RESOURCESTRING SAFECALL SET
-    SHL SHR STDCALL STORED STRING THEN THREADVAR TO TRY TYPE UNIT UNTIL USES VAR VIRTUAL
+    ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
+    CLASS CONST
+    CONSTRUCTOR CONTAINS DEFAULT DESTRUCTOR DISPID DISPINTERFACE DIV DO DOWNTO 
+    DYNAMIC
+    ELSE END EXCEPT EXPORT EXPORTS EXTERNAL FAR FILE FINALIZATION FINALLY FOR 
+    FORWARD
+    FUNCTION GOTO IF IMPLEMENTATION IMPLEMENTS IN INDEX INHERITED INITIALIZATION
+    INLINE INTERFACE
+    IS LABEL LIBRARY MESSAGE MOD NAME NEAR NIL NODEFAULT NOT OBJECT OF OR OUT 
+    OVERLOAD
+    OVERRIDE PACKAGE PACKED PASCAL PRIVATE PROCEDURE PROGRAM PROPERTY PROTECTED 
+    PUBLIC PUBLISHED RAISE
+    READ READONLY RECORD REGISTER REINTRODUCE REPEAT REQUIRES RESIDENT 
+    RESOURCESTRING SAFECALL SET
+    SHL SHR STDCALL STORED STRING THEN THREADVAR TO TRY TYPE UNIT UNTIL USES VAR
+    VIRTUAL
     WHILE WITH WRITE WRITELN WRITEONLY XOR BOOLEAN CHAR INTEGER REAL
     </keywords>
   
@@ -265,7 +291,8 @@ without the written consent of the copyright owner.
       <colouring no="1"> bold </colouring>
       <colouring no="3"> fore:red </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
     </colourings>
     
     <keywords>    
@@ -273,9 +300,10 @@ without the written consent of the copyright owner.
       begin body case constant declare delay delta digits do else elsif
       end entry exception exit for function generic goto if in interface
       israise limited loop mod new not null of or others out
-      overriding pragma private procedure protected range record rem renames requeue return reverse
-      select separate subtype synchronized tagged task terminate then type until use
-      when while with xor
+      overriding pragma private procedure protected range record rem renames 
+      requeue return reverse
+      select separate subtype synchronized tagged task terminate then type until
+      use when while with xor
     </keywords>    
     
     <properties>
@@ -308,7 +336,8 @@ without the written consent of the copyright owner.
     -->
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="2"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="2"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
       <colouring no="3"> fore:red </colouring>
       <colouring no="4"> bold </colouring>
       <colouring no="5"> fore:blue </colouring>
@@ -317,8 +346,10 @@ without the written consent of the copyright owner.
     </colourings>
   
     <keywords>    
-    alias bg case cd cp diff do done echo elif else esac exit export fg fi find for function
-    help history if in jobs kill logout mount pwd rm select set sleep source tail test then
+    alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
+    for function
+    help history if in jobs kill logout mount pwd rm select set sleep source 
+    tail test then
     time ulimit umount umask unalias unset until while
     <!--
      The next keywords are .po keywords. Currently they are
@@ -360,7 +391,8 @@ without the written consent of the copyright owner.
     -->
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
       <colouring no="2"> fore:red </colouring>
       <colouring no="3"> fore:blue </colouring>
       <colouring no="4"> fore:brown </colouring>
@@ -373,12 +405,18 @@ without the written consent of the copyright owner.
     </colourings>
   
     <keywords>    
-    ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC BICB BIS BISB BIT BITB BLE BLO BLOS BLT
-    BMI BNE BPL BPT BR BVC BVS CLR CLRB C CCC CLC CLN CLV CLZ CMP CMPB COM COMB CSM DEC DECB DF DIV EMT HALT INC
-    INCB IOT JMP JSR MARK MFPD MFPS MFPT MOV MOVB MTPD MTPI MTPS MUL NEG NEGB NOP RESET ROL ROLB ROR RORB RTI RTS 
-    RTT SBC SBCB S SCC SEC SEN SEV SEZ SOB SPL SUB SWAB SXT TRAP TST TSTB TSTSET WAIT WRTLCK XOR
-    .ASCII .ASCIZ .ASECT .BLKB .BYTE .CROSS .CSECT .DSABL .ENABL .END .ENDC .EVEN .FLT2 .FLT4 .GLOBL .IDENT .IF 
-    .IFF .IFT .IFTF .IIF .INCLUDE .LIBRARY .LIMIT .LIST .NLIST .NOCROSS .ODD .PACKED .PAGE .PSECT .RAD50 .RADIX .REM 
+    ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
+    BICB BIS BISB BIT BITB BLE BLO BLOS BLT
+    BMI BNE BPL BPT BR BVC BVS CLR CLRB C CCC CLC CLN CLV CLZ CMP CMPB COM COMB 
+    CSM DEC DECB DF DIV EMT HALT INC
+    INCB IOT JMP JSR MARK MFPD MFPS MFPT MOV MOVB MTPD MTPI MTPS MUL NEG NEGB 
+    NOP RESET ROL ROLB ROR RORB RTI RTS 
+    RTT SBC SBCB S SCC SEC SEN SEV SEZ SOB SPL SUB SWAB SXT TRAP TST TSTB 
+    TSTSET WAIT WRTLCK XOR
+    .ASCII .ASCIZ .ASECT .BLKB .BYTE .CROSS .CSECT .DSABL .ENABL .END .ENDC 
+    .EVEN .FLT2 .FLT4 .GLOBL .IDENT .IF 
+    .IFF .IFT .IFTF .IIF .INCLUDE .LIBRARY .LIMIT .LIST .NLIST .NOCROSS .ODD 
+    .PACKED .PAGE .PSECT .RAD50 .RADIX .REM 
     .RESTORE .SBTTL .TITLE .WEAK .WORD
     MN SO DO PC MS CC SP R1 R2 R3 R4 R5
     </keywords>
@@ -516,7 +554,8 @@ without the written consent of the copyright owner.
       <colouring no="1"> bold </colouring>
       <colouring no="5"> fore:red </colouring>
       <colouring no="6,7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
       <colouring no="18"> fore:#0000FF,back:#FFEFBF </colouring>
       <colouring no="19"> fore:#FF00FF,back:#FFEFFF </colouring>
       <colouring no="104"> fore:#007F00,italic,back:#FFF8F8 </colouring>
@@ -526,7 +565,8 @@ without the written consent of the copyright owner.
       <colouring no="121"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
       <colouring no="122"> fore:#CC9900,back:#FFF8F8 </colouring>
       <colouring no="123"> fore:#00007F,italic,back:#FFF8F8 </colouring>
-      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic,size:8 </colouring>
+      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic,size:8 
+      </colouring>
       <colouring no="126"> fore:#007F00,italic,back:#FFF8F8 </colouring>
       <colouring no="127"> fore:#000000,back:#FFF8F8 </colouring>
     </colourings>
@@ -550,7 +590,8 @@ without the written consent of the copyright owner.
       <colouring no="5"> fore:red </colouring>
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
     </colourings>
     
     <properties>
@@ -559,7 +600,8 @@ without the written consent of the copyright owner.
       <property name="fold.compact"> 1 </property>
     </properties>
     
-    <!-- xml comments cannot be added, but don't need to, they are added in the source -->
+    <!-- xml comments cannot be added, but don't need to, 
+         they are added in the source -->
   </lexer>
   
   <lexer
@@ -591,7 +633,8 @@ without the written consent of the copyright owner.
     -->
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
       <colouring no="6"> fore:blue </colouring>
@@ -679,7 +722,8 @@ without the written consent of the copyright owner.
     -->
     <colourings>
       <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol </colouring>
+      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      </colouring>
       <colouring no="2"> fore:grey </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
