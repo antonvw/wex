@@ -66,7 +66,10 @@ void wxExListItemWithFileName::Insert(long index)
 #endif
   }
 
-  SetImage(m_FileName.GetIconID());
+  if (m_FileName.GetStat().IsOk())
+  {
+    SetImage(m_FileName.GetIconID());
+  }
 
   Update();
 
@@ -76,7 +79,7 @@ void wxExListItemWithFileName::Insert(long index)
   }
 }
 
-const wxExFileStatistics& wxExListItemWithFileName::Run(const wxExTool& tool)
+const wxExFileStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
 {
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(m_FileName.GetFullPath());
@@ -92,9 +95,9 @@ const wxExFileStatistics& wxExListItemWithFileName::Run(const wxExTool& tool)
       {
         Update();
       }
-
-      m_Statistics += file.GetStatistics();
     }
+
+    return file.GetStatistics();
   }
   else
   {
@@ -102,17 +105,15 @@ const wxExFileStatistics& wxExListItemWithFileName::Run(const wxExTool& tool)
 
     if (dir.FindFiles())
     {
-      m_Statistics += dir.GetStatistics();
-
       // Here we show the counts of individual folders on the top level.
       if (tool.IsCount() && GetListView()->GetSelectedItemCount() > 1)
       {
-        tool.Log(&m_Statistics.GetElements(), m_FileName.GetFullPath());
+        tool.Log(&dir.GetStatistics().GetElements(), m_FileName.GetFullPath());
       }
     }
-  }
 
-  return m_Statistics;
+    return dir.GetStatistics();
+  }
 }
 
 void wxExListItemWithFileName::SetReadOnly(bool readonly)

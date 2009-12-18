@@ -20,7 +20,6 @@
 /// It allows you to run tools on the item and keeps statistics when running.
 class wxExListItemWithFileName : public wxExListItem
 {
-  friend class wxExDirWithListView; // wxExDirWithListView uses m_Statistics directly.
 public:
   /// Constructor.
   wxExListItemWithFileName(wxExListView* listview, const int itemnumber);
@@ -33,9 +32,6 @@ public:
   /// Gets the filename.
   const wxExFileName& GetFileName() const {return m_FileName;};
 
-  /// Gets the statistics.
-  const wxExFileStatistics& GetStatistics() const {return m_Statistics;};
-
   /// Inserts the item at index (if -1 at the end of the listview),
   /// and sets all attributes.
   void Insert(long index = -1);
@@ -44,7 +40,7 @@ public:
   bool IsReadOnly() const {return m_IsReadOnly;};
 
   /// Runs a tool on this item.
-  const wxExFileStatistics& Run(const wxExTool& tool);
+  const wxExFileStatistics Run(const wxExTool& tool);
 
   /// Updates all attributes.
   void Update();
@@ -55,7 +51,6 @@ private:
   void SetReadOnly(bool readonly);
 
   wxExFileName m_FileName;
-  wxExFileStatistics m_Statistics;
   const wxString m_FileSpec;
   bool m_IsReadOnly;
 };
