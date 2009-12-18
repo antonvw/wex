@@ -124,9 +124,10 @@ Frame::Frame()
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
   menuView->AppendCheckItem(ID_VIEW_PROJECTS, _("&Projects"));
   menuView->AppendCheckItem(ID_VIEW_DIRCTRL, _("&Explorer"));
-  menuView->AppendCheckItem(ID_VIEW_OUTPUT, _("&Output"));
-  menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
   menuView->AppendCheckItem(ID_VIEW_HISTORY, _("&History"));
+  menuView->AppendCheckItem(ID_VIEW_OUTPUT, _("&Output"));
+  menuView->AppendSeparator();
+  menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
 #ifdef __WXMSW__
   wxMenu *menuListView = new wxMenu;
   menuListView->AppendCheckItem(wxID_VIEW_LIST, _("&List"));
