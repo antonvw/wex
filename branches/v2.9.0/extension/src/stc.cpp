@@ -632,7 +632,7 @@ int wxExSTC::ConfigDialog(
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
-    items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
     items.push_back(wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
 
     items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
@@ -693,13 +693,13 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet()
 {
-  if (!wxConfigBase::Get()->Exists(_("CallTip")))
+  if (!wxConfigBase::Get()->Exists(_("Calltip")))
   {
     wxConfigBase::Get()->SetRecordDefaults(true);
   }
 
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
-    _("CallTip"), wxColour("YELLOW")));
+    _("Calltip"), wxColour("YELLOW")));
 
   SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
   SetEdgeColour(wxConfigBase::Get()->ReadObject(
