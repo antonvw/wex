@@ -580,9 +580,9 @@ int wxExSTC::ConfigDialog(
   }
 
   items.push_back(wxExConfigItem(
-    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge Column"), 80), page));
+    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
   items.push_back(wxExConfigItem(
-    _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge Column"), 80), page));
+    _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
 
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
@@ -701,6 +701,7 @@ void wxExSTC::ConfigGet()
     _("CallTip"), wxColour("YELLOW")));
 
   SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
+  SetEdgeColour(*wxGREEN); 
   SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE) == wxSTC_EDGE_LINE);
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
