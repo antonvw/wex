@@ -136,7 +136,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Statistics->Get("test") == 12);
   m_Statistics->Inc("test2");
   CPPUNIT_ASSERT(m_Statistics->Get("test2") == 1);
-  const wxExStatistics<long> copy(*m_Statistics);
+  wxExStatistics<long> copy(*m_Statistics);
   CPPUNIT_ASSERT(copy.Get("test2") == 1);
   m_Statistics->Clear();
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
