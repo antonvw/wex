@@ -594,7 +594,7 @@ int wxExSTC::ConfigDialog(
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
-  items.push_back(wxExConfigItem(_("WhiteSpace"), choices, true, page));
+  items.push_back(wxExConfigItem(_("Whitespace"), choices, true, page));
 
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
@@ -631,7 +631,7 @@ int wxExSTC::ConfigDialog(
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
-    items.push_back(wxExConfigItem(_("CallTip"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
     items.push_back(wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
 
     items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
@@ -692,13 +692,13 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet()
 {
-  if (!wxConfigBase::Get()->Exists(_("CallTip")))
+  if (!wxConfigBase::Get()->Exists(_("Calltip")))
   {
     wxConfigBase::Get()->SetRecordDefaults(true);
   }
 
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
-    _("CallTip"), wxColour("YELLOW")));
+    _("Calltip"), wxColour("YELLOW")));
 
   SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
   SetEdgeColour(wxConfigBase::Get()->ReadObject(
@@ -718,7 +718,7 @@ void wxExSTC::ConfigGet()
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
   SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-  SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
+  SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 
