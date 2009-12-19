@@ -595,7 +595,7 @@ int wxExSTC::ConfigDialog(
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
-  items.push_back(wxExConfigItem(_("WhiteSpace"), choices, true, page));
+  items.push_back(wxExConfigItem(_("Whitespace"), choices, true, page));
 
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
@@ -719,7 +719,7 @@ void wxExSTC::ConfigGet()
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
   SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-  SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("WhiteSpace"), wxSTC_WS_INVISIBLE));
+  SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 
