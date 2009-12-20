@@ -1467,7 +1467,9 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     skip = m_vi->OnChar(event);
   }
 
-  if (skip && GetReadOnly() && wxIsalnum(event.GetUnicodeKey()))
+  if (skip && 
+       GetReadOnly() && 
+       wxIsalnum(event.GetUnicodeKey()))
   {
 #if wxUSE_STATUSBAR
       wxExFrame::StatusText(_("Document is readonly"));
@@ -1477,7 +1479,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
   if (skip)
   {
-    if (event.GetUnicodeKey() == WXK_RETURN)
+    if (event.GetKeyCode() == WXK_RETURN)
     {
       CheckSmartIndentation();
     }
