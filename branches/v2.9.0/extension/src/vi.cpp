@@ -503,7 +503,7 @@ bool wxExVi::DoCommandRange(const wxString& command) const
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
 
-  if (cmd == NULL)
+  if (cmd == 0)
   {
     return false;
   }
