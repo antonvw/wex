@@ -10,7 +10,9 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#if wxUSE_TOOLTIPS
 #include <wx/tooltip.h> // for GetTip
+#endif
 #include <wx/extension/frame.h>
 #include <wx/extension/art.h>
 #include <wx/extension/frd.h>
@@ -632,6 +634,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             GetPane(i).m_Name, 
             event.GetPosition());
         }
+#if wxUSE_TOOLTIPS
         // Show tooltip if tooltip is available, and not yet tooltip presented.
         else if (event.Moving())
         {
@@ -646,6 +649,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             }
           }
         }
+#endif
       }
     }
   }

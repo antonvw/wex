@@ -244,9 +244,13 @@ Frame::Frame()
       wxDefaultPosition,
       wxSize(-1, m_ToolBar->GetToolSize().GetHeight())));
 
+#if wxUSE_TOOLTIPS
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
+#endif
   m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
+#if wxUSE_TOOLTIPS
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
+#endif
   m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
 #endif // wxUSE_CHECKBOX
 
