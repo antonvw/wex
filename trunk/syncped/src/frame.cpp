@@ -785,7 +785,12 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 void MDIFrame::OnTree(wxTreeEvent& event)
 {
   const wxString selection = m_DirCtrl->GetFilePath();
-  if (selection.empty()) return;
+
+  if (selection.empty()) 
+  {
+    event.Skip();
+    return;
+  }
 
   const wxExFileName filename(selection);
 
