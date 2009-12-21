@@ -349,32 +349,34 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 
   <!-- Todo: only add this target if USE_OTL is defined
     -->  
-  <exe id="syncodbcquery" template="wxgui,wxlike">
-    <define>$(VAR_USE_OTL)</define>
-    <sources>../syncodbcquery/src/app.cpp</sources>
-    <win32-res>../syncodbcquery/src/app.rc</win32-res>
-    <headers>../syncodbcquery/src/app.h</headers>
+  <if var="VAR_USE_OTL=='wxExUSE_OTL'">
+    <exe id="syncodbcquery" template="wxgui,wxlike">
+      <define>$(VAR_USE_OTL)</define>
+      <sources>../syncodbcquery/src/app.cpp</sources>
+      <win32-res>../syncodbcquery/src/app.rc</win32-res>
+      <headers>../syncodbcquery/src/app.h</headers>
     
-    <include>../extension/include</include>
+      <include>../extension/include</include>
 
-    <library>wxex-rep</library>
-    <library>wxex</library>
+      <library>wxex-rep</library>
+      <library>wxex</library>
     
-    <if cond="PLATFORM_UNIX=='1'">
-      <sys-lib>odbc</sys-lib>
-    </if>
+      <if cond="PLATFORM_UNIX=='1'">
+        <sys-lib>odbc</sys-lib>
+      </if>
     
-    <install-to>/usr/local/bin/</install-to>
+      <install-to>/usr/local/bin/</install-to>
     
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-  </exe>
-  
+      <wx-lib>aui</wx-lib>
+      <wx-lib>stc</wx-lib>
+      <wx-lib>html</wx-lib>
+      <wx-lib>adv</wx-lib>
+      <wx-lib>xml</wx-lib> 
+      <wx-lib>core</wx-lib>
+      <wx-lib>base</wx-lib>
+    </exe>
+  </if>
+
   <exe id="syncsocketserver" template="wxgui,wxlike">
     <sources>../syncsocketserver/src/app.cpp</sources>
     <win32-res>../syncsocketserver/src/app.rc</win32-res>
