@@ -142,7 +142,7 @@ void wxExAppTestFixture::testMethods()
     wxLogMessage("No lexers available");
   }
 
-  CPPUNIT_ASSERT(wxExLog::Get()->Log("hello from wxExtension test"));
+  wxExLog::Get()->Log("hello from wxExtension test");
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("t     es   t") == "t es t");

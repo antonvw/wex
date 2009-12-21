@@ -19,10 +19,10 @@
 void wxExReportAppTestFixture::setUp()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  m_ListView = new wxExListViewWithFrame(frame, wxExListViewWithFrame::LIST_PROCESS);
+  m_ListView = new wxExListViewWithFrame(frame, frame, wxExListViewWithFrame::LIST_PROCESS);
   m_Dir = new wxExDirWithListView(m_ListView, "./");
   m_Process = new wxExProcess(m_ListView, "wc test.h");
-  m_STC = new wxExSTCWithFrame(frame, wxExFileName(TEST_FILE));
+  m_STC = new wxExSTCWithFrame(frame, frame, wxExFileName(TEST_FILE));
 }
 
 void wxExReportAppTestFixture::testConstructors()
