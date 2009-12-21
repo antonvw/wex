@@ -472,6 +472,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   else if (event.GetId() >= wxID_VIEW_DETAILS &&  event.GetId() <= wxID_VIEW_LIST)
   {
     wxExForEach(m_NotebookWithProjects, event.GetId());
+    wxExForEach(m_NotebookWithLists, event.GetId());
     m_History->SetStyle(event.GetId());
   }
   // the rest
@@ -825,27 +826,15 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
 void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  wxExListViewWithFrame* project = GetProject();
+  wxExListView* list = GetFocusedListView();
 
   if (event.GetId() >= wxID_VIEW_DETAILS && event.GetId() <= wxID_VIEW_LIST)
   {
-    event.Enable(
-      (project != NULL && project->IsShown()) ||
-      m_History->IsShown());
+    event.Enable(list != NULL && list->IsShown());
 
-    if (project != NULL && project->IsShown())
+    if (list != NULL && list->IsShown())
     {
-      switch (project->GetWindowStyle() & wxLC_MASK_TYPE)
-      {
-        case wxLC_LIST: event.Check(event.GetId() == wxID_VIEW_LIST); break;
-        case wxLC_REPORT: event.Check(event.GetId() == wxID_VIEW_DETAILS); break;
-        case wxLC_SMALL_ICON: event.Check(event.GetId() == wxID_VIEW_SMALLICONS); break;
-        default: wxFAIL;
-      }
-    }
-    else if (m_History->IsShown())
-    {
-      switch (m_History->GetWindowStyle() & wxLC_MASK_TYPE)
+      switch (list->GetWindowStyle() & wxLC_MASK_TYPE)
       {
         case wxLC_LIST: event.Check(event.GetId() == wxID_VIEW_LIST); break;
         case wxLC_REPORT: event.Check(event.GetId() == wxID_VIEW_DETAILS); break;
@@ -855,7 +844,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     }
   }
   else switch (event.GetId())
-    {
+  {
     case wxID_EXECUTE: 
       event.Enable( wxExProcess::IsSelected() &&
                    !ProcessIsRunning()); 
@@ -877,13 +866,13 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
     case ID_PROJECT_CLOSE:
     case ID_PROJECT_SAVEAS:
-      event.Enable(project != NULL && project->IsShown());
+      event.Enable(GetProject() != NULL && GetProject()->IsShown());
     break;
     case ID_PROJECT_OPENTEXT:
-      event.Enable(project != NULL && !project->GetFileName().GetFullPath().empty());
+      event.Enable(GetProject() != NULL && !GetProject()->GetFileName().GetFullPath().empty());
       break;
     case ID_PROJECT_SAVE:
-      event.Enable(project != NULL && project->GetContentsChanged());
+      event.Enable(GetProject() != NULL && GetProject()->GetContentsChanged());
       break;
 
     case ID_RECENT_FILE_MENU:
