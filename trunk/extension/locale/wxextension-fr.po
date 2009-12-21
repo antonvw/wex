@@ -1,6 +1,6 @@
 # File:    extension-nl.po
 # Purpose: Translation for wxextension library to dutch.
-# RCS-ID:  $Id: wxextension-nl.po 2559 2009-12-20 15:41:15Z antonvw $
+# RCS-ID:  $Id$
 # Copyright (c) 1998-2009 Anton van Wezenbeek
 msgid ""
 msgstr ""
