@@ -347,9 +347,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
 
-  <!-- Todo: only add this target if USE_OTL is defined
-    -->  
-  <if var="VAR_USE_OTL=='wxExUSE_OTL'">
+  <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
     <exe id="syncodbcquery" template="wxgui,wxlike">
       <define>$(VAR_USE_OTL)</define>
       <sources>../syncodbcquery/src/app.cpp</sources>
