@@ -115,13 +115,29 @@ bool wxExVi::DoCommand(const wxString& command)
   if (command.EndsWith("cw"))
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
-    InsertMode();
+
+    if (!m_InsertText.empty())
+    {
+      m_STC->ReplaceSelection(m_InsertText);
+    }
+    else
+    {
+      InsertMode();
+    }
   }
   else if (command == "cc")
   {
     m_STC->Home();
     m_STC->DelLineRight();
-    InsertMode();
+
+    if (!m_InsertText.empty())
+    {
+      m_STC->ReplaceSelection(m_InsertText);
+    }
+    else
+    {
+      InsertMode();
+    }
   }
   else if (command.EndsWith("dd"))
   {
@@ -217,14 +233,32 @@ bool wxExVi::DoCommand(const wxString& command)
           handled = false;
         }
         break;
-      case 'a': InsertMode(command.Last(), repeat); break;
+      case 'a': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat); 
+        }
+        break;
       case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
       case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
       case 'g': m_STC->DocumentStart(); break;
       case 'h': 
         for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
         break;
-      case 'i': InsertMode(command.Last(), repeat); break;
+      case 'i': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat); 
+        }
+        break;
       case 'j': 
         for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
         break;
@@ -239,7 +273,16 @@ bool wxExVi::DoCommand(const wxString& command)
         for (int i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
         break;
-      case 'o': InsertMode(command.Last(), repeat); break;
+      case 'o': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat); 
+        }
+        break;
       case 'p': 
         if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
         {
@@ -262,8 +305,26 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
 
-      case 'A': InsertMode(command.Last(), repeat); break;
-      case 'C': InsertMode(command.Last()); break;
+      case 'A': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat);
+        }
+        break;
+      case 'C': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last()); 
+        }
+        break;
       case 'D': m_STC->DelLineRight(); break;
       case 'G': 
         if (repeat > 1)
@@ -276,14 +337,32 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
       case 'H': m_STC->GotoLine(m_STC->GetFirstVisibleLine()); break;
-      case 'I': InsertMode(command.Last(), repeat); break;
+      case 'I': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat); 
+        }
+        break;
       case 'M': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2); break;
       case 'L': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);
         break;
-      case 'O': InsertMode(command.Last(), repeat); break;
+      case 'O': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat); 
+        }
+        break;
       case 'P':
         if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
         {
@@ -295,7 +374,16 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         m_STC->Paste();
         break;
-      case 'R': InsertMode(command.Last(), repeat, true); break;
+      case 'R': 
+        if (!m_InsertText.empty())
+        {
+          m_STC->AddText(m_InsertText);
+        }
+        else
+        {
+          InsertMode(command.Last(), repeat, true); 
+        }
+        break;
       case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
@@ -711,7 +799,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     case WXK_ESCAPE:
       if (m_InsertMode)
       {
-        // Add extra inserts if necesrary.        
+        // Add extra inserts if necessary.        
         for (int i = 1; i < m_InsertRepeatCount; i++)
         {
           m_STC->AddText(m_InsertText);
@@ -740,14 +828,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 void wxExVi::Repeat()
 {
-  if (!m_InsertText.empty())
-  {
-    for (int i = 0; i < m_InsertRepeatCount; i++)
-    {
-      m_STC->AddText(m_InsertText);
-    }
-  }
-  else if (!m_LastCommand.empty())
+  if (!m_LastCommand.empty())
   {
     DoCommand(m_LastCommand);
   }
