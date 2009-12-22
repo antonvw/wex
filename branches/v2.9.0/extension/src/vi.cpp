@@ -796,19 +796,26 @@ bool wxExVi::Substitute(
 
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
-  m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
+  const int target_end = m_STC->PositionFromLine(end_line);
+  m_STC->SetTargetEnd(target_end);
 
   const bool is_re = m_STC->IsTargetRE(replacement);
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
-    const int start = m_STC->GetTargetStart();
+    const int target_start = m_STC->GetTargetStart();
+
+    if (target_start >= target_end)
+    {
+      break;
+    }
+
     const int length = (is_re ? 
       m_STC->ReplaceTargetRE(replacement): 
       m_STC->ReplaceTarget(replacement));
 
-    m_STC->SetTargetStart(start + length);
-    m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
+    m_STC->SetTargetStart(target_start + length);
+    m_STC->SetTargetEnd(target_end);
 
     nr_replacements++;
   }
