@@ -46,7 +46,7 @@ private:
   bool Delete(
     const wxString& begin_address, 
     const wxString& end_address) const;
-  bool DoCommand(const wxString& command);
+  bool DoCommand(const wxString& command, bool dot);
   void DoCommandFind(const wxUniChar& c);
   void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
