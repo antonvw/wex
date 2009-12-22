@@ -68,10 +68,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- libraries -->
   <lib id="wxex" template="wx-lib,wxlike">
-    <!-- we could add sources depending on variables using this construct:
-    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-    </if>
-    -->
     <libname>wxex09</libname>
     
     <define>$(VAR_USE_OTL)</define>
@@ -102,7 +98,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/log.cpp</sources>
     <sources>../extension/src/notebook.cpp</sources>
     <sources>../extension/src/menu.cpp</sources>
+    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
     <sources>../extension/src/otl.cpp</sources>
+    </if>
     <sources>../extension/src/printing.cpp</sources>
     <sources>../extension/src/renderer.cpp</sources>
     <sources>../extension/src/shell.cpp</sources>
@@ -134,6 +132,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/log.h</headers>
     <headers>../extension/include/wx/extension/menu.h</headers>
     <headers>../extension/include/wx/extension/notebook.h</headers>
+    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
+    <headers>../extension/include/wx/extension/otl.h</headers>
+    </if>
     <headers>../extension/include/wx/extension/printing.h</headers>
     <headers>../extension/include/wx/extension/renderer.h</headers>
     <headers>../extension/include/wx/extension/shell.h</headers>
@@ -232,73 +233,75 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
   
   <!-- tests -->
-  <exe id="wxex-test-base" template="wxgui,wxlike">
-    <sources>../extension/test/base/main.cpp</sources>
-    <sources>../extension/test/base/test.cpp</sources>
-    <headers>../extension/test/base/test.h</headers>
+  <if cond="PLATFORM_UNIX=='1'">
+    <exe id="wxex-test-base" template="wxgui,wxlike">
+      <sources>../extension/test/base/main.cpp</sources>
+      <sources>../extension/test/base/test.cpp</sources>
+      <headers>../extension/test/base/test.h</headers>
+      
+      <include>/usr/include/cppunit</include>
+      <include>../extension/include</include>
+      
+      <library>wxex</library>
+      
+      <sys-lib>cppunit</sys-lib>
+      <wx-lib>aui</wx-lib>
+      <wx-lib>stc</wx-lib>
+      <wx-lib>html</wx-lib>
+      <wx-lib>adv</wx-lib>
+      <wx-lib>xml</wx-lib> 
+      <wx-lib>core</wx-lib>
+      <wx-lib>base</wx-lib>
+    </exe>
     
-    <include>/usr/include/cppunit</include>
-    <include>../extension/include</include>
+    <exe id="wxex-test-app" template="wxgui,wxlike">
+      <sources>../extension/test/app/main.cpp</sources>
+      <sources>../extension/test/app/test.cpp</sources>
+      
+      <headers>../extension/test/app/test.h</headers>
+      
+      <include>/usr/include/cppunit</include>
+      <include>../extension/include</include>
+      
+      <library>wxex</library>
+      
+      <sys-lib>cppunit</sys-lib>
+      
+      <wx-lib>aui</wx-lib>
+      <wx-lib>stc</wx-lib>
+      <wx-lib>html</wx-lib>
+      <wx-lib>adv</wx-lib>
+      <wx-lib>xml</wx-lib> 
+      <wx-lib>core</wx-lib>
+      <wx-lib>base</wx-lib>
+    </exe>
     
-    <library>wxex</library>
-    
-    <sys-lib>cppunit</sys-lib>
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-  </exe>
-  
-  <exe id="wxex-test-app" template="wxgui,wxlike">
-    <sources>../extension/test/app/main.cpp</sources>
-    <sources>../extension/test/app/test.cpp</sources>
-    
-    <headers>../extension/test/app/test.h</headers>
-    
-    <include>/usr/include/cppunit</include>
-    <include>../extension/include</include>
-    
-    <library>wxex</library>
-    
-    <sys-lib>cppunit</sys-lib>
-    
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-  </exe>
-  
-  <exe id="wxex-test-rep" template="wxgui,wxlike">
-    <sources>../extension/test/report/main.cpp</sources>
-    <sources>../extension/test/report/test.cpp</sources>
-    <headers>../extension/test/report/test.h</headers>
-    
-    <include>/usr/include/cppunit</include>
-    <include>../extension/include</include>
-    
-    <library>wxex-rep</library>
-    <library>wxex</library>
-    
-    <if cond="PLATFORM_UNIX=='1'">
-      <sys-lib>odbc</sys-lib>
-    </if>
-    
-    <sys-lib>cppunit</sys-lib>
-    
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-  </exe>
+    <exe id="wxex-test-rep" template="wxgui,wxlike">
+      <sources>../extension/test/report/main.cpp</sources>
+      <sources>../extension/test/report/test.cpp</sources>
+      <headers>../extension/test/report/test.h</headers>
+      
+      <include>/usr/include/cppunit</include>
+      <include>../extension/include</include>
+      
+      <library>wxex-rep</library>
+      <library>wxex</library>
+      
+      <if cond="PLATFORM_UNIX=='1'">
+        <sys-lib>odbc</sys-lib>
+      </if>
+      
+      <sys-lib>cppunit</sys-lib>
+      
+      <wx-lib>aui</wx-lib>
+      <wx-lib>stc</wx-lib>
+      <wx-lib>html</wx-lib>
+      <wx-lib>adv</wx-lib>
+      <wx-lib>xml</wx-lib> 
+      <wx-lib>core</wx-lib>
+      <wx-lib>base</wx-lib>
+    </exe>
+  </if>
   
   <!-- run the tests -->
   <if cond="PLATFORM_UNIX=='1'">
