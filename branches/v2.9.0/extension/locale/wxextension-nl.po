@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: wxextension v0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-19 14:12+0100\n"
-"PO-Revision-Date: 2009-12-19 14:12+0100\n"
+"PO-Revision-Date: 2009-12-22 19:13+0100\n"
 "Last-Translator: anton van wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -375,7 +375,7 @@ msgstr "Vorige zoeken"
 #: ../src/vi.cpp:81
 #, c-format
 msgid "%d fewer lines"
-msgstr "%d minder regels"
+msgstr "%d regels minder"
 
 #: ../src/vi.cpp:664
 #, c-format
