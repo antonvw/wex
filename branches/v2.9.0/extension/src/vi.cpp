@@ -85,7 +85,7 @@ bool wxExVi::Delete(
   return true;
 }
 
-bool wxExVi::DoCommand(const wxString& command)
+bool wxExVi::DoCommand(const wxString& command, bool dot)
 {
   if (command.StartsWith(":"))
   {
@@ -116,7 +116,7 @@ bool wxExVi::DoCommand(const wxString& command)
   {
     for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
 
-    if (!m_InsertText.empty())
+    if (dot && !m_InsertText.empty())
     {
       m_STC->ReplaceSelection(m_InsertText);
     }
@@ -130,7 +130,7 @@ bool wxExVi::DoCommand(const wxString& command)
     m_STC->Home();
     m_STC->DelLineRight();
 
-    if (!m_InsertText.empty())
+    if (dot && !m_InsertText.empty())
     {
       m_STC->ReplaceSelection(m_InsertText);
     }
@@ -234,7 +234,7 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
       case 'a': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -250,7 +250,7 @@ bool wxExVi::DoCommand(const wxString& command)
         for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
         break;
       case 'i': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -274,7 +274,7 @@ bool wxExVi::DoCommand(const wxString& command)
           m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
         break;
       case 'o': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -306,7 +306,7 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
 
       case 'A': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -316,7 +316,7 @@ bool wxExVi::DoCommand(const wxString& command)
         }
         break;
       case 'C': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -338,7 +338,7 @@ bool wxExVi::DoCommand(const wxString& command)
         break;
       case 'H': m_STC->GotoLine(m_STC->GetFirstVisibleLine()); break;
       case 'I': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -354,7 +354,7 @@ bool wxExVi::DoCommand(const wxString& command)
           m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);
         break;
       case 'O': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -375,7 +375,7 @@ bool wxExVi::DoCommand(const wxString& command)
         m_STC->Paste();
         break;
       case 'R': 
-        if (!m_InsertText.empty())
+        if (dot)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -770,7 +770,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       m_Command += event.GetUnicodeKey();
 
-      if (DoCommand(m_Command))
+      if (DoCommand(m_Command, false))
       {
         // Prevent motion command and the .dot command
         // to be stored as last command.
@@ -830,7 +830,7 @@ void wxExVi::Repeat()
 {
   if (!m_LastCommand.empty())
   {
-    DoCommand(m_LastCommand);
+    DoCommand(m_LastCommand, true);
   }
 }
 
