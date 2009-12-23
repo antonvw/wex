@@ -626,26 +626,35 @@ void wxExVi::InsertMode(
 
     switch ((int)c)
     {
-      case 'a': m_STC->CharRight(); break;
-      case 'i': break;
+      case 'a': m_STC->CharRight(); 
+        break;
+
+      case 'i': 
+        break;
+
       case 'o': 
         m_STC->LineEnd(); 
         m_STC->NewLine(); 
         break;
-      case 'A': m_STC->LineEnd(); break;
+      case 'A': m_STC->LineEnd(); 
+        break;
+
       case 'C': 
+      case 'R': 
         m_STC->SetSelectionStart(m_STC->GetCurrentPos());
         m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
         break;
+
       case 'I': 
         m_STC->Home(); 
         break;
+
       case 'O': 
         m_STC->Home(); 
         m_STC->NewLine(); 
         m_STC->LineUp(); 
         break;
-      case 'R': break;
+
       default: wxFAIL;
     }
 
