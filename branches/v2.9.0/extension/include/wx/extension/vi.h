@@ -55,7 +55,8 @@ private:
   void InsertMode(
     const wxUniChar c = 'i', 
     int repeat = 1,
-    bool overtype = false);
+    bool overtype = false,
+    bool dot = false);
   bool Move(
     const wxString& begin_address, 
     const wxString& end_address, 

@@ -230,14 +230,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'C': 
       case 'I': 
       case 'O': 
-        if (dot)
-        {
-          m_STC->AddText(m_InsertText);
-        }
-        else
-        {
-          InsertMode(command.Last(), repeat); 
-        }
+        InsertMode(command.Last(), repeat, false, dot); 
+        break;
+      case 'R': 
+        InsertMode(command.Last(), repeat, true, dot); 
         break;
 
       case '0': 
@@ -320,16 +316,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
         }
         m_STC->Paste();
-        break;
-      case 'R': 
-        if (dot)
-        {
-          m_STC->AddText(m_InsertText);
-        }
-        else
-        {
-          InsertMode(command.Last(), repeat, true); 
-        }
         break;
       case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
@@ -622,15 +608,21 @@ void wxExVi::GotoBrace()
   }
 }
 
-void wxExVi::InsertMode(const wxUniChar c, int repeat, bool overtype)
+void wxExVi::InsertMode(
+  const wxUniChar c, 
+  int repeat, 
+  bool overtype,
+  bool dot)
 {
   if (!m_STC->GetReadOnly())
   {
-    m_InsertMode = true;
-    m_InsertText.clear();
-    m_InsertRepeatCount = repeat;
-
-    m_STC->BeginUndoAction();
+    if (!dot)
+    {
+      m_InsertMode = true;
+      m_InsertText.clear();
+      m_InsertRepeatCount = repeat;
+      m_STC->BeginUndoAction();
+    }
 
     switch ((int)c)
     {
@@ -657,7 +649,14 @@ void wxExVi::InsertMode(const wxUniChar c, int repeat, bool overtype)
       default: wxFAIL;
     }
 
-    m_STC->SetOvertype(overtype);
+    if (dot)
+    {
+      m_STC->AddText(m_InsertText);
+    }
+    else
+    {
+      m_STC->SetOvertype(overtype);
+    }
   }
 }
 
