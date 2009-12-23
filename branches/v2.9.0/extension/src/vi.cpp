@@ -660,7 +660,14 @@ void wxExVi::InsertMode(
 
     if (dot)
     {
-      m_STC->AddText(m_InsertText);
+      if (c == 'R' || c == 'C')
+      {
+        m_STC->ReplaceSelection(m_InsertText);
+      }
+      else
+      {
+        m_STC->AddText(m_InsertText);
+      }
     }
     else
     {
