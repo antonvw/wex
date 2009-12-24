@@ -784,6 +784,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         m_STC->EndUndoAction();
         m_InsertMode = false;
       }
+
+      m_Command.clear();
       break;
    case WXK_RETURN:
       if (!m_InsertMode)
