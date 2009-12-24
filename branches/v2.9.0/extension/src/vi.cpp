@@ -145,11 +145,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command == "d0")
   {
-    m_STC->DelLineLeft();
+    m_STC->HomeExtend();
+    m_STC->Cut();
   }
   else if (command == "d$")
   {
-    m_STC->DelLineRight();
+    m_STC->LineEndExtend();
+    m_STC->Cut();
   }
   else if (command.EndsWith("dw"))
   {
@@ -288,7 +290,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         break;
 
-      case 'D': m_STC->DelLineRight(); break;
+      case 'D': 
+        m_STC->LineEndExtend();
+        m_STC->Cut();
+        break;
       case 'G': 
         if (repeat > 1)
         {
