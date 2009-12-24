@@ -46,7 +46,16 @@ void wxExVi::Delete(int lines) const
   const int end = m_STC->PositionFromLine(line + lines);
 
   m_STC->SetSelectionStart(start);
-  m_STC->SetSelectionEnd(end);
+
+  if (end != -1)
+  {
+    m_STC->SetSelectionEnd(end);
+  }
+  else
+  {
+    m_STC->DocumentEndExtend();
+  }
+
   m_STC->Cut();
 
   if (lines > 2)
