@@ -64,7 +64,8 @@ General
   - finally strip the executable using UPX
       http://upx.sourceforge.net/
 
-  - deploy under Windows using WinRAR
+  - deploy under Windows using JustZIPIt
+      http://free-backup-software.net/index.htm
 
 
 SVN hierarchy
