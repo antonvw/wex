@@ -56,12 +56,14 @@ void wxExVi::Delete(int lines) const
     m_STC->DocumentEndExtend();
   }
 
+  const int end_line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+
   m_STC->Cut();
 
   if (lines > 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
+    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), end_line - line));
 #endif
   }
 }
