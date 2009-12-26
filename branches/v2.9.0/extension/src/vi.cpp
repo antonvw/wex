@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi.cpp
-// Purpose:   Implementation of class wxExSTC vi mode
+// Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
 // Created:   2009-11-21
 // RCS-ID:    $Id$
