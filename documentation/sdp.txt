@@ -61,11 +61,13 @@ General
   - under linux gcc (Ubuntu 4.3.3-5ubuntu4) 4.3.3 and no IDE
     GNUMakefile generated using format gnu
 
-  - finally strip the executable using UPX
+  - finally strip the executable under Windows using UPX
       http://upx.sourceforge.net/
+    under Linux just strip it
 
   - deploy under Windows using JustZIPIt
       http://free-backup-software.net/index.htm
+    deploy under Linux using gzip and tar
 
 
 SVN hierarchy
