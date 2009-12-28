@@ -757,11 +757,15 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
             m_Command == "i" || 
             m_Command == "o" || 
             m_Command == "p" ||
+            m_Command == "x" ||
             m_Command == "A" || 
             m_Command == "C" || 
+            m_Command == "D" || 
             m_Command == "I" || 
             m_Command == "O" || 
-            m_Command == "R") 
+            m_Command == "R" || 
+            m_Command == "X" || 
+            m_Command == "~")
         {
           m_LastCommand = m_Command;
         }
