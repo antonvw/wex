@@ -347,6 +347,14 @@ void MDIFrame::NewFile(bool as_project)
   }
   else
   {
+#if wxUSE_CHECKBOX
+    if (GetHexModeCheckBox()->GetValue())
+    {
+      // In hex mode we cannot edit the file.
+      return;
+    }
+#endif
+
     key = text;
     page = new wxExSTCWithFrame(notebook, this);
 
