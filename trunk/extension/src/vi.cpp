@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      vi.cpp
-// Purpose:   Implementation of class wxExSTC vi mode
+// Purpose:   Implementation of class wxExVi
 // Author:    Anton van Wezenbeek
 // Created:   2009-11-21
 // RCS-ID:    $Id$
@@ -46,13 +46,24 @@ void wxExVi::Delete(int lines) const
   const int end = m_STC->PositionFromLine(line + lines);
 
   m_STC->SetSelectionStart(start);
-  m_STC->SetSelectionEnd(end);
+
+  if (end != -1)
+  {
+    m_STC->SetSelectionEnd(end);
+  }
+  else
+  {
+    m_STC->DocumentEndExtend();
+  }
+
+  const int end_line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+
   m_STC->Cut();
 
-  if (lines > 2)
+  if (lines >= 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
+    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), end_line - line));
 #endif
   }
 }
@@ -75,7 +86,7 @@ bool wxExVi::Delete(
   
   m_STC->Cut();
 
-  if (lines > 2)
+  if (lines >= 2)
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
@@ -145,11 +156,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command == "d0")
   {
-    m_STC->DelLineLeft();
+    m_STC->HomeExtend();
+    m_STC->Cut();
   }
   else if (command == "d$")
   {
-    m_STC->DelLineRight();
+    m_STC->LineEndExtend();
+    m_STC->Cut();
   }
   else if (command.EndsWith("dw"))
   {
@@ -288,7 +301,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         break;
 
-      case 'D': m_STC->DelLineRight(); break;
+      case 'D': 
+        m_STC->LineEndExtend();
+        m_STC->Cut();
+        break;
       case 'G': 
         if (repeat > 1)
         {
@@ -626,32 +642,48 @@ void wxExVi::InsertMode(
 
     switch ((int)c)
     {
-      case 'a': m_STC->CharRight(); break;
-      case 'i': break;
+      case 'a': m_STC->CharRight(); 
+        break;
+
+      case 'i': 
+        break;
+
       case 'o': 
         m_STC->LineEnd(); 
         m_STC->NewLine(); 
         break;
-      case 'A': m_STC->LineEnd(); break;
+      case 'A': m_STC->LineEnd(); 
+        break;
+
       case 'C': 
+      case 'R': 
         m_STC->SetSelectionStart(m_STC->GetCurrentPos());
         m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
         break;
+
       case 'I': 
         m_STC->Home(); 
         break;
+
       case 'O': 
         m_STC->Home(); 
         m_STC->NewLine(); 
         m_STC->LineUp(); 
         break;
-      case 'R': break;
+
       default: wxFAIL;
     }
 
     if (dot)
     {
-      m_STC->AddText(m_InsertText);
+      if (c == 'R' || c == 'C')
+      {
+        m_STC->ReplaceSelection(m_InsertText);
+      }
+      else
+      {
+        m_STC->AddText(m_InsertText);
+      }
     }
     else
     {
@@ -692,7 +724,7 @@ bool wxExVi::Move(
   
   const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   
-  if (lines > 2)
+  if (lines >= 2)
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d lines moved"), lines));
@@ -763,6 +795,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         m_STC->EndUndoAction();
         m_InsertMode = false;
       }
+
+      m_Command.clear();
       break;
    case WXK_RETURN:
       if (!m_InsertMode)
@@ -944,12 +978,20 @@ void wxExVi::Yank(int lines) const
   const int start = m_STC->PositionFromLine(line);
   const int end = m_STC->PositionFromLine(line + lines);
 
-  m_STC->CopyRange(start, end);
+  if (end != -1)
+  {
+    m_STC->CopyRange(start, end);
+  }
+  else
+  {
+    m_STC->CopyRange(start, m_STC->GetLastPosition());
+  }
 
-  if (lines > 2)
+  if (lines >= 2)
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
+    wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), 
+      wxExGetNumberOfLines(wxExClipboardGet()) - 1));
 #endif
   }
 }
@@ -973,7 +1015,7 @@ bool wxExVi::Yank(
   
   const int lines = end_line - begin_line;
 
-  if (lines > 2)
+  if (lines >= 2)
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
