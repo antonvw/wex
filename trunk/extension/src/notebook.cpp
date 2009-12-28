@@ -15,6 +15,7 @@
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
+#if wxUSE_AUI
 
 BEGIN_EVENT_TABLE(wxExNotebook, wxAuiNotebook)
   EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, wxExNotebook::OnNotebook)
@@ -235,4 +236,5 @@ bool wxExNotebook::SetPageText(
   return (page != NULL);
 }
 
+#endif // wxUSE_AUI
 #endif // wxUSE_GUI

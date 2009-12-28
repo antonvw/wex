@@ -528,6 +528,7 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 
 #endif // wxUSE_STATUSBAR
 
+#if wxUSE_AUI
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
@@ -557,6 +558,7 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
   m_Manager.Update();
 }
+#endif // wxUSE_AUI
 
 int wxExPane::m_Total = 0;
 
@@ -815,6 +817,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
+#if wxUSE_AUI
 // Cannot use wxNewId here, as these are used in a switch statement.
 enum
 {
@@ -927,5 +930,5 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
   event.Enable(!m_ComboBox->GetValue().empty());
 }
-
+#endif // wxUSE_AUI
 #endif // wxUSE_GUI

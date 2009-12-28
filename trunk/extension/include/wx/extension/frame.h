@@ -18,8 +18,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/aui/auibar.h>
-#include <wx/aui/auibook.h> // for wxAuiManager
+#include <wx/aui/auibar.h> // for wxAuiToolBar
+#include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
@@ -212,6 +212,7 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
+#if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes.
 class wxExManagedFrame : public wxExFrame
@@ -249,6 +250,7 @@ public:
 private:
   wxAuiManager m_Manager;
 };
+#endif
 
 #if wxUSE_STATUSBAR
 /// Offers a status bar with popup menu in relation to wxExFrame.
@@ -305,6 +307,7 @@ public:
 
 class ComboBox;
 
+#if wxUSE_AUI
 /// Offers a find toolbar, containing a find combobox, up and down arrows
 /// and checkboxes.
 /// The find combobox allows you to find in an wxExSTC
@@ -331,5 +334,6 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
+#endif // wxUSE_AUI
 #endif // wxUSE_GUI
 #endif
