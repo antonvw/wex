@@ -12,8 +12,8 @@
 #ifndef _EXSTCSHELL_H
 #define _EXSTCSHELL_H
 
-#include <wx/extension/stc.h>
 #include <list>
+#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 /// This class offers an wxExSTC with support for commands.

@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <algorithm>
-#include <ctype.h> // for isspace
+#include <cctype> // for isspace
 #include <wx/config.h>
 #include <wx/regex.h>
 #include <wx/extension/textfile.h>
