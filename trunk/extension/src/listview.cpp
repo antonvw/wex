@@ -11,7 +11,6 @@
 
 #include <wx/config.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
-#include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
