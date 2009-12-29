@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/cmdline.h> // for wxCmdLineParser
-#include <wx/config.h>
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/process.h>
@@ -38,11 +37,6 @@ bool App::OnInit()
   if (!wxExApp::OnInit())
   {
     return false;
-  }
-
-  if (!wxConfigBase::Get()->Exists(_("List Colour")))
-  {
-    wxConfigBase::Get()->Write(_("List Colour"), wxColour("RED"));
   }
 
   wxExProcess::InitCommandFromConfig();

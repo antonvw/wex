@@ -652,6 +652,11 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   case ID_OPTION_LIST_READONLY_COLOUR:
     {
+      if (!wxConfigBase::Get()->Exists(_("List Colour")))
+      {
+        wxConfigBase::Get()->Write(_("List Colour"), wxColour("RED"));
+      }
+
       std::vector<wxExConfigItem> v;
       v.push_back(wxExConfigItem(_("List Colour"), CONFIG_COLOUR));
 
