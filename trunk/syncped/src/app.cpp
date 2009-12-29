@@ -12,7 +12,6 @@
 #include <wx/cmdline.h> // for wxCmdLineParser
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
-#include <wx/extension/report/process.h>
 #include "app.h"
 #include "frame.h"
 
@@ -38,8 +37,6 @@ bool App::OnInit()
   {
     return false;
   }
-
-  wxExProcess::InitCommandFromConfig();
 
   wxExLog::Get()->SetLogging();
 
