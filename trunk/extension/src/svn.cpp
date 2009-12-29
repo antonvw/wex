@@ -348,32 +348,33 @@ wxExSVNType wxExSVN::GetType(int command_id) const
 
 void wxExSVN::Initialize()
 {
-  switch (m_Type)
+  if (m_Type != SVN_NONE)
   {
-    case SVN_NONE:     m_Caption = ""; break;
-    case SVN_ADD:      m_Caption = "SVN Add"; break;
-    case SVN_BLAME:    m_Caption = "SVN Blame"; break;
-    case SVN_CAT:      m_Caption = "SVN Cat"; break;
-    case SVN_COMMIT:   m_Caption = "SVN Commit"; break;
-    case SVN_DIFF:     m_Caption = "SVN Diff"; break;
-    case SVN_HELP:     m_Caption = "SVN Help"; break;
-    case SVN_INFO:     m_Caption = "SVN Info"; break;
-    case SVN_LOG:      m_Caption = "SVN Log"; break;
-    case SVN_LS:       m_Caption = "SVN Ls"; break;
-    case SVN_PROPLIST: m_Caption = "SVN Proplist"; break;
-    case SVN_PROPSET:  m_Caption = "SVN Propset"; break;
-    case SVN_REVERT:   m_Caption = "SVN Revert"; break;
-    case SVN_STAT:     m_Caption = "SVN Stat"; break;
-    case SVN_UPDATE:   m_Caption = "SVN Update"; break;
-    default:
-      wxFAIL;
-      break;
+    switch (m_Type)
+    {
+      case SVN_ADD:      m_Command = "add"; break;
+      case SVN_BLAME:    m_Command = "blame"; break;
+      case SVN_CAT:      m_Command = "cat"; break;
+      case SVN_COMMIT:   m_Command = "commit"; break;
+      case SVN_DIFF:     m_Command = "diff"; break;
+      case SVN_HELP:     m_Command = "help"; break;
+      case SVN_INFO:     m_Command = "info"; break;
+      case SVN_LOG:      m_Command = "log"; break;
+      case SVN_LS:       m_Command = "ls"; break;
+      case SVN_PROPLIST: m_Command = "proplist"; break;
+      case SVN_PROPSET:  m_Command = "propset"; break;
+      case SVN_REVERT:   m_Command = "revert"; break;
+      case SVN_STAT:     m_Command = "stat"; break;
+      case SVN_UPDATE:   m_Command = "update"; break;
+      default:
+        wxFAIL;
+        break;
+    }
+
+    m_Caption = "SVN " + m_Command;
+    // Currently no flags, as no command was executed.
+    m_CommandWithFlags = m_Command;
   }
-
-  m_Command = m_Caption.AfterFirst(' ').Lower();
-
-  // Currently no flags, as no command was executed.
-  m_CommandWithFlags = m_Command;
 
   m_Output.clear();
   m_UsageKey = _("Use SVN");
