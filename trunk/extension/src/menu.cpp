@@ -37,9 +37,9 @@ wxMenuItem* wxExMenu::Append(int id)
   m_ItemsAppended++;
   m_IsSeparator = false;
 
-  const wxExStockArt art(id);
+  wxMenuItem* item = new wxMenuItem(this, id);
 
-  wxMenuItem* item = new wxMenuItem(this, id, wxGetStockLabel(id));
+  const wxExStockArt art(id);
 
   if (art.GetBitmap().IsOk())
   {
