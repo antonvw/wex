@@ -118,15 +118,22 @@ void wxExComboBoxFromString(
     text, 
     wxExFindReplaceData::Get()->GetFieldSeparator());
 
+  wxArrayString items;
+
   while (tkz.HasMoreTokens())
   {
-    cb->Append(tkz.GetNextToken());
+    items.Add(tkz.GetNextToken());
   }
+
+  cb->Append(items);
 
   if (cb->GetCount() > 0) 
   {
     cb->SetValue(cb->GetString(0));
   }
+
+  // Not sure whether this is easy.
+  //cb->AutoComplete(items);
 }
 
 const wxString wxExComboBoxToString(
