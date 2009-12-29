@@ -363,13 +363,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 2:  // ^b
         for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
         break;
-      case 5:  // ^e
-        for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
-        break;
       case 6:  // ^f
         for (int i = 0; i < repeat; i++) m_STC->PageDown(); 
         break;
-      case 25: // ^y
+      case 16:  // ^p (^y is not possible, already redo accel key)
+        for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
+        break;
+      case 14: // ^n
         for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
         break;
 
