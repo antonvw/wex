@@ -192,7 +192,17 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
  }
   else if (command.Matches("m?"))
   {
+    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
+
+    const int vi_marker_symbol = 0;
+
+    if (it != m_Markers.end())
+  	{
+	    m_STC->MarkerDelete(it->second, vi_marker_symbol);
+	  }
+
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
+    m_STC->MarkerAdd(m_STC->GetCurrentLine(), vi_marker_symbol);
   }
   else if (command.Matches("*r?"))
   {
