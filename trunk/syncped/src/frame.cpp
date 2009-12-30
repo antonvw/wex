@@ -660,6 +660,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       std::vector<wxExConfigItem> v;
       v.push_back(wxExConfigItem(_("List Colour"), CONFIG_COLOUR));
 
+      // text also used in menu
       wxExConfigDialog(
         this,
         v,
