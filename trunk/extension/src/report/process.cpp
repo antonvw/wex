@@ -214,13 +214,6 @@ long wxExProcess::Execute()
   return pid;
 }
 
-void wxExProcess::InitCommandFromConfig()
-{
-  // The process is a combobox, we want only the first from the list,
-  // so use the default separator, causing only first field to be returned.
-  m_Command = wxExConfigFirstOf(_("Process"));
-}
-
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
   if (!Exists(GetPid()))
