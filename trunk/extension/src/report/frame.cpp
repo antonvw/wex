@@ -65,8 +65,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
       wxConfigBase::Get()->Read(wxString::Format("RecentProject%d", i)));
   }
 
-  wxExProcess::InitCommandFromConfig();
-
 #ifdef wxExUSE_EMBEDDED_SQL
   wxExTool::Get()->AddInfo(
     ID_TOOL_SQL,

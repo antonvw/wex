@@ -26,6 +26,9 @@ public:
     wxExFrameWithHistory* frame, 
     const wxString& command = wxEmptyString);
 
+  // Destructor.
+ ~wxExProcess();
+
   /// Shows a config dialog, returns dialog return code.
   static int ConfigDialog(
     wxWindow* parent,
@@ -39,9 +42,6 @@ public:
   /// is sent to the frame as specified in the constructor.
   long Execute();
   
-  /// Initializes the command from config.
-  static void InitCommandFromConfig();
-
   /// Returns whether a process has been selected.
   static bool IsSelected() {
     return !m_Command.empty();};
@@ -56,6 +56,7 @@ private:
   bool CheckInput();
 
   static wxString m_Command;
+  static int m_Instances;
 
   wxExFrameWithHistory* m_Frame;
   wxExListView* m_ListView;

@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
+int wxExProcess::m_Instances = 0;
 wxString wxExProcess::m_Command = "";
 
 wxExProcess::wxExProcess(
@@ -36,12 +37,24 @@ wxExProcess::wxExProcess(
   , m_ListView(NULL)
   , m_Timer(this)
 {
+  if (m_Instances == 0)
+  {
+    m_Command = wxExConfigFirstOf(_("Process"));
+  }
+
+  m_Instances++;
+
   if (!command.empty())
   {
     m_Command = command;
   }
 
   Redirect();
+}
+
+wxExProcess::~wxExProcess()
+{
+  m_Instances--;
 }
 
 bool wxExProcess::CheckInput()
