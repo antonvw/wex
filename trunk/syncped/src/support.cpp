@@ -15,6 +15,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/svn.h>
 #include <wx/extension/util.h>
+#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -260,7 +261,7 @@ Frame::Frame()
 
 bool Frame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  if (ProcessIsRunning())
+  if (wxExProcess::Get()->IsRunning())
   {
     return false;
   }

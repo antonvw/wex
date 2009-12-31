@@ -26,8 +26,14 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
-int wxExProcess::m_Instances = 0;
-wxString wxExProcess::m_Command = "";
+wxExProcess* wxExProcess::m_Self = NULL;
+wxString wxExProcess::m_Command;
+
+wxExProcess::wxExProcess()
+  : m_Frame(NULL)
+  , m_ListView(NULL)
+{
+}
 
 wxExProcess::wxExProcess(
   wxExFrameWithHistory* frame,
@@ -37,24 +43,12 @@ wxExProcess::wxExProcess(
   , m_ListView(NULL)
   , m_Timer(this)
 {
-  if (m_Instances == 0)
-  {
-    m_Command = wxExConfigFirstOf(_("Process"));
-  }
-
-  m_Instances++;
-
   if (!command.empty())
   {
     m_Command = command;
   }
 
   Redirect();
-}
-
-wxExProcess::~wxExProcess()
-{
-  m_Instances--;
 }
 
 bool wxExProcess::CheckInput()
@@ -214,6 +208,22 @@ long wxExProcess::Execute()
   return pid;
 }
 
+wxExProcess* wxExProcess::Get(bool createOnDemand)
+{
+  if (m_Self == NULL && createOnDemand)
+  {
+    m_Self = new wxExProcess();
+    m_Self->m_Command = wxExConfigFirstOf(_("Process"));
+  }
+
+  return m_Self;
+}
+
+bool wxExProcess::IsRunning() const
+{
+  return wxProcess::Exists(GetPid());
+}
+
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
   if (!Exists(GetPid()))
@@ -263,4 +273,11 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
   {
     // Do nothing.
   }
+}
+
+wxExProcess* wxExProcess::Set(wxExProcess* process)
+{
+  wxExProcess* old = m_Self;
+  m_Self = process;
+  return old;
 }

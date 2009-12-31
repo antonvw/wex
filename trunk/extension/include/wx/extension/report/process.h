@@ -21,16 +21,17 @@ class wxExListView;
 class wxExProcess : public wxProcess
 {
 public:
+  /// Default constructor.
+  wxExProcess();
+
   /// Constructor.
   wxExProcess(
     wxExFrameWithHistory* frame, 
     const wxString& command = wxEmptyString);
 
-  // Destructor.
- ~wxExProcess();
-
-  /// Shows a config dialog, returns dialog return code.
-  static int ConfigDialog(
+  /// Shows a config dialog, sets the command 
+  /// and returns dialog return code.
+  int ConfigDialog(
     wxWindow* parent,
     const wxString& title = _("Select Process"));
 
@@ -42,12 +43,22 @@ public:
   /// is sent to the frame as specified in the constructor.
   long Execute();
   
+  /// Returns the process object.
+  static wxExProcess* Get(bool createOnDemand = true);
+
+  /// Returns true if a process is running.
+  bool IsRunning() const;
+
   /// Returns whether a process has been selected.
-  static bool IsSelected() {
+  bool IsSelected() const {
     return !m_Command.empty();};
     
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
+
+  /// Sets the object as the current one, returns the pointer 
+  /// to the previous current object (both the parameter and returned value may be NULL). 
+  static wxExProcess* Set(wxExProcess* process);
 protected:
   virtual void OnTerminate(int pid, int status); // overriden
   void OnTimer(wxTimerEvent& event);
@@ -56,12 +67,13 @@ private:
   bool CheckInput();
 
   static wxString m_Command;
-  static int m_Instances;
 
   wxExFrameWithHistory* m_Frame;
   wxExListView* m_ListView;
 
   wxTimer m_Timer;
+
+  static wxExProcess* m_Self;
 
   DECLARE_EVENT_TABLE()
 };

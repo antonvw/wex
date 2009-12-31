@@ -73,9 +73,6 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
-  /// Returns true if a process is running.
-  bool ProcessIsRunning() const;
-
   /// Runs the process.
   /// Outputs to a listview LIST_PROCESS.
   /// Returns true if the process executes.

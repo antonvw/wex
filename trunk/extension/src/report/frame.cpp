@@ -109,7 +109,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
-    if (ProcessIsRunning())
+    if (wxExProcess::Get()->IsRunning())
     {
       wxLogMessage(_("Process is running"));
       event.Veto();
@@ -305,11 +305,6 @@ bool wxExFrameWithHistory::OpenFile(
   return false;
 }
 
-bool wxExFrameWithHistory::ProcessIsRunning() const
-{
-  return m_Process != NULL && wxProcess::Exists(m_Process->GetPid());
-}
-
 bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 {
   wxASSERT(m_Process == NULL);
@@ -329,7 +324,7 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 
 bool wxExFrameWithHistory::ProcessStop()
 {
-  if (ProcessIsRunning())
+  if (wxExProcess::Get()->IsRunning())
   {
     if (m_Process->Kill() == wxKILL_ERROR)
     {

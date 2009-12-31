@@ -392,6 +392,8 @@ void MDIFrame::OnClose(wxCloseEvent& event)
 #endif
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
+  delete wxExProcess::Set(NULL);
+
   event.Skip();
 }
 
@@ -675,7 +677,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_LIST_SORT_TOGGLE:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
-  case ID_PROCESS_SELECT: wxExProcess::ConfigDialog(this); break;
+  case ID_PROCESS_SELECT: wxExProcess::Get()->ConfigDialog(this); break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)
@@ -861,10 +863,10 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   else switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( wxExProcess::IsSelected() &&
-                   !ProcessIsRunning()); 
+      event.Enable( wxExProcess::Get()->IsSelected() &&
+                   !wxExProcess::Get()->IsRunning()); 
       break;
-    case wxID_STOP: event.Enable(ProcessIsRunning()); break;
+    case wxID_STOP: event.Enable(wxExProcess::Get()->IsRunning()); break;
 
     case ID_ALL_STC_CLOSE:
     case ID_ALL_STC_SAVE:
