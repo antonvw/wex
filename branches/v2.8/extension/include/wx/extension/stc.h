@@ -130,7 +130,7 @@ public:
     int search_flags = 0,
     bool find_next = true);
 
-  virtual bool GetContentsChanged() const {return GetModify();};
+  virtual bool GetContentsChanged() {return GetModify();};
 
   virtual void ResetContentsChanged();
 

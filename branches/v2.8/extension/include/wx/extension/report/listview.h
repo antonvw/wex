@@ -76,7 +76,7 @@ public:
   virtual void AfterSorting();
 
   /// Returns member.
-  virtual bool GetContentsChanged() const {return m_ContentsChanged;};
+  virtual bool GetContentsChanged() {return m_ContentsChanged;};
 
   /// Updates all items.
   virtual void ItemsUpdate();

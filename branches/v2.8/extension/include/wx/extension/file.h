@@ -37,7 +37,7 @@ public:
   /// From wxFileName class GetModificationTime is available as well,
   /// this one returns string and only uses the stat member, and is fast.
   const wxString GetModificationTime() const {
-    return wxDateTime(st_mtime).FormatISOCombined(' ');};
+    return wxDateTime(st_mtime).FormatISODate();};
 
   /// Returns true if the stat is okay (last update was okay).
   bool IsOk() const {return m_IsOk;};
@@ -51,7 +51,7 @@ public:
 #ifdef __WXGTK__
     m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
 #else
-    m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
+    m_IsOk = (stat(m_FullPath.char_str(), (struct stat *)this) != -1);
 #endif
     return m_IsOk;};
 
@@ -146,7 +146,7 @@ public:
   bool FileSave(const wxString filename = wxEmptyString);
 
   /// Returns whether contents have been changed.
-  virtual bool GetContentsChanged() const = 0;
+  virtual bool GetContentsChanged() = 0;
 
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}

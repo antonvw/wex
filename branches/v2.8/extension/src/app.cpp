@@ -70,10 +70,7 @@ bool wxExApp::OnInit()
 
         if (!m_Locale.IsLoaded(fn.GetName()))
         {
-          if (!m_Locale.AddCatalog(fn.GetName()))
-          {
-            wxLogError("Catalog could not be added: " + fn.GetName());
-          }
+          m_Locale.AddCatalog(fn.GetName());
         }
       }
     }

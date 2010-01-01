@@ -36,7 +36,7 @@ class wxExToolBar;
 #if wxUSE_STATUSBAR
 /// This class defines our statusbar panes, to be used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
-class wxExPane : public wxStatusBarPane
+class wxExPane
 {
   friend class wxExFrame;
   friend class wxExStatusBar;
@@ -53,8 +53,7 @@ public:
     const wxString& helptext = wxEmptyString,
     /// The style.
     int style = wxSB_NORMAL)
-    : wxStatusBarPane(style, width)
-    , m_Helptext(
+    : m_Helptext(
         helptext.empty() && name != "PaneText" ? 
           name.AfterFirst('e'): helptext)
     , m_Name(name)
