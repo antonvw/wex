@@ -271,7 +271,7 @@ protected:
 private:
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
   void AddBasePathToPathList();
-  bool CheckAutoComp(const wxUniChar c);
+  bool CheckAutoComp(const wxChar c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
   bool CheckSmartIndentation();

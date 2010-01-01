@@ -156,7 +156,7 @@ void wxExSTC::AddAsciiTable()
 
   for (int i = 1; i <= 255; i++)
   {
-    AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
+    AddText(wxString::Format("%d\t%c", i, (wxChar)i));
     AddText((i % 5 == 0) ? GetEOL(): "\t");
   }
 
@@ -398,7 +398,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-bool wxExSTC::CheckAutoComp(const wxUniChar c)
+bool wxExSTC::CheckAutoComp(const wxChar c)
 {
   static wxString autoc;
 
@@ -507,12 +507,12 @@ bool wxExSTC::CheckSmartIndentation()
   // Using isspace is not okay, as that copies the CR and LF too, these
   // are already copied.
   int i = 0;
-  if (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
+  if (line[i] == wxChar('\t') || line[i] == wxChar(' '))
   {
     InsertText(GetCurrentPos(), GetEOL());
     GotoLine(GetCurrentLine() + 1);
 
-    while (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
+    while (line[i] == wxChar('\t') || line[i] == wxChar(' '))
     {
       InsertText(GetCurrentPos(), line[i]);
       GotoPos(GetCurrentPos() + 1);
@@ -746,7 +746,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   {
     if (GetSelectedText().length() == 1)
     {
-      const wxUniChar value = GetSelectedText().GetChar(0);
+      const wxChar value = GetSelectedText().GetChar(0);
       wxMessageBox(wxString::Format("hex: %x dec: %d", value, value), _("Control Character"));
     }
 
@@ -776,7 +776,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   {
     if (value != new_value)
     {
-      ReplaceSelection(wxString::Format("%c", (wxUniChar)new_value));
+      ReplaceSelection(wxString::Format("%c", (wxChar)new_value));
     }
 
     SetSelection(GetCurrentPos(), GetCurrentPos() + 1);
@@ -1253,7 +1253,7 @@ void wxExSTC::HexDecCalltip(int pos)
 
   if (word.empty()) return;
 
-  const wxUniChar c = word.GetChar(0);
+  const wxChar c = word.GetChar(0);
 
   if (c < 32 || c > 125)
   {

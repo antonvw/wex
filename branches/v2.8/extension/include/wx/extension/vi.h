@@ -47,13 +47,13 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
   bool DoCommand(const wxString& command, bool dot);
-  void DoCommandFind(const wxUniChar& c);
+  void DoCommandFind(const wxChar& c);
   void DoCommandLine();
   bool DoCommandRange(const wxString& command) const;
   void FindWord(bool find_next = true);
   void GotoBrace();
   void InsertMode(
-    const wxUniChar c = 'i', 
+    const wxChar c = 'i', 
     int repeat = 1,
     bool overtype = false,
     bool dot = false);
@@ -81,7 +81,7 @@ private:
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
   
-  std::map<wxUniChar, int> m_Markers;
+  std::map<wxChar, int> m_Markers;
   
   bool m_InsertMode;
   bool m_SearchForward;

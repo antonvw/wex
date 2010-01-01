@@ -192,7 +192,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
  }
   else if (command.Matches("m?"))
   {
-    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
+    std::map<wxChar, int>::const_iterator it = m_Markers.find(command.Last());
 
     const int vi_marker_symbol = 0;
 
@@ -235,7 +235,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("'?"))
   {
-    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
+    std::map<wxChar, int>::const_iterator it = m_Markers.find(command.Last());
 
     if (it != m_Markers.end())
   	{
@@ -381,7 +381,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   return handled;
 }
 
-void wxExVi::DoCommandFind(const wxUniChar& c)
+void wxExVi::DoCommandFind(const wxChar& c)
 {
   const wxString title = "vi " + wxString(c);
 
@@ -635,7 +635,7 @@ void wxExVi::GotoBrace()
 }
 
 void wxExVi::InsertMode(
-  const wxUniChar c, 
+  const wxChar c, 
   int repeat, 
   bool overtype,
   bool dot)
@@ -939,7 +939,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
   if (address.StartsWith("'"))
   {
-    std::map<wxUniChar, int>::const_iterator it = 
+    std::map<wxChar, int>::const_iterator it = 
       m_Markers.find(address.GetChar(1));
 
     if (it != m_Markers.end())

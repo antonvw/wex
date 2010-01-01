@@ -72,13 +72,13 @@ public:
   /// the specified fullpath is used for getting svn contents from.
   /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, or wxID_ABORT if errors
   /// were reported by svn otherwise.
-  wxStandardID Execute(wxWindow* parent);
+  int Execute(wxWindow* parent);
 #endif    
 
 #if wxUSE_GUI
   /// Executes and if not cancelled shows output in a dialog.
   /// Returns return code from execute.
-  wxStandardID ExecuteAndShowOutput(wxWindow* parent);
+  int ExecuteAndShowOutput(wxWindow* parent);
 #endif  
 
   /// Returns the svn object.

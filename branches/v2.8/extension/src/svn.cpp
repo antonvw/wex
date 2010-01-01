@@ -179,7 +179,7 @@ long wxExSVN::Execute()
 }
 
 #if wxUSE_GUI
-wxStandardID wxExSVN::Execute(wxWindow* parent)
+int wxExSVN::Execute(wxWindow* parent)
 {
   wxASSERT(parent != NULL);
 
@@ -249,9 +249,9 @@ wxStandardID wxExSVN::Execute(wxWindow* parent)
 #endif
 
 #if wxUSE_GUI
-wxStandardID wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
+int wxExSVN::ExecuteAndShowOutput(wxWindow* parent)
 {
-  wxStandardID retValue;
+  int retValue;
 
   if ((retValue = Execute(parent)) == wxID_OK)
   {

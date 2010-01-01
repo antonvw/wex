@@ -236,7 +236,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   wxExListViewWithFrame* project = wxDynamicCast(win, wxExListViewWithFrame);
 
   const wxString title(GetTitle());
-  const wxUniChar indicator('*');
+  const wxChar indicator('*');
 
   if ((project != NULL && project->GetContentsChanged()) ||
       (editor != NULL && editor->GetContentsChanged()))
