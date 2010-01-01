@@ -18,7 +18,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 <makefile>
 
   <include file="presets/wx.bkl"/>
-  <set-wxlike-builddir/>
   
   <set var="DEFAULT_CXXFLAGS">-Wno-write-strings</set>
   
@@ -67,7 +66,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set var="VAR_USE_RBS" cond="USE_RBS=='0'"></set>
   
   <!-- libraries -->
-  <lib id="wxex" template="wx-lib,wxlike">
+  <lib id="wxex" template="wx-lib">
     <libname>wxex09</libname>
     
     <define>$(VAR_USE_OTL)</define>
@@ -149,7 +148,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/vi.h</headers>
   </lib>
 
-  <lib id="wxex-rep" template="wx-lib,wxlike">
+  <lib id="wxex-rep" template="wx-lib">
     <libname>wxex-rep09</libname>
     
     <define>$(VAR_USE_EMBEDDED_SQL)</define>
@@ -188,7 +187,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </lib>
   
   <!-- samples -->
-  <exe id="wxex-sample" template="wxgui,wxlike">
+  <exe id="wxex-sample" template="wx">
     <sources>../extension/sample/app.cpp</sources>
     <win32-res>../extension/sample/app.rc</win32-res>
     <headers>../extension/sample/app.h</headers>
@@ -211,7 +210,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>base</wx-lib>
   </exe>
   
-  <exe id="wxex-sample-rep" template="wxgui,wxlike">
+  <exe id="wxex-sample-rep" template="wx">
     <sources>../extension/sample/report/app.cpp</sources>
     <win32-res>../extension/sample/report/app.rc</win32-res>
     <headers>../extension/sample/report/app.h</headers>
@@ -234,7 +233,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- tests -->
   <if cond="PLATFORM_UNIX=='1'">
-    <exe id="wxex-test-base" template="wxgui,wxlike">
+    <exe id="wxex-test-base" template="wx">
       <sources>../extension/test/base/main.cpp</sources>
       <sources>../extension/test/base/test.cpp</sources>
       <headers>../extension/test/base/test.h</headers>
@@ -254,7 +253,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
       <wx-lib>base</wx-lib>
     </exe>
     
-    <exe id="wxex-test-app" template="wxgui,wxlike">
+    <exe id="wxex-test-app" template="wx">
       <sources>../extension/test/app/main.cpp</sources>
       <sources>../extension/test/app/test.cpp</sources>
       
@@ -276,7 +275,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
       <wx-lib>base</wx-lib>
     </exe>
     
-    <exe id="wxex-test-rep" template="wxgui,wxlike">
+    <exe id="wxex-test-rep" template="wx">
       <sources>../extension/test/report/main.cpp</sources>
       <sources>../extension/test/report/test.cpp</sources>
       <headers>../extension/test/report/test.h</headers>
@@ -314,7 +313,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </if>
   
   <!-- applications -->
-  <exe id="syncped" template="wxgui,wxlike">
+  <exe id="syncped" template="wx">
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
     
@@ -351,7 +350,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </exe>
 
   <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-    <exe id="syncodbcquery" template="wxgui,wxlike">
+    <exe id="syncodbcquery" template="wx">
       <define>$(VAR_USE_OTL)</define>
       <sources>../syncodbcquery/src/app.cpp</sources>
       <win32-res>../syncodbcquery/src/app.rc</win32-res>
@@ -378,7 +377,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     </exe>
   </if>
 
-  <exe id="syncsocketserver" template="wxgui,wxlike">
+  <exe id="syncsocketserver" template="wx">
     <sources>../syncsocketserver/src/app.cpp</sources>
     <win32-res>../syncsocketserver/src/app.rc</win32-res>
     <headers>../syncsocketserver/src/app.h</headers>
