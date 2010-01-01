@@ -67,7 +67,7 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
-/// Flags for wxExStatusText.
+/// Flags for StatusText.
 enum wxExStatusFlags
 {
   STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
