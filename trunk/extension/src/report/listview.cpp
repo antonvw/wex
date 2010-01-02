@@ -160,7 +160,8 @@ void wxExListViewFile::AddItems()
   {
     m_ContentsChanged = true;
 
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && m_Type == LIST_PROJECT)
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
+        m_Type == LIST_PROJECT)
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -287,7 +288,9 @@ void wxExListViewFile::DoFileLoad(bool synced)
   if (synced)
   {
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(GetFileName(), STAT_SYNC | STAT_FULLPATH);
+  wxExFrame::StatusText(
+    GetFileName(), 
+    wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
 #endif
   }
 }
@@ -373,7 +376,8 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
   switch (m_Type)
   {
   case LIST_COUNT:
-    // See wxExTextFileWithListView::Report, the order in which columns are set should be the same there.
+    // See wxExTextFileWithListView::Report, 
+    // the order in which columns are set should be the same there.
     InsertColumn(wxExColumn(_("Lines")));
     InsertColumn(wxExColumn(_("Lines Of Code")));
     InsertColumn(wxExColumn(_("Empty Lines")));
@@ -460,7 +464,8 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
       wxExListItemWithFileName item(this, value);
       item.Insert();
 
-      // And try to set the rest of the columns (that are not already set by inserting).
+      // And try to set the rest of the columns 
+      // (that are not already set by inserting).
       int col = 1;
       while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
       {
@@ -594,13 +599,16 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     wxExListItemWithFileName item(this, m_ItemNumber);
 
     if ( item.GetFileName().FileExists() &&
-        (item.GetFileName().GetStat().GetModificationTime() != item.GetColumnText(_("Modified")) ||
+        (item.GetFileName().GetStat().GetModificationTime() != 
+         item.GetColumnText(_("Modified")) ||
          item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
         )
     {
       item.Update();
 #if wxUSE_STATUSBAR
-      wxExFrame::StatusText(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
+      wxExFrame::StatusText(
+        item.GetFileName(), 
+        wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
 #endif
       m_ItemUpdated = true;
     }
@@ -613,7 +621,8 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
     if (m_ItemUpdated)
     {
-      if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && m_Type == LIST_PROJECT)
+      if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
+          m_Type == LIST_PROJECT)
       {
         SortColumn(_("Modified"), SORT_KEEP);
       }
@@ -636,7 +645,9 @@ void wxExListViewFile::OnList(wxListEvent& event)
 
       if (item.GetFileName().GetStat().IsOk())
       {
-        wxExFrame::StatusText(item.GetFileName(), STAT_FULLPATH);
+        wxExFrame::StatusText(
+          item.GetFileName(), 
+          wxExFrame::STAT_FULLPATH);
       }
     }
 #endif

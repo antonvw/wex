@@ -502,7 +502,7 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
   }
 }
 
-void wxExFrame::StatusText(const wxExFileName& filename, long flags)
+void wxExFrame::StatusText(const wxExFileName& filename, wxExStatusFlags flags)
 {
   wxString text; // clear status bar for empty or not existing or not initialized file names
 

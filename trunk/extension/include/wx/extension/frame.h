@@ -67,20 +67,20 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
-/// Flags for StatusText.
-enum wxExStatusFlags
-{
-  STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
-  STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
-  STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
-};
-
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and a toolbar if you call CreateToolBar.
 /// Allows for file dropping as well.
 class wxExFrame : public wxFrame
 {
 public:
+  /// Flags for StatusText.
+  enum wxExStatusFlags
+  {
+    STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
+    STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
+    STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
+  };
+
   /// Constructor, the frame position and size is taken from the config.
   wxExFrame(wxWindow* parent,
     wxWindowID id,
@@ -154,7 +154,7 @@ public:
   /// Shows filename info on the statusbar.
   static void StatusText(
     const wxExFileName& filename, 
-    long flags = STAT_DEFAULT);
+    wxExStatusFlags flags = STAT_DEFAULT);
 #endif // wxUSE_STATUSBAR
 
 protected:

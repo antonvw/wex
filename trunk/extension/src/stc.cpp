@@ -848,7 +848,7 @@ void wxExSTC::DoFileLoad(bool synced)
   else
   {
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(GetFileName(), STAT_SYNC);
+    wxExFrame::StatusText(GetFileName(), wxExFrame::STAT_SYNC);
     UpdateStatusBar("PaneLines");
 #endif
   }
