@@ -152,9 +152,11 @@ public:
     const wxString& pane = "PaneText");
 
   /// Shows filename info on the statusbar.
+  // Using type wxExStatusFlags instead of long gives compiler errors at
+  // invoking.
   static void StatusText(
     const wxExFileName& filename, 
-    wxExStatusFlags flags = STAT_DEFAULT);
+    long flags = STAT_DEFAULT);
 #endif // wxUSE_STATUSBAR
 
 protected:

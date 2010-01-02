@@ -288,9 +288,9 @@ void wxExListViewFile::DoFileLoad(bool synced)
   if (synced)
   {
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(
-    GetFileName(), 
-    wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
+    wxExFrame::StatusText(
+      GetFileName(), 
+      wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
 #endif
   }
 }
