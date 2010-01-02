@@ -280,7 +280,7 @@ wxExSVN* wxExSVN::Get(bool createOnDemand)
   return m_Self;
 }
 
-wxExSVNType wxExSVN::GetType(int command_id) const
+wxExSVN::wxExSVNType wxExSVN::GetType(int command_id) const
 {
   switch (command_id)
   {

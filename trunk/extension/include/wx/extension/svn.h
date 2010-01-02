@@ -18,32 +18,32 @@
 #endif
 #include <wx/filename.h>
 
-/// SVN types supported.
-enum wxExSVNType
-{
-  SVN_NONE,   ///< not ok value
-  SVN_ADD,    ///< svn add
-  SVN_BLAME,  ///< svn blame
-  SVN_CAT,    ///< svn cat
-  SVN_COMMIT, ///< svn commit
-  SVN_DIFF,   ///< svn diff
-  SVN_HELP,   ///< svn help
-  SVN_INFO,   ///< svn info
-  SVN_LOG,    ///< svn log
-  SVN_LS,     ///< svn ls
-  SVN_PROPLIST, ///< svn prop list
-  SVN_PROPSET,  ///< svn prop set
-  SVN_REVERT, ///< svn revert
-  SVN_STAT,   ///< svn stat
-  SVN_UPDATE, ///< svn update
-};
-
 class wxExSTCEntryDialog;
 
 /// This class collects all svn handling.
 class wxExSVN
 {
 public:
+  /// SVN types supported.
+  enum wxExSVNType
+  {
+    SVN_NONE,     ///< not ok value
+    SVN_ADD,      ///< svn add
+    SVN_BLAME,    ///< svn blame
+    SVN_CAT,      ///< svn cat
+    SVN_COMMIT,   ///< svn commit
+    SVN_DIFF,     ///< svn diff
+    SVN_HELP,     ///< svn help
+    SVN_INFO,     ///< svn info
+    SVN_LOG,      ///< svn log
+    SVN_LS,       ///< svn ls
+    SVN_PROPLIST, ///< svn prop list
+    SVN_PROPSET,  ///< svn prop set
+    SVN_REVERT,   ///< svn revert
+    SVN_STAT,     ///< svn stat
+    SVN_UPDATE,   ///< svn update
+  };
+
   /// Default constructor.
   wxExSVN();
 
