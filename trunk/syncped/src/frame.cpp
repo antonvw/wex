@@ -597,6 +597,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
         editor->GetFileName().GetFullPath(),
         editor->GetFileName().GetFullName());
     }
+    editor->PropertiesMessage();
     break;
 
   case wxID_EXECUTE: ProcessRun(); break;
