@@ -714,7 +714,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SORT_SYNC: 
     wxConfigBase::Get()->Write("List/SortSync", 
-      !wxConfigBase::Get()->ReadBool("List/SortSync", true)); 
+      !wxConfigBase::Get()->Read("List/SortSync", true)); 
     break;
 
   case ID_SPLIT:
@@ -898,7 +898,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
 
     case ID_SORT_SYNC:
-      event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
+      event.Check(wxConfigBase::Get()->Read("List/SortSync", true));
     break;
 
     case ID_VIEW_ASCII_TABLE:

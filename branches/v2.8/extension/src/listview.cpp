@@ -720,7 +720,7 @@ void wxExListView::PasteItemsFromClipboard()
     ItemFromText(tkz.GetNextToken());
   }
 
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  if (wxConfigBase::Get()->Read("List/SortSync", true))
   {
     SortColumn(_("Modified"), SORT_KEEP);
   }

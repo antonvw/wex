@@ -77,16 +77,16 @@ wxExFrame::wxExFrame(wxWindow* parent,
   //SetName("wxExFrame");
   //wxPersistenceManager::Get().RegisterAndRestore(this, this);
 
-  if (wxConfigBase::Get()->ReadBool("Frame/Maximized", false))
+  if (wxConfigBase::Get()->Read(wxT("Frame/Maximized"), false))
   {
     Maximize(true);
   }
 
   SetSize(
-    wxConfigBase::Get()->ReadLong("Frame/X", 100),
-    wxConfigBase::Get()->ReadLong("Frame/Y", 100),
-    wxConfigBase::Get()->ReadLong("Frame/Width", 450),
-    wxConfigBase::Get()->ReadLong("Frame/Height", 350));
+    wxConfigBase::Get()->Read(wxT("Frame/X"), 100),
+    wxConfigBase::Get()->Read(wxT("Frame/Y"), 100),
+    wxConfigBase::Get()->Read(wxT("Frame/Width"), 450),
+    wxConfigBase::Get()->ReadwxT(("Frame/Height"), 350));
 }
 
 wxExFrame::wxExFrame(wxWindow* parent,
@@ -116,8 +116,7 @@ wxExFrame::~wxExFrame()
 }
 
 wxExGrid* wxExFrame::GetFocusedGrid()
-{
-  wxWindow* win = wxWindow::FindFocus();
+{  wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
   {

@@ -135,8 +135,8 @@ void wxExListViewFile::AddItems()
   }
 
   int flags = 0;
-  if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
-  if (wxConfigBase::Get()->ReadBool(_("Recursive"), false)) flags |= wxDIR_DIRS;
+  if (wxConfigBase::Get()->Read(_("Add files"), true)) flags |= wxDIR_FILES;
+  if (wxConfigBase::Get()->Read(_("Recursive"), false)) flags |= wxDIR_DIRS;
 
   wxExDirWithListView dir(
     this,
@@ -152,7 +152,7 @@ void wxExListViewFile::AddItems()
   {
     m_ContentsChanged = true;
 
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && m_Type == LIST_PROJECT)
+    if (wxConfigBase::Get()->Read("List/SortSync", true) && m_Type == LIST_PROJECT)
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -171,7 +171,7 @@ void wxExListViewFile::AfterSorting()
   // Only if we are a project list and not sort syncing, 
   // set contents changed.
   if ( m_Type == LIST_PROJECT &&
-      !wxConfigBase::Get()->ReadBool("List/SortSync", true))
+      !wxConfigBase::Get()->Read("List/SortSync", true))
   {
     m_ContentsChanged = true;
   }
@@ -271,7 +271,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
     ItemFromText(tkz.GetNextToken());
   }
 
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  if (wxConfigBase::Get()->Read("List/SortSync", true))
     SortColumn(_("Modified"), SORT_KEEP);
   else
     SortColumnReset();
@@ -576,7 +576,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
   if (
     !IsShown() ||
      GetItemCount() == 0 ||
-     !wxConfigBase::Get()->ReadBool("AllowSync", true))
+     !wxConfigBase::Get()->Read("AllowSync", true))
   {
     return;
   }
@@ -605,7 +605,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
     if (m_ItemUpdated)
     {
-      if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && m_Type == LIST_PROJECT)
+      if (wxConfigBase::Get()->Read("List/SortSync", true) && m_Type == LIST_PROJECT)
       {
         SortColumn(_("Modified"), SORT_KEEP);
       }
@@ -696,7 +696,7 @@ bool ListViewDropTarget::OnDropFiles(
     m_Owner->ItemFromText(filenames[n]);
   }
 
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  if (wxConfigBase::Get()->Read("List/SortSync", true))
   {
     m_Owner->SortColumn(_("Modified"), SORT_KEEP);
   }

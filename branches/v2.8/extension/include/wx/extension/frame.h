@@ -20,6 +20,7 @@
 #endif
 #include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h> // for wxAuiManager
+#include <wx/string.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/file.h> // for wxExFileName
@@ -54,10 +55,12 @@ public:
     /// The style.
     int style = wxSB_NORMAL)
     : m_Helptext(
-        helptext.empty() && name != "PaneText" ? 
+        helptext.empty() && name != wxT("PaneText") ? 
           name.AfterFirst('e'): helptext)
     , m_Name(name)
     , m_No(m_Total)
+    , m_Width(width)
+    , m_Style(style)
     {m_Total++;};
 private:
   wxString m_Helptext;
@@ -158,7 +161,7 @@ public:
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(
     const wxString& text, 
-    const wxString& pane = "PaneText");
+    const wxString& pane = wxT("PaneText"));
 
   /// Shows filename info on the statusbar.
   static void StatusText(
@@ -200,7 +203,7 @@ protected:
     const std::vector<wxExPane>& panes,
     long style = wxST_SIZEGRIP,
     wxWindowID id = ID_EDIT_STATUS_BAR,
-    const wxString& name = "statusBar");
+    const wxString& name = wxT("statusBar"));
 #endif
 protected:
 #if wxUSE_TOOLBAR

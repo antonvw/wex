@@ -301,7 +301,7 @@ wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(125, wxDefaultCoord));
 
-  checkbox->SetValue(wxConfigBase::Get()->ReadBool(text, false));
+  checkbox->SetValue(wxConfigBase::Get()->Read(text, false));
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -389,7 +389,7 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
         box->Check(item);
       }
     }
-    else if (wxConfigBase::Get()->ReadBool(*it, false))
+    else if (wxConfigBase::Get()->Read(*it, false))
     {
       box->Check(item);
     }

@@ -708,22 +708,22 @@ void wxExSTC::ConfigGet()
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
   SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), 4));
-  SetIndentationGuides(wxConfigBase::Get()->ReadBool(_("Indentation guide"), false));
+  SetIndentationGuides(wxConfigBase::Get()->Read(_("Indentation guide"), false));
 
   SetMarginWidth(m_MarginDividerNumber, wxConfigBase::Get()->ReadLong(_("Divider"), 16));
   SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
   SetMarginWidth(m_MarginLineNumber,
-    (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ?
+    (wxConfigBase::Get()->Read(_("Line numbers"), false) ?
       wxConfigBase::Get()->ReadLong(_("Line number"), TextWidth(m_MarginLineNumber, "999999")): 0));
 
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
-  SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
-  SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
+  SetUseTabs(wxConfigBase::Get()->Read(_("Use tabs"), false));
+  SetViewEOL(wxConfigBase::Get()->Read(_("End of line"), false));
   SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
   SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
 
-  m_viMode = wxConfigBase::Get()->ReadBool(_("vi mode"), false);
+  m_viMode = wxConfigBase::Get()->Read(_("vi mode"), false);
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {

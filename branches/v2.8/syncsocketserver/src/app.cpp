@@ -460,17 +460,17 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_CLIENT_ECHO:
     wxConfigBase::Get()->Write(_("Echo"), 
-      !wxConfigBase::Get()->ReadBool(_("Echo"), true));
+      !wxConfigBase::Get()->Read(_("Echo"), true));
     break;
 
   case ID_CLIENT_LOG_DATA:
     wxConfigBase::Get()->Write(_("Log Data"), 
-      !wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+      !wxConfigBase::Get()->Read(_("Log Data"), true));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
     wxConfigBase::Get()->Write(_("Count Only"), 
-      !wxConfigBase::Get()->ReadBool(_("Count Only"), true));
+      !wxConfigBase::Get()->Read(_("Count Only"), true));
     break;
 
   case ID_HIDE:
@@ -620,7 +620,7 @@ void Frame::OnSocket(wxSocketEvent& event)
 
         if (sock->LastCount() > 0)
         {
-          if (wxConfigBase::Get()->ReadBool(_("Echo"), true))
+          if (wxConfigBase::Get()->Read(_("Echo"), true))
           {
             sock->Write(buffer, sock->LastCount());
             SocketCheckError(sock);
@@ -639,9 +639,9 @@ void Frame::OnSocket(wxSocketEvent& event)
             }
           }
 
-          if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
+          if (wxConfigBase::Get()->Read(_("Log Data"), true))
           {
-            if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
+            if (wxConfigBase::Get()->Read(_("Count Only"), true))
             {
               m_LogWindow->AppendTextForced(
                 wxString::Format(_("read: %d bytes from: %s"), 
@@ -728,16 +728,16 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_CLIENT_ECHO:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Echo"), true));
+    event.Check(wxConfigBase::Get()->Read(_("Echo"), true));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+    event.Check(wxConfigBase::Get()->Read(_("Log Data"), true));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
-    event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));
+    event.Enable(wxConfigBase::Get()->Read(_("Log Data"), true));
+    event.Check(wxConfigBase::Get()->Read(_("Count Only"), true));
     break;
 
   case ID_CLEAR_STATISTICS:
@@ -995,9 +995,9 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
     "PaneBytes");
 #endif
 
-  if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
+  if (wxConfigBase::Get()->Read(_("Log Data"), true))
   {
-    if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
+    if (wxConfigBase::Get()->Read(_("Count Only"), true))
     {
       m_LogWindow->AppendTextForced(
         wxString::Format(_("write: %d bytes to: %s"),

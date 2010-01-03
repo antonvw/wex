@@ -394,7 +394,7 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
 
 bool wxExSVN::Use() const
 {
-  return wxConfigBase::Get()->ReadBool(m_UsageKey, true);
+  return wxConfigBase::Get()->Read(m_UsageKey, true);
 }
 
 bool wxExSVN::UseFlags() const

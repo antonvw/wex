@@ -251,9 +251,9 @@ Frame::Frame()
       wxNO_BORDER));
 
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
+  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->Read("HexMode", false)); // default no hex
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
-  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  m_SyncCheckBox->SetValue(wxConfigBase::Get()->Read("AllowSync", true));
 #endif // wxUSE_CHECKBOX
 
   m_ToolBar->Realize();
