@@ -498,8 +498,8 @@ void wxExFrame::SetupStatusBar(
     ++it)
   {
     m_Panes[it->m_Name] = *it;
-    styles[it->m_No] = it->GetStyle();
-    widths[it->m_No] = it->GetWidth();
+    styles[it->m_No] = it->m_Style;
+    widths[it->m_No] = it->m_Width;
   }
 
   m_StatusBar->SetStatusStyles(panes.size(), styles);
