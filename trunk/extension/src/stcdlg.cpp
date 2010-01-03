@@ -8,6 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 
@@ -58,6 +59,26 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   AddUserSizer(m_STC);
 
   LayoutSizers();
+}
+
+const wxString wxExSTCEntryDialog::GetLexer() const
+{
+  return m_STC->GetFileName().GetLexer().GetScintillaLexer();
+}
+
+const wxString wxExSTCEntryDialog::GetText() const 
+{
+  return m_STC->GetText();
+}
+
+wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const 
+{
+  return m_STC->GetTextRaw();
+}
+
+void wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
+{
+  m_STC->SetLexer(lexer);
 }
 
 void wxExSTCEntryDialog::SetText(const wxString& text, bool reset_lexer)

@@ -10,10 +10,11 @@
 #ifndef _EXSTCDLG_H
 #define _EXSTCDLG_H
 
-#include <wx/extension/stc.h>
 #include <wx/extension/dialog.h> // for wxExDialog
 
 #if wxUSE_GUI
+class wxExSTC;
+
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt is allowed to be empty, in that case no sizer is used for it.
 class wxExSTCEntryDialog : public wxExDialog
@@ -33,17 +34,16 @@ public:
     const wxString& name = wxDialogNameStr);
 
   /// Gets the STC scintilla lexer.
-  const wxString GetLexer() const {
-    return m_STC->GetFileName().GetLexer().GetScintillaLexer();};
+  const wxString GetLexer() const;
 
   /// Gets the normal text value.
-  const wxString GetText() const {return m_STC->GetText();};
+  const wxString GetText() const;
 
   /// Gets raw text value.
-  wxCharBuffer GetTextRaw() const {return m_STC->GetTextRaw();};
+  wxCharBuffer GetTextRaw() const;
 
   /// Sets the STC lexer.
-  void SetLexer(const wxString& lexer) {m_STC->SetLexer(lexer);};
+  void SetLexer(const wxString& lexer);
 
   /// Sets the text (either normal or raw).
   /// Resets a previous lexer if asked for.
