@@ -41,11 +41,8 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
-  EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
   EVT_MENU(wxID_SAVE, wxExSTC::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
@@ -157,7 +154,7 @@ void wxExSTC::AddAsciiTable()
   for (int i = 1; i <= 255; i++)
   {
     AddText(wxString::Format("%d\t%c", i, (wxChar)i));
-    AddText((i % 5 == 0) ? GetEOL(): "\t");
+    AddText((i % 5 == 0) ? GetEOL(): wxT("\t"));
   }
 
   EmptyUndoBuffer();
@@ -345,16 +342,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       wxExMenu* menuSelection = menuSelection = new wxExMenu(menu);
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
-
-      if (wxExGetNumberOfLines(sel) > 1)
-      {
-        wxExMenu* menuSort = new wxExMenu(menu);
-        menuSort->Append(wxID_SORT_ASCENDING);
-        menuSort->Append(wxID_SORT_DESCENDING);
-        menuSelection->AppendSeparator();
-        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
-      }
-
       menu.AppendSeparator();
       menu.AppendSubMenu(menuSelection, _("&Selection"));
     }
@@ -789,7 +776,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText,
     // InsertTextRaw do not add the length.
     // To be able to add NULLs this is the only way.
-    SendMsg(SCI_ADDTEXT, 1, (wxIntPtr)buffer);
+    SendMsg(SCI_ADDTEXT, 1, buffer);
   }
 }
 
@@ -1319,8 +1306,6 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
   entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
   entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
@@ -1449,7 +1434,7 @@ void wxExSTC::MacroPlayback()
 		txt[0] = c;
 		txt[1] = '\0';
 
-    SendMsg(msg, wp, (wxIntPtr)txt);
+    SendMsg(msg, wp, txt);
   }
 
 #if wxUSE_STATUSBAR
@@ -1497,14 +1482,11 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
   case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
-  case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
   case wxID_SELECTALL: SelectAll(); break;
   case wxID_UNDO: Undo(); break;
   case wxID_REDO: Redo(); break;
   case wxID_SAVE: FileSave(); break;
-  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
-  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
 
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
@@ -1662,7 +1644,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
     if (event.GetLParam() != 0)
     {
-      char* txt = (char *)(wxIntPtr)event.GetLParam();
+      char* txt = (char *)event.GetLParam();
       msg += txt;
     }
     else
@@ -1843,7 +1825,7 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.
-    SendMsg(message, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+    SendMsg(message, buffer.length(), (const char *)buffer.data());
   }
   else
   {
@@ -2286,7 +2268,7 @@ void wxExSTC::SetText(const wxString& value)
 
   // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
   // So for text with nulls this is the only way for opening.
-  SendMsg(SCI_ADDTEXT, value.length(), (wxIntPtr)(const char *)value.c_str());
+  SendMsg(SCI_ADDTEXT, value.length(), (const char *)value.c_str());
 
   DocumentStart();
 
