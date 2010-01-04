@@ -316,6 +316,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <exe id="syncped" template="wx">
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
+    <app-type>gui</app-type>
     
     <sources>../syncped/src/app.cpp</sources>
     <sources>../syncped/src/frame.cpp</sources>
