@@ -392,8 +392,6 @@ void MDIFrame::OnClose(wxCloseEvent& event)
 #endif
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
-  delete wxExProcess::Set(NULL);
-
   event.Skip();
 }
 

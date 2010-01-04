@@ -119,6 +119,8 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 
   wxDELETE(m_Process);
 
+  delete wxExProcess::Set(NULL);
+
   m_FileHistory.Save(*wxConfigBase::Get());
 
   for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
