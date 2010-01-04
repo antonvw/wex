@@ -198,6 +198,8 @@ offset    hex field                                         ascii field
                                   <- mid_in_hex_field
 */
 {
+  wxMemoryBuffer test(buffer);
+
   SetGlobalStyles();
 
   // Do not show an edge, eol or whitespace in hex mode.
@@ -213,15 +215,15 @@ offset    hex field                                         ascii field
   // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, hex field 3 * length and the
   // ascii field just the length.
   text.Alloc(
-    (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line +
-     buffer.length() * each_hex_field + buffer.length());
+    (start_hex_field + 1 + 1) * test.GetDataLen() / bytes_per_line +
+     test.GetDataLen() * each_hex_field + test.GetDataLen());
 
   for (
     wxFileOffset offset = 0;
-    offset < buffer.length();
+    offset < test.GetDataLen();
     offset += bytes_per_line)
   {
-    long count = buffer.length() - offset;
+    long count = test.GetDataLen() - offset;
     count =
       (bytes_per_line < count ? bytes_per_line : count);
 
@@ -1809,13 +1811,15 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
+    wxMemoryBuffer test(buffer);
+
     SetControlCharSymbol(0);
 
     const int message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.
-    SendMsg(message, buffer.length(), (const char *)buffer.data());
+    SendMsg(message, test.GetDataLen(), (long)test.GetData());
   }
   else
   {
