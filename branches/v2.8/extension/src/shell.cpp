@@ -53,7 +53,7 @@ wxExSTCShell::wxExSTCShell(
   if (m_CommandsSaveInConfig > 0)
   {
     // Get all previous commands.
-    wxStringTokenizer tkz(wxConfigBase::Get()->Read("Shell"),
+    wxStringTokenizer tkz(wxConfigBase::Get()->Read(wxT("Shell")),
       m_CommandsInConfigDelimiter);
 
     while (tkz.HasMoreTokens())
@@ -84,7 +84,7 @@ wxExSTCShell::~wxExSTCShell()
       items++;
     }
 
-    wxConfigBase::Get()->Write("Shell", values);
+    wxConfigBase::Get()->Write(wxT("Shell"), values);
   }
 }
 
@@ -123,7 +123,7 @@ void wxExSTCShell::OnCommand(wxCommandEvent& command)
       Paste();
       break;
 
-    default: 
+    default:
       wxFAIL;
       break;
   }
@@ -161,7 +161,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
       EmptyUndoBuffer();
 
       // History command.
-      if (m_Command == wxString("history") +
+      if (m_Command == wxString(wxT("history")) +
          (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
       {
         KeepCommand();

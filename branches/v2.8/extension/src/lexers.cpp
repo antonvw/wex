@@ -112,24 +112,24 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
 
   if (text_lowercase.StartsWith("#") ||
       // .po files that do not have comment headers, start with msgid, so set them
-      text_lowercase.StartsWith("msgid"))
+      text_lowercase.StartsWith(wxT("msgid")))
   {
-    return FindByName("bash", false); // don't show error
+    return FindByName(wxT("bash"), false); // don't show error
   }
   else if (text_lowercase.StartsWith("<html>") ||
            text_lowercase.StartsWith("<?php"))
   {
-    return FindByName("hypertext", false); // don't show error
+    return FindByName(wxT("hypertext"), false); // don't show error
   }
   else if (text_lowercase.StartsWith("<?xml"))
   {
-    return FindByName("xml", false); // don't show error
+    return FindByName(wxT("xml"), false); // don't show error
   }
   // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
   // so add here.
   else if (text_lowercase.StartsWith("//"))
   {
-    return FindByName("cpp", false); // don't show error
+    return FindByName(wxT("cpp"), false); // don't show error
   }
 
   return wxExLexer();
@@ -185,20 +185,20 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
 
   while (child)
   {
-    if (child->GetName() == "colouring")
+    if (child->GetName() == wxT("colouring"))
     {
       text +=
-        child->GetAttribute("no", "0") + "=" +
+        child->GetPropVal(wxT("no"), "0") + "=" +
         child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
     }
-    else if (child->GetName() == "comment")
+    else if (child->GetName() == wxT("comment"))
     {
       // Ignore comments.
     }
     else
     {
-      wxLogError("Undefined colourings tag: %s on: %d",
-        child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined colourings tag: %s",
+        child->GetName().c_str());
     }
 
     child = child->GetNext();
@@ -213,26 +213,26 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 
   while (child)
   {
-    if (child->GetName() == "comment")
+    if (child->GetName() == wxT("comment"))
     {
       // Ignore comments.
     }
-    else if (child->GetName() == "hex")
+    else if (child->GetName() == wxT("hex"))
     {
       m_StylesHex.push_back(
-        child->GetAttribute("no", "0") + "=" +
+        child->GetPropVal(wxT("no"), "0") + "=" +
         child->GetNodeContent().Strip(wxString::both));
     }
-    else if (child->GetName() == "indicator")
+    else if (child->GetName() == wxT("indicator"))
     {
       m_Indicators.insert(std::make_pair(
-        atoi(child->GetAttribute("no", "0").c_str()),
+        atoi(child->GetPropVal(wxT("no"), "0").c_str()),
         atoi(child->GetNodeContent().Strip(wxString::both).c_str())));
     }
-    else if (child->GetName() == "marker")
+    else if (child->GetName() == wxT("marker"))
     {
       const wxExMarker marker(ParseTagMarker(
-        child->GetAttribute("no", "0"),
+        child->GetPropVal(wxT("no"), "0"),
         child->GetNodeContent().Strip(wxString::both)));
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
@@ -242,22 +242,21 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
       }
       else
       {
-        wxLogError("Illegal marker number: %d or symbol: %d on: %d",
+        wxLogError("Illegal marker number: %d or symbol: %d",
           marker.GetMarkerNumber(),
-          marker.GetMarkerSymbol(),
-          child->GetLineNumber());
+          marker.GetMarkerSymbol());
       }
     }
-    else if (child->GetName() == "style")
+    else if (child->GetName() == wxT("style"))
     {
       m_Styles.push_back(
-        child->GetAttribute("no", "0") + "=" +
+        child->GetPropVal(wxT("no"), "0") + "=" +
         child->GetNodeContent().Strip(wxString::both));
     }
     else
     {
-      wxLogError("Undefined global tag: %s on: %d",
-        child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined global tag: %s",
+        child->GetName().c_str());
     }
 
     child = child->GetNext();
@@ -267,43 +266,43 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
 {
   wxExLexer lexer;
-  lexer.m_ScintillaLexer = node->GetAttribute("name", "");
-  lexer.m_Associations = node->GetAttribute("extensions", "");
+  lexer.m_ScintillaLexer = node->GetPropVal(wxT("name"), wxT(""));
+  lexer.m_Associations = node->GetPropVal(wxT("extensions"), wxT(""));
 
   wxXmlNode *child = node->GetChildren();
 
   while (child)
   {
-    if (child->GetName() == "colourings")
+    if (child->GetName() == wxT("colourings"))
     {
       lexer.m_Colourings = ParseTagColourings(child);
     }
-    else if (child->GetName() == "keywords")
+    else if (child->GetName() == wxT("keywords"))
     {
       if (!lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both)))
       {
-        wxLogError("Keywords could not be set on: %d", child->GetLineNumber());
+        wxLogError("Keywords could not be set");
       }
     }
-    else if (child->GetName() == "properties")
+    else if (child->GetName() == wxT("properties"))
     {
       lexer.m_Properties = ParseTagProperties(child);
     }
-    else if (child->GetName() == "comments")
+    else if (child->GetName() == wxT("comments"))
     {
-      lexer.m_CommentBegin = child->GetAttribute("begin1", "");
-      lexer.m_CommentEnd = child->GetAttribute("end1", "");
-      lexer.m_CommentBegin2 = child->GetAttribute("begin2", "");
-      lexer.m_CommentEnd2 = child->GetAttribute("end2", "");
+      lexer.m_CommentBegin = child->GetPropVal("begin1", wxT(""));
+      lexer.m_CommentEnd = child->GetPropVal("end1", wxT(""));
+      lexer.m_CommentBegin2 = child->GetPropVal("begin2", wxT(""));
+      lexer.m_CommentEnd2 = child->GetPropVal("end2", wxT(""));
     }
-    else if (child->GetName() == "comment")
+    else if (child->GetName() == wxT("comment"))
     {
       // Ignore comments.
     }
     else
     {
-      wxLogError("Undefined lexer tag: %s on: %d",
-        child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined lexer tag: %s",
+        child->GetName().c_str());
     }
 
     child = child->GetNext();
@@ -355,20 +354,20 @@ const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
 
   while (child)
   {
-    if (child->GetName() == "property")
+    if (child->GetName() == wxT("property"))
     {
       text +=
-        child->GetAttribute("name", "0") + "=" +
+        child->GetPropVal(wxT("name"), "0") + "=" +
         child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
     }
-    else if (child->GetName() == "comment")
+    else if (child->GetName() == wxT("comment"))
     {
       // Ignore comments.
     }
     else
     {
-      wxLogError("Undefined properties tag: %s on %d",
-        child->GetName().c_str(), child->GetLineNumber());
+      wxLogError("Undefined properties tag: %s",
+        child->GetName().c_str());
     }
 
     child = child->GetNext();
@@ -384,7 +383,7 @@ void wxExLexers::Read()
   if (!m_FileName.FileExists())
   {
     return;
-  } 
+  }
 
   wxXmlDocument doc;
 
@@ -404,17 +403,17 @@ void wxExLexers::Read()
 
   while (child)
   {
-    if (child->GetName() == "global")
+    if (child->GetName() == wxT("global"))
     {
       ParseTagGlobal(child);
     }
-    else if (child->GetName() == "lexer")
+    else if (child->GetName() == wxT("lexer"))
     {
       const wxExLexer& lexer = ParseTagLexer(child);
 
       if (!lexer.GetScintillaLexer().empty())
       {
-        if (lexer.GetScintillaLexer() == "hypertext")
+        if (lexer.GetScintillaLexer() == wxT("hypertext"))
         {
           // As our lexers.xml files cannot use xml comments,
           // add them here.
@@ -485,9 +484,9 @@ bool wxExLexers::ShowDialog(
   {
     choice = index;
   }
-  
-  wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, aChoices);
-  
+
+  wxSingleChoiceDialog dlg(parent, _("Input") + wxT(":"), caption, aChoices);
+
   if (choice != -1)
   {
     dlg.SetSelection(choice);

@@ -37,8 +37,8 @@ wxExTextDropTarget::wxExTextDropTarget(wxExGrid* grid)
 }
 
 bool wxExTextDropTarget::OnDropText(
-  wxCoord x, 
-  wxCoord y, 
+  wxCoord x,
+  wxCoord y,
   const wxString& data)
 {
   const int row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
@@ -147,7 +147,7 @@ bool wxExGrid::CopySelectedCellsToClipboard()
 
 #if wxUSE_DRAG_AND_DROP
 bool wxExGrid::DropSelection(
-  const wxGridCellCoords& drop_coords, 
+  const wxGridCellCoords& drop_coords,
   const wxString& data)
 {
   SetCellsValue(drop_coords, data);
@@ -267,14 +267,14 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
   if (!match)
   {
     wxExFindResult(text, find_next, recursive);
-    
+
     if (!recursive)
     {
       recursive = true;
       FindNext(text, find_next);
       recursive = false;
     }
-    
+
     return false;
   }
   else
@@ -489,7 +489,7 @@ void wxExGrid::OnGrid(wxGridEvent& event)
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
       wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
-      "PaneCells");
+      wxT("PaneCells"));
 #endif
 
     event.Skip();
@@ -511,7 +511,7 @@ void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(
     wxString::Format("%d", GetSelectedCells().GetCount()),
-    "PaneCells");
+    wxT("PaneCells"));
 #endif
 }
 
@@ -530,8 +530,8 @@ void wxExGrid::PasteCellsFromClipboard()
 {
   SetCellsValue(
     wxGridCellCoords(
-      GetGridCursorRow(), 
-      GetGridCursorCol()), 
+      GetGridCursorRow(),
+      GetGridCursorCol()),
     wxExClipboardGet());
 }
 
@@ -552,14 +552,14 @@ void wxExGrid::PrintPreview()
 }
 
 void wxExGrid::SetGridCellValue(
-  const wxGridCellCoords& coords, 
+  const wxGridCellCoords& coords,
   const wxString& data)
 {
   SetCellValue(coords, data);
 }
 
 void wxExGrid::SetCellsValue(
-  const wxGridCellCoords& start_coords, 
+  const wxGridCellCoords& start_coords,
   const wxString& data)
 {
   wxStringTokenizer tkz(data, wxTextFile::GetEOL());

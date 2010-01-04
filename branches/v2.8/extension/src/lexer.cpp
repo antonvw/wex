@@ -60,7 +60,7 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-    std::map< int, std::set<wxString> >::const_iterator it = 
+    std::map< int, std::set<wxString> >::const_iterator it =
       m_KeywordsSet.find(keyword_set);
 
     if (it != m_KeywordsSet.end())
@@ -97,7 +97,7 @@ bool wxExLexer::IsKeyword(const wxString& word) const
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
   std::set<wxString>::const_iterator it = m_Keywords.lower_bound(word.Lower());
-  return 
+  return
     it != m_Keywords.end() &&
     it->StartsWith(word.Lower());
 }
@@ -142,7 +142,7 @@ const wxString wxExLexer::MakeSingleLineComment(
   // First set the fill_out_character.
   wxChar fill_out_character;
 
-  if (fill_out_with_space || m_ScintillaLexer == "hypertext")
+  if (fill_out_with_space || m_ScintillaLexer == wxT("hypertext"))
   {
     fill_out_character = ' ';
   }
@@ -201,7 +201,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
   while (tkz.HasMoreTokens())
   {
     const wxString line = tkz.GetNextToken();
-    wxStringTokenizer fields(line, ":");
+    wxStringTokenizer fields(line, wxT(":"));
 
     wxString keyword;
 

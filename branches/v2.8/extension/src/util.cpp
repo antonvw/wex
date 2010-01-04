@@ -115,7 +115,7 @@ void wxExComboBoxFromString(
   cb->Clear();
 
   wxStringTokenizer tkz(
-    text, 
+    text,
     wxExFindReplaceData::Get()->GetFieldSeparator());
 
   while (tkz.HasMoreTokens())
@@ -123,7 +123,7 @@ void wxExComboBoxFromString(
     cb->Append(tkz.GetNextToken());
   }
 
-  if (cb->GetCount() > 0) 
+  if (cb->GetCount() > 0)
   {
     cb->SetValue(cb->GetString(0));
   }
@@ -141,7 +141,7 @@ const wxString wxExComboBoxToString(
     cb->GetValue(),
     true)) // case sensitive
   {
-    case 0: 
+    case 0:
       text.clear();
       // No change necessary, the string is already present as the first one.
       for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
@@ -183,7 +183,7 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
 
 void wxExFindResult(
   const wxString& find_text,
-  bool find_next, 
+  bool find_next,
   bool recursive)
 {
   if (!recursive)
@@ -192,7 +192,7 @@ void wxExFindResult(
 
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
-      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
+      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " +
       _("hit") + " " + where);
 #endif
   }
@@ -244,7 +244,7 @@ int wxExGetNumberOfLines(const wxString& text)
 int wxExGetLineNumberFromText(const wxString& text)
 {
   // Get text after :.
-  const size_t pos_char = text.rfind(":");
+  const size_t pos_char = text.rfind(wxT(":"));
 
   if (pos_char == wxString::npos)
   {
@@ -271,7 +271,7 @@ const wxString wxExGetWord(
   bool use_path_separator)
 {
   wxString field_separators = " \t";
-  if (use_other_field_separators) field_separators += ":";
+  if (use_other_field_separators) field_separators += wxT(":");
   if (use_path_separator) field_separators = wxFILE_SEP_PATH;
   wxString token;
   wxStringTokenizer tkz(text, field_separators);
@@ -317,7 +317,7 @@ void wxExOpenFiles(
     {
       int line = 0;
 
-      if (!wxFileName(file).FileExists() && file.Contains(":"))
+      if (!wxFileName(file).FileExists() && file.Contains(wxT(":")))
       {
         line = atoi(file.AfterFirst(':').c_str());
         file = file.BeforeFirst(':');
@@ -340,7 +340,7 @@ void wxExOpenFilesDialog(
   wxArrayString files;
 
   const wxString caption(_("Select Files"));
-      
+
   if (stc != NULL)
   {
     wxExFileDialog dlg(frame,

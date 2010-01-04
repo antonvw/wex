@@ -84,7 +84,7 @@ bool wxExApp::OnInit()
     wxEmptyString,
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
-      GetAppName() + wxString(".cfg")).GetFullPath(),
+      GetAppName() + wxT(".cfg")).GetFullPath(),
     wxEmptyString,
     wxCONFIG_USE_LOCAL_FILE);
 #else

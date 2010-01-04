@@ -139,6 +139,8 @@ void wxExListItem::StoreImage(int image)
 
 const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
+const int wxID_SORT_ASCENDING = ID_COL_LAST + 1;
+const int wxID_SORT_DESCENDING = ID_COL_LAST + 2;
 
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)

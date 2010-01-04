@@ -14,21 +14,21 @@
 wxExFileDialog::wxExFileDialog(
   wxWindow *parent,
   wxExFile* file,
-  const wxString &message, 
+  const wxString &message,
   const wxString &wildcard,
-  long style, 
-  const wxPoint &pos, 
-  const wxSize &size, 
+  long style,
+  const wxPoint &pos,
+  const wxSize &size,
   const wxString &name)
   : wxFileDialog(
-      parent, 
-      message, 
-      file->GetFileName().GetPath(), 
-      file->GetFileName().GetFullName(), 
-      wildcard, 
-      style, 
-      pos, 
-      size, 
+      parent,
+      message,
+      file->GetFileName().GetPath(),
+      file->GetFileName().GetFullName(),
+      wildcard,
+      style,
+      pos,
+      size,
       name)
   , m_File(file)
 {
@@ -47,16 +47,16 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
     if (!m_File->GetFileName().IsOk())
     {
       switch (wxMessageBox(
-        _("Save changes") + "?",
+        _("Save changes") + wxT("?"),
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
-        case wxYES: 
+        case wxYES:
           return ShowModal();
           break;
 
-        case wxNO:     
-          m_File->ResetContentsChanged(); 
+        case wxNO:
+          m_File->ResetContentsChanged();
           break;
 
         case wxCANCEL: return wxID_CANCEL; break;
@@ -69,15 +69,15 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
-        case wxYES:    
+        case wxYES:
           m_File->FileSave();
           break;
 
-        case wxNO:     
-          m_File->ResetContentsChanged(); 
+        case wxNO:
+          m_File->ResetContentsChanged();
           break;
 
-        case wxCANCEL: 
+        case wxCANCEL:
           return wxID_CANCEL;
           break;
       }

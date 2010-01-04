@@ -35,24 +35,6 @@ wxExConfigItem::wxExConfigItem(
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
-  double min,
-  double max,
-  double inc,
-  const wxString& page)
-  : m_IsRequired(false)
-  , m_MaxItems(0)
-  , m_MinDouble(min)
-  , m_MaxDouble(max)
-  , m_Inc(inc)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(CONFIG_SPINCTRL_DOUBLE)
-{
-}
-
-wxExConfigItem::wxExConfigItem(
-  const wxString& name,
   const wxString& page,
   long style,
   bool is_required)

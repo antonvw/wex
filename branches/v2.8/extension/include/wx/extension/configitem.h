@@ -46,7 +46,6 @@ enum
   CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
   CONFIG_INT,             ///< a textctrl that only accepts an integer (a long integer)
   CONFIG_SPINCTRL,        ///< a spinctrl
-  CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_STRING,          ///< a textctrl
 
   CONFIG_SPACER,         ///< a spacer only, no config item
@@ -64,11 +63,6 @@ public:
   /// Constructor for a spin ctrl.
   wxExConfigItem(const wxString& name,
     int min, int max,
-    const wxString& page = wxEmptyString);
-
-  /// Constructor for a spin ctrl double.
-  wxExConfigItem(const wxString& name,
-    double min, double max, double inc = 1,
     const wxString& page = wxEmptyString);
 
   /// Constructor for a string.

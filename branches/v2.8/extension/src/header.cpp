@@ -26,13 +26,13 @@ wxExHeader::wxExHeader()
 
 const wxString wxExHeader::Get(const wxExFileName* filename) const
 {
-  const wxString h_name      = "Name:      "; 
-  const wxString h_purpose   = "Purpose:   "; 
-  const wxString h_author    = "Author:    "; 
-  const wxString h_created   = "Created:   "; 
-  const wxString h_rcs       = "RCS-ID:    $"; 
-  const wxString h_copyright = "Copyright: "; 
-  const wxString h_license   = "License:   "; 
+  const wxString h_name      = "Name:      ";
+  const wxString h_purpose   = "Purpose:   ";
+  const wxString h_author    = "Author:    ";
+  const wxString h_created   = "Created:   ";
+  const wxString h_rcs       = "RCS-ID:    $";
+  const wxString h_copyright = "Copyright: ";
+  const wxString h_license   = "License:   ";
 
   const wxString author = wxConfigBase::Get()->Read(m_TextAuthor);
   const wxString license = wxConfigBase::Get()->Read(m_TextLicense);
@@ -79,7 +79,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
 
   header << "\n";
 
-  if (filename->GetExt() == "h" &&
+  if (filename->GetExt() == wxT("h") &&
       filename->GetStat().st_size == 0)
   {
     wxString argument = "__" + filename->GetName() + "_h";
@@ -118,6 +118,6 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
   }
 
   return wxExConfigDialog(
-    parent, 
+    parent,
     v, title).ShowModal();
 }

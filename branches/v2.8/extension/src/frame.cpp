@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#include <wx/stockitem.h>
 #include <wx/tooltip.h> // for GetTip
 #include <wx/extension/frame.h>
 #include <wx/extension/art.h>
@@ -77,7 +78,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   //SetName("wxExFrame");
   //wxPersistenceManager::Get().RegisterAndRestore(this, this);
 
-  if (wxConfigBase::Get()->Read(wxT("Frame/Maximized"), false))
+  if (wxConfigBase::Get()->Read(wxT("Frame/Maximized"), 0l))
   {
     Maximize(true);
   }
@@ -574,7 +575,7 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
         ? _("Synchronized"): _("Modified"));
       const wxString time = (flags & STAT_SYNC
         ? wxDateTime::Now().Format(): filename.GetStat().GetModificationTime());
-      text += " " + what + " " + time;
+      text += wxT(" ") + what + wxT(" ") + time;
     }
   }
 
@@ -742,8 +743,7 @@ ComboBox::ComboBox(
   wxAcceleratorTable accel(accels, entries);
   SetAcceleratorTable(accel);
 
-  SetFont(wxConfigBase::Get()->ReadObject("FindFont",
-    wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+  SetFont(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
 
   wxExComboBoxFromString(
     this,
@@ -809,7 +809,7 @@ enum
   ID_REGULAR_EXPRESSION,
 };
 
-BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
+BEGIN_EVENT_TABLE(wxExFindToolBar, wxToolBar)
   EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
@@ -823,7 +823,7 @@ wxExFindToolBar::wxExFindToolBar(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id)
-  : wxAuiToolBar(parent, id)
+  : wxToolBar(parent, id)
   , m_Frame(frame)
 {
   Initialize();

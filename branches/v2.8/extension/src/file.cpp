@@ -33,7 +33,7 @@ bool wxExFile::CheckFileSync()
 {
   if (IsOpened() ||
      !m_FileName.m_Stat.IsOk() ||
-     !wxConfigBase::Get()->Read("AllowSync", true))
+     !wxConfigBase::Get()->Read(wxT("AllowSync"), true))
   {
     return false;
   }
@@ -121,7 +121,7 @@ bool wxExFile::MakeAbsolute()
 {
   if (m_FileName.MakeAbsolute())
   {
-    return 
+    return
       m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());
   }
@@ -175,7 +175,7 @@ void wxExFileName::SetLexer(
   const wxString& lexer,
   const wxString& text)
 {
-  if (wxExLexers::Get(false) == NULL) 
+  if (wxExLexers::Get(false) == NULL)
   {
     m_Lexer = wxExLexer();
   }
@@ -183,7 +183,7 @@ void wxExFileName::SetLexer(
   {
     if (lexer.empty())
     {
-      if (text != "forced")
+      if (text != wxT("forced"))
       {
         m_Lexer = wxExLexers::Get()->FindByFileName(*this);
 

@@ -110,13 +110,6 @@ private:
     const wxString& text,
     int min,
     int max);
-  wxControl* AddSpinCtrlDouble(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    double min,
-    double max,
-    double inc);
   wxControl* AddTextCtrl(
     wxWindow* parent,
     wxSizer* sizer,

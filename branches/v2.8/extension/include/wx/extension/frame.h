@@ -18,7 +18,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/aui/auibar.h>
 #include <wx/aui/auibook.h> // for wxAuiManager
 #include <wx/string.h>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
@@ -306,7 +305,7 @@ class ComboBox;
 /// and checkboxes.
 /// The find combobox allows you to find in an wxExSTC
 /// component on the specified wxExFrame.
-class wxExFindToolBar : public wxAuiToolBar
+class wxExFindToolBar : public wxToolBar
 {
 public:
   /// Constructor.

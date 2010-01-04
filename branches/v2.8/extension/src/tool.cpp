@@ -64,8 +64,8 @@ const wxString wxExTool::Info() const
 }
 
 void wxExTool::Log(
-  wxExStatistics<long>* stat, 
-  const wxString& caption, 
+  wxExStatistics<long>* stat,
+  const wxString& caption,
   bool log_to_file) const
 {
   // This is no error, if you run a tool and you cancelled everything,
@@ -84,7 +84,7 @@ void wxExTool::Log(
 
   logtext
     << " " << stat->Get(_("Files Passed")) << " " << _("file(s)")
-    << (!caption.empty() ? ": " + caption: "");
+    << (!caption.empty() ? ": " + caption: wxT(""));
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(logtext);
