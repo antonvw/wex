@@ -76,25 +76,7 @@ bool wxExRCS::SetRevision(wxString& text)
   const wxString REV_CBD_FORMAT = "%B %d, %Y %H:%M";
   const wxString REV_TIMESTAMP_FORMAT = "%y%m%d %H%M%S";
 
-  wxString::const_iterator end;
-
-  if      (m_RevisionTime.ParseFormat(text, REV_TIMESTAMP_FORMAT, &end))
-    m_RevisionFormat = REV_TIMESTAMP_FORMAT;
-  else if (m_RevisionTime.ParseFormat(text, REV_DATE_FORMAT, &end))
-    m_RevisionFormat = REV_DATE_FORMAT;
-  else if (m_RevisionTime.ParseFormat(text, REV_CBD_FORMAT, &end))
-    m_RevisionFormat = REV_CBD_FORMAT;
-  else
-  {
-    // At this moment we support no other formats.
-    return false;
-  }
-
-  text = wxString(end, text.end());
-  word = wxExGetWord(text);
-  m_User = word;
-  text.Trim();
-  m_Description = text;
+  m_RevisionFormat = REV_TIMESTAMP_FORMAT;
 
   return true;
 }
@@ -597,7 +579,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
 bool wxExTextFile::PrepareRevision()
 {
   if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT ||
-      wxConfigBase::Get()->Read("RCS/RecentOnly", false))
+      wxConfigBase::Get()->Read("RCS/RecentOnly", 0L))
   {
     if (m_VersionLine == 1)
     {

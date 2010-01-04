@@ -351,7 +351,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
   // Set initial style depending on type.
   // Might be improved.
   SetSingleStyle((m_Type == LIST_PROJECT || m_Type == LIST_HISTORY ?
-    wxConfigBase::Get()->ReadLong("List/Style", wxLC_REPORT) :
+    wxConfigBase::Get()->Read("List/Style", (long)wxLC_REPORT) :
     wxLC_REPORT));
 #endif
 
@@ -938,7 +938,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         {
           menu.AppendSeparator();
           menu.Append(ID_LIST_COMPARE,
-            _("&Compare With") + " " + wxExGetEndOfText(with_file));
+            _("&Compare With") + wxString(" ") + wxExGetEndOfText(with_file));
         }
       }
     }
@@ -1030,7 +1030,7 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   const wxString prefix =
     (id == ID_TOOL_REPORT_REPLACE ?
        _("Replace In"):
-       _("Find In")) + " ";
+       _("Find In")) + wxString(" ");
 
   if (GetSelectedItemCount() == 1)
   {
@@ -1069,7 +1069,7 @@ void wxExListViewWithFrame::ItemActivated(int item_number)
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
   {
     wxTextEntryDialog dlg(this,
-      _("Input") + ":",
+      _("Input") + wxString(":"),
       _("Folder Type"),
       item.GetColumnText(_("Type")));
 

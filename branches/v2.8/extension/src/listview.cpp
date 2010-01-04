@@ -193,8 +193,7 @@ wxExListView::wxExListView(wxWindow* parent,
     }
   }
 
-  SetFont(wxConfigBase::Get()->ReadObject(
-    _("List Font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+  SetFont(wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
 
   wxAcceleratorEntry entries[7];
 
@@ -671,7 +670,7 @@ void wxExListView::OnList(wxListEvent& event)
   {
     SortColumn(
       event.GetColumn(),
-      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE));
+      (wxExSortType)wxConfigBase::Get()->Read("List/SortMethod", (long)SORT_TOGGLE));
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_RIGHT_CLICK)
   {
@@ -827,7 +826,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
       {
         wxDateTime dt;
 
-        if (!dt.ParseISOCombined(val, ' '))
+        if (!dt.ParseFormat(val))
         {
           SetItemData(i, 0);
         }
@@ -874,7 +873,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   }
 
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Sorted on") + ": " + sorted_col->GetText());
+  wxExFrame::StatusText(_("Sorted on") + wxString(": ") + sorted_col->GetText());
 #endif
 }
 

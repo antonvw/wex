@@ -181,7 +181,7 @@ long wxExProcess::Execute()
   }
   else
   {
-    wxLogError(_("Cannot execute") + ": " + m_Command);
+    wxLogError(_("Cannot execute") + wxString(": ") + m_Command);
   }
 
   if (!cwd.empty())
@@ -211,8 +211,6 @@ wxKillError wxExProcess::Kill(wxSignal sig)
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Stopped"));
 #endif
-
-  DeletePendingEvents();
 
   // Next statement causes wxGTK to crash, so outcommented.
 #ifndef __WXGTK__

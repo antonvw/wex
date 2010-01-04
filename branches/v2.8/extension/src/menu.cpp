@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <map>
+#include <wx/stockitem.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/art.h>
 #include <wx/extension/tool.h>

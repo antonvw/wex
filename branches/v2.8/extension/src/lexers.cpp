@@ -485,7 +485,7 @@ bool wxExLexers::ShowDialog(
     choice = index;
   }
 
-  wxSingleChoiceDialog dlg(parent, _("Input") + wxT(":"), caption, aChoices);
+  wxSingleChoiceDialog dlg(parent, _("Input") + wxString(":"), caption, aChoices);
 
   if (choice != -1)
   {

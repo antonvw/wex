@@ -37,13 +37,11 @@ enum
   /// A normal, single, checkbox (use Read to retrieve value).
   CONFIG_CHECKBOX,       
 
-  CONFIG_COLOUR,          ///< a colour button
   CONFIG_COMBOBOX,        ///< a combobox
   CONFIG_COMBOBOX_NONAME, ///< a combobox without a name
   CONFIG_COMBOBOXDIR,     ///< a combobox with a browse button
   CONFIG_DIRPICKERCTRL,   ///< a dirpicker ctrl
   CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
-  CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
   CONFIG_INT,             ///< a textctrl that only accepts an integer (a long integer)
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_STRING,          ///< a textctrl

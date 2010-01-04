@@ -135,7 +135,7 @@ public:
   virtual void ResetContentsChanged();
 
   /// Gets EOL string.
-  const wxString GetEOL() const;
+  const wxString GetEOL();
 
   /// Gets current flags (used by Open).
   long GetFlags() const {return m_Flags;};

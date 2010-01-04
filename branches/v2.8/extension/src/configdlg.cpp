@@ -172,10 +172,6 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
       control = AddCheckListBoxNoName(parent, sizer, it->m_ChoicesBool);
       break;
 
-    case CONFIG_COLOUR:
-      control = AddColourButton(parent, sizer, it->m_Name);
-      break;
-
     case CONFIG_COMBOBOX:
       control = AddComboBox(parent, sizer, it->m_Name, false);
       break;
@@ -194,10 +190,6 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 
     case CONFIG_FILEPICKERCTRL:
       control = AddFilePickerCtrl(parent, sizer, it->m_Name);
-      break;
-
-    case CONFIG_FONTPICKERCTRL:
-      control = AddFontPickerCtrlCtrl(parent, sizer, it->m_Name);
       break;
 
     case CONFIG_INT:
@@ -228,8 +220,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 
     if (sizer != NULL)
     {
-      if ( sizer->GetRows() > 0 &&
-          !sizer->IsRowGrowable(sizer->GetRows() - 1))
+      if ( sizer->GetRows() > 0 )
       {
         sizer->AddGrowableRow(sizer->GetRows() - 1);
       }
@@ -251,8 +242,6 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
     AddUserSizer(notebook_sizer);
 
     SetMinSize(size);
-
-    SendSizeEvent();
   }
   else
   {
@@ -292,7 +281,7 @@ wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(125, wxDefaultCoord));
 
-  checkbox->SetValue(wxConfigBase::Get()->Read(text, false));
+  checkbox->SetValue(wxConfigBase::Get()->Read(text, 0L));
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -317,7 +306,7 @@ wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
   wxCheckListBox* box = new wxCheckListBox(parent,
     wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
 
-  const long value = wxConfigBase::Get()->ReadLong(text, 0);
+  const long value = wxConfigBase::Get()->Read(text, 0L);
 
   int item = 0;
   for (
@@ -380,7 +369,7 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
         box->Check(item);
       }
     }
-    else if (wxConfigBase::Get()->Read(*it, false))
+    else if (wxConfigBase::Get()->Read(*it, 0L))
     {
       box->Check(item);
     }
@@ -403,7 +392,7 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
     parent,
     new wxColourPickerWidget(parent,
       wxID_ANY,
-      *wxWHITE,
+      *wxWHITE),
     text + ":",
     false); // do not expand
 }
@@ -546,7 +535,7 @@ wxControl* wxExConfigDialog::AddRadioBox(wxWindow* parent,
   wxRadioBox* box = new wxRadioBox(parent,
     wxID_ANY, text, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
 
-  box->SetStringSelection(choices[wxConfigBase::Get()->ReadLong(text, 0)]);
+  box->SetStringSelection(choices[wxConfigBase::Get()->Read(text, 0L)]);
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -574,7 +563,7 @@ wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
     style,
     min,
     max,
-    wxConfigBase::Get()->ReadLong(text, min));
+    wxConfigBase::Get()->Read(text, min));
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
@@ -585,7 +574,7 @@ wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
   const wxString value =
     (!is_numeric ?
         wxConfigBase::Get()->Read(text):
-        wxString::Format("%ld", wxConfigBase::Get()->ReadLong(text, 0)));
+        wxString::Format("%ld", wxConfigBase::Get()->Read(text, 0L)));
 
   long actual_style = style;
   int actual_width = width;
@@ -729,13 +718,6 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       }
       break;
 
-    case CONFIG_COLOUR:
-      {
-      wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
-      wxConfigBase::Get()->Write(gcb->GetName(), gcb->GetColour());
-      }
-      break;
-
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
     case CONFIG_COMBOBOX_NONAME:
@@ -772,13 +754,6 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       {
       wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
       wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
-      }
-      break;
-
-    case CONFIG_FONTPICKERCTRL:
-      {
-      wxFontPickerCtrl* pc = (wxFontPickerCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(pc->GetName(), pc->GetSelectedFont());
       }
       break;
 

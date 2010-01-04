@@ -47,7 +47,7 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
     if (!m_File->GetFileName().IsOk())
     {
       switch (wxMessageBox(
-        _("Save changes") + wxT("?"),
+        _("Save changes") + wxString("?"),
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {
@@ -65,7 +65,7 @@ int wxExFileDialog::ShowModalIfChanged(bool show_modal)
     else
     {
       switch (wxMessageBox(
-        _("Save changes to") + ": " + m_File->GetFileName().GetFullPath() + "?",
+        _("Save changes to") + wxString(": ") + m_File->GetFileName().GetFullPath() + wxString("?"),
         _("Confirm"),
         wxYES_NO | wxCANCEL | wxICON_QUESTION))
       {

@@ -155,7 +155,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
             if (!file.FileExists())
             {
-              wxLogError(_("Cannot locate file") + ": " + token);
+              wxLogError(_("Cannot locate file") + wxString(": ") + token);
             }
             else
             {

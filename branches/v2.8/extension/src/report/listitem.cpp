@@ -119,8 +119,7 @@ void wxExListItemWithFileName::SetReadOnly(bool readonly)
 {
   if (readonly)
   {
-    SetTextColour(wxConfigBase::Get()->ReadObject(
-      _("List Colour"), wxColour("RED")));
+    SetTextColour(wxColour("RED"));
   }
   else
   {
@@ -162,7 +161,7 @@ void wxExListItemWithFileName::Update()
 void wxExListItemWithFileName::UpdateRevisionList(const wxExRCS& rcs)
 {
   SetColumnText(_("Revision"), rcs.GetRevisionNumber());
-  SetColumnText(_("Date"), rcs.GetRevisionTime().FormatISOCombined(' '));
+  SetColumnText(_("Date"), rcs.GetRevisionTime().FormatISODate());
   SetColumnText(_("Initials"), rcs.GetUser());
   SetColumnText(_("Revision Comment"), rcs.GetDescription());
 }

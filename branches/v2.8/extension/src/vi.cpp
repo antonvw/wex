@@ -154,12 +154,12 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     Delete(repeat);
   }
-  else if (command == "d0")
+  else if (command == wxT("d0"))
   {
     m_STC->HomeExtend();
     m_STC->Cut();
   }
-  else if (command == "d$")
+  else if (command == wxT("d$"))
   {
     m_STC->LineEndExtend();
     m_STC->Cut();
@@ -174,15 +174,15 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     m_STC->Cut();
     m_STC->EndUndoAction();
   }
-  else if (command.Matches("*f?"))
+  else if (command.Matches(wxT("*f?")))
   {
     for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), m_SearchFlags);
   }
-  else if (command.Matches("*F?"))
+  else if (command.Matches(wxT("*F?")))
   {
     for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), m_SearchFlags, false);
   }
-  else if (command.Matches("*J"))
+  else if (command.Matches(wxT("*J")))
   {
     m_STC->BeginUndoAction();
     m_STC->SetTargetStart(m_STC->PositionFromLine(m_STC->GetCurrentLine()));
@@ -190,7 +190,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     m_STC->LinesJoin();
     m_STC->EndUndoAction();
  }
-  else if (command.Matches("m?"))
+  else if (command.Matches(wxT("m?")))
   {
     std::map<wxChar, int>::const_iterator it = m_Markers.find(command.Last());
 
@@ -203,13 +203,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
     m_STC->MarkerAdd(m_STC->GetCurrentLine(), vi_marker_symbol);
-  }
-  else if (command.Matches("*r?"))
-  {
-    m_STC->wxStyledTextCtrl::Replace(
-      m_STC->GetCurrentPos(),
-      m_STC->GetCurrentPos() + repeat,
-      wxString(command.Last(), repeat));
   }
   else if (command.EndsWith(wxT("yw")))
   {
@@ -233,7 +226,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     wxCloseEvent event(wxEVT_CLOSE_WINDOW);
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.Matches("'?"))
+  else if (command.Matches(wxT("'?")))
   {
     std::map<wxChar, int>::const_iterator it = m_Markers.find(command.Last());
 
@@ -351,7 +344,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
 
       case '.': Repeat(); break;
-      case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
       case '}': m_STC->ParaDown(); break;
@@ -748,7 +740,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 {
   if (m_InsertMode)
   {
-    m_InsertText += event.GetUnicodeKey();
+    m_InsertText += (char)event.GetKeyCode();
 
     return true;
   }
@@ -756,7 +748,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   {
     if (!(event.GetModifiers() & wxMOD_ALT))
     {
-      m_Command += event.GetUnicodeKey();
+      m_Command += (char)event.GetKeyCode();
 
       if (DoCommand(m_Command, false))
       {
@@ -819,7 +811,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       }
       else
       {
-        m_InsertText += event.GetUnicodeKey();
+        m_InsertText += (char)event.GetKeyCode();
         handled = false;
       }
       break;
@@ -914,22 +906,6 @@ bool wxExVi::Substitute(
   return true;
 }
 
-void wxExVi::ToggleCase() const
-{
-  wxString text(m_STC->GetTextRange(
-    m_STC->GetCurrentPos(),
-    m_STC->GetCurrentPos() + 1));
-
-  wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
-
-  m_STC->wxStyledTextCtrl::Replace(
-    m_STC->GetCurrentPos(),
-    m_STC->GetCurrentPos() + 1,
-    text);
-
-  m_STC->CharRight();
-}
-
 int wxExVi::ToLineNumber(const wxString& address) const
 {
   wxString filtered_address(address);
@@ -998,7 +974,7 @@ void wxExVi::Yank(int lines) const
   }
   else
   {
-    m_STC->CopyRange(start, m_STC->GetLastPosition());
+    return;
   }
 
   if (lines >= 2)

@@ -192,8 +192,8 @@ void wxExFindResult(
 
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
-      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " +
-      _("hit") + " " + where);
+      _("Searching for") + wxString(" ") + wxExQuoted(wxExSkipWhiteSpace(find_text)) + wxString(" ") +
+      _("hit") + wxT(" ") + where);
 #endif
   }
   else
@@ -202,7 +202,7 @@ void wxExFindResult(
 
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
-      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + wxT(" ") + _("not found"));
 #endif
   }
 }
@@ -403,7 +403,7 @@ const wxString wxExPrintHeader(const wxFileName& filename)
   }
   else
   {
-    return _("Printed") + ": " + wxDateTime::Now().Format();
+    return _("Printed") + wxString(": ") + wxDateTime::Now().Format();
   }
 }
 

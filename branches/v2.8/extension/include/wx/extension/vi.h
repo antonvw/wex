@@ -70,7 +70,6 @@ private:
     const wxString& end_address, 
     const wxString& pattern,
     const wxString& replacement) const;
-  void ToggleCase() const;
   int ToLineNumber(const wxString& address) const;
   void Yank(int lines) const;
   bool Yank(

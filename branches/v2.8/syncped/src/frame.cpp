@@ -621,40 +621,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
       event.GetId());
     break;
-  case ID_OPTION_LIST_FONT:
-    {
-      std::vector<wxExConfigItem> v;
-      v.push_back(wxExConfigItem(_("List Font"), CONFIG_FONTPICKERCTRL));
-
-      if (wxExConfigDialog(
-        this,
-        v,
-        _("Set List Font")).ShowModal() == wxID_OK)
-      {
-        const wxFont font(
-          wxConfigBase::Get()->ReadObject(_("List Font"), 
-            wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
-
-        wxExForEach(m_NotebookWithProjects, ID_LIST_ALL_ITEMS, font);
-        wxExForEach(m_NotebookWithLists, ID_LIST_ALL_ITEMS, font);
-        m_History->SetFont(font);
-        m_History->ItemsUpdate();
-      }
-    }
-    break;
-
-  case ID_OPTION_LIST_READONLY_COLOUR:
-    {
-      std::vector<wxExConfigItem> v;
-      v.push_back(wxExConfigItem(_("List Colour"), CONFIG_COLOUR));
-
-      // text also used in menu
-      wxExConfigDialog(
-        this,
-        v,
-        _("Set List Read Only Colour")).ShowModal();
-    }
-    break;
 
   case ID_OPTION_LIST_SORT_ASCENDING:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_ASCENDING); break;

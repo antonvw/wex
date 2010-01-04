@@ -143,7 +143,7 @@ long wxExSVN::Execute()
     errors)) == -1)
   {
     // See also process, same log is shown.
-    wxLogError(_("Cannot execute") + ": " + commandline);
+    wxLogError(_("Cannot execute") + wxString(": ") + commandline);
   }
   else
   {
@@ -394,7 +394,7 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
 
 bool wxExSVN::Use() const
 {
-  return wxConfigBase::Get()->Read(m_UsageKey, true);
+  return wxConfigBase::Get()->Read(m_UsageKey, 1L);
 }
 
 bool wxExSVN::UseFlags() const
