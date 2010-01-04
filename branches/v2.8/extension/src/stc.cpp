@@ -134,7 +134,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 wxExSTC::~wxExSTC()
 {
-  const wxString text = m_vi->GetSearchText(); 
+  const wxString text = m_vi->GetSearchText();
 
   if (!text.empty())
   {
@@ -167,7 +167,7 @@ void wxExSTC::AddAsciiTable()
 void wxExSTC::AddBasePathToPathList()
 {
   // First find the base path, if this is not yet on the list, add it.
-  const wxString basepath_text = "Basepath:";
+  const wxString basepath_text = wxT("Basepath:");
 
   const int find = FindText(
     0,
@@ -216,12 +216,12 @@ offset    hex field                                         ascii field
   // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, hex field 3 * length and the
   // ascii field just the length.
   text.Alloc(
-    (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
+    (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line +
      buffer.length() * each_hex_field + buffer.length());
 
   for (
-    wxFileOffset offset = 0; 
-    offset < buffer.length(); 
+    wxFileOffset offset = 0;
+    offset < buffer.length();
     offset += bytes_per_line)
   {
     long count = buffer.length() - offset;
@@ -234,7 +234,7 @@ offset    hex field                                         ascii field
     {
       const char c = buffer.data()[offset + byte];
 
-      field_hex += wxString::Format("%02x ", (unsigned char)c);
+      field_hex += wxString::Format(wxT("%02x "), (unsigned char)c);
 
       // Print an extra space.
       if (byte == mid_in_hex_field)
@@ -261,7 +261,7 @@ offset    hex field                                         ascii field
       field_hex += ' ';
     }
 
-    text += wxString::Format("%08lx: ", (unsigned long)start + offset) +
+    text += wxString::Format(wxT("%08lx: "), (unsigned long)start + offset) +
       field_hex +
       wxString(' ', space_between_fields + ((bytes_per_line - count)* each_hex_field)) +
       field_ascii +
@@ -284,7 +284,7 @@ void wxExSTC::AppendTextForced(const wxString& text, bool withTimestamp)
   if (withTimestamp)
   {
     const wxString now = wxDateTime::Now().Format();
-    AppendText(now + " " + text + GetEOL());
+    AppendText(now + wxT(" ") + text + GetEOL());
   }
   else
   {
@@ -317,7 +317,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     if (LinkOpen(link, filename, line_no, false))
     {
       menu.AppendSeparator();
-      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + wxT(" ") + filename);
     }
   }
 
@@ -382,9 +382,9 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
   }
 
-  if (sel.empty() && 
-      (GetFileName().GetLexer().GetScintillaLexer() == "hypertext" ||
-       GetFileName().GetLexer().GetScintillaLexer() == "xml"))
+  if (sel.empty() &&
+      (GetFileName().GetLexer().GetScintillaLexer() == wxT("hypertext") ||
+       GetFileName().GetLexer().GetScintillaLexer() == wxT("xml")))
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
@@ -532,7 +532,7 @@ void wxExSTC::ClearDocument()
   SetReadOnly(false);
   ClearAll();
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxEmptyString, "PaneLines");
+  wxExFrame::StatusText(wxEmptyString, wxT("PaneLines"));
 #endif
   EmptyUndoBuffer();
   SetSavePoint();
@@ -703,7 +703,7 @@ void wxExSTC::ConfigGet()
 
   SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
   SetEdgeColour(wxConfigBase::Get()->ReadObject(
-    _("Edge colour"), wxColour("GREY"))); 
+    _("Edge colour"), wxColour("GREY")));
   SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
@@ -761,7 +761,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   }
 
   long new_value;
-  if ((new_value = wxGetNumberFromUser(_("Input") + " 0 - 255:",
+  if ((new_value = wxGetNumberFromUser(_("Input") + wxT(" 0 - 255:"),
     wxEmptyString,
     caption,
     value,
@@ -776,7 +776,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   {
     if (value != new_value)
     {
-      ReplaceSelection(wxString::Format("%c", (wxChar)new_value));
+      ReplaceSelection(wxString::Format(wxT("%c"), (wxChar)new_value));
     }
 
     SetSelection(GetCurrentPos(), GetCurrentPos() + 1);
@@ -801,7 +801,7 @@ void wxExSTC::DoFileLoad(bool synced)
   // so small log files are synced always (e.g. COM LIB report.log).
   const bool log_sync =
     synced &&
-    GetFileName().GetExt().CmpNoCase("log") == 0 &&
+    GetFileName().GetExt().CmpNoCase(wxT("log")) == 0 &&
     GetTextLength() > 1024;
 
   // Be sure we can add text.
@@ -830,7 +830,7 @@ void wxExSTC::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    const wxString msg = _("Opened") + ": " + GetFileName().GetFullPath();
+    const wxString msg = _("Opened") + wxT(": ") + GetFileName().GetFullPath();
     wxExLog::Get()->Log(msg);
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(msg);
@@ -841,7 +841,7 @@ void wxExSTC::DoFileLoad(bool synced)
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(GetFileName(), STAT_SYNC);
-    UpdateStatusBar("PaneLines");
+    UpdateStatusBar(wxT("PaneLines"));
 #endif
   }
 
@@ -853,7 +853,7 @@ void wxExSTC::DoFileLoad(bool synced)
 
 void wxExSTC::DoFileSave(bool save_as)
 {
-  const wxCharBuffer& buffer = GetTextRaw(); 
+  const wxCharBuffer& buffer = GetTextRaw();
   Write(buffer.data(), buffer.length());
 
   if (save_as)
@@ -861,7 +861,7 @@ void wxExSTC::DoFileSave(bool save_as)
     Colourise();
   }
 
-  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
+  const wxString msg = _("Saved") + wxT(": ") + GetFileName().GetFullPath();
   wxExLog::Get()->Log(msg);
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
@@ -873,7 +873,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
   ConvertEOLs(eol_mode);
   SetEOLMode(eol_mode);
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
+  UpdateStatusBar(wxT("PaneFileType"));
 #endif
 }
 
@@ -915,9 +915,9 @@ void wxExSTC::FileTypeMenu()
 
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
-  eol->Append(ID_EDIT_EOL_DOS, "&DOS", wxEmptyString, wxITEM_CHECK);
-  eol->Append(ID_EDIT_EOL_MAC, "&MAC", wxEmptyString, wxITEM_CHECK);
-  eol->Append(ID_EDIT_EOL_UNIX, "&UNIX", wxEmptyString, wxITEM_CHECK);
+  eol->Append(ID_EDIT_EOL_DOS, wxT("&DOS"), wxEmptyString, wxITEM_CHECK);
+  eol->Append(ID_EDIT_EOL_MAC, wxT("&MAC"), wxEmptyString, wxITEM_CHECK);
+  eol->Append(ID_EDIT_EOL_UNIX, wxT("&UNIX"), wxEmptyString, wxITEM_CHECK);
   eol->FindItemByPosition(GetEOLMode())->Check();
 
   PopupMenu(eol);
@@ -932,7 +932,7 @@ bool wxExSTC::FindNext(bool find_next)
 }
 
 bool wxExSTC::FindNext(
-  const wxString& text, 
+  const wxString& text,
   int search_flags,
   bool find_next)
 {
@@ -973,14 +973,14 @@ bool wxExSTC::FindNext(
   if (SearchInTarget(text) < 0)
   {
     wxExFindResult(text, find_next, recursive);
-    
+
     if (!recursive)
     {
       recursive = true;
       FindNext(text, search_flags, find_next);
       recursive = false;
     }
-    
+
     return false;
   }
   else
@@ -1017,7 +1017,7 @@ int wxExSTC::FindReplaceDataFlags() const
 
 void wxExSTC::FoldAll()
 {
-  if (GetProperty("fold") != "1") return;
+  if (GetProperty("fold") != wxT("1")) return;
 
   const int current_line = GetCurrentLine();
 
@@ -1045,13 +1045,13 @@ const wxString wxExSTC::GetEOL() const
 {
   switch (GetEOLMode())
   {
-  case wxSTC_EOL_CR: return "\r"; break;
-  case wxSTC_EOL_CRLF: return "\r\n"; break;
-  case wxSTC_EOL_LF: return "\n"; break;
+  case wxSTC_EOL_CR: return wxT("\r"); break;
+  case wxSTC_EOL_CRLF: return wxT("\r\n"); break;
+  case wxSTC_EOL_LF: return wxT("\n"); break;
   default: wxFAIL; break;
   }
 
-  return "\r\n";
+  return wxT("\r\n");
 }
 
 int wxExSTC::GetLineNumberAtCurrentPos()
@@ -1099,28 +1099,28 @@ const wxString wxExSTC::GetTextAtCurrentPos()
     // <A HREF="http://www.scintilla.org">scintilla</A> component.
 
     // So, first get text between " signs.
-    size_t pos_char1 = text.find("\"");
-    size_t pos_char2 = text.rfind("\"");
+    size_t pos_char1 = text.find(wxT("\""));
+    size_t pos_char2 = text.rfind(wxT("\""));
 
     // If that did not succeed, then get text between < and >.
     if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
     {
-      pos_char1 = text.find("<");
-      pos_char2 = text.rfind(">");
+      pos_char1 = text.find(wxT("<"));
+      pos_char2 = text.rfind(wxT(">"));
     }
 
     // If that did not succeed, then get text between : and : (in .po files).
     if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
     {
-      pos_char1 = text.find(": ");
-      pos_char2 = text.rfind(":");
+      pos_char1 = text.find(wxT(": "));
+      pos_char2 = text.rfind(wxT(":"));
     }
 
     // If that did not succeed, then get text between ' and '.
     if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
     {
-      pos_char1 = text.find("'");
-      pos_char2 = text.rfind("'");
+      pos_char1 = text.find(wxT("'"));
+      pos_char2 = text.rfind(wxT("'"));
     }
 
     // If we did not find anything.
@@ -1222,14 +1222,14 @@ void wxExSTC::GuessType()
     const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
     const wxString text = GetTextRange(0, sample_size);
 
-    if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
-    else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
-    else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
+    if      (text.Contains(wxT("\r\n"))) SetEOLMode(wxSTC_EOL_CRLF);
+    else if (text.Contains(wxT("\n")))   SetEOLMode(wxSTC_EOL_LF);
+    else if (text.Contains(wxT("\r")))   SetEOLMode(wxSTC_EOL_CR);
     else return; // do nothing
   }
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
+  UpdateStatusBar(wxT("PaneFileType"));
 #endif
 }
 
@@ -1257,7 +1257,7 @@ void wxExSTC::HexDecCalltip(int pos)
 
   if (c < 32 || c > 125)
   {
-    const wxString text(wxString::Format("hex: %x dec: %d", c, c));
+    const wxString text(wxString::Format(wxT("hex: %x dec: %d"), c, c));
     CallTipShow(pos, text);
     wxExClipboardAdd(text);
     return;
@@ -1271,12 +1271,12 @@ void wxExSTC::HexDecCalltip(int pos)
   {
     wxString text;
 
-    if      ( base10_ok && !base16_ok) 
-      text = wxString::Format("hex: %lx", base10_val);
-    else if (!base10_ok &&  base16_ok) 
-      text = wxString::Format("dec: %ld", base16_val);
-    else if ( base10_ok &&  base16_ok) 
-      text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
+    if      ( base10_ok && !base16_ok)
+      text = wxString::Format(wxT("hex: %lx"), base10_val);
+    else if (!base10_ok &&  base16_ok)
+      text = wxString::Format(wxT("dec: %ld"), base16_val);
+    else if ( base10_ok &&  base16_ok)
+      text = wxString::Format(wxT("hex: %lx dec: %ld"), base10_val, base16_val);
 
     CallTipShow(pos, text);
     wxExClipboardAdd(text);
@@ -1338,16 +1338,16 @@ void wxExSTC::Initialize()
 
 bool wxExSTC::IsTargetRE(const wxString& target) const
 {
-  return 
-    target.Contains("\\1") ||
-    target.Contains("\\2") ||
-    target.Contains("\\3") ||
-    target.Contains("\\4") ||
-    target.Contains("\\5") ||
-    target.Contains("\\6") ||
-    target.Contains("\\7") ||
-    target.Contains("\\8") ||
-    target.Contains("\\9");
+  return
+    target.Contains(wxT("\\1")) ||
+    target.Contains(wxT("\\2")) ||
+    target.Contains(wxT("\\3")) ||
+    target.Contains(wxT("\\4")) ||
+    target.Contains(wxT("\\5")) ||
+    target.Contains(wxT("\\6")) ||
+    target.Contains(wxT("\\7")) ||
+    target.Contains(wxT("\\8")) ||
+    target.Contains(wxT("\\9"));
 }
 
 void wxExSTC::LexerDialog(const wxString& caption)
@@ -1409,7 +1409,7 @@ bool wxExSTC::LinkOpen(
       for (size_t i=0; i < m_PathList.GetCount() && fullpath.empty(); i++)
       {
         wxString strstart = m_PathList.Item(i);
-        if (!strstart.IsEmpty() && 
+        if (!strstart.IsEmpty() &&
              strstart.Last() != wxFileName::GetPathSeparator())
           strstart += wxFileName::GetPathSeparator();
 
@@ -1422,14 +1422,14 @@ bool wxExSTC::LinkOpen(
   if (!fullpath.empty() && open_link)
   {
     return Open(
-      fullpath, 
-      line_number, 
-      wxEmptyString, 
+      fullpath,
+      line_number,
+      wxEmptyString,
       m_Flags | STC_OPEN_FROM_OTHER);
   }
 
   filename = wxFileName(fullpath).GetFullName();
-  
+
   return !fullpath.empty();
 }
 
@@ -1444,7 +1444,7 @@ void wxExSTC::MacroPlayback()
   {
     int msg, wp;
     char c = ' ';
-    sscanf((*it).c_str(), "%d %d %c", &msg, &wp, &c);
+    sscanf((*it).c_str(), wxT("%d %d %c"), &msg, &wp, &c);
 		char txt[2];
 		txt[0] = c;
 		txt[1] = '\0';
@@ -1467,8 +1467,8 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     skip = m_vi->OnChar(event);
   }
 
-  if (skip && 
-       GetReadOnly() && 
+  if (skip &&
+       GetReadOnly() &&
        wxIsalnum(event.GetUnicodeKey()))
   {
 #if wxUSE_STATUSBAR
@@ -1483,7 +1483,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     {
       CheckSmartIndentation();
     }
-    
+
     event.Skip();
 
     CheckAutoComp(event.GetUnicodeKey());
@@ -1658,7 +1658,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_MACRORECORD)
   {
-    wxString msg = wxString::Format("%d %d ", event.GetMessage(), event.GetWParam());
+    wxString msg = wxString::Format(wxT("%d %d "), event.GetMessage(), event.GetWParam());
 
     if (event.GetLParam() != 0)
     {
@@ -1667,7 +1667,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     }
     else
     {
-      msg += "0";
+      msg += wxT("0");
     }
 
     m_Macro.push_back(msg);
@@ -1744,7 +1744,7 @@ void wxExSTC::PathListAdd(const wxString& path)
 {
   if (!wxFileName::DirExists(path))
   {
-    wxLogError("Path: %s does not exist", path.c_str());
+    wxLogError(wxT("Path: %s does not exist"), path.c_str());
     return;
   }
 
@@ -1762,7 +1762,7 @@ void wxExSTC::PathListInit()
 
   wxStringTokenizer tkz(
     wxConfigBase::Get()->Read(_("Include directory")),
-    ";");
+    wxT(";"));
 
   while (tkz.HasMoreTokens())
   {
@@ -1788,7 +1788,7 @@ void wxExSTC::PrintPreview()
   if (!preview->Ok())
   {
     delete preview;
-    wxLogError("There was a problem previewing.\nPerhaps your current printer is not set correctly?");
+    wxLogError(wxT("There was a problem previewing.\nPerhaps your current printer is not set correctly?"));
     return;
   }
 
@@ -1806,9 +1806,9 @@ void wxExSTC::PropertiesMessage()
 {
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(GetFileName());
-  UpdateStatusBar("PaneFileType");
-  UpdateStatusBar("PaneLexer");
-  UpdateStatusBar("PaneLines");
+  UpdateStatusBar(wxT("PaneFileType"));
+  UpdateStatusBar(wxT("PaneLexer"));
+  UpdateStatusBar(wxT("PaneLines"));
 #endif
 }
 
@@ -1971,7 +1971,7 @@ void wxExSTC::ReplaceNext(bool find_next)
 }
 
 void wxExSTC::ReplaceNext(
-  const wxString& find_text, 
+  const wxString& find_text,
   const wxString& replace_text,
   int search_flags,
   bool find_next)
@@ -1993,7 +1993,7 @@ void wxExSTC::ReplaceNext(
 
   FindNext(find_text, search_flags, find_next);
 }
-  
+
 void wxExSTC::SequenceDialog()
 {
   static wxString start_previous;
@@ -2011,7 +2011,7 @@ void wxExSTC::SequenceDialog()
   static wxString end_previous = start;
 
   const wxString end = wxGetTextFromUser(
-    _("Input") + ":",
+    _("Input") + wxT(":"),
     _("End Of Sequence"),
     end_previous,
     this);
@@ -2102,10 +2102,10 @@ void wxExSTC::SetFolding()
 
     // C Header files usually contain #ifdef statements.
     // Folding them might fold the entire file. Therefore don't fold preprocessor.
-    if (GetFileName().GetLexer().GetScintillaLexer() == "cpp" &&
-        GetFileName().GetExt() == "h")
+    if (GetFileName().GetLexer().GetScintillaLexer() == wxT("cpp") &&
+        GetFileName().GetExt() == wxT("h"))
     {
-      SetProperty("fold.preprocessor", "0");
+      SetProperty("fold.preprocessor", wxT("0"));
     }
   }
   else
@@ -2174,7 +2174,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
   {
     ClearDocumentStyle();
 
-    // Reset all old properties. 
+    // Reset all old properties.
     // Should be before GetFileName().SetLexer().
     wxStringTokenizer properties(
       GetFileName().GetLexer().GetProperties(),
@@ -2182,7 +2182,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 
     while (properties.HasMoreTokens())
     {
-      wxStringTokenizer property(properties.GetNextToken(), "=");
+      wxStringTokenizer property(properties.GetNextToken(), wxT("="));
 
       // Don't put key, value into SetProperty, as that might parse value first,
       // reversing the two.
@@ -2192,7 +2192,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
       SetProperty(key, wxEmptyString);
     }
 
-    SetFileNameLexer(lexer, "forced");
+    SetFileNameLexer(lexer, wxT("forced"));
   }
   else
   {
@@ -2200,7 +2200,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
   }
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneLexer");
+  UpdateStatusBar(wxT("PaneLexer"));
 #endif
 
   // Update the lexer for scintilla.
@@ -2212,7 +2212,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
     // Otherwise it is not known, and we better show an error.
     wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
   {
-    wxLogError(_("Lexer is not known") + ": " + GetFileName().GetLexer().GetScintillaLexer());
+    wxLogError(_("Lexer is not known") + wxT(": ") + GetFileName().GetLexer().GetScintillaLexer());
   }
 
   Colourise();
@@ -2222,7 +2222,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
     FoldAll();
   }
 
-  if (GetFileName().GetExt() == "po")
+  if (GetFileName().GetExt() == wxT("po"))
   {
     AddBasePathToPathList();
   }
@@ -2251,7 +2251,7 @@ void wxExSTC::SetProperties()
 
   while (properties.HasMoreTokens())
   {
-    wxStringTokenizer property(properties.GetNextToken(), "=");
+    wxStringTokenizer property(properties.GetNextToken(), wxT("="));
 
     // Don't put key, value into SetProperty, as that might parse value first,
     // reversing the two.
@@ -2268,9 +2268,9 @@ void wxExSTC::SetStyle(const wxString& style)
   // 1,2,3=fore:light steel blue,italic,size:8
   // 1,2,3 are the scintilla_styles, and the rest is spec
 
-  wxStringTokenizer stylespec(style, "=");
+  wxStringTokenizer stylespec(style, wxT("="));
 
-  wxStringTokenizer scintilla_styles(stylespec.GetNextToken(), ",");
+  wxStringTokenizer scintilla_styles(stylespec.GetNextToken(), wxT(","));
   const wxString spec = stylespec.GetNextToken();
 
   // So for each scintilla style set the spec.
@@ -2299,7 +2299,7 @@ void wxExSTC::SetText(const wxString& value)
 void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 {
   long val;
-  if ((val = wxGetNumberFromUser(_("Input") + ":",
+  if ((val = wxGetNumberFromUser(_("Input") + wxT(":"),
     wxEmptyString,
     caption,
     GetCurrentPos() + 1 - PositionFromLine(GetCurrentLine()),
@@ -2396,26 +2396,26 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
 {
   wxString text;
 
-  if (pane == "PaneFileType")
+  if (pane == wxT("PaneFileType"))
   {
     if (m_Flags & STC_OPEN_HEX)
     {
-      text = "HEX";
+      text = wxT("HEX");
     }
     else
     {
       switch (GetEOLMode())
       {
-      case wxSTC_EOL_CRLF: text = "DOS"; break;
-      case wxSTC_EOL_CR: text = "MAC"; break;
-      case wxSTC_EOL_LF: text = "UNIX"; break;
-      default: text = "UNKNOWN";
+      case wxSTC_EOL_CRLF: text = wxT("DOS"); break;
+      case wxSTC_EOL_CR: text = wxT("MAC"); break;
+      case wxSTC_EOL_LF: text = wxT("UNIX"); break;
+      default: text = wxT("UNKNOWN");
       }
     }
   }
-  else if (pane == "PaneLines")
+  else if (pane == wxT("PaneLines"))
   {
-    if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
+    if (GetCurrentPos() == 0) text = wxString::Format(wxT("%d"), GetLineCount());
     else
     {
       int start;
@@ -2425,18 +2425,18 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
       const int line = GetCurrentLine() + 1;
       const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
 
-      if (len == 0) text = wxString::Format("%d,%d", line, pos);
+      if (len == 0) text = wxString::Format(wxT("%d,%d"), line, pos);
       else
       {
         // There might be NULL's inside selection.
         // So use the GetSelectedTextRaw variant.
         const int number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
-        if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
-        else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+        if (number_of_lines <= 1) text = wxString::Format(wxT("%d,%d,%d"), line, pos, len);
+        else                      text = wxString::Format(wxT("%d,%d,%d"), line, number_of_lines, len);
       }
     }
   }
-  else if (pane == "PaneLexer")
+  else if (pane == wxT("PaneLexer"))
   {
     text = GetFileName().GetLexer().GetScintillaLexer();
   }

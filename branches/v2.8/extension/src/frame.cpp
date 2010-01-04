@@ -32,12 +32,12 @@ std::map<wxString, wxExPane> wxExFrame::m_Panes;
 class FileDropTarget : public wxFileDropTarget
 {
 public:
-  FileDropTarget(wxExFrame* frame) 
+  FileDropTarget(wxExFrame* frame)
     : m_Frame(frame){;};
 private:
   virtual bool OnDropFiles(
-    wxCoord x, 
-    wxCoord y, 
+    wxCoord x,
+    wxCoord y,
     const wxArrayString& filenames) {
     wxExOpenFiles(m_Frame, filenames);
     return true;}
@@ -223,16 +223,16 @@ void wxExFrame::OnClose(wxCloseEvent& event)
     // Set config values that might have changed.
     if (IsMaximized())
     {
-      wxConfigBase::Get()->Write("Frame/Maximized", true);
+      wxConfigBase::Get()->Write(wxT("Frame/Maximized"), true);
     }
     else
     {
-      wxConfigBase::Get()->Write("Frame/Maximized", false);
+      wxConfigBase::Get()->Write(wxT("Frame/Maximized"), false);
       const wxRect rect = GetRect();
-      wxConfigBase::Get()->Write("Frame/X", (long)rect.GetX());
-      wxConfigBase::Get()->Write("Frame/Y", (long)rect.GetY());
-      wxConfigBase::Get()->Write("Frame/Width", (long)rect.GetWidth());
-      wxConfigBase::Get()->Write("Frame/Height", (long)rect.GetHeight());
+      wxConfigBase::Get()->Write(wxT("Frame/X"), (long)rect.GetX());
+      wxConfigBase::Get()->Write(wxT("Frame/Y"), (long)rect.GetY());
+      wxConfigBase::Get()->Write(wxT("Frame/Width"), (long)rect.GetWidth());
+      wxConfigBase::Get()->Write(wxT("Frame/Height"), (long)rect.GetHeight());
     }
   }
 
@@ -248,9 +248,9 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
 
   switch (command.GetId())
   {
-  case wxID_FIND: 
+  case wxID_FIND:
     GetSearchText();
-    
+
     if (m_FindReplaceDialog != NULL)
     {
       if (m_FindReplaceDialog->GetWindowStyle() & wxFR_REPLACEDIALOG)
@@ -259,18 +259,18 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         m_FindReplaceDialog = NULL;
       }
     }
-    
+
     if (m_FindReplaceDialog == NULL)
     {
-      m_FindReplaceDialog = new wxFindReplaceDialog(this, frd, _("Find")); 
+      m_FindReplaceDialog = new wxFindReplaceDialog(this, frd, _("Find"));
     }
-    
+
     m_FindReplaceDialog->Show();
     break;
-    
-  case wxID_REPLACE: 
+
+  case wxID_REPLACE:
     GetSearchText();
-    
+
     if (m_FindReplaceDialog != NULL)
     {
       if (!(m_FindReplaceDialog->GetWindowStyle() & wxFR_REPLACEDIALOG))
@@ -279,37 +279,37 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         m_FindReplaceDialog = NULL;
       }
     }
-    
+
     if (m_FindReplaceDialog == NULL)
     {
       m_FindReplaceDialog = new wxFindReplaceDialog(
-        this, 
+        this,
         frd,
-        _("Replace"), 
-        wxFR_REPLACEDIALOG); 
+        _("Replace"),
+        wxFR_REPLACEDIALOG);
     }
-      
+
     m_FindReplaceDialog->Show();
     break;
-    
-  case ID_EDIT_FIND_NEXT: 
+
+  case ID_EDIT_FIND_NEXT:
     GetSearchText();
 
     if (stc != NULL)
     {
-      stc->FindNext(); 
+      stc->FindNext();
     }
     else if (lv != NULL)
     {
-      lv->FindNext(frd->GetFindString()); 
+      lv->FindNext(frd->GetFindString());
     }
     else if (grid != NULL)
     {
-      grid->FindNext(frd->GetFindString()); 
+      grid->FindNext(frd->GetFindString());
     }
     break;
 
-  case ID_EDIT_FIND_PREVIOUS: 
+  case ID_EDIT_FIND_PREVIOUS:
     GetSearchText();
 
     if (stc != NULL)
@@ -322,7 +322,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     if (grid != NULL)
     {
-      grid->FindNext(frd->GetFindString(), false); 
+      grid->FindNext(frd->GetFindString(), false);
     }
     break;
 
@@ -366,7 +366,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
-    // Hiding instead of destroying, does not 
+    // Hiding instead of destroying, does not
     // show the dialog next time.
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = NULL;
@@ -399,7 +399,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
     {
       stc->ReplaceAll(
-        frd->GetFindString(), 
+        frd->GetFindString(),
         frd->GetReplaceString());
     }
     else
@@ -455,7 +455,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
 #if wxUSE_STATUSBAR
-  case ID_EDIT_STATUS_BAR: stc->UpdateStatusBar("PaneLines"); break;
+  case ID_EDIT_STATUS_BAR: stc->UpdateStatusBar(wxT("PaneLines")); break;
 #endif
   default:
     wxFAIL;
@@ -512,29 +512,29 @@ void wxExFrame::SetupStatusBar(
 #if wxUSE_STATUSBAR
 void wxExFrame::StatusBarDoubleClicked(int field, const wxPoint& point)
 {
-  if (field == GetPaneField("PaneLines"))
+  if (field == GetPaneField(wxT("PaneLines")))
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
-  else if (field == GetPaneField("PaneLexer"))
+  else if (field == GetPaneField(wxT("PaneLexer")))
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->LexerDialog();
   }
-  else if (field == GetPaneField("PaneFileType"))
+  else if (field == GetPaneField(wxT("PaneFileType")))
   {
     wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
-  else if (field == GetPaneField("PaneItems"))
+  else if (field == GetPaneField(wxT("PaneItems")))
   {
     wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
   }
   else
   {
-    // Clicking on another field, do nothing. 
+    // Clicking on another field, do nothing.
   }
 }
 
@@ -695,7 +695,7 @@ wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
   const wxExStockArt art(toolId);
 
   return wxToolBar::AddTool(
-    toolId, 
+    toolId,
     wxEmptyString,
     art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
     wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
@@ -742,11 +742,11 @@ ComboBox::ComboBox(
   wxAcceleratorTable accel(accels, entries);
   SetAcceleratorTable(accel);
 
-  SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
+  SetFont(wxConfigBase::Get()->ReadObject("FindFont",
     wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
   wxExComboBoxFromString(
-    this, 
+    this,
     wxConfigBase::Get()->Read(wxExFindReplaceData::Get()->GetTextFindWhat()));
 
   // And override the value set by previous, as we want text to be same as in Find.
@@ -786,7 +786,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
       const wxString text = wxExComboBoxToString(this);
 
       wxConfigBase::Get()->Write(
-        wxExFindReplaceData::Get()->GetTextFindWhat(), 
+        wxExFindReplaceData::Get()->GetTextFindWhat(),
         text);
 
       Clear(); // so wxExComboBoxFromString can append again
@@ -833,13 +833,13 @@ wxExFindToolBar::wxExFindToolBar(
   AddSeparator();
 
   AddTool(
-    wxID_DOWN, 
-    wxEmptyString, 
+    wxID_DOWN,
+    wxEmptyString,
     wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()),
     _("Find next"));
   AddTool(
-    wxID_UP, 
-    wxEmptyString, 
+    wxID_UP,
+    wxEmptyString,
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()),
     _("Find previous"));
   AddSeparator();
@@ -860,13 +860,13 @@ void wxExFindToolBar::Initialize()
 #endif
   m_ComboBox = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
 
-  m_MatchCase = new wxCheckBox(this, 
+  m_MatchCase = new wxCheckBox(this,
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
 
-  m_MatchWholeWord = new wxCheckBox(this, 
+  m_MatchWholeWord = new wxCheckBox(this,
     ID_MATCH_WHOLE_WORD, wxExFindReplaceData::Get()->GetTextMatchWholeWord());
 
-  m_RegularExpression= new wxCheckBox(this, 
+  m_RegularExpression= new wxCheckBox(this,
     ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
 
   m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
