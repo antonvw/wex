@@ -48,10 +48,10 @@ public:
 
   /// Sets this stat, returns result and keeps it in IsOk.
   bool Sync() {
-#ifdef __WXGTK__
+#ifndef __WXMSW__
     m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
 #else
-    m_IsOk = (stat(m_FullPath.char_str(), (struct stat *)this) != -1);
+    m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
 #endif
     return m_IsOk;};
 
