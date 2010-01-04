@@ -86,7 +86,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
     wxConfigBase::Get()->Read(wxT("Frame/X"), 100),
     wxConfigBase::Get()->Read(wxT("Frame/Y"), 100),
     wxConfigBase::Get()->Read(wxT("Frame/Width"), 450),
-    wxConfigBase::Get()->ReadwxT(("Frame/Height"), 350));
+    wxConfigBase::Get()->Read(wxT("Frame/Height"), 350));
 }
 
 wxExFrame::wxExFrame(wxWindow* parent,
