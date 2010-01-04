@@ -48,7 +48,7 @@ public:
 
   /// Sets this stat, returns result and keeps it in IsOk.
   bool Sync() {
-#ifndef __WXMSW__
+#ifdef __UNIX__
     m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
 #else
     m_IsOk = (stat(m_FullPath.c_str(), this) != -1);

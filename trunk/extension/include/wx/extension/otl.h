@@ -16,7 +16,7 @@
 #define OTL_ODBC
 #define OTL_STL
 //#define OTL_UNICODE
-#if __WXGTK__
+#if __UNIX__
 #define OTL_ODBC_UNIX
 #endif
 #include <otlv4.h>
