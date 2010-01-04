@@ -67,7 +67,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   
   <!-- libraries -->
   <lib id="wxex" template="wx-lib">
-    <libname>wxex09</libname>
+    <libname>wxex08</libname>
     
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
@@ -149,7 +149,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </lib>
 
   <lib id="wxex-rep" template="wx-lib">
-    <libname>wxex-rep09</libname>
+    <libname>wxex-rep08</libname>
     
     <define>$(VAR_USE_EMBEDDED_SQL)</define>
     <define>$(VAR_USE_OTL)</define>
