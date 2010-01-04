@@ -32,7 +32,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_CLOSE(MDIFrame::OnClose)
   EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
   EVT_MENU(wxID_EXECUTE, MDIFrame::OnCommand)
-  EVT_MENU(wxID_JUMP_TO, MDIFrame::OnCommand)
   EVT_MENU(wxID_SELECTALL, MDIFrame::OnCommand)
   EVT_MENU(wxID_STOP, MDIFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MDIFrame::OnCommand)
@@ -50,7 +49,6 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(wxID_COPY, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_CUT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_JUMP_TO, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PRINT, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PREVIEW, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PASTE, MDIFrame::OnUpdateUI)
@@ -79,7 +77,7 @@ MDIFrame::MDIFrame(bool open_recent)
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_History(NULL)
-  , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
+  , m_ProjectWildcard(_("Project Files") + wxString(" (*.prj)|*.prj"))
 {
   wxLogTrace("SY_CALL", "+MDIFrame");
 
@@ -264,7 +262,7 @@ bool MDIFrame::DialogProjectOpen()
 
 wxExListView* MDIFrame::GetListView()
 {
-  if (m_History->HasFocus())
+  if (m_History->IsShown())
   {
     return m_History;
   }
@@ -447,8 +445,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   if ((event.GetId() == wxID_UNDO ||
        event.GetId() == wxID_REDO ||
        event.GetId() == wxID_DELETE ||
-       event.GetId() == wxID_SELECTALL ||
-       event.GetId() == wxID_JUMP_TO) ||
+       event.GetId() == wxID_SELECTALL) ||
       (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR) ||
       (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST)||
       (event.GetId() >= ID_STC_LOWEST && event.GetId() <= ID_STC_HIGHEST))
@@ -842,7 +839,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_OPTION_LIST_SORT_TOGGLE:
       event.Check(
         event.GetId() - ID_OPTION_LIST_SORT_ASCENDING == 
-        wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE) - SORT_ASCENDING);
+        wxConfigBase::Get()->Read("List/SortMethod", (long)SORT_TOGGLE) - SORT_ASCENDING);
     break;
 
     case ID_PROJECT_CLOSE:
@@ -907,7 +904,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
         switch (event.GetId())
         {
-        case wxID_JUMP_TO:
         case wxID_SAVEAS:
         case ID_EDIT_FIND_NEXT:
         case ID_EDIT_FOLD_ALL:
@@ -1038,7 +1034,7 @@ bool MDIFrame::OpenFile(
 
   if (!filename.GetStat().IsOk())
   {
-    wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
+    wxLogError(_("Cannot open file") + wxString(": ") + filename.GetFullPath());
     return false;
   }
 

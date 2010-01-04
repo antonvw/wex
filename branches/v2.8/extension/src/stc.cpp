@@ -198,7 +198,8 @@ offset    hex field                                         ascii field
                                   <- mid_in_hex_field
 */
 {
-  wxMemoryBuffer test(buffer);
+  wxMemoryBuffer test;
+  test.AppendData(buffer, GetLength());
 
   SetGlobalStyles();
 
@@ -833,7 +834,7 @@ void wxExSTC::DoFileLoad(bool synced)
 void wxExSTC::DoFileSave(bool save_as)
 {
   const wxCharBuffer& buffer = GetTextRaw();
-  Write(buffer.data(), buffer.length());
+  Write(buffer.data(), GetLength());
 
   if (save_as)
   {
@@ -1811,7 +1812,8 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
-    wxMemoryBuffer test(buffer);
+    wxMemoryBuffer test;
+    test.AppendData(buffer, GetLength());
 
     SetControlCharSymbol(0);
 

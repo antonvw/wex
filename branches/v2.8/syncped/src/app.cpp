@@ -38,11 +38,6 @@ bool App::OnInit()
     return false;
   }
 
-  if (!wxConfigBase::Get()->Exists(_("List Colour")))
-  {
-    wxConfigBase::Get()->Write(_("List Colour"), wxColour("RED"));
-  }
-
   wxExProcess::InitCommandFromConfig();
 
   wxExLog::Get()->SetLogging();

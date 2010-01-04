@@ -87,8 +87,6 @@ Frame::Frame()
   menuEdit->AppendSeparator();
   menuEdit->AppendTools();
   menuEdit->AppendSeparator();
-  menuEdit->Append(wxID_JUMP_TO);
-  menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
   menuEdit->AppendSeparator();
 
@@ -251,9 +249,9 @@ Frame::Frame()
       wxNO_BORDER));
 
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->Read("HexMode", false)); // default no hex
+  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->Read("HexMode", 0L)); // default no hex
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
-  m_SyncCheckBox->SetValue(wxConfigBase::Get()->Read("AllowSync", true));
+  m_SyncCheckBox->SetValue(wxConfigBase::Get()->Read("AllowSync", 1L));
 #endif // wxUSE_CHECKBOX
 
   m_ToolBar->Realize();

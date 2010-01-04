@@ -135,8 +135,8 @@ void wxExListViewFile::AddItems()
   }
 
   int flags = 0;
-  if (wxConfigBase::Get()->Read(_("Add files"), true)) flags |= wxDIR_FILES;
-  if (wxConfigBase::Get()->Read(_("Recursive"), false)) flags |= wxDIR_DIRS;
+  if (wxConfigBase::Get()->Read(_("Add files"), 1L)) flags |= wxDIR_FILES;
+  if (wxConfigBase::Get()->Read(_("Recursive"), 0L)) flags |= wxDIR_DIRS;
 
   wxExDirWithListView dir(
     this,

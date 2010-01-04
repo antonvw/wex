@@ -33,7 +33,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
     return false;
   }
 
-  const wxString msg = _("Compared") + ": " + arguments;
+  const wxString msg = _("Compared") + wxString(": ") + arguments;
   wxExLog::Get()->Log(msg);
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
