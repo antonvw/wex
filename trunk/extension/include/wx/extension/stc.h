@@ -141,19 +141,19 @@ public:
   long GetFlags() const {return m_Flags;};
 
   /// Gets line number at current position.
-  int GetLineNumberAtCurrentPos();
+  int GetLineNumberAtCurrentPos() const;
 
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
   /// Gets search text, as selected or from config.
-  const wxString GetSearchText(); // cannot be const, it uses GetSelectedText
+  const wxString GetSearchText() const;
 
   /// Gets text at current position.
-  const wxString GetTextAtCurrentPos(); // cannot be const, it uses GetSelectedText
+  const wxString GetTextAtCurrentPos() const;
 
   /// Gets word at position.
-  const wxString GetWordAtPos(int pos);
+  const wxString GetWordAtPos(int pos) const;
 
   /// Asks for a line number and goes to the line.
   bool GotoDialog(const wxString& caption = _("Enter Line Number"));
@@ -188,7 +188,7 @@ public:
 #endif
 
   /// Shows properties on the statusbar.
-  virtual void PropertiesMessage();
+  virtual void PropertiesMessage() const;
 
   /// Reset all margins.
   /// Default also resets the divider margin.
@@ -251,7 +251,7 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane);
+  void UpdateStatusBar(const wxString& pane) const;
 #endif
 protected:
   /// Builds the popup menu.

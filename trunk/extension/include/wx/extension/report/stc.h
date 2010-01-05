@@ -73,7 +73,7 @@ public:
     long flags = 0);
 
   /// Invokes base properties message and sets the frame title.
-  virtual void PropertiesMessage();
+  virtual void PropertiesMessage() const;
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);

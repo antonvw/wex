@@ -1062,7 +1062,7 @@ const wxString wxExSTC::GetEOL() const
   return "\r\n";
 }
 
-int wxExSTC::GetLineNumberAtCurrentPos()
+int wxExSTC::GetLineNumberAtCurrentPos() const
 {
   // This method is used by LinkOpen.
   // So, if no line number present return 0, otherwise link open jumps to last line.
@@ -1071,22 +1071,29 @@ int wxExSTC::GetLineNumberAtCurrentPos()
 
   // Cannot use GetLine, as that includes EOF, and then the ToLong does not
   // return correct number.
-  const wxString text = GetTextRange(PositionFromLine(line_no), GetLineEndPosition(line_no));
+  const wxString text = const_cast< wxExSTC * >( this )->GetTextRange(
+    PositionFromLine(line_no), 
+    GetLineEndPosition(line_no));
 
   return wxExGetLineNumberFromText(text);
 }
 
-const wxString wxExSTC::GetSearchText()
+const wxString wxExSTC::GetSearchText() const
 {
-  const wxString selection = GetSelectedText();
+  const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
+
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
+  {
     wxExFindReplaceData::Get()->SetFindString(selection);
+  }
+
   return wxExFindReplaceData::Get()->GetFindString();
 }
 
-const wxString wxExSTC::GetTextAtCurrentPos()
+const wxString wxExSTC::GetTextAtCurrentPos() const
 {
-  const wxString sel = GetSelectedText();
+  const wxString sel = const_cast< wxExSTC * >( this )->GetSelectedText();
+
   if (!sel.empty())
   {
     if (wxExGetNumberOfLines(sel) > 1)
@@ -1145,14 +1152,18 @@ const wxString wxExSTC::GetTextAtCurrentPos()
   }
 }
 
-const wxString wxExSTC::GetWordAtPos(int pos)
+const wxString wxExSTC::GetWordAtPos(int pos) const
 {
-  const int word_start = WordStartPosition(pos, true);
-  const int word_end = WordEndPosition(pos, true);
+  const int word_start = 
+    const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
+  const int word_end = 
+    const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
 
   if (word_start == word_end && word_start < GetTextLength())
   {
-    const wxString word = GetTextRange(word_start, word_start + 1);
+    const wxString word = 
+      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_start + 1);
+
     if (!isspace(word[0]))
     {
       return word;
@@ -1164,7 +1175,9 @@ const wxString wxExSTC::GetWordAtPos(int pos)
   }
   else
   {
-    const wxString word = GetTextRange(word_start, word_end);
+    const wxString word = 
+      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end);
+
     return word;
   }
 }
@@ -1766,7 +1779,7 @@ void wxExSTC::PrintPreview()
 }
 #endif
 
-void wxExSTC::PropertiesMessage()
+void wxExSTC::PropertiesMessage() const
 {
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(GetFileName());
@@ -2356,7 +2369,7 @@ void wxExSTC::StopRecord()
 }
 
 #if wxUSE_STATUSBAR
-void wxExSTC::UpdateStatusBar(const wxString& pane)
+void wxExSTC::UpdateStatusBar(const wxString& pane) const
 {
   wxString text;
 
@@ -2384,9 +2397,11 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
     {
       int start;
       int end;
-      GetSelection(&start, &end);
+      const_cast< wxExSTC * >( this )->GetSelection(&start, &end);
+
       const int len  = end - start;
-      const int line = GetCurrentLine() + 1;
+      const int line = 
+        const_cast< wxExSTC * >( this )->GetCurrentLine() + 1;
       const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
 
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
@@ -2394,7 +2409,8 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
       {
         // There might be NULL's inside selection.
         // So use the GetSelectedTextRaw variant.
-        const int number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
+        const int number_of_lines = wxExGetNumberOfLines(
+          const_cast< wxExSTC * >( this )->GetSelectedTextRaw());
         if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
         else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
       }
