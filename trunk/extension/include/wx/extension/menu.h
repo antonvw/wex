@@ -45,11 +45,13 @@ public:
   /// Copy constructor.
   wxExMenu(const wxExMenu& menu);
 
-  /// Adds automatic naming (for stock menu id's) and art id for menu items.
+  /// Appends a menu item for stock menu id's
+  /// using automatic naming, help text and art id.
   wxMenuItem* Append(int id);
 
-  /// Appends a menu item, possibly with art.
-  wxMenuItem* Append(int id,
+  /// Appends a menu item.
+  wxMenuItem* Append(
+    int id,
     const wxString& name,
     const wxString& helptext = wxEmptyString,
     wxArtID artid = wxEmptyString);
