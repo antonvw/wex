@@ -136,7 +136,7 @@ Frame::Frame()
   wxMenu *menuProcess = new wxMenu();
   menuProcess->Append(ID_PROCESS_SELECT, wxExEllipsed(_("&Select")));
   menuProcess->AppendSeparator();
-  menuProcess->Append(wxID_EXECUTE);
+  menuProcess->Append(wxID_EXECUTE, _("Execute"));
   menuProcess->Append(wxID_STOP);
 
   wxExMenu *menuProject = new wxExMenu();
