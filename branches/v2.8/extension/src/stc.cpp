@@ -185,7 +185,7 @@ void wxExSTC::AddBasePathToPathList()
   PathListAdd(basepath);
 }
 
-void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
+void wxExSTC::AddTextHexMode(wxFileOffset start, const wxMemoryBuffer& buffer)
 /*
 e.g.:
 offset    hex field                                         ascii field
@@ -198,9 +198,6 @@ offset    hex field                                         ascii field
                                   <- mid_in_hex_field
 */
 {
-  wxMemoryBuffer test;
-  test.AppendData(buffer, GetLength());
-
   SetGlobalStyles();
 
   // Do not show an edge, eol or whitespace in hex mode.
@@ -216,15 +213,15 @@ offset    hex field                                         ascii field
   // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, hex field 3 * length and the
   // ascii field just the length.
   text.Alloc(
-    (start_hex_field + 1 + 1) * test.GetDataLen() / bytes_per_line +
-     test.GetDataLen() * each_hex_field + test.GetDataLen());
+    (start_hex_field + 1 + 1) * buffer.GetDataLen() / bytes_per_line +
+     buffer.GetDataLen() * each_hex_field + buffer.GetDataLen());
 
   for (
     wxFileOffset offset = 0;
-    offset < test.GetDataLen();
+    offset < buffer.GetDataLen();
     offset += bytes_per_line)
   {
-    long count = test.GetDataLen() - offset;
+    long count = buffer.GetDataLen() - offset;
     count =
       (bytes_per_line < count ? bytes_per_line : count);
 
@@ -232,7 +229,7 @@ offset    hex field                                         ascii field
 
     for (register wxFileOffset byte = 0; byte < count; byte++)
     {
-      const char c = buffer.data()[offset + byte];
+      const char c = ((char *)buffer.GetData())[offset + byte];
 
       field_hex += wxString::Format(wxT("%02x "), (unsigned char)c);
 
@@ -1808,20 +1805,17 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  const wxCharBuffer& buffer = Read(offset);
+  const wxMemoryBuffer& buffer = Read(offset);
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
-    wxMemoryBuffer test;
-    test.AppendData(buffer, GetLength());
-
     SetControlCharSymbol(0);
 
     const int message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.
-    SendMsg(message, test.GetDataLen(), (long)test.GetData());
+    SendMsg(message, buffer.GetDataLen(), (long)buffer.GetData());
   }
   else
   {

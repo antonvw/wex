@@ -131,7 +131,7 @@ bool wxExFile::MakeAbsolute()
   }
 }
 
-const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
+const wxMemoryBuffer wxExFile::Read(wxFileOffset seek_position)
 {
   const wxFileOffset bytes_to_read = Length() - seek_position;
 
@@ -145,7 +145,10 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
     wxFAIL;
   }
 
-  return buffer;
+  wxMemoryBuffer mem;
+  mem.AppendData(buffer.data(), bytes_to_read);
+
+  return mem;
 }
 
 int wxExFileName::GetIconID() const

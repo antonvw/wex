@@ -155,7 +155,7 @@ public:
   const wxExStat& GetStat() const {return m_Stat;};
 
   /// Reads this file into a buffer.
-  const wxCharBuffer Read(wxFileOffset seek_position = 0);
+  const wxMemoryBuffer Read(wxFileOffset seek_position = 0);
 
   /// Reset contents changed.
   virtual void ResetContentsChanged() = 0;

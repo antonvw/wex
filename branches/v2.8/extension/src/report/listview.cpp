@@ -262,9 +262,9 @@ void wxExListViewFile::DoFileLoad(bool synced)
 {
   EditClearAll();
 
-  const wxCharBuffer& buffer = Read();
+  const wxMemoryBuffer& buffer = Read();
 
-  wxStringTokenizer tkz(buffer.data(), wxTextFile::GetEOL());
+  wxStringTokenizer tkz((char *)buffer.GetData(), wxTextFile::GetEOL());
 
   while (tkz.HasMoreTokens())
   {
