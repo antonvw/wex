@@ -33,7 +33,7 @@ public:
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Gets find/replace info text.
-  const wxString GetText(bool replace = false);
+  const wxString GetText(bool replace = false) const;
 
   /// Gets the text for the check boxes.
   const std::set<wxString> & GetInfo() const {return m_Info;};
