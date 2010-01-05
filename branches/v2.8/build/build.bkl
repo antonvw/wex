@@ -17,6 +17,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
 
 <makefile>
 
+  <set var="WX_PYTHON">0</set>
+
   <include file="presets/wx.bkl"/>
   
   <set var="DEFAULT_CXXFLAGS">-Wno-write-strings</set>
