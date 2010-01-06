@@ -18,11 +18,11 @@
 
 /// Offers a list item associated with a file on an wxExListView.
 /// It allows you to run tools on the item and keeps statistics when running.
-class wxExListItemWithFileName : public wxExListItem
+class wxExListItemWithFileName : public wxListItem
 {
 public:
   /// Constructor.
-  wxExListItemWithFileName(wxExListView* listview, const int itemnumber);
+  wxExListItemWithFileName(wxExListView* listview, int itemnumber);
 
   /// Constructor.
   wxExListItemWithFileName(wxExListView* listview,
@@ -42,6 +42,17 @@ public:
   /// Runs a tool on this item.
   const wxExFileStatistics Run(const wxExTool& tool);
 
+  /// Sets the item text using column number.
+  void SetItemText(int col_number, const wxString& text) {
+    m_ListView->SetItemText(GetId(), col_number, text);};
+
+  /// Sets the item text using column name.
+  void SetItemText(
+    const wxString& col_name,
+    const wxString& text,
+    bool is_required = true) {
+    SetItemText(m_ListView->FindColumn(col_name, is_required), text);};
+
   /// Updates all attributes.
   void Update();
 
@@ -49,6 +60,10 @@ public:
   void UpdateRevisionList(const wxExRCS& rcs);
 private:
   void SetReadOnly(bool readonly);
+
+  // Cannot be a wxListCtrl, as FindColumn is used from wxExListView,
+  // and cannot be const, as it calls InsertItem on the list.
+  wxExListView* m_ListView;
 
   wxExFileName m_FileName;
   const wxString m_FileSpec;

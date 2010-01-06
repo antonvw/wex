@@ -20,8 +20,8 @@
 // E.g. the LIST_PROCESS has none of the file columns.
 wxExListItemWithFileName::wxExListItemWithFileName(
   wxExListView* lv, 
-  const int itemnumber)
-  : wxExListItem(lv, itemnumber)
+  int itemnumber)
+  : m_ListView(lv)
   , m_FileName(
       (!lv->GetItemText(itemnumber, _("File Name"), false).empty() ?
           lv->GetItemText(itemnumber, _("In Folder"), false) + wxFileName::GetPathSeparator() +
@@ -29,23 +29,25 @@ wxExListItemWithFileName::wxExListItemWithFileName(
       )
   , m_FileSpec(lv->GetItemText(itemnumber, _("Type"), false))
 {
-  m_IsReadOnly = (GetListView()->GetItemData(itemnumber) > 0);
+  SetId(itemnumber);
+  m_IsReadOnly = (m_ListView->GetItemData(itemnumber) > 0);
 }
 
 wxExListItemWithFileName::wxExListItemWithFileName(
   wxExListView* listview,
   const wxString& fullpath,
   const wxString& filespec)
-  : wxExListItem(listview, -1)
+  : m_ListView(listview)
   , m_FileName(fullpath)
   , m_FileSpec(filespec)
 {
+  SetId(-1);
 }
 
 void wxExListItemWithFileName::Insert(long index)
 {
-  SetId(index == -1 ? GetListView()->GetItemCount(): index);
-  const int col = GetListView()->FindColumn(_("File Name"), false);
+  SetId(index == -1 ? m_ListView->GetItemCount(): index);
+  const int col = m_ListView->FindColumn(_("File Name"), false);
   const wxString filename = (
     m_FileName.FileExists() || m_FileName.DirExists() ?
       m_FileName.GetFullName():
@@ -57,12 +59,12 @@ void wxExListItemWithFileName::Insert(long index)
     SetText(filename);
   }
 
-  GetListView()->InsertItem(*this);
+  m_ListView->InsertItem(*this);
   
-  if (GetListView()->IsShown())
+  if (m_ListView->IsShown())
   {
 #if wxUSE_STATUSBAR
-    GetListView()->UpdateStatusBar();
+    m_ListView->UpdateStatusBar();
 #endif
   }
 
@@ -106,7 +108,7 @@ const wxExFileStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
     if (dir.FindFiles())
     {
       // Here we show the counts of individual folders on the top level.
-      if (tool.IsCount() && GetListView()->GetSelectedItemCount() > 1)
+      if (tool.IsCount() && m_ListView->GetSelectedItemCount() > 1)
       {
         tool.Log(&dir.GetStatistics().GetElements(), m_FileName.GetFullPath());
       }
@@ -130,14 +132,14 @@ void wxExListItemWithFileName::SetReadOnly(bool readonly)
 
   // Using GetTextColour did not work, so keep state in boolean.
   m_IsReadOnly = readonly;
-  GetListView()->SetItemData(GetId(), m_IsReadOnly);
+  m_ListView->SetItemData(GetId(), m_IsReadOnly);
 }
 
 void wxExListItemWithFileName::Update()
 {
   SetReadOnly(m_FileName.GetStat().IsReadOnly());
 
-  if (!GetListView()->SetItem(*this))
+  if (!m_ListView->SetItem(*this))
   {
     wxFAIL;
     return;

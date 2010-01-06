@@ -180,21 +180,20 @@ wxExSampleFrame::wxExSampleFrame()
 
   for (int i = 0; i < items; i++)
   {
-    wxExListItem item(m_ListView, wxString::Format("item%d", i));
-    m_ListView->InsertItem(item);
-    item.SetItemText(1, wxString::Format("%d", i));
-    item.SetItemText(2, wxString::Format("%f", (float)i / 2.0));
-    item.SetItemText(3, wxDateTime::Now().Format());
+    m_ListView->InsertItem(i, wxString::Format("item%d", i));
+    m_ListView->SetItemText(i, 1, wxString::Format("%d", i));
+    m_ListView->SetItemText(i, 2, wxString::Format("%f", (float)i / 2.0));
+    m_ListView->SetItemText(i, 3, wxDateTime::Now().Format());
 
     // Set some images.
-    if      (i == 0) item.SetImage(wxART_CDROM);
-    else if (i == 1) item.SetImage(wxART_REMOVABLE);
-    else if (i == 2) item.SetImage(wxART_FOLDER);
-    else if (i == 3) item.SetImage(wxART_FOLDER_OPEN);
-    else if (i == 4) item.SetImage(wxART_GO_DIR_UP);
-    else if (i == 5) item.SetImage(wxART_EXECUTABLE_FILE);
-    else if (i == 6) item.SetImage(wxART_NORMAL_FILE);
-    else             item.SetImage(wxART_TICK_MARK);
+    if      (i == 0) m_ListView->SetItemImage(i, wxART_CDROM);
+    else if (i == 1) m_ListView->SetItemImage(i, wxART_REMOVABLE);
+    else if (i == 2) m_ListView->SetItemImage(i, wxART_FOLDER);
+    else if (i == 3) m_ListView->SetItemImage(i, wxART_FOLDER_OPEN);
+    else if (i == 4) m_ListView->SetItemImage(i, wxART_GO_DIR_UP);
+    else if (i == 5) m_ListView->SetItemImage(i, wxART_EXECUTABLE_FILE);
+    else if (i == 6) m_ListView->SetItemImage(i, wxART_NORMAL_FILE);
+    else             m_ListView->SetItemImage(i, wxART_TICK_MARK);
   }
 
 #if wxUSE_STATUSBAR

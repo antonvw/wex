@@ -59,56 +59,6 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
   }
 }
 
-wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
-  : m_ListView(lv)
-{
-  SetId(itemnumber);
-}
-
-void wxExListItem::SetItemText(int col_number, const wxString& text)
-{
-  if (col_number >= m_ListView->GetColumnCount())
-  {
-    wxFAIL;
-    return;
-  }
-
-#ifdef __WXDEBUG__
-  // Readme: 512 should be a constant from the wx lib.
-  if (text.length() >= 512)
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      "Warning, column max size is 512, column text: ..." +
-        text.substr(text.length() - 25) + " ignored");
-#endif
-  }
-#endif
-
-  wxListItem item;
-  item.SetId(GetId());
-  item.SetColumn(col_number);
-  item.SetMask(wxLIST_MASK_TEXT);
-  item.SetText(text);
-
-  if (!m_ListView->SetItem(item))
-  {
-    wxFAIL;
-  }
-}
-
-void wxExListItem::StoreImage(int image)
-{
-  wxListItem::SetImage(image);
-  SetMask(wxLIST_MASK_IMAGE);
-  SetColumn(0);
-
-  if (!m_ListView->SetItem(*this))
-  {
-    wxFAIL;
-  }
-}
-
 const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
 
@@ -567,13 +517,12 @@ bool wxExListView::ItemFromText(const wxString& text)
     const wxString value = tkz.GetNextToken();
 
     InsertItem(GetItemCount(), value);
-    wxExListItem item(this, GetItemCount() - 1);
 
     // And set the rest of the columns.
     int col = 1;
     while (tkz.HasMoreTokens() && col < GetColumnCount())
     {
-      item.SetItemText(col, tkz.GetNextToken());
+      SetItemText(GetItemCount(), col, tkz.GetNextToken());
       col++;
     }
   }
@@ -733,6 +682,41 @@ void wxExListView::PrintPreview()
 #endif
 }
 
+void wxExListView::SetItemText(
+  int item_number,
+  int col_number, 
+  const wxString& text)
+{
+  if (col_number >= GetColumnCount())
+  {
+    wxFAIL;
+    return;
+  }
+
+#ifdef __WXDEBUG__
+  // Readme: 512 should be a constant from the wx lib.
+  if (text.length() >= 512)
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(
+      "Warning, column max size is 512, column text: ..." +
+        text.substr(text.length() - 25) + " ignored");
+#endif
+  }
+#endif
+
+  wxListItem item;
+  item.SetId(item_number);
+  item.SetColumn(col_number);
+  item.SetMask(wxLIST_MASK_TEXT);
+  item.SetText(text);
+
+  if (!SetItem(item))
+  {
+    wxFAIL;
+  }
+}
+
 std::vector<wxString>* pitems;
 
 int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
@@ -875,6 +859,21 @@ void wxExListView::SortColumnReset()
   }
 
   m_SortedColumnNo = -1;
+}
+
+void wxExListView::StoreImage(int item_number, int image)
+{
+  wxListItem item;
+
+  item.SetId(item_number);
+  item.SetImage(image);
+  item.SetMask(wxLIST_MASK_IMAGE);
+  item.SetColumn(0);
+
+  if (!SetItem(item))
+  {
+    wxFAIL;
+  }
 }
 
 #if wxUSE_STATUSBAR

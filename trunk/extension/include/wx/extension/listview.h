@@ -158,6 +158,26 @@ public:
   /// Previews the lis.
   void PrintPreview();
 
+  /// Sets the item image, using the image list.
+  /// If the listview does not already contain the image, it is added.
+  void SetItemImage(int item_number, wxArtID artid) {
+    if (GetImageType() == IMAGE_ART)
+      return StoreImage(item_number, GetArtID(artid));
+    else
+       wxFAIL;
+    };
+
+  /// Sets the item file icon image.
+  void SetItemImage(int item_number, int iconid) {
+    if (GetImageType() == IMAGE_FILE_ICON)
+      return StoreImage(item_number, iconid);
+    else
+       wxFAIL;
+    };
+
+  /// Sets the item text using item number and column number.
+  void SetItemText(int item_number, int col_number, const wxString& text);
+
   /// Sorts on a column.
   /// If you specified use_images,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
@@ -215,6 +235,7 @@ private:
   const wxString BuildPage();
   void CopySelectedItemsToClipboard();
   void PasteItemsFromClipboard();
+  void StoreImage(int item_number, int image);
 
   const wxUniChar m_FieldSeparator;
 
@@ -232,50 +253,6 @@ private:
   std::vector<wxExColumn> m_Columns;
 
   DECLARE_EVENT_TABLE()
-};
-
-/// Offers an item on an wxExListView.
-class wxExListItem: public wxListItem
-{
-public:
-  /// Constructor, sets the id.
-  wxExListItem(wxExListView* lv, int id);
-
-  /// Gets the list view.
-  wxExListView* GetListView() {return m_ListView;};
-
-  /// Sets the image for this item, using the image list from list view.
-  /// If the listview does not already contain the image, it is added.
-  void SetImage(wxArtID artid) {
-    if (m_ListView->GetImageType() == wxExListView::IMAGE_ART)
-      return StoreImage(m_ListView->GetArtID(artid));
-    else
-       wxFAIL;
-    };
-
-  /// Sets the file icon image for this item.
-  void SetImage(int iconid) {
-    if (m_ListView->GetImageType() == wxExListView::IMAGE_FILE_ICON)
-      return StoreImage(iconid);
-    else
-       wxFAIL;
-    };
-
-  /// Sets the item text using column number.
-  void SetItemText(int col_number, const wxString& text);
-
-  /// Sets the item text using column name.
-  void SetItemText(
-    const wxString& col_name,
-    const wxString& text,
-    bool is_required = true) {
-    SetItemText(m_ListView->FindColumn(col_name, is_required), text);};
-private:
-  void StoreImage(int image);
-
-  // Cannot be a wxListCtrl, as FindColumn is used from wxExListView,
-  // and cannot be const, as it calls InsertItem on the list.
-  wxExListView* m_ListView;
 };
 #endif // wx_USE_GUI
 #endif
