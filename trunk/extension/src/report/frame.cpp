@@ -353,14 +353,14 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
     if (m_FileHistoryList != NULL)
     {
-      wxExListItemWithFileName item(m_FileHistoryList, file);
+      wxExListItem item(m_FileHistoryList, file);
       item.Insert((long)0);
 
       if (m_FileHistoryList->GetItemCount() > 1)
       {
         for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
         {
-          wxExListItemWithFileName item(m_FileHistoryList, i);
+          wxExListItem item(m_FileHistoryList, i);
 
           if (item.GetFileName().GetFullPath() == file)
           {
@@ -432,7 +432,7 @@ void wxExFrameWithHistory::UseFileHistoryList(wxExListView* list)
   // Add all (existing) items from FileHistory.
   for (size_t i = 0; i < m_FileHistory.GetCount(); i++)
   {
-    wxExListItemWithFileName item(
+    wxExListItem item(
       m_FileHistoryList, 
       m_FileHistory.GetHistoryFile(i));
 

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listitem.cpp
-* Purpose:       Implementation of class 'wxExListItemWithFileName'
+* Purpose:       Implementation of class 'wxExListItem'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,7 +18,7 @@
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.
-wxExListItemWithFileName::wxExListItemWithFileName(
+wxExListItem::wxExListItem(
   wxExListView* lv, 
   int itemnumber)
   : m_ListView(lv)
@@ -33,7 +33,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
   m_IsReadOnly = (m_ListView->GetItemData(itemnumber) > 0);
 }
 
-wxExListItemWithFileName::wxExListItemWithFileName(
+wxExListItem::wxExListItem(
   wxExListView* listview,
   const wxString& fullpath,
   const wxString& filespec)
@@ -44,7 +44,7 @@ wxExListItemWithFileName::wxExListItemWithFileName(
   SetId(-1);
 }
 
-void wxExListItemWithFileName::Insert(long index)
+void wxExListItem::Insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
   const int col = m_ListView->FindColumn(_("File Name"), false);
@@ -81,7 +81,7 @@ void wxExListItemWithFileName::Insert(long index)
   }
 }
 
-const wxExFileStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
+const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
 {
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(m_FileName.GetFullPath());
@@ -118,7 +118,7 @@ const wxExFileStatistics wxExListItemWithFileName::Run(const wxExTool& tool)
   }
 }
 
-void wxExListItemWithFileName::SetReadOnly(bool readonly)
+void wxExListItem::SetReadOnly(bool readonly)
 {
   if (readonly)
   {
@@ -135,7 +135,7 @@ void wxExListItemWithFileName::SetReadOnly(bool readonly)
   m_ListView->SetItemData(GetId(), m_IsReadOnly);
 }
 
-void wxExListItemWithFileName::Update()
+void wxExListItem::Update()
 {
   SetReadOnly(m_FileName.GetStat().IsReadOnly());
 
@@ -162,7 +162,7 @@ void wxExListItemWithFileName::Update()
   }
 }
 
-void wxExListItemWithFileName::UpdateRevisionList(const wxExRCS& rcs)
+void wxExListItem::UpdateRevisionList(const wxExRCS& rcs)
 {
   SetItemText(_("Revision"), rcs.GetRevisionNumber());
   SetItemText(_("Date"), rcs.GetRevisionTime().FormatISOCombined(' '));

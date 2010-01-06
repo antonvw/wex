@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          listitem.h
-* Purpose:       Declaration of class 'wxExListItemWithFileName'
+* Purpose:       Declaration of class 'wxExListItem'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -18,14 +18,14 @@
 
 /// Offers a list item associated with a file on an wxExListView.
 /// It allows you to run tools on the item and keeps statistics when running.
-class wxExListItemWithFileName : public wxListItem
+class wxExListItem : public wxListItem
 {
 public:
   /// Constructor.
-  wxExListItemWithFileName(wxExListView* listview, int itemnumber);
+  wxExListItem(wxExListView* listview, int itemnumber);
 
   /// Constructor.
-  wxExListItemWithFileName(wxExListView* listview,
+  wxExListItem(wxExListView* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString);
 

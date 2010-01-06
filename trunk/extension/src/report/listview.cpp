@@ -223,7 +223,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (GetSelectedItemCount() == 1)
   {
-    const wxExListItemWithFileName item(this, GetFirstSelected());
+    const wxExListItem item(this, GetFirstSelected());
 
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
     exists = item.GetFileName().GetStat().IsOk();
@@ -441,7 +441,7 @@ void wxExListViewFile::ItemsUpdate()
 {
   for (int i = 0; i < GetItemCount(); i++)
   {
-    wxExListItemWithFileName item(this, i);
+    wxExListItem item(this, i);
     item.Update();
   }
 }
@@ -461,7 +461,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
 
     if (fn.FileExists())
     {
-      wxExListItemWithFileName item(this, value);
+      wxExListItem item(this, value);
       item.Insert();
 
       // And try to set the rest of the columns 
@@ -489,13 +489,13 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
       const wxString findfiles =
         (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
 
-      wxExListItemWithFileName dir(this, value, findfiles);
+      wxExListItem dir(this, value, findfiles);
       dir.Insert();
     }
   }
   else
   {
-    wxExListItemWithFileName item(this, text);
+    wxExListItem item(this, text);
     item.Insert();
   }
 
@@ -506,7 +506,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
 
 const wxString wxExListViewFile::ItemToText(int item_number) const
 {
-  wxExListItemWithFileName item(
+  wxExListItem item(
     const_cast< wxExListViewFile * >(this), item_number);
 
   wxString text = (item.GetFileName().GetStat().IsOk() ? 
@@ -532,7 +532,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   {
     wxExSVN svn(
       event.GetId(), 
-      wxExListItemWithFileName(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+      wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
     svn.ExecuteAndShowOutput(this);
     return;
   }
@@ -597,7 +597,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
   if (m_ItemNumber < GetItemCount())
   {
-    wxExListItemWithFileName item(this, m_ItemNumber);
+    wxExListItem item(this, m_ItemNumber);
 
     if ( item.GetFileName().FileExists() &&
         (item.GetFileName().GetStat().GetModificationTime() != 
@@ -642,7 +642,7 @@ void wxExListViewFile::OnList(wxListEvent& event)
 #if wxUSE_STATUSBAR
     if (GetSelectedItemCount() == 1)
     {
-      const wxExListItemWithFileName item(this, event.GetIndex());
+      const wxExListItem item(this, event.GetIndex());
 
       if (item.GetFileName().GetStat().IsOk())
       {
@@ -779,7 +779,7 @@ void RBSFile::GenerateDialog()
   int i = -1;
   while ((i = m_Owner->GetNextSelected(i)) != -1)
   {
-    wxExListItemWithFileName li(m_Owner, i);
+    wxExListItem li(m_Owner, i);
     const wxFileName* filename = &li.GetFileName();
     if (!wxFileName::DirExists(filename->GetFullPath()))
     {
@@ -909,7 +909,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
   if (GetSelectedItemCount() == 1)
   {
-    const wxExListItemWithFileName item(this, GetFirstSelected());
+    const wxExListItem item(this, GetFirstSelected());
 
     exists = item.GetFileName().GetStat().IsOk();
     is_folder = wxDirExists(item.GetFileName().GetFullPath());
@@ -947,10 +947,10 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
       if (list != NULL && list->GetSelectedItemCount() == 1)
       {
-        wxExListItemWithFileName thislist(this, GetFirstSelected());
+        wxExListItem thislist(this, GetFirstSelected());
         const wxString current_file = thislist.GetFileName().GetFullPath();
 
-        wxExListItemWithFileName otherlist(list, list->GetFirstSelected());
+        wxExListItem otherlist(list, list->GetFirstSelected());
         const wxString with_file = otherlist.GetFileName().GetFullPath();
 
         if (current_file != with_file &&
@@ -981,7 +981,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       }
       else if (GetSelectedItemCount() == 1)
       {
-        const wxExListItemWithFileName item(this, GetFirstSelected());
+        const wxExListItem item(this, GetFirstSelected());
         menu.AppendSeparator();
 
         if (wxExSVN::Get()->DirExists(item.GetFileName()))
@@ -1021,7 +1021,7 @@ void wxExListViewWithFrame::DeleteDoubles()
 
   for (int i = itemcount - 1; i >= 0; i--)
   {
-    wxExListItemWithFileName item(this, i);
+    wxExListItem item(this, i);
 
     // Delete this element if it has the same mtime
     // and the same name as the previous one.
@@ -1082,7 +1082,7 @@ void wxExListViewWithFrame::ItemActivated(int item_number)
   wxASSERT(item_number >= 0);
  
   // Cannot be const because of SetItemText later on.
-  wxExListItemWithFileName item(this, item_number);
+  wxExListItem item(this, item_number);
 
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
   {
@@ -1152,7 +1152,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
     while ((i = GetNextSelected(i)) != -1)
     {
-      wxExListItemWithFileName li(this, i);
+      wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
       if (wxFileName::DirExists(filename->GetFullPath())) continue;
       switch (event.GetId())
@@ -1164,7 +1164,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
             list = m_Frame->Activate(LIST_PROJECT);
             if (list == NULL) return;
             int main_selected = list->GetFirstSelected();
-            wxExCompareFile(wxExListItemWithFileName(list, main_selected).GetFileName(), *filename);
+            wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
           }
           else
           {
@@ -1209,7 +1209,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_RUN_MAKE:
   {
-    const wxExListItemWithFileName item(this, GetNextSelected(-1));
+    const wxExListItem item(this, GetNextSelected(-1));
     wxExMake(m_Frame, item.GetFileName());
   }
   break;
@@ -1291,7 +1291,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   while ((i = GetNextSelected(i)) != -1)
   {
-    stats += wxExListItemWithFileName(this, i).Run(tool).GetElements();
+    stats += wxExListItem(this, i).Run(tool).GetElements();
   }
 
   tool.Log(&stats, GetFileName().GetName());

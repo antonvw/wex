@@ -167,7 +167,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   dir.FindFiles();
 
-  wxExListItemWithFileName item(
+  wxExListItem item(
     (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
       wxExListViewWithFrame::GetTypeDescription(wxExListViewWithFrame::LIST_PROJECT)),
     "NOT EXISTING ITEM");

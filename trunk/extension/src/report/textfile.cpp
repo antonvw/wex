@@ -23,7 +23,7 @@ wxExListViewWithFrame* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
 
 void SetItemColumnStatistics(
-  wxExListItemWithFileName& item,
+  wxExListItem& item,
   const wxString& col,
   const wxExStatistics<long>& stat)
 {
@@ -196,7 +196,7 @@ void wxExTextFileWithListView::Report(size_t line)
 {
   wxASSERT(m_Report != NULL);
 
-  wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
+  wxExListItem item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
   item.SetItemText(_("Line No"), wxString::Format("%d", line + 1));
@@ -239,7 +239,7 @@ void wxExTextFileWithListView::ReportStatistics()
     }
   }
 
-  wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
+  wxExListItem item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
   switch (GetTool().GetId())

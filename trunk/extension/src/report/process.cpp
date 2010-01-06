@@ -114,7 +114,7 @@ bool wxExProcess::CheckInput()
 
     if (fn.FileExists())
     {
-      wxExListItemWithFileName item(m_ListView, fn.GetFullPath());
+      wxExListItem item(m_ListView, fn.GetFullPath());
       item.Insert();
       item.SetItemText(_("Line"), line);
       item.SetItemText(_("Line No"), lineno);
@@ -122,7 +122,7 @@ bool wxExProcess::CheckInput()
     else
     {
       // wxExListItem gives incorrect image
-      wxExListItemWithFileName item(m_ListView, wxEmptyString);
+      wxExListItem item(m_ListView, wxEmptyString);
       item.Insert();
       item.SetItemText(_("Line"), line);
     }
