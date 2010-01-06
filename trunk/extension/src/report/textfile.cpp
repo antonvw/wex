@@ -31,7 +31,7 @@ void SetItemColumnStatistics(
 
   if (it != stat.GetItems().end())
   {
-    item.SetColumnText(
+    item.SetItemText(
       col,
       wxString::Format("%ld", it->second));
   }
@@ -199,15 +199,15 @@ void wxExTextFileWithListView::Report(size_t line)
   wxExListItemWithFileName item(m_Report, GetFileName().GetFullPath());
   item.Insert();
 
-  item.SetColumnText(_("Line No"), wxString::Format("%d", line + 1));
+  item.SetItemText(_("Line No"), wxString::Format("%d", line + 1));
 
   switch (GetTool().GetId())
   {
   case ID_TOOL_REPORT_REPLACE:
-    item.SetColumnText(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
+    item.SetItemText(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
-    item.SetColumnText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
-    item.SetColumnText(_("Match"), wxExFindReplaceData::Get()->GetFindString());
+    item.SetItemText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
+    item.SetItemText(_("Match"), wxExFindReplaceData::Get()->GetFindString());
   break;
 
   case ID_TOOL_REPORT_REVISION:
@@ -216,8 +216,8 @@ void wxExTextFileWithListView::Report(size_t line)
 
 #if wxExUSE_EMBEDDED_SQL
   case ID_TOOL_REPORT_SQL:
-    item.SetColumnText(_("Query"), m_SQLQuery);
-    item.SetColumnText(_("Run Time"), m_SQLQueryRunTime);
+    item.SetItemText(_("Query"), m_SQLQuery);
+    item.SetItemText(_("Run Time"), m_SQLQueryRunTime);
   break;
 #endif
 
@@ -263,11 +263,11 @@ void wxExTextFileWithListView::ReportStatistics()
       std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
       if (it != stat.GetItems().end())
       {
-        item.SetColumnText(i + 1, wxString::Format("%ld", it->second));
+        item.SetItemText(i + 1, wxString::Format("%ld", it->second));
         total += it->second;
       }
     }
-    item.SetColumnText(
+    item.SetItemText(
       GetFileName().GetLexer().GetKeywords().size() + 1,
       wxString::Format("%ld", total));
   }

@@ -253,16 +253,6 @@ public:
   /// Gets the list view.
   wxExListView* GetListView() {return m_ListView;};
 
-  /// Sets the column text using column number.
-  void SetColumnText(int col_no, const wxString& text);
-
-  /// Sets the column text using column name.
-  void SetColumnText(
-    const wxString& col_name,
-    const wxString& text,
-    bool is_required = true) {
-    SetColumnText(m_ListView->FindColumn(col_name, is_required), text);};
-
   /// Sets the image for this item, using the image list from list view.
   /// If the listview does not already contain the image, it is added.
   void SetImage(wxArtID artid) {
@@ -279,6 +269,16 @@ public:
     else
        wxFAIL;
     };
+
+  /// Sets the item text using column number.
+  void SetItemText(int col_number, const wxString& text);
+
+  /// Sets the item text using column name.
+  void SetItemText(
+    const wxString& col_name,
+    const wxString& text,
+    bool is_required = true) {
+    SetItemText(m_ListView->FindColumn(col_name, is_required), text);};
 private:
   void StoreImage(int image);
 

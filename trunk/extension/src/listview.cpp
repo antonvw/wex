@@ -73,7 +73,7 @@ wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
   SetId(itemnumber);
 }
 
-void wxExListItem::SetColumnText(int col_number, const wxString& text)
+void wxExListItem::SetItemText(int col_number, const wxString& text)
 {
   if (col_number >= m_ListView->GetColumnCount())
   {
@@ -579,7 +579,7 @@ bool wxExListView::ItemFromText(const wxString& text)
     int col = 1;
     while (tkz.HasMoreTokens() && col < GetColumnCount())
     {
-      item.SetColumnText(col, tkz.GetNextToken());
+      item.SetItemText(col, tkz.GetNextToken());
       col++;
     }
   }

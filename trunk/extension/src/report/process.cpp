@@ -116,15 +116,15 @@ bool wxExProcess::CheckInput()
     {
       wxExListItemWithFileName item(m_ListView, fn.GetFullPath());
       item.Insert();
-      item.SetColumnText(_("Line"), line);
-      item.SetColumnText(_("Line No"), lineno);
+      item.SetItemText(_("Line"), line);
+      item.SetItemText(_("Line No"), lineno);
     }
     else
     {
       // wxExListItem gives incorrect image
       wxExListItemWithFileName item(m_ListView, wxEmptyString);
       item.Insert();
-      item.SetColumnText(_("Line"), line);
+      item.SetItemText(_("Line"), line);
     }
 
     // If nothing selected, then ensure last line is visible.

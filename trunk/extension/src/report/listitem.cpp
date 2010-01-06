@@ -53,7 +53,7 @@ void wxExListItemWithFileName::Insert(long index)
 
   if (col == 0)
   {
-    SetColumn(col); // do not combine this with next statement in SetColumnText!!
+    SetColumn(col); // do not combine this with next statement in SetItemText!!
     SetText(filename);
   }
 
@@ -75,7 +75,7 @@ void wxExListItemWithFileName::Insert(long index)
 
   if (col > 0)
   {
-    SetColumnText(col, filename);
+    SetItemText(col, filename);
   }
 }
 
@@ -147,23 +147,23 @@ void wxExListItemWithFileName::Update()
       wxFileName::DirExists(m_FileName.GetFullPath()))
   {
     const unsigned long size = m_FileName.GetStat().st_size; // to prevent warning
-    SetColumnText(_("Type"),
+    SetItemText(_("Type"),
       (wxFileName::DirExists(m_FileName.GetFullPath()) ?
          m_FileSpec:
          m_FileName.GetExt()));
-    SetColumnText(_("In Folder"), m_FileName.GetPath());
-    SetColumnText(_("Size"),
+    SetItemText(_("In Folder"), m_FileName.GetPath());
+    SetItemText(_("Size"),
       (!wxFileName::DirExists(m_FileName.GetFullPath()) ?
          (wxString::Format("%lu", size)):
           wxString(wxEmptyString)));
-    SetColumnText(_("Modified"), m_FileName.GetStat().GetModificationTime());
+    SetItemText(_("Modified"), m_FileName.GetStat().GetModificationTime());
   }
 }
 
 void wxExListItemWithFileName::UpdateRevisionList(const wxExRCS& rcs)
 {
-  SetColumnText(_("Revision"), rcs.GetRevisionNumber());
-  SetColumnText(_("Date"), rcs.GetRevisionTime().FormatISOCombined(' '));
-  SetColumnText(_("Initials"), rcs.GetUser());
-  SetColumnText(_("Revision Comment"), rcs.GetDescription());
+  SetItemText(_("Revision"), rcs.GetRevisionNumber());
+  SetItemText(_("Date"), rcs.GetRevisionTime().FormatISOCombined(' '));
+  SetItemText(_("Initials"), rcs.GetUser());
+  SetItemText(_("Revision Comment"), rcs.GetDescription());
 }

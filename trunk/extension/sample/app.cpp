@@ -182,9 +182,9 @@ wxExSampleFrame::wxExSampleFrame()
   {
     wxExListItem item(m_ListView, wxString::Format("item%d", i));
     item.Insert();
-    item.SetColumnText(1, wxString::Format("%d", i));
-    item.SetColumnText(2, wxString::Format("%f", (float)i / 2.0));
-    item.SetColumnText(3, wxDateTime::Now().Format());
+    item.SetItemText(1, wxString::Format("%d", i));
+    item.SetItemText(2, wxString::Format("%f", (float)i / 2.0));
+    item.SetItemText(3, wxDateTime::Now().Format());
 
     // Set some images.
     if      (i == 0) item.SetImage(wxART_CDROM);
