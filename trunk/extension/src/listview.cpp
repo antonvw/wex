@@ -63,8 +63,8 @@ wxExListItem::wxExListItem(wxExListView* lv, const wxString& text)
   : m_ListView(lv)
 {
   SetId(m_ListView->GetItemCount());
-  SetMask(wxLIST_MASK_TEXT);
-  SetText(text);
+
+  SetItemText(0, text);
 }
 
 wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
@@ -93,11 +93,13 @@ void wxExListItem::SetItemText(int col_number, const wxString& text)
   }
 #endif
 
-  SetColumn(col_number);
-  SetMask(wxLIST_MASK_TEXT);
-  SetText(text);
+  wxListItem item;
+  item.SetId(GetId());
+  item.SetColumn(col_number);
+  item.SetMask(wxLIST_MASK_TEXT);
+  item.SetText(text);
 
-  if (!m_ListView->SetItem(*this))
+  if (!m_ListView->SetItem(item))
   {
     wxFAIL;
   }
@@ -572,8 +574,8 @@ bool wxExListView::ItemFromText(const wxString& text)
   {
     const wxString value = tkz.GetNextToken();
 
-    wxExListItem item(this, value);
-    InsertItem(item);
+    InsertItem(GetItemCount(), value);
+    wxExListItem item(this, GetItemCount() - 1);
 
     // And set the rest of the columns.
     int col = 1;
@@ -585,8 +587,7 @@ bool wxExListView::ItemFromText(const wxString& text)
   }
   else
   {
-    wxExListItem item(this, text);
-    InsertItem(item);
+    InsertItem(GetItemCount(), text);
   }
 
   return true;
