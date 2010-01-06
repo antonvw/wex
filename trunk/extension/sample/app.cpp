@@ -181,7 +181,7 @@ wxExSampleFrame::wxExSampleFrame()
   for (int i = 0; i < items; i++)
   {
     wxExListItem item(m_ListView, wxString::Format("item%d", i));
-    item.Insert();
+    m_ListView->InsertItem(item);
     item.SetItemText(1, wxString::Format("%d", i));
     item.SetItemText(2, wxString::Format("%f", (float)i / 2.0));
     item.SetItemText(3, wxDateTime::Now().Format());
