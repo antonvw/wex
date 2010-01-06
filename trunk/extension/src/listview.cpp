@@ -573,7 +573,7 @@ bool wxExListView::ItemFromText(const wxString& text)
     const wxString value = tkz.GetNextToken();
 
     wxExListItem item(this, value);
-    item.Insert();
+    InsertItem(item);
 
     // And set the rest of the columns.
     int col = 1;
@@ -586,7 +586,7 @@ bool wxExListView::ItemFromText(const wxString& text)
   else
   {
     wxExListItem item(this, text);
-    item.Insert();
+    InsertItem(item);
   }
 
   return true;

@@ -246,10 +246,6 @@ public:
   /// Constructor, sets the id.
   wxExListItem(wxExListView* lv, int id);
 
-  /// Inserts the item on the list.
-  long Insert() {
-    return m_ListView->InsertItem(*this);}
-
   /// Gets the list view.
   wxExListView* GetListView() {return m_ListView;};
 
