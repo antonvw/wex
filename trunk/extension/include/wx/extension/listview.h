@@ -19,8 +19,6 @@
 #include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GUI
-class wxExListItem;
-class wxExListView;
 
 /*! \file */
 /// Sort types.
