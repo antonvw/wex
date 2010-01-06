@@ -121,10 +121,7 @@ bool wxExProcess::CheckInput()
     }
     else
     {
-      // wxExListItem gives incorrect image
-      wxExListItem item(m_ListView, wxEmptyString);
-      item.Insert();
-      item.SetItemText(_("Line"), line);
+      m_ListView->InsertItem(m_ListView->GetItemCount(), line, -1);
     }
 
     // If nothing selected, then ensure last line is visible.
