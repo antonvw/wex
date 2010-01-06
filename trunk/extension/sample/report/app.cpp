@@ -170,7 +170,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   wxExListItem item(
     (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
       wxExListViewWithFrame::GetTypeDescription(wxExListViewWithFrame::LIST_PROJECT)),
-    "NOT EXISTING ITEM");
+    wxFileName("NOT EXISTING ITEM"));
 
   item.Insert();
 }
