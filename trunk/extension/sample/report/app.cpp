@@ -275,7 +275,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_PROCESS_DIALOG:
-    wxExProcess::ConfigDialog(this);
+    wxExProcess::Get()->ConfigDialog(this);
     break;
 
   case ID_PROCESS_RUN:
