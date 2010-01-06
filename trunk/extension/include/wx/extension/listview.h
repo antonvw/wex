@@ -127,6 +127,18 @@ public:
   /// Gets the specified column by column name.
   const wxExColumn GetColumn(const wxString& name) const;
 
+  /// Gets the column using column number and item number.
+  const wxString GetColumnText(int col_number, int item_number) const;
+
+  /// Gets the column using column name and item number.
+  const wxString GetColumnText(
+    const wxString& col_name,
+    int item_number,
+    bool is_required = true) const {
+    return GetColumnText(
+      FindColumn(col_name, is_required),
+      item_number);};
+
   /// Gets the field separator.
   const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};
 
@@ -237,15 +249,6 @@ public:
   /// Inserts the item on the list.
   long Insert() {
     return m_ListView->InsertItem(*this);}
-
-  /// Gets the column using column number.
-  const wxString GetColumnText(int col_no) const;
-
-  /// Gets the column using column name.
-  const wxString GetColumnText(
-    const wxString& col_name,
-    bool is_required = true) const {
-    return GetColumnText(m_ListView->FindColumn(col_name, is_required));};
 
   /// Gets the list view.
   wxExListView* GetListView() {return m_ListView;};

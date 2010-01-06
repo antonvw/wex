@@ -73,30 +73,6 @@ wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
   SetId(itemnumber);
 }
 
-const wxString wxExListItem::GetColumnText(int col_no) const
-{
-  if (col_no < 0) 
-  {
-    // We cannot wxFAIL here, as e.g. "Line No" column is used
-    // to get line number, in several lists, als in lists without that column.
-    return wxEmptyString;
-  }
-
-  wxListItem item;
-
-  item.SetId(GetId());
-  item.SetColumn(col_no);
-  item.SetMask(wxLIST_MASK_TEXT);
-
-  if (!m_ListView->GetItem(item))
-  {
-    wxFAIL;
-    return wxEmptyString;
-  }
-
-  return item.GetText();
-}
-
 void wxExListItem::SetColumnText(int col_no, const wxString& text)
 {
   if (col_no >= m_ListView->GetColumnCount())
@@ -236,11 +212,9 @@ const wxString wxExListView::BuildPage()
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    wxExListItem item(this, i);
-
     for (int col = 0; col < GetColumnCount(); col++)
     {
-      text << "<td>" << item.GetColumnText(col) << wxTextFile::GetEOL();
+      text << "<td>" << GetColumnText(col, i) << wxTextFile::GetEOL();
     }
   }
 
@@ -396,11 +370,9 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
-    wxExListItem item(this, index);
-
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      wxString text = item.GetColumnText(col);
+      wxString text = GetColumnText(col, index);
 
       if (!wxExFindReplaceData::Get()->MatchCase())
       {
@@ -517,6 +489,32 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
   return wxExColumn();
 }
 
+const wxString wxExListView::GetColumnText(
+  int col_no, 
+  int item_number) const
+{
+  if (col_no < 0) 
+  {
+    // We cannot wxFAIL here, as e.g. "Line No" column is used
+    // to get line number, in several lists, als in lists without that column.
+    return wxEmptyString;
+  }
+
+  wxListItem item;
+
+  item.SetId(item_number);
+  item.SetColumn(col_no);
+  item.SetMask(wxLIST_MASK_TEXT);
+
+  if (!GetItem(item))
+  {
+    wxFAIL;
+    return wxEmptyString;
+  }
+
+  return item.GetText();
+}
+
 bool wxExListView::GotoDialog(const wxString& caption)
 {
   long initial_value = GetFirstSelected();
@@ -598,12 +596,9 @@ const wxString wxExListView::ItemToText(int item_number) const
 {
   wxString text;
 
-  const wxExListItem item(
-    const_cast< wxExListView * >(this), item_number);
-
   for (int col = 0; col < GetColumnCount(); col++)
   {
-    text += item.GetColumnText(col);
+    text += GetColumnText(col, item_number);
 
     if (col < GetColumnCount() - 1)
     {
@@ -810,7 +805,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   for (long i = 0; i < GetItemCount(); i++)
   {
-    const wxString val = wxExListItem(this, i).GetColumnText(column_no);
+    const wxString val = GetColumnText(column_no, i);
     items.push_back(val);
 
     switch (sorted_col->GetType())
