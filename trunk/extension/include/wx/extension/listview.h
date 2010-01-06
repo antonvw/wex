@@ -238,9 +238,6 @@ private:
 class wxExListItem: public wxListItem
 {
 public:
-  /// Constructor, sets the text for item at the end of the listview.
-  wxExListItem(wxExListView* lv, const wxString& text);
-
   /// Constructor, sets the id.
   wxExListItem(wxExListView* lv, int id);
 

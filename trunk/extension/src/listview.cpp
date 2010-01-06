@@ -59,14 +59,6 @@ void wxExColumn::SetIsSortedAscending(wxExSortType type)
   }
 }
 
-wxExListItem::wxExListItem(wxExListView* lv, const wxString& text)
-  : m_ListView(lv)
-{
-  SetId(m_ListView->GetItemCount());
-
-  SetItemText(0, text);
-}
-
 wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
   : m_ListView(lv)
 {
