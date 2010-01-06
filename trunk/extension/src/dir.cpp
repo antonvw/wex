@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dir.cpp
-* Purpose:       Implementation of class 'wxExDir'
+* Purpose:       Implementation of class 'wxExDir' and 'wxExDirOpenFile'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

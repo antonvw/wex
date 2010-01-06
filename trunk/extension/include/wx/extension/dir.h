@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          dir.h
-* Purpose:       Declaration of class 'wxExDir'
+* Purpose:       Declaration of class 'wxExDir' and 'wxExDirOpenFile'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,7 +14,8 @@
 
 #include <wx/dir.h>
 
-/// Adds FindFiles to a wxDir, by overriding OnDir and OnFile you can take care
+/// Adds FindFiles to a wxDir.
+/// By overriding OnDir and OnFile you can take care
 /// of what to do with the result.
 class wxExDir : public wxDir
 {
@@ -34,6 +35,15 @@ public:
   /// This results in recursive calls for OnDir and OnFile.
   size_t FindFiles();
 
+  /// Allows you to cancel the FindFiles.
+  static void Cancel() {m_Cancelled = true;}
+
+  /// Check whether operation was cancelled.
+  static bool Cancelled() {return m_Cancelled;};
+
+  /// Is FindFiles already active.
+  static bool GetIsBusy() {return m_IsBusy;};
+
   /// Gets the file spec.
   const wxString& GetFileSpec() const {return m_FileSpec;};
 
@@ -45,15 +55,6 @@ public:
 
   /// Do something with the file.
   virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
-
-  /// Allows you to cancel the FindFiles.
-  static void Cancel() {m_Cancelled = true;}
-
-  /// Check whether operation was cancelled.
-  static bool Cancelled() {return m_Cancelled;};
-
-  /// Is FindFiles already active.
-  static bool GetIsBusy() {return m_IsBusy;};
 private:
   const wxString m_FileSpec;
   const int m_Flags;
@@ -63,13 +64,13 @@ private:
 
 class wxExFrame;
 
-/// Adds FindFiles to a wxDir, by overriding OnDir and OnFile you can take care
-/// of what to do with the result.
+/// Allows you to easily open all files on specified path.
+/// After constructing, invoke FindFiles which
+/// causes all found files to be opened using OpenFile from frame.
 class wxExDirOpenFile : public wxExDir
 {
 public:
   /// Constructor.
-  /// FindFiles causes all found files to be opened using OpenFile from frame.
   /// Flags are passed on to OpenFile, and dir flags for treating subdirs.
   wxExDirOpenFile(wxExFrame* frame,
     const wxString& fullpath,
