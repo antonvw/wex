@@ -84,6 +84,7 @@ const wxString wxExListItem::GetColumnText(int col_no) const
 
   wxListItem item;
 
+  item.SetId(GetId());
   item.SetColumn(col_no);
   item.SetMask(wxLIST_MASK_TEXT);
 
