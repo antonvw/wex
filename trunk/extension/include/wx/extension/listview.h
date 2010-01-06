@@ -165,7 +165,7 @@ public:
   
 #if wxUSE_STATUSBAR
   /// Updates pane items field on the statusbar.
-  void UpdateStatusBar();
+  void UpdateStatusBar() const;
 #endif
 protected:
   // Interface.
@@ -180,7 +180,7 @@ protected:
 
   /// Copies this item (all columns) to text.
   // Cannot be const.
-  virtual const wxString ItemToText(int item_number);
+  virtual const wxString ItemToText(int item_number) const;
 
   /// Clears all items.
   void EditClearAll();
@@ -239,12 +239,12 @@ public:
     return m_ListView->InsertItem(*this);}
 
   /// Gets the column using column number.
-  const wxString GetColumnText(int col_no);
+  const wxString GetColumnText(int col_no) const;
 
   /// Gets the column using column name.
   const wxString GetColumnText(
     const wxString& col_name,
-    bool is_required = true) {
+    bool is_required = true) const {
     return GetColumnText(m_ListView->FindColumn(col_name, is_required));};
 
   /// Gets the list view.

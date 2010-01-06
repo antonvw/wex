@@ -73,7 +73,7 @@ wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
   SetId(itemnumber);
 }
 
-const wxString wxExListItem::GetColumnText(int col_no)
+const wxString wxExListItem::GetColumnText(int col_no) const
 {
   if (col_no < 0) 
   {
@@ -82,16 +82,18 @@ const wxString wxExListItem::GetColumnText(int col_no)
     return wxEmptyString;
   }
 
-  SetColumn(col_no);
-  SetMask(wxLIST_MASK_TEXT);
+  wxListItem item;
 
-  if (!m_ListView->GetItem(*this))
+  item.SetColumn(col_no);
+  item.SetMask(wxLIST_MASK_TEXT);
+
+  if (!m_ListView->GetItem(item))
   {
     wxFAIL;
     return wxEmptyString;
   }
 
-  return GetText();
+  return item.GetText();
 }
 
 void wxExListItem::SetColumnText(int col_no, const wxString& text)
@@ -591,11 +593,12 @@ bool wxExListView::ItemFromText(const wxString& text)
   return true;
 }
 
-const wxString wxExListView::ItemToText(int item_number)
+const wxString wxExListView::ItemToText(int item_number) const
 {
   wxString text;
 
-  wxExListItem item(this, item_number);
+  const wxExListItem item(
+    const_cast< wxExListView * >(this), item_number);
 
   for (int col = 0; col < GetColumnCount(); col++)
   {
@@ -886,7 +889,7 @@ void wxExListView::SortColumnReset()
 }
 
 #if wxUSE_STATUSBAR
-void wxExListView::UpdateStatusBar()
+void wxExListView::UpdateStatusBar() const
 {
   const wxString text = wxString::Format("%d", GetItemCount()) +
     wxString((GetSelectedItemCount() > 0) ?
