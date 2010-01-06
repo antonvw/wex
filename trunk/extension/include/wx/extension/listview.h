@@ -121,23 +121,23 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
-  /// Gets the specified column by column number.
-  const wxExColumn GetColumn(int col_no) const;
+  /// Gets the column by column number.
+  const wxExColumn GetColumn(int col_number) const;
 
-  /// Gets the specified column by column name.
+  /// Gets the column by column name.
   const wxExColumn GetColumn(const wxString& name) const;
 
-  /// Gets the column using column number and item number.
-  const wxString GetColumnText(int col_number, int item_number) const;
+  /// Gets the item column text using item number and column number.
+  const wxString GetColumnText(int item_number, int col_number) const;
 
-  /// Gets the column using column name and item number.
+  /// Gets the item column text using item number and column name.
   const wxString GetColumnText(
-    const wxString& col_name,
     int item_number,
+    const wxString& col_name,
     bool is_required = true) const {
     return GetColumnText(
-      FindColumn(col_name, is_required),
-      item_number);};
+      item_number,
+      FindColumn(col_name, is_required));};
 
   /// Gets the field separator.
   const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};

@@ -73,9 +73,9 @@ wxExListItem::wxExListItem(wxExListView* lv, int itemnumber)
   SetId(itemnumber);
 }
 
-void wxExListItem::SetColumnText(int col_no, const wxString& text)
+void wxExListItem::SetColumnText(int col_number, const wxString& text)
 {
-  if (col_no >= m_ListView->GetColumnCount())
+  if (col_number >= m_ListView->GetColumnCount())
   {
     wxFAIL;
     return;
@@ -93,7 +93,7 @@ void wxExListItem::SetColumnText(int col_no, const wxString& text)
   }
 #endif
 
-  SetColumn(col_no);
+  SetColumn(col_number);
   SetMask(wxLIST_MASK_TEXT);
   SetText(text);
 
@@ -214,7 +214,7 @@ const wxString wxExListView::BuildPage()
 
     for (int col = 0; col < GetColumnCount(); col++)
     {
-      text << "<td>" << GetColumnText(col, i) << wxTextFile::GetEOL();
+      text << "<td>" << GetColumnText(i, col) << wxTextFile::GetEOL();
     }
   }
 
@@ -372,7 +372,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   {
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      wxString text = GetColumnText(col, index);
+      wxString text = GetColumnText(index, col);
 
       if (!wxExFindReplaceData::Get()->MatchCase())
       {
@@ -453,14 +453,14 @@ unsigned int wxExListView::GetArtID(wxArtID artid)
   }
 }
 
-const wxExColumn wxExListView::GetColumn(int col_no) const
+const wxExColumn wxExListView::GetColumn(int col_number) const
 {
   for (
     std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
-    if (it->GetColumn() == col_no)
+    if (it->GetColumn() == col_number)
     {
       return *it;
     }
@@ -490,10 +490,10 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
 }
 
 const wxString wxExListView::GetColumnText(
-  int col_no, 
-  int item_number) const
+  int item_number,
+  int col_number) const
 {
-  if (col_no < 0) 
+  if (col_number < 0) 
   {
     // We cannot wxFAIL here, as e.g. "Line No" column is used
     // to get line number, in several lists, als in lists without that column.
@@ -503,7 +503,7 @@ const wxString wxExListView::GetColumnText(
   wxListItem item;
 
   item.SetId(item_number);
-  item.SetColumn(col_no);
+  item.SetColumn(col_number);
   item.SetMask(wxLIST_MASK_TEXT);
 
   if (!GetItem(item))
@@ -598,7 +598,7 @@ const wxString wxExListView::ItemToText(int item_number) const
 
   for (int col = 0; col < GetColumnCount(); col++)
   {
-    text += GetColumnText(col, item_number);
+    text += GetColumnText(item_number, col);
 
     if (col < GetColumnCount() - 1)
     {
@@ -805,7 +805,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   for (long i = 0; i < GetItemCount(); i++)
   {
-    const wxString val = GetColumnText(column_no, i);
+    const wxString val = GetColumnText(i, column_no);
     items.push_back(val);
 
     switch (sorted_col->GetType())
