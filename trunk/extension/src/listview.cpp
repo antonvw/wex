@@ -214,7 +214,7 @@ const wxString wxExListView::BuildPage()
 
     for (int col = 0; col < GetColumnCount(); col++)
     {
-      text << "<td>" << GetColumnText(i, col) << wxTextFile::GetEOL();
+      text << "<td>" << GetItemText(i, col) << wxTextFile::GetEOL();
     }
   }
 
@@ -372,7 +372,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   {
     for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      wxString text = GetColumnText(index, col);
+      wxString text = GetItemText(index, col);
 
       if (!wxExFindReplaceData::Get()->MatchCase())
       {
@@ -489,7 +489,7 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
   return wxExColumn();
 }
 
-const wxString wxExListView::GetColumnText(
+const wxString wxExListView::GetItemText(
   int item_number,
   int col_number) const
 {
@@ -598,7 +598,7 @@ const wxString wxExListView::ItemToText(int item_number) const
 
   for (int col = 0; col < GetColumnCount(); col++)
   {
-    text += GetColumnText(item_number, col);
+    text += GetItemText(item_number, col);
 
     if (col < GetColumnCount() - 1)
     {
@@ -805,7 +805,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   for (long i = 0; i < GetItemCount(); i++)
   {
-    const wxString val = GetColumnText(i, column_no);
+    const wxString val = GetItemText(i, column_no);
     items.push_back(val);
 
     switch (sorted_col->GetType())

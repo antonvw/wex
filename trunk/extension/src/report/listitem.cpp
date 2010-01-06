@@ -23,11 +23,11 @@ wxExListItemWithFileName::wxExListItemWithFileName(
   const int itemnumber)
   : wxExListItem(lv, itemnumber)
   , m_FileName(
-      (!lv->GetColumnText(itemnumber, _("File Name"), false).empty() ?
-          lv->GetColumnText(itemnumber, _("In Folder"), false) + wxFileName::GetPathSeparator() +
-          lv->GetColumnText(itemnumber, _("File Name"), false) : wxString(wxEmptyString))
+      (!lv->GetItemText(itemnumber, _("File Name"), false).empty() ?
+          lv->GetItemText(itemnumber, _("In Folder"), false) + wxFileName::GetPathSeparator() +
+          lv->GetItemText(itemnumber, _("File Name"), false) : wxString(wxEmptyString))
       )
-  , m_FileSpec(lv->GetColumnText(itemnumber, _("Type"), false))
+  , m_FileSpec(lv->GetItemText(itemnumber, _("Type"), false))
 {
   m_IsReadOnly = (GetListView()->GetItemData(itemnumber) > 0);
 }

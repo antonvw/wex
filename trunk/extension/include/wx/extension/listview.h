@@ -127,23 +127,23 @@ public:
   /// Gets the column by column name.
   const wxExColumn GetColumn(const wxString& name) const;
 
-  /// Gets the item column text using item number and column number.
-  const wxString GetColumnText(int item_number, int col_number) const;
-
-  /// Gets the item column text using item number and column name.
-  const wxString GetColumnText(
-    int item_number,
-    const wxString& col_name,
-    bool is_required = true) const {
-    return GetColumnText(
-      item_number,
-      FindColumn(col_name, is_required));};
-
   /// Gets the field separator.
   const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Gets image type.
   wxExImageType GetImageType() const {return m_ImageType;};
+
+  /// Gets the item text using item number and column number.
+  const wxString GetItemText(int item_number, int col_number) const;
+
+  /// Gets the item text using item number and column name.
+  const wxString GetItemText(
+    int item_number,
+    const wxString& col_name,
+    bool is_required = true) const {
+    return GetItemText(
+      item_number,
+      FindColumn(col_name, is_required));};
 
   /// Gets the sorted column.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};

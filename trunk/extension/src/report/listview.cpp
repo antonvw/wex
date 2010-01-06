@@ -515,7 +515,7 @@ const wxString wxExListViewFile::ItemToText(int item_number) const
 
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
   {
-    text += GetFieldSeparator() + GetColumnText(item_number, _("Type"));
+    text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
   }
 
   if (GetType() != LIST_PROJECT)
@@ -601,7 +601,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
     if ( item.GetFileName().FileExists() &&
         (item.GetFileName().GetStat().GetModificationTime() != 
-         GetColumnText(m_ItemNumber, _("Modified")) ||
+         GetItemText(m_ItemNumber, _("Modified")) ||
          item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
         )
     {
@@ -1026,14 +1026,14 @@ void wxExListViewWithFrame::DeleteDoubles()
     // Delete this element if it has the same mtime
     // and the same name as the previous one.
     if (mtime == item.GetFileName().GetStat().st_mtime &&
-        name == GetColumnText(i, _("File Name")))
+        name == GetItemText(i, _("File Name")))
     {
       DeleteItem(i);
     }
     else
     {
       mtime = item.GetFileName().GetStat().st_mtime;
-      name = GetColumnText(i, _("File Name"));
+      name = GetItemText(i, _("File Name"));
     }
   }
 
@@ -1055,7 +1055,7 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   if (GetSelectedItemCount() == 1)
   {
     // The File Name is better than using 0, as it can be another column as well.
-    return prefix + GetColumnText(GetFirstSelected(), _("File Name"));
+    return prefix + GetItemText(GetFirstSelected(), _("File Name"));
   }
   else if (GetSelectedItemCount() > 1)
   {
@@ -1089,7 +1089,7 @@ void wxExListViewWithFrame::ItemActivated(int item_number)
     wxTextEntryDialog dlg(this,
       _("Input") + ":",
       _("Folder Type"),
-      GetColumnText(item_number, _("Type")));
+      GetItemText(item_number, _("Type")));
 
     if (dlg.ShowModal() == wxID_OK)
     {
@@ -1098,12 +1098,12 @@ void wxExListViewWithFrame::ItemActivated(int item_number)
   }
   else if (item.GetFileName().FileExists())
   {
-    const wxString line_number_str = GetColumnText(item_number, _("Line No"), false);
+    const wxString line_number_str = GetItemText(item_number, _("Line No"), false);
     const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
     const wxString match =
       (GetType() == LIST_REPLACE ?
-         GetColumnText(item_number, _("Replaced")):
-         GetColumnText(item_number, _("Match"), false));
+         GetItemText(item_number, _("Replaced")):
+         GetItemText(item_number, _("Match"), false));
 
     m_Frame->OpenFile(
       item.GetFileName().GetFullPath(),
