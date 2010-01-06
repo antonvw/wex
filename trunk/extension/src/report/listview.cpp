@@ -504,9 +504,10 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
   return true;
 }
 
-const wxString wxExListViewFile::ItemToText(int item_number)
+const wxString wxExListViewFile::ItemToText(int item_number) const
 {
-  wxExListItemWithFileName item(this, item_number);
+  wxExListItemWithFileName item(
+    const_cast< wxExListViewFile * >(this), item_number);
 
   wxString text = (item.GetFileName().GetStat().IsOk() ? 
     item.GetFileName().GetFullPath(): 
