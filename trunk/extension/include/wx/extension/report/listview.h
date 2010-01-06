@@ -86,7 +86,7 @@ public:
   /// Returns true if successfull.
   virtual bool ItemFromText(const wxString& text);
 
-  /// Returns colunm text for specified item.
+  /// Returns column text for specified item.
   virtual const wxString ItemToText(int item_number) const;
 
   /// Invokes base and clears the list.
@@ -116,14 +116,14 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   /// Loads the file and gets all data as list items.
   virtual void DoFileLoad(bool synced = false);
+  /// Saves list items to file.
+  virtual void DoFileSave(bool save_as = false);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
   void AddItems();
-  /// Saves list items to file.
-  virtual void DoFileSave(bool save_as = false);
   void Initialize(const wxExLexer* lexer);
 
   bool m_ContentsChanged;
@@ -174,7 +174,7 @@ protected:
   void OnList(wxListEvent& event);
 private:
   void DeleteDoubles();
-  const wxString GetFindInCaption(int id); // cannot be const
+  const wxString GetFindInCaption(int id) const;
   void ItemActivated(int item_number);
   void RunItems(const wxExTool& tool);
   wxExFrameWithHistory* m_Frame;

@@ -1045,7 +1045,13 @@ void wxExListViewWithFrame::DeleteDoubles()
   }
 }
 
-const wxString wxExListViewWithFrame::GetFindInCaption(int id)
+void wxExListViewWithFrame::DoFileLoad(bool synced)
+{
+  wxExListViewFile::DoFileLoad(synced);
+  m_Frame->SetRecentProject(GetFileName().GetFullPath());
+}
+
+const wxString wxExListViewWithFrame::GetFindInCaption(int id) const
 {
   const wxString prefix =
     (id == ID_TOOL_REPORT_REPLACE ?
@@ -1069,12 +1075,6 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id)
   {
     return prefix + GetName();
   }
-}
-
-void wxExListViewWithFrame::DoFileLoad(bool synced)
-{
-  wxExListViewFile::DoFileLoad(synced);
-  m_Frame->SetRecentProject(GetFileName().GetFullPath());
 }
 
 void wxExListViewWithFrame::ItemActivated(int item_number)
