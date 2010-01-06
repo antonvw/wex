@@ -168,12 +168,12 @@ public:
     const wxString &name = wxListCtrlNameStr);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
+  /// Opens the file and updates recent project from frame.
+  virtual void DoFileLoad(bool synced = false);
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:
   void DeleteDoubles();
-  /// Opens the file and updates recent project from frame.
-  virtual void DoFileLoad(bool synced = false);
   const wxString GetFindInCaption(int id); // cannot be const
   void ItemActivated(int item_number);
   void RunItems(const wxExTool& tool);

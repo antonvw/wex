@@ -256,6 +256,8 @@ public:
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
+  virtual void DoFileLoad(bool synced = false);
+  virtual void DoFileSave(bool save_as = false);
 
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
@@ -276,8 +278,6 @@ private:
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
   void EOLModeUpdate(int eol_mode);
-  virtual void DoFileLoad(bool synced = false);
-  virtual void DoFileSave(bool save_as = false);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   int FindReplaceDataFlags() const;
   void FoldAll();
