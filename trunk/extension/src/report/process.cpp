@@ -114,7 +114,7 @@ bool wxExProcess::CheckInput()
 
     if (fn.FileExists())
     {
-      wxExListItem item(m_ListView, fn.GetFullPath());
+      wxExListItem item(m_ListView, fn);
       item.Insert();
       item.SetItemText(_("Line"), line);
       item.SetItemText(_("Line No"), lineno);

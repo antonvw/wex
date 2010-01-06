@@ -35,10 +35,10 @@ wxExListItem::wxExListItem(
 
 wxExListItem::wxExListItem(
   wxExListView* listview,
-  const wxString& fullpath,
+  const wxExFileName& filename,
   const wxString& filespec)
   : m_ListView(listview)
-  , m_FileName(fullpath)
+  , m_FileName(filename)
   , m_FileSpec(filespec)
 {
   SetId(-1);

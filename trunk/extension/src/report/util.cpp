@@ -196,8 +196,7 @@ bool wxExFindOtherFileName(
 
       if (listview != NULL)
       {
-        wxExListItem item(listview, fn.GetFullPath());
-        item.Insert();
+        wxExListItem(listview, fn).Insert();
       }
 
       if (lastfile != NULL)

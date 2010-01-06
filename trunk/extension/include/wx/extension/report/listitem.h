@@ -26,7 +26,7 @@ public:
 
   /// Constructor.
   wxExListItem(wxExListView* listview,
-    const wxString& fullpath,
+    const wxExFileName& filename,
     const wxString& filespec = wxEmptyString);
 
   /// Gets the filename.
@@ -65,7 +65,7 @@ private:
   // and cannot be const, as it calls InsertItem on the list.
   wxExListView* m_ListView;
 
-  wxExFileName m_FileName;
+  const wxExFileName m_FileName;
   const wxString m_FileSpec;
   bool m_IsReadOnly;
 };

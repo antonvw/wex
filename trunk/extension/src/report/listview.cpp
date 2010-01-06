@@ -461,7 +461,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
 
     if (fn.FileExists())
     {
-      wxExListItem item(this, value);
+      wxExListItem item(this, fn);
       item.Insert();
 
       // And try to set the rest of the columns 
@@ -495,8 +495,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
   }
   else
   {
-    wxExListItem item(this, text);
-    item.Insert();
+    wxExListItem(this, text).Insert();
   }
 
   m_ContentsChanged = true;

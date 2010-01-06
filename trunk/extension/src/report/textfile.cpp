@@ -196,7 +196,7 @@ void wxExTextFileWithListView::Report(size_t line)
 {
   wxASSERT(m_Report != NULL);
 
-  wxExListItem item(m_Report, GetFileName().GetFullPath());
+  wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
   item.SetItemText(_("Line No"), wxString::Format("%d", line + 1));
@@ -239,7 +239,7 @@ void wxExTextFileWithListView::ReportStatistics()
     }
   }
 
-  wxExListItem item(m_Report, GetFileName().GetFullPath());
+  wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
   switch (GetTool().GetId())
