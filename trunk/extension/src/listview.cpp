@@ -709,7 +709,6 @@ void wxExListView::SetItemText(
   wxListItem item;
   item.SetId(item_number);
   item.SetColumn(col_number);
-  item.SetMask(wxLIST_MASK_TEXT);
   item.SetText(text);
 
   if (!SetItem(item))
@@ -860,21 +859,6 @@ void wxExListView::SortColumnReset()
   }
 
   m_SortedColumnNo = -1;
-}
-
-void wxExListView::StoreImage(int item_number, int image)
-{
-  wxListItem item;
-
-  item.SetId(item_number);
-  item.SetImage(image);
-  item.SetMask(wxLIST_MASK_IMAGE);
-  item.SetColumn(0);
-
-  if (!SetItem(item))
-  {
-    wxFAIL;
-  }
 }
 
 #if wxUSE_STATUSBAR

@@ -159,19 +159,19 @@ public:
 
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
-  void SetItemImage(int item_number, wxArtID artid) {
+  bool SetItemImage(int item_number, wxArtID artid) {
     if (GetImageType() == IMAGE_ART)
-      return StoreImage(item_number, GetArtID(artid));
+      return wxListView::SetItemImage(item_number, GetArtID(artid));
     else
-       wxFAIL;
+       return false;
     };
 
   /// Sets the item file icon image.
-  void SetItemImage(int item_number, int iconid) {
+  bool SetItemImage(int item_number, int iconid) {
     if (GetImageType() == IMAGE_FILE_ICON)
-      return StoreImage(item_number, iconid);
+      return wxListView::SetItemImage(item_number, iconid);
     else
-       wxFAIL;
+       return false;
     };
 
   /// Sets the item text using item number and column number.
