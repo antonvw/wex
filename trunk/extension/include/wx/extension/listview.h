@@ -14,7 +14,6 @@
 
 #include <map>
 #include <vector>
-#include <wx/imaglist.h>
 #include <wx/listctrl.h>
 #include <wx/extension/menu.h> // for wxExMenu
 

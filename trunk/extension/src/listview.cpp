@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/imaglist.h>
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
