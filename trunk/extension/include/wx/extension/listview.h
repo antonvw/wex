@@ -154,25 +154,19 @@ public:
   /// Prints the list.
   void Print();
 
-  /// Previews the lis.
+  /// Previews the list.
   void PrintPreview();
 
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
   bool SetItemImage(int item_number, wxArtID artid) {
-    if (GetImageType() == IMAGE_ART)
-      return wxListView::SetItemImage(item_number, GetArtID(artid));
-    else
-       return false;
-    };
+    return (GetImageType() == IMAGE_ART ?
+      wxListView::SetItemImage(item_number, GetArtID(artid)): false);};
 
   /// Sets the item file icon image.
   bool SetItemImage(int item_number, int iconid) {
-    if (GetImageType() == IMAGE_FILE_ICON)
-      return wxListView::SetItemImage(item_number, iconid);
-    else
-       return false;
-    };
+    return (GetImageType() == IMAGE_FILE_ICON ?
+      wxListView::SetItemImage(item_number, iconid): false);};
 
   /// Sets the item text using item number and column number.
   void SetItemText(int item_number, int col_number, const wxString& text);
@@ -234,7 +228,6 @@ private:
   const wxString BuildPage();
   void CopySelectedItemsToClipboard();
   void PasteItemsFromClipboard();
-  void StoreImage(int item_number, int image);
 
   const wxUniChar m_FieldSeparator;
 
