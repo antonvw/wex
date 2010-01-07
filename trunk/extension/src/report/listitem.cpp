@@ -72,6 +72,10 @@ void wxExListItem::Insert(long index)
   {
     SetImage(m_FileName.GetIconID());
   }
+  else
+  {
+    SetImage(-1);
+  }
 
   Update();
 
