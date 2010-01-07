@@ -436,7 +436,7 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
 
 const wxString wxExListView::GetItemText(
   long item_number,
-  long col_number) const
+  int col_number) const
 {
   if (col_number < 0) 
   {
