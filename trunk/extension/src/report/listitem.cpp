@@ -77,6 +77,12 @@ void wxExListItem::Insert(long index)
     SetImage(-1);
   }
 
+  if (!m_ListView->SetItem(*this))
+  {
+    wxFAIL;
+    return;
+  }
+
   Update();
 
   if (col > 0)
@@ -134,6 +140,12 @@ void wxExListItem::SetReadOnly(bool readonly)
     SetTextColour(*wxBLACK);
   }
 
+  if (!m_ListView->SetItem(*this))
+  {
+    wxFAIL;
+    return;
+  }
+
   // Using GetTextColour did not work, so keep state in boolean.
   m_IsReadOnly = readonly;
   m_ListView->SetItemData(GetId(), m_IsReadOnly);
@@ -142,12 +154,6 @@ void wxExListItem::SetReadOnly(bool readonly)
 void wxExListItem::Update()
 {
   SetReadOnly(m_FileName.GetStat().IsReadOnly());
-
-  if (!m_ListView->SetItem(*this))
-  {
-    wxFAIL;
-    return;
-  }
 
   if (m_FileName.FileExists() ||
       wxFileName::DirExists(m_FileName.GetFullPath()))
