@@ -169,7 +169,7 @@ public:
       wxListView::SetItemImage(item_number, iconid): false);};
 
   /// Sets the item text using item number and column number.
-  void SetItemText(long item_number, long col_number, const wxString& text);
+  void SetItemText(long item_number, int col_number, const wxString& text);
 
   /// Sorts on a column.
   /// If you specified use_images,

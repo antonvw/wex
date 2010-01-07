@@ -685,7 +685,7 @@ void wxExListView::PrintPreview()
 
 void wxExListView::SetItemText(
   long item_number,
-  long col_number, 
+  int col_number, 
   const wxString& text)
 {
   if (col_number >= GetColumnCount())
