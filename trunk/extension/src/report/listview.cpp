@@ -503,7 +503,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
   return true;
 }
 
-const wxString wxExListViewFile::ItemToText(int item_number) const
+const wxString wxExListViewFile::ItemToText(long item_number) const
 {
   wxExListItem item(
     const_cast< wxExListViewFile * >(this), item_number);

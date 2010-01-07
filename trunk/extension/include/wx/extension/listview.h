@@ -131,11 +131,11 @@ public:
   wxExImageType GetImageType() const {return m_ImageType;};
 
   /// Gets the item text using item number and column number.
-  const wxString GetItemText(int item_number, int col_number) const;
+  const wxString GetItemText(long item_number, long col_number) const;
 
   /// Gets the item text using item number and column name.
   const wxString GetItemText(
-    int item_number,
+    long item_number,
     const wxString& col_name,
     bool is_required = true) const {
     return GetItemText(
@@ -159,17 +159,17 @@ public:
 
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
-  bool SetItemImage(int item_number, wxArtID artid) {
+  bool SetItemImage(long item_number, wxArtID artid) {
     return (GetImageType() == IMAGE_ART ?
       wxListView::SetItemImage(item_number, GetArtID(artid)): false);};
 
   /// Sets the item file icon image.
-  bool SetItemImage(int item_number, int iconid) {
+  bool SetItemImage(long item_number, int iconid) {
     return (GetImageType() == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
   /// Sets the item text using item number and column number.
-  void SetItemText(int item_number, int col_number, const wxString& text);
+  void SetItemText(long item_number, long col_number, const wxString& text);
 
   /// Sorts on a column.
   /// If you specified use_images,
@@ -203,7 +203,7 @@ protected:
 
   /// Copies this item (all columns) to text.
   // Cannot be const.
-  virtual const wxString ItemToText(int item_number) const;
+  virtual const wxString ItemToText(long item_number) const;
 
   /// Clears all items.
   void EditClearAll();

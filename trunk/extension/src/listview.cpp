@@ -200,7 +200,7 @@ void wxExListView::CopySelectedItemsToClipboard()
   wxBusyCursor wait;
   wxString clipboard;
 
-  int i = -1;
+  long i = -1;
   while ((i = GetNextSelected(i)) != -1)
   {
     clipboard = clipboard + ItemToText(i) + wxTextFile::GetEOL();
@@ -435,8 +435,8 @@ const wxExColumn wxExListView::GetColumn(const wxString& name) const
 }
 
 const wxString wxExListView::GetItemText(
-  int item_number,
-  int col_number) const
+  long item_number,
+  long col_number) const
 {
   if (col_number < 0) 
   {
@@ -535,7 +535,7 @@ bool wxExListView::ItemFromText(const wxString& text)
   return true;
 }
 
-const wxString wxExListView::ItemToText(int item_number) const
+const wxString wxExListView::ItemToText(long item_number) const
 {
   wxString text;
 
@@ -684,8 +684,8 @@ void wxExListView::PrintPreview()
 }
 
 void wxExListView::SetItemText(
-  int item_number,
-  int col_number, 
+  long item_number,
+  long col_number, 
   const wxString& text)
 {
   if (col_number >= GetColumnCount())

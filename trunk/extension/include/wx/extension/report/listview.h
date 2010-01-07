@@ -87,7 +87,7 @@ public:
   virtual bool ItemFromText(const wxString& text);
 
   /// Returns column text for specified item.
-  virtual const wxString ItemToText(int item_number) const;
+  virtual const wxString ItemToText(long item_number) const;
 
   /// Invokes base and clears the list.
   void FileNew(const wxExFileName& filename = wxExFileName());

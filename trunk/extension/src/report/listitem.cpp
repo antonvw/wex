@@ -20,7 +20,7 @@
 // E.g. the LIST_PROCESS has none of the file columns.
 wxExListItem::wxExListItem(
   wxExListView* lv, 
-  int itemnumber)
+  long itemnumber)
   : m_ListView(lv)
   , m_FileName(
       (!lv->GetItemText(itemnumber, _("File Name"), false).empty() ?
