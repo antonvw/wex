@@ -523,7 +523,7 @@ bool wxExListView::ItemFromText(const wxString& text)
     int col = 1;
     while (tkz.HasMoreTokens() && col < GetColumnCount())
     {
-      SetItemText(GetItemCount(), col, tkz.GetNextToken());
+      SetItem(GetItemCount(), col, tkz.GetNextToken());
       col++;
     }
   }
@@ -681,40 +681,6 @@ void wxExListView::PrintPreview()
   wxBusyCursor wait;
   wxExPrinting::Get()->GetHtmlPrinter()->PreviewText(BuildPage());
 #endif
-}
-
-void wxExListView::SetItemText(
-  long item_number,
-  int col_number, 
-  const wxString& text)
-{
-  if (col_number >= GetColumnCount())
-  {
-    wxFAIL;
-    return;
-  }
-
-#ifdef __WXDEBUG__
-  // Readme: 512 should be a constant from the wx lib.
-  if (text.length() >= 512)
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      "Warning, column max size is 512, column text: ..." +
-        text.substr(text.length() - 25) + " ignored");
-#endif
-  }
-#endif
-
-  wxListItem item;
-  item.SetId(item_number);
-  item.SetColumn(col_number);
-  item.SetText(text);
-
-  if (!SetItem(item))
-  {
-    wxFAIL;
-  }
 }
 
 std::vector<wxString>* pitems;

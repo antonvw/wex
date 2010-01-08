@@ -43,15 +43,15 @@ public:
   const wxExFileStatistics Run(const wxExTool& tool);
 
   /// Sets the item text using column number.
-  void SetItemText(int col_number, const wxString& text) {
-    m_ListView->SetItemText(GetId(), col_number, text);};
+  void SetItem(int col_number, const wxString& text) {
+    m_ListView->SetItem(GetId(), col_number, text);};
 
   /// Sets the item text using column name.
-  void SetItemText(
+  void SetItem(
     const wxString& col_name,
     const wxString& text,
     bool is_required = true) {
-    SetItemText(m_ListView->FindColumn(col_name, is_required), text);};
+    SetItem(m_ListView->FindColumn(col_name, is_required), text);};
 
   /// Updates all attributes.
   void Update();

@@ -116,8 +116,8 @@ bool wxExProcess::CheckInput()
     {
       wxExListItem item(m_ListView, fn);
       item.Insert();
-      item.SetItemText(_("Line"), line);
-      item.SetItemText(_("Line No"), lineno);
+      item.SetItem(_("Line"), line);
+      item.SetItem(_("Line No"), lineno);
     }
     else
     {

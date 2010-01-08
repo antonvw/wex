@@ -476,7 +476,7 @@ bool wxExListViewFile::ItemFromText(const wxString& text)
             col != FindColumn(_("Size")) &&
             col != FindColumn(_("Modified")))
         {
-          item.SetItemText(col, value);
+          item.SetItem(col, value);
         }
 
         col++;
@@ -1080,7 +1080,7 @@ void wxExListViewWithFrame::ItemActivated(int item_number)
 {
   wxASSERT(item_number >= 0);
  
-  // Cannot be const because of SetItemText later on.
+  // Cannot be const because of SetItem later on.
   wxExListItem item(this, item_number);
 
   if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
@@ -1092,7 +1092,7 @@ void wxExListViewWithFrame::ItemActivated(int item_number)
 
     if (dlg.ShowModal() == wxID_OK)
     {
-      item.SetItemText(_("Type"), dlg.GetValue());
+      item.SetItem(_("Type"), dlg.GetValue());
     }
   }
   else if (item.GetFileName().FileExists())

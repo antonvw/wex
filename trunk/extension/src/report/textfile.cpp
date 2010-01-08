@@ -31,7 +31,7 @@ void SetItemColumnStatistics(
 
   if (it != stat.GetItems().end())
   {
-    item.SetItemText(
+    item.SetItem(
       col,
       wxString::Format("%ld", it->second));
   }
@@ -199,15 +199,15 @@ void wxExTextFileWithListView::Report(size_t line)
   wxExListItem item(m_Report, GetFileName());
   item.Insert();
 
-  item.SetItemText(_("Line No"), wxString::Format("%d", line + 1));
+  item.SetItem(_("Line No"), wxString::Format("%d", line + 1));
 
   switch (GetTool().GetId())
   {
   case ID_TOOL_REPORT_REPLACE:
-    item.SetItemText(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
+    item.SetItem(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
-    item.SetItemText(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
-    item.SetItemText(_("Match"), wxExFindReplaceData::Get()->GetFindString());
+    item.SetItem(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
+    item.SetItem(_("Match"), wxExFindReplaceData::Get()->GetFindString());
   break;
 
   case ID_TOOL_REPORT_REVISION:
@@ -216,8 +216,8 @@ void wxExTextFileWithListView::Report(size_t line)
 
 #if wxExUSE_EMBEDDED_SQL
   case ID_TOOL_REPORT_SQL:
-    item.SetItemText(_("Query"), m_SQLQuery);
-    item.SetItemText(_("Run Time"), m_SQLQueryRunTime);
+    item.SetItem(_("Query"), m_SQLQuery);
+    item.SetItem(_("Run Time"), m_SQLQueryRunTime);
   break;
 #endif
 
@@ -263,11 +263,11 @@ void wxExTextFileWithListView::ReportStatistics()
       std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
       if (it != stat.GetItems().end())
       {
-        item.SetItemText(i + 1, wxString::Format("%ld", it->second));
+        item.SetItem(i + 1, wxString::Format("%ld", it->second));
         total += it->second;
       }
     }
-    item.SetItemText(
+    item.SetItem(
       GetFileName().GetLexer().GetKeywords().size() + 1,
       wxString::Format("%ld", total));
   }

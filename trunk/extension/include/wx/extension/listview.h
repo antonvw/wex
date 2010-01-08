@@ -168,9 +168,6 @@ public:
     return (GetImageType() == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
-  /// Sets the item text using item number and column number.
-  void SetItemText(long item_number, int col_number, const wxString& text);
-
   /// Sorts on a column.
   /// If you specified use_images,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
