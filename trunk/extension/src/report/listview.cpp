@@ -25,6 +25,403 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/util.h>
 
+BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
+  EVT_IDLE(wxExListViewStandard::OnIdle)
+  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
+  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewStandard::OnCommand)
+END_EVENT_TABLE()
+
+wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
+  ListType type,
+  wxWindowID id,
+  long menu_flags,
+  const wxExLexer* lexer,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxValidator& validator,
+  const wxString &name)
+  : wxExListView(parent, id, pos, size, style, IMAGE_FILE_ICON, validator, name)
+  , m_MenuFlags(menu_flags)
+  , m_ItemUpdated(false)
+  , m_ItemNumber(0)
+  , m_Type(type)
+{
+  Initialize(lexer);
+}
+
+void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
+{
+  long style = 0;
+
+  if (m_Type == LIST_HISTORY)
+  {
+    style |= wxExMenu::MENU_IS_READ_ONLY;
+  }
+
+  if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
+  if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+
+  if (GetSelectedItemCount() == 0 && 
+      GetItemCount() > 0 &&
+      m_Type != LIST_HISTORY) 
+  {
+    style |= wxExMenu::MENU_ALLOW_CLEAR;
+  }
+
+  menu.SetStyle(style);
+
+  bool exists = true;
+  bool is_folder = false;
+
+  if (GetSelectedItemCount() == 1)
+  {
+    const wxExListItem item(this, GetFirstSelected());
+
+    is_folder = wxDirExists(item.GetFileName().GetFullPath());
+    exists = item.GetFileName().GetStat().IsOk();
+  }
+
+  if (GetSelectedItemCount() >= 1)
+  {
+    wxExListView::BuildPopupMenu(menu);
+
+#ifdef __WXMSW__
+#ifdef wxExUSE_RBS
+    if (exists && !is_folder)
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
+    }
+#endif
+#endif
+  }
+  else
+  {
+    menu.AppendSeparator();
+    wxExListView::BuildPopupMenu(menu);
+  }
+}
+
+const wxString wxExListViewStandard::GetTypeDescription(ListType type)
+{
+  wxString value;
+
+  switch (type)
+  {
+  case LIST_COUNT: value = _("File Count"); break;
+  case LIST_FIND: value = _("Find Results"); break;
+  case LIST_HISTORY: value = _("History"); break;
+  case LIST_KEYWORD: value = _("Keywords"); break;
+  case LIST_PROCESS: value = _("Process Output"); break;
+  case LIST_PROJECT: value = _("Project"); break;
+  case LIST_REPLACE: value = _("Replace Results"); break;
+  case LIST_REVISION: value = _("Revisions"); break;
+  case LIST_SQL: value = _("SQL Queries"); break;
+  case LIST_VERSION: value = _("Version List"); break;
+  default: wxFAIL;
+  }
+
+  return value;
+}
+
+wxExListViewStandard::ListType wxExListViewStandard::GetTypeTool(
+  const wxExTool& tool)
+{
+  switch (tool.GetId())
+  {
+    case ID_TOOL_REPORT_COUNT: return LIST_COUNT; break;
+    case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
+    case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
+    case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
+    case ID_TOOL_REPORT_REVISION: return LIST_REVISION; break;
+    case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
+    case ID_TOOL_REPORT_VERSION: return LIST_VERSION; break;
+    default: wxFAIL; return LIST_PROJECT;
+  }
+}
+
+void wxExListViewStandard::ItemsUpdate()
+{
+  for (long i = 0; i < GetItemCount(); i++)
+  {
+    wxExListItem item(this, i);
+    item.Update();
+  }
+}
+
+bool wxExListViewStandard::ItemFromText(const wxString& text)
+{
+  if (text.empty())
+  {
+    return false;
+  }
+
+  wxStringTokenizer tkz(text, GetFieldSeparator());
+  if (tkz.HasMoreTokens())
+  {
+    const wxString value = tkz.GetNextToken();
+    wxFileName fn(value);
+
+    if (fn.FileExists())
+    {
+      wxExListItem item(this, fn);
+      item.Insert();
+
+      // And try to set the rest of the columns 
+      // (that are not already set by inserting).
+      int col = 1;
+      while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
+      {
+        const wxString value = tkz.GetNextToken();
+
+        if (col != FindColumn(_("Type")) &&
+            col != FindColumn(_("In Folder")) &&
+            col != FindColumn(_("Size")) &&
+            col != FindColumn(_("Modified")))
+        {
+          item.SetItem(col, value);
+        }
+
+        col++;
+      }
+    }
+    else
+    {
+      // Now we need only the first column (containing findfiles). If more
+      // columns are present, these are ignored.
+      const wxString findfiles =
+        (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
+
+      wxExListItem dir(this, value, findfiles);
+      dir.Insert();
+    }
+  }
+  else
+  {
+    wxExListItem(this, text).Insert();
+  }
+
+  return true;
+}
+
+const wxString wxExListViewStandard::ItemToText(long item_number) const
+{
+  wxExListItem item(
+    const_cast< wxExListViewStandard * >(this), item_number);
+
+  wxString text = (item.GetFileName().GetStat().IsOk() ? 
+    item.GetFileName().GetFullPath(): 
+    item.GetFileName().GetFullName());
+
+  if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
+  {
+    text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
+  }
+
+  if (GetType() != LIST_PROJECT)
+  {
+    text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
+  }
+
+  return text;
+}
+
+void wxExListViewStandard::Initialize(const wxExLexer* lexer)
+{
+  SetName(GetTypeDescription());
+
+  if (m_Type == LIST_KEYWORD)
+  {
+    if (lexer == NULL)
+    {
+      wxFAIL;
+      return;
+    }
+
+    SetName(GetName() + " " + lexer->GetScintillaLexer());
+  }
+
+#ifndef __WXMSW__
+  // Under Linux this should be done before adding any columns, under MSW it does not matter!
+  SetSingleStyle(wxLC_REPORT);
+#else
+  // Set initial style depending on type.
+  // Might be improved.
+  SetSingleStyle((m_Type == LIST_PROJECT || m_Type == LIST_HISTORY ?
+    wxConfigBase::Get()->ReadLong("List/Style", wxLC_REPORT) :
+    wxLC_REPORT));
+#endif
+
+  const int col_line_width = 750;
+
+  if (m_Type != LIST_PROCESS)
+  {
+    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+  }
+
+  switch (m_Type)
+  {
+  case LIST_COUNT:
+    // See wxExTextFileWithListView::Report, 
+    // the order in which columns are set should be the same there.
+    InsertColumn(wxExColumn(_("Lines")));
+    InsertColumn(wxExColumn(_("Lines Of Code")));
+    InsertColumn(wxExColumn(_("Empty Lines")));
+    InsertColumn(wxExColumn(_("Words Of Code")));
+    InsertColumn(wxExColumn(_("Comments")));
+    InsertColumn(wxExColumn(_("Comment Size")));
+  break;
+  case LIST_FIND:
+  case LIST_REPLACE:
+    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    InsertColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Line No")));
+  break;
+  case LIST_KEYWORD:
+    for (
+      std::set<wxString>::const_iterator it = lexer->GetKeywords().begin();
+      it != lexer->GetKeywords().end();
+      ++it)
+    {
+      InsertColumn(wxExColumn(*it));
+    }
+
+    InsertColumn(wxExColumn(_("Keywords")));
+  break;
+  case LIST_PROCESS:
+    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    InsertColumn(wxExColumn(_("Line No")));
+    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+  break;
+  case LIST_REVISION:
+    InsertColumn(wxExColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400));
+    InsertColumn(wxExColumn(_("Date"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("Initials"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Line No")));
+    InsertColumn(wxExColumn(_("Revision"), wxExColumn::COL_STRING));
+  break;
+  case LIST_SQL:
+    InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
+    InsertColumn(wxExColumn(_("Line No")));
+  break;
+  default: break; // to prevent warnings
+  }
+
+  if (m_Type == LIST_REPLACE)
+  {
+    InsertColumn(wxExColumn(_("Replaced")));
+  }
+
+  InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
+  InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
+  InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
+  InsertColumn(wxExColumn(_("Size")));
+}
+
+void wxExListViewStandard::OnCommand(wxCommandEvent& event)
+{
+  if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
+  {
+    wxExSVN svn(
+      event.GetId(), 
+      wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+    svn.ExecuteAndShowOutput(this);
+  }
+}
+
+void wxExListViewStandard::OnIdle(wxIdleEvent& event)
+{
+  event.Skip();
+
+  if (
+    !IsShown() ||
+     GetItemCount() == 0 ||
+     !wxConfigBase::Get()->ReadBool("AllowSync", true))
+  {
+    return;
+  }
+
+  if (m_ItemNumber < GetItemCount())
+  {
+    wxExListItem item(this, m_ItemNumber);
+
+    if ( item.GetFileName().FileExists() &&
+        (item.GetFileName().GetStat().GetModificationTime() != 
+         GetItemText(m_ItemNumber, _("Modified")) ||
+         item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
+        )
+    {
+      item.Update();
+#if wxUSE_STATUSBAR
+      wxExFrame::StatusText(
+        item.GetFileName(), 
+        wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
+#endif
+      m_ItemUpdated = true;
+    }
+
+    m_ItemNumber++;
+  }
+  else
+  {
+    m_ItemNumber = 0;
+
+    if (m_ItemUpdated)
+    {
+      if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
+          m_Type == LIST_PROJECT)
+      {
+        SortColumn(_("Modified"), SORT_KEEP);
+      }
+
+      m_ItemUpdated = false;
+    }
+  }
+}
+
+void wxExListViewStandard::OnList(wxListEvent& event)
+{
+  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
+  {
+#if wxUSE_STATUSBAR
+    if (GetSelectedItemCount() == 1)
+    {
+      const wxExListItem item(this, event.GetIndex());
+
+      if (item.GetFileName().GetStat().IsOk())
+      {
+        wxExFrame::StatusText(
+          item.GetFileName(), 
+          wxExFrame::STAT_FULLPATH);
+      }
+    }
+#endif
+
+    event.Skip();
+  }
+  else
+  {
+    wxFAIL;
+  }
+}
+
+void wxExListViewStandard::SetStyle(int id)
+{
+  long view = 0;
+  switch (id)
+  {
+  case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
+  case wxID_VIEW_LIST: view = wxLC_LIST; break;
+  case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
+  default: wxFAIL;
+  }
+
+  SetSingleStyle(view);
+  wxConfigBase::Get()->Write("List/Style", view);
+}
+
 #if wxUSE_DRAG_AND_DROP
 class ListViewDropTarget : public wxFileDropTarget
 {
@@ -63,9 +460,8 @@ private:
 #endif // __WXMSW__
 #endif // wxExUSE_RBS
 
-BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
+BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
   EVT_IDLE(wxExListViewFile::OnIdle)
-  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFile::OnList)
   EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
@@ -77,27 +473,7 @@ BEGIN_EVENT_TABLE(wxExListViewFile, wxExListView)
 END_EVENT_TABLE()
 
 wxExListViewFile::wxExListViewFile(wxWindow* parent,
-  ListType type,
-  wxWindowID id,
-  long menu_flags,
-  const wxExLexer* lexer,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxValidator& validator,
-  const wxString &name)
-  : wxExListView(parent, id, pos, size, style, IMAGE_FILE_ICON, validator, name)
-  , wxExFile()
-  , m_ContentsChanged(false)
-  , m_ItemUpdated(false)
-  , m_ItemNumber(0)
-  , m_MenuFlags(menu_flags)
-  , m_Type(type)
-{
-  Initialize(lexer);
-}
-
-wxExListViewFile::wxExListViewFile(wxWindow* parent,
+  wxExFrameWithHistory* frame,
   const wxString& file,
   wxWindowID id,
   long menu_flags,
@@ -106,16 +482,18 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString& name)
-  : wxExListView(parent, id, pos, size, style, IMAGE_FILE_ICON, validator, name)
+  : wxExListViewWithFrame(parent, frame, LIST_PROJECT, id, menu_flags, NULL, pos, size, style, IMAGE_FILE_ICON, validator, name)
   , wxExFile()
   , m_ContentsChanged(false)
-  , m_ItemUpdated(false)
-  , m_ItemNumber(0)
-  , m_MenuFlags(menu_flags)
-  , m_Type(LIST_PROJECT)
 {
-  Initialize(NULL);
+  Initialize();
+
   wxExFile::FileLoad(file);
+
+  if (GetFileName().GetStat().IsOk())
+  {
+    m_Frame->SetRecentProject(file);
+  }
 }
 
 void wxExListViewFile::AddItems()
@@ -208,28 +586,10 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
     style |= wxExMenu::MENU_IS_READ_ONLY;
   }
 
-  if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
-  if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-
-  if (GetSelectedItemCount() == 0 && 
-      GetItemCount() > 0 &&
-      m_Type != LIST_HISTORY) 
-  {
-    style |= wxExMenu::MENU_ALLOW_CLEAR;
-  }
-
   menu.SetStyle(style);
 
   bool exists = true;
   bool is_folder = false;
-
-  if (GetSelectedItemCount() == 1)
-  {
-    const wxExListItem item(this, GetFirstSelected());
-
-    is_folder = wxDirExists(item.GetFileName().GetFullPath());
-    exists = item.GetFileName().GetStat().IsOk();
-  }
 
   if (GetSelectedItemCount() >= 1)
   {
@@ -263,12 +623,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-void wxExListViewFile::FileNew(const wxExFileName& filename)
-{
-  wxExFile::FileNew(filename);
-  EditClearAll();
-}
-
 void wxExListViewFile::DoFileLoad(bool synced)
 {
   EditClearAll();
@@ -295,6 +649,8 @@ void wxExListViewFile::DoFileLoad(bool synced)
       wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
 #endif
   }
+
+  m_Frame->SetRecentProject(GetFileName().GetFullPath());
 }
 
 void wxExListViewFile::DoFileSave(bool save_as)
@@ -305,239 +661,34 @@ void wxExListViewFile::DoFileSave(bool save_as)
   }
 }
 
-wxExListViewFile::ListType wxExListViewFile::GetTypeTool(const wxExTool& tool)
+void wxExListViewFile::FileNew(const wxExFileName& filename)
 {
-  switch (tool.GetId())
-  {
-    case ID_TOOL_REPORT_COUNT: return LIST_COUNT; break;
-    case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
-    case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
-    case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
-    case ID_TOOL_REPORT_REVISION: return LIST_REVISION; break;
-    case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
-    case ID_TOOL_REPORT_VERSION: return LIST_VERSION; break;
-    default: wxFAIL; return LIST_PROJECT;
-  }
+  wxExFile::FileNew(filename);
+  EditClearAll();
 }
 
-const wxString wxExListViewFile::GetTypeDescription(ListType type)
+void wxExListViewFile::Initialize()
 {
-  wxString value;
-
-  switch (type)
-  {
-  case LIST_COUNT: value = _("File Count"); break;
-  case LIST_FIND: value = _("Find Results"); break;
-  case LIST_HISTORY: value = _("History"); break;
-  case LIST_KEYWORD: value = _("Keywords"); break;
-  case LIST_PROCESS: value = _("Process Output"); break;
-  case LIST_PROJECT: value = _("Project"); break;
-  case LIST_REPLACE: value = _("Replace Results"); break;
-  case LIST_REVISION: value = _("Revisions"); break;
-  case LIST_SQL: value = _("SQL Queries"); break;
-  case LIST_VERSION: value = _("Version List"); break;
-  default: wxFAIL;
-  }
-
-  return value;
-}
-
-void wxExListViewFile::Initialize(const wxExLexer* lexer)
-{
-  SetName(GetTypeDescription());
-
-  if (m_Type == LIST_KEYWORD)
-  {
-    if (lexer == NULL)
-    {
-      wxFAIL;
-      return;
-    }
-
-    SetName(GetName() + " " + lexer->GetScintillaLexer());
-  }
-
-#ifndef __WXMSW__
-  // Under Linux this should be done before adding any columns, under MSW it does not matter!
-  SetSingleStyle(wxLC_REPORT);
-#else
-  // Set initial style depending on type.
-  // Might be improved.
-  SetSingleStyle((m_Type == LIST_PROJECT || m_Type == LIST_HISTORY ?
-    wxConfigBase::Get()->ReadLong("List/Style", wxLC_REPORT) :
-    wxLC_REPORT));
-#endif
-
-  const int col_line_width = 750;
-
-  if (m_Type != LIST_PROCESS)
-  {
-    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
-  }
-
-  switch (m_Type)
-  {
-  case LIST_COUNT:
-    // See wxExTextFileWithListView::Report, 
-    // the order in which columns are set should be the same there.
-    InsertColumn(wxExColumn(_("Lines")));
-    InsertColumn(wxExColumn(_("Lines Of Code")));
-    InsertColumn(wxExColumn(_("Empty Lines")));
-    InsertColumn(wxExColumn(_("Words Of Code")));
-    InsertColumn(wxExColumn(_("Comments")));
-    InsertColumn(wxExColumn(_("Comment Size")));
-  break;
-  case LIST_FIND:
-  case LIST_REPLACE:
-    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    InsertColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Line No")));
-  break;
-  case LIST_KEYWORD:
-    for (
-      std::set<wxString>::const_iterator it = lexer->GetKeywords().begin();
-      it != lexer->GetKeywords().end();
-      ++it)
-    {
-      InsertColumn(wxExColumn(*it));
-    }
-
-    InsertColumn(wxExColumn(_("Keywords")));
-  break;
-  case LIST_PROCESS:
-    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    InsertColumn(wxExColumn(_("Line No")));
-    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
-  break;
-  case LIST_REVISION:
-    InsertColumn(wxExColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400));
-    InsertColumn(wxExColumn(_("Date"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("Initials"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Line No")));
-    InsertColumn(wxExColumn(_("Revision"), wxExColumn::COL_STRING));
-  break;
-  case LIST_SQL:
-    InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
-    InsertColumn(wxExColumn(_("Line No")));
-  break;
-  default: break; // to prevent warnings
-  }
-
-  if (m_Type == LIST_REPLACE)
-  {
-    InsertColumn(wxExColumn(_("Replaced")));
-  }
-
-  InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
-  InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
-  InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
-  InsertColumn(wxExColumn(_("Size")));
-
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new ListViewDropTarget(this));
 #endif
 }
 
-void wxExListViewFile::ItemsUpdate()
-{
-  for (long i = 0; i < GetItemCount(); i++)
-  {
-    wxExListItem item(this, i);
-    item.Update();
-  }
-}
-
 bool wxExListViewFile::ItemFromText(const wxString& text)
 {
-  if (text.empty())
+  if (wxExListViewStandard::ItemFromText(text))
   {
-    return false;
-  }
-
-  wxStringTokenizer tkz(text, GetFieldSeparator());
-  if (tkz.HasMoreTokens())
-  {
-    const wxString value = tkz.GetNextToken();
-    wxFileName fn(value);
-
-    if (fn.FileExists())
-    {
-      wxExListItem item(this, fn);
-      item.Insert();
-
-      // And try to set the rest of the columns 
-      // (that are not already set by inserting).
-      int col = 1;
-      while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
-      {
-        const wxString value = tkz.GetNextToken();
-
-        if (col != FindColumn(_("Type")) &&
-            col != FindColumn(_("In Folder")) &&
-            col != FindColumn(_("Size")) &&
-            col != FindColumn(_("Modified")))
-        {
-          item.SetItem(col, value);
-        }
-
-        col++;
-      }
-    }
-    else
-    {
-      // Now we need only the first column (containing findfiles). If more
-      // columns are present, these are ignored.
-      const wxString findfiles =
-        (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
-
-      wxExListItem dir(this, value, findfiles);
-      dir.Insert();
-    }
+    m_ContentsChanged = true;
+    return true;
   }
   else
   {
-    wxExListItem(this, text).Insert();
+    return false;
   }
-
-  m_ContentsChanged = true;
-
-  return true;
-}
-
-const wxString wxExListViewFile::ItemToText(long item_number) const
-{
-  wxExListItem item(
-    const_cast< wxExListViewFile * >(this), item_number);
-
-  wxString text = (item.GetFileName().GetStat().IsOk() ? 
-    item.GetFileName().GetFullPath(): 
-    item.GetFileName().GetFullName());
-
-  if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
-  {
-    text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
-  }
-
-  if (GetType() != LIST_PROJECT)
-  {
-    text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
-  }
-
-  return text;
 }
 
 void wxExListViewFile::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
-  {
-    wxExSVN svn(
-      event.GetId(), 
-      wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
-    svn.ExecuteAndShowOutput(this);
-    return;
-  }
-
   switch (event.GetId())
   {
   // These are added to disable changing this listview if it is read-only etc.
@@ -596,70 +747,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     return;
   }
 
-  if (m_ItemNumber < GetItemCount())
-  {
-    wxExListItem item(this, m_ItemNumber);
-
-    if ( item.GetFileName().FileExists() &&
-        (item.GetFileName().GetStat().GetModificationTime() != 
-         GetItemText(m_ItemNumber, _("Modified")) ||
-         item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
-        )
-    {
-      item.Update();
-#if wxUSE_STATUSBAR
-      wxExFrame::StatusText(
-        item.GetFileName(), 
-        wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
-#endif
-      m_ItemUpdated = true;
-    }
-
-    m_ItemNumber++;
-  }
-  else
-  {
-    m_ItemNumber = 0;
-
-    if (m_ItemUpdated)
-    {
-      if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-          m_Type == LIST_PROJECT)
-      {
-        SortColumn(_("Modified"), SORT_KEEP);
-      }
-
-      m_ItemUpdated = false;
-    }
-  }
-
   CheckFileSync();
-}
-
-void wxExListViewFile::OnList(wxListEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
-  {
-#if wxUSE_STATUSBAR
-    if (GetSelectedItemCount() == 1)
-    {
-      const wxExListItem item(this, event.GetIndex());
-
-      if (item.GetFileName().GetStat().IsOk())
-      {
-        wxExFrame::StatusText(
-          item.GetFileName(), 
-          wxExFrame::STAT_FULLPATH);
-      }
-    }
-#endif
-
-    event.Skip();
-  }
-  else
-  {
-    wxFAIL;
-  }
 }
 
 void wxExListViewFile::OnMouse(wxMouseEvent& event)
@@ -689,21 +777,6 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
 #if wxUSE_STATUSBAR
   UpdateStatusBar();
 #endif
-}
-
-void wxExListViewFile::SetStyle(int id)
-{
-  long view = 0;
-  switch (id)
-  {
-  case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
-  case wxID_VIEW_LIST: view = wxLC_LIST; break;
-  case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
-  default: wxFAIL;
-  }
-
-  SetSingleStyle(view);
-  wxConfigBase::Get()->Write("List/Style", view);
 }
 
 #if wxUSE_DRAG_AND_DROP
@@ -856,7 +929,7 @@ bool RBSFile::Substitute(
 #endif // wxExUSE_RBS
 #endif // __WXMSW__
 
-BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFile)
+BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewStandard)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
@@ -873,31 +946,12 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString &name)
-  : wxExListViewFile(parent, type, id, menu_flags, lexer, pos, size, style, validator, name)
+  : wxExListViewStandard(parent, type, id, menu_flags, lexer, pos, size, style, validator, name)
   , m_Frame(frame)
 {
   if (GetType() == LIST_HISTORY)
   {
     m_Frame->UseFileHistoryList(this);
-  }
-}
-
-wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
-  wxExFrameWithHistory* frame,
-  const wxString& file,
-  wxWindowID id,
-  long menu_flags,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxValidator& validator,
-  const wxString &name)
-  : wxExListViewFile(parent, file, id, menu_flags, pos, size, style, validator, name)
-  , m_Frame(frame)
-{
-  if (GetFileName().GetStat().IsOk())
-  {
-    m_Frame->SetRecentProject(file);
   }
 }
 
@@ -1044,12 +1098,6 @@ void wxExListViewWithFrame::DeleteDoubles()
     // Next gives compile error, but is not needed.
     // m_ContentsChanged = true;
   }
-}
-
-void wxExListViewWithFrame::DoFileLoad(bool synced)
-{
-  wxExListViewFile::DoFileLoad(synced);
-  m_Frame->SetRecentProject(GetFileName().GetFullPath());
 }
 
 const wxString wxExListViewWithFrame::GetFindInCaption(int id) const

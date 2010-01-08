@@ -16,9 +16,8 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 
-/// Combines wxExListView and wxExFile, giving you a list control with file
-/// synchronization support. Further it adds some standard lists.
-class wxExListViewFile : public wxExListView, public wxExFile
+/// Adds some standard lists.
+class wxExListViewStandard : public wxExListView
 {
 public:
   /// The supported lists.
@@ -50,7 +49,7 @@ public:
   };
 
   /// Constructor.
-  wxExListViewFile(wxWindow* parent,
+  wxExListViewStandard(wxWindow* parent,
     ListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
@@ -60,37 +59,6 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
-
-  /// Constructor for a LIST_PROJECT, opens the file.
-  wxExListViewFile(wxWindow* parent,
-    const wxString& file,
-    wxWindowID id = wxID_ANY,
-    long menu_flags = LIST_MENU_DEFAULT,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator,
-    const wxString &name = wxListCtrlNameStr);
-
-  // Interface, for wxExListView overriden methods.
-  /// Sets contents changed if we are not syncing.
-  virtual void AfterSorting();
-
-  /// Returns member.
-  virtual bool GetContentsChanged() const {return m_ContentsChanged;};
-
-  /// Updates all items.
-  virtual void ItemsUpdate();
-
-  /// Tries to insert items from specified text.
-  /// Returns true if successfull.
-  virtual bool ItemFromText(const wxString& text);
-
-  /// Returns column text for specified item.
-  virtual const wxString ItemToText(long item_number) const;
-
-  /// Invokes base and clears the list.
-  void FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;}
@@ -107,39 +75,38 @@ public:
   /// Returns list type from tool id.
   static ListType GetTypeTool(const wxExTool& tool);
 
-  /// Resets the member.
-  virtual void ResetContentsChanged() {m_ContentsChanged = false;};
+  /// Updates all items.
+  virtual void ItemsUpdate();
+
+  /// Tries to insert items from specified text.
+  /// Returns true if successfull.
+  virtual bool ItemFromText(const wxString& text);
+
+  /// Returns column text for specified item.
+  virtual const wxString ItemToText(long item_number) const;
 
   /// Sets style acoording to event id.
   void SetStyle(int id);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  /// Loads the file and gets all data as list items.
-  virtual void DoFileLoad(bool synced = false);
-  /// Saves list items to file.
-  virtual void DoFileSave(bool save_as = false);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
-  void OnMouse(wxMouseEvent& event);
 private:
-  void AddItems();
   void Initialize(const wxExLexer* lexer);
-
-  bool m_ContentsChanged;
+  const ListType m_Type;
   bool m_ItemUpdated;
   long m_ItemNumber;
   const long m_MenuFlags;
-  const ListType m_Type;
 
   DECLARE_EVENT_TABLE()
 };
 
 class wxExFrameWithHistory;
 
-/// Adds a wxExFrameWithHistory to wxExListViewFile.
+/// Adds a wxExFrameWithHistory to wxExListViewStandard.
 /// It also adds a tool menu if appropriate.
-class wxExListViewWithFrame : public wxExListViewFile
+class wxExListViewWithFrame : public wxExListViewStandard
 {
 public:
   /// Constructor.
@@ -148,15 +115,32 @@ public:
     ListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
-    const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
+protected:
+  virtual void BuildPopupMenu(wxExMenu& menu);
+  void OnCommand(wxCommandEvent& event);
+  void OnList(wxListEvent& event);
+  wxExFrameWithHistory* m_Frame;
+private:
+  void DeleteDoubles();
+  const wxString GetFindInCaption(int id) const;
+  void ItemActivated(long item_number);
+  void RunItems(const wxExTool& tool);
 
+  DECLARE_EVENT_TABLE()
+};
+
+/// Combines wxExListViewWithFrame and wxExFile, giving you a list control with file
+/// synchronization support.
+class wxExListViewFile : public wxExListViewWithFrame, public wxExFile
+{
+public:
   /// Constructor for a LIST_PROJECT, opens the file.
-  wxExListViewWithFrame(wxWindow* parent,
+  wxExListViewFile(wxWindow* parent,
     wxExFrameWithHistory* frame,
     const wxString& file,
     wxWindowID id = wxID_ANY,
@@ -166,18 +150,35 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
+
+  // Interface, for wxExListView overriden methods.
+  /// Sets contents changed if we are not syncing.
+  virtual void AfterSorting();
+
+  /// Returns member.
+  virtual bool GetContentsChanged() const {return m_ContentsChanged;};
+
+  /// Invokes base and clears the list.
+  void FileNew(const wxExFileName& filename = wxExFileName());
+
+  virtual bool ItemFromText(const wxString& text);
+
+  /// Resets the member.
+  virtual void ResetContentsChanged() {m_ContentsChanged = false;};
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  /// Opens the file and updates recent project from frame.
+  /// Loads the file and gets all data as list items.
   virtual void DoFileLoad(bool synced = false);
+  /// Saves list items to file.
+  virtual void DoFileSave(bool save_as = false);
   void OnCommand(wxCommandEvent& event);
-  void OnList(wxListEvent& event);
+  void OnIdle(wxIdleEvent& event);
+  void OnMouse(wxMouseEvent& event);
 private:
-  void DeleteDoubles();
-  const wxString GetFindInCaption(int id) const;
-  void ItemActivated(long item_number);
-  void RunItems(const wxExTool& tool);
-  wxExFrameWithHistory* m_Frame;
+  void AddItems();
+  void Initialize();
+
+  bool m_ContentsChanged;
 
   DECLARE_EVENT_TABLE()
 };
