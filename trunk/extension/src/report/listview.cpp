@@ -28,6 +28,7 @@
 BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_IDLE(wxExListViewStandard::OnIdle)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
+  EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewStandard::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewStandard::OnCommand)
 END_EVENT_TABLE()
 
@@ -337,6 +338,14 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
       wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
     svn.ExecuteAndShowOutput(this);
   }
+
+#ifdef __WXMSW__
+#ifdef wxExUSE_RBS
+  case ID_LIST_SEND_ITEM:
+    RBSFile(this).GenerateDialog();
+    break;
+#endif
+#endif
 }
 
 void wxExListViewStandard::OnIdle(wxIdleEvent& event)
@@ -446,7 +455,7 @@ private:
 class RBSFile : public wxExFile
 {
 public:
-  RBSFile(wxExListViewFile* listview);
+  RBSFile(wxExListViewStandard* listview);
   void GenerateDialog();
 private:
   void Body(
@@ -462,7 +471,7 @@ private:
     const wxString& pattern,
     const wxString& new_pattern,
     const bool is_required);
-  wxExListViewFile* m_Owner;
+  wxExListViewStandard* m_Owner;
   wxString m_Prompt;
 };
 #endif // __WXMSW__
@@ -475,7 +484,6 @@ BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
-  EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewFile::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
   EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
 END_EVENT_TABLE()
@@ -613,33 +621,20 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (GetSelectedItemCount() >= 1)
   {
-    wxExListView::BuildPopupMenu(menu);
-
-#ifdef __WXMSW__
-#ifdef wxExUSE_RBS
-    if (exists && !is_folder)
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
-    }
-#endif
-#endif
+    wxExListViewStandard::BuildPopupMenu(menu);
   }
   else
   {
-    if (m_Type == LIST_PROJECT)
+    if (!GetFileName().IsOk() ||
+        !GetFileName().FileExists() ||
+        (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
     {
-      if (!GetFileName().IsOk() ||
-          !GetFileName().FileExists() ||
-          (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
-      {
-        menu.AppendSeparator();
-        menu.Append(wxID_ADD);
-      }
+      menu.AppendSeparator();
+      menu.Append(wxID_ADD);
     }
 
     menu.AppendSeparator();
-    wxExListView::BuildPopupMenu(menu);
+    wxExListViewStandard::BuildPopupMenu(menu);
   }
 }
 
@@ -737,14 +732,6 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 
   case wxID_ADD: AddItems(); break;
 
-#ifdef __WXMSW__
-#ifdef wxExUSE_RBS
-  case ID_LIST_SEND_ITEM:
-    RBSFile(this).GenerateDialog();
-    break;
-#endif
-#endif
-
   default: 
     wxFAIL;
     break;
@@ -821,7 +808,7 @@ bool ListViewDropTarget::OnDropFiles(
 
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
-RBSFile::RBSFile(wxExListViewFile* listview)
+RBSFile::RBSFile(wxExListViewStandard* listview)
   : wxExFile()
   , m_Owner(listview)
   , m_Prompt(wxConfigBase::Get()->Read("RBS/Prompt", ">"))
@@ -870,7 +857,7 @@ void RBSFile::GenerateDialog()
   Header();
 
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  int i = -1;
+  long = -1;
   while ((i = m_Owner->GetNextSelected(i)) != -1)
   {
     wxExListItem li(m_Owner, i);
