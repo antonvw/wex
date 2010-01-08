@@ -1016,9 +1016,9 @@ void wxExListViewWithFrame::DeleteDoubles()
 {
   wxDateTime mtime((time_t)0);
   wxString name;
-  const int itemcount = GetItemCount();
+  const long itemcount = GetItemCount();
 
-  for (int i = itemcount - 1; i >= 0; i--)
+  for (long i = itemcount - 1; i >= 0; i--)
   {
     wxExListItem item(this, i);
 
@@ -1076,7 +1076,7 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id) const
   }
 }
 
-void wxExListViewWithFrame::ItemActivated(int item_number)
+void wxExListViewWithFrame::ItemActivated(long item_number)
 {
   wxASSERT(item_number >= 0);
  

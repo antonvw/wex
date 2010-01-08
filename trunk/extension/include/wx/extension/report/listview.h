@@ -128,7 +128,7 @@ private:
 
   bool m_ContentsChanged;
   bool m_ItemUpdated;
-  int m_ItemNumber;
+  long m_ItemNumber;
   const long m_MenuFlags;
   const ListType m_Type;
 
@@ -175,7 +175,7 @@ protected:
 private:
   void DeleteDoubles();
   const wxString GetFindInCaption(int id) const;
-  void ItemActivated(int item_number);
+  void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);
   wxExFrameWithHistory* m_Frame;
 

@@ -311,7 +311,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   int match = -1;
 
   for (
-    int index = start_item;
+    long index = start_item;
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
