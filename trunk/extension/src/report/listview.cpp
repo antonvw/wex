@@ -152,9 +152,11 @@ void wxExListViewFile::AddItems()
     wxExConfigFirstOf(_("Add what")),
     flags);
 
-  const int old_count = GetItemCount();
+  const long old_count = GetItemCount();
+
   dir.FindFiles();
-  const int new_count = GetItemCount();
+
+  const long new_count = GetItemCount();
 
   if (new_count - old_count > 0)
   {
@@ -297,7 +299,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
 void wxExListViewFile::DoFileSave(bool save_as)
 {
-  for (int i = 0; i < GetItemCount(); i++)
+  for (long i = 0; i < GetItemCount(); i++)
   {
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }
@@ -439,7 +441,7 @@ void wxExListViewFile::Initialize(const wxExLexer* lexer)
 
 void wxExListViewFile::ItemsUpdate()
 {
-  for (int i = 0; i < GetItemCount(); i++)
+  for (long i = 0; i < GetItemCount(); i++)
   {
     wxExListItem item(this, i);
     item.Update();

@@ -222,7 +222,8 @@ void wxExListView::EditDelete()
 {
   if (GetSelectedItemCount() == 0) return;
 
-  int i = -1, old_item = -1;
+  long i = -1, old_item = -1;
+
   while ((i = GetNextSelected(i)) != -1)
   {
     DeleteItem(i);
@@ -238,7 +239,7 @@ void wxExListView::EditDelete()
 
 void wxExListView::EditInvertAll()
 {
-  for (int i = 0; i < GetItemCount(); i++)
+  for (long i = 0; i < GetItemCount(); i++)
   {
     Select(i, !IsSelected(i));
   }
@@ -269,8 +270,8 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
 
   static bool recursive = false;
-  static int start_item;
-  static int end_item;
+  static long start_item;
+  static long end_item;
 
   wxString text_use = text;
 
@@ -591,7 +592,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     EditInvertAll();
     break;
   case ID_EDIT_SELECT_NONE:
-    for (int i = 0; i < GetItemCount(); i++)
+    for (long i = 0; i < GetItemCount(); i++)
     {
       Select(i, false);
     }
