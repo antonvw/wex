@@ -41,7 +41,15 @@ wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString &name)
-  : wxExListView(parent, id, pos, size, style, IMAGE_FILE_ICON, validator, name)
+  : wxExListView(
+      parent, 
+      id, 
+      pos, 
+      size, 
+      style, 
+      IMAGE_FILE_ICON, 
+      validator, 
+      name)
   , m_MenuFlags(menu_flags)
   , m_ItemUpdated(false)
   , m_ItemNumber(0)
@@ -482,7 +490,19 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString& name)
-  : wxExListViewWithFrame(parent, frame, LIST_PROJECT, id, menu_flags, NULL, pos, size, style, IMAGE_FILE_ICON, validator, name)
+  : wxExListViewWithFrame(
+      parent, 
+      frame, 
+      LIST_PROJECT, 
+      id, 
+      menu_flags, 
+      NULL, 
+      pos, 
+      size, 
+      style, 
+      IMAGE_FILE_ICON, 
+      validator, 
+      name)
   , wxExFile()
   , m_ContentsChanged(false)
 {
@@ -946,7 +966,17 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString &name)
-  : wxExListViewStandard(parent, type, id, menu_flags, lexer, pos, size, style, validator, name)
+  : wxExListViewStandard(
+      parent, 
+      type, 
+      id, 
+      menu_flags, 
+      lexer, 
+      pos, 
+      size, 
+      style, 
+      validator, 
+      name)
   , m_Frame(frame)
 {
   if (GetType() == LIST_HISTORY)
