@@ -100,9 +100,9 @@ void wxExFrameWithHistory::DoRecent(
   }
 }
 
-wxExListViewWithFrame* wxExFrameWithHistory::GetProject()
+wxExListViewFile* wxExFrameWithHistory::GetProject()
 {
-  return (wxExListViewWithFrame*)GetFocusedListView();
+  return (wxExListViewFile*)GetFocusedListView();
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
@@ -203,7 +203,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
     case ID_PROJECT_SAVE:
       {
-        wxExListViewWithFrame* project = GetProject();
+        wxExListViewFile* project = GetProject();
         if (project != NULL)
         {
           project->FileSave();
@@ -249,7 +249,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   if (win == NULL) return;
 
   wxExSTCWithFrame* editor = wxDynamicCast(win, wxExSTCWithFrame);
-  wxExListViewWithFrame* project = wxDynamicCast(win, wxExListViewWithFrame);
+  wxExListViewFile* project = GetProject();
 
   const wxString title(GetTitle());
   const wxUniChar indicator('*');
@@ -392,7 +392,7 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_project.empty())
   {
-    wxExListViewWithFrame* lv = (wxExListViewWithFrame*)GetListView();
+    wxExListViewFile* lv = (wxExListViewFile*)GetListView();
 
     if (lv != NULL && lv->GetType() == wxExListViewWithFrame::LIST_PROJECT)
     {

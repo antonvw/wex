@@ -21,7 +21,7 @@
 #include <wx/filename.h>
 
 class wxExFrameWithHistory;
-class wxExListViewFile;
+class wxExListView;
 
 /*! \file */
 
@@ -35,7 +35,7 @@ size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace = false);
 /// Results are put on the list if not null, or in the filename if not null.
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListViewFile* listview,
+  wxExListView* listview,
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Do something (id) for all pages on the notebook.

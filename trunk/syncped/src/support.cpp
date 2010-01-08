@@ -272,7 +272,7 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
-    wxExFileDialog dlg(this, (wxExListViewWithFrame*)page);
+    wxExFileDialog dlg(this, (wxExListViewFile*)page);
     return dlg.ShowModalIfChanged() == wxID_OK;
   }
   else
@@ -289,10 +289,10 @@ void Frame::OnNotebook(wxWindowID id, wxWindow* page)
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
-    SetTitle(wxEmptyString, ((wxExListViewWithFrame*)page)->GetFileName().GetName());
+    SetTitle(wxEmptyString, ((wxExListViewFile*)page)->GetFileName().GetName());
 #if wxUSE_STATUSBAR
-    StatusText(((wxExListViewWithFrame*)page)->GetFileName());
-    ((wxExListViewWithFrame*)page)->UpdateStatusBar();
+    StatusText(((wxExListViewFile*)page)->GetFileName());
+    ((wxExListViewFile*)page)->UpdateStatusBar();
 #endif
   }
   else if (id == NOTEBOOK_LISTS)

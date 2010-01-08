@@ -287,7 +287,7 @@ wxExListView* MDIFrame::GetListView()
   }
 }
 
-wxExListViewWithFrame* MDIFrame::GetProject()
+wxExListViewFile* MDIFrame::GetProject()
 {
   if (
     !m_NotebookWithProjects->IsShown() || 
@@ -297,7 +297,7 @@ wxExListViewWithFrame* MDIFrame::GetProject()
   }
   else
   {
-    return (wxExListViewWithFrame*)m_NotebookWithProjects->
+    return (wxExListViewFile*)m_NotebookWithProjects->
       GetPage(m_NotebookWithProjects->GetSelection());
   }
 }
@@ -335,13 +335,13 @@ void MDIFrame::NewFile(bool as_project)
 
     key = fn.GetFullPath();
 
-    page = new wxExListViewWithFrame(notebook,
+    page = new wxExListViewFile(notebook,
       this,
       key,
       wxID_ANY,
       wxExListViewFile::LIST_MENU_DEFAULT);
 
-    ((wxExListViewWithFrame*)page)->FileNew(fn);
+    ((wxExListViewFile*)page)->FileNew(fn);
     SetTitle(wxEmptyString, text);
 
     m_NewProjectNo++;
@@ -433,7 +433,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   }
 
   wxExSTC* editor = GetSTC();
-  wxExListViewWithFrame* project = GetProject();
+  wxExListViewFile* project = GetProject();
 
   if (event.GetId() == ID_EDIT_NEXT)
   {
@@ -1091,7 +1091,7 @@ bool MDIFrame::OpenFile(
   {
     if (page == NULL)
     {
-      wxExListViewWithFrame* project = new wxExListViewWithFrame(m_NotebookWithProjects,
+      wxExListViewFile* project = new wxExListViewFile(m_NotebookWithProjects,
         this,
         filename.GetFullPath(),
         wxID_ANY,

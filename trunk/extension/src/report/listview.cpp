@@ -508,10 +508,8 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       pos, 
       size, 
       style, 
-      IMAGE_FILE_ICON, 
       validator, 
       name)
-  , wxExFile()
   , m_ContentsChanged(false)
 {
   Initialize();
@@ -569,7 +567,7 @@ void wxExListViewFile::AddItems()
     m_ContentsChanged = true;
 
     if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-        m_Type == LIST_PROJECT)
+        GetType() == LIST_PROJECT)
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -587,7 +585,7 @@ void wxExListViewFile::AfterSorting()
 {
   // Only if we are a project list and not sort syncing, 
   // set contents changed.
-  if ( m_Type == LIST_PROJECT &&
+  if ( GetType() == LIST_PROJECT &&
       !wxConfigBase::Get()->ReadBool("List/SortSync", true))
   {
     m_ContentsChanged = true;
@@ -596,20 +594,10 @@ void wxExListViewFile::AfterSorting()
 
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
-  long style;
+  // This contains the CAN_PASTE flag.
+  long style = wxExMenu::MENU_DEFAULT;
 
-  if (m_Type == LIST_PROJECT)
-  {
-    // This contains the CAN_PASTE flag, only for these types.
-    style = wxExMenu::MENU_DEFAULT;
-  }
-  else
-  {
-    style = 0;
-  }
-
-  if ((GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly()) ||
-       m_Type == LIST_HISTORY)
+  if (GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly())
   {
     style |= wxExMenu::MENU_IS_READ_ONLY;
   }
@@ -621,7 +609,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   if (GetSelectedItemCount() >= 1)
   {
-    wxExListViewStandard::BuildPopupMenu(menu);
+    wxExListViewWithFrame::BuildPopupMenu(menu);
   }
   else
   {
@@ -634,7 +622,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
     }
 
     menu.AppendSeparator();
-    wxExListViewStandard::BuildPopupMenu(menu);
+    wxExListViewWithFrame::BuildPopupMenu(menu);
   }
 }
 
@@ -711,7 +699,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   case wxID_CUT:
   case wxID_DELETE:
   case wxID_PASTE:
-    if (m_Type == LIST_HISTORY)
+    if (GetType() == LIST_HISTORY)
     {
       // Do nothing.
     }
@@ -995,7 +983,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
   }
 
-  wxExListViewFile::BuildPopupMenu(menu);
+  wxExListViewStandard::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() > 1 && !wxConfigBase::Get()->Read(_("Comparator")).empty())
   {
@@ -1015,7 +1003,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         !wxExSVN::Get()->Use() &&
          exists && !is_folder)
     {
-      wxExListViewFile* list = m_Frame->Activate(LIST_PROJECT);
+      wxExListViewWithFrame* list = m_Frame->Activate(LIST_PROJECT);
 
       if (list != NULL && list->GetSelectedItemCount() == 1)
       {
@@ -1132,10 +1120,6 @@ const wxString wxExListViewWithFrame::GetFindInCaption(int id) const
   else if (GetSelectedItemCount() > 1)
   {
     return prefix + _("Selection");
-  }
-  else if (!GetFileName().GetName().empty())
-  {
-    return prefix + GetFileName().GetName();
   }
   else
   {
@@ -1360,7 +1344,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     stats += wxExListItem(this, i).Run(tool).GetElements();
   }
 
-  tool.Log(&stats, GetFileName().GetName());
+  tool.Log(&stats, GetTypeDescription());
 
   if (tool.IsCount())
   {

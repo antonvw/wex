@@ -33,7 +33,7 @@ private:
   virtual void ConfigDialogApplied(wxWindowID dialogid);
   bool DialogProjectOpen();
   virtual wxExListView* GetListView();
-  virtual wxExListViewWithFrame* GetProject();
+  virtual wxExListViewFile* GetProject();
   virtual wxExSTC* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,

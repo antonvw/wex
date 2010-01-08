@@ -126,7 +126,7 @@ size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
 
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListViewFile* listview,
+  wxExListView* listview,
   wxFileName* lastfile)
 {
   /* Add the base version if present. E.g.
@@ -234,7 +234,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
     page >= 0;
     page--)
   {
-    wxExListViewWithFrame* lv = (wxExListViewWithFrame*)notebook->GetPage(page);
+    wxExListViewFile* lv = (wxExListViewFile*)notebook->GetPage(page);
 
     if (lv == NULL)
     {
