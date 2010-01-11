@@ -28,6 +28,10 @@
 BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_IDLE(wxExListViewStandard::OnIdle)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
+  EVT_MENU(wxID_CUT, wxExListViewStandard::OnCommand)
+  EVT_MENU(wxID_CLEAR, wxExListViewStandard::OnCommand)
+  EVT_MENU(wxID_DELETE, wxExListViewStandard::OnCommand)
+  EVT_MENU(wxID_PASTE, wxExListViewStandard::OnCommand)
   EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewStandard::OnCommand)
   EVT_MENU_RANGE(
     ID_EDIT_SVN_LOWEST, 
@@ -364,24 +368,35 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
     wxExSVN svn(
       event.GetId(), 
       wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+
     svn.ExecuteAndShowOutput(this);
   }
   else
   {
-#ifdef __WXMSW__
-#ifdef wxExUSE_RBS
     switch (event.GetId())
     {
+      case wxID_CLEAR:
+      case wxID_CUT:
+      case wxID_DELETE:
+      case wxID_PASTE:
+        if (m_Type != LIST_HISTORY)
+        {
+          event.Skip();
+        }
+      break;
+
+#ifdef __WXMSW__
+#ifdef wxExUSE_RBS
     case ID_LIST_SEND_ITEM:
       RBSFile(this).GenerateDialog();
       break;
+#endif
+#endif
 
     default: 
       wxFAIL;
       break;
     }
-#endif
-#endif
   }
 }
 
