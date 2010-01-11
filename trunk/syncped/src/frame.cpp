@@ -184,7 +184,7 @@ wxExListViewWithFrame* MDIFrame::Activate(
   wxExListViewFile::ListType type, 
   const wxExLexer* lexer)
 {
-  if (type == wxExListViewFile::LIST_PROJECT)
+  if (type == wxExListViewFile::LIST_FILE)
   {
     return GetProject();
   }
@@ -206,7 +206,7 @@ wxExListViewWithFrame* MDIFrame::AddPage(
 
   wxExListViewWithFrame* list = (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(name);
 
-  if (list == NULL && type != wxExListViewFile::LIST_PROJECT)
+  if (list == NULL && type != wxExListViewFile::LIST_FILE)
   {
     list = new wxExListViewWithFrame(
       m_NotebookWithLists, this,
@@ -1017,7 +1017,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
             break;
 
           case wxID_PASTE:
-            event.Enable(list->GetType() == wxExListViewFile::LIST_PROJECT);
+            event.Enable(list->GetType() == wxExListViewFile::LIST_FILE);
             break;
 
           default:

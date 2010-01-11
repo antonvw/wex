@@ -30,7 +30,7 @@ public:
     LIST_KEYWORD,      ///< a list to show keywords
     LIST_REPLACE,      ///< a list to show replace results
     LIST_PROCESS,      ///< a list to show process output
-    LIST_PROJECT,      ///< a list to show project items
+    LIST_FILE,         ///< a list associated with a file
     LIST_REVISION,     ///< a list to show revisions
     LIST_SQL,          ///< a list to show embedded sql
     LIST_VERSION,      ///< a list to show versions
@@ -140,7 +140,7 @@ private:
 class wxExListViewFile : public wxExListViewWithFrame, public wxExFile
 {
 public:
-  /// Constructor for a LIST_PROJECT, opens the file.
+  /// Constructor for a LIST_FILE, opens the file.
   wxExListViewFile(wxWindow* parent,
     wxExFrameWithHistory* frame,
     const wxString& file,

@@ -153,7 +153,7 @@ const wxString wxExListViewStandard::GetTypeDescription(ListType type)
   case LIST_HISTORY: value = _("History"); break;
   case LIST_KEYWORD: value = _("Keywords"); break;
   case LIST_PROCESS: value = _("Process Output"); break;
-  case LIST_PROJECT: value = _("Project"); break;
+  case LIST_FILE: value = _("File"); break;
   case LIST_REPLACE: value = _("Replace Results"); break;
   case LIST_REVISION: value = _("Revisions"); break;
   case LIST_SQL: value = _("SQL Queries"); break;
@@ -176,7 +176,7 @@ wxExListViewStandard::ListType wxExListViewStandard::GetTypeTool(
     case ID_TOOL_REPORT_REVISION: return LIST_REVISION; break;
     case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
     case ID_TOOL_REPORT_VERSION: return LIST_VERSION; break;
-    default: wxFAIL; return LIST_PROJECT;
+    default: wxFAIL; return LIST_FILE;
   }
 }
 
@@ -258,7 +258,7 @@ const wxString wxExListViewStandard::ItemToText(long item_number) const
     text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
   }
 
-  if (GetType() != LIST_PROJECT)
+  if (GetType() != LIST_FILE)
   {
     text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
   }
@@ -287,7 +287,7 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
 #else
   // Set initial style depending on type.
   // Might be improved.
-  SetSingleStyle((m_Type == LIST_PROJECT || m_Type == LIST_HISTORY ?
+  SetSingleStyle((m_Type == LIST_FILE || m_Type == LIST_HISTORY ?
     wxConfigBase::Get()->ReadLong("List/Style", wxLC_REPORT) :
     wxLC_REPORT));
 #endif
@@ -427,7 +427,7 @@ void wxExListViewStandard::OnIdle(wxIdleEvent& event)
     if (m_ItemUpdated)
     {
       if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-          m_Type == LIST_PROJECT)
+          m_Type == LIST_FILE)
       {
         SortColumn(_("Modified"), SORT_KEEP);
       }
@@ -564,11 +564,11 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       menu.Append(ID_LIST_RUN_MAKE, _("&Make"));
     }
 
-    if ( GetType() != LIST_PROJECT &&
+    if ( GetType() != LIST_FILE &&
         !wxExSVN::Get()->Use() &&
          exists && !is_folder)
     {
-      wxExListViewWithFrame* list = m_Frame->Activate(LIST_PROJECT);
+      wxExListViewWithFrame* list = m_Frame->Activate(LIST_FILE);
 
       if (list != NULL && list->GetSelectedItemCount() == 1)
       {
@@ -776,7 +776,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
         {
           if (GetSelectedItemCount() == 1)
           {
-            list = m_Frame->Activate(LIST_PROJECT);
+            list = m_Frame->Activate(LIST_FILE);
             if (list == NULL) return;
             int main_selected = list->GetFirstSelected();
             wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
@@ -942,7 +942,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   : wxExListViewWithFrame(
       parent, 
       frame, 
-      LIST_PROJECT, 
+      LIST_FILE, 
       id, 
       menu_flags, 
       NULL, 
@@ -1008,7 +1008,7 @@ void wxExListViewFile::AddItems()
     m_ContentsChanged = true;
 
     if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-        GetType() == LIST_PROJECT)
+        GetType() == LIST_FILE)
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -1026,7 +1026,7 @@ void wxExListViewFile::AfterSorting()
 {
   // Only if we are a project list and not sort syncing, 
   // set contents changed.
-  if ( GetType() == LIST_PROJECT &&
+  if ( GetType() == LIST_FILE &&
       !wxConfigBase::Get()->ReadBool("List/SortSync", true))
   {
     m_ContentsChanged = true;

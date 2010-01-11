@@ -394,7 +394,7 @@ void wxExFrameWithHistory::SetTitle(
   {
     wxExListViewFile* lv = (wxExListViewFile*)GetListView();
 
-    if (lv != NULL && lv->GetType() == wxExListViewWithFrame::LIST_PROJECT)
+    if (lv != NULL && lv->GetType() == wxExListViewWithFrame::LIST_FILE)
     {
       better_project = lv->GetFileName().GetName();
     }
