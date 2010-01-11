@@ -29,8 +29,38 @@ BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_IDLE(wxExListViewStandard::OnIdle)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
   EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewStandard::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewStandard::OnCommand)
+  EVT_MENU_RANGE(
+    ID_EDIT_SVN_LOWEST, 
+    ID_EDIT_SVN_HIGHEST, 
+    wxExListViewStandard::OnCommand)
 END_EVENT_TABLE()
+
+#ifdef __WXMSW__
+#ifdef wxExUSE_RBS
+class RBSFile : public wxExFile
+{
+public:
+  RBSFile(wxExListViewStandard* listview);
+  void GenerateDialog();
+private:
+  void Body(
+    const wxString& filename,
+    const wxString& source,
+    const wxString& destination);
+  void Footer();
+  void GenerateTransmit(const wxString& text);
+  void GenerateWaitFor(const wxString& text);
+  void Header();
+  bool Substitute(
+    wxString& text,
+    const wxString& pattern,
+    const wxString& new_pattern,
+    const bool is_required);
+  wxExListViewStandard* m_Owner;
+  wxString m_Prompt;
+};
+#endif // __WXMSW__
+#endif // wxExUSE_RBS
 
 wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
   ListType type,
@@ -338,14 +368,23 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
       wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
     svn.ExecuteAndShowOutput(this);
   }
-
+  else
+  {
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
-  case ID_LIST_SEND_ITEM:
-    RBSFile(this).GenerateDialog();
-    break;
+    switch (event.GetId())
+    {
+    case ID_LIST_SEND_ITEM:
+      RBSFile(this).GenerateDialog();
+      break;
+
+    default: 
+      wxFAIL;
+      break;
+    }
 #endif
 #endif
+  }
 }
 
 void wxExListViewStandard::OnIdle(wxIdleEvent& event)
@@ -449,480 +488,6 @@ private:
   wxExListViewFile* m_Owner;
 };
 #endif
-
-#ifdef __WXMSW__
-#ifdef wxExUSE_RBS
-class RBSFile : public wxExFile
-{
-public:
-  RBSFile(wxExListViewStandard* listview);
-  void GenerateDialog();
-private:
-  void Body(
-    const wxString& filename,
-    const wxString& source,
-    const wxString& destination);
-  void Footer();
-  void GenerateTransmit(const wxString& text);
-  void GenerateWaitFor(const wxString& text);
-  void Header();
-  bool Substitute(
-    wxString& text,
-    const wxString& pattern,
-    const wxString& new_pattern,
-    const bool is_required);
-  wxExListViewStandard* m_Owner;
-  wxString m_Prompt;
-};
-#endif // __WXMSW__
-#endif // wxExUSE_RBS
-
-BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
-  EVT_IDLE(wxExListViewFile::OnIdle)
-  EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
-  EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
-  EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
-END_EVENT_TABLE()
-
-wxExListViewFile::wxExListViewFile(wxWindow* parent,
-  wxExFrameWithHistory* frame,
-  const wxString& file,
-  wxWindowID id,
-  long menu_flags,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxValidator& validator,
-  const wxString& name)
-  : wxExListViewWithFrame(
-      parent, 
-      frame, 
-      LIST_PROJECT, 
-      id, 
-      menu_flags, 
-      NULL, 
-      pos, 
-      size, 
-      style, 
-      validator, 
-      name)
-  , m_ContentsChanged(false)
-{
-  Initialize();
-
-  wxExFile::FileLoad(file);
-
-  if (GetFileName().GetStat().IsOk())
-  {
-    m_Frame->SetRecentProject(file);
-  }
-}
-
-void wxExListViewFile::AddItems()
-{
-  std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
-  v.push_back(wxExConfigItem());
-  std::set<wxString> set;
-  set.insert(_("Add files"));
-  set.insert(_("Add folders"));
-  set.insert(_("Recursive"));
-  v.push_back(wxExConfigItem(set));
-
-  wxExConfigDialog dlg(this,
-    v,
-    _("Add Files"));
-
-  // Force at least one of the checkboxes to be checked.
-  dlg.ForceCheckBoxChecked(_("Add"));
-
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return;
-  }
-
-  int flags = 0;
-  if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
-  if (wxConfigBase::Get()->ReadBool(_("Recursive"), false)) flags |= wxDIR_DIRS;
-
-  wxExDirWithListView dir(
-    this,
-    wxExConfigFirstOf(_("In folder")),
-    wxExConfigFirstOf(_("Add what")),
-    flags);
-
-  const long old_count = GetItemCount();
-
-  dir.FindFiles();
-
-  const long new_count = GetItemCount();
-
-  if (new_count - old_count > 0)
-  {
-    m_ContentsChanged = true;
-
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-        GetType() == LIST_PROJECT)
-    {
-      SortColumn(_("Modified"), SORT_KEEP);
-    }
-  }
-
-#if wxUSE_STATUSBAR
-  const wxString text = 
-    _("Added") + wxString::Format(" %d ", new_count - old_count) + _("file(s)");
-
-  wxExFrame::StatusText(text);
-#endif
-}
-
-void wxExListViewFile::AfterSorting()
-{
-  // Only if we are a project list and not sort syncing, 
-  // set contents changed.
-  if ( GetType() == LIST_PROJECT &&
-      !wxConfigBase::Get()->ReadBool("List/SortSync", true))
-  {
-    m_ContentsChanged = true;
-  }
-}
-
-void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
-{
-  // This contains the CAN_PASTE flag.
-  long style = wxExMenu::MENU_DEFAULT;
-
-  if (GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly())
-  {
-    style |= wxExMenu::MENU_IS_READ_ONLY;
-  }
-
-  menu.SetStyle(style);
-
-  bool exists = true;
-  bool is_folder = false;
-
-  if (GetSelectedItemCount() >= 1)
-  {
-    wxExListViewWithFrame::BuildPopupMenu(menu);
-  }
-  else
-  {
-    if (!GetFileName().IsOk() ||
-        !GetFileName().FileExists() ||
-        (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
-    {
-      menu.AppendSeparator();
-      menu.Append(wxID_ADD);
-    }
-
-    menu.AppendSeparator();
-    wxExListViewWithFrame::BuildPopupMenu(menu);
-  }
-}
-
-void wxExListViewFile::DoFileLoad(bool synced)
-{
-  EditClearAll();
-
-  const wxCharBuffer& buffer = Read();
-
-  wxStringTokenizer tkz(buffer.data(), wxTextFile::GetEOL());
-
-  while (tkz.HasMoreTokens())
-  {
-    ItemFromText(tkz.GetNextToken());
-  }
-
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-    SortColumn(_("Modified"), SORT_KEEP);
-  else
-    SortColumnReset();
-
-  if (synced)
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      GetFileName(), 
-      wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
-#endif
-  }
-
-  m_Frame->SetRecentProject(GetFileName().GetFullPath());
-}
-
-void wxExListViewFile::DoFileSave(bool save_as)
-{
-  for (long i = 0; i < GetItemCount(); i++)
-  {
-    Write(ItemToText(i) + wxTextFile::GetEOL());
-  }
-}
-
-void wxExListViewFile::FileNew(const wxExFileName& filename)
-{
-  wxExFile::FileNew(filename);
-  EditClearAll();
-}
-
-void wxExListViewFile::Initialize()
-{
-#if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new ListViewDropTarget(this));
-#endif
-}
-
-bool wxExListViewFile::ItemFromText(const wxString& text)
-{
-  if (wxExListViewStandard::ItemFromText(text))
-  {
-    m_ContentsChanged = true;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-void wxExListViewFile::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-  // These are added to disable changing this listview if it is read-only etc.
-  case wxID_CLEAR:
-  case wxID_CUT:
-  case wxID_DELETE:
-  case wxID_PASTE:
-    if (GetType() == LIST_HISTORY)
-    {
-      // Do nothing.
-    }
-    else if (GetFileName().GetStat().IsOk())
-    {
-      if (!GetFileName().GetStat().IsReadOnly())
-      {
-        event.Skip();
-        m_ContentsChanged = true;
-      }
-    }
-    else
-    {
-      event.Skip();
-      m_ContentsChanged = false;
-    }
-  break;
-
-  case wxID_ADD: AddItems(); break;
-
-  default: 
-    wxFAIL;
-    break;
-  }
-
-#if wxUSE_STATUSBAR
-  UpdateStatusBar();
-#endif
-}
-
-void wxExListViewFile::OnIdle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    !IsShown() ||
-     GetItemCount() == 0 ||
-     !wxConfigBase::Get()->ReadBool("AllowSync", true))
-  {
-    return;
-  }
-
-  CheckFileSync();
-}
-
-void wxExListViewFile::OnMouse(wxMouseEvent& event)
-{
-  if (event.LeftDown())
-  {
-    event.Skip();
-    int flags = wxLIST_HITTEST_ONITEM;
-    const long index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-
-    // If no item has been selected, then show filename mod time in the statusbar.
-    if (index < 0)
-    {
-      if (GetFileName().FileExists())
-      {
-#if wxUSE_STATUSBAR
-        wxExFrame::StatusText(GetFileName());
-#endif
-      }
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-
-#if wxUSE_STATUSBAR
-  UpdateStatusBar();
-#endif
-}
-
-#if wxUSE_DRAG_AND_DROP
-bool ListViewDropTarget::OnDropFiles(
-  wxCoord, 
-  wxCoord, 
-  const wxArrayString& filenames)
-{
-  for (size_t n = 0; n < filenames.GetCount(); n++)
-  {
-    m_Owner->ItemFromText(filenames[n]);
-  }
-
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-  {
-    m_Owner->SortColumn(_("Modified"), SORT_KEEP);
-  }
-
-  return true;
-}
-#endif
-
-#ifdef __WXMSW__
-#ifdef wxExUSE_RBS
-RBSFile::RBSFile(wxExListViewStandard* listview)
-  : wxExFile()
-  , m_Owner(listview)
-  , m_Prompt(wxConfigBase::Get()->Read("RBS/Prompt", ">"))
-{
-}
-
-void RBSFile::Body(
-  const wxString& filename,
-  const wxString& source,
-  const wxString& destination)
-{
-  GenerateTransmit("SET DEF [" + destination + "]");
-  GenerateTransmit("; *** Sending: " + filename + " ***");
-  GenerateWaitFor(m_Prompt);
-  GenerateTransmit("KERMIT RECEIVE");
-  Write(".KermitSendFile \"" + source + wxFILE_SEP_PATH + filename + "\",\"" + filename + ("\",rcASCII\n"));
-
-  GenerateTransmit(wxEmptyString);
-  GenerateWaitFor(m_Prompt);
-  GenerateTransmit("; *** Done: " + filename + " ***");
-}
-
-void RBSFile::Footer()
-{
-  Write("End With\n");
-  Write("End Sub\n");
-}
-
-void RBSFile::GenerateDialog()
-{
-  std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem(_("RBS File"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("RBS Pattern"), CONFIG_DIRPICKERCTRL));
-  wxExConfigDialog dlg(NULL, v, _("Build RBS File"));
-  if (dlg.ShowModal() == wxID_CANCEL) return;
-
-  const wxString script = wxConfigBase::Get()->Read(_("RBS File"));
-
-  if (!Open(script, wxFile::write))
-  {
-    return;
-  }
-
-  wxBusyCursor wait;
-
-  Header();
-
-  const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  long = -1;
-  while ((i = m_Owner->GetNextSelected(i)) != -1)
-  {
-    wxExListItem li(m_Owner, i);
-    const wxFileName* filename = &li.GetFileName();
-    if (!wxFileName::DirExists(filename->GetFullPath()))
-    {
-      const wxString source = filename->GetPath();
-      wxString destination = source, pattern, with;
-      if (source.find(rsx_pattern) != wxString::npos)
-      {
-        pattern = rsx_pattern;
-        with = wxConfigBase::Get()->Read("RBS/With");
-      }
-      else
-      {
-        wxLogError("Cannot find: %s inside: %s", rsx_pattern.c_str(), source.c_str());
-        return;
-      }
-
-      if (!Substitute(destination, pattern, with, true)) return;
-      Substitute(destination, wxFILE_SEP_PATH, ",", false);
-      Body(filename->GetFullName(), source, destination);
-    }
-  }
-
-  Footer();
-  Close();
-
-  wxExLog::Get()->Log("RBS " + _("File") + ": " + script + " " + _("generated"));
-}
-
-void RBSFile::GenerateTransmit(const wxString& text)
-{
-  if (text.empty()) Write(".Transmit Chr$(13)\n");
-  else              Write(".Transmit \"" + text + "\" & Chr$(13)\n");
-}
-
-void RBSFile::GenerateWaitFor(const wxString& text)
-{
-  const wxString pdp_11_spec = "Chr$(10) & ";
-  Write(".WaitForString " + pdp_11_spec + "\"" + text + "\", 0, rcAllowKeyStrokes\n");
-  Write(".Wait 1, rcAllowKeyStrokes\n");
-}
-
-void RBSFile::Header()
-{
-  wxASSERT(wxTheApp != NULL);
-  Write("' Script generated by: " + wxTheApp->GetAppName() + ": " + wxDateTime::Now().Format() + "\n" +
-        "' Do not modify this file, all changes will be lost!\n\n" +
-        "Option Explicit\n" +
-        "Sub Main\n\n" +
-        "With Application\n\n");
-}
-
-bool RBSFile::Substitute(
-  wxString& text,
-  const wxString& pattern,
-  const wxString& new_pattern,
-  const bool is_required)
-{
-  size_t pos_pattern;
-  if ((pos_pattern = text.find(pattern)) == wxString::npos)
-  {
-    if (is_required)
-    {
-      wxLogError("Cannot find pattern: " + pattern + " in: " + text);
-    }
-
-    return false;
-  }
-
-  text = text.substr(0, pos_pattern) + new_pattern + text.substr(pos_pattern + pattern.length());
-
-  return true;
-}
-#endif // wxExUSE_RBS
-#endif // __WXMSW__
 
 BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewStandard)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
@@ -1352,3 +917,448 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       tool.GetLogfileName(), 0 , wxEmptyString, wxExSTC::STC_OPEN_FROM_OTHER);
   }
 }
+
+BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
+  EVT_IDLE(wxExListViewFile::OnIdle)
+  EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_DELETE, wxExListViewFile::OnCommand)
+  EVT_MENU(wxID_PASTE, wxExListViewFile::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_SVN_LOWEST, ID_EDIT_SVN_HIGHEST, wxExListViewFile::OnCommand)
+  EVT_LEFT_DOWN(wxExListViewFile::OnMouse)
+END_EVENT_TABLE()
+
+wxExListViewFile::wxExListViewFile(wxWindow* parent,
+  wxExFrameWithHistory* frame,
+  const wxString& file,
+  wxWindowID id,
+  long menu_flags,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxValidator& validator,
+  const wxString& name)
+  : wxExListViewWithFrame(
+      parent, 
+      frame, 
+      LIST_PROJECT, 
+      id, 
+      menu_flags, 
+      NULL, 
+      pos, 
+      size, 
+      style, 
+      validator, 
+      name)
+  , m_ContentsChanged(false)
+{
+  Initialize();
+
+  wxExFile::FileLoad(file);
+
+  if (GetFileName().GetStat().IsOk())
+  {
+    m_Frame->SetRecentProject(file);
+  }
+}
+
+void wxExListViewFile::AddItems()
+{
+  std::vector<wxExConfigItem> v;
+  v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
+  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem());
+  std::set<wxString> set;
+  set.insert(_("Add files"));
+  set.insert(_("Add folders"));
+  set.insert(_("Recursive"));
+  v.push_back(wxExConfigItem(set));
+
+  wxExConfigDialog dlg(this,
+    v,
+    _("Add Files"));
+
+  // Force at least one of the checkboxes to be checked.
+  dlg.ForceCheckBoxChecked(_("Add"));
+
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return;
+  }
+
+  int flags = 0;
+  if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
+  if (wxConfigBase::Get()->ReadBool(_("Recursive"), false)) flags |= wxDIR_DIRS;
+
+  wxExDirWithListView dir(
+    this,
+    wxExConfigFirstOf(_("In folder")),
+    wxExConfigFirstOf(_("Add what")),
+    flags);
+
+  const long old_count = GetItemCount();
+
+  dir.FindFiles();
+
+  const long new_count = GetItemCount();
+
+  if (new_count - old_count > 0)
+  {
+    m_ContentsChanged = true;
+
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
+        GetType() == LIST_PROJECT)
+    {
+      SortColumn(_("Modified"), SORT_KEEP);
+    }
+  }
+
+#if wxUSE_STATUSBAR
+  const wxString text = 
+    _("Added") + wxString::Format(" %d ", new_count - old_count) + _("file(s)");
+
+  wxExFrame::StatusText(text);
+#endif
+}
+
+void wxExListViewFile::AfterSorting()
+{
+  // Only if we are a project list and not sort syncing, 
+  // set contents changed.
+  if ( GetType() == LIST_PROJECT &&
+      !wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  {
+    m_ContentsChanged = true;
+  }
+}
+
+void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
+{
+  // This contains the CAN_PASTE flag.
+  long style = wxExMenu::MENU_DEFAULT;
+
+  if (GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly())
+  {
+    style |= wxExMenu::MENU_IS_READ_ONLY;
+  }
+
+  menu.SetStyle(style);
+
+  bool exists = true;
+  bool is_folder = false;
+
+  if (GetSelectedItemCount() >= 1)
+  {
+    wxExListViewWithFrame::BuildPopupMenu(menu);
+  }
+  else
+  {
+    if (!GetFileName().IsOk() ||
+        !GetFileName().FileExists() ||
+        (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
+    {
+      menu.AppendSeparator();
+      menu.Append(wxID_ADD);
+    }
+
+    menu.AppendSeparator();
+    wxExListViewWithFrame::BuildPopupMenu(menu);
+  }
+}
+
+void wxExListViewFile::DoFileLoad(bool synced)
+{
+  EditClearAll();
+
+  const wxCharBuffer& buffer = Read();
+
+  wxStringTokenizer tkz(buffer.data(), wxTextFile::GetEOL());
+
+  while (tkz.HasMoreTokens())
+  {
+    ItemFromText(tkz.GetNextToken());
+  }
+
+  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    SortColumn(_("Modified"), SORT_KEEP);
+  else
+    SortColumnReset();
+
+  if (synced)
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(
+      GetFileName(), 
+      wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
+#endif
+  }
+
+  m_Frame->SetRecentProject(GetFileName().GetFullPath());
+}
+
+void wxExListViewFile::DoFileSave(bool save_as)
+{
+  for (long i = 0; i < GetItemCount(); i++)
+  {
+    Write(ItemToText(i) + wxTextFile::GetEOL());
+  }
+}
+
+void wxExListViewFile::FileNew(const wxExFileName& filename)
+{
+  wxExFile::FileNew(filename);
+  EditClearAll();
+}
+
+void wxExListViewFile::Initialize()
+{
+#if wxUSE_DRAG_AND_DROP
+  SetDropTarget(new ListViewDropTarget(this));
+#endif
+}
+
+bool wxExListViewFile::ItemFromText(const wxString& text)
+{
+  if (wxExListViewStandard::ItemFromText(text))
+  {
+    m_ContentsChanged = true;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void wxExListViewFile::OnCommand(wxCommandEvent& event)
+{
+  switch (event.GetId())
+  {
+  // These are added to disable changing this listview if it is read-only etc.
+  case wxID_CLEAR:
+  case wxID_CUT:
+  case wxID_DELETE:
+  case wxID_PASTE:
+    if (GetType() == LIST_HISTORY)
+    {
+      // Do nothing.
+    }
+    else if (GetFileName().GetStat().IsOk())
+    {
+      if (!GetFileName().GetStat().IsReadOnly())
+      {
+        event.Skip();
+        m_ContentsChanged = true;
+      }
+    }
+    else
+    {
+      event.Skip();
+      m_ContentsChanged = false;
+    }
+  break;
+
+  case wxID_ADD: AddItems(); break;
+
+  default: 
+    wxFAIL;
+    break;
+  }
+
+#if wxUSE_STATUSBAR
+  UpdateStatusBar();
+#endif
+}
+
+void wxExListViewFile::OnIdle(wxIdleEvent& event)
+{
+  event.Skip();
+
+  if (
+    IsShown() &&
+    GetItemCount() > 0 &&
+    wxConfigBase::Get()->ReadBool("AllowSync", true))
+  {
+    CheckFileSync();
+  }
+}
+
+void wxExListViewFile::OnMouse(wxMouseEvent& event)
+{
+  if (event.LeftDown())
+  {
+    event.Skip();
+    int flags = wxLIST_HITTEST_ONITEM;
+    const long index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+
+    // If no item has been selected, then show filename mod time in the statusbar.
+    if (index < 0)
+    {
+      if (GetFileName().FileExists())
+      {
+#if wxUSE_STATUSBAR
+        wxExFrame::StatusText(GetFileName());
+#endif
+      }
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
+
+#if wxUSE_STATUSBAR
+  UpdateStatusBar();
+#endif
+}
+
+#if wxUSE_DRAG_AND_DROP
+bool ListViewDropTarget::OnDropFiles(
+  wxCoord, 
+  wxCoord, 
+  const wxArrayString& filenames)
+{
+  for (size_t n = 0; n < filenames.GetCount(); n++)
+  {
+    m_Owner->ItemFromText(filenames[n]);
+  }
+
+  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  {
+    m_Owner->SortColumn(_("Modified"), SORT_KEEP);
+  }
+
+  return true;
+}
+#endif
+
+#ifdef __WXMSW__
+#ifdef wxExUSE_RBS
+RBSFile::RBSFile(wxExListViewStandard* listview)
+  : wxExFile()
+  , m_Owner(listview)
+  , m_Prompt(wxConfigBase::Get()->Read("RBS/Prompt", ">"))
+{
+}
+
+void RBSFile::Body(
+  const wxString& filename,
+  const wxString& source,
+  const wxString& destination)
+{
+  GenerateTransmit("SET DEF [" + destination + "]");
+  GenerateTransmit("; *** Sending: " + filename + " ***");
+  GenerateWaitFor(m_Prompt);
+  GenerateTransmit("KERMIT RECEIVE");
+  Write(".KermitSendFile \"" + source + wxFILE_SEP_PATH + filename + "\",\"" + filename + ("\",rcASCII\n"));
+
+  GenerateTransmit(wxEmptyString);
+  GenerateWaitFor(m_Prompt);
+  GenerateTransmit("; *** Done: " + filename + " ***");
+}
+
+void RBSFile::Footer()
+{
+  Write("End With\n");
+  Write("End Sub\n");
+}
+
+void RBSFile::GenerateDialog()
+{
+  std::vector<wxExConfigItem> v;
+  v.push_back(wxExConfigItem(_("RBS File"), CONFIG_FILEPICKERCTRL, wxEmptyString, true));
+  v.push_back(wxExConfigItem(_("RBS Pattern"), CONFIG_DIRPICKERCTRL));
+  wxExConfigDialog dlg(NULL, v, _("Build RBS File"));
+  if (dlg.ShowModal() == wxID_CANCEL) return;
+
+  const wxString script = wxConfigBase::Get()->Read(_("RBS File"));
+
+  if (!Open(script, wxFile::write))
+  {
+    return;
+  }
+
+  wxBusyCursor wait;
+
+  Header();
+
+  const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
+  long = -1;
+  while ((i = m_Owner->GetNextSelected(i)) != -1)
+  {
+    wxExListItem li(m_Owner, i);
+    const wxFileName* filename = &li.GetFileName();
+    if (!wxFileName::DirExists(filename->GetFullPath()))
+    {
+      const wxString source = filename->GetPath();
+      wxString destination = source, pattern, with;
+      if (source.find(rsx_pattern) != wxString::npos)
+      {
+        pattern = rsx_pattern;
+        with = wxConfigBase::Get()->Read("RBS/With");
+      }
+      else
+      {
+        wxLogError("Cannot find: %s inside: %s", rsx_pattern.c_str(), source.c_str());
+        return;
+      }
+
+      if (!Substitute(destination, pattern, with, true)) return;
+      Substitute(destination, wxFILE_SEP_PATH, ",", false);
+      Body(filename->GetFullName(), source, destination);
+    }
+  }
+
+  Footer();
+  Close();
+
+  wxExLog::Get()->Log("RBS " + _("File") + ": " + script + " " + _("generated"));
+}
+
+void RBSFile::GenerateTransmit(const wxString& text)
+{
+  if (text.empty()) Write(".Transmit Chr$(13)\n");
+  else              Write(".Transmit \"" + text + "\" & Chr$(13)\n");
+}
+
+void RBSFile::GenerateWaitFor(const wxString& text)
+{
+  const wxString pdp_11_spec = "Chr$(10) & ";
+  Write(".WaitForString " + pdp_11_spec + "\"" + text + "\", 0, rcAllowKeyStrokes\n");
+  Write(".Wait 1, rcAllowKeyStrokes\n");
+}
+
+void RBSFile::Header()
+{
+  wxASSERT(wxTheApp != NULL);
+  Write("' Script generated by: " + wxTheApp->GetAppName() + ": " + wxDateTime::Now().Format() + "\n" +
+        "' Do not modify this file, all changes will be lost!\n\n" +
+        "Option Explicit\n" +
+        "Sub Main\n\n" +
+        "With Application\n\n");
+}
+
+bool RBSFile::Substitute(
+  wxString& text,
+  const wxString& pattern,
+  const wxString& new_pattern,
+  const bool is_required)
+{
+  size_t pos_pattern;
+  if ((pos_pattern = text.find(pattern)) == wxString::npos)
+  {
+    if (is_required)
+    {
+      wxLogError("Cannot find pattern: " + pattern + " in: " + text);
+    }
+
+    return false;
+  }
+
+  text = text.substr(0, pos_pattern) + new_pattern + text.substr(pos_pattern + pattern.length());
+
+  return true;
+}
+#endif // wxExUSE_RBS
+#endif // __WXMSW__
