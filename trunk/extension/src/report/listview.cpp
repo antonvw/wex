@@ -1138,22 +1138,13 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   case wxID_CUT:
   case wxID_DELETE:
   case wxID_PASTE:
-    if (GetType() == LIST_HISTORY)
-    {
-      // Do nothing.
-    }
-    else if (GetFileName().GetStat().IsOk())
+    if (GetFileName().GetStat().IsOk())
     {
       if (!GetFileName().GetStat().IsReadOnly())
       {
         event.Skip();
         m_ContentsChanged = true;
       }
-    }
-    else
-    {
-      event.Skip();
-      m_ContentsChanged = false;
     }
   break;
 
