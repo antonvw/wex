@@ -1207,10 +1207,6 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
   {
     wxFAIL;
   }
-
-#if wxUSE_STATUSBAR
-  UpdateStatusBar();
-#endif
 }
 
 #if wxUSE_DRAG_AND_DROP
