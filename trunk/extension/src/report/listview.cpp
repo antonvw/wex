@@ -65,7 +65,6 @@ private:
 wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
   ListType type,
   wxWindowID id,
-  long menu_flags,
   const wxExLexer* lexer,
   const wxPoint& pos,
   const wxSize& size,
@@ -81,7 +80,6 @@ wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
       IMAGE_FILE_ICON, 
       validator, 
       name)
-  , m_MenuFlags(menu_flags)
   , m_ItemUpdated(false)
   , m_ItemNumber(0)
   , m_Type(type)
@@ -510,7 +508,6 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
       parent, 
       type, 
       id, 
-      menu_flags, 
       lexer, 
       pos, 
       size, 
@@ -518,6 +515,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
       validator, 
       name)
   , m_Frame(frame)
+  , m_MenuFlags(menu_flags)
 {
   if (GetType() == LIST_HISTORY)
   {
@@ -619,7 +617,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     // Finding in the LIST_FIND and REPLACE would result in recursive calls, do not add them.
     if ( exists &&
          GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
-        (GetMenuFlags() & LIST_MENU_REPORT_FIND))
+        (m_MenuFlags & LIST_MENU_REPORT_FIND))
     {
       menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
@@ -631,7 +629,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (GetSelectedItemCount() > 0 && exists && (GetMenuFlags() & LIST_MENU_TOOL))
+  if (GetSelectedItemCount() > 0 && exists && (m_MenuFlags & LIST_MENU_TOOL))
   {
     menu.AppendSeparator();
     menu.AppendTools();

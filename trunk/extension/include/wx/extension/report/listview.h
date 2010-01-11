@@ -52,16 +52,12 @@ public:
   wxExListViewStandard(wxWindow* parent,
     ListType type,
     wxWindowID id = wxID_ANY,
-    long menu_flags = LIST_MENU_DEFAULT,
     const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
-
-  /// Gets the menu flags.
-  long GetMenuFlags() const {return m_MenuFlags;}
 
   /// Gets the list type.
   const ListType GetType() const {return m_Type;};
@@ -97,7 +93,6 @@ private:
   const ListType m_Type;
   bool m_ItemUpdated;
   long m_ItemNumber;
-  const long m_MenuFlags;
 
   DECLARE_EVENT_TABLE()
 };
@@ -131,6 +126,8 @@ private:
   const wxString GetFindInCaption(int id) const;
   void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);
+
+  const long m_MenuFlags;
 
   DECLARE_EVENT_TABLE()
 };
