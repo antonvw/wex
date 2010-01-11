@@ -181,7 +181,7 @@ MDIFrame::MDIFrame(bool open_recent)
 }
 
 wxExListViewWithFrame* MDIFrame::Activate(
-  wxExListViewFile::ListType type, 
+  wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
   if (type == wxExListViewFile::LIST_FILE)
@@ -198,10 +198,10 @@ wxExListViewWithFrame* MDIFrame::Activate(
 }
 
 wxExListViewWithFrame* MDIFrame::AddPage(
-  wxExListViewFile::ListType type, 
+  wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
-  const wxString name = wxExListViewFile::GetTypeDescription((wxExListViewFile::ListType)type) +
+  const wxString name = wxExListViewStandard::GetTypeDescription((wxExListViewStandard::ListType)type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
   wxExListViewWithFrame* list = (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(name);
@@ -210,7 +210,7 @@ wxExListViewWithFrame* MDIFrame::AddPage(
   {
     list = new wxExListViewWithFrame(
       m_NotebookWithLists, this,
-      (wxExListViewFile::ListType)type,
+      (wxExListViewStandard::ListType)type,
       wxID_ANY,
       wxExListViewFile::LIST_MENU_DEFAULT,
       lexer);

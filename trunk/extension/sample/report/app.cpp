@@ -160,8 +160,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   GetManager().Update();
 
   wxExDirWithListView dir(
-    (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewWithFrame::GetTypeDescription(wxExListViewWithFrame::LIST_FILE)),
+    (wxExListViewFile*)m_NotebookWithLists->GetPageByKey(
+      wxExListViewStandard::GetTypeDescription(wxExListViewWithFrame::LIST_FILE)),
     wxGetCwd(),
     "*.cpp;*.h");
 
@@ -169,7 +169,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExListItem item(
     (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewWithFrame::GetTypeDescription(wxExListViewWithFrame::LIST_FILE)),
+      wxExListViewStandard::GetTypeDescription(wxExListViewWithFrame::LIST_FILE)),
     wxFileName("NOT EXISTING ITEM"));
 
   item.Insert();

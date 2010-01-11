@@ -39,7 +39,7 @@ public:
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
   virtual wxExListViewWithFrame* Activate(
-    wxExListViewFile::ListType WXUNUSED(list_type), 
+    wxExListViewStandard::ListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
