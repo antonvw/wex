@@ -119,15 +119,15 @@ without the written consent of the copyright owner.
     <marker no="31"> 6,light grey,white </marker>
     <indicator no="3"> 6 </indicator>
     <style no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> 
-      fore:black,size:10,face:courier new </style>
+      fore:black,face:courier new </style>
     <!-- this style is used for placing edge line, 
          font should equal font used for code -->
-    <style no="32"> size:10,face:courier new </style>
-    <style no="34"> back:yellow,size:10,face:courier new </style>
-    <style no="36"> size:6 </style>
+    <style no="32"> face:courier new </style>
+    <style no="34"> back:yellow,face:courier new </style>
+    <style no="36"> </style>
     <hex no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> 
-      fore:black,size:10,face:courier new </hex>
-    <hex no="34"> back:red,size:10,face:courier new </hex>
+      fore:black,face:courier new </hex>
+    <hex no="34"> back:red,face:courier new </hex>
   </global>
   
   <lexer 
@@ -158,10 +158,10 @@ without the written consent of the copyright owner.
     However currently they show underlined lines if doing so.
     -->
     <colourings>
-      <colouring no="0"> fore:black,size:8,face:courier new </colouring>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="0"> fore:black,face:courier new </colouring>
+      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
-      <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,size:8,eol 
+      <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,eol 
       </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
@@ -232,8 +232,8 @@ without the written consent of the copyright owner.
     extensions="*.pas">
   
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="0"> fore:black,face:courier new </colouring>
+      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
@@ -287,11 +287,11 @@ without the written consent of the copyright owner.
     -->
     
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
+      <colouring no="0"> fore:black,face:courier new </colouring>
       <colouring no="1"> bold </colouring>
       <colouring no="3"> fore:red </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
     </colourings>
     
@@ -337,8 +337,8 @@ without the written consent of the copyright owner.
      TODO: eol does not work for bash files!
     -->
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="2"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="0"> fore:black,face:courier new </colouring>
+      <colouring no="2"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
       <colouring no="3"> fore:red </colouring>
       <colouring no="4"> bold </colouring>
@@ -392,8 +392,8 @@ without the written consent of the copyright owner.
     #define wxSTC_ASM_EXTINSTRUCTION 14
     -->
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="0"> fore:black,face:courier new </colouring>
+      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
       <colouring no="2"> fore:red </colouring>
       <colouring no="3"> fore:blue </colouring>
@@ -552,11 +552,11 @@ without the written consent of the copyright owner.
     #define wxSTC_HPHP_OPERATOR 127
     -->
     <colourings>
-      <colouring no="0"> size:10,face:courier new </colouring>
+      <colouring no="0"> face:courier new </colouring>
       <colouring no="1"> bold </colouring>
       <colouring no="5"> fore:red </colouring>
       <colouring no="6,7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
       <colouring no="18"> fore:#0000FF,back:#FFEFBF </colouring>
       <colouring no="19"> fore:#FF00FF,back:#FFEFFF </colouring>
@@ -567,7 +567,7 @@ without the written consent of the copyright owner.
       <colouring no="121"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
       <colouring no="122"> fore:#CC9900,back:#FFF8F8 </colouring>
       <colouring no="123"> fore:#00007F,italic,back:#FFF8F8 </colouring>
-      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic,size:8 
+      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic
       </colouring>
       <colouring no="126"> fore:#007F00,italic,back:#FFF8F8 </colouring>
       <colouring no="127"> fore:#000000,back:#FFF8F8 </colouring>
@@ -587,12 +587,12 @@ without the written consent of the copyright owner.
     <!-- See above -->
   
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
+      <colouring no="0"> fore:black,face:courier new </colouring>
       <colouring no="1"> bold </colouring>
       <colouring no="5"> fore:red </colouring>
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
     </colourings>
     
@@ -634,8 +634,8 @@ without the written consent of the copyright owner.
     #define wxSTC_SQL_QUOTEDIDENTIFIER 23
     -->
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="0"> fore:black,face:courier new </colouring>
+      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
       <colouring no="4"> fore:red </colouring>
       <colouring no="5"> bold </colouring>
@@ -723,8 +723,8 @@ without the written consent of the copyright owner.
     #define wxSTC_MAKE_IDEOL 9
     -->
     <colourings>
-      <colouring no="0"> fore:black,size:10,face:courier new </colouring>
-      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,size:8,eol 
+      <colouring no="0"> fore:black,face:courier new </colouring>
+      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
       <colouring no="2"> fore:grey </colouring>
       <colouring no="4"> fore:red </colouring>
