@@ -553,7 +553,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     {
       editor->FileSave();
 
-      if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
+      if (editor->GetFileName().GetFullName() == 
+          wxExLexers::Get()->GetFileName().GetFullName())
       {
         wxExLexers::Get()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);
