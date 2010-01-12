@@ -254,7 +254,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
       const wxString content = child->GetNodeContent().Strip(wxString::both);
       int attrib_no = atoi(attrib.c_str());
 
-      if (attrib_no == 32)
+      if (attrib_no == wxSTC_STYLE_DEFAULT)
       {
         m_DefaultStyle = attrib + "=" + content;
       }
