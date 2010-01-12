@@ -122,7 +122,7 @@ without the written consent of the copyright owner.
       fore:black,face:courier new </style>
     <!-- this style is used for placing edge line, 
          font should equal font used for code -->
-    <style no="32"> face:courier new </style>
+    <style no="32"> face:courier new,size:10 </style>
     <style no="34"> back:yellow,face:courier new </style>
     <style no="36"> </style>
     <hex no="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"> 
@@ -587,12 +587,11 @@ without the written consent of the copyright owner.
     <!-- See above -->
   
     <colourings>
-      <colouring no="0"> fore:black,face:courier new </colouring>
       <colouring no="1"> bold </colouring>
       <colouring no="5"> fore:red </colouring>
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
+      <colouring no="9"> size:10,back:#F0F0F0F0,fore:#2277DD,italic,eol 
       </colouring>
     </colourings>
     
