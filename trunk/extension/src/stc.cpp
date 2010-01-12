@@ -2148,6 +2148,7 @@ void wxExSTC::SetKeyWords()
 void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 {
   ClearDocumentStyle();
+  StyleResetDefault();
 
   // Reset all old properties. 
   // Should be before GetFileName().SetLexer().
