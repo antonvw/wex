@@ -2147,28 +2147,28 @@ void wxExSTC::SetKeyWords()
 
 void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 {
+  ClearDocumentStyle();
+
+  // Reset all old properties. 
+  // Should be before GetFileName().SetLexer().
+  wxStringTokenizer properties(
+    GetFileName().GetLexer().GetProperties(),
+    wxTextFile::GetEOL());
+
+  while (properties.HasMoreTokens())
+  {
+    wxStringTokenizer property(properties.GetNextToken(), "=");
+
+    // Don't put key, value into SetProperty, as that might parse value first,
+    // reversing the two.
+    const wxString key = property.GetNextToken();
+    const wxString value = property.GetNextToken(); // ignore
+
+    SetProperty(key, wxEmptyString);
+  }
+
   if (forced)
   {
-    ClearDocumentStyle();
-
-    // Reset all old properties. 
-    // Should be before GetFileName().SetLexer().
-    wxStringTokenizer properties(
-      GetFileName().GetLexer().GetProperties(),
-      wxTextFile::GetEOL());
-
-    while (properties.HasMoreTokens())
-    {
-      wxStringTokenizer property(properties.GetNextToken(), "=");
-
-      // Don't put key, value into SetProperty, as that might parse value first,
-      // reversing the two.
-      const wxString key = property.GetNextToken();
-      const wxString value = property.GetNextToken(); // ignore
-
-      SetProperty(key, wxEmptyString);
-    }
-
     SetFileNameLexer(lexer, "forced");
   }
   else
