@@ -83,6 +83,9 @@ public:
   /// Returns the lexers object.
   static wxExLexers* Get(bool createOnDemand = true);
 
+  /// Returns the default style.
+  const wxString& GetDefaultStyle() const {return m_DefaultStyle;};
+
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
 
@@ -124,6 +127,7 @@ private:
   std::vector<wxExMarker> m_Markers;
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
+  wxString m_DefaultStyle;
 
   const wxFileName m_FileName;
 

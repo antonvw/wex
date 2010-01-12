@@ -250,9 +250,18 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "style")
     {
-      m_Styles.push_back(
-        child->GetAttribute("no", "0") + "=" +
-        child->GetNodeContent().Strip(wxString::both));
+      const wxString attrib = child->GetAttribute("no", "0");
+      const wxString content = child->GetNodeContent().Strip(wxString::both));
+      int attrib_no = atoi(attrib.c_str());
+
+      if (attrib_no == 32)
+      {
+        m_DefaultStyle = attrib + "=" + content;
+      }
+      else
+      {
+        m_Styles.push_back(attrib + "=" + content);
+      }
     }
     else
     {
