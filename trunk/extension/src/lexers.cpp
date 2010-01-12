@@ -251,7 +251,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     else if (child->GetName() == "style")
     {
       const wxString attrib = child->GetAttribute("no", "0");
-      const wxString content = child->GetNodeContent().Strip(wxString::both));
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
       int attrib_no = atoi(attrib.c_str());
 
       if (attrib_no == 32)
