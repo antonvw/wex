@@ -2093,8 +2093,6 @@ void wxExSTC::SetFolding()
 
 void wxExSTC::SetGlobalStyles()
 {
-  StyleClearAll();
-
   if (!(m_Flags & STC_OPEN_HEX))
   {
     for (
@@ -2123,6 +2121,8 @@ void wxExSTC::SetGlobalStyles()
       SetStyle(*it);
     }
   }
+
+  StyleClearAll();
 }
 
 void wxExSTC::SetKeyWords()
