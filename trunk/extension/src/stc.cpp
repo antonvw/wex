@@ -2093,9 +2093,13 @@ void wxExSTC::SetFolding()
 
 void wxExSTC::SetGlobalStyles()
 {
-  SetStyle(wxExLexers::Get()->GetDefaultStyle());
+  const wxString default_style = wxExLexers::Get()->GetDefaultStyle());
 
-  StyleClearAll();
+  if  (!default_style.empty()) 
+  {
+    SetStyle(default_style);
+    StyleClearAll();
+  }
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
