@@ -553,11 +553,13 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     {
       editor->FileSave();
 
-      if (editor->GetFileName().GetFullName() == 
-          wxExLexers::Get()->GetFileName().GetFullName())
+      // Compare fullpath, otherwise the Read still reads in the old one.
+      if (editor->GetFileName() == 
+          wxExLexers::Get()->GetFileName())
       {
         wxExLexers::Get()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);
+
         // As the lexer might have changed, update status bar field as well.
 #if wxUSE_STATUSBAR
         editor->UpdateStatusBar("PaneLexer");
