@@ -169,6 +169,9 @@ public:
     return (GetImageType() == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
+  /// Sets style acoording to event id.
+  void SetStyle(int id);
+
   /// Sorts on a column.
   /// If you specified use_images,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
@@ -210,10 +213,15 @@ protected:
   void EditDelete();
 
   /// Inverts all items from selected to not selected.
-  void EditInvertAll();
+  void EditInvertAll() {
+    for (long i = 0; i < GetItemCount(); i++)
+    {
+      Select(i, !IsSelected(i));
+    }}
 
   /// Selects all items.
-  void EditSelectAll();
+  void EditSelectAll() {
+    SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);};
 
   /// Resets column that was used for sorting.
   void SortColumnReset();

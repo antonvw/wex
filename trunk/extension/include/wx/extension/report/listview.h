@@ -80,9 +80,6 @@ public:
 
   /// Returns column text for specified item.
   virtual const wxString ItemToText(long item_number) const;
-
-  /// Sets style acoording to event id.
-  void SetStyle(int id);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);

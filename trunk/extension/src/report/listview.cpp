@@ -186,8 +186,7 @@ void wxExListViewStandard::ItemsUpdate()
 {
   for (long i = 0; i < GetItemCount(); i++)
   {
-    wxExListItem item(this, i);
-    item.Update();
+    wxExListItem(this, i).Update();
   }
 }
 
@@ -234,8 +233,7 @@ bool wxExListViewStandard::ItemFromText(const wxString& text)
       const wxString findfiles =
         (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
 
-      wxExListItem dir(this, value, findfiles);
-      dir.Insert();
+      wxExListItem(this, value, findfiles).Insert();
     }
   }
   else
@@ -474,21 +472,6 @@ void wxExListViewStandard::OnList(wxListEvent& event)
   {
     wxFAIL;
   }
-}
-
-void wxExListViewStandard::SetStyle(int id)
-{
-  long view = 0;
-  switch (id)
-  {
-  case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
-  case wxID_VIEW_LIST: view = wxLC_LIST; break;
-  case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
-  default: wxFAIL;
-  }
-
-  SetSingleStyle(view);
-  wxConfigBase::Get()->Write("List/Style", view);
 }
 
 #if wxUSE_DRAG_AND_DROP

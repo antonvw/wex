@@ -203,7 +203,7 @@ void wxExListView::CopySelectedItemsToClipboard()
   long i = -1;
   while ((i = GetNextSelected(i)) != -1)
   {
-    clipboard = clipboard + ItemToText(i) + wxTextFile::GetEOL();
+    clipboard += ItemToText(i) + wxTextFile::GetEOL();
   }
 
   wxExClipboardAdd(clipboard);
@@ -235,19 +235,6 @@ void wxExListView::EditDelete()
     SetItemState(old_item, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 
   ItemsUpdate();
-}
-
-void wxExListView::EditInvertAll()
-{
-  for (long i = 0; i < GetItemCount(); i++)
-  {
-    Select(i, !IsSelected(i));
-  }
-}
-
-void wxExListView::EditSelectAll()
-{
-  SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
 int wxExListView::FindColumn(const wxString& name, bool is_required) const
@@ -664,6 +651,21 @@ void wxExListView::PrintPreview()
   wxBusyCursor wait;
   wxExPrinting::Get()->GetHtmlPrinter()->PreviewText(BuildPage());
 #endif
+}
+
+void wxExListView::SetStyle(int id)
+{
+  long view = 0;
+  switch (id)
+  {
+  case wxID_VIEW_DETAILS: view = wxLC_REPORT; break;
+  case wxID_VIEW_LIST: view = wxLC_LIST; break;
+  case wxID_VIEW_SMALLICONS: view = wxLC_SMALL_ICON; break;
+  default: wxFAIL;
+  }
+
+  SetSingleStyle(view);
+  wxConfigBase::Get()->Write("List/Style", view);
 }
 
 std::vector<wxString>* pitems;
