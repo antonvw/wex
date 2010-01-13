@@ -44,6 +44,7 @@ without the written consent of the copyright owner.
  At this moment <style>, <indicator>, <marker> and <hex> styles are supported.
  The marker element has a 'no' attribute and its value contains the next fields:
  <marker symbol number><','><foreground colour><','><background colour>
+ You can also use macro's, using the <def> property.
 */
 -->
 
@@ -117,12 +118,20 @@ without the written consent of the copyright owner.
     <marker no="29"> 9,light grey,light grey </marker>
     <marker no="30"> 2,light grey,white </marker>
     <marker no="31"> 6,light grey,white </marker>
-    <indicator no="3"> 6 </indicator>
+    <indicator no="3"> 6 </indicator>
     <!-- this style is used as default style, 
          and is applied before all other styles -->
     <style no="32"> face:courier new,size:10 </style>
+    
     <style no="34"> back:yellow </style>
     <hex no="34"> back:red </hex>
+    
+    <def no="comment"> fore:lime green,italic,eol </def>
+    <def no="number"> fore:red </def>
+    <def no="string"> fore:blue </def>
+    <def no="word"> fore:purple </def>
+    <def no="char"> fore:pink </def>
+    <def no="operator"> fore:brown </def>
   </global>
   
   <lexer 
@@ -153,16 +162,15 @@ without the written consent of the copyright owner.
     However currently they show underlined lines if doing so.
     -->
     <colourings>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
+      <colouring no="1,2,3"> comment </colouring>
       <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,eol 
       </colouring>
-      <colouring no="4"> fore:red </colouring>
-      <colouring no="5"> bold </colouring>
-      <colouring no="6"> fore:blue </colouring>
-      <colouring no="7"> fore:pink </colouring>
+      <colouring no="4"> number </colouring>
+      <colouring no="5"> word </colouring>
+      <colouring no="6"> string </colouring>
+      <colouring no="7"> char </colouring>
       <colouring no="9"> fore:grey </colouring>
-      <colouring no="10"> fore:brown </colouring>
+      <colouring no="10"> operator </colouring>
       <colouring no="16"> italic </colouring>
     </colourings>
   
@@ -226,13 +234,12 @@ without the written consent of the copyright owner.
     extensions="*.pas">
   
     <colourings>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
-      <colouring no="4"> fore:red </colouring>
-      <colouring no="5"> bold </colouring>
-      <colouring no="6"> fore:blue </colouring>
-      <colouring no="7"> fore:pink </colouring>
-      <colouring no="10"> fore:brown </colouring>
+      <colouring no="1,2,3"> comment </colouring>
+      <colouring no="4"> number </colouring>
+      <colouring no="5"> word </colouring>
+      <colouring no="6"> string </colouring>
+      <colouring no="7"> char </colouring>
+      <colouring no="10"> operator </colouring>
       <colouring no="16"> italic </colouring>
     </colourings>
   
@@ -280,11 +287,10 @@ without the written consent of the copyright owner.
     -->
     
     <colourings>
-      <colouring no="1"> bold </colouring>
-      <colouring no="3"> fore:red </colouring>
-      <colouring no="7"> fore:blue </colouring>
-      <colouring no="10"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
+      <colouring no="1"> word </colouring>
+      <colouring no="3"> number </colouring>
+      <colouring no="7"> string </colouring>
+      <colouring no="10"> comment </colouring>
     </colourings>
     
     <keywords>    
@@ -329,13 +335,12 @@ without the written consent of the copyright owner.
      TODO: eol does not work for bash files!
     -->
     <colourings>
-      <colouring no="2"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
-      <colouring no="3"> fore:red </colouring>
-      <colouring no="4"> bold </colouring>
-      <colouring no="5"> fore:blue </colouring>
-      <colouring no="6"> fore:pink </colouring>
-      <colouring no="7"> fore:brown </colouring>
+      <colouring no="2"> comment </colouring>
+      <colouring no="3"> number </colouring>
+      <colouring no="4"> word </colouring>
+      <colouring no="5"> string </colouring>
+      <colouring no="6"> char </colouring>
+      <colouring no="7"> operator </colouring>
     </colourings>
   
     <keywords>    
@@ -383,17 +388,16 @@ without the written consent of the copyright owner.
     #define wxSTC_ASM_EXTINSTRUCTION 14
     -->
     <colourings>
-      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
-      <colouring no="2"> fore:red </colouring>
-      <colouring no="3"> fore:blue </colouring>
-      <colouring no="4"> fore:brown </colouring>
-      <colouring no="6"> bold </colouring>
+      <colouring no="1"> comment </colouring>
+      <colouring no="2"> number </colouring>
+      <colouring no="3"> string </colouring>
+      <colouring no="4"> operator </colouring>
+      <colouring no="6"> word </colouring>
       <colouring no="7"> italic </colouring>
       <colouring no="8"> fore:blue </colouring>
       <colouring no="9"> italic </colouring>
       <colouring no="11"> underline </colouring>
-      <colouring no="12"> fore:pink  </colouring>
+      <colouring no="12"> char </colouring>
     </colourings>
   
     <keywords>    
@@ -542,11 +546,10 @@ without the written consent of the copyright owner.
     #define wxSTC_HPHP_OPERATOR 127
     -->
     <colourings>
-      <colouring no="1"> bold </colouring>
-      <colouring no="5"> fore:red </colouring>
-      <colouring no="6,7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
+      <colouring no="1"> word </colouring>
+      <colouring no="5"> number </colouring>
+      <colouring no="6,7"> string </colouring>
+      <colouring no="9"> comment </colouring>
       <colouring no="18"> fore:#0000FF,back:#FFEFBF </colouring>
       <colouring no="19"> fore:#FF00FF,back:#FFEFFF </colouring>
       <colouring no="104"> fore:#007F00,italic,back:#FFF8F8 </colouring>
@@ -576,12 +579,11 @@ without the written consent of the copyright owner.
     <!-- See above -->
   
     <colourings>
-      <colouring no="1"> bold </colouring>
-      <colouring no="5"> fore:red </colouring>
+      <colouring no="1"> word </colouring>
+      <colouring no="5"> number </colouring>
       <colouring no="6"> fore:blue </colouring>
       <colouring no="7"> fore:blue </colouring>
-      <colouring no="9"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
+      <colouring no="9"> comment </colouring>
     </colourings>
     
     <properties>
@@ -622,13 +624,12 @@ without the written consent of the copyright owner.
     #define wxSTC_SQL_QUOTEDIDENTIFIER 23
     -->
     <colourings>
-      <colouring no="1,2,3"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
-      <colouring no="4"> fore:red </colouring>
-      <colouring no="5"> bold </colouring>
-      <colouring no="6"> fore:blue </colouring>
-      <colouring no="7"> fore:pink </colouring>
-      <colouring no="10"> fore:brown </colouring>
+      <colouring no="1,2,3"> comment </colouring>
+      <colouring no="4"> number </colouring>
+      <colouring no="5"> word </colouring>
+      <colouring no="6"> string </colouring>
+      <colouring no="7"> char </colouring>
+      <colouring no="10"> operator </colouring>
     </colourings>
   
     <keywords>    
@@ -710,10 +711,9 @@ without the written consent of the copyright owner.
     #define wxSTC_MAKE_IDEOL 9
     -->
     <colourings>
-      <colouring no="1"> back:#F0F0F0F0,fore:#2277DD,italic,eol 
-      </colouring>
+      <colouring no="1"> comment </colouring>
       <colouring no="2"> fore:grey </colouring>
-      <colouring no="4"> fore:red </colouring>
+      <colouring no="4"> operator </colouring>
       <colouring no="5"> bold </colouring>
       <colouring no="9"> fore:brown </colouring>
     </colourings>
