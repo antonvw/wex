@@ -1452,13 +1452,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
   if (skip)
   {
-    if (event.GetKeyCode() == WXK_RETURN)
-    {
-      SmartIndentation();
-    }
-    
     event.Skip();
-
     CheckAutoComp(event.GetUnicodeKey());
   }
 }
@@ -1559,7 +1553,17 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   if ( !m_viMode ||
        (m_viMode && m_vi->OnKeyDown(event)))
   {
-    event.Skip();
+    if (event.GetKeyCode() == WXK_RETURN)
+    {
+      if (!SmartIndentation())
+	  {
+        event.Skip();
+	  }
+    }
+	else
+	{
+      event.Skip();
+	}
   }
 }
 
