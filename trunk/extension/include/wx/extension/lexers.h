@@ -122,6 +122,7 @@ private:
   const wxExMarker ParseTagMarker(const wxString& number, const wxString& props) const;
   const wxString ParseTagProperties(const wxXmlNode* node) const;
 
+  std::map<wxString, wxString> m_Macros;
   std::map<int, int> m_Indicators;
   std::vector<wxExLexer> m_Lexers;
   std::vector<wxExMarker> m_Markers;

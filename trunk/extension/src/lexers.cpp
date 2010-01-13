@@ -187,9 +187,17 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
   {
     if (child->GetName() == "colouring")
     {
+	  wxString content = child->GetNodeContent().Strip(wxString::both);
+
+      std::map<wxString, wxString>::const_iterator it = m_Macros.find(content);
+
+      if (it != m_Macros.end())
+  	  {
+	    content = it->second;
+	  }
+
       text +=
-        child->GetAttribute("no", "0") + "=" +
-        child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
+        child->GetAttribute("no", "0") + "=" + content + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     {
@@ -263,6 +271,12 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
         m_Styles.push_back(attrib + "=" + content);
       }
     }
+    else if (child->GetName() == "def")
+    {
+      const wxString attrib = child->GetAttribute("no", "0");
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
+	  m_Macros[attrib] = content;
+	}
     else
     {
       wxLogError("Undefined global tag: %s on: %d",
