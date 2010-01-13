@@ -491,41 +491,6 @@ bool wxExSTC::CheckBraceHex(int pos)
   return false;
 }
 
-bool wxExSTC::CheckSmartIndentation()
-{
-  // At this moment a newline has been given (but not yet processed).
-  const wxString line = GetLine(GetCurrentLine());
-
-  if (line.empty() || line == GetEOL())
-  {
-    return false;
-  }
-
-  // We check for a tab or space at the begin of this line,
-  // and copy all these characters to the new line.
-  // Using isspace is not okay, as that copies the CR and LF too, these
-  // are already copied.
-  int i = 0;
-  if (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
-  {
-    InsertText(GetCurrentPos(), GetEOL());
-    GotoLine(GetCurrentLine() + 1);
-
-    while (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
-    {
-      InsertText(GetCurrentPos(), line[i]);
-      GotoPos(GetCurrentPos() + 1);
-      i++;
-    }
-
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
 void wxExSTC::ClearDocument()
 {
   SetReadOnly(false);
@@ -1489,7 +1454,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   {
     if (event.GetKeyCode() == WXK_RETURN)
     {
-      CheckSmartIndentation();
+      SmartIndentation();
     }
     
     event.Skip();
@@ -2263,6 +2228,41 @@ void wxExSTC::SetText(const wxString& value)
 
   // Do not allow the text specified to be undone.
   EmptyUndoBuffer();
+}
+
+bool wxExSTC::SmartIndentation()
+{
+  // At this moment a newline has been given (but not yet processed).
+  const wxString line = GetLine(GetCurrentLine());
+
+  if (line.empty() || line == GetEOL())
+  {
+    return false;
+  }
+
+  // We check for a tab or space at the begin of this line,
+  // and copy all these characters to the new line.
+  // Using isspace is not okay, as that copies the CR and LF too, these
+  // are already copied.
+  int i = 0;
+  if (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
+  {
+    InsertText(GetCurrentPos(), GetEOL());
+    GotoLine(GetCurrentLine() + 1);
+
+    while (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
+    {
+      InsertText(GetCurrentPos(), line[i]);
+      GotoPos(GetCurrentPos() + 1);
+      i++;
+    }
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)

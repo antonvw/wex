@@ -249,6 +249,10 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
 
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool SmartIndentation();
+
 #if wxUSE_STATUSBAR
   /// Updates the specified statusbar pane with current values.
   void UpdateStatusBar(const wxString& pane) const;
@@ -272,7 +276,6 @@ private:
   bool CheckAutoComp(const wxUniChar c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
-  bool CheckSmartIndentation();
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and FileNew.
   // (Clear is used by scintilla to clear the selection).
