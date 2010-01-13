@@ -111,13 +111,13 @@ without the written consent of the copyright owner.
     #define wxSTC_IV_LOOKFORWARD 2
     #define wxSTC_IV_LOOKBOTH 3
     -->
-    <marker no="25"> 2,light grey,white </marker>
-    <marker no="26"> 6,light grey,white </marker>
+    <marker no="25"> 8,light grey </marker>
+    <marker no="26"> 7,light grey </marker>
     <marker no="27"> 11,light grey,light grey </marker>
     <marker no="28"> 10,light grey,light grey </marker>
     <marker no="29"> 9,light grey,light grey </marker>
-    <marker no="30"> 2,light grey,white </marker>
-    <marker no="31"> 6,light grey,white </marker>
+    <marker no="30"> 8,light grey </marker>
+    <marker no="31"> 7,light grey </marker>
     <indicator no="3"> 6 </indicator>
     <!-- this style is used as default style, 
          and is applied before all other styles -->
