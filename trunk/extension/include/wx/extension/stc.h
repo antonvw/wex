@@ -249,10 +249,6 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
 
-  /// After pressing enter, starts new line at same place
-  /// as previous line.
-  bool SmartIndentation();
-
 #if wxUSE_STATUSBAR
   /// Updates the specified statusbar pane with current values.
   void UpdateStatusBar(const wxString& pane) const;
@@ -300,6 +296,9 @@ private:
   void SetMarkers();
   void SetProperties(bool reset = false);
   void SetStyle(const wxString& style);
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool SmartIndentation();
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
