@@ -134,9 +134,6 @@ public:
 
   virtual void ResetContentsChanged();
 
-  /// Gets EOL string.
-  const wxString GetEOL() const;
-
   /// Gets current flags (used by Open).
   long GetFlags() const {return m_Flags;};
 
@@ -258,6 +255,9 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   virtual void DoFileLoad(bool synced = false);
   virtual void DoFileSave(bool save_as = false);
+
+  /// Gets EOL string.
+  const wxString GetEOL() const;
 
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);

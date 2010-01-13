@@ -12,6 +12,7 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/numdlg.h>
+#include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
@@ -503,7 +504,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_SHELL_COMMAND:
     {
-      const wxString str = event.GetString() + m_Shell->GetEOL();
+      const wxString str = event.GetString() + wxTextFile::GetEOL();
       const wxCharBuffer& buffer(str.c_str());
 
       for (
