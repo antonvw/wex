@@ -118,6 +118,7 @@ without the written consent of the copyright owner.
     <marker no="29"> 9,light grey,light grey </marker>
     <marker no="30"> 8,light grey </marker>
     <marker no="31"> 7,light grey </marker>
+    
     <indicator no="3"> 6 </indicator>
     <!-- this style is used as default style, 
          and is applied before all other styles -->
@@ -125,13 +126,16 @@ without the written consent of the copyright owner.
     
     <style no="34"> back:yellow </style>
     <hex no="34"> back:red </hex>
-    
-    <def no="comment"> fore:lime green,italic,eol </def>
-    <def no="number"> fore:red </def>
-    <def no="string"> fore:blue </def>
-    <def no="word"> fore:purple </def>
+
+    <!-- these are the macro's you can use as general colouring styles
+      -->    
     <def no="char"> fore:pink </def>
+    <def no="comment"> fore:forest green,italic,eol </def>
+    <def no="number"> fore:red </def>
     <def no="operator"> fore:brown </def>
+    <def no="preprocessor"> fore:grey </def>
+    <def no="string"> fore:blue </def>
+    <def no="word"> fore:dark turquoise </def>
   </global>
   
   <lexer 
@@ -169,7 +173,7 @@ without the written consent of the copyright owner.
       <colouring no="5"> word </colouring>
       <colouring no="6"> string </colouring>
       <colouring no="7"> char </colouring>
-      <colouring no="9"> fore:grey </colouring>
+      <colouring no="9"> preprocessor </colouring>
       <colouring no="10"> operator </colouring>
       <colouring no="16"> italic </colouring>
     </colourings>
@@ -712,7 +716,7 @@ without the written consent of the copyright owner.
     -->
     <colourings>
       <colouring no="1"> comment </colouring>
-      <colouring no="2"> fore:grey </colouring>
+      <colouring no="2"> preprocessor </colouring>
       <colouring no="4"> operator </colouring>
       <colouring no="5"> bold </colouring>
       <colouring no="9"> fore:brown </colouring>
