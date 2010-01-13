@@ -295,7 +295,7 @@ private:
   void SetGlobalStyles();
   void SetKeyWords();
   void SetMarkers();
-  void SetProperties();
+  void SetProperties(bool reset = false);
   void SetStyle(const wxString& style);
 
   // All objects share the following:
