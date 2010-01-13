@@ -348,11 +348,11 @@ const wxExMarker wxExLexers::ParseTagMarker(
 
   if (prop_fields.HasMoreTokens())
   {
-    foreground = prop_fields.GetNextToken();
+    foreground = prop_fields.GetNextToken().Strip(wxString::both);
 
     if (prop_fields.HasMoreTokens())
     {
-      background = prop_fields.GetNextToken();
+      background = prop_fields.GetNextToken().Strip(wxString::both);
     }
   }
 
