@@ -44,88 +44,284 @@ without the written consent of the copyright owner.
  At this moment <style>, <indicator>, <marker> and <hex> styles are supported.
  The marker element has a 'no' attribute and its value contains the next fields:
  <marker symbol number><','><foreground colour><','><background colour>
- You can also use macro's, using the <def> property.
+ You can also use macro's, using the </def> property.
 */
 -->
 
 <lexers>
   <global>
-    <!--
-    #define wxSTC_MARK_CIRCLE 0
-    #define wxSTC_MARK_ROUNDRECT 1
-    #define wxSTC_MARK_ARROW 2
-    #define wxSTC_MARK_SMALLRECT 3
-    #define wxSTC_MARK_SHORTARROW 4
-    #define wxSTC_MARK_EMPTY 5
-    #define wxSTC_MARK_ARROWDOWN 6
-    #define wxSTC_MARK_MINUS 7
-    #define wxSTC_MARK_PLUS 8
-    #define wxSTC_MARK_VLINE 9
-    #define wxSTC_MARK_LCORNER 10
-    #define wxSTC_MARK_TCORNER 11
-    #define wxSTC_MARK_BOXPLUS 12
-    #define wxSTC_MARK_BOXPLUSCONNECTED 13
-    #define wxSTC_MARK_BOXMINUS 14
-    #define wxSTC_MARK_BOXMINUSCONNECTED 15
-    #define wxSTC_MARK_LCORNERCURVE 16
-    #define wxSTC_MARK_TCORNERCURVE 17
-    #define wxSTC_MARK_CIRCLEPLUS 18
-    #define wxSTC_MARK_CIRCLEPLUSCONNECTED 19
-    #define wxSTC_MARK_CIRCLEMINUS 20
-    #define wxSTC_MARK_CIRCLEMINUSCONNECTED 21
-    #define wxSTC_MARK_BACKGROUND 22
-    #define wxSTC_MARK_DOTDOTDOT 23
-    #define wxSTC_MARK_ARROWS 24
-    #define wxSTC_MARK_PIXMAP 25
-    #define wxSTC_MARK_FULLRECT 26
-    #define wxSTC_MARKNUM_FOLDEREND 25
-    #define wxSTC_MARKNUM_FOLDEROPENMID 26
-    #define wxSTC_MARKNUM_FOLDERMIDTAIL 27
-    #define wxSTC_MARKNUM_FOLDERTAIL 28
-    #define wxSTC_MARKNUM_FOLDERSUB 29
-    #define wxSTC_MARKNUM_FOLDER 30
-    #define wxSTC_MARKNUM_FOLDEROPEN 31
-    #define wxSTC_STYLE_DEFAULT 32
-    #define wxSTC_STYLE_LINENUMBER 33
-    #define wxSTC_STYLE_BRACELIGHT 34
-    #define wxSTC_STYLE_BRACEBAD 35
-    #define wxSTC_STYLE_CONTROLCHAR 36
-    #define wxSTC_STYLE_INDENTGUIDE 37
-    #define wxSTC_STYLE_CALLTIP 38
-    #define wxSTC_INDIC_PLAIN 0
-    #define wxSTC_INDIC_SQUIGGLE 1
-    #define wxSTC_INDIC_TT 2
-    #define wxSTC_INDIC_DIAGONAL 3
-    #define wxSTC_INDIC_STRIKE 4
-    #define wxSTC_INDIC_HIDDEN 5
-    #define wxSTC_INDIC_BOX 6
-    #define wxSTC_INDIC_ROUNDBOX 7
-    #define wxSTC_INDIC_MAX 31
-    #define wxSTC_INDIC_CONTAINER 8
-    #define wxSTC_INDIC0_MASK 0x20
-    #define wxSTC_INDIC1_MASK 0x40
-    #define wxSTC_INDIC2_MASK 0x80
-    #define wxSTC_INDICS_MASK 0xE0
-    #define wxSTC_IV_NONE 0
-    #define wxSTC_IV_REAL 1
-    #define wxSTC_IV_LOOKFORWARD 2
-    #define wxSTC_IV_LOOKBOTH 3
-    -->
-    <marker no="25"> 8,light grey </marker>
-    <marker no="26"> 7,light grey </marker>
-    <marker no="27"> 11,light grey,light grey </marker>
-    <marker no="28"> 10,light grey,light grey </marker>
-    <marker no="29"> 9,light grey,light grey </marker>
-    <marker no="30"> 8,light grey </marker>
-    <marker no="31"> 7,light grey </marker>
+    <def no ="wxSTC_MARK_CIRCLE"> 0 </def>
+    <def no ="wxSTC_MARK_ROUNDRECT"> 1 </def>
+    <def no ="wxSTC_MARK_ARROW"> 2 </def>
+    <def no ="wxSTC_MARK_SMALLRECT"> 3 </def>
+    <def no ="wxSTC_MARK_SHORTARROW"> 4 </def>
+    <def no ="wxSTC_MARK_EMPTY"> 5 </def>
+    <def no ="wxSTC_MARK_ARROWDOWN"> 6 </def>
+    <def no ="wxSTC_MARK_MINUS"> 7 </def>
+    <def no ="wxSTC_MARK_PLUS"> 8 </def>
+    <def no ="wxSTC_MARK_VLINE"> 9 </def>
+    <def no ="wxSTC_MARK_LCORNER"> 10 </def>
+    <def no ="wxSTC_MARK_TCORNER"> 11 </def>
+    <def no ="wxSTC_MARK_BOXPLUS"> 12 </def>
+    <def no ="wxSTC_MARK_BOXPLUSCONNECTED"> 13 </def>
+    <def no ="wxSTC_MARK_BOXMINUS"> 14 </def>
+    <def no ="wxSTC_MARK_BOXMINUSCONNECTED"> 15 </def>
+    <def no ="wxSTC_MARK_LCORNERCURVE"> 16 </def>
+    <def no ="wxSTC_MARK_TCORNERCURVE"> 17 </def>
+    <def no ="wxSTC_MARK_CIRCLEPLUS"> 18 </def>
+    <def no ="wxSTC_MARK_CIRCLEPLUSCONNECTED"> 19 </def>
+    <def no ="wxSTC_MARK_CIRCLEMINUS"> 20 </def>
+    <def no ="wxSTC_MARK_CIRCLEMINUSCONNECTED"> 21 </def>
+    <def no ="wxSTC_MARK_BACKGROUND"> 22 </def>
+    <def no ="wxSTC_MARK_DOTDOTDOT"> 23 </def>
+    <def no ="wxSTC_MARK_ARROWS"> 24 </def>
+    <def no ="wxSTC_MARK_PIXMAP"> 25 </def>
+    <def no ="wxSTC_MARK_FULLRECT"> 26 </def>
+    <def no ="wxSTC_MARKNUM_FOLDEREND"> 25 </def>
+    <def no ="wxSTC_MARKNUM_FOLDEROPENMID"> 26 </def>
+    <def no ="wxSTC_MARKNUM_FOLDERMIDTAIL"> 27 </def>
+    <def no ="wxSTC_MARKNUM_FOLDERTAIL"> 28 </def>
+    <def no ="wxSTC_MARKNUM_FOLDERSUB"> 29 </def>
+    <def no ="wxSTC_MARKNUM_FOLDER"> 30 </def>
+    <def no ="wxSTC_MARKNUM_FOLDEROPEN"> 31 </def>
+    <def no ="wxSTC_STYLE_DEFAULT"> 32 </def>
+    <def no ="wxSTC_STYLE_LINENUMBER"> 33 </def>
+    <def no ="wxSTC_STYLE_BRACELIGHT"> 34 </def>
+    <def no ="wxSTC_STYLE_BRACEBAD"> 35 </def>
+    <def no ="wxSTC_STYLE_CONTROLCHAR"> 36 </def>
+    <def no ="wxSTC_STYLE_INDENTGUIDE"> 37 </def>
+    <def no ="wxSTC_STYLE_CALLTIP"> 38 </def>
+    <def no ="wxSTC_INDIC_PLAIN"> 0 </def>
+    <def no ="wxSTC_INDIC_SQUIGGLE"> 1 </def>
+    <def no ="wxSTC_INDIC_TT"> 2 </def>
+    <def no ="wxSTC_INDIC_DIAGONAL"> 3 </def>
+    <def no ="wxSTC_INDIC_STRIKE"> 4 </def>
+    <def no ="wxSTC_INDIC_HIDDEN"> 5 </def>
+    <def no ="wxSTC_INDIC_BOX"> 6 </def>
+    <def no ="wxSTC_INDIC_ROUNDBOX"> 7 </def>
+    <def no ="wxSTC_INDIC_MAX"> 31 </def>
+    <def no ="wxSTC_INDIC_CONTAINER"> 8 </def>
+    <def no ="wxSTC_INDIC0_MASK"> 0x20 </def>
+    <def no ="wxSTC_INDIC1_MASK"> 0x40 </def>
+    <def no ="wxSTC_INDIC2_MASK"> 0x80 </def>
+    <def no ="wxSTC_INDICS_MASK"> 0xE0 </def>
+    <def no ="wxSTC_IV_NONE"> 0 </def>
+    <def no ="wxSTC_IV_REAL"> 1 </def>
+    <def no ="wxSTC_IV_LOOKFORWARD"> 2 </def>
+    <def no ="wxSTC_IV_LOOKBOTH"> 3 </def>
+    <def no ="wxSTC_C_DEFAULT"> 0 </def>
+    <def no ="wxSTC_C_COMMENT"> 1 </def>
+    <def no ="wxSTC_C_COMMENTLINE"> 2 </def>
+    <def no ="wxSTC_C_COMMENTDOC"> 3 </def>
+    <def no ="wxSTC_C_NUMBER"> 4 </def>
+    <def no ="wxSTC_C_WORD"> 5 </def>
+    <def no ="wxSTC_C_STRING"> 6 </def>
+    <def no ="wxSTC_C_CHARACTER"> 7 </def>
+    <def no ="wxSTC_C_UUID"> 8 </def>
+    <def no ="wxSTC_C_PREPROCESSOR"> 9 </def>
+    <def no ="wxSTC_C_OPERATOR"> 10 </def>
+    <def no ="wxSTC_C_IDENTIFIER"> 11 </def>
+    <def no ="wxSTC_C_STRINGEOL"> 12 </def>
+    <def no ="wxSTC_C_VERBATIM"> 13 </def>
+    <def no ="wxSTC_C_REGEX"> 14 </def>
+    <def no ="wxSTC_C_COMMENTLINEDOC"> 15 </def>
+    <def no ="wxSTC_C_WORD2"> 16 </def>
+    <def no ="wxSTC_C_COMMENTDOCKEYWORD"> 17 </def>
+    <def no ="wxSTC_C_COMMENTDOCKEYWORDERROR"> 18 </def>
+    <def no ="wxSTC_C_GLOBALCLASS"> 19 </def>
+    <def no ="wxSTC_ADA_DEFAULT"> 0 </def>
+    <def no ="wxSTC_ADA_WORD"> 1 </def>
+    <def no ="wxSTC_ADA_IDENTIFIER"> 2 </def>
+    <def no ="wxSTC_ADA_NUMBER"> 3 </def>
+    <def no ="wxSTC_ADA_STRINGEOL"> 8 </def>
+    <def no ="wxSTC_ADA_LABEL"> 9 </def>
+    <def no ="wxSTC_ADA_COMMENTLINE"> 10 </def>
+    <def no ="wxSTC_ADA_ILLEGAL"> 11 </def>
+    <def no ="wxSTC_SH_DEFAULT"> 0 </def>
+    <def no ="wxSTC_SH_ERROR"> 1 </def>
+    <def no ="wxSTC_SH_COMMENTLINE"> 2 </def>
+    <def no ="wxSTC_SH_NUMBER"> 3 </def>
+    <def no ="wxSTC_SH_WORD"> 4 </def>
+    <def no ="wxSTC_SH_STRING"> 5 </def>
+    <def no ="wxSTC_SH_CHARACTER"> 6 </def>
+    <def no ="wxSTC_SH_OPERATOR"> 7 </def>
+    <def no ="wxSTC_SH_IDENTIFIER"> 8 </def>
+    <def no ="wxSTC_SH_SCALAR"> 9 </def>
+    <def no ="wxSTC_SH_PARAM"> 10 </def>
+    <def no ="wxSTC_SH_BACKTICKS"> 11 </def>
+    <def no ="wxSTC_SH_HERE_DELIM"> 12 </def>
+    <def no ="wxSTC_SH_HERE_Q"> 13 </def>
+    <def no ="wxSTC_ASM_DEFAULT"> 0 </def>
+    <def no ="wxSTC_ASM_COMMENT"> 1 </def>
+    <def no ="wxSTC_ASM_NUMBER"> 2 </def>
+    <def no ="wxSTC_ASM_STRING"> 3 </def>
+    <def no ="wxSTC_ASM_OPERATOR"> 4 </def>
+    <def no ="wxSTC_ASM_IDENTIFIER"> 5 </def>
+    <def no ="wxSTC_ASM_CPUINSTRUCTION"> 6 </def>
+    <def no ="wxSTC_ASM_MATHINSTRUCTION"> 7 </def>
+    <def no ="wxSTC_ASM_REGISTER"> 8 </def>
+    <def no ="wxSTC_ASM_DIRECTIVE"> 9 </def>
+    <def no ="wxSTC_ASM_DIRECTIVEOPERAND"> 10 </def>
+    <def no ="wxSTC_ASM_COMMENTBLOCK"> 11 </def>
+    <def no ="wxSTC_ASM_CHARACTER"> 12 </def>
+    <def no ="wxSTC_ASM_STRINGEOL"> 13 </def>
+    <def no ="wxSTC_ASM_EXTINSTRUCTION"> 14 </def>
+    <def no ="wxSTC_H_DEFAULT"> 0 </def>
+    <def no ="wxSTC_H_TAG"> 1 </def>
+    <def no ="wxSTC_H_TAGUNKNOWN"> 2 </def>
+    <def no ="wxSTC_H_ATTRIBUTE"> 3 </def>
+    <def no ="wxSTC_H_ATTRIBUTEUNKNOWN"> 4 </def>
+    <def no ="wxSTC_H_NUMBER"> 5 </def>
+    <def no ="wxSTC_H_DOUBLESTRING"> 6 </def>
+    <def no ="wxSTC_H_SINGLESTRING"> 7 </def>
+    <def no ="wxSTC_H_OTHER"> 8 </def>
+    <def no ="wxSTC_H_COMMENT"> 9 </def>
+    <def no ="wxSTC_H_ENTITY"> 10 </def>
+    <def no ="wxSTC_H_TAGEND"> 11 </def>
+    <def no ="wxSTC_H_XMLSTART"> 12 </def>
+    <def no ="wxSTC_H_XMLEND"> 13 </def>
+    <def no ="wxSTC_H_SCRIPT"> 14 </def>
+    <def no ="wxSTC_H_ASP"> 15 </def>
+    <def no ="wxSTC_H_ASPAT"> 16 </def>
+    <def no ="wxSTC_H_CDATA"> 17 </def>
+    <def no ="wxSTC_H_QUESTION"> 18 </def>
+    <def no ="wxSTC_H_VALUE"> 19 </def>
+    <def no ="wxSTC_H_XCCOMMENT"> 20 </def>
+    <def no ="wxSTC_H_SGML_DEFAULT"> 21 </def>
+    <def no ="wxSTC_H_SGML_COMMAND"> 22 </def>
+    <def no ="wxSTC_H_SGML_1ST_PARAM"> 23 </def>
+    <def no ="wxSTC_H_SGML_DOUBLESTRING"> 24 </def>
+    <def no ="wxSTC_H_SGML_SIMPLESTRING"> 25 </def>
+    <def no ="wxSTC_H_SGML_ERROR"> 26 </def>
+    <def no ="wxSTC_H_SGML_SPECIAL"> 27 </def>
+    <def no ="wxSTC_H_SGML_ENTITY"> 28 </def>
+    <def no ="wxSTC_H_SGML_COMMENT"> 29 </def>
+    <def no ="wxSTC_H_SGML_1ST_PARAM_COMMENT"> 30 </def>
+    <def no ="wxSTC_H_SGML_BLOCK_DEFAULT"> 31 </def>
+    <def no ="wxSTC_HJ_START"> 40 </def>
+    <def no ="wxSTC_HJ_DEFAULT"> 41 </def>
+    <def no ="wxSTC_HJ_COMMENT"> 42 </def>
+    <def no ="wxSTC_HJ_COMMENTLINE"> 43 </def>
+    <def no ="wxSTC_HJ_COMMENTDOC"> 44 </def>
+    <def no ="wxSTC_HJ_NUMBER"> 45 </def>
+    <def no ="wxSTC_HJ_WORD"> 46 </def>
+    <def no ="wxSTC_HJ_KEYWORD"> 47 </def>
+    <def no ="wxSTC_HJ_DOUBLESTRING"> 48 </def>
+    <def no ="wxSTC_HJ_SINGLESTRING"> 49 </def>
+    <def no ="wxSTC_HJ_SYMBOLS"> 50 </def>
+    <def no ="wxSTC_HJ_STRINGEOL"> 51 </def>
+    <def no ="wxSTC_HJ_REGEX"> 52 </def>
+    <def no ="wxSTC_HJA_START"> 55 </def>
+    <def no ="wxSTC_HJA_DEFAULT"> 56 </def>
+    <def no ="wxSTC_HJA_COMMENT"> 57 </def>
+    <def no ="wxSTC_HJA_COMMENTLINE"> 58 </def>
+    <def no ="wxSTC_HJA_COMMENTDOC"> 59 </def>
+    <def no ="wxSTC_HJA_NUMBER"> 60 </def>
+    <def no ="wxSTC_HJA_WORD"> 61 </def>
+    <def no ="wxSTC_HJA_KEYWORD"> 62 </def>
+    <def no ="wxSTC_HJA_DOUBLESTRING"> 63 </def>
+    <def no ="wxSTC_HJA_SINGLESTRING"> 64 </def>
+    <def no ="wxSTC_HJA_SYMBOLS"> 65 </def>
+    <def no ="wxSTC_HJA_STRINGEOL"> 66 </def>
+    <def no ="wxSTC_HJA_REGEX"> 67 </def>
+    <def no ="wxSTC_HB_START"> 70 </def>
+    <def no ="wxSTC_HB_DEFAULT"> 71 </def>
+    <def no ="wxSTC_HB_COMMENTLINE"> 72 </def>
+    <def no ="wxSTC_HB_NUMBER"> 73 </def>
+    <def no ="wxSTC_HB_WORD"> 74 </def>
+    <def no ="wxSTC_HB_STRING"> 75 </def>
+    <def no ="wxSTC_HB_IDENTIFIER"> 76 </def>
+    <def no ="wxSTC_HB_STRINGEOL"> 77 </def>
+    <def no ="wxSTC_HBA_START"> 80 </def>
+    <def no ="wxSTC_HBA_DEFAULT"> 81 </def>
+    <def no ="wxSTC_HBA_COMMENTLINE"> 82 </def>
+    <def no ="wxSTC_HBA_NUMBER"> 83 </def>
+    <def no ="wxSTC_HBA_WORD"> 84 </def>
+    <def no ="wxSTC_HBA_STRING"> 85 </def>
+    <def no ="wxSTC_HBA_IDENTIFIER"> 86 </def>
+    <def no ="wxSTC_HBA_STRINGEOL"> 87 </def>
+    <def no ="wxSTC_HP_START"> 90 </def>
+    <def no ="wxSTC_HP_DEFAULT"> 91 </def>
+    <def no ="wxSTC_HP_COMMENTLINE"> 92 </def>
+    <def no ="wxSTC_HP_NUMBER"> 93 </def>
+    <def no ="wxSTC_HP_STRING"> 94 </def>
+    <def no ="wxSTC_HP_CHARACTER"> 95 </def>
+    <def no ="wxSTC_HP_WORD"> 96 </def>
+    <def no ="wxSTC_HP_TRIPLE"> 97 </def>
+    <def no ="wxSTC_HP_TRIPLEDOUBLE"> 98 </def>
+    <def no ="wxSTC_HP_CLASSNAME"> 99 </def>
+    <def no ="wxSTC_HP_DEFNAME"> 100 </def>
+    <def no ="wxSTC_HP_OPERATOR"> 101 </def>
+    <def no ="wxSTC_HP_IDENTIFIER"> 102 </def>
+    <def no ="wxSTC_HPHP_COMPLEX_VARIABLE"> 104 </def>
+    <def no ="wxSTC_HPA_START"> 105 </def>
+    <def no ="wxSTC_HPA_DEFAULT"> 106 </def>
+    <def no ="wxSTC_HPA_COMMENTLINE"> 107 </def>
+    <def no ="wxSTC_HPA_NUMBER"> 108 </def>
+    <def no ="wxSTC_HPA_STRING"> 109 </def>
+    <def no ="wxSTC_HPA_CHARACTER"> 110 </def>
+    <def no ="wxSTC_HPA_WORD"> 111 </def>
+    <def no ="wxSTC_HPA_TRIPLE"> 112 </def>
+    <def no ="wxSTC_HPA_TRIPLEDOUBLE"> 113 </def>
+    <def no ="wxSTC_HPA_CLASSNAME"> 114 </def>
+    <def no ="wxSTC_HPA_DEFNAME"> 115 </def>
+    <def no ="wxSTC_HPA_OPERATOR"> 116 </def>
+    <def no ="wxSTC_HPA_IDENTIFIER"> 117 </def>
+    <def no ="wxSTC_HPHP_DEFAULT"> 118 </def>
+    <def no ="wxSTC_HPHP_HSTRING"> 119 </def>
+    <def no ="wxSTC_HPHP_SIMPLESTRING"> 120 </def>
+    <def no ="wxSTC_HPHP_WORD"> 121 </def>
+    <def no ="wxSTC_HPHP_NUMBER"> 122 </def>
+    <def no ="wxSTC_HPHP_VARIABLE"> 123 </def>
+    <def no ="wxSTC_HPHP_COMMENT"> 124 </def>
+    <def no ="wxSTC_HPHP_COMMENTLINE"> 125 </def>
+    <def no ="wxSTC_HPHP_HSTRING_VARIABLE"> 126 </def>
+    <def no ="wxSTC_HPHP_OPERATOR"> 127 </def>
+    <def no ="wxSTC_SQL_DEFAULT"> 0 </def>
+    <def no ="wxSTC_SQL_COMMENT"> 1 </def>
+    <def no ="wxSTC_SQL_COMMENTLINE"> 2 </def>
+    <def no ="wxSTC_SQL_COMMENTDOC"> 3 </def>
+    <def no ="wxSTC_SQL_NUMBER"> 4 </def>
+    <def no ="wxSTC_SQL_WORD"> 5 </def>
+    <def no ="wxSTC_SQL_STRING"> 6 </def>
+    <def no ="wxSTC_SQL_CHARACTER"> 7 </def>
+    <def no ="wxSTC_SQL_SQLPLUS"> 8 </def>
+    <def no ="wxSTC_SQL_SQLPLUS_PROMPT"> 9 </def>
+    <def no ="wxSTC_SQL_OPERATOR"> 10 </def>
+    <def no ="wxSTC_SQL_IDENTIFIER"> 11 </def>
+    <def no ="wxSTC_SQL_SQLPLUS_COMMENT"> 13 </def>
+    <def no ="wxSTC_SQL_COMMENTLINEDOC"> 15 </def>
+    <def no ="wxSTC_SQL_WORD2"> 16 </def>
+    <def no ="wxSTC_SQL_COMMENTDOCKEYWORD"> 17 </def>
+    <def no ="wxSTC_SQL_COMMENTDOCKEYWORDERROR"> 18 </def>
+    <def no ="wxSTC_SQL_USER1"> 19 </def>
+    <def no ="wxSTC_SQL_USER2"> 20 </def>
+    <def no ="wxSTC_SQL_USER3"> 21 </def>
+    <def no ="wxSTC_SQL_USER4"> 22 </def>
+    <def no ="wxSTC_SQL_QUOTEDIDENTIFIER"> 23 </def>
+    <def no ="wxSTC_MAKE_DEFAULT"> 0 </def>
+    <def no ="wxSTC_MAKE_COMMENT"> 1 </def>
+    <def no ="wxSTC_MAKE_PREPROCESSOR"> 2 </def>
+    <def no ="wxSTC_MAKE_IDENTIFIER"> 3 </def>
+    <def no ="wxSTC_MAKE_OPERATOR"> 4 </def>
+    <def no ="wxSTC_MAKE_TARGET"> 5 </def>
+    <def no ="wxSTC_MAKE_IDEOL"> 9 </def>
+    
+    <marker no="wxSTC_MARKNUM_FOLDEREND"> wxSTC_MARK_PLUS,light grey </marker>
+    <marker no="wxSTC_MARKNUM_FOLDEROPENMID"> wxSTC_MARK_MINUS,light grey </marker>
+    <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNER,light grey,light grey </marker>
+    <marker no="wxSTC_MARKNUM_FOLDERTAIL"> wxSTC_MARK_LCORNER,light grey,light grey </marker>
+    <marker no="wxSTC_MARKNUM_FOLDERSUB"> wxSTC_MARK_VLINE,light grey,light grey </marker>
+    <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,light grey </marker>
+    <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,light grey </marker>
     
     <indicator no="3"> 6 </indicator>
     <!-- this style is used as default style, 
-         and is applied before all other styles -->
-    <style no="32"> face:courier new,size:10 </style>
+     and is applied before all other styles -->
+    <style no="wxSTC_STYLE_DEFAULT"> face:courier new,size:10 </style>
     
-    <style no="34"> back:yellow </style>
-    <hex no="34"> back:red </hex>
+    <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
+    <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
 
     <!-- these are the macro's you can use as general colouring styles
       -->    
@@ -141,30 +337,9 @@ without the written consent of the copyright owner.
   <lexer 
     name="cpp"
     extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
-    <!--
-    #define wxSTC_C_DEFAULT 0
-    #define wxSTC_C_COMMENT 1
-    #define wxSTC_C_COMMENTLINE 2
-    #define wxSTC_C_COMMENTDOC 3
-    #define wxSTC_C_NUMBER 4
-    #define wxSTC_C_WORD 5
-    #define wxSTC_C_STRING 6
-    #define wxSTC_C_CHARACTER 7
-    #define wxSTC_C_UUID 8
-    #define wxSTC_C_PREPROCESSOR 9
-    #define wxSTC_C_OPERATOR 10
-    #define wxSTC_C_IDENTIFIER 11
-    #define wxSTC_C_STRINGEOL 12
-    #define wxSTC_C_VERBATIM 13
-    #define wxSTC_C_REGEX 14
-    #define wxSTC_C_COMMENTLINEDOC 15
-    #define wxSTC_C_WORD2 16
-    #define wxSTC_C_COMMENTDOCKEYWORD 17
-    #define wxSTC_C_COMMENTDOCKEYWORDERROR 18
-    #define wxSTC_C_GLOBALCLASS 19
-    TODO the php, js and asp files should be parsed as embedded hypertext. 
-    However currently they show underlined lines if doing so.
-    -->
+    <!-- TODO the php, js and asp files should be parsed as embedded hypertext. 
+         However currently they show underlined lines if doing so.
+      -->
     <colourings>
       <colouring no="1,2,3"> comment </colouring>
       <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,eol 
@@ -279,16 +454,6 @@ without the written consent of the copyright owner.
   <lexer 
     name="ada"
     extensions="*.a">
-    <!--
-    #define wxSTC_ADA_DEFAULT 0
-    #define wxSTC_ADA_WORD 1
-    #define wxSTC_ADA_IDENTIFIER 2
-    #define wxSTC_ADA_NUMBER 3
-    #define wxSTC_ADA_STRINGEOL 8
-    #define wxSTC_ADA_LABEL 9
-    #define wxSTC_ADA_COMMENTLINE 10
-    #define wxSTC_ADA_ILLEGAL 11
-    -->
     
     <colourings>
       <colouring no="1"> word </colouring>
@@ -321,23 +486,6 @@ without the written consent of the copyright owner.
   <lexer
     name="bash"
     extensions="*.bash"> 
-    <!--
-    #define wxSTC_SH_DEFAULT 0
-    #define wxSTC_SH_ERROR 1
-    #define wxSTC_SH_COMMENTLINE 2
-    #define wxSTC_SH_NUMBER 3
-    #define wxSTC_SH_WORD 4
-    #define wxSTC_SH_STRING 5
-    #define wxSTC_SH_CHARACTER 6
-    #define wxSTC_SH_OPERATOR 7
-    #define wxSTC_SH_IDENTIFIER 8
-    #define wxSTC_SH_SCALAR 9
-    #define wxSTC_SH_PARAM 10
-    #define wxSTC_SH_BACKTICKS 11
-    #define wxSTC_SH_HERE_DELIM 12
-    #define wxSTC_SH_HERE_Q 13
-     TODO: eol does not work for bash files!
-    -->
     <colourings>
       <colouring no="2"> comment </colouring>
       <colouring no="3"> number </colouring>
@@ -374,23 +522,6 @@ without the written consent of the copyright owner.
   <lexer
     name="asm"
     extensions="*.mac"> 
-    <!--
-    #define wxSTC_ASM_DEFAULT 0
-    #define wxSTC_ASM_COMMENT 1
-    #define wxSTC_ASM_NUMBER 2
-    #define wxSTC_ASM_STRING 3
-    #define wxSTC_ASM_OPERATOR 4
-    #define wxSTC_ASM_IDENTIFIER 5
-    #define wxSTC_ASM_CPUINSTRUCTION 6
-    #define wxSTC_ASM_MATHINSTRUCTION 7
-    #define wxSTC_ASM_REGISTER 8
-    #define wxSTC_ASM_DIRECTIVE 9
-    #define wxSTC_ASM_DIRECTIVEOPERAND 10
-    #define wxSTC_ASM_COMMENTBLOCK 11
-    #define wxSTC_ASM_CHARACTER 12
-    #define wxSTC_ASM_STRINGEOL 13
-    #define wxSTC_ASM_EXTINSTRUCTION 14
-    -->
     <colourings>
       <colouring no="1"> comment </colouring>
       <colouring no="2"> number </colouring>
@@ -427,128 +558,6 @@ without the written consent of the copyright owner.
   <lexer
     name="hypertext"
     extensions="*.htm;*.html">
-    <!--
-    #define wxSTC_H_DEFAULT 0
-    #define wxSTC_H_TAG 1
-    #define wxSTC_H_TAGUNKNOWN 2
-    #define wxSTC_H_ATTRIBUTE 3
-    #define wxSTC_H_ATTRIBUTEUNKNOWN 4
-    #define wxSTC_H_NUMBER 5
-    #define wxSTC_H_DOUBLESTRING 6
-    #define wxSTC_H_SINGLESTRING 7
-    #define wxSTC_H_OTHER 8
-    #define wxSTC_H_COMMENT 9
-    #define wxSTC_H_ENTITY 10
-    #define wxSTC_H_TAGEND 11
-    #define wxSTC_H_XMLSTART 12
-    #define wxSTC_H_XMLEND 13
-    #define wxSTC_H_SCRIPT 14
-    #define wxSTC_H_ASP 15
-    #define wxSTC_H_ASPAT 16
-    #define wxSTC_H_CDATA 17
-    #define wxSTC_H_QUESTION 18
-    #define wxSTC_H_VALUE 19
-    #define wxSTC_H_XCCOMMENT 20
-    SGML
-    #define wxSTC_H_SGML_DEFAULT 21
-    #define wxSTC_H_SGML_COMMAND 22
-    #define wxSTC_H_SGML_1ST_PARAM 23
-    #define wxSTC_H_SGML_DOUBLESTRING 24
-    #define wxSTC_H_SGML_SIMPLESTRING 25
-    #define wxSTC_H_SGML_ERROR 26
-    #define wxSTC_H_SGML_SPECIAL 27
-    #define wxSTC_H_SGML_ENTITY 28
-    #define wxSTC_H_SGML_COMMENT 29
-    #define wxSTC_H_SGML_1ST_PARAM_COMMENT 30
-    #define wxSTC_H_SGML_BLOCK_DEFAULT 31
-    Embedded Javascript
-    #define wxSTC_HJ_START 40
-    #define wxSTC_HJ_DEFAULT 41
-    #define wxSTC_HJ_COMMENT 42
-    #define wxSTC_HJ_COMMENTLINE 43
-    #define wxSTC_HJ_COMMENTDOC 44
-    #define wxSTC_HJ_NUMBER 45
-    #define wxSTC_HJ_WORD 46
-    #define wxSTC_HJ_KEYWORD 47
-    #define wxSTC_HJ_DOUBLESTRING 48
-    #define wxSTC_HJ_SINGLESTRING 49
-    #define wxSTC_HJ_SYMBOLS 50
-    #define wxSTC_HJ_STRINGEOL 51
-    #define wxSTC_HJ_REGEX 52
-    ASP Javascript
-    #define wxSTC_HJA_START 55
-    #define wxSTC_HJA_DEFAULT 56
-    #define wxSTC_HJA_COMMENT 57
-    #define wxSTC_HJA_COMMENTLINE 58
-    #define wxSTC_HJA_COMMENTDOC 59
-    #define wxSTC_HJA_NUMBER 60
-    #define wxSTC_HJA_WORD 61
-    #define wxSTC_HJA_KEYWORD 62
-    #define wxSTC_HJA_DOUBLESTRING 63
-    #define wxSTC_HJA_SINGLESTRING 64
-    #define wxSTC_HJA_SYMBOLS 65
-    #define wxSTC_HJA_STRINGEOL 66
-    #define wxSTC_HJA_REGEX 67
-    // Embedded VBScript
-    #define wxSTC_HB_START 70
-    #define wxSTC_HB_DEFAULT 71
-    #define wxSTC_HB_COMMENTLINE 72
-    #define wxSTC_HB_NUMBER 73
-    #define wxSTC_HB_WORD 74
-    #define wxSTC_HB_STRING 75
-    #define wxSTC_HB_IDENTIFIER 76
-    #define wxSTC_HB_STRINGEOL 77
-    // ASP VBScript
-    #define wxSTC_HBA_START 80
-    #define wxSTC_HBA_DEFAULT 81
-    #define wxSTC_HBA_COMMENTLINE 82
-    #define wxSTC_HBA_NUMBER 83
-    #define wxSTC_HBA_WORD 84
-    #define wxSTC_HBA_STRING 85
-    #define wxSTC_HBA_IDENTIFIER 86
-    #define wxSTC_HBA_STRINGEOL 87
-    // Embedded Python
-    #define wxSTC_HP_START 90
-    #define wxSTC_HP_DEFAULT 91
-    #define wxSTC_HP_COMMENTLINE 92
-    #define wxSTC_HP_NUMBER 93
-    #define wxSTC_HP_STRING 94
-    #define wxSTC_HP_CHARACTER 95
-    #define wxSTC_HP_WORD 96
-    #define wxSTC_HP_TRIPLE 97
-    #define wxSTC_HP_TRIPLEDOUBLE 98
-    #define wxSTC_HP_CLASSNAME 99
-    #define wxSTC_HP_DEFNAME 100
-    #define wxSTC_HP_OPERATOR 101
-    #define wxSTC_HP_IDENTIFIER 102
-    // PHP
-    #define wxSTC_HPHP_COMPLEX_VARIABLE 104
-    // ASP Python
-    #define wxSTC_HPA_START 105
-    #define wxSTC_HPA_DEFAULT 106
-    #define wxSTC_HPA_COMMENTLINE 107
-    #define wxSTC_HPA_NUMBER 108
-    #define wxSTC_HPA_STRING 109
-    #define wxSTC_HPA_CHARACTER 110
-    #define wxSTC_HPA_WORD 111
-    #define wxSTC_HPA_TRIPLE 112
-    #define wxSTC_HPA_TRIPLEDOUBLE 113
-    #define wxSTC_HPA_CLASSNAME 114
-    #define wxSTC_HPA_DEFNAME 115
-    #define wxSTC_HPA_OPERATOR 116
-    #define wxSTC_HPA_IDENTIFIER 117
-    // PHP
-    #define wxSTC_HPHP_DEFAULT 118
-    #define wxSTC_HPHP_HSTRING 119
-    #define wxSTC_HPHP_SIMPLESTRING 120
-    #define wxSTC_HPHP_WORD 121
-    #define wxSTC_HPHP_NUMBER 122
-    #define wxSTC_HPHP_VARIABLE 123
-    #define wxSTC_HPHP_COMMENT 124
-    #define wxSTC_HPHP_COMMENTLINE 125
-    #define wxSTC_HPHP_HSTRING_VARIABLE 126
-    #define wxSTC_HPHP_OPERATOR 127
-    -->
     <colourings>
       <colouring no="1"> word </colouring>
       <colouring no="5"> number </colouring>
@@ -603,30 +612,6 @@ without the written consent of the copyright owner.
   <lexer
     name="sql"
     extensions="*.sql">
-    <!--
-    #define wxSTC_SQL_DEFAULT 0
-    #define wxSTC_SQL_COMMENT 1
-    #define wxSTC_SQL_COMMENTLINE 2
-    #define wxSTC_SQL_COMMENTDOC 3
-    #define wxSTC_SQL_NUMBER 4
-    #define wxSTC_SQL_WORD 5
-    #define wxSTC_SQL_STRING 6
-    #define wxSTC_SQL_CHARACTER 7
-    #define wxSTC_SQL_SQLPLUS 8
-    #define wxSTC_SQL_SQLPLUS_PROMPT 9
-    #define wxSTC_SQL_OPERATOR 10
-    #define wxSTC_SQL_IDENTIFIER 11
-    #define wxSTC_SQL_SQLPLUS_COMMENT 13
-    #define wxSTC_SQL_COMMENTLINEDOC 15
-    #define wxSTC_SQL_WORD2 16
-    #define wxSTC_SQL_COMMENTDOCKEYWORD 17
-    #define wxSTC_SQL_COMMENTDOCKEYWORDERROR 18
-    #define wxSTC_SQL_USER1 19
-    #define wxSTC_SQL_USER2 20
-    #define wxSTC_SQL_USER3 21
-    #define wxSTC_SQL_USER4 22
-    #define wxSTC_SQL_QUOTEDIDENTIFIER 23
-    -->
     <colourings>
       <colouring no="1,2,3"> comment </colouring>
       <colouring no="4"> number </colouring>
@@ -705,15 +690,6 @@ without the written consent of the copyright owner.
   <lexer
     name="makefile"
     extensions="makefile;makefile.*">  
-    <!--
-    #define wxSTC_MAKE_DEFAULT 0
-    #define wxSTC_MAKE_COMMENT 1
-    #define wxSTC_MAKE_PREPROCESSOR 2
-    #define wxSTC_MAKE_IDENTIFIER 3
-    #define wxSTC_MAKE_OPERATOR 4
-    #define wxSTC_MAKE_TARGET 5
-    #define wxSTC_MAKE_IDEOL 9
-    -->
     <colourings>
       <colouring no="1"> comment </colouring>
       <colouring no="2"> preprocessor </colouring>
