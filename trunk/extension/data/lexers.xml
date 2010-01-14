@@ -307,22 +307,8 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_MAKE_TARGET"> 5 </def>
     <def no ="wxSTC_MAKE_IDEOL"> 9 </def>
     
-    <marker no="wxSTC_MARKNUM_FOLDEREND"> wxSTC_MARK_PLUS,light grey </marker>
-    <marker no="wxSTC_MARKNUM_FOLDEROPENMID"> wxSTC_MARK_MINUS,light grey </marker>
-    <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNER,light grey,light grey </marker>
-    <marker no="wxSTC_MARKNUM_FOLDERTAIL"> wxSTC_MARK_LCORNER,light grey,light grey </marker>
-    <marker no="wxSTC_MARKNUM_FOLDERSUB"> wxSTC_MARK_VLINE,light grey,light grey </marker>
-    <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,light grey </marker>
-    <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,light grey </marker>
+    <def no ="folder"> black </def>
     
-    <indicator no="3"> 6 </indicator>
-    <!-- this style is used as default style, 
-     and is applied before all other styles -->
-    <style no="wxSTC_STYLE_DEFAULT"> face:courier new,size:10 </style>
-    
-    <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
-    <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
-
     <!-- these are the macro's you can use as general colouring styles
       -->    
     <def no="char"> fore:pink </def>
@@ -332,6 +318,23 @@ without the written consent of the copyright owner.
     <def no="preprocessor"> fore:grey </def>
     <def no="string"> fore:blue </def>
     <def no="word"> fore:dark turquoise </def>
+    
+    <marker no="wxSTC_MARKNUM_FOLDEREND"> wxSTC_MARK_PLUS,folder </marker>
+    <marker no="wxSTC_MARKNUM_FOLDEROPENMID"> wxSTC_MARK_MINUS,folder </marker>
+    <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNER,folder,folder</marker>
+    <marker no="wxSTC_MARKNUM_FOLDERTAIL"> wxSTC_MARK_LCORNER,folder,folder </marker>
+    <marker no="wxSTC_MARKNUM_FOLDERSUB"> wxSTC_MARK_VLINE,folder,folder</marker>
+    <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
+    <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
+    
+    <indicator no="3"> 6 </indicator>
+    <!-- this style is used as default style, 
+     and is applied before all other styles -->
+    <style no="wxSTC_STYLE_DEFAULT"> face:courier new,size:10 </style>
+    
+    <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
+    <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
+
   </global>
   
   <lexer 
