@@ -775,7 +775,8 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
             m_Command == "O" || 
             m_Command == "R" || 
             m_Command == "X" || 
-            m_Command == "~")
+            m_Command == "~" &&
+			!m_Command.Matches("m?"))
         {
           m_LastCommand = m_Command;
         }
