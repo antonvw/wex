@@ -341,16 +341,16 @@ without the written consent of the copyright owner.
          However currently they show underlined lines if doing so.
       -->
     <colourings>
-      <colouring no="1,2,3"> comment </colouring>
-      <colouring no="15,17,18"> back:#F0F0F0F0,fore:#8800DD,italic,eol 
+      <colouring no="wxSTC_C_COMMENT,wxSTC_C_COMMENTLINE,wxSTC_C_COMMENTDOC"> comment </colouring>
+      <colouring no="wxSTC_C_COMMENTLINEDOC,wxSTC_C_COMMENTDOCKEYWORD,wxSTC_C_COMMENTDOCKEYWORDERROR"> back:#F0F0F0F0,fore:#8800DD,italic,eol 
       </colouring>
-      <colouring no="4"> number </colouring>
-      <colouring no="5"> word </colouring>
-      <colouring no="6"> string </colouring>
-      <colouring no="7"> char </colouring>
-      <colouring no="9"> preprocessor </colouring>
-      <colouring no="10"> operator </colouring>
-      <colouring no="16"> italic </colouring>
+      <colouring no="wxSTC_C_NUMBER"> number </colouring>
+      <colouring no="wxSTC_C_WORD"> word </colouring>
+      <colouring no="wxSTC_C_STRING"> string </colouring>
+      <colouring no="wxSTC_C_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_C_PREPROCESSOR"> preprocessor </colouring>
+      <colouring no="wxSTC_C_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_C_WORD2"> italic </colouring>
     </colourings>
   
     <keywords>
@@ -413,13 +413,13 @@ without the written consent of the copyright owner.
     extensions="*.pas">
   
     <colourings>
-      <colouring no="1,2,3"> comment </colouring>
-      <colouring no="4"> number </colouring>
-      <colouring no="5"> word </colouring>
-      <colouring no="6"> string </colouring>
-      <colouring no="7"> char </colouring>
-      <colouring no="10"> operator </colouring>
-      <colouring no="16"> italic </colouring>
+      <colouring no="wxSTC_C_COMMENT,wxSTC_C_COMMENTLINE,wxSTC_C_COMMENTDOC"> comment </colouring>
+      <colouring no="wxSTC_C_NUMBER"> number </colouring>
+      <colouring no="wxSTC_C_WORD"> word </colouring>
+      <colouring no="wxSTC_C_STRING"> string </colouring>
+      <colouring no="wxSTC_C_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_C_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_C_WORD2"> italic </colouring>
     </colourings>
   
     <keywords>    
@@ -456,10 +456,10 @@ without the written consent of the copyright owner.
     extensions="*.a">
     
     <colourings>
-      <colouring no="1"> word </colouring>
-      <colouring no="3"> number </colouring>
-      <colouring no="7"> string </colouring>
-      <colouring no="10"> comment </colouring>
+      <colouring no="wxSTC_ADA_WORD"> word </colouring>
+      <colouring no="wxSTC_ADA_NUMBER"> number </colouring>
+      <colouring no="wxSTC_ADA_STRINGEOL"> string </colouring>
+      <colouring no="wxSTC_ADA_COMMENTLINE"> comment </colouring>
     </colourings>
     
     <keywords>    
@@ -487,12 +487,12 @@ without the written consent of the copyright owner.
     name="bash"
     extensions="*.bash"> 
     <colourings>
-      <colouring no="2"> comment </colouring>
-      <colouring no="3"> number </colouring>
-      <colouring no="4"> word </colouring>
-      <colouring no="5"> string </colouring>
-      <colouring no="6"> char </colouring>
-      <colouring no="7"> operator </colouring>
+      <colouring no="wxSTC_SH_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_SH_NUMBER"> number </colouring>
+      <colouring no="wxSTC_SH_WORD"> word </colouring>
+      <colouring no="wxSTC_SH_STRING"> string </colouring>
+      <colouring no="wxSTC_SH_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_SH_OPERATOR"> operator </colouring>
     </colourings>
   
     <keywords>    
@@ -523,16 +523,16 @@ without the written consent of the copyright owner.
     name="asm"
     extensions="*.mac"> 
     <colourings>
-      <colouring no="1"> comment </colouring>
-      <colouring no="2"> number </colouring>
-      <colouring no="3"> string </colouring>
-      <colouring no="4"> operator </colouring>
-      <colouring no="6"> word </colouring>
-      <colouring no="7"> italic </colouring>
-      <colouring no="8"> fore:blue </colouring>
-      <colouring no="9"> italic </colouring>
-      <colouring no="11"> underline </colouring>
-      <colouring no="12"> char </colouring>
+      <colouring no="wxSTC_ASM_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ASM_NUMBER"> number </colouring>
+      <colouring no="wxSTC_ASM_STRING"> string </colouring>
+      <colouring no="wxSTC_ASM_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_ASM_CPUINSTRUCTION"> word </colouring>
+      <colouring no="wxSTC_ASM_MATHINSTRUCTION"> italic </colouring>
+      <colouring no="wxSTC_ASM_REGISTER"> fore:blue </colouring>
+      <colouring no="wxSTC_ASM_DIRECTIVE"> italic </colouring>
+      <colouring no="wxSTC_ASM_COMMENTBLOCK"> underline </colouring>
+      <colouring no="wxSTC_ASM_CHARACTER"> char </colouring>
     </colourings>
   
     <keywords>    
@@ -559,23 +559,21 @@ without the written consent of the copyright owner.
     name="hypertext"
     extensions="*.htm;*.html">
     <colourings>
-      <colouring no="1"> word </colouring>
-      <colouring no="5"> number </colouring>
-      <colouring no="6,7"> string </colouring>
-      <colouring no="9"> comment </colouring>
-      <colouring no="18"> fore:#0000FF,back:#FFEFBF </colouring>
-      <colouring no="19"> fore:#FF00FF,back:#FFEFFF </colouring>
-      <colouring no="104"> fore:#007F00,italic,back:#FFF8F8 </colouring>
-      <colouring no="118"> fore:green,eol </colouring>
-      <colouring no="119"> fore:#007F00,back:#FFF8F8 </colouring>
-      <colouring no="120"> fore:#009F00,back:#FFF8F8 </colouring>
-      <colouring no="121"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
-      <colouring no="122"> fore:#CC9900,back:#FFF8F8 </colouring>
-      <colouring no="123"> fore:#00007F,italic,back:#FFF8F8 </colouring>
-      <colouring no="124,125"> back:#F9F9F9,fore:#2277DD,italic
-      </colouring>
-      <colouring no="126"> fore:#007F00,italic,back:#FFF8F8 </colouring>
-      <colouring no="127"> fore:#000000,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_H_TAG"> word </colouring>
+      <colouring no="wxSTC_H_NUMBER"> number </colouring>
+      <colouring no="wxSTC_H_DOUBLESTRING,wxSTC_H_SINGLESTRING"> string </colouring>
+      <colouring no="wxSTC_H_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_H_QUESTION"> fore:#0000FF,back:#FFEFBF </colouring>
+      <colouring no="wxSTC_H_VALUE"> fore:#FF00FF,back:#FFEFFF </colouring>
+      <colouring no="wxSTC_HPHP_DEFAULT"> fore:green,eol </colouring>
+      <colouring no="wxSTC_HPHP_HSTRING"> fore:#007F00,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_SIMPLESTRING"> fore:#009F00,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_WORD"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_VARIABLE"> fore:#00007F,italic,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_COMMENT,wxSTC_HPHP_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </colouring>
     </colourings>
               
     <properties>
@@ -613,12 +611,12 @@ without the written consent of the copyright owner.
     name="sql"
     extensions="*.sql">
     <colourings>
-      <colouring no="1,2,3"> comment </colouring>
-      <colouring no="4"> number </colouring>
-      <colouring no="5"> word </colouring>
-      <colouring no="6"> string </colouring>
-      <colouring no="7"> char </colouring>
-      <colouring no="10"> operator </colouring>
+      <colouring no="wxSTC_SQL_COMMENT,wxSTC_SQL_COMMENTLINE,wxSTC_SQL_COMMENTDOC"> comment </colouring>
+      <colouring no="wxSTC_SQL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_SQL_WORD"> word </colouring>
+      <colouring no="wxSTC_SQL_STRING"> string </colouring>
+      <colouring no="wxSTC_SQL_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_SQL_OPERATOR"> operator </colouring>
     </colourings>
   
     <keywords>    
@@ -691,11 +689,11 @@ without the written consent of the copyright owner.
     name="makefile"
     extensions="makefile;makefile.*">  
     <colourings>
-      <colouring no="1"> comment </colouring>
-      <colouring no="2"> preprocessor </colouring>
-      <colouring no="4"> operator </colouring>
-      <colouring no="5"> bold </colouring>
-      <colouring no="9"> fore:brown </colouring>
+      <colouring no="wxSTC_MAKE_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_MAKE_PREPROCESSOR"> preprocessor </colouring>
+      <colouring no="wxSTC_MAKE_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_MAKE_TARGET"> bold </colouring>
+      <colouring no="wxSTC_MAKE_IDEOL"> fore:brown </colouring>
     </colourings>
     
     <comments begin1="#" />
