@@ -66,6 +66,10 @@ public:
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
 
+  /// Converts attribute by applying macro on them,
+  /// if attribute is referring to a macro.
+  const wxString ConvertAttribute(const wxString& attribute) const;
+
   /// Returns the number of lexers.
   size_t Count() const {return m_Lexers.size();};
 

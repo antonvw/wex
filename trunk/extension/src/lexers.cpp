@@ -25,6 +25,20 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 {
 }
 
+const wxString wxExLexers::ConvertAttribute(const wxString& attribute) const
+{
+  wxString value = attribute;
+
+  std::map<wxString, wxString>::const_iterator it = m_Macros.find(value);
+
+  if (it != m_Macros.end())
+  {
+    value = it->second;
+  }
+
+  return value;
+}
+
 const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =
@@ -197,7 +211,9 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
 	  }
 
       text +=
-        child->GetAttribute("no", "0") + "=" + content + wxTextFile::GetEOL();
+        ConvertAttribute(
+		  child->GetAttribute("no", "0"))
+		+ "=" + content + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     {
@@ -228,19 +244,19 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     else if (child->GetName() == "hex")
     {
       m_StylesHex.push_back(
-        child->GetAttribute("no", "0") + "=" +
+        ConvertAttribute(child->GetAttribute("no", "0")) + "=" +
         child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "indicator")
     {
       m_Indicators.insert(std::make_pair(
-        atoi(child->GetAttribute("no", "0").c_str()),
+        atoi(ConvertAttribute(child->GetAttribute("no", "0")).c_str()),
         atoi(child->GetNodeContent().Strip(wxString::both).c_str())));
     }
     else if (child->GetName() == "marker")
     {
       const wxExMarker marker(ParseTagMarker(
-        child->GetAttribute("no", "0"),
+        ConvertAttribute(child->GetAttribute("no", "0")),
         child->GetNodeContent().Strip(wxString::both)));
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
@@ -258,7 +274,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "style")
     {
-      const wxString attrib = child->GetAttribute("no", "0");
+      const wxString attrib = ConvertAttribute(child->GetAttribute("no", "0"));
       const wxString content = child->GetNodeContent().Strip(wxString::both);
       int attrib_no = atoi(attrib.c_str());
 
@@ -341,7 +357,7 @@ const wxExMarker wxExLexers::ParseTagMarker(
 {
   wxStringTokenizer prop_fields(props, ",");
 
-  const wxString symbol = prop_fields.GetNextToken();
+  const wxString symbol = ConvertAttribute(prop_fields.GetNextToken());
 
   wxColour foreground;
   wxColour background;

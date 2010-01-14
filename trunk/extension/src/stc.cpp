@@ -2214,7 +2214,9 @@ void wxExSTC::SetStyle(const wxString& style)
   // So for each scintilla style set the spec.
   while (scintilla_styles.HasMoreTokens())
   {
-    StyleSetSpec(atoi(scintilla_styles.GetNextToken().c_str()), spec);
+	const wxString single = wxExLexers::Get()->ConvertAttribute(
+	  scintilla_styles.GetNextToken());
+	StyleSetSpec(atoi(single.c_str()), spec);
   }
 }
 
