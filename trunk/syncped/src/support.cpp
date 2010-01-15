@@ -122,6 +122,7 @@ Frame::Frame()
   wxMenu *menuView = new wxMenu;
   menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
+  menuView->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar"));
   menuView->AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
