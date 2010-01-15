@@ -307,7 +307,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_MAKE_TARGET"> 5 </def>
     <def no ="wxSTC_MAKE_IDEOL"> 9 </def>
     
-    <def no ="folder"> black </def>
+    <def no ="folder"> light blue </def>
     
     <!-- these are the macro's you can use as general colouring styles
       -->    
@@ -327,9 +327,8 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
-    <indicator no="3"> 6 </indicator>
     <!-- this style is used as default style, 
-     and is applied before all other styles -->
+         and is applied before all other styles -->
     <style no="wxSTC_STYLE_DEFAULT"> face:courier new,size:10 </style>
     
     <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
@@ -344,8 +343,10 @@ without the written consent of the copyright owner.
          However currently they show underlined lines if doing so.
       -->
     <colourings>
-      <colouring no="wxSTC_C_COMMENT,wxSTC_C_COMMENTLINE,wxSTC_C_COMMENTDOC"> comment </colouring>
-      <colouring no="wxSTC_C_COMMENTLINEDOC,wxSTC_C_COMMENTDOCKEYWORD,wxSTC_C_COMMENTDOCKEYWORDERROR"> back:#F0F0F0F0,fore:#8800DD,italic,eol 
+      <colouring no="wxSTC_C_COMMENT,wxSTC_C_COMMENTLINE,wxSTC_C_COMMENTDOC"> 
+        comment </colouring>
+      <colouring no="wxSTC_C_COMMENTLINEDOC,wxSTC_C_COMMENTDOCKEYWORD,wxSTC_C_COMMENTDOCKEYWORDERROR"> 
+        back:#F0F0F0F0,fore:#8800DD,italic,eol 
       </colouring>
       <colouring no="wxSTC_C_NUMBER"> number </colouring>
       <colouring no="wxSTC_C_WORD"> word </colouring>
