@@ -63,8 +63,9 @@ public:
   /// Constructor for lexers from specified filename.
   wxExLexers(const wxFileName& filename);
 
-  /// Apply macro on text:
+  /// Apply macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
+  /// Otherwise an error message is given, and same text is returned.
   const wxString ApplyMacro(const wxString& text) const;
 
   /// Builds a wildcard string from available lexers using specified filename.

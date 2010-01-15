@@ -25,18 +25,19 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 {
 }
 
-const wxString wxExLexers::ApplyMacro(const wxString& attribute) const
+const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
-  wxString value = attribute;
-
-  std::map<wxString, wxString>::const_iterator it = m_Macros.find(value);
+  std::map<wxString, wxString>::const_iterator it = m_Macros.find(text);
 
   if (it != m_Macros.end())
   {
-    value = it->second;
+    return it->second;
   }
-
-  return value;
+  else
+  {
+    wxLogError("Undefined macro: %s", text.c_str());
+    return text;
+  }
 }
 
 const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
