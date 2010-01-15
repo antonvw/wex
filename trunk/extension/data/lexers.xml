@@ -45,6 +45,9 @@ without the written consent of the copyright owner.
  The marker element has a 'no' attribute and its value contains the next fields:
  <marker symbol number><','><foreground colour><','><background colour>
  You can also use macro's, using the </def> property.
+ When adding macro from stc.h yuo can use next regular expression:
+ find:    '#define \(.*\) \(.*\)'
+ replace: '    <def no ="\1"> \2 </def>'
 */
 -->
 
@@ -99,16 +102,27 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_INDIC_HIDDEN"> 5 </def>
     <def no ="wxSTC_INDIC_BOX"> 6 </def>
     <def no ="wxSTC_INDIC_ROUNDBOX"> 7 </def>
-    <def no ="wxSTC_INDIC_MAX"> 31 </def>
     <def no ="wxSTC_INDIC_CONTAINER"> 8 </def>
-    <def no ="wxSTC_INDIC0_MASK"> 0x20 </def>
-    <def no ="wxSTC_INDIC1_MASK"> 0x40 </def>
-    <def no ="wxSTC_INDIC2_MASK"> 0x80 </def>
-    <def no ="wxSTC_INDICS_MASK"> 0xE0 </def>
     <def no ="wxSTC_IV_NONE"> 0 </def>
     <def no ="wxSTC_IV_REAL"> 1 </def>
     <def no ="wxSTC_IV_LOOKFORWARD"> 2 </def>
     <def no ="wxSTC_IV_LOOKBOTH"> 3 </def>
+    <def no ="wxSTC_P_DEFAULT"> 0 </def>
+    <def no ="wxSTC_P_COMMENTLINE"> 1 </def>
+    <def no ="wxSTC_P_NUMBER"> 2 </def>
+    <def no ="wxSTC_P_STRING"> 3 </def>
+    <def no ="wxSTC_P_CHARACTER"> 4 </def>
+    <def no ="wxSTC_P_WORD"> 5 </def>
+    <def no ="wxSTC_P_TRIPLE"> 6 </def>
+    <def no ="wxSTC_P_TRIPLEDOUBLE"> 7 </def>
+    <def no ="wxSTC_P_CLASSNAME"> 8 </def>
+    <def no ="wxSTC_P_DEFNAME"> 9 </def>
+    <def no ="wxSTC_P_OPERATOR"> 10 </def>
+    <def no ="wxSTC_P_IDENTIFIER"> 11 </def>
+    <def no ="wxSTC_P_COMMENTBLOCK"> 12 </def>
+    <def no ="wxSTC_P_STRINGEOL"> 13 </def>
+    <def no ="wxSTC_P_WORD2"> 14 </def>
+    <def no ="wxSTC_P_DECORATOR"> 15 </def>
     <def no ="wxSTC_C_DEFAULT"> 0 </def>
     <def no ="wxSTC_C_COMMENT"> 1 </def>
     <def no ="wxSTC_C_COMMENTLINE"> 2 </def>
@@ -129,6 +143,28 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_C_COMMENTDOCKEYWORD"> 17 </def>
     <def no ="wxSTC_C_COMMENTDOCKEYWORDERROR"> 18 </def>
     <def no ="wxSTC_C_GLOBALCLASS"> 19 </def>
+    <def no ="wxSTC_TCL_DEFAULT"> 0 </def>
+    <def no ="wxSTC_TCL_COMMENT"> 1 </def>
+    <def no ="wxSTC_TCL_COMMENTLINE"> 2 </def>
+    <def no ="wxSTC_TCL_NUMBER"> 3 </def>
+    <def no ="wxSTC_TCL_WORD_IN_QUOTE"> 4 </def>
+    <def no ="wxSTC_TCL_IN_QUOTE"> 5 </def>
+    <def no ="wxSTC_TCL_OPERATOR"> 6 </def>
+    <def no ="wxSTC_TCL_IDENTIFIER"> 7 </def>
+    <def no ="wxSTC_TCL_SUBSTITUTION"> 8 </def>
+    <def no ="wxSTC_TCL_SUB_BRACE"> 9 </def>
+    <def no ="wxSTC_TCL_MODIFIER"> 10 </def>
+    <def no ="wxSTC_TCL_EXPAND"> 11 </def>
+    <def no ="wxSTC_TCL_WORD"> 12 </def>
+    <def no ="wxSTC_TCL_WORD2"> 13 </def>
+    <def no ="wxSTC_TCL_WORD3"> 14 </def>
+    <def no ="wxSTC_TCL_WORD4"> 15 </def>
+    <def no ="wxSTC_TCL_WORD5"> 16 </def>
+    <def no ="wxSTC_TCL_WORD6"> 17 </def>
+    <def no ="wxSTC_TCL_WORD7"> 18 </def>
+    <def no ="wxSTC_TCL_WORD8"> 19 </def>
+    <def no ="wxSTC_TCL_COMMENT_BOX"> 20 </def>
+    <def no ="wxSTC_TCL_BLOCK_COMMENT"> 21 </def>
     <def no ="wxSTC_ADA_DEFAULT"> 0 </def>
     <def no ="wxSTC_ADA_WORD"> 1 </def>
     <def no ="wxSTC_ADA_IDENTIFIER"> 2 </def>
