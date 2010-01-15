@@ -704,7 +704,7 @@ int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
   case wxExColumn::COL_FLOAT:
     if (ascending) return item1 > item2;
     else           return item1 < item2;
-	break;
+  break;
 
   default:
     wxFAIL;
@@ -739,12 +739,12 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     switch (sorted_col->GetType())
     {
     case wxExColumn::COL_INT: 
-	  SetItemData(i, atoi(val.c_str())); 
-	  break;
+    SetItemData(i, atoi(val.c_str())); 
+    break;
 
     case wxExColumn::COL_FLOAT: 
-	  SetItemData(i, (long)atof(val.c_str())); 
-	  break;
+    SetItemData(i, (long)atof(val.c_str())); 
+    break;
 
     case wxExColumn::COL_DATE:
       if (!val.empty())
@@ -767,8 +767,8 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     break;
 
     case wxExColumn::COL_STRING: 
-	  SetItemData(i, i); 
-	  break;
+      SetItemData(i, i); 
+    break;
     default: 
       wxFAIL;
     }

@@ -452,15 +452,15 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
     long val;
     if ((val = wxGetNumberFromUser(
-		_("Input") + ":",
+      _("Input") + ":",
       wxEmptyString,
       _("Buffer Size"),
       wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096),
       1,
       65536)) > 0)
-    {
-      wxConfigBase::Get()->Write(_("Buffer Size"), val);
-    }
+      {
+        wxConfigBase::Get()->Write(_("Buffer Size"), val);
+      }
     }
     break;
 

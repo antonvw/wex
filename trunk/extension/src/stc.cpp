@@ -1418,9 +1418,9 @@ void wxExSTC::MacroPlayback()
     int msg, wp;
     char c = ' ';
     sscanf((*it).c_str(), "%d %d %c", &msg, &wp, &c);
-		char txt[2];
-		txt[0] = c;
-		txt[1] = '\0';
+    char txt[2];
+    txt[0] = c;
+    txt[1] = '\0';
 
     SendMsg(msg, wp, (wxIntPtr)txt);
   }
@@ -1556,14 +1556,14 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
     if (event.GetKeyCode() == WXK_RETURN)
     {
       if (!SmartIndentation())
-	  {
+    {
         event.Skip();
-	  }
     }
-	else
-	{
+    }
+  else
+  {
       event.Skip();
-	}
+  }
   }
 }
 
@@ -2196,7 +2196,7 @@ void wxExSTC::SetProperties(bool reset)
     const wxString key = property.GetNextToken();
     const wxString value = property.GetNextToken();
 
-	SetProperty(key, (!reset ? value: wxEmptyString));
+  SetProperty(key, (!reset ? value: wxEmptyString));
   }
 }
 
@@ -2214,9 +2214,9 @@ void wxExSTC::SetStyle(const wxString& style)
   // So for each scintilla style set the spec.
   while (scintilla_styles.HasMoreTokens())
   {
-	const wxString single = wxExLexers::Get()->ApplyMacro(
-	  scintilla_styles.GetNextToken());
-	StyleSetSpec(atoi(single.c_str()), spec);
+  const wxString single = wxExLexers::Get()->ApplyMacro(
+    scintilla_styles.GetNextToken());
+  StyleSetSpec(atoi(single.c_str()), spec);
   }
 }
 

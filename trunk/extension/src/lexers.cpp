@@ -207,19 +207,19 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
   {
     if (child->GetName() == "colouring")
     {
-	  wxString content = child->GetNodeContent().Strip(wxString::both);
+      wxString content = child->GetNodeContent().Strip(wxString::both);
 
       std::map<wxString, wxString>::const_iterator it = m_Macros.find(content);
 
       if (it != m_Macros.end())
-  	  {
-	    content = it->second;
-	  }
+      {
+        content = it->second;
+      }
 
       text +=
         ApplyMacro(
-		  child->GetAttribute("no", "0"))
-		+ "=" + content + wxTextFile::GetEOL();
+          child->GetAttribute("no", "0"))
+        + "=" + content + wxTextFile::GetEOL();
     }
     else if (child->GetName() == "comment")
     {
@@ -297,8 +297,8 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     {
       const wxString attrib = child->GetAttribute("no", "0");
       const wxString content = child->GetNodeContent().Strip(wxString::both);
-	  m_Macros[attrib] = content;
-	}
+      m_Macros[attrib] = content;
+    }
     else
     {
       wxLogError("Undefined global tag: %s on: %d",
@@ -371,7 +371,7 @@ const wxExMarker wxExLexers::ParseTagMarker(
   if (prop_fields.HasMoreTokens())
   {
     foreground = ApplyMacro(
-	  prop_fields.GetNextToken().Strip(wxString::both));
+      prop_fields.GetNextToken().Strip(wxString::both));
 
     if (prop_fields.HasMoreTokens())
     {

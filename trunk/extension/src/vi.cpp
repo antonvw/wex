@@ -197,9 +197,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     const int vi_marker_symbol = 0;
 
     if (it != m_Markers.end())
-  	{
-	    m_STC->MarkerDelete(it->second, vi_marker_symbol);
-	  }
+    {
+      m_STC->MarkerDelete(it->second, vi_marker_symbol);
+    }
 
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
     m_STC->MarkerAdd(m_STC->GetCurrentLine(), vi_marker_symbol);
@@ -238,9 +238,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
 
     if (it != m_Markers.end())
-  	{
-	    m_STC->GotoLine(it->second);
-	  }
+    {
+      m_STC->GotoLine(it->second);
+    }
   }
   else
   {
@@ -776,7 +776,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
             m_Command == "R" || 
             m_Command == "X" || 
             m_Command == "~" &&
-			!m_Command.Matches("m?"))
+            !m_Command.Matches("m?"))
         {
           m_LastCommand = m_Command;
         }
@@ -944,9 +944,9 @@ int wxExVi::ToLineNumber(const wxString& address) const
       m_Markers.find(address.GetChar(1));
 
     if (it != m_Markers.end())
-	  {
-	    marker = it->second + 1;
-	  }
+      {
+        marker = it->second + 1;
+      }
 
     filtered_address = filtered_address.substr(2);
   }
