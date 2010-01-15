@@ -25,7 +25,7 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 {
 }
 
-const wxString wxExLexers::ConvertAttribute(const wxString& attribute) const
+const wxString wxExLexers::ApplyMacro(const wxString& attribute) const
 {
   wxString value = attribute;
 
@@ -211,7 +211,7 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
 	  }
 
       text +=
-        ConvertAttribute(
+        ApplyMacro(
 		  child->GetAttribute("no", "0"))
 		+ "=" + content + wxTextFile::GetEOL();
     }
@@ -244,19 +244,19 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     else if (child->GetName() == "hex")
     {
       m_StylesHex.push_back(
-        ConvertAttribute(child->GetAttribute("no", "0")) + "=" +
+        ApplyMacro(child->GetAttribute("no", "0")) + "=" +
         child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "indicator")
     {
       m_Indicators.insert(std::make_pair(
-        atoi(ConvertAttribute(child->GetAttribute("no", "0")).c_str()),
+        atoi(ApplyMacro(child->GetAttribute("no", "0")).c_str()),
         atoi(child->GetNodeContent().Strip(wxString::both).c_str())));
     }
     else if (child->GetName() == "marker")
     {
       const wxExMarker marker(ParseTagMarker(
-        ConvertAttribute(child->GetAttribute("no", "0")),
+        ApplyMacro(child->GetAttribute("no", "0")),
         child->GetNodeContent().Strip(wxString::both)));
 
       if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
@@ -274,7 +274,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "style")
     {
-      const wxString attrib = ConvertAttribute(child->GetAttribute("no", "0"));
+      const wxString attrib = ApplyMacro(child->GetAttribute("no", "0"));
       const wxString content = child->GetNodeContent().Strip(wxString::both);
       int attrib_no = atoi(attrib.c_str());
 
@@ -357,19 +357,19 @@ const wxExMarker wxExLexers::ParseTagMarker(
 {
   wxStringTokenizer prop_fields(props, ",");
 
-  const wxString symbol = ConvertAttribute(prop_fields.GetNextToken());
+  const wxString symbol = ApplyMacro(prop_fields.GetNextToken());
 
   wxColour foreground;
   wxColour background;
 
   if (prop_fields.HasMoreTokens())
   {
-    foreground = ConvertAttribute(
+    foreground = ApplyMacro(
 	  prop_fields.GetNextToken().Strip(wxString::both));
 
     if (prop_fields.HasMoreTokens())
     {
-      background = ConvertAttribute(
+      background = ApplyMacro(
         prop_fields.GetNextToken().Strip(wxString::both));
     }
   }

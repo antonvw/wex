@@ -63,12 +63,12 @@ public:
   /// Constructor for lexers from specified filename.
   wxExLexers(const wxFileName& filename);
 
+  /// Apply macro on text:
+  /// if text is referring to a macro, text is replaced by the macro value.
+  const wxString ApplyMacro(const wxString& text) const;
+
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
-
-  /// Converts attribute by applying macro on them,
-  /// if attribute is referring to a macro.
-  const wxString ConvertAttribute(const wxString& attribute) const;
 
   /// Returns the number of lexers.
   size_t Count() const {return m_Lexers.size();};
