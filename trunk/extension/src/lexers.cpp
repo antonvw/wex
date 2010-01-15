@@ -444,6 +444,7 @@ void wxExLexers::Read()
   m_Indicators.clear();
   m_Lexers.clear();
   m_Markers.clear();
+  m_SortedLexerNames.clear();
   m_Styles.clear();
   m_StylesHex.clear();
 
@@ -473,12 +474,16 @@ void wxExLexers::Read()
         else
         {
           m_Lexers.push_back(lexer);
+          m_SortedLexerNames.Add(lexer.GetScintillaLexer());
         }
       }
     }
 
     child = child->GetNext();
   }
+
+  // Add the <none> lexer.
+  m_SortedLexerNames.Add(_("<none>"));
 
   if (!wxConfigBase::Get()->Exists(_("In files")))
   {
@@ -503,39 +508,17 @@ bool wxExLexers::ShowDialog(
   wxExLexer& lexer,
   const wxString& caption) const
 {
-  wxArrayString aChoices;
-  int choice = -1;
-  int index = 0;
+  const int choice = (lexer.GetScintillaLexer().empty()) ? 
+    m_SortedLexerNames.Index(_("<none>")):
+    m_SortedLexerNames.Index(lexer.GetScintillaLexer());
 
-  for (
-    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
-  {
-    aChoices.Add(it->GetScintillaLexer());
-
-    if (lexer.GetScintillaLexer() == it->GetScintillaLexer())
-    {
-      choice = index;
-    }
-
-    index++;
-  }
-
-  // Add the <none> lexer (index is already incremented).
-  const wxString no_lexer = _("<none>");
-
-  aChoices.Add(no_lexer);
-
-  // And set the choice if we do not have a lexer.
-  if (lexer.GetScintillaLexer().empty())
-  {
-    choice = index;
-  }
+  wxSingleChoiceDialog dlg(
+    parent, 
+    _("Input") + ":", 
+    caption, 
+    m_SortedLexerNames);
   
-  wxSingleChoiceDialog dlg(parent, _("Input") + ":", caption, aChoices);
-  
-  if (choice != -1)
+  if (choice != wxNOT_FOUND)
   {
     dlg.SetSelection(choice);
   }
@@ -545,15 +528,13 @@ bool wxExLexers::ShowDialog(
     return false;
   }
 
-  const wxString sel = dlg.GetStringSelection();
-
-  if (sel == no_lexer)
+  if (dlg.GetSelection() == m_SortedLexerNames.Index(_("<none>")))
   {
     lexer = wxExLexer();
   }
   else
   {
-    lexer = FindByName(sel);
+    lexer = FindByName(dlg.GetStringSelection());
   }
 
   return true;

@@ -134,6 +134,7 @@ private:
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
   wxString m_DefaultStyle;
+  wxSortedArrayString m_SortedLexerNames;
 
   const wxFileName m_FileName;
 
