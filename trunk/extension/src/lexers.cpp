@@ -518,24 +518,16 @@ bool wxExLexers::ShowDialog(
     caption, 
     m_SortedLexerNames);
   
-  if (choice != wxNOT_FOUND)
-  {
-    dlg.SetSelection(choice);
-  }
+  dlg.SetSelection(choice);
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {
     return false;
   }
 
-  if (dlg.GetSelection() == m_SortedLexerNames.Index(_("<none>")))
-  {
-    lexer = wxExLexer();
-  }
-  else
-  {
-    lexer = FindByName(dlg.GetStringSelection());
-  }
+  lexer = (dlg.GetSelection() == m_SortedLexerNames.Index(_("<none>")) ?
+    wxExLexer():
+    FindByName(dlg.GetStringSelection()));
 
   return true;
 }
