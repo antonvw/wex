@@ -372,6 +372,30 @@ without the written consent of the copyright owner.
 
   </global>
   
+  <lexer
+    name="python"
+    extensions="*.py">
+  
+    <colourings>
+      <colouring no="wxSTC_P_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_P_NUMBER"> number </colouring>
+      <colouring no="wxSTC_P_WORD"> word </colouring>
+      <colouring no="wxSTC_P_STRING"> string </colouring>
+      <colouring no="wxSTC_P_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_P_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_P_WORD2"> italic </colouring>
+    </colourings>
+  
+    <keywords>    
+    </keywords>
+  
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+    </properties>
+  </lexer>
+  
   <lexer 
     name="cpp"
     extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
@@ -446,6 +470,28 @@ without the written consent of the copyright owner.
     </properties>
     
     <comments begin1="//" begin2="/*" end2="*/" />
+  </lexer>
+  
+  <lexer
+    name="tcl"
+    extensions="*.tcl">
+  
+    <colourings>
+      <colouring no="wxSTC_TCL_COMMENT,wxSTC_TCL_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_TCL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_TCL_WORD"> word </colouring>
+      <colouring no="wxSTC_TCL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_TCL_WORD2"> italic </colouring>
+    </colourings>
+  
+    <keywords>    
+    </keywords>
+  
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+    </properties>
   </lexer>
   
   <lexer
@@ -627,14 +673,14 @@ without the written consent of the copyright owner.
   <lexer
     name="xml"
     extensions="*.xml">
-    <!-- See above -->
   
     <colourings>
-      <colouring no="1"> word </colouring>
-      <colouring no="5"> number </colouring>
-      <colouring no="6"> fore:blue </colouring>
-      <colouring no="7"> fore:blue </colouring>
-      <colouring no="9"> comment </colouring>
+      <colouring no="wxSTC_H_TAG"> word </colouring>
+      <colouring no="wxSTC_H_NUMBER"> number </colouring>
+      <colouring no="wxSTC_H_DOUBLESTRING"> string </colouring>
+      <colouring no="wxSTC_H_SINGLESTRING"> string </colouring>
+      <colouring no="wxSTC_H_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </colouring>
     </colourings>
     
     <properties>
