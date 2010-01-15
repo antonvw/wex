@@ -117,7 +117,7 @@ public:
   /// Returns true if you selected one.
   bool ShowDialog(
     wxWindow* parent,
-    wxExLexer& lexer,
+    wxString& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
   const wxString GetLexerAssociations() const;

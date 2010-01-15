@@ -1338,11 +1338,11 @@ bool wxExSTC::IsTargetRE(const wxString& target) const
 
 void wxExSTC::LexerDialog(const wxString& caption)
 {
-  wxExLexer lexer = GetFileName().GetLexer();
+  wxString lexer = GetFileName().GetLexer().GetScintillaLexer();
 
   if (wxExLexers::Get()->ShowDialog(this, lexer, caption))
   {
-    SetLexer(lexer.GetScintillaLexer(), true); // forced
+    SetLexer(lexer, true); // forced
   }
 }
 

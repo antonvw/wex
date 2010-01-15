@@ -505,20 +505,18 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
 
 bool wxExLexers::ShowDialog(
   wxWindow* parent,
-  wxExLexer& lexer,
+  wxString& lexer,
   const wxString& caption) const
 {
-  const int choice = (lexer.GetScintillaLexer().empty()) ? 
-    m_SortedLexerNames.Index(_("<none>")):
-    m_SortedLexerNames.Index(lexer.GetScintillaLexer());
-
   wxSingleChoiceDialog dlg(
     parent, 
     _("Input") + ":", 
     caption, 
     m_SortedLexerNames);
   
-  dlg.SetSelection(choice);
+  dlg.SetSelection(lexer.empty() ? 
+    m_SortedLexerNames.Index(_("<none>")):
+    m_SortedLexerNames.Index(lexer));
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {
@@ -526,8 +524,8 @@ bool wxExLexers::ShowDialog(
   }
 
   lexer = (dlg.GetSelection() == m_SortedLexerNames.Index(_("<none>")) ?
-    wxExLexer():
-    FindByName(dlg.GetStringSelection()));
+    wxEmptyString:
+    FindByName(dlg.GetStringSelection()).GetScintillaLexer());
 
   return true;
 }
