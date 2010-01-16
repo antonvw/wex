@@ -56,18 +56,18 @@ const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
 
   // Build the wildcard string using all available lexers.
   for (
-    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
+    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->m_Extensions.empty())
+    if (!it->second.m_Extensions.empty())
     {
       const wxString wildcard =
-        it->GetScintillaLexer() +
-        " (" + it->m_Extensions + ") |" +
-        it->m_Extensions;
+        it->second.GetScintillaLexer() +
+        " (" + it->second.m_Extensions + ") |" +
+        it->second.m_Extensions;
 
-      if (wxExMatchesOneOf(filename, it->m_Extensions))
+      if (wxExMatchesOneOf(filename, it->second.m_Extensions))
       {
         wildcards = wildcard + "|" + wildcards;
       }
@@ -89,13 +89,13 @@ const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
   }
 
   for (
-    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
+    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
-    if (wxExMatchesOneOf(filename, it->m_Extensions))
+    if (wxExMatchesOneOf(filename, it->second.m_Extensions))
     {
-      return *it;
+      return it->second;
     }
   }
 
@@ -107,13 +107,13 @@ const wxExLexer wxExLexers::FindByName(
   bool fail_if_not_found) const
 {
   for (
-    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
+    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
-    if (name == it->GetScintillaLexer())
+    if (name == it->second.GetScintillaLexer())
     {
-      return *it;
+      return it->second;
     }
   }
 
@@ -179,18 +179,18 @@ const wxString wxExLexers::GetLexerAssociations() const
   wxString text;
 
   for (
-    std::vector<wxExLexer>::const_iterator it = m_Lexers.begin();
+    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->m_Extensions.empty())
+    if (!it->second.m_Extensions.empty())
     {
       if (!text.empty())
       {
         text += wxExFindReplaceData::Get()->GetFieldSeparator();
       }
 
-      text += it->m_Extensions;
+      text += it->second.m_Extensions;
     }
   }
 
@@ -469,11 +469,11 @@ void wxExLexers::Read()
           wxExLexer l(lexer);
           l.m_CommentBegin = "<!--";
           l.m_CommentEnd = "-->";
-          m_Lexers.push_back(l);
+          m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), l));
         }
         else
         {
-          m_Lexers.push_back(lexer);
+          m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
           m_SortedLexerNames.Add(lexer.GetScintillaLexer());
         }
       }

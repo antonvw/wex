@@ -129,7 +129,7 @@ private:
 
   std::map<wxString, wxString> m_Macros;
   std::map<int, int> m_Indicators;
-  std::vector<wxExLexer> m_Lexers;
+  std::map<wxString, wxExLexer> m_Lexers;
   std::vector<wxExMarker> m_Markers;
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
