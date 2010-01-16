@@ -14,11 +14,12 @@ without the written consent of the copyright owner.
 -->
 
 <!--
- Each <lexer> has a name atribute (scintilla lexer) and 
- an extensions atribute (file extensions for files associated with this lexer).
- Extensions are separated by a semicolon (;).
+ Each <lexer> has a name atribute (scintilla lexer). 
  Each lexer might contain the next elements:
- 1) <colourings>. Colouring styles for this lexer. 
+ 1) <extensions>. File extensions for files associated with this lexer.
+    Extensions are separated by a semicolon (;).
+    If not present, the name is use as extension.
+ 2) <colourings>. Colouring styles for this lexer. 
     The attribute 'no' contains the scintilla styles.
     This attribute lists all styles that will have the style specifier that 
     follows, separated by a comma sign (,).
@@ -32,20 +33,20 @@ without the written consent of the copyright owner.
     size:[num] sets the font size in points
     eol turns on eol filling
     underline turns on underlining
- 2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
+ 3) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
     explicitly express the set by adding :<setno> after the keyword.
- 3) <properties>. Properties for this lexer. This field
+ 4) <properties>. Properties for this lexer. This field
     is built of two fields, separated by an equal sign (=).
     The first field contains the scintilla property key.
     The second field contains the scintilla property value. 
- 4) A <comments> element.
+ 5) A <comments> element.
  
  In addition to lexers, also <global> properties can be specified.
  At this moment <style>, <indicator>, <marker> and <hex> styles are supported.
  The marker element has a 'no' attribute and its value contains the next fields:
  <marker symbol number><','><foreground colour><','><background colour>
  You can also use macro's, using the </def> property.
- When adding macro from stc.h yuo can use next regular expression:
+ When adding macro from stc.h you can use next regular expression:
  find:    '#define \(.*\) \(.*\)'
  replace: '    <def no ="\1"> \2 </def>'
 */
@@ -1303,7 +1304,9 @@ without the written consent of the copyright owner.
     <!-- these are the macro's you can use as general colouring styles
       -->    
     <def no="char"> fore:pink </def>
+    <def no="command"> fore:steel blue </def>
     <def no="comment"> fore:forest green,italic,eol </def>
+    <def no="identifier"> fore:yellow </def>
     <def no="number"> fore:red </def>
     <def no="operator"> fore:brown </def>
     <def no="preprocessor"> fore:grey </def>
@@ -1330,7 +1333,6 @@ without the written consent of the copyright owner.
   <lexer
     name="python"
     extensions="*.py">
-  
     <colourings>
       <colouring no="wxSTC_P_COMMENTLINE"> comment </colouring>
       <colouring no="wxSTC_P_NUMBER"> number </colouring>
@@ -1340,15 +1342,6 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_P_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_P_WORD2"> italic </colouring>
     </colourings>
-  
-    <keywords>    
-    </keywords>
-  
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
   </lexer>
   
   <lexer 
@@ -1428,31 +1421,8 @@ without the written consent of the copyright owner.
   </lexer>
   
   <lexer
-    name="tcl"
-    extensions="*.tcl">
-  
-    <colourings>
-      <colouring no="wxSTC_TCL_COMMENT,wxSTC_TCL_COMMENTLINE"> comment </colouring>
-      <colouring no="wxSTC_TCL_NUMBER"> number </colouring>
-      <colouring no="wxSTC_TCL_WORD"> word </colouring>
-      <colouring no="wxSTC_TCL_OPERATOR"> operator </colouring>
-      <colouring no="wxSTC_TCL_WORD2"> italic </colouring>
-    </colourings>
-  
-    <keywords>    
-    </keywords>
-  
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
-  </lexer>
-  
-  <lexer
     name="pascal"
     extensions="*.pas">
-  
     <colourings>
       <colouring no="wxSTC_C_COMMENT,wxSTC_C_COMMENTLINE,wxSTC_C_COMMENTDOC"> comment </colouring>
       <colouring no="wxSTC_C_NUMBER"> number </colouring>
@@ -1495,7 +1465,6 @@ without the written consent of the copyright owner.
   <lexer 
     name="ada"
     extensions="*.a">
-    
     <colourings>
       <colouring no="wxSTC_ADA_WORD"> word </colouring>
       <colouring no="wxSTC_ADA_NUMBER"> number </colouring>
@@ -1550,12 +1519,6 @@ without the written consent of the copyright owner.
     msgid
     msgstr
     </keywords>
-
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
     
     <comments begin1="#" />
   </lexer>
@@ -1739,4 +1702,531 @@ without the written consent of the copyright owner.
     
     <comments begin1="#" />
   </lexer>
+  
+  <lexer name="d">
+    <colourings>
+      <colouring no="wxSTC_D_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_D_NUMBER"> number </colouring>
+      <colouring no="wxSTC_D_WORD"> word </colouring>
+      <colouring no="wxSTC_D_STRING"> string </colouring>
+      <colouring no="wxSTC_D_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_D_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_D_WORD2"> italic </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="tcl">
+    <colourings>
+      <colouring no="wxSTC_TCL_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_TCL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_TCL_WORD"> word </colouring>
+      <colouring no="wxSTC_TCL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_TCL_WORD2"> italic </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="perl">
+    <colourings>
+      <colouring no="wxSTC_PL_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_PL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_PL_WORD"> word </colouring>
+      <colouring no="wxSTC_PL_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="ruby">
+    <colourings>
+      <colouring no="wxSTC_RB_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_RB_NUMBER"> number </colouring>
+      <colouring no="wxSTC_RB_WORD"> word </colouring>
+      <colouring no="wxSTC_RB_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="vb">
+    <colourings>
+      <colouring no="wxSTC_B_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_B_NUMBER"> number </colouring>
+      <colouring no="wxSTC_B_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_B_KEYWORD2"> italic </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="props">
+    <colourings>
+      <colouring no="wxSTC_PROPS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_PROPS_SECTION"> number </colouring>
+      <colouring no="wxSTC_PROPS_KEY"> word </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="latex">
+    <colourings>
+      <colouring no="wxSTC_L_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_L_COMMAND"> command </colouring>
+      <colouring no="wxSTC_L_MATH"> number </colouring>
+      <colouring no="wxSTC_L_TAG"> word </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="lua">
+    <colourings>
+      <colouring no="wxSTC_LUA_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_LUA_NUMBER"> number </colouring>
+      <colouring no="wxSTC_LUA_WORD"> word </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="errlist">
+    <colourings>
+      <colouring no="wxSTC_ERR_PYTHON"> comment </colouring>
+      <colouring no="wxSTC_ERR_GCC"> number </colouring>
+      <colouring no="wxSTC_ERR_MS"> word </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer
+    name="batch"
+    extensions="*.bat">
+    <colourings>
+      <colouring no="wxSTC_BAT_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_BAT_COMMAND"> comment </colouring>
+      <colouring no="wxSTC_BAT_WORD"> word </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="diff">
+    <colourings>
+      <colouring no="wxSTC_DIFF_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_DIFF_COMMAND"> command </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="acf">
+    <colourings>
+      <colouring no="wxSTC_CONF_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_CONF_NUMBER"> number </colouring>
+      <colouring no="wxSTC_CONF_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="ave">
+    <colourings>
+      <colouring no="wxSTC_AVE_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_AVE_NUMBER"> number </colouring>
+      <colouring no="wxSTC_AVE_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="baan">
+    <colourings>
+      <colouring no="wxSTC_BAAN_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_BAAN_NUMBER"> number </colouring>
+      <colouring no="wxSTC_BAAN_WORD"> word </colouring>
+      <colouring no="wxSTC_BAAN_STRING"> string </colouring>
+      <colouring no="wxSTC_BAAN_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="lisp">
+    <colourings>
+      <colouring no="wxSTC_LISP_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_LISP_NUMBER"> number </colouring>
+      <colouring no="wxSTC_LISP_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_LISP_STRING"> string </colouring>
+      <colouring no="wxSTC_LISP_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="eiffel">
+    <colourings>
+      <colouring no="wxSTC_EIFFEL_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_EIFFEL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_EIFFEL_WORD"> word </colouring>
+      <colouring no="wxSTC_EIFFEL_STRING"> string </colouring>
+      <colouring no="wxSTC_EIFFEL_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="crontab">
+    <colourings>
+      <colouring no="wxSTC_NNCRONTAB_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_NNCRONTAB_NUMBER"> number </colouring>
+      <colouring no="wxSTC_NNCRONTAB_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_NNCRONTAB_STRING"> string </colouring>
+      <colouring no="wxSTC_NNCRONTAB_MODIFIER"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="forth">
+    <colourings>
+      <colouring no="wxSTC_FORTH_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_FORTH_NUMBER"> number </colouring>
+      <colouring no="wxSTC_FORTH_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_FORTH_STRING"> string </colouring>
+      <colouring no="wxSTC_FORTH_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="matlab">
+    <colourings>
+      <colouring no="wxSTC_MATLAB_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_MATLAB_NUMBER"> number </colouring>
+      <colouring no="wxSTC_MATLAB_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_MATLAB_STRING"> string </colouring>
+      <colouring no="wxSTC_MATLAB_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="scriptol">
+    <colourings>
+      <colouring no="wxSTC_SCRIPTOL_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_SCRIPTOL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_SCRIPTOL_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_SCRIPTOL_STRING"> string </colouring>
+      <colouring no="wxSTC_SCRIPTOL_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="fortran">
+    <colourings>
+      <colouring no="wxSTC_F_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_F_NUMBER"> number </colouring>
+      <colouring no="wxSTC_F_WORD"> word </colouring>
+      <colouring no="wxSTC_F_STRING1"> string </colouring>
+      <colouring no="wxSTC_F_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="css">
+    <colourings>
+      <colouring no="wxSTC_CSS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_CSS_SINGLESTRING"> string </colouring>
+      <colouring no="wxSTC_CSS_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="pov">
+    <colourings>
+      <colouring no="wxSTC_POV_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_POV_NUMBER"> number </colouring>
+      <colouring no="wxSTC_POV_WORD2"> word </colouring>
+      <colouring no="wxSTC_POV_STRING"> string </colouring>
+      <colouring no="wxSTC_POV_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_POV_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="lout">
+    <colourings>
+      <colouring no="wxSTC_LOUT_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_LOUT_NUMBER"> number </colouring>
+      <colouring no="wxSTC_LOUT_WORD"> word </colouring>
+      <colouring no="wxSTC_LOUT_STRING"> string </colouring>
+      <colouring no="wxSTC_LOUT_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_LOUT_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="escript">
+    <colourings>
+      <colouring no="wxSTC_ESCRIPT_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ESCRIPT_NUMBER"> number </colouring>
+      <colouring no="wxSTC_ESCRIPT_WORD"> word </colouring>
+      <colouring no="wxSTC_ESCRIPT_STRING"> string </colouring>
+      <colouring no="wxSTC_ESCRIPT_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_ESCRIPT_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer
+    name="postscript"
+    extensions="*.ps">
+    <colourings>
+      <colouring no="wxSTC_PS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_PS_NUMBER"> number </colouring>
+      <colouring no="wxSTC_PS_KEYWORD"> word </colouring>
+      <colouring no="wxSTC_PS_TEXT"> string </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="nsis">
+    <colourings>
+      <colouring no="wxSTC_NSIS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_NSIS_STRINGDQ"> string </colouring>
+      <colouring no="wxSTC_NSIS_NUMBER"> number</colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="mmixal">
+    <colourings>
+      <colouring no="wxSTC_MMIXAL_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_MMIXAL_STRING"> string </colouring>
+      <colouring no="wxSTC_MMIXAL_NUMBER"> number</colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="clw">
+    <colourings>
+      <colouring no="wxSTC_CLW_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_CLW_STRING"> string </colouring>
+      <colouring no="wxSTC_CLW_ERROR"> number</colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="lot">
+    <colourings>
+      <colouring no="wxSTC_LOT_HEADER"> comment </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="yaml">
+    <colourings>
+      <colouring no="wxSTC_YAML_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_YAML_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_YAML_ERROR"> number</colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="tex">
+    <colourings>
+      <colouring no="wxSTC_TEX_TEXT"> string </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="metapost">
+    <colourings>
+      <colouring no="wxSTC_METAPOST_TEXT"> string </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="erlang">
+    <colourings>
+      <colouring no="wxSTC_MMIXAL_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_MMIXAL_STRING"> string </colouring>
+      <colouring no="wxSTC_MMIXAL_NUMBER"> number</colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="mssql">
+    <colourings>
+      <colouring no="wxSTC_MSSQL_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_MSSQL_STRING"> string </colouring>
+      <colouring no="wxSTC_MSSQL_NUMBER"> number</colouring>
+      <colouring no="wxSTC_MSSQL_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="verilog">
+    <colourings>
+      <colouring no="wxSTC_V_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_V_STRING"> string </colouring>
+      <colouring no="wxSTC_V_NUMBER"> number</colouring>
+      <colouring no="wxSTC_V_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_V_PREPROCESSOR"> preprocessor </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="kix">
+    <colourings>
+      <colouring no="wxSTC_KIX_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_KIX_STRING1"> string </colouring>
+      <colouring no="wxSTC_KIX_NUMBER"> number</colouring>
+      <colouring no="wxSTC_KIX_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="gui4cli">
+    <colourings>
+      <colouring no="wxSTC_GC_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_GC_STRING"> string </colouring>
+      <colouring no="wxSTC_GC_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="specman">
+    <colourings>
+      <colouring no="wxSTC_SN_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_SN_STRING"> string </colouring>
+      <colouring no="wxSTC_SN_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_SN_PREPROCESSOR"> preprocessor </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="au3">
+    <colourings>
+      <colouring no="wxSTC_AU3_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_AU3_STRING"> string </colouring>
+      <colouring no="wxSTC_AU3_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_AU3_PREPROCESSOR"> preprocessor </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="apdl">
+    <colourings>
+      <colouring no="wxSTC_APDL_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_APDL_STRING"> string </colouring>
+      <colouring no="wxSTC_APDL_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="asn1">
+    <colourings>
+      <colouring no="wxSTC_ASN1_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ASN1_STRING"> string </colouring>
+      <colouring no="wxSTC_ASN1_IDENTIFIER"> identifier </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="vhdl">
+    <colourings>
+      <colouring no="wxSTC_VHDL_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_VHDL_STRING"> string </colouring>
+      <colouring no="wxSTC_VHDL_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="caml">
+    <colourings>
+      <colouring no="wxSTC_CAML_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_CAML_STRING"> string </colouring>
+      <colouring no="wxSTC_CAML_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="haskell">
+    <colourings>
+      <colouring no="wxSTC_HA_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_HA_STRING"> string </colouring>
+      <colouring no="wxSTC_HA_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="tads3">
+    <colourings>
+      <colouring no="wxSTC_T3_LINE_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_T3_S_STRING"> string </colouring>
+      <colouring no="wxSTC_T3_OPERATOR"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="rebol">
+    <colourings>
+      <colouring no="wxSTC_REBOL_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_REBOL_QUOTEDSTRING"> string </colouring>
+      <colouring no="wxSTC_REBOL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_REBOL_IDENTIFIER"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="smalltalk">
+    <colourings>
+      <colouring no="wxSTC_ST_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ST_STRING"> string </colouring>
+      <colouring no="wxSTC_ST_SYMBOL"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="flagship">
+    <colourings>
+      <colouring no="wxSTC_FS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_FS_STRING"> string </colouring>
+      <colouring no="wxSTC_FS_IDENTIFIER"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="csound">
+    <colourings>
+      <colouring no="wxSTC_CSOUND_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_CSOUND_STRINGEOL"> string </colouring>
+      <colouring no="wxSTC_CSOUND_IDENTIFIER"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="innosetup">
+    <colourings>
+      <colouring no="wxSTC_INNO_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_INNO_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_INNO_IDENTIFIER"> operator </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="opal">
+    <colourings>
+      <colouring no="wxSTC_OPAL_COMMENT_BLOCK"> comment </colouring>
+      <colouring no="wxSTC_OPAL_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_OPAL_INTEGER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="spice">
+    <colourings>
+      <colouring no="wxSTC_SPICE_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_SPICE_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_SPICE_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="cmake">
+    <colourings>
+      <colouring no="wxSTC_CMAKE_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_CMAKE_COMMANDS"> command </colouring>
+      <colouring no="wxSTC_CMAKE_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="gap">
+    <colourings>
+      <colouring no="wxSTC_GAP_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_GAP_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_GAP_CHAR"> char </colouring>
+      <colouring no="wxSTC_GAP_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="plm">
+    <colourings>
+      <colouring no="wxSTC_PLM_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_PLM_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_PLM_STRING"> string </colouring>
+      <colouring no="wxSTC_PLM_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="progress">
+    <colourings>
+      <colouring no="wxSTC_4GL_COMMENT1"> comment </colouring>
+      <colouring no="wxSTC_4GL_WORD"> word </colouring>
+      <colouring no="wxSTC_4GL_STRING"> string </colouring>
+      <colouring no="wxSTC_4GL_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="abaqus">
+    <colourings>
+      <colouring no="wxSTC_ABAQUS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ABAQUS_WORD"> word </colouring>
+      <colouring no="wxSTC_ABAQUS_STRING"> string </colouring>
+      <colouring no="wxSTC_ABAQUS_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="asy">
+    <colourings>
+      <colouring no="wxSTC_ASY_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ASY_WORD"> word </colouring>
+      <colouring no="wxSTC_ASY_STRING"> string </colouring>
+      <colouring no="wxSTC_ASY_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
+  <lexer name="r">
+    <colourings>
+      <colouring no="wxSTC_R_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_R_KWORD"> word </colouring>
+      <colouring no="wxSTC_R_STRING"> string </colouring>
+      <colouring no="wxSTC_R_NUMBER"> number </colouring>
+    </colourings>
+  </lexer>
+  
 </lexers>
