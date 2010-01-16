@@ -25,9 +25,6 @@ class wxExLexer
 {
   friend class wxExLexers;
 public:
-  /// Gets the associations, e.g. *.cpp;*.c;*.cc;*.h;*.hpp;.
-  const wxString& GetAssociations() const {return m_Associations;};
-
   /// Gets the colourings.
   const wxString& GetColourings() const {return m_Colourings;};
 
@@ -99,12 +96,12 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
 
-  wxString m_Associations;
   wxString m_Colourings;
   wxString m_CommentBegin;
   wxString m_CommentBegin2;
   wxString m_CommentEnd;
   wxString m_CommentEnd2;
+  wxString m_Extensions;
   wxString m_Properties;
   wxString m_ScintillaLexer;
 
