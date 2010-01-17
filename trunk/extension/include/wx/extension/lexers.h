@@ -94,6 +94,9 @@ public:
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
 
+  /// Gets the global properties.
+  const wxString& GetGlobalProperties() const {return m_GlobalProperties;};
+
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};
 
@@ -135,6 +138,7 @@ private:
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
   wxString m_DefaultStyle;
+  wxString m_GlobalProperties;
   wxSortedArrayString m_SortedLexerNames;
 
   const wxFileName m_FileName;

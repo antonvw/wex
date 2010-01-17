@@ -506,8 +506,9 @@ void wxExSTC::Colourise()
 {
   SetKeyWords();
   SetGlobalStyles();
+  SetProperties(wxExLexers::Get()->GetGlobalProperties());
   SetMarkers();
-  SetProperties();
+  SetProperties(GetFileName().GetLexer().GetProperties());
   SetFolding();
 
   wxStringTokenizer tkz(
@@ -2126,7 +2127,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 
   // Reset all old properties. 
   // Should be before GetFileName().SetLexer().
-  SetProperties(true); //reset
+  SetProperties(GetFileName().GetLexer().GetProperties(), true); //reset
 
   if (forced)
   {
@@ -2181,11 +2182,9 @@ void wxExSTC::SetMarkers()
   }
 }
 
-void wxExSTC::SetProperties(bool reset)
+void wxExSTC::SetProperties(const wxString& prop, bool reset)
 {
-  wxStringTokenizer properties(
-    GetFileName().GetLexer().GetProperties(),
-    wxTextFile::GetEOL());
+  wxStringTokenizer properties(prop, wxTextFile::GetEOL());
 
   while (properties.HasMoreTokens())
   {
@@ -2196,7 +2195,7 @@ void wxExSTC::SetProperties(bool reset)
     const wxString key = property.GetNextToken();
     const wxString value = property.GetNextToken();
 
-  SetProperty(key, (!reset ? value: wxEmptyString));
+    SetProperty(key, (!reset ? value: wxEmptyString));
   }
 }
 

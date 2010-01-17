@@ -294,7 +294,7 @@ private:
   void SetGlobalStyles();
   void SetKeyWords();
   void SetMarkers();
-  void SetProperties(bool reset = false);
+  void SetProperties(const wxString& properties, bool reset = false);
   void SetStyle(const wxString& style);
   /// After pressing enter, starts new line at same place
   /// as previous line.

@@ -233,32 +233,6 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
   return text;
 }
 
-void wxExLexers::ParseTagMacro(const wxXmlNode* node)
-{
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else if (child->GetName() == "def")
-    {
-      const wxString attrib = child->GetAttribute("no", "0");
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
-      m_Macros[attrib] = content;
-    }
-    else
-    {
-      wxLogError("Undefined macro tag: %s on: %d",
-        child->GetName().c_str(), child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-}
-
 void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
@@ -299,6 +273,10 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
           marker.GetMarkerSymbol(),
           child->GetLineNumber());
       }
+    }
+    else if (child->GetName() == "properties")
+    {
+      m_GlobalProperties = ParseTagProperties(child);
     }
     else if (child->GetName() == "style")
     {
@@ -371,6 +349,32 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
   }
 
   return lexer;
+}
+
+void wxExLexers::ParseTagMacro(const wxXmlNode* node)
+{
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else if (child->GetName() == "def")
+    {
+      const wxString attrib = child->GetAttribute("no", "0");
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
+      m_Macros[attrib] = content;
+    }
+    else
+    {
+      wxLogError("Undefined macro tag: %s on: %d",
+        child->GetName().c_str(), child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
 }
 
 const wxExMarker wxExLexers::ParseTagMarker(
