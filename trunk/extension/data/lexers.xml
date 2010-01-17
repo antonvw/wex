@@ -13,47 +13,14 @@ All rights are reserved. Reproduction in whole or part is prohibited
 without the written consent of the copyright owner.
 -->
 
-<!--
- Each <lexer> has a name atribute (scintilla lexer). 
- Each lexer might contain the next elements:
- 1) <extensions>. File extensions for files associated with this lexer.
-    Extensions are separated by a semicolon (;).
-    If not present, the name is use as extension.
- 2) <colourings>. Colouring styles for this lexer. 
-    The attribute 'no' contains the scintilla styles.
-    This attribute lists all styles that will have the style specifier that 
-    follows, separated by a comma sign (,).
-    The value contains the scintilla style specifier. 
-    It can have the next values:
-    bold turns on bold
-    italic turns on italics
-    fore:[name or #RRGGBB] sets the foreground colour
-    back:[name or #RRGGBB] sets the background colour
-    face:[facename] sets the font face name to use
-    size:[num] sets the font size in points
-    eol turns on eol filling
-    underline turns on underlining
- 3) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
-    explicitly express the set by adding :<setno> after the keyword.
- 4) <properties>. Properties for this lexer. This field
-    is built of two fields, separated by an equal sign (=).
-    The first field contains the scintilla property key.
-    The second field contains the scintilla property value. 
- 5) A <comments> element.
- 
- In addition to lexers, also <global> properties can be specified.
- At this moment <style>, <indicator>, <marker> and <hex> styles are supported.
- The marker element has a 'no' attribute and its value contains the next fields:
- <marker symbol number><','><foreground colour><','><background colour>
- You can also use macro's, using the </def> property.
- When adding macro from stc.h you can use next regular expression:
- find:    '#define \(.*\) \(.*\)'
- replace: '    <def no ="\1"> \2 </def>'
-*/
--->
-
 <lexers>
-  <global>
+  <macro>
+  <!-- 
+   You can use macro's, using the <def> property.
+   When adding macro from stc.h you can use next regular expression:
+   find:    '#define \(.*\) \(.*\)'
+   replace: '    <def no ="\1"> \2 </def>'
+   -->
     <def no ="wxSTC_MARK_CIRCLE"> 0 </def>
     <def no ="wxSTC_MARK_ROUNDRECT"> 1 </def>
     <def no ="wxSTC_MARK_ARROW"> 2 </def>
@@ -1306,13 +1273,21 @@ without the written consent of the copyright owner.
     <def no="char"> fore:pink </def>
     <def no="command"> fore:steel blue </def>
     <def no="comment"> fore:forest green,italic,eol </def>
+    <def no="error"> fore:red,italic,eol </def>
     <def no="identifier"> fore:yellow </def>
     <def no="number"> fore:red </def>
     <def no="operator"> fore:brown </def>
     <def no="preprocessor"> fore:grey </def>
     <def no="string"> fore:blue </def>
     <def no="word"> fore:dark turquoise </def>
-    
+  </macro>
+  
+  <global>
+  <!--
+   At this moment <style>, <indicator>, <marker> and <hex> styles are supported.  
+   The marker element has a 'no' attribute and its value contains the next fields:
+   <marker symbol number><','><foreground colour><','><background colour>
+   -->
     <marker no="wxSTC_MARKNUM_FOLDEREND"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPENMID"> wxSTC_MARK_MINUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNER,folder,folder</marker>
@@ -1327,12 +1302,39 @@ without the written consent of the copyright owner.
     
     <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
     <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
-
   </global>
   
   <lexer
     name="python"
     extensions="*.py">
+  <!--
+   Each <lexer> has a name atribute (scintilla lexer). 
+   In addition it might contain the next attributes:
+   1) <extensions>. File extensions for files associated with this lexer.
+      Extensions are separated by a semicolon (;).
+      If not present, the name is use as extension.
+   2) <colourings>. Colouring styles for this lexer. 
+      The attribute 'no' contains the scintilla styles.
+      This attribute lists all styles that will have the style specifier that 
+      follows, separated by a comma sign (,).
+      The value contains the scintilla style specifier. 
+      It can have the next values:
+      bold turns on bold
+      italic turns on italics
+      fore:[name or #RRGGBB] sets the foreground colour
+      back:[name or #RRGGBB] sets the background colour
+      face:[facename] sets the font face name to use
+      size:[num] sets the font size in points
+      eol turns on eol filling
+      underline turns on underlining
+   3) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
+      explicitly express the set by adding :<setno> after the keyword.
+   4) <properties>. Properties for this lexer. This field
+      is built of two fields, separated by an equal sign (=).
+      The first field contains the scintilla property key.
+      The second field contains the scintilla property value. 
+   5) A <comments> element.
+   -->
     <colourings>
       <colouring no="wxSTC_P_COMMENTLINE"> comment </colouring>
       <colouring no="wxSTC_P_NUMBER"> number </colouring>
@@ -1729,6 +1731,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_PL_COMMENTLINE"> comment </colouring>
       <colouring no="wxSTC_PL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_PL_ERROR"> error </colouring>
       <colouring no="wxSTC_PL_WORD"> word </colouring>
       <colouring no="wxSTC_PL_OPERATOR"> operator </colouring>
     </colourings>
@@ -1738,6 +1741,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_RB_COMMENTLINE"> comment </colouring>
       <colouring no="wxSTC_RB_NUMBER"> number </colouring>
+      <colouring no="wxSTC_RB_ERROR"> error </colouring>
       <colouring no="wxSTC_RB_WORD"> word </colouring>
       <colouring no="wxSTC_RB_OPERATOR"> operator </colouring>
     </colourings>
@@ -1747,6 +1751,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_B_COMMENT"> comment </colouring>
       <colouring no="wxSTC_B_NUMBER"> number </colouring>
+      <colouring no="wxSTC_B_ERROR"> error </colouring>
       <colouring no="wxSTC_B_KEYWORD"> word </colouring>
       <colouring no="wxSTC_B_KEYWORD2"> italic </colouring>
     </colourings>
@@ -1970,7 +1975,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_CLW_COMMENT"> comment </colouring>
       <colouring no="wxSTC_CLW_STRING"> string </colouring>
-      <colouring no="wxSTC_CLW_ERROR"> number</colouring>
+      <colouring no="wxSTC_CLW_ERROR"> error </colouring>
     </colourings>
   </lexer>
   
@@ -1984,7 +1989,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_YAML_COMMENT"> comment </colouring>
       <colouring no="wxSTC_YAML_IDENTIFIER"> identifier </colouring>
-      <colouring no="wxSTC_YAML_ERROR"> number</colouring>
+      <colouring no="wxSTC_YAML_ERROR"> error </colouring>
     </colourings>
   </lexer>
   
