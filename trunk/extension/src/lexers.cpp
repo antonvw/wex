@@ -106,15 +106,11 @@ const wxExLexer wxExLexers::FindByName(
   const wxString& name,
   bool fail_if_not_found) const
 {
-  for (
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
-    it != m_Lexers.end();
-    ++it)
+  std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.find(name);
+
+  if (it != m_Lexers.end())
   {
-    if (name == it->second.GetScintillaLexer())
-    {
-      return it->second;
-    }
+    return it->second;
   }
 
   if (!m_Lexers.empty() && fail_if_not_found)
