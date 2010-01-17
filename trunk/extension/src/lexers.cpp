@@ -233,6 +233,32 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
   return text;
 }
 
+void wxExLexers::ParseTagMacro(const wxXmlNode* node)
+{
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else if (child->GetName() == "def")
+    {
+      const wxString attrib = child->GetAttribute("no", "0");
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
+      m_Macros[attrib] = content;
+    }
+    else
+    {
+      wxLogError("Undefined macro tag: %s on: %d",
+        child->GetName().c_str(), child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
+}
+
 void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
@@ -288,12 +314,6 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
       {
         m_Styles.push_back(attrib + "=" + content);
       }
-    }
-    else if (child->GetName() == "def")
-    {
-      const wxString attrib = child->GetAttribute("no", "0");
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
-      m_Macros[attrib] = content;
     }
     else
     {
@@ -448,7 +468,11 @@ void wxExLexers::Read()
 
   while (child)
   {
-    if (child->GetName() == "global")
+    if (child->GetName() == "macro")
+    {
+      ParseTagMacro(child);
+    }
+    else if (child->GetName() == "global")
     {
       ParseTagGlobal(child);
     }

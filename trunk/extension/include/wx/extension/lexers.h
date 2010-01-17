@@ -124,6 +124,7 @@ private:
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
   const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
+  void ParseTagMacro(const wxXmlNode* node);
   const wxExMarker ParseTagMarker(const wxString& number, const wxString& props) const;
   const wxString ParseTagProperties(const wxXmlNode* node) const;
 
