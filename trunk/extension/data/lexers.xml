@@ -1284,7 +1284,8 @@ without the written consent of the copyright owner.
   
   <global>
   <!--
-   At this moment <style>, <indicator>, <marker> and <hex> styles are supported.  
+   At this moment <style>, <indicator>, <marker>, <hex> and <properties> 
+   attributes are supported.  
    The marker element has a 'no' attribute and its value contains the next fields:
    <marker symbol number><','><foreground colour><','><background colour>
    -->
@@ -1302,6 +1303,13 @@ without the written consent of the copyright owner.
     
     <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
     <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
+    
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.comment"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+      <property name="fold.preprocessor"> 0 </property>
+    </properties>
   </global>
   
   <lexer
@@ -1412,13 +1420,6 @@ without the written consent of the copyright owner.
     valarray:1 vector:1
     </keywords>
   
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.preprocessor"> 0 </property>
-    </properties>
-    
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
   
@@ -1455,12 +1456,6 @@ without the written consent of the copyright owner.
     WHILE WITH WRITE WRITELN WRITEONLY XOR BOOLEAN CHAR INTEGER REAL
     </keywords>
   
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
-    
     <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
   </lexer>
   
@@ -1485,13 +1480,6 @@ without the written consent of the copyright owner.
       use when while with xor
     </keywords>    
     
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-      <property name="fold.preprocessor"> 0 </property>
-    </properties>
-
     <comments begin1="--" />
   </lexer>
     
@@ -1681,12 +1669,6 @@ without the written consent of the copyright owner.
     year
     zone
     </keywords>
-    
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.comment"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
     
     <comments begin1="--" />
   </lexer>
