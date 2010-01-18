@@ -1601,6 +1601,10 @@ without the written consent of the copyright owner.
          they are added in the source -->
   </lexer>
   
+  <lexer name="php"> </lexer>
+  <lexer name="phpscript"> </lexer>
+  <lexer name="asp"> </lexer>
+  
   <lexer
     name="sql"
     extensions="*.sql">
@@ -1741,6 +1745,8 @@ without the written consent of the copyright owner.
     </colourings>
   </lexer>
   
+  <lexer name="vbscript"> </lexer>
+  
   <lexer name="props">
     <colourings>
       <colouring no="wxSTC_PROPS_COMMENT"> comment </colouring>
@@ -1839,7 +1845,7 @@ without the written consent of the copyright owner.
     </colourings>
   </lexer>
   
-  <lexer name="crontab">
+  <lexer name="nncrontab">
     <colourings>
       <colouring no="wxSTC_NNCRONTAB_COMMENT"> comment </colouring>
       <colouring no="wxSTC_NNCRONTAB_NUMBER"> number </colouring>
@@ -1959,7 +1965,7 @@ without the written consent of the copyright owner.
     </colourings>
   </lexer>
   
-  <lexer name="clw">
+  <lexer name="clarion">
     <colourings>
       <colouring no="wxSTC_CLW_COMMENT"> comment </colouring>
       <colouring no="wxSTC_CLW_STRING"> string </colouring>
@@ -2181,7 +2187,7 @@ without the written consent of the copyright owner.
     </colourings>
   </lexer>
   
-  <lexer name="plm">
+  <lexer name="PL/M">
     <colourings>
       <colouring no="wxSTC_PLM_COMMENT"> comment </colouring>
       <colouring no="wxSTC_PLM_KEYWORD"> keyword </colouring>
