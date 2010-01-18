@@ -44,9 +44,11 @@ public:
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
 
   /// Gets all the keywords sets.
-  const std::map< int, std::set<wxString> >& GetKeywordsSet() const {return m_KeywordsSet;};
+  const std::map< int, std::set<wxString> >& GetKeywordsSet() const {
+    return m_KeywordsSet;};
 
-  /// Gets the keywords as one large string, if keyword_set -1 take all the sets,
+  /// Gets the keywords as one large string, 
+  /// if keyword_set -1 take all the sets,
   /// otherwise take the specified set.
   const wxString GetKeywordsString(int keyword_set = -1) const;
 
@@ -82,7 +84,8 @@ public:
 
   /// Adds the specified keywords to the keywords map and the keywords set.
   /// The text might contain the keyword set after a ':'.
-  /// Returns true if keyword could be added and false if specified set is illegal.
+  /// Returns true if keyword could be added 
+  /// and false if specified set is illegal.
   /// Empties existing keywords.
   bool SetKeywords(const wxString& text);
 
@@ -105,7 +108,10 @@ private:
   wxString m_Properties;
   wxString m_ScintillaLexer;
 
-  std::set<wxString> m_Keywords; // all keywords
-  std::map< int, std::set<wxString> > m_KeywordsSet; // each keyword set in a separate keyword set
+  // all keywords
+  std::set<wxString> m_Keywords;
+
+  // each keyword set in a separate keyword set
+  std::map< int, std::set<wxString> > m_KeywordsSet;
 };
 #endif

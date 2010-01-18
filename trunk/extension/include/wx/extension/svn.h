@@ -68,10 +68,10 @@ public:
 
 #if wxUSE_GUI
   /// Executes the svn command, after showing a dialog.
-  /// If no fullpath was specified, a dialog with base folder is shown, otherwise
-  /// the specified fullpath is used for getting svn contents from.
-  /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, or wxID_ABORT if errors
-  /// were reported by svn otherwise.
+  /// If no fullpath was specified, a dialog with base folder is shown, 
+  /// otherwise the specified fullpath is used for getting svn contents from.
+  /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, 
+  /// or wxID_ABORT if errors were reported by svn otherwise.
   wxStandardID Execute(wxWindow* parent);
 #endif    
 
@@ -91,7 +91,8 @@ public:
   const wxString& GetOutput() const {return m_Output;};
 
   /// Sets the object as the current one, returns the pointer 
-  /// to the previous current object (both the parameter and returned value may be NULL). 
+  /// to the previous current object 
+  /// (both the parameter and returned value may be NULL). 
   static wxExSVN* Set(wxExSVN* svn);
 
 #if wxUSE_GUI

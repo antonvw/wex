@@ -113,7 +113,8 @@ public:
   void Read();
 
   /// Sets the object as the current one, returns the pointer 
-  /// to the previous current object (both the parameter and returned value may be NULL). 
+  /// to the previous current object 
+  /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
 
   /// Shows a dialog with all lexers, allowing you to choose one.
@@ -128,7 +129,9 @@ private:
   void ParseTagGlobal(const wxXmlNode* node);
   const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
   void ParseTagMacro(const wxXmlNode* node);
-  const wxExMarker ParseTagMarker(const wxString& number, const wxString& props) const;
+  const wxExMarker ParseTagMarker(
+    const wxString& number, 
+    const wxString& props) const;
   const wxString ParseTagProperties(const wxXmlNode* node) const;
 
   std::map<wxString, wxString> m_Macros;
