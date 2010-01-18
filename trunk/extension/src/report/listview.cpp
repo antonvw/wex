@@ -1076,6 +1076,8 @@ void wxExListViewFile::DoFileLoad(bool synced)
     ItemFromText(tkz.GetNextToken());
   }
 
+  m_ContentsChanged = false;
+
   if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
     SortColumn(_("Modified"), SORT_KEEP);
   else
