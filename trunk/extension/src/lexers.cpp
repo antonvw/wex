@@ -170,7 +170,7 @@ wxExLexers* wxExLexers::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExLexers::GetLexerAssociations() const
+const wxString wxExLexers::GetLexerExtensions() const
 {
   wxString text;
 
@@ -179,7 +179,8 @@ const wxString wxExLexers::GetLexerAssociations() const
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->second.m_Extensions.empty())
+    if (!it->second.m_Extensions.empty() &&
+         it->second.m_Extensions != "*." + it->second.m_ScintillaLexer)
     {
       if (!text.empty())
       {
@@ -513,12 +514,12 @@ void wxExLexers::Read()
 
   if (!wxConfigBase::Get()->Exists(_("In files")))
   {
-    wxConfigBase::Get()->Write(_("In files"), GetLexerAssociations());
+    wxConfigBase::Get()->Write(_("In files"), GetLexerExtensions());
   }
 
   if (!wxConfigBase::Get()->Exists(_("Add what")))
   {
-    wxConfigBase::Get()->Write(_("Add what"), GetLexerAssociations());
+    wxConfigBase::Get()->Write(_("Add what"), GetLexerExtensions());
   }
 }
 

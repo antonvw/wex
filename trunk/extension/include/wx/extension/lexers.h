@@ -123,7 +123,7 @@ public:
     wxString& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
-  const wxString GetLexerAssociations() const;
+  const wxString GetLexerExtensions() const;
   const wxString ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
   const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
