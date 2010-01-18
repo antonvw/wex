@@ -3,8 +3,7 @@
 <!--
 File:    lexers.xml
 Purpose: Lexers configuration for wxextension.
-         See scintilla v1.75 (www.scintilla.org) for explanation of 
-         style numbers.
+         See scintilla v1.75 (www.scintilla.org).
 Author:  Anton van Wezenbeek
 RCS-ID:  $Id$
 
@@ -1278,6 +1277,7 @@ without the written consent of the copyright owner.
     <def no="number"> fore:red </def>
     <def no="operator"> fore:brown </def>
     <def no="preprocessor"> fore:grey </def>
+    <def no="processor"> fore:dark grey </def>
     <def no="string"> fore:blue </def>
     <def no="word"> fore:dark turquoise </def>
   </macro>
@@ -1716,6 +1716,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_PL_ERROR"> error </colouring>
       <colouring no="wxSTC_PL_WORD"> word </colouring>
       <colouring no="wxSTC_PL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_PL_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -1736,6 +1737,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_B_ERROR"> error </colouring>
       <colouring no="wxSTC_B_KEYWORD"> word </colouring>
       <colouring no="wxSTC_B_KEYWORD2"> italic </colouring>
+      <colouring no="wxSTC_B_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -1761,6 +1763,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_LUA_COMMENT"> comment </colouring>
       <colouring no="wxSTC_LUA_NUMBER"> number </colouring>
       <colouring no="wxSTC_LUA_WORD"> word </colouring>
+      <colouring no="wxSTC_LUA_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -1777,7 +1780,7 @@ without the written consent of the copyright owner.
     extensions="*.bat">
     <colourings>
       <colouring no="wxSTC_BAT_COMMENT"> comment </colouring>
-      <colouring no="wxSTC_BAT_COMMAND"> comment </colouring>
+      <colouring no="wxSTC_BAT_COMMAND"> command </colouring>
       <colouring no="wxSTC_BAT_WORD"> word </colouring>
     </colourings>
   </lexer>
@@ -1812,6 +1815,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_BAAN_WORD"> word </colouring>
       <colouring no="wxSTC_BAAN_STRING"> string </colouring>
       <colouring no="wxSTC_BAAN_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_BAAN_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -1872,6 +1876,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_SCRIPTOL_KEYWORD"> word </colouring>
       <colouring no="wxSTC_SCRIPTOL_STRING"> string </colouring>
       <colouring no="wxSTC_SCRIPTOL_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_SCRIPTOL_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -1882,6 +1887,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_F_WORD"> word </colouring>
       <colouring no="wxSTC_F_STRING1"> string </colouring>
       <colouring no="wxSTC_F_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_F_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -2054,6 +2060,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_APDL_COMMENT"> comment </colouring>
       <colouring no="wxSTC_APDL_STRING"> string </colouring>
       <colouring no="wxSTC_APDL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_APDL_PROCESSOR"> processor </colouring>
     </colourings>
   </lexer>
   
@@ -2094,6 +2101,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_T3_LINE_COMMENT"> comment </colouring>
       <colouring no="wxSTC_T3_S_STRING"> string </colouring>
       <colouring no="wxSTC_T3_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_T3_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -2119,6 +2127,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_FS_COMMENT"> comment </colouring>
       <colouring no="wxSTC_FS_STRING"> string </colouring>
       <colouring no="wxSTC_FS_IDENTIFIER"> operator </colouring>
+      <colouring no="wxSTC_FS_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -2135,6 +2144,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_INNO_COMMENT"> comment </colouring>
       <colouring no="wxSTC_INNO_KEYWORD"> keyword </colouring>
       <colouring no="wxSTC_INNO_IDENTIFIER"> operator </colouring>
+      <colouring no="wxSTC_INNO_PREPROC"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -2186,6 +2196,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_4GL_WORD"> word </colouring>
       <colouring no="wxSTC_4GL_STRING"> string </colouring>
       <colouring no="wxSTC_4GL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_4GL_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
   
@@ -2195,6 +2206,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_ABAQUS_WORD"> word </colouring>
       <colouring no="wxSTC_ABAQUS_STRING"> string </colouring>
       <colouring no="wxSTC_ABAQUS_NUMBER"> number </colouring>
+      <colouring no="wxSTC_ABAQUS_PROCESSOR"> processor </colouring>
     </colourings>
   </lexer>
   
