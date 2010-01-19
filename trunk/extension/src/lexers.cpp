@@ -367,7 +367,18 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
     {
       const wxString attrib = child->GetAttribute("no", "0");
       const wxString content = child->GetNodeContent().Strip(wxString::both);
-      m_Macros[attrib] = content;
+
+      std::map<wxString, wxString>::const_iterator it = m_Macros.find(attrib);
+
+      if (it != m_Macros.end())
+      {
+        wxLogError(_("Macro: %s on line: already exists: %d"),
+          attrib.c_str(), child->GetLineNumber());
+      }
+      else
+      {
+        m_Macros[attrib] = content;
+      }
     }
     else
     {
