@@ -1280,6 +1280,7 @@ without the written consent of the copyright owner.
     <def no="preprocessor"> fore:grey </def>
     <def no="processor"> fore:dark grey </def>
     <def no="string"> fore:blue </def>
+    <def no="variable"> fore:dark yellow </def>
     <def no="word"> fore:dark turquoise </def>
   </macro>
   
@@ -1571,7 +1572,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_HPHP_SIMPLESTRING"> fore:#009F00,back:#FFF8F8 </colouring>
       <colouring no="wxSTC_HPHP_WORD"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
       <colouring no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_VARIABLE"> fore:#00007F,italic,back:#FFF8F8 </colouring>
+      <colouring no="wxSTC_HPHP_VARIABLE"> variable </colouring>
       <colouring no="wxSTC_HPHP_COMMENT,wxSTC_HPHP_COMMENTLINE"> comment </colouring>
       <colouring no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </colouring>
       <colouring no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </colouring>
@@ -1625,6 +1626,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_SQL_STRING"> string </colouring>
       <colouring no="wxSTC_SQL_CHARACTER"> char </colouring>
       <colouring no="wxSTC_SQL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_SQL_IDENTIFIER"> identifier </colouring>
     </colourings>
   
     <keywords>    
@@ -1965,6 +1967,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_NSIS_COMMENT"> comment </colouring>
       <colouring no="wxSTC_NSIS_STRINGDQ"> string </colouring>
       <colouring no="wxSTC_NSIS_NUMBER"> number</colouring>
+      <colouring no="wxSTC_NSIS_VARIABLE"> variable </colouring>
     </colourings>
   </lexer>
   
@@ -2013,18 +2016,21 @@ without the written consent of the copyright owner.
   
   <lexer name="erlang">
     <colourings>
-      <colouring no="wxSTC_MMIXAL_COMMENT"> comment </colouring>
-      <colouring no="wxSTC_MMIXAL_STRING"> string </colouring>
-      <colouring no="wxSTC_MMIXAL_NUMBER"> number</colouring>
+      <colouring no="wxSTC_ERLANG_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ERLANG_VARIABLE"> variable </colouring>
+      <colouring no="wxSTC_ERLANG_STRING"> string </colouring>
+      <colouring no="wxSTC_ERLANG_NUMBER"> number</colouring>
     </colourings>
   </lexer>
   
   <lexer name="mssql">
     <colourings>
       <colouring no="wxSTC_MSSQL_COMMENT"> comment </colouring>
-      <colouring no="wxSTC_MSSQL_STRING"> string </colouring>
       <colouring no="wxSTC_MSSQL_NUMBER"> number</colouring>
+      <colouring no="wxSTC_MSSQL_STRING"> string </colouring>
+      <colouring no="wxSTC_MSSQL_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_MSSQL_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_MSSQL_VARIABLE"> variable </colouring>
     </colourings>
   </lexer>
   
@@ -2070,6 +2076,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_AU3_COMMENT"> comment </colouring>
       <colouring no="wxSTC_AU3_STRING"> string </colouring>
       <colouring no="wxSTC_AU3_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_AU3_VARIABLE"> variable </colouring>
       <colouring no="wxSTC_AU3_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
@@ -2147,8 +2154,10 @@ without the written consent of the copyright owner.
   <lexer name="flagship">
     <colourings>
       <colouring no="wxSTC_FS_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_FS_NUMBER"> number </colouring>
       <colouring no="wxSTC_FS_STRING"> string </colouring>
-      <colouring no="wxSTC_FS_IDENTIFIER"> operator </colouring>
+      <colouring no="wxSTC_FS_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_FS_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_FS_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
   </lexer>
@@ -2190,15 +2199,19 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_CMAKE_COMMENT"> comment </colouring>
       <colouring no="wxSTC_CMAKE_COMMANDS"> command </colouring>
+      <colouring no="wxSTC_CMAKE_VARIABLE"> variable </colouring>
       <colouring no="wxSTC_CMAKE_NUMBER"> number </colouring>
     </colourings>
   </lexer>
   
   <lexer name="gap">
     <colourings>
+      <colouring no="wxSTC_GAP_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_GAP_COMMENT"> comment </colouring>
       <colouring no="wxSTC_GAP_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_GAP_STRING"> string </colouring>
       <colouring no="wxSTC_GAP_CHAR"> char </colouring>
+      <colouring no="wxSTC_GAP_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_GAP_NUMBER"> number </colouring>
     </colourings>
   </lexer>
@@ -2206,38 +2219,48 @@ without the written consent of the copyright owner.
   <lexer name="PL/M">
     <colourings>
       <colouring no="wxSTC_PLM_COMMENT"> comment </colouring>
-      <colouring no="wxSTC_PLM_KEYWORD"> keyword </colouring>
       <colouring no="wxSTC_PLM_STRING"> string </colouring>
       <colouring no="wxSTC_PLM_NUMBER"> number </colouring>
+      <colouring no="wxSTC_PLM_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_PLM_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_PLM_KEYWORD"> keyword </colouring>
     </colourings>
   </lexer>
   
   <lexer name="progress">
     <colourings>
       <colouring no="wxSTC_4GL_COMMENT1"> comment </colouring>
+      <colouring no="wxSTC_4GL_NUMBER"> number </colouring>
       <colouring no="wxSTC_4GL_WORD"> word </colouring>
       <colouring no="wxSTC_4GL_STRING"> string </colouring>
-      <colouring no="wxSTC_4GL_NUMBER"> number </colouring>
+      <colouring no="wxSTC_4GL_CHARACTER"> char </colouring>
       <colouring no="wxSTC_4GL_PREPROCESSOR"> preprocessor </colouring>
+      <colouring no="wxSTC_4GL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_4GL_IDENTIFIER"> identifier </colouring>
     </colourings>
   </lexer>
   
   <lexer name="abaqus">
     <colourings>
       <colouring no="wxSTC_ABAQUS_COMMENT"> comment </colouring>
-      <colouring no="wxSTC_ABAQUS_WORD"> word </colouring>
-      <colouring no="wxSTC_ABAQUS_STRING"> string </colouring>
       <colouring no="wxSTC_ABAQUS_NUMBER"> number </colouring>
+      <colouring no="wxSTC_ABAQUS_STRING"> string </colouring>
+      <colouring no="wxSTC_ABAQUS_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_ABAQUS_WORD"> word </colouring>
       <colouring no="wxSTC_ABAQUS_PROCESSOR"> processor </colouring>
+      <colouring no="wxSTC_ABAQUS_COMMAND"> command </colouring>
     </colourings>
   </lexer>
   
   <lexer name="asy">
     <colourings>
       <colouring no="wxSTC_ASY_COMMENT"> comment </colouring>
+      <colouring no="wxSTC_ASY_NUMBER"> number </colouring>
       <colouring no="wxSTC_ASY_WORD"> word </colouring>
       <colouring no="wxSTC_ASY_STRING"> string </colouring>
-      <colouring no="wxSTC_ASY_NUMBER"> number </colouring>
+      <colouring no="wxSTC_ASY_CHARACTER"> char </colouring>
+      <colouring no="wxSTC_ASY_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_ASY_IDENTIFIER"> identifier </colouring>
     </colourings>
   </lexer>
   
@@ -2245,8 +2268,10 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_R_COMMENT"> comment </colouring>
       <colouring no="wxSTC_R_KWORD"> word </colouring>
-      <colouring no="wxSTC_R_STRING"> string </colouring>
       <colouring no="wxSTC_R_NUMBER"> number </colouring>
+      <colouring no="wxSTC_R_STRING"> string </colouring>
+      <colouring no="wxSTC_R_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_R_IDENTIFIER"> identifier </colouring>
     </colourings>
   </lexer>
   
