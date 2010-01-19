@@ -1269,6 +1269,7 @@ without the written consent of the copyright owner.
     
     <!-- these are the macro's you can use as general colouring styles
       -->    
+    <def no="attribute"> fore:steel blue </def>
     <def no="char"> fore:pink </def>
     <def no="command"> fore:steel blue </def>
     <def no="comment"> fore:forest green,italic,eol </def>
@@ -1368,10 +1369,11 @@ without the written consent of the copyright owner.
       </colouring>
       <colouring no="wxSTC_C_NUMBER"> number </colouring>
       <colouring no="wxSTC_C_WORD"> word </colouring>
-      <colouring no="wxSTC_C_STRING"> string </colouring>
+      <colouring no="wxSTC_C_STRING,wxSTC_C_STRINGEOL"> string </colouring>
       <colouring no="wxSTC_C_CHARACTER"> char </colouring>
       <colouring no="wxSTC_C_PREPROCESSOR"> preprocessor </colouring>
       <colouring no="wxSTC_C_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_C_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_C_WORD2"> italic </colouring>
     </colourings>
   
@@ -1430,9 +1432,10 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_C_COMMENT,wxSTC_C_COMMENTLINE,wxSTC_C_COMMENTDOC"> comment </colouring>
       <colouring no="wxSTC_C_NUMBER"> number </colouring>
       <colouring no="wxSTC_C_WORD"> word </colouring>
-      <colouring no="wxSTC_C_STRING"> string </colouring>
+      <colouring no="wxSTC_C_STRING,wxSTC_C_STRINGEOL"> string </colouring>
       <colouring no="wxSTC_C_CHARACTER"> char </colouring>
       <colouring no="wxSTC_C_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_C_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_C_WORD2"> italic </colouring>
     </colourings>
   
@@ -1464,6 +1467,7 @@ without the written consent of the copyright owner.
     extensions="*.a">
     <colourings>
       <colouring no="wxSTC_ADA_WORD"> word </colouring>
+      <colouring no="wxSTC_ADA_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_ADA_NUMBER"> number </colouring>
       <colouring no="wxSTC_ADA_STRINGEOL"> string </colouring>
       <colouring no="wxSTC_ADA_COMMENTLINE"> comment </colouring>
@@ -1554,6 +1558,9 @@ without the written consent of the copyright owner.
     extensions="*.htm;*.html">
     <colourings>
       <colouring no="wxSTC_H_TAG"> word </colouring>
+      <colouring no="wxSTC_H_TAGUNKNOWN"> error </colouring>
+      <colouring no="wxSTC_H_ATTRIBUTE"> attribute </colouring>
+      <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> error </colouring>
       <colouring no="wxSTC_H_NUMBER"> number </colouring>
       <colouring no="wxSTC_H_DOUBLESTRING,wxSTC_H_SINGLESTRING"> string </colouring>
       <colouring no="wxSTC_H_COMMENT"> comment </colouring>
@@ -1584,6 +1591,9 @@ without the written consent of the copyright owner.
   
     <colourings>
       <colouring no="wxSTC_H_TAG"> word </colouring>
+      <colouring no="wxSTC_H_TAGUNKNOWN"> error </colouring>
+      <colouring no="wxSTC_H_ATTRIBUTE"> attribute </colouring>
+      <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> error </colouring>
       <colouring no="wxSTC_H_NUMBER"> number </colouring>
       <colouring no="wxSTC_H_DOUBLESTRING"> string </colouring>
       <colouring no="wxSTC_H_SINGLESTRING"> string </colouring>
@@ -1902,6 +1912,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_CSS_COMMENT"> comment </colouring>
       <colouring no="wxSTC_CSS_SINGLESTRING"> string </colouring>
       <colouring no="wxSTC_CSS_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_CSS_ATTRIBUTE"> attribute </colouring>
     </colourings>
   </lexer>
   
@@ -1969,6 +1980,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_CLW_COMMENT"> comment </colouring>
       <colouring no="wxSTC_CLW_STRING"> string </colouring>
+      <colouring no="wxSTC_CLW_ATTRIBUTE"> attribute </colouring>
       <colouring no="wxSTC_CLW_ERROR"> error </colouring>
     </colourings>
   </lexer>
@@ -2038,6 +2050,7 @@ without the written consent of the copyright owner.
   <lexer name="gui4cli">
     <colourings>
       <colouring no="wxSTC_GC_COMMENTLINE"> comment </colouring>
+      <colouring no="wxSTC_GC_ATTRIBUTE"> attribute </colouring>
       <colouring no="wxSTC_GC_STRING"> string </colouring>
       <colouring no="wxSTC_GC_OPERATOR"> operator </colouring>
     </colourings>
@@ -2075,6 +2088,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_ASN1_COMMENT"> comment </colouring>
       <colouring no="wxSTC_ASN1_STRING"> string </colouring>
       <colouring no="wxSTC_ASN1_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_ASN1_ATTRIBUTE"> attribute </colouring>
     </colourings>
   </lexer>
   
@@ -2083,6 +2097,8 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_VHDL_COMMENT"> comment </colouring>
       <colouring no="wxSTC_VHDL_STRING"> string </colouring>
       <colouring no="wxSTC_VHDL_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_VHDL_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_VHDL_ATTRIBUTE"> attribute </colouring>
     </colourings>
   </lexer>
   
