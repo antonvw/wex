@@ -372,7 +372,7 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
 
       if (it != m_Macros.end())
       {
-        wxLogError(_("Macro: %s on line: already exists: %d"),
+        wxLogError(_("Macro: %s on line: %d already exists"),
           attrib.c_str(), child->GetLineNumber());
       }
       else
