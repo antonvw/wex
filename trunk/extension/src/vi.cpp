@@ -60,12 +60,12 @@ void wxExVi::Delete(int lines) const
 
   m_STC->Cut();
 
+#if wxUSE_STATUSBAR
   if (lines >= 2)
   {
-#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), end_line - line));
-#endif
   }
+#endif
 }
 
 bool wxExVi::Delete(
@@ -86,12 +86,12 @@ bool wxExVi::Delete(
   
   m_STC->Cut();
 
+#if wxUSE_STATUSBAR
   if (lines >= 2)
   {
-#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
-#endif
   }
+#endif
 
   return true;
 }
@@ -732,14 +732,13 @@ bool wxExVi::Move(
 
   m_STC->EndUndoAction();
   
+#if wxUSE_STATUSBAR
   const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
-  
   if (lines >= 2)
   {
-#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d lines moved"), lines));
-#endif
   }
+#endif
 
   return true;
 }
@@ -1002,13 +1001,13 @@ void wxExVi::Yank(int lines) const
     m_STC->CopyRange(start, m_STC->GetLastPosition());
   }
 
+#if wxUSE_STATUSBAR
   if (lines >= 2)
   {
-#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), 
       wxExGetNumberOfLines(wxExClipboardGet()) - 1));
-#endif
   }
+#endif
 }
 
 bool wxExVi::Yank(
@@ -1028,14 +1027,13 @@ bool wxExVi::Yank(
 
   m_STC->CopyRange(start, end);
   
+#if wxUSE_STATUSBAR
   const int lines = end_line - begin_line;
-
   if (lines >= 2)
   {
-#if wxUSE_STATUSBAR
     wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
-#endif
   }
+#endif
 
   return true;
 }
