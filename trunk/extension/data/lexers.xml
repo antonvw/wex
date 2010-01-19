@@ -1293,8 +1293,8 @@ without the written consent of the copyright owner.
    -->
     <marker no="wxSTC_MARKNUM_FOLDEREND"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPENMID"> wxSTC_MARK_MINUS,folder </marker>
-    <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNER,folder,folder</marker>
-    <marker no="wxSTC_MARKNUM_FOLDERTAIL"> wxSTC_MARK_LCORNER,folder,folder </marker>
+    <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNERCURVE,folder,folder</marker>
+    <marker no="wxSTC_MARKNUM_FOLDERTAIL"> wxSTC_MARK_LCORNERCURVE,folder,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDERSUB"> wxSTC_MARK_VLINE,folder,folder</marker>
     <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
@@ -1374,7 +1374,6 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_C_CHARACTER"> char </colouring>
       <colouring no="wxSTC_C_PREPROCESSOR"> preprocessor </colouring>
       <colouring no="wxSTC_C_OPERATOR"> operator </colouring>
-      <colouring no="wxSTC_C_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_C_WORD2"> italic </colouring>
     </colourings>
   
@@ -1436,7 +1435,6 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_C_STRING,wxSTC_C_STRINGEOL"> string </colouring>
       <colouring no="wxSTC_C_CHARACTER"> char </colouring>
       <colouring no="wxSTC_C_OPERATOR"> operator </colouring>
-      <colouring no="wxSTC_C_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_C_WORD2"> italic </colouring>
     </colourings>
   
@@ -1468,7 +1466,6 @@ without the written consent of the copyright owner.
     extensions="*.a">
     <colourings>
       <colouring no="wxSTC_ADA_WORD"> word </colouring>
-      <colouring no="wxSTC_ADA_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_ADA_NUMBER"> number </colouring>
       <colouring no="wxSTC_ADA_STRINGEOL"> string </colouring>
       <colouring no="wxSTC_ADA_COMMENTLINE"> comment </colouring>
