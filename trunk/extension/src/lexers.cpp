@@ -206,9 +206,9 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
     {
       wxString content = child->GetNodeContent().Strip(wxString::both);
 
-      std::map<wxString, wxString>::const_iterator it = m_Macros.find(content);
+      std::map<wxString, wxString>::const_iterator it = m_MacroStyles.find(content);
 
-      if (it != m_Macros.end())
+      if (it != m_MacroStyles.end())
       {
         content = it->second;
       }
@@ -365,19 +365,38 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
     }
     else if (child->GetName() == "def")
     {
-      const wxString attrib = child->GetAttribute("no", "0");
+      const wxString attrib = child->GetAttribute("no", "");
       const wxString content = child->GetNodeContent().Strip(wxString::both);
+      const wxString style = child->GetAttribute("style", "");
 
-      std::map<wxString, wxString>::const_iterator it = m_Macros.find(attrib);
-
-      if (it != m_Macros.end())
+      if (!attrib.empty())
       {
-        wxLogError(_("Macro: %s on line: %d already exists"),
-          attrib.c_str(), child->GetLineNumber());
+        std::map<wxString, wxString>::const_iterator it = m_Macros.find(attrib);
+
+        if (it != m_Macros.end())
+        {
+          wxLogError(_("Macro: %s on line: %d already exists"),
+            attrib.c_str(), child->GetLineNumber());
+        }
+        else
+        {
+          m_Macros[attrib] = content;
+        }
       }
-      else
+
+      if (!style.empty())
       {
-        m_Macros[attrib] = content;
+        std::map<wxString, wxString>::const_iterator it = m_MacroStyles.find(style);
+
+        if (it != m_MacroStyles.end())
+        {
+          wxLogError(_("Macro style: %s on line: %d already exists"),
+            style.c_str(), child->GetLineNumber());
+        }
+        else
+        {
+          m_MacroStyles[style] = content;
+        }
       }
     }
     else
@@ -477,6 +496,7 @@ void wxExLexers::Read()
   m_Indicators.clear();
   m_Lexers.clear();
   m_Macros.clear();
+  m_MacroStyles.clear();
   m_Markers.clear();
   m_SortedLexerNames.clear();
   m_Styles.clear();
