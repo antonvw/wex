@@ -476,10 +476,13 @@ void wxExLexers::Read()
   // Initialize members.
   m_Indicators.clear();
   m_Lexers.clear();
+  m_Macros.clear();
   m_Markers.clear();
   m_SortedLexerNames.clear();
   m_Styles.clear();
   m_StylesHex.clear();
+  m_DefaultStyle.clear();
+  m_GlobalProperties.clear();
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
