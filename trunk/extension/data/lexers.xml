@@ -1498,6 +1498,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_SH_STRING"> string </colouring>
       <colouring no="wxSTC_SH_CHARACTER"> char </colouring>
       <colouring no="wxSTC_SH_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_SH_IDENTIFIER"> identifier </colouring>
     </colourings>
   
     <keywords>    
@@ -1526,6 +1527,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_ASM_NUMBER"> number </colouring>
       <colouring no="wxSTC_ASM_STRING"> string </colouring>
       <colouring no="wxSTC_ASM_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_ASM_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_ASM_CPUINSTRUCTION"> word </colouring>
       <colouring no="wxSTC_ASM_MATHINSTRUCTION"> italic </colouring>
       <colouring no="wxSTC_ASM_REGISTER"> fore:blue </colouring>
@@ -1904,6 +1906,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_F_NUMBER"> number </colouring>
       <colouring no="wxSTC_F_WORD"> word </colouring>
       <colouring no="wxSTC_F_STRING1"> string </colouring>
+      <colouring no="wxSTC_F_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_F_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_F_PREPROCESSOR"> preprocessor </colouring>
     </colourings>
@@ -1913,6 +1916,7 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_CSS_COMMENT"> comment </colouring>
       <colouring no="wxSTC_CSS_SINGLESTRING"> string </colouring>
+      <colouring no="wxSTC_CSS_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_CSS_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_CSS_ATTRIBUTE"> attribute </colouring>
     </colourings>
@@ -1926,6 +1930,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_POV_STRING"> string </colouring>
       <colouring no="wxSTC_POV_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_POV_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_POV_STRING"> string </colouring>
     </colourings>
   </lexer>
   
@@ -1998,18 +2003,21 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_YAML_COMMENT"> comment </colouring>
       <colouring no="wxSTC_YAML_IDENTIFIER"> identifier </colouring>
+      <colouring no="wxSTC_YAML_KEYWORD"> keyword </colouring>
       <colouring no="wxSTC_YAML_ERROR"> error </colouring>
     </colourings>
   </lexer>
   
   <lexer name="tex">
     <colourings>
+      <colouring no="wxSTC_TEX_COMMAND"> command </colouring>
       <colouring no="wxSTC_TEX_TEXT"> string </colouring>
     </colourings>
   </lexer>
   
   <lexer name="metapost">
     <colourings>
+      <colouring no="wxSTC_METAPOST_COMMAND"> command </colouring>
       <colouring no="wxSTC_METAPOST_TEXT"> string </colouring>
     </colourings>
   </lexer>
@@ -2020,6 +2028,7 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_ERLANG_VARIABLE"> variable </colouring>
       <colouring no="wxSTC_ERLANG_STRING"> string </colouring>
       <colouring no="wxSTC_ERLANG_NUMBER"> number</colouring>
+      <colouring no="wxSTC_ERLANG_OPERATOR"> operator </colouring>
     </colourings>
   </lexer>
   
@@ -2041,6 +2050,8 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_V_NUMBER"> number</colouring>
       <colouring no="wxSTC_V_IDENTIFIER"> identifier </colouring>
       <colouring no="wxSTC_V_PREPROCESSOR"> preprocessor </colouring>
+      <colouring no="wxSTC_V_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_V_IDENTIFIER"> identifier </colouring>
     </colourings>
   </lexer>
   
@@ -2049,6 +2060,8 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_KIX_COMMENT"> comment </colouring>
       <colouring no="wxSTC_KIX_STRING1"> string </colouring>
       <colouring no="wxSTC_KIX_NUMBER"> number</colouring>
+      <colouring no="wxSTC_KIX_KEYWORD"> keyword </colouring>
+      <colouring no="wxSTC_KIX_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_KIX_IDENTIFIER"> identifier </colouring>
     </colourings>
   </lexer>
@@ -2066,8 +2079,9 @@ without the written consent of the copyright owner.
     <colourings>
       <colouring no="wxSTC_SN_COMMENTLINE"> comment </colouring>
       <colouring no="wxSTC_SN_STRING"> string </colouring>
-      <colouring no="wxSTC_SN_OPERATOR"> operator </colouring>
       <colouring no="wxSTC_SN_PREPROCESSOR"> preprocessor </colouring>
+      <colouring no="wxSTC_SN_OPERATOR"> operator </colouring>
+      <colouring no="wxSTC_SN_IDENTIFIER"> operator </colouring>
     </colourings>
   </lexer>
   
