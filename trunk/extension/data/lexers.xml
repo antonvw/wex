@@ -15,11 +15,13 @@ without the written consent of the copyright owner.
 <lexers>
   <macro>
   <!-- 
-   You can use macro's, using the <def> property.
-   When adding macro from stc.h you can use next regular expression:
-   find:    '#define \(.*\) \(.*\)'
-   replace: '    <def no ="\1"> \2 </def>'
-   -->
+    You can use macro's, using the <def> property.
+    When adding macro from stc.h you can use next regular expression:
+    find:    '#define \(.*\) \(.*\)'
+    replace: '    <def no ="\1"> \2 </def>'
+    -->
+  <!-- these are the style macro's 
+    -->    
     <def no ="wxSTC_MARK_CIRCLE"> 0 </def>
     <def no ="wxSTC_MARK_ROUNDRECT"> 1 </def>
     <def no ="wxSTC_MARK_ARROW"> 2 </def>
@@ -884,6 +886,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_APDL_STARCOMMAND"> 10 </def>
     <def no ="wxSTC_APDL_ARGUMENT"> 11 </def>
     <def no ="wxSTC_APDL_FUNCTION"> 12 </def>
+    <!-- Lexical states for SCLEX_SQL -->
     <def no ="wxSTC_SQL_DEFAULT"> 0 </def>
     <def no ="wxSTC_SQL_COMMENT"> 1 </def>
     <def no ="wxSTC_SQL_COMMENTLINE"> 2 </def>
@@ -1035,29 +1038,6 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_REBOL_WORD6"> 26 </def>
     <def no ="wxSTC_REBOL_WORD7"> 27 </def>
     <def no ="wxSTC_REBOL_WORD8"> 28 </def>
-    <!-- Lexical states for SCLEX_SQL -->
-    <def no ="wxSTC_SQL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SQL_COMMENT"> 1 </def>
-    <def no ="wxSTC_SQL_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_SQL_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_SQL_NUMBER"> 4 </def>
-    <def no ="wxSTC_SQL_WORD"> 5 </def>
-    <def no ="wxSTC_SQL_STRING"> 6 </def>
-    <def no ="wxSTC_SQL_CHARACTER"> 7 </def>
-    <def no ="wxSTC_SQL_SQLPLUS"> 8 </def>
-    <def no ="wxSTC_SQL_SQLPLUS_PROMPT"> 9 </def>
-    <def no ="wxSTC_SQL_OPERATOR"> 10 </def>
-    <def no ="wxSTC_SQL_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_SQL_SQLPLUS_COMMENT"> 13 </def>
-    <def no ="wxSTC_SQL_COMMENTLINEDOC"> 15 </def>
-    <def no ="wxSTC_SQL_WORD2"> 16 </def>
-    <def no ="wxSTC_SQL_COMMENTDOCKEYWORD"> 17 </def>
-    <def no ="wxSTC_SQL_COMMENTDOCKEYWORDERROR"> 18 </def>
-    <def no ="wxSTC_SQL_USER1"> 19 </def>
-    <def no ="wxSTC_SQL_USER2"> 20 </def>
-    <def no ="wxSTC_SQL_USER3"> 21 </def>
-    <def no ="wxSTC_SQL_USER4"> 22 </def>
-    <def no ="wxSTC_SQL_QUOTEDIDENTIFIER"> 23 </def>
     <!-- Lexical states for SCLEX_SMALLTALK -->
     <def no ="wxSTC_ST_DEFAULT"> 0 </def>
     <def no ="wxSTC_ST_STRING"> 1 </def>
@@ -1264,24 +1244,23 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_R_IDENTIFIER"> 9 </def>
     <def no ="wxSTC_R_INFIX"> 10 </def>
     <def no ="wxSTC_R_INFIXEOL"> 11 </def>
-    
     <def no ="folder"> light blue </def>
     
-    <!-- these are the macro's you can use as general colouring styles
+    <!-- these are the style macro's 
       -->    
-    <def no="attribute"> fore:steel blue </def>
-    <def no="char"> fore:pink </def>
-    <def no="command"> fore:steel blue </def>
-    <def no="comment"> fore:forest green,italic,eol </def>
-    <def no="error"> fore:red,italic,eol </def>
-    <def no="identifier"> fore:yellow </def>
-    <def no="number"> fore:red </def>
-    <def no="operator"> fore:brown </def>
-    <def no="preprocessor"> fore:grey </def>
-    <def no="processor"> fore:dark grey </def>
-    <def no="string"> fore:blue </def>
-    <def no="variable"> fore:dark yellow </def>
-    <def no="word"> fore:dark turquoise </def>
+    <def style ="attribute"> fore:steel blue </def>
+    <def style ="char"> fore:pink </def>
+    <def style ="command"> fore:steel blue </def>
+    <def style ="comment"> fore:forest green,italic,eol </def>
+    <def style ="error"> fore:red,italic,eol </def>
+    <def style ="identifier"> fore:yellow </def>
+    <def style ="number"> fore:red </def>
+    <def style ="operator"> fore:brown </def>
+    <def style ="preprocessor"> fore:grey </def>
+    <def style ="processor"> fore:dark grey </def>
+    <def style ="string"> fore:blue </def>
+    <def style ="variable"> fore:dark yellow </def>
+    <def style ="word"> fore:dark turquoise </def>
   </macro>
   
   <global>
@@ -1505,10 +1484,10 @@ without the written consent of the copyright owner.
     tail test then
     time ulimit umount umask unalias unset until while
     <!--
-     The next keywords are .po keywords. Currently they are
-     parsed as bash file, so I have added them here. If po
-     becomes known by Scintilla, add them to new keyword file.
-    -->
+      The next keywords are .po keywords. Currently they are
+      parsed as bash file, so I have added them here. If po
+      becomes known by Scintilla, add them to new keyword file.
+      -->
     msgid
     msgstr
     </keywords>
