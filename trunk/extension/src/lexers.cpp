@@ -306,8 +306,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 
 const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
 {
-  wxExLexer lexer;
-  lexer.m_ScintillaLexer = node->GetAttribute("name", "");
+  wxExLexer lexer(node->GetAttribute("name", ""));
   lexer.m_Extensions = node->GetAttribute(
     "extensions", 
     "*." + lexer.m_ScintillaLexer);

@@ -25,6 +25,9 @@ class wxExLexer
 {
   friend class wxExLexers;
 public:
+  /// Default constructor.
+  wxExLexer(const wxString& scintilla_name = wxEmptyString);
+
   /// Gets the colourings.
   const wxString& GetColourings() const {return m_Colourings;};
 
@@ -106,6 +109,9 @@ private:
   wxString m_CommentEnd2;
   wxString m_Extensions;
   wxString m_Properties;
+
+  // The scintilla name for this lexer.
+  // Cannot be const, as in wxExFileName the operator= is used on a lexer.
   wxString m_ScintillaLexer;
 
   // all keywords

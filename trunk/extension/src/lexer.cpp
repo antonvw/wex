@@ -14,6 +14,11 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
+wxExLexer::wxExLexer(const wxString& scintilla_name)
+  : m_ScintillaLexer(scintilla_name)
+{
+}
+
 const wxString wxExLexer::GetFormattedText(
   const wxString& lines,
   const wxString& header,
