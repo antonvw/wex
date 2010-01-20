@@ -1255,7 +1255,7 @@ without the written consent of the copyright owner.
     <def style ="error"> fore:red,italic,eol </def>
     <def style ="identifier"> fore:yellow </def>
     <def style ="number"> fore:red </def>
-    <def style ="operator"> fore:brown </def>
+    <def style ="OPERATOR"> fore:brown </def>
     <def style ="preprocessor"> fore:grey </def>
     <def style ="processor"> fore:dark grey </def>
     <def style ="string"> fore:blue </def>
@@ -2254,15 +2254,6 @@ without the written consent of the copyright owner.
     </colourings>
   </lexer>
   
-  <lexer name="r">
-    <colourings>
-      <colouring no="wxSTC_R_COMMENT"> comment </colouring>
-      <colouring no="wxSTC_R_KWORD"> word </colouring>
-      <colouring no="wxSTC_R_NUMBER"> number </colouring>
-      <colouring no="wxSTC_R_STRING"> string </colouring>
-      <colouring no="wxSTC_R_OPERATOR"> operator </colouring>
-      <colouring no="wxSTC_R_IDENTIFIER"> identifier </colouring>
-    </colourings>
-  </lexer>
+  <lexer name="r" match="wxSTC_R_">  </lexer>
   
 </lexers>
