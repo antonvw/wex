@@ -45,6 +45,10 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
 }
 
+void wxExLexers::AutoMatch(const wxExLexer& lexer) const
+{
+}
+
 const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =
@@ -307,9 +311,15 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
 {
   wxExLexer lexer(node->GetAttribute("name", ""));
+
   lexer.m_Extensions = node->GetAttribute(
     "extensions", 
     "*." + lexer.m_ScintillaLexer);
+
+  if (node->GetAttribute("match", "auto") == "auto")
+  {
+    AutoMatch(lexer);
+  }
 
   wxXmlNode *child = node->GetChildren();
 
