@@ -570,8 +570,9 @@ void wxExLexers::Read()
         else
         {
           m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
-          m_SortedLexerNames.Add(lexer.GetScintillaLexer());
         }
+
+        m_SortedLexerNames.Add(lexer.GetScintillaLexer());
       }
     }
 
