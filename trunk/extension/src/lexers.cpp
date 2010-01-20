@@ -62,7 +62,7 @@ const wxString wxExLexers::AutoMatch(const wxString& lexer) const
   {
     for (
       std::map<wxString, wxString>::const_iterator style = m_MacroStyles.begin();
-      style != m_MacroStyles.begin();
+      style != m_MacroStyles.end();
       ++style)
       {
         if (it->first.Contains(style->first))
