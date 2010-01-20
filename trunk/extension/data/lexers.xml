@@ -1326,7 +1326,6 @@ without the written consent of the copyright owner.
     name="cpp"
     extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y"
     match="wxSTC_C_">
-  
     <keywords>
     argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 CHAR:0 class:0 const:0
     const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
@@ -1371,7 +1370,6 @@ without the written consent of the copyright owner.
     swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
     valarray:1 vector:1
     </keywords>
-  
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
   
@@ -1395,11 +1393,10 @@ without the written consent of the copyright owner.
     VIRTUAL
     WHILE WITH WRITE WRITELN WRITEONLY XOR BOOLEAN CHAR INTEGER REAL
     </keywords>
-  
     <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
   </lexer>
   
-  <lexer name="ada" extensions="*.a" match="wxSTC_ADA" >
+  <lexer name="ada" extensions="*.a" match="wxSTC_ADA_" >
     <keywords>    
       abort abs abstract accept access ackage aliased all and array at
       begin body case constant declare delay delta digits do else elsif
@@ -1410,7 +1407,6 @@ without the written consent of the copyright owner.
       select separate subtype synchronized tagged task terminate then type until
       use when while with xor
     </keywords>    
-    
     <comments begin1="--" />
   </lexer>
     
@@ -1422,34 +1418,27 @@ without the written consent of the copyright owner.
     tail test then
     time ulimit umount umask unalias unset until while
     <!--
-      The next keywords are .po keywords. Currently they are
+      TODO: The next keywords are .po keywords. Currently they are
       parsed as bash file, so I have added them here. If po
       becomes known by Scintilla, add them to new keyword file.
       -->
     msgid
     msgstr
     </keywords>
-    
     <comments begin1="#" />
   </lexer>
   
   <lexer
     name="asm"
-    extensions="*.mac"> 
+    extensions="*.mac" 
+    match="wxSTC_ASM_">
     <colourings>
-      <colouring no="wxSTC_ASM_COMMENT"> COMMENT </colouring>
-      <colouring no="wxSTC_ASM_NUMBER"> NUMBER </colouring>
-      <colouring no="wxSTC_ASM_STRING"> STRING </colouring>
-      <colouring no="wxSTC_ASM_OPERATOR"> OPERATOR </colouring>
-      <colouring no="wxSTC_ASM_IDENTIFIER"> IDENTIFIER </colouring>
       <colouring no="wxSTC_ASM_CPUINSTRUCTION"> WORD </colouring>
       <colouring no="wxSTC_ASM_MATHINSTRUCTION"> italic </colouring>
       <colouring no="wxSTC_ASM_REGISTER"> fore:blue </colouring>
       <colouring no="wxSTC_ASM_DIRECTIVE"> italic </colouring>
       <colouring no="wxSTC_ASM_COMMENTBLOCK"> underline </colouring>
-      <colouring no="wxSTC_ASM_CHARACTER"> CHAR </colouring>
     </colourings>
-  
     <keywords>    
     ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
     BICB BIS BISB BIT BITB BLE BLO BLOS BLT
@@ -1466,21 +1455,17 @@ without the written consent of the copyright owner.
     .RESTORE .SBTTL .TITLE .WEAK .WORD
     MN SO DO PC MS CC SP R1 R2 R3 R4 R5
     </keywords>
-  
     <comments begin1=";" />
   </lexer>
   
   <lexer
     name="hypertext"
-    extensions="*.htm;*.html">
+    extensions="*.htm;*.html"
+    match="wxSTC_H_">
     <colourings>
       <colouring no="wxSTC_H_TAG"> WORD </colouring>
       <colouring no="wxSTC_H_TAGUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_ATTRIBUTE"> ATTRIBUTE </colouring>
       <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_NUMBER"> NUMBER </colouring>
-      <colouring no="wxSTC_H_DOUBLESTRING,wxSTC_H_SINGLESTRING"> STRING </colouring>
-      <colouring no="wxSTC_H_COMMENT"> COMMENT </colouring>
       <colouring no="wxSTC_H_QUESTION"> fore:#0000FF,back:#FFEFBF </colouring>
       <colouring no="wxSTC_H_VALUE"> fore:#FF00FF,back:#FFEFFF </colouring>
       <colouring no="wxSTC_HPHP_DEFAULT"> fore:green,eol </colouring>
@@ -1488,12 +1473,9 @@ without the written consent of the copyright owner.
       <colouring no="wxSTC_HPHP_SIMPLESTRING"> fore:#009F00,back:#FFF8F8 </colouring>
       <colouring no="wxSTC_HPHP_WORD"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
       <colouring no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_VARIABLE"> VARIABLE </colouring>
-      <colouring no="wxSTC_HPHP_COMMENT,wxSTC_HPHP_COMMENTLINE"> COMMENT </colouring>
       <colouring no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </colouring>
       <colouring no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </colouring>
     </colourings>
-              
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>
@@ -1502,41 +1484,23 @@ without the written consent of the copyright owner.
     </properties>
   </lexer>
   
-  <lexer
-    name="xml"
-    extensions="*.xml">
-  
+  <lexer name="xml" match="wxSTC_H_">
     <colourings>
       <colouring no="wxSTC_H_TAG"> WORD </colouring>
       <colouring no="wxSTC_H_TAGUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_ATTRIBUTE"> ATTRIBUTE </colouring>
       <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_NUMBER"> NUMBER </colouring>
-      <colouring no="wxSTC_H_DOUBLESTRING"> STRING </colouring>
-      <colouring no="wxSTC_H_SINGLESTRING"> STRING </colouring>
-      <colouring no="wxSTC_H_COMMENT"> COMMENT </colouring>
       <colouring no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </colouring>
     </colourings>
-    
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>
       <property name="fold.compact"> 1 </property>
     </properties>
-    
     <!-- xml comments cannot be added, but don't need to, 
          they are added in the source -->
   </lexer>
   
-  <lexer name="php"> </lexer>
-  <lexer name="phpscript"> </lexer>
-  <lexer name="asp"> </lexer>
-  
-  <lexer
-    name="sql"
-    extensions="*.sql"
-    match="wx_SSTC_SQL_" >
-  
+  <lexer name="sql" match="wx_SSTC_SQL_" >
     <keywords>    
     <!-- These ones added manually -->
     auto_increment COMMENT index exists
@@ -1593,15 +1557,7 @@ without the written consent of the copyright owner.
     year
     zone
     </keywords>
-    
     <comments begin1="--" />
-  </lexer>
-  
-  <lexer
-    name="makefile"
-    extensions="makefile;makefile.*"
-    match="wxSTC_MAKE_" >  
-    <comments begin1="#" />
   </lexer>
   
   <lexer name="PL/M" match="wxSTC_PLM_" />
@@ -1609,6 +1565,7 @@ without the written consent of the copyright owner.
   <lexer name="acf" match="wxSTC_ACF_" />
   <lexer name="apdl" match="wxSTC_APDL_" />
   <lexer name="asn1" match="wxSTC_ASN1_" />
+  <lexer name="asp" match="wxSTC_H_" /> 
   <lexer name="asy" match="wxSTC_ASY_" />
   <lexer name="au3" match="wxSTC_AU3_" />
   <lexer name="ave" match="wxSTC_AVE_" />
@@ -1638,6 +1595,7 @@ without the written consent of the copyright owner.
   <lexer name="lot" match="wxSTC_LOT_" />
   <lexer name="lout" match="wxSTC_LOUT_" />
   <lexer name="lua" match="wxSTC_LUA_" />
+  <lexer name="makefile" extensions="makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
   <lexer name="matlab" match="wxSTC_MATLAB_" />
   <lexer name="metapost" match="wxSTC_METAPOST_" />
   <lexer name="mmixal" match="wxSTC_MMIXAL_" />
@@ -1646,6 +1604,8 @@ without the written consent of the copyright owner.
   <lexer name="nsis" match="wxSTC_NSIS_" />
   <lexer name="opal" match="wxSTC_OPAL_" />
   <lexer name="perl" match="wxSTC_PL_" />
+  <lexer name="php" match="wxSTC_HPHP_" /> 
+  <lexer name="phpscript" match="wxSTC_H_" /> 
   <lexer name="postscript" extensions="*.ps" match="wxSTC_PS_" />
   <lexer name="pov" match="wxSTC_POV_" />
   <lexer name="progress" match="wxSTC_4GL_" />
