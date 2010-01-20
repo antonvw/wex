@@ -45,8 +45,34 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
 }
 
-void wxExLexers::AutoMatch(const wxExLexer& lexer) const
+const wxString wxExLexers::AutoMatch(const wxString& lexer) const
 {
+  wxString text;
+
+  std::map<wxString, wxString>::const_iterator itlow = 
+    m_Macros.lower_bound(lexer);
+
+  std::map<wxString, wxString>::const_iterator itup = 
+    m_Macros.upper_bound(lexer + "ZZZ");
+
+  for (
+    std::map<wxString, wxString>::const_iterator it = itlow;
+    it != itup;
+    ++it)
+  {
+    for (
+      std::map<wxString, wxString>::const_iterator style = m_MacroStyles.begin();
+      style != m_MacroStyles.begin();
+      ++style)
+      {
+        if (it->first.Contains(style->first))
+        {
+          text += it->second + "=" + style->second + wxTextFile::GetEOL();
+        }
+      }
+  }
+
+  return text;
 }
 
 const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
@@ -316,9 +342,9 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
     "extensions", 
     "*." + lexer.m_ScintillaLexer);
 
-  if (node->GetAttribute("match", "auto") == "auto")
+  if (node->GetAttribute("match", "") != "")
   {
-    AutoMatch(lexer);
+    lexer.m_Colourings = AutoMatch(node->GetAttribute("match", ""));
   }
 
   wxXmlNode *child = node->GetChildren();
@@ -327,7 +353,7 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
   {
     if (child->GetName() == "colourings")
     {
-      lexer.m_Colourings = ParseTagColourings(child);
+      lexer.m_Colourings += ParseTagColourings(child);
     }
     else if (child->GetName() == "keywords")
     {
