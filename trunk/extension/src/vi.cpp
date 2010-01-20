@@ -759,9 +759,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 
       if (DoCommand(m_Command, false))
       {
-        // Prevent motion command and the .dot command
-        // to be stored as last command.
-        if (m_Command.length() > 1 || 
+        if ((m_Command.length() > 1 && !m_Command.Matches("m?")) || 
             m_Command == "a" || 
             m_Command == "i" || 
             m_Command == "o" || 
@@ -774,8 +772,8 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
             m_Command == "O" || 
             m_Command == "R" || 
             m_Command == "X" || 
-            m_Command == "~" &&
-            !m_Command.Matches("m?"))
+            m_Command == "~"
+            )
         {
           m_LastCommand = m_Command;
         }
