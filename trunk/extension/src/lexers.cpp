@@ -254,7 +254,7 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
     }
     else
     {
-      wxLogError(_("Undefined colourings tag: %s on: %d"),
+      wxLogError(_("Undefined colourings tag: %s on line: %d"),
         child->GetName().c_str(), child->GetLineNumber());
     }
 
@@ -299,7 +299,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
       }
       else
       {
-        wxLogError(_("Illegal marker number: %d or symbol: %d on: %d"),
+        wxLogError(_("Illegal marker number: %d or symbol: %d on line: %d"),
           marker.GetMarkerNumber(),
           marker.GetMarkerSymbol(),
           child->GetLineNumber());
@@ -326,7 +326,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else
     {
-      wxLogError(_("Undefined global tag: %s on: %d"),
+      wxLogError(_("Undefined global tag: %s on line: %d"),
         child->GetName().c_str(), child->GetLineNumber());
     }
 
@@ -359,7 +359,7 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
     {
       if (!lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both)))
       {
-        wxLogError(_("Keywords could not be set on: %d"), child->GetLineNumber());
+        wxLogError(_("Keywords could not be set on line: %d"), child->GetLineNumber());
       }
     }
     else if (child->GetName() == "properties")
@@ -379,7 +379,7 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
     }
     else
     {
-      wxLogError(_("Undefined lexer tag: %s on: %d"),
+      wxLogError(_("Undefined lexer tag: %s on line: %d"),
         child->GetName().c_str(), child->GetLineNumber());
     }
 
@@ -437,7 +437,7 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
     }
     else
     {
-      wxLogError(_("Undefined macro tag: %s on: %d"),
+      wxLogError(_("Undefined macro tag: %s on line: %d"),
         child->GetName().c_str(), child->GetLineNumber());
     }
 
@@ -502,7 +502,7 @@ const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
     }
     else
     {
-      wxLogError(_("Undefined properties tag: %s on %d"),
+      wxLogError(_("Undefined properties tag: %s on line: %d"),
         child->GetName().c_str(), child->GetLineNumber());
     }
 
