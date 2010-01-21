@@ -384,13 +384,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 2:  // ^b
         for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
         break;
-      case 6:  // ^f
+      case 7:  // ^g (^f is not possible, already find accel key)
         for (int i = 0; i < repeat; i++) m_STC->PageDown(); 
         break;
-      case 16:  // ^p (^y is not possible, already redo accel key)
+      case 16: // ^p (^y is not possible, already redo accel key)
         for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
         break;
-      case 14: // ^n
+      case 12: // ^l (^n is not possible, already new doc accel key)
         for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
         break;
 
