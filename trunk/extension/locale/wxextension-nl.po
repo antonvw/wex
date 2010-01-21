@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-21 11:27+0100\n"
-"PO-Revision-Date: 2010-01-21 11:33+0100\n"
+"POT-Creation-Date: 2010-01-21 12:49+0100\n"
+"PO-Revision-Date: 2010-01-21 12:50+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -114,27 +114,27 @@ msgstr "Alle bestanden"
 
 #: ../src/lexers.cpp:257
 #, c-format
-msgid "Undefined colourings tag: %s on: %d"
+msgid "Undefined colourings tag: %s on line: %d"
 msgstr "Onbekende kleuren tag: %s  op regel: %d"
 
 #: ../src/lexers.cpp:302
 #, c-format
-msgid "Illegal marker number: %d or symbol: %d on: %d"
+msgid "Illegal marker number: %d or symbol: %d on line: %d"
 msgstr "Onbekende marker: %d of symbool: %d op regel: %d"
 
 #: ../src/lexers.cpp:329
 #, c-format
-msgid "Undefined global tag: %s on: %d"
+msgid "Undefined global tag: %s on line: %d"
 msgstr "Onbekende globale tag: %s op regel: %d"
 
 #: ../src/lexers.cpp:362
 #, c-format
-msgid "Keywords could not be set on: %d"
+msgid "Keywords could not be set on line: %d"
 msgstr "Keywords kunnen niet worden bepaald op regel: %d"
 
 #: ../src/lexers.cpp:382
 #, c-format
-msgid "Undefined lexer tag: %s on: %d"
+msgid "Undefined lexer tag: %s on line: %d"
 msgstr "Onbekende lexer tag: %s op regel: %d"
 
 #: ../src/lexers.cpp:414
@@ -149,7 +149,7 @@ msgstr "Macro style: %s op regel: %d bestaat al"
 
 #: ../src/lexers.cpp:440
 #, c-format
-msgid "Undefined macro tag: %s on: %d"
+msgid "Undefined macro tag: %s on line: %d"
 msgstr "Onbekende macro: %s op regel: %d"
 
 #: ../src/lexers.cpp:480
@@ -159,7 +159,7 @@ msgstr "Onbekende marker: %d op regel: %d"
 
 #: ../src/lexers.cpp:505
 #, c-format
-msgid "Undefined properties tag: %s on %d"
+msgid "Undefined properties tag: %s on line: %d"
 msgstr "Onbekende properties tag: %s op regel: %d"
 
 #: ../src/lexers.cpp:583
