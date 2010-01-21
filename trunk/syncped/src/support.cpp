@@ -94,7 +94,7 @@ Frame::Frame()
   menuEdit->AppendSeparator();
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
-  menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
+  menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
   menuEdit->AppendSeparator();
 
   if (wxExSVN::Get()->Use())
@@ -117,7 +117,7 @@ Frame::Frame()
 
   menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
-  menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
+  menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl-M"));
 
   wxMenu *menuView = new wxMenu;
   menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
