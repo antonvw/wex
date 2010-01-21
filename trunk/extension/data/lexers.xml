@@ -1259,6 +1259,7 @@ without the written consent of the copyright owner.
     <def style ="OPERATOR"> fore:brown </def>
     <def style ="PREPROCESSOR"> fore:grey </def>
     <def style ="STRING"> fore:blue </def>
+    <def style ="TAG"> fore:dark slate blue </def>
     <def style ="VARIABLE"> fore:dark yellow </def>
     <def style ="WORD"> fore:dark turquoise </def>
   </macro>
@@ -1287,9 +1288,9 @@ without the written consent of the copyright owner.
     
     <properties>
       <property name="fold"> 1 </property>
-      <property name="fold.COMMENT"> 1 </property>
+      <property name="fold.comment"> 1 </property>
       <property name="fold.compact"> 1 </property>
-      <property name="fold.PREPROCESSOR"> 0 </property>
+      <property name="fold.preprocessor"> 0 </property>
     </properties>
   </global>
   
@@ -1463,7 +1464,8 @@ without the written consent of the copyright owner.
     extensions="*.htm;*.html"
     match="wxSTC_H_">
     <colourings>
-      <colouring no="wxSTC_H_TAG"> WORD </colouring>
+      <colouring no="wxSTC_H_TAG"> TAG </colouring>
+      <colouring no="wxSTC_H_TAGEND"> TAG </colouring>
       <colouring no="wxSTC_H_TAGUNKNOWN"> ERROR </colouring>
       <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </colouring>
       <colouring no="wxSTC_H_QUESTION"> fore:#0000FF,back:#FFEFBF </colouring>
@@ -1486,7 +1488,8 @@ without the written consent of the copyright owner.
   
   <lexer name="xml" match="wxSTC_H_">
     <colourings>
-      <colouring no="wxSTC_H_TAG"> WORD </colouring>
+      <colouring no="wxSTC_H_TAG"> TAG </colouring>
+      <colouring no="wxSTC_H_TAGEND"> TAG </colouring>
       <colouring no="wxSTC_H_TAGUNKNOWN"> ERROR </colouring>
       <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </colouring>
       <colouring no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </colouring>
@@ -1503,7 +1506,7 @@ without the written consent of the copyright owner.
   <lexer name="sql" match="wx_SSTC_SQL_" >
     <keywords>    
     <!-- These ones added manually -->
-    auto_increment COMMENT index exists
+    auto_increment comment index exists
     <!-- Copied from scite, v1.68. -->
     absolute action add admin after aggregate
     alias all allocate alter and any are array as asc
@@ -1571,6 +1574,7 @@ without the written consent of the copyright owner.
   <lexer name="ave" match="wxSTC_AVE_" />
   <lexer name="baan" match="wxSTC_BAAN_" />
   <lexer name="batch" extensions="*.bat" match="wxSTC_BAT_" />
+  <lexer name="bullant" match="wxSTC_BULLANT_" />
   <lexer name="caml" match="wxSTC_CAML_" />
   <lexer name="clarion" match="wxSTC_CLW_" />
   <lexer name="cmake" match="wxSTC_CMAKE_" />
@@ -1588,7 +1592,7 @@ without the written consent of the copyright owner.
   <lexer name="gap" match="wxSTC_GAP_" />
   <lexer name="gui4cli" match="wxSTC_GC_" />
   <lexer name="haskell" match="wxSTC_HA_" />
-  <lexer name="innosetup" match="wxSTC_INNO_" />
+  <lexer name="inno" match="wxSTC_INNO_" />
   <lexer name="kix" match="wxSTC_KIX_" />
   <lexer name="latex" match="wxSTC_L_" />
   <lexer name="lisp" match="wxSTC_LISP_" />
@@ -1602,14 +1606,15 @@ without the written consent of the copyright owner.
   <lexer name="mssql" match="wxSTC_MSSQL_" />
   <lexer name="nncrontab" match="wxSTC_NNCRONTAB_" />
   <lexer name="nsis" match="wxSTC_NSIS_" />
+  <lexer name="octave" match="wxSTC_MATLAB_" />
   <lexer name="opal" match="wxSTC_OPAL_" />
   <lexer name="perl" match="wxSTC_PL_" />
   <lexer name="php" match="wxSTC_HPHP_" /> 
   <lexer name="phpscript" match="wxSTC_H_" /> 
-  <lexer name="postscript" extensions="*.ps" match="wxSTC_PS_" />
   <lexer name="pov" match="wxSTC_POV_" />
   <lexer name="progress" match="wxSTC_4GL_" />
   <lexer name="props" match="wxSTC_PROPS_" />
+  <lexer name="ps" match="wxSTC_PS_" />
   <lexer name="python" extensions="*.py" match="wxSTC_P_" />
   <lexer name="r" match="wxSTC_R_" />
   <lexer name="rebol" match="wxSTC_REBOL_" />
