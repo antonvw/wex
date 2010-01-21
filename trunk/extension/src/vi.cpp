@@ -22,6 +22,7 @@ wxString wxExVi::m_LastCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
+  , m_MarkerSymbol(0)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
@@ -73,7 +74,7 @@ void wxExVi::Delete(int lines) const
 
 bool wxExVi::Delete(
   const wxString& begin_address, 
-  const wxString& end_address) const
+  const wxString& end_address)
 {
   if (m_STC->GetReadOnly())
   {
@@ -89,6 +90,16 @@ bool wxExVi::Delete(
   
   m_STC->Cut();
 
+  if (begin_address.StartsWith("'"))
+  {
+    DeleteMarker(begin_address.GetChar(1));
+  }
+
+  if (end_address.StartsWith("'"))
+  {
+    DeleteMarker(end_address.GetChar(1));
+  }
+
 #if wxUSE_STATUSBAR
   if (lines >= 2)
   {
@@ -97,6 +108,17 @@ bool wxExVi::Delete(
 #endif
 
   return true;
+}
+
+void wxExVi::DeleteMarker(const wxUniChar& marker)
+{
+  std::map<wxUniChar, int>::const_iterator it = m_Markers.find(marker);
+
+  if (it != m_Markers.end())
+  {
+    m_STC->MarkerDelete(it->second, m_MarkerSymbol);
+    m_Markers.erase(it);
+  }
 }
 
 bool wxExVi::DoCommand(const wxString& command, bool dot)
@@ -195,17 +217,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
  }
   else if (command.Matches("m?"))
   {
-    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
-
-    const int vi_marker_symbol = 0;
-
-    if (it != m_Markers.end())
-    {
-      m_STC->MarkerDelete(it->second, vi_marker_symbol);
-    }
-
+    DeleteMarker(command.Last());
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
-    m_STC->MarkerAdd(m_STC->GetCurrentLine(), vi_marker_symbol);
+    m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol);
   }
   else if (command.Matches("*r?"))
   {
@@ -243,6 +257,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     if (it != m_Markers.end())
     {
       m_STC->GotoLine(it->second);
+    }
+    else
+    {
+      wxBell();
     }
   }
   else
@@ -539,7 +557,7 @@ void wxExVi::DoCommandLine()
   }
 }
 
-bool wxExVi::DoCommandRange(const wxString& command) const
+bool wxExVi::DoCommandRange(const wxString& command)
 {
   // :[address] m destination
   // :[address] s [/pattern/replacement/] [options] [count]
@@ -708,7 +726,7 @@ void wxExVi::InsertMode(
 bool wxExVi::Move(
   const wxString& begin_address, 
   const wxString& end_address, 
-  const wxString& destination) const
+  const wxString& destination)
 {
   if (m_STC->GetReadOnly())
   {
@@ -725,6 +743,16 @@ bool wxExVi::Move(
   if (!SetSelection(begin_address, end_address))
   {
     return false;
+  }
+
+  if (begin_address.StartsWith("'"))
+  {
+    DeleteMarker(begin_address.GetChar(1));
+  }
+
+  if (end_address.StartsWith("'"))
+  {
+    DeleteMarker(end_address.GetChar(1));
   }
 
   m_STC->BeginUndoAction();
@@ -944,9 +972,13 @@ int wxExVi::ToLineNumber(const wxString& address) const
       m_Markers.find(address.GetChar(1));
 
     if (it != m_Markers.end())
-      {
-        marker = it->second + 1;
-      }
+    {
+      marker = it->second + 1;
+    }
+    else
+    {
+      wxBell();
+    }
 
     filtered_address = filtered_address.substr(2);
   }

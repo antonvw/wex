@@ -45,11 +45,12 @@ private:
   void Delete(int lines) const;
   bool Delete(
     const wxString& begin_address, 
-    const wxString& end_address) const;
+    const wxString& end_address);
+  void DeleteMarker(const wxUniChar& marker);
   bool DoCommand(const wxString& command, bool dot);
   void DoCommandFind(const wxUniChar& c);
   void DoCommandLine();
-  bool DoCommandRange(const wxString& command) const;
+  bool DoCommandRange(const wxString& command);
   void FindWord(bool find_next = true);
   void GotoBrace();
   void InsertMode(
@@ -60,7 +61,7 @@ private:
   bool Move(
     const wxString& begin_address, 
     const wxString& end_address, 
-    const wxString& destination) const;
+    const wxString& destination);
   void Repeat();
   bool SetSelection(
     const wxString& begin_address, 
@@ -80,6 +81,8 @@ private:
   static wxExConfigDialog* m_CommandDialog;
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
+
+  const int m_MarkerSymbol;
   
   std::map<wxUniChar, int> m_Markers;
   
