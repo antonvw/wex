@@ -390,7 +390,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 16: // ^p (^y is not possible, already redo accel key)
         for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
         break;
-      case 12: // ^l (^n is not possible, already new doc accel key)
+      case 17: // ^q (^n is not possible, already new doc accel key)
         for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
         break;
 
