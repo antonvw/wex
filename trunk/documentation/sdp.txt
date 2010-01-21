@@ -39,7 +39,7 @@ General
 - Test coverage is not yet done, it might be done using gcov
     http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
 
-- Translation is done using poedit (1.4.2)
+- Translation is done using poedit (1.4.3)
     http://www.poedit.net/
   wxextension has it's own localization file, your application should
   also add it's own one, and also put the standard wxwidgets localization file
