@@ -14,6 +14,7 @@
 
 #include <map>
 #include <set>
+#include <vector>
 
 class wxExLexers;
 
@@ -29,7 +30,7 @@ public:
   wxExLexer(const wxString& scintilla_name = wxEmptyString);
 
   /// Gets the colourings.
-  const wxString& GetColourings() const {return m_Colourings;};
+  const std::vector<wxString>& GetColourings() const {return m_Colourings;};
 
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
@@ -56,7 +57,7 @@ public:
   const wxString GetKeywordsString(int keyword_set = -1) const;
 
   /// Gets the properties.
-  const wxString& GetProperties() const {return m_Properties;};
+  const std::vector<wxString>& GetProperties() const {return m_Properties;};
 
   /// Gets the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
@@ -102,19 +103,18 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
 
-  wxString m_Colourings;
   wxString m_CommentBegin;
   wxString m_CommentBegin2;
   wxString m_CommentEnd;
   wxString m_CommentEnd2;
   wxString m_Extensions;
-  wxString m_Properties;
 
   // The scintilla name for this lexer.
   // Cannot be const, as in wxExFileName the operator= is used on a lexer.
   wxString m_ScintillaLexer;
 
-  // all keywords
+  std::vector<wxString> m_Colourings;
+  std::vector<wxString> m_Properties;
   std::set<wxString> m_Keywords;
 
   // each keyword set in a separate keyword set

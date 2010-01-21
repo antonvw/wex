@@ -13,7 +13,6 @@
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
-#include <wx/textfile.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
@@ -45,9 +44,10 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
 }
 
-const wxString wxExLexers::AutoMatch(const wxString& lexer) const
+const std::vector<wxString> wxExLexers::AutoMatch(
+  const wxString& lexer) const
 {
-  wxString text;
+  std::vector<wxString> text;
 
   std::map<wxString, wxString>::const_iterator itlow = 
     m_Macros.lower_bound(lexer);
@@ -67,7 +67,7 @@ const wxString wxExLexers::AutoMatch(const wxString& lexer) const
       {
         if (it->first.Contains(style->first))
         {
-          text += it->second + "=" + style->second + wxTextFile::GetEOL();
+          text.push_back(it->second + "=" + style->second);
         }
       }
   }
@@ -224,9 +224,10 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
+const std::vector<wxString> wxExLexers::ParseTagColourings(
+  const wxXmlNode* node) const
 {
-  wxString text;
+  std::vector<wxString> text;
 
   wxXmlNode* child = node->GetChildren();
 
@@ -243,10 +244,8 @@ const wxString wxExLexers::ParseTagColourings(const wxXmlNode* node) const
         content = it->second;
       }
 
-      text +=
-        ApplyMacro(
-          child->GetAttribute("no", "0"))
-        + "=" + content + wxTextFile::GetEOL();
+      text.push_back(
+        ApplyMacro(child->GetAttribute("no", "0")) + "=" + content);
     }
     else if (child->GetName() == "comment")
     {
@@ -353,7 +352,11 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
   {
     if (child->GetName() == "colourings")
     {
-      lexer.m_Colourings += ParseTagColourings(child);
+      const std::vector<wxString> v = ParseTagColourings(child);
+
+      lexer.m_Colourings.insert(
+        lexer.m_Colourings.end(), 
+        v.begin(), v.end());
     }
     else if (child->GetName() == "keywords")
     {
@@ -482,9 +485,10 @@ const wxExMarker wxExLexers::ParseTagMarker(
   }
 }
 
-const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
+const std::vector<wxString> wxExLexers::ParseTagProperties(
+  const wxXmlNode* node) const
 {
-  wxString text;
+  std::vector<wxString> text;
 
   wxXmlNode *child = node->GetChildren();
 
@@ -492,9 +496,9 @@ const wxString wxExLexers::ParseTagProperties(const wxXmlNode* node) const
   {
     if (child->GetName() == "property")
     {
-      text +=
+      text.push_back(
         child->GetAttribute("name", "0") + "=" +
-        child->GetNodeContent().Strip(wxString::both) + wxTextFile::GetEOL();
+        child->GetNodeContent().Strip(wxString::both));
     }
     else if (child->GetName() == "comment")
     {

@@ -511,13 +511,12 @@ void wxExSTC::Colourise()
   SetProperties(GetFileName().GetLexer().GetProperties());
   SetFolding();
 
-  wxStringTokenizer tkz(
-    GetFileName().GetLexer().GetColourings(),
-    wxTextFile::GetEOL());
-
-  while (tkz.HasMoreTokens())
+  for (
+    std::vector<wxString>::const_iterator it = GetFileName().GetLexer().GetColourings().begin();
+    it != GetFileName().GetLexer().GetColourings().end();
+    ++it)
   {
-    SetStyle(tkz.GetNextToken());
+    SetStyle(*it);
   }
 
   // And finally colour the entire document.
@@ -2182,13 +2181,16 @@ void wxExSTC::SetMarkers()
   }
 }
 
-void wxExSTC::SetProperties(const wxString& prop, bool reset)
+void wxExSTC::SetProperties(
+  const std::vector<wxString>& prop, 
+  bool reset)
 {
-  wxStringTokenizer properties(prop, wxTextFile::GetEOL());
-
-  while (properties.HasMoreTokens())
+  for (
+    std::vector<wxString>::const_iterator it = prop.begin();
+    it != prop.end();
+    ++it)
   {
-    wxStringTokenizer property(properties.GetNextToken(), "=");
+    wxStringTokenizer property(*it, "=");
 
     // Don't put key, value into SetProperty, as that might parse value first,
     // reversing the two.
@@ -2213,9 +2215,9 @@ void wxExSTC::SetStyle(const wxString& style)
   // So for each scintilla style set the spec.
   while (scintilla_styles.HasMoreTokens())
   {
-  const wxString single = wxExLexers::Get()->ApplyMacro(
-    scintilla_styles.GetNextToken());
-  StyleSetSpec(atoi(single.c_str()), spec);
+    const wxString single = wxExLexers::Get()->ApplyMacro(
+      scintilla_styles.GetNextToken());
+      StyleSetSpec(atoi(single.c_str()), spec);
   }
 }
 

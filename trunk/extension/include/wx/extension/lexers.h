@@ -95,7 +95,7 @@ public:
   const wxFileName& GetFileName() const {return m_FileName;};
 
   /// Gets the global properties.
-  const wxString& GetGlobalProperties() const {return m_GlobalProperties;};
+  const std::vector<wxString>& GetGlobalProperties() const {return m_GlobalProperties;};
 
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};
@@ -124,26 +124,27 @@ public:
     wxString& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
-  const wxString AutoMatch(const wxString& lexer) const;
+  const std::vector<wxString> AutoMatch(const wxString& lexer) const;
   const wxString GetLexerExtensions() const;
-  const wxString ParseTagColourings(const wxXmlNode* node) const;
+  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
   const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
   void ParseTagMacro(const wxXmlNode* node);
   const wxExMarker ParseTagMarker(
     const wxString& number, 
     const wxString& props) const;
-  const wxString ParseTagProperties(const wxXmlNode* node) const;
+  const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
 
   std::map<wxString, wxString> m_Macros;
   std::map<wxString, wxString> m_MacroStyles;
   std::map<int, int> m_Indicators;
   std::map<wxString, wxExLexer> m_Lexers;
+  std::vector<wxString> m_GlobalProperties;
   std::vector<wxExMarker> m_Markers;
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
+
   wxString m_DefaultStyle;
-  wxString m_GlobalProperties;
   wxSortedArrayString m_SortedLexerNames;
 
   const wxFileName m_FileName;
