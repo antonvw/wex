@@ -170,6 +170,11 @@ const wxString wxExListView::BuildPage()
 
 void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
+  if (GetItemCount() > 0)
+  {
+    menu.AppendSeparator();
+  }
+
   menu.AppendEdit(true);
 
   if (GetItemCount() > 0 && GetSelectedItemCount() == 0)

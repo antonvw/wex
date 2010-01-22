@@ -139,7 +139,6 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
   }
   else
   {
-    menu.AppendSeparator();
     wxExListView::BuildPopupMenu(menu);
   }
 }
@@ -1058,7 +1057,6 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
       menu.Append(wxID_ADD);
     }
 
-    menu.AppendSeparator();
     wxExListViewWithFrame::BuildPopupMenu(menu);
   }
 }
