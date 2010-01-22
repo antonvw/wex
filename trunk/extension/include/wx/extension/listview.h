@@ -169,9 +169,6 @@ public:
     return (GetImageType() == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
-  /// Sets style acoording to event id.
-  void SetStyle(int id);
-
   /// Sorts on a column.
   /// If you specified use_images,
   /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether

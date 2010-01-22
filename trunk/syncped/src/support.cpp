@@ -132,14 +132,6 @@ Frame::Frame()
   menuView->AppendCheckItem(ID_VIEW_OUTPUT, _("&Output"));
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_ASCII_TABLE, _("&Ascii Table"));
-#ifdef __WXMSW__
-  wxMenu *menuListView = new wxMenu;
-  menuListView->AppendCheckItem(wxID_VIEW_LIST, _("&List"));
-  menuListView->AppendCheckItem(wxID_VIEW_DETAILS, _("&Detail"));
-  menuListView->AppendCheckItem(wxID_VIEW_SMALLICONS, _("&Small Icon"));
-  menuView->AppendSeparator();
-  menuView->AppendSubMenu(menuListView, _("&Lists"));
-#endif
 
   wxMenu *menuProcess = new wxMenu();
   menuProcess->Append(ID_PROCESS_SELECT, wxExEllipsed(_("&Select")));
@@ -214,21 +206,6 @@ Frame::Frame()
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
     _("Save project"));
-
-#ifdef __WXMSW__
-  m_ToolBar->AddSeparator();
-  m_ToolBar->AddCheckTool(
-    wxID_VIEW_LIST,
-    wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    wxNullBitmap,
-    _("View in list mode"));
-  m_ToolBar->AddCheckTool(
-    wxID_VIEW_DETAILS, wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    wxNullBitmap,
-    _("View in detail mode"));
-#endif //__WXMSW__
 
 #if wxUSE_CHECKBOX
   m_ToolBar->AddSeparator();

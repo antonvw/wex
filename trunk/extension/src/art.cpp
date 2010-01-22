@@ -41,8 +41,6 @@ wxExStockArt::wxExStockArt(wxWindowID id)
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_SAVEAS, wxART_FILE_SAVE_AS));
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_UNDO, wxART_UNDO));
     m_StockArt.insert(std::make_pair((wxWindowID)wxID_UP, wxART_GO_UP));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_VIEW_DETAILS, wxART_REPORT_VIEW));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_VIEW_LIST, wxART_LIST_VIEW));
   }
 }
 

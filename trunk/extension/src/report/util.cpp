@@ -242,12 +242,6 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       return false;
     }
 
-    if (id >= wxID_VIEW_DETAILS &&  id <= wxID_VIEW_LIST)
-    {
-      lv->SetStyle(id);
-    }
-    else
-    {
     switch (id)
     {
     case ID_LIST_ALL_ITEMS:
@@ -270,7 +264,6 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
       break;
 
     default: wxFAIL;
-    }
     }
   }
 
