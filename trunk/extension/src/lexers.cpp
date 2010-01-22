@@ -61,21 +61,23 @@ const std::vector<wxString> wxExLexers::AutoMatch(
     ++it)
   {
     for (
-      std::map<wxString, wxString>::const_iterator style = m_MacroStyles.begin();
+      std::map<wxString, wxString>::const_iterator style = 
+        m_MacroStyles.begin();
       style != m_MacroStyles.end();
       ++style)
+    {
+      if (it->first.Contains(style->first))
       {
-        if (it->first.Contains(style->first))
-        {
-          text.push_back(it->second + "=" + style->second);
-        }
+        text.push_back(it->second + "=" + style->second);
       }
+    }
   }
 
   return text;
 }
 
-const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
+const wxString wxExLexers::BuildWildCards(
+  const wxFileName& filename) const
 {
   const wxString allfiles_wildcard =
     _("All Files") + wxString::Format(" (%s)|%s",
@@ -111,7 +113,8 @@ const wxString wxExLexers::BuildWildCards(const wxFileName& filename) const
   return wildcards;
 }
 
-const wxExLexer wxExLexers::FindByFileName(const wxFileName& filename) const
+const wxExLexer wxExLexers::FindByFileName(
+  const wxFileName& filename) const
 {
   if (!filename.IsOk())
   {
