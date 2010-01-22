@@ -128,6 +128,19 @@ const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
   }
 }
 
+void wxExListItem::SetItem(int col_number, const wxString& text) 
+{
+  if (col_number > 0)
+  {
+    if ((m_ListView->GetWindowStyle() & wxLC_MASK_TYPE) != wxLC_REPORT)
+    {
+      return;
+    }
+  }
+
+  m_ListView->SetItem(GetId(), col_number, text);
+}
+
 void wxExListItem::SetReadOnly(bool readonly)
 {
   if (readonly)

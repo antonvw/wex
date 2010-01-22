@@ -43,8 +43,7 @@ public:
   const wxExFileStatistics Run(const wxExTool& tool);
 
   /// Sets the item text using column number.
-  void SetItem(int col_number, const wxString& text) {
-    m_ListView->SetItem(GetId(), col_number, text);};
+  void SetItem(int col_number, const wxString& text);
 
   /// Sets the item text using column name.
   void SetItem(
