@@ -20,7 +20,7 @@ without the written consent of the copyright owner.
     find:    '#define \(.*\) \(.*\)'
     replace: '    <def no ="\1"> \2 </def>'
     -->
-  <!-- these are the style macro's 
+  <!-- these are the no macro's, used by the match algorithm 
     -->    
     <def no ="wxSTC_MARK_CIRCLE"> 0 </def>
     <def no ="wxSTC_MARK_ROUNDRECT"> 1 </def>
@@ -1297,12 +1297,15 @@ without the written consent of the copyright owner.
   <!--
    Each <lexer> has a name atribute (scintilla lexer). 
    In addition it might contain the next attributes:
-   1) <extensions>. File extensions for files associated with this lexer.
+   1) extensions. File extensions for files associated with this lexer.
       Extensions are separated by a semicolon (;).
       If not present, the name is use as extension.
-   2) <colourings>. Colouring styles for this lexer. 
-      The ATTRIBUTE 'no' contains the scintilla styles.
-      This ATTRIBUTE lists all styles that will have the style specifier that 
+   2) match. The match attribute specifies the lexer macro
+      used for matching with style macro.
+   It might contain the next tags:
+   1) <colourings>. Colouring styles for this lexer. 
+      The attribute 'no' contains the scintilla styles.
+      This attribute lists all styles that will have the style specifier that 
       follows, separated by a comma sign (,).
       The value contains the scintilla style specifier. 
       It can have the next values:
@@ -1314,13 +1317,13 @@ without the written consent of the copyright owner.
       size:[num] sets the font size in points
       eol turns on eol filling
       underline turns on underlining
-   3) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
+   2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
       explicitly express the set by adding :<setno> after the keyword.
-   4) <properties>. Properties for this lexer. This field
+   3) <properties>. Properties for this lexer. This field
       is built of two fields, separated by an equal sign (=).
       The first field contains the scintilla property key.
       The second field contains the scintilla property value. 
-   5) A <comments> element.
+   4) A <comments> element.
    -->
   
   <lexer 
@@ -1429,10 +1432,7 @@ without the written consent of the copyright owner.
     <comments begin1="#" />
   </lexer>
   
-  <lexer
-    name="asm"
-    extensions="*.mac" 
-    match="wxSTC_ASM_">
+  <lexer name="asm" extensions="*.mac" match="wxSTC_ASM_">
     <colourings>
       <colouring no="wxSTC_ASM_CPUINSTRUCTION"> WORD </colouring>
       <colouring no="wxSTC_ASM_MATHINSTRUCTION"> italic </colouring>
@@ -1459,10 +1459,7 @@ without the written consent of the copyright owner.
     <comments begin1=";" />
   </lexer>
   
-  <lexer
-    name="hypertext"
-    extensions="*.htm;*.html"
-    match="wxSTC_H_">
+  <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_">
     <colourings>
       <colouring no="wxSTC_H_TAG"> TAG </colouring>
       <colouring no="wxSTC_H_TAGEND"> TAG </colouring>
@@ -1503,7 +1500,7 @@ without the written consent of the copyright owner.
          they are added in the source -->
   </lexer>
   
-  <lexer name="sql" match="wx_SSTC_SQL_" >
+  <lexer name="sql" match="wx_SSTC_SQL_">
     <keywords>    
     <!-- These ones added manually -->
     auto_increment comment index exists
