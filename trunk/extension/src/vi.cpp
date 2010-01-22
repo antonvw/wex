@@ -31,10 +31,6 @@ wxExVi::wxExVi(wxExSTC* stc)
 {
 }
 
-wxExVi::~wxExVi()
-{
-}
-
 void wxExVi::Delete(int lines) const
 {
   if (m_STC->GetReadOnly())
@@ -112,7 +108,7 @@ bool wxExVi::Delete(
 
 void wxExVi::DeleteMarker(const wxUniChar& marker)
 {
-  std::map<wxUniChar, int>::const_iterator it = m_Markers.find(marker);
+  std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
 
   if (it != m_Markers.end())
   {
@@ -201,11 +197,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("*f?"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), m_SearchFlags);
+    for (int i = 0; i < repeat; i++) 
+      m_STC->FindNext(command.Last(), m_SearchFlags);
   }
   else if (command.Matches("*F?"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->FindNext(command.Last(), m_SearchFlags, false);
+    for (int i = 0; i < repeat; i++) 
+      m_STC->FindNext(command.Last(), m_SearchFlags, false);
   }
   else if (command.Matches("*J"))
   {
@@ -346,9 +344,15 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           m_STC->DocumentEnd();
         }
         break;
-      case 'H': m_STC->GotoLine(m_STC->GetFirstVisibleLine()); break;
-      case 'M': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2); break;
-      case 'L': m_STC->GotoLine(m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); break;
+      case 'H': m_STC->GotoLine(
+                  m_STC->GetFirstVisibleLine()); 
+        break;
+      case 'M': m_STC->GotoLine(
+                  m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2); 
+        break;
+      case 'L': m_STC->GotoLine(
+                  m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
+        break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);

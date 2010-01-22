@@ -28,9 +28,6 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
 
-  /// Destructor.
- ~wxExVi();
-
   /// Gets the search text.
   const wxString& GetSearchText() const {return m_SearchText;};
 
