@@ -175,7 +175,7 @@ bool wxExFindOtherFileName(
 
   bool found = false;
 
-  wxWindow* window = wxExSetYieldWindow();
+  wxWindow* window = wxExGetYieldWindow();
 
   // Readme: Maybe use a thread for this.
   while (cont)

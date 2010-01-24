@@ -382,7 +382,7 @@ void wxExOpenFilesDialog(
   wxExOpenFiles(frame, files, file_flags, dir_flags);
 }
 
-wxWindow* wxExSetYieldWindow()
+wxWindow* wxExGetYieldWindow()
 {
   if (wxTheApp != NULL)
   {

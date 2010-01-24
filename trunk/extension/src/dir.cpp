@@ -18,7 +18,7 @@ class wxExDirTraverser: public wxDirTraverser
 public:
   wxExDirTraverser(wxExDir& dir)
     : m_Dir(dir)
-    , m_Window(wxExSetYieldWindow()) {}
+    , m_Window(wxExGetYieldWindow()) {}
 
   virtual wxDirTraverseResult OnDir(const wxString& dirname)
   {

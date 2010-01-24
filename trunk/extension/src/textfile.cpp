@@ -334,7 +334,7 @@ bool wxExTextFile::Parse()
     }
   }
 
-  wxWindow* window = wxExSetYieldWindow();
+  wxWindow* window = wxExGetYieldWindow();
 
   for (size_t i = 0; i < GetLineCount() && !Cancelled() && !m_FinishedAction; i++)
   {
