@@ -234,6 +234,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
     page >= 0;
     page--)
   {
+    // Required by wxExFileDialog.
     wxExListViewFile* lv = (wxExListViewFile*)notebook->GetPage(page);
 
     if (lv == NULL)
