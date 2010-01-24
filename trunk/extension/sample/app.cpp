@@ -345,9 +345,21 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case ID_LEXER_PROPERTIES:
     {
       wxString lexer;
+
       if (wxExLexers::Get()->ShowDialog(this, lexer))
       {
-        wxLogMessage(wxExLexers::Get()->FindByName(lexer).GetColourings());
+        wxString text;
+        const wxExLexer l = wxExLexers::Get()->FindByName(lexer);
+        
+        for (
+          std::vector<wxString>::const_iterator it = l.GetColourings().begin();
+          it != l.GetColourings().end();
+          ++it)
+        {
+          text += *it;
+        }
+
+        wxLogMessage(text);
       }
     }
     break;
