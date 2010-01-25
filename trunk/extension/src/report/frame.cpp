@@ -101,11 +101,6 @@ void wxExFrameWithHistory::DoRecent(
   }
 }
 
-wxExListViewFile* wxExFrameWithHistory::GetProject()
-{
-  return (wxExListViewFile*)GetFocusedListView();
-}
-
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())

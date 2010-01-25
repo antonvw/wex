@@ -44,8 +44,8 @@ public:
     return NULL;};
 
   /// If there is a project somewhere, your implementation should return that one.
-  /// Default it invokes GetFocusedListView.
-  virtual wxExListViewFile* GetProject();
+  /// Default it returns NULL.
+    virtual wxExListViewFile* GetProject() {return NULL;};
 
   /// Returns the recent opened file.
   // Returning a reference here gives a warning.
