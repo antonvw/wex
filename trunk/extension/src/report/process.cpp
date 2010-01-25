@@ -162,7 +162,13 @@ int wxExProcess::ConfigDialog(
 
 long wxExProcess::Execute()
 {
-  wxASSERT(!m_Command.empty());
+  if (m_Command.empty())
+  {
+    if (ConfigDialog(m_ListView) == wxID_CANCEL)
+    {
+      return 0;
+    }
+  }
 
   wxString cwd;
   const wxString dir = wxExConfigFirstOf(_("Process folder"));
