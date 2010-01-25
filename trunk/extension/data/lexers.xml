@@ -15,13 +15,11 @@ without the written consent of the copyright owner.
 <lexers>
   <macro>
   <!-- 
-    You can use macro's, using the <def> property.
+    These macro's allow you to use text instead of numbers.
     When adding macro from stc.h you can use next regular expression:
     find:    '#define \(.*\) \(.*\)'
     replace: '    <def no ="\1"> \2 </def>'
     -->
-  <!-- these are the no macro's, used by the match algorithm 
-    -->    
     <def no ="wxSTC_MARK_CIRCLE"> 0 </def>
     <def no ="wxSTC_MARK_ROUNDRECT"> 1 </def>
     <def no ="wxSTC_MARK_ARROW"> 2 </def>
@@ -1246,7 +1244,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_R_INFIXEOL"> 11 </def>
     <def no ="folder"> light blue </def>
     
-    <!-- these are the style macro's 
+    <!-- These are the style macro's. 
       -->    
     <def style ="_PROCESSOR"> fore:dark grey </def>
     <def style ="ATTRIBUTE"> fore:steel blue </def>
@@ -1260,7 +1258,7 @@ without the written consent of the copyright owner.
     <def style ="PREPROCESSOR"> fore:grey </def>
     <def style ="STRING"> fore:blue </def>
     <def style ="TAG"> fore:dark slate blue </def>
-    <def style ="VARIABLE"> fore:dark yellow </def>
+    <def style ="VARIABLE"> fore:violet </def>
     <def style ="WORD"> fore:dark turquoise </def>
   </macro>
   
@@ -1300,8 +1298,8 @@ without the written consent of the copyright owner.
    1) extensions. File extensions for files associated with this lexer.
       Extensions are separated by a semicolon (;).
       If not present, the name is use as extension.
-   2) match. The match attribute specifies the lexer macro
-      used for matching with style macro.
+   2) match. The match attribute specifies the 'no' macro
+      used for matching with the 'style' macro.
    It might contain the next tags:
    1) <colourings>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
