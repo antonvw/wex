@@ -1329,11 +1329,11 @@ without the written consent of the copyright owner.
     extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y"
     match="wxSTC_C_">
     <keywords>
-    argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 CHAR:0 class:0 const:0
+    argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
     const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
     else:0 enum:0 envp:0 explicit:0 extern:0 false:0 float:0 for:0 friend:0
     fstream:0 goto:0 if:0 inline:0 int:0 istream:0 istrstream:0 istringstream:0
-    long:0 main:0 mutable:0 namespace:0 new:0 OPERATOR:0 ostream:0 ostrstream:0
+    long:0 main:0 mutable:0 namespace:0 new:0 operator:0 ostream:0 ostrstream:0
     ostringstream:0 private:0 protected:0 public:0 register:0 reinterpret_cast:0
     return:0 short:0 signed:0 sizeof:0 static:0 static_cast:0 struct:0 switch:0
     template:0 this:0 throw:0 true:0 try:0 typedef:0 typeid:0 typename:0
@@ -1368,7 +1368,7 @@ without the written consent of the copyright owner.
     reserve_copy:1 resize:1 reverse:1 reverse_iterator:1 rotate:1 rotate_copy:1
     search:1 search_n:1 set:1
     set_difference:1 set_intersection:1 set_symmetric_difference:1 set_union:1
-    size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 STRING:1
+    size:1 sort:1 sort_heap:1 stable_partition:1 stable_sort:1 stack:1 string:1
     swap:1 swap_ranges:1 transform:1 unique:1 unique_copy:1 upper_bound:1 
     valarray:1 vector:1
     </keywords>
@@ -1507,7 +1507,7 @@ without the written consent of the copyright owner.
     alias all allocate alter and any are array as asc
     assertion at authorization
     before begin binary bit blob boolean both breadth by
-    call cascade cascaded case cast catalog CHAR character
+    call cascade cascaded case cast catalog char character
     check class clob close collate collation column commit
     completion connect connection constraint constraints
     constructor continue corresponding create cross cube current
@@ -1550,7 +1550,7 @@ without the written consent of the copyright owner.
     treat trigger true
     under union unique unknown
     unnest update usage user using
-    value values varchar VARIABLE varying view
+    value values varchar variable varying view
     when whenever where with without work write
     year
     zone
