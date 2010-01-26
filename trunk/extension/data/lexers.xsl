@@ -79,6 +79,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <tr bgcolor="#9acd32">
       <th align="left">name</th>
       <th align="left">extensions</th>
+      <th align="left">match</th>
       <th align="left">colourings</th>
       <th align="left">properties</th>
       <th align="left">comments</th>
@@ -89,6 +90,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <tr>
       <td><xsl:value-of select="@name"/></td>
       <td><xsl:value-of select="@extensions"/></td>
+      <td><xsl:value-of select="@match"/></td>
       <td><xsl:value-of select="colourings"/></td>
       <td><xsl:value-of select="properties"/></td>
       <td><xsl:value-of select="comments"/></td>
