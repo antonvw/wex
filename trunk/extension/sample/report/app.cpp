@@ -175,7 +175,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   item.Insert();
 }
 
-wxExListViewWithFrame* wxExRepSampleFrame::Activate(
+wxExListViewStandard* wxExRepSampleFrame::Activate(
   wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
@@ -184,7 +184,7 @@ wxExListViewWithFrame* wxExRepSampleFrame::Activate(
     i < m_NotebookWithLists->GetPageCount();
     i++)
   {
-    wxExListViewWithFrame* vw = (wxExListViewWithFrame*)m_NotebookWithLists->GetPage(i);
+    wxExListViewStandard* vw = (wxExListViewStandard*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetType() == type)
     {

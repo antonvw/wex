@@ -143,6 +143,38 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
+void wxExListViewStandard::DeleteDoubles()
+{
+  wxDateTime mtime((time_t)0);
+  wxString name;
+  const long itemcount = GetItemCount();
+
+  for (long i = itemcount - 1; i >= 0; i--)
+  {
+    wxExListItem item(this, i);
+
+    // Delete this element if it has the same mtime
+    // and the same name as the previous one.
+    if (mtime == item.GetFileName().GetStat().st_mtime &&
+        name == GetItemText(i, _("File Name")))
+    {
+      DeleteItem(i);
+    }
+    else
+    {
+      mtime = item.GetFileName().GetStat().st_mtime;
+      name = GetItemText(i, _("File Name"));
+    }
+  }
+
+  if (itemcount != GetItemCount())
+  {
+    ItemsUpdate();
+    // Next gives compile error, but is not needed.
+    // m_ContentsChanged = true;
+  }
+}
+
 const wxString wxExListViewStandard::GetTypeDescription(ListType type)
 {
   wxString value;
@@ -552,7 +584,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         !wxExSVN::Get()->Use() &&
          exists && !is_folder)
     {
-      wxExListViewWithFrame* list = m_Frame->Activate(LIST_FILE);
+      wxExListView* list = m_Frame->Activate(LIST_FILE);
 
       if (list != NULL && list->GetSelectedItemCount() == 1)
       {
@@ -619,38 +651,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     menu.AppendSeparator();
     menu.AppendTools();
-  }
-}
-
-void wxExListViewWithFrame::DeleteDoubles()
-{
-  wxDateTime mtime((time_t)0);
-  wxString name;
-  const long itemcount = GetItemCount();
-
-  for (long i = itemcount - 1; i >= 0; i--)
-  {
-    wxExListItem item(this, i);
-
-    // Delete this element if it has the same mtime
-    // and the same name as the previous one.
-    if (mtime == item.GetFileName().GetStat().st_mtime &&
-        name == GetItemText(i, _("File Name")))
-    {
-      DeleteItem(i);
-    }
-    else
-    {
-      mtime = item.GetFileName().GetStat().st_mtime;
-      name = GetItemText(i, _("File Name"));
-    }
-  }
-
-  if (itemcount != GetItemCount())
-  {
-    ItemsUpdate();
-    // Next gives compile error, but is not needed.
-    // m_ContentsChanged = true;
   }
 }
 
@@ -741,7 +741,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     int i = -1;
     bool found = false;
 
-    wxExListViewWithFrame* list = NULL;
+    wxExListViewStandard* list = NULL;
 
     if (event.GetId() == ID_LIST_VERSIONLIST)
     {

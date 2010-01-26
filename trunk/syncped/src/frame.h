@@ -27,7 +27,7 @@ protected:
   void OnTree(wxTreeEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual wxExListViewWithFrame* Activate(
+  virtual wxExListViewStandard* Activate(
     wxExListViewWithFrame::ListType type, 
     const wxExLexer* lexer = NULL);
   virtual void ConfigDialogApplied(wxWindowID dialogid);

@@ -14,7 +14,7 @@
 
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/extension/frame.h>
-#include <wx/extension/report/listview.h> // for wxExListViewFile::ListType 
+#include <wx/extension/report/listview.h> // for wxExListViewStandard::ListType 
 
 class wxExListViewWithFrame;
 class wxExProcess;
@@ -38,14 +38,14 @@ public:
 
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
-  virtual wxExListViewWithFrame* Activate(
+  virtual wxExListViewStandard* Activate(
     wxExListViewStandard::ListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it returns NULL.
-    virtual wxExListViewFile* GetProject() {return NULL;};
+  virtual wxExListViewFile* GetProject() {return NULL;};
 
   /// Returns the recent opened file.
   // Returning a reference here gives a warning.

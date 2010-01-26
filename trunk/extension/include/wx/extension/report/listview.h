@@ -59,6 +59,9 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
+  /// Deletes double items.
+  void DeleteDoubles();
+
   /// Gets the list type.
   const ListType GetType() const {return m_Type;};
 
@@ -119,7 +122,6 @@ protected:
   void OnList(wxListEvent& event);
   wxExFrameWithHistory* m_Frame;
 private:
-  void DeleteDoubles();
   const wxString GetFindInCaption(int id) const;
   void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);

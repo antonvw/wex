@@ -101,8 +101,8 @@ MDIFrame::MDIFrame(bool open_recent)
   m_NotebookWithProjects = new wxExNotebook(
     this, this, (wxWindowID)NOTEBOOK_PROJECTS, wxDefaultPosition, wxDefaultSize, flag);
   m_History = new wxExListViewWithFrame(this, this,
-    wxExListViewFile::LIST_HISTORY,
-    wxExListViewFile::LIST_MENU_DEFAULT);
+    wxExListViewStandard::LIST_HISTORY,
+    wxExListViewStandard::LIST_MENU_DEFAULT);
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
@@ -178,11 +178,11 @@ MDIFrame::MDIFrame(bool open_recent)
   wxLogTrace("SY_CALL", "-MDIFrame");
 }
 
-wxExListViewWithFrame* MDIFrame::Activate(
+wxExListViewStandard* MDIFrame::Activate(
   wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
-  if (type == wxExListViewFile::LIST_FILE)
+  if (type == wxExListViewStandard::LIST_FILE)
   {
     return GetProject();
   }
@@ -199,18 +199,19 @@ wxExListViewWithFrame* MDIFrame::AddPage(
   wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
-  const wxString name = wxExListViewStandard::GetTypeDescription((wxExListViewStandard::ListType)type) +
+  const wxString name = wxExListViewStandard::GetTypeDescription(type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
-  wxExListViewWithFrame* list = (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(name);
+  wxExListViewWithFrame* list = 
+    (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(name);
 
-  if (list == NULL && type != wxExListViewFile::LIST_FILE)
+  if (list == NULL && type != wxExListViewStandard::LIST_FILE)
   {
     list = new wxExListViewWithFrame(
       m_NotebookWithLists, this,
       (wxExListViewStandard::ListType)type,
       wxID_ANY,
-      wxExListViewFile::LIST_MENU_DEFAULT,
+      wxExListViewStandard::LIST_MENU_DEFAULT,
       lexer);
     m_NotebookWithLists->AddPage(list, name, name, true);
   }
@@ -322,7 +323,10 @@ void MDIFrame::NewFile(bool as_project)
   const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
   wxString key;
 
-  wxExNotebook* notebook = (as_project ? m_NotebookWithProjects : m_NotebookWithEditors);
+  wxExNotebook* notebook = (as_project ? 
+    m_NotebookWithProjects : 
+    m_NotebookWithEditors);
+
   wxWindow* page;
 
   if (as_project)
@@ -337,7 +341,7 @@ void MDIFrame::NewFile(bool as_project)
       this,
       key,
       wxID_ANY,
-      wxExListViewFile::LIST_MENU_DEFAULT);
+      wxExListViewStandard::LIST_MENU_DEFAULT);
 
     ((wxExListViewFile*)page)->FileNew(fn);
     SetTitle(wxEmptyString, text);
@@ -996,7 +1000,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
             break;
 
           case wxID_PASTE:
-            event.Enable(list->GetType() == wxExListViewFile::LIST_FILE);
+            event.Enable(list->GetType() == wxExListViewStandard::LIST_FILE);
             break;
 
           default:
@@ -1074,7 +1078,7 @@ bool MDIFrame::OpenFile(
         this,
         filename.GetFullPath(),
         wxID_ANY,
-        wxExListViewFile::LIST_MENU_DEFAULT);
+        wxExListViewStandard::LIST_MENU_DEFAULT);
 
       m_NotebookWithProjects->AddPage(
         project,

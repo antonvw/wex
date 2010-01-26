@@ -187,7 +187,7 @@ long wxExProcess::Execute()
 
   if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
   {
-    m_ListView = m_Frame->Activate(wxExListViewFile::LIST_PROCESS);
+    m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS);
 
     SetPid(pid);
 
