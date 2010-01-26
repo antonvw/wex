@@ -280,17 +280,6 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
     SetName(GetName() + " " + lexer->GetScintillaLexer());
   }
 
-#ifndef __WXMSW__
-  // Under Linux this should be done before adding any columns, under MSW it does not matter!
-  SetSingleStyle(wxLC_REPORT);
-#else
-  // Set initial style depending on type.
-  // Might be improved.
-  SetSingleStyle((m_Type == LIST_FILE || m_Type == LIST_HISTORY ?
-    wxConfigBase::Get()->ReadLong("List/Style", wxLC_REPORT) :
-    wxLC_REPORT));
-#endif
-
   const int col_line_width = 750;
 
   if (m_Type != LIST_PROCESS)

@@ -96,6 +96,8 @@ wxExListView::wxExListView(wxWindow* parent,
   , m_ImageWidthLarge(32)
   , m_SortedColumnNo(-1)
 {
+  SetSingleStyle(wxLC_REPORT);
+
   if (image_type != IMAGE_NONE)
   {
     if (image_type == IMAGE_ART || image_type == IMAGE_OWN)

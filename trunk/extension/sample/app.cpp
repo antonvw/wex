@@ -172,7 +172,6 @@ wxExSampleFrame::wxExSampleFrame()
   m_Grid->AutoSizeColumns();
 #endif
 
-  m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
   m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
   m_ListView->InsertColumn(wxExColumn("Float", wxExColumn::COL_FLOAT));
