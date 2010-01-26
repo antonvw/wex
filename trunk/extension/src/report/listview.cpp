@@ -170,8 +170,6 @@ void wxExListViewStandard::DeleteDoubles()
   if (itemcount != GetItemCount())
   {
     ItemsUpdate();
-    // Next gives compile error, but is not needed.
-    // m_ContentsChanged = true;
   }
 }
 
