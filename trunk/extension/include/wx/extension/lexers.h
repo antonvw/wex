@@ -136,7 +136,7 @@ private:
   const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
 
   std::map<wxString, wxString> m_Macros;
-  std::map<wxString, wxString> m_MacroStyles;
+  std::map<wxString, wxString> m_MacrosStyle;
   std::map<int, int> m_Indicators;
   std::map<wxString, wxExLexer> m_Lexers;
   std::vector<wxString> m_GlobalProperties;

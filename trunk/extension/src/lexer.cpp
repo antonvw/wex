@@ -17,6 +17,15 @@
 wxExLexer::wxExLexer(const wxString& scintilla_name)
   : m_ScintillaLexer(scintilla_name)
 {
+  m_CommentBegin.clear();
+  m_CommentBegin2.clear();
+  m_CommentEnd.clear();
+  m_CommentEnd2.clear();
+  m_Extensions.clear();
+  m_Colourings.clear();
+  m_Properties.clear();
+  m_Keywords.clear();
+  m_KeywordsSet.clear();
 }
 
 const wxString wxExLexer::GetFormattedText(

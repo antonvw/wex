@@ -62,8 +62,8 @@ const std::vector<wxString> wxExLexers::AutoMatch(
   {
     for (
       std::map<wxString, wxString>::const_iterator style = 
-        m_MacroStyles.begin();
-      style != m_MacroStyles.end();
+        m_MacrosStyle.begin();
+      style != m_MacrosStyle.end();
       ++style)
     {
       if (it->first.Contains(style->first))
@@ -240,9 +240,10 @@ const std::vector<wxString> wxExLexers::ParseTagColourings(
     {
       wxString content = child->GetNodeContent().Strip(wxString::both);
 
-      std::map<wxString, wxString>::const_iterator it = m_MacroStyles.find(content);
+      std::map<wxString, wxString>::const_iterator it = 
+        m_MacrosStyle.find(content);
 
-      if (it != m_MacroStyles.end())
+      if (it != m_MacrosStyle.end())
       {
         content = it->second;
       }
@@ -257,7 +258,8 @@ const std::vector<wxString> wxExLexers::ParseTagColourings(
     else
     {
       wxLogError(_("Undefined colourings tag: %s on line: %d"),
-        child->GetName().c_str(), child->GetLineNumber());
+        child->GetName().c_str(), 
+        child->GetLineNumber());
     }
 
     child = child->GetNext();
@@ -329,7 +331,8 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     else
     {
       wxLogError(_("Undefined global tag: %s on line: %d"),
-        child->GetName().c_str(), child->GetLineNumber());
+        child->GetName().c_str(), 
+        child->GetLineNumber());
     }
 
     child = child->GetNext();
@@ -365,7 +368,9 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
     {
       if (!lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both)))
       {
-        wxLogError(_("Keywords could not be set on line: %d"), child->GetLineNumber());
+        wxLogError(
+          _("Keywords could not be set on line: %d"), 
+          child->GetLineNumber());
       }
     }
     else if (child->GetName() == "properties")
@@ -386,7 +391,8 @@ const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
     else
     {
       wxLogError(_("Undefined lexer tag: %s on line: %d"),
-        child->GetName().c_str(), child->GetLineNumber());
+        child->GetName().c_str(), 
+        child->GetLineNumber());
     }
 
     child = child->GetNext();
@@ -418,7 +424,8 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
         if (it != m_Macros.end())
         {
           wxLogError(_("Macro: %s on line: %d already exists"),
-            attrib.c_str(), child->GetLineNumber());
+            attrib.c_str(), 
+            child->GetLineNumber());
         }
         else
         {
@@ -428,23 +435,26 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
 
       if (!style.empty())
       {
-        std::map<wxString, wxString>::const_iterator it = m_MacroStyles.find(style);
+        std::map<wxString, wxString>::const_iterator it = 
+          m_MacrosStyle.find(style);
 
-        if (it != m_MacroStyles.end())
+        if (it != m_MacrosStyle.end())
         {
           wxLogError(_("Macro style: %s on line: %d already exists"),
-            style.c_str(), child->GetLineNumber());
+            style.c_str(), 
+            child->GetLineNumber());
         }
         else
         {
-          m_MacroStyles[style] = content;
+          m_MacrosStyle[style] = content;
         }
       }
     }
     else
     {
       wxLogError(_("Undefined macro tag: %s on line: %d"),
-        child->GetName().c_str(), child->GetLineNumber());
+        child->GetName().c_str(), 
+        child->GetLineNumber());
     }
 
     child = child->GetNext();
@@ -483,7 +493,9 @@ const wxExMarker wxExLexers::ParseTagMarker(
   }
   else
   {
-    wxLogError(_("Illegal marker number: %d or symbol: %d"), no, symbol_no);
+    wxLogError(_("Illegal marker number: %d or symbol: %d"), 
+      no, 
+      symbol_no);
     return wxExMarker(0, 0, foreground, background);
   }
 }
@@ -539,7 +551,7 @@ void wxExLexers::Read()
   m_Indicators.clear();
   m_Lexers.clear();
   m_Macros.clear();
-  m_MacroStyles.clear();
+  m_MacrosStyle.clear();
   m_Markers.clear();
   m_SortedLexerNames.clear();
   m_Styles.clear();
