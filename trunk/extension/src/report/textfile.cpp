@@ -15,11 +15,10 @@
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/listview.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 
-wxExListViewWithFrame* wxExTextFileWithListView::m_Report = NULL;
+wxExListView* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
 
 void SetItemColumnStatistics(

@@ -126,14 +126,14 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   m_STC = new wxExSTCWithFrame(this, this); // use all flags (default)
 
   for (
-    int i = wxExListViewWithFrame::LIST_BEFORE_FIRST + 1;
-    i < wxExListViewWithFrame::LIST_AFTER_LAST;
+    int i = wxExListViewStandard::LIST_BEFORE_FIRST + 1;
+    i < wxExListViewStandard::LIST_AFTER_LAST;
     i++)
   {
     wxExListViewWithFrame* vw = new wxExListViewWithFrame(
       this,
       this, 
-      (wxExListViewWithFrame::ListType)i, 
+      (wxExListViewStandard::ListType)i, 
       wxID_ANY,
       0xFF, 
       &lexer); // set all flags
@@ -160,23 +160,23 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   GetManager().Update();
 
   wxExDirWithListView dir(
-    (wxExListViewFile*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewStandard::GetTypeDescription(wxExListViewWithFrame::LIST_FILE)),
+    (wxExListView*)m_NotebookWithLists->GetPageByKey(
+      wxExListViewStandard::GetTypeDescription(wxExListViewStandard::LIST_FILE)),
     wxGetCwd(),
     "*.cpp;*.h");
 
   dir.FindFiles();
 
   wxExListItem item(
-    (wxExListViewWithFrame*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewStandard::GetTypeDescription(wxExListViewWithFrame::LIST_FILE)),
+    (wxExListView*)m_NotebookWithLists->GetPageByKey(
+      wxExListViewStandard::GetTypeDescription(wxExListViewStandard::LIST_FILE)),
     wxFileName("NOT EXISTING ITEM"));
 
   item.Insert();
 }
 
 wxExListViewWithFrame* wxExRepSampleFrame::Activate(
-  wxExListViewWithFrame::ListType type, 
+  wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
   for (
@@ -188,7 +188,7 @@ wxExListViewWithFrame* wxExRepSampleFrame::Activate(
 
     if (vw->GetType() == type)
     {
-      if (type == wxExListViewWithFrame::LIST_KEYWORD)
+      if (type == wxExListViewStandard::LIST_KEYWORD)
       {
         if (lexer != NULL)
         {
@@ -229,7 +229,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetVersion(wxEX_VERSION_STRING);
     info.AddDeveloper(wxVERSION_STRING);
-    info.SetCopyright("(c) 1998-2009 Anton van Wezenbeek");
+    info.SetCopyright("(c) 1998-2010 Anton van Wezenbeek");
     wxAboutBox(info);
     }
     break;

@@ -36,7 +36,7 @@ public:
 protected:
   // Interface from wxExFrameWithHistory.
   virtual wxExListViewWithFrame* Activate(
-    wxExListViewWithFrame::ListType type, 
+    wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
   virtual wxExListView* GetListView();
   virtual wxExSTC* GetSTC();
