@@ -43,7 +43,7 @@ private:
   const wxExTool m_Tool;
 };
 
-class wxExListViewFile;
+class wxExListView;
 
 /// Offers a wxExDir with reporting to a listview.
 /// All matching files and folders are added as listitem to the listview.
@@ -51,7 +51,7 @@ class wxExDirWithListView : public wxExDir
 {
 public:
   /// Constructor, provide your listview and a path.
-  wxExDirWithListView(wxExListViewFile* listview,
+  wxExDirWithListView(wxExListView* listview,
     const wxString& fullpath,
     const wxString& filespec = wxEmptyString,
     int flags = wxDIR_DEFAULT);
@@ -59,6 +59,6 @@ protected:
   virtual void OnDir(const wxString& dir);
   virtual void OnFile(const wxString& file);
 private:
-  wxExListViewFile* m_ListView;
+  wxExListView* m_ListView;
 };
 #endif

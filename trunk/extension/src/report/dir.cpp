@@ -12,7 +12,6 @@
 #include <wx/config.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listitem.h>
-#include <wx/extension/report/listview.h>
 
 wxExDirTool::wxExDirTool(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec, int flags)
@@ -29,7 +28,7 @@ void wxExDirTool::OnFile(const wxString& file)
   m_Statistics += report.GetStatistics();
 }
 
-wxExDirWithListView::wxExDirWithListView(wxExListViewFile* listview,
+wxExDirWithListView::wxExDirWithListView(wxExListView* listview,
   const wxString& fullpath, const wxString& filespec, int flags)
   : wxExDir(fullpath, filespec, flags)
   , m_ListView(listview)
