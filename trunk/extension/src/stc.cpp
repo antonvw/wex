@@ -308,7 +308,9 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
   const wxString link = GetTextAtCurrentPos();
-  const int line_no = (!sel.empty() ? wxExGetLineNumberFromText(sel): GetLineNumberAtCurrentPos());
+  const int line_no = (!sel.empty() ? 
+    wxExGetLineNumberFromText(sel): 
+    GetLineNumberAtCurrentPos());
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
@@ -512,7 +514,8 @@ void wxExSTC::Colourise()
   SetFolding();
 
   for (
-    std::vector<wxString>::const_iterator it = GetFileName().GetLexer().GetColourings().begin();
+    std::vector<wxString>::const_iterator it = 
+      GetFileName().GetLexer().GetColourings().begin();
     it != GetFileName().GetLexer().GetColourings().end();
     ++it)
   {
@@ -2073,7 +2076,8 @@ void wxExSTC::SetGlobalStyles()
   if (!(m_Flags & STC_OPEN_HEX))
   {
     for (
-      std::vector<wxString>::const_iterator it = wxExLexers::Get()->GetStyles().begin();
+      std::vector<wxString>::const_iterator it = 
+        wxExLexers::Get()->GetStyles().begin();
       it != wxExLexers::Get()->GetStyles().end();
       ++it)
     {
@@ -2081,7 +2085,8 @@ void wxExSTC::SetGlobalStyles()
     }
 
     for (
-      std::map<int, int>::const_iterator ind = wxExLexers::Get()->GetIndicators().begin();
+      std::map<int, int>::const_iterator ind = 
+        wxExLexers::Get()->GetIndicators().begin();
       ind != wxExLexers::Get()->GetIndicators().end();
       ++ind)
     {
@@ -2091,7 +2096,8 @@ void wxExSTC::SetGlobalStyles()
   else
   {
     for (
-      std::vector<wxString>::const_iterator it = wxExLexers::Get()->GetStylesHex().begin();
+      std::vector<wxString>::const_iterator it = 
+        wxExLexers::Get()->GetStylesHex().begin();
       it != wxExLexers::Get()->GetStylesHex().end();
       ++it)
     {
@@ -2110,7 +2116,8 @@ void wxExSTC::SetKeyWords()
 
   // Readme: The Scintilla lexer only recognized lower case words, apparently.
   for (
-    std::map< int, std::set<wxString> >::const_iterator it = GetFileName().GetLexer().GetKeywordsSet().begin();
+    std::map< int, std::set<wxString> >::const_iterator it = 
+      GetFileName().GetLexer().GetKeywordsSet().begin();
     it != GetFileName().GetLexer().GetKeywordsSet().end();
     ++it)
   {
@@ -2125,17 +2132,10 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
   ClearDocumentStyle();
 
   // Reset all old properties. 
-  // Should be before GetFileName().SetLexer().
+  // Should be before SetFileNameLexer.
   SetProperties(GetFileName().GetLexer().GetProperties(), true); //reset
 
-  if (forced)
-  {
-    SetFileNameLexer(lexer, "forced");
-  }
-  else
-  {
-    SetFileNameLexer(lexer, GetLine(0));
-  }
+  SetFileNameLexer(lexer, (forced ? "forced": GetLine(0)));
 
 #if wxUSE_STATUSBAR
   UpdateStatusBar("PaneLexer");
@@ -2169,7 +2169,8 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 void wxExSTC::SetMarkers()
 {
   for (
-    std::vector<wxExMarker>::const_iterator it = wxExLexers::Get()->GetMarkers().begin();
+    std::vector<wxExMarker>::const_iterator it = 
+      wxExLexers::Get()->GetMarkers().begin();
     it != wxExLexers::Get()->GetMarkers().end();
     ++it)
   {
