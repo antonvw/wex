@@ -102,6 +102,28 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 </td>
 </tr>
   
+<tr>
+<td>
+    <h2>macros</h2>
+    <table border="1">
+    <tr bgcolor="#9acd32">
+      <th align="left">no</th>
+      <th align="left">style</th>
+      <th align="left">value</th>
+    </tr>
+    
+    <xsl:for-each select="lexers/macro/def">
+    <tr>
+      <td><xsl:value-of select="@no"/></td>
+      <td><xsl:value-of select="@style"/></td>
+      <td><xsl:value-of select="."/></td>
+    </tr>
+    </xsl:for-each>
+    
+    </table>
+</td>
+</tr>
+  
 </table>
 
 </body>
