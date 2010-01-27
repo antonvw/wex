@@ -807,10 +807,9 @@ void wxExListView::SortColumnReset()
 #if wxUSE_STATUSBAR
 void wxExListView::UpdateStatusBar() const
 {
-  const wxString text = wxString::Format("%d", GetItemCount()) +
-    wxString((GetSelectedItemCount() > 0) ?
-      ("," + wxString::Format("%d", GetSelectedItemCount())):
-      wxString(wxEmptyString));
+  const wxString text = (GetSelectedItemCount() == 0 ?
+    wxString::Format("%d", GetItemCount()):
+    wxString::Format("%d,%d", GetItemCount(), GetSelectedItemCount()));
 
   wxExFrame::StatusText(text, "PaneItems");
 }
