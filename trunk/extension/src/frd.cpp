@@ -91,8 +91,6 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
 {
   wxFindReplaceData::SetFindString(value.BeforeFirst(m_FieldSeparator));
 
-  m_FindStringNoCase = MatchCase() ? GetFindString(): GetFindString().Upper();
-
   if (IsRegularExpression())
   {
     int flags = wxRE_DEFAULT;

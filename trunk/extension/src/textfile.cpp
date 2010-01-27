@@ -264,30 +264,37 @@ bool wxExTextFile::MatchLine(wxString& line)
   if (!frd->IsRegularExpression())
   {
     const wxString search_line = frd->MatchCase() ? line: line.Upper();
-    const size_t start = search_line.find(frd->GetFindStringNoCase());
 
-    if (start != wxString::npos)
+    if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      if (frd->MatchWord() && m_Tool.GetId() == ID_TOOL_REPORT_FIND)
+      const size_t start = search_line.find(frd->MatchCase() ? 
+        frd->GetFindString(): frd->GetFindString().Upper());
+
+      if (start != wxString::npos)
       {
-        if (( start == 0 ||
-             (start > 0 && !IsWordCharacter(search_line[start - 1]))) &&
-            !IsWordCharacter(search_line[start + frd->GetFindStringNoCase().length()]))
+        if (frd->MatchWord())
+        {
+          if (( start == 0 ||
+               (start > 0 && !IsWordCharacter(search_line[start - 1]))) &&
+              !IsWordCharacter(search_line[start + frd->GetFindString().length()]))
+          {
+            match = true;
+          }
+        }
+        else
         {
           match = true;
         }
       }
-      else
-      {
-        match = true;
-      }
+    }
+    else
+    {
+      const size_t count = line.Replace(
+        frd->GetFindString(), 
+        frd->GetReplaceString());
 
-      if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
-      {
-        const size_t count = line.Replace(frd->GetFindString(), frd->GetReplaceString());
-        m_Stats.m_Elements.Inc(_("Actions Completed"), count);
-        m_Modified = true;
-      }
+      m_Stats.m_Elements.Inc(_("Actions Completed"), count);
+      m_Modified = true;
     }
   }
   else
@@ -296,7 +303,10 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
-      const int count = frd->GetRegularExpression().ReplaceAll(&line, frd->GetReplaceString());
+      const int count = frd->GetRegularExpression().ReplaceAll(
+        &line, 
+        frd->GetReplaceString());
+
       m_Stats.m_Elements.Inc(_("Actions Completed"), count);
       m_Modified = true;
     }
