@@ -100,12 +100,12 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 
     if (GetMenuFlags() & STC_MENU_REPORT_FIND)
     {
-      menu.Append(ID_STC_FIND_FILES, wxExEllipsed(_("Find &In Files")));
+      menu.Append(ID_STC_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
     }
 
     if (GetMenuFlags() & STC_MENU_REPORT_REPLACE)
     {
-      menu.Append(ID_STC_REPLACE_FILES, wxExEllipsed(_("&Replace In Files")));
+      menu.Append(ID_STC_REPLACE_IN_FILES, wxExEllipsed(_("&Replace In Files")));
     }
   }
 
@@ -220,11 +220,11 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_STC_FIND_FILES:
+  case ID_STC_FIND_IN_FILES:
     wxExFindInFiles(m_Frame);
     break;
 
-  case ID_STC_REPLACE_FILES:
+  case ID_STC_REPLACE_IN_FILES:
     wxExFindInFiles(m_Frame, true);
     break;
 

@@ -87,8 +87,8 @@ Frame::Frame()
   menuEdit->Append(wxID_FIND);
   menuEdit->Append(ID_EDIT_FIND_NEXT, _("Find &Next\tF3"));
   menuEdit->Append(wxID_REPLACE);
-  menuEdit->Append(ID_SPECIAL_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
-  menuEdit->Append(ID_SPECIAL_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
+  menuEdit->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
+  menuEdit->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
   menuEdit->AppendSeparator();
   menuEdit->AppendTools();
   menuEdit->AppendSeparator();
