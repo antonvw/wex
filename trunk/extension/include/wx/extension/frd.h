@@ -69,6 +69,9 @@ public:
   /// Returns true if the flags have whole word set.
   bool MatchWord() const {return (GetFlags() & wxFR_WHOLEWORD) > 0;};
 
+  /// Returns true if the flags have search down set.
+  bool SearchDown() const {return (GetFlags() & wxFR_DOWN) > 0;};
+
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 

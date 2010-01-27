@@ -345,8 +345,6 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   }
 
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-  const bool find_next = (frd->GetFlags() & wxFR_DOWN);
-
   wxExSTC* stc = GetSTC();
 
   if (stc != NULL && stc->IsShown())
@@ -361,11 +359,11 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
       event.GetEventType() == wxEVT_COMMAND_FIND ||
       event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
-      stc->FindNext(find_next);
+      stc->FindNext(frd->SearchDown());
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
     {
-      stc->ReplaceNext(find_next);
+      stc->ReplaceNext(frd->SearchDown());
     }
     else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
     {
@@ -389,7 +387,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
       event.GetEventType() == wxEVT_COMMAND_FIND ||
       event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
-      lv->FindNext(frd->GetFindString(), find_next);
+      lv->FindNext(frd->GetFindString(), frd->SearchDown());
     }
     else
     {
@@ -407,7 +405,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
       event.GetEventType() == wxEVT_COMMAND_FIND ||
       event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
     {
-      grid->FindNext(frd->GetFindString(), find_next);
+      grid->FindNext(frd->GetFindString(), frd->SearchDown());
     }
     else
     {

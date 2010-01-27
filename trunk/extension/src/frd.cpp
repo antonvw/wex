@@ -51,7 +51,7 @@ wxExFindReplaceData::~wxExFindReplaceData()
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
   wxConfigBase::Get()->Write(m_TextRegEx, m_IsRegularExpression);
-  wxConfigBase::Get()->Write(m_TextSearchDown, (GetFlags() & wxFR_DOWN) > 0);
+  wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
 }
 
 wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
