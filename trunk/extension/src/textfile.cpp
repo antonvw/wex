@@ -258,6 +258,7 @@ void wxExTextFile::InsertLine(const wxString& line)
 bool wxExTextFile::MatchLine(wxString& line)
 {
   bool match = false;
+  int count = 1;
 
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
@@ -289,11 +290,10 @@ bool wxExTextFile::MatchLine(wxString& line)
     }
     else
     {
-      const size_t count = line.Replace(
+      count = line.Replace(
         frd->GetFindString(), 
         frd->GetReplaceString());
 
-      m_Stats.m_Elements.Inc(_("Actions Completed"), count);
       m_Modified = true;
     }
   }
@@ -303,23 +303,17 @@ bool wxExTextFile::MatchLine(wxString& line)
 
     if (match && m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
     {
-      const int count = frd->GetRegularExpression().ReplaceAll(
+      count = frd->GetRegularExpression().ReplaceAll(
         &line, 
         frd->GetReplaceString());
 
-      m_Stats.m_Elements.Inc(_("Actions Completed"), count);
       m_Modified = true;
     }
   }
 
   if (match)
   {
-    m_RCS.m_Description = line;
-
-    if (m_Tool.GetId() != ID_TOOL_REPORT_REPLACE)
-    {
-      m_Stats.m_Elements.Inc(_("Actions Completed"));
-    }
+    m_Stats.m_Elements.Inc(_("Actions Completed"), count);
   }
 
   return match;
@@ -327,26 +321,25 @@ bool wxExTextFile::MatchLine(wxString& line)
 
 bool wxExTextFile::Parse()
 {
-  if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE)
+  if (m_Tool.GetId() == ID_TOOL_REPORT_REPLACE &&
+      m_FileName.GetStat().IsReadOnly())
   {
-    if (m_FileName.GetStat().IsReadOnly())
-    {
-      return false;
-    }
+    return false;
   }
 
-  if (m_Tool.IsFindType())
+  if (m_Tool.IsFindType() &&
+      wxExFindReplaceData::Get()->GetFindString().empty())
   {
-    if (wxExFindReplaceData::Get()->GetFindString().empty())
-    {
-      wxFAIL;
-      return false;
-    }
+    wxFAIL;
+    return false;
   }
 
   wxWindow* window = wxExGetYieldWindow();
 
-  for (size_t i = 0; i < GetLineCount() && !Cancelled() && !m_FinishedAction; i++)
+  for (
+    size_t i = 0; 
+    i < GetLineCount() && !Cancelled() && !m_FinishedAction; 
+    i++)
   {
     wxString& line = GetLine(i);
 

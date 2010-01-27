@@ -205,7 +205,7 @@ void wxExTextFileWithListView::Report(size_t line)
   case ID_TOOL_REPORT_REPLACE:
     item.SetItem(_("Replaced"), wxExFindReplaceData::Get()->GetReplaceString());
   case ID_TOOL_REPORT_FIND:
-    item.SetItem(_("Line"), GetRCS().GetDescription().Strip(wxString::both));
+    item.SetItem(_("Line"), GetLine(line).Strip(wxString::both));
     item.SetItem(_("Match"), wxExFindReplaceData::Get()->GetFindString());
   break;
 
