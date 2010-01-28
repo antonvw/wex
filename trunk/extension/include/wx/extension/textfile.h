@@ -106,12 +106,6 @@ public:
     const wxExFileName& filename,
     const wxExTool& tool);
 
-  /// Allows you to cancel the RunTool.
-  static void Cancel() {m_Cancelled = true;}
-
-  /// Check whether operation was cancelled.
-  static bool Cancelled() {return m_Cancelled;};
-
   /// Gets the filename.
   const wxExFileName& GetFileName() const {return m_FileName;};
 
@@ -247,7 +241,6 @@ private:
   wxExSyntaxType m_SyntaxType;
   const wxExTool m_Tool;
 
-  static bool m_Cancelled;
   size_t m_LineMarker;
   size_t m_LineMarkerEnd;
   size_t m_VersionLine;

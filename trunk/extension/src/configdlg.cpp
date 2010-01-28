@@ -60,6 +60,7 @@ const long ID_BROWSE_FOLDER = wxNewId();
 
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
+  EVT_BUTTON(wxID_CANCEL, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
   EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
@@ -870,7 +871,8 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   }
 
   if ( command.GetId() == wxID_APPLY ||
-      (command.GetId() == wxID_OK && !IsModal()))
+      ((command.GetId() == wxID_OK ||
+        command.GetId() == wxID_CANCEL) && !IsModal()))
   {
     wxASSERT(wxTheApp != NULL);
     wxWindow* window = wxTheApp->GetTopWindow();
@@ -879,6 +881,11 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     wxASSERT(frame != NULL);
 
     frame->OnCommandConfigDialog(GetId(), command.GetId());
+  }
+
+  if (command.GetId() == wxID_CANCEL)
+  {
+    EndDialog(wxID_CANCEL);
   }
 
   if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)

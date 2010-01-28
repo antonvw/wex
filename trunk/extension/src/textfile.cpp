@@ -99,8 +99,6 @@ bool wxExRCS::SetRevision(wxString& text)
   return true;
 }
 
-bool wxExTextFile::m_Cancelled = false;
-
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
   const wxExTool& tool)
@@ -334,11 +332,9 @@ bool wxExTextFile::Parse()
     return false;
   }
 
-  wxWindow* window = wxExGetYieldWindow();
-
   for (
     size_t i = 0; 
-    i < GetLineCount() && !Cancelled() && !m_FinishedAction; 
+    i < GetLineCount() && !m_FinishedAction; 
     i++)
   {
     wxString& line = GetLine(i);
@@ -359,14 +355,9 @@ bool wxExTextFile::Parse()
         return false;
       }
     }
-
-    if (window != NULL)
-    {
-      wxTheApp->SafeYield(window, true);
-    }
   }
 
-  return !Cancelled();
+  return true;
 }
 
 bool wxExTextFile::ParseComments()

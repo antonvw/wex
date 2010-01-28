@@ -302,12 +302,15 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
   wxWindowID dialogid,
   int commandid)
 {
-  if (wxExDir::GetIsBusy() && commandid == wxID_CANCEL)
+  if (commandid == wxID_CANCEL)
   {
-    wxExDir::Cancel();
+    if (wxExDir::GetIsBusy())
+    {
+      wxExDir::Cancel();
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Cancelled previous find files"));
+      wxExFrame::StatusText(_("Cancelled previous find files"));
 #endif
+    }
     return;
   }
 
