@@ -43,7 +43,7 @@ protected:
 private:
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    wxStandardID /* commandid*/);
+    int /* commandid*/);
   virtual wxExGrid* GetGrid();
   virtual wxExSTC* GetSTC();
   virtual bool OpenFile(

@@ -233,7 +233,7 @@ Frame::~Frame()
 
 void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
-  wxStandardID /* commandid*/ )
+  int /* commandid*/ )
 {
   if (dialogid == wxID_PREFERENCES)
   {

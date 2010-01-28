@@ -36,7 +36,7 @@ private:
   virtual wxExSTC* GetSTC();
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
-    wxStandardID commandid = wxID_APPLY);
+    int commandid = wxID_APPLY);
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxString& unique,

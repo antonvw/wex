@@ -218,7 +218,7 @@ wxExSampleFrame::wxExSampleFrame()
 
 void wxExSampleFrame::OnCommandConfigDialog(
   wxWindowID, /* id */
-  wxStandardID /* commandid*/ )
+  int /* commandid*/ )
 {
   m_STC->ConfigGet();
   m_STCLexers->ConfigGet();

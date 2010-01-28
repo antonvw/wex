@@ -57,7 +57,7 @@ public:
 protected:
   virtual void OnCommandConfigDialog(
     wxWindowID id, 
-    wxStandardID commandid = wxID_APPLY);
+    int commandid = wxID_APPLY);
   /// Do something.
   void OnCommand(wxCommandEvent& event);
 private:

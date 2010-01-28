@@ -128,7 +128,7 @@ public:
   /// Default it fires when the apply button was pressed.
   virtual void OnCommandConfigDialog(
     wxWindowID WXUNUSED(dialogid),
-    wxStandardID WXUNUSED(commandid = wxID_APPLY)) {};
+    int WXUNUSED(commandid) = wxID_APPLY) {};
 
   /// Default opens the file using the GetFocusedSTC.
   virtual bool OpenFile(
