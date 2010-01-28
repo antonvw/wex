@@ -216,7 +216,9 @@ wxExSampleFrame::wxExSampleFrame()
   m_ToolBar->Realize();
 }
 
-void wxExSampleFrame::OnCommandConfigDialog(wxWindowID /* id */)
+void wxExSampleFrame::OnCommandConfigDialog(
+  wxWindowID, /* id */
+  wxStandardID /* commandid*/ )
 {
   m_STC->ConfigGet();
   m_STCLexers->ConfigGet();

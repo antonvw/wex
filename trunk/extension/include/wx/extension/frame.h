@@ -124,8 +124,11 @@ public:
   /// Invokes GetSearchText on one of the controls.
   void GetSearchText();
 
-  /// Called when a config dialog apply button was pressed.
-  virtual void OnCommandConfigDialog(wxWindowID WXUNUSED(dialogid)) {};
+  /// Called when a config dialog command event is triggered.
+  /// Default it fires when the apply button was pressed.
+  virtual void OnCommandConfigDialog(
+    wxWindowID WXUNUSED(dialogid),
+    wxStandardID WXUNUSED(commandid = wxID_APPLY)) {};
 
   /// Default opens the file using the GetFocusedSTC.
   virtual bool OpenFile(

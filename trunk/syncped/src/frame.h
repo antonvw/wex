@@ -34,7 +34,9 @@ private:
   virtual wxExListView* GetListView();
   virtual wxExListViewFile* GetProject();
   virtual wxExSTC* GetSTC();
-  virtual void OnCommandConfigDialog(wxWindowID dialogid);
+  virtual void OnCommandConfigDialog(
+    wxWindowID dialogid,
+    wxStandardID commandid = wxID_APPLY);
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxString& unique,

@@ -237,7 +237,9 @@ bool MDIFrame::AllowCloseAll(wxWindowID id)
   return true;
 }
 
-void MDIFrame::OnCommandConfigDialog(wxWindowID dialogid)
+void MDIFrame::OnCommandConfigDialog(
+  wxWindowID dialogid,
+  wxStandardID /* commandid*/ )
 {
   if (dialogid == ID_OPTION_EDITOR)
   {
