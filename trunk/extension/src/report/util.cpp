@@ -11,14 +11,11 @@
 
 #include <wx/config.h>
 #include <wx/regex.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/util.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 
@@ -46,82 +43,6 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 #endif
 
   return true;
-}
-
-size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace)
-{
-  if (wxExDir::GetIsBusy())
-  {
-    wxExDir::Cancel();
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Cancelled previous find files"));
-#endif
-  }
-
-  frame->GetSearchText();
-
-  std::vector<wxExConfigItem> v;
-  v.push_back(
-    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  if (replace) 
-  {
-    v.push_back(wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX));
-  }
-  
-  const wxString in_files = _("In files");
-  const wxString in_folder = _("In folder");
-
-  v.push_back(wxExConfigItem(in_files, CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(in_folder, CONFIG_COMBOBOXDIR, wxEmptyString, true));
-  v.push_back(wxExConfigItem());
-
-  if (replace) 
-  {
-    // Match whole word does not work with replace.
-    std::set<wxString> s;
-    s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
-    s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
-    v.push_back(wxExConfigItem(s));
-  }
-  else
-  {
-    v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
-  }
-
-  if (wxExConfigDialog(frame,
-    v,
-    (replace ? _("Replace In Files"): _("Find In Files"))).ShowModal() == wxID_CANCEL)
-  {
-    return 0;
-  }
-
-  const wxExTool tool =
-    (replace ?
-       ID_TOOL_REPORT_REPLACE:
-       ID_TOOL_REPORT_FIND);
-
-  if (!wxExTextFileWithListView::SetupTool(tool, frame))
-  {
-    return 0;
-  }
-
-  wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
-
-  wxExDirTool dir(
-    tool,
-    wxExConfigFirstOf(in_folder),
-    wxExConfigFirstOf(in_files));
-
-  const size_t result = dir.FindFiles();
-  tool.Log(&dir.GetStatistics().GetElements(), wxExConfigFirstOf(in_folder));
-  
-  return result;
 }
 
 bool wxExFindOtherFileName(
@@ -277,8 +198,8 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
 
   if (!wxSetWorkingDirectory(makefile.GetPath()))
   {
-      wxLogError(_("Cannot set working directory"));
-      return false;
+    wxLogError(_("Cannot set working directory"));
+    return false;
   }
 
   const bool ret = frame->ProcessRun(

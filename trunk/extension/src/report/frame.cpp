@@ -11,9 +11,13 @@
 
 #include <wx/config.h>
 #include <wx/tokenzr.h> 
+#include <wx/extension/configdlg.h>
+#include <wx/extension/frd.h>
+#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/dir.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
@@ -52,6 +56,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   size_t maxProjects,
   int style)
   : wxExManagedFrame(parent, id, title, style)
+  , m_FiFDialog(NULL)
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
@@ -99,6 +104,58 @@ void wxExFrameWithHistory::DoRecent(
       OpenFile(file, 0, wxEmptyString, flags);
     }
   }
+}
+
+int wxExFrameWithHistory::FindInFilesDialog(int id)
+{
+  GetSearchText();
+
+  std::vector<wxExConfigItem> v;
+  v.push_back(
+    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+
+  if (id == ID_REPLACE_IN_FILES) 
+  {
+    v.push_back(wxExConfigItem(
+      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+      CONFIG_COMBOBOX));
+  }
+  
+  const wxString in_files = _("In files");
+  const wxString in_folder = _("In folder");
+
+  v.push_back(wxExConfigItem(in_files, CONFIG_COMBOBOX, wxEmptyString, true));
+  v.push_back(wxExConfigItem(in_folder, CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem());
+
+  if (id == ID_REPLACE_IN_FILES) 
+  {
+    // Match whole word does not work with replace.
+    std::set<wxString> s;
+    s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
+    s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
+    v.push_back(wxExConfigItem(s));
+  }
+  else
+  {
+    v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+  }
+
+  if (m_FiFDialog == NULL)
+  {
+    m_FiFDialog = new wxExConfigDialog(this,
+      v,
+      (id == ID_REPLACE_IN_FILES ? _("Replace In Files"): _("Find In Files")),
+      0,
+      2,
+      wxOK | wxCANCEL,
+      id);
+  }
+  
+  return m_FiFDialog->Show();
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
@@ -209,11 +266,8 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
 
     case ID_FIND_IN_FILES:
-      wxExFindInFiles(this);
-      break;
-
     case ID_REPLACE_IN_FILES:
-      wxExFindInFiles(this, true);
+      FindInFilesDialog(event.GetId());
       break;
 
     case ID_TERMINATED_PROCESS:
@@ -242,6 +296,45 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       wxFAIL;
     }
   }
+}
+
+void wxExFrameWithHistory::OnCommandConfigDialog(
+  wxWindowID dialogid,
+  int commandid)
+{
+  if (wxExDir::GetIsBusy() && commandid == wxID_CANCEL)
+  {
+    wxExDir::Cancel();
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("Cancelled previous find files"));
+#endif
+    return;
+  }
+
+  const bool replace = (dialogid == ID_REPLACE_IN_FILES);
+  const wxExTool tool =
+    (replace ?
+       ID_TOOL_REPORT_REPLACE:
+       ID_TOOL_REPORT_FIND);
+
+  if (!wxExTextFileWithListView::SetupTool(tool, this))
+  {
+    return;
+  }
+
+  wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
+
+  const wxString in_files = _("In files");
+  const wxString in_folder = _("In folder");
+
+  wxExDirTool dir(
+    tool,
+    wxExConfigFirstOf(in_folder),
+    wxExConfigFirstOf(in_files));
+
+  dir.FindFiles();
+
+  tool.Log(&dir.GetStatistics().GetElements(), wxExConfigFirstOf(in_folder));
 }
 
 void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)

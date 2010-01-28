@@ -28,9 +28,6 @@ class wxExListView;
 /// Compares the files, using wxExecute on comparator set in the config.
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
 
-/// Shows a find in files dialog and finds or replaces text in files if chosen.
-size_t wxExFindInFiles(wxExFrameWithHistory* frame, bool replace = false);
-
 /// Finds other filenames from the one specified in the same dir structure.
 /// Results are put on the list if not null, or in the filename if not null.
 bool wxExFindOtherFileName(

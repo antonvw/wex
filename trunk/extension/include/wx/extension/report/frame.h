@@ -14,8 +14,10 @@
 
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/extension/frame.h>
+#include <wx/extension/report/defs.h>
 #include <wx/extension/report/listview.h> // for wxExListViewStandard::ListType 
 
+class wxExConfigDialog;
 class wxExListViewWithFrame;
 class wxExProcess;
 
@@ -43,6 +45,9 @@ public:
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
+  /// Shows a find in files dialog and finds or replaces text in files if chosen.
+  int FindInFilesDialog(int id = ID_FIND_IN_FILES);
+
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it returns NULL.
   virtual wxExListViewFile* GetProject() {return NULL;};
@@ -58,6 +63,10 @@ public:
   const wxString GetRecentProject() const {
     if (m_ProjectHistory.GetCount() == 0) return wxEmptyString;
     return m_ProjectHistory.GetHistoryFile(0);}
+
+  virtual void OnCommandConfigDialog(
+    wxWindowID WXUNUSED(dialogid),
+    int WXUNUSED(commandid) = wxID_APPLY);
 
   /// Allows you to open a filename with specified contents.
   /// The unique argument can be used as addition for a key in the notebook.
@@ -113,6 +122,7 @@ private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
+  wxExConfigDialog* m_FiFDialog;
   wxFileHistory m_FileHistory;
   wxExListView* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
