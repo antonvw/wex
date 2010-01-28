@@ -390,7 +390,7 @@ wxWindow* wxExGetYieldWindow()
 
     if (frame != NULL)
     {
-      return frame->GetMenuBar();
+      return frame->FindWindow(wxID_CANCEL);
     }
   }
 
