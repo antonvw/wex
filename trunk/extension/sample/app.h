@@ -55,7 +55,7 @@ public:
   /// Constructor.
   wxExSampleFrame();
 protected:
-  virtual void ConfigDialogApplied(wxWindowID id);
+  virtual void OnCommandConfigDialog(wxWindowID id);
   /// Do something.
   void OnCommand(wxCommandEvent& event);
 private:

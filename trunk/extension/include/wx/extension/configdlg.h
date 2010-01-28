@@ -22,7 +22,7 @@
 /// Offers a dialog to set several items in the config.
 /// You can also use the dialog modeless (then you can use wxAPPLY
 /// to store the items in the config).
-/// When pressing the apply button ConfigDialogApplied is invoked from wxExFrame.
+/// When pressing the apply button OnCommandConfigDialog is invoked from wxExFrame.
 /// If you only specify a wxCANCEL button, the dialog is readonly.
 class wxExConfigDialog: public wxExDialog
 {

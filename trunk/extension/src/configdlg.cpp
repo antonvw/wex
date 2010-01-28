@@ -878,7 +878,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     wxExFrame* frame = wxDynamicCast(window, wxExFrame);
     wxASSERT(frame != NULL);
 
-    frame->ConfigDialogApplied(GetId());
+    frame->OnCommandConfigDialog(GetId());
   }
 
   if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)

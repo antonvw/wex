@@ -41,7 +41,7 @@ protected:
   void OnTimer(wxTimerEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual void ConfigDialogApplied(wxWindowID dialogid);
+  virtual void OnCommandConfigDialog(wxWindowID dialogid);
   virtual wxExGrid* GetGrid();
   virtual wxExSTC* GetSTC();
   virtual bool OpenFile(

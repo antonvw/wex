@@ -100,9 +100,6 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
-  /// Called when a config dialog apply button was pressed.
-  virtual void ConfigDialogApplied(wxWindowID WXUNUSED(dialogid)) {};
-
   /// Returns a grid, default returns the focused grid.
   virtual wxExGrid* GetGrid() {return GetFocusedGrid();};
 
@@ -126,6 +123,9 @@ public:
 
   /// Invokes GetSearchText on one of the controls.
   void GetSearchText();
+
+  /// Called when a config dialog apply button was pressed.
+  virtual void OnCommandConfigDialog(wxWindowID WXUNUSED(dialogid)) {};
 
   /// Default opens the file using the GetFocusedSTC.
   virtual bool OpenFile(

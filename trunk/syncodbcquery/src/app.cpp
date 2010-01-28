@@ -175,7 +175,7 @@ Frame::Frame()
   m_ToolBar->Realize();
 }
 
-void Frame::ConfigDialogApplied(wxWindowID dialogid)
+void Frame::OnCommandConfigDialog(wxWindowID dialogid)
 {
   if (dialogid == wxID_PREFERENCES)
   {

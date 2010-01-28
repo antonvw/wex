@@ -231,7 +231,7 @@ Frame::~Frame()
   delete m_SocketServer;
 }
 
-void Frame::ConfigDialogApplied(wxWindowID dialogid)
+void Frame::OnCommandConfigDialog(wxWindowID dialogid)
 {
   if (dialogid == wxID_PREFERENCES)
   {
