@@ -69,8 +69,8 @@ public:
     return m_ProjectHistory.GetHistoryFile(0);}
 
   virtual void OnCommandConfigDialog(
-    wxWindowID WXUNUSED(dialogid),
-    int WXUNUSED(commandid) = wxID_APPLY);
+    wxWindowID dialogid,
+    int commandid = wxID_APPLY);
 
   /// Allows you to open a filename with specified contents.
   /// The unique argument can be used as addition for a key in the notebook.
@@ -124,6 +124,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
+  void FindInFiles(wxWindowID dialogid);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxExConfigDialog* m_FiFDialog;

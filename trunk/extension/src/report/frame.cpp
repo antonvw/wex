@@ -117,6 +117,33 @@ void wxExFrameWithHistory::DoRecent(
   }
 }
 
+void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
+{
+  const bool replace = (dialogid == ID_REPLACE_IN_FILES);
+  const wxExTool tool =
+    (replace ?
+       ID_TOOL_REPORT_REPLACE:
+       ID_TOOL_REPORT_FIND);
+
+  if (!wxExTextFileWithListView::SetupTool(tool, this))
+  {
+    return;
+  }
+
+  wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
+
+  wxExDirTool dir(
+    tool,
+    wxExConfigFirstOf(m_TextInFolder),
+    wxExConfigFirstOf(m_TextInFiles));
+
+  dir.FindFiles();
+
+  tool.Log(
+    &dir.GetStatistics().GetElements(), 
+    wxExConfigFirstOf(m_TextInFolder));
+}
+
 int wxExFrameWithHistory::FindInFilesDialog(int id)
 {
   if (m_FiFDialog != NULL)
@@ -329,47 +356,36 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
   wxWindowID dialogid,
   int commandid)
 {
-  if (commandid == wxID_CANCEL)
+  switch (commandid)
   {
-    if (wxExDir::GetIsBusy())
-    {
-      wxExDir::Cancel();
+    case wxID_CANCEL:
+      if (wxExDir::GetIsBusy())
+      {
+        wxExDir::Cancel();
 #if wxUSE_STATUSBAR
-      wxExFrame::StatusText(_("Cancelled previous find files"));
+        wxExFrame::StatusText(_("Cancelled previous find files"));
 #endif
-    }
-    return;
+      }
+      break;
+
+    case wxID_OK:
+      switch (dialogid)
+      {
+        case wxID_ADD:
+          GetProject()->AddItems();
+          break;
+
+        case ID_FIND_IN_FILES:
+        case ID_REPLACE_IN_FILES:
+          FindInFiles(dialogid);
+          break;
+
+        default: wxFAIL;
+      }
+      break;
+
+    default: wxFAIL;
   }
-
-  if (dialogid == wxID_ADD)
-  {
-    GetProject()->AddItems();
-    return;
-  }
-
-  const bool replace = (dialogid == ID_REPLACE_IN_FILES);
-  const wxExTool tool =
-    (replace ?
-       ID_TOOL_REPORT_REPLACE:
-       ID_TOOL_REPORT_FIND);
-
-  if (!wxExTextFileWithListView::SetupTool(tool, this))
-  {
-    return;
-  }
-
-  wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
-
-  wxExDirTool dir(
-    tool,
-    wxExConfigFirstOf(m_TextInFolder),
-    wxExConfigFirstOf(m_TextInFiles));
-
-  dir.FindFiles();
-
-  tool.Log(
-    &dir.GetStatistics().GetElements(), 
-    wxExConfigFirstOf(m_TextInFolder));
 }
 
 void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
