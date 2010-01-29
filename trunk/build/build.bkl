@@ -167,6 +167,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/report/frame.cpp</sources>
     <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
+    <sources>../extension/src/report/listviewfile.cpp</sources>
     <sources>../extension/src/report/process.cpp</sources>
     <sources>../extension/src/report/stc.cpp</sources>
     <sources>../extension/src/report/textfile.cpp</sources>
@@ -177,6 +178,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/report/frame.h</headers>
     <headers>../extension/include/wx/extension/report/listitem.h</headers>
     <headers>../extension/include/wx/extension/report/listview.h</headers>
+    <headers>../extension/include/wx/extension/report/listviewfile.h</headers>
     <headers>../extension/include/wx/extension/report/process.h</headers>
     <headers>../extension/include/wx/extension/report/stc.h</headers>
     <headers>../extension/include/wx/extension/report/textfile.h</headers>

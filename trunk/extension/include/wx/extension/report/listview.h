@@ -12,7 +12,6 @@
 #ifndef _EX_REPORT_LISTVIEW_H
 #define _EX_REPORT_LISTVIEW_H
 
-#include <wx/extension/file.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/tool.h>
 
@@ -131,52 +130,4 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-/// Combines wxExListViewWithFrame and wxExFile, giving you a list control with file
-/// synchronization support.
-class wxExListViewFile : public wxExListViewWithFrame, public wxExFile
-{
-public:
-  /// Constructor for a LIST_FILE, opens the file.
-  wxExListViewFile(wxWindow* parent,
-    wxExFrameWithHistory* frame,
-    const wxString& file,
-    wxWindowID id = wxID_ANY,
-    long menu_flags = LIST_MENU_DEFAULT,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
-    const wxValidator& validator = wxDefaultValidator,
-    const wxString &name = wxListCtrlNameStr);
-
-  // Interface, for wxExListView overriden methods.
-  /// Sets contents changed if we are not syncing.
-  virtual void AfterSorting();
-
-  /// Returns member.
-  virtual bool GetContentsChanged() const {return m_ContentsChanged;};
-
-  /// Invokes base and clears the list.
-  void FileNew(const wxExFileName& filename = wxExFileName());
-
-  virtual bool ItemFromText(const wxString& text);
-
-  /// Resets the member.
-  virtual void ResetContentsChanged() {m_ContentsChanged = false;};
-protected:
-  virtual void BuildPopupMenu(wxExMenu& menu);
-  /// Loads the file and gets all data as list items.
-  virtual void DoFileLoad(bool synced = false);
-  /// Saves list items to file.
-  virtual void DoFileSave(bool save_as = false);
-  void OnCommand(wxCommandEvent& event);
-  void OnIdle(wxIdleEvent& event);
-  void OnMouse(wxMouseEvent& event);
-private:
-  void AddItems();
-  void Initialize();
-
-  bool m_ContentsChanged;
-
-  DECLARE_EVENT_TABLE()
-};
 #endif

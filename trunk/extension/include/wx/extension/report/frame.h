@@ -18,6 +18,7 @@
 #include <wx/extension/report/listview.h> // for wxExListViewStandard::ListType 
 
 class wxExConfigDialog;
+class wxExListViewFile;
 class wxExListViewWithFrame;
 class wxExProcess;
 
