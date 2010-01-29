@@ -128,6 +128,9 @@ private:
   wxFileHistory m_ProjectHistory;
   wxExProcess* m_Process;
 
+  const wxString m_TextInFiles;
+  const wxString m_TextInFolder;
+
   DECLARE_EVENT_TABLE()
 };
 #endif

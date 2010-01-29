@@ -57,6 +57,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   int style)
   : wxExManagedFrame(parent, id, title, style)
   , m_FiFDialog(NULL)
+  , m_TextInFiles(_("In files"))
+  , m_TextInFolder(_("In folder"))
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
@@ -124,11 +126,18 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
       CONFIG_COMBOBOX));
   }
   
-  const wxString in_files = _("In files");
-  const wxString in_folder = _("In folder");
+  v.push_back(wxExConfigItem(
+    m_TextInFiles, 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
 
-  v.push_back(wxExConfigItem(in_files, CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(in_folder, CONFIG_COMBOBOXDIR, wxEmptyString, true));
+  v.push_back(wxExConfigItem(
+    m_TextInFolder, 
+    CONFIG_COMBOBOXDIR, 
+    wxEmptyString, 
+    true));
+
   v.push_back(wxExConfigItem());
 
   if (id == ID_REPLACE_IN_FILES) 
@@ -327,17 +336,16 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
 
   wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
 
-  const wxString in_files = _("In files");
-  const wxString in_folder = _("In folder");
-
   wxExDirTool dir(
     tool,
-    wxExConfigFirstOf(in_folder),
-    wxExConfigFirstOf(in_files));
+    wxExConfigFirstOf(m_TextInFolder),
+    wxExConfigFirstOf(m_TextInFiles));
 
   dir.FindFiles();
 
-  tool.Log(&dir.GetStatistics().GetElements(), wxExConfigFirstOf(in_folder));
+  tool.Log(
+    &dir.GetStatistics().GetElements(), 
+    wxExConfigFirstOf(m_TextInFolder));
 }
 
 void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
