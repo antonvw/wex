@@ -341,6 +341,12 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
     return;
   }
 
+  if (dialogid == wxID_ADD)
+  {
+    GetProject()->AddItems();
+    return;
+  }
+
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
   const wxExTool tool =
     (replace ?

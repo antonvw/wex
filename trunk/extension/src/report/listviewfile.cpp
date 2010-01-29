@@ -65,6 +65,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       style, 
       validator, 
       name)
+  , m_AddItemsDialog(NULL)
   , m_ContentsChanged(false)
 {
   Initialize();
@@ -77,30 +78,16 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   }
 }
 
+wxExListViewFile::~wxExListViewFile()
+{
+  if (m_AddItemsDialog != NULL)
+  {
+    m_AddItemsDialog->Destroy();
+  }
+}
+
 void wxExListViewFile::AddItems()
 {
-  std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
-  v.push_back(wxExConfigItem());
-  std::set<wxString> set;
-  set.insert(_("Add files"));
-  set.insert(_("Add folders"));
-  set.insert(_("Recursive"));
-  v.push_back(wxExConfigItem(set));
-
-  wxExConfigDialog dlg(this,
-    v,
-    _("Add Files"));
-
-  // Force at least one of the checkboxes to be checked.
-  dlg.ForceCheckBoxChecked(_("Add"));
-
-  if (dlg.ShowModal() == wxID_CANCEL)
-  {
-    return;
-  }
-
   int flags = 0;
   if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
   if (wxConfigBase::Get()->ReadBool(_("Recursive"), false)) flags |= wxDIR_DIRS;
@@ -121,8 +108,7 @@ void wxExListViewFile::AddItems()
   {
     m_ContentsChanged = true;
 
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-        GetType() == LIST_FILE)
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
     {
       SortColumn(_("Modified"), SORT_KEEP);
     }
@@ -134,6 +120,34 @@ void wxExListViewFile::AddItems()
 
   wxExFrame::StatusText(text);
 #endif
+}
+
+void wxExListViewFile::AddItemsDialog()
+{
+  if (m_AddItemsDialog == NULL)
+  {
+    std::vector<wxExConfigItem> v;
+    v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
+    v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+    v.push_back(wxExConfigItem());
+    std::set<wxString> set;
+    set.insert(_("Add files"));
+    set.insert(_("Add folders"));
+    set.insert(_("Recursive"));
+    v.push_back(wxExConfigItem(set));
+
+    m_AddItemsDialog = new wxExConfigDialog(this,
+      v,
+      _("Add Files"),
+      0,
+      2,
+      wxOK | wxCANCEL,
+      wxID_ADD);
+  }
+
+  // Force at least one of the checkboxes to be checked.
+  m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
+  m_AddItemsDialog->Show();
 }
 
 void wxExListViewFile::AfterSorting()
@@ -265,7 +279,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
     }
   break;
 
-  case wxID_ADD: AddItems(); break;
+  case wxID_ADD: AddItemsDialog(); break;
 
   default: 
     wxFAIL;

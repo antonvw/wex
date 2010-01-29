@@ -13,6 +13,8 @@
 #include <wx/extension/file.h>
 #include <wx/extension/report/listview.h>
 
+class wxExConfigDialog;
+
 /// Combines wxExListViewWithFrame and wxExFile, giving you a list control with file
 /// synchronization support.
 class wxExListViewFile : public wxExListViewWithFrame, public wxExFile
@@ -29,6 +31,12 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
+
+  /// Destructor.
+ ~wxExListViewFile();
+
+  /// Adds items.
+  void AddItems();
 
   // Interface, for wxExListView overriden methods.
   /// Sets contents changed if we are not syncing.
@@ -54,10 +62,11 @@ protected:
   void OnIdle(wxIdleEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
-  void AddItems();
+  void AddItemsDialog();
   void Initialize();
 
   bool m_ContentsChanged;
+  wxExConfigDialog* m_AddItemsDialog;
 
   DECLARE_EVENT_TABLE()
 };
