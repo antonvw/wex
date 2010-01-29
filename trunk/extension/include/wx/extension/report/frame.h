@@ -38,6 +38,9 @@ public:
     size_t maxProjects = 0,
     int style = wxDEFAULT_FRAME_STYLE);
 
+  /// Destructor.
+ ~wxExFrameWithHistory();
+
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
   virtual wxExListViewStandard* Activate(

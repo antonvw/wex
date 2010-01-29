@@ -86,6 +86,14 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
 #endif
 }
 
+wxExFrameWithHistory::~wxExFrameWithHistory()
+{
+  if (m_FiFDialog != NULL)
+  {
+    m_FiFDialog->Destroy();
+  }
+}
+
 void wxExFrameWithHistory::DoRecent(
   wxFileHistory& history, 
   int index, 
@@ -110,51 +118,60 @@ void wxExFrameWithHistory::DoRecent(
 
 int wxExFrameWithHistory::FindInFilesDialog(int id)
 {
+  if (m_FiFDialog != NULL)
+  {
+    if (m_FiFDialog->GetId() != id)
+    {
+      m_FiFDialog->Destroy();
+      m_FiFDialog = NULL;
+    }
+  }
+
   GetSearchText();
-
-  std::vector<wxExConfigItem> v;
-  v.push_back(
-    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  if (id == ID_REPLACE_IN_FILES) 
-  {
-    v.push_back(wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX));
-  }
-  
-  v.push_back(wxExConfigItem(
-    m_TextInFiles, 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  v.push_back(wxExConfigItem(
-    m_TextInFolder, 
-    CONFIG_COMBOBOXDIR, 
-    wxEmptyString, 
-    true));
-
-  v.push_back(wxExConfigItem());
-
-  if (id == ID_REPLACE_IN_FILES) 
-  {
-    // Match whole word does not work with replace.
-    std::set<wxString> s;
-    s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
-    s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
-    v.push_back(wxExConfigItem(s));
-  }
-  else
-  {
-    v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
-  }
 
   if (m_FiFDialog == NULL)
   {
+    std::vector<wxExConfigItem> v;
+    v.push_back(
+      wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true));
+
+    if (id == ID_REPLACE_IN_FILES) 
+    {
+      v.push_back(wxExConfigItem(
+        wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+        CONFIG_COMBOBOX));
+    }
+  
+    v.push_back(wxExConfigItem(
+      m_TextInFiles, 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true));
+
+    v.push_back(wxExConfigItem(
+      m_TextInFolder, 
+      CONFIG_COMBOBOXDIR, 
+      wxEmptyString, 
+      true));
+
+    v.push_back(wxExConfigItem());
+
+    if (id == ID_REPLACE_IN_FILES) 
+    {
+      // Match whole word does not work with replace.
+      std::set<wxString> s;
+      s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
+      s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
+      v.push_back(wxExConfigItem(s));
+    }
+    else
+    {
+      v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+    }
+
     m_FiFDialog = new wxExConfigDialog(this,
       v,
       (id == ID_REPLACE_IN_FILES ? _("Replace In Files"): _("Find In Files")),
