@@ -67,6 +67,11 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       name)
   , m_AddItemsDialog(NULL)
   , m_ContentsChanged(false)
+  , m_TextAddFiles(_("Add files"))
+  , m_TextAddFolders(_("Add folders"))
+  , m_TextAddRecursive(_("Recursive"))
+  , m_TextAddWhat(_("Add what"))
+  , m_TextInFolder(_("In folder"))
 {
   Initialize();
 
@@ -89,13 +94,21 @@ wxExListViewFile::~wxExListViewFile()
 void wxExListViewFile::AddItems()
 {
   int flags = 0;
-  if (wxConfigBase::Get()->ReadBool(_("Add files"), true)) flags |= wxDIR_FILES;
-  if (wxConfigBase::Get()->ReadBool(_("Recursive"), false)) flags |= wxDIR_DIRS;
+
+  if (wxConfigBase::Get()->ReadBool(m_TextAddFiles, true)) 
+  {
+    flags |= wxDIR_FILES;
+  }
+
+  if (wxConfigBase::Get()->ReadBool(m_TextAddRecursive, false)) 
+  {
+    flags |= wxDIR_DIRS;
+  }
 
   wxExDirWithListView dir(
     this,
-    wxExConfigFirstOf(_("In folder")),
-    wxExConfigFirstOf(_("Add what")),
+    wxExConfigFirstOf(m_TextInFolder),
+    wxExConfigFirstOf(m_TextAddWhat),
     flags);
 
   const long old_count = GetItemCount();
@@ -127,13 +140,24 @@ void wxExListViewFile::AddItemsDialog()
   if (m_AddItemsDialog == NULL)
   {
     std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem(_("Add what"), CONFIG_COMBOBOX, wxEmptyString, true));
-    v.push_back(wxExConfigItem(_("In folder"), CONFIG_COMBOBOXDIR, wxEmptyString, true));
+
+    v.push_back(wxExConfigItem(
+      m_TextAddWhat, 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true));
+
+    v.push_back(wxExConfigItem(
+      m_TextInFolder, 
+      CONFIG_COMBOBOXDIR, 
+      wxEmptyString, 
+      true));
+
     v.push_back(wxExConfigItem());
     std::set<wxString> set;
-    set.insert(_("Add files"));
-    set.insert(_("Add folders"));
-    set.insert(_("Recursive"));
+    set.insert(m_TextAddFiles);
+    set.insert(m_TextAddFolders);
+    set.insert(m_TextAddRecursive);
     v.push_back(wxExConfigItem(set));
 
     m_AddItemsDialog = new wxExConfigDialog(this,
@@ -309,19 +333,21 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
   if (event.LeftDown())
   {
     event.Skip();
+
+#if wxUSE_STATUSBAR
+    // If no item has been selected, then show 
+    // filename mod time in the statusbar.
     int flags = wxLIST_HITTEST_ONITEM;
     const long index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
 
-    // If no item has been selected, then show filename mod time in the statusbar.
     if (index < 0)
     {
       if (GetFileName().FileExists())
       {
-#if wxUSE_STATUSBAR
         wxExFrame::StatusText(GetFileName());
-#endif
       }
     }
+#endif
   }
   else
   {
