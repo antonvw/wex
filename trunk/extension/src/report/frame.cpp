@@ -19,6 +19,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listitem.h>
+#include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>

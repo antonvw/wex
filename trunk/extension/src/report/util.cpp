@@ -18,6 +18,7 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
+#include <wx/extension/report/listviewfile.h>
 
 bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 {

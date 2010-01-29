@@ -22,6 +22,7 @@
 #include <wx/extension/svn.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
+#include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
