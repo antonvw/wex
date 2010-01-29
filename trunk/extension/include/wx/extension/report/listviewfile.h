@@ -68,6 +68,12 @@ private:
   bool m_ContentsChanged;
   wxExConfigDialog* m_AddItemsDialog;
 
+  const wxString m_TextAddFiles;
+  const wxString m_TextAddFolders;
+  const wxString m_TextAddRecursive;
+  const wxString m_TextAddWhat;
+  const wxString m_TextInFolder;
+
   DECLARE_EVENT_TABLE()
 };
 #endif
