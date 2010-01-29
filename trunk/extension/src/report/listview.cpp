@@ -287,7 +287,7 @@ const wxString wxExListViewStandard::ItemToText(long item_number) const
     text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
   }
 
-  if (GetType() != LIST_FILE)
+  if (m_Type != LIST_FILE)
   {
     text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
   }
