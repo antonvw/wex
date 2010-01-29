@@ -176,10 +176,8 @@ void wxExListViewFile::AddItemsDialog()
 
 void wxExListViewFile::AfterSorting()
 {
-  // Only if we are a project list and not sort syncing, 
-  // set contents changed.
-  if ( GetType() == LIST_FILE &&
-      !wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  // Only if we are not sort syncing set contents changed.
+  if (!wxConfigBase::Get()->ReadBool("List/SortSync", true))
   {
     m_ContentsChanged = true;
   }
