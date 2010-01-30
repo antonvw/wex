@@ -71,7 +71,7 @@ END_EVENT_TABLE()
 // wxPropertySheetDialog has been tried as well,
 // then you always have a notebook, and apply button is not supported.
 wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
-  std::vector<wxExConfigItem> v,
+  const std::vector<wxExConfigItem>& v,
   const wxString& title,
   int rows,
   int cols,
@@ -84,12 +84,13 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   : wxExDialog(parent, title, flags, id, pos, size, style, name)
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
+  , m_ConfigItems(v)
 {
-  Add(v, rows, cols, pos, size);
+  Add(rows, cols, pos, size);
   Config(false); // read
 }
 
-void wxExConfigDialog::Add(std::vector<wxExConfigItem>& v,
+void wxExConfigDialog::Add(
   int rows, int cols, const wxPoint& pos, const wxSize& size)
 {
   bool first_time = true;
@@ -100,12 +101,12 @@ void wxExConfigDialog::Add(std::vector<wxExConfigItem>& v,
   wxPanel* page_panel = NULL;
 
   for (
-    std::vector<wxExConfigItem>::iterator it = v.begin();
-    it != v.end();
+    std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
+    it != m_ConfigItems.end();
     ++it)
   {
     // Check if we need a notebook.
-    if (it == v.begin() && !it->m_Page.empty())
+    if (it == m_ConfigItems.begin() && !it->m_Page.empty())
     {
       // Do not give it a close button.
       notebook = new wxAuiNotebook(this,
@@ -256,8 +257,6 @@ void wxExConfigDialog::Add(std::vector<wxExConfigItem>& v,
       control->SetName(it->m_Name);
       it->m_Control = control;
     }
-
-    m_ConfigItems.push_back(*it);
   }
 
   if (page_panel != NULL && notebook_sizer != NULL && sizer != NULL)
