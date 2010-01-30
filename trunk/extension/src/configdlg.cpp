@@ -85,6 +85,13 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
 {
+  Add(v, rows, cols, pos, size);
+  Config(false); // read
+}
+
+void wxExConfigDialog::Add(std::vector<wxExConfigItem>& v,
+  int rows, int cols, const wxPoint& pos, const wxSize& size)
+{
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
   wxFlexGridSizer* notebook_sizer = NULL;
@@ -301,8 +308,6 @@ wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(125, wxDefaultCoord));
 
-  checkbox->SetValue(wxConfigBase::Get()->ReadBool(text, false));
-
   wxSizerFlags flags;
   flags.Expand().Left().Border();
   sizer->Add(checkbox, flags);
@@ -326,22 +331,6 @@ wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
   wxCheckListBox* box = new wxCheckListBox(parent,
     wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
 
-  const long value = wxConfigBase::Get()->ReadLong(text, 0);
-
-  int item = 0;
-  for (
-    std::map<long, const wxString>::const_iterator it = choices.begin();
-    it != choices.end();
-    ++it)
-  {
-    if (value & it->first)
-    {
-      box->Check(item);
-    }
-
-    item++;
-  }
-
   return Add(sizer, parent, box, text + ":");
 }
 
@@ -360,42 +349,6 @@ wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
 
   wxCheckListBox* box = new wxCheckListBox(parent,
     wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
-
-  int item = 0;
-  for (
-    std::set<wxString>::const_iterator it = choices.begin();
-    it != choices.end();
-    ++it)
-  {
-    // Special cases, should be taken from the find replace data.
-    if (*it == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
-    {
-      if (wxExFindReplaceData::Get()->MatchWord())
-      {
-        box->Check(item);
-      }
-    }
-    else if (*it == wxExFindReplaceData::Get()->GetTextMatchCase())
-    {
-      if (wxExFindReplaceData::Get()->MatchCase())
-      {
-        box->Check(item);
-      }
-    }
-    else if (*it == wxExFindReplaceData::Get()->GetTextRegEx())
-    {
-      if (wxExFindReplaceData::Get()->IsRegularExpression())
-      {
-        box->Check(item);
-      }
-    }
-    else if (wxConfigBase::Get()->ReadBool(*it, false))
-    {
-      box->Check(item);
-    }
-
-    item++;
-  }
 
   wxSizerFlags flags;
   flags.Expand().Left().Border();
@@ -427,19 +380,6 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
     wxDefaultPosition,
     wxSize(width_combo, wxDefaultCoord));
 
-  wxExComboBoxFromString(
-    cb,
-    wxConfigBase::Get()->Read(text));
-
-  if (text == wxExFindReplaceData::Get()->GetTextFindWhat())
-  {
-    Update(cb, wxExFindReplaceData::Get()->GetFindString());
-  }
-  else if (text == wxExFindReplaceData::Get()->GetTextReplaceWith())
-  {
-    Update(cb, wxExFindReplaceData::Get()->GetReplaceString());
-  }
-
   return Add(sizer, parent, cb, text + ":", true, hide);
 }
 
@@ -452,10 +392,6 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
     wxEmptyString,
     wxDefaultPosition,
     wxSize(width_combo, wxDefaultCoord));
-
-  wxExComboBoxFromString(
-    cb,
-    wxConfigBase::Get()->Read(text));
 
   wxSizerFlags flag;
 
@@ -557,8 +493,6 @@ wxControl* wxExConfigDialog::AddRadioBox(wxWindow* parent,
   wxRadioBox* box = new wxRadioBox(parent,
     wxID_ANY, text, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
 
-  box->SetStringSelection(choices[wxConfigBase::Get()->ReadLong(text, 0)]);
-
   wxSizerFlags flags;
   flags.Expand().Left().Border();
   sizer->Add(box, flags);
@@ -618,11 +552,6 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
 wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
   wxSizer* sizer, const wxString& text, bool is_numeric, long style)
 {
-  const wxString value =
-    (!is_numeric ?
-        wxConfigBase::Get()->Read(text):
-        wxString::Format("%ld", wxConfigBase::Get()->ReadLong(text, 0)));
-
   long actual_style = style;
   int actual_width = width;
 
@@ -641,7 +570,7 @@ wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
 
   wxTextCtrl* textctrl = new wxTextCtrl(parent,
     wxID_ANY,
-    value,
+    wxEmptyString,
     wxDefaultPosition,
     (style & wxTE_MULTILINE ?
        wxSize(actual_width, 200):
@@ -671,7 +600,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(cb->GetName(), cb->GetValue());
       else
-        cb->SetValue(wxConfigBase::Get()->ReadBool(cb->GetName(), true));
+        cb->SetValue(wxConfigBase::Get()->ReadBool(cb->GetName(), false));
       }
       break;
 
@@ -680,6 +609,8 @@ void wxExConfigDialog::Config(bool save)
       wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
 
       long value = 0;
+      if (!save)
+        value = wxConfigBase::Get()->ReadLong(clb->GetName(), 0);
       int item = 0;
 
       for (
@@ -687,9 +618,19 @@ void wxExConfigDialog::Config(bool save)
         b != it->m_Choices.end();
         ++b)
       {
-        if (clb->IsChecked(item))
+        if (save)
         {
-          value |= b->first;
+          if (clb->IsChecked(item))
+          {
+            value |= b->first;
+          }
+        }
+        else
+        {
+          if (value & b->first)
+          {
+            clb->Check(item);
+          }
         }
 
         item++;
@@ -731,7 +672,36 @@ void wxExConfigDialog::Config(bool save)
             wxConfigBase::Get()->Write(*b, clb->IsChecked(item));
           }
         }
-
+        else
+        {
+          // Special cases, should be taken from the find replace data.
+          if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
+          {
+            if (wxExFindReplaceData::Get()->MatchWord())
+            {
+              clb->Check(item);
+            }
+          }
+          else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
+          {
+            if (wxExFindReplaceData::Get()->MatchCase())
+            {
+              clb->Check(item);
+            }
+          }
+          else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
+          {
+            if (wxExFindReplaceData::Get()->IsRegularExpression())
+            {
+              clb->Check(item);
+            }
+          }
+          else if (wxConfigBase::Get()->ReadBool(*b, false))
+          {
+            clb->Check(item);
+          }
+        }
+      
         item++;
       }
       }
@@ -742,6 +712,8 @@ void wxExConfigDialog::Config(bool save)
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(gcb->GetName(), gcb->GetColour());
+      else
+        wxConfigBase::Get()->ReadObject(gcb->GetName(), *wxWHITE);
       }
       break;
 
@@ -770,6 +742,21 @@ void wxExConfigDialog::Config(bool save)
           wxExFindReplaceData::Get()->SetReplaceString(cb->GetValue());
         }
       }
+      else
+      {
+        wxExComboBoxFromString(
+        cb,
+        wxConfigBase::Get()->Read(cb->GetName()));
+
+        if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
+        {
+          Update(cb, wxExFindReplaceData::Get()->GetFindString());
+        }
+        else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
+        {
+          Update(cb, wxExFindReplaceData::Get()->GetReplaceString());
+        }
+      }
       }
       break;
 
@@ -778,6 +765,8 @@ void wxExConfigDialog::Config(bool save)
       wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
+      else
+        wxConfigBase::Get()->Read(pc->GetName());
       }
       break;
 
@@ -786,6 +775,8 @@ void wxExConfigDialog::Config(bool save)
       wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
+      else
+        wxConfigBase::Get()->Read(pc->GetName());
       }
       break;
 
@@ -794,6 +785,8 @@ void wxExConfigDialog::Config(bool save)
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(pc->GetName(), pc->GetSelectedFont());
+      else
+        wxConfigBase::Get()->ReadObject(pc->GetName(), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
       }
       break;
 
@@ -802,6 +795,8 @@ void wxExConfigDialog::Config(bool save)
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(tc->GetName(), atol(tc->GetValue().c_str()));
+      else
+        wxString::Format("%ld", wxConfigBase::Get()->ReadLong(tc->GetName(), 0));
       }
       break;
 
@@ -809,16 +804,22 @@ void wxExConfigDialog::Config(bool save)
       {
       wxRadioBox* rb = (wxRadioBox*)it->m_Control;
 
-      for (
-        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
-        b != it->m_Choices.end();
-        ++b)
+      if (save)
       {
-        if (b->second == rb->GetStringSelection())
+        for (
+          std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
+          b != it->m_Choices.end();
+          ++b)
         {
-          if (save)
+          if (b->second == rb->GetStringSelection())
+          {
             wxConfigBase::Get()->Write(rb->GetName(), b->first);
+          }
         }
+      }
+      else
+      {
+       // TODO: rb->SetStringSelection(it->m_Choices[wxConfigBase::Get()->ReadLong(rb->GetName(), 0)]);
       }
       }
       break;
@@ -831,6 +832,8 @@ void wxExConfigDialog::Config(bool save)
       wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(tc->GetName(), tc->GetValue());
+      else
+        wxConfigBase::Get()->Read(tc->GetName());
       }
       break;
 
@@ -839,6 +842,8 @@ void wxExConfigDialog::Config(bool save)
       wxSpinCtrl* sc = (wxSpinCtrl*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
+      else
+        wxConfigBase::Get()->ReadLong(sc->GetName(), it->m_Min);
       }
       break;
 
@@ -847,6 +852,8 @@ void wxExConfigDialog::Config(bool save)
       wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)it->m_Control;
       if (save)
         wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
+      else
+        wxConfigBase::Get()->ReadDouble(sc->GetName(), it->m_MinDouble);
       }
       break;
 

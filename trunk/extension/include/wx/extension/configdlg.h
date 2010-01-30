@@ -54,6 +54,9 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
+  void Add(std::vector<wxExConfigItem>& v, 
+    int rows, int cols, const wxPoint& pos, const wxSize& size);
+
   wxControl* Add(
     wxSizer* sizer,
     wxWindow* parent,
