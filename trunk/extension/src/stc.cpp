@@ -375,7 +375,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (sel.empty() && GetProperty("fold") == "1")
+  // Folding if nothing selected, property is set,
+  // and we have a lexer.
+  if (
+    sel.empty() && 
+    GetProperty("fold") == "1" &&
+   !GetFileName().GetLexer().GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl-T"));
