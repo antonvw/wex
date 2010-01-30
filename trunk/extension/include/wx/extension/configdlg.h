@@ -138,10 +138,16 @@ private:
 };
 
 /// Returns a special config dialog using only one combobox.
-wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
+wxExConfigDialog* wxExConfigComboBoxDialog(
+  /// Parent.
+  wxWindow* parent,
+  /// Title.
   const wxString& title,
+  /// The item that is used for the label before the combobox.
   const wxString& item,
+  /// The flags.
   long flags = wxOK | wxCANCEL,
+  /// The window id.
   wxWindowID id = wxID_ANY,
   const wxPoint& pos = wxDefaultPosition,
   const wxSize& size = wxDefaultSize,

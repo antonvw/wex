@@ -416,7 +416,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     m_FindDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       title, 
-      "searchline", 
+      _("searchline"), 
       0);
   }
 
@@ -446,7 +446,7 @@ void wxExVi::DoCommandLine()
     m_CommandDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       "vi :", 
-      "commandline", 
+      _("commandline"), 
       0);
   }
 
