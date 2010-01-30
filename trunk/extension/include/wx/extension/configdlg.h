@@ -71,11 +71,11 @@ private:
     wxWindow* parent,
     wxSizer* sizer,
     const wxString& text,
-    std::map<long, const wxString> & choices);
+    const std::map<long, const wxString> & choices);
   wxControl* AddCheckListBoxNoName(
     wxWindow* parent,
     wxSizer* sizer,
-    std::set<wxString> & choices);
+    const std::set<wxString> & choices);
   wxControl* AddColourButton(
     wxWindow* parent,
     wxSizer* sizer,
@@ -105,7 +105,7 @@ private:
     wxWindow* parent,
     wxSizer* sizer,
     const wxString& text,
-    std::map<long, const wxString> & choices);
+    const std::map<long, const wxString> & choices);
   wxControl* AddSpinCtrl(
     wxWindow* parent,
     wxSizer* sizer,

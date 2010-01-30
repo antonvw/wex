@@ -315,7 +315,9 @@ wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
 }
 
 wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, std::map<long, const wxString> & choices)
+  wxSizer* sizer, 
+  const wxString& text, 
+  const std::map<long, const wxString> & choices)
 {
   wxArrayString arraychoices;
 
@@ -334,7 +336,7 @@ wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
 }
 
 wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
-  wxSizer* sizer, std::set<wxString> & choices)
+  wxSizer* sizer, const std::set<wxString> & choices)
 {
   wxArrayString arraychoices;
 
@@ -475,8 +477,11 @@ wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
   return Add(sizer, parent, pc, text + ":");
 }
 
-wxControl* wxExConfigDialog::AddRadioBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, std::map<long, const wxString> & choices)
+wxControl* wxExConfigDialog::AddRadioBox(
+  wxWindow* parent,
+  wxSizer* sizer, 
+  const wxString& text, 
+  const std::map<long, const wxString> & choices)
 {
   wxArrayString arraychoices;
 
