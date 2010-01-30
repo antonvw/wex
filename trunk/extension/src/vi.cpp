@@ -409,6 +409,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 void wxExVi::DoCommandFind(const wxUniChar& c)
 {
   const wxString title = "vi " + wxString(c);
+  const wxString item = "searchline"; // do not translate
 
   if (m_FindDialog == NULL)
   {
@@ -416,7 +417,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     m_FindDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       title, 
-      _("searchline"), 
+      item, 
       0);
   }
 
@@ -427,7 +428,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     return;
   }
 
-  const wxString val = wxExConfigFirstOf("searchline");
+  const wxString val = wxExConfigFirstOf(item);
 
   if (val.empty())
   {
@@ -441,12 +442,14 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 
 void wxExVi::DoCommandLine()
 {
+  const wxString item = "commandline"; // do not translate
+
   if (m_CommandDialog == NULL)
   {
     m_CommandDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       "vi :", 
-      _("commandline"), 
+      item, 
       0);
   }
 
@@ -455,7 +458,7 @@ void wxExVi::DoCommandLine()
     return;
   }
 
-  const wxString val = wxExConfigFirstOf("commandline");
+  const wxString val = wxExConfigFirstOf(item);
 
   if (val.empty())
   {
