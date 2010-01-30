@@ -627,10 +627,7 @@ void wxExConfigDialog::Config(bool save)
         }
         else
         {
-          if (value & b->first)
-          {
-            clb->Check(item);
-          }
+          clb->Check(item, (value & b->first) > 0);
         }
 
         item++;
@@ -677,28 +674,19 @@ void wxExConfigDialog::Config(bool save)
           // Special cases, should be taken from the find replace data.
           if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
           {
-            if (wxExFindReplaceData::Get()->MatchWord())
-            {
-              clb->Check(item);
-            }
+            clb->Check(item, wxExFindReplaceData::Get()->MatchWord());
           }
           else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
           {
-            if (wxExFindReplaceData::Get()->MatchCase())
-            {
-              clb->Check(item);
-            }
+            clb->Check(item, wxExFindReplaceData::Get()->MatchCase());
           }
           else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
           {
-            if (wxExFindReplaceData::Get()->IsRegularExpression())
-            {
-              clb->Check(item);
-            }
+            clb->Check(item, wxExFindReplaceData::Get()->IsRegularExpression());
           }
-          else if (wxConfigBase::Get()->ReadBool(*b, false))
+          else
           {
-            clb->Check(item);
+            clb->Check(item, wxConfigBase::Get()->ReadBool(*b, false));
           }
         }
       
@@ -713,7 +701,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(gcb->GetName(), gcb->GetColour());
       else
-        wxConfigBase::Get()->ReadObject(gcb->GetName(), *wxWHITE);
+        gcb->SetColour(wxConfigBase::Get()->ReadObject(gcb->GetName(), *wxWHITE));
       }
       break;
 
@@ -776,7 +764,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
       else
-        wxConfigBase::Get()->Read(pc->GetName());
+        pc->SetPath(wxConfigBase::Get()->Read(pc->GetName()));
       }
       break;
 
@@ -786,7 +774,9 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(pc->GetName(), pc->GetSelectedFont());
       else
-        wxConfigBase::Get()->ReadObject(pc->GetName(), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
+        pc->SetFont(
+          wxConfigBase::Get()->ReadObject(pc->GetName(), 
+          wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
       }
       break;
 
@@ -796,7 +786,8 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(tc->GetName(), atol(tc->GetValue().c_str()));
       else
-        wxString::Format("%ld", wxConfigBase::Get()->ReadLong(tc->GetName(), 0));
+        tc->SetValue(
+          wxString::Format("%ld", wxConfigBase::Get()->ReadLong(tc->GetName(), 0)));
       }
       break;
 
@@ -833,7 +824,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(tc->GetName(), tc->GetValue());
       else
-        wxConfigBase::Get()->Read(tc->GetName());
+        tc->SetValue(wxConfigBase::Get()->Read(tc->GetName()));
       }
       break;
 
@@ -843,7 +834,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
       else
-        wxConfigBase::Get()->ReadLong(sc->GetName(), it->m_Min);
+        sc->SetValue(wxConfigBase::Get()->ReadLong(sc->GetName(), it->m_Min));
       }
       break;
 
@@ -853,7 +844,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
       else
-        wxConfigBase::Get()->ReadDouble(sc->GetName(), it->m_MinDouble);
+        sc->SetValue(wxConfigBase::Get()->ReadDouble(sc->GetName(), it->m_MinDouble));
       }
       break;
 
