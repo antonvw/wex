@@ -231,22 +231,6 @@ Frame::~Frame()
   delete m_SocketServer;
 }
 
-void Frame::OnCommandConfigDialog(
-  wxWindowID dialogid,
-  int /* commandid*/ )
-{
-  if (dialogid == wxID_PREFERENCES)
-  {
-    m_DataWindow->ConfigGet();
-    m_LogWindow->ConfigGet();
-    m_Shell->ConfigGet();
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
 wxExGrid* Frame::GetGrid()
 {
   const wxExGrid* grid = m_Statistics.GetGrid();
@@ -543,6 +527,25 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   default:
     wxFAIL;
+  }
+}
+
+void Frame::OnCommandConfigDialog(
+  wxWindowID dialogid,
+  int commandid)
+{
+  if (dialogid == wxID_PREFERENCES)
+  {
+    if (commandid != wxID_CANCEL)
+    {
+      m_DataWindow->ConfigGet();
+      m_LogWindow->ConfigGet();
+      m_Shell->ConfigGet();
+    }
+  }
+  else
+  {
+    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
   }
 }
 

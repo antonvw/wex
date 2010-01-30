@@ -244,7 +244,10 @@ void MDIFrame::OnCommandConfigDialog(
 {
   if (dialogid == ID_OPTION_EDITOR)
   {
-    m_NotebookWithEditors->ForEach(ID_ALL_STC_CONFIG_GET);
+    if (commandid != wxID_CANCEL)
+    {
+      m_NotebookWithEditors->ForEach(ID_ALL_STC_CONFIG_GET);
+    }
   }
   else
   {

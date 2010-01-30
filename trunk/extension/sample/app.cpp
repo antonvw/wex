@@ -217,12 +217,22 @@ wxExSampleFrame::wxExSampleFrame()
 }
 
 void wxExSampleFrame::OnCommandConfigDialog(
-  wxWindowID, /* id */
-  int /* commandid*/ )
+  wxWindowID dialogid,
+  int commandid)
 {
-  m_STC->ConfigGet();
-  m_STCLexers->ConfigGet();
-  m_STCShell->ConfigGet();
+  if (dialogid == wxID_PREFERENCES)
+  {
+    if (commandid != wxID_CANCEL)
+    {
+      m_STC->ConfigGet();
+      m_STCLexers->ConfigGet();
+      m_STCShell->ConfigGet();
+    }
+  }
+  else
+  {
+    wxExManagedFrame::OnCommandConfigDialog(dialogid, commandid);
+  }
 }
 
 wxExGrid* wxExSampleFrame::GetGrid()
