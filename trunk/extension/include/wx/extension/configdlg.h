@@ -124,6 +124,7 @@ private:
     bool is_numeric = false,
     long style = 0);
 
+  void SaveToConfig();
   void Update(wxComboBox* cb, const wxString& value) const;
 
   std::vector<wxExConfigItem> m_ConfigItems;

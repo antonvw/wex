@@ -690,6 +690,153 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
   // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
   // save to config.
+  if ( command.GetId() != wxID_CANCEL)
+  {
+    SaveToConfig();
+  }
+
+  if ( command.GetId() == wxID_APPLY ||
+      ((command.GetId() == wxID_OK ||
+        command.GetId() == wxID_CANCEL) && !IsModal()))
+  {
+    wxASSERT(wxTheApp != NULL);
+    wxWindow* window = wxTheApp->GetTopWindow();
+    wxASSERT(window != NULL);
+    wxExFrame* frame = wxDynamicCast(window, wxExFrame);
+    wxASSERT(frame != NULL);
+
+    frame->OnCommandConfigDialog(GetId(), command.GetId());
+  }
+
+  if (command.GetId() == wxID_CANCEL)
+  {
+    command.Skip();
+  }
+
+  if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)
+  {
+    EndDialog(wxID_OK);
+  }
+}
+
+void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
+{
+  bool one_checkbox_checked = false;
+
+  for (
+    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    it != m_ConfigItems.end();
+    ++it)
+  {
+    switch (it->m_Type)
+    {
+    case CONFIG_CHECKBOX:
+      if (m_ForceCheckBoxChecked)
+      {
+        wxCheckBox* cb = (wxCheckBox*)it->m_Control;
+
+        if (cb->GetName().Lower().Contains(m_Contains.Lower()) && 
+            cb->GetValue() &&
+            it->m_Page == m_Page)
+        {
+          one_checkbox_checked = true;
+        }
+      }
+      break;
+
+    case CONFIG_CHECKLISTBOX_NONAME:
+      if (m_ForceCheckBoxChecked)
+      {
+        wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+
+        for (
+          size_t i = 0;
+          i < clb->GetCount();
+          i++)
+        {
+          if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
+              clb->IsChecked(i) &&
+              it->m_Page == m_Page)
+          {
+            one_checkbox_checked = true;
+          }
+        }
+      }
+      break;
+
+    case CONFIG_COMBOBOX:
+    case CONFIG_COMBOBOXDIR:
+    case CONFIG_COMBOBOX_NONAME:
+      {
+      wxComboBox* cb = (wxComboBox*)it->m_Control;
+      if (it->m_IsRequired)
+      {
+        if (cb->GetValue().empty())
+        {
+          event.Enable(false);
+          return;
+        }
+      }
+      }
+      break;
+
+    case CONFIG_INT:
+    case CONFIG_STRING:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
+      if (it->m_IsRequired)
+      {
+        if (tc->GetValue().empty())
+        {
+          event.Enable(false);
+          return;
+        }
+      }
+      }
+      break;
+
+    case CONFIG_DIRPICKERCTRL:
+      {
+      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
+      if (it->m_IsRequired)
+      {
+        if (pc->GetPath().empty())
+        {
+          event.Enable(false);
+          return;
+        }
+      }
+      }
+      break;
+
+    case CONFIG_FILEPICKERCTRL:
+      {
+      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
+      if (it->m_IsRequired)
+      {
+        if (pc->GetPath().empty())
+        {
+          event.Enable(false);
+          return;
+        }
+      }
+      }
+      break;
+    }
+  }
+
+  if (m_ForceCheckBoxChecked)
+  {
+    event.Enable(one_checkbox_checked);
+  }
+  else
+  {
+    event.Enable(true);
+  }
+}
+
+void wxExConfigDialog::SaveToConfig()
+{
   for (
     std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
@@ -868,145 +1015,6 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       wxFAIL;
       break;
     }
-  }
-
-  if ( command.GetId() == wxID_APPLY ||
-      ((command.GetId() == wxID_OK ||
-        command.GetId() == wxID_CANCEL) && !IsModal()))
-  {
-    wxASSERT(wxTheApp != NULL);
-    wxWindow* window = wxTheApp->GetTopWindow();
-    wxASSERT(window != NULL);
-    wxExFrame* frame = wxDynamicCast(window, wxExFrame);
-    wxASSERT(frame != NULL);
-
-    frame->OnCommandConfigDialog(GetId(), command.GetId());
-  }
-
-  if (command.GetId() == wxID_CANCEL)
-  {
-    EndDialog(wxID_CANCEL);
-  }
-
-  if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)
-  {
-    EndDialog(wxID_OK);
-  }
-}
-
-void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  bool one_checkbox_checked = false;
-
-  for (
-    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
-  {
-    switch (it->m_Type)
-    {
-    case CONFIG_CHECKBOX:
-      if (m_ForceCheckBoxChecked)
-      {
-        wxCheckBox* cb = (wxCheckBox*)it->m_Control;
-
-        if (cb->GetName().Lower().Contains(m_Contains.Lower()) && 
-            cb->GetValue() &&
-            it->m_Page == m_Page)
-        {
-          one_checkbox_checked = true;
-        }
-      }
-      break;
-
-    case CONFIG_CHECKLISTBOX_NONAME:
-      if (m_ForceCheckBoxChecked)
-      {
-        wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
-
-        for (
-          size_t i = 0;
-          i < clb->GetCount();
-          i++)
-        {
-          if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
-              clb->IsChecked(i) &&
-              it->m_Page == m_Page)
-          {
-            one_checkbox_checked = true;
-          }
-        }
-      }
-      break;
-
-    case CONFIG_COMBOBOX:
-    case CONFIG_COMBOBOXDIR:
-    case CONFIG_COMBOBOX_NONAME:
-      {
-      wxComboBox* cb = (wxComboBox*)it->m_Control;
-      if (it->m_IsRequired)
-      {
-        if (cb->GetValue().empty())
-        {
-          event.Enable(false);
-          return;
-        }
-      }
-      }
-      break;
-
-    case CONFIG_INT:
-    case CONFIG_STRING:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
-      if (it->m_IsRequired)
-      {
-        if (tc->GetValue().empty())
-        {
-          event.Enable(false);
-          return;
-        }
-      }
-      }
-      break;
-
-    case CONFIG_DIRPICKERCTRL:
-      {
-      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
-      if (it->m_IsRequired)
-      {
-        if (pc->GetPath().empty())
-        {
-          event.Enable(false);
-          return;
-        }
-      }
-      }
-      break;
-
-    case CONFIG_FILEPICKERCTRL:
-      {
-      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
-      if (it->m_IsRequired)
-      {
-        if (pc->GetPath().empty())
-        {
-          event.Enable(false);
-          return;
-        }
-      }
-      }
-      break;
-    }
-  }
-
-  if (m_ForceCheckBoxChecked)
-  {
-    event.Enable(one_checkbox_checked);
-  }
-  else
-  {
-    event.Enable(true);
   }
 }
 
