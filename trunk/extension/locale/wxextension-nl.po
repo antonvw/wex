@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-30 20:04+0100\n"
-"PO-Revision-Date: 2010-01-30 20:05+0100\n"
+"POT-Creation-Date: 2010-01-30 20:15+0100\n"
+"PO-Revision-Date: 2010-01-30 20:15+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -500,7 +500,7 @@ msgid "Macro played back"
 msgstr "Macro afgespeeld"
 
 #: ../src/stc.cpp:1913
-#: ../src/vi.cpp:943
+#: ../src/vi.cpp:946
 #, c-format
 msgid "Replaced: %d occurrences of: %s"
 msgstr "Vervangen: %d voorkomens van: %s"
@@ -724,21 +724,13 @@ msgstr "Afgedrukt"
 msgid "%d fewer lines"
 msgstr "%d regels minder"
 
-#: ../src/vi.cpp:419
-msgid "searchline"
-msgstr "zoekregel"
-
-#: ../src/vi.cpp:449
-msgid "commandline"
-msgstr "commando regel"
-
-#: ../src/vi.cpp:774
+#: ../src/vi.cpp:777
 #, c-format
 msgid "%d lines moved"
 msgstr "%d regels verplaatst"
 
-#: ../src/vi.cpp:1044
-#: ../src/vi.cpp:1071
+#: ../src/vi.cpp:1047
+#: ../src/vi.cpp:1074
 #, c-format
 msgid "%d lines yanked"
 msgstr "%d regels yanked"
@@ -1109,6 +1101,10 @@ msgstr "SVN en vergelijker instellen"
 msgid "Select Process"
 msgstr "Proces selecteren"
 
+#~ msgid "searchline"
+#~ msgstr "zoekregel"
+#~ msgid "commandline"
+#~ msgstr "commando regel"
 #~ msgid "Cancelled previous find files"
 #~ msgstr "Zoeken naar bestanden geannuleerd"
 #~ msgid "Edge Column"
