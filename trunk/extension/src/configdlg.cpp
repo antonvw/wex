@@ -363,9 +363,7 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
   return Add(
     sizer,
     parent,
-    new wxColourPickerWidget(parent,
-      wxID_ANY,
-      wxConfigBase::Get()->ReadObject(text, *wxWHITE)),
+    new wxColourPickerWidget(parent, wxID_ANY),
     text + ":",
     false); // do not expand
 }
@@ -373,14 +371,17 @@ wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
 wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
   wxSizer* sizer, const wxString& text, bool hide)
 {
-  wxComboBox* cb = new wxComboBox(
+  return Add(
+    sizer, 
     parent, 
-    wxID_ANY,
-    wxEmptyString,
-    wxDefaultPosition,
-    wxSize(width_combo, wxDefaultCoord));
-
-  return Add(sizer, parent, cb, text + ":", true, hide);
+    new wxComboBox(
+      parent, 
+      wxID_ANY,
+      wxEmptyString,
+      wxDefaultPosition,
+      wxSize(width_combo, wxDefaultCoord)),
+    text + ":", 
+    true, hide);
 }
 
 wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
@@ -423,7 +424,7 @@ wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
 {
   wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
     wxID_ANY,
-    wxConfigBase::Get()->Read(text),
+    wxEmptyString,
     wxDirSelectorPromptStr,
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
@@ -442,7 +443,7 @@ wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
 {
   wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
     wxID_ANY,
-    wxConfigBase::Get()->Read(text),
+    wxEmptyString,
     wxFileSelectorPromptStr,
     wxFileSelectorDefaultWildcardStr,
     wxDefaultPosition,
@@ -462,9 +463,7 @@ wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
 {
   wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
     wxID_ANY,
-    wxConfigBase::Get()->ReadObject(
-      text, 
-      wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)),
+    wxNullFont,
     wxDefaultPosition,
     wxSize(width, wxDefaultCoord));
 
@@ -518,8 +517,7 @@ wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
     wxSize(width_numeric, wxDefaultCoord),
     style,
     min,
-    max,
-    wxConfigBase::Get()->ReadLong(text, min));
+    max);
 
   return Add(sizer, parent, spinctrl, text + ":", false);
 }
@@ -543,7 +541,7 @@ wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
     style,
     min,
     max,
-    wxConfigBase::Get()->ReadDouble(text, min),
+    min,
     inc);
 
   return Add(sizer, parent, spinctrl, text + ":", false);
@@ -710,9 +708,11 @@ void wxExConfigDialog::Config(bool save)
     case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)it->m_Control;
-      const wxString values = wxExComboBoxToString(cb, it->m_MaxItems);
+
       if (save)
       {
+        const wxString values = wxExComboBoxToString(cb, it->m_MaxItems);
+
         wxConfigBase::Get()->Write(
           cb->GetName(), values);
 
@@ -754,7 +754,7 @@ void wxExConfigDialog::Config(bool save)
       if (save)
         wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
       else
-        wxConfigBase::Get()->Read(pc->GetName());
+        pc->SetPath(wxConfigBase::Get()->Read(pc->GetName()));
       }
       break;
 
@@ -810,7 +810,13 @@ void wxExConfigDialog::Config(bool save)
       }
       else
       {
-       // TODO: rb->SetStringSelection(it->m_Choices[wxConfigBase::Get()->ReadLong(rb->GetName(), 0)]);
+        std::map<long, const wxString>::const_iterator c = 
+          it->m_Choices.find(wxConfigBase::Get()->ReadLong(rb->GetName(), 0));
+
+        if (c != it->m_Choices.end())
+        {
+          rb->SetStringSelection(c->second);
+        }
       }
       }
       break;
