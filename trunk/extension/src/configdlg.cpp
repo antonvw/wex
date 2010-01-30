@@ -656,6 +656,207 @@ wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
   return Add(sizer, parent, textctrl, text + ":", !is_numeric);
 }
 
+void wxExConfigDialog::Config(bool save)
+{
+  for (
+    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    it != m_ConfigItems.end();
+    ++it)
+  {
+    switch (it->m_Type)
+    {
+    case CONFIG_CHECKBOX:
+      {
+      wxCheckBox* cb = (wxCheckBox*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(cb->GetName(), cb->GetValue());
+      else
+        cb->SetValue(wxConfigBase::Get()->ReadBool(cb->GetName(), true));
+      }
+      break;
+
+    case CONFIG_CHECKLISTBOX:
+      {
+      wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+
+      long value = 0;
+      int item = 0;
+
+      for (
+        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
+        b != it->m_Choices.end();
+        ++b)
+      {
+        if (clb->IsChecked(item))
+        {
+          value |= b->first;
+        }
+
+        item++;
+      }
+
+      if (save)
+        wxConfigBase::Get()->Write(clb->GetName(), value);
+      }
+      break;
+
+    case CONFIG_CHECKLISTBOX_NONAME:
+      {
+      wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+
+      int item = 0;
+
+      for (
+        std::set<wxString>::const_iterator b = it->m_ChoicesBool.begin();
+        b != it->m_ChoicesBool.end();
+        ++b)
+      {
+        if (save)
+        {
+          // Special case, should be taken from find replace data.
+          if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
+          {
+            wxExFindReplaceData::Get()->SetMatchWord(clb->IsChecked(item));
+          }
+          else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
+          {
+            wxExFindReplaceData::Get()->SetMatchCase(clb->IsChecked(item));
+          }
+          else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
+          {
+            wxExFindReplaceData::Get()->SetIsRegularExpression(clb->IsChecked(item));
+          }
+          else
+          {
+            wxConfigBase::Get()->Write(*b, clb->IsChecked(item));
+          }
+        }
+
+        item++;
+      }
+      }
+      break;
+
+    case CONFIG_COLOUR:
+      {
+      wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(gcb->GetName(), gcb->GetColour());
+      }
+      break;
+
+    case CONFIG_COMBOBOX:
+    case CONFIG_COMBOBOXDIR:
+    case CONFIG_COMBOBOX_NONAME:
+      {
+      wxComboBox* cb = (wxComboBox*)it->m_Control;
+      const wxString values = wxExComboBoxToString(cb, it->m_MaxItems);
+      if (save)
+      {
+        wxConfigBase::Get()->Write(
+          cb->GetName(), values);
+
+        // This seems not necessary, but when using static dialogs,
+        // the init is already done, but we want the combo to be updated
+        // with new values as well.
+        wxExComboBoxFromString(cb, values);
+
+        if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
+        {
+          wxExFindReplaceData::Get()->SetFindString(cb->GetValue());
+        }
+        else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
+        {
+          wxExFindReplaceData::Get()->SetReplaceString(cb->GetValue());
+        }
+      }
+      }
+      break;
+
+    case CONFIG_DIRPICKERCTRL:
+      {
+      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
+      }
+      break;
+
+    case CONFIG_FILEPICKERCTRL:
+      {
+      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
+      }
+      break;
+
+    case CONFIG_FONTPICKERCTRL:
+      {
+      wxFontPickerCtrl* pc = (wxFontPickerCtrl*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(pc->GetName(), pc->GetSelectedFont());
+      }
+      break;
+
+    case CONFIG_INT:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(tc->GetName(), atol(tc->GetValue().c_str()));
+      }
+      break;
+
+    case CONFIG_RADIOBOX:
+      {
+      wxRadioBox* rb = (wxRadioBox*)it->m_Control;
+
+      for (
+        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
+        b != it->m_Choices.end();
+        ++b)
+      {
+        if (b->second == rb->GetStringSelection())
+        {
+          if (save)
+            wxConfigBase::Get()->Write(rb->GetName(), b->first);
+        }
+      }
+      }
+      break;
+
+    case CONFIG_SPACER:
+      break;
+
+    case CONFIG_STRING:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(tc->GetName(), tc->GetValue());
+      }
+      break;
+
+    case CONFIG_SPINCTRL:
+      {
+      wxSpinCtrl* sc = (wxSpinCtrl*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
+      }
+      break;
+
+    case CONFIG_SPINCTRL_DOUBLE:
+      {
+      wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)it->m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
+      }
+      break;
+
+    default:
+      wxFAIL;
+      break;
+    }
+  }
+}
+
 void wxExConfigDialog::ForceCheckBoxChecked(
   const wxString& contains,
   const wxString& page)
@@ -690,9 +891,13 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
   // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
   // save to config.
-  if ( command.GetId() != wxID_CANCEL)
+  if (command.GetId() != wxID_CANCEL)
   {
-    SaveToConfig();
+    Config(true); //save
+  }
+  else if (!IsModal())
+  {
+    Config(false); //load
   }
 
   if ( command.GetId() == wxID_APPLY ||
@@ -832,189 +1037,6 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   else
   {
     event.Enable(true);
-  }
-}
-
-void wxExConfigDialog::SaveToConfig()
-{
-  for (
-    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
-  {
-    switch (it->m_Type)
-    {
-    case CONFIG_CHECKBOX:
-      {
-      wxCheckBox* cb = (wxCheckBox*)it->m_Control;
-      wxConfigBase::Get()->Write(cb->GetName(), cb->GetValue());
-      }
-      break;
-
-    case CONFIG_CHECKLISTBOX:
-      {
-      wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
-
-      long value = 0;
-      int item = 0;
-
-      for (
-        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
-        b != it->m_Choices.end();
-        ++b)
-      {
-        if (clb->IsChecked(item))
-        {
-          value |= b->first;
-        }
-
-        item++;
-      }
-
-      wxConfigBase::Get()->Write(clb->GetName(), value);
-      }
-      break;
-
-    case CONFIG_CHECKLISTBOX_NONAME:
-      {
-      wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
-
-      int item = 0;
-
-      for (
-        std::set<wxString>::const_iterator b = it->m_ChoicesBool.begin();
-        b != it->m_ChoicesBool.end();
-        ++b)
-      {
-        // Special case, should be taken from find replace data.
-        if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
-        {
-          wxExFindReplaceData::Get()->SetMatchWord(clb->IsChecked(item));
-        }
-        else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
-        {
-          wxExFindReplaceData::Get()->SetMatchCase(clb->IsChecked(item));
-        }
-        else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
-        {
-          wxExFindReplaceData::Get()->SetIsRegularExpression(clb->IsChecked(item));
-        }
-        else
-        {
-          wxConfigBase::Get()->Write(*b, clb->IsChecked(item));
-        }
-
-        item++;
-      }
-
-      }
-      break;
-
-    case CONFIG_COLOUR:
-      {
-      wxColourPickerWidget* gcb = (wxColourPickerWidget*)it->m_Control;
-      wxConfigBase::Get()->Write(gcb->GetName(), gcb->GetColour());
-      }
-      break;
-
-    case CONFIG_COMBOBOX:
-    case CONFIG_COMBOBOXDIR:
-    case CONFIG_COMBOBOX_NONAME:
-      {
-      wxComboBox* cb = (wxComboBox*)it->m_Control;
-      const wxString values = wxExComboBoxToString(cb, it->m_MaxItems);
-      wxConfigBase::Get()->Write(
-        cb->GetName(), values);
-
-      // This seems not necessary, but when using static dialogs,
-      // the init is already done, but we want the combo to be updated
-      // with new values as well.
-      wxExComboBoxFromString(cb, values);
-
-      if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
-      {
-        wxExFindReplaceData::Get()->SetFindString(cb->GetValue());
-      }
-      else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
-      {
-        wxExFindReplaceData::Get()->SetReplaceString(cb->GetValue());
-      }
-      }
-      break;
-
-    case CONFIG_DIRPICKERCTRL:
-      {
-      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
-      }
-      break;
-
-    case CONFIG_FILEPICKERCTRL:
-      {
-      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
-      }
-      break;
-
-    case CONFIG_FONTPICKERCTRL:
-      {
-      wxFontPickerCtrl* pc = (wxFontPickerCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(pc->GetName(), pc->GetSelectedFont());
-      }
-      break;
-
-    case CONFIG_INT:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(tc->GetName(), atol(tc->GetValue().c_str()));
-      }
-      break;
-
-    case CONFIG_RADIOBOX:
-      {
-      wxRadioBox* rb = (wxRadioBox*)it->m_Control;
-
-      for (
-        std::map<long, const wxString>::const_iterator b = it->m_Choices.begin();
-        b != it->m_Choices.end();
-        ++b)
-      {
-        if (b->second == rb->GetStringSelection())
-        {
-          wxConfigBase::Get()->Write(rb->GetName(), b->first);
-        }
-      }
-      }
-      break;
-
-    case CONFIG_SPACER:
-      break;
-
-    case CONFIG_STRING:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(tc->GetName(), tc->GetValue());
-      }
-      break;
-
-    case CONFIG_SPINCTRL:
-      {
-      wxSpinCtrl* sc = (wxSpinCtrl*)it->m_Control;
-      wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
-      }
-      break;
-
-    case CONFIG_SPINCTRL_DOUBLE:
-      {
-      wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)it->m_Control;
-      wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
-      }
-      break;
-
-    default:
-      wxFAIL;
-      break;
-    }
   }
 }
 
