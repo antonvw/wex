@@ -17,8 +17,7 @@ class wxExDirTraverser: public wxDirTraverser
 {
 public:
   wxExDirTraverser(wxExDir& dir)
-    : m_Dir(dir)
-    , m_Window(wxExGetYieldWindow()) {}
+    : m_Dir(dir){;}
 
   virtual wxDirTraverseResult OnDir(const wxString& dirname)
   {
@@ -32,9 +31,9 @@ public:
       m_Dir.OnDir(dirname);
     }
 
-    if (m_Window != NULL)
+    if (wxTheApp != NULL)
     {
-      wxTheApp->SafeYield(m_Window, true);
+      wxTheApp->Yield();
     }
 
     return wxDIR_CONTINUE;
@@ -52,9 +51,9 @@ public:
       m_Dir.OnFile(filename);
     }
 
-    if (m_Window != NULL)
+    if (wxTheApp != NULL)
     {
-      wxTheApp->SafeYield(m_Window, true);
+      wxTheApp->Yield();
     }
 
     return wxDIR_CONTINUE;
@@ -62,7 +61,6 @@ public:
 
 private:
   wxExDir& m_Dir;
-  wxWindow* m_Window;
 };
 
 bool wxExDir::m_Cancelled = false;

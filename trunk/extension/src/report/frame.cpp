@@ -363,7 +363,7 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       {
         wxExDir::Cancel();
 #if wxUSE_STATUSBAR
-        wxExFrame::StatusText(_("Cancelled previous find files"));
+        wxExFrame::StatusText(_("Cancelled"));
 #endif
       }
       break;

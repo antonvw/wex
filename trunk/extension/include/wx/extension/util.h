@@ -110,9 +110,6 @@ const wxString wxExComboBoxToString(
   const wxComboBox* cb,
   size_t max_items = 25);
 
-/// Gets a window to be used for safe yields.
-wxWindow* wxExGetYieldWindow();
-
 /// Opens files.
 void wxExOpenFiles(wxExFrame* frame,
   const wxArrayString& files,

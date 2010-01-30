@@ -97,8 +97,6 @@ bool wxExFindOtherFileName(
 
   bool found = false;
 
-  wxWindow* window = wxExGetYieldWindow();
-
   // Readme: Maybe use a thread for this.
   while (cont)
   {
@@ -133,9 +131,9 @@ bool wxExFindOtherFileName(
 
     cont = dir.GetNext(&filename_string);
 
-    if (window != NULL)
+    if (wxTheApp != NULL)
     {
-      wxTheApp->SafeYield(window, true);
+      wxTheApp->Yield();
     }
   }
 
