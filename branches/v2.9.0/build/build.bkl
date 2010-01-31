@@ -221,8 +221,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxex-rep</library>
     <library>wxex</library>
     
-    <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
-    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -288,7 +286,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
       <library>wxex</library>
       
       <if cond="PLATFORM_UNIX=='1'">
-        <sys-lib>odbc</sys-lib>
       </if>
       
       <sys-lib>cppunit</sys-lib>
@@ -338,7 +335,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxex</library>
     
     <if cond="PLATFORM_UNIX=='1'">
-      <sys-lib>odbc</sys-lib>
     </if>
     
     <wx-lib>aui</wx-lib>
@@ -388,9 +384,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxex-rep</library>
     <library>wxex</library>
 
-    <!-- strangely odbc is needed by sss as well -->    
     <if cond="PLATFORM_UNIX=='1'">
-      <sys-lib>odbc</sys-lib>
     </if>
     
     <install-to>/usr/local/bin/</install-to>
