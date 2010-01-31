@@ -32,7 +32,7 @@ int wxExApp::OnExit()
   delete wxExTool::Set(NULL);
   delete wxExSVN::Set(NULL);
 
-  return wxApp::OnExit();
+  return wxApp::OnExit(); // this destroys the config
 }
 
 bool wxExApp::OnInit()
