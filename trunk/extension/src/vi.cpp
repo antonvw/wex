@@ -27,7 +27,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
-  , m_SearchText(stc->GetSearchText())
 {
 }
 

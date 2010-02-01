@@ -133,13 +133,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 wxExSTC::~wxExSTC()
 {
-  const wxString text = m_vi->GetSearchText(); 
-
-  if (!text.empty())
-  {
-    wxExFindReplaceData::Get()->SetFindString(text);
-  }
-
   delete m_vi;
 }
 
