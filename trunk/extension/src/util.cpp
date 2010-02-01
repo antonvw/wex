@@ -106,23 +106,22 @@ const wxString wxExClipboardGet()
 }
 
 #if wxUSE_GUI
-void wxExComboBoxFromString(
+void wxExComboBoxFromList(
   wxComboBox* cb,
-  const wxString& text)
+  const std::list < wxString > & text)
 {
   wxASSERT(cb != NULL);
 
   cb->Clear();
 
-  wxStringTokenizer tkz(
-    text, 
-    wxExFindReplaceData::Get()->GetFieldSeparator());
-
   wxArrayString items;
 
-  while (tkz.HasMoreTokens())
+  for (
+    std::list < wxString >::const_iterator it = text.begin();
+    it != text.end();
+    it++)
   {
-    items.Add(tkz.GetNextToken());
+    items.Add(*it);
   }
 
   cb->Append(items);
@@ -136,13 +135,14 @@ void wxExComboBoxFromString(
   //cb->AutoComplete(items);
 }
 
-const wxString wxExComboBoxToString(
+const std::list < wxString > wxExComboBoxToList(
   const wxComboBox* cb,
   size_t max_items)
 {
   wxASSERT(cb != NULL);
 
-  wxString text = cb->GetValue();
+  std::list < wxString > text;
+  text.push_back(cb->GetValue());
 
   switch (cb->FindString(
     cb->GetValue(),
@@ -152,14 +152,14 @@ const wxString wxExComboBoxToString(
       text.clear();
       // No change necessary, the string is already present as the first one.
       for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
-        text += cb->GetString(i) + wxExFindReplaceData::Get()->GetFieldSeparator();
+        text.push_back(cb->GetString(i));
       break;
 
     case wxNOT_FOUND:
       // Add the string, as it is not in the combo box, to the text,
       // simply by appending all combobox items.
       for (size_t i = 0; i < cb->GetCount() && i < max_items - 1; i++)
-        text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb->GetString(i);
+        text.push_back(cb->GetString(i));
     break;
 
     default:
@@ -168,7 +168,7 @@ const wxString wxExComboBoxToString(
       {
         const wxString cb_element = cb->GetString(i);
         if (cb_element != cb->GetValue())
-          text += wxExFindReplaceData::Get()->GetFieldSeparator() + cb_element;
+          text.push_back(cb_element);
       }
   }
 

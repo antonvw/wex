@@ -12,6 +12,7 @@
 #ifndef _EXFRD_H
 #define _EXFRD_H
 
+#include <list>
 #include <set>
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
@@ -32,6 +33,10 @@ public:
   /// Gets the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
+  /// Gets the find strings.
+  const std::list < wxString > & GetFindStrings() const {
+    return m_FindStrings;};
+
   /// Gets find/replace info text.
   const wxString GetText(bool replace = false) const;
 
@@ -41,6 +46,10 @@ public:
   /// Gets the regular expression.
   const wxRegEx& GetRegularExpression() const {
     return m_FindRegularExpression;};
+
+  /// Gets the replace strings.
+  const std::list < wxString > & GetReplaceStrings() const {
+    return m_ReplaceStrings;};
 
   /// Gets text.
   const wxString& GetTextFindWhat() const {return m_TextFindWhat;};
@@ -82,6 +91,9 @@ public:
   /// This string is used for tool find in files and replace in files.
   void SetFindString(const wxString& value);
 
+  /// Sets the find strings.
+  void SetFindStrings(const std::list < wxString > & value);
+
   /// Sets regular expression.
   void SetIsRegularExpression(bool value) {
     m_IsRegularExpression = value;};
@@ -94,6 +106,9 @@ public:
 
   /// Sets the replace string.
   void SetReplaceString(const wxString& value);
+
+  /// Sets the replace strings.
+  void SetReplaceStrings(const std::list < wxString > & value);
 private:
   wxRegEx m_FindRegularExpression;
   bool m_IsRegularExpression;
@@ -107,6 +122,9 @@ private:
   const wxString m_TextRegEx;
   const wxString m_TextReplaceWith;
   const wxString m_TextSearchDown;
+
+  std::list < wxString > m_FindStrings;
+  std::list < wxString > m_ReplaceStrings;
 
   static wxExFindReplaceData* m_Self;
 };

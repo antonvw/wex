@@ -715,7 +715,7 @@ void wxExConfigDialog::Config(bool save)
 
       if (save)
       {
-        const wxString values = wxExComboBoxToString(cb, it->m_MaxItems);
+        const wxString values = wxExComboBoxToList(cb, it->m_MaxItems);
 
         wxConfigBase::Get()->Write(
           cb->GetName(), values);
@@ -723,7 +723,7 @@ void wxExConfigDialog::Config(bool save)
         // This seems not necessary, but when using static dialogs,
         // the init is already done, but we want the combo to be updated
         // with new values as well.
-        wxExComboBoxFromString(cb, values);
+        wxExComboBoxFromList(cb, values);
 
         if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
@@ -736,7 +736,7 @@ void wxExConfigDialog::Config(bool save)
       }
       else
       {
-        wxExComboBoxFromString(
+        wxExComboBoxFromList(
         cb,
         wxConfigBase::Get()->Read(cb->GetName()));
 

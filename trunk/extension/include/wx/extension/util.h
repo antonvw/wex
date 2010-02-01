@@ -12,6 +12,7 @@
 #ifndef _EXUTIL_H
 #define _EXUTIL_H
 
+#include <list>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -100,13 +101,13 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);
 
 #if wxUSE_GUI
 
-/// Adds entries to a combobox from a text string.
-void wxExComboBoxFromString(
+/// Adds entries to a combobox from a list with strings.
+void wxExComboBoxFromList(
   wxComboBox* cb,
-  const wxString& text);
+  const std::list < wxString > & text);
 
-/// Adds entries from a combobox to a text string.
-const wxString wxExComboBoxToString(
+/// Adds entries from a combobox to a list with strings.
+const std::list < wxString > wxExComboBoxToList(
   const wxComboBox* cb,
   size_t max_items = 25);
 

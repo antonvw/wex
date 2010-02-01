@@ -747,9 +747,9 @@ ComboBox::ComboBox(
   SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
     wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 
-  wxExComboBoxFromString(
+  wxExComboBoxFromList(
     this, 
-    wxConfigBase::Get()->Read(wxExFindReplaceData::Get()->GetTextFindWhat()));
+    wxExFindReplaceData::Get()->GetFindStrings());
 
   // And override the value set by previous, as we want text to be same as in Find.
   SetValue(wxExFindReplaceData::Get()->GetFindString());
@@ -782,19 +782,12 @@ void ComboBox::OnKey(wxKeyEvent& event)
     if (stc != NULL)
     {
       stc->FindNext(GetValue());
+
       wxExFindReplaceData::Get()->SetFindString(GetValue());
+      wxExFindReplaceData::Get()->SetFindStrings(wxExComboBoxToList(this));
 
-      // And keep the changed text in the combo box.
-      const wxString text = wxExComboBoxToString(this);
-
-      wxConfigBase::Get()->Write(
-        wxExFindReplaceData::Get()->GetTextFindWhat(), 
-        text);
-
-      Clear(); // so wxExComboBoxFromString can append again
-      wxExComboBoxFromString(this, text);
-
-      SetValue(wxExFindReplaceData::Get()->GetFindString());
+      Clear(); // so we can append again
+      wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
     }
   }
   else

@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h> 
+#include <wx/tokenzr.h>
 #include <wx/extension/frd.h>
 
 wxExFindReplaceData* wxExFindReplaceData::m_Self = NULL;
@@ -33,8 +34,34 @@ wxExFindReplaceData::wxExFindReplaceData()
 
   // Start with this one, as it is used by SetFindString.
   SetIsRegularExpression(wxConfigBase::Get()->ReadBool(m_TextRegEx, false));
-  SetFindString(wxConfigBase::Get()->Read(m_TextFindWhat));
-  SetReplaceString(wxConfigBase::Get()->Read(m_TextReplaceWith));
+
+  wxStringTokenizer tkz(wxConfigBase::Get()->Read(m_TextFindWhat),
+    m_FieldSeparator);
+
+  while (tkz.HasMoreTokens())
+  {
+    const wxString val = tkz.GetNextToken();
+    m_FindStrings.push_front(val);
+  }
+
+  wxStringTokenizer tkz2(wxConfigBase::Get()->Read(m_TextReplaceWith),
+    m_FieldSeparator);
+
+  while (tkz2.HasMoreTokens())
+  {
+    const wxString val = tkz.GetNextToken();
+    m_ReplaceStrings.push_front(val);
+  }
+
+  if (!m_FindStrings.empty())
+  {
+    SetFindString(m_FindStrings.front());
+  }
+
+  if (!m_ReplaceStrings.empty())
+  {
+    SetReplaceString(m_ReplaceStrings.front());
+  }
 
   // This set determines what fields are placed on the Find Files dialogs
   // as a list of checkboxes.
@@ -45,8 +72,28 @@ wxExFindReplaceData::wxExFindReplaceData()
 
 wxExFindReplaceData::~wxExFindReplaceData()
 {
-  wxConfigBase::Get()->Write(m_TextFindWhat, GetFindString());
-  wxConfigBase::Get()->Write(m_TextReplaceWith, GetReplaceString());
+  wxString find;
+
+  for (
+    std::list < wxString >::const_iterator it = m_FindStrings.begin();
+    it != m_FindStrings.end();
+    it++)
+  {
+    find += *it + m_FieldSeparator;
+  }
+
+  wxString replace;
+
+  for (
+    std::list < wxString >::const_iterator it = m_ReplaceStrings.begin();
+    it != m_ReplaceStrings.end();
+    it++)
+  {
+    replace += *it + m_FieldSeparator;
+  }
+
+  wxConfigBase::Get()->Write(m_TextFindWhat, find);
+  wxConfigBase::Get()->Write(m_TextReplaceWith, replace);
 
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
@@ -89,7 +136,10 @@ wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
 
 void wxExFindReplaceData::SetFindString(const wxString& value)
 {
-  wxFindReplaceData::SetFindString(value.BeforeFirst(m_FieldSeparator));
+  wxFindReplaceData::SetFindString(value);
+
+  m_FindStrings.remove(GetFindString());
+  m_FindStrings.push_back(GetFindString());
 
   if (IsRegularExpression())
   {
@@ -97,6 +147,11 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
     if (!MatchCase()) flags |= wxRE_ICASE;
     m_FindRegularExpression.Compile(GetFindString(), flags);
   }
+}
+
+void wxExFindReplaceData::SetFindStrings(const std::list < wxString > & value)
+{
+  m_FindStrings = value;
 }
 
 void wxExFindReplaceData::SetMatchCase(bool value)
@@ -117,5 +172,13 @@ void wxExFindReplaceData::SetMatchWord(bool value)
 
 void wxExFindReplaceData::SetReplaceString(const wxString& value)
 {
-  wxFindReplaceData::SetReplaceString(value.BeforeFirst(m_FieldSeparator));
+  wxFindReplaceData::SetReplaceString(value);
+
+  m_ReplaceStrings.remove(GetReplaceString());
+  m_ReplaceStrings.push_back(GetReplaceString());
+}
+
+void wxExFindReplaceData::SetReplaceStrings(const std::list < wxString > & value)
+{
+  m_ReplaceStrings = value;
 }
