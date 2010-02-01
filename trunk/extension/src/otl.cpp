@@ -136,8 +136,6 @@ long wxExOTL::Query(
 
   const long startrow = grid->GetNumberRows();
 
-  wxWindow* window = wxExGetYieldWindow();
-
   // Get all rows.
   while (!i.eof() && !stopped)
   {
@@ -169,10 +167,7 @@ long wxExOTL::Query(
 
     if ((rows & 0xff) == 0)
     {
-      if (window != NULL)
-      {
-        wxTheApp->SafeYield(window, true);
-      } 
+      wxTheApp->Yield();
     }
 
     rows++;
@@ -218,8 +213,6 @@ long wxExOTL::Query(
 
   stc->AppendText(wxTextFile::GetEOL());
 
-  wxWindow* window = wxExGetYieldWindow();
-
   // Get all rows.
   while (!i.eof() && !stopped)
   {
@@ -257,10 +250,7 @@ long wxExOTL::Query(
 
     if ((rows & 0xff) == 0)
     {
-      if (window != NULL)
-      {
-        wxTheApp->SafeYield(window, true);
-      } 
+      wxTheApp->Yield();
     }
 
     rows++;
