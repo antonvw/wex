@@ -730,18 +730,7 @@ void wxExConfigDialog::Config(bool save)
       }
       else
       {
-        const std::list <wxString> l = wxExListFromConfig(cb->GetName());
-
-        wxExComboBoxFromList(cb, l);
-
-        if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
-        {
-          Update(cb, wxExFindReplaceData::Get()->GetFindString());
-        }
-        else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
-        {
-          Update(cb, wxExFindReplaceData::Get()->GetReplaceString());
-        }
+        wxExComboBoxFromList(cb, wxExListFromConfig(cb->GetName()));
       }
       }
       break;

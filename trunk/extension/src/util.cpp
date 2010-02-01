@@ -141,25 +141,24 @@ const std::list < wxString > wxExComboBoxToList(
 {
   wxASSERT(cb != NULL);
 
-  std::list < wxString > text;
-  text.push_back(cb->GetValue());
+  std::list < wxString > l;
+  l.push_back(cb->GetValue());
 
   switch (cb->FindString(
     cb->GetValue(),
     true)) // case sensitive
   {
     case 0: 
-      text.clear();
       // No change necessary, the string is already present as the first one.
-      for (size_t i = 0; i < cb->GetCount() && i < max_items; i++)
-        text.push_back(cb->GetString(i));
+      for (size_t i = 1; i < cb->GetCount() && i < max_items; i++)
+        l.push_back(cb->GetString(i));
       break;
 
     case wxNOT_FOUND:
       // Add the string, as it is not in the combo box, to the text,
       // simply by appending all combobox items.
       for (size_t i = 0; i < cb->GetCount() && i < max_items - 1; i++)
-        text.push_back(cb->GetString(i));
+        l.push_back(cb->GetString(i));
     break;
 
     default:
@@ -168,11 +167,11 @@ const std::list < wxString > wxExComboBoxToList(
       {
         const wxString cb_element = cb->GetString(i);
         if (cb_element != cb->GetValue())
-          text.push_back(cb_element);
+          l.push_back(cb_element);
       }
   }
 
-  return text;
+  return l;
 }
 
 #endif // wxUSE_GUI
