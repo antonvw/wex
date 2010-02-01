@@ -162,7 +162,7 @@ void wxExListViewFile::AddItemsDialog()
 
     m_AddItemsDialog = new wxExConfigDialog(this,
       v,
-      _("Add Files"),
+      _("Add Items"),
       0,
       2,
       wxOK | wxCANCEL,
