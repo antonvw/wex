@@ -41,7 +41,9 @@ bool wxExClipboardAdd(const wxString& text);
 const wxString wxExClipboardGet();
 
 /// Returns first of a list of values from config key.
-const wxString wxExConfigFirstOf(const wxString& key);
+const wxString wxExConfigFirstOf(
+  const wxString& key, 
+  const wxUniChar fs = '\x0B');
 
 /// Adds an ellipses after text.
 const wxString wxExEllipsed(
@@ -61,6 +63,9 @@ const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars = 15);
 
+/// Gets field separator.
+const wxUniChar wxExGetFieldSeparator();
+
 /// Gets the number of lines in a string.
 int wxExGetNumberOfLines(const wxString& text);
 
@@ -76,6 +81,15 @@ const wxString wxExGetWord(
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
+
+/// Loads entries from the config into a list with strings.
+const std::list < wxString > wxExListFromConfig(
+  const wxString& config);
+
+/// Saves entries from a list with strings to the config.
+void wxExListToConfig(
+  const std::list < wxString > & l, 
+  const wxString& config);
 
 /// Returns quotes around the text.
 const wxString wxExQuoted(const wxString& text);

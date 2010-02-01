@@ -177,10 +177,12 @@ const std::list < wxString > wxExComboBoxToList(
 
 #endif // wxUSE_GUI
 
-const wxString wxExConfigFirstOf(const wxString& key)
+const wxString wxExConfigFirstOf(
+  const wxString& key,
+  const wxUniChar fs)
 {
   const wxString value = wxConfigBase::Get()->Read(key);
-  return value.BeforeFirst(wxExFindReplaceData::Get()->GetFieldSeparator());
+  return value.BeforeFirst(fs);
 }
 
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
@@ -226,6 +228,11 @@ const wxString wxExGetEndOfText(
   }
 
   return text_out;
+}
+
+const wxUniChar wxExGetFieldSeparator()
+{
+  return '\x0B';
 }
 
 int wxExGetNumberOfLines(const wxString& text)
@@ -286,6 +293,42 @@ const wxString wxExGetWord(
   text = tkz.GetString();
   text.Trim(false);
   return token;
+}
+
+const std::list < wxString > wxExListFromConfig(
+  const wxString& config)
+{
+  wxStringTokenizer tkz(
+    wxConfigBase::Get()->Read(config), 
+    wxExGetFieldSeparator());
+
+  std::list < wxString > l;
+
+  while (tkz.HasMoreTokens())
+  {
+    const wxString val = tkz.GetNextToken();
+    l.push_front(val);
+  }
+
+  return l;
+}
+
+/// Saves entries from a list with strings to the config.
+void wxExListToConfig(
+  const std::list < wxString > & l, 
+  const wxString& config)
+{
+  wxString text;
+
+  for (
+    std::list < wxString >::const_iterator it = l.begin();
+    it != l.end();
+    it++)
+  {
+    text += *it + wxExGetFieldSeparator();
+  }
+
+  wxConfigBase::Get()->Write(config, text);
 }
 
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)

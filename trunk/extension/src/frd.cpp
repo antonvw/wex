@@ -10,14 +10,13 @@
 \******************************************************************************/
 
 #include <wx/config.h> 
-#include <wx/tokenzr.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/util.h>
 
 wxExFindReplaceData* wxExFindReplaceData::m_Self = NULL;
 
 wxExFindReplaceData::wxExFindReplaceData()
   : wxFindReplaceData()
-  , m_FieldSeparator('\x0B')
   , m_TextFindWhat(_("Find what"))
   , m_TextMatchCase(_("Match case"))
   , m_TextMatchWholeWord(_("Match whole word"))
@@ -35,23 +34,8 @@ wxExFindReplaceData::wxExFindReplaceData()
   // Start with this one, as it is used by SetFindString.
   SetIsRegularExpression(wxConfigBase::Get()->ReadBool(m_TextRegEx, false));
 
-  wxStringTokenizer tkz(wxConfigBase::Get()->Read(m_TextFindWhat),
-    m_FieldSeparator);
-
-  while (tkz.HasMoreTokens())
-  {
-    const wxString val = tkz.GetNextToken();
-    m_FindStrings.push_front(val);
-  }
-
-  wxStringTokenizer tkz2(wxConfigBase::Get()->Read(m_TextReplaceWith),
-    m_FieldSeparator);
-
-  while (tkz2.HasMoreTokens())
-  {
-    const wxString val = tkz.GetNextToken();
-    m_ReplaceStrings.push_front(val);
-  }
+  m_FindStrings = wxExListFromConfig(m_TextFindWhat);
+  m_ReplaceStrings = wxExListFromConfig(m_TextReplaceWith);
 
   if (!m_FindStrings.empty())
   {
@@ -72,28 +56,8 @@ wxExFindReplaceData::wxExFindReplaceData()
 
 wxExFindReplaceData::~wxExFindReplaceData()
 {
-  wxString find;
-
-  for (
-    std::list < wxString >::const_iterator it = m_FindStrings.begin();
-    it != m_FindStrings.end();
-    it++)
-  {
-    find += *it + m_FieldSeparator;
-  }
-
-  wxString replace;
-
-  for (
-    std::list < wxString >::const_iterator it = m_ReplaceStrings.begin();
-    it != m_ReplaceStrings.end();
-    it++)
-  {
-    replace += *it + m_FieldSeparator;
-  }
-
-  wxConfigBase::Get()->Write(m_TextFindWhat, find);
-  wxConfigBase::Get()->Write(m_TextReplaceWith, replace);
+  wxExListToConfig(m_FindStrings, m_TextFindWhat);
+  wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
 
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
@@ -149,7 +113,8 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   }
 }
 
-void wxExFindReplaceData::SetFindStrings(const std::list < wxString > & value)
+void wxExFindReplaceData::SetFindStrings(
+  const std::list < wxString > & value)
 {
   m_FindStrings = value;
 }
@@ -178,7 +143,8 @@ void wxExFindReplaceData::SetReplaceString(const wxString& value)
   m_ReplaceStrings.push_back(GetReplaceString());
 }
 
-void wxExFindReplaceData::SetReplaceStrings(const std::list < wxString > & value)
+void wxExFindReplaceData::SetReplaceStrings(
+  const std::list < wxString > & value)
 {
   m_ReplaceStrings = value;
 }

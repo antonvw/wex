@@ -14,7 +14,6 @@
 #include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 
 wxExLexers* wxExLexers::m_Self = NULL;
@@ -217,7 +216,7 @@ const wxString wxExLexers::GetLexerExtensions() const
     {
       if (!text.empty())
       {
-        text += wxExFindReplaceData::Get()->GetFieldSeparator();
+        text += wxExGetFieldSeparator();
       }
 
       text += it->second.m_Extensions;

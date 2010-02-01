@@ -30,9 +30,6 @@ public:
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
-  /// Gets the field separator.
-  const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
-
   /// Gets the find strings.
   const std::list < wxString > & GetFindStrings() const {
     return m_FindStrings;};
@@ -113,8 +110,6 @@ private:
   wxRegEx m_FindRegularExpression;
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;
-
-  const wxUniChar m_FieldSeparator;
 
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;
