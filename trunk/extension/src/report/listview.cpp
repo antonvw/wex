@@ -862,8 +862,9 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       return;
     }
 
-    wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(
-      tool.GetId() == ID_TOOL_REPORT_REPLACE));
+    wxExLog::Get()->Log(
+      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
+        tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))

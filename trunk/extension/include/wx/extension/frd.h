@@ -30,12 +30,12 @@ public:
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
+  /// Gets find/replace info text.
+  const wxString GetFindReplaceInfoText(bool replace = false) const;
+
   /// Gets the find strings.
   const std::list < wxString > & GetFindStrings() const {
     return m_FindStrings;};
-
-  /// Gets find/replace info text.
-  const wxString GetText(bool replace = false) const;
 
   /// Gets the text for the check boxes.
   const std::set<wxString> & GetInfo() const {return m_Info;};

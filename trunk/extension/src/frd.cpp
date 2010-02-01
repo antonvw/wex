@@ -75,7 +75,7 @@ wxExFindReplaceData* wxExFindReplaceData::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExFindReplaceData::GetText(bool replace) const
+const wxString wxExFindReplaceData::GetFindReplaceInfoText(bool replace) const
 {
   // TODO: wx 2.9.1 GetFindString is no const, so use a cast here.
 

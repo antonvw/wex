@@ -130,7 +130,8 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-  wxExLog::Get()->Log(wxExFindReplaceData::Get()->GetText(replace));
+  wxExLog::Get()->Log(
+    wxExFindReplaceData::Get()->GetFindReplaceInfoText(replace));
 
   wxExDirTool dir(
     tool,
