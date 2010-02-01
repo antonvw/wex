@@ -75,7 +75,11 @@ wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
 
 size_t wxExDir::FindFiles()
 {
-  if (!IsOpened()) return 0;
+  if (!IsOpened()) 
+  {
+    wxFAIL;
+    return 0;
+  }
 
   if (m_IsBusy)
   {
