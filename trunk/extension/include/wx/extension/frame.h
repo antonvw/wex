@@ -281,9 +281,6 @@ private:
   /// Returns the status bar pane.
   /// If pane could not be found, returns empty pane.
   const wxExPane GetPane(int pane) const;
-  /// Returns the field number of status bar pane.
-  /// If pane could not be found, returns -1.
-  int GetPaneField(const wxString& pane) const;
 
   wxExFrame* m_Frame;
   std::map<wxString, wxExPane> m_Panes;

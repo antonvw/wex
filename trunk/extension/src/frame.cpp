@@ -593,18 +593,6 @@ const wxExPane wxExStatusBar::GetPane(int pane) const
   return wxExPane();
 }
 
-int wxExStatusBar::GetPaneField(const wxString& pane) const
-{
-  std::map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
-
-  if (it != m_Panes.end())
-  {
-    return it->second.m_No;
-  }
-
-  return -1;
-}
-
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   bool found = false;
@@ -681,13 +669,13 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 {
-  const int field = GetPaneField(pane);
+  std::map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
 
-  if (field >= 0)
+  if (it != m_Panes.end())
   {
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
-    wxStatusBar::SetStatusText(text, field);
+    wxStatusBar::SetStatusText(text, it->second.m_No);
   }
 }
 
