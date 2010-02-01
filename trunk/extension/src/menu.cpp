@@ -55,7 +55,7 @@ wxMenuItem* wxExMenu::Append(
   int id,
   const wxString& name,
   const wxString& helptext,
-  wxArtID artid)
+  const wxArtID& artid)
 {
   m_ItemsAppended++;
   m_IsSeparator = false;

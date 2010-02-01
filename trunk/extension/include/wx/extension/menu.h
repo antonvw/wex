@@ -54,7 +54,7 @@ public:
     int id,
     const wxString& name,
     const wxString& helptext = wxEmptyString,
-    wxArtID artid = wxEmptyString);
+    const wxArtID& artid = wxEmptyString);
 
   /// Appends edit menu items, depending on the style specified during construction.
   void AppendEdit(bool add_invert = false);

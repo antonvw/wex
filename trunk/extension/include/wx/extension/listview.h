@@ -113,7 +113,7 @@ public:
   /// Returns the index of the bitmap in the image list used by this list view.
   /// If the artid is not yet on the image lists, it is added to both image lists.
   /// Use only if you setup for IMAGE_ART.
-  unsigned int GetArtID(wxArtID artid);
+  unsigned int GetArtID(const wxArtID& artid);
 
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
@@ -160,7 +160,7 @@ public:
 
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
-  bool SetItemImage(long item_number, wxArtID artid) {
+  bool SetItemImage(long item_number, const wxArtID& artid) {
     return (GetImageType() == IMAGE_ART ?
       wxListView::SetItemImage(item_number, GetArtID(artid)): false);};
 

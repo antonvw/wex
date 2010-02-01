@@ -365,7 +365,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   }
 }
 
-unsigned int wxExListView::GetArtID(wxArtID artid)
+unsigned int wxExListView::GetArtID(const wxArtID& artid)
 {
   if (GetImageList(wxIMAGE_LIST_NORMAL) == NULL ||
       GetImageList(wxIMAGE_LIST_SMALL) == NULL ||
