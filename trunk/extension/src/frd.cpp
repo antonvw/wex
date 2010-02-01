@@ -103,7 +103,7 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   wxFindReplaceData::SetFindString(value);
 
   m_FindStrings.remove(GetFindString());
-  m_FindStrings.push_back(GetFindString());
+  m_FindStrings.push_front(GetFindString());
 
   if (IsRegularExpression())
   {
@@ -117,6 +117,8 @@ void wxExFindReplaceData::SetFindStrings(
   const std::list < wxString > & value)
 {
   m_FindStrings = value;
+
+  wxFindReplaceData::SetFindString(m_FindStrings.front());
 }
 
 void wxExFindReplaceData::SetMatchCase(bool value)
@@ -140,11 +142,13 @@ void wxExFindReplaceData::SetReplaceString(const wxString& value)
   wxFindReplaceData::SetReplaceString(value);
 
   m_ReplaceStrings.remove(GetReplaceString());
-  m_ReplaceStrings.push_back(GetReplaceString());
+  m_ReplaceStrings.push_front(GetReplaceString());
 }
 
 void wxExFindReplaceData::SetReplaceStrings(
   const std::list < wxString > & value)
 {
   m_ReplaceStrings = value;
+
+  wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
 }

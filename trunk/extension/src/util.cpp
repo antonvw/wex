@@ -307,7 +307,7 @@ const std::list < wxString > wxExListFromConfig(
   while (tkz.HasMoreTokens())
   {
     const wxString val = tkz.GetNextToken();
-    l.push_front(val);
+    l.push_back(val);
   }
 
   return l;

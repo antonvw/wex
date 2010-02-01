@@ -784,7 +784,6 @@ void ComboBox::OnKey(wxKeyEvent& event)
       stc->FindNext(GetValue());
 
       wxExFindReplaceData::Get()->SetFindString(GetValue());
-      wxExFindReplaceData::Get()->SetFindStrings(wxExComboBoxToList(this));
 
       Clear(); // so we can append again
       wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
