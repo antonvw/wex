@@ -56,7 +56,7 @@ const int width = 200;
 const int width_combo = 250;
 const int width_numeric = 75;
 
-const long ID_BROWSE_FOLDER = wxNewId();
+const long ID_BROWSE_FOLDER = 1000; //wxNewId(); not constant
 
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
@@ -859,8 +859,10 @@ void wxExConfigDialog::ForceCheckBoxChecked(
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
-  if (command.GetId() == ID_BROWSE_FOLDER)
+  switch (command.GetId())
   {
+  case ID_BROWSE_FOLDER:
+    {
     wxComboBox* cb = wxDynamicCast(
       FindWindowById(command.GetId() + 1, this), wxComboBox);
 
@@ -876,17 +878,15 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     {
       cb->SetValue(dir_dlg.GetPath());
     }
+    }
+    break;
 
-    return;
-  }
-
-  if (command.GetId() == wxID_CANCEL)
-  {
+  case wxID_CANCEL:
     // For wxID_CANCEL reload from config.
     Config(false); // (re)load from config
-  }
-  else
-  {
+    break;
+
+  default:
     // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
     // save to config.
     Config(true); // save to config
@@ -905,15 +905,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     frame->OnCommandConfigDialog(GetId(), command.GetId());
   }
 
-  if (command.GetId() == wxID_CANCEL)
-  {
-    command.Skip();
-  }
-
-  if (command.GetId() == wxID_OK || command.GetId() == wxID_CLOSE)
-  {
-    EndDialog(wxID_OK);
-  }
+  command.Skip();
 }
 
 void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
