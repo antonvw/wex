@@ -880,15 +880,16 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
-  // save to config.
-  if (command.GetId() != wxID_CANCEL)
+  if (command.GetId() == wxID_CANCEL)
   {
-    Config(true); //save
+    // For wxID_CANCEL reload from config.
+    Config(false); // (re)load from config
   }
-  else if (!IsModal())
+  else
   {
-    Config(false); //load
+    // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
+    // save to config.
+    Config(true); // save to config
   }
 
   if ( command.GetId() == wxID_APPLY ||
