@@ -17,7 +17,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/aui/auibook.h>
-#include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filename.h>
 
 class wxExFrameWithHistory;
