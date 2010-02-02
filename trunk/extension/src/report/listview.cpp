@@ -1,6 +1,7 @@
 /******************************************************************************\
 * File:          listview.cpp
-* Purpose:       Implementation of class 'wxExListViewFile' and support classes
+* Purpose:       Implementation of class 'wxExListViewStandard' 
+                 and 'wxExListViewWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

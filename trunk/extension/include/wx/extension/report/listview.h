@@ -1,6 +1,7 @@
 /******************************************************************************\
 * File:          listview.h
-* Purpose:       Declaration of class 'wxExListViewWithFrame'
+* Purpose:       Declaration of class 'wxExListViewStandard' and 
+*                'wxExListViewWithFrame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
