@@ -107,6 +107,8 @@ public:
   /// Sets the replace strings.
   void SetReplaceStrings(const std::list < wxString > & value);
 private:
+  void SetFindRegularExpression();
+
   wxRegEx m_FindRegularExpression;
   bool m_IsRegularExpression;
   std::set<wxString> m_Info;

@@ -98,13 +98,8 @@ wxExFindReplaceData* wxExFindReplaceData::Set(wxExFindReplaceData* frd)
   return old;
 }
 
-void wxExFindReplaceData::SetFindString(const wxString& value)
+void wxExFindReplaceData::SetFindRegularExpression()
 {
-  wxFindReplaceData::SetFindString(value);
-
-  m_FindStrings.remove(GetFindString());
-  m_FindStrings.push_front(GetFindString());
-
   if (IsRegularExpression())
   {
     int flags = wxRE_DEFAULT;
@@ -113,12 +108,24 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   }
 }
 
+void wxExFindReplaceData::SetFindString(const wxString& value)
+{
+  wxFindReplaceData::SetFindString(value);
+
+  m_FindStrings.remove(value);
+  m_FindStrings.push_front(value);
+
+  SetFindRegularExpression();
+}
+
 void wxExFindReplaceData::SetFindStrings(
   const std::list < wxString > & value)
 {
   m_FindStrings = value;
 
   wxFindReplaceData::SetFindString(m_FindStrings.front());
+
+  SetFindRegularExpression();
 }
 
 void wxExFindReplaceData::SetMatchCase(bool value)
@@ -141,8 +148,8 @@ void wxExFindReplaceData::SetReplaceString(const wxString& value)
 {
   wxFindReplaceData::SetReplaceString(value);
 
-  m_ReplaceStrings.remove(GetReplaceString());
-  m_ReplaceStrings.push_front(GetReplaceString());
+  m_ReplaceStrings.remove(value);
+  m_ReplaceStrings.push_front(value);
 }
 
 void wxExFindReplaceData::SetReplaceStrings(
