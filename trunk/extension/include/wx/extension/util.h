@@ -67,14 +67,14 @@ const wxUniChar wxExGetFieldSeparator();
 /// Gets the number of lines in a string.
 int wxExGetNumberOfLines(const wxString& text);
 
-/// Gets a line number from a string.
-int wxExGetLineNumberFromText(const wxString& text);
-
 /// Gets a word from a string.
 const wxString wxExGetWord(
   wxString& text,
   bool use_other_field_separators = false,
   bool use_path_separator = false);
+
+/// Gets a line number from a string.
+int wxExGetLineNumberFromText(const wxString& text);
 
 /// Loads entries from the config into a list with strings.
 const std::list < wxString > wxExListFromConfig(

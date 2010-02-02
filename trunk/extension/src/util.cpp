@@ -11,10 +11,8 @@
 
 #include <wx/clipbrd.h>
 #include <wx/config.h>
-#include <wx/file.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
-#include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/util.h>
 #include <wx/extension/dir.h>
