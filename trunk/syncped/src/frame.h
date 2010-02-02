@@ -28,7 +28,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewStandard* Activate(
-    wxExListViewWithFrame::ListType type, 
+    wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
   bool DialogProjectOpen();
   virtual wxExListView* GetListView();
@@ -49,7 +49,7 @@ private:
   virtual void SyncCloseAll(wxWindowID id);
 
   wxExListViewWithFrame* AddPage(
-    wxExListViewWithFrame::ListType type, 
+    wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   void NewFile(bool as_project = false);

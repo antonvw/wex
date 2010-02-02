@@ -210,7 +210,7 @@ wxExListViewWithFrame* MDIFrame::AddPage(
   {
     list = new wxExListViewWithFrame(
       m_NotebookWithLists, this,
-      (wxExListViewStandard::ListType)type,
+      type,
       wxID_ANY,
       wxExListViewStandard::LIST_MENU_DEFAULT,
       lexer);
