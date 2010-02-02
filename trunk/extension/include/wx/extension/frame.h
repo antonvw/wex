@@ -140,13 +140,11 @@ public:
 #if wxUSE_STATUSBAR
   /// Do something when statusbar is clicked.
   virtual void StatusBarClicked(
-    const wxString& WXUNUSED(pane), 
-    const wxPoint& WXUNUSED(point)) {};
+    const wxString& WXUNUSED(pane)) {};
 
   /// When double clicked, uses the GetSTC() for some dialogs.
   virtual void StatusBarDoubleClicked(
-    const wxString& pane, 
-    const wxPoint& point);
+    const wxString& pane);
 
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.

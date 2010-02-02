@@ -462,8 +462,7 @@ void wxExFrame::SetupStatusBar(
 
 #if wxUSE_STATUSBAR
 void wxExFrame::StatusBarDoubleClicked(
-  const wxString& pane, 
-  const wxPoint& point)
+  const wxString& pane)
 {
   if (pane == "PaneLines")
   {
@@ -612,15 +611,11 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         // could cause assertions.
         if (event.ButtonDClick())
         {
-          m_Frame->StatusBarDoubleClicked(
-            GetPane(i).m_Name, 
-            event.GetPosition());
+          m_Frame->StatusBarDoubleClicked(GetPane(i).m_Name);
         }
         else if (event.ButtonDown())
         {
-          m_Frame->StatusBarClicked(
-            GetPane(i).m_Name, 
-            event.GetPosition());
+          m_Frame->StatusBarClicked(GetPane(i).m_Name);
         }
 #if wxUSE_TOOLTIPS
         // Show tooltip if tooltip is available, and not yet tooltip presented.

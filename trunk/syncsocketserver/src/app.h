@@ -52,8 +52,7 @@ private:
     const wxString& match = wxEmptyString,
     long flags = 0);
   virtual void StatusBarDoubleClicked(
-    const wxString& pane, 
-    const wxPoint& point);
+    const wxString& pane);
 
   void LogConnection(
     wxSocketBase* sock,
