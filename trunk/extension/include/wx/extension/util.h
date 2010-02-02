@@ -41,9 +41,7 @@ bool wxExClipboardAdd(const wxString& text);
 const wxString wxExClipboardGet();
 
 /// Returns first of a list of values from config key.
-const wxString wxExConfigFirstOf(
-  const wxString& key, 
-  const wxUniChar fs = '\x0B');
+const wxString wxExConfigFirstOf(const wxString& key);
 
 /// Adds an ellipses after text.
 const wxString wxExEllipsed(
@@ -78,10 +76,6 @@ const wxString wxExGetWord(
   bool use_other_field_separators = false,
   bool use_path_separator = false);
 
-/// Returns true if filename (fullname) matches one of the
-/// fields in specified pattern (fields separated by ; sign).
-bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
-
 /// Loads entries from the config into a list with strings.
 const std::list < wxString > wxExListFromConfig(
   const wxString& config);
@@ -91,8 +85,9 @@ void wxExListToConfig(
   const std::list < wxString > & l, 
   const wxString& config);
 
-/// Returns quotes around the text.
-const wxString wxExQuoted(const wxString& text);
+/// Returns true if filename (fullname) matches one of the
+/// fields in specified pattern (fields separated by ; sign).
+bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);
 
 /// Adds a caption.
 const wxString wxExPrintCaption(const wxFileName& filename);
@@ -104,6 +99,9 @@ const wxString wxExPrintFooter();
 
 /// Adds a header.
 const wxString wxExPrintHeader(const wxFileName& filename);
+
+/// Returns quotes around the text.
+const wxString wxExQuoted(const wxString& text);
 
 /// Returns a string without all white space in specified input.
 const wxString wxExSkipWhiteSpace(

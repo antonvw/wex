@@ -176,17 +176,17 @@ const std::list < wxString > wxExComboBoxToList(
 
 #endif // wxUSE_GUI
 
-const wxString wxExConfigFirstOf(
-  const wxString& key,
-  const wxUniChar fs)
+const wxString wxExConfigFirstOf(const wxString& key)
 {
-  const wxString value = wxConfigBase::Get()->Read(key);
-  return value.BeforeFirst(fs);
+  return 
+    wxConfigBase::Get()->Read(key).BeforeFirst(wxExGetFieldSeparator());
 }
 
 const wxString wxExEllipsed(const wxString& text, const wxString& control)
 {
-  return text + "..." + (!control.empty() ? "\t" + control: wxString(wxEmptyString));
+  return 
+    text + "..." + 
+      (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
 void wxExFindResult(
