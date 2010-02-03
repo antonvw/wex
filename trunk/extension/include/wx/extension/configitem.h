@@ -56,7 +56,6 @@ enum
 /// If you specify a page, then all items are placed on that page in a notebook.
 class wxExConfigItem
 {
-  friend class wxExConfigDialog;
 public:
   /// Default contructor (for a spacer item).
   wxExConfigItem();
@@ -100,6 +99,21 @@ public:
 
   /// Creates the item.
   void Create(wxWindow* parent, bool readonly = false);
+
+  /// Gets the control
+  wxControl* GetControl() const {return m_Control;};
+
+  /// Gets is required.
+  bool GetIsRequired() const {return m_IsRequired;};
+
+  /// Gets the name.
+  const wxString& GetName() const {return m_Name;};
+
+  /// Gets the page.
+  const wxString& GetPage() const {return m_Page;};
+
+  /// Gets the type.
+  int GetType() const {return m_Type;};
 
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;

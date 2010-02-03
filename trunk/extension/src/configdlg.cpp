@@ -98,7 +98,7 @@ void wxExConfigDialog::Add(
     ++it)
   {
     // Check if we need a notebook.
-    if (it == m_ConfigItems.begin() && !it->m_Page.empty())
+    if (it == m_ConfigItems.begin() && !it->GetPage().empty())
     {
       // Do not give it a close button.
       notebook = new wxAuiNotebook(this,
@@ -115,12 +115,12 @@ void wxExConfigDialog::Add(
     }
 
     if (first_time ||
-        (it->m_Page != previous_page &&
-         it->m_Page != wxEmptyString))
+        (it->GetPage() != previous_page &&
+         it->GetPage() != wxEmptyString))
     {
       first_time = false;
 
-      if (notebook != NULL && it->m_Type != CONFIG_SPACER)
+      if (notebook != NULL && it->GetType() != CONFIG_SPACER)
       {
         // Finish the current page.
         if (sizer != NULL)
@@ -130,10 +130,10 @@ void wxExConfigDialog::Add(
 
         // And make a new one.
         page_panel = new wxPanel(notebook);
-        notebook->AddPage(page_panel, it->m_Page);
+        notebook->AddPage(page_panel, it->GetPage());
       }
 
-      previous_page = it->m_Page;
+      previous_page = it->GetPage();
 
       if (rows != 0)
         sizer = new wxFlexGridSizer(rows, cols, 0, 0);
@@ -158,7 +158,7 @@ void wxExConfigDialog::Add(
 
     it->Create(parent, GetButtonFlags() == wxCANCEL);
 
-    switch (it->m_Type)
+    switch (it->GetType())
     {
     case CONFIG_CHECKBOX: AddCheckBox(parent, sizer, *it); break;
 
@@ -238,10 +238,10 @@ void wxExConfigDialog::Add(
 
   if (!hide)
   {
-    sizer->Add(new wxStaticText(parent, wxID_ANY, item.m_Name + ":"), flags.Right());
+    sizer->Add(new wxStaticText(parent, wxID_ANY, item.GetName() + ":"), flags.Right());
   }
 
-  sizer->Add(item.m_Control, (expand ? flags.Left().Expand(): flags.Left()));
+  sizer->Add(item.GetControl(), (expand ? flags.Left().Expand(): flags.Left()));
 }
 
 void wxExConfigDialog::AddCheckBox(wxWindow* parent,
@@ -249,7 +249,7 @@ void wxExConfigDialog::AddCheckBox(wxWindow* parent,
 {
   wxSizerFlags flags;
   flags.Expand().Left().Border();
-  sizer->Add(item.m_Control, flags);
+  sizer->Add(item.GetControl(), flags);
 }
 
 void wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
@@ -257,7 +257,7 @@ void wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
 {
   wxSizerFlags flags;
   flags.Expand().Left().Border();
-  sizer->Add(item.m_Control, flags);
+  sizer->Add(item.GetControl(), flags);
 }
 
 void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
@@ -265,7 +265,7 @@ void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
 {
   wxASSERT(m_BrowseDir == NULL);
 
-  m_BrowseDir = (wxComboBox *)item.m_Control;
+  m_BrowseDir = (wxComboBox *)item.GetControl();
 
   wxSizerFlags flag;
 
@@ -286,7 +286,7 @@ void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
       wxBU_EXACTFIT),
     flag.Center().Border(wxLEFT));
 
-  sizer->Add(new wxStaticText(parent, wxID_ANY, item.m_Name + ":"), flag.Right().Border());
+  sizer->Add(new wxStaticText(parent, wxID_ANY, item.GetName() + ":"), flag.Right().Border());
   sizer->Add(browse, flag.Center().Border());
 }
 
@@ -297,7 +297,7 @@ void wxExConfigDialog::AddRadioBox(
 {
   wxSizerFlags flags;
   flags.Expand().Left().Border();
-  sizer->Add(item.m_Control, flags);
+  sizer->Add(item.GetControl(), flags);
 }
 
 void wxExConfigDialog::Config(bool save)
@@ -377,16 +377,16 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     it != m_ConfigItems.end();
     ++it)
   {
-    switch (it->m_Type)
+    switch (it->GetType())
     {
     case CONFIG_CHECKBOX:
       if (m_ForceCheckBoxChecked)
       {
-        wxCheckBox* cb = (wxCheckBox*)it->m_Control;
+        wxCheckBox* cb = (wxCheckBox*)it->GetControl();
 
-        if (it->m_Name.Lower().Contains(m_Contains.Lower()) && 
+        if (it->GetName().Lower().Contains(m_Contains.Lower()) && 
             cb->GetValue() &&
-            it->m_Page == m_Page)
+            it->GetPage() == m_Page)
         {
           one_checkbox_checked = true;
         }
@@ -396,7 +396,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_CHECKLISTBOX_NONAME:
       if (m_ForceCheckBoxChecked)
       {
-        wxCheckListBox* clb = (wxCheckListBox*)it->m_Control;
+        wxCheckListBox* clb = (wxCheckListBox*)it->GetControl();
 
         for (
           size_t i = 0;
@@ -405,7 +405,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
         {
           if (clb->GetString(i).Lower().Contains(m_Contains.Lower()) && 
               clb->IsChecked(i) &&
-              it->m_Page == m_Page)
+              it->GetPage() == m_Page)
           {
             one_checkbox_checked = true;
           }
@@ -417,8 +417,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_COMBOBOXDIR:
     case CONFIG_COMBOBOX_NONAME:
       {
-      wxComboBox* cb = (wxComboBox*)it->m_Control;
-      if (it->m_IsRequired)
+      wxComboBox* cb = (wxComboBox*)it->GetControl();
+      if (it->GetIsRequired())
       {
         if (cb->GetValue().empty())
         {
@@ -432,8 +432,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_INT:
     case CONFIG_STRING:
       {
-      wxTextCtrl* tc = (wxTextCtrl*)it->m_Control;
-      if (it->m_IsRequired)
+      wxTextCtrl* tc = (wxTextCtrl*)it->GetControl();
+      if (it->GetIsRequired())
       {
         if (tc->GetValue().empty())
         {
@@ -446,8 +446,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->m_Control;
-      if (it->m_IsRequired)
+      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->GetControl();
+      if (it->GetIsRequired())
       {
         if (pc->GetPath().empty())
         {
@@ -460,8 +460,8 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_FILEPICKERCTRL:
       {
-      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->m_Control;
-      if (it->m_IsRequired)
+      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->GetControl();
+      if (it->GetIsRequired())
       {
         if (pc->GetPath().empty())
         {
