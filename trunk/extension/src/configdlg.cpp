@@ -384,7 +384,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
       {
         wxCheckBox* cb = (wxCheckBox*)it->m_Control;
 
-        if (cb->GetName().Lower().Contains(m_Contains.Lower()) && 
+        if (it->m_Name.Lower().Contains(m_Contains.Lower()) && 
             cb->GetValue() &&
             it->m_Page == m_Page)
         {
