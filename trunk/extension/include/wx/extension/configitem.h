@@ -97,6 +97,9 @@ public:
     const wxString& page = wxEmptyString,
     bool is_required = false,
     int max_items = 25); // used by CONFIG_COMBOBOX
+
+  /// Loads or saves this item to the config.
+  void ToConfig(bool save) const;
 private:
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
