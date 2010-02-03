@@ -85,6 +85,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
+  , m_BrowseDir(NULL)
 {
   Add(rows, cols, pos, size);
   Config(false); // read
@@ -388,7 +389,7 @@ wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
 wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   wxSizer* sizer, const wxString& text)
 {
-  wxComboBox* cb = new wxComboBox(
+  m_BrowseDir = new wxComboBox(
     parent, 
     ID_BROWSE_FOLDER + 1,
     wxEmptyString,
@@ -399,7 +400,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
 
   wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
   browse->AddGrowableCol(0);
-  browse->Add(cb, flag.Expand());
+  browse->Add(m_BrowseDir, flag.Expand());
 
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
@@ -417,7 +418,7 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   sizer->Add(new wxStaticText(parent, wxID_ANY, text + ":"), flag.Right().Border());
   sizer->Add(browse, flag.Center().Border());
 
-  return cb;
+  return m_BrowseDir;
 }
 
 wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
@@ -863,20 +864,17 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   {
   case ID_BROWSE_FOLDER:
     {
-    wxComboBox* cb = wxDynamicCast(
-      FindWindowById(command.GetId() + 1, this), wxComboBox);
-
-    wxASSERT(cb != NULL);
+    wxASSERT(m_BrowseDir != NULL);
 
     wxDirDialog dir_dlg(
       this,
       wxDirSelectorPromptStr,
-      cb->GetValue(),
+      m_BrowseDir->GetValue(),
       wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
     if (dir_dlg.ShowModal() == wxID_OK)
     {
-      cb->SetValue(dir_dlg.GetPath());
+      m_BrowseDir->SetValue(dir_dlg.GetPath());
     }
     }
     break;

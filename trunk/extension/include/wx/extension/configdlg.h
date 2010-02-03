@@ -129,6 +129,8 @@ private:
   void Config(bool save);
   void Update(wxComboBox* cb, const wxString& value) const;
 
+  wxComboBox* m_BrowseDir;
+
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
   wxString m_Contains;
