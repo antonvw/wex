@@ -17,6 +17,12 @@
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
+
+const int width = 200;
+const int width_combo = 250;
+const int width_numeric = 75;
+
+
 wxExConfigItem::wxExConfigItem()
   : m_Name("spacer")
   , m_Page(wxEmptyString)
@@ -123,10 +129,240 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
+void wxExConfigItem::Create(wxWindow* parent, bool readonly)
+{
+  switch (m_Type)
+  {
+    case CONFIG_CHECKBOX:
+      m_Control = new wxCheckBox(parent,
+        wxID_ANY,
+        m_Name,
+        wxDefaultPosition,
+        wxSize(125, wxDefaultCoord));
+      break;
+
+    case CONFIG_CHECKLISTBOX:
+      {
+      wxArrayString arraychoices;
+
+      for (
+        std::map<long, const wxString>::const_iterator it = m_Choices.begin();
+        it != m_Choices.end();
+       ++it)
+      {
+        arraychoices.Add(it->second);
+      }
+
+      m_Control = (wxCheckListBox*)new wxCheckListBox(parent,
+        wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
+      }
+      break;
+
+    case CONFIG_CHECKLISTBOX_NONAME:
+      {
+      wxArrayString arraychoices;
+
+      for (
+        std::set<wxString>::const_iterator it = m_ChoicesBool.begin();
+        it != m_ChoicesBool.end();
+        ++it)
+      {
+        arraychoices.Add(*it);
+      }
+
+      m_Control = new wxCheckListBox(parent,
+        wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
+      }
+      break;
+
+    case CONFIG_COLOUR:
+      m_Control = new wxColourPickerWidget(parent, wxID_ANY);
+      break;
+
+    case CONFIG_COMBOBOX:
+      m_Control = new wxComboBox(
+        parent, 
+        wxID_ANY,
+        wxEmptyString,
+        wxDefaultPosition,
+        wxSize(width_combo, wxDefaultCoord));
+      break;
+
+    case CONFIG_COMBOBOXDIR:
+      m_Control = new wxComboBox(
+        parent, 
+        wxID_ANY,
+        wxEmptyString,
+        wxDefaultPosition,
+        wxSize(width_combo, wxDefaultCoord));
+      break;
+
+    case CONFIG_DIRPICKERCTRL:
+      {
+      wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
+        wxID_ANY,
+        wxEmptyString,
+        wxDirSelectorPromptStr,
+        wxDefaultPosition,
+        wxSize(width, wxDefaultCoord));
+
+      m_Control = pc;
+
+      if (pc->GetTextCtrl() != NULL && readonly)
+      {
+        pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
+      }
+      }
+      break;
+
+    case CONFIG_FILEPICKERCTRL:
+      {
+      wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
+        wxID_ANY,
+        wxEmptyString,
+        wxFileSelectorPromptStr,
+        wxFileSelectorDefaultWildcardStr,
+        wxDefaultPosition,
+        wxSize(width, wxDefaultCoord));
+
+      m_Control = pc;
+
+      if (pc->GetTextCtrl() != NULL && readonly)
+      {
+        pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
+      }
+      }
+      break;
+
+    case CONFIG_FONTPICKERCTRL:
+      {
+      wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
+        wxID_ANY,
+        wxNullFont,
+        wxDefaultPosition,
+        wxSize(width, wxDefaultCoord));
+
+      m_Control = pc;
+
+      if (pc->GetTextCtrl() != NULL && readonly)
+      {
+        pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
+      }
+      }
+      break;
+
+    case CONFIG_INT:
+      {
+      long actual_style = m_Style;
+
+      if (readonly)
+      {
+        actual_style |= wxTE_READONLY;
+      }
+
+      m_Control = new wxTextCtrl(parent,
+        wxID_ANY,
+        wxEmptyString,
+        wxDefaultPosition,
+        (m_Style & wxTE_MULTILINE ?
+           wxSize(width_numeric, 200):
+           wxSize(width_numeric, wxDefaultCoord)),
+        m_Style | wxTE_RIGHT);
+
+      m_Control->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
+      }
+      break;
+
+    case CONFIG_RADIOBOX:
+      {
+      wxArrayString arraychoices;
+
+      for (
+        std::map<long, const wxString>::const_iterator it = m_Choices.begin();
+        it != m_Choices.end();
+        ++it)
+      {
+        arraychoices.Add(it->second);
+      } 
+
+      m_Control = new wxRadioBox(parent,
+        wxID_ANY, m_Name, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
+      }
+
+      break;
+
+    case CONFIG_SPACER: break;
+
+    case CONFIG_SPINCTRL:
+      {
+      long style = wxSP_ARROW_KEYS;
+
+      if (readonly)
+      {
+        style |= wxTE_READONLY;
+      }
+
+      m_Control = new wxSpinCtrl(parent,
+        wxID_ANY,
+        wxEmptyString,
+        wxDefaultPosition,
+        wxSize(width_numeric, wxDefaultCoord),
+        style,
+        m_Min,
+        m_Max);
+      }
+      break;
+
+    case CONFIG_SPINCTRL_DOUBLE:
+      {
+      long style = wxSP_ARROW_KEYS;
+
+      if (readonly)
+      {
+        style |= wxTE_READONLY;
+      }
+
+      m_Control = new wxSpinCtrlDouble(parent,
+        wxID_ANY,
+        wxEmptyString,
+        wxDefaultPosition,
+        wxSize(width_numeric, wxDefaultCoord),
+        style,
+        m_MinDouble,
+        m_MaxDouble,
+        m_MinDouble,
+        m_Inc);
+      }
+      break;
+
+    case CONFIG_STRING:
+      {
+      long actual_style = m_Style;
+
+      if (readonly)
+      {
+        actual_style |= wxTE_READONLY;
+      }
+
+      m_Control = new wxTextCtrl(parent,
+        wxID_ANY,
+        wxEmptyString,
+        wxDefaultPosition,
+        (m_Style & wxTE_MULTILINE ?
+           wxSize(width, 200):
+           wxSize(width, wxDefaultCoord)),
+        actual_style);
+      }
+      break;
+
+    default: wxFAIL;
+  }
+}
+
 void wxExConfigItem::ToConfig(bool save) const
 {
-    switch (m_Type)
-    {
+  switch (m_Type)
+  {
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)m_Control;
@@ -375,7 +611,7 @@ void wxExConfigItem::ToConfig(bool save) const
     default:
       wxFAIL;
       break;
-    }
+  }
 }
 
 #endif // wxUSE_GUI

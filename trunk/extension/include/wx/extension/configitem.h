@@ -98,6 +98,9 @@ public:
     bool is_required = false,
     int max_items = 25); // used by CONFIG_COMBOBOX
 
+  /// Creates the item.
+  void Create(wxWindow* parent, bool readonly = false);
+
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:

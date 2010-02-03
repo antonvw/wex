@@ -50,10 +50,6 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
     name);
 }
 
-const int width = 200;
-const int width_combo = 250;
-const int width_numeric = 75;
-
 const long ID_BROWSE_FOLDER = 1000; //wxNewId(); not constant
 
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
@@ -163,78 +159,41 @@ void wxExConfigDialog::Add(
     wxWindow* parent =
       (page_panel != NULL ? (wxWindow*)page_panel: this);
 
-    wxControl* control = NULL;
+    it->Create(parent, GetButtonFlags() == wxCANCEL);
 
     switch (it->m_Type)
     {
-    case CONFIG_CHECKBOX:
-      control = AddCheckBox(parent, sizer, it->m_Name);
-      break;
+    case CONFIG_CHECKBOX: AddCheckBox(parent, sizer, *it); break;
 
-    case CONFIG_CHECKLISTBOX:
-      control = AddCheckListBox(parent, sizer, it->m_Name, it->m_Choices);
-      break;
+    case CONFIG_CHECKLISTBOX: Add(parent, sizer, *it); break;
 
-    case CONFIG_CHECKLISTBOX_NONAME:
-      control = AddCheckListBoxNoName(parent, sizer, it->m_ChoicesBool);
-      break;
+    case CONFIG_CHECKLISTBOX_NONAME: AddCheckListBoxNoName(parent, sizer, *it); break;
 
-    case CONFIG_COLOUR:
-      control = AddColourButton(parent, sizer, it->m_Name);
-      break;
+    case CONFIG_COLOUR: Add(parent, sizer, *it, false); break;
 
-    case CONFIG_COMBOBOX:
-      control = AddComboBox(parent, sizer, it->m_Name, false);
-      break;
+    case CONFIG_COMBOBOX: Add(parent, sizer, *it, true, false); break;
 
-    case CONFIG_COMBOBOXDIR:
-      control = AddComboBoxDir(parent, sizer, it->m_Name);
-      break;
+    case CONFIG_COMBOBOXDIR: AddComboBoxDir(parent, sizer, *it); break;
 
-    case CONFIG_COMBOBOX_NONAME:
-      control = AddComboBox(parent, sizer, it->m_Name, true);
-      break;
+    case CONFIG_COMBOBOX_NONAME: Add(parent, sizer, *it, true); break;
 
-    case CONFIG_DIRPICKERCTRL:
-      control = AddDirPickerCtrl(parent, sizer, it->m_Name);
-      break;
+    case CONFIG_DIRPICKERCTRL: Add(parent, sizer, *it); break;
 
-    case CONFIG_FILEPICKERCTRL:
-      control = AddFilePickerCtrl(parent, sizer, it->m_Name);
-      break;
+    case CONFIG_FILEPICKERCTRL: Add(parent, sizer, *it); break;
 
-    case CONFIG_FONTPICKERCTRL:
-      control = AddFontPickerCtrlCtrl(parent, sizer, it->m_Name);
-      break;
+    case CONFIG_FONTPICKERCTRL: Add(parent, sizer, *it); break;
 
-    case CONFIG_INT:
-      control = AddTextCtrl(parent, sizer, it->m_Name, true);
-      break;
+    case CONFIG_INT: Add(parent, sizer, *it); break;
 
-    case CONFIG_RADIOBOX:
-      control = AddRadioBox(parent, sizer, it->m_Name, it->m_Choices);
-      break;
+    case CONFIG_RADIOBOX: AddRadioBox(parent, sizer, *it); break;
 
-    case CONFIG_SPACER:
-      sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
-      break;
+    case CONFIG_SPACER: sizer->AddSpacer(wxSizerFlags::GetDefaultBorder()); break;
 
-    case CONFIG_SPINCTRL:
-      control = AddSpinCtrl(parent, sizer, it->m_Name, it->m_Min, it->m_Max);
-      break;
+    case CONFIG_SPINCTRL: Add(parent, sizer, *it, false); break;
 
-    case CONFIG_SPINCTRL_DOUBLE:
-      control = AddSpinCtrlDouble(
-        parent, sizer, 
-        it->m_Name, 
-        it->m_MinDouble, 
-        it->m_MaxDouble, 
-        it->m_Inc);
-      break;
+    case CONFIG_SPINCTRL_DOUBLE: Add(parent, sizer, *it, false); break;
 
-    case CONFIG_STRING:
-      control = AddTextCtrl(parent, sizer, it->m_Name, false, it->m_Style);
-      break;
+    case CONFIG_STRING: Add(parent, sizer, *it, true); break;
 
     default:
       wxFAIL;
@@ -249,12 +208,6 @@ void wxExConfigDialog::Add(
       {
         sizer->AddGrowableRow(sizer->GetRows() - 1);
       }
-    }
-
-    if (control != NULL)
-    {
-      control->SetName(it->m_Name);
-      it->m_Control = control;
     }
   }
 
@@ -276,11 +229,10 @@ void wxExConfigDialog::Add(
   LayoutSizers();
 }
 
-wxControl* wxExConfigDialog::Add(
-  wxSizer* sizer,
+void wxExConfigDialog::Add(
   wxWindow* parent,
-  wxControl* control,
-  const wxString& text,
+  wxSizer* sizer,
+  const wxExConfigItem& item,
   bool expand,
   bool hide)
 {
@@ -289,110 +241,32 @@ wxControl* wxExConfigDialog::Add(
 
   if (!hide)
   {
-    sizer->Add(new wxStaticText(parent, wxID_ANY, text), flags.Right());
+    sizer->Add(new wxStaticText(parent, wxID_ANY, item.m_Name + ":"), flags.Right());
   }
 
-  sizer->Add(control, (expand ? flags.Left().Expand(): flags.Left()));
-
-  return control;
+  sizer->Add(item.m_Control, (expand ? flags.Left().Expand(): flags.Left()));
 }
 
-wxControl* wxExConfigDialog::AddCheckBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
+void wxExConfigDialog::AddCheckBox(wxWindow* parent,
+  wxSizer* sizer, const wxExConfigItem& item)
 {
-  wxCheckBox* checkbox = new wxCheckBox(parent,
-    wxID_ANY,
-    text,
-    wxDefaultPosition,
-    wxSize(125, wxDefaultCoord));
-
   wxSizerFlags flags;
   flags.Expand().Left().Border();
-  sizer->Add(checkbox, flags);
-
-  return checkbox;
+  sizer->Add(item.m_Control, flags);
 }
 
-wxControl* wxExConfigDialog::AddCheckListBox(wxWindow* parent,
-  wxSizer* sizer, 
-  const wxString& text, 
-  const std::map<long, const wxString> & choices)
+void wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
+  wxSizer* sizer, const wxExConfigItem& item)
 {
-  wxArrayString arraychoices;
-
-  for (
-    std::map<long, const wxString>::const_iterator it = choices.begin();
-    it != choices.end();
-    ++it)
-  {
-    arraychoices.Add(it->second);
-  }
-
-  wxCheckListBox* box = new wxCheckListBox(parent,
-    wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
-
-  return Add(sizer, parent, box, text + ":");
-}
-
-wxControl* wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
-  wxSizer* sizer, const std::set<wxString> & choices)
-{
-  wxArrayString arraychoices;
-
-  for (
-    std::set<wxString>::const_iterator it = choices.begin();
-    it != choices.end();
-    ++it)
-  {
-    arraychoices.Add(*it);
-  }
-
-  wxCheckListBox* box = new wxCheckListBox(parent,
-    wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
-
   wxSizerFlags flags;
   flags.Expand().Left().Border();
-  sizer->Add(box, flags);
-
-  return box;
+  sizer->Add(item.m_Control, flags);
 }
 
-wxControl* wxExConfigDialog::AddColourButton(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
+void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
+  wxSizer* sizer, const wxExConfigItem& item)
 {
-  return Add(
-    sizer,
-    parent,
-    new wxColourPickerWidget(parent, wxID_ANY),
-    text + ":",
-    false); // do not expand
-}
-
-wxControl* wxExConfigDialog::AddComboBox(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, bool hide)
-{
-  return Add(
-    sizer, 
-    parent, 
-    new wxComboBox(
-      parent, 
-      wxID_ANY,
-      wxEmptyString,
-      wxDefaultPosition,
-      wxSize(width_combo, wxDefaultCoord)),
-    text + ":", 
-    true, hide);
-}
-
-wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
-{
-  m_BrowseDir = new wxComboBox(
-    parent, 
-    ID_BROWSE_FOLDER + 1,
-    wxEmptyString,
-    wxDefaultPosition,
-    wxSize(width_combo, wxDefaultCoord));
+  m_BrowseDir = (wxComboBox *)item.m_Control;
 
   wxSizerFlags flag;
 
@@ -413,177 +287,18 @@ wxControl* wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
       wxBU_EXACTFIT),
     flag.Center().Border(wxLEFT));
 
-  sizer->Add(new wxStaticText(parent, wxID_ANY, text + ":"), flag.Right().Border());
+  sizer->Add(new wxStaticText(parent, wxID_ANY, item.m_Name + ":"), flag.Right().Border());
   sizer->Add(browse, flag.Center().Border());
-
-  return m_BrowseDir;
 }
 
-wxControl* wxExConfigDialog::AddDirPickerCtrl(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
-{
-  wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
-    wxID_ANY,
-    wxEmptyString,
-    wxDirSelectorPromptStr,
-    wxDefaultPosition,
-    wxSize(width, wxDefaultCoord));
-
-  // If only cancel button, make readonly.
-  if (pc->GetTextCtrl() != NULL && GetButtonFlags() == wxCANCEL)
-  {
-    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
-  }
-
-  return Add(sizer, parent, pc, text + ":");
-}
-
-wxControl* wxExConfigDialog::AddFilePickerCtrl(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
-{
-  wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
-    wxID_ANY,
-    wxEmptyString,
-    wxFileSelectorPromptStr,
-    wxFileSelectorDefaultWildcardStr,
-    wxDefaultPosition,
-    wxSize(width, wxDefaultCoord));
-
-  // If only cancel button, make readonly.
-  if (pc->GetTextCtrl() != NULL && GetButtonFlags() == wxCANCEL)
-  {
-    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
-  }
-
-  return Add(sizer, parent, pc, text + ":");
-}
-
-wxControl* wxExConfigDialog::AddFontPickerCtrlCtrl(wxWindow* parent,
-  wxSizer* sizer, const wxString& text)
-{
-  wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
-    wxID_ANY,
-    wxNullFont,
-    wxDefaultPosition,
-    wxSize(width, wxDefaultCoord));
-
-  // If only cancel button, make readonly.
-  if (pc->GetTextCtrl() != NULL && GetButtonFlags() == wxCANCEL)
-  {
-    pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
-  }
-
-  return Add(sizer, parent, pc, text + ":");
-}
-
-wxControl* wxExConfigDialog::AddRadioBox(
+void wxExConfigDialog::AddRadioBox(
   wxWindow* parent,
   wxSizer* sizer, 
-  const wxString& text, 
-  const std::map<long, const wxString> & choices)
+  const wxExConfigItem& item)
 {
-  wxArrayString arraychoices;
-
-  for (
-    std::map<long, const wxString>::const_iterator it = choices.begin();
-    it != choices.end();
-    ++it)
-  {
-    arraychoices.Add(it->second);
-  }
-
-  wxRadioBox* box = new wxRadioBox(parent,
-    wxID_ANY, text, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
-
   wxSizerFlags flags;
   flags.Expand().Left().Border();
-  sizer->Add(box, flags);
-
-  return box;
-}
-
-wxControl* wxExConfigDialog::AddSpinCtrl(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, int min, int max)
-{
-  long style = wxSP_ARROW_KEYS;
-
-  // If only cancel button, make readonly.
-  if (GetButtonFlags() == wxCANCEL)
-  {
-    style |= wxTE_READONLY;
-  }
-
-  wxSpinCtrl* spinctrl = new wxSpinCtrl(parent,
-    wxID_ANY,
-    wxEmptyString,
-    wxDefaultPosition,
-    wxSize(width_numeric, wxDefaultCoord),
-    style,
-    min,
-    max);
-
-  return Add(sizer, parent, spinctrl, text + ":", false);
-}
-
-wxControl* wxExConfigDialog::AddSpinCtrlDouble(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, double min, double max, double inc)
-{
-  long style = wxSP_ARROW_KEYS;
-
-  // If only cancel button, make readonly.
-  if (GetButtonFlags() == wxCANCEL)
-  {
-    style |= wxTE_READONLY;
-  }
-
-  wxSpinCtrlDouble* spinctrl = new wxSpinCtrlDouble(parent,
-    wxID_ANY,
-    wxEmptyString,
-    wxDefaultPosition,
-    wxSize(width_numeric, wxDefaultCoord),
-    style,
-    min,
-    max,
-    min,
-    inc);
-
-  return Add(sizer, parent, spinctrl, text + ":", false);
-}
-
-wxControl* wxExConfigDialog::AddTextCtrl(wxWindow* parent,
-  wxSizer* sizer, const wxString& text, bool is_numeric, long style)
-{
-  long actual_style = style;
-  int actual_width = width;
-
-  // Add alignment for numerics.
-  if (is_numeric)
-  {
-    actual_style |= wxTE_RIGHT;
-    actual_width = width_numeric;
-  }
-
-  // If only cancel button, make readonly.
-  if (GetButtonFlags() == wxCANCEL)
-  {
-    actual_style |= wxTE_READONLY;
-  }
-
-  wxTextCtrl* textctrl = new wxTextCtrl(parent,
-    wxID_ANY,
-    wxEmptyString,
-    wxDefaultPosition,
-    (style & wxTE_MULTILINE ?
-       wxSize(actual_width, 200):
-       wxSize(actual_width, wxDefaultCoord)),
-    actual_style);
-
-  if (is_numeric)
-  {
-    textctrl->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-  }
-
-  return Add(sizer, parent, textctrl, text + ":", !is_numeric);
+  sizer->Add(item.m_Control, flags);
 }
 
 void wxExConfigDialog::Config(bool save)

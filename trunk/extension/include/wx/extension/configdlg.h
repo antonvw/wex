@@ -56,75 +56,18 @@ protected:
 private:
   void Add(int rows, int cols, const wxPoint& pos, const wxSize& size);
 
-  wxControl* Add(
-    wxSizer* sizer,
-    wxWindow* parent,
-    wxControl* control,
-    const wxString& text,
-    bool expand = true,
-    bool hide = false);
-  wxControl* AddCheckBox(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text);
-  wxControl* AddCheckListBox(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    const std::map<long, const wxString> & choices);
-  wxControl* AddCheckListBoxNoName(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const std::set<wxString> & choices);
-  wxControl* AddColourButton(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text);
-  wxControl* AddComboBox(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    bool hide);
-  wxControl* AddComboBoxDir(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text);
-  wxControl* AddDirPickerCtrl(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text);
-  wxControl* AddFilePickerCtrl(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text);
-  wxControl* AddFontPickerCtrlCtrl(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text);
-  wxControl* AddRadioBox(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    const std::map<long, const wxString> & choices);
-  wxControl* AddSpinCtrl(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    int min,
-    int max);
-  wxControl* AddSpinCtrlDouble(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    double min,
-    double max,
-    double inc);
-  wxControl* AddTextCtrl(
-    wxWindow* parent,
-    wxSizer* sizer,
-    const wxString& text,
-    bool is_numeric = false,
-    long style = 0);
+  void Add(wxWindow* parent, wxSizer* sizer, 
+    const wxExConfigItem& item, bool expand = true, bool hide = false);
+  void AddCheckBox(wxWindow* parent, 
+    wxSizer* sizer, const wxExConfigItem& item);
+  void AddCheckListBoxNoName(wxWindow* parent,
+    wxSizer* sizer, const wxExConfigItem& item);
+  void AddColourButton(wxWindow* parent,
+    wxSizer* sizer, const wxExConfigItem& item);
+  void AddComboBoxDir(wxWindow* parent,
+    wxSizer* sizer,  const wxExConfigItem& item);
+  void AddRadioBox(wxWindow* parent,
+    wxSizer* sizer, const wxExConfigItem& item);
 
   void Config(bool save);
   void Update(wxComboBox* cb, const wxString& value) const;
