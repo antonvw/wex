@@ -10,11 +10,8 @@
 \******************************************************************************/
 
 #include <wx/aui/auibook.h>
-#include <wx/clrpicker.h> // for wxColourPickerWidget
 #include <wx/config.h>
 #include <wx/filepicker.h>
-#include <wx/fontpicker.h>
-#include <wx/spinctrl.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 
