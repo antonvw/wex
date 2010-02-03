@@ -56,18 +56,10 @@ protected:
 private:
   void Add(int rows, int cols, const wxPoint& pos, const wxSize& size);
 
-  void Add(wxWindow* parent, wxSizer* sizer, 
+  void AddSizerItem(wxSizer* sizer, const wxExConfigItem& item);
+  void AddSizerItemBrowse(wxSizer* sizer,  const wxExConfigItem& item);
+  void AddSizerItemLabeled(wxSizer* sizer, 
     const wxExConfigItem& item, bool expand = true, bool hide = false);
-  void AddCheckBox(wxWindow* parent, 
-    wxSizer* sizer, const wxExConfigItem& item);
-  void AddCheckListBoxNoName(wxWindow* parent,
-    wxSizer* sizer, const wxExConfigItem& item);
-  void AddColourButton(wxWindow* parent,
-    wxSizer* sizer, const wxExConfigItem& item);
-  void AddComboBoxDir(wxWindow* parent,
-    wxSizer* sizer,  const wxExConfigItem& item);
-  void AddRadioBox(wxWindow* parent,
-    wxSizer* sizer, const wxExConfigItem& item);
 
   void Config(bool save);
   void Update(wxComboBox* cb, const wxString& value) const;

@@ -153,44 +153,28 @@ void wxExConfigDialog::Add(
       }
     }
 
-    wxWindow* parent =
-      (page_panel != NULL ? (wxWindow*)page_panel: this);
-
-    it->Create(parent, GetButtonFlags() == wxCANCEL);
+    it->Create(
+      (page_panel != NULL ? (wxWindow*)page_panel: this), 
+      GetButtonFlags() == wxCANCEL);
 
     switch (it->GetType())
     {
-    case CONFIG_CHECKBOX: AddCheckBox(parent, sizer, *it); break;
-
-    case CONFIG_CHECKLISTBOX: Add(parent, sizer, *it); break;
-
-    case CONFIG_CHECKLISTBOX_NONAME: AddCheckListBoxNoName(parent, sizer, *it); break;
-
-    case CONFIG_COLOUR: Add(parent, sizer, *it, false); break;
-
-    case CONFIG_COMBOBOX: Add(parent, sizer, *it, true, false); break;
-
-    case CONFIG_COMBOBOXDIR: AddComboBoxDir(parent, sizer, *it); break;
-
-    case CONFIG_COMBOBOX_NONAME: Add(parent, sizer, *it, true); break;
-
-    case CONFIG_DIRPICKERCTRL: Add(parent, sizer, *it); break;
-
-    case CONFIG_FILEPICKERCTRL: Add(parent, sizer, *it); break;
-
-    case CONFIG_FONTPICKERCTRL: Add(parent, sizer, *it); break;
-
-    case CONFIG_INT: Add(parent, sizer, *it); break;
-
-    case CONFIG_RADIOBOX: AddRadioBox(parent, sizer, *it); break;
-
+    case CONFIG_CHECKBOX: AddSizerItem(sizer, *it); break;
+    case CONFIG_CHECKLISTBOX: AddSizerItemLabeled(sizer, *it); break;
+    case CONFIG_CHECKLISTBOX_NONAME: AddSizerItem(sizer, *it); break;
+    case CONFIG_COLOUR: AddSizerItemLabeled(sizer, *it, false); break;
+    case CONFIG_COMBOBOX: AddSizerItemLabeled(sizer, *it, true, false); break;
+    case CONFIG_COMBOBOXDIR: AddSizerItemBrowse(sizer, *it); break;
+    case CONFIG_COMBOBOX_NONAME: AddSizerItemLabeled(sizer, *it, true); break;
+    case CONFIG_DIRPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
+    case CONFIG_FILEPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
+    case CONFIG_FONTPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
+    case CONFIG_INT: AddSizerItemLabeled(sizer, *it); break;
+    case CONFIG_RADIOBOX: AddSizerItem(sizer, *it); break;
     case CONFIG_SPACER: sizer->AddSpacer(wxSizerFlags::GetDefaultBorder()); break;
-
-    case CONFIG_SPINCTRL: Add(parent, sizer, *it, false); break;
-
-    case CONFIG_SPINCTRL_DOUBLE: Add(parent, sizer, *it, false); break;
-
-    case CONFIG_STRING: Add(parent, sizer, *it, true); break;
+    case CONFIG_SPINCTRL: AddSizerItemLabeled(sizer, *it, false); break;
+    case CONFIG_SPINCTRL_DOUBLE: AddSizerItemLabeled(sizer, *it, false); break;
+    case CONFIG_STRING: AddSizerItemLabeled(sizer, *it, true); break;
 
     default:
       wxFAIL;
@@ -226,25 +210,7 @@ void wxExConfigDialog::Add(
   LayoutSizers();
 }
 
-void wxExConfigDialog::Add(
-  wxWindow* parent,
-  wxSizer* sizer,
-  const wxExConfigItem& item,
-  bool expand,
-  bool hide)
-{
-  wxSizerFlags flags;
-  flags.Border();
-
-  if (!hide)
-  {
-    sizer->Add(new wxStaticText(parent, wxID_ANY, item.GetName() + ":"), flags.Right());
-  }
-
-  sizer->Add(item.GetControl(), (expand ? flags.Left().Expand(): flags.Left()));
-}
-
-void wxExConfigDialog::AddCheckBox(wxWindow* parent,
+void wxExConfigDialog::AddSizerItem(
   wxSizer* sizer, const wxExConfigItem& item)
 {
   wxSizerFlags flags;
@@ -252,15 +218,7 @@ void wxExConfigDialog::AddCheckBox(wxWindow* parent,
   sizer->Add(item.GetControl(), flags);
 }
 
-void wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
-  wxSizer* sizer, const wxExConfigItem& item)
-{
-  wxSizerFlags flags;
-  flags.Expand().Left().Border();
-  sizer->Add(item.GetControl(), flags);
-}
-
-void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
+void wxExConfigDialog::AddSizerItemBrowse(
   wxSizer* sizer, const wxExConfigItem& item)
 {
   wxASSERT(m_BrowseDir == NULL);
@@ -278,7 +236,7 @@ void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   // And the text box that is used is not resizable as well.
   browse->Add(
     new wxButton(
-      parent,
+    item.GetControl()->GetParent(),
       ID_BROWSE_FOLDER,
       wxDirPickerWidgetLabel,
       wxDefaultPosition,
@@ -286,18 +244,34 @@ void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
       wxBU_EXACTFIT),
     flag.Center().Border(wxLEFT));
 
-  sizer->Add(new wxStaticText(parent, wxID_ANY, item.GetName() + ":"), flag.Right().Border());
+  sizer->Add(new wxStaticText(
+    item.GetControl()->GetParent(), 
+    wxID_ANY, 
+    item.GetName() + ":"), 
+    flag.Right().Border());
+
   sizer->Add(browse, flag.Center().Border());
 }
 
-void wxExConfigDialog::AddRadioBox(
-  wxWindow* parent,
-  wxSizer* sizer, 
-  const wxExConfigItem& item)
+void wxExConfigDialog::AddSizerItemLabeled(
+  wxSizer* sizer,
+  const wxExConfigItem& item,
+  bool expand,
+  bool hide)
 {
   wxSizerFlags flags;
-  flags.Expand().Left().Border();
-  sizer->Add(item.GetControl(), flags);
+  flags.Border();
+
+  if (!hide)
+  {
+    sizer->Add(
+      new wxStaticText(item.GetControl()->GetParent(), 
+      wxID_ANY, 
+      item.GetName() + ":"), 
+      flags.Right());
+  }
+
+  sizer->Add(item.GetControl(), (expand ? flags.Left().Expand(): flags.Left()));
 }
 
 void wxExConfigDialog::Config(bool save)
