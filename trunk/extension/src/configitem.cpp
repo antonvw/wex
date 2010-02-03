@@ -367,9 +367,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxCheckBox* cb = (wxCheckBox*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(cb->GetName(), cb->GetValue());
+        wxConfigBase::Get()->Write(m_Name, cb->GetValue());
       else
-        cb->SetValue(wxConfigBase::Get()->ReadBool(cb->GetName(), false));
+        cb->SetValue(wxConfigBase::Get()->ReadBool(m_Name, false));
       }
       break;
 
@@ -379,7 +379,7 @@ void wxExConfigItem::ToConfig(bool save) const
 
       long value = 0;
       if (!save)
-        value = wxConfigBase::Get()->ReadLong(clb->GetName(), 0);
+        value = wxConfigBase::Get()->ReadLong(m_Name, 0);
       int item = 0;
 
       for (
@@ -403,7 +403,7 @@ void wxExConfigItem::ToConfig(bool save) const
       }
 
       if (save)
-        wxConfigBase::Get()->Write(clb->GetName(), value);
+        wxConfigBase::Get()->Write(m_Name, value);
       }
       break;
 
@@ -468,9 +468,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(gcb->GetName(), gcb->GetColour());
+        wxConfigBase::Get()->Write(m_Name, gcb->GetColour());
       else
-        gcb->SetColour(wxConfigBase::Get()->ReadObject(gcb->GetName(), *wxWHITE));
+        gcb->SetColour(wxConfigBase::Get()->ReadObject(m_Name, *wxWHITE));
       }
       break;
 
@@ -484,20 +484,20 @@ void wxExConfigItem::ToConfig(bool save) const
       {
         const std::list <wxString> l = wxExComboBoxToList(cb, m_MaxItems);
 
-        wxExListToConfig(l, cb->GetName());
+        wxExListToConfig(l, m_Name);
 
-        if (cb->GetName() == wxExFindReplaceData::Get()->GetTextFindWhat())
+        if (m_Name == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
           wxExFindReplaceData::Get()->SetFindStrings(l);
         }
-        else if (cb->GetName() == wxExFindReplaceData::Get()->GetTextReplaceWith())
+        else if (m_Name == wxExFindReplaceData::Get()->GetTextReplaceWith())
         {
           wxExFindReplaceData::Get()->SetReplaceStrings(l);
         }
       }
       else
       {
-        wxExComboBoxFromList(cb, wxExListFromConfig(cb->GetName()));
+        wxExComboBoxFromList(cb, wxExListFromConfig(m_Name));
       }
       }
       break;
@@ -506,9 +506,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxDirPickerCtrl* pc = (wxDirPickerCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
+        wxConfigBase::Get()->Write(m_Name, pc->GetPath());
       else
-        pc->SetPath(wxConfigBase::Get()->Read(pc->GetName()));
+        pc->SetPath(wxConfigBase::Get()->Read(m_Name));
       }
       break;
 
@@ -516,9 +516,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxFilePickerCtrl* pc = (wxFilePickerCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(pc->GetName(), pc->GetPath());
+        wxConfigBase::Get()->Write(m_Name, pc->GetPath());
       else
-        pc->SetPath(wxConfigBase::Get()->Read(pc->GetName()));
+        pc->SetPath(wxConfigBase::Get()->Read(m_Name));
       }
       break;
 
@@ -526,10 +526,10 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(pc->GetName(), pc->GetSelectedFont());
+        wxConfigBase::Get()->Write(m_Name, pc->GetSelectedFont());
       else
         pc->SetFont(
-          wxConfigBase::Get()->ReadObject(pc->GetName(), 
+          wxConfigBase::Get()->ReadObject(m_Name, 
           wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
       }
       break;
@@ -538,10 +538,10 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(tc->GetName(), atol(tc->GetValue().c_str()));
+        wxConfigBase::Get()->Write(m_Name, atol(tc->GetValue().c_str()));
       else
         tc->SetValue(
-          wxString::Format("%ld", wxConfigBase::Get()->ReadLong(tc->GetName(), 0)));
+          wxString::Format("%ld", wxConfigBase::Get()->ReadLong(m_Name, 0)));
       }
       break;
 
@@ -558,14 +558,14 @@ void wxExConfigItem::ToConfig(bool save) const
         {
           if (b->second == rb->GetStringSelection())
           {
-            wxConfigBase::Get()->Write(rb->GetName(), b->first);
+            wxConfigBase::Get()->Write(m_Name, b->first);
           }
         }
       }
       else
       {
         std::map<long, const wxString>::const_iterator c = 
-          m_Choices.find(wxConfigBase::Get()->ReadLong(rb->GetName(), 0));
+          m_Choices.find(wxConfigBase::Get()->ReadLong(m_Name, 0));
 
         if (c != m_Choices.end())
         {
@@ -582,9 +582,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(tc->GetName(), tc->GetValue());
+        wxConfigBase::Get()->Write(m_Name, tc->GetValue());
       else
-        tc->SetValue(wxConfigBase::Get()->Read(tc->GetName()));
+        tc->SetValue(wxConfigBase::Get()->Read(m_Name));
       }
       break;
 
@@ -592,9 +592,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxSpinCtrl* sc = (wxSpinCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
+        wxConfigBase::Get()->Write(m_Name, sc->GetValue());
       else
-        sc->SetValue(wxConfigBase::Get()->ReadLong(sc->GetName(), m_Min));
+        sc->SetValue(wxConfigBase::Get()->ReadLong(m_Name, m_Min));
       }
       break;
 
@@ -602,9 +602,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(sc->GetName(), sc->GetValue());
+        wxConfigBase::Get()->Write(m_Name, sc->GetValue());
       else
-        sc->SetValue(wxConfigBase::Get()->ReadDouble(sc->GetName(), m_MinDouble));
+        sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Name, m_MinDouble));
       }
       break;
 
