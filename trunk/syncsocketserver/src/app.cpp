@@ -817,9 +817,19 @@ bool Frame::OpenFile(
 bool Frame::SetupSocketServer()
 {
   // Create the address - defaults to localhost and port as specified
+  if (!wxConfigBase::Get()->Exists(_("Hostname")))
+  {
+    wxConfigBase::Get()->SetRecordDefaults(true);
+  }
+
   wxIPV4address addr;
   addr.Hostname(wxConfigBase::Get()->Read(_("Hostname"), "localhost"));
   addr.Service(wxConfigBase::Get()->ReadLong(_("Port"), 3000));
+
+  if (wxConfigBase::Get()->IsRecordingDefaults())
+  {
+    wxConfigBase::Get()->SetRecordDefaults(false);
+  }
 
   // Create the socket
   m_SocketServer = new wxSocketServer(addr);
