@@ -263,6 +263,8 @@ void wxExConfigDialog::AddCheckListBoxNoName(wxWindow* parent,
 void wxExConfigDialog::AddComboBoxDir(wxWindow* parent,
   wxSizer* sizer, const wxExConfigItem& item)
 {
+  wxASSERT(m_BrowseDir == NULL);
+
   m_BrowseDir = (wxComboBox *)item.m_Control;
 
   wxSizerFlags flag;
