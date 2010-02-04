@@ -91,14 +91,14 @@ const wxString wxExLexers::BuildWildCards(
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->second.m_Extensions.empty())
+    if (!it->second.GetExtensions().empty())
     {
       const wxString wildcard =
         it->second.GetScintillaLexer() +
-        " (" + it->second.m_Extensions + ") |" +
-        it->second.m_Extensions;
+        " (" + it->second.GetExtensions() + ") |" +
+        it->second.GetExtensions();
 
-      if (wxExMatchesOneOf(filename, it->second.m_Extensions))
+      if (wxExMatchesOneOf(filename, it->second.GetExtensions()))
       {
         wildcards = wildcard + "|" + wildcards;
       }
@@ -125,7 +125,7 @@ const wxExLexer wxExLexers::FindByFileName(
     it != m_Lexers.end();
     ++it)
   {
-    if (wxExMatchesOneOf(filename, it->second.m_Extensions))
+    if (wxExMatchesOneOf(filename, it->second.GetExtensions()))
     {
       return it->second;
     }
@@ -211,15 +211,15 @@ const wxString wxExLexers::GetLexerExtensions() const
     it != m_Lexers.end();
     ++it)
   {
-    if (!it->second.m_Extensions.empty() &&
-         it->second.m_Extensions != "*." + it->second.m_ScintillaLexer)
+    if (!it->second.GetExtensions().empty() &&
+         it->second.GetExtensions() != "*." + it->second.GetScintillaLexer())
     {
       if (!text.empty())
       {
         text += wxExGetFieldSeparator();
       }
 
-      text += it->second.m_Extensions;
+      text += it->second.GetExtensions();
     }
   }
 
@@ -340,11 +340,13 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 
 const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
 {
-  wxExLexer lexer(node->GetAttribute("name", ""));
+  const wxString name = node->GetAttribute("name", "");
 
-  lexer.m_Extensions = node->GetAttribute(
-    "extensions", 
-    "*." + lexer.m_ScintillaLexer);
+  wxExLexer lexer(
+    name,
+    node->GetAttribute(
+      "extensions", 
+      "*." + name));
 
   if (node->GetAttribute("match", "") != "")
   {

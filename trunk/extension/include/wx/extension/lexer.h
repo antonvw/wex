@@ -27,7 +27,9 @@ class wxExLexer
   friend class wxExLexers;
 public:
   /// Default constructor.
-  wxExLexer(const wxString& scintilla_name = wxEmptyString);
+  wxExLexer(
+    const wxString& scintilla_name = wxEmptyString,
+    const wxString& extensions = wxEmptyString);
 
   /// Gets the colourings.
   const std::vector<wxString>& GetColourings() const {return m_Colourings;};
@@ -43,6 +45,9 @@ public:
 
   /// Gets the comment end 2.
   const wxString& GetCommentEnd2() const {return m_CommentEnd2;};
+
+  /// Gets the extensions.
+  const wxString& GetExtensions() const {return m_Extensions;};
 
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};

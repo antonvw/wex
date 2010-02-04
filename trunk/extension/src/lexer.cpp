@@ -14,14 +14,16 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
-wxExLexer::wxExLexer(const wxString& scintilla_name)
+wxExLexer::wxExLexer(
+  const wxString& scintilla_name, 
+  const wxString& extensions)
   : m_ScintillaLexer(scintilla_name)
+  , m_Extensions(extensions)
 {
   m_CommentBegin.clear();
   m_CommentBegin2.clear();
   m_CommentEnd.clear();
   m_CommentEnd2.clear();
-  m_Extensions.clear();
   m_Colourings.clear();
   m_Properties.clear();
   m_Keywords.clear();
