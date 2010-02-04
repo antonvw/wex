@@ -111,6 +111,12 @@ public:
   /// Gets the styles hex.
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
+  /// Parses colourings tag.
+  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
+
+  /// Parses properties tag.
+  const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
+
   /// Reads the lexers, keywords, markers and styles from file.
   void Read();
 
@@ -118,9 +124,6 @@ public:
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
-
-  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
-  const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.

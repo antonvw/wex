@@ -89,13 +89,6 @@ public:
     bool fill_out_with_space = true,
     bool fill_out = true) const;
 
-  /// Adds the specified keywords to the keywords map and the keywords set.
-  /// The text might contain the keyword set after a ':'.
-  /// Returns true if keyword could be added 
-  /// and false if specified set is illegal.
-  /// Empties existing keywords.
-  bool SetKeywords(const wxString& text);
-
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
@@ -107,6 +100,12 @@ private:
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
   /// Sets members from xml node.
   void Set(const wxXmlNode* node);
+  /// Adds the specified keywords to the keywords map and the keywords set.
+  /// The text might contain the keyword set after a ':'.
+  /// Returns true if keyword could be added 
+  /// and false if specified set is illegal.
+  /// Empties existing keywords.
+  bool SetKeywords(const wxString& text);
 
   wxString m_CommentBegin;
   wxString m_CommentBegin2;
