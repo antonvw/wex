@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/aui/auibook.h>
-#include <wx/config.h>
 #include <wx/filepicker.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
@@ -176,9 +175,7 @@ void wxExConfigDialog::Add(
     case CONFIG_SPINCTRL_DOUBLE: AddSizerItemLabeled(sizer, *it, false); break;
     case CONFIG_STRING: AddSizerItemLabeled(sizer, *it, true); break;
 
-    default:
-      wxFAIL;
-      return;
+    default: wxFAIL;
       break;
     }
 
