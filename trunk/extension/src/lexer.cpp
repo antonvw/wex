@@ -12,22 +12,26 @@
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
-wxExLexer::wxExLexer(
-  const wxString& scintilla_name, 
-  const wxString& extensions)
-  : m_ScintillaLexer(scintilla_name)
-  , m_Extensions(extensions)
+wxExLexer::wxExLexer(const wxXmlNode* node)
 {
   m_CommentBegin.clear();
   m_CommentBegin2.clear();
   m_CommentEnd.clear();
   m_CommentEnd2.clear();
   m_Colourings.clear();
+  m_Extensions.clear();
   m_Properties.clear();
   m_Keywords.clear();
   m_KeywordsSet.clear();
+  m_ScintillaLexer.clear();
+
+  if (node != NULL)
+  {
+    Set(node);
+  }
 }
 
 const wxString wxExLexer::GetFormattedText(
@@ -194,6 +198,75 @@ const wxString wxExLexer::MakeSingleLineComment(
   if (!m_CommentEnd.empty()) out += fill_out_character + m_CommentEnd;
 
   return out;
+}
+
+void wxExLexer::Set(const wxXmlNode* node)
+{
+  m_ScintillaLexer = node->GetAttribute("name", "");
+  m_Extensions = node->GetAttribute(
+    "extensions", 
+    "*." + m_ScintillaLexer);
+
+  if (node->GetAttribute("match", "") != "")
+  {
+    m_Colourings = 
+      wxExLexers::Get()->AutoMatch(node->GetAttribute("match", ""));
+  }
+
+  if (m_ScintillaLexer == "hypertext")
+  {
+    // As our lexers.xml files cannot use xml comments,
+    // add them here.
+    m_CommentBegin = "<!--";
+    m_CommentEnd = "-->";
+  }
+
+  wxXmlNode *child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "colourings")
+    {
+      const std::vector<wxString> v = 
+        wxExLexers::Get()->ParseTagColourings(child);
+
+      m_Colourings.insert(
+        m_Colourings.end(), 
+        v.begin(), v.end());
+    }
+    else if (child->GetName() == "keywords")
+    {
+      if (!SetKeywords(child->GetNodeContent().Strip(wxString::both)))
+      {
+        wxLogError(
+          _("Keywords could not be set on line: %d"), 
+          child->GetLineNumber());
+      }
+    }
+    else if (child->GetName() == "properties")
+    {
+      m_Properties = wxExLexers::Get()->ParseTagProperties(child);
+    }
+    else if (child->GetName() == "comments")
+    {
+      m_CommentBegin = child->GetAttribute("begin1", "");
+      m_CommentEnd = child->GetAttribute("end1", "");
+      m_CommentBegin2 = child->GetAttribute("begin2", "");
+      m_CommentEnd2 = child->GetAttribute("end2", "");
+    }
+    else if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else
+    {
+      wxLogError(_("Undefined lexer tag: %s on line: %d"),
+        child->GetName().c_str(), 
+        child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
 }
 
 bool wxExLexer::SetKeywords(const wxString& value)

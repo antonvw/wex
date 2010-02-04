@@ -338,70 +338,6 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
   }
 }
 
-const wxExLexer wxExLexers::ParseTagLexer(const wxXmlNode* node) const
-{
-  const wxString name = node->GetAttribute("name", "");
-
-  wxExLexer lexer(
-    name,
-    node->GetAttribute(
-      "extensions", 
-      "*." + name));
-
-  if (node->GetAttribute("match", "") != "")
-  {
-    lexer.m_Colourings = AutoMatch(node->GetAttribute("match", ""));
-  }
-
-  wxXmlNode *child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "colourings")
-    {
-      const std::vector<wxString> v = ParseTagColourings(child);
-
-      lexer.m_Colourings.insert(
-        lexer.m_Colourings.end(), 
-        v.begin(), v.end());
-    }
-    else if (child->GetName() == "keywords")
-    {
-      if (!lexer.SetKeywords(child->GetNodeContent().Strip(wxString::both)))
-      {
-        wxLogError(
-          _("Keywords could not be set on line: %d"), 
-          child->GetLineNumber());
-      }
-    }
-    else if (child->GetName() == "properties")
-    {
-      lexer.m_Properties = ParseTagProperties(child);
-    }
-    else if (child->GetName() == "comments")
-    {
-      lexer.m_CommentBegin = child->GetAttribute("begin1", "");
-      lexer.m_CommentEnd = child->GetAttribute("end1", "");
-      lexer.m_CommentBegin2 = child->GetAttribute("begin2", "");
-      lexer.m_CommentEnd2 = child->GetAttribute("end2", "");
-    }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else
-    {
-      wxLogError(_("Undefined lexer tag: %s on line: %d"),
-        child->GetName().c_str(), 
-        child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-
-  return lexer;
-}
-
 void wxExLexers::ParseTagMacro(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
@@ -574,24 +510,11 @@ void wxExLexers::Read()
     }
     else if (child->GetName() == "lexer")
     {
-      const wxExLexer& lexer = ParseTagLexer(child);
+      const wxExLexer lexer(child);
 
       if (!lexer.GetScintillaLexer().empty())
       {
-        if (lexer.GetScintillaLexer() == "hypertext")
-        {
-          // As our lexers.xml files cannot use xml comments,
-          // add them here.
-          wxExLexer l(lexer);
-          l.m_CommentBegin = "<!--";
-          l.m_CommentEnd = "-->";
-          m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), l));
-        }
-        else
-        {
-          m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
-        }
-
+        m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
         m_SortedLexerNames.Add(lexer.GetScintillaLexer());
       }
     }

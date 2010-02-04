@@ -68,6 +68,8 @@ public:
   /// Otherwise an error message is given, and same text is returned.
   const wxString ApplyMacro(const wxString& text) const;
 
+  const std::vector<wxString> AutoMatch(const wxString& lexer) const;
+
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
 
@@ -117,6 +119,9 @@ public:
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
 
+  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
+  const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
+
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.
   bool ShowDialog(
@@ -124,16 +129,12 @@ public:
     wxString& lexer,
     const wxString& caption = _("Enter Lexer")) const;
 private:
-  const std::vector<wxString> AutoMatch(const wxString& lexer) const;
   const wxString GetLexerExtensions() const;
-  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
   void ParseTagGlobal(const wxXmlNode* node);
-  const wxExLexer ParseTagLexer(const wxXmlNode* node) const;
   void ParseTagMacro(const wxXmlNode* node);
   const wxExMarker ParseTagMarker(
     const wxString& number, 
     const wxString& props) const;
-  const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
 
   std::map<wxString, wxString> m_Macros;
   std::map<wxString, wxString> m_MacrosStyle;

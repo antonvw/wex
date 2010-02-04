@@ -15,6 +15,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <wx/xml/xml.h>
 
 class wxExLexers;
 
@@ -24,12 +25,9 @@ class wxExLexers;
 /// The lexers are read by and kept in the wxExLexers class.
 class wxExLexer
 {
-  friend class wxExLexers;
 public:
   /// Default constructor.
-  wxExLexer(
-    const wxString& scintilla_name = wxEmptyString,
-    const wxString& extensions = wxEmptyString);
+  wxExLexer(const wxXmlNode* node = NULL);
 
   /// Gets the colourings.
   const std::vector<wxString>& GetColourings() const {return m_Colourings;};
@@ -107,6 +105,8 @@ private:
     bool fill_out_with_space,
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
+  /// Sets members from xml node.
+  void Set(const wxXmlNode* node);
 
   wxString m_CommentBegin;
   wxString m_CommentBegin2;
