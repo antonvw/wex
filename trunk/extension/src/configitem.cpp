@@ -18,11 +18,6 @@
 
 #if wxUSE_GUI
 
-const int width = 200;
-const int width_combo = 250;
-const int width_numeric = 75;
-
-
 wxExConfigItem::wxExConfigItem()
   : m_Name("spacer")
   , m_Page(wxEmptyString)
@@ -131,6 +126,10 @@ wxExConfigItem::wxExConfigItem(
 
 void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 {
+  const int width = 200;
+  const int width_combo = 250;
+  const int width_numeric = 75;
+
   switch (m_Type)
   {
     case CONFIG_CHECKBOX:
