@@ -17,6 +17,8 @@
 #include <wx/regex.h>
 #include <wx/fdrepdlg.h> // for wxFindReplaceData
 
+class wxCheckListBox;
+
 /// Adds an existing config to wxFindReplaceData, and some members.
 class wxExFindReplaceData : public wxFindReplaceData
 {
@@ -29,6 +31,9 @@ public:
 
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
+
+  /// Gets field member into a check list box.
+  bool Get(const wxString& field, wxCheckListBox* clb, int item) const;
 
   /// Gets find/replace info text.
   const wxString GetFindReplaceInfoText(bool replace = false) const;
@@ -82,6 +87,10 @@ public:
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
   static wxExFindReplaceData* Set(wxExFindReplaceData* frd);
+
+  /// Sets field member if the specified text matches 
+  /// one of the text fields.
+  bool Set(const wxString& field, bool value);
 
   /// Sets the find string.
   /// If IsRegularExpression also sets the regular expression.

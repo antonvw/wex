@@ -419,40 +419,14 @@ void wxExConfigItem::ToConfig(bool save) const
       {
         if (save)
         {
-          // Special case, should be taken from find replace data.
-          if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
-          {
-            wxExFindReplaceData::Get()->SetMatchWord(clb->IsChecked(item));
-          }
-          else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
-          {
-            wxExFindReplaceData::Get()->SetMatchCase(clb->IsChecked(item));
-          }
-          else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
-          {
-            wxExFindReplaceData::Get()->SetIsRegularExpression(clb->IsChecked(item));
-          }
-          else
+          if (!wxExFindReplaceData::Get()->Set(*b, clb->IsChecked(item)))
           {
             wxConfigBase::Get()->Write(*b, clb->IsChecked(item));
           }
         }
         else
         {
-          // Special cases, should be taken from the find replace data.
-          if (*b == wxExFindReplaceData::Get()->GetTextMatchWholeWord())
-          {
-            clb->Check(item, wxExFindReplaceData::Get()->MatchWord());
-          }
-          else if (*b == wxExFindReplaceData::Get()->GetTextMatchCase())
-          {
-            clb->Check(item, wxExFindReplaceData::Get()->MatchCase());
-          }
-          else if (*b == wxExFindReplaceData::Get()->GetTextRegEx())
-          {
-            clb->Check(item, wxExFindReplaceData::Get()->IsRegularExpression());
-          }
-          else
+          if (!wxExFindReplaceData::Get()->Get(*b, clb, item))
           {
             clb->Check(item, wxConfigBase::Get()->ReadBool(*b, false));
           }
