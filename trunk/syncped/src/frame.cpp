@@ -78,6 +78,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, MDIFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -930,6 +931,14 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       if (list == NULL && editor != NULL && editor->IsShown())
       {
         event.Enable(true);
+
+        if (
+          event.GetId() > ID_TOOL_LOWEST &&
+          event.GetId() < ID_TOOL_HIGHEST)
+        {
+          event.Enable(editor->GetLength() > 0);
+          return;
+        }
 
         switch (event.GetId())
         {
