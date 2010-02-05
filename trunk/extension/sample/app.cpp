@@ -36,9 +36,7 @@ enum
   ID_STC_CONFIG_DLG,
   ID_STC_ENTRY_DLG,
   ID_STC_FLAGS,
-  ID_STC_GOTO,
   ID_STC_SPLIT,
-  ID_STC_LEXER,
   ID_LAST,
 };
 
@@ -124,8 +122,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
   menuSTC->Append(ID_STC_ENTRY_DLG, wxExEllipsed(_("Entry Dialog")));
-  menuSTC->Append(ID_STC_GOTO, wxExEllipsed(_("Goto Dialog")));
-  menuSTC->Append(ID_STC_LEXER, wxExEllipsed(_("Lexer Dialog")));
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_SPLIT, _("Split"));
   menuSTC->AppendSeparator();
@@ -426,9 +422,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_STC_GOTO: m_STC->GotoDialog(); break;
-  case ID_STC_LEXER: m_STC->LexerDialog(); break;
-  
   case ID_STC_SPLIT:
     {
     wxExSTC* stc = new wxExSTC(*m_STC);
