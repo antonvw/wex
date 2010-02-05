@@ -448,11 +448,21 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   if (event.GetId() == ID_EDIT_NEXT)
   {
+    if (m_NotebookWithEditors->GetSelection() == m_NotebookWithEditors->GetPageCount() - 1)
+    {
+      m_NotebookWithEditors->SetSelection(0);
+    }
+    
     m_NotebookWithEditors->AdvanceSelection();
     return;
   }
   else if (event.GetId() == ID_EDIT_PREVIOUS)
   {
+    if (m_NotebookWithEditors->GetSelection() == 0)
+    {
+      m_NotebookWithEditors->SetSelection(m_NotebookWithEditors->GetPageCount() - 1);
+    }
+      
     m_NotebookWithEditors->AdvanceSelection(false);
     return;
   }
