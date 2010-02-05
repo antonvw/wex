@@ -9,6 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <numeric>
+#include <functional>
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/shell.h>
@@ -91,15 +93,7 @@ wxExSTCShell::~wxExSTCShell()
 const wxString wxExSTCShell::GetHistory() const
 {
   wxString commands;
-
-  for (
-    std::list < wxString >::const_iterator it = m_Commands.begin();
-    it != m_Commands.end();
-    it++)
-  {
-    commands += *it + "\n";
-  }
-
+  accumulate(m_Commands.begin(), m_Commands.end(), commands + "\n");
   return commands;
 }
 
