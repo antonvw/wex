@@ -21,6 +21,8 @@
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
 #include "app.h"
+#include <functional>
+#include <algorithm>
 
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -302,14 +304,7 @@ void Frame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  for (
-    std::list<wxSocketBase*>::iterator it = m_Clients.begin();
-    it != m_Clients.end();
-    ++it)
-  {
-    wxSocketBase* sock = *it;
-    sock->Destroy();
-  }
+  for_each (m_Clients.begin(), m_Clients.end(), std::mem_fun(&wxSocketBase::Destroy));
 
   m_Clients.clear();
 

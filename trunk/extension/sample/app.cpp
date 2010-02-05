@@ -21,6 +21,8 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
+#include <numeric>
+#include <functional>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -355,18 +357,9 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
       if (wxExLexers::Get()->ShowDialog(this, lexer))
       {
-        wxString text;
         const wxExLexer l = wxExLexers::Get()->FindByName(lexer);
-        
-        for (
-          std::vector<wxString>::const_iterator it = l.GetColourings().begin();
-          it != l.GetColourings().end();
-          ++it)
-        {
-          text += *it;
-        }
-
-        wxLogMessage(text);
+        wxLogMessage(accumulate(
+          l.GetColourings().begin(), l.GetColourings().end(), wxString()));
       }
     }
     break;
