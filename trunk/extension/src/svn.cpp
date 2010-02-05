@@ -181,8 +181,6 @@ long wxExSVN::Execute()
 #if wxUSE_GUI
 wxStandardID wxExSVN::Execute(wxWindow* parent)
 {
-  wxASSERT(parent != NULL);
-
   // Key SVN is already used, so use other name.
   const wxString svn_flags_name = wxString::Format("svnflags/name%d", m_Type);
 
