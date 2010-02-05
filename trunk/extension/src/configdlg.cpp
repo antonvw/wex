@@ -9,6 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <functional>
+#include <algorithm>
 #include <wx/aui/auibook.h>
 #include <wx/filepicker.h>
 #include <wx/extension/configdlg.h>
@@ -78,7 +80,9 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_BrowseDir(NULL)
 {
   Add(rows, cols, pos, size);
-  Config(false); // read
+
+  for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false)); // read
 }
 
 void wxExConfigDialog::Add(
@@ -271,17 +275,6 @@ void wxExConfigDialog::AddSizerItemLabeled(
   sizer->Add(item.GetControl(), (expand ? flags.Left().Expand(): flags.Left()));
 }
 
-void wxExConfigDialog::Config(bool save)
-{
-  for (
-    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
-  {
-    it->ToConfig(save);
-  }
-}
-
 void wxExConfigDialog::ForceCheckBoxChecked(
   const wxString& contains,
   const wxString& page)
@@ -314,13 +307,15 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
   case wxID_CANCEL:
     // For wxID_CANCEL reload from config.
-    Config(false); // (re)load from config
+    for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
     break;
 
   default:
     // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
     // save to config.
-    Config(true); // save to config
+    for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), true));
   }
 
   if ( command.GetId() == wxID_APPLY ||

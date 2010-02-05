@@ -55,13 +55,10 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void Add(int rows, int cols, const wxPoint& pos, const wxSize& size);
-
   void AddSizerItem(wxSizer* sizer, const wxExConfigItem& item);
   void AddSizerItemBrowse(wxSizer* sizer,  const wxExConfigItem& item);
   void AddSizerItemLabeled(wxSizer* sizer, 
     const wxExConfigItem& item, bool expand = true, bool hide = false);
-
-  void Config(bool save);
   void Update(wxComboBox* cb, const wxString& value) const;
 
   wxComboBox* m_BrowseDir;
