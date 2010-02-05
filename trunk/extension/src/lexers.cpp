@@ -43,38 +43,6 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
 }
 
-const std::vector<wxString> wxExLexers::AutoMatch(
-  const wxString& lexer) const
-{
-  std::vector<wxString> text;
-
-  std::map<wxString, wxString>::const_iterator itlow = 
-    m_Macros.lower_bound(lexer);
-
-  std::map<wxString, wxString>::const_iterator itup = 
-    m_Macros.upper_bound(lexer + "ZZZ");
-
-  for (
-    std::map<wxString, wxString>::const_iterator it = itlow;
-    it != itup;
-    ++it)
-  {
-    for (
-      std::map<wxString, wxString>::const_iterator style = 
-        m_MacrosStyle.begin();
-      style != m_MacrosStyle.end();
-      ++style)
-    {
-      if (it->first.Contains(style->first))
-      {
-        text.push_back(it->second + "=" + style->second);
-      }
-    }
-  }
-
-  return text;
-}
-
 const wxString wxExLexers::BuildWildCards(
   const wxFileName& filename) const
 {

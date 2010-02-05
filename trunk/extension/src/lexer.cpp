@@ -34,6 +34,38 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   }
 }
 
+const std::vector<wxString> wxExLexer::AutoMatch(
+  const wxString& lexer) const
+{
+  std::vector<wxString> text;
+
+  std::map<wxString, wxString>::const_iterator itlow = 
+    wxExLexers::Get()->GetMacros().lower_bound(lexer);
+
+  std::map<wxString, wxString>::const_iterator itup = 
+    wxExLexers::Get()->GetMacros().upper_bound(lexer + "ZZZ");
+
+  for (
+    std::map<wxString, wxString>::const_iterator it = itlow;
+    it != itup;
+    ++it)
+  {
+    for (
+      std::map<wxString, wxString>::const_iterator style = 
+        wxExLexers::Get()->GetMacrosStyle().begin();
+      style != wxExLexers::Get()->GetMacrosStyle().end();
+      ++style)
+    {
+      if (it->first.Contains(style->first))
+      {
+        text.push_back(it->second + "=" + style->second);
+      }
+    }
+  }
+
+  return text;
+}
+
 const wxString wxExLexer::GetFormattedText(
   const wxString& lines,
   const wxString& header,
@@ -212,8 +244,7 @@ void wxExLexer::Set(const wxXmlNode* node)
 
   if (node->GetAttribute("match", "") != "")
   {
-    m_Colourings = 
-      wxExLexers::Get()->AutoMatch(node->GetAttribute("match", ""));
+    m_Colourings = AutoMatch(node->GetAttribute("match", ""));
   }
 
   if (m_ScintillaLexer == "hypertext")

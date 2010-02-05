@@ -68,8 +68,6 @@ public:
   /// Otherwise an error message is given, and same text is returned.
   const wxString ApplyMacro(const wxString& text) const;
 
-  const std::vector<wxString> AutoMatch(const wxString& lexer) const;
-
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
 
@@ -100,6 +98,12 @@ public:
 
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};
+
+  /// Gets the macros.
+  const std::map<wxString, wxString>& GetMacros() const {return m_Macros;};
+
+  /// Gets the style macros.
+  const std::map<wxString, wxString>& GetMacrosStyle() const {return m_MacrosStyle;};
 
   /// Gets the markers.
   const std::vector<wxExMarker>& GetMarkers() const {return m_Markers;};
