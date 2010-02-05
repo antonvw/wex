@@ -511,19 +511,15 @@ void wxExLexers::Read()
     else if (child->GetName() == "lexer")
     {
       const wxExLexer lexer(child);
-
-      if (!lexer.GetScintillaLexer().empty())
-      {
-        m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
-        m_SortedLexerNames.Add(lexer.GetScintillaLexer());
-      }
+      m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
+      m_SortedLexerNames.Add(lexer.GetScintillaLexer());
     }
 
     child = child->GetNext();
   }
 
-  // Add the <none> lexer.
-  m_SortedLexerNames.Add(_("<none>"));
+  // Add empty lexer.
+  m_SortedLexerNames.Add(wxEmptyString);
 
   if (!wxConfigBase::Get()->Exists(_("In files")))
   {
@@ -554,18 +550,14 @@ bool wxExLexers::ShowDialog(
     caption, 
     m_SortedLexerNames);
   
-  dlg.SetSelection(lexer.empty() ? 
-    m_SortedLexerNames.Index(_("<none>")):
-    m_SortedLexerNames.Index(lexer));
+  dlg.SetSelection(m_SortedLexerNames.Index(lexer));
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {
     return false;
   }
 
-  lexer = (dlg.GetSelection() == m_SortedLexerNames.Index(_("<none>")) ?
-    wxEmptyString:
-    FindByName(dlg.GetStringSelection()).GetScintillaLexer());
+  lexer = FindByName(dlg.GetStringSelection()).GetScintillaLexer();
 
   return true;
 }
