@@ -203,6 +203,9 @@ const wxString wxExLexer::MakeSingleLineComment(
 void wxExLexer::Set(const wxXmlNode* node)
 {
   m_ScintillaLexer = node->GetAttribute("name", "");
+
+  wxASSERT(!m_ScintillaLexer.empty());
+
   m_Extensions = node->GetAttribute(
     "extensions", 
     "*." + m_ScintillaLexer);
