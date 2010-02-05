@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <numeric>
-#include <functional>
+//#include <numeric> // both for accumulate
+//#include <functional>
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
@@ -129,8 +129,18 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
 const wxString wxExLexer::GetKeywordsStringSet(
   const std::set<wxString>& kset) const
 {
+  // accumulate would be nice, but does not add a space, could not do it easily.
+  // return accumulate(kset.begin(), kset.end(), wxEmptyString);
   wxString keywords;
-  accumulate(kset.begin(), kset.end(), keywords + " ");
+
+  for (
+    std::set<wxString>::const_iterator it = kset.begin();
+    it != kset.end();
+    ++it)
+  {
+    keywords += *it + " ";
+  }
+
   return keywords.Trim(); // remove the ending space
 }
 

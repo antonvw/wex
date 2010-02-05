@@ -92,9 +92,7 @@ wxExSTCShell::~wxExSTCShell()
 
 const wxString wxExSTCShell::GetHistory() const
 {
-  wxString commands;
-  accumulate(m_Commands.begin(), m_Commands.end(), commands + "\n");
-  return commands;
+  return accumulate(m_Commands.begin(), m_Commands.end(), wxEmptyString);
 }
 
 void wxExSTCShell::KeepCommand()
