@@ -423,7 +423,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     if (event.GetId() == ID_EDIT_SVN_CAT ||
         event.GetId() == ID_EDIT_SVN_BLAME)
     {
-      if (svn.Execute(this) == wxID_OK)
+      if (svn.ExecuteDialog(this) == wxID_OK)
       {
         OpenFile(
           wxExFileName(m_DirCtrl->GetFilePath()), 
@@ -437,7 +437,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     }
     else
     {
-      svn.ExecuteAndShowOutput(this);
+      svn.Request(this);
     }
 
     return;
@@ -763,15 +763,15 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   }
   break;
 
-  case ID_SVN_ADD: wxExSVN(wxExSVN::SVN_ADD).ExecuteAndShowOutput(this); break;
-  case ID_SVN_COMMIT: wxExSVN(wxExSVN::SVN_COMMIT).ExecuteAndShowOutput(this); break;
-  case ID_SVN_DIFF: wxExSVN(wxExSVN::SVN_DIFF).ExecuteAndShowOutput(this); break;
-  case ID_SVN_HELP: wxExSVN(wxExSVN::SVN_HELP).ExecuteAndShowOutput(this); break;
-  case ID_SVN_INFO: wxExSVN(wxExSVN::SVN_INFO).ExecuteAndShowOutput(this); break;
-  case ID_SVN_LOG: wxExSVN(wxExSVN::SVN_LOG).ExecuteAndShowOutput(this); break;
-  case ID_SVN_LS: wxExSVN(wxExSVN::SVN_LS).ExecuteAndShowOutput(this); break;
-  case ID_SVN_STAT: wxExSVN(wxExSVN::SVN_STAT).ExecuteAndShowOutput(this); break;
-  case ID_SVN_UPDATE: wxExSVN(wxExSVN::SVN_UPDATE).ExecuteAndShowOutput(this); break;
+  case ID_SVN_ADD: wxExSVN(wxExSVN::SVN_ADD).Request(this); break;
+  case ID_SVN_COMMIT: wxExSVN(wxExSVN::SVN_COMMIT).Request(this); break;
+  case ID_SVN_DIFF: wxExSVN(wxExSVN::SVN_DIFF).Request(this); break;
+  case ID_SVN_HELP: wxExSVN(wxExSVN::SVN_HELP).Request(this); break;
+  case ID_SVN_INFO: wxExSVN(wxExSVN::SVN_INFO).Request(this); break;
+  case ID_SVN_LOG: wxExSVN(wxExSVN::SVN_LOG).Request(this); break;
+  case ID_SVN_LS: wxExSVN(wxExSVN::SVN_LS).Request(this); break;
+  case ID_SVN_STAT: wxExSVN(wxExSVN::SVN_STAT).Request(this); break;
+  case ID_SVN_UPDATE: wxExSVN(wxExSVN::SVN_UPDATE).Request(this); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX

@@ -386,7 +386,7 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
       event.GetId(), 
       wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
 
-    svn.ExecuteAndShowOutput(this);
+    svn.Request(this);
   }
   else
   {

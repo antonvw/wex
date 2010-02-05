@@ -67,19 +67,13 @@ public:
   long Execute();
 
 #if wxUSE_GUI
-  /// Executes the svn command, after showing a dialog.
+  /// Shows a dialog and executes the svn command if not cancelled.
   /// If no fullpath was specified, a dialog with base folder is shown, 
   /// otherwise the specified fullpath is used for getting svn contents from.
   /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, 
   /// or wxID_ABORT if errors were reported by svn otherwise.
-  wxStandardID Execute(wxWindow* parent);
+  wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
-
-#if wxUSE_GUI
-  /// Executes and if not cancelled shows output in a dialog.
-  /// Returns return code from execute.
-  wxStandardID ExecuteAndShowOutput(wxWindow* parent);
-#endif  
 
   /// Returns the svn object.
   static wxExSVN* Get(bool createOnDemand = true);
@@ -89,6 +83,13 @@ public:
 
   /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
+
+#if wxUSE_GUI
+  /// Combines all in one method. Shows the dialog,
+  /// executes if not cancelled, and shows output in the STC dialog.
+  /// Returns return code from execute.
+  wxStandardID Request(wxWindow* parent);
+#endif  
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
@@ -105,6 +106,7 @@ public:
 private:
   wxExSVNType GetType(int command_id) const;
   void Initialize();
+  int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
   bool UseSubcommand() const;
 
@@ -116,6 +118,7 @@ private:
   wxString m_Output;
 
   const wxString m_FullPath;
+  wxString m_FlagsKey;
 
   static wxExSVN* m_Self;
 #if wxUSE_GUI
