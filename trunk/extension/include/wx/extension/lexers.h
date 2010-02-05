@@ -80,9 +80,7 @@ public:
   const wxExLexer FindByFileName(const wxFileName& filename) const;
 
   /// Finds a lexer specified by the (scintilla) name.
-  const wxExLexer FindByName(
-    const wxString& name,
-    bool fail_if_not_found = true) const;
+  const wxExLexer FindByName(const wxString& name) const;
 
   /// Finds a lexer if text starts with some special tokens.
   const wxExLexer FindByText(const wxString& text) const;
@@ -97,7 +95,8 @@ public:
   const wxFileName& GetFileName() const {return m_FileName;};
 
   /// Gets the global properties.
-  const std::vector<wxString>& GetGlobalProperties() const {return m_GlobalProperties;};
+  const std::vector<wxString>& GetGlobalProperties() const {
+    return m_GlobalProperties;};
 
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};

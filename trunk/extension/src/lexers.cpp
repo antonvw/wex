@@ -134,20 +134,13 @@ const wxExLexer wxExLexers::FindByFileName(
   return wxExLexer();
 }
 
-const wxExLexer wxExLexers::FindByName(
-  const wxString& name,
-  bool fail_if_not_found) const
+const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
   std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.find(name);
 
   if (it != m_Lexers.end())
   {
     return it->second;
-  }
-
-  if (!m_Lexers.empty() && fail_if_not_found)
-  {
-    wxFAIL;
   }
 
   return wxExLexer();
@@ -162,22 +155,22 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
       // .po files that do not have comment headers, start with msgid, so set them
       text_lowercase.StartsWith("msgid"))
   {
-    return FindByName("bash", false); // don't show error
+    return FindByName("bash");
   }
   else if (text_lowercase.StartsWith("<html>") ||
            text_lowercase.StartsWith("<?php"))
   {
-    return FindByName("hypertext", false); // don't show error
+    return FindByName("hypertext");
   }
   else if (text_lowercase.StartsWith("<?xml"))
   {
-    return FindByName("xml", false); // don't show error
+    return FindByName("xml");
   }
   // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
   // so add here.
   else if (text_lowercase.StartsWith("//"))
   {
-    return FindByName("cpp", false); // don't show error
+    return FindByName("cpp");
   }
 
   return wxExLexer();
