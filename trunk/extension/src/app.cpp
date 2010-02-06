@@ -59,13 +59,13 @@ bool wxExApp::OnInit()
       wxDir::GetAllFiles(catalogDir, &files);
 
       for (
-        size_t i = 0;
-        i < files.GetCount();
-        i++)
+        wxArrayString::const_iterator it = files.begin();
+        it != files.end();
+        it++)
       {
         // Default the wxstd is already loaded by m_Locale.Init(),
         // so do not do it twice.
-        const wxFileName fn(files[i]);
+        const wxFileName fn(*it);
 
         if (!m_Locale.IsLoaded(fn.GetName()))
         {

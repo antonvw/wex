@@ -340,9 +340,12 @@ void wxExOpenFiles(
   int dir_flags)
 {
   // std::vector gives compile error.
-  for (size_t i = 0; i < files.GetCount(); i++)
+  for (
+    wxArrayString::const_iterator it = files.begin();
+    it != files.end();
+    it++)
   {
-    wxString file = files[i]; // cannot be const because of file = later on
+    wxString file = *it; // cannot be const because of file = later on
 
     if (file.Contains("*") || file.Contains("?"))
     {

@@ -359,9 +359,12 @@ bool ListViewDropTarget::OnDropFiles(
   wxCoord, 
   const wxArrayString& filenames)
 {
-  for (size_t n = 0; n < filenames.GetCount(); n++)
+  for (
+    wxArrayString::const_iterator it = filenames.begin();
+    it != filenames.end();
+    it++)
   {
-    m_Owner->ItemFromText(filenames[n]);
+    m_Owner->ItemFromText(*it);
   }
 
   if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
