@@ -168,7 +168,7 @@ void wxExConfigDialog::Add(
     case CONFIG_COLOUR: AddSizerItemLabeled(sizer, *it, false); break;
     case CONFIG_COMBOBOX: AddSizerItemLabeled(sizer, *it, true, false); break;
     case CONFIG_COMBOBOXDIR: AddSizerItemBrowse(sizer, *it); break;
-    case CONFIG_COMBOBOX_NONAME: AddSizerItemLabeled(sizer, *it, true); break;
+    case CONFIG_COMBOBOX_NONAME: AddSizerItem(sizer, *it); break;
     case CONFIG_DIRPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
     case CONFIG_FILEPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
     case CONFIG_FONTPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
