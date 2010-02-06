@@ -108,24 +108,13 @@ void wxExComboBoxFromList(
   wxComboBox* cb,
   const std::list < wxString > & text)
 {
-  wxASSERT(cb != NULL);
-
-  cb->Clear();
-
-  wxArrayString items;
-
-  for (
-    std::list < wxString >::const_iterator it = text.begin();
-    it != text.end();
-    it++)
+  if (!text.empty())
   {
-    items.Add(*it);
-  }
-
-  cb->Append(items);
-
-  if (cb->GetCount() > 0) 
-  {
+    wxASSERT(cb != NULL);
+    cb->Clear();
+    wxArrayString items;
+    copy (text.begin(), text.end(), items.begin());
+    cb->Append(items);
     cb->SetValue(cb->GetString(0));
   }
 
