@@ -22,6 +22,9 @@
 /// The config item types supported.
 enum
 {
+  /// A normal, single, checkbox (use ReadBool to retrieve value).
+  CONFIG_CHECKBOX,       
+
   /// A checklistbox (not mutually exclusive choices).
   /// Should be used to get/set individual bits in a long.
   CONFIG_CHECKLISTBOX,
@@ -29,13 +32,6 @@ enum
   /// A checklistbox without a name (not mutually exclusive choices).
   /// Should be used to get/set several boolean values in one checklistbox.
   CONFIG_CHECKLISTBOX_NONAME,
-
-  /// A radiobox (mutually exclusive choices).
-  /// Should be used when a long value can have a short set of possible individual values.
-  CONFIG_RADIOBOX,
-
-  /// A normal, single, checkbox (use ReadBool to retrieve value).
-  CONFIG_CHECKBOX,       
 
   CONFIG_COLOUR,          ///< a colour button
   CONFIG_COMBOBOX,        ///< a combobox
@@ -45,11 +41,16 @@ enum
   CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
   CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
   CONFIG_INT,             ///< a textctrl that only accepts an integer (a long integer)
+
+  /// A radiobox (mutually exclusive choices).
+  /// Should be used when a long value can have a short set of possible individual values.
+  CONFIG_RADIOBOX,
+
+  CONFIG_SPACER,         ///< a spacer only, no config item
+
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_STRING,          ///< a textctrl
-
-  CONFIG_SPACER,         ///< a spacer only, no config item
 };
 
 /// Container class for using with wxExConfigDialog.

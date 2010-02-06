@@ -179,14 +179,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_COMBOBOX:
-      m_Control = new wxComboBox(
-        parent, 
-        wxID_ANY,
-        wxEmptyString,
-        wxDefaultPosition,
-        wxSize(width_combo, wxDefaultCoord));
-      break;
-
+    case CONFIG_COMBOBOX_NONAME:
     case CONFIG_COMBOBOXDIR:
       m_Control = new wxComboBox(
         parent, 
