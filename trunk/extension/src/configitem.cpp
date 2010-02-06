@@ -243,25 +243,14 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_INT:
-      {
-      long actual_style = m_Style;
-
-      if (readonly)
-      {
-        actual_style |= wxTE_READONLY;
-      }
-
       m_Control = new wxTextCtrl(parent,
         wxID_ANY,
         wxEmptyString,
         wxDefaultPosition,
-        (m_Style & wxTE_MULTILINE ?
-           wxSize(width_numeric, 200):
-           wxSize(width_numeric, wxDefaultCoord)),
-        m_Style | wxTE_RIGHT);
+        wxSize(width_numeric, wxDefaultCoord),
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
 
       m_Control->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-      }
       break;
 
     case CONFIG_RADIOBOX:
@@ -285,56 +274,30 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
     case CONFIG_SPACER: break;
 
     case CONFIG_SPINCTRL:
-      {
-      long style = wxSP_ARROW_KEYS;
-
-      if (readonly)
-      {
-        style |= wxTE_READONLY;
-      }
-
       m_Control = new wxSpinCtrl(parent,
         wxID_ANY,
         wxEmptyString,
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
-        style,
+        wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_Min,
         m_Max);
-      }
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
-      {
-      long style = wxSP_ARROW_KEYS;
-
-      if (readonly)
-      {
-        style |= wxTE_READONLY;
-      }
-
       m_Control = new wxSpinCtrlDouble(parent,
         wxID_ANY,
         wxEmptyString,
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
-        style,
+        wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_MinDouble,
         m_MaxDouble,
         m_MinDouble,
         m_Inc);
-      }
       break;
 
     case CONFIG_STRING:
-      {
-      long actual_style = m_Style;
-
-      if (readonly)
-      {
-        actual_style |= wxTE_READONLY;
-      }
-
       m_Control = new wxTextCtrl(parent,
         wxID_ANY,
         wxEmptyString,
@@ -342,8 +305,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
-        actual_style);
-      }
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
       break;
 
     default: wxFAIL;
