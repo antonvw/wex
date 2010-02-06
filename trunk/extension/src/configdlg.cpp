@@ -214,9 +214,7 @@ void wxExConfigDialog::Add(
 void wxExConfigDialog::AddSizerItem(
   wxSizer* sizer, const wxExConfigItem& item)
 {
-  wxSizerFlags flags;
-  flags.Expand().Left().Border();
-  sizer->Add(item.GetControl(), flags);
+  sizer->Add(item.GetControl(), wxSizerFlags().Expand().Left().Border());
 }
 
 void wxExConfigDialog::AddSizerItemBrowse(
