@@ -159,15 +159,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
     case CONFIG_CHECKLISTBOX_NONAME:
       {
       wxArrayString arraychoices;
-
-      for (
-        std::set<wxString>::const_iterator it = m_ChoicesBool.begin();
-        it != m_ChoicesBool.end();
-        ++it)
-      {
-        arraychoices.Add(*it);
-      }
-
+      copy (m_ChoicesBool.begin(), m_ChoicesBool.end(), arraychoices.begin());
       m_Control = new wxCheckListBox(parent,
         wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
