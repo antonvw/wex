@@ -127,7 +127,6 @@ wxExConfigItem::wxExConfigItem(
 void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 {
   const int width = 200;
-  const int width_combo = 250;
   const int width_numeric = 75;
 
   switch (m_Type)
@@ -186,7 +185,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         wxID_ANY,
         wxEmptyString,
         wxDefaultPosition,
-        wxSize(width_combo, wxDefaultCoord));
+        wxSize(250, wxDefaultCoord));
       break;
 
     case CONFIG_DIRPICKERCTRL:
