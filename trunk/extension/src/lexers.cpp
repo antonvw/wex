@@ -25,11 +25,6 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 
 const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
-  if (text.IsNumber() || text.Contains(","))
-  {
-    return text;
-  }
-
   std::map<wxString, wxString>::const_iterator it = m_Macros.find(text);
 
   if (it != m_Macros.end())
@@ -38,7 +33,6 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
   else
   {
-    wxLogError(_("Undefined macro: %s"), text.c_str());
     return text;
   }
 }
