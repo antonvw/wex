@@ -113,7 +113,8 @@ void wxExComboBoxFromList(
     wxASSERT(cb != NULL);
     cb->Clear();
     wxArrayString items;
-    copy (text.begin(), text.end(), items.begin());
+    items.resize(text.size());
+    copy (text.begin(), text.end(), items.begin()); // required!
     cb->Append(items);
     cb->SetValue(cb->GetString(0));
   }
