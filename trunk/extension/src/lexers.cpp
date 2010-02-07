@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <algorithm>
 #include <wx/config.h>
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
@@ -494,6 +495,12 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   return old;
 }
 
+void wxExLexers::SetMarkers(wxStyledTextCtrl* stc)
+{
+  for_each (m_Markers.begin(), m_Markers.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExMarker::Apply), stc));
+}
+
 bool wxExLexers::ShowDialog(
   wxWindow* parent,
   wxString& lexer,
@@ -515,4 +522,13 @@ bool wxExLexers::ShowDialog(
   lexer = FindByName(dlg.GetStringSelection()).GetScintillaLexer();
 
   return true;
+}
+
+void wxExMarker::Apply(wxStyledTextCtrl* stc) const
+{
+  stc->MarkerDefine(
+    m_MarkerNumber,
+    m_MarkerSymbol,
+    m_ForegroundColour,
+    m_BackgroundColour);
 }

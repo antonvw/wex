@@ -293,7 +293,6 @@ private:
   void SetFolding();
   void SetGlobalStyles();
   void SetKeyWords();
-  void SetMarkers();
   void SetProperties(
     const std::vector<wxString>& properties, 
     bool reset = false);

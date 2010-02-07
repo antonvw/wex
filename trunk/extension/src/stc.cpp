@@ -507,7 +507,7 @@ void wxExSTC::Colourise()
   SetKeyWords();
   SetGlobalStyles();
   SetProperties(wxExLexers::Get()->GetGlobalProperties());
-  SetMarkers();
+  wxExLexers::Get()->SetMarkers(this);
   SetProperties(GetFileName().GetLexer().GetProperties());
   SetFolding();
 
@@ -790,7 +790,7 @@ void wxExSTC::DoFileLoad(bool synced)
   }
   else
   {
-    SetMarkers();
+    wxExLexers::Get()->SetMarkers(this);
   }
 
   if (m_Flags & STC_OPEN_READ_ONLY ||
@@ -2162,22 +2162,6 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
   if (GetFileName().GetExt() == "po")
   {
     AddBasePathToPathList();
-  }
-}
-
-void wxExSTC::SetMarkers()
-{
-  for (
-    std::vector<wxExMarker>::const_iterator it = 
-      wxExLexers::Get()->GetMarkers().begin();
-    it != wxExLexers::Get()->GetMarkers().end();
-    ++it)
-  {
-     MarkerDefine(
-       it->GetMarkerNumber(),
-       it->GetMarkerSymbol(),
-       it->GetForegroundColour(),
-       it->GetBackgroundColour());
   }
 }
 

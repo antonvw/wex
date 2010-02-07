@@ -19,6 +19,8 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
 
+class wxStyledTextCtrl;
+
 /// This class defines our markers, closely related to scintilla markers.
 class wxExMarker
 {
@@ -33,6 +35,9 @@ public:
     , m_MarkerSymbol(markerSymbol)
     , m_BackgroundColour(background)
     , m_ForegroundColour(foreground) {}
+
+  /// Applies this maker to stc component.
+  void Apply(wxStyledTextCtrl* stc) const;
 
   /// Gets the background colour.
   const wxColour& GetBackgroundColour() const {return m_BackgroundColour;};
@@ -105,9 +110,6 @@ public:
   /// Gets the style macros.
   const std::map<wxString, wxString>& GetMacrosStyle() const {return m_MacrosStyle;};
 
-  /// Gets the markers.
-  const std::vector<wxExMarker>& GetMarkers() const {return m_Markers;};
-
   /// Gets the styles.
   const std::vector<wxString>& GetStyles() const {return m_Styles;};
 
@@ -127,6 +129,9 @@ public:
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
+
+  /// Sets markers for specified component.
+  void SetMarkers(wxStyledTextCtrl* stc);
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.
