@@ -1277,6 +1277,9 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
+    <!-- Marker 0 is used for vi marking -->
+    <marker no="0"> 0,blue,light blue </marker>
+    
     <!-- this style is used as default style, 
          and is applied before all other styles -->
     <style no="wxSTC_STYLE_DEFAULT"> face:courier new,size:10 </style>
