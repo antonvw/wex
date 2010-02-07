@@ -381,7 +381,7 @@ const wxExMarker wxExLexers::ParseTagMarker(
     wxLogError(_("Illegal marker number: %d or symbol: %d"), 
       no, 
       symbol_no);
-    return wxExMarker(0, 0, foreground, background);
+    return wxExMarker(-1, -1, foreground, background);
   }
 }
 
