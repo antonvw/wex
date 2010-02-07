@@ -241,9 +241,8 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         wxEmptyString,
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
-
-      m_Control->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
+        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
+        wxTextValidator(wxFILTER_NUMERIC));
       break;
 
     case CONFIG_RADIOBOX:
