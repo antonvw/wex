@@ -436,38 +436,6 @@ void wxExSampleFrame::ShowConfigItems()
 {
   std::vector<wxExConfigItem> v;
 
-  // CONFIG_CHECKLISTBOX
-  std::map<long, const wxString> clb;
-  clb.insert(std::make_pair(0, _("Bit One")));
-  clb.insert(std::make_pair(1, _("Bit Two")));
-  clb.insert(std::make_pair(2, _("Bit Three")));
-  clb.insert(std::make_pair(4, _("Bit Four")));
-  v.push_back(wxExConfigItem(
-    _("Bin Choices"), 
-    clb, 
-    false, 
-    "Lists"));
-
-  // CONFIG_CHECKLISTBOX_NONAME
-  std::set<wxString> bchoices;
-  bchoices.insert(_("This"));
-  bchoices.insert(_("Or"));
-  bchoices.insert(_("Other"));
-  v.push_back(wxExConfigItem(
-    bchoices, 
-    "Lists"));
-
-  // CONFIG_RADIOBOX
-  std::map<long, const wxString> echoices;
-  echoices.insert(std::make_pair(0, _("Zero")));
-  echoices.insert(std::make_pair(1, _("One")));
-  echoices.insert(std::make_pair(2, _("Two")));
-  v.push_back(wxExConfigItem(
-    _("Radio Box"), 
-    echoices, 
-    true, 
-    "Lists"));
-
   // CONFIG_CHECKBOX
   for (size_t h = 1; h <= 4; h++)
   {
@@ -486,6 +454,27 @@ void wxExSampleFrame::ShowConfigItems()
     "Group Checkbox2",
     CONFIG_CHECKBOX, 
     "Checkboxes"));
+
+  // CONFIG_CHECKLISTBOX
+  std::map<long, const wxString> clb;
+  clb.insert(std::make_pair(0, _("Bit One")));
+  clb.insert(std::make_pair(1, _("Bit Two")));
+  clb.insert(std::make_pair(2, _("Bit Three")));
+  clb.insert(std::make_pair(4, _("Bit Four")));
+  v.push_back(wxExConfigItem(
+    _("Bin Choices"), 
+    clb, 
+    false, 
+    "Checkbox lists"));
+
+  // CONFIG_CHECKLISTBOX_NONAME
+  std::set<wxString> bchoices;
+  bchoices.insert(_("This"));
+  bchoices.insert(_("Or"));
+  bchoices.insert(_("Other"));
+  v.push_back(wxExConfigItem(
+    bchoices, 
+    "Checkbox lists"));
 
   // CONFIG_COLOUR
   for (size_t i = 1; i <= 5; i++)
@@ -545,6 +534,17 @@ void wxExSampleFrame::ShowConfigItems()
       "Integers", 
       true));
   }
+
+  // CONFIG_RADIOBOX
+  std::map<long, const wxString> echoices;
+  echoices.insert(std::make_pair(0, _("Zero")));
+  echoices.insert(std::make_pair(1, _("One")));
+  echoices.insert(std::make_pair(2, _("Two")));
+  v.push_back(wxExConfigItem(
+    _("Radio Box"), 
+    echoices, 
+    true, 
+    "Radioboxes"));
 
   // CONFIG_SPINCTRL
   for (size_t s = 1; s <= 3; s++)
