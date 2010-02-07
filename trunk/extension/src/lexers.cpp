@@ -251,17 +251,9 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
         ApplyMacro(child->GetAttribute("no", "0")),
         child->GetNodeContent().Strip(wxString::both)));
 
-      if (marker.GetMarkerNumber() < wxSTC_STYLE_MAX &&
-          marker.GetMarkerSymbol() < wxSTC_STYLE_MAX)
+      if (marker.IsOk())
       {
         m_Markers.push_back(marker);
-      }
-      else
-      {
-        wxLogError(_("Illegal marker number: %d or symbol: %d on line: %d"),
-          marker.GetMarkerNumber(),
-          marker.GetMarkerSymbol(),
-          child->GetLineNumber());
       }
     }
     else if (child->GetName() == "properties")
@@ -531,4 +523,9 @@ void wxExMarker::Apply(wxStyledTextCtrl* stc) const
     m_MarkerSymbol,
     m_ForegroundColour,
     m_BackgroundColour);
+}
+
+bool wxExMarker::IsOk() const
+{
+  return m_MarkerNumber>= 0 && m_MarkerSymbol >= 0;
 }

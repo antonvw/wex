@@ -36,25 +36,16 @@ public:
     , m_BackgroundColour(background)
     , m_ForegroundColour(foreground) {}
 
-  /// Applies this maker to stc component.
+  /// Applies this marker to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
-  /// Gets the background colour.
-  const wxColour& GetBackgroundColour() const {return m_BackgroundColour;};
-
-  /// Gets the foreground colour.
-  const wxColour& GetForegroundColour() const {return m_ForegroundColour;};
-
-  /// Gets the marker number.
-  unsigned int GetMarkerNumber() const {return m_MarkerNumber;};
-
-  /// Gets the marker symbol.
-  unsigned int GetMarkerSymbol() const {return m_MarkerSymbol;};
+  /// Returns true if marker is valid.
+  bool IsOk() const;
 private:
   // When making const, Visual Studio complains:
   // error C2582: 'operator =' function is unavailable in 'wxExMarker'
-  unsigned int m_MarkerNumber;
-  unsigned int m_MarkerSymbol;
+  int m_MarkerNumber;
+  int m_MarkerSymbol;
   wxColour m_BackgroundColour;
   wxColour m_ForegroundColour;
 };
