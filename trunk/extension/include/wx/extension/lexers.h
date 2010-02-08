@@ -106,9 +106,6 @@ private:
   const wxString GetLexerExtensions() const;
   void ParseTagGlobal(const wxXmlNode* node);
   void ParseTagMacro(const wxXmlNode* node);
-  const wxExMarker ParseTagMarker(
-    const wxString& number, 
-    const wxString& props) const;
 
   std::map<wxString, wxString> m_Macros;
   std::map<wxString, wxString> m_MacrosStyle;

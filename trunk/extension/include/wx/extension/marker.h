@@ -20,11 +20,7 @@ class wxExMarker
 {
 public:
   /// Constructor.
-  wxExMarker(
-    int markerNumber,
-    int markerSymbol,
-    const wxColour& foreground = wxNullColour,
-    const wxColour& background = wxNullColour);
+  wxExMarker(const wxXmlNode* node = NULL);
 
   /// Applies this marker to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
@@ -32,8 +28,8 @@ public:
   /// Returns true if marker is valid.
   bool IsOk() const;
 private:
-  // When making const, Visual Studio complains:
-  // error C2582: 'operator =' function is unavailable in 'wxExMarker'
+  void Set(const wxXmlNode* node);
+
   int m_MarkerNumber;
   int m_MarkerSymbol;
   wxColour m_BackgroundColour;

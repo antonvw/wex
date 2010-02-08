@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <wx/config.h>
 #include <wx/stdpaths.h>
-#include <wx/tokenzr.h>
 #include <wx/stc/stc.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExMatchesOneOf
@@ -247,9 +246,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "marker")
     {
-      const wxExMarker marker(ParseTagMarker(
-        ApplyMacro(child->GetAttribute("no", "0")),
-        child->GetNodeContent().Strip(wxString::both)));
+      const wxExMarker marker(child);
 
       if (marker.IsOk())
       {
@@ -343,45 +340,6 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
     }
 
     child = child->GetNext();
-  }
-}
-
-const wxExMarker wxExLexers::ParseTagMarker(
-  const wxString& number,
-  const wxString& props) const
-{
-  wxStringTokenizer prop_fields(props, ",");
-
-  const wxString symbol = ApplyMacro(prop_fields.GetNextToken());
-
-  wxColour foreground;
-  wxColour background;
-
-  if (prop_fields.HasMoreTokens())
-  {
-    foreground = ApplyMacro(
-      prop_fields.GetNextToken().Strip(wxString::both));
-
-    if (prop_fields.HasMoreTokens())
-    {
-      background = ApplyMacro(
-        prop_fields.GetNextToken().Strip(wxString::both));
-    }
-  }
-
-  const int no = atoi(number.c_str());
-  const int symbol_no = atoi(symbol.c_str());
-
-  if (no <= wxSTC_MARKER_MAX && symbol_no <= wxSTC_MARKER_MAX)
-  {
-    return wxExMarker(no, symbol_no, foreground, background);
-  }
-  else
-  {
-    wxLogError(_("Illegal marker number: %d or symbol: %d"), 
-      no, 
-      symbol_no);
-    return wxExMarker(-1, -1, foreground, background);
   }
 }
 
