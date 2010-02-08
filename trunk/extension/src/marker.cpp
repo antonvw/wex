@@ -1,13 +1,11 @@
-/******************************************************************************\
-* File:          lexers.cpp
-* Purpose:       Implementation of wxExLexers classes
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2008-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      marker.cpp
+// Purpose:   Implementation of class 'wxExMarker'
+// Author:    Anton van Wezenbeek
+// Created:   2010-02-08
+// RCS-ID:    $Id$
+// Copyright: (c) 2010 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
 #include <wx/config.h>
@@ -514,4 +512,18 @@ bool wxExLexers::ShowDialog(
   lexer = FindByName(dlg.GetStringSelection()).GetScintillaLexer();
 
   return true;
+}
+
+void wxExMarker::Apply(wxStyledTextCtrl* stc) const
+{
+  stc->MarkerDefine(
+    m_MarkerNumber,
+    m_MarkerSymbol,
+    m_ForegroundColour,
+    m_BackgroundColour);
+}
+
+bool wxExMarker::IsOk() const
+{
+  return m_MarkerNumber>= 0 && m_MarkerSymbol >= 0;
 }

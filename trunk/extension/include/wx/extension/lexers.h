@@ -18,37 +18,9 @@
 #include <wx/filename.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/marker.h>
 
 class wxStyledTextCtrl;
-
-/// This class defines our markers, closely related to scintilla markers.
-class wxExMarker
-{
-public:
-  /// Constructor.
-  wxExMarker(
-    int markerNumber,
-    int markerSymbol,
-    const wxColour& foreground = wxNullColour,
-    const wxColour& background = wxNullColour)
-    : m_MarkerNumber(markerNumber)
-    , m_MarkerSymbol(markerSymbol)
-    , m_BackgroundColour(background)
-    , m_ForegroundColour(foreground) {}
-
-  /// Applies this marker to stc component.
-  void Apply(wxStyledTextCtrl* stc) const;
-
-  /// Returns true if marker is valid.
-  bool IsOk() const;
-private:
-  // When making const, Visual Studio complains:
-  // error C2582: 'operator =' function is unavailable in 'wxExMarker'
-  int m_MarkerNumber;
-  int m_MarkerSymbol;
-  wxColour m_BackgroundColour;
-  wxColour m_ForegroundColour;
-};
 
 /// Reads the lexers, keywords, markers and styles
 /// from the configuration file and makes
