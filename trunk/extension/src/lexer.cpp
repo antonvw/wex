@@ -37,10 +37,10 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   }
 }
 
-const std::vector<wxString> wxExLexer::AutoMatch(
+const std::vector<wxExStyle> wxExLexer::AutoMatch(
   const wxString& lexer) const
 {
-  std::vector<wxString> text;
+  std::vector<wxExStyle> text;
 
   std::map<wxString, wxString>::const_iterator itlow = 
     wxExLexers::Get()->GetMacros().lower_bound(lexer);
@@ -61,12 +61,18 @@ const std::vector<wxString> wxExLexer::AutoMatch(
     {
       if (it->first.Contains(style->first))
       {
-        text.push_back(it->second + "=" + style->second);
+        text.push_back(wxExStyle(it->second, style->second));
       }
     }
   }
 
   return text;
+}
+
+void wxExLexer::Colourise(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Colourings.begin(), m_Colourings.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 }
 
 const wxString wxExLexer::GetFormattedText(
@@ -266,7 +272,7 @@ void wxExLexer::Set(const wxXmlNode* node)
   {
     if (child->GetName() == "colourings")
     {
-      const std::vector<wxString> v = ParseTagColourings(child);
+      const std::vector<wxExStyle> v = ParseTagColourings(child);
 
       m_Colourings.insert(
         m_Colourings.end(), 
@@ -307,10 +313,10 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
 }
 
-const std::vector<wxString> wxExLexer::ParseTagColourings(
+const std::vector<wxExStyle> wxExLexer::ParseTagColourings(
   const wxXmlNode* node) const
 {
-  std::vector<wxString> text;
+  std::vector<wxExStyle> text;
 
   wxXmlNode* child = node->GetChildren();
 
@@ -318,18 +324,7 @@ const std::vector<wxString> wxExLexer::ParseTagColourings(
   {
     if (child->GetName() == "colouring")
     {
-      wxString content = child->GetNodeContent().Strip(wxString::both);
-
-      std::map<wxString, wxString>::const_iterator it = 
-        wxExLexers::Get()->GetMacrosStyle().find(content);
-
-      if (it != wxExLexers::Get()->GetMacrosStyle().end())
-      {
-        content = it->second;
-      }
-
-      text.push_back(
-        wxExLexers::Get()->ApplyMacro(child->GetAttribute("no", "0")) + "=" + content);
+      text.push_back(wxExStyle(child));
     }
     else if (child->GetName() == "comment")
     {

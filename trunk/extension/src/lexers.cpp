@@ -193,9 +193,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "hex")
     {
-      m_StylesHex.push_back(
-        ApplyMacro(child->GetAttribute("no", "0")) + "=" +
-        child->GetNodeContent().Strip(wxString::both));
+      m_StylesHex.push_back(wxExStyle(child));
     }
     else if (child->GetName() == "indicator")
     {
@@ -218,17 +216,17 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "style")
     {
-      const wxString attrib = ApplyMacro(child->GetAttribute("no", "0"));
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
-      int attrib_no = atoi(attrib.c_str());
+      const wxExStyle style(node);
+
+      int attrib_no = atoi(style.GetNo().c_str());
 
       if (attrib_no == wxSTC_STYLE_DEFAULT)
       {
-        m_DefaultStyle = attrib + "=" + content;
+        m_DefaultStyle = style;
       }
       else
       {
-        m_Styles.push_back(attrib + "=" + content);
+        m_Styles.push_back(style);
       }
     }
     else
@@ -356,7 +354,7 @@ void wxExLexers::Read()
   m_SortedLexerNames.clear();
   m_Styles.clear();
   m_StylesHex.clear();
-  m_DefaultStyle.clear();
+  m_DefaultStyle = wxExStyle(NULL);
   m_GlobalProperties.clear();
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
@@ -400,6 +398,18 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   wxExLexers* old = m_Self;
   m_Self = lexers;
   return old;
+}
+
+void wxExLexers::SetGlobalStyles(wxStyledTextCtrl* stc)
+{
+  for_each (m_Styles.begin(), m_Styles.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+}
+
+void wxExLexers::SetHexStyles(wxStyledTextCtrl* stc)
+{
+  for_each (m_StylesHex.begin(), m_StylesHex.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 }
 
 void wxExLexers::SetMarkers(wxStyledTextCtrl* stc)

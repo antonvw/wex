@@ -17,6 +17,7 @@
 #include <vector>
 #include <wx/xml/xml.h>
 #include <wx/extension/property.h>
+#include <wx/extension/style.h>
 
 class wxExLexers;
 
@@ -30,8 +31,8 @@ public:
   /// Default constructor.
   wxExLexer(const wxXmlNode* node = NULL);
 
-  /// Gets the colourings.
-  const std::vector<wxString>& GetColourings() const {return m_Colourings;};
+  /// Colourises the component.
+  void Colourise(wxStyledTextCtrl* stc) const;
 
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
@@ -95,7 +96,7 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  const std::vector<wxString> AutoMatch(const wxString& lexer) const;
+  const std::vector<wxExStyle> AutoMatch(const wxString& lexer) const;
   const wxString GetFormattedText(
     const wxString& lines,
     const wxString& header,
@@ -103,7 +104,7 @@ private:
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
   /// Parses colourings tag.
-  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
+  const std::vector<wxExStyle> ParseTagColourings(const wxXmlNode* node) const;
   /// Sets members from xml node.
   void Set(const wxXmlNode* node);
   /// Adds the specified keywords to the keywords map and the keywords set.
@@ -123,7 +124,7 @@ private:
   // Cannot be const, as in wxExFileName the operator= is used on a lexer.
   wxString m_ScintillaLexer;
 
-  std::vector<wxString> m_Colourings;
+  std::vector<wxExStyle> m_Colourings;
   std::vector<wxExProperty> m_Properties;
   std::set<wxString> m_Keywords;
 

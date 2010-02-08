@@ -510,15 +510,7 @@ void wxExSTC::Colourise()
   wxExLexers::Get()->SetMarkers(this);
   GetFileName().GetLexer().SetProperties(this);
   SetFolding();
-
-  for (
-    std::vector<wxString>::const_iterator it = 
-      GetFileName().GetLexer().GetColourings().begin();
-    it != GetFileName().GetLexer().GetColourings().end();
-    ++it)
-  {
-    SetStyle(*it);
-  }
+  GetFileName().GetLexer().Colourise(this);
 
   // And finally colour the entire document.
   wxStyledTextCtrl::Colourise(0, GetLength() - 1);
@@ -2064,24 +2056,12 @@ void wxExSTC::SetFolding()
 
 void wxExSTC::SetGlobalStyles()
 {
-  const wxString default_style = wxExLexers::Get()->GetDefaultStyle();
-
-  if  (!default_style.empty()) 
-  {
-    SetStyle(default_style);
-    StyleClearAll();
-  }
+  wxExLexers::Get()->GetDefaultStyle().Apply(this);
+  StyleClearAll();
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
-    for (
-      std::vector<wxString>::const_iterator it = 
-        wxExLexers::Get()->GetStyles().begin();
-      it != wxExLexers::Get()->GetStyles().end();
-      ++it)
-    {
-      SetStyle(*it);
-    }
+    wxExLexers::Get()->SetGlobalStyles(this);
 
     for (
       std::map<int, int>::const_iterator ind = 
@@ -2094,14 +2074,7 @@ void wxExSTC::SetGlobalStyles()
   }
   else
   {
-    for (
-      std::vector<wxString>::const_iterator it = 
-        wxExLexers::Get()->GetStylesHex().begin();
-      it != wxExLexers::Get()->GetStylesHex().end();
-      ++it)
-    {
-      SetStyle(*it);
-    }
+    wxExLexers::Get()->SetHexStyles(this);
   }
 }
 
@@ -2141,26 +2114,6 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
   if (GetFileName().GetExt() == "po")
   {
     AddBasePathToPathList();
-  }
-}
-
-void wxExSTC::SetStyle(const wxString& style)
-{
-  // E.g.
-  // 1,2,3=fore:light steel blue,italic,size:8
-  // 1,2,3 are the scintilla_styles, and the rest is spec
-
-  wxStringTokenizer stylespec(style, "=");
-
-  wxStringTokenizer scintilla_styles(stylespec.GetNextToken(), ",");
-  const wxString spec = stylespec.GetNextToken();
-
-  // So for each scintilla style set the spec.
-  while (scintilla_styles.HasMoreTokens())
-  {
-    const wxString single = wxExLexers::Get()->ApplyMacro(
-      scintilla_styles.GetNextToken());
-      StyleSetSpec(atoi(single.c_str()), spec);
   }
 }
 

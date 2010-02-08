@@ -292,7 +292,6 @@ private:
   void SequenceDialog();
   void SetFolding();
   void SetGlobalStyles();
-  void SetStyle(const wxString& style);
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();

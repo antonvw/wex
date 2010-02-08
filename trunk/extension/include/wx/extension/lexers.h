@@ -20,6 +20,7 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/property.h>
+#include <wx/extension/style.h>
 
 class wxStyledTextCtrl;
 
@@ -56,7 +57,7 @@ public:
   static wxExLexers* Get(bool createOnDemand = true);
 
   /// Returns the default style.
-  const wxString& GetDefaultStyle() const {return m_DefaultStyle;};
+  const wxExStyle& GetDefaultStyle() const {return m_DefaultStyle;};
 
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
@@ -69,12 +70,6 @@ public:
 
   /// Gets the style macros.
   const std::map<wxString, wxString>& GetMacrosStyle() const {return m_MacrosStyle;};
-
-  /// Gets the styles.
-  const std::vector<wxString>& GetStyles() const {return m_Styles;};
-
-  /// Gets the styles hex.
-  const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
   /// Parses properties tag.
   const std::vector<wxExProperty> ParseTagProperties(const wxXmlNode* node) const;
@@ -93,6 +88,12 @@ public:
   /// Sets properties for specified component.
   void SetProperties(wxStyledTextCtrl* stc);
 
+  /// Sets global styles.
+  void SetGlobalStyles(wxStyledTextCtrl* stc);
+
+  /// Sets hex styles.
+  void SetHexStyles(wxStyledTextCtrl* stc);
+
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.
   bool ShowDialog(
@@ -110,10 +111,10 @@ private:
   std::map<wxString, wxExLexer> m_Lexers;
   std::vector<wxExProperty> m_GlobalProperties;
   std::vector<wxExMarker> m_Markers;
-  std::vector<wxString> m_Styles;
-  std::vector<wxString> m_StylesHex;
+  std::vector<wxExStyle> m_Styles;
+  std::vector<wxExStyle> m_StylesHex;
 
-  wxString m_DefaultStyle;
+  wxExStyle m_DefaultStyle;
   wxSortedArrayString m_SortedLexerNames;
 
   const wxFileName m_FileName;
