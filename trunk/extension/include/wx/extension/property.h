@@ -19,10 +19,16 @@ class wxExProperty
 public:
   /// Default constructor.
   wxExProperty(const wxXmlNode* node = NULL);
+
+  /// Applies this property to stc component.
+  void Apply(wxStyledTextCtrl* stc) const;
+
+  /// Resets this property
+  void ApplyReset(wxStyledTextCtrl* stc) const;
 private:
-  void Set(wxXmlNode* node);
+  void Set(const wxXmlNode* node);
   
-  wxString m_Key;
+  wxString m_Name;
   wxString m_Value;
 };
 #endif

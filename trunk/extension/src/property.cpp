@@ -7,46 +7,29 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <wx/config.h>
-#include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/util.h> // for wxExMatchesOneOf
+#include <wx/extension/property.h>
 
-wxExProperty::wxExProperty(const wxFileName& filename)
-  : m_FileName(filename)
+wxExProperty::wxExProperty(const wxXmlNode* node)
 {
+  if (node != NULL)
+  {
+    Set(node);
+  }
 }
 
-void wxExProperty::Set(wxXmlNode* node);
-const std::vector<wxString> wxExProperty::ParseTagProperties(
-  const wxXmlNode* node) const
+void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
-  std::vector<wxString> text;
+  stc->SetProperty(m_Name, m_Value);
+}
 
-  wxXmlNode *child = node->GetChildren();
+void wxExProperty::ApplyReset(wxStyledTextCtrl* stc) const
+{
+  stc->SetProperty(m_Name, wxEmptyString);
+}
 
-  while (child)
-  {
-    if (child->GetName() == "property")
-    {
-      text.push_back(
-        child->GetAttribute("name", "0") + "=" +
-        child->GetNodeContent().Strip(wxString::both));
-    }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else
-    {
-      wxLogError(_("Undefined properties tag: %s on line: %d"),
-        child->GetName().c_str(), child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-
-  return text;
+void wxExProperty::Set(const wxXmlNode* node)
+{
+  m_Name = node->GetAttribute("name", "0");
+  m_Value = node->GetNodeContent().Strip(wxString::both);
 }

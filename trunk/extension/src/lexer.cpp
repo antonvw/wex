@@ -11,6 +11,7 @@
 
 //#include <numeric> // both for accumulate
 //#include <functional>
+#include <algorithm>
 #include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
@@ -347,6 +348,12 @@ const std::vector<wxString> wxExLexer::ParseTagColourings(
   return text;
 }
 
+void wxExLexer::ResetProperties(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
+}
+
 bool wxExLexer::SetKeywords(const wxString& value)
 {
   if (!m_Keywords.empty())
@@ -408,6 +415,12 @@ bool wxExLexer::SetKeywords(const wxString& value)
   m_KeywordsSet.insert(make_pair(setno, keywords_set));
 
   return true;
+}
+
+void wxExLexer::SetProperties(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
 int wxExLexer::UsableCharactersPerLine() const

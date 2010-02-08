@@ -302,10 +302,10 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
   }
 }
 
-const std::vector<wxString> wxExLexers::ParseTagProperties(
+const std::vector<wxExProperty> wxExLexers::ParseTagProperties(
   const wxXmlNode* node) const
 {
-  std::vector<wxString> text;
+  std::vector<wxExProperty> text;
 
   wxXmlNode *child = node->GetChildren();
 
@@ -313,9 +313,7 @@ const std::vector<wxString> wxExLexers::ParseTagProperties(
   {
     if (child->GetName() == "property")
     {
-      text.push_back(
-        child->GetAttribute("name", "0") + "=" +
-        child->GetNodeContent().Strip(wxString::both));
+      text.push_back(wxExProperty(child));
     }
     else if (child->GetName() == "comment")
     {
@@ -408,6 +406,12 @@ void wxExLexers::SetMarkers(wxStyledTextCtrl* stc)
 {
   for_each (m_Markers.begin(), m_Markers.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExMarker::Apply), stc));
+}
+
+void wxExLexers::SetProperties(wxStyledTextCtrl* stc)
+{
+  for_each (m_GlobalProperties.begin(), m_GlobalProperties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
 bool wxExLexers::ShowDialog(

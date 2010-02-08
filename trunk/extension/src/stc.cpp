@@ -506,9 +506,9 @@ void wxExSTC::Colourise()
 {
   SetKeyWords();
   SetGlobalStyles();
-  SetProperties(wxExLexers::Get()->GetGlobalProperties());
+  wxExLexers::Get()->SetProperties(this);
   wxExLexers::Get()->SetMarkers(this);
-  SetProperties(GetFileName().GetLexer().GetProperties());
+  GetFileName().GetLexer().SetProperties(this);
   SetFolding();
 
   for (
@@ -2132,7 +2132,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 
   // Reset all old properties. 
   // Should be before SetFileNameLexer.
-  SetProperties(GetFileName().GetLexer().GetProperties(), true); //reset
+  GetFileName().GetLexer().ResetProperties(this);
 
   SetFileNameLexer(lexer, (forced ? "forced": GetLine(0)));
 
@@ -2162,26 +2162,6 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
   if (GetFileName().GetExt() == "po")
   {
     AddBasePathToPathList();
-  }
-}
-
-void wxExSTC::SetProperties(
-  const std::vector<wxString>& prop, 
-  bool reset)
-{
-  for (
-    std::vector<wxString>::const_iterator it = prop.begin();
-    it != prop.end();
-    ++it)
-  {
-    wxStringTokenizer property(*it, "=");
-
-    // Don't put key, value into SetProperty, as that might parse value first,
-    // reversing the two.
-    const wxString key = property.GetNextToken();
-    const wxString value = property.GetNextToken();
-
-    SetProperty(key, (!reset ? value: wxEmptyString));
   }
 }
 

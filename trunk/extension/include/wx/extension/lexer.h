@@ -16,6 +16,7 @@
 #include <set>
 #include <vector>
 #include <wx/xml/xml.h>
+#include <wx/extension/property.h>
 
 class wxExLexers;
 
@@ -59,9 +60,6 @@ public:
   /// otherwise take the specified set.
   const wxString GetKeywordsString(int keyword_set = -1) const;
 
-  /// Gets the properties.
-  const std::vector<wxString>& GetProperties() const {return m_Properties;};
-
   /// Gets the scintilla lexer.
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
@@ -88,6 +86,12 @@ public:
     const wxString& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
+
+  /// Resets properties for specified component.
+  void ResetProperties(wxStyledTextCtrl* stc) const;
+
+  /// Sets properties for specified component.
+  void SetProperties(wxStyledTextCtrl* stc) const;
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
@@ -121,7 +125,7 @@ private:
   wxString m_ScintillaLexer;
 
   std::vector<wxString> m_Colourings;
-  std::vector<wxString> m_Properties;
+  std::vector<wxExProperty> m_Properties;
   std::set<wxString> m_Keywords;
 
   // each keyword set in a separate keyword set

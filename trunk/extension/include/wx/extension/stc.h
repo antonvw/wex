@@ -293,9 +293,6 @@ private:
   void SetFolding();
   void SetGlobalStyles();
   void SetKeyWords();
-  void SetProperties(
-    const std::vector<wxString>& properties, 
-    bool reset = false);
   void SetStyle(const wxString& style);
   /// After pressing enter, starts new line at same place
   /// as previous line.

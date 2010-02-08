@@ -19,6 +19,7 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/marker.h>
+#include <wx/extension/property.h>
 
 class wxStyledTextCtrl;
 
@@ -60,10 +61,6 @@ public:
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
 
-  /// Gets the global properties.
-  const std::vector<wxString>& GetGlobalProperties() const {
-    return m_GlobalProperties;};
-
   /// Gets the indicators.
   const std::map<int, int>& GetIndicators() const {return m_Indicators;};
 
@@ -80,7 +77,7 @@ public:
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
   /// Parses properties tag.
-  const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
+  const std::vector<wxExProperty> ParseTagProperties(const wxXmlNode* node) const;
 
   /// Reads the lexers, keywords, markers and styles from file.
   void Read();
@@ -92,6 +89,9 @@ public:
 
   /// Sets markers for specified component.
   void SetMarkers(wxStyledTextCtrl* stc);
+
+  /// Sets properties for specified component.
+  void SetProperties(wxStyledTextCtrl* stc);
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.
@@ -108,7 +108,7 @@ private:
   std::map<wxString, wxString> m_MacrosStyle;
   std::map<int, int> m_Indicators;
   std::map<wxString, wxExLexer> m_Lexers;
-  std::vector<wxString> m_GlobalProperties;
+  std::vector<wxExProperty> m_GlobalProperties;
   std::vector<wxExMarker> m_Markers;
   std::vector<wxString> m_Styles;
   std::vector<wxString> m_StylesHex;
