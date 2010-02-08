@@ -504,7 +504,7 @@ void wxExSTC::ClearDocument()
 
 void wxExSTC::Colourise()
 {
-  SetKeyWords();
+  GetFileName().GetLexer().SetKeywords(this);
   SetGlobalStyles();
   wxExLexers::Get()->SetProperties(this);
   wxExLexers::Get()->SetMarkers(this);
@@ -2102,27 +2102,6 @@ void wxExSTC::SetGlobalStyles()
     {
       SetStyle(*it);
     }
-  }
-}
-
-void wxExSTC::SetKeyWords()
-{
-  // Reset keywords, also if no lexer is available.
-  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
-  {
-    wxStyledTextCtrl::SetKeyWords(setno, wxEmptyString);
-  }
-
-  // Readme: The Scintilla lexer only recognized lower case words, apparently.
-  for (
-    std::map< int, std::set<wxString> >::const_iterator it = 
-      GetFileName().GetLexer().GetKeywordsSet().begin();
-    it != GetFileName().GetLexer().GetKeywordsSet().end();
-    ++it)
-  {
-    wxStyledTextCtrl::SetKeyWords(
-      it->first,
-      GetFileName().GetLexer().GetKeywordsString(it->first).Lower());
   }
 }
 

@@ -354,6 +354,26 @@ void wxExLexer::ResetProperties(wxStyledTextCtrl* stc) const
     std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
 }
 
+void wxExLexer::SetKeywords(wxStyledTextCtrl* stc) const
+{
+  // Reset keywords, also if no lexer is available.
+  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
+  {
+    stc->SetKeyWords(setno, wxEmptyString);
+  }
+
+  // Readme: The Scintilla lexer only recognized lower case words, apparently.
+  for (
+    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.begin();
+    it != m_KeywordsSet.end();
+    ++it)
+  {
+    stc->SetKeyWords(
+      it->first,
+      GetKeywordsString(it->first).Lower());
+  }
+}
+
 bool wxExLexer::SetKeywords(const wxString& value)
 {
   if (!m_Keywords.empty())

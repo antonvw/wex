@@ -51,10 +51,6 @@ public:
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
 
-  /// Gets all the keywords sets.
-  const std::map< int, std::set<wxString> >& GetKeywordsSet() const {
-    return m_KeywordsSet;};
-
   /// Gets the keywords as one large string, 
   /// if keyword_set -1 take all the sets,
   /// otherwise take the specified set.
@@ -89,6 +85,9 @@ public:
 
   /// Resets properties for specified component.
   void ResetProperties(wxStyledTextCtrl* stc) const;
+
+  /// Sets keywords for specified component.
+  void SetKeywords(wxStyledTextCtrl* stc) const;
 
   /// Sets properties for specified component.
   void SetProperties(wxStyledTextCtrl* stc) const;
