@@ -181,47 +181,6 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-const std::vector<wxString> wxExLexers::ParseTagColourings(
-  const wxXmlNode* node) const
-{
-  std::vector<wxString> text;
-
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "colouring")
-    {
-      wxString content = child->GetNodeContent().Strip(wxString::both);
-
-      std::map<wxString, wxString>::const_iterator it = 
-        m_MacrosStyle.find(content);
-
-      if (it != m_MacrosStyle.end())
-      {
-        content = it->second;
-      }
-
-      text.push_back(
-        ApplyMacro(child->GetAttribute("no", "0")) + "=" + content);
-    }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else
-    {
-      wxLogError(_("Undefined colourings tag: %s on line: %d"),
-        child->GetName().c_str(), 
-        child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-
-  return text;
-}
-
 void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();

@@ -79,9 +79,6 @@ public:
   /// Gets the styles hex.
   const std::vector<wxString>& GetStylesHex() const {return m_StylesHex;};
 
-  /// Parses colourings tag.
-  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
-
   /// Parses properties tag.
   const std::vector<wxString> ParseTagProperties(const wxXmlNode* node) const;
 

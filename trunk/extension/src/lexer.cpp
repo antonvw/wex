@@ -265,8 +265,7 @@ void wxExLexer::Set(const wxXmlNode* node)
   {
     if (child->GetName() == "colourings")
     {
-      const std::vector<wxString> v = 
-        wxExLexers::Get()->ParseTagColourings(child);
+      const std::vector<wxString> v = ParseTagColourings(child);
 
       m_Colourings.insert(
         m_Colourings.end(), 
@@ -305,6 +304,47 @@ void wxExLexer::Set(const wxXmlNode* node)
 
     child = child->GetNext();
   }
+}
+
+const std::vector<wxString> wxExLexer::ParseTagColourings(
+  const wxXmlNode* node) const
+{
+  std::vector<wxString> text;
+
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "colouring")
+    {
+      wxString content = child->GetNodeContent().Strip(wxString::both);
+
+      std::map<wxString, wxString>::const_iterator it = 
+        wxExLexers::Get()->GetMacrosStyle().find(content);
+
+      if (it != wxExLexers::Get()->GetMacrosStyle().end())
+      {
+        content = it->second;
+      }
+
+      text.push_back(
+        wxExLexers::Get()->ApplyMacro(child->GetAttribute("no", "0")) + "=" + content);
+    }
+    else if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else
+    {
+      wxLogError(_("Undefined colourings tag: %s on line: %d"),
+        child->GetName().c_str(), 
+        child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
+
+  return text;
 }
 
 bool wxExLexer::SetKeywords(const wxString& value)

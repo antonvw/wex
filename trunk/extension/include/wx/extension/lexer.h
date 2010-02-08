@@ -99,6 +99,8 @@ private:
     bool fill_out_with_space,
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
+  /// Parses colourings tag.
+  const std::vector<wxString> ParseTagColourings(const wxXmlNode* node) const;
   /// Sets members from xml node.
   void Set(const wxXmlNode* node);
   /// Adds the specified keywords to the keywords map and the keywords set.
