@@ -46,6 +46,8 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 
 void wxExStyle::Set(const wxXmlNode* node)
 {
+  m_No = wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
+
   wxString content = node->GetNodeContent().Strip(wxString::both);
 
   std::map<wxString, wxString>::const_iterator it = 
@@ -56,6 +58,5 @@ void wxExStyle::Set(const wxXmlNode* node)
     content = it->second;
   }
 
-  m_No = wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
   m_Value = content;
 }
