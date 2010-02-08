@@ -103,6 +103,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/otl.cpp</sources>
     </if>
     <sources>../extension/src/printing.cpp</sources>
+    <sources>../extension/src/property.cpp</sources>
     <sources>../extension/src/renderer.cpp</sources>
     <sources>../extension/src/shell.cpp</sources>
     <sources>../extension/src/stc.cpp</sources>
@@ -137,6 +138,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/otl.h</headers>
     </if>
     <headers>../extension/include/wx/extension/printing.h</headers>
+    <headers>../extension/include/wx/extension/property.h</headers>
     <headers>../extension/include/wx/extension/renderer.h</headers>
     <headers>../extension/include/wx/extension/shell.h</headers>
     <headers>../extension/include/wx/extension/statistics.h</headers>
