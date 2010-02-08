@@ -24,11 +24,7 @@ public:
     int markerNumber,
     int markerSymbol,
     const wxColour& foreground = wxNullColour,
-    const wxColour& background = wxNullColour)
-    : m_MarkerNumber(markerNumber)
-    , m_MarkerSymbol(markerSymbol)
-    , m_BackgroundColour(background)
-    , m_ForegroundColour(foreground) {}
+    const wxColour& background = wxNullColour);
 
   /// Applies this marker to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
