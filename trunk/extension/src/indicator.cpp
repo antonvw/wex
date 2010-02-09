@@ -12,7 +12,7 @@
 #include <wx/extension/lexers.h>
 
 wxExIndicator::wxExIndicator(const wxXmlNode* node)
-  : m_Number(-1)
+  : m_No(-1)
   , m_Style(-1)
 {
   if (node != NULL)
@@ -23,12 +23,13 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
 
 void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
 {
-  stc->IndicatorSetStyle(m_Number, m_Style);
+  wxASSERT(m_No != -1 && m_Style != -1);
+  stc->IndicatorSetStyle(m_No, m_Style);
 }
 
 void wxExIndicator::Set(const wxXmlNode* node)
 {
-  m_Number = atoi(
+  m_No = atoi(
     wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")).c_str());
   m_Style = atoi(node->GetNodeContent().Strip(wxString::both).c_str());
 }

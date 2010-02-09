@@ -26,7 +26,7 @@ public:
 private:
   void Set(const wxXmlNode* node);
 
-  int m_Number;
+  int m_No;
   int m_Style;
 };
 

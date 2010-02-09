@@ -20,6 +20,7 @@ wxExProperty::wxExProperty(const wxXmlNode* node)
 
 void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
+  wxASSERT(!m_Name.empty());
   stc->SetProperty(m_Name, m_Value);
 }
 

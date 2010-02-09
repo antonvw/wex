@@ -14,8 +14,8 @@
 #include <wx/extension/lexers.h>
 
 wxExMarker::wxExMarker(const wxXmlNode* node)
-  : m_MarkerNumber(-1)
-  , m_MarkerSymbol(-1)
+  : m_No(-1)
+  , m_Symbol(-1)
 {
   if (node != NULL)
   {
@@ -25,42 +25,44 @@ wxExMarker::wxExMarker(const wxXmlNode* node)
 
 void wxExMarker::Apply(wxStyledTextCtrl* stc) const
 {
+  wxASSERT(IsOk());
+
   stc->MarkerDefine(
-    m_MarkerNumber,
-    m_MarkerSymbol,
+    m_No,
+    m_Symbol,
     m_ForegroundColour,
     m_BackgroundColour);
 }
 
 bool wxExMarker::IsOk() const
 {
-  return m_MarkerNumber>= 0 && m_MarkerSymbol >= 0;
+  return m_No>= 0 && m_Symbol >= 0;
 }
 
 void wxExMarker::Set(const wxXmlNode* node)
 {
-  const wxString number = 
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
-  const wxString props = node->GetNodeContent().Strip(wxString::both);
+  const int no = 
+    atoi(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")).c_str());
 
-  wxStringTokenizer prop_fields(props, ",");
+  const wxString content = node->GetNodeContent().Strip(wxString::both);
+
+  wxStringTokenizer fields(content, ",");
 
   const wxString symbol = 
-    wxExLexers::Get()->ApplyMacro(prop_fields.GetNextToken());
+    wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
 
-  if (prop_fields.HasMoreTokens())
+  if (fields.HasMoreTokens())
   {
     m_ForegroundColour = wxExLexers::Get()->ApplyMacro(
-      prop_fields.GetNextToken().Strip(wxString::both));
+      fields.GetNextToken().Strip(wxString::both));
 
-    if (prop_fields.HasMoreTokens())
+    if (fields.HasMoreTokens())
     {
       m_BackgroundColour = wxExLexers::Get()->ApplyMacro(
-        prop_fields.GetNextToken().Strip(wxString::both));
+        fields.GetNextToken().Strip(wxString::both));
     }
   }
 
-  const int no = atoi(number.c_str());
   const int symno = atoi(symbol.c_str());
 
   if (no > wxSTC_MARKER_MAX || symno > wxSTC_MARKER_MAX)
@@ -71,7 +73,7 @@ void wxExMarker::Set(const wxXmlNode* node)
   }
   else
   {
-    m_MarkerNumber = no;
-    m_MarkerSymbol = symno;
+    m_No = no;
+    m_Symbol = symno;
   }
 }

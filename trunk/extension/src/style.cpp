@@ -30,6 +30,8 @@ wxExStyle::wxExStyle(const wxString& no, const wxString& value)
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
+  wxASSERT(!m_No.empty());
+
   // E.g.
   // 1,2,3=fore:light steel blue,italic,size:8
   // 1,2,3 are the scintilla_styles, and the rest is spec

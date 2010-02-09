@@ -30,8 +30,8 @@ public:
 private:
   void Set(const wxXmlNode* node);
 
-  int m_MarkerNumber;
-  int m_MarkerSymbol;
+  int m_No;
+  int m_Symbol;
   wxColour m_BackgroundColour;
   wxColour m_ForegroundColour;
 };
