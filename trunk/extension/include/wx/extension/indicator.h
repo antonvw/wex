@@ -1,0 +1,33 @@
+////////////////////////////////////////////////////////////////////////////////
+// Name:      marker.h
+// Purpose:   Declaration of class 'wxExIndicator'
+// Author:    Anton van Wezenbeek
+// Created:   2010-02-08
+// RCS-ID:    $Id$
+// Copyright: (c) 2010 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
+
+#ifndef _EXINDICATOR_H
+#define _EXINDICATOR_H
+
+#include <wx/xml/xml.h>
+
+class wxStyledTextCtrl;
+
+/// This class defines our indicators.
+class wxExIndicator
+{
+public:
+  /// Constructor.
+  wxExIndicator(const wxXmlNode* node = NULL);
+
+  /// Applies this marker to stc component.
+  void Apply(wxStyledTextCtrl* stc) const;
+private:
+  void Set(const wxXmlNode* node);
+
+  int m_Number;
+  int m_Style;
+};
+
+#endif

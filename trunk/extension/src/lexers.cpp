@@ -197,9 +197,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "indicator")
     {
-      m_Indicators.insert(std::make_pair(
-        atoi(ApplyMacro(child->GetAttribute("no", "0")).c_str()),
-        atoi(child->GetNodeContent().Strip(wxString::both).c_str())));
+      m_Indicators.push_back(wxExIndicator(child));
     }
     else if (child->GetName() == "marker")
     {
@@ -399,25 +397,31 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   return old;
 }
 
-void wxExLexers::SetGlobalStyles(wxStyledTextCtrl* stc)
+void wxExLexers::SetGlobalStyles(wxStyledTextCtrl* stc) const
 {
   for_each (m_Styles.begin(), m_Styles.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 }
 
-void wxExLexers::SetHexStyles(wxStyledTextCtrl* stc)
+void wxExLexers::SetHexStyles(wxStyledTextCtrl* stc) const
 {
   for_each (m_StylesHex.begin(), m_StylesHex.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 }
 
-void wxExLexers::SetMarkers(wxStyledTextCtrl* stc)
+void wxExLexers::SetIndicators(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Indicators.begin(), m_Indicators.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExIndicator::Apply), stc));
+}
+
+void wxExLexers::SetMarkers(wxStyledTextCtrl* stc) const
 {
   for_each (m_Markers.begin(), m_Markers.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExMarker::Apply), stc));
 }
 
-void wxExLexers::SetProperties(wxStyledTextCtrl* stc)
+void wxExLexers::SetProperties(wxStyledTextCtrl* stc) const
 {
   for_each (m_GlobalProperties.begin(), m_GlobalProperties.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));

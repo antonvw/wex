@@ -2062,15 +2062,7 @@ void wxExSTC::SetGlobalStyles()
   if (!(m_Flags & STC_OPEN_HEX))
   {
     wxExLexers::Get()->SetGlobalStyles(this);
-
-    for (
-      std::map<int, int>::const_iterator ind = 
-        wxExLexers::Get()->GetIndicators().begin();
-      ind != wxExLexers::Get()->GetIndicators().end();
-      ++ind)
-    {
-      IndicatorSetStyle(ind->first, ind->second);
-    }
+    wxExLexers::Get()->SetIndicators(this);
   }
   else
   {

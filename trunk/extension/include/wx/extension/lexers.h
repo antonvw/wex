@@ -18,6 +18,7 @@
 #include <wx/filename.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
@@ -62,9 +63,6 @@ public:
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
 
-  /// Gets the indicators.
-  const std::map<int, int>& GetIndicators() const {return m_Indicators;};
-
   /// Gets the macros.
   const std::map<wxString, wxString>& GetMacros() const {return m_Macros;};
 
@@ -82,17 +80,20 @@ public:
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
 
+  /// Sets global styles for specified component.
+  void SetGlobalStyles(wxStyledTextCtrl* stc) const;
+
+  /// Sets hex styles for specified component.
+  void SetHexStyles(wxStyledTextCtrl* stc) const;
+
+  /// Sets indicators for specified component.
+  void SetIndicators(wxStyledTextCtrl* stc) const;
+
   /// Sets markers for specified component.
-  void SetMarkers(wxStyledTextCtrl* stc);
+  void SetMarkers(wxStyledTextCtrl* stc) const;
 
   /// Sets properties for specified component.
-  void SetProperties(wxStyledTextCtrl* stc);
-
-  /// Sets global styles.
-  void SetGlobalStyles(wxStyledTextCtrl* stc);
-
-  /// Sets hex styles.
-  void SetHexStyles(wxStyledTextCtrl* stc);
+  void SetProperties(wxStyledTextCtrl* stc) const;
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.
@@ -105,11 +106,13 @@ private:
   void ParseTagGlobal(const wxXmlNode* node);
   void ParseTagMacro(const wxXmlNode* node);
 
+  std::map<wxString, wxExLexer> m_Lexers;
+
   std::map<wxString, wxString> m_Macros;
   std::map<wxString, wxString> m_MacrosStyle;
-  std::map<int, int> m_Indicators;
-  std::map<wxString, wxExLexer> m_Lexers;
+
   std::vector<wxExProperty> m_GlobalProperties;
+  std::vector<wxExIndicator> m_Indicators;
   std::vector<wxExMarker> m_Markers;
   std::vector<wxExStyle> m_Styles;
   std::vector<wxExStyle> m_StylesHex;
