@@ -32,7 +32,6 @@ enum
 {
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
-  ID_LEXER_PROPERTIES,
   ID_CONFIG_DLG_READONLY,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
@@ -108,7 +107,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
-  menuFile->Append(ID_LEXER_PROPERTIES, _("Lexer Properties"));
   menuFile->Append(ID_STATISTICS_SHOW, _("Show Statistics"));
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
@@ -348,19 +346,6 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       wxCANCEL);
 
       dlg->Show();
-    }
-    break;
-
-  case ID_LEXER_PROPERTIES:
-    {
-      wxString lexer;
-
-      if (wxExLexers::Get()->ShowDialog(this, lexer))
-      {
-        const wxExLexer l = wxExLexers::Get()->FindByName(lexer);
-        wxLogMessage(accumulate(
-          l.GetColourings().begin(), l.GetColourings().end(), wxString()));
-      }
     }
     break;
 
