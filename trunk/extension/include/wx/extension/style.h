@@ -10,10 +10,16 @@
 #ifndef _EXSTYLE_H
 #define _EXSTYLE_H
 
+#include <vector>
 #include <wx/xml/xml.h>
 
 class wxStyledTextCtrl;
 
+/// This class defines our scintilla styles. The no as in xml or ni the string
+/// can be a single style, or several styles separated by a comma.
+/// E.g.
+/// 1,2,3=fore:light steel blue,italic,size:8
+/// 1,2,3 are the scintilla styles numbers, and the rest is spec
 class wxExStyle
 {
 public:
@@ -26,12 +32,13 @@ public:
   /// Applies this style to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
-  /// Gets the no.
-  const wxString& GetNo() const {return m_No;};
+  /// Does this style concern the default style.
+  bool IsDefault() const;
 private:
   void Set(const wxXmlNode* node);
+  void SetNo(const wxString& no);
 
-  wxString m_No;
+  std::vector <int> m_No;
   wxString m_Value;
 };
 #endif

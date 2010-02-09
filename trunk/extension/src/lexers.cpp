@@ -215,9 +215,8 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     else if (child->GetName() == "style")
     {
       const wxExStyle style(child);
-      const int attrib_no = atoi(style.GetNo().c_str());
 
-      if (attrib_no == wxSTC_STYLE_DEFAULT)
+      if (style.IsDefault())
       {
         m_DefaultStyle = style;
       }

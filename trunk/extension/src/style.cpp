@@ -23,32 +23,43 @@ wxExStyle::wxExStyle(const wxXmlNode* node)
 }
 
 wxExStyle::wxExStyle(const wxString& no, const wxString& value)
-  : m_No(no)
-  , m_Value(value)
+  : m_Value(value)
 {
+  SetNo(no);
 }
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(!m_No.empty());
+  wxASSERT(!m_No.empty() && !m_Value.empty());
 
-  // E.g.
-  // 1,2,3=fore:light steel blue,italic,size:8
-  // 1,2,3 are the scintilla_styles, and the rest is spec
-  wxStringTokenizer scintilla_styles(m_No, ",");
-
-  // So for each scintilla style set the spec.
-  while (scintilla_styles.HasMoreTokens())
+  for (
+    std::vector<int>::const_iterator it = m_No.begin();
+    it != m_No.end();
+    ++it)
   {
-    const wxString single = wxExLexers::Get()->ApplyMacro(
-      scintilla_styles.GetNextToken());
-      stc->StyleSetSpec(atoi(single.c_str()), m_Value);
+    stc->StyleSetSpec(*it, m_Value);
   }
+}
+
+bool wxExStyle::IsDefault() const
+{
+  for (
+    std::vector<int>::const_iterator it = m_No.begin();
+    it != m_No.end();
+    ++it)
+  {
+    if (*it == wxSTC_STYLE_DEFAULT)
+    {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void wxExStyle::Set(const wxXmlNode* node)
 {
-  m_No = wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
+  SetNo(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")));
 
   wxString content = node->GetNodeContent().Strip(wxString::both);
 
@@ -61,4 +72,18 @@ void wxExStyle::Set(const wxXmlNode* node)
   }
 
   m_Value = content;
+}
+
+void wxExStyle::SetNo(const wxString& no)
+{
+  wxStringTokenizer no_fields(no, ",");
+
+  // Collect each single no in the vector.
+  while (no_fields.HasMoreTokens())
+  {
+    const wxString single = 
+      wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken());
+
+    m_No.push_back(atoi(single.c_str()));
+  }
 }
