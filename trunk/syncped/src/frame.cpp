@@ -1032,6 +1032,10 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
             event.Enable(list->GetSelectedItemCount() > 0);
             break;
 
+          case wxID_FIND:
+            event.Enable(list->GetItemCount() > 0);
+            break;
+
           case wxID_PASTE:
             event.Enable(list->GetType() == wxExListViewStandard::LIST_FILE);
             break;
