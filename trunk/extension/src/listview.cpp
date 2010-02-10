@@ -615,6 +615,10 @@ void wxExListView::OnList(wxListEvent& event)
 
 void wxExListView::OnMouse(wxMouseEvent& event)
 {
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_LISTVIEW);
+  focusevent.SetEventObject(this);
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
+
   if (event.RightDown())
   {
     int style = wxExMenu::MENU_DEFAULT;

@@ -517,6 +517,10 @@ void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 
 void wxExGrid::OnMouse(wxMouseEvent& event)
 {
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_GRID);
+  focusevent.SetEventObject(this);
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
+
   if (event.Dragging())
   {
     // Readme: This event is not coming in as well.

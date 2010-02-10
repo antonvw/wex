@@ -213,6 +213,10 @@ private:
 
   wxFindReplaceDialog* m_FindReplaceDialog;
 
+  wxExGrid* m_FocusGrid;
+  wxExListView* m_FocusListView;
+  wxExSTC* m_FocusSTC;
+
   const bool m_KeepPosAndSize;
 
   DECLARE_EVENT_TABLE()

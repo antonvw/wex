@@ -359,6 +359,24 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
+  case ID_FOCUS_GRID:
+    m_FocusGrid = (wxExGrid*)command.GetEventObject();
+    m_FocusListView = NULL;
+    m_FocusSTC = NULL;
+    break;
+
+  case ID_FOCUS_LISTVIEW:
+    m_FocusGrid = NULL;
+    m_FocusListView = (wxExListView*)command.GetEventObject();;
+    m_FocusSTC = NULL;
+    break;
+
+  case ID_FOCUS_STC: 
+    m_FocusGrid = NULL;
+    m_FocusListView = NULL;
+    m_FocusSTC = (wxExSTC*)command.GetEventObject();;
+    break;
+
   default: wxFAIL; break;
   }
 }
