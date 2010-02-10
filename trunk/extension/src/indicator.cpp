@@ -38,6 +38,11 @@ void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
   stc->IndicatorSetUnder(m_No, m_Under);
 }
 
+bool wxExIndicator::IsOk() const
+{
+  return m_No >= 0 && m_Style >= 0;
+}
+
 void wxExIndicator::Set(const wxXmlNode* node)
 {
   const int no = atoi(

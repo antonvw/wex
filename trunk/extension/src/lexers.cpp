@@ -197,7 +197,12 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "indicator")
     {
-      m_Indicators.push_back(wxExIndicator(child));
+      const wxExIndicator indicator (child);
+
+      if (indicator.IsOk())
+      {
+        m_Indicators.push_back(indicator);
+      }
     }
     else if (child->GetName() == "marker")
     {

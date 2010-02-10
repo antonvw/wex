@@ -21,8 +21,11 @@ public:
   /// Constructor.
   wxExIndicator(const wxXmlNode* node = NULL);
 
-  /// Applies this marker to stc component.
+  /// Applies this indicator to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
+
+  /// Returns true if this indicator is valid.
+  bool IsOk() const;
 private:
   void Set(const wxXmlNode* node);
 
