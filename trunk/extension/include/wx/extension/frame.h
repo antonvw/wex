@@ -202,6 +202,9 @@ protected:
 #endif
 
 private:
+  void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
+  void FindIn(wxFindDialogEvent& event, wxExListView* lv);
+  void FindIn(wxFindDialogEvent& event, wxExSTC* stc);
   void Initialize();
 
 #if wxUSE_STATUSBAR
