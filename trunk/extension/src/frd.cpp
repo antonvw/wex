@@ -40,12 +40,12 @@ wxExFindReplaceData::wxExFindReplaceData()
 
   if (!m_FindStrings.empty())
   {
-    SetFindString(m_FindStrings.front());
+    wxFindReplaceData::SetFindString(m_FindStrings.front());
   }
 
   if (!m_ReplaceStrings.empty())
   {
-    SetReplaceString(m_ReplaceStrings.front());
+    wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
   }
 
   // This set determines what fields are placed on the Find Files dialogs
