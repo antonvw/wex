@@ -1025,6 +1025,14 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
         if (list != NULL)
         {
+          if (
+            event.GetId() > ID_TOOL_LOWEST &&
+            event.GetId() < ID_TOOL_HIGHEST)
+          {
+            event.Enable(editor->GetLength() > 0);
+            return;
+          }
+
           switch (event.GetId())
           {
           case wxID_COPY:
