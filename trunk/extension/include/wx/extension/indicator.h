@@ -28,6 +28,8 @@ private:
 
   int m_No;
   int m_Style;
+  wxColour m_ForegroundColour;
+  bool m_Under;
 };
 
 #endif
