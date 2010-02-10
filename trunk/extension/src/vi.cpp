@@ -27,7 +27,9 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
+  , m_FindDialogItem("searchline") // do not translate
 {
+  m_SearchText = wxExConfigFirstOf(m_FindDialogItem);
 }
 
 void wxExVi::Delete(int lines) const
@@ -408,7 +410,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 void wxExVi::DoCommandFind(const wxUniChar& c)
 {
   const wxString title = "vi " + wxString(c);
-  const wxString item = "searchline"; // do not translate
 
   if (m_FindDialog == NULL)
   {
@@ -416,7 +417,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     m_FindDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       title, 
-      item, 
+      m_FindDialogItem, 
       0);
   }
 
@@ -427,7 +428,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     return;
   }
 
-  const wxString val = wxExConfigFirstOf(item);
+  const wxString val = wxExConfigFirstOf(m_FindDialogItem);
 
   if (val.empty())
   {

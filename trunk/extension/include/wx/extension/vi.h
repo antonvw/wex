@@ -80,6 +80,7 @@ private:
   static wxString m_LastCommand;
 
   const int m_MarkerSymbol;
+  const wxString m_FindDialogItem;
   
   std::map<wxUniChar, int> m_Markers;
   
