@@ -1582,10 +1582,6 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
 {
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
-
   if (event.RightUp())
   {
     if (m_MenuFlags == 0)
@@ -1620,6 +1616,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   {
     wxFAIL;
   }
+
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
+  focusevent.SetEventObject(this);
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)

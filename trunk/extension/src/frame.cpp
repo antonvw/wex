@@ -58,6 +58,9 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
   EVT_MENU(ID_EDIT_FIND_NEXT, wxExFrame::OnCommand)
   EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExFrame::OnCommand)
+  EVT_MENU(ID_FOCUS_GRID, wxExFrame::OnCommand)
+  EVT_MENU(ID_FOCUS_LISTVIEW, wxExFrame::OnCommand)
+  EVT_MENU(ID_FOCUS_STC, wxExFrame::OnCommand)
 #if wxUSE_STATUSBAR
   EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, wxExFrame::OnUpdateUI)
 #endif
@@ -71,6 +74,9 @@ wxExFrame::wxExFrame(wxWindow* parent,
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, name)
   , m_FindReplaceDialog(NULL)
   , m_KeepPosAndSize(true)
+  , m_FocusGrid(NULL)
+  , m_FocusListView(NULL)
+  , m_FocusSTC(NULL)
 {
   Initialize();
 
@@ -180,6 +186,11 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
 
 wxExGrid* wxExFrame::GetFocusedGrid()
 {
+  if (m_FocusGrid != NULL)
+  {
+    return m_FocusGrid;
+  }
+
   wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
@@ -192,6 +203,11 @@ wxExGrid* wxExFrame::GetFocusedGrid()
 
 wxExListView* wxExFrame::GetFocusedListView()
 {
+  if (m_FocusListView != NULL)
+  {
+    return m_FocusListView;
+  }
+
   wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
@@ -204,6 +220,11 @@ wxExListView* wxExFrame::GetFocusedListView()
 
 wxExSTC* wxExFrame::GetFocusedSTC()
 {
+  if (m_FocusSTC != NULL)
+  {
+    return m_FocusSTC;
+  }
+
   wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
@@ -424,27 +445,23 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     return;
   }
 
-  wxExSTC* stc = GetFocusedSTC();
-  wxExListView* lv = GetFocusedListView();
-  wxExGrid* grid = GetFocusedGrid();
-
-  if (stc != NULL)
+  if (m_FocusSTC != NULL)
   {
-    FindIn(event, stc);
+    FindIn(event, m_FocusSTC);
   }
-  else if (lv != NULL)
+  else if (m_FocusListView != NULL)
   {
-    FindIn(event, lv);
+    FindIn(event, m_FocusListView);
   }
-  else if (grid != NULL)
+  else if (m_FocusGrid != NULL)
   {
-    FindIn(event, grid);
+    FindIn(event, m_FocusGrid);
   }
   else
   {
-    stc = GetSTC();
-    lv = GetListView();
-    grid = GetGrid();
+    wxExSTC* stc = GetSTC();
+    wxExListView* lv = GetListView();
+    wxExGrid* grid = GetGrid();
 
     if (stc != NULL && stc->IsShown())
     {
