@@ -1279,6 +1279,9 @@ without the written consent of the copyright owner.
     
     <!-- Marker 0 is used for vi marking -->
     <marker no="0"> 0,blue,light blue </marker>
+     
+    <!-- Indicator 0 is used for vi indicating yanked lines -->
+    <indicator no="0"> 6,black </indicator>
     
     <!-- this style is used as default style, 
          and is applied before all other styles -->
