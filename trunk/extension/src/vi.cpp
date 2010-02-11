@@ -23,12 +23,15 @@ wxString wxExVi::m_LastCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_MarkerSymbol(0)
+  , m_IndicatorNumber(0)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_FindDialogItem("searchline") // do not translate
 {
+  m_STC->SetIndicatorCurrent(m_IndicatorNumber);
+
   m_SearchText = wxExConfigFirstOf(m_FindDialogItem);
 }
 
@@ -1032,13 +1035,17 @@ void wxExVi::Yank(int lines) const
   const int start = m_STC->PositionFromLine(line);
   const int end = m_STC->PositionFromLine(line + lines);
 
+  m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
+
   if (end != -1)
   {
     m_STC->CopyRange(start, end);
+    m_STC->IndicatorFillRange(start, end - start);
   }
   else
   {
     m_STC->CopyRange(start, m_STC->GetLastPosition());
+    m_STC->IndicatorFillRange(start, m_STC->GetLastPosition() - start);
   }
 
 #if wxUSE_STATUSBAR
@@ -1065,8 +1072,10 @@ bool wxExVi::Yank(
   const int start = m_STC->PositionFromLine(begin_line);
   const int end = m_STC->PositionFromLine(end_line);
 
+  m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
   m_STC->CopyRange(start, end);
-  
+  m_STC->IndicatorFillRange(start, end - start);
+
 #if wxUSE_STATUSBAR
   const int lines = end_line - begin_line;
   if (lines >= 2)
