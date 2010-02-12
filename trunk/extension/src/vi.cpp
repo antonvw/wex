@@ -236,6 +236,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     for (int i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
+    m_STC->IndicatorFillRange(start, m_STC->GetCurrentPos() - start);
     m_STC->GotoPos(start);
   }
   else if (command.EndsWith("yy"))
