@@ -1242,6 +1242,9 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_R_IDENTIFIER"> 9 </def>
     <def no ="wxSTC_R_INFIX"> 10 </def>
     <def no ="wxSTC_R_INFIXEOL"> 11 </def>
+    
+    <def no ="wxEx_INDIC_VI"> 0 </def>
+    <def no ="wxEx_MARKNUM_VI"> 0 </def>
     <def no ="folder"> light blue </def>
     
     <!-- These are the style macro's. 
@@ -1277,11 +1280,8 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
-    <!-- Marker 0 is used for vi marking -->
-    <marker no="0"> 0,blue,light blue </marker>
-     
-    <!-- Indicator 0 is used for vi indicating yanked lines -->
-    <indicator no="0"> 6,black </indicator>
+    <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
+    <indicator no="wxEx_INDIC_VI"> wxSTC_INDIC_BOX,black </indicator>
     
     <!-- this style is used as default style, 
          and is applied before all other styles -->
