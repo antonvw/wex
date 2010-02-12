@@ -124,64 +124,66 @@ wxExFrame::~wxExFrame()
 
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExGrid* grid)
 {
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-    if (
-      event.GetEventType() == wxEVT_COMMAND_FIND ||
-      event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-    {
-      grid->FindNext(frd->GetFindString(), frd->SearchDown());
-    }
-    else
-    {
-      wxFAIL;
-    }
-
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    grid->FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExListView* lv)
 {
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-    if (
-      event.GetEventType() == wxEVT_COMMAND_FIND ||
-      event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-    {
-      lv->FindNext(frd->GetFindString(), frd->SearchDown());
-    }
-    else
-    {
-      wxFAIL;
-    }
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    lv->FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-    // Match word and regular expression do not work together.
-    if (frd->MatchWord())
-    {
-      frd->SetIsRegularExpression(false);
-    }
 
-    if (
-      event.GetEventType() == wxEVT_COMMAND_FIND ||
-      event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-    {
-      stc->FindNext(frd->SearchDown());
-    }
-    else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
-    {
-      stc->ReplaceNext(frd->SearchDown());
-    }
-    else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
-    {
-      stc->ReplaceAll(
-        frd->GetFindString(), 
-        frd->GetReplaceString());
-    }
-    else
-    {
-      wxFAIL;
-    }
+  // Match word and regular expression do not work together.
+  if (frd->MatchWord())
+  {
+    frd->SetIsRegularExpression(false);
+  }
+
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    stc->FindNext(frd->SearchDown());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  {
+    stc->ReplaceNext(frd->SearchDown());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
+  {
+    stc->ReplaceAll(
+      frd->GetFindString(), 
+      frd->GetReplaceString());
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 wxExGrid* wxExFrame::GetFocusedGrid()
@@ -295,9 +297,9 @@ void wxExFrame::OnClose(wxCloseEvent& event)
 
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
-  wxExGrid* grid = GetGrid();
-  wxExSTC* stc = GetSTC();
-  wxExListView* lv = GetListView();
+  wxExGrid* grid = GetFocusedGrid();
+  wxExSTC* stc = GetFocusedSTC();
+  wxExListView* lv = GetFocusedListView();
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   switch (command.GetId())
@@ -370,11 +372,11 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     {
       stc->FindNext(false);
     }
-    if (lv != NULL)
+    else if (lv != NULL)
     {
       lv->FindNext(frd->GetFindString(), false);
     }
-    if (grid != NULL)
+    else if (grid != NULL)
     {
       grid->FindNext(frd->GetFindString(), false); 
     }
