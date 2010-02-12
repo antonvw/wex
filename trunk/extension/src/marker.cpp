@@ -41,9 +41,16 @@ bool wxExMarker::IsOk() const
 
 void wxExMarker::Set(const wxXmlNode* node)
 {
-  const int no = 
-    atoi(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")).c_str());
+  const wxString single = 
+    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
 
+  if (!single.IsNumber())
+  {
+    wxLogError(_("Illegal marker: %s"), single.c_str());
+    return;
+  }
+
+  const int no = atoi(single.c_str());
   const wxString content = node->GetNodeContent().Strip(wxString::both);
 
   wxStringTokenizer fields(content, ",");

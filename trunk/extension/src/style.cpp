@@ -7,6 +7,7 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/log.h> 
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/style.h>
@@ -84,6 +85,13 @@ void wxExStyle::SetNo(const wxString& no)
     const wxString single = 
       wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken());
 
-    m_No.push_back(atoi(single.c_str()));
+    if (single.IsNumber())
+    {
+      m_No.push_back(atoi(single.c_str()));
+    }
+    else
+    {
+      wxLogError(_("Illegal style: %s"), single.c_str());
+    }
   }
 }

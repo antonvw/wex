@@ -45,17 +45,28 @@ bool wxExIndicator::IsOk() const
 
 void wxExIndicator::Set(const wxXmlNode* node)
 {
-  const int no = atoi(
-    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")).c_str());
+  const wxString single = 
+    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"));
 
-  m_Style = atoi(node->GetNodeContent().Strip(wxString::both).c_str());
+  if (!single.IsNumber())
+  {
+    wxLogError(_("Illegal indicator: %s"), single.c_str());
+    return;
+  }
 
+  const int no = atoi(single.c_str());
   const wxString content = node->GetNodeContent().Strip(wxString::both);
 
   wxStringTokenizer fields(content, ",");
 
   const wxString style = 
     wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+
+  if (!style.IsNumber())
+  {
+    wxLogError(_("Illegal indicator style: %s"), style.c_str());
+    return;
+  }
 
   if (fields.HasMoreTokens())
   {
