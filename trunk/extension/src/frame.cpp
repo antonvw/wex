@@ -188,11 +188,6 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
 
 wxExGrid* wxExFrame::GetFocusedGrid()
 {
-  if (m_FocusGrid != NULL)
-  {
-    return m_FocusGrid;
-  }
-
   wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
@@ -205,11 +200,6 @@ wxExGrid* wxExFrame::GetFocusedGrid()
 
 wxExListView* wxExFrame::GetFocusedListView()
 {
-  if (m_FocusListView != NULL)
-  {
-    return m_FocusListView;
-  }
-
   wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
@@ -222,11 +212,6 @@ wxExListView* wxExFrame::GetFocusedListView()
 
 wxExSTC* wxExFrame::GetFocusedSTC()
 {
-  if (m_FocusSTC != NULL)
-  {
-    return m_FocusSTC;
-  }
-
   wxWindow* win = wxWindow::FindFocus();
 
   if (win == NULL)
@@ -297,9 +282,6 @@ void wxExFrame::OnClose(wxCloseEvent& event)
 
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
-  wxExGrid* grid = GetFocusedGrid();
-  wxExSTC* stc = GetFocusedSTC();
-  wxExListView* lv = GetFocusedListView();
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   switch (command.GetId())
@@ -351,34 +333,34 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case ID_EDIT_FIND_NEXT: 
     GetSearchText();
 
-    if (stc != NULL)
+    if (m_FocusSTC != NULL)
     {
-      stc->FindNext(); 
+      m_FocusSTC->FindNext(); 
     }
-    else if (lv != NULL)
+    else if (m_FocusListView != NULL)
     {
-      lv->FindNext(frd->GetFindString()); 
+      m_FocusListView->FindNext(frd->GetFindString()); 
     }
-    else if (grid != NULL)
+    else if (m_FocusGrid != NULL)
     {
-      grid->FindNext(frd->GetFindString()); 
+      m_FocusGrid->FindNext(frd->GetFindString()); 
     }
     break;
 
   case ID_EDIT_FIND_PREVIOUS: 
     GetSearchText();
 
-    if (stc != NULL)
+    if (m_FocusSTC != NULL)
     {
-      stc->FindNext(false);
+      m_FocusSTC->FindNext(false);
     }
-    else if (lv != NULL)
+    else if (m_FocusListView != NULL)
     {
-      lv->FindNext(frd->GetFindString(), false);
+      m_FocusListView->FindNext(frd->GetFindString(), false);
     }
-    else if (grid != NULL)
+    else if (m_FocusGrid != NULL)
     {
-      grid->FindNext(frd->GetFindString(), false); 
+      m_FocusGrid->FindNext(frd->GetFindString(), false); 
     }
     break;
 

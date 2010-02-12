@@ -79,7 +79,8 @@ private:
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
 
-  const int m_IndicatorNumber;
+  const int m_IndicatorPut;
+  const int m_IndicatorYank;
   const int m_MarkerSymbol;
   const wxString m_FindDialogItem;
   

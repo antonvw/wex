@@ -23,15 +23,14 @@ wxString wxExVi::m_LastCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_MarkerSymbol(0)
-  , m_IndicatorNumber(0)
+  , m_IndicatorPut(1)
+  , m_IndicatorYank(0)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_FindDialogItem("searchline") // do not translate
 {
-  m_STC->SetIndicatorCurrent(m_IndicatorNumber);
-
   m_SearchText = wxExConfigFirstOf(m_FindDialogItem);
 }
 
@@ -236,6 +235,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     for (int i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
+    m_STC->SetIndicatorCurrent(m_IndicatorYank);
     m_STC->IndicatorFillRange(start, m_STC->GetCurrentPos() - start);
     m_STC->GotoPos(start);
   }
@@ -313,18 +313,43 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         for (int i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
         break;
+
       case 'p': 
-        if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
+        {
+        const wxString text = wxExClipboardGet();
+        if (wxExGetNumberOfLines(text) > 1)
         {
           m_STC->LineDown();
           m_STC->Home();
         }
+        const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
+        m_STC->SetIndicatorCurrent(m_IndicatorPut);
+        m_STC->IndicatorFillRange(pos, text.length());
+        if (wxExGetNumberOfLines(text) > 1)
         {
           m_STC->LineUp();
         }
+        }
         break;
+      case 'P':
+        {
+        const wxString text = wxExClipboardGet();
+        if (wxExGetNumberOfLines(text) > 1)
+        {
+          m_STC->Home();
+        }
+        else
+        {
+          m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
+        }
+        const int pos = m_STC->GetCurrentPos();
+        m_STC->Paste();
+        m_STC->SetIndicatorCurrent(m_IndicatorPut);
+        m_STC->IndicatorFillRange(pos, text.length());
+        }
+        break;
+
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
       case 'x': 
@@ -361,17 +386,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'N': 
         for (int i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);
-        break;
-      case 'P':
-        if (wxExGetNumberOfLines(wxExClipboardGet()) > 1)
-        {
-          m_STC->Home();
-        }
-        else
-        {
-          m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
-        }
-        m_STC->Paste();
         break;
       case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
@@ -1041,11 +1055,13 @@ void wxExVi::Yank(int lines) const
   if (end != -1)
   {
     m_STC->CopyRange(start, end);
+    m_STC->SetIndicatorCurrent(m_IndicatorYank);
     m_STC->IndicatorFillRange(start, end - start);
   }
   else
   {
     m_STC->CopyRange(start, m_STC->GetLastPosition());
+    m_STC->SetIndicatorCurrent(m_IndicatorYank);
     m_STC->IndicatorFillRange(start, m_STC->GetLastPosition() - start);
   }
 
@@ -1075,6 +1091,7 @@ bool wxExVi::Yank(
 
   m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
   m_STC->CopyRange(start, end);
+  m_STC->SetIndicatorCurrent(m_IndicatorYank);
   m_STC->IndicatorFillRange(start, end - start);
 
 #if wxUSE_STATUSBAR
