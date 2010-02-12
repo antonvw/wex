@@ -235,8 +235,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     for (int i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
-    m_STC->SetIndicatorCurrent(m_IndicatorYank);
-    m_STC->IndicatorFillRange(start, m_STC->GetCurrentPos() - start);
+    SetIndicator(m_IndicatorYank, start, m_STC->GetCurrentPos());
     m_STC->GotoPos(start);
   }
   else if (command.EndsWith("yy"))
@@ -324,9 +323,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
-        m_STC->SetIndicatorCurrent(m_IndicatorPut);
-        m_STC->IndicatorFillRange(pos, text.length());
+        SetIndicator(m_IndicatorPut, pos, pos + text.length());
         if (wxExGetNumberOfLines(text) > 1)
         {
           m_STC->LineUp();
@@ -346,9 +343,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
-        m_STC->SetIndicatorCurrent(m_IndicatorPut);
-        m_STC->IndicatorFillRange(pos, text.length());
+        SetIndicator(m_IndicatorPut, pos, pos + text.length());
         }
         break;
 
@@ -893,6 +888,20 @@ void wxExVi::Repeat()
   }
 }
 
+void wxExVi::SetIndicator(int indicator, int start, int end) const
+{
+  m_STC->SetIndicatorCurrent(indicator);
+
+  // When yanking, old one can be cleared.
+  // For put it is useful to keep them.
+  if (indicator == m_IndicatorYank)
+  {
+    m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
+  }
+
+  m_STC->IndicatorFillRange(start, end - start);
+}
+
 bool wxExVi::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address) const
@@ -1052,19 +1061,15 @@ void wxExVi::Yank(int lines) const
   const int start = m_STC->PositionFromLine(line);
   const int end = m_STC->PositionFromLine(line + lines);
 
-  m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
-
   if (end != -1)
   {
     m_STC->CopyRange(start, end);
-    m_STC->SetIndicatorCurrent(m_IndicatorYank);
-    m_STC->IndicatorFillRange(start, end - start);
+    SetIndicator(m_IndicatorYank, start, end);
   }
   else
   {
     m_STC->CopyRange(start, m_STC->GetLastPosition());
-    m_STC->SetIndicatorCurrent(m_IndicatorYank);
-    m_STC->IndicatorFillRange(start, m_STC->GetLastPosition() - start);
+    SetIndicator(m_IndicatorYank, start, m_STC->GetLastPosition());
   }
 
 #if wxUSE_STATUSBAR
@@ -1091,10 +1096,8 @@ bool wxExVi::Yank(
   const int start = m_STC->PositionFromLine(begin_line);
   const int end = m_STC->PositionFromLine(end_line);
 
-  m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
   m_STC->CopyRange(start, end);
-  m_STC->SetIndicatorCurrent(m_IndicatorYank);
-  m_STC->IndicatorFillRange(start, end - start);
+  SetIndicator(m_IndicatorYank, start, end);
 
 #if wxUSE_STATUSBAR
   const int lines = end_line - begin_line;
