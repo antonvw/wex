@@ -1243,7 +1243,8 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_R_INFIX"> 10 </def>
     <def no ="wxSTC_R_INFIXEOL"> 11 </def>
     
-    <def no ="wxEx_INDIC_VI"> 0 </def>
+    <def no ="wxEx_INDIC_VI_YANK"> 0 </def>
+    <def no ="wxEx_INDIC_VI_PUT"> 1 </def>
     <def no ="wxEx_MARKNUM_VI"> 0 </def>
     <def no ="folder"> light blue </def>
     
@@ -1281,7 +1282,8 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
     <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
-    <indicator no="wxEx_INDIC_VI"> wxSTC_INDIC_BOX,black </indicator>
+    <indicator no="wxEx_INDIC_VI_YANK"> wxSTC_INDIC_BOX,black </indicator>
+    <indicator no="wxEx_INDIC_VI_PUT"> wxSTC_INDIC_BOX,blue </indicator>
     
     <!-- this style is used as default style, 
          and is applied before all other styles -->
