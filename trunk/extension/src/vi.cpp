@@ -324,6 +324,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
+        m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
         m_STC->SetIndicatorCurrent(m_IndicatorPut);
         m_STC->IndicatorFillRange(pos, text.length());
         if (wxExGetNumberOfLines(text) > 1)
@@ -345,6 +346,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
+        m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
         m_STC->SetIndicatorCurrent(m_IndicatorPut);
         m_STC->IndicatorFillRange(pos, text.length());
         }
