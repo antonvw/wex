@@ -324,7 +324,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        SetIndicator(m_IndicatorPut, pos, pos + text.length());
+        SetIndicator(m_IndicatorPut, pos, pos + text.length() - 1);
         if (wxExGetNumberOfLines(text) > 1)
         {
           m_STC->LineUp();
@@ -344,7 +344,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        SetIndicator(m_IndicatorPut, pos, pos + text.length());
+        SetIndicator(m_IndicatorPut, pos, pos + text.length() - 1);
         }
         break;
 
@@ -1065,7 +1065,7 @@ void wxExVi::Yank(int lines) const
 {
   const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
   const int start = m_STC->PositionFromLine(line);
-  const int end = m_STC->GetLineEndPosition(line + lines - 1);
+  const int end = m_STC->PositionFromLine(line + lines);
 
   if (end != -1)
   {
@@ -1100,7 +1100,7 @@ bool wxExVi::Yank(
   }
 
   const int start = m_STC->PositionFromLine(begin_line);
-  const int end = m_STC->GetLineEndPosition(end_line);
+  const int end = m_STC->PositionFromLine(end_line);
 
   m_STC->CopyRange(start, end);
   SetIndicator(m_IndicatorYank, start, end);
