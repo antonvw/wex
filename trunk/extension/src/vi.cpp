@@ -24,6 +24,7 @@ wxString wxExVi::m_LastCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_MarkerSymbol(0)
+  , m_IndicatorInsert(2)
   , m_IndicatorPut(1)
   , m_IndicatorYank(0)
   , m_InsertMode(false)
@@ -801,6 +802,11 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 {
   if (m_InsertMode)
   {
+    SetIndicator(
+      m_IndicatorInsert, 
+      m_STC->GetCurrentPos() - 1, 
+      m_STC->GetCurrentPos() + 1);
+
     m_InsertText += event.GetUnicodeKey();
 
     return true;
