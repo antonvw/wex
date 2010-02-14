@@ -325,7 +325,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        SetIndicator(m_IndicatorPut, pos, pos + text.length() - 1);
+        SetIndicator(
+          m_IndicatorPut, 
+          pos, 
+          text.EndsWith(m_STC->GetEOL()) ? pos + text.length() - 1: pos + text.length());
         if (wxExGetNumberOfLines(text) > 1)
         {
           m_STC->LineUp();
@@ -345,7 +348,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         }
         const int pos = m_STC->GetCurrentPos();
         m_STC->Paste();
-        SetIndicator(m_IndicatorPut, pos, pos + text.length() - 1);
+        SetIndicator(
+          m_IndicatorPut, 
+          pos, 
+          text.EndsWith(m_STC->GetEOL()) ? pos + text.length() - 1: pos + text.length());
         }
         break;
 
