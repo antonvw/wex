@@ -808,11 +808,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 {
   if (m_InsertMode)
   {
-    SetIndicator(
-      m_IndicatorInsert, 
-      m_STC->GetCurrentPos() - 1, 
-      m_STC->GetCurrentPos() + 1);
-
     m_InsertText += event.GetUnicodeKey();
 
     return true;
@@ -853,6 +848,14 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       return true;
     }
   }
+}
+
+void wxExVi::OnCharAdded(const wxStyledTextEvent& event)
+{
+  SetIndicator(
+    m_IndicatorInsert, 
+    m_STC->GetCurrentPos() - 1, 
+    m_STC->GetCurrentPos());
 }
 
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)

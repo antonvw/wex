@@ -15,6 +15,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/stc/stc.h>
 
 #if wxUSE_GUI
 
@@ -34,6 +35,9 @@ public:
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   bool OnChar(const wxKeyEvent& event);
+
+  /// Handles char added events.
+  void OnCharAdded(const wxStyledTextEvent& event);
 
   /// Handles keydown events.
   /// Returns true if event is allowed to be skipped.

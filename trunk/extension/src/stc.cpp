@@ -49,6 +49,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
+  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
@@ -1670,6 +1671,10 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
       wxExFrame::StatusText(wxDateTime::Now().Format());
 #endif
     }
+  }
+  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
+  {
+    m_vi->OnCharAdded(event);
   }
   else
   {
