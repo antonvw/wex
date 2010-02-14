@@ -24,6 +24,9 @@ public:
   /// Applies this indicator to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
+  /// Returns the no.
+  int GetNo() const {return m_No;};
+
   /// Returns true if this indicator is valid.
   bool IsOk() const;
 private:

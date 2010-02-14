@@ -181,6 +181,22 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
+bool wxExLexers::IndicatorIsLoaded(int indic) const
+{
+  for (
+    std::vector<wxExIndicator>::const_iterator it = m_Indicators.begin();
+    it != m_Indicators.end();
+    ++it)
+  {
+    if (it->GetNo() == indic)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();

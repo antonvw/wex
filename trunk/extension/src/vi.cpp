@@ -11,6 +11,7 @@
 #include <wx/extension/vi.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -890,6 +891,11 @@ void wxExVi::Repeat()
 
 void wxExVi::SetIndicator(int indicator, int start, int end) const
 {
+  if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
+  {
+    return;
+  }
+
   m_STC->SetIndicatorCurrent(indicator);
 
   // When yanking, old one can be cleared.
