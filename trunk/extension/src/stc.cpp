@@ -1282,6 +1282,8 @@ void wxExSTC::Initialize()
 #endif
   ConfigGet();
 
+  SetBackSpaceUnIndents(true);
+
   SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
   SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
   SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
