@@ -34,10 +34,25 @@ public:
   /// Constructor for lexers from specified filename.
   wxExLexers(const wxFileName& filename);
 
+  /// Sets global styles for specified component.
+  void ApplyGlobalStyles(wxStyledTextCtrl* stc) const;
+
+  /// Sets hex styles for specified component.
+  void ApplyHexStyles(wxStyledTextCtrl* stc) const;
+
+  /// Sets indicators for specified component.
+  void ApplyIndicators(wxStyledTextCtrl* stc) const;
+
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
   /// Otherwise the same text is returned.
   const wxString ApplyMacro(const wxString& text) const;
+
+  /// Sets markers for specified component.
+  void ApplyMarkers(wxStyledTextCtrl* stc) const;
+
+  /// Sets properties for specified component.
+  void ApplyProperties(wxStyledTextCtrl* stc) const;
 
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
@@ -82,21 +97,6 @@ public:
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
   static wxExLexers* Set(wxExLexers* lexers);
-
-  /// Sets global styles for specified component.
-  void SetGlobalStyles(wxStyledTextCtrl* stc) const;
-
-  /// Sets hex styles for specified component.
-  void SetHexStyles(wxStyledTextCtrl* stc) const;
-
-  /// Sets indicators for specified component.
-  void SetIndicators(wxStyledTextCtrl* stc) const;
-
-  /// Sets markers for specified component.
-  void SetMarkers(wxStyledTextCtrl* stc) const;
-
-  /// Sets properties for specified component.
-  void SetProperties(wxStyledTextCtrl* stc) const;
 
   /// Shows a dialog with all lexers, allowing you to choose one.
   /// Returns true if you selected one.

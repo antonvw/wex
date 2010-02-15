@@ -507,8 +507,8 @@ void wxExSTC::Colourise()
 {
   GetFileName().GetLexer().SetKeywords(this);
   SetGlobalStyles();
-  wxExLexers::Get()->SetProperties(this);
-  wxExLexers::Get()->SetMarkers(this);
+  wxExLexers::Get()->ApplyProperties(this);
+  wxExLexers::Get()->ApplyMarkers(this);
   GetFileName().GetLexer().SetProperties(this);
   SetFolding();
   GetFileName().GetLexer().Colourise(this);
@@ -783,7 +783,7 @@ void wxExSTC::DoFileLoad(bool synced)
   }
   else
   {
-    wxExLexers::Get()->SetMarkers(this);
+    wxExLexers::Get()->ApplyMarkers(this);
   }
 
   if (m_Flags & STC_OPEN_READ_ONLY ||
@@ -2071,16 +2071,17 @@ void wxExSTC::SetFolding()
 void wxExSTC::SetGlobalStyles()
 {
   wxExLexers::Get()->GetDefaultStyle().Apply(this);
+
   StyleClearAll();
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
-    wxExLexers::Get()->SetGlobalStyles(this);
-    wxExLexers::Get()->SetIndicators(this);
+    wxExLexers::Get()->ApplyGlobalStyles(this);
+    wxExLexers::Get()->ApplyIndicators(this);
   }
   else
   {
-    wxExLexers::Get()->SetHexStyles(this);
+    wxExLexers::Get()->ApplyHexStyles(this);
   }
 }
 

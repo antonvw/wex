@@ -23,6 +23,24 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 {
 }
 
+void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Styles.begin(), m_Styles.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+}
+
+void wxExLexers::ApplyHexStyles(wxStyledTextCtrl* stc) const
+{
+  for_each (m_StylesHex.begin(), m_StylesHex.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+}
+
+void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Indicators.begin(), m_Indicators.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExIndicator::Apply), stc));
+}
+
 const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
   std::map<wxString, wxString>::const_iterator it = m_Macros.find(text);
@@ -35,6 +53,18 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   {
     return text;
   }
+}
+
+void wxExLexers::ApplyMarkers(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Markers.begin(), m_Markers.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExMarker::Apply), stc));
+}
+
+void wxExLexers::ApplyProperties(wxStyledTextCtrl* stc) const
+{
+  for_each (m_GlobalProperties.begin(), m_GlobalProperties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
 const wxString wxExLexers::BuildWildCards(
@@ -415,36 +445,6 @@ wxExLexers* wxExLexers::Set(wxExLexers* lexers)
   wxExLexers* old = m_Self;
   m_Self = lexers;
   return old;
-}
-
-void wxExLexers::SetGlobalStyles(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Styles.begin(), m_Styles.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-}
-
-void wxExLexers::SetHexStyles(wxStyledTextCtrl* stc) const
-{
-  for_each (m_StylesHex.begin(), m_StylesHex.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-}
-
-void wxExLexers::SetIndicators(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Indicators.begin(), m_Indicators.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExIndicator::Apply), stc));
-}
-
-void wxExLexers::SetMarkers(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Markers.begin(), m_Markers.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExMarker::Apply), stc));
-}
-
-void wxExLexers::SetProperties(wxStyledTextCtrl* stc) const
-{
-  for_each (m_GlobalProperties.begin(), m_GlobalProperties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
 bool wxExLexers::ShowDialog(
