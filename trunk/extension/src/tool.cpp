@@ -68,13 +68,6 @@ void wxExTool::Log(
   const wxString& caption, 
   bool log_to_file) const
 {
-  // This is no error, if you run a tool and you cancelled everything,
-  // the elements will be empty, so just quit.
-  if (stat->GetItems().empty())
-  {
-    return;
-  }
-
   wxString logtext(Info());
 
   if (logtext.Contains("%ld"))
