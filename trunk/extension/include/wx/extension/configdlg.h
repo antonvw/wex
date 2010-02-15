@@ -59,7 +59,6 @@ private:
   void AddSizerItemBrowse(wxSizer* sizer,  const wxExConfigItem& item);
   void AddSizerItemLabeled(wxSizer* sizer, 
     const wxExConfigItem& item, bool expand = true, bool hide = false);
-  void Update(wxComboBox* cb, const wxString& value) const;
 
   wxComboBox* m_BrowseDir;
 

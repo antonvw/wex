@@ -183,17 +183,14 @@ void wxExConfigDialog::Add(
       break;
     }
 
-    if (sizer != NULL)
+    if ( sizer->GetRows() > 0 &&
+        !sizer->IsRowGrowable(sizer->GetRows() - 1))
     {
-      if ( sizer->GetRows() > 0 &&
-          !sizer->IsRowGrowable(sizer->GetRows() - 1))
-      {
-        sizer->AddGrowableRow(sizer->GetRows() - 1);
-      }
+      sizer->AddGrowableRow(sizer->GetRows() - 1);
     }
   }
 
-  if (page_panel != NULL && notebook_sizer != NULL && sizer != NULL)
+  if (page_panel != NULL && notebook_sizer != NULL)
   {
     page_panel->SetSizer(sizer);
 
@@ -445,19 +442,6 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   else
   {
     event.Enable(true);
-  }
-}
-
-void wxExConfigDialog::Update(wxComboBox* cb, const wxString& value) const
-{
-  if (!value.empty())
-  {
-    if (cb->FindString(value) == wxNOT_FOUND)
-    {
-      cb->Append(value);
-    }
-
-    cb->SetValue(value);
   }
 }
 #endif // wxUSE_GUI
