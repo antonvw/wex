@@ -31,6 +31,15 @@ public:
   /// Default constructor.
   wxExLexer(const wxXmlNode* node = NULL);
 
+  /// Sets keywords for specified component.
+  void ApplyKeywords(wxStyledTextCtrl* stc) const;
+
+  /// Sets properties for specified component.
+  void ApplyProperties(wxStyledTextCtrl* stc) const;
+
+  /// Resets properties for specified component.
+  void ApplyResetProperties(wxStyledTextCtrl* stc) const;
+
   /// Colourises the component.
   void Colourise(wxStyledTextCtrl* stc) const;
 
@@ -83,15 +92,6 @@ public:
     const wxString& text,
     bool fill_out_with_space = true,
     bool fill_out = true) const;
-
-  /// Resets properties for specified component.
-  void ResetProperties(wxStyledTextCtrl* stc) const;
-
-  /// Sets keywords for specified component.
-  void SetKeywords(wxStyledTextCtrl* stc) const;
-
-  /// Sets properties for specified component.
-  void SetProperties(wxStyledTextCtrl* stc) const;
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;

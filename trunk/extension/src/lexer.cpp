@@ -37,6 +37,38 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   }
 }
 
+void wxExLexer::ApplyKeywords(wxStyledTextCtrl* stc) const
+{
+  // Reset keywords, also if no lexer is available.
+  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
+  {
+    stc->SetKeyWords(setno, wxEmptyString);
+  }
+
+  // Readme: The Scintilla lexer only recognized lower case words, apparently.
+  for (
+    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.begin();
+    it != m_KeywordsSet.end();
+    ++it)
+  {
+    stc->SetKeyWords(
+      it->first,
+      GetKeywordsString(it->first).Lower());
+  }
+}
+
+void wxExLexer::ApplyProperties(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
+}
+
+void wxExLexer::ApplyResetProperties(wxStyledTextCtrl* stc) const
+{
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
+}
+
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
   const wxString& lexer) const
 {
@@ -73,6 +105,9 @@ void wxExLexer::Colourise(wxStyledTextCtrl* stc) const
 {
   for_each (m_Colourings.begin(), m_Colourings.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+
+  // And finally colour the entire document.
+  stc->Colourise(0, stc->GetLength() - 1);
 }
 
 const wxString wxExLexer::GetFormattedText(
@@ -343,32 +378,6 @@ const std::vector<wxExStyle> wxExLexer::ParseTagColourings(
   return text;
 }
 
-void wxExLexer::ResetProperties(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
-}
-
-void wxExLexer::SetKeywords(wxStyledTextCtrl* stc) const
-{
-  // Reset keywords, also if no lexer is available.
-  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
-  {
-    stc->SetKeyWords(setno, wxEmptyString);
-  }
-
-  // Readme: The Scintilla lexer only recognized lower case words, apparently.
-  for (
-    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.begin();
-    it != m_KeywordsSet.end();
-    ++it)
-  {
-    stc->SetKeyWords(
-      it->first,
-      GetKeywordsString(it->first).Lower());
-  }
-}
-
 bool wxExLexer::SetKeywords(const wxString& value)
 {
   if (!m_Keywords.empty())
@@ -430,12 +439,6 @@ bool wxExLexer::SetKeywords(const wxString& value)
   m_KeywordsSet.insert(make_pair(setno, keywords_set));
 
   return true;
-}
-
-void wxExLexer::SetProperties(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
 int wxExLexer::UsableCharactersPerLine() const

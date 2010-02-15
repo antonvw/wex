@@ -505,16 +505,13 @@ void wxExSTC::ClearDocument()
 
 void wxExSTC::Colourise()
 {
-  GetFileName().GetLexer().SetKeywords(this);
+  GetFileName().GetLexer().ApplyKeywords(this);
   SetGlobalStyles();
   wxExLexers::Get()->ApplyProperties(this);
   wxExLexers::Get()->ApplyMarkers(this);
-  GetFileName().GetLexer().SetProperties(this);
+  GetFileName().GetLexer().ApplyProperties(this);
   SetFolding();
   GetFileName().GetLexer().Colourise(this);
-
-  // And finally colour the entire document.
-  wxStyledTextCtrl::Colourise(0, GetLength() - 1);
 }
 
 // This is a static method, cannot use normal members here.
@@ -2091,7 +2088,7 @@ void wxExSTC::SetLexer(const wxString& lexer, bool forced)
 
   // Reset all old properties. 
   // Should be before SetFileNameLexer.
-  GetFileName().GetLexer().ResetProperties(this);
+  GetFileName().GetLexer().ApplyResetProperties(this);
 
   SetFileNameLexer(lexer, (forced ? "forced": GetLine(0)));
 
