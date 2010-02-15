@@ -1674,7 +1674,10 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
-    m_vi->OnCharAdded(event);
+    if (m_viMode)
+    {
+      m_vi->OnCharAdded(event);
+    }
   }
   else
   {
