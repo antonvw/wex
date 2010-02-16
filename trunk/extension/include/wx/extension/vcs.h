@@ -27,7 +27,7 @@ public:
   /// VCS types supported.
   enum wxExVCSCommand
   {
-    VCS_NONE,     ///< not ok value
+    VCS_NO_COMMAND, ///< not ok value
     VCS_ADD,      ///< vcs add
     VCS_BLAME,    ///< vcs blame
     VCS_CAT,      ///< vcs cat
@@ -46,7 +46,9 @@ public:
 
   enum wxExVCSSystem
   {
-    VCS_SVN, /// currently only svn is supported
+    VCS_NONE, ///< no version control
+    VCS_GIT,  ///< GIT version control
+    VCS_SVN,  ///< Subversion version control
   };
 
   /// Default constructor.
@@ -115,7 +117,7 @@ private:
   bool UseFlags() const;
   bool UseSubcommand() const;
 
-  wxExVCSSystem m_System;
+  long m_System;
   const wxExVCSCommand m_Command;
 
   wxString m_Caption;
@@ -130,6 +132,5 @@ private:
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;
 #endif  
-  static wxString m_UsageKey;
 };
 #endif

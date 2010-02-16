@@ -22,10 +22,9 @@ wxExVCS* wxExVCS::m_Self = NULL;
 #if wxUSE_GUI
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
-wxString wxExVCS::m_UsageKey;
 
 wxExVCS::wxExVCS()
-  : m_Command(VCS_NONE)
+  : m_Command(VCS_NO_COMMAND)
   , m_FullPath(wxEmptyString)
 {
   Initialize();
@@ -52,7 +51,13 @@ int wxExVCS::ConfigDialog(
 {
   std::vector<wxExConfigItem> v;
   v.push_back(wxExConfigItem()); // a spacer
-  v.push_back(wxExConfigItem(m_UsageKey, CONFIG_CHECKBOX));
+
+  std::map<long, const wxString> choices;
+  choices.insert(std::make_pair(VCS_NONE, _("None")));
+  choices.insert(std::make_pair(VCS_GIT, "GIT"));
+  choices.insert(std::make_pair(VCS_SVN, "SVN"));
+  v.push_back(wxExConfigItem("VCS", choices));
+
   v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
 
   return wxExConfigDialog(parent, v, title).ShowModal();
@@ -65,6 +70,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
   switch (m_System)
   {
+    case VCS_GIT: path.AppendDir(".git"); break;
     case VCS_SVN: path.AppendDir(".svn"); break;
     default: wxFAIL;
   }
@@ -74,7 +80,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(m_Command != VCS_NONE);
+  wxASSERT(m_Command != VCS_NO_COMMAND);
 
   const wxString cwd = wxGetCwd();
 
@@ -136,6 +142,7 @@ long wxExVCS::Execute()
 
   switch (m_System)
   {
+    case VCS_GIT: vcs_bin = "git"; break;
     case VCS_SVN: vcs_bin = "svn"; break;
     default: wxFAIL;
   }
@@ -218,9 +225,9 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   {
     m_Self = new wxExVCS;
 
-    if (!wxConfigBase::Get()->Exists(m_UsageKey))
+    if (!wxConfigBase::Get()->Exists("VCS"))
     {
-      wxConfigBase::Get()->Write(m_UsageKey, true);
+      wxConfigBase::Get()->Write("VCS", (long)VCS_NONE);
     }
   }
 
@@ -288,14 +295,14 @@ wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
 
     default:
       wxFAIL;
-      return VCS_NONE;
+      return VCS_NO_COMMAND;
       break;
   }
 }
 
 void wxExVCS::Initialize()
 {
-  if (m_Command != VCS_NONE)
+  if (m_Command != VCS_NO_COMMAND)
   {
     switch (m_Command)
     {
@@ -328,13 +335,7 @@ void wxExVCS::Initialize()
   // Use general key.
   m_FlagsKey = wxString::Format("cvsflags/name%d", m_Command);
 
-  m_System = VCS_SVN;
-
-  switch (m_System)
-  {
-    case VCS_SVN: m_UsageKey = _("Use SVN"); break;
-    default: wxFAIL;
-  }
+  m_System = wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
 }
 
 #if wxUSE_GUI
@@ -463,7 +464,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::Use() const
 {
-  return wxConfigBase::Get()->ReadBool(m_UsageKey, true);
+  return wxConfigBase::Get()->ReadLong("VCS", VCS_NONE) != VCS_NONE;
 }
 
 bool wxExVCS::UseFlags() const
