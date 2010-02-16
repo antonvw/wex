@@ -65,7 +65,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
   switch (m_System)
   {
-    case VCS_SVN: path.AppendDir(".svn");
+    case VCS_SVN: path.AppendDir(".svn"); break;
     default: wxFAIL;
   }
 
@@ -325,7 +325,7 @@ void wxExVCS::Initialize()
   // Currently only svn is supported.
   switch (m_System)
   {
-    case VCS_SVN: m_UsageKey = _("Use SVN");
+    case VCS_SVN: m_UsageKey = _("Use SVN"); break;
     default: wxFAIL;
   }
 }
