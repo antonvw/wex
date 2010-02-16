@@ -120,7 +120,6 @@ private:
   bool UseFlags() const;
   bool UseSubcommand() const;
 
-  long m_System;
   const wxExVCSCommand m_Command;
 
   wxString m_Caption;

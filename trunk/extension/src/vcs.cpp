@@ -66,9 +66,14 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
+  if (!Use())
+  {
+    return false;
+  }
+
   wxFileName path(filename);
 
-  switch (m_System)
+  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
   {
     case VCS_GIT: path.AppendDir(".git"); break;
     case VCS_SVN: path.AppendDir(".svn"); break;
@@ -140,7 +145,7 @@ long wxExVCS::Execute()
 
   wxString vcs_bin;
 
-  switch (m_System)
+  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
   {
     case VCS_GIT: vcs_bin = "git"; break;
     case VCS_SVN: vcs_bin = "svn"; break;
@@ -334,8 +339,6 @@ void wxExVCS::Initialize()
 
   // Use general key.
   m_FlagsKey = wxString::Format("cvsflags/name%d", m_Command);
-
-  m_System = wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
 }
 
 #if wxUSE_GUI
