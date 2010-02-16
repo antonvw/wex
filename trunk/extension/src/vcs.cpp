@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          svn.cpp
-* Purpose:       Implementation of wxExSVN class
+* File:          vcs.cpp
+* Purpose:       Implementation of wxExVCS class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
@@ -18,27 +18,27 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
-wxExSVN* wxExSVN::m_Self = NULL;
+wxExVCS* wxExVCS::m_Self = NULL;
 #if wxUSE_GUI
-wxExSTCEntryDialog* wxExSVN::m_STCEntryDialog = NULL;
+wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
-wxString wxExSVN::m_UsageKey;
+wxString wxExVCS::m_UsageKey;
 
-wxExSVN::wxExSVN()
-  : m_Type(SVN_NONE)
+wxExVCS::wxExVCS()
+  : m_Type(VCS_NONE)
   , m_FullPath(wxEmptyString)
 {
   Initialize();
 }
 
-wxExSVN::wxExSVN(int command_id, const wxString& fullpath)
+wxExVCS::wxExVCS(int command_id, const wxString& fullpath)
   : m_Type(GetType(command_id))
   , m_FullPath(fullpath)
 {
   Initialize();
 }
 
-wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
+wxExVCS::wxExVCS(wxExVCSType type, const wxString& fullpath)
   : m_Type(type)
   , m_FullPath(fullpath)
 {
@@ -46,7 +46,7 @@ wxExSVN::wxExSVN(wxExSVNType type, const wxString& fullpath)
 }
 
 #if wxUSE_GUI
-int wxExSVN::ConfigDialog(
+int wxExVCS::ConfigDialog(
   wxWindow* parent,
   const wxString& title) const
 {
@@ -59,16 +59,22 @@ int wxExSVN::ConfigDialog(
 }
 #endif
 
-bool wxExSVN::DirExists(const wxFileName& filename) const
+bool wxExVCS::DirExists(const wxFileName& filename) const
 {
   wxFileName path(filename);
-  path.AppendDir(".svn");
+
+  switch (m_System)
+  {
+    case VCS_SVN: path.AppendDir(".svn");
+    default: wxFAIL;
+  }
+
   return path.DirExists();
 }
 
-long wxExSVN::Execute()
+long wxExVCS::Execute()
 {
-  wxASSERT(m_Type != SVN_NONE);
+  wxASSERT(m_Type != VCS_NONE);
 
   const wxString cwd = wxGetCwd();
 
@@ -82,7 +88,7 @@ long wxExSVN::Execute()
       return -1;
     }
 
-    if (m_Type == SVN_ADD)
+    if (m_Type == VCS_ADD)
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
@@ -94,7 +100,7 @@ long wxExSVN::Execute()
 
   wxString comment;
 
-  if (m_Type == SVN_COMMIT)
+  if (m_Type == VCS_COMMIT)
   {
     comment = 
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
@@ -179,7 +185,7 @@ long wxExSVN::Execute()
 }
 
 #if wxUSE_GUI
-wxStandardID wxExSVN::ExecuteDialog(wxWindow* parent)
+wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 {
   if (ShowDialog(parent) == wxID_CANCEL)
   {
@@ -198,11 +204,11 @@ wxStandardID wxExSVN::ExecuteDialog(wxWindow* parent)
 }
 #endif
 
-wxExSVN* wxExSVN::Get(bool createOnDemand)
+wxExVCS* wxExVCS::Get(bool createOnDemand)
 {
   if (m_Self == NULL && createOnDemand)
   {
-    m_Self = new wxExSVN;
+    m_Self = new wxExVCS;
 
     if (!wxConfigBase::Get()->Exists(m_UsageKey))
     {
@@ -213,110 +219,119 @@ wxExSVN* wxExSVN::Get(bool createOnDemand)
   return m_Self;
 }
 
-wxExSVN::wxExSVNType wxExSVN::GetType(int command_id) const
+wxExVCS::wxExVCSType wxExVCS::GetType(int command_id) const
 {
   switch (command_id)
   {
-    case ID_EDIT_SVN_ADD: 
-    case ID_SVN_ADD:
-      return SVN_ADD; break;
+    case ID_EDIT_VCS_ADD: 
+    case ID_VCS_ADD:
+      return VCS_ADD; break;
 
-    case ID_EDIT_SVN_BLAME: 
-    case ID_SVN_BLAME:
-      return SVN_BLAME; break;
+    case ID_EDIT_VCS_BLAME: 
+    case ID_VCS_BLAME:
+      return VCS_BLAME; break;
 
-    case ID_EDIT_SVN_CAT: 
-      return SVN_CAT; break;
+    case ID_EDIT_VCS_CAT: 
+      return VCS_CAT; break;
 
-    case ID_EDIT_SVN_COMMIT: 
-    case ID_SVN_COMMIT:
-      return SVN_COMMIT; break;
+    case ID_EDIT_VCS_COMMIT: 
+    case ID_VCS_COMMIT:
+      return VCS_COMMIT; break;
 
-    case ID_EDIT_SVN_DIFF: 
-    case ID_SVN_DIFF:
-      return SVN_DIFF; break;
+    case ID_EDIT_VCS_DIFF: 
+    case ID_VCS_DIFF:
+      return VCS_DIFF; break;
 
-    case ID_EDIT_SVN_HELP: 
-    case ID_SVN_HELP:
-      return SVN_HELP; break;
+    case ID_EDIT_VCS_HELP: 
+    case ID_VCS_HELP:
+      return VCS_HELP; break;
 
-    case ID_EDIT_SVN_INFO: 
-    case ID_SVN_INFO:
-      return SVN_INFO; break;
+    case ID_EDIT_VCS_INFO: 
+    case ID_VCS_INFO:
+      return VCS_INFO; break;
 
-    case ID_EDIT_SVN_LOG: 
-    case ID_SVN_LOG:
-      return SVN_LOG; break;
+    case ID_EDIT_VCS_LOG: 
+    case ID_VCS_LOG:
+      return VCS_LOG; break;
 
-    case ID_EDIT_SVN_LS: 
-    case ID_SVN_LS:
-      return SVN_LS; break;
+    case ID_EDIT_VCS_LS: 
+    case ID_VCS_LS:
+      return VCS_LS; break;
 
-    case ID_EDIT_SVN_PROPLIST: 
-    case ID_SVN_PROPLIST:
-      return SVN_PROPLIST; break;
+    case ID_EDIT_VCS_PROPLIST: 
+    case ID_VCS_PROPLIST:
+      return VCS_PROPLIST; break;
 
-    case ID_EDIT_SVN_PROPSET: 
-    case ID_SVN_PROPSET:
-      return SVN_PROPSET; break;
+    case ID_EDIT_VCS_PROPSET: 
+    case ID_VCS_PROPSET:
+      return VCS_PROPSET; break;
 
-    case ID_EDIT_SVN_REVERT: 
-    case ID_SVN_REVERT:
-      return SVN_REVERT; break;
+    case ID_EDIT_VCS_REVERT: 
+    case ID_VCS_REVERT:
+      return VCS_REVERT; break;
 
-    case ID_EDIT_SVN_STAT: 
-    case ID_SVN_STAT:
-      return SVN_STAT; break;
+    case ID_EDIT_VCS_STAT: 
+    case ID_VCS_STAT:
+      return VCS_STAT; break;
 
-    case ID_EDIT_SVN_UPDATE: 
-    case ID_SVN_UPDATE:
-      return SVN_UPDATE; break;
+    case ID_EDIT_VCS_UPDATE: 
+    case ID_VCS_UPDATE:
+      return VCS_UPDATE; break;
 
     default:
       wxFAIL;
-      return SVN_NONE;
+      return VCS_NONE;
       break;
   }
 }
 
-void wxExSVN::Initialize()
+void wxExVCS::Initialize()
 {
-  if (m_Type != SVN_NONE)
+  if (m_Type != VCS_NONE)
   {
     switch (m_Type)
     {
-      case SVN_ADD:      m_Command = "add"; break;
-      case SVN_BLAME:    m_Command = "blame"; break;
-      case SVN_CAT:      m_Command = "cat"; break;
-      case SVN_COMMIT:   m_Command = "commit"; break;
-      case SVN_DIFF:     m_Command = "diff"; break;
-      case SVN_HELP:     m_Command = "help"; break;
-      case SVN_INFO:     m_Command = "info"; break;
-      case SVN_LOG:      m_Command = "log"; break;
-      case SVN_LS:       m_Command = "ls"; break;
-      case SVN_PROPLIST: m_Command = "proplist"; break;
-      case SVN_PROPSET:  m_Command = "propset"; break;
-      case SVN_REVERT:   m_Command = "revert"; break;
-      case SVN_STAT:     m_Command = "stat"; break;
-      case SVN_UPDATE:   m_Command = "update"; break;
+      case VCS_ADD:      m_Command = "add"; break;
+      case VCS_BLAME:    m_Command = "blame"; break;
+      case VCS_CAT:      m_Command = "cat"; break;
+      case VCS_COMMIT:   m_Command = "commit"; break;
+      case VCS_DIFF:     m_Command = "diff"; break;
+      case VCS_HELP:     m_Command = "help"; break;
+      case VCS_INFO:     m_Command = "info"; break;
+      case VCS_LOG:      m_Command = "log"; break;
+      case VCS_LS:       m_Command = "ls"; break;
+      case VCS_PROPLIST: m_Command = "proplist"; break;
+      case VCS_PROPSET:  m_Command = "propset"; break;
+      case VCS_REVERT:   m_Command = "revert"; break;
+      case VCS_STAT:     m_Command = "stat"; break;
+      case VCS_UPDATE:   m_Command = "update"; break;
       default:
         wxFAIL;
         break;
     }
 
-    m_Caption = "SVN " + m_Command;
+    m_Caption = "VCS " + m_Command;
     // Currently no flags, as no command was executed.
     m_CommandWithFlags = m_Command;
   }
 
   m_Output.clear();
-  // Key SVN is already used, so use other name.
-  m_FlagsKey = wxString::Format("svnflags/name%d", m_Type);
-  m_UsageKey = _("Use SVN");
+
+  // Use general key.
+  m_FlagsKey = wxString::Format("cvsflags/name%d", m_Type);
+
+  m_System = VCS_SVN;
+
+  // Currently only svn is supported.
+  switch (m_System)
+  {
+    case VCS_SVN: m_UsageKey = _("Use SVN");
+    default: wxFAIL;
+  }
 }
 
 #if wxUSE_GUI
-wxStandardID wxExSVN::Request(wxWindow* parent)
+wxStandardID wxExVCS::Request(wxWindow* parent)
 {
   wxStandardID retValue;
 
@@ -332,19 +347,19 @@ wxStandardID wxExSVN::Request(wxWindow* parent)
 }
 #endif
 
-wxExSVN* wxExSVN::Set(wxExSVN* svn)
+wxExVCS* wxExVCS::Set(wxExVCS* vcs)
 {
-  wxExSVN* old = m_Self;
-  m_Self = svn;
+  wxExVCS* old = m_Self;
+  m_Self = vcs;
   return old;
 }
 
 #if wxUSE_GUI
-int wxExSVN::ShowDialog(wxWindow* parent)
+int wxExVCS::ShowDialog(wxWindow* parent)
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_Type == SVN_COMMIT)
+  if (m_Type == VCS_COMMIT)
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -353,7 +368,7 @@ int wxExSVN::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (m_FullPath.empty() && m_Type != SVN_HELP)
+  if (m_FullPath.empty() && m_Type != VCS_HELP)
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -361,7 +376,7 @@ int wxExSVN::ShowDialog(wxWindow* parent)
       wxEmptyString, 
       true)); // required
 
-    if (m_Type == SVN_ADD)
+    if (m_Type == VCS_ADD)
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -392,11 +407,11 @@ int wxExSVN::ShowDialog(wxWindow* parent)
 #endif
 
 #if wxUSE_GUI
-void wxExSVN::ShowOutput(wxWindow* parent) const
+void wxExVCS::ShowOutput(wxWindow* parent) const
 {
   wxString caption = m_Caption;
       
-  if (m_Type != SVN_HELP)
+  if (m_Type != VCS_HELP)
   {
     caption += " " + (!m_FullPath.empty() ?  
       wxFileName(m_FullPath).GetFullName(): 
@@ -425,7 +440,7 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
   // and there is a lexer.
   if (
     !m_FullPath.empty() &&
-    (m_Type == SVN_CAT || m_Type == SVN_BLAME))
+    (m_Type == VCS_CAT || m_Type == VCS_BLAME))
   {
     const wxExFileName fn(m_FullPath);
  
@@ -439,17 +454,17 @@ void wxExSVN::ShowOutput(wxWindow* parent) const
 }
 #endif
 
-bool wxExSVN::Use() const
+bool wxExVCS::Use() const
 {
   return wxConfigBase::Get()->ReadBool(m_UsageKey, true);
 }
 
-bool wxExSVN::UseFlags() const
+bool wxExVCS::UseFlags() const
 {
-  return m_Type != SVN_UPDATE && m_Type != SVN_HELP;
+  return m_Type != VCS_UPDATE && m_Type != VCS_HELP;
 }
 
-bool wxExSVN::UseSubcommand() const
+bool wxExVCS::UseSubcommand() const
 {
-  return m_Type == SVN_HELP;
+  return m_Type == VCS_HELP;
 }

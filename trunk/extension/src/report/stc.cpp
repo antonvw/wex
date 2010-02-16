@@ -12,7 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/header.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/defs.h>
@@ -22,8 +22,8 @@
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
   EVT_MENU_RANGE(
-    ID_EDIT_SVN_LOWEST, 
-    ID_EDIT_SVN_HIGHEST, 
+    ID_EDIT_VCS_LOWEST, 
+    ID_EDIT_VCS_HIGHEST, 
     wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExSTCWithFrame::OnCommand)
@@ -110,11 +110,11 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   }
 
   if ( GetFileName().FileExists() && GetSelectedText().empty() &&
-      (GetMenuFlags() & STC_MENU_COMPARE_OR_SVN))
+      (GetMenuFlags() & STC_MENU_COMPARE_OR_VCS))
   {
-    if (wxExSVN::Get()->DirExists(GetFileName()))
+    if (wxExVCS::Get()->DirExists(GetFileName()))
     {
-      menu.AppendSVN();
+      menu.AppendVCS();
     }
     else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
     {
@@ -159,29 +159,29 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  if (command.GetId() > ID_EDIT_SVN_LOWEST && 
-      command.GetId() < ID_EDIT_SVN_HIGHEST)
+  if (command.GetId() > ID_EDIT_VCS_LOWEST && 
+      command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExSVN svn(command.GetId(), GetFileName().GetFullPath());
+    wxExVCS vcs(command.GetId(), GetFileName().GetFullPath());
 
-    if (command.GetId() == ID_EDIT_SVN_CAT ||
-        command.GetId() == ID_EDIT_SVN_BLAME)
+    if (command.GetId() == ID_EDIT_VCS_CAT ||
+        command.GetId() == ID_EDIT_VCS_BLAME)
     {
-      if (svn.ExecuteDialog(this) == wxID_OK)
+      if (vcs.ExecuteDialog(this) == wxID_OK)
       {
         m_Frame->OpenFile(
           GetFileName(), 
-          svn.GetCommandWithFlags(), 
-          svn.GetOutput());
+          vcs.GetCommandWithFlags(), 
+          vcs.GetOutput());
       }
       else
       {
-        svn.ShowOutput(this);
+        vcs.ShowOutput(this);
       }
     }
     else
     {
-      svn.Request(this);
+      vcs.Request(this);
     }
 
     return;

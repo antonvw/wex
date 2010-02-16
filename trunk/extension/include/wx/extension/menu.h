@@ -67,11 +67,11 @@ public:
   /// If no items have yet been appended, it ignores this one.
   void AppendSeparator();
 
-  /// Appends SVN menu items.
-  void AppendSVN();
+  /// Appends VCS menu items.
+  void AppendVCS();
 
-  /// Appends specified SVN menu item.
-  void AppendSVN(int id);
+  /// Appends specified VCS menu item.
+  void AppendVCS(int id);
 
   /// Appends a submenu (and resets the is separator member).
   void AppendSubMenu(

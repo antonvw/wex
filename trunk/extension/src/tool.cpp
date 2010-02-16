@@ -16,7 +16,7 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/log.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 
 wxExTool* wxExTool::m_Self = NULL;
 
@@ -31,7 +31,7 @@ wxExTool* wxExTool::Get(bool createOnDemand)
   {
     m_Self = new wxExTool(0);
 
-    if (!wxExSVN::Get()->Use())
+    if (!wxExVCS::Get()->Use())
     {
       m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
       m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));

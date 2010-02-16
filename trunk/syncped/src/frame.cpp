@@ -19,7 +19,7 @@
 #include <wx/extension/log.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/listviewfile.h>
@@ -47,7 +47,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_SVN_LOWEST, ID_SVN_HIGHEST, MDIFrame::OnCommand)
+  EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, MDIFrame::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
@@ -415,29 +415,29 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  if (event.GetId() > ID_EDIT_SVN_LOWEST && 
-      event.GetId() < ID_EDIT_SVN_HIGHEST)
+  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
+      event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExSVN svn(event.GetId(), m_DirCtrl->GetFilePath());
+    wxExVCS vcs(event.GetId(), m_DirCtrl->GetFilePath());
 
-    if (event.GetId() == ID_EDIT_SVN_CAT ||
-        event.GetId() == ID_EDIT_SVN_BLAME)
+    if (event.GetId() == ID_EDIT_VCS_CAT ||
+        event.GetId() == ID_EDIT_VCS_BLAME)
     {
-      if (svn.ExecuteDialog(this) == wxID_OK)
+      if (vcs.ExecuteDialog(this) == wxID_OK)
       {
         OpenFile(
           wxExFileName(m_DirCtrl->GetFilePath()), 
-          svn.GetCommandWithFlags(),
-          svn.GetOutput());
+          vcs.GetCommandWithFlags(),
+          vcs.GetOutput());
       }
       else
       {
-        svn.ShowOutput(this);
+        vcs.ShowOutput(this);
       }
     }
     else
     {
-      svn.Request(this);
+      vcs.Request(this);
     }
 
     return;
@@ -641,7 +641,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 
-  case ID_OPTION_SVN_AND_COMPARATOR: wxExSVN::Get()->ConfigDialog(this);
+  case ID_OPTION_VCS_AND_COMPARATOR: wxExVCS::Get()->ConfigDialog(this);
     break;
 
   case ID_OPTION_EDITOR:
@@ -767,15 +767,15 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   }
   break;
 
-  case ID_SVN_ADD: wxExSVN(wxExSVN::SVN_ADD).Request(this); break;
-  case ID_SVN_COMMIT: wxExSVN(wxExSVN::SVN_COMMIT).Request(this); break;
-  case ID_SVN_DIFF: wxExSVN(wxExSVN::SVN_DIFF).Request(this); break;
-  case ID_SVN_HELP: wxExSVN(wxExSVN::SVN_HELP).Request(this); break;
-  case ID_SVN_INFO: wxExSVN(wxExSVN::SVN_INFO).Request(this); break;
-  case ID_SVN_LOG: wxExSVN(wxExSVN::SVN_LOG).Request(this); break;
-  case ID_SVN_LS: wxExSVN(wxExSVN::SVN_LS).Request(this); break;
-  case ID_SVN_STAT: wxExSVN(wxExSVN::SVN_STAT).Request(this); break;
-  case ID_SVN_UPDATE: wxExSVN(wxExSVN::SVN_UPDATE).Request(this); break;
+  case ID_VCS_ADD: wxExVCS(wxExVCS::VCS_ADD).Request(this); break;
+  case ID_VCS_COMMIT: wxExVCS(wxExVCS::VCS_COMMIT).Request(this); break;
+  case ID_VCS_DIFF: wxExVCS(wxExVCS::VCS_DIFF).Request(this); break;
+  case ID_VCS_HELP: wxExVCS(wxExVCS::VCS_HELP).Request(this); break;
+  case ID_VCS_INFO: wxExVCS(wxExVCS::VCS_INFO).Request(this); break;
+  case ID_VCS_LOG: wxExVCS(wxExVCS::VCS_LOG).Request(this); break;
+  case ID_VCS_LS: wxExVCS(wxExVCS::VCS_LS).Request(this); break;
+  case ID_VCS_STAT: wxExVCS(wxExVCS::VCS_STAT).Request(this); break;
+  case ID_VCS_UPDATE: wxExVCS(wxExVCS::VCS_UPDATE).Request(this); break;
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
@@ -837,10 +837,10 @@ void MDIFrame::OnTree(wxTreeEvent& event)
     wxExMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
 
-    if (wxExSVN::Get()->DirExists(filename))
+    if (wxExVCS::Get()->DirExists(filename))
     {
       menu.AppendSeparator();
-      menu.AppendSVN();
+      menu.AppendVCS();
     }
 
     if (filename.GetLexer().GetScintillaLexer() == "makefile")

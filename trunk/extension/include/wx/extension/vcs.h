@@ -1,6 +1,6 @@
 /******************************************************************************\
-* File:          svn.h
-* Purpose:       Declaration of wxExSVN class
+* File:          vcs.h
+* Purpose:       Declaration of wxExVCS class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _EXSVN_H
-#define _EXSVN_H
+#ifndef _EXVCS_H
+#define _EXVCS_H
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -20,65 +20,70 @@
 
 class wxExSTCEntryDialog;
 
-/// This class collects all svn handling.
-class wxExSVN
+/// This class collects all vcs handling.
+class wxExVCS
 {
 public:
-  /// SVN types supported.
-  enum wxExSVNType
+  /// VCS types supported.
+  enum wxExVCSType
   {
-    SVN_NONE,     ///< not ok value
-    SVN_ADD,      ///< svn add
-    SVN_BLAME,    ///< svn blame
-    SVN_CAT,      ///< svn cat
-    SVN_COMMIT,   ///< svn commit
-    SVN_DIFF,     ///< svn diff
-    SVN_HELP,     ///< svn help
-    SVN_INFO,     ///< svn info
-    SVN_LOG,      ///< svn log
-    SVN_LS,       ///< svn ls
-    SVN_PROPLIST, ///< svn prop list
-    SVN_PROPSET,  ///< svn prop set
-    SVN_REVERT,   ///< svn revert
-    SVN_STAT,     ///< svn stat
-    SVN_UPDATE,   ///< svn update
+    VCS_NONE,     ///< not ok value
+    VCS_ADD,      ///< vcs add
+    VCS_BLAME,    ///< vcs blame
+    VCS_CAT,      ///< vcs cat
+    VCS_COMMIT,   ///< vcs commit
+    VCS_DIFF,     ///< vcs diff
+    VCS_HELP,     ///< vcs help
+    VCS_INFO,     ///< vcs info
+    VCS_LOG,      ///< vcs log
+    VCS_LS,       ///< vcs ls
+    VCS_PROPLIST, ///< vcs prop list
+    VCS_PROPSET,  ///< vcs prop set
+    VCS_REVERT,   ///< vcs revert
+    VCS_STAT,     ///< vcs stat
+    VCS_UPDATE,   ///< vcs update
+  };
+
+  enum wxExVCSSystem
+  {
+    VCS_SVN, /// currently only svn is supported
   };
 
   /// Default constructor.
-  wxExSVN();
+  wxExVCS();
 
   /// Constructor, specify the command type and a fullpath.
-  wxExSVN(wxExSVNType command, const wxString& fullpath = wxEmptyString);
+  wxExVCS(wxExVCSType command, const wxString& fullpath = wxEmptyString);
 
   /// Constructor, specify the command id and a fullpath.
-  wxExSVN(int command_id, const wxString& fullpath = wxEmptyString);
+  wxExVCS(int command_id, const wxString& fullpath = wxEmptyString);
 
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
-    const wxString& title = _("Set SVN And Comparator")) const;
+    const wxString& title = _("Set VCS And Comparator")) const;
 #endif    
 
-  /// Returns true if specified filename (a path) is a svn directory.
+  /// Returns true if specified filename (a path) is a vcs directory.
   bool DirExists(const wxFileName& filename) const;
 
-  /// Executes the svn command, and collects the output.
+  /// Executes the vcs command, and collects the output.
   long Execute();
 
 #if wxUSE_GUI
-  /// Shows a dialog and executes the svn command if not cancelled.
+  /// Shows a dialog and executes the vcs command if not cancelled.
   /// If no fullpath was specified, a dialog with base folder is shown, 
-  /// otherwise the specified fullpath is used for getting svn contents from.
+  /// otherwise the specified fullpath is used for getting vcs contents from.
   /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, 
-  /// or wxID_ABORT if errors were reported by svn otherwise.
+  /// or wxID_ABORT if errors were reported by vcs otherwise.
   wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
 
-  /// Returns the svn object.
-  static wxExSVN* Get(bool createOnDemand = true);
+  /// Returns the vcs object.
+  static wxExVCS* Get(bool createOnDemand = true);
 
-  /// Gets the flags and command (without the 'svn') used to get the output.
+  /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
 
   /// Gets the output from Execute.
@@ -94,23 +99,24 @@ public:
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 
   /// (both the parameter and returned value may be NULL). 
-  static wxExSVN* Set(wxExSVN* svn);
+  static wxExVCS* Set(wxExVCS* vcs);
 
 #if wxUSE_GUI
   /// Shows output from Execute in a dialog only.
   void ShowOutput(wxWindow* parent) const;
 #endif  
 
-  /// Returns true if SVN usage is set in the config.
+  /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  wxExSVNType GetType(int command_id) const;
+  wxExVCSType GetType(int command_id) const;
   void Initialize();
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
   bool UseSubcommand() const;
 
-  const wxExSVNType m_Type;
+  wxExVCSSystem m_System;
+  const wxExVCSType m_Type;
 
   wxString m_Caption;
   wxString m_Command;
@@ -120,7 +126,7 @@ private:
   const wxString m_FullPath;
   wxString m_FlagsKey;
 
-  static wxExSVN* m_Self;
+  static wxExVCS* m_Self;
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;
 #endif  

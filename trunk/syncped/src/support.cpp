@@ -13,7 +13,7 @@
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/process.h>
@@ -98,21 +98,21 @@ Frame::Frame()
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
   menuEdit->AppendSeparator();
 
-  if (wxExSVN::Get()->Use())
+  if (wxExVCS::Get()->Use())
   {
-    wxExMenu* menuSVN = new wxExMenu;
-    menuSVN->AppendSVN(ID_SVN_STAT);
-    menuSVN->AppendSVN(ID_SVN_INFO);
-    menuSVN->AppendSVN(ID_SVN_LOG);
-    menuSVN->AppendSVN(ID_SVN_LS);
-    menuSVN->AppendSVN(ID_SVN_DIFF);
-    menuSVN->AppendSVN(ID_SVN_HELP);
-    menuSVN->AppendSeparator();
-    menuSVN->AppendSVN(ID_SVN_UPDATE);
-    menuSVN->AppendSVN(ID_SVN_COMMIT);
-    menuSVN->AppendSeparator();
-    menuSVN->AppendSVN(ID_SVN_ADD);
-    menuEdit->AppendSubMenu(menuSVN, "&SVN");
+    wxExMenu* menuVCS = new wxExMenu;
+    menuVCS->AppendVCS(ID_VCS_STAT);
+    menuVCS->AppendVCS(ID_VCS_INFO);
+    menuVCS->AppendVCS(ID_VCS_LOG);
+    menuVCS->AppendVCS(ID_VCS_LS);
+    menuVCS->AppendVCS(ID_VCS_DIFF);
+    menuVCS->AppendVCS(ID_VCS_HELP);
+    menuVCS->AppendSeparator();
+    menuVCS->AppendVCS(ID_VCS_UPDATE);
+    menuVCS->AppendVCS(ID_VCS_COMMIT);
+    menuVCS->AppendSeparator();
+    menuVCS->AppendVCS(ID_VCS_ADD);
+    menuEdit->AppendSubMenu(menuVCS, "&VCS");
     menuEdit->AppendSeparator();
   }
 
@@ -156,7 +156,7 @@ Frame::Frame()
   menuWindow->Append(ID_SPLIT, _("Split"));
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(ID_OPTION_SVN_AND_COMPARATOR, wxExEllipsed(_("Set SVN And &Comparator")));
+  menuOptions->Append(ID_OPTION_VCS_AND_COMPARATOR, wxExEllipsed(_("Set VCS And &Comparator")));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   // text also used as caption

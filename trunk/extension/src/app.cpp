@@ -21,7 +21,7 @@
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 
 int wxExApp::OnExit()
 {
@@ -30,7 +30,7 @@ int wxExApp::OnExit()
   delete wxExLog::Set(NULL);
   delete wxExPrinting::Set(NULL);
   delete wxExTool::Set(NULL);
-  delete wxExSVN::Set(NULL);
+  delete wxExVCS::Set(NULL);
 
   return wxApp::OnExit(); // this destroys the config
 }

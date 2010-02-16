@@ -17,7 +17,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listview.h>
 #include <wx/extension/report/defs.h>
@@ -35,8 +35,8 @@ BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_MENU(wxID_PASTE, wxExListViewStandard::OnCommand)
   EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewStandard::OnCommand)
   EVT_MENU_RANGE(
-    ID_EDIT_SVN_LOWEST, 
-    ID_EDIT_SVN_HIGHEST, 
+    ID_EDIT_VCS_LOWEST, 
+    ID_EDIT_VCS_HIGHEST, 
     wxExListViewStandard::OnCommand)
 END_EVENT_TABLE()
 
@@ -380,13 +380,13 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
 
 void wxExListViewStandard::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() > ID_EDIT_SVN_LOWEST && event.GetId() < ID_EDIT_SVN_HIGHEST)
+  if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExSVN svn(
+    wxExVCS vcs(
       event.GetId(), 
       wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
 
-    svn.Request(this);
+    vcs.Request(this);
   }
   else
   {
@@ -569,7 +569,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
 
     if ( GetType() != LIST_FILE &&
-        !wxExSVN::Get()->Use() &&
+        !wxExVCS::Get()->Use() &&
          exists && !is_folder)
     {
       wxExListView* list = m_Frame->Activate(LIST_FILE);
@@ -597,7 +597,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists && !is_folder)
     {
-      if (!wxExSVN::Get()->Use())
+      if (!wxExVCS::Get()->Use())
       {
         menu.AppendSeparator();
 
@@ -613,9 +613,9 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         const wxExListItem item(this, GetFirstSelected());
         menu.AppendSeparator();
 
-        if (wxExSVN::Get()->DirExists(item.GetFileName()))
+        if (wxExVCS::Get()->DirExists(item.GetFileName()))
         {
-          menu.AppendSVN();
+          menu.AppendVCS();
         }
       }
     }

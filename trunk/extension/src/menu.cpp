@@ -13,7 +13,7 @@
 #include <wx/extension/menu.h>
 #include <wx/extension/art.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/svn.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/util.h> // for wxExEllipsed
 
 #if wxUSE_GUI
@@ -155,33 +155,33 @@ void wxExMenu::AppendSubMenu(
   wxMenu::AppendSubMenu(submenu, text, help);
 }
 
-void wxExMenu::AppendSVN()
+void wxExMenu::AppendVCS()
 {
-  wxExMenu* svnmenu = new wxExMenu;
-  svnmenu->AppendSVN(ID_EDIT_SVN_LOG);
-  svnmenu->AppendSVN(ID_EDIT_SVN_STAT);
-  svnmenu->AppendSVN(ID_EDIT_SVN_DIFF);
-  svnmenu->AppendSeparator();
-  svnmenu->AppendSVN(ID_EDIT_SVN_COMMIT);
-  svnmenu->AppendSeparator();
-  svnmenu->AppendSVN(ID_EDIT_SVN_CAT);
-  svnmenu->AppendSVN(ID_EDIT_SVN_BLAME);
-  svnmenu->AppendSeparator();
-  svnmenu->AppendSVN(ID_EDIT_SVN_PROPLIST);
-  svnmenu->AppendSVN(ID_EDIT_SVN_PROPSET);
-  svnmenu->AppendSeparator();
-  svnmenu->AppendSVN(ID_EDIT_SVN_REVERT);
-  svnmenu->AppendSeparator();
-  svnmenu->AppendSVN(ID_EDIT_SVN_ADD);
+  wxExMenu* vcsmenu = new wxExMenu;
+  vcsmenu->AppendVCS(ID_EDIT_VCS_LOG);
+  vcsmenu->AppendVCS(ID_EDIT_VCS_STAT);
+  vcsmenu->AppendVCS(ID_EDIT_VCS_DIFF);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(ID_EDIT_VCS_COMMIT);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(ID_EDIT_VCS_CAT);
+  vcsmenu->AppendVCS(ID_EDIT_VCS_BLAME);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(ID_EDIT_VCS_PROPLIST);
+  vcsmenu->AppendVCS(ID_EDIT_VCS_PROPSET);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(ID_EDIT_VCS_REVERT);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(ID_EDIT_VCS_ADD);
 
   AppendSeparator();
-  AppendSubMenu(svnmenu, "&SVN");
+  AppendSubMenu(vcsmenu, "&VCS");
 }
 
-void wxExMenu::AppendSVN(int id)
+void wxExMenu::AppendVCS(int id)
 {
   const wxString text(
-    wxExEllipsed("&" + wxExSVN(id).GetCommandWithFlags()));
+    wxExEllipsed("&" + wxExVCS(id).GetCommandWithFlags()));
 
   Append(id, text);
 }
