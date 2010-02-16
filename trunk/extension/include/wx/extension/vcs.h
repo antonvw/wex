@@ -25,7 +25,7 @@ class wxExVCS
 {
 public:
   /// VCS types supported.
-  enum wxExVCSType
+  enum wxExVCSCommand
   {
     VCS_NONE,     ///< not ok value
     VCS_ADD,      ///< vcs add
@@ -52,8 +52,8 @@ public:
   /// Default constructor.
   wxExVCS();
 
-  /// Constructor, specify the command type and a fullpath.
-  wxExVCS(wxExVCSType command, const wxString& fullpath = wxEmptyString);
+  /// Constructor, specify the command and a fullpath.
+  wxExVCS(wxExVCSCommand command, const wxString& fullpath = wxEmptyString);
 
   /// Constructor, specify the command id and a fullpath.
   wxExVCS(int command_id, const wxString& fullpath = wxEmptyString);
@@ -109,17 +109,17 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  wxExVCSType GetType(int command_id) const;
+  wxExVCSCommand GetType(int command_id) const;
   void Initialize();
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
   bool UseSubcommand() const;
 
   wxExVCSSystem m_System;
-  const wxExVCSType m_Type;
+  const wxExVCSCommand m_Command;
 
   wxString m_Caption;
-  wxString m_Command;
+  wxString m_CommandString;
   wxString m_CommandWithFlags;
   wxString m_Output;
 

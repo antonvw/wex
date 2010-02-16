@@ -25,21 +25,21 @@ wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 wxString wxExVCS::m_UsageKey;
 
 wxExVCS::wxExVCS()
-  : m_Type(VCS_NONE)
+  : m_Command(VCS_NONE)
   , m_FullPath(wxEmptyString)
 {
   Initialize();
 }
 
 wxExVCS::wxExVCS(int command_id, const wxString& fullpath)
-  : m_Type(GetType(command_id))
+  : m_Command(GetType(command_id))
   , m_FullPath(fullpath)
 {
   Initialize();
 }
 
-wxExVCS::wxExVCS(wxExVCSType type, const wxString& fullpath)
-  : m_Type(type)
+wxExVCS::wxExVCS(wxExVCSCommand type, const wxString& fullpath)
+  : m_Command(type)
   , m_FullPath(fullpath)
 {
   Initialize();
@@ -74,7 +74,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(m_Type != VCS_NONE);
+  wxASSERT(m_Command != VCS_NONE);
 
   const wxString cwd = wxGetCwd();
 
@@ -88,7 +88,7 @@ long wxExVCS::Execute()
       return -1;
     }
 
-    if (m_Type == VCS_ADD)
+    if (m_Command == VCS_ADD)
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
@@ -100,7 +100,7 @@ long wxExVCS::Execute()
 
   wxString comment;
 
-  if (m_Type == VCS_COMMIT)
+  if (m_Command == VCS_COMMIT)
   {
     comment = 
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
@@ -130,10 +130,18 @@ long wxExVCS::Execute()
     }
   }
 
-  m_CommandWithFlags = m_Command + flags;
+  m_CommandWithFlags = m_CommandString + flags;
+
+  wxString vcs_bin;
+
+  switch (m_System)
+  {
+    case VCS_SVN: vcs_bin = "svn"; break;
+    default: wxFAIL;
+  }
 
   const wxString commandline = 
-    "svn " + m_Command + subcommand + flags + comment + file;
+    vcs_bin + " " + m_CommandString + subcommand + flags + comment + file;
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(commandline);
@@ -219,7 +227,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-wxExVCS::wxExVCSType wxExVCS::GetType(int command_id) const
+wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
 {
   switch (command_id)
   {
@@ -287,42 +295,41 @@ wxExVCS::wxExVCSType wxExVCS::GetType(int command_id) const
 
 void wxExVCS::Initialize()
 {
-  if (m_Type != VCS_NONE)
+  if (m_Command != VCS_NONE)
   {
-    switch (m_Type)
+    switch (m_Command)
     {
-      case VCS_ADD:      m_Command = "add"; break;
-      case VCS_BLAME:    m_Command = "blame"; break;
-      case VCS_CAT:      m_Command = "cat"; break;
-      case VCS_COMMIT:   m_Command = "commit"; break;
-      case VCS_DIFF:     m_Command = "diff"; break;
-      case VCS_HELP:     m_Command = "help"; break;
-      case VCS_INFO:     m_Command = "info"; break;
-      case VCS_LOG:      m_Command = "log"; break;
-      case VCS_LS:       m_Command = "ls"; break;
-      case VCS_PROPLIST: m_Command = "proplist"; break;
-      case VCS_PROPSET:  m_Command = "propset"; break;
-      case VCS_REVERT:   m_Command = "revert"; break;
-      case VCS_STAT:     m_Command = "stat"; break;
-      case VCS_UPDATE:   m_Command = "update"; break;
+      case VCS_ADD:      m_CommandString = "add"; break;
+      case VCS_BLAME:    m_CommandString = "blame"; break;
+      case VCS_CAT:      m_CommandString = "cat"; break;
+      case VCS_COMMIT:   m_CommandString = "commit"; break;
+      case VCS_DIFF:     m_CommandString = "diff"; break;
+      case VCS_HELP:     m_CommandString = "help"; break;
+      case VCS_INFO:     m_CommandString = "info"; break;
+      case VCS_LOG:      m_CommandString = "log"; break;
+      case VCS_LS:       m_CommandString = "ls"; break;
+      case VCS_PROPLIST: m_CommandString = "proplist"; break;
+      case VCS_PROPSET:  m_CommandString = "propset"; break;
+      case VCS_REVERT:   m_CommandString = "revert"; break;
+      case VCS_STAT:     m_CommandString = "stat"; break;
+      case VCS_UPDATE:   m_CommandString = "update"; break;
       default:
         wxFAIL;
         break;
     }
 
-    m_Caption = "VCS " + m_Command;
+    m_Caption = "VCS " + m_CommandString;
     // Currently no flags, as no command was executed.
-    m_CommandWithFlags = m_Command;
+    m_CommandWithFlags = m_CommandString;
   }
 
   m_Output.clear();
 
   // Use general key.
-  m_FlagsKey = wxString::Format("cvsflags/name%d", m_Type);
+  m_FlagsKey = wxString::Format("cvsflags/name%d", m_Command);
 
   m_System = VCS_SVN;
 
-  // Currently only svn is supported.
   switch (m_System)
   {
     case VCS_SVN: m_UsageKey = _("Use SVN"); break;
@@ -359,7 +366,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_Type == VCS_COMMIT)
+  if (m_Command == VCS_COMMIT)
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -368,7 +375,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (m_FullPath.empty() && m_Type != VCS_HELP)
+  if (m_FullPath.empty() && m_Command != VCS_HELP)
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -376,7 +383,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       wxEmptyString, 
       true)); // required
 
-    if (m_Type == VCS_ADD)
+    if (m_Command == VCS_ADD)
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -411,7 +418,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 {
   wxString caption = m_Caption;
       
-  if (m_Type != VCS_HELP)
+  if (m_Command != VCS_HELP)
   {
     caption += " " + (!m_FullPath.empty() ?  
       wxFileName(m_FullPath).GetFullName(): 
@@ -440,7 +447,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   // and there is a lexer.
   if (
     !m_FullPath.empty() &&
-    (m_Type == VCS_CAT || m_Type == VCS_BLAME))
+    (m_Command == VCS_CAT || m_Command == VCS_BLAME))
   {
     const wxExFileName fn(m_FullPath);
  
@@ -461,10 +468,10 @@ bool wxExVCS::Use() const
 
 bool wxExVCS::UseFlags() const
 {
-  return m_Type != VCS_UPDATE && m_Type != VCS_HELP;
+  return m_Command != VCS_UPDATE && m_Command != VCS_HELP;
 }
 
 bool wxExVCS::UseSubcommand() const
 {
-  return m_Type == VCS_HELP;
+  return m_Command == VCS_HELP;
 }
