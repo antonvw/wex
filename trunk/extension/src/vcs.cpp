@@ -87,11 +87,12 @@ long wxExVCS::Execute()
 {
   wxASSERT(m_Command != VCS_NO_COMMAND);
 
-  const wxString cwd = wxGetCwd();
+  const wxString cwd = 
+    (m_Command == VCS_HELP ? wxEmptyString: wxGetCwd());
 
   wxString file;
 
-  if (m_FullPath.empty())
+  if (m_FullPath.empty() && !cwd.empty())
   {
     if (!wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder"))))
     {
@@ -176,7 +177,7 @@ long wxExVCS::Execute()
     wxExLog::Get()->Log(commandline);
   }
 
-  if (m_FullPath.empty())
+  if (m_FullPath.empty() && !cwd.empty())
   {
     wxSetWorkingDirectory(cwd);
   }
