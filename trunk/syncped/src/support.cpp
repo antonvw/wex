@@ -277,17 +277,20 @@ void Frame::BuildVCSMenu(bool fill)
     m_MenuVCS->Destroy(ID_VCS_ADD);
   }
 
-  m_MenuVCS->AppendVCS(ID_VCS_STAT);
-  m_MenuVCS->AppendVCS(ID_VCS_INFO);
-  m_MenuVCS->AppendVCS(ID_VCS_LOG);
-  m_MenuVCS->AppendVCS(ID_VCS_LS);
-  m_MenuVCS->AppendVCS(ID_VCS_DIFF);
-  m_MenuVCS->AppendVCS(ID_VCS_HELP);
-  m_MenuVCS->AppendSeparator();
-  m_MenuVCS->AppendVCS(ID_VCS_UPDATE);
-  m_MenuVCS->AppendVCS(ID_VCS_COMMIT);
-  m_MenuVCS->AppendSeparator();
-  m_MenuVCS->AppendVCS(ID_VCS_ADD);
+  if (fill)
+  {
+    m_MenuVCS->AppendVCS(ID_VCS_STAT);
+    m_MenuVCS->AppendVCS(ID_VCS_INFO);
+    m_MenuVCS->AppendVCS(ID_VCS_LOG);
+    m_MenuVCS->AppendVCS(ID_VCS_LS);
+    m_MenuVCS->AppendVCS(ID_VCS_DIFF);
+    m_MenuVCS->AppendVCS(ID_VCS_HELP);
+    m_MenuVCS->AppendSeparator();
+    m_MenuVCS->AppendVCS(ID_VCS_UPDATE);
+    m_MenuVCS->AppendVCS(ID_VCS_COMMIT);
+    m_MenuVCS->AppendSeparator();
+    m_MenuVCS->AppendVCS(ID_VCS_ADD);
+  }
 
   m_MenuVCSFilled = fill;
 }
