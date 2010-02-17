@@ -105,7 +105,7 @@ long wxExVCS::Execute()
       file = " " + wxExConfigFirstOf(_("Path"));
     }
   }
-  else
+  else if (!m_FullPath.empty())
   {
     file = " \"" + m_FullPath + "\"";
   }
