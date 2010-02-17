@@ -258,7 +258,13 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
       } 
 
       m_Control = new wxRadioBox(parent,
-        wxID_ANY, m_Name, wxDefaultPosition, wxDefaultSize, arraychoices, 0, wxRA_SPECIFY_ROWS);
+        wxID_ANY, 
+        m_Name, 
+        wxDefaultPosition, 
+        wxDefaultSize, 
+        arraychoices, 
+        0, 
+        wxRA_SPECIFY_ROWS);
       }
 
       break;
@@ -297,7 +303,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
-        m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT);
+        m_Style | (readonly ? wxTE_READONLY: 0));
       break;
 
     default: wxFAIL;
