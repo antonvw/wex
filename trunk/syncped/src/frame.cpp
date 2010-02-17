@@ -641,7 +641,18 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 
-  case ID_OPTION_VCS_AND_COMPARATOR: wxExVCS::Get()->ConfigDialog(this);
+  case ID_OPTION_VCS_AND_COMPARATOR: 
+    if (wxExVCS::Get()->ConfigDialog(this) == wxID_OK)
+    {
+      if (GetMenuVCSFilled() && !wxExVCS::Get()->Use())
+      {
+        BuildVCSMenu(false);
+      }
+      else
+      {
+        BuildVCSMenu(true);
+      }
+    }
     break;
 
   case ID_OPTION_EDITOR:

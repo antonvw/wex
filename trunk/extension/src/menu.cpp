@@ -180,8 +180,14 @@ void wxExMenu::AppendVCS()
 
 void wxExMenu::AppendVCS(int id)
 {
-  const wxString text(
-    wxExEllipsed("&" + wxExVCS(id).GetCommand()));
+  const wxString command = wxExVCS(id).GetCommand();
+
+  if (command.empty())
+  {
+    return;
+  }
+
+  const wxString text(wxExEllipsed("&" + command));
 
   Append(id, text);
 }

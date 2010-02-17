@@ -310,27 +310,57 @@ wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
 
 void wxExVCS::Initialize()
 {
-  if (m_Command != VCS_NO_COMMAND)
+  if (Use() && m_Command != VCS_NO_COMMAND)
   {
-    switch (m_Command)
+    switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
     {
-      case VCS_ADD:      m_CommandString = "add"; break;
-      case VCS_BLAME:    m_CommandString = "blame"; break;
-      case VCS_CAT:      m_CommandString = "cat"; break;
-      case VCS_COMMIT:   m_CommandString = "commit"; break;
-      case VCS_DIFF:     m_CommandString = "diff"; break;
-      case VCS_HELP:     m_CommandString = "help"; break;
-      case VCS_INFO:     m_CommandString = "info"; break;
-      case VCS_LOG:      m_CommandString = "log"; break;
-      case VCS_LS:       m_CommandString = "ls"; break;
-      case VCS_PROPLIST: m_CommandString = "proplist"; break;
-      case VCS_PROPSET:  m_CommandString = "propset"; break;
-      case VCS_REVERT:   m_CommandString = "revert"; break;
-      case VCS_STAT:     m_CommandString = "stat"; break;
-      case VCS_UPDATE:   m_CommandString = "update"; break;
-      default:
-        wxFAIL;
+      case VCS_GIT:
+        switch (m_Command)
+        {
+          case VCS_ADD:      m_CommandString = "add"; break;
+          case VCS_BLAME:    m_CommandString = "blame"; break;
+          case VCS_CAT:      m_CommandString = "cat"; break;
+          case VCS_COMMIT:   m_CommandString = "push"; break;
+          case VCS_DIFF:     m_CommandString = "diff"; break;
+          case VCS_HELP:     m_CommandString = "help"; break;
+          case VCS_INFO:     m_CommandString = "info"; break;
+          case VCS_LOG:      m_CommandString = "log"; break;
+          case VCS_LS:       m_CommandString = "ls"; break;
+          case VCS_PROPLIST: break;
+          case VCS_PROPSET:  break;
+          case VCS_REVERT:   m_CommandString = "revert"; break;
+          case VCS_STAT:     m_CommandString = "status"; break;
+          case VCS_UPDATE:   m_CommandString = "update"; break;
+          default:
+            wxFAIL;
+            break;
+        }
         break;
+
+      case VCS_SVN:
+        switch (m_Command)
+        {
+          case VCS_ADD:      m_CommandString = "add"; break;
+          case VCS_BLAME:    m_CommandString = "blame"; break;
+          case VCS_CAT:      m_CommandString = "cat"; break;
+          case VCS_COMMIT:   m_CommandString = "commit"; break;
+          case VCS_DIFF:     m_CommandString = "diff"; break;
+          case VCS_HELP:     m_CommandString = "help"; break;
+          case VCS_INFO:     m_CommandString = "info"; break;
+          case VCS_LOG:      m_CommandString = "log"; break;
+          case VCS_LS:       m_CommandString = "ls"; break;
+          case VCS_PROPLIST: m_CommandString = "proplist"; break;
+          case VCS_PROPSET:  m_CommandString = "propset"; break;
+          case VCS_REVERT:   m_CommandString = "revert"; break;
+          case VCS_STAT:     m_CommandString = "stat"; break;
+          case VCS_UPDATE:   m_CommandString = "update"; break;
+          default:
+            wxFAIL;
+            break;
+        }
+        break;
+
+      default: wxFAIL;
     }
 
     m_Caption = "VCS " + m_CommandString;
