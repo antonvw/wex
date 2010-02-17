@@ -58,6 +58,8 @@ int wxExVCS::ConfigDialog(
   choices.insert(std::make_pair(VCS_SVN, "SVN"));
   v.push_back(wxExConfigItem("VCS", choices));
 
+  v.push_back(wxExConfigItem("GIT", CONFIG_FILEPICKERCTRL));
+  v.push_back(wxExConfigItem("SVN", CONFIG_FILEPICKERCTRL));
   v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
 
   return wxExConfigDialog(parent, v, title).ShowModal();
@@ -148,8 +150,8 @@ long wxExVCS::Execute()
 
   switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
   {
-    case VCS_GIT: vcs_bin = "git"; break;
-    case VCS_SVN: vcs_bin = "svn"; break;
+    case VCS_GIT: vcs_bin = wxConfigBase::Get()->Read("GIT"); break;
+    case VCS_SVN: vcs_bin = wxConfigBase::Get()->Read("SVN"); break;
     default: wxFAIL;
   }
 
