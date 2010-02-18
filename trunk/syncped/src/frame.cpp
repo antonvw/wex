@@ -73,6 +73,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VCS_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, MDIFrame::OnUpdateUI)
@@ -883,6 +884,12 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
                    !wxExProcess::Get()->IsRunning()); 
       break;
     case wxID_STOP: event.Enable(wxExProcess::Get()->IsRunning()); break;
+    case wxID_PREVIEW:
+    case wxID_PRINT:
+      event.Enable(
+        (GetFocusedSTC() != NULL && GetFocusedSTC()->GetLength() > 0) ||
+        (GetFocusedListView() != NULL && GetFocusedListView()->GetItemCount() > 0));
+      break;
 
     case ID_ALL_STC_CLOSE:
     case ID_ALL_STC_SAVE:
@@ -919,6 +926,10 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
     break;
 
+    case ID_VCS_MENU:
+      event.Enable(GetVCSMenu()->IsVCSBuild());
+      break;
+
     case ID_VIEW_ASCII_TABLE:
       event.Check(GetManager().GetPane("ASCIITABLE").IsShown());
       break;
@@ -939,13 +950,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
     case ID_VIEW_PROJECTS:
       event.Check(GetManager().GetPane("PROJECTS").IsShown());
-      break;
-
-    case wxID_PREVIEW:
-    case wxID_PRINT:
-      event.Enable(
-        (GetFocusedSTC() != NULL && GetFocusedSTC()->GetLength() > 0) ||
-        (GetFocusedListView() != NULL && GetFocusedListView()->GetItemCount() > 0));
       break;
 
     default:

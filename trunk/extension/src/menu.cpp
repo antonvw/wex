@@ -150,11 +150,22 @@ void wxExMenu::AppendSeparator()
 void wxExMenu::AppendSubMenu(
   wxMenu *submenu,
   const wxString& text,
-  const wxString& help)
+  const wxString& help,
+  int itemid)
 {
   m_ItemsAppended++; // count submenu as one
   m_IsSeparator = false;
-  wxMenu::AppendSubMenu(submenu, text, help);
+
+  if (itemid == wxID_ANY)
+  {
+    wxMenu::AppendSubMenu(submenu, text, help);
+  }
+  else
+  {
+    // This one is deprecated, but is necessary if
+    // we have an explicit itemid.
+    wxMenu::Append(itemid, text, submenu, help);
+  }
 }
 
 void wxExMenu::AppendVCS()

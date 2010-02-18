@@ -31,6 +31,7 @@ Frame::Frame()
       wxTheApp->GetAppName(), // title
       25,                     // maxFiles
       4)                      // maxProjects
+  , m_MenuVCS(new wxExMenu)
 {
   SetIcon(wxICON(app));
 
@@ -97,9 +98,7 @@ Frame::Frame()
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
   menuEdit->AppendSeparator();
-
-  m_MenuVCS = new wxExMenu;
-  menuEdit->AppendSubMenu(m_MenuVCS, "&VCS");
+  menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_VCS_MENU);
   menuEdit->AppendSeparator();
 
   if (wxExVCS::Get()->Use())

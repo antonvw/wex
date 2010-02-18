@@ -77,7 +77,8 @@ public:
   void AppendSubMenu(
     wxMenu *submenu,
     const wxString& text,
-    const wxString& help = wxEmptyString);
+    const wxString& help = wxEmptyString,
+    int itemid = wxID_ANY);
 
   /// Appends a tools submenu.
   void AppendTools();
