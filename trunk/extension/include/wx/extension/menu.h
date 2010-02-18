@@ -56,7 +56,8 @@ public:
     const wxString& helptext = wxEmptyString,
     const wxArtID& artid = wxEmptyString);
 
-  /// Appends edit menu items, depending on the style specified during construction.
+  /// Appends edit menu items, depending on the style 
+  /// specified during construction.
   void AppendEdit(bool add_invert = false);
 
   /// Appends print menu items.
@@ -67,12 +68,6 @@ public:
   /// If no items have yet been appended, it ignores this one.
   void AppendSeparator();
 
-  /// Appends VCS menu items.
-  void AppendVCS();
-
-  /// Appends specified VCS menu item.
-  void AppendVCS(int id);
-
   /// Appends a submenu (and resets the is separator member).
   void AppendSubMenu(
     wxMenu *submenu,
@@ -81,7 +76,13 @@ public:
     int itemid = wxID_ANY);
 
   /// Appends a tools submenu.
-  void AppendTools();
+  void AppendTools(int itemid = wxID_ANY);
+
+  /// Appends VCS menu items.
+  void AppendVCS();
+
+  /// Appends specified VCS menu item.
+  void AppendVCS(int id);
 
   /// Builds VCS menu items.
   void BuildVCS(bool fill);
@@ -95,10 +96,10 @@ public:
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};
 private:
-  long m_Style;
   int m_ItemsAppended;
   bool m_IsSeparator;
   bool m_MenuVCSFilled;
+  long m_Style;
 };
 #endif // wxUSE_GUI
 #endif

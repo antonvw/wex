@@ -40,7 +40,8 @@ enum
   ID_RECENT_PROJECT_MENU,
   ID_SORT_SYNC,
   ID_SPLIT,
-  ID_VCS_MENU,
+  ID_MENU_TOOLS,
+  ID_MENU_VCS,
   ID_TREE_OPEN,
   ID_TREE_RUN_MAKE,
   ID_VIEW_PANE_FIRST, // put all your panes from here

@@ -92,13 +92,13 @@ Frame::Frame()
   menuEdit->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
   menuEdit->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
   menuEdit->AppendSeparator();
-  menuEdit->AppendTools();
+  menuEdit->AppendTools(ID_MENU_TOOLS);
   menuEdit->AppendSeparator();
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
   menuEdit->AppendSeparator();
-  menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_VCS_MENU);
+  menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_MENU_VCS);
   menuEdit->AppendSeparator();
   m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
 

@@ -73,7 +73,8 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VCS_MENU, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_MENU_TOOLS, MDIFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_MENU_VCS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, MDIFrame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, MDIFrame::OnUpdateUI)
@@ -919,7 +920,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
     break;
 
-    case ID_VCS_MENU:
+    case ID_MENU_VCS:
       event.Enable(GetVCSMenu()->IsVCSBuild());
       break;
 
@@ -955,8 +956,9 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
         event.Enable(true);
 
         if (
-          event.GetId() > ID_TOOL_LOWEST &&
-          event.GetId() < ID_TOOL_HIGHEST)
+           event.GetId() == ID_MENU_TOOLS ||
+          (event.GetId() > ID_TOOL_LOWEST &&
+           event.GetId() < ID_TOOL_HIGHEST))
         {
           event.Enable(editor->GetLength() > 0);
           return;

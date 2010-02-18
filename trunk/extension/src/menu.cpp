@@ -168,6 +168,28 @@ void wxExMenu::AppendSubMenu(
   }
 }
 
+void wxExMenu::AppendTools(int itemid)
+{
+  wxExMenu* menuTool = new wxExMenu(*this);
+
+  for (
+    std::map <int, wxExToolInfo>::const_iterator it = 
+      wxExTool::Get()->GetToolInfo().begin();
+    it != wxExTool::Get()->GetToolInfo().end();
+    ++it)
+  {
+    if (!it->second.GetText().empty())
+    {
+      menuTool->Append(
+        it->first, 
+        it->second.GetText(), 
+        it->second.GetHelpText());
+    }
+  }
+
+  AppendSubMenu(menuTool, _("&Tools"), wxEmptyString, itemid);
+}
+
 void wxExMenu::AppendVCS()
 {
   wxExMenu* vcsmenu = new wxExMenu;
@@ -203,28 +225,6 @@ void wxExMenu::AppendVCS(int id)
   const wxString text(wxExEllipsed("&" + command));
 
   Append(id, text);
-}
-
-void wxExMenu::AppendTools()
-{
-  wxExMenu* menuTool = new wxExMenu(*this);
-
-  for (
-    std::map <int, wxExToolInfo>::const_iterator it = 
-      wxExTool::Get()->GetToolInfo().begin();
-    it != wxExTool::Get()->GetToolInfo().end();
-    ++it)
-  {
-    if (!it->second.GetText().empty())
-    {
-      menuTool->Append(
-        it->first, 
-        it->second.GetText(), 
-        it->second.GetHelpText());
-    }
-  }
-
-  AppendSubMenu(menuTool, _("&Tools"));
 }
 
 void wxExMenu::BuildVCS(bool fill)
