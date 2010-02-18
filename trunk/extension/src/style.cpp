@@ -31,7 +31,9 @@ wxExStyle::wxExStyle(const wxString& no, const wxString& value)
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(!m_No.empty() && !m_Value.empty());
+  // Do not assert if m_No is empty,
+  // if we do not have lexers, then the default style is empty,
+  // but still will be applied here.
 
   for (
     std::vector<int>::const_iterator it = m_No.begin();
