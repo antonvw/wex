@@ -155,6 +155,12 @@ long wxExVCS::Execute()
     default: wxFAIL;
   }
 
+  if (vcs_bin.empty())
+  {
+    wxLogError(_("VCS path is empty"));
+    return -1;
+  }
+
   const wxString commandline = 
     vcs_bin + " " + m_CommandString + subcommand + flags + comment + file;
 
