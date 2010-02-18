@@ -82,6 +82,12 @@ public:
   /// Appends a tools submenu.
   void AppendTools();
 
+  /// Builds VCS menu items.
+  void BuildVCS(bool fill);
+
+  /// Is the VCS menu build?
+  bool IsVCSBuild() const {return m_MenuVCSFilled;};
+
   /// Gets the style.
   long GetStyle() const {return m_Style;};
 
@@ -91,6 +97,7 @@ private:
   long m_Style;
   int m_ItemsAppended;
   bool m_IsSeparator;
+  bool m_MenuVCSFilled;
 };
 #endif // wxUSE_GUI
 #endif

@@ -22,6 +22,7 @@ wxExMenu::wxExMenu(long style)
   : m_Style(style)
   , m_ItemsAppended(0)
   , m_IsSeparator(false)
+  , m_MenuVCSFilled(false)
 {
 }
 
@@ -29,6 +30,7 @@ wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
   , m_ItemsAppended(menu.m_ItemsAppended)
   , m_IsSeparator(menu.m_IsSeparator)
+  , m_MenuVCSFilled(menu.m_MenuVCSFilled)
 {
 }
 
@@ -212,6 +214,46 @@ void wxExMenu::AppendTools()
   }
 
   AppendSubMenu(menuTool, _("&Tools"));
+}
+
+void wxExMenu::BuildVCS(bool fill)
+{
+  if (m_MenuVCSFilled)
+  {
+    wxMenuItem* item;
+
+    while ((item = FindItem(wxID_SEPARATOR)) != NULL)
+    {
+      Destroy(item);
+    }
+
+    Destroy(ID_VCS_STAT);
+    Destroy(ID_VCS_INFO);
+    Destroy(ID_VCS_LOG);
+    Destroy(ID_VCS_LS);
+    Destroy(ID_VCS_DIFF);
+    Destroy(ID_VCS_HELP);
+    Destroy(ID_VCS_UPDATE);
+    Destroy(ID_VCS_COMMIT);
+    Destroy(ID_VCS_ADD);
+  }
+
+  if (fill)
+  {
+    AppendVCS(ID_VCS_STAT);
+    AppendVCS(ID_VCS_INFO);
+    AppendVCS(ID_VCS_LOG);
+    AppendVCS(ID_VCS_LS);
+    AppendVCS(ID_VCS_DIFF);
+    AppendVCS(ID_VCS_HELP);
+    AppendSeparator();
+    AppendVCS(ID_VCS_UPDATE);
+    AppendVCS(ID_VCS_COMMIT);
+    AppendSeparator();
+    AppendVCS(ID_VCS_ADD);
+  }
+
+  m_MenuVCSFilled = fill;
 }
 
 #endif // wxUSE_GUI

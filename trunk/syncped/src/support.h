@@ -25,8 +25,7 @@ public:
   wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
 #endif
 protected:
-  bool GetMenuVCSFilled() const {return m_MenuVCSFilled;};
-  void BuildVCSMenu(bool fill);
+  wxExMenu* GetVCSMenu() {return m_MenuVCS;};
 private:
   // Interface from wxExFrame.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
@@ -37,7 +36,6 @@ private:
   wxCheckBox* m_SyncCheckBox;
 #endif
 
-  bool m_MenuVCSFilled;
   wxExMenu* m_MenuVCS;
 };
 #endif

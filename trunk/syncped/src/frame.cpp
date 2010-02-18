@@ -644,13 +644,13 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_VCS_AND_COMPARATOR: 
     if (wxExVCS::Get()->ConfigDialog(this) == wxID_OK)
     {
-      if (GetMenuVCSFilled() && !wxExVCS::Get()->Use())
+      if (GetVCSMenu()->IsVCSBuild() && !wxExVCS::Get()->Use())
       {
-        BuildVCSMenu(false);
+        GetVCSMenu()->BuildVCS(false);
       }
       else
       {
-        BuildVCSMenu(true);
+        GetVCSMenu()->BuildVCS(true);
       }
     }
     break;

@@ -31,8 +31,6 @@ Frame::Frame()
       wxTheApp->GetAppName(), // title
       25,                     // maxFiles
       4)                      // maxProjects
-  , m_MenuVCS(NULL)
-  , m_MenuVCSFilled(false)
 {
   SetIcon(wxICON(app));
 
@@ -106,7 +104,7 @@ Frame::Frame()
 
   if (wxExVCS::Get()->Use())
   {
-    BuildVCSMenu(true);
+    m_MenuVCS->BuildVCS(true);
   }
 
   menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
@@ -253,46 +251,6 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
   {
     return wxExFrameWithHistory::AllowClose(id, page);
   }
-}
-
-void Frame::BuildVCSMenu(bool fill)
-{
-  if (m_MenuVCSFilled)
-  {
-    wxMenuItem* item;
-
-    while ((item = m_MenuVCS->FindItem(wxID_SEPARATOR)) != NULL)
-    {
-      m_MenuVCS->Destroy(item);
-    }
-
-    m_MenuVCS->Destroy(ID_VCS_STAT);
-    m_MenuVCS->Destroy(ID_VCS_INFO);
-    m_MenuVCS->Destroy(ID_VCS_LOG);
-    m_MenuVCS->Destroy(ID_VCS_LS);
-    m_MenuVCS->Destroy(ID_VCS_DIFF);
-    m_MenuVCS->Destroy(ID_VCS_HELP);
-    m_MenuVCS->Destroy(ID_VCS_UPDATE);
-    m_MenuVCS->Destroy(ID_VCS_COMMIT);
-    m_MenuVCS->Destroy(ID_VCS_ADD);
-  }
-
-  if (fill)
-  {
-    m_MenuVCS->AppendVCS(ID_VCS_STAT);
-    m_MenuVCS->AppendVCS(ID_VCS_INFO);
-    m_MenuVCS->AppendVCS(ID_VCS_LOG);
-    m_MenuVCS->AppendVCS(ID_VCS_LS);
-    m_MenuVCS->AppendVCS(ID_VCS_DIFF);
-    m_MenuVCS->AppendVCS(ID_VCS_HELP);
-    m_MenuVCS->AppendSeparator();
-    m_MenuVCS->AppendVCS(ID_VCS_UPDATE);
-    m_MenuVCS->AppendVCS(ID_VCS_COMMIT);
-    m_MenuVCS->AppendSeparator();
-    m_MenuVCS->AppendVCS(ID_VCS_ADD);
-  }
-
-  m_MenuVCSFilled = fill;
 }
 
 void Frame::OnNotebook(wxWindowID id, wxWindow* page)
