@@ -76,6 +76,7 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_MENU(ID_EDIT_SELECT_NONE, wxExListView::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExListView::OnCommand)
   EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
+  EVT_LEFT_DOWN(wxExListView::OnMouse)
   EVT_RIGHT_DOWN(wxExListView::OnMouse)
 END_EVENT_TABLE()
 
@@ -630,6 +631,10 @@ void wxExListView::OnMouse(wxMouseEvent& event)
     BuildPopupMenu(menu);
 
     PopupMenu(&menu);
+  }
+  else
+  {
+    event.Skip();
   }
 }
 
