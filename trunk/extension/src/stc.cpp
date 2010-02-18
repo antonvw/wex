@@ -810,6 +810,12 @@ void wxExSTC::DoFileLoad(bool synced)
 #endif
   }
 
+  // No edges for log files.
+  if (GetFileName().GetExt() == "log")
+  {
+    SetEdgeMode(wxSTC_EDGE_NONE);
+  }
+
   if (GetFileName() == wxExLog::Get()->GetFileName())
   {
     DocumentEnd();
