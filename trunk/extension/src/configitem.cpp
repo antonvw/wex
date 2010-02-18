@@ -308,6 +308,8 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 
     default: wxFAIL;
   }
+
+  wxASSERT(m_Control != NULL);
 }
 
 void wxExConfigItem::ToConfig(bool save) const
