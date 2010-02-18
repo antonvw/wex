@@ -100,11 +100,7 @@ Frame::Frame()
   menuEdit->AppendSeparator();
   menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_VCS_MENU);
   menuEdit->AppendSeparator();
-
-  if (wxExVCS::Get()->Use())
-  {
-    m_MenuVCS->BuildVCS(true);
-  }
+  m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
 
   menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
