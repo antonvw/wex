@@ -869,8 +869,6 @@ void MDIFrame::OnTree(wxTreeEvent& event)
 
 void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  wxExListView* list = GetFocusedListView();
-
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
@@ -1033,35 +1031,32 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       {
         event.Enable(false);
 
-        if (list != NULL)
+        if (
+          event.GetId() > ID_TOOL_LOWEST &&
+          event.GetId() < ID_TOOL_HIGHEST)
         {
-          if (
-            event.GetId() > ID_TOOL_LOWEST &&
-            event.GetId() < ID_TOOL_HIGHEST)
-          {
-            event.Enable(editor->GetLength() > 0);
-            return;
-          }
+          event.Enable(list->GetSelectedItemCount() > 0);
+          return;
+        }
 
-          switch (event.GetId())
-          {
-          case wxID_COPY:
-          case wxID_CUT:
-            event.Enable(list->GetSelectedItemCount() > 0);
-            break;
+        switch (event.GetId())
+        {
+        case wxID_COPY:
+        case wxID_CUT:
+          event.Enable(list->GetSelectedItemCount() > 0);
+          break;
 
-          case wxID_FIND:
-            event.Enable(list->GetItemCount() > 0);
-            break;
+        case wxID_FIND:
+          event.Enable(list->GetItemCount() > 0);
+          break;
 
-          case wxID_PASTE:
-            event.Enable(list->GetType() == wxExListViewStandard::LIST_FILE);
-            break;
+        case wxID_PASTE:
+          event.Enable(list->GetType() == wxExListViewStandard::LIST_FILE);
+          break;
 
-          default:
-            // No wxFAIL;, too many events here.
-            ;
-          }
+        default:
+          // No wxFAIL;, too many events here.
+          ;
         }
       }
     }
