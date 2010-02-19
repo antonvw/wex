@@ -16,6 +16,7 @@ General
       git svn clone http://svn.xp-dev.com/svn/wxextension/
     to create a git clone.
     use
+      git commit -a -m "your comment" to update your local repository
       git svn dcommit to commit your changes to svn repository
     use 
       git svn rebase to fetch changes from svn repository
