@@ -77,7 +77,12 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
   switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
   {
-    case VCS_GIT: path.AppendDir(".git"); break;
+    case VCS_GIT: 
+      // The .git dir only exists in the root, so for now always return true.
+      //path.AppendDir(".git"); 
+      return true;
+      break;
+
     case VCS_SVN: path.AppendDir(".svn"); break;
     default: wxFAIL;
   }

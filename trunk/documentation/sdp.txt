@@ -10,6 +10,15 @@ General
     under windows TortoiseSVN is used (TortoiseSVN 1.6.7)
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.5.4 (r33841))
+    
+- GIT access
+    use
+      git svn clone http://svn.xp-dev.com/svn/wxextension/
+    to create a git clone.
+    use
+      git svn dcommit to commit your changes to svn repository
+    use 
+      git svn rebase to fetch changes from svn repository
 
 - STL is used wherever possible
 
