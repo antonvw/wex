@@ -1794,6 +1794,10 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
+    // At least for toggling between hex and non-hex this is necessary to
+    // reshow the edge line.
+    ConfigGet();
+
     SetControlCharSymbol(0);
 
     const int message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);

@@ -1082,6 +1082,12 @@ bool MDIFrame::OpenFile(
 
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 
+    if (unique.Contains("blame"))
+    {
+      // Do not show an edge for blamed documents, they are too wide.
+      editor->SetEdgeMode(wxSTC_EDGE_NONE);
+    }
+
     m_NotebookWithEditors->AddPage(
       editor,
       key,
