@@ -13,7 +13,7 @@
 #include <wx/config.h>
 #include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
-#include <wx/extension/lexers.h>
+#include <wx/extension/lexers.h> // for wxExLexers
 #include <wx/extension/util.h> // for wxExMatchesOneOf
 
 wxExLexers* wxExLexers::m_Self = NULL;
