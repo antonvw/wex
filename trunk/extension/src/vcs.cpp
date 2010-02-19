@@ -94,13 +94,12 @@ long wxExVCS::Execute()
 {
   wxASSERT(m_Command != VCS_NO_COMMAND);
 
-  const wxString cwd = 
-    (m_Command == VCS_HELP ? wxEmptyString: wxGetCwd());
-
+  wxString cwd;
   wxString file;
 
   if (m_FullPath.empty() && !cwd.empty())
   {
+    cwd = wxGetCwd();
     if (!wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder"))))
     {
       m_Output = _("Cannot set working directory");
@@ -114,7 +113,16 @@ long wxExVCS::Execute()
   }
   else if (!m_FullPath.empty())
   {
-    file = " \"" + m_FullPath + "\"";
+    if (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN) == VCS_GIT)
+    {
+      cwd = wxGetCwd();
+      wxSetWorkingDirectory(wxFileName(m_FullPath).GetPath());
+      file = " \"" + wxFileName(m_FullPath).GetFullName() + "\"";
+    }
+    else
+    {
+      file = " \"" + m_FullPath + "\"";
+    }
   }
 
   wxString comment;
@@ -190,7 +198,7 @@ long wxExVCS::Execute()
     wxExLog::Get()->Log(commandline);
   }
 
-  if (m_FullPath.empty() && !cwd.empty())
+  if (!cwd.empty())
   {
     wxSetWorkingDirectory(cwd);
   }
@@ -330,13 +338,13 @@ void wxExVCS::Initialize()
         {
           case VCS_ADD:      m_CommandString = "add"; break;
           case VCS_BLAME:    m_CommandString = "blame"; break;
-          case VCS_CAT:      m_CommandString = "cat"; break;
+          case VCS_CAT:      break;
           case VCS_COMMIT:   m_CommandString = "push"; break;
           case VCS_DIFF:     m_CommandString = "diff"; break;
           case VCS_HELP:     m_CommandString = "help"; break;
-          case VCS_INFO:     m_CommandString = "info"; break;
+          case VCS_INFO:     m_CommandString = "show"; break;
           case VCS_LOG:      m_CommandString = "log"; break;
-          case VCS_LS:       m_CommandString = "ls"; break;
+          case VCS_LS:       break;
           case VCS_PROPLIST: break;
           case VCS_PROPSET:  break;
           case VCS_REVERT:   m_CommandString = "revert"; break;
