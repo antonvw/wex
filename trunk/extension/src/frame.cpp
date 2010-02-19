@@ -331,36 +331,20 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case ID_EDIT_FIND_NEXT: 
-    GetSearchText();
-
-    if (m_FocusSTC != NULL)
-    {
-      m_FocusSTC->FindNext(); 
-    }
-    else if (m_FocusListView != NULL)
-    {
-      m_FocusListView->FindNext(frd->GetFindString()); 
-    }
-    else if (m_FocusGrid != NULL)
-    {
-      m_FocusGrid->FindNext(frd->GetFindString()); 
-    }
-    break;
-
   case ID_EDIT_FIND_PREVIOUS: 
     GetSearchText();
 
     if (m_FocusSTC != NULL)
     {
-      m_FocusSTC->FindNext(false);
+      m_FocusSTC->FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     else if (m_FocusListView != NULL)
     {
-      m_FocusListView->FindNext(frd->GetFindString(), false);
+      m_FocusListView->FindNext(frd->GetFindString(),command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     else if (m_FocusGrid != NULL)
     {
-      m_FocusGrid->FindNext(frd->GetFindString(), false); 
+      m_FocusGrid->FindNext(frd->GetFindString(), command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     break;
 
