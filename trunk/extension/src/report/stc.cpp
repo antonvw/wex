@@ -174,10 +174,6 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
           vcs.GetCommandWithFlags(), 
           vcs.GetOutput());
       }
-      else
-      {
-        vcs.ShowOutput(this);
-      }
     }
     else
     {
