@@ -186,7 +186,7 @@ long wxExVCS::Execute()
 
   if (vcs_bin.empty())
   {
-    wxLogError(_("VCS path is empty"));
+    wxLogError(GetVCSName() + " " + _("path is empty"));
     return -1;
   }
 
@@ -348,6 +348,20 @@ long wxExVCS::GetVCS() const
   return wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
 }
 
+const wxString wxExVCS::GetVCSName() const
+{
+  wxString text;
+
+  switch (GetVCS())
+  {
+    case VCS_GIT: text = "GIT"; break;
+    case VCS_SVN: text = "SVN"; break;
+    default: wxFAIL;
+  }
+
+  return text;
+}
+
 void wxExVCS::Initialize()
 {
   if (Use() && m_Command != VCS_NO_COMMAND)
@@ -403,7 +417,7 @@ void wxExVCS::Initialize()
       default: wxFAIL;
     }
 
-    m_Caption = "VCS " + m_CommandString;
+    m_Caption = GetVCSName() + " " + m_CommandString;
 
     // Currently no flags, as no command was executed.
     m_CommandWithFlags = m_CommandString;

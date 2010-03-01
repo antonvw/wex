@@ -118,6 +118,7 @@ public:
   bool Use() const;
 private:
   wxExVCSCommand GetType(int command_id) const;
+  const wxString GetVCSName() const;
   void Initialize();
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
