@@ -76,19 +76,22 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
   switch (GetVCS())
   {
     case VCS_GIT: 
-      // The .git dir only exists in the root, so check all components.
-      for (
-        wxArrayString::const_iterator it = filename.GetDirs().begin();
-        it != filename.GetDirs().end();
-        it++)
       {
-        wxFileName path(*it);
+      // The .git dir only exists in the root, so check all components.
+      wxFileName root(filename);
+
+      while (wxFileName(root.GetFullPath()).DirExists())
+      {
+        wxFileName path(root);
         path.AppendDir(".git");
 
         if (path.DirExists())
         {
           return true;
         }
+
+        root.RemoveLastDir();
+      }
       }
       break;
 
