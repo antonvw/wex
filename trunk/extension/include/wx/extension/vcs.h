@@ -94,6 +94,9 @@ public:
   /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
 
+  /// Gets the VCS system used.
+  long GetVCS() const;
+
 #if wxUSE_GUI
   /// Combines all in one method. Shows the dialog,
   /// executes if not cancelled, and shows output in the STC dialog.

@@ -73,7 +73,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
     return false;
   }
 
-  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
+  switch (GetVCS())
   {
     case VCS_GIT: 
       // The .git dir only exists in the root, so check all components.
@@ -129,7 +129,7 @@ long wxExVCS::Execute()
   }
   else if (!m_FullPath.empty())
   {
-    if (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN) == VCS_GIT)
+    if (GetVCS() == VCS_GIT)
     {
       cwd = wxGetCwd();
       wxSetWorkingDirectory(wxFileName(m_FullPath).GetPath());
@@ -177,7 +177,7 @@ long wxExVCS::Execute()
 
   wxString vcs_bin;
 
-  switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
+  switch (GetVCS())
   {
     case VCS_GIT: vcs_bin = wxConfigBase::Get()->Read("GIT"); break;
     case VCS_SVN: vcs_bin = wxConfigBase::Get()->Read("SVN"); break;
@@ -343,11 +343,16 @@ wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
   }
 }
 
+long wxExVCS::GetVCS() const
+{
+  return wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
+}
+
 void wxExVCS::Initialize()
 {
   if (Use() && m_Command != VCS_NO_COMMAND)
   {
-    switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
+    switch (GetVCS())
     {
       case VCS_GIT:
         switch (m_Command)
@@ -536,7 +541,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::Use() const
 {
-  return wxConfigBase::Get()->ReadLong("VCS", VCS_NONE) != VCS_NONE;
+  return GetVCS() != VCS_NONE;
 }
 
 bool wxExVCS::UseFlags() const
