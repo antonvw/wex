@@ -436,10 +436,7 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 
   if ((retValue = ExecuteDialog(parent)) == wxID_OK)
   {
-    if (!m_Output.empty())
-    {
-      ShowOutput(parent);
-    }
+    ShowOutput(parent);
   }
 
   return retValue;
