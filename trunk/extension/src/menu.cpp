@@ -238,15 +238,15 @@ void wxExMenu::BuildVCS(bool fill)
       Destroy(item);
     }
 
-    Destroy(ID_VCS_STAT);
-    Destroy(ID_VCS_INFO);
-    Destroy(ID_VCS_LOG);
-    Destroy(ID_VCS_LS);
-    Destroy(ID_VCS_DIFF);
-    Destroy(ID_VCS_HELP);
-    Destroy(ID_VCS_UPDATE);
-    Destroy(ID_VCS_COMMIT);
-    Destroy(ID_VCS_ADD);
+    DestroyVCS(ID_VCS_STAT);
+    DestroyVCS(ID_VCS_INFO);
+    DestroyVCS(ID_VCS_LOG);
+    DestroyVCS(ID_VCS_LS);
+    DestroyVCS(ID_VCS_DIFF);
+    DestroyVCS(ID_VCS_HELP);
+    DestroyVCS(ID_VCS_UPDATE);
+    DestroyVCS(ID_VCS_COMMIT);
+    DestroyVCS(ID_VCS_ADD);
   }
 
   if (fill)
@@ -265,6 +265,17 @@ void wxExMenu::BuildVCS(bool fill)
   }
 
   m_MenuVCSFilled = fill;
+}
+
+void wxExMenu::DestroyVCS(int id)
+{
+  // When using only Destroy, and the item does not exist,
+  // an assert happens.
+
+  if (FindItem(id))
+  {
+    Destroy(id);
+  }
 }
 
 #endif // wxUSE_GUI
