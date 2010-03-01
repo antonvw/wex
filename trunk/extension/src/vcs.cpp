@@ -73,8 +73,6 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
     return false;
   }
 
-  wxFileName path(filename);
-
   switch (wxConfigBase::Get()->ReadLong("VCS", VCS_SVN))
   {
     case VCS_GIT: 
@@ -94,11 +92,18 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
       }
       break;
 
-    case VCS_SVN: path.AppendDir(".svn"); break;
+    case VCS_SVN: 
+      {
+      wxFileName path(filename);
+      path.AppendDir(".svn");
+      return path.DirExists();
+      }
+      break;
+
     default: wxFAIL;
   }
 
-  return path.DirExists();
+  return false;
 }
 
 long wxExVCS::Execute()
