@@ -64,17 +64,15 @@ void wxExStyle::Set(const wxXmlNode* node)
 {
   SetNo(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")));
 
-  wxString content = node->GetNodeContent().Strip(wxString::both);
+  m_Value = node->GetNodeContent().Strip(wxString::both);
 
   std::map<wxString, wxString>::const_iterator it = 
-    wxExLexers::Get()->GetMacrosStyle().find(content);
+    wxExLexers::Get()->GetMacrosStyle().find(m_Value);
 
   if (it != wxExLexers::Get()->GetMacrosStyle().end())
   {
-    content = it->second;
+    m_Value = it->second;
   }
-
-  m_Value = content;
 }
 
 void wxExStyle::SetNo(const wxString& no)
