@@ -10,7 +10,7 @@
 #ifndef _EXSTYLE_H
 #define _EXSTYLE_H
 
-#include <vector>
+#include <set>
 #include <wx/xml/xml.h>
 
 class wxStyledTextCtrl;
@@ -38,7 +38,7 @@ private:
   void Set(const wxXmlNode* node);
   void SetNo(const wxString& no);
 
-  std::vector <int> m_No;
+  std::set <int> m_No;
   wxString m_Value;
 };
 #endif

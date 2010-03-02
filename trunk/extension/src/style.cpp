@@ -36,7 +36,7 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
   // but still will be applied here.
 
   for (
-    std::vector<int>::const_iterator it = m_No.begin();
+    std::set<int>::const_iterator it = m_No.begin();
     it != m_No.end();
     ++it)
   {
@@ -46,18 +46,8 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 
 bool wxExStyle::IsDefault() const
 {
-  for (
-    std::vector<int>::const_iterator it = m_No.begin();
-    it != m_No.end();
-    ++it)
-  {
-    if (*it == wxSTC_STYLE_DEFAULT)
-    {
-      return true;
-    }
-  }
-
-  return false;
+  std::set<int>::const_iterator it = m_No.find(wxSTC_STYLE_DEFAULT);
+  return (it != m_No.end());
 }
 
 void wxExStyle::Set(const wxXmlNode* node)
@@ -87,7 +77,7 @@ void wxExStyle::SetNo(const wxString& no)
 
     if (single.IsNumber())
     {
-      m_No.push_back(atoi(single.c_str()));
+      m_No.insert(atoi(single.c_str()));
     }
     else
     {
