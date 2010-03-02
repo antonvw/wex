@@ -14,6 +14,7 @@
 
 BEGIN_EVENT_TABLE(wxExSTCEntryDialog, wxExDialog)
   EVT_MENU(wxID_FIND, wxExSTCEntryDialog::OnCommand)
+  EVT_MENU(wxID_REPLACE, wxExSTCEntryDialog::OnCommand)
 END_EVENT_TABLE()
 
 wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
@@ -36,7 +37,9 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   m_STC = new wxExSTC(
     this, 
     text, 
-    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND,
+    wxExSTC::STC_MENU_SIMPLE | 
+      wxExSTC::STC_MENU_FIND | 
+      wxExSTC::STC_MENU_REPLACE,
     wxID_ANY, 
     pos, 
     size);
@@ -81,6 +84,7 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
     case wxID_FIND: 
+    case wxID_REPLACE: 
       wxPostEvent(wxTheApp->GetTopWindow(), command);
       break;
 
