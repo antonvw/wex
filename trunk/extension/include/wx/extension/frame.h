@@ -121,9 +121,6 @@ public:
   /// otherwise returns NULL.
   wxExSTC* GetFocusedSTC();
 
-  /// Invokes GetSearchText on one of the controls.
-  void GetSearchText();
-
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
   virtual void OnCommandConfigDialog(
@@ -161,6 +158,9 @@ public:
 #endif // wxUSE_STATUSBAR
 
 protected:
+  /// Invokes GetSearchText on one of the controls.
+  void GetSearchText();
+
   /// Writes the current frame size and position to the config.
   void OnClose(wxCloseEvent& event);
   /// Handles command event.

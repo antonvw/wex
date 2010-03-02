@@ -224,19 +224,30 @@ wxExSTC* wxExFrame::GetFocusedSTC()
 
 void wxExFrame::GetSearchText()
 {
-  wxExSTC* stc = GetSTC();
-
-  if (stc != NULL && stc->IsShown())
+  if (m_FocusSTC != NULL)
   {
-    stc->GetSearchText();
+    m_FocusSTC->GetSearchText();
+  }
+  else if (m_FocusGrid != NULL)
+  {
+    m_FocusGrid->GetSearchText();
   }
   else
   {
-    wxExGrid* grid = GetGrid();
+    wxExSTC* stc = GetSTC();
 
-    if (grid != NULL && grid->IsShown() )
+    if (stc != NULL && stc->IsShown())
     {
-      grid->GetSearchText();
+      stc->GetSearchText();
+    }
+    else
+    {
+      wxExGrid* grid = GetGrid();
+
+      if (grid != NULL && grid->IsShown() )
+      {
+        grid->GetSearchText();
+      }
     }
   }
 }
@@ -332,10 +343,9 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     
   case ID_EDIT_FIND_NEXT: 
   case ID_EDIT_FIND_PREVIOUS: 
-    GetSearchText();
-
     if (m_FocusSTC != NULL)
     {
+      m_FocusSTC->GetSearchText();
       m_FocusSTC->FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     else if (m_FocusListView != NULL)
@@ -344,6 +354,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     else if (m_FocusGrid != NULL)
     {
+      m_FocusGrid->GetSearchText();
       m_FocusGrid->FindNext(frd->GetFindString(), command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     break;
