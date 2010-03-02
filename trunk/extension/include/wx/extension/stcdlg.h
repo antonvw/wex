@@ -48,8 +48,12 @@ public:
   /// Sets the text (either normal or raw).
   /// Resets a previous lexer if asked for.
   void SetText(const wxString& text, bool reset_lexer = true);
+protected:
+  void OnCommand(wxCommandEvent& command);
 private:
   wxExSTC* m_STC;
+
+  DECLARE_EVENT_TABLE()
 };
 
 #endif // wxUSE_GUI

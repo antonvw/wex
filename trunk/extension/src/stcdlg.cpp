@@ -12,6 +12,10 @@
 
 #if wxUSE_GUI
 
+BEGIN_EVENT_TABLE(wxExSTCEntryDialog, wxExDialog)
+  EVT_MENU(wxID_FIND, wxExSTCEntryDialog::OnCommand)
+END_EVENT_TABLE()
+
 wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& caption,
   const wxString& text,
@@ -29,14 +33,10 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
-  // Currently we cannot find in the component,
-  // so no wxExSTC::STC_MENU_FIND flag,
-  // as this requires the component to be visible to public interface,
-  // and the applications to forward the find events.
   m_STC = new wxExSTC(
     this, 
     text, 
-    wxExSTC::STC_MENU_SIMPLE,
+    wxExSTC::STC_MENU_SIMPLE | wxExSTC::STC_MENU_FIND,
     wxID_ANY, 
     pos, 
     size);
@@ -74,6 +74,18 @@ const wxString wxExSTCEntryDialog::GetText() const
 wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const 
 {
   return m_STC->GetTextRaw();
+}
+
+void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
+{
+  switch (command.GetId())
+  {
+    case wxID_FIND: 
+      wxPostEvent(wxTheApp->GetTopWindow(), command);
+      break;
+
+    default: wxFAIL;
+  }
 }
 
 void wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
