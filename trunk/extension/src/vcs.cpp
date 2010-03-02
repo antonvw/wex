@@ -259,9 +259,9 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
       wxConfigBase::Get()->Read(_("Flags")));
   }
 
-  Execute();
+  const long retValue = Execute();
   
-  return wxID_OK;
+  return (retValue != -1 ? wxID_OK: wxID_CANCEL);
 }
 #endif
 
