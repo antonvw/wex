@@ -293,8 +293,6 @@ void wxExFrame::OnClose(wxCloseEvent& event)
 
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-
   switch (command.GetId())
   {
   case wxID_FIND: 
@@ -311,7 +309,8 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     
     if (m_FindReplaceDialog == NULL)
     {
-      m_FindReplaceDialog = new wxFindReplaceDialog(this, frd, _("Find")); 
+      m_FindReplaceDialog = new wxFindReplaceDialog(
+        this, wxExFindReplaceData::Get(), _("Find")); 
     }
     
     m_FindReplaceDialog->Show();
@@ -333,7 +332,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     {
       m_FindReplaceDialog = new wxFindReplaceDialog(
         this, 
-        frd,
+        wxExFindReplaceData::Get(),
         _("Replace"), 
         wxFR_REPLACEDIALOG); 
     }
@@ -350,12 +349,16 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     else if (m_FocusListView != NULL)
     {
-      m_FocusListView->FindNext(frd->GetFindString(),command.GetId() == ID_EDIT_FIND_NEXT); 
+      m_FocusListView->FindNext(
+        wxExFindReplaceData::Get()->GetFindString(), 
+        command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     else if (m_FocusGrid != NULL)
     {
       m_FocusGrid->GetSearchText();
-      m_FocusGrid->FindNext(frd->GetFindString(), command.GetId() == ID_EDIT_FIND_NEXT); 
+      m_FocusGrid->FindNext(
+        wxExFindReplaceData::Get()->GetFindString(), 
+        command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     break;
 
