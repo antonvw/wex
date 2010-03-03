@@ -159,8 +159,8 @@ protected:
   const wxString& GetComments() const {return m_Comments;};
 
   /// Increments the actions completed.
-  void IncActionsCompleted() {
-    m_Stats.GetElements().Inc(_("Actions Completed"));};
+  void IncActionsCompleted(long inc_value = 1) {
+    m_Stats.GetElements().Inc(_("Actions Completed"), inc_value);};
 
   /// Parses the specified line, and invokes actions depending on the tool,
   /// and fills the comments if any on the line.

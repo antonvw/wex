@@ -226,7 +226,7 @@ void wxExTextFile::EndCurrentRevision()
 {
   if (m_RevisionActive)
   {
-    m_Stats.m_Elements.Inc(_("Actions Completed"));
+    IncActionsCompleted();
 
     if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
     {
@@ -311,7 +311,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
   if (match)
   {
-    m_Stats.m_Elements.Inc(_("Actions Completed"), count);
+    IncActionsCompleted(count);
   }
 
   return match;
@@ -663,9 +663,8 @@ bool wxExTextFile::RunTool()
     {
       if (!m_FileName.GetLexer().GetKeywordsString().empty())
       {
-        m_Stats.m_Elements.Inc(_("Actions Completed"));
+        IncActionsCompleted();
       }
-
     }
 
     ReportStatistics();
