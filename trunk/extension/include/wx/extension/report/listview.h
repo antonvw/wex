@@ -65,8 +65,13 @@ public:
   /// Gets the list type.
   const ListType GetType() const {return m_Type;};
 
+  /// Gets info about this list.
+  virtual const wxString GetListInfo() const {
+    return GetTypeDescription();};
+
   /// Gets the list type as a string.
-  const wxString GetTypeDescription() const {return GetTypeDescription(m_Type);};
+  const wxString GetTypeDescription() const {
+    return GetTypeDescription(m_Type);};
 
   /// Gets the list type as a string for specified type.
   static const wxString GetTypeDescription(ListType type);

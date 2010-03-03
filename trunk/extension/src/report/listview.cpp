@@ -882,7 +882,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     stats += wxExListItem(this, i).Run(tool).GetElements();
   }
 
-  tool.Log(&stats, GetTypeDescription());
+  tool.Log(&stats, GetListInfo());
 
   if (tool.IsCount())
   {

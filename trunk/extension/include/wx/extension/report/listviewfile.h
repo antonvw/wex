@@ -48,6 +48,8 @@ public:
   /// Invokes base and clears the list.
   void FileNew(const wxExFileName& filename = wxExFileName());
 
+  virtual const wxString GetListInfo() const;
+
   virtual bool ItemFromText(const wxString& text);
 
   /// Resets the member.

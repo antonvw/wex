@@ -262,6 +262,11 @@ void wxExListViewFile::FileNew(const wxExFileName& filename)
   EditClearAll();
 }
 
+const wxString wxExListViewFile::GetListInfo() const
+{
+  return GetFileName().GetName();
+}
+
 void wxExListViewFile::Initialize()
 {
 #if wxUSE_DRAG_AND_DROP
