@@ -117,7 +117,7 @@ void wxExVi::DeleteMarker(const wxUniChar& marker)
 
   if (it != m_Markers.end())
   {
-    m_STC->MarkerDelete(it->second, m_MarkerSymbol);
+    m_STC->MarkerDelete(it->second, m_MarkerSymbol.GetNo());
     m_Markers.erase(it);
   }
 }
@@ -222,7 +222,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     DeleteMarker(command.Last());
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
-    m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol);
+    m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol.GetNo());
   }
   else if (command.Matches("*r?"))
   {

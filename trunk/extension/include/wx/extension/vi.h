@@ -17,6 +17,7 @@
 #endif
 #include <wx/stc/stc.h>
 #include <wx/extension/indicator.h>
+#include <wx/extension/marker.h>
 
 #if wxUSE_GUI
 
@@ -88,7 +89,7 @@ private:
   const wxExIndicator m_IndicatorInsert;
   const wxExIndicator m_IndicatorPut;
   const wxExIndicator m_IndicatorYank;
-  const int m_MarkerSymbol;
+  const wxExMarker m_MarkerSymbol;
   const wxString m_FindDialogItem;
   
   std::map<wxUniChar, int> m_Markers;

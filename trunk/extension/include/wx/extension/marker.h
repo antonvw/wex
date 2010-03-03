@@ -19,11 +19,17 @@ class wxStyledTextCtrl;
 class wxExMarker
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExMarker(const wxXmlNode* node = NULL);
+
+  /// Constructor.
+  wxExMarker(int no);
 
   /// Applies this marker to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
+
+  /// Returns the no.
+  int GetNo() const {return m_No;};
 
   /// Returns true if marker is valid.
   bool IsOk() const;
