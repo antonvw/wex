@@ -450,7 +450,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   if (event.GetId() == ID_EDIT_NEXT)
   {
-    if (m_NotebookWithEditors->GetSelection() == m_NotebookWithEditors->GetPageCount() - 1)
+    if (m_NotebookWithEditors->GetSelection() == 
+        m_NotebookWithEditors->GetPageCount() - 1)
     {
       m_NotebookWithEditors->SetSelection(0);
     }
@@ -464,7 +465,8 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   {
     if (m_NotebookWithEditors->GetSelection() == 0)
     {
-      m_NotebookWithEditors->SetSelection(m_NotebookWithEditors->GetPageCount() - 1);
+      m_NotebookWithEditors->SetSelection(
+        m_NotebookWithEditors->GetPageCount() - 1);
     }
     else
     {
@@ -1067,7 +1069,8 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 bool MDIFrame::OpenFile(
   const wxExFileName& filename,
   const wxString& unique,
-  const wxString& contents)
+  const wxString& contents,
+  long flags)
 {
   const wxString key = filename.GetFullPath() + unique;
 
@@ -1078,7 +1081,8 @@ bool MDIFrame::OpenFile(
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
       m_NotebookWithEditors, 
       this,
-      contents);
+      contents,
+      flags);
 
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 

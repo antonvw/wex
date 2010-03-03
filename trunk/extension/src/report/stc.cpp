@@ -32,13 +32,14 @@ END_EVENT_TABLE()
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   wxExFrameWithHistory* frame,
   const wxString& value,
+  long flags,
   long type,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
-  : wxExSTC(parent, value, type, id, pos, size, style, name)
+  : wxExSTC(parent, value, flags, type, id, pos, size, style, name)
   , m_Frame(frame)
 {
 }
@@ -172,7 +173,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
         m_Frame->OpenFile(
           GetFileName(), 
           vcs.GetCommandWithFlags(), 
-          vcs.GetOutput());
+          vcs.GetOutput(),
+          wxExSTC::STC_OPEN_READ_ONLY);
       }
     }
     else

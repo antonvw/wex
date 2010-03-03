@@ -62,6 +62,7 @@ public:
   /// This default value is overwritten by Open.
   wxExSTC(wxWindow* parent,
     const wxString& value = wxEmptyString,
+    long open_flags = 0,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,

@@ -62,6 +62,7 @@ std::vector <wxString> wxExSTC::m_Macro;
 
 wxExSTC::wxExSTC(wxWindow* parent,
   const wxString& value,
+  long open_flags,
   long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
@@ -70,7 +71,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxString& name)
   : wxStyledTextCtrl(parent, id, pos, size, style, name)
   , m_FileSaveInMenu(false)
-  , m_Flags(0)
+  , m_Flags(open_flags)
   , m_GotoLineNumber(1)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
@@ -80,6 +81,13 @@ wxExSTC::wxExSTC(wxWindow* parent,
   if (!value.empty())
   {
     SetText(value);
+
+    if (m_Flags & STC_OPEN_READ_ONLY ||
+        // At this moment we do not allow to write in hex mode.
+        m_Flags & STC_OPEN_HEX)
+    {
+      SetReadOnly(true);
+    }
   }
   else
   {

@@ -37,6 +37,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   m_STC = new wxExSTC(
     this, 
     text, 
+    0,
     wxExSTC::STC_MENU_SIMPLE | 
       wxExSTC::STC_MENU_FIND | 
       wxExSTC::STC_MENU_REPLACE,

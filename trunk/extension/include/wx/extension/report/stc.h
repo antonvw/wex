@@ -41,6 +41,7 @@ public:
   wxExSTCWithFrame(wxWindow* parent,
     wxExFrameWithHistory* frame,
     const wxString& value,
+    long flags = 0,
     long type = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,

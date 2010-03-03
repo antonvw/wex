@@ -40,7 +40,8 @@ private:
   virtual bool OpenFile(
     const wxExFileName& filename,
     const wxString& unique,
-    const wxString& contents);
+    const wxString& contents,
+    long flags = 0);
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

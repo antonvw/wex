@@ -77,7 +77,8 @@ public:
   virtual bool OpenFile(
     const wxExFileName& WXUNUSED(filename),
     const wxString& WXUNUSED(unique),
-    const wxString& WXUNUSED(contents)) {return false;};
+    const wxString& WXUNUSED(contents),
+    long flags = 0) {return false;};
 
   /// Interface from wxExFrame.
   virtual bool OpenFile(
