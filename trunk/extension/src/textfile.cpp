@@ -655,8 +655,6 @@ bool wxExTextFile::RunTool()
     }
   }
 
-  m_Stats.m_Elements.Set(_("Files Passed"), 1);
-
   if (m_Tool.IsStatisticsType())
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)

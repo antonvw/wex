@@ -73,14 +73,14 @@ void wxExTool::Log(
   }
 
   logtext
-    << " " << stat->Get(_("Files Passed")) << " " << _("file(s)")
+    << " " << stat->Get(_("Files")) << " " << _("file(s)")
     << (!caption.empty() ? ": " + caption: "");
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(logtext);
 #endif
 
-  if (log_to_file && stat->Get(_("Files Passed")) != 0)
+  if (log_to_file && stat->Get(_("Files")) != 0)
   {
     wxExLog::Get()->Log(logtext);
 
