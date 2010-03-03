@@ -394,7 +394,6 @@ void wxExLexers::Read()
   m_Macros.clear();
   m_MacrosStyle.clear();
   m_Markers.clear();
-  m_SortedLexerNames.clear();
   m_Styles.clear();
   m_StylesHex.clear();
   m_DefaultStyle = wxExStyle(NULL);
@@ -416,14 +415,10 @@ void wxExLexers::Read()
     {
       const wxExLexer lexer(child);
       m_Lexers.insert(std::make_pair(lexer.GetScintillaLexer(), lexer));
-      m_SortedLexerNames.Add(lexer.GetScintillaLexer());
     }
 
     child = child->GetNext();
   }
-
-  // Add empty lexer.
-  m_SortedLexerNames.Add(wxEmptyString);
 
   if (!wxConfigBase::Get()->Exists(_("In files")))
   {
@@ -448,13 +443,25 @@ bool wxExLexers::ShowDialog(
   wxString& lexer,
   const wxString& caption) const
 {
+  wxArrayString s;
+
+  for (
+    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
+    it != m_Lexers.end();
+    ++it)
+  {
+    s.Add(it->first);
+  } 
+
+  s.Add(wxEmptyString);
+
   wxSingleChoiceDialog dlg(
     parent, 
     _("Input") + ":", 
     caption, 
-    m_SortedLexerNames);
+    s);
   
-  dlg.SetSelection(m_SortedLexerNames.Index(lexer));
+  dlg.SetSelection(s.Index(lexer));
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {

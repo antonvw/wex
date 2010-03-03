@@ -126,7 +126,6 @@ private:
   std::vector<wxExStyle> m_StylesHex;
 
   wxExStyle m_DefaultStyle;
-  wxSortedArrayString m_SortedLexerNames;
 
   const wxFileName m_FileName;
 
