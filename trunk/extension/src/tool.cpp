@@ -31,11 +31,8 @@ wxExTool* wxExTool::Get(bool createOnDemand)
   {
     m_Self = new wxExTool(0);
 
-    if (!wxExVCS::Get()->Use())
-    {
-      m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-      m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
-    }
+    m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
+    m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
 
     m_Self->AddInfo(ID_TOOL_LINE_CODE, _("Parsed code lines"));
     m_Self->AddInfo(ID_TOOL_LINE_COMMENT, _("Parsed comment lines"));

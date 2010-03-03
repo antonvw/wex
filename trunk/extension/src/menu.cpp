@@ -180,10 +180,15 @@ void wxExMenu::AppendTools(int itemid)
   {
     if (!it->second.GetText().empty())
     {
-      menuTool->Append(
-        it->first, 
-        it->second.GetText(), 
-        it->second.GetHelpText());
+      const bool vcs_type = wxExTool(it->first).IsRCSType();
+
+      if ((vcs_type && !wxExVCS::Get()->Use()) || !vcs_type)
+      {
+        menuTool->Append(
+          it->first, 
+          it->second.GetText(), 
+          it->second.GetHelpText());
+      }
     }
   }
 
