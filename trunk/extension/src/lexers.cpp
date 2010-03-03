@@ -217,6 +217,12 @@ bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
   return (it != m_Indicators.end());
 }
 
+bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
+{
+  std::set<wxExMarker>::const_iterator it = m_Markers.find(marker);
+  return (it != m_Markers.end());
+}
+
 void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
@@ -246,7 +252,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
 
       if (marker.IsOk())
       {
-        m_Markers.push_back(marker);
+        m_Markers.insert(marker);
       }
     }
     else if (child->GetName() == "properties")

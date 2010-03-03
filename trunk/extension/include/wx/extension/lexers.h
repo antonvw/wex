@@ -88,6 +88,9 @@ public:
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
+  /// Returns true if specified marker is available.
+  bool MarkerIsLoaded(const wxExMarker& marker) const;
+
   /// Parses properties tag.
   const std::vector<wxExProperty> ParseTagProperties(const wxXmlNode* node) const;
 
@@ -116,9 +119,9 @@ private:
   std::map<wxString, wxString> m_MacrosStyle;
 
   std::set<wxExIndicator> m_Indicators;
+  std::set<wxExMarker> m_Markers;
 
   std::vector<wxExProperty> m_GlobalProperties;
-  std::vector<wxExMarker> m_Markers;
   std::vector<wxExStyle> m_Styles;
   std::vector<wxExStyle> m_StylesHex;
 

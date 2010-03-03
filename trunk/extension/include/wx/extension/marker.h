@@ -25,6 +25,12 @@ public:
   /// Constructor.
   wxExMarker(int no);
 
+  /// < operator
+  bool operator<(const wxExMarker& m) const;
+
+  /// == operator
+  bool operator==(const wxExMarker& m) const;
+
   /// Applies this marker to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 

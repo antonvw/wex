@@ -29,6 +29,16 @@ wxExMarker::wxExMarker(int no)
 {
 }
 
+bool wxExMarker::operator<(const wxExMarker& m) const
+{
+  return m_No < m.m_No;
+}
+
+bool wxExMarker::operator==(const wxExMarker& m) const
+{
+  return m_No == m.m_No;
+}
+
 void wxExMarker::Apply(wxStyledTextCtrl* stc) const
 {
   wxASSERT(IsOk());
