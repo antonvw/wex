@@ -13,6 +13,7 @@
 #define _EXLEXERS_H
 
 #include <map>
+#include <set>
 #include <vector>
 #include <wx/colour.h> 
 #include <wx/filename.h>
@@ -114,8 +115,9 @@ private:
   std::map<wxString, wxString> m_Macros;
   std::map<wxString, wxString> m_MacrosStyle;
 
+  std::set<wxExIndicator> m_Indicators;
+
   std::vector<wxExProperty> m_GlobalProperties;
-  std::vector<wxExIndicator> m_Indicators;
   std::vector<wxExMarker> m_Markers;
   std::vector<wxExStyle> m_Styles;
   std::vector<wxExStyle> m_StylesHex;

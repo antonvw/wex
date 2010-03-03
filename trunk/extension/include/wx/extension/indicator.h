@@ -18,8 +18,14 @@ class wxStyledTextCtrl;
 class wxExIndicator
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExIndicator(const wxXmlNode* node = NULL);
+
+  /// Constructor.
+  wxExIndicator(int no);
+
+  /// < operator
+  bool operator<(const wxExIndicator& i) const;
 
   /// Applies this indicator to stc component.
   void Apply(wxStyledTextCtrl* stc) const;

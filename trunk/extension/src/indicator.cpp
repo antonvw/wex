@@ -24,6 +24,18 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
   }
 }
 
+wxExIndicator::wxExIndicator(int no)
+  : m_No(no)
+  , m_Style(-1)
+  , m_Under(false)
+{
+}
+
+bool wxExIndicator::operator<(const wxExIndicator& i) const
+{
+  return m_No < i.m_No;
+}
+
 void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
 {
   wxASSERT(m_No != -1 && m_Style != -1);
