@@ -43,7 +43,7 @@ bool wxExIndicator::operator==(const wxExIndicator& i) const
 
 void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(m_No != -1 && m_Style != -1);
+  wxASSERT(IsOk());
 
   stc->IndicatorSetStyle(m_No, m_Style);
 
