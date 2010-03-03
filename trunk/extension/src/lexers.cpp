@@ -211,10 +211,9 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-bool wxExLexers::IndicatorIsLoaded(int indic) const
+bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
 {
-  std::set<wxExIndicator>::const_iterator it = 
-    m_Indicators.find(wxExIndicator(indic));
+  std::set<wxExIndicator>::const_iterator it = m_Indicators.find(indic);
   return (it != m_Indicators.end());
 }
 

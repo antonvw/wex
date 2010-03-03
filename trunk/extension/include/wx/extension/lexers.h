@@ -86,7 +86,7 @@ public:
   const std::map<wxString, wxString>& GetMacrosStyle() const {return m_MacrosStyle;};
 
   /// Returns true if specified indicator is available.
-  bool IndicatorIsLoaded(int indic) const;
+  bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
   /// Parses properties tag.
   const std::vector<wxExProperty> ParseTagProperties(const wxXmlNode* node) const;

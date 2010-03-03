@@ -904,14 +904,17 @@ void wxExVi::Repeat()
   }
 }
 
-void wxExVi::SetIndicator(int indicator, int start, int end) const
+void wxExVi::SetIndicator(
+  const wxExIndicator& indicator, 
+  int start, 
+  int end) const
 {
   if (!wxExLexers::Get()->IndicatorIsLoaded(indicator))
   {
     return;
   }
 
-  m_STC->SetIndicatorCurrent(indicator);
+  m_STC->SetIndicatorCurrent(indicator.GetNo());
 
   // When yanking, old one can be cleared.
   // For put it is useful to keep them.

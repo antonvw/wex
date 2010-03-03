@@ -16,6 +16,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/stc/stc.h>
+#include <wx/extension/indicator.h>
 
 #if wxUSE_GUI
 
@@ -64,7 +65,7 @@ private:
     const wxString& end_address, 
     const wxString& destination);
   void Repeat();
-  void SetIndicator(int indicator, int start, int end) const;
+  void SetIndicator(const wxExIndicator& indicator, int start, int end) const;
   bool SetSelection(
     const wxString& begin_address, 
     const wxString& end_address) const;
@@ -84,9 +85,9 @@ private:
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
 
-  const int m_IndicatorInsert;
-  const int m_IndicatorPut;
-  const int m_IndicatorYank;
+  const wxExIndicator m_IndicatorInsert;
+  const wxExIndicator m_IndicatorPut;
+  const wxExIndicator m_IndicatorYank;
   const int m_MarkerSymbol;
   const wxString m_FindDialogItem;
   

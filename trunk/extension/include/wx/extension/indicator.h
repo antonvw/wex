@@ -27,6 +27,9 @@ public:
   /// < operator
   bool operator<(const wxExIndicator& i) const;
 
+  /// == operator
+  bool operator==(const wxExIndicator& i) const;
+
   /// Applies this indicator to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 

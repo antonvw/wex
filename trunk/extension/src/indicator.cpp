@@ -36,6 +36,11 @@ bool wxExIndicator::operator<(const wxExIndicator& i) const
   return m_No < i.m_No;
 }
 
+bool wxExIndicator::operator==(const wxExIndicator& i) const
+{
+  return m_No == i.m_No;
+}
+
 void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
 {
   wxASSERT(m_No != -1 && m_Style != -1);
