@@ -106,17 +106,17 @@ wxExTextFile::wxExTextFile(
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(tool)
+  , m_AllowAction(false)
+  , m_EmptyLine(false)
+  , m_FinishedAction(false)
+  , m_IsCommentStatement(false)
+  , m_IsString(false)
+  , m_Modified(false)
+  , m_RevisionActive(false)
+  , m_LineMarker(0)
+  , m_LineMarkerEnd(0)
+  , m_VersionLine(0)
 {
-  m_AllowAction = false;
-  m_EmptyLine = false;
-  m_FinishedAction = false;
-  m_IsCommentStatement = false;
-  m_IsString = false;
-  m_Modified = false;
-  m_RevisionActive = false;
-  m_LineMarker = 0;
-  m_LineMarkerEnd = 0;
-  m_VersionLine = 0;
 }
 
 wxExTextFile::wxExCommentType wxExTextFile::CheckCommentSyntax(
