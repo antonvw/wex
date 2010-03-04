@@ -33,7 +33,7 @@ wxExFindReplaceData::wxExFindReplaceData()
   SetFlags(flags);
 
   // Start with this one, as it is used by SetFindString.
-  SetIsRegularExpression(wxConfigBase::Get()->ReadBool(m_TextRegEx, false));
+  SetUseRegularExpression(wxConfigBase::Get()->ReadBool(m_TextRegEx, false));
 
   m_FindStrings = wxExListFromConfig(m_TextFindWhat);
   m_ReplaceStrings = wxExListFromConfig(m_TextReplaceWith);
@@ -62,7 +62,7 @@ wxExFindReplaceData::~wxExFindReplaceData()
 
   wxConfigBase::Get()->Write(m_TextMatchCase, MatchCase());
   wxConfigBase::Get()->Write(m_TextMatchWholeWord, MatchWord());
-  wxConfigBase::Get()->Write(m_TextRegEx, m_IsRegularExpression);
+  wxConfigBase::Get()->Write(m_TextRegEx, m_UseRegularExpression);
   wxConfigBase::Get()->Write(m_TextSearchDown, SearchDown());
 }
 
@@ -91,7 +91,7 @@ bool wxExFindReplaceData::Get(
   }
   else if (field == m_TextRegEx)
   {
-    clb->Check(item, IsRegularExpression());
+    clb->Check(item, UseRegularExpression());
   }
   else
   {
@@ -136,10 +136,11 @@ bool wxExFindReplaceData::Set(const wxString& field, bool value)
   }
   else if (field == m_TextRegEx)
   {
-    SetIsRegularExpression(value);
+    SetUseRegularExpression(value);
   }
   else
   {
+    // No wxFAIL, see configitem.
     return false;
   }
 
@@ -148,7 +149,7 @@ bool wxExFindReplaceData::Set(const wxString& field, bool value)
 
 void wxExFindReplaceData::SetFindRegularExpression()
 {
-  if (IsRegularExpression())
+  if (UseRegularExpression())
   {
     int flags = wxRE_DEFAULT;
     if (!MatchCase()) flags |= wxRE_ICASE;

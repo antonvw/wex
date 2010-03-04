@@ -71,9 +71,6 @@ public:
   /// Gets text.
   const wxString& GetTextSearchDown() const {return m_TextSearchDown;};
 
-  /// Returns true if find text is a regular expression.
-  bool IsRegularExpression() const {return m_IsRegularExpression;};
-
   /// Returns true if the flags have match case set.
   bool MatchCase() const {return (GetFlags() & wxFR_MATCHCASE) > 0;};
 
@@ -93,16 +90,12 @@ public:
   bool Set(const wxString& field, bool value);
 
   /// Sets the find string.
-  /// If IsRegularExpression also sets the regular expression.
+  /// If UseRegularExpression also sets the regular expression.
   /// This string is used for tool find in files and replace in files.
   void SetFindString(const wxString& value);
 
   /// Sets the find strings.
   void SetFindStrings(const std::list < wxString > & value);
-
-  /// Sets regular expression.
-  void SetIsRegularExpression(bool value) {
-    m_IsRegularExpression = value;};
 
   /// Sets flags for match case.
   void SetMatchCase(bool value);
@@ -115,12 +108,18 @@ public:
 
   /// Sets the replace strings.
   void SetReplaceStrings(const std::list < wxString > & value);
+
+  /// Sets using regular expression for find text.
+  void SetUseRegularExpression(bool value) {
+    m_UseRegularExpression = value;};
+
+  /// Returns true if find text is used as a regular expression.
+  bool UseRegularExpression() const {return m_UseRegularExpression;};
 private:
   void SetFindRegularExpression();
 
   wxRegEx m_FindRegularExpression;
-  bool m_IsRegularExpression;
-  std::set<wxString> m_Info;
+  bool m_UseRegularExpression;
 
   const wxString m_TextFindWhat;
   const wxString m_TextMatchCase;
@@ -131,6 +130,7 @@ private:
 
   std::list < wxString > m_FindStrings;
   std::list < wxString > m_ReplaceStrings;
+  std::set < wxString > m_Info;
 
   static wxExFindReplaceData* m_Self;
 };

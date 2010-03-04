@@ -161,7 +161,7 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
   // Match word and regular expression do not work together.
   if (frd->MatchWord())
   {
-    frd->SetIsRegularExpression(false);
+    frd->SetUseRegularExpression(false);
   }
 
   if (
@@ -905,7 +905,7 @@ void wxExFindToolBar::Initialize()
 
   m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
   m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
-  m_RegularExpression->SetValue(wxExFindReplaceData::Get()->IsRegularExpression());
+  m_RegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegularExpression());
 }
 
 void wxExFindToolBar::OnCommand(wxCommandEvent& event)
@@ -933,7 +933,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       m_MatchCase->GetValue());
     break;
   case ID_REGULAR_EXPRESSION:
-    wxExFindReplaceData::Get()->SetIsRegularExpression(
+    wxExFindReplaceData::Get()->SetUseRegularExpression(
       m_RegularExpression->GetValue());
     break;
 

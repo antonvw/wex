@@ -994,7 +994,7 @@ int wxExSTC::FindReplaceDataFlags() const
 
   int flags = 0;
 
-  if (frd->IsRegularExpression())  flags |= wxSTC_FIND_REGEXP;
+  if (frd->UseRegularExpression())  flags |= wxSTC_FIND_REGEXP;
   if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
   if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
 
