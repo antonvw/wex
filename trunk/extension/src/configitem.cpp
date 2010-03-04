@@ -131,6 +131,15 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
+void wxExConfigItem::AddLabel(wxSizer* sizer) const
+{
+  sizer->Add(
+    new wxStaticText(m_Control->GetParent(), 
+    wxID_ANY, 
+    m_Name + ":"), 
+    wxSizerFlags().Right().Border());
+}
+
 void wxExConfigItem::AddToSizer(wxSizer* sizer) const
 {
   sizer->Add(m_Control, wxSizerFlags().Expand().Left().Border());
@@ -138,11 +147,9 @@ void wxExConfigItem::AddToSizer(wxSizer* sizer) const
 
 void wxExConfigItem::AddToSizerBrowse(wxSizer* sizer, int id) const
 {
-  wxSizerFlags flag;
-
   wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
   browse->AddGrowableCol(0);
-  browse->Add(m_Control, flag.Expand());
+  browse->Add(m_Control, wxSizerFlags().Expand());
 
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
@@ -155,15 +162,11 @@ void wxExConfigItem::AddToSizerBrowse(wxSizer* sizer, int id) const
       wxDefaultPosition,
       wxDefaultSize,
       wxBU_EXACTFIT),
-    flag.Center().Border(wxLEFT));
+    wxSizerFlags().Center().Border(wxLEFT));
 
-  sizer->Add(new wxStaticText(
-    m_Control->GetParent(), 
-    wxID_ANY, 
-    GetName() + ":"), 
-    flag.Right().Border());
+  AddLabel(sizer);
 
-  sizer->Add(browse, flag.Center().Border());
+  sizer->Add(browse, wxSizerFlags().Center().Border());
 }
 
 void wxExConfigItem::AddToSizerLabel(
@@ -176,11 +179,7 @@ void wxExConfigItem::AddToSizerLabel(
 
   if (!hide)
   {
-    sizer->Add(
-      new wxStaticText(m_Control->GetParent(), 
-      wxID_ANY, 
-      GetName() + ":"), 
-      flags.Right());
+    AddLabel(sizer);
   }
 
   sizer->Add(m_Control, (expand ? flags.Left().Expand(): flags.Left()));

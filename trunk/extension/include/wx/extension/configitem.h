@@ -122,13 +122,9 @@ public:
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:
-  /// Adds this item to specified sizer
+  void AddLabel(wxSizer* sizer) const;
   void AddToSizer(wxSizer* sizer) const;
-
-  /// Adds this item to specified sizer with a browse button.
   void AddToSizerBrowse(wxSizer* sizer, int id) const;
-
-  /// Adds this item to specified sizer with a label.
   void AddToSizerLabel(wxSizer* sizer, 
     bool expand = true, bool hide = false) const;
 
