@@ -260,7 +260,8 @@ bool wxExTextFile::MatchLine(wxString& line)
 
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
-  if (!frd->UseRegularExpression())
+  if (!frd->UseRegularExpression() ||
+      (frd->UseRegularExpression() && !frd->GetRegularExpression().IsValid()))
   {
     const wxString search_line = frd->MatchCase() ? line: line.Upper();
 
