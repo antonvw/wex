@@ -19,7 +19,8 @@
 #if wxUSE_GUI
 
 wxExConfigItem::wxExConfigItem()
-  : m_Name("spacer")
+  : m_Control(NULL)
+  , m_Name("spacer")
   , m_Page(wxEmptyString)
   , m_Type(CONFIG_SPACER) 
 {
@@ -30,7 +31,8 @@ wxExConfigItem::wxExConfigItem(
   int min,
   int max,
   const wxString& page)
-  : m_IsRequired(false)
+  : m_Control(NULL)
+  , m_IsRequired(false)
   , m_Min(min)
   , m_Max(max)
   , m_MaxItems(0)
@@ -47,7 +49,8 @@ wxExConfigItem::wxExConfigItem(
   double max,
   double inc,
   const wxString& page)
-  : m_IsRequired(false)
+  : m_Control(NULL)
+  , m_IsRequired(false)
   , m_MaxItems(0)
   , m_MinDouble(min)
   , m_MaxDouble(max)
@@ -64,7 +67,8 @@ wxExConfigItem::wxExConfigItem(
   const wxString& page,
   long style,
   bool is_required)
-  : m_IsRequired(is_required)
+  : m_Control(NULL)
+  , m_IsRequired(is_required)
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
@@ -80,7 +84,8 @@ wxExConfigItem::wxExConfigItem(
   const std::map<long, const wxString> & choices,
   bool use_radiobox,
   const wxString& page)
-  : m_IsRequired(false)
+  : m_Control(NULL)
+  , m_IsRequired(false)
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
@@ -95,7 +100,8 @@ wxExConfigItem::wxExConfigItem(
 wxExConfigItem::wxExConfigItem(
   const std::set<wxString> & choices,
   const wxString& page)
-  : m_IsRequired(false)
+  : m_Control(NULL)
+  , m_IsRequired(false)
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
@@ -113,7 +119,8 @@ wxExConfigItem::wxExConfigItem(
   const wxString& page,
   bool is_required,
   int max_items)
-  : m_IsRequired(is_required)
+  : m_Control(NULL)
+  , m_IsRequired(is_required)
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(max_items)
@@ -309,7 +316,9 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
     default: wxFAIL;
   }
 
-  wxASSERT(m_Control != NULL);
+  wxASSERT(
+     m_Type == CONFIG_SPACER || 
+    (m_Type != CONFIG_SPACER && m_Control != NULL));
 }
 
 void wxExConfigItem::ToConfig(bool save) const
