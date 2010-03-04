@@ -124,16 +124,6 @@ public:
 
   /// Runs the tool (opens the file before running and closes afterwards).
   bool RunTool();
-
-  /// Writes a comment to the current line.
-  void WriteComment(
-    const wxString& text,
-    const bool fill_out = false,
-    const bool fill_out_with_space = false) {
-    InsertLine(m_FileName.GetLexer().MakeComment(
-      text,
-      fill_out,
-      fill_out_with_space));};
 protected:
   // Interface.
   /// Called after comments have been found.

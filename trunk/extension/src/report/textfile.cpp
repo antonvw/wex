@@ -51,6 +51,11 @@ public:
   static const wxString QueryRunTimeText() {return "QUERY RUN TIME: ";};
 private:
   void UpdateTextFileFromQuery();
+  /// Writes a comment to the current line.
+  void WriteComment(
+    const wxString& text,
+    const bool fill_out = false,
+    const bool fill_out_with_space = false);
   otl_connect* m_db;
   otl_stream m_stream;
   wxExTextFile* m_TextFile;
@@ -370,8 +375,8 @@ bool Recordset::ExecQuery(const wxString& query)
 void Recordset::UpdateTextFileFromQuery()
 {
   m_TextFile->GoToLine(m_TextFile->GetCurrentLine() + 1);
-  m_TextFile->WriteComment(QueryRunTimeText() + wxDateTime::Now().FormatISOCombined(' '));
-  m_TextFile->WriteComment("USING ODBC DATABASE: " + wxConfigBase::Get()->Read(_("Datasource")));
+  WriteComment(QueryRunTimeText() + wxDateTime::Now().FormatISOCombined(' '));
+  WriteComment("USING ODBC DATABASE: " + wxConfigBase::Get()->Read(_("Datasource")));
 
   // Get columns.
   int desc_len;
@@ -397,5 +402,16 @@ void Recordset::UpdateTextFileFromQuery()
 
     m_TextFile->InsertLine(line);
   }
+}
+
+void Recordset::WriteComment(
+  const wxString& text,
+  const bool fill_out,
+  const bool fill_out_with_space) 
+{
+  m_TextFile->InsertLine(m_TextFile->GetFileName().GetLexer().MakeComment(
+    text,
+    fill_out,
+    fill_out_with_space));
 }
 #endif
