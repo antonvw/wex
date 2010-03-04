@@ -80,7 +80,14 @@ wxExSTC::wxExSTC(wxWindow* parent,
 
   if (!value.empty())
   {
-    SetText(value);
+    if (m_Flags & STC_OPEN_HEX)
+    {
+      AddTextHexMode(0, value.c_str());
+    }
+    else
+    {
+      SetText(value);
+    }
 
     if (m_Flags & STC_OPEN_READ_ONLY ||
         // At this moment we do not allow to write in hex mode.
