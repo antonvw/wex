@@ -116,9 +116,22 @@ public:
   /// Gets the type.
   int GetType() const {return m_Type;};
 
+  /// Lays out this item on a sizer.
+  void Layout(wxSizer* sizer, int id) const;
+
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:
+  /// Adds this item to specified sizer
+  void AddToSizer(wxSizer* sizer) const;
+
+  /// Adds this item to specified sizer with a browse button.
+  void AddToSizerBrowse(wxSizer* sizer, int id) const;
+
+  /// Adds this item to specified sizer with a label.
+  void AddToSizerLabel(wxSizer* sizer, 
+    bool expand = true, bool hide = false) const;
+
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
   bool m_IsRequired;

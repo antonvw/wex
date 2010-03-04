@@ -131,8 +131,69 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
+void wxExConfigItem::AddToSizer(wxSizer* sizer) const
+{
+  sizer->Add(m_Control, wxSizerFlags().Expand().Left().Border());
+}
+
+void wxExConfigItem::AddToSizerBrowse(wxSizer* sizer, int id) const
+{
+  wxSizerFlags flag;
+
+  wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
+  browse->AddGrowableCol(0);
+  browse->Add(m_Control, flag.Expand());
+
+  // Tried to use a wxDirPickerCtrl here, is nice,
+  // but does not use a combobox for keeping old values, so this is better.
+  // And the text box that is used is not resizable as well.
+  browse->Add(
+    new wxButton(
+      m_Control->GetParent(),
+      id,
+      wxDirPickerWidgetLabel,
+      wxDefaultPosition,
+      wxDefaultSize,
+      wxBU_EXACTFIT),
+    flag.Center().Border(wxLEFT));
+
+  sizer->Add(new wxStaticText(
+    m_Control->GetParent(), 
+    wxID_ANY, 
+    GetName() + ":"), 
+    flag.Right().Border());
+
+  sizer->Add(browse, flag.Center().Border());
+}
+
+void wxExConfigItem::AddToSizerLabel(
+  wxSizer* sizer,
+  bool expand,
+  bool hide) const
+{
+  wxSizerFlags flags;
+  flags.Border();
+
+  if (!hide)
+  {
+    sizer->Add(
+      new wxStaticText(m_Control->GetParent(), 
+      wxID_ANY, 
+      GetName() + ":"), 
+      flags.Right());
+  }
+
+  sizer->Add(m_Control, (expand ? flags.Left().Expand(): flags.Left()));
+}
+
 void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 {
+  if (m_Type == CONFIG_SPACER)
+  {
+    // A spacer has no controlling window.
+    return;
+  }
+
   const int width = 200;
   const int width_numeric = 75;
 
@@ -276,8 +337,6 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 
       break;
 
-    case CONFIG_SPACER: break;
-
     case CONFIG_SPINCTRL:
       m_Control = new wxSpinCtrl(parent,
         wxID_ANY,
@@ -316,9 +375,33 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
     default: wxFAIL;
   }
 
-  wxASSERT(
-     m_Type == CONFIG_SPACER || 
-    (m_Type != CONFIG_SPACER && m_Control != NULL));
+  wxASSERT(m_Control != NULL);
+}
+
+void wxExConfigItem::Layout(wxSizer* sizer, int id) const
+{
+  switch (m_Type)
+  {
+    case CONFIG_CHECKBOX: AddToSizer(sizer); break;
+    case CONFIG_CHECKLISTBOX: AddToSizerLabel(sizer); break;
+    case CONFIG_CHECKLISTBOX_NONAME: AddToSizer(sizer); break;
+    case CONFIG_COLOUR: AddToSizerLabel(sizer,false); break;
+    case CONFIG_COMBOBOX: AddToSizerLabel(sizer, true, false); break;
+    case CONFIG_COMBOBOXDIR: AddToSizerBrowse(sizer, id); break;
+    case CONFIG_COMBOBOX_NONAME: AddToSizer(sizer); break;
+    case CONFIG_DIRPICKERCTRL: AddToSizerLabel(sizer); break;
+    case CONFIG_FILEPICKERCTRL: AddToSizerLabel(sizer); break;
+    case CONFIG_FONTPICKERCTRL: AddToSizerLabel(sizer); break;
+    case CONFIG_INT: AddToSizerLabel(sizer); break;
+    case CONFIG_RADIOBOX: AddToSizer(sizer); break;
+    case CONFIG_SPACER: sizer->AddSpacer(wxSizerFlags::GetDefaultBorder()); break;
+    case CONFIG_SPINCTRL: AddToSizerLabel(sizer, false); break;
+    case CONFIG_SPINCTRL_DOUBLE: AddToSizerLabel(sizer, false); break;
+    case CONFIG_STRING: AddToSizerLabel(sizer, true); break;
+
+    default: wxFAIL;
+      break;
+  }
 }
 
 void wxExConfigItem::ToConfig(bool save) const

@@ -160,27 +160,12 @@ void wxExConfigDialog::Add(
       (page_panel != NULL ? (wxWindow*)page_panel: this), 
       GetButtonFlags() == wxCANCEL);
 
-    switch (it->GetType())
-    {
-    case CONFIG_CHECKBOX: AddSizerItem(sizer, *it); break;
-    case CONFIG_CHECKLISTBOX: AddSizerItemLabeled(sizer, *it); break;
-    case CONFIG_CHECKLISTBOX_NONAME: AddSizerItem(sizer, *it); break;
-    case CONFIG_COLOUR: AddSizerItemLabeled(sizer, *it, false); break;
-    case CONFIG_COMBOBOX: AddSizerItemLabeled(sizer, *it, true, false); break;
-    case CONFIG_COMBOBOXDIR: AddSizerItemBrowse(sizer, *it); break;
-    case CONFIG_COMBOBOX_NONAME: AddSizerItem(sizer, *it); break;
-    case CONFIG_DIRPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
-    case CONFIG_FILEPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
-    case CONFIG_FONTPICKERCTRL: AddSizerItemLabeled(sizer, *it); break;
-    case CONFIG_INT: AddSizerItemLabeled(sizer, *it); break;
-    case CONFIG_RADIOBOX: AddSizerItem(sizer, *it); break;
-    case CONFIG_SPACER: sizer->AddSpacer(wxSizerFlags::GetDefaultBorder()); break;
-    case CONFIG_SPINCTRL: AddSizerItemLabeled(sizer, *it, false); break;
-    case CONFIG_SPINCTRL_DOUBLE: AddSizerItemLabeled(sizer, *it, false); break;
-    case CONFIG_STRING: AddSizerItemLabeled(sizer, *it, true); break;
+    it->Layout(sizer, ID_BROWSE_FOLDER);
 
-    default: wxFAIL;
-      break;
+    if (it->GetType() == CONFIG_COMBOBOXDIR)
+    {
+      wxASSERT(m_BrowseDir == NULL);
+      m_BrowseDir = (wxComboBox *)it->GetControl();
     }
 
     if ( sizer->GetRows() > 0 &&
@@ -206,68 +191,6 @@ void wxExConfigDialog::Add(
   }
 
   LayoutSizers();
-}
-
-void wxExConfigDialog::AddSizerItem(
-  wxSizer* sizer, const wxExConfigItem& item)
-{
-  sizer->Add(item.GetControl(), wxSizerFlags().Expand().Left().Border());
-}
-
-void wxExConfigDialog::AddSizerItemBrowse(
-  wxSizer* sizer, const wxExConfigItem& item)
-{
-  wxASSERT(m_BrowseDir == NULL);
-
-  m_BrowseDir = (wxComboBox *)item.GetControl();
-
-  wxSizerFlags flag;
-
-  wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
-  browse->AddGrowableCol(0);
-  browse->Add(m_BrowseDir, flag.Expand());
-
-  // Tried to use a wxDirPickerCtrl here, is nice,
-  // but does not use a combobox for keeping old values, so this is better.
-  // And the text box that is used is not resizable as well.
-  browse->Add(
-    new wxButton(
-    item.GetControl()->GetParent(),
-      ID_BROWSE_FOLDER,
-      wxDirPickerWidgetLabel,
-      wxDefaultPosition,
-      wxDefaultSize,
-      wxBU_EXACTFIT),
-    flag.Center().Border(wxLEFT));
-
-  sizer->Add(new wxStaticText(
-    item.GetControl()->GetParent(), 
-    wxID_ANY, 
-    item.GetName() + ":"), 
-    flag.Right().Border());
-
-  sizer->Add(browse, flag.Center().Border());
-}
-
-void wxExConfigDialog::AddSizerItemLabeled(
-  wxSizer* sizer,
-  const wxExConfigItem& item,
-  bool expand,
-  bool hide)
-{
-  wxSizerFlags flags;
-  flags.Border();
-
-  if (!hide)
-  {
-    sizer->Add(
-      new wxStaticText(item.GetControl()->GetParent(), 
-      wxID_ANY, 
-      item.GetName() + ":"), 
-      flags.Right());
-  }
-
-  sizer->Add(item.GetControl(), (expand ? flags.Left().Expand(): flags.Left()));
 }
 
 void wxExConfigDialog::ForceCheckBoxChecked(
