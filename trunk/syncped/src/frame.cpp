@@ -1062,6 +1062,10 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
           }
         }
       }
+      else
+      {
+        event.Enable(false);
+      }
     }
   }
 }
