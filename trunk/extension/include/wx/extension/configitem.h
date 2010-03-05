@@ -124,9 +124,8 @@ public:
 private:
   void AddBrowse(wxSizer* sizer, int id) const;
   void AddControl(wxSizer* sizer, bool expand = true) const;
-  void AddLabel(wxSizer* sizer) const;
-  void AddLabelAndControl(wxSizer* sizer, 
-    bool expand = true, bool hide = false) const;
+  void AddName(wxSizer* sizer) const;
+  void AddNameAndControl(wxSizer* sizer, bool expand = true) const;
 
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'

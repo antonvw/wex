@@ -150,9 +150,9 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
       wxBU_EXACTFIT),
     wxSizerFlags().Center().Border(wxLEFT));
 
-  AddLabel(sizer);
+  AddName(sizer);
 
-  sizer->Add(browse, wxSizerFlags().Center().Border());
+  sizer->Add(browse, wxSizerFlags().Left().Expand());
 }
 
 void wxExConfigItem::AddControl(wxSizer* sizer, bool expand) const
@@ -163,8 +163,10 @@ void wxExConfigItem::AddControl(wxSizer* sizer, bool expand) const
   sizer->Add(m_Control, (expand ? flags.Expand(): flags));
 }
 
-void wxExConfigItem::AddLabel(wxSizer* sizer) const
+void wxExConfigItem::AddName(wxSizer* sizer) const
 {
+  wxASSERT(!m_Name.empty());
+
   sizer->Add(
     new wxStaticText(m_Control->GetParent(), 
     wxID_ANY, 
@@ -172,16 +174,9 @@ void wxExConfigItem::AddLabel(wxSizer* sizer) const
     wxSizerFlags().Right().Border());
 }
 
-void wxExConfigItem::AddLabelAndControl(
-  wxSizer* sizer,
-  bool expand,
-  bool hide) const
+void wxExConfigItem::AddNameAndControl(wxSizer* sizer, bool expand) const
 {
-  if (!hide)
-  {
-    AddLabel(sizer);
-  }
-
+  AddName(sizer);
   AddControl(sizer, expand);
 }
 
@@ -381,22 +376,36 @@ void wxExConfigItem::Layout(wxSizer* sizer, int id) const
 {
   switch (m_Type)
   {
-    case CONFIG_CHECKBOX: AddControl(sizer); break;
-    case CONFIG_CHECKLISTBOX: AddLabelAndControl(sizer); break;
-    case CONFIG_CHECKLISTBOX_NONAME: AddControl(sizer); break;
-    case CONFIG_COLOUR: AddLabelAndControl(sizer,false); break;
-    case CONFIG_COMBOBOX: AddLabelAndControl(sizer, true, false); break;
-    case CONFIG_COMBOBOXDIR: AddBrowse(sizer, id); break;
-    case CONFIG_COMBOBOX_NONAME: AddControl(sizer); break;
-    case CONFIG_DIRPICKERCTRL: AddLabelAndControl(sizer); break;
-    case CONFIG_FILEPICKERCTRL: AddLabelAndControl(sizer); break;
-    case CONFIG_FONTPICKERCTRL: AddLabelAndControl(sizer); break;
-    case CONFIG_INT: AddLabelAndControl(sizer); break;
-    case CONFIG_RADIOBOX: AddControl(sizer); break;
-    case CONFIG_SPACER: sizer->AddSpacer(wxSizerFlags::GetDefaultBorder()); break;
-    case CONFIG_SPINCTRL: AddLabelAndControl(sizer, false); break;
-    case CONFIG_SPINCTRL_DOUBLE: AddLabelAndControl(sizer, false); break;
-    case CONFIG_STRING: AddLabelAndControl(sizer, true); break;
+    case CONFIG_CHECKBOX:
+    case CONFIG_CHECKLISTBOX_NONAME:
+    case CONFIG_COMBOBOX_NONAME:
+    case CONFIG_RADIOBOX:
+      AddControl(sizer);
+      break;
+
+    case CONFIG_CHECKLISTBOX:
+    case CONFIG_COMBOBOX:
+    case CONFIG_DIRPICKERCTRL:
+    case CONFIG_FILEPICKERCTRL:
+    case CONFIG_FONTPICKERCTRL:
+    case CONFIG_STRING:
+      AddNameAndControl(sizer);
+      break;
+
+    case CONFIG_COLOUR:
+    case CONFIG_INT:
+    case CONFIG_SPINCTRL:
+    case CONFIG_SPINCTRL_DOUBLE:
+      AddNameAndControl(sizer, false);
+      break;
+
+    case CONFIG_COMBOBOXDIR:
+      AddBrowse(sizer, id);
+      break;
+
+    case CONFIG_SPACER:
+      sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
+      break;
 
     default: wxFAIL;
       break;
