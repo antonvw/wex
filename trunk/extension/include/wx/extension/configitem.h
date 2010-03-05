@@ -123,9 +123,7 @@ public:
   void ToConfig(bool save) const;
 private:
   void AddBrowse(wxSizer* sizer, int id) const;
-  void AddControl(wxSizer* sizer, bool expand = true) const;
   void AddName(wxSizer* sizer) const;
-  void AddNameAndControl(wxSizer* sizer, bool expand = true) const;
 
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
@@ -141,6 +139,8 @@ private:
   long m_Style;
   int m_Type;
   wxControl* m_Control;
+  wxSizerFlags m_ControlFlags;
+
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
 };

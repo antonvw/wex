@@ -135,7 +135,7 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
 {
   wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
   browse->AddGrowableCol(0);
-  AddControl(browse);
+  browse->Add(m_Control, m_ControlFlags);
 
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
@@ -152,15 +152,7 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
 
   AddName(sizer);
 
-  sizer->Add(browse, wxSizerFlags().Left().Expand());
-}
-
-void wxExConfigItem::AddControl(wxSizer* sizer, bool expand) const
-{
-  wxSizerFlags flags;
-  flags.Border().Left();
-
-  sizer->Add(m_Control, (expand ? flags.Expand(): flags));
+  sizer->Add(browse, wxSizerFlags().Left().Expand()); // no border
 }
 
 void wxExConfigItem::AddName(wxSizer* sizer) const
@@ -174,12 +166,6 @@ void wxExConfigItem::AddName(wxSizer* sizer) const
     wxSizerFlags().Right().Border());
 }
 
-void wxExConfigItem::AddNameAndControl(wxSizer* sizer, bool expand) const
-{
-  AddName(sizer);
-  AddControl(sizer, expand);
-}
-
 void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 {
   if (m_Type == CONFIG_SPACER)
@@ -190,6 +176,10 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 
   const int width = 200;
   const int width_numeric = 75;
+
+  // Default control is expanded when laid out, 
+  // override in switch if not wanted.
+  bool expand = true;
 
   switch (m_Type)
   {
@@ -230,6 +220,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
 
     case CONFIG_COLOUR:
       m_Control = new wxColourPickerWidget(parent, wxID_ANY);
+      expand = false;
       break;
 
     case CONFIG_COMBOBOX:
@@ -305,6 +296,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         wxSize(width_numeric, wxDefaultCoord),
         m_Style | (readonly ? wxTE_READONLY: 0) | wxTE_RIGHT,
         wxTextValidator(wxFILTER_NUMERIC));
+      expand = false;
       break;
 
     case CONFIG_RADIOBOX:
@@ -340,6 +332,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
         m_Min,
         m_Max);
+      expand = false;
       break;
 
     case CONFIG_SPINCTRL_DOUBLE:
@@ -353,6 +346,7 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
         m_MaxDouble,
         m_MinDouble,
         m_Inc);
+      expand = false;
       break;
 
     case CONFIG_STRING:
@@ -369,6 +363,9 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
     default: wxFAIL;
   }
 
+  m_ControlFlags = wxSizerFlags().Border().Left();
+  if (expand) m_ControlFlags.Expand();
+
   wxASSERT(m_Control != NULL);
 }
 
@@ -380,23 +377,21 @@ void wxExConfigItem::Layout(wxSizer* sizer, int id) const
     case CONFIG_CHECKLISTBOX_NONAME:
     case CONFIG_COMBOBOX_NONAME:
     case CONFIG_RADIOBOX:
-      AddControl(sizer);
+      sizer->Add(m_Control, m_ControlFlags);
       break;
 
     case CONFIG_CHECKLISTBOX:
+    case CONFIG_COLOUR:
     case CONFIG_COMBOBOX:
     case CONFIG_DIRPICKERCTRL:
     case CONFIG_FILEPICKERCTRL:
     case CONFIG_FONTPICKERCTRL:
-    case CONFIG_STRING:
-      AddNameAndControl(sizer);
-      break;
-
-    case CONFIG_COLOUR:
     case CONFIG_INT:
     case CONFIG_SPINCTRL:
     case CONFIG_SPINCTRL_DOUBLE:
-      AddNameAndControl(sizer, false);
+    case CONFIG_STRING:
+      AddName(sizer);
+      sizer->Add(m_Control, m_ControlFlags);
       break;
 
     case CONFIG_COMBOBOXDIR:
