@@ -131,25 +131,11 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
-void wxExConfigItem::AddLabel(wxSizer* sizer) const
-{
-  sizer->Add(
-    new wxStaticText(m_Control->GetParent(), 
-    wxID_ANY, 
-    m_Name + ":"), 
-    wxSizerFlags().Right().Border());
-}
-
-void wxExConfigItem::AddToSizer(wxSizer* sizer) const
-{
-  sizer->Add(m_Control, wxSizerFlags().Expand().Left().Border());
-}
-
-void wxExConfigItem::AddToSizerBrowse(wxSizer* sizer, int id) const
+void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
 {
   wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
   browse->AddGrowableCol(0);
-  browse->Add(m_Control, wxSizerFlags().Expand());
+  AddControl(browse);
 
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
@@ -169,20 +155,34 @@ void wxExConfigItem::AddToSizerBrowse(wxSizer* sizer, int id) const
   sizer->Add(browse, wxSizerFlags().Center().Border());
 }
 
-void wxExConfigItem::AddToSizerLabel(
+void wxExConfigItem::AddControl(wxSizer* sizer, bool expand) const
+{
+  wxSizerFlags flags;
+  flags.Border().Left();
+
+  sizer->Add(m_Control, (expand ? flags.Expand(): flags));
+}
+
+void wxExConfigItem::AddLabel(wxSizer* sizer) const
+{
+  sizer->Add(
+    new wxStaticText(m_Control->GetParent(), 
+    wxID_ANY, 
+    m_Name + ":"), 
+    wxSizerFlags().Right().Border());
+}
+
+void wxExConfigItem::AddLabelAndControl(
   wxSizer* sizer,
   bool expand,
   bool hide) const
 {
-  wxSizerFlags flags;
-  flags.Border();
-
   if (!hide)
   {
     AddLabel(sizer);
   }
 
-  sizer->Add(m_Control, (expand ? flags.Left().Expand(): flags.Left()));
+  AddControl(sizer, expand);
 }
 
 void wxExConfigItem::Create(wxWindow* parent, bool readonly)
@@ -381,22 +381,22 @@ void wxExConfigItem::Layout(wxSizer* sizer, int id) const
 {
   switch (m_Type)
   {
-    case CONFIG_CHECKBOX: AddToSizer(sizer); break;
-    case CONFIG_CHECKLISTBOX: AddToSizerLabel(sizer); break;
-    case CONFIG_CHECKLISTBOX_NONAME: AddToSizer(sizer); break;
-    case CONFIG_COLOUR: AddToSizerLabel(sizer,false); break;
-    case CONFIG_COMBOBOX: AddToSizerLabel(sizer, true, false); break;
-    case CONFIG_COMBOBOXDIR: AddToSizerBrowse(sizer, id); break;
-    case CONFIG_COMBOBOX_NONAME: AddToSizer(sizer); break;
-    case CONFIG_DIRPICKERCTRL: AddToSizerLabel(sizer); break;
-    case CONFIG_FILEPICKERCTRL: AddToSizerLabel(sizer); break;
-    case CONFIG_FONTPICKERCTRL: AddToSizerLabel(sizer); break;
-    case CONFIG_INT: AddToSizerLabel(sizer); break;
-    case CONFIG_RADIOBOX: AddToSizer(sizer); break;
+    case CONFIG_CHECKBOX: AddControl(sizer); break;
+    case CONFIG_CHECKLISTBOX: AddLabelAndControl(sizer); break;
+    case CONFIG_CHECKLISTBOX_NONAME: AddControl(sizer); break;
+    case CONFIG_COLOUR: AddLabelAndControl(sizer,false); break;
+    case CONFIG_COMBOBOX: AddLabelAndControl(sizer, true, false); break;
+    case CONFIG_COMBOBOXDIR: AddBrowse(sizer, id); break;
+    case CONFIG_COMBOBOX_NONAME: AddControl(sizer); break;
+    case CONFIG_DIRPICKERCTRL: AddLabelAndControl(sizer); break;
+    case CONFIG_FILEPICKERCTRL: AddLabelAndControl(sizer); break;
+    case CONFIG_FONTPICKERCTRL: AddLabelAndControl(sizer); break;
+    case CONFIG_INT: AddLabelAndControl(sizer); break;
+    case CONFIG_RADIOBOX: AddControl(sizer); break;
     case CONFIG_SPACER: sizer->AddSpacer(wxSizerFlags::GetDefaultBorder()); break;
-    case CONFIG_SPINCTRL: AddToSizerLabel(sizer, false); break;
-    case CONFIG_SPINCTRL_DOUBLE: AddToSizerLabel(sizer, false); break;
-    case CONFIG_STRING: AddToSizerLabel(sizer, true); break;
+    case CONFIG_SPINCTRL: AddLabelAndControl(sizer, false); break;
+    case CONFIG_SPINCTRL_DOUBLE: AddLabelAndControl(sizer, false); break;
+    case CONFIG_STRING: AddLabelAndControl(sizer, true); break;
 
     default: wxFAIL;
       break;

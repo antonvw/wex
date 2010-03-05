@@ -122,10 +122,10 @@ public:
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:
+  void AddBrowse(wxSizer* sizer, int id) const;
+  void AddControl(wxSizer* sizer, bool expand = true) const;
   void AddLabel(wxSizer* sizer) const;
-  void AddToSizer(wxSizer* sizer) const;
-  void AddToSizerBrowse(wxSizer* sizer, int id) const;
-  void AddToSizerLabel(wxSizer* sizer, 
+  void AddLabelAndControl(wxSizer* sizer, 
     bool expand = true, bool hide = false) const;
 
   // cannot be const, otherwise
