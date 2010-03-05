@@ -682,10 +682,12 @@ void wxExSTC::ConfigGet()
 
   SetMarginWidth(m_MarginDividerNumber, wxConfigBase::Get()->ReadLong(_("Divider"), 16));
   SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-  SetMarginWidth(m_MarginLineNumber,
-    (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ?
-      wxConfigBase::Get()->ReadLong(_("Line number"), 
-        TextWidth(wxSTC_STYLE_DEFAULT, "999999")): 0));
+
+  const long margin = wxConfigBase::Get()->ReadLong(
+    _("Line number"), 
+    TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
+
+  SetMarginWidth(m_MarginLineNumber, (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
