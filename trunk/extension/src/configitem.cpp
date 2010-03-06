@@ -144,10 +144,7 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
     new wxButton(
       m_Control->GetParent(),
       id,
-      wxDirPickerWidgetLabel,
-      wxDefaultPosition,
-      wxDefaultSize,
-      wxBU_EXACTFIT),
+      wxDirPickerWidgetLabel),
     wxSizerFlags().Center().Border(wxLEFT));
 
   AddName(sizer);
