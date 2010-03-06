@@ -63,6 +63,7 @@ std::vector <wxString> wxExSTC::m_Macro;
 wxExSTC::wxExSTC(wxWindow* parent,
   const wxString& value,
   long open_flags,
+  const wxString& title,
   long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
@@ -75,6 +76,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_GotoLineNumber(1)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
+  , m_Title(title)
 {
   Initialize();
 
@@ -121,6 +123,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
+  , m_Title(wxEmptyString)
 {
   Initialize();
 

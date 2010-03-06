@@ -1086,7 +1086,8 @@ bool MDIFrame::OpenFile(
       m_NotebookWithEditors, 
       this,
       contents,
-      flags);
+      flags,
+      filename.GetFullName() + " " + unique);
 
     editor->SetLexer(filename.GetLexer().GetScintillaLexer());
 
@@ -1188,7 +1189,7 @@ bool MDIFrame::OpenFile(
 
       editor = new wxExSTCWithFrame(m_NotebookWithEditors,
         this,
-        filename.GetFullPath(),
+        filename,
         line_number,
         match,
         flags);

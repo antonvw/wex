@@ -35,7 +35,7 @@ wxExSTCShell::wxExSTCShell(
   const wxSize& size,
   long style,
   const wxString& name)
-  : wxExSTC(parent, wxEmptyString, 0, menu_flags, id, pos, size, style, name)
+  : wxExSTC(parent, wxEmptyString, 0, wxEmptyString, menu_flags, id, pos, size, style, name)
   , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)

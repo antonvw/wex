@@ -63,6 +63,7 @@ public:
   wxExSTC(wxWindow* parent,
     const wxString& value = wxEmptyString,
     long open_flags = 0,
+    const wxString& title = wxEmptyString,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -152,6 +153,9 @@ public:
 
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;
+
+  /// Gets the title.
+  const wxString& GetTitle() const {return m_Title;};
 
   /// Gets word at position.
   const wxString GetWordAtPos(int pos) const;
@@ -313,6 +317,8 @@ private:
   wxExVi* m_vi;
   wxFileOffset m_PreviousLength;
   wxPathList m_PathList;
+
+  wxString m_Title;
 
   DECLARE_EVENT_TABLE()
 };

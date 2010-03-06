@@ -33,13 +33,14 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   wxExFrameWithHistory* frame,
   const wxString& value,
   long flags,
+  const wxString& title,
   long type,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style,
   const wxString& name)
-  : wxExSTC(parent, value, flags, type, id, pos, size, style, name)
+  : wxExSTC(parent, value, flags, title, type, id, pos, size, style, name)
   , m_Frame(frame)
 {
 }
@@ -260,8 +261,11 @@ void wxExSTCWithFrame::PropertiesMessage() const
 {
   wxExSTC::PropertiesMessage();
 
+  const wxString title = 
+    GetFileName().FileExists() ? GetFileName().GetFullPath(): GetTitle();
+
   m_Frame->SetTitle(
-    GetFileName().GetFullPath() + 
+    title + 
       (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString)), 
     wxEmptyString);
 }

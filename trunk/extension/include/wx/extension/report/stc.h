@@ -42,6 +42,7 @@ public:
     wxExFrameWithHistory* frame,
     const wxString& value,
     long flags = 0,
+    const wxString& title = wxEmptyString,
     long type = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
