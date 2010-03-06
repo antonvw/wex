@@ -212,6 +212,8 @@ offset    hex field                                         ascii field
                                   <- mid_in_hex_field
 */
 {
+  SetControlCharSymbol('x');
+
   SetGlobalStyles();
 
   // Do not show an edge, eol or whitespace in hex mode.
@@ -1829,8 +1831,6 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
   }
   else
   {
-    SetControlCharSymbol('x');
-
     AddTextHexMode(offset, buffer);
   }
 
