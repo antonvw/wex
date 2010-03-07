@@ -5,7 +5,6 @@
 # Created:   2010-03-07
 # Copyright: (c) 2010 Anton van Wezenbeek
 ################################################################################
-
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
