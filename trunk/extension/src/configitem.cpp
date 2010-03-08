@@ -145,7 +145,7 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
       m_Control->GetParent(),
       id,
       _(wxDirPickerWidgetLabel)),
-    wxSizerFlags().Center().Border(wxLEFT));
+    wxSizerFlags().Center().Border());
 
   AddName(sizer);
 
