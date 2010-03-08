@@ -220,11 +220,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_STC_FIND_IN_FILES:
-    m_Frame->FindInFilesDialog();
-    break;
-
   case ID_STC_REPLACE_IN_FILES:
-    m_Frame->FindInFilesDialog(ID_REPLACE_IN_FILES);
+    m_Frame->FindInFilesDialog(command.GetId());
     break;
 
   default: wxFAIL;
