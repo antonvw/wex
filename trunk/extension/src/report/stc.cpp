@@ -21,6 +21,8 @@
 #include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
+  EVT_MENU(ID_FIND_IN_FILES, wxExSTCWithFrame::OnCommand)
+  EVT_MENU(ID_REPLACE_IN_FILES, wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
@@ -102,12 +104,12 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 
     if (GetMenuFlags() & STC_MENU_REPORT_FIND)
     {
-      menu.Append(ID_STC_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
+      menu.Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
     }
 
     if (GetMenuFlags() & STC_MENU_REPORT_REPLACE)
     {
-      menu.Append(ID_STC_REPLACE_IN_FILES, wxExEllipsed(_("&Replace In Files")));
+      menu.Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("&Replace In Files")));
     }
   }
 
@@ -219,8 +221,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_STC_FIND_IN_FILES:
-  case ID_STC_REPLACE_IN_FILES:
+  case ID_FIND_IN_FILES:
+  case ID_REPLACE_IN_FILES:
     m_Frame->FindInFilesDialog(command.GetId());
     break;
 

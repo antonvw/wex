@@ -164,6 +164,8 @@ void wxExFindReplaceData::SetFindString(const wxString& value)
   m_FindStrings.remove(value);
   m_FindStrings.push_front(value);
 
+  wxExListToConfig(m_FindStrings, m_TextFindWhat);
+
   SetFindRegularExpression();
 }
 
@@ -173,6 +175,8 @@ void wxExFindReplaceData::SetFindStrings(
   m_FindStrings = value;
 
   wxFindReplaceData::SetFindString(m_FindStrings.front());
+
+  wxExListToConfig(m_FindStrings, m_TextFindWhat);
 
   SetFindRegularExpression();
 }
@@ -199,6 +203,8 @@ void wxExFindReplaceData::SetReplaceString(const wxString& value)
 
   m_ReplaceStrings.remove(value);
   m_ReplaceStrings.push_front(value);
+
+  wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
 }
 
 void wxExFindReplaceData::SetReplaceStrings(
@@ -207,4 +213,6 @@ void wxExFindReplaceData::SetReplaceStrings(
   m_ReplaceStrings = value;
 
   wxFindReplaceData::SetReplaceString(m_ReplaceStrings.front());
+
+  wxExListToConfig(m_ReplaceStrings, m_TextReplaceWith);
 }
