@@ -21,8 +21,6 @@
 #include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
-  EVT_MENU(ID_FIND_IN_FILES, wxExSTCWithFrame::OnCommand)
-  EVT_MENU(ID_REPLACE_IN_FILES, wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
@@ -219,11 +217,6 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
         wxExCompareFile(GetFileName(), lastfile);
       }
     }
-    break;
-
-  case ID_FIND_IN_FILES:
-  case ID_REPLACE_IN_FILES:
-    m_Frame->FindInFilesDialog(command.GetId());
     break;
 
   default: wxFAIL;
