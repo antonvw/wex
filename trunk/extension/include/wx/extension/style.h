@@ -34,6 +34,9 @@ public:
 
   /// Does this style concern the default style.
   bool IsDefault() const;
+
+  /// Returns true if style is valid.
+  bool IsOk() const;
 private:
   void Set(const wxXmlNode* node);
   void SetNo(const wxString& no);

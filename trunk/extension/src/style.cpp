@@ -50,6 +50,11 @@ bool wxExStyle::IsDefault() const
   return (it != m_No.end());
 }
 
+bool wxExStyle::IsOk() const
+{
+  return !m_No.empty();
+}
+
 void wxExStyle::Set(const wxXmlNode* node)
 {
   SetNo(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")));

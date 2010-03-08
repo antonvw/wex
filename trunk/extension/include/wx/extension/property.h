@@ -25,6 +25,9 @@ public:
 
   /// Resets this property
   void ApplyReset(wxStyledTextCtrl* stc) const;
+
+  /// Returns true if property is valid.
+  bool IsOk() const;
 private:
   void Set(const wxXmlNode* node);
   

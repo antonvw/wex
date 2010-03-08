@@ -20,14 +20,19 @@ wxExProperty::wxExProperty(const wxXmlNode* node)
 
 void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(!m_Name.empty());
+  wxASSERT(IsOk());
   stc->SetProperty(m_Name, m_Value);
 }
 
 void wxExProperty::ApplyReset(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(!m_Name.empty());
+  wxASSERT(!IsOk());
   stc->SetProperty(m_Name, wxEmptyString);
+}
+
+bool wxExProperty::IsOk() const
+{
+  return !m_Name.empty();
 }
 
 void wxExProperty::Set(const wxXmlNode* node)
