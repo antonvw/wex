@@ -406,6 +406,14 @@ void wxExConfigItem::Layout(wxSizer* sizer, int id) const
 
 void wxExConfigItem::ToConfig(bool save) const
 {
+  if (m_Type == CONFIG_SPACER)
+  {
+    // A spacer has no controlling window.
+    return;
+  }
+
+  wxASSERT(m_Control != NULL);
+
   switch (m_Type)
   {
     case CONFIG_CHECKBOX:
@@ -592,9 +600,6 @@ void wxExConfigItem::ToConfig(bool save) const
         }
       }
       }
-      break;
-
-    case CONFIG_SPACER:
       break;
 
     case CONFIG_STRING:
