@@ -9,8 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/stc/stc.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/stcfile.h>
 #include <wx/extension/util.h>
 
 wxExPrinting* wxExPrinting::m_Self = NULL;
@@ -62,8 +62,8 @@ wxExPrinting* wxExPrinting::Set(wxExPrinting* printing)
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
-wxExPrintout::wxExPrintout(wxExSTC* owner)
-  : wxPrintout(wxExPrintCaption(owner->GetFileName()))
+wxExPrintout::wxExPrintout(wxStyledTextCtrl* owner)
+  : wxPrintout(wxExPrintCaption(owner->GetName()))
   , m_PageRect()
   , m_PrintRect()
   , m_PageBreaks()
@@ -171,7 +171,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   GetDC()->SetPen(*wxBLACK_PEN);
 
   // Print a header.
-  const wxString header = wxExPrintHeader(m_Owner->GetFileName());
+  const wxString header = wxExPrintHeader(m_Owner->GetName());
   if (!header.empty())
   {
     GetDC()->DrawText(

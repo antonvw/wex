@@ -121,9 +121,6 @@ public:
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
-  /// Gets the title.
-  const wxString& GetTitle() const {return m_Title;};
-
   /// Asks for a lexer for this document, choosing from a dialog of
   /// all available lexers. Then colours the document.
   void LexerDialog(const wxString& caption = _("Enter Lexer"));
@@ -138,20 +135,8 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
-#if wxUSE_PRINTING_ARCHITECTURE
-  /// Prints the document.
-  void Print(bool prompt = true);
-
-  /// Shows a print preview.
-  void PrintPreview();
-#endif
-
   /// Shows properties on the statusbar.
   virtual void PropertiesMessage() const;
-
-  /// Reset all margins.
-  /// Default also resets the divider margin.
-  void ResetMargins(bool divider_margin = true);
 
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.
@@ -204,7 +189,6 @@ private:
     int line_number = 0, 
     bool link_open = true);
   void ReadFromFile(bool get_only_new_data);
-  void SetFolding();
   void SetGlobalStyles();
 
   // All objects share the following:
@@ -214,14 +198,10 @@ private:
   bool m_viMode;
   long m_Flags; // open flags
   long m_MenuFlags;
-  int m_MarginDividerNumber;
-  int m_MarginFoldingNumber;
-  int m_MarginLineNumber;
+
   wxExVi* m_vi;
   wxFileOffset m_PreviousLength;
   wxPathList m_PathList;
-
-  wxString m_Title;
 
   DECLARE_EVENT_TABLE()
 };

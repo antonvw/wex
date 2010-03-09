@@ -77,6 +77,14 @@ public:
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
 
+#if wxUSE_PRINTING_ARCHITECTURE
+  /// Prints the document.
+  void Print(bool prompt = true);
+
+  /// Shows a print preview.
+  void PrintPreview();
+#endif
+
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
   /// in the entire document.
@@ -97,6 +105,10 @@ public:
     int search_flags = 0,
     bool find_next = true);
   
+  /// Reset all margins.
+  /// Default also resets the divider margin.
+  void ResetMargins(bool divider_margin = true);
+
   /// Asks for confirmation to sort the selection.
   void SortSelectionDialog(
     bool sort_ascending,
@@ -123,9 +135,14 @@ protected:
   void FoldAll();
   void HexDecCalltip(int pos);
   void SequenceDialog();
+  void SetFolding();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+
+  const int m_MarginDividerNumber;
+  const int m_MarginFoldingNumber;
+  const int m_MarginLineNumber;
 private:
   long m_GotoLineNumber;
   bool m_MacroIsRecording;

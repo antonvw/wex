@@ -9,11 +9,13 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/config.h>
 #include <wx/numdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -25,8 +27,11 @@ std::vector <wxString> wxExStyledTextCtrl::m_Macro;
 
 wxExStyledTextCtrl::wxExStyledTextCtrl() 
   : wxStyledTextCtrl()
-  , m_GotoLineNumber(1)
+  , m_GotoLineNumber(-1)
   , m_MacroIsRecording(false)
+  , m_MarginDividerNumber(1)
+  , m_MarginFoldingNumber(2)
+  , m_MarginLineNumber(0)
 {
 }
 
@@ -39,7 +44,15 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   : wxStyledTextCtrl(parent, id , pos, size, style, name)
   , m_MacroIsRecording(false)
   , m_GotoLineNumber(1)
+  , m_MarginDividerNumber(1)
+  , m_MarginFoldingNumber(2)
+  , m_MarginLineNumber(0)
 {
+  SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
+  SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
+  SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
+  SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
+  SetMarginSensitive(m_MarginFoldingNumber, true);
 }
 
 void wxExStyledTextCtrl::AddAsciiTable()
@@ -550,6 +563,37 @@ void wxExStyledTextCtrl::MacroPlayback()
 #endif
 }
 
+#if wxUSE_PRINTING_ARCHITECTURE
+void wxExStyledTextCtrl::Print(bool prompt)
+{
+  wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
+  wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
+  wxExPrinting::Get()->GetPrinter()->Print(this, new wxExPrintout(this), prompt);
+}
+#endif
+
+#if wxUSE_PRINTING_ARCHITECTURE
+void wxExStyledTextCtrl::PrintPreview()
+{
+  wxPrintPreview* preview = new wxPrintPreview(new wxExPrintout(this), new wxExPrintout(this));
+
+  if (!preview->Ok())
+  {
+    delete preview;
+    wxLogError("There was a problem previewing.\nPerhaps your current printer is not set correctly?");
+    return;
+  }
+
+  wxPreviewFrame* frame = new wxPreviewFrame(
+    preview,
+    this,
+    wxExPrintCaption(GetName()));
+
+  frame->Initialize();
+  frame->Show();
+}
+#endif
+
 void wxExStyledTextCtrl::ReplaceAll(
   const wxString& find_text,
   const wxString& replace_text)
@@ -656,6 +700,17 @@ void wxExStyledTextCtrl::ReplaceNext(
   FindNext(find_text, search_flags, find_next);
 }
   
+void wxExStyledTextCtrl::ResetMargins(bool divider_margin)
+{
+  SetMarginWidth(m_MarginFoldingNumber, 0);
+  SetMarginWidth(m_MarginLineNumber, 0);
+
+  if (divider_margin)
+  {
+    SetMarginWidth(m_MarginDividerNumber, 0);
+  }
+}
+
 void wxExStyledTextCtrl::SequenceDialog()
 {
   static wxString start_previous;
@@ -750,6 +805,22 @@ void wxExStyledTextCtrl::SequenceDialog()
   }
 
   AddText(sequence + GetEOL());
+}
+
+void wxExStyledTextCtrl::SetFolding()
+{
+  if (GetProperty("fold") == "1")
+  {
+    SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+
+    SetFoldFlags(
+      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+  }
+  else
+  {
+    SetMarginWidth(m_MarginFoldingNumber, 0);
+  }
 }
 
 bool wxExStyledTextCtrl::SmartIndentation()

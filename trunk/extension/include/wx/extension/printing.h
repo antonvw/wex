@@ -55,14 +55,14 @@ private:
 };
 
 #if wxUSE_PRINTING_ARCHITECTURE
-class wxExSTC;
+class wxStyledTextCtrl;
 
 // Offers a print out to be used by wxExSTC.
 class wxExPrintout : public wxPrintout
 {
 public:
   /// Constructor.
-  wxExPrintout(wxExSTC* owner);
+  wxExPrintout(wxStyledTextCtrl* owner);
 private:
   void CountPages();
   void GetPageInfo(int* minPage, int* maxPage, int* pageFrom, int* pageTo);
@@ -74,7 +74,7 @@ private:
   wxRect m_PageRect, m_PrintRect;
   int m_CurrentPage;
   std::vector<int> m_PageBreaks;
-  wxExSTC* m_Owner;
+  wxStyledTextCtrl* m_Owner;
 };
 #endif
 #endif

@@ -254,7 +254,7 @@ void wxExSTCWithFrame::PropertiesMessage() const
   wxExSTC::PropertiesMessage();
 
   const wxString title = 
-    GetFileName().FileExists() ? GetFileName().GetFullPath(): GetTitle();
+    GetFileName().FileExists() ? GetFileName().GetFullPath(): GetName();
 
   m_Frame->SetTitle(
     title + 

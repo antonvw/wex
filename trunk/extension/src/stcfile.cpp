@@ -16,7 +16,6 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
-#include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vi.h>
 
@@ -66,12 +65,11 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxSize& size,
   long style,
   const wxString& name)
-  : wxExStyledTextCtrl(parent, id, pos, size, style, name)
+  : wxExStyledTextCtrl(parent, id, pos, size, style, title)
   , m_FileSaveInMenu(false)
   , m_Flags(open_flags)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
-  , m_Title(title)
 {
   Initialize();
 
@@ -117,7 +115,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_Flags(0)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
-  , m_Title(wxEmptyString)
 {
   Initialize();
 
@@ -817,10 +814,6 @@ void wxExSTC::GuessType()
 
 void wxExSTC::Initialize()
 {
-  m_MarginDividerNumber = 1;
-  m_MarginFoldingNumber = 2;
-  m_MarginLineNumber = 0;
-
   m_viMode = false;
   m_vi = new wxExVi(this);
 
@@ -833,12 +826,6 @@ void wxExSTC::Initialize()
   ConfigGet();
 
   SetBackSpaceUnIndents(true);
-
-  SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
-  SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
-  SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
-  SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
-  SetMarginSensitive(m_MarginFoldingNumber, true);
 
   SetMouseDwellTime(1000);
 
@@ -1237,37 +1224,6 @@ bool wxExSTC::Open(
   }
 }
 
-#if wxUSE_PRINTING_ARCHITECTURE
-void wxExSTC::Print(bool prompt)
-{
-  wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
-  wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
-  wxExPrinting::Get()->GetPrinter()->Print(this, new wxExPrintout(this), prompt);
-}
-#endif
-
-#if wxUSE_PRINTING_ARCHITECTURE
-void wxExSTC::PrintPreview()
-{
-  wxPrintPreview* preview = new wxPrintPreview(new wxExPrintout(this), new wxExPrintout(this));
-
-  if (!preview->Ok())
-  {
-    delete preview;
-    wxLogError("There was a problem previewing.\nPerhaps your current printer is not set correctly?");
-    return;
-  }
-
-  wxPreviewFrame* frame = new wxPreviewFrame(
-    preview,
-    this,
-    wxExPrintCaption(GetFileName()));
-
-  frame->Initialize();
-  frame->Show();
-}
-#endif
-
 void wxExSTC::PropertiesMessage() const
 {
 #if wxUSE_STATUSBAR
@@ -1343,41 +1299,6 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 void wxExSTC::ResetContentsChanged()
 {
   SetSavePoint();
-}
-
-void wxExSTC::ResetMargins(bool divider_margin)
-{
-  SetMarginWidth(m_MarginFoldingNumber, 0);
-  SetMarginWidth(m_MarginLineNumber, 0);
-
-  if (divider_margin)
-  {
-    SetMarginWidth(m_MarginDividerNumber, 0);
-  }
-}
-
-void wxExSTC::SetFolding()
-{
-  if (GetProperty("fold") == "1")
-  {
-    SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-
-    SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-
-    // C Header files usually contain #ifdef statements.
-    // Folding them might fold the entire file. Therefore don't fold preprocessor.
-    if (GetFileName().GetLexer().GetScintillaLexer() == "cpp" &&
-        GetFileName().GetExt() == "h")
-    {
-      SetProperty("fold.preprocessor", "0");
-    }
-  }
-  else
-  {
-    SetMarginWidth(m_MarginFoldingNumber, 0);
-  }
 }
 
 void wxExSTC::SetGlobalStyles()
