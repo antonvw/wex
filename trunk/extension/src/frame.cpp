@@ -19,7 +19,7 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
 

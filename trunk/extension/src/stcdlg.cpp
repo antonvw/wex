@@ -8,7 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 
 #if wxUSE_GUI
 

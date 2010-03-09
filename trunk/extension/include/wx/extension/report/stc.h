@@ -14,7 +14,7 @@
 
 class wxExFrameWithHistory;
 
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 
 /// Adds a frame to wxExSTC.
 /// The frame is assigned in the Initialize.

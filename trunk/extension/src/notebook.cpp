@@ -12,7 +12,7 @@
 #include <wx/extension/notebook.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h> // for wxExManagedFrame
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 
 #if wxUSE_GUI
 #if wxUSE_AUI

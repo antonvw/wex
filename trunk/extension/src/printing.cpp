@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/printing.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 #include <wx/extension/util.h>
 
 wxExPrinting* wxExPrinting::m_Self = NULL;

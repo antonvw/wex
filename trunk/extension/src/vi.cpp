@@ -12,7 +12,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI

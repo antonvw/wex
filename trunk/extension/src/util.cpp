@@ -19,7 +19,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 
 const wxString wxExAlignText(
   const wxString& lines,
