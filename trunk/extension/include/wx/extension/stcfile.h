@@ -118,29 +118,11 @@ public:
   /// Gets current flags (used by Open).
   long GetFlags() const {return m_Flags;};
 
-  /// Gets line number at current position.
-  int GetLineNumberAtCurrentPos() const;
-
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
-  /// Gets search text, as selected or from config.
-  const wxString GetSearchText() const;
-
-  /// Gets text at current position.
-  const wxString GetTextAtCurrentPos() const;
-
   /// Gets the title.
   const wxString& GetTitle() const {return m_Title;};
-
-  /// Gets word at position.
-  const wxString GetWordAtPos(int pos) const;
-
-  /// Asks for a line number and goes to the line.
-  bool GotoDialog(const wxString& caption = _("Enter Line Number"));
-
-  /// Goes to line and selects the specified text in it.
-  void GotoLineAndSelect(int line_number, const wxString& text);
 
   /// Asks for a lexer for this document, choosing from a dialog of
   /// all available lexers. Then colours the document.
@@ -214,9 +196,7 @@ private:
   void ClearDocument();
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
-  void FoldAll();
   void GuessType();
-  void HexDecCalltip(int pos);
   void Initialize();
   bool LinkOpen(
     const wxString& link,
@@ -233,7 +213,6 @@ private:
   bool m_FileSaveInMenu;
   bool m_viMode;
   long m_Flags; // open flags
-  long m_GotoLineNumber;
   long m_MenuFlags;
   int m_MarginDividerNumber;
   int m_MarginFoldingNumber;

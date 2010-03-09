@@ -10,12 +10,10 @@
 \******************************************************************************/
 
 #include <wx/config.h>
-#include <wx/numdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
@@ -71,7 +69,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   : wxExStyledTextCtrl(parent, id, pos, size, style, name)
   , m_FileSaveInMenu(false)
   , m_Flags(open_flags)
-  , m_GotoLineNumber(1)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
   , m_Title(title)
@@ -118,7 +115,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
   : wxExStyledTextCtrl(parent, id, pos, size, style, name)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
-  , m_GotoLineNumber(1) // do not initialize with line_number, that might be 0 or -1
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
   , m_Title(wxEmptyString)
@@ -136,7 +132,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   // And m_Macro is shared, so not necessary.
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
   m_Flags = stc.m_Flags;
-  m_GotoLineNumber = stc.m_GotoLineNumber;
   m_PreviousLength = stc.m_PreviousLength;
   m_MenuFlags = stc.m_MenuFlags;
 
@@ -144,7 +139,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
   if (stc.GetFileName().IsOk())
   {
-    Open(stc.GetFileName(), m_GotoLineNumber, wxEmptyString, m_Flags);
+    Open(stc.GetFileName(), -1, wxEmptyString, m_Flags);
   }
 }
 
@@ -801,205 +796,6 @@ void wxExSTC::FileTypeMenu()
   PopupMenu(eol);
 }
 
-void wxExSTC::FoldAll()
-{
-  if (GetProperty("fold") != "1") return;
-
-  const int current_line = GetCurrentLine();
-
-  int line = 0;
-  while (line < GetLineCount())
-  {
-    const int level = GetFoldLevel(line);
-    const int last_child_line = GetLastChild(line, level);
-
-    if (last_child_line > line)
-    {
-      if (GetFoldExpanded(line)) ToggleFold(line);
-      line = last_child_line + 1;
-    }
-    else
-    {
-      line++;
-    }
-  }
-
-  GotoLine(current_line);
-}
-
-int wxExSTC::GetLineNumberAtCurrentPos() const
-{
-  // This method is used by LinkOpen.
-  // So, if no line number present return 0, otherwise link open jumps to last line.
-  const int pos = GetCurrentPos();
-  const int line_no = LineFromPosition(pos);
-
-  // Cannot use GetLine, as that includes EOF, and then the ToLong does not
-  // return correct number.
-  const wxString text = const_cast< wxExSTC * >( this )->GetTextRange(
-    PositionFromLine(line_no), 
-    GetLineEndPosition(line_no));
-
-  return wxExGetLineNumberFromText(text);
-}
-
-const wxString wxExSTC::GetSearchText() const
-{
-  const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
-
-  if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
-  {
-    wxExFindReplaceData::Get()->SetFindString(selection);
-  }
-
-  return wxExFindReplaceData::Get()->GetFindString();
-}
-
-const wxString wxExSTC::GetTextAtCurrentPos() const
-{
-  const wxString sel = const_cast< wxExSTC * >( this )->GetSelectedText();
-
-  if (!sel.empty())
-  {
-    if (wxExGetNumberOfLines(sel) > 1)
-    {
-      // wxPathList cannot handle links over several lines.
-      return wxEmptyString;
-    }
-
-    return sel;
-  }
-  else
-  {
-    const int pos = GetCurrentPos();
-    const int line_no = LineFromPosition(pos);
-    const wxString text = GetLine(line_no);
-
-    // Better first try to find "...", then <...>, as in next example.
-    // <A HREF="http://www.scintilla.org">scintilla</A> component.
-
-    // So, first get text between " signs.
-    size_t pos_char1 = text.find("\"");
-    size_t pos_char2 = text.rfind("\"");
-
-    // If that did not succeed, then get text between < and >.
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find("<");
-      pos_char2 = text.rfind(">");
-    }
-
-    // If that did not succeed, then get text between : and : (in .po files).
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find(": ");
-      pos_char2 = text.rfind(":");
-    }
-
-    // If that did not succeed, then get text between ' and '.
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find("'");
-      pos_char2 = text.rfind("'");
-    }
-
-    // If we did not find anything.
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
-    {
-      return wxEmptyString;
-    }
-
-    // Okay, get everything inbetween.
-    const wxString match = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
-
-    // And make sure we skip white space.
-    return match.Strip(wxString::both);
-  }
-}
-
-const wxString wxExSTC::GetWordAtPos(int pos) const
-{
-  const int word_start = 
-    const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
-  const int word_end = 
-    const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
-
-  if (word_start == word_end && word_start < GetTextLength())
-  {
-    const wxString word = 
-      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_start + 1);
-
-    if (!isspace(word[0]))
-    {
-      return word;
-    }
-    else
-    {
-      return wxEmptyString;
-    }
-  }
-  else
-  {
-    const wxString word = 
-      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end);
-
-    return word;
-  }
-}
-
-bool wxExSTC::GotoDialog(const wxString& caption)
-{
-  wxASSERT(m_GotoLineNumber <= GetLineCount() && m_GotoLineNumber > 0);
-
-  long val;
-  if ((val = wxGetNumberFromUser(
-    _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
-    wxEmptyString,
-    caption,
-    m_GotoLineNumber, // initial value
-    1,
-    GetLineCount())) < 0)
-  {
-    return false;
-  }
-
-  GotoLineAndSelect(val, wxEmptyString);
-
-  return true;
-}
-
-void wxExSTC::GotoLineAndSelect(int line_number, const wxString& text)
-{
-  // line_number and m_GotoLineNumber start with 1 and is allowed to be equal to number of lines.
-  // Internally GotoLine starts with 0, therefore line_number - 1 is used afterwards.
-  wxASSERT(line_number <= GetLineCount() && line_number > 0);
-
-  GotoLine(line_number - 1);
-  EnsureVisible(line_number - 1);
-
-  m_GotoLineNumber = line_number;
-
-  const int start_pos = PositionFromLine(line_number - 1);
-  const int end_pos = GetLineEndPosition(line_number - 1);
-
-  SetTargetStart(start_pos);
-  SetTargetEnd(end_pos);
-
-  if (!text.empty())
-  {
-    SetSearchFlags(FindReplaceDataFlags());
-
-    if (SearchInTarget(text) < 0)
-    {
-      bool recursive = true;
-      wxExFindResult(text, true, recursive);
-      return;
-    }
-  }
-
-  SetSelection(GetTargetStart(), GetTargetEnd());
-}
-
 void wxExSTC::GuessType()
 {
   if (!(m_Flags & STC_OPEN_HEX))
@@ -1017,56 +813,6 @@ void wxExSTC::GuessType()
 #if wxUSE_STATUSBAR
   UpdateStatusBar("PaneFileType");
 #endif
-}
-
-void wxExSTC::HexDecCalltip(int pos)
-{
-  if (CallTipActive())
-  {
-    CallTipCancel();
-  }
-
-  wxString word;
-
-  if (!GetSelectedText().empty())
-  {
-    word = GetSelectedText();
-  }
-  else
-  {
-    word = GetWordAtPos(pos);
-  }
-
-  if (word.empty()) return;
-
-  const wxUniChar c = word.GetChar(0);
-
-  if (c < 32 || c > 125)
-  {
-    const wxString text(wxString::Format("hex: %x dec: %d", c, c));
-    CallTipShow(pos, text);
-    wxExClipboardAdd(text);
-    return;
-  }
-
-  long base10_val, base16_val;
-  const bool base10_ok = word.ToLong(&base10_val);
-  const bool base16_ok = word.ToLong(&base16_val, 16);
-
-  if (base10_ok || base16_ok)
-  {
-    wxString text;
-
-    if      ( base10_ok && !base16_ok) 
-      text = wxString::Format("hex: %lx", base10_val);
-    else if (!base10_ok &&  base16_ok) 
-      text = wxString::Format("dec: %ld", base16_val);
-    else if ( base10_ok &&  base16_ok) 
-      text = wxString::Format("hex: %lx dec: %ld", base10_val, base16_val);
-
-    CallTipShow(pos, text);
-    wxExClipboardAdd(text);
-  }
 }
 
 void wxExSTC::Initialize()

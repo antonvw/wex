@@ -55,6 +55,24 @@ public:
     int search_flags = 0,
     bool find_next = true);
 
+  /// Gets line number at current position.
+  int GetLineNumberAtCurrentPos() const;
+
+  /// Gets search text, as selected or from config.
+  const wxString GetSearchText() const;
+
+  /// Gets text at current position.
+  const wxString GetTextAtCurrentPos() const;
+
+  /// Gets word at position.
+  const wxString GetWordAtPos(int pos) const;
+
+  /// Asks for a line number and goes to the line.
+  bool GotoDialog(const wxString& caption = _("Enter Line Number"));
+
+  /// Goes to line and selects the specified text in it.
+  void GotoLineAndSelect(int line_number, const wxString& text);
+
   /// Returns true if specified target is a RE, to be used by
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
@@ -102,11 +120,14 @@ public:
 protected:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
   int FindReplaceDataFlags() const;
+  void FoldAll();
+  void HexDecCalltip(int pos);
   void SequenceDialog();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
 private:
+  long m_GotoLineNumber;
   bool m_MacroIsRecording;
   static std::vector <wxString> m_Macro;
 };
