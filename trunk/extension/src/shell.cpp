@@ -33,9 +33,8 @@ wxExSTCShell::wxExSTCShell(
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxExSTC(parent, wxEmptyString, 0, wxEmptyString, menu_flags, id, pos, size, style, name)
+  long style)
+  : wxExSTC(parent, wxEmptyString, 0, wxEmptyString, menu_flags, id, pos, size, style)
   , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)

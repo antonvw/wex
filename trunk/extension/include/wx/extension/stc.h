@@ -29,8 +29,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
-    long style = 0,
-    const wxString& name = wxSTCNameStr);
+    long style = 0);
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();

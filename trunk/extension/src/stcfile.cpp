@@ -63,14 +63,15 @@ wxExSTC::wxExSTC(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxExStyledTextCtrl(parent, id, pos, size, style, title)
+  long style)
+  : wxExStyledTextCtrl(parent, id, pos, size, style)
   , m_FileSaveInMenu(false)
   , m_Flags(open_flags)
   , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
 {
+  SetName(title);
+
   Initialize();
 
   if (!value.empty())
@@ -108,9 +109,8 @@ wxExSTC::wxExSTC(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxExStyledTextCtrl(parent, id, pos, size, style, name)
+  long style)
+  : wxExStyledTextCtrl(parent, id, pos, size, style)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_MenuFlags(menu_flags)

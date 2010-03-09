@@ -39,9 +39,8 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size, 
-  long style,
-  const wxString& name)
-  : wxStyledTextCtrl(parent, id , pos, size, style, name)
+  long style)
+  : wxStyledTextCtrl(parent, id , pos, size, style)
   , m_MacroIsRecording(false)
   , m_GotoLineNumber(1)
   , m_MarginDividerNumber(1)

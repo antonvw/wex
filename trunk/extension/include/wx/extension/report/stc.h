@@ -47,8 +47,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = 0,
-    const wxString& name = wxSTCNameStr);
+    long style = 0);
 
   /// Constructor, opens the file.
   wxExSTCWithFrame(wxWindow* parent,
@@ -61,8 +60,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = 0,
-    const wxString& name = wxSTCNameStr);
+    long style = 0);
 
   /// Copy constructor from another wxExSTC.
   wxExSTCWithFrame(const wxExSTC& stc, wxExFrameWithHistory* frame);

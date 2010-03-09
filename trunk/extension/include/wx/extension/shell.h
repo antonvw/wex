@@ -52,9 +52,7 @@ public:
     /// Size.
     const wxSize& size = wxDefaultSize,
     /// Window style.
-    long style = 0,
-    /// Name of the component.
-    const wxString& name = wxSTCNameStr);
+    long style = 0);
 
   /// Destructor, keeps the commands in the config, if required.
  ~wxExSTCShell();

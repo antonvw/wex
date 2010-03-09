@@ -67,8 +67,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = 0,
-    const wxString& name = wxSTCNameStr);
+    long style = 0);
 
   /// Constructor, opens the file.
   /// See also Open.
@@ -81,8 +80,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = 0,
-    const wxString& name = wxSTCNameStr);
+    long style = 0);
 
   /// Destructor.
  ~wxExSTC();

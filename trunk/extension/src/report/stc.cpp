@@ -38,9 +38,8 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxExSTC(parent, value, flags, title, type, id, pos, size, style, name)
+  long style)
+  : wxExSTC(parent, value, flags, title, type, id, pos, size, style)
   , m_Frame(frame)
 {
 }
@@ -55,8 +54,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
+  long style)
   : wxExSTC(
       parent, 
       filename, 
@@ -67,8 +65,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
       id, 
       pos, 
       size, 
-      style, 
-      name)
+      style)
   , m_Frame(frame)
 {
   m_Frame->SetRecentFile(GetFileName().GetFullPath());
