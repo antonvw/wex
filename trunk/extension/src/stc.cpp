@@ -15,6 +15,7 @@
 #include <wx/extension/stc.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vi.h>
@@ -227,6 +228,17 @@ void wxExStyledTextCtrl::BuildPopupMenu(wxExMenu& menu)
     if (CanUndo()) menu.Append(wxID_UNDO);
     if (CanRedo()) menu.Append(wxID_REDO);
   }
+}
+
+void wxExStyledTextCtrl::Colourise()
+{
+  m_Lexer.ApplyKeywords(this);
+  SetGlobalStyles();
+  wxExLexers::Get()->ApplyProperties(this);
+  wxExLexers::Get()->ApplyMarkers(this);
+  m_Lexer.ApplyProperties(this);
+  SetFolding();
+  m_Lexer.Colourise(this);
 }
 
 void wxExStyledTextCtrl::ControlCharDialog(const wxString& caption)
@@ -657,6 +669,16 @@ bool wxExStyledTextCtrl::IsTargetRE(const wxString& target) const
     target.Contains("\\7") ||
     target.Contains("\\8") ||
     target.Contains("\\9");
+}
+
+void wxExStyledTextCtrl::LexerDialog(const wxString& caption)
+{
+  wxString lexer = m_Lexer.GetScintillaLexer();
+
+  if (wxExLexers::Get()->ShowDialog(this, lexer, caption))
+  {
+    SetLexer(lexer);
+  }
 }
 
 void wxExStyledTextCtrl::MacroPlayback()
@@ -1114,6 +1136,51 @@ void wxExStyledTextCtrl::SetFolding()
   {
     SetMarginWidth(m_MarginFoldingNumber, 0);
   }
+}
+
+void wxExStyledTextCtrl::SetGlobalStyles()
+{
+  wxExLexers::Get()->GetDefaultStyle().Apply(this);
+
+  StyleClearAll();
+
+  wxExLexers::Get()->ApplyGlobalStyles(this);
+  wxExLexers::Get()->ApplyIndicators(this);
+}
+
+void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
+{
+  ClearDocumentStyle();
+
+  // Reset all old properties. 
+  // Should be before SetFileNameLexer.
+  m_Lexer.ApplyResetProperties(this);
+
+  m_Lexer = wxExLexers::Get()->FindByName(lexer);
+
+  // Update the lexer for scintilla.
+  SetLexerLanguage(m_Lexer.GetScintillaLexer());
+
+  if (
+    !m_Lexer.GetScintillaLexer().empty() &&
+    // And check whether the GetLexer from scintilla has a good value.
+    // Otherwise it is not known, and we better show an error.
+    wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
+  {
+    wxLogError(_("Lexer is not known") + ": " + m_Lexer.GetScintillaLexer());
+  }
+
+  Colourise();
+
+  if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
+  {
+    FoldAll();
+  }
+}
+
+void wxExStyledTextCtrl::SetLexerByText()
+{
+  m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
 }
 
 bool wxExStyledTextCtrl::SmartIndentation()

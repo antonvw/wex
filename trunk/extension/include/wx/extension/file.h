@@ -104,12 +104,7 @@ public:
 
   /// If specified lexer is empty, use one of the lexers from config
   /// according to match on the file fullname.
-  /// Otherwise use specified lexer.
-  /// Text is used if lexer is empty, to override settings from config
-  /// if no match was found, to match special cases.
-  void SetLexer(
-    const wxString& lexer = wxEmptyString,
-    const wxString& text = wxEmptyString);
+  void SetLexer();
 private:
   wxExLexer m_Lexer;
   wxExStat m_Stat;
@@ -159,10 +154,6 @@ public:
 
   /// Reset contents changed.
   virtual void ResetContentsChanged() = 0;
-
-  /// Sets specified lexer for filename.
-  void SetFileNameLexer(const wxString& lexer, const wxString& text) {
-    m_FileName.SetLexer(lexer, text);};
 protected:
   /// Invoked by FileLoad, allows you to load the file.
   virtual void DoFileLoad(bool synced = false) = 0;

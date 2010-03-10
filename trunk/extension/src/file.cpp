@@ -176,9 +176,7 @@ int wxExFileName::GetIconID() const
   }
 }
 
-void wxExFileName::SetLexer(
-  const wxString& lexer,
-  const wxString& text)
+void wxExFileName::SetLexer()
 {
   if (wxExLexers::Get(false) == NULL) 
   {
@@ -186,25 +184,6 @@ void wxExFileName::SetLexer(
   }
   else
   {
-    if (lexer.empty())
-    {
-      if (text != "forced")
-      {
-        m_Lexer = wxExLexers::Get()->FindByFileName(*this);
-
-        if (m_Lexer.GetScintillaLexer().empty() && !text.empty())
-        {
-          m_Lexer = wxExLexers::Get()->FindByText(text);
-        }
-      }
-      else
-      {
-        m_Lexer = wxExLexer();
-      }
-    }
-    else
-    {
-      m_Lexer = wxExLexers::Get()->FindByName(lexer);
-    }
+    m_Lexer = wxExLexers::Get()->FindByFileName(*this);
   }
 }

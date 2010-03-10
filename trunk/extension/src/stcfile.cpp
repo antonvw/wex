@@ -79,10 +79,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
       SetReadOnly(true);
     }
   }
-  else
-  {
-    SetLexer();
-  }
 
   PropertiesMessage();
 }
@@ -166,8 +162,8 @@ offset    hex field                                         ascii field
 */
 {
   SetControlCharSymbol('x');
-
   SetGlobalStyles();
+  wxExLexers::Get()->ApplyHexStyles(this);
 
   // Do not show an edge, eol or whitespace in hex mode.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -395,17 +391,6 @@ void wxExSTC::ClearDocument()
   SetSavePoint();
 }
 
-void wxExSTC::Colourise()
-{
-  GetFileName().GetLexer().ApplyKeywords(this);
-  SetGlobalStyles();
-  wxExLexers::Get()->ApplyProperties(this);
-  wxExLexers::Get()->ApplyMarkers(this);
-  GetFileName().GetLexer().ApplyProperties(this);
-  SetFolding();
-  GetFileName().GetLexer().Colourise(this);
-}
-
 // This is a static method, cannot use normal members here.
 int wxExSTC::ConfigDialog(
   wxWindow* parent,
@@ -611,7 +596,17 @@ void wxExSTC::DoFileLoad(bool synced)
 
   if (!(m_Flags & STC_OPEN_HEX))
   {
-    SetLexer();
+    SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+
+    if (GetLexer().GetScintillaLexer().empty())
+    {
+      SetLexerByText();
+    }
+
+    if (GetFileName().GetExt() == "po")
+    {
+      AddBasePathToPathList();
+    }
   }
   else
   {
@@ -691,7 +686,7 @@ void wxExSTC::FileNew(const wxExFileName& filename)
 
   ClearDocument();
 
-  SetLexer();
+  SetLexer(filename.GetLexer().GetScintillaLexer());
 }
 
 bool wxExSTC::FileReadOnlyAttributeChanged()
@@ -752,16 +747,6 @@ void wxExSTC::Initialize()
 {
   ConfigGet();
   SetGlobalStyles();
-}
-
-void wxExSTC::LexerDialog(const wxString& caption)
-{
-  wxString lexer = GetFileName().GetLexer().GetScintillaLexer();
-
-  if (wxExLexers::Get()->ShowDialog(this, lexer, caption))
-  {
-    SetLexer(lexer, true); // forced
-  }
 }
 
 bool wxExSTC::LinkOpen(
@@ -1056,62 +1041,6 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 void wxExSTC::ResetContentsChanged()
 {
   SetSavePoint();
-}
-
-void wxExSTC::SetGlobalStyles()
-{
-  wxExLexers::Get()->GetDefaultStyle().Apply(this);
-
-  StyleClearAll();
-
-  if (!(m_Flags & STC_OPEN_HEX))
-  {
-    wxExLexers::Get()->ApplyGlobalStyles(this);
-    wxExLexers::Get()->ApplyIndicators(this);
-  }
-  else
-  {
-    wxExLexers::Get()->ApplyHexStyles(this);
-  }
-}
-
-void wxExSTC::SetLexer(const wxString& lexer, bool forced)
-{
-  ClearDocumentStyle();
-
-  // Reset all old properties. 
-  // Should be before SetFileNameLexer.
-  GetFileName().GetLexer().ApplyResetProperties(this);
-
-  SetFileNameLexer(lexer, (forced ? "forced": GetLine(0)));
-
-#if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneLexer");
-#endif
-
-  // Update the lexer for scintilla.
-  SetLexerLanguage(GetFileName().GetLexer().GetScintillaLexer());
-
-  if (
-    !GetFileName().GetLexer().GetScintillaLexer().empty() &&
-    // And check whether the GetLexer from scintilla has a good value.
-    // Otherwise it is not known, and we better show an error.
-    wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
-  {
-    wxLogError(_("Lexer is not known") + ": " + GetFileName().GetLexer().GetScintillaLexer());
-  }
-
-  Colourise();
-
-  if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
-  {
-    FoldAll();
-  }
-
-  if (GetFileName().GetExt() == "po")
-  {
-    AddBasePathToPathList();
-  }
 }
 
 void wxExSTC::SetText(const wxString& value)

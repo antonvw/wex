@@ -14,6 +14,7 @@
 
 #include <vector> 
 #include <wx/stc/stc.h>
+#include <wx/extension/lexer.h>
 #include <wx/extension/menu.h> // for wxExMenu
 
 class wxExVi;
@@ -57,6 +58,9 @@ public:
   /// If caret was at end, it is repositioned at the end.
   void AppendTextForced(const wxString& text, bool withTimestamp = true);
 
+  /// Colourises the document.
+  void Colourise();
+
   /// Edit the current selected char as a control char, or if nothing selected,
   /// add a new control char.
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
@@ -72,6 +76,9 @@ public:
     const wxString& text, 
     int search_flags = 0,
     bool find_next = true);
+
+  /// Gets the lexer.
+  const wxExLexer& GetLexer() const {return m_Lexer;};
 
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
@@ -97,6 +104,10 @@ public:
   /// Returns true if specified target is a RE, to be used by
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
+
+  /// Asks for a lexer for this document, choosing from a dialog of
+  /// all available lexers. Then colours the document.
+  void LexerDialog(const wxString& caption = _("Enter Lexer"));
 
 #if wxUSE_PRINTING_ARCHITECTURE
   /// Prints the document.
@@ -130,6 +141,13 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
+  /// Sets the (scintilla) lexer for this document.
+  /// Then colourises the document.
+  void SetLexer(const wxString& lexer);
+
+  /// Sets the (scintilla) lexer using document text.
+  void SetLexerByText();
+
   /// Asks for confirmation to sort the selection.
   void SortSelectionDialog(
     bool sort_ascending,
@@ -160,6 +178,7 @@ protected:
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFolding();
+  void SetGlobalStyles();
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
@@ -181,6 +200,7 @@ private:
 
   static std::vector <wxString> m_Macro;
 
+  wxExLexer m_Lexer;
   wxExVi* m_vi;
 
   DECLARE_EVENT_TABLE()

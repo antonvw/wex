@@ -80,9 +80,6 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Colourises the document.
-  void Colourise();
-
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in wxExFrame::OnCommandConfigDialog.
@@ -108,10 +105,6 @@ public:
   /// Gets current flags (used by Open).
   long GetFlags() const {return m_Flags;};
 
-  /// Asks for a lexer for this document, choosing from a dialog of
-  /// all available lexers. Then colours the document.
-  void LexerDialog(const wxString& caption = _("Enter Lexer"));
-
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
   /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
@@ -130,11 +123,6 @@ public:
   /// Default it is off.
   void SetFileSaveInMenu(bool val = true) {
     m_FileSaveInMenu = val;}
-
-  /// Set the (scintilla) lexer for this document using the current filename by
-  /// default, or the explicit lexer if specified.
-  /// Then colourises the document.
-  void SetLexer(const wxString& lexer = wxEmptyString, bool forced = false);
 
   /// Sets the text.
   void SetText(const wxString& value);
@@ -174,7 +162,6 @@ private:
     int line_number = 0, 
     bool link_open = true);
   void ReadFromFile(bool get_only_new_data);
-  void SetGlobalStyles();
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
