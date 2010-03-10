@@ -757,14 +757,6 @@ void wxExSTC::Initialize()
   m_viMode = false;
   m_vi = new wxExVi(this);
 
-  UsePopUp(false);
-
-#ifdef __WXMSW__
-  EOLModeUpdate(wxSTC_EOL_CRLF);
-#else
-  EOLModeUpdate(wxSTC_EOL_LF);
-#endif
-
   ConfigGet();
 
   SetGlobalStyles();

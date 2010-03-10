@@ -65,6 +65,12 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
 {
+#ifdef __WXMSW__
+  SetEOLMode(wxSTC_EOL_CRLF);
+#else
+  SetEOLMode(wxSTC_EOL_LF);
+#endif
+
   SetBackSpaceUnIndents(true);
   SetMouseDwellTime(1000);
   SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
@@ -72,6 +78,8 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
   SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
   SetMarginSensitive(m_MarginFoldingNumber, true);
+
+  UsePopUp(false); // we have our own
 
   const int accels = 15; // take max number of entries
   wxAcceleratorEntry entries[accels];
