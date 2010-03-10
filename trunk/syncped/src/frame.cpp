@@ -171,6 +171,10 @@ MDIFrame::MDIFrame(bool open_recent)
           wxEmptyString,
           wxExSTCWithFrame::STC_OPEN_IS_PROJECT);
       }
+      else
+      {
+        GetManager().GetPane("PROJECTS").Hide();
+      }
     }
   }
   else
