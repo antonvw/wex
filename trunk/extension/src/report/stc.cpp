@@ -250,11 +250,8 @@ void wxExSTCWithFrame::PropertiesMessage() const
 {
   wxExSTC::PropertiesMessage();
 
-  const wxString title = 
-    GetFileName().FileExists() ? GetFileName().GetFullPath(): GetName();
-
   m_Frame->SetTitle(
-    title + 
+    GetName() + 
       (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString)), 
     wxEmptyString);
 }

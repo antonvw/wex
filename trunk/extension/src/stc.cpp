@@ -23,6 +23,13 @@
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
+BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
+  EVT_STC_DWELLEND(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
+//  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_MACRORECORD(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
+  EVT_STC_MARGINCLICK(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
+END_EVENT_TABLE()
+
 std::vector <wxString> wxExStyledTextCtrl::m_Macro;
 
 wxExStyledTextCtrl::wxExStyledTextCtrl() 
@@ -560,6 +567,50 @@ void wxExStyledTextCtrl::MacroPlayback()
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Macro played back"));
 #endif
+}
+
+void wxExStyledTextCtrl::OnStyledText(wxStyledTextEvent& event)
+{
+  if (event.GetEventType() == wxEVT_STC_DWELLEND)
+  {
+    if (CallTipActive())
+    {
+      CallTipCancel();
+    }
+  }
+  else if (event.GetEventType() == wxEVT_STC_MACRORECORD)
+  {
+    wxString msg = wxString::Format("%d %d ", event.GetMessage(), event.GetWParam());
+
+    if (event.GetLParam() != 0)
+    {
+      char* txt = (char *)(wxIntPtr)event.GetLParam();
+      msg += txt;
+    }
+    else
+    {
+      msg += "0";
+    }
+
+    AddMacro(msg);
+  }
+  else if (event.GetEventType() == wxEVT_STC_MARGINCLICK)
+  {
+    if (event.GetMargin() == m_MarginFoldingNumber)
+    {
+      const int line = LineFromPosition(event.GetPosition());
+      const int level = GetFoldLevel(line);
+
+      if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
+      {
+        ToggleFold(line);
+      }
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE

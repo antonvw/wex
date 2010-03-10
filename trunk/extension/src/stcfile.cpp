@@ -46,10 +46,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
-//  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
@@ -126,7 +122,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   wxExStyledTextCtrl::Create(stc.GetParent());
 
   // Do not yet set GetFileName(), this is done by Open.
-  // And m_Macro is shared, so not necessary.
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
   m_Flags = stc.m_Flags;
   m_PreviousLength = stc.m_PreviousLength;
@@ -1052,14 +1047,14 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
     if (event.GetKeyCode() == WXK_RETURN)
     {
       if (!SmartIndentation())
-    {
+      {
         event.Skip();
+      }
     }
-    }
-  else
-  {
+    else
+    {
       event.Skip();
-  }
+    }
   }
 }
 
@@ -1126,43 +1121,7 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
-  if (event.GetEventType() == wxEVT_STC_DWELLEND)
-  {
-    if (CallTipActive())
-    {
-      CallTipCancel();
-    }
-  }
-  else if (event.GetEventType() == wxEVT_STC_MACRORECORD)
-  {
-    wxString msg = wxString::Format("%d %d ", event.GetMessage(), event.GetWParam());
-
-    if (event.GetLParam() != 0)
-    {
-      char* txt = (char *)(wxIntPtr)event.GetLParam();
-      msg += txt;
-    }
-    else
-    {
-      msg += "0";
-    }
-
-    AddMacro(msg);
-  }
-  else if (event.GetEventType() == wxEVT_STC_MARGINCLICK)
-  {
-    if (event.GetMargin() == m_MarginFoldingNumber)
-    {
-      const int line = LineFromPosition(event.GetPosition());
-      const int level = GetFoldLevel(line);
-
-      if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
-      {
-        ToggleFold(line);
-      }
-    }
-  }
-  else if (event.GetEventType() == wxEVT_STC_MODIFIED)
+  if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
     // Only useful if this is not a file on disk, otherwise
     // the OnIdle already does this.
@@ -1182,7 +1141,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else
   {
-    wxFAIL;
+    event.Skip();
   }
 }
 
@@ -1203,6 +1162,8 @@ bool wxExSTC::Open(
 
   if (wxExFile::FileLoad(filename))
   {
+    SetName(filename.GetFullPath());
+
     // This should be after folding, and this one unfolds the line to go to.
     if (line_number > 0)
     {
