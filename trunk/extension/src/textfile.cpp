@@ -643,11 +643,6 @@ bool wxExTextFile::RunTool()
 
   if (GetLineCount() > 0)
   {
-    if (m_FileName.GetLexer().GetScintillaLexer().empty())
-    {
-      m_FileName.SetLexer(wxEmptyString, GetLine(0));
-    }
-
     if (!Parse())
     {
       Close();

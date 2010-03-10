@@ -1176,6 +1176,8 @@ void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
   {
     FoldAll();
   }
+
+  wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
 }
 
 void wxExStyledTextCtrl::SetLexerByText()
