@@ -222,7 +222,6 @@ void wxExSampleFrame::OnCommandConfigDialog(
     {
       m_STC->ConfigGet();
       m_STCLexers->ConfigGet();
-      m_STCShell->ConfigGet();
     }
   }
   else
