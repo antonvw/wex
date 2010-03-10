@@ -248,10 +248,6 @@ wxExSTC* wxExSampleFrame::GetSTC()
   {
     return m_STC;
   }
-  else if (m_STCShell->HasFocus())
-  {
-    return m_STCShell;
-  }
   else if (m_STCLexers->HasFocus())
   {
     return m_STCLexers;
@@ -260,10 +256,6 @@ wxExSTC* wxExSampleFrame::GetSTC()
   else if (m_STC->IsShown())
   {
     return m_STC;
-  }
-  else if (m_STCShell->IsShown())
-  {
-    return m_STCShell;
   }
   else if (m_STCLexers->IsShown())
   {

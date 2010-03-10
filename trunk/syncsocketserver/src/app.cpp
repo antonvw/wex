@@ -257,10 +257,6 @@ wxExSTC* Frame::GetSTC()
   {
     return m_LogWindow;
   }
-  else if (m_Shell->IsShown())
-  {
-    return m_Shell;
-  }
 
   return NULL;
 }
@@ -535,7 +531,6 @@ void Frame::OnCommandConfigDialog(
     {
       m_DataWindow->ConfigGet();
       m_LogWindow->ConfigGet();
-      m_Shell->ConfigGet();
     }
   }
   else

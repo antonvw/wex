@@ -16,7 +16,7 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/stcfile.h>
 #include <wx/extension/shell.h>
 
 /// Derive your application from wxExApp.
