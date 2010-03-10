@@ -17,7 +17,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
-#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
@@ -32,7 +31,6 @@ const wxFileOffset start_hex_field = 10;
 BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
   EVT_IDLE(wxExSTC::OnIdle)
-  EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
@@ -40,7 +38,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
   EVT_MENU(ID_EDIT_EOL_DOS, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_EOL_UNIX, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_EOL_MAC, wxExSTC::OnCommand)
-  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
@@ -129,7 +126,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 wxExSTC::~wxExSTC()
 {
-  delete m_vi;
 }
 
 void wxExSTC::AddBasePathToPathList()
@@ -754,11 +750,7 @@ void wxExSTC::GuessType()
 
 void wxExSTC::Initialize()
 {
-  m_viMode = false;
-  m_vi = new wxExVi(this);
-
   ConfigGet();
-
   SetGlobalStyles();
 }
 
@@ -834,29 +826,8 @@ bool wxExSTC::LinkOpen(
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
-  bool skip = true;
-
-  if (m_viMode)
-  {
-    // Let vi handle all keys.
-    skip = m_vi->OnChar(event);
-  }
-
-  if (skip && 
-       GetReadOnly() && 
-       wxIsalnum(event.GetUnicodeKey()))
-  {
-#if wxUSE_STATUSBAR
-      wxExFrame::StatusText(_("Document is readonly"));
-#endif
-    return;
-  }
-
-  if (skip)
-  {
-    event.Skip();
-    CheckAutoComp(event.GetUnicodeKey());
-  }
+  event.Skip();
+  CheckAutoComp(event.GetUnicodeKey());
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
@@ -913,25 +884,6 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExSTC::OnKeyDown(wxKeyEvent& event)
-{
-  if ( !m_viMode ||
-       (m_viMode && m_vi->OnKeyDown(event)))
-  {
-    if (event.GetKeyCode() == WXK_RETURN)
-    {
-      if (!SmartIndentation())
-      {
-        event.Skip();
-      }
-    }
-    else
-    {
-      event.Skip();
-    }
-  }
-}
-
 void wxExSTC::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
@@ -981,13 +933,6 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 #if wxUSE_STATUSBAR
       wxExFrame::StatusText(wxDateTime::Now().Format());
 #endif
-    }
-  }
-  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
-  {
-    if (m_viMode)
-    {
-      m_vi->OnCharAdded(event);
     }
   }
   else

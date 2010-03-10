@@ -15,21 +15,21 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/stc/stc.h>
+#include <wx/stc/stc.h> // for wxStyledTextEvent
 #include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
 
 #if wxUSE_GUI
 
 class wxExConfigDialog;
-class wxExSTC;
+class wxExStyledTextCtrl;
 
 /// Offers a class that extends STC with vi behaviour.
 class wxExVi
 {
 public:
   /// Constructor.
-  wxExVi(wxExSTC* stc);
+  wxExVi(wxExStyledTextCtrl* stc);
 
   /// Gets the search text.
   const wxString& GetSearchText() const {return m_SearchText;};
@@ -100,7 +100,7 @@ private:
   int m_InsertRepeatCount;
   int m_SearchFlags;
   
-  wxExSTC* m_STC;
+  wxExStyledTextCtrl* m_STC;
   
   wxString m_Command;
   wxString m_InsertText;

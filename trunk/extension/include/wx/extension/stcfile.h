@@ -17,7 +17,6 @@
 #include <wx/extension/menu.h> // for wxExMenu
 
 class wxExConfigDialog;
-class wxExVi;
 
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
@@ -149,10 +148,9 @@ protected:
   virtual void DoFileLoad(bool synced = false);
   virtual void DoFileSave(bool save_as = false);
 
-  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnChar(wxKeyEvent& event);
   void OnIdle(wxIdleEvent& event);
-  void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
@@ -182,10 +180,8 @@ private:
   static wxExConfigDialog* m_ConfigDialog;
 
   bool m_FileSaveInMenu;
-  bool m_viMode;
   long m_Flags; // open flags
 
-  wxExVi* m_vi;
   wxFileOffset m_PreviousLength;
   wxPathList m_PathList;
 

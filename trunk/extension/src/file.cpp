@@ -86,6 +86,11 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
 
 bool wxExFile::FileSave(const wxString filename)
 {
+  if (!GetContentsChanged())
+  {
+    return false;
+  }
+
   bool save_as = false;
 
   if (!filename.empty())

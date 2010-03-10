@@ -17,6 +17,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
@@ -24,6 +25,8 @@ const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
 BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
+  EVT_CHAR(wxExStyledTextCtrl::OnChar)
+  EVT_KEY_DOWN(wxExStyledTextCtrl::OnKeyDown)
   EVT_MENU(wxID_DELETE, wxExStyledTextCtrl::OnCommand)
   EVT_MENU(wxID_JUMP_TO, wxExStyledTextCtrl::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExStyledTextCtrl::OnCommand)
@@ -35,6 +38,7 @@ BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
   EVT_RIGHT_UP(wxExStyledTextCtrl::OnMouse)
   EVT_STC_DWELLEND(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_CHARADDED(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
 END_EVENT_TABLE()
@@ -48,6 +52,7 @@ wxExStyledTextCtrl::wxExStyledTextCtrl()
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
+  , m_vi(NULL)
 {
 }
 
@@ -64,6 +69,8 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
+  , m_viMode(false)
+  , m_vi(new wxExVi(this))
 {
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
@@ -104,6 +111,11 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
+}
+
+wxExStyledTextCtrl::~wxExStyledTextCtrl()
+{
+  delete m_vi;
 }
 
 void wxExStyledTextCtrl::AddAsciiTable()
@@ -671,6 +683,32 @@ void wxExStyledTextCtrl::MacroPlayback()
 #endif
 }
 
+void wxExStyledTextCtrl::OnChar(wxKeyEvent& event)
+{
+  bool skip = true;
+
+  if (m_viMode)
+  {
+    // Let vi handle all keys.
+    skip = m_vi->OnChar(event);
+  }
+
+  if (skip && 
+       GetReadOnly() && 
+       wxIsalnum(event.GetUnicodeKey()))
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("Document is readonly"));
+#endif
+    return;
+  }
+
+  if (skip)
+  {
+    event.Skip();
+  }
+}
+
 void wxExStyledTextCtrl::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -714,6 +752,25 @@ void wxExStyledTextCtrl::OnCommand(wxCommandEvent& command)
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   default: wxFAIL; break;
+  }
+}
+
+void wxExStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
+{
+  if ( !m_viMode ||
+       (m_viMode && m_vi->OnKeyDown(event)))
+  {
+    if (event.GetKeyCode() == WXK_RETURN)
+    {
+      if (!SmartIndentation())
+      {
+        event.Skip();
+      }
+    }
+    else
+    {
+      event.Skip();
+    }
   }
 }
 
@@ -784,6 +841,13 @@ void wxExStyledTextCtrl::OnStyledText(wxStyledTextEvent& event)
       {
         ToggleFold(line);
       }
+    }
+  }
+  else if (event.GetEventType() == wxEVT_STC_CHARADDED)
+  {
+    if (m_viMode)
+    {
+      m_vi->OnCharAdded(event);
     }
   }
   else

@@ -12,7 +12,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -21,7 +21,7 @@ wxExConfigDialog* wxExVi::m_CommandDialog = NULL;
 wxExConfigDialog* wxExVi::m_FindDialog = NULL;
 wxString wxExVi::m_LastCommand;
 
-wxExVi::wxExVi(wxExSTC* stc)
+wxExVi::wxExVi(wxExStyledTextCtrl* stc)
   : m_STC(stc)
   , m_MarkerSymbol(0)
   , m_IndicatorInsert(2)
@@ -546,13 +546,8 @@ void wxExVi::DoCommandLine()
   }
   else if (command == ":x")
   {
-    if (m_STC->GetContentsChanged())
-    {
-      m_STC->FileSave();
-    }
-
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    wxPostEvent(wxTheApp->GetTopWindow(), wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+    wxPostEvent(wxTheApp->GetTopWindow(), wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
   else if (command == ":y")
   {

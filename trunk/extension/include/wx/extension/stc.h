@@ -16,7 +16,10 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/menu.h> // for wxExMenu
 
+class wxExVi;
+
 #if wxUSE_GUI
+
 /// Offers a styled text ctrl with find/replace, macro support,
 /// and base extensions.
 class wxExStyledTextCtrl : public wxStyledTextCtrl
@@ -43,6 +46,9 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
     long style = 0);
+
+  /// Destructor.
+ ~wxExStyledTextCtrl();
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();
@@ -148,27 +154,34 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
   void FoldAll();
+  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnKeyDown(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFolding();
-  /// After pressing enter, starts new line at same place
-  /// as previous line.
-  bool SmartIndentation();
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
   const int m_MarginLineNumber;
+  bool m_viMode;
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
   int FindReplaceDataFlags() const;
   void HexDecCalltip(int pos);
   void SequenceDialog();
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool SmartIndentation();
+
+  bool m_MacroIsRecording;
 
   long m_GotoLineNumber;
-  bool m_MacroIsRecording;
   long m_MenuFlags;
+
   static std::vector <wxString> m_Macro;
+
+  wxExVi* m_vi;
 
   DECLARE_EVENT_TABLE()
 };
