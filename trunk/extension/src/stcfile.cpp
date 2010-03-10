@@ -36,15 +36,11 @@ BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
-  EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
-  EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SAVE, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
-  EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_EOL_DOS, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_EOL_UNIX, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_EOL_MAC, wxExSTC::OnCommand)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
@@ -813,40 +809,14 @@ void wxExSTC::Initialize()
   m_vi = new wxExVi(this);
 
   UsePopUp(false);
+
 #ifdef __WXMSW__
   EOLModeUpdate(wxSTC_EOL_CRLF);
 #else
   EOLModeUpdate(wxSTC_EOL_LF);
 #endif
+
   ConfigGet();
-
-  SetBackSpaceUnIndents(true);
-
-  SetMouseDwellTime(1000);
-
-  const int accels = 15; // take max number of entries
-  wxAcceleratorEntry entries[accels];
-
-  int i = 0;
-
-  entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
-  entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
-  entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, ID_EDIT_LOWERCASE);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-
-  wxAcceleratorTable accel(i, entries);
-  SetAcceleratorTable(accel);
 
   SetGlobalStyles();
 }
@@ -952,45 +922,11 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
-  case wxID_COPY: Copy(); break;
-  case wxID_CUT: Cut(); break;
-  case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
-  case wxID_JUMP_TO: GotoDialog(); break;
-  case wxID_PASTE: Paste(); break;
-  case wxID_SELECTALL: SelectAll(); break;
-  case wxID_UNDO: Undo(); break;
-  case wxID_REDO: Redo(); break;
   case wxID_SAVE: FileSave(); break;
-  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
-  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
 
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
   case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-
-  case ID_EDIT_CONTROL_CHAR:
-    ControlCharDialog();
-  break;
-  case ID_EDIT_HEX_DEC_CALLTIP:
-    HexDecCalltip(GetCurrentPos());
-  break;
-
-  case ID_EDIT_FOLD_ALL: FoldAll(); break;
-  case ID_EDIT_UNFOLD_ALL:
-    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
-  break;
-  case ID_EDIT_TOGGLE_FOLD:
-  {
-    const int level = GetFoldLevel(GetCurrentLine());
-    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-      GetCurrentLine(): GetFoldParent(GetCurrentLine());
-    ToggleFold(line_to_fold);
-  }
-  break;
-
-  case ID_EDIT_MACRO_PLAYBACK: MacroPlayback(); break;
-  case ID_EDIT_MACRO_START_RECORD: StartRecord(); break;
-  case ID_EDIT_MACRO_STOP_RECORD: StopRecord(); break;
 
   case ID_EDIT_OPEN_LINK:
     {
@@ -1015,9 +951,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxLaunchDefaultBrowser(GetFileName().GetFullPath());
   break;
 
-  case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
-  case ID_EDIT_LOWERCASE: LowerCase(); break;
-  case ID_EDIT_UPPERCASE: UpperCase(); break;
   default: wxFAIL; break;
   }
 }

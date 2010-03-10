@@ -24,6 +24,14 @@ const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
 BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
+  EVT_MENU(wxID_DELETE, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU(wxID_JUMP_TO, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU(wxID_SELECTALL, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU(wxID_SORT_ASCENDING, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU(wxID_SORT_DESCENDING, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExStyledTextCtrl::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExStyledTextCtrl::OnCommand)
   EVT_STC_DWELLEND(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
@@ -54,11 +62,37 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
 {
+  SetBackSpaceUnIndents(true);
+  SetMouseDwellTime(1000);
   SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
   SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
   SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
   SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
   SetMarginSensitive(m_MarginFoldingNumber, true);
+
+  const int accels = 15; // take max number of entries
+  wxAcceleratorEntry entries[accels];
+
+  int i = 0;
+
+  entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
+  entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
+  entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
+  entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
+  entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, ID_EDIT_LOWERCASE);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
+  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
+  entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+  entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+
+  wxAcceleratorTable accel(i, entries);
+  SetAcceleratorTable(accel);
 }
 
 void wxExStyledTextCtrl::AddAsciiTable()
@@ -567,6 +601,52 @@ void wxExStyledTextCtrl::MacroPlayback()
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(_("Macro played back"));
 #endif
+}
+
+void wxExStyledTextCtrl::OnCommand(wxCommandEvent& command)
+{
+  switch (command.GetId())
+  {
+  case wxID_COPY: Copy(); break;
+  case wxID_CUT: Cut(); break;
+  case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
+  case wxID_JUMP_TO: GotoDialog(); break;
+  case wxID_PASTE: Paste(); break;
+  case wxID_SELECTALL: SelectAll(); break;
+  case wxID_UNDO: Undo(); break;
+  case wxID_REDO: Redo(); break;
+  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
+  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
+
+  case ID_EDIT_CONTROL_CHAR:
+    ControlCharDialog();
+  break;
+  case ID_EDIT_HEX_DEC_CALLTIP:
+    HexDecCalltip(GetCurrentPos());
+  break;
+
+  case ID_EDIT_FOLD_ALL: FoldAll(); break;
+  case ID_EDIT_UNFOLD_ALL:
+    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
+  break;
+  case ID_EDIT_TOGGLE_FOLD:
+  {
+    const int level = GetFoldLevel(GetCurrentLine());
+    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+      GetCurrentLine(): GetFoldParent(GetCurrentLine());
+    ToggleFold(line_to_fold);
+  }
+  break;
+
+  case ID_EDIT_MACRO_PLAYBACK: MacroPlayback(); break;
+  case ID_EDIT_MACRO_START_RECORD: StartRecord(); break;
+  case ID_EDIT_MACRO_STOP_RECORD: StopRecord(); break;
+
+  case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
+  case ID_EDIT_LOWERCASE: LowerCase(); break;
+  case ID_EDIT_UPPERCASE: UpperCase(); break;
+  default: wxFAIL; break;
+  }
 }
 
 void wxExStyledTextCtrl::OnStyledText(wxStyledTextEvent& event)

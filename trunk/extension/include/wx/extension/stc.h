@@ -129,11 +129,9 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
 protected:
-  int FindReplaceDataFlags() const;
   void FoldAll();
-  void HexDecCalltip(int pos);
+  void OnCommand(wxCommandEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
-  void SequenceDialog();
   void SetFolding();
   /// After pressing enter, starts new line at same place
   /// as previous line.
@@ -144,6 +142,9 @@ protected:
   const int m_MarginLineNumber;
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
+  int FindReplaceDataFlags() const;
+  void HexDecCalltip(int pos);
+  void SequenceDialog();
 
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
