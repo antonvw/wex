@@ -73,7 +73,9 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
 {
-  Initialize();
+#if wxUSE_DRAG_AND_DROP
+  SetDropTarget(new ListViewDropTarget(this));
+#endif
 
   wxExFile::FileLoad(file);
 
@@ -265,13 +267,6 @@ void wxExListViewFile::FileNew(const wxExFileName& filename)
 const wxString wxExListViewFile::GetListInfo() const
 {
   return GetFileName().GetName();
-}
-
-void wxExListViewFile::Initialize()
-{
-#if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new ListViewDropTarget(this));
-#endif
 }
 
 bool wxExListViewFile::ItemFromText(const wxString& text)

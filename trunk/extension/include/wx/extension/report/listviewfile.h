@@ -65,7 +65,6 @@ protected:
   void OnMouse(wxMouseEvent& event);
 private:
   void AddItemsDialog();
-  void Initialize();
 
   bool m_ContentsChanged;
   wxExConfigDialog* m_AddItemsDialog;
