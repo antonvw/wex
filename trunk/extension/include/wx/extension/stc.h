@@ -14,6 +14,7 @@
 
 #include <vector> 
 #include <wx/stc/stc.h>
+#include <wx/extension/menu.h> // for wxExMenu
 
 #if wxUSE_GUI
 /// Offers a styled text ctrl with find/replace, macro support,
@@ -21,11 +22,23 @@
 class wxExStyledTextCtrl : public wxStyledTextCtrl
 {
 public:
+  /// Menu and tooltip flags (0 is used for no menu).
+  enum wxExStyledMenuFlags
+  {
+    STC_MENU_SIMPLE    = 0x0002, ///< for adding copy/paste etc. menu
+    STC_MENU_FIND      = 0x0004, ///< for adding find menu
+    STC_MENU_REPLACE   = 0x0008, ///< for adding replace menu
+    STC_MENU_INSERT    = 0x0010, ///< for adding sequence menu
+
+    STC_MENU_DEFAULT   = 0xFFFF, ///< all
+  };
+
   /// Default constructor.
   wxExStyledTextCtrl();
 
   /// Constructor.
   wxExStyledTextCtrl(wxWindow *parent, 
+    long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
@@ -56,6 +69,9 @@ public:
 
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
+
+  /// Gets the menu flags.
+  long GetMenuFlags() const {return m_MenuFlags;};
 
   /// Gets search text, as selected or from config.
   const wxString GetSearchText() const;
@@ -129,8 +145,11 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
 protected:
+  /// Builds the popup menu.
+  virtual void BuildPopupMenu(wxExMenu& menu);
   void FoldAll();
   void OnCommand(wxCommandEvent& event);
+  void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFolding();
   /// After pressing enter, starts new line at same place
@@ -148,6 +167,7 @@ private:
 
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
+  long m_MenuFlags;
   static std::vector <wxString> m_Macro;
 
   DECLARE_EVENT_TABLE()

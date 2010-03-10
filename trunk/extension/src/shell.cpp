@@ -18,7 +18,7 @@
 
 #if wxUSE_GUI
 
-BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
+BEGIN_EVENT_TABLE(wxExSTCShell, wxExStyledTextCtrl)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
   EVT_MENU(wxID_PASTE, wxExSTCShell::OnCommand)
 END_EVENT_TABLE()
@@ -34,7 +34,13 @@ wxExSTCShell::wxExSTCShell(
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTC(parent, wxEmptyString, 0, wxEmptyString, menu_flags, id, pos, size, style)
+  : wxExStyledTextCtrl(
+      parent, 
+      menu_flags, 
+      id, 
+      pos, 
+      size, 
+      style)
   , m_Command(wxEmptyString)
   , m_CommandEnd((command_end == wxEmptyString ? GetEOL(): command_end))
   , m_CommandStartPosition(0)

@@ -27,16 +27,9 @@ class wxExVi;
 class wxExSTC : public wxExStyledTextCtrl, public wxExFile
 {
 public:
-  /// Menu and tooltip flags (0 is used for no menu).
   enum wxExSTCMenuFlags
   {
-    STC_MENU_SIMPLE    = 0x0002, ///< for adding copy/paste etc. menu
-    STC_MENU_FIND      = 0x0004, ///< for adding find menu
-    STC_MENU_REPLACE   = 0x0008, ///< for adding replace menu
-    STC_MENU_INSERT    = 0x0010, ///< for adding sequence menu
     STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
-
-    STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };
 
   /// Open flags (0 is used as default).
@@ -116,9 +109,6 @@ public:
   /// Gets current flags (used by Open).
   long GetFlags() const {return m_Flags;};
 
-  /// Gets the menu flags.
-  long GetMenuFlags() const {return m_MenuFlags;};
-
   /// Asks for a lexer for this document, choosing from a dialog of
   /// all available lexers. Then colours the document.
   void LexerDialog(const wxString& caption = _("Enter Lexer"));
@@ -155,7 +145,6 @@ public:
   void UpdateStatusBar(const wxString& pane) const;
 #endif
 protected:
-  /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
   virtual void DoFileLoad(bool synced = false);
   virtual void DoFileSave(bool save_as = false);
@@ -195,7 +184,6 @@ private:
   bool m_FileSaveInMenu;
   bool m_viMode;
   long m_Flags; // open flags
-  long m_MenuFlags;
 
   wxExVi* m_vi;
   wxFileOffset m_PreviousLength;

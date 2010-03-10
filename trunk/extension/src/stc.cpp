@@ -32,6 +32,7 @@ BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExStyledTextCtrl::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExStyledTextCtrl::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExStyledTextCtrl::OnCommand)
+  EVT_RIGHT_UP(wxExStyledTextCtrl::OnMouse)
   EVT_STC_DWELLEND(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
@@ -51,11 +52,13 @@ wxExStyledTextCtrl::wxExStyledTextCtrl()
 }
 
 wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent, 
+  long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size, 
   long style)
   : wxStyledTextCtrl(parent, id , pos, size, style)
+  , m_MenuFlags(menu_flags)
   , m_MacroIsRecording(false)
   , m_GotoLineNumber(1)
   , m_MarginDividerNumber(1)
@@ -146,6 +149,63 @@ void wxExStyledTextCtrl::AppendTextForced(const wxString& text, bool withTimesta
   if (pos_at_end)
   {
     DocumentEnd();
+  }
+}
+
+void wxExStyledTextCtrl::BuildPopupMenu(wxExMenu& menu)
+{
+  if (m_MenuFlags & STC_MENU_FIND && GetTextLength() > 0)
+  {
+    menu.AppendSeparator();
+    menu.Append(wxID_FIND);
+  }
+
+  if (!GetReadOnly())
+  {
+    if (m_MenuFlags & STC_MENU_REPLACE && GetTextLength() > 0)
+    {
+      menu.Append(wxID_REPLACE);
+    }
+  }
+
+  menu.AppendSeparator();
+  menu.AppendEdit();
+
+  if (!GetReadOnly())
+  {
+    if (!GetSelectedText().empty())
+    {
+      wxExMenu* menuSelection = menuSelection = new wxExMenu(menu);
+      menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
+      menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
+
+      if (wxExGetNumberOfLines(GetSelectedText()) > 1)
+      {
+        wxExMenu* menuSort = new wxExMenu(menu);
+        menuSort->Append(wxID_SORT_ASCENDING);
+        menuSort->Append(wxID_SORT_DESCENDING);
+        menuSelection->AppendSeparator();
+        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
+      }
+
+      menu.AppendSeparator();
+      menu.AppendSubMenu(menuSelection, _("&Selection"));
+    }
+    else
+    {
+      if (m_MenuFlags & STC_MENU_INSERT)
+      {
+        menu.AppendSeparator();
+        menu.Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
+      }
+    }
+  }
+
+  if (!GetReadOnly() && (CanUndo() || CanRedo()))
+  {
+    menu.AppendSeparator();
+    if (CanUndo()) menu.Append(wxID_UNDO);
+    if (CanRedo()) menu.Append(wxID_REDO);
   }
 }
 
@@ -647,6 +707,37 @@ void wxExStyledTextCtrl::OnCommand(wxCommandEvent& command)
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   default: wxFAIL; break;
   }
+}
+
+void wxExStyledTextCtrl::OnMouse(wxMouseEvent& event)
+{
+  if (event.RightUp())
+  {
+    if (m_MenuFlags == 0)
+    {
+      event.Skip();
+    }
+    else
+    {
+      int style = 0; // otherwise CAN_PASTE already on
+      if (GetReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
+      if (!GetSelectedText().empty()) style |= wxExMenu::MENU_IS_SELECTED;
+      if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
+      if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
+
+      wxExMenu menu(style);
+      BuildPopupMenu(menu);
+      PopupMenu(&menu);
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
+
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
+  focusevent.SetEventObject(this);
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExStyledTextCtrl::OnStyledText(wxStyledTextEvent& event)

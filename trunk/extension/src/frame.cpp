@@ -154,7 +154,7 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExListView* lv)
   }
 }
 
-void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
+void wxExFrame::FindIn(wxFindDialogEvent& event, wxExStyledTextCtrl* stc)
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
@@ -377,7 +377,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case ID_FOCUS_STC: 
     m_FocusGrid = NULL;
     m_FocusListView = NULL;
-    m_FocusSTC = (wxExSTC*)command.GetEventObject();;
+    m_FocusSTC = (wxExStyledTextCtrl*)command.GetEventObject();;
     break;
 
   default: wxFAIL; break;

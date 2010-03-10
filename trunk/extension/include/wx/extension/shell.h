@@ -13,10 +13,10 @@
 #define _EXSTCSHELL_H
 
 #include <list>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
-/// This class offers an wxExSTC with support for commands.
+/// This class offers a wxExStyledTextCtrl with support for commands.
 /// The commands are entered at the last line, and kept in a list of commands,
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
@@ -26,7 +26,7 @@
 /// - If you enter !\<number\> the previous \<number\> command is entered.
 /// - If you enter !\<abbreviation\> the last command starting with \<abbreviation\>
 ///   is entered.
-class wxExSTCShell: public wxExSTC
+class wxExSTCShell: public wxExStyledTextCtrl
 {
 public:
   /// Constructor.

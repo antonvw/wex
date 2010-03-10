@@ -31,6 +31,7 @@ class wxExGrid;
 class wxExListView;
 class wxExStatusBar;
 class wxExSTC;
+class wxExStyledTextCtrl;
 class wxExToolBar;
 
 #if wxUSE_STATUSBAR
@@ -204,7 +205,7 @@ protected:
 private:
   void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
   void FindIn(wxFindDialogEvent& event, wxExListView* lv);
-  void FindIn(wxFindDialogEvent& event, wxExSTC* stc);
+  void FindIn(wxFindDialogEvent& event, wxExStyledTextCtrl* stc);
   void Initialize();
 
 #if wxUSE_STATUSBAR
@@ -215,7 +216,7 @@ private:
 
   wxExGrid* m_FocusGrid;
   wxExListView* m_FocusListView;
-  wxExSTC* m_FocusSTC;
+  wxExStyledTextCtrl* m_FocusSTC;
 
   const bool m_KeepPosAndSize;
 

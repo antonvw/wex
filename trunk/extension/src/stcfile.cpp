@@ -35,7 +35,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_LEFT_UP(wxExSTC::OnMouse)
-  EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_EOL_DOS, wxExSTC::OnCommand)
@@ -56,10 +55,9 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExStyledTextCtrl(parent, id, pos, size, style)
+  : wxExStyledTextCtrl(parent, menu_flags, id, pos, size, style)
   , m_FileSaveInMenu(false)
   , m_Flags(open_flags)
-  , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
 {
   SetName(title);
@@ -102,10 +100,9 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExStyledTextCtrl(parent, id, pos, size, style)
+  : wxExStyledTextCtrl(parent, menu_flags, id, pos, size, style)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
-  , m_MenuFlags(menu_flags)
   , m_PreviousLength(0)
 {
   Initialize();
@@ -121,7 +118,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
   m_Flags = stc.m_Flags;
   m_PreviousLength = stc.m_PreviousLength;
-  m_MenuFlags = stc.m_MenuFlags;
 
   Initialize();
 
@@ -248,13 +244,14 @@ offset    hex field                                         ascii field
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
-  const wxString link = GetTextAtCurrentPos();
-  const int line_no = (!sel.empty() ? 
-    wxExGetLineNumberFromText(sel): 
-    GetLineNumberAtCurrentPos());
 
-  if (m_MenuFlags & STC_MENU_OPEN_LINK)
+  if (GetMenuFlags() & STC_MENU_OPEN_LINK)
   {
+    const wxString link = GetTextAtCurrentPos();
+    const int line_no = (!sel.empty() ? 
+      wxExGetLineNumberFromText(sel): 
+      GetLineNumberAtCurrentPos());
+
     wxString filename;
     if (LinkOpen(link, filename, line_no, false))
     {
@@ -263,57 +260,16 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (m_MenuFlags & STC_MENU_FIND && GetTextLength() > 0)
+  wxExStyledTextCtrl::BuildPopupMenu(menu);
+
+  if (
+    !GetReadOnly() && 
+     sel.empty() && 
+     m_FileSaveInMenu && 
+     GetModify())
   {
     menu.AppendSeparator();
-    menu.Append(wxID_FIND);
-  }
-
-  if (!GetReadOnly())
-  {
-    if (m_MenuFlags & STC_MENU_REPLACE && GetTextLength() > 0)
-    {
-      menu.Append(wxID_REPLACE);
-    }
-  }
-
-  menu.AppendSeparator();
-  menu.AppendEdit();
-
-  if (!GetReadOnly())
-  {
-    if (!sel.empty())
-    {
-      wxExMenu* menuSelection = menuSelection = new wxExMenu(menu);
-      menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
-      menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
-
-      if (wxExGetNumberOfLines(sel) > 1)
-      {
-        wxExMenu* menuSort = new wxExMenu(menu);
-        menuSort->Append(wxID_SORT_ASCENDING);
-        menuSort->Append(wxID_SORT_DESCENDING);
-        menuSelection->AppendSeparator();
-        menuSelection->AppendSubMenu(menuSort, _("&Sort"));
-      }
-
-      menu.AppendSeparator();
-      menu.AppendSubMenu(menuSelection, _("&Selection"));
-    }
-    else
-    {
-      if (m_MenuFlags & STC_MENU_INSERT)
-      {
-        menu.AppendSeparator();
-        menu.Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
-      }
-
-      if (m_FileSaveInMenu && GetModify())
-      {
-        menu.AppendSeparator();
-        menu.Append(wxID_SAVE);
-      }
-    }
+    menu.Append(wxID_SAVE);
   }
 
   // Folding if nothing selected, property is set,
@@ -335,13 +291,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
-  }
-
-  if (!GetReadOnly() && (CanUndo() || CanRedo()))
-  {
-    menu.AppendSeparator();
-    if (CanUndo()) menu.Append(wxID_UNDO);
-    if (CanRedo()) menu.Append(wxID_REDO);
   }
 }
 
@@ -1012,26 +961,7 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
 {
-  if (event.RightUp())
-  {
-    if (m_MenuFlags == 0)
-    {
-      event.Skip();
-    }
-    else
-    {
-      int style = 0; // otherwise CAN_PASTE already on
-      if (GetReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
-      if (!GetSelectedText().empty()) style |= wxExMenu::MENU_IS_SELECTED;
-      if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-      if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
-
-      wxExMenu menu(style);
-      BuildPopupMenu(menu);
-      PopupMenu(&menu);
-    }
-  }
-  else if (event.LeftUp())
+  if (event.LeftUp())
   {
     PropertiesMessage();
 
@@ -1046,10 +976,6 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   {
     wxFAIL;
   }
-
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)
