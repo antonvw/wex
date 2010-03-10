@@ -246,13 +246,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command == "ZZ")
   {
-    if (m_STC->GetContentsChanged())
-    {
-      m_STC->FileSave();
-    }
-
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
   else if (command.Matches("'?"))
   {
