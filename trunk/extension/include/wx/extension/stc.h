@@ -183,14 +183,12 @@ protected:
   // Invoked by Open and FileNew.
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
-  void FoldAll();
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
-  void SetFolding();
   void SetGlobalStyles();
 
   const int m_MarginDividerNumber;
@@ -202,7 +200,9 @@ private:
   bool CheckAutoComp(const wxUniChar c);
   bool CheckBrace(int pos);
   int FindReplaceDataFlags() const;
+  void FoldAll();
   void HexDecCalltip(int pos);
+  void SetFolding();
   void SequenceDialog();
   void SetLexer();
   /// After pressing enter, starts new line at same place
