@@ -13,9 +13,9 @@
 #include <wx/extension/dialog.h> // for wxExDialog
 
 #if wxUSE_GUI
-class wxExSTC;
+class wxExStyledTextCtrl;
 
-/// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
+/// Offers an wxExStyledTextCtrl as a dialog (like wxTextEntryDialog).
 /// The prompt is allowed to be empty, in that case no sizer is used for it.
 class wxExSTCEntryDialog : public wxExDialog
 {
@@ -51,7 +51,7 @@ public:
 protected:
   void OnCommand(wxCommandEvent& command);
 private:
-  wxExSTC* m_STC;
+  wxExStyledTextCtrl* m_STC;
 
   DECLARE_EVENT_TABLE()
 };

@@ -8,7 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 
 #if wxUSE_GUI
 
@@ -34,17 +34,16 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
-  m_STC = new wxExSTC(
+  m_STC = new wxExStyledTextCtrl(
     this, 
-    text, 
-    0,
-    wxEmptyString,
-    wxExSTC::STC_MENU_SIMPLE | 
-      wxExSTC::STC_MENU_FIND | 
-      wxExSTC::STC_MENU_REPLACE,
+    wxExStyledTextCtrl::STC_MENU_SIMPLE | 
+      wxExStyledTextCtrl::STC_MENU_FIND | 
+      wxExStyledTextCtrl::STC_MENU_REPLACE,
     wxID_ANY, 
     pos, 
     size);
+
+  m_STC->SetText(text);
 
   // Override defaults from config.
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
@@ -68,7 +67,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
 
 const wxString wxExSTCEntryDialog::GetLexer() const
 {
-  return m_STC->GetFileName().GetLexer().GetScintillaLexer();
+  return m_STC->GetLexer().GetScintillaLexer();
 }
 
 const wxString wxExSTCEntryDialog::GetText() const 
