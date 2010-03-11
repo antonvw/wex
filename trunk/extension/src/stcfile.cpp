@@ -164,6 +164,7 @@ offset    hex field                                         ascii field
   SetControlCharSymbol('x');
   SetGlobalStyles();
   wxExLexers::Get()->ApplyHexStyles(this);
+  wxExLexers::Get()->ApplyMarkers(this);
 
   // Do not show an edge, eol or whitespace in hex mode.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -576,10 +577,6 @@ void wxExSTC::DoFileLoad(bool synced)
       AddBasePathToPathList();
     }
   }
-  else
-  {
-    wxExLexers::Get()->ApplyMarkers(this);
-  }
 
   if (m_Flags & STC_OPEN_READ_ONLY ||
       GetFileName().GetStat().IsReadOnly() ||
@@ -593,11 +590,7 @@ void wxExSTC::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    const wxString msg = _("Opened") + ": " + GetFileName().GetFullPath();
-    wxExLog::Get()->Log(msg);
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(msg);
-#endif
+    wxExLog::Get()->Log(_("Opened") + ": " + GetFileName().GetFullPath());
     PropertiesMessage();
   }
   else
