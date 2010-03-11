@@ -201,6 +201,7 @@ private:
   int FindReplaceDataFlags() const;
   void HexDecCalltip(int pos);
   void SequenceDialog();
+  void SetLexer();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();

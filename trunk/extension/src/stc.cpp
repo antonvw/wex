@@ -1180,16 +1180,8 @@ void wxExStyledTextCtrl::SetGlobalStyles()
   wxExLexers::Get()->ApplyIndicators(this);
 }
 
-void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
+void wxExStyledTextCtrl::SetLexer()
 {
-  ClearDocumentStyle();
-
-  // Reset all old properties. 
-  // Should be before SetFileNameLexer.
-  m_Lexer.ApplyResetProperties(this);
-
-  m_Lexer = wxExLexers::Get()->FindByName(lexer);
-
   // Update the lexer for scintilla.
   SetLexerLanguage(m_Lexer.GetScintillaLexer());
 
@@ -1212,9 +1204,21 @@ void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
   wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
 }
 
+void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
+{
+  ClearDocumentStyle();
+
+  // Reset all old properties. 
+  m_Lexer.ApplyResetProperties(this);
+
+  m_Lexer = wxExLexers::Get()->FindByName(lexer);
+  SetLexer();
+}
+
 void wxExStyledTextCtrl::SetLexerByText()
 {
   m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
+  SetLexer();
 }
 
 void wxExStyledTextCtrl::SetText(const wxString& value)
