@@ -21,8 +21,8 @@ class wxExVi;
 
 #if wxUSE_GUI
 
-/// Offers a styled text ctrl with find/replace, macro support,
-/// and base extensions.
+/// Offers a styled text ctrl with find/replace, printing, popup menu, macro support,
+/// vi support, lexer support (syntax colouring, folding) and basic extensions.
 class wxExStyledTextCtrl : public wxStyledTextCtrl
 {
 public:

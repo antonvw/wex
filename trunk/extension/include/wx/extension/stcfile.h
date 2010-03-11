@@ -19,8 +19,7 @@
 class wxExConfigDialog;
 
 #if wxUSE_GUI
-/// Offers a styled text ctrl with find/replace, folding, printing, popup menu,
-/// config support and syntax colouring. Also adds synchronizing to the window,
+/// Adds file support, config support and synchronizing to the window,
 /// and if the file is a logfile and
 /// the caret is at the end, it stays at the end after syncing.
 class wxExSTC : public wxExStyledTextCtrl, public wxExFile
