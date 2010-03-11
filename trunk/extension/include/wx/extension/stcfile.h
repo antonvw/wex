@@ -124,9 +124,6 @@ public:
   void SetFileSaveInMenu(bool val = true) {
     m_FileSaveInMenu = val;}
 
-  /// Sets the text.
-  void SetText(const wxString& value);
-
 #if wxUSE_STATUSBAR
   /// Updates the specified statusbar pane with current values.
   void UpdateStatusBar(const wxString& pane) const;
@@ -148,10 +145,6 @@ private:
   bool CheckAutoComp(const wxUniChar c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
-  // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and FileNew.
-  // (Clear is used by scintilla to clear the selection).
-  void ClearDocument();
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void GuessType();

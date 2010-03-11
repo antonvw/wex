@@ -148,6 +148,9 @@ public:
   /// Sets the (scintilla) lexer using document text.
   void SetLexerByText();
 
+  /// Sets the text.
+  void SetText(const wxString& value);
+
   /// Asks for confirmation to sort the selection.
   void SortSelectionDialog(
     bool sort_ascending,
@@ -171,6 +174,10 @@ public:
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
+  // Clears the component: all text is cleared and all styles are reset.
+  // Invoked by Open and FileNew.
+  // (Clear is used by scintilla to clear the selection).
+  void ClearDocument();
   void FoldAll();
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);

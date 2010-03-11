@@ -380,17 +380,6 @@ bool wxExSTC::CheckBraceHex(int pos)
   return false;
 }
 
-void wxExSTC::ClearDocument()
-{
-  SetReadOnly(false);
-  ClearAll();
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxEmptyString, "PaneLines");
-#endif
-  EmptyUndoBuffer();
-  SetSavePoint();
-}
-
 // This is a static method, cannot use normal members here.
 int wxExSTC::ConfigDialog(
   wxWindow* parent,
@@ -1041,22 +1030,6 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
 void wxExSTC::ResetContentsChanged()
 {
   SetSavePoint();
-}
-
-void wxExSTC::SetText(const wxString& value)
-{
-  ClearDocument();
-
-  // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
-  // So for text with nulls this is the only way for opening.
-  SendMsg(SCI_ADDTEXT, value.length(), (wxIntPtr)(const char *)value.c_str());
-
-  DocumentStart();
-
-  ResetContentsChanged();
-
-  // Do not allow the text specified to be undone.
-  EmptyUndoBuffer();
 }
 
 #if wxUSE_STATUSBAR

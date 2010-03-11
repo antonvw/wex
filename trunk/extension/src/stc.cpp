@@ -230,6 +230,17 @@ void wxExStyledTextCtrl::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
+void wxExStyledTextCtrl::ClearDocument()
+{
+  SetReadOnly(false);
+  ClearAll();
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(wxEmptyString, "PaneLines");
+#endif
+  EmptyUndoBuffer();
+  SetSavePoint();
+}
+
 void wxExStyledTextCtrl::Colourise()
 {
   m_Lexer.ApplyKeywords(this);
@@ -1183,6 +1194,20 @@ void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
 void wxExStyledTextCtrl::SetLexerByText()
 {
   m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
+}
+
+void wxExStyledTextCtrl::SetText(const wxString& value)
+{
+  ClearDocument();
+
+  // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
+  // So for text with nulls this is the only way for opening.
+  SendMsg(SCI_ADDTEXT, value.length(), (wxIntPtr)(const char *)value.c_str());
+
+  DocumentStart();
+
+  // Do not allow the text specified to be undone.
+  EmptyUndoBuffer();
 }
 
 bool wxExStyledTextCtrl::SmartIndentation()
