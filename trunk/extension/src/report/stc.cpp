@@ -87,7 +87,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   // and a lexer.
   if (GetSelectedText().empty() && GetTextLength() > 0 &&
      (GetMenuFlags() & STC_MENU_TOOL) &&
-      !GetFileName().GetLexer().GetScintillaLexer().empty())
+      !GetLexer().GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
     menu.AppendTools();
@@ -191,7 +191,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 
       if (header.ShowDialog(this) != wxID_CANCEL)
       {
-        if (GetFileName().GetLexer().GetScintillaLexer() == "hypertext")
+        if (GetLexer().GetScintillaLexer() == "hypertext")
         {
           GotoLine(1);
         }
