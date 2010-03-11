@@ -387,17 +387,15 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  wxWindow* win = wxWindow::FindFocus();
-  if (win == NULL) return;
-
-  wxExSTCWithFrame* editor = wxDynamicCast(win, wxExSTCWithFrame);
+  wxExSTC* stc = GetFocusedSTC();
   wxExListViewFile* project = GetProject();
 
   const wxString title(GetTitle());
   const wxUniChar indicator('*');
 
   if ((project != NULL && project->GetContentsChanged()) ||
-      (editor != NULL && editor->GetContentsChanged()))
+       // using GetContentsChanged gives assert in vcs dialog
+      (stc != NULL && stc->GetModify()))
   {
     // Project or editor changed, add indicator if not yet done.
     if (title.Last() != indicator)

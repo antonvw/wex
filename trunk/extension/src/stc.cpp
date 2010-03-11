@@ -891,7 +891,7 @@ void wxExStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
 
 void wxExStyledTextCtrl::OnMouse(wxMouseEvent& event)
 {
-  if (event.RightUp())
+  if (event.LeftUp())
   {
     event.Skip();
 
