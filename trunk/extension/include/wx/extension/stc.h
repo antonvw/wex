@@ -187,6 +187,7 @@ protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnKeyDown(wxKeyEvent& event);
+  void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFolding();
@@ -198,6 +199,8 @@ protected:
   bool m_viMode;
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
+  bool CheckAutoComp(const wxUniChar c);
+  bool CheckBrace(int pos);
   int FindReplaceDataFlags() const;
   void HexDecCalltip(int pos);
   void SequenceDialog();

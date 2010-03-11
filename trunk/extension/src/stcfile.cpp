@@ -29,7 +29,6 @@ const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
-  EVT_CHAR(wxExSTC::OnChar)
   EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_LEFT_UP(wxExSTC::OnMouse)
@@ -118,10 +117,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   {
     Open(stc.GetFileName(), -1, wxEmptyString, m_Flags);
   }
-}
-
-wxExSTC::~wxExSTC()
-{
 }
 
 void wxExSTC::AddBasePathToPathList()
@@ -263,54 +258,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     menu.AppendSeparator();
     menu.Append(wxID_SAVE);
-  }
-}
-
-bool wxExSTC::CheckAutoComp(const wxUniChar c)
-{
-  static wxString autoc;
-
-  if (isspace(GetCharAt(GetCurrentPos() - 1)))
-  {
-    autoc = c;
-  }
-  else
-  {
-    autoc += c;
-
-    if (autoc.length() >= 3) // Only autocompletion for large words
-    {
-      if (!AutoCompActive())
-      {
-        AutoCompSetIgnoreCase(true);
-        AutoCompSetAutoHide(false);
-      }
-
-      if (GetLexer().KeywordStartsWith(autoc))
-        AutoCompShow(
-          autoc.length() - 1,
-          GetLexer().GetKeywordsString());
-      else
-        AutoCompCancel();
-    }
-  }
-
-  return AutoCompActive();
-}
-
-bool wxExSTC::CheckBrace(int pos)
-{
-  const int brace_match = BraceMatch(pos);
-
-  if (brace_match != wxSTC_INVALID_POSITION)
-  {
-    BraceHighlight(pos, brace_match);
-    return true;
-  }
-  else
-  {
-    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-    return false;
   }
 }
 
@@ -772,12 +719,6 @@ bool wxExSTC::LinkOpen(
   return !fullpath.empty();
 }
 
-void wxExSTC::OnChar(wxKeyEvent& event)
-{
-  event.Skip();
-  CheckAutoComp(event.GetUnicodeKey());
-}
-
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -836,56 +777,30 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
 
-  if (!CheckBrace(GetCurrentPos()))
+  if (m_Flags & STC_OPEN_HEX)
   {
-    if (!CheckBrace(GetCurrentPos() - 1))
+    if (!CheckBraceHex(GetCurrentPos()))
     {
-      if (m_Flags & STC_OPEN_HEX)
-      {
-        if (!CheckBraceHex(GetCurrentPos()))
-        {
-          CheckBraceHex(GetCurrentPos() - 1);
-        }
-      }
+      CheckBraceHex(GetCurrentPos() - 1);
     }
   }
 }
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
 {
-  if (event.LeftUp())
-  {
-    PropertiesMessage();
-
-    event.Skip();
-
-    if (!CheckBrace(GetCurrentPos()))
-    {
-      CheckBrace(GetCurrentPos() - 1);
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
+  PropertiesMessage();
+  event.Skip();
 }
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
-  if (event.GetEventType() == wxEVT_STC_MODIFIED)
+  // Only useful if this is not a file on disk, otherwise
+  // the OnIdle already does this.
+  if (!GetFileName().IsOk())
   {
-    // Only useful if this is not a file on disk, otherwise
-    // the OnIdle already does this.
-    if (!GetFileName().IsOk())
-    {
 #if wxUSE_STATUSBAR
-      wxExFrame::StatusText(wxDateTime::Now().Format());
+    wxExFrame::StatusText(wxDateTime::Now().Format());
 #endif
-    }
-  }
-  else
-  {
-    event.Skip();
   }
 }
 

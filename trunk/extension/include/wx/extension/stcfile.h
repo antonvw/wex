@@ -73,9 +73,6 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = 0);
 
-  /// Destructor.
- ~wxExSTC();
-
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
@@ -133,7 +130,6 @@ protected:
   virtual void DoFileSave(bool save_as = false);
 
   void OnCommand(wxCommandEvent& event);
-  void OnChar(wxKeyEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
@@ -141,8 +137,6 @@ protected:
 private:
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
   void AddBasePathToPathList();
-  bool CheckAutoComp(const wxUniChar c);
-  bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute

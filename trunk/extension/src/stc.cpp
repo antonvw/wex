@@ -27,7 +27,10 @@ const int SCI_APPENDTEXT = 2282;
 
 BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
   EVT_CHAR(wxExStyledTextCtrl::OnChar)
+  EVT_LEFT_UP(wxExStyledTextCtrl::OnMouse)
+  EVT_RIGHT_UP(wxExStyledTextCtrl::OnMouse)
   EVT_KEY_DOWN(wxExStyledTextCtrl::OnKeyDown)
+  EVT_KEY_UP(wxExStyledTextCtrl::OnKeyUp)
   EVT_MENU(wxID_DELETE, wxExStyledTextCtrl::OnCommand)
   EVT_MENU(wxID_JUMP_TO, wxExStyledTextCtrl::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExStyledTextCtrl::OnCommand)
@@ -36,7 +39,6 @@ BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExStyledTextCtrl::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExStyledTextCtrl::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExStyledTextCtrl::OnCommand)
-  EVT_RIGHT_UP(wxExStyledTextCtrl::OnMouse)
   EVT_STC_DWELLEND(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_CHARADDED(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
@@ -260,6 +262,54 @@ void wxExStyledTextCtrl::ClearDocument()
 #endif
   EmptyUndoBuffer();
   SetSavePoint();
+}
+
+bool wxExStyledTextCtrl::CheckAutoComp(const wxUniChar c)
+{
+  static wxString autoc;
+
+  if (isspace(GetCharAt(GetCurrentPos() - 1)))
+  {
+    autoc = c;
+  }
+  else
+  {
+    autoc += c;
+
+    if (autoc.length() >= 3) // Only autocompletion for large words
+    {
+      if (!AutoCompActive())
+      {
+        AutoCompSetIgnoreCase(true);
+        AutoCompSetAutoHide(false);
+      }
+
+      if (GetLexer().KeywordStartsWith(autoc))
+        AutoCompShow(
+          autoc.length() - 1,
+          GetLexer().GetKeywordsString());
+      else
+        AutoCompCancel();
+    }
+  }
+
+  return AutoCompActive();
+}
+
+bool wxExStyledTextCtrl::CheckBrace(int pos)
+{
+  const int brace_match = BraceMatch(pos);
+
+  if (brace_match != wxSTC_INVALID_POSITION)
+  {
+    BraceHighlight(pos, brace_match);
+    return true;
+  }
+  else
+  {
+    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+    return false;
+  }
 }
 
 void wxExStyledTextCtrl::Colourise()
@@ -759,6 +809,7 @@ void wxExStyledTextCtrl::OnChar(wxKeyEvent& event)
 
   if (skip)
   {
+    CheckAutoComp(event.GetUnicodeKey());
     event.Skip();
   }
 }
@@ -828,9 +879,28 @@ void wxExStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
   }
 }
 
+void wxExStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
+{
+  event.Skip();
+
+  if (!CheckBrace(GetCurrentPos()))
+  {
+    CheckBrace(GetCurrentPos() - 1);
+  }
+}
+
 void wxExStyledTextCtrl::OnMouse(wxMouseEvent& event)
 {
   if (event.RightUp())
+  {
+    event.Skip();
+
+    if (!CheckBrace(GetCurrentPos()))
+    {
+      CheckBrace(GetCurrentPos() - 1);
+    }
+  }
+  else if (event.RightUp())
   {
     if (m_MenuFlags == 0)
     {
