@@ -228,6 +228,27 @@ void wxExStyledTextCtrl::BuildPopupMenu(wxExMenu& menu)
     if (CanUndo()) menu.Append(wxID_UNDO);
     if (CanRedo()) menu.Append(wxID_REDO);
   }
+
+  // Folding if nothing selected, property is set,
+  // and we have a lexer.
+  if (
+    GetSelectedText().empty() && 
+    GetProperty("fold") == "1" &&
+   !m_Lexer.GetScintillaLexer().empty())
+  {
+    menu.AppendSeparator();
+    menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl-T"));
+    menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
+    menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
+  }
+
+  if (GetSelectedText().empty() && 
+      (m_Lexer.GetScintillaLexer() == "hypertext" ||
+       m_Lexer.GetScintillaLexer() == "xml"))
+  {
+    menu.AppendSeparator();
+    menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
+  }
 }
 
 void wxExStyledTextCtrl::ClearDocument()
@@ -1340,4 +1361,45 @@ void wxExStyledTextCtrl::StopRecord()
   wxStyledTextCtrl::StopRecord();
 }
 
+void wxExStyledTextCtrl::UpdateStatusBar(const wxString& pane) const
+{
+  wxString text;
+
+  if (pane == "PaneLines")
+  {
+    if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
+    else
+    {
+      int start;
+      int end;
+      const_cast< wxExStyledTextCtrl * >( this )->GetSelection(&start, &end);
+
+      const int len  = end - start;
+      const int line = 
+        const_cast< wxExStyledTextCtrl * >( this )->GetCurrentLine() + 1;
+      const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
+
+      if (len == 0) text = wxString::Format("%d,%d", line, pos);
+      else
+      {
+        // There might be NULL's inside selection.
+        // So use the GetSelectedTextRaw variant.
+        const int number_of_lines = wxExGetNumberOfLines(
+          const_cast< wxExStyledTextCtrl * >( this )->GetSelectedTextRaw());
+        if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
+        else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+      }
+    }
+  }
+  else if (pane == "PaneLexer")
+  {
+    text = m_Lexer.GetScintillaLexer();
+  }
+  else
+  {
+    wxFAIL;
+  }
+
+  wxExFrame::StatusText(text, pane);
+}
 #endif // wxUSE_GUI

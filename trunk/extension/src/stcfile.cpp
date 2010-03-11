@@ -263,27 +263,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.Append(wxID_SAVE);
   }
-
-  // Folding if nothing selected, property is set,
-  // and we have a lexer.
-  if (
-    sel.empty() && 
-    GetProperty("fold") == "1" &&
-   !GetFileName().GetLexer().GetScintillaLexer().empty())
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl-T"));
-    menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
-    menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
-  }
-
-  if (sel.empty() && 
-      (GetFileName().GetLexer().GetScintillaLexer() == "hypertext" ||
-       GetFileName().GetLexer().GetScintillaLexer() == "xml"))
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
-  }
 }
 
 bool wxExSTC::CheckAutoComp(const wxUniChar c)
@@ -306,10 +285,10 @@ bool wxExSTC::CheckAutoComp(const wxUniChar c)
         AutoCompSetAutoHide(false);
       }
 
-      if (GetFileName().GetLexer().KeywordStartsWith(autoc))
+      if (GetLexer().KeywordStartsWith(autoc))
         AutoCompShow(
           autoc.length() - 1,
-          GetFileName().GetLexer().GetKeywordsString());
+          GetLexer().GetKeywordsString());
       else
         AutoCompCancel();
     }
@@ -936,7 +915,6 @@ bool wxExSTC::Open(
   {
     SetName(filename.GetFullPath());
 
-    // This should be after folding, and this one unfolds the line to go to.
     if (line_number > 0)
     {
       GotoLineAndSelect(line_number, match);
@@ -1037,10 +1015,10 @@ void wxExSTC::ResetContentsChanged()
 #if wxUSE_STATUSBAR
 void wxExSTC::UpdateStatusBar(const wxString& pane) const
 {
-  wxString text;
-
   if (pane == "PaneFileType")
   {
+    wxString text;
+
     if (m_Flags & STC_OPEN_HEX)
     {
       text = "HEX";
@@ -1055,43 +1033,13 @@ void wxExSTC::UpdateStatusBar(const wxString& pane) const
       default: text = "UNKNOWN";
       }
     }
-  }
-  else if (pane == "PaneLines")
-  {
-    if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
-    else
-    {
-      int start;
-      int end;
-      const_cast< wxExSTC * >( this )->GetSelection(&start, &end);
 
-      const int len  = end - start;
-      const int line = 
-        const_cast< wxExSTC * >( this )->GetCurrentLine() + 1;
-      const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
-
-      if (len == 0) text = wxString::Format("%d,%d", line, pos);
-      else
-      {
-        // There might be NULL's inside selection.
-        // So use the GetSelectedTextRaw variant.
-        const int number_of_lines = wxExGetNumberOfLines(
-          const_cast< wxExSTC * >( this )->GetSelectedTextRaw());
-        if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
-        else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
-      }
-    }
-  }
-  else if (pane == "PaneLexer")
-  {
-    text = GetFileName().GetLexer().GetScintillaLexer();
+    wxExFrame::StatusText(text, pane);
   }
   else
   {
-    wxFAIL;
+    wxExStyledTextCtrl::UpdateStatusBar(pane);
   }
-
-  wxExFrame::StatusText(text, pane);
 }
 #endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI

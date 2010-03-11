@@ -156,6 +156,11 @@ public:
     bool sort_ascending,
     const wxString& caption = _("Enter Sort Position"));
 
+#if wxUSE_STATUSBAR
+  /// Updates the specified statusbar pane with current values.
+  void UpdateStatusBar(const wxString& pane) const;
+#endif
+
   /// Starts recording the macro, and empties the previous one.
   /// There is only one shared macro for all objects.
   void StartRecord();
