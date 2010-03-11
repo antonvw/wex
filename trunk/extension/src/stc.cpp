@@ -1365,6 +1365,7 @@ void wxExStyledTextCtrl::StopRecord()
   wxStyledTextCtrl::StopRecord();
 }
 
+#if wxUSE_STATUSBAR
 void wxExStyledTextCtrl::UpdateStatusBar(const wxString& pane) const
 {
   wxString text;
@@ -1406,4 +1407,5 @@ void wxExStyledTextCtrl::UpdateStatusBar(const wxString& pane) const
 
   wxExFrame::StatusText(text, pane);
 }
+#endif
 #endif // wxUSE_GUI

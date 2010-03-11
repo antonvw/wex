@@ -12,9 +12,10 @@
 #include <map>
 #include <wx/extension/menu.h>
 #include <wx/extension/art.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/vcs.h>
 #include <wx/extension/util.h> // for wxExEllipsed
+#include <wx/extension/vcs.h>
 
 #if wxUSE_GUI
 
@@ -170,6 +171,11 @@ void wxExMenu::AppendSubMenu(
 
 void wxExMenu::AppendTools(int itemid)
 {
+  if (wxExLexers::Get()->Count() == 0)
+  {
+    return;
+  }
+
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (

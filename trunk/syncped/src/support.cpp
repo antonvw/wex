@@ -41,10 +41,7 @@ Frame::Frame()
   panes.push_back(wxExPane("PaneFileType", 50, _("File Type")));
   panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
 
-  // Add the lexer pane only if we have lexers.
-  wxExLexers* lexers = wxExLexers::Get();
-
-  if (lexers->Count() > 0)
+  if (wxExLexers::Get()->Count() > 0)
   {
 #ifdef __WXMSW__
     const int lexer_size = 60;
