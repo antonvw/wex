@@ -671,6 +671,8 @@ void wxExSTC::FileNew(const wxExFileName& filename)
 {
   wxExFile::FileNew(filename);
 
+  SetName(filename.GetFullPath());
+
   PropertiesMessage();
 
   ClearDocument();
