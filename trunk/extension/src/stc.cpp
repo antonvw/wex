@@ -23,7 +23,6 @@
 #if wxUSE_GUI
 
 const int SCI_ADDTEXT = 2001;
-const int SCI_APPENDTEXT = 2282;
 
 BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
   EVT_CHAR(wxExStyledTextCtrl::OnChar)
