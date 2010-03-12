@@ -59,30 +59,23 @@ public:
   bool Sync(const wxString& fullpath) {
     m_FullPath = fullpath;
     return Sync();};
-
 private:
   wxString m_FullPath;
   bool m_IsOk;
 };
 
-/// Adds an wxExStat and an wxExLexer member to wxFileName.
+/// Adds a wxExStat and a wxExLexer member to wxFileName.
 class wxExFileName : public wxFileName
 {
   friend class wxExFile; // it might update stat
 public:
   /// Default constructor.
   wxExFileName(
-    const wxString& fullpath = wxEmptyString,
-    wxPathFormat format = wxPATH_NATIVE)
-    : wxFileName(fullpath, format)
-    , m_Stat(fullpath) {
-    SetLexer();}
+    const wxString& fullpath = wxEmptyString, 
+    wxPathFormat format = wxPATH_NATIVE);
 
   /// Copy constructor from a wxFileName.
-  wxExFileName(const wxFileName& filename)
-    : wxFileName(filename)
-    , m_Stat(filename.GetFullPath()) {
-    SetLexer();}
+  wxExFileName(const wxFileName& filename);
 
   /// Assignment operator.
   wxExFileName& operator=(const wxExFileName& f)
@@ -102,8 +95,6 @@ public:
   /// Gets the stat.
   const wxExStat& GetStat() const {return m_Stat;};
 private:
-  void SetLexer();
-
   wxExLexer m_Lexer;
   wxExStat m_Stat;
 };
@@ -161,7 +152,6 @@ protected:
 private:
   /// Called if file needs to be synced.
   void FileSync();
-
   // Take care that filename and stat are in sync.
   bool MakeAbsolute();
 

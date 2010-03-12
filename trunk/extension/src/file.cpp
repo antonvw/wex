@@ -152,6 +152,20 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   return buffer;
 }
 
+wxExFileName::wxExFileName(const wxString& fullpath, wxPathFormat format)
+  : wxFileName(fullpath, format)
+  , m_Stat(fullpath) 
+{
+  m_Lexer = wxExLexers::Get()->FindByFileName(*this);
+}
+
+wxExFileName::wxExFileName(const wxFileName& filename)
+  : wxFileName(filename)
+  , m_Stat(filename.GetFullPath()) 
+{
+  m_Lexer = wxExLexers::Get()->FindByFileName(*this);
+}
+
 int wxExFileName::GetIconID() const
 {
   if (m_Stat.IsOk())
@@ -172,17 +186,5 @@ int wxExFileName::GetIconID() const
   else
   {
     return wxFileIconsTable::computer;
-  }
-}
-
-void wxExFileName::SetLexer()
-{
-  if (wxExLexers::Get(false) == NULL) 
-  {
-    m_Lexer = wxExLexer();
-  }
-  else
-  {
-    m_Lexer = wxExLexers::Get()->FindByFileName(*this);
   }
 }
