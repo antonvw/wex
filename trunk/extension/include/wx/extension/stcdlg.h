@@ -40,14 +40,13 @@ public:
   const wxString GetText() const;
 
   /// Gets raw text value.
-  wxCharBuffer GetTextRaw() const;
+  const wxCharBuffer GetTextRaw() const;
 
   /// Sets the STC lexer.
   void SetLexer(const wxString& lexer);
 
   /// Sets the text (either normal or raw).
-  /// Resets a previous lexer if asked for.
-  void SetText(const wxString& text, bool reset_lexer = true);
+  void SetText(const wxString& text);
 protected:
   void OnCommand(wxCommandEvent& command);
 private:

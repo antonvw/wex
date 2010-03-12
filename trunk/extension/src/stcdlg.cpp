@@ -75,7 +75,7 @@ const wxString wxExSTCEntryDialog::GetText() const
   return m_STC->GetText();
 }
 
-wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const 
+const wxCharBuffer wxExSTCEntryDialog::GetTextRaw() const 
 {
   return m_STC->GetTextRaw();
 }
@@ -99,7 +99,7 @@ void wxExSTCEntryDialog::SetLexer(const wxString& lexer)
   m_STC->SetLexer(lexer);
 }
 
-void wxExSTCEntryDialog::SetText(const wxString& text, bool reset_lexer)
+void wxExSTCEntryDialog::SetText(const wxString& text)
 {
   const bool readonly = m_STC->GetReadOnly();
 
@@ -113,14 +113,6 @@ void wxExSTCEntryDialog::SetText(const wxString& text, bool reset_lexer)
   if (readonly)
   {
     m_STC->SetReadOnly(true);
-  }
-
-  if (reset_lexer)
-  {
-    if (!GetLexer().empty())
-    {
-      SetLexer(wxEmptyString);
-    }
   }
 }
 
