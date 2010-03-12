@@ -20,7 +20,7 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
-BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
+BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTCFile)
   EVT_MENU_RANGE(
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
@@ -39,7 +39,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTC(parent, value, flags, title, type, id, pos, size, style)
+  : wxExSTCFile(parent, value, flags, title, type, id, pos, size, style)
   , m_Frame(frame)
 {
 }
@@ -55,7 +55,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTC(
+  : wxExSTCFile(
       parent, 
       filename, 
       line_number, 
@@ -72,16 +72,16 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
 }
 
 wxExSTCWithFrame::wxExSTCWithFrame(
-  const wxExSTC& stc, 
+  const wxExSTCFile& stc, 
   wxExFrameWithHistory* frame)
-  : wxExSTC(stc)
+  : wxExSTCFile(stc)
   , m_Frame(frame)
 {
 }
 
 void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
-  wxExSTC::BuildPopupMenu(menu);
+  wxExSTCFile::BuildPopupMenu(menu);
 
   // Add tools if we have at least some text, the tool flag,
   // and a lexer.
@@ -172,7 +172,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
           GetFileName(), 
           vcs.GetCommandWithFlags(), 
           vcs.GetOutput(),
-          wxExSTC::STC_OPEN_READ_ONLY);
+          wxExSTCFile::STC_OPEN_READ_ONLY);
       }
     }
     else
@@ -235,7 +235,7 @@ bool wxExSTCWithFrame::Open(
   }
   else
   {
-    retValue = wxExSTC::Open(filename, line_number, match, flags);
+    retValue = wxExSTCFile::Open(filename, line_number, match, flags);
 
     if (retValue)
     {
@@ -248,7 +248,7 @@ bool wxExSTCWithFrame::Open(
 
 void wxExSTCWithFrame::PropertiesMessage() const
 {
-  wxExSTC::PropertiesMessage();
+  wxExSTCFile::PropertiesMessage();
 
   m_Frame->SetTitle(
     GetName() + 

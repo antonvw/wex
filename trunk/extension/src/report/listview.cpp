@@ -831,7 +831,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   if (tool.IsFindType())
   {
-    wxExSTC* stc = m_Frame->GetSTC();
+    wxExSTCFile* stc = m_Frame->GetSTC();
 
     if (stc != NULL)
     {
@@ -887,7 +887,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
   if (tool.IsCount())
   {
     m_Frame->OpenFile(
-      tool.GetLogfileName(), 0 , wxEmptyString, wxExSTC::STC_OPEN_FROM_OTHER);
+      tool.GetLogfileName(), 0 , wxEmptyString, wxExSTCFile::STC_OPEN_FROM_OTHER);
   }
 }
 

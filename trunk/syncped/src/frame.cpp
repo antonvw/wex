@@ -114,7 +114,7 @@ MDIFrame::MDIFrame(bool open_recent)
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
-  wxExSTC* asciiTable = new wxExSTC(this);
+  wxExSTCFile* asciiTable = new wxExSTCFile(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
   wxExFindToolBar* findbar = new wxExFindToolBar(this, this);
@@ -318,7 +318,7 @@ wxExListViewFile* MDIFrame::GetProject()
   }
 }
 
-wxExSTC* MDIFrame::GetSTC()
+wxExSTCFile* MDIFrame::GetSTC()
 {
   if (
     !m_NotebookWithEditors->IsShown() || 
@@ -328,7 +328,7 @@ wxExSTC* MDIFrame::GetSTC()
   }
   else
   {
-    return (wxExSTC*)m_NotebookWithEditors->GetPage(
+    return (wxExSTCFile*)m_NotebookWithEditors->GetPage(
       m_NotebookWithEditors->GetSelection());
   }
 }
@@ -451,7 +451,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  wxExSTC* editor = GetSTC();
+  wxExSTCFile* editor = GetSTC();
   wxExListViewFile* project = GetProject();
 
   if (event.GetId() == ID_EDIT_NEXT)
@@ -636,10 +636,10 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 #if wxUSE_CHECKBOX
       if (editor != NULL &&
          // Reopen the current file, in the new mode, if different from current mode.
-         (((editor->GetFlags() & wxExSTC::STC_OPEN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
+         (((editor->GetFlags() & wxExSTCFile::STC_OPEN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
       {
         long flags = 0;
-        if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTC::STC_OPEN_HEX;
+        if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTCFile::STC_OPEN_HEX;
         wxExFileDialog dlg(this, editor);
         if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         editor->Open(editor->GetFileName().GetFullPath(),
@@ -659,9 +659,9 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPTION_EDITOR:
-    wxExSTC::ConfigDialog(this,
+    wxExSTCFile::ConfigDialog(this,
       _("Editor Options"),
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
+      wxExSTCFile::STC_CONFIG_MODELESS | wxExSTCFile::STC_CONFIG_WITH_APPLY,
       event.GetId());
     break;
   case ID_OPTION_LIST_FONT:
@@ -954,7 +954,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
     default:
     {
-      wxExSTC* editor = GetSTC();
+      wxExSTCFile* editor = GetSTC();
       wxExListViewFile* list = (wxExListViewFile*)GetFocusedListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())
@@ -1188,7 +1188,7 @@ bool MDIFrame::OpenFile(
     {
 #if wxUSE_CHECKBOX
       if (GetHexModeCheckBox()->GetValue())
-        flags |= wxExSTC::STC_OPEN_HEX;
+        flags |= wxExSTCFile::STC_OPEN_HEX;
 #endif
 
       wxLogTrace("SY_CALL", "+wxExSTCWithFrame");

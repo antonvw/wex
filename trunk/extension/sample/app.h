@@ -63,7 +63,7 @@ protected:
 private:
   virtual wxExGrid* GetGrid();
   virtual wxExListView* GetListView();
-  virtual wxExSTC* GetSTC();
+  virtual wxExSTCFile* GetSTC();
   void ShowConfigItems();
   
 #if wxUSE_GRID
@@ -72,8 +72,8 @@ private:
   wxExListView* m_ListView; ///< a listview
   wxExNotebook* m_Notebook; ///< a notebook
   wxExSTCShell* m_STCShell; ///< an stc shell
-  wxExSTC* m_STC;           ///< an stc
-  wxExSTC* m_STCLexers;     ///< an stc
+  wxExSTCFile* m_STC;           ///< an stc
+  wxExSTCFile* m_STCLexers;     ///< an stc
 
   long m_FlagsSTC;          ///< keep current flags
   wxExStatistics <long> m_Statistics; ///< keep some statistics

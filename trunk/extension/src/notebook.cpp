@@ -96,8 +96,8 @@ bool wxExNotebook::ForEach(int id)
     // src\notebook.cpp(96): error C2039: 'ms_classInfo' : is not a member of 'wxExFile'
     // include\wx\extension\file.h(95) : see declaration of 'wxExFile'
 
-    // Try to get an wxExSTC out of the page.
-    wxExSTC* stc = wxDynamicCast(GetPage(page), wxExSTC);
+    // Try to get an wxExSTCFile out of the page.
+    wxExSTCFile* stc = wxDynamicCast(GetPage(page), wxExSTCFile);
 
     if (stc == NULL)
     {

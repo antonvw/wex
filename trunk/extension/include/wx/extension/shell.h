@@ -16,7 +16,7 @@
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
-/// This class offers a wxExStyledTextCtrl with support for commands.
+/// This class offers a wxExSTC with support for commands.
 /// The commands are entered at the last line, and kept in a list of commands,
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
@@ -26,7 +26,7 @@
 /// - If you enter !\<number\> the previous \<number\> command is entered.
 /// - If you enter !\<abbreviation\> the last command starting with \<abbreviation\>
 ///   is entered.
-class wxExSTCShell: public wxExStyledTextCtrl
+class wxExSTCShell: public wxExSTC
 {
 public:
   /// Constructor.
@@ -74,7 +74,7 @@ public:
     m_Prompt = prompt;
     if (do_prompt) Prompt();};
 protected:
-  /// Override the default from wxExSTC.
+  /// Override the default from wxExSTCFile.
   /// When you manipulate commands, this should not cause contents changed.
   virtual bool GetContentsChanged() const {return false;};
   void OnCommand(wxCommandEvent& event);

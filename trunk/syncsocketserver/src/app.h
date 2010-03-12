@@ -45,7 +45,7 @@ private:
     wxWindowID dialogid,
     int /* commandid*/);
   virtual wxExGrid* GetGrid();
-  virtual wxExSTC* GetSTC();
+  virtual wxExSTCFile* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

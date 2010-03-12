@@ -376,7 +376,7 @@ void wxExOpenFilesDialog(
   long file_flags,
   int dir_flags)
 {
-  wxExSTC* stc = frame->GetSTC();
+  wxExSTCFile* stc = frame->GetSTC();
   wxArrayString files;
 
   const wxString caption(_("Select Files"));

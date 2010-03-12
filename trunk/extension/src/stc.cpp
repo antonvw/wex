@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.cpp
-* Purpose:       Implementation of class wxExStyledTextCtrl
+* Purpose:       Implementation of class wxExSTC
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -24,30 +24,30 @@
 
 const int SCI_ADDTEXT = 2001;
 
-BEGIN_EVENT_TABLE(wxExStyledTextCtrl, wxStyledTextCtrl)
-  EVT_CHAR(wxExStyledTextCtrl::OnChar)
-  EVT_LEFT_UP(wxExStyledTextCtrl::OnMouse)
-  EVT_RIGHT_UP(wxExStyledTextCtrl::OnMouse)
-  EVT_KEY_DOWN(wxExStyledTextCtrl::OnKeyDown)
-  EVT_KEY_UP(wxExStyledTextCtrl::OnKeyUp)
-  EVT_MENU(wxID_DELETE, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU(wxID_JUMP_TO, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU(wxID_SELECTALL, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU(wxID_SORT_ASCENDING, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU(wxID_SORT_DESCENDING, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExStyledTextCtrl::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExStyledTextCtrl::OnCommand)
-  EVT_STC_DWELLEND(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
+BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
+  EVT_CHAR(wxExSTC::OnChar)
+  EVT_LEFT_UP(wxExSTC::OnMouse)
+  EVT_RIGHT_UP(wxExSTC::OnMouse)
+  EVT_KEY_DOWN(wxExSTC::OnKeyDown)
+  EVT_KEY_UP(wxExSTC::OnKeyUp)
+  EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
+  EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
+  EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
+  EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
+  EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
+  EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_CHARADDED(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
-  EVT_STC_MACRORECORD(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
-  EVT_STC_MARGINCLICK(wxID_ANY, wxExStyledTextCtrl::OnStyledText)
+  EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
-std::vector <wxString> wxExStyledTextCtrl::m_Macro;
+std::vector <wxString> wxExSTC::m_Macro;
 
-wxExStyledTextCtrl::wxExStyledTextCtrl() 
+wxExSTC::wxExSTC() 
   : wxStyledTextCtrl()
   , m_GotoLineNumber(-1)
   , m_MacroIsRecording(false)
@@ -58,7 +58,7 @@ wxExStyledTextCtrl::wxExStyledTextCtrl()
 {
 }
 
-wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent, 
+wxExSTC::wxExSTC(wxWindow *parent, 
   long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
@@ -115,12 +115,12 @@ wxExStyledTextCtrl::wxExStyledTextCtrl(wxWindow *parent,
   SetAcceleratorTable(accel);
 }
 
-wxExStyledTextCtrl::~wxExStyledTextCtrl()
+wxExSTC::~wxExSTC()
 {
   delete m_vi;
 }
 
-void wxExStyledTextCtrl::AddAsciiTable()
+void wxExSTC::AddAsciiTable()
 {
   // Do not show an edge, eol or whitespace for ascii table.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -140,7 +140,7 @@ void wxExStyledTextCtrl::AddAsciiTable()
   SetSavePoint();
 }
 
-void wxExStyledTextCtrl::AppendTextForced(const wxString& text, bool withTimestamp)
+void wxExSTC::AppendTextForced(const wxString& text, bool withTimestamp)
 {
   const bool pos_at_end = (GetCurrentPos() == GetTextLength());
   const bool readonly = GetReadOnly();
@@ -174,7 +174,7 @@ void wxExStyledTextCtrl::AppendTextForced(const wxString& text, bool withTimesta
   }
 }
 
-void wxExStyledTextCtrl::BuildPopupMenu(wxExMenu& menu)
+void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   if (m_MenuFlags & STC_MENU_FIND && GetTextLength() > 0)
   {
@@ -252,7 +252,7 @@ void wxExStyledTextCtrl::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-void wxExStyledTextCtrl::ClearDocument()
+void wxExSTC::ClearDocument()
 {
   SetReadOnly(false);
   ClearAll();
@@ -263,7 +263,7 @@ void wxExStyledTextCtrl::ClearDocument()
   SetSavePoint();
 }
 
-bool wxExStyledTextCtrl::CheckAutoComp(const wxUniChar c)
+bool wxExSTC::CheckAutoComp(const wxUniChar c)
 {
   static wxString autoc;
 
@@ -295,7 +295,7 @@ bool wxExStyledTextCtrl::CheckAutoComp(const wxUniChar c)
   return AutoCompActive();
 }
 
-bool wxExStyledTextCtrl::CheckBrace(int pos)
+bool wxExSTC::CheckBrace(int pos)
 {
   const int brace_match = BraceMatch(pos);
 
@@ -311,7 +311,7 @@ bool wxExStyledTextCtrl::CheckBrace(int pos)
   }
 }
 
-void wxExStyledTextCtrl::Colourise()
+void wxExSTC::Colourise()
 {
   m_Lexer.ApplyKeywords(this);
   SetGlobalStyles();
@@ -322,7 +322,7 @@ void wxExStyledTextCtrl::Colourise()
   m_Lexer.Colourise(this);
 }
 
-void wxExStyledTextCtrl::ControlCharDialog(const wxString& caption)
+void wxExSTC::ControlCharDialog(const wxString& caption)
 {
   if (GetSelectedText().length() > 1)
   {
@@ -381,7 +381,7 @@ void wxExStyledTextCtrl::ControlCharDialog(const wxString& caption)
   }
 }
 
-bool wxExStyledTextCtrl::FindNext(bool find_next)
+bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
@@ -389,7 +389,7 @@ bool wxExStyledTextCtrl::FindNext(bool find_next)
     find_next);
 }
 
-bool wxExStyledTextCtrl::FindNext(
+bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
   bool find_next)
@@ -461,7 +461,7 @@ bool wxExStyledTextCtrl::FindNext(
   }
 }
 
-int wxExStyledTextCtrl::FindReplaceDataFlags() const
+int wxExSTC::FindReplaceDataFlags() const
 {
   const wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
@@ -474,7 +474,7 @@ int wxExStyledTextCtrl::FindReplaceDataFlags() const
   return flags;
 }
 
-void wxExStyledTextCtrl::FoldAll()
+void wxExSTC::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
 
@@ -500,7 +500,7 @@ void wxExStyledTextCtrl::FoldAll()
   GotoLine(current_line);
 }
 
-const wxString wxExStyledTextCtrl::GetEOL() const
+const wxString wxExSTC::GetEOL() const
 {
   switch (GetEOLMode())
   {
@@ -513,7 +513,7 @@ const wxString wxExStyledTextCtrl::GetEOL() const
   return "\r\n";
 }
 
-int wxExStyledTextCtrl::GetLineNumberAtCurrentPos() const
+int wxExSTC::GetLineNumberAtCurrentPos() const
 {
   // This method is used by LinkOpen.
   // So, if no line number present return 0, otherwise link open jumps to last line.
@@ -522,16 +522,16 @@ int wxExStyledTextCtrl::GetLineNumberAtCurrentPos() const
 
   // Cannot use GetLine, as that includes EOF, and then the ToLong does not
   // return correct number.
-  const wxString text = const_cast< wxExStyledTextCtrl * >( this )->GetTextRange(
+  const wxString text = const_cast< wxExSTC * >( this )->GetTextRange(
     PositionFromLine(line_no), 
     GetLineEndPosition(line_no));
 
   return wxExGetLineNumberFromText(text);
 }
 
-const wxString wxExStyledTextCtrl::GetSearchText() const
+const wxString wxExSTC::GetSearchText() const
 {
-  const wxString selection = const_cast< wxExStyledTextCtrl * >( this )->GetSelectedText();
+  const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
 
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
@@ -541,9 +541,9 @@ const wxString wxExStyledTextCtrl::GetSearchText() const
   return wxExFindReplaceData::Get()->GetFindString();
 }
 
-const wxString wxExStyledTextCtrl::GetTextAtCurrentPos() const
+const wxString wxExSTC::GetTextAtCurrentPos() const
 {
-  const wxString sel = const_cast< wxExStyledTextCtrl * >( this )->GetSelectedText();
+  const wxString sel = const_cast< wxExSTC * >( this )->GetSelectedText();
 
   if (!sel.empty())
   {
@@ -603,17 +603,17 @@ const wxString wxExStyledTextCtrl::GetTextAtCurrentPos() const
   }
 }
 
-const wxString wxExStyledTextCtrl::GetWordAtPos(int pos) const
+const wxString wxExSTC::GetWordAtPos(int pos) const
 {
   const int word_start = 
-    const_cast< wxExStyledTextCtrl * >( this )->WordStartPosition(pos, true);
+    const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
   const int word_end = 
-    const_cast< wxExStyledTextCtrl * >( this )->WordEndPosition(pos, true);
+    const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
 
   if (word_start == word_end && word_start < GetTextLength())
   {
     const wxString word = 
-      const_cast< wxExStyledTextCtrl * >( this )->GetTextRange(word_start, word_start + 1);
+      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_start + 1);
 
     if (!isspace(word[0]))
     {
@@ -627,13 +627,13 @@ const wxString wxExStyledTextCtrl::GetWordAtPos(int pos) const
   else
   {
     const wxString word = 
-      const_cast< wxExStyledTextCtrl * >( this )->GetTextRange(word_start, word_end);
+      const_cast< wxExSTC * >( this )->GetTextRange(word_start, word_end);
 
     return word;
   }
 }
 
-bool wxExStyledTextCtrl::GotoDialog(const wxString& caption)
+bool wxExSTC::GotoDialog(const wxString& caption)
 {
   wxASSERT(m_GotoLineNumber <= GetLineCount() && m_GotoLineNumber > 0);
 
@@ -654,7 +654,7 @@ bool wxExStyledTextCtrl::GotoDialog(const wxString& caption)
   return true;
 }
 
-void wxExStyledTextCtrl::GotoLineAndSelect(
+void wxExSTC::GotoLineAndSelect(
   int line_number, 
   const wxString& text)
 {
@@ -688,7 +688,7 @@ void wxExStyledTextCtrl::GotoLineAndSelect(
   SetSelection(GetTargetStart(), GetTargetEnd());
 }
 
-void wxExStyledTextCtrl::HexDecCalltip(int pos)
+void wxExSTC::HexDecCalltip(int pos)
 {
   if (CallTipActive())
   {
@@ -738,7 +738,7 @@ void wxExStyledTextCtrl::HexDecCalltip(int pos)
   }
 }
 
-bool wxExStyledTextCtrl::IsTargetRE(const wxString& target) const
+bool wxExSTC::IsTargetRE(const wxString& target) const
 {
   return 
     target.Contains("\\1") ||
@@ -752,7 +752,7 @@ bool wxExStyledTextCtrl::IsTargetRE(const wxString& target) const
     target.Contains("\\9");
 }
 
-void wxExStyledTextCtrl::LexerDialog(const wxString& caption)
+void wxExSTC::LexerDialog(const wxString& caption)
 {
   wxString lexer = m_Lexer.GetScintillaLexer();
 
@@ -762,7 +762,7 @@ void wxExStyledTextCtrl::LexerDialog(const wxString& caption)
   }
 }
 
-void wxExStyledTextCtrl::MacroPlayback()
+void wxExSTC::MacroPlayback()
 {
   wxASSERT(MacroIsRecorded());
 
@@ -786,7 +786,7 @@ void wxExStyledTextCtrl::MacroPlayback()
 #endif
 }
 
-void wxExStyledTextCtrl::OnChar(wxKeyEvent& event)
+void wxExSTC::OnChar(wxKeyEvent& event)
 {
   bool skip = true;
 
@@ -813,7 +813,7 @@ void wxExStyledTextCtrl::OnChar(wxKeyEvent& event)
   }
 }
 
-void wxExStyledTextCtrl::OnCommand(wxCommandEvent& command)
+void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
@@ -859,7 +859,7 @@ void wxExStyledTextCtrl::OnCommand(wxCommandEvent& command)
   }
 }
 
-void wxExStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
+void wxExSTC::OnKeyDown(wxKeyEvent& event)
 {
   if ( !m_viMode ||
        (m_viMode && m_vi->OnKeyDown(event)))
@@ -878,7 +878,7 @@ void wxExStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
   }
 }
 
-void wxExStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
+void wxExSTC::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
 
@@ -888,7 +888,7 @@ void wxExStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
   }
 }
 
-void wxExStyledTextCtrl::OnMouse(wxMouseEvent& event)
+void wxExSTC::OnMouse(wxMouseEvent& event)
 {
   if (event.LeftUp())
   {
@@ -928,7 +928,7 @@ void wxExStyledTextCtrl::OnMouse(wxMouseEvent& event)
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
-void wxExStyledTextCtrl::OnStyledText(wxStyledTextEvent& event)
+void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
   if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
@@ -980,7 +980,7 @@ void wxExStyledTextCtrl::OnStyledText(wxStyledTextEvent& event)
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void wxExStyledTextCtrl::Print(bool prompt)
+void wxExSTC::Print(bool prompt)
 {
   wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
   wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
@@ -989,7 +989,7 @@ void wxExStyledTextCtrl::Print(bool prompt)
 #endif
 
 #if wxUSE_PRINTING_ARCHITECTURE
-void wxExStyledTextCtrl::PrintPreview()
+void wxExSTC::PrintPreview()
 {
   wxPrintPreview* preview = new wxPrintPreview(new wxExPrintout(this), new wxExPrintout(this));
 
@@ -1010,7 +1010,7 @@ void wxExStyledTextCtrl::PrintPreview()
 }
 #endif
 
-void wxExStyledTextCtrl::ReplaceAll(
+void wxExSTC::ReplaceAll(
   const wxString& find_text,
   const wxString& replace_text)
 {
@@ -1083,7 +1083,7 @@ void wxExStyledTextCtrl::ReplaceAll(
 #endif
 }
 
-void wxExStyledTextCtrl::ReplaceNext(bool find_next)
+void wxExSTC::ReplaceNext(bool find_next)
 {
   return ReplaceNext(
     wxExFindReplaceData::Get()->GetFindString(),
@@ -1092,7 +1092,7 @@ void wxExStyledTextCtrl::ReplaceNext(bool find_next)
     find_next);
 }
 
-void wxExStyledTextCtrl::ReplaceNext(
+void wxExSTC::ReplaceNext(
   const wxString& find_text, 
   const wxString& replace_text,
   int search_flags,
@@ -1116,7 +1116,7 @@ void wxExStyledTextCtrl::ReplaceNext(
   FindNext(find_text, search_flags, find_next);
 }
   
-void wxExStyledTextCtrl::ResetMargins(bool divider_margin)
+void wxExSTC::ResetMargins(bool divider_margin)
 {
   SetMarginWidth(m_MarginFoldingNumber, 0);
   SetMarginWidth(m_MarginLineNumber, 0);
@@ -1127,7 +1127,7 @@ void wxExStyledTextCtrl::ResetMargins(bool divider_margin)
   }
 }
 
-void wxExStyledTextCtrl::SequenceDialog()
+void wxExSTC::SequenceDialog()
 {
   static wxString start_previous;
 
@@ -1223,7 +1223,7 @@ void wxExStyledTextCtrl::SequenceDialog()
   AddText(sequence + GetEOL());
 }
 
-void wxExStyledTextCtrl::SetFolding()
+void wxExSTC::SetFolding()
 {
   if (GetProperty("fold") == "1")
   {
@@ -1239,7 +1239,7 @@ void wxExStyledTextCtrl::SetFolding()
   }
 }
 
-void wxExStyledTextCtrl::SetGlobalStyles()
+void wxExSTC::SetGlobalStyles()
 {
   wxExLexers::Get()->GetDefaultStyle().Apply(this);
 
@@ -1249,7 +1249,7 @@ void wxExStyledTextCtrl::SetGlobalStyles()
   wxExLexers::Get()->ApplyIndicators(this);
 }
 
-void wxExStyledTextCtrl::SetLexer()
+void wxExSTC::SetLexer()
 {
   // Update the lexer for scintilla.
   SetLexerLanguage(m_Lexer.GetScintillaLexer());
@@ -1273,7 +1273,7 @@ void wxExStyledTextCtrl::SetLexer()
   wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
 }
 
-void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
+void wxExSTC::SetLexer(const wxString& lexer)
 {
   ClearDocumentStyle();
 
@@ -1284,13 +1284,13 @@ void wxExStyledTextCtrl::SetLexer(const wxString& lexer)
   SetLexer();
 }
 
-void wxExStyledTextCtrl::SetLexerByText()
+void wxExSTC::SetLexerByText()
 {
   m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
   SetLexer();
 }
 
-void wxExStyledTextCtrl::SetText(const wxString& value)
+void wxExSTC::SetText(const wxString& value)
 {
   ClearDocument();
 
@@ -1304,7 +1304,7 @@ void wxExStyledTextCtrl::SetText(const wxString& value)
   EmptyUndoBuffer();
 }
 
-bool wxExStyledTextCtrl::SmartIndentation()
+bool wxExSTC::SmartIndentation()
 {
   // At this moment a newline has been given (but not yet processed).
   const wxString line = GetLine(GetCurrentLine());
@@ -1339,7 +1339,7 @@ bool wxExStyledTextCtrl::SmartIndentation()
   }
 }
 
-void wxExStyledTextCtrl::SortSelectionDialog(bool sort_ascending, const wxString& caption)
+void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 {
   long val;
   if ((val = wxGetNumberFromUser(_("Input") + ":",
@@ -1406,7 +1406,7 @@ void wxExStyledTextCtrl::SortSelectionDialog(bool sort_ascending, const wxString
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
 }
 
-void wxExStyledTextCtrl::StartRecord()
+void wxExSTC::StartRecord()
 {
   wxASSERT(!m_MacroIsRecording);
 
@@ -1421,7 +1421,7 @@ void wxExStyledTextCtrl::StartRecord()
   wxStyledTextCtrl::StartRecord();
 }
 
-void wxExStyledTextCtrl::StopRecord()
+void wxExSTC::StopRecord()
 {
   wxASSERT(m_MacroIsRecording);
 
@@ -1435,7 +1435,7 @@ void wxExStyledTextCtrl::StopRecord()
 }
 
 #if wxUSE_STATUSBAR
-void wxExStyledTextCtrl::UpdateStatusBar(const wxString& pane) const
+void wxExSTC::UpdateStatusBar(const wxString& pane) const
 {
   wxString text;
 
@@ -1446,11 +1446,11 @@ void wxExStyledTextCtrl::UpdateStatusBar(const wxString& pane) const
     {
       int start;
       int end;
-      const_cast< wxExStyledTextCtrl * >( this )->GetSelection(&start, &end);
+      const_cast< wxExSTC * >( this )->GetSelection(&start, &end);
 
       const int len  = end - start;
       const int line = 
-        const_cast< wxExStyledTextCtrl * >( this )->GetCurrentLine() + 1;
+        const_cast< wxExSTC * >( this )->GetCurrentLine() + 1;
       const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
 
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
@@ -1459,7 +1459,7 @@ void wxExStyledTextCtrl::UpdateStatusBar(const wxString& pane) const
         // There might be NULL's inside selection.
         // So use the GetSelectedTextRaw variant.
         const int number_of_lines = wxExGetNumberOfLines(
-          const_cast< wxExStyledTextCtrl * >( this )->GetSelectedTextRaw());
+          const_cast< wxExSTC * >( this )->GetSelectedTextRaw());
         if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
         else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
       }

@@ -30,8 +30,8 @@
 class wxExGrid;
 class wxExListView;
 class wxExStatusBar;
+class wxExSTCFile;
 class wxExSTC;
-class wxExStyledTextCtrl;
 class wxExToolBar;
 
 #if wxUSE_STATUSBAR
@@ -108,7 +108,7 @@ public:
   virtual wxExListView* GetListView() {return GetFocusedListView();};
 
   /// Returns an STC, default returns the focused STC.
-  virtual wxExSTC* GetSTC() {return GetFocusedSTC();};
+  virtual wxExSTCFile* GetSTC() {return GetFocusedSTC();};
 
   /// If the window that has focus is a Grid, then returns that, 
   /// otherwise returns NULL.
@@ -120,7 +120,7 @@ public:
 
   /// If the window that has focus is an STC, then returns that, 
   /// otherwise returns NULL.
-  wxExSTC* GetFocusedSTC();
+  wxExSTCFile* GetFocusedSTC();
 
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
@@ -205,7 +205,7 @@ protected:
 private:
   void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
   void FindIn(wxFindDialogEvent& event, wxExListView* lv);
-  void FindIn(wxFindDialogEvent& event, wxExStyledTextCtrl* stc);
+  void FindIn(wxFindDialogEvent& event, wxExSTC* stc);
   void Initialize();
 
 #if wxUSE_STATUSBAR
@@ -216,7 +216,7 @@ private:
 
   wxExGrid* m_FocusGrid;
   wxExListView* m_FocusListView;
-  wxExStyledTextCtrl* m_FocusSTC;
+  wxExSTC* m_FocusSTC;
 
   const bool m_KeepPosAndSize;
 
@@ -318,7 +318,7 @@ class ComboBox;
 #if wxUSE_AUI
 /// Offers a find toolbar, containing a find combobox, up and down arrows
 /// and checkboxes.
-/// The find combobox allows you to find in an wxExSTC
+/// The find combobox allows you to find in an wxExSTCFile
 /// component on the specified wxExFrame.
 class wxExFindToolBar : public wxAuiToolBar
 {

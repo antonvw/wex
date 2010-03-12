@@ -21,7 +21,7 @@ wxExConfigDialog* wxExVi::m_CommandDialog = NULL;
 wxExConfigDialog* wxExVi::m_FindDialog = NULL;
 wxString wxExVi::m_LastCommand;
 
-wxExVi::wxExVi(wxExStyledTextCtrl* stc)
+wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_MarkerSymbol(0)
   , m_IndicatorInsert(2)

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stcfile.h
-* Purpose:       Declaration of class wxExSTC
+* Purpose:       Declaration of class wxExSTCFile
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -22,7 +22,7 @@ class wxExConfigDialog;
 /// Adds file support, config support and synchronizing to the window,
 /// and if the file is a logfile and
 /// the caret is at the end, it stays at the end after syncing.
-class wxExSTC : public wxExStyledTextCtrl, public wxExFile
+class wxExSTCFile : public wxExSTC, public wxExFile
 {
 public:
   enum wxExSTCMenuFlags
@@ -50,7 +50,7 @@ public:
   /// Constructor. Does not open a file, but sets text to specified value,
   /// NULL's are allowed.
   /// This default value is overwritten by Open.
-  wxExSTC(wxWindow* parent,
+  wxExSTCFile(wxWindow* parent,
     const wxString& value = wxEmptyString,
     long open_flags = 0,
     const wxString& title = wxEmptyString,
@@ -62,7 +62,7 @@ public:
 
   /// Constructor, opens the file.
   /// See also Open.
-  wxExSTC(wxWindow* parent,
+  wxExSTCFile(wxWindow* parent,
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
@@ -74,7 +74,7 @@ public:
     long style = 0);
 
   /// Copy constructor.
-  wxExSTC(const wxExSTC& stc);
+  wxExSTCFile(const wxExSTCFile& stc);
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,

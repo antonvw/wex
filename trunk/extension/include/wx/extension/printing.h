@@ -57,7 +57,7 @@ private:
 #if wxUSE_PRINTING_ARCHITECTURE
 class wxStyledTextCtrl;
 
-// Offers a print out to be used by wxExSTC.
+// Offers a print out to be used by wxExSTCFile.
 class wxExPrintout : public wxPrintout
 {
 public:

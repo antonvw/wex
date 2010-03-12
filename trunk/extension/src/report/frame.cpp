@@ -259,7 +259,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       {
         wxArrayString files;
         wxStringTokenizer tkz(event.GetString());
-        wxExSTC* stc = GetSTC();
+        wxExSTCFile* stc = GetSTC();
 
         while (tkz.HasMoreTokens())
         {
@@ -295,11 +295,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
       
     case wxID_PREFERENCES:
-      wxExSTC::ConfigDialog(this,
+      wxExSTCFile::ConfigDialog(this,
         _("Editor Options"),
-        wxExSTC::STC_CONFIG_MODELESS | 
-        wxExSTC::STC_CONFIG_SIMPLE |
-        wxExSTC::STC_CONFIG_WITH_APPLY,
+        wxExSTCFile::STC_CONFIG_MODELESS | 
+        wxExSTCFile::STC_CONFIG_SIMPLE |
+        wxExSTCFile::STC_CONFIG_WITH_APPLY,
         event.GetId());
     break;
 
@@ -387,7 +387,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  wxExSTC* stc = GetFocusedSTC();
+  wxExSTCFile* stc = GetFocusedSTC();
   wxExListViewFile* project = GetProject();
 
   const wxString title(GetTitle());
@@ -527,7 +527,7 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_file.empty())
   {
-    wxExSTC* stc = GetSTC();
+    wxExSTCFile* stc = GetSTC();
 
     if (stc != NULL)
     {

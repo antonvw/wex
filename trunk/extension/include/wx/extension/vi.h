@@ -22,14 +22,14 @@
 #if wxUSE_GUI
 
 class wxExConfigDialog;
-class wxExStyledTextCtrl;
+class wxExSTC;
 
 /// Offers a class that extends STC with vi behaviour.
 class wxExVi
 {
 public:
   /// Constructor.
-  wxExVi(wxExStyledTextCtrl* stc);
+  wxExVi(wxExSTC* stc);
 
   /// Gets the search text.
   const wxString& GetSearchText() const {return m_SearchText;};
@@ -100,7 +100,7 @@ private:
   int m_InsertRepeatCount;
   int m_SearchFlags;
   
-  wxExStyledTextCtrl* m_STC;
+  wxExSTC* m_STC;
   
   wxString m_Command;
   wxString m_InsertText;

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stc.h
-* Purpose:       Declaration of class wxExStyledTextCtrl
+* Purpose:       Declaration of class wxExSTC
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -23,7 +23,7 @@ class wxExVi;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, macro support,
 /// vi support, lexer support (syntax colouring, folding) and basic extensions.
-class wxExStyledTextCtrl : public wxStyledTextCtrl
+class wxExSTC : public wxStyledTextCtrl
 {
 public:
   /// Menu and tooltip flags (0 is used for no menu).
@@ -38,10 +38,10 @@ public:
   };
 
   /// Default constructor.
-  wxExStyledTextCtrl();
+  wxExSTC();
 
   /// Constructor.
-  wxExStyledTextCtrl(wxWindow *parent, 
+  wxExSTC(wxWindow *parent, 
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -49,7 +49,7 @@ public:
     long style = 0);
 
   /// Destructor.
- ~wxExStyledTextCtrl();
+ ~wxExSTC();
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();

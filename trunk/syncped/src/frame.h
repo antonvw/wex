@@ -33,7 +33,7 @@ private:
   bool DialogProjectOpen();
   virtual wxExListView* GetListView();
   virtual wxExListViewFile* GetProject();
-  virtual wxExSTC* GetSTC();
+  virtual wxExSTCFile* GetSTC();
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int commandid = wxID_APPLY);

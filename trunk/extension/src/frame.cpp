@@ -154,7 +154,7 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExListView* lv)
   }
 }
 
-void wxExFrame::FindIn(wxFindDialogEvent& event, wxExStyledTextCtrl* stc)
+void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
@@ -210,7 +210,7 @@ wxExListView* wxExFrame::GetFocusedListView()
   return wxDynamicCast(win, wxExListView);
 }
 
-wxExSTC* wxExFrame::GetFocusedSTC()
+wxExSTCFile* wxExFrame::GetFocusedSTC()
 {
   wxWindow* win = wxWindow::FindFocus();
 
@@ -219,7 +219,7 @@ wxExSTC* wxExFrame::GetFocusedSTC()
     return NULL;
   }
 
-  return wxDynamicCast(win, wxExSTC);
+  return wxDynamicCast(win, wxExSTCFile);
 }
 
 void wxExFrame::GetSearchText()
@@ -234,7 +234,7 @@ void wxExFrame::GetSearchText()
   }
   else
   {
-    wxExSTC* stc = GetSTC();
+    wxExSTCFile* stc = GetSTC();
 
     if (stc != NULL && stc->IsShown())
     {
@@ -377,7 +377,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case ID_FOCUS_STC: 
     m_FocusGrid = NULL;
     m_FocusListView = NULL;
-    m_FocusSTC = (wxExStyledTextCtrl*)command.GetEventObject();;
+    m_FocusSTC = (wxExSTC*)command.GetEventObject();;
     break;
 
   default: wxFAIL; break;
@@ -441,7 +441,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    wxExSTC* stc = GetSTC();
+    wxExSTCFile* stc = GetSTC();
     wxExListView* lv = GetListView();
     wxExGrid* grid = GetGrid();
 
@@ -462,7 +462,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  wxExSTC* stc = GetFocusedSTC();
+  wxExSTCFile* stc = GetFocusedSTC();
   if (stc == NULL) return;
 
   switch (event.GetId())
@@ -482,7 +482,7 @@ bool wxExFrame::OpenFile(
   const wxString& match,
   long flags)
 {
-  wxExSTC* stc = GetFocusedSTC();
+  wxExSTCFile* stc = GetFocusedSTC();
 
   if (stc != NULL)
   {
@@ -510,17 +510,17 @@ void wxExFrame::StatusBarDoubleClicked(
 {
   if (pane == "PaneLines")
   {
-    wxExSTC* stc = GetSTC();
+    wxExSTCFile* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
   else if (pane == "PaneLexer")
   {
-    wxExSTC* stc = GetSTC();
+    wxExSTCFile* stc = GetSTC();
     if (stc != NULL) stc->LexerDialog();
   }
   else if (pane == "PaneFileType")
   {
-    wxExSTC* stc = GetSTC();
+    wxExSTCFile* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
   else if (pane == "PaneItems")
@@ -816,7 +816,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    wxExSTC* stc = m_Frame->GetSTC();
+    wxExSTCFile* stc = m_Frame->GetSTC();
 
     if (stc != NULL)
     {
@@ -915,7 +915,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case wxID_DOWN:
   case wxID_UP:
     {
-      wxExSTC* stc = m_Frame->GetSTC();
+      wxExSTCFile* stc = m_Frame->GetSTC();
 
       if (stc != NULL)
       {

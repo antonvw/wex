@@ -34,11 +34,11 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
-  m_STC = new wxExStyledTextCtrl(
+  m_STC = new wxExSTC(
     this, 
-    wxExStyledTextCtrl::STC_MENU_SIMPLE | 
-      wxExStyledTextCtrl::STC_MENU_FIND | 
-      wxExStyledTextCtrl::STC_MENU_REPLACE,
+    wxExSTC::STC_MENU_SIMPLE | 
+      wxExSTC::STC_MENU_FIND | 
+      wxExSTC::STC_MENU_REPLACE,
     wxID_ANY, 
     pos, 
     size);
@@ -84,6 +84,7 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
+    // Without these, events are not handled by the frame.
     case wxID_FIND: 
     case wxID_REPLACE: 
       wxPostEvent(wxTheApp->GetTopWindow(), command);

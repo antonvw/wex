@@ -16,13 +16,13 @@ class wxExFrameWithHistory;
 
 #include <wx/extension/stcfile.h>
 
-/// Adds a frame to wxExSTC.
+/// Adds a frame to wxExSTCFile.
 /// The frame is assigned in the Initialize.
-class wxExSTCWithFrame : public wxExSTC
+class wxExSTCWithFrame : public wxExSTCFile
 {
 public:
   /// Menu types, they determine how the context menu will appear.
-  /// These values extend the menu types used by wxExSTC.
+  /// These values extend the menu types used by wxExSTCFile.
   enum
   {
     STC_MENU_TOOL           = 0x0100, ///< for adding tool menu
@@ -62,8 +62,8 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = 0);
 
-  /// Copy constructor from another wxExSTC.
-  wxExSTCWithFrame(const wxExSTC& stc, wxExFrameWithHistory* frame);
+  /// Copy constructor from another wxExSTCFile.
+  wxExSTCWithFrame(const wxExSTCFile& stc, wxExFrameWithHistory* frame);
 
   /// Calls base and sets recent file if base call succeeded.
   virtual bool Open(

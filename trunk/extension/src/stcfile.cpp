@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stcfile.cpp
-* Purpose:       Implementation of class wxExSTC
+* Purpose:       Implementation of class wxExSTCFile
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -28,21 +28,21 @@ const wxFileOffset each_hex_field = 3;
 const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 10;
 
-BEGIN_EVENT_TABLE(wxExSTC, wxExStyledTextCtrl)
-  EVT_IDLE(wxExSTC::OnIdle)
-  EVT_KEY_UP(wxExSTC::OnKeyUp)
-  EVT_LEFT_UP(wxExSTC::OnMouse)
-  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_EOL_DOS, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_EOL_UNIX, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_EOL_MAC, wxExSTC::OnCommand)
-  EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
+BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
+  EVT_IDLE(wxExSTCFile::OnIdle)
+  EVT_KEY_UP(wxExSTCFile::OnKeyUp)
+  EVT_LEFT_UP(wxExSTCFile::OnMouse)
+  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
+  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
+  EVT_MENU(ID_EDIT_EOL_DOS, wxExSTCFile::OnCommand)
+  EVT_MENU(ID_EDIT_EOL_UNIX, wxExSTCFile::OnCommand)
+  EVT_MENU(ID_EDIT_EOL_MAC, wxExSTCFile::OnCommand)
+  EVT_STC_MODIFIED(wxID_ANY, wxExSTCFile::OnStyledText)
 END_EVENT_TABLE()
 
-wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
+wxExConfigDialog* wxExSTCFile::m_ConfigDialog = NULL;
 
-wxExSTC::wxExSTC(wxWindow* parent,
+wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxString& value,
   long open_flags,
   const wxString& title,
@@ -51,7 +51,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExStyledTextCtrl(parent, menu_flags, id, pos, size, style)
+  : wxExSTC(parent, menu_flags, id, pos, size, style)
   , m_FileSaveInMenu(false)
   , m_Flags(open_flags)
   , m_PreviousLength(0)
@@ -82,7 +82,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   PropertiesMessage();
 }
 
-wxExSTC::wxExSTC(wxWindow* parent,
+wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
@@ -92,7 +92,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExStyledTextCtrl(parent, menu_flags, id, pos, size, style)
+  : wxExSTC(parent, menu_flags, id, pos, size, style)
   , m_FileSaveInMenu(false)
   , m_Flags(0)
   , m_PreviousLength(0)
@@ -102,9 +102,9 @@ wxExSTC::wxExSTC(wxWindow* parent,
   Open(filename, line_number, match, flags);
 }
 
-wxExSTC::wxExSTC(const wxExSTC& stc)
+wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
 {
-  wxExStyledTextCtrl::Create(stc.GetParent());
+  wxExSTC::Create(stc.GetParent());
 
   // Do not yet set GetFileName(), this is done by Open.
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
@@ -119,7 +119,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   }
 }
 
-void wxExSTC::AddBasePathToPathList()
+void wxExSTCFile::AddBasePathToPathList()
 {
   // First find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath:";
@@ -143,7 +143,7 @@ void wxExSTC::AddBasePathToPathList()
   m_PathList.Add(basepath);
 }
 
-void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
+void wxExSTCFile::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
 /*
 e.g.:
 offset    hex field                                         ascii field
@@ -229,7 +229,7 @@ offset    hex field                                         ascii field
   AddText(text);
 }
 
-void wxExSTC::BuildPopupMenu(wxExMenu& menu)
+void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
 
@@ -248,7 +248,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  wxExStyledTextCtrl::BuildPopupMenu(menu);
+  wxExSTC::BuildPopupMenu(menu);
 
   if (
     !GetReadOnly() && 
@@ -261,7 +261,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-bool wxExSTC::CheckBraceHex(int pos)
+bool wxExSTCFile::CheckBraceHex(int pos)
 {
   const int col = GetColumn(pos);
   const wxFileOffset start_ascii_field =
@@ -308,7 +308,7 @@ bool wxExSTC::CheckBraceHex(int pos)
 }
 
 // This is a static method, cannot use normal members here.
-int wxExSTC::ConfigDialog(
+int wxExSTCFile::ConfigDialog(
   wxWindow* parent,
   const wxString& title,
   long flags,
@@ -439,7 +439,7 @@ int wxExSTC::ConfigDialog(
   }
 }
 
-void wxExSTC::ConfigGet()
+void wxExSTCFile::ConfigGet()
 {
   if (!wxConfigBase::Get()->Exists(_("Calltip")))
   {
@@ -494,7 +494,7 @@ void wxExSTC::ConfigGet()
   }
 }
 
-void wxExSTC::DoFileLoad(bool synced)
+void wxExSTCFile::DoFileLoad(bool synced)
 {
   // Synchronizing by appending only new data only works for log files.
   // Other kind of files might get new data anywhere inside the file,
@@ -560,7 +560,7 @@ void wxExSTC::DoFileLoad(bool synced)
   }
 }
 
-void wxExSTC::DoFileSave(bool save_as)
+void wxExSTCFile::DoFileSave(bool save_as)
 {
   const wxCharBuffer& buffer = GetTextRaw(); 
   Write(buffer.data(), buffer.length());
@@ -577,7 +577,7 @@ void wxExSTC::DoFileSave(bool save_as)
 #endif
 }
 
-void wxExSTC::EOLModeUpdate(int eol_mode)
+void wxExSTCFile::EOLModeUpdate(int eol_mode)
 {
   ConvertEOLs(eol_mode);
   SetEOLMode(eol_mode);
@@ -586,7 +586,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 #endif
 }
 
-void wxExSTC::FileNew(const wxExFileName& filename)
+void wxExSTCFile::FileNew(const wxExFileName& filename)
 {
   wxExFile::FileNew(filename);
 
@@ -599,7 +599,7 @@ void wxExSTC::FileNew(const wxExFileName& filename)
   SetLexer(filename.GetLexer().GetScintillaLexer());
 }
 
-bool wxExSTC::FileReadOnlyAttributeChanged()
+bool wxExSTCFile::FileReadOnlyAttributeChanged()
 {
   if (!(m_Flags & STC_OPEN_HEX))
   {
@@ -612,7 +612,7 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   return true;
 }
 
-void wxExSTC::FileTypeMenu()
+void wxExSTCFile::FileTypeMenu()
 {
   if (GetReadOnly())
   {
@@ -634,7 +634,7 @@ void wxExSTC::FileTypeMenu()
   PopupMenu(eol);
 }
 
-void wxExSTC::GuessType()
+void wxExSTCFile::GuessType()
 {
   if (!(m_Flags & STC_OPEN_HEX))
   {
@@ -653,13 +653,13 @@ void wxExSTC::GuessType()
 #endif
 }
 
-void wxExSTC::Initialize()
+void wxExSTCFile::Initialize()
 {
   ConfigGet();
   SetGlobalStyles();
 }
 
-bool wxExSTC::LinkOpen(
+bool wxExSTCFile::LinkOpen(
   const wxString& link_with_line,
   wxString& filename,
   int line_number,
@@ -719,7 +719,7 @@ bool wxExSTC::LinkOpen(
   return !fullpath.empty();
 }
 
-void wxExSTC::OnCommand(wxCommandEvent& command)
+void wxExSTCFile::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
@@ -756,7 +756,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   }
 }
 
-void wxExSTC::OnIdle(wxIdleEvent& event)
+void wxExSTCFile::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
@@ -773,7 +773,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
   }
 }
 
-void wxExSTC::OnKeyUp(wxKeyEvent& event)
+void wxExSTCFile::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
 
@@ -786,13 +786,13 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
   }
 }
 
-void wxExSTC::OnMouse(wxMouseEvent& event)
+void wxExSTCFile::OnMouse(wxMouseEvent& event)
 {
   PropertiesMessage();
   event.Skip();
 }
 
-void wxExSTC::OnStyledText(wxStyledTextEvent& event)
+void wxExSTCFile::OnStyledText(wxStyledTextEvent& event)
 {
   // Only useful if this is not a file on disk, otherwise
   // the OnIdle already does this.
@@ -804,7 +804,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
 }
 
-bool wxExSTC::Open(
+bool wxExSTCFile::Open(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
@@ -843,7 +843,7 @@ bool wxExSTC::Open(
   }
 }
 
-void wxExSTC::PropertiesMessage() const
+void wxExSTCFile::PropertiesMessage() const
 {
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(GetFileName());
@@ -853,7 +853,7 @@ void wxExSTC::PropertiesMessage() const
 #endif
 }
 
-void wxExSTC::ReadFromFile(bool get_only_new_data)
+void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
   const bool pos_at_end = (GetCurrentPos() >= GetTextLength() - 1);
 
@@ -915,13 +915,13 @@ void wxExSTC::ReadFromFile(bool get_only_new_data)
   }
 }
 
-void wxExSTC::ResetContentsChanged()
+void wxExSTCFile::ResetContentsChanged()
 {
   SetSavePoint();
 }
 
 #if wxUSE_STATUSBAR
-void wxExSTC::UpdateStatusBar(const wxString& pane) const
+void wxExSTCFile::UpdateStatusBar(const wxString& pane) const
 {
   if (pane == "PaneFileType")
   {
@@ -946,7 +946,7 @@ void wxExSTC::UpdateStatusBar(const wxString& pane) const
   }
   else
   {
-    wxExStyledTextCtrl::UpdateStatusBar(pane);
+    wxExSTC::UpdateStatusBar(pane);
   }
 }
 #endif // wxUSE_STATUSBAR
