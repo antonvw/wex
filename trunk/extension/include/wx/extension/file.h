@@ -101,11 +101,9 @@ public:
 
   /// Gets the stat.
   const wxExStat& GetStat() const {return m_Stat;};
-
-  /// If specified lexer is empty, use one of the lexers from config
-  /// according to match on the file fullname.
-  void SetLexer();
 private:
+  void SetLexer();
+
   wxExLexer m_Lexer;
   wxExStat m_Stat;
 };

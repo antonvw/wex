@@ -95,8 +95,7 @@ bool wxExFile::FileSave(const wxString filename)
 
   if (!filename.empty())
   {
-    m_FileName.Assign(filename);
-    m_FileName.SetLexer();
+    m_FileName = filename;
     save_as = true;
   }
 
