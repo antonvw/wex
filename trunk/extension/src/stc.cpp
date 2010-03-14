@@ -54,6 +54,7 @@ wxExSTC::wxExSTC()
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
+  , m_MenuFlags(0)
   , m_vi(NULL)
 {
 }

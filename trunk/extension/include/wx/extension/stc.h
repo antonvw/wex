@@ -209,10 +209,11 @@ private:
   /// as previous line.
   bool SmartIndentation();
 
+  const long m_MenuFlags;
+
   bool m_MacroIsRecording;
 
   long m_GotoLineNumber;
-  long m_MenuFlags;
 
   static std::vector <wxString> m_Macro;
 
