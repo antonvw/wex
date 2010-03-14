@@ -377,7 +377,8 @@ int wxExSTCFile::ConfigDialog(
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
+    // next is experimental, wait for scintilla
+    //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
 
     items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
