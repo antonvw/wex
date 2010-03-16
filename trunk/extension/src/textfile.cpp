@@ -266,15 +266,13 @@ bool wxExTextFile::MatchLine(wxString& line)
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
       std::string search_line(line);
-      std::string find_str(frd->GetFindString());
 
-      if (frd->MatchCase())
+      if (!frd->MatchCase())
       {
         std::transform(search_line.begin(), search_line.end(), search_line.begin(), toupper);
-        std::transform(find_str.begin(), find_str.end(), find_str.begin(), toupper);
       }
 
-      const size_t start = search_line.find(find_str);
+      const size_t start = search_line.find(m_FindString);
 
       if (start != wxString::npos)
       {
@@ -282,7 +280,7 @@ bool wxExTextFile::MatchLine(wxString& line)
         {
           if (( start == 0 ||
                (start > 0 && !IsWordCharacter(search_line[start - 1]))) &&
-              !IsWordCharacter(search_line[start + frd->GetFindString().length()]))
+              !IsWordCharacter(search_line[start + m_FindString.length()]))
           {
             match = true;
           }
@@ -332,11 +330,24 @@ bool wxExTextFile::Parse()
     return false;
   }
 
-  if (m_Tool.IsFindType() &&
-      wxExFindReplaceData::Get()->GetFindString().empty())
+  if (m_Tool.IsFindType())
   {
-    wxFAIL;
-    return false;
+    if (wxExFindReplaceData::Get()->GetFindString().empty())
+    {
+      wxFAIL;
+      return false;
+    }
+
+    m_FindString = wxExFindReplaceData::Get()->GetFindString();
+
+    if (!wxExFindReplaceData::Get()->MatchCase())
+    {
+      std::transform(
+        m_FindString.begin(), 
+        m_FindString.end(), 
+        m_FindString.begin(), 
+        toupper);
+    }
   }
 
   for (

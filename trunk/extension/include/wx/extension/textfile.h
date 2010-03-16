@@ -235,6 +235,8 @@ private:
   size_t m_LineMarkerEnd;
   size_t m_VersionLine;
 
+  std::string m_FindString;
+
   wxString m_Comments;
 };
 #endif
