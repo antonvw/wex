@@ -10,6 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h>
+#include "wx/persist/toplevel.h"
 #if wxUSE_TOOLTIPS
 #include <wx/tooltip.h> // for GetTip
 #endif
@@ -48,7 +49,6 @@ private:
 #endif
 
 BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
-  EVT_CLOSE(wxExFrame::OnClose)
   EVT_FIND(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_FIND_CLOSE(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_FIND_NEXT(wxID_ANY, wxExFrame::OnFindDialog)
@@ -73,41 +73,14 @@ wxExFrame::wxExFrame(wxWindow* parent,
   const wxString& name)
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, name)
   , m_FindReplaceDialog(NULL)
-  , m_KeepPosAndSize(true)
   , m_FocusGrid(NULL)
   , m_FocusListView(NULL)
   , m_FocusSTC(NULL)
 {
   Initialize();
 
-  // The wxPersistenceManager might be usefull in the future.
-  //SetName("wxExFrame");
-  //wxPersistenceManager::Get().RegisterAndRestore(this, this);
-
-  if (wxConfigBase::Get()->ReadBool("Frame/Maximized", false))
-  {
-    Maximize(true);
-  }
-
-  SetSize(
-    wxConfigBase::Get()->ReadLong("Frame/X", 100),
-    wxConfigBase::Get()->ReadLong("Frame/Y", 100),
-    wxConfigBase::Get()->ReadLong("Frame/Width", 450),
-    wxConfigBase::Get()->ReadLong("Frame/Height", 350));
-}
-
-wxExFrame::wxExFrame(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  const wxPoint& pos,
-  const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxFrame(parent, id, title, pos, size, style, name)
-  , m_FindReplaceDialog(NULL)
-  , m_KeepPosAndSize(false)
-{
-  Initialize();
+  SetName("wxExFrame");
+  wxPersistentRegisterAndRestore(this);
 }
 
 wxExFrame::~wxExFrame()
@@ -266,29 +239,6 @@ void wxExFrame::Initialize()
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
-}
-
-void wxExFrame::OnClose(wxCloseEvent& event)
-{
-  if (m_KeepPosAndSize)
-  {
-    // Set config values that might have changed.
-    if (IsMaximized())
-    {
-      wxConfigBase::Get()->Write("Frame/Maximized", true);
-    }
-    else
-    {
-      wxConfigBase::Get()->Write("Frame/Maximized", false);
-      const wxRect rect = GetRect();
-      wxConfigBase::Get()->Write("Frame/X", (long)rect.GetX());
-      wxConfigBase::Get()->Write("Frame/Y", (long)rect.GetY());
-      wxConfigBase::Get()->Write("Frame/Width", (long)rect.GetWidth());
-      wxConfigBase::Get()->Write("Frame/Height", (long)rect.GetHeight());
-    }
-  }
-
-  event.Skip();
 }
 
 void wxExFrame::OnCommand(wxCommandEvent& command)

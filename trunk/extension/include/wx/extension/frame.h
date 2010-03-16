@@ -89,15 +89,6 @@ public:
     long style = wxDEFAULT_FRAME_STYLE,
     const wxString& name = wxFrameNameStr);
 
-  /// Using specified position and size.
-  wxExFrame(wxWindow* parent,
-    wxWindowID id,
-    const wxString& title,
-    const wxPoint& pos,
-    const wxSize& size,
-    long style = wxDEFAULT_FRAME_STYLE,
-    const wxString& name = wxFrameNameStr);
-
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
@@ -161,8 +152,6 @@ protected:
   /// Invokes GetSearchText on one of the controls.
   void GetSearchText();
 
-  /// Writes the current frame size and position to the config.
-  void OnClose(wxCloseEvent& event);
   /// Handles command event.
   void OnCommand(wxCommandEvent& command);
 
@@ -216,8 +205,6 @@ private:
   wxExGrid* m_FocusGrid;
   wxExListView* m_FocusListView;
   wxExSTC* m_FocusSTC;
-
-  const bool m_KeepPosAndSize;
 
   DECLARE_EVENT_TABLE()
 };
