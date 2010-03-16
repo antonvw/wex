@@ -137,8 +137,7 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Do something when statusbar is clicked.
-  virtual void StatusBarClicked(
-    const wxString& WXUNUSED(pane)) {};
+  virtual void StatusBarClicked(const wxString& ) {};
 
   /// When double clicked, uses the GetSTC() for some dialogs.
   virtual void StatusBarDoubleClicked(

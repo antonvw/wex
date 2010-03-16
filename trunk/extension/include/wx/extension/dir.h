@@ -51,10 +51,10 @@ public:
   int GetFlags() const {return m_Flags;};
 
   /// Do something with the dir.
-  virtual void OnDir(const wxString& WXUNUSED(dir)){};
+  virtual void OnDir(const wxString& ){};
 
   /// Do something with the file.
-  virtual void OnFile(const wxString& WXUNUSED(file)) = 0;
+  virtual void OnFile(const wxString& ) = 0;
 private:
   const wxString m_FileSpec;
   const int m_Flags;
