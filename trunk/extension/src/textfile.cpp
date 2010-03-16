@@ -263,12 +263,18 @@ bool wxExTextFile::MatchLine(wxString& line)
   if (!frd->UseRegularExpression() ||
       (frd->UseRegularExpression() && !frd->GetRegularExpression().IsValid()))
   {
-    const wxString search_line = frd->MatchCase() ? line: line.Upper();
-
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
-      const size_t start = search_line.find(frd->MatchCase() ? 
-        frd->GetFindString(): frd->GetFindString().Upper());
+      std::string search_line(line);
+      std::string find_str(frd->GetFindString());
+
+      if (frd->MatchCase())
+      {
+        std::transform(search_line.begin(), search_line.end(), search_line.begin(), toupper);
+        std::transform(find_str.begin(), find_str.end(), find_str.begin(), toupper);
+      }
+
+      const size_t start = search_line.find(find_str);
 
       if (start != wxString::npos)
       {
