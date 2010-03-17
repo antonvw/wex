@@ -57,7 +57,6 @@ wxExSTC::wxExSTC()
   , m_MenuFlags(0)
   , m_vi(NULL)
 {
-  Initialize();
 }
 
 wxExSTC::wxExSTC(wxWindow *parent, 

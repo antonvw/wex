@@ -58,6 +58,7 @@ bool wxExFile::CheckFileSync()
 void wxExFile::FileNew(const wxExFileName& filename)
 {
   m_FileName = filename;
+  m_Stat = filename.GetFullPath();
 
   // Do not make it absolute, the specified filename does not need
   // to exist.
@@ -67,6 +68,7 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
 {
   // First set the member, even if filename does not exist.
   m_FileName = filename;
+  m_Stat = filename.GetFullPath();
 
   if (!m_FileName.FileExists()) return false;
 
