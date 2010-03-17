@@ -163,7 +163,7 @@ void wxExConfigItem::AddName(wxSizer* sizer) const
     wxSizerFlags().Right().Border());
 }
 
-void wxExConfigItem::Create(wxWindow* parent, bool readonly)
+void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 {
   if (m_Type == CONFIG_SPACER)
   {
@@ -366,8 +366,10 @@ void wxExConfigItem::Create(wxWindow* parent, bool readonly)
   wxASSERT(m_Control != NULL);
 }
 
-void wxExConfigItem::Layout(wxSizer* sizer, int id) const
+void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, int id, bool readonly)
 {
+  CreateControl(parent, readonly);
+
   switch (m_Type)
   {
     case CONFIG_CHECKBOX:

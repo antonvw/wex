@@ -146,11 +146,11 @@ void wxExConfigDialog::Layout(int rows, int cols)
       }
     }
 
-    it->Create(
+    it->Layout(
       (page_panel != NULL ? (wxWindow*)page_panel: this), 
+      sizer, 
+      ID_BROWSE_FOLDER,
       GetButtonFlags() == wxCANCEL);
-
-    it->Layout(sizer, ID_BROWSE_FOLDER);
 
     if (it->GetType() == CONFIG_COMBOBOXDIR)
     {
