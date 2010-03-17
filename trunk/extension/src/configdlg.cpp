@@ -11,8 +11,8 @@
 
 #include <functional>
 #include <algorithm>
-#include <wx/aui/auibook.h>
 #include <wx/filepicker.h>
+#include <wx/notebook.h> 
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 
@@ -98,8 +98,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
 {
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
-  wxFlexGridSizer* notebook_sizer = NULL;
-  wxAuiNotebook* notebook = NULL;
+  wxNotebook* notebook = NULL;
   wxString previous_page = "XXXXXX";
   wxPanel* page_panel = NULL;
 
@@ -111,17 +110,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
     // Check if we need a notebook.
     if (it == m_ConfigItems.begin() && !it->GetPage().empty())
     {
-      // Do not give it a close button.
-      notebook = new wxAuiNotebook(this,
-        wxID_ANY,
-        GetPosition(),
-        GetSize(),
-        wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_SPLIT);
-
-      notebook_sizer = new wxFlexGridSizer(1);
-      notebook_sizer->AddGrowableCol(0);
-      notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
-      notebook_sizer->AddGrowableRow(0);
+      notebook = new wxNotebook(this, wxID_ANY);
     }
 
     if (first_time ||
@@ -182,13 +171,11 @@ void wxExConfigDialog::Layout(int rows, int cols)
     }
   }
 
-  if (page_panel != NULL && notebook_sizer != NULL)
+  if (page_panel != NULL)
   {
-    page_panel->SetSizer(sizer);
+    page_panel->SetSizerAndFit(sizer);
 
-    AddUserSizer(notebook_sizer);
-
-    SendSizeEvent();
+    AddUserSizer(notebook);
   }
   else
   {

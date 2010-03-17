@@ -28,8 +28,6 @@ public:
   /// Constructor, specify the vector of config items
   /// to be used. When wxOK or wxAPPLY is pressed, any change in one of the
   /// config items is saved in the config.
-  /// \todo The dialog does not set it's window size correctly when
-  /// notebooks are used, you have to specify size yourself.
   wxExConfigDialog(wxWindow* parent,
     const std::vector<wxExConfigItem>& v,
     const wxString& title = _("Options"),
