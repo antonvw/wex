@@ -15,11 +15,10 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <wx/colour.h> 
 #include <wx/filename.h>
 #include <wx/xml/xml.h>
-#include <wx/extension/lexer.h>
 #include <wx/extension/indicator.h>
+#include <wx/extension/lexer.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
