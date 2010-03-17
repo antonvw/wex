@@ -202,6 +202,7 @@ private:
   int FindReplaceDataFlags() const;
   void FoldAll();
   void HexDecCalltip(int pos);
+  void Initialize();
   void SetFolding();
   void SequenceDialog();
   void SetLexer();

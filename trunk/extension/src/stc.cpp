@@ -57,6 +57,7 @@ wxExSTC::wxExSTC()
   , m_MenuFlags(0)
   , m_vi(NULL)
 {
+  Initialize();
 }
 
 wxExSTC::wxExSTC(wxWindow *parent, 
@@ -75,45 +76,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_viMode(false)
   , m_vi(new wxExVi(this))
 {
-#ifdef __WXMSW__
-  SetEOLMode(wxSTC_EOL_CRLF);
-#else
-  SetEOLMode(wxSTC_EOL_LF);
-#endif
-
-  SetBackSpaceUnIndents(true);
-  SetMouseDwellTime(1000);
-  SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
-  SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
-  SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
-  SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
-  SetMarginSensitive(m_MarginFoldingNumber, true);
-
-  UsePopUp(false); // we have our own
-
-  const int accels = 15; // take max number of entries
-  wxAcceleratorEntry entries[accels];
-
-  int i = 0;
-
-  entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
-  entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
-  entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
-  entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, ID_EDIT_LOWERCASE);
-  entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
-  entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
-  entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-
-  wxAcceleratorTable accel(i, entries);
-  SetAcceleratorTable(accel);
+  Initialize();
 }
 
 wxExSTC::~wxExSTC()
@@ -737,6 +700,49 @@ void wxExSTC::HexDecCalltip(int pos)
     CallTipShow(pos, text);
     wxExClipboardAdd(text);
   }
+}
+
+void wxExSTC::Initialize()
+{
+#ifdef __WXMSW__
+  SetEOLMode(wxSTC_EOL_CRLF);
+#else
+  SetEOLMode(wxSTC_EOL_LF);
+#endif
+
+  SetBackSpaceUnIndents(true);
+  SetMouseDwellTime(1000);
+  SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
+  SetMarginType(m_MarginDividerNumber, wxSTC_MARGIN_SYMBOL);
+  SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
+  SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
+  SetMarginSensitive(m_MarginFoldingNumber, true);
+
+  UsePopUp(false); // we have our own
+
+  const int accels = 15; // take max number of entries
+  wxAcceleratorEntry entries[accels];
+
+  int i = 0;
+
+  entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
+  entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
+  entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
+  entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
+  entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F10, ID_EDIT_UNFOLD_ALL);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F11, ID_EDIT_UPPERCASE);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F12, ID_EDIT_LOWERCASE);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
+  entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
+  entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
+  entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+
+  wxAcceleratorTable accel(i, entries);
+  SetAcceleratorTable(accel);
 }
 
 bool wxExSTC::IsTargetRE(const wxString& target) const
