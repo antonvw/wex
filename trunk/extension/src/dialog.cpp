@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/persist/toplevel.h>
 #include <wx/extension/dialog.h>
 
 #if wxUSE_GUI
@@ -29,6 +30,8 @@ wxExDialog::wxExDialog(wxWindow* parent,
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
+  SetName(title);
+  wxPersistentRegisterAndRestore(this);
 }
 
 wxSizerItem* wxExDialog::AddUserSizer(

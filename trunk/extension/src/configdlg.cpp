@@ -122,7 +122,6 @@ void wxExConfigDialog::Layout(int rows, int cols)
       notebook_sizer->AddGrowableCol(0);
       notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
       notebook_sizer->AddGrowableRow(0);
-      notebook_sizer->SetMinSize(GetSize());
     }
 
     if (first_time ||
@@ -188,8 +187,6 @@ void wxExConfigDialog::Layout(int rows, int cols)
     page_panel->SetSizer(sizer);
 
     AddUserSizer(notebook_sizer);
-
-    SetMinSize(GetSize());
 
     SendSizeEvent();
   }

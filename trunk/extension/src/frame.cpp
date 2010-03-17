@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/config.h>
-#include "wx/persist/toplevel.h"
+#include <wx/persist/toplevel.h>
 #if wxUSE_TOOLTIPS
 #include <wx/tooltip.h> // for GetTip
 #endif
