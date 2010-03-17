@@ -79,14 +79,22 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_ConfigItems(v)
   , m_BrowseDir(NULL)
 {
-  Add(rows, cols, pos, size);
+  Layout(rows, cols);
 
   for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false)); // read
 }
 
-void wxExConfigDialog::Add(
-  int rows, int cols, const wxPoint& pos, const wxSize& size)
+void wxExConfigDialog::ForceCheckBoxChecked(
+  const wxString& contains,
+  const wxString& page)
+{
+  m_ForceCheckBoxChecked = true;
+  m_Contains = contains;
+  m_Page = page;
+}
+
+void wxExConfigDialog::Layout(int rows, int cols)
 {
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
@@ -106,15 +114,15 @@ void wxExConfigDialog::Add(
       // Do not give it a close button.
       notebook = new wxAuiNotebook(this,
         wxID_ANY,
-        pos,
-        size,
+        GetPosition(),
+        GetSize(),
         wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_SPLIT);
 
       notebook_sizer = new wxFlexGridSizer(1);
       notebook_sizer->AddGrowableCol(0);
       notebook_sizer->Add(notebook, wxSizerFlags().Expand().Center());
       notebook_sizer->AddGrowableRow(0);
-      notebook_sizer->SetMinSize(size);
+      notebook_sizer->SetMinSize(GetSize());
     }
 
     if (first_time ||
@@ -181,7 +189,7 @@ void wxExConfigDialog::Add(
 
     AddUserSizer(notebook_sizer);
 
-    SetMinSize(size);
+    SetMinSize(GetSize());
 
     SendSizeEvent();
   }
@@ -191,15 +199,6 @@ void wxExConfigDialog::Add(
   }
 
   LayoutSizers();
-}
-
-void wxExConfigDialog::ForceCheckBoxChecked(
-  const wxString& contains,
-  const wxString& page)
-{
-  m_ForceCheckBoxChecked = true;
-  m_Contains = contains;
-  m_Page = page;
 }
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)

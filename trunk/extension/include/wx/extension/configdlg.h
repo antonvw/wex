@@ -12,8 +12,6 @@
 #ifndef _EXCONFIGDIALOG_H
 #define _EXCONFIGDIALOG_H
 
-#include <map>
-#include <set>
 #include <vector>
 #include <wx/extension/configitem.h>
 #include <wx/extension/dialog.h>
@@ -54,7 +52,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  void Add(int rows, int cols, const wxPoint& pos, const wxSize& size);
+  void Layout(int rows, int cols);
 
   wxComboBox* m_BrowseDir;
 
