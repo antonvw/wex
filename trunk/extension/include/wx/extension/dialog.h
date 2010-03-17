@@ -32,8 +32,6 @@ public:
     const wxString& title,
     long button_flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
     const wxString& name = wxDialogNameStr);
 protected:

@@ -23,8 +23,6 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
   const wxString& item,
   long flags,
   wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
   long style,
   const wxString& name)
 {
@@ -42,8 +40,6 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
     1, 
     flags, 
     id, 
-    pos, 
-    size, 
     style, 
     name);
 }
@@ -69,11 +65,9 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   int cols,
   long flags,
   wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size,
   long style,
   const wxString& name)
-  : wxExDialog(parent, title, flags, id, pos, size, style, name)
+  : wxExDialog(parent, title, flags, id, style, name)
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)

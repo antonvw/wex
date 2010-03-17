@@ -391,13 +391,6 @@ int wxExSTCFile::ConfigDialog(
     items.push_back(wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
   }
 
-  const wxSize size
-#ifdef __WXMSW__
-    (355, 300);
-#else
-    (500, 350);
-#endif
-
   int buttons = wxOK | wxCANCEL;
 
   if (flags & STC_CONFIG_WITH_APPLY)
@@ -414,9 +407,7 @@ int wxExSTCFile::ConfigDialog(
       0,
       2,
       buttons,
-      id,
-      wxDefaultPosition,
-      size);
+      id);
 
     return dlg.ShowModal();
   }
@@ -431,9 +422,7 @@ int wxExSTCFile::ConfigDialog(
         0,
         2,
         buttons,
-        id,
-        wxDefaultPosition,
-        size);
+        id);
     }
 
     return m_ConfigDialog->Show();

@@ -35,8 +35,6 @@ public:
     int cols = 2,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
     const wxString& name = wxDialogNameStr);
 
@@ -74,8 +72,6 @@ wxExConfigDialog* wxExConfigComboBoxDialog(
   long flags = wxOK | wxCANCEL,
   /// The window id.
   wxWindowID id = wxID_ANY,
-  const wxPoint& pos = wxDefaultPosition,
-  const wxSize& size = wxDefaultSize,
   long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
   const wxString& name = wxDialogNameStr);
 
