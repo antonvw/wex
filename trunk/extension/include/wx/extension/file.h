@@ -69,6 +69,7 @@ protected:
   /// Invoked by FileSave, allows you to save the file.
   virtual void DoFileSave(bool save_as = false) = 0;
 private:
+  void Assign(const wxFileName& filename);
   /// Called if file needs to be synced.
   void FileSync();
   // Take care that filename and stat are in sync.

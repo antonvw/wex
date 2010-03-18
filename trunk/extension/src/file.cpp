@@ -24,6 +24,12 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
+void wxExFile::Assign(const wxFileName& filename)
+{
+  m_FileName = filename;
+  m_Stat = filename.GetFullPath();
+}
+
 bool wxExFile::CheckFileSync()
 {
   if (IsOpened() ||
@@ -52,8 +58,7 @@ bool wxExFile::CheckFileSync()
 
 void wxExFile::FileNew(const wxExFileName& filename)
 {
-  m_FileName = filename;
-  m_Stat = filename.GetFullPath();
+  Assign(filename);
 
   // Do not make it absolute, the specified filename does not need
   // to exist.
@@ -62,8 +67,7 @@ void wxExFile::FileNew(const wxExFileName& filename)
 bool wxExFile::FileLoad(const wxExFileName& filename)
 {
   // First set the member, even if filename does not exist.
-  m_FileName = filename;
-  m_Stat = filename.GetFullPath();
+  Assign(filename);
 
   if (!m_FileName.FileExists()) return false;
 
@@ -92,8 +96,7 @@ bool wxExFile::FileSave(const wxString filename)
 
   if (!filename.empty())
   {
-    m_FileName = filename;
-    m_Stat = filename;
+    Assign(filename);
     save_as = true;
   }
 
