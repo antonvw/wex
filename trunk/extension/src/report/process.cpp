@@ -155,8 +155,8 @@ int wxExProcess::ConfigDialog(
     _("Process folder"), 
     CONFIG_COMBOBOXDIR, 
     wxEmptyString,
-    1000, // TODO: fix
-    true));
+    true,
+    1000)); // TODO: fix
 
   const int result = wxExConfigDialog(parent,
     v,

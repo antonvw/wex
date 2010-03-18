@@ -153,8 +153,8 @@ void wxExListViewFile::AddItemsDialog()
       m_TextInFolder, 
       CONFIG_COMBOBOXDIR, 
       wxEmptyString, 
-      1000, // TODO: fix
-      true));
+      true,
+      1000)); // TODO: fix
 
     v.push_back(wxExConfigItem());
     std::set<wxString> set;
