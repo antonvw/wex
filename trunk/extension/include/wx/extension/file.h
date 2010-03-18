@@ -46,7 +46,7 @@ public:
   void FileNew(const wxExFileName& filename = wxExFileName());
 
   /// Sets the filename member and invokes DoFileSave().
-  bool FileSave(const wxString filename = wxEmptyString);
+  bool FileSave(const wxString& filename = wxEmptyString);
 
   /// Returns whether contents have been changed.
   virtual bool GetContentsChanged() const = 0;

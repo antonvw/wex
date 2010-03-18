@@ -18,9 +18,8 @@ wxExFile::wxExFile()
 
 wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   : wxFile(filename, mode)
-  , m_FileName(filename)
-  , m_Stat(filename)
 {
+  Assign(filename);
   MakeAbsolute();
 }
 
@@ -66,7 +65,6 @@ void wxExFile::FileNew(const wxExFileName& filename)
 
 bool wxExFile::FileLoad(const wxExFileName& filename)
 {
-  // First set the member, even if filename does not exist.
   Assign(filename);
 
   if (!m_FileName.FileExists()) return false;
@@ -76,6 +74,7 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
     if (Open(m_FileName.GetFullPath()))
     {
       DoFileLoad();
+
       Close();
       ResetContentsChanged();
       return true;
@@ -85,7 +84,7 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
   return false;
 }
 
-bool wxExFile::FileSave(const wxString filename)
+bool wxExFile::FileSave(const wxString& filename)
 {
   if (!GetContentsChanged())
   {
@@ -97,6 +96,7 @@ bool wxExFile::FileSave(const wxString filename)
   if (!filename.empty())
   {
     Assign(filename);
+    MakeAbsolute();
     save_as = true;
   }
 
@@ -106,7 +106,7 @@ bool wxExFile::FileSave(const wxString filename)
   }
 
   DoFileSave(save_as);
-  MakeAbsolute();
+
   Close();
   ResetContentsChanged();
 
@@ -118,7 +118,9 @@ void wxExFile::FileSync()
   if (Open(m_FileName.GetFullPath()))
   {
     DoFileLoad(true);
+
     Close();
+    ResetContentsChanged();
   }
 }
 
