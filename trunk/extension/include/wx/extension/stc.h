@@ -197,7 +197,7 @@ protected:
   bool m_viMode;
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
-  bool CheckAutoComp(const wxUniChar c);
+  bool CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   int FindReplaceDataFlags() const;
   void FoldAll();

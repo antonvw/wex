@@ -226,7 +226,7 @@ void wxExSTC::ClearDocument()
   SetSavePoint();
 }
 
-bool wxExSTC::CheckAutoComp(const wxUniChar c)
+bool wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
   static wxString autoc;
 

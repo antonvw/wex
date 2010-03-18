@@ -126,7 +126,7 @@ public:
   const wxExColumn GetColumn(const wxString& name) const;
 
   /// Gets the field separator.
-  const wxUniChar GetFieldSeparator() const {return m_FieldSeparator;};
+  const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
   /// Gets image type.
   wxExImageType GetImageType() const {return m_ImageType;};
