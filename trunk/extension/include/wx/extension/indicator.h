@@ -10,6 +10,7 @@
 #ifndef _EXINDICATOR_H
 #define _EXINDICATOR_H
 
+#include <wx/colour.h> 
 #include <wx/xml/xml.h>
 
 class wxStyledTextCtrl;
