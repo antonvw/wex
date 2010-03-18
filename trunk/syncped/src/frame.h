@@ -14,7 +14,6 @@
 
 #include <wx/generic/dirctrlg.h>
 #include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
 #include "support.h"
 
 class MDIFrame : public Frame
