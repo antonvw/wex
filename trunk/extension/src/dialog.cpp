@@ -60,7 +60,7 @@ wxSizerItem* wxExDialog::AddUserSizer(
   return item;
 }
 
-void wxExDialog::LayoutSizers()
+void wxExDialog::LayoutSizers(bool add_separator_line)
 {
   m_TopSizer->AddGrowableCol(0);
   m_UserSizer->AddGrowableCol(0);
@@ -78,7 +78,16 @@ void wxExDialog::LayoutSizers()
   // Then, if buttons were specified, the button sizer.
   if (m_ButtonFlags != 0)
   {
-    wxSizer* sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
+    wxSizer* sbz;
+
+    if (add_separator_line)
+    {
+      sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
+    }
+    else
+    {
+      sbz = CreateButtonSizer(m_ButtonFlags);
+    }
 
     if (sbz != NULL)
     {

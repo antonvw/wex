@@ -176,7 +176,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
     AddUserSizer(sizer);
   }
 
-  LayoutSizers();
+  LayoutSizers(notebook == NULL); // add separator line if no notebook
 }
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)

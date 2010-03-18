@@ -49,7 +49,10 @@ protected:
   long GetButtonFlags() const {return m_ButtonFlags;};
 
   /// Layouts the sizers. Should be invoked after adding to sizers.
-  void LayoutSizers();
+  /// If you specified button flags,
+  /// they will be put at the bottom of the top sizer,
+  /// and a sepator line will be added as specified.
+  void LayoutSizers(bool add_separator_line = true);
 
   void OnKeyDown(wxKeyEvent& event);
 private:
