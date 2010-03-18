@@ -17,6 +17,7 @@ class wxExSTC;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt is allowed to be empty, in that case no sizer is used for it.
+/// The size is used for the exSTC component.
 class wxExSTCEntryDialog : public wxExDialog
 {
 public:
@@ -28,10 +29,8 @@ public:
     const wxString& prompt = wxEmptyString,
     long button_style = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    const wxString& name = wxDialogNameStr);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
   /// Gets the STC scintilla lexer.
   const wxString GetLexer() const;

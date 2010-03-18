@@ -23,8 +23,7 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
   const wxString& item,
   long flags,
   wxWindowID id,
-  long style,
-  const wxString& name)
+  long style)
 {
   std::vector<wxExConfigItem> v;
 
@@ -40,8 +39,7 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
     1, 
     flags, 
     id, 
-    style, 
-    name);
+    style);
 }
 
 const long ID_BROWSE_FOLDER = 1000; //wxNewId(); not constant
@@ -65,9 +63,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   int cols,
   long flags,
   wxWindowID id,
-  long style,
-  const wxString& name)
-  : wxExDialog(parent, title, flags, id, style, name)
+  long style)
+  : wxExDialog(parent, title, flags, id, style)
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)

@@ -32,8 +32,7 @@ public:
     const wxString& title,
     long button_flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    const wxString& name = wxDialogNameStr);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 protected:
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(

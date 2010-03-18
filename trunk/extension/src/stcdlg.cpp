@@ -23,11 +23,9 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& prompt,
   long button_style,
   wxWindowID id,
-  const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxExDialog(parent, caption, button_style, id, style, name)
+  long style)
+  : wxExDialog(parent, caption, button_style, id, style)
 {
   if (!prompt.empty())
   {
@@ -40,7 +38,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
       wxExSTC::STC_MENU_FIND | 
       wxExSTC::STC_MENU_REPLACE,
     wxID_ANY, 
-    pos, 
+    wxDefaultPosition, 
     size);
 
   m_STC->SetText(text);

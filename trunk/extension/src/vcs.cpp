@@ -527,7 +527,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
       wxEmptyString,
       wxOK,
       wxID_ANY,
-      wxDefaultPosition, wxSize(575, 250));
+      wxSize(575, 250));
   }
   else
   {

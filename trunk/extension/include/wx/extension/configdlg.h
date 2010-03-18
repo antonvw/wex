@@ -35,8 +35,7 @@ public:
     int cols = 2,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-    const wxString& name = wxDialogNameStr);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
@@ -72,8 +71,7 @@ wxExConfigDialog* wxExConfigComboBoxDialog(
   long flags = wxOK | wxCANCEL,
   /// The window id.
   wxWindowID id = wxID_ANY,
-  long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
-  const wxString& name = wxDialogNameStr);
+  long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
 #endif // wxUSE_GUI
 #endif
