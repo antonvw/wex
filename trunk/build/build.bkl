@@ -87,6 +87,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/dialog.cpp</sources>
     <sources>../extension/src/dir.cpp</sources>
     <sources>../extension/src/file.cpp</sources>
+    <sources>../extension/src/filename.cpp</sources>
     <sources>../extension/src/filedlg.cpp</sources>
     <sources>../extension/src/frame.cpp</sources>
     <sources>../extension/src/frd.cpp</sources>
@@ -126,6 +127,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/dir.h</headers>
     <headers>../extension/include/wx/extension/file.h</headers>
     <headers>../extension/include/wx/extension/filedlg.h</headers>
+    <headers>../extension/include/wx/extension/filename.h</headers>
     <headers>../extension/include/wx/extension/frame.h</headers>
     <headers>../extension/include/wx/extension/frd.h</headers>
     <headers>../extension/include/wx/extension/grid.h</headers>
@@ -145,6 +147,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/property.h</headers>
     <headers>../extension/include/wx/extension/renderer.h</headers>
     <headers>../extension/include/wx/extension/shell.h</headers>
+    <headers>../extension/include/wx/extension/stat.h</headers>
     <headers>../extension/include/wx/extension/statistics.h</headers>
     <headers>../extension/include/wx/extension/stc.h</headers>
     <headers>../extension/include/wx/extension/stcdlg.h</headers>

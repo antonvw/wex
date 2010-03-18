@@ -1,103 +1,22 @@
-/******************************************************************************\
-* File:          file.h
-* Purpose:       Declaration of wxExtension file classes
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      file.h
+// Purpose:   Declaration of class 'wxExFile'
+// Author:    Anton van Wezenbeek
+// Created:   2010-03-18
+// RCS-ID:    $Id$
+// Copyright: (c) 2010 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFILE_H
 #define _EXFILE_H
 
-#include <sys/stat.h> // for stat
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/file.h>
-#include <wx/filename.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/lexer.h>
-
-/// Adds IsOk to the stat base class, and several methods
-/// to get/update on the stat members.
-class wxExStat : public stat
-{
-public:
-  /// Default constructor. Calls Sync.
-  wxExStat(const wxString& fullpath = wxEmptyString) {
-    Sync(fullpath);}
-
-  /// Gets the fullpath member.
-  const wxString& GetFullPath() const {return m_FullPath;};
-
-  /// Gets the modification time.
-  /// From wxFileName class GetModificationTime is available as well,
-  /// this one returns string and only uses the stat member, and is fast.
-  const wxString GetModificationTime() const {
-    return wxDateTime(st_mtime).FormatISOCombined(' ');};
-
-  /// Returns true if the stat is okay (last update was okay).
-  bool IsOk() const {return m_IsOk;};
-
-  /// Returns true if this stat is readonly.
-  bool IsReadOnly() const {
-    return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
-
-  /// Sets this stat, returns result and keeps it in IsOk.
-  bool Sync() {
-#ifdef __UNIX__
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-#else
-    m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
-#endif
-    return m_IsOk;};
-
-  /// Sets the fullpath member, then Syncs.
-  bool Sync(const wxString& fullpath) {
-    m_FullPath = fullpath;
-    return Sync();};
-private:
-  wxString m_FullPath;
-  bool m_IsOk;
-};
-
-/// Adds a wxExStat and a wxExLexer member to wxFileName.
-class wxExFileName : public wxFileName
-{
-  friend class wxExFile; // it might update stat
-public:
-  /// Default constructor.
-  wxExFileName(
-    const wxString& fullpath = wxEmptyString, 
-    wxPathFormat format = wxPATH_NATIVE);
-
-  /// Copy constructor from a wxFileName.
-  wxExFileName(const wxFileName& filename);
-
-  /// Assignment operator.
-  wxExFileName& operator=(const wxExFileName& f)
-  {
-    m_Lexer = f.m_Lexer;
-    m_Stat = f.m_Stat;
-    Assign(f.GetFullPath());
-    return *this;
-  };
-
-  /// Gets the icon index for this filename (uses the file extension to get it).
-  int GetIconID() const;
-
-  /// Gets the lexer.
-  const wxExLexer& GetLexer() const {return m_Lexer;};
-
-  /// Gets the stat.
-  const wxExStat& GetStat() const {return m_Stat;};
-private:
-  wxExLexer m_Lexer;
-  wxExStat m_Stat;
-};
 
 /// Adds several File* methods to wxFile. All the File* methods update
 /// the wxExStat member. Also takes care of synchronization,
