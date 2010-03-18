@@ -22,7 +22,7 @@
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
-#include <wx/extension/file.h> // for wxExFileName
+#include <wx/extension/filename.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI

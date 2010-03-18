@@ -12,7 +12,7 @@
 #include <wx/config.h>
 #include <wx/extension/header.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/file.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 

@@ -14,7 +14,7 @@
 
 #include <wx/datetime.h>
 #include <wx/textfile.h>
-#include <wx/extension/file.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/tool.h>
 
