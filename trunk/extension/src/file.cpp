@@ -9,7 +9,6 @@
 
 #include <wx/config.h>
 #include <wx/extension/file.h>
-#include <wx/extension/lexers.h>
 
 wxExFile::wxExFile()
   : m_FileName()

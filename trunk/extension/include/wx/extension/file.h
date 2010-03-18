@@ -16,7 +16,7 @@
 #endif
 #include <wx/file.h>
 #include <wx/extension/filename.h>
-#include <wx/extension/lexer.h>
+#include <wx/extension/stat.h>
 
 /// Adds several File* methods to wxFile. All the File* methods update
 /// the wxExStat member. Also takes care of synchronization,
