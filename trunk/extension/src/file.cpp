@@ -98,6 +98,7 @@ bool wxExFile::FileSave(const wxString filename)
   if (!filename.empty())
   {
     m_FileName = filename;
+    m_Stat = filename;
     save_as = true;
   }
 
