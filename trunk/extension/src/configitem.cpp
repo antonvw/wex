@@ -20,6 +20,7 @@
 
 wxExConfigItem::wxExConfigItem()
   : m_Control(NULL)
+  , m_Id(wxID_ANY)
   , m_Name("spacer")
   , m_Page(wxEmptyString)
   , m_Type(CONFIG_SPACER) 
@@ -32,6 +33,7 @@ wxExConfigItem::wxExConfigItem(
   int max,
   const wxString& page)
   : m_Control(NULL)
+  , m_Id(wxID_ANY)
   , m_IsRequired(false)
   , m_Min(min)
   , m_Max(max)
@@ -50,6 +52,7 @@ wxExConfigItem::wxExConfigItem(
   double inc,
   const wxString& page)
   : m_Control(NULL)
+  , m_Id(wxID_ANY)
   , m_IsRequired(false)
   , m_MaxItems(0)
   , m_MinDouble(min)
@@ -68,6 +71,7 @@ wxExConfigItem::wxExConfigItem(
   long style,
   bool is_required)
   : m_Control(NULL)
+  , m_Id(wxID_ANY)
   , m_IsRequired(is_required)
   , m_Min(0)
   , m_Max(0)
@@ -85,6 +89,7 @@ wxExConfigItem::wxExConfigItem(
   bool use_radiobox,
   const wxString& page)
   : m_Control(NULL)
+  , m_Id(wxID_ANY)
   , m_IsRequired(false)
   , m_Min(0)
   , m_Max(0)
@@ -101,6 +106,7 @@ wxExConfigItem::wxExConfigItem(
   const std::set<wxString> & choices,
   const wxString& page)
   : m_Control(NULL)
+  , m_Id(wxID_ANY)
   , m_IsRequired(false)
   , m_Min(0)
   , m_Max(0)
@@ -118,8 +124,10 @@ wxExConfigItem::wxExConfigItem(
   int type,
   const wxString& page,
   bool is_required,
+  int id,
   int max_items)
   : m_Control(NULL)
+  , m_Id(id)
   , m_IsRequired(is_required)
   , m_Min(0)
   , m_Max(0)
@@ -131,7 +139,7 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
-void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
+void wxExConfigItem::AddBrowse(wxSizer* sizer) const
 {
   wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
   browse->AddGrowableCol(0);
@@ -143,7 +151,7 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer, int id) const
   browse->Add(
     new wxButton(
       m_Control->GetParent(),
-      id,
+      m_Id,
       _(wxDirPickerWidgetLabel)),
     wxSizerFlags().Center().Border());
 
@@ -182,7 +190,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   {
     case CONFIG_CHECKBOX:
       m_Control = new wxCheckBox(parent,
-        wxID_ANY,
+        m_Id,
         m_Name,
         wxDefaultPosition,
         wxSize(125, wxDefaultCoord));
@@ -201,7 +209,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       }
 
       m_Control = (wxCheckListBox*)new wxCheckListBox(parent,
-        wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
+        m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
       break;
 
@@ -211,12 +219,12 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       arraychoices.resize(m_ChoicesBool.size()); // required!
       copy (m_ChoicesBool.begin(), m_ChoicesBool.end(), arraychoices.begin());
       m_Control = new wxCheckListBox(parent,
-        wxID_ANY, wxDefaultPosition, wxDefaultSize, arraychoices);
+        m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
       break;
 
     case CONFIG_COLOUR:
-      m_Control = new wxColourPickerWidget(parent, wxID_ANY);
+      m_Control = new wxColourPickerWidget(parent, m_Id);
       expand = false;
       break;
 
@@ -225,7 +233,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_COMBOBOXDIR:
       m_Control = new wxComboBox(
         parent, 
-        wxID_ANY,
+        (m_Type == CONFIG_COMBOBOXDIR ? wxID_ANY: m_Id),
         wxEmptyString,
         wxDefaultPosition,
         wxSize(250, wxDefaultCoord));
@@ -234,7 +242,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_DIRPICKERCTRL:
       {
       wxDirPickerCtrl* pc = new wxDirPickerCtrl(parent,
-        wxID_ANY,
+        m_Id,
         wxEmptyString,
         wxDirSelectorPromptStr,
         wxDefaultPosition,
@@ -366,7 +374,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   wxASSERT(m_Control != NULL);
 }
 
-void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, int id, bool readonly)
+void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
 {
   CreateControl(parent, readonly);
 
@@ -394,7 +402,7 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, int id, bool reado
       break;
 
     case CONFIG_COMBOBOXDIR:
-      AddBrowse(sizer, id);
+      AddBrowse(sizer);
       break;
 
     case CONFIG_SPACER:

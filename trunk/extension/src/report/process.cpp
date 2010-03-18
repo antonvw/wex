@@ -145,8 +145,18 @@ int wxExProcess::ConfigDialog(
   const wxString& title)
 {
   std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem(_("Process"), CONFIG_COMBOBOX, wxEmptyString, true));
-  v.push_back(wxExConfigItem(_("Process folder"), CONFIG_COMBOBOXDIR, wxEmptyString));
+
+  v.push_back(wxExConfigItem(
+    _("Process"), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString));
+
+  v.push_back(wxExConfigItem(
+    _("Process folder"), 
+    CONFIG_COMBOBOXDIR, 
+    wxEmptyString,
+    1000, // TODO: fix
+    true));
 
   const int result = wxExConfigDialog(parent,
     v,

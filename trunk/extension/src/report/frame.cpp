@@ -179,6 +179,7 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     m_TextInFolder, 
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
+    1000, // TODO: fix
     true));
 
   v.push_back(wxExConfigItem());

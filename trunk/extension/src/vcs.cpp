@@ -473,6 +473,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       _("Base folder"), 
       CONFIG_COMBOBOXDIR, 
       wxEmptyString, 
+      1000, // TODO: fix
       true)); // required
 
     if (m_Command == VCS_ADD)

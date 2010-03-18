@@ -96,6 +96,7 @@ public:
     int type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
+    int id = wxID_ANY,
     int max_items = 25); // used by CONFIG_COMBOBOX
 
   /// Gets the control (first call Layout).
@@ -114,12 +115,12 @@ public:
   int GetType() const {return m_Type;};
 
   /// Creates the control and lays out this item on a sizer.
-  void Layout(wxWindow* parent, wxSizer* sizer, int id, bool readonly = false);
+  void Layout(wxWindow* parent, wxSizer* sizer, bool readonly = false);
 
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:
-  void AddBrowse(wxSizer* sizer, int id) const;
+  void AddBrowse(wxSizer* sizer) const;
   void AddName(wxSizer* sizer) const;
   /// Creates the control.
   void CreateControl(wxWindow* parent, bool readonly);
@@ -127,6 +128,7 @@ private:
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
   bool m_IsRequired;
+  int m_Id;
   int m_Min;
   int m_Max;
   int m_MaxItems;
