@@ -479,11 +479,19 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
-    _("Combobox Dir"), 
+    _("Combobox Dir1"), 
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     true,
-    1000)); // TODO: fix
+    1000));
+
+  // CONFIG_COMBOBOXDIR
+  v.push_back(wxExConfigItem(
+    _("Combobox Dir2"), 
+    CONFIG_COMBOBOXDIR, 
+    "Comboboxes",
+    true,
+    1001));
 
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(
