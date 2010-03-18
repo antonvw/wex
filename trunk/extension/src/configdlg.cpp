@@ -49,7 +49,6 @@ BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_CANCEL, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_CLOSE, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_OK, wxExConfigDialog::OnCommand)
-  EVT_BUTTON(ID_BROWSE_FOLDER, wxExConfigDialog::OnCommand)
   EVT_UPDATE_UI(wxID_APPLY, wxExConfigDialog::OnUpdateUI)
   EVT_UPDATE_UI(wxID_OK, wxExConfigDialog::OnUpdateUI)
 END_EVENT_TABLE()
@@ -68,12 +67,27 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
-  , m_BrowseDir(NULL)
 {
   Layout(rows, cols);
 
   for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false)); // read
+}
+
+wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
+{
+  for (
+    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    it != m_ConfigItems.end();
+    ++it)
+  {
+    if (it->GetId() == id)
+    {
+      return *it;
+    }
+  }
+
+  return wxExConfigItem();
 }
 
 void wxExConfigDialog::ForceCheckBoxChecked(
@@ -150,8 +164,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
     if (it->GetType() == CONFIG_COMBOBOXDIR)
     {
-      wxASSERT(m_BrowseDir == NULL);
-      m_BrowseDir = (wxComboBox *)it->GetControl();
+      Bind(wxEVT_COMMAND_BUTTON_CLICKED, &wxExConfigDialog::OnCommand, this, it->GetId());
     }
 
     if ( sizer->GetRows() > 0 &&
@@ -177,25 +190,29 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
+  if (command.GetId() < wxID_LOWEST)
+  {
+    wxComboBox* browse = (wxComboBox*)FindConfigItem(command.GetId()).GetControl();
+
+    if (browse != NULL)
+    {
+      wxDirDialog dir_dlg(
+        this,
+        wxDirSelectorPromptStr,
+        browse->GetValue(),
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+      if (dir_dlg.ShowModal() == wxID_OK)
+      {
+        browse->SetValue(dir_dlg.GetPath());
+      }
+    }
+
+    return;
+  }
+
   switch (command.GetId())
   {
-  case ID_BROWSE_FOLDER:
-    {
-    wxASSERT(m_BrowseDir != NULL);
-
-    wxDirDialog dir_dlg(
-      this,
-      wxDirSelectorPromptStr,
-      m_BrowseDir->GetValue(),
-      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-    if (dir_dlg.ShowModal() == wxID_OK)
-    {
-      m_BrowseDir->SetValue(dir_dlg.GetPath());
-    }
-    }
-    break;
-
   case wxID_CANCEL:
     // For wxID_CANCEL reload from config.
     for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 

@@ -47,9 +47,8 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
+  wxExConfigItem FindConfigItem(int id) const;
   void Layout(int rows, int cols);
-
-  wxComboBox* m_BrowseDir;
 
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;

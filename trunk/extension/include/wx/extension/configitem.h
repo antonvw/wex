@@ -102,6 +102,9 @@ public:
   /// Gets the control (first call Layout).
   wxControl* GetControl() const {return m_Control;};
 
+  /// Gets the id.
+  int GetId() const {return m_Id;};
+
   /// Gets is required.
   bool GetIsRequired() const {return m_IsRequired;};
 
