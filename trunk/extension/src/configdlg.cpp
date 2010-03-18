@@ -42,8 +42,6 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
     style);
 }
 
-const long ID_BROWSE_FOLDER = 1000; //wxNewId(); not constant
-
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_CANCEL, wxExConfigDialog::OnCommand)
