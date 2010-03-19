@@ -103,7 +103,6 @@ void wxExConfigDialog::Layout(int rows, int cols)
   wxFlexGridSizer* sizer = NULL;
   wxNotebook* notebook = NULL;
   wxString previous_page = "XXXXXX";
-  wxPanel* page_panel = NULL;
 
   for (
     std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
@@ -125,11 +124,13 @@ void wxExConfigDialog::Layout(int rows, int cols)
       if (notebook != NULL)
       {
         // Finish the current page.
-        page_panel->SetSizerAndFit(sizer);
+        if (notebook->GetPageCount() > 0)
+        {
+          notebook->GetPage(notebook->GetPageCount() - 1)->SetSizerAndFit(sizer);
+        }
 
         // And make a new one.
-        page_panel = new wxPanel(notebook);
-        notebook->AddPage(page_panel, it->GetPage());
+        notebook->AddPage(new wxPanel(notebook), it->GetPage());
       }
 
       previous_page = it->GetPage();
@@ -153,7 +154,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
     }
 
     it->Layout(
-      (page_panel != NULL ? (wxWindow*)page_panel: this), 
+      (notebook != NULL ? notebook->GetPage(notebook->GetPageCount() - 1): this), 
       sizer, 
       GetButtonFlags() == wxCANCEL);
 
@@ -171,7 +172,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
   if (notebook != NULL)
   {
-    page_panel->SetSizerAndFit(sizer);
+    notebook->GetPage(notebook->GetPageCount() - 1)->SetSizerAndFit(sizer);
 
     AddUserSizer(notebook);
   }
