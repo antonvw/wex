@@ -103,9 +103,8 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 }
 
 wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
+  : wxExSTC(stc)
 {
-  wxExSTC::Create(stc.GetParent());
-
   // Do not yet set GetFileName(), this is done by Open.
   m_FileSaveInMenu = stc.m_FileSaveInMenu;
   m_Flags = stc.m_Flags;

@@ -78,6 +78,18 @@ wxExSTC::wxExSTC(wxWindow *parent,
   Initialize();
 }
 
+wxExSTC::wxExSTC(const wxExSTC& stc)
+  : m_MarginDividerNumber(stc.m_MarginDividerNumber)
+  , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
+  , m_MarginLineNumber(stc.m_MarginLineNumber)
+  , m_MenuFlags(stc.m_MenuFlags)
+  , m_vi(new wxExVi(this))
+{
+  wxStyledTextCtrl::Create(stc.GetParent());
+
+  Initialize();
+}
+
 wxExSTC::~wxExSTC()
 {
   delete m_vi;
