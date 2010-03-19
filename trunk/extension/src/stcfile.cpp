@@ -104,14 +104,13 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 
 wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
   : wxExSTC(stc)
+  , m_FileSaveInMenu(stc.m_FileSaveInMenu)
+  , m_Flags(stc.m_Flags)
+  , m_PreviousLength(stc.m_PreviousLength)
 {
-  // Do not yet set GetFileName(), this is done by Open.
-  m_FileSaveInMenu = stc.m_FileSaveInMenu;
-  m_Flags = stc.m_Flags;
-  m_PreviousLength = stc.m_PreviousLength;
-
   Initialize();
 
+  // Do not yet set GetFileName(), this is done by Open.
   if (stc.GetFileName().IsOk())
   {
     Open(stc.GetFileName(), -1, wxEmptyString, m_Flags);

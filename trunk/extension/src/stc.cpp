@@ -47,18 +47,6 @@ END_EVENT_TABLE()
 
 std::vector <wxString> wxExSTC::m_Macro;
 
-wxExSTC::wxExSTC() 
-  : wxStyledTextCtrl()
-  , m_GotoLineNumber(-1)
-  , m_MacroIsRecording(false)
-  , m_MarginDividerNumber(1)
-  , m_MarginFoldingNumber(2)
-  , m_MarginLineNumber(0)
-  , m_MenuFlags(0)
-  , m_vi(NULL)
-{
-}
-
 wxExSTC::wxExSTC(wxWindow *parent, 
   long menu_flags,
   wxWindowID id,
@@ -79,10 +67,13 @@ wxExSTC::wxExSTC(wxWindow *parent,
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
-  : m_MarginDividerNumber(stc.m_MarginDividerNumber)
+  : m_MenuFlags(stc.m_MenuFlags)
+  , m_MacroIsRecording(stc.m_MacroIsRecording)
+  , m_GotoLineNumber(stc.m_GotoLineNumber)
+  , m_MarginDividerNumber(stc.m_MarginDividerNumber)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
-  , m_MenuFlags(stc.m_MenuFlags)
+  , m_viMode(stc.m_viMode)
   , m_vi(new wxExVi(this))
 {
   wxStyledTextCtrl::Create(stc.GetParent());

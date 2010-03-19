@@ -37,9 +37,6 @@ public:
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };
 
-  /// Default constructor.
-  wxExSTC();
-
   /// Constructor.
   wxExSTC(wxWindow *parent, 
     long menu_flags = STC_MENU_DEFAULT,
