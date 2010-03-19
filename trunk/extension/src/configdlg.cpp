@@ -101,7 +101,8 @@ void wxExConfigDialog::Layout(int rows, int cols)
 {
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
-  wxNotebook* notebook = NULL;
+  wxNotebook* notebook = 
+    (m_ConfigItems.begin()->GetPage().empty() ? NULL: new wxNotebook(this, wxID_ANY));
   wxString previous_page = "XXXXXX";
 
   for (
@@ -109,36 +110,28 @@ void wxExConfigDialog::Layout(int rows, int cols)
     it != m_ConfigItems.end();
     ++it)
   {
-    // Check if we need a notebook.
-    if (it == m_ConfigItems.begin() && !it->GetPage().empty())
-    {
-      notebook = new wxNotebook(this, wxID_ANY);
-    }
-
     if (first_time ||
-        (it->GetPage() != previous_page &&
-         it->GetPage() != wxEmptyString))
+        (it->GetPage() != previous_page && !it->GetPage().empty()))
     {
       first_time = false;
 
       if (notebook != NULL)
       {
         // Finish the current page.
-        if (notebook->GetPageCount() > 0)
+        if (notebook->GetCurrentPage() != NULL)
         {
-          notebook->GetPage(notebook->GetPageCount() - 1)->SetSizerAndFit(sizer);
+          notebook->GetCurrentPage()->SetSizerAndFit(sizer);
         }
 
         // And make a new one.
-        notebook->AddPage(new wxPanel(notebook), it->GetPage());
+        notebook->AddPage(new wxWindow(notebook, wxID_ANY), it->GetPage(), true); // select
       }
 
       previous_page = it->GetPage();
 
-      if (rows != 0)
-        sizer = new wxFlexGridSizer(rows, cols, 0, 0);
-      else
-        sizer = new wxFlexGridSizer(cols);
+      sizer = (rows != 0 ? 
+        new wxFlexGridSizer(rows, cols, 0, 0):
+        new wxFlexGridSizer(cols));
 
       if (cols == 2)
       {
@@ -154,7 +147,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
     }
 
     it->Layout(
-      (notebook != NULL ? notebook->GetPage(notebook->GetPageCount() - 1): this), 
+      (notebook != NULL ? notebook->GetCurrentPage(): this), 
       sizer, 
       GetButtonFlags() == wxCANCEL);
 
@@ -172,7 +165,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
   if (notebook != NULL)
   {
-    notebook->GetPage(notebook->GetPageCount() - 1)->SetSizerAndFit(sizer);
+    notebook->GetCurrentPage()->SetSizerAndFit(sizer);
 
     AddUserSizer(notebook);
   }
