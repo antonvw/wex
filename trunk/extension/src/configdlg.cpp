@@ -166,6 +166,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
   if (notebook != NULL)
   {
     notebook->GetCurrentPage()->SetSizerAndFit(sizer);
+    notebook->SetSelection(0);
 
     AddUserSizer(notebook);
   }
