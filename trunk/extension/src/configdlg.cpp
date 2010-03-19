@@ -188,7 +188,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     {
       wxDirDialog dir_dlg(
         this,
-        wxDirSelectorPromptStr,
+        _(wxDirSelectorPromptStr),
         browse->GetValue(),
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
