@@ -122,13 +122,10 @@ void wxExConfigDialog::Layout(int rows, int cols)
     {
       first_time = false;
 
-      if (notebook != NULL && it->GetType() != CONFIG_SPACER)
+      if (notebook != NULL)
       {
         // Finish the current page.
-        if (sizer != NULL)
-        {
-          page_panel->SetSizerAndFit(sizer);
-        }
+        page_panel->SetSizerAndFit(sizer);
 
         // And make a new one.
         page_panel = new wxPanel(notebook);
@@ -172,7 +169,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
     }
   }
 
-  if (page_panel != NULL)
+  if (notebook != NULL)
   {
     page_panel->SetSizerAndFit(sizer);
 
