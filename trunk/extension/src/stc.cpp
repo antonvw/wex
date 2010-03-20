@@ -789,13 +789,7 @@ void wxExSTC::MacroPlayback()
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
-  bool skip = true;
-
-  if (m_vi.GetActive())
-  {
-    // Let vi handle all keys.
-    skip = m_vi.OnChar(event);
-  }
+  bool skip = m_vi.OnChar(event);
 
   if (skip && 
        GetReadOnly() && 
@@ -862,8 +856,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
 void wxExSTC::OnKeyDown(wxKeyEvent& event)
 {
-  if (!m_vi.GetActive() ||
-      (m_vi.GetActive() && m_vi.OnKeyDown(event)))
+  if (!m_vi.GetActive() || m_vi.OnKeyDown(event))
   {
     if (event.GetKeyCode() == WXK_RETURN)
     {
@@ -969,10 +962,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
-    if (m_vi.GetActive())
-    {
-      m_vi.OnCharAdded(event);
-    }
+    m_vi.OnCharAdded(event);
   }
   else
   {
