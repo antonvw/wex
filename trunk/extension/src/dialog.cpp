@@ -28,7 +28,6 @@ wxExDialog::wxExDialog(wxWindow* parent,
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
   SetName(title);
-  wxPersistentRegisterAndRestore(this);
 }
 
 wxSizerItem* wxExDialog::AddUserSizer(
@@ -98,6 +97,8 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
   SetSizerAndFit(m_TopSizer);
+
+  wxPersistentRegisterAndRestore(this);
 }
 
 void wxExDialog::OnKeyDown(wxKeyEvent& event)
