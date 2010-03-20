@@ -16,8 +16,7 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/menu.h> // for wxExMenu
-
-class wxExVi;
+#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
@@ -47,9 +46,6 @@ public:
 
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
-
-  /// Destructor.
- ~wxExSTC();
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();
@@ -190,11 +186,11 @@ protected:
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetGlobalStyles();
+  void SetViMode(bool mode) {m_vi.Use(mode);};
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
   const int m_MarginLineNumber;
-  bool m_viMode;
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
   bool CheckAutoComp(const wxUniChar& c);
@@ -219,7 +215,7 @@ private:
   static std::vector <wxString> m_Macro;
 
   wxExLexer m_Lexer;
-  wxExVi* m_vi;
+  wxExVi m_vi;
 
   DECLARE_EVENT_TABLE()
 };

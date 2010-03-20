@@ -23,6 +23,7 @@ wxString wxExVi::m_LastCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
+  , m_Active(false)
   , m_MarkerSymbol(0)
   , m_IndicatorInsert(2)
   , m_IndicatorPut(1)

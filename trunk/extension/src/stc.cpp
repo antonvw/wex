@@ -18,7 +18,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
-#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
@@ -60,8 +59,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
-  , m_viMode(false)
-  , m_vi(new wxExVi(this))
+  , m_vi(wxExVi(this))
 {
   Initialize();
 }
@@ -73,17 +71,11 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginDividerNumber(stc.m_MarginDividerNumber)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
-  , m_viMode(stc.m_viMode)
-  , m_vi(new wxExVi(this))
+  , m_vi(wxExVi(this))
 {
   wxStyledTextCtrl::Create(stc.GetParent());
 
   Initialize();
-}
-
-wxExSTC::~wxExSTC()
-{
-  delete m_vi;
 }
 
 void wxExSTC::AddAsciiTable()
@@ -799,10 +791,10 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 {
   bool skip = true;
 
-  if (m_viMode)
+  if (m_vi.GetActive())
   {
     // Let vi handle all keys.
-    skip = m_vi->OnChar(event);
+    skip = m_vi.OnChar(event);
   }
 
   if (skip && 
@@ -870,8 +862,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
 void wxExSTC::OnKeyDown(wxKeyEvent& event)
 {
-  if ( !m_viMode ||
-       (m_viMode && m_vi->OnKeyDown(event)))
+  if (!m_vi.GetActive() ||
+      (m_vi.GetActive() && m_vi.OnKeyDown(event)))
   {
     if (event.GetKeyCode() == WXK_RETURN)
     {
@@ -977,9 +969,9 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
-    if (m_viMode)
+    if (m_vi.GetActive())
     {
-      m_vi->OnCharAdded(event);
+      m_vi.OnCharAdded(event);
     }
   }
   else
