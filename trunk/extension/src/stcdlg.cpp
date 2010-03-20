@@ -23,7 +23,6 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& prompt,
   long button_style,
   wxWindowID id,
-  const wxSize& size,
   long style)
   : wxExDialog(parent, caption, button_style, id, style)
 {
@@ -39,7 +38,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
       wxExSTC::STC_MENU_REPLACE,
     wxID_ANY, 
     wxDefaultPosition, 
-    size);
+    wxDefaultSize);
 
   m_STC->SetText(text);
 

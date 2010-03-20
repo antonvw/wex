@@ -526,9 +526,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
       caption,
       m_Output,
       wxEmptyString,
-      wxOK,
-      wxID_ANY,
-      wxSize(575, 250));
+      wxOK);
   }
   else
   {

@@ -29,7 +29,6 @@ public:
     const wxString& prompt = wxEmptyString,
     long button_style = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
-    const wxSize& size = wxDefaultSize,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
   /// Gets the STC scintilla lexer.
