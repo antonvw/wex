@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <wx/filepicker.h>
 #include <wx/notebook.h> 
+#include <wx/persist/treebook.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 
@@ -166,7 +167,13 @@ void wxExConfigDialog::Layout(int rows, int cols)
   if (notebook != NULL)
   {
     notebook->GetCurrentPage()->SetSizerAndFit(sizer);
-    notebook->SetSelection(0);
+    notebook->SetName("book" + GetName());
+
+    if (!wxPersistenceManager::Get().RegisterAndRestore(notebook))
+    {
+      // nothing was restored, so choose the default page ourselves
+      notebook->SetSelection(0);
+    }
 
     AddUserSizer(notebook);
   }
