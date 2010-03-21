@@ -789,11 +789,11 @@ void wxExSTC::MacroPlayback()
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
-  bool skip = m_vi.OnChar(event);
+  const bool skip = m_vi.OnChar(event);
 
   if (skip && 
-       GetReadOnly() && 
-       wxIsalnum(event.GetUnicodeKey()))
+      GetReadOnly() && 
+      wxIsalnum(event.GetUnicodeKey()))
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Document is readonly"));
