@@ -252,6 +252,14 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
+  else if (command.EndsWith(">>"))
+  {
+    Indent(repeat);
+  }
+  else if (command.EndsWith("<<"))
+  {
+    Indent(repeat, false);
+  }
   else if (command.Matches("'?"))
   {
     std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
@@ -676,6 +684,30 @@ void wxExVi::GotoBrace()
       m_STC->GotoPos(brace_match);
     }
   }
+}
+
+void wxExVi::Indent(int lines, bool forward) const
+{
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+
+  m_STC->BeginUndoAction();
+
+  for (int i = 0; i < lines; i++)
+  {
+    const int start = m_STC->PositionFromLine(line + i);
+
+    if (forward)
+    {
+      const wxUniChar c = (m_STC->GetUseTabs() ? '\t': ' ');
+      m_STC->InsertText(start, wxString(c, m_STC->GetIndent()));
+    }
+    else
+    {
+      m_STC->Remove(start, start + m_STC->GetIndent());
+    }
+  }
+
+  m_STC->EndUndoAction();
 }
 
 void wxExVi::InsertMode(
