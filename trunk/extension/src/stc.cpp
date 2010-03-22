@@ -856,6 +856,11 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
 void wxExSTC::OnKeyDown(wxKeyEvent& event)
 {
+  if (event.GetModifiers() == wxMOD_ALT)
+  {
+    return;
+  }
+
   if (!m_vi.GetActive() || m_vi.OnKeyDown(event))
   {
     if (event.GetKeyCode() == WXK_RETURN)
