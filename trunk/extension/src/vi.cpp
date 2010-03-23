@@ -667,7 +667,7 @@ void wxExVi::FindWord(bool find_next)
   m_STC->FindNext(m_SearchText, m_SearchFlags, find_next);
 }
 
-void wxExVi::GotoBrace()
+void wxExVi::GotoBrace() const
 {
   int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
           
