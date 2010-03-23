@@ -913,6 +913,10 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         m_STC->EndUndoAction();
         m_InsertMode = false;
       }
+      else
+      {
+        wxBell();
+      }
 
       m_Command.clear();
       break;
