@@ -1457,12 +1457,19 @@ void wxExSTC::UpdateStatusBar(const wxString& pane) const
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
       else
       {
-        // There might be NULL's inside selection.
-        // So use the GetSelectedTextRaw variant.
-        const int number_of_lines = wxExGetNumberOfLines(
-          const_cast< wxExSTC * >( this )->GetSelectedTextRaw());
-        if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
-        else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+        if (SelectionIsRectangle())
+        {
+          text = wxString::Format("%d,%d,%d", line, pos, len);
+        }
+        else
+        {
+          // There might be NULL's inside selection.
+          // So use the GetSelectedTextRaw variant.
+          const int number_of_lines = wxExGetNumberOfLines(
+            const_cast< wxExSTC * >( this )->GetSelectedTextRaw());
+          if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
+          else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+        }
       }
     }
   }
