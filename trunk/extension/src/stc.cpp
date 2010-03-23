@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
+  EVT_MOUSE_CAPTURE_LOST(wxExSTC::OnMouseCapture)
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
@@ -925,6 +926,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
   focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
+}
+
+void wxExSTC::OnMouseCapture(wxMouseCaptureLostEvent& event)
+{
 }
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)

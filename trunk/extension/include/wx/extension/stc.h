@@ -184,6 +184,7 @@ protected:
   void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
+  void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetGlobalStyles();
   void SetViMode(bool mode) {m_vi.Use(mode);};
