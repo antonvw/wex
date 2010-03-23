@@ -246,7 +246,7 @@ bool wxExSTCWithFrame::Open(
   return retValue;
 }
 
-void wxExSTCWithFrame::PropertiesMessage() const
+void wxExSTCWithFrame::PropertiesMessage()
 {
   wxExSTCFile::PropertiesMessage();
 

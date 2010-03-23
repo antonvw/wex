@@ -1436,7 +1436,9 @@ void wxExSTC::StopRecord()
 }
 
 #if wxUSE_STATUSBAR
-void wxExSTC::UpdateStatusBar(const wxString& pane) const
+// Do not make it const, too many const_casts needed,
+// I thought that might cause crash in rect selection, but it didn't.
+void wxExSTC::UpdateStatusBar(const wxString& pane)
 {
   wxString text;
 
@@ -1447,11 +1449,10 @@ void wxExSTC::UpdateStatusBar(const wxString& pane) const
     {
       int start;
       int end;
-      const_cast< wxExSTC * >( this )->GetSelection(&start, &end);
+      GetSelection(&start, &end);
 
       const int len  = end - start;
-      const int line = 
-        const_cast< wxExSTC * >( this )->GetCurrentLine() + 1;
+      const int line = GetCurrentLine() + 1;
       const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
 
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
@@ -1459,14 +1460,16 @@ void wxExSTC::UpdateStatusBar(const wxString& pane) const
       {
         if (SelectionIsRectangle())
         {
-          text = wxString::Format("%d,%d,%d", line, pos, len);
+          // The number of chars in the selection must be calculated.
+          // TODO: However, next code crashes (wxWidgets 2.9.0).
+          // GetSelectedText().length()
+          text = wxString::Format("%d,%d", line, pos);
         }
         else
         {
           // There might be NULL's inside selection.
           // So use the GetSelectedTextRaw variant.
-          const int number_of_lines = wxExGetNumberOfLines(
-            const_cast< wxExSTC * >( this )->GetSelectedTextRaw());
+          const int number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
           if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
           else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
         }

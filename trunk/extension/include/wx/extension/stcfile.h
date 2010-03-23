@@ -112,7 +112,7 @@ public:
     long flags = 0);
 
   /// Shows properties on the statusbar.
-  virtual void PropertiesMessage() const;
+  virtual void PropertiesMessage();
 
   /// If set, then the popup menu will show a file save item
   /// if the document is modified.
@@ -122,7 +122,7 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane) const;
+  void UpdateStatusBar(const wxString& pane);
 #endif
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);

@@ -832,7 +832,7 @@ bool wxExSTCFile::Open(
   }
 }
 
-void wxExSTCFile::PropertiesMessage() const
+void wxExSTCFile::PropertiesMessage()
 {
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(GetFileName());
@@ -910,7 +910,7 @@ void wxExSTCFile::ResetContentsChanged()
 }
 
 #if wxUSE_STATUSBAR
-void wxExSTCFile::UpdateStatusBar(const wxString& pane) const
+void wxExSTCFile::UpdateStatusBar(const wxString& pane)
 {
   if (pane == "PaneFileType")
   {

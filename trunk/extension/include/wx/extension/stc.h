@@ -154,7 +154,7 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane) const;
+  void UpdateStatusBar(const wxString& pane);
 #endif
 
   /// Starts recording the macro, and empties the previous one.
