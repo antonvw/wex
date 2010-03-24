@@ -80,8 +80,7 @@ void wxExFile::FileNew(const wxString& filename)
 {
   Assign(filename);
 
-  // Do not make it absolute, the specified filename does not need
-  // to exist.
+  DoFileNew();
 }
 
 bool wxExFile::FileSave(const wxString& filename)

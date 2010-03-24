@@ -45,9 +45,6 @@ public:
   /// Returns member.
   virtual bool GetContentsChanged() const {return m_ContentsChanged;};
 
-  /// Invokes base and clears the list.
-  void FileNew(const wxExFileName& filename = wxExFileName());
-
   virtual const wxString GetListInfo() const;
 
   virtual bool ItemFromText(const wxString& text);
@@ -56,9 +53,8 @@ public:
   virtual void ResetContentsChanged() {m_ContentsChanged = false;};
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  /// Loads the file and gets all data as list items.
   virtual void DoFileLoad(bool synced = false);
-  /// Saves list items to file.
+  virtual void DoFileNew();
   virtual void DoFileSave(bool save_as = false);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);

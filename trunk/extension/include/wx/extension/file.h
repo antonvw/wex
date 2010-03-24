@@ -39,13 +39,13 @@ public:
   /// Returns false if no check was done (e.g. this file was opened).
   bool CheckFileSync();
 
-  /// Sets the filename member and invokes DoFileLoad().
+  /// Sets the filename member and invokes DoFileLoad.
   bool FileLoad(const wxString& filename);
 
-  /// Sets the filename member.
+  /// Sets the filename member and invokes DoFileNew.
   void FileNew(const wxString& filename);
 
-  /// Sets the filename member and invokes DoFileSave().
+  /// Sets the filename member and invokes DoFileSave.
   bool FileSave(const wxString& filename = wxEmptyString);
 
   /// Returns whether contents have been changed.
@@ -65,6 +65,9 @@ public:
 protected:
   /// Invoked by FileLoad, allows you to load the file.
   virtual void DoFileLoad(bool synced = false) = 0;
+
+  /// Invoked by FileNew, allows you to load a new file.
+  virtual void DoFileNew() {;};
 
   /// Invoked by FileSave, allows you to save the file.
   virtual void DoFileSave(bool save_as = false) = 0;

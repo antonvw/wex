@@ -360,7 +360,7 @@ void MDIFrame::NewFile(bool as_project)
       wxID_ANY,
       wxExListViewStandard::LIST_MENU_DEFAULT);
 
-    ((wxExListViewFile*)page)->FileNew(fn);
+    ((wxExListViewFile*)page)->FileNew(key);
     SetTitle(wxEmptyString, text);
 
     m_NewProjectNo++;

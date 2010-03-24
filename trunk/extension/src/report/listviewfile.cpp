@@ -251,18 +251,17 @@ void wxExListViewFile::DoFileLoad(bool synced)
   m_Frame->SetRecentProject(GetFileName().GetFullPath());
 }
 
+void wxExListViewFile::DoFileNew()
+{
+  EditClearAll();
+}
+
 void wxExListViewFile::DoFileSave(bool save_as)
 {
   for (long i = 0; i < GetItemCount(); i++)
   {
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }
-}
-
-void wxExListViewFile::FileNew(const wxExFileName& filename)
-{
-  wxExFile::FileNew(filename.GetFullPath());
-  EditClearAll();
 }
 
 const wxString wxExListViewFile::GetListInfo() const

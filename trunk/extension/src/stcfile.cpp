@@ -548,6 +548,17 @@ void wxExSTCFile::DoFileLoad(bool synced)
   }
 }
 
+void wxExSTCFile::DoFileNew()
+{
+  SetName(GetFileName().GetFullPath());
+
+  PropertiesMessage();
+
+  ClearDocument();
+
+  SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+}
+
 void wxExSTCFile::DoFileSave(bool save_as)
 {
   const wxCharBuffer& buffer = GetTextRaw(); 
@@ -573,19 +584,6 @@ void wxExSTCFile::EOLModeUpdate(int eol_mode)
 #if wxUSE_STATUSBAR
   UpdateStatusBar("PaneFileType");
 #endif
-}
-
-void wxExSTCFile::FileNew(const wxExFileName& filename)
-{
-  wxExFile::FileNew(filename.GetFullPath());
-
-  SetName(filename.GetFullPath());
-
-  PropertiesMessage();
-
-  ClearDocument();
-
-  SetLexer(filename.GetLexer().GetScintillaLexer());
 }
 
 bool wxExSTCFile::FileReadOnlyAttributeChanged()

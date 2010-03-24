@@ -334,7 +334,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    m_DataWindow->FileNew();
+    m_DataWindow->FileNew(wxEmptyString);
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
     break;

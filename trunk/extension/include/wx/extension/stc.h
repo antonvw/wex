@@ -176,7 +176,7 @@ protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
   // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and FileNew.
+  // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
   void OnChar(wxKeyEvent& event);

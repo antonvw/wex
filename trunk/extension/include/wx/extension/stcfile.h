@@ -88,9 +88,6 @@ public:
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
 
-  /// Invokes base and clears document.
-  void FileNew(const wxExFileName& filename = wxExFileName());
-
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
 
@@ -127,6 +124,7 @@ public:
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   virtual void DoFileLoad(bool synced = false);
+  virtual void DoFileNew();
   virtual void DoFileSave(bool save_as = false);
 
   void OnCommand(wxCommandEvent& event);
