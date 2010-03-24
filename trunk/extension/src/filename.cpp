@@ -14,16 +14,16 @@
 
 wxExFileName::wxExFileName(const wxString& fullpath, wxPathFormat format)
   : wxFileName(fullpath, format)
+  , m_Lexer(wxExLexers::Get()->FindByFileName(*this))
   , m_Stat(fullpath) 
 {
-  m_Lexer = wxExLexers::Get()->FindByFileName(*this);
 }
 
 wxExFileName::wxExFileName(const wxFileName& filename)
   : wxFileName(filename)
+  , m_Lexer(wxExLexers::Get()->FindByFileName(*this))
   , m_Stat(filename.GetFullPath()) 
 {
-  m_Lexer = wxExLexers::Get()->FindByFileName(*this);
 }
 
 int wxExFileName::GetIconID() const
