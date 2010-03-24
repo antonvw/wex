@@ -87,7 +87,7 @@ void wxExSTC::AddAsciiTable()
   SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 
   // And override tab width.
-  SetTabWidth(10);
+  SetTabWidth(5);
 
   for (int i = 1; i <= 255; i++)
   {
