@@ -788,6 +788,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   case ID_VCS_INFO: wxExVCS(wxExVCS::VCS_INFO).Request(this); break;
   case ID_VCS_LOG: wxExVCS(wxExVCS::VCS_LOG).Request(this); break;
   case ID_VCS_LS: wxExVCS(wxExVCS::VCS_LS).Request(this); break;
+  case ID_VCS_SHOW: wxExVCS(wxExVCS::VCS_SHOW).Request(this); break;
   case ID_VCS_STAT: wxExVCS(wxExVCS::VCS_STAT).Request(this); break;
   case ID_VCS_UPDATE: wxExVCS(wxExVCS::VCS_UPDATE).Request(this); break;
 

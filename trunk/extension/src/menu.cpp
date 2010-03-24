@@ -252,6 +252,7 @@ void wxExMenu::BuildVCS(bool fill)
     DestroyVCS(ID_VCS_STAT);
     DestroyVCS(ID_VCS_INFO);
     DestroyVCS(ID_VCS_LOG);
+    DestroyVCS(ID_VCS_SHOW);
     DestroyVCS(ID_VCS_LS);
     DestroyVCS(ID_VCS_DIFF);
     DestroyVCS(ID_VCS_HELP);
@@ -265,6 +266,7 @@ void wxExMenu::BuildVCS(bool fill)
     AppendVCS(ID_VCS_STAT);
     AppendVCS(ID_VCS_INFO);
     AppendVCS(ID_VCS_LOG);
+    AppendVCS(ID_VCS_SHOW);
     AppendVCS(ID_VCS_LS);
     AppendVCS(ID_VCS_DIFF);
     AppendVCS(ID_VCS_HELP);

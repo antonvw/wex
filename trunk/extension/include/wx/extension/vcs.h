@@ -40,6 +40,7 @@ public:
     VCS_PROPLIST, ///< vcs prop list
     VCS_PROPSET,  ///< vcs prop set
     VCS_REVERT,   ///< vcs revert
+    VCS_SHOW,     ///< vcs show
     VCS_STAT,     ///< vcs stat
     VCS_UPDATE,   ///< vcs update
   };

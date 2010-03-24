@@ -331,6 +331,10 @@ wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
     case ID_VCS_REVERT:
       return VCS_REVERT; break;
 
+    case ID_EDIT_VCS_SHOW: 
+    case ID_VCS_SHOW:
+      return VCS_SHOW; break;
+
     case ID_EDIT_VCS_STAT: 
     case ID_VCS_STAT:
       return VCS_STAT; break;
@@ -380,12 +384,13 @@ void wxExVCS::Initialize()
           case VCS_COMMIT:   m_CommandString = "push"; break;
           case VCS_DIFF:     m_CommandString = "diff"; break;
           case VCS_HELP:     m_CommandString = "help"; break;
-          case VCS_INFO:     m_CommandString = "show"; break;
+          case VCS_INFO:     break;
           case VCS_LOG:      m_CommandString = "log"; break;
           case VCS_LS:       break;
           case VCS_PROPLIST: break;
           case VCS_PROPSET:  break;
           case VCS_REVERT:   m_CommandString = "revert"; break;
+          case VCS_SHOW:     m_CommandString = "show"; break;
           case VCS_STAT:     m_CommandString = "status"; break;
           case VCS_UPDATE:   m_CommandString = "update"; break;
           default:
@@ -409,6 +414,7 @@ void wxExVCS::Initialize()
           case VCS_PROPLIST: m_CommandString = "proplist"; break;
           case VCS_PROPSET:  m_CommandString = "propset"; break;
           case VCS_REVERT:   m_CommandString = "revert"; break;
+          case VCS_SHOW:     break;
           case VCS_STAT:     m_CommandString = "stat"; break;
           case VCS_UPDATE:   m_CommandString = "update"; break;
           default:
