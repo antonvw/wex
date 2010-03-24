@@ -151,7 +151,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       if (tool.IsCount())
       {
         m_Frame->OpenFile(
-          tool.GetLogfileName(), 0, wxEmptyString, STC_OPEN_FROM_OTHER);
+          tool.GetLogfileName(), 0, wxEmptyString, STC_WIN_FROM_OTHER);
       }
     }
 
@@ -161,25 +161,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   if (command.GetId() > ID_EDIT_VCS_LOWEST && 
       command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCS vcs(command.GetId(), GetFileName().GetFullPath());
-
-    if (command.GetId() == ID_EDIT_VCS_CAT ||
-        command.GetId() == ID_EDIT_VCS_BLAME)
-    {
-      if (vcs.ExecuteDialog(this) == wxID_OK)
-      {
-        m_Frame->OpenFile(
-          GetFileName(), 
-          vcs.GetCommandWithFlags(), 
-          vcs.GetOutput(),
-          wxExSTCFile::STC_OPEN_READ_ONLY);
-      }
-    }
-    else
-    {
-      vcs.Request(this);
-    }
-
+    wxExVCSExecute(m_Frame, command.GetId(), GetFileName());
     return;
   }
 
@@ -229,7 +211,7 @@ bool wxExSTCWithFrame::Open(
 {
   bool retValue;
 
-  if (flags & STC_OPEN_FROM_OTHER)
+  if (flags & STC_WIN_FROM_OTHER)
   {
     retValue = m_Frame->OpenFile(filename, line_number, match, flags);
   }

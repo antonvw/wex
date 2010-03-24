@@ -305,7 +305,7 @@ bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
 {
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses the focused STC.
   // Prevent recursion.
-  if (flags & wxExSTCFile::STC_OPEN_FROM_OTHER)
+  if (flags & wxExSTCFile::STC_WIN_FROM_OTHER)
   {
     flags = 0;
   }

@@ -30,14 +30,6 @@ public:
     STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
   };
 
-  /// Open flags (0 is used as default).
-  enum wxExSTCOpenFlags
-  {
-    STC_OPEN_HEX         = 0x0001, ///< open in hex mode
-    STC_OPEN_READ_ONLY   = 0x0002, ///< open as readonly, this mode overrides real mode from disk
-    STC_OPEN_FROM_OTHER  = 0x0008, ///< opened from within another file (e.g. a link)
-  };
-
   /// Config dialog flags (0 gives
   /// a modal dialog with all options).
   enum wxExSTCConfigFlags
@@ -45,6 +37,11 @@ public:
     STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
     STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
     STC_CONFIG_SIMPLE     = 0x0004, ///< only 'simple' options on dialog
+  };
+
+  enum wxExSTCFileWindowFlags
+  {
+    STC_WIN_FROM_OTHER  = 0x0008, ///< opened from within another file (e.g. a link)
   };
 
   /// Constructor. Does not open a file, but sets text to specified value,

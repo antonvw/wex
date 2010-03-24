@@ -62,7 +62,7 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 
   if (!value.empty())
   {
-    if (m_Flags & STC_OPEN_HEX)
+    if (m_Flags & STC_WIN_HEX)
     {
       AddTextHexMode(0, value.c_str());
     }
@@ -71,9 +71,9 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
       SetText(value);
     }
 
-    if (m_Flags & STC_OPEN_READ_ONLY ||
+    if (m_Flags & STC_WIN_READ_ONLY ||
         // At this moment we do not allow to write in hex mode.
-        m_Flags & STC_OPEN_HEX)
+        m_Flags & STC_WIN_HEX)
     {
       SetReadOnly(true);
     }
@@ -498,7 +498,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
 
   ReadFromFile(log_sync);
 
-  if (!(m_Flags & STC_OPEN_HEX))
+  if (!(m_Flags & STC_WIN_HEX))
   {
     SetLexer(GetFileName().GetLexer().GetScintillaLexer());
 
@@ -513,10 +513,10 @@ void wxExSTCFile::DoFileLoad(bool synced)
     }
   }
 
-  if (m_Flags & STC_OPEN_READ_ONLY ||
+  if (m_Flags & STC_WIN_READ_ONLY ||
       GetFileName().GetStat().IsReadOnly() ||
       // At this moment we do not allow to write in hex mode.
-      m_Flags & STC_OPEN_HEX)
+      m_Flags & STC_WIN_HEX)
   {
     SetReadOnly(true);
   }
@@ -588,7 +588,7 @@ void wxExSTCFile::EOLModeUpdate(int eol_mode)
 
 bool wxExSTCFile::FileReadOnlyAttributeChanged()
 {
-  if (!(m_Flags & STC_OPEN_HEX))
+  if (!(m_Flags & STC_WIN_HEX))
   {
     SetReadOnly(GetFileName().GetStat().IsReadOnly()); // does not return anything
 #if wxUSE_STATUSBAR
@@ -623,7 +623,7 @@ void wxExSTCFile::FileTypeMenu()
 
 void wxExSTCFile::GuessType()
 {
-  if (!(m_Flags & STC_OPEN_HEX))
+  if (!(m_Flags & STC_WIN_HEX))
   {
     // Get a small sample from this file to detect the file mode.
     const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
@@ -698,7 +698,7 @@ bool wxExSTCFile::LinkOpen(
       fullpath, 
       line_number, 
       wxEmptyString, 
-      m_Flags | STC_OPEN_FROM_OTHER);
+      m_Flags | STC_WIN_FROM_OTHER);
   }
 
   filename = wxFileName(fullpath).GetFullName();
@@ -752,7 +752,7 @@ void wxExSTCFile::OnIdle(wxIdleEvent& event)
   if (
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
-    !(m_Flags & STC_OPEN_READ_ONLY) &&
+    !(m_Flags & STC_WIN_READ_ONLY) &&
     GetFileName().GetStat().IsOk() &&
     GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
@@ -764,7 +764,7 @@ void wxExSTCFile::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
 
-  if (m_Flags & STC_OPEN_HEX)
+  if (m_Flags & STC_WIN_HEX)
   {
     if (!CheckBraceHex(GetCurrentPos()))
     {
@@ -863,7 +863,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   const wxCharBuffer& buffer = Read(offset);
 
-  if (!(m_Flags & STC_OPEN_HEX))
+  if (!(m_Flags & STC_WIN_HEX))
   {
     // At least for toggling between hex and non-hex this is necessary to
     // reshow the edge line.
@@ -914,7 +914,7 @@ void wxExSTCFile::UpdateStatusBar(const wxString& pane)
   {
     wxString text;
 
-    if (m_Flags & STC_OPEN_HEX)
+    if (m_Flags & STC_WIN_HEX)
     {
       text = "HEX";
     }

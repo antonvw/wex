@@ -36,6 +36,13 @@ public:
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };
 
+  /// Window flags (0 is used as default).
+  enum wxExSTCWindowFlags
+  {
+    STC_WIN_READ_ONLY   = 0x0002, ///< open as readonly, this mode overrides real mode from disk
+    STC_WIN_HEX         = 0x0001, ///< open in hex mode
+  };
+
   /// Constructor.
   wxExSTC(wxWindow *parent, 
     long menu_flags = STC_MENU_DEFAULT,

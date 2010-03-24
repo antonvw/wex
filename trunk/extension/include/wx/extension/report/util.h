@@ -18,6 +18,7 @@
 #endif
 #include <wx/aui/auibook.h>
 #include <wx/filename.h>
+#include <wx/extension/filename.h>
 
 class wxExFrameWithHistory;
 class wxExListView;
@@ -39,4 +40,11 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont())
 
 /// Run make on specified makefile.
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
+
+/// Executes VCS command id for specified path
+/// and opens component if necessary.
+void wxExVCSExecute(
+  wxExFrameWithHistory* frame, 
+  int id,
+  const wxExFileName& filename);
 #endif

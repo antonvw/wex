@@ -171,7 +171,7 @@ MDIFrame::MDIFrame(bool open_recent)
           wxExFileName(GetRecentProject()),
           0,
           wxEmptyString,
-          wxExSTCWithFrame::STC_OPEN_IS_PROJECT);
+          wxExSTCWithFrame::STC_WIN_IS_PROJECT);
       }
       else
       {
@@ -279,7 +279,7 @@ bool MDIFrame::DialogProjectOpen()
 
   wxArrayString files;
   dlg.GetPaths(files);
-  wxExOpenFiles(this, files, wxExSTCWithFrame::STC_OPEN_IS_PROJECT);
+  wxExOpenFiles(this, files, wxExSTCWithFrame::STC_WIN_IS_PROJECT);
 
   return true;
 }
@@ -426,28 +426,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCS vcs(event.GetId(), m_DirCtrl->GetFilePath());
-
-    if (event.GetId() == ID_EDIT_VCS_CAT ||
-        event.GetId() == ID_EDIT_VCS_BLAME)
-    {
-      if (vcs.ExecuteDialog(this) == wxID_OK)
-      {
-        OpenFile(
-          wxExFileName(m_DirCtrl->GetFilePath()), 
-          vcs.GetCommandWithFlags(),
-          vcs.GetOutput());
-      }
-      else
-      {
-        vcs.ShowOutput(this);
-      }
-    }
-    else
-    {
-      vcs.Request(this);
-    }
-
+    wxExVCSExecute(this, event.GetId(), wxExFileName(m_DirCtrl->GetFilePath()));
     return;
   }
 
@@ -636,10 +615,10 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 #if wxUSE_CHECKBOX
       if (editor != NULL &&
          // Reopen the current file, in the new mode, if different from current mode.
-         (((editor->GetFlags() & wxExSTCFile::STC_OPEN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
+         (((editor->GetFlags() & wxExSTCFile::STC_WIN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
       {
         long flags = 0;
-        if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTCFile::STC_OPEN_HEX;
+        if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
         wxExFileDialog dlg(this, editor);
         if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         editor->Open(editor->GetFileName().GetFullPath(),
@@ -1133,7 +1112,7 @@ bool MDIFrame::OpenFile(
     return false;
   }
 
-  wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT
+  wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
 
   wxWindow* page = notebook->GetPageByKey(filename.GetFullPath());
@@ -1143,7 +1122,7 @@ bool MDIFrame::OpenFile(
     notebook->SetSelection(notebook->GetPageIndex(page));
   }
 
-  if (flags & wxExSTCWithFrame::STC_OPEN_IS_PROJECT)
+  if (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT)
   {
     if (page == NULL)
     {
@@ -1189,7 +1168,7 @@ bool MDIFrame::OpenFile(
     {
 #if wxUSE_CHECKBOX
       if (GetHexModeCheckBox()->GetValue())
-        flags |= wxExSTCFile::STC_OPEN_HEX;
+        flags |= wxExSTCFile::STC_WIN_HEX;
 #endif
 
       wxLogTrace("SY_CALL", "+wxExSTCWithFrame");

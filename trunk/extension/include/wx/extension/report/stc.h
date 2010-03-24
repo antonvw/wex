@@ -34,7 +34,7 @@ public:
   /// Extra open flags.
   enum
   {
-    STC_OPEN_IS_PROJECT = 0x0100,
+    STC_WIN_IS_PROJECT = 0x0100,
   };
 
   /// Constructor. Does not open a file, but sets text to specified value.
