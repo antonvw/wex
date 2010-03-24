@@ -66,7 +66,8 @@ wxExSTC::wxExSTC(wxWindow *parent,
 }
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
-  : m_MenuFlags(stc.m_MenuFlags)
+  : wxStyledTextCtrl(stc.GetParent())
+  , m_MenuFlags(stc.m_MenuFlags)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
   , m_MarginDividerNumber(stc.m_MarginDividerNumber)
@@ -74,8 +75,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
   , m_vi(wxExVi(this))
 {
-  wxStyledTextCtrl::Create(stc.GetParent());
-
   Initialize();
 }
 
