@@ -261,7 +261,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
 void wxExListViewFile::FileNew(const wxExFileName& filename)
 {
-  wxExFile::FileNew(filename);
+  wxExFile::FileNew(filename.GetFullPath());
   EditClearAll();
 }
 

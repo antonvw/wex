@@ -40,10 +40,10 @@ public:
   bool CheckFileSync();
 
   /// Sets the filename member and invokes DoFileLoad().
-  bool FileLoad(const wxExFileName& filename);
+  bool FileLoad(const wxString& filename);
 
   /// Sets the filename member.
-  void FileNew(const wxExFileName& filename = wxExFileName());
+  void FileNew(const wxString& filename);
 
   /// Sets the filename member and invokes DoFileSave().
   bool FileSave(const wxString& filename = wxEmptyString);

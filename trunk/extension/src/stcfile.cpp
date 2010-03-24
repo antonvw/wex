@@ -577,7 +577,7 @@ void wxExSTCFile::EOLModeUpdate(int eol_mode)
 
 void wxExSTCFile::FileNew(const wxExFileName& filename)
 {
-  wxExFile::FileNew(filename);
+  wxExFile::FileNew(filename.GetFullPath());
 
   SetName(filename.GetFullPath());
 
@@ -808,7 +808,7 @@ bool wxExSTCFile::Open(
 
   m_Flags = flags;
 
-  if (wxExFile::FileLoad(filename))
+  if (wxExFile::FileLoad(filename.GetFullPath()))
   {
     SetName(filename.GetFullPath());
 
