@@ -20,6 +20,7 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stcfile.h>
+#include <wx/extension/vcs.h>
 
 const wxString wxExAlignText(
   const wxString& lines,
@@ -471,4 +472,29 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
   translation.Replace("@PAGESCNT@", num);
 
   return translation;
+}
+
+void wxExVCSExecute(
+  wxExFrame* frame, 
+  int id, 
+  const wxExFileName& filename)
+{
+  wxExVCS vcs(id, filename.GetFullPath());
+
+  if (id == ID_EDIT_VCS_CAT ||
+      id == ID_EDIT_VCS_BLAME)
+  {
+    if (vcs.ExecuteDialog(frame) == wxID_OK)
+    {
+      frame->OpenFile(
+        filename, 
+        vcs.GetCommandWithFlags(), 
+        vcs.GetOutput(),
+        wxExSTC::STC_WIN_READ_ONLY);
+    }
+  }
+  else
+  {
+    vcs.Request(frame);
+  }
 }

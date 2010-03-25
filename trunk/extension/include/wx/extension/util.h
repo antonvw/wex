@@ -19,6 +19,7 @@
 #endif
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filename.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/lexer.h>
 
 class wxExFrame;
@@ -137,6 +138,12 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   long file_flags = 0,
   int dir_flags = wxDIR_DEFAULT);
 
+/// Executes VCS command id for specified path
+/// and opens component if necessary.
+void wxExVCSExecute(
+  wxExFrame* frame, 
+  int id,
+  const wxExFileName& filename);
 #endif // wxUSE_GUI
 
 #endif

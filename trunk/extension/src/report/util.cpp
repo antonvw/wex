@@ -13,9 +13,7 @@
 #include <wx/regex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/log.h>
-#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
-#include <wx/extension/vcs.h>
 #include <wx/extension/report/util.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
@@ -211,29 +209,4 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
   wxSetWorkingDirectory(cwd);
 
   return ret;
-}
-
-void wxExVCSExecute(
-  wxExFrameWithHistory* frame, 
-  int id, 
-  const wxExFileName& filename)
-{
-  wxExVCS vcs(id, filename.GetFullPath());
-
-  if (id == ID_EDIT_VCS_CAT ||
-      id == ID_EDIT_VCS_BLAME)
-  {
-    if (vcs.ExecuteDialog(frame) == wxID_OK)
-    {
-      frame->OpenFile(
-        filename, 
-        vcs.GetCommandWithFlags(), 
-        vcs.GetOutput(),
-        wxExSTC::STC_WIN_READ_ONLY);
-    }
-  }
-  else
-  {
-    vcs.Request(frame);
-  }
 }

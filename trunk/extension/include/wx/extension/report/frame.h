@@ -72,14 +72,6 @@ public:
     wxWindowID dialogid,
     int commandid = wxID_APPLY);
 
-  /// Allows you to open a filename with specified contents.
-  /// The unique argument can be used as addition for a key in the notebook.
-  virtual bool OpenFile(
-    const wxExFileName& WXUNUSED(filename),
-    const wxString& WXUNUSED(unique),
-    const wxString& WXUNUSED(contents),
-    long flags = 0) {return false;};
-
   /// Interface from wxExFrame.
   virtual bool OpenFile(
     const wxExFileName& filename,

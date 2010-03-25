@@ -126,6 +126,14 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
+  /// Allows you to open a filename with specified contents.
+  /// The unique argument can be used as addition for a key in the notebook.
+  virtual bool OpenFile(
+    const wxExFileName& WXUNUSED(filename),
+    const wxString& WXUNUSED(unique),
+    const wxString& WXUNUSED(contents),
+    long flags = 0) {return false;};
+
 #if wxUSE_STATUSBAR
   /// Do something when statusbar is clicked.
   virtual void StatusBarClicked(const wxString& ) {};
