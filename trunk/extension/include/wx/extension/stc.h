@@ -40,10 +40,13 @@ public:
   enum wxExSTCWindowFlags
   {
     STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, this mode overrides real mode from disk
+    STC_WIN_HEX         = 0x0002, ///< window in hex mode
   };
 
   /// Constructor.
   wxExSTC(wxWindow *parent, 
+    const wxString& value = wxEmptyString,
+    long win_flags = 0,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -78,6 +81,9 @@ public:
     const wxString& text, 
     int search_flags = 0,
     bool find_next = true);
+
+  /// Gets current flags.
+  long GetFlags() const {return m_Flags;};
 
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
@@ -179,6 +185,7 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
 protected:
+  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
   // Clears the component: all text is cleared and all styles are reset.
@@ -198,10 +205,12 @@ protected:
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
   const int m_MarginLineNumber;
+  long m_Flags; // win flags
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
   bool CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
+  bool CheckBraceHex(int pos);
   int FindReplaceDataFlags() const;
   void FoldAll();
   void HexDecCalltip(int pos);

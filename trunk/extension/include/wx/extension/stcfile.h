@@ -41,7 +41,6 @@ public:
 
   enum wxExSTCFileWindowFlags
   {
-    STC_WIN_HEX         = 0x0010, ///< window in hex mode
     STC_WIN_FROM_OTHER  = 0x0020, ///< opened from within another file (e.g. a link)
   };
 
@@ -50,7 +49,7 @@ public:
   /// This default value is overwritten by Open.
   wxExSTCFile(wxWindow* parent,
     const wxString& value = wxEmptyString,
-    long open_flags = 0,
+    long win_flags = 0,
     const wxString& title = wxEmptyString,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
@@ -64,7 +63,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
-    long open_flags = 0,
+    long win_flags = 0,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -92,9 +91,6 @@ public:
   virtual bool GetContentsChanged() const {return GetModify();};
 
   virtual void ResetContentsChanged();
-
-  /// Gets current flags (used by Open).
-  long GetFlags() const {return m_Flags;};
 
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
@@ -127,13 +123,10 @@ protected:
 
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
-  void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
-  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
   void AddBasePathToPathList();
-  bool CheckBraceHex(int pos);
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void GuessType();
@@ -149,7 +142,6 @@ private:
   static wxExConfigDialog* m_ConfigDialog;
 
   bool m_FileSaveInMenu;
-  long m_Flags; // open flags
 
   wxFileOffset m_PreviousLength;
   wxPathList m_PathList;

@@ -23,14 +23,8 @@
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
-const wxFileOffset bytes_per_line = 16;
-const wxFileOffset each_hex_field = 3;
-const wxFileOffset space_between_fields = 1;
-const wxFileOffset start_hex_field = 10;
-
 BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_IDLE(wxExSTCFile::OnIdle)
-  EVT_KEY_UP(wxExSTCFile::OnKeyUp)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
@@ -51,33 +45,13 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTC(parent, menu_flags, id, pos, size, style)
+  : wxExSTC(parent, value, open_flags, menu_flags, id, pos, size, style)
   , m_FileSaveInMenu(false)
-  , m_Flags(open_flags)
   , m_PreviousLength(0)
 {
   SetName(title);
 
   Initialize();
-
-  if (!value.empty())
-  {
-    if (m_Flags & STC_WIN_HEX)
-    {
-      AddTextHexMode(0, value.c_str());
-    }
-    else
-    {
-      SetText(value);
-    }
-
-    if (m_Flags & STC_WIN_READ_ONLY ||
-        // At this moment we do not allow to write in hex mode.
-        m_Flags & STC_WIN_HEX)
-    {
-      SetReadOnly(true);
-    }
-  }
 
   PropertiesMessage();
 }
@@ -92,9 +66,8 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTC(parent, menu_flags, id, pos, size, style)
+  : wxExSTC(parent, wxEmptyString, flags, menu_flags, id, pos, size, style)
   , m_FileSaveInMenu(false)
-  , m_Flags(0)
   , m_PreviousLength(0)
 {
   Initialize();
@@ -105,7 +78,6 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
   : wxExSTC(stc)
   , m_FileSaveInMenu(stc.m_FileSaveInMenu)
-  , m_Flags(stc.m_Flags)
   , m_PreviousLength(stc.m_PreviousLength)
 {
   Initialize();
@@ -141,92 +113,6 @@ void wxExSTCFile::AddBasePathToPathList()
   m_PathList.Add(basepath);
 }
 
-void wxExSTCFile::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
-/*
-e.g.:
-offset    hex field                                         ascii field
-00000000: 23 69 6e 63 6c 75 64 65  20 3c 77 78 2f 63 6d 64  #include <wx/cmd
-00000010: 6c 69 6e 65 2e 68 3e 20  2f 2f 20 66 6f 72 20 77  line.h> // for w
-00000020: 78 43 6d 64 4c 69 6e 65  50 61 72 73 65 72 0a 23  xCmdLineParser #
-          <----------------------------------------------> bytes_per_line
-          <-> each_hex_field
-                                     space_between_fields <>
-                                  <- mid_in_hex_field
-*/
-{
-  SetControlCharSymbol('x');
-  SetGlobalStyles();
-  wxExLexers::Get()->ApplyHexStyles(this);
-  wxExLexers::Get()->ApplyMarkers(this);
-
-  // Do not show an edge, eol or whitespace in hex mode.
-  SetEdgeMode(wxSTC_EDGE_NONE);
-  SetViewEOL(false);
-  SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-
-  const wxFileOffset mid_in_hex_field = 7;
-
-  wxString text;
-
-  // Allocate space for the string.
-  // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, hex field 3 * length and the
-  // ascii field just the length.
-  text.Alloc(
-    (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
-     buffer.length() * each_hex_field + buffer.length());
-
-  for (
-    wxFileOffset offset = 0; 
-    offset < buffer.length(); 
-    offset += bytes_per_line)
-  {
-    long count = buffer.length() - offset;
-    count =
-      (bytes_per_line < count ? bytes_per_line : count);
-
-    wxString field_hex, field_ascii;
-
-    for (register wxFileOffset byte = 0; byte < count; byte++)
-    {
-      const char c = buffer.data()[offset + byte];
-
-      field_hex += wxString::Format("%02x ", (unsigned char)c);
-
-      // Print an extra space.
-      if (byte == mid_in_hex_field)
-      {
-        field_hex += ' ';
-      }
-
-      // We do not want the \n etc. to be printed,
-      // as that disturbs the hex view field.
-      if (c != 0 && c != '\r' && c != '\n' && c != '\t')
-      {
-        field_ascii += c;
-      }
-      else
-      {
-        // Therefore print an ordinary ascii char.
-        field_ascii += '.';
-      }
-    }
-
-    // The extra space if we ended too soon.
-    if (count <= mid_in_hex_field)
-    {
-      field_hex += ' ';
-    }
-
-    text += wxString::Format("%08lx: ", (unsigned long)start + offset) +
-      field_hex +
-      wxString(' ', space_between_fields + ((bytes_per_line - count)* each_hex_field)) +
-      field_ascii +
-      GetEOL();
-  }
-
-  AddText(text);
-}
-
 void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
@@ -257,52 +143,6 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
     menu.Append(wxID_SAVE);
   }
-}
-
-bool wxExSTCFile::CheckBraceHex(int pos)
-{
-  const int col = GetColumn(pos);
-  const wxFileOffset start_ascii_field =
-    start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
-
-  if (col >= start_ascii_field)
-  {
-    const int offset = col - start_ascii_field;
-    int space = 0;
-
-    if (col >= start_ascii_field + bytes_per_line / 2)
-    {
-      space++;
-    }
-
-    BraceHighlight(pos,
-      PositionFromLine(LineFromPosition(pos)) + start_hex_field + each_hex_field * offset + space);
-    return true;
-  }
-  else if (col >= start_hex_field)
-  {
-    if (GetCharAt(pos) != ' ')
-    {
-      int space = 0;
-
-      if (col >= start_hex_field + space_between_fields + (bytes_per_line * each_hex_field) / 2)
-      {
-        space++;
-      }
-
-      const int offset = (col - (start_hex_field + space)) / each_hex_field;
-
-      BraceHighlight(pos,
-        PositionFromLine(LineFromPosition(pos)) + start_ascii_field + offset);
-      return true;
-    }
-  }
-  else
-  {
-    BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
-  }
-
-  return false;
 }
 
 // This is a static method, cannot use normal members here.
@@ -757,19 +597,6 @@ void wxExSTCFile::OnIdle(wxIdleEvent& event)
     GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
-  }
-}
-
-void wxExSTCFile::OnKeyUp(wxKeyEvent& event)
-{
-  event.Skip();
-
-  if (m_Flags & STC_WIN_HEX)
-  {
-    if (!CheckBraceHex(GetCurrentPos()))
-    {
-      CheckBraceHex(GetCurrentPos() - 1);
-    }
   }
 }
 
