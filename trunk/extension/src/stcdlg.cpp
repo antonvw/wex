@@ -37,14 +37,14 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
 
   m_STC = new wxExSTC(
     this, 
+    text,
+    0,
     wxExSTC::STC_MENU_SIMPLE | 
       wxExSTC::STC_MENU_FIND | 
       wxExSTC::STC_MENU_REPLACE,
     wxID_ANY, 
     wxDefaultPosition, 
     wxDefaultSize);
-
-  m_STC->SetText(text);
 
   // Override defaults from config.
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);

@@ -36,6 +36,8 @@ wxExSTCShell::wxExSTCShell(
   long style)
   : wxExSTC(
       parent, 
+      wxEmptyString,
+      0,
       menu_flags, 
       id, 
       pos, 
