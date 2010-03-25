@@ -12,6 +12,8 @@
 #ifndef _EXDEFS_H
 #define _EXDEFS_H
 
+const int TOOL_MAX = 25;
+const int TOOL_MAX_REPORTS = 10;
 const int VCS_MAX_COMMANDS = 25;
 
 /// These are used as window event ID's. Therefore after the highest wxWidgets ID.
@@ -86,7 +88,7 @@ enum wxExToolId
   ID_TOOL_LINE_CODE,     // only lines with code
   ID_TOOL_REVISION_RECENT,
   ID_TOOL_FIRST_USER,    // after this your own tool
-  ID_TOOL_REPORT_FIRST = ID_TOOL_FIRST_USER + 100,  // after this the first report
+  ID_TOOL_REPORT_FIRST = ID_TOOL_FIRST_USER + TOOL_MAX,  // after this the first report
   ID_TOOL_REPORT_FIND,
   ID_TOOL_REPORT_REPLACE,
   ID_TOOL_REPORT_COUNT,
@@ -94,7 +96,7 @@ enum wxExToolId
   ID_TOOL_REPORT_REVISION,
   ID_TOOL_REPORT_KEYWORD,
   ID_TOOL_REPORT_FIRST_USER, // after this your own report
-  ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + 100,   // before this is the last report
+  ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + TOOL_MAX_REPORTS,  // before this is the last report
   ID_TOOL_HIGHEST,
 };
 #endif
