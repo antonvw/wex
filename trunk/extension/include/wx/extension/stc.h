@@ -217,7 +217,7 @@ private:
   void Initialize();
   void SetFolding();
   void SequenceDialog();
-  void SetLexer();
+  void SetScintillaLexer();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
