@@ -50,6 +50,7 @@ BEGIN_EVENT_TABLE(MDIFrame, Frame)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, MDIFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, MDIFrame::OnCommand)
+  EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, MDIFrame::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, MDIFrame::OnUpdateUI)
@@ -422,17 +423,17 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
-      event.GetId() < ID_EDIT_VCS_HIGHEST)
-  {
-    wxExVCSExecute(this, event.GetId(), wxExFileName(m_DirCtrl->GetFilePath()));
-    return;
-  }
-
   if (event.GetId() > ID_VCS_LOWEST && 
       event.GetId() < ID_VCS_HIGHEST)
   {
     wxExVCS(event.GetId()).Request(this);
+    return;
+  }
+
+  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
+      event.GetId() < ID_EDIT_VCS_HIGHEST)
+  {
+    wxExVCSExecute(this, event.GetId(), wxExFileName(m_DirCtrl->GetFilePath()));
     return;
   }
 
