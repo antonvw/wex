@@ -610,11 +610,10 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       }
       else if (GetSelectedItemCount() == 1)
       {
-        const wxExListItem item(this, GetFirstSelected());
-        menu.AppendSeparator();
-
-        if (wxExVCS::Get()->DirExists(item.GetFileName()))
+        if (wxExVCS::Get()->DirExists(
+          wxExListItem(this, GetFirstSelected()).GetFileName()))
         {
+          menu.AppendSeparator();
           menu.AppendVCS();
         }
       }
