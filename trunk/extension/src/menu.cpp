@@ -203,23 +203,25 @@ void wxExMenu::AppendTools(int itemid)
 
 void wxExMenu::AppendVCS()
 {
+  const int vcs_offset_id = ID_EDIT_VCS_LOWEST;
+
   wxExMenu* vcsmenu = new wxExMenu;
-  vcsmenu->AppendVCS(ID_EDIT_VCS_LOG);
-  vcsmenu->AppendVCS(ID_EDIT_VCS_STAT);
-  vcsmenu->AppendVCS(ID_EDIT_VCS_SHOW);
-  vcsmenu->AppendVCS(ID_EDIT_VCS_DIFF);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_SHOW);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
   vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(ID_EDIT_VCS_COMMIT);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
   vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(ID_EDIT_VCS_CAT);
-  vcsmenu->AppendVCS(ID_EDIT_VCS_BLAME);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_CAT);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_BLAME);
   vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(ID_EDIT_VCS_PROPLIST);
-  vcsmenu->AppendVCS(ID_EDIT_VCS_PROPSET);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPLIST);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPSET);
   vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(ID_EDIT_VCS_REVERT);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_REVERT);
   vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(ID_EDIT_VCS_ADD);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
 
   AppendSeparator();
   AppendSubMenu(vcsmenu, "&VCS");
@@ -227,7 +229,7 @@ void wxExMenu::AppendVCS()
 
 void wxExMenu::AppendVCS(int id)
 {
-  const wxString command = wxExVCS(id).GetCommand();
+  const wxString command = wxExVCS(id).GetCommandString();
 
   if (command.empty())
   {
@@ -241,6 +243,8 @@ void wxExMenu::AppendVCS(int id)
 
 void wxExMenu::BuildVCS(bool fill)
 {
+  const int vcs_offset_id = ID_VCS_LOWEST;
+
   if (m_MenuVCSFilled)
   {
     wxMenuItem* item;
@@ -250,30 +254,30 @@ void wxExMenu::BuildVCS(bool fill)
       Destroy(item);
     }
 
-    DestroyVCS(ID_VCS_STAT);
-    DestroyVCS(ID_VCS_INFO);
-    DestroyVCS(ID_VCS_LOG);
-    DestroyVCS(ID_VCS_LS);
-    DestroyVCS(ID_VCS_DIFF);
-    DestroyVCS(ID_VCS_HELP);
-    DestroyVCS(ID_VCS_UPDATE);
-    DestroyVCS(ID_VCS_COMMIT);
-    DestroyVCS(ID_VCS_ADD);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_STAT);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_INFO);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_LOG);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_LS);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_HELP);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
+    DestroyVCS(vcs_offset_id + wxExVCS::VCS_ADD);
   }
 
   if (fill)
   {
-    AppendVCS(ID_VCS_STAT);
-    AppendVCS(ID_VCS_INFO);
-    AppendVCS(ID_VCS_LOG);
-    AppendVCS(ID_VCS_LS);
-    AppendVCS(ID_VCS_DIFF);
-    AppendVCS(ID_VCS_HELP);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_INFO);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_LS);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_HELP);
     AppendSeparator();
-    AppendVCS(ID_VCS_UPDATE);
-    AppendVCS(ID_VCS_COMMIT);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
     AppendSeparator();
-    AppendVCS(ID_VCS_ADD);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
   }
 
   m_MenuVCSFilled = fill;

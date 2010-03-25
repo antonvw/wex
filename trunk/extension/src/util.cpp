@@ -481,8 +481,8 @@ void wxExVCSExecute(
 {
   wxExVCS vcs(id, filename.GetFullPath());
 
-  if (id == ID_EDIT_VCS_CAT ||
-      id == ID_EDIT_VCS_BLAME)
+  if (vcs.GetCommand() == wxExVCS::VCS_CAT ||
+      vcs.GetCommand() == wxExVCS::VCS_BLAME)
   {
     if (vcs.ExecuteDialog(frame) == wxID_OK)
     {

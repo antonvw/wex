@@ -282,71 +282,18 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
 
 wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
 {
-  switch (command_id)
+  if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
   {
-    case ID_EDIT_VCS_ADD: 
-    case ID_VCS_ADD:
-      return VCS_ADD; break;
-
-    case ID_EDIT_VCS_BLAME: 
-    case ID_VCS_BLAME:
-      return VCS_BLAME; break;
-
-    case ID_EDIT_VCS_CAT: 
-      return VCS_CAT; break;
-
-    case ID_EDIT_VCS_COMMIT: 
-    case ID_VCS_COMMIT:
-      return VCS_COMMIT; break;
-
-    case ID_EDIT_VCS_DIFF: 
-    case ID_VCS_DIFF:
-      return VCS_DIFF; break;
-
-    case ID_EDIT_VCS_HELP: 
-    case ID_VCS_HELP:
-      return VCS_HELP; break;
-
-    case ID_EDIT_VCS_INFO: 
-    case ID_VCS_INFO:
-      return VCS_INFO; break;
-
-    case ID_EDIT_VCS_LOG: 
-    case ID_VCS_LOG:
-      return VCS_LOG; break;
-
-    case ID_EDIT_VCS_LS: 
-    case ID_VCS_LS:
-      return VCS_LS; break;
-
-    case ID_EDIT_VCS_PROPLIST: 
-    case ID_VCS_PROPLIST:
-      return VCS_PROPLIST; break;
-
-    case ID_EDIT_VCS_PROPSET: 
-    case ID_VCS_PROPSET:
-      return VCS_PROPSET; break;
-
-    case ID_EDIT_VCS_REVERT: 
-    case ID_VCS_REVERT:
-      return VCS_REVERT; break;
-
-    case ID_EDIT_VCS_SHOW: 
-    case ID_VCS_SHOW:
-      return VCS_SHOW; break;
-
-    case ID_EDIT_VCS_STAT: 
-    case ID_VCS_STAT:
-      return VCS_STAT; break;
-
-    case ID_EDIT_VCS_UPDATE: 
-    case ID_VCS_UPDATE:
-      return VCS_UPDATE; break;
-
-    default:
-      wxFAIL;
-      return VCS_NO_COMMAND;
-      break;
+    return (wxExVCSCommand)(command_id - ID_VCS_LOWEST);
+  }
+  else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
+  {
+    return (wxExVCSCommand)(command_id - ID_EDIT_VCS_LOWEST);
+  }
+  else
+  {
+    wxFAIL;
+    return VCS_NO_COMMAND;
   }
 }
 
