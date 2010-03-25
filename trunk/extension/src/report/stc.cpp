@@ -131,9 +131,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
-  wxExFileDialog dlg(this, this);
-
-  if (dlg.ShowModalIfChanged() == wxID_CANCEL) 
+  if (wxExFileDialog(this, this).ShowModalIfChanged() == wxID_CANCEL)
   {
     return;
   }
@@ -154,20 +152,15 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
           tool.GetLogfileName(), 0, wxEmptyString, STC_WIN_FROM_OTHER);
       }
     }
-
-    return;
   }
-
-  if (command.GetId() > ID_EDIT_VCS_LOWEST && 
-      command.GetId() < ID_EDIT_VCS_HIGHEST)
+  else if (command.GetId() > ID_EDIT_VCS_LOWEST && 
+           command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
     wxExVCSExecute(m_Frame, command.GetId(), GetFileName());
-    return;
   }
-
-  switch (command.GetId())
+  else switch (command.GetId())
   {
-  case ID_STC_ADD_HEADER:
+    case ID_STC_ADD_HEADER:
     {
       const wxExHeader header;
 
@@ -187,7 +180,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_STC_COMPARE:
+    case ID_STC_COMPARE:
     {
       wxFileName lastfile;
 
@@ -198,8 +191,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  default: wxFAIL;
-    break;
+    default: wxFAIL; break;
   }
 }
 
