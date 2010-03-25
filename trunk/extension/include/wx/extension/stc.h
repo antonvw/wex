@@ -28,10 +28,10 @@ public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExStyledMenuFlags
   {
-    STC_MENU_SIMPLE    = 0x0002, ///< for adding copy/paste etc. menu
-    STC_MENU_FIND      = 0x0004, ///< for adding find menu
-    STC_MENU_REPLACE   = 0x0008, ///< for adding replace menu
-    STC_MENU_INSERT    = 0x0010, ///< for adding sequence menu
+    STC_MENU_SIMPLE    = 0x0001, ///< for adding copy/paste etc. menu
+    STC_MENU_FIND      = 0x0002, ///< for adding find menu
+    STC_MENU_REPLACE   = 0x0004, ///< for adding replace menu
+    STC_MENU_INSERT    = 0x0008, ///< for adding sequence menu
 
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };
@@ -39,8 +39,7 @@ public:
   /// Window flags (0 is used as default).
   enum wxExSTCWindowFlags
   {
-    STC_WIN_READ_ONLY   = 0x0002, ///< open as readonly, this mode overrides real mode from disk
-    STC_WIN_HEX         = 0x0001, ///< open in hex mode
+    STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, this mode overrides real mode from disk
   };
 
   /// Constructor.

@@ -41,7 +41,8 @@ public:
 
   enum wxExSTCFileWindowFlags
   {
-    STC_WIN_FROM_OTHER  = 0x0008, ///< opened from within another file (e.g. a link)
+    STC_WIN_HEX         = 0x0010, ///< window in hex mode
+    STC_WIN_FROM_OTHER  = 0x0020, ///< opened from within another file (e.g. a link)
   };
 
   /// Constructor. Does not open a file, but sets text to specified value,
