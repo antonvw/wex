@@ -553,6 +553,10 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
       m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
     }
   }
+  else
+  {
+    m_STCEntryDialog->SetLexer(wxEmptyString);
+  }
 
   m_STCEntryDialog->Show();
 }
