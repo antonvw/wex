@@ -96,7 +96,6 @@ public:
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};
 private:
-  void DestroyVCS(int id);
   int m_ItemsAppended;
   bool m_IsSeparator;
   bool m_MenuVCSFilled;

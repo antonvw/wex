@@ -260,7 +260,12 @@ void wxExMenu::BuildVCS(bool fill)
 
     for (int id = ID_VCS_LOWEST + 1; id < ID_VCS_HIGHEST; id++)
     {
-      DestroyVCS(id);
+      // When using only Destroy, and the item does not exist,
+      // an assert happens.
+      if (FindItem(id) != NULL)
+      {
+        Destroy(id);
+      }
     }
   }
 
@@ -283,16 +288,4 @@ void wxExMenu::BuildVCS(bool fill)
 
   m_MenuVCSFilled = fill;
 }
-
-void wxExMenu::DestroyVCS(int id)
-{
-  // When using only Destroy, and the item does not exist,
-  // an assert happens.
-
-  if (FindItem(id))
-  {
-    Destroy(id);
-  }
-}
-
 #endif // wxUSE_GUI
