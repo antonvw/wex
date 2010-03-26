@@ -201,6 +201,9 @@ void wxExMenu::AppendTools(int itemid)
   AppendSubMenu(menuTool, _("&Tools"), wxEmptyString, itemid);
 }
 
+// This is the VCS submenu, as present on a popup.
+// Therefore it is build when clicking, and does not
+// need to be destroyed an old one.
 void wxExMenu::AppendVCS()
 {
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST;
@@ -241,10 +244,11 @@ void wxExMenu::AppendVCS(int id)
   Append(id, text);
 }
 
+// This is the general VCS menu, it is in the main menu,
+// and because contents depends on actual VCS used,
+// it is rebuild after change of VCS system.
 void wxExMenu::BuildVCS(bool fill)
 {
-  const int vcs_offset_id = ID_VCS_LOWEST;
-
   if (m_MenuVCSFilled)
   {
     wxMenuItem* item;
@@ -254,19 +258,16 @@ void wxExMenu::BuildVCS(bool fill)
       Destroy(item);
     }
 
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_STAT);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_INFO);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_LOG);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_LS);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_HELP);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
-    DestroyVCS(vcs_offset_id + wxExVCS::VCS_ADD);
+    for (int id = ID_VCS_LOWEST + 1; id < ID_VCS_HIGHEST; id++)
+    {
+      DestroyVCS(id);
+    }
   }
 
   if (fill)
   {
+    const int vcs_offset_id = ID_VCS_LOWEST;
+
     AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
     AppendVCS(vcs_offset_id + wxExVCS::VCS_INFO);
     AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
