@@ -116,21 +116,17 @@ long wxExVCS::Execute()
   wxString cwd;
   wxString file;
 
-  if (m_FullPath.empty() && !cwd.empty())
+  if (m_FullPath.empty())
   {
     cwd = wxGetCwd();
-    if (!wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder"))))
-    {
-      m_Output = _("Cannot set working directory");
-      return -1;
-    }
+    wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
 
     if (m_Command == VCS_ADD)
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
   }
-  else if (!m_FullPath.empty())
+  else
   {
     if (GetVCS() == VCS_GIT)
     {
