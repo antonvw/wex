@@ -121,16 +121,18 @@ MDIFrame::MDIFrame(bool open_recent)
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
+
   GetManager().AddPane(m_NotebookWithProjects,
-    wxAuiPaneInfo().Left().MaximizeButton(true).BestSize(250, 250).Name("PROJECTS").Caption(_("Projects")));
+    wxAuiPaneInfo().Left().MaximizeButton(true).Name("PROJECTS").Caption(_("Projects")));
+  GetManager().AddPane(m_DirCtrl,
+    wxAuiPaneInfo().Left().Name("DIRCTRL").Caption(_("Explorer")));
+  GetManager().AddPane(asciiTable,
+    wxAuiPaneInfo().Left().Name("ASCIITABLE").Caption(_("Ascii Table")));
+  GetManager().AddPane(m_History,
+    wxAuiPaneInfo().Left().Name("HISTORY").Caption(_("History")));
+
   GetManager().AddPane(m_NotebookWithLists,
     wxAuiPaneInfo().Bottom().MaximizeButton(true).MinSize(250, 100).Name("OUTPUT").Caption(_("Output")));
-  GetManager().AddPane(m_DirCtrl,
-    wxAuiPaneInfo().Left().BestSize(400, 250).Name("DIRCTRL").Caption(_("Explorer")));
-  GetManager().AddPane(asciiTable,
-    wxAuiPaneInfo().Left().BestSize(400, 250).Name("ASCIITABLE").Caption(_("Ascii Table")));
-  GetManager().AddPane(m_History,
-    wxAuiPaneInfo().Left().BestSize(400, 250).Name("HISTORY").Caption(_("History")));
   GetManager().AddPane(findbar,
     wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
