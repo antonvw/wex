@@ -7,7 +7,6 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/config.h>
 #include <wx/persist/toplevel.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
