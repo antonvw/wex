@@ -1,26 +1,23 @@
-/******************************************************************************\
-* File:          frame.h
-* Purpose:       Declaration of wxexFrame class and support classes
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      frame.h
+// Purpose:   Declaration of wxExFrame classes
+// Author:    Anton van Wezenbeek
+// RCS-ID:    $Id$
+// Created:   2010-03-26
+// Copyright: (c) 2010 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRAME_H
 #define _EXFRAME_H
 
-#include <map>
 #include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/aui/auibar.h> // for wxAuiToolBar
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
+#include <wx/extension/bar.h>
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
 
@@ -29,44 +26,8 @@
 
 class wxExGrid;
 class wxExListView;
-class wxExStatusBar;
-class wxExSTCFile;
 class wxExSTC;
-class wxExToolBar;
-
-#if wxUSE_STATUSBAR
-/// This class defines our statusbar panes, to be used by wxExFrame::SetupStatusBar.
-/// It just adds some members to the base class, and keeps a static total.
-class wxExPane : public wxStatusBarPane
-{
-  friend class wxExStatusBar;
-public:
-  /// Default constructor.
-  wxExPane(
-    /// If you do no provide helptext, it is derived from the name, by using
-    /// text after the first 'e' character (so after 'Pane') if name is
-    /// not 'PaneText'.
-    const wxString& name = wxEmptyString,
-    /// Width of the pane.
-    int width = 50,
-    /// The helptext shown as a tooltip.
-    const wxString& helptext = wxEmptyString,
-    /// The style.
-    int style = wxSB_NORMAL)
-    : wxStatusBarPane(style, width)
-    , m_Helptext(
-        helptext.empty() && name != "PaneText" ? 
-          name.AfterFirst('e'): helptext)
-    , m_Name(name)
-    , m_No(m_Total)
-    {m_Total++;};
-private:
-  wxString m_Helptext;
-  wxString m_Name;
-  int m_No;
-  static int m_Total;
-};
-#endif // wxUSE_STATUSBAR
+class wxExSTCFile;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and a toolbar if you call CreateToolBar.
@@ -254,87 +215,6 @@ public:
   void TogglePane(const wxString& pane);
 private:
   wxAuiManager m_Manager;
-};
-#endif
-
-#if wxUSE_STATUSBAR
-/// Offers a status bar with popup menu in relation to wxExFrame.
-class wxExStatusBar : public wxStatusBar
-{
-public:
-  /// Constructor.
-  wxExStatusBar(wxExFrame* parent,
-    wxWindowID id = wxID_ANY,
-    long style = wxST_SIZEGRIP,
-    const wxString& name = wxStatusBarNameStr);
-
-  /// Sets the panes.
-  void SetPanes(const std::vector<wxExPane>& panes);
-
-  /// Sets text on specified pane.
-  void SetStatusText(
-    const wxString& text, 
-    const wxString& pane = "PaneText");
-protected:
-  void OnMouse(wxMouseEvent& event);
-private:
-  /// Returns the status bar pane.
-  /// If pane could not be found, returns empty pane.
-  const wxExPane GetPane(int pane) const;
-
-  wxExFrame* m_Frame;
-  std::map<wxString, wxExPane> m_Panes;
-
-  DECLARE_EVENT_TABLE()
-};
-#endif // wxUSE_STATUSBAR
-
-#if wxUSE_TOOLBAR
-/// Offers a toolbar together with stock art.
-class wxExToolBar : public wxToolBar
-{
-public:
-  /// Constructor.
-  wxExToolBar(wxWindow* parent,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxTB_HORIZONTAL,
-    const wxString& name = wxToolBarNameStr);
-
-  /// Adds automatic naming (for stock menu id's) and art id for toolbar normal items.
-  wxToolBarToolBase* AddTool(int toolId);
-};
-#endif // wxUSE_TOOLBAR
-
-class ComboBox;
-
-#if wxUSE_AUI
-/// Offers a find toolbar, containing a find combobox, up and down arrows
-/// and checkboxes.
-/// The find combobox allows you to find in an wxExSTCFile
-/// component on the specified wxExFrame.
-class wxExFindToolBar : public wxAuiToolBar
-{
-public:
-  /// Constructor.
-  wxExFindToolBar(
-    wxWindow* parent, 
-    wxExFrame* frame, 
-    wxWindowID id = wxID_ANY);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
-private:
-  void Initialize();
-
-  wxCheckBox* m_RegularExpression;
-  wxCheckBox* m_MatchCase;
-  wxCheckBox* m_MatchWholeWord;
-  wxExFrame* m_Frame;
-  ComboBox* m_ComboBox;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_AUI
 #endif // wxUSE_GUI
