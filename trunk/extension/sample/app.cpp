@@ -139,7 +139,13 @@ wxExSampleFrame::wxExSampleFrame()
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  m_Notebook = new wxExNotebook(this, NULL);
+  m_Notebook = new wxExNotebook(
+    this, 
+    NULL,
+    wxID_ANY,
+    wxDefaultPosition,
+    wxDefaultSize,
+    wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS);
 #if wxUSE_GRID
   m_Grid = new wxExGrid(m_Notebook);
 #endif
