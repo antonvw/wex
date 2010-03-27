@@ -398,7 +398,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Clients.clear();
 
       m_SocketServer->Destroy();
-      delete m_SocketServer;
+//      delete m_SocketServer;
       m_SocketServer = NULL;
 
       const wxString text = _("server stopped");
