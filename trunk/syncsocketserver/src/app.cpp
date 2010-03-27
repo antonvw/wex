@@ -107,7 +107,7 @@ Frame::Frame()
     this,
     wxEmptyString,
     0,
-    wxEmptyString,
+    _("Log"),
     wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
 
   m_Shell = new wxExSTCShell(this);
