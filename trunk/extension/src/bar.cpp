@@ -253,7 +253,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    wxExSTCFile* stc = m_Frame->GetSTC();
+    wxExSTC* stc = m_Frame->GetSTC();
 
     if (stc != NULL)
     {
@@ -353,7 +353,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case wxID_DOWN:
   case wxID_UP:
     {
-      wxExSTCFile* stc = m_Frame->GetSTC();
+      wxExSTC* stc = m_Frame->GetSTC();
 
       if (stc != NULL)
       {

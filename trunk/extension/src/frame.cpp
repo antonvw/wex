@@ -200,7 +200,7 @@ void wxExFrame::GetSearchText()
   }
   else
   {
-    wxExSTCFile* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
 
     if (stc != NULL && stc->IsShown())
     {
@@ -384,7 +384,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    wxExSTCFile* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     wxExListView* lv = GetListView();
     wxExGrid* grid = GetGrid();
 
@@ -453,12 +453,12 @@ void wxExFrame::StatusBarDoubleClicked(
 {
   if (pane == "PaneLines")
   {
-    wxExSTCFile* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
   else if (pane == "PaneLexer")
   {
-    wxExSTCFile* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->LexerDialog();
   }
   else if (pane == "PaneFileType")
