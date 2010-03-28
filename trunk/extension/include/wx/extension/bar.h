@@ -16,7 +16,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/aui/auibar.h> // for wxAuiToolBar
 #include <wx/statusbr.h> 
 
 // Only if we have a gui.
@@ -104,19 +103,22 @@ public:
     long style = wxTB_HORIZONTAL,
     const wxString& name = wxToolBarNameStr);
 
-  /// Adds automatic naming (for stock menu id's) and art id for toolbar normal items.
-  wxToolBarToolBase* AddTool(int toolId);
+  /// Adds automatic naming (for stock menu id's) and 
+  /// art id for toolbar normal items.
+  wxToolBarToolBase* AddTool(int toolId,
+    const wxString& label = wxEmptyString,
+    const wxBitmap& bitmap = wxNullBitmap,
+    const wxString& shortHelp = wxEmptyString,
+    wxItemKind kind = wxITEM_NORMAL);
 };
 #endif // wxUSE_TOOLBAR
 
-class ComboBox;
-
-#if wxUSE_AUI
+#if wxUSE_TOOLBAR
 /// Offers a find toolbar, containing a find combobox, up and down arrows
 /// and checkboxes.
 /// The find combobox allows you to find in an wxExSTCFile
 /// component on the specified wxExFrame.
-class wxExFindToolBar : public wxAuiToolBar
+class wxExFindToolBar : public wxExToolBar
 {
 public:
   /// Constructor.
@@ -133,11 +135,11 @@ private:
   wxCheckBox* m_RegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
+  wxComboBox* m_ComboBox;
   wxExFrame* m_Frame;
-  ComboBox* m_ComboBox;
 
   DECLARE_EVENT_TABLE()
 };
-#endif // wxUSE_AUI
+#endif // wxUSE_TOOLBAR
 #endif // wxUSE_GUI
 #endif

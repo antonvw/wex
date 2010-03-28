@@ -150,15 +150,33 @@ wxExToolBar::wxExToolBar(wxWindow* parent,
 {
 }
 
-wxToolBarToolBase* wxExToolBar::AddTool(int toolId)
+wxToolBarToolBase* wxExToolBar::AddTool(
+  int toolId,
+  const wxString& label,
+  const wxBitmap& bitmap,
+  const wxString& shortHelp,
+  wxItemKind kind)
 {
   const wxExStockArt art(toolId);
 
-  return wxToolBar::AddTool(
-    toolId, 
-    wxEmptyString,
-    art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
-    wxGetStockLabel(toolId, wxSTOCK_NOFLAGS));
+  if (art.GetBitmap().IsOk())
+  {
+    return wxToolBar::AddTool(
+      toolId, 
+      wxEmptyString,
+      art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
+      wxGetStockLabel(toolId, wxSTOCK_NOFLAGS),
+      kind);
+  }
+  else
+  {
+    return wxToolBar::AddTool(
+      toolId, 
+      label,
+      bitmap,
+      shortHelp,
+      kind);
+  }
 }
 #endif // wxUSE_TOOLBAR
 
@@ -253,7 +271,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
-#if wxUSE_AUI
+#if wxUSE_TOOLBAR
 // Cannot use wxNewId here, as these are used in a switch statement.
 enum
 {
@@ -262,7 +280,7 @@ enum
   ID_REGULAR_EXPRESSION,
 };
 
-BEGIN_EVENT_TABLE(wxExFindToolBar, wxAuiToolBar)
+BEGIN_EVENT_TABLE(wxExFindToolBar, wxExToolBar)
   EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_REGULAR_EXPRESSION, wxExFindToolBar::OnCommand)
@@ -276,7 +294,7 @@ wxExFindToolBar::wxExFindToolBar(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id)
-  : wxAuiToolBar(parent, id)
+  : wxExToolBar(parent, id)
   , m_Frame(frame)
 {
   Initialize();
@@ -311,7 +329,8 @@ void wxExFindToolBar::Initialize()
 #else
   const wxSize size(150, -1);
 #endif
-  m_ComboBox = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
+  ComboBox* cb = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
+  m_ComboBox = cb;
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -366,5 +385,5 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
   event.Enable(!m_ComboBox->GetValue().empty());
 }
-#endif // wxUSE_AUI
+#endif // wxUSE_TOOLBAR
 #endif // wxUSE_GUI
