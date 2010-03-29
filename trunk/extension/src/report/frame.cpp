@@ -412,11 +412,6 @@ void wxExFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
-  case ID_VIEW_FINDBAR:
-    wxASSERT(GetFindBar() != NULL);
-    event.Check(GetFindBar()->IsShown());
-    break;
-
   case ID_VIEW_MENUBAR:
     wxASSERT(GetMenuBar() != NULL);
     event.Check(GetMenuBar()->IsShown());
@@ -425,11 +420,6 @@ void wxExFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
   case ID_VIEW_STATUSBAR:
     wxASSERT(GetStatusBar() != NULL);
     event.Check(GetStatusBar()->IsShown());
-    break;
-
-  case ID_VIEW_TOOLBAR:
-    wxASSERT(GetToolBar() != NULL) ;
-    event.Check(GetToolBar()->IsShown());
     break;
 
   default:
