@@ -17,6 +17,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/statusbr.h> 
+#include <wx/toolbar.h> 
 
 // Only if we have a gui.
 #if wxUSE_GUI
