@@ -58,6 +58,8 @@ enum wxExId
   ID_EDIT_STATUS_BAR,
 
   ID_VIEW_FINDBAR,
+  ID_VIEW_MENUBAR,
+  ID_VIEW_STATUSBAR,
   ID_VIEW_TOOLBAR,
 
   ID_EDIT_STC_LOWEST,   // all STC commands after this one

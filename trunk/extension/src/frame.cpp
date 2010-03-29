@@ -500,7 +500,9 @@ BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
   EVT_MENU(ID_VIEW_FINDBAR, wxExManagedFrame::OnCommand)
   EVT_MENU(ID_VIEW_TOOLBAR, wxExManagedFrame::OnCommand)
   EVT_UPDATE_UI(ID_VIEW_FINDBAR, wxExManagedFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExManagedFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExManagedFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExManagedFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
@@ -561,6 +563,18 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
     case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
     case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
 
+    case ID_VIEW_MENUBAR:
+      if (GetMenuBar()->IsShown())
+      {
+        SetMenuBar(NULL);
+      }
+      break;
+
+    case ID_VIEW_STATUSBAR:
+      GetStatusBar()->Show(!GetStatusBar()->IsShown());
+      SendSizeEvent();
+      break;
+
     default:
       wxFAIL;
   }
@@ -577,6 +591,16 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_VIEW_TOOLBAR:
       event.Check(GetManager().GetPane("TOOLBAR").IsShown());
     break;
+
+    case ID_VIEW_MENUBAR:
+      wxASSERT(GetMenuBar() != NULL);
+      event.Check(GetMenuBar()->IsShown());
+    break;
+
+    case ID_VIEW_STATUSBAR:
+      wxASSERT(GetStatusBar() != NULL);
+      event.Check(GetStatusBar()->IsShown());
+      break;
 
     default:
       wxFAIL;

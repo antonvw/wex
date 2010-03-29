@@ -168,7 +168,7 @@ private:
 
 #if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
-/// used by the notebook classes.
+/// used by the notebook classes, and toolbar support.
 class wxExManagedFrame : public wxExFrame
 {
 public:
@@ -204,13 +204,11 @@ public:
   wxAuiToolBar* CreateToolBar(
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
-  /// Gets the find bar.
-  wxExFindToolBar* GetFindBar() {return m_FindBar;};
-
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
   /// Gets the tool bar.
+  // Cannot be const yet, as it overrides the virtual one.
   wxExToolBar* GetToolBar() {return m_ToolBar;};
 
   /// Toggles the managed pane: if shown hides it, otherwise shows it.

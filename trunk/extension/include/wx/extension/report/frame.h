@@ -114,7 +114,6 @@ protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);

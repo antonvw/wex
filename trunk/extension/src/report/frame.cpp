@@ -45,8 +45,6 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
     ID_EXTENSION_REPORT_LOWEST, 
     ID_EXTENSION_REPORT_HIGHEST, 
     wxExFrameWithHistory::OnCommand)
-  EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExFrameWithHistory::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrameWithHistory::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
@@ -324,18 +322,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       wxDELETE(m_Process);
     break;
 
-    case ID_VIEW_MENUBAR:
-      if (GetMenuBar()->IsShown())
-      {
-        SetMenuBar(NULL);
-      }
-      break;
-
-    case ID_VIEW_STATUSBAR:
-      GetStatusBar()->Show(!GetStatusBar()->IsShown());
-      SendSizeEvent();
-      break;
-
     default:
       wxFAIL;
     }
@@ -405,25 +391,6 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     {
       wxFrame::SetTitle(title.substr(0, title.length() - 2));
     }
-  }
-}
-
-void wxExFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  switch (event.GetId())
-  {
-  case ID_VIEW_MENUBAR:
-    wxASSERT(GetMenuBar() != NULL);
-    event.Check(GetMenuBar()->IsShown());
-    break;
-
-  case ID_VIEW_STATUSBAR:
-    wxASSERT(GetStatusBar() != NULL);
-    event.Check(GetStatusBar()->IsShown());
-    break;
-
-  default:
-    wxFAIL;
   }
 }
 
