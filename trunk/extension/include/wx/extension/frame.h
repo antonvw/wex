@@ -53,13 +53,6 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
-  /// Creates the find bar.
-  wxToolBar* CreateFindBar(long style,
-    wxWindowID id,
-    const wxString& name = wxToolBarNameStr);
-
-  wxExFindToolBar* GetFindBar() {return m_FindBar;};
-
   /// Returns a grid, default returns the focused grid.
   virtual wxExGrid* GetGrid() {return GetFocusedGrid();};
 
@@ -139,14 +132,6 @@ protected:
     const wxString& name);
 #endif
 
-#if wxUSE_TOOLBAR
-  // Interface from wxFrame.
-  virtual wxToolBar* OnCreateToolBar(
-    long style,
-    wxWindowID id,
-    const wxString& name);
-#endif
-
   /// If there is a STC, calls find.
   void OnFindDialog(wxFindDialogEvent& event);
   
@@ -161,10 +146,6 @@ protected:
     wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");
 #endif
-protected:
-#if wxUSE_TOOLBAR
-  wxExToolBar* m_ToolBar;
-#endif
 
 private:
   void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
@@ -174,10 +155,6 @@ private:
 
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
-#endif
-
-#if wxUSE_TOOLBAR
-  wxExFindToolBar* m_FindBar;
 #endif
 
   wxFindReplaceDialog* m_FindReplaceDialog;
@@ -219,13 +196,35 @@ public:
   /// Called after all pages from the notebooks are deleted.
   virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
 
+  /// Creates the find bar.
+  wxAuiToolBar* CreateFindBar(
+    long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
+
+  /// Creates the tool bar.
+  wxAuiToolBar* CreateToolBar(
+    long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
+
+  /// Gets the find bar.
+  wxExFindToolBar* GetFindBar() {return m_FindBar;};
+
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
+  /// Gets the tool bar.
+  wxExToolBar* GetToolBar() {return m_ToolBar;};
+
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);
+protected:
+  void OnCommand(wxCommandEvent& event);
+  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
+
+  wxExFindToolBar* m_FindBar;
+  wxExToolBar* m_ToolBar;
+
+  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_AUI
 #endif // wxUSE_GUI

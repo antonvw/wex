@@ -16,8 +16,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/aui/auibar.h> 
 #include <wx/statusbr.h> 
-#include <wx/toolbar.h> 
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -91,9 +91,9 @@ private:
 };
 #endif // wxUSE_STATUSBAR
 
-#if wxUSE_TOOLBAR
+#if wxUSE_AUI
 /// Offers a toolbar together with stock art.
-class wxExToolBar : public wxToolBar
+class wxExToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
@@ -101,20 +101,35 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxTB_HORIZONTAL,
-    const wxString& name = wxToolBarNameStr);
+    long style = wxAUI_TB_DEFAULT_STYLE);
 
   /// Adds automatic naming (for stock menu id's) and 
   /// art id for toolbar normal items.
-  wxToolBarToolBase* AddTool(int toolId,
+  wxAuiToolBarItem* AddTool(int toolId,
     const wxString& label = wxEmptyString,
     const wxBitmap& bitmap = wxNullBitmap,
     const wxString& shortHelp = wxEmptyString,
     wxItemKind kind = wxITEM_NORMAL);
-};
-#endif // wxUSE_TOOLBAR
 
-#if wxUSE_TOOLBAR
+  /// Adds standard controls.
+  void AddControls();
+
+#if wxUSE_CHECKBOX
+  /// Access to the hex check box.
+  wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
+
+  /// Access to the sync check box.
+  wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
+#endif
+private:
+  #if wxUSE_CHECKBOX
+  wxCheckBox* m_HexModeCheckBox;
+  wxCheckBox* m_SyncCheckBox;
+#endif
+};
+#endif // wxUSE_AUI
+
+#if wxUSE_AUI
 /// Offers a find toolbar, containing a find combobox, up and down arrows
 /// and checkboxes.
 /// The find combobox allows you to find in an wxExSTCFile
@@ -129,8 +144,7 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
-    long style = wxTB_HORIZONTAL,
-    const wxString& name = wxToolBarNameStr);
+    long style = wxAUI_TB_DEFAULT_STYLE);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -145,6 +159,6 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-#endif // wxUSE_TOOLBAR
+#endif // wxUSE_AUI
 #endif // wxUSE_GUI
 #endif

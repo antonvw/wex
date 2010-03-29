@@ -165,63 +165,7 @@ Frame::Frame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
 
   CreateToolBar();
-  CreateFindBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_BOTTOM, ID_EDIT_FIND_TOOL_BAR);
-
-  m_ToolBar->AddTool(wxID_OPEN);
-  m_ToolBar->AddTool(wxID_SAVE);
-  m_ToolBar->AddTool(wxID_PRINT);
-  m_ToolBar->AddSeparator();
-  m_ToolBar->AddTool(wxID_FIND);
-  
-#ifdef __WXGTK__
-  // wxID_EXECUTE is not part of art provider, but GTK directly,
-  // so the following does not present a bitmap.
-  //m_ToolBar->AddSeparator();
-  //m_ToolBar->AddTool(wxID_EXECUTE);
-#endif
-
-  m_ToolBar->AddSeparator();
-  ((wxToolBar*)m_ToolBar)->AddTool(
-    ID_PROJECT_OPEN,
-    wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    wxExEllipsed(_("Open project")));
-  ((wxToolBar*)m_ToolBar)->AddTool(
-    ID_PROJECT_SAVE,
-    wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
-    _("Save project"));
-
-#if wxUSE_CHECKBOX
-  m_ToolBar->AddSeparator();
-
-  m_ToolBar->AddControl(
-    m_HexModeCheckBox = new wxCheckBox(
-      m_ToolBar,
-      ID_EDIT_HEX_MODE,
-      "Hex",
-      wxDefaultPosition,
-      wxSize(-1, m_ToolBar->GetToolSize().GetHeight())));
-
-  m_ToolBar->AddControl(
-    m_SyncCheckBox = new wxCheckBox(
-      m_ToolBar,
-      ID_SYNC_MODE,
-      "Sync",
-      wxDefaultPosition,
-      wxSize(-1, m_ToolBar->GetToolSize().GetHeight())));
-
-#if wxUSE_TOOLTIPS
-  m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-#endif
-  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
-#if wxUSE_TOOLTIPS
-  m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
-#endif
-  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
-#endif // wxUSE_CHECKBOX
-
-  m_ToolBar->Realize();
+  CreateFindBar();
 }
 
 bool Frame::AllowClose(wxWindowID id, wxWindow* page)

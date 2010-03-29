@@ -19,22 +19,12 @@ class Frame : public wxExFrameWithHistory
 public:
   Frame();
 
-#if wxUSE_CHECKBOX
-  wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
-
-  wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
-#endif
 protected:
   wxExMenu* GetVCSMenu() {return m_MenuVCS;};
 private:
   // Interface from wxExFrame.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
-
-#if wxUSE_CHECKBOX
-  wxCheckBox* m_HexModeCheckBox;
-  wxCheckBox* m_SyncCheckBox;
-#endif
 
   wxExMenu* m_MenuVCS;
 };

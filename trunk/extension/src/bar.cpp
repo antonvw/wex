@@ -139,18 +139,60 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 
 #endif //wxUSE_STATUSBAR
 
-#if wxUSE_TOOLBAR
+#if wxUSE_AUI
 wxExToolBar::wxExToolBar(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxToolBar(parent, id, pos, size, style, name)
+  long style)
+  : wxAuiToolBar(parent, id, pos, size, style)
 {
 }
 
-wxToolBarToolBase* wxExToolBar::AddTool(
+void wxExToolBar::AddControls()
+{
+  AddTool(wxID_OPEN);
+  AddTool(wxID_SAVE);
+  AddTool(wxID_PRINT);
+  AddSeparator();
+  AddTool(wxID_FIND);
+  
+#ifdef __WXGTK__
+  // wxID_EXECUTE is not part of art provider, but GTK directly,
+  // so the following does not present a bitmap.
+  AddSeparator();
+  AddTool(wxID_EXECUTE);
+#endif
+
+#if wxUSE_CHECKBOX
+  AddSeparator();
+
+  AddControl(
+    m_HexModeCheckBox = new wxCheckBox(
+      this,
+      ID_EDIT_HEX_MODE,
+      "Hex"));
+
+  AddControl(
+    m_SyncCheckBox = new wxCheckBox(
+      this,
+      ID_SYNC_MODE,
+      "Sync"));
+
+#if wxUSE_TOOLTIPS
+  m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
+#endif
+  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
+#if wxUSE_TOOLTIPS
+  m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
+#endif
+  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+#endif // wxUSE_CHECKBOX
+
+  Realize();
+}
+
+wxAuiToolBarItem* wxExToolBar::AddTool(
   int toolId,
   const wxString& label,
   const wxBitmap& bitmap,
@@ -161,7 +203,7 @@ wxToolBarToolBase* wxExToolBar::AddTool(
 
   if (art.GetBitmap().IsOk())
   {
-    return wxToolBar::AddTool(
+    return wxAuiToolBar::AddTool(
       toolId, 
       wxEmptyString,
       art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
@@ -170,7 +212,7 @@ wxToolBarToolBase* wxExToolBar::AddTool(
   }
   else
   {
-    return wxToolBar::AddTool(
+    return wxAuiToolBar::AddTool(
       toolId, 
       label,
       bitmap,
@@ -178,7 +220,7 @@ wxToolBarToolBase* wxExToolBar::AddTool(
       kind);
   }
 }
-#endif // wxUSE_TOOLBAR
+#endif // wxUSE_AUI
 
 /// Offers a find combobox that allows you to find text
 /// on a current STC on an wxExFrame.
@@ -271,7 +313,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
   }
 }
 
-#if wxUSE_TOOLBAR
+#if wxUSE_AUI
 // Cannot use wxNewId here, as these are used in a switch statement.
 enum
 {
@@ -296,9 +338,8 @@ wxExFindToolBar::wxExFindToolBar(
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
-  long style,
-  const wxString& name)
-  : wxExToolBar(parent, id, pos, size, style, name)
+  long style)
+  : wxExToolBar(parent, id, pos, size, style)
   , m_Frame(frame)
 {
   Initialize();
@@ -389,5 +430,5 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
   event.Enable(!m_ComboBox->GetValue().empty());
 }
-#endif // wxUSE_TOOLBAR
+#endif // wxUSE_AUI
 #endif // wxUSE_GUI

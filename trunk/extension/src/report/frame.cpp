@@ -47,7 +47,6 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
     wxExFrameWithHistory::OnCommand)
   EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExFrameWithHistory::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrameWithHistory::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExFrameWithHistory::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
@@ -325,11 +324,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       wxDELETE(m_Process);
     break;
 
-    case ID_VIEW_FINDBAR: 
-      GetFindBar()->Show(!GetFindBar()->IsShown());
-      SendSizeEvent();
-      break;
-
     case ID_VIEW_MENUBAR:
       if (GetMenuBar()->IsShown())
       {
@@ -339,11 +333,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
 
     case ID_VIEW_STATUSBAR:
       GetStatusBar()->Show(!GetStatusBar()->IsShown());
-      SendSizeEvent();
-      break;
-
-    case ID_VIEW_TOOLBAR:
-      GetToolBar()->Show(!GetToolBar()->IsShown());
       SendSizeEvent();
       break;
 

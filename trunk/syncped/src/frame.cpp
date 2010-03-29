@@ -366,7 +366,7 @@ void MDIFrame::NewFile(bool as_project)
   else
   {
 #if wxUSE_CHECKBOX
-    if (GetHexModeCheckBox()->GetValue())
+    if (GetToolBar()->GetHexModeCheckBox()->GetValue())
     {
       // In hex mode we cannot edit the file.
       return;
@@ -405,7 +405,7 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   }
 
 #if wxUSE_CHECKBOX
-  wxConfigBase::Get()->Write("HexMode", GetHexModeCheckBox()->GetValue());
+  wxConfigBase::Get()->Write("HexMode", GetToolBar()->GetHexModeCheckBox()->GetValue());
 #endif
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
@@ -620,10 +620,10 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 #if wxUSE_CHECKBOX
       if (editor != NULL &&
          // Reopen the current file, in the new mode, if different from current mode.
-         (((editor->GetFlags() & wxExSTCFile::STC_WIN_HEX) > 0) != GetHexModeCheckBox()->GetValue()))
+         (((editor->GetFlags() & wxExSTCFile::STC_WIN_HEX) > 0) != GetToolBar()->GetHexModeCheckBox()->GetValue()))
       {
         long flags = 0;
-        if (GetHexModeCheckBox()->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
+        if (GetToolBar()->GetHexModeCheckBox()->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
         wxExFileDialog dlg(this, editor);
         if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         editor->Open(editor->GetFileName().GetFullPath(),
@@ -767,7 +767,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SYNC_MODE:
 #if wxUSE_CHECKBOX
-    wxConfigBase::Get()->Write("AllowSync", GetSyncCheckBox()->GetValue());
+    wxConfigBase::Get()->Write("AllowSync", GetToolBar()->GetSyncCheckBox()->GetValue());
 #endif
     break;
 
@@ -1157,7 +1157,7 @@ bool MDIFrame::OpenFile(
     if (page == NULL)
     {
 #if wxUSE_CHECKBOX
-      if (GetHexModeCheckBox()->GetValue())
+      if (GetToolBar()->GetHexModeCheckBox()->GetValue())
         flags |= wxExSTCFile::STC_WIN_HEX;
 #endif
 

@@ -88,20 +88,6 @@ wxExFrame::~wxExFrame()
 #endif
 }
 
-wxToolBar* wxExFrame::CreateFindBar(long style,
-  wxWindowID id,
-  const wxString& name)
-{
-  m_FindBar = new wxExFindToolBar(this, this,
-    id,
-    wxDefaultPosition,
-    wxDefaultSize,
-    style,
-    name);
-
-  return m_FindBar;
-}
-
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExGrid* grid)
 {
   if (
@@ -354,23 +340,6 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
 }
 #endif
 
-#if wxUSE_TOOLBAR
-wxToolBar* wxExFrame::OnCreateToolBar(
-  long style,
-  wxWindowID id,
-  const wxString& name)
-{
-  m_ToolBar = new wxExToolBar(this,
-    id,
-    wxDefaultPosition,
-    wxDefaultSize,
-    style,
-    name);
-
-  return m_ToolBar;
-}
-#endif
-
 void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 {
   wxASSERT(m_FindReplaceDialog != NULL);
@@ -527,12 +496,21 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_AUI
+BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
+  EVT_MENU(ID_VIEW_FINDBAR, wxExManagedFrame::OnCommand)
+  EVT_MENU(ID_VIEW_TOOLBAR, wxExManagedFrame::OnCommand)
+  EVT_UPDATE_UI(ID_VIEW_FINDBAR, wxExManagedFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExManagedFrame::OnUpdateUI)
+END_EVENT_TABLE()
+
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
   long style,
   const wxString& name)
   : wxExFrame(parent, id, title, style, name)
+  , m_FindBar(NULL)
+  , m_ToolBar(NULL)
 {
   m_Manager.SetManagedWindow(this);
 
@@ -544,6 +522,65 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 wxExManagedFrame::~wxExManagedFrame()
 {
   m_Manager.UnInit();
+}
+
+wxAuiToolBar* wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
+{
+  m_FindBar = new wxExFindToolBar(this, this,
+    id,
+    wxDefaultPosition,
+    wxDefaultSize,
+    style);
+
+  GetManager().AddPane(m_FindBar,
+    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
+
+  return m_FindBar;
+}
+
+wxAuiToolBar* wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
+{
+  m_ToolBar = new wxExToolBar(this,
+    id,
+    wxDefaultPosition,
+    wxDefaultSize,
+    style);
+
+  m_ToolBar->AddControls();
+
+  GetManager().AddPane(m_ToolBar,
+    wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Tool Bar")));
+
+  return m_ToolBar;
+}
+
+void wxExManagedFrame::OnCommand(wxCommandEvent& event)
+{
+  switch (event.GetId())
+  {
+    case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
+    case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
+
+    default:
+      wxFAIL;
+  }
+}
+
+void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
+{
+  switch (event.GetId())
+  {
+    case ID_VIEW_FINDBAR:
+      event.Check(GetManager().GetPane("FINDBAR").IsShown());
+    break;
+
+    case ID_VIEW_TOOLBAR:
+      event.Check(GetManager().GetPane("TOOLBAR").IsShown());
+    break;
+
+    default:
+      wxFAIL;
+  }
 }
 
 void wxExManagedFrame::TogglePane(const wxString& pane)
