@@ -88,6 +88,20 @@ wxExFrame::~wxExFrame()
 #endif
 }
 
+wxToolBar* wxExFrame::CreateFindBar(long style,
+  wxWindowID id,
+  const wxString& name)
+{
+  m_FindBar = new wxExFindToolBar(this, this,
+    id,
+    wxDefaultPosition,
+    wxDefaultSize,
+    style,
+    name);
+
+  return m_FindBar;
+}
+
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExGrid* grid)
 {
   if (

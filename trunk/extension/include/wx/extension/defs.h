@@ -53,6 +53,7 @@ enum wxExId
   ID_EDIT_EOL_MAC,
 
   ID_EDIT_STATUS_BAR,
+  ID_EDIT_FIND_TOOL_BAR,
 
   ID_EDIT_STC_LOWEST,   // all STC commands after this one
   ID_EDIT_CONTROL_CHAR,

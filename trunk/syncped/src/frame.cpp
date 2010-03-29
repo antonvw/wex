@@ -117,7 +117,6 @@ MDIFrame::MDIFrame(bool open_recent)
   wxExSTCFile* asciiTable = new wxExSTCFile(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
-  wxExFindToolBar* findbar = new wxExFindToolBar(this, this);
 
   GetManager().AddPane(m_NotebookWithEditors,
     wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
@@ -133,8 +132,6 @@ MDIFrame::MDIFrame(bool open_recent)
 
   GetManager().AddPane(m_NotebookWithLists,
     wxAuiPaneInfo().Bottom().MaximizeButton(true).MinSize(250, 100).Name("OUTPUT").Caption(_("Output")));
-  GetManager().AddPane(findbar,
-    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
 
   const wxString perspective = wxConfigBase::Get()->Read("Perspective");
 
@@ -144,7 +141,6 @@ MDIFrame::MDIFrame(bool open_recent)
     GetManager().GetPane("DIRCTRL").Hide();
     GetManager().GetPane("ASCIITABLE").Hide();
     GetManager().GetPane("HISTORY").Hide();
-    GetManager().GetPane("FINDBAR").Hide();
   }
   else
   {
@@ -789,7 +785,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
       }
     }
     break;
-  case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
   case ID_VIEW_HISTORY: 
     TogglePane("HISTORY");
 #if wxUSE_STATUSBAR
@@ -916,9 +911,6 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
       break;
     case ID_VIEW_FILES:
       event.Check(GetManager().GetPane("FILES").IsShown());
-      break;
-    case ID_VIEW_FINDBAR:
-      event.Check(GetManager().GetPane("FINDBAR").IsShown());
       break;
     case ID_VIEW_HISTORY:
       event.Check(GetManager().GetPane("HISTORY").IsShown());

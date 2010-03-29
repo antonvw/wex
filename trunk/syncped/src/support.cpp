@@ -165,6 +165,7 @@ Frame::Frame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
 
   CreateToolBar();
+  CreateFindBar(wxBORDER_NONE | wxTB_HORIZONTAL | wxTB_BOTTOM, ID_EDIT_FIND_TOOL_BAR);
 
   m_ToolBar->AddTool(wxID_OPEN);
   m_ToolBar->AddTool(wxID_SAVE);

@@ -53,6 +53,13 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
+  /// Creates the find bar.
+  wxToolBar* CreateFindBar(long style,
+    wxWindowID id,
+    const wxString& name = wxToolBarNameStr);
+
+  wxExFindToolBar* GetFindBar() {return m_FindBar;};
+
   /// Returns a grid, default returns the focused grid.
   virtual wxExGrid* GetGrid() {return GetFocusedGrid();};
 
@@ -167,6 +174,10 @@ private:
 
 #if wxUSE_STATUSBAR
   static wxExStatusBar* m_StatusBar;
+#endif
+
+#if wxUSE_TOOLBAR
+  wxExFindToolBar* m_FindBar;
 #endif
 
   wxFindReplaceDialog* m_FindReplaceDialog;

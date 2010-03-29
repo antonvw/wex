@@ -293,8 +293,12 @@ END_EVENT_TABLE()
 wxExFindToolBar::wxExFindToolBar(
   wxWindow* parent,
   wxExFrame* frame,
-  wxWindowID id)
-  : wxExToolBar(parent, id)
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style,
+  const wxString& name)
+  : wxExToolBar(parent, id, pos, size, style, name)
   , m_Frame(frame)
 {
   Initialize();

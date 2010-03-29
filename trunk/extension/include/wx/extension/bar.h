@@ -126,7 +126,11 @@ public:
   wxExFindToolBar(
     wxWindow* parent, 
     wxExFrame* frame, 
-    wxWindowID id = wxID_ANY);
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = wxTB_HORIZONTAL,
+    const wxString& name = wxToolBarNameStr);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);

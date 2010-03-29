@@ -325,6 +325,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       wxDELETE(m_Process);
     break;
 
+    case ID_VIEW_FINDBAR: 
+      GetFindBar()->Show(!GetFindBar()->IsShown());
+      SendSizeEvent();
+      break;
+
     case ID_VIEW_MENUBAR:
       if (GetMenuBar()->IsShown())
       {
@@ -418,6 +423,11 @@ void wxExFrameWithHistory::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
+  case ID_VIEW_FINDBAR:
+    wxASSERT(GetFindBar() != NULL);
+    event.Check(GetFindBar()->IsShown());
+    break;
+
   case ID_VIEW_MENUBAR:
     wxASSERT(GetMenuBar() != NULL);
     event.Check(GetMenuBar()->IsShown());
