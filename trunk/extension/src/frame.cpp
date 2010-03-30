@@ -511,7 +511,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   long style,
   const wxString& name)
   : wxExFrame(parent, id, title, style, name)
-  , m_FindBar(NULL)
   , m_ToolBar(NULL)
 {
   m_Manager.SetManagedWindow(this);
@@ -528,16 +527,16 @@ wxExManagedFrame::~wxExManagedFrame()
 
 wxAuiToolBar* wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
 {
-  m_FindBar = new wxExFindToolBar(this, this,
+  wxExFindToolBar* findBar = new wxExFindToolBar(this, this,
     id,
     wxDefaultPosition,
     wxDefaultSize,
     style);
 
-  GetManager().AddPane(m_FindBar,
+  GetManager().AddPane(findBar,
     wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
 
-  return m_FindBar;
+  return findBar;
 }
 
 wxAuiToolBar* wxExManagedFrame::CreateToolBar(long style, wxWindowID id)

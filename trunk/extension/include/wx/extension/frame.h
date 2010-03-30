@@ -219,7 +219,6 @@ protected:
 private:
   wxAuiManager m_Manager;
 
-  wxExFindToolBar* m_FindBar;
   wxExToolBar* m_ToolBar;
 
   DECLARE_EVENT_TABLE()
