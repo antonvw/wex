@@ -142,9 +142,7 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 #if wxUSE_AUI
 
 BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
-#if wxUSE_CHECKBOX
   EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
-#endif
 END_EVENT_TABLE()
 
 wxExToolBar::wxExToolBar(wxWindow* parent,
@@ -160,12 +158,10 @@ wxExToolBar::wxExToolBar(wxWindow* parent,
 
 wxExToolBar::~wxExToolBar()
 {
-#if wxUSE_CHECKBOX
   if (m_HexModeCheckBox != NULL)
   {
     wxConfigBase::Get()->Write("HexMode", m_HexModeCheckBox->GetValue());
   }
-#endif
 }
 
 void wxExToolBar::AddControls()
@@ -183,7 +179,6 @@ void wxExToolBar::AddControls()
   AddTool(wxID_EXECUTE);
 #endif
 
-#if wxUSE_CHECKBOX
   AddSeparator();
 
   AddControl(
@@ -205,8 +200,6 @@ void wxExToolBar::AddControls()
 
   m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
   m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
-
-#endif // wxUSE_CHECKBOX
 
   Realize();
 }
@@ -245,9 +238,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case ID_SYNC_MODE:
-#if wxUSE_CHECKBOX
     wxConfigBase::Get()->Write("AllowSync", m_SyncCheckBox->GetValue());
-#endif
     break;
 
   default: 
