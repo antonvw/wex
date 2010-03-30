@@ -19,6 +19,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/renderer.h>
 #include <wx/extension/stcdlg.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <numeric>
@@ -157,8 +158,7 @@ wxExSampleFrame::wxExSampleFrame()
     wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTCFile"));
   GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
-  GetManager().AddPane(new wxExFindToolBar(this, this),
-    wxAuiPaneInfo().ToolbarPane().Bottom().Name("FINDBAR").Caption(_("Findbar")));
+
   GetManager().Update();
 
   m_STCLexers = new wxExSTCFile(this, wxExLexers::Get()->GetFileName());
@@ -217,6 +217,8 @@ wxExSampleFrame::wxExSampleFrame()
   GetToolBar()->AddTool(wxID_PRINT);
   GetToolBar()->AddTool(wxID_EXIT);
   GetToolBar()->Realize();
+
+  CreateFindBar();
 }
 
 void wxExSampleFrame::OnCommandConfigDialog(
