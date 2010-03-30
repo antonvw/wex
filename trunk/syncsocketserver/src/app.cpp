@@ -182,16 +182,16 @@ Frame::Frame()
 
   CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
 
-  m_ToolBar->AddTool(wxID_NEW);
-  m_ToolBar->AddTool(wxID_OPEN);
-  m_ToolBar->AddTool(wxID_SAVE);
-  ((wxToolBar*)m_ToolBar)->AddTool(
+  GetToolBar()->AddTool(wxID_NEW);
+  GetToolBar()->AddTool(wxID_OPEN);
+  GetToolBar()->AddTool(wxID_SAVE);
+  GetToolBar()->AddTool(
     ID_WRITE_DATA,
     wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, m_ToolBar->GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
     _("Write data"));
 
-  m_ToolBar->Realize();
+  GetToolBar()->Realize();
 
   GetManager().AddPane(m_LogWindow,
     wxAuiPaneInfo().CenterPane().Name("LOG"));
