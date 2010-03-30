@@ -82,7 +82,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/art.cpp</sources>
-    <sources>../extension/src/bar.cpp</sources>
     <sources>../extension/src/configdlg.cpp</sources>
     <sources>../extension/src/configitem.cpp</sources>
     <sources>../extension/src/dialog.cpp</sources>
@@ -109,19 +108,20 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/property.cpp</sources>
     <sources>../extension/src/renderer.cpp</sources>
     <sources>../extension/src/shell.cpp</sources>
+    <sources>../extension/src/statusbar.cpp</sources>
     <sources>../extension/src/stc.cpp</sources>
     <sources>../extension/src/stcdlg.cpp</sources>
     <sources>../extension/src/stcfile.cpp</sources>
     <sources>../extension/src/style.cpp</sources>
     <sources>../extension/src/textfile.cpp</sources>
     <sources>../extension/src/tool.cpp</sources>
+    <sources>../extension/src/toolbar.cpp</sources>
     <sources>../extension/src/util.cpp</sources>
     <sources>../extension/src/vcs.cpp</sources>
     <sources>../extension/src/vi.cpp</sources>
     
     <headers>../extension/include/wx/extension/app.h</headers>
     <headers>../extension/include/wx/extension/art.h</headers>
-    <headers>../extension/include/wx/extension/bar.h</headers>
     <headers>../extension/include/wx/extension/configdlg.h</headers>
     <headers>../extension/include/wx/extension/configitem.h</headers>
     <headers>../extension/include/wx/extension/defs.h</headers>
@@ -151,12 +151,14 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/shell.h</headers>
     <headers>../extension/include/wx/extension/stat.h</headers>
     <headers>../extension/include/wx/extension/statistics.h</headers>
+    <headers>../extension/include/wx/extension/statusbar.h</headers>
     <headers>../extension/include/wx/extension/stc.h</headers>
     <headers>../extension/include/wx/extension/stcdlg.h</headers>
     <headers>../extension/include/wx/extension/stcfile.h</headers>
     <headers>../extension/include/wx/extension/style.h</headers>
     <headers>../extension/include/wx/extension/textfile.h</headers>
     <headers>../extension/include/wx/extension/tool.h</headers>
+    <headers>../extension/include/wx/extension/toolbar.h</headers>
     <headers>../extension/include/wx/extension/util.h</headers>
     <headers>../extension/include/wx/extension/vcs.h</headers>
     <headers>../extension/include/wx/extension/version.h</headers>

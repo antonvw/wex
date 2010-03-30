@@ -15,6 +15,7 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -525,7 +526,7 @@ wxExManagedFrame::~wxExManagedFrame()
   m_Manager.UnInit();
 }
 
-wxAuiToolBar* wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
+void wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
 {
   wxExFindToolBar* findBar = new wxExFindToolBar(this, this,
     id,
@@ -535,11 +536,9 @@ wxAuiToolBar* wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
 
   GetManager().AddPane(findBar,
     wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
-
-  return findBar;
 }
 
-wxAuiToolBar* wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
+void wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
 {
   m_ToolBar = new wxExToolBar(this,
     id,
@@ -551,8 +550,6 @@ wxAuiToolBar* wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
 
   GetManager().AddPane(m_ToolBar,
     wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Tool Bar")));
-
-  return m_ToolBar;
 }
 
 void wxExManagedFrame::OnCommand(wxCommandEvent& event)

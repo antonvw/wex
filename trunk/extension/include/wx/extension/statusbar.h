@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Name:      bar.h
-// Purpose:   Declaration of bar classes
+// Name:      statusbar.h
+// Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
 // RCS-ID:    $Id$
 // Created:   2010-03-26
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _EXBAR_H
-#define _EXBAR_H
+#ifndef _EXSTATUSBAR_H
+#define _EXSTATUSBAR_H
 
 #include <map>
 #include <vector>
@@ -16,16 +16,15 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/aui/auibar.h> 
 #include <wx/statusbr.h> 
 
 // Only if we have a gui.
 #if wxUSE_GUI
+#if wxUSE_STATUSBAR
 
 class wxExFrame;
 class wxExStatusBar;
 
-#if wxUSE_STATUSBAR
 /// This class defines our statusbar panes, to be used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
 class wxExPane : public wxStatusBarPane
@@ -57,9 +56,7 @@ private:
   int m_No;
   static int m_Total;
 };
-#endif // wxUSE_STATUSBAR
 
-#if wxUSE_STATUSBAR
 /// Offers a status bar with popup menu in relation to wxExFrame.
 class wxExStatusBar : public wxStatusBar
 {
@@ -90,75 +87,5 @@ private:
   DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_STATUSBAR
-
-#if wxUSE_AUI
-/// Offers a toolbar together with stock art.
-class wxExToolBar : public wxAuiToolBar
-{
-public:
-  /// Constructor.
-  wxExToolBar(wxWindow* parent,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_TB_DEFAULT_STYLE);
-
-  /// Adds automatic naming (for stock menu id's) and 
-  /// art id for toolbar normal items.
-  wxAuiToolBarItem* AddTool(int toolId,
-    const wxString& label = wxEmptyString,
-    const wxBitmap& bitmap = wxNullBitmap,
-    const wxString& shortHelp = wxEmptyString,
-    wxItemKind kind = wxITEM_NORMAL);
-
-  /// Destructor.
- ~wxExToolBar();
-
-  /// Adds standard controls.
-  void AddControls();
-
-  /// Access to the hex check box.
-  wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
-protected:
-  void OnCommand(wxCommandEvent& event);
-private:
-  wxCheckBox* m_HexModeCheckBox;
-  wxCheckBox* m_SyncCheckBox;
-
-  DECLARE_EVENT_TABLE()
-};
-#endif // wxUSE_AUI
-
-#if wxUSE_AUI
-/// Offers a find toolbar, containing a find combobox, up and down arrows
-/// and checkboxes.
-/// The find combobox allows you to find in an wxExSTCFile
-/// component on the specified wxExFrame.
-class wxExFindToolBar : public wxExToolBar
-{
-public:
-  /// Constructor.
-  wxExFindToolBar(
-    wxWindow* parent, 
-    wxExFrame* frame, 
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize,
-    long style = wxAUI_TB_DEFAULT_STYLE);
-protected:
-  void OnCommand(wxCommandEvent& event);
-  void OnUpdateUI(wxUpdateUIEvent& event);
-private:
-  void Initialize();
-
-  wxCheckBox* m_RegularExpression;
-  wxCheckBox* m_MatchCase;
-  wxCheckBox* m_MatchWholeWord;
-  wxComboBox* m_ComboBox;
-  wxExFrame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
-};
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI
 #endif

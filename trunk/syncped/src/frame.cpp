@@ -19,8 +19,9 @@
 #include <wx/extension/log.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/vcs.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/process.h>

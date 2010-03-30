@@ -15,9 +15,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/aui/auibar.h> // for wxAUI_TB_DEFAULT_STYLE
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
-#include <wx/extension/bar.h>
+#include <wx/extension/statusbar.h>
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
 
@@ -28,6 +29,7 @@ class wxExGrid;
 class wxExListView;
 class wxExSTC;
 class wxExSTCFile;
+class wxExToolBar;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and a toolbar if you call CreateToolBar.
@@ -197,11 +199,11 @@ public:
   virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
 
   /// Creates the find bar.
-  wxAuiToolBar* CreateFindBar(
+  void CreateFindBar(
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
   /// Creates the tool bar.
-  wxAuiToolBar* CreateToolBar(
+  void CreateToolBar(
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
   /// Gets the manager.
