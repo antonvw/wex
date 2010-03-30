@@ -11,6 +11,7 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/grid.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcfile.h>
@@ -443,7 +444,16 @@ void wxExFrame::StatusBarDoubleClicked(
   else if (pane == "PaneLexer")
   {
     wxExSTC* stc = GetSTC();
-    if (stc != NULL) stc->LexerDialog();
+
+    if (stc != NULL && wxExLexers::Get()->Count() > 0)
+    {
+      wxString lexer = stc->GetLexer().GetScintillaLexer();
+
+      if (wxExLexers::Get()->ShowDialog(this, lexer, _("Enter Lexer")))
+      {
+        stc->SetLexer(lexer);
+      }
+    }
   }
   else if (pane == "PaneFileType")
   {

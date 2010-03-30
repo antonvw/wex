@@ -113,10 +113,6 @@ public:
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
 
-  /// Asks for a lexer for this document, choosing from a dialog of
-  /// all available lexers. Then colours the document.
-  void LexerDialog(const wxString& caption = _("Enter Lexer"));
-
 #if wxUSE_PRINTING_ARCHITECTURE
   /// Prints the document.
   void Print(bool prompt = true);

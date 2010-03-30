@@ -913,16 +913,6 @@ bool wxExSTC::IsTargetRE(const wxString& target) const
     target.Contains("\\9");
 }
 
-void wxExSTC::LexerDialog(const wxString& caption)
-{
-  wxString lexer = m_Lexer.GetScintillaLexer();
-
-  if (wxExLexers::Get()->ShowDialog(this, lexer, caption))
-  {
-    SetLexer(lexer);
-  }
-}
-
 void wxExSTC::MacroPlayback()
 {
   wxASSERT(MacroIsRecorded());
