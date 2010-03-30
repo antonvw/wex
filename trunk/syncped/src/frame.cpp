@@ -33,7 +33,6 @@
 BEGIN_EVENT_TABLE(MDIFrame, Frame)
 #if wxUSE_CHECKBOX
   EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
-  EVT_CHECKBOX(ID_SYNC_MODE, MDIFrame::OnCommand)
 #endif
   EVT_CLOSE(MDIFrame::OnClose)
   EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
@@ -404,9 +403,6 @@ void MDIFrame::OnClose(wxCloseEvent& event)
     }
   }
 
-#if wxUSE_CHECKBOX
-  wxConfigBase::Get()->Write("HexMode", GetToolBar()->GetHexModeCheckBox()->GetValue());
-#endif
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
   event.Skip();
@@ -764,12 +760,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
     stc->SetDocPointer(editor->GetDocPointer());
   }
   break;
-
-  case ID_SYNC_MODE:
-#if wxUSE_CHECKBOX
-    wxConfigBase::Get()->Write("AllowSync", GetToolBar()->GetSyncCheckBox()->GetValue());
-#endif
-    break;
 
   case ID_TREE_OPEN: OpenFile(wxExFileName(m_DirCtrl->GetFilePath())); break;
   case ID_TREE_RUN_MAKE: wxExMake(this, wxFileName(m_DirCtrl->GetFilePath())); break;

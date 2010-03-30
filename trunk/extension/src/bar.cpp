@@ -140,13 +140,32 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 #endif //wxUSE_STATUSBAR
 
 #if wxUSE_AUI
+
+BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
+#if wxUSE_CHECKBOX
+  EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
+#endif
+END_EVENT_TABLE()
+
 wxExToolBar::wxExToolBar(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style)
   : wxAuiToolBar(parent, id, pos, size, style)
+  , m_HexModeCheckBox(NULL)
+  , m_SyncCheckBox(NULL)
 {
+}
+
+wxExToolBar::~wxExToolBar()
+{
+#if wxUSE_CHECKBOX
+  if (m_HexModeCheckBox != NULL)
+  {
+    wxConfigBase::Get()->Write("HexMode", m_HexModeCheckBox->GetValue());
+  }
+#endif
 }
 
 void wxExToolBar::AddControls()
@@ -181,12 +200,12 @@ void wxExToolBar::AddControls()
 
 #if wxUSE_TOOLTIPS
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-#endif
-  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
-#if wxUSE_TOOLTIPS
   m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
 #endif
+
+  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
   m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+
 #endif // wxUSE_CHECKBOX
 
   Realize();
@@ -220,6 +239,23 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
       kind);
   }
 }
+
+void wxExToolBar::OnCommand(wxCommandEvent& event)
+{
+  switch (event.GetId())
+  {
+  case ID_SYNC_MODE:
+#if wxUSE_CHECKBOX
+    wxConfigBase::Get()->Write("AllowSync", m_SyncCheckBox->GetValue());
+#endif
+    break;
+
+  default: 
+    wxFAIL;
+    break;
+  }
+}
+
 #endif // wxUSE_AUI
 
 /// Offers a find combobox that allows you to find text

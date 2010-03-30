@@ -111,21 +111,25 @@ public:
     const wxString& shortHelp = wxEmptyString,
     wxItemKind kind = wxITEM_NORMAL);
 
+  /// Destructor.
+ ~wxExToolBar();
+
   /// Adds standard controls.
   void AddControls();
 
 #if wxUSE_CHECKBOX
   /// Access to the hex check box.
   wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
-
-  /// Access to the sync check box.
-  wxCheckBox* GetSyncCheckBox() const {return m_SyncCheckBox;};
 #endif
+protected:
+  void OnCommand(wxCommandEvent& event);
 private:
   #if wxUSE_CHECKBOX
   wxCheckBox* m_HexModeCheckBox;
   wxCheckBox* m_SyncCheckBox;
 #endif
+
+  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_AUI
 
