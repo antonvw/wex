@@ -539,7 +539,7 @@ wxExManagedFrame::~wxExManagedFrame()
 
 void wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
 {
-  wxExFindToolBar* findBar = new wxExFindToolBar(this, this,
+  wxExFindToolBar* findBar = new wxExFindToolBar(this,
     id,
     wxDefaultPosition,
     wxDefaultSize,

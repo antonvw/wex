@@ -27,7 +27,7 @@ class wxExToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.
-  wxExToolBar(wxWindow* parent,
+  wxExToolBar(wxExFrame* frame, 
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -46,11 +46,9 @@ public:
 
   /// Adds standard controls.
   void AddControls();
-
-  /// Access to the hex check box.
-  wxCheckBox* GetHexModeCheckBox() const {return m_HexModeCheckBox;};
 protected:
   void OnCommand(wxCommandEvent& event);
+  wxExFrame* m_Frame;
 private:
   wxCheckBox* m_HexModeCheckBox;
   wxCheckBox* m_SyncCheckBox;
@@ -66,9 +64,7 @@ class wxExFindToolBar : public wxExToolBar
 {
 public:
   /// Constructor.
-  wxExFindToolBar(
-    wxWindow* parent, 
-    wxExFrame* frame, 
+  wxExFindToolBar(wxExFrame* frame, 
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize,
@@ -83,7 +79,6 @@ private:
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
   wxComboBox* m_ComboBox;
-  wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };

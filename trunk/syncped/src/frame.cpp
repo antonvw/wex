@@ -32,7 +32,6 @@
 #include "version.h"
 
 BEGIN_EVENT_TABLE(MDIFrame, Frame)
-  EVT_CHECKBOX(ID_EDIT_HEX_MODE, MDIFrame::OnCommand)
   EVT_CLOSE(MDIFrame::OnClose)
   EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
   EVT_MENU(wxID_EXECUTE, MDIFrame::OnCommand)
@@ -363,7 +362,7 @@ void MDIFrame::NewFile(bool as_project)
   }
   else
   {
-    if (GetToolBar()->GetHexModeCheckBox()->GetValue())
+    if (wxConfigBase::Get()->ReadBool("HexMode", true))
     {
       // In hex mode we cannot edit the file.
       return;
@@ -608,20 +607,6 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
 
   case wxID_EXECUTE: ProcessRun(); break;
   case wxID_STOP: ProcessStop(); break;
-
-  case ID_EDIT_HEX_MODE:
-      if (editor != NULL &&
-         // Reopen the current file, in the new mode, if different from current mode.
-         (((editor->GetFlags() & wxExSTCFile::STC_WIN_HEX) > 0) != GetToolBar()->GetHexModeCheckBox()->GetValue()))
-      {
-        long flags = 0;
-        if (GetToolBar()->GetHexModeCheckBox()->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
-        wxExFileDialog dlg(this, editor);
-        if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
-        editor->Open(editor->GetFileName().GetFullPath(),
-          0, wxEmptyString, flags);
-      }
-    break;
 
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
@@ -1141,7 +1126,7 @@ bool MDIFrame::OpenFile(
 
     if (page == NULL)
     {
-      if (GetToolBar()->GetHexModeCheckBox()->GetValue())
+      if (wxConfigBase::Get()->ReadBool("HexMode", true))
         flags |= wxExSTCFile::STC_WIN_HEX;
 
       wxLogTrace("SY_CALL", "+wxExSTCWithFrame");

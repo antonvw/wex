@@ -10,6 +10,7 @@
 #include <wx/config.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/art.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stcfile.h>
@@ -24,19 +25,22 @@ enum
   ID_MATCH_WHOLE_WORD = 100,
   ID_MATCH_CASE,
   ID_REGULAR_EXPRESSION,
+  ID_EDIT_HEX_MODE,
   ID_SYNC_MODE,
 };
 
 BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
+  EVT_CHECKBOX(ID_EDIT_HEX_MODE, wxExToolBar::OnCommand)
   EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
 END_EVENT_TABLE()
 
-wxExToolBar::wxExToolBar(wxWindow* parent,
+wxExToolBar::wxExToolBar(wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxAuiToolBar(parent, id, pos, size, style)
+  : wxAuiToolBar(frame, id, pos, size, style)
+  , m_Frame(frame)
   , m_HexModeCheckBox(NULL)
   , m_SyncCheckBox(NULL)
 {
@@ -123,6 +127,23 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
+  case ID_EDIT_HEX_MODE:
+    wxConfigBase::Get()->Write("HexMode", m_HexModeCheckBox->GetValue());
+
+    {
+      wxExSTCFile* stc = m_Frame->GetSTC();
+
+      if (stc != NULL)
+      {
+        long flags = 0;
+        if (m_HexModeCheckBox->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
+        wxExFileDialog dlg(m_Frame, stc);
+        if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
+        stc->Open(stc->GetFileName(), 0, wxEmptyString, flags);
+      }
+    }
+    break;
+
   case ID_SYNC_MODE:
     wxConfigBase::Get()->Write("AllowSync", m_SyncCheckBox->GetValue());
     break;
@@ -235,14 +256,12 @@ BEGIN_EVENT_TABLE(wxExFindToolBar, wxExToolBar)
 END_EVENT_TABLE()
 
 wxExFindToolBar::wxExFindToolBar(
-  wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExToolBar(parent, id, pos, size, style)
-  , m_Frame(frame)
+  : wxExToolBar(frame, id, pos, size, style)
 {
   Initialize();
 
