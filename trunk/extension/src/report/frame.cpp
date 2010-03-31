@@ -33,7 +33,6 @@ BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
   EVT_MENU(wxID_OPEN, wxExFrameWithHistory::OnCommand)
-  EVT_MENU(wxID_PREFERENCES, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
@@ -292,15 +291,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       }
       break;
       
-    case wxID_PREFERENCES:
-      wxExSTCFile::ConfigDialog(this,
-        _("Editor Options"),
-        wxExSTCFile::STC_CONFIG_MODELESS | 
-        wxExSTCFile::STC_CONFIG_SIMPLE |
-        wxExSTCFile::STC_CONFIG_WITH_APPLY,
-        event.GetId());
-    break;
-
     case ID_PROJECT_SAVE:
       {
         wxExListViewFile* project = GetProject();

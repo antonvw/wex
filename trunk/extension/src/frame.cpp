@@ -508,6 +508,7 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 
 #if wxUSE_AUI
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
+  EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
   EVT_MENU(ID_VIEW_FINDBAR, wxExManagedFrame::OnCommand)
   EVT_MENU(ID_VIEW_TOOLBAR, wxExManagedFrame::OnCommand)
   EVT_UPDATE_UI(ID_VIEW_FINDBAR, wxExManagedFrame::OnUpdateUI)
@@ -566,6 +567,15 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
+    case wxID_PREFERENCES:
+      wxExSTCFile::ConfigDialog(this,
+        _("Editor Options"),
+        wxExSTCFile::STC_CONFIG_MODELESS | 
+        wxExSTCFile::STC_CONFIG_SIMPLE |
+        wxExSTCFile::STC_CONFIG_WITH_APPLY,
+        event.GetId());
+    break;
+
     case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
     case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
 
