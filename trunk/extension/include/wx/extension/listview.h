@@ -118,9 +118,6 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
-  /// Gets the column by column name.
-  const wxExColumn GetColumn(const wxString& name) const;
-
   /// Gets the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
@@ -226,6 +223,9 @@ protected:
 private:
   const wxString BuildPage();
   void CopySelectedItemsToClipboard();
+  /// Gets the column by column name.
+  const wxExColumn GetColumn(const wxString& name) const;
+
   void PasteItemsFromClipboard();
 
   const wxUniChar m_FieldSeparator;
