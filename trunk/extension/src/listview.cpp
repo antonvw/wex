@@ -153,7 +153,9 @@ const wxString wxExListView::BuildPage()
 
   for (int c = 0; c < GetColumnCount(); c++)
   {
-    text << "<td><i>" << GetColumn(c).GetText() << "</i>" << wxTextFile::GetEOL();
+    wxListItem col;
+    wxListView::GetColumn(c, col);
+    text << "<td><i>" << col.GetText() << "</i>" << wxTextFile::GetEOL();
   }
 
   for (long i = 0; i < GetItemCount(); i++)

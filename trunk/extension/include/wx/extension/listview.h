@@ -118,10 +118,6 @@ public:
   /// Finds next.
   bool FindNext(const wxString& text, bool find_next = true);
 
-  /// Gets the column by column number.
-  const wxExColumn& GetColumn(int col_number) const {
-    return m_Columns[col_number];};
-
   /// Gets the column by column name.
   const wxExColumn GetColumn(const wxString& name) const;
 
