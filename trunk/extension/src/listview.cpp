@@ -247,16 +247,9 @@ void wxExListView::EditDelete()
   ItemsUpdate();
 }
 
-int wxExListView::FindColumn(const wxString& name, bool is_required) const
+int wxExListView::FindColumn(const wxString& name) const
 {
-  const wxExColumn col(GetColumn(name));
-
-  if (is_required && col.GetColumn() == -1)
-  {
-    wxFAIL;
-  }
-
-  return col.GetColumn();
+  return GetColumn(name).GetColumn();
 }
 
 bool wxExListView::FindNext(const wxString& text, bool find_next)

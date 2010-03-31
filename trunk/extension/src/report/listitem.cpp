@@ -23,11 +23,11 @@ wxExListItem::wxExListItem(
   long itemnumber)
   : m_ListView(lv)
   , m_FileName(
-      (!lv->GetItemText(itemnumber, _("File Name"), false).empty() ?
-          lv->GetItemText(itemnumber, _("In Folder"), false) + wxFileName::GetPathSeparator() +
-          lv->GetItemText(itemnumber, _("File Name"), false) : wxString(wxEmptyString))
+      (!lv->GetItemText(itemnumber, _("File Name")).empty() ?
+          lv->GetItemText(itemnumber, _("In Folder")) + wxFileName::GetPathSeparator() +
+          lv->GetItemText(itemnumber, _("File Name")) : wxString(wxEmptyString))
       )
-  , m_FileSpec(lv->GetItemText(itemnumber, _("Type"), false))
+  , m_FileSpec(lv->GetItemText(itemnumber, _("Type")))
 {
   SetId(itemnumber);
   m_IsReadOnly = (m_ListView->GetItemData(itemnumber) > 0);
@@ -47,7 +47,7 @@ wxExListItem::wxExListItem(
 void wxExListItem::Insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
-  const int col = m_ListView->FindColumn(_("File Name"), false);
+  const int col = m_ListView->FindColumn(_("File Name"));
   const wxString filename = (
     m_FileName.FileExists() || m_FileName.DirExists() ?
       m_FileName.GetFullName():
@@ -130,7 +130,10 @@ const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
 
 void wxExListItem::SetItem(int col_number, const wxString& text) 
 {
-  m_ListView->SetItem(GetId(), col_number, text);
+  if (col_number != -1)
+  {
+    m_ListView->SetItem(GetId(), col_number, text);
+  }
 }
 
 void wxExListItem::SetReadOnly(bool readonly)

@@ -105,10 +105,7 @@ public:
   virtual void ItemsUpdate() {;};
 
   /// If column is not found, -1 is returned,
-  /// if column is not found and is_required, wxFAIL is invoked.
-  int FindColumn(
-    const wxString& name, 
-    bool is_required = true) const;
+  int FindColumn(const wxString& name) const;
 
   /// Returns the index of the bitmap in the image list used by this list view.
   /// If the artid is not yet on the image lists, it is added to both image lists.
@@ -130,11 +127,10 @@ public:
   /// Gets the item text using item number and column name.
   const wxString GetItemText(
     long item_number,
-    const wxString& col_name,
-    bool is_required = true) const {
+    const wxString& col_name) const {
     return GetItemText(
       item_number,
-      FindColumn(col_name, is_required));};
+      FindColumn(col_name));};
 
   /// Gets the sorted column.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
@@ -175,7 +171,7 @@ public:
   void SortColumn(
     const wxString& column_name, 
     wxExSortType sort_method = SORT_TOGGLE) {  
-      SortColumn(FindColumn(column_name, true), sort_method);};
+      SortColumn(FindColumn(column_name), sort_method);};
   
 #if wxUSE_STATUSBAR
   /// Updates pane items field on the statusbar.

@@ -691,12 +691,12 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
   }
   else if (item.GetFileName().FileExists())
   {
-    const wxString line_number_str = GetItemText(item_number, _("Line No"), false);
+    const wxString line_number_str = GetItemText(item_number, _("Line No"));
     const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
     const wxString match =
       (GetType() == LIST_REPLACE ?
          GetItemText(item_number, _("Replaced")):
-         GetItemText(item_number, _("Match"), false));
+         GetItemText(item_number, _("Match")));
 
     m_Frame->OpenFile(
       item.GetFileName().GetFullPath(),

@@ -46,11 +46,8 @@ public:
   void SetItem(int col_number, const wxString& text);
 
   /// Sets the item text using column name.
-  void SetItem(
-    const wxString& col_name,
-    const wxString& text,
-    bool is_required = true) {
-    SetItem(m_ListView->FindColumn(col_name, is_required), text);};
+  void SetItem(const wxString& col_name, const wxString& text) {
+    SetItem(m_ListView->FindColumn(col_name), text);};
 
   /// Updates all attributes.
   void Update();
