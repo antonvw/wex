@@ -15,6 +15,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/vcs.h>
@@ -619,22 +620,28 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
       }
     }
 
-    // Finding in the LIST_FIND and REPLACE would result in recursive calls, do not add them.
+    // Finding in the LIST_FIND and REPLACE would 
+    /// result in recursive calls, do not add them.
     if ( exists &&
          GetType() != LIST_FIND && GetType() != LIST_REPLACE &&
         (m_MenuFlags & LIST_MENU_REPORT_FIND))
     {
       menu.AppendSeparator();
-      menu.Append(ID_TOOL_REPORT_FIND, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
+      menu.Append(ID_TOOL_REPORT_FIND, 
+        wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
       if (!read_only)
       {
-        menu.Append(ID_TOOL_REPORT_REPLACE, wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+        menu.Append(ID_TOOL_REPORT_REPLACE, 
+          wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
       }
     }
   }
 
-  if (GetSelectedItemCount() > 0 && exists && (m_MenuFlags & LIST_MENU_TOOL))
+  if (GetSelectedItemCount() > 0 && 
+      exists && 
+     (m_MenuFlags & LIST_MENU_TOOL) &&
+      wxExLexers::Get()->Count() > 0)
   {
     menu.AppendSeparator();
     menu.AppendTools();

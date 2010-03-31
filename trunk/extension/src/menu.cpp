@@ -169,11 +169,11 @@ void wxExMenu::AppendSubMenu(
   }
 }
 
-void wxExMenu::AppendTools(int itemid)
+bool wxExMenu::AppendTools(int itemid)
 {
   if (wxExLexers::Get()->Count() == 0)
   {
-    return;
+    return false;
   }
 
   wxExMenu* menuTool = new wxExMenu(*this);
@@ -199,6 +199,8 @@ void wxExMenu::AppendTools(int itemid)
   }
 
   AppendSubMenu(menuTool, _("&Tools"), wxEmptyString, itemid);
+
+  return true;
 }
 
 // This is the VCS submenu, as present on a popup.
@@ -206,6 +208,11 @@ void wxExMenu::AppendTools(int itemid)
 // need to be destroyed an old one.
 void wxExMenu::AppendVCS()
 {
+  if (!wxExVCS::Get()->Use())
+  {
+    return;
+  }
+
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST;
 
   wxExMenu* vcsmenu = new wxExMenu;

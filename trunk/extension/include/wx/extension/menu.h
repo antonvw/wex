@@ -76,7 +76,8 @@ public:
     int itemid = wxID_ANY);
 
   /// Appends a tools submenu.
-  void AppendTools(int itemid = wxID_ANY);
+  /// Returns true if items have been appended.
+  bool AppendTools(int itemid = wxID_ANY);
 
   /// Appends VCS menu items.
   void AppendVCS();
