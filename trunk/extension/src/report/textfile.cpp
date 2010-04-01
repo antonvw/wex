@@ -263,7 +263,7 @@ void wxExTextFileWithListView::ReportStatistics()
     for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
     {
       wxListItem col;
-      ((wxListView*)m_Report)->GetColumn(i + 1, col);
+      m_Report->GetColumn(i + 1, col);
       const wxString name = col.GetText();
       const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
       std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
