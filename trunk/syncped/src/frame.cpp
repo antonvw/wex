@@ -362,7 +362,7 @@ void MDIFrame::NewFile(bool as_project)
   }
   else
   {
-    if (wxConfigBase::Get()->ReadBool("HexMode", true))
+    if (wxConfigBase::Get()->ReadBool("HexMode", false))
     {
       // In hex mode we cannot edit the file.
       return;
@@ -1126,7 +1126,7 @@ bool MDIFrame::OpenFile(
 
     if (page == NULL)
     {
-      if (wxConfigBase::Get()->ReadBool("HexMode", true))
+      if (wxConfigBase::Get()->ReadBool("HexMode", false))
         flags |= wxExSTCFile::STC_WIN_HEX;
 
       wxLogTrace("SY_CALL", "+wxExSTCWithFrame");
