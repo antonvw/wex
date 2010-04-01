@@ -219,8 +219,6 @@ protected:
 private:
   const wxString BuildPage();
   void CopySelectedItemsToClipboard();
-  /// Gets the column by column name.
-  const wxExColumn GetColumn(const wxString& name) const;
 
   void PasteItemsFromClipboard();
 

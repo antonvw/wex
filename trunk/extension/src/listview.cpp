@@ -154,7 +154,7 @@ const wxString wxExListView::BuildPage()
   for (int c = 0; c < GetColumnCount(); c++)
   {
     wxListItem col;
-    wxListView::GetColumn(c, col);
+    GetColumn(c, col);
     text << "<td><i>" << col.GetText() << "</i>" << wxTextFile::GetEOL();
   }
 
@@ -249,7 +249,20 @@ void wxExListView::EditDelete()
 
 int wxExListView::FindColumn(const wxString& name) const
 {
-  return GetColumn(name).GetColumn();
+  // This method does not fail if name could not be found,
+  // test for col no in wxExColumn to check for that.
+  for (
+    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
+    it != m_Columns.end();
+    ++it)
+  {
+    if (it->GetText() == name)
+    {
+      return it->GetColumn();
+    }
+  }
+
+  return -1;
 }
 
 bool wxExListView::FindNext(const wxString& text, bool find_next)
@@ -387,24 +400,6 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     GetImageList(wxIMAGE_LIST_SMALL)->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER, smallsize));
     return GetImageList(wxIMAGE_LIST_NORMAL)->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER, largesize));
   }
-}
-
-const wxExColumn wxExListView::GetColumn(const wxString& name) const
-{
-  // This method does not fail if name could not be found,
-  // test for col no in wxExColumn to check for that.
-  for (
-    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
-    it != m_Columns.end();
-    ++it)
-  {
-    if (it->GetText() == name)
-    {
-      return *it;
-    }
-  }
-
-  return wxExColumn();
 }
 
 const wxString wxExListView::GetItemText(
