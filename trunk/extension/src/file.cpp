@@ -99,6 +99,9 @@ bool wxExFile::FileSave(const wxString& filename)
     return false;
   }
 
+  m_FileName.m_Stat.Sync();
+  m_Stat.Sync();
+
   DoFileSave(save_as);
 
   Close();
