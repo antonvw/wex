@@ -39,7 +39,7 @@ wxExToolBar::wxExToolBar(wxExFrame* frame,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxAuiToolBar(frame, id, pos, size, style)
+  : wxAuiToolBar(frame, id, pos, size, style | wxAUI_TB_HORZ_TEXT)
   , m_Frame(frame)
   , m_HexModeCheckBox(NULL)
   , m_SyncCheckBox(NULL)
@@ -77,22 +77,22 @@ void wxExToolBar::AddControls()
       ID_EDIT_HEX_MODE,
       "Hex"));
 
-  AddTool(ID_SYNC_MODE, "Sync", wxNullBitmap, wxEmptyString, wxITEM_CHECK);
-/*
+//  m_HexModeCheckBox->SetBackgroundColour(m_Frame->GetBackgroundColour());
+
+//  AddTool(ID_SYNC_MODE, "Sync", wxNullBitmap, wxEmptyString, wxITEM_CHECK);
   AddControl(
     m_SyncCheckBox = new wxCheckBox(
       this,
       ID_SYNC_MODE,
       "Sync"));
-      */
 
 #if wxUSE_TOOLTIPS
   m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-//  m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
+  m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
 #endif
 
   m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
-//  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
 
   Realize();
 }
