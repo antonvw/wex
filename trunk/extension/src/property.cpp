@@ -26,7 +26,7 @@ void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 
 void wxExProperty::ApplyReset(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(!IsOk());
+  wxASSERT(IsOk());
   stc->SetProperty(m_Name, wxEmptyString);
 }
 
