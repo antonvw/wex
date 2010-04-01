@@ -189,14 +189,12 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
 
     wxMenu* menuSort = new wxMenu;
-
-    int i = ID_COL_FIRST;
-    for (
-      std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
-      it != m_Columns.end();
-      ++it)
+    
+    for (int i = 0; i < GetColumnCount(); i++)
     {
-      menuSort->Append(i++, it->GetText());
+      wxListItem item;
+      GetColumn(i, item);  
+      menuSort->Append(ID_COL_FIRST + i, item.GetText());
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
