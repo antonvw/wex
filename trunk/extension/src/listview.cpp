@@ -247,16 +247,14 @@ void wxExListView::EditDelete()
 
 int wxExListView::FindColumn(const wxString& name) const
 {
-  // This method does not fail if name could not be found,
-  // test for col no in wxExColumn to check for that.
-  for (
-    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
-    it != m_Columns.end();
-    ++it)
+  for (int i = 0; i < GetColumnCount(); i++)
   {
-    if (it->GetText() == name)
+    wxListItem item;
+    GetColumn(i, item);
+
+    if (item.GetText() == name)
     {
-      return it->GetColumn();
+      return item.GetColumn();
     }
   }
 
