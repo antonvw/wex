@@ -210,7 +210,8 @@ int wxExSTCFile::ConfigDialog(
     items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
     std::map<long, const wxString> fchoices;
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
+    // next no longer available
+//    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
