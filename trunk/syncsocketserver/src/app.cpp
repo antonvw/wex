@@ -181,7 +181,7 @@ Frame::Frame()
   menuBar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menuBar);
 
-  CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER | wxTB_DOCKABLE);
+  CreateToolBar();
 
   GetToolBar()->AddTool(wxID_NEW);
   GetToolBar()->AddTool(wxID_OPEN);
