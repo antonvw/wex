@@ -1242,6 +1242,153 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_R_IDENTIFIER"> 9 </def>
     <def no ="wxSTC_R_INFIX"> 10 </def>
     <def no ="wxSTC_R_INFIXEOL"> 11 </def>
+    <!-- Lexical state for SCLEX_MAGIKSF -->
+    <def no ="wxSTC_MAGIK_DEFAULT"> 0 </def>
+    <def no ="wxSTC_MAGIK_COMMENT"> 1 </def>
+    <def no ="wxSTC_MAGIK_HYPER_COMMENT"> 16 </def>
+    <def no ="wxSTC_MAGIK_STRING"> 2 </def>
+    <def no ="wxSTC_MAGIK_CHARACTER"> 3 </def>
+    <def no ="wxSTC_MAGIK_NUMBER"> 4 </def>
+    <def no ="wxSTC_MAGIK_IDENTIFIER"> 5 </def>
+    <def no ="wxSTC_MAGIK_OPERATOR"> 6 </def>
+    <def no ="wxSTC_MAGIK_FLOW"> 7 </def>
+    <def no ="wxSTC_MAGIK_CONTAINER"> 8 </def>
+    <def no ="wxSTC_MAGIK_BRACKET_BLOCK"> 9 </def>
+    <def no ="wxSTC_MAGIK_BRACE_BLOCK"> 10 </def>
+    <def no ="wxSTC_MAGIK_SQBRACKET_BLOCK"> 11 </def>
+    <def no ="wxSTC_MAGIK_UNKNOWN_KEYWORD"> 12 </def>
+    <def no ="wxSTC_MAGIK_KEYWORD"> 13 </def>
+    <def no ="wxSTC_MAGIK_PRAGMA"> 14 </def>
+    <def no ="wxSTC_MAGIK_SYMBOL"> 15 </def>
+    <!-- Lexical state for SCLEX_POWERSHELL -->
+    <def no ="wxSTC_POWERSHELL_DEFAULT"> 0 </def>
+    <def no ="wxSTC_POWERSHELL_COMMENT"> 1 </def>
+    <def no ="wxSTC_POWERSHELL_STRING"> 2 </def>
+    <def no ="wxSTC_POWERSHELL_CHARACTER"> 3 </def>
+    <def no ="wxSTC_POWERSHELL_NUMBER"> 4 </def>
+    <def no ="wxSTC_POWERSHELL_VARIABLE"> 5 </def>
+    <def no ="wxSTC_POWERSHELL_OPERATOR"> 6 </def>
+    <def no ="wxSTC_POWERSHELL_IDENTIFIER"> 7 </def>
+    <def no ="wxSTC_POWERSHELL_KEYWORD"> 8 </def>
+    <def no ="wxSTC_POWERSHELL_CMDLET"> 9 </def>
+    <def no ="wxSTC_POWERSHELL_ALIAS"> 10 </def>
+    <!-- // Lexical state for SCLEX_MYSQL -->
+    <def no ="wxSTC_MYSQL_DEFAULT"> 0 </def>
+    <def no ="wxSTC_MYSQL_COMMENT"> 1 </def>
+    <def no ="wxSTC_MYSQL_COMMENTLINE"> 2 </def>
+    <def no ="wxSTC_MYSQL_VARIABLE"> 3 </def>
+    <def no ="wxSTC_MYSQL_SYSTEMVARIABLE"> 4 </def>
+    <def no ="wxSTC_MYSQL_KNOWNSYSTEMVARIABLE"> 5 </def>
+    <def no ="wxSTC_MYSQL_NUMBER"> 6 </def>
+    <def no ="wxSTC_MYSQL_MAJORKEYWORD"> 7 </def>
+    <def no ="wxSTC_MYSQL_KEYWORD"> 8 </def>
+    <def no ="wxSTC_MYSQL_DATABASEOBJECT"> 9 </def>
+    <def no ="wxSTC_MYSQL_PROCEDUREKEYWORD"> 10 </def>
+    <def no ="wxSTC_MYSQL_STRING"> 11 </def>
+    <def no ="wxSTC_MYSQL_SQSTRING"> 12 </def>
+    <def no ="wxSTC_MYSQL_DQSTRING"> 13 </def>
+    <def no ="wxSTC_MYSQL_OPERATOR"> 14 </def>
+    <def no ="wxSTC_MYSQL_FUNCTION"> 15 </def>
+    <def no ="wxSTC_MYSQL_IDENTIFIER"> 16 </def>
+    <def no ="wxSTC_MYSQL_QUOTEDIDENTIFIER"> 17 </def>
+    <def no ="wxSTC_MYSQL_USER1"> 18 </def>
+    <def no ="wxSTC_MYSQL_USER2"> 19 </def>
+    <def no ="wxSTC_MYSQL_USER3"> 20 </def>
+    <def no ="wxSTC_MYSQL_HIDDENCOMMAND"> 21 </def>
+    <!-- // Lexical state for SCLEX_PO -->
+    <def no ="wxSTC_PO_DEFAULT"> 0 </def>
+    <def no ="wxSTC_PO_COMMENT"> 1 </def>
+    <def no ="wxSTC_PO_MSGID"> 2 </def>
+    <def no ="wxSTC_PO_MSGID_TEXT"> 3 </def>
+    <def no ="wxSTC_PO_MSGSTR"> 4 </def>
+    <def no ="wxSTC_PO_MSGSTR_TEXT"> 5 </def>
+    <def no ="wxSTC_PO_MSGCTXT"> 6 </def>
+    <def no ="wxSTC_PO_MSGCTXT_TEXT"> 7 </def>
+    <def no ="wxSTC_PO_FUZZY"> 8 </def>
+    <!-- // Lexical states for SCLEX_PASCAL -->
+    <def no ="wxSTC_PAS_DEFAULT"> 0 </def>
+    <def no ="wxSTC_PAS_IDENTIFIER"> 1 </def>
+    <def no ="wxSTC_PAS_COMMENT"> 2 </def>
+    <def no ="wxSTC_PAS_COMMENT2"> 3 </def>
+    <def no ="wxSTC_PAS_COMMENTLINE"> 4 </def>
+    <def no ="wxSTC_PAS_PREPROCESSOR"> 5 </def>
+    <def no ="wxSTC_PAS_PREPROCESSOR2"> 6 </def>
+    <def no ="wxSTC_PAS_NUMBER"> 7 </def>
+    <def no ="wxSTC_PAS_HEXNUMBER"> 8 </def>
+    <def no ="wxSTC_PAS_WORD"> 9 </def>
+    <def no ="wxSTC_PAS_STRING"> 10 </def>
+    <def no ="wxSTC_PAS_STRINGEOL"> 11 </def>
+    <def no ="wxSTC_PAS_CHARACTER"> 12 </def>
+    <def no ="wxSTC_PAS_OPERATOR"> 13 </def>
+    <def no ="wxSTC_PAS_ASM"> 14 </def>
+    <!-- // Lexical state for SCLEX_SORCUS -->
+    <def no ="wxSTC_SORCUS_DEFAULT"> 0 </def>
+    <def no ="wxSTC_SORCUS_COMMAND"> 1 </def>
+    <def no ="wxSTC_SORCUS_PARAMETER"> 2 </def>
+    <def no ="wxSTC_SORCUS_COMMENTLINE"> 3 </def>
+    <def no ="wxSTC_SORCUS_STRING"> 4 </def>
+    <def no ="wxSTC_SORCUS_STRINGEOL"> 5 </def>
+    <def no ="wxSTC_SORCUS_IDENTIFIER"> 6 </def>
+    <def no ="wxSTC_SORCUS_OPERATOR"> 7 </def>
+    <def no ="wxSTC_SORCUS_NUMBER"> 8 </def>
+    <def no ="wxSTC_SORCUS_CONSTANT"> 9 </def>
+    <!-- // Lexical state for SCLEX_POWERPRO -->
+    <def no ="wxSTC_POWERPRO_DEFAULT"> 0 </def>
+    <def no ="wxSTC_POWERPRO_COMMENTBLOCK"> 1 </def>
+    <def no ="wxSTC_POWERPRO_COMMENTLINE"> 2 </def>
+    <def no ="wxSTC_POWERPRO_NUMBER"> 3 </def>
+    <def no ="wxSTC_POWERPRO_WORD"> 4 </def>
+    <def no ="wxSTC_POWERPRO_WORD2"> 5 </def>
+    <def no ="wxSTC_POWERPRO_WORD3"> 6 </def>
+    <def no ="wxSTC_POWERPRO_WORD4"> 7 </def>
+    <def no ="wxSTC_POWERPRO_DOUBLEQUOTEDSTRING"> 8 </def>
+    <def no ="wxSTC_POWERPRO_SINGLEQUOTEDSTRING"> 9 </def>
+    <def no ="wxSTC_POWERPRO_LINECONTINUE"> 10 </def>
+    <def no ="wxSTC_POWERPRO_OPERATOR"> 11 </def>
+    <def no ="wxSTC_POWERPRO_IDENTIFIER"> 12 </def>
+    <def no ="wxSTC_POWERPRO_STRINGEOL"> 13 </def>
+    <def no ="wxSTC_POWERPRO_VERBATIM"> 14 </def>
+    <def no ="wxSTC_POWERPRO_ALTQUOTE"> 15 </def>
+    <def no ="wxSTC_POWERPRO_FUNCTION"> 16 </def>
+    <!-- // Lexical states for SCLEX_SML -->
+    <def no ="wxSTC_SML_DEFAULT"> 0 </def>
+    <def no ="wxSTC_SML_IDENTIFIER"> 1 </def>
+    <def no ="wxSTC_SML_TAGNAME"> 2 </def>
+    <def no ="wxSTC_SML_KEYWORD"> 3 </def>
+    <def no ="wxSTC_SML_KEYWORD2"> 4 </def>
+    <def no ="wxSTC_SML_KEYWORD3"> 5 </def>
+    <def no ="wxSTC_SML_LINENUM"> 6 </def>
+    <def no ="wxSTC_SML_OPERATOR"> 7 </def>
+    <def no ="wxSTC_SML_NUMBER"> 8 </def>
+    <def no ="wxSTC_SML_CHAR"> 9 </def>
+    <def no ="wxSTC_SML_STRING"> 11 </def>
+    <def no ="wxSTC_SML_COMMENT"> 12 </def>
+    <def no ="wxSTC_SML_COMMENT1"> 13 </def>
+    <def no ="wxSTC_SML_COMMENT2"> 14 </def>
+    <def no ="wxSTC_SML_COMMENT3"> 15 </def>
+    <!-- // Lexical state for SCLEX_MARKDOWN -->
+    <def no ="wxSTC_MARKDOWN_DEFAULT"> 0 </def>
+    <def no ="wxSTC_MARKDOWN_LINE_BEGIN"> 1 </def>
+    <def no ="wxSTC_MARKDOWN_STRONG1"> 2 </def>
+    <def no ="wxSTC_MARKDOWN_STRONG2"> 3 </def>
+    <def no ="wxSTC_MARKDOWN_EM1"> 4 </def>
+    <def no ="wxSTC_MARKDOWN_EM2"> 5 </def>
+    <def no ="wxSTC_MARKDOWN_HEADER1"> 6 </def>
+    <def no ="wxSTC_MARKDOWN_HEADER2"> 7 </def>
+    <def no ="wxSTC_MARKDOWN_HEADER3"> 8 </def>
+    <def no ="wxSTC_MARKDOWN_HEADER4"> 9 </def>
+    <def no ="wxSTC_MARKDOWN_HEADER5"> 10 </def>
+    <def no ="wxSTC_MARKDOWN_HEADER6"> 11 </def>
+    <def no ="wxSTC_MARKDOWN_PRECHAR"> 12 </def>
+    <def no ="wxSTC_MARKDOWN_ULIST_ITEM"> 13 </def>
+    <def no ="wxSTC_MARKDOWN_OLIST_ITEM"> 14 </def>
+    <def no ="wxSTC_MARKDOWN_BLOCKQUOTE"> 15 </def>
+    <def no ="wxSTC_MARKDOWN_STRIKEOUT"> 16 </def>
+    <def no ="wxSTC_MARKDOWN_HRULE"> 17 </def>
+    <def no ="wxSTC_MARKDOWN_LINK"> 18 </def>
+    <def no ="wxSTC_MARKDOWN_CODE"> 19 </def>
+    <def no ="wxSTC_MARKDOWN_CODE2"> 20 </def>
+    <def no ="wxSTC_MARKDOWN_CODEBK"> 21 </def>
     
     <def no ="wxEx_INDIC_VI_YANK"> 0 </def>
     <def no ="wxEx_INDIC_VI_PUT"> 1 </def>
@@ -1384,7 +1531,7 @@ without the written consent of the copyright owner.
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
   
-  <lexer name="pascal" extensions="*.pas" match="wxSTC_C_">
+  <lexer name="pascal" extensions="*.pas" match="wxSTC_PAS_">
     <keywords>    
     ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
     CLASS CONST
@@ -1428,13 +1575,6 @@ without the written consent of the copyright owner.
     help history if in jobs kill logout mount pwd rm select set sleep source 
     tail test then
     time ulimit umount umask unalias unset until while
-    <!--
-      TODO: The next keywords are .po keywords. Currently they are
-      parsed as bash file, so I have added them here. If po
-      becomes known by Scintilla, add them to new keyword file.
-      -->
-    msgid
-    msgstr
     </keywords>
     <comments begin1="#" />
   </lexer>
@@ -1603,11 +1743,14 @@ without the written consent of the copyright owner.
   <lexer name="lot" match="wxSTC_LOT_" />
   <lexer name="lout" match="wxSTC_LOUT_" />
   <lexer name="lua" match="wxSTC_LUA_" />
+  <lexer name="magik" match="wxSTC_MAGIK" />
   <lexer name="makefile" extensions="makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
+  <lexer name="markdown" match="wxSTC_MARKDOWN" />
   <lexer name="matlab" match="wxSTC_MATLAB_" />
   <lexer name="metapost" match="wxSTC_METAPOST_" />
   <lexer name="mmixal" match="wxSTC_MMIXAL_" />
   <lexer name="mssql" match="wxSTC_MSSQL_" />
+  <lexer name="mysql" match="wxSTC_MYSQL" />
   <lexer name="nncrontab" match="wxSTC_NNCRONTAB_" />
   <lexer name="nsis" match="wxSTC_NSIS_" />
   <lexer name="octave" match="wxSTC_MATLAB_" />
@@ -1615,9 +1758,12 @@ without the written consent of the copyright owner.
   <lexer name="perl" match="wxSTC_PL_" />
   <lexer name="php" match="wxSTC_HPHP_" /> 
   <lexer name="phpscript" match="wxSTC_H_" /> 
+  <lexer name="po" match="wxSTC_PO_" />
   <lexer name="pov" match="wxSTC_POV_" />
+  <lexer name="powerpro" match="wxSTC_POWERPRO" />
   <lexer name="progress" match="wxSTC_4GL_" />
   <lexer name="props" match="wxSTC_PROPS_" />
+  <lexer name="ps" match="wxSTC_POWERSHELL" />
   <lexer name="ps" match="wxSTC_PS_" />
   <lexer name="python" extensions="*.py" match="wxSTC_P_" />
   <lexer name="r" match="wxSTC_R_" />
@@ -1625,6 +1771,8 @@ without the written consent of the copyright owner.
   <lexer name="ruby" match="wxSTC_RB_" />
   <lexer name="scriptol" match="wxSTC_SCRIPTOL_WHITE" />
   <lexer name="smalltalk" match="wxSTC_ST_" />
+  <lexer name="sml" match="wxSTC_SML" />
+  <lexer name="sorcus" match="wxSTC_SORCUS" />
   <lexer name="specman" match="wxSTC_SN_" />
   <lexer name="spice" match="wxSTC_SPICE_" />
   <lexer name="tads3" match="wxSTC_T3_" />
