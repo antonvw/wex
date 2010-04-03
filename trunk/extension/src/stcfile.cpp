@@ -348,7 +348,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
       SetLexerByText();
     }
 
-    if (GetFileName().GetExt() == "po")
+    if (GetLexer().GetScintillaLexer() == "po")
     {
       AddBasePathToPathList();
     }
