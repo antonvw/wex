@@ -59,7 +59,7 @@ General
   is updated only for wxWidgets 2.8.0, whereas we use 2.9.0, in the added file
   the extra needed translation are put. 
 
-- The SVN support in wxExSVN works with SVN client 1.6.2 
+- The SVN support in wxExVCS works with SVN client 1.6.2 
     (e.g. from http://www.sliksvn.com/en/download)
 
 - Build process/IDE
