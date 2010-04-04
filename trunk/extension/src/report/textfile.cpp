@@ -263,6 +263,7 @@ void wxExTextFileWithListView::ReportStatistics()
     for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
     {
       wxListItem col;
+      col.SetMask(wxLIST_MASK_TEXT);
       m_Report->GetColumn(i + 1, col);
       const wxString name = col.GetText();
       const wxExStatistics<long>& stat = GetStatistics().GetKeywords();

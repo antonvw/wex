@@ -193,6 +193,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     for (int i = 0; i < GetColumnCount(); i++)
     {
       wxListItem item;
+      item.SetMask(wxLIST_MASK_TEXT);
       GetColumn(i, item);  
       menuSort->Append(ID_COL_FIRST + i, item.GetText());
     }
