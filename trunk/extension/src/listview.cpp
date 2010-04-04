@@ -250,11 +250,12 @@ int wxExListView::FindColumn(const wxString& name) const
   for (int i = 0; i < GetColumnCount(); i++)
   {
     wxListItem item;
+    item.SetMask(wxLIST_MASK_TEXT);
     GetColumn(i, item);
 
     if (item.GetText() == name)
     {
-      return item.GetColumn();
+      return i;
     }
   }
 
