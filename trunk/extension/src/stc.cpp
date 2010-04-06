@@ -101,7 +101,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginDividerNumber(stc.m_MarginDividerNumber)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
-  , m_vi(wxExVi(this))
+  , m_vi(stc.m_vi)
 {
   Initialize();
 }
