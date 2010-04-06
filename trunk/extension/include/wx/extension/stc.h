@@ -195,13 +195,13 @@ protected:
   void OnMouse(wxMouseEvent& event);
   void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
+  void SetFlags(long flags) {m_Flags = flags;};
   void SetGlobalStyles();
   void SetViMode(bool mode) {m_vi.Use(mode);};
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
   const int m_MarginLineNumber;
-  long m_Flags; // win flags
 private:
   void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
   bool CheckAutoComp(const wxUniChar& c);
@@ -218,11 +218,11 @@ private:
   /// as previous line.
   bool SmartIndentation();
 
-  const long m_MenuFlags;
-
   bool m_MacroIsRecording;
 
+  long m_Flags; // win flags
   long m_GotoLineNumber;
+  const long m_MenuFlags;
 
   static std::vector <wxString> m_Macro;
 

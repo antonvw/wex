@@ -94,10 +94,10 @@ wxExSTC::wxExSTC(wxWindow *parent,
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
-  , m_Flags(stc.m_Flags)
-  , m_MenuFlags(stc.m_MenuFlags)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
+  , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
+  , m_MenuFlags(stc.m_MenuFlags)
   , m_MarginDividerNumber(stc.m_MarginDividerNumber)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
