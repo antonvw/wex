@@ -192,6 +192,12 @@ bool wxExLexer::IsKeyword(const wxString& word) const
   return (it != m_Keywords.end());
 }
 
+bool wxExLexer::IsOk() const
+{
+  // At this moment ok if scintila lexer has been filled.
+  return !m_ScintillaLexer.empty();
+}
+
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
   std::set<wxString>::const_iterator it = m_Keywords.lower_bound(word.Lower());
@@ -312,8 +318,6 @@ void wxExLexer::Set(const wxXmlNode* node)
 {
   m_ScintillaLexer = node->GetAttribute("name", "");
 
-  wxASSERT(!m_ScintillaLexer.empty());
-
   m_Extensions = node->GetAttribute(
     "extensions", 
     "*." + m_ScintillaLexer);
@@ -375,6 +379,11 @@ void wxExLexer::Set(const wxXmlNode* node)
     }
 
     child = child->GetNext();
+  }
+
+  if (!IsOk())
+  {
+    wxLogError(_("Illegal lexer on line: %d"), node->GetLineNumber());
   }
 }
 

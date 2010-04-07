@@ -491,7 +491,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   {
     const wxExFileName fn(m_FullPath);
  
-    if (!fn.GetLexer().GetScintillaLexer().empty())
+    if (fn.GetLexer().IsOk())
     {
       m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
     }

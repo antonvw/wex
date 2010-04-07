@@ -87,7 +87,7 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
   // and a lexer.
   if (GetSelectedText().empty() && GetTextLength() > 0 &&
      (GetMenuFlags() & STC_MENU_TOOL) &&
-      !GetLexer().GetScintillaLexer().empty())
+      GetLexer().IsOk())
   {
     menu.AppendSeparator();
     menu.AppendTools();

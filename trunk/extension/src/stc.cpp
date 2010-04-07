@@ -307,7 +307,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   if (
     GetSelectedText().empty() && 
     GetProperty("fold") == "1" &&
-   !m_Lexer.GetScintillaLexer().empty())
+    m_Lexer.IsOk())
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl-T"));
@@ -1390,7 +1390,7 @@ void wxExSTC::SetScintillaLexer()
   SetLexerLanguage(m_Lexer.GetScintillaLexer());
 
   if (
-    !m_Lexer.GetScintillaLexer().empty() &&
+    m_Lexer.IsOk() &&
     // And check whether the GetLexer from scintilla has a good value.
     // Otherwise it is not known, and we better show an error.
     wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)

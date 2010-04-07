@@ -342,7 +342,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
   {
     SetLexer(GetFileName().GetLexer().GetScintillaLexer());
 
-    if (GetLexer().GetScintillaLexer().empty())
+    if (!GetLexer().IsOk())
     {
       SetLexerByText();
     }

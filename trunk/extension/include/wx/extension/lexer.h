@@ -72,6 +72,9 @@ public:
   /// Is this word a keyword (allways all keywords), case sensitive.
   bool IsKeyword(const wxString& word) const;
 
+  /// Is this lexer valid.
+  bool IsOk() const;
+
   /// Does any keyword (allways all keywords) start with this word,
   /// case insensitive.
   bool KeywordStartsWith(const wxString& word) const;
