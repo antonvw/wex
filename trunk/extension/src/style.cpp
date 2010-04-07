@@ -52,7 +52,7 @@ bool wxExStyle::IsDefault() const
 
 bool wxExStyle::IsOk() const
 {
-  return !m_No.empty();
+  return !m_No.empty() && !m_Value.empty();
 }
 
 void wxExStyle::Set(const wxXmlNode* node)
@@ -67,6 +67,11 @@ void wxExStyle::Set(const wxXmlNode* node)
   if (it != wxExLexers::Get()->GetMacrosStyle().end())
   {
     m_Value = it->second;
+  }
+
+  if (!IsOk())
+  {
+    wxLogError(_("Illegal style on line: %d"), node->GetLineNumber());
   }
 }
 

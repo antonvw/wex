@@ -7,6 +7,7 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/log.h> 
 #include <wx/stc/stc.h>
 #include <wx/extension/property.h>
 
@@ -20,23 +21,26 @@ wxExProperty::wxExProperty(const wxXmlNode* node)
 
 void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(IsOk());
   stc->SetProperty(m_Name, m_Value);
 }
 
 void wxExProperty::ApplyReset(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(IsOk());
   stc->SetProperty(m_Name, wxEmptyString);
 }
 
 bool wxExProperty::IsOk() const
 {
-  return !m_Name.empty();
+  return !m_Name.empty() && !m_Value.empty();
 }
 
 void wxExProperty::Set(const wxXmlNode* node)
 {
   m_Name = node->GetAttribute("name", "0");
   m_Value = node->GetNodeContent().Strip(wxString::both);
+
+  if (!IsOk())
+  {
+    wxLogError(_("Illegal property on line: %d"), node->GetLineNumber());
+  }
 }
