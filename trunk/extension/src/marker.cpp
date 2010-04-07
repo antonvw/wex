@@ -41,18 +41,21 @@ bool wxExMarker::operator==(const wxExMarker& m) const
 
 void wxExMarker::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(IsOk());
-
-  stc->MarkerDefine(
-    m_No,
-    m_Symbol,
-    m_ForegroundColour,
-    m_BackgroundColour);
+  if (IsOk())
+  {
+    stc->MarkerDefine(
+      m_No,
+      m_Symbol,
+      m_ForegroundColour,
+      m_BackgroundColour);
+  }
 }
 
 bool wxExMarker::IsOk() const
 {
-  return m_No >= 0 && m_Symbol >= 0;
+  return 
+    m_No >= 0 && m_Symbol >= 0 &&
+    m_No < wxSTC_MARKER_MAX && m_Symbol < wxSTC_MARKER_MAX;
 }
 
 void wxExMarker::Set(const wxXmlNode* node)
@@ -66,13 +69,16 @@ void wxExMarker::Set(const wxXmlNode* node)
     return;
   }
 
-  const int no = atoi(single.c_str());
+  m_No = atoi(single.c_str());
+
   const wxString content = node->GetNodeContent().Strip(wxString::both);
 
   wxStringTokenizer fields(content, ",");
 
   const wxString symbol = 
     wxExLexers::Get()->ApplyMacro(fields.GetNextToken());
+
+  m_Symbol = atoi(symbol.c_str());
 
   if (fields.HasMoreTokens())
   {
@@ -86,17 +92,8 @@ void wxExMarker::Set(const wxXmlNode* node)
     }
   }
 
-  const int symno = atoi(symbol.c_str());
-
-  if (no > wxSTC_MARKER_MAX || symno > wxSTC_MARKER_MAX)
+  if (!IsOk())
   {
-    wxLogError(_("Illegal marker number: %d or symbol: %d"), 
-      no, 
-      symno);
-  }
-  else
-  {
-    m_No = no;
-    m_Symbol = symno;
+    wxLogError(_("Illegal marker on line: %d"), node->GetLineNumber());
   }
 }

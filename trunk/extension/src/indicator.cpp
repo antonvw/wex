@@ -43,21 +43,24 @@ bool wxExIndicator::operator==(const wxExIndicator& i) const
 
 void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
 {
-  wxASSERT(IsOk());
-
-  stc->IndicatorSetStyle(m_No, m_Style);
-
-  if (m_ForegroundColour.IsOk())
+  if (IsOk())
   {
-    stc->IndicatorSetForeground(m_No, m_ForegroundColour);
-  }
+    stc->IndicatorSetStyle(m_No, m_Style);
 
-  stc->IndicatorSetUnder(m_No, m_Under);
+    if (m_ForegroundColour.IsOk())
+    {
+      stc->IndicatorSetForeground(m_No, m_ForegroundColour);
+    }
+
+    stc->IndicatorSetUnder(m_No, m_Under);
+  }
 }
 
 bool wxExIndicator::IsOk() const
 {
-  return m_No >= 0 && m_Style >= 0;
+  return 
+    m_No >= 0 && m_Style >= 0 &&
+    m_No < wxSTC_INDIC_MAX && m_Style < wxSTC_INDIC_ROUNDBOX;
 }
 
 void wxExIndicator::Set(const wxXmlNode* node)
@@ -71,7 +74,8 @@ void wxExIndicator::Set(const wxXmlNode* node)
     return;
   }
 
-  const int no = atoi(single.c_str());
+  m_No = atoi(single.c_str());
+
   const wxString content = node->GetNodeContent().Strip(wxString::both);
 
   wxStringTokenizer fields(content, ",");
@@ -85,6 +89,8 @@ void wxExIndicator::Set(const wxXmlNode* node)
     return;
   }
 
+  m_Style = atoi(style.c_str());
+
   if (fields.HasMoreTokens())
   {
     m_ForegroundColour = wxExLexers::Get()->ApplyMacro(
@@ -96,17 +102,8 @@ void wxExIndicator::Set(const wxXmlNode* node)
     }
   }
 
-  const int styleno = atoi(style.c_str());
-
-  if (no > wxSTC_INDIC_MAX || styleno > wxSTC_INDIC_ROUNDBOX)
+  if (!IsOk())
   {
-    wxLogError(_("Illegal indicator number: %d or style: %d"), 
-      no, 
-      styleno);
-  }
-  else
-  {
-    m_No = no;
-    m_Style = styleno;
+    wxLogError(_("Illegal marker on line: %d"), node->GetLineNumber());
   }
 }
