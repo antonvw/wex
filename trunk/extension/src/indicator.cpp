@@ -60,7 +60,7 @@ bool wxExIndicator::IsOk() const
 {
   return 
     m_No >= 0 && m_Style >= 0 &&
-    m_No < wxSTC_INDIC_MAX && m_Style < wxSTC_INDIC_ROUNDBOX;
+    m_No <= wxSTC_INDIC_MAX && m_Style <= wxSTC_INDIC_ROUNDBOX;
 }
 
 void wxExIndicator::Set(const wxXmlNode* node)

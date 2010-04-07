@@ -55,7 +55,7 @@ bool wxExMarker::IsOk() const
 {
   return 
     m_No >= 0 && m_Symbol >= 0 &&
-    m_No < wxSTC_MARKER_MAX && m_Symbol < wxSTC_MARKER_MAX;
+    m_No <= wxSTC_MARKER_MAX && m_Symbol <= wxSTC_MARKER_MAX;
 }
 
 void wxExMarker::Set(const wxXmlNode* node)
