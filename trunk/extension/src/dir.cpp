@@ -77,7 +77,6 @@ size_t wxExDir::FindFiles()
 {
   if (!IsOpened()) 
   {
-    wxFAIL;
     return 0;
   }
 
