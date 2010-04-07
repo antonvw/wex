@@ -31,7 +31,6 @@ BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_MENU(ID_EDIT_EOL_DOS, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_EOL_UNIX, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_EOL_MAC, wxExSTCFile::OnCommand)
-  EVT_STC_MODIFIED(wxID_ANY, wxExSTCFile::OnStyledText)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTCFile::m_ConfigDialog = NULL;
@@ -605,18 +604,6 @@ void wxExSTCFile::OnMouse(wxMouseEvent& event)
 {
   PropertiesMessage();
   event.Skip();
-}
-
-void wxExSTCFile::OnStyledText(wxStyledTextEvent& event)
-{
-  // Only useful if this is not a file on disk, otherwise
-  // the OnIdle already does this.
-  if (!GetFileName().IsOk())
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(wxDateTime::Now().Format());
-#endif
-  }
 }
 
 bool wxExSTCFile::Open(
