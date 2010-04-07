@@ -278,6 +278,36 @@ const wxString wxExLexer::MakeSingleLineComment(
   return out;
 }
 
+const std::vector<wxExStyle> wxExLexer::ParseTagColourings(
+  const wxXmlNode* node) const
+{
+  std::vector<wxExStyle> text;
+
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "colouring")
+    {
+      text.push_back(wxExStyle(child));
+    }
+    else if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else
+    {
+      wxLogError(_("Undefined colourings tag: %s on line: %d"),
+        child->GetName().c_str(), 
+        child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
+
+  return text;
+}
+
 void wxExLexer::Set(const wxXmlNode* node)
 {
   m_ScintillaLexer = node->GetAttribute("name", "");
@@ -346,36 +376,6 @@ void wxExLexer::Set(const wxXmlNode* node)
 
     child = child->GetNext();
   }
-}
-
-const std::vector<wxExStyle> wxExLexer::ParseTagColourings(
-  const wxXmlNode* node) const
-{
-  std::vector<wxExStyle> text;
-
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "colouring")
-    {
-      text.push_back(wxExStyle(child));
-    }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else
-    {
-      wxLogError(_("Undefined colourings tag: %s on line: %d"),
-        child->GetName().c_str(), 
-        child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-
-  return text;
 }
 
 bool wxExLexer::SetKeywords(const wxString& value)
