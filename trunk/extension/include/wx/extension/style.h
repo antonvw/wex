@@ -15,7 +15,7 @@
 
 class wxStyledTextCtrl;
 
-/// This class defines our scintilla styles. The no as in xml or ni the string
+/// This class defines our scintilla styles. The no as in xml or in the string
 /// can be a single style, or several styles separated by a comma.
 /// E.g.
 /// 1,2,3=fore:light steel blue,italic,size:8
@@ -35,7 +35,7 @@ public:
   /// Does this style concern the default style.
   bool IsDefault() const;
 
-  /// Returns true if style is valid.
+  /// Returns true if this style is valid.
   bool IsOk() const;
 private:
   void Set(const wxXmlNode* node);
