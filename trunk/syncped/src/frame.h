@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          frame.h
-* Purpose:       Declaration of class 'MDIFrame'
+* Purpose:       Declaration of class 'Frame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -9,17 +9,19 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#ifndef _MDIFRAME_H
-#define _MDIFRAME_H
+#ifndef _FRAME_H
+#define _FRAME_H
 
 #include <wx/generic/dirctrlg.h>
 #include <wx/extension/notebook.h>
 #include "support.h"
 
-class MDIFrame : public Frame
+/// Adds event handling and implements virtual methods.
+class Frame : public FrameWithHistory
 {
 public:
-  MDIFrame(bool open_recent);
+  /// Constructor.
+  Frame(bool open_recent);
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);

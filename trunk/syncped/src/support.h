@@ -14,10 +14,12 @@
 
 #include <wx/extension/report/frame.h>
 
-class Frame : public wxExFrameWithHistory
+/// Adds a menu and small things to base class.
+class FrameWithHistory : public wxExFrameWithHistory
 {
 public:
-  Frame();
+  /// Constructor.
+  FrameWithHistory();
 
 protected:
   wxExMenu* GetVCSMenu() {return m_MenuVCS;};

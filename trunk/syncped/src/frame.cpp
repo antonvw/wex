@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          frame.cpp
-* Purpose:       Implementation of class 'MDIFrame'
+* Purpose:       Implementation of class 'Frame'
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -31,66 +31,66 @@
 #include "defs.h"
 #include "version.h"
 
-BEGIN_EVENT_TABLE(MDIFrame, Frame)
-  EVT_CLOSE(MDIFrame::OnClose)
-  EVT_MENU(wxID_DELETE, MDIFrame::OnCommand)
-  EVT_MENU(wxID_EXECUTE, MDIFrame::OnCommand)
-  EVT_MENU(wxID_JUMP_TO, MDIFrame::OnCommand)
-  EVT_MENU(wxID_SELECTALL, MDIFrame::OnCommand)
-  EVT_MENU(wxID_STOP, MDIFrame::OnCommand)
-  EVT_MENU(ID_EDIT_NEXT, MDIFrame::OnCommand)
-  EVT_MENU(ID_EDIT_PREVIOUS, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_CLOSE, wxID_PREFERENCES, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, MDIFrame::OnCommand)
-  EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, MDIFrame::OnCommand)
-  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, MDIFrame::OnTree)
-  EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, MDIFrame::OnTree)
-  EVT_UPDATE_UI(ID_ALL_STC_CLOSE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_ALL_STC_SAVE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_COPY, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_CUT, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_EXECUTE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_FIND, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_JUMP_TO, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_PRINT, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_PREVIEW, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_PASTE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_REPLACE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_UNDO, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_REDO, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_STOP, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_PROJECT_SAVE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_RECENT_FILE_MENU, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_SORT_SYNC, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_TOOLS, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_VCS, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, MDIFrame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, MDIFrame::OnUpdateUI)
+BEGIN_EVENT_TABLE(Frame, FrameWithHistory)
+  EVT_CLOSE(Frame::OnClose)
+  EVT_MENU(wxID_DELETE, Frame::OnCommand)
+  EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
+  EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
+  EVT_MENU(wxID_SELECTALL, Frame::OnCommand)
+  EVT_MENU(wxID_STOP, Frame::OnCommand)
+  EVT_MENU(ID_EDIT_NEXT, Frame::OnCommand)
+  EVT_MENU(ID_EDIT_PREVIOUS, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_CLOSE, wxID_PREFERENCES, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnCommand)
+  EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
+  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, Frame::OnTree)
+  EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, Frame::OnTree)
+  EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_COPY, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_CUT, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_PRINT, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_PREVIEW, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_PASTE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_REPLACE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_UNDO, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_REDO, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_PROJECT_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_SORT_SYNC, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_MENU_VCS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
-MDIFrame::MDIFrame(bool open_recent)
-  : Frame()
+Frame::Frame(bool open_recent)
+  : FrameWithHistory()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
 {
-  wxLogTrace("SY_CALL", "+MDIFrame");
+  wxLogTrace("SY_CALL", "+Frame");
 
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
@@ -182,10 +182,10 @@ MDIFrame::MDIFrame(bool open_recent)
   // End with update, so all changes in the manager are handled.
   GetManager().Update();
 
-  wxLogTrace("SY_CALL", "-MDIFrame");
+  wxLogTrace("SY_CALL", "-Frame");
 }
 
-wxExListViewStandard* MDIFrame::Activate(
+wxExListViewStandard* Frame::Activate(
   wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
@@ -202,7 +202,7 @@ wxExListViewStandard* MDIFrame::Activate(
   }
 }
 
-wxExListViewWithFrame* MDIFrame::AddPage(
+wxExListViewWithFrame* Frame::AddPage(
   wxExListViewStandard::ListType type, 
   const wxExLexer* lexer)
 {
@@ -226,7 +226,7 @@ wxExListViewWithFrame* MDIFrame::AddPage(
   return list;
 }
 
-bool MDIFrame::AllowCloseAll(wxWindowID id)
+bool Frame::AllowCloseAll(wxWindowID id)
 {
   switch (id)
   {
@@ -244,7 +244,7 @@ bool MDIFrame::AllowCloseAll(wxWindowID id)
   return true;
 }
 
-void MDIFrame::OnCommandConfigDialog(
+void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
   int commandid)
 {
@@ -257,11 +257,11 @@ void MDIFrame::OnCommandConfigDialog(
   }
   else
   {
-    Frame::OnCommandConfigDialog(dialogid, commandid);
+    FrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
   }
 }
 
-bool MDIFrame::DialogProjectOpen()
+bool Frame::DialogProjectOpen()
 {
   wxFileDialog dlg(this,
     _("Select Projects"),
@@ -279,7 +279,7 @@ bool MDIFrame::DialogProjectOpen()
   return true;
 }
 
-wxExListView* MDIFrame::GetListView()
+wxExListView* Frame::GetListView()
 {
   if (m_History->HasFocus())
   {
@@ -298,7 +298,7 @@ wxExListView* MDIFrame::GetListView()
   }
 }
 
-wxExListViewFile* MDIFrame::GetProject()
+wxExListViewFile* Frame::GetProject()
 {
   if (
     !m_NotebookWithProjects->IsShown() || 
@@ -313,7 +313,7 @@ wxExListViewFile* MDIFrame::GetProject()
   }
 }
 
-wxExSTCFile* MDIFrame::GetSTC()
+wxExSTCFile* Frame::GetSTC()
 {
   if (
     !m_NotebookWithEditors->IsShown() || 
@@ -328,7 +328,7 @@ wxExSTCFile* MDIFrame::GetSTC()
   }
 }
 
-void MDIFrame::NewFile(bool as_project)
+void Frame::NewFile(bool as_project)
 {
   const wxString name = (as_project ? _("project") : _("textfile"));
   const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
@@ -388,7 +388,7 @@ void MDIFrame::NewFile(bool as_project)
   GetManager().Update();
 }
 
-void MDIFrame::OnClose(wxCloseEvent& event)
+void Frame::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
@@ -404,7 +404,7 @@ void MDIFrame::OnClose(wxCloseEvent& event)
   event.Skip();
 }
 
-void MDIFrame::OnCommand(wxCommandEvent& event)
+void Frame::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() == ID_ALL_STC_CLOSE ||
       event.GetId() == ID_ALL_STC_SAVE)
@@ -777,7 +777,7 @@ void MDIFrame::OnCommand(wxCommandEvent& event)
   }
 }
 
-void MDIFrame::OnTree(wxTreeEvent& event)
+void Frame::OnTree(wxTreeEvent& event)
 {
   const wxString selection = m_DirCtrl->GetFilePath();
 
@@ -818,7 +818,7 @@ void MDIFrame::OnTree(wxTreeEvent& event)
   }
 }
 
-void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
+void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
@@ -1016,7 +1016,7 @@ void MDIFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-bool MDIFrame::OpenFile(
+bool Frame::OpenFile(
   const wxExFileName& filename,
   const wxString& unique,
   const wxString& contents,
@@ -1058,7 +1058,7 @@ bool MDIFrame::OpenFile(
   return true;
 }
 
-bool MDIFrame::OpenFile(
+bool Frame::OpenFile(
   const wxExFileName& filename,
   int line_number,
   const wxString& match,
@@ -1163,7 +1163,7 @@ bool MDIFrame::OpenFile(
   return true;
 }
 
-void MDIFrame::SyncCloseAll(wxWindowID id)
+void Frame::SyncCloseAll(wxWindowID id)
 {
   switch (id)
   {

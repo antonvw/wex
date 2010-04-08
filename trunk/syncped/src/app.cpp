@@ -40,7 +40,7 @@ bool App::OnInit()
 
   wxExLog::Get()->SetLogging();
 
-  MDIFrame* frame = new MDIFrame(m_Files.Count() == 0);
+  Frame* frame = new Frame(m_Files.Count() == 0);
   frame->Show();
 
   SetTopWindow(frame);

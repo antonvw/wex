@@ -24,7 +24,7 @@
 #include "support.h"
 #include "defs.h"
 
-Frame::Frame()
+FrameWithHistory::FrameWithHistory()
   : wxExFrameWithHistory(
       NULL,
       wxID_ANY,
@@ -172,7 +172,7 @@ Frame::Frame()
   CreateFindBar();
 }
 
-bool Frame::AllowClose(wxWindowID id, wxWindow* page)
+bool FrameWithHistory::AllowClose(wxWindowID id, wxWindow* page)
 {
   if (wxExProcess::Get()->IsRunning())
   {
@@ -194,7 +194,7 @@ bool Frame::AllowClose(wxWindowID id, wxWindow* page)
   }
 }
 
-void Frame::OnNotebook(wxWindowID id, wxWindow* page)
+void FrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
 {
   if (id == NOTEBOOK_EDITORS)
   {
