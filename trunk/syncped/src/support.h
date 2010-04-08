@@ -20,7 +20,6 @@ class FrameWithHistory : public wxExFrameWithHistory
 public:
   /// Constructor.
   FrameWithHistory();
-
 protected:
   wxExMenu* GetVCSMenu() {return m_MenuVCS;};
 private:
