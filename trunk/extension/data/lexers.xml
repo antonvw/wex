@@ -3,7 +3,7 @@
 <!--
 File:    lexers.xml
 Purpose: Lexers configuration for wxextension.
-         See scintilla v1.75 (www.scintilla.org).
+         See scintilla v2.03 (www.scintilla.org).
 Author:  Anton van Wezenbeek
 RCS-ID:  $Id$
 
@@ -1272,7 +1272,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_POWERSHELL_KEYWORD"> 8 </def>
     <def no ="wxSTC_POWERSHELL_CMDLET"> 9 </def>
     <def no ="wxSTC_POWERSHELL_ALIAS"> 10 </def>
-    <!-- // Lexical state for SCLEX_MYSQL -->
+    <!-- Lexical state for SCLEX_MYSQL -->
     <def no ="wxSTC_MYSQL_DEFAULT"> 0 </def>
     <def no ="wxSTC_MYSQL_COMMENT"> 1 </def>
     <def no ="wxSTC_MYSQL_COMMENTLINE"> 2 </def>
@@ -1295,7 +1295,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_MYSQL_USER2"> 19 </def>
     <def no ="wxSTC_MYSQL_USER3"> 20 </def>
     <def no ="wxSTC_MYSQL_HIDDENCOMMAND"> 21 </def>
-    <!-- // Lexical state for SCLEX_PO -->
+    <!-- Lexical state for SCLEX_PO -->
     <def no ="wxSTC_PO_DEFAULT"> 0 </def>
     <def no ="wxSTC_PO_COMMENT"> 1 </def>
     <def no ="wxSTC_PO_MSGID"> 2 </def>
@@ -1305,7 +1305,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_PO_MSGCTXT"> 6 </def>
     <def no ="wxSTC_PO_MSGCTXT_TEXT"> 7 </def>
     <def no ="wxSTC_PO_FUZZY"> 8 </def>
-    <!-- // Lexical states for SCLEX_PASCAL -->
+    <!-- Lexical states for SCLEX_PASCAL -->
     <def no ="wxSTC_PAS_DEFAULT"> 0 </def>
     <def no ="wxSTC_PAS_IDENTIFIER"> 1 </def>
     <def no ="wxSTC_PAS_COMMENT"> 2 </def>
@@ -1321,7 +1321,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_PAS_CHARACTER"> 12 </def>
     <def no ="wxSTC_PAS_OPERATOR"> 13 </def>
     <def no ="wxSTC_PAS_ASM"> 14 </def>
-    <!-- // Lexical state for SCLEX_SORCUS -->
+    <!-- Lexical state for SCLEX_SORCUS -->
     <def no ="wxSTC_SORCUS_DEFAULT"> 0 </def>
     <def no ="wxSTC_SORCUS_COMMAND"> 1 </def>
     <def no ="wxSTC_SORCUS_PARAMETER"> 2 </def>
@@ -1332,7 +1332,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_SORCUS_OPERATOR"> 7 </def>
     <def no ="wxSTC_SORCUS_NUMBER"> 8 </def>
     <def no ="wxSTC_SORCUS_CONSTANT"> 9 </def>
-    <!-- // Lexical state for SCLEX_POWERPRO -->
+    <!-- Lexical state for SCLEX_POWERPRO -->
     <def no ="wxSTC_POWERPRO_DEFAULT"> 0 </def>
     <def no ="wxSTC_POWERPRO_COMMENTBLOCK"> 1 </def>
     <def no ="wxSTC_POWERPRO_COMMENTLINE"> 2 </def>
@@ -1350,7 +1350,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_POWERPRO_VERBATIM"> 14 </def>
     <def no ="wxSTC_POWERPRO_ALTQUOTE"> 15 </def>
     <def no ="wxSTC_POWERPRO_FUNCTION"> 16 </def>
-    <!-- // Lexical states for SCLEX_SML -->
+    <!-- Lexical states for SCLEX_SML -->
     <def no ="wxSTC_SML_DEFAULT"> 0 </def>
     <def no ="wxSTC_SML_IDENTIFIER"> 1 </def>
     <def no ="wxSTC_SML_TAGNAME"> 2 </def>
@@ -1366,7 +1366,7 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_SML_COMMENT1"> 13 </def>
     <def no ="wxSTC_SML_COMMENT2"> 14 </def>
     <def no ="wxSTC_SML_COMMENT3"> 15 </def>
-    <!-- // Lexical state for SCLEX_MARKDOWN -->
+    <!-- Lexical state for SCLEX_MARKDOWN -->
     <def no ="wxSTC_MARKDOWN_DEFAULT"> 0 </def>
     <def no ="wxSTC_MARKDOWN_LINE_BEGIN"> 1 </def>
     <def no ="wxSTC_MARKDOWN_STRONG1"> 2 </def>
@@ -1390,10 +1390,13 @@ without the written consent of the copyright owner.
     <def no ="wxSTC_MARKDOWN_CODE2"> 20 </def>
     <def no ="wxSTC_MARKDOWN_CODEBK"> 21 </def>
     
+    <!-- Macro's for wxextension vi mode -->
     <def no ="wxEx_INDIC_VI_YANK"> 0 </def>
     <def no ="wxEx_INDIC_VI_PUT"> 1 </def>
     <def no ="wxEx_INDIC_VI_INSERT"> 2 </def>
     <def no ="wxEx_MARKNUM_VI"> 0 </def>
+    
+    <!-- Macro's for wxextension folding -->
     <def no ="folder"> light blue </def>
     
     <!-- These are the style macro's. 
@@ -1430,6 +1433,7 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
     <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
+    
     <indicator no="wxEx_INDIC_VI_YANK"> wxSTC_INDIC_BOX,black </indicator>
     <indicator no="wxEx_INDIC_VI_PUT"> wxSTC_INDIC_BOX,blue </indicator>
     <indicator no="wxEx_INDIC_VI_INSERT"> wxSTC_INDIC_BOX,green </indicator>
@@ -1456,7 +1460,7 @@ without the written consent of the copyright owner.
       If not present, the name is use as extension.
    2) match. The match attribute specifies the 'no' macro
       used for matching with the 'style' macro.
-   It might contain the next tags:
+   Furthermore it might contain the next tags:
    1) <colourings>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
       This attribute lists all styles that will have the style specifier that 
