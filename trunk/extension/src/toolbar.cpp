@@ -33,6 +33,27 @@ enum
   ID_SYNC_MODE,
 };
 
+// Support class.
+// Offers a find combobox that allows you to find text
+// on a current STC on an wxExFrame.
+class ComboBox : public wxComboBox
+{
+public:
+  /// Constructor. Fills the combobox box with values from FindReplace from config.
+  ComboBox(
+    wxWindow* parent,
+    wxExFrame* frame,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize);
+private:
+  void OnCommand(wxCommandEvent& event);
+  void OnKey(wxKeyEvent& event);
+  wxExFrame* m_Frame;
+
+  DECLARE_EVENT_TABLE()
+};
+
 BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
   EVT_CHECKBOX(ID_EDIT_HEX_MODE, wxExToolBar::OnCommand)
   EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
@@ -161,97 +182,6 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
   }
 }
 
-/// Offers a find combobox that allows you to find text
-/// on a current STC on an wxExFrame.
-class ComboBox : public wxComboBox
-{
-public:
-  /// Constructor. Fills the combobox box with values from FindReplace from config.
-  ComboBox(
-    wxWindow* parent,
-    wxExFrame* frame,
-    wxWindowID id = wxID_ANY,
-    const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxDefaultSize);
-private:
-  void OnCommand(wxCommandEvent& event);
-  void OnKey(wxKeyEvent& event);
-  wxExFrame* m_Frame;
-
-  DECLARE_EVENT_TABLE()
-};
-
-BEGIN_EVENT_TABLE(ComboBox, wxComboBox)
-  EVT_CHAR(ComboBox::OnKey)
-  EVT_MENU(wxID_DELETE, ComboBox::OnCommand)
-END_EVENT_TABLE()
-
-ComboBox::ComboBox(
-  wxWindow* parent,
-  wxExFrame* frame,
-  wxWindowID id,
-  const wxPoint& pos,
-  const wxSize& size)
-  : wxComboBox(parent, id, wxEmptyString, pos, size)
-  , m_Frame(frame)
-{
-  const int accels = 1;
-  wxAcceleratorEntry entries[accels];
-  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
-  wxAcceleratorTable accel(accels, entries);
-  SetAcceleratorTable(accel);
-
-  SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
-    wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
-
-  wxExComboBoxFromList(
-    this, 
-    wxExFindReplaceData::Get()->GetFindStrings());
-
-  // And override the value set by previous, as we want text to be same as in Find.
-  SetValue(wxExFindReplaceData::Get()->GetFindString());
-}
-
-void ComboBox::OnCommand(wxCommandEvent& event)
-{
-  // README: The delete key default behaviour does not delete the char right from insertion point.
-  // Instead, the event is sent to the editor and a char is deleted from the editor.
-  // Therefore implement the delete here.
-  switch (event.GetId())
-  {
-  case wxID_DELETE:
-    Remove(GetInsertionPoint(), GetInsertionPoint() + 1);
-    break;
-  default:
-    wxFAIL;
-    break;
-  }
-}
-
-void ComboBox::OnKey(wxKeyEvent& event)
-{
-  const int key = event.GetKeyCode();
-
-  if (key == WXK_RETURN)
-  {
-    wxExSTC* stc = m_Frame->GetSTC();
-
-    if (stc != NULL)
-    {
-      stc->FindNext(GetValue());
-
-      wxExFindReplaceData::Get()->SetFindString(GetValue());
-
-      Clear(); // so we can append again
-      wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
-    }
-  }
-  else
-  {
-    event.Skip();
-  }
-}
-
 BEGIN_EVENT_TABLE(wxExFindToolBar, wxExToolBar)
   EVT_CHECKBOX(ID_MATCH_WHOLE_WORD, wxExFindToolBar::OnCommand)
   EVT_CHECKBOX(ID_MATCH_CASE, wxExFindToolBar::OnCommand)
@@ -358,5 +288,79 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
   event.Enable(!m_ComboBox->GetValue().empty());
 }
+
+// Implementation of support class.
+
+BEGIN_EVENT_TABLE(ComboBox, wxComboBox)
+  EVT_CHAR(ComboBox::OnKey)
+  EVT_MENU(wxID_DELETE, ComboBox::OnCommand)
+END_EVENT_TABLE()
+
+ComboBox::ComboBox(
+  wxWindow* parent,
+  wxExFrame* frame,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size)
+  : wxComboBox(parent, id, wxEmptyString, pos, size)
+  , m_Frame(frame)
+{
+  const int accels = 1;
+  wxAcceleratorEntry entries[accels];
+  entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
+  wxAcceleratorTable accel(accels, entries);
+  SetAcceleratorTable(accel);
+
+  SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
+    wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+
+  wxExComboBoxFromList(
+    this, 
+    wxExFindReplaceData::Get()->GetFindStrings());
+
+  // And override the value set by previous, as we want text to be same as in Find.
+  SetValue(wxExFindReplaceData::Get()->GetFindString());
+}
+
+void ComboBox::OnCommand(wxCommandEvent& event)
+{
+  // README: The delete key default behaviour does not delete the char right from insertion point.
+  // Instead, the event is sent to the editor and a char is deleted from the editor.
+  // Therefore implement the delete here.
+  switch (event.GetId())
+  {
+  case wxID_DELETE:
+    Remove(GetInsertionPoint(), GetInsertionPoint() + 1);
+    break;
+  default:
+    wxFAIL;
+    break;
+  }
+}
+
+void ComboBox::OnKey(wxKeyEvent& event)
+{
+  const int key = event.GetKeyCode();
+
+  if (key == WXK_RETURN)
+  {
+    wxExSTC* stc = m_Frame->GetSTC();
+
+    if (stc != NULL)
+    {
+      stc->FindNext(GetValue());
+
+      wxExFindReplaceData::Get()->SetFindString(GetValue());
+
+      Clear(); // so we can append again
+      wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
+    }
+  }
+  else
+  {
+    event.Skip();
+  }
+}
+
 #endif // wxUSE_AUI
 #endif // wxUSE_GUI
