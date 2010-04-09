@@ -13,10 +13,6 @@
 #define _EXART_H
 
 #include <map>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/artprov.h> // for wxArtID
 
 // Only if we have a gui.

@@ -12,10 +12,6 @@
 
 #include <map>
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/statusbr.h> 
 
 // Only if we have a gui.

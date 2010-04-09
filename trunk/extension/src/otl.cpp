@@ -13,6 +13,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/config.h>
 #include <wx/grid.h>
 #include <wx/stc/stc.h>

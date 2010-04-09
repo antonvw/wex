@@ -10,10 +10,6 @@
 #ifndef _EXTOOLBAR_H
 #define _EXTOOLBAR_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/aui/auibar.h> 
 
 // Only if we have a gui.

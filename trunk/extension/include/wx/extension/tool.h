@@ -13,10 +13,6 @@
 #define _EXTOOL_H
 
 #include <map>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/extension/defs.h>
 #include <wx/filename.h>
 

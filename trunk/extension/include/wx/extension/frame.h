@@ -11,10 +11,6 @@
 #define _EXFRAME_H
 
 #include <vector>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/aui/auibar.h> // for wxAUI_TB_DEFAULT_STYLE
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event

@@ -13,10 +13,6 @@
 #define _EXUTIL_H
 
 #include <list>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/dir.h> // for wxDIR_DEFAULT
 #include <wx/filename.h>
 #include <wx/extension/filename.h>

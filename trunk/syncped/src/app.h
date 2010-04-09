@@ -12,10 +12,6 @@
 #ifndef _APP_H
 #define _APP_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/extension/app.h>
 
 /// Adds our own init to base class.

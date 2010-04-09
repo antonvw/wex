@@ -12,10 +12,6 @@
 #ifndef _EXMENU_H
 #define _EXMENU_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
 

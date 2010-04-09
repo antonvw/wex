@@ -12,10 +12,6 @@
 #ifndef _EX_REPORT_UTIL_H
 #define _EX_REPORT_UTIL_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/aui/auibook.h>
 #include <wx/filename.h>
 

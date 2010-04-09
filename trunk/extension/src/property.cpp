@@ -7,6 +7,10 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
 #include <wx/extension/property.h>

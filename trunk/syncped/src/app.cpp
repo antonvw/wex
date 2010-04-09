@@ -9,6 +9,10 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/cmdline.h> // for wxCmdLineParser
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>

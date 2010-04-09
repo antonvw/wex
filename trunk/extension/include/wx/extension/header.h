@@ -12,11 +12,6 @@
 #ifndef _EXHEADER_H
 #define _EXHEADER_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 class wxExFileName;
 
 /// This class offers methods to make a file header.

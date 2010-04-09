@@ -12,11 +12,6 @@
 #ifndef _EX_REPORT_DIR_H
 #define _EX_REPORT_DIR_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #include <wx/extension/dir.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/report/textfile.h> // for wxExFileStatistics

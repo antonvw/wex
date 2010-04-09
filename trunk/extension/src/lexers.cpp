@@ -9,6 +9,10 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <algorithm>
 #include <wx/config.h>
 #include <wx/stdpaths.h>

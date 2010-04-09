@@ -10,10 +10,6 @@
 #ifndef _EXFILEDLG_H
 #define _EXFILEDLG_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/filedlg.h>
 
 class wxExFile;

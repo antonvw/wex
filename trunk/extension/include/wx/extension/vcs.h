@@ -12,10 +12,6 @@
 #ifndef _EXVCS_H
 #define _EXVCS_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/filename.h>
 
 class wxExSTCEntryDialog;

@@ -10,10 +10,6 @@
 #ifndef _EXFILE_H
 #define _EXFILE_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/file.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/stat.h>

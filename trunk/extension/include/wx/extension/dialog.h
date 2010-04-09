@@ -12,10 +12,6 @@
 #ifndef _EXDIALOG_H
 #define _EXDIALOG_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/dialog.h>
 
 #if wxUSE_GUI

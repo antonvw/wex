@@ -11,10 +11,6 @@
 #define _EXSTAT_H
 
 #include <sys/stat.h> // for stat
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
 /// Adds IsOk to the stat base class, and several methods
 /// to get/update on the stat members.
