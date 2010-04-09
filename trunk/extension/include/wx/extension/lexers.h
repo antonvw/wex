@@ -88,8 +88,8 @@ public:
   /// Returns true if specified marker is available.
   bool MarkerIsLoaded(const wxExMarker& marker) const;
 
-  /// Parses properties tag.
-  const std::vector<wxExProperty> ParseTagProperties(const wxXmlNode* node) const;
+  /// Parses properties node.
+  const std::vector<wxExProperty> ParseNodeProperties(const wxXmlNode* node) const;
 
   /// Reads all containers from file.
   void Read();
@@ -107,8 +107,8 @@ public:
     const wxString& caption = _("Enter Lexer")) const;
 private:
   const wxString GetLexerExtensions() const;
-  void ParseTagGlobal(const wxXmlNode* node);
-  void ParseTagMacro(const wxXmlNode* node);
+  void ParseNodeGlobal(const wxXmlNode* node);
+  void ParseNodeMacro(const wxXmlNode* node);
 
   std::map<wxString, wxExLexer> m_Lexers;
 

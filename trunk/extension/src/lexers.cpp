@@ -221,7 +221,7 @@ bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
   return (it != m_Markers.end());
 }
 
-void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
+void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
 
@@ -255,7 +255,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "properties")
     {
-      m_GlobalProperties = ParseTagProperties(child);
+      m_GlobalProperties = ParseNodeProperties(child);
     }
     else if (child->GetName() == "style")
     {
@@ -281,7 +281,7 @@ void wxExLexers::ParseTagGlobal(const wxXmlNode* node)
   }
 }
 
-void wxExLexers::ParseTagMacro(const wxXmlNode* node)
+void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 {
   wxXmlNode* child = node->GetChildren();
 
@@ -341,7 +341,7 @@ void wxExLexers::ParseTagMacro(const wxXmlNode* node)
   }
 }
 
-const std::vector<wxExProperty> wxExLexers::ParseTagProperties(
+const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
   const wxXmlNode* node) const
 {
   std::vector<wxExProperty> text;
@@ -403,11 +403,11 @@ void wxExLexers::Read()
   {
     if (child->GetName() == "macro")
     {
-      ParseTagMacro(child);
+      ParseNodeMacro(child);
     }
     else if (child->GetName() == "global")
     {
-      ParseTagGlobal(child);
+      ParseNodeGlobal(child);
     }
     else if (child->GetName() == "lexer")
     {

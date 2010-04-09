@@ -288,7 +288,7 @@ const wxString wxExLexer::MakeSingleLineComment(
   return out;
 }
 
-const std::vector<wxExStyle> wxExLexer::ParseTagColourings(
+const std::vector<wxExStyle> wxExLexer::ParseNodeColourings(
   const wxXmlNode* node) const
 {
   std::vector<wxExStyle> text;
@@ -345,7 +345,7 @@ void wxExLexer::Set(const wxXmlNode* node)
   {
     if (child->GetName() == "colourings")
     {
-      const std::vector<wxExStyle> v = ParseTagColourings(child);
+      const std::vector<wxExStyle> v = ParseNodeColourings(child);
 
       m_Colourings.insert(
         m_Colourings.end(), 
@@ -362,7 +362,7 @@ void wxExLexer::Set(const wxXmlNode* node)
     }
     else if (child->GetName() == "properties")
     {
-      m_Properties = wxExLexers::Get()->ParseTagProperties(child);
+      m_Properties = wxExLexers::Get()->ParseNodeProperties(child);
     }
     else if (child->GetName() == "comments")
     {
@@ -391,6 +391,11 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
 }
 
+// Adds the specified keywords to the keywords map and the keywords set.
+// The text might contain the keyword set after a ':'.
+// Returns true if keyword could be added 
+// and false if specified set is illegal.
+// Empties existing keywords.
 bool wxExLexer::SetKeywords(const wxString& value)
 {
   if (!m_Keywords.empty())

@@ -106,15 +106,8 @@ private:
     bool fill_out_with_space,
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
-  /// Parses colourings tag.
-  const std::vector<wxExStyle> ParseTagColourings(const wxXmlNode* node) const;
-  /// Sets members from xml node.
+  const std::vector<wxExStyle> ParseNodeColourings(const wxXmlNode* node) const;
   void Set(const wxXmlNode* node);
-  /// Adds the specified keywords to the keywords map and the keywords set.
-  /// The text might contain the keyword set after a ':'.
-  /// Returns true if keyword could be added 
-  /// and false if specified set is illegal.
-  /// Empties existing keywords.
   bool SetKeywords(const wxString& text);
 
   wxString m_CommentBegin;
