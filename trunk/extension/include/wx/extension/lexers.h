@@ -25,9 +25,7 @@
 
 class wxStyledTextCtrl;
 
-/// Reads the lexers, keywords, markers and styles
-/// from the configuration file and makes
-/// them available.
+/// Collection of all lexers.
 class wxExLexers
 {
 public:
@@ -93,7 +91,7 @@ public:
   /// Parses properties tag.
   const std::vector<wxExProperty> ParseTagProperties(const wxXmlNode* node) const;
 
-  /// Reads the lexers, keywords, markers and styles from file.
+  /// Reads all containers from file.
   void Read();
 
   /// Sets the object as the current one, returns the pointer 
