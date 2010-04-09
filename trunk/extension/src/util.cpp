@@ -457,7 +457,9 @@ const wxString wxExQuoted(const wxString& text)
   return "'" + text + "'";
 }
 
-const wxString wxExSkipWhiteSpace(const wxString& text, const wxString& replace_with)
+const wxString wxExSkipWhiteSpace(
+  const wxString& text, 
+  const wxString& replace_with)
 {
   wxString output = text;
   wxRegEx("[ \t\n]+").ReplaceAll(&output, replace_with);

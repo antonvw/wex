@@ -62,7 +62,7 @@ bool wxExFindOtherFileName(
   */
   const wxString fullpath = filename.GetFullPath();
 
-  wxRegEx reg("[/|\\][a-z-]*[0-9]+\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*");
+  const wxRegEx reg("[/|\\][a-z-]*[0-9]+\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*");
 
   if (!reg.Matches(fullpath.Lower()))
   {
