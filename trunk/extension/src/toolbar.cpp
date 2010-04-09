@@ -232,7 +232,9 @@ void wxExFindToolBar::Initialize()
 #else
   const wxSize size(150, -1);
 #endif
-  ComboBox* cb = new ComboBox(this, m_Frame, wxID_ANY, wxDefaultPosition, size);
+  ComboBox* cb = new ComboBox(this, 
+    m_Frame, wxID_ANY, wxDefaultPosition, size);
+
   m_ComboBox = cb;
 
   m_MatchCase = new wxCheckBox(this, 
