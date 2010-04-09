@@ -31,7 +31,7 @@
 #include "defs.h"
 #include "version.h"
 
-BEGIN_EVENT_TABLE(Frame, FrameWithHistory)
+BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CLOSE(Frame::OnClose)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
@@ -84,7 +84,7 @@ BEGIN_EVENT_TABLE(Frame, FrameWithHistory)
 END_EVENT_TABLE()
 
 Frame::Frame(bool open_recent)
-  : FrameWithHistory()
+  : DecoratedFrame()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
   , m_History(NULL)
@@ -257,7 +257,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    FrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
+    DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
   }
 }
 

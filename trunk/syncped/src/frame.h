@@ -17,7 +17,7 @@
 #include "support.h"
 
 /// Adds event handling and implements virtual methods.
-class Frame : public FrameWithHistory
+class Frame : public DecoratedFrame
 {
 public:
   /// Constructor.

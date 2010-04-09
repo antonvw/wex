@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          support.cpp
-* Purpose:       Implementation of support classes
+* Purpose:       Implementation of DecoratedFrame class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -24,7 +24,7 @@
 #include "support.h"
 #include "defs.h"
 
-FrameWithHistory::FrameWithHistory()
+DecoratedFrame::DecoratedFrame()
   : wxExFrameWithHistory(
       NULL,
       wxID_ANY,
@@ -172,7 +172,7 @@ FrameWithHistory::FrameWithHistory()
   CreateFindBar();
 }
 
-bool FrameWithHistory::AllowClose(wxWindowID id, wxWindow* page)
+bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
   if (wxExProcess::Get()->IsRunning())
   {
@@ -194,7 +194,7 @@ bool FrameWithHistory::AllowClose(wxWindowID id, wxWindow* page)
   }
 }
 
-void FrameWithHistory::OnNotebook(wxWindowID id, wxWindow* page)
+void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
   if (id == NOTEBOOK_EDITORS)
   {

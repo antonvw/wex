@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          support.h
-* Purpose:       Declaration of support classes
+* Purpose:       Declaration of DecoratedFrame class
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -14,12 +14,12 @@
 
 #include <wx/extension/report/frame.h>
 
-/// Adds a menu and small things to base class.
-class FrameWithHistory : public wxExFrameWithHistory
+/// Adds bars and some methods to base class.
+class DecoratedFrame : public wxExFrameWithHistory
 {
 public:
   /// Constructor.
-  FrameWithHistory();
+  DecoratedFrame();
 protected:
   wxExMenu* GetVCSMenu() {return m_MenuVCS;};
 private:
