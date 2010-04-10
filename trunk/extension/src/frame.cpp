@@ -563,6 +563,8 @@ void wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
 
   m_ToolBar->AddControls();
 
+  DoAddToolBarControl();
+
   GetManager().AddPane(m_ToolBar,
     wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Tool Bar")));
 }

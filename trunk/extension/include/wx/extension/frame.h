@@ -194,24 +194,21 @@ public:
   /// Called after all pages from the notebooks are deleted.
   virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
 
-  /// Creates the find bar.
+  /// Creates the find bar with controls.
   void CreateFindBar(
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
-  /// Creates the tool bar.
+  /// Creates the tool bar with controls.
   void CreateToolBar(
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
-  /// Gets the tool bar.
-  // Cannot be const yet, as it overrides the virtual one.
-  wxExToolBar* GetToolBar() {return m_ToolBar;};
-
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);
 protected:
+  virtual void DoAddToolBarControl() {;};
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:

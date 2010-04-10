@@ -35,6 +35,7 @@ public:
   bool ServerNotListening() const {
     return m_SocketServer == NULL;}
 protected:
+  virtual void DoAddToolBarControl();
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnSocket(wxSocketEvent& event);

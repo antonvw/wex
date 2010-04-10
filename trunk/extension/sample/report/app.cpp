@@ -102,9 +102,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   CreateToolBar();
 
-  GetToolBar()->AddTool(wxID_OPEN);
-  GetToolBar()->Realize();
-
 #if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));

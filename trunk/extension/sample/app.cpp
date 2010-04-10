@@ -215,13 +215,6 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
 
   CreateToolBar();
-
-  GetToolBar()->AddTool(wxID_OPEN);
-  GetToolBar()->AddTool(wxID_SAVE);
-  GetToolBar()->AddTool(wxID_PRINT);
-  GetToolBar()->AddTool(wxID_EXIT);
-  GetToolBar()->Realize();
-
   CreateFindBar();
 }
 

@@ -186,17 +186,7 @@ Frame::Frame()
   SetMenuBar(menuBar);
 
   CreateToolBar();
-
-  GetToolBar()->AddTool(wxID_NEW);
-  GetToolBar()->AddTool(wxID_OPEN);
-  GetToolBar()->AddTool(wxID_SAVE);
-  GetToolBar()->AddTool(
-    ID_WRITE_DATA,
-    wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
-    _("Write data"));
-
-  GetToolBar()->Realize();
+  CreateFindBar();
 
   GetManager().AddPane(m_LogWindow,
     wxAuiPaneInfo().CenterPane().Name("LOG"));
@@ -238,6 +228,15 @@ Frame::~Frame()
   delete m_TaskBarIcon;
 #endif
   delete m_SocketServer;
+}
+
+void Frame::DoAddToolBarControl()
+{
+  GetToolBar()->AddTool(
+    ID_WRITE_DATA,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+    _("Write data"));
 }
 
 wxExGrid* Frame::GetGrid()
