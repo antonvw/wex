@@ -131,6 +131,24 @@ Frame::Frame()
   m_Shell = new wxExSTCShell(this, ">", ";", true, 50);
   m_Shell->SetFocus();
 
+#if wxUSE_STATUSBAR
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
+  SetupStatusBar(panes);
+#endif
+
+  CreateToolBar();
+
+  GetToolBar()->AddTool(wxID_NEW);
+  GetToolBar()->AddTool(wxID_OPEN);
+  GetToolBar()->AddTool(wxID_SAVE);
+
+#ifdef __WXGTK__
+  GetToolBar()->AddTool(wxID_EXECUTE);
+#endif
+
+  GetToolBar()->Realize();
   GetManager().AddPane(m_Shell,
     wxAuiPaneInfo().
       Name("CONSOLE").
@@ -160,25 +178,6 @@ Frame::Frame()
   GetManager().GetPane("QUERY").Show(false);
 
   GetManager().Update();
-
-#if wxUSE_STATUSBAR
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
-  SetupStatusBar(panes);
-#endif
-
-  CreateToolBar();
-
-  GetToolBar()->AddTool(wxID_NEW);
-  GetToolBar()->AddTool(wxID_OPEN);
-  GetToolBar()->AddTool(wxID_SAVE);
-
-#ifdef __WXGTK__
-  GetToolBar()->AddTool(wxID_EXECUTE);
-#endif
-
-  GetToolBar()->Realize();
 }
 
 void Frame::OnCommandConfigDialog(
