@@ -513,14 +513,8 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 #if wxUSE_AUI
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
-  EVT_MENU(ID_VIEW_FINDBAR, wxExManagedFrame::OnCommand)
-  EVT_MENU(ID_VIEW_MENUBAR, wxExManagedFrame::OnCommand)
-  EVT_MENU(ID_VIEW_TOOLBAR, wxExManagedFrame::OnCommand)
-  EVT_MENU(ID_VIEW_STATUSBAR, wxExManagedFrame::OnCommand)
-  EVT_UPDATE_UI(ID_VIEW_FINDBAR, wxExManagedFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExManagedFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_TOOLBAR, wxExManagedFrame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExManagedFrame::OnUpdateUI)
+  EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
+  EVT_UPDATE_UI_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
