@@ -139,16 +139,8 @@ Frame::Frame()
 #endif
 
   CreateToolBar();
+  CreateFindBar();
 
-  GetToolBar()->AddTool(wxID_NEW);
-  GetToolBar()->AddTool(wxID_OPEN);
-  GetToolBar()->AddTool(wxID_SAVE);
-
-#ifdef __WXGTK__
-  GetToolBar()->AddTool(wxID_EXECUTE);
-#endif
-
-  GetToolBar()->Realize();
   GetManager().AddPane(m_Shell,
     wxAuiPaneInfo().
       Name("CONSOLE").
