@@ -9,13 +9,19 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/regex.h>
+#include <wx/stockitem.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
@@ -164,15 +170,15 @@ Frame::Frame()
 
   CreateToolBar();
 
-  m_ToolBar->AddTool(wxID_NEW);
-  m_ToolBar->AddTool(wxID_OPEN);
-  m_ToolBar->AddTool(wxID_SAVE);
+  GetToolBar()->AddTool(wxID_NEW);
+  GetToolBar()->AddTool(wxID_OPEN);
+  GetToolBar()->AddTool(wxID_SAVE);
 
 #ifdef __WXGTK__
-  m_ToolBar->AddTool(wxID_EXECUTE);
+  GetToolBar()->AddTool(wxID_EXECUTE);
 #endif
 
-  m_ToolBar->Realize();
+  GetToolBar()->Realize();
 }
 
 void Frame::OnCommandConfigDialog(
@@ -182,7 +188,6 @@ void Frame::OnCommandConfigDialog(
   if (dialogid == wxID_PREFERENCES)
   {
     m_Query->ConfigGet();
-    m_Shell->ConfigGet();
   }
   else
   {
@@ -211,15 +216,11 @@ wxExGrid* Frame::GetGrid()
   }
 }
 
-wxExSTC* Frame::GetSTC()
+wxExSTCFile* Frame::GetSTC()
 {
   if (m_Query->IsShown())
   {
     return m_Query;
-  }
-  else if (m_Shell->IsShown())
-  {
-    return m_Shell;
   }
 
   return NULL;
@@ -249,7 +250,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
     info.SetVersion("v1.0.1");
-    info.SetCopyright("(c) 2008-2009, Anton van Wezenbeek");
+    info.SetCopyright("(c) 2008-2010, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
     info.AddDeveloper(wxExOTL::Version());
@@ -267,7 +268,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    m_Query->FileNew();
+    m_Query->FileNew(wxEmptyString);
     m_Query->SetLexer("sql");
     m_Query->SetFocus();
     GetManager().GetPane("QUERY").Show();

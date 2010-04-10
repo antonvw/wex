@@ -53,7 +53,7 @@ private:
     wxWindowID dialogid,
     int commandid);
   virtual wxExGrid* GetGrid();
-  virtual wxExSTC* GetSTC();
+  virtual wxExSTCFile* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
@@ -62,6 +62,7 @@ private:
   void RunQuery(const wxString& query, bool empty_results = false);
   void RunQueries(const wxString& text);
   void UpdateStatistics(const wxStopWatch& sw, long rpc);
+
   wxExSTCShell* m_Shell;
   wxExSTCWithFrame* m_Query;
   wxExGrid* m_Results;
