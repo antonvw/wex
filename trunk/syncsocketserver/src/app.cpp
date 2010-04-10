@@ -184,9 +184,6 @@ Frame::Frame()
   menuBar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   SetMenuBar(menuBar);
 
-  CreateToolBar();
-  CreateFindBar();
-
   GetManager().AddPane(m_LogWindow,
     wxAuiPaneInfo().CenterPane().Name("LOG"));
   GetManager().AddPane(m_DataWindow,

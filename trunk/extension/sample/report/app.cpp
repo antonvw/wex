@@ -100,8 +100,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
 
-  CreateToolBar();
-
 #if wxUSE_STATUSBAR
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));

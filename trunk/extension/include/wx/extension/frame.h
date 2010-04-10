@@ -194,15 +194,6 @@ public:
   /// Called after all pages from the notebooks are deleted.
   virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
 
-  /// Creates the find bar with controls.
-  void CreateFindBar(
-    long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
-
-  /// Creates the tool bar with controls.
-  /// If you want to add your own controls, override DoAddControl.
-  void CreateToolBar(
-    long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
-
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
@@ -215,6 +206,14 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
+  /// Creates the find bar with controls.
+  void CreateFindBar(
+    long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
+  /// Creates the tool bar with controls.
+  /// If you want to add your own controls, override DoAddControl.
+  void CreateToolBar(
+    long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
+
   wxAuiManager m_Manager;
 
   DECLARE_EVENT_TABLE()

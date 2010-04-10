@@ -137,9 +137,6 @@ Frame::Frame()
   SetupStatusBar(panes);
 #endif
 
-  CreateToolBar();
-  CreateFindBar();
-
   GetManager().AddPane(m_Shell,
     wxAuiPaneInfo().
       Name("CONSOLE").

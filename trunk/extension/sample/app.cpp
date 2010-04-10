@@ -213,9 +213,6 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
   SetupStatusBar(panes);
 #endif
-
-  CreateToolBar();
-  CreateFindBar();
 }
 
 void wxExSampleFrame::OnCommandConfigDialog(

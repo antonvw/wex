@@ -168,9 +168,6 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuWindow, _("&Window"));
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
-
-  CreateToolBar();
-  CreateFindBar();
 }
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)

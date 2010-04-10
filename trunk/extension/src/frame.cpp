@@ -529,6 +529,9 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif
+
+  CreateToolBar();
+  CreateFindBar();
 }
 
 wxExManagedFrame::~wxExManagedFrame()
