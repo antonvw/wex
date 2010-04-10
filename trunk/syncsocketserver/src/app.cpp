@@ -236,7 +236,8 @@ void Frame::DoAddControl(wxExToolBar* toolbar)
   toolbar->AddTool(
     ID_WRITE_DATA,
     wxEmptyString,
-    wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(
+      wxART_GO_FORWARD, wxART_TOOLBAR, toolbar->GetToolBitmapSize()),
     _("Write data"));
 }
 
