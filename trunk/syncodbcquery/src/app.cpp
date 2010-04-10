@@ -101,10 +101,8 @@ Frame::Frame()
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(wxID_PREFERENCES);
 
-  wxMenu* menuView = new wxMenu();
-  menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
-  menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
-  menuView->AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
+  wxExMenu* menuView = new wxExMenu();
+  menuView->AppendBars();
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_QUERY, _("Query"));
   menuView->AppendCheckItem(ID_VIEW_RESULTS, _("Results"));

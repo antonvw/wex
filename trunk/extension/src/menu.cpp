@@ -39,6 +39,14 @@ wxExMenu::wxExMenu(const wxExMenu& menu)
 {
 }
 
+void wxExMenu::AppendBars()
+{
+  AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar"));
+  AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
+  AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
+  AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
+}
+
 wxMenuItem* wxExMenu::Append(int id)
 {
   m_ItemsAppended++;

@@ -9,6 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <functional>
+#include <algorithm>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -26,8 +28,6 @@
 #include <wx/extension/version.h>
 #include <wx/extension/report/defs.h>
 #include "app.h"
-#include <functional>
-#include <algorithm>
 
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -161,10 +161,8 @@ Frame::Frame()
   menuClient->Append(ID_WRITE_DATA, _("Write"),
     _("Writes data to all clients"), wxART_GO_FORWARD);
 
-  wxMenu* menuView = new wxMenu();
-  menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
-  menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
-  menuView->AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
+  wxExMenu* menuView = new wxExMenu();
+  menuView->AppendBars();
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_LOG, _("Log"));
   menuView->AppendCheckItem(ID_VIEW_DATA, _("Data"));

@@ -9,6 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <numeric>
+#include <functional>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -26,8 +28,6 @@
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
-#include <numeric>
-#include <functional>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"

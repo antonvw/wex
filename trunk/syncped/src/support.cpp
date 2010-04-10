@@ -111,11 +111,8 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl-M"));
 
-  wxMenu *menuView = new wxMenu;
-  menuView->AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
-  menuView->AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
-  menuView->AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar"));
-  menuView->AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
+  wxExMenu *menuView = new wxExMenu;
+  menuView->AppendBars();
   menuView->AppendSeparator();
   menuView->AppendCheckItem(ID_VIEW_FILES, _("&Files"));
   menuView->AppendCheckItem(ID_VIEW_PROJECTS, _("&Projects"));
