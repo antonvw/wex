@@ -230,9 +230,9 @@ Frame::~Frame()
   delete m_SocketServer;
 }
 
-void Frame::DoAddToolBarControl()
+void Frame::DoAddControl(wxExToolBar* toolbar)
 {
-  GetToolBar()->AddTool(
+  toolbar->AddTool(
     ID_WRITE_DATA,
     wxEmptyString,
     wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),

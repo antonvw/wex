@@ -166,7 +166,7 @@ private:
 
 #if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
-/// used by the notebook classes, and toolbar support.
+/// used by the notebook classes, and toolbar and findbar support.
 class wxExManagedFrame : public wxExFrame
 {
 public:
@@ -199,6 +199,7 @@ public:
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
   /// Creates the tool bar with controls.
+  /// If you want to add your own controls, override DoAddControl.
   void CreateToolBar(
     long style = wxAUI_TB_DEFAULT_STYLE, wxWindowID id = wxID_ANY);
 
@@ -208,13 +209,13 @@ public:
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);
 protected:
-  virtual void DoAddToolBarControl() {;};
+  /// Add controls to specified toolbar.
+  virtual void DoAddControl(wxExToolBar*) {;};
+
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
-
-  wxExToolBar* m_ToolBar;
 
   DECLARE_EVENT_TABLE()
 };
