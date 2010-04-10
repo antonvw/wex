@@ -92,6 +92,7 @@ long wxExOTL::Query(const wxString& query)
 }
 
 #if wxUSE_GRID
+// Cannot be const because of open call.
 long wxExOTL::Query(
   const wxString& query,
   wxGrid* grid,
@@ -184,6 +185,7 @@ long wxExOTL::Query(
 }
 #endif //wxUSE_GRID
 
+// Cannot be const because of open call.
 long wxExOTL::Query(
   const wxString& query,
   wxStyledTextCtrl* stc,
@@ -266,6 +268,7 @@ long wxExOTL::Query(
 const wxString wxExOTL::Version()
 {
   const long version = OTL_VERSION_NUMBER;
+
   return wxString::Format("OTL v%d.%d.%d",
      version >> 16,
     (version >> 8) & 0xff,
