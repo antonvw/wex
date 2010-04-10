@@ -424,8 +424,6 @@ bool Frame::OpenFile(
   GetManager().GetPane("QUERY").Show(true);
   GetManager().Update();
 
-  // Take care that wxExOpenFilesDialog always results in opening in the query.
-  // Otherwise if results are focused, the file is opened in the results.
   return m_Query->Open(filename, line_number, match, flags);
 }
 
