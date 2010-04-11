@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      frame.cpp
-// Purpose:   Implementation of wxExFrame classes
+// Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
 // Created:   2010-03-26
 // RCS-ID:    $Id$
@@ -17,10 +17,8 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/printing.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -509,133 +507,4 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 }
 
 #endif // wxUSE_STATUSBAR
-
-#if wxUSE_AUI
-BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
-  EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
-  EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
-  EVT_UPDATE_UI_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnUpdateUI)
-END_EVENT_TABLE()
-
-wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
-  wxWindowID id,
-  const wxString& title,
-  long style,
-  const wxString& name)
-  : wxExFrame(parent, id, title, style, name)
-{
-  m_Manager.SetManagedWindow(this);
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
-#endif
-
-  CreateToolBar();
-  CreateFindBar();
-}
-
-wxExManagedFrame::~wxExManagedFrame()
-{
-  m_Manager.UnInit();
-}
-
-void wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
-{
-  wxExFindToolBar* findBar = new wxExFindToolBar(this,
-    id,
-    wxDefaultPosition,
-    wxDefaultSize,
-    style);
-
-  GetManager().AddPane(findBar,
-    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
-}
-
-void wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
-{
-  wxExToolBar* toolBar = new wxExToolBar(this,
-    id,
-    wxDefaultPosition,
-    wxDefaultSize,
-    style);
-
-  toolBar->AddControls();
-
-  DoAddControl(toolBar);
-
-  GetManager().AddPane(toolBar,
-    wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Tool Bar")));
-}
-
-void wxExManagedFrame::OnCommand(wxCommandEvent& event)
-{
-  switch (event.GetId())
-  {
-    case wxID_PREFERENCES:
-      wxExSTCFile::ConfigDialog(this,
-        _("Editor Options"),
-        wxExSTCFile::STC_CONFIG_MODELESS | 
-        wxExSTCFile::STC_CONFIG_SIMPLE |
-        wxExSTCFile::STC_CONFIG_WITH_APPLY,
-        event.GetId());
-    break;
-
-    case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
-    case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
-
-    case ID_VIEW_MENUBAR:
-      if (GetMenuBar()->IsShown())
-      {
-        SetMenuBar(NULL);
-      }
-      break;
-
-    case ID_VIEW_STATUSBAR:
-      GetStatusBar()->Show(!GetStatusBar()->IsShown());
-      SendSizeEvent();
-      break;
-
-    default:
-      wxFAIL;
-  }
-}
-
-void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
-{
-  switch (event.GetId())
-  {
-    case ID_VIEW_FINDBAR:
-      event.Check(GetManager().GetPane("FINDBAR").IsShown());
-    break;
-
-    case ID_VIEW_TOOLBAR:
-      event.Check(GetManager().GetPane("TOOLBAR").IsShown());
-    break;
-
-    case ID_VIEW_MENUBAR:
-      wxASSERT(GetMenuBar() != NULL);
-      event.Check(GetMenuBar()->IsShown());
-    break;
-
-    case ID_VIEW_STATUSBAR:
-      wxASSERT(GetStatusBar() != NULL);
-      event.Check(GetStatusBar()->IsShown());
-      break;
-
-    default:
-      wxFAIL;
-  }
-}
-
-void wxExManagedFrame::TogglePane(const wxString& pane)
-{
-  wxAuiPaneInfo& info = m_Manager.GetPane(pane);
-
-  wxASSERT(info.IsOk());
-
-  info.IsShown() ? info.Hide(): info.Show();
-
-  m_Manager.Update();
-}
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI

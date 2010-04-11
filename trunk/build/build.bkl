@@ -98,6 +98,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/lexers.cpp</sources>
     <sources>../extension/src/listview.cpp</sources>
     <sources>../extension/src/log.cpp</sources>
+    <sources>../extension/src/managedframe.cpp</sources>
     <sources>../extension/src/marker.cpp</sources>
     <sources>../extension/src/menu.cpp</sources>
     <sources>../extension/src/notebook.cpp</sources>
@@ -139,6 +140,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/lexers.h</headers>
     <headers>../extension/include/wx/extension/listview.h</headers>
     <headers>../extension/include/wx/extension/log.h</headers>
+    <headers>../extension/include/wx/extension/managedframe.h</headers>
     <headers>../extension/include/wx/extension/marker.h</headers>
     <headers>../extension/include/wx/extension/menu.h</headers>
     <headers>../extension/include/wx/extension/notebook.h</headers>
