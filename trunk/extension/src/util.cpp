@@ -462,7 +462,7 @@ const wxString wxExSkipWhiteSpace(
   const wxString& replace_with)
 {
   wxString output = text;
-  wxRegEx("[ \t\n]+").ReplaceAll(&output, replace_with);
+  wxRegEx("[ \t\n\v\f\r]+").ReplaceAll(&output, replace_with);
   return output;
 }
 
