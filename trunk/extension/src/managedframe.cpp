@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/managedframe.h>
-#include <wx/extension/printing.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/toolbar.h>
 
@@ -33,10 +32,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   : wxExFrame(parent, id, title, style, name)
 {
   m_Manager.SetManagedWindow(this);
-
-#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
-  wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
-#endif
 
   CreateToolBar();
   CreateFindBar();

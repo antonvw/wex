@@ -17,6 +17,7 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
@@ -78,6 +79,10 @@ wxExFrame::wxExFrame(wxWindow* parent,
 
   SetName("wxExFrame");
   wxPersistentRegisterAndRestore(this);
+
+#if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
+  wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
+#endif
 }
 
 wxExFrame::~wxExFrame()
