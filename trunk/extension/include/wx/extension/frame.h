@@ -26,8 +26,7 @@ class wxExSTCFile;
 class wxExToolBar;
 
 /// Offers a frame with easy statusbar methods, 
-/// find/replace, and a toolbar if you call CreateToolBar.
-/// Allows for file dropping as well.
+/// find/replace, and allows for file dropping as well.
 class wxExFrame : public wxFrame
 {
 public:
