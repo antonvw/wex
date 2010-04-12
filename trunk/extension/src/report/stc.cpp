@@ -87,16 +87,6 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
   wxExSTCFile::BuildPopupMenu(menu);
 
-  // Add tools if we have at least some text, the tool flag,
-  // and a lexer.
-  if (GetSelectedText().empty() && GetTextLength() > 0 &&
-     (GetMenuFlags() & STC_MENU_TOOL) &&
-      GetLexer().IsOk())
-  {
-    menu.AppendSeparator();
-    menu.AppendTools();
-  }
-
   if (GetMenuFlags() & (STC_MENU_REPORT_FIND | STC_MENU_REPORT_REPLACE))
   {
     menu.AppendSeparator();
@@ -124,12 +114,6 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
       menu.AppendSeparator();
       menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
     }
-  }
-
-  if (!GetReadOnly())
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   }
 }
 

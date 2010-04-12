@@ -99,6 +99,7 @@ DecoratedFrame::DecoratedFrame()
     menuEdit->AppendSeparator();
   }
 
+  menuEdit->Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuEdit->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuEdit->AppendSeparator();
 
@@ -108,6 +109,7 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSeparator();
   menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_MENU_VCS);
   menuEdit->AppendSeparator();
+
   m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
 
   menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
