@@ -99,6 +99,9 @@ DecoratedFrame::DecoratedFrame()
     menuEdit->AppendSeparator();
   }
 
+  menuEdit->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
+  menuEdit->AppendSeparator();
+
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));

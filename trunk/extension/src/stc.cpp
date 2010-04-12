@@ -289,14 +289,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
       menu.AppendSeparator();
       menu.AppendSubMenu(menuSelection, _("&Selection"));
     }
-    else
-    {
-      if (m_MenuFlags & STC_MENU_INSERT)
-      {
-        menu.AppendSeparator();
-        menu.Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
-      }
-    }
   }
 
   if (!GetReadOnly() && (CanUndo() || CanRedo()))
