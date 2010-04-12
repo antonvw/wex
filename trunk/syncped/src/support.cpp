@@ -87,11 +87,13 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->Append(wxID_COPY);
   menuEdit->Append(wxID_PASTE);
   menuEdit->AppendSeparator();
-  menuEdit->Append(wxID_FIND);
-  menuEdit->Append(ID_EDIT_FIND_NEXT, _("Find &Next\tF3"));
-  menuEdit->Append(wxID_REPLACE);
-  menuEdit->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
-  menuEdit->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
+  wxExMenu* menuFind = new wxExMenu();
+  menuFind->Append(wxID_FIND);
+  menuFind->Append(ID_EDIT_FIND_NEXT, _("Find &Next\tF3"));
+  menuFind->Append(wxID_REPLACE);
+  menuFind->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
+  menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
+  menuEdit->AppendSubMenu(menuFind, _("&Find"));
   menuEdit->AppendSeparator();
 
   if (menuEdit->AppendTools(ID_MENU_TOOLS))
