@@ -96,15 +96,19 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
   menuEdit->AppendSeparator();
 
-  if (menuEdit->AppendTools(ID_MENU_TOOLS))
+  wxExMenu* menuExtra = new wxExMenu();
+  
+  if (menuExtra->AppendTools(ID_MENU_TOOLS))
   {
-    menuEdit->AppendSeparator();
+    menuExtra->AppendSeparator();
   }
 
-  menuEdit->Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
-  menuEdit->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
+  menuExtra->Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
+  menuExtra->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
+  
+  menuEdit->AppendSubMenu(menuExtra, _("Extra"));
   menuEdit->AppendSeparator();
-
+  
   menuEdit->Append(wxID_JUMP_TO);
   menuEdit->AppendSeparator();
   menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
