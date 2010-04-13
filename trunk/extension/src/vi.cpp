@@ -249,6 +249,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     Yank(repeat);
   }
+  else if (command == "zc")
+  {
+    const int level = GetFoldLevel(GetCurrentLine());
+    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+      GetCurrentLine(): GetFoldParent(GetCurrentLine());
+    ToggleFold(line_to_fold);
+  }
   else if (command == "ZZ")
   {
     wxPostEvent(wxTheApp->GetTopWindow(), 
