@@ -116,8 +116,14 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
     case ID_VIEW_MENUBAR:
-      wxASSERT(GetMenuBar() != NULL);
-      event.Check(GetMenuBar()->IsShown());
+      if (GetMenuBar() != NULL)
+      {
+        event.Check(GetMenuBar()->IsShown());
+      }
+      else
+      {
+        event.Check(false);
+      }
     break;
 
     case ID_VIEW_STATUSBAR:
