@@ -249,12 +249,16 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     Yank(repeat);
   }
-  else if (command == "zc")
+  else if (command == "zc" || command == "zo")
   {
-    const int level = GetFoldLevel(GetCurrentLine());
+    const int level = m_STC->GetFoldLevel(m_STC->GetCurrentLine());
     const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-      GetCurrentLine(): GetFoldParent(GetCurrentLine());
-    ToggleFold(line_to_fold);
+      m_STC->GetCurrentLine(): m_STC->GetFoldParent(m_STC->GetCurrentLine());
+
+    if (m_STC->GetFoldExpanded(line_to_fold) && command == "zc")
+      m_STC->ToggleFold(line_to_fold);
+    else if (!m_STC->GetFoldExpanded(line_to_fold) && command == "zo")
+      m_STC->ToggleFold(line_to_fold);
   }
   else if (command == "ZZ")
   {
