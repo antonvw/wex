@@ -260,6 +260,14 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     else if (!m_STC->GetFoldExpanded(line_to_fold) && command == "zo")
       m_STC->ToggleFold(line_to_fold);
   }
+  else if (command == "zE")
+  {
+    m_STC->SetProperty("fold", "0");
+  }
+  else if (command == "zf")
+  {
+    m_STC->SetProperty("fold", "1");
+  }
   else if (command == "ZZ")
   {
     wxPostEvent(wxTheApp->GetTopWindow(), 
