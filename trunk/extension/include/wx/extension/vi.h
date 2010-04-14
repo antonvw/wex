@@ -37,9 +37,6 @@ public:
   /// Returns true if event is allowed to be skipped.
   bool OnChar(const wxKeyEvent& event);
 
-  /// Handles char added events.
-  void OnCharAdded(const wxStyledTextEvent& event);
-
   /// Handles keydown events.
   /// Returns true if event is allowed to be skipped.
   bool OnKeyDown(const wxKeyEvent& event);
@@ -90,7 +87,6 @@ private:
   static wxString m_LastCommand;
 
   const wxExIndicator m_IndicatorYank;
-  const wxExMarker m_MarkerInsert;
   const wxExMarker m_MarkerPut;
   const wxExMarker m_MarkerSymbol;
   const wxString m_FindDialogItem;

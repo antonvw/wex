@@ -29,7 +29,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_Active(false)
   , m_MarkerSymbol(0)
-  , m_MarkerInsert(2)
   , m_MarkerPut(1)
   , m_IndicatorYank(0)
   , m_InsertMode(false)
@@ -904,14 +903,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       return true;
     }
-  }
-}
-
-void wxExVi::OnCharAdded(const wxStyledTextEvent& event)
-{
-  if (m_Active)
-  {
-    m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerInsert.GetNo());
   }
 }
 

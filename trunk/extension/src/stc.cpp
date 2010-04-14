@@ -65,6 +65,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   const wxSize& size, 
   long style)
   : wxStyledTextCtrl(parent, id , pos, size, style)
+  , m_MarkerInsert(2)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
   , m_MacroIsRecording(false)
@@ -98,6 +99,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
+  , m_MarkerInsert(2)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
@@ -1128,7 +1130,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
-    m_vi.OnCharAdded(event);
+    MarkerAdd(GetCurrentLine(), m_MarkerInsert.GetNo());
   }
   else
   {

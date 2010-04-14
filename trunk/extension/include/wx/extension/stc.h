@@ -225,6 +225,8 @@ private:
 
   static std::vector <wxString> m_Macro;
 
+  const wxExMarker m_MarkerInsert;
+
   wxExLexer m_Lexer;
   wxExVi m_vi;
 
