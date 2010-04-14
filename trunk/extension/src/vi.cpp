@@ -29,8 +29,8 @@ wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_Active(false)
   , m_MarkerSymbol(0)
-  , m_IndicatorInsert(2)
-  , m_IndicatorPut(1)
+  , m_MarkerInsert(2)
+  , m_MarkerPut(1)
   , m_IndicatorYank(0)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
@@ -347,18 +347,21 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'p': 
         {
         const wxString text = wxExClipboardGet();
-        if (wxExGetNumberOfLines(text) > 1)
+        int lines;
+        if ((lines = wxExGetNumberOfLines(text)) > 1)
         {
           m_STC->LineDown();
           m_STC->Home();
         }
-        const int pos = m_STC->GetCurrentPos();
+
         m_STC->Paste();
-        SetIndicator(
-          m_IndicatorPut, 
-          pos, 
-          text.EndsWith(m_STC->GetEOL()) ? pos + text.length() - 1: pos + text.length());
-        if (wxExGetNumberOfLines(text) > 1)
+
+        for (int i = 0; i < lines; i++)
+        {
+          m_STC->MarkerAdd(m_STC->GetCurrentLine() + i, m_MarkerPut.GetNo());
+        }
+
+        if (lines > 1)
         {
           m_STC->LineUp();
         }
@@ -367,7 +370,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'P':
         {
         const wxString text = wxExClipboardGet();
-        if (wxExGetNumberOfLines(text) > 1)
+        int lines;
+        if ((lines = wxExGetNumberOfLines(text)) > 1)
         {
           m_STC->Home();
         }
@@ -375,12 +379,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         {
           m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
         }
-        const int pos = m_STC->GetCurrentPos();
+
         m_STC->Paste();
-        SetIndicator(
-          m_IndicatorPut, 
-          pos, 
-          text.EndsWith(m_STC->GetEOL()) ? pos + text.length() - 1: pos + text.length());
+
+        for (int i = 0; i < lines; i++)
+        {
+          m_STC->MarkerAdd(m_STC->GetCurrentLine() + i, m_MarkerPut.GetNo());
+        }
         }
         break;
 
@@ -906,10 +911,7 @@ void wxExVi::OnCharAdded(const wxStyledTextEvent& event)
 {
   if (m_Active)
   {
-    SetIndicator(
-      m_IndicatorInsert, 
-      m_STC->GetCurrentPos() - 1, 
-      m_STC->GetCurrentPos());
+    m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerInsert.GetNo());
   }
 }
 
