@@ -59,9 +59,6 @@ DecoratedFrame::DecoratedFrame()
   SetupStatusBar(panes);
 #endif
 
-  wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE); // wxMB_DOCKABLE only used for GTK
-  SetMenuBar(menubar);
-
   wxExMenu *menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
@@ -118,9 +115,11 @@ DecoratedFrame::DecoratedFrame()
 
   m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
 
-  menuEdit->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
-  menuEdit->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
-  menuEdit->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl-M"));
+  wxExMenu* menuMacro = new wxExMenu();
+  menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
+  menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
+  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl-M"));
+  menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
 
   wxExMenu *menuView = new wxExMenu;
   menuView->AppendBars();
@@ -170,6 +169,9 @@ DecoratedFrame::DecoratedFrame()
 
   wxMenu *menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
+
+  wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE); // wxMB_DOCKABLE only used for GTK
+  SetMenuBar(menubar);
 
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
   menubar->Append(menuEdit, wxGetStockLabel(wxID_EDIT));
