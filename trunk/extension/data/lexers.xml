@@ -1432,7 +1432,7 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
-    <marker no="wxEx_MARKNUM_STC_INSERT">wxSTC_MARK_CIRCLE,green </marker>
+    <marker no="wxEx_MARKNUM_STC_INSERT">wxSTC_MARK_FULLRECT,green </marker>
     <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
     <marker no="wxEx_MARKNUM_VI_PUT"> wxSTC_MARK_CIRCLE,blue </marker>
     
