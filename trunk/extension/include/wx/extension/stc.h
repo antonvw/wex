@@ -112,6 +112,9 @@ public:
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
 
+  /// Paste text from clipboard.
+  void Paste();
+
 #if wxUSE_PRINTING_ARCHITECTURE
   /// Prints the document.
   void Print(bool prompt = true);
@@ -226,6 +229,7 @@ private:
   static std::vector <wxString> m_Macro;
 
   const wxExMarker m_MarkerInsert;
+  const wxExMarker m_MarkerPut;
 
   wxExLexer m_Lexer;
   wxExVi m_vi;

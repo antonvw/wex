@@ -29,7 +29,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_Active(false)
   , m_MarkerSymbol(0)
-  , m_MarkerPut(1)
   , m_IndicatorYank(0)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
@@ -922,11 +921,6 @@ void wxExVi::Put(bool after) const
   }
 
   m_STC->Paste();
-
-  for (int i = 0; i < lines; i++)
-  {
-    m_STC->MarkerAdd(m_STC->GetCurrentLine() + i, m_MarkerPut.GetNo());
-  }
 
   if (lines > 1 && after)
   {
