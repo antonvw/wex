@@ -1392,9 +1392,9 @@ without the written consent of the copyright owner.
     
     <!-- Macro's for wxextension vi mode -->
     <def no ="wxEx_INDIC_VI_YANK"> 0 </def>
-    <def no ="wxEx_MARKNUM_VI_PUT"> 1 </def>
-    <def no ="wxEx_MARKNUM_VI_INSERT"> 2 </def>
+    <def no ="wxEx_MARKNUM_STC_INSERT"> 2 </def>
     <def no ="wxEx_MARKNUM_VI"> 0 </def>
+    <def no ="wxEx_MARKNUM_VI_PUT"> 1 </def>
     
     <!-- Macro's for wxextension folding -->
     <def no ="folder"> light blue </def>
@@ -1432,9 +1432,9 @@ without the written consent of the copyright owner.
     <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
     <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
     
+    <marker no="wxEx_MARKNUM_STC_INSERT">wxSTC_MARK_CIRCLE,green </marker>
     <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
     <marker no="wxEx_MARKNUM_VI_PUT"> wxSTC_MARK_CIRCLE,blue </marker>
-    <marker no="wxEx_MARKNUM_VI_INSERT">wxSTC_MARK_CIRCLE,green </marker>
     
     <indicator no="wxEx_INDIC_VI_YANK"> wxSTC_INDIC_BOX,black </indicator>
     
