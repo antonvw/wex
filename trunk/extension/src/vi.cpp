@@ -343,50 +343,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
         break;
 
-      case 'p': 
-        {
-        const wxString text = wxExClipboardGet();
-        int lines;
-        if ((lines = wxExGetNumberOfLines(text)) > 1)
-        {
-          m_STC->LineDown();
-          m_STC->Home();
-        }
-
-        m_STC->Paste();
-
-        for (int i = 0; i < lines; i++)
-        {
-          m_STC->MarkerAdd(m_STC->GetCurrentLine() + i, m_MarkerPut.GetNo());
-        }
-
-        if (lines > 1)
-        {
-          m_STC->LineUp();
-        }
-        }
-        break;
-      case 'P':
-        {
-        const wxString text = wxExClipboardGet();
-        int lines;
-        if ((lines = wxExGetNumberOfLines(text)) > 1)
-        {
-          m_STC->Home();
-        }
-        else
-        {
-          m_STC->GotoPos(m_STC->GetCurrentPos() - 1);
-        }
-
-        m_STC->Paste();
-
-        for (int i = 0; i < lines; i++)
-        {
-          m_STC->MarkerAdd(m_STC->GetCurrentLine() + i, m_MarkerPut.GetNo());
-        }
-        }
-        break;
+      case 'p': Put(true); break;
+      case 'P': Put(false); break;
 
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
@@ -412,14 +370,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           m_STC->DocumentEnd();
         }
         break;
-      case 'H': m_STC->GotoLine(
-                  m_STC->GetFirstVisibleLine()); 
+      case 'H': m_STC->GotoLine(m_STC->GetFirstVisibleLine());
         break;
       case 'M': m_STC->GotoLine(
-                  m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2); 
+        m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen() / 2);
         break;
       case 'L': m_STC->GotoLine(
-                  m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
+        m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
         break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
@@ -952,6 +909,30 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
   return !handled;
 }
+
+void wxExVi::Put(bool after) const
+{
+  const wxString text = wxExClipboardGet();
+  int lines;
+  
+  if ((lines = wxExGetNumberOfLines(text)) > 1)
+  {
+    if (after) m_STC->LineDown();
+    m_STC->Home();
+  }
+
+  m_STC->Paste();
+
+  for (int i = 0; i < lines; i++)
+  {
+    m_STC->MarkerAdd(m_STC->GetCurrentLine() + i, m_MarkerPut.GetNo());
+  }
+
+  if (lines > 1 && after)
+  {
+    m_STC->LineUp();
+  }
+}        
 
 void wxExVi::Repeat()
 {

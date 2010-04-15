@@ -65,6 +65,7 @@ private:
     const wxString& begin_address, 
     const wxString& end_address, 
     const wxString& destination);
+  void Put(bool after) const;
   void Repeat();
   void SetIndicator(const wxExIndicator& indicator, int start, int end) const;
   bool SetSelection(
