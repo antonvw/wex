@@ -66,7 +66,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   long style)
   : wxStyledTextCtrl(parent, id , pos, size, style)
   , m_MarkerInsert(2)
-  , m_MarkerPut(1)
+  , m_MarkerPaste(1)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
   , m_MacroIsRecording(false)
@@ -101,7 +101,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
   , m_MarkerInsert(2)
-  , m_MarkerPut(1)
+  , m_MarkerPaste(1)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
@@ -1148,7 +1148,7 @@ void wxExSTC::Paste()
 
   for (int i = 0; i < lines; i++)
   {
-    MarkerAdd(GetCurrentLine() + i, m_MarkerPut.GetNo());
+    MarkerAdd(GetCurrentLine() + i, m_MarkerPaste.GetNo());
   }
 }
 
