@@ -1130,7 +1130,10 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
-    MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
+    if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+    {
+      MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
+    }
   }
   else
   {
@@ -1140,13 +1143,16 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
 void wxExSTC::Paste()
 {
-  const int lines = wxExGetNumberOfLines(wxExClipboardGet());
-  
   wxStyledTextCtrl::Paste();
-
-  for (int i = 0; i < lines; i++)
+  
+  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    MarkerAdd(GetCurrentLine() - i, m_MarkerChangeGetNo());
+    const int lines = wxExGetNumberOfLines(wxExClipboardGet());
+
+    for (int i = 0; i < lines; i++)
+    {
+      MarkerAdd(GetCurrentLine() - i, m_MarkerChange.GetNo());
+    }
   }
 }
 
