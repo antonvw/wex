@@ -1143,15 +1143,15 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
 void wxExSTC::Paste()
 {
+  const int line = GetCurrentLine();
+
   wxStyledTextCtrl::Paste();
   
   if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    const int lines = wxExGetNumberOfLines(wxExClipboardGet());
-
-    for (int i = 0; i < lines; i++)
+    for (int i = line; i < GetCurrentLine(); i++)
     {
-      MarkerAdd(GetCurrentLine() - i, m_MarkerChange.GetNo());
+      MarkerAdd(i, m_MarkerChange.GetNo());
     }
   }
 }
