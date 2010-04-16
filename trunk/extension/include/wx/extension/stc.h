@@ -228,8 +228,7 @@ private:
 
   static std::vector <wxString> m_Macro;
 
-  const wxExMarker m_MarkerInsert;
-  const wxExMarker m_MarkerPaste;
+  const wxExMarker m_MarkerChange;
 
   wxExLexer m_Lexer;
   wxExVi m_vi;
