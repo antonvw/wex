@@ -99,7 +99,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
-  , m_MarkerChange1)
+  , m_MarkerChange(1)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
