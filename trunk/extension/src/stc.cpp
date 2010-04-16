@@ -1146,7 +1146,7 @@ void wxExSTC::Paste()
 
   for (int i = 0; i < lines; i++)
   {
-    MarkerAdd(GetCurrentLine() + i, m_MarkerChangeGetNo());
+    MarkerAdd(GetCurrentLine() - i, m_MarkerChangeGetNo());
   }
 }
 
