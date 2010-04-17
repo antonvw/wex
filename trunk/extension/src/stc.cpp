@@ -1116,7 +1116,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
       msg += "0";
     }
 
-    AddMacro(msg);
+    m_Macro.push_back(msg);
   }
   else if (event.GetEventType() == wxEVT_STC_MARGINCLICK)
   {

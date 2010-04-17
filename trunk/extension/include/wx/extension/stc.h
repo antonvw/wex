@@ -206,7 +206,6 @@ protected:
   const int m_MarginFoldingNumber;
   const int m_MarginLineNumber;
 private:
-  void AddMacro(const wxString& msg) {m_Macro.push_back(msg);};
   bool CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
