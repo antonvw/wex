@@ -36,6 +36,8 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
+  EVT_SET_FOCUS(wxExSTC::OnFocus)
+  EVT_KILL_FOCUS(wxExSTC::OnFocus)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
@@ -1002,6 +1004,24 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   }
 }
 
+void wxExSTC::OnFocus(wxFocusEvent& event)
+{
+  event.Skip();
+
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
+
+  if (event.GetEventType() == wxEVT_SET_FOCUS)
+  {
+    focusevent.SetEventObject(this);
+  }
+  else
+  {
+    focusevent.SetEventObject(NULL);
+  }
+
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
+}
+
 void wxExSTC::OnKeyDown(wxKeyEvent& event)
 {
   if (event.GetModifiers() == wxMOD_ALT)
@@ -1080,10 +1100,6 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   {
     wxFAIL;
   }
-
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExSTC::OnMouseCapture(wxMouseCaptureLostEvent& event)

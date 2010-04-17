@@ -192,6 +192,7 @@ protected:
   void ClearDocument();
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnFocus(wxFocusEvent& event);
   void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
