@@ -84,6 +84,8 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->Append(wxID_COPY);
   menuEdit->Append(wxID_PASTE);
   menuEdit->AppendSeparator();
+  menuEdit->Append(wxID_JUMP_TO);
+  menuEdit->AppendSeparator();
   wxExMenu* menuFind = new wxExMenu();
   menuFind->Append(wxID_FIND);
   menuFind->Append(ID_EDIT_FIND_NEXT, _("Find &Next\tF3"));
@@ -102,14 +104,12 @@ DecoratedFrame::DecoratedFrame()
 
   menuExtra->Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuExtra->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
+  menuExtra->AppendSeparator();
+  menuExtra->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
   
   menuEdit->AppendSubMenu(menuExtra, _("Extra"));
   menuEdit->AppendSeparator();
   
-  menuEdit->Append(wxID_JUMP_TO);
-  menuEdit->AppendSeparator();
-  menuEdit->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
-  menuEdit->AppendSeparator();
   menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_MENU_VCS);
   menuEdit->AppendSeparator();
 
@@ -118,6 +118,7 @@ DecoratedFrame::DecoratedFrame()
   wxExMenu* menuMacro = new wxExMenu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
+  menuMacro->AppendSeparator();
   menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl-M"));
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
 
