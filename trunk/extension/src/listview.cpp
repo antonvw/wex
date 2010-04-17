@@ -68,6 +68,8 @@ const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
 
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
+  EVT_SET_FOCUS(wxExListView::OnFocus)
+  EVT_KILL_FOCUS(wxExListView::OnFocus)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_ITEM_DESELECTED(wxID_ANY, wxExListView::OnList)
@@ -574,6 +576,22 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 #endif
 }
 
+void wxExListView::OnFocus(wxFocusEvent& event)
+{
+  event.Skip();
+
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_LISTVIEW);
+
+  if (event.GetEventType() == wxEVT_SET_FOCUS)
+  {
+    focusevent.SetEventObject(this);
+  }
+  else
+  {
+    focusevent.SetEventObject(NULL);
+  }
+}
+
 void wxExListView::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_CLICK)
@@ -608,10 +626,6 @@ void wxExListView::OnList(wxListEvent& event)
 
 void wxExListView::OnMouse(wxMouseEvent& event)
 {
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_LISTVIEW);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
-
   if (event.RightDown())
   {
     int style = wxExMenu::MENU_DEFAULT;

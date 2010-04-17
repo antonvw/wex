@@ -200,6 +200,7 @@ protected:
 
   // Events.
   void OnCommand(wxCommandEvent& event);
+  void OnFocus(wxFocusEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:

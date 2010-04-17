@@ -65,6 +65,8 @@ bool wxExTextDropTarget::OnDropText(
 #endif // wxUSE_DRAG_AND_DROP
 
 BEGIN_EVENT_TABLE(wxExGrid, wxGrid)
+  EVT_SET_FOCUS(wxExGrid::OnFocus)
+  EVT_KILL_FOCUS(wxExGrid::OnFocus)
   EVT_GRID_CELL_LEFT_CLICK(wxExGrid::OnGrid)
   EVT_GRID_CELL_RIGHT_CLICK(wxExGrid::OnGrid)
   EVT_GRID_CELL_BEGIN_DRAG(wxExGrid::OnGrid)
@@ -416,6 +418,22 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   }
 }
 
+void wxExGrid::OnFocus(wxFocusEvent& event)
+{
+  event.Skip();
+
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_GRID);
+
+  if (event.GetEventType() == wxEVT_SET_FOCUS)
+  {
+    focusevent.SetEventObject(this);
+  }
+  else
+  {
+    focusevent.SetEventObject(NULL);
+  }
+}
+
 void wxExGrid::OnGrid(wxGridEvent& event)
 {
   if (event.GetEventType() == wxEVT_GRID_CELL_RIGHT_CLICK)
@@ -521,10 +539,6 @@ void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 
 void wxExGrid::OnMouse(wxMouseEvent& event)
 {
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_GRID);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
-
   if (event.Dragging())
   {
     // Readme: This event is not coming in as well.

@@ -94,6 +94,7 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
 
   void OnCommand(wxCommandEvent& event);
+  void OnFocus(wxFocusEvent& event);
   void OnGrid(wxGridEvent& event);
   void OnGridRange(wxGridRangeSelectEvent& event);
   void OnMouse(wxMouseEvent& event);
