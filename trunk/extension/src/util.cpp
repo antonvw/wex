@@ -492,11 +492,14 @@ void wxExVCSExecute(
   {
     if (vcs.ExecuteDialog(frame) == wxID_OK)
     {
+      const long extra_flags = 
+        (vcs.GetCommand() == wxExVCS::VCS_BLAME ? wxExSTC::STC_WIN_BLAME: 0);
+
       frame->OpenFile(
         filename, 
         vcs.GetCommandWithFlags(), 
         vcs.GetOutput(),
-        wxExSTC::STC_WIN_READ_ONLY);
+        wxExSTC::STC_WIN_READ_ONLY | extra_flags);
     }
   }
   else

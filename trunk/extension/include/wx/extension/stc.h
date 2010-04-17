@@ -40,6 +40,7 @@ public:
   {
     STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, this mode overrides real mode from disk
     STC_WIN_HEX         = 0x0002, ///< window in hex mode
+    STC_WIN_BLAME       = 0x0004, ///< window in blame mode
   };
 
   /// Constructor.
