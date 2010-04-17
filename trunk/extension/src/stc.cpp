@@ -503,7 +503,7 @@ bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
-    FindReplaceDataFlags(),
+    wxExFindReplaceData::Get()->STCFlags(),
     find_next);
 }
 
@@ -577,19 +577,6 @@ bool wxExSTC::FindNext(
 
     return true;
   }
-}
-
-int wxExSTC::FindReplaceDataFlags() const
-{
-  const wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-
-  int flags = 0;
-
-  if (frd->UseRegularExpression())  flags |= wxSTC_FIND_REGEXP;
-  if (frd->MatchWord()) flags |= wxSTC_FIND_WHOLEWORD;
-  if (frd->MatchCase()) flags |= wxSTC_FIND_MATCHCASE;
-
-  return flags;
 }
 
 void wxExSTC::FoldAll()
@@ -793,7 +780,7 @@ void wxExSTC::GotoLineAndSelect(
 
   if (!text.empty())
   {
-    SetSearchFlags(FindReplaceDataFlags());
+    SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
 
     if (SearchInTarget(text) < 0)
     {
@@ -1233,7 +1220,7 @@ void wxExSTC::ReplaceAll(
     SetTargetEnd(GetLength());
   }
 
-  SetSearchFlags(FindReplaceDataFlags());
+  SetSearchFlags(wxExFindReplaceData::Get()->STCFlags());
   int nr_replacements = 0;
 
   BeginUndoAction();
@@ -1288,7 +1275,7 @@ void wxExSTC::ReplaceNext(bool find_next)
   return ReplaceNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->GetReplaceString(),
-    FindReplaceDataFlags(),
+    wxExFindReplaceData::Get()->STCFlags(),
     find_next);
 }
 

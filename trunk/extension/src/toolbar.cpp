@@ -262,7 +262,10 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 
       if (stc != NULL)
       {
-        stc->FindNext(m_ComboBox->GetValue(), (event.GetId() == wxID_DOWN));
+        stc->FindNext(
+          m_ComboBox->GetValue(), 
+          wxExFindReplaceData::Get()->STCFlags(),
+          (event.GetId() == wxID_DOWN));
       }
     }
     break;

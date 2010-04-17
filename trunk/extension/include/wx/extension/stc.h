@@ -210,7 +210,6 @@ private:
   bool CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
-  int FindReplaceDataFlags() const;
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize();
