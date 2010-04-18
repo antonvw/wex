@@ -465,25 +465,6 @@ void wxExSTCFile::FileTypeMenu()
   PopupMenu(eol);
 }
 
-void wxExSTCFile::GuessType()
-{
-  if (!(GetFlags() & STC_WIN_HEX))
-  {
-    // Get a small sample from this file to detect the file mode.
-    const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
-    const wxString text = GetTextRange(0, sample_size);
-
-    if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
-    else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
-    else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
-    else return; // do nothing
-  }
-
-#if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
-#endif
-}
-
 void wxExSTCFile::Initialize()
 {
   ConfigGet();
@@ -725,35 +706,4 @@ void wxExSTCFile::ResetContentsChanged()
 {
   SetSavePoint();
 }
-
-#if wxUSE_STATUSBAR
-void wxExSTCFile::UpdateStatusBar(const wxString& pane)
-{
-  if (pane == "PaneFileType")
-  {
-    wxString text;
-
-    if (GetFlags() & STC_WIN_HEX)
-    {
-      text = "HEX";
-    }
-    else
-    {
-      switch (GetEOLMode())
-      {
-      case wxSTC_EOL_CRLF: text = "DOS"; break;
-      case wxSTC_EOL_CR: text = "MAC"; break;
-      case wxSTC_EOL_LF: text = "UNIX"; break;
-      default: text = "UNKNOWN";
-      }
-    }
-
-    wxExFrame::StatusText(text, pane);
-  }
-  else
-  {
-    wxExSTC::UpdateStatusBar(pane);
-  }
-}
-#endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI

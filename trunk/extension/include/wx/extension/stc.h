@@ -185,6 +185,7 @@ public:
   void MacroPlayback();
 protected:
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
+  void GuessType();
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
   // Clears the component: all text is cleared and all styles are reset.

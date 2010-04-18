@@ -110,11 +110,6 @@ public:
   /// Default it is off.
   void SetFileSaveInMenu(bool val = true) {
     m_FileSaveInMenu = val;}
-
-#if wxUSE_STATUSBAR
-  /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane);
-#endif
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   virtual void DoFileLoad(bool synced = false);
@@ -128,7 +123,6 @@ private:
   void AddBasePathToPathList();
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
-  void GuessType();
   void Initialize();
   bool LinkOpen(
     const wxString& link,
