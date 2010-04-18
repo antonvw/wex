@@ -90,6 +90,8 @@ wxExSTC::wxExSTC(wxWindow *parent,
       SetText(value);
     }
 
+	GuessType();
+
     if (m_Flags & STC_WIN_READ_ONLY ||
         // At this moment we do not allow to write in hex mode.
         m_Flags & STC_WIN_HEX)
