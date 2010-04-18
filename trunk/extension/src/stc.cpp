@@ -1688,8 +1688,6 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
   }
   else if (pane == "PaneFileType")
   {
-    wxString text;
-
     if (GetFlags() & STC_WIN_HEX)
     {
       text = "HEX";
