@@ -70,7 +70,7 @@ General
   - under windows using Microsoft Visual Studio C++ (Version 7.1.3088) and files generated
     using format msvs2003prj
     
-  - under windows using Microsoft Visual Studio 2008
+  - under windows using Microsoft Visual Studio 2010
     Version 9.0.30729.1 SP
     Microsoft .NET Framework files generated 
     using format msvs2008prj
