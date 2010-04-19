@@ -41,9 +41,6 @@ public:
   /// Copy constructor.
   wxExMenu(const wxExMenu& menu);
 
-  /// Appends bar menu items (like status bar etc.).
-  void AppendBars();
-
   /// Appends a menu item for stock menu id's
   /// using automatic naming, help text and art id.
   wxMenuItem* Append(int id);
@@ -54,6 +51,9 @@ public:
     const wxString& name,
     const wxString& helptext = wxEmptyString,
     const wxArtID& artid = wxEmptyString);
+
+  /// Appends bar menu items (like status bar etc.).
+  void AppendBars();
 
   /// Appends edit menu items, depending on the style 
   /// specified during construction.
