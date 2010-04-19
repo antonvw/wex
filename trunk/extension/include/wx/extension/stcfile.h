@@ -85,9 +85,6 @@ public:
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
 
-  /// Shows a menu with current line type checked, and allows you to change it.
-  void FileTypeMenu();
-
   virtual bool GetContentsChanged() const {return GetModify();};
 
   virtual void ResetContentsChanged();

@@ -70,8 +70,8 @@ public:
   /// add a new control char.
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
 
-  /// Gets EOL string.
-  const wxString GetEOL() const;
+  /// Shows a menu with current line type checked, and allows you to change it.
+  void FileTypeMenu();
 
   // Finds next with settings from find replace data.
   bool FindNext(bool find_next = true);
@@ -81,6 +81,9 @@ public:
     const wxString& text, 
     int search_flags = 0,
     bool find_next = true);
+
+  /// Gets EOL string.
+  const wxString GetEOL() const;
 
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};

@@ -443,28 +443,6 @@ bool wxExSTCFile::FileReadOnlyAttributeChanged()
   return true;
 }
 
-void wxExSTCFile::FileTypeMenu()
-{
-  if (GetReadOnly())
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Document is readonly"));
-#endif
-    return;
-  }
-
-  wxMenu* eol = new wxMenu();
-
-  // The order here should be the same as the defines for wxSTC_EOL_CRLF.
-  // So the FindItemByPosition can work
-  eol->Append(ID_EDIT_EOL_DOS, "&DOS", wxEmptyString, wxITEM_CHECK);
-  eol->Append(ID_EDIT_EOL_MAC, "&MAC", wxEmptyString, wxITEM_CHECK);
-  eol->Append(ID_EDIT_EOL_UNIX, "&UNIX", wxEmptyString, wxITEM_CHECK);
-  eol->FindItemByPosition(GetEOLMode())->Check();
-
-  PopupMenu(eol);
-}
-
 void wxExSTCFile::Initialize()
 {
   ConfigGet();
