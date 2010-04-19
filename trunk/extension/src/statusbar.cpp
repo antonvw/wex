@@ -60,6 +60,8 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
   for (int i = 0; i < GetFieldsCount() && !found; i++)
   {
+	const wxExPane& pane(GetPane(i));
+
     wxRect rect;
 
     if (GetFieldRect(i, rect))
@@ -73,11 +75,11 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         // could cause assertions.
         if (event.ButtonDClick())
         {
-          m_Frame->StatusBarDoubleClicked(GetPane(i).m_Name);
+          m_Frame->StatusBarDoubleClicked(pane.m_Name);
         }
         else if (event.ButtonDown())
         {
-          m_Frame->StatusBarClicked(GetPane(i).m_Name);
+          m_Frame->StatusBarClicked(pane.m_Name);
         }
 #if wxUSE_TOOLTIPS
         // Show tooltip if tooltip is available, and not yet tooltip presented.
@@ -88,9 +90,9 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             const wxString tooltip =
               (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
 
-            if (tooltip != GetPane(i).m_Helptext)
+            if (tooltip != pane.m_Helptext)
             {
-              SetToolTip(GetPane(i).m_Helptext);
+              SetToolTip(pane.m_Helptext);
             }
           }
         }
