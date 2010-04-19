@@ -15,7 +15,6 @@
 #include <wx/filename.h>
 
 class wxExSTCEntryDialog;
-class wxExFrame;
 
 /// This class collects all vcs handling.
 class wxExVCS
