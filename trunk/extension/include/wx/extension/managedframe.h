@@ -25,14 +25,14 @@ class wxExToolBar;
 class wxExManagedFrame : public wxExFrame
 {
 public:
-  /// Constructor, the frame position and size is taken from the config.
+  /// Constructor, registers the aui manager, and creates the bars.
   wxExManagedFrame(wxWindow* parent,
     wxWindowID id,
     const wxString& title,
     long style = wxDEFAULT_FRAME_STYLE,
     const wxString& name = wxFrameNameStr);
 
-  /// Destructor.
+  /// Destructor, uninits the aui manager.
  ~wxExManagedFrame();
 
   // Interface for notebooks.
