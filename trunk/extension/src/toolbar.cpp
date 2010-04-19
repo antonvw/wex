@@ -71,14 +71,6 @@ wxExToolBar::wxExToolBar(wxExFrame* frame,
 {
 }
 
-wxExToolBar::~wxExToolBar()
-{
-  if (m_HexModeCheckBox != NULL)
-  {
-    wxConfigBase::Get()->Write("HexMode", m_HexModeCheckBox->GetValue());
-  }
-}
-
 void wxExToolBar::AddControls()
 {
   AddTool(wxID_OPEN);

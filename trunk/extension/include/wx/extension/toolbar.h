@@ -37,9 +37,6 @@ public:
     const wxString& shortHelp = wxEmptyString,
     wxItemKind kind = wxITEM_NORMAL);
 
-  /// Destructor.
- ~wxExToolBar();
-
   /// Adds standard controls.
   void AddControls();
 protected:
