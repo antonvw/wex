@@ -210,6 +210,7 @@ protected:
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;
   const int m_MarginLineNumber;
+  const wxExMarker m_MarkerChange;
 private:
   bool CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
@@ -231,8 +232,6 @@ private:
   const long m_MenuFlags;
 
   static std::vector <wxString> m_Macro;
-
-  const wxExMarker m_MarkerChange;
 
   wxExLexer m_Lexer;
   wxExVi m_vi;

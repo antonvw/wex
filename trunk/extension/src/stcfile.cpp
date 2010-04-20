@@ -413,9 +413,15 @@ void wxExSTCFile::DoFileSave(bool save_as)
     SetName(GetFileName().GetFullPath());
     Colourise();
   }
+  
+  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  {
+    MarkerDeleteAll(m_MarkerChange);
+  }
 
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   wxExLog::Get()->Log(msg);
+  
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(msg);
 #endif
