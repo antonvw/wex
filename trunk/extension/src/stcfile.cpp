@@ -416,7 +416,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   
   if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    MarkerDeleteAll(m_MarkerChange);
+	  MarkerDeleteAll(m_MarkerChange.GetNo());
   }
 
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
