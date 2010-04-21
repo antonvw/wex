@@ -41,7 +41,7 @@ wxExStatusBar::wxExStatusBar(
 const wxExPane wxExStatusBar::GetPane(int pane) const
 {
   for (
-    std::map<wxString, wxExPane>::const_iterator it = m_Panes.begin();
+    auto it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
@@ -110,7 +110,7 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
   int* widths = new int[panes.size()];
 
   for (
-    std::vector<wxExPane>::const_iterator it = panes.begin();
+    auto it = panes.begin();
     it != panes.end();
     ++it)
   {
@@ -128,7 +128,7 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 {
-  std::map<wxString, wxExPane>::const_iterator it = m_Panes.find(pane);
+  auto it = m_Panes.find(pane);
 
   if (it != m_Panes.end())
   {

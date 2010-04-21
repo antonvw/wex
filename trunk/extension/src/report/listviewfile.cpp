@@ -354,7 +354,7 @@ bool ListViewDropTarget::OnDropFiles(
   const wxArrayString& filenames)
 {
   for (
-    wxArrayString::const_iterator it = filenames.begin();
+    auto it = filenames.begin();
     it != filenames.end();
     it++)
   {

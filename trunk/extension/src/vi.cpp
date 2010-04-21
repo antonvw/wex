@@ -283,7 +283,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("'?"))
   {
-    std::map<wxUniChar, int>::const_iterator it = m_Markers.find(command.Last());
+    auto it = m_Markers.find(command.Last());
 
     if (it != m_Markers.end())
     {
@@ -1060,7 +1060,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
   if (address.StartsWith("'"))
   {
-    std::map<wxUniChar, int>::const_iterator it = 
+    auto it = 
       m_Markers.find(address.GetChar(1));
 
     if (it != m_Markers.end())

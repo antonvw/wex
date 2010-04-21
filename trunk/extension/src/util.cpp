@@ -313,7 +313,7 @@ void wxExListToConfig(
   wxString text;
 
   for (
-    std::list < wxString >::const_iterator it = l.begin();
+    auto it = l.begin();
     it != l.end();
     it++)
   {
@@ -347,7 +347,7 @@ void wxExOpenFiles(
 {
   // std::vector gives compile error.
   for (
-    wxArrayString::const_iterator it = files.begin();
+    auto it = files.begin();
     it != files.end();
     it++)
   {

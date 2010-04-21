@@ -948,7 +948,7 @@ void wxExSTC::MacroPlayback()
   wxASSERT(MacroIsRecorded());
 
   for (
-    std::vector<wxString>::const_iterator it = m_Macro.begin();
+    auto it = m_Macro.begin();
     it != m_Macro.end();
     ++it)
   {
@@ -1611,7 +1611,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   if (sort_ascending)
   {
     for (
-      std::multimap<wxString, wxString>::const_iterator it = mm.begin();
+      auto it = mm.begin();
       it != mm.end();
       ++it)
     {

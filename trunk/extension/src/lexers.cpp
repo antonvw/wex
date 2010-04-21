@@ -47,7 +47,7 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
 
 const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
-  std::map<wxString, wxString>::const_iterator it = m_Macros.find(text);
+  auto it = m_Macros.find(text);
 
   if (it != m_Macros.end())
   {
@@ -83,7 +83,7 @@ const wxString wxExLexers::BuildWildCards(
 
   // Build the wildcard string using all available lexers.
   for (
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
+    auto it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -117,7 +117,7 @@ const wxExLexer wxExLexers::FindByFileName(
   }
 
   for (
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
+    auto it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -132,7 +132,7 @@ const wxExLexer wxExLexers::FindByFileName(
 
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
-  std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.find(name);
+  auto it = m_Lexers.find(name);
 
   if (it != m_Lexers.end())
   {
@@ -190,7 +190,7 @@ const wxString wxExLexers::GetLexerExtensions() const
   wxString text;
 
   for (
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
+    auto it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {
@@ -211,13 +211,13 @@ const wxString wxExLexers::GetLexerExtensions() const
 
 bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
 {
-  std::set<wxExIndicator>::const_iterator it = m_Indicators.find(indic);
+  auto it = m_Indicators.find(indic);
   return (it != m_Indicators.end());
 }
 
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
 {
-  std::set<wxExMarker>::const_iterator it = m_Markers.find(marker);
+  auto it = m_Markers.find(marker);
   return (it != m_Markers.end());
 }
 
@@ -299,7 +299,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
       if (!attrib.empty())
       {
-        std::map<wxString, wxString>::const_iterator it = m_Macros.find(attrib);
+        auto it = m_Macros.find(attrib);
 
         if (it != m_Macros.end())
         {
@@ -315,7 +315,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
       if (!style.empty())
       {
-        std::map<wxString, wxString>::const_iterator it = 
+        auto it = 
           m_MacrosStyle.find(style);
 
         if (it != m_MacrosStyle.end())
@@ -444,7 +444,7 @@ bool wxExLexers::ShowDialog(
   wxArrayString s;
 
   for (
-    std::map<wxString, wxExLexer>::const_iterator it = m_Lexers.begin();
+    auto it = m_Lexers.begin();
     it != m_Lexers.end();
     ++it)
   {

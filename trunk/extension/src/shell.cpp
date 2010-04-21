@@ -298,7 +298,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
     int no = 1;
 
     for (
-      std::list < wxString >::const_iterator it = m_Commands.begin();
+      auto it = m_Commands.begin();
       it != m_Commands.end();
       it++)
     {
@@ -389,7 +389,7 @@ void wxExSTCShell::ShowHistory()
   int command_no = 1;
 
   for (
-    std::list < wxString >::const_iterator it = m_Commands.begin();
+    auto it = m_Commands.begin();
     it != m_Commands.end();
     it++)
   {

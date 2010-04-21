@@ -205,7 +205,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
 
       for (
-        std::map<long, const wxString>::const_iterator it = m_Choices.begin();
+        auto it = m_Choices.begin();
         it != m_Choices.end();
        ++it)
       {
@@ -313,7 +313,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
 
       for (
-        std::map<long, const wxString>::const_iterator it = m_Choices.begin();
+        auto it = m_Choices.begin();
         it != m_Choices.end();
         ++it)
       {
@@ -450,7 +450,7 @@ void wxExConfigItem::ToConfig(bool save) const
       int item = 0;
 
       for (
-        std::map<long, const wxString>::const_iterator b = m_Choices.begin();
+        auto b = m_Choices.begin();
         b != m_Choices.end();
         ++b)
       {
@@ -481,7 +481,7 @@ void wxExConfigItem::ToConfig(bool save) const
       int item = 0;
 
       for (
-        std::set<wxString>::const_iterator b = m_ChoicesBool.begin();
+        auto b = m_ChoicesBool.begin();
         b != m_ChoicesBool.end();
         ++b)
       {
@@ -593,7 +593,7 @@ void wxExConfigItem::ToConfig(bool save) const
       if (save)
       {
         for (
-          std::map<long, const wxString>::const_iterator b = m_Choices.begin();
+          auto b = m_Choices.begin();
           b != m_Choices.end();
           ++b)
         {
@@ -605,7 +605,7 @@ void wxExConfigItem::ToConfig(bool save) const
       }
       else
       {
-        std::map<long, const wxString>::const_iterator c = 
+        auto c = 
           m_Choices.find(wxConfigBase::Get()->ReadLong(m_Name, 0));
 
         if (c != m_Choices.end())

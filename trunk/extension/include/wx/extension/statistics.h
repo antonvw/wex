@@ -77,7 +77,7 @@ public:
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
     for (
-      typename std::map<wxString, T>::const_iterator it = s.m_Items.begin();
+      auto it = s.m_Items.begin();
       it != s.m_Items.end();
       ++it)
     {
@@ -106,7 +106,7 @@ public:
   const wxString Get() const {
     wxString text;
     for (
-      typename std::map<wxString, T>::const_iterator it = m_Items.begin();
+      auto it = m_Items.begin();
       it != m_Items.end();
       ++it)
     {
@@ -138,7 +138,7 @@ public:
 #if wxUSE_GRID
     if (m_Grid != NULL)
     {
-      std::map<wxString, int>::const_iterator it = m_Rows.find(key);
+      auto it = m_Rows.find(key);
 
       if (it != m_Rows.end())
       {
@@ -201,7 +201,7 @@ public:
 
       int i = 0;
       for (
-        typename std::map<wxString, T>::const_iterator it = m_Items.begin();
+        auto it = m_Items.begin();
         it != m_Items.end();
         ++it)
       {

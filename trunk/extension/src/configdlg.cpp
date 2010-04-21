@@ -80,7 +80,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
 {
   for (
-    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    auto it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {
@@ -248,7 +248,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   bool one_checkbox_checked = false;
 
   for (
-    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
+    auto it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {

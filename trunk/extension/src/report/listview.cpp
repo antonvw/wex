@@ -343,7 +343,7 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
   break;
   case LIST_KEYWORD:
     for (
-      std::set<wxString>::const_iterator it = lexer->GetKeywords().begin();
+      auto it = lexer->GetKeywords().begin();
       it != lexer->GetKeywords().end();
       ++it)
     {

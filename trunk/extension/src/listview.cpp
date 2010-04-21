@@ -388,7 +388,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     return 0;
   }
 
-  std::map<wxArtID, unsigned int>::const_iterator it = m_ArtIDs.find(artid);
+  auto it = m_ArtIDs.find(artid);
 
   if (it != m_ArtIDs.end())
   {

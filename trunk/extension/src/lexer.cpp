@@ -51,7 +51,7 @@ void wxExLexer::ApplyKeywords(wxStyledTextCtrl* stc) const
 
   // Readme: The Scintilla lexer only recognized lower case words, apparently.
   for (
-    std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.begin();
+    auto it = m_KeywordsSet.begin();
     it != m_KeywordsSet.end();
     ++it)
   {
@@ -78,19 +78,19 @@ const std::vector<wxExStyle> wxExLexer::AutoMatch(
 {
   std::vector<wxExStyle> text;
 
-  std::map<wxString, wxString>::const_iterator itlow = 
+  auto itlow = 
     wxExLexers::Get()->GetMacros().lower_bound(lexer);
 
-  std::map<wxString, wxString>::const_iterator itup = 
+  auto itup = 
     wxExLexers::Get()->GetMacros().upper_bound(lexer + "ZZZ");
 
   for (
-    std::map<wxString, wxString>::const_iterator it = itlow;
+    auto it = itlow;
     it != itup;
     ++it)
   {
     for (
-      std::map<wxString, wxString>::const_iterator style = 
+      auto style = 
         wxExLexers::Get()->GetMacrosStyle().begin();
       style != wxExLexers::Get()->GetMacrosStyle().end();
       ++style)
@@ -160,7 +160,7 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-    std::map< int, std::set<wxString> >::const_iterator it = 
+    auto it = 
       m_KeywordsSet.find(keyword_set);
 
     if (it != m_KeywordsSet.end())
@@ -180,7 +180,7 @@ const wxString wxExLexer::GetKeywordsStringSet(
   wxString keywords;
 
   for (
-    std::set<wxString>::const_iterator it = kset.begin();
+    auto it = kset.begin();
     it != kset.end();
     ++it)
   {
@@ -192,7 +192,7 @@ const wxString wxExLexer::GetKeywordsStringSet(
 
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
-  std::set<wxString>::const_iterator it = m_Keywords.find(word);
+  auto it = m_Keywords.find(word);
   return (it != m_Keywords.end());
 }
 
@@ -204,7 +204,7 @@ bool wxExLexer::IsOk() const
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
-  std::set<wxString>::const_iterator it = m_Keywords.lower_bound(word.Lower());
+  auto it = m_Keywords.lower_bound(word.Lower());
   return 
     it != m_Keywords.end() &&
     it->StartsWith(word.Lower());
