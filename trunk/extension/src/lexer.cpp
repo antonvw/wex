@@ -160,7 +160,7 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
-    auto it = 
+    const auto it = 
       m_KeywordsSet.find(keyword_set);
 
     if (it != m_KeywordsSet.end())
@@ -192,7 +192,7 @@ const wxString wxExLexer::GetKeywordsStringSet(
 
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
-  auto it = m_Keywords.find(word);
+  const auto it = m_Keywords.find(word);
   return (it != m_Keywords.end());
 }
 
@@ -204,7 +204,7 @@ bool wxExLexer::IsOk() const
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
-  auto it = m_Keywords.lower_bound(word.Lower());
+  const auto it = m_Keywords.lower_bound(word.Lower());
   return 
     it != m_Keywords.end() &&
     it->StartsWith(word.Lower());

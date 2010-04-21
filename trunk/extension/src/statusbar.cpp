@@ -128,7 +128,7 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 {
-  auto it = m_Panes.find(pane);
+  const auto it = m_Panes.find(pane);
 
   if (it != m_Panes.end())
   {

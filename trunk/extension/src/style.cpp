@@ -46,7 +46,7 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 
 bool wxExStyle::IsDefault() const
 {
-  auto it = m_No.find(wxSTC_STYLE_DEFAULT);
+  const auto it = m_No.find(wxSTC_STYLE_DEFAULT);
   return (it != m_No.end());
 }
 
@@ -61,7 +61,7 @@ void wxExStyle::Set(const wxXmlNode* node)
 
   m_Value = node->GetNodeContent().Strip(wxString::both);
 
-  auto it = 
+  const auto it = 
     wxExLexers::Get()->GetMacrosStyle().find(m_Value);
 
   if (it != wxExLexers::Get()->GetMacrosStyle().end())

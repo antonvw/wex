@@ -57,7 +57,7 @@ const wxBitmap wxExStockArt::GetBitmap(
   if (wxIsStockID(m_Id))
   {
     // Check if there is art for this id.
-    auto art_it = m_StockArt.find(m_Id);
+    const auto art_it = m_StockArt.find(m_Id);
 
     if (art_it != m_StockArt.end())
     {

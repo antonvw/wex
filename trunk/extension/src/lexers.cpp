@@ -47,7 +47,7 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
 
 const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
-  auto it = m_Macros.find(text);
+  const auto it = m_Macros.find(text);
 
   if (it != m_Macros.end())
   {
@@ -132,7 +132,7 @@ const wxExLexer wxExLexers::FindByFileName(
 
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
-  auto it = m_Lexers.find(name);
+  const auto it = m_Lexers.find(name);
 
   if (it != m_Lexers.end())
   {
@@ -211,13 +211,13 @@ const wxString wxExLexers::GetLexerExtensions() const
 
 bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
 {
-  auto it = m_Indicators.find(indic);
+  const auto it = m_Indicators.find(indic);
   return (it != m_Indicators.end());
 }
 
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
 {
-  auto it = m_Markers.find(marker);
+  const auto it = m_Markers.find(marker);
   return (it != m_Markers.end());
 }
 
@@ -299,7 +299,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
       if (!attrib.empty())
       {
-        auto it = m_Macros.find(attrib);
+        const auto it = m_Macros.find(attrib);
 
         if (it != m_Macros.end())
         {

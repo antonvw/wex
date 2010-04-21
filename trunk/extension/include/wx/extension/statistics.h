@@ -138,7 +138,7 @@ public:
 #if wxUSE_GRID
     if (m_Grid != NULL)
     {
-      auto it = m_Rows.find(key);
+      const auto it = m_Rows.find(key);
 
       if (it != m_Rows.end())
       {

@@ -388,7 +388,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     return 0;
   }
 
-  auto it = m_ArtIDs.find(artid);
+  const auto it = m_ArtIDs.find(artid);
 
   if (it != m_ArtIDs.end())
   {

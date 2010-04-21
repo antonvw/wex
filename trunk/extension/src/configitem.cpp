@@ -605,7 +605,7 @@ void wxExConfigItem::ToConfig(bool save) const
       }
       else
       {
-        auto c = 
+        const auto c = 
           m_Choices.find(wxConfigBase::Get()->ReadLong(m_Name, 0));
 
         if (c != m_Choices.end())

@@ -30,7 +30,7 @@ void SetItemColumnStatistics(
   const wxString& col,
   const wxExStatistics<long>& stat)
 {
-  auto it = stat.GetItems().find(col);
+  const auto it = stat.GetItems().find(col);
 
   if (it != stat.GetItems().end())
   {
@@ -271,7 +271,7 @@ void wxExTextFileWithListView::ReportStatistics()
       m_Report->GetColumn(i + 1, col);
       const wxString name = col.GetText();
       const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
-      auto it = stat.GetItems().find(name);
+      const auto it = stat.GetItems().find(name);
       if (it != stat.GetItems().end())
       {
         item.SetItem(i + 1, wxString::Format("%ld", it->second));

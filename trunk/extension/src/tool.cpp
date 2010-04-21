@@ -48,7 +48,7 @@ wxExTool* wxExTool::Get(bool createOnDemand)
 
 const wxString wxExTool::Info() const
 {
-  auto it = m_Self->m_ToolInfo.find(m_Id);
+  const auto it = m_Self->m_ToolInfo.find(m_Id);
 
   if (it != m_Self->m_ToolInfo.end())
   {

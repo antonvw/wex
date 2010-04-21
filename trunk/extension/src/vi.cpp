@@ -283,7 +283,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("'?"))
   {
-    auto it = m_Markers.find(command.Last());
+    const auto it = m_Markers.find(command.Last());
 
     if (it != m_Markers.end())
     {

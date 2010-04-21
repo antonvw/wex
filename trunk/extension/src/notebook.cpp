@@ -174,7 +174,7 @@ const wxString wxExNotebook::GetKeys() const
 
 wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
 {
-  auto it = m_MapPages.find(key);
+  const auto it = m_MapPages.find(key);
 
   if (it != m_MapPages.end())
   {
