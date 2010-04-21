@@ -90,9 +90,6 @@ enum wxExId
 enum wxExToolId
 {
   ID_TOOL_LOWEST = ID_EDIT_HIGHEST + 1,
-  ID_TOOL_LINE,          // lines with code or empty lines
-  ID_TOOL_LINE_COMMENT,  // only comments
-  ID_TOOL_LINE_CODE,     // only lines with code
   ID_TOOL_REVISION_RECENT,
   ID_TOOL_FIRST_USER,    // after this your own tool
   ID_TOOL_REPORT_FIRST = ID_TOOL_FIRST_USER + TOOL_MAX,  // after this the first report

@@ -561,11 +561,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
   {
     m_Stats.m_Elements.Inc(_("Lines Of Code"));
 
-    if (m_Tool.GetId() == ID_TOOL_LINE || m_Tool.GetId() == ID_TOOL_LINE_CODE)
-    {
-      ReportLine(line);
-    }
-
     // Finish action.
     // However, some sources might contain revisions at the end of the file, 
     // so these are not reported.
@@ -580,21 +575,11 @@ bool wxExTextFile::ParseLine(const wxString& line)
 
   if (m_EmptyLine)
   {
-    if (m_Tool.GetId() == ID_TOOL_LINE && !m_IsCommentStatement)
-    {
-      ReportLine(line);
-    }
-
     m_Stats.m_Elements.Inc(_("Empty Lines"));
   }
 
   if (m_IsCommentStatement && GetCurrentLine() < GetLineCount() - 1)
   {
-    if (m_Tool.GetId() == ID_TOOL_LINE_COMMENT)
-    {
-      ReportLine(line);
-    }
-
     // End of lines are included in comment size as well.
     if (m_Tool.IsCount())
     {
