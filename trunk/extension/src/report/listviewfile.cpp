@@ -202,24 +202,14 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   menu.SetStyle(style);
 
-  bool exists = true;
-  bool is_folder = false;
-
-  if (GetSelectedItemCount() >= 1)
+  wxExListViewWithFrame::BuildPopupMenu(menu);
+    
+  if (!GetFileName().IsOk() ||
+      !GetFileName().FileExists() ||
+      (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
   {
-    wxExListViewWithFrame::BuildPopupMenu(menu);
-  }
-  else
-  {
-    if (!GetFileName().IsOk() ||
-        !GetFileName().FileExists() ||
-        (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
-    {
-      menu.AppendSeparator();
-      menu.Append(wxID_ADD);
-    }
-
-    wxExListViewWithFrame::BuildPopupMenu(menu);
+    menu.AppendSeparator();
+    menu.Append(wxID_ADD);
   }
 }
 
