@@ -74,7 +74,7 @@ private:
 
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
-/// Small images have size 16,16 and large images size 32,32.
+/// Small images have size 16,16.
 class wxExListView : public wxListView
 {
 public:
@@ -225,8 +225,6 @@ private:
   const wxExImageType m_ImageType;
   const int m_ImageHeightSmall;
   const int m_ImageWidthSmall;
-  const int m_ImageHeightLarge;
-  const int m_ImageWidthLarge;
 
   int m_SortedColumnNo;
   int m_ToBeSortedColumnNo;

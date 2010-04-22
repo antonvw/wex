@@ -99,8 +99,6 @@ wxExListView::wxExListView(wxWindow* parent,
   , m_ImageType(image_type)
   , m_ImageHeightSmall(16)
   , m_ImageWidthSmall(16)
-  , m_ImageHeightLarge(32)
-  , m_ImageWidthLarge(32)
   , m_SortedColumnNo(-1)
 {
   SetSingleStyle(wxLC_REPORT);
@@ -109,12 +107,10 @@ wxExListView::wxExListView(wxWindow* parent,
   {
     if (image_type == IMAGE_ART || image_type == IMAGE_OWN)
     {
-      AssignImageList(new wxImageList(m_ImageWidthLarge, m_ImageHeightLarge, true, 0), wxIMAGE_LIST_NORMAL);
       AssignImageList(new wxImageList(m_ImageWidthSmall, m_ImageHeightSmall, true, 0), wxIMAGE_LIST_SMALL);
     }
     else if (image_type == IMAGE_FILE_ICON)
     {
-      // At least in wxWidgets 2.7.0 there is no large file icons table image list.
       SetImageList(wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
     }
     else
@@ -380,8 +376,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
 
 unsigned int wxExListView::GetArtID(const wxArtID& artid)
 {
-  if (GetImageList(wxIMAGE_LIST_NORMAL) == NULL ||
-      GetImageList(wxIMAGE_LIST_SMALL) == NULL ||
+  if (GetImageList(wxIMAGE_LIST_SMALL) == NULL ||
       m_ImageType != IMAGE_ART)
   {
     wxFAIL;
@@ -398,11 +393,10 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   {
     m_ArtIDs.insert(std::make_pair(artid, GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
 
-    const wxSize largesize(m_ImageWidthLarge, m_ImageHeightLarge);
     const wxSize smallsize(m_ImageWidthSmall, m_ImageHeightSmall);
 
-    GetImageList(wxIMAGE_LIST_SMALL)->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER, smallsize));
-    return GetImageList(wxIMAGE_LIST_NORMAL)->Add(wxArtProvider::GetBitmap(artid, wxART_OTHER, largesize));
+    return GetImageList(wxIMAGE_LIST_SMALL)->Add(
+      wxArtProvider::GetBitmap(artid, wxART_OTHER, smallsize));
   }
 }
 
