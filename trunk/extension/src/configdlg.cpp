@@ -111,7 +111,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
   wxString previous_page = "XXXXXX";
 
   for (
-    std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
+    auto it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {

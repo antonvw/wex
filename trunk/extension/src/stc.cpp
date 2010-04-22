@@ -1608,6 +1608,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   // The multimap is already sorted, just iterate to get all lines back.
   wxString text;
+
   if (sort_ascending)
   {
     for (
@@ -1621,7 +1622,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   else
   {
     for (
-      std::multimap<wxString, wxString>::reverse_iterator it = mm.rbegin();
+      auto it = mm.rbegin();
       it != mm.rend();
       ++it)
     {
