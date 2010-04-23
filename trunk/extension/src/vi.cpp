@@ -62,7 +62,7 @@ void wxExVi::Delete(int lines) const
   }
 
 #if wxUSE_STATUSBAR
-  const int end_line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const auto end_line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
 #endif
 
   m_STC->Cut();
@@ -90,7 +90,7 @@ bool wxExVi::Delete(
     return false;
   }
 
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  const auto lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   
   m_STC->Cut();
 
@@ -644,8 +644,8 @@ bool wxExVi::DoCommandRange(const wxString& command)
 
 void wxExVi::FindWord(bool find_next)
 {
-  const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
-  const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
+  const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
+  const auto end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
   m_SearchText = m_STC->GetTextRange(start, end);
   m_STC->FindNext(m_SearchText, m_SearchFlags, find_next);
 }
@@ -677,7 +677,7 @@ void wxExVi::Indent(int lines, bool forward) const
 
   for (int i = 0; i < lines; i++)
   {
-    const int start = m_STC->PositionFromLine(line + i);
+    const auto start = m_STC->PositionFromLine(line + i);
 
     if (forward)
     {
@@ -771,7 +771,7 @@ bool wxExVi::Move(
     return false;
   }
 
-  const int dest_line = ToLineNumber(destination);
+  const auto dest_line = ToLineNumber(destination);
 
   if (dest_line == 0)
   {
@@ -802,7 +802,7 @@ bool wxExVi::Move(
   m_STC->EndUndoAction();
   
 #if wxUSE_STATUSBAR
-  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  const auto lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   if (lines >= 2)
   {
     wxExFrame::StatusText(wxString::Format(_("%d lines moved"), lines));
@@ -962,8 +962,8 @@ bool wxExVi::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
+  const auto begin_line = ToLineNumber(begin_address);
+  const auto end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0)
   {
@@ -989,8 +989,8 @@ bool wxExVi::Substitute(
 
   m_STC->SetSearchFlags(wxSTC_FIND_REGEXP);
 
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
+  const auto begin_line = ToLineNumber(begin_address);
+  const auto end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0)
   {
@@ -1001,21 +1001,21 @@ bool wxExVi::Substitute(
 
   m_STC->BeginUndoAction();
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
-  const int target_end = m_STC->PositionFromLine(end_line);
+  const auto target_end = m_STC->PositionFromLine(end_line);
   m_STC->SetTargetEnd(target_end);
 
   const bool is_re = m_STC->IsTargetRE(replacement);
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
-    const int target_start = m_STC->GetTargetStart();
+    const auto target_start = m_STC->GetTargetStart();
 
     if (target_start >= target_end)
     {
       break;
     }
 
-    const int length = (is_re ? 
+    const auto length = (is_re ? 
       m_STC->ReplaceTargetRE(replacement): 
       m_STC->ReplaceTarget(replacement));
 
@@ -1094,7 +1094,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
   if (!filtered_address.IsNumber()) return 0;
 
   // Calculate the line.
-  const int line_no = marker + dot + dollar + atoi(filtered_address.c_str());
+  const auto line_no = marker + dot + dollar + atoi(filtered_address.c_str());
   
   // Limit the range of what is returned.
   if (line_no < 0)
@@ -1113,9 +1113,9 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
 void wxExVi::Yank(int lines) const
 {
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start = m_STC->PositionFromLine(line);
-  const int end = m_STC->PositionFromLine(line + lines);
+  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const auto start = m_STC->PositionFromLine(line);
+  const auto end = m_STC->PositionFromLine(line + lines);
 
   if (end != -1)
   {
@@ -1141,8 +1141,8 @@ bool wxExVi::Yank(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
-  const int begin_line = ToLineNumber(begin_address);
-  const int end_line = ToLineNumber(end_address);
+  const auto begin_line = ToLineNumber(begin_address);
+  const auto end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0)
   {
@@ -1156,7 +1156,7 @@ bool wxExVi::Yank(
   SetIndicator(m_IndicatorYank, start, end);
 
 #if wxUSE_STATUSBAR
-  const int lines = end_line - begin_line;
+  const auto lines = end_line - begin_line;
   if (lines >= 2)
   {
     wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));

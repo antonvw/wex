@@ -371,7 +371,7 @@ bool wxExSTC::CheckAutoComp(const wxUniChar& c)
 
 bool wxExSTC::CheckBrace(int pos)
 {
-  const int brace_match = BraceMatch(pos);
+  const auto brace_match = BraceMatch(pos);
 
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -387,7 +387,7 @@ bool wxExSTC::CheckBrace(int pos)
 
 bool wxExSTC::CheckBraceHex(int pos)
 {
-  const int col = GetColumn(pos);
+  const auto col = GetColumn(pos);
   const wxFileOffset start_ascii_field =
     start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
 
@@ -416,7 +416,7 @@ bool wxExSTC::CheckBraceHex(int pos)
         space++;
       }
 
-      const int offset = (col - (start_hex_field + space)) / each_hex_field;
+      const auto offset = (col - (start_hex_field + space)) / each_hex_field;
 
       BraceHighlight(pos,
         PositionFromLine(LineFromPosition(pos)) + start_ascii_field + offset);
@@ -686,8 +686,8 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
   }
   else
   {
-    const int pos = GetCurrentPos();
-    const int line_no = LineFromPosition(pos);
+    const auto pos = GetCurrentPos();
+    const auto line_no = LineFromPosition(pos);
     const wxString text = GetLine(line_no);
 
     // Better first try to find "...", then <...>, as in next example.
@@ -767,7 +767,7 @@ void wxExSTC::GuessType()
   if (!(GetFlags() & STC_WIN_HEX))
   {
     // Get a small sample from this file to detect the file mode.
-    const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
+    const auto sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
     const wxString text = GetTextRange(0, sample_size);
 
     if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
@@ -1584,8 +1584,8 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   wxBusyCursor wait;
 
-  const int start_line = LineFromPosition(GetSelectionStart());
-  const int start_pos = PositionFromLine(start_line);
+  const auto start_line = LineFromPosition(GetSelectionStart());
+  const auto start_pos = PositionFromLine(start_line);
   SetSelection(start_pos, PositionFromLine(LineFromPosition(GetSelectionEnd())));
 
   // Empty lines are not kept after sorting, as they are used as separator.
