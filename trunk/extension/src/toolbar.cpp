@@ -337,7 +337,7 @@ void ComboBox::OnCommand(wxCommandEvent& event)
 
 void ComboBox::OnKey(wxKeyEvent& event)
 {
-  const int key = event.GetKeyCode();
+  const auto key = event.GetKeyCode();
 
   if (key == WXK_RETURN)
   {

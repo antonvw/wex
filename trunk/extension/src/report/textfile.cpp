@@ -108,7 +108,7 @@ bool wxExTextFileWithListView::ParseComments()
           1,
           Recordset::QueryRunTimeText().length()) == Recordset::QueryRunTimeText())
       {
-        const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
+        const auto start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
         m_SQLQueryRunTime = GetComments().substr(start_of_runtime);
         Report(GetCurrentLine());
       }

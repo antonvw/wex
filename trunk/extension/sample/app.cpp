@@ -86,7 +86,7 @@ wxExSampleDir::wxExSampleDir(
 void wxExSampleDir::OnFile(const wxString& file)
 {
   m_Grid->AppendRows(1);
-  const int no = m_Grid->GetNumberRows() - 1;
+  const auto no = m_Grid->GetNumberRows() - 1;
   m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
   m_Grid->SetCellValue(no, 1, file);
 

@@ -162,7 +162,7 @@ int wxExProcess::ConfigDialog(
     true,
     1000)); // TODO: fix
 
-  const int result = wxExConfigDialog(parent,
+  const auto result = wxExConfigDialog(parent,
     v,
     title).ShowModal();
 

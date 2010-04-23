@@ -609,7 +609,7 @@ void Frame::OnSocket(wxSocketEvent& event)
         // wxSocketEvent again.
         sock->SetNotify(wxSOCKET_LOST_FLAG);
 
-        const int size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
+        const auto size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
 
         if (size <= 0)
         {
