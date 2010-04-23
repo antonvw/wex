@@ -273,7 +273,7 @@ const wxString wxExLexer::MakeSingleLineComment(
     // To prevent filling out spaces
     if (fill_out_character != ' ' || !m_CommentEnd.empty())
     {
-      const int fill_chars = UsableCharactersPerLine() - text.size();
+      const auto fill_chars = UsableCharactersPerLine() - text.size();
 
       if (fill_chars > 0)
       {
@@ -425,7 +425,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
     {
       keyword = fields.GetNextToken();
 
-      const int new_setno = atoi(fields.GetNextToken().c_str());
+      const auto new_setno = atoi(fields.GetNextToken().c_str());
 
       if (new_setno >= wxSTC_KEYWORDSET_MAX)
       {

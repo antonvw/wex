@@ -97,7 +97,7 @@ void wxExSTCFile::AddBasePathToPathList()
   // First find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath:";
 
-  const int find = FindText(
+  const auto find = FindText(
     0,
     1000, // the max pos to look for, this seems enough
     basepath_text,
@@ -108,7 +108,7 @@ void wxExSTCFile::AddBasePathToPathList()
     return;
   }
 
-  const int line = LineFromPosition(find);
+  const auto  line = LineFromPosition(find);
   const wxString basepath = GetTextRange(
     find + basepath_text.length() + 1,
     GetLineEndPosition(line) - 3);
@@ -123,7 +123,7 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
   if (GetMenuFlags() & STC_MENU_OPEN_LINK)
   {
     const wxString link = GetTextAtCurrentPos();
-    const int line_no = (!sel.empty() ? 
+    const auto  line_no = (!sel.empty() ? 
       wxExGetLineNumberFromText(sel): 
       GetLineNumberAtCurrentPos());
 
@@ -655,7 +655,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
     SetControlCharSymbol(0);
 
-    const int message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
+    const auto message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.

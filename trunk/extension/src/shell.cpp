@@ -134,7 +134,7 @@ void wxExSTCShell::OnCommand(wxCommandEvent& command)
 
 void wxExSTCShell::OnKey(wxKeyEvent& event)
 {
-  const int key = event.GetKeyCode();
+  const auto key = event.GetKeyCode();
 
   // Enter key pressed, we might have entered a command.
   if (key == WXK_RETURN)
@@ -291,7 +291,7 @@ void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
 
 bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 {
-  const int no_asked_for = atoi(short_command.c_str());
+  const auto no_asked_for = atoi(short_command.c_str());
 
   if (no_asked_for > 0)
   {

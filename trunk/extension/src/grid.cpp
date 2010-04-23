@@ -45,8 +45,8 @@ bool wxExTextDropTarget::OnDropText(
   wxCoord y, 
   const wxString& data)
 {
-  const int row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
-  const int col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
+  const auto row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
+  const auto col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
 
   if (row == wxNOT_FOUND || col == wxNOT_FOUND)
   {
@@ -312,8 +312,8 @@ void wxExGrid::GetSearchText()
   else
   {
     // Just take current cell value, if not empty.
-    const int row = GetGridCursorRow();
-    const int col = GetGridCursorCol();
+    const auto row = GetGridCursorRow();
+    const auto col = GetGridCursorCol();
     const wxString val = GetCellValue(row, col);
 
     if (!val.empty())

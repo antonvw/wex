@@ -283,7 +283,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
     text_use.MakeUpper();
   }
 
-  const int firstselected = GetFirstSelected();
+  const auto firstselected = GetFirstSelected();
 
   if (find_next)
   {

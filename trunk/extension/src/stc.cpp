@@ -393,7 +393,7 @@ bool wxExSTC::CheckBraceHex(int pos)
 
   if (col >= start_ascii_field)
   {
-    const int offset = col - start_ascii_field;
+    const auto offset = col - start_ascii_field;
     int space = 0;
 
     if (col >= start_ascii_field + bytes_per_line / 2)
@@ -607,13 +607,13 @@ void wxExSTC::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
 
-  const int current_line = GetCurrentLine();
+  const auto current_line = GetCurrentLine();
 
   int line = 0;
   while (line < GetLineCount())
   {
-    const int level = GetFoldLevel(line);
-    const int last_child_line = GetLastChild(line, level);
+    const auto level = GetFoldLevel(line);
+    const auto last_child_line = GetLastChild(line, level);
 
     if (last_child_line > line)
     {
@@ -646,8 +646,8 @@ int wxExSTC::GetLineNumberAtCurrentPos() const
 {
   // This method is used by LinkOpen.
   // So, if no line number present return 0, otherwise link open jumps to last line.
-  const int pos = GetCurrentPos();
-  const int line_no = LineFromPosition(pos);
+  const auto pos = GetCurrentPos();
+  const auto line_no = LineFromPosition(pos);
 
   // Cannot use GetLine, as that includes EOF, and then the ToLong does not
   // return correct number.
@@ -734,9 +734,9 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
 
 const wxString wxExSTC::GetWordAtPos(int pos) const
 {
-  const int word_start = 
+  const auto word_start = 
     const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
-  const int word_end = 
+  const auto word_end = 
     const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
 
   if (word_start == word_end && word_start < GetTextLength())
@@ -815,8 +815,8 @@ void wxExSTC::GotoLineAndSelect(
 
   m_GotoLineNumber = line_number;
 
-  const int start_pos = PositionFromLine(line_number - 1);
-  const int end_pos = GetLineEndPosition(line_number - 1);
+  const auto start_pos = PositionFromLine(line_number - 1);
+  const auto end_pos = GetLineEndPosition(line_number - 1);
 
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
@@ -1016,8 +1016,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   break;
   case ID_EDIT_TOGGLE_FOLD:
   {
-    const int level = GetFoldLevel(GetCurrentLine());
-    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+    const auto level = GetFoldLevel(GetCurrentLine());
+    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
       GetCurrentLine(): GetFoldParent(GetCurrentLine());
     ToggleFold(line_to_fold);
   }
@@ -1165,8 +1165,8 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (event.GetMargin() == m_MarginFoldingNumber)
     {
-      const int line = LineFromPosition(event.GetPosition());
-      const int level = GetFoldLevel(line);
+      const auto line = LineFromPosition(event.GetPosition());
+      const auto level = GetFoldLevel(line);
 
       if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
       {
@@ -1189,7 +1189,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
 void wxExSTC::Paste()
 {
-  const int line = GetCurrentLine();
+  const auto line = GetCurrentLine();
 
   wxStyledTextCtrl::Paste();
   
@@ -1246,8 +1246,8 @@ void wxExSTC::ReplaceAll(
 {
   const wxString selection = GetSelectedText();
   int selection_from_end = 0;
-  const int selstart = GetSelectionStart();
-  const int selend = GetSelectionEnd();
+  const auto selstart = GetSelectionStart();
+  const auto selend = GetSelectionEnd();
 
   // We cannot use wxExGetNumberOfLines here if we have a rectangular selection.
   // So do it the other way.
@@ -1270,7 +1270,7 @@ void wxExSTC::ReplaceAll(
 
   while (SearchInTarget(find_text) > 0)
   {
-    const int target_start = GetTargetStart();
+    const auto target_start = GetTargetStart();
     int length;
     bool skip_replace = false;
 
@@ -1278,9 +1278,9 @@ void wxExSTC::ReplaceAll(
     // If not just continue without replacing.
     if (SelectionIsRectangle() && selection_from_end != 0)
     {
-      const int line = LineFromPosition(target_start);
-      const int start_pos = GetLineSelStartPosition(line);
-      const int end_pos = GetLineSelEndPosition(line);
+      const auto line = LineFromPosition(target_start);
+      const auto start_pos = GetLineSelStartPosition(line);
+      const auto end_pos = GetLineSelEndPosition(line);
       length = GetTargetEnd() - target_start;
 
       if (start_pos == wxSTC_INVALID_POSITION ||
@@ -1680,9 +1680,9 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
       int end;
       GetSelection(&start, &end);
 
-      const int len  = end - start;
-      const int line = GetCurrentLine() + 1;
-      const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
+      const auto len  = end - start;
+      const auto line = GetCurrentLine() + 1;
+      const auto pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
 
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
       else
@@ -1698,7 +1698,7 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
         {
           // There might be NULL's inside selection.
           // So use the GetSelectedTextRaw variant.
-          const int number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
+          const auto number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
           if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
           else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
         }

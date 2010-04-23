@@ -46,9 +46,9 @@ void wxExVi::Delete(int lines) const
     return;
   }
 
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const int start = m_STC->PositionFromLine(line);
-  const int end = m_STC->PositionFromLine(line + lines);
+  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const auto start = m_STC->PositionFromLine(line);
+  const auto end = m_STC->PositionFromLine(line + lines);
 
   m_STC->SetSelectionStart(start);
 
@@ -196,7 +196,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command.EndsWith("dw"))
   {
     m_STC->BeginUndoAction();
-    const int start = m_STC->GetCurrentPos();
+    const auto start = m_STC->GetCurrentPos();
     for (int i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->SetSelection(start, m_STC->GetCurrentPos());
@@ -236,7 +236,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.EndsWith("yw"))
   {
-    const int start = m_STC->GetCurrentPos();
+    const auto start = m_STC->GetCurrentPos();
     for (int i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
@@ -249,8 +249,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command == "zc" || command == "zo")
   {
-    const int level = m_STC->GetFoldLevel(m_STC->GetCurrentLine());
-    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+    const auto level = m_STC->GetFoldLevel(m_STC->GetCurrentLine());
+    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
       m_STC->GetCurrentLine(): m_STC->GetFoldParent(m_STC->GetCurrentLine());
 
     if (m_STC->GetFoldExpanded(line_to_fold) && command == "zc")
@@ -671,7 +671,7 @@ void wxExVi::GotoBrace() const
 
 void wxExVi::Indent(int lines, bool forward) const
 {
-  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
 
   m_STC->BeginUndoAction();
 
@@ -1149,8 +1149,8 @@ bool wxExVi::Yank(
     return false;
   }
 
-  const int start = m_STC->PositionFromLine(begin_line);
-  const int end = m_STC->PositionFromLine(end_line);
+  const auto start = m_STC->PositionFromLine(begin_line);
+  const auto end = m_STC->PositionFromLine(end_line);
 
   m_STC->CopyRange(start, end);
   SetIndicator(m_IndicatorYank, start, end);
