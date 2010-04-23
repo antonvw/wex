@@ -7,7 +7,7 @@ General
     http://svn.xp-dev.com/svn/wxextension/
 
 - Subversion access
-    under windows TortoiseSVN is used (TortoiseSVN 1.6.7)
+    under windows TortoiseSVN is used (TortoiseSVN 1.6.8)
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.5.4 (r33841))
     
@@ -71,7 +71,7 @@ General
     using format msvs2003prj
     
   - under windows using Microsoft Visual Studio 2010
-    Version 9.0.30729.1 SP
+    Version 10.0.30319.1 RTMRel
     Microsoft .NET Framework files generated 
     using format msvs2008prj
     
