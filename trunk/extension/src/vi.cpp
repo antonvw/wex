@@ -116,7 +116,7 @@ bool wxExVi::Delete(
 
 void wxExVi::DeleteMarker(const wxUniChar& marker)
 {
-  std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
+  const auto it = m_Markers.find(marker);
 
   if (it != m_Markers.end())
   {

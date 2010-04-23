@@ -23,7 +23,7 @@
 
 long wxExFileStatistics::Get(const wxString& key) const
 {
-  std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);
+  const auto it = m_Elements.GetItems().find(key);
 
   if (it != m_Elements.GetItems().end())
   {
@@ -31,7 +31,7 @@ long wxExFileStatistics::Get(const wxString& key) const
   }
   else
   {
-    std::map<wxString, long>::const_iterator it = m_Keywords.GetItems().find(key);
+    const auto it = m_Keywords.GetItems().find(key);
 
     if (it != m_Keywords.GetItems().end())
     {
