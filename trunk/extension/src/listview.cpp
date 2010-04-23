@@ -391,7 +391,8 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   }
   else
   {
-    m_ArtIDs.insert(std::make_pair(artid, GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
+    m_ArtIDs.insert(std::make_pair(artid, 
+      GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
 
     const wxSize smallsize(m_ImageWidthSmall, m_ImageHeightSmall);
 
@@ -598,7 +599,10 @@ void wxExListView::OnList(wxListEvent& event)
   {
     m_ToBeSortedColumnNo = event.GetColumn();
 
-    wxExMenu menu(GetSelectedItemCount() > 0 ? wxExMenu::MENU_IS_SELECTED: wxExMenu::MENU_DEFAULT);
+    wxExMenu menu(GetSelectedItemCount() > 0 ? 
+      wxExMenu::MENU_IS_SELECTED: 
+      wxExMenu::MENU_DEFAULT);
+      
     menu.Append(wxID_SORT_ASCENDING);
     menu.Append(wxID_SORT_DESCENDING);
 

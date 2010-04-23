@@ -74,7 +74,6 @@ private:
 
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
-/// Small images have size 16,16.
 class wxExListView : public wxListView
 {
 public:
@@ -108,7 +107,7 @@ public:
   int FindColumn(const wxString& name) const;
 
   /// Returns the index of the bitmap in the image list used by this list view.
-  /// If the artid is not yet on the image lists, it is added to both image lists.
+  /// If the artid is not yet on the image lists, it is added to the image list.
   /// Use only if you setup for IMAGE_ART.
   unsigned int GetArtID(const wxArtID& artid);
 
