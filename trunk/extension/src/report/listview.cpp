@@ -883,7 +883,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     return;
   }
 
-  int i = -1;
+  long i = -1;
 
   wxExStatistics<long> stats;
 

@@ -87,7 +87,6 @@ wxExSTCShell::~wxExSTCShell()
     wxString values;
     int items = 0;
 
-    // using a const_reverse_iterator here does not compile under Visual Studio 2003
     for (
       auto it = m_Commands.rbegin();
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
@@ -327,7 +326,6 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
           short_command.length() - m_CommandEnd.length());
     }
 
-    // using a const_reverse_iterator here does not compile under Visual Studio 2003
     for (
       auto it = m_Commands.rbegin();
       it != m_Commands.rend();

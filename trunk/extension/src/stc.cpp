@@ -126,7 +126,7 @@ void wxExSTC::AddAsciiTable()
   // And override tab width.
   SetTabWidth(5);
 
-  for (int i = 1; i <= 255; i++)
+  for (auto i = 1; i <= 255; i++)
   {
     AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
     AddText((i % 5 == 0) ? GetEOL(): "\t");
@@ -1201,7 +1201,7 @@ void wxExSTC::Paste()
     }
     else
     {
-      for (int i = line; i < GetCurrentLine(); i++)
+      for (auto i = line; i < GetCurrentLine(); i++)
       {
         MarkerAdd(i, m_MarkerChange.GetNo());
       }
