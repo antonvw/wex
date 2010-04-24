@@ -209,7 +209,7 @@ private:
   void EditDelete();
   /// Inverts all items from selected to not selected.
   void EditInvertAll() {
-    for (long i = 0; i < GetItemCount(); i++)
+    for (auto i = 0; i < GetItemCount(); i++)
     {
       Select(i, !IsSelected(i));
     }}

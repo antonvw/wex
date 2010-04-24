@@ -252,7 +252,7 @@ void wxExListViewFile::DoFileNew()
 
 void wxExListViewFile::DoFileSave(bool save_as)
 {
-  for (long i = 0; i < GetItemCount(); i++)
+  for (auto i = 0; i < GetItemCount(); i++)
   {
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }

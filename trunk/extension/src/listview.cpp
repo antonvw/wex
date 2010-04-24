@@ -153,18 +153,18 @@ const wxString wxExListView::BuildPage()
 
   text << "<tr>" << wxTextFile::GetEOL();
 
-  for (int c = 0; c < GetColumnCount(); c++)
+  for (auto c = 0; c < GetColumnCount(); c++)
   {
     wxListItem col;
     GetColumn(c, col);
     text << "<td><i>" << col.GetText() << "</i>" << wxTextFile::GetEOL();
   }
 
-  for (long i = 0; i < GetItemCount(); i++)
+  for (auto i = 0; i < GetItemCount(); i++)
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    for (int col = 0; col < GetColumnCount(); col++)
+    for (auto col = 0; col < GetColumnCount(); col++)
     {
       text << "<td>" << GetItemText(i, col) << wxTextFile::GetEOL();
     }

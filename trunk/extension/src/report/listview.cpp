@@ -219,7 +219,7 @@ wxExListViewStandard::ListType wxExListViewStandard::GetTypeTool(
 
 void wxExListViewStandard::ItemsUpdate()
 {
-  for (long i = 0; i < GetItemCount(); i++)
+  for (auto i = 0; i < GetItemCount(); i++)
   {
     wxExListItem(this, i).Update();
   }
