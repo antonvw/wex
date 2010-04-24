@@ -293,6 +293,10 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
         m_ContentsChanged = true;
       }
     }
+	else
+	{
+      event.Skip();
+	}
   break;
 
   case wxID_ADD: AddItemsDialog(); break;
