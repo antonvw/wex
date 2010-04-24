@@ -89,7 +89,7 @@ wxExSTCShell::~wxExSTCShell()
 
     // using a const_reverse_iterator here does not compile under Visual Studio 2003
     for (
-      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      auto it = m_Commands.rbegin();
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
       it++)
     {
@@ -329,7 +329,7 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 
     // using a const_reverse_iterator here does not compile under Visual Studio 2003
     for (
-      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
+      auto it = m_Commands.rbegin();
       it != m_Commands.rend();
       it++)
     {
