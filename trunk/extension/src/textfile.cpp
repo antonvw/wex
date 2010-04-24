@@ -262,7 +262,7 @@ bool wxExTextFile::MatchLine(wxString& line)
   bool match = false;
   int count = 1;
 
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+  auto* frd = wxExFindReplaceData::Get();
 
   if (!frd->UseRegularExpression() ||
       (frd->UseRegularExpression() && !frd->GetRegularExpression().IsValid()))

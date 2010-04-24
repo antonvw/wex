@@ -42,7 +42,7 @@ bool wxExOTL::Logon(
   int max_items,
   const wxString& title)
 {
-  wxConfigBase* config = wxConfigBase::Get(); 
+  auto* config = wxConfigBase::Get(); 
 
   std::vector<wxExConfigItem> v;
 

@@ -247,7 +247,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     }
     else
     {
-      wxExListView* lv = GetFocusedListView();
+      auto* lv = GetFocusedListView();
 
       if (lv != NULL)
       {
@@ -258,7 +258,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     
   case wxID_PRINT:
     {
-      wxExListView* lv = GetFocusedListView();
+      auto* lv = GetFocusedListView();
 
       if (lv != NULL)
       {

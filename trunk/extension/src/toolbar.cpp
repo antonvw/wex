@@ -151,7 +151,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
     wxConfigBase::Get()->Write("HexMode", m_HexModeCheckBox->GetValue());
 
     {
-      wxExSTCFile* stc = m_Frame->GetSTC();
+      auto* stc = m_Frame->GetSTC();
 
       if (stc != NULL)
       {
@@ -250,7 +250,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case wxID_DOWN:
   case wxID_UP:
     {
-      wxExSTC* stc = m_Frame->GetSTC();
+      auto* stc = m_Frame->GetSTC();
 
       if (stc != NULL)
       {
@@ -341,7 +341,7 @@ void ComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    wxExSTC* stc = m_Frame->GetSTC();
+    auto* stc = m_Frame->GetSTC();
 
     if (stc != NULL)
     {

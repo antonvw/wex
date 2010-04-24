@@ -841,7 +841,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   if (tool.IsFindType())
   {
-    wxExSTC* stc = m_Frame->GetSTC();
+    auto* stc = m_Frame->GetSTC();
 
     if (stc != NULL)
     {

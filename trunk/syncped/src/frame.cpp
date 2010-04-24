@@ -431,8 +431,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     return;
   }
 
-  wxExSTCFile* editor = GetSTC();
-  wxExListViewFile* project = GetProject();
+  auto* editor = GetSTC();
+  auto* project = GetProject();
 
   if (event.GetId() == ID_EDIT_NEXT)
   {
@@ -898,8 +898,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
     default:
     {
-      wxExSTCFile* editor = GetSTC();
-      wxExListViewFile* list = (wxExListViewFile*)GetFocusedListView();
+      auto* editor = GetSTC();
+      auto* list = (wxExListViewFile*)GetFocusedListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())
       {

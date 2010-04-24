@@ -260,7 +260,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       {
         wxArrayString files;
         wxStringTokenizer tkz(event.GetString());
-        wxExSTCFile* stc = GetSTC();
+        auto* stc = GetSTC();
 
         while (tkz.HasMoreTokens())
         {
@@ -362,8 +362,8 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  wxExSTCFile* stc = GetFocusedSTC();
-  wxExListViewFile* project = GetProject();
+  auto* stc = GetFocusedSTC();
+  auto* project = GetProject();
 
   const wxString title(GetTitle());
   const wxUniChar indicator('*');
@@ -478,7 +478,7 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_file.empty())
   {
-    wxExSTCFile* stc = GetSTC();
+    auto* stc = GetSTC();
 
     if (stc != NULL)
     {

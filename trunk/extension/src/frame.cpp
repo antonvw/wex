@@ -131,7 +131,7 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExListView* lv)
 
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
 {
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
+  auto* frd = wxExFindReplaceData::Get();
 
   // Match word and regular expression do not work together.
   if (frd->MatchWord())
@@ -209,7 +209,7 @@ void wxExFrame::GetSearchText()
   }
   else
   {
-    wxExSTC* stc = GetSTC();
+    auto* stc = GetSTC();
 
     if (stc != NULL && stc->IsShown())
     {
@@ -370,9 +370,9 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    wxExSTC* stc = GetSTC();
-    wxExListView* lv = GetListView();
-    wxExGrid* grid = GetGrid();
+    auto* stc = GetSTC();
+    auto* lv = GetListView();
+    auto* grid = GetGrid();
 
     if (stc != NULL && stc->IsShown())
     {
@@ -391,7 +391,7 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  wxExSTCFile* stc = GetFocusedSTC();
+  auto* stc = GetFocusedSTC();
   if (stc == NULL) return;
 
   switch (event.GetId())
@@ -411,7 +411,7 @@ bool wxExFrame::OpenFile(
   const wxString& match,
   long flags)
 {
-  wxExSTCFile* stc = GetFocusedSTC();
+  auto* stc = GetFocusedSTC();
 
   if (stc != NULL)
   {
@@ -439,12 +439,12 @@ void wxExFrame::StatusBarDoubleClicked(
 {
   if (pane == "PaneLines")
   {
-    wxExSTC* stc = GetSTC();
+    auto* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
   }
   else if (pane == "PaneLexer")
   {
-    wxExSTC* stc = GetSTC();
+    auto* stc = GetSTC();
 
     if (stc != NULL && wxExLexers::Get()->Count() > 0)
     {
@@ -458,7 +458,7 @@ void wxExFrame::StatusBarDoubleClicked(
   }
   else if (pane == "PaneFileType")
   {
-    wxExSTCFile* stc = GetSTC();
+    auto* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
   else if (pane == "PaneItems")
