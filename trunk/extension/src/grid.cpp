@@ -240,9 +240,9 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
   wxGridCellCoords match;
 
-  for (int j = start_col; j != end_col && !match; (find_next ? j++: j--))
+  for (auto j = start_col; j != end_col && !match; (find_next ? j++: j--))
   {
-    for (int i = (j == start_col ? start_row: init_row);
+    for (auto i = (j == start_col ? start_row: init_row);
          i != end_row && !match;
          (find_next ? i++: i--))
     {

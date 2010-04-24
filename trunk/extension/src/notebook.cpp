@@ -92,7 +92,7 @@ void wxExNotebook::ErasePage(const wxString& key)
 
 bool wxExNotebook::ForEach(int id)
 {
-  // The page should be an int, otherwise page >= 0 never fails!
+  // The page should be an int (no auto), otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
   {
     // When trying to cast to wxExFile, there is an error:

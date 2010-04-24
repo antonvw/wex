@@ -126,7 +126,7 @@ long wxExOTL::Query(
 
     grid->AppendCols(desc_len);
 
-    for (int n = 0; n < desc_len; n++)
+    for (auto n = 0; n < desc_len; n++)
     {
       grid->SetColLabelValue(n, desc[n].name);
     }
@@ -146,7 +146,7 @@ long wxExOTL::Query(
   {
     grid->AppendRows();
 
-    for (int n = 0; n < desc_len; n++)
+    for (auto n = 0; n < desc_len; n++)
     {
       try
       {
@@ -211,7 +211,7 @@ long wxExOTL::Query(
   int desc_len;
   desc = i.describe_select(desc_len);
 
-  for (int n = 0; n < desc_len; n++)
+  for (auto n = 0; n < desc_len; n++)
   {
     stc->AppendText(desc[n].name);
     if (n < desc_len - 1) stc->AppendText('\t');
@@ -224,7 +224,7 @@ long wxExOTL::Query(
   {
     wxString line;
 
-    for (int n = 0; n < desc_len; n++)
+    for (auto n = 0; n < desc_len; n++)
     {
       try
       {

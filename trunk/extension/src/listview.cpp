@@ -315,11 +315,11 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   int match = -1;
 
   for (
-    long index = start_item;
+    auto index = start_item;
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
-    for (int col = 0; col < GetColumnCount() && match == -1; col++)
+    for (auto col = 0; col < GetColumnCount() && match == -1; col++)
     {
       wxString text = GetItemText(index, col);
 
@@ -507,7 +507,7 @@ const wxString wxExListView::ItemToText(long item_number) const
 {
   wxString text;
 
-  for (int col = 0; col < GetColumnCount(); col++)
+  for (auto col = 0; col < GetColumnCount(); col++)
   {
     text += GetItemText(item_number, col);
 

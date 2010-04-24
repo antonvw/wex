@@ -450,7 +450,7 @@ bool wxExTextFile::ParseLine(const wxString& line)
   bool line_contains_code = false, sequence = false;
   wxString codeword;
 
-  for (size_t i = 0; i < line.length(); i++)
+  for (size_t i = 0; i < line.length(); i++) // no auto
   {
     if (m_IsCommentStatement)
     {

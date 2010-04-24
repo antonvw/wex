@@ -877,7 +877,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       if (m_InsertMode)
       {
         // Add extra inserts if necessary.        
-        for (int i = 1; i < m_InsertRepeatCount; i++)
+        for (auto i = 1; i < m_InsertRepeatCount; i++)
         {
           m_STC->AddText(m_InsertText);
         }

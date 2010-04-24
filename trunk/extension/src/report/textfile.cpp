@@ -396,7 +396,7 @@ void Recordset::UpdateTextFileFromQuery()
     wxString line;
     char rowstr[512];
 
-    for (int n = 0; n < desc_len; n++)
+    for (auto n = 0; n < desc_len; n++)
     {
       m_stream >> rowstr;
       line += rowstr;
