@@ -14,7 +14,7 @@
 
 #include <wx/extension/report/frame.h>
 
-/// Adds bars and some methods to base class.
+/// Adds statusbar, menubar and some methods to base class.
 class DecoratedFrame : public wxExFrameWithHistory
 {
 public:
