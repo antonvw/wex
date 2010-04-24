@@ -1012,7 +1012,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
   case ID_EDIT_UNFOLD_ALL:
-    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
+    for (auto i = 0; i < GetLineCount(); i++) EnsureVisible(i);
   break;
   case ID_EDIT_TOGGLE_FOLD:
   {

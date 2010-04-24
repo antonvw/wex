@@ -185,7 +185,7 @@ wxExSampleFrame::wxExSampleFrame()
 
   const int items = 50;
 
-  for (int i = 0; i < items; i++)
+  for (auto i = 0; i < items; i++)
   {
     m_ListView->InsertItem(i, wxString::Format("item%d", i));
     m_ListView->SetItem(i, 1, wxString::Format("%d", i));
@@ -362,7 +362,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     {
     wxString text;
     
-    for (int i = 0; i < 100; i++)
+    for (auto i = 0; i < 100; i++)
     {
       text += wxString::Format("Hello from line: %d\n", i);
     }

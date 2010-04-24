@@ -111,17 +111,17 @@ const wxString wxExGrid::BuildPage()
   // Add the col labels only if they are shown.
   if (GetColLabelSize() > 0)
   {
-    for (int c = 0 ; c < GetNumberCols(); c++)
+    for (auto c = 0 ; c < GetNumberCols(); c++)
     {
       text << "<td><i>" << GetColLabelValue(c) << "</i>" << wxTextFile::GetEOL();
     }
   }
 
-  for (int i = 0 ; i < GetNumberRows(); i++)
+  for (auto i = 0 ; i < GetNumberRows(); i++)
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    for (int j = 0 ; j < GetNumberCols(); j++)
+    for (auto j = 0 ; j < GetNumberCols(); j++)
     {
       text << "<td>" <<
         (GetCellValue(i, j).empty() ? "&nbsp": GetCellValue(i, j)) <<
@@ -166,9 +166,9 @@ void wxExGrid::EmptySelection()
 {
   wxBusyCursor wait;
 
-  for (int i = 0; i < GetNumberRows(); i++)
+  for (auto i = 0; i < GetNumberRows(); i++)
   {
-    for (int j = 0; j < GetNumberCols(); j++)
+    for (auto j = 0; j < GetNumberCols(); j++)
     {
       if (IsInSelection(i, j) && !IsReadOnly(i, j))
       {
@@ -329,11 +329,11 @@ const wxString wxExGrid::GetSelectedCellsValue()
   // wxGridCellCoordsArray cells = GetSelectedCells();
   wxString text;
 
-  for (int i = 0; i < GetNumberRows(); i++)
+  for (auto i = 0; i < GetNumberRows(); i++)
   {
     bool value_added = false;
 
-    for (int j = 0; j < GetNumberCols(); j++)
+    for (auto j = 0; j < GetNumberCols(); j++)
     {
       if (IsInSelection(i, j))
       {

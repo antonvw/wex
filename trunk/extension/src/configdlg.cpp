@@ -144,7 +144,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
       }
       else
       {
-        for (int i = 0; i < cols; i++)
+        for (auto i = 0; i < cols; i++)
         {
           sizer->AddGrowableCol(i);
         }

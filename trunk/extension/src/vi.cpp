@@ -154,7 +154,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   // Handle multichar commands.
   if (command.EndsWith("cw"))
   {
-    for (int i = 0; i < repeat; i++) m_STC->WordRightExtend();
+    for (auto i = 0; i < repeat; i++) m_STC->WordRightExtend();
 
     if (dot && !m_InsertText.empty())
     {
@@ -197,7 +197,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     m_STC->BeginUndoAction();
     const auto start = m_STC->GetCurrentPos();
-    for (int i = 0; i < repeat; i++) 
+    for (auto i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->SetSelection(start, m_STC->GetCurrentPos());
     m_STC->Cut();
@@ -205,12 +205,12 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("*f?"))
   {
-    for (int i = 0; i < repeat; i++) 
+    for (auto i = 0; i < repeat; i++) 
       m_STC->FindNext(command.Last(), m_SearchFlags);
   }
   else if (command.Matches("*F?"))
   {
-    for (int i = 0; i < repeat; i++) 
+    for (auto i = 0; i < repeat; i++) 
       m_STC->FindNext(command.Last(), m_SearchFlags, false);
   }
   else if (command.Matches("*J"))
@@ -237,7 +237,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command.EndsWith("yw"))
   {
     const auto start = m_STC->GetCurrentPos();
-    for (int i = 0; i < repeat; i++) 
+    for (auto i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->CopyRange(start, m_STC->GetCurrentPos());
     SetIndicator(m_IndicatorYank, start, m_STC->GetCurrentPos());

@@ -58,7 +58,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   bool found = false;
 
-  for (int i = 0; i < GetFieldsCount() && !found; i++)
+  for (auto i = 0; i < GetFieldsCount() && !found; i++)
   {
 	const wxExPane& pane(GetPane(i));
 

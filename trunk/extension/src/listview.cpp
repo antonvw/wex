@@ -192,7 +192,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
     wxMenu* menuSort = new wxMenu;
     
-    for (int i = 0; i < GetColumnCount(); i++)
+    for (auto i = 0; i < GetColumnCount(); i++)
     {
       wxListItem item;
       item.SetMask(wxLIST_MASK_TEXT);
@@ -250,7 +250,7 @@ void wxExListView::EditDelete()
 
 int wxExListView::FindColumn(const wxString& name) const
 {
-  for (int i = 0; i < GetColumnCount(); i++)
+  for (auto i = 0; i < GetColumnCount(); i++)
   {
     wxListItem item;
     item.SetMask(wxLIST_MASK_TEXT);
