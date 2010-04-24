@@ -950,7 +950,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 
 void Frame::TimerDialog()
 {
-  const long val = wxGetNumberFromUser(
+  const auto val = wxGetNumberFromUser(
     _("Input (seconds):"),
     wxEmptyString,
     _("Repeat Timer"),

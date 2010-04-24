@@ -139,7 +139,7 @@ long wxExOTL::Query(
 
   grid->BeginBatch();
 
-  const long startrow = grid->GetNumberRows();
+  const auto startrow = grid->GetNumberRows();
 
   // Get all rows.
   while (!i.eof() && !stopped)

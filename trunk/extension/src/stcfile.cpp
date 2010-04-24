@@ -293,7 +293,7 @@ void wxExSTCFile::ConfigGet()
   SetMarginWidth(m_MarginDividerNumber, wxConfigBase::Get()->ReadLong(_("Divider"), 16));
   SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
 
-  const long margin = wxConfigBase::Get()->ReadLong(
+  const auto margin = wxConfigBase::Get()->ReadLong(
     _("Line number"), 
     TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
 

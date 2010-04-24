@@ -429,7 +429,7 @@ const wxString wxExListView::GetItemText(
 
 bool wxExListView::GotoDialog(const wxString& caption)
 {
-  long initial_value = GetFirstSelected();
+  auto initial_value = GetFirstSelected();
 
   if (initial_value == -1) // nothing selected
   {
@@ -441,6 +441,7 @@ bool wxExListView::GotoDialog(const wxString& caption)
   }
 
   long val;
+
   if ((val = wxGetNumberFromUser(
     _("Input") + wxString::Format(" (1 - %d):", GetItemCount()),
     wxEmptyString,
@@ -558,7 +559,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     EditInvertAll();
     break;
   case ID_EDIT_SELECT_NONE:
-    for (long i = 0; i < GetItemCount(); i++)
+    for (auto i = 0; i < GetItemCount(); i++)
     {
       Select(i, false);
     }
@@ -736,7 +737,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   std::vector<wxString> items;
   pitems = &items;
 
-  for (long i = 0; i < GetItemCount(); i++)
+  for (auto i = 0; i < GetItemCount(); i++)
   {
     const wxString val = GetItemText(i, column_no);
     items.push_back(val);

@@ -321,34 +321,34 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           handled = false;
         }
         break;
-      case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
-      case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
+      case 'b': for (auto i = 0; i < repeat; i++) m_STC->WordLeft(); break;
+      case 'e': for (auto i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
       case 'g': m_STC->DocumentStart(); break;
       case 'h': 
-        for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
+        for (auto i = 0; i < repeat; i++) m_STC->CharLeft(); 
         break;
       case 'j': 
-        for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
+        for (auto i = 0; i < repeat; i++) m_STC->LineDown(); 
         break;
       case 'k': 
-        for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
+        for (auto i = 0; i < repeat; i++) m_STC->LineUp(); 
         break;
       case 'l': 
       case ' ': 
-        for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
+        for (auto i = 0; i < repeat; i++) m_STC->CharRight(); 
         break;
       case 'n': 
-        for (int i = 0; i < repeat; i++) 
+        for (auto i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
         break;
 
       case 'p': Put(true); break;
       case 'P': Put(false); break;
 
-      case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
+      case 'w': for (auto i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
       case 'x': 
-        for (int i = 0; i < repeat; i++) 
+        for (auto i = 0; i < repeat; i++) 
         {
           m_STC->CharRight();
           m_STC->DeleteBack(); 
@@ -378,10 +378,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
         break;
       case 'N': 
-        for (int i = 0; i < repeat; i++) 
+        for (auto i = 0; i < repeat; i++) 
           m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);
         break;
-      case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
+      case 'X': for (auto i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
       case '?': 
@@ -399,16 +399,16 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case '*': FindWord(false); break;
       
       case 2:  // ^b
-        for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
+        for (auto i = 0; i < repeat; i++) m_STC->PageUp(); 
         break;
       case 7:  // ^g (^f is not possible, already find accel key)
-        for (int i = 0; i < repeat; i++) m_STC->PageDown(); 
+        for (auto i = 0; i < repeat; i++) m_STC->PageDown(); 
         break;
       case 16: // ^p (^y is not possible, already redo accel key)
-        for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
+        for (auto i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
         break;
       case 17: // ^q (^n is not possible, already new doc accel key)
-        for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
+        for (auto i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
         break;
 
       default:
@@ -675,7 +675,7 @@ void wxExVi::Indent(int lines, bool forward) const
 
   m_STC->BeginUndoAction();
 
-  for (int i = 0; i < lines; i++)
+  for (auto i = 0; i < lines; i++)
   {
     const auto start = m_STC->PositionFromLine(line + i);
 

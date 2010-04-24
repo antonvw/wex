@@ -117,11 +117,11 @@ void wxExListViewFile::AddItems()
     wxExConfigFirstOf(m_TextAddWhat),
     flags);
 
-  const long old_count = GetItemCount();
+  const auto old_count = GetItemCount();
 
   dir.FindFiles();
 
-  const long new_count = GetItemCount();
+  const auto new_count = GetItemCount();
 
   if (new_count - old_count > 0)
   {
@@ -330,7 +330,7 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     // If no item has been selected, then show 
     // filename mod time in the statusbar.
     int flags = wxLIST_HITTEST_ONITEM;
-    const long index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+    const auto index = HitTest(wxPoint(event.GetX(), event.GetY()), flags);
 
     if (index < 0)
     {

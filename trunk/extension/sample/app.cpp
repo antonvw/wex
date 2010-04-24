@@ -291,7 +291,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
     wxStopWatch sw;
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
-    const long stop = sw.Time();
+    const auto stop = sw.Time();
 
 #if wxUSE_STATUSBAR
     StatusText(wxString::Format(

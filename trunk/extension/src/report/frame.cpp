@@ -68,7 +68,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   // There is only support for one history in the config.
   // We use file history for this, so update project history ourselves.
   // The order should be inverted, as the last one added is the most recent used.
-  for (int i = m_ProjectHistory.GetMaxFiles() - 1 ; i >=0 ; i--)
+  for (auto i = m_ProjectHistory.GetMaxFiles() - 1 ; i >=0 ; i--)
   {
     SetRecentProject(
       wxConfigBase::Get()->Read(wxString::Format("RecentProject%d", i)));
@@ -454,7 +454,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
       if (m_FileHistoryList->GetItemCount() > 1)
       {
-        for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
+        for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
         {
           wxExListItem item(m_FileHistoryList, i);
 

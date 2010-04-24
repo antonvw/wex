@@ -448,7 +448,7 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
   }
   else
   {
-    const long rpc = m_otl.Query(query);
+    const auto rpc = m_otl.Query(query);
 
     sw.Pause();
 

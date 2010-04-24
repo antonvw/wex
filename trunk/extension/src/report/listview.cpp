@@ -153,9 +153,9 @@ void wxExListViewStandard::DeleteDoubles()
 {
   wxDateTime mtime((time_t)0);
   wxString name;
-  const long itemcount = GetItemCount();
+  const auto itemcount = GetItemCount();
 
-  for (long i = itemcount - 1; i >= 0; i--)
+  for (auto i = itemcount - 1; i >= 0; i--)
   {
     wxExListItem item(this, i);
 
@@ -722,7 +722,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
   case ID_LIST_OPEN_ITEM:
   {
-    int i = -1;
+    long i = -1;
     while ((i = GetNextSelected(i)) != -1)
     {
       ItemActivated(i);
@@ -736,7 +736,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
     bool first = true;
     wxString file1,file2;
-    int i = -1;
+    long i = -1;
     bool found = false;
 
     wxExListViewStandard* list = NULL;
@@ -760,7 +760,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
           {
             list = m_Frame->Activate(LIST_FILE);
             if (list == NULL) return;
-            int main_selected = list->GetFirstSelected();
+            const auto main_selected = list->GetFirstSelected();
             wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
           }
           else
