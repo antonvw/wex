@@ -564,7 +564,7 @@ void wxExSampleFrame::ShowConfigItems()
     _("Config Dialog"),
     10,
     2,
-    wxAPPLY | wxCANCEL,
+    wxCANCEL,
     wxID_ANY,
     wxDefaultPosition,
     wxSize(400,300));
