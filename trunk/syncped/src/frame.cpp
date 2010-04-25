@@ -335,11 +335,11 @@ wxExSTCFile* Frame::GetSTC()
 void Frame::NewFile(bool as_project)
 {
   const wxString name = (as_project ? _("project") : _("textfile"));
-  const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
+  const auto use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
   const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
   wxString key;
 
-  wxExNotebook* notebook = (as_project ? 
+  auto* notebook = (as_project ? 
     m_NotebookWithProjects : 
     m_NotebookWithEditors);
 
@@ -1028,7 +1028,7 @@ bool Frame::OpenFile(
 {
   const wxString key = filename.GetFullPath() + unique;
 
-  wxWindow* page = m_NotebookWithEditors->GetPageByKey(key);
+  auto* page = m_NotebookWithEditors->GetPageByKey(key);
 
   if (page == NULL)
   {
@@ -1076,7 +1076,7 @@ bool Frame::OpenFile(
     return false;
   }
 
-  wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
+  auto* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
     ? m_NotebookWithProjects : m_NotebookWithEditors);
 
   wxWindow* page = notebook->GetPageByKey(filename.GetFullPath());

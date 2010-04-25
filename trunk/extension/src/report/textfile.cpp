@@ -270,7 +270,7 @@ void wxExTextFileWithListView::ReportStatistics()
       col.SetMask(wxLIST_MASK_TEXT);
       m_Report->GetColumn(i + 1, col);
       const wxString name = col.GetText();
-      const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
+      const auto& stat = GetStatistics().GetKeywords();
       const auto it = stat.GetItems().find(name);
       if (it != stat.GetItems().end())
       {
