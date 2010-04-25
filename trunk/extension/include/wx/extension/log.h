@@ -37,7 +37,7 @@ public:
 
   /// Sets logging as specified.
   /// If the logging is true and the logfile does not exist, it is created.
-  bool SetLogging(bool logging = true);
+  void SetLogging(bool logging = true);
 private:
   bool m_Logging;
   const wxFileName m_FileName;

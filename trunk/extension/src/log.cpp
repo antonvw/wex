@@ -81,7 +81,7 @@ wxExLog* wxExLog::Set(wxExLog* log)
   return old;
 }
 
-bool wxExLog::SetLogging(bool logging) 
+void wxExLog::SetLogging(bool logging) 
 {
   if (logging)
   {
@@ -98,6 +98,4 @@ bool wxExLog::SetLogging(bool logging)
   {
     m_Logging = false;
   }
-
-  return m_Logging;
 }
