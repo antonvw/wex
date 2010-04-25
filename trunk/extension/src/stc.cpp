@@ -1212,7 +1212,7 @@ void wxExSTC::Paste()
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::Print(bool prompt)
 {
-  wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
+  auto* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
   wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
   wxExPrinting::Get()->GetPrinter()->Print(this, new wxExPrintout(this), prompt);
 }
