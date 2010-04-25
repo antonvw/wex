@@ -152,11 +152,7 @@ void wxExListItem::SetReadOnly(bool readonly)
     SetTextColour(*wxBLACK);
   }
 
-  if (!m_ListView->SetItem(*this))
-  {
-    wxFAIL;
-    return;
-  }
+  m_ListView->SetItem(*this);
 
   // Using GetTextColour did not work, so keep state in boolean.
   m_IsReadOnly = readonly;
