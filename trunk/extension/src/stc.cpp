@@ -337,7 +337,7 @@ void wxExSTC::ClearDocument()
   SetSavePoint();
 }
 
-bool wxExSTC::CheckAutoComp(const wxUniChar& c)
+void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
   static wxString autoc;
 
@@ -365,8 +365,6 @@ bool wxExSTC::CheckAutoComp(const wxUniChar& c)
         AutoCompCancel();
     }
   }
-
-  return AutoCompActive();
 }
 
 bool wxExSTC::CheckBrace(int pos)

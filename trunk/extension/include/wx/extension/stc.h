@@ -212,7 +212,7 @@ protected:
   const int m_MarginLineNumber;
   const wxExMarker m_MarkerChange;
 private:
-  bool CheckAutoComp(const wxUniChar& c);
+  void CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
   void FoldAll();
