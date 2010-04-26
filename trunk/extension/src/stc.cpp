@@ -981,7 +981,12 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
   if (skip)
   {
-    CheckAutoComp(event.GetUnicodeKey());
+    // Auto complete does not yet combine with vi mode.
+	if (!m_vi.GetActive())
+	{
+      CheckAutoComp(event.GetUnicodeKey());
+	}
+
     event.Skip();
   }
 }
