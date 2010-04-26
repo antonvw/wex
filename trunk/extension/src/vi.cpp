@@ -142,7 +142,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
   }
           
-  int repeat = atoi(command.c_str());
+  auto repeat = atoi(command.c_str());
 
   if (repeat == 0)
   {
