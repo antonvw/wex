@@ -32,8 +32,7 @@ public:
   virtual ~wxExFile() {;};
 
   /// Invokes DoFileLoad if this file needs to be synced.
-  /// Returns false if no check was done (e.g. this file was opened).
-  bool CheckFileSync();
+  void CheckFileSync();
 
   /// Sets the filename member and invokes DoFileLoad.
   bool FileLoad(const wxString& filename);

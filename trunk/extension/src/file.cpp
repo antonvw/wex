@@ -33,13 +33,13 @@ void wxExFile::Assign(const wxFileName& filename)
   m_Stat = filename.GetFullPath();
 }
 
-bool wxExFile::CheckFileSync()
+void wxExFile::CheckFileSync()
 {
   if (IsOpened() ||
      !m_FileName.m_Stat.IsOk() ||
      !wxConfigBase::Get()->ReadBool("AllowSync", true))
   {
-    return false;
+    return;
   }
 
   if (m_FileName.m_Stat.Sync())
@@ -50,13 +50,8 @@ bool wxExFile::CheckFileSync()
 
       // Update the stat member, so next time no sync.
       m_Stat.Sync();
-
-      // Now we synced, so always return true.
-      return true;
     }
   }
-
-  return false;
 }
 
 bool wxExFile::FileLoad(const wxString& filename)
