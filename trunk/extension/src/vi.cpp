@@ -646,7 +646,9 @@ void wxExVi::FindWord(bool find_next)
 {
   const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
   const auto end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
-  m_SearchText = m_STC->GetTextRange(start, end);
+  
+  m_SearchText = "\\<" + m_STC->GetTextRange(start, end) + "\\>";
+  
   m_STC->FindNext(m_SearchText, m_SearchFlags, find_next);
 }
 
