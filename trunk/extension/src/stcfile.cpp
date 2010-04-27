@@ -17,6 +17,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
@@ -328,6 +329,12 @@ void wxExSTCFile::ConfigGet()
 
 void wxExSTCFile::DoFileLoad(bool synced)
 {
+  if (getModify())
+  {
+    wxExFileDialog dlg(this, this);
+    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
+  }
+
   // Synchronizing by appending only new data only works for log files.
   // Other kind of files might get new data anywhere inside the file,
   // we cannot sync that by keeping pos. Also only do it for reasonably large files,
