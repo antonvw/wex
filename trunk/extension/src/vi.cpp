@@ -395,8 +395,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case '}': m_STC->ParaDown(); break;
       case '%': GotoBrace(); break;
 
-      case '#': FindWord(); break;
-      case '*': FindWord(false); break;
+      case '*': FindWord(); break;
+      case '#': FindWord(false); break;
       
       case 2:  // ^b
         for (auto i = 0; i < repeat; i++) m_STC->PageUp(); 
