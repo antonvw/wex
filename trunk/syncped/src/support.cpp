@@ -105,7 +105,7 @@ DecoratedFrame::DecoratedFrame()
   menuExtra->Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuExtra->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuExtra->AppendSeparator();
-  menuExtra->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl-H"));
+  menuExtra->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
   
   menuEdit->AppendSubMenu(menuExtra, _("Extra"));
   menuEdit->AppendSeparator();
@@ -119,7 +119,7 @@ DecoratedFrame::DecoratedFrame()
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
   menuMacro->AppendSeparator();
-  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl-M"));
+  menuMacro->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback\tCtrl+M"));
   menuEdit->AppendSubMenu(menuMacro, _("&Macro"));
 
   wxExMenu *menuView = new wxExMenu;

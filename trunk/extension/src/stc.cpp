@@ -312,7 +312,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     m_Lexer.IsOk())
   {
     menu.AppendSeparator();
-    menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl-T"));
+    menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl+T"));
     menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
     menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
   }
