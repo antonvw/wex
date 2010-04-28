@@ -11,6 +11,7 @@
 #define _EXSTAT_H
 
 #include <sys/stat.h> // for stat
+#include <wx/string.h>
 
 /// Adds IsOk to the stat base class, and several methods
 /// to get/update on the stat members.
