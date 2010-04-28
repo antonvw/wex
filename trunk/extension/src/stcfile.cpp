@@ -329,10 +329,10 @@ void wxExSTCFile::ConfigGet()
 
 void wxExSTCFile::DoFileLoad(bool synced)
 {
-  if (getModify())
+  if (GetModify())
   {
     wxExFileDialog dlg(this, this);
-    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
+    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
   }
 
   // Synchronizing by appending only new data only works for log files.
