@@ -18,8 +18,7 @@ class wxExStat : public stat
 {
 public:
   /// Default constructor. Calls Sync.
-  wxExStat(const wxString& fullpath = wxEmptyString) {
-    Sync(fullpath);}
+  wxExStat(const wxString& fullpath = wxEmptyString);
 
   /// Gets the fullpath member.
   const wxString& GetFullPath() const {return m_FullPath;};
@@ -38,18 +37,10 @@ public:
     return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
 
   /// Sets this stat, returns result and keeps it in IsOk.
-  bool Sync() {
-#ifdef __UNIX__
-    m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
-#else
-    m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
-#endif
-    return m_IsOk;};
+  bool Sync();
 
   /// Sets the fullpath member, then Syncs.
-  bool Sync(const wxString& fullpath) {
-    m_FullPath = fullpath;
-    return Sync();};
+  bool Sync(const wxString& fullpath);
 private:
   wxString m_FullPath;
   bool m_IsOk;
