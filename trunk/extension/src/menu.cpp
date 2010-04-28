@@ -54,6 +54,10 @@ wxMenuItem* wxExMenu::Append(int id)
   m_ItemsAppended++;
   m_IsSeparator = false;
 
+  // Using wxMenu::Append(id)
+  // also appends the stock item,
+  // but does not add the bitmap.
+
   wxMenuItem* item = new wxMenuItem(this, id);
 
   const wxExStockArt art(id);
