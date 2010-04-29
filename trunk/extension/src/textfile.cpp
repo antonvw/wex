@@ -264,8 +264,7 @@ bool wxExTextFile::MatchLine(wxString& line)
 
   auto* frd = wxExFindReplaceData::Get();
 
-  if (!frd->UseRegularExpression() ||
-      (frd->UseRegularExpression() && !frd->GetRegularExpression().IsValid()))
+  if (!frd->UseRegularExpression() || !frd->GetRegularExpression().IsValid())
   {
     if (m_Tool.GetId() == ID_TOOL_REPORT_FIND)
     {
@@ -273,7 +272,11 @@ bool wxExTextFile::MatchLine(wxString& line)
 
       if (!frd->MatchCase())
       {
-        std::transform(search_line.begin(), search_line.end(), search_line.begin(), toupper);
+        std::transform(
+          search_line.begin(), 
+          search_line.end(), 
+          search_line.begin(), 
+          toupper);
       }
 
       const size_t start = search_line.find(m_FindString);
