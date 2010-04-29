@@ -43,14 +43,8 @@ public:
   /// 0 is returned.
   long Get(const wxString& key) const;
 
-  /// Gets the elements.
-  wxExStatistics<long>& GetElements() {return m_Elements;};
-
   /// Gets the const elements.
   const wxExStatistics<long>& GetElements() const {return m_Elements;};
-
-  /// Gets the keywords.
-  wxExStatistics<long>& GetKeywords() {return m_Keywords;};
 
   /// Gets the const keywords.
   const wxExStatistics<long>& GetKeywords() const {return m_Keywords;};
