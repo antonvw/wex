@@ -170,7 +170,7 @@ Frame::Frame()
 
 void Frame::OnCommandConfigDialog(
   wxWindowID dialogid,
-  int /* commandid */)
+  int commandid)
 {
   if (dialogid == wxID_PREFERENCES)
   {
@@ -178,7 +178,7 @@ void Frame::OnCommandConfigDialog(
   }
   else
   {
-    wxFAIL;
+    wxExFrameWithHistory::OnCommandConfigDialog(dialogid, commandid);
   }
 }
 
