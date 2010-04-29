@@ -20,11 +20,19 @@ wxExStat::wxExStat(const wxString& fullpath)
 
 bool wxExStat::Sync() 
 {
+  if (m_FullPath.empty())
+  {
+    m_IsOk = false;
+  }
+  else
+  {
 #ifdef __UNIX__
     m_IsOk = (::stat(m_FullPath.c_str(), this) != -1);
 #else
     m_IsOk = (stat(m_FullPath.c_str(), this) != -1);
 #endif
+  }
+  
   return m_IsOk;
 }
 
