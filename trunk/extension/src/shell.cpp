@@ -25,6 +25,7 @@
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
   EVT_MENU(wxID_PASTE, wxExSTCShell::OnCommand)
+  EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
 END_EVENT_TABLE()
 
 wxExSTCShell::wxExSTCShell(
@@ -81,7 +82,6 @@ wxExSTCShell::wxExSTCShell(
 
   SetLexer(wxEmptyString);
 }
-
 
 wxExSTCShell::~wxExSTCShell()
 {
@@ -268,6 +268,11 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
 
     if (m_Echo) event.Skip();
   }
+}
+
+void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
+{
+  // do nothing, keep event from sent to wxExSTC.
 }
 
 void wxExSTCShell::Prompt(const wxString& text, bool add_eol)

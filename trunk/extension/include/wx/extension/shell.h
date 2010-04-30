@@ -79,6 +79,7 @@ protected:
   virtual bool GetContentsChanged() const {return false;};
   void OnCommand(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
+  void OnStyledText(wxStyledTextEvent& event);
 private:
   void KeepCommand();
   /// Set command for command specified as number or as start of command,
