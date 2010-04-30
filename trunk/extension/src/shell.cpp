@@ -78,7 +78,10 @@ wxExSTCShell::wxExSTCShell(
 
   // Take care that m_CommandsIterator is valid.
   m_CommandsIterator = m_Commands.end();
+
+  SetLexer(wxEmptyString);
 }
+
 
 wxExSTCShell::~wxExSTCShell()
 {
