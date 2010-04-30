@@ -46,6 +46,19 @@ wxExTool* wxExTool::Get(bool createOnDemand)
   return m_Self;
 }
 
+const wxFileName wxExTool::GetLogfileName() const
+{
+  wxFileName filename(
+#ifdef wxExUSE_PORTABLE
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+    wxStandardPaths::Get().GetUserDataDir()
+#endif
+    + wxFileName::GetPathSeparator() + _("statistics.log"));
+
+  return filename;
+}
+
 const wxString wxExTool::Info() const
 {
   const auto it = m_Self->m_ToolInfo.find(m_Id);
@@ -97,19 +110,6 @@ void wxExTool::Log(
       log.Log(logtext);
     }
   }
-}
-
-const wxFileName wxExTool::GetLogfileName() const
-{
-  wxFileName filename(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-    wxStandardPaths::Get().GetUserDataDir()
-#endif
-    + wxFileName::GetPathSeparator() + _("statistics.log"));
-
-  return filename;
 }
 
 wxExTool* wxExTool::Set(wxExTool* tool)
