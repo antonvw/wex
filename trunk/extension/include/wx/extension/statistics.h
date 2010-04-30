@@ -119,8 +119,17 @@ public:
   const std::map<wxString, T> & GetItems() const {return m_Items;};
 
   /// Gets value for specified key.
-  /// If the key is not in the items it is added.
-  T Get(const wxString& key) {return m_Items[key];};
+  T Get(const wxString& key) const {
+    const auto it = m_Items.find(key);
+	if (it != m_Items.end())
+	{
+	  return it->second;
+	}
+	else
+	{
+	  return T();
+	}
+  }
 
   /// Decrements key with value.
   T Dec(const wxString& key, T dec_value = 1) {
