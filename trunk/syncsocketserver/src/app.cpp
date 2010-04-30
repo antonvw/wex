@@ -59,7 +59,7 @@ BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, Frame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_CLOSE_ALL, Frame::OnCommand)
   EVT_MENU_RANGE(ID_MENU_FIRST, ID_MENU_LAST, Frame::OnCommand)
   EVT_SOCKET(ID_SERVER, Frame::OnSocket)
   EVT_SOCKET(ID_CLIENT, Frame::OnSocket)
@@ -348,10 +348,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxFD_OPEN | wxFD_CHANGE_DIR, 
       wxFileSelectorDefaultWildcardStr, 
       true);
-    break;
-
-  case wxID_PREFERENCES:
-    event.Skip();
     break;
 
   case wxID_SAVE:
