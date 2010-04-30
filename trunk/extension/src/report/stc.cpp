@@ -87,21 +87,6 @@ void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
 {
   wxExSTCFile::BuildPopupMenu(menu);
 
-  if (GetMenuFlags() & (STC_MENU_REPORT_FIND | STC_MENU_REPORT_REPLACE))
-  {
-    menu.AppendSeparator();
-
-    if (GetMenuFlags() & STC_MENU_REPORT_FIND)
-    {
-      menu.Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
-    }
-
-    if (GetMenuFlags() & STC_MENU_REPORT_REPLACE)
-    {
-      menu.Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("&Replace In Files")));
-    }
-  }
-
   if ( GetFileName().FileExists() && GetSelectedText().empty() &&
       (GetMenuFlags() & STC_MENU_COMPARE_OR_VCS))
   {
