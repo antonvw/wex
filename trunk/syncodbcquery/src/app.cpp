@@ -59,7 +59,6 @@ BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
   EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, Frame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, Frame::OnCommand)
   EVT_MENU_RANGE(ID_FIRST, ID_LAST, Frame::OnCommand)
   EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_SAVEAS, Frame::OnUpdateUI)
@@ -268,10 +267,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxFD_OPEN | wxFD_CHANGE_DIR, 
       "sql files (*.sql) | *.sql", 
       true);
-    break;
-
-  case wxID_PREFERENCES:
-    event.Skip();
     break;
 
   case wxID_SAVE:
