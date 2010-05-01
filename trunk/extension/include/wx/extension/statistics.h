@@ -119,7 +119,7 @@ public:
   const std::map<wxString, T> & GetItems() const {return m_Items;};
 
   /// Gets value for specified key.
-  T Get(const wxString& key) const {
+  const T Get(const wxString& key) const {
     const auto it = m_Items.find(key);
 	if (it != m_Items.end())
 	{
@@ -132,16 +132,16 @@ public:
   }
 
   /// Decrements key with value.
-  T Dec(const wxString& key, T dec_value = 1) {
+  const T Dec(const wxString& key, T dec_value = 1) {
     return Set(key, Get(key) - dec_value);};
 
   /// Increments key with value.
-  T Inc(const wxString& key, T inc_value = 1) {
+  const T Inc(const wxString& key, T inc_value = 1) {
     return Set(key, Get(key) + inc_value);};
 
   /// Sets key to value. If you have Shown the statistics
   /// the window is updated as well.
-  T Set(const wxString& key, T value) {
+  const T Set(const wxString& key, T value) {
     m_Items[key] = value;
 
 #if wxUSE_GRID
