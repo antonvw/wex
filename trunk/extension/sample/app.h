@@ -10,7 +10,7 @@
 \******************************************************************************/
 
 #include <wx/extension/app.h>
-#include <wx/extension/frame.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/grid.h>
