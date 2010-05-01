@@ -63,8 +63,6 @@ const wxString wxExRCS::GetRevision() const
 
 bool wxExRCS::SetRevision(wxString& text)
 {
-  // ClassBuilder lines start with '* ', these characters are skipped here.
-  wxRegEx("^\\* ").ReplaceFirst(&text, wxEmptyString);
   // If there is a revision in the first word, store it.
   wxString word = wxExGetWord(text);
   if (word.find('.') != wxString::npos)
@@ -77,7 +75,6 @@ bool wxExRCS::SetRevision(wxString& text)
     text = word + " " + text; // put back the word!
   }
 
-  const wxString REV_CBD_FORMAT = "%B %d, %Y %H:%M";
   const wxString REV_TIMESTAMP_FORMAT = "%y%m%d %H%M%S";
 
   wxString::const_iterator end;
@@ -86,8 +83,6 @@ bool wxExRCS::SetRevision(wxString& text)
     m_RevisionFormat = REV_TIMESTAMP_FORMAT;
   else if (m_RevisionTime.ParseFormat(text, REV_DATE_FORMAT, &end))
     m_RevisionFormat = REV_DATE_FORMAT;
-  else if (m_RevisionTime.ParseFormat(text, REV_CBD_FORMAT, &end))
-    m_RevisionFormat = REV_CBD_FORMAT;
   else
   {
     // At this moment we support no other formats.
