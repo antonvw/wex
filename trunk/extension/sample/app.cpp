@@ -371,7 +371,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       this,
       "Hello world",
       text,      
-      "Greetings from\nwxextension");
+      "Greetings from " + wxTheApp->GetAppName());
       
       dlg.ShowModal();
     }
