@@ -344,7 +344,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_SHELL_COMMAND:
-      m_STCShell->Prompt("Hello '" + event.GetString() + "' from the shell");
+      m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");
     break;
 
   case ID_STATISTICS_SHOW:
