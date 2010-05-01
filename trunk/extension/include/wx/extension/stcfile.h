@@ -101,12 +101,6 @@ public:
 
   /// Shows properties on the statusbar.
   virtual void PropertiesMessage();
-
-  /// If set, then the popup menu will show a file save item
-  /// if the document is modified.
-  /// Default it is off.
-  void SetFileSaveInMenu(bool val = true) {
-    m_FileSaveInMenu = val;}
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   virtual void DoFileLoad(bool synced = false);
@@ -130,8 +124,6 @@ private:
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
-
-  bool m_FileSaveInMenu;
 
   wxFileOffset m_PreviousLength;
   wxPathList m_PathList;

@@ -50,7 +50,6 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxSize& size,
   long style)
   : wxExSTC(parent, value, open_flags, menu_flags, id, pos, size, style)
-  , m_FileSaveInMenu(false)
   , m_PreviousLength(0)
 {
   SetName(title);
@@ -71,7 +70,6 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxSize& size,
   long style)
   : wxExSTC(parent, wxEmptyString, flags, menu_flags, id, pos, size, style)
-  , m_FileSaveInMenu(false)
   , m_PreviousLength(0)
 {
   Initialize();
@@ -81,7 +79,6 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 
 wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
   : wxExSTC(stc)
-  , m_FileSaveInMenu(stc.m_FileSaveInMenu)
   , m_PathList(stc.m_PathList)
   , m_PreviousLength(stc.m_PreviousLength)
 {
@@ -137,16 +134,6 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
   }
 
   wxExSTC::BuildPopupMenu(menu);
-
-  if (
-    !GetReadOnly() && 
-     sel.empty() && 
-     m_FileSaveInMenu && 
-     GetModify())
-  {
-    menu.AppendSeparator();
-    menu.Append(wxID_SAVE);
-  }
 }
 
 // This is a static method, cannot use normal members here.
