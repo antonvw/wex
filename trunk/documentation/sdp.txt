@@ -78,7 +78,8 @@ General
     Microsoft .NET Framework files generated 
     using format msvs2008prj
     
-  - under linux gcc (Ubuntu 4.4.1-4ubuntu9) 4.4.1 and no IDE
+  - under linux gcc (Ubuntu 4.4.3-4ubuntu5) 4.4.3
+    (no IDE)
     GNUMakefile generated using format gnu
 
   - finally strip the executable under Windows using UPX
