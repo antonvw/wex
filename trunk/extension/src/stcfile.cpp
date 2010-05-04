@@ -147,6 +147,8 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
       menu.Append(ID_EDIT_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
     }
   }
+
+  wxExSTC::BuildPopupMenu(menu);
 }
 
 // This is a static method, cannot use normal members here.
