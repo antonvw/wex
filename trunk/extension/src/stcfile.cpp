@@ -532,7 +532,7 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
     {
       wxFileName lastfile;
 
-      if (wxExFindOtherFileName(GetFileName(), NULL, &lastfile))
+      if (wxExFindOtherFileName(GetFileName(), &lastfile))
       {
         wxExCompareFile(GetFileName(), lastfile);
       }

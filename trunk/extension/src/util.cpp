@@ -236,6 +236,92 @@ void wxExFindResult(
   }
 }
 
+bool wxExFindOtherFileName(
+  const wxFileName& filename,
+  wxFileName* lastfile)
+{
+  /* Add the base version if present. E.g.
+  fullpath: F:\CCIS\v990308\com\atis\atis-ctrl\atis-ctrl.cc
+  base:  F:\CCIS\
+  append:   \com\atis\atis-ctrl\atis-ctrl.cc
+  */
+  const wxString fullpath = filename.GetFullPath();
+
+  const wxRegEx reg("[/|\\][a-z-]*[0-9]+\\.?[0-9]*\\.?[0-9]*\\.?[0-9]*");
+
+  if (!reg.Matches(fullpath.Lower()))
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("No version information found"));
+#endif
+    return false;
+  }
+
+  size_t start, len;
+  if (!reg.GetMatch(&start, &len))
+  {
+    wxFAIL;
+    return false;
+  }
+
+  wxString base = fullpath.substr(0, start);
+  if (!wxEndsWithPathSeparator(base))
+  {
+    base += wxFileName::GetPathSeparator();
+  }
+
+  wxDir dir(base);
+
+  if (!dir.IsOpened())
+  {
+    wxFAIL;
+    return false;
+  }
+
+  wxString filename_string;
+  bool cont = dir.GetFirst(&filename_string, wxEmptyString, wxDIR_DIRS); // only get dirs
+
+  wxDateTime lastmodtime((time_t)0);
+  const wxString append = fullpath.substr(start + len);
+
+  bool found = false;
+
+  // Readme: Maybe use a thread for this.
+  while (cont)
+  {
+    wxFileName fn(base + filename_string + append);
+
+    if (fn.FileExists() &&
+        fn.GetPath().CmpNoCase(filename.GetPath()) != 0 &&
+        fn.GetModificationTime() != filename.GetModificationTime())
+    {
+      found = true;
+
+      if (fn.GetModificationTime() > lastmodtime)
+      {
+        lastmodtime = fn.GetModificationTime();
+        *lastfile = fn;
+      }
+    }
+
+    cont = dir.GetNext(&filename_string);
+
+    if (wxTheApp != NULL)
+    {
+      wxTheApp->Yield();
+    }
+  }
+
+  if (!found)
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("No files found"));
+#endif
+  }
+
+  return found;
+}
+
 const wxString wxExGetEndOfText(
   const wxString& text,
   size_t max_chars)

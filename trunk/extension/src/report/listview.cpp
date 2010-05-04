@@ -782,20 +782,21 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
         case ID_LIST_COMPARELAST:
         {
           wxFileName lastfile;
-          if (wxExFindOtherFileName(*filename, NULL, &lastfile))
+          if (wxExFindOtherFileName(*filename, &lastfile))
           {
             wxExCompareFile(*filename, lastfile);
           }
         }
         break;
         case ID_LIST_VERSIONLIST:
-          if (wxExFindOtherFileName(*filename, list, NULL))
+          if (wxExFindOtherFileName(*filename, list))
           {
             found = true;
           }
         break;
       }
     }
+
     if (event.GetId() == ID_LIST_VERSIONLIST && found)
     {
       list->SortColumn(_("Modified"), SORT_DESCENDING);

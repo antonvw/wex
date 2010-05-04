@@ -25,8 +25,7 @@
 
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListView* listview,
-  wxFileName* lastfile)
+  wxExListView* listview)
 {
   /* Add the base version if present. E.g.
   fullpath: F:\CCIS\v990308\com\atis\atis-ctrl\atis-ctrl.cc
@@ -84,26 +83,7 @@ bool wxExFindOtherFileName(
         fn.GetModificationTime() != filename.GetModificationTime())
     {
       found = true;
-
-      if (listview == NULL && lastfile == NULL)
-      {
-        // We are only interested in return value, so speed it up.
-        return true;
-      }
-
-      if (listview != NULL)
-      {
-        wxExListItem(listview, fn).Insert();
-      }
-
-      if (lastfile != NULL)
-      {
-        if (fn.GetModificationTime() > lastmodtime)
-        {
-          lastmodtime = fn.GetModificationTime();
-          *lastfile = fn;
-        }
-      }
+      wxExListItem(listview, fn).Insert();
     }
 
     cont = dir.GetNext(&filename_string);
@@ -114,7 +94,7 @@ bool wxExFindOtherFileName(
     }
   }
 
-  if (!found && (listview != NULL || lastfile != NULL))
+  if (!found)
   {
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("No files found"));

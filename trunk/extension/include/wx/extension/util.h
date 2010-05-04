@@ -48,6 +48,12 @@ const wxString wxExEllipsed(
   const wxString& text,
   const wxString& control = wxEmptyString);
 
+/// Finds other filenames from the one specified in the same dir structure.
+/// Results are put on the list if not null, or in the filename if not null.
+bool wxExFindOtherFileName(
+  const wxFileName& filename,
+  wxFileName* lastfile); // in case more files found, only most recent here
+
 /// Shows searching for in the statusbar.
 void wxExFindResult(
   const wxString& find_text, 

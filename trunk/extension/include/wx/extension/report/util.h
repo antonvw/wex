@@ -24,8 +24,7 @@ class wxExListView;
 /// Results are put on the list if not null, or in the filename if not null.
 bool wxExFindOtherFileName(
   const wxFileName& filename,
-  wxExListView* listview,
-  wxFileName* lastfile); // in case more files found, only most recent here
+  wxExListView* listview);
 
 /// Do something (id) for all pages on the notebook.
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
