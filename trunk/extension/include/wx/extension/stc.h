@@ -31,6 +31,7 @@ public:
     STC_MENU_SIMPLE    = 0x0001, ///< for adding copy/paste etc. menu
     STC_MENU_FIND      = 0x0002, ///< for adding find menu
     STC_MENU_REPLACE   = 0x0004, ///< for adding replace menu
+    STC_MENU_COMPARE_OR_VCS = 0x1000, ///< for adding compare or VCS menu
 
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };

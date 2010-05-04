@@ -28,7 +28,6 @@ public:
     STC_MENU_TOOL           = 0x0100, ///< for adding tool menu
     STC_MENU_REPORT_FIND    = 0x0200, ///< for adding find in files
     STC_MENU_REPORT_REPLACE = 0x0400, ///< for adding replace in files
-    STC_MENU_COMPARE_OR_VCS = 0x1000, ///< for adding compare or VCS menu
   };
 
   /// Extra open flags.
