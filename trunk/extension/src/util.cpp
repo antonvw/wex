@@ -23,6 +23,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/vcs.h>
 
@@ -168,6 +169,33 @@ const std::list < wxString > wxExComboBoxToList(
 }
 
 #endif // wxUSE_GUI
+
+bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
+{
+  if (wxConfigBase::Get()->Read(_("Comparator")).empty())
+  {
+    return false;
+  }
+
+  const wxString arguments =
+     (file1.GetModificationTime() < file2.GetModificationTime()) ?
+       "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
+       "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
+
+  if (wxExecute(wxConfigBase::Get()->Read(_("Comparator")) + " " + arguments) == 0)
+  {
+    return false;
+  }
+
+  const wxString msg = _("Compared") + ": " + arguments;
+
+  wxExLog::Get()->Log(msg);
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(msg);
+#endif
+
+  return true;
+}
 
 const wxString wxExConfigFirstOf(const wxString& key)
 {

@@ -16,7 +16,6 @@
 #include <wx/config.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/header.h>
-#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/defs.h>
@@ -83,25 +82,6 @@ wxExSTCWithFrame::wxExSTCWithFrame(
 {
 }
 
-void wxExSTCWithFrame::BuildPopupMenu(wxExMenu& menu)
-{
-  wxExSTCFile::BuildPopupMenu(menu);
-
-  if ( GetFileName().FileExists() && GetSelectedText().empty() &&
-      (GetMenuFlags() & STC_MENU_COMPARE_OR_VCS))
-  {
-    if (wxExVCS::Get()->DirExists(GetFileName()))
-    {
-      menu.AppendVCS();
-    }
-    else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_STC_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
-    }
-  }
-}
-
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
   if (wxExFileDialog(this, this).ShowModalIfChanged() == wxID_CANCEL)
@@ -149,17 +129,6 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
         }
 
         AddText(header.Get(&GetFileName()));
-      }
-    }
-    break;
-
-    case ID_STC_COMPARE:
-    {
-      wxFileName lastfile;
-
-      if (wxExFindOtherFileName(GetFileName(), NULL, &lastfile))
-      {
-        wxExCompareFile(GetFileName(), lastfile);
       }
     }
     break;

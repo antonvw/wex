@@ -75,9 +75,6 @@ public:
   /// Invokes base properties message and sets the frame title.
   virtual void PropertiesMessage();
 protected:
-  /// Builds the popup menu.
-  virtual void BuildPopupMenu(wxExMenu& menu);
-
   void OnCommand(wxCommandEvent& command);
 
   DECLARE_EVENT_TABLE()

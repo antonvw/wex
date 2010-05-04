@@ -16,39 +16,12 @@
 #include <wx/config.h>
 #include <wx/regex.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/util.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listviewfile.h>
-
-bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
-{
-  if (wxConfigBase::Get()->Read(_("Comparator")).empty())
-  {
-    return false;
-  }
-
-  const wxString arguments =
-     (file1.GetModificationTime() < file2.GetModificationTime()) ?
-       "\"" + file1.GetFullPath() + "\" \"" + file2.GetFullPath() + "\"":
-       "\"" + file2.GetFullPath() + "\" \"" + file1.GetFullPath() + "\"";
-
-  if (wxExecute(wxConfigBase::Get()->Read(_("Comparator")) + " " + arguments) == 0)
-  {
-    return false;
-  }
-
-  const wxString msg = _("Compared") + ": " + arguments;
-  wxExLog::Get()->Log(msg);
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(msg);
-#endif
-
-  return true;
-}
 
 bool wxExFindOtherFileName(
   const wxFileName& filename,

@@ -37,6 +37,9 @@ bool wxExClipboardAdd(const wxString& text);
 /// Gets data from the clipboard.
 const wxString wxExClipboardGet();
 
+/// Compares the files, using wxExecute on comparator set in the config.
+bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
+
 /// Returns first of a list of values from config key.
 const wxString wxExConfigFirstOf(const wxString& key);
 

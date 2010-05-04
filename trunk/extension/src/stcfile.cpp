@@ -22,6 +22,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 
 #if wxUSE_GUI
 
@@ -133,7 +134,19 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  wxExSTC::BuildPopupMenu(menu);
+  if ( GetFileName().FileExists() && GetSelectedText().empty() &&
+      (GetMenuFlags() & ID_EDIT_COMPARE_OR_VCS))
+  {
+    if (wxExVCS::Get()->DirExists(GetFileName()))
+    {
+      menu.AppendVCS();
+    }
+    else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_EDIT_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
+    }
+  }
 }
 
 // This is a static method, cannot use normal members here.
@@ -514,6 +527,17 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_SAVE: FileSave(); break;
+
+    case ID_EDIT_COMPARE:
+    {
+      wxFileName lastfile;
+
+      if (wxExFindOtherFileName(GetFileName(), NULL, &lastfile))
+      {
+        wxExCompareFile(GetFileName(), lastfile);
+      }
+    }
+    break;
 
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
