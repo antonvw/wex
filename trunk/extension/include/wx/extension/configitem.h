@@ -88,6 +88,7 @@ public:
     const wxString& page = wxEmptyString);
 
   /// Constuctor for other types.
+  /// When using for a combobox dir, use id < wxID_LOWEST.
   wxExConfigItem(const wxString& name,
     int type,
     const wxString& page = wxEmptyString,
