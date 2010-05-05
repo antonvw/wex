@@ -427,7 +427,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       CONFIG_COMBOBOXDIR, 
       wxEmptyString, 
       true,
-      1000)); // TODO: fix
+      1000));
 
     if (m_Command == VCS_ADD)
     {

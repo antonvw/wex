@@ -160,7 +160,7 @@ int wxExProcess::ConfigDialog(
     CONFIG_COMBOBOXDIR, 
     wxEmptyString,
     true,
-    1000)); // TODO: fix
+    1000));
 
   const auto result = wxExConfigDialog(parent,
     v,

@@ -180,7 +180,7 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     CONFIG_COMBOBOXDIR, 
     wxEmptyString, 
     true,
-    1000)); // TODO: fix
+    1000));
 
   v.push_back(wxExConfigItem());
 
