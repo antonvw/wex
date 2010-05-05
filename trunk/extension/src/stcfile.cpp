@@ -33,6 +33,7 @@ const int SCI_APPENDTEXT = 2282;
 BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_IDLE(wxExSTCFile::OnIdle)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
+  EVT_MENU(ID_EDIT_ADD_HEADER, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_EOL_DOS, wxExSTCFile::OnCommand)

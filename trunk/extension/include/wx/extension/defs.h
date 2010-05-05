@@ -45,9 +45,11 @@ enum wxExId
   ID_EDIT_SELECT_NONE,
   ID_EDIT_SELECT_INVERT,
 
+  // Here are the STC file commands,
+  // add them to stc file event macro as well.
+  ID_EDIT_ADD_HEADER,
   ID_EDIT_OPEN_LINK,
   ID_EDIT_OPEN_BROWSER,
-
   ID_EDIT_EOL_DOS,
   ID_EDIT_EOL_UNIX,
   ID_EDIT_EOL_MAC,
@@ -62,7 +64,6 @@ enum wxExId
   ID_VIEW_HIGHEST,
 
   ID_EDIT_STC_LOWEST,   // all STC commands after this one
-  ID_EDIT_ADD_HEADER,
   ID_EDIT_COMPARE,
   ID_EDIT_CONTROL_CHAR,
   ID_EDIT_HEX_DEC_CALLTIP,
