@@ -15,7 +15,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/filedlg.h>
-#include <wx/extension/header.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/defs.h>
@@ -28,7 +27,6 @@ BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTCFile)
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
     wxExSTCWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, wxExSTCWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
@@ -111,29 +109,9 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   {
     wxExVCSExecute(m_Frame, command.GetId(), GetFileName());
   }
-  else switch (command.GetId())
+  else
   {
-    case ID_STC_ADD_HEADER:
-    {
-      const wxExHeader header;
-
-      if (header.ShowDialog(this) != wxID_CANCEL)
-      {
-        if (GetLexer().GetScintillaLexer() == "hypertext")
-        {
-          GotoLine(1);
-        }
-        else
-        {
-          DocumentStart();
-        }
-
-        AddText(header.Get(&GetFileName()));
-      }
-    }
-    break;
-
-    default: wxFAIL; break;
+    wxFAIL;
   }
 }
 

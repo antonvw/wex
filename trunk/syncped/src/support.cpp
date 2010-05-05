@@ -102,7 +102,7 @@ DecoratedFrame::DecoratedFrame()
     menuExtra->AppendSeparator();
   }
 
-  menuExtra->Append(ID_STC_ADD_HEADER, wxExEllipsed(_("&Add Header")));
+  menuExtra->Append(ID_EDIT_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuExtra->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuExtra->AppendSeparator();
   menuExtra->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));

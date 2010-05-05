@@ -62,6 +62,7 @@ enum wxExId
   ID_VIEW_HIGHEST,
 
   ID_EDIT_STC_LOWEST,   // all STC commands after this one
+  ID_EDIT_ADD_HEADER,
   ID_EDIT_COMPARE,
   ID_EDIT_CONTROL_CHAR,
   ID_EDIT_HEX_DEC_CALLTIP,

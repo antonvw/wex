@@ -49,7 +49,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_STC_LOWEST, ID_STC_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, Frame::OnTree)
@@ -471,8 +470,7 @@ void Frame::OnCommand(wxCommandEvent& event)
        event.GetId() == wxID_SELECTALL ||
        event.GetId() == wxID_JUMP_TO) ||
       (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR) ||
-      (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST)||
-      (event.GetId() >= ID_STC_LOWEST && event.GetId() <= ID_STC_HIGHEST))
+      (event.GetId() >= ID_EDIT_STC_LOWEST && event.GetId() <= ID_EDIT_STC_HIGHEST))
   {
     if (editor != NULL)
     {

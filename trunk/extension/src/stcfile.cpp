@@ -19,6 +19,7 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
@@ -540,6 +541,25 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
       }
     }
     break;
+
+  case ID_EDIT_ADD_HEADER:
+    {
+      const wxExHeader header;
+
+      if (header.ShowDialog(this) != wxID_CANCEL)
+      {
+        if (GetLexer().GetScintillaLexer() == "hypertext")
+        {
+          GotoLine(1);
+        }
+        else
+        {
+          DocumentStart();
+        }
+
+        AddText(header.Get(&GetFileName()));
+      }
+    }
 
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
