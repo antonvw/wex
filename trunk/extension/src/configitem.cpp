@@ -237,7 +237,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_COMBOBOXDIR:
       m_Control = new wxComboBox(
         parent, 
-        (m_Type == CONFIG_COMBOBOXDIR ? wxID_ANY: m_Id),
+        m_Id,
         wxEmptyString,
         wxDefaultPosition,
         wxSize(250, wxDefaultCoord));
@@ -264,7 +264,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_FILEPICKERCTRL:
       {
       wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
-        wxID_ANY,
+        m_Id,
         wxEmptyString,
         wxFileSelectorPromptStr,
         wxFileSelectorDefaultWildcardStr,
@@ -283,7 +283,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_FONTPICKERCTRL:
       {
       wxFontPickerCtrl* pc = new wxFontPickerCtrl(parent,
-        wxID_ANY,
+        m_Id,
         wxNullFont,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
@@ -299,7 +299,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
     case CONFIG_INT:
       m_Control = new wxTextCtrl(parent,
-        wxID_ANY,
+        m_Id,
         wxEmptyString,
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
@@ -321,7 +321,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       } 
 
       m_Control = new wxRadioBox(parent,
-        wxID_ANY, 
+        m_Id, 
         m_Name, 
         wxDefaultPosition, 
         wxDefaultSize, 
@@ -334,7 +334,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
     case CONFIG_SPINCTRL:
       m_Control = new wxSpinCtrl(parent,
-        wxID_ANY,
+        m_Id,
         wxEmptyString,
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
@@ -346,7 +346,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
     case CONFIG_SPINCTRL_DOUBLE:
       m_Control = new wxSpinCtrlDouble(parent,
-        wxID_ANY,
+        m_Id,
         wxEmptyString,
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
@@ -360,7 +360,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
     case CONFIG_STRING:
       m_Control = new wxTextCtrl(parent,
-        wxID_ANY,
+        m_Id,
         wxEmptyString,
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
