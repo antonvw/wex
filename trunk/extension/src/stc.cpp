@@ -316,14 +316,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     menu.Append(ID_EDIT_FOLD_ALL, _("&Fold All Lines\tF9"));
     menu.Append(ID_EDIT_UNFOLD_ALL, _("&Unfold All Lines\tF10"));
   }
-
-  if (GetSelectedText().empty() && 
-      (m_Lexer.GetScintillaLexer() == "hypertext" ||
-       m_Lexer.GetScintillaLexer() == "xml"))
-  {
-    menu.AppendSeparator();
-    menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
-  }
 }
 
 void wxExSTC::ClearDocument()

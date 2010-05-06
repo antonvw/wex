@@ -150,6 +150,14 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
+  if (GetSelectedText().empty() && 
+      (GetLexer().GetScintillaLexer() == "hypertext" ||
+       GetLexer().GetScintillaLexer() == "xml"))
+  {
+    menu.AppendSeparator();
+    menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
+  }
+
   wxExSTC::BuildPopupMenu(menu);
 }
 
