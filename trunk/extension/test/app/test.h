@@ -16,12 +16,6 @@
 #include <TestFixture.h>
 #include <TestSuite.h>
 #include <wx/extension/extension.h>
-#include <wx/extension/grid.h>
-#include <wx/extension/listview.h>
-#include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
-#include <wx/extension/svn.h>
-#include <wx/extension/shell.h>
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite

@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
+#include <wx/frame.h>
 #include <wx/extension/statusbar.h>
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
