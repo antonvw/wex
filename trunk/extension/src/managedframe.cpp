@@ -33,41 +33,22 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 {
   m_Manager.SetManagedWindow(this);
 
-  CreateToolBar();
-  CreateFindBar();
-}
-
-wxExManagedFrame::~wxExManagedFrame()
-{
-  m_Manager.UnInit();
-}
-
-void wxExManagedFrame::CreateFindBar(long style, wxWindowID id)
-{
-  wxExFindToolBar* findBar = new wxExFindToolBar(this,
-    id,
-    wxDefaultPosition,
-    wxDefaultSize,
-    style);
-
-  GetManager().AddPane(findBar,
-    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
-}
-
-void wxExManagedFrame::CreateToolBar(long style, wxWindowID id)
-{
-  wxExToolBar* toolBar = new wxExToolBar(this,
-    id,
-    wxDefaultPosition,
-    wxDefaultSize,
-    style);
+  wxExToolBar* toolBar = new wxExToolBar(this);
 
   toolBar->AddControls();
 
   DoAddControl(toolBar);
 
-  GetManager().AddPane(toolBar,
+  m_Manager.AddPane(toolBar,
     wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Tool Bar")));
+
+  m_Manager.AddPane(new wxExFindToolBar(this),
+    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
+}
+
+wxExManagedFrame::~wxExManagedFrame()
+{
+  m_Manager.UnInit();
 }
 
 void wxExManagedFrame::OnCommand(wxCommandEvent& event)
