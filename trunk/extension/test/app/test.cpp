@@ -12,11 +12,6 @@
 
 #include <TestCaller.h>
 #include <wx/config.h>
-#include <wx/extension/header.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/tool.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
