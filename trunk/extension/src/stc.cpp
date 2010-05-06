@@ -1022,7 +1022,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_MACRO_START_RECORD: StartRecord(); break;
   case ID_EDIT_MACRO_STOP_RECORD: StopRecord(); break;
 
-  case ID_EDIT_INSERT_SEQUENCE: SequenceDialog(); break;
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   default: wxFAIL; break;

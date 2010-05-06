@@ -159,6 +159,9 @@ public:
   /// Sets the (scintilla) lexer using document text.
   void SetLexerByText();
 
+  /// Adds a sequence.
+  void SequenceDialog();
+
   /// Sets the text.
   void SetText(const wxString& value);
 
@@ -220,7 +223,6 @@ private:
   void HexDecCalltip(int pos);
   void Initialize();
   void SetFolding();
-  void SequenceDialog();
   void SetScintillaLexer();
   /// After pressing enter, starts new line at same place
   /// as previous line.

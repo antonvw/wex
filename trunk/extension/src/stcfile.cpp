@@ -33,7 +33,6 @@ const int SCI_APPENDTEXT = 2282;
 BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_IDLE(wxExSTCFile::OnIdle)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
-  EVT_MENU(ID_EDIT_ADD_HEADER, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_EOL_DOS, wxExSTCFile::OnCommand)
@@ -115,6 +114,25 @@ void wxExSTCFile::AddBasePathToPathList()
     GetLineEndPosition(line) - 3);
 
   m_PathList.Add(basepath);
+}
+
+void wxExSTCFile::AddHeader()
+{
+  const wxExHeader header;
+
+  if (header.ShowDialog(this) != wxID_CANCEL)
+  {
+    if (GetLexer().GetScintillaLexer() == "hypertext")
+    {
+      GotoLine(1);
+    }
+    else
+    {
+      DocumentStart();
+    }
+
+    AddText(header.Get(&GetFileName()));
+  }
 }
 
 void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
@@ -550,25 +568,6 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
       }
     }
     break;
-
-  case ID_EDIT_ADD_HEADER:
-    {
-      const wxExHeader header;
-
-      if (header.ShowDialog(this) != wxID_CANCEL)
-      {
-        if (GetLexer().GetScintillaLexer() == "hypertext")
-        {
-          GotoLine(1);
-        }
-        else
-        {
-          DocumentStart();
-        }
-
-        AddText(header.Get(&GetFileName()));
-      }
-    }
 
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;

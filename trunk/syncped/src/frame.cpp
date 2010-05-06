@@ -610,6 +610,9 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_EXECUTE: ProcessRun(); break;
   case wxID_STOP: ProcessStop(); break;
 
+  case ID_EDIT_ADD_HEADER: if (editor != NULL) editor->AddHeader(); break;
+  case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) editor->SequenceDialog(); break;
+
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 

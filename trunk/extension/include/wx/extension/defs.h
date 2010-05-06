@@ -47,7 +47,6 @@ enum wxExId
 
   // Here are the STC file commands,
   // add them to stc file event macro as well.
-  ID_EDIT_ADD_HEADER,
   ID_EDIT_OPEN_LINK,
   ID_EDIT_OPEN_BROWSER,
   ID_EDIT_EOL_DOS,
@@ -73,7 +72,6 @@ enum wxExId
   ID_EDIT_MACRO_START_RECORD,
   ID_EDIT_MACRO_STOP_RECORD,
   ID_EDIT_SORT_TOGGLE,
-  ID_EDIT_INSERT_SEQUENCE,
   ID_EDIT_TOGGLE_FOLD,
   ID_EDIT_FOLD_ALL,
   ID_EDIT_UNFOLD_ALL,

@@ -73,6 +73,9 @@ public:
   /// Copy constructor.
   wxExSTCFile(const wxExSTCFile& stc);
 
+  /// Adds a header.
+  void AddHeader();
+
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
   /// so you can use that id in wxExFrame::OnCommandConfigDialog.
