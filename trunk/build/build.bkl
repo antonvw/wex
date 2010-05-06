@@ -20,7 +20,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <include file="presets/wx.bkl"/>
   <set-wxlike-builddir/>
   
-  <set var="DEFAULT_CXXFLAGS">-Wno-write-strings</set>
+  <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++0x</set>
   
   <!-- options -->
   <option name="USE_EMBEDDED_SQL">
