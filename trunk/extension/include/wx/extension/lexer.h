@@ -96,6 +96,9 @@ public:
     bool fill_out_with_space = true,
     bool fill_out = true) const;
 
+  /// Sets keywords (public for testing only).
+  bool SetKeywords(const wxString& text);
+
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
@@ -108,7 +111,6 @@ private:
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
   const std::vector<wxExStyle> ParseNodeColourings(const wxXmlNode* node) const;
   void Set(const wxXmlNode* node);
-  bool SetKeywords(const wxString& text);
 
   wxString m_CommentBegin;
   wxString m_CommentBegin2;

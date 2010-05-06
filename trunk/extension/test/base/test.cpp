@@ -53,9 +53,9 @@ void wxExTestFixture::testMethods()
   // The fullpath should be normalized, test it.
   CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() != TEST_FILE);
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(!m_File->CheckFileSync());
+  m_File->CheckFileSync();
   CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(m_File->FileLoad(wxExFileName(TEST_BIN)));
+  CPPUNIT_ASSERT(m_File->FileLoad(TEST_BIN));
   CPPUNIT_ASSERT(!m_File->IsOpened());
   CPPUNIT_ASSERT(m_File->Open(wxExFileName(TEST_BIN).GetFullPath()));
   wxCharBuffer buffer = m_File->Read();
@@ -77,16 +77,13 @@ void wxExTestFixture::testMethods()
   // now read lexers
   m_Lexers->Read();
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
-  CPPUNIT_ASSERT(!m_Lexer->GetAssociations().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetColourings().empty());
+  CPPUNIT_ASSERT(!m_Lexer->GetExtensions().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentBegin2().empty());
   CPPUNIT_ASSERT(m_Lexer->GetCommentEnd().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetCommentEnd2().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
   CPPUNIT_ASSERT(!m_Lexer->GetKeywordsString().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetProperties().empty());
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("class"));
   CPPUNIT_ASSERT(m_Lexer->IsKeyword("const"));
   CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("cla"));
@@ -103,7 +100,6 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xx"));
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
-  CPPUNIT_ASSERT(!m_Lexer->GetKeywordsSet().empty());
 
   // test wxExLexers
   CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName(TEST_FILE)).empty());
@@ -111,10 +107,6 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(!m_Lexers->GetIndicators().empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetMarkers().empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetStyles().empty());
-  CPPUNIT_ASSERT(!m_Lexers->GetStylesHex().empty());
 
   // test wxExRCS
   CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
