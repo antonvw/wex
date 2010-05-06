@@ -57,8 +57,8 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">wxExUSE_EMBEDDED_SQL</set>
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
   
-  <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   <set var="VAR_USE_OTL" cond="USE_OTL=='1'">wxExUSE_OTL</set>
+  <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   
   <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='0'"></set>
   <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
@@ -241,7 +241,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxex-rep</library>
     <library>wxex</library>
     
-    <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
+    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
+      <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
+    </if>
     
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
@@ -307,8 +309,10 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
       <library>wxex-rep</library>
       <library>wxex</library>
       
-      <if cond="PLATFORM_UNIX=='1'">
-        <sys-lib>odbc</sys-lib>
+      <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
+        <if cond="PLATFORM_UNIX=='1'">
+          <sys-lib>odbc</sys-lib>
+        </if>
       </if>
       
       <sys-lib>cppunit</sys-lib>
@@ -358,8 +362,10 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <library>wxex-rep</library>
     <library>wxex</library>
     
-    <if cond="PLATFORM_UNIX=='1'">
-      <sys-lib>odbc</sys-lib>
+    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
+      <if cond="PLATFORM_UNIX=='1'">
+        <sys-lib>odbc</sys-lib>
+      </if>
     </if>
     
     <wx-lib>aui</wx-lib>
