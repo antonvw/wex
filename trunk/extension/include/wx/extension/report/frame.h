@@ -25,6 +25,7 @@ class wxExProcess;
 /// Adds file and project history support to wxExManagedFrame.
 /// It also updates the title of the frame if you have a focused
 /// STC file or listview project.
+/// Finally it adds process support and find in files dialog.
 class wxExFrameWithHistory : public wxExManagedFrame
 {
 public:
