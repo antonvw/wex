@@ -12,6 +12,9 @@
 
 #include <map>
 #include <set>
+#include <wx/control.h>
+#include <wx/sizer.h>
+#include <wx/string.h>
 
 #if wxUSE_GUI
 /*! \file */
