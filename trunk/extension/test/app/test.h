@@ -48,7 +48,7 @@ public:
     m_Notebook = NULL;
     m_STC = NULL;
     m_STCShell = NULL;
-    m_SVN = NULL;
+    m_VCS = NULL;
     };
 
   /// Destructor.
@@ -58,7 +58,7 @@ public:
     delete m_Notebook;
     delete m_STC;
     delete m_STCShell;
-    delete m_SVN;
+    delete m_VCS;
     };
 
   /// From TestFixture.
@@ -79,6 +79,6 @@ private:
   wxExNotebook* m_Notebook; ///< testing wxExNotebook
   wxExSTCShell* m_STCShell; ///< testing wxExSTCShell
   wxExSTC* m_STC;     ///< testing wxExSTC
-  wxExSVN* m_SVN;     ///< testing wxExSVN
+  wxExVCS* m_VCS;     ///< testing wxExVCS
 };
 #endif

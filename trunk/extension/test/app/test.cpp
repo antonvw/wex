@@ -29,7 +29,7 @@ void wxExAppTestFixture::setUp()
   m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
   m_STC = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  m_SVN = new wxExSVN(SVN_INFO, TEST_FILE);
+  m_VCS = new wxExVCS(VCS_INFO, TEST_FILE);
 }
 
 void wxExAppTestFixture::testConstructors()
@@ -43,7 +43,7 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExLog::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
-  CPPUNIT_ASSERT(wxExSVN::Get() != NULL);
+  CPPUNIT_ASSERT(wxExVCS::Get() != NULL);
   CPPUNIT_ASSERT(wxExTool::Get() != NULL);
 
   // test wxExGrid
@@ -119,9 +119,9 @@ void wxExAppTestFixture::testMethods()
   // The event queue for shell is not yet processed, so next will assert anyway.
   //CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
 
-  // test wxExSVN
-//  CPPUNIT_ASSERT(m_SVN->Execute(NULL) == 0); // do not use a dialog
-//  CPPUNIT_ASSERT(!m_SVN->GetOutput().empty());
+  // test wxExVCS
+//  CPPUNIT_ASSERT(m_VCS->Execute(NULL) == 0); // do not use a dialog
+//  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
 
   // test util
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));

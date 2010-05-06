@@ -16,6 +16,7 @@
 #include <set>
 #include <vector>
 #include <wx/filename.h>
+#include <wx/window.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>
