@@ -894,7 +894,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 15; // take max number of entries
+  const int accels = 14; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -903,7 +903,6 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
   entries[i++].Set(wxACCEL_CTRL, (int)'H', ID_EDIT_CONTROL_CHAR);
-  entries[i++].Set(wxACCEL_CTRL, (int)'M', ID_EDIT_MACRO_PLAYBACK);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
@@ -1017,10 +1016,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     ToggleFold(line_to_fold);
   }
   break;
-
-  case ID_EDIT_MACRO_PLAYBACK: MacroPlayback(); break;
-  case ID_EDIT_MACRO_START_RECORD: StartRecord(); break;
-  case ID_EDIT_MACRO_STOP_RECORD: StopRecord(); break;
 
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;

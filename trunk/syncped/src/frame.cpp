@@ -613,6 +613,10 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_ADD_HEADER: if (editor != NULL) editor->AddHeader(); break;
   case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) editor->SequenceDialog(); break;
 
+  case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->MacroPlayback(); break;
+  case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->StartRecord(); break;
+  case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->StopRecord(); break;
+
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 

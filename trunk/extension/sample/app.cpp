@@ -129,10 +129,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuSTC->Append(ID_STC_ENTRY_DLG, wxExEllipsed(_("Entry Dialog")));
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_SPLIT, _("Split"));
-  menuSTC->AppendSeparator();
-  menuSTC->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
-  menuSTC->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
-  menuSTC->Append(ID_EDIT_MACRO_PLAYBACK, _("Playback"));
 
   wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);
