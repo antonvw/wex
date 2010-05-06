@@ -322,6 +322,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
       <wx-lib>base</wx-lib>
     </exe>
   </if>
+  <!-- tests -->
   
   <!-- run the tests -->
   <if cond="PLATFORM_UNIX=='1'">
