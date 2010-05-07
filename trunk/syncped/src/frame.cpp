@@ -13,6 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/imaglist.h>
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/numdlg.h>
