@@ -72,7 +72,7 @@ public:
   void testMethods();
 private:
   wxExDirWithListView* m_Dir;     ///< testing wxExDirWithReport
-  wxExListViewWithFrame* m_ListView; ///< testing wxExListViewWithFrame
+  wxExListViewFile* m_ListView; ///< testing wxExListViewFile
   wxExProcess* m_Process; ///< testing wxExProcess
   wxExSTCWithFrame* m_STC;      ///< testing wxExSTCWithFrame
 };

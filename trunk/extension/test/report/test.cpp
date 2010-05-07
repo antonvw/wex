@@ -19,9 +19,9 @@
 void wxExReportAppTestFixture::setUp()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  m_ListView = new wxExListViewWithFrame(frame, frame, wxExListViewWithFrame::LIST_PROCESS);
+  m_ListView = new wxExListViewFile(frame, frame, TEST_FILE);
   m_Dir = new wxExDirWithListView(m_ListView, "./");
-  m_Process = new wxExProcess(m_ListView, "wc test.h");
+  m_Process = new wxExProcess(frame, "wc test.h");
   m_STC = new wxExSTCWithFrame(frame, frame, wxExFileName(TEST_FILE));
 }
 
@@ -42,11 +42,28 @@ void wxExReportAppTestFixture::testMethods()
     wxExFileName(TEST_PRJ),
     0,
     wxEmptyString,
-    wxExSTCWithFrame::STC_OPEN_IS_PROJECT));
+    wxExSTCWithFrame::STC_WIN_IS_PROJECT));
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
 
-  // test wxExListViewWithFrame
-  CPPUNIT_ASSERT(m_ListView->FileLoad(wxExFileName(TEST_PRJ)));
+  // test wxExListViewFile
+  // test wxExListView
+  m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
+  m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+  CPPUNIT_ASSERT(m_ListView->FindColumn("String") == 0);
+  CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
+/*
+  wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
+  item1.Insert();
+  wxExListItem item2(m_ListView, "b item"); ///< testing wxExListItem
+  item2.Insert();
+  wxExListItem item3(m_ListView, "a item"); ///< testing wxExListItem
+  item3.Insert();
+  m_ListView->SortColumn("String", SORT_ASCENDING);
+  wxExListItem test(m_ListView, 0);
+  CPPUNIT_ASSERT(test.GetColumnText("String") == "a item");
+*/
+
+  CPPUNIT_ASSERT(m_ListView->FileLoad(TEST_PRJ));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
 
   // test wxExProcess

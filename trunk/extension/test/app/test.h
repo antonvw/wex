@@ -78,7 +78,7 @@ private:
   wxExListView* m_ListView; ///< testing wxExListView
   wxExNotebook* m_Notebook; ///< testing wxExNotebook
   wxExSTCShell* m_STCShell; ///< testing wxExSTCShell
-  wxExSTC* m_STC;     ///< testing wxExSTC
+  wxExSTCFile* m_STC;     ///< testing wxExSTCFile
   wxExVCS* m_VCS;     ///< testing wxExVCS
 };
 #endif

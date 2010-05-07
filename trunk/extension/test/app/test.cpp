@@ -22,9 +22,9 @@ void wxExAppTestFixture::setUp()
   m_Grid = new wxExGrid(wxTheApp->GetTopWindow());
   m_ListView = new wxExListView(wxTheApp->GetTopWindow());
   m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
-  m_STC = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  m_STC = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  m_VCS = new wxExVCS(VCS_INFO, TEST_FILE);
+  m_VCS = new wxExVCS(wxExVCS::VCS_INFO, TEST_FILE);
 }
 
 void wxExAppTestFixture::testConstructors()
@@ -50,22 +50,6 @@ void wxExAppTestFixture::testMethods()
   m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test1");
 
-  // test wxExListView
-  m_ListView->SetSingleStyle(wxLC_REPORT); // wxLC_ICON);
-  m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
-  m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
-  CPPUNIT_ASSERT(m_ListView->FindColumn("String") == 0);
-  CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
-  wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
-  item1.Insert();
-  wxExListItem item2(m_ListView, "b item"); ///< testing wxExListItem
-  item2.Insert();
-  wxExListItem item3(m_ListView, "a item"); ///< testing wxExListItem
-  item3.Insert();
-  m_ListView->SortColumn("String", SORT_ASCENDING);
-  wxExListItem test(m_ListView, 0);
-  CPPUNIT_ASSERT(test.GetColumnText("String") == "a item");
-
   // test wxExNotebook (parent should not be NULL)
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
@@ -79,11 +63,11 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Notebook->DeletePage("keyx"));
   CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL);
 
-  // test wxExSTC
+  // test wxExSTCFile
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(m_STC->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
-  CPPUNIT_ASSERT(m_STC->GetMenuFlags() == wxExSTC::STC_MENU_DEFAULT);
+  CPPUNIT_ASSERT(m_STC->GetMenuFlags() == wxExSTCFile::STC_MENU_DEFAULT);
   const wxCharBuffer& buffer = m_STC->GetTextRaw();
   wxLogMessage(buffer.data());
   CPPUNIT_ASSERT(buffer.length() == 40);
