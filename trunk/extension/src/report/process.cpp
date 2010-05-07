@@ -238,6 +238,11 @@ wxExProcess* wxExProcess::Get(bool createOnDemand)
 
 bool wxExProcess::IsRunning() const
 {
+  if (GetPid() < 0)
+  {
+    return false;
+  }
+
   return wxProcess::Exists(GetPid());
 }
 
