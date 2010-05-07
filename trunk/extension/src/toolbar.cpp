@@ -78,14 +78,6 @@ void wxExToolBar::AddControls()
   AddTool(wxID_PRINT);
   AddSeparator();
   AddTool(wxID_FIND);
-  
-#ifdef __WXGTK__
-  // wxID_EXECUTE is not part of art provider, but GTK directly,
-  // so the following does not present a bitmap.
-  AddSeparator();
-  AddTool(wxID_EXECUTE);
-#endif
-
   AddSeparator();
 
   AddControl(
