@@ -171,7 +171,10 @@ wxExSampleFrame::wxExSampleFrame()
   m_Grid->AppendCols(2);
   wxExSampleDir dir(wxGetCwd(), "app.*", m_Grid);
   dir.FindFiles();
+#ifdef __WXMSW__
+  // TODO: crash under ubuntu 10.04.
   m_Grid->AutoSizeColumns();
+#endif
 #endif
 
   m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
