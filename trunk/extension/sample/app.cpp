@@ -25,7 +25,6 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/renderer.h>
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include "app.h"
