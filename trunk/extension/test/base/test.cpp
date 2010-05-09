@@ -61,7 +61,7 @@ void wxExTestFixture::testMethods()
   CPPUNIT_ASSERT(buffer.length() == 40);
 
   // test wxExFileName
-  CPPUNIT_ASSERT(m_FileName->GetLexer().GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(!m_FileName->GetLexer().GetScintillaLexer().empty());
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
   m_FileName->Assign("xxx");
   CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
@@ -72,7 +72,7 @@ void wxExTestFixture::testMethods()
 
   // test wxExLexer
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
-  CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty()); // we have no lexers
+  CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty());
   // now read lexers
   m_Lexers->Read();
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
