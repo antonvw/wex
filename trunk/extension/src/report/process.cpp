@@ -57,7 +57,10 @@ wxExProcess::wxExProcess(
 
 bool wxExProcess::CheckInput()
 {
-  wxASSERT(m_ListView != NULL); 
+  if (m_ListView == NULL)
+  {
+    return false;
+  }
 
   bool hasInput = false;
 
@@ -197,12 +200,18 @@ long wxExProcess::Execute()
     }
   }
 
-  long pid = 0;
+  m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS);
 
-  if ((pid = wxExecute(m_Command, wxEXEC_ASYNC, this)) > 0)
+  if (m_ListView == NULL)
   {
-    m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS);
+    wxLogError(_("No listview to collect output"));
+    return 0;
+  }
 
+  const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
+
+  if (pid > 0)
+  {
     SetPid(pid);
 
 #if wxUSE_STATUSBAR
