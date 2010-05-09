@@ -418,14 +418,20 @@ void wxExLexers::Read()
     child = child->GetNext();
   }
 
-  if (!wxConfigBase::Get()->Exists(_("In files")))
-  {
-    wxConfigBase::Get()->Write(_("In files"), GetLexerExtensions());
-  }
+  // Check config, but do not create one.
+  wxConfigBase* config = wxConfigBase::Get(false);
 
-  if (!wxConfigBase::Get()->Exists(_("Add what")))
+  if (config != NULL)
   {
-    wxConfigBase::Get()->Write(_("Add what"), GetLexerExtensions());
+    if (!config->Exists(_("In files")))
+    {
+      config->Write(_("In files"), GetLexerExtensions());
+    }
+
+    if (!config->Exists(_("Add what")))
+    {
+      config->Write(_("Add what"), GetLexerExtensions());
+    }
   }
 }
 
