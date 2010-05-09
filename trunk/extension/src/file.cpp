@@ -35,9 +35,12 @@ void wxExFile::Assign(const wxFileName& filename)
 
 void wxExFile::CheckFileSync()
 {
-  if (IsOpened() ||
-     !m_FileName.m_Stat.IsOk() ||
-     !wxConfigBase::Get()->ReadBool("AllowSync", true))
+  // Might be used without wxApp.
+  wxConfigBase* config = wxConfigBase::Get(false);
+
+  if ( IsOpened() ||
+      !m_FileName.m_Stat.IsOk() ||
+      (config != NULL && !config->ReadBool("AllowSync", true)))
   {
     return;
   }
