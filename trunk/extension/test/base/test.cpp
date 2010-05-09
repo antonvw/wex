@@ -29,7 +29,6 @@ private:
 
 void wxExTestFixture::setUp()
 {
-  m_Config = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
   m_File = new wxExFileTest(TEST_FILE);
   m_FileName = new wxExFileName(TEST_FILE);
   m_FileStatistics = new wxExFileStatistics();
@@ -228,24 +227,6 @@ void wxExTestFixture::testTimingAttrib()
     file_time);
 }
 
-void wxExTestFixture::testTimingConfig()
-{
-  const int max = 100000;
-
-  wxStopWatch sw;
-
-  sw.Start();
-
-  for (int j = 0; j < max; j++)
-  {
-    m_Config->Read("test", 0l);
-  }
-
-  const long config = sw.Time();
-
-  printf("wxConfig::Read:%ld\n", config);
-}
-
 void wxExTestFixture::tearDown()
 {
 }
@@ -269,8 +250,4 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testTimingAttrib",
     &wxExTestFixture::testTimingAttrib));
-
-  addTest(new CppUnit::TestCaller<wxExTestFixture>(
-    "testTimingConfig",
-    &wxExTestFixture::testTimingConfig));
 }

@@ -15,7 +15,6 @@
 
 #include <TestFixture.h>
 #include <TestSuite.h>
-#include <wx/config.h>
 #include <wx/extension/extension.h>
 
 /// CppUnit test suite.
@@ -32,7 +31,6 @@ class wxExTestFixture : public CppUnit::TestFixture
 public:
   /// Default constructor.
   wxExTestFixture() : TestFixture() {
-    m_Config = NULL;
     m_File = NULL;
     m_FileName = NULL;
     m_FileStatistics = NULL;
@@ -45,7 +43,6 @@ public:
 
   /// Destructor.
  ~wxExTestFixture() {
-    delete m_Config;
     delete m_File;
     delete m_FileName;
     delete m_FileStatistics;
@@ -74,11 +71,7 @@ public:
 
   /// Test timing of methods.
   void testTimingAttrib();
-
-  /// Test timing of methods.
-  void testTimingConfig();
 private:
-  wxConfig* m_Config; ///< testing wxConfig
   wxExFile* m_File; ///< testing wxExFile
   wxExFileName* m_FileName; ///< testing wxExFileName
   wxExFileStatistics* m_FileStatistics; ///< testing wxExFileStatistics

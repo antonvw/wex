@@ -11,6 +11,7 @@
 \******************************************************************************/
 
 #include <TestCaller.h>
+#include <wx/config.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -31,6 +32,22 @@ void wxExReportAppTestFixture::testConstructors()
 
 void wxExReportAppTestFixture::testMethods()
 {
+  wxConfig* cfg = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+  const int max = 100000;
+
+  wxStopWatch sw;
+
+  sw.Start();
+
+  for (int j = 0; j < max; j++)
+  {
+    cfg->Read("test", 0l);
+  }
+
+  const long config = sw.Time();
+
+  printf("wxConfig::Read:%ld\n", config);
+
   // test wxExDirWithListView
   CPPUNIT_ASSERT(m_Dir->FindFiles());
 
