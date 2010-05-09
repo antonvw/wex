@@ -13,7 +13,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/tool.h>
