@@ -64,10 +64,11 @@ void wxExReportAppTestFixture::testMethods()
 
   // test wxExListViewFile
   // test wxExListView
+  // Remember that listview file already has columns.
   m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
-  CPPUNIT_ASSERT(m_ListView->FindColumn("String") == 0);
-  CPPUNIT_ASSERT(m_ListView->FindColumn("Number") == 1);
+  CPPUNIT_ASSERT(m_ListView->FindColumn("String") > 1);
+  CPPUNIT_ASSERT(m_ListView->FindColumn("Number") > 1);
 /*
   wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
   item1.Insert();
