@@ -1,6 +1,6 @@
 # bash
-# File:    testall
-# Purpose: script to test all
+# File:    test-all.sh
+# Purpose: script to run all tests
 # RCS-ID:  $Id$
 
 TESTDIR=./gccgtk2_dll/
@@ -16,4 +16,4 @@ $TESTDIR/wxex-test-app > $ORG/test-app.log
 echo "-- test report --"
 $TESTDIR/wxex-test-rep > $ORG/test-rep.log
 
-svn commit -m "results of running testall"
+svn commit -m "results of running test-all"
