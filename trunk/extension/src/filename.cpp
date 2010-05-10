@@ -18,16 +18,27 @@
 
 wxExFileName::wxExFileName(const wxString& fullpath, wxPathFormat format)
   : wxFileName(fullpath, format)
-  , m_Lexer(wxExLexers::Get()->FindByFileName(*this))
   , m_Stat(fullpath) 
 {
+  // This construct prevents an assert in the test base.
+  wxExLexers* lexers = wxExLexers::Get(false);
+
+  if (lexers != NULL)
+  {
+    m_Lexer = lexers->FindByFileName(*this);
+  }
 }
 
 wxExFileName::wxExFileName(const wxFileName& filename)
   : wxFileName(filename)
-  , m_Lexer(wxExLexers::Get()->FindByFileName(*this))
   , m_Stat(filename.GetFullPath()) 
 {
+  wxExLexers* lexers = wxExLexers::Get(false);
+
+  if (lexers != NULL)
+  {
+    m_Lexer = lexers->FindByFileName(*this);
+  }
 }
 
 int wxExFileName::GetIconID() const
