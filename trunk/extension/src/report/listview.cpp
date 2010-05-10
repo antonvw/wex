@@ -953,7 +953,7 @@ void RBSFile::GenerateDialog()
   Header();
 
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  long = -1;
+  long i = -1;
   while ((i = m_Owner->GetNextSelected(i)) != -1)
   {
     wxExListItem li(m_Owner, i);
