@@ -124,7 +124,7 @@ void wxExAppTestFixture::testMethods()
   wxExLog::Get()->Log("hello from wxExtension test");
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
-  CPPUNIT_ASSERT(wxExSkipWhiteSpace("t     es   t") == "t es t");
+  CPPUNIT_ASSERT(wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   CPPUNIT_ASSERT(!wxExTranslate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
 }
 
