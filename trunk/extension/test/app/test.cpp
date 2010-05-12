@@ -95,7 +95,8 @@ void wxExAppTestFixture::testMethods()
   //CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
 
   // test wxExVCS
-//  CPPUNIT_ASSERT(m_VCS->Execute(NULL) == 0); // do not use a dialog
+  CPPUNIT_ASSERT(m_VCS->Execute() != -1);
+  wxLogMessage(m_VCS->GetOutput());
 //  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
 
   // test util
