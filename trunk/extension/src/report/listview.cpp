@@ -47,7 +47,7 @@ END_EVENT_TABLE()
 
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
-class RBSFile : public wxExFile
+class RBSFile: public wxFile
 {
 public:
   RBSFile(wxExListViewStandard* listview);
@@ -905,7 +905,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
 RBSFile::RBSFile(wxExListViewStandard* listview)
-  : wxExFile()
+  : wxFile()
   , m_Owner(listview)
   , m_Prompt(wxConfigBase::Get()->Read("RBS/Prompt", ">"))
 {
