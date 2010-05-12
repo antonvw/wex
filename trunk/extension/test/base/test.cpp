@@ -39,10 +39,6 @@ void wxExTestFixture::setUp()
   m_Statistics = new wxExStatistics<long>();
 }
 
-void wxExTestFixture::testConstructors()
-{
-}
-
 void wxExTestFixture::testMethods()
 {
 return;
@@ -234,11 +230,6 @@ void wxExTestFixture::tearDown()
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
-  // Add the tests.
-  addTest(new CppUnit::TestCaller<wxExTestFixture>(
-    "testConstructors",
-    &wxExTestFixture::testConstructors));
-
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testMethods",
     &wxExTestFixture::testMethods));

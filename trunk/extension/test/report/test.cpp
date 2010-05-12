@@ -26,10 +26,6 @@ void wxExReportAppTestFixture::setUp()
   m_STC = new wxExSTCWithFrame(frame, frame, wxExFileName(TEST_FILE));
 }
 
-void wxExReportAppTestFixture::testConstructors()
-{
-}
-
 void wxExReportAppTestFixture::testMethods()
 {
   wxConfig* cfg = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
@@ -100,10 +96,6 @@ void wxExReportAppTestFixture::tearDown()
 wxExReportTestSuite::wxExReportTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
-    "testConstructors",
-    &wxExReportAppTestFixture::testConstructors));
-
   addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
     "testMethods",
     &wxExReportAppTestFixture::testMethods));

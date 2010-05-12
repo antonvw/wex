@@ -65,9 +65,6 @@ public:
   /// Clean up after the test run.
   virtual void tearDown();
 
-  /// Test the constructors of various extension classes.
-  void testConstructors();
-
   /// Test methods of various extension classes requiring app.
   void testMethods();
 private:

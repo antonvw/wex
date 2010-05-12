@@ -27,10 +27,6 @@ void wxExAppTestFixture::setUp()
   m_VCS = new wxExVCS(wxExVCS::VCS_INFO, TEST_FILE);
 }
 
-void wxExAppTestFixture::testConstructors()
-{
-}
-
 void wxExAppTestFixture::testMethods()
 {
   // test global objects
@@ -135,10 +131,6 @@ void wxExAppTestFixture::tearDown()
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
-    "testConstructors",
-    &wxExAppTestFixture::testConstructors));
-
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testMethods",
     &wxExAppTestFixture::testMethods));
