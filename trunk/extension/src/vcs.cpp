@@ -182,8 +182,8 @@ long wxExVCS::Execute()
 
   switch (GetVCS())
   {
-    case VCS_GIT: vcs_bin = wxConfigBase::Get()->Read("GIT"); break;
-    case VCS_SVN: vcs_bin = wxConfigBase::Get()->Read("SVN"); break;
+    case VCS_GIT: vcs_bin = wxConfigBase::Get()->Read("GIT", "git"); break;
+    case VCS_SVN: vcs_bin = wxConfigBase::Get()->Read("SVN", "svn"); break;
     default: wxFAIL;
   }
 
@@ -271,9 +271,11 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   {
     m_Self = new wxExVCS;
 
+    // Add default VCS.
     if (!wxConfigBase::Get()->Exists("VCS"))
     {
-      wxConfigBase::Get()->Write("VCS", (long)VCS_NONE);
+      // TODO: Add SVN only if svn bin exists on linux.
+      wxConfigBase::Get()->Write("VCS", (long)VCS_SVN);
     }
   }
 
