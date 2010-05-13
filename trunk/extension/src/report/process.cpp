@@ -257,7 +257,7 @@ bool wxExProcess::IsRunning() const
 
 wxKillError wxExProcess::Kill(wxSignal sig)
 {
-  if (!Exists(GetPid()))
+  if (!IsRunning())
   {
     return wxKILL_NO_PROCESS;
   }
