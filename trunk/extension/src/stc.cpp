@@ -1119,9 +1119,10 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
 
       wxExMenu menu(style);
       
+      BuildPopupMenu(menu);
+      
       if (menu.GetItemsAppended() > 0)
       {
-        BuildPopupMenu(menu);
         PopupMenu(&menu);
       }
     }
