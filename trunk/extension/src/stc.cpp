@@ -884,6 +884,14 @@ void wxExSTC::Initialize()
   SetEOLMode(wxSTC_EOL_LF);
 #endif
 
+  // Try to set the background (or foreground) colour.
+  // Dit not have any effect.
+  /*
+  SetBackgroundColour(*wxBLACK);
+  ClearBackground();
+  SetForegroundColour(*wxBLACK);
+  */
+
   SetBackSpaceUnIndents(true);
   SetMouseDwellTime(1000);
   SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
