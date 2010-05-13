@@ -90,6 +90,9 @@ public:
   /// Is the VCS menu build?
   bool IsVCSBuild() const {return m_MenuVCSFilled;};
 
+  /// Get the nbumber of items that have been appended.
+  int GetItemsAppended() const {return m_ItemsAppended;};
+  
   /// Gets the style.
   long GetStyle() const {return m_Style;};
 

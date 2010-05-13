@@ -33,7 +33,7 @@ wxExMenu::wxExMenu(long style)
 
 wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
-  , m_ItemsAppended(menu.m_ItemsAppended)
+  , m_ItemsAppended(0)
   , m_IsSeparator(menu.m_IsSeparator)
   , m_MenuVCSFilled(menu.m_MenuVCSFilled)
 {

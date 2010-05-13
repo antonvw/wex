@@ -1118,8 +1118,12 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
 
       wxExMenu menu(style);
-      BuildPopupMenu(menu);
-      PopupMenu(&menu);
+      
+      if (menu.GetItemsAppended() > 0)
+      {
+        BuildPopupMenu(menu);
+        PopupMenu(&menu);
+      }
     }
   }
   else
