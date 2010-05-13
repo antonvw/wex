@@ -60,8 +60,12 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set var="VAR_USE_OTL" cond="USE_OTL=='1'">wxExUSE_OTL</set>
   <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   
-  <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='0'"></set>
-  <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
+  <if cond="PLATFORM_UNIX=='1'">
+    <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='0'"></set>
+  </if>
+  <if cond="PLATFORM_UNIX=='0'">
+    <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
+  </if>
   
   <set var="VAR_USE_RBS" cond="USE_RBS=='1'">wxExUSE_RBS</set>
   <set var="VAR_USE_RBS" cond="USE_RBS=='0'"></set>
