@@ -40,10 +40,10 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   DoAddControl(toolBar);
 
   m_Manager.AddPane(toolBar,
-    wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Tool Bar")));
+    wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Toolbar")));
 
   m_Manager.AddPane(new wxExFindToolBar(this),
-    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Find Bar")));
+    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Findbar")));
 }
 
 wxExManagedFrame::~wxExManagedFrame()

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-13 12:21+0100\n"
-"PO-Revision-Date: 2010-05-13 12:27+0100\n"
+"POT-Creation-Date: 2010-05-13 14:31+0100\n"
+"PO-Revision-Date: 2010-05-13 14:31+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,15 +23,15 @@ msgstr "&Menubalk"
 
 #: ../src/menu.cpp:45
 msgid "&Statusbar"
-msgstr "&Statusregel"
+msgstr "&Statusbalk"
 
 #: ../src/menu.cpp:46
 msgid "&Toolbar"
-msgstr "&Toolbar"
+msgstr "&Werkbalk"
 
 #: ../src/menu.cpp:47
 msgid "&Findbar"
-msgstr "&Zoekregel"
+msgstr "&Zoekbalk"
 
 #: ../src/menu.cpp:131
 msgid "&Deselect All"
@@ -212,11 +212,11 @@ msgid "Modified"
 msgstr "Gewijzigd"
 
 #: ../src/managedframe.cpp:43
-msgid "Tool Bar"
-msgstr "Tool Bar"
+msgid "Toolbar"
+msgstr "Werkbalk"
 
 #: ../src/managedframe.cpp:46
-msgid "Find Bar"
+msgid "Findbar"
 msgstr "Zoekbalk"
 
 #: ../src/managedframe.cpp:60
@@ -1147,6 +1147,10 @@ msgstr "VCS en vergelijker instellen"
 msgid "Select Process"
 msgstr "Proces selecteren"
 
+#~ msgid "Tool Bar"
+#~ msgstr "Tool Bar"
+#~ msgid "Find Bar"
+#~ msgstr "Zoekbalk"
 #~ msgid "Illegal indicator number: %d or style: %d"
 #~ msgstr "Onbekende marker: %d of stijl: %d"
 #~ msgid "Illegal marker number: %d or symbol: %d"
