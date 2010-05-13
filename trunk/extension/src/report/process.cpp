@@ -252,7 +252,7 @@ bool wxExProcess::IsRunning() const
     return false;
   }
 
-  return wxProcess::Exists(GetPid());
+  return Exists(GetPid());
 }
 
 wxKillError wxExProcess::Kill(wxSignal sig)
