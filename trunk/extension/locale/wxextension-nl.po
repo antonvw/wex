@@ -682,7 +682,7 @@ msgstr "Macro is opgenomen"
 
 #: ../src/toolbar.cpp:99
 msgid "View in hex mode"
-msgstr "Geef hex weer"
+msgstr "Bekijk hexadecimaal"
 
 #: ../src/toolbar.cpp:100
 msgid "Synchronize modified files"
