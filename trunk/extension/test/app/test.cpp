@@ -12,32 +12,26 @@
 
 #include <TestCaller.h>
 #include <wx/config.h>
+#include <wx/extension/extension.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
-void wxExAppTestFixture::setUp()
+void wxExAppTestFixture::testGlobal()
 {
-  m_Grid = new wxExGrid(wxTheApp->GetTopWindow());
-  m_ListView = new wxExListView(wxTheApp->GetTopWindow());
-  m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
-  m_STC = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
-  m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  m_VCS = new wxExVCS(wxExVCS::VCS_INFO, TEST_FILE);
-}
-
-void wxExAppTestFixture::testMethods()
-{
-  // test global objects
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExLog::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
   CPPUNIT_ASSERT(wxExVCS::Get() != NULL);
   CPPUNIT_ASSERT(wxExTool::Get() != NULL);
+}
 
-  // test wxExGrid
+void wxExAppTestFixture::testGrid()
+{
+  wxExGrid* m_Grid;
+  m_Grid = new wxExGrid(wxTheApp->GetTopWindow());
   CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
   m_Grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
   m_Grid->SelectAll();
@@ -45,8 +39,18 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test");
   m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test1");
+}
 
-  // test wxExNotebook (parent should not be NULL)
+void wxExAppTestFixture::testListView()
+{
+  m_ListView = new wxExListView(wxTheApp->GetTopWindow());
+}
+
+void wxExAppTestFixture::testNotebook()
+{
+  wxExNotebook* m_Notebook;
+  m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
+  // (parent should not be NULL)
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") != NULL);
@@ -58,8 +62,12 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == page1);
   CPPUNIT_ASSERT(m_Notebook->DeletePage("keyx"));
   CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL);
+}
 
-  // test wxExSTCFile
+void wxExAppTestFixture::testSTCFile()
+{
+  wxExSTCFile* m_STC;
+  m_STC = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(m_STC->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
@@ -75,8 +83,12 @@ void wxExAppTestFixture::testMethods()
   m_STC->StopRecord();
   CPPUNIT_ASSERT(!m_STC->MacroIsRecording());
   CPPUNIT_ASSERT(!m_STC->MacroIsRecorded()); // still no macro
+}
 
-  // test wxExSTCShell
+void wxExAppTestFixture::testSTCShell()
+{
+  wxExSTCShell* m_STCShell;
+  m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
   m_STCShell->Prompt("test1");
   m_STCShell->Prompt("test2");
   m_STCShell->Prompt("test3");
@@ -93,14 +105,10 @@ void wxExAppTestFixture::testMethods()
   wxPostEvent(m_STCShell, event);
   // The event queue for shell is not yet processed, so next will assert anyway.
   //CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
+}
 
-  // test wxExVCS
-  // There is a problem in wxExecute inside wxExVCS::Execute.
-//  CPPUNIT_ASSERT(m_VCS->Execute() != -1);
-//  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
-  CPPUNIT_ASSERT(m_VCS->DirExists(wxFileName(TEST_FILE)));
-
-  // test util
+void wxExAppTestFixture::testUtil()
+{
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
   CPPUNIT_ASSERT(wxExGetNumberOfLines("test\ntest\n") == 3);
@@ -126,8 +134,14 @@ void wxExAppTestFixture::testMethods()
   CPPUNIT_ASSERT(!wxExTranslate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
 }
 
-void wxExAppTestFixture::tearDown()
+void wxExAppTestFixture::testVCS()
 {
+  wxExVCS* m_VCS;
+  m_VCS = new wxExVCS(wxExVCS::VCS_INFO, TEST_FILE);
+  // There is a problem in wxExecute inside wxExVCS::Execute.
+//  CPPUNIT_ASSERT(m_VCS->Execute() != -1);
+//  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
+  CPPUNIT_ASSERT(m_VCS->DirExists(wxFileName(TEST_FILE)));
 }
 
 wxExTestSuite::wxExTestSuite()

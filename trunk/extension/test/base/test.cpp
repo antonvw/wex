@@ -11,6 +11,7 @@
 \******************************************************************************/
 
 #include <TestCaller.h>
+#include <wx/extension/extension.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -27,46 +28,50 @@ private:
   virtual void DoFileSave(bool) {;};
 };
 
-void wxExTestFixture::setUp()
+void wxExTestFixture::testFile()
 {
-  m_File = new wxExFileTest(TEST_FILE);
-  m_FileName = new wxExFileName(TEST_FILE);
-  m_FileStatistics = new wxExFileStatistics();
-  m_Lexer = new wxExLexer();
-  m_Lexers = new wxExLexers(wxFileName("../extension/data/lexers.xml"));
-  m_RCS = new wxExRCS();
-  m_Stat = new wxExStat(TEST_FILE);
-  m_Statistics = new wxExStatistics<long>();
+  wxExFileTest file(TEST_FILE);
+  
+  CPPUNIT_ASSERT(file.GetStat().IsOk());
+  CPPUNIT_ASSERT(file.GetStat().GetFullPath() == file.GetFileName().GetFullPath());
+  // The fullpath should be normalized, test it.
+  CPPUNIT_ASSERT(file.GetFileName().GetFullPath() != TEST_FILE);
+  CPPUNIT_ASSERT(!file.GetStat().IsReadOnly());
+  file.CheckFileSync();
+  CPPUNIT_ASSERT(!file.GetStat().IsReadOnly());
+  CPPUNIT_ASSERT(file.FileLoad(TEST_BIN));
+  CPPUNIT_ASSERT(!file.IsOpened());
+  CPPUNIT_ASSERT(file.Open(wxExFileName(TEST_BIN).GetFullPath()));
+  wxCharBuffer buffer = file.Read();
+  CPPUNIT_ASSERT(buffer.length() == 40);
+}
+  
+void wxExTestFixture::testFileName()
+{
+  wxExFileName fileName(TEST_FILE);
+  
+  CPPUNIT_ASSERT(!fileName.GetLexer().GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(fileName.GetStat().IsOk());
+  fileName.Assign("xxx");
+  CPPUNIT_ASSERT(fileName.GetStat().IsOk());
 }
 
-void wxExTestFixture::testMethods()
+void wxExTestFixture::testFileStatistics()
 {
-return;
-  // test wxExFile
-  CPPUNIT_ASSERT(m_File->GetStat().IsOk());
-  CPPUNIT_ASSERT(m_File->GetStat().GetFullPath() == m_File->GetFileName().GetFullPath());
-  // The fullpath should be normalized, test it.
-  CPPUNIT_ASSERT(m_File->GetFileName().GetFullPath() != TEST_FILE);
-  CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  m_File->CheckFileSync();
-  CPPUNIT_ASSERT(!m_File->GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(m_File->FileLoad(TEST_BIN));
-  CPPUNIT_ASSERT(!m_File->IsOpened());
-  CPPUNIT_ASSERT(m_File->Open(wxExFileName(TEST_BIN).GetFullPath()));
-  wxCharBuffer buffer = m_File->Read();
-  CPPUNIT_ASSERT(buffer.length() == 40);
+  wxExFileStatistics fileStatistics();
+  
+  CPPUNIT_ASSERT(fileStatistics.Get().empty());
+  CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
+}
 
-  // test wxExFileName
-  CPPUNIT_ASSERT(!m_FileName->GetLexer().GetScintillaLexer().empty());
-  CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
-  m_FileName->Assign("xxx");
-  CPPUNIT_ASSERT(m_FileName->GetStat().IsOk());
-
-  // test wxExFileStatistics
-  CPPUNIT_ASSERT(m_FileStatistics->Get().empty());
-  CPPUNIT_ASSERT(m_FileStatistics->Get("xx") == 0);
-
-  // test wxExLexer
+void wxExTestFixture::testLexer()
+{
+  wxExLexers* m_Lexers;
+  m_Lexers = new wxExLexers(wxFileName("../extension/data/lexers.xml"));
+  
+  wxExLexer* m_Lexer;
+  m_Lexer = new wxExLexer();
+  
   *m_Lexer = m_Lexers->FindByText("// this is a cpp comment text");
   CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty());
   // now read lexers
@@ -95,24 +100,44 @@ return;
   CPPUNIT_ASSERT(m_Lexer->KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!m_Lexer->KeywordStartsWith("xx"));
   CPPUNIT_ASSERT(!m_Lexer->GetKeywords().empty());
+    delete m_Lexer;
+}
 
-  // test wxExLexers
+void wxExTestFixture::testLexers()
+{
+  wxExLexers* m_Lexers;
+  m_Lexers = new wxExLexers(wxFileName("../extension/data/lexers.xml"));
+  
   CPPUNIT_ASSERT(!m_Lexers->BuildWildCards(wxFileName(TEST_FILE)).empty());
   CPPUNIT_ASSERT(m_Lexers->Count() > 0);
   CPPUNIT_ASSERT(m_Lexers->FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByName("cpp").GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(m_Lexers->FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
+}
 
-  // test wxExRCS
+void wxExTestFixture::testRCS()
+{
+  m_RCS = new wxExRCS();
+  wxExRCS* m_RCS;
   CPPUNIT_ASSERT(m_RCS->GetDescription().empty());
   CPPUNIT_ASSERT(m_RCS->GetUser().empty());
+  delete m_RCS;
+}
 
-  // test wxExStat
+void wxExTestFixture::testStat()
+{
+  wxExStat* m_Stat;
+  m_Stat = new wxExStat(TEST_FILE);
   CPPUNIT_ASSERT(m_Stat->IsOk());
   CPPUNIT_ASSERT(!m_Stat->IsReadOnly());
   CPPUNIT_ASSERT(m_Stat->Sync("./test-base.link"));
+  delete m_Stat;
+}
 
-  // test wxExStatistics
+void wxExTestFixture::testStatistics()
+{
+  wxExStatistics<long>* m_Statistics;
+  m_Statistics = new wxExStatistics<long>();
   m_Statistics->Inc("test");
   CPPUNIT_ASSERT(m_Statistics->Get("test") == 1);
   m_Statistics->Inc("test");
@@ -127,8 +152,11 @@ return;
   CPPUNIT_ASSERT(copy.Get("test2") == 1);
   m_Statistics->Clear();
   CPPUNIT_ASSERT(m_Statistics->GetItems().empty());
+  delete m_Statistics;
+}
 
-  // test wxExTextFile
+void wxExTestFixture::testTextFile()
+{
   wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
   CPPUNIT_ASSERT(textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
@@ -141,13 +169,6 @@ return;
   wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
   CPPUNIT_ASSERT(textFile2.RunTool());
 //  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
-
-  // test wxExTool
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsCount());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
-  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
 }
 
 void wxExTestFixture::testTiming()
@@ -223,8 +244,13 @@ void wxExTestFixture::testTimingAttrib()
     file_time);
 }
 
-void wxExTestFixture::tearDown()
+void wxExTestFixture::testTool()
 {
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsCount());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_FIND).IsFindType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_REPLACE).IsFindType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsStatisticsType());
+  CPPUNIT_ASSERT(wxExTool(ID_TOOL_REPORT_COUNT).IsReportType());
 }
 
 wxExTestSuite::wxExTestSuite()

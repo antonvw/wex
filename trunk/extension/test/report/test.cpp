@@ -12,21 +12,13 @@
 
 #include <TestCaller.h>
 #include <wx/config.h>
+#include <wx/extension/report/report.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
 #define TEST_PRJ "./test-rep.prj"
 
-void wxExReportAppTestFixture::setUp()
-{
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  m_ListView = new wxExListViewFile(frame, frame, TEST_FILE);
-  m_Dir = new wxExDirWithListView(m_ListView, "./");
-  m_Process = new wxExProcess(frame, "wc test.h");
-  m_STC = new wxExSTCWithFrame(frame, frame, wxExFileName(TEST_FILE));
-}
-
-void wxExReportAppTestFixture::testMethods()
+void wxExReportAppTestFixture::testConfig()
 {
   wxConfig* cfg = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
   const int max = 100000;
@@ -44,10 +36,18 @@ void wxExReportAppTestFixture::testMethods()
 
   printf("wxConfig::Read:%ld\n", config);
 
-  // test wxExDirWithListView
-  CPPUNIT_ASSERT(m_Dir->FindFiles());
+}
 
-  // test wxExFrameWithHistory
+void wxExReportAppTestFixture::testDirWithListView()
+{
+  wxExDirWithListView* m_Dir;
+  m_Dir = new wxExDirWithListView(m_ListView, "./");
+  CPPUNIT_ASSERT(m_Dir->FindFiles());
+}
+
+void wxExReportAppTestFixture::testFrameWithHistory()
+{
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE))); // as we have no focused stc
   CPPUNIT_ASSERT(frame->GetRecentFile().Contains("test.h"));
@@ -57,9 +57,12 @@ void wxExReportAppTestFixture::testMethods()
     wxEmptyString,
     wxExSTCWithFrame::STC_WIN_IS_PROJECT));
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
+}
 
-  // test wxExListViewFile
-  // test wxExListView
+void wxExReportAppTestFixture::testListViewFile()
+{
+  wxExListViewFile* m_ListView;
+  m_ListView = new wxExListViewFile(frame, frame, TEST_FILE);
   // Remember that listview file already has columns.
   m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
@@ -79,20 +82,24 @@ void wxExReportAppTestFixture::testMethods()
 
   CPPUNIT_ASSERT(m_ListView->FileLoad(TEST_PRJ));
   CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
+}
 
-  // test wxExProcess
+void wxExReportAppTestFixture::testProcess()
+{
+  wxExProcess* m_Process;
+  m_Process = new wxExProcess(frame, "wc test.h");
   CPPUNIT_ASSERT(m_Process->IsSelected());
   long pid = m_Process->Execute();
   // CPPUNIT_ASSERT(wxProcess::Exists(pid));
+}
 
-  // test wxExSTCWithFrame
+void wxExReportAppTestFixture::testSTCWithFrame()
+{
+  wxExSTCWithFrame* m_STC;
+  m_STC = new wxExSTCWithFrame(frame, frame, wxExFileName(TEST_FILE));
   CPPUNIT_ASSERT(m_STC->GetFileName().GetFullPath().Contains("test.h"));
 }
-
-void wxExReportAppTestFixture::tearDown()
-{
-}
-
+  
 wxExReportTestSuite::wxExReportTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
@@ -100,4 +107,3 @@ wxExReportTestSuite::wxExReportTestSuite()
     "testMethods",
     &wxExReportAppTestFixture::testMethods));
 }
-

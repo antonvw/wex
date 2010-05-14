@@ -15,7 +15,6 @@
 
 #include <TestFixture.h>
 #include <TestSuite.h>
-#include <wx/extension/extension.h>
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite
@@ -42,40 +41,25 @@ class wxExAppTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  wxExAppTestFixture() : TestFixture() {
-    m_Grid = NULL;
-    m_ListView = NULL;
-    m_Notebook = NULL;
-    m_STC = NULL;
-    m_STCShell = NULL;
-    m_VCS = NULL;
-    };
-
+  wxExAppTestFixture() : TestFixture() {}; 
+  
   /// Destructor.
- ~wxExAppTestFixture() {
-    delete m_Grid;
-    delete m_ListView;
-    delete m_Notebook;
-    delete m_STC;
-    delete m_STCShell;
-    delete m_VCS;
-    };
+ ~wxExAppTestFixture() {};
 
   /// From TestFixture.
   /// Set up context before running a test.
-  virtual void setUp();
+  virtual void setUp() {};
 
   /// Clean up after the test run.
-  virtual void tearDown();
+  virtual void tearDown() {};
 
-  /// Test methods of various extension classes requiring app.
-  void testMethods();
-private:
-  wxExGrid* m_Grid;   ///< testing wxExGrid
-  wxExListView* m_ListView; ///< testing wxExListView
-  wxExNotebook* m_Notebook; ///< testing wxExNotebook
-  wxExSTCShell* m_STCShell; ///< testing wxExSTCShell
-  wxExSTCFile* m_STC;     ///< testing wxExSTCFile
-  wxExVCS* m_VCS;     ///< testing wxExVCS
+  void testGlobal();
+  void testGrid();
+  void testListView();
+  void testNotebook();
+  void testSTCFile();
+  void testSTCShell();
+  void testUtil();
+  void testVCS();
 };
 #endif

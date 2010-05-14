@@ -15,7 +15,6 @@
 
 #include <TestFixture.h>
 #include <TestSuite.h>
-#include <wx/extension/report/report.h>
 
 /// CppUnit test suite.
 class wxExReportTestSuite : public CppUnit::TestSuite
@@ -42,36 +41,24 @@ class wxExReportAppTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  wxExReportAppTestFixture() : TestFixture() {
-    m_Dir = NULL;
-    m_ListView = NULL;
-    m_Process = NULL;
-    m_STC = NULL;
-    };
+  wxExReportAppTestFixture() : TestFixture() {};
 
   /// Destructor.
- ~wxExReportAppTestFixture() {
-    // Do not delete objects, as process needs a listview.
-    //delete m_Dir;
-    //delete m_ListView;
-    //delete m_Process;
-    //delete m_STC;
-    };
+ ~wxExReportAppTestFixture() {};
 
   /// From TestFixture.
   /// Set up context before running a test.
-  virtual void setUp();
+  virtual void setUp() {};
 
   /// Clean up after the test run.
-  virtual void tearDown();
+  virtual void tearDown() {};
 
-  /// Test methods of various extension classes requiring app.
-  void testMethods();
-private:
-  wxExDirWithListView* m_Dir;     ///< testing wxExDirWithReport
-  wxExListViewFile* m_ListView; ///< testing wxExListViewFile
-  wxExProcess* m_Process; ///< testing wxExProcess
-  wxExSTCWithFrame* m_STC;      ///< testing wxExSTCWithFrame
+  void testConfig();
+  void testDirWithListView();
+  void testFrameWithHistory();
+  void testListViewFile();
+  void testProcess();
+  void testSTCWithFrame();
 };
 #endif
 
