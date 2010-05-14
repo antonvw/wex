@@ -30,79 +30,75 @@ void wxExAppTestFixture::testGlobal()
 
 void wxExAppTestFixture::testGrid()
 {
-  wxExGrid* m_Grid;
-  m_Grid = new wxExGrid(wxTheApp->GetTopWindow());
-  CPPUNIT_ASSERT(m_Grid->CreateGrid(5, 5));
-  m_Grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
-  m_Grid->SelectAll();
-  CPPUNIT_ASSERT(!m_Grid->GetSelectedCellsValue().empty());
+  wxExGrid* grid = new wxExGrid(wxTheApp->GetTopWindow());
+  CPPUNIT_ASSERT(grid->CreateGrid(5, 5));
+  grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
+  grid->SelectAll();
+  CPPUNIT_ASSERT(!grid->GetSelectedCellsValue().empty());
   CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test");
-  m_Grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
-  CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test1");
+  grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
+  CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test1");
 }
 
 void wxExAppTestFixture::testListView()
 {
-  m_ListView = new wxExListView(wxTheApp->GetTopWindow());
+  wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
 }
 
 void wxExAppTestFixture::testNotebook()
 {
-  wxExNotebook* m_Notebook;
-  m_Notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
+  wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
   // (parent should not be NULL)
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
-  CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") != NULL);
-  CPPUNIT_ASSERT(m_Notebook->AddPage(page2, "key2") != NULL);
-  CPPUNIT_ASSERT(m_Notebook->AddPage(page1, "key1") == NULL);
-  CPPUNIT_ASSERT(m_Notebook->GetKeyByPage(page1) == "key1");
-  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("key1") == page1);
-  CPPUNIT_ASSERT(m_Notebook->SetPageText("key1", "keyx", "hello"));
-  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == page1);
-  CPPUNIT_ASSERT(m_Notebook->DeletePage("keyx"));
-  CPPUNIT_ASSERT(m_Notebook->GetPageByKey("keyx") == NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(page2, "key2") != NULL);
+  CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") == NULL);
+  CPPUNIT_ASSERT(notebook->GetKeyByPage(page1) == "key1");
+  CPPUNIT_ASSERT(notebook->GetPageByKey("key1") == page1);
+  CPPUNIT_ASSERT(notebook->SetPageText("key1", "keyx", "hello"));
+  CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == page1);
+  CPPUNIT_ASSERT(notebook->DeletePage("keyx"));
+  CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
 void wxExAppTestFixture::testSTCFile()
 {
-  wxExSTCFile* m_STC;
-  m_STC = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   // do the same test as with wxExFile in base for a binary file
-  CPPUNIT_ASSERT(m_STC->Open(wxExFileName(TEST_BIN)));
-  CPPUNIT_ASSERT(m_STC->GetFlags() == 0);
-  CPPUNIT_ASSERT(m_STC->GetMenuFlags() == wxExSTCFile::STC_MENU_DEFAULT);
-  const wxCharBuffer& buffer = m_STC->GetTextRaw();
+  CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
+  CPPUNIT_ASSERT(stc->GetFlags() == 0);
+  CPPUNIT_ASSERT(stc->GetMenuFlags() == wxExSTCFile::STC_MENU_DEFAULT);
+  const wxCharBuffer& buffer = stc->GetTextRaw();
   wxLogMessage(buffer.data());
   CPPUNIT_ASSERT(buffer.length() == 40);
-  CPPUNIT_ASSERT(!m_STC->MacroIsRecording());
-  CPPUNIT_ASSERT(!m_STC->MacroIsRecorded());
-  m_STC->StartRecord();
-  CPPUNIT_ASSERT( m_STC->MacroIsRecording());
-  CPPUNIT_ASSERT(!m_STC->MacroIsRecorded());
-  m_STC->StopRecord();
-  CPPUNIT_ASSERT(!m_STC->MacroIsRecording());
-  CPPUNIT_ASSERT(!m_STC->MacroIsRecorded()); // still no macro
+  CPPUNIT_ASSERT(!stc->MacroIsRecording());
+  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
+  stc->StartRecord();
+  CPPUNIT_ASSERT( stc->MacroIsRecording());
+  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
+  stc->StopRecord();
+  CPPUNIT_ASSERT(!stc->MacroIsRecording());
+  CPPUNIT_ASSERT(!stc->MacroIsRecorded()); // still no macro
 }
 
 void wxExAppTestFixture::testSTCShell()
 {
-  wxExSTCShell* m_STCShell;
-  m_STCShell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  m_STCShell->Prompt("test1");
-  m_STCShell->Prompt("test2");
-  m_STCShell->Prompt("test3");
-  m_STCShell->Prompt("test4");
+  wxExSTCShell* shell = new wxExSTCShell(wxTheApp->GetTopWindow());
+  shell->Prompt("test1");
+  shell->Prompt("test2");
+  shell->Prompt("test3");
+  shell->Prompt("test4");
   // Prompting does not add a command to history.
-  CPPUNIT_ASSERT(!m_STCShell->GetHistory().Contains("test4"));
+  CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
   wxKeyEvent event(wxEVT_CHAR);
   event.m_keyCode = 97; // one char 'a'
-  wxPostEvent(m_STCShell, event);
-  wxPostEvent(m_STCShell, event);
-  wxPostEvent(m_STCShell, event);
+  wxPostEvent(shell, event);
+  wxPostEvent(shell, event);
+  wxPostEvent(shell, event);
   event.m_keyCode = WXK_RETURN;
-  wxPostEvent(m_STCShell, event);
+  wxPostEvent(shell, event);
   // The event queue for shell is not yet processed, so next will assert anyway.
   //CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
 }
@@ -136,18 +132,49 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  wxExVCS* m_VCS;
-  m_VCS = new wxExVCS(wxExVCS::VCS_INFO, TEST_FILE);
+  wxExVCS vcs(wxExVCS::VCS_INFO, TEST_FILE);
   // There is a problem in wxExecute inside wxExVCS::Execute.
 //  CPPUNIT_ASSERT(m_VCS->Execute() != -1);
 //  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
-  CPPUNIT_ASSERT(m_VCS->DirExists(wxFileName(TEST_FILE)));
+  CPPUNIT_ASSERT(vcs.DirExists(wxFileName(TEST_FILE)));
 }
 
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testGlobal",
+    &wxExAppTestFixture::testGlobal));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testGrid",
+    &wxExAppTestFixture::testGrid));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testListView",
+    &wxExAppTestFixture::testListView));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testNotebook",
+    &wxExAppTestFixture::testNotebook));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testMethods",
     &wxExAppTestFixture::testMethods));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testSTCFile",
+    &wxExAppTestFixture::testSTCFile));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testSTCShell",
+    &wxExAppTestFixture::testSTCShell));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testUtil",
+    &wxExAppTestFixture::testUtil));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testVCS",
+    &wxExAppTestFixture::testVCS));
 }

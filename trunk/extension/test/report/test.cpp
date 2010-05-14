@@ -35,20 +35,18 @@ void wxExReportAppTestFixture::testConfig()
   const long config = sw.Time();
 
   printf("wxConfig::Read:%ld\n", config);
-
 }
 
 void wxExReportAppTestFixture::testDirWithListView()
 {
-  wxExDirWithListView* m_Dir;
-  m_Dir = new wxExDirWithListView(m_ListView, "./");
-  CPPUNIT_ASSERT(m_Dir->FindFiles());
+  wxExDirWithListView dir(m_ListView, "./");
+  CPPUNIT_ASSERT(dir.FindFiles());
 }
 
 void wxExReportAppTestFixture::testFrameWithHistory()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE))); // as we have no focused stc
   CPPUNIT_ASSERT(frame->GetRecentFile().Contains("test.h"));
   CPPUNIT_ASSERT(!frame->OpenFile(
@@ -61,13 +59,15 @@ void wxExReportAppTestFixture::testFrameWithHistory()
 
 void wxExReportAppTestFixture::testListViewFile()
 {
-  wxExListViewFile* m_ListView;
-  m_ListView = new wxExListViewFile(frame, frame, TEST_FILE);
+  wxExListViewFile* listView(frame, frame, TEST_FILE);
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  
   // Remember that listview file already has columns.
-  m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
-  m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
-  CPPUNIT_ASSERT(m_ListView->FindColumn("String") > 1);
-  CPPUNIT_ASSERT(m_ListView->FindColumn("Number") > 1);
+  listview.InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
+  listview.InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+  CPPUNIT_ASSERT(listview.FindColumn("String") > 1);
+  CPPUNIT_ASSERT(listview.FindColumn("Number") > 1);
+  
 /*
   wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
   item1.Insert();
@@ -80,30 +80,52 @@ void wxExReportAppTestFixture::testListViewFile()
   CPPUNIT_ASSERT(test.GetColumnText("String") == "a item");
 */
 
-  CPPUNIT_ASSERT(m_ListView->FileLoad(TEST_PRJ));
-  CPPUNIT_ASSERT(m_ListView->ItemFromText("test1\ntest2\n"));
+  CPPUNIT_ASSERT(listview.FileLoad(TEST_PRJ));
+  CPPUNIT_ASSERT(listview.ItemFromText("test1\ntest2\n"));
 }
 
 void wxExReportAppTestFixture::testProcess()
 {
-  wxExProcess* m_Process;
-  m_Process = new wxExProcess(frame, "wc test.h");
-  CPPUNIT_ASSERT(m_Process->IsSelected());
-  long pid = m_Process->Execute();
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExProcess process(frame, "wc test.h");
+  
+  CPPUNIT_ASSERT(process.IsSelected());
+  long pid = process.Execute();
   // CPPUNIT_ASSERT(wxProcess::Exists(pid));
 }
 
 void wxExReportAppTestFixture::testSTCWithFrame()
 {
-  wxExSTCWithFrame* m_STC;
-  m_STC = new wxExSTCWithFrame(frame, frame, wxExFileName(TEST_FILE));
-  CPPUNIT_ASSERT(m_STC->GetFileName().GetFullPath().Contains("test.h"));
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExSTCWithFrame stc(frame, frame, wxExFileName(TEST_FILE));
+  
+  CPPUNIT_ASSERT(stc.GetFileName().GetFullPath().Contains("test.h"));
 }
   
 wxExReportTestSuite::wxExReportTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
   addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
-    "testMethods",
-    &wxExReportAppTestFixture::testMethods));
+    "testConfig",
+    &wxExReportAppTestFixture::testConfig));
+    
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+    "testDirWithListView",
+    &wxExReportAppTestFixture::testDirWithListView));
+    
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+    "testFrameWithHistory",
+    &wxExReportAppTestFixture::testFrameWithHistory));
+    
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+    "testListViewFile",
+    &wxExReportAppTestFixture::testListViewFile));
+    
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+    "testProcess",
+    &wxExReportAppTestFixture::testProcess));
+    
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+    "testSTCWithFrame",
+    &wxExReportAppTestFixture::testSTCWithFrame));
 }
