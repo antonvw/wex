@@ -45,6 +45,28 @@ void wxExAppTestFixture::testListView()
   wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
 }
 
+void wxExAppTestFixture::testMenu()
+{
+  wxExMenu menu;
+  
+  menu.AppendSeparator();
+  menu.AppendSeparator();
+  menu.AppendSeparator();
+  menu.AppendSeparator();
+  CPPUNIT_ASSERT(menu.GetItemsAppended() == 0);
+  
+  menu.AppendBars();
+  CPPUNIT_ASSERT(menu.GetItemsAppended() > 0);
+  
+  CPPUNIT_ASSERT(!menu.IsVCSBuild());
+  
+  menu.BuildVCS(true);
+  CPPUNIT_ASSERT(menu.IsVCSBuild());
+  
+  menu.BuildVCS(false);
+  CPPUNIT_ASSERT(!menu.IsVCSBuild());
+}
+
 void wxExAppTestFixture::testNotebook()
 {
   wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
@@ -157,6 +179,10 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testNotebook",
     &wxExAppTestFixture::testNotebook));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testMenu",
+    &wxExAppTestFixture::testMenu));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testMethods",

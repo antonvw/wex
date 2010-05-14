@@ -56,6 +56,7 @@ public:
   void testGlobal();
   void testGrid();
   void testListView();
+  void testMenu();
   void testNotebook();
   void testSTCFile();
   void testSTCShell();
