@@ -15,6 +15,7 @@
 
 #include <TestFixture.h>
 #include <TestSuite.h>
+#include <wx/extension/extension.h>
 
 /// CppUnit test suite.
 class wxExTestSuite : public CppUnit::TestSuite

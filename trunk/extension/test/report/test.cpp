@@ -12,7 +12,6 @@
 
 #include <TestCaller.h>
 #include <wx/config.h>
-#include <wx/extension/report/report.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -39,7 +38,10 @@ void wxExReportAppTestFixture::testConfig()
 
 void wxExReportAppTestFixture::testDirWithListView()
 {
-  wxExDirWithListView dir(m_ListView, "./");
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_FILE);
+  
+  wxExDirWithListView dir(listView, "./");
   CPPUNIT_ASSERT(dir.FindFiles());
 }
 
@@ -59,14 +61,14 @@ void wxExReportAppTestFixture::testFrameWithHistory()
 
 void wxExReportAppTestFixture::testListViewFile()
 {
-  wxExListViewFile* listView(frame, frame, TEST_FILE);
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_FILE);
   
   // Remember that listview file already has columns.
-  listview.InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
-  listview.InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
-  CPPUNIT_ASSERT(listview.FindColumn("String") > 1);
-  CPPUNIT_ASSERT(listview.FindColumn("Number") > 1);
+  listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
+  listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+  CPPUNIT_ASSERT(listView->FindColumn("String") > 1);
+  CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
   
 /*
   wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
@@ -80,8 +82,8 @@ void wxExReportAppTestFixture::testListViewFile()
   CPPUNIT_ASSERT(test.GetColumnText("String") == "a item");
 */
 
-  CPPUNIT_ASSERT(listview.FileLoad(TEST_PRJ));
-  CPPUNIT_ASSERT(listview.ItemFromText("test1\ntest2\n"));
+  CPPUNIT_ASSERT(listView->FileLoad(TEST_PRJ));
+  CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
 
 void wxExReportAppTestFixture::testProcess()

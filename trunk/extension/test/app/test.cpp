@@ -12,7 +12,6 @@
 
 #include <TestCaller.h>
 #include <wx/config.h>
-#include <wx/extension/extension.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -35,7 +34,7 @@ void wxExAppTestFixture::testGrid()
   grid->SetGridCellValue(wxGridCellCoords(0, 0), "test");
   grid->SelectAll();
   CPPUNIT_ASSERT(!grid->GetSelectedCellsValue().empty());
-  CPPUNIT_ASSERT(m_Grid->GetCellValue(0, 0) == "test");
+  CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test");
   grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test1");
 }
@@ -177,16 +176,12 @@ wxExTestSuite::wxExTestSuite()
     &wxExAppTestFixture::testListView));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
-    "testNotebook",
-    &wxExAppTestFixture::testNotebook));
-    
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testMenu",
     &wxExAppTestFixture::testMenu));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
-    "testMethods",
-    &wxExAppTestFixture::testMethods));
+    "testNotebook",
+    &wxExAppTestFixture::testNotebook));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTCFile",

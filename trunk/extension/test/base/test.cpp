@@ -58,7 +58,7 @@ void wxExTestFixture::testFileName()
 
 void wxExTestFixture::testFileStatistics()
 {
-  wxExFileStatistics fileStatistics();
+  wxExFileStatistics fileStatistics;
   
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
   CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
@@ -67,9 +67,9 @@ void wxExTestFixture::testFileStatistics()
 void wxExTestFixture::testLexer()
 {
   wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
-  wxExLexer lexer();
+  wxExLexer lexer;
   lexer = lexers.FindByText("// this is a cpp comment text");
-  CPPUNIT_ASSERT(m_Lexer->GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(lexer.GetScintillaLexer().empty());
   
   // now read lexers
   lexers.Read();
@@ -113,7 +113,7 @@ void wxExTestFixture::testLexers()
 
 void wxExTestFixture::testRCS()
 {
-  wxExRCS rcs();
+  wxExRCS rcs;
   CPPUNIT_ASSERT(rcs.GetDescription().empty());
   CPPUNIT_ASSERT(rcs.GetUser().empty());
 }
