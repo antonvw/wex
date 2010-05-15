@@ -43,6 +43,9 @@ public:
   void ForceCheckBoxChecked(
     const wxString& contains = wxEmptyString,
     const wxString& page = wxEmptyString);
+    
+  /// Selects all in the control, if appropirate.
+  void SelectAll();
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);

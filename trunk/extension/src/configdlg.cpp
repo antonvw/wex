@@ -358,4 +358,9 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     event.Enable(true);
   }
 }
+
+void wxExConfigDialog::SelectAll()
+{
+}
+
 #endif // wxUSE_GUI

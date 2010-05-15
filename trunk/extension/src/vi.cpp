@@ -464,6 +464,8 @@ void wxExVi::DoCommandLine()
       item, 
       0);
   }
+  
+  m_CommandDialog->SelectAll();
 
   if (m_CommandDialog->ShowModal() == wxID_CANCEL)
   {
