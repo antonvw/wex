@@ -1,7 +1,14 @@
-.wxConfig::Read:138
+.wxConfig::Read:141
+..F...
 
 
+!!!FAILURES!!!
+Test Results:
+Run:  6   Failures: 1   Errors: 0
 
-OK (1 tests)
+
+1) test: testFrameWithHistory (F) line: 53 ../extension/test/report/test.cpp
+assertion failed
+- Expression: frame->GetRecentFile().Contains("test.h")
 
 
