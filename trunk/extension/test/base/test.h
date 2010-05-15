@@ -43,8 +43,6 @@ public:
   void testFile();
   void testFileName();
   void testFileStatistics();
-  void testLexer();
-  void testLexers();
   void testRCS();
   void testStat();
   void testStatistics();

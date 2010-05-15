@@ -56,6 +56,8 @@ public:
 
   void testGlobal();
   void testGrid();
+  void testLexer();
+  void testLexers();
   void testListView();
   void testMenu();
   void testNotebook();

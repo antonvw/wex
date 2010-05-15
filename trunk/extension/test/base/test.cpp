@@ -50,7 +50,7 @@ void wxExTestFixture::testFileName()
 {
   wxExFileName fileName(TEST_FILE);
   
-  CPPUNIT_ASSERT(!fileName.GetLexer().GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(fileName.GetLexer().GetScintillaLexer().empty());
   CPPUNIT_ASSERT(fileName.GetStat().IsOk());
   fileName.Assign("xxx");
   CPPUNIT_ASSERT(fileName.GetStat().IsOk());
@@ -62,53 +62,6 @@ void wxExTestFixture::testFileStatistics()
   
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
   CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
-}
-
-void wxExTestFixture::testLexer()
-{
-  wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
-  wxExLexer lexer;
-  lexer = lexers.FindByText("// this is a cpp comment text");
-  CPPUNIT_ASSERT(lexer.GetScintillaLexer().empty());
-  
-  // now read lexers
-  lexers.Read();
-  lexer = lexers.FindByText("// this is a cpp comment text");
-  
-  CPPUNIT_ASSERT(!lexer.GetExtensions().empty());
-  CPPUNIT_ASSERT(!lexer.GetCommentBegin().empty());
-  CPPUNIT_ASSERT(!lexer.GetCommentBegin2().empty());
-  CPPUNIT_ASSERT(lexer.GetCommentEnd().empty());
-  CPPUNIT_ASSERT(!lexer.GetCommentEnd2().empty());
-  CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
-  CPPUNIT_ASSERT(!lexer.GetKeywordsString().empty());
-  CPPUNIT_ASSERT(lexer.IsKeyword("class"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("const"));
-  CPPUNIT_ASSERT(lexer.KeywordStartsWith("cla"));
-  CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xxx"));
-  CPPUNIT_ASSERT(!lexer.MakeComment("test", true).empty());
-  CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
-  CPPUNIT_ASSERT(lexer.SetKeywords("hello:1"));
-  CPPUNIT_ASSERT(lexer.SetKeywords("test11 test21:1 test31:1 test12:2 test22:2"));
-  CPPUNIT_ASSERT(!lexer.IsKeyword("class")); // now overwritten
-  CPPUNIT_ASSERT(lexer.IsKeyword("test11"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("test21"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("test12"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("test22"));
-  CPPUNIT_ASSERT(lexer.KeywordStartsWith("te"));
-  CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
-  CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
-}
-
-void wxExTestFixture::testLexers()
-{
-  wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
-  
-  CPPUNIT_ASSERT(!lexers.BuildWildCards(wxFileName(TEST_FILE)).empty());
-  CPPUNIT_ASSERT(lexers.Count() > 0);
-  CPPUNIT_ASSERT(lexers.FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(lexers.FindByName("cpp").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(lexers.FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
 }
 
 void wxExTestFixture::testRCS()
@@ -257,14 +210,6 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testFileStatistics",
     &wxExTestFixture::testFileStatistics));
-
-  addTest(new CppUnit::TestCaller<wxExTestFixture>(
-    "testLexer",
-    &wxExTestFixture::testLexer));
-
-  addTest(new CppUnit::TestCaller<wxExTestFixture>(
-    "testLexers",
-    &wxExTestFixture::testLexers));
 
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testRCS",
