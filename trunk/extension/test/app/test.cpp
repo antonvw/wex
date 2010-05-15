@@ -78,6 +78,7 @@ void wxExAppTestFixture::testLexer()
 void wxExAppTestFixture::testLexers()
 {
   wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
+  lexers.Read();
   
   CPPUNIT_ASSERT(!lexers.BuildWildCards(wxFileName(TEST_FILE)).empty());
   CPPUNIT_ASSERT(lexers.Count() > 0);
