@@ -17,6 +17,10 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+void wxExAppTestFixture::testFrd()
+{
+}
+
 void wxExAppTestFixture::testGlobal()
 {
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
@@ -37,6 +41,10 @@ void wxExAppTestFixture::testGrid()
   CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test");
   grid->SetCellsValue(wxGridCellCoords(0, 0), "test1\ttest2\ntest3\ttest4\n");
   CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test1");
+}
+
+void wxExAppTestFixture::testHeader()
+{
 }
 
 void wxExAppTestFixture::testLexer()
@@ -90,6 +98,10 @@ void wxExAppTestFixture::testLexers()
 void wxExAppTestFixture::testListView()
 {
   wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
+}
+
+void wxExAppTestFixture::testLog()
+{
 }
 
 void wxExAppTestFixture::testMenu()
@@ -223,12 +235,20 @@ wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testFrd",
+    &wxExAppTestFixture::testFrd));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testGlobal",
     &wxExAppTestFixture::testGlobal));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testGrid",
     &wxExAppTestFixture::testGrid));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testHeader",
+    &wxExAppTestFixture::testHeader));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testLexer",
@@ -241,6 +261,10 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testListView",
     &wxExAppTestFixture::testListView));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testLog",
+    &wxExAppTestFixture::testLog));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testMenu",

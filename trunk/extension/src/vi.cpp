@@ -434,6 +434,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
   }
 
   m_FindDialog->SetTitle(title);
+  m_FindDialog->SelectAll();
 
   if (m_FindDialog->ShowModal() == wxID_CANCEL)
   {
@@ -930,6 +931,8 @@ void wxExVi::Put(bool after) const
   {
     m_STC->LineUp();
   }
+  
+  m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
 }        
 
 void wxExVi::Repeat()

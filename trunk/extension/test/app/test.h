@@ -54,11 +54,14 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
 
+  void testFrd();
   void testGlobal();
   void testGrid();
+  void testHeader();
   void testLexer();
   void testLexers();
   void testListView();
+  void testLog();
   void testMenu();
   void testNotebook();
   void testSTCFile();
