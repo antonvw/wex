@@ -377,6 +377,18 @@ void wxExConfigDialog::SelectAll()
         cb->SelectAll();
       }
       }
+      break;
+
+    case CONFIG_INT:
+    case CONFIG_STRING:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)it->GetControl();
+      if (it->GetIsRequired())
+      {
+        tc->SelectAll();
+      }
+      }
+      break;
     }
   }
 }
