@@ -208,6 +208,17 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT(vcs.DirExists(wxFileName(TEST_FILE)));
 }
 
+void wxExAppTestFixture::testVi()
+{
+  wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxExVi* vi = new wxExVi(stc);
+  
+  CPPUNIT_ASSERT(!vi->GetActive());
+  
+  vi->Use(true);
+  CPPUNIT_ASSERT(vi->GetActive());
+}
+  
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
@@ -254,4 +265,8 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testVCS",
     &wxExAppTestFixture::testVCS));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testVi",
+    &wxExAppTestFixture::testVi));
 }
