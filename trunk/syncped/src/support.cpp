@@ -171,7 +171,7 @@ DecoratedFrame::DecoratedFrame()
   wxMenu *menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
 
-  wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE); // wxMB_DOCKABLE only used for GTK
+  wxMenuBar* menubar = new wxMenuBar();
   SetMenuBar(menubar);
 
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
