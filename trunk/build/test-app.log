@@ -1,6 +1,13 @@
-...........
+...............F
 
 
-OK (11 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  15   Failures: 1   Errors: 0
+
+
+1) test: testVi (F) line: 249 ../extension/test/app/test.cpp
+assertion failed
+- Expression: vi->OnChar(event)
 
 
