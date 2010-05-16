@@ -361,6 +361,24 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExConfigDialog::SelectAll()
 {
+  for (
+    auto it = m_ConfigItems.begin();
+    it != m_ConfigItems.end();
+    ++it)
+  {
+    switch (it->GetType())
+    {
+    case CONFIG_COMBOBOX:
+    case CONFIG_COMBOBOXDIR:
+    case CONFIG_COMBOBOX_NONAME:
+      {
+      wxComboBox* cb = (wxComboBox*)it->GetControl();
+      {
+        cb->SelectAll();
+      }
+      }
+    }
+  }
 }
 
 #endif // wxUSE_GUI
