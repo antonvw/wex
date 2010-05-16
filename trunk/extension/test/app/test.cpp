@@ -19,6 +19,13 @@
 
 void wxExAppTestFixture::testFrd()
 {
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
+
+  frd->SetFindString("find1");
+  frd->SetFindString("find2");
+  frd->SetFindString("find3");
+  
+  CPPUNIT_ASSERT(!frd->GetFindStrings().empty());
 }
 
 void wxExAppTestFixture::testGlobal()
@@ -45,6 +52,10 @@ void wxExAppTestFixture::testGrid()
 
 void wxExAppTestFixture::testHeader()
 {
+  wxExFileName filename(TEST_FILE);
+  wxExHeader header;
+    
+  CPPUNIT_ASSERT(!header.Get(&filename).empty());
 }
 
 void wxExAppTestFixture::testLexer()
@@ -102,6 +113,7 @@ void wxExAppTestFixture::testListView()
 
 void wxExAppTestFixture::testLog()
 {
+  CPPUNIT_ASSERT(!wxExLog::Get()->GetFileName().GetFullPath().empty());
 }
 
 void wxExAppTestFixture::testMenu()
@@ -229,6 +241,12 @@ void wxExAppTestFixture::testVi()
   
   vi->Use(true);
   CPPUNIT_ASSERT(vi->GetActive());
+  
+  wxKeyEvent event(wxEVT_CHAR);
+  event.m_keyCode = 97; // one char 'a'
+  
+  CPPUNIT_ASSERT(!vi->OnChar(event));
+  CPPUNIT_ASSERT(vi->OnChar(event));
 }
   
 wxExTestSuite::wxExTestSuite()
