@@ -120,7 +120,7 @@ When adding functionality in trunk
 
   where it has least dependancies
 
-  run test.all from the build dir, which collects output in test.log, and commits automatically.
+  run test-all from the build dir, which collects output in test.log, and commits automatically.
 
 - add a sample for it in
     extension/sample, 
@@ -130,6 +130,7 @@ When adding functionality in trunk
 Roadmap
 - new wxWidgets. 
     Use GetItemText with col from list ctrl
+    Use ribbon toolbar.
     File history has it's own include file. Use it and check new methods.
 
 - Add ctags (like Exuberant CTAGS)
