@@ -25,6 +25,7 @@
 wxExConfigItem::wxExConfigItem()
   : m_Control(NULL)
   , m_Id(wxID_ANY)
+  , m_IsRequired(false)
   , m_Name("spacer")
   , m_Page(wxEmptyString)
   , m_Type(CONFIG_SPACER) 
