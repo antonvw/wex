@@ -19,6 +19,13 @@
 
 void wxExAppTestFixture::testConfigItem()
 {
+  wxExConfigItem spacer;
+  CPPUNIT_ASSERT(spacer.GetType() == CONFIG_SPACER);
+  CPPUNIT_ASSERT(!spacer.GetIsRequired());
+  
+  wxExConfigItem spin("spin", 1, 5);
+  CPPUNIT_ASSERT(spin.GetType() == CONFIG_SPINCTRL);
+  CPPUNIT_ASSERT(!spin.GetIsRequired());
 }
 
 void wxExAppTestFixture::testFrd()
@@ -161,27 +168,41 @@ void wxExAppTestFixture::testNotebook()
 
 void wxExAppTestFixture::testSTC()
 {
-  wxExSTCFile* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxExSTCFile* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  CPPUNIT_ASSERT(stc->GetText() == "hello stc");
+  
+  stc->AppendTextForced("more text");
+  CPPUNIT_ASSERT(stc->GetText() != "hello stc");
+  CPPUNIT_ASSERT(stc->FindNext("more text"));
+  
+  stc->ReplaceAll("more", "less");
+  CPPUNIT_ASSERT(stc->FindNext("less text"));
+  
+  stc->SetText("new text");
+  CPPUNIT_ASSERT(stc->GetText() == "new text");
+  
+  CPPUNIT_ASSERT(!stc->MacroIsRecording());
+  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
+  
+  stc->StartRecord();
+  CPPUNIT_ASSERT( stc->MacroIsRecording());
+  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
+  
+  stc->StopRecord();
+  CPPUNIT_ASSERT(!stc->MacroIsRecording());
+  CPPUNIT_ASSERT(!stc->MacroIsRecorded()); // still no macro
 }
   
 void wxExAppTestFixture::testSTCFile()
 {
   wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(stc->GetFlags() == 0);
   CPPUNIT_ASSERT(stc->GetMenuFlags() == wxExSTCFile::STC_MENU_DEFAULT);
   const wxCharBuffer& buffer = stc->GetTextRaw();
-  wxLogMessage(buffer.data());
   CPPUNIT_ASSERT(buffer.length() == 40);
-  CPPUNIT_ASSERT(!stc->MacroIsRecording());
-  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
-  stc->StartRecord();
-  CPPUNIT_ASSERT( stc->MacroIsRecording());
-  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
-  stc->StopRecord();
-  CPPUNIT_ASSERT(!stc->MacroIsRecording());
-  CPPUNIT_ASSERT(!stc->MacroIsRecorded()); // still no macro
 }
 
 void wxExAppTestFixture::testSTCShell()
