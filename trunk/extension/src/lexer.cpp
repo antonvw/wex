@@ -198,7 +198,7 @@ bool wxExLexer::IsKeyword(const wxString& word) const
 
 bool wxExLexer::IsOk() const
 {
-  // At this moment ok if scintila lexer has been filled.
+  // At this moment ok if scintilla lexer has been filled.
   return !m_ScintillaLexer.empty();
 }
 
