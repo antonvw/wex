@@ -97,6 +97,24 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   return header;
 }
 
+void wxExHeader::Set(
+  const wxString& purpose, 
+  const wxString& author,
+  const wxString& email,
+  const wxString& license)
+{
+  wxConfigBase::Get()->Write(m_TextPurpose, purpose);
+  
+  if (!author.empty())
+    wxConfigBase::Get()->Write(m_TextAuthor, author);
+  
+  if (!email.empty())
+    wxConfigBase::Get()->Write(m_TextEmail, email);
+  
+  if (!license.empty())
+    wxConfigBase::Get()->Write(m_TextLicense, license);
+}
+
 int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 {
   std::vector<wxExConfigItem> v;

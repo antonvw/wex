@@ -27,6 +27,13 @@ public:
   /// using it's lexer and data from config,
   /// among which the file purpose.
   const wxString Get(const wxExFileName* filename) const;
+  
+  /// Sets title fields (if not empty) in the config.
+  void Set(
+    const wxString& purpose, 
+    const wxString& author = wxEmptyString,
+    const wxString& email = wxEmptyString,
+    const wxString& license = wxEmptyString);
 
   /// Shows a dialog for getting the purpose for a header,
   /// some other fields are presented as well (if author is empty

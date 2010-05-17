@@ -99,10 +99,11 @@ void wxExAppTestFixture::testHeader()
 {
   wxExFileName filename(TEST_FILE);
   wxExHeader header;
-  header.Set("hello test");
+  header.Set("hello test", "AvW");
   const wxString str = header.Get(&filename);
   CPPUNIT_ASSERT(!str.empty());
   CPPUNIT_ASSERT(str.Contains("hello test"));
+  CPPUNIT_ASSERT(str.Contains("AvW"));
 }
 
 void wxExAppTestFixture::testLexer()
