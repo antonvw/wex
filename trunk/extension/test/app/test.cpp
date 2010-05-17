@@ -65,12 +65,16 @@ void wxExAppTestFixture::testConfigItem()
 void wxExAppTestFixture::testFrd()
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
+  
+  frd->SetUseRegularExpression(true);
 
   frd->SetFindString("find1");
   frd->SetFindString("find2");
-  frd->SetFindString("find3");
+  frd->SetFindString("find[0-9]");
   
   CPPUNIT_ASSERT(!frd->GetFindStrings().empty());
+  CPPUNIT_ASSERT(!frd->GetRegularExpression().IsValid());
+  CPPUNIT_ASSERT(!frd->GetRegularExpression().Matches("find9));
 }
 
 void wxExAppTestFixture::testGlobal()
