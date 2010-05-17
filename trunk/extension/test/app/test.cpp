@@ -169,7 +169,7 @@ void wxExAppTestFixture::testListView()
 void wxExAppTestFixture::testLog()
 {
   CPPUNIT_ASSERT(!wxExLog::Get()->GetFileName().GetFullPath().empty());
-  wxExLog::Get()->Log("hello from wxExtension test");
+  CPPUNIT_ASSERT(wxExLog::Get()->Log("hello from wxExtension test"));
 }
 
 void wxExAppTestFixture::testMenu()
