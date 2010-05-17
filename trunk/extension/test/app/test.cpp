@@ -22,10 +22,44 @@ void wxExAppTestFixture::testConfigItem()
   wxExConfigItem spacer;
   CPPUNIT_ASSERT(spacer.GetType() == CONFIG_SPACER);
   CPPUNIT_ASSERT(!spacer.GetIsRequired());
+  CPPUNIT_ASSERT(spacer.GetControl() == NULL);
   
   wxExConfigItem spin("spin", 1, 5);
   CPPUNIT_ASSERT(spin.GetType() == CONFIG_SPINCTRL);
   CPPUNIT_ASSERT(!spin.GetIsRequired());
+  CPPUNIT_ASSERT(spin.GetControl() == NULL);
+  
+  wxExConfigItem spind("spin", 1.0, 5.0);
+  CPPUNIT_ASSERT(spind.GetType() == CONFIG_SPINCTRL_DOUBLE);
+  CPPUNIT_ASSERT(!spind.GetIsRequired());
+  CPPUNIT_ASSERT(spind.GetControl() == NULL);
+  
+  wxExConfigItem str("string");
+  CPPUNIT_ASSERT(str.GetType() == CONFIG_STRING);
+  CPPUNIT_ASSERT(!str.GetIsRequired());
+  CPPUNIT_ASSERT(str.GetControl() == NULL);
+  
+  wxExConfigItem i("int", CONFIG_INT);
+  CPPUNIT_ASSERT(i.GetType() == CONFIG_INT);
+  CPPUNIT_ASSERT(!i.GetIsRequired());
+  CPPUNIT_ASSERT(i.GetControl() == NULL);
+  
+  wxSizer sizer;
+  
+  spacer.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(spacer.GetControl() == NULL); //!
+  
+  spin.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(spin.GetControl() != NULL);
+  
+  spind.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(spind.GetControl() != NULL);
+  
+  str.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(str.GetControl() != NULL);
+  
+  i.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(i.GetControl() != NULL);
 }
 
 void wxExAppTestFixture::testFrd()
