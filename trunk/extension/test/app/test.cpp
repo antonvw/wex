@@ -99,8 +99,10 @@ void wxExAppTestFixture::testHeader()
 {
   wxExFileName filename(TEST_FILE);
   wxExHeader header;
-    
-  CPPUNIT_ASSERT(!header.Get(&filename).empty());
+  header.Set("hello test");
+  const wxString str = header.Get(&filename);
+  CPPUNIT_ASSERT(!str.empty());
+  CPPUNIT_ASSERT(str.Contains("hello test"));
 }
 
 void wxExAppTestFixture::testLexer()
@@ -149,6 +151,9 @@ void wxExAppTestFixture::testLexers()
   CPPUNIT_ASSERT(lexers.FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(lexers.FindByName("cpp").GetScintillaLexer() == "cpp");
   CPPUNIT_ASSERT(lexers.FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(lexers.FindByName("xxx").GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(!lexers.GetMacros().empty());
+  CPPUNIT_ASSERT(!lexers.GetMacrosStyle().empty());
 }
 
 void wxExAppTestFixture::testListView()
@@ -159,6 +164,7 @@ void wxExAppTestFixture::testListView()
 void wxExAppTestFixture::testLog()
 {
   CPPUNIT_ASSERT(!wxExLog::Get()->GetFileName().GetFullPath().empty());
+  wxExLog::Get()->Log("hello from wxExtension test");
 }
 
 void wxExAppTestFixture::testMenu()
@@ -266,21 +272,6 @@ void wxExAppTestFixture::testUtil()
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
   CPPUNIT_ASSERT(wxExGetNumberOfLines("test\ntest\n") == 3);
   CPPUNIT_ASSERT(wxExGetLineNumberFromText("test on line: 1200") == 1200);
-
-  // Only usefull if the lexers file was present
-  if (wxExLexers::Get()->Count() > 0)
-  {
-    wxConfigBase::Get()->Write(_("Purpose"), "hello test");
-    const wxExFileName fn(TEST_FILE);
-    const wxString header = wxExHeader().Get(&fn);
-    CPPUNIT_ASSERT(header.Contains("hello test"));
-  }
-  else
-  {
-    wxLogMessage("No lexers available");
-  }
-
-  wxExLog::Get()->Log("hello from wxExtension test");
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
