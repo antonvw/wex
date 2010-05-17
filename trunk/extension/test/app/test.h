@@ -54,6 +54,7 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
 
+  void testConfigItem();
   void testFrd();
   void testGlobal();
   void testGrid();
@@ -64,6 +65,7 @@ public:
   void testLog();
   void testMenu();
   void testNotebook();
+  void testSTC();
   void testSTCFile();
   void testSTCShell();
   void testUtil();

@@ -17,6 +17,10 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+void wxExAppTestFixture::testConfigItem()
+{
+}
+
 void wxExAppTestFixture::testFrd()
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
@@ -155,6 +159,11 @@ void wxExAppTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
+void wxExAppTestFixture::testSTC()
+{
+  wxExSTCFile* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+}
+  
 void wxExAppTestFixture::testSTCFile()
 {
   wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
@@ -253,6 +262,10 @@ wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testConfigItem",
+    &wxExAppTestFixture::testConfigItem));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testFrd",
     &wxExAppTestFixture::testFrd));
     
@@ -291,6 +304,10 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testNotebook",
     &wxExAppTestFixture::testNotebook));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testSTC",
+    &wxExAppTestFixture::testSTC));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTCFile",
