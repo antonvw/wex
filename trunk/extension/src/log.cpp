@@ -57,7 +57,7 @@ wxExLog* wxExLog::Get(bool createOnDemand)
   return m_Self;
 }
 
-void wxExLog::Log(const wxString& text, bool add_timestamp ) const
+bool wxExLog::Log(const wxString& text, bool add_timestamp ) const
 {
   if (m_Logging) 
   {
@@ -70,8 +70,10 @@ void wxExLog::Log(const wxString& text, bool add_timestamp ) const
       log = wxDateTime::Now().Format() + " " + log;
     }
 
-    file.Write(log + wxTextFile::GetEOL());
+    return file.Write(log + wxTextFile::GetEOL());
   }
+
+  return false;
 }
 
 wxExLog* wxExLog::Set(wxExLog* log)
