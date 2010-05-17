@@ -322,9 +322,13 @@ void wxExLexer::Set(const wxXmlNode* node)
 {
   m_ScintillaLexer = node->GetAttribute("name", "");
 
+#ifdef __WXMSW__
   m_Extensions = node->GetAttribute(
     "extensions", 
     "*." + m_ScintillaLexer);
+#else    
+  m_Extensions = node->GetAttribute("extensions", "");
+#endif    
 
   if (node->GetAttribute("match", "") != "")
   {
