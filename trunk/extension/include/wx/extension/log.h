@@ -18,17 +18,22 @@
 class wxExLog
 {
 public:
-  /// Constructor.
-  wxExLog(const wxFileName& filename);
+  /// Constructor, calls SetLogging with logging as specified.
+  wxExLog(
+    const wxFileName& filename,
+    bool logging = true);
 
-  /// Returns the log object.
+  /// Returns the global log object.
+  /// The global file logging is default turned off.
   static wxExLog* Get(bool createOnDemand = true);
 
   /// Returns the filename of the logfile.
   const wxFileName& GetFileName() const {return m_FileName;};
+  
+  /// Gets the member.
+  bool GetLogging() const {return m_Logging;};
 
-  /// Logs text with a timestamp at the end of the file.
-  /// Logs text (only if SetLogging(true) is called, default it is off).
+  /// Logs text (if logging is on) with a timestamp at the end of the file.
   bool Log(const wxString& text, bool add_timestamp = true) const;
 
   /// Sets the object as the current one, returns the pointer 

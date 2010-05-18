@@ -21,10 +21,10 @@
 
 wxExLog* wxExLog::m_Self = NULL;
 
-wxExLog::wxExLog(const wxFileName& filename)
-  : m_Logging(true)
-  , m_FileName(filename)
+wxExLog::wxExLog(const wxFileName& filename, bool logging)
+  : m_FileName(filename)
 {
+  SetLogging(logging);
 }
 
 wxExLog* wxExLog::Get(bool createOnDemand)
@@ -50,8 +50,7 @@ wxExLog* wxExLog::Get(bool createOnDemand)
 #endif
     }
 
-    m_Self = new wxExLog(filename);
-    m_Self->m_Logging = false;
+    m_Self = new wxExLog(filename, false); // no logging
   }
 
   return m_Self;
