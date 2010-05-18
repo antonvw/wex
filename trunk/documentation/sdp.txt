@@ -131,6 +131,7 @@ Roadmap
 - new wxWidgets. 
     Use GetItemText with col from list ctrl
     Use ribbon toolbar.
+    Use cbegin iterators.
     File history has it's own include file. Use it and check new methods.
 
 - Add ctags (like Exuberant CTAGS)
