@@ -59,17 +59,34 @@ void wxExReportAppTestFixture::testFrameWithHistory()
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
 }
 
+void wxExReportAppTestFixture::testListItem()
+{
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  wxExListViewStandard* listView = new wxExListViewStandard(frame, LIST_FILE);
+  
+  wxExListItem item1(listView, wxExFileName("./test.h"));
+  item1.Insert();
+  wxExListItem item2(listView, wxExFileName("./test.cpp"));
+  item2.Insert();
+  wxExListItem item3(listView, wxExFileName("./main.cpp"));
+  item3.Insert();
+  listView->SortColumn(_("File Name"), SORT_ASCENDING);
+  
+  wxExListItem test(listView, 0);
+  CPPUNIT_ASSERT(test.GetColumnText(_("File Name")) == "./main.cpp");
+}
+  
 void wxExReportAppTestFixture::testListViewFile()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_FILE);
   
-  // Remember that listview file already has columns.
   listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+  // Remember that listview file already has columns.
   CPPUNIT_ASSERT(listView->FindColumn("String") > 1);
   CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
-  
+
   CPPUNIT_ASSERT(listView->FileLoad(TEST_PRJ));
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
@@ -106,6 +123,10 @@ wxExReportTestSuite::wxExReportTestSuite()
   addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
     "testFrameWithHistory",
     &wxExReportAppTestFixture::testFrameWithHistory));
+    
+  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+    "testListItem",
+    &wxExReportAppTestFixture::testListItem));
     
   addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
     "testListViewFile",

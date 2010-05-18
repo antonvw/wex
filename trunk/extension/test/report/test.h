@@ -57,6 +57,7 @@ public:
   void testConfig();
   void testDirWithListView();
   void testFrameWithHistory();
+  void testListItem();
   void testListViewFile();
   void testProcess();
   void testSTCWithFrame();

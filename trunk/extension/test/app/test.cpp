@@ -169,18 +169,6 @@ void wxExAppTestFixture::testListView()
   listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
   CPPUNIT_ASSERT(listView->FindColumn("String")  == 0);
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
-  
-/*
-  wxExListItem item1(m_ListView, "c item"); ///< testing wxExListItem
-  item1.Insert();
-  wxExListItem item2(m_ListView, "b item"); ///< testing wxExListItem
-  item2.Insert();
-  wxExListItem item3(m_ListView, "a item"); ///< testing wxExListItem
-  item3.Insert();
-  m_ListView->SortColumn("String", SORT_ASCENDING);
-  wxExListItem test(m_ListView, 0);
-  CPPUNIT_ASSERT(test.GetColumnText("String") == "a item");
-*/
 }
 
 void wxExAppTestFixture::testLog()
