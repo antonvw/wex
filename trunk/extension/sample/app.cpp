@@ -224,24 +224,6 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
 }
 
-void wxExSampleFrame::OnCommandConfigDialog(
-  wxWindowID dialogid,
-  int commandid)
-{
-  if (dialogid == wxID_PREFERENCES)
-  {
-    if (commandid != wxID_CANCEL)
-    {
-      m_STC->ConfigGet();
-      m_STCLexers->ConfigGet();
-    }
-  }
-  else
-  {
-    wxExManagedFrame::OnCommandConfigDialog(dialogid, commandid);
-  }
-}
-
 wxExGrid* wxExSampleFrame::GetGrid()
 {
   return m_Grid;
@@ -417,6 +399,24 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   default:
     wxFAIL;
     break;
+  }
+}
+
+void wxExSampleFrame::OnCommandConfigDialog(
+  wxWindowID dialogid,
+  int commandid)
+{
+  if (dialogid == wxID_PREFERENCES)
+  {
+    if (commandid != wxID_CANCEL)
+    {
+      m_STC->ConfigGet();
+      m_STCLexers->ConfigGet();
+    }
+  }
+  else
+  {
+    wxExManagedFrame::OnCommandConfigDialog(dialogid, commandid);
   }
 }
 
