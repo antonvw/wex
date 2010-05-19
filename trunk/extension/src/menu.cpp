@@ -251,7 +251,6 @@ void wxExMenu::AppendVCS()
   vcsmenu->AppendSeparator();
   vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
 
-  AppendSeparator();
   AppendSubMenu(vcsmenu, "&VCS");
 }
 

@@ -159,6 +159,7 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
   {
     if (wxExVCS::Get()->DirExists(GetFileName()))
     {
+      menu.AppendSeparator();
       menu.AppendVCS();
     }
     else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
@@ -188,16 +189,8 @@ int wxExSTCFile::ConfigDialog(
 {
   std::vector<wxExConfigItem> items;
 
-  wxString page;
-
-  if (flags & STC_CONFIG_SIMPLE)
-  {
-    page = wxEmptyString;
-  }
-  else
-  {
-    page = _("Setting");
-  }
+  const wxString page = 
+    ((flags & STC_CONFIG_SIMPLE) ? wxEmptyString: _("Setting"));
 
   items.push_back(wxExConfigItem(
     _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
@@ -448,7 +441,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   
   if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-	  MarkerDeleteAll(m_MarkerChange.GetNo());
+    MarkerDeleteAll(m_MarkerChange.GetNo());
   }
 
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
@@ -553,14 +546,14 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
   {
   case wxID_SAVE: FileSave(); break;
 
-    case ID_EDIT_COMPARE:
+  case ID_EDIT_COMPARE:
     {
-      wxFileName lastfile;
+    wxFileName lastfile;
 
-      if (wxExFindOtherFileName(GetFileName(), &lastfile))
-      {
-        wxExCompareFile(GetFileName(), lastfile);
-      }
+    if (wxExFindOtherFileName(GetFileName(), &lastfile))
+    {
+      wxExCompareFile(GetFileName(), lastfile);
+    }
     }
     break;
 
@@ -633,7 +626,7 @@ bool wxExSTCFile::Open(
 
   SetFlags(flags);
 
-  if (wxExFile::FileLoad(filename.GetFullPath()))
+  if (FileLoad(filename.GetFullPath()))
   {
     SetName(filename.GetFullPath());
 
@@ -700,7 +693,8 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
     const auto message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
 
-    // README: The stc.h equivalents AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
+    // README: The stc.h equivalents AddText, AddTextRaw, InsertText, 
+    // InsertTextRaw do not add the length.
     // So for binary files this is the only way for opening.
     SendMsg(message, buffer.length(), (wxIntPtr)(const char *)buffer.data());
   }
