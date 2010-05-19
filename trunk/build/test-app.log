@@ -1,12 +1,27 @@
-...............F
+..F.......F...F.....F
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  15   Failures: 1   Errors: 0
+Run:  17   Failures: 4   Errors: 0
 
 
-1) test: testVi (F) line: 249 ../extension/test/app/test.cpp
+1) test: testFrd (F) line: 76 ../extension/test/app/test.cpp
+assertion failed
+- Expression: !frd->GetRegularExpression().IsValid()
+
+
+2) test: testLog (F) line: 179 ../extension/test/app/test.cpp
+assertion failed
+- Expression: wxExLog::Get()->Log("hello from wxExtension test")
+
+
+3) test: testSTC (F) line: 228 ../extension/test/app/test.cpp
+assertion failed
+- Expression: stc->FindNext("more text")
+
+
+4) test: testVi (F) line: 316 ../extension/test/app/test.cpp
 assertion failed
 - Expression: vi->OnChar(event)
 

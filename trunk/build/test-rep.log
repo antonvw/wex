@@ -1,7 +1,14 @@
-.wxConfig::Read:145
-.....
+.wxConfig::Read:144
+...F...
 
 
-OK (6 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  7   Failures: 1   Errors: 0
+
+
+1) test: testListItem (F) line: 76 ../extension/test/report/test.cpp
+assertion failed
+- Expression: listView->GetItemText(0, _("File Name")) == "./main.cpp"
 
 
