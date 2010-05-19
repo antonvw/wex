@@ -62,7 +62,8 @@ void wxExReportAppTestFixture::testFrameWithHistory()
 void wxExReportAppTestFixture::testListItem()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewStandard* listView = new wxExListViewStandard(frame, LIST_FILE);
+  wxExListViewStandard* listView = new wxExListViewStandard(
+    frame, wxExListViewStandard::LIST_FILE);
   
   wxExListItem item1(listView, wxExFileName("./test.h"));
   item1.Insert();
@@ -72,8 +73,7 @@ void wxExReportAppTestFixture::testListItem()
   item3.Insert();
   listView->SortColumn(_("File Name"), SORT_ASCENDING);
   
-  wxExListItem test(listView, 0);
-  CPPUNIT_ASSERT(test.GetColumnText(_("File Name")) == "./main.cpp");
+  CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")) == "./main.cpp");
 }
   
 void wxExReportAppTestFixture::testListViewFile()

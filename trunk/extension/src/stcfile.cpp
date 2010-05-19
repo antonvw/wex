@@ -190,7 +190,7 @@ int wxExSTCFile::ConfigDialog(
   std::vector<wxExConfigItem> items;
 
   const wxString page = 
-    ((flags & STC_CONFIG_SIMPLE) ? wxEmptyString: _("Setting"));
+    ((flags & STC_CONFIG_SIMPLE) ? wxString(wxEmptyString): _("Setting"));
 
   items.push_back(wxExConfigItem(
     _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
