@@ -383,11 +383,6 @@ void wxExSTCFile::DoFileLoad(bool synced)
   {
     SetLexer(GetFileName().GetLexer().GetScintillaLexer());
 
-    if (!GetLexer().IsOk())
-    {
-      SetLexerByText();
-    }
-
     if (GetLexer().GetScintillaLexer() == "po")
     {
       AddBasePathToPathList();

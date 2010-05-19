@@ -156,9 +156,6 @@ public:
   /// Then colourises the document.
   void SetLexer(const wxString& lexer);
 
-  /// Sets the (scintilla) lexer using document text.
-  void SetLexerByText();
-
   /// Adds a sequence.
   void SequenceDialog();
 

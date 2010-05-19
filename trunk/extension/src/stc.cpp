@@ -1512,12 +1512,12 @@ void wxExSTC::SetLexer(const wxString& lexer)
 
   m_Lexer = wxExLexers::Get()->FindByName(lexer);
   SetScintillaLexer();
-}
-
-void wxExSTC::SetLexerByText()
-{
-  m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
-  SetScintillaLexer();
+  
+  if (!m_Lexer.IsOk())
+  {
+    m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
+    SetScintillaLexer();
+  }
 }
 
 void wxExSTC::SetText(const wxString& value)
