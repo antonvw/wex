@@ -136,11 +136,15 @@ wxExSampleFrame::wxExSampleFrame()
   menuSTC->AppendSeparator();
   menuSTC->Append(ID_STC_SPLIT, _("Split"));
 
+  wxExMenu *menuView = new wxExMenu;
+  menuView->AppendBars();
+  
   wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menuFile, _("&File"));
+  menubar->Append(menuView, _("&View"));
   menubar->Append(menuSTC, _("&STC"));
   menubar->Append(menuConfig, _("&Config"));
   menubar->Append(menuHelp, _("&Help"));
