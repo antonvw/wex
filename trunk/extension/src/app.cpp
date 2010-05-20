@@ -52,15 +52,15 @@ bool wxExApp::OnInit()
     // If there are catalogs in the catalog_dir, then add them to the m_Locale.
     // README: We use the canonical name, also for windows, not sure whether that is
     // the best.
-    const wxString catalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
+    m_CatalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
       m_Locale.GetCanonicalName(),
       // This seems to be necessarty for wxGTK. For wxMSW it isn't used.
       wxStandardPaths::ResourceCat_Messages);
 
-    if (wxFileName::DirExists(catalogDir))
+    if (wxFileName::DirExists(m_CatalogDir))
     {
       wxArrayString files;
-      wxDir::GetAllFiles(catalogDir, &files);
+      wxDir::GetAllFiles(m_CatalogDir, &files);
 
       for (
         auto it = files.begin();

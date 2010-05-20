@@ -66,15 +66,10 @@ bool wxExSampleApp::OnInit()
 
   wxExLog::Get()->SetLogging();
 
-  // This is also used by wxExApp::OnInit.
-  const wxString catalogDir = wxStandardPaths::Get().GetLocalizedResourcesDir(
-    GetLocale().GetCanonicalName(),
-      wxStandardPaths::ResourceCat_Messages);
-
   wxExSampleFrame *frame = new wxExSampleFrame();
   frame->Show(true);
   frame->StatusText(
-    "Locale: " + GetLocale().GetLocale() + " dir: " + catalogDir);
+    "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
 
   SetTopWindow(frame);
 
