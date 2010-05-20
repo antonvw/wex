@@ -471,13 +471,13 @@ void wxExLexer::SetScintillaLexer(const wxString& lexer, wxStyledTextCtrl* stc)
 
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  stc->SetLexerLanguage(GetScintillaLexer());
+  stc->SetLexerLanguage(m_ScintillaLexer);
 
   if (!IsOk())
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
     
-    stc->SetLexerLanguage(GetScintillaLexer());
+    stc->SetLexerLanguage(m_ScintillaLexer);
   }
 
   if (
@@ -486,7 +486,7 @@ void wxExLexer::SetScintillaLexer(const wxString& lexer, wxStyledTextCtrl* stc)
       // Otherwise it is not known, and we better show an error.
       stc->GetLexer() == wxSTC_LEX_NULL)
   {
-    wxLogError(_("Lexer is not known") + ": " + GetScintillaLexer());
+    wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }
 }
 
