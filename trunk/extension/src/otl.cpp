@@ -269,7 +269,7 @@ const wxString wxExOTL::Version()
 {
   const long version = OTL_VERSION_NUMBER;
 
-  return wxString::Format("OTL v%d.%d.%d",
+  return wxString::Format("OTL %d.%d.%d",
      version >> 16,
     (version >> 8) & 0xff,
     (version & 0xff));

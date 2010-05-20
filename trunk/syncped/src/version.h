@@ -9,4 +9,4 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#define APPL_VERSION "v1.0.1"
+#define APPL_VERSION "1.0.1"
