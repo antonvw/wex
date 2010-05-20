@@ -152,12 +152,12 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
+  /// Adds a sequence.
+  void SequenceDialog();
+
   /// Sets the (scintilla) lexer for this document.
   /// Then colourises the document.
   void SetLexer(const wxString& lexer);
-
-  /// Adds a sequence.
-  void SequenceDialog();
 
   /// Sets the text.
   void SetText(const wxString& value);

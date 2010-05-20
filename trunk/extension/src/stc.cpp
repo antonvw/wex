@@ -1511,11 +1511,13 @@ void wxExSTC::SetLexer(const wxString& lexer)
   m_Lexer.ApplyResetProperties(this);
 
   m_Lexer = wxExLexers::Get()->FindByName(lexer);
+  
   SetScintillaLexer();
   
   if (!m_Lexer.IsOk())
   {
     m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
+    
     SetScintillaLexer();
   }
 }
