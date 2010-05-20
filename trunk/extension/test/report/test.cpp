@@ -73,7 +73,7 @@ void wxExReportAppTestFixture::testListItem()
   item3.Insert();
   listView->SortColumn(_("File Name"), SORT_ASCENDING);
   
-  CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")) == "./main.cpp");
+  CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }
   
 void wxExReportAppTestFixture::testListViewFile()
