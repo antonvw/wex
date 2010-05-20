@@ -248,23 +248,6 @@ bool Frame::AllowCloseAll(wxWindowID id)
   return true;
 }
 
-void Frame::OnCommandConfigDialog(
-  wxWindowID dialogid,
-  int commandid)
-{
-  if (dialogid == ID_OPTION_EDITOR)
-  {
-    if (commandid != wxID_CANCEL)
-    {
-      m_NotebookWithEditors->ForEach(ID_ALL_STC_CONFIG_GET);
-    }
-  }
-  else
-  {
-    DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
-  }
-}
-
 bool Frame::DialogProjectOpen()
 {
   wxFileDialog dlg(this,
@@ -784,6 +767,23 @@ void Frame::OnCommand(wxCommandEvent& event)
   default: 
     wxFAIL;
     break;
+  }
+}
+
+void Frame::OnCommandConfigDialog(
+  wxWindowID dialogid,
+  int commandid)
+{
+  if (dialogid == ID_OPTION_EDITOR)
+  {
+    if (commandid != wxID_CANCEL)
+    {
+      m_NotebookWithEditors->ForEach(ID_ALL_STC_CONFIG_GET);
+    }
+  }
+  else
+  {
+    DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
   }
 }
 
