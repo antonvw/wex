@@ -266,16 +266,14 @@ int wxExSTCFile::ConfigDialog(
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
-    wxExConfigDialog dlg(
+    wxExConfigDialog(
       parent,
       items,
       title,
       0,
       2,
       buttons,
-      id);
-
-    return dlg.ShowModal();
+      id).ShowModal();
   }
   else
   {
