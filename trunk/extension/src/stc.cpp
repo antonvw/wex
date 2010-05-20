@@ -1454,30 +1454,6 @@ void wxExSTC::SequenceDialog()
   AddText(sequence + GetEOL());
 }
 
-void wxExSTC::SetScintillaLexer()
-{
-  // Update the lexer for scintilla.
-  SetLexerLanguage(m_Lexer.GetScintillaLexer());
-
-  if (
-    m_Lexer.IsOk() &&
-    // And check whether the GetLexer from scintilla has a good value.
-    // Otherwise it is not known, and we better show an error.
-    wxStyledTextCtrl::GetLexer() == wxSTC_LEX_NULL)
-  {
-    wxLogError(_("Lexer is not known") + ": " + m_Lexer.GetScintillaLexer());
-  }
-
-  Colourise();
-
-  if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
-  {
-    FoldAll();
-  }
-
-  wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
-}
-
 void wxExSTC::SetFolding()
 {
   if (GetProperty("fold") == "1")
@@ -1506,20 +1482,16 @@ void wxExSTC::SetGlobalStyles()
 
 void wxExSTC::SetLexer(const wxString& lexer)
 {
-  ClearDocumentStyle();
-
-  m_Lexer.ApplyResetProperties(this);
-
-  m_Lexer = wxExLexers::Get()->FindByName(lexer);
+  m_Lexer.SetScintillaLexer(lexer, this);
   
-  SetScintillaLexer();
-  
-  if (!m_Lexer.IsOk())
+  Colourise();
+
+  if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
   {
-    m_Lexer = wxExLexers::Get()->FindByText(GetLine(0));
-    
-    SetScintillaLexer();
+    FoldAll();
   }
+
+  wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
 }
 
 void wxExSTC::SetText(const wxString& value)

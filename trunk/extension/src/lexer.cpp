@@ -463,6 +463,33 @@ bool wxExLexer::SetKeywords(const wxString& value)
   return true;
 }
 
+void wxExLexer::SetScintillaLexer(const wxString& lexer, wxStyledTextCtrl* stc)
+{
+  stc->ClearDocumentStyle();
+  
+  ApplyResetProperties(stc);
+
+  (*this) = wxExLexers::Get()->FindByName(lexer);
+  
+  stc->SetLexerLanguage(GetScintillaLexer());
+
+  if (!IsOk())
+  {
+    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
+    
+    stc->SetLexerLanguage(GetScintillaLexer());
+  }
+
+  if (
+      IsOk() &&
+      // And check whether the GetLexer from scintilla has a good value.
+      // Otherwise it is not known, and we better show an error.
+      stc->GetLexer() == wxSTC_LEX_NULL)
+  {
+    wxLogError(_("Lexer is not known") + ": " + GetScintillaLexer());
+  }
+}
+
 int wxExLexer::UsableCharactersPerLine() const
 {
   // We always use lines with 80 characters. We adjust this here for

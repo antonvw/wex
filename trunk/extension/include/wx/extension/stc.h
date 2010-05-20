@@ -220,7 +220,6 @@ private:
   void HexDecCalltip(int pos);
   void Initialize();
   void SetFolding();
-  void SetScintillaLexer();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();

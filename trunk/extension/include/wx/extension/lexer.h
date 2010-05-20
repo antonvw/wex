@@ -99,6 +99,9 @@ public:
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);
 
+  /// Sets scintilla lexer for specified lexer and stc.
+  void SetScintillaLexer(const wxString& lexer, wxStyledTextCtrl* stc);
+
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
