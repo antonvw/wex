@@ -37,9 +37,6 @@ public:
   /// Sets properties for specified component.
   void ApplyProperties(wxStyledTextCtrl* stc) const;
 
-  /// Resets properties for specified component.
-  void ApplyResetProperties(wxStyledTextCtrl* stc) const;
-
   /// Colourises the component.
   void Colourise(wxStyledTextCtrl* stc) const;
 
@@ -105,6 +102,8 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
+  /// Resets properties for specified component.
+  void ApplyResetProperties(wxStyledTextCtrl* stc) const;
   const std::vector<wxExStyle> AutoMatch(const wxString& lexer) const;
   const wxString GetFormattedText(
     const wxString& lines,
