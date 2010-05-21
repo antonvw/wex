@@ -216,6 +216,7 @@ private:
   void CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
+  void EOLModeUpdate(int eol_mode);
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize();

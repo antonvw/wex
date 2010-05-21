@@ -491,6 +491,15 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   }
 }
 
+void wxExSTC::EOLModeUpdate(int eol_mode)
+{
+  ConvertEOLs(eol_mode);
+  SetEOLMode(eol_mode);
+#if wxUSE_STATUSBAR
+  UpdateStatusBar("PaneFileType");
+#endif
+}
+
 void wxExSTC::FileTypeMenu()
 {
   if (GetReadOnly())
@@ -1024,6 +1033,10 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   }
   break;
 
+  case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
+  case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
+  case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
+  
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   default: wxFAIL; break;

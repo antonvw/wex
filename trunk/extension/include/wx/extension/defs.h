@@ -49,9 +49,6 @@ enum wxExId
   // add them to stc file event macro as well.
   ID_EDIT_OPEN_LINK,
   ID_EDIT_OPEN_BROWSER,
-  ID_EDIT_EOL_DOS,
-  ID_EDIT_EOL_UNIX,
-  ID_EDIT_EOL_MAC,
 
   ID_EDIT_STATUS_BAR,
 
@@ -72,6 +69,9 @@ enum wxExId
   ID_EDIT_TOGGLE_FOLD,
   ID_EDIT_FOLD_ALL,
   ID_EDIT_UNFOLD_ALL,
+  ID_EDIT_EOL_DOS,
+  ID_EDIT_EOL_UNIX,
+  ID_EDIT_EOL_MAC,
   ID_EDIT_STC_HIGHEST,  // and before this one
 
   ID_EDIT_VCS_LOWEST,

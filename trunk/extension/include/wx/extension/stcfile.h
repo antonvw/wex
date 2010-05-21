@@ -115,7 +115,6 @@ protected:
   void OnMouse(wxMouseEvent& event);
 private:
   void AddBasePathToPathList();
-  void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void Initialize();
   bool LinkOpen(

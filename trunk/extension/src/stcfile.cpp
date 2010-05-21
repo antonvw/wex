@@ -35,9 +35,6 @@ BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
-  EVT_MENU(ID_EDIT_EOL_DOS, wxExSTCFile::OnCommand)
-  EVT_MENU(ID_EDIT_EOL_UNIX, wxExSTCFile::OnCommand)
-  EVT_MENU(ID_EDIT_EOL_MAC, wxExSTCFile::OnCommand)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTCFile::m_ConfigDialog = NULL;
@@ -450,15 +447,6 @@ void wxExSTCFile::DoFileSave(bool save_as)
 #endif
 }
 
-void wxExSTCFile::EOLModeUpdate(int eol_mode)
-{
-  ConvertEOLs(eol_mode);
-  SetEOLMode(eol_mode);
-#if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
-#endif
-}
-
 bool wxExSTCFile::FileReadOnlyAttributeChanged()
 {
   if (!(GetFlags() & STC_WIN_HEX))
@@ -554,10 +542,6 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
     }
     }
     break;
-
-  case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
-  case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
-  case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
 
   case ID_EDIT_OPEN_LINK:
     {
