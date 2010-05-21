@@ -146,23 +146,25 @@ wxExConfigItem::wxExConfigItem(
 
 void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
 {
-  wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
-  browse->AddGrowableCol(0);
-  browse->Add(m_Control, m_ControlFlags);
+  wxFlexGridSizer* fgz = new wxFlexGridSizer(3, 0, 0);
+
+  fgz->AddGrowableCol(1);
+
+  AddStaticTextName(fgz);
+
+  fgz->Add(m_Control, m_ControlFlags);
 
   // Tried to use a wxDirPickerCtrl here, is nice,
   // but does not use a combobox for keeping old values, so this is better.
   // And the text box that is used is not resizable as well.
-  browse->Add(
+  fgz->Add(
     new wxButton(
       m_Control->GetParent(),
       m_Id,
       _(wxDirPickerWidgetLabel)),
     wxSizerFlags().Center().Border());
 
-  AddStaticTextName(sizer);
-
-  sizer->Add(browse, wxSizerFlags().Left().Expand()); // no border
+  sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
 }
 
 void wxExConfigItem::AddStaticTextName(wxSizer* sizer) const
