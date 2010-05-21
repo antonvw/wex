@@ -32,7 +32,7 @@ public:
     const std::vector<wxExConfigItem>& v,
     const wxString& title = _("Options"),
     int rows = 0,
-    int cols = 2,
+    int cols = 1,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
