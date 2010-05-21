@@ -617,16 +617,6 @@ void wxExConfigItem::ToConfig(bool save) const
       }
       break;
 
-    case CONFIG_STRING:
-      {
-      wxTextCtrl* tc = (wxTextCtrl*)m_Control;
-      if (save)
-        wxConfigBase::Get()->Write(m_Name, tc->GetValue());
-      else
-        tc->SetValue(wxConfigBase::Get()->Read(m_Name));
-      }
-      break;
-
     case CONFIG_SPINCTRL:
       {
       wxSpinCtrl* sc = (wxSpinCtrl*)m_Control;
@@ -644,6 +634,16 @@ void wxExConfigItem::ToConfig(bool save) const
         wxConfigBase::Get()->Write(m_Name, sc->GetValue());
       else
         sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Name, m_MinDouble));
+      }
+      break;
+
+    case CONFIG_STRING:
+      {
+      wxTextCtrl* tc = (wxTextCtrl*)m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(m_Name, tc->GetValue());
+      else
+        tc->SetValue(wxConfigBase::Get()->Read(m_Name));
       }
       break;
 
