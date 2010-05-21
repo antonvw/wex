@@ -144,6 +144,10 @@ void wxExAppTestFixture::testLexer()
   CPPUNIT_ASSERT(lexer.KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
+  
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  CPPUNIT_ASSERT(lexer.SetScintillaLexer("cpp", stc, false));
+  CPPUNIT_ASSERT(!lexer.SetScintillaLexer("xyz", stc, false));
 }
 
 void wxExAppTestFixture::testLexers()

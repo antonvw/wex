@@ -98,7 +98,13 @@ public:
   bool SetKeywords(const wxString& text);
 
   /// Sets scintilla lexer for specified lexer and stc.
-  void SetScintillaLexer(const wxString& lexer, wxStyledTextCtrl* stc);
+  /// Returns true if a scintilla lexer has been set.
+  /// If show_error is true, a log error message is given
+  /// if a lexer was specified, but could not be set.
+  bool SetScintillaLexer(
+    const wxString& lexer, 
+    wxStyledTextCtrl* stc,
+    bool show_error = true);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
