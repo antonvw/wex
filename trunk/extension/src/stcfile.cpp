@@ -263,7 +263,7 @@ int wxExSTCFile::ConfigDialog(
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
-    wxExConfigDialog(
+    return wxExConfigDialog(
       parent,
       items,
       title,
