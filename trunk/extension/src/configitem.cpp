@@ -402,8 +402,13 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
     case CONFIG_SPINCTRL:
     case CONFIG_SPINCTRL_DOUBLE:
     case CONFIG_STRING:
-      AddStaticTextName(sizer);
-      sizer->Add(m_Control, m_ControlFlags);
+	  {
+      wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
+      fgz->AddGrowableCol(0);
+      fgz->Add(m_Control, m_ControlFlags);
+      AddStaticTextName(fgz);
+      sizer->Add(fgz, m_ControlFlags);
+	  }
       break;
 
     case CONFIG_COMBOBOXDIR:
