@@ -67,12 +67,6 @@ void wxExLexer::ApplyProperties(wxStyledTextCtrl* stc) const
     std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 }
 
-void wxExLexer::ApplyResetProperties(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
-}
-
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
   const wxString& lexer) const
 {
@@ -467,7 +461,8 @@ void wxExLexer::SetScintillaLexer(const wxString& lexer, wxStyledTextCtrl* stc)
 {
   stc->ClearDocumentStyle();
   
-  ApplyResetProperties(stc);
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
 
   (*this) = wxExLexers::Get()->FindByName(lexer);
   

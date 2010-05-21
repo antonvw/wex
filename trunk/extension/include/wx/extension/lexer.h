@@ -103,8 +103,6 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  /// Resets properties for specified component.
-  void ApplyResetProperties(wxStyledTextCtrl* stc) const;
   const std::vector<wxExStyle> AutoMatch(const wxString& lexer) const;
   const wxString GetFormattedText(
     const wxString& lines,
