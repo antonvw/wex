@@ -144,7 +144,7 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
-void wxExConfigItem::AddBrowse(wxSizer* sizer) const
+void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
 {
   wxFlexGridSizer* browse = new wxFlexGridSizer(2, 0, 0);
   browse->AddGrowableCol(0);
@@ -160,12 +160,12 @@ void wxExConfigItem::AddBrowse(wxSizer* sizer) const
       _(wxDirPickerWidgetLabel)),
     wxSizerFlags().Center().Border());
 
-  AddName(sizer);
+  AddStaticTextName(sizer);
 
   sizer->Add(browse, wxSizerFlags().Left().Expand()); // no border
 }
 
-void wxExConfigItem::AddName(wxSizer* sizer) const
+void wxExConfigItem::AddStaticTextName(wxSizer* sizer) const
 {
   wxASSERT(!m_Name.empty());
 
@@ -402,12 +402,12 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
     case CONFIG_SPINCTRL:
     case CONFIG_SPINCTRL_DOUBLE:
     case CONFIG_STRING:
-      AddName(sizer);
+      AddStaticTextName(sizer);
       sizer->Add(m_Control, m_ControlFlags);
       break;
 
     case CONFIG_COMBOBOXDIR:
-      AddBrowse(sizer);
+      AddBrowseButton(sizer);
       break;
 
     case CONFIG_SPACER:
@@ -652,5 +652,4 @@ void wxExConfigItem::ToConfig(bool save) const
       break;
   }
 }
-
 #endif // wxUSE_GUI

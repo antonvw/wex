@@ -123,8 +123,8 @@ public:
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:
-  void AddBrowse(wxSizer* sizer) const;
-  void AddName(wxSizer* sizer) const;
+  void AddBrowseButton(wxSizer* sizer) const;
+  void AddStaticTextName(wxSizer* sizer) const;
   /// Creates the control.
   void CreateControl(wxWindow* parent, bool readonly);
 
