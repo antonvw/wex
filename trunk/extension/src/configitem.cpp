@@ -406,10 +406,10 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
     case CONFIG_STRING:
 	  {
       wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
-      fgz->AddGrowableCol(0);
-      fgz->Add(m_Control, m_ControlFlags);
+      fgz->AddGrowableCol(1);
       AddStaticTextName(fgz);
-      sizer->Add(fgz, m_ControlFlags);
+      fgz->Add(m_Control, m_ControlFlags);
+      sizer->Add(fgz, wxSizerFlags().Expand());
 	  }
       break;
 

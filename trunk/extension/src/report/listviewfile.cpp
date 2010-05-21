@@ -171,7 +171,7 @@ void wxExListViewFile::AddItemsDialog()
       v,
       _("Add Items"),
       0,
-      2,
+      1,
       wxOK | wxCANCEL,
       wxID_ADD);
   }

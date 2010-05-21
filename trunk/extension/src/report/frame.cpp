@@ -201,7 +201,7 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     v,
     (id == ID_REPLACE_IN_FILES ? _("Replace In Files"): _("Find In Files")),
     0,
-    2,
+    1,
     wxOK | wxCANCEL,
     id);
   

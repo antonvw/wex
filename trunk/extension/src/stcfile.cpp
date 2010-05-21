@@ -189,11 +189,6 @@ int wxExSTCFile::ConfigDialog(
   const wxString page = 
     ((flags & STC_CONFIG_SIMPLE) ? wxString(wxEmptyString): _("Setting"));
 
-  items.push_back(wxExConfigItem(
-    _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
-  items.push_back(wxExConfigItem(
-    _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), page));
-
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
@@ -230,7 +225,6 @@ int wxExSTCFile::ConfigDialog(
     items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
     items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
-    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
 
     std::map<long, const wxString> fchoices;
@@ -247,8 +241,16 @@ int wxExSTCFile::ConfigDialog(
     items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
     items.push_back(wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
 
+    items.push_back(wxExConfigItem(
+      _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+    items.push_back(wxExConfigItem()); // spacer
+    items.push_back(wxExConfigItem(
+      _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
+    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
+    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
 
     items.push_back(wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
@@ -268,7 +270,7 @@ int wxExSTCFile::ConfigDialog(
       items,
       title,
       0,
-      2,
+      1,
       buttons,
       id).ShowModal();
   }
@@ -281,7 +283,7 @@ int wxExSTCFile::ConfigDialog(
         items,
         title,
         0,
-        2,
+        1,
         buttons,
         id);
     }

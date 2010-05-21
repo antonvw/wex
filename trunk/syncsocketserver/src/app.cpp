@@ -473,7 +473,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       v,
       _("Server Config"),
       0,
-      2,
+      1,
       flags).ShowModal();
     }
     break;
