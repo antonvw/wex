@@ -423,11 +423,6 @@ bool wxExSTC::CheckBraceHex(int pos)
 
 void wxExSTC::Colourise()
 {
-  m_Lexer.ApplyKeywords(this);
-  SetGlobalStyles();
-  wxExLexers::Get()->ApplyProperties(this);
-  wxExLexers::Get()->ApplyMarkers(this);
-  m_Lexer.ApplyProperties(this);
   SetFolding();
   m_Lexer.Colourise(this);
 }
@@ -1497,7 +1492,7 @@ void wxExSTC::SetLexer(const wxString& lexer)
 {
   m_Lexer.SetScintillaLexer(lexer, this);
   
-  Colourise();
+  SetFolding();
 
   if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
   {

@@ -489,6 +489,20 @@ bool wxExLexer::SetScintillaLexer(
       wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
     }
   }
+
+  ApplyKeywords(stc);
+
+  wxExLexers::Get()->GetDefaultStyle().Apply(stc);
+
+  stc->StyleClearAll();
+
+  wxExLexers::Get()->ApplyGlobalStyles(stc);
+  wxExLexers::Get()->ApplyIndicators(stc);
+  wxExLexers::Get()->ApplyProperties(stc);
+  wxExLexers::Get()->ApplyMarkers(stc);
+  ApplyProperties(stc);
+
+  Colourise(stc);
   
   return stc->GetLexer() != wxSTC_LEX_NULL;
 }
