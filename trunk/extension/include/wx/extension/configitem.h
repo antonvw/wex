@@ -45,8 +45,6 @@ enum
   /// Should be used when a long value can have a short set of possible individual values.
   CONFIG_RADIOBOX,
 
-  CONFIG_SPACER,         ///< a spacer only, no config item
-
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_STRING,          ///< a textctrl
@@ -57,7 +55,7 @@ enum
 class wxExConfigItem
 {
 public:
-  /// Default contructor (for a spacer item).
+  /// Default constructor.
   wxExConfigItem();
 
   /// Constructor for a spin ctrl.

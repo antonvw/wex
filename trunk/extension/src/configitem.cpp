@@ -24,12 +24,6 @@
 
 wxExConfigItem::wxExConfigItem()
   : m_Control(NULL)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(false)
-  , m_Name("spacer")
-  , m_Page(wxEmptyString)
-  , m_Type(CONFIG_SPACER) 
-  , m_Cols(-1)
 {
 }
 
@@ -159,6 +153,8 @@ wxExConfigItem::wxExConfigItem(
 
 void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
 {
+  wxASSERT(m_Control != NULL);
+
   wxFlexGridSizer* fgz = new wxFlexGridSizer(3, 0, 0);
 
   fgz->AddGrowableCol(1);
@@ -183,6 +179,7 @@ void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
 void wxExConfigItem::AddStaticTextName(wxSizer* sizer) const
 {
   wxASSERT(!m_Name.empty());
+  wxASSERT(m_Control != NULL);
 
   sizer->Add(
     new wxStaticText(m_Control->GetParent(), 
@@ -193,12 +190,6 @@ void wxExConfigItem::AddStaticTextName(wxSizer* sizer) const
 
 void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 {
-  if (m_Type == CONFIG_SPACER)
-  {
-    // A spacer has no controlling window.
-    return;
-  }
-
   const int width = 200;
   const int width_numeric = 75;
 
@@ -430,10 +421,6 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
       AddBrowseButton(sizer);
       break;
 
-    case CONFIG_SPACER:
-      sizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
-      break;
-
     default: wxFAIL;
       break;
   }
@@ -441,12 +428,6 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
 
 void wxExConfigItem::ToConfig(bool save) const
 {
-  if (m_Type == CONFIG_SPACER)
-  {
-    // A spacer has no controlling window.
-    return;
-  }
-
   wxASSERT(m_Control != NULL);
 
   switch (m_Type)

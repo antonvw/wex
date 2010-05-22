@@ -567,10 +567,6 @@ void wxExSampleFrame::ShowConfigItems()
       wxString::Format(_("String%d"), l), 
       CONFIG_STRING, 
       "Strings"));
-
-    // CONFIG_SPACER
-    v.push_back(wxExConfigItem());
-    v.push_back(wxExConfigItem());
   }
 
   wxExConfigDialog* dlg = new wxExConfigDialog(
