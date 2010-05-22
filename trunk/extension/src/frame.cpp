@@ -197,15 +197,15 @@ wxExSTCFile* wxExFrame::GetFocusedSTC()
   return wxDynamicCast(win, wxExSTCFile);
 }
 
-void wxExFrame::GetSearchText()
+void wxExFrame::GetFindText()
 {
   if (m_FocusSTC != NULL)
   {
-    m_FocusSTC->GetSearchText();
+    m_FocusSTC->GetFindText();
   }
   else if (m_FocusGrid != NULL)
   {
-    m_FocusGrid->GetSearchText();
+    m_FocusGrid->GetFindText();
   }
   else
   {
@@ -213,7 +213,7 @@ void wxExFrame::GetSearchText()
 
     if (stc != NULL && stc->IsShown())
     {
-      stc->GetSearchText();
+      stc->GetFindText();
     }
     else
     {
@@ -221,7 +221,7 @@ void wxExFrame::GetSearchText()
 
       if (grid != NULL && grid->IsShown() )
       {
-        grid->GetSearchText();
+        grid->GetFindText();
       }
     }
   }
@@ -248,7 +248,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_FIND: 
-    GetSearchText();
+    GetFindText();
     
     if (m_FindReplaceDialog != NULL)
     {
@@ -269,7 +269,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case wxID_REPLACE: 
-    GetSearchText();
+    GetFindText();
     
     if (m_FindReplaceDialog != NULL)
     {
@@ -296,7 +296,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case ID_EDIT_FIND_PREVIOUS: 
     if (m_FocusSTC != NULL)
     {
-      m_FocusSTC->GetSearchText();
+      m_FocusSTC->GetFindText();
       m_FocusSTC->FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
     }
     else if (m_FocusListView != NULL)
@@ -307,7 +307,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     else if (m_FocusGrid != NULL)
     {
-      m_FocusGrid->GetSearchText();
+      m_FocusGrid->GetFindText();
       m_FocusGrid->FindNext(
         wxExFindReplaceData::Get()->GetFindString(), 
         command.GetId() == ID_EDIT_FIND_NEXT); 

@@ -31,7 +31,7 @@ public:
   bool GetActive() const {return m_Active;};
 
   /// Gets the search text.
-  const wxString& GetSearchText() const {return m_SearchText;};
+  const wxString& GetFindText() const {return m_FindString;};
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -104,7 +104,7 @@ private:
   
   wxString m_Command;
   wxString m_InsertText;
-  wxString m_SearchText;
+  wxString m_FindString;
 };
 
 #endif // wxUSE_GUI

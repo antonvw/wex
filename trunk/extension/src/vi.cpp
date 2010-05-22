@@ -36,7 +36,7 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchForward(true)
   , m_FindDialogItem("searchline") // do not translate
 {
-  m_SearchText = wxExConfigFirstOf(m_FindDialogItem);
+  m_FindString = wxExConfigFirstOf(m_FindDialogItem);
 }
 
 void wxExVi::Delete(int lines) const
@@ -339,7 +339,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
       case 'n': 
         for (auto i = 0; i < repeat; i++) 
-          m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
+          m_STC->FindNext(m_FindString, m_SearchFlags, m_SearchForward);
         break;
 
       case 'p': Put(true); break;
@@ -379,7 +379,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
       case 'N': 
         for (auto i = 0; i < repeat; i++) 
-          m_STC->FindNext(m_SearchText, m_SearchFlags, !m_SearchForward);
+          m_STC->FindNext(m_FindString, m_SearchFlags, !m_SearchForward);
         break;
       case 'X': for (auto i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
@@ -449,8 +449,8 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
   }
 
   m_SearchForward = c == '/';
-  m_SearchText = val;
-  m_STC->FindNext(m_SearchText, m_SearchFlags, m_SearchForward);
+  m_FindString = val;
+  m_STC->FindNext(m_FindString, m_SearchFlags, m_SearchForward);
 }
 
 void wxExVi::DoCommandLine()
@@ -650,9 +650,9 @@ void wxExVi::FindWord(bool find_next)
   const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
   const auto end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
   
-  m_SearchText = "\\<" + m_STC->GetTextRange(start, end) + "\\>";
+  m_FindString = "\\<" + m_STC->GetTextRange(start, end) + "\\>";
   
-  m_STC->FindNext(m_SearchText, m_SearchFlags, find_next);
+  m_STC->FindNext(m_FindString, m_SearchFlags, find_next);
 }
 
 void wxExVi::GotoBrace() const

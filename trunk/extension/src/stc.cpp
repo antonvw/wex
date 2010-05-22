@@ -652,7 +652,7 @@ int wxExSTC::GetLineNumberAtCurrentPos() const
   return wxExGetLineNumberFromText(text);
 }
 
-const wxString wxExSTC::GetSearchText() const
+const wxString wxExSTC::GetFindText() const
 {
   const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
 

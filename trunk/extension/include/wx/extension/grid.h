@@ -61,7 +61,7 @@ public:
   bool FindNext(const wxString& text, bool find_next = true);
 
   /// Updates find replace text.
-  void GetSearchText();
+  void GetFindText();
 
   /// Get text from selected cells,
   const wxString GetSelectedCellsValue();

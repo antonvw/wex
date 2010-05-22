@@ -153,7 +153,7 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     m_FiFDialog = NULL;
   }
 
-  GetSearchText();
+  GetFindText();
 
   std::vector<wxExConfigItem> v;
   v.push_back(

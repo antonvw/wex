@@ -99,7 +99,7 @@ public:
   long GetMenuFlags() const {return m_MenuFlags;};
 
   /// Gets search text, as selected or from config.
-  const wxString GetSearchText() const;
+  const wxString GetFindText() const;
 
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;

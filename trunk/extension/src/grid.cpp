@@ -293,7 +293,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
   }
 }
 
-void wxExGrid::GetSearchText()
+void wxExGrid::GetFindText()
 {
   if (IsSelection())
   {
