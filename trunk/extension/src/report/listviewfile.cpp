@@ -160,7 +160,6 @@ void wxExListViewFile::AddItemsDialog()
       true,
       1000));
 
-    v.push_back(wxExConfigItem());
     std::set<wxString> set;
     set.insert(m_TextAddFiles);
     set.insert(m_TextAddFolders);

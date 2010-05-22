@@ -864,7 +864,6 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
         CONFIG_COMBOBOX));
     }
 
-    v.push_back(wxExConfigItem());
     v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
 
     if (wxExConfigDialog(this,

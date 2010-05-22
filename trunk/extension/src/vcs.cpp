@@ -54,7 +54,6 @@ int wxExVCS::ConfigDialog(
   const wxString& title) const
 {
   std::vector<wxExConfigItem> v;
-  v.push_back(wxExConfigItem()); // a spacer item
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(VCS_NONE, _("None")));

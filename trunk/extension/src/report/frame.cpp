@@ -182,8 +182,6 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     true,
     1000));
 
-  v.push_back(wxExConfigItem());
-
   if (id == ID_REPLACE_IN_FILES) 
   {
     // Match whole word does not work with replace.
