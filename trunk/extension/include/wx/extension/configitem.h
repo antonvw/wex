@@ -63,12 +63,14 @@ public:
   /// Constructor for a spin ctrl.
   wxExConfigItem(const wxString& name,
     int min, int max,
-    const wxString& page = wxEmptyString);
+    const wxString& page = wxEmptyString,
+	int cols = -1);
 
   /// Constructor for a spin ctrl double.
   wxExConfigItem(const wxString& name,
     double min, double max, double inc = 1,
-    const wxString& page = wxEmptyString);
+    const wxString& page = wxEmptyString,
+	int cols = -1);
 
   /// Constructor for a string.
   /// The extra style argument is the style for the wxTextCtrl used.
@@ -76,19 +78,22 @@ public:
   wxExConfigItem(const wxString& name,
     const wxString& page = wxEmptyString,
     long style = 0,
-    bool is_required = false);
+    bool is_required = false,
+	int cols = -1);
 
   /// Constructor for a radiobox or a checklistbox. Just specify
   /// the map with values and text.
   wxExConfigItem(const wxString& name,
     const std::map<long, const wxString> & choices,
     bool use_radiobox = true,
-    const wxString& page = wxEmptyString);
+    const wxString& page = wxEmptyString,
+	int cols = -1);
 
   /// Constructor for a checklistbox without a name. Just specify
   /// the set with names of boolean items.
   wxExConfigItem(const std::set<wxString> & choices,
-    const wxString& page = wxEmptyString);
+    const wxString& page = wxEmptyString,
+	int cols = -1);
 
   /// Constuctor for other types.
   /// When using for a combobox dir, use id < wxID_LOWEST.
@@ -97,7 +102,11 @@ public:
     const wxString& page = wxEmptyString,
     bool is_required = false,
     int id = wxID_ANY,
-    int max_items = 25); // used by CONFIG_COMBOBOX
+    int max_items = 25, // used by CONFIG_COMBOBOX
+	int cols = -1);
+
+  /// Gets the columns.
+  int GetColumns() const {return m_Cols;};
 
   /// Gets the control (first call Layout).
   wxControl* GetControl() const {return m_Control;};
@@ -131,6 +140,7 @@ private:
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
   bool m_IsRequired;
+  int m_Cols;
   int m_Id;
   int m_Min;
   int m_Max;

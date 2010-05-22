@@ -29,6 +29,7 @@ wxExConfigItem::wxExConfigItem()
   , m_Name("spacer")
   , m_Page(wxEmptyString)
   , m_Type(CONFIG_SPACER) 
+  , m_Cols(-1)
 {
 }
 
@@ -36,7 +37,8 @@ wxExConfigItem::wxExConfigItem(
   const wxString& name,
   int min,
   int max,
-  const wxString& page)
+  const wxString& page,
+  int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(false)
@@ -47,6 +49,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_SPINCTRL)
+  , m_Cols(cols)
 {
 }
 
@@ -55,7 +58,8 @@ wxExConfigItem::wxExConfigItem(
   double min,
   double max,
   double inc,
-  const wxString& page)
+  const wxString& page,
+  int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(false)
@@ -67,6 +71,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_SPINCTRL_DOUBLE)
+  , m_Cols(cols)
 {
 }
 
@@ -74,7 +79,8 @@ wxExConfigItem::wxExConfigItem(
   const wxString& name,
   const wxString& page,
   long style,
-  bool is_required)
+  bool is_required,
+  int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(is_required)
@@ -85,6 +91,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Page(page)
   , m_Style(style)
   , m_Type(CONFIG_STRING)
+  , m_Cols(cols)
 {
 }
 
@@ -92,7 +99,8 @@ wxExConfigItem::wxExConfigItem(
   const wxString& name,
   const std::map<long, const wxString> & choices,
   bool use_radiobox,
-  const wxString& page)
+  const wxString& page,
+  int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(false)
@@ -104,12 +112,14 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
+  , m_Cols(cols)
 {
 }
 
 wxExConfigItem::wxExConfigItem(
   const std::set<wxString> & choices,
-  const wxString& page)
+  const wxString& page,
+  int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(false)
@@ -121,6 +131,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(CONFIG_CHECKLISTBOX_NONAME)
   , m_ChoicesBool(choices) 
+  , m_Cols(cols)
 {
 }
 
@@ -130,7 +141,8 @@ wxExConfigItem::wxExConfigItem(
   const wxString& page,
   bool is_required,
   int id,
-  int max_items)
+  int max_items,
+  int cols)
   : m_Control(NULL)
   , m_Id(id)
   , m_IsRequired(is_required)
@@ -141,6 +153,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Page(page)
   , m_Style(0)
   , m_Type(type) 
+  , m_Cols(cols)
 {
 }
 

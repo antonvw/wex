@@ -129,14 +129,17 @@ void wxExConfigDialog::Layout(int rows, int cols)
         }
 
         // And make a new one.
-        notebook->AddPage(new wxWindow(notebook, wxID_ANY), it->GetPage(), true); // select
+        notebook->AddPage(
+		  new wxWindow(notebook, wxID_ANY), it->GetPage(), true); // select
       }
 
       previous_page = it->GetPage();
 
+	  const int use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
+
       sizer = (rows != 0 ? 
-        new wxFlexGridSizer(rows, cols, 0, 0):
-        new wxFlexGridSizer(cols));
+        new wxFlexGridSizer(rows, use_cols, 0, 0):
+        new wxFlexGridSizer(use_cols));
 
       if (cols == 2)
       {

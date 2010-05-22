@@ -194,7 +194,7 @@ int wxExSTCFile::ConfigDialog(
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
   bchoices.insert(_("vi mode"));
-  items.push_back(wxExConfigItem(bchoices, page));
+  items.push_back(wxExConfigItem(bchoices, page, 2));
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
@@ -243,14 +243,10 @@ int wxExSTCFile::ConfigDialog(
 
     items.push_back(wxExConfigItem(
       _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(
       _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
-    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
-    items.push_back(wxExConfigItem()); // spacer
     items.push_back(wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
 
     items.push_back(wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
