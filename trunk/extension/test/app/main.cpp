@@ -29,7 +29,7 @@ bool wxExTestApp::OnInit()
 
   CppUnit::TextUi::TestRunner runner;
 
-  wxExTestSuite* suite = new wxExTestSuite;
+  wxExAppTestSuite* suite = new wxExAppTestSuite;
 
   runner.addTest(suite);
   runner.run();

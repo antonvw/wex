@@ -18,11 +18,11 @@
 #include <wx/extension/extension.h>
 
 /// CppUnit test suite.
-class wxExTestSuite : public CppUnit::TestSuite
+class wxExAppTestSuite : public CppUnit::TestSuite
 {
 public:
   /// Default constructor.
-  wxExTestSuite();
+  wxExAppTestSuite();
 };
 
 /// Derive your application from wxExApp.

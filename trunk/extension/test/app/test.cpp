@@ -19,10 +19,8 @@
 
 void wxExAppTestFixture::testConfigItem()
 {
-  wxExConfigItem spacer;
-  CPPUNIT_ASSERT(spacer.GetType() == CONFIG_SPACER);
-  CPPUNIT_ASSERT(!spacer.GetIsRequired());
-  CPPUNIT_ASSERT(spacer.GetControl() == NULL);
+  wxExConfigItem item;
+  CPPUNIT_ASSERT(item.GetControl() == NULL);
   
   wxExConfigItem spin("spin", 1, 5);
   CPPUNIT_ASSERT(spin.GetType() == CONFIG_SPINCTRL);
@@ -45,9 +43,6 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(i.GetControl() == NULL);
   
   wxGridSizer sizer(3);
-  
-  spacer.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(spacer.GetControl() == NULL); //!
   
   spin.Layout(wxTheApp->GetTopWindow(), &sizer);
   CPPUNIT_ASSERT(spin.GetControl() != NULL);
@@ -322,7 +317,7 @@ void wxExAppTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->OnChar(event));
 }
   
-wxExTestSuite::wxExTestSuite()
+wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
