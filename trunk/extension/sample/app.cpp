@@ -573,7 +573,7 @@ void wxExSampleFrame::ShowConfigItems()
     v,
     _("Config Dialog"),
     10,
-    2,
+    1,
     wxAPPLY | wxCANCEL,
     wxID_ANY);
 
