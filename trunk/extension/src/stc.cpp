@@ -984,7 +984,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   if (skip)
   {
     // Auto complete does not yet combine with vi mode.
-	if (!m_vi.GetActive())
+	if (!m_vi.GetIsActive())
 	{
       CheckAutoComp(event.GetUnicodeKey());
 	}
@@ -1063,7 +1063,7 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
     return;
   }
 
-  if (!m_vi.GetActive() || m_vi.OnKeyDown(event))
+  if (!m_vi.GetIsActive() || m_vi.OnKeyDown(event))
   {
     if (event.GetKeyCode() == WXK_RETURN)
     {

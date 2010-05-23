@@ -27,11 +27,11 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
 
-  /// Returns whether vi is active.
-  bool GetActive() const {return m_Active;};
-
   /// Gets the search text.
   const wxString& GetFindText() const {return m_FindString;};
+
+  /// Returns whether vi is active.
+  bool GetIsActive() const {return m_IsActive;};
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -42,7 +42,7 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
 
   /// Set using vi mode.
-  void Use(bool mode) {m_Active = mode;};
+  void Use(bool mode) {m_IsActive = mode;};
 private:
   void Delete(int lines) const;
   bool Delete(
@@ -93,7 +93,7 @@ private:
   
   std::map<wxUniChar, int> m_Markers;
   
-  bool m_Active; // are we actively using vi mode?
+  bool m_IsActive; // are we actively using vi mode?
   bool m_InsertMode;
   bool m_SearchForward;
   

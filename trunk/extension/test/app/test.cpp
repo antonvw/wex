@@ -306,10 +306,10 @@ void wxExAppTestFixture::testVi()
   wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   wxExVi* vi = new wxExVi(stc);
   
-  CPPUNIT_ASSERT(!vi->GetActive());
+  CPPUNIT_ASSERT(!vi->GetIsActive());
   
   vi->Use(true);
-  CPPUNIT_ASSERT(vi->GetActive());
+  CPPUNIT_ASSERT(vi->GetIsActive());
   
   wxKeyEvent event(wxEVT_CHAR);
   event.m_keyCode = 97; // one char 'a'

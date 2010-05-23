@@ -27,7 +27,7 @@ wxString wxExVi::m_LastCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
-  , m_Active(false)
+  , m_IsActive(false)
   , m_MarkerSymbol(0)
   , m_IndicatorYank(0)
   , m_InsertMode(false)
@@ -819,7 +819,7 @@ bool wxExVi::Move(
 
 bool wxExVi::OnChar(const wxKeyEvent& event)
 {
-  if (!m_Active)
+  if (!m_IsActive)
   {
     return true;
   }
@@ -869,7 +869,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
-  if (!m_Active)
+  if (!m_IsActive)
   {
     return false;
   }
