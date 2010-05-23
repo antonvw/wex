@@ -1,12 +1,17 @@
-......F...........
+.F.....F...........
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  17   Failures: 1   Errors: 0
+Run:  17   Failures: 2   Errors: 0
 
 
-1) test: testLexer (F) line: 149 ../extension/test/app/test.cpp
+1) test: testConfigItem (F) line: 23 ../extension/test/app/test.cpp
+assertion failed
+- Expression: !item.GetIsRequired()
+
+
+2) test: testLexer (F) line: 145 ../extension/test/app/test.cpp
 assertion failed
 - Expression: lexer.SetScintillaLexer("cpp", stc, false)
 
