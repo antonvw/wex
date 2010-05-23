@@ -478,7 +478,6 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_COMBOBOX_NONAME
-  v.push_back(wxExConfigItem());
   v.push_back(wxExConfigItem(
     _("Combobox No Name"),
     CONFIG_COMBOBOX_NONAME, 
