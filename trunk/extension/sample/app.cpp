@@ -322,7 +322,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       v,
       _("Config Dialog Readonly"),
       0,
-      2,
+      1,
       wxCANCEL);
 
       dlg->Show();
