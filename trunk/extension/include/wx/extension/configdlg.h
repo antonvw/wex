@@ -62,6 +62,7 @@ private:
 };
 
 /// Returns a special config dialog using only one combobox.
+/// Default pressing return acts as OK and escape as CANCEL.
 wxExConfigDialog* wxExConfigComboBoxDialog(
   /// Parent.
   wxWindow* parent,
@@ -70,7 +71,7 @@ wxExConfigDialog* wxExConfigComboBoxDialog(
   /// The item that is used for the label before the combobox.
   const wxString& item,
   /// The flags.
-  long flags = wxOK | wxCANCEL,
+  long flags = 0,
   /// The window id.
   wxWindowID id = wxID_ANY,
   long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);

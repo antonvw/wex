@@ -429,8 +429,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     m_FindDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       title, 
-      m_FindDialogItem, 
-      0);
+      m_FindDialogItem);
   }
 
   m_FindDialog->SetTitle(title);
@@ -462,8 +461,7 @@ void wxExVi::DoCommandLine()
     m_CommandDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       "vi :", 
-      item, 
-      0);
+      item);
   }
   
   m_CommandDialog->SelectAll();
