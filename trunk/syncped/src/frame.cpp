@@ -272,6 +272,10 @@ wxExListView* Frame::GetListView()
   {
     return m_History;
   }
+  else if (GetProject() != NULL && GetProject()->HasFocus())
+  {
+    return GetProject();
+  }
   else if (
     !m_NotebookWithLists->IsShown() || 
      m_NotebookWithLists->GetPageCount() == 0)
