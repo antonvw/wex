@@ -32,13 +32,7 @@ public:
   /// Default constructor.
   wxExLexer(const wxXmlNode* node = NULL);
 
-  /// Sets keywords for specified component.
-  void ApplyKeywords(wxStyledTextCtrl* stc) const;
-
-  /// Sets properties for specified component.
-  void ApplyProperties(wxStyledTextCtrl* stc) const;
-
-  /// Colourises the component.
+  /// Colourises the specified component.
   void Colourise(wxStyledTextCtrl* stc) const;
 
   /// Gets the comment begin.

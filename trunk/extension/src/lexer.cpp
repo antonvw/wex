@@ -41,32 +41,6 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   }
 }
 
-void wxExLexer::ApplyKeywords(wxStyledTextCtrl* stc) const
-{
-  // Reset keywords, also if no lexer is available.
-  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
-  {
-    stc->SetKeyWords(setno, wxEmptyString);
-  }
-
-  // Readme: The Scintilla lexer only recognized lower case words, apparently.
-  for (
-    auto it = m_KeywordsSet.begin();
-    it != m_KeywordsSet.end();
-    ++it)
-  {
-    stc->SetKeyWords(
-      it->first,
-      GetKeywordsString(it->first).Lower());
-  }
-}
-
-void wxExLexer::ApplyProperties(wxStyledTextCtrl* stc) const
-{
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
-}
-
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
   const wxString& lexer) const
 {
@@ -505,7 +479,22 @@ bool wxExLexer::SetScintillaLexer(
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }
 
-  ApplyKeywords(stc);
+  // Reset keywords, also if no lexer is available.
+  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
+  {
+    stc->SetKeyWords(setno, wxEmptyString);
+  }
+
+  // Readme: The Scintilla lexer only recognized lower case words, apparently.
+  for (
+    auto it = m_KeywordsSet.begin();
+    it != m_KeywordsSet.end();
+    ++it)
+  {
+    stc->SetKeyWords(
+      it->first,
+      GetKeywordsString(it->first).Lower());
+  }
 
   wxExLexers::Get()->GetDefaultStyle().Apply(stc);
 
@@ -515,7 +504,9 @@ bool wxExLexer::SetScintillaLexer(
   wxExLexers::Get()->ApplyIndicators(stc);
   wxExLexers::Get()->ApplyProperties(stc);
   wxExLexers::Get()->ApplyMarkers(stc);
-  ApplyProperties(stc);
+  
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 
   Colourise(stc);
   
