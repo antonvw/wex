@@ -421,11 +421,6 @@ bool wxExSTC::CheckBraceHex(int pos)
   return false;
 }
 
-void wxExSTC::Colourise()
-{
-  m_Lexer.Colourise(this);
-}
-
 void wxExSTC::ControlCharDialog(const wxString& caption)
 {
   if (GetSelectedText().length() > 1)

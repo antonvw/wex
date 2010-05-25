@@ -113,7 +113,7 @@ bool wxExNotebook::ForEach(int id)
 
     switch (id)
     {
-    case ID_ALL_STC_COLOURISE: stc->Colourise(); break;
+    case ID_ALL_STC_COLOURISE: stc->GetLexer().Colourise(stc); break;
     case ID_ALL_STC_CONFIG_GET: stc->ConfigGet(); break;
     case ID_ALL_STC_SET_LEXER: stc->SetLexer(stc->GetLexer().GetScintillaLexer()); break;
 

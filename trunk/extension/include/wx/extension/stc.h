@@ -64,9 +64,6 @@ public:
   /// If caret was at end, it is repositioned at the end.
   void AppendTextForced(const wxString& text, bool withTimestamp = true);
 
-  /// Colourises the document.
-  void Colourise();
-
   /// Edit the current selected char as a control char, or if nothing selected,
   /// add a new control char.
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
