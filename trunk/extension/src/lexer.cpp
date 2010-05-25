@@ -499,12 +499,10 @@ bool wxExLexer::SetScintillaLexer(
       IsOk() &&
       // And check whether the GetLexer from scintilla has a good value.
       // Otherwise it is not known, and we better show an error.
-      stc->GetLexer() == wxSTC_LEX_NULL)
+      stc->GetLexer() == wxSTC_LEX_NULL &&
+      show_error)
   {
-    if (show_error)
-    {
-      wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
-    }
+    wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }
 
   ApplyKeywords(stc);
