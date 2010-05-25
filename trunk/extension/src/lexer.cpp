@@ -106,6 +106,23 @@ void wxExLexer::Colourise(wxStyledTextCtrl* stc) const
 
   // And finally colour the entire document.
   stc->Colourise(0, stc->GetLength() - 1);
+  
+  // Todo: should be from wxExSTC.
+  const int margin_fold_no = 2;
+  
+  if (stc->GetProperty("fold") == "1")
+  {
+    stc->SetMarginWidth(margin_fold_no, 
+      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+
+    stc->SetFoldFlags(
+      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+  }
+  else
+  {
+    stc->SetMarginWidth(margin_fold_no, 0);
+  }
 }
 
 const wxString wxExLexer::GetFormattedText(

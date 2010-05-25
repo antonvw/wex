@@ -220,7 +220,6 @@ private:
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize();
-  void SetFolding();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();

@@ -423,7 +423,6 @@ bool wxExSTC::CheckBraceHex(int pos)
 
 void wxExSTC::Colourise()
 {
-  SetFolding();
   m_Lexer.Colourise(this);
 }
 
@@ -1462,21 +1461,6 @@ void wxExSTC::SequenceDialog()
   AddText(sequence + GetEOL());
 }
 
-void wxExSTC::SetFolding()
-{
-  if (GetProperty("fold") == "1")
-  {
-    SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-
-    SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  }
-  else
-  {
-    SetMarginWidth(m_MarginFoldingNumber, 0);
-  }
-}
 
 void wxExSTC::SetGlobalStyles()
 {
@@ -1492,8 +1476,6 @@ void wxExSTC::SetLexer(const wxString& lexer)
 {
   m_Lexer.SetScintillaLexer(lexer, this);
   
-  SetFolding();
-
   if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
   {
     FoldAll();
