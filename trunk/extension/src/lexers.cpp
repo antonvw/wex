@@ -394,7 +394,7 @@ void wxExLexers::Read()
   m_Markers.clear();
   m_Styles.clear();
   m_StylesHex.clear();
-  m_DefaultStyle = wxExStyle(NULL);
+  m_DefaultStyle = wxExStyle();
   m_GlobalProperties.clear();
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
