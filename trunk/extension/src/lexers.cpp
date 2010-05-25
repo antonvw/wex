@@ -263,7 +263,16 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 
       if (style.IsDefault())
       {
-        m_DefaultStyle = style;
+        if (m_DefaultStyle.IsOk())
+        {
+          wxLogError(_("Duplicate default style: %s on line: %d"),
+            child->GetName().c_str(), 
+            child->GetLineNumber());
+        }
+        else
+        {
+          m_DefaultStyle = style;
+        }
       }
       else
       {
