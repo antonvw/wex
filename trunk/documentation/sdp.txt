@@ -38,10 +38,12 @@ General
     and converted to xpm using GIMP (2.6.6)    
     http://www.gimp.org/
 
-- API documentation is generated from the sources using Doxygen (1.6.1)
+- Documentation
+  - API documentation is generated from the sources using Doxygen (1.6.1)
     http://www.stack.nl/~dimitri/doxygen/
-
-- Other docs are in html format using no special html editor
+  - Other docs are in html format using no special html editor
+  - Use bouml for reverse engineering and obtaining class diagrams
+    http://bouml.free.fr/index.html
 
 - Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
@@ -134,7 +136,12 @@ Roadmap
     Use cbegin iterators.
     File history has it's own include file. Use it and check new methods.
 
+- Improve test units, use macro's
+
 - Add ctags (like Exuberant CTAGS)
+
+- Add profile option (see gcc website, g++ -D_GLIBCXX_PROFILE foo.cc)
+    or use valgrind
 
 - Add gdb front-end
 
