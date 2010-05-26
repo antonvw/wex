@@ -53,7 +53,7 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 {
   SetName(title);
 
-  Initialize();
+  ConfigGet();
 
   PropertiesMessage();
 }
@@ -71,7 +71,7 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   : wxExSTC(parent, wxEmptyString, flags, menu_flags, id, pos, size, style)
   , m_PreviousLength(0)
 {
-  Initialize();
+  ConfigGet();
 
   Open(filename, line_number, match, flags);
 }
@@ -81,7 +81,7 @@ wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
   , m_PathList(stc.m_PathList)
   , m_PreviousLength(stc.m_PreviousLength)
 {
-  Initialize();
+  ConfigGet();
 
   if (stc.GetFileName().IsOk())
   {
@@ -456,12 +456,6 @@ bool wxExSTCFile::FileReadOnlyAttributeChanged()
   }
 
   return true;
-}
-
-void wxExSTCFile::Initialize()
-{
-  ConfigGet();
-  SetGlobalStyles();
 }
 
 bool wxExSTCFile::LinkOpen(

@@ -150,7 +150,6 @@ offset    hex field                                         ascii field
 */
 {
   SetControlCharSymbol('x');
-  SetGlobalStyles();
   wxExLexers::Get()->ApplyHexStyles(this);
   wxExLexers::Get()->ApplyMarkers(this);
 
@@ -921,6 +920,8 @@ void wxExSTC::Initialize()
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
+  
+  SetGlobalStyles();
 }
 
 bool wxExSTC::IsTargetRE(const wxString& target) const
@@ -1455,7 +1456,6 @@ void wxExSTC::SequenceDialog()
 
   AddText(sequence + GetEOL());
 }
-
 
 void wxExSTC::SetGlobalStyles()
 {

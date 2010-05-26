@@ -202,7 +202,6 @@ protected:
   void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFlags(long flags) {m_Flags = flags;};
-  void SetGlobalStyles();
   void SetViMode(bool mode) {m_vi.Use(mode);};
 
   const int m_MarginDividerNumber;
@@ -217,6 +216,7 @@ private:
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize();
+  void SetGlobalStyles();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();

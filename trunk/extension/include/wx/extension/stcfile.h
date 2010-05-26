@@ -116,7 +116,6 @@ protected:
 private:
   void AddBasePathToPathList();
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
-  void Initialize();
   bool LinkOpen(
     const wxString& link,
     wxString& filename, // name of found file
