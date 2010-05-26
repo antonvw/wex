@@ -16,6 +16,7 @@
 //#include <numeric> // both for accumulate
 //#include <functional>
 #include <algorithm>
+#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
@@ -474,7 +475,7 @@ bool wxExLexer::SetScintillaLexer(
       IsOk() &&
       // And check whether the GetLexer from scintilla has a good value.
       // Otherwise it is not known, and we better show an error.
-      stc->GetLexer() == wxSTC_LEX_NULL &&
+      ((wxStyledTextCtrl *)stc)->GetLexer() == wxSTC_LEX_NULL &&
       show_error)
   {
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
@@ -511,7 +512,7 @@ bool wxExLexer::SetScintillaLexer(
 
   Colourise(stc);
   
-  return stc->GetLexer() != wxSTC_LEX_NULL;
+  return ((wxStyledTextCtrl *)stc)->GetLexer() != wxSTC_LEX_NULL;
 }
 
 int wxExLexer::UsableCharactersPerLine() const
