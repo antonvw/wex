@@ -334,11 +334,7 @@ void wxExLexer::Set(const wxXmlNode* node)
   {
     if (child->GetName() == "colourings")
     {
-      const std::vector<wxExStyle> v = ParseNodeColourings(child);
-
-      m_Colourings.insert(
-        m_Colourings.end(), 
-        v.begin(), v.end());
+      m_Colourings = ParseNodeColourings(child);
     }
     else if (child->GetName() == "keywords")
     {
