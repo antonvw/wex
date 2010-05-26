@@ -20,7 +20,7 @@
 #include <wx/extension/style.h>
 
 class wxExLexers;
-class wxStyledTextCtrl;
+class wxExSTC;
 
 /// This class defines a lexer using file associations,
 /// syntax colouring and comment definitions.
@@ -33,7 +33,7 @@ public:
   wxExLexer(const wxXmlNode* node = NULL);
 
   /// Colourises the specified component.
-  void Colourise(wxStyledTextCtrl* stc) const;
+  void Colourise(wxExSTC* stc) const;
 
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
@@ -91,13 +91,14 @@ public:
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);
 
-  /// Sets scintilla lexer for specified lexer and stc.
+  /// Sets scintilla lexer for specified lexer and stc 
+  /// (and colours the component).
   /// Returns true if a scintilla lexer has been set.
   /// If show_error is true, a log error message is given
   /// if a lexer was specified, but could not be set.
   bool SetScintillaLexer(
     const wxString& lexer, 
-    wxStyledTextCtrl* stc,
+    wxExSTC* stc,
     bool show_error = true);
 
   /// Returns number of chars that fit on a line, skipping comment chars.

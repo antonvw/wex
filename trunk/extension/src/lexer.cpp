@@ -16,10 +16,10 @@
 //#include <numeric> // both for accumulate
 //#include <functional>
 #include <algorithm>
-#include <wx/stc/stc.h> // for wxSTC_KEYWORDSET_MAX
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
 wxExLexer::wxExLexer(const wxXmlNode* node)
@@ -73,7 +73,7 @@ const std::vector<wxExStyle> wxExLexer::AutoMatch(
   return text;
 }
 
-void wxExLexer::Colourise(wxStyledTextCtrl* stc) const
+void wxExLexer::Colourise(wxExSTC* stc) const
 {
   for_each (m_Colourings.begin(), m_Colourings.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
@@ -81,8 +81,7 @@ void wxExLexer::Colourise(wxStyledTextCtrl* stc) const
   // And finally colour the entire document.
   stc->Colourise(0, stc->GetLength() - 1);
   
-  // Todo: should be from wxExSTC.
-  const int margin_fold_no = 2;
+  const int margin_fold_no = stc->GetMarginFoldingNumber();
   
   if (stc->GetProperty("fold") == "1")
   {
@@ -452,7 +451,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
 
 bool wxExLexer::SetScintillaLexer(
   const wxString& lexer, 
-  wxStyledTextCtrl* stc,
+  wxExSTC* stc,
   bool show_error)
 {
   stc->ClearDocumentStyle();

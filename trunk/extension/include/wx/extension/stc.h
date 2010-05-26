@@ -92,15 +92,18 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
-  /// Gets the menu flags.
-  long GetMenuFlags() const {return m_MenuFlags;};
-
   /// Gets search text, as selected or from config.
   const wxString GetFindText() const;
 
+  /// Gets the margin number used for folding.
+  int GetMarginFoldingNumber() const {return m_MarginFoldingNumber;};
+
+  /// Gets the menu flags.
+  long GetMenuFlags() const {return m_MenuFlags;};
+
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;
-
+  
   /// Gets word at position.
   const wxString GetWordAtPos(int pos) const;
 
