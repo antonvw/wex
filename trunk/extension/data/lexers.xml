@@ -1459,7 +1459,7 @@ without the written consent of the copyright owner.
    2) match. The match attribute specifies the 'no' macro
       used for matching with the 'style' macro.
    Furthermore it might contain the next tags:
-   1) <colourings>. Colouring styles for this lexer. 
+   1) <styles>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
       This attribute lists all styles that will have the style specifier that 
       follows, separated by a comma sign (,).
@@ -1582,13 +1582,13 @@ without the written consent of the copyright owner.
   </lexer>
   
   <lexer name="asm" extensions="*.mac" match="wxSTC_ASM_">
-    <colourings>
-      <colouring no="wxSTC_ASM_CPUINSTRUCTION"> WORD </colouring>
-      <colouring no="wxSTC_ASM_MATHINSTRUCTION"> italic </colouring>
-      <colouring no="wxSTC_ASM_REGISTER"> fore:blue </colouring>
-      <colouring no="wxSTC_ASM_DIRECTIVE"> italic </colouring>
-      <colouring no="wxSTC_ASM_COMMENTBLOCK"> underline </colouring>
-    </colourings>
+    <styles>
+      <style no="wxSTC_ASM_CPUINSTRUCTION"> WORD </style>
+      <style no="wxSTC_ASM_MATHINSTRUCTION"> italic </style>
+      <style no="wxSTC_ASM_REGISTER"> fore:blue </style>
+      <style no="wxSTC_ASM_DIRECTIVE"> italic </style>
+      <style no="wxSTC_ASM_COMMENTBLOCK"> underline </style>
+    </styles>
     <keywords>    
     ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
     BICB BIS BISB BIT BITB BLE BLO BLOS BLT
@@ -1609,21 +1609,21 @@ without the written consent of the copyright owner.
   </lexer>
   
   <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_">
-    <colourings>
-      <colouring no="wxSTC_H_TAG"> TAG </colouring>
-      <colouring no="wxSTC_H_TAGEND"> TAG </colouring>
-      <colouring no="wxSTC_H_TAGUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_QUESTION"> fore:#0000FF,back:#FFEFBF </colouring>
-      <colouring no="wxSTC_H_VALUE"> fore:#FF00FF,back:#FFEFFF </colouring>
-      <colouring no="wxSTC_HPHP_DEFAULT"> fore:green,eol </colouring>
-      <colouring no="wxSTC_HPHP_HSTRING"> fore:#007F00,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_SIMPLESTRING"> fore:#009F00,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_WORD"> fore:#7F007F,italic,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </colouring>
-      <colouring no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </colouring>
-    </colourings>
+    <styles>
+      <style no="wxSTC_H_TAG"> TAG </style>
+      <style no="wxSTC_H_TAGEND"> TAG </style>
+      <style no="wxSTC_H_TAGUNKNOWN"> ERROR </style>
+      <style no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </style>
+      <style no="wxSTC_H_QUESTION"> fore:#0000FF,back:#FFEFBF </style>
+      <style no="wxSTC_H_VALUE"> fore:#FF00FF,back:#FFEFFF </style>
+      <style no="wxSTC_HPHP_DEFAULT"> fore:green,eol </style>
+      <style no="wxSTC_HPHP_HSTRING"> fore:#007F00,back:#FFF8F8 </style>
+      <style no="wxSTC_HPHP_SIMPLESTRING"> fore:#009F00,back:#FFF8F8 </style>
+      <style no="wxSTC_HPHP_WORD"> fore:#7F007F,italic,back:#FFF8F8 </style>
+      <style no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </style>
+      <style no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </style>
+      <style no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </style>
+    </styles>
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>
@@ -1633,23 +1633,23 @@ without the written consent of the copyright owner.
   </lexer>
   
   <lexer name="po" match="wxSTC_PO_" >
-    <colourings>
-      <colouring no ="wxSTC_PO_MSGID"> WORD </colouring>
-      <colouring no ="wxSTC_PO_MSGSTR"> WORD </colouring>
-    </colourings>
+    <styles>
+      <style no ="wxSTC_PO_MSGID"> WORD </style>
+      <style no ="wxSTC_PO_MSGSTR"> WORD </style>
+    </styles>
     <keywords>    
       msgid msgstr
     </keywords>
   </lexer>
   
   <lexer name="xml" match="wxSTC_H_">
-    <colourings>
-      <colouring no="wxSTC_H_TAG"> TAG </colouring>
-      <colouring no="wxSTC_H_TAGEND"> TAG </colouring>
-      <colouring no="wxSTC_H_TAGUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </colouring>
-      <colouring no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </colouring>
-    </colourings>
+    <styles>
+      <style no="wxSTC_H_TAG"> TAG </style>
+      <style no="wxSTC_H_TAGEND"> TAG </style>
+      <style no="wxSTC_H_TAGUNKNOWN"> ERROR </style>
+      <style no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </style>
+      <style no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </style>
+    </styles>
     <properties>
       <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>

@@ -111,7 +111,7 @@ private:
     bool fill_out_with_space,
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
-  const std::vector<wxExStyle> ParseNodeColourings(const wxXmlNode* node) const;
+  const std::vector<wxExStyle> ParseNodeStyles(const wxXmlNode* node) const;
   void Set(const wxXmlNode* node);
 
   wxString m_CommentBegin;
@@ -124,9 +124,9 @@ private:
   // Cannot be const, as in wxExFileName the operator= is used on a lexer.
   wxString m_ScintillaLexer;
 
-  std::vector<wxExStyle> m_Colourings;
-  std::vector<wxExProperty> m_Properties;
   std::set<wxString> m_Keywords;
+  std::vector<wxExProperty> m_Properties;
+  std::vector<wxExStyle> m_Styles;
 
   // each keyword set in a separate keyword set
   std::map< int, std::set<wxString> > m_KeywordsSet;

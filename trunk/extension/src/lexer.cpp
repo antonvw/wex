@@ -28,7 +28,7 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   m_CommentBegin2.clear();
   m_CommentEnd.clear();
   m_CommentEnd2.clear();
-  m_Colourings.clear();
+  m_Styles.clear();
   m_Extensions.clear();
   m_Properties.clear();
   m_Keywords.clear();
@@ -75,7 +75,7 @@ const std::vector<wxExStyle> wxExLexer::AutoMatch(
 
 void wxExLexer::Colourise(wxExSTC* stc) const
 {
-  for_each (m_Colourings.begin(), m_Colourings.end(), 
+  for_each (m_Styles.begin(), m_Styles.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 
   // And finally colour the entire document.
@@ -272,7 +272,7 @@ const wxString wxExLexer::MakeSingleLineComment(
   return out;
 }
 
-const std::vector<wxExStyle> wxExLexer::ParseNodeColourings(
+const std::vector<wxExStyle> wxExLexer::ParseNodeStyles(
   const wxXmlNode* node) const
 {
   std::vector<wxExStyle> text;
@@ -281,7 +281,7 @@ const std::vector<wxExStyle> wxExLexer::ParseNodeColourings(
 
   while (child)
   {
-    if (child->GetName() == "colouring")
+    if (child->GetName() == "style")
     {
       text.push_back(wxExStyle(child));
     }
@@ -291,7 +291,7 @@ const std::vector<wxExStyle> wxExLexer::ParseNodeColourings(
     }
     else
     {
-      wxLogError(_("Undefined colourings tag: %s on line: %d"),
+      wxLogError(_("Undefined styles tag: %s on line: %d"),
         child->GetName().c_str(), 
         child->GetLineNumber());
     }
@@ -316,7 +316,7 @@ void wxExLexer::Set(const wxXmlNode* node)
 
   if (node->GetAttribute("match", "") != "")
   {
-    m_Colourings = AutoMatch(node->GetAttribute("match", ""));
+    m_Styles = AutoMatch(node->GetAttribute("match", ""));
   }
 
   if (m_ScintillaLexer == "hypertext")
@@ -331,14 +331,14 @@ void wxExLexer::Set(const wxXmlNode* node)
 
   while (child)
   {
-    if (child->GetName() == "colourings")
+    if (child->GetName() == "styles")
     {
-      const std::vector<wxExStyle> v = ParseNodeColourings(child);
+      const std::vector<wxExStyle> v = ParseNodeStyles(child);
       
-      // Do not assign colourings to result of ParseNode,
-      // as colourings might already be filled with result of automatch.
-      m_Colourings.insert(
-        m_Colourings.end(), 
+      // Do not assign styles to result of ParseNode,
+      // as styles might already be filled with result of automatch.
+      m_Styles.insert(
+        m_Styles.end(), 
         v.begin(), v.end());
     }
     else if (child->GetName() == "keywords")
