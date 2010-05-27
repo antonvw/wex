@@ -83,6 +83,9 @@ public:
   /// Gets EOL string.
   const wxString GetEOL() const;
 
+  /// Gets find string, as selected or from config.
+  const wxString GetFindString() const;
+
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};
 
@@ -91,9 +94,6 @@ public:
 
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
-
-  /// Gets search text, as selected or from config.
-  const wxString GetFindText() const;
 
   /// Gets the margin number used for folding.
   int GetMarginFoldingNumber() const {return m_MarginFoldingNumber;};

@@ -114,8 +114,8 @@ public:
 #endif // wxUSE_STATUSBAR
 
 protected:
-  /// Invokes GetFindText on one of the controls.
-  void GetFindText();
+  /// Invokes GetFindString on one of the controls.
+  void GetFindString();
 
   /// Handles command event.
   void OnCommand(wxCommandEvent& command);

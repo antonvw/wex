@@ -846,7 +846,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
     if (stc != NULL)
     {
-      stc->GetFindText();
+      stc->GetFindString();
     }
 
     std::vector<wxExConfigItem> v;
