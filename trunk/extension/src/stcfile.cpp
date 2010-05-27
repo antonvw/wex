@@ -327,7 +327,7 @@ void wxExSTCFile::ConfigGet()
 
   wxStringTokenizer tkz(
     wxConfigBase::Get()->Read(_("Include directory")),
-    ";");
+    "\r\n");
 
   while (tkz.HasMoreTokens())
   {
