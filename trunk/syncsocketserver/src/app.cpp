@@ -442,12 +442,12 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_CLIENT_ECHO:
     wxConfigBase::Get()->Write(_("Echo"), 
-      !wxConfigBase::Get()->ReadBool(_("Echo"), true));
+      !wxConfigBase::Get()->ReadBool(_("Echo"), false));
     break;
 
   case ID_CLIENT_LOG_DATA:
     wxConfigBase::Get()->Write(_("Log Data"), 
-      !wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+      !wxConfigBase::Get()->ReadBool(_("Log Data"), false));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
@@ -620,7 +620,7 @@ void Frame::OnSocket(wxSocketEvent& event)
 
         if (sock->LastCount() > 0)
         {
-          if (wxConfigBase::Get()->ReadBool(_("Echo"), true))
+          if (wxConfigBase::Get()->ReadBool(_("Echo"), false))
           {
             sock->Write(buffer, sock->LastCount());
             SocketCheckError(sock);
@@ -728,15 +728,15 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
   case ID_CLIENT_ECHO:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Echo"), true));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Echo"), false));
     break;
 
   case ID_CLIENT_LOG_DATA:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+    event.Check(wxConfigBase::Get()->ReadBool(_("Log Data"), false));
     break;
 
   case ID_CLIENT_LOG_DATA_COUNT_ONLY:
-    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), true));
+    event.Enable(wxConfigBase::Get()->ReadBool(_("Log Data"), false));
     event.Check(wxConfigBase::Get()->ReadBool(_("Count Only"), true));
     break;
 
