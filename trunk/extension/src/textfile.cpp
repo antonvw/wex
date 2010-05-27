@@ -299,7 +299,11 @@ bool wxExTextFile::MatchLine(wxString& line)
         frd->GetFindString(), 
         frd->GetReplaceString());
 
-      m_Modified = true;
+      if (count > 0)
+      {
+        m_Modified = true;
+        match = true;
+      }
     }
   }
   else
