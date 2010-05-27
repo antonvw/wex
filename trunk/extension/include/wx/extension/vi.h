@@ -11,7 +11,6 @@
 #define _EXVI_H
 
 #include <map>
-#include <wx/stc/stc.h> // for wxStyledTextEvent
 #include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
 
