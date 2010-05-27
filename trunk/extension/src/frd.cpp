@@ -126,7 +126,7 @@ const wxString wxExFindReplaceData::GetFindReplaceInfoText(bool replace) const
 
   if (replace)
   {
-    log += " " + _("Replacing with") + ": " + 
+    log += " " + _("replacing with") + ": " + 
       const_cast< wxExFindReplaceData * >( this )->GetReplaceString();
   }
 

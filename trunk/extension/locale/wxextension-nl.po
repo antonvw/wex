@@ -659,7 +659,7 @@ msgstr "%ld voorkomens gevonden in"
 #: ../src/tool.cpp:41
 #, c-format
 msgid "Replaced %ld matches in"
-msgstr "Vervangen: %ld voorkomens"
+msgstr "Vervangen: %ld voorkomens in"
 
 #: ../src/tool.cpp:42
 #, c-format
