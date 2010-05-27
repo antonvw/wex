@@ -40,6 +40,9 @@ public:
   /// Returns true if event is allowed to be skipped.
   bool OnKeyDown(const wxKeyEvent& event);
 
+  /// Updates the find string.
+  void SetFindString(const wxString& val);
+  
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 private:

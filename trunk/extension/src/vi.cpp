@@ -941,6 +941,13 @@ void wxExVi::Repeat()
   }
 }
 
+void wxExVi::SetFindString(const wxString& val)
+{
+  m_FindString = val;
+  
+  // Todo: update combobox as well.
+}
+
 void wxExVi::SetIndicator(
   const wxExIndicator& indicator, 
   int start, 

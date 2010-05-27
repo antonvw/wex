@@ -652,6 +652,12 @@ const wxString wxExSTC::GetFindText() const
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
     wxExFindReplaceData::Get()->SetFindString(selection);
+
+    // Synchronize vi find string.    
+	if (m_vi.GetIsActive())
+	{
+	  m_vi.SetFindString(selection);
+	}
   }
 
   return wxExFindReplaceData::Get()->GetFindString();
