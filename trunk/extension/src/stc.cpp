@@ -645,7 +645,8 @@ int wxExSTC::GetLineNumberAtCurrentPos() const
   return wxExGetLineNumberFromText(text);
 }
 
-const wxString wxExSTC::GetFindString() const
+// Method cannot be const because of usage of SetFindString.
+const wxString wxExSTC::GetFindString()
 {
   const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
 

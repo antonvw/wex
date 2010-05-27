@@ -84,7 +84,7 @@ public:
   const wxString GetEOL() const;
 
   /// Gets find string, as selected or from config.
-  const wxString GetFindString() const;
+  const wxString GetFindString();
 
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};
