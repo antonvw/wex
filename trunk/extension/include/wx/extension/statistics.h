@@ -67,7 +67,7 @@ private:
 template <class T> class wxExStatistics
 {
 public:
-  /// Constructor.
+  /// Default constructor.
   wxExStatistics() {
 #if wxUSE_GRID
     m_Grid = NULL;
@@ -156,6 +156,7 @@ public:
       else
       {
         m_Grid->AppendRows(1);
+
         const auto row = m_Grid->GetNumberRows() - 1;
         m_Rows.insert(std::make_pair(key, row));
 
@@ -177,12 +178,10 @@ public:
   /// and col labels (Item, Value).
   /// Returns the window that is created, or is activated,
   /// if it already was created.
-  /// You can also specify wehther you want a menu, and the id of 
-  /// the grid component.
+  /// You can also the id of the grid component.
   wxExGrid* Show(wxWindow* parent,
     bool hide_row_labels = true,
     bool hide_col_labels = true,
-    bool add_menu = false,
     wxWindowID id = wxID_ANY)
     {
     if (m_Grid == NULL)
@@ -191,6 +190,7 @@ public:
       m_Grid->CreateGrid(0, 0);
       m_Grid->AppendCols(2);
       m_Grid->EnableEditing(false);
+
 #if wxUSE_DRAG_AND_DROP
       m_Grid->UseDragAndDrop(false);
 #endif
@@ -203,22 +203,27 @@ public:
       m_Grid->SetColLabelValue(0, _("Item"));
       m_Grid->SetColLabelValue(1, _("Value"));
 
+      // Values are numbers.
+      m_Grid->SetColFormatNumber(1);
+
       if (hide_col_labels)
       {
         m_Grid->HideColLabels();
       }
 
-      int i = 0;
       for (
         auto it = m_Items.begin();
         it != m_Items.end();
         ++it)
       {
        m_Grid->AppendRows(1);
-       m_Grid->SetCellValue(i, 0, it->first);
-       m_Grid->SetCellValue(i, 1, wxString::Format("%d", it->second));
-       m_Rows[it->first] = i;
-       i++;
+
+       const auto row = m_Grid->GetNumberRows() - 1;
+
+       m_Grid->SetCellValue(row, 0, it->first);
+       m_Grid->SetCellValue(row, 1, wxString::Format("%d", it->second));
+
+       m_Rows[it->first] = row;
       }
     }
     m_Grid->Show();
@@ -229,6 +234,7 @@ public:
 #endif
 private:
   std::map<wxString, T> m_Items;
+
 #if wxUSE_GRID
   std::map<wxString, int> m_Rows;
   wxExGridStatistics<T>* m_Grid;
