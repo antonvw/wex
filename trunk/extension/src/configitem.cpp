@@ -373,7 +373,9 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
-        m_Style | (readonly ? wxTE_READONLY: 0));
+        m_Style | 
+		  (readonly ? wxTE_READONLY: 0) | 
+		  (m_Style & wxTE_MULTILINE ? wxHSCROLL: 0));
       break;
 
     default: wxFAIL;
