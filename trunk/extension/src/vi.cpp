@@ -337,6 +337,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         for (auto i = 0; i < repeat; i++) m_STC->CharRight(); 
         break;
       case 'n': 
+        m_STC->GetFindString();
         for (auto i = 0; i < repeat; i++) 
           m_STC->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, m_SearchForward);
@@ -378,6 +379,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
         break;
       case 'N': 
+        m_STC->GetFindString();
         for (auto i = 0; i < repeat; i++) 
           m_STC->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, !m_SearchForward);
