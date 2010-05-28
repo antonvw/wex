@@ -75,8 +75,11 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
       break;
 
     case ID_VIEW_STATUSBAR:
-      GetStatusBar()->Show(!GetStatusBar()->IsShown());
-      SendSizeEvent();
+      if (GetStatusBar() != NULL)
+      {
+        GetStatusBar()->Show(!GetStatusBar()->IsShown());
+        SendSizeEvent();
+      }
       break;
 
     default:
@@ -108,8 +111,14 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
     case ID_VIEW_STATUSBAR:
-      wxASSERT(GetStatusBar() != NULL);
-      event.Check(GetStatusBar()->IsShown());
+      if (GetStatusBar() != NULL)
+      {
+        event.Check(GetStatusBar()->IsShown());
+      }
+      else
+      {
+        event.Check(false);
+      }
       break;
 
     default:

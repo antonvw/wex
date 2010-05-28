@@ -21,7 +21,7 @@
 class wxExFrame;
 class wxExStatusBar;
 
-/// This class defines our statusbar panes, to be used by wxExFrame::SetupStatusBar.
+/// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
 class wxExPane : public wxStatusBarPane
 {
@@ -53,7 +53,7 @@ private:
   static int m_Total;
 };
 
-/// Offers a status bar with popup menu in relation to wxExFrame.
+/// Offers a status bar that calls virtual methods from wxExFrame.
 class wxExStatusBar : public wxStatusBar
 {
 public:
@@ -62,6 +62,9 @@ public:
     wxWindowID id = wxID_ANY,
     long style = wxST_SIZEGRIP,
     const wxString& name = wxStatusBarNameStr);
+    
+  /// Destructor.
+ ~wxExStatusBar();  
 
   /// Sets the panes.
   void SetPanes(const std::vector<wxExPane>& panes);
@@ -71,6 +74,8 @@ public:
     const wxString& text, 
     const wxString& pane = "PaneText");
 protected:
+  /// React on some mouse events line button down, double click and
+  /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
   /// Returns the status bar pane.

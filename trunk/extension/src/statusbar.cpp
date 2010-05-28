@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #if wxUSE_TOOLTIPS
 #include <wx/tooltip.h> // for GetTip
 #endif
@@ -36,8 +37,16 @@ wxExStatusBar::wxExStatusBar(
   : wxStatusBar(parent, id, style, name)
   , m_Frame(parent)
 {
+  // The statusbar is not managed by Aui, so show/hide it explicitly.    
+  Show(wxConfigBase::Get()->ReadBool("ShowStatusBar", true));
+  SendSizeEvent();
 }
 
+wxExStatusBar::~wxExStatusBar()
+{ 
+  wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
+}
+  
 const wxExPane wxExStatusBar::GetPane(int pane) const
 {
   for (
@@ -137,6 +146,5 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
     wxStatusBar::SetStatusText(text, it->second.m_No);
   }
 }
-
 #endif //wxUSE_STATUSBAR
 #endif // wxUSE_GUI
