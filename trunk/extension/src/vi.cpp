@@ -434,8 +434,12 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
       title, 
       wxExFindReplaceData::Get()->GetTextFindWhat());
   }
+  else
+  {
+    m_FindDialog->Reload();
+    m_FindDialog->SetTitle(title);
+  }
 
-  m_FindDialog->SetTitle(title);
   m_FindDialog->SelectAll();
 
   if (m_FindDialog->ShowModal() == wxID_CANCEL)
