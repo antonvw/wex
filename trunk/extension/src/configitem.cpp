@@ -411,10 +411,16 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
     case CONFIG_SPINCTRL_DOUBLE:
     case CONFIG_STRING:
 	  {
+	  // Construct a child flex grid sizer.
       wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
-      fgz->AddGrowableCol(1);
+      fgz->AddGrowableCol(1); // the control
+      fgz->AddGrowableRow(0);
+      
+      // Add name and control.
       AddStaticTextName(fgz);
       fgz->Add(m_Control, m_ControlFlags);
+      
+      // Add to the sizer.
       sizer->Add(fgz, wxSizerFlags().Expand());
 	  }
       break;

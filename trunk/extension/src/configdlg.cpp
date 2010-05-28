@@ -141,16 +141,9 @@ void wxExConfigDialog::Layout(int rows, int cols)
         new wxFlexGridSizer(rows, use_cols, 0, 0):
         new wxFlexGridSizer(use_cols));
 
-      if (cols == 2)
+      for (auto i = 0; i < cols; i++)
       {
-        sizer->AddGrowableCol(1);
-      }
-      else
-      {
-        for (auto i = 0; i < cols; i++)
-        {
-          sizer->AddGrowableCol(i);
-        }
+        sizer->AddGrowableCol(i);
       }
     }
 
@@ -161,7 +154,11 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
     if (it->GetType() == CONFIG_COMBOBOXDIR)
     {
-      Bind(wxEVT_COMMAND_BUTTON_CLICKED, &wxExConfigDialog::OnCommand, this, it->GetId());
+      Bind(
+        wxEVT_COMMAND_BUTTON_CLICKED, 
+        &wxExConfigDialog::OnCommand, 
+        this, 
+        it->GetId());
     }
 
     if ( sizer->GetRows() > 0 &&
