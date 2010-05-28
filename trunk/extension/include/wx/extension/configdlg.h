@@ -43,8 +43,11 @@ public:
   void ForceCheckBoxChecked(
     const wxString& contains = wxEmptyString,
     const wxString& page = wxEmptyString);
+
+  /// Reloads all items from config.
+  void Reload();
     
-  /// Selects all in the control, if appropirate.
+  /// Selects all in the control, if appropriate.
   void SelectAll();
 protected:
   void OnCommand(wxCommandEvent& event);

@@ -214,11 +214,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
   switch (command.GetId())
   {
-  case wxID_CANCEL:
-    // For wxID_CANCEL reload from config.
-    for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-      std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
-    break;
+  case wxID_CANCEL: Reload(); break;
 
   default:
     // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
@@ -357,6 +353,12 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   {
     event.Enable(true);
   }
+}
+
+void wxExConfigDialog::Reload()
+{
+  for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
 }
 
 void wxExConfigDialog::SelectAll()
