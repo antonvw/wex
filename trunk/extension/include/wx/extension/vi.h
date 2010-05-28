@@ -26,9 +26,6 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
 
-  /// Gets the find string.
-  const wxString& GetFindString() const {return m_FindString;};
-
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
 
