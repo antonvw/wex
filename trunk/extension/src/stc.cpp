@@ -629,20 +629,13 @@ const wxString wxExSTC::GetEOL() const
   return "\r\n";
 }
 
-// Method cannot be const because of usage of SetFindString.
-const wxString wxExSTC::GetFindString()
+const wxString wxExSTC::GetFindString() const
 {
   const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
 
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
     wxExFindReplaceData::Get()->SetFindString(selection);
-
-    // Synchronize vi find string.    
-	if (m_vi.GetIsActive())
-	{
-	  m_vi.SetFindString(selection);
-	}
   }
 
   return wxExFindReplaceData::Get()->GetFindString();

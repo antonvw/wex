@@ -40,9 +40,6 @@ public:
   /// Returns true if event is allowed to be skipped.
   bool OnKeyDown(const wxKeyEvent& event);
 
-  /// Updates the find string.
-  void SetFindString(const wxString& val);
-  
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 private:
@@ -91,7 +88,6 @@ private:
 
   const wxExIndicator m_IndicatorYank;
   const wxExMarker m_MarkerSymbol;
-  const wxString m_FindDialogItem;
   
   std::map<wxUniChar, int> m_Markers;
   
@@ -106,8 +102,6 @@ private:
   
   wxString m_Command;
   wxString m_InsertText;
-  wxString m_FindString;
 };
-
 #endif // wxUSE_GUI
 #endif

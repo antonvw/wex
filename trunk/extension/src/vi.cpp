@@ -34,9 +34,7 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
-  , m_FindDialogItem("searchline") // do not translate
 {
-  m_FindString = wxExConfigFirstOf(m_FindDialogItem);
 }
 
 void wxExVi::Delete(int lines) const
@@ -339,7 +337,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
       case 'n': 
         for (auto i = 0; i < repeat; i++) 
-          m_STC->FindNext(m_FindString, m_SearchFlags, m_SearchForward);
+          m_STC->FindNext(
+            wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, m_SearchForward);
         break;
 
       case 'p': Put(true); break;
@@ -379,7 +378,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
       case 'N': 
         for (auto i = 0; i < repeat; i++) 
-          m_STC->FindNext(m_FindString, m_SearchFlags, !m_SearchForward);
+          m_STC->FindNext(
+            wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, !m_SearchForward);
         break;
       case 'X': for (auto i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
@@ -429,7 +429,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     m_FindDialog = wxExConfigComboBoxDialog(
       wxTheApp->GetTopWindow(), 
       title, 
-      m_FindDialogItem);
+      wxExFindReplaceData::Get()->GetTextFindWhat());
   }
 
   m_FindDialog->SetTitle(title);
@@ -440,7 +440,8 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     return;
   }
 
-  const wxString val = wxExConfigFirstOf(m_FindDialogItem);
+  const wxString val = 
+    wxExConfigFirstOf(wxExFindReplaceData::Get()->GetTextFindWhat());
 
   if (val.empty())
   {
@@ -448,8 +449,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
   }
 
   m_SearchForward = c == '/';
-  m_FindString = val;
-  m_STC->FindNext(m_FindString, m_SearchFlags, m_SearchForward);
+  m_STC->FindNext(val, m_SearchFlags, m_SearchForward);
 }
 
 void wxExVi::DoCommandLine()
@@ -648,9 +648,11 @@ void wxExVi::FindWord(bool find_next)
   const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
   const auto end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
   
-  m_FindString = "\\<" + m_STC->GetTextRange(start, end) + "\\>";
+  wxExFindReplaceData::Get()->SetFindString(
+    "\\<" + m_STC->GetTextRange(start, end) + "\\>");
   
-  m_STC->FindNext(m_FindString, m_SearchFlags, find_next);
+  m_STC->FindNext(
+    wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, find_next);
 }
 
 void wxExVi::GotoBrace() const
@@ -939,13 +941,6 @@ void wxExVi::Repeat()
   {
     DoCommand(m_LastCommand, true);
   }
-}
-
-void wxExVi::SetFindString(const wxString& val)
-{
-  m_FindString = val;
-  
-  // Todo: update combobox as well.
 }
 
 void wxExVi::SetIndicator(
