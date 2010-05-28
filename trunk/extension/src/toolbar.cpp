@@ -36,11 +36,12 @@ enum
 // Support class.
 // Offers a find combobox that allows you to find text
 // on a current STC on an wxExFrame.
-class ComboBox : public wxComboBox
+class FindStrings : public wxComboBox
 {
 public:
-  /// Constructor. Fills the combobox box with values from FindReplace from config.
-  ComboBox(
+  /// Constructor. Fills the combobox box with values 
+  /// from FindReplace from config.
+  FindStrings(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
@@ -66,8 +67,8 @@ wxExToolBar::wxExToolBar(wxExFrame* frame,
   long style)
   : wxAuiToolBar(frame, id, pos, size, style | wxAUI_TB_HORZ_TEXT)
   , m_Frame(frame)
-  , m_HexModeCheckBox(NULL)
-  , m_SyncCheckBox(NULL)
+  , m_HexMode(NULL)
+  , m_SyncMode(NULL)
 {
 }
 
@@ -81,27 +82,27 @@ void wxExToolBar::AddControls()
   AddSeparator();
 
   AddControl(
-    m_HexModeCheckBox = new wxCheckBox(
+    m_HexMode = new wxCheckBox(
       this,
       ID_EDIT_HEX_MODE,
       "Hex"));
 
-//  m_HexModeCheckBox->SetBackgroundColour(m_Frame->GetBackgroundColour());
+//  m_HexMode->SetBackgroundColour(m_Frame->GetBackgroundColour());
 
 //  AddTool(ID_SYNC_MODE, "Sync", wxNullBitmap, wxEmptyString, wxITEM_CHECK);
   AddControl(
-    m_SyncCheckBox = new wxCheckBox(
+    m_SyncMode = new wxCheckBox(
       this,
       ID_SYNC_MODE,
       "Sync"));
 
 #if wxUSE_TOOLTIPS
-  m_HexModeCheckBox->SetToolTip(_("View in hex mode"));
-  m_SyncCheckBox->SetToolTip(_("Synchronize modified files"));
+  m_HexMode->SetToolTip(_("View in hex mode"));
+  m_SyncMode->SetToolTip(_("Synchronize modified files"));
 #endif
 
-  m_HexModeCheckBox->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
-  m_SyncCheckBox->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  m_HexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
+  m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
 
   Realize();
 }
@@ -140,7 +141,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case ID_EDIT_HEX_MODE:
-    wxConfigBase::Get()->Write("HexMode", m_HexModeCheckBox->GetValue());
+    wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());
 
     {
       auto* stc = m_Frame->GetSTC();
@@ -148,7 +149,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
       if (stc != NULL)
       {
         long flags = 0;
-        if (m_HexModeCheckBox->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
+        if (m_HexMode->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
         wxExFileDialog dlg(m_Frame, stc);
         if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         stc->Open(stc->GetFileName(), 0, wxEmptyString, flags);
@@ -157,7 +158,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_SYNC_MODE:
-    wxConfigBase::Get()->Write("AllowSync", m_SyncCheckBox->GetValue());
+    wxConfigBase::Get()->Write("AllowSync", m_SyncMode->GetValue());
     break;
 
   default: 
@@ -187,7 +188,7 @@ wxExFindToolBar::wxExFindToolBar(
   Initialize();
 
   // And place the controls on the toolbar.
-  AddControl(m_ComboBox);
+  AddControl(m_FindStrings);
   AddSeparator();
 
   AddTool(
@@ -204,7 +205,7 @@ wxExFindToolBar::wxExFindToolBar(
 
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
-  AddControl(m_RegularExpression);
+  AddControl(m_IsRegularExpression);
 
   Realize();
 }
@@ -216,10 +217,10 @@ void wxExFindToolBar::Initialize()
 #else
   const wxSize size(150, -1);
 #endif
-  ComboBox* cb = new ComboBox(this, 
+  FindStrings* cb = new FindStrings(this, 
     m_Frame, wxID_ANY, wxDefaultPosition, size);
 
-  m_ComboBox = cb;
+  m_FindStrings = cb;
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -227,12 +228,12 @@ void wxExFindToolBar::Initialize()
   m_MatchWholeWord = new wxCheckBox(this, 
     ID_MATCH_WHOLE_WORD, wxExFindReplaceData::Get()->GetTextMatchWholeWord());
 
-  m_RegularExpression= new wxCheckBox(this, 
+  m_IsRegularExpression = new wxCheckBox(this, 
     ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
 
   m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
   m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
-  m_RegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegularExpression());
+  m_IsRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegularExpression());
 }
 
 void wxExFindToolBar::OnCommand(wxCommandEvent& event)
@@ -247,7 +248,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       if (stc != NULL)
       {
         stc->FindNext(
-          m_ComboBox->GetValue(), 
+          m_FindStrings->GetValue(), 
           wxExFindReplaceData::Get()->STCFlags(),
           (event.GetId() == wxID_DOWN));
       }
@@ -264,7 +265,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     break;
   case ID_REGULAR_EXPRESSION:
     wxExFindReplaceData::Get()->SetUseRegularExpression(
-      m_RegularExpression->GetValue());
+      m_IsRegularExpression->GetValue());
     break;
 
   default:
@@ -275,17 +276,17 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 
 void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  event.Enable(!m_ComboBox->GetValue().empty());
+  event.Enable(!m_FindStrings->GetValue().empty());
 }
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(ComboBox, wxComboBox)
-  EVT_CHAR(ComboBox::OnKey)
-  EVT_MENU(wxID_DELETE, ComboBox::OnCommand)
+BEGIN_EVENT_TABLE(FindStrings, wxComboBox)
+  EVT_CHAR(FindStrings::OnKey)
+  EVT_MENU(wxID_DELETE, FindStrings::OnCommand)
 END_EVENT_TABLE()
 
-ComboBox::ComboBox(
+FindStrings::FindStrings(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
@@ -311,7 +312,7 @@ ComboBox::ComboBox(
   SetValue(wxExFindReplaceData::Get()->GetFindString());
 }
 
-void ComboBox::OnCommand(wxCommandEvent& event)
+void FindStrings::OnCommand(wxCommandEvent& event)
 {
   // README: The delete key default behaviour does not delete the char right from insertion point.
   // Instead, the event is sent to the editor and a char is deleted from the editor.
@@ -327,7 +328,7 @@ void ComboBox::OnCommand(wxCommandEvent& event)
   }
 }
 
-void ComboBox::OnKey(wxKeyEvent& event)
+void FindStrings::OnKey(wxKeyEvent& event)
 {
   const auto key = event.GetKeyCode();
 
@@ -350,6 +351,5 @@ void ComboBox::OnKey(wxKeyEvent& event)
     event.Skip();
   }
 }
-
 #endif // wxUSE_AUI
 #endif // wxUSE_GUI

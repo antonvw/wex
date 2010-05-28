@@ -43,8 +43,8 @@ protected:
   void OnCommand(wxCommandEvent& event);
   wxExFrame* m_Frame;
 private:
-  wxCheckBox* m_HexModeCheckBox;
-  wxCheckBox* m_SyncCheckBox;
+  wxCheckBox* m_HexMode;
+  wxCheckBox* m_SyncMode;
 
   DECLARE_EVENT_TABLE()
 };
@@ -68,10 +68,10 @@ protected:
 private:
   void Initialize();
 
-  wxCheckBox* m_RegularExpression;
+  wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
-  wxComboBox* m_ComboBox;
+  wxComboBox* m_FindStrings;
 
   DECLARE_EVENT_TABLE()
 };
