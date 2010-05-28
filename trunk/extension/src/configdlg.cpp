@@ -73,8 +73,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
 {
   Layout(rows, cols);
 
-  for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false)); // read
+  Reload();
 }
 
 const wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
