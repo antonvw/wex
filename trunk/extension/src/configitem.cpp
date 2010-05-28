@@ -533,7 +533,7 @@ void wxExConfigItem::ToConfig(bool save) const
 
       if (save)
       {
-        const std::list <wxString> l = wxExComboBoxToList(cb, m_MaxItems);
+        const auto l = wxExComboBoxToList(cb, m_MaxItems);
 
         wxExListToConfig(l, m_Name);
 
