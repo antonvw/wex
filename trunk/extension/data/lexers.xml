@@ -1628,7 +1628,8 @@ without the written consent of the copyright owner.
       <property name="fold"> 1 </property>
       <property name="fold.html"> 1 </property>
       <property name="fold.compact"> 1 </property>
-      <property name="asp.default.language"> 4 </property>
+      <!-- Default Language 1 for JS, 2 for VBS, 3 for python -->
+      <property name="asp.default.language"> 1 </property>
     </properties>
   </lexer>
   
