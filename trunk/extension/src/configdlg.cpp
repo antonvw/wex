@@ -77,7 +77,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
     std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false)); // read
 }
 
-wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
+const wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
 {
   for (
     auto it = m_ConfigItems.begin();
