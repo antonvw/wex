@@ -629,22 +629,6 @@ const wxString wxExSTC::GetEOL() const
   return "\r\n";
 }
 
-int wxExSTC::GetLineNumberAtCurrentPos() const
-{
-  // This method is used by LinkOpen.
-  // So, if no line number present return 0, otherwise link open jumps to last line.
-  const auto pos = GetCurrentPos();
-  const auto line_no = LineFromPosition(pos);
-
-  // Cannot use GetLine, as that includes EOF, and then the ToLong does not
-  // return correct number.
-  const wxString text = const_cast< wxExSTC * >( this )->GetTextRange(
-    PositionFromLine(line_no), 
-    GetLineEndPosition(line_no));
-
-  return wxExGetLineNumberFromText(text);
-}
-
 // Method cannot be const because of usage of SetFindString.
 const wxString wxExSTC::GetFindString()
 {
@@ -662,6 +646,22 @@ const wxString wxExSTC::GetFindString()
   }
 
   return wxExFindReplaceData::Get()->GetFindString();
+}
+
+int wxExSTC::GetLineNumberAtCurrentPos() const
+{
+  // This method is used by LinkOpen.
+  // So, if no line number present return 0, otherwise link open jumps to last line.
+  const auto pos = GetCurrentPos();
+  const auto line_no = LineFromPosition(pos);
+
+  // Cannot use GetLine, as that includes EOF, and then the ToLong does not
+  // return correct number.
+  const wxString text = const_cast< wxExSTC * >( this )->GetTextRange(
+    PositionFromLine(line_no), 
+    GetLineEndPosition(line_no));
+
+  return wxExGetLineNumberFromText(text);
 }
 
 const wxString wxExSTC::GetTextAtCurrentPos() const
