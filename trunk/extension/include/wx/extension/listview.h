@@ -222,8 +222,8 @@ private:
   const wxUniChar m_FieldSeparator;
 
   const wxExImageType m_ImageType;
-  const int m_ImageHeightSmall;
-  const int m_ImageWidthSmall;
+  const int m_ImageHeight;
+  const int m_ImageWidth;
 
   int m_SortedColumnNo;
   int m_ToBeSortedColumnNo;

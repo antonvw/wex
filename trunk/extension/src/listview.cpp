@@ -97,8 +97,8 @@ wxExListView::wxExListView(wxWindow* parent,
   : wxListView(parent, id, pos, size, style, validator, name)
   , m_FieldSeparator('\t')
   , m_ImageType(image_type)
-  , m_ImageHeightSmall(16)
-  , m_ImageWidthSmall(16)
+  , m_ImageHeight(16)
+  , m_ImageWidth(16)
   , m_SortedColumnNo(-1)
 {
   SetSingleStyle(wxLC_REPORT);
@@ -107,11 +107,17 @@ wxExListView::wxExListView(wxWindow* parent,
   {
     if (image_type == IMAGE_ART || image_type == IMAGE_OWN)
     {
-      AssignImageList(new wxImageList(m_ImageWidthSmall, m_ImageHeightSmall, true, 0), wxIMAGE_LIST_SMALL);
+      AssignImageList(
+        new wxImageList(
+          m_ImageWidth, 
+          m_ImageHeight, true, 0), 
+        wxIMAGE_LIST_SMALL);
     }
     else if (image_type == IMAGE_FILE_ICON)
     {
-      SetImageList(wxTheFileIconsTable->GetSmallImageList(), wxIMAGE_LIST_SMALL);
+      SetImageList(
+        wxTheFileIconsTable->GetSmallImageList(), 
+        wxIMAGE_LIST_SMALL);
     }
     else
     {
@@ -394,7 +400,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     m_ArtIDs.insert(std::make_pair(artid, 
       GetImageList(wxIMAGE_LIST_SMALL)->GetImageCount()));
 
-    const wxSize smallsize(m_ImageWidthSmall, m_ImageHeightSmall);
+    const wxSize smallsize(m_ImageWidth, m_ImageHeight);
 
     return GetImageList(wxIMAGE_LIST_SMALL)->Add(
       wxArtProvider::GetBitmap(artid, wxART_OTHER, smallsize));
