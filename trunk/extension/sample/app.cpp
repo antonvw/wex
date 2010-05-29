@@ -485,7 +485,7 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
-    _("Combobox Dir1"), 
+    _("Combobox Required"), 
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     true,
@@ -496,7 +496,7 @@ void wxExSampleFrame::ShowConfigItems()
     _("Combobox Dir2"), 
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
-    true,
+    false,
     1001));
 
   // CONFIG_DIRPICKERCTRL
