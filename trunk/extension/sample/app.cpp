@@ -564,9 +564,13 @@ void wxExSampleFrame::ShowConfigItems()
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("String%d"), l), 
-      CONFIG_STRING, 
       "Strings"));
   }
+  
+  v.push_back(wxExConfigItem(
+    _("String Multiline"), 
+    "Strings",
+    wxTE_MULTILINE));
 
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
