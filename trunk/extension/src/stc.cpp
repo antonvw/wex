@@ -163,8 +163,8 @@ offset    hex field                                         ascii field
   wxString text;
 
   // Allocate space for the string.
-  // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, hex field 3 * length and the
-  // ascii field just the length.
+  // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, 
+  // hex field 3 * length and the ascii field just the length.
   text.Alloc(
     (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
      buffer.length() * each_hex_field + buffer.length());
@@ -391,7 +391,8 @@ bool wxExSTC::CheckBraceHex(int pos)
     }
 
     BraceHighlight(pos,
-      PositionFromLine(LineFromPosition(pos)) + start_hex_field + each_hex_field * offset + space);
+      PositionFromLine(LineFromPosition(pos)) 
+        + start_hex_field + each_hex_field * offset + space);
     return true;
   }
   else if (col >= start_hex_field)
@@ -635,7 +636,25 @@ const wxString wxExSTC::GetFindString() const
 
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
-    wxExFindReplaceData::Get()->SetFindString(selection);
+    bool alnum = true;
+    
+    // If regexp is true, then only use selected text if text does not
+    // contain special regexp characters.
+    if (wxExFindReplaceData::Get()->STCFlags() & wxSTC_FIND_REGEXP)
+    {
+      for (int i = 0; i < selection.size() && alnum; i++)
+      {
+        if (!isalnum(selection[i]))
+        {
+          alnum = false;
+        }
+      }
+    }
+
+    if (alnum)
+    {  
+      wxExFindReplaceData::Get()->SetFindString(selection);
+    }
   }
 
   return wxExFindReplaceData::Get()->GetFindString();
@@ -685,28 +704,36 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
     size_t pos_char2 = text.rfind("\"");
 
     // If that did not succeed, then get text between < and >.
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
+    if (pos_char1 == wxString::npos || 
+        pos_char2 == wxString::npos || 
+        pos_char2 <= pos_char1)
     {
       pos_char1 = text.find("<");
       pos_char2 = text.rfind(">");
     }
 
     // If that did not succeed, then get text between : and : (in .po files).
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
+    if (pos_char1 == wxString::npos || 
+        pos_char2 == wxString::npos || 
+        pos_char2 <= pos_char1)
     {
       pos_char1 = text.find(": ");
       pos_char2 = text.rfind(":");
     }
 
     // If that did not succeed, then get text between ' and '.
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
+    if (pos_char1 == wxString::npos ||
+        pos_char2 == wxString::npos || 
+        pos_char2 <= pos_char1)
     {
       pos_char1 = text.find("'");
       pos_char2 = text.rfind("'");
     }
 
     // If we did not find anything.
-    if (pos_char1 == wxString::npos || pos_char2 == wxString::npos || pos_char2 <= pos_char1)
+    if (pos_char1 == wxString::npos || 
+        pos_char2 == wxString::npos || 
+        pos_char2 <= pos_char1)
     {
       return wxEmptyString;
     }
@@ -793,8 +820,10 @@ void wxExSTC::GotoLineAndSelect(
   int line_number, 
   const wxString& text)
 {
-  // line_number and m_GotoLineNumber start with 1 and is allowed to be equal to number of lines.
-  // Internally GotoLine starts with 0, therefore line_number - 1 is used afterwards.
+  // line_number and m_GotoLineNumber start with 1 and is allowed to be 
+  // equal to number of lines.
+  // Internally GotoLine starts with 0, therefore 
+  // line_number - 1 is used afterwards.
   wxASSERT(line_number <= GetLineCount() && line_number > 0);
 
   GotoLine(line_number - 1);
@@ -1116,7 +1145,8 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       if (GetReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
       // TODO added SelectionIsRectangle() to fix assert when sel is rectangle,
       // however check GetSelectedText() is done quite often
-      if (SelectionIsRectangle() || !GetSelectedText().empty()) style |= wxExMenu::MENU_IS_SELECTED;
+      if (SelectionIsRectangle() || !GetSelectedText().empty()) 
+        style |= wxExMenu::MENU_IS_SELECTED;
       if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
       if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
 
@@ -1151,7 +1181,9 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_MACRORECORD)
   {
-    wxString msg = wxString::Format("%d %d ", event.GetMessage(), event.GetWParam());
+    wxString msg = wxString::Format("%d %d ", 
+      event.GetMessage(), 
+      event.GetWParam());
 
     if (event.GetLParam() != 0)
     {
@@ -1225,7 +1257,9 @@ void wxExSTC::Print(bool prompt)
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::PrintPreview()
 {
-  wxPrintPreview* preview = new wxPrintPreview(new wxExPrintout(this), new wxExPrintout(this));
+  wxPrintPreview* preview = new wxPrintPreview(
+    new wxExPrintout(this), 
+    new wxExPrintout(this));
 
   if (!preview->Ok())
   {
@@ -1519,7 +1553,7 @@ bool wxExSTC::SmartIndentation()
       GotoPos(GetCurrentPos() + 1);
       i++;
     }
-
+    
     return true;
   }
   else
