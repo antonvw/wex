@@ -140,7 +140,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
         new wxFlexGridSizer(rows, use_cols, 0, 0):
         new wxFlexGridSizer(use_cols));
 
-      for (auto i = 0; i < cols; i++)
+      for (auto i = 0; i < use_cols; i++)
       {
         sizer->AddGrowableCol(i);
       }
