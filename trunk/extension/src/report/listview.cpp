@@ -217,90 +217,6 @@ wxExListViewStandard::ListType wxExListViewStandard::GetTypeTool(
   }
 }
 
-void wxExListViewStandard::ItemsUpdate()
-{
-  for (auto i = 0; i < GetItemCount(); i++)
-  {
-    wxExListItem(this, i).Update();
-  }
-}
-
-bool wxExListViewStandard::ItemFromText(const wxString& text)
-{
-  if (text.empty())
-  {
-    return false;
-  }
-
-  wxStringTokenizer tkz(text, GetFieldSeparator());
-  if (tkz.HasMoreTokens())
-  {
-    const wxString value = tkz.GetNextToken();
-    wxFileName fn(value);
-
-    if (fn.FileExists())
-    {
-      wxExListItem item(this, fn);
-      item.Insert();
-
-      // And try to set the rest of the columns 
-      // (that are not already set by inserting).
-      int col = 1;
-      while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
-      {
-        const wxString value = tkz.GetNextToken();
-
-        if (col != FindColumn(_("Type")) &&
-            col != FindColumn(_("In Folder")) &&
-            col != FindColumn(_("Size")) &&
-            col != FindColumn(_("Modified")))
-        {
-          item.SetItem(col, value);
-        }
-
-        col++;
-      }
-    }
-    else
-    {
-      // Now we need only the first column (containing findfiles). If more
-      // columns are present, these are ignored.
-      const wxString findfiles =
-        (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
-
-      wxExListItem(this, value, findfiles).Insert();
-    }
-  }
-  else
-  {
-    wxExListItem(this, text).Insert();
-  }
-
-  return true;
-}
-
-const wxString wxExListViewStandard::ItemToText(long item_number) const
-{
-  wxExListItem item(
-    const_cast< wxExListViewStandard * >(this), item_number);
-
-  wxString text = (item.GetFileName().GetStat().IsOk() ? 
-    item.GetFileName().GetFullPath(): 
-    item.GetFileName().GetFullName());
-
-  if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
-  {
-    text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
-  }
-
-  if (m_Type != LIST_FILE)
-  {
-    text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
-  }
-
-  return text;
-}
-
 void wxExListViewStandard::Initialize(const wxExLexer* lexer)
 {
   SetName(GetTypeDescription());
@@ -381,6 +297,90 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
   InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
   InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
   InsertColumn(wxExColumn(_("Size")));
+}
+
+bool wxExListViewStandard::ItemFromText(const wxString& text)
+{
+  if (text.empty())
+  {
+    return false;
+  }
+
+  wxStringTokenizer tkz(text, GetFieldSeparator());
+  if (tkz.HasMoreTokens())
+  {
+    const wxString value = tkz.GetNextToken();
+    wxFileName fn(value);
+
+    if (fn.FileExists())
+    {
+      wxExListItem item(this, fn);
+      item.Insert();
+
+      // And try to set the rest of the columns 
+      // (that are not already set by inserting).
+      int col = 1;
+      while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
+      {
+        const wxString value = tkz.GetNextToken();
+
+        if (col != FindColumn(_("Type")) &&
+            col != FindColumn(_("In Folder")) &&
+            col != FindColumn(_("Size")) &&
+            col != FindColumn(_("Modified")))
+        {
+          item.SetItem(col, value);
+        }
+
+        col++;
+      }
+    }
+    else
+    {
+      // Now we need only the first column (containing findfiles). If more
+      // columns are present, these are ignored.
+      const wxString findfiles =
+        (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
+
+      wxExListItem(this, value, findfiles).Insert();
+    }
+  }
+  else
+  {
+    wxExListItem(this, text).Insert();
+  }
+
+  return true;
+}
+
+const wxString wxExListViewStandard::ItemToText(long item_number) const
+{
+  wxExListItem item(
+    const_cast< wxExListViewStandard * >(this), item_number);
+
+  wxString text = (item.GetFileName().GetStat().IsOk() ? 
+    item.GetFileName().GetFullPath(): 
+    item.GetFileName().GetFullName());
+
+  if (wxFileName::DirExists(item.GetFileName().GetFullPath()))
+  {
+    text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
+  }
+
+  if (m_Type != LIST_FILE)
+  {
+    text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
+  }
+
+  return text;
+}
+
+void wxExListViewStandard::ItemsUpdate()
+{
+  for (auto i = 0; i < GetItemCount(); i++)
+  {
+    wxExListItem(this, i).Update();
+  }
 }
 
 void wxExListViewStandard::OnCommand(wxCommandEvent& event)
