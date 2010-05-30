@@ -202,6 +202,7 @@ protected:
   void OnFocus(wxFocusEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
+  void OnShow(wxShowEvent& event);
 private:
   const wxString BuildPage();
   void CopySelectedItemsToClipboard();

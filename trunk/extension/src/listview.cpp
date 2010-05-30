@@ -100,6 +100,7 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
   EVT_LEFT_DOWN(wxExListView::OnMouse)
   EVT_RIGHT_DOWN(wxExListView::OnMouse)
+  EVT_SHOW(wxExListView::OnShow)
 END_EVENT_TABLE()
 
 wxExListView::wxExListView(wxWindow* parent,
@@ -665,6 +666,12 @@ void wxExListView::OnMouse(wxMouseEvent& event)
   }
 }
 
+void wxExListView::OnShow(wxShowEvent& event)
+{
+  event.Skip();
+  UpdateStatusBar();
+}
+
 void wxExListView::PasteItemsFromClipboard()
 {
   wxStringTokenizer tkz(wxExClipboardGet(), wxTextFile::GetEOL());
@@ -843,11 +850,18 @@ void wxExListView::SortColumnReset()
 #if wxUSE_STATUSBAR
 void wxExListView::UpdateStatusBar() const
 {
-  const wxString text = (GetSelectedItemCount() == 0 ?
-    wxString::Format("%d", GetItemCount()):
-    wxString::Format("%d,%d", GetItemCount(), GetSelectedItemCount()));
-
-  wxExFrame::StatusText(text, "PaneItems");
+  if (IsShown())
+  {
+    const wxString text = (GetSelectedItemCount() == 0 ?
+      wxString::Format("%d", GetItemCount()):
+      wxString::Format("%d,%d", GetItemCount(), GetSelectedItemCount()));
+      
+    wxExFrame::StatusText(text, "PaneItems");
+  }
+  else
+  {
+    wxExFrame::StatusText(wxEmptyString, "PaneItems");
+  }
 }
 #endif
 
