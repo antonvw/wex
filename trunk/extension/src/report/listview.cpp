@@ -232,7 +232,7 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
     SetName(GetName() + " " + lexer->GetScintillaLexer());
   }
 
-  const int col_line_width = 750;
+  const int col_line_width = 250;
 
   if (m_Type != LIST_PROCESS)
   {

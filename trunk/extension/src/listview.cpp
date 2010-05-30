@@ -39,14 +39,30 @@ wxExColumn::wxExColumn(
 
   switch (m_Type)
   {
-  case wxExColumn::COL_FLOAT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
-  case wxExColumn::COL_INT: align = wxLIST_FORMAT_RIGHT; if (width == 0) width = 80; break;
-  case wxExColumn::COL_STRING: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 100; break;
-  case wxExColumn::COL_DATE: align = wxLIST_FORMAT_LEFT;  if (width == 0) width = 150; break;
+  case wxExColumn::COL_FLOAT: 
+    align = wxLIST_FORMAT_RIGHT; 
+    if (width == 0) width = 80; 
+    break;
+    
+  case wxExColumn::COL_INT: 
+    align = wxLIST_FORMAT_RIGHT; 
+    if (width == 0) width = 60; 
+    break;
+    
+  case wxExColumn::COL_STRING: 
+    align = wxLIST_FORMAT_LEFT;  
+    if (width == 0) width = 100; 
+    break;
+    
+  case wxExColumn::COL_DATE: 
+    align = wxLIST_FORMAT_LEFT;  
+    if (width == 0) width = 150; 
+    break;
+    
   default: wxFAIL;
   }
 
-  SetColumn(-1); // set a default value, should be overriden when inserting the col
+  SetColumn(-1); // default value, should be overriden when inserting the col
   SetText(name);
   SetAlign(align);
   SetWidth(width);
