@@ -217,10 +217,8 @@ void wxExFindToolBar::Initialize()
 #else
   const wxSize size(150, -1);
 #endif
-  FindStrings* cb = new FindStrings(this, 
+  m_FindStrings = new FindStrings(this, 
     m_Frame, wxID_ANY, wxDefaultPosition, size);
-
-  m_FindStrings = cb;
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());

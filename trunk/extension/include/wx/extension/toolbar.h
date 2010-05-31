@@ -19,6 +19,7 @@
 class wxExFrame;
 
 /// Offers a toolbar together with stock art.
+/// Default no controls are added, you have to call AddControls to do that.
 class wxExToolBar : public wxAuiToolBar
 {
 public:
@@ -37,7 +38,7 @@ public:
     const wxString& shortHelp = wxEmptyString,
     wxItemKind kind = wxITEM_NORMAL);
 
-  /// Adds standard controls.
+  /// Adds the standard controls.
   void AddControls();
 protected:
   void OnCommand(wxCommandEvent& event);
@@ -68,10 +69,10 @@ protected:
 private:
   void Initialize();
 
+  wxComboBox* m_FindStrings;
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
-  wxComboBox* m_FindStrings;
 
   DECLARE_EVENT_TABLE()
 };
