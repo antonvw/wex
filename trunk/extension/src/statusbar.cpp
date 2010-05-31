@@ -69,8 +69,6 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
   for (auto i = 0; i < GetFieldsCount() && !found; i++)
   {
-	const wxExPane& pane(GetPane(i));
-
     wxRect rect;
 
     if (GetFieldRect(i, rect))
@@ -78,6 +76,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       if (rect.Contains(event.GetPosition()))
       {
         found = true;
+        const wxExPane& pane(GetPane(i));
 
         // Handle the event, don't fail if none is true here,
         // it seems that moving and clicking almost at the same time
