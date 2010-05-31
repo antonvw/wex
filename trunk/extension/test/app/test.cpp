@@ -224,12 +224,11 @@ void wxExAppTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
   
   stc->AppendTextForced("more text");
-  wxLogMessage(stc->GetText());
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
   // next asserts, do not know why
 //  CPPUNIT_ASSERT(stc->FindNext("more text"));
   
-  stc->ReplaceAll("more", "less");
+  CPPUNIT_ASSERT(stc->ReplaceAll("more", "less") == 1);
 //  CPPUNIT_ASSERT(stc->FindNext("less text"));
   
   stc->SetText("new text");
@@ -249,7 +248,8 @@ void wxExAppTestFixture::testSTC()
   
 void wxExAppTestFixture::testSTCFile()
 {
-  wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxExSTCFile* stc = new wxExSTCFile(
+    wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
