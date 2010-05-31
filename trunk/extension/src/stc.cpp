@@ -779,25 +779,6 @@ const wxString wxExSTC::GetWordAtPos(int pos) const
   }
 }
 
-void wxExSTC::GuessType()
-{
-  if (!(GetFlags() & STC_WIN_HEX))
-  {
-    // Get a small sample from this file to detect the file mode.
-    const auto sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
-    const wxString text = GetTextRange(0, sample_size);
-
-    if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
-    else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
-    else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
-    else return; // do nothing
-  }
-
-#if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
-#endif
-}
-
 bool wxExSTC::GotoDialog(const wxString& caption)
 {
   wxASSERT(m_GotoLineNumber <= GetLineCount() && m_GotoLineNumber > 0);
@@ -814,7 +795,7 @@ bool wxExSTC::GotoDialog(const wxString& caption)
     return false;
   }
 
-  GotoLineAndSelect(val, wxEmptyString);
+  GotoLineAndSelect(val);
 
   return true;
 }
@@ -853,6 +834,25 @@ void wxExSTC::GotoLineAndSelect(
   }
 
   SetSelection(GetTargetStart(), GetTargetEnd());
+}
+
+void wxExSTC::GuessType()
+{
+  if (!(GetFlags() & STC_WIN_HEX))
+  {
+    // Get a small sample from this file to detect the file mode.
+    const auto sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
+    const wxString text = GetTextRange(0, sample_size);
+
+    if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
+    else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
+    else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
+    else return; // do nothing
+  }
+
+#if wxUSE_STATUSBAR
+  UpdateStatusBar("PaneFileType");
+#endif
 }
 
 void wxExSTC::HexDecCalltip(int pos)
@@ -1281,7 +1281,7 @@ void wxExSTC::PrintPreview()
 }
 #endif
 
-void wxExSTC::ReplaceAll(
+int wxExSTC::ReplaceAll(
   const wxString& find_text,
   const wxString& replace_text)
 {
@@ -1352,9 +1352,11 @@ void wxExSTC::ReplaceAll(
   wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, find_text.c_str()));
 #endif
+
+  return nr_replacements;
 }
 
-void wxExSTC::ReplaceNext(bool find_next)
+bool wxExSTC::ReplaceNext(bool find_next)
 {
   return ReplaceNext(
     wxExFindReplaceData::Get()->GetFindString(),
@@ -1363,7 +1365,7 @@ void wxExSTC::ReplaceNext(bool find_next)
     find_next);
 }
 
-void wxExSTC::ReplaceNext(
+bool wxExSTC::ReplaceNext(
   const wxString& find_text, 
   const wxString& replace_text,
   int search_flags,
@@ -1377,7 +1379,7 @@ void wxExSTC::ReplaceNext(
   {
     SetTargetStart(GetCurrentPos());
     SetTargetEnd(GetLength());
-    if (SearchInTarget(find_text) == -1) return;
+    if (SearchInTarget(find_text) == -1) return false;
   }
 
   IsTargetRE(replace_text) ?
@@ -1385,6 +1387,8 @@ void wxExSTC::ReplaceNext(
     ReplaceTarget(replace_text);
 
   FindNext(find_text, search_flags, find_next);
+  
+  return true;
 }
   
 void wxExSTC::ResetMargins(bool divider_margin)

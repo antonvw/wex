@@ -20,8 +20,9 @@
 
 #if wxUSE_GUI
 
-/// Offers a styled text ctrl with find/replace, printing, popup menu, macro support,
-/// vi support, lexer support (syntax colouring, folding) and basic extensions.
+/// Offers a styled text ctrl with find/replace, printing, popup menu, 
+/// macro support, vi support, lexer support (syntax colouring, folding) 
+/// and basic extensions.
 class wxExSTC : public wxStyledTextCtrl
 {
 public:
@@ -39,7 +40,8 @@ public:
   /// Window flags (0 is used as default).
   enum wxExSTCWindowFlags
   {
-    STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, this mode overrides real mode from disk
+    STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, 
+                                  ///<   this mode overrides real mode from disk
     STC_WIN_HEX         = 0x0002, ///< window in hex mode
     STC_WIN_BLAME       = 0x0004, ///< window in blame mode
   };
@@ -111,8 +113,10 @@ public:
   /// Asks for a line number and goes to the line.
   bool GotoDialog(const wxString& caption = _("Enter Line Number"));
 
-  /// Goes to line and selects the specified text in it.
-  void GotoLineAndSelect(int line_number, const wxString& text);
+  /// Goes to line and selects the line or the specified text in it.
+  void GotoLineAndSelect(
+    int line_number, 
+    const wxString& text = wxEmptyString);
 
   /// Returns true if specified target is a RE, to be used by
   /// ReplaceTargetRE.
@@ -132,18 +136,19 @@ public:
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
   /// in the entire document.
-  void ReplaceAll(
+  /// Returns the number of replacements.
+  int ReplaceAll(
     const wxString& find_text, 
     const wxString& replace_text);
   
   /// Replaces text and calls find next.
   /// Uses settings from find replace data.
-  void ReplaceNext(bool find_next);
+  bool ReplaceNext(bool find_next);
 
   /// Replaces text and calls find next.
   /// It there is a selection, it replaces in the selection, otherwise
   /// it starts at current position.
-  void ReplaceNext(
+  bool ReplaceNext(
     const wxString& find_text, 
     const wxString& replace_text,
     int search_flags = 0,
