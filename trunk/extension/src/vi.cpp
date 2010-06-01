@@ -339,7 +339,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'n': 
         for (auto i = 0; i < repeat; i++) 
           m_STC->FindNext(
-            wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, m_SearchForward);
+            wxExFindReplaceData::Get()->GetFindString(), 
+            m_SearchFlags, 
+            m_SearchForward);
         break;
 
       case 'p': Put(true); break;
@@ -380,7 +382,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'N': 
         for (auto i = 0; i < repeat; i++) 
           m_STC->FindNext(
-            wxExFindReplaceData::Get()->GetFindString(), m_SearchFlags, !m_SearchForward);
+            wxExFindReplaceData::Get()->GetFindString(), 
+            m_SearchFlags, 
+            !m_SearchForward);
         break;
       case 'X': for (auto i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
@@ -447,16 +451,12 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     return;
   }
 
-  const wxString val = 
-    wxExConfigFirstOf(wxExFindReplaceData::Get()->GetTextFindWhat());
-
-  if (val.empty())
-  {
-    return;
-  }
-
-  m_SearchForward = c == '/';
-  m_STC->FindNext(val, m_SearchFlags, m_SearchForward);
+  m_SearchForward = (c == '/');
+  
+  m_STC->FindNext(
+    wxExConfigFirstOf(wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    m_SearchFlags, 
+    m_SearchForward);
 }
 
 void wxExVi::DoCommandLine()
@@ -546,8 +546,11 @@ void wxExVi::DoCommandLine()
   }
   else if (command == ":x")
   {
-    wxPostEvent(wxTheApp->GetTopWindow(), wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-    wxPostEvent(wxTheApp->GetTopWindow(), wxCloseEvent(wxEVT_CLOSE_WINDOW));
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+      
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
   else if (command == ":y")
   {
