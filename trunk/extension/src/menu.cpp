@@ -47,6 +47,7 @@ void wxExMenu::AppendBars()
   AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
 
   m_ItemsAppended += 4;
+  m_IsSeparator = false;
 }
 
 wxMenuItem* wxExMenu::Append(int id)
