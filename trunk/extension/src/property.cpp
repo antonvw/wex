@@ -25,7 +25,10 @@ wxExProperty::wxExProperty(const wxXmlNode* node)
 
 void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
-  stc->SetProperty(m_Name, m_Value);
+  if (IsOk())
+  {
+    stc->SetProperty(m_Name, m_Value);
+  }
 }
 
 void wxExProperty::ApplyReset(wxStyledTextCtrl* stc) const
