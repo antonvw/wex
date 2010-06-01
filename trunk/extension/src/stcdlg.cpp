@@ -69,9 +69,9 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   LayoutSizers();
 }
 
-const wxString wxExSTCEntryDialog::GetLexer() const
+const wxLexer& wxExSTCEntryDialog::GetLexer() const
 {
-  return m_STC->GetLexer().GetScintillaLexer();
+  return m_STC->GetLexer();
 }
 
 const wxString wxExSTCEntryDialog::GetText() const 

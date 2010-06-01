@@ -16,8 +16,8 @@
 class wxExSTC;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
-/// The prompt is allowed to be empty, in that case no sizer is used for it.
-/// The size is used for the exSTC component.
+/// The prompt (if not empty) is first added as a text sizer to the user sizer.
+/// Then the STC component is added to the user sizer.
 class wxExSTCEntryDialog : public wxExDialog
 {
 public:
@@ -31,19 +31,19 @@ public:
     wxWindowID id = wxID_ANY,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-  /// Gets the STC scintilla lexer.
-  const wxString GetLexer() const;
+  /// Gets the STC lexer.
+  const wxLexer& GetLexer() const;
 
-  /// Gets the normal text value.
+  /// Gets the normal STC text value.
   const wxString GetText() const;
 
-  /// Gets raw text value.
+  /// Gets raw STC text value.
   const wxCharBuffer GetTextRaw() const;
 
   /// Sets the STC lexer.
   void SetLexer(const wxString& lexer);
 
-  /// Sets the text (either normal or raw).
+  /// Sets the STC text (either normal or raw).
   void SetText(const wxString& text);
 protected:
   void OnCommand(wxCommandEvent& command);
