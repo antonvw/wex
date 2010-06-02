@@ -751,7 +751,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     {
       wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
-      if (wxFileName::DirExists(filename->GetFullPath())) continue;
+      if (filename->IsDir())) continue;
       switch (event.GetId())
       {
         case ID_LIST_COMPARE:
@@ -957,7 +957,7 @@ void RBSFile::GenerateDialog()
   {
     wxExListItem li(m_Owner, i);
     const wxFileName* filename = &li.GetFileName();
-    if (!wxFileName::DirExists(filename->GetFullPath()))
+    if (!filename->GetFullPath()))
     {
       const wxString source = filename->GetPath();
       wxString destination = source, pattern, with;
