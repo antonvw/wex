@@ -125,7 +125,7 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
   {
     const wxExListItem item(this, GetFirstSelected());
 
-    is_folder = item.GetFileName().DirExists());
+    is_folder = item.GetFileName().DirExists();
     exists = item.GetFileName().GetStat().IsOk();
   }
 
@@ -362,7 +362,7 @@ const wxString wxExListViewStandard::ItemToText(long item_number) const
     item.GetFileName().GetFullPath(): 
     item.GetFileName().GetFullName());
 
-  if (item.GetFileName().DirExists()))
+  if (item.GetFileName().DirExists())
   {
     text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
   }
@@ -546,7 +546,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     const wxExListItem item(this, GetFirstSelected());
 
     exists = item.GetFileName().GetStat().IsOk();
-    is_folder = item.GetFileName().DirExists());
+    is_folder = item.GetFileName().DirExists();
     read_only = item.GetFileName().GetStat().IsReadOnly();
     is_make = item.GetFileName().GetLexer().GetScintillaLexer() == "makefile";
   }
@@ -751,7 +751,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     {
       wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
-      if (filename->IsDir())) continue;
+      if (filename->IsDir()) continue;
       switch (event.GetId())
       {
         case ID_LIST_COMPARE:
