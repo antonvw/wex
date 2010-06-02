@@ -13,8 +13,9 @@
 #include <sys/stat.h> // for stat
 #include <wx/string.h>
 
-/// Adds IsOk to the stat base class, and several methods
-/// to get/update on the stat members.
+/// Adds IsOk to the stat base class, several methods
+/// to get/update on the stat members, and Sync to sync
+/// the stat from disk.
 class wxExStat : public stat
 {
 public:
@@ -37,11 +38,13 @@ public:
   bool IsReadOnly() const {
     return (m_IsOk && ((st_mode & wxS_IWUSR) == 0));};
 
-  /// Sets this stat, returns result and keeps it in IsOk.
+  /// Sets (syncs) this stat, returns result and keeps it in IsOk.
   bool Sync();
 
   /// Sets the fullpath member, then Syncs.
-  bool Sync(const wxString& fullpath);
+  bool Sync(const wxString& fullpath) {
+    m_FullPath = fullpath;
+    return Sync();}
 private:
   wxString m_FullPath;
   bool m_IsOk;

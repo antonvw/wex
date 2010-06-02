@@ -35,9 +35,3 @@ bool wxExStat::Sync()
   
   return m_IsOk;
 }
-
-bool wxExStat::Sync(const wxString& fullpath) 
-{
-  m_FullPath = fullpath;
-  return Sync();
-}
