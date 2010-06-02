@@ -454,7 +454,7 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
   m_SearchForward = (c == '/');
   
   m_STC->FindNext(
-    wxExConfigFirstOf(wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    wxExConfigFirstOf(wxExFindReplaceData::Get()->GetTextFindWhat()), 
     m_SearchFlags, 
     m_SearchForward);
 }

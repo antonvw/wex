@@ -13,6 +13,7 @@
 #include <wx/extension/dialog.h> // for wxExDialog
 
 #if wxUSE_GUI
+class wxExLexer;
 class wxExSTC;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
@@ -32,7 +33,7 @@ public:
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
   /// Gets the STC lexer.
-  const wxLexer& GetLexer() const;
+  const wxExLexer* GetLexer() const;
 
   /// Gets the normal STC text value.
   const wxString GetText() const;
