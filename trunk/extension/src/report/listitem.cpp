@@ -163,8 +163,7 @@ void wxExListItem::Update()
 {
   SetReadOnly(m_FileName.GetStat().IsReadOnly());
 
-  if (m_FileName.FileExists() ||
-      wxFileName::DirExists(m_FileName.GetFullPath()))
+  if (m_FileName.GetStat().IsOk())
   {
     const unsigned long size = m_FileName.GetStat().st_size; // to prevent warning
     SetItem(_("Type"),
