@@ -428,8 +428,6 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
 {
   const wxString title = "vi " + wxString(c);
 
-  m_STC->GetFindString(m_SearchFlags);
-
   if (m_FindDialog == NULL)
   {
     // Do not use stc as parent, as that might be destroyed.
