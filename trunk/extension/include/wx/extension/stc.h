@@ -163,7 +163,7 @@ public:
 
   /// Sets the (scintilla) lexer for this document.
   /// Then colourises the document.
-  void SetLexer(const wxString& lexer);
+  bool SetLexer(const wxString& lexer);
 
   /// Sets the text.
   void SetText(const wxString& value);

@@ -1508,16 +1508,21 @@ void wxExSTC::SetGlobalStyles()
   wxExLexers::Get()->ApplyIndicators(this);
 }
 
-void wxExSTC::SetLexer(const wxString& lexer)
+bool wxExSTC::SetLexer(const wxString& lexer)
 {
-  m_Lexer.SetScintillaLexer(lexer, this);
-  
-  if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
+  if (m_Lexer.SetScintillaLexer(lexer, this))
   {
-    FoldAll();
-  }
+    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
+    {
+      FoldAll();
+    }
 
-  wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
+    wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
+    
+    return true;
+  }
+  
+  return false;
 }
 
 void wxExSTC::SetText(const wxString& value)
