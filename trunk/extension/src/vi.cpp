@@ -924,10 +924,9 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 void wxExVi::Put(bool after) const
 {
-  const wxString text = wxExClipboardGet();
-  int lines;
+  const auto lines = wxExGetNumberOfLines(wxExClipboardGet());
   
-  if ((lines = wxExGetNumberOfLines(text)) > 1)
+  if (lines > 1)
   {
     if (after) m_STC->LineDown();
     m_STC->Home();
