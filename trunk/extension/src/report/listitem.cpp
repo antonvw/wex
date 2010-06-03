@@ -167,12 +167,12 @@ void wxExListItem::Update()
   {
     const unsigned long size = m_FileName.GetStat().st_size; // to prevent warning
     SetItem(_("Type"),
-      (m_FileName.IsDir() ?
+      (wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
          m_FileSpec:
          m_FileName.GetExt()));
     SetItem(_("In Folder"), m_FileName.GetPath());
     SetItem(_("Size"),
-      (!m_FileName.IsDir() ?
+      (!wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
          (wxString::Format("%lu", size)):
           wxString(wxEmptyString)));
     SetItem(_("Modified"), m_FileName.GetStat().GetModificationTime());
