@@ -257,7 +257,7 @@ msgstr "Pagina-&instelling"
 
 #: ../src/menu.cpp:219
 msgid "&Tools"
-msgstr "&Extra"
+msgstr "&Hulpmiddelen"
 
 #: ../src/otl.cpp:49
 #: ../src/otl.cpp:70
