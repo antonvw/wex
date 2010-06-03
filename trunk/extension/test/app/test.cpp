@@ -234,6 +234,11 @@ void wxExAppTestFixture::testSTC()
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
   
+  wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
+  lexers.Read();
+  wxExLexers::Set(&lexers);
+  CPPUNIT_ASSERT(stc->SetLexer("cpp"));
+  
   CPPUNIT_ASSERT(!stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded());
   
