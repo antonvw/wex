@@ -19,11 +19,16 @@
 
 void wxExReportAppTestFixture::testConfig()
 {
-  wxConfig* cfg = new wxConfig(wxEmptyString, wxEmptyString, "test.cfg", wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+  wxConfig* cfg = new wxConfig(
+    wxEmptyString, 
+    wxEmptyString, 
+    "test.cfg", 
+    wxEmptyString, 
+    wxCONFIG_USE_LOCAL_FILE);
+    
   const int max = 100000;
 
   wxStopWatch sw;
-
   sw.Start();
 
   for (int j = 0; j < max; j++)
@@ -33,7 +38,7 @@ void wxExReportAppTestFixture::testConfig()
 
   const long config = sw.Time();
 
-  printf("wxConfig::Read:%ld\n", config);
+  printf("reading %d items from config took %ld milliseconds\n", max, config);
 }
 
 void wxExReportAppTestFixture::testDirWithListView()
@@ -65,14 +70,32 @@ void wxExReportAppTestFixture::testListItem()
   wxExListViewStandard* listView = new wxExListViewStandard(
     frame, wxExListViewStandard::LIST_FILE);
   
-  wxExListItem item1(listView, wxExFileName("./test.h"));
-  item1.Insert();
-  wxExListItem item2(listView, wxExFileName("./test.cpp"));
-  item2.Insert();
-  wxExListItem item3(listView, wxExFileName("./main.cpp"));
-  item3.Insert();
+  wxStopWatch sw;
+  sw.Start();
+
+  const int max = 250;
+  for (int j = 0; j < max; j++)
+  {
+    wxExListItem item1(listView, wxExFileName("./test.h"));
+    item1.Insert();
+    wxExListItem item2(listView, wxExFileName("./test.cpp"));
+    item2.Insert();
+    wxExListItem item3(listView, wxExFileName("./main.cpp"));
+    item3.Insert();
+  }
+  
+  const long add = sw.Time();
+
+  printf("adding %d items took %ld milliseconds\n", 3 * max, add);
+  
+  sw.Start();
+  
   listView->SortColumn(_("File Name"), SORT_ASCENDING);
   
+  const long sort = sw.Time();
+  
+  printf("sorting %d items took %ld milliseconds\n", 3 * max, sort);
+    
   CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
 }
   
