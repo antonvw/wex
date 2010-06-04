@@ -33,7 +33,7 @@ void wxExFile::Assign(const wxFileName& filename)
   m_Stat = filename.GetFullPath();
 }
 
-void wxExFile::CheckFileSync()
+void wxExFile::CheckSync()
 {
   // Might be used without wxApp.
   wxConfigBase* config = wxConfigBase::Get(false);

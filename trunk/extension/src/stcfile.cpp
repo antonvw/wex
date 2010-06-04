@@ -566,7 +566,7 @@ void wxExSTCFile::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  CheckFileSync();
+  CheckSync();
 
   if (
     // the readonly flags bit of course can differ from file actual readonly mode,

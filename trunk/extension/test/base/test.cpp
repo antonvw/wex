@@ -37,7 +37,7 @@ void wxExTestFixture::testFile()
   // The fullpath should be normalized, test it.
   CPPUNIT_ASSERT(file.GetFileName().GetFullPath() != TEST_FILE);
   CPPUNIT_ASSERT(!file.GetStat().IsReadOnly());
-  file.CheckFileSync();
+  file.CheckSync();
   CPPUNIT_ASSERT(!file.GetStat().IsReadOnly());
   CPPUNIT_ASSERT(file.FileLoad(TEST_BIN));
   CPPUNIT_ASSERT(!file.IsOpened());

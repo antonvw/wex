@@ -16,7 +16,7 @@
 
 /// Adds several File* methods to wxFile. All the File* methods update
 /// the wxExStat member. Also takes care of synchronization,
-/// all you have to do is call CheckFileSync once in a while.
+/// all you have to do is call CheckSync once in a while.
 class wxExFile : public wxFile
 {
 public:
@@ -33,7 +33,7 @@ public:
   virtual ~wxExFile() {;};
 
   /// Invokes DoFileLoad if this file needs to be synced.
-  void CheckFileSync();
+  void CheckSync();
 
   /// Sets the filename member and invokes DoFileLoad.
   bool FileLoad(const wxString& filename);

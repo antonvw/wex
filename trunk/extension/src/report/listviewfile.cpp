@@ -319,7 +319,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
     GetItemCount() > 0 &&
     wxConfigBase::Get()->ReadBool("AllowSync", true))
   {
-    CheckFileSync();
+    CheckSync();
   }
 }
 
