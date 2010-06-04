@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped v1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-03 18:58+0100\n"
-"PO-Revision-Date: 2010-06-03 18:59+0100\n"
+"POT-Creation-Date: 2010-06-04 19:23+0100\n"
+"PO-Revision-Date: 2010-06-04 19:24+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -287,150 +287,102 @@ msgstr "&Opties"
 
 #~ msgid "Extra"
 #~ msgstr "Extra"
-
 #~ msgid "Findbar"
 #~ msgstr "Zoekbalk"
-
 #~ msgid "&Statusbar"
 #~ msgstr "&Statusbalk"
-
 #~ msgid "&Toolbar"
 #~ msgstr "&Werkbalk"
-
 #~ msgid "&Menubar"
 #~ msgstr "&Menubalk"
-
 #~ msgid "&Findbar"
 #~ msgstr "&Zoekbalk"
-
 #~ msgid "Open project"
 #~ msgstr "Project openen"
-
 #~ msgid "Save project"
 #~ msgstr "Project opslaan"
-
 #~ msgid "View in hex mode"
 #~ msgstr "Bekijk hexadecimaal"
-
 #~ msgid "Synchronize modified files"
 #~ msgstr "Synchronizeer gewijzigde bestanden"
-
 #~ msgid "&List"
 #~ msgstr "&Lijst"
-
 #~ msgid "&Detail"
 #~ msgstr "&Details"
-
 #~ msgid "&Small Icon"
 #~ msgstr "&Pictogrammen"
-
 #~ msgid "&Lists"
 #~ msgstr "&Lijstweergave"
-
 #~ msgid "View in list mode"
 #~ msgstr "Lijst weergave"
-
 #~ msgid "View in detail mode"
 #~ msgstr "Details weergave"
-
 #~ msgid "Set &List Read Only Colour"
 #~ msgstr "&Lijst kleuren instellen"
-
 #~ msgid "Comparator"
 #~ msgstr "Vergelijker"
-
 #~ msgid "Set SVN And Comparator"
 #~ msgstr "SVN en vergelijker instellen"
-
 #~ msgid "Perspective"
 #~ msgstr "Perspektief"
-
 #~ msgid "&File"
 #~ msgstr "&Bestand"
-
 #~ msgid "&Edit"
 #~ msgstr "Be&werken"
-
 #~ msgid "Flags"
 #~ msgstr "Vlaggen"
-
 #~ msgid "&Contents"
 #~ msgstr "Inhoud"
-
 #~ msgid "Make"
 #~ msgstr "Maken"
-
 #~ msgid "Print all files"
 #~ msgstr "Alle bestanden afdrukken"
-
 #~ msgid "Confirm"
 #~ msgstr "Bevestigen"
-
 #~ msgid "Print A&ll"
 #~ msgstr "&Alles afdrukken"
-
 #~ msgid "&Update"
 #~ msgstr "&Update"
-
 #~ msgid "C&ommit"
 #~ msgstr "C&ommit"
-
 #~ msgid "&Diff"
 #~ msgstr "&Diff"
-
 #~ msgid "&Log"
 #~ msgstr "&Log"
-
 #~ msgid "&Cat"
 #~ msgstr "&Cat"
-
 #~ msgid "&Make"
 #~ msgstr "&Maken"
-
 #~ msgid "&Stat"
 #~ msgstr "&Stat"
-
 #~ msgid "&Info"
 #~ msgstr "&Info"
-
 #~ msgid "&Goto"
 #~ msgstr "&Ga naar"
-
 #~ msgid "&Run"
 #~ msgstr "Uitvoeren"
-
 #~ msgid "&SVN"
 #~ msgstr "&SVN"
-
 #~ msgid "Toolbar"
 #~ msgstr "Werkbalk"
-
 #~ msgid "Browse"
 #~ msgstr "Overzicht"
-
 #~ msgid "&Browse"
 #~ msgstr "&Overzicht"
-
 #~ msgid "day"
 #~ msgstr "dag"
-
 #~ msgid "week"
 #~ msgstr "week"
-
 #~ msgid "month"
 #~ msgstr "maand"
-
 #~ msgid "year"
 #~ msgstr "jaar"
-
 #~ msgid "link"
 #~ msgstr "koppeling"
-
 #~ msgid "help"
 #~ msgstr "help"
-
 #~ msgid "show this help"
 #~ msgstr "geeft deze help"
-
 #~ msgid "input file:line number"
 #~ msgstr "bestand:regel nummer"
+
