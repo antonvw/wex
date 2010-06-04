@@ -98,9 +98,9 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
   }
 }
 
-void wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
+bool wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
 {
-  m_STC->SetLexer(lexer);
+  return m_STC->SetLexer(lexer);
 }
 
 void wxExSTCEntryDialog::SetText(const wxString& text)

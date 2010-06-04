@@ -162,7 +162,6 @@ public:
   void SequenceDialog();
 
   /// Sets the (scintilla) lexer for this document.
-  /// Then colourises the document.
   bool SetLexer(const wxString& lexer);
 
   /// Sets the text.

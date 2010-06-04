@@ -42,7 +42,7 @@ public:
   const wxCharBuffer GetTextRaw() const;
 
   /// Sets the STC lexer.
-  void SetLexer(const wxString& lexer);
+  bool SetLexer(const wxString& lexer);
 
   /// Sets the STC text (either normal or raw).
   void SetText(const wxString& text);
