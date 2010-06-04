@@ -17,7 +17,7 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
-void wxExAppTestFixturesetUp()
+void wxExAppTestFixture::setUp()
 {
   wxExLexers* lexers = new wxExLexers(
     wxFileName("../extension/data/lexers.xml"));
