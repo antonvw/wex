@@ -27,7 +27,8 @@ public:
   wxExFile(const wxString& filename, wxFile::OpenMode mode = wxFile::read);
 
   /// Destructor.
-  /// NB: for wxFile the destructor is not virtual so you should not use wxFile polymorphically.
+  /// NB: for wxFile the destructor is not virtual so 
+  /// you should not use wxFile polymorphically.
   /// So do it here.
   virtual ~wxExFile() {;};
 
@@ -68,10 +69,10 @@ protected:
   virtual void DoFileSave(bool save_as = false) = 0;
 private:
   void Assign(const wxFileName& filename);
-  /// Called if file needs to be synced.
-  void FileSync();
   // Take care that filename and stat are in sync.
   bool MakeAbsolute();
+  /// Called if file needs to be synced.
+  void Sync();
 
   wxExFileName m_FileName;
   wxExStat m_Stat;

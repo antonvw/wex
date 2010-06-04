@@ -49,7 +49,7 @@ void wxExFile::CheckFileSync()
   {
     if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
     {
-      FileSync();
+      Sync();
 
       // Update the stat member, so next time no sync.
       m_Stat.Sync();
@@ -113,17 +113,6 @@ bool wxExFile::FileSave(const wxString& filename)
   return true;
 }
 
-void wxExFile::FileSync()
-{
-  if (Open(m_FileName.GetFullPath()))
-  {
-    DoFileLoad(true);
-
-    Close();
-    ResetContentsChanged();
-  }
-}
-
 bool wxExFile::MakeAbsolute()
 {
   if (m_FileName.MakeAbsolute())
@@ -153,4 +142,15 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   }
 
   return buffer;
+}
+
+void wxExFile::Sync()
+{
+  if (Open(m_FileName.GetFullPath()))
+  {
+    DoFileLoad(true);
+
+    Close();
+    ResetContentsChanged();
+  }
 }
