@@ -74,9 +74,6 @@ General
     http://www.bakefile.org/
     this is done in the build dir, directly under trunk:
     
-  - under windows using Microsoft Visual Studio C++ (Version 7.1.3088) and files generated
-    using format msvs2003prj
-    
   - under windows using Microsoft Visual Studio 2010
     Version 10.0.30319.1 RTMRel
     Microsoft .NET Framework files generated 
@@ -135,6 +132,8 @@ Roadmap
     Use ribbon toolbar.
     Use cbegin iterators.
     File history has it's own include file. Use it and check new methods.
+    Use wxFileSystemWatcher, instead of our own sync methods 
+    (at least for listvew file).
 
 - Improve test units, use macro's
 
