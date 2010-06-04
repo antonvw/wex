@@ -1,13 +1,6 @@
-......F...........
+.................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  17   Failures: 1   Errors: 0
-
-
-1) test: testLexer (F) line: 144 ../extension/test/app/test.cpp
-assertion failed
-- Expression: lexer.SetScintillaLexer("cpp", stc, false)
+OK (17 tests)
 
 

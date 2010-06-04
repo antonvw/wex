@@ -1,5 +1,7 @@
-.wxConfig::Read:166
-......
+.reading 100000 items from config took 168 milliseconds
+...adding 750 items took 1262 milliseconds
+sorting 750 items took 647 milliseconds
+...
 
 
 OK (7 tests)
