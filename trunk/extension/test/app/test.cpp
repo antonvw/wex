@@ -17,6 +17,16 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+void wxExAppTestFixturesetUp()
+{
+  wxExLexers* lexers = new wxExLexers(
+    wxFileName("../extension/data/lexers.xml"));
+    
+  lexers->Read();
+  
+  wxExLexers::Set(lexers);
+}
+
 void wxExAppTestFixture::testConfigItem()
 {
   wxExConfigItem item;
@@ -107,14 +117,8 @@ void wxExAppTestFixture::testHeader()
 
 void wxExAppTestFixture::testLexer()
 {
-  wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
   wxExLexer lexer;
-  lexer = lexers.FindByText("// this is a cpp comment text");
-  CPPUNIT_ASSERT(lexer.GetScintillaLexer().empty());
-  
-  // now read lexers
-  lexers.Read();
-  lexer = lexers.FindByText("// this is a cpp comment text");
+  lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
   
   CPPUNIT_ASSERT(!lexer.GetExtensions().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin().empty());
@@ -143,17 +147,14 @@ void wxExAppTestFixture::testLexer()
 
 void wxExAppTestFixture::testLexers()
 {
-  wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
-  lexers.Read();
-  
-  CPPUNIT_ASSERT(!lexers.BuildWildCards(wxFileName(TEST_FILE)).empty());
-  CPPUNIT_ASSERT(lexers.Count() > 0);
-  CPPUNIT_ASSERT(lexers.FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(lexers.FindByName("cpp").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(lexers.FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(lexers.FindByName("xxx").GetScintillaLexer().empty());
-  CPPUNIT_ASSERT(!lexers.GetMacros().empty());
-  CPPUNIT_ASSERT(!lexers.GetMacrosStyle().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(wxFileName(TEST_FILE)).empty());
+  CPPUNIT_ASSERT(wxExLexers::Get()->Count() > 0);
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName("cpp").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName("xxx").GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacrosStyle().empty());
 }
 
 void wxExAppTestFixture::testListView()
@@ -230,9 +231,6 @@ void wxExAppTestFixture::testSTC()
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
   
-  wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
-  CPPUNIT_ASSERT(lexers.Read());
-  wxExLexers::Set(&lexers);
   CPPUNIT_ASSERT(stc->SetLexer("cpp"));
 
   wxExLexer lexer;
@@ -369,10 +367,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testNotebook",
     &wxExAppTestFixture::testNotebook));
     
- /* addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTC",
     &wxExAppTestFixture::testSTC));
-   */ 
+ 
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTCFile",
     &wxExAppTestFixture::testSTCFile));

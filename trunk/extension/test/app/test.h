@@ -49,7 +49,7 @@ public:
 
   /// From TestFixture.
   /// Set up context before running a test.
-  virtual void setUp() {};
+  virtual void setUp();
 
   /// Clean up after the test run.
   virtual void tearDown() {};
