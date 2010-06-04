@@ -1664,7 +1664,10 @@ void wxExSTC::StopRecord()
   m_MacroIsRecording = false;
 
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Macro is recorded"));
+  if (!m_Macro.empty())
+  {
+    wxExFrame::StatusText(_("Macro is recorded"));
+  }
 #endif
 
   wxStyledTextCtrl::StopRecord();
