@@ -379,7 +379,7 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
   return text;
 }
 
-bool void wxExLexers::Read()
+bool wxExLexers::Read()
 {
   // This test is to prevent showing an error if the lexers file does not exist,
   // as this is not required.
