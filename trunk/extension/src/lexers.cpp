@@ -379,20 +379,20 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
   return text;
 }
 
-void wxExLexers::Read()
+bool void wxExLexers::Read()
 {
   // This test is to prevent showing an error if the lexers file does not exist,
   // as this is not required.
   if (!m_FileName.FileExists())
   {
-    return;
+    return false;
   } 
 
   wxXmlDocument doc;
 
   if (!doc.Load(m_FileName.GetFullPath()))
   {
-    return;
+    return false;
   }
 
   // Initialize members.
@@ -442,6 +442,8 @@ void wxExLexers::Read()
       config->Write(_("Add what"), GetLexerExtensions());
     }
   }
+  
+  return true;
 }
 
 wxExLexers* wxExLexers::Set(wxExLexers* lexers)

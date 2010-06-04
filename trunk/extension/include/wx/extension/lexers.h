@@ -96,7 +96,8 @@ public:
   const std::vector<wxExProperty> ParseNodeProperties(const wxXmlNode* node) const;
 
   /// Reads all containers from file.
-  void Read();
+  /// Returns true if the file could be read and loaded as valid xml file.
+  bool Read();
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object 

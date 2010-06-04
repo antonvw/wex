@@ -139,10 +139,6 @@ void wxExAppTestFixture::testLexer()
   CPPUNIT_ASSERT(lexer.KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
-  
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
-  CPPUNIT_ASSERT(lexer.SetScintillaLexer("cpp", stc, false));
-  CPPUNIT_ASSERT(!lexer.SetScintillaLexer("xyz", stc, false));
 }
 
 void wxExAppTestFixture::testLexers()
@@ -235,9 +231,13 @@ void wxExAppTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->GetText() == "new text");
   
   wxExLexers lexers(wxFileName("../extension/data/lexers.xml"));
-  lexers.Read();
+  CPPUNIT_ASSERT(lexers.Read());
   wxExLexers::Set(&lexers);
   CPPUNIT_ASSERT(stc->SetLexer("cpp"));
+
+  wxExLexer lexer;
+  CPPUNIT_ASSERT(lexer.SetScintillaLexer("cpp", stc, false));
+  CPPUNIT_ASSERT(!lexer.SetScintillaLexer("xyz", stc, false));
   
   CPPUNIT_ASSERT(!stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded());
@@ -369,10 +369,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testNotebook",
     &wxExAppTestFixture::testNotebook));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+ /* addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTC",
     &wxExAppTestFixture::testSTC));
-    
+   */ 
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTCFile",
     &wxExAppTestFixture::testSTCFile));
