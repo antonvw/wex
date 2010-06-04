@@ -473,8 +473,13 @@ bool wxExLexers::ShowDialog(
     _("Input") + ":", 
     caption, 
     s);
+
+  const auto index = s.Index(lexer);
   
-  dlg.SetSelection(s.Index(lexer));
+  if (index != wxNOT_FOUND)
+  {
+    dlg.SetSelection(index);
+  }
 
   if (dlg.ShowModal() == wxID_CANCEL)
   {
