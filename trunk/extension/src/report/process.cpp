@@ -30,7 +30,6 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
-wxExProcess* wxExProcess::m_Self = NULL;
 wxString wxExProcess::m_Command;
 
 wxExProcess::wxExProcess(

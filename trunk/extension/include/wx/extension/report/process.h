@@ -63,8 +63,6 @@ private:
 
   wxTimer m_Timer;
 
-  static wxExProcess* m_Self;
-
   DECLARE_EVENT_TABLE()
 };
 #endif
