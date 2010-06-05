@@ -21,9 +21,6 @@ class wxExListView;
 class wxExProcess : public wxProcess
 {
 public:
-  /// Default constructor.
-  wxExProcess();
-
   /// Constructor.
   wxExProcess(
     wxExFrameWithHistory* frame, 

@@ -33,12 +33,6 @@ END_EVENT_TABLE()
 wxExProcess* wxExProcess::m_Self = NULL;
 wxString wxExProcess::m_Command;
 
-wxExProcess::wxExProcess()
-  : m_Frame(NULL)
-  , m_ListView(NULL)
-{
-}
-
 wxExProcess::wxExProcess(
   wxExFrameWithHistory* frame,
   const wxString& command)
