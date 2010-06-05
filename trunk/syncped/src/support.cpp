@@ -20,7 +20,6 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -186,7 +185,7 @@ DecoratedFrame::DecoratedFrame()
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  if (wxExProcess::Get()->IsRunning())
+  if (ProcessIsRunning())
   {
     return false;
   }

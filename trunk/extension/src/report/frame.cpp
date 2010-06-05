@@ -210,7 +210,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto() && m_Process != NULL)
   {
-    if (wxExProcess::Get()->IsRunning())
+    if (m_Process->IsRunning())
     {
       wxLogMessage(_("Process is running"));
       event.Veto();
@@ -219,8 +219,6 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
   }
 
   wxDELETE(m_Process);
-
-  delete wxExProcess::Set(NULL);
 
   m_FileHistory.Save(*wxConfigBase::Get());
 
@@ -401,6 +399,23 @@ bool wxExFrameWithHistory::OpenFile(
   return false;
 }
 
+int wxExFrameWithHistory::ProcessConfigDialog(
+  wxWindow* parent, 
+  const wxString& title) const
+{
+  return wxExProcess::ConfigDialog(parent, title);
+}
+
+bool wxExFrameWithHistory::ProcessIsRunning() const
+{
+  return (m_Process != NULL && m_Process->IsRunning());
+}
+  
+bool wxExFrameWithHistory::ProcessIsSelected() const
+{
+  return (m_Process != NULL && m_Process->IsSelected());
+}
+  
 bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 {
   wxASSERT(m_Process == NULL);
@@ -420,7 +435,7 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 
 bool wxExFrameWithHistory::ProcessStop()
 {
-  if (wxExProcess::Get()->IsRunning())
+  if (m_Process->IsRunning())
   {
     if (m_Process->Kill() == wxKILL_ERROR)
     {

@@ -234,17 +234,6 @@ long wxExProcess::Execute()
   return pid;
 }
 
-wxExProcess* wxExProcess::Get(bool createOnDemand)
-{
-  if (m_Self == NULL && createOnDemand)
-  {
-    m_Self = new wxExProcess();
-    m_Self->m_Command = wxExConfigFirstOf(_("Process"));
-  }
-
-  return m_Self;
-}
-
 bool wxExProcess::IsRunning() const
 {
   if (GetPid() < 0)
@@ -304,11 +293,4 @@ void wxExProcess::OnTimer(wxTimerEvent& event)
   {
     // Do nothing.
   }
-}
-
-wxExProcess* wxExProcess::Set(wxExProcess* process)
-{
-  wxExProcess* old = m_Self;
-  m_Self = process;
-  return old;
 }

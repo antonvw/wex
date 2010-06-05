@@ -80,6 +80,18 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
+  /// Shows a config dialog, sets the command 
+  /// and returns dialog return code.
+  int ProcessConfigDialog(
+    wxWindow* parent,
+    const wxString& title = _("Select Process")) const;
+    
+  /// Is a process running.
+  bool ProcessIsRunning() const;
+  
+  /// Is a process selected.
+  bool ProcessIsSelected() const;
+  
   /// Runs the process.
   /// Outputs to a listview LIST_PROCESS.
   /// Returns true if the process executes.

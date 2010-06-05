@@ -29,7 +29,6 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "frame.h"
@@ -668,7 +667,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_LIST_SORT_TOGGLE:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
-  case ID_PROCESS_SELECT: wxExProcess::Get()->ConfigDialog(this); break;
+  case ID_PROCESS_SELECT: ProcessConfigDialog(this); break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)
@@ -837,10 +836,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( wxExProcess::Get()->IsSelected() &&
-                   !wxExProcess::Get()->IsRunning()); 
+      event.Enable( ProcessIsSelected() &&
+                   !ProcessIsRunning()); 
       break;
-    case wxID_STOP: event.Enable(wxExProcess::Get()->IsRunning()); break;
+    case wxID_STOP: event.Enable(ProcessIsRunning()); break;
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(

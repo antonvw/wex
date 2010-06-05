@@ -23,7 +23,6 @@
 #include <wx/extension/version.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listitem.h>
-#include <wx/extension/report/process.h>
 #include "app.h"
 
 #ifndef __WXMSW__
@@ -275,7 +274,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_PROCESS_DIALOG:
-    wxExProcess::Get()->ConfigDialog(this);
+    ProcessConfigDialog(this);
     break;
 
   case ID_PROCESS_RUN:
