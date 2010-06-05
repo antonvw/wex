@@ -111,6 +111,7 @@ bool wxExProcess::CheckInput()
     }
 
     wxFileName fn(path);
+//    wxLogMessage(path);
     fn.Normalize();
 
     if (fn.FileExists())
@@ -254,10 +255,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
 
   DeletePendingEvents();
 
-  // Next statement causes wxGTK to crash, so outcommented.
-#ifndef __WXGTK__
   delete this;
-#endif
 
   return wxProcess::Kill(GetPid(), sig);
 }
