@@ -43,11 +43,11 @@ public:
   /// is sent to the frame as specified in the constructor.
   long Execute();
   
-  /// Returns true if a process is running.
+  /// Returns true if this process is running.
   bool IsRunning() const;
 
   /// Returns whether a process has been selected.
-  bool IsSelected() const {
+  static bool IsSelected() {
     return !m_Command.empty();};
     
   /// Kills the process (sends specified signal if process still running).
