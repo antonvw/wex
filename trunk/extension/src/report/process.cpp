@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
 END_EVENT_TABLE()
 
 wxString wxExProcess::m_Command;
+wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess(
   wxExFrameWithHistory* frame,
@@ -152,7 +153,7 @@ int wxExProcess::ConfigDialog(
     wxEmptyString));
 
   v.push_back(wxExConfigItem(
-    _("Process folder"), 
+    m_WorkingDirKey, 
     CONFIG_COMBOBOXDIR, 
     wxEmptyString,
     true,
@@ -181,7 +182,7 @@ long wxExProcess::Execute()
   }
 
   wxString cwd;
-  const wxString dir = wxExConfigFirstOf(_("Process folder"));
+  const wxString dir = wxExConfigFirstOf(m_WorkingDirKey);
 
   if (!dir.empty())
   {

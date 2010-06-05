@@ -57,6 +57,7 @@ private:
   bool CheckInput();
 
   static wxString m_Command;
+  static wxString m_WorkingDirKey;
 
   wxExFrameWithHistory* m_Frame;
   wxExListView* m_ListView;
