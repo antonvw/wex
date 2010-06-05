@@ -117,11 +117,8 @@ void wxExReportAppTestFixture::testListViewFile()
 void wxExReportAppTestFixture::testProcess()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExProcess process(frame, "wc test.h");
-  
-  CPPUNIT_ASSERT(process.IsSelected());
-  long pid = process.Execute();
-  // CPPUNIT_ASSERT(wxProcess::Exists(pid));
+  CPPUNIT_ASSERT(frame->ProcessRun("wc test.h"));
+  CPPUNIT_ASSERT(frame->ProcessIsSelected());
 }
 
 void wxExReportAppTestFixture::testSTCWithFrame()

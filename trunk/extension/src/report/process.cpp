@@ -204,8 +204,9 @@ long wxExProcess::Execute()
 
   if (m_ListView == NULL)
   {
-    wxLogError(_("No listview to collect output"));
-    return 0;
+    // Only show a message, and continue,
+    // easier for testing.
+    wxLogMessage(_("No listview to collect output"));
   }
 
   const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
