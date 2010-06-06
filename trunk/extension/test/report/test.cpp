@@ -62,6 +62,9 @@ void wxExReportAppTestFixture::testFrameWithHistory()
     wxEmptyString,
     wxExSTCWithFrame::STC_WIN_IS_PROJECT));
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
+  
+  CPPUNIT_ASSERT(frame->ProcessRun("wc test.h"));
+  CPPUNIT_ASSERT(frame->ProcessIsSelected());
 }
 
 void wxExReportAppTestFixture::testListItem()
@@ -117,8 +120,10 @@ void wxExReportAppTestFixture::testListViewFile()
 void wxExReportAppTestFixture::testProcess()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  CPPUNIT_ASSERT(frame->ProcessRun("wc test.h"));
-  CPPUNIT_ASSERT(frame->ProcessIsSelected());
+  
+  wxExProcess* process = new wxExProcess(frame, "wc test.h");
+  CPPUNIT_ASSERT(process->IsSelected());
+  CPPUNIT_ASSERT(process->Execute());
 }
 
 void wxExReportAppTestFixture::testSTCWithFrame()
