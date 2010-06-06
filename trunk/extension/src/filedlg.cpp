@@ -32,8 +32,10 @@ wxExFileDialog::wxExFileDialog(
       wildcard, 
       style, 
       pos, 
-      size, 
-      name)
+      size) 
+// when compiling under x11 the name is not used as argument,
+// so outcommented it here.      
+//      name)
   , m_File(file)
 {
   // Override wildcard if it is default and file is initialized.
