@@ -118,23 +118,23 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
 
   menu.SetStyle(style);
 
-  bool exists = true;
-  bool is_folder = false;
-
-  if (GetSelectedItemCount() == 1)
-  {
-    const wxExListItem item(this, GetFirstSelected());
-
-    is_folder = item.GetFileName().DirExists();
-    exists = item.GetFileName().GetStat().IsOk();
-  }
+  wxExListView::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() >= 1)
   {
-    wxExListView::BuildPopupMenu(menu);
-
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
+    bool exists = true;
+    bool is_folder = false;
+
+    if (GetSelectedItemCount() == 1)
+    {
+      const wxExListItem item(this, GetFirstSelected());
+
+      is_folder = item.GetFileName().DirExists();
+      exists = item.GetFileName().GetStat().IsOk();
+    }
+
     if (exists && !is_folder)
     {
       menu.AppendSeparator();
@@ -142,10 +142,6 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
     }
 #endif
 #endif
-  }
-  else
-  {
-    wxExListView::BuildPopupMenu(menu);
   }
 }
 
