@@ -656,9 +656,13 @@ void wxExListView::OnMouse(wxMouseEvent& event)
     if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= wxExMenu::MENU_ALLOW_CLEAR;
 
     wxExMenu menu(style);
+
     BuildPopupMenu(menu);
 
-    PopupMenu(&menu);
+    if (menu.GetMenuItemCount() > 0)
+    {
+      PopupMenu(&menu);
+    }
   }
   else
   {
