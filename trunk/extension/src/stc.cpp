@@ -645,7 +645,7 @@ const wxString wxExSTC::GetFindString(int search_flags) const
 
     if (flags & wxSTC_FIND_REGEXP)
     {
-      for (int i = 0; i < selection.size() && alnum; i++)
+      for (size_t i = 0; i < selection.size() && alnum; i++)
       {
         if (!isalnum(selection[i]))
         {
