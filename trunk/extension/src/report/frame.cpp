@@ -435,7 +435,11 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 
 bool wxExFrameWithHistory::ProcessStop()
 {
-  if (m_Process->IsRunning())
+  if (m_Process == NULL)
+  {
+    return true;
+  }
+  else if (m_Process->IsRunning())
   {
     if (m_Process->Kill() == wxKILL_ERROR)
     {
@@ -449,9 +453,9 @@ bool wxExFrameWithHistory::ProcessStop()
       m_Process = NULL;
       return true;
     }
-  }
 
-  return true;
+    return true;
+  }
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)
