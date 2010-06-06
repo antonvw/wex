@@ -17,9 +17,8 @@
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/configdlg.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/log.h>
-#include <wx/extension/util.h>
+#include <wx/extension/util.h> // for wxExConfigFirstOf
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
