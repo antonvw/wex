@@ -111,7 +111,7 @@ bool wxExProcess::CheckInput()
     }
 
     wxFileName fn(path);
-//    wxLogMessage(path);
+
     fn.Normalize();
 
     if (fn.FileExists())
@@ -215,7 +215,7 @@ long wxExProcess::Execute()
 #endif
     wxExLog::Get()->Log(m_Command);
 
-    m_Timer.Start(100); // each 100 milliseconds
+    m_Timer.Start(1000); // each 1000 milliseconds
   }
   else
   {
