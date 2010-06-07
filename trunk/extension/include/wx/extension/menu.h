@@ -96,7 +96,6 @@ public:
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};
 private:
-  bool m_IsSeparator;
   bool m_MenuVCSFilled;
   long m_Style;
 };
