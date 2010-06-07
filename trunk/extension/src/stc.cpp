@@ -1157,7 +1157,7 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
       
       BuildPopupMenu(menu);
       
-      if (menu.GetItemsAppended() > 0)
+      if (menu.GetMenuItemCount() > 0)
       {
         PopupMenu(&menu);
       }

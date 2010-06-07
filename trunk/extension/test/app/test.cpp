@@ -184,10 +184,10 @@ void wxExAppTestFixture::testMenu()
   menu.AppendSeparator();
   menu.AppendSeparator();
   menu.AppendSeparator();
-  CPPUNIT_ASSERT(menu.GetItemsAppended() == 0);
+  CPPUNIT_ASSERT(menu.GetMenuItemCount() == 0);
   
   menu.AppendBars();
-  CPPUNIT_ASSERT(menu.GetItemsAppended() > 0);
+  CPPUNIT_ASSERT(menu.GetMenuItemCount() > 0);
   
   CPPUNIT_ASSERT(!menu.IsVCSBuild());
   
