@@ -32,9 +32,6 @@ public:
   /// Default constructor.
   wxExLexer(const wxXmlNode* node = NULL);
 
-  /// Colourises the specified component.
-  void Colourise(wxExSTC* stc) const;
-
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
 
@@ -105,6 +102,7 @@ public:
   int UsableCharactersPerLine() const;
 private:
   const std::vector<wxExStyle> AutoMatch(const wxString& lexer) const;
+  void Colourise(wxExSTC* stc) const;
   const wxString GetFormattedText(
     const wxString& lines,
     const wxString& header,

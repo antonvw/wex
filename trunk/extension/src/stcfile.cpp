@@ -429,7 +429,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   if (save_as)
   {
     SetName(GetFileName().GetFullPath());
-    GetLexer().Colourise(this);
+    SetLexer(GetFileName().GetLexer().GetScintillaLexer());
   }
   
   if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
