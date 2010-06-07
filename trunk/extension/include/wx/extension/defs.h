@@ -23,7 +23,6 @@ enum wxExId
 
   ID_ALL_LOWEST,         // all ALL commands after this one
   ID_ALL_STC_CLOSE,
-  ID_ALL_STC_COLOURISE,
   ID_ALL_STC_CONFIG_GET,
   ID_ALL_STC_SAVE,
   ID_ALL_STC_SET_LEXER,
