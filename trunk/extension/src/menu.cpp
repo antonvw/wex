@@ -25,7 +25,6 @@
 
 wxExMenu::wxExMenu(long style)
   : m_Style(style)
-  , m_ItemsAppended(0)
   , m_IsSeparator(false)
   , m_MenuVCSFilled(false)
 {
@@ -33,7 +32,6 @@ wxExMenu::wxExMenu(long style)
 
 wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
-  , m_ItemsAppended(0)
   , m_IsSeparator(menu.m_IsSeparator)
   , m_MenuVCSFilled(menu.m_MenuVCSFilled)
 {
@@ -46,13 +44,11 @@ void wxExMenu::AppendBars()
   AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
 
-  m_ItemsAppended += 4;
   m_IsSeparator = false;
 }
 
 wxMenuItem* wxExMenu::Append(int id)
 {
-  m_ItemsAppended++;
   m_IsSeparator = false;
 
   // Using wxMenu::Append(id)
@@ -79,7 +75,6 @@ wxMenuItem* wxExMenu::Append(
   const wxString& helptext,
   const wxArtID& artid)
 {
-  m_ItemsAppended++;
   m_IsSeparator = false;
 
   wxMenuItem* item = new wxMenuItem(this, id, name, helptext);
@@ -160,7 +155,7 @@ void wxExMenu::AppendPrint()
 
 void wxExMenu::AppendSeparator()
 {
-  if (m_ItemsAppended == 0 || m_IsSeparator) return;
+  if (GetMenuItemCount() == 0 || m_IsSeparator) return;
 
   wxMenu::AppendSeparator();
 
@@ -173,7 +168,6 @@ void wxExMenu::AppendSubMenu(
   const wxString& help,
   int itemid)
 {
-  m_ItemsAppended++; // count submenu as one
   m_IsSeparator = false;
 
   if (itemid == wxID_ANY)
