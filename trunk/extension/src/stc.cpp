@@ -1510,7 +1510,7 @@ void wxExSTC::SetGlobalStyles()
 
 bool wxExSTC::SetLexer(const wxString& lexer)
 {
-  if (m_Lexer.SetScintillaLexer(lexer, this))
+  if (m_Lexer.ApplyLexer(lexer, this))
   {
     if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
     {

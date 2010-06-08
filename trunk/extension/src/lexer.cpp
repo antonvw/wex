@@ -42,6 +42,91 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   }
 }
 
+bool wxExLexer::ApplyLexer(
+  const wxString& lexer, 
+  wxExSTC* stc,
+  bool show_error) const
+{
+  stc->ClearDocumentStyle();
+  
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
+
+  (*this) = wxExLexers::Get()->FindByName(lexer);
+  
+  stc->SetLexerLanguage(m_ScintillaLexer);
+
+  if (!IsOk())
+  {
+    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
+    
+    stc->SetLexerLanguage(m_ScintillaLexer);
+  }
+
+  if (
+      IsOk() &&
+      // And check whether the GetLexer from scintilla has a good value.
+      // Otherwise it is not known, and we better show an error.
+      ((wxStyledTextCtrl *)stc)->GetLexer() == wxSTC_LEX_NULL &&
+      show_error)
+  {
+    wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
+  }
+
+  // Reset keywords, also if no lexer is available.
+  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
+  {
+    stc->SetKeyWords(setno, wxEmptyString);
+  }
+
+  // Readme: The Scintilla lexer only recognized lower case words, apparently.
+  for (
+    auto it = m_KeywordsSet.begin();
+    it != m_KeywordsSet.end();
+    ++it)
+  {
+    stc->SetKeyWords(
+      it->first,
+      GetKeywordsString(it->first).Lower());
+  }
+
+  wxExLexers::Get()->GetDefaultStyle().Apply(stc);
+
+  stc->StyleClearAll();
+
+  wxExLexers::Get()->ApplyGlobalStyles(stc);
+  wxExLexers::Get()->ApplyIndicators(stc);
+  wxExLexers::Get()->ApplyProperties(stc);
+  wxExLexers::Get()->ApplyMarkers(stc);
+  
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
+
+  for_each (m_Styles.begin(), m_Styles.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+
+  // And finally colour the entire document.
+  stc->Colourise(0, stc->GetLength() - 1);
+  
+  const int margin_fold_no = stc->GetMarginFoldingNumber();
+  
+  if (stc->GetProperty("fold") == "1")
+  {
+    stc->SetMarginWidth(margin_fold_no, 
+      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+
+    stc->SetFoldFlags(
+      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+  }
+  else
+  {
+    stc->SetMarginWidth(margin_fold_no, 0);
+  }
+  
+  return ((wxStyledTextCtrl *)stc)->GetLexer() != wxSTC_LEX_NULL;
+}
+
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
   const wxString& lexer) const
 {
@@ -423,91 +508,6 @@ bool wxExLexer::SetKeywords(const wxString& value)
   m_KeywordsSet.insert(make_pair(setno, keywords_set));
 
   return true;
-}
-
-bool wxExLexer::SetScintillaLexer(
-  const wxString& lexer, 
-  wxExSTC* stc,
-  bool show_error) const
-{
-  stc->ClearDocumentStyle();
-  
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
-
-  (*this) = wxExLexers::Get()->FindByName(lexer);
-  
-  stc->SetLexerLanguage(m_ScintillaLexer);
-
-  if (!IsOk())
-  {
-    (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
-    
-    stc->SetLexerLanguage(m_ScintillaLexer);
-  }
-
-  if (
-      IsOk() &&
-      // And check whether the GetLexer from scintilla has a good value.
-      // Otherwise it is not known, and we better show an error.
-      ((wxStyledTextCtrl *)stc)->GetLexer() == wxSTC_LEX_NULL &&
-      show_error)
-  {
-    wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
-  }
-
-  // Reset keywords, also if no lexer is available.
-  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
-  {
-    stc->SetKeyWords(setno, wxEmptyString);
-  }
-
-  // Readme: The Scintilla lexer only recognized lower case words, apparently.
-  for (
-    auto it = m_KeywordsSet.begin();
-    it != m_KeywordsSet.end();
-    ++it)
-  {
-    stc->SetKeyWords(
-      it->first,
-      GetKeywordsString(it->first).Lower());
-  }
-
-  wxExLexers::Get()->GetDefaultStyle().Apply(stc);
-
-  stc->StyleClearAll();
-
-  wxExLexers::Get()->ApplyGlobalStyles(stc);
-  wxExLexers::Get()->ApplyIndicators(stc);
-  wxExLexers::Get()->ApplyProperties(stc);
-  wxExLexers::Get()->ApplyMarkers(stc);
-  
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
-
-  for_each (m_Styles.begin(), m_Styles.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-
-  // And finally colour the entire document.
-  stc->Colourise(0, stc->GetLength() - 1);
-  
-  const int margin_fold_no = stc->GetMarginFoldingNumber();
-  
-  if (stc->GetProperty("fold") == "1")
-  {
-    stc->SetMarginWidth(margin_fold_no, 
-      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-
-    stc->SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  }
-  else
-  {
-    stc->SetMarginWidth(margin_fold_no, 0);
-  }
-  
-  return ((wxStyledTextCtrl *)stc)->GetLexer() != wxSTC_LEX_NULL;
 }
 
 int wxExLexer::UsableCharactersPerLine() const
