@@ -677,7 +677,8 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
   // Cannot be const because of SetItem later on.
   wxExListItem item(this, item_number);
 
-  if (!item.GetFileName().FileExists())
+  if (!item.GetFileName().FileExists() &&
+       item.GetFileName().DirExists())
   {
     wxTextEntryDialog dlg(this,
       _("Input") + ":",
@@ -689,7 +690,7 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
       item.SetItem(_("Type"), dlg.GetValue());
     }
   }
-  else
+  else if (item.GetFileName().FileExists())
   {
     const wxString line_number_str = GetItemText(item_number, _("Line No"));
     const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
