@@ -74,31 +74,6 @@ const std::vector<wxExStyle> wxExLexer::AutoMatch(
   return text;
 }
 
-void wxExLexer::Colourise(wxExSTC* stc) const
-{
-  for_each (m_Styles.begin(), m_Styles.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-
-  // And finally colour the entire document.
-  stc->Colourise(0, stc->GetLength() - 1);
-  
-  const int margin_fold_no = stc->GetMarginFoldingNumber();
-  
-  if (stc->GetProperty("fold") == "1")
-  {
-    stc->SetMarginWidth(margin_fold_no, 
-      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-
-    stc->SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  }
-  else
-  {
-    stc->SetMarginWidth(margin_fold_no, 0);
-  }
-}
-
 const wxString wxExLexer::GetFormattedText(
   const wxString& lines,
   const wxString& header,
@@ -510,7 +485,27 @@ bool wxExLexer::SetScintillaLexer(
   for_each (m_Properties.begin(), m_Properties.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 
-  Colourise(stc);
+  for_each (m_Styles.begin(), m_Styles.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+
+  // And finally colour the entire document.
+  stc->Colourise(0, stc->GetLength() - 1);
+  
+  const int margin_fold_no = stc->GetMarginFoldingNumber();
+  
+  if (stc->GetProperty("fold") == "1")
+  {
+    stc->SetMarginWidth(margin_fold_no, 
+      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+
+    stc->SetFoldFlags(
+      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+  }
+  else
+  {
+    stc->SetMarginWidth(margin_fold_no, 0);
+  }
   
   return ((wxStyledTextCtrl *)stc)->GetLexer() != wxSTC_LEX_NULL;
 }

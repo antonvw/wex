@@ -102,7 +102,6 @@ public:
   int UsableCharactersPerLine() const;
 private:
   const std::vector<wxExStyle> AutoMatch(const wxString& lexer) const;
-  void Colourise(wxExSTC* stc) const;
   const wxString GetFormattedText(
     const wxString& lines,
     const wxString& header,
