@@ -19,10 +19,10 @@
 #include <wx/extension/frame.h>
 
 #if wxUSE_GUI
+#if wxUSE_STATUSBAR
 
 int wxExPane::m_Total = 0;
 
-#if wxUSE_STATUSBAR
 BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
   EVT_LEFT_DOWN(wxExStatusBar::OnMouse)
   EVT_LEFT_DCLICK(wxExStatusBar::OnMouse)
@@ -145,5 +145,5 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
     wxStatusBar::SetStatusText(text, it->second.m_No);
   }
 }
-#endif //wxUSE_STATUSBAR
+#endif // wxUSE_STATUSBAR
 #endif // wxUSE_GUI
