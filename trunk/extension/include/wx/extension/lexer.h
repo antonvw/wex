@@ -96,7 +96,7 @@ public:
   bool SetScintillaLexer(
     const wxString& lexer, 
     wxExSTC* stc,
-    bool show_error = true);
+    bool show_error = true) const;
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;

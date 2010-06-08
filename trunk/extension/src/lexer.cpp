@@ -428,7 +428,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
 bool wxExLexer::SetScintillaLexer(
   const wxString& lexer, 
   wxExSTC* stc,
-  bool show_error)
+  bool show_error) const
 {
   stc->ClearDocumentStyle();
   
