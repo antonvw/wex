@@ -49,7 +49,7 @@ private:
   void DoCommandFind(const wxUniChar& c);
   void DoCommandLine();
   bool DoCommandRange(const wxString& command);
-  void FindWord(bool find_next = true);
+  void FindWord(bool find_next = true) const;
   void GotoBrace() const;
   void Indent(int lines, bool forward = true) const;
   void InsertMode(

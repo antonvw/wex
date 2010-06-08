@@ -651,7 +651,7 @@ bool wxExVi::DoCommandRange(const wxString& command)
   }
 }
 
-void wxExVi::FindWord(bool find_next)
+void wxExVi::FindWord(bool find_next) const
 {
   const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
   const auto end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
