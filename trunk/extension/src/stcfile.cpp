@@ -198,7 +198,8 @@ int wxExSTCFile::ConfigDialog(
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
-  choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, _("Invisible after ident")));
+  choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
+    _("Invisible after ident")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
   items.push_back(wxExConfigItem(_("Whitespace"), choices, true, page));
 
@@ -225,31 +226,46 @@ int wxExSTCFile::ConfigDialog(
     items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
 
     items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
-    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, _("Folding")));
+    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, 
+      _("Folding")));
 
     std::map<long, const wxString> fchoices;
     // next no longer available
 //    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, _("Line before expanded")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, _("Line before contracted")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, _("Line after expanded")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, _("Line after contracted")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, 
+      _("Line before expanded")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, 
+      _("Line before contracted")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, 
+      _("Line after expanded")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, 
+      _("Line after contracted")));
     // next is experimental, wait for scintilla
     //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
-    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, _("Folding")));
+    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, 
+      _("Folding")));
 
     items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
-    items.push_back(wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(
+      wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
 
     items.push_back(wxExConfigItem(
-      _("Tab width"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+      _("Tab width"), 
+      1, 
+      (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
     items.push_back(wxExConfigItem(
-      _("Indent"), 1, (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-    items.push_back(wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
-    items.push_back(wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
-    items.push_back(wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
+      _("Indent"), 
+      1, 
+      (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+    items.push_back(
+      wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
+    items.push_back(
+      wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
+    items.push_back(
+      wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
 
-    items.push_back(wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
+    items.push_back(
+      wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
   }
 
   int buttons = wxOK | wxCANCEL;
@@ -298,30 +314,48 @@ void wxExSTCFile::ConfigGet()
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("Calltip"), wxColour("YELLOW")));
 
-  SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
-  SetEdgeColour(wxConfigBase::Get()->ReadObject(
-    _("Edge colour"), wxColour("GREY"))); 
-  SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+  if (GetFileName().GetExt().CmpNoCase("log") == 0)
+  {
+    SetEdgeMode(wxSTC_EDGE_NONE);
+  }
+  else
+  {
+    SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
+    SetEdgeColour(wxConfigBase::Get()->ReadObject(
+      _("Edge colour"), wxColour("GREY"))); 
+    SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+  }
+    
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
   SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), 4));
-  SetIndentationGuides(wxConfigBase::Get()->ReadBool(_("Indentation guide"), false));
+  SetIndentationGuides(
+    wxConfigBase::Get()->ReadBool(_("Indentation guide"), false));
 
-  SetMarginWidth(m_MarginDividerNumber, wxConfigBase::Get()->ReadLong(_("Divider"), 16));
-  SetMarginWidth(m_MarginFoldingNumber, wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+  SetMarginWidth(
+    m_MarginDividerNumber, 
+    wxConfigBase::Get()->ReadLong(_("Divider"), 16));
+  SetMarginWidth(
+    m_MarginFoldingNumber, 
+    wxConfigBase::Get()->ReadLong(_("Folding"), 16));
 
   const auto margin = wxConfigBase::Get()->ReadLong(
     _("Line number"), 
     TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
 
-  SetMarginWidth(m_MarginLineNumber, (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
+  SetMarginWidth(
+    m_MarginLineNumber, 
+    (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
   SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
-  SetViewWhiteSpace(wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+  SetViewWhiteSpace(
+    wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
   SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
-  SetWrapVisualFlags(wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), wxSTC_WRAPVISUALFLAG_END));
+  SetWrapVisualFlags(
+    wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
+    wxSTC_WRAPVISUALFLAG_END));
 
   SetViMode(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
 
