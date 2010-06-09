@@ -134,14 +134,16 @@ Roadmap
     File history has it's own include file. Use it and check new methods.
     Use wxFileSystemWatcher, instead of our own sync methods 
     (at least for listvew file).
+    
+- in vi and stc share replace code
 
-- Improve test units, use macro's
+- improve test units, use macro's
 
-- Add ctags (like Exuberant CTAGS)
+- add ctags (like Exuberant CTAGS)
 
-- Add profile option (see gcc website, g++ -D_GLIBCXX_PROFILE foo.cc)
+- add profile option (see gcc website, g++ -D_GLIBCXX_PROFILE foo.cc)
     or use valgrind
 
-- Add gdb front-end
+- add gdb front-end
 
-- Use Boost
+- use Boost
