@@ -19,8 +19,8 @@
 #include <wx/extension/property.h>
 #include <wx/extension/style.h>
 
+class wxStyledTextCtrl;
 class wxExLexers;
-class wxExSTC;
 
 /// This class defines a lexer using file associations,
 /// syntax colouring and comment definitions.
@@ -39,7 +39,7 @@ public:
   /// if a lexer was specified, but could not be set.
   bool ApplyLexer(
     const wxString& lexer, 
-    wxExSTC* stc,
+    wxStyledTextCtrl* stc,
     bool show_error = true) const;
 
   /// Gets the comment begin.

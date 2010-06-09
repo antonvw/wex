@@ -16,10 +16,10 @@
 //#include <numeric> // both for accumulate
 //#include <functional>
 #include <algorithm>
+#include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/stc.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
 wxExLexer::wxExLexer(const wxXmlNode* node)
@@ -43,7 +43,7 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
 
 bool wxExLexer::ApplyLexer(
   const wxString& lexer, 
-  wxExSTC* stc,
+  wxStyledTextCtrl* stc,
   bool show_error) const
 {
   stc->ClearDocumentStyle();
@@ -66,7 +66,7 @@ bool wxExLexer::ApplyLexer(
       IsOk() &&
       // And check whether the GetLexer from scintilla has a good value.
       // Otherwise it is not known, and we better show an error.
-      ((wxStyledTextCtrl *)stc)->GetLexer() == wxSTC_LEX_NULL &&
+      stc->GetLexer() == wxSTC_LEX_NULL &&
       show_error)
   {
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
@@ -107,7 +107,7 @@ bool wxExLexer::ApplyLexer(
   // And finally colour the entire document.
   stc->Colourise(0, stc->GetLength() - 1);
   
-  return ((wxStyledTextCtrl *)stc)->GetLexer() != wxSTC_LEX_NULL;
+  return stc->GetLexer() != wxSTC_LEX_NULL;
 }
 
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
