@@ -98,9 +98,6 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
-  /// Gets the margin number used for folding.
-  int GetMarginFoldingNumber() const {return m_MarginFoldingNumber;};
-
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 

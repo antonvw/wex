@@ -16,7 +16,6 @@
 //#include <numeric> // both for accumulate
 //#include <functional>
 #include <algorithm>
-#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
@@ -107,22 +106,6 @@ bool wxExLexer::ApplyLexer(
 
   // And finally colour the entire document.
   stc->Colourise(0, stc->GetLength() - 1);
-  
-  const int margin_fold_no = stc->GetMarginFoldingNumber();
-  
-  if (stc->GetProperty("fold") == "1")
-  {
-    stc->SetMarginWidth(margin_fold_no, 
-      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-
-    stc->SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  }
-  else
-  {
-    stc->SetMarginWidth(margin_fold_no, 0);
-  }
   
   return ((wxStyledTextCtrl *)stc)->GetLexer() != wxSTC_LEX_NULL;
 }

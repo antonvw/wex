@@ -1512,6 +1512,22 @@ bool wxExSTC::SetLexer(const wxString& lexer)
 {
   if (m_Lexer.ApplyLexer(lexer, this))
   {
+    const int margin_fold_no = m_MarginFoldingNumber;
+  
+    if (GetProperty("fold") == "1")
+    {
+      SetMarginWidth(m_MarginFoldingNumber, 
+        wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+
+      SetFoldFlags(
+        wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+        wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+    }
+    else
+    {
+      SetMarginWidth(m_MarginFoldingNumber, 0);
+    }
+    
     if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
     {
       FoldAll();
