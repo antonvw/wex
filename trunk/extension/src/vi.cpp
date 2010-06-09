@@ -1038,7 +1038,7 @@ bool wxExVi::Substitute(
     
     for (auto i = line_begin; i < line_end; i++)
     {
-      stc->MarkerAdd(i, stc->GetMarkerChange().GetNo());
+      m_STC->MarkerAdd(i, m_STC->GetMarkerChange().GetNo());
     }
   
     m_STC->SetTargetStart(target_start + length);
