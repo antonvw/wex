@@ -1033,6 +1033,14 @@ bool wxExVi::Substitute(
       m_STC->ReplaceTargetRE(replacement): 
       m_STC->ReplaceTarget(replacement));
 
+    const auto line_begin = m_STC->LineFromPosition(target_start);
+    const auto line_end = m_STC->LineFromPosition(target_start + length);
+    
+    for (auto i = line_begin; i < line_end; i++)
+    {
+      stc->MarkerAdd(i, stc->GetMarkerChange().GetNo());
+    }
+  
     m_STC->SetTargetStart(target_start + length);
     m_STC->SetTargetEnd(target_end);
 

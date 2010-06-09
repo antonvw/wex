@@ -98,6 +98,9 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
+  /// Gets the change marker.
+  const wxExMarker& GetMarkerChange() const {return m_MarkerChange;};
+  
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
