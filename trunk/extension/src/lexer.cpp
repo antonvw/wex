@@ -23,6 +23,7 @@
 #include <wx/extension/util.h> // for wxExAlignText
 
 wxExLexer::wxExLexer(const wxXmlNode* node)
+  : m_IsOk(false)
 {
   m_CommentBegin.clear();
   m_CommentBegin2.clear();
@@ -44,7 +45,7 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
 bool wxExLexer::ApplyLexer(
   const wxString& lexer, 
   wxStyledTextCtrl* stc,
-  bool show_error) const
+  bool show_error)
 {
   stc->ClearDocumentStyle();
   
@@ -53,20 +54,17 @@ bool wxExLexer::ApplyLexer(
 
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
-  stc->SetLexerLanguage(m_ScintillaLexer);
-
-  if (!IsOk())
+  if (m_ScintillaLexer.empty())
   {
     (*this) = wxExLexers::Get()->FindByText(stc->GetLine(0));
-    
-    stc->SetLexerLanguage(m_ScintillaLexer);
   }
-
-  if (
-      IsOk() &&
-      // And check whether the GetLexer from scintilla has a good value.
-      // Otherwise it is not known, and we better show an error.
-      stc->GetLexer() == wxSTC_LEX_NULL &&
+  
+  stc->SetLexerLanguage(m_ScintillaLexer);
+  
+  m_IsOk = (stc->GetLexer() != wxSTC_LEX_NULL);
+  
+  if (!m_ScintillaLexer.empty() &&
+      !m_IsOk &&
       show_error)
   {
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
@@ -107,7 +105,7 @@ bool wxExLexer::ApplyLexer(
   // And finally colour the entire document.
   stc->Colourise(0, stc->GetLength() - 1);
   
-  return stc->GetLexer() != wxSTC_LEX_NULL;
+  return m_IsOk;
 }
 
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
@@ -222,12 +220,6 @@ bool wxExLexer::IsKeyword(const wxString& word) const
 {
   const auto it = m_Keywords.find(word);
   return (it != m_Keywords.end());
-}
-
-bool wxExLexer::IsOk() const
-{
-  // At this moment ok if scintilla lexer has been filled.
-  return !m_ScintillaLexer.empty();
 }
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
@@ -419,9 +411,15 @@ void wxExLexer::Set(const wxXmlNode* node)
     child = child->GetNext();
   }
 
-  if (!IsOk())
+  // At this moment we have to stc to check whether the 
+  // scintilla lexer is really supported,
+  // so just set ok if there is a lexer,
+  // when we Apply to a stc component we really can set it.  
+  m_IsOk = !m_ScintillaLexer.empty();
+
+  if (!m_IsOk)
   {
-    wxLogError(_("Illegal lexer on line: %d"), node->GetLineNumber());
+    wxLogError(_("Missing lexer on line: %d"), node->GetLineNumber());
   }
 }
 

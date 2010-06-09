@@ -37,10 +37,12 @@ public:
   /// Returns true if a scintilla lexer has been set.
   /// If show_error is true, a log error message is given
   /// if a lexer was specified, but could not be set.
+  /// The is ok member is set as well according to whether the
+  /// lexer could be set.
   bool ApplyLexer(
     const wxString& lexer, 
     wxStyledTextCtrl* stc,
-    bool show_error = true) const;
+    bool show_error = true);
 
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
@@ -72,7 +74,7 @@ public:
   bool IsKeyword(const wxString& word) const;
 
   /// Is this lexer valid.
-  bool IsOk() const;
+  bool IsOk() const {return m_IsOk;};
 
   /// Does any keyword (allways all keywords) start with this word,
   /// case insensitive.
@@ -127,5 +129,7 @@ private:
 
   // each keyword set in a separate keyword set
   std::map< int, std::set<wxString> > m_KeywordsSet;
+  
+  bool m_IsOk;
 };
 #endif
