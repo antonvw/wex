@@ -213,7 +213,9 @@ offset    hex field                                         ascii field
 
     text += wxString::Format("%08lx: ", (unsigned long)start + offset) +
       field_hex +
-      wxString(' ', space_between_fields + ((bytes_per_line - count)* each_hex_field)) +
+      wxString(
+        ' ', 
+        space_between_fields + ((bytes_per_line - count)* each_hex_field)) +
       field_ascii +
       GetEOL();
   }
@@ -401,7 +403,10 @@ bool wxExSTC::CheckBraceHex(int pos)
     {
       int space = 0;
 
-      if (col >= start_hex_field + space_between_fields + (bytes_per_line * each_hex_field) / 2)
+      if (col >= 
+        start_hex_field + 
+        space_between_fields + 
+        (bytes_per_line * each_hex_field) / 2)
       {
         space++;
       }
@@ -434,7 +439,9 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     if (GetSelectedText().length() == 1)
     {
       const wxUniChar value = GetSelectedText().GetChar(0);
-      wxMessageBox(wxString::Format("hex: %x dec: %d", value, value), _("Control Character"));
+      wxMessageBox(
+        wxString::Format("hex: %x dec: %d", value, value), 
+        _("Control Character"));
     }
 
     return;
@@ -666,7 +673,8 @@ const wxString wxExSTC::GetFindString(int search_flags) const
 int wxExSTC::GetLineNumberAtCurrentPos() const
 {
   // This method is used by LinkOpen.
-  // So, if no line number present return 0, otherwise link open jumps to last line.
+  // So, if no line number present return 0, 
+  // otherwise link open jumps to last line.
   const auto pos = GetCurrentPos();
   const auto line_no = LineFromPosition(pos);
 
@@ -742,7 +750,8 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
     }
 
     // Okay, get everything inbetween.
-    const wxString match = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
+    const wxString match = 
+      text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
 
     // And make sure we skip white space.
     return match.Strip(wxString::both);
@@ -1512,8 +1521,6 @@ bool wxExSTC::SetLexer(const wxString& lexer)
 {
   if (m_Lexer.ApplyLexer(lexer, this))
   {
-    const int margin_fold_no = m_MarginFoldingNumber;
-  
     if (GetProperty("fold") == "1")
     {
       SetMarginWidth(m_MarginFoldingNumber, 
@@ -1521,7 +1528,8 @@ bool wxExSTC::SetLexer(const wxString& lexer)
 
       SetFoldFlags(
         wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-        wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+        wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
+          wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
     }
     else
     {
@@ -1723,9 +1731,13 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
         {
           // There might be NULL's inside selection.
           // So use the GetSelectedTextRaw variant.
-          const auto number_of_lines = wxExGetNumberOfLines(GetSelectedTextRaw());
-          if (number_of_lines <= 1) text = wxString::Format("%d,%d,%d", line, pos, len);
-          else                      text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+          const auto number_of_lines = 
+            wxExGetNumberOfLines(GetSelectedTextRaw());
+            
+          if (number_of_lines <= 1) 
+            text = wxString::Format("%d,%d,%d", line, pos, len);
+          else
+            text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
         }
       }
     }
