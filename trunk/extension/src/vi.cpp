@@ -1036,7 +1036,7 @@ bool wxExVi::Substitute(
     const auto line_begin = m_STC->LineFromPosition(target_start);
     const auto line_end = m_STC->LineFromPosition(target_start + length);
     
-    for (auto i = line_begin; i < line_end; i++)
+    for (auto i = line_begin; i <= line_end; i++)
     {
       m_STC->MarkerAdd(i, m_STC->GetMarkerChange().GetNo());
     }
