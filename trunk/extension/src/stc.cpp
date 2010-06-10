@@ -1003,7 +1003,7 @@ void wxExSTC::MacroPlayback()
 #endif
 }
 
-void wxExSTC::MarkTargetChange()
+void wxExSTC::MarkTargetChange() const
 {
   if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
