@@ -234,8 +234,8 @@ void wxExAppTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->SetLexer("cpp"));
 
   wxExLexer lexer;
-  CPPUNIT_ASSERT(lexer.SetScintillaLexer("cpp", stc, false));
-  CPPUNIT_ASSERT(!lexer.SetScintillaLexer("xyz", stc, false));
+  CPPUNIT_ASSERT(lexer.ApplyLexer("cpp", stc, false));
+  CPPUNIT_ASSERT(!lexer.ApplyLexer("xyz", stc, false));
   
   CPPUNIT_ASSERT(!stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded());
