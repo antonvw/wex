@@ -44,6 +44,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(CONFIG_SPINCTRL)
   , m_Cols(cols)
+  , m_UseName(true)
 {
 }
 
@@ -66,6 +67,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(CONFIG_SPINCTRL_DOUBLE)
   , m_Cols(cols)
+  , m_UseName(true)
 {
 }
 
@@ -74,6 +76,7 @@ wxExConfigItem::wxExConfigItem(
   const wxString& page,
   long style,
   bool is_required,
+  bool use_name,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
@@ -86,6 +89,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(style)
   , m_Type(CONFIG_STRING)
   , m_Cols(cols)
+  , m_UseName(use_name)
 {
 }
 
@@ -107,6 +111,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
   , m_Cols(cols)
+  , m_UseName(true)
 {
 }
 
@@ -126,6 +131,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_CHECKLISTBOX_NONAME)
   , m_ChoicesBool(choices) 
   , m_Cols(cols)
+  , m_UseName(true)
 {
 }
 
@@ -148,6 +154,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(type) 
   , m_Cols(cols)
+  , m_UseName(true)
 {
 }
 
@@ -410,19 +417,24 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
     case CONFIG_SPINCTRL:
     case CONFIG_SPINCTRL_DOUBLE:
     case CONFIG_STRING:
-	  {
 	  // Construct a child flex grid sizer.
-      wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
-      fgz->AddGrowableCol(1); // the control
-      fgz->AddGrowableRow(0);
+      if (m_UseName)
+      {
+        wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
+        fgz->AddGrowableCol(1); // the control
+        fgz->AddGrowableRow(0);
       
-      // Add name and control.
-      AddStaticTextName(fgz);
-      fgz->Add(m_Control, m_ControlFlags);
-      
-      // Add to the sizer.
-      sizer->Add(fgz, wxSizerFlags().Expand());
-	  }
+        // Add name and control.
+        AddStaticTextName(fgz);
+        fgz->Add(m_Control, m_ControlFlags);
+
+        // Add to the sizer.
+        sizer->Add(fgz, wxSizerFlags().Expand());
+      }
+      else
+      {
+        sizer->Add(m_Control, m_ControlFlags);
+      }
       break;
 
     case CONFIG_COMBOBOXDIR:

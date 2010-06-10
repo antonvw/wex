@@ -265,7 +265,12 @@ int wxExSTCFile::ConfigDialog(
       wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
 
     items.push_back(
-      wxExConfigItem(_("Include directory"), _("Directory"), wxTE_MULTILINE));
+      wxExConfigItem(
+        _("Include directory"), 
+        _("Directory"), 
+        wxTE_MULTILINE,
+        false,
+        false)); // no name
   }
 
   int buttons = wxOK | wxCANCEL;

@@ -52,6 +52,8 @@ enum
 
 /// Container class for using with wxExConfigDialog.
 /// If you specify a page, then all items are placed on that page in a notebook.
+/// If you use the default for cols, then the number of cols used
+/// is determined by the config dialog, otherwise this number is used.
 class wxExConfigItem
 {
 public:
@@ -77,6 +79,7 @@ public:
     const wxString& page = wxEmptyString,
     long style = 0,
     bool is_required = false,
+    bool use_name = true,
 	int cols = -1);
 
   /// Constructor for a radiobox or a checklistbox. Just specify
@@ -138,18 +141,24 @@ private:
   // cannot be const, otherwise
   // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
   bool m_IsRequired;
+  bool m_UseName;
+
   int m_Cols;
   int m_Id;
   int m_Min;
   int m_Max;
   int m_MaxItems;
+  int m_Type;
+
   double m_MinDouble;
   double m_MaxDouble;
   double m_Inc;
+
   wxString m_Name;
   wxString m_Page;
+
   long m_Style;
-  int m_Type;
+
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;
 
