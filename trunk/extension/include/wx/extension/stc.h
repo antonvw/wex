@@ -120,7 +120,7 @@ public:
   bool IsTargetRE(const wxString& target) const;
 
   /// Mark target as changed.
-  void MarkTargetChange() const;
+  void MarkTargetChange();
   
   /// Paste text from clipboard.
   void Paste();

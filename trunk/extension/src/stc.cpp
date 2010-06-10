@@ -1003,7 +1003,8 @@ void wxExSTC::MacroPlayback()
 #endif
 }
 
-void wxExSTC::MarkTargetChange() const
+// cannot be const because of MarkerAdd
+void wxExSTC::MarkTargetChange()
 {
   if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
