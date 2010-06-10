@@ -1348,6 +1348,14 @@ int wxExSTC::ReplaceAll(
         ReplaceTargetRE(replace_text):
         ReplaceTarget(replace_text));
 
+      const auto line_begin = LineFromPosition(target_start);
+      const auto line_end = LineFromPosition(target_start + length);
+    
+      for (auto i = line_begin; i <= line_end; i++)
+      {
+        m_STC->MarkerAdd(i, m_MarkerChange.GetNo());
+      }
+  
       nr_replacements++;
     }
 
