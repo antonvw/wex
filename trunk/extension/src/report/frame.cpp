@@ -456,6 +456,10 @@ bool wxExFrameWithHistory::ProcessStop()
 
     return true;
   }
+  else
+  {
+    return false;
+  }
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)
