@@ -98,9 +98,6 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
-  /// Gets the change marker.
-  const wxExMarker& GetMarkerChange() const {return m_MarkerChange;};
-  
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
@@ -122,6 +119,9 @@ public:
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
 
+  /// Mark target as changed.
+  void MarkTargetChange();
+  
   /// Paste text from clipboard.
   void Paste();
 
@@ -201,6 +201,9 @@ protected:
   // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).
   void ClearDocument();
+  /// Gets the change marker.
+  const wxExMarker& GetMarkerChange() const {return m_MarkerChange;};
+  
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);

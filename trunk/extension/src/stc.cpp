@@ -1003,6 +1003,22 @@ void wxExSTC::MacroPlayback()
 #endif
 }
 
+void wxExSTC::MarkTargetChange()
+{
+  if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  {
+    return;
+  }
+  
+  const auto line_begin = LineFromPosition(GetTargetStart());
+  const auto line_end = LineFromPosition(GetTargetEnd());
+    
+  for (auto i = line_begin; i <= line_end; i++)
+  {
+    MarkerAdd(i, m_MarkerChange.GetNo());
+  }
+}
+      
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
   const bool skip = m_vi.OnChar(event);
@@ -1344,18 +1360,12 @@ int wxExSTC::ReplaceAll(
 
     if (!skip_replace)
     {
+      MarkTargetChange();
+  
       length = (IsTargetRE(replace_text) ?
         ReplaceTargetRE(replace_text):
         ReplaceTarget(replace_text));
 
-      const auto line_begin = LineFromPosition(target_start);
-      const auto line_end = LineFromPosition(target_start + length);
-    
-      for (auto i = line_begin; i <= line_end; i++)
-      {
-        m_STC->MarkerAdd(i, m_MarkerChange.GetNo());
-      }
-  
       nr_replacements++;
     }
 
@@ -1399,6 +1409,8 @@ bool wxExSTC::ReplaceNext(
     if (SearchInTarget(find_text) == -1) return false;
   }
 
+  MarkTargetChange();
+      
   IsTargetRE(replace_text) ?
     ReplaceTargetRE(replace_text):
     ReplaceTarget(replace_text);
