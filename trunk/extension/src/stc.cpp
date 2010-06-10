@@ -1260,16 +1260,9 @@ void wxExSTC::Paste()
   
   if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    if (wxExGetNumberOfLines(wxExClipboardGet()) <= 1)
+    for (auto i = line; i <= GetCurrentLine(); i++)
     {
-      MarkerAdd(line, m_MarkerChange.GetNo());
-    }
-    else
-    {
-      for (auto i = line; i < GetCurrentLine(); i++)
-      {
-        MarkerAdd(i, m_MarkerChange.GetNo());
-      }
+      MarkerAdd(i, m_MarkerChange.GetNo());
     }
   }
 }
