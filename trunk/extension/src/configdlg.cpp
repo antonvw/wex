@@ -378,21 +378,30 @@ void wxExConfigDialog::SelectAll()
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
       {
-      wxComboBox* cb = (wxComboBox*)it->GetControl();
-      {
-        cb->SelectAll();
-      }
+      wxComboBox* c = (wxComboBox*)it->GetControl();
+      c->SelectAll();
       }
       break;
 
     case CONFIG_INT:
     case CONFIG_STRING:
       {
-      wxTextCtrl* tc = (wxTextCtrl*)it->GetControl();
-      if (it->GetIsRequired())
-      {
-        tc->SelectAll();
+      wxTextCtrl* c = (wxTextCtrl*)it->GetControl();
+      c->SelectAll();
       }
+      break;
+      
+    case CONFIG_SPINCTRL:
+      {
+      wxSpinCtrl* c = (wxSpinCtrl*)it->GetControl();
+      c->SetSelection(-1, -1);
+      }
+      break;
+      
+    case CONFIG_SPINCTRL:
+      {
+      wxSpinCtrlDouble* c = (wxSpinCtrlDouble*)it->GetControl();
+      c->SetSelection(-1, -1);
       }
       break;
     }
