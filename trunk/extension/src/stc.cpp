@@ -487,6 +487,16 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   }
 }
 
+void wxExSTC::Cut()
+{
+  wxStyledTextCtrl::Cut();
+  
+  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  {
+    MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
+  }
+}
+  
 void wxExSTC::EOLModeUpdate(int eol_mode)
 {
   ConvertEOLs(eol_mode);

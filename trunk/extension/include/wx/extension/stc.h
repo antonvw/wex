@@ -69,6 +69,9 @@ public:
   /// Edit the current selected char as a control char, or if nothing selected,
   /// add a new control char.
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
+  
+  /// Cuts text to clipboard.
+  void Cut();
 
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
