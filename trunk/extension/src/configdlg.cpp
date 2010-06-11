@@ -34,7 +34,11 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
 
   v.push_back(wxExConfigItem(
     item, 
-    CONFIG_COMBOBOX_NONAME));
+    CONFIG_COMBOBOX,
+    true, // is required
+    wxID_ANY,
+    25,
+    false)); // add name
 
   return new wxExConfigDialog(
     parent, 
@@ -106,7 +110,9 @@ void wxExConfigDialog::Layout(int rows, int cols)
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
   wxNotebook* notebook = 
-    (m_ConfigItems.begin()->GetPage().empty() ? NULL: new wxNotebook(this, wxID_ANY));
+    (m_ConfigItems.begin()->GetPage().empty() ? 
+       NULL: 
+       new wxNotebook(this, wxID_ANY));
   wxString previous_page = "XXXXXX";
 
   for (
@@ -129,12 +135,12 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
         // And make a new one.
         notebook->AddPage(
-		  new wxWindow(notebook, wxID_ANY), it->GetPage(), true); // select
+          new wxWindow(notebook, wxID_ANY), it->GetPage(), true); // select
       }
 
       previous_page = it->GetPage();
 
-	  const int use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
+      const int use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
 
       sizer = (rows != 0 ? 
         new wxFlexGridSizer(rows, use_cols, 0, 0):
@@ -192,7 +198,8 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
   if (command.GetId() < wxID_LOWEST)
   {
-    wxComboBox* browse = (wxComboBox*)FindConfigItem(command.GetId()).GetControl();
+    wxComboBox* browse = 
+      (wxComboBox*)FindConfigItem(command.GetId()).GetControl();
 
     if (browse != NULL)
     {
@@ -285,7 +292,6 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
-    case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)it->GetControl();
       if (it->GetIsRequired())
@@ -371,7 +377,6 @@ void wxExConfigDialog::SelectAll()
     {
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
-    case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)it->GetControl();
       {

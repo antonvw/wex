@@ -76,7 +76,7 @@ wxExConfigItem::wxExConfigItem(
   const wxString& page,
   long style,
   bool is_required,
-  bool use_name,
+  bool add_name,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
@@ -111,7 +111,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
   , m_Cols(cols)
-  , m_AddName(true)
+  , m_AddName(false)
 {
 }
 
@@ -131,7 +131,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_CHECKLISTBOX_NONAME)
   , m_ChoicesBool(choices) 
   , m_Cols(cols)
-  , m_AddName(true)
+  , m_AddName(false)
 {
 }
 
@@ -142,6 +142,7 @@ wxExConfigItem::wxExConfigItem(
   bool is_required,
   int id,
   int max_items,
+  bool add_name,
   int cols)
   : m_Control(NULL)
   , m_Id(id)
@@ -154,7 +155,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(type) 
   , m_Cols(cols)
-  , m_AddName(true)
+  , m_AddName(add_name)
 {
 }
 
@@ -247,7 +248,6 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_COMBOBOX:
-    case CONFIG_COMBOBOX_NONAME:
     case CONFIG_COMBOBOXDIR:
       m_Control = new wxComboBox(
         parent, 
@@ -380,9 +380,9 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
-        m_Style | 
-		  (readonly ? wxTE_READONLY: 0) | 
-		  (m_Style & wxTE_MULTILINE ? wxHSCROLL: 0));
+           m_Style | 
+             (readonly ? wxTE_READONLY: 0) | 
+             (m_Style & wxTE_MULTILINE ? wxHSCROLL: 0));
       break;
 
     default: wxFAIL;
@@ -400,26 +400,14 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
 
   switch (m_Type)
   {
-    case CONFIG_CHECKBOX:
-    case CONFIG_CHECKLISTBOX_NONAME:
-    case CONFIG_COMBOBOX_NONAME:
-    case CONFIG_RADIOBOX:
-      sizer->Add(m_Control, m_ControlFlags);
+    case CONFIG_COMBOBOXDIR:
+      AddBrowseButton(sizer);
       break;
 
-    case CONFIG_CHECKLISTBOX:
-    case CONFIG_COLOUR:
-    case CONFIG_COMBOBOX:
-    case CONFIG_DIRPICKERCTRL:
-    case CONFIG_FILEPICKERCTRL:
-    case CONFIG_FONTPICKERCTRL:
-    case CONFIG_INT:
-    case CONFIG_SPINCTRL:
-    case CONFIG_SPINCTRL_DOUBLE:
-    case CONFIG_STRING:
-	  // Construct a child flex grid sizer.
+    default:
       if (m_AddName)
       {
+        // Construct a child flex grid sizer.
         wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
         fgz->AddGrowableCol(1); // the control
         fgz->AddGrowableRow(0);
@@ -435,14 +423,7 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
       {
         sizer->Add(m_Control, m_ControlFlags);
       }
-      break;
-
-    case CONFIG_COMBOBOXDIR:
-      AddBrowseButton(sizer);
-      break;
-
-    default: wxFAIL;
-      break;
+    break;
   }
 }
 
@@ -539,7 +520,6 @@ void wxExConfigItem::ToConfig(bool save) const
 
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
-    case CONFIG_COMBOBOX_NONAME:
       {
       wxComboBox* cb = (wxComboBox*)m_Control;
 

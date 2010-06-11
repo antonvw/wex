@@ -34,7 +34,6 @@ enum
 
   CONFIG_COLOUR,          ///< a colour button
   CONFIG_COMBOBOX,        ///< a combobox
-  CONFIG_COMBOBOX_NONAME, ///< a combobox without a name
   CONFIG_COMBOBOXDIR,     ///< a combobox with a browse button
   CONFIG_DIRPICKERCTRL,   ///< a dirpicker ctrl
   CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
@@ -52,6 +51,9 @@ enum
 
 /// Container class for using with wxExConfigDialog.
 /// If you specify a page, then all items are placed on that page in a notebook.
+/// If you specify add name, then the name is added as a label to
+/// the item as well, otherwise the name is not added, and only used
+/// for loading and saving from config.
 /// If you use the default for cols, then the number of cols used
 /// is determined by the config dialog, otherwise this number is used.
 class wxExConfigItem
@@ -104,6 +106,7 @@ public:
     bool is_required = false,
     int id = wxID_ANY,
     int max_items = 25, // used by CONFIG_COMBOBOX
+    bool add_name = true,
     int cols = -1);
 
   /// Gets the columns.
