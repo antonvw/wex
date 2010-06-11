@@ -533,6 +533,14 @@ void wxExVi::DoCommandLine()
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
+  else if (command.startsWith(":r"))
+  {
+    wxExFile file(command.AfterFirst(' '));
+    const wxCharBuffer& buffer = file.Read();
+    const int SCI_ADDTEXT = 2001;
+    m_STC->SendMsg(
+      SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+  }
   else if (command.StartsWith(":w"))
   {
     if (command.Contains(" "))
