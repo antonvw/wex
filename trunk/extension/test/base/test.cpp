@@ -17,20 +17,9 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
-class wxExFileTest: public wxExFile
-{
-public :
-  wxExFileTest(const wxString& filename) : wxExFile(filename) {;};
-private:
-  virtual bool GetContentsChanged() const {return false;};
-  virtual void ResetContentsChanged() {;};
-  virtual void DoFileLoad(bool) {;};
-  virtual void DoFileSave(bool) {;};
-};
-
 void wxExTestFixture::testFile()
 {
-  wxExFileTest file(TEST_FILE);
+  wxExFile file(TEST_FILE);
   
   CPPUNIT_ASSERT(file.GetStat().IsOk());
   CPPUNIT_ASSERT(file.GetStat().GetFullPath() == file.GetFileName().GetFullPath());
@@ -116,7 +105,7 @@ void wxExTestFixture::testTextFile()
 
 void wxExTestFixture::testTiming()
 {
-  wxExFileTest file(TEST_FILE);
+  wxExFile file(TEST_FILE);
 
   CPPUNIT_ASSERT(file.IsOpened());
 
