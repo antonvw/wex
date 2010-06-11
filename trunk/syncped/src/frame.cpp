@@ -103,26 +103,48 @@ Frame::Frame(bool open_recent)
     wxAUI_NB_SCROLL_BUTTONS;
 
   m_NotebookWithEditors = new wxExNotebook(
-    this, this, (wxWindowID)NOTEBOOK_EDITORS, wxDefaultPosition, wxDefaultSize, flag);
+    this, 
+    this, 
+    (wxWindowID)NOTEBOOK_EDITORS, 
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    flag);
+    
   m_NotebookWithLists = new wxExNotebook(
-    this, this, (wxWindowID)NOTEBOOK_LISTS, wxDefaultPosition, wxDefaultSize, flag);
+    this, 
+    this, 
+    (wxWindowID)NOTEBOOK_LISTS, 
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    flag);
+    
   m_NotebookWithProjects = new wxExNotebook(
-    this, this, (wxWindowID)NOTEBOOK_PROJECTS, wxDefaultPosition, wxDefaultSize, flag);
+    this, 
+    this, 
+    (wxWindowID)NOTEBOOK_PROJECTS, 
+    wxDefaultPosition, 
+    wxDefaultSize, 
+    flag);
+    
   m_History = new wxExListViewWithFrame(this, this,
     wxExListViewStandard::LIST_HISTORY,
     wxExListViewStandard::LIST_MENU_DEFAULT);
+    
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
+    
   wxExSTCFile* asciiTable = new wxExSTCFile(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
 
   GetManager().AddPane(m_NotebookWithEditors,
-    wxAuiPaneInfo().CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
+    wxAuiPaneInfo().
+      CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
 
   GetManager().AddPane(m_NotebookWithProjects,
-    wxAuiPaneInfo().Left().MaximizeButton(true).Name("PROJECTS").Caption(_("Projects")));
+      wxAuiPaneInfo().
+        Left().MaximizeButton(true).Name("PROJECTS").Caption(_("Projects")));
   GetManager().AddPane(m_DirCtrl,
     wxAuiPaneInfo().Left().Name("DIRCTRL").Caption(_("Explorer")));
   GetManager().AddPane(asciiTable,
@@ -131,7 +153,10 @@ Frame::Frame(bool open_recent)
     wxAuiPaneInfo().Left().Name("HISTORY").Caption(_("History")));
 
   GetManager().AddPane(m_NotebookWithLists,
-    wxAuiPaneInfo().Bottom().MaximizeButton(true).MinSize(250, 100).Name("OUTPUT").Caption(_("Output")));
+    wxAuiPaneInfo().
+      Bottom().
+      MaximizeButton(true).
+      MinSize(250, 100).Name("OUTPUT").Caption(_("Output")));
 
   const wxString perspective = wxConfigBase::Get()->Read("Perspective");
 
@@ -504,7 +529,8 @@ void Frame::OnCommand(wxCommandEvent& event)
 #endif
 
     info.SetDescription(description);
-    info.SetCopyright("(c) 1998-2010, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
+    info.SetCopyright("(c) 1998-2010, Anton van Wezenbeek. " 
+      + wxString(_("All rights reserved.")));
     info.SetWebSite("http://syncped.1.xpdev-hosted.com/index.htm");
     wxAboutBox(info);
     }
