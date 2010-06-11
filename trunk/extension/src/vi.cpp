@@ -126,6 +126,11 @@ void wxExVi::DeleteMarker(const wxUniChar& marker)
 
 bool wxExVi::DoCommand(const wxString& command, bool dot)
 {
+  if (command.empty())
+  {
+    return false;
+  }
+  
   if (command.StartsWith(":"))
   {
     if (command.length() > 1)
@@ -393,7 +398,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         DoCommandFind(command.Last());
         break;
 
-      case '.': Repeat(); break;
+      case '.': DoCommand(m_LastCommand, true); break;
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
@@ -941,14 +946,6 @@ void wxExVi::Put(bool after) const
   
   m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
 }        
-
-void wxExVi::Repeat()
-{
-  if (!m_LastCommand.empty())
-  {
-    DoCommand(m_LastCommand, true);
-  }
-}
 
 void wxExVi::SetIndicator(
   const wxExIndicator& indicator, 
