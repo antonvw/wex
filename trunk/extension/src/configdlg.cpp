@@ -18,6 +18,7 @@
 #include <wx/filepicker.h>
 #include <wx/notebook.h> 
 #include <wx/persist/treebook.h>
+#include <wx/spinctrl.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 
@@ -35,10 +36,12 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
   v.push_back(wxExConfigItem(
     item, 
     CONFIG_COMBOBOX,
+    wxEmptyString,
     true, // is required
     wxID_ANY,
     25,
-    false)); // add name
+    false,// add name
+    -1)); 
 
   return new wxExConfigDialog(
     parent, 
@@ -398,7 +401,7 @@ void wxExConfigDialog::SelectAll()
       }
       break;
       
-    case CONFIG_SPINCTRL:
+    case CONFIG_SPINCTRL_DOUBLE:
       {
       wxSpinCtrlDouble* c = (wxSpinCtrlDouble*)it->GetControl();
       c->SetSelection(-1, -1);

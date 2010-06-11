@@ -70,7 +70,7 @@ protected:
   /// Invoked by FileSave, allows you to save the file.
   virtual void DoFileSave(bool save_as = false) {;};
 private:
-  void Assign(const wxFileName& filename);A
+  void Assign(const wxFileName& filename);
   bool Get();
   bool MakeAbsolute();
 

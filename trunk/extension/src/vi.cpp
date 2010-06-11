@@ -14,6 +14,7 @@
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/file.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -533,7 +534,7 @@ void wxExVi::DoCommandLine()
     event.SetCanVeto(false); 
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.startsWith(":r"))
+  else if (command.StartsWith(":r"))
   {
     wxExFile file(command.AfterFirst(' '));
     const wxCharBuffer& buffer = file.Read();

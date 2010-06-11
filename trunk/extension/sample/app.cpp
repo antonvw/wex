@@ -477,11 +477,14 @@ void wxExSampleFrame::ShowConfigItems()
       "Comboboxes"));
   }
 
-  // CONFIG_COMBOBOX_NONAME
+  // CONFIG_COMBOBOX without a name
   v.push_back(wxExConfigItem(
     _("Combobox No Name"),
-    CONFIG_COMBOBOX_NONAME, 
-    "Comboboxes"));
+    CONFIG_COMBOBOX, 
+    "Comboboxes",
+    false,
+    25,
+    false));
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
@@ -553,10 +556,10 @@ void wxExSampleFrame::ShowConfigItems()
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("Spin Control Double%d"), sd), 
-      1, 
+      (double)1, 
       sd, 
-      1, 
-      "Spin controls"));
+      (double)1, 
+      "Spin controls", -1));
   }
 
   // CONFIG_STRING
