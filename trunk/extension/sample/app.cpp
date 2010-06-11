@@ -483,6 +483,7 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_COMBOBOX, 
     "Comboboxes",
     false,
+    wxID_ANY,
     25,
     false));
 
