@@ -61,13 +61,15 @@ private:
     long flags = 0);
   void RunQuery(const wxString& query, bool empty_results = false);
   void RunQueries(const wxString& text);
-  void UpdateStatistics(const wxStopWatch& sw, long rpc);
+  void UpdateStatistics(long time, long rpc);
 
-  wxExSTCShell* m_Shell;
   wxExSTCWithFrame* m_Query;
   wxExGrid* m_Results;
+  wxExSTCShell* m_Shell;
+  
   wxExStatistics <long> m_Statistics;
   wxExOTL m_otl;
+  
   bool m_Running;
   bool m_Stopped;
 

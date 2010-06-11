@@ -439,7 +439,7 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
 
     sw.Pause();
 
-    UpdateStatistics(sw, rpc);
+    UpdateStatistics(sw.Time(), rpc);
   }
   else
   {
@@ -447,7 +447,7 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
 
     sw.Pause();
 
-    UpdateStatistics(sw, rpc);
+    UpdateStatistics(sw.Time(), rpc);
   }
 
   m_Shell->DocumentEnd();
@@ -502,16 +502,16 @@ void Frame::RunQueries(const wxString& text)
   m_Running = false;
 }
 
-void Frame::UpdateStatistics(const wxStopWatch& sw, long rpc)
+void Frame::UpdateStatistics(long time, long rpc)
 {
   m_Shell->AppendText(wxString::Format(_("\n%d rows processed (%.3f seconds)"),
     rpc,
-    (float)sw.Time() / (float)1000));
+    (float)time / (float)1000));
 
   m_Statistics.Set(_("Rows processed"), rpc);
-  m_Statistics.Set(_("Query runtime"), sw.Time());
+  m_Statistics.Set(_("Query runtime"), time);
 
   m_Statistics.Inc(_("Total number of queries run"));
-  m_Statistics.Inc(_("Total query runtime"), sw.Time());
+  m_Statistics.Inc(_("Total query runtime"), time);
   m_Statistics.Inc(_("Total rows processed"), rpc);
 }
