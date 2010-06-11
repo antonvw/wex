@@ -49,7 +49,7 @@ void wxExFile::CheckSync()
   {
     if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
     {
-      Sync();
+      Get();
 
       // Update the stat member, so next time no sync.
       m_Stat.Sync();
@@ -60,22 +60,7 @@ void wxExFile::CheckSync()
 bool wxExFile::FileLoad(const wxString& filename)
 {
   Assign(filename);
-
-  if (!m_FileName.FileExists()) return false;
-
-  if (MakeAbsolute())
-  {
-    if (Open(m_FileName.GetFullPath()))
-    {
-      DoFileLoad();
-
-      Close();
-      ResetContentsChanged();
-      return true;
-    }
-  }
-
-  return false;
+  return m_FileName.FileExists() && MakeAbsolute() && Get();
 }
 
 void wxExFile::FileNew(const wxString& filename)
@@ -102,15 +87,26 @@ bool wxExFile::FileSave(const wxString& filename)
   }
 
   DoFileSave(save_as);
-
   Close();
-
+  ResetContentsChanged();
+  
   m_FileName.m_Stat.Sync();
   m_Stat.Sync();
 
-  ResetContentsChanged();
-
   return true;
+}
+
+bool wxExFile::Get()
+{
+  if (Open(m_FileName.GetFullPath()))
+  {
+    DoFileLoad(true);
+    Close();
+    ResetContentsChanged();
+    return true;
+  }
+  
+  return false;
 }
 
 bool wxExFile::MakeAbsolute()
@@ -142,15 +138,4 @@ const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
   }
 
   return buffer;
-}
-
-void wxExFile::Sync()
-{
-  if (Open(m_FileName.GetFullPath()))
-  {
-    DoFileLoad(true);
-
-    Close();
-    ResetContentsChanged();
-  }
 }

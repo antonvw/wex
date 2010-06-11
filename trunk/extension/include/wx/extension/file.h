@@ -35,17 +35,19 @@ public:
   /// Invokes DoFileLoad if this file needs to be synced.
   void CheckSync();
 
-  /// Sets the filename member and invokes DoFileLoad.
+  /// Sets the filename member, opens the file,
+  /// invokes DoFileLoad, and closes the file again.
   bool FileLoad(const wxString& filename);
 
   /// Sets the filename member and invokes DoFileNew.
   void FileNew(const wxString& filename);
 
-  /// Sets the filename member and invokes DoFileSave.
+  /// Sets the filename member, opens the file,
+  /// invokes DoFileSave, and closes the file again.
   bool FileSave(const wxString& filename = wxEmptyString);
 
   /// Returns whether contents have been changed.
-  virtual bool GetContentsChanged() const = 0;
+  virtual bool GetContentsChanged() const {return false;};
 
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}
@@ -57,22 +59,20 @@ public:
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
 
   /// Reset contents changed.
-  virtual void ResetContentsChanged() = 0;
+  virtual void ResetContentsChanged() {;};
 protected:
   /// Invoked by FileLoad, allows you to load the file.
-  virtual void DoFileLoad(bool synced = false) = 0;
+  virtual void DoFileLoad(bool synced = false) {;};
 
   /// Invoked by FileNew, allows you to load a new file.
   virtual void DoFileNew() {;};
 
   /// Invoked by FileSave, allows you to save the file.
-  virtual void DoFileSave(bool save_as = false) = 0;
+  virtual void DoFileSave(bool save_as = false) {;};
 private:
-  void Assign(const wxFileName& filename);
-  // Take care that filename and stat are in sync.
+  void Assign(const wxFileName& filename);A
+  bool Get();
   bool MakeAbsolute();
-  /// Called if file needs to be synced.
-  void Sync();
 
   wxExFileName m_FileName;
   wxExStat m_Stat;
