@@ -487,6 +487,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetVersion(APPL_VERSION);
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
+    info.AddArtist("http://www.famfamfam.com/lab/icons/silk/");
 
 #ifdef wxExUSE_OTL
     info.AddDeveloper(wxExOTL::Version());
