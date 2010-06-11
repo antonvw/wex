@@ -166,8 +166,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
     m_PrintRect,
     m_PageRect);
 
-  wxFont font = *wxSMALL_FONT;
-  font.SetStyle(wxNORMAL);
+  wxFont font = *wxNORMAL_FONT;
   font.SetWeight(wxBOLD);
   GetDC()->SetFont(font);
   GetDC()->SetTextForeground(*wxBLACK);

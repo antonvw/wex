@@ -330,7 +330,7 @@ const wxString wxExGetEndOfText(
 
   if (text_out.length() > max_chars)
   {
-    text_out = "..." + text_out.substr(text_out.length() - max_chars);
+    text_out = "..." + text_out.substr(3 + text_out.length() - max_chars);
   }
 
   return text_out;
@@ -557,8 +557,10 @@ const wxString wxExPrintHeader(const wxFileName& filename)
   if (filename.FileExists())
   {
     return
-      wxExGetEndOfText(filename.GetFullPath(), 30) + " " +
-      filename.GetModificationTime().Format();
+      wxExGetEndOfText(
+        filename.GetFullPath() + " " +
+        filename.GetModificationTime().Format(), 
+        30);
   }
   else
   {
