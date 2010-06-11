@@ -639,6 +639,8 @@ bool wxExSTCFile::Open(
 
   SetFlags(flags);
 
+  //Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+
   if (FileLoad(filename.GetFullPath()))
   {
     SetName(filename.GetFullPath());
@@ -655,10 +657,14 @@ bool wxExSTCFile::Open(
       }
     }
 
+    //Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+
     return true;
   }
   else
   {
+   // Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+
     return false;
   }
 }

@@ -926,6 +926,8 @@ void wxExSTC::HexDecCalltip(int pos)
 
 void wxExSTC::Initialize()
 {
+//  Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
 #else
@@ -1250,6 +1252,13 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     }
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
+  {
+    if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+    {
+      MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
+    }
+  }
+  else if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
     if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
     {
