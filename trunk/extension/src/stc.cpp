@@ -53,7 +53,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
-//  EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
@@ -927,13 +926,12 @@ void wxExSTC::HexDecCalltip(int pos)
 
 void wxExSTC::Initialize()
 {
-/*
   Bind(
     wxEVT_STC_MODIFIED, 
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
-    */
+
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
 #else
@@ -1266,9 +1264,11 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
+    event.Skip();
+
     if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
     {
-      MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
+//      MarkerAdd(event.GetLine(), m_MarkerChange.GetNo());
     }
   }
   else

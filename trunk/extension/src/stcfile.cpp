@@ -35,7 +35,6 @@ BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
-//  EVT_STC_MODIFIED(wxID_ANY, wxExSTCFile::OnStyledText)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTCFile::m_ConfigDialog = NULL;
@@ -629,11 +628,11 @@ void wxExSTCFile::OnStyledText(wxStyledTextEvent& event)
 {
   if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
-    event.StopPropagation();
+    event.Skip();
 
     if (wxExLexers::Get()->MarkerIsLoaded(GetMarkerChange()))
     {
-      MarkerAdd(event.GetLine(), GetMarkerChange().GetNo());
+//      MarkerAdd(event.GetLine(), GetMarkerChange().GetNo());
     }
   }
   else
