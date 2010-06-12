@@ -629,9 +629,11 @@ void wxExSTCFile::OnStyledText(wxStyledTextEvent& event)
 {
   if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
-    if (!IsOpened())
+    event.StopPropagation();
+
+    if (wxExLexers::Get()->MarkerIsLoaded(GetMarkerChange()))
     {
-      event.Skip();
+      MarkerAdd(event.GetLine(), GetMarkerChange().GetNo());
     }
   }
   else
@@ -687,7 +689,11 @@ bool wxExSTCFile::Open(
   }
   else
   {
-   // Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+    Bind(
+      wxEVT_STC_MODIFIED, 
+      &wxExSTCFile::OnStyledText,
+      this,
+      wxID_ANY);
 
     return false;
   }

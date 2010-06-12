@@ -927,8 +927,13 @@ void wxExSTC::HexDecCalltip(int pos)
 
 void wxExSTC::Initialize()
 {
-//  Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
-
+/*
+  Bind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+    */
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
 #else
