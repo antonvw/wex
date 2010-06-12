@@ -113,6 +113,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnMouse(wxMouseEvent& event);
+  void OnStyledText(wxStyledTextEvent& event);
 private:
   void AddBasePathToPathList();
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute

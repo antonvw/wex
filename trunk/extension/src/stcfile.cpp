@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
+//  EVT_STC_MODIFIED(wxID_ANY, wxExSTCFile::OnStyledText)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTCFile::m_ConfigDialog = NULL;
@@ -624,6 +625,21 @@ void wxExSTCFile::OnMouse(wxMouseEvent& event)
   event.Skip();
 }
 
+void wxExSTCFile::OnStyledText(wxStyledTextEvent& event)
+{
+  if (event.GetEventType() == wxEVT_STC_MODIFIED)
+  {
+    if (!IsOpened())
+    {
+      event.Skip();
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
+}
+
 bool wxExSTCFile::Open(
   const wxExFileName& filename,
   int line_number,
@@ -639,7 +655,11 @@ bool wxExSTCFile::Open(
 
   SetFlags(flags);
 
-  //Unbind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+  Unbind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTCFile::OnStyledText,
+    this,
+    wxID_ANY);
 
   if (FileLoad(filename.GetFullPath()))
   {
@@ -657,7 +677,11 @@ bool wxExSTCFile::Open(
       }
     }
 
-    //Bind(wxEVT_STC_MODIFIED, &wxExSTC::OnStyledText);
+    Bind(
+      wxEVT_STC_MODIFIED, 
+      &wxExSTCFile::OnStyledText,
+      this,
+      wxID_ANY);
 
     return true;
   }

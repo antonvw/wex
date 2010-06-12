@@ -53,6 +53,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
 //  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
+//  EVT_STC_MODIFIED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
