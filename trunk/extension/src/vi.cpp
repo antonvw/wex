@@ -598,7 +598,7 @@ bool wxExVi::DoCommandRange(const wxString& command)
 {
   // :[address] m destination
   // :[address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command.AfterFirst(':'), "dmsy");
+  wxStringTokenizer tkz(command.AfterFirst(':'), "dmsyw");
   
   if (!tkz.HasMoreTokens())
   {
@@ -658,6 +658,9 @@ bool wxExVi::DoCommandRange(const wxString& command)
     break;
   case 'y':
     return Yank(begin_address, end_address);
+    break;
+  case 'w':
+    return Write(begin_address, end_address, tkz.GetString());
     break;
   default:
     wxFAIL;
@@ -1131,6 +1134,27 @@ int wxExVi::ToLineNumber(const wxString& address) const
   {
     return line_no;
   }
+}
+
+bool wxExVi::Write(
+  const wxString& begin_address, 
+  const wxString& end_address,
+  const wxString& filename) const
+{
+  const auto begin_line = ToLineNumber(begin_address);
+  const auto end_line = ToLineNumber(end_address);
+
+  if (begin_line == 0 || end_line == 0)
+  {
+    return false;
+  }
+
+  const auto start = m_STC->PositionFromLine(begin_line);
+  const auto end = m_STC->PositionFromLine(end_line);
+
+  wxFile file(filename, wxFile::write);
+
+  return file.Write(m_STC->GetTextRange(start, end));
 }
 
 void wxExVi::Yank(int lines) const

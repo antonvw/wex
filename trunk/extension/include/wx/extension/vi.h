@@ -73,6 +73,10 @@ private:
     const wxString& replacement) const;
   void ToggleCase() const;
   int ToLineNumber(const wxString& address) const;
+  bool Write(
+    const wxString& begin_address, 
+    const wxString& end_address,
+    const wxString& filename) const;
   void Yank(int lines) const;
   bool Yank(
     const wxString& begin_address, 
