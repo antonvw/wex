@@ -1149,7 +1149,7 @@ bool wxExVi::Write(
     return false;
   }
 
-  const auto start = m_STC->PositionFromLine(begin_line);
+  const auto start = m_STC->PositionFromLine(begin_line - 1);
   const auto end = m_STC->PositionFromLine(end_line);
 
   wxFile file(filename, wxFile::write);
