@@ -537,10 +537,19 @@ void wxExVi::DoCommandLine()
   else if (command.StartsWith(":r"))
   {
     wxExFile file(command.AfterFirst(' '));
-    const wxCharBuffer& buffer = file.Read();
-    const int SCI_ADDTEXT = 2001;
-    m_STC->SendMsg(
-      SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+
+    if (file.GetFileName().FileExists())
+    {
+      const wxCharBuffer& buffer = file.Read();
+      const int SCI_ADDTEXT = 2001;
+      m_STC->SendMsg(
+        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+    }
+    else
+    {
+      wxExFrame::StatusText(wxString::Format(_("file: %s does not exist"), 
+        file.GetFileName().GetFullPath()));
+    }
   }
   else if (command.StartsWith(":w"))
   {
