@@ -538,7 +538,7 @@ void wxExVi::DoCommandLine()
   {
     wxExFile file(command.AfterFirst(' '));
 
-    if (file.GetFileName().FileExists())
+    if (file.IsOpened())
     {
       const wxCharBuffer& buffer = file.Read();
       const int SCI_ADDTEXT = 2001;
@@ -1163,7 +1163,9 @@ bool wxExVi::Write(
 
   wxFile file(filename, wxFile::write);
 
-  return file.Write(m_STC->GetTextRange(start, end));
+  return 
+    file.IsOpened() && 
+    file.Write(m_STC->GetTextRange(start, end));
 }
 
 void wxExVi::Yank(int lines) const
