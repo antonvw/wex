@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/dnd.h> 
 #include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
@@ -22,20 +21,6 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
-
-#if wxUSE_DRAG_AND_DROP
-class ListViewDropTarget : public wxFileDropTarget
-{
-public:
-  ListViewDropTarget(wxExListViewFile* owner) {m_Owner = owner;}
-private:
-  virtual bool OnDropFiles(
-    wxCoord x, 
-    wxCoord y, 
-    const wxArrayString& filenames);
-  wxExListViewFile* m_Owner;
-};
-#endif
 
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
   EVT_IDLE(wxExListViewFile::OnIdle)
@@ -77,10 +62,6 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
 {
-#if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new ListViewDropTarget(this));
-#endif
-
   wxExFile::FileLoad(file);
 
   if (GetFileName().GetStat().IsOk())
@@ -349,26 +330,3 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     wxFAIL;
   }
 }
-
-#if wxUSE_DRAG_AND_DROP
-bool ListViewDropTarget::OnDropFiles(
-  wxCoord, 
-  wxCoord, 
-  const wxArrayString& filenames)
-{
-  for (
-    auto it = filenames.begin();
-    it != filenames.end();
-    it++)
-  {
-    m_Owner->ItemFromText(*it);
-  }
-
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-  {
-    m_Owner->SortColumn(_("Modified"), SORT_KEEP);
-  }
-
-  return true;
-}
-#endif

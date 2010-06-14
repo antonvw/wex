@@ -93,6 +93,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnList(wxListEvent& event);
+  void OnMouse(wxMouseEvent& event);
 private:
   void Initialize(const wxExLexer* lexer);
   const ListType m_Type;
