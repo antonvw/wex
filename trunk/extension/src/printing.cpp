@@ -180,7 +180,7 @@ bool wxExPrintout::OnPrintPage(int pageNum)
     GetDC()->DrawText(
       wxExTranslate(header, pageNum, m_PageBreaks.size()),
       m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetTopLeft().y - 20);
+      m_PrintRect.GetTopLeft().y - 25);
 
     GetDC()->DrawLine(
       m_PrintRect.GetTopLeft().x,
