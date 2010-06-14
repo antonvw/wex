@@ -30,7 +30,8 @@ General
     http://otl.sourceforge.net/
 
 - icons and bitmaps
-    menu and toolbar bitmaps are from wxWidgets, using wxArtProvider, or gtk stock items
+    menu and toolbar bitmaps are from wxWidgets, using wxArtProvider, 
+    or gtk stock items
     application icons are from
     http://www.famfamfam.com/lab/icons/silk/
     and converted to ico using
@@ -95,13 +96,15 @@ General
 SVN hierarchy
 
 - branches contain stable releases, and follow the wxWidgets branches
-  currrently 2.9.0 is regarded as a stable branch, though not really for wxWidgets,
-  and the 2.8 branch is recently added to build using the real wxWidgets stable branch,
-  it compiles, but with some warnings, and the using build.bkl generated project file
-  does not find the correct wxextension libraries when linking, you have to adjust
-  it manually.
+  - currrently 2.9.0 is regarded as a stable branch, 
+    though not really for wxWidgets,
+  - the 2.8 branch is added to build using the real 
+    wxWidgets stable branch,
+    it compiles, but with some warnings, and the using build.bkl 
+    generated project file does not find the correct wxextension libraries 
+    when linking, you have to adjust it manually.
 
-- tags contain all releases version
+- tags contain all release versions
 
 - trunk contains the development version
 
@@ -110,7 +113,8 @@ When adding functionality in trunk
 
 - document it in the source in doxy way
 
-- if it needs to be translated, add _() around text strings, and update po file(s)
+- if it needs to be translated, add _() around text strings, 
+  and update po file(s)
 
 - add a test for it in 
     extension/test/base, 
@@ -119,7 +123,8 @@ When adding functionality in trunk
 
   where it has least dependancies
 
-  run test-all from the build dir, which collects output in test.log, and commits automatically.
+  run test-all from the build dir, which collects output in test.log, 
+  and commits automatically.
 
 - add a sample for it in
     extension/sample, 
@@ -134,16 +139,18 @@ Roadmap
     File history has it's own include file. Use it and check new methods.
     Use wxFileSystemWatcher, instead of our own sync methods 
     (at least for listvew file).
+    Fix change marker for deleting text 
+    (currently it gives stack overflow if enabled).
     
 - in vi and stc share replace code
 
-- improve test units, use macro's
+- add gdb front-end
 
-- add ctags (like Exuberant CTAGS)
+- improve test units, use macro's
 
 - add profile option (see gcc website, g++ -D_GLIBCXX_PROFILE foo.cc)
     or use valgrind
 
-- add gdb front-end
+- add ctags (like Exuberant CTAGS)
 
 - use Boost
