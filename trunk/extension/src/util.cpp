@@ -560,7 +560,7 @@ const wxString wxExPrintHeader(const wxFileName& filename)
       wxExGetEndOfText(
         filename.GetFullPath() + " " +
         filename.GetModificationTime().Format(), 
-        30);
+        80);
   }
   else
   {
