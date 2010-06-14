@@ -530,14 +530,17 @@ void wxExListViewStandard::OnMouse(wxMouseEvent& event)
       text += ItemToText(i) + wxTextFile::GetEOL();
     }
 
-    wxTextDataObject textData(text);
-    wxDropSource source(textData, this);
-    wxDragResult result = source.DoDragDrop(wxDragCopy);
-
-    if (result != wxDragError &&
-        result != wxDragNone &&
-        result != wxDragCancel)
+    if (!text.empty())
     {
+      wxTextDataObject textData(text);
+      wxDropSource source(textData, this);
+      wxDragResult result = source.DoDragDrop(wxDragCopy);
+
+      if (result != wxDragError &&
+          result != wxDragNone &&
+          result != wxDragCancel)
+      {
+      }
     }
 #endif
   }
