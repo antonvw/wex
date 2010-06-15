@@ -694,7 +694,7 @@ int wxExSTC::GetLineNumberAtCurrentPos() const
     PositionFromLine(line_no), 
     GetLineEndPosition(line_no));
 
-  return wxExGetLineNumberFromText(text);
+  return wxExGetLineNumber(text);
 }
 
 const wxString wxExSTC::GetTextAtCurrentPos() const

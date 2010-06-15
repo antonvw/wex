@@ -140,7 +140,7 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
   {
     const wxString link = GetTextAtCurrentPos();
     const auto  line_no = (!sel.empty() ? 
-      wxExGetLineNumberFromText(sel): 
+      wxExGetLineNumber(sel): 
       GetLineNumberAtCurrentPos());
 
     wxString filename;
@@ -580,7 +580,7 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
     wxString filename;
     if (!sel.empty())
     {
-      LinkOpen(sel, filename, wxExGetLineNumberFromText(sel));
+      LinkOpen(sel, filename, wxExGetLineNumber(sel));
     }
     else
     {

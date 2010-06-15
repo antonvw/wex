@@ -80,7 +80,7 @@ const wxString wxExGetWord(
   bool use_path_separator = false);
 
 /// Gets a line number from a string.
-int wxExGetLineNumberFromText(const wxString& text);
+int wxExGetLineNumber(const wxString& text);
 
 /// Loads entries from the config into a list with strings.
 const std::list < wxString > wxExListFromConfig(

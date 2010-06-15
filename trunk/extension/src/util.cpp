@@ -359,7 +359,7 @@ int wxExGetNumberOfLines(const wxString& text)
   return std::count(text.begin(), text.end(), '\n') + 1;
 }
 
-int wxExGetLineNumberFromText(const wxString& text)
+int wxExGetLineNumber(const wxString& text)
 {
   // Get text after :.
   const size_t pos_char = text.rfind(":");
