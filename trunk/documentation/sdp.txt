@@ -20,14 +20,20 @@ General
       git svn dcommit to commit your changes to svn repository
     use 
       git svn rebase to fetch changes from svn repository
+      
+- Source code      
+  - STL is used wherever possible
+  
+  - Coding standard follows:
+      http://www.gnu.org/prep/standards/standards.html
+      and wxWidgets guidelines
+      http://www.wxwidgets.org/develop/standard.htm
 
-- STL is used wherever possible
+  - GUI development library wxWidgets (2.8 branch, 2.9 branch, and trunk)
+      http://www.wxwidgets.org/
 
-- GUI development library wxWidgets (2.8 branch, 2.9 branch, and trunk)
-    http://www.wxwidgets.org/
-
-- database is OTL (Version 4.0.214)
-    http://otl.sourceforge.net/
+  - database is OTL (Version 4.0.214)
+      http://otl.sourceforge.net/
 
 - icons and bitmaps
     menu and toolbar bitmaps are from wxWidgets, using wxArtProvider, 
