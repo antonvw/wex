@@ -1085,6 +1085,8 @@ void wxExVi::ToggleCase() const
   m_STC->CharRight();
 }
 
+// Returns 0 and bells on error in address, otherwise the vi line number,
+// so subtract 1 for stc line number.
 int wxExVi::ToLineNumber(const wxString& address) const
 {
   wxString filtered_address(address);
@@ -1099,11 +1101,12 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
     if (it != m_Markers.end())
     {
-      marker = it->second + 1;
+      marker = it->second;
     }
     else
     {
       wxBell();
+      return 0;
     }
 
     filtered_address = filtered_address.substr(2);
@@ -1113,7 +1116,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
 
   if (filtered_address.Contains("."))
   {
-    dot = m_STC->GetCurrentLine() + 1;
+    dot = m_STC->GetCurrentLine();
     filtered_address.Replace(".", "");
   }
 
@@ -1125,13 +1128,25 @@ int wxExVi::ToLineNumber(const wxString& address) const
     filtered_address.Replace("$", "");
   }
 
-  if (!filtered_address.IsNumber()) return 0;
+  if (!filtered_address.IsNumber()) 
+  {
+    wxBell();
+    return 0;
+  }
 
   // Calculate the line.
-  const auto line_no = marker + dot + dollar + atoi(filtered_address.c_str());
+  const auto i = atoi(filtered_address.c_str());
+  
+  if (i == 0)
+  {
+    wxBell();
+    return 0;
+  }
+  
+  const auto line_no = marker + dot + dollar + i + 1;
   
   // Limit the range of what is returned.
-  if (line_no < 0)
+  if (line_no <= 0)
   {
     return 1;
   }
