@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/dnd.h> 
 #include <wx/numdlg.h> // for wxGetNumberFromUser
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
@@ -26,6 +27,28 @@
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
+
+#if wxUSE_DRAG_AND_DROP
+class ListViewDropTarget : public wxTextDropTarget
+{
+public:
+  ListViewDropTarget(wxExListView* owner) {m_Owner = owner;}
+private:
+  virtual bool OnDropText(
+    wxCoord x, 
+    wxCoord y, 
+    const wxString& data) {
+    m_Owner->ItemFromText(data);
+
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    {
+      m_Owner->SortColumn(_("Modified"), SORT_KEEP);
+    }
+
+    return true;} 
+  wxExListView* m_Owner;
+};
+#endif
 
 wxExColumn::wxExColumn(
   const wxString& name,
@@ -119,6 +142,10 @@ wxExListView::wxExListView(wxWindow* parent,
   , m_SortedColumnNo(-1)
 {
   SetSingleStyle(wxLC_REPORT);
+
+#if wxUSE_DRAG_AND_DROP
+  SetDropTarget(new ListViewDropTarget(this));
+#endif
 
   if (image_type != IMAGE_NONE)
   {
@@ -667,6 +694,33 @@ void wxExListView::OnMouse(wxMouseEvent& event)
   else
   {
     event.Skip();
+    
+    if (event.LeftIsDown())
+    {
+#if wxUSE_DRAG_AND_DROP
+      // Start drag operation.
+      wxString text;
+
+      long i = -1;
+      while ((i = GetNextSelected(i)) != -1)
+      {
+        text += ItemToText(i) + wxTextFile::GetEOL();
+      }
+
+      if (!text.empty())
+      {
+        wxTextDataObject textData(text);
+        wxDropSource source(textData, this);
+        wxDragResult result = source.DoDragDrop(wxDragCopy);
+
+        if (result != wxDragError &&
+            result != wxDragNone &&
+            result != wxDragCancel)
+        {
+        }
+      }
+#endif
+    }
   }
 }
 

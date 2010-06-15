@@ -140,6 +140,12 @@ public:
   /// Inserts a column.
   void InsertColumn(const wxExColumn& col);
 
+  /// Inserts a new item with column values from text.
+  virtual bool ItemFromText(const wxString& text);
+
+  /// Copies this item (all columns) to text.
+  virtual const wxString ItemToText(long item_number) const;
+
   /// Prints the list.
   void Print();
 
@@ -183,13 +189,6 @@ protected:
 
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
-
-  /// Inserts a new item with column values from text.
-  virtual bool ItemFromText(const wxString& text);
-
-  /// Copies this item (all columns) to text.
-  // Cannot be const.
-  virtual const wxString ItemToText(long item_number) const;
 
   /// Clears all items.
   void EditClearAll();

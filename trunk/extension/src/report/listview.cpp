@@ -15,7 +15,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/dnd.h> 
 #include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
@@ -32,28 +31,6 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
-#if wxUSE_DRAG_AND_DROP
-class ListViewDropTarget : public wxTextDropTarget
-{
-public:
-  ListViewDropTarget(wxExListViewStandard* owner) {m_Owner = owner;}
-private:
-  virtual bool OnDropText(
-    wxCoord x, 
-    wxCoord y, 
-    const wxString& data) {
-    m_Owner->ItemFromText(data);
-
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-    {
-      m_Owner->SortColumn(_("Modified"), SORT_KEEP);
-    }
-
-    return true;} 
-  wxExListViewStandard* m_Owner;
-};
-#endif
-
 BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_IDLE(wxExListViewStandard::OnIdle)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
@@ -66,7 +43,6 @@ BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
     wxExListViewStandard::OnCommand)
-  EVT_LEFT_DOWN(wxExListViewStandard::OnMouse)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -118,10 +94,6 @@ wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
   , m_ItemNumber(0)
   , m_Type(type)
 {
-#if wxUSE_DRAG_AND_DROP
-  SetDropTarget(new ListViewDropTarget(this));
-#endif
-
   Initialize(lexer);
 }
 
@@ -519,38 +491,6 @@ void wxExListViewStandard::OnList(wxListEvent& event)
   else
   {
     wxFAIL;
-  }
-}
-
-void wxExListViewStandard::OnMouse(wxMouseEvent& event)
-{
-  event.Skip();
-
-  if (event.LeftIsDown())
-  {
-#if wxUSE_DRAG_AND_DROP
-    // Start drag operation.
-    wxString text;
-
-    long i = -1;
-    while ((i = GetNextSelected(i)) != -1)
-    {
-      text += ItemToText(i) + wxTextFile::GetEOL();
-    }
-
-    if (!text.empty())
-    {
-      wxTextDataObject textData(text);
-      wxDropSource source(textData, this);
-      wxDragResult result = source.DoDragDrop(wxDragCopy);
-
-      if (result != wxDragError &&
-          result != wxDragNone &&
-          result != wxDragCancel)
-      {
-      }
-    }
-#endif
   }
 }
 
