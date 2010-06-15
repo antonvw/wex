@@ -9,6 +9,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <algorithm>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -347,18 +348,15 @@ int wxExGetNumberOfLines(const wxString& text)
   {
     return 0;
   }
-  else if (text.Find(wxUniChar('\r')) != wxNOT_FOUND)
+  
+  const int c = std::count(text.begin(), text.end(), '\r') + 1;
+  
+  if (c != 1)
   {
-    return text.Freq(wxUniChar('\r')) + 1;
+    return c;
   }
-  else if (text.Find(wxUniChar('\n')) != wxNOT_FOUND)
-  {
-    return text.Freq(wxUniChar('\n')) + 1;
-  }
-  else
-  {
-    return 1;
-  }
+  
+  return std::count(text.begin(), text.end(), '\n') + 1;
 }
 
 int wxExGetLineNumberFromText(const wxString& text)
