@@ -41,7 +41,15 @@ private:
   virtual bool OnDropText(
     wxCoord x, 
     wxCoord y, 
-    const wxString& data);
+    const wxString& data) {
+    m_Owner->ItemFromText(data);
+
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    {
+      m_Owner->SortColumn(_("Modified"), SORT_KEEP);
+    }
+
+    return true;} 
   wxExListViewStandard* m_Owner;
 };
 #endif
@@ -518,7 +526,7 @@ void wxExListViewStandard::OnMouse(wxMouseEvent& event)
 {
   event.Skip();
 
-  if (event.LeftDown())
+  if (event.LeftIsDown())
   {
 #if wxUSE_DRAG_AND_DROP
     // Start drag operation.
@@ -545,23 +553,6 @@ void wxExListViewStandard::OnMouse(wxMouseEvent& event)
 #endif
   }
 }
-
-#if wxUSE_DRAG_AND_DROP
-bool ListViewDropTarget::OnDropText(
-  wxCoord, 
-  wxCoord, 
-  const wxString& data)
-{
-  m_Owner->ItemFromText(data);
-
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-  {
-    m_Owner->SortColumn(_("Modified"), SORT_KEEP);
-  }
-
-  return true;
-}
-#endif
 
 BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewStandard)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
