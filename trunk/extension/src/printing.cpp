@@ -177,16 +177,19 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   const wxString header = wxExPrintHeader(m_Owner->GetName());
   if (!header.empty())
   {
+    const int text_from_top = 27;
+    const int line_from_top = 12;
+    
     GetDC()->DrawText(
-      wxExTranslate(header, pageNum, m_PageBreaks.size()),
+      wxExTranslate(header, pageNum, m_PageBreaks.size() - 1),
       m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetTopLeft().y - 25);
+      m_PrintRect.GetTopLeft().y - text_from_top);
 
     GetDC()->DrawLine(
       m_PrintRect.GetTopLeft().x,
-      m_PrintRect.GetTopLeft().y - 10,
+      m_PrintRect.GetTopLeft().y - line_from_top,
       m_PrintRect.GetBottomRight().x,
-      m_PrintRect.GetTopLeft().y - 10);
+      m_PrintRect.GetTopLeft().y - line_from_top);
   }
 
   // Print a footer
