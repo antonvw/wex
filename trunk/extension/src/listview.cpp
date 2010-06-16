@@ -38,9 +38,20 @@ private:
     wxCoord x, 
     wxCoord y, 
     const wxString& data) {
-    m_Owner->ItemFromText(data);
+    bool modified = false;
+    wxStringTokenizer tkz(data, wxTextFile::GetEOL());
 
-    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    while (tkz.HasMoreTokens())
+    {
+      if (m_Owner->ItemFromText(tkz.GetNextToken()))
+      {
+        modified = true;
+      }
+    }
+
+    if (
+      modified && 
+      wxConfigBase::Get()->ReadBool("List/SortSync", true))
     {
       m_Owner->SortColumn(_("Modified"), SORT_KEEP);
     }
