@@ -1135,12 +1135,15 @@ int wxExVi::ToLineNumber(const wxString& address) const
   }
 
   // Calculate the line.
-  const auto i = atoi(filtered_address.c_str());
+  int i = 0;
   
-  if (i == 0)
+  if (!filtered_address.empty())
   {
-    wxBell();
-    return 0;
+    if (i = atoi(filtered_address.c_str()) == 0)
+    {
+      wxBell();
+      return 0;
+    }
   }
   
   const auto line_no = marker + dot + dollar + i + 1;
