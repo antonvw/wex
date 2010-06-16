@@ -120,7 +120,7 @@ const int ID_COL_LAST = ID_COL_FIRST + 255;
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_SET_FOCUS(wxExListView::OnFocus)
   EVT_KILL_FOCUS(wxExListView::OnFocus)
-  EVT_LIST_BEGIN_DRAG(wxExListView::OnList)
+  EVT_LIST_BEGIN_DRAG(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_ITEM_DESELECTED(wxID_ANY, wxExListView::OnList)
