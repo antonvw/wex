@@ -90,7 +90,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
       SetText(value);
     }
 
-	GuessType();
+    GuessType();
 
     if (m_Flags & STC_WIN_READ_ONLY ||
         // At this moment we do not allow to write in hex mode.
@@ -1053,10 +1053,10 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   if (skip)
   {
     // Auto complete does not yet combine with vi mode.
-	if (!m_vi.GetIsActive())
-	{
+    if (!m_vi.GetIsActive())
+    {
       CheckAutoComp(event.GetUnicodeKey());
-	}
+    }
 
     event.Skip();
   }
@@ -1592,7 +1592,8 @@ void wxExSTC::SetText(const wxString& value)
 {
   ClearDocument();
 
-  // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, InsertTextRaw do not add the length.
+  // The stc.h equivalents SetText, AddText, AddTextRaw, InsertText, 
+  // InsertTextRaw do not add the length.
   // So for text with nulls this is the only way for opening.
   SendMsg(SCI_ADDTEXT, value.length(), (wxIntPtr)(const char *)value.c_str());
 
