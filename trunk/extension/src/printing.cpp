@@ -177,8 +177,8 @@ bool wxExPrintout::OnPrintPage(int pageNum)
   const wxString header = wxExPrintHeader(m_Owner->GetName());
   if (!header.empty())
   {
-    const int text_from_top = 27;
-    const int line_from_top = 12;
+    const int text_from_top = 23;
+    const int line_from_top = 8;
     
     GetDC()->DrawText(
       wxExTranslate(header, pageNum, m_PageBreaks.size() - 1),
