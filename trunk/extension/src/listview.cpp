@@ -109,6 +109,7 @@ const int ID_COL_LAST = ID_COL_FIRST + 255;
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_SET_FOCUS(wxExListView::OnFocus)
   EVT_KILL_FOCUS(wxExListView::OnFocus)
+  EVT_LIST_BEGIN_DRAG(wxExListView::OnList)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_ITEM_DESELECTED(wxID_ANY, wxExListView::OnList)
@@ -121,7 +122,6 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_MENU(ID_EDIT_SELECT_NONE, wxExListView::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExListView::OnCommand)
   EVT_MENU_RANGE(ID_COL_FIRST, ID_COL_LAST, wxExListView::OnCommand)
-  EVT_LEFT_DOWN(wxExListView::OnMouse)
   EVT_RIGHT_DOWN(wxExListView::OnMouse)
   EVT_SHOW(wxExListView::OnShow)
 END_EVENT_TABLE()
@@ -644,7 +644,8 @@ void wxExListView::OnList(wxListEvent& event)
   {
     SortColumn(
       event.GetColumn(),
-      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE));
+      (wxExSortType)wxConfigBase::Get()->ReadLong("List/SortMethod", 
+         SORT_TOGGLE));
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_COL_RIGHT_CLICK)
   {
@@ -671,6 +672,32 @@ void wxExListView::OnList(wxListEvent& event)
     UpdateStatusBar();
 #endif
   }
+  else if (event.GetEventType() == wxEVT_COMMAND_LIST_BEGIN_DRAG)
+  {
+#if wxUSE_DRAG_AND_DROP
+    // Start drag operation.
+    wxString text;
+
+    long i = -1;
+    while ((i = GetNextSelected(i)) != -1)
+    {
+      text += ItemToText(i) + wxTextFile::GetEOL();
+    }
+
+    if (!text.empty())
+    {
+      wxTextDataObject textData(text);
+      wxDropSource source(textData, this);
+      wxDragResult result = source.DoDragDrop(wxDragCopy);
+
+      if (result != wxDragError &&
+          result != wxDragNone &&
+           result != wxDragCancel)
+      {
+      }
+    }
+#endif
+  }
 }
 
 void wxExListView::OnMouse(wxMouseEvent& event)
@@ -680,7 +707,10 @@ void wxExListView::OnMouse(wxMouseEvent& event)
     int style = wxExMenu::MENU_DEFAULT;
     if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
     if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= wxExMenu::MENU_ALLOW_CLEAR;
+    if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
+    {
+      style |= wxExMenu::MENU_ALLOW_CLEAR;
+    }
 
     wxExMenu menu(style);
 
@@ -689,37 +719,6 @@ void wxExListView::OnMouse(wxMouseEvent& event)
     if (menu.GetMenuItemCount() > 0)
     {
       PopupMenu(&menu);
-    }
-  }
-  else
-  {
-    event.Skip();
-    
-    if (event.LeftIsDown())
-    {
-#if wxUSE_DRAG_AND_DROP
-      // Start drag operation.
-      wxString text;
-
-      long i = -1;
-      while ((i = GetNextSelected(i)) != -1)
-      {
-        text += ItemToText(i) + wxTextFile::GetEOL();
-      }
-
-      if (!text.empty())
-      {
-        wxTextDataObject textData(text);
-        wxDropSource source(textData, this);
-        wxDragResult result = source.DoDragDrop(wxDragCopy);
-
-        if (result != wxDragError &&
-            result != wxDragNone &&
-            result != wxDragCancel)
-        {
-        }
-      }
-#endif
     }
   }
 }
@@ -766,7 +765,8 @@ std::vector<wxString>* pitems;
 int wxCALLBACK CompareFunctionCB(long item1, long item2, wxIntPtr sortData)
 {
   const bool ascending = (sortData > 0);
-  const wxExColumn::wxExColumnType type = (wxExColumn::wxExColumnType)abs(sortData);
+  const wxExColumn::wxExColumnType type = 
+    (wxExColumn::wxExColumnType)abs(sortData);
 
   switch (type)
   {
