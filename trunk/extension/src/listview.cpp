@@ -559,6 +559,10 @@ bool wxExListView::ItemFromText(const wxString& text)
   {
     SortColumn(_("Modified"), SORT_KEEP);
   }
+  else
+  {
+    SortColumnReset();
+  }
 
   return true;
 }

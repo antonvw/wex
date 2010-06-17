@@ -199,19 +199,9 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
   const wxCharBuffer& buffer = Read();
 
-  wxStringTokenizer tkz(buffer.data(), wxTextFile::GetEOL());
-
-  while (tkz.HasMoreTokens())
-  {
-    ItemFromText(tkz.GetNextToken());
-  }
+  ItemFromText(buffer.data());
 
   m_ContentsChanged = false;
-
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-    SortColumn(_("Modified"), SORT_KEEP);
-  else
-    SortColumnReset();
 
   if (synced)
   {
