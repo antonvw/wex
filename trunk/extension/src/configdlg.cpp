@@ -361,7 +361,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
-void wxExConfigDialog::Reload()
+void wxExConfigDialog::Reload() const
 {
   for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));

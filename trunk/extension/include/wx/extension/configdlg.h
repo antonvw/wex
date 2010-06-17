@@ -45,7 +45,7 @@ public:
     const wxString& page = wxEmptyString);
 
   /// Reloads all items from config.
-  void Reload();
+  void Reload() const;
     
   /// Selects all in the control, if appropriate.
   void SelectAll();
