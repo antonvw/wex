@@ -37,26 +37,7 @@ private:
   virtual bool OnDropText(
     wxCoord x, 
     wxCoord y, 
-    const wxString& data) {
-    bool modified = false;
-    wxStringTokenizer tkz(data, wxTextFile::GetEOL());
-
-    while (tkz.HasMoreTokens())
-    {
-      if (m_Owner->ItemFromText(tkz.GetNextToken()))
-      {
-        modified = true;
-      }
-    }
-
-    if (
-      modified && 
-      wxConfigBase::Get()->ReadBool("List/SortSync", true))
-    {
-      m_Owner->SortColumn(_("Modified"), SORT_KEEP);
-    }
-
-    return true;} 
+    const wxString& data) {return m_Owner->ItemFromText(data);};
   wxExListView* m_Owner;
 };
 #endif
@@ -541,24 +522,42 @@ bool wxExListView::ItemFromText(const wxString& text)
     return false;
   }
 
-  wxStringTokenizer tkz(text, m_FieldSeparator);
-  if (tkz.HasMoreTokens())
+  bool modified = false;
+  wxStringTokenizer tkz(text, wxTextFile::GetEOL());
+
+  while (tkz.HasMoreTokens())
   {
-    const wxString value = tkz.GetNextToken();
-
-    InsertItem(GetItemCount(), value);
-
-    // And set the rest of the columns.
-    int col = 1;
-    while (tkz.HasMoreTokens() && col < GetColumnCount())
+    modified = true;
+    
+    const wxString line = tkz.GetNextToken();
+    
+    wxStringTokenizer tkz(line, m_FieldSeparator);
+    
+    if (tkz.HasMoreTokens())
     {
-      SetItem(GetItemCount(), col, tkz.GetNextToken());
-      col++;
+      const wxString value = tkz.GetNextToken();
+
+      InsertItem(GetItemCount(), value);
+
+      // And set the rest of the columns.
+      int col = 1;
+      while (tkz.HasMoreTokens() && col < GetColumnCount())
+      {
+        SetItem(GetItemCount(), col, tkz.GetNextToken());
+        col++;
+      }
+    }
+    else
+    {
+      InsertItem(GetItemCount(), line);
     }
   }
-  else
+
+  if (
+    modified && 
+    wxConfigBase::Get()->ReadBool("List/SortSync", true))
   {
-    InsertItem(GetItemCount(), text);
+    SortColumn(_("Modified"), SORT_KEEP);
   }
 
   return true;
@@ -742,17 +741,7 @@ void wxExListView::OnShow(wxShowEvent& event)
 
 void wxExListView::PasteItemsFromClipboard()
 {
-  wxStringTokenizer tkz(wxExClipboardGet(), wxTextFile::GetEOL());
-
-  while (tkz.HasMoreTokens())
-  {
-    ItemFromText(tkz.GetNextToken());
-  }
-
-  if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
-  {
-    SortColumn(_("Modified"), SORT_KEEP);
-  }
+  ItemFromText(wxExClipboardGet());
 }
 
 void wxExListView::Print()
