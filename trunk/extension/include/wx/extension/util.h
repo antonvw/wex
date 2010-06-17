@@ -22,7 +22,7 @@ class wxExFrame;
 
 /*! \file */
 
-/// Aligns text, if lexer is speecified 
+/// Aligns text, if lexer is specified 
 /// fills out over lexer comment lines.
 const wxString wxExAlignText(
   const wxString& lines,
@@ -70,6 +70,9 @@ const wxString wxExGetEndOfText(
 /// Gets field separator.
 const wxUniChar wxExGetFieldSeparator();
 
+/// Gets a line number from a string.
+int wxExGetLineNumber(const wxString& text);
+
 /// Gets the number of lines in a string.
 int wxExGetNumberOfLines(const wxString& text);
 
@@ -78,9 +81,6 @@ const wxString wxExGetWord(
   wxString& text,
   bool use_other_field_separators = false,
   bool use_path_separator = false);
-
-/// Gets a line number from a string.
-int wxExGetLineNumber(const wxString& text);
 
 /// Loads entries from the config into a list with strings.
 const std::list < wxString > wxExListFromConfig(
