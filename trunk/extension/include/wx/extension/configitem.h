@@ -130,7 +130,9 @@ public:
   /// Gets the type.
   int GetType() const {return m_Type;};
 
-  /// Creates the control and lays out this item on a sizer.
+  /// Creates the control,
+  /// lays out this item on the specified sizer, and fills it
+  /// with config value (calls ToConfig).
   void Layout(wxWindow* parent, wxSizer* sizer, bool readonly = false);
 
   /// Loads or saves this item to the config.

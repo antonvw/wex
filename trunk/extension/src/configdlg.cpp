@@ -79,8 +79,6 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_ConfigItems(v)
 {
   Layout(rows, cols);
-
-  Reload();
 }
 
 const wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const

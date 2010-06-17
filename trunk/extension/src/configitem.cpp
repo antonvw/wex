@@ -425,6 +425,8 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
       }
     break;
   }
+  
+  ToConfig(false);
 }
 
 void wxExConfigItem::ToConfig(bool save) const
