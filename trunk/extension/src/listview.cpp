@@ -608,7 +608,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     EditDelete();
     break;
   case wxID_PASTE:
-    PasteItemsFromClipboard();
+    ItemFromText(wxExClipboardGet());
     break;
   case wxID_SELECTALL:
     EditSelectAll();
@@ -741,11 +741,6 @@ void wxExListView::OnShow(wxShowEvent& event)
 {
   event.Skip();
   UpdateStatusBar();
-}
-
-void wxExListView::PasteItemsFromClipboard()
-{
-  ItemFromText(wxExClipboardGet());
 }
 
 void wxExListView::Print()

@@ -217,10 +217,7 @@ private:
   void EditSelectAll() {
     SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);};
 
-  void PasteItemsFromClipboard();
-
   const wxUniChar m_FieldSeparator;
-
   const wxExImageType m_ImageType;
   const int m_ImageHeight;
   const int m_ImageWidth;
