@@ -195,11 +195,12 @@ const wxString wxExListView::BuildPage()
 
   text << "<tr>" << wxTextFile::GetEOL();
 
-  for (auto c = 0; c < GetColumnCount(); c++)
+  for (
+    auto it = m_Columns.begin();
+    it != m_Columns.end();
+    ++it)
   {
-    wxListItem col;
-    GetColumn(c, col);
-    text << "<td><i>" << col.GetText() << "</i>" << wxTextFile::GetEOL();
+    text << "<td><i>" << it->GetColumn() << "</i>" << wxTextFile::GetEOL();
   }
 
   for (auto i = 0; i < GetItemCount(); i++)
@@ -234,12 +235,12 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
     wxMenu* menuSort = new wxMenu;
     
-    for (auto i = 0; i < GetColumnCount(); i++)
+    for (
+      auto it = m_Columns.begin(), int i = 0;
+      it != m_Columns.end();
+      ++it, i++)
     {
-      wxListItem item;
-      item.SetMask(wxLIST_MASK_TEXT);
-      GetColumn(i, item);  
-      menuSort->Append(ID_COL_FIRST + i, item.GetText());
+      menuSort->Append(ID_COL_FIRST + i, it->GetColumn());
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
