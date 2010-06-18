@@ -32,13 +32,13 @@
 class ListViewDropTarget : public wxTextDropTarget
 {
 public:
-  ListViewDropTarget(wxExListView* owner) {m_Owner = owner;}
+  ListViewDropTarget(wxExListView* lv) {m_ListView= lv;}
 private:
   virtual bool OnDropText(
     wxCoord x, 
     wxCoord y, 
-    const wxString& data) {return m_Owner->ItemFromText(data);};
-  wxExListView* m_Owner;
+    const wxString& data) {return m_ListView->ItemFromText(data);};
+  wxExListView* m_ListView;
 };
 #endif
 
