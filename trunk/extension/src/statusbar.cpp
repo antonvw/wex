@@ -54,7 +54,7 @@ const wxExPane wxExStatusBar::GetPane(int pane) const
     it != m_Panes.end();
     ++it)
   {
-    if (it->second.m_No == pane)
+    if (it->second.GetNo() == pane)
     {
       return it->second;
     }
@@ -83,11 +83,11 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         // could cause assertions.
         if (event.ButtonDClick())
         {
-          m_Frame->StatusBarDoubleClicked(pane.m_Name);
+          m_Frame->StatusBarDoubleClicked(pane.GetName());
         }
         else if (event.ButtonDown())
         {
-          m_Frame->StatusBarClicked(pane.m_Name);
+          m_Frame->StatusBarClicked(pane.GetName());
         }
 #if wxUSE_TOOLTIPS
         // Show tooltip if tooltip is available, and not yet tooltip presented.
@@ -98,9 +98,9 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             const wxString tooltip =
               (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
 
-            if (tooltip != pane.m_Helptext)
+            if (tooltip != pane.GetHelpText())
             {
-              SetToolTip(pane.m_Helptext);
+              SetToolTip(pane.GetHelpText());
             }
           }
         }
@@ -122,9 +122,9 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
     it != panes.end();
     ++it)
   {
-    m_Panes[it->m_Name] = *it;
-    styles[it->m_No] = it->GetStyle();
-    widths[it->m_No] = it->GetWidth();
+    m_Panes[it->GetName()] = *it;
+    styles[it->GetNo()] = it->GetStyle();
+    widths[it->GetNo()] = it->GetWidth();
   }
 
   SetStatusStyles(panes.size(), styles);
@@ -142,7 +142,7 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
   {
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
-    wxStatusBar::SetStatusText(text, it->second.m_No);
+    wxStatusBar::SetStatusText(text, it->second.GetNo());
   }
 }
 #endif // wxUSE_STATUSBAR

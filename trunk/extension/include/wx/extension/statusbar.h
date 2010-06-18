@@ -25,7 +25,6 @@ class wxExStatusBar;
 /// It just adds some members to the base class, and keeps a static total.
 class wxExPane : public wxStatusBarPane
 {
-  friend class wxExStatusBar;
 public:
   /// Default constructor.
   wxExPane(
@@ -40,14 +39,17 @@ public:
     /// The style.
     int style = wxSB_NORMAL)
     : wxStatusBarPane(style, width)
-    , m_Helptext(
+    , m_HelpText(
         helptext.empty() && name != "PaneText" ? 
           name.AfterFirst('e'): helptext)
     , m_Name(name)
     , m_No(m_Total)
     {m_Total++;};
+  const wxString& GetHelpText() const {return m_HelpText;};
+  const wxString& GetName() const {return m_Name;};
+  int GetNo() const {return m_No;};
 private:
-  wxString m_Helptext;
+  wxString m_HelpText;
   wxString m_Name;
   int m_No;
   static int m_Total;
