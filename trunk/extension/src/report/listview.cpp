@@ -302,51 +302,59 @@ bool wxExListViewStandard::ItemFromText(const wxString& text)
     return false;
   }
 
-  wxStringTokenizer tkz(text, GetFieldSeparator());
-  if (tkz.HasMoreTokens())
+  bool modified = false;
+  wxStringTokenizer tk(text, wxTextFile::GetEOL());
+
+  while (tk.HasMoreTokens())
   {
-    const wxString value = tkz.GetNextToken();
-    wxFileName fn(value);
+    modified = true;
 
-    if (fn.FileExists())
+    wxStringTokenizer tkz(tk.GetNextToken(), GetFieldSeparator());
+    if (tkz.HasMoreTokens())
     {
-      wxExListItem item(this, fn);
-      item.Insert();
+      const wxString value = tkz.GetNextToken();
+      wxFileName fn(value);
 
-      // And try to set the rest of the columns 
-      // (that are not already set by inserting).
-      int col = 1;
-      while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
+      if (fn.FileExists())
       {
-        const wxString value = tkz.GetNextToken();
+        wxExListItem item(this, fn);
+        item.Insert();
 
-        if (col != FindColumn(_("Type")) &&
-            col != FindColumn(_("In Folder")) &&
-            col != FindColumn(_("Size")) &&
-            col != FindColumn(_("Modified")))
+        // And try to set the rest of the columns 
+        // (that are not already set by inserting).
+        int col = 1;
+        while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
         {
-          item.SetItem(col, value);
-        }
+          const wxString value = tkz.GetNextToken();
 
-        col++;
+          if (col != FindColumn(_("Type")) &&
+              col != FindColumn(_("In Folder")) &&
+              col != FindColumn(_("Size")) &&
+              col != FindColumn(_("Modified")))
+          {
+            item.SetItem(col, value);
+          }
+
+          col++;
+        }
+      }
+      else
+      {
+        // Now we need only the first column (containing findfiles). If more
+        // columns are present, these are ignored.
+        const wxString findfiles =
+          (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
+
+        wxExListItem(this, value, findfiles).Insert();
       }
     }
     else
     {
-      // Now we need only the first column (containing findfiles). If more
-      // columns are present, these are ignored.
-      const wxString findfiles =
-        (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
-
-      wxExListItem(this, value, findfiles).Insert();
+      wxExListItem(this, text).Insert();
     }
   }
-  else
-  {
-    wxExListItem(this, text).Insert();
-  }
 
-  return true;
+  return modified;
 }
 
 const wxString wxExListViewStandard::ItemToText(long item_number) const
