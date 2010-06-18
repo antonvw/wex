@@ -234,13 +234,15 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
 
     wxMenu* menuSort = new wxMenu;
+
+    int i = 0;
     
     for (
-      auto it = m_Columns.begin(), int i = 0;
+      auto it = m_Columns.begin();
       it != m_Columns.end();
       ++it, i++)
     {
-      menuSort->Append(ID_COL_FIRST + i, it->GetColumn());
+      menuSort->Append(ID_COL_FIRST + i, it->GetText());
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
@@ -293,14 +295,16 @@ void wxExListView::EditDelete()
 
 int wxExListView::FindColumn(const wxString& name) const
 {
+  int i = 0;
+
   for (
     auto it = m_Columns.begin();
     it != m_Columns.end();
-    ++it)
+    ++it, i++)
   {
-    if (it->GetName() == name)
+    if (it->GetText() == name)
     {
-      return it->GetColumn();
+      return i;
     }
   }
 
