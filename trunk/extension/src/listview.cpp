@@ -32,7 +32,7 @@
 class ListViewDropTarget : public wxTextDropTarget
 {
 public:
-  ListViewDropTarget(wxExListView* lv) {m_ListView= lv;}
+  ListViewDropTarget(wxExListView* lv) {m_ListView = lv;}
 private:
   virtual bool OnDropText(
     wxCoord x, 
@@ -77,7 +77,7 @@ wxExColumn::wxExColumn(
   default: wxFAIL;
   }
 
-  SetColumn(-1); // default value, should be overriden when inserting the col
+  SetColumn(-1); // default value, is set when inserting the col
   SetText(name);
   SetAlign(align);
   SetWidth(width);
@@ -292,15 +292,14 @@ void wxExListView::EditDelete()
 
 int wxExListView::FindColumn(const wxString& name) const
 {
-  for (auto i = 0; i < GetColumnCount(); i++)
+  for (
+    auto it = m_Columns.begin();
+    it != m_Columns.end();
+    ++it)
   {
-    wxListItem item;
-    item.SetMask(wxLIST_MASK_TEXT);
-    GetColumn(i, item);
-
-    if (item.GetText() == name)
+    if (it->GetName() == name)
     {
-      return i;
+      return it->GetColumn();
     }
   }
 
