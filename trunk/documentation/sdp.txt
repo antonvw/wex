@@ -11,6 +11,10 @@ General
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.5.4 (r33841))
     
+    The SVN support in wxExVCS works with SVN client 1.6.6
+      http://www.sliksvn.com/en/download or
+      http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=8100
+    
 - GIT access
     use
       git svn clone http://svn.xp-dev.com/svn/wxextension/
@@ -22,7 +26,7 @@ General
       git svn rebase to fetch changes from svn repository
       
 - Source code      
-  - STL is used wherever possible
+  - STL is used wherever possible, instead of wxWidgets containers
   
   - Coding standard follows:
       http://www.gnu.org/prep/standards/standards.html
@@ -69,9 +73,6 @@ General
   the extra needed translation are put. 
   The place where to put your po files can be found by running wxex-sample,
   that shows the folder on the status bar.
-
-- The SVN support in wxExVCS works with SVN client 1.6.2 
-    (e.g. from http://www.sliksvn.com/en/download)
 
 - Build process/IDE
   - First of all, the new C++ auto keyword is used a lot, so
