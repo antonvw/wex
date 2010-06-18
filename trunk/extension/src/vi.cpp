@@ -1139,7 +1139,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
   
   if (!filtered_address.empty())
   {
-    if (i = atoi(filtered_address.c_str()) == 0)
+    if ((i = atoi(filtered_address.c_str())) == 0)
     {
       wxBell();
       return 0;
