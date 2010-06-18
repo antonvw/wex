@@ -277,11 +277,17 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
     case CONFIG_FILEPICKERCTRL:
       {
+#if defined(__WXMSW__) || defined(__OS2__)
+      const wxString wc = "*.exe";
+#else // Unix/Mac
+      const wxString wc(wxFileSelectorDefaultWildcardStr);
+#endif
+
       wxFilePickerCtrl* pc = new wxFilePickerCtrl(parent,
         m_Id,
         wxEmptyString,
         wxFileSelectorPromptStr,
-        wxFileSelectorDefaultWildcardStr,
+        wc,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
 
