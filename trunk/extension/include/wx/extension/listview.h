@@ -99,20 +99,16 @@ public:
   /// Destructor.
   virtual ~wxExListView();
 
-  // Interface.
-  /// Implement this one if you have images that might be changed after sorting etc.
-  virtual void ItemsUpdate() {;};
-
   /// If column is not found, -1 is returned,
   int FindColumn(const wxString& name) const;
+
+  /// Finds next.
+  bool FindNext(const wxString& text, bool find_next = true);
 
   /// Returns the index of the bitmap in the image list used by this list view.
   /// If the artid is not yet on the image lists, it is added to the image list.
   /// Use only if you setup for IMAGE_ART.
   unsigned int GetArtID(const wxArtID& artid);
-
-  /// Finds next.
-  bool FindNext(const wxString& text, bool find_next = true);
 
   /// Gets the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
@@ -145,6 +141,9 @@ public:
 
   /// Copies this item (all columns) to text.
   virtual const wxString ItemToText(long item_number) const;
+
+  /// Implement this one if you have images that might be changed after sorting etc.
+  virtual void ItemsUpdate() {;};
 
   /// Prints the list.
   void Print();
