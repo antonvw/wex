@@ -536,20 +536,14 @@ void wxExVi::DoCommandLine()
   }
   else if (command.StartsWith(":r"))
   {
-    wxExFile file(command.AfterFirst(' '));
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
 
-    if (file.IsOpened())
+    if (command.Contains(" "))
     {
-      const wxCharBuffer& buffer = file.Read();
-      const int SCI_ADDTEXT = 2001;
-      m_STC->SendMsg(
-        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+      event.SetString(command.AfterFirst(' '));
     }
-    else
-    {
-      wxExFrame::StatusText(wxString::Format(_("file: %s does not exist"), 
-        file.GetFileName().GetFullPath()));
-    }
+
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else if (command.StartsWith(":w"))
   {

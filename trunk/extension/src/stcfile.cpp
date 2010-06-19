@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_LEFT_UP(wxExSTCFile::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTCFile::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTCFile::OnCommand)
+  EVT_MENU(ID_EDIT_READ, wxExSTCFile::OnCommand)
 END_EVENT_TABLE()
 
 wxExConfigDialog* wxExSTCFile::m_ConfigDialog = NULL;
@@ -588,6 +589,7 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
     }
     }
     break;
+
   case ID_EDIT_OPEN_BROWSER:
     if (GetModify())
     {
@@ -595,7 +597,32 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
     }
 
     wxLaunchDefaultBrowser(GetFileName().GetFullPath());
-  break;
+    break;
+
+  case ID_EDIT_READ:
+    {
+    wxExFileName fn(command.GetString());
+
+    if (fn.IsRelative())
+    {
+      fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
+    }
+
+    wxExFile file(fn.GetFullPath());
+
+    if (file.IsOpened())
+    {
+      const wxCharBuffer& buffer = file.Read();
+      SendMsg(
+        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+    }
+    else
+    {
+      wxExFrame::StatusText(wxString::Format(_("file: %s does not exist"), 
+        file.GetFileName().GetFullPath()));
+    }
+    }
+    break;
 
   default: wxFAIL; break;
   }
