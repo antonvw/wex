@@ -235,14 +235,12 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 
     wxMenu* menuSort = new wxMenu;
 
-    int i = 0;
-    
     for (
       auto it = m_Columns.begin();
       it != m_Columns.end();
-      ++it, i++)
+      ++it)
     {
-      menuSort->Append(ID_COL_FIRST + i, it->GetText());
+      menuSort->Append(ID_COL_FIRST + it->GetColumn(), it->GetText());
     }
 
     menu.AppendSubMenu(menuSort, _("Sort On"));
@@ -295,16 +293,14 @@ void wxExListView::EditDelete()
 
 int wxExListView::FindColumn(const wxString& name) const
 {
-  int i = 0;
-
   for (
     auto it = m_Columns.begin();
     it != m_Columns.end();
-    ++it, i++)
+    ++it)
   {
     if (it->GetText() == name)
     {
-      return i;
+      return it->GetColumn();
     }
   }
 
@@ -557,18 +553,19 @@ bool wxExListView::ItemFromText(const wxString& text)
     }
   }
 
-  if (
-    modified && 
-    wxConfigBase::Get()->ReadBool("List/SortSync", true))
+  if (modified)
   {
-    SortColumn(_("Modified"), SORT_KEEP);
-  }
-  else
-  {
-    SortColumnReset();
+    if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+    {
+      SortColumn(_("Modified"), SORT_KEEP);
+    }
+    else
+    {
+      SortColumnReset();
+    }
   }
 
-  return true;
+  return modified;
 }
 
 const wxString wxExListView::ItemToText(long item_number) const
