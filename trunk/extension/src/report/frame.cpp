@@ -408,12 +408,12 @@ int wxExFrameWithHistory::ProcessConfigDialog(
 
 bool wxExFrameWithHistory::ProcessIsRunning() const
 {
-  return (m_Process != NULL && m_Process->IsRunning());
+  return m_Process != NULL && m_Process->IsRunning();
 }
   
 bool wxExFrameWithHistory::ProcessIsSelected() const
 {
-  return wxExProcess::IsSelected();
+  return m_Process != NULL && m_Process->IsSelected();
 }
   
 bool wxExFrameWithHistory::ProcessRun(const wxString& command)
