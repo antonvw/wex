@@ -253,8 +253,6 @@ wxKillError wxExProcess::Kill(wxSignal sig)
 
   DeletePendingEvents();
 
-  delete this;
-
   return wxProcess::Kill(GetPid(), sig);
 }
 
