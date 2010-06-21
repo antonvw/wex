@@ -43,8 +43,8 @@ public:
   /// Returns true if this process is running.
   bool IsRunning() const;
 
-  /// Returns true if this process is selected.
-  bool IsSelected() const {
+  /// Returns true if a process command is selected.
+  static bool IsSelected() {
     return !m_Command.empty();};
     
   /// Kills the process (sends specified signal if process still running).
