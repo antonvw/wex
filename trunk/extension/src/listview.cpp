@@ -220,11 +220,7 @@ const wxString wxExListView::BuildPage()
 
 void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
-  if (GetItemCount() > 0)
-  {
-    menu.AppendSeparator();
-  }
-
+  menu.AppendSeparator();
   menu.AppendEdit(true);
 
   if (GetItemCount() > 0 && GetSelectedItemCount() == 0)
@@ -254,12 +250,9 @@ void wxExListView::CopySelectedItemsToClipboard()
   wxBusyCursor wait;
   wxString clipboard;
 
-  long i = -1;
-  while ((i = GetNextSelected(i)) != -1)
-  {
+  for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     clipboard += ItemToText(i) + wxTextFile::GetEOL();
-  }
-
+    
   wxExClipboardAdd(clipboard);
 }
 
@@ -693,12 +686,9 @@ void wxExListView::OnList(wxListEvent& event)
     // Start drag operation.
     wxString text;
 
-    long i = -1;
-    while ((i = GetNextSelected(i)) != -1)
-    {
+    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
       text += ItemToText(i) + wxTextFile::GetEOL();
-    }
-
+      
     if (!text.empty())
     {
       wxTextDataObject textData(text);

@@ -393,7 +393,7 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
   {
     wxExVCS vcs(
       event.GetId(), 
-      wxExListItem(this, GetNextSelected(-1)).GetFileName().GetFullPath());
+      wxExListItem(this, GetFirstSelected()).GetFileName().GetFullPath());
 
     vcs.Request(this);
   }
@@ -727,11 +727,8 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
   case ID_LIST_OPEN_ITEM:
   {
-    long i = -1;
-    while ((i = GetNextSelected(i)) != -1)
-    {
+    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
       ItemActivated(i);
-    }
   }
   break;
 
@@ -741,7 +738,6 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
     bool first = true;
     wxString file1,file2;
-    long i = -1;
     bool found = false;
 
     wxExListViewStandard* list = NULL;
@@ -752,7 +748,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
       wxASSERT(list != NULL);
     }
 
-    while ((i = GetNextSelected(i)) != -1)
+    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
@@ -812,7 +808,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
   case ID_LIST_RUN_MAKE:
   {
-    const wxExListItem item(this, GetNextSelected(-1));
+    const wxExListItem item(this, GetFirstSelected());
     wxExMake(m_Frame, item.GetFileName());
   }
   break;
@@ -888,11 +884,9 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     return;
   }
 
-  long i = -1;
-
   wxExStatistics<long> stats;
 
-  while ((i = GetNextSelected(i)) != -1)
+  for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     stats += wxExListItem(this, i).Run(tool).GetElements();
   }
@@ -957,8 +951,7 @@ void RBSFile::GenerateDialog()
   Header();
 
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  long i = -1;
-  while ((i = m_Owner->GetNextSelected(i)) != -1)
+  for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     wxExListItem li(m_Owner, i);
     const wxFileName* filename = &li.GetFileName();
