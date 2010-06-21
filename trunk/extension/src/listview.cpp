@@ -37,8 +37,12 @@ private:
   virtual bool OnDropText(
     wxCoord x, 
     wxCoord y, 
-    const wxString& data) {return m_ListView->ItemFromText(data);};
-  wxExListView* m_ListView;
+    const wxString& text) {
+      // Only drop text if nothing is selected,
+      // so dropping on your own selection is impossible.
+      return (m_ListView->GetSelectedItemCount() == 0 ?
+        m_ListView->ItemFromText(text): false);};
+wxExListView* m_ListView;
 };
 #endif
 
