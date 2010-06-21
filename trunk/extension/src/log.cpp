@@ -62,10 +62,10 @@ bool wxExLog::Log(const wxString& text, bool add_timestamp ) const
   {
     wxFile file(m_FileName.GetFullPath(), wxFile::write_append);
 
-    const wxString log = (add_timestamp ? wxDateTime::Now().Format() + " ": "") 
-      + text + wxTextFile::GetEOL();
-
-    return file.Write(log);
+    return 
+      file.IsOpened() &&
+      file.Write((add_timestamp ? wxDateTime::Now().Format() + " ": "") 
+        + text + wxTextFile::GetEOL());
   }
 
   return false;
