@@ -1218,7 +1218,7 @@ bool wxExVi::Yank(
     return false;
   }
 
-  const auto start = m_STC->PositionFromLine(begin_line);
+  const auto start = m_STC->PositionFromLine(begin_line - 1);
   const auto end = m_STC->PositionFromLine(end_line);
 
   m_STC->CopyRange(start, end);
