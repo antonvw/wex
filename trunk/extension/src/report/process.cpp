@@ -104,8 +104,7 @@ bool wxExProcess::CheckInput()
       if (tkz.HasMoreTokens())
       {
         const wxString number = tkz.GetNextToken();
-        long val;
-        if (number.ToLong(&val)) lineno = number;
+        if (atoi(number.c_str()) != 0) lineno = number;
       }
     }
 
