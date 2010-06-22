@@ -1603,6 +1603,11 @@ void wxExSTC::SetText(const wxString& value)
   EmptyUndoBuffer();
 }
 
+void wxExSTC::SetViMode() 
+{
+  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
+}
+  
 bool wxExSTC::SmartIndentation()
 {
   // At this moment a newline has been given (but not yet processed).

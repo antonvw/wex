@@ -170,6 +170,9 @@ public:
   /// Sets the text.
   void SetText(const wxString& value);
 
+  /// Sets vi mode (as currently in the config).
+  void SetViMode();
+  
   /// Asks for confirmation to sort the selection.
   void SortSelectionDialog(
     bool sort_ascending,
@@ -216,7 +219,6 @@ protected:
   void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFlags(long flags) {m_Flags = flags;};
-  void SetViMode(bool mode) {m_vi.Use(mode);};
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;

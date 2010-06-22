@@ -47,12 +47,12 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
       wxExSTC::STC_MENU_FIND | 
       wxExSTC::STC_MENU_REPLACE);
 
-  // Override defaults from config.
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   m_STC->ResetMargins();
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-
+  m_STC->SetViMode();
+  
   if ((button_style & wxCANCEL) == 0 &&
       (button_style & wxNO) == 0)
   {
