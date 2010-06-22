@@ -329,7 +329,7 @@ void wxExVCS::Initialize()
           case VCS_ADD:      m_CommandString = "add"; break;
           case VCS_BLAME:    m_CommandString = "blame"; break;
           case VCS_CAT:      break;
-          case VCS_COMMIT:   m_CommandString = "push"; break;
+          case VCS_COMMIT:   m_CommandString = "commit"; break;
           case VCS_DIFF:     m_CommandString = "diff"; break;
           case VCS_HELP:     m_CommandString = "help"; break;
           case VCS_INFO:     break;
@@ -337,6 +337,7 @@ void wxExVCS::Initialize()
           case VCS_LS:       break;
           case VCS_PROPLIST: break;
           case VCS_PROPSET:  break;
+          case VCS_PUSH:     m_CommandString = "push"; break;
           case VCS_REVERT:   m_CommandString = "revert"; break;
           case VCS_SHOW:     m_CommandString = "show"; break;
           case VCS_STAT:     m_CommandString = "status"; break;
@@ -361,6 +362,7 @@ void wxExVCS::Initialize()
           case VCS_LS:       m_CommandString = "ls"; break;
           case VCS_PROPLIST: m_CommandString = "proplist"; break;
           case VCS_PROPSET:  m_CommandString = "propset"; break;
+          case VCS_PUSH:     break;
           case VCS_REVERT:   m_CommandString = "revert"; break;
           case VCS_SHOW:     break;
           case VCS_STAT:     m_CommandString = "stat"; break;

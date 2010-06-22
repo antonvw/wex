@@ -294,6 +294,7 @@ void wxExMenu::BuildVCS(bool fill)
     AppendSeparator();
     AppendVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
     AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_PUSH);
     AppendSeparator();
     AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
   }

@@ -21,6 +21,7 @@ class wxExVCS
 {
 public:
   /// VCS types supported.
+  /// See also defs.h, and do not exceed VCS_MAX_COMMANDS.
   enum wxExVCSCommand
   {
     VCS_NO_COMMAND, ///< not ok value
@@ -35,11 +36,11 @@ public:
     VCS_LS,       ///< vcs ls
     VCS_PROPLIST, ///< vcs prop list
     VCS_PROPSET,  ///< vcs prop set
+    VCS_PUSH,     ///< vcs push
     VCS_REVERT,   ///< vcs revert
     VCS_SHOW,     ///< vcs show
     VCS_STAT,     ///< vcs stat
     VCS_UPDATE,   ///< vcs update
-    VCS_HIGHEST,
   };
 
   enum wxExVCSSystem
