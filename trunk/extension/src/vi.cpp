@@ -1225,7 +1225,8 @@ bool wxExVi::Yank(
   SetIndicator(m_IndicatorYank, start, end);
 
 #if wxUSE_STATUSBAR
-  const auto lines = end_line - begin_line;
+  const auto lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
+  
   if (lines >= 2)
   {
     wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
