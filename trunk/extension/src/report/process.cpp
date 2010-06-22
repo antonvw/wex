@@ -206,8 +206,6 @@ long wxExProcess::Execute()
 
   if (pid > 0)
   {
-    SetPid(pid);
-
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(m_Command);
 #endif
