@@ -363,7 +363,7 @@ void wxExSTCFile::ConfigGet()
     wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
     wxSTC_WRAPVISUALFLAG_END));
 
-  SetViMode(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
+  SetViMode();
 
   wxStringTokenizer tkz(
     wxConfigBase::Get()->Read(_("Include directory")),
