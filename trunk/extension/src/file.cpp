@@ -49,7 +49,7 @@ void wxExFile::CheckSync()
   {
     if (m_FileName.m_Stat.st_mtime != m_Stat.st_mtime)
     {
-      Get();
+      Get(true);
 
       // Update the stat member, so next time no sync.
       m_Stat.Sync();
@@ -60,7 +60,7 @@ void wxExFile::CheckSync()
 bool wxExFile::FileLoad(const wxString& filename)
 {
   Assign(filename);
-  return m_FileName.FileExists() && MakeAbsolute() && Get();
+  return m_FileName.FileExists() && MakeAbsolute() && Get(false);
 }
 
 void wxExFile::FileNew(const wxString& filename)
@@ -96,11 +96,11 @@ bool wxExFile::FileSave(const wxString& filename)
   return true;
 }
 
-bool wxExFile::Get()
+bool wxExFile::Get(bool synced)
 {
   if (Open(m_FileName.GetFullPath()))
   {
-    DoFileLoad(true);
+    DoFileLoad(synced);
     Close();
     ResetContentsChanged();
     return true;

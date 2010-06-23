@@ -71,7 +71,7 @@ protected:
   virtual void DoFileSave(bool save_as = false) {;};
 private:
   void Assign(const wxFileName& filename);
-  bool Get();
+  bool Get(bool synced);
   bool MakeAbsolute();
 
   wxExFileName m_FileName;
