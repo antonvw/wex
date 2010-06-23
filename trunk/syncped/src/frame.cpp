@@ -1191,7 +1191,7 @@ bool Frame::OpenFile(
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
-        m_DirCtrl->SetPath(filename.GetFullPath());
+        m_DirCtrl->SelectPath(filename.GetFullPath());
       }
     }
     else if (line_number > 0)
