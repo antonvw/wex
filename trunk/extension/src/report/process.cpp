@@ -35,7 +35,7 @@ wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 wxExProcess::wxExProcess(
   wxExFrameWithHistory* frame,
   const wxString& command)
-  : wxProcess(NULL, -1)
+  : wxProcess(wxPROCESS_REDIRECT)
   , m_Frame(frame)
   , m_ListView(NULL)
   , m_Timer(this)
@@ -44,8 +44,6 @@ wxExProcess::wxExProcess(
   {
     m_Command = command;
   }
-
-  Redirect();
 }
 
 bool wxExProcess::CheckInput()
