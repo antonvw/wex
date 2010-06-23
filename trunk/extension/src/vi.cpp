@@ -928,7 +928,16 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
    case WXK_RETURN:
       if (!m_InsertMode)
       {
-        m_STC->LineDown();
+        auto repeat = atoi(m_Command.c_str());
+
+        if (repeat == 0)
+        {
+          repeat++;
+        }
+  
+        for (auto i = 0; i < repeat; i++) m_STC->LineDown();
+
+        m_Command.clear();
       }
       else
       {
