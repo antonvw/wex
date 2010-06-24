@@ -27,12 +27,6 @@ wxExFile::wxExFile(const wxString& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
-void wxExFile::Assign(const wxFileName& filename)
-{
-  m_FileName = filename;
-  m_Stat = filename.GetFullPath();
-}
-
 void wxExFile::CheckSync()
 {
   // Might be used without wxApp.
@@ -109,20 +103,6 @@ bool wxExFile::Get(bool synced)
   }
   
   return false;
-}
-
-bool wxExFile::MakeAbsolute()
-{
-  if (m_FileName.MakeAbsolute())
-  {
-    return 
-      m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
-      m_Stat.Sync(m_FileName.GetFullPath());
-  }
-  else
-  {
-    return false;
-  }
 }
 
 const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)

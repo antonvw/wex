@@ -70,9 +70,15 @@ protected:
   /// Invoked by FileSave, allows you to save the file.
   virtual void DoFileSave(bool save_as = false) {;};
 private:
-  void Assign(const wxFileName& filename);
+  void Assign(const wxFileName& filename) {
+    m_FileName = filename;
+    m_Stat = filename.GetFullPath();};
   bool Get(bool synced);
-  bool MakeAbsolute();
+  bool MakeAbsolute() {
+    return 
+      m_FileName.MakeAbsolute() &&
+      m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
+      m_Stat.Sync(m_FileName.GetFullPath());};
 
   wxExFileName m_FileName;
   wxExStat m_Stat;
