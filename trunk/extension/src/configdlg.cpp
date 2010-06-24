@@ -78,6 +78,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
 {
+  wxASSERT(!m_ConfigItems.empty());
+  
   Layout(rows, cols);
 }
 
@@ -219,13 +221,13 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  switch (command.GetId())
+  if (command.GetId() == wxID_CANCEL)
   {
-  case wxID_CANCEL: Reload(); break;
-
-  default:
-    // For rest of the buttons (wxID_OK, wxID_APPLY, wxID_CLOSE)
-    // save to config.
+    Reload();
+  }
+  else
+  {
+    // Save to config.
     for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
       std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), true));
   }
