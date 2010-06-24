@@ -156,6 +156,10 @@ Roadmap
     the virtual methods. This also solves searching in the wxExSTCEntryDialog 
     and allows to let the ascii table be an ordinary wxExSTC object.
     
+- use wxFileName in wxExVCS for m_FullPath
+
+- backspace key in vi should not delete text when not in insert mode        
+    
 - in vi and stc share replace code
 
 - add gdb front-end
