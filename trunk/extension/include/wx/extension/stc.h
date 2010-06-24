@@ -88,9 +88,10 @@ public:
   /// Gets EOL string.
   const wxString GetEOL() const;
 
-  /// Gets find string, as selected or from config.
-  /// The default search flags are taken from frd.
-  const wxString GetFindString(int search_flags = -1) const;
+  /// Gets find string, from selected text or from config.
+  /// The search flags are taken from frd.
+  /// If text is selected, it also sets the find string.
+  const wxString GetFindString() const;
 
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};

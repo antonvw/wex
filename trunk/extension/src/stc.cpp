@@ -647,7 +647,7 @@ const wxString wxExSTC::GetEOL() const
   return "\r\n";
 }
 
-const wxString wxExSTC::GetFindString(int search_flags) const
+const wxString wxExSTC::GetFindString() const
 {
   const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
 
@@ -657,10 +657,7 @@ const wxString wxExSTC::GetFindString(int search_flags) const
     
     // If regexp is true, then only use selected text if text does not
     // contain special regexp characters.
-    const int flags = (search_flags == -1 ? 
-      wxExFindReplaceData::Get()->STCFlags(): search_flags);
-
-    if (flags & wxSTC_FIND_REGEXP)
+    if (wxExFindReplaceData::Get()->STCFlags() & wxSTC_FIND_REGEXP)
     {
       for (size_t i = 0; i < selection.size() && alnum; i++)
       {
