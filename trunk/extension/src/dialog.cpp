@@ -25,8 +25,10 @@ wxExDialog::wxExDialog(wxWindow* parent,
   const wxString& title,
   long button_flags,
   wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size, 
   long style)
-  : wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, style)
+  : wxDialog(parent, id, title, pos, size, style)
   , m_ButtonFlags(button_flags)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))

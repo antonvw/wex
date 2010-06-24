@@ -482,7 +482,10 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
       caption,
       m_Output,
       wxEmptyString,
-      wxOK);
+      wxOK,
+      wxID_ANY,
+      wxDefaultPosition,
+      wxSize(350, 50));
   }
   else
   {

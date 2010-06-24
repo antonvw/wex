@@ -28,6 +28,8 @@ public:
     const wxString& title,
     long button_flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize, 
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 protected:
   /// Adds to the user sizer using the sizer flags.
