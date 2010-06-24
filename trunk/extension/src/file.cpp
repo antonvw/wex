@@ -81,7 +81,9 @@ bool wxExFile::FileSave(const wxString& filename)
     save_as = true;
   }
 
-  if (!Open(m_FileName.GetFullPath(), wxFile::write))
+  if (
+    !m_FileName.IsFileWritable() ||
+    !Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
   }
