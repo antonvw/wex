@@ -143,11 +143,18 @@ Roadmap
     Use GetItemText with col from list ctrl
     Use ribbon toolbar.
     Use cbegin iterators.
-    File history has it's own include file. Use it and check new methods.
+    File history has it's own include file. Use it and check new methods,
+    and add wxUSE_HISTORY switches.
     Use wxFileSystemWatcher, instead of our own sync methods 
     (at least for listvew file).
     Fix change marker for deleting text 
     (currently it gives stack overflow if enabled).
+    
+- remove GetFocusedSTC methods, and replace by access to the focus members.
+    This requires other implementation of wxExSTCFile, in fact it should 
+    disappear, just add a wxExSTCFile member of wxExSTC that only implements
+    the virtual methods. This also solves searching in the wxExSTCEntryDialog 
+    and allows to let the ascii table be an ordinary wxExSTC object.
     
 - in vi and stc share replace code
 
