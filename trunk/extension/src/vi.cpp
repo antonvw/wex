@@ -157,7 +157,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   bool handled = true;
 
   // Handle multichar commands.
-  if (command.EndsWith("cw"))
+  if (command.EndsWith("cw") && !m_STC->GetReadOnly())
   {
     for (auto i = 0; i < repeat; i++) m_STC->WordRightExtend();
 
@@ -170,7 +170,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       InsertMode();
     }
   }
-  else if (command == "cc")
+  else if (command == "cc" && !m_STC->GetReadOnly())
   {
     m_STC->Home();
     m_STC->DelLineRight();
@@ -184,21 +184,21 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       InsertMode();
     }
   }
-  else if (command.EndsWith("dd"))
+  else if (command.EndsWith("dd") && !m_STC->GetReadOnly())
   {
     Delete(repeat);
   }
-  else if (command == "d0")
+  else if (command == "d0" && !m_STC->GetReadOnly())
   {
     m_STC->HomeExtend();
     m_STC->Cut();
   }
-  else if (command == "d$")
+  else if (command == "d$" && !m_STC->GetReadOnly())
   {
     m_STC->LineEndExtend();
     m_STC->Cut();
   }
-  else if (command.EndsWith("dw"))
+  else if (command.EndsWith("dw") && !m_STC->GetReadOnly())
   {
     m_STC->BeginUndoAction();
     const auto start = m_STC->GetCurrentPos();
@@ -232,7 +232,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
     m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol.GetNo());
   }
-  else if (command.Matches("*r?"))
+  else if (command.Matches("*r?") && !m_STC->GetReadOnly())
   {
     m_STC->wxStyledTextCtrl::Replace(
       m_STC->GetCurrentPos(), 
@@ -278,11 +278,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
-  else if (command.EndsWith(">>"))
+  else if (command.EndsWith(">>") && !m_STC->GetReadOnly())
   {
     Indent(repeat);
   }
-  else if (command.EndsWith("<<"))
+  else if (command.EndsWith("<<") && !m_STC->GetReadOnly())
   {
     Indent(repeat, false);
   }
@@ -364,8 +364,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
 
       case 'D': 
-        m_STC->LineEndExtend();
-        m_STC->Cut();
+        if (!m_STC->GetReadOnly())
+        {
+          m_STC->LineEndExtend();
+          m_STC->Cut();
+          }
         break;
       case 'G': 
         if (repeat > 1)
