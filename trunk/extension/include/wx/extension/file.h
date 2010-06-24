@@ -52,9 +52,6 @@ public:
   /// Gets the file name.
   const wxExFileName& GetFileName() const {return m_FileName;}
 
-  /// Gets the stat.
-  const wxExStat& GetStat() const {return m_Stat;};
-
   /// Reads this file into a buffer.
   const wxCharBuffer Read(wxFileOffset seek_position = 0);
 
@@ -62,12 +59,16 @@ public:
   virtual void ResetContentsChanged() {;};
 protected:
   /// Invoked by FileLoad, allows you to load the file.
+  /// The file is already opened, so you can call Read.
+  /// If synced is true, this call was a result of
+  /// CheckSync and not of FileLoad.
   virtual void DoFileLoad(bool synced = false) {;};
 
-  /// Invoked by FileNew, allows you to load a new file.
+  /// Invoked by FileNew, allows you to make a new (empty) file.
   virtual void DoFileNew() {;};
 
   /// Invoked by FileSave, allows you to save the file.
+  /// The file is already opened.
   virtual void DoFileSave(bool save_as = false) {;};
 private:
   void Assign(const wxFileName& filename) {
@@ -81,6 +82,6 @@ private:
       m_Stat.Sync(m_FileName.GetFullPath());};
 
   wxExFileName m_FileName;
-  wxExStat m_Stat;
+  wxExStat m_Stat; // used for syncing, no public access
 };
 #endif
