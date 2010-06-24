@@ -27,6 +27,7 @@
 wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
   const wxString& title,
   const wxString& item,
+  int max_items,
   long flags,
   wxWindowID id,
   long style)
@@ -39,7 +40,7 @@ wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
     wxEmptyString,
     true, // is required
     wxID_ANY,
-    25,
+    max_items,
     false,// add name
     -1)); 
 
