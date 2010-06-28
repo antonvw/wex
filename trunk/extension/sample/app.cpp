@@ -103,7 +103,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 #endif
 
 wxExSampleFrame::wxExSampleFrame()
-  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppName())
+  : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_FlagsSTC(0)
 {
   SetIcon(wxICON(app));
@@ -357,7 +357,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
       this,
       "Hello world",
       text,      
-      "Greetings from " + wxTheApp->GetAppName());
+      "Greetings from " + wxTheApp->GetAppDisplayName());
       
       dlg.ShowModal();
     }

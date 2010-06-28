@@ -31,7 +31,7 @@ DecoratedFrame::DecoratedFrame()
   : wxExFrameWithHistory(
       NULL,
       wxID_ANY,
-      wxTheApp->GetAppName(), // title
+      wxTheApp->GetAppDisplayName(), // title
       25,                     // maxFiles
       4)                      // maxProjects
   , m_MenuVCS(new wxExMenu)

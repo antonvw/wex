@@ -520,7 +520,7 @@ void wxExFrameWithHistory::SetTitle(
   // And now update the title.
   if (better_file.empty() && better_project.empty())
   {
-    wxExFrame::SetTitle(wxTheApp->GetAppName());
+    wxExFrame::SetTitle(wxTheApp->GetAppDisplayName());
   }
   else
   {

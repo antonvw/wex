@@ -72,7 +72,7 @@ bool wxExRepSampleApp::OnInit()
 }
 
 wxExRepSampleFrame::wxExRepSampleFrame()
-  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
+  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
 {
   SetIcon(wxICON(app));
 
