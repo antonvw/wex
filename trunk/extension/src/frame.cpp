@@ -450,7 +450,7 @@ void wxExFrame::StatusBarDoubleClicked(
     {
       wxString lexer = stc->GetLexer().GetScintillaLexer();
 
-      if (wxExLexers::Get()->ShowDialog(this, lexer, _("Enter Lexer")))
+      if (wxExLexers::Get()->ShowDialog(this, lexer))
       {
         stc->SetLexer(lexer);
       }
@@ -483,7 +483,8 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 
 void wxExFrame::StatusText(const wxExFileName& filename, long flags)
 {
-  wxString text; // clear status bar for empty or not existing or not initialized file names
+  // Clear status bar for empty or not existing or not initialized file names.
+  wxString text; 
 
   if (filename.IsOk())
   {
