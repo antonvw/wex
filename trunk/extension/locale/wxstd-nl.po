@@ -1,10 +1,9 @@
-################################################################################
 # Name:      wxstd-nl.po
-# Purpose:   Extra translations for items not present in wxstd.
+# Purpose:   Extra translations for items not present or incorrect in wxstd.
+# RCS-ID:    $Id$
 # Author:    Anton van Wezenbeek
 # Created:   2010-03-07
 # Copyright: (c) 2010 Anton van Wezenbeek
-################################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -22,3 +21,5 @@ msgstr "&Uitvoeren"
 msgid "&Jump to"
 msgstr "&Ga naar"
 
+msgid "About "
+msgstr "Info "

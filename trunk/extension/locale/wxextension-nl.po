@@ -1,4 +1,4 @@
-# File:    extension-nl.po
+# File:    wxextension-nl.po
 # Purpose: Translation for wxextension library to dutch.
 # RCS-ID:  $Id$
 # Copyright (c) 1998-2009 Anton van Wezenbeek
