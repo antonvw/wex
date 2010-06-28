@@ -706,9 +706,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
   case ID_PROJECT_NEW: NewFile(true); break;
-    case ID_PROJECT_OPEN:
-      DialogProjectOpen();
-      break;
+  case ID_PROJECT_OPEN:
+    DialogProjectOpen();
+    break;
   case ID_PROJECT_OPENTEXT:
     if (project != NULL)
     {

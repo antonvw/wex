@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/cmdline.h> // for wxCmdLineParser
+#include <wx/extension/filename.h>
 #include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include "app.h"
@@ -21,6 +22,14 @@
 
 DECLARE_APP(App)
 IMPLEMENT_APP(App)
+
+#ifdef __WXOSX__  
+void App::MacOpenFile(const wxString& fileName)
+{
+  Frame* frame = (Frame*)GetTopWindow();
+  frame->OpenFile(wxExFileName(fileName));
+}
+#endif
 
 bool App::OnCmdLineParsed(wxCmdLineParser& parser)
 {

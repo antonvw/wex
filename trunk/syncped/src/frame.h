@@ -22,6 +22,13 @@ class Frame : public DecoratedFrame
 public:
   /// Constructor.
   Frame(bool open_recent);
+  
+  /// Opens the file.
+  virtual bool OpenFile(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long flags = 0);
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
@@ -31,10 +38,15 @@ private:
   virtual wxExListViewStandard* Activate(
     wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
+  wxExListViewWithFrame* AddPage(
+    wxExListViewStandard::ListType type, 
+    const wxExLexer* lexer = NULL);
+  bool AllowCloseAll(wxWindowID id);
   bool DialogProjectOpen();
   virtual wxExListView* GetListView();
   virtual wxExListViewFile* GetProject();
   virtual wxExSTCFile* GetSTC();
+  void NewFile(bool as_project = false);
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int commandid = wxID_APPLY);
@@ -43,18 +55,7 @@ private:
     const wxString& unique,
     const wxString& contents,
     long flags = 0);
-  virtual bool OpenFile(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
-
-  wxExListViewWithFrame* AddPage(
-    wxExListViewStandard::ListType type, 
-    const wxExLexer* lexer = NULL);
-  bool AllowCloseAll(wxWindowID id);
-  void NewFile(bool as_project = false);
 
   int m_NewFileNo;
   int m_NewProjectNo;
