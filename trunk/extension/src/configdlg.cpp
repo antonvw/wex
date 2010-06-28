@@ -74,7 +74,14 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   long flags,
   wxWindowID id,
   long style)
-  : wxExDialog(parent, title, flags, id, style)
+  : wxExDialog(
+      parent, 
+      title, 
+      flags, 
+      id, 
+      wxDefaultPosition, 
+      wxDefaultSize, 
+      style)
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
