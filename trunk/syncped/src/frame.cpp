@@ -69,7 +69,9 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(wxID_UNDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_ADD_HEADER, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_CONTROL_CHAR, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_EDIT_INSERT_SEQUENCE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
@@ -1013,6 +1015,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           }
           break;
 
+        case ID_EDIT_ADD_HEADER:
+        case ID_EDIT_INSERT_SEQUENCE:
+          event.Enable(!editor->GetReadOnly());
+          break;
+  
         default:
           wxFAIL;
         }
