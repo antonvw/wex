@@ -50,7 +50,7 @@ END_EVENT_TABLE()
 class RBSFile: public wxFile
 {
 public:
-  RBSFile(wxExListViewStandard* listview);
+  RBSFile(wxExListView* listview);
   void GenerateDialog();
 private:
   void Body(
@@ -66,7 +66,7 @@ private:
     const wxString& pattern,
     const wxString& new_pattern,
     const bool is_required);
-  wxExListViewStandard* m_Owner;
+  wxExListView* m_ListView;
   wxString m_Prompt;
 };
 #endif // __WXMSW__
@@ -909,9 +909,9 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
-RBSFile::RBSFile(wxExListViewStandard* listview)
+RBSFile::RBSFile(wxExListView* listview)
   : wxFile()
-  , m_Owner(listview)
+  , m_ListView(listview)
   , m_Prompt(wxConfigBase::Get()->Read("RBS/Prompt", ">"))
 {
 }
@@ -960,7 +960,7 @@ void RBSFile::GenerateDialog()
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
   for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
-    wxExListItem li(m_Owner, i);
+    wxExListItem li(m_ListView, i);
     const wxFileName* filename = &li.GetFileName();
     if (!wxFileName::DirExists(filename->GetFullPath()))
     {
