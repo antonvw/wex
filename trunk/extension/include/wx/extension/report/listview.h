@@ -121,11 +121,13 @@ public:
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
+    
+  /// Gets the frame.
+  wxExFrameWithHistory* GetFrame() {return m_Frame;};
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
-  wxExFrameWithHistory* m_Frame;
 private:
   int FindInFilesDialog(int id);
   const wxString GetFindInCaption(int id) const;
@@ -133,6 +135,7 @@ private:
   void RunItems(const wxExTool& tool);
 
   const long m_MenuFlags;
+  wxExFrameWithHistory* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };

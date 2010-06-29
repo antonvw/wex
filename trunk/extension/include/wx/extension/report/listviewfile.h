@@ -45,7 +45,8 @@ public:
   /// Returns member.
   virtual bool GetContentsChanged() const {return m_ContentsChanged;};
 
-  virtual const wxString GetListInfo() const;
+  virtual const wxString GetListInfo() const {
+    return GetFileName().GetName();};
 
   virtual bool ItemFromText(const wxString& text);
 

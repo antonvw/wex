@@ -66,7 +66,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
 
   if (GetFileName().GetStat().IsOk())
   {
-    m_Frame->SetRecentProject(file);
+    GetFrame()->SetRecentProject(file);
   }
 }
 
@@ -212,7 +212,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 #endif
   }
 
-  m_Frame->SetRecentProject(GetFileName().GetFullPath());
+  GetFrame()->SetRecentProject(GetFileName().GetFullPath());
 }
 
 void wxExListViewFile::DoFileNew()
@@ -226,11 +226,6 @@ void wxExListViewFile::DoFileSave(bool save_as)
   {
     Write(ItemToText(i) + wxTextFile::GetEOL());
   }
-}
-
-const wxString wxExListViewFile::GetListInfo() const
-{
-  return GetFileName().GetName();
 }
 
 bool wxExListViewFile::ItemFromText(const wxString& text)
