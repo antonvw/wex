@@ -17,11 +17,18 @@
 #include <wx/numdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/configdlg.h>
+#include <wx/extension/configitem.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
+#include <wx/extension/header.h>
+#include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
+#include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 
 #if wxUSE_GUI
 
@@ -33,6 +40,11 @@ const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
+  EVT_IDLE(wxExSTC::OnIdle)
+  EVT_LEFT_UP(wxExSTC::OnMouse)
+  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_CHAR(wxExSTC::OnChar)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
@@ -57,10 +69,12 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
 END_EVENT_TABLE()
 
 std::vector <wxString> wxExSTC::m_Macro;
+wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
   const wxString& value,
   long win_flags,
+  const wxString& title,
   long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
@@ -76,8 +90,15 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
   , m_vi(wxExVi(this))
+  , m_File(this)
 {
   Initialize();
+
+  SetName(title);
+
+  ConfigGet();
+
+  PropertiesMessage();
 
   if (!value.empty())
   {
@@ -101,6 +122,30 @@ wxExSTC::wxExSTC(wxWindow *parent,
   }
 }
 
+wxExSTC::wxExSTC(wxWindow* parent,
+  const wxExFileName& filename,
+  int line_number,
+  const wxString& match,
+  long flags,
+  long menu_flags,
+  wxWindowID id,
+  const wxPoint& pos,
+  const wxSize& size,
+  long style)
+  : wxStyledTextCtrl(parent, id, pos, size, style)
+  , m_File(this)
+  , m_MarginDividerNumber(1)
+  , m_MarginFoldingNumber(2)
+  , m_MarginLineNumber(0)
+  , m_Flags(flags)
+  , m_MenuFlags(menu_flags)
+  , m_vi(wxExVi(this))
+{
+  ConfigGet();
+
+  Open(filename, line_number, match, flags);
+}
+
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
   , m_MarkerChange(1)
@@ -112,8 +157,16 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
+  , m_File(this)
 {
   Initialize();
+
+  ConfigGet();
+
+  if (stc.m_File.GetFileName().IsOk())
+  {
+    Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
+  }
 }
 
 void wxExSTC::AddAsciiTable()
@@ -134,6 +187,49 @@ void wxExSTC::AddAsciiTable()
 
   EmptyUndoBuffer();
   SetSavePoint();
+}
+
+void wxExSTC::AddBasePathToPathList()
+{
+  // First find the base path, if this is not yet on the list, add it.
+  const wxString basepath_text = "Basepath:";
+
+  const auto find = FindText(
+    0,
+    1000, // the max pos to look for, this seems enough
+    basepath_text,
+    wxSTC_FIND_WHOLEWORD);
+
+  if (find == -1)
+  {
+    return;
+  }
+
+  const auto  line = LineFromPosition(find);
+  const wxString basepath = GetTextRange(
+    find + basepath_text.length() + 1,
+    GetLineEndPosition(line) - 3);
+
+  m_PathList.Add(basepath);
+}
+
+void wxExSTC::AddHeader()
+{
+  const wxExHeader header;
+
+  if (header.ShowDialog(this) != wxID_CANCEL)
+  {
+    if (GetLexer().GetScintillaLexer() == "hypertext")
+    {
+      GotoLine(1);
+    }
+    else
+    {
+      DocumentStart();
+    }
+
+    AddText(header.Get(&m_File.GetFileName()));
+  }
 }
 
 void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
@@ -259,6 +355,46 @@ void wxExSTC::AppendTextForced(const wxString& text, bool withTimestamp)
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
+  const wxString sel = GetSelectedText();
+
+  if (GetMenuFlags() & STC_MENU_OPEN_LINK)
+  {
+    const wxString link = GetTextAtCurrentPos();
+    const auto  line_no = (!sel.empty() ? 
+      wxExGetLineNumber(sel): 
+      GetLineNumberAtCurrentPos());
+
+    wxString filename;
+    if (LinkOpen(link, filename, line_no, false))
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
+    }
+  }
+
+  if ( m_File.GetFileName().FileExists() && GetSelectedText().empty() &&
+      (GetMenuFlags() & STC_MENU_COMPARE_OR_VCS))
+  {
+    if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
+    {
+      menu.AppendSeparator();
+      menu.AppendVCS();
+    }
+    else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
+    {
+      menu.AppendSeparator();
+      menu.Append(ID_EDIT_COMPARE, wxExEllipsed(_("&Compare Recent Version")));
+    }
+  }
+
+  if (GetSelectedText().empty() && 
+      (GetLexer().GetScintillaLexer() == "hypertext" ||
+       GetLexer().GetScintillaLexer() == "xml"))
+  {
+    menu.AppendSeparator();
+    menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
+  }
+
   if (m_MenuFlags & STC_MENU_FIND && GetTextLength() > 0)
   {
     menu.AppendSeparator();
@@ -424,6 +560,284 @@ bool wxExSTC::CheckBraceHex(int pos)
   }
 
   return false;
+}
+
+// This is a static method, cannot use normal members here.
+int wxExSTC::ConfigDialog(
+  wxWindow* parent,
+  const wxString& title,
+  long flags,
+  wxWindowID id)
+{
+  std::vector<wxExConfigItem> items;
+
+  const wxString page = 
+    ((flags & STC_CONFIG_SIMPLE) ? wxString(wxEmptyString): _("Setting"));
+
+  std::set<wxString> bchoices;
+  bchoices.insert(_("End of line"));
+  bchoices.insert(_("Line numbers"));
+  bchoices.insert(_("Use tabs"));
+  bchoices.insert(_("vi mode"));
+  items.push_back(wxExConfigItem(bchoices, page, 2));
+
+  std::map<long, const wxString> choices;
+  choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
+  choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
+    _("Invisible after ident")));
+  choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
+  items.push_back(wxExConfigItem(_("Whitespace"), choices, true, page));
+
+  std::map<long, const wxString> wchoices;
+  wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
+  wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
+  wchoices.insert(std::make_pair(wxSTC_WRAP_CHAR, _("Char")));
+  items.push_back(wxExConfigItem(_("Wrap line"), wchoices, true, page));
+
+  std::map<long, const wxString> vchoices;
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
+  vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
+  items.push_back(wxExConfigItem(_("Wrap visual flags"), vchoices, true, page));
+
+  if (!(flags & STC_CONFIG_SIMPLE))
+  {
+    items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
+
+    std::map<long, const wxString> echoices;
+    echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
+    echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
+    echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
+    items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
+
+    items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
+    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, 
+      _("Folding")));
+
+    std::map<long, const wxString> fchoices;
+    // next no longer available
+//    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, 
+      _("Line before expanded")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, 
+      _("Line before contracted")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, 
+      _("Line after expanded")));
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, 
+      _("Line after contracted")));
+    // next is experimental, wait for scintilla
+    //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
+    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, 
+      _("Folding")));
+
+    items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
+    items.push_back(
+      wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
+
+    items.push_back(wxExConfigItem(
+      _("Tab width"), 
+      1, 
+      (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+    items.push_back(wxExConfigItem(
+      _("Indent"), 
+      1, 
+      (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+    items.push_back(
+      wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
+    items.push_back(
+      wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
+    items.push_back(
+      wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
+
+    items.push_back(
+      wxExConfigItem(
+        _("Include directory"), 
+        _("Directory"), 
+        wxTE_MULTILINE,
+        false,
+        false)); // no name
+  }
+
+  int buttons = wxOK | wxCANCEL;
+
+  if (flags & STC_CONFIG_WITH_APPLY)
+  {
+    buttons |= wxAPPLY;
+  }
+
+  if (!(flags & STC_CONFIG_MODELESS))
+  {
+    return wxExConfigDialog(
+      parent,
+      items,
+      title,
+      0,
+      1,
+      buttons,
+      id).ShowModal();
+  }
+  else
+  {
+    if (m_ConfigDialog == NULL)
+    {
+      m_ConfigDialog = new wxExConfigDialog(
+        parent,
+        items,
+        title,
+        0,
+        1,
+        buttons,
+        id);
+    }
+
+    return m_ConfigDialog->Show();
+  }
+}
+
+void wxExSTC::ConfigGet()
+{
+  if (!wxConfigBase::Get()->Exists(_("Calltip")))
+  {
+    wxConfigBase::Get()->SetRecordDefaults(true);
+  }
+
+  CallTipSetBackground(wxConfigBase::Get()->ReadObject(
+    _("Calltip"), wxColour("YELLOW")));
+
+  if (m_File.GetFileName().GetExt().CmpNoCase("log") == 0)
+  {
+    SetEdgeMode(wxSTC_EDGE_NONE);
+  }
+  else
+  {
+    SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
+    SetEdgeColour(wxConfigBase::Get()->ReadObject(
+      _("Edge colour"), wxColour("GREY"))); 
+    SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
+  }
+    
+  SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
+    wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+  SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), 4));
+  SetIndentationGuides(
+    wxConfigBase::Get()->ReadBool(_("Indentation guide"), false));
+
+  SetMarginWidth(
+    m_MarginDividerNumber, 
+    wxConfigBase::Get()->ReadLong(_("Divider"), 16));
+  SetMarginWidth(
+    m_MarginFoldingNumber, 
+    wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+
+  const auto margin = wxConfigBase::Get()->ReadLong(
+    _("Line number"), 
+    TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
+
+  SetMarginWidth(
+    m_MarginLineNumber, 
+    (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
+
+  SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
+  SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
+  SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
+  SetViewWhiteSpace(
+    wxConfigBase::Get()->ReadLong(_("Whitespace"), wxSTC_WS_INVISIBLE));
+  SetWrapMode(wxConfigBase::Get()->ReadLong(_("Wrap line"), wxSTC_WRAP_NONE));
+  SetWrapVisualFlags(
+    wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
+    wxSTC_WRAPVISUALFLAG_END));
+
+  SetViMode();
+
+  wxStringTokenizer tkz(
+    wxConfigBase::Get()->Read(_("Include directory")),
+    "\r\n");
+
+  while (tkz.HasMoreTokens())
+  {
+    m_PathList.Add(tkz.GetNextToken());
+  }
+
+  if (wxConfigBase::Get()->IsRecordingDefaults())
+  {
+    // Set defaults only.
+    wxConfigBase::Get()->ReadLong(_("Auto fold"), 2500);
+
+    wxConfigBase::Get()->SetRecordDefaults(false);
+  }
+}
+
+bool wxExSTC::FileReadOnlyAttributeChanged()
+{
+  if (!(GetFlags() & STC_WIN_HEX))
+  {
+    SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("Readonly attribute changed"));
+#endif
+  }
+
+  return true;
+}
+
+bool wxExSTC::LinkOpen(
+  const wxString& link_with_line,
+  wxString& filename,
+  int line_number,
+  bool open_link)
+{
+  wxString link;
+
+  // Any line info is already in line_number if text was selected, so skip here.
+  if (line_number != 0 && !GetSelectedText().empty())
+    link = link_with_line.BeforeFirst(':');
+  else
+    link = link_with_line;
+
+  if (link.empty())
+  {
+    return false;
+  }
+
+  wxFileName file(link);
+  wxString fullpath;
+
+  if (file.FileExists())
+  {
+    file.MakeAbsolute();
+    fullpath = file.GetFullPath();
+  }
+  else
+  {
+    if (file.IsRelative())
+    {
+      if (file.MakeAbsolute(m_File.GetFileName().GetPath()))
+      {
+        if (file.FileExists())
+        {
+          fullpath = file.GetFullPath();
+        }
+      }
+    }
+
+    if (fullpath.empty())
+    {
+      fullpath = m_PathList.FindAbsoluteValidPath(link);
+    }
+  }
+
+  if (!fullpath.empty() && open_link)
+  {
+    return Open(
+      fullpath, 
+      line_number, 
+      wxEmptyString, 
+      GetFlags() | STC_WIN_FROM_OTHER);
+  }
+
+  filename = wxFileName(fullpath).GetFullName();
+  
+  return !fullpath.empty();
 }
 
 void wxExSTC::ControlCharDialog(const wxString& caption)
@@ -1059,10 +1473,89 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   }
 }
 
+void wxExSTC::OnIdle(wxIdleEvent& event)
+{
+  event.Skip();
+
+  m_File.CheckSync();
+
+  if (
+    // the readonly flags bit of course can differ from file actual readonly mode,
+    // therefore add this check
+    !(GetFlags() & STC_WIN_READ_ONLY) &&
+    m_File.GetFileName().GetStat().IsOk() &&
+    m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
+  {
+    FileReadOnlyAttributeChanged();
+  }
+}
+
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
+  case wxID_SAVE: m_File.FileSave(); break;
+
+  case ID_EDIT_COMPARE:
+    {
+    wxFileName lastfile;
+
+    if (wxExFindOtherFileName(m_File.GetFileName(), &lastfile))
+    {
+      wxExCompareFile(m_File.GetFileName(), lastfile);
+    }
+    }
+    break;
+
+  case ID_EDIT_OPEN_LINK:
+    {
+    const wxString sel = GetSelectedText();
+    wxString filename;
+    if (!sel.empty())
+    {
+      LinkOpen(sel, filename, wxExGetLineNumber(sel));
+    }
+    else
+    {
+      LinkOpen(GetTextAtCurrentPos(), filename, GetLineNumberAtCurrentPos());
+    }
+    }
+    break;
+
+  case ID_EDIT_OPEN_BROWSER:
+    if (GetModify())
+    {
+      m_File.FileSave();
+    }
+
+    wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
+    break;
+
+  case ID_EDIT_READ:
+    {
+    wxExFileName fn(command.GetString());
+
+    if (fn.IsRelative())
+    {
+      fn.Normalize(wxPATH_NORM_ALL, m_File.GetFileName().GetPath());
+    }
+
+    wxExFile file(fn.GetFullPath());
+
+    if (file.IsOpened())
+    {
+      const wxCharBuffer& buffer = file.Read();
+      SendMsg(
+        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+    }
+    else
+    {
+      wxExFrame::StatusText(wxString::Format(_("file: %s does not exist"), 
+        file.GetFileName().GetFullPath()));
+    }
+    }
+    break;
+
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
   case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
@@ -1168,6 +1661,8 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
 {
   if (event.LeftUp())
   {
+    PropertiesMessage();
+
     event.Skip();
 
     if (!CheckBrace(GetCurrentPos()))
@@ -1214,7 +1709,16 @@ void wxExSTC::OnMouseCapture(wxMouseCaptureLostEvent& event)
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 {
-  if (event.GetEventType() == wxEVT_STC_DWELLEND)
+  if (event.GetEventType() == wxEVT_STC_MODIFIED)
+  {
+    event.Skip();
+
+    if (wxExLexers::Get()->MarkerIsLoaded(GetMarkerChange()))
+    {
+//      MarkerAdd(event.GetLine(), GetMarkerChange().GetNo());
+    }
+  }
+  else if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
     if (CallTipActive())
     {
@@ -1272,6 +1776,73 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     wxFAIL;
   }
+}
+
+bool wxExSTC::Open(
+  const wxExFileName& filename,
+  int line_number,
+  const wxString& match,
+  long flags)
+{
+  if (m_File.GetFileName() == filename && line_number > 0)
+  {
+    GotoLineAndSelect(line_number, match);
+    PropertiesMessage();
+    return true;
+  }
+
+  SetFlags(flags);
+
+  Unbind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+
+  if (m_File.FileLoad(filename.GetFullPath()))
+  {
+    SetName(filename.GetFullPath());
+
+    if (line_number > 0)
+    {
+      GotoLineAndSelect(line_number, match);
+    }
+    else
+    {
+      if (line_number == -1)
+      {
+        DocumentEnd();
+      }
+    }
+
+    Bind(
+      wxEVT_STC_MODIFIED, 
+      &wxExSTC::OnStyledText,
+      this,
+      wxID_ANY);
+
+    return true;
+  }
+  else
+  {
+    Bind(
+      wxEVT_STC_MODIFIED, 
+      &wxExSTC::OnStyledText,
+      this,
+      wxID_ANY);
+
+    return false;
+  }
+}
+
+void wxExSTC::PropertiesMessage()
+{
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(m_File.GetFileName());
+  UpdateStatusBar("PaneFileType");
+  UpdateStatusBar("PaneLexer");
+  UpdateStatusBar("PaneLines");
+#endif
 }
 
 void wxExSTC::Paste()

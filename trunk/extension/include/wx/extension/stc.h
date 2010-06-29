@@ -14,11 +14,14 @@
 
 #include <vector> 
 #include <wx/stc/stc.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/menu.h> // for wxExMenu
+#include <wx/extension/stcfile.h>
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
+class wxExConfigDialog;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
 /// macro support, vi support, lexer support (syntax colouring, folding) 
@@ -32,6 +35,7 @@ public:
     STC_MENU_SIMPLE    = 0x0001, ///< for adding copy/paste etc. menu
     STC_MENU_FIND      = 0x0002, ///< for adding find menu
     STC_MENU_REPLACE   = 0x0004, ///< for adding replace menu
+    STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
     STC_MENU_COMPARE_OR_VCS = 0x1000, ///< for adding compare or VCS menu
 
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
@@ -44,20 +48,78 @@ public:
                                   ///<   this mode overrides real mode from disk
     STC_WIN_HEX         = 0x0002, ///< window in hex mode
     STC_WIN_BLAME       = 0x0004, ///< window in blame mode
+    STC_WIN_FROM_OTHER  = 0x0020, ///< opened from within another file (e.g. a link)
+  };
+
+  /// Config dialog flags (0 gives
+  /// a modal dialog with all options).
+  enum wxExSTCConfigFlags
+  {
+    STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
+    STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
+    STC_CONFIG_SIMPLE     = 0x0004, ///< only 'simple' options on dialog
   };
 
   /// Constructor.
   wxExSTC(wxWindow *parent, 
     const wxString& value = wxEmptyString,
     long win_flags = 0,
+    const wxString& title = wxEmptyString,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
     long style = 0);
 
+  /// Constructor, opens the file.
+  /// See also Open.
+  wxExSTC(wxWindow* parent,
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long win_flags = 0,
+    long menu_flags = STC_MENU_DEFAULT,
+    wxWindowID id = wxID_ANY,
+    const wxPoint& pos = wxDefaultPosition,
+    const wxSize& size = wxDefaultSize,
+    long style = 0);
+
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
+
+  void AddBasePathToPathList();
+
+  /// Adds a header.
+  void AddHeader();
+
+  /// Shows a dialog with options, returns dialog return code.
+  /// If used modeless, it uses the dialog id as specified,
+  /// so you can use that id in wxExFrame::OnCommandConfigDialog.
+  static int ConfigDialog(
+    wxWindow* parent,
+    const wxString& title = _("Editor Options"),
+    long flags = 0,
+    wxWindowID id = wxID_ANY);
+
+  /// Sets the configurable parameters to values currently in config.
+  void ConfigGet();
+
+  wxExFile& GetFile() {return m_File;};
+
+  const wxExFileName& GetFileName() const {return m_File.GetFileName();};
+
+  /// Opens the file, reads the content into the window, then closes the file
+  /// and sets the lexer.
+  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
+  /// If you specify a match selects the text on that line.
+  virtual bool Open(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long flags = 0);
+
+  /// Shows properties on the statusbar.
+  virtual void PropertiesMessage();
 
   /// Adds an ascii table to current document.
   void AddAsciiTable();
@@ -219,6 +281,7 @@ protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
+  void OnIdle(wxIdleEvent& event);
   void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
@@ -241,6 +304,12 @@ private:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+  bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
+  bool LinkOpen(
+    const wxString& link,
+    wxString& filename, // name of found file
+    int line_number = 0, 
+    bool link_open = true);
 
   bool m_MacroIsRecording;
 
@@ -253,6 +322,13 @@ private:
 
   wxExLexer m_Lexer;
   wxExVi m_vi;
+
+  // All objects share the following:
+  static wxExConfigDialog* m_ConfigDialog;
+
+  wxPathList m_PathList;
+
+  wxExSTCFileImp m_File;
 
   DECLARE_EVENT_TABLE()
 };
