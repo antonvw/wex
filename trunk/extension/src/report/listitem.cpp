@@ -105,13 +105,7 @@ const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
   {
     wxExTextFileWithListView file(m_FileName, tool);
 
-    if (file.RunTool())
-    {
-      if (tool.IsRCSType())
-      {
-        Update();
-      }
-    }
+    file.RunTool();
 
     return file.GetStatistics();
   }
