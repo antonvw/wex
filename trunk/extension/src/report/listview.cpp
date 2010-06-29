@@ -656,6 +656,46 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
+int wxExListViewWithFrame::FindInFilesDialog(int id)
+{
+  auto* stc = m_Frame->GetSTC();
+
+  if (stc != NULL)
+  {
+    stc->GetFindString();
+  }
+
+  std::vector<wxExConfigItem> v;
+
+  v.push_back(wxExConfigItem(
+    wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+
+  if (id == ID_TOOL_REPORT_REPLACE) 
+  {
+    v.push_back(wxExConfigItem(
+      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+      CONFIG_COMBOBOX));
+  }
+
+  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+
+  if (wxExConfigDialog(this,
+    v,
+    GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
+  {
+    return wxID_CANCEL;
+  }
+
+  wxExLog::Get()->Log(
+    wxExFindReplaceData::Get()->GetFindReplaceInfoText(
+      id == ID_TOOL_REPORT_REPLACE));
+      
+  return wxID_OK;
+}
+
 const wxString wxExListViewWithFrame::GetFindInCaption(int id) const
 {
   const wxString prefix =
@@ -841,42 +881,9 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     return;
   }
 
-  if (tool.IsFindType())
+  if (tool.IsFindType() && FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
   {
-    auto* stc = m_Frame->GetSTC();
-
-    if (stc != NULL)
-    {
-      stc->GetFindString();
-    }
-
-    std::vector<wxExConfigItem> v;
-
-    v.push_back(wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextFindWhat(), 
-      CONFIG_COMBOBOX, 
-      wxEmptyString, 
-      true));
-
-    if (tool.GetId() == ID_TOOL_REPORT_REPLACE) 
-    {
-      v.push_back(wxExConfigItem(
-        wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-        CONFIG_COMBOBOX));
-    }
-
-    v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
-
-    if (wxExConfigDialog(this,
-      v,
-      GetFindInCaption(tool.GetId())).ShowModal() == wxID_CANCEL)
-    {
-      return;
-    }
-
-    wxExLog::Get()->Log(
-      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-        tool.GetId() == ID_TOOL_REPORT_REPLACE));
+    return;
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))

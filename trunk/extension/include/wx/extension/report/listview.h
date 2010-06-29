@@ -127,6 +127,7 @@ protected:
   void OnList(wxListEvent& event);
   wxExFrameWithHistory* m_Frame;
 private:
+  int FindInFilesDialog(int id);
   const wxString GetFindInCaption(int id) const;
   void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);
