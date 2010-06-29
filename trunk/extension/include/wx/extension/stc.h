@@ -87,10 +87,26 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
+  /// Adds base path.
   void AddBasePathToPathList();
 
   /// Adds a header.
   void AddHeader();
+
+  /// Adds an ascii table to current document.
+  void AddAsciiTable();
+
+  /// Adds text in hex mode.
+  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
+
+  /// Appends text, possibly with timestamp, even if the document is readonly.
+  /// If caret was at end, it is repositioned at the end.
+  void AppendTextForced(const wxString& text, bool withTimestamp = true);
+
+  // Clears the component: all text is cleared and all styles are reset.
+  // Invoked by Open and DoFileNew.
+  // (Clear is used by scintilla to clear the selection).
+  void ClearDocument();
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
@@ -103,38 +119,6 @@ public:
 
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
-
-  wxExFile& GetFile() {return m_File;};
-
-  const wxExFileName& GetFileName() const {return m_File.GetFileName();};
-
-  /// Opens the file, reads the content into the window, then closes the file
-  /// and sets the lexer.
-  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
-  /// If you specify a match selects the text on that line.
-  virtual bool Open(
-    const wxExFileName& filename,
-    int line_number = 0,
-    const wxString& match = wxEmptyString,
-    long flags = 0);
-
-  /// Shows properties on the statusbar.
-  virtual void PropertiesMessage();
-
-  /// Adds an ascii table to current document.
-  void AddAsciiTable();
-
-  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
-
-  /// Appends text, possibly with timestamp, even if the document is readonly.
-  /// If caret was at end, it is repositioned at the end.
-  void AppendTextForced(const wxString& text, bool withTimestamp = true);
-
-
-  // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and DoFileNew.
-  // (Clear is used by scintilla to clear the selection).
-  void ClearDocument();
 
   /// Edit the current selected char as a control char, or if nothing selected,
   /// add a new control char.
@@ -157,6 +141,12 @@ public:
 
   /// Gets EOL string.
   const wxString GetEOL() const;
+
+  /// Gets the file.
+  wxExFile& GetFile() {return m_File;};
+
+  /// Gets the filename, as used by the file.
+  const wxExFileName& GetFileName() const {return m_File.GetFileName();};
 
   /// Gets find string, from selected text or from config.
   /// The search flags are taken from frd.
@@ -192,6 +182,7 @@ public:
     int line_number, 
     const wxString& text = wxEmptyString);
 
+  /// Guesses the type.
   void GuessType();
 
   /// Returns true if specified target is a RE, to be used by
@@ -201,6 +192,16 @@ public:
   /// Mark target as changed.
   void MarkTargetChange();
   
+  /// Opens the file, reads the content into the window, then closes the file
+  /// and sets the lexer.
+  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
+  /// If you specify a match selects the text on that line.
+  virtual bool Open(
+    const wxExFileName& filename,
+    int line_number = 0,
+    const wxString& match = wxEmptyString,
+    long flags = 0);
+
   /// Paste text from clipboard.
   void Paste();
 
@@ -211,6 +212,9 @@ public:
   /// Shows a print preview.
   void PrintPreview();
 #endif
+
+  /// Shows properties on the statusbar.
+  virtual void PropertiesMessage();
 
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
@@ -320,15 +324,13 @@ private:
 
   static std::vector <wxString> m_Macro;
 
+  wxExSTCFileImp m_File;
   wxExLexer m_Lexer;
+  wxPathList m_PathList;
   wxExVi m_vi;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
-
-  wxPathList m_PathList;
-
-  wxExSTCFileImp m_File;
 
   DECLARE_EVENT_TABLE()
 };
