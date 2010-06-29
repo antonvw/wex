@@ -390,7 +390,7 @@ void Frame::NewFile(bool as_project)
     key = text;
     page = new wxExSTCWithFrame(notebook, this);
 
-    ((wxExSTCWithFrame*)page)->FileNew(text);
+    ((wxExSTCWithFrame*)page)->GetFile().FileNew(text);
 
     m_NewFileNo++;
   }
@@ -575,7 +575,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_SAVE:
     if (editor != NULL)
     {
-      editor->FileSave();
+      editor->GetFile().FileSave();
 
       // Compare fullpath, otherwise the Read still reads in the old one.
       if (editor->GetFileName() == 
@@ -598,13 +598,13 @@ void Frame::OnCommand(wxCommandEvent& event)
 
       if (!event.GetString().empty())
       {
-        editor->FileSave(event.GetString());
+        editor->GetFile().FileSave(event.GetString());
       }
       else
       {
         wxExFileDialog dlg(
           this, 
-          editor, 
+          &editor->GetFile(), 
           _("File Save As"), 
           wxFileSelectorDefaultWildcardStr, 
           wxFD_SAVE);
@@ -614,7 +614,7 @@ void Frame::OnCommand(wxCommandEvent& event)
           return;
         }
 
-        editor->FileSave(dlg.GetPath());
+        editor->GetFile().FileSave(dlg.GetPath());
       }
 
       m_NotebookWithEditors->SetPageText(

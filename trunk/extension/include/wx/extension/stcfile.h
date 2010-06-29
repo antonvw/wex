@@ -17,12 +17,30 @@
 #include <wx/extension/menu.h> // for wxExMenu
 
 class wxExConfigDialog;
+class wxExSTCFile;
 
 #if wxUSE_GUI
+class wxExSTCFileImp : public wxExFile
+{
+public:
+  wxExSTCFileImp(wxExSTCFile* stc);
+  virtual bool GetContentsChanged() const;
+  virtual void ResetContentsChanged();
+protected:
+  virtual void DoFileLoad(bool synced = false);
+  virtual void DoFileNew();
+  virtual void DoFileSave(bool save_as = false);
+private:
+  void ReadFromFile(bool get_only_new_data);
+
+  wxExSTCFile* m_STC;
+  wxFileOffset m_PreviousLength;
+};
+
 /// Adds file support, config support and synchronizing to the window,
 /// and if the file is a logfile and
 /// the caret is at the end, it stays at the end after syncing.
-class wxExSTCFile : public wxExSTC, public wxExFile
+class wxExSTCFile : public wxExSTC
 {
 public:
   enum wxExSTCMenuFlags
@@ -73,6 +91,8 @@ public:
   /// Copy constructor.
   wxExSTCFile(const wxExSTCFile& stc);
 
+  void AddBasePathToPathList();
+
   /// Adds a header.
   void AddHeader();
 
@@ -88,9 +108,9 @@ public:
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
 
-  virtual bool GetContentsChanged() const {return GetModify();};
+  wxExFile& GetFile() {return m_File;};
 
-  virtual void ResetContentsChanged();
+  const wxExFileName& GetFileName() const {return m_File.GetFileName();};
 
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
@@ -106,29 +126,25 @@ public:
   virtual void PropertiesMessage();
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
-  virtual void DoFileLoad(bool synced = false);
-  virtual void DoFileNew();
-  virtual void DoFileSave(bool save_as = false);
 
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnMouse(wxMouseEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
-  void AddBasePathToPathList();
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   bool LinkOpen(
     const wxString& link,
     wxString& filename, // name of found file
     int line_number = 0, 
     bool link_open = true);
-  void ReadFromFile(bool get_only_new_data);
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
 
-  wxFileOffset m_PreviousLength;
   wxPathList m_PathList;
+
+  wxExSTCFileImp m_File;
 
   DECLARE_EVENT_TABLE()
 };

@@ -82,7 +82,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(
 
 void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
 {
-  if (wxExFileDialog(this, this).ShowModalIfChanged() == wxID_CANCEL)
+  if (wxExFileDialog(this, &GetFile()).ShowModalIfChanged() == wxID_CANCEL)
   {
     return;
   }

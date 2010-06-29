@@ -26,9 +26,189 @@
 #include <wx/extension/vcs.h>
 
 #if wxUSE_GUI
-
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
+
+wxExSTCFileImp::wxExSTCFileImp(wxExSTCFile* stc)
+  : m_STC(stc)
+  , m_PreviousLength(0)
+{
+}
+
+void wxExSTCFileImp::DoFileLoad(bool synced)
+{
+  if (GetContentsChanged())
+  {
+    wxExFileDialog dlg(m_STC, this);
+    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
+  }
+
+  // Synchronizing by appending only new data only works for log files.
+  // Other kind of files might get new data anywhere inside the file,
+  // we cannot sync that by keeping pos. Also only do it for reasonably large files,
+  // so small log files are synced always (e.g. COM LIB report.log).
+  const bool log_sync =
+    synced &&
+    GetFileName().GetExt().CmpNoCase("log") == 0 &&
+    m_STC->GetTextLength() > 1024;
+
+  // Be sure we can add text.
+  m_STC->SetReadOnly(false);
+
+  ReadFromFile(log_sync);
+
+  if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
+  {
+    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+
+    if (m_STC->GetLexer().GetScintillaLexer() == "po")
+    {
+      m_STC->AddBasePathToPathList();
+    }
+  }
+
+  if (m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY ||
+      GetFileName().GetStat().IsReadOnly() ||
+      // At this moment we do not allow to write in hex mode.
+      m_STC->GetFlags() & m_STC->STC_WIN_HEX)
+  {
+    m_STC->SetReadOnly(true);
+  }
+
+  m_STC->EmptyUndoBuffer();
+
+  if (!synced)
+  {
+    wxExLog::Get()->Log(_("Opened") + ": " + GetFileName().GetFullPath());
+    m_STC->PropertiesMessage();
+  }
+  else
+  {
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(GetFileName(), wxExFrame::STAT_SYNC);
+    m_STC->UpdateStatusBar("PaneLines");
+#endif
+  }
+
+  // No edges for log files.
+  if (GetFileName().GetExt() == "log")
+  {
+    m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
+  }
+
+  if (GetFileName() == wxExLog::Get()->GetFileName())
+  {
+    m_STC->DocumentEnd();
+  }
+}
+
+void wxExSTCFileImp::DoFileNew()
+{
+  m_STC->SetName(GetFileName().GetFullPath());
+
+  m_STC->PropertiesMessage();
+
+  m_STC->ClearDocument();
+
+  m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+}
+
+void wxExSTCFileImp::DoFileSave(bool save_as)
+{
+  const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
+  Write(buffer.data(), buffer.length());
+
+  if (save_as)
+  {
+    m_STC->SetName(GetFileName().GetFullPath());
+    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+  }
+  
+  if (wxExLexers::Get()->MarkerIsLoaded(m_STC->GetMarkerChange()))
+  {
+    m_STC->MarkerDeleteAll(m_STC->GetMarkerChange().GetNo());
+  }
+
+  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
+  wxExLog::Get()->Log(msg);
+  
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(msg);
+#endif
+}
+
+bool wxExSTCFileImp::GetContentsChanged() const 
+{
+  return m_STC->GetModify();
+}
+
+void wxExSTCFileImp::ReadFromFile(bool get_only_new_data)
+{
+  const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
+
+  int startPos, endPos;
+  m_STC->GetSelection(&startPos, &endPos);
+
+  wxFileOffset offset = 0;
+
+  if (m_PreviousLength < Length() && get_only_new_data)
+  {
+    offset = m_PreviousLength;
+  }
+
+  if (offset == 0)
+  {
+    m_STC->ClearDocument();
+  }
+
+  m_PreviousLength = Length();
+
+  const wxCharBuffer& buffer = Read(offset);
+
+  if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
+  {
+    // At least for toggling between hex and non-hex this is necessary to
+    // reshow the edge line.
+    m_STC->ConfigGet();
+
+    m_STC->SetControlCharSymbol(0);
+
+    const auto message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
+
+    // README: The stc.h equivalents AddText, AddTextRaw, InsertText, 
+    // InsertTextRaw do not add the length.
+    // So for binary files this is the only way for opening.
+    m_STC->SendMsg(message, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+  }
+  else
+  {
+    m_STC->AddTextHexMode(offset, buffer);
+  }
+
+  if (get_only_new_data)
+  {
+    if (pos_at_end)
+    {
+      m_STC->DocumentEnd();
+    }
+  }
+  else
+  {
+    m_STC->GuessType();
+    m_STC->DocumentStart();
+  }
+
+  if (startPos != endPos)
+  {
+    // TODO: This does not seem to work.
+    m_STC->SetSelection(startPos, endPos);
+  }
+}
+
+void wxExSTCFileImp::ResetContentsChanged()
+{
+  m_STC->SetSavePoint();
+}
 
 BEGIN_EVENT_TABLE(wxExSTCFile, wxExSTC)
   EVT_IDLE(wxExSTCFile::OnIdle)
@@ -50,7 +230,7 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxSize& size,
   long style)
   : wxExSTC(parent, value, open_flags, menu_flags, id, pos, size, style)
-  , m_PreviousLength(0)
+  , m_File(this)
 {
   SetName(title);
 
@@ -70,7 +250,7 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
   const wxSize& size,
   long style)
   : wxExSTC(parent, wxEmptyString, flags, menu_flags, id, pos, size, style)
-  , m_PreviousLength(0)
+  , m_File(this)
 {
   ConfigGet();
 
@@ -80,13 +260,13 @@ wxExSTCFile::wxExSTCFile(wxWindow* parent,
 wxExSTCFile::wxExSTCFile(const wxExSTCFile& stc)
   : wxExSTC(stc)
   , m_PathList(stc.m_PathList)
-  , m_PreviousLength(stc.m_PreviousLength)
+  , m_File(this)
 {
   ConfigGet();
 
-  if (stc.GetFileName().IsOk())
+  if (stc.m_File.GetFileName().IsOk())
   {
-    Open(stc.GetFileName(), -1, wxEmptyString, GetFlags());
+    Open(stc.m_File.GetFileName(), -1, wxEmptyString, GetFlags());
   }
 }
 
@@ -129,7 +309,7 @@ void wxExSTCFile::AddHeader()
       DocumentStart();
     }
 
-    AddText(header.Get(&GetFileName()));
+    AddText(header.Get(&m_File.GetFileName()));
   }
 }
 
@@ -152,10 +332,10 @@ void wxExSTCFile::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if ( GetFileName().FileExists() && GetSelectedText().empty() &&
+  if ( m_File.GetFileName().FileExists() && GetSelectedText().empty() &&
       (GetMenuFlags() & STC_MENU_COMPARE_OR_VCS))
   {
-    if (wxExVCS::Get()->DirExists(GetFileName()))
+    if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
     {
       menu.AppendSeparator();
       menu.AppendVCS();
@@ -320,7 +500,7 @@ void wxExSTCFile::ConfigGet()
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("Calltip"), wxColour("YELLOW")));
 
-  if (GetFileName().GetExt().CmpNoCase("log") == 0)
+  if (m_File.GetFileName().GetExt().CmpNoCase("log") == 0)
   {
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
@@ -383,113 +563,11 @@ void wxExSTCFile::ConfigGet()
   }
 }
 
-void wxExSTCFile::DoFileLoad(bool synced)
-{
-  if (GetModify())
-  {
-    wxExFileDialog dlg(this, this);
-    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
-  }
-
-  // Synchronizing by appending only new data only works for log files.
-  // Other kind of files might get new data anywhere inside the file,
-  // we cannot sync that by keeping pos. Also only do it for reasonably large files,
-  // so small log files are synced always (e.g. COM LIB report.log).
-  const bool log_sync =
-    synced &&
-    GetFileName().GetExt().CmpNoCase("log") == 0 &&
-    GetTextLength() > 1024;
-
-  // Be sure we can add text.
-  SetReadOnly(false);
-
-  ReadFromFile(log_sync);
-
-  if (!(GetFlags() & STC_WIN_HEX))
-  {
-    SetLexer(GetFileName().GetLexer().GetScintillaLexer());
-
-    if (GetLexer().GetScintillaLexer() == "po")
-    {
-      AddBasePathToPathList();
-    }
-  }
-
-  if (GetFlags() & STC_WIN_READ_ONLY ||
-      GetFileName().GetStat().IsReadOnly() ||
-      // At this moment we do not allow to write in hex mode.
-      GetFlags() & STC_WIN_HEX)
-  {
-    SetReadOnly(true);
-  }
-
-  EmptyUndoBuffer();
-
-  if (!synced)
-  {
-    wxExLog::Get()->Log(_("Opened") + ": " + GetFileName().GetFullPath());
-    PropertiesMessage();
-  }
-  else
-  {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(GetFileName(), wxExFrame::STAT_SYNC);
-    UpdateStatusBar("PaneLines");
-#endif
-  }
-
-  // No edges for log files.
-  if (GetFileName().GetExt() == "log")
-  {
-    SetEdgeMode(wxSTC_EDGE_NONE);
-  }
-
-  if (GetFileName() == wxExLog::Get()->GetFileName())
-  {
-    DocumentEnd();
-  }
-}
-
-void wxExSTCFile::DoFileNew()
-{
-  SetName(GetFileName().GetFullPath());
-
-  PropertiesMessage();
-
-  ClearDocument();
-
-  SetLexer(GetFileName().GetLexer().GetScintillaLexer());
-}
-
-void wxExSTCFile::DoFileSave(bool save_as)
-{
-  const wxCharBuffer& buffer = GetTextRaw(); 
-  Write(buffer.data(), buffer.length());
-
-  if (save_as)
-  {
-    SetName(GetFileName().GetFullPath());
-    SetLexer(GetFileName().GetLexer().GetScintillaLexer());
-  }
-  
-  if (wxExLexers::Get()->MarkerIsLoaded(GetMarkerChange()))
-  {
-    MarkerDeleteAll(GetMarkerChange().GetNo());
-  }
-
-  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
-  wxExLog::Get()->Log(msg);
-  
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(msg);
-#endif
-}
-
 bool wxExSTCFile::FileReadOnlyAttributeChanged()
 {
   if (!(GetFlags() & STC_WIN_HEX))
   {
-    SetReadOnly(GetFileName().GetStat().IsReadOnly()); // does not return anything
+    SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(_("Readonly attribute changed"));
 #endif
@@ -529,7 +607,7 @@ bool wxExSTCFile::LinkOpen(
   {
     if (file.IsRelative())
     {
-      if (file.MakeAbsolute(GetFileName().GetPath()))
+      if (file.MakeAbsolute(m_File.GetFileName().GetPath()))
       {
         if (file.FileExists())
         {
@@ -562,15 +640,15 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
-  case wxID_SAVE: FileSave(); break;
+  case wxID_SAVE: m_File.FileSave(); break;
 
   case ID_EDIT_COMPARE:
     {
     wxFileName lastfile;
 
-    if (wxExFindOtherFileName(GetFileName(), &lastfile))
+    if (wxExFindOtherFileName(m_File.GetFileName(), &lastfile))
     {
-      wxExCompareFile(GetFileName(), lastfile);
+      wxExCompareFile(m_File.GetFileName(), lastfile);
     }
     }
     break;
@@ -593,10 +671,10 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
   case ID_EDIT_OPEN_BROWSER:
     if (GetModify())
     {
-      FileSave();
+      m_File.FileSave();
     }
 
-    wxLaunchDefaultBrowser(GetFileName().GetFullPath());
+    wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
     break;
 
   case ID_EDIT_READ:
@@ -605,7 +683,7 @@ void wxExSTCFile::OnCommand(wxCommandEvent& command)
 
     if (fn.IsRelative())
     {
-      fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
+      fn.Normalize(wxPATH_NORM_ALL, m_File.GetFileName().GetPath());
     }
 
     wxExFile file(fn.GetFullPath());
@@ -632,14 +710,14 @@ void wxExSTCFile::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  CheckSync();
+  m_File.CheckSync();
 
   if (
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(GetFlags() & STC_WIN_READ_ONLY) &&
-    GetFileName().GetStat().IsOk() &&
-    GetFileName().GetStat().IsReadOnly() != GetReadOnly())
+    m_File.GetFileName().GetStat().IsOk() &&
+    m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
     FileReadOnlyAttributeChanged();
   }
@@ -674,7 +752,7 @@ bool wxExSTCFile::Open(
   const wxString& match,
   long flags)
 {
-  if (GetFileName() == filename && line_number > 0)
+  if (m_File.GetFileName() == filename && line_number > 0)
   {
     GotoLineAndSelect(line_number, match);
     PropertiesMessage();
@@ -689,7 +767,7 @@ bool wxExSTCFile::Open(
     this,
     wxID_ANY);
 
-  if (FileLoad(filename.GetFullPath()))
+  if (m_File.FileLoad(filename.GetFullPath()))
   {
     SetName(filename.GetFullPath());
 
@@ -728,78 +806,10 @@ bool wxExSTCFile::Open(
 void wxExSTCFile::PropertiesMessage()
 {
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(GetFileName());
+  wxExFrame::StatusText(m_File.GetFileName());
   UpdateStatusBar("PaneFileType");
   UpdateStatusBar("PaneLexer");
   UpdateStatusBar("PaneLines");
 #endif
-}
-
-void wxExSTCFile::ReadFromFile(bool get_only_new_data)
-{
-  const bool pos_at_end = (GetCurrentPos() >= GetTextLength() - 1);
-
-  int startPos, endPos;
-  GetSelection(&startPos, &endPos);
-
-  wxFileOffset offset = 0;
-
-  if (m_PreviousLength < Length() && get_only_new_data)
-  {
-    offset = m_PreviousLength;
-  }
-
-  if (offset == 0)
-  {
-    ClearDocument();
-  }
-
-  m_PreviousLength = Length();
-
-  const wxCharBuffer& buffer = Read(offset);
-
-  if (!(GetFlags() & STC_WIN_HEX))
-  {
-    // At least for toggling between hex and non-hex this is necessary to
-    // reshow the edge line.
-    ConfigGet();
-
-    SetControlCharSymbol(0);
-
-    const auto message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
-
-    // README: The stc.h equivalents AddText, AddTextRaw, InsertText, 
-    // InsertTextRaw do not add the length.
-    // So for binary files this is the only way for opening.
-    SendMsg(message, buffer.length(), (wxIntPtr)(const char *)buffer.data());
-  }
-  else
-  {
-    AddTextHexMode(offset, buffer);
-  }
-
-  if (get_only_new_data)
-  {
-    if (pos_at_end)
-    {
-      DocumentEnd();
-    }
-  }
-  else
-  {
-    GuessType();
-    DocumentStart();
-  }
-
-  if (startPos != endPos)
-  {
-    // TODO: This does not seem to work.
-    SetSelection(startPos, endPos);
-  }
-}
-
-void wxExSTCFile::ResetContentsChanged()
-{
-  SetSavePoint();
 }
 #endif // wxUSE_GUI

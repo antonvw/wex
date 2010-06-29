@@ -150,7 +150,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
       {
         long flags = 0;
         if (m_HexMode->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
-        wxExFileDialog dlg(m_Frame, stc);
+        wxExFileDialog dlg(m_Frame, &stc->GetFile());
         if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         stc->Open(stc->GetFileName(), 0, wxEmptyString, flags);
       }

@@ -501,7 +501,7 @@ void wxExOpenFilesDialog(
   if (stc != NULL)
   {
     wxExFileDialog dlg(frame,
-      stc,
+      &stc->GetFile(),
       caption,
       wildcards,
       style);

@@ -62,9 +62,17 @@ public:
   /// Adds an ascii table to current document.
   void AddAsciiTable();
 
+  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
+
   /// Appends text, possibly with timestamp, even if the document is readonly.
   /// If caret was at end, it is repositioned at the end.
   void AppendTextForced(const wxString& text, bool withTimestamp = true);
+
+
+  // Clears the component: all text is cleared and all styles are reset.
+  // Invoked by Open and DoFileNew.
+  // (Clear is used by scintilla to clear the selection).
+  void ClearDocument();
 
   /// Edit the current selected char as a control char, or if nothing selected,
   /// add a new control char.
@@ -102,6 +110,9 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
+  /// Gets the change marker.
+  const wxExMarker& GetMarkerChange() const {return m_MarkerChange;};
+
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
@@ -118,6 +129,8 @@ public:
   void GotoLineAndSelect(
     int line_number, 
     const wxString& text = wxEmptyString);
+
+  void GuessType();
 
   /// Returns true if specified target is a RE, to be used by
   /// ReplaceTargetRE.
@@ -200,16 +213,8 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
 protected:
-  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
-  void GuessType();
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
-  // Clears the component: all text is cleared and all styles are reset.
-  // Invoked by Open and DoFileNew.
-  // (Clear is used by scintilla to clear the selection).
-  void ClearDocument();
-  /// Gets the change marker.
-  const wxExMarker& GetMarkerChange() const {return m_MarkerChange;};
   
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);

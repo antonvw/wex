@@ -123,16 +123,16 @@ bool wxExNotebook::ForEach(int id)
 
     case ID_ALL_STC_CLOSE:
       {
-      wxExFileDialog dlg(this, stc);
+      wxExFileDialog dlg(this, &stc->GetFile());
       if (dlg.ShowModalIfChanged() == wxID_CANCEL) return false;
       DeletePage(GetKeyByPage(GetPage(page)));
       }
       break;
 
     case ID_ALL_STC_SAVE:
-      if (stc->GetContentsChanged())
+      if (stc->GetFile().GetContentsChanged())
       {
-        stc->FileSave();
+        stc->GetFile().FileSave();
       }
       break;
 
