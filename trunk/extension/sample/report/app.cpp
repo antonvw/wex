@@ -213,7 +213,7 @@ wxExListView* wxExRepSampleFrame::GetListView()
 }
 
 
-wxExSTCFile* wxExRepSampleFrame::GetSTC()
+wxExSTC* wxExRepSampleFrame::GetSTC()
 {
   return m_STC;
 }
@@ -304,7 +304,7 @@ bool wxExRepSampleFrame::OpenFile(const wxExFileName& file,
 {
   // We cannot use the wxExFrameWithHistory::OpenFile, as that uses the focused STC.
   // Prevent recursion.
-  if (flags & wxExSTCFile::STC_WIN_FROM_OTHER)
+  if (flags & wxExSTC::STC_WIN_FROM_OTHER)
   {
     flags = 0;
   }

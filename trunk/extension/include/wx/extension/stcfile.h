@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stcfile.h
-* Purpose:       Declaration of class wxExSTCFile
+* Purpose:       Declaration of class wxExSTC
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *

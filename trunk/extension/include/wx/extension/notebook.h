@@ -46,7 +46,7 @@ public:
   bool DeletePage(const wxString& key);
 
   /// Do something for each page in the notebook.
-  /// The pages should all be castable to wxExSTCFile pages.
+  /// The pages should all be castable to wxExSTC pages.
   /// The id should be inbetween ID_ALL_LOWEST and ID_ALL_HIGHEST.
   /// Cannot be const as it can call DeletePage.
   bool ForEach(int id);

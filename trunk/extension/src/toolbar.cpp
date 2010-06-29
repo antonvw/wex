@@ -17,7 +17,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -149,7 +149,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
       if (stc != NULL)
       {
         long flags = 0;
-        if (m_HexMode->GetValue()) flags |= wxExSTCFile::STC_WIN_HEX;
+        if (m_HexMode->GetValue()) flags |= wxExSTC::STC_WIN_HEX;
         wxExFileDialog dlg(m_Frame, &stc->GetFile());
         if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
         stc->Open(stc->GetFileName(), 0, wxEmptyString, flags);

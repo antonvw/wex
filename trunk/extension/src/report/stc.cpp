@@ -22,7 +22,7 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
-BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTCFile)
+BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
   EVT_MENU_RANGE(
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
@@ -40,7 +40,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTCFile(parent, value, flags, title, type, id, pos, size, style)
+  : wxExSTC(parent, value, flags, title, type, id, pos, size, style)
   , m_Frame(frame)
 {
 }
@@ -56,7 +56,7 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
   const wxPoint& pos,
   const wxSize& size,
   long style)
-  : wxExSTCFile(
+  : wxExSTC(
       parent, 
       filename, 
       line_number, 
@@ -73,9 +73,9 @@ wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
 }
 
 wxExSTCWithFrame::wxExSTCWithFrame(
-  const wxExSTCFile& stc, 
+  const wxExSTC& stc, 
   wxExFrameWithHistory* frame)
-  : wxExSTCFile(stc)
+  : wxExSTC(stc)
   , m_Frame(frame)
 {
 }
@@ -129,7 +129,7 @@ bool wxExSTCWithFrame::Open(
   }
   else
   {
-    retValue = wxExSTCFile::Open(filename, line_number, match, flags);
+    retValue = wxExSTC::Open(filename, line_number, match, flags);
 
     if (retValue)
     {
@@ -142,7 +142,7 @@ bool wxExSTCWithFrame::Open(
 
 void wxExSTCWithFrame::PropertiesMessage()
 {
-  wxExSTCFile::PropertiesMessage();
+  wxExSTC::PropertiesMessage();
 
   m_Frame->SetTitle(
     GetName() + 

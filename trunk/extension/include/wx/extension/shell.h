@@ -74,7 +74,7 @@ public:
     m_Prompt = prompt;
     if (do_prompt) Prompt();};
 protected:
-  /// Override the default from wxExSTCFile.
+  /// Override the default from wxExSTC.
   /// When you manipulate commands, this should not cause contents changed.
   virtual bool GetContentsChanged() const {return false;};
   void OnCommand(wxCommandEvent& event);

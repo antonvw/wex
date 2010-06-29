@@ -250,7 +250,7 @@ wxExGrid* Frame::GetGrid()
   }
 }
 
-wxExSTCFile* Frame::GetSTC()
+wxExSTC* Frame::GetSTC()
 {
   if (m_DataWindow->IsShown())
   {

@@ -52,7 +52,7 @@ private:
 
 /// Offers a find toolbar, containing a find combobox, up and down arrows
 /// and checkboxes.
-/// The find combobox allows you to find in an wxExSTCFile
+/// The find combobox allows you to find in an wxExSTC
 /// component on the specified wxExFrame.
 class wxExFindToolBar : public wxExToolBar
 {

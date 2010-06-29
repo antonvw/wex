@@ -156,17 +156,17 @@ wxExSampleFrame::wxExSampleFrame()
   m_Grid = new wxExGrid(m_Notebook);
 #endif
   m_ListView = new wxExListView(m_Notebook);
-  m_STC = new wxExSTCFile(this);
+  m_STC = new wxExSTC(this);
   m_STCShell = new wxExSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
   GetManager().AddPane(m_STC, 
-    wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTCFile"));
+    wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTC"));
   GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
-  m_STCLexers = new wxExSTCFile(this, wxExLexers::Get()->GetFileName());
+  m_STCLexers = new wxExSTC(this, wxExLexers::Get()->GetFileName());
   m_Notebook->AddPage(m_STCLexers, wxExLexers::Get()->GetFileName().GetFullName());
   m_Notebook->AddPage(m_ListView, "wxExListView");
 
@@ -229,7 +229,7 @@ wxExListView* wxExSampleFrame::GetListView()
   return m_ListView;
 }
 
-wxExSTCFile* wxExSampleFrame::GetSTC()
+wxExSTC* wxExSampleFrame::GetSTC()
 {
   // First if we have a focus somewhere.
   if (m_STC->HasFocus())
@@ -281,7 +281,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
 #if wxUSE_STATUSBAR
     StatusText(wxString::Format(
-      "wxExSTCFile::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+      "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
 #endif
     }
     break;
@@ -338,10 +338,10 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_STC_CONFIG_DLG:
-    wxExSTCFile::ConfigDialog(
+    wxExSTC::ConfigDialog(
       this,
       _("Editor Options"),
-      wxExSTCFile::STC_CONFIG_MODELESS | wxExSTCFile::STC_CONFIG_WITH_APPLY);
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
     break;
     
   case ID_STC_ENTRY_DLG:
@@ -382,7 +382,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     
   case ID_STC_SPLIT:
     {
-    wxExSTCFile* stc = new wxExSTCFile(*m_STC);
+    wxExSTC* stc = new wxExSTC(*m_STC);
     m_Notebook->AddPage(
       stc,
       wxString::Format("stc%d", stc->GetId()),

@@ -39,7 +39,7 @@ protected:
     wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
   virtual wxExListView* GetListView();
-  virtual wxExSTCFile* GetSTC();
+  virtual wxExSTC* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& file,
     int line_number = 0,

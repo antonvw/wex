@@ -18,7 +18,7 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/util.h>
 
@@ -185,7 +185,7 @@ wxExListView* wxExFrame::GetFocusedListView()
   return wxDynamicCast(win, wxExListView);
 }
 
-wxExSTCFile* wxExFrame::GetFocusedSTC()
+wxExSTC* wxExFrame::GetFocusedSTC()
 {
   wxWindow* win = wxWindow::FindFocus();
 
@@ -194,7 +194,7 @@ wxExSTCFile* wxExFrame::GetFocusedSTC()
     return NULL;
   }
 
-  return wxDynamicCast(win, wxExSTCFile);
+  return wxDynamicCast(win, wxExSTC);
 }
 
 void wxExFrame::GetFindString()

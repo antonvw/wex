@@ -16,7 +16,7 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/notebook.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/shell.h>
 
 /// Derive your application from wxExApp.
@@ -63,7 +63,7 @@ protected:
 private:
   virtual wxExGrid* GetGrid();
   virtual wxExListView* GetListView();
-  virtual wxExSTCFile* GetSTC();
+  virtual wxExSTC* GetSTC();
   void ShowConfigItems();
   
 #if wxUSE_GRID
@@ -72,8 +72,8 @@ private:
   wxExListView* m_ListView; ///< a listview
   wxExNotebook* m_Notebook; ///< a notebook
   wxExSTCShell* m_STCShell; ///< an stc shell
-  wxExSTCFile* m_STC;           ///< an stc
-  wxExSTCFile* m_STCLexers;     ///< an stc
+  wxExSTC* m_STC;           ///< an stc
+  wxExSTC* m_STCLexers;     ///< an stc
 
   long m_FlagsSTC;          ///< keep current flags
   wxExStatistics <long> m_Statistics; ///< keep some statistics

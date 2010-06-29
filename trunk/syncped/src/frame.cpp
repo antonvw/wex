@@ -138,7 +138,7 @@ Frame::Frame(bool open_recent)
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath());
     
-  wxExSTCFile* asciiTable = new wxExSTCFile(this);
+  wxExSTC* asciiTable = new wxExSTC(this);
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
 
@@ -332,7 +332,7 @@ wxExListViewFile* Frame::GetProject()
   }
 }
 
-wxExSTCFile* Frame::GetSTC()
+wxExSTC* Frame::GetSTC()
 {
   if (
     !m_NotebookWithEditors->IsShown() || 
@@ -342,7 +342,7 @@ wxExSTCFile* Frame::GetSTC()
   }
   else
   {
-    return (wxExSTCFile*)m_NotebookWithEditors->GetPage(
+    return (wxExSTC*)m_NotebookWithEditors->GetPage(
       m_NotebookWithEditors->GetSelection());
   }
 }
@@ -646,9 +646,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPTION_EDITOR:
-    wxExSTCFile::ConfigDialog(this,
+    wxExSTC::ConfigDialog(this,
       _("Editor Options"),
-      wxExSTCFile::STC_CONFIG_MODELESS | wxExSTCFile::STC_CONFIG_WITH_APPLY,
+      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
       event.GetId());
     break;
   case ID_OPTION_LIST_FONT:
@@ -1176,7 +1176,7 @@ bool Frame::OpenFile(
     if (page == NULL)
     {
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
-        flags |= wxExSTCFile::STC_WIN_HEX;
+        flags |= wxExSTC::STC_WIN_HEX;
 
       wxLogTrace("SY_CALL", "+wxExSTCWithFrame");
 

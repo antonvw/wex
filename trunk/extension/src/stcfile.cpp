@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stcfile.cpp
-* Purpose:       Implementation of class wxExSTCFile
+* Purpose:       Implementation of class wxExSTC
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -16,6 +16,10 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/stcfile.h>
+#include <wx/extension/filename.h>
+#include <wx/extension/frame.h>
+#include <wx/extension/lexers.h>
+#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/filedlg.h>
 
@@ -23,7 +27,7 @@
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
-wxExSTCFileImp::wxExSTCFileImp(wxExSTCFile* stc)
+wxExSTCFileImp::wxExSTCFileImp(wxExSTC* stc)
   : m_STC(stc)
   , m_PreviousLength(0)
 {

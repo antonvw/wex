@@ -12,7 +12,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/managedframe.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 
 #if wxUSE_GUI
@@ -56,11 +56,11 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
     case wxID_PREFERENCES:
-      wxExSTCFile::ConfigDialog(this,
+      wxExSTC::ConfigDialog(this,
         _("Editor Options"),
-        wxExSTCFile::STC_CONFIG_MODELESS | 
-        wxExSTCFile::STC_CONFIG_SIMPLE |
-        wxExSTCFile::STC_CONFIG_WITH_APPLY,
+        wxExSTC::STC_CONFIG_MODELESS | 
+        wxExSTC::STC_CONFIG_SIMPLE |
+        wxExSTC::STC_CONFIG_WITH_APPLY,
         event.GetId());
     break;
 

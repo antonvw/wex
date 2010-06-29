@@ -21,7 +21,7 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
-#include <wx/extension/stcfile.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listview.h>
@@ -903,7 +903,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
   if (tool.IsCount())
   {
     m_Frame->OpenFile(
-      tool.GetLogfileName(), 0 , wxEmptyString, wxExSTCFile::STC_WIN_FROM_OTHER);
+      tool.GetLogfileName(), 0 , wxEmptyString, wxExSTC::STC_WIN_FROM_OTHER);
   }
 }
 
