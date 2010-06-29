@@ -107,7 +107,7 @@ public:
   const wxExRCS& GetRCS() const {return m_RCS;};
 
   /// Gets the statistics.
-  wxExFileStatistics& GetStatistics() {return m_Stats;}
+  const wxExFileStatistics& GetStatistics() const {return m_Stats;}
 
   /// Gets the tool.
   const wxExTool& GetTool() const {return m_Tool;};
@@ -119,7 +119,6 @@ public:
   /// Runs the tool (opens the file before running and closes afterwards).
   bool RunTool();
 protected:
-  // Interface.
   /// Called after comments have been found.
   virtual bool ParseComments();
 
