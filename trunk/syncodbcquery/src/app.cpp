@@ -200,7 +200,7 @@ wxExSTC* Frame::GetSTC()
 
 void Frame::OnClose(wxCloseEvent& event)
 {
-  wxExFileDialog dlg(this, m_Query);
+    wxExFileDialog dlg(this, &m_Query->GetFile());
 
   if (dlg.ShowModalIfChanged()  == wxID_CANCEL)
   {
@@ -240,7 +240,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    m_Query->FileNew(wxEmptyString);
+    m_Query->GetFile().FileNew(wxEmptyString);
     m_Query->SetLexer("sql");
     m_Query->SetFocus();
     GetManager().GetPane("QUERY").Show();
@@ -256,20 +256,21 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_SAVE:
-    m_Query->FileSave();
+    m_Query->GetFile().FileSave();
     break;
 
   case wxID_SAVEAS:
     {
       wxExFileDialog dlg(
-        this, m_Query, 
+        this, 
+        &m_Query->GetFile(), 
         _("File Save As"), 
         wxFileSelectorDefaultWildcardStr, 
         wxFD_SAVE);
 
       if (dlg.ShowModal() == wxID_OK)
       {
-         m_Query->FileSave(dlg.GetPath());
+         m_Query->GetFile().FileSave(dlg.GetPath());
       }
     }
     break;

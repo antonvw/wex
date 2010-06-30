@@ -272,7 +272,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_EXIT: Close(true); break;
   case wxID_OPEN:
     {
-    wxExFileDialog dlg(this, m_STC);
+        wxExFileDialog dlg(this, &m_STC->GetFile());
     if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
 
     wxStopWatch sw;
@@ -291,7 +291,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); break;
 
   case wxID_SAVE:
-    m_STC->FileSave();
+    m_STC->GetFile().FileSave();
 
     if (m_STC->GetFileName().GetFullPath() == 
         wxExLexers::Get()->GetFileName().GetFullPath())

@@ -296,7 +296,7 @@ void Frame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  wxExFileDialog dlg(this, m_DataWindow);
+  wxExFileDialog dlg(this, &m_DataWindow->GetFile());
 
   if (dlg.ShowModalIfChanged() == wxID_CANCEL)
   {
@@ -337,7 +337,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    m_DataWindow->FileNew(wxEmptyString);
+    m_DataWindow->GetFile().FileNew(wxEmptyString);
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
     break;
@@ -351,7 +351,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_SAVE:
-    m_DataWindow->FileSave();
+    m_DataWindow->GetFile().FileSave();
     m_LogWindow->AppendTextForced(
       _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
     break;
@@ -360,14 +360,14 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       wxExFileDialog dlg(
         this, 
-        m_DataWindow, 
+        &m_DataWindow->GetFile(), 
         _("File Save As"), 
         wxFileSelectorDefaultWildcardStr, 
         wxFD_SAVE);
         
       if (dlg.ShowModal())
       {
-        m_DataWindow->FileSave(dlg.GetPath());
+        m_DataWindow->GetFile().FileSave(dlg.GetPath());
         m_LogWindow->AppendTextForced(
           _("saved: ") + m_DataWindow->GetFileName().GetFullPath());
       }
