@@ -16,6 +16,11 @@
 #include <wx/extension/filename.h>
 #include <wx/extension/lexers.h>
 
+wxExFileName::wxExFileName()
+  : wxFileName()
+{
+}
+
 wxExFileName::wxExFileName(const wxString& fullpath, wxPathFormat format)
   : wxFileName(fullpath, format)
   , m_Stat(fullpath) 

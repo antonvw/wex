@@ -1794,7 +1794,7 @@ bool wxExSTC::Open(
     this,
     wxID_ANY);
 
-  if (m_File.FileLoad(filename.GetFullPath()))
+  if (m_File.FileLoad(filename))
   {
     SetName(filename.GetFullPath());
 

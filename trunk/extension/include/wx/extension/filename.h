@@ -22,9 +22,10 @@ class wxExFileName : public wxFileName
   friend class wxExFile; // it might update stat
 public:
   /// Default constructor.
-  wxExFileName(
-    const wxString& fullpath = wxEmptyString, 
-    wxPathFormat format = wxPATH_NATIVE);
+  wxExFileName();
+
+  /// Constructor taking a full filename.
+  wxExFileName(const wxString& fullpath, wxPathFormat format = wxPATH_NATIVE);
 
   /// Copy constructor from a wxFileName.
   wxExFileName(const wxFileName& filename);

@@ -24,7 +24,7 @@ public:
   wxExFile();
 
   /// Opens a file with a filename.
-  wxExFile(const wxString& filename, wxFile::OpenMode mode = wxFile::read);
+  wxExFile(const wxExFileName& filename, wxFile::OpenMode mode = wxFile::read);
 
   /// Destructor.
   /// NB: for wxFile the destructor is not virtual so 
@@ -37,14 +37,14 @@ public:
 
   /// Sets the filename member, opens the file,
   /// invokes DoFileLoad, and closes the file again.
-  bool FileLoad(const wxString& filename);
+  bool FileLoad(const wxExFileName& filename);
 
   /// Sets the filename member and invokes DoFileNew.
-  void FileNew(const wxString& filename);
+  void FileNew(const wxExFileName& filename);
 
-  /// Sets the filename member, opens the file,
+  /// Sets the filename member if filename is ok, opens the file,
   /// invokes DoFileSave, and closes the file again.
-  bool FileSave(const wxString& filename = wxEmptyString);
+  bool FileSave(const wxExFileName& filename = wxExFileName());
 
   /// Returns whether contents have been changed.
   virtual bool GetContentsChanged() const {return false;};
@@ -71,7 +71,7 @@ protected:
   /// The file is already opened.
   virtual void DoFileSave(bool save_as = false) {;};
 private:
-  void Assign(const wxFileName& filename) {
+  void Assign(const wxExFileName& filename) {
     m_FileName = filename;
     m_Stat = filename.GetFullPath();};
   bool Get(bool synced);
