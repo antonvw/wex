@@ -289,10 +289,6 @@ protected:
   void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
   void SetFlags(long flags) {m_Flags = flags;};
-
-  const int m_MarginDividerNumber;
-  const int m_MarginFoldingNumber;
-  const int m_MarginLineNumber;
 private:
   void CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
@@ -308,17 +304,19 @@ private:
     int line_number = 0, 
     bool link_open = true);
   void SetGlobalStyles();
-  /// Sets vi mode (as currently in the config).
-  void SetViMode();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
 
+  const int m_MarginDividerNumber;
+  const int m_MarginFoldingNumber;
+  const int m_MarginLineNumber;
+  const wxExMarker m_MarkerChange;
+  const long m_MenuFlags;
+
   long m_Flags; // win flags
   long m_GotoLineNumber;
-  const wxExMarker m_MarkerChange;
   bool m_MacroIsRecording;
-  const long m_MenuFlags;
 
   static std::vector <wxString> m_Macro;
 

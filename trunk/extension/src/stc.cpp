@@ -740,7 +740,7 @@ void wxExSTC::ConfigGet()
     wxConfigBase::Get()->ReadLong(_("Wrap visual flags"), 
     wxSTC_WRAPVISUALFLAG_END));
 
-  SetViMode();
+  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
 
   wxStringTokenizer tkz(
     wxConfigBase::Get()->Read(_("Include directory")),
@@ -2166,11 +2166,6 @@ void wxExSTC::SetText(const wxString& value)
   EmptyUndoBuffer();
 }
 
-void wxExSTC::SetViMode() 
-{
-  m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
-}
-  
 bool wxExSTC::SmartIndentation()
 {
   // At this moment a newline has been given (but not yet processed).
