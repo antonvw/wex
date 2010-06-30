@@ -44,7 +44,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
   EVT_KILL_FOCUS(wxExSTC::OnFocus)
   EVT_LEFT_UP(wxExSTC::OnMouse)
-  EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
@@ -146,7 +145,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
-  , m_MarkerChange(1)
+  , m_MarkerChange(stc.m_MarkerChange)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
@@ -217,7 +216,7 @@ void wxExSTC::AddHeader()
 
   if (header.ShowDialog(this) != wxID_CANCEL)
   {
-    if (GetLexer().GetScintillaLexer() == "hypertext")
+    if (m_Lexer.GetScintillaLexer() == "hypertext")
     {
       GotoLine(1);
     }
@@ -386,8 +385,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 
   if (GetSelectedText().empty() && 
-      (GetLexer().GetScintillaLexer() == "hypertext" ||
-       GetLexer().GetScintillaLexer() == "xml"))
+      (m_Lexer.GetScintillaLexer() == "hypertext" ||
+       m_Lexer.GetScintillaLexer() == "xml"))
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_OPEN_BROWSER, _("&Open In Browser"));
@@ -473,10 +472,10 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
         AutoCompSetAutoHide(false);
       }
 
-      if (GetLexer().KeywordStartsWith(autoc))
+      if (m_Lexer.KeywordStartsWith(autoc))
         AutoCompShow(
           autoc.length() - 1,
-          GetLexer().GetKeywordsString());
+          m_Lexer.GetKeywordsString());
       else
         AutoCompCancel();
     }
