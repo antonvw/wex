@@ -395,7 +395,7 @@ void Frame::NewFile(bool as_project)
     key = text;
     page = new wxExSTCWithFrame(notebook, this);
 
-    ((wxExSTCWithFrame*)page)->GetFile().FileNew(text);
+    ((wxExSTC*)page)->GetFile().FileNew(text);
 
     m_NewFileNo++;
   }
