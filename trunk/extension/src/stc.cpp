@@ -453,17 +453,6 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-void wxExSTC::ClearDocument()
-{
-  SetReadOnly(false);
-  ClearAll();
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxEmptyString, "PaneLines");
-#endif
-  EmptyUndoBuffer();
-  SetSavePoint();
-}
-
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
   static wxString autoc;
@@ -558,6 +547,17 @@ bool wxExSTC::CheckBraceHex(int pos)
   }
 
   return false;
+}
+
+void wxExSTC::ClearDocument()
+{
+  SetReadOnly(false);
+  ClearAll();
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(wxEmptyString, "PaneLines");
+#endif
+  EmptyUndoBuffer();
+  SetSavePoint();
 }
 
 // This is a static method, cannot use normal members here.
@@ -765,79 +765,6 @@ void wxExSTC::ConfigGet()
   }
 }
 
-bool wxExSTC::FileReadOnlyAttributeChanged()
-{
-  if (!(GetFlags() & STC_WIN_HEX))
-  {
-    SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Readonly attribute changed"));
-#endif
-  }
-
-  return true;
-}
-
-bool wxExSTC::LinkOpen(
-  const wxString& link_with_line,
-  wxString& filename,
-  int line_number,
-  bool open_link)
-{
-  wxString link;
-
-  // Any line info is already in line_number if text was selected, so skip here.
-  if (line_number != 0 && !GetSelectedText().empty())
-    link = link_with_line.BeforeFirst(':');
-  else
-    link = link_with_line;
-
-  if (link.empty())
-  {
-    return false;
-  }
-
-  wxFileName file(link);
-  wxString fullpath;
-
-  if (file.FileExists())
-  {
-    file.MakeAbsolute();
-    fullpath = file.GetFullPath();
-  }
-  else
-  {
-    if (file.IsRelative())
-    {
-      if (file.MakeAbsolute(m_File.GetFileName().GetPath()))
-      {
-        if (file.FileExists())
-        {
-          fullpath = file.GetFullPath();
-        }
-      }
-    }
-
-    if (fullpath.empty())
-    {
-      fullpath = m_PathList.FindAbsoluteValidPath(link);
-    }
-  }
-
-  if (!fullpath.empty() && open_link)
-  {
-    return Open(
-      fullpath, 
-      line_number, 
-      wxEmptyString, 
-      GetFlags() | STC_WIN_FROM_OTHER);
-  }
-
-  filename = wxFileName(fullpath).GetFullName();
-  
-  return !fullpath.empty();
-}
-
 void wxExSTC::ControlCharDialog(const wxString& caption)
 {
   if (GetSelectedText().length() > 1)
@@ -916,6 +843,19 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 #if wxUSE_STATUSBAR
   UpdateStatusBar("PaneFileType");
 #endif
+}
+
+bool wxExSTC::FileReadOnlyAttributeChanged()
+{
+  if (!(GetFlags() & STC_WIN_HEX))
+  {
+    SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
+#if wxUSE_STATUSBAR
+    wxExFrame::StatusText(_("Readonly attribute changed"));
+#endif
+  }
+
+  return true;
 }
 
 void wxExSTC::FileTypeMenu()
@@ -1404,6 +1344,66 @@ bool wxExSTC::IsTargetRE(const wxString& target) const
     target.Contains("\\9");
 }
 
+bool wxExSTC::LinkOpen(
+  const wxString& link_with_line,
+  wxString& filename,
+  int line_number,
+  bool open_link)
+{
+  wxString link;
+
+  // Any line info is already in line_number if text was selected, so skip here.
+  if (line_number != 0 && !GetSelectedText().empty())
+    link = link_with_line.BeforeFirst(':');
+  else
+    link = link_with_line;
+
+  if (link.empty())
+  {
+    return false;
+  }
+
+  wxFileName file(link);
+  wxString fullpath;
+
+  if (file.FileExists())
+  {
+    file.MakeAbsolute();
+    fullpath = file.GetFullPath();
+  }
+  else
+  {
+    if (file.IsRelative())
+    {
+      if (file.MakeAbsolute(m_File.GetFileName().GetPath()))
+      {
+        if (file.FileExists())
+        {
+          fullpath = file.GetFullPath();
+        }
+      }
+    }
+
+    if (fullpath.empty())
+    {
+      fullpath = m_PathList.FindAbsoluteValidPath(link);
+    }
+  }
+
+  if (!fullpath.empty() && open_link)
+  {
+    return Open(
+      fullpath, 
+      line_number, 
+      wxEmptyString, 
+      GetFlags() | STC_WIN_FROM_OTHER);
+  }
+
+  filename = wxFileName(fullpath).GetFullName();
+  
+  return !fullpath.empty();
+}
+
 void wxExSTC::MacroPlayback()
 {
   wxASSERT(MacroIsRecorded());
@@ -1833,16 +1833,6 @@ bool wxExSTC::Open(
   }
 }
 
-void wxExSTC::PropertiesMessage()
-{
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_File.GetFileName());
-  UpdateStatusBar("PaneFileType");
-  UpdateStatusBar("PaneLexer");
-  UpdateStatusBar("PaneLines");
-#endif
-}
-
 void wxExSTC::Paste()
 {
   const auto line = GetCurrentLine();
@@ -1890,6 +1880,16 @@ void wxExSTC::PrintPreview()
   frame->Show();
 }
 #endif
+
+void wxExSTC::PropertiesMessage()
+{
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(m_File.GetFileName());
+  UpdateStatusBar("PaneFileType");
+  UpdateStatusBar("PaneLexer");
+  UpdateStatusBar("PaneLines");
+#endif
+}
 
 int wxExSTC::ReplaceAll(
   const wxString& find_text,

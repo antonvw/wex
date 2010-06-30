@@ -13,15 +13,13 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/stcfile.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/filedlg.h>
 
 #if wxUSE_GUI
 const int SCI_ADDTEXT = 2001;
