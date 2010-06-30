@@ -150,12 +150,6 @@ Roadmap
     Fix change marker for deleting text 
     (currently it gives stack overflow if enabled).
     
-- remove GetFocusedSTC methods, and replace by access to the focus members.
-    This requires other implementation of wxExSTCFile, in fact it should 
-    disappear, just add a wxExSTCFile member of wxExSTC that only implements
-    the virtual methods. This also solves searching in the wxExSTCEntryDialog 
-    and allows to let the ascii table be an ordinary wxExSTC object.
-    
 - use wxFileName in wxExVCS for m_FullPath
 
 - backspace key in vi should not delete text when not in insert mode        
