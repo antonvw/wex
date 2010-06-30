@@ -335,7 +335,11 @@ wxExListViewFile* Frame::GetProject()
 
 wxExSTC* Frame::GetSTC()
 {
-  if (
+  if (DecoratedFrame::GetSTC() != NULL)
+  {
+    return DecoratedFrame::GetSTC();
+  }
+  else if (
     !m_NotebookWithEditors->IsShown() || 
      m_NotebookWithEditors->GetPageCount() == 0)
   {
