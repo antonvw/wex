@@ -22,7 +22,7 @@ class wxExVCS
 public:
   /// VCS types supported.
   /// See also defs.h, and do not exceed VCS_MAX_COMMANDS.
-  enum wxExVCSCommand
+  enum wxExCommand
   {
     VCS_NO_COMMAND, ///< not ok value
     VCS_ADD,      ///< vcs add
@@ -43,7 +43,7 @@ public:
     VCS_UPDATE,   ///< vcs update
   };
 
-  enum wxExVCSSystem
+  enum wxExSystem
   {
     VCS_NONE, ///< no version control
     VCS_GIT,  ///< GIT version control
@@ -54,7 +54,7 @@ public:
   wxExVCS();
 
   /// Constructor, specify the command and a fullpath.
-  wxExVCS(wxExVCSCommand command, const wxString& fullpath = wxEmptyString);
+  wxExVCS(wxExCommand command, const wxString& fullpath = wxEmptyString);
 
   /// Constructor, specify the command id and a fullpath.
   wxExVCS(int command_id, const wxString& fullpath = wxEmptyString);
@@ -85,7 +85,7 @@ public:
   static wxExVCS* Get(bool createOnDemand = true);
 
   /// Gets the command.
-  const wxExVCSCommand GetCommand() const {return m_Command;};
+  const wxExCommand GetCommand() const {return m_Command;};
 
   /// Gets the command string (without the 'vcs') used to get the output.
   const wxString& GetCommandString() const {return m_CommandString;};
@@ -119,14 +119,14 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  wxExVCSCommand GetType(int command_id) const;
+  wxExCommand GetType(int command_id) const;
   const wxString GetVCSName() const;
   void Initialize();
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
   bool UseSubcommand() const;
 
-  const wxExVCSCommand m_Command;
+  const wxExCommand m_Command;
 
   wxString m_Caption;
   wxString m_CommandString;

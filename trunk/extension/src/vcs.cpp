@@ -41,7 +41,7 @@ wxExVCS::wxExVCS(int command_id, const wxString& fullpath)
   Initialize();
 }
 
-wxExVCS::wxExVCS(wxExVCSCommand type, const wxString& fullpath)
+wxExVCS::wxExVCS(wxExCommand type, const wxString& fullpath)
   : m_Command(type)
   , m_FullPath(fullpath)
 {
@@ -281,15 +281,15 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-wxExVCS::wxExVCSCommand wxExVCS::GetType(int command_id) const
+wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
 {
   if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
   {
-    return (wxExVCSCommand)(command_id - ID_VCS_LOWEST);
+    return (wxExCommand)(command_id - ID_VCS_LOWEST);
   }
   else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
   {
-    return (wxExVCSCommand)(command_id - ID_EDIT_VCS_LOWEST);
+    return (wxExCommand)(command_id - ID_EDIT_VCS_LOWEST);
   }
   else
   {

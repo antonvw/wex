@@ -30,7 +30,7 @@ class wxExSTC : public wxStyledTextCtrl
 {
 public:
   /// Menu and tooltip flags (0 is used for no menu).
-  enum wxExStyledMenuFlags
+  enum wxExMenuFlags
   {
     STC_MENU_SIMPLE    = 0x0001, ///< for adding copy/paste etc. menu
     STC_MENU_FIND      = 0x0002, ///< for adding find menu
@@ -42,7 +42,7 @@ public:
   };
 
   /// Window flags (0 is used as default).
-  enum wxExSTCWindowFlags
+  enum wxExWindowFlags
   {
     STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, 
                                   ///<   this mode overrides real mode from disk
@@ -53,7 +53,7 @@ public:
 
   /// Config dialog flags (0 gives
   /// a modal dialog with all options).
-  enum wxExSTCConfigFlags
+  enum wxExConfigFlags
   {
     STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
     STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
