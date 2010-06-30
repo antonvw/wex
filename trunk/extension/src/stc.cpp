@@ -93,8 +93,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
 
   SetName(title);
 
-  ConfigGet();
-
   PropertiesMessage();
 
   if (!value.empty())
@@ -138,7 +136,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_MenuFlags(menu_flags)
   , m_vi(wxExVi(this))
 {
-  ConfigGet();
+  Initialize();
 
   Open(filename, line_number, match, flags);
 }
@@ -157,8 +155,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_File(this)
 {
   Initialize();
-
-  ConfigGet();
 
   if (stc.m_File.GetFileName().IsOk())
   {
@@ -1327,6 +1323,8 @@ void wxExSTC::Initialize()
   SetAcceleratorTable(accel);
   
   SetGlobalStyles();
+  
+  ConfigGet();
 }
 
 bool wxExSTC::IsTargetRE(const wxString& target) const

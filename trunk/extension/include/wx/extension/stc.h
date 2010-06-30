@@ -189,6 +189,15 @@ public:
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;
 
+  /// A macro has been recorded.
+  bool MacroIsRecorded() const {return !m_Macro.empty();};
+
+  /// A marco is now being recorded.
+  bool MacroIsRecording() const {return m_MacroIsRecording;};
+
+  /// Plays back the last recorded macro.
+  void MacroPlayback();
+  
   /// Mark target as changed.
   void MarkTargetChange();
   
@@ -250,18 +259,10 @@ public:
   /// Sets the text.
   void SetText(const wxString& value);
 
-  /// Sets vi mode (as currently in the config).
-  void SetViMode();
-  
   /// Asks for confirmation to sort the selection.
   void SortSelectionDialog(
     bool sort_ascending,
     const wxString& caption = _("Enter Sort Position"));
-
-#if wxUSE_STATUSBAR
-  /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane);
-#endif
 
   /// Starts recording the macro, and empties the previous one.
   /// There is only one shared macro for all objects.
@@ -270,14 +271,10 @@ public:
   /// Stops recording the macro.
   void StopRecord();
 
-  /// A macro has been recorded.
-  bool MacroIsRecorded() const {return !m_Macro.empty();};
-
-  /// A marco is now being recorded.
-  bool MacroIsRecording() const {return m_MacroIsRecording;};
-
-  /// Plays back the last recorded macro.
-  void MacroPlayback();
+#if wxUSE_STATUSBAR
+  /// Updates the specified statusbar pane with current values.
+  void UpdateStatusBar(const wxString& pane);
+#endif
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
@@ -311,6 +308,8 @@ private:
     int line_number = 0, 
     bool link_open = true);
   void SetGlobalStyles();
+  /// Sets vi mode (as currently in the config).
+  void SetViMode();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
