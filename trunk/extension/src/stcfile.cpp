@@ -25,13 +25,13 @@
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
-wxSTCFile::wxSTCFile(wxExSTC* stc)
+wxExSTCFile::wxExSTCFile(wxExSTC* stc)
   : m_STC(stc)
   , m_PreviousLength(0)
 {
 }
 
-void wxSTCFile::DoFileLoad(bool synced)
+void wxExSTCFile::DoFileLoad(bool synced)
 {
   if (GetContentsChanged())
   {
@@ -98,7 +98,7 @@ void wxSTCFile::DoFileLoad(bool synced)
   }
 }
 
-void wxSTCFile::DoFileNew()
+void wxExSTCFile::DoFileNew()
 {
   m_STC->SetName(GetFileName().GetFullPath());
 
@@ -109,7 +109,7 @@ void wxSTCFile::DoFileNew()
   m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
 }
 
-void wxSTCFile::DoFileSave(bool save_as)
+void wxExSTCFile::DoFileSave(bool save_as)
 {
   const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
   Write(buffer.data(), buffer.length());
@@ -133,12 +133,12 @@ void wxSTCFile::DoFileSave(bool save_as)
 #endif
 }
 
-bool wxSTCFile::GetContentsChanged() const 
+bool wxExSTCFile::GetContentsChanged() const 
 {
   return m_STC->GetModify();
 }
 
-void wxSTCFile::ReadFromFile(bool get_only_new_data)
+void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
@@ -201,7 +201,7 @@ void wxSTCFile::ReadFromFile(bool get_only_new_data)
   }
 }
 
-void wxSTCFile::ResetContentsChanged()
+void wxExSTCFile::ResetContentsChanged()
 {
   m_STC->SetSavePoint();
 }

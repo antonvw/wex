@@ -45,9 +45,12 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     this, 
     text,
     0,
+    wxEmptyString, // title
     wxExSTC::STC_MENU_SIMPLE | 
       wxExSTC::STC_MENU_FIND | 
-      wxExSTC::STC_MENU_REPLACE);
+      wxExSTC::STC_MENU_REPLACE,
+    wxID_ANY,
+    wxDefaultPosition);
 
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   m_STC->ResetMargins();

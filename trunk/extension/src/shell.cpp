@@ -43,6 +43,7 @@ wxExSTCShell::wxExSTCShell(
       parent, 
       wxEmptyString,
       0,
+      wxEmptyString, // title
       menu_flags, 
       id, 
       pos, 
