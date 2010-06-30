@@ -22,9 +22,6 @@
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
-const int SCI_ADDTEXT = 2001;
-const int SCI_APPENDTEXT = 2282;
-
 wxExSTCFile::wxExSTCFile(wxExSTC* stc)
   : m_STC(stc)
   , m_PreviousLength(0)
@@ -101,11 +98,8 @@ void wxExSTCFile::DoFileLoad(bool synced)
 void wxExSTCFile::DoFileNew()
 {
   m_STC->SetName(GetFileName().GetFullPath());
-
   m_STC->PropertiesMessage();
-
   m_STC->ClearDocument();
-
   m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
 }
 
@@ -169,6 +163,8 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
     m_STC->SetControlCharSymbol(0);
 
+    const int SCI_ADDTEXT = 2001;
+    const int SCI_APPENDTEXT = 2282;
     const auto message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, 
