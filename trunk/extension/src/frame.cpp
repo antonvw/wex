@@ -161,42 +161,6 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
   }
 }
 
-wxExGrid* wxExFrame::GetFocusedGrid()
-{
-  wxWindow* win = wxWindow::FindFocus();
-
-  if (win == NULL)
-  {
-    return NULL;
-  }
-
-  return wxDynamicCast(win, wxExGrid);
-}
-
-wxExListView* wxExFrame::GetFocusedListView()
-{
-  wxWindow* win = wxWindow::FindFocus();
-
-  if (win == NULL)
-  {
-    return NULL;
-  }
-
-  return wxDynamicCast(win, wxExListView);
-}
-
-wxExSTC* wxExFrame::GetFocusedSTC()
-{
-  wxWindow* win = wxWindow::FindFocus();
-
-  if (win == NULL)
-  {
-    return NULL;
-  }
-
-  return wxDynamicCast(win, wxExSTC);
-}
-
 void wxExFrame::GetFindString()
 {
   if (m_FocusSTC != NULL)

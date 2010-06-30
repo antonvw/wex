@@ -23,7 +23,6 @@
 class wxExGrid;
 class wxExListView;
 class wxExSTC;
-class wxExSTC;
 class wxExToolBar;
 
 /// Offers a frame with easy statusbar methods, 
@@ -60,15 +59,15 @@ public:
 
   /// If the window that has focus is a Grid, then returns that, 
   /// otherwise returns NULL.
-  wxExGrid* GetFocusedGrid();
+  wxExGrid* GetFocusedGrid() {return m_FocusGrid;};
 
   /// If the window that has focus is a ListView, 
   /// then returns that, otherwise returns NULL.
-  wxExListView* GetFocusedListView();
+  wxExListView* GetFocusedListView() {return m_FocusListView;};
 
   /// If the window that has focus is an STC, then returns that, 
   /// otherwise returns NULL.
-  wxExSTC* GetFocusedSTC();
+  wxExSTC* GetFocusedSTC() {return m_FocusSTC;};
 
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
