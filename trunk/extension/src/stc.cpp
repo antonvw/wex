@@ -21,12 +21,10 @@
 #include <wx/extension/configitem.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/lexers.h>
-#include <wx/extension/printing.h>
-#include <wx/extension/util.h>
 #include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
+#include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
@@ -40,32 +38,32 @@ const wxFileOffset space_between_fields = 1;
 const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
-  EVT_IDLE(wxExSTC::OnIdle)
-  EVT_LEFT_UP(wxExSTC::OnMouse)
-  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
-  EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_CHAR(wxExSTC::OnChar)
-  EVT_LEFT_UP(wxExSTC::OnMouse)
-  EVT_RIGHT_UP(wxExSTC::OnMouse)
-  EVT_SET_FOCUS(wxExSTC::OnFocus)
-  EVT_KILL_FOCUS(wxExSTC::OnFocus)
+  EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
+  EVT_KILL_FOCUS(wxExSTC::OnFocus)
+  EVT_LEFT_UP(wxExSTC::OnMouse)
+  EVT_LEFT_UP(wxExSTC::OnMouse)
+  EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
   EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
   EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
   EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
+  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MOUSE_CAPTURE_LOST(wxExSTC::OnMouseCapture)
-  EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
-//  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_RIGHT_UP(wxExSTC::OnMouse)
+  EVT_SET_FOCUS(wxExSTC::OnFocus)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
+//  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
 std::vector <wxString> wxExSTC::m_Macro;

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stcfile.cpp
-* Purpose:       Implementation of class wxExSTC
+* Purpose:       Implementation of class wxExSTCFile
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -27,13 +27,13 @@
 const int SCI_ADDTEXT = 2001;
 const int SCI_APPENDTEXT = 2282;
 
-wxExSTCFileImp::wxExSTCFileImp(wxExSTC* stc)
+wxSTCFile::wxSTCFile(wxExSTC* stc)
   : m_STC(stc)
   , m_PreviousLength(0)
 {
 }
 
-void wxExSTCFileImp::DoFileLoad(bool synced)
+void wxSTCFile::DoFileLoad(bool synced)
 {
   if (GetContentsChanged())
   {
@@ -100,7 +100,7 @@ void wxExSTCFileImp::DoFileLoad(bool synced)
   }
 }
 
-void wxExSTCFileImp::DoFileNew()
+void wxSTCFile::DoFileNew()
 {
   m_STC->SetName(GetFileName().GetFullPath());
 
@@ -111,7 +111,7 @@ void wxExSTCFileImp::DoFileNew()
   m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
 }
 
-void wxExSTCFileImp::DoFileSave(bool save_as)
+void wxSTCFile::DoFileSave(bool save_as)
 {
   const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
   Write(buffer.data(), buffer.length());
@@ -135,12 +135,12 @@ void wxExSTCFileImp::DoFileSave(bool save_as)
 #endif
 }
 
-bool wxExSTCFileImp::GetContentsChanged() const 
+bool wxSTCFile::GetContentsChanged() const 
 {
   return m_STC->GetModify();
 }
 
-void wxExSTCFileImp::ReadFromFile(bool get_only_new_data)
+void wxSTCFile::ReadFromFile(bool get_only_new_data)
 {
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
@@ -203,7 +203,7 @@ void wxExSTCFileImp::ReadFromFile(bool get_only_new_data)
   }
 }
 
-void wxExSTCFileImp::ResetContentsChanged()
+void wxSTCFile::ResetContentsChanged()
 {
   m_STC->SetSavePoint();
 }

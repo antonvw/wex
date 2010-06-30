@@ -87,14 +87,14 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
+  /// Adds an ascii table to current document.
+  void AddAsciiTable();
+
   /// Adds base path.
   void AddBasePathToPathList();
 
   /// Adds a header.
   void AddHeader();
-
-  /// Adds an ascii table to current document.
-  void AddAsciiTable();
 
   /// Adds text in hex mode.
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
@@ -301,30 +301,29 @@ private:
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
   void EOLModeUpdate(int eol_mode);
+  bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize();
-  void SetGlobalStyles();
-  /// After pressing enter, starts new line at same place
-  /// as previous line.
-  bool SmartIndentation();
-  bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   bool LinkOpen(
     const wxString& link,
     wxString& filename, // name of found file
     int line_number = 0, 
     bool link_open = true);
-
-  bool m_MacroIsRecording;
+  void SetGlobalStyles();
+  /// After pressing enter, starts new line at same place
+  /// as previous line.
+  bool SmartIndentation();
 
   long m_Flags; // win flags
   long m_GotoLineNumber;
   const wxExMarker m_MarkerChange;
+  bool m_MacroIsRecording;
   const long m_MenuFlags;
 
   static std::vector <wxString> m_Macro;
 
-  wxExSTCFileImp m_File;
+  wxExSTCFile m_File;
   wxExLexer m_Lexer;
   wxPathList m_PathList;
   wxExVi m_vi;

@@ -1,6 +1,6 @@
 /******************************************************************************\
 * File:          stcfile.h
-* Purpose:       Declaration of class wxExSTC
+* Purpose:       Declaration of class wxExSTCFile
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
@@ -17,10 +17,14 @@
 class wxExSTC;
 
 #if wxUSE_GUI
-class wxExSTCFileImp : public wxExFile
+/// Adds file read and write to wxExSTC.
+class wxExSTCFile: public wxExFile
 {
 public:
-  wxExSTCFileImp(wxExSTC* stc);
+  /// Constructor.
+  wxExSTCFile(wxExSTC* stc);
+  
+  /// Override virtual methods.
   virtual bool GetContentsChanged() const;
   virtual void ResetContentsChanged();
 protected:
