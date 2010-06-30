@@ -75,12 +75,13 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_MENU_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_SORT_SYNC, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_VCS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_TOOL_REPORT_REVISION, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, Frame::OnUpdateUI)
@@ -883,6 +884,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Enable(m_NotebookWithEditors->GetPageCount() > 2);
     break;
 
+    case ID_MENU_VCS:
+      event.Enable(GetVCSMenu()->IsVCSBuild());
+      break;
+
     case ID_OPTION_LIST_SORT_ASCENDING:
     case ID_OPTION_LIST_SORT_DESCENDING:
     case ID_OPTION_LIST_SORT_TOGGLE:
@@ -913,10 +918,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
     break;
 
-    case ID_MENU_VCS:
-      event.Enable(GetVCSMenu()->IsVCSBuild());
+    case ID_TOOL_REPORT_REVISION:
+      event.Check(!wxExVCS::Get()->Use());
       break;
-
+      
     case ID_VIEW_ASCII_TABLE:
       event.Check(GetManager().GetPane("ASCIITABLE").IsShown());
       break;
