@@ -299,9 +299,8 @@ private:
   void Initialize();
   bool LinkOpen(
     const wxString& link,
-    wxString& filename, // name of found file
     int line_number = 0, 
-    bool link_open = true);
+    wxString* filename = NULL); // name of found file
   void SetGlobalStyles();
   /// After pressing enter, starts new line at same place
   /// as previous line.

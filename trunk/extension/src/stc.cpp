@@ -354,12 +354,12 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   if (GetMenuFlags() & STC_MENU_OPEN_LINK)
   {
     const wxString link = GetTextAtCurrentPos();
-    const auto  line_no = (!sel.empty() ? 
+    const auto line_no = (!sel.empty() ? 
       wxExGetLineNumber(sel): 
       GetLineNumberAtCurrentPos());
 
     wxString filename;
-    if (LinkOpen(link, filename, line_no, false))
+    if (LinkOpen(link, line_no, &filename))
     {
       menu.AppendSeparator();
       menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
@@ -1344,17 +1344,11 @@ bool wxExSTC::IsTargetRE(const wxString& target) const
 
 bool wxExSTC::LinkOpen(
   const wxString& link_with_line,
-  wxString& filename,
   int line_number,
-  bool open_link)
+  *wxString filename)
 {
-  wxString link;
-
-  // Any line info is already in line_number if text was selected, so skip here.
-  if (line_number != 0 && !GetSelectedText().empty())
-    link = link_with_line.BeforeFirst(':');
-  else
-    link = link_with_line;
+  // Any line info is already in line_number, so skip here.
+  const wxString link = link_with_line.BeforeFirst(':');
 
   if (link.empty())
   {
@@ -1387,17 +1381,22 @@ bool wxExSTC::LinkOpen(
       fullpath = m_PathList.FindAbsoluteValidPath(link);
     }
   }
-
-  if (!fullpath.empty() && open_link)
+  
+  if (!fullpath.empty())
   {
-    return Open(
-      fullpath, 
-      line_number, 
-      wxEmptyString, 
-      GetFlags() | STC_WIN_FROM_OTHER);
+    if (filename == NULL)
+    {
+      return Open(
+        fullpath, 
+        line_number, 
+        wxEmptyString, 
+        GetFlags() | STC_WIN_FROM_OTHER);
+    }
+    else
+    {
+      filename = wxFileName(fullpath).GetFullName();
+    }
   }
-
-  filename = wxFileName(fullpath).GetFullName();
   
   return !fullpath.empty();
 }
@@ -1548,14 +1547,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_OPEN_LINK:
     {
     const wxString sel = GetSelectedText();
-    wxString filename;
+    
     if (!sel.empty())
     {
-      LinkOpen(sel, filename, wxExGetLineNumber(sel));
+      LinkOpen(sel, wxExGetLineNumber(sel));
     }
     else
     {
-      LinkOpen(GetTextAtCurrentPos(), filename, GetLineNumberAtCurrentPos());
+      LinkOpen(GetTextAtCurrentPos(), GetLineNumberAtCurrentPos());
     }
     }
     break;
