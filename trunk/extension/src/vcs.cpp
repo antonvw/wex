@@ -71,11 +71,6 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  if (!Use())
-  {
-    return false;
-  }
-
   switch (GetVCS())
   {
     case VCS_GIT: 
@@ -98,12 +93,10 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
       }
       break;
 
+    case VCS_NONE: break; // prevent wxFAIL
+    
     case VCS_SVN: 
-      {
-      wxFileName path(filename);
-      path.AppendDir(".svn");
-      return path.DirExists();
-      }
+      return wxFileName(filename).AppendDir(".svn").DirExists();
       break;
 
     default: wxFAIL;
