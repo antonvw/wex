@@ -133,10 +133,13 @@ public:
   /// Creates the control,
   /// lays out this item on the specified sizer, and fills it
   /// with config value (calls ToConfig).
+  /// It returns the sizer that was used for creating the item sizer.
   wxFlexGridSizer* Layout(
     wxWindow* parent, 
     wxSizer* sizer, 
     bool readonly = false,
+    ///< specify the size for creating the item, or NULL, 
+    ///< than a new one is created
     wxFlexGridSizer* fgz = NULL);
 
   /// Loads or saves this item to the config.

@@ -120,6 +120,8 @@ void wxExConfigDialog::Layout(int rows, int cols)
 {
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
+  wxFlexGridSizer* previous_item_sizer = NULL;
+  int previous_item_type = -1;
   wxNotebook* notebook = 
     (m_ConfigItems.begin()->GetPage().empty() ? 
        NULL: 
@@ -163,10 +165,16 @@ void wxExConfigDialog::Layout(int rows, int cols)
       }
     }
 
-    it->Layout(
+    wxFlexGridSizer* use_item_sizer = (it->GetType() == previous_item_type ?
+      previous_item_sizer: NULL);
+
+    previous_item_sizer = it->Layout(
       (notebook != NULL ? notebook->GetCurrentPage(): this), 
       sizer, 
-      GetButtonFlags() == wxCANCEL);
+      GetButtonFlags() == wxCANCEL,
+      use_item_sizer);
+
+    previous_item_type = it->GetType();
 
     if (it->GetType() == CONFIG_COMBOBOXDIR)
     {

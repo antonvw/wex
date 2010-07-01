@@ -408,7 +408,7 @@ wxFlexGridSizer* wxExConfigItem::Layout(
 {
   CreateControl(parent, readonly);
   
-  wxFlexGridSizer* flex = NULL;
+  wxFlexGridSizer* use = NULL;
 
   switch (m_Type)
   {
@@ -422,21 +422,22 @@ wxFlexGridSizer* wxExConfigItem::Layout(
         // Construct a child flex grid sizer.
         if (fgz == NULL)
         {
-          flex = new wxFlexGridSizer(2, 0, 0);
-          flex->AddGrowableCol(1); // the control
-          flex->AddGrowableRow(0);
+          use = new wxFlexGridSizer(2, 0, 0);
+          use->AddGrowableCol(1); // the control
+          use->AddGrowableRow(0);
       
           // Add name and control.
-          AddStaticTextName(flex );
-          flex->Add(m_Control, m_ControlFlags);
+          AddStaticTextName(use);
+          use->Add(m_Control, m_ControlFlags);
 
           // Add to the sizer.
-          sizer->Add(flex, wxSizerFlags().Expand());
+          sizer->Add(use, wxSizerFlags().Expand());
         }
         else
         {
-          AddStaticTextName(fgz);
-          fgz->Add(m_Control, m_ControlFlags);
+          use = fgz;
+          AddStaticTextName(use);
+          use->Add(m_Control, m_ControlFlags);
         }
       }
       else
@@ -448,7 +449,7 @@ wxFlexGridSizer* wxExConfigItem::Layout(
   
   ToConfig(false);
   
-  return flex;
+  return use;
 }
 
 void wxExConfigItem::ToConfig(bool save) const
