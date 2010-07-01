@@ -1490,7 +1490,17 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
   {
+  case wxID_COPY: Copy(); break;
+  case wxID_CUT: Cut(); break;
+  case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
+  case wxID_JUMP_TO: GotoDialog(); break;
+  case wxID_PASTE: Paste(); break;
+  case wxID_SELECTALL: SelectAll(); break;
+  case wxID_UNDO: Undo(); break;
+  case wxID_REDO: Redo(); break;
   case wxID_SAVE: m_File.FileSave(); break;
+  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
+  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
 
   case ID_EDIT_COMPARE:
     {
@@ -1503,6 +1513,34 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     break;
 
+  case ID_EDIT_CONTROL_CHAR:
+    ControlCharDialog();
+  break;
+  
+  case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
+  case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
+  case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
+  
+  case ID_EDIT_FOLD_ALL: FoldAll(); break;
+  case ID_EDIT_UNFOLD_ALL:
+    for (auto i = 0; i < GetLineCount(); i++) EnsureVisible(i);
+  break;
+  case ID_EDIT_TOGGLE_FOLD:
+  {
+    const auto level = GetFoldLevel(GetCurrentLine());
+    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+      GetCurrentLine(): GetFoldParent(GetCurrentLine());
+    ToggleFold(line_to_fold);
+  }
+  break;
+
+  case ID_EDIT_HEX_DEC_CALLTIP:
+    HexDecCalltip(GetCurrentPos());
+  break;
+
+  case ID_EDIT_LOWERCASE: LowerCase(); break;
+  case ID_EDIT_UPPERCASE: UpperCase(); break;
+  
   case ID_EDIT_OPEN_LINK:
     {
     const wxString sel = GetSelectedText();
@@ -1552,43 +1590,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case wxID_COPY: Copy(); break;
-  case wxID_CUT: Cut(); break;
-  case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
-  case wxID_JUMP_TO: GotoDialog(); break;
-  case wxID_PASTE: Paste(); break;
-  case wxID_SELECTALL: SelectAll(); break;
-  case wxID_UNDO: Undo(); break;
-  case wxID_REDO: Redo(); break;
-  case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
-  case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
-
-  case ID_EDIT_CONTROL_CHAR:
-    ControlCharDialog();
-  break;
-  case ID_EDIT_HEX_DEC_CALLTIP:
-    HexDecCalltip(GetCurrentPos());
-  break;
-
-  case ID_EDIT_FOLD_ALL: FoldAll(); break;
-  case ID_EDIT_UNFOLD_ALL:
-    for (auto i = 0; i < GetLineCount(); i++) EnsureVisible(i);
-  break;
-  case ID_EDIT_TOGGLE_FOLD:
-  {
-    const auto level = GetFoldLevel(GetCurrentLine());
-    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
-      GetCurrentLine(): GetFoldParent(GetCurrentLine());
-    ToggleFold(line_to_fold);
-  }
-  break;
-
-  case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
-  case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
-  case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-  
-  case ID_EDIT_LOWERCASE: LowerCase(); break;
-  case ID_EDIT_UPPERCASE: UpperCase(); break;
   default: wxFAIL; break;
   }
 }
