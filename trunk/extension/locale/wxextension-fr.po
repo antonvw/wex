@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: syncped v1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-02 19:51+0100\n"
-"PO-Revision-Date: 2010-07-01 20:17+0100\n"
+"PO-Revision-Date: 2010-07-01 20:35+0100\n"
 "Last-Translator: Emma v. Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,16 +23,16 @@ msgstr ""
 
 #: ../src/filedlg.cpp:54
 msgid "Save changes"
-msgstr "Rester changer"
+msgstr "Rester les modifications"
 
 #: ../src/filedlg.cpp:55
 #: ../src/filedlg.cpp:73
 msgid "Confirm"
-msgstr "Bevestigen"
+msgstr "confirmer"
 
 #: ../src/filedlg.cpp:72
 msgid "Save changes to"
-msgstr ""
+msgstr "enregistrer les modifications apportées"
 
 #: ../src/frame.cpp:265
 #, fuzzy
@@ -41,7 +41,7 @@ msgstr "barre de recherche"
 
 #: ../src/frame.cpp:288
 msgid "Replace"
-msgstr ""
+msgstr "remplacer"
 
 #: ../src/frame.cpp:453
 #, fuzzy
@@ -55,7 +55,7 @@ msgstr "Synchronizeer gewijzigde bestanden"
 
 #: ../src/frame.cpp:498
 msgid "Modified"
-msgstr ""
+msgstr "modifié"
 
 #: ../src/frd.cpp:26
 #, fuzzy
@@ -64,15 +64,15 @@ msgstr "barre de recherche"
 
 #: ../src/frd.cpp:27
 msgid "Match case"
-msgstr ""
+msgstr "sensible à  la casse"
 
 #: ../src/frd.cpp:28
 msgid "Match whole word"
-msgstr ""
+msgstr "mot entier"
 
 #: ../src/frd.cpp:29
 msgid "Regular expression"
-msgstr ""
+msgstr "expression régulière"
 
 #: ../src/frd.cpp:30
 #, fuzzy
@@ -81,15 +81,15 @@ msgstr "Vervangen in bestande&n"
 
 #: ../src/frd.cpp:31
 msgid "Search down"
-msgstr ""
+msgstr "de recherche à"
 
 #: ../src/frd.cpp:124
 msgid "Searching for"
-msgstr ""
+msgstr "regarder dans le bas"
 
 #: ../src/frd.cpp:129
 msgid "replacing with"
-msgstr ""
+msgstr "remplacer avec"
 
 #: ../src/header.cpp:24
 #, fuzzy
@@ -98,7 +98,7 @@ msgstr "&Automatisch sorteren"
 
 #: ../src/header.cpp:25
 msgid "Email"
-msgstr ""
+msgstr "e-mail"
 
 #: ../src/header.cpp:26
 #, fuzzy
@@ -113,12 +113,12 @@ msgstr "Overzicht"
 #: ../src/indicator.cpp:77
 #, c-format
 msgid "Illegal indicator: %s"
-msgstr ""
+msgstr "indicateur illégales: %s"
 
 #: ../src/indicator.cpp:92
 #, c-format
 msgid "Illegal indicator style: %s on line: %d"
-msgstr ""
+msgstr "stule indicateur illégales: %s  à la ligne: %d"
 
 #: ../src/indicator.cpp:112
 #, c-format
@@ -222,7 +222,7 @@ msgstr ""
 
 #: ../src/managedframe.cpp:43
 msgid "Toolbar"
-msgstr "Werkbalk"
+msgstr "barre d'outils"
 
 #: ../src/managedframe.cpp:46
 msgid "Findbar"
@@ -249,15 +249,15 @@ msgstr "&Zoekbalk"
 
 #: ../src/menu.cpp:45
 msgid "&Statusbar"
-msgstr "&Statusbalk"
+msgstr "&Statut"
 
 #: ../src/menu.cpp:46
 msgid "&Toolbar"
-msgstr "&Werkbalk"
+msgstr "&Barre d'outils"
 
 #: ../src/menu.cpp:47
 msgid "&Findbar"
-msgstr "&Zoekbalk"
+msgstr "&Barre de recherche"
 
 #: ../src/menu.cpp:132
 #, fuzzy
@@ -395,7 +395,7 @@ msgstr "&Ouvrir"
 
 #: ../src/stcfile.cpp:162
 msgid "Comparator"
-msgstr "Vergelijker"
+msgstr "Comparateur"
 
 #: ../src/stcfile.cpp:165
 msgid "&Compare Recent Version"
@@ -529,9 +529,8 @@ msgstr ""
 
 #: ../src/stcfile.cpp:239
 #: ../src/stcfile.cpp:305
-#, fuzzy
 msgid "Fold flags"
-msgstr "Vlaggen"
+msgstr "Drapeaux"
 
 #: ../src/stcfile.cpp:241
 #: ../src/stcfile.cpp:293
@@ -615,9 +614,8 @@ msgstr ""
 #: ../src/textfile.cpp:218
 #: ../src/report/listview.cpp:251
 #: ../src/report/textfile.cpp:260
-#, fuzzy
 msgid "Comments"
-msgstr "Inhoud"
+msgstr "teneur"
 
 #: ../src/textfile.cpp:220
 #: ../src/textfile.cpp:461
@@ -720,11 +718,11 @@ msgstr "fichiers"
 
 #: ../src/toolbar.cpp:100
 msgid "View in hex mode"
-msgstr "Bekijk hexadecimaal"
+msgstr "Voir hexadécimal"
 
 #: ../src/toolbar.cpp:101
 msgid "Synchronize modified files"
-msgstr "Synchronizeer gewijzigde bestanden"
+msgstr "Synchroniser les fichiers modéfies"
 
 #: ../src/toolbar.cpp:198
 #, fuzzy
@@ -767,9 +765,8 @@ msgid "No files found"
 msgstr ""
 
 #: ../src/util.cpp:501
-#, fuzzy
 msgid "Select Files"
-msgstr "les dossiers de projet"
+msgstr "les fichiers de projet"
 
 #: ../src/util.cpp:546
 msgid "Printout"
@@ -809,7 +806,7 @@ msgstr ""
 #: ../src/vcs.cpp:446
 #: ../src/vcs.cpp:449
 msgid "Flags"
-msgstr "Vlaggen"
+msgstr "drapeaux"
 
 #: ../src/vcs.cpp:191
 msgid "path is empty"
@@ -872,14 +869,12 @@ msgid "Removed not existing file: %s from history"
 msgstr ""
 
 #: ../src/report/frame.cpp:200
-#, fuzzy
 msgid "Replace In Files"
-msgstr "Vervangen in bestande&n"
+msgstr "Remplacer dans les fichiers"
 
 #: ../src/report/frame.cpp:200
-#, fuzzy
 msgid "Find In Files"
-msgstr "&Zoeken in bestanden"
+msgstr "&Rechercher dans les fichiers"
 
 #: ../src/report/frame.cpp:215
 msgid "Process is running"
@@ -895,9 +890,8 @@ msgid "Cancelled"
 msgstr ""
 
 #: ../src/report/frame.cpp:546
-#, fuzzy
 msgid "Open &Recent"
-msgstr "&Lexers file openen"
+msgstr "Ouvrez&récents"
 
 #: ../src/report/listitem.cpp:30
 #: ../src/report/listitem.cpp:32
@@ -993,9 +987,8 @@ msgid "File"
 msgstr "fichiers"
 
 #: ../src/report/listview.cpp:194
-#, fuzzy
 msgid "Replace Results"
-msgstr "Vervangen in bestande&n"
+msgstr "Remplacer des résultats"
 
 #: ../src/report/listview.cpp:195
 msgid "Revisions"
@@ -1047,37 +1040,32 @@ msgid "&Open"
 msgstr "&Ouvrir"
 
 #: ../src/report/listview.cpp:565
-#, fuzzy
 msgid "C&ompare"
-msgstr "Vergelijker"
+msgstr "C&omparateur"
 
 #: ../src/report/listview.cpp:573
 msgid "&Make"
-msgstr "&Maken"
+msgstr "&Faire"
 
 #: ../src/report/listview.cpp:595
-#, fuzzy
 msgid "&Compare With"
-msgstr "Vergelijker"
+msgstr "&Comparer avec"
 
 #: ../src/report/listview.cpp:614
 msgid "&Version List"
 msgstr ""
 
 #: ../src/report/listview.cpp:659
-#, fuzzy
 msgid "Replace In"
-msgstr "Vervangen in bestande&n"
+msgstr "Remplacer dans les fichiers"
 
 #: ../src/report/listview.cpp:660
-#, fuzzy
 msgid "Find In"
-msgstr "&Zoeken in bestanden"
+msgstr "&Rechercher dans les fichiers"
 
 #: ../src/report/listview.cpp:669
-#, fuzzy
 msgid "Selection"
-msgstr "&Selecteren"
+msgstr "&Sélectionner"
 
 #: ../src/report/listview.cpp:688
 #, fuzzy
@@ -1108,18 +1096,16 @@ msgid "Add files"
 msgstr ""
 
 #: ../src/report/listviewfile.cpp:76
-#, fuzzy
 msgid "Recursive"
-msgstr "Perspektief"
+msgstr "récursive"
 
 #: ../src/report/listviewfile.cpp:138
 msgid "Added"
 msgstr ""
 
 #: ../src/report/listviewfile.cpp:171
-#, fuzzy
 msgid "Add Items"
-msgstr "Items"
+msgstr "ajouter des éléments"
 
 #: ../src/report/listviewfile.cpp:179
 msgid "Add"
@@ -1148,9 +1134,8 @@ msgid "No listview to collect output"
 msgstr ""
 
 #: ../src/report/process.cpp:268
-#, fuzzy
 msgid "Stopped"
-msgstr "Stop opname"
+msgstr "Arrêter l'enregistrement"
 
 #: ../src/report/process.cpp:294
 msgid "Ready"
