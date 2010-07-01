@@ -78,7 +78,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
   const wxSize& size, 
   long style)
   : wxStyledTextCtrl(parent, id , pos, size, style)
-  , m_MarkerChange(1)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
   , m_MacroIsRecording(false)
@@ -86,6 +85,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
+  , m_MarkerChange(1)
   , m_vi(wxExVi(this))
   , m_File(this)
 {
@@ -132,6 +132,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
+  , m_MarkerChange(1)
   , m_Flags(flags)
   , m_MenuFlags(menu_flags)
   , m_vi(wxExVi(this))
@@ -143,7 +144,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
-  , m_MarkerChange(stc.m_MarkerChange)
   , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
@@ -151,6 +151,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarginDividerNumber(stc.m_MarginDividerNumber)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
   , m_MarginLineNumber(stc.m_MarginLineNumber)
+  , m_MarkerChange(stc.m_MarkerChange)
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
   , m_File(this)
 {
