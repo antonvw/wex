@@ -1468,22 +1468,6 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   }
 }
 
-void wxExSTC::OnIdle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    m_File.CheckSync() &&
-    // the readonly flags bit of course can differ from file actual readonly mode,
-    // therefore add this check
-    !(GetFlags() & STC_WIN_READ_ONLY) &&
-    m_File.GetFileName().GetStat().IsOk() &&
-    m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
-  {
-    FileReadOnlyAttributeChanged();
-  }
-}
-
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -1603,6 +1587,22 @@ void wxExSTC::OnFocus(wxFocusEvent& event)
   }
 
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
+}
+
+void wxExSTC::OnIdle(wxIdleEvent& event)
+{
+  event.Skip();
+
+  if (
+    m_File.CheckSync() &&
+    // the readonly flags bit of course can differ from file actual readonly mode,
+    // therefore add this check
+    !(GetFlags() & STC_WIN_READ_ONLY) &&
+    m_File.GetFileName().GetStat().IsOk() &&
+    m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
+  {
+    FileReadOnlyAttributeChanged();
+  }
 }
 
 void wxExSTC::OnKeyDown(wxKeyEvent& event)

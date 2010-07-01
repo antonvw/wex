@@ -107,6 +107,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
   else if (command.GetId() > ID_EDIT_VCS_LOWEST && 
            command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
+    // Cannot move this code to wxExSTC, because of member m_Frame.
     wxExVCSExecute(m_Frame, command.GetId(), GetFileName());
   }
   else
