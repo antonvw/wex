@@ -1345,7 +1345,7 @@ bool wxExSTC::IsTargetRE(const wxString& target) const
 bool wxExSTC::LinkOpen(
   const wxString& link_with_line,
   int line_number,
-  *wxString filename)
+  wxString* filename)
 {
   // Any line info is already in line_number, so skip here.
   const wxString link = link_with_line.BeforeFirst(':');
@@ -1394,7 +1394,7 @@ bool wxExSTC::LinkOpen(
     }
     else
     {
-      filename = wxFileName(fullpath).GetFullName();
+      *filename = wxFileName(fullpath).GetFullName();
     }
   }
   

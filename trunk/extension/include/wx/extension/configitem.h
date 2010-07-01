@@ -136,8 +136,8 @@ public:
   wxFlexGridSizer* Layout(
     wxWindow* parent, 
     wxSizer* sizer, 
-    wxFlexGridSizer* fgz,
-    bool readonly = false);
+    bool readonly = false,
+    wxFlexGridSizer* fgz = NULL);
 
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;

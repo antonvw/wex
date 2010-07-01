@@ -403,8 +403,8 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 wxFlexGridSizer* wxExConfigItem::Layout(
   wxWindow* parent, 
   wxSizer* sizer, 
-  wxFlexGridSizer* fgz,
-  bool readonly)
+  bool readonly,
+  wxFlexGridSizer* fgz)
 {
   CreateControl(parent, readonly);
   

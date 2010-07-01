@@ -96,7 +96,12 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
     case VCS_NONE: break; // prevent wxFAIL
     
     case VCS_SVN: 
-      return wxFileName(filename).AppendDir(".svn").DirExists();
+      {
+      // these cannot be combined, as AppendDir is a void (2.9.1).
+      wxFileName path(filename);
+      path.AppendDir(".svn");
+      return path.DirExists();
+      }
       break;
 
     default: wxFAIL;
