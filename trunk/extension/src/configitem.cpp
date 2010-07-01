@@ -400,9 +400,15 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   wxASSERT(m_Control != NULL);
 }
 
-void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
+wxFlexGridSizer* wxExConfigItem::Layout(
+  wxWindow* parent, 
+  wxSizer* sizer, 
+  wxFlexGridSizer* fgz,
+  bool readonly)
 {
   CreateControl(parent, readonly);
+  
+  wxFlexGridSizer* flex = NULL;
 
   switch (m_Type)
   {
@@ -414,16 +420,24 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
       if (m_AddName)
       {
         // Construct a child flex grid sizer.
-        wxFlexGridSizer* fgz = new wxFlexGridSizer(2, 0, 0);
-        fgz->AddGrowableCol(1); // the control
-        fgz->AddGrowableRow(0);
+        if (fgz == NULL)
+        {
+          flex = new wxFlexGridSizer(2, 0, 0);
+          flex->AddGrowableCol(1); // the control
+          flex->AddGrowableRow(0);
       
-        // Add name and control.
-        AddStaticTextName(fgz);
-        fgz->Add(m_Control, m_ControlFlags);
+          // Add name and control.
+          AddStaticTextName(flex );
+          flex->Add(m_Control, m_ControlFlags);
 
-        // Add to the sizer.
-        sizer->Add(fgz, wxSizerFlags().Expand());
+          // Add to the sizer.
+          sizer->Add(flex, wxSizerFlags().Expand());
+        }
+        else
+        {
+          AddStaticTextName(fgz);
+          fgz->Add(m_Control, m_ControlFlags);
+        }
       }
       else
       {
@@ -433,6 +447,8 @@ void wxExConfigItem::Layout(wxWindow* parent, wxSizer* sizer, bool readonly)
   }
   
   ToConfig(false);
+  
+  return flex;
 }
 
 void wxExConfigItem::ToConfig(bool save) const

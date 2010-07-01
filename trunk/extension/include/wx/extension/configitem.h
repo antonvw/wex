@@ -133,7 +133,11 @@ public:
   /// Creates the control,
   /// lays out this item on the specified sizer, and fills it
   /// with config value (calls ToConfig).
-  void Layout(wxWindow* parent, wxSizer* sizer, bool readonly = false);
+  wxFlexGridSizer* Layout(
+    wxWindow* parent, 
+    wxSizer* sizer, 
+    wxFlexGridSizer* fgz,
+    bool readonly = false);
 
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
