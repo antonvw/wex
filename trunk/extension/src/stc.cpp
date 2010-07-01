@@ -1541,6 +1541,10 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   
+  case ID_EDIT_OPEN_BROWSER:
+    wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
+    break;
+
   case ID_EDIT_OPEN_LINK:
     {
     const wxString sel = GetSelectedText();
@@ -1554,15 +1558,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       LinkOpen(GetTextAtCurrentPos(), filename, GetLineNumberAtCurrentPos());
     }
     }
-    break;
-
-  case ID_EDIT_OPEN_BROWSER:
-    if (GetModify())
-    {
-      m_File.FileSave();
-    }
-
-    wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
     break;
 
   case ID_EDIT_READ:
