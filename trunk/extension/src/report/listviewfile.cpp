@@ -282,8 +282,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
 
   if (
     IsShown() &&
-    GetItemCount() > 0 &&
-    wxConfigBase::Get()->ReadBool("AllowSync", true))
+    GetItemCount() > 0)
   {
     CheckSync();
   }
