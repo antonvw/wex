@@ -1472,9 +1472,8 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  m_File.CheckSync();
-
   if (
+    m_File.CheckSync() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
     !(GetFlags() & STC_WIN_READ_ONLY) &&

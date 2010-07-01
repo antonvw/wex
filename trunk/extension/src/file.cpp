@@ -27,7 +27,7 @@ wxExFile::wxExFile(const wxExFileName& filename, wxFile::OpenMode mode)
   MakeAbsolute();
 }
 
-void wxExFile::CheckSync()
+bool wxExFile::CheckSync()
 {
   // Might be used without wxApp.
   wxConfigBase* config = wxConfigBase::Get(false);
@@ -36,7 +36,7 @@ void wxExFile::CheckSync()
       !m_FileName.m_Stat.IsOk() ||
       (config != NULL && !config->ReadBool("AllowSync", true)))
   {
-    return;
+    return false;
   }
 
   if (m_FileName.m_Stat.Sync())
@@ -47,8 +47,12 @@ void wxExFile::CheckSync()
 
       // Update the stat member, so next time no sync.
       m_Stat.Sync();
+      
+      return true;
     }
   }
+  
+  return false;
 }
 
 bool wxExFile::FileLoad(const wxExFileName& filename)

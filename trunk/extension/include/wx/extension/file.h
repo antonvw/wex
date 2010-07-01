@@ -32,8 +32,10 @@ public:
   /// So do it here.
   virtual ~wxExFile() {;};
 
-  /// Invokes DoFileLoad if this file needs to be synced.
-  void CheckSync();
+  /// Checks whether this file can be synced, and 
+  /// syncs (invokes DoFileLoad) the file if so.
+  /// Returns true if this file was synced.
+  bool CheckSync();
 
   /// Sets the filename member, opens the file,
   /// invokes DoFileLoad, and closes the file again.
