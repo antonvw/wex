@@ -288,7 +288,6 @@ protected:
   void OnMouse(wxMouseEvent& event);
   void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
-  void SetFlags(long flags) {m_Flags = flags;};
 private:
   void CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);

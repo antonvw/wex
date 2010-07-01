@@ -1786,7 +1786,7 @@ bool wxExSTC::Open(
     return true;
   }
 
-  SetFlags(flags);
+  m_Flags = flags;
 
   Unbind(
     wxEVT_STC_MODIFIED, 
