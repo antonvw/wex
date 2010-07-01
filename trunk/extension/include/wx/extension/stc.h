@@ -16,7 +16,7 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/lexer.h>
-#include <wx/extension/menu.h> // for wxExMenu
+#include <wx/extension/menu.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/vi.h>
 
@@ -316,8 +316,6 @@ private:
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
 
-  static std::vector <wxString> m_Macro;
-
   wxExSTCFile m_File;
   wxExLexer m_Lexer;
   wxPathList m_PathList;
@@ -325,6 +323,7 @@ private:
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
+  static std::vector <wxString> m_Macro;
 
   DECLARE_EVENT_TABLE()
 };
