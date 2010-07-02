@@ -233,11 +233,8 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
         browse->SetValue(dir_dlg.GetPath());
       }
     }
-
-    return;
   }
-
-  if (command.GetId() == wxID_CANCEL)
+  else if (command.GetId() == wxID_CANCEL)
   {
     Reload();
   }
