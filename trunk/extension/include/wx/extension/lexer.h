@@ -30,7 +30,10 @@ class wxExLexer
 {
 public:
   /// Default constructor.
-  wxExLexer(const wxXmlNode* node = NULL);
+  wxExLexer();
+
+  /// Constructor using xml node.
+  wxExLexer(const wxXmlNode* node);
 
   /// Sets scintilla lexer for specified lexer and stc 
   /// (and colours the component).
@@ -110,6 +113,7 @@ private:
     bool fill_out_with_space,
     bool fill_out) const;
   const wxString GetKeywordsStringSet(const std::set<wxString>& kset) const;
+  void Initialize();
   const std::vector<wxExStyle> ParseNodeStyles(const wxXmlNode* node) const;
   void Set(const wxXmlNode* node);
 

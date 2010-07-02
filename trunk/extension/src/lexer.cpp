@@ -22,24 +22,16 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h> // for wxExAlignText
 
-wxExLexer::wxExLexer(const wxXmlNode* node)
-  : m_IsOk(false)
+wxExLexer::wxExLexer()
 {
-  m_CommentBegin.clear();
-  m_CommentBegin2.clear();
-  m_CommentEnd.clear();
-  m_CommentEnd2.clear();
-  m_Styles.clear();
-  m_Extensions.clear();
-  m_Properties.clear();
-  m_Keywords.clear();
-  m_KeywordsSet.clear();
-  m_ScintillaLexer.clear();
+  Intialize();
+}
 
-  if (node != NULL)
-  {
-    Set(node);
-  }
+wxExLexer::wxExLexer(const wxXmlNode* node)
+{
+  Initialize();
+  
+  Set(node);
 }
 
 bool wxExLexer::ApplyLexer(
@@ -216,6 +208,22 @@ const wxString wxExLexer::GetKeywordsStringSet(
   return keywords.Trim(); // remove the ending space
 }
 
+void wxExLexer::Initialize()
+{
+  m_IsOk = false;
+  
+  m_CommentBegin.clear();
+  m_CommentBegin2.clear();
+  m_CommentEnd.clear();
+  m_CommentEnd2.clear();
+  m_Styles.clear();
+  m_Extensions.clear();
+  m_Properties.clear();
+  m_Keywords.clear();
+  m_KeywordsSet.clear();
+  m_ScintillaLexer.clear();
+}
+
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
   const auto it = m_Keywords.find(word);
@@ -342,13 +350,24 @@ void wxExLexer::Set(const wxXmlNode* node)
 {
   m_ScintillaLexer = node->GetAttribute("name", "");
 
+  // Just set ok if there is a lexer,
+  // when we Apply to a stc component we really can set it.  
+  m_IsOk = !m_ScintillaLexer.empty();
+
+  if (!m_IsOk)
+  {
+    wxLogError(_("Missing lexer on line: %d"), node->GetLineNumber());
+  }
+  else
+  {
 #ifdef __WXMSW__
-  m_Extensions = node->GetAttribute(
-    "extensions", 
-    "*." + m_ScintillaLexer);
+    m_Extensions = node->GetAttribute(
+      "extensions", 
+      "*." + m_ScintillaLexer);
 #else    
-  m_Extensions = node->GetAttribute("extensions", "");
-#endif    
+    m_Extensions = node->GetAttribute("extensions", "");
+#endif
+  }
 
   if (node->GetAttribute("match", "") != "")
   {
@@ -409,17 +428,6 @@ void wxExLexer::Set(const wxXmlNode* node)
     }
 
     child = child->GetNext();
-  }
-
-  // At this moment we have to stc to check whether the 
-  // scintilla lexer is really supported,
-  // so just set ok if there is a lexer,
-  // when we Apply to a stc component we really can set it.  
-  m_IsOk = !m_ScintillaLexer.empty();
-
-  if (!m_IsOk)
-  {
-    wxLogError(_("Missing lexer on line: %d"), node->GetLineNumber());
   }
 }
 
