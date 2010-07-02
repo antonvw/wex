@@ -491,8 +491,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
     m_STCEntryDialog->SetTitle(caption);
   }
 
-  // Add a lexer if we specified a path, asked for cat or blame 
-  // and there is a lexer.
+  // Add a lexer when appropriate.
   if (
     !m_FullPath.empty() &&
     (m_Command == VCS_CAT || m_Command == VCS_BLAME))
@@ -503,6 +502,10 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
     {
       m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
     }
+  }
+  else if (m_Command == VCS_DIFF)
+  {
+    m_STCEntryDialog->SetLexer("diff");
   }
   else
   {
