@@ -1608,6 +1608,15 @@ without the written consent of the copyright owner.
     <comments begin1=";" />
   </lexer>
   
+  <lexer name="diff" match="wxSTC_DIFF_" >
+    <styles>
+    <style no="wxSTC_DIFF_HEADER"> fore:blue </style>
+    <style no="wxSTC_DIFF_POSITION"> fore:brown </style>
+    <style no="wxSTC_DIFF_DELETED"> fore:red </style>
+    <style no="wxSTC_DIFF_ADDED"> fore:lime green </style>
+    </styles>
+  </lexer>
+
   <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_">
     <styles>
       <style no="wxSTC_H_TAG"> TAG </style>
@@ -1738,7 +1747,6 @@ without the written consent of the copyright owner.
   <lexer name="csound" match="wxSTC_CSOUND_" />
   <lexer name="css" match="wxSTC_CSS_" />
   <lexer name="d" match="wxSTC_D_" /> 
-  <lexer name="diff" match="wxSTC_DIFF_" />
   <lexer name="eiffel" match="wxSTC_EIFFEL_" />
   <lexer name="erlang" match="wxSTC_ERLANG_" />
   <lexer name="errlist" match="wxSTC_ERR_" />
