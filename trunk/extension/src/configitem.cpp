@@ -155,7 +155,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(type) 
   , m_Cols(cols)
-  , m_AddName(add_name)
+  , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
 {
 }
 
