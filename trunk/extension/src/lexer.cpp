@@ -24,7 +24,7 @@
 
 wxExLexer::wxExLexer()
 {
-  Intialize();
+  Initialize();
 }
 
 wxExLexer::wxExLexer(const wxXmlNode* node)
