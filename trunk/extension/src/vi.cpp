@@ -280,11 +280,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.EndsWith(">>") && !m_STC->GetReadOnly())
   {
-    Indent(repeat);
+    m_STC->Indent(repeat);
   }
   else if (command.EndsWith("<<") && !m_STC->GetReadOnly())
   {
-    Indent(repeat, false);
+    m_STC->Indent(repeat, false);
   }
   else if (command.Matches("'?"))
   {
@@ -703,30 +703,6 @@ void wxExVi::GotoBrace() const
       m_STC->GotoPos(brace_match);
     }
   }
-}
-
-void wxExVi::Indent(int lines, bool forward) const
-{
-  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-
-  m_STC->BeginUndoAction();
-
-  for (auto i = 0; i < lines; i++)
-  {
-    const auto start = m_STC->PositionFromLine(line + i);
-
-    if (forward)
-    {
-      const wxUniChar c = (m_STC->GetUseTabs() ? '\t': ' ');
-      m_STC->InsertText(start, wxString(c, m_STC->GetIndent()));
-    }
-    else
-    {
-      m_STC->Remove(start, start + m_STC->GetIndent());
-    }
-  }
-
-  m_STC->EndUndoAction();
 }
 
 void wxExVi::InsertMode(

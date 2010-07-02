@@ -185,6 +185,9 @@ public:
   /// Guesses the type.
   void GuessType();
 
+  /// Indents lines.
+  void Indent(int lines, bool forward = true);
+  
   /// Returns true if specified target is a RE, to be used by
   /// ReplaceTargetRE.
   bool IsTargetRE(const wxString& target) const;

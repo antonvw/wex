@@ -1269,6 +1269,32 @@ void wxExSTC::HexDecCalltip(int pos)
   }
 }
 
+void wxExSTC::Indent(int lines, bool forward)
+{
+  const auto line = LineFromPosition(GetCurrentPos());
+
+  BeginUndoAction();
+
+  for (auto i = 0; i < lines; i++)
+  {
+    const auto start = PositionFromLine(line + i);
+
+    if (forward)
+    {
+      const wxUniChar c = (GetUseTabs() ? '\t': ' ');
+      InsertText(start, wxString(c, GetIndent()));
+    }
+    else
+    {
+      Remove(start, start + GetIndent());
+    }
+    
+    MarkerAdd(line + i, m_MarkerChange.GetNo());
+  }
+
+  EndUndoAction();
+}
+
 void wxExSTC::Initialize()
 {
   Bind(
