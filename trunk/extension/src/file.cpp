@@ -61,11 +61,19 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
   return m_FileName.FileExists() && MakeAbsolute() && Get(false);
 }
 
-void wxExFile::FileNew(const wxExFileName& filename)
+bool wxExFile::FileNew(const wxExFileName& filename)
 {
   Assign(filename);
 
-  DoFileNew();
+  if (Create(filename.GetFullPath()))
+  {
+    DoFileNew();
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 bool wxExFile::FileSave(const wxExFileName& filename)
@@ -79,9 +87,7 @@ bool wxExFile::FileSave(const wxExFileName& filename)
     save_as = true;
   }
 
-  if (
-    !m_FileName.IsFileWritable() ||
-    !Open(m_FileName.GetFullPath(), wxFile::write))
+  if (!Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
   }
