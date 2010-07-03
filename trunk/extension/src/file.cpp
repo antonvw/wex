@@ -65,15 +65,9 @@ bool wxExFile::FileNew(const wxExFileName& filename)
 {
   Assign(filename);
 
-  if (Create(filename.GetFullPath()))
-  {
-    DoFileNew();
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  DoFileNew();
+
+  return true;
 }
 
 bool wxExFile::FileSave(const wxExFileName& filename)

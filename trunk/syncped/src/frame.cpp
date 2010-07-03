@@ -281,7 +281,11 @@ bool Frame::DialogProjectOpen()
 {
   wxFileDialog dlg(this,
     _("Select Projects"),
-    wxStandardPaths::Get().GetUserDataDir(),
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+#else
+      wxStandardPaths::Get().GetUserDataDir(),
+#endif
     wxEmptyString,
     m_ProjectWildcard,
     wxFD_OPEN | wxFD_MULTIPLE);
@@ -368,7 +372,11 @@ void Frame::NewFile(bool as_project)
   if (as_project)
   {
     const wxFileName fn(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+#else
       wxStandardPaths::Get().GetUserDataDir(),
+#endif
       text + ".prj");
 
     key = fn.GetFullPath();
