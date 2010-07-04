@@ -240,7 +240,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_NEW:
-    m_Query->GetFile().FileNew(wxEmptyString);
+    m_Query->GetFile().FileNew(wxExFileName());
     m_Query->SetLexer("sql");
     m_Query->SetFocus();
     GetManager().GetPane("QUERY").Show();
