@@ -63,7 +63,10 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
 
 bool wxExFile::FileNew(const wxExFileName& filename)
 {
-  Assign(filename);
+  if (!Assign(filename))
+  {
+    return false;
+  }
 
   DoFileNew();
 
