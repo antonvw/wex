@@ -601,19 +601,17 @@ void wxExVCSExecute(
 {
   wxExVCS vcs(id, filename.GetFullPath());
 
-  if (vcs.GetCommand() == wxExVCS::VCS_CAT ||
-      vcs.GetCommand() == wxExVCS::VCS_BLAME)
+  if (vcs.GetCommand() == wxExVCS::VCS_BLAME ||
+      vcs.GetCommand() == wxExVCS::VCS_CAT ||
+      vcs.GetCommand() == wxExVCS::VCS_DIFF)
   {
     if (vcs.ExecuteDialog(frame) == wxID_OK)
     {
-      const long extra_flags = 
-        (vcs.GetCommand() == wxExVCS::VCS_BLAME ? wxExSTC::STC_WIN_BLAME: 0);
-
       frame->OpenFile(
         filename, 
         vcs.GetCommandWithFlags(), 
         vcs.GetOutput(),
-        wxExSTC::STC_WIN_READ_ONLY | extra_flags);
+        wxExSTC::STC_WIN_READ_ONLY);
     }
   }
   else

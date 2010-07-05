@@ -1101,7 +1101,14 @@ bool Frame::OpenFile(
       flags,
       filename.GetFullName() + " " + unique);
 
-    editor->SetLexer(filename.GetLexer().GetScintillaLexer());
+    if (unique.Contains("diff"))
+    {
+      editor->SetLexer("diff");
+    }
+    else
+    {
+      editor->SetLexer(filename.GetLexer().GetScintillaLexer());
+    }
 
     if (unique.Contains("blame"))
     {
