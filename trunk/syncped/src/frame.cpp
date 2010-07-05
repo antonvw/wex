@@ -57,8 +57,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, Frame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_COPY, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_CUT, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
@@ -999,16 +997,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
             editor->GetFoldLevel(editor->GetCurrentLine()) > wxSTC_FOLDLEVELBASE);
           break;
 
-        case wxID_COPY:
-          event.Enable(!editor->GetSelectedText().empty());
-          break;
-
-        case wxID_CUT:
-          event.Enable(
-            !editor->GetReadOnly() &&
-            !editor->GetSelectedText().empty());
-          break;
-
         case wxID_PASTE:
           event.Enable(editor->CanPaste());
           break;
@@ -1055,11 +1043,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         {
           switch (event.GetId())
           {
-          case wxID_COPY:
-          case wxID_CUT:
-            event.Enable(list->GetSelectedItemCount() > 0);
-            break;
-
           case wxID_FIND:
             event.Enable(list->GetItemCount() > 0);
             break;
