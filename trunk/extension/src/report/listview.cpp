@@ -545,7 +545,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   bool read_only = false;
   bool is_make = false;
 
-  if (GetSelectedItemCount() == 1)
+  if (GetSelectedItemCount() >= 1)
   {
     const wxExListItem item(this, GetFirstSelected());
 

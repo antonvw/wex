@@ -184,9 +184,9 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 
   wxExListViewWithFrame::BuildPopupMenu(menu);
     
-  if (!GetFileName().IsOk() ||
-      !GetFileName().FileExists() ||
-      (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly()))
+  if ((GetSelectedItemCount() == 0) &&
+      (!GetFileName().IsOk() || !GetFileName().FileExists() ||
+      (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly())))
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
