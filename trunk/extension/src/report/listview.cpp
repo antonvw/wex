@@ -69,8 +69,8 @@ private:
   wxExListView* m_ListView;
   wxString m_Prompt;
 };
-#endif // __WXMSW__
 #endif // wxExUSE_RBS
+#endif // __WXMSW__
 
 wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
   ListType type,
@@ -563,7 +563,8 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
   wxExListViewStandard::BuildPopupMenu(menu);
 
-  if (GetSelectedItemCount() > 1 && !wxConfigBase::Get()->Read(_("Comparator")).empty())
+  if (GetSelectedItemCount() > 1 && exists &&
+     !wxConfigBase::Get()->Read(_("Comparator")).empty())
   {
     menu.AppendSeparator();
     menu.Append(ID_LIST_COMPARE, _("C&ompare"));
@@ -741,7 +742,7 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
   else if (item.GetFileName().FileExists())
   {
     const wxString line_number_str = GetItemText(item_number, _("Line No"));
-    const int line_number = (!line_number_str.empty() ? atoi(line_number_str.c_str()): 0);
+    const auto line_number = atoi(line_number_str.c_str());
     const wxString match =
       (GetType() == LIST_REPLACE ?
          GetItemText(item_number, _("Replaced")):
