@@ -80,7 +80,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
   : wxStyledTextCtrl(parent, id , pos, size, style)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
-  , m_MacroIsRecording(false)
   , m_GotoLineNumber(1)
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
@@ -144,7 +143,6 @@ wxExSTC::wxExSTC(wxWindow* parent,
 
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
-  , m_MacroIsRecording(stc.m_MacroIsRecording)
   , m_Flags(stc.m_Flags)
   , m_GotoLineNumber(stc.m_GotoLineNumber)
   , m_MenuFlags(stc.m_MenuFlags)
@@ -1297,6 +1295,8 @@ void wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize()
 {
+  m_MacroIsRecording = false;
+  
   Bind(
     wxEVT_STC_MODIFIED, 
     &wxExSTC::OnStyledText,
