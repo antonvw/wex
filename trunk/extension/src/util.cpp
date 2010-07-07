@@ -599,7 +599,7 @@ void wxExVCSExecute(
   int id, 
   const wxExFileName& filename)
 {
-  wxExVCS vcs(id, filename.GetFullPath());
+  wxExVCS vcs(id, filename);
 
   if (vcs.IsOpenCommand())
   {

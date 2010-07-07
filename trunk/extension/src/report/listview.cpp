@@ -391,11 +391,9 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
 {
   if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCS vcs(
+    wxExVCS(
       event.GetId(), 
-      wxExListItem(this, GetFirstSelected()).GetFileName().GetFullPath());
-
-    vcs.Request(this);
+      wxExListItem(this, GetFirstSelected()).GetFileName()).Request(this);
   }
   else
   {
