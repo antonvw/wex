@@ -406,7 +406,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
 
       case '.': DoCommand(m_LastCommand, true); break;
-      case ';': DoCommand(m_LastFindCharCommand); break;
+      case ';': DoCommand(m_LastFindCharCommand, false); break;
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
