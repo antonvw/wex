@@ -12,7 +12,7 @@
 #ifndef _EXVCS_H
 #define _EXVCS_H
 
-#include <wx/filename.h>
+#include <wx/extension/filename.h>
 
 class wxExSTCEntryDialog;
 
@@ -53,11 +53,11 @@ public:
   /// Default constructor.
   wxExVCS();
 
-  /// Constructor, specify the command and a fullpath.
-  wxExVCS(wxExCommand command, const wxString& fullpath = wxEmptyString);
+  /// Constructor, specify the command and a filename.
+  wxExVCS(wxExCommand command, const wxExFileName& filename = wxExFileName());
 
-  /// Constructor, specify the command id and a fullpath.
-  wxExVCS(int command_id, const wxString& fullpath = wxEmptyString);
+  /// Constructor, specify the command id and a filename.
+  wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
 
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
@@ -131,13 +131,13 @@ private:
   bool UseSubcommand() const;
 
   const wxExCommand m_Command;
+  const wxExFileName m_FileName;
 
   wxString m_Caption;
   wxString m_CommandString;
   wxString m_CommandWithFlags;
   wxString m_Output;
 
-  const wxString m_FullPath;
   wxString m_FlagsKey;
 
   static wxExVCS* m_Self;

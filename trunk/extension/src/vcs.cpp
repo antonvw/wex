@@ -29,21 +29,21 @@ wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 
 wxExVCS::wxExVCS()
   : m_Command(VCS_NO_COMMAND)
-  , m_FullPath(wxEmptyString)
+  , m_FileName(wxExFileName())
 {
   Initialize();
 }
 
-wxExVCS::wxExVCS(int command_id, const wxString& fullpath)
+wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
   : m_Command(GetType(command_id))
-  , m_FullPath(fullpath)
+  , m_FileName(filename)
 {
   Initialize();
 }
 
-wxExVCS::wxExVCS(wxExCommand type, const wxString& fullpath)
+wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
   : m_Command(type)
-  , m_FullPath(fullpath)
+  , m_FileName(filename)
 {
   Initialize();
 }
@@ -117,7 +117,7 @@ long wxExVCS::Execute()
   wxString cwd;
   wxString file;
 
-  if (m_FullPath.empty())
+  if (!m_FileName.IsOk())
   {
     cwd = wxGetCwd();
     wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
@@ -132,12 +132,12 @@ long wxExVCS::Execute()
     if (GetVCS() == VCS_GIT)
     {
       cwd = wxGetCwd();
-      wxSetWorkingDirectory(wxFileName(m_FullPath).GetPath());
-      file = " \"" + wxFileName(m_FullPath).GetFullName() + "\"";
+      wxSetWorkingDirectory(m_FileName.GetPath());
+      file = " \"" + m_FileName.GetFullName() + "\"";
     }
     else
     {
-      file = " \"" + m_FullPath + "\"";
+      file = " \"" + m_FileName.GetFullPath() + "\"";
     }
   }
 
@@ -429,7 +429,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (m_FullPath.empty() && m_Command != VCS_HELP)
+  if (!m_FileName.IsOk() && m_Command != VCS_HELP)
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -475,8 +475,8 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
       
   if (m_Command != VCS_HELP)
   {
-    caption += " " + (!m_FullPath.empty() ?  
-      wxFileName(m_FullPath).GetFullName(): 
+    caption += " " + (m_FileName.IsOk() ?  
+      m_FileName.GetFullName(): 
       wxExConfigFirstOf(_("Base folder")));
   }
 
@@ -502,11 +502,9 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   // Add a lexer when appropriate.
   if (m_Command == VCS_CAT || m_Command == VCS_BLAME)
   {
-    const wxExFileName fn(m_FullPath);
- 
-    if (fn.GetLexer().IsOk())
+    if (m_FileName.GetLexer().IsOk())
     {
-      m_STCEntryDialog->SetLexer(fn.GetLexer().GetScintillaLexer());
+      m_STCEntryDialog->SetLexer(m_FileName.GetLexer().GetScintillaLexer());
     }
   }
   else if (m_Command == VCS_DIFF)
