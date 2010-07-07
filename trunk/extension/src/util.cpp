@@ -601,9 +601,7 @@ void wxExVCSExecute(
 {
   wxExVCS vcs(id, filename.GetFullPath());
 
-  if (vcs.GetCommand() == wxExVCS::VCS_BLAME ||
-      vcs.GetCommand() == wxExVCS::VCS_CAT ||
-      vcs.GetCommand() == wxExVCS::VCS_DIFF)
+  if (vcs.IsOpenCommand())
   {
     if (vcs.ExecuteDialog(frame) == wxID_OK)
     {

@@ -386,6 +386,14 @@ void wxExVCS::Initialize()
   m_Output.clear();
 }
 
+bool wxExVCS::IsOpenCommand() const
+{
+  return 
+    m_Command == wxExVCS::VCS_BLAME ||
+    m_Command == wxExVCS::VCS_CAT ||
+    m_Command == wxExVCS::VCS_DIFF;
+}
+
 #if wxUSE_GUI
 wxStandardID wxExVCS::Request(wxWindow* parent)
 {
@@ -492,9 +500,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   }
 
   // Add a lexer when appropriate.
-  if (
-    !m_FullPath.empty() &&
-    (m_Command == VCS_CAT || m_Command == VCS_BLAME))
+  if (m_Command == VCS_CAT || m_Command == VCS_BLAME)
   {
     const wxExFileName fn(m_FullPath);
  

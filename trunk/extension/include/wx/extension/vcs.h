@@ -99,6 +99,10 @@ public:
   /// Gets the VCS system used.
   long GetVCS() const;
 
+  /// Returns true if this command can behave like
+  /// opening a file.  
+  bool IsOpenCommand() const;
+
 #if wxUSE_GUI
   /// Combines all in one method. Shows the dialog,
   /// executes if not cancelled, and shows output in the STC dialog.
