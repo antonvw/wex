@@ -54,6 +54,7 @@ bool App::OnInit()
 
 BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
   EVT_CLOSE(Frame::OnClose)
+  EVT_MENU(wxID_ABOUT, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
