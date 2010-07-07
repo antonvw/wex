@@ -84,6 +84,7 @@ private:
   static wxExConfigDialog* m_CommandDialog;
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
+  static wxString m_LastFindCharCommand;
 
   const wxExIndicator m_IndicatorYank;
   const wxExMarker m_MarkerSymbol;

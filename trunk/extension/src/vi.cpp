@@ -26,6 +26,7 @@
 wxExConfigDialog* wxExVi::m_CommandDialog = NULL;
 wxExConfigDialog* wxExVi::m_FindDialog = NULL;
 wxString wxExVi::m_LastCommand;
+wxString wxExVi::m_LastFindCharCommand;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
@@ -212,11 +213,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     for (auto i = 0; i < repeat; i++) 
       m_STC->FindNext(command.Last(), m_SearchFlags);
+    m_LastFindCharCommand = command;
   }
   else if (command.Matches("*F?"))
   {
     for (auto i = 0; i < repeat; i++) 
       m_STC->FindNext(command.Last(), m_SearchFlags, false);
+    m_LastFindCharCommand = command;
   }
   else if (command.Matches("*J"))
   {
@@ -403,6 +406,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
 
       case '.': DoCommand(m_LastCommand, true); break;
+      case ';': DoCommand(m_LastFindCharCommand); break;
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
