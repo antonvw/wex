@@ -77,7 +77,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   const wxPoint& pos,
   const wxSize& size, 
   long style)
-  : wxStyledTextCtrl(parent, id , pos, size, style)
+  : wxStyledTextCtrl(parent, id , pos, size, style, title)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
   , m_GotoLineNumber(1)
@@ -89,8 +89,6 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_File(this)
 {
   Initialize();
-
-  SetName(title);
 
   PropertiesMessage();
 
