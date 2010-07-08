@@ -56,10 +56,12 @@ private:
 /// Class for keeping RCS information.
 class wxExRCS
 {
-  friend class wxExTextFile;
 public:
   /// Default constructor.
   wxExRCS();
+
+  /// Appends to the description.
+  void AppendDescription(const wxString& text);
 
   /// Gets the description.
   const wxString& GetDescription() const {return m_Description;};
@@ -78,7 +80,7 @@ public:
 
   /// Gets the user.
   const wxString& GetUser() const {return m_User;};
-
+  
   /// Sets revision info from specified text.
   bool SetRevision(wxString& text);
 private:

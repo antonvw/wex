@@ -49,6 +49,12 @@ wxExRCS::wxExRCS()
 {
 }
 
+void wxExRCS::AppendDescription(const wxString& text)
+{
+  m_Description += 
+    (m_Description.empty() ? wxString(" "): wxString(wxEmptyString)) + text;
+}
+
 const wxString wxExRCS::GetRevision() const
 {
   wxString logtext;
@@ -415,8 +421,7 @@ bool wxExTextFile::ParseComments()
           if (m_VersionLine >= 1 && GetCurrentLine() == m_LineMarkerEnd + 1)
           {
             m_LineMarkerEnd = GetCurrentLine();
-            m_RCS.m_Description += 
-              (!m_RCS.m_Description.empty() ? wxString(" "): wxString(wxEmptyString)) + m_Comments;
+            m_RCS.AppendDescription(m_Comments);
           }
           else
           {
