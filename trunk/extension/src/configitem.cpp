@@ -497,29 +497,22 @@ void wxExConfigItem::ToConfig(bool save) const
       {
       wxCheckListBox* clb = (wxCheckListBox*)m_Control;
 
-      int item = 0;
-
-      for (
-        auto b = m_ChoicesBool.begin();
-        b != m_ChoicesBool.end();
-        ++b)
+      for (size_t i = 0; i < clb->GetCount(); i++)
       {
         if (save)
         {
-          if (!wxExFindReplaceData::Get()->Set(*b, clb->IsChecked(item)))
+          if (!wxExFindReplaceData::Get()->Set(clb->GetString(i), clb->IsChecked(i)))
           {
-            wxConfigBase::Get()->Write(*b, clb->IsChecked(item));
+            wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
           }
         }
         else
         {
-          if (!wxExFindReplaceData::Get()->Get(*b, clb, item))
+          if (!wxExFindReplaceData::Get()->Get(clb->GetString(i), clb, i))
           {
-            clb->Check(item, wxConfigBase::Get()->ReadBool(*b, false));
+            clb->Check(i, wxConfigBase::Get()->ReadBool(clb->GetString(i), false));
           }
         }
-      
-        item++;
       }
       }
       break;
