@@ -91,7 +91,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   Layout(rows, cols);
 }
 
-const wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
+std::vector< wxExConfigItem >::const_iterator wxExConfigDialog::FindConfigItem(int id) const
 {
   for (
     auto it = m_ConfigItems.begin();
@@ -100,11 +100,11 @@ const wxExConfigItem wxExConfigDialog::FindConfigItem(int id) const
   {
     if (it->GetId() == id)
     {
-      return *it;
+      return it;
     }
   }
 
-  return wxExConfigItem();
+  return m_ConfigItems.end();
 }
 
 void wxExConfigDialog::ForceCheckBoxChecked(
@@ -217,11 +217,12 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
   if (command.GetId() < wxID_LOWEST)
   {
-    wxComboBox* browse = 
-      (wxComboBox*)FindConfigItem(command.GetId()).GetControl();
+    auto it = FindConfigItem(command.GetId());
 
-    if (browse != NULL)
+    if (it != m_ConfigItems.end())
     {
+      auto browse = (wxComboBox*)it->GetControl();
+
       wxDirDialog dir_dlg(
         this,
         _(wxDirSelectorPromptStr),

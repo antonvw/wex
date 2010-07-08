@@ -53,7 +53,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  const wxExConfigItem FindConfigItem(int id) const;
+  std::vector< wxExConfigItem >::const_iterator FindConfigItem(int id) const;
   void Layout(int rows, int cols);
 
   std::vector<wxExConfigItem> m_ConfigItems;
