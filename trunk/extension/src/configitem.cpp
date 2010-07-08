@@ -22,11 +22,6 @@
 
 #if wxUSE_GUI
 
-wxExConfigItem::wxExConfigItem()
-  : m_Control(NULL)
-{
-}
-
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
   int min,

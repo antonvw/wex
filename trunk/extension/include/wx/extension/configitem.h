@@ -59,9 +59,6 @@ enum
 class wxExConfigItem
 {
 public:
-  /// Default constructor.
-  wxExConfigItem();
-
   /// Constructor for a spin ctrl.
   wxExConfigItem(const wxString& name,
     int min, int max,
