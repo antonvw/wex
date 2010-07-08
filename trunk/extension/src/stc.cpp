@@ -822,10 +822,7 @@ void wxExSTC::Cut()
 {
   wxStyledTextCtrl::Cut();
   
-  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-  {
-    MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
-  }
+  MarkerAddChange(GetCurrentLine());
 }
   
 void wxExSTC::EOLModeUpdate(int eol_mode)
@@ -1285,7 +1282,7 @@ void wxExSTC::Indent(int lines, bool forward)
       Remove(start, start + GetIndent());
     }
     
-    MarkerAdd(line + i, m_MarkerChange.GetNo());
+    MarkerAddChange(line + i);
   }
 
   EndUndoAction();
@@ -1449,7 +1446,17 @@ void wxExSTC::MacroPlayback()
 #endif
 }
 
-// cannot be const because of MarkerAdd
+void wxExSTC::MarkerAddChange(int line)
+{
+  if (
+    wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) &&
+    m_File.GetFileName().GetStat().IsOk())
+  {
+    MarkerAdd(line, m_MarkerChange.GetNo());
+  }
+}
+  
+// cannot be const because of MarkerAddChange
 void wxExSTC::MarkTargetChange()
 {
   if (!wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
@@ -1462,7 +1469,7 @@ void wxExSTC::MarkTargetChange()
     
   for (auto i = line_begin; i <= line_end; i++)
   {
-    MarkerAdd(i, m_MarkerChange.GetNo());
+    MarkerAddChange(i);
   }
 }
       
@@ -1727,10 +1734,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     event.Skip();
 
-    if (wxExLexers::Get()->MarkerIsLoaded(GetMarkerChange()))
-    {
-//      MarkerAdd(event.GetLine(), GetMarkerChange().GetNo());
-    }
+//    MarkerAddChange(event.GetLine()); 
   }
   else if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
@@ -1772,19 +1776,13 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_CHARADDED)
   {
-    if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-    {
-      MarkerAdd(GetCurrentLine(), m_MarkerChange.GetNo());
-    }
+    MarkerAddChange(GetCurrentLine());
   }
   else if (event.GetEventType() == wxEVT_STC_MODIFIED)
   {
     event.Skip();
 
-    if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
-    {
-//      MarkerAdd(event.GetLine(), m_MarkerChange.GetNo());
-    }
+//    MarkerAddChange(event.GetLine());
   }
   else
   {
@@ -1859,7 +1857,7 @@ void wxExSTC::Paste()
   {
     for (auto i = line; i <= GetCurrentLine(); i++)
     {
-      MarkerAdd(i, m_MarkerChange.GetNo());
+      MarkerAddChange(i);
     }
   }
 }
