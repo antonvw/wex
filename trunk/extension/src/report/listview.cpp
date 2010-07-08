@@ -846,10 +846,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   break;
 
   case ID_LIST_RUN_MAKE:
-  {
-    const wxExListItem item(this, GetFirstSelected());
-    wxExMake(m_Frame, item.GetFileName());
-  }
+    wxExMake(m_Frame, wxExListItem(this, GetFirstSelected()).GetFileName());
   break;
 
   default: 
