@@ -203,11 +203,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   switch (m_Type)
   {
     case CONFIG_CHECKBOX:
-      m_Control = new wxCheckBox(parent,
-        m_Id,
-        m_Name,
-        wxDefaultPosition,
-        wxSize(125, wxDefaultCoord));
+      m_Control = new wxCheckBox(parent, m_Id, m_Name);
       break;
 
     case CONFIG_CHECKLISTBOX:
