@@ -347,7 +347,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();
 
-  if (GetMenuFlags() & STC_MENU_OPEN_LINK)
+  if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
     const wxString link = GetTextAtCurrentPos();
     const auto line_no = (!sel.empty() ? 
@@ -363,7 +363,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   }
 
   if ( m_File.GetFileName().FileExists() && GetSelectedText().empty() &&
-      (GetMenuFlags() & STC_MENU_COMPARE_OR_VCS))
+      (m_MenuFlags & STC_MENU_COMPARE_OR_VCS))
   {
     if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
     {

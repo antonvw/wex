@@ -161,9 +161,6 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
-  /// Gets the menu flags.
-  long GetMenuFlags() const {return m_MenuFlags;};
-
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;
   

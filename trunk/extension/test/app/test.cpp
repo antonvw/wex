@@ -257,7 +257,6 @@ void wxExAppTestFixture::testSTCFile()
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(stc->GetFlags() == 0);
-  CPPUNIT_ASSERT(stc->GetMenuFlags() == wxExSTCFile::STC_MENU_DEFAULT);
   const wxCharBuffer& buffer = stc->GetTextRaw();
   CPPUNIT_ASSERT(buffer.length() == 40);
 }
