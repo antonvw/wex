@@ -1456,6 +1456,14 @@ void wxExSTC::MarkerAddChange(int line)
   }
 }
   
+void wxExSTC::MarkerDeleteAllChange()
+{
+  if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
+  {
+    MarkerDeleteAll(m_MarkerChange.GetNo());
+  }
+}
+  
 // cannot be const because of MarkerAddChange
 void wxExSTC::MarkTargetChange()
 {

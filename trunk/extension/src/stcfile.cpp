@@ -114,11 +114,8 @@ void wxExSTCFile::DoFileSave(bool save_as)
     m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
   }
   
-  if (wxExLexers::Get()->MarkerIsLoaded(m_STC->GetMarkerChange()))
-  {
-    m_STC->MarkerDeleteAll(m_STC->GetMarkerChange().GetNo());
-  }
-
+  m_STC->MarkerDeleteAllChange();
+  
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   wxExLog::Get()->Log(msg);
   

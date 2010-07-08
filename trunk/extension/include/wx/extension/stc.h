@@ -161,9 +161,6 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
-  /// Gets the change marker.
-  const wxExMarker& GetMarkerChange() const {return m_MarkerChange;};
-
   /// Gets the menu flags.
   long GetMenuFlags() const {return m_MenuFlags;};
 
@@ -199,6 +196,9 @@ public:
 
   /// Plays back the last recorded macro.
   void MacroPlayback();
+  
+  /// Deletes all change markers.
+  void MarkerDeleteAllChange();
   
   /// Mark target as changed.
   void MarkTargetChange();
