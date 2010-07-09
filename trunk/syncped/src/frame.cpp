@@ -135,7 +135,10 @@ Frame::Frame(bool open_recent)
     
   m_DirCtrl = new wxGenericDirCtrl(this,
     wxID_ANY,
-    wxFileName(GetRecentFile()).GetFullPath());
+    wxFileName(GetRecentFile()).GetFullPath(),
+    wxDefaultPosition,
+    wxDefaultSize,
+    wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE);
     
   wxExSTC* asciiTable = new wxExSTC(this);
   asciiTable->AddAsciiTable();
@@ -764,7 +767,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_SPLIT:
-  {
+    {
     wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
 
     m_NotebookWithEditors->AddPage(
@@ -776,11 +779,19 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIconID()));
 
     stc->SetDocPointer(editor->GetDocPointer());
-  }
-  break;
+    }
+    break;
 
-  case ID_TREE_OPEN: OpenFile(wxExFileName(m_DirCtrl->GetFilePath())); break;
-  case ID_TREE_RUN_MAKE: wxExMake(this, wxFileName(m_DirCtrl->GetFilePath())); break;
+  case ID_TREE_OPEN: 
+    {
+    wxArrayString files;
+    m_DirCtrl->GetFilePaths(files);
+    wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
+    }
+  break;
+  case ID_TREE_RUN_MAKE: 
+    wxExMake(this, wxFileName(m_DirCtrl->GetFilePath()));
+    break;
 
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
