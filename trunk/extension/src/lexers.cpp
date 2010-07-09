@@ -48,15 +48,7 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
 const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
   const auto it = m_Macros.find(text);
-
-  if (it != m_Macros.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    return text;
-  }
+  return (it != m_Macros.end() ? it->second: text);
 }
 
 void wxExLexers::ApplyMarkers(wxStyledTextCtrl* stc) const
@@ -111,11 +103,6 @@ const wxString wxExLexers::BuildWildCards(
 const wxExLexer wxExLexers::FindByFileName(
   const wxFileName& filename) const
 {
-  if (!filename.IsOk())
-  {
-    return wxExLexer();
-  }
-
   for (
     auto it = m_Lexers.begin();
     it != m_Lexers.end();
@@ -133,13 +120,7 @@ const wxExLexer wxExLexers::FindByFileName(
 const wxExLexer wxExLexers::FindByName(const wxString& name) const
 {
   const auto it = m_Lexers.find(name);
-
-  if (it != m_Lexers.end())
-  {
-    return it->second;
-  }
-
-  return wxExLexer();
+  return (it != m_Lexers.end() ? it->second: wxExLexer());
 }
 
 const wxExLexer wxExLexers::FindByText(const wxString& text) const
@@ -156,8 +137,8 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   {
     return FindByName("xml");
   }
-  // cpp files like #include <map> really do not have a .h extension (e.g. /usr/include/c++/3.3.5/map)
-  // so add here.
+  // cpp files like #include <map> really do not have a .h extension 
+  // (e.g. /usr/include/c++/3.3.5/map) so add here.
   else if (text_lowercase.StartsWith("//"))
   {
     return FindByName("cpp");
