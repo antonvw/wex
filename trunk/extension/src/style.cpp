@@ -17,14 +17,15 @@
 #include <wx/extension/style.h>
 #include <wx/extension/lexers.h>
 
-wxExStyle::wxExStyle(const wxXmlNode* node)
+wxExStyle::wxExStyle()
   : m_No()
   , m_Value()
 {
-  if (node != NULL)
-  {
-    Set(node);
-  }
+}
+  
+wxExStyle::wxExStyle(const wxXmlNode* node)
+{
+  Set(node);
 }
 
 wxExStyle::wxExStyle(const wxString& no, const wxString& value)
@@ -77,6 +78,8 @@ void wxExStyle::Set(const wxXmlNode* node)
 
 void wxExStyle::SetNo(const wxString& no)
 {
+  m_No.clear();
+  
   wxStringTokenizer no_fields(no, ",");
 
   // Collect each single no in the vector.

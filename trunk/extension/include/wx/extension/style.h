@@ -24,7 +24,10 @@ class wxExStyle
 {
 public:
   /// Default constructor.
-  wxExStyle(const wxXmlNode* node = NULL);
+  wxExStyle();
+  
+  /// Constructor using xml node.
+  wxExStyle(const wxXmlNode* node);
 
   /// Constructor using no and value.
   wxExStyle(const wxString& no, const wxString& value);
