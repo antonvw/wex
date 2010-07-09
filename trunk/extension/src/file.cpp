@@ -61,16 +61,12 @@ bool wxExFile::FileLoad(const wxExFileName& filename)
   return m_FileName.FileExists() && MakeAbsolute() && Get(false);
 }
 
-bool wxExFile::FileNew(const wxExFileName& filename)
+void wxExFile::FileNew(const wxExFileName& filename)
 {
-  if (!Assign(filename))
-  {
-    return false;
-  }
-
+  // Do not check return value, as file will not (yet) 
+  // exist.
+  Assign(filename);
   DoFileNew();
-
-  return true;
 }
 
 bool wxExFile::FileSave(const wxExFileName& filename)

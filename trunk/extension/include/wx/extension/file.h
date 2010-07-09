@@ -42,7 +42,7 @@ public:
   bool FileLoad(const wxExFileName& filename);
 
   /// Sets the filename member and invokes DoFileNew.
-  bool FileNew(const wxExFileName& filename);
+  void FileNew(const wxExFileName& filename);
 
   /// Sets the filename member if filename is ok, opens the file,
   /// invokes DoFileSave, and closes the file again.
