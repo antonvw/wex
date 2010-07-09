@@ -48,6 +48,9 @@ public:
 
   /// Sets the STC text (either normal or raw).
   void SetText(const wxString& text);
+  
+  /// Updates the STC control with values from config.
+  void UpdateFromConfig();
 protected:
   void OnCommand(wxCommandEvent& command);
 private:
