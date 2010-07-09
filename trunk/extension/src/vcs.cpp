@@ -170,6 +170,12 @@ long wxExVCS::Execute()
     if (!flags.empty())
     {
       flags = " " + flags;
+
+      // If we specified help flags, we do not need a file argument.      
+      if (flags.Contains("help"))
+      {
+        file.clear();
+      }
     }
   }
 
@@ -201,6 +207,8 @@ long wxExVCS::Execute()
   wxArrayString errors;
   long retValue;
 
+  // Call wxExcute to execute the cvs command and
+  // collect the output and the errors.
   if ((retValue = wxExecute(
     commandline,
     output,
