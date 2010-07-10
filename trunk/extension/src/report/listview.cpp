@@ -39,10 +39,6 @@ BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_MENU(wxID_DELETE, wxExListViewStandard::OnCommand)
   EVT_MENU(wxID_PASTE, wxExListViewStandard::OnCommand)
   EVT_MENU(ID_LIST_SEND_ITEM, wxExListViewStandard::OnCommand)
-  EVT_MENU_RANGE(
-    ID_EDIT_VCS_LOWEST, 
-    ID_EDIT_VCS_HIGHEST, 
-    wxExListViewStandard::OnCommand)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -389,38 +385,29 @@ void wxExListViewStandard::ItemsUpdate()
 
 void wxExListViewStandard::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+  switch (event.GetId())
   {
-    wxExVCS(
-      event.GetId(), 
-      wxExListItem(this, GetFirstSelected()).GetFileName()).Request(this);
-  }
-  else
-  {
-    switch (event.GetId())
-    {
-      case wxID_CLEAR:
-      case wxID_CUT:
-      case wxID_DELETE:
-      case wxID_PASTE:
-        if (m_Type != LIST_HISTORY)
-        {
-          event.Skip();
-        }
-      break;
+    case wxID_CLEAR:
+    case wxID_CUT:
+    case wxID_DELETE:
+    case wxID_PASTE:
+      if (m_Type != LIST_HISTORY)
+      {
+        event.Skip();
+      }
+    break;
 
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
-    case ID_LIST_SEND_ITEM:
-      RBSFile(this).GenerateDialog();
-      break;
+  case ID_LIST_SEND_ITEM:
+    RBSFile(this).GenerateDialog();
+    break;
 #endif
 #endif
 
-    default: 
-      wxFAIL;
-      break;
-    }
+  default: 
+    wxFAIL;
+    break;
   }
 }
 
@@ -504,6 +491,10 @@ BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewStandard)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
+  EVT_MENU_RANGE(
+    ID_EDIT_VCS_LOWEST, 
+    ID_EDIT_VCS_HIGHEST, 
+    wxExListViewWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
@@ -759,6 +750,14 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
     RunItems(event.GetId());
+    return;
+  }
+
+  if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+  {
+    wxExVCSExecute(
+      m_Frame, event.GetId(), 
+      wxExListItem(this, GetFirstSelected()).GetFileName());
     return;
   }
 
