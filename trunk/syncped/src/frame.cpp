@@ -456,7 +456,9 @@ void Frame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCSExecute(this, event.GetId(), wxExFileName(m_DirCtrl->GetFilePath()));
+    wxArrayString files;
+    m_DirCtrl->GetFilePaths(files);
+    wxExVCSExecute(this, event.GetId(), wxExFileName(files[0]));
     return;
   }
 
@@ -845,14 +847,16 @@ void Frame::OnCommandConfigDialog(
 
 void Frame::OnTree(wxTreeEvent& event)
 {
-  const wxString selection = m_DirCtrl->GetFilePath();
+  wxArrayString files;
+  m_DirCtrl->GetFilePaths(files);
 
-  if (selection.empty()) 
+  if (files.empty()) 
   {
     event.Skip();
     return;
   }
 
+  const wxString selection = files[0];
   const wxExFileName filename(selection);
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
