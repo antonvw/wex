@@ -147,26 +147,24 @@ private:
   /// Creates the control.
   void CreateControl(wxWindow* parent, bool readonly);
 
-  // cannot be const, otherwise
-  // error C2582: 'operator =' function is unavailable in 'wxExConfigItem'
-  bool m_AddName;
-  bool m_IsRequired;
+  const bool m_AddName;
+  const bool m_IsRequired;
 
-  int m_Cols;
-  int m_Id;
-  int m_Min;
-  int m_Max;
-  int m_MaxItems;
-  int m_Type;
+  const int m_Cols;
+  const int m_Id;
+  const int m_Min;
+  const int m_Max;
+  const int m_MaxItems;
+  const int m_Type;
 
-  double m_MinDouble;
-  double m_MaxDouble;
-  double m_Inc;
+  const double m_MinDouble;
+  const double m_MaxDouble;
+  const double m_Inc;
 
-  wxString m_Name;
-  wxString m_Page;
+  const wxString m_Name;
+  const wxString m_Page;
 
-  long m_Style;
+  const long m_Style;
 
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;

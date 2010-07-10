@@ -40,6 +40,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_SPINCTRL)
   , m_Cols(cols)
   , m_AddName(true)
+  , m_MinDouble(0)
+  , m_MaxDouble(0)
+  , m_Inc(0)
 {
 }
 
@@ -63,6 +66,8 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_SPINCTRL_DOUBLE)
   , m_Cols(cols)
   , m_AddName(true)
+  , m_Min(0)
+  , m_Max(0)
 {
 }
 
@@ -85,6 +90,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_STRING)
   , m_Cols(cols)
   , m_AddName(add_name)
+  , m_MinDouble(0)
+  , m_MaxDouble(0)
+  , m_Inc(0)
 {
 }
 
@@ -107,6 +115,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Choices(choices)
   , m_Cols(cols)
   , m_AddName(false)
+  , m_MinDouble(0)
+  , m_MaxDouble(0)
+  , m_Inc(0)
 {
 }
 
@@ -127,6 +138,9 @@ wxExConfigItem::wxExConfigItem(
   , m_ChoicesBool(choices) 
   , m_Cols(cols)
   , m_AddName(false)
+  , m_MinDouble(0)
+  , m_MaxDouble(0)
+  , m_Inc(0)
 {
 }
 
@@ -151,6 +165,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(type) 
   , m_Cols(cols)
   , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
+  , m_MinDouble(0)
+  , m_MaxDouble(0)
+  , m_Inc(0)
 {
 }
 
