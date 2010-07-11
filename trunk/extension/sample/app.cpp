@@ -553,15 +553,18 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_SPINCTRL_DOUBLE
+#ifdef __WXMSW__  
+  // Problems finding right constructor using wxGTK.
   for (size_t sd = 1; sd <= 3; sd++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("Spin Control Double%d"), sd), 
       (double)1, 
-      sd, 
+      (double)sd, 
       (double)1, 
       "Spin controls", -1));
   }
+#endif  
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
