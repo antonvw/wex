@@ -113,7 +113,7 @@ void wxExReportAppTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->FindColumn("String") > 1);
   CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
 
-  CPPUNIT_ASSERT(listView->FileLoad(TEST_PRJ));
+  CPPUNIT_ASSERT(listView->FileLoad(wxExFileName(TEST_PRJ)));
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
 
