@@ -147,27 +147,31 @@ private:
   /// Creates the control.
   void CreateControl(wxWindow* parent, bool readonly);
 
-  const bool m_AddName;
-  const bool m_IsRequired;
+  // The members are allowed to be const using
+  // MS Visual Studio 2010, not using gcc, so
+  // removed again (operator= seems to be used).
+  bool m_AddName;
+  bool m_IsRequired;
 
-  const int m_Cols;
-  const int m_Id;
-  const int m_Min;
-  const int m_Max;
-  const int m_MaxItems;
-  const int m_Type;
+  int m_Cols;
+  int m_Id;
+  int m_Min;
+  int m_Max;
+  int m_MaxItems;
+  int m_Type;
 
-  const double m_MinDouble;
-  const double m_MaxDouble;
-  const double m_Inc;
+  double m_MinDouble;
+  double m_MaxDouble;
+  double m_Inc;
 
-  const wxString m_Name;
-  const wxString m_Page;
+  wxString m_Name;
+  wxString m_Page;
 
-  const long m_Style;
+  long m_Style;
 
-  const std::map<long, const wxString> m_Choices;
-  const std::set<wxString> m_ChoicesBool;
+  std::map<long, const wxString> m_Choices;
+  std::set<wxString> m_ChoicesBool;
+  // There were all const.
 
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;
