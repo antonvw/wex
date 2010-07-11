@@ -154,6 +154,9 @@ Roadmap
     
 - in vi and stc share replace code
 
+- remove default constructor for wxExLexer, and use iterators 
+  for Find etc. in wxExLexers.
+
 - add gdb front-end
 
 - improve test units, use macro's
