@@ -166,11 +166,11 @@ private:
 
   const long m_Style;
 
+  const std::map<long, const wxString> m_Choices;
+  const std::set<wxString> m_ChoicesBool;
+
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;
-
-  std::map<long, const wxString> m_Choices;
-  std::set<wxString> m_ChoicesBool;
 };
 #endif // wxUSE_GUI
 #endif
