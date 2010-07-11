@@ -1,6 +1,13 @@
-.................
+...............F..
 
 
-OK (17 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  17   Failures: 1   Errors: 0
+
+
+1) test: testUtil (F) line: 283 ../extension/test/app/test.cpp
+assertion failed
+- Expression: wxString(wxExAlignText("test", "header", true, true, wxExLexers::Get()->FindByName("cpp"))).size() == 80
 
 
