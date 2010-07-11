@@ -19,16 +19,14 @@
 
 void wxExTestFixture::testFile()
 {
-  wxExFile file(TEST_FILE);
+  wxExFile file(wxExFileName(TEST_FILE));
   
-  CPPUNIT_ASSERT(file.GetStat().IsOk());
-  CPPUNIT_ASSERT(file.GetStat().GetFullPath() == file.GetFileName().GetFullPath());
+  CPPUNIT_ASSERT(file.GetFileName().GetStat().IsOk());
   // The fullpath should be normalized, test it.
   CPPUNIT_ASSERT(file.GetFileName().GetFullPath() != TEST_FILE);
-  CPPUNIT_ASSERT(!file.GetStat().IsReadOnly());
+  CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsReadOnly());
   file.CheckSync();
-  CPPUNIT_ASSERT(!file.GetStat().IsReadOnly());
-  CPPUNIT_ASSERT(file.FileLoad(TEST_BIN));
+  CPPUNIT_ASSERT(file.FileLoad(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(!file.IsOpened());
   CPPUNIT_ASSERT(file.Open(wxExFileName(TEST_BIN).GetFullPath()));
   wxCharBuffer buffer = file.Read();
@@ -105,7 +103,7 @@ void wxExTestFixture::testTextFile()
 
 void wxExTestFixture::testTiming()
 {
-  wxExFile file(TEST_FILE);
+  wxExFile file(wxExFileName(TEST_FILE));
 
   CPPUNIT_ASSERT(file.IsOpened());
 
