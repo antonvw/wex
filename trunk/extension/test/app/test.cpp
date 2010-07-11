@@ -29,9 +29,6 @@ void wxExAppTestFixture::setUp()
 
 void wxExAppTestFixture::testConfigItem()
 {
-  wxExConfigItem item;
-  CPPUNIT_ASSERT(item.GetControl() == NULL);
-  
   wxExConfigItem spin("spin", 1, 5);
   CPPUNIT_ASSERT(spin.GetType() == CONFIG_SPINCTRL);
   CPPUNIT_ASSERT(!spin.GetIsRequired());
@@ -247,18 +244,16 @@ void wxExAppTestFixture::testSTC()
   stc->StopRecord();
   CPPUNIT_ASSERT(!stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded()); // still no macro
-}
-  
-void wxExAppTestFixture::testSTCFile()
-{
-  wxExSTCFile* stc = new wxExSTCFile(
-    wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(stc->GetFlags() == 0);
   const wxCharBuffer& buffer = stc->GetTextRaw();
   CPPUNIT_ASSERT(buffer.length() == 40);
+}
+  
+void wxExAppTestFixture::testSTCFile()
+{
 }
 
 void wxExAppTestFixture::testSTCShell()
@@ -284,12 +279,12 @@ void wxExAppTestFixture::testSTCShell()
 
 void wxExAppTestFixture::testUtil()
 {
-  CPPUNIT_ASSERT(wxString(wxExAlignText("test", "header", 
-    wxExLexers::Get()->FindByName("cpp")), true, true).size() == 80);
+  CPPUNIT_ASSERT(wxString(wxExAlignText("test", "header", true, true,
+    wxExLexers::Get()->FindByName("cpp"))).size() == 80);
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
-  CPPUNIT_ASSERT(wxExGetEndOfText("test", 3) == 3);
-  CPPUNIT_ASSERT(wxExGetEndOfText("testtest", 3) == 3);
+  CPPUNIT_ASSERT(wxExGetEndOfText("test", 3).size() == 3);
+  CPPUNIT_ASSERT(wxExGetEndOfText("testtest", 3).size() == 3);
   CPPUNIT_ASSERT(wxExGetLineNumber("test on line: 1200") == 1200);
   CPPUNIT_ASSERT(wxExGetNumberOfLines("test\ntest\n") == 3);
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
@@ -300,7 +295,7 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  wxExVCS vcs(wxExVCS::VCS_INFO, TEST_FILE);
+  wxExVCS vcs(wxExVCS::VCS_INFO, wxExFileName(TEST_FILE));
   // There is a problem in wxExecute inside wxExVCS::Execute.
 //  CPPUNIT_ASSERT(m_VCS->Execute() != -1);
 //  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
@@ -309,7 +304,7 @@ void wxExAppTestFixture::testVCS()
 
 void wxExAppTestFixture::testVi()
 {
-  wxExSTCFile* stc = new wxExSTCFile(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   wxExVi* vi = new wxExVi(stc);
   
   CPPUNIT_ASSERT(!vi->GetIsActive());
