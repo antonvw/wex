@@ -618,11 +618,6 @@ bool wxExVi::DoCommandRange(const wxString& command)
   const wxString address = tkz.GetNextToken();
   const wxChar cmd = tkz.GetLastDelimiter();
 
-  if (cmd == 0)
-  {
-    return false;
-  }
-    
   wxString begin_address;
   wxString end_address;
     
@@ -644,6 +639,9 @@ bool wxExVi::DoCommandRange(const wxString& command)
 
   switch (cmd)
   {
+  case 0: 
+    return false; break;
+    
   case 'd':
     return Delete(begin_address, end_address);
     break;
