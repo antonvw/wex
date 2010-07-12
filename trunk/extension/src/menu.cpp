@@ -289,9 +289,7 @@ void wxExMenu::BuildVCS(bool fill)
     AppendVCS(vcs_offset_id + wxExVCS::VCS_INFO);
     AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
     AppendVCS(vcs_offset_id + wxExVCS::VCS_LS);
-    // The VCS_DIFF is not used, as it requires diff between files,
-    // and not a folder.
-    //AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
     AppendVCS(vcs_offset_id + wxExVCS::VCS_HELP);
     AppendSeparator();
     AppendVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
