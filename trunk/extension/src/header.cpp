@@ -17,8 +17,8 @@
 #include <wx/extension/header.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filename.h>
-#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 
 wxExHeader::wxExHeader()
   : m_TextAuthor(_("Author"))
@@ -43,7 +43,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxString email = wxConfigBase::Get()->Read(m_TextEmail);
   const wxString purpose = wxConfigBase::Get()->Read(m_TextPurpose);
 
-  const wxString email_field = (!email.empty() ? " < " + email + ">": email);
+  const wxString email_field = (!email.empty() ? " <" + email + ">": email);
 
   wxString header;
   const wxExLexer l = filename->GetLexer();
@@ -74,8 +74,8 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     if (wxExVCS::Get()->GetVCS() == wxExVCS::VCS_SVN)
     // Prevent the Id to be expanded by VCS itself here.
     header << l.MakeComment(h_rcs, wxString("Id$")) << "\n";
-    header << l.MakeComment(h_copyright, "(c) " + wxDateTime::Now().Format("%Y") + " " +
-      author + email_field) << "\n";
+    header << l.MakeComment(h_copyright, "(c) " + wxDateTime::Now().Format("%Y")
+      + " " + author + email_field) << "\n";
     if (!license.empty())
     header << l.MakeComment(h_license, license) << "\n";
     header << l.MakeComment(wxEmptyString, false) << "\n";
@@ -120,7 +120,8 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
   std::vector<wxExConfigItem> v;
 
   // Purpose is required.
-  v.push_back(wxExConfigItem(m_TextPurpose, wxEmptyString, wxTE_MULTILINE, true));
+  v.push_back(
+    wxExConfigItem(m_TextPurpose, wxEmptyString, wxTE_MULTILINE, true));
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
