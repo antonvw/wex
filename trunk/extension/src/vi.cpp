@@ -981,7 +981,9 @@ bool wxExVi::SetSelection(
   const auto begin_line = ToLineNumber(begin_address);
   const auto end_line = ToLineNumber(end_address);
 
-  if (begin_line == 0 || end_line == 0)
+  if (begin_line == 0 || 
+      end_line == 0 ||
+      end_line < begin_line)
   {
     return false;
   }
@@ -1008,7 +1010,9 @@ bool wxExVi::Substitute(
   const auto begin_line = ToLineNumber(begin_address);
   const auto end_line = ToLineNumber(end_address);
 
-  if (begin_line == 0 || end_line == 0)
+  if (begin_line == 0 || 
+      end_line == 0 || 
+      end_line < begin_line)
   {
     return false;
   }
