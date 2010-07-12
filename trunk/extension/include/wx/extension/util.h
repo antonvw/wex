@@ -24,6 +24,11 @@ class wxExFrame;
 
 /// Aligns text, if lexer is specified 
 /// fills out over lexer comment lines.
+/// If the lexer has no comment end character, fill out
+/// with spaces is not done.
+/// The header is used as a prefix for the line, directly 
+/// followed by the lines, and if necessary on the next line
+/// the header is repeated as a string of spaces.
 const wxString wxExAlignText(
   const wxString& lines,
   const wxString& header,

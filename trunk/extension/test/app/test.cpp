@@ -280,7 +280,7 @@ void wxExAppTestFixture::testSTCShell()
 void wxExAppTestFixture::testUtil()
 {
   CPPUNIT_ASSERT(wxString(wxExAlignText("test", "header", true, true,
-    wxExLexers::Get()->FindByName("cpp"))).size() == 80);
+    wxExLexers::Get()->FindByName("cpp"))).size() == wxString("// headertest").size();
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
   CPPUNIT_ASSERT(wxExGetEndOfText("test", 3).size() == 3);
