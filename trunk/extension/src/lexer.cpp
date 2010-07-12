@@ -367,67 +367,67 @@ void wxExLexer::Set(const wxXmlNode* node)
 #else    
     m_Extensions = node->GetAttribute("extensions", "");
 #endif
-  }
 
-  if (node->GetAttribute("match", "") != "")
-  {
-    m_Styles = AutoMatch(node->GetAttribute("match", ""));
-  }
-
-  if (m_ScintillaLexer == "hypertext")
-  {
-    // As our lexers.xml files cannot use xml comments,
-    // add them here.
-    m_CommentBegin = "<!--";
-    m_CommentEnd = "-->";
-  }
-
-  wxXmlNode *child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "styles")
+    if (node->GetAttribute("match", "") != "")
     {
-      const std::vector<wxExStyle> v = ParseNodeStyles(child);
-      
-      // Do not assign styles to result of ParseNode,
-      // as styles might already be filled with result of automatch.
-      m_Styles.insert(
-        m_Styles.end(), 
-        v.begin(), v.end());
+      m_Styles = AutoMatch(node->GetAttribute("match", ""));
     }
-    else if (child->GetName() == "keywords")
+
+    if (m_ScintillaLexer == "hypertext")
     {
-      if (!SetKeywords(child->GetNodeContent().Strip(wxString::both)))
+      // As our lexers.xml files cannot use xml comments,
+      // add them here.
+      m_CommentBegin = "<!--";
+      m_CommentEnd = "-->";
+    }
+
+    wxXmlNode *child = node->GetChildren();
+
+    while (child)
+    {
+      if (child->GetName() == "styles")
       {
-        wxLogError(
-          _("Keywords could not be set on line: %d"), 
+        const std::vector<wxExStyle> v = ParseNodeStyles(child);
+      
+        // Do not assign styles to result of ParseNode,
+        // as styles might already be filled with result of automatch.
+        m_Styles.insert(
+          m_Styles.end(), 
+          v.begin(), v.end());
+      }
+      else if (child->GetName() == "keywords")
+      {
+        if (!SetKeywords(child->GetNodeContent().Strip(wxString::both)))
+        {
+          wxLogError(
+            _("Keywords could not be set on line: %d"), 
+            child->GetLineNumber());
+        }
+      }
+      else if (child->GetName() == "properties")
+      {
+        m_Properties = wxExLexers::Get()->ParseNodeProperties(child);
+      }
+      else if (child->GetName() == "comments")
+      {
+        m_CommentBegin = child->GetAttribute("begin1", "");
+        m_CommentEnd = child->GetAttribute("end1", "");
+        m_CommentBegin2 = child->GetAttribute("begin2", "");
+        m_CommentEnd2 = child->GetAttribute("end2", "");
+      }
+      else if (child->GetName() == "comment")
+      {
+        // Ignore comments.
+      }
+      else
+      {
+        wxLogError(_("Undefined lexer tag: %s on line: %d"),
+          child->GetName().c_str(), 
           child->GetLineNumber());
       }
-    }
-    else if (child->GetName() == "properties")
-    {
-      m_Properties = wxExLexers::Get()->ParseNodeProperties(child);
-    }
-    else if (child->GetName() == "comments")
-    {
-      m_CommentBegin = child->GetAttribute("begin1", "");
-      m_CommentEnd = child->GetAttribute("end1", "");
-      m_CommentBegin2 = child->GetAttribute("begin2", "");
-      m_CommentEnd2 = child->GetAttribute("end2", "");
-    }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else
-    {
-      wxLogError(_("Undefined lexer tag: %s on line: %d"),
-        child->GetName().c_str(), 
-        child->GetLineNumber());
-    }
 
-    child = child->GetNext();
+      child = child->GetNext();
+    }
   }
 }
 
