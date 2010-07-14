@@ -18,6 +18,7 @@
 #include <wx/config.h>
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
+#include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
