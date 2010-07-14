@@ -784,6 +784,22 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
+  case ID_TREE_COPY: 
+    {
+    wxBusyCursor wait;
+    wxArrayString files;
+    m_DirCtrl->GetFilePaths(files);
+    wxString clipboard;
+    for (
+      auto it = files.begin();
+      it != files.end();
+      it++)
+    {
+      clipboard += *it + wxTextFile::GetEOL();
+    }
+    wxExClipboardAdd(clipboard);
+    }
+  break;
   case ID_TREE_OPEN: 
     {
     wxArrayString files;
@@ -863,7 +879,10 @@ void Frame::OnTree(wxTreeEvent& event)
   {
     wxExMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
-
+    menu.AppendSeparator();
+    menu.Append(ID_TREE_COPY,
+      wxGetStockLabel(wxID_COPY), wxEmptyString, wxART_COPY);
+  
     if (wxExVCS::Get()->DirExists(filename))
     {
       menu.AppendSeparator();

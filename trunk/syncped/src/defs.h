@@ -46,6 +46,9 @@ enum
   ID_MENU_TOOLS,
   ID_MENU_VCS,
   ID_TREE_OPEN,
+  ID_TREE_COPY,
+  ID_TREE_FIND,
+  ID_TREE_REPLACE,
   ID_TREE_RUN_MAKE,
   ID_VIEW_PANE_FIRST, // put all your panes from here
   ID_VIEW_FILES,
