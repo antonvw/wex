@@ -899,7 +899,7 @@ void Frame::OnTree(wxTreeEvent& event)
   }
   else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
   {
-    OpenFile(filename);
+    wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
   }
   else
   {
