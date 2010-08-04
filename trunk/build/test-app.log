@@ -1,13 +1,13 @@
-...............F..
+...............E..
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  17   Failures: 1   Errors: 0
+Run:  17   Failures: 0   Errors: 1
 
 
-1) test: testUtil (F) line: 283 ../extension/test/app/test.cpp
-assertion failed
-- Expression: wxString(wxExAlignText("test", "header", true, true, wxExLexers::Get()->FindByName("cpp"))).size() == 80
+1) test: testUtil (E) 
+uncaught exception of type St12out_of_range
+- basic_string::substr
 
 
