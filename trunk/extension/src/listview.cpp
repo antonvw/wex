@@ -213,7 +213,7 @@ const wxString wxExListView::BuildPage()
 
     for (auto col = 0; col < GetColumnCount(); col++)
     {
-      text << "<td>" << GetItemText(i, col) << wxTextFile::GetEOL();
+      text << "<td>" << wxListView::GetItemText(i, col) << wxTextFile::GetEOL();
     }
   }
 
@@ -360,7 +360,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   {
     for (auto col = 0; col < GetColumnCount() && match == -1; col++)
     {
-      wxString text = GetItemText(index, col);
+      wxString text = wxListView::GetItemText(index, col);
 
       if (!wxExFindReplaceData::Get()->MatchCase())
       {
@@ -438,32 +438,6 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     return GetImageList(wxIMAGE_LIST_SMALL)->Add(
       wxArtProvider::GetBitmap(artid, wxART_OTHER, smallsize));
   }
-}
-
-const wxString wxExListView::GetItemText(
-  long item_number,
-  int col_number) const
-{
-  if (col_number < 0) 
-  {
-    // We cannot wxFAIL here, as e.g. "Line No" column is used
-    // to get line number, in several lists, als in lists without that column.
-    return wxEmptyString;
-  }
-
-  wxListItem item;
-
-  item.SetId(item_number);
-  item.SetColumn(col_number);
-  item.SetMask(wxLIST_MASK_TEXT);
-
-  if (!GetItem(item))
-  {
-    wxFAIL;
-    return wxEmptyString;
-  }
-
-  return item.GetText();
 }
 
 bool wxExListView::GotoDialog(const wxString& caption)
@@ -571,7 +545,7 @@ const wxString wxExListView::ItemToText(long item_number) const
 
   for (auto col = 0; col < GetColumnCount(); col++)
   {
-    text += GetItemText(item_number, col);
+    text += wxListView::GetItemText(item_number, col);
 
     if (col < GetColumnCount() - 1)
     {
@@ -820,7 +794,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    const wxString val = GetItemText(i, column_no);
+    const wxString val = wxListView::GetItemText(i, column_no);
     items.push_back(val);
 
     switch (sorted_col->GetType())

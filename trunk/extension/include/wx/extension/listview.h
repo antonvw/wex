@@ -116,14 +116,11 @@ public:
   /// Gets image type.
   wxExImageType GetImageType() const {return m_ImageType;};
 
-  /// Gets the item text using item number and column number.
-  const wxString GetItemText(long item_number, int col_number) const;
-
   /// Gets the item text using item number and column name.
   const wxString GetItemText(
     long item_number,
     const wxString& col_name) const {
-    return GetItemText(
+    return wxListView::GetItemText(
       item_number,
       FindColumn(col_name));};
 

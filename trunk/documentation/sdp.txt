@@ -26,15 +26,15 @@ General
       git svn rebase to fetch changes from svn repository
       
 - Source code      
-  - STL is used wherever possible, instead of wxWidgets containers
-  
-  - Coding standard follows:
+  - Coding standard:
       http://www.gnu.org/prep/standards/standards.html
       and wxWidgets guidelines
       http://www.wxwidgets.org/develop/standard.htm
 
+  - STL is used whenever possible 
+  
   - GUI development library wxWidgets (2.8 branch, 2.9 branch, and trunk)
-      http://www.wxwidgets.org/
+      http://www.wxwidgets.org/ (use STL instead of wxWidgets containers)
 
   - database is OTL (Version 4.0.214)
       http://otl.sourceforge.net/
@@ -140,7 +140,6 @@ When adding functionality in trunk
 
 Roadmap
 - new wxWidgets. 
-    Use GetItemText with col from list ctrl
     Use ribbon toolbar.
     Use cbegin iterators.
     Use wxFileSystemWatcher, instead of our own sync methods 
