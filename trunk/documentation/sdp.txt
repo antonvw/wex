@@ -140,6 +140,11 @@ When adding functionality in trunk
 
 Roadmap
 - new wxWidgets. 
+    Ubuntu:
+    Translation for Explorer, Projects as aui pane title.
+    When changing the option map, new include dir not immediately active.
+    Location of VCS dir's is not correct.
+    
     Use ribbon toolbar.
     Use cbegin iterators.
     Use wxFileSystemWatcher, instead of our own sync methods 
