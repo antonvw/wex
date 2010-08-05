@@ -12,7 +12,7 @@
 #ifndef _EX_REPORT_FRAME_H
 #define _EX_REPORT_FRAME_H
 
-#include <wx/docview.h> // for wxFileHistory
+#include <wx/filehistory.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/listview.h> // for wxExListViewStandard::ListType 
