@@ -1642,7 +1642,7 @@ without the written consent of the copyright owner.
     </properties>
   </lexer>
   
-  <lexer name="po" match="wxSTC_PO_" >
+  <lexer name="po" extensions="*.po" match="wxSTC_PO_" >
     <styles>
       <style no ="wxSTC_PO_MSGID"> WORD </style>
       <style no ="wxSTC_PO_MSGSTR"> WORD </style>
