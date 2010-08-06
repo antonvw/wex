@@ -140,9 +140,6 @@ When adding functionality in trunk
 
 Roadmap
 - new wxWidgets. 
-    Ubuntu:
-    Translation for Explorer, Projects as aui pane title.
-    
     Use ribbon toolbar.
     Use cbegin iterators.
     Use wxFileSystemWatcher, instead of our own sync methods 
@@ -156,6 +153,8 @@ Roadmap
 
 - remove default constructor for wxExLexer, and use iterators 
   for Find etc. in wxExLexers.
+  
+- add Auto option for VCS used
 
 - add gdb front-end
 
