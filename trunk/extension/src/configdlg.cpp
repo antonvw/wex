@@ -91,7 +91,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   Layout(rows, cols);
 }
 
-std::vector< wxExConfigItem >::const_iterator wxExConfigDialog::FindConfigItem(int id) const
+std::vector< wxExConfigItem >::const_iterator 
+wxExConfigDialog::FindConfigItem(int id) const
 {
   for (
     auto it = m_ConfigItems.begin();
