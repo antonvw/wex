@@ -584,10 +584,30 @@ void wxExConfigItem::ToConfig(bool save) const
     case CONFIG_FILEPICKERCTRL:
       {
       wxFilePickerCtrl* pc = (wxFilePickerCtrl*)m_Control;
+      
       if (save)
+      {
         wxConfigBase::Get()->Write(m_Name, pc->GetPath());
+      }
       else
-        pc->SetPath(wxConfigBase::Get()->Read(m_Name));
+      {
+        const wxString val(wxConfigBase::Get()->Read(m_Name));
+        
+        if (!val.empty())
+        {
+          const wxFileName fn(val);
+        
+          if (fn.FileExists() && 
+              fn.IsFileExecutable())
+          { 
+            pc->SetPath(fn.GetFullPath());
+          }
+          else
+          {
+            wxLogError("illegal file: " + val);
+          }
+        }
+      }
       }
       break;
 
