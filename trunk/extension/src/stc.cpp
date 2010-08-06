@@ -743,6 +743,8 @@ void wxExSTC::ConfigGet()
     wxConfigBase::Get()->Read(_("Include directory")),
     "\r\n");
 
+  m_PathList.Empty();
+  
   while (tkz.HasMoreTokens())
   {
     m_PathList.Add(tkz.GetNextToken());

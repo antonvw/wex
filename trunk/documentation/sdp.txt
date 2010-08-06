@@ -142,7 +142,6 @@ Roadmap
 - new wxWidgets. 
     Ubuntu:
     Translation for Explorer, Projects as aui pane title.
-    When changing the option map, new include dir not immediately active.
     
     Use ribbon toolbar.
     Use cbegin iterators.
