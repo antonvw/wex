@@ -147,8 +147,6 @@ Roadmap
     Fix change marker for deleting text 
     (currently it gives stack overflow if enabled).
     
-- backspace key in vi should not delete text when not in insert mode        
-    
 - in vi and stc share replace code
 
 - remove default constructor for wxExLexer, and use iterators 

@@ -887,6 +887,18 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
   switch (event.GetKeyCode())
   {
+    case WXK_BACK:
+      if (!m_InsertMode)
+      {
+        m_STC->CharLeft();
+        handled = true;
+      }
+      else
+      {
+        handled = false;
+      }
+      break;
+      
     case WXK_ESCAPE:
       if (m_InsertMode)
       {
@@ -906,7 +918,8 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
       m_Command.clear();
       break;
-   case WXK_RETURN:
+      
+    case WXK_RETURN:
       if (!m_InsertMode)
       {
         auto repeat = atoi(m_Command.c_str());
@@ -926,6 +939,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         handled = false;
       }
       break;
+      
    default: handled = false;
   }
 
