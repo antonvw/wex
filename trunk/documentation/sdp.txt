@@ -140,6 +140,7 @@ When adding functionality in trunk
 
 Roadmap
 - new wxWidgets. 
+    Goto asserts.
     Use ribbon toolbar.
     Use cbegin iterators.
     Use wxFileSystemWatcher, instead of our own sync methods 
