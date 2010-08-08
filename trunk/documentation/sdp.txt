@@ -140,7 +140,6 @@ When adding functionality in trunk
 
 Roadmap
 - new wxWidgets. 
-    asserts when double click on list item.
     Use ribbon toolbar.
     Use cbegin iterators.
     Use wxFileSystemWatcher, instead of our own sync methods 

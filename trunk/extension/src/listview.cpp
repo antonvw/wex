@@ -440,6 +440,20 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
   }
 }
 
+const wxString wxExListView::GetItemText(
+  long item_number,
+  const wxString& col_name) const 
+{
+  const int col = FindColumn(col_name);
+  
+  if (col < 0)
+  {
+    return wxEmptyString;
+  }
+  
+  return wxListView::GetItemText(item_number, col);
+}
+
 bool wxExListView::GotoDialog(const wxString& caption)
 {
   auto initial_value = GetFirstSelected();
