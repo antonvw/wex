@@ -126,6 +126,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style)
   : wxStyledTextCtrl(parent, id, pos, size, style)
   , m_File(this)
+  , m_GotoLineNumber(1)
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
