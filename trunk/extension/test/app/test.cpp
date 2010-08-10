@@ -254,6 +254,11 @@ void wxExAppTestFixture::testSTC()
   
 void wxExAppTestFixture::testSTCFile()
 {
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxExSTCFile file(stc);
+
+  // The file itself is not assigned.  
+  CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
 }
 
 void wxExAppTestFixture::testSTCShell()

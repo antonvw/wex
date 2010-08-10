@@ -22,6 +22,7 @@ class wxExSTCFile: public wxExFile
 {
 public:
   /// Constructor.
+  /// Does not open the file.
   wxExSTCFile(wxExSTC* stc);
   
   /// Override virtual methods.
