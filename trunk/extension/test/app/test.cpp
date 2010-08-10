@@ -219,6 +219,8 @@ void wxExAppTestFixture::testSTC()
   
   stc->AppendTextForced("more text");
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
+  stc->DocumentStart();
+  
   // next asserts, do not know why
 //  CPPUNIT_ASSERT(stc->FindNext("more text"));
   
@@ -300,11 +302,11 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  wxExVCS vcs(wxExVCS::VCS_INFO, wxExFileName(TEST_FILE));
-  // There is a problem in wxExecute inside wxExVCS::Execute.
-//  CPPUNIT_ASSERT(m_VCS->Execute() != -1);
-//  CPPUNIT_ASSERT(!m_VCS->GetOutput().empty());
-  CPPUNIT_ASSERT(vcs.DirExists(wxFileName(TEST_FILE)));
+  wxExVCS* vcs = new wxExVCS(wxExVCS::VCS_STAT, wxExFileName(TEST_FILE));
+  // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
+//  CPPUNIT_ASSERT(vcs->Execute() != -1);
+//  CPPUNIT_ASSERT(!vcs->GetOutput().empty());
+  CPPUNIT_ASSERT(vcs->DirExists(wxFileName(TEST_FILE)));
 }
 
 void wxExAppTestFixture::testVi()
