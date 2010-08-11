@@ -48,6 +48,35 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
   Initialize();
 }
 
+bool wxExVCS::CheckVCS(const wxFileName& fn) const
+{
+  // these cannot be combined, as AppendDir is a void (2.9.1).
+  wxFileName path(filename);
+  path.AppendDir(".svn");
+  return path.DirExists();
+}
+
+bool wxExVCS::CheckGIT(const wxFileName& fn) const
+{
+  // The .git dir only exists in the root, so check all components.
+  wxFileName root(filename.GetPath());
+
+  while (root.DirExists() && root.GetDirCount() > 0)
+  {
+    wxFileName path(root);
+    path.AppendDir(".git");
+
+    if (path.DirExists())
+    {
+      return true;
+    }
+
+    root.RemoveLastDir();
+  }
+
+  return false;
+}
+
 #if wxUSE_GUI
 int wxExVCS::ConfigDialog(
   wxWindow* parent,
@@ -59,6 +88,7 @@ int wxExVCS::ConfigDialog(
   choices.insert(std::make_pair(VCS_NONE, _("None")));
   choices.insert(std::make_pair(VCS_GIT, "GIT"));
   choices.insert(std::make_pair(VCS_SVN, "SVN"));
+  choices.insert(std::make_pair(VCS_AUTO, "Auto"));
   v.push_back(wxExConfigItem("VCS", choices));
 
   v.push_back(wxExConfigItem("GIT", CONFIG_FILEPICKERCTRL));
@@ -73,36 +103,24 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 {
   switch (GetVCS())
   {
-    case VCS_GIT: 
+    case VCS_AUTO: 
+      if (CheckVCS(filename))
       {
-      // The .git dir only exists in the root, so check all components.
-      wxFileName root(filename.GetPath());
-
-      while (root.DirExists() && root.GetDirCount() > 0)
+        return true;
+      }
+      else 
       {
-        wxFileName path(root);
-        path.AppendDir(".git");
-
-        if (path.DirExists())
-        {
-          return true;
-        }
-
-        root.RemoveLastDir();
-      }
-      }
+        return CheckGIT(filename);
+      } 
       break;
+
+    case VCS_GIT: 
+      return CheckGIT(filename); break;
 
     case VCS_NONE: break; // prevent wxFAIL
     
     case VCS_SVN: 
-      {
-      // these cannot be combined, as AppendDir is a void (2.9.1).
-      wxFileName path(filename);
-      path.AppendDir(".svn");
-      return path.DirExists();
-      }
-      break;
+      return CheckVCS(filename); break;
 
     default: wxFAIL;
   }

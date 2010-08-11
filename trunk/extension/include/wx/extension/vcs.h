@@ -48,6 +48,7 @@ public:
     VCS_NONE, ///< no version control
     VCS_GIT,  ///< GIT version control
     VCS_SVN,  ///< Subversion version control
+    VCS_AUTO, ///< Uses the VCS appropriate for current file
   };
 
   /// Default constructor.
@@ -123,6 +124,8 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
+  bool CheckVCS(const wxFileName& fn) const;
+  bool CheckGIT(const wxFileName& fn) const;
   wxExCommand GetType(int command_id) const;
   const wxString GetVCSName() const;
   void Initialize();
