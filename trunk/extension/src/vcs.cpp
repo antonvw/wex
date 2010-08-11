@@ -324,7 +324,21 @@ wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
 
 long wxExVCS::GetVCS() const
 {
-  return wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
+  long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
+
+  if (vcs == VCS_AUTO)
+  {
+    if (CheckVCS(m_FileName))
+    {
+      vcs = VCS_SVN;
+    }
+    else if (CheckGIT(m_FileName))
+    {
+      vcs = VCS_GIT;
+    }
+  }
+
+  return vcs;
 }
 
 const wxString wxExVCS::GetVCSName() const
