@@ -48,14 +48,6 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
   Initialize();
 }
 
-bool wxExVCS::CheckVCS(const wxFileName& fn) const
-{
-  // these cannot be combined, as AppendDir is a void (2.9.1).
-  wxFileName path(filename);
-  path.AppendDir(".svn");
-  return path.DirExists();
-}
-
 bool wxExVCS::CheckGIT(const wxFileName& fn) const
 {
   // The .git dir only exists in the root, so check all components.
@@ -75,6 +67,14 @@ bool wxExVCS::CheckGIT(const wxFileName& fn) const
   }
 
   return false;
+}
+
+bool wxExVCS::CheckSVN(const wxFileName& fn) const
+{
+  // these cannot be combined, as AppendDir is a void (2.9.1).
+  wxFileName path(filename);
+  path.AppendDir(".svn");
+  return path.DirExists();
 }
 
 #if wxUSE_GUI
@@ -104,7 +104,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
   switch (GetVCS())
   {
     case VCS_AUTO: 
-      if (CheckVCS(filename))
+      if (CheckSVN(filename))
       {
         return true;
       }
@@ -120,7 +120,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
     case VCS_NONE: break; // prevent wxFAIL
     
     case VCS_SVN: 
-      return CheckVCS(filename); break;
+      return CheckSVN(filename); break;
 
     default: wxFAIL;
   }
@@ -328,7 +328,7 @@ long wxExVCS::GetVCS() const
 
   if (vcs == VCS_AUTO)
   {
-    if (CheckVCS(m_FileName))
+    if (CheckSVN(m_FileName))
     {
       vcs = VCS_SVN;
     }

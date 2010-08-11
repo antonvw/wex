@@ -124,8 +124,8 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  bool CheckVCS(const wxFileName& fn) const;
   bool CheckGIT(const wxFileName& fn) const;
+  bool CheckSVN(const wxFileName& fn) const;
   wxExCommand GetType(int command_id) const;
   const wxString GetVCSName() const;
   void Initialize();
