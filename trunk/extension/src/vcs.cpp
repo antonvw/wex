@@ -51,7 +51,7 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
 bool wxExVCS::CheckGIT(const wxFileName& fn) const
 {
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(filename.GetPath());
+  wxFileName root(fn.GetPath());
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
@@ -72,7 +72,7 @@ bool wxExVCS::CheckGIT(const wxFileName& fn) const
 bool wxExVCS::CheckSVN(const wxFileName& fn) const
 {
   // these cannot be combined, as AppendDir is a void (2.9.1).
-  wxFileName path(filename);
+  wxFileName path(fn);
   path.AppendDir(".svn");
   return path.DirExists();
 }
