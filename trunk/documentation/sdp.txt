@@ -152,8 +152,6 @@ Roadmap
 - remove default constructor for wxExLexer, and use iterators 
   for Find etc. in wxExLexers.
   
-- add Auto option for VCS used
-
 - add gdb front-end
 
 - improve test units, use macro's
