@@ -103,6 +103,10 @@ const wxString wxExLexers::BuildWildCards(
 const wxExLexer wxExLexers::FindByFileName(
   const wxFileName& filename) const
 {
+  if (filename.GetName().Upper().Contains("makefile").Upper())
+  {
+  }
+  
   for (
     auto it = m_Lexers.begin();
     it != m_Lexers.end();
