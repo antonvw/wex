@@ -336,6 +336,10 @@ long wxExVCS::GetVCS() const
     {
       vcs = VCS_GIT;
     }
+    else
+    {
+      vcs = VCS_NONE;
+    }
   }
 
   return vcs;
@@ -349,6 +353,7 @@ const wxString wxExVCS::GetVCSName() const
   {
     case VCS_GIT: text = "GIT"; break;
     case VCS_SVN: text = "SVN"; break;
+    case VCS_AUTO: break; // to prevent wxFAIL
     default: wxFAIL;
   }
 
@@ -411,6 +416,8 @@ void wxExVCS::Initialize()
         }
         break;
 
+      case VCS_AUTO: break;
+      
       default: wxFAIL;
     }
 
