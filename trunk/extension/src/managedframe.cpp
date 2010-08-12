@@ -21,7 +21,8 @@
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
-  EVT_UPDATE_UI_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(
+    ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
