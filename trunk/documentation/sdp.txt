@@ -147,8 +147,6 @@ Roadmap
     Fix change marker for deleting text 
     (currently it gives stack overflow if enabled).
     
-- use lexer makefile for GNUMakefile    
-    
 - in vi and stc share replace code
 
 - remove default constructor for wxExLexer, and use iterators 
