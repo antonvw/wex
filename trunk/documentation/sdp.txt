@@ -139,6 +139,10 @@ When adding functionality in trunk
 
 
 Roadmap
+- move dir ctrl from syncped to separate files to extension
+
+- add tooltips to the findbar, just as with checkbox for sync etc. 
+
 - new wxWidgets. 
     Use ribbon toolbar.
     Use cbegin iterators.
