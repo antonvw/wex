@@ -84,7 +84,8 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(wxID_SAVE, wxID_SAVEAS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_FIND_NEXT, ID_EDIT_FIND_PREVIOUS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_EDIT_TOGGLE_FOLD, ID_EDIT_UNFOLD_ALL, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI_RANGE(
+    ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
@@ -873,9 +874,6 @@ void Frame::OnTree(wxTreeEvent& event)
     return;
   }
 
-  const wxString selection = files[0];
-  const wxExFileName filename(selection);
-
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
   {
     wxExMenu menu;
@@ -883,6 +881,9 @@ void Frame::OnTree(wxTreeEvent& event)
     menu.AppendSeparator();
     menu.Append(ID_TREE_COPY,
       wxGetStockLabel(wxID_COPY), wxEmptyString, wxART_COPY);
+
+    const wxString selection = files[0];
+    const wxExFileName filename(selection);
   
     if (wxExVCS::Get()->DirExists(filename))
     {
@@ -944,9 +945,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_PROJECT_CLOSE:
     case ID_PROJECT_SAVEAS:
       event.Enable(GetProject() != NULL && GetProject()->IsShown());
-    break;
+      break;
     case ID_PROJECT_OPENTEXT:
-      event.Enable(GetProject() != NULL && !GetProject()->GetFileName().GetFullPath().empty());
+      event.Enable(
+        GetProject() != NULL && !GetProject()->GetFileName().GetFullPath().empty());
       break;
     case ID_PROJECT_SAVE:
       event.Enable(GetProject() != NULL && GetProject()->GetContentsChanged());
