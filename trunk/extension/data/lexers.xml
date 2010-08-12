@@ -16,7 +16,7 @@ without the written consent of the copyright owner.
   <macro>
   <!-- 
     These macro's allow you to use text instead of numbers.
-    When adding macro from stc.h you can use next regular expression:
+    When adding a new macro from stc.h you can use the next regular expression:
     find:    '#define \(.*\) \(.*\)'
     replace: '    <def no ="\1"> \2 </def>'
     -->
@@ -1556,7 +1556,7 @@ without the written consent of the copyright owner.
     <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
   </lexer>
   
-  <lexer name="ada" extensions="*.a" match="wxSTC_ADA_" >
+  <lexer name="ada" extensions="*.a" match="wxSTC_ADA_">
     <keywords>    
       abort abs abstract accept access ackage aliased all and array at
       begin body case constant declare delay delta digits do else elsif
@@ -1608,7 +1608,7 @@ without the written consent of the copyright owner.
     <comments begin1=";" />
   </lexer>
   
-  <lexer name="diff" match="wxSTC_DIFF_" >
+  <lexer name="diff" match="wxSTC_DIFF_">
     <styles>
     <style no="wxSTC_DIFF_HEADER"> fore:blue </style>
     <style no="wxSTC_DIFF_POSITION"> fore:brown </style>
@@ -1642,7 +1642,7 @@ without the written consent of the copyright owner.
     </properties>
   </lexer>
   
-  <lexer name="po" extensions="*.po" match="wxSTC_PO_" >
+  <lexer name="po" extensions="*.po" match="wxSTC_PO_">
     <styles>
       <style no ="wxSTC_PO_MSGID"> WORD </style>
       <style no ="wxSTC_PO_MSGSTR"> WORD </style>
@@ -1765,7 +1765,7 @@ without the written consent of the copyright owner.
   <lexer name="lout" match="wxSTC_LOUT_" />
   <lexer name="lua" match="wxSTC_LUA_" />
   <lexer name="magik" match="wxSTC_MAGIK" />
-  <lexer name="makefile" extensions="makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
+  <lexer name="makefile" extensions="*makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
   <lexer name="markdown" match="wxSTC_MARKDOWN" />
   <lexer name="matlab" match="wxSTC_MATLAB_" />
   <lexer name="metapost" match="wxSTC_METAPOST_" />
