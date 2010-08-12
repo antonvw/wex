@@ -595,17 +595,7 @@ void wxExConfigItem::ToConfig(bool save) const
         
         if (!val.empty())
         {
-          const wxFileName fn(val);
-        
-          if (fn.FileExists() && 
-              fn.IsFileExecutable())
-          { 
-            pc->SetPath(fn.GetFullPath());
-          }
-          else
-          {
-            wxLogError("illegal file: " + val);
-          }
+          pc->SetPath(val);
         }
       }
       }
