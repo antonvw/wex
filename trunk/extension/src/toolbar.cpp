@@ -229,6 +229,12 @@ void wxExFindToolBar::Initialize()
   m_IsRegularExpression = new wxCheckBox(this, 
     ID_REGULAR_EXPRESSION, wxExFindReplaceData::Get()->GetTextRegEx());
 
+#if wxUSE_TOOLTIPS
+  m_MatchCase->SetToolTip(_("Search case sensitive"));
+  m_MatchWholeWord->SetToolTip(_("Search matching words"));
+  m_IsRegularExpression->SetToolTip(_("Search using regular expressions"));
+#endif
+
   m_MatchCase->SetValue(wxExFindReplaceData::Get()->MatchCase());
   m_MatchWholeWord->SetValue(wxExFindReplaceData::Get()->MatchWord());
   m_IsRegularExpression->SetValue(wxExFindReplaceData::Get()->UseRegularExpression());
