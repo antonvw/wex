@@ -120,12 +120,10 @@ public:
     const wxSize& size = wxDefaultSize,
     long style = wxLC_LIST  | wxLC_HRULES | wxLC_VRULES | wxSUNKEN_BORDER,
     const wxValidator& validator = wxDefaultValidator,
-    const wxString &name = wxListCtrlNameStr);
-    
-  /// Gets the frame.
-  wxExFrameWithHistory* GetFrame() {return m_Frame;};
+    const wxString &name = wxListCtrlNameStr);    
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
+  wxExFrameWithHistory* GetFrame() {return m_Frame;};
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:
