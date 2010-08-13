@@ -15,7 +15,8 @@
 #include <wx/app.h>
 #include <wx/intl.h> // for wxLocale
 
-/// Offers the application, with wxExtension specific init and exit and keeps the locale.
+/// Offers the application, with wxExtension specific init and exit.
+/// It also keeps the locale and the catalog dir.
 /// Your application should be derived from this class.
 class wxExApp : public wxApp
 {
@@ -27,10 +28,13 @@ public:
   const wxLocale& GetLocale() const {return m_Locale;};
 
   /// Constructs the config, and initializes the locale.
-  /// In your class first set the app name, as it uses this name for the config.
+  /// In your class OnInit first set the app name,
+  /// as it uses this name for the config,
+  /// and then call this base class method.
   virtual bool OnInit();
 
   /// This deletes all global objects and cleans up things if necessary.
+  /// You should normally don't need to override it.
   virtual int OnExit();
 private:
   wxString m_CatalogDir;
