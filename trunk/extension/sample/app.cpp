@@ -46,13 +46,6 @@ enum
   ID_LAST,
 };
 
-BEGIN_EVENT_TABLE(wxExSampleFrame, wxExManagedFrame)
-  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSampleFrame::OnCommand)
-  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExSampleFrame::OnCommand)
-  EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
-  EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
-END_EVENT_TABLE()
-
 IMPLEMENT_APP(wxExSampleApp)
 
 bool wxExSampleApp::OnInit()
@@ -101,6 +94,13 @@ void wxExSampleDir::OnFile(const wxString& file)
   m_Grid->SetCellBackgroundColour(no, 1, *wxLIGHT_GREY);
 }
 #endif
+
+BEGIN_EVENT_TABLE(wxExSampleFrame, wxExManagedFrame)
+  EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSampleFrame::OnCommand)
+  EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExSampleFrame::OnCommand)
+  EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
+END_EVENT_TABLE()
 
 wxExSampleFrame::wxExSampleFrame()
   : wxExManagedFrame(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())

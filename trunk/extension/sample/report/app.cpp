@@ -24,13 +24,8 @@
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listitem.h>
 #include "app.h"
-
 #ifndef __WXMSW__
 #include "app.xpm"
-#else
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 #endif
 
 enum
@@ -90,11 +85,15 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menuProcess->AppendSeparator();
   menuProcess->Append(wxID_STOP);
 
+  wxExMenu *menuView = new wxExMenu;
+  menuView->AppendBars();
+
   wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menuFile, _("&File"));
+  menubar->Append(menuView, _("&View"));
   menubar->Append(menuProcess, _("&Process"));
   menubar->Append(menuHelp, _("&Help"));
   SetMenuBar(menubar);
@@ -266,7 +265,8 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); 
+  case wxID_PRINT_SETUP:
+	wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();
     break;
 
   case wxID_STOP:
