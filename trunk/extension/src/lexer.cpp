@@ -348,7 +348,7 @@ const std::vector<wxExStyle> wxExLexer::ParseNodeStyles(
 
 void wxExLexer::Set(const wxXmlNode* node)
 {
-  m_ScintillaLexer = node->GetAttribute("name", "");
+  m_ScintillaLexer = node->GetAttribute("name");
 
   // Just set ok if there is a lexer,
   // when we Apply to a stc component we really can set it.  
@@ -365,12 +365,12 @@ void wxExLexer::Set(const wxXmlNode* node)
       "extensions", 
       "*." + m_ScintillaLexer);
 #else    
-    m_Extensions = node->GetAttribute("extensions", "");
+    m_Extensions = node->GetAttribute("extensions");
 #endif
 
-    if (node->GetAttribute("match", "") != "")
+    if (!node->GetAttribute("match").empty())
     {
-      m_Styles = AutoMatch(node->GetAttribute("match", ""));
+      m_Styles = AutoMatch(node->GetAttribute("match"));
     }
 
     if (m_ScintillaLexer == "hypertext")
@@ -410,10 +410,10 @@ void wxExLexer::Set(const wxXmlNode* node)
       }
       else if (child->GetName() == "comments")
       {
-        m_CommentBegin = child->GetAttribute("begin1", "");
-        m_CommentEnd = child->GetAttribute("end1", "");
-        m_CommentBegin2 = child->GetAttribute("begin2", "");
-        m_CommentEnd2 = child->GetAttribute("end2", "");
+        m_CommentBegin = child->GetAttribute("begin1");
+        m_CommentEnd = child->GetAttribute("end1");
+        m_CommentBegin2 = child->GetAttribute("begin2");
+        m_CommentEnd2 = child->GetAttribute("end2");
       }
       else if (child->GetName() == "comment")
       {

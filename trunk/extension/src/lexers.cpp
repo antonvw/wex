@@ -283,9 +283,9 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
     }
     else if (child->GetName() == "def")
     {
-      const wxString attrib = child->GetAttribute("no", "");
+      const wxString attrib = child->GetAttribute("no");
       const wxString content = child->GetNodeContent().Strip(wxString::both);
-      const wxString style = child->GetAttribute("style", "");
+      const wxString style = child->GetAttribute("style");
 
       if (!attrib.empty())
       {
