@@ -71,7 +71,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << l.MakeComment(h_purpose, purpose) << "\n";
     header << l.MakeComment(h_author, author) << "\n";
     header << l.MakeComment(h_created, wxDateTime::Now().FormatISODate()) << "\n";
-    if (wxExVCS::Get()->GetVCS() == wxExVCS::VCS_SVN)
+    if (wxExVCS::Get()->SupportKeywordExpansion())
     // Prevent the Id to be expanded by VCS itself here.
     header << l.MakeComment(h_rcs, wxString("Id$")) << "\n";
     header << l.MakeComment(h_copyright, "(c) " + wxDateTime::Now().Format("%Y")
