@@ -43,14 +43,6 @@ public:
     VCS_UPDATE,   ///< vcs update
   };
 
-  enum wxExSystem
-  {
-    VCS_NONE, ///< no version control
-    VCS_GIT,  ///< GIT version control
-    VCS_SVN,  ///< Subversion version control
-    VCS_AUTO, ///< Uses the VCS appropriate for current file
-  };
-
   /// Default constructor.
   wxExVCS();
 
@@ -97,9 +89,6 @@ public:
   /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
 
-  /// Gets the VCS system used.
-  long GetVCS() const;
-
   /// Returns true if this command can behave like
   /// opening a file.  
   bool IsOpenCommand() const;
@@ -121,12 +110,25 @@ public:
   void ShowOutput(wxWindow* parent) const;
 #endif  
 
+  /// Does current vcs allow keyword expansion.
+  bool SupportKeywordExpansion() const;
+
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
+  enum wxExSystem
+  {
+    VCS_NONE, ///< no version control
+    VCS_GIT,  ///< GIT version control
+    VCS_SVN,  ///< Subversion version control
+    VCS_AUTO, ///< Uses the VCS appropriate for current file
+  };
+
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   wxExCommand GetType(int command_id) const;
+  /// Gets the VCS system used.
+  long GetVCS() const;
   const wxString GetVCSName() const;
   void Initialize();
   int ShowDialog(wxWindow* parent);

@@ -55,7 +55,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << wxExAlignText(purpose, h_purpose) << "\n";
     header << h_author << author << "\n";
     header << h_created << wxDateTime::Now().FormatISODate() << "\n";
-    if (wxExVCS::Get()->GetVCS() == wxExVCS::VCS_SVN)
+    if (wxExVCS::Get()->SupportKeywordExpansion())
     // Prevent the Id to be expanded by VCS itself here.
     header << h_rcs << wxString("Id$") << "\n";
     header << h_copyright << "(c) " << wxDateTime::Now().Format("%Y") << " " <<

@@ -567,6 +567,10 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 }
 #endif
 
+bool wxExVCS::SupportKeywordExpansion() const
+{
+  return GetVCS() == VCS_SVN;
+}
 bool wxExVCS::Use() const
 {
   return GetVCS() != VCS_NONE;
