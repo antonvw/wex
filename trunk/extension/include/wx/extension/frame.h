@@ -26,7 +26,9 @@ class wxExSTC;
 class wxExToolBar;
 
 /// Offers a frame with easy statusbar methods, 
-/// find/replace, and allows for file dropping as well.
+/// find/replace, and allows for file dropping.
+/// Also helps in maintaining focus to the base controls
+/// (grid, listview and STC).
 class wxExFrame : public wxFrame
 {
 public:
@@ -49,24 +51,21 @@ public:
  ~wxExFrame();
 
   /// Returns a grid, default returns the focused grid.
-  virtual wxExGrid* GetGrid() {return GetFocusedGrid();};
+  virtual wxExGrid* GetGrid() {return m_FocusGrid;};
 
   /// Returns a listview, default returns the focused listview.
-  virtual wxExListView* GetListView() {return GetFocusedListView();};
+  virtual wxExListView* GetListView() {return m_FocusListView;};
 
   /// Returns an STC, default returns the focused STC.
-  virtual wxExSTC* GetSTC() {return GetFocusedSTC();};
+  virtual wxExSTC* GetSTC() {return m_FocusSTC;};
 
-  /// If the window that has focus is a Grid, then returns that, 
-  /// otherwise returns NULL.
+  /// Gets the focused grid.
   wxExGrid* GetFocusedGrid() {return m_FocusGrid;};
 
-  /// If the window that has focus is a ListView, 
-  /// then returns that, otherwise returns NULL.
+  /// Gets the focused list view.
   wxExListView* GetFocusedListView() {return m_FocusListView;};
 
-  /// If the window that has focus is an STC, then returns that, 
-  /// otherwise returns NULL.
+  /// Gets the focused STC.
   wxExSTC* GetFocusedSTC() {return m_FocusSTC;};
 
   /// Called when a config dialog command event is triggered.
