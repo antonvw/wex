@@ -101,7 +101,7 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  switch (GetVCS())
+  switch (GetVCS(filename))
   {
     case VCS_GIT: 
       return CheckGIT(filename); break;
