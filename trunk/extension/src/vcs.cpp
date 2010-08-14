@@ -103,17 +103,6 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 {
   switch (GetVCS())
   {
-    case VCS_AUTO: 
-      if (CheckSVN(filename))
-      {
-        return true;
-      }
-      else 
-      {
-        return CheckGIT(filename);
-      } 
-      break;
-
     case VCS_GIT: 
       return CheckGIT(filename); break;
 
@@ -322,17 +311,19 @@ wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
   }
 }
 
-long wxExVCS::GetVCS() const
+long wxExVCS::GetVCS(const wxFileName& filename) const
 {
+  const wxExFileName fn = (!filename.IsOk() ? m_FileName: filename);
+  
   long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
 
   if (vcs == VCS_AUTO)
   {
-    if (CheckSVN(m_FileName))
+    if (CheckSVN(fn))
     {
       vcs = VCS_SVN;
     }
-    else if (CheckGIT(m_FileName))
+    else if (CheckGIT(fn))
     {
       vcs = VCS_GIT;
     }
@@ -353,7 +344,6 @@ const wxString wxExVCS::GetVCSName() const
   {
     case VCS_GIT: text = "GIT"; break;
     case VCS_SVN: text = "SVN"; break;
-    case VCS_AUTO: break; // to prevent wxFAIL
     default: wxFAIL;
   }
 
@@ -416,8 +406,6 @@ void wxExVCS::Initialize()
         }
         break;
 
-      case VCS_AUTO: break;
-      
       default: wxFAIL;
     }
 

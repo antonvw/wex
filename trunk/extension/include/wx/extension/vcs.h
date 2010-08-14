@@ -128,7 +128,7 @@ private:
   bool CheckSVN(const wxFileName& fn) const;
   wxExCommand GetType(int command_id) const;
   /// Gets the VCS system used.
-  long GetVCS() const;
+  long GetVCS(const wxFileName& filename = wxFileName()) const;
   const wxString GetVCSName() const;
   void Initialize();
   int ShowDialog(wxWindow* parent);
