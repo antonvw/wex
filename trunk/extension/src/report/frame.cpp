@@ -60,6 +60,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   , m_FiFDialog(NULL)
   , m_TextInFiles(_("In files"))
   , m_TextInFolder(_("In folder"))
+  , m_TextRecursive(_("Recursive"))
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
@@ -132,11 +133,19 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
   wxExLog::Get()->Log(
     wxExFindReplaceData::Get()->GetFindReplaceInfoText(replace));
+    
+  int flags = wxDIR_FILES | wxDIR_HIDDEN;
+  
+  if (wxConfigBase::Get()->ReadBool(m_TextRecursive, false)) 
+  {
+    flags |= wxDIR_DIRS;
+  }
 
   wxExDirTool dir(
     tool,
     wxExConfigFirstOf(m_TextInFolder),
-    wxExConfigFirstOf(m_TextInFiles));
+    wxExConfigFirstOf(m_TextInFiles),
+    flags);
 
   dir.FindFiles();
 
@@ -156,6 +165,7 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
   GetFindString();
 
   std::vector<wxExConfigItem> v;
+
   v.push_back(
     wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
     CONFIG_COMBOBOX, 
@@ -182,12 +192,18 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     true,
     1000));
 
+  v.push_back(wxExConfigItem(
+    m_TextRecursive, 
+    CONFIG_CHECKBOX));
+  
   if (id == ID_REPLACE_IN_FILES) 
   {
     // Match whole word does not work with replace.
     std::set<wxString> s;
+
     s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
     s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
+    
     v.push_back(wxExConfigItem(s));
   }
   else

@@ -139,6 +139,7 @@ private:
 
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
+  const wxString m_TextRecursive;
 
   DECLARE_EVENT_TABLE()
 };
