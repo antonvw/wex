@@ -50,9 +50,6 @@ public:
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
-  /// Shows a find in files dialog and finds or replaces text in files if chosen.
-  int FindInFilesDialog(int id = ID_FIND_IN_FILES);
-
   /// If there is a project somewhere, your implementation should return that one.
   /// Default it returns NULL.
   virtual wxExListViewFile* GetProject() {return NULL;};
@@ -130,6 +127,8 @@ protected:
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
+  /// Shows a find in files dialog and finds or replaces text in files if chosen.
+  int FindInFilesDialog(int id = ID_FIND_IN_FILES);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxExConfigDialog* m_FiFDialog;
