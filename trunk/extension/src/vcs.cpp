@@ -313,7 +313,7 @@ wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
 
 long wxExVCS::GetVCS(const wxFileName& filename) const
 {
-  const wxExFileName fn = (!filename.IsOk() ? m_FileName: filename);
+  const wxFileName fn(!filename.IsOk() ? m_FileName: filename);
   
   long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
 
