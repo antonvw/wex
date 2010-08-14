@@ -939,14 +939,10 @@ bool wxExSTC::FindNext(
     if (GetTargetStart() != GetTargetEnd())
     {
       SetSelection(GetTargetStart(), GetTargetEnd());
-      EnsureVisible(LineFromPosition(GetTargetStart()));
-      EnsureCaretVisible();
     }
-    else
-    {
-      wxFAIL;
-      return false;
-    }
+    
+    EnsureVisible(LineFromPosition(GetTargetStart()));
+    EnsureCaretVisible();
 
     return true;
   }

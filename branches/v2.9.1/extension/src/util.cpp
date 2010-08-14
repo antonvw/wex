@@ -331,7 +331,14 @@ const wxString wxExGetEndOfText(
 
   if (text_out.length() > max_chars)
   {
-    text_out = "..." + text_out.substr(4 + text_out.length() - max_chars);
+    if (4 + text_out.length() - max_chars < text_out.length())
+    {
+      text_out = "..." + text_out.substr(4 + text_out.length() - max_chars);
+    }
+    else
+    {
+      text_out = text.substr(text.length() - max_chars);
+    }
   }
 
   return text_out;

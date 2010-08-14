@@ -119,10 +119,7 @@ public:
   /// Gets the item text using item number and column name.
   const wxString GetItemText(
     long item_number,
-    const wxString& col_name) const {
-    return wxListView::GetItemText(
-      item_number,
-      FindColumn(col_name));};
+    const wxString& col_name) const;
 
   /// Gets the sorted column.
   int GetSortedColumnNo() const {return m_SortedColumnNo;};
