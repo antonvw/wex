@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped v1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-02 19:51+0100\n"
-"PO-Revision-Date: 2010-07-01 20:35+0100\n"
-"Last-Translator: Emma v. Wezenbeek <emmac.vw@gmail.com>\n"
+"POT-Creation-Date: 2010-08-15 09:41+0100\n"
+"PO-Revision-Date: 2010-08-15 09:41+0100\n"
+"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,39 +21,34 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/filedlg.cpp:54
+#: ../src/filedlg.cpp:56
 msgid "Save changes"
 msgstr "Rester les modifications"
 
-#: ../src/filedlg.cpp:55
-#: ../src/filedlg.cpp:73
+#: ../src/filedlg.cpp:57
+#: ../src/filedlg.cpp:75
 msgid "Confirm"
 msgstr "confirmer"
 
-#: ../src/filedlg.cpp:72
+#: ../src/filedlg.cpp:74
 msgid "Save changes to"
 msgstr "enregistrer les modifications apportées"
 
-#: ../src/frame.cpp:265
+#: ../src/frame.cpp:229
 #, fuzzy
 msgid "Find"
 msgstr "barre de recherche"
 
-#: ../src/frame.cpp:288
+#: ../src/frame.cpp:252
 msgid "Replace"
 msgstr "remplacer"
 
-#: ../src/frame.cpp:453
-#, fuzzy
-msgid "Enter Lexer"
-msgstr "Lexer"
-
-#: ../src/frame.cpp:498
+#: ../src/frame.cpp:463
 #, fuzzy
 msgid "Synchronized"
 msgstr "Synchronizeer gewijzigde bestanden"
 
-#: ../src/frame.cpp:498
+#: ../src/frame.cpp:463
 msgid "Modified"
 msgstr "modifié"
 
@@ -125,110 +120,101 @@ msgstr "stule indicateur illégales: %s  à la ligne: %d"
 msgid "Illegal indicator on line: %d"
 msgstr ""
 
-#: ../src/lexer.cpp:90
-msgid "Folding"
+#: ../src/lexer.cpp:62
+msgid "Lexer is not known"
 msgstr ""
 
-#: ../src/lexer.cpp:93
-#, fuzzy
-msgid "Fold Flags"
-msgstr "Vlaggen"
-
-#: ../src/lexer.cpp:295
+#: ../src/lexer.cpp:338
 #, c-format
 msgid "Undefined styles tag: %s on line: %d"
 msgstr ""
 
-#: ../src/lexer.cpp:350
+#: ../src/lexer.cpp:359
+#, c-format
+msgid "Missing lexer on line: %d"
+msgstr ""
+
+#: ../src/lexer.cpp:403
 #, c-format
 msgid "Keywords could not be set on line: %d"
 msgstr ""
 
-#: ../src/lexer.cpp:371
+#: ../src/lexer.cpp:424
 #, c-format
 msgid "Undefined lexer tag: %s on line: %d"
 msgstr ""
 
-#: ../src/lexer.cpp:381
-#, c-format
-msgid "Illegal lexer on line: %d"
-msgstr ""
-
-#: ../src/lexer.cpp:481
-msgid "Lexer is not known"
-msgstr ""
-
-#: ../src/lexers.cpp:78
+#: ../src/lexers.cpp:70
 #, fuzzy
 msgid "All Files"
 msgstr "fichiers"
 
-#: ../src/lexers.cpp:268
+#: ../src/lexers.cpp:249
 #, c-format
 msgid "Duplicate default style: %s on line: %d"
 msgstr ""
 
-#: ../src/lexers.cpp:284
+#: ../src/lexers.cpp:265
 #, c-format
 msgid "Undefined global tag: %s on line: %d"
 msgstr ""
 
-#: ../src/lexers.cpp:315
+#: ../src/lexers.cpp:296
 #, c-format
 msgid "Macro: %s on line: %d already exists"
 msgstr ""
 
-#: ../src/lexers.cpp:332
+#: ../src/lexers.cpp:313
 #, c-format
 msgid "Macro style: %s on line: %d already exists"
 msgstr ""
 
-#: ../src/lexers.cpp:344
+#: ../src/lexers.cpp:325
 #, c-format
 msgid "Undefined macro tag: %s on line: %d"
 msgstr ""
 
-#: ../src/lexers.cpp:372
+#: ../src/lexers.cpp:353
 #, c-format
 msgid "Undefined properties tag: %s on line: %d"
 msgstr ""
 
-#: ../src/lexers.cpp:435
-#: ../src/lexers.cpp:437
+#: ../src/lexers.cpp:416
+#: ../src/lexers.cpp:418
 #, fuzzy
 msgid "In files"
 msgstr "&Zoeken in bestanden"
 
-#: ../src/lexers.cpp:440
-#: ../src/lexers.cpp:442
+#: ../src/lexers.cpp:421
+#: ../src/lexers.cpp:423
 msgid "Add what"
 msgstr ""
 
-#: ../src/lexers.cpp:473
+#: ../src/lexers.cpp:456
 msgid "Input"
 msgstr ""
 
-#: ../src/listview.cpp:146
+#: ../src/listview.cpp:169
 msgid "List Font"
 msgstr "liste des polices"
 
-#: ../src/listview.cpp:226
+#: ../src/listview.cpp:246
 msgid "Sort On"
 msgstr ""
 
-#: ../src/listview.cpp:836
+#: ../src/listview.cpp:876
 msgid "Sorted on"
 msgstr ""
 
-#: ../src/managedframe.cpp:43
+#: ../src/managedframe.cpp:44
 msgid "Toolbar"
 msgstr "barre d'outils"
 
-#: ../src/managedframe.cpp:46
+#: ../src/managedframe.cpp:47
 msgid "Findbar"
 msgstr "barre de recherche"
 
-#: ../src/managedframe.cpp:60
+#: ../src/managedframe.cpp:61
 msgid "Editor Options"
 msgstr "options de l'éditeur"
 
@@ -242,37 +228,37 @@ msgstr ""
 msgid "Illegal marker on line: %d"
 msgstr ""
 
-#: ../src/menu.cpp:44
+#: ../src/menu.cpp:85
 #, fuzzy
 msgid "&Menubar"
 msgstr "&Zoekbalk"
 
-#: ../src/menu.cpp:45
+#: ../src/menu.cpp:86
 msgid "&Statusbar"
 msgstr "&Statut"
 
-#: ../src/menu.cpp:46
+#: ../src/menu.cpp:87
 msgid "&Toolbar"
 msgstr "&Barre d'outils"
 
-#: ../src/menu.cpp:47
+#: ../src/menu.cpp:88
 msgid "&Findbar"
 msgstr "&Barre de recherche"
 
-#: ../src/menu.cpp:132
+#: ../src/menu.cpp:119
 #, fuzzy
 msgid "&Deselect All"
 msgstr "&Selecteren"
 
-#: ../src/menu.cpp:143
+#: ../src/menu.cpp:130
 msgid "&Invert"
 msgstr ""
 
-#: ../src/menu.cpp:156
+#: ../src/menu.cpp:143
 msgid "Page &Setup"
 msgstr ""
 
-#: ../src/menu.cpp:220
+#: ../src/menu.cpp:207
 #, fuzzy
 msgid "&Tools"
 msgstr "&Werkbalk"
@@ -303,360 +289,379 @@ msgstr ""
 msgid "Illegal property on line: %d"
 msgstr ""
 
-#: ../src/shell.cpp:192
+#: ../src/shell.cpp:193
 msgid "event not found"
 msgstr ""
 
-#: ../src/stc.cpp:282
-msgid "&Uppercase\tF11"
-msgstr ""
-
-#: ../src/stc.cpp:283
-msgid "&Lowercase\tF12"
-msgstr ""
-
-#: ../src/stc.cpp:291
-#, fuzzy
-msgid "&Sort"
-msgstr "&Automatisch sorteren"
-
-#: ../src/stc.cpp:295
-#, fuzzy
-msgid "&Selection"
-msgstr "&Selecteren"
-
-#: ../src/stc.cpp:314
-msgid "&Toggle Fold\tCtrl+T"
-msgstr ""
-
-#: ../src/stc.cpp:315
-msgid "&Fold All Lines\tF9"
-msgstr ""
-
-#: ../src/stc.cpp:316
-msgid "&Unfold All Lines\tF10"
-msgstr ""
-
-#: ../src/stc.cpp:437
-#, fuzzy
-msgid "Control Character"
-msgstr "&Controle karakter"
-
-#: ../src/stc.cpp:497
-#: ../src/stc.cpp:1006
-msgid "Document is readonly"
-msgstr ""
-
-#: ../src/stc.cpp:993
-msgid "Macro played back"
-msgstr ""
-
-#: ../src/stc.cpp:1352
-#, c-format
-msgid "Replaced: %d occurrences of: %s"
-msgstr ""
-
-#: ../src/stc.cpp:1411
-msgid "Start Of Sequence"
-msgstr ""
-
-#: ../src/stc.cpp:1423
-msgid "End Of Sequence"
-msgstr ""
-
-#: ../src/stc.cpp:1433
-msgid "Start and end sequence should have same length"
-msgstr ""
-
-#: ../src/stc.cpp:1444
-#, c-format
-msgid "Generate %ld lines"
-msgstr ""
-
-#: ../src/stc.cpp:1515
-#: ../src/stcfile.cpp:227
-#: ../src/stcfile.cpp:340
-#, fuzzy
-msgid "Auto fold"
-msgstr "&Automatisch sorteren"
-
-#: ../src/stc.cpp:1649
-msgid "Macro recording"
-msgstr ""
-
-#: ../src/stc.cpp:1662
-msgid "Macro is recorded"
-msgstr ""
-
-#: ../src/stcfile.cpp:150
+#: ../src/stc.cpp:362
 #, fuzzy
 msgid "Open"
 msgstr "&Ouvrir"
 
-#: ../src/stcfile.cpp:162
+#: ../src/stc.cpp:374
 msgid "Comparator"
 msgstr "Comparateur"
 
-#: ../src/stcfile.cpp:165
+#: ../src/stc.cpp:377
 msgid "&Compare Recent Version"
 msgstr ""
 
-#: ../src/stcfile.cpp:174
+#: ../src/stc.cpp:386
 #, fuzzy
 msgid "&Open In Browser"
 msgstr "&Overzicht"
 
-#: ../src/stcfile.cpp:190
+#: ../src/stc.cpp:411
+msgid "&Uppercase\tF11"
+msgstr ""
+
+#: ../src/stc.cpp:412
+msgid "&Lowercase\tF12"
+msgstr ""
+
+#: ../src/stc.cpp:420
+#, fuzzy
+msgid "&Sort"
+msgstr "&Automatisch sorteren"
+
+#: ../src/stc.cpp:424
+#, fuzzy
+msgid "&Selection"
+msgstr "&Selecteren"
+
+#: ../src/stc.cpp:443
+msgid "&Toggle Fold\tCtrl+T"
+msgstr ""
+
+#: ../src/stc.cpp:444
+msgid "&Fold All Lines\tF9"
+msgstr ""
+
+#: ../src/stc.cpp:445
+msgid "&Unfold All Lines\tF10"
+msgstr ""
+
+#: ../src/stc.cpp:566
 msgid "Setting"
 msgstr ""
 
-#: ../src/stcfile.cpp:193
-#: ../src/stcfile.cpp:321
+#: ../src/stc.cpp:569
+#: ../src/stc.cpp:733
 msgid "End of line"
 msgstr ""
 
-#: ../src/stcfile.cpp:194
-#: ../src/stcfile.cpp:317
+#: ../src/stc.cpp:570
+#: ../src/stc.cpp:729
 msgid "Line numbers"
 msgstr ""
 
-#: ../src/stcfile.cpp:195
-#: ../src/stcfile.cpp:320
+#: ../src/stc.cpp:571
+#: ../src/stc.cpp:732
 msgid "Use tabs"
 msgstr ""
 
-#: ../src/stcfile.cpp:196
-#: ../src/stcfile.cpp:326
+#: ../src/stc.cpp:572
+#: ../src/stc.cpp:741
 msgid "vi mode"
 msgstr ""
 
-#: ../src/stcfile.cpp:200
+#: ../src/stc.cpp:576
 msgid "Invisible"
 msgstr ""
 
-#: ../src/stcfile.cpp:201
+#: ../src/stc.cpp:578
 msgid "Invisible after ident"
 msgstr ""
 
-#: ../src/stcfile.cpp:202
+#: ../src/stc.cpp:579
 msgid "Visible always"
 msgstr ""
 
-#: ../src/stcfile.cpp:203
-#: ../src/stcfile.cpp:322
+#: ../src/stc.cpp:580
+#: ../src/stc.cpp:735
 msgid "Whitespace"
 msgstr ""
 
-#: ../src/stcfile.cpp:206
-#: ../src/stcfile.cpp:212
-#: ../src/stcfile.cpp:222
+#: ../src/stc.cpp:583
+#: ../src/stc.cpp:589
+#: ../src/stc.cpp:599
 msgid "None"
 msgstr ""
 
-#: ../src/stcfile.cpp:207
+#: ../src/stc.cpp:584
 msgid "Word"
 msgstr ""
 
-#: ../src/stcfile.cpp:208
+#: ../src/stc.cpp:585
 msgid "Char"
 msgstr ""
 
-#: ../src/stcfile.cpp:209
-#: ../src/stcfile.cpp:323
+#: ../src/stc.cpp:586
+#: ../src/stc.cpp:736
 msgid "Wrap line"
 msgstr ""
 
-#: ../src/stcfile.cpp:213
+#: ../src/stc.cpp:590
 msgid "End"
 msgstr ""
 
-#: ../src/stcfile.cpp:214
+#: ../src/stc.cpp:591
 #, fuzzy
 msgid "Start"
 msgstr "&Stat"
 
-#: ../src/stcfile.cpp:215
-#: ../src/stcfile.cpp:324
+#: ../src/stc.cpp:592
+#: ../src/stc.cpp:738
 msgid "Wrap visual flags"
 msgstr ""
 
-#: ../src/stcfile.cpp:219
-#: ../src/stcfile.cpp:245
-#: ../src/stcfile.cpp:247
-#: ../src/stcfile.cpp:301
+#: ../src/stc.cpp:596
+#: ../src/stc.cpp:631
+#: ../src/stc.cpp:635
+#: ../src/stc.cpp:704
 msgid "Edge column"
 msgstr ""
 
-#: ../src/stcfile.cpp:219
-#: ../src/stcfile.cpp:225
+#: ../src/stc.cpp:596
+#: ../src/stc.cpp:602
 msgid "Edge"
 msgstr ""
 
-#: ../src/stcfile.cpp:223
+#: ../src/stc.cpp:600
 #, fuzzy
 msgid "Line"
 msgstr "lignes"
 
-#: ../src/stcfile.cpp:224
+#: ../src/stc.cpp:601
 msgid "Background"
 msgstr ""
 
-#: ../src/stcfile.cpp:225
-#: ../src/stcfile.cpp:304
+#: ../src/stc.cpp:602
+#: ../src/stc.cpp:707
 msgid "Edge line"
 msgstr ""
 
-#: ../src/stcfile.cpp:228
-#: ../src/stcfile.cpp:308
+#: ../src/stc.cpp:604
+#: ../src/stc.cpp:757
+#: ../src/stc.cpp:2165
+#, fuzzy
+msgid "Auto fold"
+msgstr "&Automatisch sorteren"
+
+#: ../src/stc.cpp:604
+#: ../src/stc.cpp:606
+#: ../src/stc.cpp:622
+#: ../src/stc.cpp:639
+#: ../src/stc.cpp:721
+#: ../src/stc.cpp:2153
+msgid "Folding"
+msgstr ""
+
+#: ../src/stc.cpp:605
+#: ../src/stc.cpp:714
 msgid "Indentation guide"
 msgstr ""
 
-#: ../src/stcfile.cpp:233
+#: ../src/stc.cpp:612
 msgid "Line before expanded"
 msgstr ""
 
-#: ../src/stcfile.cpp:234
+#: ../src/stc.cpp:614
 msgid "Line before contracted"
 msgstr ""
 
-#: ../src/stcfile.cpp:235
+#: ../src/stc.cpp:616
 msgid "Line after expanded"
 msgstr ""
 
-#: ../src/stcfile.cpp:236
+#: ../src/stc.cpp:618
 msgid "Line after contracted"
 msgstr ""
 
-#: ../src/stcfile.cpp:239
-#: ../src/stcfile.cpp:305
+#: ../src/stc.cpp:621
+#: ../src/stc.cpp:710
 msgid "Fold flags"
 msgstr "Drapeaux"
 
-#: ../src/stcfile.cpp:241
-#: ../src/stcfile.cpp:293
-#: ../src/stcfile.cpp:299
+#: ../src/stc.cpp:624
+#: ../src/stc.cpp:690
+#: ../src/stc.cpp:696
 msgid "Calltip"
 msgstr ""
 
-#: ../src/stcfile.cpp:241
-#: ../src/stcfile.cpp:242
+#: ../src/stc.cpp:624
+#: ../src/stc.cpp:626
 #, fuzzy
 msgid "Colour"
 msgstr "liste des couleurs"
 
-#: ../src/stcfile.cpp:242
-#: ../src/stcfile.cpp:303
+#: ../src/stc.cpp:626
+#: ../src/stc.cpp:706
 msgid "Edge colour"
 msgstr ""
 
-#: ../src/stcfile.cpp:245
-#: ../src/stcfile.cpp:319
+#: ../src/stc.cpp:629
+#: ../src/stc.cpp:731
 msgid "Tab width"
 msgstr ""
 
-#: ../src/stcfile.cpp:245
-#: ../src/stcfile.cpp:247
-#: ../src/stcfile.cpp:248
-#: ../src/stcfile.cpp:249
-#: ../src/stcfile.cpp:250
+#: ../src/stc.cpp:631
+#: ../src/stc.cpp:635
+#: ../src/stc.cpp:637
+#: ../src/stc.cpp:639
+#: ../src/stc.cpp:641
 msgid "Margin"
 msgstr ""
 
-#: ../src/stcfile.cpp:247
-#: ../src/stcfile.cpp:307
+#: ../src/stc.cpp:633
+#: ../src/stc.cpp:712
 msgid "Indent"
 msgstr ""
 
-#: ../src/stcfile.cpp:248
-#: ../src/stcfile.cpp:310
+#: ../src/stc.cpp:637
+#: ../src/stc.cpp:718
 msgid "Divider"
 msgstr ""
 
-#: ../src/stcfile.cpp:250
-#: ../src/stcfile.cpp:314
+#: ../src/stc.cpp:641
+#: ../src/stc.cpp:724
 #, fuzzy
 msgid "Line number"
 msgstr "bestand:regel nummer"
 
-#: ../src/stcfile.cpp:252
-#: ../src/stcfile.cpp:329
+#: ../src/stc.cpp:645
+#: ../src/stc.cpp:744
 msgid "Include directory"
 msgstr ""
 
-#: ../src/stcfile.cpp:252
+#: ../src/stc.cpp:646
 #, fuzzy
 msgid "Directory"
 msgstr "Histoire"
 
-#: ../src/stcfile.cpp:390
+#: ../src/stc.cpp:778
+#, fuzzy
+msgid "Control Character"
+msgstr "&Controle karakter"
+
+#: ../src/stc.cpp:846
+msgid "Readonly attribute changed"
+msgstr ""
+
+#: ../src/stc.cpp:858
+#: ../src/stc.cpp:1492
+msgid "Document is readonly"
+msgstr ""
+
+#: ../src/stc.cpp:1444
+msgid "Macro played back"
+msgstr ""
+
+#: ../src/stc.cpp:1602
+#, c-format
+msgid "file: %s does not exist"
+msgstr ""
+
+#: ../src/stc.cpp:1985
+#, c-format
+msgid "Replaced: %d occurrences of: %s"
+msgstr ""
+
+#: ../src/stc.cpp:2046
+msgid "Start Of Sequence"
+msgstr ""
+
+#: ../src/stc.cpp:2058
+msgid "End Of Sequence"
+msgstr ""
+
+#: ../src/stc.cpp:2068
+msgid "Start and end sequence should have same length"
+msgstr ""
+
+#: ../src/stc.cpp:2079
+#, c-format
+msgid "Generate %ld lines"
+msgstr ""
+
+#: ../src/stc.cpp:2156
+#, fuzzy
+msgid "Fold Flags"
+msgstr "Vlaggen"
+
+#: ../src/stc.cpp:2305
+msgid "Macro recording"
+msgstr ""
+
+#: ../src/stc.cpp:2320
+msgid "Macro is recorded"
+msgstr ""
+
+#: ../src/stcfile.cpp:75
 #, fuzzy
 msgid "Opened"
 msgstr "&Ouvrir"
 
-#: ../src/stcfile.cpp:440
+#: ../src/stcfile.cpp:119
 msgid "Saved"
 msgstr ""
 
-#: ../src/stcfile.cpp:454
-msgid "Readonly attribute changed"
-msgstr ""
-
-#: ../src/style.cpp:74
+#: ../src/style.cpp:75
 #, c-format
 msgid "Illegal style on line: %d"
 msgstr ""
 
-#: ../src/style.cpp:94
+#: ../src/style.cpp:97
 #, c-format
 msgid "Illegal style: %s"
 msgstr ""
 
-#: ../src/textfile.cpp:218
-#: ../src/report/listview.cpp:251
+#: ../src/textfile.cpp:224
+#: ../src/report/listview.cpp:243
 #: ../src/report/textfile.cpp:260
 msgid "Comments"
 msgstr "teneur"
 
-#: ../src/textfile.cpp:220
-#: ../src/textfile.cpp:461
-#: ../src/textfile.cpp:588
-#: ../src/report/listview.cpp:252
+#: ../src/textfile.cpp:226
+#: ../src/textfile.cpp:466
+#: ../src/textfile.cpp:593
+#: ../src/report/listview.cpp:244
 #: ../src/report/textfile.cpp:261
 msgid "Comment Size"
 msgstr ""
 
-#: ../src/textfile.cpp:517
-#: ../src/report/listview.cpp:250
+#: ../src/textfile.cpp:522
+#: ../src/report/listview.cpp:242
 #: ../src/report/textfile.cpp:259
 msgid "Words Of Code"
 msgstr ""
 
-#: ../src/textfile.cpp:564
 #: ../src/textfile.cpp:569
-#: ../src/report/listview.cpp:248
+#: ../src/textfile.cpp:574
+#: ../src/report/listview.cpp:240
 #: ../src/report/textfile.cpp:257
 msgid "Lines Of Code"
 msgstr ""
 
-#: ../src/textfile.cpp:580
-#: ../src/report/listview.cpp:249
+#: ../src/textfile.cpp:585
+#: ../src/report/listview.cpp:241
 #: ../src/report/textfile.cpp:258
 #, fuzzy
 msgid "Empty Lines"
 msgstr "lignes"
 
-#: ../src/textfile.cpp:644
+#: ../src/textfile.cpp:649
 #: ../src/tool.cpp:88
 #: ../src/tool.cpp:95
 msgid "Files"
 msgstr "fichiers"
 
-#: ../src/textfile.cpp:648
+#: ../src/textfile.cpp:653
 msgid "Total Size"
 msgstr ""
 
-#: ../src/textfile.cpp:649
-#: ../src/report/listview.cpp:247
+#: ../src/textfile.cpp:654
+#: ../src/report/listview.cpp:239
 #: ../src/report/textfile.cpp:256
 msgid "Lines"
 msgstr "lignes"
@@ -711,7 +716,7 @@ msgid "Actions Completed"
 msgstr ""
 
 #: ../src/tool.cpp:88
-#: ../src/report/listviewfile.cpp:138
+#: ../src/report/listviewfile.cpp:119
 #, fuzzy
 msgid "file(s)"
 msgstr "fichiers"
@@ -733,357 +738,376 @@ msgstr "&Volgende zoeken\tF3"
 msgid "Find previous"
 msgstr ""
 
-#: ../src/util.cpp:190
+#: ../src/toolbar.cpp:233
+msgid "Search case sensitive"
+msgstr ""
+
+#: ../src/toolbar.cpp:234
+#, fuzzy
+msgid "Search matching words"
+msgstr "regarder dans le bas"
+
+#: ../src/toolbar.cpp:235
+#, fuzzy
+msgid "Search using regular expressions"
+msgstr "expression régulière"
+
+#: ../src/util.cpp:191
 #, fuzzy
 msgid "Compared"
 msgstr "Vergelijker"
 
-#: ../src/util.cpp:220
+#: ../src/util.cpp:221
 msgid "bottom"
 msgstr ""
 
-#: ../src/util.cpp:220
+#: ../src/util.cpp:221
 msgid "top"
 msgstr ""
 
-#: ../src/util.cpp:225
+#: ../src/util.cpp:226
 msgid "hit"
 msgstr ""
 
-#: ../src/util.cpp:234
+#: ../src/util.cpp:235
 msgid "not found"
 msgstr ""
 
-#: ../src/util.cpp:255
+#: ../src/util.cpp:256
 #: ../src/report/util.cpp:42
 msgid "No version information found"
 msgstr ""
 
-#: ../src/util.cpp:318
+#: ../src/util.cpp:319
 #: ../src/report/util.cpp:100
 msgid "No files found"
 msgstr ""
 
-#: ../src/util.cpp:501
+#: ../src/util.cpp:506
 msgid "Select Files"
 msgstr "les fichiers de projet"
 
-#: ../src/util.cpp:546
+#: ../src/util.cpp:551
 msgid "Printout"
 msgstr ""
 
-#: ../src/util.cpp:552
+#: ../src/util.cpp:557
 msgid "Page @PAGENUM@ of @PAGESCNT@"
 msgstr ""
 
-#: ../src/util.cpp:565
+#: ../src/util.cpp:572
 msgid "Printed"
 msgstr ""
 
-#: ../src/vcs.cpp:125
-#: ../src/vcs.cpp:427
-#: ../src/vcs.cpp:472
+#: ../src/vcs.cpp:130
+#: ../src/vcs.cpp:470
+#: ../src/vcs.cpp:515
 msgid "Base folder"
 msgstr ""
 
-#: ../src/vcs.cpp:129
-#: ../src/vcs.cpp:436
+#: ../src/vcs.cpp:134
+#: ../src/vcs.cpp:479
 msgid "Path"
 msgstr ""
 
-#: ../src/vcs.cpp:151
-#: ../src/vcs.cpp:418
+#: ../src/vcs.cpp:156
+#: ../src/vcs.cpp:461
 msgid "Revision comment"
 msgstr ""
 
-#: ../src/vcs.cpp:158
-#: ../src/vcs.cpp:454
+#: ../src/vcs.cpp:163
+#: ../src/vcs.cpp:497
 msgid "Subcommand"
 msgstr ""
 
-#: ../src/vcs.cpp:170
-#: ../src/vcs.cpp:258
-#: ../src/vcs.cpp:446
-#: ../src/vcs.cpp:449
+#: ../src/vcs.cpp:175
+#: ../src/vcs.cpp:271
+#: ../src/vcs.cpp:489
+#: ../src/vcs.cpp:492
 msgid "Flags"
 msgstr "drapeaux"
 
-#: ../src/vcs.cpp:191
+#: ../src/vcs.cpp:202
 msgid "path is empty"
 msgstr ""
 
-#: ../src/vcs.cpp:212
-#: ../src/report/process.cpp:226
+#: ../src/vcs.cpp:225
+#: ../src/report/process.cpp:216
 #, fuzzy
 msgid "Cannot execute"
 msgstr "ne peut pas ouvrir le fichier"
 
-#: ../src/vi.cpp:73
-#: ../src/vi.cpp:109
+#: ../src/vi.cpp:75
+#: ../src/vi.cpp:111
 #, c-format
 msgid "%d fewer lines"
 msgstr ""
 
-#: ../src/vi.cpp:823
+#: ../src/vi.cpp:822
 #, c-format
 msgid "%d lines moved"
 msgstr ""
 
-#: ../src/vi.cpp:1151
-#: ../src/vi.cpp:1179
+#: ../src/vi.cpp:1211
+#: ../src/vi.cpp:1240
 #, c-format
 msgid "%d lines yanked"
 msgstr ""
 
 #: ../src/report/dir.cpp:44
-#: ../src/report/listviewfile.cpp:75
+#: ../src/report/listviewfile.cpp:60
 msgid "Add folders"
 msgstr ""
 
 #: ../src/report/frame.cpp:62
-#: ../src/report/listviewfile.cpp:78
+#: ../src/report/listviewfile.cpp:63
 msgid "In folder"
 msgstr ""
 
-#: ../src/report/frame.cpp:80
+#: ../src/report/frame.cpp:63
+#: ../src/report/listviewfile.cpp:61
+msgid "Recursive"
+msgstr "récursive"
+
+#: ../src/report/frame.cpp:81
 #, c-format
 msgid "Executed %ld SQL queries in"
 msgstr ""
 
-#: ../src/report/frame.cpp:81
+#: ../src/report/frame.cpp:82
 msgid "&SQL Query Run"
 msgstr ""
 
-#: ../src/report/frame.cpp:85
+#: ../src/report/frame.cpp:86
 #, c-format
 msgid "Reported %ld SQL queries in"
 msgstr ""
 
-#: ../src/report/frame.cpp:86
+#: ../src/report/frame.cpp:87
 msgid "Report SQL &Query"
 msgstr ""
 
-#: ../src/report/frame.cpp:110
+#: ../src/report/frame.cpp:111
 #, c-format
 msgid "Removed not existing file: %s from history"
 msgstr ""
 
-#: ../src/report/frame.cpp:200
+#: ../src/report/frame.cpp:216
 msgid "Replace In Files"
 msgstr "Remplacer dans les fichiers"
 
-#: ../src/report/frame.cpp:200
+#: ../src/report/frame.cpp:216
 msgid "Find In Files"
 msgstr "&Rechercher dans les fichiers"
 
-#: ../src/report/frame.cpp:215
+#: ../src/report/frame.cpp:231
 msgid "Process is running"
 msgstr ""
 
-#: ../src/report/frame.cpp:275
+#: ../src/report/frame.cpp:289
 #, fuzzy
 msgid "Cannot locate file"
 msgstr "ne peut pas ouvrir le fichier"
 
-#: ../src/report/frame.cpp:334
+#: ../src/report/frame.cpp:348
 msgid "Cancelled"
 msgstr ""
 
-#: ../src/report/frame.cpp:546
+#: ../src/report/frame.cpp:585
 msgid "Open &Recent"
 msgstr "Ouvrez&récents"
 
 #: ../src/report/listitem.cpp:30
 #: ../src/report/listitem.cpp:32
 #: ../src/report/listitem.cpp:54
-#: ../src/report/listview.cpp:165
-#: ../src/report/listview.cpp:172
-#: ../src/report/listview.cpp:239
-#: ../src/report/listview.cpp:274
-#: ../src/report/listview.cpp:665
+#: ../src/report/listview.cpp:157
+#: ../src/report/listview.cpp:164
+#: ../src/report/listview.cpp:231
+#: ../src/report/listview.cpp:266
+#: ../src/report/listview.cpp:699
 #, fuzzy
 msgid "File Name"
 msgstr "fichier enregistrer sous"
 
 #: ../src/report/listitem.cpp:31
-#: ../src/report/listitem.cpp:173
-#: ../src/report/listview.cpp:297
-#: ../src/report/listview.cpp:328
+#: ../src/report/listitem.cpp:167
+#: ../src/report/listview.cpp:289
+#: ../src/report/listview.cpp:327
 msgid "In Folder"
 msgstr ""
 
 #: ../src/report/listitem.cpp:34
-#: ../src/report/listitem.cpp:169
-#: ../src/report/listview.cpp:298
-#: ../src/report/listview.cpp:327
+#: ../src/report/listitem.cpp:163
+#: ../src/report/listview.cpp:290
+#: ../src/report/listview.cpp:326
 #: ../src/report/listview.cpp:367
-#: ../src/report/listview.cpp:689
-#: ../src/report/listview.cpp:693
+#: ../src/report/listview.cpp:724
+#: ../src/report/listview.cpp:728
 #, fuzzy
 msgid "Type"
 msgstr "type de fichier"
 
-#: ../src/report/listitem.cpp:148
+#: ../src/report/listitem.cpp:142
 msgid "List Colour"
 msgstr "liste des couleurs"
 
-#: ../src/report/listitem.cpp:174
-#: ../src/report/listview.cpp:299
-#: ../src/report/listview.cpp:329
+#: ../src/report/listitem.cpp:168
+#: ../src/report/listview.cpp:291
+#: ../src/report/listview.cpp:328
 msgid "Size"
 msgstr ""
 
-#: ../src/report/listitem.cpp:184
-#: ../src/report/listview.cpp:281
+#: ../src/report/listitem.cpp:178
+#: ../src/report/listview.cpp:273
 msgid "Revision"
 msgstr ""
 
-#: ../src/report/listitem.cpp:185
-#: ../src/report/listview.cpp:278
+#: ../src/report/listitem.cpp:179
+#: ../src/report/listview.cpp:270
 msgid "Date"
 msgstr ""
 
-#: ../src/report/listitem.cpp:186
-#: ../src/report/listview.cpp:279
+#: ../src/report/listitem.cpp:180
+#: ../src/report/listview.cpp:271
 msgid "Initials"
 msgstr ""
 
-#: ../src/report/listitem.cpp:187
-#: ../src/report/listview.cpp:277
+#: ../src/report/listitem.cpp:181
+#: ../src/report/listview.cpp:269
 msgid "Revision Comment"
 msgstr ""
 
-#: ../src/report/listview.cpp:141
+#: ../src/report/listview.cpp:137
 msgid "&Build RBS File"
 msgstr ""
 
-#: ../src/report/listview.cpp:188
+#: ../src/report/listview.cpp:180
 msgid "File Count"
 msgstr ""
 
-#: ../src/report/listview.cpp:189
+#: ../src/report/listview.cpp:181
 msgid "Find Results"
 msgstr ""
 
-#: ../src/report/listview.cpp:190
+#: ../src/report/listview.cpp:182
 msgid "History"
 msgstr "Histoire"
 
-#: ../src/report/listview.cpp:191
-#: ../src/report/listview.cpp:269
+#: ../src/report/listview.cpp:183
+#: ../src/report/listview.cpp:261
 msgid "Keywords"
 msgstr ""
 
-#: ../src/report/listview.cpp:192
+#: ../src/report/listview.cpp:184
 #, fuzzy
 msgid "Process Output"
 msgstr "&Proces"
 
-#: ../src/report/listview.cpp:193
+#: ../src/report/listview.cpp:185
 #: ../src/report/listview.cpp:984
 #: ../src/report/textfile.cpp:152
 #, fuzzy
 msgid "File"
 msgstr "fichiers"
 
-#: ../src/report/listview.cpp:194
+#: ../src/report/listview.cpp:186
 msgid "Replace Results"
 msgstr "Remplacer des résultats"
 
-#: ../src/report/listview.cpp:195
+#: ../src/report/listview.cpp:187
 msgid "Revisions"
 msgstr ""
 
-#: ../src/report/listview.cpp:196
+#: ../src/report/listview.cpp:188
 msgid "SQL Queries"
 msgstr ""
 
-#: ../src/report/listview.cpp:197
+#: ../src/report/listview.cpp:189
 msgid "Version List"
 msgstr ""
 
-#: ../src/report/listview.cpp:257
-#: ../src/report/listview.cpp:703
+#: ../src/report/listview.cpp:249
+#: ../src/report/listview.cpp:738
 #: ../src/report/textfile.cpp:218
 msgid "Match"
 msgstr ""
 
-#: ../src/report/listview.cpp:258
-#: ../src/report/listview.cpp:273
-#: ../src/report/listview.cpp:280
-#: ../src/report/listview.cpp:286
-#: ../src/report/listview.cpp:698
-#: ../src/report/process.cpp:127
+#: ../src/report/listview.cpp:250
+#: ../src/report/listview.cpp:265
+#: ../src/report/listview.cpp:272
+#: ../src/report/listview.cpp:278
+#: ../src/report/listview.cpp:733
+#: ../src/report/process.cpp:118
 #: ../src/report/textfile.cpp:210
 #, fuzzy
 msgid "Line No"
 msgstr "lignes"
 
-#: ../src/report/listview.cpp:284
+#: ../src/report/listview.cpp:276
 #: ../src/report/textfile.cpp:228
 msgid "Run Time"
 msgstr ""
 
-#: ../src/report/listview.cpp:285
+#: ../src/report/listview.cpp:277
 #: ../src/report/textfile.cpp:227
 msgid "Query"
 msgstr ""
 
-#: ../src/report/listview.cpp:293
-#: ../src/report/listview.cpp:702
+#: ../src/report/listview.cpp:285
+#: ../src/report/listview.cpp:737
 #: ../src/report/textfile.cpp:215
 msgid "Replaced"
 msgstr ""
 
-#: ../src/report/listview.cpp:556
+#: ../src/report/listview.cpp:549
 msgid "&Open"
 msgstr "&Ouvrir"
 
-#: ../src/report/listview.cpp:565
+#: ../src/report/listview.cpp:559
 msgid "C&ompare"
 msgstr "C&omparateur"
 
-#: ../src/report/listview.cpp:573
+#: ../src/report/listview.cpp:567
 msgid "&Make"
 msgstr "&Faire"
 
-#: ../src/report/listview.cpp:595
+#: ../src/report/listview.cpp:589
 msgid "&Compare With"
 msgstr "&Comparer avec"
 
-#: ../src/report/listview.cpp:614
+#: ../src/report/listview.cpp:608
 msgid "&Version List"
 msgstr ""
 
-#: ../src/report/listview.cpp:659
+#: ../src/report/listview.cpp:693
 msgid "Replace In"
 msgstr "Remplacer dans les fichiers"
 
-#: ../src/report/listview.cpp:660
+#: ../src/report/listview.cpp:694
 msgid "Find In"
 msgstr "&Rechercher dans les fichiers"
 
-#: ../src/report/listview.cpp:669
+#: ../src/report/listview.cpp:703
 msgid "Selection"
 msgstr "&Sélectionner"
 
-#: ../src/report/listview.cpp:688
+#: ../src/report/listview.cpp:723
 #, fuzzy
 msgid "Folder Type"
 msgstr "type de fichier"
 
-#: ../src/report/listview.cpp:938
-#: ../src/report/listview.cpp:943
+#: ../src/report/listview.cpp:939
+#: ../src/report/listview.cpp:944
 #, fuzzy
 msgid "RBS File"
 msgstr "fichiers"
 
-#: ../src/report/listview.cpp:939
-#: ../src/report/listview.cpp:954
+#: ../src/report/listview.cpp:940
+#: ../src/report/listview.cpp:955
 msgid "RBS Pattern"
 msgstr ""
 
-#: ../src/report/listview.cpp:940
+#: ../src/report/listview.cpp:941
 msgid "Build RBS File"
 msgstr ""
 
@@ -1091,57 +1115,51 @@ msgstr ""
 msgid "generated"
 msgstr ""
 
-#: ../src/report/listviewfile.cpp:74
+#: ../src/report/listviewfile.cpp:59
 msgid "Add files"
 msgstr ""
 
-#: ../src/report/listviewfile.cpp:76
-msgid "Recursive"
-msgstr "récursive"
-
-#: ../src/report/listviewfile.cpp:138
+#: ../src/report/listviewfile.cpp:119
 msgid "Added"
 msgstr ""
 
-#: ../src/report/listviewfile.cpp:171
+#: ../src/report/listviewfile.cpp:154
 msgid "Add Items"
 msgstr "ajouter des éléments"
 
-#: ../src/report/listviewfile.cpp:179
+#: ../src/report/listviewfile.cpp:162
 msgid "Add"
 msgstr ""
 
-#: ../src/report/process.cpp:157
-#: ../src/report/process.cpp:174
-#: ../src/report/process.cpp:242
-#, fuzzy
-msgid "Process"
-msgstr "&Proces"
-
-#: ../src/report/process.cpp:162
-#: ../src/report/process.cpp:191
+#: ../src/report/process.cpp:33
 #, fuzzy
 msgid "Process folder"
 msgstr "&Proces"
 
-#: ../src/report/process.cpp:198
+#: ../src/report/process.cpp:148
+#: ../src/report/process.cpp:165
+#, fuzzy
+msgid "Process"
+msgstr "&Proces"
+
+#: ../src/report/process.cpp:189
 #: ../src/report/util.cpp:158
 msgid "Cannot set working directory"
 msgstr ""
 
-#: ../src/report/process.cpp:207
+#: ../src/report/process.cpp:200
 msgid "No listview to collect output"
 msgstr ""
 
-#: ../src/report/process.cpp:268
+#: ../src/report/process.cpp:247
 msgid "Stopped"
 msgstr "Arrêter l'enregistrement"
 
-#: ../src/report/process.cpp:294
+#: ../src/report/process.cpp:268
 msgid "Ready"
 msgstr ""
 
-#: ../src/report/stc.cpp:149
+#: ../src/report/stc.cpp:150
 msgid "Readonly"
 msgstr ""
 
@@ -1157,6 +1175,10 @@ msgstr ""
 #: ../src/report/textfile.cpp:374
 msgid "ODBC Error"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Enter Lexer"
+#~ msgstr "Lexer"
 
 #~ msgid "Projects"
 #~ msgstr "Projets"
