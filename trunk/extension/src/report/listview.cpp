@@ -881,7 +881,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     
     wxExLog::Get()->Log(
       wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-        id == ID_TOOL_REPORT_REPLACE));
+        tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))
