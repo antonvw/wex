@@ -192,10 +192,6 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     true,
     1000));
 
-  v.push_back(wxExConfigItem(
-    m_TextRecursive, 
-    CONFIG_CHECKBOX));
-  
   if (id == ID_REPLACE_IN_FILES) 
   {
     // Match whole word does not work with replace.
@@ -211,6 +207,10 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
     v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
   }
 
+  v.push_back(wxExConfigItem(
+    m_TextRecursive, 
+    CONFIG_CHECKBOX));
+  
   m_FiFDialog = new wxExConfigDialog(this,
     v,
     (id == ID_REPLACE_IN_FILES ? _("Replace In Files"): _("Find In Files")),
