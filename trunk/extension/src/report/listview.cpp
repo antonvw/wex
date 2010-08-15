@@ -679,10 +679,6 @@ int wxExListViewWithFrame::FindInFilesDialog(int id)
     return wxID_CANCEL;
   }
 
-  wxExLog::Get()->Log(
-    wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-      id == ID_TOOL_REPORT_REPLACE));
-      
   return wxID_OK;
 }
 
@@ -876,9 +872,16 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     return;
   }
 
-  if (tool.IsFindType() && FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
+  if (tool.IsFindType())
   {
-    return;
+    if (FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
+    {
+      return;
+    }
+    
+    wxExLog::Get()->Log(
+      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
+        id == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))
