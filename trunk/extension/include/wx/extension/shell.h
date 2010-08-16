@@ -21,11 +21,12 @@
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
 /// parent, with the command available as event.GetString().
-/// - If you press Ctrl-Q in the shell, a ID_SHELL_COMMAND_STOP is sent to the parent.
+/// - If you press Ctrl-Q in the shell, i
+///   a ID_SHELL_COMMAND_STOP is sent to the parent.
 /// - If you enter 'history', all previously entered commands are shown.
 /// - If you enter !\<number\> the previous \<number\> command is entered.
-/// - If you enter !\<abbreviation\> the last command starting with \<abbreviation\>
-///   is entered.
+/// - If you enter !\<abbreviation\> the last command starting with 
+///   \<abbreviation\> is entered.
 class wxExSTCShell: public wxExSTC
 {
 public:
@@ -44,7 +45,7 @@ public:
     /// Default -1, no commands are kept.
     int commands_save_in_config = -1,
     /// The lexer used by stc.
-    const wxString& lexer = wxEmtyString,
+    const wxString& lexer = wxEmptyString,
     /// The stc menu flags.
     long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND,
     /// The window id.
@@ -59,14 +60,16 @@ public:
   /// Destructor, keeps the commands in the config, if required.
  ~wxExSTCShell();
 
-  /// Gets all history commands as a string, separated by a newline (for testing).
+  /// Gets all history commands as a string, 
+  /// separated by a newline (for testing).
   const wxString GetHistory() const;
 
   /// Gets the prompt.
   const wxString& GetPrompt() const {return m_Prompt;};
 
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
-  /// and empties the undo buffer. Default it also adds an eol before the prompt.
+  /// and empties the undo buffer. 
+  /// Default it also adds an eol before the prompt.
   void Prompt(
     const wxString& text = wxEmptyString,
     bool add_eol = true);
