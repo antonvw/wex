@@ -1940,6 +1940,8 @@ int wxExSTC::ReplaceAll(
 
   BeginUndoAction();
 
+  const bool is_re = IsTargetRE(replace_text);
+
   while (SearchInTarget(find_text) > 0)
   {
     const auto target_start = GetTargetStart();
@@ -1968,7 +1970,7 @@ int wxExSTC::ReplaceAll(
     {
       MarkTargetChange();
   
-      length = (IsTargetRE(replace_text) ?
+      length = (is_re ?
         ReplaceTargetRE(replace_text):
         ReplaceTarget(replace_text));
 
