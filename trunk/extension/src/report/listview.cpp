@@ -648,12 +648,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
 int wxExListViewWithFrame::FindInFilesDialog(int id)
 {
-  auto* stc = m_Frame->GetSTC();
-
-  if (stc != NULL)
-  {
-    stc->GetFindString();
-  }
+  m_Frame->GetFindString();
 
   std::vector<wxExConfigItem> v;
 
