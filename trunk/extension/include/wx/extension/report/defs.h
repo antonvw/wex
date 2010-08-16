@@ -29,6 +29,11 @@ enum
   ID_LIST_HIGHEST,
   ID_LIST_SEND_ITEM, // only for wxExListViewFile
   ID_LIST_ALL_ITEMS, // not a real command, used by exForEach
+  ID_TREE_OPEN,
+  ID_TREE_COPY,
+  ID_TREE_FIND,
+  ID_TREE_REPLACE,
+  ID_TREE_RUN_MAKE,
   ID_LIST_ALL_CLOSE, // not a real command, used by exForEach
   ID_PROJECT_SAVE,
   ID_FIND_IN_FILES,

@@ -12,7 +12,7 @@
 #ifndef _FRAME_H
 #define _FRAME_H
 
-#include <wx/generic/dirctrlg.h>
+#include <wx/extension/report/dirctrl.h>
 #include <wx/extension/notebook.h>
 #include "support.h"
 
@@ -32,7 +32,6 @@ public:
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
-  void OnTree(wxTreeEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewStandard* Activate(
@@ -60,7 +59,7 @@ private:
   int m_NewFileNo;
   int m_NewProjectNo;
 
-  wxGenericDirCtrl* m_DirCtrl;
+  wxExGenericDirCtrl* m_DirCtrl;
   wxExListViewWithFrame* m_History;
   wxExNotebook* m_NotebookWithEditors;
   wxExNotebook* m_NotebookWithLists;

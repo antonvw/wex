@@ -139,8 +139,6 @@ When adding functionality in trunk
 
 
 Roadmap
-- move dir ctrl from syncped to separate files to extension
-
 - new wxWidgets. 
     Use ribbon toolbar.
     Use cbegin iterators.

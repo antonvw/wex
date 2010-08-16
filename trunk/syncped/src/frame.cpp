@@ -51,11 +51,8 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_APPL_LOWEST, ID_APPL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_ALL_LOWEST, ID_ALL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, Frame::OnCommand)
-  EVT_MENU_RANGE(ID_EDIT_VCS_LOWEST, ID_EDIT_VCS_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnCommand)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
-  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, Frame::OnTree)
-  EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, Frame::OnTree)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
@@ -135,7 +132,8 @@ Frame::Frame(bool open_recent)
     wxExListViewStandard::LIST_HISTORY,
     wxExListViewStandard::LIST_MENU_DEFAULT);
     
-  m_DirCtrl = new wxGenericDirCtrl(this,
+  m_DirCtrl = new wxExGenericDirCtrl(this,
+    this,
     wxID_ANY,
     wxFileName(GetRecentFile()).GetFullPath(),
     wxDefaultPosition,
@@ -452,15 +450,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       event.GetId() < ID_VCS_HIGHEST)
   {
     wxExVCS(event.GetId()).Request(this);
-    return;
-  }
-
-  if (event.GetId() > ID_EDIT_VCS_LOWEST && 
-      event.GetId() < ID_EDIT_VCS_HIGHEST)
-  {
-    wxArrayString files;
-    m_DirCtrl->GetFilePaths(files);
-    wxExVCSExecute(this, event.GetId(), wxExFileName(files[0]));
     return;
   }
 
@@ -786,33 +775,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_TREE_COPY: 
-    {
-    wxBusyCursor wait;
-    wxArrayString files;
-    m_DirCtrl->GetFilePaths(files);
-    wxString clipboard;
-    for (
-      auto it = files.begin();
-      it != files.end();
-      it++)
-    {
-      clipboard += *it + wxTextFile::GetEOL();
-    }
-    wxExClipboardAdd(clipboard);
-    }
-  break;
-  case ID_TREE_OPEN: 
-    {
-    wxArrayString files;
-    m_DirCtrl->GetFilePaths(files);
-    wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
-    }
-  break;
-  case ID_TREE_RUN_MAKE: 
-    wxExMake(this, wxFileName(m_DirCtrl->GetFilePath()));
-    break;
-
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
   case ID_VIEW_FILES: TogglePane("FILES"); 
@@ -860,52 +822,6 @@ void Frame::OnCommandConfigDialog(
   else
   {
     DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
-  }
-}
-
-void Frame::OnTree(wxTreeEvent& event)
-{
-  wxArrayString files;
-  m_DirCtrl->GetFilePaths(files);
-
-  if (files.empty()) 
-  {
-    event.Skip();
-    return;
-  }
-
-  if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
-  {
-    wxExMenu menu;
-    menu.Append(ID_TREE_OPEN, _("&Open"));
-    menu.AppendSeparator();
-    menu.Append(ID_TREE_COPY,
-      wxGetStockLabel(wxID_COPY), wxEmptyString, wxART_COPY);
-
-    const wxString selection = files[0];
-    const wxExFileName filename(selection);
-  
-    if (wxExVCS::Get()->DirExists(filename))
-    {
-      menu.AppendSeparator();
-      menu.AppendVCS();
-    }
-
-    if (filename.GetLexer().GetScintillaLexer() == "makefile")
-    {
-      menu.AppendSeparator();
-      menu.Append(ID_TREE_RUN_MAKE, "&Make");
-    }
-
-    PopupMenu(&menu);
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
-  {
-    wxExOpenFiles(this, files, 0, wxDIR_FILES); // only files in this dir
-  }
-  else
-  {
-    wxFAIL;
   }
 }
 
