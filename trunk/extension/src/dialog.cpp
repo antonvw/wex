@@ -77,7 +77,8 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
 
   // Then place the growable user sizer.
   m_TopSizer->Add(m_UserSizer, flag);
-  m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1); // so this is the user sizer
+  // So this is the user sizer, make the row growable.
+  m_TopSizer->AddGrowableRow(m_TopSizer->GetChildren().GetCount() - 1);
 
   // Then, if buttons were specified, the button sizer.
   if (m_ButtonFlags != 0)
@@ -118,7 +119,7 @@ void wxExDialog::OnKeyDown(wxKeyEvent& event)
       wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
       wxPostEvent(this, event);
     }
-    if (event.GetKeyCode() == WXK_ESCAPE)
+    else if (event.GetKeyCode() == WXK_ESCAPE)
     {
       wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
       wxPostEvent(this, event);
