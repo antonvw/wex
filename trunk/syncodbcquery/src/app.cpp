@@ -74,7 +74,7 @@ BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
 END_EVENT_TABLE()
 
 Frame::Frame()
-  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppName())
+  : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Running(false)
   , m_Stopped(false)
 {
