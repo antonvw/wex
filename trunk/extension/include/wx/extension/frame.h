@@ -50,6 +50,9 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
+  /// Invokes GetFindString on one of the controls.
+  void GetFindString();
+
   /// Returns a grid, default returns the focused grid.
   virtual wxExGrid* GetGrid() {return m_FocusGrid;};
 
@@ -112,9 +115,6 @@ public:
 #endif // wxUSE_STATUSBAR
 
 protected:
-  /// Invokes GetFindString on one of the controls.
-  void GetFindString();
-
   /// Handles command event.
   void OnCommand(wxCommandEvent& command);
 
