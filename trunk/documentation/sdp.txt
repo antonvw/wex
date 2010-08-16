@@ -139,19 +139,11 @@ When adding functionality in trunk
 
 
 Roadmap
-- new wxWidgets. 
-    Use ribbon toolbar.
-    Use cbegin iterators.
-    Use wxFileSystemWatcher, instead of our own sync methods 
-    (at least for listvew file).
-    Fix change marker for deleting text 
-    (currently it gives stack overflow if enabled).
+- use new ribbon toolbar
     
-- in vi and stc share replace code
-
-- remove default constructor for wxExLexer, and use iterators 
-  for Find etc. in wxExLexers.
-  
+- fix change marker for deleting text 
+ (currently it gives stack overflow if enabled).
+    
 - add gdb front-end
 
 - improve test units, use macro's
@@ -160,5 +152,7 @@ Roadmap
     or use valgrind
 
 - add ctags (like Exuberant CTAGS)
+
+- use cbegin iterators.
 
 - use Boost

@@ -9,10 +9,13 @@
 
 #include <wx/extension/frame.h>
 #include <wx/extension/menu.h>
+#include <wx/extension/textfile.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/defs.h>
+#include <wx/extension/report/frame.h>
+#include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExGenericDirCtrl, wxGenericDirCtrl)
   EVT_MENU_RANGE(
