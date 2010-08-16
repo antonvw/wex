@@ -34,6 +34,7 @@ wxExSTCShell::wxExSTCShell(
   const wxString& command_end,
   bool echo,
   int commands_save_in_config,
+  const wxString& lexer,
   long menu_flags,
   wxWindowID id,
   const wxPoint& pos,
@@ -81,7 +82,7 @@ wxExSTCShell::wxExSTCShell(
   // Take care that m_CommandsIterator is valid.
   m_CommandsIterator = m_Commands.end();
 
-  SetLexer(wxEmptyString);
+  SetLexer(lexer);
 }
 
 wxExSTCShell::~wxExSTCShell()

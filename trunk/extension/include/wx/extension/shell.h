@@ -43,6 +43,8 @@ public:
     /// Give the number of commands that are kept in the config.
     /// Default -1, no commands are kept.
     int commands_save_in_config = -1,
+    /// The lexer used by stc.
+    const wxString& lexer = wxEmtyString,
     /// The stc menu flags.
     long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND,
     /// The window id.
