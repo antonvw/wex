@@ -505,6 +505,14 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
   }
 }
 
+void wxExFrameWithHistory::SetRecentProject(const wxString& project) 
+{
+  if (!project.empty()) 
+  {
+    m_ProjectHistory.AddFileToHistory(project);
+  }
+}
+    
 void wxExFrameWithHistory::SetTitle(
   const wxString& file, 
   const wxString& project)

@@ -62,12 +62,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
 {
-  wxExFile::FileLoad(file);
-
-  if (GetFileName().GetStat().IsOk())
-  {
-    GetFrame()->SetRecentProject(file);
-  }
+  FileLoad(file);
 }
 
 wxExListViewFile::~wxExListViewFile()

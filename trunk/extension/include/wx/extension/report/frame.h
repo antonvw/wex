@@ -50,7 +50,8 @@ public:
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
 
-  /// If there is a project somewhere, your implementation should return that one.
+  /// If there is a project somewhere, 
+  /// your implementation should return that one.
   /// Default it returns NULL.
   virtual wxExListViewFile* GetProject() {return NULL;};
 
@@ -102,8 +103,7 @@ public:
   void SetRecentFile(const wxString& file);
 
   /// Updates project history.
-  void SetRecentProject(const wxString& project) {
-    if (!project.empty()) m_ProjectHistory.AddFileToHistory(project);}
+  void SetRecentProject(const wxString& project);
 
   /// Sets the title using file and project.
   void SetTitle(const wxString& file, const wxString& project);
@@ -127,7 +127,6 @@ protected:
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
-  /// Shows a find in files dialog and finds or replaces text in files if chosen.
   int FindInFilesDialog(int id = ID_FIND_IN_FILES);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
