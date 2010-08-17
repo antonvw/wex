@@ -17,6 +17,8 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/util.h>
 
+#if wxUSE_DIRDLG
+
 BEGIN_EVENT_TABLE(wxExGenericDirCtrl, wxGenericDirCtrl)
   EVT_MENU_RANGE(
     ID_EDIT_VCS_LOWEST, 
@@ -140,4 +142,4 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
     wxFAIL;
   }
 }
-
+#endif

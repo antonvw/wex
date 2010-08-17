@@ -12,6 +12,8 @@
 
 #include <wx/generic/dirctrlg.h>
 
+#if wxUSE_DIRDLG
+
 class wxExFrameWithHistory;
 
 /// Offers our generic dir control.
@@ -38,4 +40,5 @@ private:
   
   DECLARE_EVENT_TABLE()
 };
+#endif // wxUSE_DIRDLG
 #endif
