@@ -10,7 +10,6 @@
 #ifndef _EXMANAGEDFRAME_H
 #define _EXMANAGEDFRAME_H
 
-#include <wx/aui/auibar.h> // for wxAUI_TB_DEFAULT_STYLE
 #include <wx/aui/framemanager.h> // for wxAuiManager
 #include <wx/extension/frame.h>
 
