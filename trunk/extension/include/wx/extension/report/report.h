@@ -15,6 +15,7 @@
 #include <wx/extension/extension.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
+#include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
