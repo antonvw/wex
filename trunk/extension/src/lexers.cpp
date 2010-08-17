@@ -334,7 +334,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
   const wxXmlNode* node) const
 {
-  std::vector<wxExProperty> text;
+  std::vector<wxExProperty> v;
 
   wxXmlNode *child = node->GetChildren();
 
@@ -342,7 +342,7 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
   {
     if (child->GetName() == "property")
     {
-      text.push_back(wxExProperty(child));
+      v.push_back(wxExProperty(child));
     }
     else if (child->GetName() == "comment")
     {
@@ -357,7 +357,7 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
     child = child->GetNext();
   }
 
-  return text;
+  return v;
 }
 
 bool wxExLexers::Read()
