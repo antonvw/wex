@@ -69,7 +69,8 @@ DecoratedFrame::DecoratedFrame()
   menuFile->AppendSeparator();
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
-  menuFile->Append(ID_ALL_STC_SAVE, _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
+  menuFile->Append(ID_ALL_STC_SAVE,
+    _("Save A&ll"), wxEmptyString, wxART_FILE_SAVE);
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
@@ -104,15 +105,15 @@ DecoratedFrame::DecoratedFrame()
   menuMore->Append(ID_EDIT_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuMore->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuMore->AppendSeparator();
-  menuMore->Append(ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
+  menuMore->Append(
+    ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
   
   menuEdit->AppendSubMenu(menuMore, _("More"));
   menuEdit->AppendSeparator();
   
+  m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
   menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_MENU_VCS);
   menuEdit->AppendSeparator();
-
-  m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
 
   wxExMenu* menuMacro = new wxExMenu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
@@ -139,14 +140,20 @@ DecoratedFrame::DecoratedFrame()
   menuProcess->Append(wxID_STOP);
 
   wxExMenu *menuProject = new wxExMenu();
-  menuProject->Append(ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
-  menuProject->Append(ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
+  menuProject->Append(
+    ID_PROJECT_NEW, wxGetStockLabel(wxID_NEW), wxEmptyString, wxART_NEW);
+  menuProject->Append(
+    ID_PROJECT_OPEN, wxGetStockLabel(wxID_OPEN), wxEmptyString, wxART_FILE_OPEN);
   UseProjectHistory(ID_RECENT_PROJECT_MENU, menuProject);
   menuProject->Append(ID_PROJECT_OPENTEXT, _("&Open As Text"));
-  menuProject->Append(ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
+  menuProject->Append(
+    ID_PROJECT_CLOSE, wxGetStockLabel(wxID_CLOSE), wxEmptyString, wxART_CLOSE);
   menuProject->AppendSeparator();
-  menuProject->Append(ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxART_FILE_SAVE);
-  menuProject->Append(ID_PROJECT_SAVEAS, wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
+  menuProject->Append(
+    ID_PROJECT_SAVE, wxGetStockLabel(wxID_SAVE), wxEmptyString, wxART_FILE_SAVE);
+  menuProject->Append(
+    ID_PROJECT_SAVEAS,
+    wxGetStockLabel(wxID_SAVEAS), wxEmptyString, wxART_FILE_SAVE_AS);
   menuProject->AppendSeparator();
   menuProject->AppendCheckItem(ID_SORT_SYNC, _("&Auto Sort"));
 
@@ -154,11 +161,13 @@ DecoratedFrame::DecoratedFrame()
   menuWindow->Append(ID_SPLIT, _("Split"));
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(ID_OPTION_VCS_AND_COMPARATOR, wxExEllipsed(_("Set VCS And &Comparator")));
+  menuOptions->Append(
+    ID_OPTION_VCS_AND_COMPARATOR, wxExEllipsed(_("Set VCS And &Comparator")));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   // text also used as caption
-  menuOptions->Append(ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set List Read Only Colour")));
+  menuOptions->Append(
+    ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set List Read Only Colour")));
   wxMenu *menuListSort = new wxMenu;
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
