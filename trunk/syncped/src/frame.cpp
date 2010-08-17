@@ -132,13 +132,7 @@ Frame::Frame(bool open_recent)
     wxExListViewStandard::LIST_HISTORY,
     wxExListViewStandard::LIST_MENU_DEFAULT);
     
-  m_DirCtrl = new wxExGenericDirCtrl(this,
-    this,
-    wxID_ANY,
-    wxFileName(GetRecentFile()).GetFullPath(),
-    wxDefaultPosition,
-    wxDefaultSize,
-    wxDIRCTRL_3D_INTERNAL | wxDIRCTRL_MULTIPLE);
+  m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
   wxExSTC* asciiTable = new wxExSTC(this);
   asciiTable->AddAsciiTable();

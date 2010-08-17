@@ -31,7 +31,6 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   wxWindow *parent, 
   wxExFrameWithHistory* frame,
   const wxWindowID id, 
-  const wxString &dir, 
   const wxPoint &pos, 
   const wxSize &size, 
   long style, 
@@ -39,7 +38,15 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   int defaultFilter, 
   const wxString &name)
   : wxGenericDirCtrl(
-    parent, id, dir, pos, size, style, filter, defaultFilter, name)
+      parent,
+      id,
+      wxFileName(frame->GetRecentFile()).GetFullPath()),
+      pos,
+      size,
+      style,
+      filter,
+      defaultFilter,
+      name)
   , m_Frame(frame)
 {
 }
