@@ -44,10 +44,10 @@ void wxExReportAppTestFixture::testConfig()
 void wxExReportAppTestFixture::testDirWithListView()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_FILE);
+  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_PRJ);
   
-  wxExDirWithListView dir(listView, "./");
-  CPPUNIT_ASSERT(dir.FindFiles());
+  wxExDirWithListView* dir = new wxExDirWithListView(listView, "./");
+  CPPUNIT_ASSERT(dir->FindFiles());
 }
 
 void wxExReportAppTestFixture::testFrameWithHistory()
@@ -61,7 +61,7 @@ void wxExReportAppTestFixture::testFrameWithHistory()
     0,
     wxEmptyString,
     wxExSTCWithFrame::STC_WIN_IS_PROJECT));
-  CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
+  CPPUNIT_ASSERT(frame->GetRecentProject().Contains("test-rep.prj"));
   
   CPPUNIT_ASSERT(frame->ProcessRun("wc test.h"));
   CPPUNIT_ASSERT(frame->ProcessIsSelected());
@@ -105,7 +105,7 @@ void wxExReportAppTestFixture::testListItem()
 void wxExReportAppTestFixture::testListViewFile()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_FILE);
+  wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_PRJ);
   
   listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
