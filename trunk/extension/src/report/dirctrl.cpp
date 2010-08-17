@@ -7,6 +7,7 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/frame.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/textfile.h>
@@ -42,7 +43,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   : wxGenericDirCtrl(
       parent,
       id,
-      wxFileName(frame->GetRecentFile()).GetFullPath()),
+      wxFileName(frame->GetRecentFile()).GetFullPath(),
       pos,
       size,
       style,

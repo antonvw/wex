@@ -14,7 +14,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
-#include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
@@ -147,7 +146,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
 
   GetManager().AddPane(
-    new wxGenericDirCtrl(this, this),
+    new wxExGenericDirCtrl(this, this),
     wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
