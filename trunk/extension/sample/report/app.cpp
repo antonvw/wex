@@ -22,6 +22,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
 #include <wx/extension/report/dir.h>
+#include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/listitem.h>
 #include "app.h"
 #ifndef __WXMSW__
@@ -41,7 +42,6 @@ BEGIN_EVENT_TABLE(wxExRepSampleFrame, wxExFrameWithHistory)
   EVT_MENU(ID_PROCESS_RUN, wxExRepSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExRepSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExRepSampleFrame::OnCommand)
-  EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExRepSampleFrame::OnTree)
 END_EVENT_TABLE()
 
 IMPLEMENT_APP(wxExRepSampleApp)
@@ -108,13 +108,6 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   SetupStatusBar(panes);
 #endif
 
-  const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
-
-  m_DirCtrl = new wxGenericDirCtrl(
-    this, 
-    wxID_ANY, 
-    wxStandardPaths::Get().GetDocumentsDir());
-
   m_NotebookWithLists = new wxExNotebook(
     this, this,
     wxID_ANY, wxDefaultPosition, wxDefaultSize,
@@ -122,6 +115,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxAUI_NB_WINDOWLIST_BUTTON);
 
   m_STC = new wxExSTCWithFrame(this, this); // use all flags (default)
+
+  const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
   for (
     int i = wxExListViewStandard::LIST_BEFORE_FIRST + 1;
@@ -152,7 +147,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxAuiPaneInfo().CloseButton(false).Bottom().MinSize(wxSize(250, 250)));
 
   GetManager().AddPane(
-    m_DirCtrl, 
+    new wxGenericDirCtrl(this, this),
     wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
@@ -284,16 +279,6 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
   default: 
     wxFAIL;
     break;
-  }
-}
-
-void wxExRepSampleFrame::OnTree(wxTreeEvent& /* event */)
-{
-  const wxString selection = m_DirCtrl->GetFilePath();
-
-  if (!selection.empty())
-  {
-    OpenFile(wxExFileName(selection));
   }
 }
 

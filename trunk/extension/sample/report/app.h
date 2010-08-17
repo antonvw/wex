@@ -10,7 +10,6 @@
 \******************************************************************************/
 
 #include <wx/treectrl.h>
-#include <wx/generic/dirctrlg.h>
 #include <wx/extension/app.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/report/frame.h>
@@ -46,10 +45,8 @@ protected:
     const wxString& match = wxEmptyString,
     long flags = 0);
   void OnCommand(wxCommandEvent& event);
-  void OnTree(wxTreeEvent& event);
 private:
   wxExNotebook* m_NotebookWithLists; ///< all listviews
   wxExSTCWithFrame* m_STC;           ///< an stc
-  wxGenericDirCtrl* m_DirCtrl;
   DECLARE_EVENT_TABLE()
 };
