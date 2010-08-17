@@ -139,10 +139,10 @@ When adding functionality in trunk
 
 
 Roadmap
-- use new ribbon toolbar
-    
 - fix change marker for deleting text 
  (currently it gives stack overflow if enabled).
+    
+- use new ribbon toolbar
     
 - add gdb front-end
 
@@ -153,6 +153,6 @@ Roadmap
 
 - add ctags (like Exuberant CTAGS)
 
-- use cbegin iterators.
+- use cbegin iterators
 
 - use Boost
