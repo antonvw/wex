@@ -26,7 +26,6 @@ int wxExPane::m_Total = 0;
 BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
   EVT_LEFT_DOWN(wxExStatusBar::OnMouse)
   EVT_LEFT_DCLICK(wxExStatusBar::OnMouse)
-  EVT_MOTION(wxExStatusBar::OnMouse)
 END_EVENT_TABLE()
 
 wxExStatusBar::wxExStatusBar(
@@ -65,6 +64,8 @@ const wxExPane wxExStatusBar::GetPane(int pane) const
 
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
+  event.Skip();
+
   bool found = false;
 
   for (auto i = 0; i < GetFieldsCount() && !found; i++)
@@ -76,24 +77,25 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       if (rect.Contains(event.GetPosition()))
       {
         found = true;
+
         const wxExPane& pane(GetPane(i));
 
-        // Handle the event, don't fail if none is true here,
-        // it seems that moving and clicking almost at the same time
-        // could cause assertions.
-        if (event.ButtonDClick())
+        if (pane.GetNo() != -1)
         {
-          m_Frame->StatusBarDoubleClicked(pane.GetName());
-        }
-        else if (event.ButtonDown())
-        {
-          m_Frame->StatusBarClicked(pane.GetName());
-        }
+          // Handle the event, don't fail if none is true here,
+          // it seems that moving and clicking almost at the same time
+          // could cause assertions.
+          if (event.ButtonDClick())
+          {
+            m_Frame->StatusBarDoubleClicked(pane.GetName());
+          }
+          else if (event.ButtonDown())
+          {
+            m_Frame->StatusBarClicked(pane.GetName());
+          }
 #if wxUSE_TOOLTIPS
-        // Show tooltip if tooltip is available, and not yet tooltip presented.
-        else if (event.Moving())
-        {
-          if (!m_Panes.empty())
+          // Show tooltip if tooltip is available, and not yet tooltip presented.
+          else if (event.Moving())
           {
             const wxString tooltip =
               (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
@@ -108,8 +110,6 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       }
     }
   }
-
-  event.Skip();
 }
 
 void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
@@ -122,9 +122,12 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
     it != panes.end();
     ++it)
   {
-    m_Panes[it->GetName()] = *it;
-    styles[it->GetNo()] = it->GetStyle();
-    widths[it->GetNo()] = it->GetWidth();
+    if (it->GetNo() != -1)
+    {
+      m_Panes.insert(std::make_pair(it->GetName(), *it));
+      styles[it->GetNo()] = it->GetStyle();
+      widths[it->GetNo()] = it->GetWidth();
+    }
   }
 
   SetStatusStyles(panes.size(), styles);
@@ -132,6 +135,10 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 
   delete[] styles;
   delete[] widths;
+
+  Bind(
+    wxEVT_MOTION,
+    &wxExStatusBar::OnMouse);
 }
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)

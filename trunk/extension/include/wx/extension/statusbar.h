@@ -27,11 +27,14 @@ class wxExPane : public wxStatusBarPane
 {
 public:
   /// Default constructor.
+  wxExPane() : m_No(-1){;};
+
+  /// Constructor.
   wxExPane(
     /// If you do no provide helptext, it is derived from the name, by using
     /// text after the first 'e' character (so after 'Pane') if name is
     /// not 'PaneText'.
-    const wxString& name = wxEmptyString,
+    const wxString& name,
     /// Width of the pane.
     int width = 50,
     /// The helptext shown as a tooltip.
