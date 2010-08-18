@@ -575,10 +575,8 @@ void wxExListView::OnCommand(wxCommandEvent& event)
   if (event.GetId() >= ID_COL_FIRST && event.GetId() <= ID_COL_LAST)
   {
     SortColumn(event.GetId() - ID_COL_FIRST, SORT_TOGGLE);
-    return;
   }
-
-  switch (event.GetId())
+  else switch (event.GetId())
   {
   case wxID_CLEAR:
     EditClearAll();
@@ -695,6 +693,10 @@ void wxExListView::OnList(wxListEvent& event)
     }
 #endif
   }
+  else
+  {
+    wxFAIL;
+  }
 }
 
 void wxExListView::OnMouse(wxMouseEvent& event)
@@ -717,6 +719,10 @@ void wxExListView::OnMouse(wxMouseEvent& event)
     {
       PopupMenu(&menu);
     }
+  }
+  else
+  {
+    wxFAIL;
   }
 }
 
