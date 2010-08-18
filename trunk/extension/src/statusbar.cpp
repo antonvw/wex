@@ -138,7 +138,9 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 
   Bind(
     wxEVT_MOTION,
-    &wxExStatusBar::OnMouse);
+    &wxExStatusBar::OnMouse,
+    this,
+    wxID_ANY);
 }
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
