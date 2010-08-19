@@ -69,12 +69,14 @@ void wxExAppTestFixture::testFrame()
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
   std::vector<wxExPane> panes;
+
   panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExPane("PaneCells", 60, _("Cells")));
-  panes.push_back(wxExPane("PaneItems", 60, _("Items")));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
-  panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
+
+  for (int i = 0; i < 25; i++)
+  {
+    panes.push_back(wxExPane(wxString::Format("Pane%d", i)));
+  }
+  
   CPPUNIT_ASSERT(frame->SetupStatusBar(panes) != NULL);
 }
 

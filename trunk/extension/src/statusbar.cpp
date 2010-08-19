@@ -114,6 +114,8 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
 int wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 {
+  wxASSERT(m_Panes.empty());
+  
   int* styles = new int[panes.size()];
   int* widths = new int[panes.size()];
 
@@ -158,6 +160,7 @@ bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
   }
   else
   {
+    // Do not show error, as you might explicitly want to ignore messages.
     return false;
   }
 }
