@@ -386,14 +386,18 @@ bool wxExFrame::OpenFile(
 }
 
 #if wxUSE_STATUSBAR
-void wxExFrame::SetupStatusBar(
+wxExStatusBar* wxExFrame::SetupStatusBar(
   const std::vector<wxExPane>& panes,
   long style,
   wxWindowID id,
   const wxString& name)
 {
-  wxFrame::CreateStatusBar(panes.size(), style, id, name);
-  m_StatusBar->SetPanes(panes);
+  if (wxFrame::CreateStatusBar(panes.size(), style, id, name) != NULL)
+  {
+    m_StatusBar->SetPanes(panes);
+  }
+
+  return m_StatusBar;
 }
 #endif // wxUSE_STATUSBAR
 

@@ -93,6 +93,13 @@ public:
     long flags = 0) {return false;};
 
 #if wxUSE_STATUSBAR
+  /// Sets up the status bar if you want to use StatusText.
+  wxExStatusBar* SetupStatusBar(
+    const std::vector<wxExPane>& panes,
+    long style = wxST_SIZEGRIP,
+    wxWindowID id = ID_EDIT_STATUS_BAR,
+    const wxString& name = "statusBar");
+
   /// Do something when statusbar is clicked.
   virtual void StatusBarClicked(const wxString& ) {};
 
@@ -130,17 +137,7 @@ protected:
   void OnFindDialog(wxFindDialogEvent& event);
   
   /// If there is a focused STC, updates the status bar.
-  void OnUpdateUI(wxUpdateUIEvent& event);
-  
-#if wxUSE_STATUSBAR
-  /// Sets up the status bar if you want to use StatusText.
-  void SetupStatusBar(
-    const std::vector<wxExPane>& panes,
-    long style = wxST_SIZEGRIP,
-    wxWindowID id = ID_EDIT_STATUS_BAR,
-    const wxString& name = "statusBar");
-#endif
-
+  void OnUpdateUI(wxUpdateUIEvent& event);  
 private:
   void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
   void FindIn(wxFindDialogEvent& event, wxExListView* lv);
