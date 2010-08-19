@@ -64,6 +64,20 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(i.GetControl() != NULL);
 }
 
+void wxExAppTestFixture::testFrame()
+{
+  wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
+
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
+  panes.push_back(wxExPane("PaneCells", 60, _("Cells")));
+  panes.push_back(wxExPane("PaneItems", 60, _("Items")));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
+  panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
+  CPPUNIT_ASSERT(frame->SetupStatusBar(panes) != NULL);
+}
+
 void wxExAppTestFixture::testFrd()
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
@@ -220,17 +234,24 @@ void wxExAppTestFixture::testNotebook()
 
 void wxExAppTestFixture::testStatusBar()
 {
-  wxExFrame* frame = wxTheApp->GetTopWindow();
+  wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
   std::vector<wxExPane> panes;
   panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExPane("PaneCells", 60, _("Cells")));
-  panes.push_back(wxExPane("PaneItems", 60, _("Items")));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
-  panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
-  CPPUNIT_ASSERT(frame->SetupStatusBar(panes) != NULL);
+  panes.push_back(wxExPane("panex"));
+  panes.push_back(wxExPane("paney"));
+  panes.push_back(wxExPane("panez"));
+
+  wxExStatusBar* sb = new wxExStatusBar(frame);
+
+  CPPUNIT_ASSERT(sb->SetPanes(panes) == panes.size());
+  CPPUNIT_ASSERT(sb->SetStatusText("hello"));
+  CPPUNIT_ASSERT(sb->SetStatusText("hello", "panex"));
+  CPPUNIT_ASSERT(sb->SetStatusText("hello", "paney"));
+  CPPUNIT_ASSERT(sb->SetStatusText("hello", "panez"));
+  CPPUNIT_ASSERT(!sb->SetStatusText("hello", "panexxx"));
 }
+
 void wxExAppTestFixture::testSTC()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
@@ -351,6 +372,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testConfigItem",
     &wxExAppTestFixture::testConfigItem));
     
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testFrame",
+    &wxExAppTestFixture::testFrame));
+
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testFrd",
     &wxExAppTestFixture::testFrd));

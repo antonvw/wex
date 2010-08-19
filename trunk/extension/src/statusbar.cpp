@@ -145,7 +145,7 @@ int wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
   return m_Panes.size();
 }
 
-void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
+bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
 {
   const auto it = m_Panes.find(pane);
 
@@ -154,6 +154,11 @@ void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
     // wxStatusBar checks whether new text differs from current,
     // and does nothing if the same to avoid flicker.
     wxStatusBar::SetStatusText(text, it->second.GetNo());
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 #endif // wxUSE_STATUSBAR

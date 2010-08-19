@@ -55,6 +55,7 @@ public:
   virtual void tearDown() {};
 
   void testConfigItem();
+  void testFrame();
   void testFrd();
   void testGlobal();
   void testGrid();

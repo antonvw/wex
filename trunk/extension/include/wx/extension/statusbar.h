@@ -76,7 +76,8 @@ public:
   int SetPanes(const std::vector<wxExPane>& panes);
 
   /// Sets text on specified pane.
-  void SetStatusText(
+  /// Returns true if the specified pane exists.
+  bool SetStatusText(
     const wxString& text, 
     const wxString& pane = "PaneText");
 protected:
