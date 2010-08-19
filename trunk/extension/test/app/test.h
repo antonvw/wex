@@ -65,6 +65,7 @@ public:
   void testLog();
   void testMenu();
   void testNotebook();
+  void testStatusBar();
   void testSTC();
   void testSTCFile();
   void testSTCShell();

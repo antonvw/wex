@@ -77,6 +77,12 @@ void wxExAppTestFixture::testFrd()
   CPPUNIT_ASSERT(!frd->GetFindStrings().empty());
   CPPUNIT_ASSERT( frd->GetRegularExpression().IsValid());
   CPPUNIT_ASSERT( frd->GetRegularExpression().Matches("find9"));
+
+  frd->SetReplaceString("replace1");
+  frd->SetReplaceString("replace2");
+  frd->SetReplaceString("replace[0-9]");
+
+  CPPUNIT_ASSERT(!frd->GetReplaceStrings().empty());
 }
 
 void wxExAppTestFixture::testGlobal()
@@ -212,6 +218,19 @@ void wxExAppTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
+void wxExAppTestFixture::testStatusBar()
+{
+  wxExFrame* frame = wxTheApp->GetTopWindow();
+
+  std::vector<wxExPane> panes;
+  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
+  panes.push_back(wxExPane("PaneCells", 60, _("Cells")));
+  panes.push_back(wxExPane("PaneItems", 60, _("Items")));
+  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
+  panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
+  frame->SetupStatusBar(panes);
+}
 void wxExAppTestFixture::testSTC()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
@@ -372,6 +391,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testNotebook",
     &wxExAppTestFixture::testNotebook));
     
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testStatusBar",
+    &wxExAppTestFixture::testStatusBar));
+
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testSTC",
     &wxExAppTestFixture::testSTC));
