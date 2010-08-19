@@ -72,7 +72,8 @@ public:
  ~wxExStatusBar();  
 
   /// Sets the panes.
-  void SetPanes(const std::vector<wxExPane>& panes);
+  /// Returns the number of panes added.
+  int SetPanes(const std::vector<wxExPane>& panes);
 
   /// Sets text on specified pane.
   void SetStatusText(

@@ -94,6 +94,7 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
+  /// Returns NULL if an error occurred.
   wxExStatusBar* SetupStatusBar(
     const std::vector<wxExPane>& panes,
     long style = wxST_SIZEGRIP,

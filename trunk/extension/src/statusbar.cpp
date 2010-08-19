@@ -112,7 +112,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 }
 
-void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
+int wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
 {
   int* styles = new int[panes.size()];
   int* widths = new int[panes.size()];
@@ -130,8 +130,8 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
     }
   }
 
-  SetStatusStyles(panes.size(), styles);
-  SetStatusWidths(panes.size(), widths);
+  SetStatusStyles(m_Panes.size(), styles);
+  SetStatusWidths(m_Panes.size(), widths);
 
   delete[] styles;
   delete[] widths;
@@ -141,6 +141,8 @@ void wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
     &wxExStatusBar::OnMouse,
     this,
     wxID_ANY);
+
+  return m_Panes.size();
 }
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
