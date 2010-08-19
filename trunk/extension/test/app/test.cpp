@@ -229,7 +229,7 @@ void wxExAppTestFixture::testStatusBar()
   panes.push_back(wxExPane("PaneItems", 60, _("Items")));
   panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
   panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
-  frame->SetupStatusBar(panes);
+  CPPUNIT_ASSERT(frame->SetupStatusBar(panes) != NULL);
 }
 void wxExAppTestFixture::testSTC()
 {
