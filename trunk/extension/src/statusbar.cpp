@@ -124,16 +124,26 @@ int wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
     it != panes.end();
     ++it)
   {
+    // our member should have same size as panes
+    m_Panes.insert(std::make_pair(it->GetName(), *it));
+    
     if (it->GetNo() != -1)
     {
-      m_Panes.insert(std::make_pair(it->GetName(), *it));
       styles[it->GetNo()] = it->GetStyle();
       widths[it->GetNo()] = it->GetWidth();
     }
   }
+  
+  if (GetFieldsCount() == 0)
+  {
+    SetFieldsCount(m_Panes.size(), widths);
+  }
+  else
+  {
+    SetStatusWidths(m_Panes.size(), widths);
+  }
 
   SetStatusStyles(m_Panes.size(), styles);
-  SetStatusWidths(m_Panes.size(), widths);
 
   delete[] styles;
   delete[] widths;
