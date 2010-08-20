@@ -11,9 +11,8 @@ General
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.5.4 (r33841))
     
-    The SVN support in wxExVCS works with SVN client 1.6.6
-      http://www.sliksvn.com/en/download or
-      http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=8100
+    The SVN support in wxExVCS works with SVN client 1.6.12
+      http://www.sliksvn.com/en/download
     
 - GIT access
     use
