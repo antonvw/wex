@@ -35,6 +35,7 @@ public:
     const wxString& email = wxEmptyString,
     const wxString& license = wxEmptyString);
 
+#if wxUSE_GUI
   /// Shows a dialog for getting the purpose for a header,
   /// some other fields are presented as well (if author is empty
   /// in the config).
@@ -49,6 +50,7 @@ public:
     wxWindow* parent) const {
     if (ShowDialog(parent) == wxID_OK) return Get(filename);
     else return wxEmptyString;}
+#endif    
 private:
   const wxString m_TextAuthor;
   const wxString m_TextEmail;

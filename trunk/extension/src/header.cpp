@@ -115,6 +115,7 @@ void wxExHeader::Set(
     wxConfigBase::Get()->Write(m_TextLicense, license);
 }
 
+#if wxUSE_GUI
 int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 {
   std::vector<wxExConfigItem> v;
@@ -144,3 +145,4 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
     parent, 
     v, title).ShowModal();
 }
+#endif

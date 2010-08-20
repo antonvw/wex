@@ -40,6 +40,7 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
   
+  void testDir();
   void testFile();
   void testFileName();
   void testFileStatistics();

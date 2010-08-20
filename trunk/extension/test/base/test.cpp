@@ -17,6 +17,10 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
+void wxExTestFixture::testDir()
+{
+}
+  
 void wxExTestFixture::testFile()
 {
   wxExFile file(wxExFileName(TEST_FILE));
