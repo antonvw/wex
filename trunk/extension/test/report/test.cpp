@@ -12,6 +12,7 @@
 
 #include <TestCaller.h>
 #include <wx/config.h>
+#include <wx/extension/report/report.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"

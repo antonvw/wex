@@ -12,6 +12,7 @@
 
 #include <ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
+#include <wx/extension/report/frame.h>
 #include "test.h"
 
 IMPLEMENT_APP(wxExReportTestApp)
@@ -22,7 +23,9 @@ bool wxExReportTestApp::OnInit()
 
   wxExApp::OnInit();
 
-  wxExFrameWithHistory *frame = new wxExFrameWithHistory(NULL, wxID_ANY, "wxExReportTestApp");
+  wxExFrameWithHistory *frame = new 
+    wxExFrameWithHistory(NULL, wxID_ANY, "wxExReportTestApp");
+    
   frame->Show(true);
 
   SetTopWindow(frame);
