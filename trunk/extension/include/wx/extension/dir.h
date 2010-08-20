@@ -66,6 +66,7 @@ private:
   static bool m_IsBusy;
 };
 
+#if wxUSE_GUI
 class wxExFrame;
 
 /// Allows you to easily open all files on specified path.
@@ -89,3 +90,5 @@ private:
   const long m_Flags;
 };
 #endif
+#endif
+
