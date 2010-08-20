@@ -51,10 +51,14 @@ public:
   int GetFlags() const {return m_Flags;};
 
   /// Do something with the dir.
+  /// Not made pure virtual, to allow this 
+  /// class to be tested by calling FindFiles.
   virtual void OnDir(const wxString& ){};
 
   /// Do something with the file.
-  virtual void OnFile(const wxString& ) = 0;
+  /// Not made pure virtual, to allow this 
+  /// class to be tested by calling FindFiles.
+  virtual void OnFile(const wxString& ){};
 private:
   const wxString m_FileSpec;
   const int m_Flags;

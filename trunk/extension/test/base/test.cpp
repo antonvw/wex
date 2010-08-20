@@ -19,6 +19,10 @@
 
 void wxExTestFixture::testDir()
 {
+  wxExDir dir("./", "*.h");
+  
+  CPPUNIT_ASSERT(dir.GetFileSpec() == "*.h");
+  CPPUNIT_ASSERT(dir.FindFiles() == 1);
 }
   
 void wxExTestFixture::testFile()
@@ -190,6 +194,10 @@ void wxExTestFixture::testTool()
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
+    "testDir",
+    &wxExTestFixture::testDir));
+
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testFile",
     &wxExTestFixture::testFile));
