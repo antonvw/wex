@@ -106,8 +106,9 @@ SVN hierarchy
     though not really for wxWidgets,
   - the 2.8 branch is added to build using the real 
     wxWidgets stable branch,
-    it compiles, but with some warnings, and the using build.bkl 
-    generated project file does not find the correct wxextension libraries 
+    it compiles, but with some warnings, and the project file, 
+    generated using build.bkl, 
+    does not find the correct wxextension libraries 
     when linking, you have to adjust it manually.
 
 - tags contain all release versions
