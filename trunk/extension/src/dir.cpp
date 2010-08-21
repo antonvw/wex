@@ -103,6 +103,7 @@ size_t wxExDir::FindFiles()
   return retValue;
 }
 
+#if wxUSE_GUI
 wxExDirOpenFile::wxExDirOpenFile(wxExFrame* frame,
   const wxString& fullpath, 
   const wxString& filespec, 
@@ -118,3 +119,4 @@ void wxExDirOpenFile::OnFile(const wxString& file)
 {
   m_Frame->OpenFile(file, 0, wxEmptyString, m_Flags);
 }
+#endif
