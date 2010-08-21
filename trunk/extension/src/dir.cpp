@@ -79,12 +79,7 @@ wxExDir::wxExDir(const wxString& fullpath, const wxString& filespec, int flags)
 
 size_t wxExDir::FindFiles()
 {
-  if (!IsOpened()) 
-  {
-    return 0;
-  }
-
-  if (m_IsBusy)
+  if (!IsOpened() || m_IsBusy)
   {
     return 0;
   }
@@ -92,11 +87,14 @@ size_t wxExDir::FindFiles()
   m_Cancelled = false;
   m_IsBusy = true;
 
-  // Using m_FileSpec here does not work, as it might
-  // contain several specs (*.cpp;*.h), wxDir does not handle that.
-  // Do not combine into one, Ubuntu complains.
   wxExDirTraverser traverser(*this);
-  const size_t retValue = Traverse(traverser, wxEmptyString, m_Flags);
+  
+  // Using m_FileSpec only works if it 
+  // contains single spec (*.h), wxDir does not handle multi specs (*.cpp; *.h).
+  const size_t retValue = Traverse(
+    traverser, 
+    (m_FileSpec.Contains(";") ? wxString(wxEmptyString): m_FileSpec), 
+    m_Flags);
 
   m_IsBusy = false;
 

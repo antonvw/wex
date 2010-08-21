@@ -23,7 +23,6 @@ void wxExTestFixture::testDir()
   
   CPPUNIT_ASSERT(dir.IsOpened());
   CPPUNIT_ASSERT(dir.GetFileSpec() == "*.h");
-  printf("%s %d\n", dir.GetName().c_str(), dir.FindFiles());
   CPPUNIT_ASSERT(dir.FindFiles() == 1);
 }
   
