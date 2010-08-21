@@ -146,8 +146,6 @@ Roadmap
     
 - add gdb front-end
 
-- improve test units, use macro's
-
 - add profile option (see gcc website, g++ -D_GLIBCXX_PROFILE foo.cc)
     or use valgrind
 
