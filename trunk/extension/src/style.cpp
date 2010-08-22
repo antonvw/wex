@@ -72,7 +72,8 @@ void wxExStyle::Set(const wxXmlNode* node)
 
   if (!IsOk())
   {
-    wxLogError(_("Illegal style on line: %d"), node->GetLineNumber());
+    wxLogError(_("Illegal style: %s on line: %d"), 
+      m_Value.c_str(), node->GetLineNumber());
   }
 }
 

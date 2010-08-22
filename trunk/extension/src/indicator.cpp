@@ -74,7 +74,8 @@ void wxExIndicator::Set(const wxXmlNode* node)
 
   if (!single.IsNumber())
   {
-    wxLogError(_("Illegal indicator: %s"), single.c_str());
+    wxLogError(_("Illegal indicator: %s on line: %d"), 
+      single.c_str(), node->GetLineNumber());
     return;
   }
 
@@ -109,6 +110,7 @@ void wxExIndicator::Set(const wxXmlNode* node)
 
   if (!IsOk())
   {
-    wxLogError(_("Illegal indicator on line: %d"), node->GetLineNumber());
+    wxLogError(_("Illegal indicator number: %d on line: %d"), 
+      m_No, node->GetLineNumber());
   }
 }
