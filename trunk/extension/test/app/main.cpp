@@ -20,7 +20,10 @@ bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-app");
 
-  wxExApp::OnInit();
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
 
   wxExFrame *frame = new wxExFrame(NULL, wxID_ANY, "wxex-test-app");
   frame->Show(true);

@@ -21,7 +21,10 @@ bool wxExReportTestApp::OnInit()
 {
   SetAppName("wxex-test-rep");
 
-  wxExApp::OnInit();
+  if (!wxExApp::OnInit())
+  {
+    return false;
+  }
 
   wxExFrameWithHistory *frame = new 
     wxExFrameWithHistory(NULL, wxID_ANY, "wxex-test-rep");
