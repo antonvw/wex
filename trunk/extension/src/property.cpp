@@ -48,6 +48,9 @@ void wxExProperty::Set(const wxXmlNode* node)
 
   if (!IsOk())
   {
-    wxLogError(_("Illegal property on line: %d"), node->GetLineNumber());
+    wxLogError(_("Illegal property name: %s or value: %s on line: %d"),
+      m_Name.c_str(),
+      m_Value.c_str(),
+      node->GetLineNumber());
   }
 }

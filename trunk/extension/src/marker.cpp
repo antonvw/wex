@@ -99,6 +99,7 @@ void wxExMarker::Set(const wxXmlNode* node)
 
   if (!IsOk())
   {
-    wxLogError(_("Illegal marker on line: %d"), node->GetLineNumber());
+    wxLogError(_("Illegal marker number: %d on line: %d"), 
+      m_No, node->GetLineNumber());
   }
 }

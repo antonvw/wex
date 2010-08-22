@@ -95,7 +95,7 @@ void wxExStyle::SetNo(const wxString& no)
     }
     else
     {
-      wxLogError(_("Illegal style: %s"), single.c_str());
+      wxLogError(_("Illegal style: %s"), no.c_str());
     }
   }
 }
