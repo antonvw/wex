@@ -37,5 +37,6 @@ bool wxExReportTestApp::OnInit()
   runner.addTest(suite);
   runner.run();
 
-  return true;
+  // Return false, so test ends here.
+  return false;
 }
