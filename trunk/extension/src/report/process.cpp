@@ -13,6 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/infobar.h>
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
@@ -197,7 +198,7 @@ long wxExProcess::Execute()
   {
     // Only show a message, and continue,
     // easier for testing.
-    wxLogMessage(_("No listview to collect output"));
+    wxInfoBar(m_Frame).ShowMessage(_("No listview to collect output"));
   }
 
   const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
