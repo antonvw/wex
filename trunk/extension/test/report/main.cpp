@@ -19,12 +19,12 @@ IMPLEMENT_APP(wxExReportTestApp)
 
 bool wxExReportTestApp::OnInit()
 {
-  SetAppName("wxExReportTestApp");
+  SetAppName("wxex-test-rep");
 
   wxExApp::OnInit();
 
   wxExFrameWithHistory *frame = new 
-    wxExFrameWithHistory(NULL, wxID_ANY, "wxExReportTestApp");
+    wxExFrameWithHistory(NULL, wxID_ANY, "wxex-test-rep");
     
   frame->Show(true);
 

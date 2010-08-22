@@ -18,11 +18,11 @@ IMPLEMENT_APP(wxExTestApp)
 
 bool wxExTestApp::OnInit()
 {
-  SetAppName("wxExTestApp");
+  SetAppName("wxex-test-app");
 
   wxExApp::OnInit();
 
-  wxExFrame *frame = new wxExFrame(NULL, wxID_ANY, "wxExTestApp");
+  wxExFrame *frame = new wxExFrame(NULL, wxID_ANY, "wxex-test-app");
   frame->Show(true);
 
   SetTopWindow(frame);
