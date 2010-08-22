@@ -19,12 +19,10 @@
 
 void wxExAppTestFixture::setUp()
 {
-  wxExLexers* lexers = new wxExLexers(
-    wxFileName("../extension/data/lexers.xml"));
-    
-  lexers->Read();
-  
-  wxExLexers::Set(lexers);
+  // Create the global lexers object, 
+  // it should be present in ~/.wxex-test-app
+  // (depending on platform, configuration).
+  wxExLexers* lexers = wxExLexers::Get();
 }
 
 void wxExAppTestFixture::testConfigItem()
