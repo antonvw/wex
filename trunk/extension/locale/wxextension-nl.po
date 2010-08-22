@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-22 13:56+0100\n"
-"PO-Revision-Date: 2010-08-22 13:58+0100\n"
+"POT-Creation-Date: 2010-08-22 14:14+0100\n"
+"PO-Revision-Date: 2010-08-22 14:16+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -275,8 +275,8 @@ msgstr "Onbekende marker: %s op regel: %d"
 
 #: ../src/marker.cpp:102
 #, c-format
-msgid "Illegal marker on line: %d"
-msgstr "Onbekende marker op regel: %d"
+msgid "Illegal marker number: %d on line: %d"
+msgstr "Onbekende marker nummer: %d op regel: %d"
 
 #: ../src/listview.cpp:169
 msgid "List Font"
@@ -368,8 +368,8 @@ msgstr "Onbekende lexer tag: %s op regel: %d"
 
 #: ../src/property.cpp:51
 #, c-format
-msgid "Illegal property on line: %d"
-msgstr "Onbekende eigenschap: %d"
+msgid "Illegal property name: %s or value: %s on line: %d"
+msgstr "Onbekende property naam: %s of waarde: %s op regel: %d"
 
 #: ../src/indicator.cpp:77
 #, c-format
@@ -1170,6 +1170,10 @@ msgstr "VCS en vergelijker instellen"
 msgid "Select Process"
 msgstr "Proces selecteren"
 
+#~ msgid "Illegal marker on line: %d"
+#~ msgstr "Onbekende marker op regel: %d"
+#~ msgid "Illegal property on line: %d"
+#~ msgstr "Onbekende eigenschap: %d"
 #~ msgid "Illegal indicator: %s"
 #~ msgstr "Onbekenbde indicator: %s"
 #~ msgid "Undefined colourings tag: %s on line: %d"
@@ -1178,8 +1182,6 @@ msgstr "Proces selecteren"
 #~ msgstr "Tool Bar"
 #~ msgid "Find Bar"
 #~ msgstr "Zoekbalk"
-#~ msgid "Illegal marker number: %d or symbol: %d"
-#~ msgstr "Onbekende marker: %d op regel: %d"
 #~ msgid "Insert Sequence"
 #~ msgstr "Rij toevoegen"
 #~ msgid "Box"
@@ -1198,8 +1200,6 @@ msgstr "Proces selecteren"
 #~ msgstr "Niveau nummers"
 #~ msgid "Undefined macro: %s"
 #~ msgstr "Onbekende macro: %s"
-#~ msgid "Illegal marker number: %d or symbol: %d on line: %d"
-#~ msgstr "Onbekende marker: %d of symbool: %d op regel: %d"
 #~ msgid "<none>"
 #~ msgstr "<geen>"
 #~ msgid "Use SVN"
