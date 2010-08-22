@@ -151,7 +151,8 @@ void wxExAppTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.MakeComment("test", true).empty());
   CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
   CPPUNIT_ASSERT(lexer.SetKeywords("hello:1"));
-  CPPUNIT_ASSERT(lexer.SetKeywords("test11 test21:1 test31:1 test12:2 test22:2"));
+  CPPUNIT_ASSERT(lexer.SetKeywords(
+    "test11 test21:1 test31:1 test12:2 test22:2"));
   CPPUNIT_ASSERT(!lexer.IsKeyword("class")); // now overwritten
   CPPUNIT_ASSERT(lexer.IsKeyword("test11"));
   CPPUNIT_ASSERT(lexer.IsKeyword("test21"));
@@ -164,12 +165,19 @@ void wxExAppTestFixture::testLexer()
 
 void wxExAppTestFixture::testLexers()
 {
-  CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(wxFileName(TEST_FILE)).empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(
+    wxFileName(TEST_FILE)).empty());
   CPPUNIT_ASSERT(wxExLexers::Get()->Count() > 0);
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByFileName(wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName("cpp").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByText("// this is a cpp comment text").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName("xxx").GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByFileName(
+    wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName(
+    "cpp").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByText(
+    "// this is a cpp comment text").GetScintillaLexer() == "cpp");
+  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName(
+    "xxx").GetScintillaLexer().empty());
+  CPPUNIT_ASSERT(wxExLexers::Get()->GetDefaultStyle().IsDefault());
+  CPPUNIT_ASSERT(wxExLexers::Get()->GetDefaultStyle().IsOk());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacrosStyle().empty());
 }
@@ -245,8 +253,10 @@ void wxExAppTestFixture::testStatusBar()
   wxExStatusBar* sb = new wxExStatusBar(frame);
   
   // The next is OK, but asserts in wxWidgets.
-  //../src/generic/statusbr.cpp(179): assert "(size_t)n == m_panes.GetCount()" failed in SetStatusWidths(): status bar field count mismatch
-  //../src/common/statbar.cpp(189): assert "(size_t)n == m_panes.GetCount()" failed in SetStatusStyles(): field number mismatch
+  //../src/generic/statusbr.cpp(179): assert "(size_t)n == m_panes.GetCount()" 
+  // failed in SetStatusWidths(): status bar field count mismatch
+  //../src/common/statbar.cpp(189): assert "(size_t)n == m_panes.GetCount()" 
+  // failed in SetStatusStyles(): field number mismatch
   //CPPUNIT_ASSERT(sb->SetPanes(panes) == panes.size());
   //CPPUNIT_ASSERT(sb->SetStatusText("hello"));
   //CPPUNIT_ASSERT(sb->SetStatusText("hello", "panex"));
@@ -329,8 +339,10 @@ void wxExAppTestFixture::testSTCShell()
 
 void wxExAppTestFixture::testUtil()
 {
-  CPPUNIT_ASSERT(wxExAlignText("test", "header", true, true,
-    wxExLexers::Get()->FindByName("cpp")).size() == wxString("// headertest").size());
+  CPPUNIT_ASSERT(i
+    wxExAlignText("test", "header", true, true,
+      wxExLexers::Get()->FindByName("cpp")).size() 
+      == wxString("// headertest").size());
   CPPUNIT_ASSERT(wxExClipboardAdd("test"));
   CPPUNIT_ASSERT(wxExClipboardGet() == "test");
   CPPUNIT_ASSERT(wxExGetEndOfText("test", 3).size() == 3);
@@ -340,7 +352,8 @@ void wxExAppTestFixture::testUtil()
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT(wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
-  CPPUNIT_ASSERT(!wxExTranslate("hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
+  CPPUNIT_ASSERT(!wxExTranslate(
+    "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
 }
 
 void wxExAppTestFixture::testVCS()
