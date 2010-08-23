@@ -289,6 +289,8 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
       // TODO: Add SVN only if svn bin exists on linux.
       wxConfigBase::Get()->Write("VCS", (long)VCS_SVN);
     }
+
+    m_Self->Read();
   }
 
   return m_Self;
@@ -354,61 +356,7 @@ void wxExVCS::Initialize()
 {
   if (Use() && m_Command != VCS_NO_COMMAND)
   {
-    switch (GetVCS())
-    {
-      case VCS_GIT:
-        switch (m_Command)
-        {
-          case VCS_ADD:      m_CommandString = "add"; break;
-          case VCS_BLAME:    m_CommandString = "blame"; break;
-          case VCS_CAT:      break;
-          case VCS_COMMIT:   m_CommandString = "commit"; break;
-          case VCS_DIFF:     m_CommandString = "diff"; break;
-          case VCS_HELP:     m_CommandString = "help"; break;
-          case VCS_INFO:     break;
-          case VCS_LOG:      m_CommandString = "log"; break;
-          case VCS_LS:       break;
-          case VCS_PROPLIST: break;
-          case VCS_PROPSET:  break;
-          case VCS_PUSH:     m_CommandString = "push"; break;
-          case VCS_REVERT:   m_CommandString = "revert"; break;
-          case VCS_SHOW:     m_CommandString = "show"; break;
-          case VCS_STAT:     m_CommandString = "status"; break;
-          case VCS_UPDATE:   m_CommandString = "update"; break;
-          default:
-            wxFAIL;
-            break;
-        }
-        break;
-
-      case VCS_SVN:
-        switch (m_Command)
-        {
-          case VCS_ADD:      m_CommandString = "add"; break;
-          case VCS_BLAME:    m_CommandString = "blame"; break;
-          case VCS_CAT:      m_CommandString = "cat"; break;
-          case VCS_COMMIT:   m_CommandString = "commit"; break;
-          case VCS_DIFF:     m_CommandString = "diff"; break;
-          case VCS_HELP:     m_CommandString = "help"; break;
-          case VCS_INFO:     m_CommandString = "info"; break;
-          case VCS_LOG:      m_CommandString = "log"; break;
-          case VCS_LS:       m_CommandString = "ls"; break;
-          case VCS_PROPLIST: m_CommandString = "proplist"; break;
-          case VCS_PROPSET:  m_CommandString = "propset"; break;
-          case VCS_PUSH:     break;
-          case VCS_REVERT:   m_CommandString = "revert"; break;
-          case VCS_SHOW:     break;
-          case VCS_STAT:     m_CommandString = "stat"; break;
-          case VCS_UPDATE:   m_CommandString = "update"; break;
-          default:
-            wxFAIL;
-            break;
-        }
-        break;
-
-      default: wxFAIL;
-    }
-
+    m_CommandString = m_Entries[GetVCSName()].GetCommand(m_Command);
     m_Caption = GetVCSName() + " " + m_CommandString;
 
     // Currently no flags, as no command was executed.
@@ -427,6 +375,46 @@ bool wxExVCS::IsOpenCommand() const
     m_Command == wxExVCS::VCS_BLAME ||
     m_Command == wxExVCS::VCS_CAT ||
     m_Command == wxExVCS::VCS_DIFF;
+}
+
+bool wxExVCS::Read()
+{
+  // This test is to prevent showing an error if the vcs file does not exist,
+  // as this is not required.
+  if (!m_FileNameXML.FileExists())
+  {
+    return false;
+  }
+
+  wxXmlDocument doc;
+
+  if (!doc.Load(m_FileNameXML.GetFullPath()))
+  {
+    return false;
+  }
+
+  // Initialize members.
+  m_Entries.clear();
+  m_Macros.clear();
+
+  wxXmlNode* child = doc.GetRoot()->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "macro")
+    {
+      ParseNodeMacro(child);
+    }
+    else if (child->GetName() == "vcs")
+    {
+      const wxExVCSEntry vcs(child);
+      m_Entries.insert(std::make_pair(vcs.GetName(), vcs));
+    }
+
+    child = child->GetNext();
+  }
+
+  return true;
 }
 
 #if wxUSE_GUI
@@ -572,4 +560,124 @@ bool wxExVCS::UseFlags() const
 bool wxExVCS::UseSubcommand() const
 {
   return m_Command == VCS_HELP;
+}
+
+void wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
+{
+  m_Name = node->GetAttribute("name");
+
+  if (m_Name.empty())
+  {
+    wxLogError(_("Missing vcs on line: %d"), node->GetLineNumber());
+  }
+  else
+  {
+    wxXmlNode *child = node->GetChildren();
+
+    while (child)
+    {
+      if (child->GetName() == "commands")
+      {
+        const std::vector<wxExStyle> v = ParseNodeCommands(child);
+
+        // Do not assign styles to result of ParseNode,
+        // as styles might already be filled with result of automatch.
+        m_Commands.insert(
+          m_Styles.end(),
+          v.begin(), v.end());
+      }
+      else if (child->GetName() == "comment")
+      {
+        // Ignore comments.
+      }
+      else
+      {
+        wxLogError(_("Undefined tag: %s on line: %d"),
+          child->GetName().c_str(),
+          child->GetLineNumber());
+      }
+
+      child = child->GetNext();
+    }
+  }
+}
+const std::vector<wxString> wxExLexer::ParseNodeCommands(
+  const wxXmlNode* node) const
+{
+  std::vector<wxString> text;
+
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "command")
+    {
+      SetNo(ApplyMacro(node->GetAttribute("no", "0")));
+
+      m_Value = node->GetNodeContent().Strip(wxString::both);
+
+      if (it != wxExLexers::Get()->GetMacrosStyle().end())
+      {
+        m_Value = it->second;
+      }
+
+      text.push_back(child->GetName());
+    }
+    else if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else
+    {
+      wxLogError(_("Undefined tag: %s on line: %d"),
+        child->GetName().c_str(),
+        child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
+
+  return text;
+}
+
+void wxExVCSEntry::ParseNodeMacro(const wxXmlNode* node)
+{
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else if (child->GetName() == "def")
+    {
+      const wxString attrib = child->GetAttribute("no");
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
+
+      if (!attrib.empty())
+      {
+        const auto it = m_Macros.find(attrib);
+
+        if (it != m_Macros.end())
+        {
+          wxLogError(_("Macro: %s on line: %d already exists"),
+            attrib.c_str(),
+            child->GetLineNumber());
+        }
+        else
+        {
+          m_Macros[attrib] = content;
+        }
+      }
+    }
+    else
+    {
+      wxLogError(_("Undefined macro tag: %s on line: %d"),
+        child->GetName().c_str(),
+        child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
 }
