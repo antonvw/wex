@@ -48,6 +48,12 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
   Initialize();
 }
 
+int wxExVCS::ApplyMacro(const wxString& no) const
+{
+  const auto it = m_Macros.find(no);
+  return (it != m_Macros.end() ? atoi(it->second.c_str()): 0);
+}
+
 bool wxExVCS::CheckGIT(const wxFileName& fn) const
 {
   // The .git dir only exists in the root, so check all components.
@@ -377,6 +383,48 @@ bool wxExVCS::IsOpenCommand() const
     m_Command == wxExVCS::VCS_DIFF;
 }
 
+void wxExVCS::ParseNodeMacro(const wxXmlNode* node)
+{
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else if (child->GetName() == "def")
+    {
+      const wxString attrib = child->GetAttribute("no");
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
+
+      if (!attrib.empty())
+      {
+        const auto it = m_Macros.find(attrib);
+
+        if (it != m_Macros.end())
+        {
+          wxLogError(_("Macro: %s on line: %d already exists"),
+            attrib.c_str(),
+            child->GetLineNumber());
+        }
+        else
+        {
+          m_Macros[attrib] = content;
+        }
+      }
+    }
+    else
+    {
+      wxLogError(_("Undefined macro tag: %s on line: %d"),
+        child->GetName().c_str(),
+        child->GetLineNumber());
+    }
+
+    child = child->GetNext();
+  }
+}
+
 bool wxExVCS::Read()
 {
   // This test is to prevent showing an error if the vcs file does not exist,
@@ -562,7 +610,7 @@ bool wxExVCS::UseSubcommand() const
   return m_Command == VCS_HELP;
 }
 
-void wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
+wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
 {
   m_Name = node->GetAttribute("name");
 
@@ -578,13 +626,7 @@ void wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
     {
       if (child->GetName() == "commands")
       {
-        const std::vector<wxExStyle> v = ParseNodeCommands(child);
-
-        // Do not assign styles to result of ParseNode,
-        // as styles might already be filled with result of automatch.
-        m_Commands.insert(
-          m_Styles.end(),
-          v.begin(), v.end());
+        m_Commands = ParseNodeCommands(child);
       }
       else if (child->GetName() == "comment")
       {
@@ -601,10 +643,17 @@ void wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
     }
   }
 }
-const std::vector<wxString> wxExLexer::ParseNodeCommands(
+
+const wxString wxExVCSEntry::GetCommand(int command_id) const
+{
+  const auto it = m_Commands.find(command_id);
+  return (it != m_Commands.end() ? it->second.c_str(): wxEmptyString);
+}
+  
+const std::map<int, wxString> wxExVCSEntry::ParseNodeCommands(
   const wxXmlNode* node) const
 {
-  std::vector<wxString> text;
+  std::map<int, wxString> text;
 
   wxXmlNode* child = node->GetChildren();
 
@@ -612,16 +661,10 @@ const std::vector<wxString> wxExLexer::ParseNodeCommands(
   {
     if (child->GetName() == "command")
     {
-      SetNo(ApplyMacro(node->GetAttribute("no", "0")));
+      const int no = wxExVCS::Get()->ApplyMacro(
+        node->GetAttribute("no", "0"));
 
-      m_Value = node->GetNodeContent().Strip(wxString::both);
-
-      if (it != wxExLexers::Get()->GetMacrosStyle().end())
-      {
-        m_Value = it->second;
-      }
-
-      text.push_back(child->GetName());
+      text.insert(std::make_pair(no, child->GetName()));
     }
     else if (child->GetName() == "comment")
     {
@@ -640,44 +683,3 @@ const std::vector<wxString> wxExLexer::ParseNodeCommands(
   return text;
 }
 
-void wxExVCSEntry::ParseNodeMacro(const wxXmlNode* node)
-{
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else if (child->GetName() == "def")
-    {
-      const wxString attrib = child->GetAttribute("no");
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
-
-      if (!attrib.empty())
-      {
-        const auto it = m_Macros.find(attrib);
-
-        if (it != m_Macros.end())
-        {
-          wxLogError(_("Macro: %s on line: %d already exists"),
-            attrib.c_str(),
-            child->GetLineNumber());
-        }
-        else
-        {
-          m_Macros[attrib] = content;
-        }
-      }
-    }
-    else
-    {
-      wxLogError(_("Undefined macro tag: %s on line: %d"),
-        child->GetName().c_str(),
-        child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-}

@@ -12,6 +12,8 @@
 #ifndef _EXVCS_H
 #define _EXVCS_H
 
+#include <map>
+#include <vector>
 #include <wx/xml/xml.h>
 #include <wx/extension/filename.h>
 
@@ -21,23 +23,24 @@ class wxExSTCEntryDialog;
 class wxExVCSEntry
 {
 public:
+  /// Default constructor.
+  wxExVCSEntry();
+  
   /// Constructor using xml node.
   wxExVCSEntry(const wxXmlNode* node);
 
   /// Gets the command.
-  const wxString& GetCommand(int command_id) const;
+  const wxString GetCommand(int command_id) const;
 
   /// Gets the name.
   const wxString& GetName() const {return m_Name;};
 private:
-  const std::vector<wxString> ParseNodeCommands(
+  const std::map<int, wxString> ParseNodeCommands(
     const wxXmlNode* node) const;
-  void ParseNodeMacro(const wxXmlNode* node);
-  bool Read();
   
   wxString m_Name;
 
-  std::vector<wxString> m_Commands;
+  std::map<int, wxString> m_Commands;
 };
 
 /// This class collects all vcs handling.
@@ -75,6 +78,9 @@ public:
 
   /// Constructor, specify the command id and a filename.
   wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
+  
+  /// Returns real id no.
+  int ApplyMacro(const wxString& no) const;
 
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
@@ -155,7 +161,8 @@ private:
   long GetVCS(const wxFileName& filename = wxFileName()) const;
   const wxString GetVCSName() const;
   void Initialize();
-  void Read();
+  void ParseNodeMacro(const wxXmlNode* node);
+  bool Read();
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
   bool UseSubcommand() const;
@@ -170,9 +177,8 @@ private:
   wxString m_Caption;
   wxString m_CommandString;
   wxString m_CommandWithFlags;
-  wxString m_Output;
-
   wxString m_FlagsKey;
+  wxString m_Output;
 
   static wxExVCS* m_Self;
 #if wxUSE_GUI
