@@ -94,8 +94,8 @@ public:
   bool IsOpenCommand() const;
 
 #if wxUSE_GUI
-  /// Combines all in one method. Shows the dialog,
-  /// executes if not cancelled, and shows output in the STC dialog.
+  /// Combines all in one method. Calls the ExecuteDialog,
+  /// executes if not cancelled, and calls ShowOutput.
   /// Returns return code from execute.
   wxStandardID Request(wxWindow* parent);
 #endif  
@@ -106,7 +106,7 @@ public:
   static wxExVCS* Set(wxExVCS* vcs);
 
 #if wxUSE_GUI
-  /// Shows output from Execute in a dialog only.
+  /// Shows output from Execute in a dialog.
   void ShowOutput(wxWindow* parent) const;
 #endif  
 
