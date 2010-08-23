@@ -84,7 +84,8 @@ public:
   const std::map<wxString, wxString>& GetMacros() const {return m_Macros;};
 
   /// Gets the style macros.
-  const std::map<wxString, wxString>& GetMacrosStyle() const {return m_MacrosStyle;};
+  const std::map<wxString, wxString>& GetMacrosStyle() const {
+    return m_MacrosStyle;};
 
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
@@ -93,9 +94,10 @@ public:
   bool MarkerIsLoaded(const wxExMarker& marker) const;
 
   /// Parses properties node.
-  const std::vector<wxExProperty> ParseNodeProperties(const wxXmlNode* node) const;
+  const std::vector<wxExProperty> ParseNodeProperties(
+    const wxXmlNode* node) const;
 
-  /// Reads all containers from file.
+  /// Reads all containers (first clears them )from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   bool Read();
 
