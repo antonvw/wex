@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<!--
+File:    vcss.xml
+Purpose: collection of version control systems supported
+Author:  Anton van Wezenbeek
+RCS-ID:  $Id$
+
+Copyright (c) 2010, Anton van Wezenbeek
+All rights are reserved. Reproduction in whole or part is prohibited
+without the written consent of the copyright owner.
+-->
+
+<vcss>
+  <!--
+   Each <vcs> has a name atribute (name of vcs used) and a path attribute. 
+   -->
+  
+  <vcs 
+    name="svn"
+    path="/usr/local/bin"
+
+    <commands>
+      <command no="VCS_COMMIT"> commit </command>
+      <command no="VCS_LOG"> log </command>
+    </commands>
+  </vcs>
+  
+  <vcs 
+    name="git"
+    path="/usr/local/bin"
+
+    <commands>
+      <command no="VCS_COMMIT"> commit </command>
+      <command no="VCS_LOG"> log </command>
+    </commands>
+  </vcs>
+  
+</vcss>
