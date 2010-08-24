@@ -215,14 +215,7 @@ long wxExVCS::Execute()
 
   m_CommandWithFlags = m_CommandString + flags;
 
-  wxString vcs_bin;
-
-  switch (GetVCS())
-  {
-    case VCS_GIT: vcs_bin = wxConfigBase::Get()->Read("GIT", "git"); break;
-    case VCS_SVN: vcs_bin = wxConfigBase::Get()->Read("SVN", "svn"); break;
-    default: wxFAIL;
-  }
+  const wxString vcs_bin = wxConfigBase::Get()->Read(GetVCSName(), "svn");
 
   if (vcs_bin.empty())
   {
