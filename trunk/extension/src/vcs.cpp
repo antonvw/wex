@@ -389,7 +389,7 @@ void wxExVCS::Initialize()
     m_CommandWithFlags = m_CommandString;
 
     // Use general key.
-    m_FlagsKey = wxString::Format("cvsflags/name%d", m_Command);
+    m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command);
   }
 
   m_Output.clear();
