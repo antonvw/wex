@@ -166,7 +166,6 @@ private:
 
   const wxExCommand m_Command;
   const wxExFileName m_FileName;
-  const wxFileName m_FileNameXML;
 
   std::map<wxString, wxExVCSEntry> m_Entries;
   std::map<wxString, wxString> m_Macros;

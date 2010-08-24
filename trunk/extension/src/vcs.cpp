@@ -417,16 +417,24 @@ void wxExVCS::ParseNodeMacro(const wxXmlNode* node)
 
 bool wxExVCS::Read()
 {
+  const wxFileName filename(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + "vcss.xml");
+
   // This test is to prevent showing an error if the vcs file does not exist,
   // as this is not required.
-  if (!m_FileNameXML.FileExists())
+  if (!filename.FileExists())
   {
     return false;
   }
 
   wxXmlDocument doc;
 
-  if (!doc.Load(m_FileNameXML.GetFullPath()))
+  if (!doc.Load(filename.GetFullPath()))
   {
     return false;
   }
