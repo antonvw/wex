@@ -160,7 +160,7 @@ long wxExVCS::Execute()
   }
   else
   {
-    if (GetVCSName() == "git")
+    if (GetName() == "git")
     {
       cwd = wxGetCwd();
       wxSetWorkingDirectory(m_FileName.GetPath());
@@ -212,11 +212,11 @@ long wxExVCS::Execute()
 
   m_CommandWithFlags = m_CommandString + flags;
 
-  const wxString vcs_bin = wxConfigBase::Get()->Read(GetVCSName(), "svn");
+  const wxString vcs_bin = wxConfigBase::Get()->Read(GetName(), "svn");
 
   if (vcs_bin.empty())
   {
-    wxLogError(GetVCSName() + " " + _("path is empty"));
+    wxLogError(GetName() + " " + _("path is empty"));
     return -1;
   }
 
@@ -312,24 +312,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
-{
-  if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
-  {
-    return (wxExCommand)(command_id - ID_VCS_LOWEST);
-  }
-  else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
-  {
-    return (wxExCommand)(command_id - ID_EDIT_VCS_LOWEST);
-  }
-  else
-  {
-    wxFAIL;
-    return VCS_NO_COMMAND;
-  }
-}
-
-const wxString wxExVCS::GetVCSName() const
+const wxString wxExVCS::GetName() const
 {
   if (Use())
   {
@@ -348,12 +331,29 @@ const wxString wxExVCS::GetVCSName() const
   return wxEmptyString;
 }
 
+wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
+{
+  if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
+  {
+    return (wxExCommand)(command_id - ID_VCS_LOWEST);
+  }
+  else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
+  {
+    return (wxExCommand)(command_id - ID_EDIT_VCS_LOWEST);
+  }
+  else
+  {
+    wxFAIL;
+    return VCS_NO_COMMAND;
+  }
+}
+
 void wxExVCS::Initialize()
 {
   if (Use() && m_Command != VCS_NO_COMMAND)
   {
-    m_CommandString = m_Entries[GetVCSName()].GetCommand(m_Command);
-    m_Caption = GetVCSName() + " " + m_CommandString;
+    m_CommandString = m_Entries[GetName()].GetCommand(m_Command);
+    m_Caption = GetName() + " " + m_CommandString;
 
     // Currently no flags, as no command was executed.
     m_CommandWithFlags = m_CommandString;
@@ -583,7 +583,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  return GetVCSName() == "svn";
+  return GetName() == "svn";
 }
 
 bool wxExVCS::Use() const

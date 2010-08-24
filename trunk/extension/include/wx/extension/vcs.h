@@ -154,8 +154,8 @@ public:
 private:
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
+  const wxString GetName() const;
   wxExCommand GetType(int command_id) const;
-  const wxString GetVCSName() const;
   void Initialize();
   void ParseNodeMacro(const wxXmlNode* node);
   bool Read();
