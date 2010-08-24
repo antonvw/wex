@@ -1776,7 +1776,7 @@ without the written consent of the copyright owner.
   <lexer name="nsis" match="wxSTC_NSIS_" />
   <lexer name="octave" match="wxSTC_MATLAB_" />
   <lexer name="opal" match="wxSTC_OPAL_" />
-  <lexer name="perl" match="wxSTC_PL_" />
+  <lexer name="perl" extensions="*.pl" match="wxSTC_PL_" />
   <lexer name="php" match="wxSTC_HPHP_" /> 
   <lexer name="phpscript" match="wxSTC_H_" /> 
   <lexer name="pov" match="wxSTC_POV_" />
