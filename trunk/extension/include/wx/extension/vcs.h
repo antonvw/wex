@@ -155,13 +155,12 @@ private:
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   wxExCommand GetType(int command_id) const;
-  /// Gets the VCS system used.
-  long GetVCS(const wxFileName& filename = wxFileName()) const;
   const wxString GetVCSName() const;
   void Initialize();
   void ParseNodeMacro(const wxXmlNode* node);
   bool Read();
   int ShowDialog(wxWindow* parent);
+  bool Use(const wxFileName& filename) const;
   bool UseFlags() const;
   bool UseSubcommand() const;
 

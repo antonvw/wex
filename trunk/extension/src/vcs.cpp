@@ -26,8 +26,6 @@ enum wxExSystem
 {
   VCS_NONE, ///< no version control
   VCS_AUTO, ///< Uses the VCS appropriate for current file
-  VCS_GIT,  ///< GIT version control
-  VCS_SVN,  ///< Subversion version control
 };
 
 wxExVCS* wxExVCS::m_Self = NULL;
@@ -128,17 +126,16 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  switch (GetVCS(filename))
+  if (Use(filename))
   {
-    case VCS_GIT: 
-      return CheckGIT(filename); break;
-
-    case VCS_NONE: break; // prevent wxFAIL
-    
-    case VCS_SVN: 
-      return CheckSVN(filename); break;
-
-    default: wxFAIL;
+    if (CheckSVN(filename))
+    {
+      return true;
+    }
+    else if (CheckGIT(filename))
+    {
+      return true;
+    }
   }
 
   return false;
@@ -332,36 +329,9 @@ wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
   }
 }
 
-long wxExVCS::GetVCS(const wxFileName& filename) const
-{
-  const wxFileName fn(!filename.IsOk() ? m_FileName: filename);
-  
-  long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
-
-  if (vcs == VCS_AUTO)
-  {
-    if (CheckSVN(fn))
-    {
-      vcs = VCS_SVN;
-    }
-    else if (CheckGIT(fn))
-    {
-      vcs = VCS_GIT;
-    }
-    else
-    {
-      vcs = VCS_NONE;
-    }
-  }
-
-  return vcs;
-}
-
 const wxString wxExVCS::GetVCSName() const
 {
-  const long vcs = GetVCS();
-
-  if (vcs != VCS_NONE)
+  if (Use())
   {
     for (
       auto it = m_Entries.begin();
@@ -618,7 +588,30 @@ bool wxExVCS::SupportKeywordExpansion() const
 
 bool wxExVCS::Use() const
 {
-  return GetVCS() != VCS_NONE;
+  return Use(m_FileName);
+}
+
+bool wxExVCS::Use(const wxFileName& filename) const
+{
+  long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
+
+  if (vcs == VCS_AUTO)
+  {
+    if (CheckSVN(filename))
+    {
+      return true;
+    }
+    else if (CheckGIT(filename))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  return vcs != VCS_NONE;
 }
 
 bool wxExVCS::UseFlags() const
@@ -710,4 +703,3 @@ const std::map<int, wxString> wxExVCSEntry::ParseNodeCommands(
 
   return text;
 }
-
