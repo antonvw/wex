@@ -163,7 +163,7 @@ long wxExVCS::Execute()
   }
   else
   {
-    if (GetVCS() == VCS_GIT)
+    if (GetVCSName() == "git")
     {
       cwd = wxGetCwd();
       wxSetWorkingDirectory(m_FileName.GetPath());
