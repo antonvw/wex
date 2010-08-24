@@ -302,15 +302,14 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   if (m_Self == NULL && createOnDemand)
   {
     m_Self = new wxExVCS;
+    m_Self->Read();
 
     // Add default VCS.
-    if (!wxConfigBase::Get()->Exists("VCS"))
+    if (!wxConfigBase::Get()->Exists("VCS") && !m_Entries.empty())
     {
       // TODO: Add SVN only if svn bin exists on linux.
-      wxConfigBase::Get()->Write("VCS", (long)VCS_SVN);
+      wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO + 1);
     }
-
-    m_Self->Read();
   }
 
   return m_Self;
@@ -337,7 +336,7 @@ long wxExVCS::GetVCS(const wxFileName& filename) const
 {
   const wxFileName fn(!filename.IsOk() ? m_FileName: filename);
   
-  long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_SVN);
+  long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
 
   if (vcs == VCS_AUTO)
   {
@@ -360,16 +359,23 @@ long wxExVCS::GetVCS(const wxFileName& filename) const
 
 const wxString wxExVCS::GetVCSName() const
 {
-  wxString text;
+  const long vcs = GetVCS();
 
-  switch (GetVCS())
+  if (vcs != VCS_NONE)
   {
-    case VCS_GIT: text = "GIT"; break;
-    case VCS_SVN: text = "SVN"; break;
-    default: wxFAIL;
+    for (
+      auto it = m_Entries.begin();
+      it != m_Entries.end();
+      ++it)
+    {
+      if (it->second.GetNo() == vcs)
+      {
+        return it->second.GetName();
+      }
+    }
   }
 
-  return text;
+  return wxEmptyString;
 }
 
 void wxExVCS::Initialize()
@@ -607,8 +613,9 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  return GetVCS() == VCS_SVN;
+  return GetVCSName() == "svn";
 }
+
 bool wxExVCS::Use() const
 {
   return GetVCS() != VCS_NONE;
