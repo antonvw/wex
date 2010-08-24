@@ -22,6 +22,14 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
+enum wxExSystem
+{
+  VCS_NONE, ///< no version control
+  VCS_AUTO, ///< Uses the VCS appropriate for current file
+  VCS_GIT,  ///< GIT version control
+  VCS_SVN,  ///< Subversion version control
+};
+
 wxExVCS* wxExVCS::m_Self = NULL;
 #if wxUSE_GUI
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
@@ -92,13 +100,26 @@ int wxExVCS::ConfigDialog(
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(VCS_NONE, _("None")));
-  choices.insert(std::make_pair(VCS_GIT, "GIT"));
-  choices.insert(std::make_pair(VCS_SVN, "SVN"));
   choices.insert(std::make_pair(VCS_AUTO, "Auto"));
+  
+  for (
+    auto it = m_Entries.begin();
+    it != m_Entries.end();
+    ++it)
+  {
+    choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName());
+  }
+
   v.push_back(wxExConfigItem("VCS", choices));
 
-  v.push_back(wxExConfigItem("GIT", CONFIG_FILEPICKERCTRL));
-  v.push_back(wxExConfigItem("SVN", CONFIG_FILEPICKERCTRL));
+  for (
+    auto it2 = m_Entries.begin();
+    it2 != m_Entries.end();
+    ++it2)
+  {
+    v.push_back(wxExConfigItem(it2->second.GetName(), CONFIG_FILEPICKERCTRL));
+  }
+
   v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
 
   return wxExConfigDialog(parent, v, title).ShowModal();
@@ -610,7 +631,14 @@ bool wxExVCS::UseSubcommand() const
   return m_Command == VCS_HELP;
 }
 
+int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
+
+wxExVCSEntry::wxExVCSEntry()
+{
+}
+
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
+  : m_No(m_Instances++)
 {
   m_Name = node->GetAttribute("name");
 

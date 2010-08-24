@@ -34,11 +34,17 @@ public:
 
   /// Gets the name.
   const wxString& GetName() const {return m_Name;};
+
+  /// Gets the no.
+  int GetNo() const {return m_No;};
 private:
   const std::map<int, wxString> ParseNodeCommands(
     const wxXmlNode* node) const;
-  
+
+  static int m_Instances;
+
   wxString m_Name;
+  int m_No;
 
   std::map<int, wxString> m_Commands;
 };
@@ -146,14 +152,6 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  enum wxExSystem
-  {
-    VCS_NONE, ///< no version control
-    VCS_GIT,  ///< GIT version control
-    VCS_SVN,  ///< Subversion version control
-    VCS_AUTO, ///< Uses the VCS appropriate for current file
-  };
-
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   wxExCommand GetType(int command_id) const;
