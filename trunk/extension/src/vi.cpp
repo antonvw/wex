@@ -46,8 +46,12 @@ void wxExVi::Delete(int lines) const
   {
     return;
   }
-
-  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  
+  const bool pos_at_end =
+    (m_STC->GetCurrentPos() == m_STC->GetTextLength() &&
+     m_STC->GetTextLength() > 0);
+  const auto line = m_STC->LineFromPosition(
+    (pos_at_end ? m_STC->GetCurrentPos() - 1: m_STC->GetCurrentPos());
   const auto start = m_STC->PositionFromLine(line);
   const auto end = m_STC->PositionFromLine(line + lines);
 
