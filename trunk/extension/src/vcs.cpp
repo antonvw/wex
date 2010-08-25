@@ -58,15 +58,7 @@ wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 #if wxUSE_GUI
 void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
 {
-  for (
-    auto it = m_Entries.begin();
-    it != m_Entries.end();
-    ++it)
-  {
-    const int id = base_id + it->second.GetNo();
-    const wxString text(wxExEllipsed("&" + it->second.GetName()));
-    menu->Append(id, text);
-  }
+  m_Entries[GetName()].BuildMenu(base_id, menu, is_popup);
 }
 #endif
 
@@ -635,6 +627,21 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
     }
   }
 }
+
+#if wxUSE_GUI
+void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
+{
+  for (
+    auto it = m_Commands.begin();
+    it != m_Commands.end();
+    ++it)
+  {
+    const int id = base_id + m_No;
+    const wxString text(wxExEllipsed("&" + *it));
+    menu->Append(id, text);
+  }
+}
+#endif
 
 const wxString wxExVCSEntry::GetCommand(int command_id) const
 {

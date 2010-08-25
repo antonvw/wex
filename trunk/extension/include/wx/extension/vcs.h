@@ -30,6 +30,11 @@ public:
   /// Constructor using xml node.
   wxExVCSEntry(const wxXmlNode* node);
 
+#if wxUSE_GUI
+  /// Builds a menu, default assumes it is a popup menu.
+  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true);
+#endif
+  
   /// Gets the command.
   const wxString GetCommand(int command_id) const;
 
@@ -89,9 +94,6 @@ public:
 
   /// Returns the vcs object.
   static wxExVCS* Get(bool createOnDemand = true);
-
-  /// Gets the command string (without the 'vcs') used to get the output.
-  const wxString& GetCommandString() const {return m_CommandString;};
 
   /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
