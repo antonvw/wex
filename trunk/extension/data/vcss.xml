@@ -54,4 +54,13 @@ without the written consent of the copyright owner.
     </commands>
   </vcs>
 
+  <vcs 
+    name="cvs">
+
+    <commands>
+      <command> add </command>
+      <command> co </command>
+    </commands>
+  </vcs>
+  
 </vcss>
