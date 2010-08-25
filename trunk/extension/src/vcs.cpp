@@ -22,6 +22,29 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
+/// VCS types supported.
+/// See also defs.h, and do not exceed VCS_MAX_COMMANDS.
+enum wxExCommand
+{
+    VCS_NO_COMMAND, ///< not ok value
+    VCS_ADD,      ///< vcs add
+    VCS_BLAME,    ///< vcs blame
+    VCS_CAT,      ///< vcs cat
+    VCS_COMMIT,   ///< vcs commit
+    VCS_DIFF,     ///< vcs diff
+    VCS_HELP,     ///< vcs help
+    VCS_INFO,     ///< vcs info
+    VCS_LOG,      ///< vcs log
+    VCS_LS,       ///< vcs ls
+    VCS_PROPLIST, ///< vcs prop list
+    VCS_PROPSET,  ///< vcs prop set
+    VCS_PUSH,     ///< vcs push
+    VCS_REVERT,   ///< vcs revert
+    VCS_SHOW,     ///< vcs show
+    VCS_STAT,     ///< vcs stat
+    VCS_UPDATE,   ///< vcs update
+};
+
 enum wxExSystem
 {
   VCS_NONE, ///< no version control
@@ -52,12 +75,6 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
   , m_FileName(filename)
 {
   Initialize();
-}
-
-int wxExVCS::ApplyMacro(const wxString& no) const
-{
-  const auto it = m_Macros.find(no);
-  return (it != m_Macros.end() ? atoi(it->second.c_str()): 0);
 }
 
 bool wxExVCS::CheckGIT(const wxFileName& fn) const
@@ -373,48 +390,6 @@ bool wxExVCS::IsOpenCommand() const
     m_Command == wxExVCS::VCS_DIFF;
 }
 
-void wxExVCS::ParseNodeMacro(const wxXmlNode* node)
-{
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else if (child->GetName() == "def")
-    {
-      const wxString attrib = child->GetAttribute("no");
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
-
-      if (!attrib.empty())
-      {
-        const auto it = m_Macros.find(attrib);
-
-        if (it != m_Macros.end())
-        {
-          wxLogError(_("Macro: %s on line: %d already exists"),
-            attrib.c_str(),
-            child->GetLineNumber());
-        }
-        else
-        {
-          m_Macros[attrib] = content;
-        }
-      }
-    }
-    else
-    {
-      wxLogError(_("Undefined macro tag: %s on line: %d"),
-        child->GetName().c_str(),
-        child->GetLineNumber());
-    }
-
-    child = child->GetNext();
-  }
-}
-
 bool wxExVCS::Read()
 {
   const wxFileName filename(
@@ -441,17 +416,12 @@ bool wxExVCS::Read()
 
   // Initialize members.
   m_Entries.clear();
-  m_Macros.clear();
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
   while (child)
   {
-    if (child->GetName() == "macro")
-    {
-      ParseNodeMacro(child);
-    }
-    else if (child->GetName() == "vcs")
+    if (child->GetName() == "vcs")
     {
       const wxExVCSEntry vcs(child);
       m_Entries.insert(std::make_pair(vcs.GetName(), vcs));
@@ -690,9 +660,7 @@ const std::map<int, wxString> wxExVCSEntry::ParseNodeCommands(
   {
     if (child->GetName() == "command")
     {
-      const int no = wxExVCS::Get()->ApplyMacro(
-        node->GetAttribute("no", "0"));
-
+      const int no = node->GetAttribute("no", "0");
       text.insert(std::make_pair(no, child->GetName()));
     }
     else if (child->GetName() == "comment")

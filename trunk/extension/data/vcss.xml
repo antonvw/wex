@@ -11,28 +11,6 @@ without the written consent of the copyright owner.
 -->
 
 <vcss>
-  <macro>
-  <!--
-    These macro's allow you to use text instead of numbers.
-    -->
-    <def no="VCS_ADD"> 1 </def>
-    <def no="VCS_BLAME"> 2 </def>
-    <def no="VCS_CAT"> 3 </def>
-    <def no="VCS_COMMIT"> 4 </def>
-    <def no="VCS_DIFF"> 5 </def>
-    <def no="VCS_HELP"> 6 </def>
-    <def no="VCS_INFO"> 7 </def>
-    <def no="VCS_LOG"> 8 </def>
-    <def no="VCS_LS"> 9 </def>
-    <def no="VCS_PROPLIST"> 10 </def>
-    <def no="VCS_PROPSET"> 11 </def>
-    <def no="VCS_PUSH"> 12 </def>
-    <def no="VCS_REVERT"> 13 </def>
-    <def no="VCS_SHOW"> 14 </def>
-    <def no="VCS_STAT"> 15 </def>
-    <def no="VCS_UPDATE"> 16 </def>
-  </macro>
-
   <!--
    Each <vcs> has a name atribute (name of vcs used). 
    -->
@@ -41,20 +19,20 @@ without the written consent of the copyright owner.
     name="svn">
 
     <commands>
-      <command no="VCS_ADD"> add </command>
-      <command no="VCS_BLAME"> blame </command>
-      <command no="VCS_CAT"> cat </command>
-      <command no="VCS_COMMIT"> commit </command>
-      <command no="VCS_DIFF"> diff </command>
-      <command no="VCS_HELP"> help </command>
-      <command no="VCS_INFO"> info </command>
-      <command no="VCS_LOG"> log </command>
-      <command no="VCS_LS"> ls </command>
-      <command no="VCS_PROPLIST"> proplist </command>
-      <command no="VCS_PROPSET"> propset </command>
-      <command no="VCS_REVERT"> revert </command>
-      <command no="VCS_STAT"> stat </command>
-      <command no="VCS_UPDATE"> update </command>
+      <command> add </command>
+      <command type="open"> blame </command>
+      <command type="open"> cat </command>
+      <command> commit </command>
+      <command type="open"> diff </command>
+      <command> help </command>
+      <command> info </command>
+      <command> log </command>
+      <command> ls </command>
+      <command> proplist </command>
+      <command> propset </command>
+      <command> revert </command>
+      <command> stat </command>
+      <command> update </command>
     </commands>
   </vcs>
   
@@ -62,17 +40,17 @@ without the written consent of the copyright owner.
     name="git">
 
     <commands>
-      <command no="VCS_ADD"> add </command>
-      <command no="VCS_BLAME"> blame </command>
-      <command no="VCS_COMMIT"> commit </command>
-      <command no="VCS_DIFF"> diff </command>
-      <command no="VCS_HELP"> help </command>
-      <command no="VCS_LOG"> log </command>
-      <command no="VCS_PUSH"> push </command>
-      <command no="VCS_REVERT"> revert </command>
-      <command no="VCS_SHOW"> show </command>
-      <command no="VCS_STAT"> status </command>
-      <command no="VCS_UPDATE"> update </command>
+      <command> add </command>
+      <command> type="open"> blame </command>
+      <command> commit </command>
+      <command> type="open"> diff </command>
+      <command> help </command>
+      <command> log </command>
+      <command> push </command>
+      <command> revert </command>
+      <command> show </command>
+      <command> status </command>
+      <command> update </command>
     </commands>
   </vcs>
 

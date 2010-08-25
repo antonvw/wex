@@ -53,41 +53,12 @@ private:
 class wxExVCS
 {
 public:
-  /// VCS types supported.
-  /// See also defs.h, and do not exceed VCS_MAX_COMMANDS.
-  enum wxExCommand
-  {
-    VCS_NO_COMMAND, ///< not ok value
-    VCS_ADD,      ///< vcs add
-    VCS_BLAME,    ///< vcs blame
-    VCS_CAT,      ///< vcs cat
-    VCS_COMMIT,   ///< vcs commit
-    VCS_DIFF,     ///< vcs diff
-    VCS_HELP,     ///< vcs help
-    VCS_INFO,     ///< vcs info
-    VCS_LOG,      ///< vcs log
-    VCS_LS,       ///< vcs ls
-    VCS_PROPLIST, ///< vcs prop list
-    VCS_PROPSET,  ///< vcs prop set
-    VCS_PUSH,     ///< vcs push
-    VCS_REVERT,   ///< vcs revert
-    VCS_SHOW,     ///< vcs show
-    VCS_STAT,     ///< vcs stat
-    VCS_UPDATE,   ///< vcs update
-  };
-
   /// Default constructor.
   wxExVCS();
-
-  /// Constructor, specify the command and a filename.
-  wxExVCS(wxExCommand command, const wxExFileName& filename = wxExFileName());
 
   /// Constructor, specify the command id and a filename.
   wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
   
-  /// Returns real id no.
-  int ApplyMacro(const wxString& no) const;
-
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
@@ -112,9 +83,6 @@ public:
 
   /// Returns the vcs object.
   static wxExVCS* Get(bool createOnDemand = true);
-
-  /// Gets the command.
-  const wxExCommand GetCommand() const {return m_Command;};
 
   /// Gets the command string (without the 'vcs') used to get the output.
   const wxString& GetCommandString() const {return m_CommandString;};
@@ -157,18 +125,16 @@ private:
   const wxString GetName() const;
   wxExCommand GetType(int command_id) const;
   void Initialize();
-  void ParseNodeMacro(const wxXmlNode* node);
   bool Read();
   int ShowDialog(wxWindow* parent);
   bool Use(const wxFileName& filename) const;
   bool UseFlags() const;
   bool UseSubcommand() const;
 
-  const wxExCommand m_Command;
+  const int m_Command;
   const wxExFileName m_FileName;
 
   std::map<wxString, wxExVCSEntry> m_Entries;
-  std::map<wxString, wxString> m_Macros;
 
   wxString m_Caption;
   wxString m_CommandString;
