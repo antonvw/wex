@@ -15,6 +15,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/menu.h>
+#include <wx/stdpaths.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -111,7 +112,7 @@ int wxExVCS::ConfigDialog(
     it != m_Entries.end();
     ++it)
   {
-    choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName());
+    choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
   }
 
   v.push_back(wxExConfigItem("VCS", choices));
@@ -308,7 +309,8 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
     m_Self->Read();
 
     // Add default VCS.
-    if (!wxConfigBase::Get()->Exists("VCS") && !m_Entries.empty())
+    // This is a static method, so not use m_Entries.
+    if (!wxConfigBase::Get()->Exists("VCS"))
     {
       // TODO: Add SVN only if svn bin exists on linux.
       wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO + 1);
@@ -345,7 +347,7 @@ int wxExVCS::GetType(int command_id) const
   }
   else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
   {
-    return (command_id - ID_EDIT_VCS_LOWEST;
+    return command_id - ID_EDIT_VCS_LOWEST;
   }
   else
   {
@@ -588,7 +590,7 @@ bool wxExVCS::UseFlags() const
 
 bool wxExVCS::UseSubcommand() const
 {
-  return m_Command == "help";
+  return m_CommandString == "help";
 }
 
 int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
@@ -652,10 +654,10 @@ const wxString wxExVCSEntry::GetCommand(int command_id) const
   return m_Commands.at(command_id);
 }
   
-const std::map<wxString> wxExVCSEntry::ParseNodeCommands(
+const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
   const wxXmlNode* node) const
 {
-  std::map<wxString> text;
+  std::vector<wxString> text;
 
   wxXmlNode* child = node->GetChildren();
 
