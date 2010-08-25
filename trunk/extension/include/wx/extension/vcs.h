@@ -17,6 +17,7 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/filename.h>
 
+class wxMenu;
 class wxExSTCEntryDialog;
 
 /// This class collects a single vcs.
@@ -60,11 +61,8 @@ public:
   wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
   
 #if wxUSE_GUI
-  /// Builds the main menu.
-  void BuildMainMenu(int base_id, wxExMenu* menu);
-
-  /// Builds the popup menu.
-  void BuildPopupMenu(int base_id, wxExMenu* menu);
+  /// Builds a menu, default assumes it is a popup menu.
+  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true);
 #endif
 
 #if wxUSE_GUI
@@ -128,7 +126,6 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  void AppendVCS(int id, wxExMenu* menu);
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   const wxString GetName() const;

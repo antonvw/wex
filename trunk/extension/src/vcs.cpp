@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/menu.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -78,54 +79,17 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
 }
 
 #if wxUSE_GUI
-void wxExVCS::AppendVCS(int id, wxExMenu* menu)
+void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
 {
-  const wxString command = wxExVCS(id).GetCommandString();
-
-  if (command.empty())
+  for (
+    auto it = m_Entries.begin();
+    it != m_Entries.end();
+    ++it)
   {
-    return;
+    const int id = base_id + it->second.GetNo();
+    const wxString text(wxExEllipsed("&" + it->second.GetName()));
+    menu->Append(id, text);
   }
-
-  const wxString text(wxExEllipsed("&" + command));
-
-  Append(id, text);
-}
-
-void wxExVCS::BuildMainMenu(int base_id, wxExMenu* menu)
-{
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_INFO);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_LS);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_HELP);
-    AppendSeparator();
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_PUSH);
-    AppendSeparator();
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
-}
-
-void wxExVCS::BuildPopupMenu(int base_id, wxExMenu* menu)
-{
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_SHOW);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_CAT);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_BLAME);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPLIST);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPSET);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_REVERT);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
 }
 #endif
 

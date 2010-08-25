@@ -222,7 +222,7 @@ void wxExMenu::AppendVCS()
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST;
 
   wxExMenu* vcsmenu = new wxExMenu;
-  wxExVCS::Get()->BuildPopupMenu(vcs_offset_id, vcsmenu);
+  wxExVCS::Get()->BuildMenu(vcs_offset_id, vcsmenu);
   
   AppendSubMenu(vcsmenu, "&VCS");
 }
@@ -255,7 +255,7 @@ void wxExMenu::BuildVCS(bool fill)
   if (fill)
   {
     const int vcs_offset_id = ID_VCS_LOWEST;
-    wxExVCS::Get()->BuildMainMenu(vcs_offset_id, this);
+    wxExVCS::Get()->BuildMenu(vcs_offset_id, this, false); // no popup
   }
 
   m_MenuVCSFilled = fill;
