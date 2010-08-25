@@ -1641,7 +1641,39 @@ without the written consent of the copyright owner.
       <property name="asp.default.language"> 1 </property>
     </properties>
   </lexer>
-  
+
+ <lexer name="perl" extensions="*.pl" match="wxSTC_PL_">
+    <keywords>
+      abs accept 
+      alarm and atan2 bind binmode bless caller chdir chmod chomp chop 
+      chown chr chroot close closedir cmp connect continue cos crypt 
+      dbmclose dbmopen defined delete die do dump each else elsif endgrent 
+      endhostent endnetent endprotoent endpwent endservent eof eq eval 
+      exec exists exit exp fcntl fileno flock for foreach fork format 
+      formline ge getc getgrent getgrgid getgrnam gethostbyaddr gethostbyname 
+      gethostent getlogin getnetbyaddr getnetbyname getnetent getpeername 
+      getpgrp getppid getpriority getprotobyname getprotobynumber getprotoent 
+      getpwent getpwnam getpwuid getservbyname getservbyport getservent 
+      getsockname getsockopt glob gmtime goto grep gt hex if index 
+      int ioctl join keys kill last lc lcfirst le length link listen 
+      local localtime lock log lstat lt map mkdir msgctl msgget msgrcv 
+      msgsnd my ne next no not oct open opendir or ord our pack package 
+      pipe pop pos print printf prototype push quotemeta qu 
+      rand read readdir readline readlink readpipe recv redo 
+      ref rename require reset return reverse rewinddir rindex rmdir 
+      scalar seek seekdir select semctl semget semop send setgrent 
+      sethostent setnetent setpgrp setpriority setprotoent setpwent 
+      setservent setsockopt shift shmctl shmget shmread shmwrite shutdown 
+      sin sleep socket socketpair sort splice split sprintf sqrt srand 
+      stat study sub substr symlink syscall sysopen sysread sysseek 
+      system syswrite tell telldir tie tied time times truncate 
+      uc ucfirst umask undef unless unlink unpack unshift untie until 
+      use utime values vec wait waitpid wantarray warn while write 
+      xor 
+      given when default say state
+    </keywords>
+  </lexer>
+ 
   <lexer name="po" extensions="*.po" match="wxSTC_PO_">
     <styles>
       <style no ="wxSTC_PO_MSGID"> WORD </style>
@@ -1651,7 +1683,16 @@ without the written consent of the copyright owner.
       msgid msgstr
     </keywords>
   </lexer>
-  
+
+  <lexer name="python" extensions="*.py" match="wxSTC_P_">
+    <keywords>
+      keywordclass.python=and as assert break class continue def del elif 
+      else except exec finally for from global if import in is lambda None 
+      not or pass print raise return try while with yield
+    </keywords>
+  </lexer>
+
+ 
   <lexer name="xml" match="wxSTC_H_">
     <styles>
       <style no="wxSTC_H_TAG"> TAG </style>
@@ -1776,7 +1817,6 @@ without the written consent of the copyright owner.
   <lexer name="nsis" match="wxSTC_NSIS_" />
   <lexer name="octave" match="wxSTC_MATLAB_" />
   <lexer name="opal" match="wxSTC_OPAL_" />
-  <lexer name="perl" extensions="*.pl" match="wxSTC_PL_" />
   <lexer name="php" match="wxSTC_HPHP_" /> 
   <lexer name="phpscript" match="wxSTC_H_" /> 
   <lexer name="pov" match="wxSTC_POV_" />
@@ -1785,7 +1825,6 @@ without the written consent of the copyright owner.
   <lexer name="props" match="wxSTC_PROPS_" />
   <lexer name="ps" match="wxSTC_POWERSHELL" />
   <lexer name="ps" match="wxSTC_PS_" />
-  <lexer name="python" extensions="*.py" match="wxSTC_P_" />
   <lexer name="r" match="wxSTC_R_" />
   <lexer name="rebol" match="wxSTC_REBOL_" />
   <lexer name="ruby" match="wxSTC_RB_" />
