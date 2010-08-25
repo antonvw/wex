@@ -23,17 +23,21 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
-/// VCS command types supported.
-/// See also defs.h, and do not exceed VCS_MAX_COMMANDS.
-enum wxExCommand
+// The VCS commands are read in from vcss.xml.
+// See also defs.h, and do not exceed VCS_MAX_COMMANDS in vcss.xml.
+// This command indicates an error in the command being handled.
+enum
 {
-  VCS_NO_COMMAND, ///< not ok value
+  VCS_NO_COMMAND,
 };
 
-enum wxExSystem
+// The VCS systems are read in from vcss.xml.
+// The ones here can be set in the config dialog, and are not
+// present in the vcss.xml.
+enum
 {
-  VCS_NONE, ///< no version control
-  VCS_AUTO, ///< Uses the VCS appropriate for current file
+  VCS_NONE, // no version control
+  VCS_AUTO, // uses the VCS appropriate for current file
 };
 
 wxExVCS* wxExVCS::m_Self = NULL;
@@ -370,9 +374,9 @@ void wxExVCS::Initialize()
 bool wxExVCS::IsOpenCommand() const
 {
   return 
-    m_Command == wxExVCS::VCS_BLAME ||
-    m_Command == wxExVCS::VCS_CAT ||
-    m_Command == wxExVCS::VCS_DIFF;
+    m_CommandString == "blame" ||
+    m_CommandString == "cat" ||
+    m_CommandString == "diff";
 }
 
 bool wxExVCS::Read()
@@ -645,8 +649,7 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
 
 const wxString wxExVCSEntry::GetCommand(int command_id) const
 {
-  const auto it = m_Commands.find(command_id);
-  return (it != m_Commands.end() ? it->second.c_str(): wxEmptyString);
+  return m_Commands.at(command_id);
 }
   
 const std::map<wxString> wxExVCSEntry::ParseNodeCommands(

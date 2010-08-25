@@ -20,10 +20,10 @@ without the written consent of the copyright owner.
 
     <commands>
       <command> add </command>
-      <command type="open"> blame </command>
-      <command type="open"> cat </command>
+      <command> blame </command>
+      <command> cat </command>
       <command> commit </command>
-      <command type="open"> diff </command>
+      <command> diff </command>
       <command> help </command>
       <command> info </command>
       <command> log </command>
@@ -41,9 +41,9 @@ without the written consent of the copyright owner.
 
     <commands>
       <command> add </command>
-      <command> type="open"> blame </command>
+      <command> blame </command>
       <command> commit </command>
-      <command> type="open"> diff </command>
+      <command> diff </command>
       <command> help </command>
       <command> log </command>
       <command> push </command>
