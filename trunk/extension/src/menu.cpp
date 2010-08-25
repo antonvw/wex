@@ -222,38 +222,9 @@ void wxExMenu::AppendVCS()
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST;
 
   wxExMenu* vcsmenu = new wxExMenu;
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_SHOW);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_CAT);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_BLAME);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPLIST);
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPSET);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_REVERT);
-  vcsmenu->AppendSeparator();
-  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
-
+  wxExVCS::Get()->BuildPopupMenu(vcs_offset_id, vcsmenu);
+  
   AppendSubMenu(vcsmenu, "&VCS");
-}
-
-void wxExMenu::AppendVCS(int id)
-{
-  const wxString command = wxExVCS(id).GetCommandString();
-
-  if (command.empty())
-  {
-    return;
-  }
-
-  const wxString text(wxExEllipsed("&" + command));
-
-  Append(id, text);
 }
 
 // This is the general VCS menu, it is in the main menu,
@@ -284,19 +255,7 @@ void wxExMenu::BuildVCS(bool fill)
   if (fill)
   {
     const int vcs_offset_id = ID_VCS_LOWEST;
-
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_INFO);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_LS);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_HELP);
-    AppendSeparator();
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_PUSH);
-    AppendSeparator();
-    AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
+    wxExVCS::Get()->BuildMainMenu(vcs_offset_id, this);
   }
 
   m_MenuVCSFilled = fill;

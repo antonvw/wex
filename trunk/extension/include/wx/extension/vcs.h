@@ -60,6 +60,14 @@ public:
   wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
   
 #if wxUSE_GUI
+  /// Builds the main menu.
+  void BuildMainMenu(int base_id, wxExMenu* menu);
+
+  /// Builds the popup menu.
+  void BuildPopupMenu(int base_id, wxExMenu* menu);
+#endif
+
+#if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
@@ -120,6 +128,7 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
+  void AppendVCS(int id, wxExMenu* menu);
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   const wxString GetName() const;

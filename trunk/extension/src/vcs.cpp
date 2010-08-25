@@ -77,6 +77,58 @@ wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
   Initialize();
 }
 
+#if wxUSE_GUI
+void wxExVCS::AppendVCS(int id, wxExMenu* menu)
+{
+  const wxString command = wxExVCS(id).GetCommandString();
+
+  if (command.empty())
+  {
+    return;
+  }
+
+  const wxString text(wxExEllipsed("&" + command));
+
+  Append(id, text);
+}
+
+void wxExVCS::BuildMainMenu(int base_id, wxExMenu* menu)
+{
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_INFO);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_LS);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_HELP);
+    AppendSeparator();
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_UPDATE);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_PUSH);
+    AppendSeparator();
+    AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
+}
+
+void wxExVCS::BuildPopupMenu(int base_id, wxExMenu* menu)
+{
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_LOG);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_STAT);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_SHOW);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_DIFF);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_COMMIT);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_CAT);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_BLAME);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPLIST);
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_PROPSET);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_REVERT);
+  vcsmenu->AppendSeparator();
+  vcsmenu->AppendVCS(vcs_offset_id + wxExVCS::VCS_ADD);
+}
+#endif
+
 bool wxExVCS::CheckGIT(const wxFileName& fn) const
 {
   // The .git dir only exists in the root, so check all components.

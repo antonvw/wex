@@ -81,9 +81,6 @@ public:
   /// Appends VCS menu items.
   void AppendVCS();
 
-  /// Appends specified VCS menu item.
-  void AppendVCS(int id);
-
   /// Builds VCS menu items.
   void BuildVCS(bool fill);
 
