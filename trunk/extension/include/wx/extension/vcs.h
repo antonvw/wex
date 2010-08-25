@@ -57,7 +57,7 @@ public:
   /// Default constructor.
   wxExVCS();
 
-  /// Constructor, specify the command id and a filename.
+  /// Constructor, specify the menu command id and a filename.
   wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
   
 #if wxUSE_GUI
@@ -129,7 +129,7 @@ private:
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   const wxString GetName() const;
-  wxExCommand GetType(int command_id) const;
+  int GetType(int command_id) const;
   void Initialize();
   bool Read();
   int ShowDialog(wxWindow* parent);

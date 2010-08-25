@@ -23,27 +23,11 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
-/// VCS types supported.
+/// VCS command types supported.
 /// See also defs.h, and do not exceed VCS_MAX_COMMANDS.
 enum wxExCommand
 {
-    VCS_NO_COMMAND, ///< not ok value
-    VCS_ADD,      ///< vcs add
-    VCS_BLAME,    ///< vcs blame
-    VCS_CAT,      ///< vcs cat
-    VCS_COMMIT,   ///< vcs commit
-    VCS_DIFF,     ///< vcs diff
-    VCS_HELP,     ///< vcs help
-    VCS_INFO,     ///< vcs info
-    VCS_LOG,      ///< vcs log
-    VCS_LS,       ///< vcs ls
-    VCS_PROPLIST, ///< vcs prop list
-    VCS_PROPSET,  ///< vcs prop set
-    VCS_PUSH,     ///< vcs push
-    VCS_REVERT,   ///< vcs revert
-    VCS_SHOW,     ///< vcs show
-    VCS_STAT,     ///< vcs stat
-    VCS_UPDATE,   ///< vcs update
+  VCS_NO_COMMAND, ///< not ok value
 };
 
 enum wxExSystem
@@ -66,13 +50,6 @@ wxExVCS::wxExVCS()
 
 wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
   : m_Command(GetType(command_id))
-  , m_FileName(filename)
-{
-  Initialize();
-}
-
-wxExVCS::wxExVCS(wxExCommand type, const wxExFileName& filename)
-  : m_Command(type)
   , m_FileName(filename)
 {
   Initialize();
@@ -186,7 +163,7 @@ long wxExVCS::Execute()
     cwd = wxGetCwd();
     wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
 
-    if (m_Command == VCS_ADD)
+    if (m_CommandString == "add")
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
@@ -207,7 +184,7 @@ long wxExVCS::Execute()
 
   wxString comment;
 
-  if (m_Command == VCS_COMMIT)
+  if (m_CommandString == "commit")
   {
     comment = 
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
@@ -364,15 +341,15 @@ const wxString wxExVCS::GetName() const
   return wxEmptyString;
 }
 
-wxExVCS::wxExCommand wxExVCS::GetType(int command_id) const
+int wxExVCS::GetType(int command_id) const
 {
   if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
   {
-    return (wxExCommand)(command_id - ID_VCS_LOWEST);
+    return command_id - ID_VCS_LOWEST;
   }
   else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
   {
-    return (wxExCommand)(command_id - ID_EDIT_VCS_LOWEST);
+    return (command_id - ID_EDIT_VCS_LOWEST;
   }
   else
   {
@@ -475,7 +452,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_Command == VCS_COMMIT)
+  if (m_CommandString == "commit")
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -484,7 +461,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!m_FileName.IsOk() && m_Command != VCS_HELP)
+  if (!m_FileName.IsOk() && m_CommandString != "help")
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -493,7 +470,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true,
       1000));
 
-    if (m_Command == VCS_ADD)
+    if (m_CommandString == "add")
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -528,7 +505,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 {
   wxString caption = m_Caption;
       
-  if (m_Command != VCS_HELP)
+  if (m_CommandString != "help")
   {
     caption += " " + (m_FileName.IsOk() ?  
       m_FileName.GetFullName(): 
@@ -555,14 +532,14 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   }
 
   // Add a lexer when appropriate.
-  if (m_Command == VCS_CAT || m_Command == VCS_BLAME)
+  if (m_CommandString == "cat" || m_CommandString == "blame")
   {
     if (m_FileName.GetLexer().IsOk())
     {
       m_STCEntryDialog->SetLexer(m_FileName.GetLexer().GetScintillaLexer());
     }
   }
-  else if (m_Command == VCS_DIFF)
+  else if (m_CommandString == "diff")
   {
     m_STCEntryDialog->SetLexer("diff");
   }
@@ -610,12 +587,12 @@ bool wxExVCS::Use(const wxFileName& filename) const
 
 bool wxExVCS::UseFlags() const
 {
-  return m_Command != VCS_UPDATE && m_Command != VCS_HELP;
+  return m_CommandString != "update" && m_CommandString != "help";
 }
 
 bool wxExVCS::UseSubcommand() const
 {
-  return m_Command == VCS_HELP;
+  return m_Command == "help";
 }
 
 int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
