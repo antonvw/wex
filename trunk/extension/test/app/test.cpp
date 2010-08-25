@@ -358,7 +358,7 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  wxExVCS* vcs = new wxExVCS(wxExVCS::VCS_STAT, wxExFileName(TEST_FILE));
+  wxExVCS* vcs = new wxExVCS(ID_VCS_LOWEST + 1, wxExFileName(TEST_FILE));
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
 //  CPPUNIT_ASSERT(vcs->Execute() != -1);
 //  CPPUNIT_ASSERT(!vcs->GetOutput().empty());
