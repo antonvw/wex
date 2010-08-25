@@ -39,7 +39,7 @@ public:
   /// Gets the no.
   int GetNo() const {return m_No;};
 private:
-  const std::map<int, wxString> ParseNodeCommands(
+  const std::vector<wxString> ParseNodeCommands(
     const wxXmlNode* node) const;
 
   static int m_Instances;
@@ -47,7 +47,7 @@ private:
   wxString m_Name;
   int m_No;
 
-  std::map<int, wxString> m_Commands;
+  std::vector<wxString> m_Commands;
 };
 
 /// This class collects all vcs handling.

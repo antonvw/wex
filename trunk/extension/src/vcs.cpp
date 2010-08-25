@@ -665,10 +665,10 @@ const wxString wxExVCSEntry::GetCommand(int command_id) const
   return (it != m_Commands.end() ? it->second.c_str(): wxEmptyString);
 }
   
-const std::map<int, wxString> wxExVCSEntry::ParseNodeCommands(
+const std::map<wxString> wxExVCSEntry::ParseNodeCommands(
   const wxXmlNode* node) const
 {
-  std::map<int, wxString> text;
+  std::map<wxString> text;
 
   wxXmlNode* child = node->GetChildren();
 
