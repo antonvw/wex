@@ -29,7 +29,7 @@
 // This command indicates an error in the command being handled.
 enum
 {
-  VCS_NO_COMMAND,
+  VCS_NO_COMMAND = -1,
 };
 
 // The VCS systems are read in from vcss.xml.
@@ -369,11 +369,11 @@ int wxExVCS::GetType(int command_id) const
 {
   if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
   {
-    return command_id - ID_VCS_LOWEST;
+    return command_id - ID_VCS_LOWEST - 1;
   }
   else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
   {
-    return command_id - ID_EDIT_VCS_LOWEST;
+    return command_id - ID_EDIT_VCS_LOWEST - 1;
   }
   else
   {
