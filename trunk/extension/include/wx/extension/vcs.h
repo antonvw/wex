@@ -128,8 +128,8 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  bool CheckGIT(const wxFileName& fn) const;
-  bool CheckSVN(const wxFileName& fn) const;
+  bool CheckPath(const wxString& vcs, const wxFileName& fn) const;
+  bool CheckPathAll(const wxString& vcs, const wxFileName& fn) const;
   const wxString GetName() const;
   long GetNo(const wxString& name) const;
   int GetType(int command_id) const;

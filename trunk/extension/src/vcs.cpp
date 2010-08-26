@@ -67,7 +67,15 @@ void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
 }
 #endif
 
-bool wxExVCS::CheckGIT(const wxFileName& fn) const
+bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
+{
+  // these cannot be combined, as AppendDir is a void (2.9.1).
+  wxFileName path(fn);
+  path.AppendDir("." + vcs);
+  return path.DirExists();
+}
+
+bool wxExVCS::CheckPathAll(const wxString& vcs, const wxFileName& fn) const
 {
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn.GetPath());
@@ -75,7 +83,7 @@ bool wxExVCS::CheckGIT(const wxFileName& fn) const
   while (root.DirExists() && root.GetDirCount() > 0)
   {
     wxFileName path(root);
-    path.AppendDir(".git");
+    path.AppendDir("." + vcs);
 
     if (path.DirExists())
     {
@@ -86,14 +94,6 @@ bool wxExVCS::CheckGIT(const wxFileName& fn) const
   }
 
   return false;
-}
-
-bool wxExVCS::CheckSVN(const wxFileName& fn) const
-{
-  // these cannot be combined, as AppendDir is a void (2.9.1).
-  wxFileName path(fn);
-  path.AppendDir(".svn");
-  return path.DirExists();
 }
 
 #if wxUSE_GUI
@@ -135,11 +135,11 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 {
   if (Use(filename))
   {
-    if (CheckSVN(filename))
+    if (CheckPath("svn", filename))
     {
       return true;
     }
-    else if (CheckGIT(filename))
+    else if (CheckPathAll("git", filename))
     {
       return true;
     }
@@ -584,11 +584,11 @@ long wxExVCS::Use(const wxFileName& filename) const
 
   if (vcs == VCS_AUTO)
   {
-    if (CheckSVN(filename))
+    if (CheckPath("svn", filename))
     {
       return GetNo("svn");
     }
-    else if (CheckGIT(filename))
+    else if (CheckPathAll("git", filename))
     {
       return GetNo("git");
     }
@@ -683,7 +683,7 @@ const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
   {
     if (child->GetName() == "command")
     {
-      text.insert(child->GetName());
+      text.push_back(child->GetName());
     }
     else if (child->GetName() == "comment")
     {

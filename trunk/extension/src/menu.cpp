@@ -223,8 +223,11 @@ void wxExMenu::AppendVCS()
 
   wxExMenu* vcsmenu = new wxExMenu;
   wxExVCS::Get()->BuildMenu(vcs_offset_id, vcsmenu);
-  
-  AppendSubMenu(vcsmenu, "&VCS");
+
+  if (vcsmenu->GetMenuItemCount() > 0)
+  { 
+    AppendSubMenu(vcsmenu, "&VCS");
+  }
 }
 
 // This is the general VCS menu, it is in the main menu,
