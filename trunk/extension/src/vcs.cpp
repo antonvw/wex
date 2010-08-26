@@ -104,8 +104,8 @@ int wxExVCS::ConfigDialog(
   std::vector<wxExConfigItem> v;
 
   std::map<long, const wxString> choices;
-  choices.insert(std::make_pair(VCS_NONE, _("None")));
-  choices.insert(std::make_pair(VCS_AUTO, "Auto"));
+  choices.insert(std::make_pair((long)VCS_NONE, _("None")));
+  choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
   
   for (
     auto it = m_Entries.begin();
@@ -322,14 +322,16 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
 
 const wxString wxExVCS::GetName() const
 {
-  if (Use())
+  const long no = Use();
+  
+  if (no != VCS_NONE)
   {
     for (
       auto it = m_Entries.begin();
       it != m_Entries.end();
       ++it)
     {
-      if (it->second.GetNo() == vcs)
+      if (it->second.GetNo() == no)
       {
         return it->second.GetName();
       }
@@ -337,6 +339,22 @@ const wxString wxExVCS::GetName() const
   }
 
   return wxEmptyString;
+}
+
+long wxExVCS::GetNo(const wxString& name) const
+{
+  for (
+    auto it = m_Entries.begin();
+    it != m_Entries.end();
+    ++it)
+  {
+    if (it->second.GetName() == name)
+    {
+      return it->second.GetNo();
+    }
+  }
+
+  return VCS_NONE;
 }
 
 int wxExVCS::GetType(int command_id) const
@@ -560,7 +578,7 @@ bool wxExVCS::Use() const
   return Use(m_FileName);
 }
 
-bool wxExVCS::Use(const wxFileName& filename) const
+long wxExVCS::Use(const wxFileName& filename) const
 {
   long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
 
@@ -568,19 +586,19 @@ bool wxExVCS::Use(const wxFileName& filename) const
   {
     if (CheckSVN(filename))
     {
-      return true;
+      return GetNo("svn");
     }
     else if (CheckGIT(filename))
     {
-      return true;
+      return GetNo("git");
     }
     else
     {
-      return false;
+      return VCS_NONE;
     }
   }
 
-  return vcs != VCS_NONE;
+  return vcs;
 }
 
 bool wxExVCS::UseFlags() const
@@ -665,8 +683,7 @@ const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
   {
     if (child->GetName() == "command")
     {
-      const int no = node->GetAttribute("no", "0");
-      text.insert(std::make_pair(no, child->GetName()));
+      text.insert(child->GetName());
     }
     else if (child->GetName() == "comment")
     {

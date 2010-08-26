@@ -131,11 +131,12 @@ private:
   bool CheckGIT(const wxFileName& fn) const;
   bool CheckSVN(const wxFileName& fn) const;
   const wxString GetName() const;
+  long GetNo(const wxString& name) const;
   int GetType(int command_id) const;
   void Initialize();
   bool Read();
   int ShowDialog(wxWindow* parent);
-  bool Use(const wxFileName& filename) const;
+  long Use(const wxFileName& filename) const;
   bool UseFlags() const;
   bool UseSubcommand() const;
 
