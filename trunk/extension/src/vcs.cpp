@@ -683,7 +683,8 @@ const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
   {
     if (child->GetName() == "command")
     {
-      text.push_back(child->GetName());
+      const wxString content = child->GetNodeContent().Strip(wxString::both);
+      text.push_back(content);
     }
     else if (child->GetName() == "comment")
     {
