@@ -143,14 +143,13 @@ private:
   const int m_Command;
   const wxExFileName m_FileName;
 
-  std::map<wxString, wxExVCSEntry> m_Entries;
-
   wxString m_Caption;
   wxString m_CommandString;
   wxString m_CommandWithFlags;
   wxString m_FlagsKey;
   wxString m_Output;
 
+  static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxExVCS* m_Self;
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;

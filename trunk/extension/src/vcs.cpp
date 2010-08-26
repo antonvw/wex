@@ -41,6 +41,7 @@ enum
   VCS_AUTO, // uses the VCS appropriate for current file
 };
 
+std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxExVCS* wxExVCS::m_Self = NULL;
 #if wxUSE_GUI
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
@@ -341,7 +342,9 @@ const wxString wxExVCS::GetName() const
       }
     }
     
-    wxFAIL;
+    wxLogMessage(wxString::Format("%d fail", no));
+    
+    //wxFAIL;
   }
 
   return wxEmptyString;
@@ -349,18 +352,17 @@ const wxString wxExVCS::GetName() const
 
 long wxExVCS::GetNo(const wxString& name) const
 {
-  for (
-    auto it = m_Entries.begin();
-    it != m_Entries.end();
-    ++it)
+  const auto it = m_Entries.find(name);
+  
+  if (it != m_Entries.end())
   {
-    if (it->second.GetName() == name)
-    {
-      return it->second.GetNo();
-    }
+    return it->second.GetNo();
   }
-
-  return VCS_NONE;
+  else
+  {
+    wxFAIL;
+    return VCS_NONE;
+  }
 }
 
 int wxExVCS::GetType(int command_id) const
@@ -676,9 +678,8 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
     it != m_Commands.end();
     ++it)
   {
-    const int id = base_id + m_No;
     const wxString text(wxExEllipsed("&" + *it));
-    menu->Append(id, text);
+    menu->Append(base_id++, text);
   }
 }
 #endif
