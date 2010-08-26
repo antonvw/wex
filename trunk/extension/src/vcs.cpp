@@ -63,7 +63,12 @@ wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 #if wxUSE_GUI
 void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
 {
-  m_Entries[GetName()].BuildMenu(base_id, menu, is_popup);
+  const auto it = m_Entries.find(GetName());
+  
+  if (it != m_Entries.end())
+  {
+    it->second.BuildMenu(base_id, menu, is_popup);
+  }
 }
 #endif
 
@@ -378,14 +383,23 @@ void wxExVCS::Initialize()
 {
   if (Use() && m_Command != VCS_NO_COMMAND)
   {
-    m_CommandString = m_Entries[GetName()].GetCommand(m_Command);
-    m_Caption = GetName() + " " + m_CommandString;
+    const auto it = m_Entries.find(GetName());
+  
+    if (it != m_Entries.end())
+    {
+      m_CommandString = it->second.GetCommand(m_Command);
+      m_Caption = GetName() + " " + m_CommandString;
 
-    // Currently no flags, as no command was executed.
-    m_CommandWithFlags = m_CommandString;
+      // Currently no flags, as no command was executed.
+      m_CommandWithFlags = m_CommandString;
 
-    // Use general key.
-    m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command);
+      // Use general key.
+      m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command);
+    }
+    else
+    {
+      wxFAIL;
+    }
   }
 
   m_Output.clear();
