@@ -262,7 +262,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     }
     else
     {
-      wxLogError(_("Undefined global tag: %s on line: %d"),
+      wxLogError(_("Undefined tag: %s on line: %d"),
         child->GetName().c_str(), 
         child->GetLineNumber());
     }
@@ -322,7 +322,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
     }
     else
     {
-      wxLogError(_("Undefined macro tag: %s on line: %d"),
+      wxLogError(_("Undefined tag: %s on line: %d"),
         child->GetName().c_str(), 
         child->GetLineNumber());
     }
@@ -350,7 +350,7 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
     }
     else
     {
-      wxLogError(_("Undefined properties tag: %s on line: %d"),
+      wxLogError(_("Undefined tag: %s on line: %d"),
         child->GetName().c_str(), child->GetLineNumber());
     }
 
