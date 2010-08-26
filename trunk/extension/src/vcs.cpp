@@ -37,7 +37,7 @@ enum
 // present in the vcss.xml.
 enum
 {
-  VCS_NONE, // no version control
+  VCS_NONE = 0, // no version control
   VCS_AUTO, // uses the VCS appropriate for current file
 };
 
@@ -138,7 +138,7 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  if (Use(filename))
+  if (Use(filename) != VCS_NONE)
   {
     if (CheckPath("svn", filename))
     {
@@ -317,7 +317,6 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
     // This is a static method, so not use m_Entries.
     if (!wxConfigBase::Get()->Exists("VCS"))
     {
-      // TODO: Add SVN only if svn bin exists on linux.
       wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO + 1);
     }
   }
@@ -327,7 +326,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
 
 const wxString wxExVCS::GetName() const
 {
-  const long no = Use();
+  const long no = Use(m_FileName);
   
   if (no != VCS_NONE)
   {
@@ -341,6 +340,8 @@ const wxString wxExVCS::GetName() const
         return it->second.GetName();
       }
     }
+    
+    wxFAIL;
   }
 
   return wxEmptyString;
@@ -594,7 +595,7 @@ bool wxExVCS::Use() const
 
 long wxExVCS::Use(const wxFileName& filename) const
 {
-  long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
+  const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
 
   if (vcs == VCS_AUTO)
   {
@@ -628,14 +629,15 @@ bool wxExVCS::UseSubcommand() const
 int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
 
 wxExVCSEntry::wxExVCSEntry()
+  : m_No(-1)
+  , m_Name()
 {
 }
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : m_No(m_Instances++)
+  , m_Name(node->GetAttribute("name"))
 {
-  m_Name = node->GetAttribute("name");
-
   if (m_Name.empty())
   {
     wxLogError(_("Missing vcs on line: %d"), node->GetLineNumber());

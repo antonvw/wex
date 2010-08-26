@@ -42,15 +42,15 @@ public:
   const wxString& GetName() const {return m_Name;};
 
   /// Gets the no.
-  int GetNo() const {return m_No;};
+  long GetNo() const {return m_No;};
 private:
   const std::vector<wxString> ParseNodeCommands(
     const wxXmlNode* node) const;
 
   static int m_Instances;
 
-  wxString m_Name;
-  int m_No;
+  const wxString m_Name;
+  const long m_No;
 
   std::vector<wxString> m_Commands;
 };
