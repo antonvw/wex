@@ -342,9 +342,7 @@ const wxString wxExVCS::GetName() const
       }
     }
     
-    wxLogMessage(wxString::Format("%d fail", no));
-    
-    //wxFAIL;
+    wxFAIL;
   }
 
   return wxEmptyString;
