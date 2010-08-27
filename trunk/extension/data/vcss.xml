@@ -12,7 +12,12 @@ without the written consent of the copyright owner.
 
 <vcss>
   <!--
-   Each <vcs> has a name atribute (name of vcs used). 
+   Each <vcs> has a name atribute (name of vcs used), and
+   a number of <commands>. 
+   Each command will be a menu item, the attribute type indicates
+   how this item will be used, if type is popup the item is only
+   on the popup menu, if type is main, the itme is only on the
+   main menu, if not given, both on popup and main menu. 
    -->
   
   <vcs 
@@ -27,9 +32,9 @@ without the written consent of the copyright owner.
       <command> help </command>
       <command> info </command>
       <command> log </command>
-      <command> ls </command>
-      <command> proplist </command>
-      <command> propset </command>
+      <command type ="main"> ls </command>
+      <command type ="popup"> proplist </command>
+      <command type ="popup"> propset </command>
       <command> revert </command>
       <command> stat </command>
       <command> update </command>
