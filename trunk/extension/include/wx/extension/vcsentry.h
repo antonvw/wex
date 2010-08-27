@@ -30,7 +30,9 @@ public:
   };
 
   /// Constructor.
-  wxExVCSCommand(const wxString& command, const wxString& type)
+  wxExVCSCommand(
+    const wxString& command,
+    const wxString& type = wxEmptyString)
     : m_Command(command)
     , m_Type(From(type)){;};
 
@@ -39,10 +41,21 @@ public:
 
   /// Gets the type.
   int GetType() const {return m_Type;};
+
+  /// Returns true if this command can behave like
+  /// opening a file.
+  bool IsOpen() const;
+
+  /// Sets the command and type.
+  void SetCommand(
+    const wxString& command,
+    const wxString& type = wxEmptyString) {
+    m_Command = command;
+    m_Type = From(type);};
 private:
   int From(const wxString& type) const;
-  const wxString m_Command;
-  const int m_Type;
+  wxString m_Command;
+  int m_Type;
 };
 
 /// This class collects a single vcs.

@@ -37,6 +37,14 @@ int wxExVCSCommand::From(const wxString& type) const
   }
 }
 
+bool wxExVCSCommand::IsOpen() const
+{
+  return
+    m_Command == "blame" ||
+    m_Command == "cat" ||
+    m_Command == "diff";
+}
+
 int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
 
 wxExVCSEntry::wxExVCSEntry()

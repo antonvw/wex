@@ -69,7 +69,8 @@ public:
 
   /// Returns true if this command can behave like
   /// opening a file.  
-  bool IsOpenCommand() const;
+  bool IsOpenCommand() const {
+    return m_CommandString.IsOpen();};
 
 #if wxUSE_GUI
   /// Combines all in one method. Calls the ExecuteDialog,
@@ -109,8 +110,9 @@ private:
   const int m_Command;
   const wxExFileName m_FileName;
 
+  wxExVCSCommand m_CommandString;
+
   wxString m_Caption;
-  wxString m_CommandString;
   wxString m_CommandWithFlags;
   wxString m_FlagsKey;
   wxString m_Output;

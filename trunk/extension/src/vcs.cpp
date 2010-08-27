@@ -171,7 +171,7 @@ long wxExVCS::Execute()
     cwd = wxGetCwd();
     wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
 
-    if (m_CommandString == "add")
+    if (m_CommandString.GetCommand() == "add")
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
@@ -192,7 +192,7 @@ long wxExVCS::Execute()
 
   wxString comment;
 
-  if (m_CommandString == "commit")
+  if (m_CommandString.GetCommand() == "commit")
   {
     comment = 
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
@@ -228,7 +228,7 @@ long wxExVCS::Execute()
     }
   }
 
-  m_CommandWithFlags = m_CommandString + flags;
+  m_CommandWithFlags = m_CommandString.GetCommand() + flags;
 
   const wxString vcs_bin = wxConfigBase::Get()->Read(GetName(), "svn");
 
@@ -239,7 +239,8 @@ long wxExVCS::Execute()
   }
 
   const wxString commandline = 
-    vcs_bin + " " + m_CommandString + subcommand + flags + comment + file;
+    vcs_bin + " " + 
+    m_CommandString.GetCommand() + subcommand + flags + comment + file;
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(commandline);
@@ -393,11 +394,11 @@ void wxExVCS::Initialize()
   
     if (it != m_Entries.end())
     {
-      m_CommandString = it->second.GetCommand(m_Command);
-      m_Caption = GetName() + " " + m_CommandString;
+      m_CommandString.Set(it->second.GetCommand(m_Command));
+      m_Caption = GetName() + " " + m_CommandString.GetCommand();
 
       // Currently no flags, as no command was executed.
-      m_CommandWithFlags = m_CommandString;
+      m_CommandWithFlags = m_CommandString.GetCommand();
 
       // Use general key.
       m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command);
@@ -409,14 +410,6 @@ void wxExVCS::Initialize()
   }
 
   m_Output.clear();
-}
-
-bool wxExVCS::IsOpenCommand() const
-{
-  return 
-    m_CommandString == "blame" ||
-    m_CommandString == "cat" ||
-    m_CommandString == "diff";
 }
 
 bool wxExVCS::Read()
@@ -488,7 +481,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_CommandString == "commit")
+  if (m_CommandString.GetCommand() == "commit")
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -497,7 +490,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!m_FileName.IsOk() && m_CommandString != "help")
+  if (!m_FileName.IsOk() && m_CommandString.GetCommand() != "help")
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -506,7 +499,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true,
       1000));
 
-    if (m_CommandString == "add")
+    if (m_CommandString.GetCommand() == "add")
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -541,7 +534,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 {
   wxString caption = m_Caption;
       
-  if (m_CommandString != "help")
+  if (m_CommandString.GetCommand() != "help")
   {
     caption += " " + (m_FileName.IsOk() ?  
       m_FileName.GetFullName(): 
@@ -568,14 +561,15 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   }
 
   // Add a lexer when appropriate.
-  if (m_CommandString == "cat" || m_CommandString == "blame")
+  if (m_CommandString.GetCommand() == "cat" ||
+      m_CommandString.GetCommand() == "blame")
   {
     if (m_FileName.GetLexer().IsOk())
     {
       m_STCEntryDialog->SetLexer(m_FileName.GetLexer().GetScintillaLexer());
     }
   }
-  else if (m_CommandString == "diff")
+  else if (m_CommandString.GetCommand() == "diff")
   {
     m_STCEntryDialog->SetLexer("diff");
   }
@@ -623,10 +617,12 @@ long wxExVCS::Use(const wxFileName& filename) const
 
 bool wxExVCS::UseFlags() const
 {
-  return m_CommandString != "update" && m_CommandString != "help";
+  return 
+    m_CommandString.GetCommand() != "update" &&
+    m_CommandString.GetCommand() != "help";
 }
 
 bool wxExVCS::UseSubcommand() const
 {
-  return m_CommandString == "help";
+  return m_CommandString.GetCommand() == "help";
 }
