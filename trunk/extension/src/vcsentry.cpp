@@ -91,10 +91,10 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
     switch (it->GetCommand())
     {
-      case VCS_COMMAND_IS_BOTH: add = true; break;
-      case VCS_COMMAND_IS_POPUP: add = is_popup; break;
-      case VCS_COMMAND_IS_MAIN: add = !is_popup; break;
-      case VCS_COMMAND_IS_UNKNOWN: add = false;
+      case wxExVCSCommand::VCS_COMMAND_IS_BOTH: add = true; break;
+      case wxExVCSCommand::VCS_COMMAND_IS_POPUP: add = is_popup; break;
+      case wxExVCSCommand::VCS_COMMAND_IS_MAIN: add = !is_popup; break;
+      case wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN: add = false; break;
       default: wxFAIL;
     }
 
