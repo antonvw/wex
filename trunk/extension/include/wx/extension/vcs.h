@@ -29,12 +29,13 @@ public:
     VCS_COMMAND_IS_BOTH,
     VCS_COMMAND_IS_POPUP,
     VCS_COMMAND_IS_MAIN,
+    VCS_COMMAND_IS_UNKNOWN,
   };
 
   /// Constructor.
-  wxExVCSCommand(const wxString& command, int type = VCS_COMMAND_IS_BOTH)
+  wxExVCSCommand(const wxString& command, const wxString& type)
     : m_Command(command)
-    , m_Type(type){;};
+    , m_Type(From(type)){;};
 
   /// Gets the command.
   const wxString GetCommand() const {return m_Command;};
@@ -42,6 +43,7 @@ public:
   /// Gets the type.
   int GetType() const {return m_Type;};
 private:
+  int From(const wxString& type) const;
   const wxString m_Command;
   const int m_Type;
 };

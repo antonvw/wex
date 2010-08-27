@@ -631,6 +631,26 @@ bool wxExVCS::UseSubcommand() const
   return m_CommandString == "help";
 }
 
+int wxExVCSCommand::From(const wxString& type) const
+{
+  if (type.IsEmpty())
+  {
+    return VCS_COMMAND_IS_BOTH;
+  }
+  else if (type == "popup")
+  {
+    return VCS_COMMAND_IS_POPUP;
+  }
+  else if (type == "main")
+  {
+    return VCS_COMMAND_IS_MAIN;
+  }
+  else
+  {
+    return VCS_COMMAND_IS_UNKNOWN;
+  }
+}
+
 int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
 
 wxExVCSEntry::wxExVCSEntry()
@@ -681,8 +701,22 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     it != m_Commands.end();
     ++it)
   {
-    const wxString text(wxExEllipsed("&" + *it));
-    menu->Append(base_id++, text);
+    bool add = false;
+
+    switch (it->GetCommand())
+    {
+      case VCS_COMMAND_IS_BOTH: add = true; break;
+      case VCS_COMMAND_IS_POPUP: add = is_popup; break;
+      case VCS_COMMAND_IS_MAIN: add = !is_popup; break;
+      case VCS_COMMAND_IS_UNKNOWN: add = false;
+      default: wxFAIL;
+    }
+
+    if (add)
+    {
+      const wxString text(wxExEllipsed("&" + *it.GetCommand()));
+      menu->Append(base_id++, text);
+    }
   }
 }
 #endif
@@ -704,7 +738,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
     if (child->GetName() == "command")
     {
       const wxString content = child->GetNodeContent().Strip(wxString::both);
-      v.push_back(wxExVCSCommand(content));
+      const wxString attrib = child->GetAttribute("type");
+      v.push_back(wxExVCSCommand(content, type));
     }
     else if (child->GetName() == "comment")
     {
