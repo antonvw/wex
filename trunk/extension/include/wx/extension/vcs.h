@@ -20,6 +20,32 @@
 class wxMenu;
 class wxExSTCEntryDialog;
 
+/// This class contains a single vcs command.
+class wxExVCSCommand
+{
+public:
+  enum
+  {
+    VCS_COMMAND_IS_BOTH,
+    VCS_COMMAND_IS_POPUP,
+    VCS_COMMAND_IS_MAIN,
+  };
+
+  /// Constructor.
+  wxExVCSCommand(const wxString& command, int type = VCS_COMMAND_IS_BOTH)
+    : m_Command(command)
+    , m_Type(type){;};
+
+  /// Gets the command.
+  const wxString GetCommand() const {return m_Command;};
+
+  /// Gets the type.
+  int GetType() const {return m_Type;};
+private:
+  const wxString m_Command;
+  const int m_Type;
+};
+
 /// This class collects a single vcs.
 class wxExVCSEntry
 {
@@ -32,7 +58,7 @@ public:
 
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
-  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true);
+  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
 #endif
   
   /// Gets the command.
@@ -44,7 +70,7 @@ public:
   /// Gets the no.
   long GetNo() const {return m_No;};
 private:
-  const std::vector<wxString> ParseNodeCommands(
+  const std::vector<wxExVCSCommand> ParseNodeCommands(
     const wxXmlNode* node) const;
 
   static int m_Instances;
@@ -52,7 +78,7 @@ private:
   const wxString m_Name;
   const long m_No;
 
-  std::vector<wxString> m_Commands;
+  std::vector<wxExVCSCommand> m_Commands;
 };
 
 /// This class collects all vcs handling.
@@ -67,7 +93,7 @@ public:
   
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
-  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true);
+  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
 #endif
 
 #if wxUSE_GUI

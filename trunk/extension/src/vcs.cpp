@@ -62,7 +62,7 @@ wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 }
 
 #if wxUSE_GUI
-void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
+void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
   const auto it = m_Entries.find(GetName());
   
@@ -669,7 +669,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
 }
 
 #if wxUSE_GUI
-void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
+void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
   for (
     auto it = m_Commands.begin();
@@ -684,13 +684,13 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup)
 
 const wxString wxExVCSEntry::GetCommand(int command_id) const
 {
-  return m_Commands.at(command_id);
+  return m_Commands.at(command_id).GetCommand();
 }
   
-const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
+const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
   const wxXmlNode* node) const
 {
-  std::vector<wxString> text;
+  std::vector<wxExVCSCommand> v;
 
   wxXmlNode* child = node->GetChildren();
 
@@ -699,7 +699,7 @@ const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
     if (child->GetName() == "command")
     {
       const wxString content = child->GetNodeContent().Strip(wxString::both);
-      text.push_back(content);
+      v.push_back(wxExVCSCommand(content));
     }
     else if (child->GetName() == "comment")
     {
@@ -715,5 +715,5 @@ const std::vector<wxString> wxExVCSEntry::ParseNodeCommands(
     child = child->GetNext();
   }
 
-  return text;
+  return v;
 }
