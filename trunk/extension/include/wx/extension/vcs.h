@@ -16,72 +16,10 @@
 #include <vector>
 #include <wx/xml/xml.h>
 #include <wx/extension/filename.h>
+#include <wx/extension/vcsentry.h>
 
 class wxMenu;
 class wxExSTCEntryDialog;
-
-/// This class contains a single vcs command.
-class wxExVCSCommand
-{
-public:
-  enum
-  {
-    VCS_COMMAND_IS_BOTH,
-    VCS_COMMAND_IS_POPUP,
-    VCS_COMMAND_IS_MAIN,
-    VCS_COMMAND_IS_UNKNOWN,
-  };
-
-  /// Constructor.
-  wxExVCSCommand(const wxString& command, const wxString& type)
-    : m_Command(command)
-    , m_Type(From(type)){;};
-
-  /// Gets the command.
-  const wxString GetCommand() const {return m_Command;};
-
-  /// Gets the type.
-  int GetType() const {return m_Type;};
-private:
-  int From(const wxString& type) const;
-  const wxString m_Command;
-  const int m_Type;
-};
-
-/// This class collects a single vcs.
-class wxExVCSEntry
-{
-public:
-  /// Default constructor.
-  wxExVCSEntry();
-  
-  /// Constructor using xml node.
-  wxExVCSEntry(const wxXmlNode* node);
-
-#if wxUSE_GUI
-  /// Builds a menu, default assumes it is a popup menu.
-  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
-#endif
-  
-  /// Gets the command.
-  const wxString GetCommand(int command_id) const;
-
-  /// Gets the name.
-  const wxString& GetName() const {return m_Name;};
-
-  /// Gets the no.
-  long GetNo() const {return m_No;};
-private:
-  const std::vector<wxExVCSCommand> ParseNodeCommands(
-    const wxXmlNode* node) const;
-
-  static int m_Instances;
-
-  const wxString m_Name;
-  const long m_No;
-
-  std::vector<wxExVCSCommand> m_Commands;
-};
 
 /// This class collects all vcs handling.
 class wxExVCS
