@@ -38,10 +38,12 @@ enum
   CONFIG_DIRPICKERCTRL,   ///< a dirpicker ctrl
   CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
   CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
-  CONFIG_INT,             ///< a textctrl that only accepts an integer (a long integer)
+  CONFIG_INT,             ///< a textctrl that only accepts an integer
+                          ///< (a long integer)
 
   /// A radiobox (mutually exclusive choices).
-  /// Should be used when a long value can have a short set of possible individual values.
+  /// Should be used when a long value can have a short
+  /// set of possible individual values.
   CONFIG_RADIOBOX,
 
   CONFIG_SPINCTRL,        ///< a spinctrl
@@ -87,6 +89,8 @@ public:
     const std::map<long, const wxString> & choices,
     bool use_radiobox = true,
     const wxString& page = wxEmptyString,
+    int majorDimension = 0,
+    long style = wxRA_SPECIFY_COLS,
     int cols = -1);
 
   /// Constructor for a checklistbox without a name. Just specify
@@ -155,6 +159,7 @@ private:
 
   int m_Cols;
   int m_Id;
+  int m_MajorDimension;
   int m_Min;
   int m_Max;
   int m_MaxItems;
@@ -168,6 +173,7 @@ private:
   wxString m_Page;
 
   long m_Style;
+  long m_StyleRadioBox;
 
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;

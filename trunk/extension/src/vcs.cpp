@@ -121,7 +121,12 @@ int wxExVCS::ConfigDialog(
     choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
   }
 
-  v.push_back(wxExConfigItem("VCS", choices));
+  v.push_back(wxExConfigItem(
+    "VCS",
+    choices,
+    true, // use a radiobox 
+    wxEmptyString, 
+    5));  // no more than 5 cols
 
   for (
     auto it2 = m_Entries.begin();

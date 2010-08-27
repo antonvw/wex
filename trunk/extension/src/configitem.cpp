@@ -101,16 +101,20 @@ wxExConfigItem::wxExConfigItem(
   const std::map<long, const wxString> & choices,
   bool use_radiobox,
   const wxString& page,
+  int majorDimension,
+  long style,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(false)
+  , m_MajorDimension(majorDimension)
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
   , m_Name(name)
   , m_Page(page)
   , m_Style(0)
+  , m_StyleRadioBox(style)
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
   , m_Cols(cols)
@@ -354,8 +358,8 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         wxDefaultPosition, 
         wxDefaultSize, 
         arraychoices, 
-        0, 
-        wxRA_SPECIFY_ROWS);
+        m_MajorDimension,
+        m_StyleRadioBox);
       }
 
       break;
