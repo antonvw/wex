@@ -737,9 +737,16 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
   {
     if (child->GetName() == "command")
     {
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
-      const wxString attrib = child->GetAttribute("type");
-      v.push_back(wxExVCSCommand(content, type));
+      if (v.size() == VCS_MAX_COMMANDS)
+      {
+        wxLogError(_("Reached commands limit: %d"), VCS_MAX_COMMANDS);
+      }
+      else
+      {
+        const wxString content = child->GetNodeContent().Strip(wxString::both);
+        const wxString attrib = child->GetAttribute("type");
+        v.push_back(wxExVCSCommand(content, type));
+      }
     }
     else if (child->GetName() == "comment")
     {
