@@ -16,7 +16,7 @@ without the written consent of the copyright owner.
    a number of <commands>. 
    Each command will be a menu item, the attribute type indicates
    how this item will be used, if type is popup the item is only
-   on the popup menu, if type is main, the itme is only on the
+   on the popup menu, if type is main, the item is only on the
    main menu, if not given, both on popup and main menu. 
    -->
   
