@@ -394,7 +394,7 @@ void wxExVCS::Initialize()
   
     if (it != m_Entries.end())
     {
-      m_CommandString.Set(it->second.GetCommand(m_Command));
+      m_CommandString.SetCommand(it->second.GetCommand(m_Command));
       m_Caption = GetName() + " " + m_CommandString.GetCommand();
 
       // Currently no flags, as no command was executed.

@@ -28,6 +28,11 @@ public:
     VCS_COMMAND_IS_MAIN,
     VCS_COMMAND_IS_UNKNOWN,
   };
+  
+  /// Default constructor.
+  wxExVCSCommand()
+    : m_Command()
+    , m_Type(VCS_COMMAND_IS_UNKNOWN) {;};
 
   /// Constructor.
   wxExVCSCommand(

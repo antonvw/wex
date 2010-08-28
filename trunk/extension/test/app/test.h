@@ -72,6 +72,7 @@ public:
   void testSTCShell();
   void testUtil();
   void testVCS();
+  void testVCSEntry();
   void testVi();
 };
 #endif

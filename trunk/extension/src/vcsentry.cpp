@@ -16,6 +16,7 @@
 #include <wx/menu.h>
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/util.h>
 
 int wxExVCSCommand::From(const wxString& type) const
 {
@@ -45,7 +46,7 @@ bool wxExVCSCommand::IsOpen() const
     m_Command == "diff";
 }
 
-int wxExVCSEntry::m_Instances = VCS_AUTO + 1;
+int wxExVCSEntry::m_Instances = 2; // TODO: VCS_AUTO + 1;
 
 wxExVCSEntry::wxExVCSEntry()
   : m_No(-1)
@@ -97,7 +98,7 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   {
     bool add = false;
 
-    switch (it->GetCommand())
+    switch (it->GetType())
     {
       case wxExVCSCommand::VCS_COMMAND_IS_BOTH: add = true; break;
       case wxExVCSCommand::VCS_COMMAND_IS_POPUP: add = is_popup; break;
@@ -108,7 +109,7 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
     if (add)
     {
-      const wxString text(wxExEllipsed("&" + *it.GetCommand()));
+      const wxString text(wxExEllipsed("&" + it->GetCommand()));
       menu->Append(base_id++, text);
     }
   }
@@ -139,7 +140,7 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
       {
         const wxString content = child->GetNodeContent().Strip(wxString::both);
         const wxString attrib = child->GetAttribute("type");
-        v.push_back(wxExVCSCommand(content, type));
+        v.push_back(wxExVCSCommand(content, attrib));
       }
     }
     else if (child->GetName() == "comment")
