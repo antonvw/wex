@@ -171,7 +171,7 @@ long wxExVCS::Execute()
     cwd = wxGetCwd();
     wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
 
-    if (m_CommandString.GetCommand() == "add")
+    if (m_CommandString.IsAdd())
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
@@ -192,7 +192,7 @@ long wxExVCS::Execute()
 
   wxString comment;
 
-  if (m_CommandString.GetCommand() == "commit")
+  if (m_CommandString.IsCommit())
   {
     comment = 
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
@@ -481,7 +481,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_CommandString.GetCommand() == "commit")
+  if (m_CommandString.IsCommit())
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -490,7 +490,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!m_FileName.IsOk() && m_CommandString.GetCommand() != "help")
+  if (!m_FileName.IsOk() && !m_CommandString.IsHelp())
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -499,7 +499,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true,
       1000));
 
-    if (m_CommandString.GetCommand() == "add")
+    if (m_CommandString.IsAdd())
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -534,7 +534,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 {
   wxString caption = m_Caption;
       
-  if (m_CommandString.GetCommand() != "help")
+  if (!m_CommandString.IsHelp())
   {
     caption += " " + (m_FileName.IsOk() ?  
       m_FileName.GetFullName(): 
@@ -561,15 +561,14 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   }
 
   // Add a lexer when appropriate.
-  if (m_CommandString.GetCommand() == "cat" ||
-      m_CommandString.GetCommand() == "blame")
+  if (m_CommandString.IsOpen())
   {
     if (m_FileName.GetLexer().IsOk())
     {
       m_STCEntryDialog->SetLexer(m_FileName.GetLexer().GetScintillaLexer());
     }
   }
-  else if (m_CommandString.GetCommand() == "diff")
+  else if (m_CommandString.IsDiff())
   {
     m_STCEntryDialog->SetLexer("diff");
   }
@@ -618,11 +617,11 @@ long wxExVCS::Use(const wxFileName& filename) const
 bool wxExVCS::UseFlags() const
 {
   return 
-    m_CommandString.GetCommand() != "update" &&
-    m_CommandString.GetCommand() != "help";
+    !m_CommandString.IsUpdate() &&
+    !m_CommandString.IsHelp();
 }
 
 bool wxExVCS::UseSubcommand() const
 {
-  return m_CommandString.GetCommand() == "help";
+  return m_CommandString.IsHelp();
 }

@@ -18,6 +18,24 @@
 #include <wx/extension/defs.h>
 #include <wx/extension/util.h>
 
+int wxExVCSCommand::m_Instances = 0;
+
+wxExVCSCommand::wxExVCSCommand()
+  : m_Command()
+  , m_No(0)
+  , m_Type(VCS_COMMAND_IS_UNKNOWN) 
+{
+}
+
+wxExVCSCommand::wxExVCSCommand(
+  const wxString& command,
+  const wxString& type)
+  : m_Command(command)
+  , m_No(m_Instances++)
+  , m_Type(From(type))
+{
+}
+  
 int wxExVCSCommand::From(const wxString& type) const
 {
   if (type.IsEmpty())
@@ -38,12 +56,43 @@ int wxExVCSCommand::From(const wxString& type) const
   }
 }
 
+bool wxExVCSCommand::IsAdd() const
+{
+  return 
+    m_Command == "add";
+}
+
+bool wxExVCSCommand::IsCommit() const
+{
+  return 
+    m_Command == "commit" ||
+    m_Command == "co";
+}
+
+bool wxExVCSCommand::IsDiff() const
+{
+  return 
+    m_Command == "diff";
+}
+
+bool wxExVCSCommand::IsHelp() const
+{
+  return 
+    m_Command == "help";
+}
+
 bool wxExVCSCommand::IsOpen() const
 {
   return
     m_Command == "blame" ||
     m_Command == "cat" ||
     m_Command == "diff";
+}
+
+bool wxExVCSCommand::IsUpdate() const
+{
+  return 
+    m_Command == "update";
 }
 
 int wxExVCSEntry::m_Instances = 2; // TODO: VCS_AUTO + 1;
@@ -110,7 +159,7 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     if (add)
     {
       const wxString text(wxExEllipsed("&" + it->GetCommand()));
-      menu->Append(base_id++, text);
+      menu->Append(base_id + it->GetNo(), text);
     }
   }
 }

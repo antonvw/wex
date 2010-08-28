@@ -30,26 +30,40 @@ public:
   };
   
   /// Default constructor.
-  wxExVCSCommand()
-    : m_Command()
-    , m_Type(VCS_COMMAND_IS_UNKNOWN) {;};
+  wxExVCSCommand();
 
   /// Constructor.
   wxExVCSCommand(
     const wxString& command,
-    const wxString& type = wxEmptyString)
-    : m_Command(command)
-    , m_Type(From(type)){;};
+    const wxString& type = wxEmptyString);
 
   /// Gets the command.
   const wxString GetCommand() const {return m_Command;};
+  
+  /// Gets the no.
+  int GetNo() const {return m_No;};
 
   /// Gets the type.
   int GetType() const {return m_Type;};
+  
+  /// Returns true if this is a add like command.
+  bool IsAdd() const;
+
+  /// Returns true if this is a commit like command.
+  bool IsCommit() const;
+
+  /// Returns true if this is a diff like command.
+  bool IsDiff() const;
+
+  /// Returns true if this is a help like command.
+  bool IsHelp() const;
 
   /// Returns true if this command can behave like
   /// opening a file.
   bool IsOpen() const;
+
+  /// Returns true if this is a update like command.
+  bool IsUpdate() const;
 
   /// Sets the command and type.
   void SetCommand(
@@ -60,6 +74,10 @@ public:
 private:
   int From(const wxString& type) const;
   wxString m_Command;
+  
+  static int m_Instances;
+  
+  int m_No;
   int m_Type;
 };
 
