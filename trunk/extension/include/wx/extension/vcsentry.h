@@ -62,6 +62,10 @@ public:
 
   /// Returns true if this is a update like command.
   bool IsUpdate() const;
+  
+  /// Resets the number of instances, so the no
+  /// will start from 0 again.
+  static void ResetInstances() {m_Instances = 0;};
 
   /// Sets the command and type.
   void SetCommand(

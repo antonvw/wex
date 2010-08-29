@@ -367,7 +367,9 @@ void wxExAppTestFixture::testVCS()
 
 void wxExAppTestFixture::testVCSCommand()
 {
-  const wxExVCSCommand add("add", "both");
+  wxExVCSCommand::ResetInstances();
+  
+  const wxExVCSCommand add("add");
   const wxExVCSCommand commit("commit", "main");
   const wxExVCSCommand diff("diff", "popup");
   const wxExVCSCommand help("help", "error");

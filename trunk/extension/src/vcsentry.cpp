@@ -172,6 +172,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
   const wxXmlNode* node) const
 {
   std::vector<wxExVCSCommand> v;
+  
+  wxExVCSCommand::ResetInstances();
 
   wxXmlNode* child = node->GetChildren();
 
