@@ -365,6 +365,31 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT(vcs->DirExists(wxFileName(TEST_FILE)));
 }
 
+void wxExAppTestFixture::testVCSCommand()
+{
+  const wxExVCSCommand add("add", "both");
+  const wxExVCSCommand commit("commit", "main");
+  const wxExVCSCommand diff("diff", "popup");
+  const wxExVCSCommand help("help", "error");
+  const wxExVCSCommand open("blame");
+  const wxExVCSCommand update("update");
+  
+  CPPUNIT_ASSERT(add.IsAdd());
+  CPPUNIT_ASSERT(commit.IsCommit());
+  CPPUNIT_ASSERT(diff.IsDiff());
+  CPPUNIT_ASSERT(help.IsHelp());
+  CPPUNIT_ASSERT(open.IsOpen());
+  CPPUNIT_ASSERT(update.IsUpdate());
+  
+  CPPUNIT_ASSERT(update.GetNo() == 5);
+  
+  CPPUNIT_ASSERT(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  CPPUNIT_ASSERT(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
+  CPPUNIT_ASSERT(diff.GetType() == wxExVCSCommand::VCS_COMMAND_IS_POPUP);
+  CPPUNIT_ASSERT(help.GetType() == wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
+  CPPUNIT_ASSERT(open.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+}
+
 void wxExAppTestFixture::testVCSEntry()
 {
 }
@@ -459,6 +484,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testVCS",
     &wxExAppTestFixture::testVCS));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testVCSCommand",
+    &wxExAppTestFixture::testVCSCommand));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testVCSEntry",
