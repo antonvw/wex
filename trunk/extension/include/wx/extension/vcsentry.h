@@ -1,13 +1,11 @@
-/******************************************************************************\
-* File:          vcsentry.h
-* Purpose:       Declaration of wxExVCSEntry class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      vcsentry.h
+// Purpose:   Declaration of wxExVCSEntry class
+// Author:    Anton van Wezenbeek
+// Created:   2010-08-27
+// RCS-ID:    $Id$
+// Copyright: (c) 2010 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCSENTRY_H
 #define _EXVCSENTRY_H
