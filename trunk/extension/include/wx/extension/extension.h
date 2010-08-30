@@ -32,6 +32,7 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/marker.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/notebook.h>
 #include <wx/extension/otl.h>
@@ -46,10 +47,11 @@
 #include <wx/extension/stcfile.h>
 #include <wx/extension/style.h>
 #include <wx/extension/textfile.h>
-#include <wx/extension/toolbar.h>
 #include <wx/extension/tool.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/vcsentry.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi.h>
 
