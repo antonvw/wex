@@ -588,7 +588,7 @@ bool wxExVCS::SupportKeywordExpansion() const
 
 bool wxExVCS::Use() const
 {
-  return Use(m_FileName);
+  return Use(m_FileName) != VCS_NONE;
 }
 
 long wxExVCS::Use(const wxFileName& filename) const
@@ -607,7 +607,8 @@ long wxExVCS::Use(const wxFileName& filename) const
     }
     else
     {
-      return VCS_NONE;
+      // We do not yet know vcs, so return AUTO.
+      return vcs;
     }
   }
 
