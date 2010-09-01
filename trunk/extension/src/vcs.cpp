@@ -597,7 +597,12 @@ long wxExVCS::Use(const wxFileName& filename) const
 
   if (vcs == VCS_AUTO)
   {
-    if (CheckPath("svn", filename))
+    if (!filename.IsOk())
+    {
+      // We do not have a filename, so return AUTO.
+      return vcs;
+    }
+    else if (CheckPath("svn", filename))
     {
       return GetNo("svn");
     }
