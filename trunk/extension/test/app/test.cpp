@@ -394,6 +394,11 @@ void wxExAppTestFixture::testVCSCommand()
 
 void wxExAppTestFixture::testVCSEntry()
 {
+  wxExVCSEntry test;
+  
+  CPPUNIT_ASSERT(test.GetCommand(0).empty());
+  CPPUNIT_ASSERT(test.GetName().empty());
+  CPPUNIT_ASSERT(test.GetNo() == -1);
 }
 
 void wxExAppTestFixture::testVi()

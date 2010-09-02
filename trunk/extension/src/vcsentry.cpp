@@ -165,7 +165,14 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
 const wxString wxExVCSEntry::GetCommand(int command_id) const
 {
-  return m_Commands.at(command_id).GetCommand();
+  if (command_id >= m_Commands.size() || command_id < 0)
+  {
+    return wxEmptyString;
+  }
+  else
+  {
+    return m_Commands.at(command_id).GetCommand();
+  }
 }
   
 const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
