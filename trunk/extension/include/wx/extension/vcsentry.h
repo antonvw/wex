@@ -47,6 +47,9 @@ public:
   /// Returns true if this is a add like command.
   bool IsAdd() const;
 
+  /// Returns true if this is a checkout like command.
+  bool IsCheckout() const;
+
   /// Returns true if this is a commit like command.
   bool IsCommit() const;
 

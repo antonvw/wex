@@ -69,13 +69,16 @@ void wxExVCS::BuildMenu(
   const wxExFileName& filename,
   bool is_popup)
 {
-  m_FileName = filename;
-  
-  const auto it = m_Entries.find(GetName());
-  
-  if (it != m_Entries.end())
+  if (filename.IsOk())
   {
-    it->second.BuildMenu(base_id, menu, is_popup);
+    m_FileName = filename;
+  
+    const auto it = m_Entries.find(GetName());
+    
+    if (it != m_Entries.end())
+    {
+      it->second.BuildMenu(base_id, menu, is_popup);
+    }
   }
 }
 #endif

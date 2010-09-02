@@ -60,11 +60,18 @@ bool wxExVCSCommand::IsAdd() const
     m_Command == "add";
 }
 
+bool wxExVCSCommand::IsCheckout() const
+{
+  return 
+    m_Command == "checkout" ||
+    m_Command == "co";
+}
+
 bool wxExVCSCommand::IsCommit() const
 {
   return 
     m_Command == "commit" ||
-    m_Command == "co";
+    m_Command == "ci";
 }
 
 bool wxExVCSCommand::IsDiff() const
@@ -90,7 +97,8 @@ bool wxExVCSCommand::IsOpen() const
 bool wxExVCSCommand::IsUpdate() const
 {
   return 
-    m_Command == "update";
+    m_Command == "update" ||
+    m_Command == "up";
 }
 
 int wxExVCSEntry::m_Instances = 2; // TODO: VCS_AUTO + 1;
