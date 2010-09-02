@@ -577,19 +577,34 @@ int wxExSTC::ConfigDialog(
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEAFTERINDENT, 
     _("Invisible after ident")));
   choices.insert(std::make_pair(wxSTC_WS_VISIBLEALWAYS, _("Visible always")));
-  items.push_back(wxExConfigItem(_("Whitespace"), choices, true, page));
+  items.push_back(wxExConfigItem(
+    _("Whitespace"), 
+    choices, 
+    true, 
+    page,
+    1));
 
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_CHAR, _("Char")));
-  items.push_back(wxExConfigItem(_("Wrap line"), wchoices, true, page));
+  items.push_back(wxExConfigItem(
+    _("Wrap line"), 
+    wchoices, 
+    true,
+    page,
+    1));
 
   std::map<long, const wxString> vchoices;
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_END, _("End")));
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_START, _("Start")));
-  items.push_back(wxExConfigItem(_("Wrap visual flags"), vchoices, true, page));
+  items.push_back(wxExConfigItem(
+    _("Wrap visual flags"), 
+    vchoices, 
+    true, 
+    page,
+    1));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
@@ -599,7 +614,12 @@ int wxExSTC::ConfigDialog(
     echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
     echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
     echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
-    items.push_back(wxExConfigItem(_("Edge line"), echoices, true, _("Edge")));
+    items.push_back(wxExConfigItem(
+      _("Edge line"), 
+      echoices, 
+      true, 
+      _("Edge"),
+      1));
 
     items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
     items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, 

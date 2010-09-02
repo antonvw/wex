@@ -72,13 +72,13 @@ void wxExVCS::BuildMenu(
   if (filename.IsOk())
   {
     m_FileName = filename;
+  }
   
-    const auto it = m_Entries.find(GetName());
+  const auto it = m_Entries.find(GetName());
     
-    if (it != m_Entries.end())
-    {
+  if (it != m_Entries.end())
+  {
       it->second.BuildMenu(base_id, menu, is_popup);
-    }
   }
 }
 #endif
