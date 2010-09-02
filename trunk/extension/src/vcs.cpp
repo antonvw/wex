@@ -63,8 +63,14 @@ wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 }
 
 #if wxUSE_GUI
-void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
+void wxExVCS::BuildMenu(
+  int base_id, 
+  wxMenu* menu, 
+  wxExFileName& filename,
+  bool is_popup) const
 {
+  m_FileName = filename;
+  
   const auto it = m_Entries.find(GetName());
   
   if (it != m_Entries.end())
@@ -336,7 +342,7 @@ const wxString wxExVCS::GetName()
 {
   const long no = Use(m_FileName);
   
-  if (no != VCS_NONE)
+  if (no != VCS_NONE && no != VCS_AUTO)
   {
     for (
       auto it = m_Entries.begin();

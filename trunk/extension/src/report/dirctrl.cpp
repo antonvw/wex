@@ -123,7 +123,7 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
     if (wxExVCS::Get()->DirExists(filename))
     {
       menu.AppendSeparator();
-      menu.AppendVCS();
+      menu.AppendVCS(filename);
     }
 
     if (filename.GetLexer().GetScintillaLexer() == "makefile")

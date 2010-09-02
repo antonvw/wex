@@ -212,7 +212,7 @@ bool wxExMenu::AppendTools(int itemid)
 // This is the VCS submenu, as present on a popup.
 // Therefore it is build when clicking, and does not
 // need to be destroyed an old one.
-void wxExMenu::AppendVCS()
+void wxExMenu::AppendVCS(const wxExFileName& filename)
 {
   if (!wxExVCS::Get()->Use())
   {
@@ -222,7 +222,7 @@ void wxExMenu::AppendVCS()
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST + 1;
 
   wxExMenu* vcsmenu = new wxExMenu;
-  wxExVCS::Get()->BuildMenu(vcs_offset_id, vcsmenu);
+  wxExVCS::Get()->BuildMenu(vcs_offset_id, vcsmenu, filename);
 
   if (vcsmenu->GetMenuItemCount() > 0)
   { 

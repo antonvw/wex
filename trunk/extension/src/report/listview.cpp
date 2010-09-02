@@ -613,7 +613,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
           wxExListItem(this, GetFirstSelected()).GetFileName()))
         {
           menu.AppendSeparator();
-          menu.AppendVCS();
+          menu.AppendVCS(wxExListItem(this, GetFirstSelected()).GetFileName());
         }
       }
     }

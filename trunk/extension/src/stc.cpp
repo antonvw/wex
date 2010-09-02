@@ -369,7 +369,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
     {
       menu.AppendSeparator();
-      menu.AppendVCS();
+      menu.AppendVCS(m_File.GetFileName());
     }
     else if (!wxConfigBase::Get()->Read(_("Comparator")).empty())
     {

@@ -33,7 +33,11 @@ public:
   
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
-  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
+  void BuildMenu(
+    int base_id, 
+    wxMenu* menu, 
+    const wxExFileName& filename = wxExFileName(),
+    bool is_popup = true);
 #endif
 
 #if wxUSE_GUI

@@ -14,6 +14,7 @@
 
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
+#include <wx/extension/filename.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -79,7 +80,7 @@ public:
   bool AppendTools(int itemid = wxID_ANY);
 
   /// Appends VCS menu items.
-  void AppendVCS();
+  void AppendVCS(const wxExFileName& filename);
 
   /// Builds VCS menu items.
   void BuildVCS(bool fill);
