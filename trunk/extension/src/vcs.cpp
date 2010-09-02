@@ -66,7 +66,7 @@ wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 void wxExVCS::BuildMenu(
   int base_id, 
   wxMenu* menu, 
-  wxExFileName& filename,
+  const wxExFileName& filename,
   bool is_popup)
 {
   m_FileName = filename;
