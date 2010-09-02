@@ -41,23 +41,24 @@ enum
   VCS_AUTO, // uses the VCS appropriate for current file
 };
 
+int wxExVCS::m_Command = VCS_NO_COMMAND;
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
+wxExFileName wxExVCS::m_FileName;
 wxExVCS* wxExVCS::m_Self = NULL;
 #if wxUSE_GUI
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
 
 wxExVCS::wxExVCS()
-  : m_Command(VCS_NO_COMMAND)
-  , m_FileName(wxExFileName())
 {
   Initialize();
 }
 
 wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
-  : m_Command(GetType(command_id))
-  , m_FileName(filename)
 {
+  m_Command = GetType(command_id);
+  m_FileName = filename;
+  
   Initialize();
 }
 
@@ -73,7 +74,7 @@ void wxExVCS::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 }
 #endif
 
-bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
+bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
 {
   // these cannot be combined, as AppendDir is a void (2.9.1).
   wxFileName path(fn);
@@ -81,7 +82,7 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
   return path.DirExists();
 }
 
-bool wxExVCS::CheckPathAll(const wxString& vcs, const wxFileName& fn) const
+bool wxExVCS::CheckPathAll(const wxString& vcs, const wxFileName& fn)
 {
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn.GetPath());
@@ -331,7 +332,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExVCS::GetName() const
+const wxString wxExVCS::GetName()
 {
   const long no = Use(m_FileName);
   
@@ -354,7 +355,7 @@ const wxString wxExVCS::GetName() const
   return wxEmptyString;
 }
 
-long wxExVCS::GetNo(const wxString& name) const
+long wxExVCS::GetNo(const wxString& name)
 {
   const auto it = m_Entries.find(name);
   
@@ -591,7 +592,7 @@ bool wxExVCS::Use() const
   return Use(m_FileName) != VCS_NONE;
 }
 
-long wxExVCS::Use(const wxFileName& filename) const
+long wxExVCS::Use(const wxFileName& filename)
 {
   const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
 

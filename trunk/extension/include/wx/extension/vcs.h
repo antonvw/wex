@@ -95,20 +95,17 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  bool CheckPath(const wxString& vcs, const wxFileName& fn) const;
-  bool CheckPathAll(const wxString& vcs, const wxFileName& fn) const;
-  const wxString GetName() const;
-  long GetNo(const wxString& name) const;
+  static bool CheckPath(const wxString& vcs, const wxFileName& fn);
+  static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
+  static const wxString GetName();
+  static long GetNo(const wxString& name);
   int GetType(int command_id) const;
   void Initialize();
   bool Read();
   int ShowDialog(wxWindow* parent);
-  long Use(const wxFileName& filename) const;
+  static long Use(const wxFileName& filename);
   bool UseFlags() const;
   bool UseSubcommand() const;
-
-  const int m_Command;
-  const wxExFileName m_FileName;
 
   wxExVCSCommand m_CommandString;
 
@@ -117,7 +114,9 @@ private:
   wxString m_FlagsKey;
   wxString m_Output;
 
+  static int m_Command;
   static std::map<wxString, wxExVCSEntry> m_Entries;
+  static wxExFileName m_FileName;
   static wxExVCS* m_Self;
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;
