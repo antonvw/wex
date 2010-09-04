@@ -258,7 +258,17 @@ void wxExMenu::BuildVCS(bool fill)
   if (fill)
   {
     const int vcs_offset_id = ID_VCS_LOWEST + 1;
-    wxExVCS::Get()->BuildMenu(vcs_offset_id, this, wxExFileName(), false); // no popup
+    
+    wxExVCS::Get()->BuildMenu(
+      vcs_offset_id, 
+      this, 
+      wxExFileName(), 
+      false); // no popup
+      
+    if (GetMenuItemCount() == 0)
+    {
+      fill = false;
+    }
   }
 
   m_MenuVCSFilled = fill;
