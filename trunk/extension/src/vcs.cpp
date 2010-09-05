@@ -91,15 +91,19 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
   return path.DirExists();
 }
 
-bool wxExVCS::CheckPathAll(const wxString& vcs, const wxFileName& fn)
+bool wxExVCS::CheckPathAll(
+  const wxString& vcs, 
+  const wxFileName& fn)
 {
+  const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
+  
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn.GetPath());
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
     wxFileName path(root);
-    path.AppendDir("." + vcs);
+    path.AppendDir("." + use_vcs);
 
     if (path.DirExists())
     {
@@ -619,6 +623,10 @@ long wxExVCS::Use(const wxFileName& filename)
     else if (CheckPathAll("git", filename))
     {
       return GetNo("git");
+    }
+    else if (CheckPathAll("mercurial", filename))
+    {
+      return GetNo("mercurial");
     }
     else
     {
