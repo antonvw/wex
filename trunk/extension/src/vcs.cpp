@@ -536,10 +536,17 @@ int wxExVCS::ShowDialog(wxWindow* parent)
   {
     v.push_back(wxExConfigItem(_("Subcommand")));
   }
-
-  return wxExConfigDialog(parent,
-    v,
-    m_Caption).ShowModal();
+  
+  if (v.empty())
+  {
+    return wxMessageBox(m_Caption);
+  }
+  else
+  {
+    return wxExConfigDialog(parent,
+      v,
+      m_Caption).ShowModal();
+  }
 }
 #endif
 
@@ -640,9 +647,7 @@ long wxExVCS::Use(const wxFileName& filename)
 
 bool wxExVCS::UseFlags() const
 {
-  return 
-    !m_CommandString.IsUpdate() &&
-    !m_CommandString.IsHelp();
+  return !m_CommandString.IsHelp();
 }
 
 bool wxExVCS::UseSubcommand() const
