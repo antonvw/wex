@@ -106,12 +106,15 @@ int wxExVCSEntry::m_Instances = 2; // TODO: VCS_AUTO + 1;
 wxExVCSEntry::wxExVCSEntry()
   : m_No(-1)
   , m_Name()
+  , m_SupportKeywordExpansion(false)
 {
 }
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : m_No(m_Instances++)
   , m_Name(node->GetAttribute("name"))
+  , m_SupportKeywordExpansion(
+      node->GetAttribute("keyword-expansion") == "true")
 {
   if (m_Name.empty())
   {

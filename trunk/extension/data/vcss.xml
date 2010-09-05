@@ -18,10 +18,14 @@ without the written consent of the copyright owner.
    how this item will be used, if type is popup the item is only
    on the popup menu, if type is main, the item is only on the
    main menu, if not given, both on popup and main menu. 
+   Default accelerator is first char of the command, 
+   but you can set it everywhere using an & char.
+   Each <vcs> can also have a keyword-expansion attribute.
    -->
   
   <vcs 
-    name="svn">
+    name="svn"
+    keyword-expansion="true">
 
     <commands>
       <command> add </command>

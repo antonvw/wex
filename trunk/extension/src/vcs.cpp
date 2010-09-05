@@ -160,11 +160,16 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 {
   if (Use(filename) != VCS_NONE)
   {
+    // When adding a vcs, also check Use.
     if (CheckPath("svn", filename))
     {
       return true;
     }
     else if (CheckPathAll("git", filename))
+    {
+      return true;
+    }
+    else if (CheckPathAll("mercurial", filename))
     {
       return true;
     }
@@ -604,7 +609,14 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  return GetName() == "svn";
+  const auto it = m_Entries.find(GetName());
+    
+  if (it != m_Entries.end())
+  {
+      return it->second.SupportKeywordExpansion();
+  }
+  
+  return false;
 }
 
 bool wxExVCS::Use() const
@@ -623,6 +635,7 @@ long wxExVCS::Use(const wxFileName& filename)
       // We do not have a filename, so return AUTO.
       return vcs;
     }
+    // When adding a vcs, also check DirExists.
     else if (CheckPath("svn", filename))
     {
       return GetNo("svn");

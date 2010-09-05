@@ -109,6 +109,9 @@ public:
 
   /// Gets the no.
   long GetNo() const {return m_No;};
+  
+  /// Does this vcs supports keyword expansion.
+  bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:
   const std::vector<wxExVCSCommand> ParseNodeCommands(
     const wxXmlNode* node) const;
@@ -117,6 +120,7 @@ private:
 
   const wxString m_Name;
   const long m_No;
+  const bool m_SupportKeywordExpansion;
 
   std::vector<wxExVCSCommand> m_Commands;
 };
