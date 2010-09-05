@@ -362,7 +362,9 @@ void wxExAppTestFixture::testVCS()
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
 //  CPPUNIT_ASSERT(vcs->Execute() != -1);
 //  CPPUNIT_ASSERT(!vcs->GetOutput().empty());
+
   CPPUNIT_ASSERT(vcs->DirExists(wxFileName(TEST_FILE)));
+  CPPUNIT_ASSERT(!vcs->SupportKeywordExpansion());
 }
 
 void wxExAppTestFixture::testVCSCommand()
@@ -399,6 +401,7 @@ void wxExAppTestFixture::testVCSEntry()
   CPPUNIT_ASSERT(test.GetCommand(0).empty());
   CPPUNIT_ASSERT(test.GetName().empty());
   CPPUNIT_ASSERT(test.GetNo() == -1);
+  CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }
 
 void wxExAppTestFixture::testVi()
