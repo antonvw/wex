@@ -183,7 +183,14 @@ const wxString wxExVCSEntry::GetCommand(int command_id) const
   }
   else
   {
-    return m_Commands.at(command_id).GetCommand();
+    wxString command = m_Commands.at(command_id).GetCommand();
+    
+    if (command.Contains("&"))
+    {
+      command.Replace("&", wxEmptyString);
+    }
+      
+    return command;
   }
 }
   
