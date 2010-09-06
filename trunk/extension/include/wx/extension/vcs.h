@@ -13,7 +13,6 @@
 #define _EXVCS_H
 
 #include <map>
-#include <vector>
 #include <wx/xml/xml.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/vcsentry.h>
