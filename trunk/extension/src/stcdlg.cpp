@@ -37,10 +37,6 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
-  wxFlexGridSizer* sizer = new wxFlexGridSizer(0);
-  sizer->AddGrowableRow(0);
-  sizer->AddGrowableCol(0);
-
   m_STC = new wxExSTC(
     this, 
     text,
@@ -66,9 +62,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     m_STC->SetReadOnly(true);
   }
 
-  sizer->Add(m_STC, wxSizerFlags().Center().Border().Expand());
-
-  AddUserSizer(sizer);
+  AddUserSizer(m_STC);
 
   LayoutSizers();
 }
