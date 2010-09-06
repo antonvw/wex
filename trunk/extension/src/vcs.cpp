@@ -41,7 +41,7 @@ enum
   VCS_AUTO, // uses the VCS appropriate for current file
 };
 
-int wxExVCS::m_Command = VCS_NO_COMMAND;
+int wxExVCS::m_CommandNo = VCS_NO_COMMAND;
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxExFileName wxExVCS::m_FileName;
 wxExVCS* wxExVCS::m_Self = NULL;
@@ -56,7 +56,7 @@ wxExVCS::wxExVCS()
 
 wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 {
-  m_Command = GetCommand(command_id);
+  m_CommandNo = GetCommand(command_id);
   m_FileName = filename;
   
   Initialize();
@@ -184,7 +184,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(m_Command != VCS_NO_COMMAND);
+  wxASSERT(m_CommandNo != VCS_NO_COMMAND);
 
   wxString cwd;
   wxString file;
@@ -194,7 +194,7 @@ long wxExVCS::Execute()
     cwd = wxGetCwd();
     wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
 
-    if (m_CommandString.IsAdd())
+    if (m_Command.IsAdd())
     {
       file = " " + wxExConfigFirstOf(_("Path"));
     }
@@ -215,7 +215,7 @@ long wxExVCS::Execute()
 
   wxString comment;
 
-  if (m_CommandString.IsCommit())
+  if (m_Command.IsCommit())
   {
     comment = 
       " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
@@ -251,7 +251,7 @@ long wxExVCS::Execute()
     }
   }
 
-  m_CommandWithFlags = m_CommandString.GetCommand() + flags;
+  m_CommandWithFlags = m_Command.GetCommand() + flags;
 
   const wxString vcs_bin = wxConfigBase::Get()->Read(GetName(), "svn");
 
@@ -263,7 +263,7 @@ long wxExVCS::Execute()
 
   const wxString commandline = 
     vcs_bin + " " + 
-    m_CommandString.GetCommand() + subcommand + flags + comment + file;
+    m_Command.GetCommand() + subcommand + flags + comment + file;
 
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(commandline);
@@ -411,20 +411,20 @@ long wxExVCS::GetNo(const wxString& name)
 
 void wxExVCS::Initialize()
 {
-  if (Use() && m_Command != VCS_NO_COMMAND)
+  if (Use() && m_CommandNo != VCS_NO_COMMAND)
   {
     const auto it = m_Entries.find(GetName());
   
     if (it != m_Entries.end())
     {
-      m_CommandString.SetCommand(it->second.GetCommand(m_Command));
-      m_Caption = GetName() + " " + m_CommandString.GetCommand();
+      m_Command.SetCommand(it->second.GetCommand(m_CommandNo));
+      m_Caption = GetName() + " " + m_Command.GetCommand();
 
       // Currently no flags, as no command was executed.
-      m_CommandWithFlags = m_CommandString.GetCommand();
+      m_CommandWithFlags = m_Command.GetCommand();
 
       // Use general key.
-      m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command);
+      m_FlagsKey = wxString::Format("vcsflags/name%d", m_CommandNo);
     }
     else
     {
@@ -504,7 +504,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_CommandString.IsCommit())
+  if (m_Command.IsCommit())
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -513,7 +513,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!m_FileName.IsOk() && !m_CommandString.IsHelp())
+  if (!m_FileName.IsOk() && !m_Command.IsHelp())
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -522,7 +522,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true,
       1000));
 
-    if (m_CommandString.IsAdd())
+    if (m_Command.IsAdd())
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -564,7 +564,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 {
   wxString caption = m_Caption;
       
-  if (!m_CommandString.IsHelp())
+  if (!m_Command.IsHelp())
   {
     caption += " " + (m_FileName.IsOk() ?  
       m_FileName.GetFullName(): 
@@ -591,14 +591,14 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   }
 
   // Add a lexer when appropriate.
-  if (m_CommandString.IsOpen())
+  if (m_Command.IsOpen())
   {
     if (m_FileName.GetLexer().IsOk())
     {
       m_STCEntryDialog->SetLexer(m_FileName.GetLexer().GetScintillaLexer());
     }
   }
-  else if (m_CommandString.IsDiff())
+  else if (m_Command.IsDiff())
   {
     m_STCEntryDialog->SetLexer("diff");
   }
@@ -668,10 +668,10 @@ long wxExVCS::Use(const wxFileName& filename)
 
 bool wxExVCS::UseFlags() const
 {
-  return !m_CommandString.IsHelp();
+  return !m_Command.IsHelp();
 }
 
 bool wxExVCS::UseSubcommand() const
 {
-  return m_CommandString.IsHelp();
+  return m_Command.IsHelp();
 }

@@ -73,7 +73,7 @@ public:
   /// Returns true if this command can behave like
   /// opening a file.  
   bool IsOpenCommand() const {
-    return m_CommandString.IsOpen();};
+    return m_Command.IsOpen();};
 
 #if wxUSE_GUI
   /// Combines all in one method. Calls the ExecuteDialog,
@@ -110,14 +110,14 @@ private:
   bool UseFlags() const;
   bool UseSubcommand() const;
 
-  wxExVCSCommand m_CommandString;
+  wxExVCSCommand m_Command;
 
   wxString m_Caption;
   wxString m_CommandWithFlags;
   wxString m_FlagsKey;
   wxString m_Output;
 
-  static int m_Command;
+  static int m_CommandNo;
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxExFileName m_FileName;
   static wxExVCS* m_Self;
