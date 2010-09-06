@@ -56,7 +56,7 @@ wxExVCS::wxExVCS()
 
 wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 {
-  m_CommandNo = GetCommand(command_id);
+  m_CommandNo = GetCommandNo(command_id);
   m_FileName = filename;
   
   Initialize();
@@ -354,7 +354,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-int wxExVCS::GetCommand(int command_id) const
+int wxExVCS::GetCommandNo(int command_id) const
 {
   if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
   {
