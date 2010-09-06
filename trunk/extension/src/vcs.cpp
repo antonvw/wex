@@ -87,7 +87,7 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
 {
   // these cannot be combined, as AppendDir is a void (2.9.1).
   wxFileName path(fn);
-  path.AppendDir("." + vcs);
+  path.AppendDir(vcs);
   return path.DirExists();
 }
 
@@ -161,7 +161,11 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
   if (Use(filename) != VCS_NONE)
   {
     // When adding a vcs, also check Use.
-    if (CheckPath("svn", filename))
+    if (CheckPath(".svn", filename))
+    {
+      return true;
+    }
+    else if (CheckPath("cvs", filename))
     {
       return true;
     }
@@ -636,9 +640,13 @@ long wxExVCS::Use(const wxFileName& filename)
       return vcs;
     }
     // When adding a vcs, also check DirExists.
-    else if (CheckPath("svn", filename))
+    else if (CheckPath(".svn", filename))
     {
       return GetNo("svn");
+    }
+    else if (CheckPath("cvs", filename))
+    {
+      return GetNo("cvs");
     }
     else if (CheckPathAll("git", filename))
     {
