@@ -11,7 +11,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/menu.h>
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/util.h>

@@ -11,6 +11,7 @@
 #define _EXVCSENTRY_H
 
 #include <vector>
+#include <wx/menu.h>
 #include <wx/xml/xml.h>
 
 class wxMenu;
@@ -78,10 +79,11 @@ public:
     m_Type = From(type);};
 private:
   int From(const wxString& type) const;
-  wxString m_Command;
-  
+
   static int m_Instances;
   
+  wxString m_Command;
+
   int m_No;
   int m_Type;
 };
