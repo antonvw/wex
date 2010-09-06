@@ -102,7 +102,7 @@ private:
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static const wxString GetName();
   static long GetNo(const wxString& name);
-  int GetType(int command_id) const;
+  int GetCommand(int command_id) const;
   void Initialize();
   bool Read();
   int ShowDialog(wxWindow* parent);

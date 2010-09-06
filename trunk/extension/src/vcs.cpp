@@ -56,7 +56,7 @@ wxExVCS::wxExVCS()
 
 wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 {
-  m_Command = GetType(command_id);
+  m_Command = GetCommand(command_id);
   m_FileName = filename;
   
   Initialize();
@@ -350,6 +350,23 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
+int wxExVCS::GetCommand(int command_id) const
+{
+  if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
+  {
+    return command_id - ID_VCS_LOWEST - 1;
+  }
+  else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
+  {
+    return command_id - ID_EDIT_VCS_LOWEST - 1;
+  }
+  else
+  {
+    wxFAIL;
+    return VCS_NO_COMMAND;
+  }
+}
+
 const wxString wxExVCS::GetName()
 {
   const long no = Use(m_FileName);
@@ -385,23 +402,6 @@ long wxExVCS::GetNo(const wxString& name)
   {
     wxFAIL;
     return VCS_NONE;
-  }
-}
-
-int wxExVCS::GetType(int command_id) const
-{
-  if (command_id > ID_VCS_LOWEST && command_id < ID_VCS_HIGHEST)
-  {
-    return command_id - ID_VCS_LOWEST - 1;
-  }
-  else if (command_id > ID_EDIT_VCS_LOWEST && command_id < ID_EDIT_VCS_HIGHEST)
-  {
-    return command_id - ID_EDIT_VCS_LOWEST - 1;
-  }
-  else
-  {
-    wxFAIL;
-    return VCS_NO_COMMAND;
   }
 }
 
