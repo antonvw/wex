@@ -70,13 +70,6 @@ public:
   /// Resets the number of instances, so the no
   /// will start from 0 again.
   static void ResetInstances() {m_Instances = 0;};
-
-  /// Sets the command and type.
-  void SetCommand(
-    const wxString& command,
-    const wxString& type = wxEmptyString) {
-    m_Command = command;
-    m_Type = From(type);};
 private:
   int From(const wxString& type) const;
 
