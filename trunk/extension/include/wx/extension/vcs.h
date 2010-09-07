@@ -28,7 +28,7 @@ public:
   wxExVCS();
 
   /// Constructor, specify the menu command id and a filename.
-  wxExVCS(int command_id, const wxExFileName& filename = wxExFileName());
+  wxExVCS(int menu_id, const wxExFileName& filename = wxExFileName());
   
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
@@ -101,7 +101,6 @@ private:
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static long FindNo(const wxString& name);
-  int GetCommandNo(int command_id) const;
   static const wxString GetName();
   static long GetNo(const wxFileName& filename);
   void Initialize(int command_id);
