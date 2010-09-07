@@ -24,14 +24,6 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
-// The VCS commands are read in from vcss.xml.
-// See also defs.h, and do not exceed VCS_MAX_COMMANDS in vcss.xml.
-// This command indicates an error in the command being handled.
-enum
-{
-  VCS_NO_COMMAND = -1,
-};
-
 // The VCS systems are read in from vcss.xml.
 // The ones here can be set in the config dialog, and are not
 // present in the vcss.xml.
@@ -181,7 +173,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(m_Command.GetNo() != VCS_NO_COMMAND);
+  wxASSERT(m_Command.GetType() != wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
 
   wxString cwd;
   wxString file;
