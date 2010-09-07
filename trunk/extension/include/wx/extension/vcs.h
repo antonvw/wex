@@ -103,7 +103,7 @@ private:
   static const wxString GetName();
   static long GetNo(const wxString& name);
   int GetCommandNo(int command_id) const;
-  void Initialize();
+  void Initialize(int command_id);
   bool Read();
   int ShowDialog(wxWindow* parent);
   static long Use(const wxFileName& filename);
@@ -117,7 +117,6 @@ private:
   wxString m_FlagsKey;
   wxString m_Output;
 
-  static int m_CommandNo;
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxExFileName m_FileName;
   static wxExVCS* m_Self;

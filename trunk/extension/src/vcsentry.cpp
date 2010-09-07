@@ -53,6 +53,18 @@ int wxExVCSCommand::From(const wxString& type) const
   }
 }
 
+const wxString wxExCommand::GetCommand() const
+{
+  wxString command = m_Command;
+
+  if (command.Contains("&"))
+  {
+    command.Replace("&", wxEmptyString);
+  }
+
+  return command;
+}
+
 bool wxExVCSCommand::IsAdd() const
 {
   return 
@@ -177,22 +189,15 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 }
 #endif
 
-const wxString wxExVCSEntry::GetCommand(int command_id) const
+const wxExVCSCommand wxExVCSEntry::GetCommand(int command_id) const
 {
   if (command_id >= m_Commands.size() || command_id < 0)
   {
-    return wxEmptyString;
+    return wxExVCSCommand();
   }
   else
   {
-    wxString command = m_Commands.at(command_id).GetCommand();
-    
-    if (command.Contains("&"))
-    {
-      command.Replace("&", wxEmptyString);
-    }
-      
-    return command;
+    return m_Commands.at(command_id);
   }
 }
   

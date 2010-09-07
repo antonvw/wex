@@ -41,7 +41,6 @@ enum
   VCS_AUTO, // uses the VCS appropriate for current file
 };
 
-int wxExVCS::m_CommandNo = VCS_NO_COMMAND;
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxExFileName wxExVCS::m_FileName;
 wxExVCS* wxExVCS::m_Self = NULL;
@@ -51,15 +50,13 @@ wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 
 wxExVCS::wxExVCS()
 {
-  Initialize();
 }
 
 wxExVCS::wxExVCS(int command_id, const wxExFileName& filename)
 {
-  m_CommandNo = GetCommandNo(command_id);
   m_FileName = filename;
   
-  Initialize();
+  Initialize(GetCommandNo(command_id));
 }
 
 #if wxUSE_GUI
@@ -184,7 +181,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(m_CommandNo != VCS_NO_COMMAND);
+  wxASSERT(m_Command.GetNo() != VCS_NO_COMMAND);
 
   wxString cwd;
   wxString file;
@@ -409,22 +406,22 @@ long wxExVCS::GetNo(const wxString& name)
   }
 }
 
-void wxExVCS::Initialize()
+void wxExVCS::Initialize(int command_id)
 {
-  if (Use() && m_CommandNo != VCS_NO_COMMAND)
+  if (Use() && int command_id != VCS_NO_COMMAND)
   {
     const auto it = m_Entries.find(GetName());
   
     if (it != m_Entries.end())
     {
-      m_Command.SetCommand(it->second.GetCommand(m_CommandNo));
+      m_Command = it->second.GetCommand(command_id);
       m_Caption = GetName() + " " + m_Command.GetCommand();
 
       // Currently no flags, as no command was executed.
       m_CommandWithFlags = m_Command.GetCommand();
 
       // Use general key.
-      m_FlagsKey = wxString::Format("vcsflags/name%d", m_CommandNo);
+      m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
     }
     else
     {

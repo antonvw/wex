@@ -37,7 +37,7 @@ public:
     const wxString& type = wxEmptyString);
 
   /// Gets the command.
-  const wxString GetCommand() const {return m_Command;};
+  const wxString GetCommand() const;
   
   /// Gets the no.
   int GetNo() const {return m_No;};
@@ -104,7 +104,7 @@ public:
 #endif
   
   /// Gets the command.
-  const wxString GetCommand(int command_id) const;
+  const wxExVCSCommand GetCommand(int command_id) const;
 
   /// Gets the name.
   const wxString& GetName() const {return m_Name;};
