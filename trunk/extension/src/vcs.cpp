@@ -155,9 +155,9 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  if (Use(filename) != VCS_NONE)
+  if (GetNo(filename) != VCS_NONE)
   {
-    // When adding a vcs, also check Use.
+    // When adding a vcs, also check GetNo.
     if (CheckPath(".svn", filename))
     {
       return true;
@@ -333,6 +333,21 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 }
 #endif
 
+long wxExVCS::FindNo(const wxString& name)
+{
+  const auto it = m_Entries.find(name);
+
+  if (it != m_Entries.end())
+  {
+    return it->second.GetNo();
+  }
+  else
+  {
+    wxFAIL;
+    return VCS_NONE;
+  }
+}
+
 wxExVCS* wxExVCS::Get(bool createOnDemand)
 {
   if (m_Self == NULL && createOnDemand)
@@ -370,7 +385,7 @@ int wxExVCS::GetCommandNo(int command_id) const
 
 const wxString wxExVCS::GetName()
 {
-  const long no = Use(m_FileName);
+  const long no = GetNo(m_FileName);
   
   if (no != VCS_NONE && no != VCS_AUTO)
   {
@@ -391,19 +406,42 @@ const wxString wxExVCS::GetName()
   return wxEmptyString;
 }
 
-long wxExVCS::GetNo(const wxString& name)
+long wxExVCS::GetNo(const wxFileName& filename)
 {
-  const auto it = m_Entries.find(name);
-  
-  if (it != m_Entries.end())
+  const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
+
+  if (vcs == VCS_AUTO)
   {
-    return it->second.GetNo();
+    if (!filename.IsOk())
+    {
+      // We do not have a filename, so return AUTO.
+      return vcs;
+    }
+    // When adding a vcs, also check DirExists.
+    else if (CheckPath(".svn", filename))
+    {
+      return FindNo("svn");
+    }
+    else if (CheckPath("cvs", filename))
+    {
+      return FindNo("cvs");
+    }
+    else if (CheckPathAll("git", filename))
+    {
+      return FindNo("git");
+    }
+    else if (CheckPathAll("mercurial", filename))
+    {
+      return FindNo("mercurial");
+    }
+    else
+    {
+      // We do not yet know vcs, so return AUTO.
+      return vcs;
+    }
   }
-  else
-  {
-    wxFAIL;
-    return VCS_NONE;
-  }
+
+  return vcs;
 }
 
 void wxExVCS::Initialize(int command_id)
@@ -622,45 +660,7 @@ bool wxExVCS::SupportKeywordExpansion() const
 
 bool wxExVCS::Use() const
 {
-  return Use(m_FileName) != VCS_NONE;
-}
-
-long wxExVCS::Use(const wxFileName& filename)
-{
-  const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
-
-  if (vcs == VCS_AUTO)
-  {
-    if (!filename.IsOk())
-    {
-      // We do not have a filename, so return AUTO.
-      return vcs;
-    }
-    // When adding a vcs, also check DirExists.
-    else if (CheckPath(".svn", filename))
-    {
-      return GetNo("svn");
-    }
-    else if (CheckPath("cvs", filename))
-    {
-      return GetNo("cvs");
-    }
-    else if (CheckPathAll("git", filename))
-    {
-      return GetNo("git");
-    }
-    else if (CheckPathAll("mercurial", filename))
-    {
-      return GetNo("mercurial");
-    }
-    else
-    {
-      // We do not yet know vcs, so return AUTO.
-      return vcs;
-    }
-  }
-
-  return vcs;
+  return GetNo(m_FileName) != VCS_NONE;
 }
 
 bool wxExVCS::UseFlags() const

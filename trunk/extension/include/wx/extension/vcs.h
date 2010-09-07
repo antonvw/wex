@@ -100,13 +100,13 @@ public:
 private:
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
-  static const wxString GetName();
-  static long GetNo(const wxString& name);
+  static long FindNo(const wxString& name);
   int GetCommandNo(int command_id) const;
+  static const wxString GetName();
+  static long GetNo(const wxFileName& filename);
   void Initialize(int command_id);
   bool Read();
   int ShowDialog(wxWindow* parent);
-  static long Use(const wxFileName& filename);
   bool UseFlags() const;
   bool UseSubcommand() const;
 
