@@ -335,7 +335,8 @@ long wxExVCS::FindNo(const wxString& name)
   }
   else
   {
-    wxFAIL;
+    // Do not fail, you might remove some from vcss.xml,
+    // then entry cannot be found.
     return VCS_NONE;
   }
 }
