@@ -101,7 +101,7 @@ private:
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static long FindNo(const wxString& name);
-  static const wxString GetName();
+  static const wxString GetName(const wxFileName& filename);
   static long GetNo(const wxFileName& filename);
   void Initialize(int command_id);
   bool Read();

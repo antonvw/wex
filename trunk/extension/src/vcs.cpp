@@ -63,7 +63,7 @@ void wxExVCS::BuildMenu(
     m_FileName = filename;
   }
   
-  const auto it = m_Entries.find(GetName());
+  const auto it = m_Entries.find(GetName(m_FileName));
     
   if (it != m_Entries.end())
   {
@@ -147,28 +147,30 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  if (GetNo(filename) != VCS_NONE)
-  {
-    // When adding a vcs, also check GetNo.
-    if (CheckPath(".svn", filename))
-    {
-      return true;
-    }
-    else if (CheckPath("cvs", filename))
-    {
-      return true;
-    }
-    else if (CheckPathAll("git", filename))
-    {
-      return true;
-    }
-    else if (CheckPathAll("mercurial", filename))
-    {
-      return true;
-    }
-  }
+  const wxString name = GetName(filename);
 
-  return false;
+  // When adding a vcs, also check GetNo.
+  if (name == "svn" && CheckPath(".svn", filename))
+  {
+    return true;
+  }
+  else if (name == "git" && CheckPathAll(name, filename))
+  {
+    return true;
+  }
+  else if (name == "mercurial" && CheckPathAll(name, filename))
+  {
+    return true;
+  }
+  // This is the default check.
+  else if (CheckPath(name, filename))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 long wxExVCS::Execute()
@@ -177,6 +179,7 @@ long wxExVCS::Execute()
 
   wxString cwd;
   wxString file;
+  const wxString name = GetName(m_FileName);
 
   if (!m_FileName.IsOk())
   {
@@ -190,7 +193,7 @@ long wxExVCS::Execute()
   }
   else
   {
-    if (GetName() == "git")
+    if (name == "git")
     {
       cwd = wxGetCwd();
       wxSetWorkingDirectory(m_FileName.GetPath());
@@ -242,11 +245,11 @@ long wxExVCS::Execute()
 
   m_CommandWithFlags = m_Command.GetCommand() + flags;
 
-  const wxString vcs_bin = wxConfigBase::Get()->Read(GetName(), "svn");
+  const wxString vcs_bin = wxConfigBase::Get()->Read(name, "svn");
 
   if (vcs_bin.empty())
   {
-    wxLogError(GetName() + " " + _("path is empty"));
+    wxLogError(name + " " + _("path is empty"));
     return -1;
   }
 
@@ -359,9 +362,9 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExVCS::GetName()
+const wxString wxExVCS::GetName(const wxFileName& filename)
 {
-  const long no = GetNo(m_FileName);
+  const long no = GetNo(filename);
   
   if (no != VCS_NONE && no != VCS_AUTO)
   {
@@ -440,12 +443,12 @@ void wxExVCS::Initialize(int menu_id)
 
   if (Use())
   {
-    const auto it = m_Entries.find(GetName());
+    const auto it = m_Entries.find(GetName(m_FileName));
   
     if (it != m_Entries.end())
     {
       m_Command = it->second.GetCommand(command_id);
-      m_Caption = GetName() + " " + m_Command.GetCommand();
+      m_Caption = GetName(m_FileName) + " " + m_Command.GetCommand();
 
       // Currently no flags, as no command was executed.
       m_CommandWithFlags = m_Command.GetCommand();
@@ -640,7 +643,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  const auto it = m_Entries.find(GetName());
+  const auto it = m_Entries.find(GetName(m_FileName));
     
   if (it != m_Entries.end())
   {
