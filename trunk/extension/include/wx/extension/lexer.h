@@ -20,7 +20,6 @@
 #include <wx/extension/style.h>
 
 class wxStyledTextCtrl;
-class wxExLexers;
 
 /// This class defines a lexer using file associations,
 /// syntax colouring and comment definitions.
