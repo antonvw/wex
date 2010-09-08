@@ -190,46 +190,64 @@ void wxExAppTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.GetExtensions().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentBegin2().empty());
-  CPPUNIT_ASSERT(lexer.GetCommentEnd().empty());
+  CPPUNIT_ASSERT( lexer.GetCommentEnd().empty());
   CPPUNIT_ASSERT(!lexer.GetCommentEnd2().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
   CPPUNIT_ASSERT(!lexer.GetKeywordsString().empty());
-  CPPUNIT_ASSERT(lexer.IsKeyword("class"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("const"));
-  CPPUNIT_ASSERT(lexer.KeywordStartsWith("cla"));
+
+  CPPUNIT_ASSERT( lexer.IsKeyword("class"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("const"));
+
+  CPPUNIT_ASSERT( lexer.KeywordStartsWith("cla"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xxx"));
+
   CPPUNIT_ASSERT(!lexer.MakeComment("test", true).empty());
   CPPUNIT_ASSERT(!lexer.MakeComment("test", "test").empty());
-  CPPUNIT_ASSERT(lexer.SetKeywords("hello:1"));
-  CPPUNIT_ASSERT(lexer.SetKeywords(
+
+  CPPUNIT_ASSERT( lexer.SetKeywords("hello:1"));
+  CPPUNIT_ASSERT( lexer.SetKeywords(
     "test11 test21:1 test31:1 test12:2 test22:2"));
+
   CPPUNIT_ASSERT(!lexer.IsKeyword("class")); // now overwritten
-  CPPUNIT_ASSERT(lexer.IsKeyword("test11"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("test21"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("test12"));
-  CPPUNIT_ASSERT(lexer.IsKeyword("test22"));
-  CPPUNIT_ASSERT(lexer.KeywordStartsWith("te"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("test11"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("test21"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("test12"));
+  CPPUNIT_ASSERT( lexer.IsKeyword("test22"));
+
+  CPPUNIT_ASSERT( lexer.KeywordStartsWith("te"));
   CPPUNIT_ASSERT(!lexer.KeywordStartsWith("xx"));
+
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
 }
 
 void wxExAppTestFixture::testLexers()
 {
+  CPPUNIT_ASSERT(!wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
+  CPPUNIT_ASSERT(!wxExLexers::Get()->ApplyMacro("wxSTC_MARK_LCORNER") == "10");
+
   CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(
     wxFileName(TEST_FILE)).empty());
-  CPPUNIT_ASSERT(wxExLexers::Get()->Count() > 0);
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByFileName(
+  CPPUNIT_ASSERT( wxExLexers::Get()->Count() > 0);
+
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByFileName(
     wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName(
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "cpp").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByText(
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByText(
     "// this is a cpp comment text").GetScintillaLexer() == "cpp");
-  CPPUNIT_ASSERT(wxExLexers::Get()->FindByName(
+  CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
-  CPPUNIT_ASSERT(wxExLexers::Get()->GetDefaultStyle().IsDefault());
-  CPPUNIT_ASSERT(wxExLexers::Get()->GetDefaultStyle().IsOk());
+
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsDefault());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
+
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());
+
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacrosStyle().empty());
+
+  CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
+  CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
 }
 
 void wxExAppTestFixture::testListView()
