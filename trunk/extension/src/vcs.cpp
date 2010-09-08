@@ -147,6 +147,7 @@ int wxExVCS::ConfigDialog(
     case 7:
     case 8:
     case 12:
+    case 16:
       cols = 4;
       break;
 
