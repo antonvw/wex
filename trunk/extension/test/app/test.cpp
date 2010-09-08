@@ -46,7 +46,40 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(i.GetType() == CONFIG_INT);
   CPPUNIT_ASSERT(!i.GetIsRequired());
   CPPUNIT_ASSERT(i.GetControl() == NULL);
-  
+
+  std::map<long, const wxString> echoices;
+  echoices.insert(std::make_pair(0, _("Zero")));
+  echoices.insert(std::make_pair(1, _("One")));
+  echoices.insert(std::make_pair(2, _("Two")));
+  wxExConfigItem radio("Radio Box", echoices, true));
+  CPPUNIT_ASSERT(radio.GetType() == CONFIG_RADIOBOX);
+  CPPUNIT_ASSERT(!radio.GetIsRequired());
+  CPPUNIT_ASSERT(radio.GetControl() == NULL);
+
+  std::map<long, const wxString> cl;
+  cl.insert(std::make_pair(0, _("Bit One")));
+  cl.insert(std::make_pair(1, _("Bit Two")));
+  cl.insert(std::make_pair(2, _("Bit Three")));
+  cl.insert(std::make_pair(4, _("Bit Four")));
+  wxExConfigItem clb("Bin Choices", clb, false, "Checkbox lists"));
+  CPPUNIT_ASSERT(clb.GetType() == CONFIG_CHECKLISTBOX);
+  CPPUNIT_ASSERT(!clb.GetIsRequired());
+  CPPUNIT_ASSERT(clb.GetControl() == NULL);
+
+  std::set<wxString> bchoices;
+  bchoices.insert(_("This"));
+  bchoices.insert(_("Or"));
+  bchoices.insert(_("Other"));
+  wxExConfigItem clbn(bchoices));
+  CPPUNIT_ASSERT(clbn.GetType() == CONFIG_CHECKLISTBOX_NONAME);
+  CPPUNIT_ASSERT(!clbn.GetIsRequired());
+  CPPUNIT_ASSERT(clbn.GetControl() == NULL);
+
+  wxExConfigItem cb(_("Combobox")), CONFIG_COMBOBOX));
+  CPPUNIT_ASSERT(cb.GetType() == CONFIG_COMBOBOX);
+  CPPUNIT_ASSERT(!cb.GetIsRequired());
+  CPPUNIT_ASSERT(cb.GetControl() == NULL);
+
   wxGridSizer sizer(3);
   
   spin.Layout(wxTheApp->GetTopWindow(), &sizer);
@@ -60,6 +93,18 @@ void wxExAppTestFixture::testConfigItem()
   
   i.Layout(wxTheApp->GetTopWindow(), &sizer);
   CPPUNIT_ASSERT(i.GetControl() != NULL);
+
+  radio.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(radio.GetControl() != NULL);
+
+  clb.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(clb.GetControl() != NULL);
+
+  clbn.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(clbn.GetControl() != NULL);
+
+  cb.Layout(wxTheApp->GetTopWindow(), &sizer);
+  CPPUNIT_ASSERT(cb.GetControl() != NULL);
 }
 
 void wxExAppTestFixture::testFrame()
