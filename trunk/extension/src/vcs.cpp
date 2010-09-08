@@ -124,12 +124,43 @@ int wxExVCS::ConfigDialog(
     choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
   }
 
+  // Calculate number of columns.
+  int cols;
+
+  switch (m_Entries.size() + 2)
+  {
+    case 2:
+      cols = 1;
+      break;
+
+    case 3:
+    case 4:
+      cols = 2;
+      break;
+
+    case 5:
+    case 6:
+    case 11:
+      cols = 3;
+      break;
+
+    case 7:
+    case 8:
+    case 12:
+      cols = 4;
+      break;
+
+    default:
+      cols = 5;
+      break;
+  }
+
   v.push_back(wxExConfigItem(
     "VCS",
     choices,
     true, // use a radiobox 
     wxEmptyString, 
-    5));  // no more than 5 cols
+    cols));
 
   for (
     auto it2 = m_Entries.begin();
