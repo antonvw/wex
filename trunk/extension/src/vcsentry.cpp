@@ -53,7 +53,7 @@ int wxExVCSCommand::From(const wxString& type) const
   }
 }
 
-const wxString wxExCommand::GetCommand() const
+const wxString wxExVCSCommand::GetCommand() const
 {
   wxString command = m_Command;
 
