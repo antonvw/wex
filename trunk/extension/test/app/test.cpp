@@ -130,6 +130,11 @@ void wxExAppTestFixture::testHeader()
   CPPUNIT_ASSERT(!str.empty());
   CPPUNIT_ASSERT(str.Contains("hello test"));
   CPPUNIT_ASSERT(str.Contains("AvW"));
+  CPPUNIT_ASSERT(str.Contains("Name"));
+  CPPUNIT_ASSERT(str.Contains("Purpose"));
+  CPPUNIT_ASSERT(str.Contains("Author"));
+  CPPUNIT_ASSERT(str.Contains("Created"));
+  CPPUNIT_ASSERT(str.Contains("Copyright"));
 }
 
 void wxExAppTestFixture::testLexer()
