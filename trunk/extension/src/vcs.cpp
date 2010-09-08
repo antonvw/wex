@@ -428,26 +428,34 @@ long wxExVCS::GetNo(const wxFileName& filename)
       // We do not have a filename, so return AUTO.
       return vcs;
     }
-    // When adding a vcs, also check DirExists.
-    else if (CheckPath(".svn", filename))
-    {
-      return FindNo("svn");
-    }
-    else if (CheckPath("cvs", filename))
-    {
-      return FindNo("cvs");
-    }
-    else if (CheckPathAll("git", filename))
-    {
-      return FindNo("git");
-    }
-    else if (CheckPathAll("mercurial", filename))
-    {
-      return FindNo("mercurial");
-    }
     else
     {
-      // We do not yet know vcs, so return AUTO.
+      for (
+        auto it = m_Entries.begin();
+        it != m_Entries.end();
+        ++it)
+      {
+        const wxString name = it->second.GetName();
+
+        if (name == "svn" && CheckPath(".svn", filename))
+        {
+          return it->second.GetNo();
+        }
+        else if (name == "git" && CheckPathAll(name, filename))
+        {
+          return it->second.GetNo();
+        }
+        else if (name == "mercurial" && CheckPathAll(name, filename))
+        {
+          return it->second.GetNo();
+        }
+        else if (CheckPath(name, filename))
+        {
+          return it->second.GetNo();
+        }
+      }
+
+      // We have no match, so return AUTO.
       return vcs;
     }
   }
