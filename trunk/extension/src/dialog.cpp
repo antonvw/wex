@@ -83,20 +83,13 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   // Then, if buttons were specified, the button sizer.
   if (m_ButtonFlags != 0)
   {
-    wxSizer* sbz;
+    wxSizer* sizer = (add_separator_line ?
+      CreateSeparatedButtonSizer(m_ButtonFlags):
+      CreateButtonSizer(m_ButtonFlags));
 
-    if (add_separator_line)
+    if (sizer != NULL)
     {
-      sbz = CreateSeparatedButtonSizer(m_ButtonFlags);
-    }
-    else
-    {
-      sbz = CreateButtonSizer(m_ButtonFlags);
-    }
-
-    if (sbz != NULL)
-    {
-      m_TopSizer->Add(sbz, flag);
+      m_TopSizer->Add(sizer, flag);
     }
   }
 
