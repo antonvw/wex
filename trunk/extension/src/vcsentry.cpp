@@ -19,6 +19,7 @@ int wxExVCSCommand::m_Instances = 0;
 
 wxExVCSCommand::wxExVCSCommand()
   : m_Command()
+  , m_IsSub(false)
   , m_No(0)
   , m_Type(VCS_COMMAND_IS_UNKNOWN) 
 {
@@ -26,8 +27,10 @@ wxExVCSCommand::wxExVCSCommand()
 
 wxExVCSCommand::wxExVCSCommand(
   const wxString& command,
-  const wxString& type)
+  const wxString& type,
+  bool issub)
   : m_Command(command)
+  , m_IsSub(issub)
   , m_No(m_Instances++)
   , m_Type(From(type))
 {
@@ -160,12 +163,27 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
 #if wxUSE_GUI
 void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
+  wxMenu* submenu = NULL;
+
   for (
     auto it = m_Commands.begin();
     it != m_Commands.end();
     ++it)
   {
     bool add = false;
+
+    if (it->IsSub())
+    {
+      if (submenu == NULL)
+      {
+        submenu = new wxMenu(menu);
+      }
+    }
+    else if (submenu != NULL)
+    {
+      menu->Append(submenu);
+      submenu = NULL;
+    }
 
     switch (it->GetType())
     {
@@ -182,11 +200,18 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
         (it->GetCommand().Contains("&") ? 
            wxExEllipsed(it->GetCommand()) :
           (wxExEllipsed("&" + it->GetCommand())));
-          
-      menu->Append(base_id + it->GetNo(), text);
+
+      wxMenu* usemenu = (submenu == NULL ? menu: submenu);
+      usemenu->Append(base_id + it->GetNo(), text);
     }
   }
+
+  if (submenu != NULL)
+  {
+    menu->Append(submenu);
+  }
 }
+
 #endif
 
 const wxExVCSCommand wxExVCSEntry::GetCommand(int command_id) const
@@ -222,7 +247,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
       {
         const wxString content = child->GetNodeContent().Strip(wxString::both);
         const wxString attrib = child->GetAttribute("type");
-        v.push_back(wxExVCSCommand(content, attrib));
+        const bool issub = child->HasAttribute("is-sub");
+        v.push_back(wxExVCSCommand(content, attrib, issub));
       }
     }
     else if (child->GetName() == "comment")
