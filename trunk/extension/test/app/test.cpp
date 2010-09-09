@@ -429,8 +429,9 @@ void wxExAppTestFixture::testVCS()
   wxMenu* menu = new wxMenu("test");
   wxExVCS::Get()->BuildMenu(100, menu);
   CPPUNIT_ASSERT(menu->GetItemCount() > 0);
-  CPPUNIT_ASSERT(!wxExVCS::Get()->SupportKeywordExpansion());
   CPPUNIT_ASSERT( wxExVCS::Get()->GetOutput().empty());
+  CPPUNIT_ASSERT( wxExVCS::Get()->SupportKeywordExpansion());
+  CPPUNIT_ASSERT( wxExVCS::Get()->Use());
 
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
 //  CPPUNIT_ASSERT(vcs->Execute() != -1);
