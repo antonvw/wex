@@ -58,6 +58,14 @@ void wxExTestFixture::testFileStatistics()
   
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
   CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
+
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
+  CPPUNIT_ASSERT( textFile.RunTool());
+  CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
+
+  fileStatistics += textFile.GetStatistics();
+  
+  CPPUNIT_ASSERT(!fileStatistics.Get().empty());
 }
 
 void wxExTestFixture::testRCS()
@@ -97,17 +105,17 @@ void wxExTestFixture::testStatistics()
 void wxExTestFixture::testTextFile()
 {
   wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
-  CPPUNIT_ASSERT(textFile.RunTool());
+  CPPUNIT_ASSERT( textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
-  CPPUNIT_ASSERT(textFile.RunTool()); // do the same test
+  CPPUNIT_ASSERT( textFile.RunTool()); // do the same test
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
   wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
-  CPPUNIT_ASSERT(textFile2.RunTool());
-//  CPPUNIT_ASSERT(!m_TextFile->GetStatistics().GetKeywords().GetItems().empty());
+  CPPUNIT_ASSERT(textFile2.RunTool()); // we have no lexers, so no keywords
+  CPPUNIT_ASSERT(textFile2.GetStatistics().GetKeywords().GetItems().empty());
 }
 
 void wxExTestFixture::testTiming()
