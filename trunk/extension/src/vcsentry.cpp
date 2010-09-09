@@ -176,7 +176,7 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     {
       if (submenu == NULL)
       {
-        submenu = new wxMenu(0);
+        submenu = new wxMenu();
         menu->AppendSubMenu(submenu, it->SubMenu());
       }
     }
