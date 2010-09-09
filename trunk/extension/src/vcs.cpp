@@ -77,7 +77,17 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
   // these cannot be combined, as AppendDir is a void (2.9.1).
   wxFileName path(fn);
   path.AppendDir(vcs);
-  return path.DirExists();
+
+  if (path.DirExists())
+  {
+    return true;
+  }
+  else
+  {
+    wxFileName path(fn);
+    path.AppendDir("." + vcs);
+    return path.DirExists();
+  }
 }
 
 bool wxExVCS::CheckPathAll(
@@ -172,15 +182,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
   const wxString name = GetName(filename);
 
   // When adding a vcs, also check GetNo.
-  if (name == "svn" && CheckPath(".svn", filename))
-  {
-    return true;
-  }
-  else if (name == "git" && CheckPathAll(name, filename))
-  {
-    return true;
-  }
-  else if (name == "mercurial" && CheckPathAll(name, filename))
+  if ((name == "git" ||  name == "mercurial") && CheckPathAll(name, filename))
   {
     return true;
   }
@@ -427,15 +429,8 @@ long wxExVCS::GetNo(const wxFileName& filename)
       {
         const wxString name = it->second.GetName();
 
-        if (name == "svn" && CheckPath(".svn", filename))
-        {
-          return it->second.GetNo();
-        }
-        else if (name == "git" && CheckPathAll(name, filename))
-        {
-          return it->second.GetNo();
-        }
-        else if (name == "mercurial" && CheckPathAll(name, filename))
+        if ((name == "git" || name == "mercurial") &&
+             CheckPathAll(name, filename))
         {
           return it->second.GetNo();
         }
