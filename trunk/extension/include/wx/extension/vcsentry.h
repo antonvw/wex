@@ -35,7 +35,7 @@ public:
   wxExVCSCommand(
     const wxString& command,
     const wxString& type = wxEmptyString,
-    const bool issub = false);
+    const wxString& submenu = wxEmptyString);
 
   /// Gets the command.
   const wxString GetCommand() const;
@@ -65,23 +65,23 @@ public:
   /// opening a file.
   bool IsOpen() const;
 
-  /// Returns true if this command is a subcommand.
-  bool IsSub() const {return m_IsSub};;
-
   /// Returns true if this is a update like command.
   bool IsUpdate() const;
 
   /// Resets the number of instances, so the no
   /// will start from 0 again.
   static void ResetInstances() {m_Instances = 0;};
+
+  /// Returns the submenu.
+  const wxString& SubMenu() const {return m_SubMenu;};
 private:
   int From(const wxString& type) const;
 
   static int m_Instances;
   
   wxString m_Command;
+  wxString m_SubMenu;
 
-  bool m_IsSub;
   int m_No;
   int m_Type;
 };

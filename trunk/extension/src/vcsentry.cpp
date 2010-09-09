@@ -19,7 +19,7 @@ int wxExVCSCommand::m_Instances = 0;
 
 wxExVCSCommand::wxExVCSCommand()
   : m_Command()
-  , m_IsSub(false)
+  , m_SubMenu()
   , m_No(0)
   , m_Type(VCS_COMMAND_IS_UNKNOWN) 
 {
@@ -28,9 +28,9 @@ wxExVCSCommand::wxExVCSCommand()
 wxExVCSCommand::wxExVCSCommand(
   const wxString& command,
   const wxString& type,
-  bool issub)
+  const wxString& submenu)
   : m_Command(command)
-  , m_IsSub(issub)
+  , m_SubMenu(submenu)
   , m_No(m_Instances++)
   , m_Type(From(type))
 {
@@ -172,16 +172,16 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   {
     bool add = false;
 
-    if (it->IsSub())
+    if (!it->SubMenu().empty())
     {
       if (submenu == NULL)
       {
         submenu = new wxMenu(menu);
+        menu->AppendSubmenu(submenu, it->SubMenu());
       }
     }
     else if (submenu != NULL)
     {
-      menu->Append(submenu);
       submenu = NULL;
     }
 
@@ -204,11 +204,6 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
       wxMenu* usemenu = (submenu == NULL ? menu: submenu);
       usemenu->Append(base_id + it->GetNo(), text);
     }
-  }
-
-  if (submenu != NULL)
-  {
-    menu->Append(submenu);
   }
 }
 
@@ -247,8 +242,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
       {
         const wxString content = child->GetNodeContent().Strip(wxString::both);
         const wxString attrib = child->GetAttribute("type");
-        const bool issub = child->HasAttribute("is-sub");
-        v.push_back(wxExVCSCommand(content, attrib, issub));
+        const wxString submenu = child->GetAttribute("submenu");
+        v.push_back(wxExVCSCommand(content, attrib, submenu));
       }
     }
     else if (child->GetName() == "comment")

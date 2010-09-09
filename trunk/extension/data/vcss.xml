@@ -21,8 +21,8 @@ without the written consent of the copyright owner.
    main menu, if not given, both on popup and main menu. 
    Default accelerator is first char of the command, 
    but you can set it everywhere using an & char.
-   Each <command> can also have a is-sub attribute, in which case
-   it is shown as a submenu.
+   Each <command> can also have a submenu attribute, in which case
+   it is shown as a submenu using the name as specified.
    -->
   
   <vcs 
