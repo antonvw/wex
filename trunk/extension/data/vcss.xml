@@ -35,12 +35,12 @@ without the written consent of the copyright owner.
       <command> cat </command>
       <command> commit </command>
       <command> diff </command>
-      <command> help </command>
+      <command type = "main"> help </command>
       <command> info </command>
       <command> log </command>
-      <command type ="main"> ls </command>
-      <command type ="popup"> proplist </command>
-      <command type ="popup"> propset </command>
+      <command type = "main"> ls </command>
+      <command type = "popup"> proplist </command>
+      <command type = "popup"> propset </command>
       <command> revert </command>
       <command> stat </command>
       <command> update </command>
@@ -55,13 +55,17 @@ without the written consent of the copyright owner.
       <command> blame </command>
       <command> commit </command>
       <command> diff </command>
-      <command> help </command>
+      <command type = "main"> help </command>
       <command> log </command>
       <command> push </command>
       <command> revert </command>
       <command> show </command>
       <command> status </command>
       <command> update </command>
+      <command submenu = "svn"> rebase </command>
+      <command submenu = "svn"> dcommit </command>
+      <command submenu = "svn"> blame </command>
+      <command submenu = "svn"> help </command>
     </commands>
   </vcs>
 
