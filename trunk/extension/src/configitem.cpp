@@ -419,7 +419,7 @@ wxFlexGridSizer* wxExConfigItem::Layout(
 {
   CreateControl(parent, readonly);
   
-  wxFlexGridSizer* use = NULL;
+  wxFlexGridSizer* use = fgz;
 
   switch (m_Type)
   {
@@ -446,9 +446,8 @@ wxFlexGridSizer* wxExConfigItem::Layout(
         }
         else
         {
-          use = fgz;
-          AddStaticTextName(use);
-          use->Add(m_Control, m_ControlFlags);
+          AddStaticTextName(fgz);
+          fgz->Add(m_Control, m_ControlFlags);
         }
       }
       else
