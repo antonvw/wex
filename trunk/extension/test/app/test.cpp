@@ -425,13 +425,16 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  wxExVCS* vcs = new wxExVCS(ID_VCS_LOWEST + 1, wxExFileName(TEST_FILE));
+  CPPUNIT_ASSERT( wxExVCS::Get()->DirExists(wxFileName(TEST_FILE)));
+  wxMenu* menu = new wxMenu("test");
+  wxExVCS::Get()->BuildMenu(100, menu);
+  CPPUNIT_ASSERT(menu->GetItemCount() > 0);
+  CPPUNIT_ASSERT(!wxExVCS::Get()->SupportKeywordExpansion());
+  CPPUNIT_ASSERT( wxExVCS::Get()->GetOutput().empty());
+
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
 //  CPPUNIT_ASSERT(vcs->Execute() != -1);
 //  CPPUNIT_ASSERT(!vcs->GetOutput().empty());
-
-  CPPUNIT_ASSERT(vcs->DirExists(wxFileName(TEST_FILE)));
-  CPPUNIT_ASSERT(!vcs->SupportKeywordExpansion());
 }
 
 void wxExAppTestFixture::testVCSCommand()
