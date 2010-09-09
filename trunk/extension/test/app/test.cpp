@@ -441,14 +441,16 @@ void wxExAppTestFixture::testVCSCommand()
   
   const wxExVCSCommand add("add");
   const wxExVCSCommand commit("commit", "main");
-  const wxExVCSCommand diff("diff", "popup");
+  const wxExVCSCommand diff("diff", "popup", "sub");
   const wxExVCSCommand help("help", "error");
   const wxExVCSCommand open("blame");
   const wxExVCSCommand update("update");
   
   CPPUNIT_ASSERT(add.IsAdd());
+  CPPUNIT_ASSERT(add.SubMenu().empty());
   CPPUNIT_ASSERT(commit.IsCommit());
   CPPUNIT_ASSERT(diff.IsDiff());
+  CPPUNIT_ASSERT(diff.SubMenu() == "sub");
   CPPUNIT_ASSERT(help.IsHelp());
   CPPUNIT_ASSERT(open.IsOpen());
   CPPUNIT_ASSERT(update.IsUpdate());
