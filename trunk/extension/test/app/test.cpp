@@ -27,84 +27,83 @@ void wxExAppTestFixture::setUp()
 
 void wxExAppTestFixture::testConfigItem()
 {
-  wxExConfigItem spin("spin", 1, 5);
-  CPPUNIT_ASSERT(spin.GetType() == CONFIG_SPINCTRL);
-  CPPUNIT_ASSERT(!spin.GetIsRequired());
-  CPPUNIT_ASSERT(spin.GetControl() == NULL);
+  vector <wxExConfigItem> items;
+
+  // Use specific connstructors.
+  wxExConfigItem ci1("ci1", 1, 5);
+  items.push_back(ci1);
+  CPPUNIT_ASSERT(ci1.GetName() == "ci1");
+  CPPUNIT_ASSERT(ci1.GetType() == CONFIG_SPINCTRL);
   
-  wxExConfigItem spind("spin", 1.0, 5.0);
-  CPPUNIT_ASSERT(spind.GetType() == CONFIG_SPINCTRL_DOUBLE);
-  CPPUNIT_ASSERT(!spind.GetIsRequired());
-  CPPUNIT_ASSERT(spind.GetControl() == NULL);
+  wxExConfigItem ci2("ci1", 1.0, 5.0);
+  items.push_back(ci2);
+  CPPUNIT_ASSERT(ci2.GetType() == CONFIG_SPINCTRL_DOUBLE);
   
-  wxExConfigItem str("string");
-  CPPUNIT_ASSERT(str.GetType() == CONFIG_STRING);
-  CPPUNIT_ASSERT(!str.GetIsRequired());
-  CPPUNIT_ASSERT(str.GetControl() == NULL);
+  wxExConfigItem ci3("string");
+  items.push_back(ci3);
+  CPPUNIT_ASSERT(ci3.GetType() == CONFIG_STRING);
   
-  wxExConfigItem i("int", CONFIG_INT);
-  CPPUNIT_ASSERT(i.GetType() == CONFIG_INT);
-  CPPUNIT_ASSERT(!i.GetIsRequired());
-  CPPUNIT_ASSERT(i.GetControl() == NULL);
+  wxExConfigItem ci4("int", CONFIG_INT);
+  items.push_back(ci4);
+  CPPUNIT_ASSERT(ci4.GetType() == CONFIG_INT);
 
   std::map<long, const wxString> echoices;
   echoices.insert(std::make_pair(0, _("Zero")));
   echoices.insert(std::make_pair(1, _("One")));
   echoices.insert(std::make_pair(2, _("Two")));
-  wxExConfigItem radio("Radio Box", echoices, true);
-  CPPUNIT_ASSERT(radio.GetType() == CONFIG_RADIOBOX);
-  CPPUNIT_ASSERT(!radio.GetIsRequired());
-  CPPUNIT_ASSERT(radio.GetControl() == NULL);
+  wxExConfigItem ci5("Radio Box", echoices, true);
+  items.push_back(ci5);
+  CPPUNIT_ASSERT(ci5.GetType() == CONFIG_RADIOBOX);
 
   std::map<long, const wxString> cl;
   cl.insert(std::make_pair(0, _("Bit One")));
   cl.insert(std::make_pair(1, _("Bit Two")));
   cl.insert(std::make_pair(2, _("Bit Three")));
   cl.insert(std::make_pair(4, _("Bit Four")));
-  wxExConfigItem clb("Bin Choices", cl, false, "Checkbox lists");
-  CPPUNIT_ASSERT(clb.GetType() == CONFIG_CHECKLISTBOX);
-  CPPUNIT_ASSERT(!clb.GetIsRequired());
-  CPPUNIT_ASSERT(clb.GetControl() == NULL);
+  wxExConfigItem ci6("Bin Choices", cl, false, "Checkbox lists");
+  items.push_back(ci6);
+  CPPUNIT_ASSERT(ci6.GetType() == CONFIG_CHECKLISTBOX);
 
   std::set<wxString> bchoices;
   bchoices.insert(_("This"));
   bchoices.insert(_("Or"));
   bchoices.insert(_("Other"));
-  wxExConfigItem clbn(bchoices);
-  CPPUNIT_ASSERT(clbn.GetType() == CONFIG_CHECKLISTBOX_NONAME);
-  CPPUNIT_ASSERT(!clbn.GetIsRequired());
-  CPPUNIT_ASSERT(clbn.GetControl() == NULL);
+  wxExConfigItem ci7(bchoices);
+  items.push_back(ci7);
+  CPPUNIT_ASSERT(ci7.GetType() == CONFIG_CHECKLISTBOX_NONAME);
 
-  wxExConfigItem cb(_("Combobox"), CONFIG_COMBOBOX);
-  CPPUNIT_ASSERT(cb.GetType() == CONFIG_COMBOBOX);
-  CPPUNIT_ASSERT(!cb.GetIsRequired());
-  CPPUNIT_ASSERT(cb.GetControl() == NULL);
+  // Use general constructor, and add all items.
+  for (
+    int i = CONFIG_ITEM_MIN + 1;
+    i < CONFIG_ITEM_MAX;
+    i++)
+  {
+    items.push_back(wxExConfigItem(wxString::Format("item%d", i), i));
+  }
+
+  // Check members are initialized.
+  for (
+    auto it = items.begin();
+    it != items.end();
+    ++it)
+  {
+    CPPUNIT_ASSERT(it->GetControl() == NULL);
+    CPPUNIT_ASSERT(!it->GetIsRequired());
+    CPPUNIT_ASSERT(it->GetColumns() == -1);
+    CPPUNIT_ASSERT(it->GetPage().empty());
+  }
 
   wxGridSizer sizer(3);
-  
-  spin.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(spin.GetControl() != NULL);
-  
-  spind.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(spind.GetControl() != NULL);
-  
-  str.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(str.GetControl() != NULL);
-  
-  i.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(i.GetControl() != NULL);
 
-  radio.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(radio.GetControl() != NULL);
-
-  clb.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(clb.GetControl() != NULL);
-
-  clbn.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(clbn.GetControl() != NULL);
-
-  cb.Layout(wxTheApp->GetTopWindow(), &sizer);
-  CPPUNIT_ASSERT(cb.GetControl() != NULL);
+  // Layout the items and check control is created.
+  for (
+    auto it = items.begin();
+    it != items.end();
+    ++it)
+  {
+    it->Layout(wxTheApp->GetTopWindow(), &sizer);
+    CPPUNIT_ASSERT(it->GetControl() != NULL);
+  }
 }
 
 void wxExAppTestFixture::testFrame()

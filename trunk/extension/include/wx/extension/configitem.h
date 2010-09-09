@@ -21,6 +21,9 @@
 /// The config item types supported.
 enum
 {
+  /// Used for automatic testing only.
+  CONFIG_ITEM_MIN,
+
   /// A normal, single, checkbox (use ReadBool to retrieve value).
   CONFIG_CHECKBOX,       
 
@@ -49,6 +52,9 @@ enum
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_STRING,          ///< a textctrl
+
+  /// Used for automatic testing only.
+  CONFIG_ITEM_MAX,
 };
 
 /// Container class for using with wxExConfigDialog.
