@@ -39,7 +39,7 @@ public:
     const wxString& subcommand = wxEmptyString);
 
   /// Gets the command (and subcommand if necessary) without accelerators.
-  const wxString GetCommand() const;
+  const wxString GetCommand(bool include_subcommand = true) const;
   
   /// Gets the no.
   int GetNo() const {return m_No;};

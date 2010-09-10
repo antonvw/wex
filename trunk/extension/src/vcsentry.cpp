@@ -60,11 +60,11 @@ int wxExVCSCommand::From(const wxString& type) const
   }
 }
 
-const wxString wxExVCSCommand::GetCommand() const
+const wxString wxExVCSCommand::GetCommand(bool include_subcommand) const
 {
   wxString command = m_Command;
 
-  if (m_SubMenuIsCommand)
+  if (m_SubMenuIsCommand && include_subcommand)
   {
     command += " " + m_SubMenu;
   }
@@ -80,48 +80,48 @@ const wxString wxExVCSCommand::GetCommand() const
 bool wxExVCSCommand::IsAdd() const
 {
   return 
-    m_Command == "add";
+    GetCommand(false) == "add";
 }
 
 bool wxExVCSCommand::IsCheckout() const
 {
   return 
-    m_Command == "checkout" ||
-    m_Command == "co";
+    GetCommand(false) == "checkout" ||
+    GetCommand(false) == "co";
 }
 
 bool wxExVCSCommand::IsCommit() const
 {
   return 
-    m_Command == "commit" ||
-    m_Command == "ci";
+    GetCommand(false) == "commit" ||
+    GetCommand(false) == "ci";
 }
 
 bool wxExVCSCommand::IsDiff() const
 {
   return 
-    m_Command == "diff";
+    GetCommand(false) == "diff";
 }
 
 bool wxExVCSCommand::IsHelp() const
 {
   return 
-    m_Command == "help";
+    GetCommand(false) == "help";
 }
 
 bool wxExVCSCommand::IsOpen() const
 {
   return
-    m_Command == "blame" ||
-    m_Command == "cat" ||
-    m_Command == "diff";
+    GetCommand(false) == "blame" ||
+    GetCommand(false) == "cat" ||
+    GetCommand(false) == "diff";
 }
 
 bool wxExVCSCommand::IsUpdate() const
 {
   return 
-    m_Command == "update" ||
-    m_Command == "up";
+    GetCommand(false) == "update" ||
+    GetCommand(false) == "up";
 }
 
 int wxExVCSEntry::m_Instances = wxExVCS::VCS_AUTO + 1;
