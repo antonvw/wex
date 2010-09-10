@@ -1,6 +1,23 @@
-.....................
+.F.................F.F..
 
 
-OK (21 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  21   Failures: 3   Errors: 0
+
+
+1) test: testConfigItem (F) line: 94 ../extension/test/app/test.cpp
+assertion failed
+- Expression: it->GetPage().empty()
+
+
+2) test: testVCS (F) line: 434 ../extension/test/app/test.cpp
+assertion failed
+- Expression: wxExVCS::Get()->SupportKeywordExpansion()
+
+
+3) test: testVCSCommand (F) line: 465 ../extension/test/app/test.cpp
+assertion failed
+- Expression: add.IsAdd()
 
 
