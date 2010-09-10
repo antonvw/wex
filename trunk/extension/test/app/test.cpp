@@ -10,6 +10,7 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <vector>
 #include <TestCaller.h>
 #include <wx/config.h>
 #include "test.h"
@@ -27,7 +28,7 @@ void wxExAppTestFixture::setUp()
 
 void wxExAppTestFixture::testConfigItem()
 {
-  vector <wxExConfigItem> items;
+  std::vector <wxExConfigItem> items;
 
   // Use specific connstructors.
   wxExConfigItem ci1("ci1", 1, 5);
@@ -428,7 +429,7 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( wxExVCS::Get()->DirExists(wxFileName(TEST_FILE)));
   wxMenu* menu = new wxMenu("test");
   wxExVCS::Get()->BuildMenu(100, menu);
-  CPPUNIT_ASSERT(menu->GetItemCount() > 0);
+  CPPUNIT_ASSERT(menu->GetMenuItemCount() > 0);
   CPPUNIT_ASSERT( wxExVCS::Get()->GetOutput().empty());
   CPPUNIT_ASSERT( wxExVCS::Get()->SupportKeywordExpansion());
   CPPUNIT_ASSERT( wxExVCS::Get()->Use());

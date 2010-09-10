@@ -14,6 +14,7 @@
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 
 int wxExVCSCommand::m_Instances = 0;
 
