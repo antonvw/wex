@@ -35,9 +35,10 @@ public:
   wxExVCSCommand(
     const wxString& command,
     const wxString& type = wxEmptyString,
-    const wxString& submenu = wxEmptyString);
+    const wxString& submenu = wxEmptyString,
+    const wxString& subcommand = wxEmptyString);
 
-  /// Gets the command.
+  /// Gets the command (and subcommand if necessary) without accelerators.
   const wxString GetCommand() const;
   
   /// Gets the no.
@@ -82,6 +83,7 @@ private:
   wxString m_Command;
   wxString m_SubMenu;
 
+  bool m_SubMenuIsCommand;
   int m_No;
   int m_Type;
 };

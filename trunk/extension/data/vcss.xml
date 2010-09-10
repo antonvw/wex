@@ -21,8 +21,10 @@ without the written consent of the copyright owner.
    main menu, if not given, both on popup and main menu. 
    Default accelerator is first char of the command, 
    but you can set it everywhere using an & char.
-   Each <command> can also have a submenu attribute, in which case
+   Each <command> can also have a submenu or subcomand attribute, 
+   in which case
    it is shown as a submenu using the name as specified.
+   A subcommand is handled the same, but also used as command to execute.
    -->
   
   <vcs 
@@ -62,10 +64,10 @@ without the written consent of the copyright owner.
       <command> show </command>
       <command> status </command>
       <command> update </command>
-      <command submenu = "svn"> rebase </command>
-      <command submenu = "svn"> dcommit </command>
-      <command submenu = "svn"> blame </command>
-      <command submenu = "svn"> help </command>
+      <command subcommand = "svn"> rebase </command>
+      <command subcommand = "svn"> dcommit </command>
+      <command subcommand = "svn"> blame </command>
+      <command subcommand = "svn"> help </command>
     </commands>
   </vcs>
 

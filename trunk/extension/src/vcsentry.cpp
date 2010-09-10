@@ -20,6 +20,7 @@ int wxExVCSCommand::m_Instances = 0;
 wxExVCSCommand::wxExVCSCommand()
   : m_Command()
   , m_SubMenu()
+  , m_SubMenuIsCommand(false)
   , m_No(0)
   , m_Type(VCS_COMMAND_IS_UNKNOWN) 
 {
@@ -28,9 +29,11 @@ wxExVCSCommand::wxExVCSCommand()
 wxExVCSCommand::wxExVCSCommand(
   const wxString& command,
   const wxString& type,
-  const wxString& submenu)
+  const wxString& submenu,
+  const wxString& subcommand)
   : m_Command(command)
-  , m_SubMenu(submenu)
+  , m_SubMenu(!submenu.empty() ? submenu: subcommand)
+  , m_SubMenuIsCommand(!subcommand.empty())
   , m_No(m_Instances++)
   , m_Type(From(type))
 {
@@ -58,7 +61,14 @@ int wxExVCSCommand::From(const wxString& type) const
 
 const wxString wxExVCSCommand::GetCommand() const
 {
-  wxString command = m_Command;
+  wxString command;
+
+  if (m_SubMenuIsCommand)
+  {
+    command += m_SubMenu + " ";
+  }
+
+  command += m_Command;
 
   if (command.Contains("&"))
   {
@@ -243,7 +253,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
         const wxString content = child->GetNodeContent().Strip(wxString::both);
         const wxString attrib = child->GetAttribute("type");
         const wxString submenu = child->GetAttribute("submenu");
-        v.push_back(wxExVCSCommand(content, attrib, submenu));
+        const wxString subcommand = child->GetAttribute("subcommand");
+        v.push_back(wxExVCSCommand(content, attrib, submenu, subcommand));
       }
     }
     else if (child->GetName() == "comment")
