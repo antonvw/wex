@@ -24,6 +24,15 @@ class wxExSTCEntryDialog;
 class wxExVCS
 {
 public:
+  // The VCS systems are read in from vcss.xml.
+  // The ones here can be set in the config dialog, and are not
+  // present in the vcss.xml.
+  enum
+  {
+    VCS_NONE = 0, // no version control
+    VCS_AUTO, // uses the VCS appropriate for current file
+  };
+
   /// Default constructor.
   wxExVCS();
 

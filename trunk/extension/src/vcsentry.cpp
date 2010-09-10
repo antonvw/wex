@@ -125,7 +125,7 @@ bool wxExVCSCommand::IsUpdate() const
     m_Command == "up";
 }
 
-int wxExVCSEntry::m_Instances = 2; // TODO: VCS_AUTO + 1;
+int wxExVCSEntry::m_Instances = wxExVCS::VCS_AUTO + 1;
 
 wxExVCSEntry::wxExVCSEntry()
   : m_No(-1)

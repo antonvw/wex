@@ -24,15 +24,6 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 
-// The VCS systems are read in from vcss.xml.
-// The ones here can be set in the config dialog, and are not
-// present in the vcss.xml.
-enum
-{
-  VCS_NONE = 0, // no version control
-  VCS_AUTO, // uses the VCS appropriate for current file
-};
-
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxExFileName wxExVCS::m_FileName;
 wxExVCS* wxExVCS::m_Self = NULL;
