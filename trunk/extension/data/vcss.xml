@@ -72,11 +72,18 @@ without the written consent of the copyright owner.
   </vcs>
 
   <vcs 
-    name="cvs">
+    name="cvs"
+    keyword-expansion="true">
 
     <commands>
       <command> add </command>
       <command> co </command>
+      <command> commit </command>
+      <command> diff </command>
+      <command> help </command>
+      <command> log </command>
+      <command> status </command>
+      <command> update </command>
     </commands>
   </vcs>
   
