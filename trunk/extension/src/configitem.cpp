@@ -193,7 +193,7 @@ void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
   fgz->Add(
     new wxButton(
       m_Control->GetParent(),
-      m_Id,
+      m_Control->GetId(),
       _(wxDirPickerWidgetLabel)),
     wxSizerFlags().Center().Border());
 

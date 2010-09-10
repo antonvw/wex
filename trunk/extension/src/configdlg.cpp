@@ -99,7 +99,7 @@ wxExConfigDialog::FindConfigItem(int id) const
     it != m_ConfigItems.end();
     ++it)
   {
-    if (it->GetId() == id)
+    if (it->GetControl()->GetId() == id)
     {
       return it;
     }
@@ -183,7 +183,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
         wxEVT_COMMAND_BUTTON_CLICKED, 
         &wxExConfigDialog::OnCommand, 
         this, 
-        it->GetId());
+        it->GetControl()->GetId());
     }
 
     if ( sizer->GetRows() > 0 &&
