@@ -61,14 +61,12 @@ int wxExVCSCommand::From(const wxString& type) const
 
 const wxString wxExVCSCommand::GetCommand() const
 {
-  wxString command;
+  wxString command = m_Command;
 
   if (m_SubMenuIsCommand)
   {
-    command += m_SubMenu + " ";
+    command += " " + m_SubMenu;
   }
-
-  command += m_Command;
 
   if (command.Contains("&"))
   {
