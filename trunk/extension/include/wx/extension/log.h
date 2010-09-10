@@ -23,6 +23,11 @@ public:
     const wxFileName& filename,
     bool logging = true);
 
+  /// Logs the text, using a timestamp.
+  const wxExLog& operator<< (const wxString& text) {
+    Log(text);
+    return *this;};
+
   /// Returns the global log object.
   /// The global file logging is default turned off.
   static wxExLog* Get(bool createOnDemand = true);

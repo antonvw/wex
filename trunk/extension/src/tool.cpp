@@ -106,7 +106,7 @@ void wxExTool::Log(
         << wxTextFile::GetEOL();
 
       wxExLog log(GetLogfileName());
-      log.Log(logtext);
+      log << logtext;
     }
   }
 }
