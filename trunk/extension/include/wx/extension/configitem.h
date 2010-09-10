@@ -24,31 +24,20 @@ enum
   /// Used for automatic testing only.
   CONFIG_ITEM_MIN,
 
-  /// A normal, single, checkbox (use ReadBool to retrieve value).
-  CONFIG_CHECKBOX,       
-
-  /// A checklistbox (not mutually exclusive choices).
-  /// Should be used to get/set individual bits in a long.
-  CONFIG_CHECKLISTBOX,
-
-  /// A checklistbox without a name (not mutually exclusive choices).
-  /// Should be used to get/set several boolean values in one checklistbox.
-  CONFIG_CHECKLISTBOX_NONAME,
-
+  /// Items that are constructed using the general constructor.
+  CONFIG_CHECKBOX,        ///< a checkbox (use ReadBool to retrieve value)
   CONFIG_COLOUR,          ///< a colour button
   CONFIG_COMBOBOX,        ///< a combobox
   CONFIG_COMBOBOXDIR,     ///< a combobox with a browse button
   CONFIG_DIRPICKERCTRL,   ///< a dirpicker ctrl
   CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
   CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
-  CONFIG_INT,             ///< a textctrl that only accepts an integer
-                          ///< (a long integer)
+  CONFIG_INT,             ///< a textctrl that only accepts an integer (long)
 
-  /// A radiobox (mutually exclusive choices).
-  /// Should be used when a long value can have a short
-  /// set of possible individual values.
-  CONFIG_RADIOBOX,
-
+  // Items that have an explicit constructor.
+  CONFIG_CHECKLISTBOX,    ///< a checklistbox ctrl
+  CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox ctrl
+  CONFIG_RADIOBOX,        ///< a radiobox ctrl
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_STRING,          ///< a textctrl
@@ -67,6 +56,17 @@ enum
 class wxExConfigItem
 {
 public:
+  /// Constuctor using type as specified.
+  /// When using for a combobox dir, use id < wxID_LOWEST.
+  wxExConfigItem(const wxString& name,
+    int type,
+    const wxString& page = wxEmptyString,
+    bool is_required = false,
+    int id = wxID_ANY,
+    int max_items = 25, // used by CONFIG_COMBOBOX
+    bool add_name = true,
+    int cols = -1);
+
   /// Constructor for a spin ctrl.
   wxExConfigItem(const wxString& name,
     int min, int max,
@@ -91,6 +91,11 @@ public:
 
   /// Constructor for a radiobox or a checklistbox. Just specify
   /// the map with values and text.
+  /// A checklistbox (not mutually exclusive choices)
+  /// should be used to get/set individual bits in a long.
+  /// A radiobox (mutually exclusive choices)
+  /// should be used when a long value can have a short
+  /// set of possible individual values.
   wxExConfigItem(const wxString& name,
     const std::map<long, const wxString> & choices,
     bool use_radiobox = true,
@@ -101,19 +106,10 @@ public:
 
   /// Constructor for a checklistbox without a name. Just specify
   /// the set with names of boolean items.
+  /// A checklistbox without a name (not mutually exclusive choices)
+  /// should be used to get/set several boolean values in one checklistbox.
   wxExConfigItem(const std::set<wxString> & choices,
     const wxString& page = wxEmptyString,
-    int cols = -1);
-
-  /// Constuctor for other types.
-  /// When using for a combobox dir, use id < wxID_LOWEST.
-  wxExConfigItem(const wxString& name,
-    int type,
-    const wxString& page = wxEmptyString,
-    bool is_required = false,
-    int id = wxID_ANY,
-    int max_items = 25, // used by CONFIG_COMBOBOX
-    bool add_name = true,
     int cols = -1);
 
   /// Gets the columns.

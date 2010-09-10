@@ -24,6 +24,33 @@
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
+  int type,
+  const wxString& page,
+  bool is_required,
+  int id,
+  int max_items,
+  bool add_name,
+  int cols)
+  : m_Control(NULL)
+  , m_Id(id)
+  , m_IsRequired(is_required)
+  , m_Min(0)
+  , m_Max(0)
+  , m_MaxItems(max_items)
+  , m_Name(name)
+  , m_Page(page)
+  , m_Style(0)
+  , m_Type(type)
+  , m_Cols(cols)
+  , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
+  , m_MinDouble(0)
+  , m_MaxDouble(0)
+  , m_Inc(0)
+{
+}
+
+wxExConfigItem::wxExConfigItem(
+  const wxString& name,
   int min,
   int max,
   const wxString& page,
@@ -142,33 +169,6 @@ wxExConfigItem::wxExConfigItem(
   , m_ChoicesBool(choices) 
   , m_Cols(cols)
   , m_AddName(false)
-  , m_MinDouble(0)
-  , m_MaxDouble(0)
-  , m_Inc(0)
-{
-}
-
-wxExConfigItem::wxExConfigItem(
-  const wxString& name,
-  int type,
-  const wxString& page,
-  bool is_required,
-  int id,
-  int max_items,
-  bool add_name,
-  int cols)
-  : m_Control(NULL)
-  , m_Id(id)
-  , m_IsRequired(is_required)
-  , m_Min(0)
-  , m_Max(0)
-  , m_MaxItems(max_items)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(0)
-  , m_Type(type) 
-  , m_Cols(cols)
-  , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
   , m_MinDouble(0)
   , m_MaxDouble(0)
   , m_Inc(0)
@@ -520,7 +520,9 @@ void wxExConfigItem::ToConfig(bool save) const
       {
         if (save)
         {
-          if (!wxExFindReplaceData::Get()->Set(clb->GetString(i), clb->IsChecked(i)))
+          if (!wxExFindReplaceData::Get()->Set(
+            clb->GetString(i),
+            clb->IsChecked(i)))
           {
             wxConfigBase::Get()->Write(clb->GetString(i), clb->IsChecked(i));
           }
