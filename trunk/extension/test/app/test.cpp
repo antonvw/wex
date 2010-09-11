@@ -452,7 +452,11 @@ void wxExAppTestFixture::testVCSCommand()
   const wxExVCSCommand update("update");
 
   CPPUNIT_ASSERT(add.GetCommand() == "add");
+  CPPUNIT_ASSERT(add.GetCommand(true, true) == "a&dd");
   CPPUNIT_ASSERT(help.GetCommand() == "help me");
+  CPPUNIT_ASSERT(help.GetCommand(true, true) == "h&elp m&e");
+  CPPUNIT_ASSERT(help.GetCommand(false, true) == "h&elp");
+  CPPUNIT_ASSERT(help.GetCommand(false, false) == "help");
   
   CPPUNIT_ASSERT(add.GetNo() == 0);
   CPPUNIT_ASSERT(update.GetNo() == 5);
