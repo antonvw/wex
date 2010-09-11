@@ -45,7 +45,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
   , m_MinDouble(0)
   , m_MaxDouble(0)
-  , m_Inc(0)
+  , m_Inc(1)
 {
 }
 
@@ -69,7 +69,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(true)
   , m_MinDouble(0)
   , m_MaxDouble(0)
-  , m_Inc(0)
+  , m_Inc(1)
 {
 }
 
@@ -119,7 +119,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(add_name)
   , m_MinDouble(0)
   , m_MaxDouble(0)
-  , m_Inc(0)
+  , m_Inc(1)
 {
 }
 
@@ -148,7 +148,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(false)
   , m_MinDouble(0)
   , m_MaxDouble(0)
-  , m_Inc(0)
+  , m_Inc(1)
 {
 }
 
@@ -171,7 +171,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(false)
   , m_MinDouble(0)
   , m_MaxDouble(0)
-  , m_Inc(0)
+  , m_Inc(1)
 {
 }
 
