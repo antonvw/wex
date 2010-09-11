@@ -37,6 +37,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(max_items)
+  , m_MajorDimension(1)
   , m_Name(name)
   , m_Page(page)
   , m_Style(0)
