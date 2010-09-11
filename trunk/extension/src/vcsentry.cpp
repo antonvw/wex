@@ -60,7 +60,9 @@ int wxExVCSCommand::From(const wxString& type) const
   }
 }
 
-const wxString wxExVCSCommand::GetCommand(bool include_subcommand) const
+const wxString wxExVCSCommand::GetCommand(
+  bool include_subcommand,
+  bool include_accelerators) const
 {
   wxString command = m_Command;
 
@@ -69,7 +71,7 @@ const wxString wxExVCSCommand::GetCommand(bool include_subcommand) const
     command += " " + m_SubMenu;
   }
 
-  if (command.Contains("&"))
+  if (command.Contains("&") && !include_accelerators)
   {
     command.Replace("&", wxEmptyString);
   }
@@ -173,6 +175,8 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
 void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
   wxMenu* submenu = NULL;
+  
+  wxString prev_menu = "XXXXX";
 
   for (
     auto it = m_Commands.begin();
@@ -181,11 +185,12 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   {
     bool add = false;
 
-    if (!it->SubMenu().empty())
+    if (!it->SubMenu().empty() && prev_menu != it->SubMenu())
     {
       if (submenu == NULL)
       {
         submenu = new wxMenu();
+        prev_menu = it->SubMenu();
         menu->AppendSubMenu(submenu, it->SubMenu());
       }
     }
@@ -206,7 +211,7 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     if (add)
     {
       const wxString text = 
-        (it->GetCommand().Contains("&") ? 
+        (it->GetCommand(true, true).Contains("&") ? 
            wxExEllipsed(it->GetCommand()) :
           (wxExEllipsed("&" + it->GetCommand())));
 

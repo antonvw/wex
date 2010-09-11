@@ -38,8 +38,10 @@ public:
     const wxString& submenu = wxEmptyString,
     const wxString& subcommand = wxEmptyString);
 
-  /// Gets the command (and subcommand if necessary) without accelerators.
-  const wxString GetCommand(bool include_subcommand = true) const;
+  /// Gets the command (and subcommand and accelerators if necessary).
+  const wxString GetCommand(
+    bool include_subcommand = true,
+    bool include_accelerators = false) const;
   
   /// Gets the no.
   int GetNo() const {return m_No;};
