@@ -211,7 +211,9 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     if (add)
     {
       wxMenu* usemenu = (submenu == NULL ? menu: submenu);
-      usemenu->Append(base_id + it->GetNo(), wxExEllipsed(it->GetCommand()));
+      usemenu->Append(
+        base_id + it->GetNo(), 
+        wxExEllipsed(it->GetCommand(false, true))); // use no sub and do accel
     }
   }
 }
