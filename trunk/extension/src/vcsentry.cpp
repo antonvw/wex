@@ -210,13 +210,8 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
     if (add)
     {
-      const wxString text = 
-        (it->GetCommand(true, true).Contains("&") ? 
-           wxExEllipsed(it->GetCommand()) :
-          (wxExEllipsed("&" + it->GetCommand())));
-
       wxMenu* usemenu = (submenu == NULL ? menu: submenu);
-      usemenu->Append(base_id + it->GetNo(), text);
+      usemenu->Append(base_id + it->GetNo(), wxExEllipsed(it->GetCommand()));
     }
   }
 }

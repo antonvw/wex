@@ -19,8 +19,7 @@ without the written consent of the copyright owner.
    how this item will be used, if type is popup the item is only
    on the popup menu, if type is main, the item is only on the
    main menu, if not given, both on popup and main menu. 
-   Default accelerator is first char of the command, 
-   but you can set it everywhere using an & char.
+   You can set an accelerator everywhere using an & char (&amp;).
    Each <command> can also have a submenu or subcomand attribute, 
    in which case
    it is shown as a submenu using the name as specified.
@@ -32,20 +31,20 @@ without the written consent of the copyright owner.
     keyword-expansion="true">
 
     <commands>
-      <command> add </command>
-      <command> blame </command>
-      <command> cat </command>
-      <command> commit </command>
-      <command> diff </command>
-      <command type = "main"> help </command>
-      <command> info </command>
-      <command> log </command>
-      <command type = "main"> ls </command>
-      <command type = "popup"> proplist </command>
-      <command type = "popup"> propset </command>
-      <command> revert </command>
-      <command> stat </command>
-      <command> update </command>
+      <command> &amp;add </command>
+      <command> &amp;blame </command>
+      <command> &amp;cat </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type = "main"> &amp;help </command>
+      <command> &amp;info </command>
+      <command> &amp;log </command>
+      <command type = "main"> &amp;ls </command>
+      <command type = "popup"> &amp;proplist </command>
+      <command type = "popup"> prop&amp;set </command>
+      <command> &amp;revert </command>
+      <command> &amp;stat </command>
+      <command> &amp;update </command>
     </commands>
   </vcs>
   
