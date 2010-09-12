@@ -35,7 +35,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Id(id)
   , m_IsRequired(is_required)
   , m_Min(0)
-  , m_Max(0)
+  , m_Max(1)
   , m_MaxItems(max_items)
   , m_MajorDimension(1)
   , m_Name(name)
@@ -45,7 +45,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Cols(cols)
   , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
   , m_MinDouble(0)
-  , m_MaxDouble(0)
+  , m_MaxDouble(1)
   , m_Inc(1)
 {
 }
