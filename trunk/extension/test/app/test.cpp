@@ -88,10 +88,14 @@ void wxExAppTestFixture::testConfigItem()
     it != items.end();
     ++it)
   {
+    CPPUNIT_ASSERT(it->GetColumns() == -1);
     CPPUNIT_ASSERT(it->GetControl() == NULL);
     CPPUNIT_ASSERT(!it->GetIsRequired());
-    CPPUNIT_ASSERT(it->GetColumns() == -1);
+    CPPUNIT_ASSERT(!it->GetName().empty());
     CPPUNIT_ASSERT(it->GetPage().empty());
+    CPPUNIT_ASSERT(
+      it->GetType() > CONFIG_ITEM_MIN &&
+      it->GetType() < CONFIG_ITEM_MAX);
   }
 
   wxGridSizer sizer(3);
