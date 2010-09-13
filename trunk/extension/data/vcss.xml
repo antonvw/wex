@@ -1,13 +1,11 @@
 <?xml version="1.0" ?>
 <!--
-File:    vcss.xml
-Purpose: collection of version control systems supported
-Author:  Anton van Wezenbeek
-RCS-ID:  $Id$
-
-Copyright (c) 2010, Anton van Wezenbeek
-All rights are reserved. Reproduction in whole or part is prohibited
-without the written consent of the copyright owner.
+Name:      vcss.xml
+Purpose:   collection of version control systems supported
+Author:    Anton van Wezenbeek
+Created:   2010-08-23
+RCS-ID:    $Id$
+Copyright: (c) 2010, Anton van Wezenbeek
 -->
 
 <vcss>
@@ -21,9 +19,8 @@ without the written consent of the copyright owner.
    main menu, if not given, both on popup and main menu. 
    You can set an accelerator everywhere using an & char (&amp;).
    Each <command> can also have a submenu or subcomand attribute, 
-   in which case
-   it is shown as a submenu using the name as specified.
-   A subcommand is handled the same, but also used as command to execute.
+   the former is shown as a submenu using the name as specified.
+   The latter is handled the same, but also used as command to execute.
    -->
   
   <vcs 
@@ -52,21 +49,21 @@ without the written consent of the copyright owner.
     name="git">
 
     <commands>
-      <command> add </command>
-      <command> blame </command>
-      <command> commit </command>
-      <command> diff </command>
-      <command type = "main"> help </command>
-      <command> log </command>
-      <command> push </command>
-      <command> revert </command>
-      <command> show </command>
-      <command> status </command>
-      <command> update </command>
-      <command subcommand = "svn"> rebase </command>
-      <command subcommand = "svn"> dcommit </command>
-      <command subcommand = "svn"> blame </command>
-      <command subcommand = "svn"> help </command>
+      <command> &amp;add </command>
+      <command> &amp;blame </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type = "main"> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;push </command>
+      <command> &amp;revert </command>
+      <command> &amp;show </command>
+      <command> &amp;status </command>
+      <command> &amp;update </command>
+      <command subcommand = "svn"> &amp;rebase </command>
+      <command subcommand = "svn"> &amp;dcommit </command>
+      <command subcommand = "svn"> &amp;blame </command>
+      <command subcommand = "svn"> &amp;help </command>
     </commands>
   </vcs>
 
@@ -75,14 +72,14 @@ without the written consent of the copyright owner.
     keyword-expansion="true">
 
     <commands>
-      <command> add </command>
-      <command> co </command>
-      <command> commit </command>
-      <command> diff </command>
-      <command> help </command>
-      <command> log </command>
-      <command> status </command>
-      <command> update </command>
+      <command> &amp;add </command>
+      <command> &amp;co </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;status </command>
+      <command> &amp;update </command>
     </commands>
   </vcs>
   

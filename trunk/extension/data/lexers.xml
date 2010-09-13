@@ -1,15 +1,13 @@
 <?xml version="1.0" ?>
 <?xml-stylesheet href="lexers.xsl" type="text/xsl" ?>
 <!--
-File:    lexers.xml
-Purpose: Lexers configuration for wxextension.
-         See scintilla v2.03 (www.scintilla.org).
-Author:  Anton van Wezenbeek
-RCS-ID:  $Id$
-
-Copyright (c) 1998-2009, Anton van Wezenbeek
-All rights are reserved. Reproduction in whole or part is prohibited
-without the written consent of the copyright owner.
+Name:      lexers.xml
+Purpose:   Lexers configuration for wxextension.
+           See scintilla v2.03 (www.scintilla.org).
+Author:    Anton van Wezenbeek
+Created:   2006
+RCS-ID:    $Id$
+Copyright: (c) 1998-2009, Anton van Wezenbeek
 -->
 
 <lexers>
