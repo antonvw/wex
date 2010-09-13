@@ -81,16 +81,17 @@ General
     http://www.bakefile.org/
     this is done in the build dir, directly under trunk:
     
-  - under windows using Microsoft Visual Studio 2010
-    Version 10.0.30319.1 RTMRel
-    TODO: fix, this no longer works
-    Microsoft .NET Framework files generated 
-    using format msvs2008prj
+    - under windows using Microsoft Visual Studio 2010
+      Version 10.0.30319.1 RTMRel
+      TODO: fix, this no longer works
+      Microsoft .NET Framework files generated 
+      using format msvs2008prj
     
-  - under linux gcc (Ubuntu 4.4.3-4ubuntu5) 4.4.3
-    (no IDE)
-    GNUMakefile generated using format gnu
-    debug using Kdbg
+    - under linux gcc (Ubuntu 4.4.3-4ubuntu5) 4.4.3
+      (no IDE)
+      GNUMakefile generated using format gnu
+
+  - debug under Windows using IDE, under Linux using Kdbg
 
   - finally strip the executable under Windows using UPX
       http://upx.sourceforge.net/
