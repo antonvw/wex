@@ -17,6 +17,8 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/stc.h>
 
+#if wxUSE_SOCKETS
+
 #if wxUSE_TASKBARICON
 class TaskBarIcon;
 #endif
@@ -130,3 +132,6 @@ enum
   ID_SERVER,
   ID_CLIENT,
 };
+
+#endif // wxUSE_SOCKETS
+

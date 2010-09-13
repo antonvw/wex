@@ -36,6 +36,8 @@
 #include "ready.xpm"
 #endif
 
+#if wxUSE_SOCKETS
+
 IMPLEMENT_APP(App)
 
 bool App::OnInit()
@@ -1072,3 +1074,5 @@ void TaskBarIcon::OnCommand(wxCommandEvent& event)
   }
 }
 #endif // wxUSE_TASKBARICON
+#endif // wxUSE_SOCKETS
+
