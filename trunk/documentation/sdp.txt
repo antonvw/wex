@@ -91,6 +91,10 @@ General
       (no IDE)
       GNUMakefile generated using format gnu
 
+    - under SunOS using the Sun make gives errors,
+      you have to use GNU make (/usr/sfw/bin)
+      and the -mt option should be removed from generated Makefile
+
   - debug under Windows using IDE, under Linux using Kdbg
 
   - finally strip the executable under Windows using UPX
