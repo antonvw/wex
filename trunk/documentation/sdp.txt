@@ -94,6 +94,11 @@ General
     - under SunOS using the Sun make gives errors,
       you have to use GNU make (/usr/sfw/bin)
       and the -mt option should be removed from generated Makefile
+      this config command was used (socket file did not compile, and
+      glcancas neither):
+      ../configure --with-gtk --disable-sockets --without-opengl
+      than libs were built, but listctrl and auidemo both crashed, no
+      more attempts (wxWidgets 2.9.1).
 
   - debug under Windows using IDE, under Linux using Kdbg
 
