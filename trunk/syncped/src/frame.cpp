@@ -433,55 +433,21 @@ void Frame::OnClose(wxCloseEvent& event)
 
 void Frame::OnCommand(wxCommandEvent& event)
 {
-  if (event.GetId() == ID_ALL_STC_CLOSE ||
-      event.GetId() == ID_ALL_STC_SAVE)
-  {
-    m_NotebookWithEditors->ForEach(event.GetId());
-    return;
-  }
+  auto* editor = GetSTC();
+  auto* project = GetProject();
 
+  // VCS commands.
   if (event.GetId() > ID_VCS_LOWEST && 
       event.GetId() < ID_VCS_HIGHEST)
   {
     wxExVCS(event.GetId()).Request(this);
-    return;
   }
-
-  auto* editor = GetSTC();
-  auto* project = GetProject();
-
-  if (event.GetId() == ID_EDIT_NEXT)
-  {
-    if (m_NotebookWithEditors->GetSelection() == 
-        m_NotebookWithEditors->GetPageCount() - 1)
-    {
-      m_NotebookWithEditors->SetSelection(0);
-    }
-    else
-    {
-      m_NotebookWithEditors->AdvanceSelection();
-    }
-    return;
-  }
-  else if (event.GetId() == ID_EDIT_PREVIOUS)
-  {
-    if (m_NotebookWithEditors->GetSelection() == 0)
-    {
-      m_NotebookWithEditors->SetSelection(
-        m_NotebookWithEditors->GetPageCount() - 1);
-    }
-    else
-    {
-      m_NotebookWithEditors->AdvanceSelection(false);
-    }
-    return;
-  }
-
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,
   // as wxID_ABOUT etc. is used here and not in the editor.
   // That causes appl to hang.
-  if ((event.GetId() == wxID_UNDO ||
+  else if ((
+       event.GetId() == wxID_UNDO ||
        event.GetId() == wxID_REDO ||
        event.GetId() == wxID_DELETE ||
        event.GetId() == wxID_SELECTALL ||
@@ -629,12 +595,40 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_EXECUTE: ProcessRun(); break;
   case wxID_STOP: ProcessStop(); break;
 
+  case ID_ALL_STC_CLOSE:
+  case ID_ALL_STC_SAVE:
+    m_NotebookWithEditors->ForEach(event.GetId());
+    break;
+
   case ID_EDIT_ADD_HEADER: if (editor != NULL) editor->AddHeader(); break;
   case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) editor->SequenceDialog(); break;
 
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->StartRecord(); break;
   case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->StopRecord(); break;
+  
+  case ID_EDIT_NEXT:
+    if (m_NotebookWithEditors->GetSelection() == 
+        m_NotebookWithEditors->GetPageCount() - 1)
+    {
+      m_NotebookWithEditors->SetSelection(0);
+    }
+    else
+    {
+      m_NotebookWithEditors->AdvanceSelection();
+    }
+    break;
+  case ID_EDIT_PREVIOUS:
+    if (m_NotebookWithEditors->GetSelection() == 0)
+    {
+      m_NotebookWithEditors->SetSelection(
+        m_NotebookWithEditors->GetPageCount() - 1);
+    }
+    else
+    {
+      m_NotebookWithEditors->AdvanceSelection(false);
+    }
+    break;
 
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
@@ -768,7 +762,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     stc->SetDocPointer(editor->GetDocPointer());
     }
     break;
-
+    
   case ID_VIEW_ASCII_TABLE: TogglePane("ASCIITABLE"); break;
   case ID_VIEW_DIRCTRL: TogglePane("DIRCTRL"); break;
   case ID_VIEW_FILES: TogglePane("FILES"); 
