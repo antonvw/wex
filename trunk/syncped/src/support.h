@@ -14,16 +14,13 @@
 
 #include <wx/extension/report/frame.h>
 
-/// Adds statusbar, menubar and some methods to base class.
 class DecoratedFrame : public wxExFrameWithHistory
 {
 public:
-  /// Constructor.
   DecoratedFrame();
 protected:
   wxExMenu* GetVCSMenu() {return m_MenuVCS;};
 private:
-  // Interface from wxExFrame.
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
 

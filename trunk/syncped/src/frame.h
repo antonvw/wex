@@ -12,18 +12,16 @@
 #ifndef _FRAME_H
 #define _FRAME_H
 
-#include <wx/extension/report/dirctrl.h>
 #include <wx/extension/notebook.h>
+#include <wx/extension/report/dirctrl.h>
 #include "support.h"
 
 /// Adds event handling and implements virtual methods.
 class Frame : public DecoratedFrame
 {
 public:
-  /// Constructor.
   Frame(bool open_recent);
   
-  /// Opens the file.
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

@@ -14,7 +14,6 @@
 
 #include <wx/extension/app.h>
 
-/// Adds our own init to base class.
 class App : public wxExApp
 {
 private:
