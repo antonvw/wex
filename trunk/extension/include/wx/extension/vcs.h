@@ -37,7 +37,7 @@ public:
   /// This must be an existing xml file containing all vcss.
   /// It does not Read this file, however if you use the global Get,
   /// it both constructs and reads the vcs.
-  wxExVCS();
+  wxExVCS(const wxFileName& filename);
 
   /// Constructor, specify the menu command id and a filename.
   wxExVCS(int menu_id, const wxExFileName& filename = wxExFileName());
@@ -134,10 +134,9 @@ private:
   wxString m_FlagsKey;
   wxString m_Output;
 
-  const wxFileName m_FileNameXML;
-
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxExFileName m_FileName;
+  static wxFileName m_FileNameXML;
   static wxExVCS* m_Self;
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_STCEntryDialog;

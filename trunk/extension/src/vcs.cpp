@@ -26,14 +26,15 @@
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxExFileName wxExVCS::m_FileName;
+wxFileName wxExVCS::m_FileNameXML;
 wxExVCS* wxExVCS::m_Self = NULL;
 #if wxUSE_GUI
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
 
 wxExVCS::wxExVCS(const wxFileName& filename)
-  : m_FileNameXML(filename)
 {
+  m_FileNameXML = filename;
 }
 
 wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
