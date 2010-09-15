@@ -33,7 +33,10 @@ public:
     VCS_AUTO, // uses the VCS appropriate for current file
   };
 
-  /// Default constructor.
+  /// Default constructor for vcss from specified filename.
+  /// This must be an existing xml file containing all vcss.
+  /// It does not Read this file, however if you use the global Get,
+  /// it both constructs and reads the vcs.
   wxExVCS();
 
   /// Constructor, specify the menu command id and a filename.
@@ -76,6 +79,9 @@ public:
   /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
 
+  /// Gets the xml filename.
+  const wxFileName& GetFileName() const {return m_FileNameXML;};
+
   /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
 
@@ -83,6 +89,10 @@ public:
   /// opening a file.  
   bool IsOpenCommand() const {
     return m_Command.IsOpen();};
+
+  /// Reads all containers (first clears them )from file.
+  /// Returns true if the file could be read and loaded as valid xml file.
+  bool Read();
 
 #if wxUSE_GUI
   /// Combines all in one method. Calls the ExecuteDialog,
@@ -113,7 +123,6 @@ private:
   static const wxString GetName(const wxFileName& filename);
   static long GetNo(const wxFileName& filename);
   void Initialize(int command_id);
-  bool Read();
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
   bool UseSubcommand() const;
@@ -124,6 +133,8 @@ private:
   wxString m_CommandWithFlags;
   wxString m_FlagsKey;
   wxString m_Output;
+
+  const wxFileName m_FileNameXML;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxExFileName m_FileName;

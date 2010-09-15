@@ -31,7 +31,8 @@ wxExVCS* wxExVCS::m_Self = NULL;
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
 
-wxExVCS::wxExVCS()
+wxExVCS::wxExVCS(const wxFileName& filename)
+  : m_FileNameXML(filename)
 {
 }
 
@@ -363,7 +364,15 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
 {
   if (m_Self == NULL && createOnDemand)
   {
-    m_Self = new wxExVCS;
+    m_Self = new wxExVCS(wxFileName(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + "vcss.xml")
+      );
+
     m_Self->Read();
 
     // Add default VCS.
@@ -483,24 +492,16 @@ void wxExVCS::Initialize(int menu_id)
 
 bool wxExVCS::Read()
 {
-  const wxFileName filename(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "vcss.xml");
-
   // This test is to prevent showing an error if the vcs file does not exist,
   // as this is not required.
-  if (!filename.FileExists())
+  if (!m_FileNameXML.FileExists())
   {
     return false;
   }
 
   wxXmlDocument doc;
 
-  if (!doc.Load(filename.GetFullPath()))
+  if (!doc.Load(m_FileNameXML.GetFullPath()))
   {
     return false;
   }
