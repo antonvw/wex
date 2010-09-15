@@ -32,6 +32,10 @@ wxExVCS* wxExVCS::m_Self = NULL;
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
 
+wxExVCS::wxExVCS()
+{
+}
+
 wxExVCS::wxExVCS(const wxFileName& filename)
 {
   m_FileNameXML = filename;

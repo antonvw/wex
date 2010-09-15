@@ -33,7 +33,10 @@ public:
     VCS_AUTO, // uses the VCS appropriate for current file
   };
 
-  /// Default constructor for vcss from specified filename.
+  /// Default constructor.
+  wxExVCS();
+
+  /// Constructor for vcss from specified filename.
   /// This must be an existing xml file containing all vcss.
   /// It does not Read this file, however if you use the global Get,
   /// it both constructs and reads the vcs.
@@ -80,7 +83,7 @@ public:
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
 
   /// Gets the xml filename.
-  const wxFileName& GetFileName() const {return m_FileNameXML;};
+  static const wxFileName& GetFileName() {return m_FileNameXML;};
 
   /// Gets the output from Execute.
   const wxString& GetOutput() const {return m_Output;};
