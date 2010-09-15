@@ -252,6 +252,8 @@ void wxExAppTestFixture::testLexers()
 
   CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
+
+  CPPUNIT_ASSERT( wxExLexers::Get()->Read());
 }
 
 void wxExAppTestFixture::testListView()
