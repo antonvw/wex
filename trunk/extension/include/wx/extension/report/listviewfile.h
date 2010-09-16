@@ -58,7 +58,6 @@ protected:
   virtual void DoFileNew();
   virtual void DoFileSave(bool save_as = false);
   void OnCommand(wxCommandEvent& event);
-  void OnIdle(wxIdleEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
   void AddItemsDialog();

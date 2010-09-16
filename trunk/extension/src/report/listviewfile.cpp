@@ -13,6 +13,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/tokenzr.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/util.h>
@@ -23,7 +24,6 @@
 #include <wx/extension/report/listitem.h>
 
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
-  EVT_IDLE(wxExListViewFile::OnIdle)
   EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
@@ -195,9 +195,28 @@ void wxExListViewFile::DoFileLoad(bool synced)
 {
   EditClearAll();
 
-  const wxCharBuffer& buffer = Read();
+  wxXmlDocument doc;
 
-  ItemFromText(buffer.data());
+  if (!doc.Load(GetFileName().GetFullPath()))
+  {
+    return;
+  }
+
+  wxXmlNode* child = doc.GetRoot()->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "file")
+    {
+      const wxString value = child->GetNodeContent();
+      const wxString type = child->GetAttribute("type");
+
+      type.empty() ?
+        wxExListItem(this, wxFileName(value)).Insert():
+        wxExListItem(this, value, type).Insert();
+
+    child = child->GetNext();
+  }
 
   if (synced)
   {
@@ -218,10 +237,16 @@ void wxExListViewFile::DoFileNew()
 
 void wxExListViewFile::DoFileSave(bool save_as)
 {
+  wxXmlDocument doc;
+
+  wxXmlNode root(wxXML_ELEMENT_NODE, "files");
+
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    Write(ItemToText(i) + wxTextFile::GetEOL());
+    root.AddChild(new wxXmlNode(), ItemToText(i));
   }
+
+  doc.Save(GetFileName().GetFullPath());
 }
 
 bool wxExListViewFile::ItemFromText(const wxString& text)
@@ -270,18 +295,6 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 #if wxUSE_STATUSBAR
   UpdateStatusBar();
 #endif
-}
-
-void wxExListViewFile::OnIdle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    IsShown() &&
-    GetItemCount() > 0)
-  {
-    CheckSync();
-  }
 }
 
 void wxExListViewFile::OnMouse(wxMouseEvent& event)
