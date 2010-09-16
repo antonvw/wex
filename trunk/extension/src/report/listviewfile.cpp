@@ -199,8 +199,6 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
   ItemFromText(buffer.data());
 
-  m_ContentsChanged = false;
-
   if (synced)
   {
 #if wxUSE_STATUSBAR
