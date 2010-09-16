@@ -54,6 +54,7 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
       style, 
       validator, 
       name)
+  , wxExFile(false) // do not open files in FileLoad and Save
   , m_AddItemsDialog(NULL)
   , m_ContentsChanged(false)
   , m_TextAddFiles(_("Add files"))
