@@ -37,16 +37,20 @@ public:
   /// Returns true if this file was synced.
   bool CheckSync();
 
-  /// Sets the filename member, opens the file,
+  /// Sets the filename member, opens the file if asked for,
   /// invokes DoFileLoad, and closes the file again.
-  bool FileLoad(const wxExFileName& filename);
+  bool FileLoad(
+    const wxExFileName& filename,
+    bool open = true);
 
   /// Sets the filename member and invokes DoFileNew.
   void FileNew(const wxExFileName& filename);
 
-  /// Sets the filename member if filename is ok, opens the file,
+  /// Sets the filename member if filename is ok, opens the file if asked for,
   /// invokes DoFileSave, and closes the file again.
-  bool FileSave(const wxExFileName& filename = wxExFileName());
+  bool FileSave(
+    const wxExFileName& filename = wxExFileName(),
+     bool open = true);
 
   /// Returns whether contents have been changed.
   virtual bool GetContentsChanged() const {return false;};
@@ -77,7 +81,7 @@ private:
     m_FileName = filename;
     m_Stat = filename.GetFullPath();
     return m_Stat.IsOk();};
-  bool Get(bool synced);
+  bool Get(bool synced, bool open = true);
   bool MakeAbsolute() {
     return 
       m_FileName.MakeAbsolute() &&

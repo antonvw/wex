@@ -55,10 +55,12 @@ bool wxExFile::CheckSync()
   return false;
 }
 
-bool wxExFile::FileLoad(const wxExFileName& filename)
+bool wxExFile::FileLoad(
+  const wxExFileName& filename,
+  bool open)
 {
   Assign(filename);
-  return m_FileName.FileExists() && MakeAbsolute() && Get(false);
+  return m_FileName.FileExists() && MakeAbsolute() && Get(false, open);
 }
 
 void wxExFile::FileNew(const wxExFileName& filename)
@@ -69,7 +71,9 @@ void wxExFile::FileNew(const wxExFileName& filename)
   DoFileNew();
 }
 
-bool wxExFile::FileSave(const wxExFileName& filename)
+bool wxExFile::FileSave(
+  const wxExFileName& filename,
+  bool open)
 {
   bool save_as = false;
 
@@ -80,13 +84,18 @@ bool wxExFile::FileSave(const wxExFileName& filename)
     save_as = true;
   }
 
-  if (!Open(m_FileName.GetFullPath(), wxFile::write))
+  if (open && !Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
   }
 
   DoFileSave(save_as);
-  Close();
+
+  if (open)
+  {
+    Close();
+  }
+
   ResetContentsChanged();
   
   m_FileName.m_Stat.Sync();
@@ -95,17 +104,23 @@ bool wxExFile::FileSave(const wxExFileName& filename)
   return true;
 }
 
-bool wxExFile::Get(bool synced)
+bool wxExFile::Get(bool synced, bool open)
 {
-  if (Open(m_FileName.GetFullPath()))
+  if (open && !Open(m_FileName.GetFullPath()))
   {
-    DoFileLoad(synced);
-    Close();
-    ResetContentsChanged();
-    return true;
+    return false;
   }
-  
-  return false;
+
+  DoFileLoad(synced);
+
+  if (open)
+  {
+    Close();
+  }
+
+  ResetContentsChanged();
+
+  return true;
 }
 
 const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
