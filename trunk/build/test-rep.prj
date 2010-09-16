@@ -1,2 +1,5 @@
-./test.cpp
-./main.cpp
+<?xml version="1.0" ?>
+<files>
+  <file>./test.cpp</file>
+  <file>./main.cpp</file>
+</files>
