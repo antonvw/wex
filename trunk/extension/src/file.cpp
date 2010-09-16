@@ -92,7 +92,7 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
   DoFileSave(save_as);
 
-  if (IsOpend())
+  if (IsOpened())
   {
     Close();
   }

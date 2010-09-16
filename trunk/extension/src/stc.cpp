@@ -1609,7 +1609,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
       fn.Normalize(wxPATH_NORM_ALL, m_File.GetFileName().GetPath());
     }
 
-    wxExFile file(fn.GetFullPath());
+    wxExFile file(fn);
 
     if (file.IsOpened())
     {
