@@ -214,7 +214,8 @@ void wxExListViewFile::DoFileLoad(bool synced)
       type.empty() ?
         wxExListItem(this, wxFileName(value)).Insert():
         wxExListItem(this, value, type).Insert();
-
+    }
+    
     child = child->GetNext();
   }
 
@@ -243,7 +244,9 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    root.AddChild(new wxXmlNode(), ItemToText(i));
+    wxXmlNode* el = new wxXmlNode(wxXML_ELEMENT_NODE, "file");
+    el->AddChild(new wxXmlNode(wxXML_TEXT_NODE, ItemToText(i)));
+    root.AddChild(el);
   }
 
   doc.Save(GetFileName().GetFullPath());
