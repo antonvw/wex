@@ -92,7 +92,7 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
   DoFileSave(save_as);
 
-  if (m_OpenFile)
+  if (IsOpend())
   {
     Close();
   }
@@ -114,7 +114,7 @@ bool wxExFile::Get(bool synced)
 
   DoFileLoad(synced);
 
-  if (m_OpenFile)
+  if (IsOpened())
   {
     Close();
   }
