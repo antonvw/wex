@@ -1,9 +1,16 @@
-.reading 100000 items from config took 160 milliseconds
-...adding 750 items took 1252 milliseconds
-sorting 750 items took 771 milliseconds
+.reading 100000 items from config took 250 milliseconds
+..F.adding 750 items took 935 milliseconds
+sorting 750 items took 533 milliseconds
 ...
 
 
-OK (7 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  7   Failures: 1   Errors: 0
+
+
+1) test: testFrameWithHistory (F) line: 65 ../extension/test/report/test.cpp
+assertion failed
+- Expression: frame->GetRecentProject().Contains("test-rep.prj")
 
 
