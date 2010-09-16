@@ -238,17 +238,23 @@ void wxExListViewFile::DoFileNew()
 
 void wxExListViewFile::DoFileSave(bool save_as)
 {
-  wxXmlDocument doc;
-
-  wxXmlNode root(wxXML_ELEMENT_NODE, "files");
+  wxXmlNode* root = new wxXmlNode(wxXML_ELEMENT_NODE, "files");
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    wxXmlNode* el = new wxXmlNode(wxXML_ELEMENT_NODE, "file");
-    el->AddChild(new wxXmlNode(wxXML_TEXT_NODE, ItemToText(i)));
-    root.AddChild(el);
+    wxXmlNode* element = new wxXmlNode(wxXML_ELEMENT_NODE, "file");
+    
+    wxXmlNode* text = new wxXmlNode(
+      wxXML_TEXT_NODE, 
+      wxEmptyString, 
+      wxExListItem(this, i).GetFileName().GetFullPath());
+      
+    element->AddChild(text);
+    root->AddChild(element);
   }
-
+  
+  wxXmlDocument doc;
+  doc.SetRoot(root);
   doc.Save(GetFileName().GetFullPath());
 }
 
