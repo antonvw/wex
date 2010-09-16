@@ -14,14 +14,19 @@
 #include <wx/config.h>
 #include <wx/extension/file.h>
 
-wxExFile::wxExFile()
+wxExFile::wxExFile(bool open_file)
   : m_FileName()
   , m_Stat()
+  , m_OpenFile(open_file)
 {
 }
 
-wxExFile::wxExFile(const wxExFileName& filename, wxFile::OpenMode mode)
-    : wxFile(filename.GetFullPath(), mode)
+wxExFile::wxExFile(
+  const wxExFileName& filename,
+  wxFile::OpenMode mode,
+  bool open_file)
+  : wxFile(filename.GetFullPath(), mode)
+  , m_OpenFile(open_file)
 {
   Assign(filename);
   MakeAbsolute();
@@ -55,12 +60,10 @@ bool wxExFile::CheckSync()
   return false;
 }
 
-bool wxExFile::FileLoad(
-  const wxExFileName& filename,
-  bool open)
+bool wxExFile::FileLoad(const wxExFileName& filename)
 {
   Assign(filename);
-  return m_FileName.FileExists() && MakeAbsolute() && Get(false, open);
+  return m_FileName.FileExists() && MakeAbsolute() && Get(false);
 }
 
 void wxExFile::FileNew(const wxExFileName& filename)
@@ -71,9 +74,7 @@ void wxExFile::FileNew(const wxExFileName& filename)
   DoFileNew();
 }
 
-bool wxExFile::FileSave(
-  const wxExFileName& filename,
-  bool open)
+bool wxExFile::FileSave(const wxExFileName& filename)
 {
   bool save_as = false;
 
@@ -84,14 +85,14 @@ bool wxExFile::FileSave(
     save_as = true;
   }
 
-  if (open && !Open(m_FileName.GetFullPath(), wxFile::write))
+  if (m_OpenFile && !Open(m_FileName.GetFullPath(), wxFile::write))
   {
     return false;
   }
 
   DoFileSave(save_as);
 
-  if (open)
+  if (m_OpenFile)
   {
     Close();
   }
@@ -104,16 +105,16 @@ bool wxExFile::FileSave(
   return true;
 }
 
-bool wxExFile::Get(bool synced, bool open)
+bool wxExFile::Get(bool synced)
 {
-  if (open && !Open(m_FileName.GetFullPath()))
+  if (m_OpenFile && !Open(m_FileName.GetFullPath()))
   {
     return false;
   }
 
   DoFileLoad(synced);
 
-  if (open)
+  if (m_OpenFile)
   {
     Close();
   }

@@ -21,10 +21,13 @@ class wxExFile : public wxFile
 {
 public:
   /// Default constructor.
-  wxExFile();
+  wxExFile(bool open_file = true);
 
   /// Opens a file with a filename.
-  wxExFile(const wxExFileName& filename, wxFile::OpenMode mode = wxFile::read);
+  wxExFile(
+    const wxExFileName& filename,
+    wxFile::OpenMode mode = wxFile::read,
+    bool open_file = true);
 
   /// Destructor.
   /// NB: for wxFile the destructor is not virtual so 
@@ -39,18 +42,14 @@ public:
 
   /// Sets the filename member, opens the file if asked for,
   /// invokes DoFileLoad, and closes the file again.
-  bool FileLoad(
-    const wxExFileName& filename,
-    bool open = true);
+  bool FileLoad(const wxExFileName& filename);
 
   /// Sets the filename member and invokes DoFileNew.
   void FileNew(const wxExFileName& filename);
 
   /// Sets the filename member if filename is ok, opens the file if asked for,
   /// invokes DoFileSave, and closes the file again.
-  bool FileSave(
-    const wxExFileName& filename = wxExFileName(),
-     bool open = true);
+  bool FileSave(const wxExFileName& filename = wxExFileName());
 
   /// Returns whether contents have been changed.
   virtual bool GetContentsChanged() const {return false;};
@@ -81,12 +80,14 @@ private:
     m_FileName = filename;
     m_Stat = filename.GetFullPath();
     return m_Stat.IsOk();};
-  bool Get(bool synced, bool open = true);
+  bool Get(bool synced);
   bool MakeAbsolute() {
     return 
       m_FileName.MakeAbsolute() &&
       m_FileName.m_Stat.Sync(m_FileName.GetFullPath()) &&
       m_Stat.Sync(m_FileName.GetFullPath());};
+
+  const bool m_OpenFile;
 
   wxExFileName m_FileName;
   wxExStat m_Stat; // used for syncing, no public access
