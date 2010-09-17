@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <files>
-  <!--wxex-test-rep project file vr 17 sep 2010 21:20:28 CEST-->
-  <file>/test.cpp</file>
-  <file>/main.cpp</file>
+  <!--wxex-test-rep project file vr 17 sep 2010 21:34:18 CEST-->
+  <folder extensions="cpp">/home/anton/mywx/extension/test/report/main.cpp</folder>
+  <folder extensions="cpp">/home/anton/mywx/extension/test/report/test.cpp</folder>
+  <folder extensions="h">/home/anton/mywx/extension/test/report/test.h</folder>
 </files>
