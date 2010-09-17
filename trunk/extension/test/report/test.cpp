@@ -57,15 +57,18 @@ void wxExReportAppTestFixture::testFrameWithHistory()
   
   CPPUNIT_ASSERT(!frame->OpenFile(wxExFileName(TEST_FILE))); // as we have no focused stc
   CPPUNIT_ASSERT(!frame->GetRecentFile().Contains("test.h"));
+
   CPPUNIT_ASSERT(!frame->OpenFile(
     wxExFileName(TEST_PRJ),
     0,
     wxEmptyString,
     wxExSTCWithFrame::STC_WIN_IS_PROJECT));
-  CPPUNIT_ASSERT(frame->GetRecentProject().Contains("test-rep.prj"));
+
+  // TODO: if it does not open, next should fail.
+  CPPUNIT_ASSERT( frame->GetRecentProject().Contains("test-rep.prj"));
   
-  CPPUNIT_ASSERT(frame->ProcessRun("wc test.h"));
-  CPPUNIT_ASSERT(frame->ProcessIsSelected());
+  CPPUNIT_ASSERT( frame->ProcessRun("wc test.h"));
+  CPPUNIT_ASSERT( frame->ProcessIsSelected());
 }
 
 void wxExReportAppTestFixture::testListItem()
@@ -110,11 +113,14 @@ void wxExReportAppTestFixture::testListViewFile()
   
   listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+
   // Remember that listview file already has columns.
   CPPUNIT_ASSERT(listView->FindColumn("String") > 1);
   CPPUNIT_ASSERT(listView->FindColumn("Number") > 1);
 
   CPPUNIT_ASSERT(listView->FileLoad(wxExFileName(TEST_PRJ)));
+  CPPUNIT_ASSERT(listView->FileSave());
+
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
 
