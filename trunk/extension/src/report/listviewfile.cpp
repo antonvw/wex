@@ -24,6 +24,7 @@
 #include <wx/extension/report/listitem.h>
 
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
+  EVT_IDLE(wxExListViewFile::OnIdle)
   EVT_MENU(wxID_ADD, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CUT, wxExListViewFile::OnCommand)
   EVT_MENU(wxID_CLEAR, wxExListViewFile::OnCommand)
@@ -321,6 +322,18 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 #if wxUSE_STATUSBAR
   UpdateStatusBar();
 #endif
+}
+
+void wxExListViewFile::OnIdle(wxIdleEvent& event)
+{
+  event.Skip();
+
+  if (
+    IsShown() &&
+    GetItemCount() > 0)
+  {
+    CheckSync();
+  }
 }
 
 void wxExListViewFile::OnMouse(wxMouseEvent& event)
