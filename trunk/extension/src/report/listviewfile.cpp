@@ -180,7 +180,7 @@ void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
   wxExListViewWithFrame::BuildPopupMenu(menu);
     
   if ( GetSelectedItemCount() == 0 &&
-      !GetFileName().GetStat().IsReadOnly()))
+      !GetFileName().GetStat().IsReadOnly())
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
@@ -206,7 +206,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
     if (child->GetName() == "file")
     {
-      wxExListItem(this, value).Insert():
+      wxExListItem(this, value).Insert();
     }
     else if (child->GetName() == "folder")
     {
@@ -240,13 +240,13 @@ void wxExListViewFile::DoFileSave(bool save_as)
     wxXML_COMMENT_NODE,
     wxEmptyString,
     wxTheApp->GetAppDisplayName() + " project file " +
-      wxDateTime::Now().Format()));
+      wxDateTime::Now().Format());
 
   root->AddChild(comment);
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    const wxString type = GetItemText(item_number, _("Type"));
+    const wxString type = GetItemText(i, _("Type"));
     const wxExFileName fn = wxExListItem(this, i).GetFileName();
 
     wxXmlNode* element = new wxXmlNode(
