@@ -30,14 +30,21 @@ void wxExTestFixture::testFile()
 {
   wxExFile file(wxExFileName(TEST_FILE));
   
-  CPPUNIT_ASSERT(file.GetFileName().GetStat().IsOk());
+  CPPUNIT_ASSERT(!file.CheckSync());
+
+  CPPUNIT_ASSERT(!file.GetContentsChanged());
+
+  CPPUNIT_ASSERT( file.GetFileName().GetStat().IsOk());
   // The fullpath should be normalized, test it.
-  CPPUNIT_ASSERT(file.GetFileName().GetFullPath() != TEST_FILE);
+  CPPUNIT_ASSERT( file.GetFileName().GetFullPath() != TEST_FILE);
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsReadOnly());
-  file.CheckSync();
-  CPPUNIT_ASSERT(file.FileLoad(wxExFileName(TEST_BIN)));
+
+  CPPUNIT_ASSERT( file.FileLoad(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(!file.IsOpened());
-  CPPUNIT_ASSERT(file.Open(wxExFileName(TEST_BIN).GetFullPath()));
+  
+  CPPUNIT_ASSERT( file.Open(wxExFileName(TEST_BIN).GetFullPath()));
+  CPPUNIT_ASSERT( file.IsOpened());
+
   wxCharBuffer buffer = file.Read();
   CPPUNIT_ASSERT(buffer.length() == 40);
 }
@@ -55,11 +62,11 @@ void wxExTestFixture::testFileName()
 void wxExTestFixture::testFileStatistics()
 {
   wxExFileStatistics fileStatistics;
+  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
   
   CPPUNIT_ASSERT(fileStatistics.Get().empty());
   CPPUNIT_ASSERT(fileStatistics.Get("xx") == 0);
 
-  wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
   CPPUNIT_ASSERT( textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
 
@@ -78,9 +85,10 @@ void wxExTestFixture::testRCS()
 void wxExTestFixture::testStat()
 {
   wxExStat stat(TEST_FILE);
-  CPPUNIT_ASSERT(stat.IsOk());
+
+  CPPUNIT_ASSERT( stat.IsOk());
   CPPUNIT_ASSERT(!stat.IsReadOnly());
-  CPPUNIT_ASSERT(stat.Sync("./test-base.link"));
+  CPPUNIT_ASSERT( stat.Sync("./test-base.link"));
 }
 
 void wxExTestFixture::testStatistics()
@@ -111,6 +119,7 @@ void wxExTestFixture::testStatistics()
 void wxExTestFixture::testTextFile()
 {
   wxExTextFile textFile(wxExFileName(TEST_FILE), ID_TOOL_REPORT_COUNT);
+
   CPPUNIT_ASSERT( textFile.RunTool());
   CPPUNIT_ASSERT(!textFile.GetStatistics().GetElements().GetItems().empty());
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
@@ -120,8 +129,8 @@ void wxExTestFixture::testTextFile()
   CPPUNIT_ASSERT(!textFile.IsOpened()); // file should be closed after running tool
 
   wxExTextFile textFile2(wxExFileName(TEST_FILE), ID_TOOL_REPORT_KEYWORD);
-  CPPUNIT_ASSERT(textFile2.RunTool()); // we have no lexers, so no keywords
-  CPPUNIT_ASSERT(textFile2.GetStatistics().GetKeywords().GetItems().empty());
+  CPPUNIT_ASSERT( textFile2.RunTool()); // we have no lexers, so no keywords
+  CPPUNIT_ASSERT( textFile2.GetStatistics().GetKeywords().GetItems().empty());
 }
 
 void wxExTestFixture::testTiming()
