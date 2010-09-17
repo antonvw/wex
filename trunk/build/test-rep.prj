@@ -1,5 +1,6 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <files>
-  <file>./test.cpp</file>
-  <file>./main.cpp</file>
+  <!--wxex-test-rep project file vr 17 sep 2010 21:20:28 CEST-->
+  <file>/test.cpp</file>
+  <file>/main.cpp</file>
 </files>
