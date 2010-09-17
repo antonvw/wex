@@ -107,7 +107,9 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
 bool wxExFile::Get(bool synced)
 {
-  if (m_OpenFile && !Open(m_FileName.GetFullPath()))
+  if ( synced ||
+     (!synced && m_OpenFile) &&
+      !Open(m_FileName.GetFullPath()))
   {
     return false;
   }
