@@ -211,7 +211,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
     if (child->GetName() == "file")
     {
-      wxExListItem(this, wxFileName(value)).Insert():
+      wxExListItem(this, value).Insert():
     }
     else if (child->GetName() == "folder")
     {
@@ -246,6 +246,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
     wxEmptyString,
     wxTheApp->GetAppDisplayName() + " project file " +
       wxDateTime::Now().Format()));
+
   root->AddChild(comment);
 
   for (auto i = 0; i < GetItemCount(); i++)
@@ -278,38 +279,24 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
 bool wxExListViewFile::ItemFromText(const wxString& text)
 {
-  if (wxExListViewStandard::ItemFromText(text))
-  {
-    m_ContentsChanged = true;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  m_ContentsChanged = true;
+  return wxExListViewStandard::ItemFromText(text);
 }
 
 void wxExListViewFile::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
-  // These are added to disable changing this listview if it is read-only etc.
+  // These are added to disable changing this listview if it is read-only.
   case wxID_CLEAR:
   case wxID_CUT:
   case wxID_DELETE:
   case wxID_PASTE:
-    if (GetFileName().GetStat().IsOk())
+    if (!GetFileName().GetStat().IsReadOnly())
     {
-      if (!GetFileName().GetStat().IsReadOnly())
-      {
-        event.Skip();
-        m_ContentsChanged = true;
-      }
-    }
-	else
-	{
       event.Skip();
-	}
+      m_ContentsChanged = true;
+    }
   break;
 
   case wxID_ADD: AddItemsDialog(); break;
