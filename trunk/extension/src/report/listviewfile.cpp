@@ -99,9 +99,9 @@ void wxExListViewFile::AddItems()
 
   dir.FindFiles();
 
-  const auto new_count = GetItemCount();
+  const auto added = GetItemCount() - old_count;
 
-  if (new_count - old_count > 0)
+  if (added > 0)
   {
     m_ContentsChanged = true;
 
@@ -113,7 +113,7 @@ void wxExListViewFile::AddItems()
 
 #if wxUSE_STATUSBAR
   const wxString text = 
-    _("Added") + wxString::Format(" %d ", new_count - old_count) + _("file(s)");
+    _("Added") + wxString::Format(" %d ", added) + _("file(s)");
 
   wxExFrame::StatusText(text);
 #endif
@@ -172,20 +172,15 @@ void wxExListViewFile::AfterSorting()
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
   // This contains the CAN_PASTE flag.
-  long style = wxExMenu::MENU_DEFAULT;
-
-  if (GetFileName().FileExists() && GetFileName().GetStat().IsReadOnly())
-  {
-    style |= wxExMenu::MENU_IS_READ_ONLY;
-  }
+  const long style = wxExMenu::MENU_DEFAULT |
+    (GetFileName().GetStat().IsReadOnly() ? wxExMenu::MENU_IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
 
   wxExListViewWithFrame::BuildPopupMenu(menu);
     
-  if ((GetSelectedItemCount() == 0) &&
-      (!GetFileName().IsOk() || !GetFileName().FileExists() ||
-      (GetFileName().FileExists() && !GetFileName().GetStat().IsReadOnly())))
+  if ( GetSelectedItemCount() == 0 &&
+      !GetFileName().GetStat().IsReadOnly()))
   {
     menu.AppendSeparator();
     menu.Append(wxID_ADD);
