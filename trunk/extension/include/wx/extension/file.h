@@ -21,6 +21,12 @@ class wxExFile : public wxFile
 {
 public:
   /// Default constructor.
+  /// The open_file parameter specifies the behaviour of FileLoad and
+  /// FileSave, if true, the file is opened before calling DoFileLoad
+  /// and DoFileSave, if false the file is not opened.
+  /// That might be useful if you do not use the wxFile for loading
+  /// and saving (as with XML documents), but still want to use the
+  /// virtual file interface.
   wxExFile(bool open_file = true);
 
   /// Opens a file with a filename.

@@ -15,8 +15,8 @@
 
 class wxExConfigDialog;
 
-/// Combines wxExListViewWithFrame and wxExFile, giving you a list control with file
-/// synchronization support.
+/// Combines wxExListViewWithFrame and wxExFile,
+/// giving you a list control with file synchronization support.
 class wxExListViewFile : public wxExListViewWithFrame, public wxExFile
 {
 public:
