@@ -87,7 +87,7 @@ General
       Microsoft .NET Framework files generated 
       using format msvs2008prj
     
-    - under linux gcc (Ubuntu 4.4.3-4ubuntu5) 4.4.3
+    - under Ubuntu 10.04 linux gcc (Ubuntu 4.4.3-4ubuntu5) 4.4.3
       (no IDE)
       GNUMakefile generated using format gnu
 
@@ -99,6 +99,8 @@ General
       ../configure --with-gtk --disable-sockets --without-opengl
       than libs were built, but listctrl and auidemo both crashed, no
       more attempts (wxWidgets 2.9.1).
+
+    - under cygwin 1.7 wxWidgets 2.9.1 does not compile 
 
   - debug under Windows using IDE, under Linux using Kdbg
 
