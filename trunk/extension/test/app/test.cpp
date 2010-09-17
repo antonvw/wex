@@ -88,11 +88,12 @@ void wxExAppTestFixture::testConfigItem()
     it != items.end();
     ++it)
   {
-    CPPUNIT_ASSERT(it->GetColumns() == -1);
-    CPPUNIT_ASSERT(it->GetControl() == NULL);
+    CPPUNIT_ASSERT( it->GetColumns() == -1);
+    CPPUNIT_ASSERT( it->GetControl() == NULL);
     CPPUNIT_ASSERT(!it->GetIsRequired());
     CPPUNIT_ASSERT(!it->GetName().empty());
-    CPPUNIT_ASSERT(it->GetPage().empty());
+    CPPUNIT_ASSERT( it->GetPage().empty());
+
     CPPUNIT_ASSERT(
       it->GetType() > CONFIG_ITEM_MIN &&
       it->GetType() < CONFIG_ITEM_MAX);
@@ -262,6 +263,7 @@ void wxExAppTestFixture::testListView()
   
   listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
+
   CPPUNIT_ASSERT(listView->FindColumn("String")  == 0);
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
 }
@@ -413,19 +415,19 @@ void wxExAppTestFixture::testSTCShell()
 
 void wxExAppTestFixture::testUtil()
 {
-  CPPUNIT_ASSERT(
-    wxExAlignText("test", "header", true, true,
-      wxExLexers::Get()->FindByName("cpp")).size() 
+  CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
+    wxExLexers::Get()->FindByName("cpp")).size() 
       == wxString("// headertest").size());
-  CPPUNIT_ASSERT(wxExClipboardAdd("test"));
-  CPPUNIT_ASSERT(wxExClipboardGet() == "test");
-  CPPUNIT_ASSERT(wxExGetEndOfText("test", 3).size() == 3);
-  CPPUNIT_ASSERT(wxExGetEndOfText("testtest", 3).size() == 3);
-  CPPUNIT_ASSERT(wxExGetLineNumber("test on line: 1200") == 1200);
-  CPPUNIT_ASSERT(wxExGetNumberOfLines("test\ntest\n") == 3);
+
+  CPPUNIT_ASSERT( wxExClipboardAdd("test"));
+  CPPUNIT_ASSERT( wxExClipboardGet() == "test");
+  CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
+  CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
+  CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 3);
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
-  CPPUNIT_ASSERT(wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
-  CPPUNIT_ASSERT(wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
+  CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
+  CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   CPPUNIT_ASSERT(!wxExTranslate(
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
 }
@@ -498,9 +500,9 @@ void wxExAppTestFixture::testVCSEntry()
 {
   wxExVCSEntry test;
   
-  CPPUNIT_ASSERT(test.GetCommand(0).GetCommand().empty());
-  CPPUNIT_ASSERT(test.GetName().empty());
-  CPPUNIT_ASSERT(test.GetNo() == -1);
+  CPPUNIT_ASSERT( test.GetCommand(0).GetCommand().empty());
+  CPPUNIT_ASSERT( test.GetName().empty());
+  CPPUNIT_ASSERT( test.GetNo() == -1);
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }
 
