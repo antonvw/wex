@@ -206,14 +206,15 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
   while (child)
   {
+    const wxString value = child->GetNodeContent();
+
     if (child->GetName() == "file")
     {
-      const wxString value = child->GetNodeContent();
-      const wxString type = child->GetAttribute("type");
-
-      type.empty() ?
-        wxExListItem(this, wxFileName(value)).Insert():
-        wxExListItem(this, value, type).Insert();
+      wxExListItem(this, wxFileName(value)).Insert():
+    }
+    else if (child->GetName() == "folder")
+    {
+      wxExListItem(this, value, child->GetAttribute("extensions")).Insert();
     }
     
     child = child->GetNext();
@@ -239,15 +240,31 @@ void wxExListViewFile::DoFileNew()
 void wxExListViewFile::DoFileSave(bool save_as)
 {
   wxXmlNode* root = new wxXmlNode(wxXML_ELEMENT_NODE, "files");
+  wxXmlNode* comment = new wxXmlNode(
+    wxXML_COMMENT_NODE,
+    wxEmptyString,
+    wxTheApp->GetAppDisplayName() + " project file " +
+      wxDateTime::Now().Format()));
+  root->AddChild(comment);
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    wxXmlNode* element = new wxXmlNode(wxXML_ELEMENT_NODE, "file");
+    const wxString type = GetItemText(item_number, _("Type"));
+    const wxExFileName fn = wxExListItem(this, i).GetFileName();
+
+    wxXmlNode* element = new wxXmlNode(
+      wxXML_ELEMENT_NODE,
+      (type.empty() ? "file": "folder"));
+
+    if (!type.empty())
+    {
+      element->AddAttribute("extensions", type);
+    }
     
     wxXmlNode* text = new wxXmlNode(
       wxXML_TEXT_NODE, 
       wxEmptyString, 
-      wxExListItem(this, i).GetFileName().GetFullPath());
+      fn.GetFullPath());
       
     element->AddChild(text);
     root->AddChild(element);
