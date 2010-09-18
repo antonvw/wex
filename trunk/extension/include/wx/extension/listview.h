@@ -96,9 +96,6 @@ public:
     const wxValidator& validator = wxDefaultValidator,
     const wxString &name = wxListCtrlNameStr);
 
-  /// Destructor.
-  virtual ~wxExListView();
-
   /// If column is not found, -1 is returned,
   int FindColumn(const wxString& name) const;
 

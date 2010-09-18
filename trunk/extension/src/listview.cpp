@@ -179,10 +179,6 @@ wxExListView::wxExListView(wxWindow* parent,
   SetAcceleratorTable(accel);
 }
 
-wxExListView::~wxExListView()
-{
-}
-
 const wxString wxExListView::BuildPage()
 {
   wxString text;
