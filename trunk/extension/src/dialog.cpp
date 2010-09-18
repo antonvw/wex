@@ -69,8 +69,7 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   m_TopSizer->AddGrowableCol(0);
   m_UserSizer->AddGrowableCol(0);
 
-  wxSizerFlags flag;
-  flag.Expand().Center().Border();
+  const wxSizerFlags flag = wxSizerFlags().Expand().Center().Border();
 
   // The top sizer starts with a spacer, for a nice border.
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
