@@ -19,6 +19,7 @@
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/util.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/filedlg.h>
@@ -622,5 +623,19 @@ void wxExVCSExecute(
   else
   {
     vcs.Request(frame);
+  }
+}
+
+void wxExXmlNodeGeneric(wxXmlNode* node)
+{
+  if (node->GetName() == "comment")
+  {
+    // Ignore comments.
+  }
+  else
+  {
+    wxLogError(_("Undefined tag: %s on line: %d"),
+      node->GetName().c_str(),
+      node->GetLineNumber());
   }
 }

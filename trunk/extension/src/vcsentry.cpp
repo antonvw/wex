@@ -155,15 +155,9 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
       {
         m_Commands = ParseNodeCommands(child);
       }
-      else if (child->GetName() == "comment")
-      {
-        // Ignore comments.
-      }
       else
       {
-        wxLogError(_("Undefined tag: %s on line: %d"),
-          child->GetName().c_str(),
-          child->GetLineNumber());
+        wxExXmlNodeGeneric(child);
       }
 
       child = child->GetNext();
@@ -258,15 +252,9 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
         v.push_back(wxExVCSCommand(content, attrib, submenu, subcommand));
       }
     }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
     else
     {
-      wxLogError(_("Undefined tag: %s on line: %d"),
-        child->GetName().c_str(),
-        child->GetLineNumber());
+      wxExXmlNodeGeneric(child);
     }
 
     child = child->GetNext();

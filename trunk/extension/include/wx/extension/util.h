@@ -21,6 +21,7 @@
 #include <wx/extension/lexer.h>
 
 class wxExFrame;
+class wxXmlNode;
 
 /*! \file */
 
@@ -154,6 +155,9 @@ void wxExVCSExecute(
   wxExFrame* frame, 
   int id,
   const wxExFileName& filename);
+  
+/// Generic handler for wxXmlNode.
+void wxExXmlNodeGeneric(wxXmlNode* node);
 #endif // wxUSE_GUI
 
 #endif

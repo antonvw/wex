@@ -208,11 +208,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 
   while (child)
   {
-    if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else if (child->GetName() == "hex")
+    if (child->GetName() == "hex")
     {
       m_StylesHex.push_back(wxExStyle(child));
     }
@@ -262,9 +258,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     }
     else
     {
-      wxLogError(_("Undefined tag: %s on line: %d"),
-        child->GetName().c_str(), 
-        child->GetLineNumber());
+      wxExXmlNodeGeneric(child);
     }
 
     child = child->GetNext();
@@ -277,11 +271,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
 
   while (child)
   {
-    if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
-    else if (child->GetName() == "def")
+    if (child->GetName() == "def")
     {
       const wxString attrib = child->GetAttribute("no");
       const wxString content = child->GetNodeContent().Strip(wxString::both);
@@ -322,9 +312,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
     }
     else
     {
-      wxLogError(_("Undefined tag: %s on line: %d"),
-        child->GetName().c_str(), 
-        child->GetLineNumber());
+      wxExXmlNodeGeneric(child);
     }
 
     child = child->GetNext();
@@ -344,14 +332,9 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
     {
       v.push_back(wxExProperty(child));
     }
-    else if (child->GetName() == "comment")
-    {
-      // Ignore comments.
-    }
     else
     {
-      wxLogError(_("Undefined tag: %s on line: %d"),
-        child->GetName().c_str(), child->GetLineNumber());
+      wxExXmlNodeGeneric(child);
     }
 
     child = child->GetNext();
