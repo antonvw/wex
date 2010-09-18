@@ -256,16 +256,15 @@ void wxExListViewFile::DoFileSave(bool save_as)
 
   for (auto i = 0; i < GetItemCount(); i++)
   {
-    const wxString type = GetItemText(i, _("Type"));
     const wxExFileName fn = wxExListItem(this, i).GetFileName();
 
     wxXmlNode* element = new wxXmlNode(
       wxXML_ELEMENT_NODE,
-      (type.empty() ? "file": "folder"));
+      (fn.FileExists() ? "file": "folder"));
 
-    if (!type.empty())
+    if (!fn.FileExists() && fn.DirExists())
     {
-      element->AddAttribute("extensions", type);
+      element->AddAttribute("extensions", GetItemText(i, _("Type")));
     }
     
     wxXmlNode* text = new wxXmlNode(
