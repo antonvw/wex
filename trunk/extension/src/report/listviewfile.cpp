@@ -212,6 +212,16 @@ void wxExListViewFile::DoFileLoad(bool synced)
     {
       wxExListItem(this, value, child->GetAttribute("extensions")).Insert();
     }
+    else if (child->GetName() == "comment")
+    {
+      // Ignore comments.
+    }
+    else
+    {
+      wxLogError(_("Undefined tag: %s on line: %d"),
+        child->GetName().c_str(),
+        child->GetLineNumber());
+    }
     
     child = child->GetNext();
   }
