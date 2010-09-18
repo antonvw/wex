@@ -24,8 +24,7 @@
 class wxExConfigDialog;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
-/// macro support, vi support, lexer support (syntax colouring, folding) 
-/// and basic extensions.
+/// macro support, vi support and lexer support (syntax colouring, folding).
 class wxExSTC : public wxStyledTextCtrl
 {
 public:
@@ -178,7 +177,7 @@ public:
   /// Guesses the type.
   void GuessType();
 
-  /// Indents lines.
+  /// Indents lines from current position.
   void Indent(int lines, bool forward = true);
   
   /// Returns true if specified target is a RE, to be used by
@@ -316,10 +315,11 @@ private:
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
 
-  wxExSTCFile m_File;
   wxExLexer m_Lexer;
-  wxPathList m_PathList;
+  wxExSTCFile m_File;
   wxExVi m_vi;
+
+  wxPathList m_PathList;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
