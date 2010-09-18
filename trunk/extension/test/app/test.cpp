@@ -435,6 +435,9 @@ void wxExAppTestFixture::testUtil()
 void wxExAppTestFixture::testVCS()
 {
   CPPUNIT_ASSERT( wxExVCS::Get()->DirExists(wxFileName(TEST_FILE)));
+  
+  // Should be before test Read, otherwise fails, don know why.
+  CPPUNIT_ASSERT( wxExVCS::Get()->SupportKeywordExpansion());
 
   wxMenu* menu = new wxMenu("test");
   wxExVCS::Get()->BuildMenu(100, menu);
@@ -448,8 +451,6 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT(!wxExVCS::Get()->IsOpenCommand());
 
   CPPUNIT_ASSERT( wxExVCS::Get()->Read());
-
-  CPPUNIT_ASSERT( wxExVCS::Get()->SupportKeywordExpansion());
 
   CPPUNIT_ASSERT( wxExVCS::Get()->Use());
 
