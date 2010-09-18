@@ -249,8 +249,8 @@ void wxExListViewFile::DoFileSave(bool save_as)
   wxXmlNode* comment = new wxXmlNode(
     wxXML_COMMENT_NODE,
     wxEmptyString,
-    wxTheApp->GetAppDisplayName() + " project file " +
-      wxDateTime::Now().Format());
+    wxTheApp->GetAppDisplayName() + " project " + GetFileName().GetFullName() + 
+      " "  + wxDateTime::Now().Format());
 
   root->AddChild(comment);
 
