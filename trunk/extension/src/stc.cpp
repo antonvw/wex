@@ -363,8 +363,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if ( m_File.GetFileName().FileExists() && GetSelectedText().empty() &&
-      (m_MenuFlags & STC_MENU_COMPARE_OR_VCS))
+  if (m_File.GetFileName().FileExists() && 
+      GetSelectedText().empty())
   {
     if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
     {
