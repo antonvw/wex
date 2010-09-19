@@ -245,6 +245,10 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
       {
         lv->PrintPreview();
       }
+      else
+      {
+        wxLogMessage("No focus");
+      }
     }
     break;
     
@@ -256,11 +260,15 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
       {
         lv->Print();
       }
+      else
+      {
+        wxLogMessage("No focus");
+      }
     }
     break;
     
   case wxID_PRINT_SETUP:
-	wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();
+	  wxExPrinting::Get()->GetHtmlPrinter()->PageSetup();
     break;
 
   case wxID_STOP:
