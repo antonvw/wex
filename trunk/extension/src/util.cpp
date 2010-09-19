@@ -626,16 +626,12 @@ void wxExVCSExecute(
   }
 }
 
-void wxExXmlNodeGeneric(wxXmlNode* node)
+wxXmlNode* wxExXmlNodeGeneric(wxXmlNode* node)
 {
   if (node->GetName() == "comment")
   {
     // Ignore comments.
   }
-  else
-  {
-    wxLogError(_("Undefined tag: %s on line: %d"),
-      node->GetName().c_str(),
-      node->GetLineNumber());
-  }
+  
+  return node->GetNext();
 }

@@ -256,12 +256,8 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
         m_Styles.push_back(style);
       }
     }
-    else
-    {
-      wxExXmlNodeGeneric(child);
-    }
-
-    child = child->GetNext();
+    
+    child = wxExXmlNodeGeneric(child);
   }
 }
 
@@ -310,12 +306,8 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
         }
       }
     }
-    else
-    {
-      wxExXmlNodeGeneric(child);
-    }
-
-    child = child->GetNext();
+    
+    child = wxExXmlNodeGeneric(child);
   }
 }
 
@@ -332,12 +324,8 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
     {
       v.push_back(wxExProperty(child));
     }
-    else
-    {
-      wxExXmlNodeGeneric(child);
-    }
-
-    child = child->GetNext();
+    
+    child = wxExXmlNodeGeneric(child);
   }
 
   return v;

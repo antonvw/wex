@@ -157,7 +157,8 @@ void wxExVCSExecute(
   const wxExFileName& filename);
   
 /// Generic handler for wxXmlNode.
-void wxExXmlNodeGeneric(wxXmlNode* node);
+/// It returns node->GetNext.
+wxXmlNode* wxExXmlNodeGeneric(wxXmlNode* node);
 #endif // wxUSE_GUI
 
 #endif

@@ -155,12 +155,8 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
       {
         m_Commands = ParseNodeCommands(child);
       }
-      else
-      {
-        wxExXmlNodeGeneric(child);
-      }
-
-      child = child->GetNext();
+      
+      child = wxExXmlNodeGeneric(child);
     }
   }
 }
@@ -252,12 +248,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
         v.push_back(wxExVCSCommand(content, attrib, submenu, subcommand));
       }
     }
-    else
-    {
-      wxExXmlNodeGeneric(child);
-    }
-
-    child = child->GetNext();
+    
+    child = wxExXmlNodeGeneric(child);
   }
 
   return v;

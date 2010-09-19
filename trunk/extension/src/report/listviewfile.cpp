@@ -212,12 +212,8 @@ void wxExListViewFile::DoFileLoad(bool synced)
     {
       wxExListItem(this, value, child->GetAttribute("extensions")).Insert();
     }
-    else
-    {
-      wxExXmlNodeGeneric(child);
-    }
     
-    child = child->GetNext();
+    child = wxExXmlNodeGeneric(child);
   }
 
   if (synced)
