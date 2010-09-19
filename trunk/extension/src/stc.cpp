@@ -714,6 +714,8 @@ void wxExSTC::ConfigGet()
 
   CallTipSetBackground(wxConfigBase::Get()->ReadObject(
     _("Calltip"), wxColour("YELLOW")));
+    
+  const long def_tab_width = 2;
 
   if (m_File.GetFileName().GetExt().CmpNoCase("log") == 0)
   {
@@ -729,7 +731,7 @@ void wxExSTC::ConfigGet()
     
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-  SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), 4));
+  SetIndent(wxConfigBase::Get()->ReadLong(_("Indent"), def_tab_width));
   SetIndentationGuides(
     wxConfigBase::Get()->ReadBool(_("Indentation guide"), false));
 
@@ -748,7 +750,7 @@ void wxExSTC::ConfigGet()
     m_MarginLineNumber, 
     (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
-  SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), 4));
+  SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), def_tab_width));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
   SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
   SetViewWhiteSpace(
