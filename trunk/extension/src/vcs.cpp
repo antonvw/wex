@@ -378,13 +378,14 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
       + wxFileName::GetPathSeparator() + "vcss.xml")
       );
 
-    m_Self->Read();
-
-    // Add default VCS.
-    // This is a static method, so not use m_Entries.
-    if (!wxConfigBase::Get()->Exists("VCS"))
+    if (m_Self->Read())
     {
-      wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO + 1);
+      // Add default VCS.
+      // This is a static method, so not use m_Entries.
+      if (!wxConfigBase::Get()->Exists("VCS"))
+      {
+        wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO + 1);
+      }
     }
   }
 
