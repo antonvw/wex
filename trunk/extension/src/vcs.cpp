@@ -55,6 +55,11 @@ void wxExVCS::BuildMenu(
   const wxExFileName& filename,
   bool is_popup)
 {
+  if (m_Entries.size() == 0)
+  {
+    return;
+  }
+  
   if (filename.IsOk())
   {
     m_FileName = filename;
@@ -176,6 +181,11 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
+  if (m_Entries.size() == 0)
+  {
+    return false;
+  }
+  
   const wxString name = GetName(filename);
 
   // When adding a vcs, also check GetNo.
