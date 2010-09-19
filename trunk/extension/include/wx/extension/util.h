@@ -155,10 +155,6 @@ void wxExVCSExecute(
   wxExFrame* frame, 
   int id,
   const wxExFileName& filename);
-  
-/// Generic handler for wxXmlNode.
-/// It returns node->GetNext.
-wxXmlNode* wxExXmlNodeGeneric(wxXmlNode* node);
 #endif // wxUSE_GUI
 
 #endif

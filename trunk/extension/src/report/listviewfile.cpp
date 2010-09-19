@@ -213,7 +213,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
       wxExListItem(this, value, child->GetAttribute("extensions")).Insert();
     }
     
-    child = wxExXmlNodeGeneric(child);
+    child = child->GetNext();
   }
 
   if (synced)

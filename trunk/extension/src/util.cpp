@@ -625,13 +625,3 @@ void wxExVCSExecute(
     vcs.Request(frame);
   }
 }
-
-wxXmlNode* wxExXmlNodeGeneric(wxXmlNode* node)
-{
-  if (node->GetName() == "comment")
-  {
-    // Ignore comments.
-  }
-  
-  return node->GetNext();
-}

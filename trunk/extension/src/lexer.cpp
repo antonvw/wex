@@ -330,7 +330,7 @@ const std::vector<wxExStyle> wxExLexer::ParseNodeStyles(
       text.push_back(wxExStyle(child));
     }
     
-    child = wxExXmlNodeGeneric(child);
+    child = child->GetNext();
   }
 
   return text;
@@ -406,7 +406,7 @@ void wxExLexer::Set(const wxXmlNode* node)
         m_CommentEnd2 = child->GetAttribute("end2");
       }
       
-      child = wxExXmlNodeGeneric(child);
+      child = child->GetNext();
     }
   }
 }

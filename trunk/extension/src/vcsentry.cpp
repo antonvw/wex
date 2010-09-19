@@ -156,7 +156,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
         m_Commands = ParseNodeCommands(child);
       }
       
-      child = wxExXmlNodeGeneric(child);
+      child = child->GetNext();
     }
   }
 }
@@ -249,7 +249,7 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
       }
     }
     
-    child = wxExXmlNodeGeneric(child);
+    child = child->GetNext();
   }
 
   return v;
