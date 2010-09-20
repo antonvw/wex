@@ -56,15 +56,10 @@ wxExConfigItem::wxExConfigItem(
    int cols)
   : m_Control(NULL)
   , m_Id(CONFIG_HYPERLINKCTRL)
-  , m_Min(0)
-  , m_Max(1)
-  , m_MajorDimension(1)
   , m_Name(name)
+  , m_AddName(true)
   , m_Page(page)
   , m_Cols(cols)
-  , m_MinDouble(0)
-  , m_MaxDouble(1)
-  , m_Inc(1)
   , m_Default(url)
  {
  }
@@ -354,7 +349,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         m_Name,
         m_Default,
         wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord))=
+        wxSize(width, wxDefaultCoord));
       expand = false;
       break;
 

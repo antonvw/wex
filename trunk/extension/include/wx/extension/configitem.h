@@ -68,10 +68,33 @@ public:
     bool add_name = true,
     int cols = -1);
 
+  /// Constructor for a checklistbox without a name. Just specify
+  /// the set with names of boolean items.
+  /// A checklistbox without a name (not mutually exclusive choices)
+  /// should be used to get/set several boolean values in one checklistbox.
+  wxExConfigItem(const std::set<wxString> & choices,
+    const wxString& page = wxEmptyString,
+    int cols = -1);
+
   /// Constructor for a hyperlink ctrl.
   wxExConfigItem(const wxString& name,
     const wxString& url,
     const wxString& page = wxEmptyString,
+    int cols = -1);
+
+  /// Constructor for a radiobox or a checklistbox. Just specify
+  /// the map with values and text.
+  /// A checklistbox (not mutually exclusive choices)
+  /// should be used to get/set individual bits in a long.
+  /// A radiobox (mutually exclusive choices)
+  /// should be used when a long value can have a short
+  /// set of possible individual values.
+  wxExConfigItem(const wxString& name,
+    const std::map<long, const wxString> & choices,
+    bool use_radiobox = true,
+    const wxString& page = wxEmptyString,
+    int majorDimension = 0,
+    long style = wxRA_SPECIFY_COLS,
     int cols = -1);
 
   /// Constructor for a spin ctrl.
@@ -94,29 +117,6 @@ public:
     long style = 0,
     bool is_required = false,
     bool add_name = true,
-    int cols = -1);
-
-  /// Constructor for a radiobox or a checklistbox. Just specify
-  /// the map with values and text.
-  /// A checklistbox (not mutually exclusive choices)
-  /// should be used to get/set individual bits in a long.
-  /// A radiobox (mutually exclusive choices)
-  /// should be used when a long value can have a short
-  /// set of possible individual values.
-  wxExConfigItem(const wxString& name,
-    const std::map<long, const wxString> & choices,
-    bool use_radiobox = true,
-    const wxString& page = wxEmptyString,
-    int majorDimension = 0,
-    long style = wxRA_SPECIFY_COLS,
-    int cols = -1);
-
-  /// Constructor for a checklistbox without a name. Just specify
-  /// the set with names of boolean items.
-  /// A checklistbox without a name (not mutually exclusive choices)
-  /// should be used to get/set several boolean values in one checklistbox.
-  wxExConfigItem(const std::set<wxString> & choices,
-    const wxString& page = wxEmptyString,
     int cols = -1);
 
   /// Gets the columns.
