@@ -15,6 +15,7 @@
 #include <wx/config.h>
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
+#include <wx/hyperlink.h>
 #include <wx/spinctrl.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -345,12 +346,19 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_HYPERLINKCTRL:
-      m_Control = new wxHyperLinkCtrl(parent,
+      {
+#if wxUSE_HYPERLINKCTRL
+      wxHyperlinkCtrl* hl = new wxHyperlinkCtrl(parent,
+        m_Id,
         m_Name,
         m_Default,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
+        
+      m_Control = hl;
       expand = false;
+#endif      
+      }
       break;
 
     case CONFIG_INT:
