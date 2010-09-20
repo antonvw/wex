@@ -65,7 +65,7 @@ void wxExAppTestFixture::testConfigItem()
   items.push_back(ci6);
   CPPUNIT_ASSERT(ci6.GetType() == CONFIG_CHECKLISTBOX);
 
-  wxExConfigItem ci7("hyper", "www.wxwidgets.org");
+  wxExConfigItem ci7("hyper", "www.wxwidgets.org", wxEmptyString);
   items.push_back(ci7);
   CPPUNIT_ASSERT(ci7.GetType() == CONFIG_HYPERLINKCTRL);
 
@@ -73,9 +73,9 @@ void wxExAppTestFixture::testConfigItem()
   bchoices.insert(_("This"));
   bchoices.insert(_("Or"));
   bchoices.insert(_("Other"));
-  wxExConfigItem ci7(bchoices);
-  items.push_back(ci7);
-  CPPUNIT_ASSERT(ci7.GetType() == CONFIG_CHECKLISTBOX_NONAME);
+  wxExConfigItem ci8(bchoices);
+  items.push_back(ci8);
+  CPPUNIT_ASSERT(ci8.GetType() == CONFIG_CHECKLISTBOX_NONAME);
 
   // Use general constructor, and add all items.
   for (

@@ -582,7 +582,8 @@ void wxExSampleFrame::ShowConfigItems()
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("String%d"), l), 
-      "Strings"));
+      "Strings",
+      0));
   }
   
   v.push_back(wxExConfigItem(
