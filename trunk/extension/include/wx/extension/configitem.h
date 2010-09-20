@@ -37,6 +37,7 @@ enum
   // Items that have an explicit constructor.
   CONFIG_CHECKLISTBOX,    ///< a checklistbox ctrl
   CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox ctrl
+  CONFIG_HYPERLINKCTRL,   ///< a hyperlink ctrl
   CONFIG_RADIOBOX,        ///< a radiobox ctrl
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
@@ -65,6 +66,12 @@ public:
     int id = wxID_ANY,
     int max_items = 25, // used by CONFIG_COMBOBOX
     bool add_name = true,
+    int cols = -1);
+
+  /// Constructor for a hyperlink ctrl.
+  wxExConfigItem(const wxString& name,
+    const wxString& url,
+    const wxString& page = wxEmptyString,
     int cols = -1);
 
   /// Constructor for a spin ctrl.
@@ -170,6 +177,7 @@ private:
 
   wxString m_Name;
   wxString m_Page;
+  wxString m_Default;
 
   long m_Style;
   long m_StyleRadioBox;

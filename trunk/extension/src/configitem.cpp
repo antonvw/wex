@@ -50,6 +50,25 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
+ wxExConfigItem::wxExConfigItem(const wxString& name,
+   const wxString& url,
+   const wxString& page,
+   int cols)
+  : m_Control(NULL)
+  , m_Id(CONFIG_HYPERLINKCTRL)
+  , m_Min(0)
+  , m_Max(1)
+  , m_MajorDimension(1)
+  , m_Name(name)
+  , m_Page(page)
+  , m_Cols(cols)
+  , m_MinDouble(0)
+  , m_MaxDouble(1)
+  , m_Inc(1)
+  , m_Default(url)
+ {
+ }
+
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
   int min,
@@ -328,6 +347,15 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
       }
       }
+      break;
+
+    case CONFIG_HYPERLINKCTRL:
+      m_Control = new wxHyperLinkCtrl(parent,
+        m_Name,
+        m_Default,
+        wxDefaultPosition,
+        wxSize(width_numeric, wxDefaultCoord))=
+      expand = false;
       break;
 
     case CONFIG_INT:
@@ -616,6 +644,10 @@ void wxExConfigItem::ToConfig(bool save) const
           wxConfigBase::Get()->ReadObject(m_Name, 
           wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
       }
+      break;
+
+    case CONFIG_HYPERLINKCTRL:
+      // do nothing yet
       break;
 
     case CONFIG_INT:

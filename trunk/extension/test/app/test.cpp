@@ -65,6 +65,10 @@ void wxExAppTestFixture::testConfigItem()
   items.push_back(ci6);
   CPPUNIT_ASSERT(ci6.GetType() == CONFIG_CHECKLISTBOX);
 
+  wxExConfigItem ci7("hyper", "www.wxwidgets.org");
+  items.push_back(ci7);
+  CPPUNIT_ASSERT(ci7.GetType() == CONFIG_HYPERLINKCTRL);
+
   std::set<wxString> bchoices;
   bchoices.insert(_("This"));
   bchoices.insert(_("Or"));
