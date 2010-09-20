@@ -521,6 +521,17 @@ void wxExSampleFrame::ShowConfigItems()
     CONFIG_FONTPICKERCTRL, 
     "Pickers"));
 
+  // CONFIG_HYPERLINKCTRL
+  v.push_back(wxExConfigItem(
+    _("Hyper Link 1"),
+    "www.wxwidgets.org",
+    "Hyperlinks"));
+
+  v.push_back(wxExConfigItem(
+    _("Hyper Link 2"),
+    "www.scintilla.org",
+    "Hyperlinks"));
+
   // CONFIG_INT
   for (size_t j = 1; j <= 5; j++)
   {
