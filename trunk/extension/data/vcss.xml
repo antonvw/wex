@@ -76,7 +76,7 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;co </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
-      <command> &amp;help </command>
+      <command type = "main"> &amp;help </command>
       <command> &amp;log </command>
       <command> &amp;status </command>
       <command> &amp;update </command>
