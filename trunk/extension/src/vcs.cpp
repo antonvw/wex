@@ -136,8 +136,8 @@ int wxExVCS::ConfigDialog(
     choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
   }
 
-  // Calculate number of columns.
-  int cols;
+  // Estimate number of columns used by the radiobox.
+  int cols = 5;
 
   switch (m_Entries.size() + 2)
   {
@@ -151,10 +151,6 @@ int wxExVCS::ConfigDialog(
     case 12:
     case 16:
       cols = 4;
-      break;
-
-    default:
-      cols = 5;
       break;
   }
 
