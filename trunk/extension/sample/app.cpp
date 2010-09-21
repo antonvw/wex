@@ -275,11 +275,14 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         wxExFileDialog dlg(this, &m_STC->GetFile());
     if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
 
+#if wxUSE_STATUSBAR
     wxStopWatch sw;
+#endif
+    
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
-    const auto stop = sw.Time();
 
 #if wxUSE_STATUSBAR
+    const auto stop = sw.Time();
     StatusText(wxString::Format(
       "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
 #endif
