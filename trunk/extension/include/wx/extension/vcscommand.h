@@ -3,7 +3,7 @@
 // Purpose:   Declaration of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
 // Created:   2010-08-27
-// RCS-ID:    $Id: vcsentry.h 4169 2010-09-11 12:20:18Z antonvw $
+// RCS-ID:    $Id$
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
