@@ -113,7 +113,7 @@ bool wxExVCSCommand::IsOpen() const
   return
     GetCommand(false) == "blame" ||
     GetCommand(false) == "cat" ||
-    GetCommand(false) == "diff";
+    IsDiff();
 }
 
 bool wxExVCSCommand::IsUpdate() const
