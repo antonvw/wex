@@ -51,6 +51,7 @@
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi.h>
