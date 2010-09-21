@@ -44,6 +44,7 @@ bool wxExLexer::ApplyLexer(
   for_each (m_Properties.begin(), m_Properties.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
 
+  // Even if the lexer is empty.
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
   if (m_ScintillaLexer.empty())
@@ -53,11 +54,11 @@ bool wxExLexer::ApplyLexer(
   
   stc->SetLexerLanguage(m_ScintillaLexer);
   
-  m_IsOk = (stc->GetLexer() != wxSTC_LEX_NULL);
+  m_IsOk = 
+    m_ScintillaLexer.empty() ||
+    (stc->GetLexer() != wxSTC_LEX_NULL);
   
-  if (!m_ScintillaLexer.empty() &&
-      !m_IsOk &&
-      show_error)
+  if (!m_IsOk && show_error)
   {
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }
