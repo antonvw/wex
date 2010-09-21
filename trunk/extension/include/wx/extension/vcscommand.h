@@ -12,8 +12,6 @@
 
 #include <wx/string.h>
 
-class wxMenu;
-
 /// This class contains a single vcs command.
 class wxExVCSCommand
 {
@@ -29,7 +27,10 @@ public:
   /// Default constructor.
   wxExVCSCommand();
 
-  /// Constructor.
+  /// Constructor, specify command and type.
+  /// The submenu member is set to specified submenu if not empty,
+  /// otherwise to specified subcommand.
+  /// Increments the no.
   wxExVCSCommand(
     const wxString& command,
     const wxString& type = wxEmptyString,
@@ -43,6 +44,9 @@ public:
   
   /// Gets the no.
   int GetNo() const {return m_No;};
+
+  /// Returns the submenu.
+  const wxString& GetSubMenu() const {return m_SubMenu;};
 
   /// Gets the type.
   int GetType() const {return m_Type;};
@@ -72,9 +76,6 @@ public:
   /// Resets the number of instances, so the no
   /// will start from 0 again.
   static void ResetInstances() {m_Instances = 0;};
-
-  /// Returns the submenu.
-  const wxString& SubMenu() const {return m_SubMenu;};
 private:
   int From(const wxString& type) const;
 

@@ -469,11 +469,13 @@ void wxExAppTestFixture::testVCSCommand()
   wxExVCSCommand::ResetInstances();
   
   const wxExVCSCommand add("a&dd");
+  const wxExVCSCommand co("checkou&t");
   const wxExVCSCommand commit("commit", "main");
   const wxExVCSCommand diff("diff", "popup", "submenu");
   const wxExVCSCommand help("h&elp", "error", "", "m&e");
   const wxExVCSCommand open("blame");
   const wxExVCSCommand update("update");
+  const wxExVCSCommand none();
 
   CPPUNIT_ASSERT(add.GetCommand() == "add");
   CPPUNIT_ASSERT(add.GetCommand(true, true) == "a&dd");
@@ -492,15 +494,18 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(open.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
 
   CPPUNIT_ASSERT(add.IsAdd());
+  CPPUNIT_ASSERT(co.IsCheckout());
   CPPUNIT_ASSERT(commit.IsCommit());
   CPPUNIT_ASSERT(diff.IsDiff());
   CPPUNIT_ASSERT(help.IsHelp());
   CPPUNIT_ASSERT(open.IsOpen());
   CPPUNIT_ASSERT(update.IsUpdate());
 
-  CPPUNIT_ASSERT(add.SubMenu().empty());
-  CPPUNIT_ASSERT(diff.SubMenu() == "submenu");
-  CPPUNIT_ASSERT(help.SubMenu() == "m&e");
+  CPPUNIT_ASSERT(add.GetSubMenu().empty());
+  CPPUNIT_ASSERT(diff.GetSubMenu() == "submenu");
+  CPPUNIT_ASSERT(help.GetSubMenu() == "m&e");
+
+  CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
 }
 
 void wxExAppTestFixture::testVCSEntry()

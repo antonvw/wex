@@ -65,13 +65,13 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   {
     bool add = false;
 
-    if (!it->SubMenu().empty() && prev_menu != it->SubMenu())
+    if (!it->GetSubMenu().empty() && prev_menu != it->GetSubMenu())
     {
       if (submenu == NULL)
       {
         submenu = new wxMenu();
-        prev_menu = it->SubMenu();
-        menu->AppendSubMenu(submenu, it->SubMenu());
+        prev_menu = it->GetSubMenu();
+        menu->AppendSubMenu(submenu, it->GetSubMenu());
       }
     }
     else if (submenu != NULL)
