@@ -395,6 +395,12 @@ void wxExAppTestFixture::testSTCFile()
 
   // The file itself is not assigned.  
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
+  
+  CPPUNIT_ASSERT(!file.GetContentsChanged());
+  stc->SetText("hello")
+  CPPUNIT_ASSERT( file.GetContentsChanged());
+  file.ResetContentsChanged());
+  CPPUNIT_ASSERT(!file.GetContentsChanged());
 }
 
 void wxExAppTestFixture::testSTCShell()
@@ -404,8 +410,10 @@ void wxExAppTestFixture::testSTCShell()
   shell->Prompt("test2");
   shell->Prompt("test3");
   shell->Prompt("test4");
+
   // Prompting does not add a command to history.
   CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
+
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
   wxKeyEvent event(wxEVT_CHAR);
   event.m_keyCode = 97; // one char 'a'
@@ -414,8 +422,12 @@ void wxExAppTestFixture::testSTCShell()
   wxPostEvent(shell, event);
   event.m_keyCode = WXK_RETURN;
   wxPostEvent(shell, event);
-  // The event queue for shell is not yet processed, so next will assert anyway.
-  //CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
+
+  // Sleep a little to allow the event queue for shell to be processed.
+  wxMilliSleep(10);
+  CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
+
+  CPPUNIT_ASSERT(m_STCShell->GetPrompt() == ">");
 }
 
 void wxExAppTestFixture::testUtil()
