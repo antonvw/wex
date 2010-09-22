@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/button.h>
 #include <wx/clrpicker.h> // for wxColourPickerWidget
 #include <wx/config.h>
 #include <wx/filepicker.h>
@@ -243,7 +244,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
   switch (m_Type)
   {
-    case CONFIG_CHECKBOX:
+    case CONFIG_BUTTON:
       m_Control = new wxButton(parent, m_Id, m_Name);
       break;
 
@@ -407,7 +408,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_SLIDER:
       m_Control = new wxSlider(parent,
         m_Id,
-        wxEmptyString,
+        0,
         m_Min,
         m_Max,
         wxDefaultPosition,
