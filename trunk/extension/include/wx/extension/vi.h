@@ -31,10 +31,13 @@ public:
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
+  /// This means that the char is not handled by vi,
+  /// e.g. vi mode is not active, or we are in insert mode,
+  /// so the char should be handled by stc.
   bool OnChar(const wxKeyEvent& event);
 
   /// Handles keydown events.
-  /// Returns true if event is allowed to be skipped.
+  /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
 
   /// Set using vi mode.
