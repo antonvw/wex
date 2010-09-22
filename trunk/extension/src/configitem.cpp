@@ -45,7 +45,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(0)
   , m_Type(type)
   , m_Cols(cols)
-  , m_AddName(type == CONFIG_CHECKBOX ? false: add_name)
+  , m_AddName(
+      type == CONFIG_CHECKBOX ||
+      type == CONFIG_BUTTON ? false: add_name)
   , m_MinDouble(0)
   , m_MaxDouble(1)
   , m_Inc(1)
@@ -241,6 +243,10 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
   switch (m_Type)
   {
+    case CONFIG_CHECKBOX:
+      m_Control = new wxButton(parent, m_Id, m_Name);
+      break;
+
     case CONFIG_CHECKBOX:
       m_Control = new wxCheckBox(parent, m_Id, m_Name);
       break;
@@ -514,6 +520,11 @@ void wxExConfigItem::ToConfig(bool save) const
 
   switch (m_Type)
   {
+    case CONFIG_BUTTON:
+    case CONFIG_HYPERLINKCTRL:
+      // these controls have no persistant info
+      break;
+
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)m_Control;
@@ -661,10 +672,6 @@ void wxExConfigItem::ToConfig(bool save) const
           wxConfigBase::Get()->ReadObject(m_Name, 
           wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
       }
-      break;
-
-    case CONFIG_HYPERLINKCTRL:
-      // do nothing yet
       break;
 
     case CONFIG_INT:

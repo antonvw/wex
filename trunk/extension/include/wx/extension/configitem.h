@@ -25,6 +25,7 @@ enum
   CONFIG_ITEM_MIN,
 
   /// Items that are constructed using the general constructor.
+  CONFIG_BUTTON,          ///< a button
   CONFIG_CHECKBOX,        ///< a checkbox (use ReadBool to retrieve value)
   CONFIG_COLOUR,          ///< a colour button
   CONFIG_COMBOBOX,        ///< a combobox
