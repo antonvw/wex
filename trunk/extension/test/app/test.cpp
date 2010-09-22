@@ -538,12 +538,16 @@ void wxExAppTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->GetIsActive());
   
   vi->Use(true);
-  CPPUNIT_ASSERT(vi->GetIsActive());
+  CPPUNIT_ASSERT( vi->GetIsActive());
   
   wxKeyEvent event(wxEVT_CHAR);
   event.m_keyCode = 97; // one char 'a'
-  
+
+  // First a enters insert mode, so is handled by vi, not to be skipped.
   CPPUNIT_ASSERT(!vi->OnChar(event));
+
+  // The next a is to be skipped, we are now in insert mode.
+  CPPUNIT_ASSERT( vi->OnChar(event));
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
