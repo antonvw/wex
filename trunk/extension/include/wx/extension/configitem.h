@@ -103,6 +103,7 @@ public:
     int min, int max,
     const wxString& page = wxEmptyString,
     bool spin = true,
+    long style = wxSL_HORIZONTAL,
     int cols = -1);
 
   /// Constructor for a spin ctrl double.

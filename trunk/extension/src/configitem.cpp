@@ -72,6 +72,7 @@ wxExConfigItem::wxExConfigItem(
   int max,
   const wxString& page,
   bool spin,
+  long style,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
@@ -81,7 +82,7 @@ wxExConfigItem::wxExConfigItem(
   , m_MaxItems(0)
   , m_Name(name)
   , m_Page(page)
-  , m_Style(0)
+  , m_Style(style)
   , m_Type(spin ? CONFIG_SPINCTRL: CONFIG_SLIDER)
   , m_Cols(cols)
   , m_AddName(true)
