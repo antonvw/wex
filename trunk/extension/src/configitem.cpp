@@ -405,7 +405,8 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         m_Min,
         m_Max,
         wxDefaultPosition,
-        wxSize(width_numeric, wxDefaultCoord));
+        wxSize(width_numeric, wxDefaultCoord),
+        m_Style);
       expand = false;
       break;
 
