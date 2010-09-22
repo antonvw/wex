@@ -182,7 +182,6 @@ private:
   wxString m_Default;
 
   long m_Style;
-  long m_StyleRadioBox;
 
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;

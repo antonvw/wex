@@ -158,8 +158,7 @@ wxExConfigItem::wxExConfigItem(
   , m_MaxItems(0)
   , m_Name(name)
   , m_Page(page)
-  , m_Style(0)
-  , m_StyleRadioBox(style)
+  , m_Style(style)
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
   , m_Cols(cols)
@@ -393,7 +392,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         wxDefaultSize, 
         arraychoices, 
         m_MajorDimension,
-        m_StyleRadioBox);
+        m_Style);
       }
 
       break;
