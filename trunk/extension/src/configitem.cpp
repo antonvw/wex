@@ -59,7 +59,8 @@ wxExConfigItem::wxExConfigItem(
    const wxString& page,
    int cols)
   : m_Control(NULL)
-  , m_Id(CONFIG_HYPERLINKCTRL)
+  , m_Id(wxID_ANY)
+  , m_Type(CONFIG_HYPERLINKCTRL)
   , m_Name(name)
   , m_AddName(true)
   , m_Page(page)

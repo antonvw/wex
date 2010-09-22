@@ -504,7 +504,7 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(help.GetCommand(false, false) == "help");
   
   CPPUNIT_ASSERT(add.GetNo() == 0);
-  CPPUNIT_ASSERT(update.GetNo() == 5);
+  CPPUNIT_ASSERT(update.GetNo() == 6);
 
   CPPUNIT_ASSERT(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
   CPPUNIT_ASSERT(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
