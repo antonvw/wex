@@ -31,11 +31,13 @@ void wxExAppTestFixture::testConfigItem()
   std::vector <wxExConfigItem> items;
 
   // Use specific constructors.
-  wxExConfigItem ci_sl("ci-sl", 1, 5, false);
+  /*
+  wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, false,
+    wxSL_HORIZONTAL, -1);
   items.push_back(ci_sl);
   CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
-
+*/
   wxExConfigItem ci_sp("ci-sp", 1, 5);
   items.push_back(ci_sp);
   CPPUNIT_ASSERT(ci_sp.GetName() == "ci-sp");
@@ -402,9 +404,9 @@ void wxExAppTestFixture::testSTCFile()
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
   
   CPPUNIT_ASSERT(!file.GetContentsChanged());
-  stc->SetText("hello")
+  stc->SetText("hello");
   CPPUNIT_ASSERT( file.GetContentsChanged());
-  file.ResetContentsChanged());
+  file.ResetContentsChanged();
   CPPUNIT_ASSERT(!file.GetContentsChanged());
 }
 
@@ -430,9 +432,9 @@ void wxExAppTestFixture::testSTCShell()
 
   // Sleep a little to allow the event queue for shell to be processed.
   wxMilliSleep(10);
-  CPPUNIT_ASSERT(m_STCShell->GetHistory().Contains("aaa"));
+  CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
 
-  CPPUNIT_ASSERT(m_STCShell->GetPrompt() == ">");
+  CPPUNIT_ASSERT(shell->GetPrompt() == ">");
 }
 
 void wxExAppTestFixture::testUtil()
@@ -492,7 +494,7 @@ void wxExAppTestFixture::testVCSCommand()
   const wxExVCSCommand help("h&elp", "error", "", "m&e");
   const wxExVCSCommand open("blame");
   const wxExVCSCommand update("update");
-  const wxExVCSCommand none();
+  const wxExVCSCommand none;
 
   CPPUNIT_ASSERT(add.GetCommand() == "add");
   CPPUNIT_ASSERT(add.GetCommand(true, true) == "a&dd");
