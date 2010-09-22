@@ -30,52 +30,57 @@ void wxExAppTestFixture::testConfigItem()
 {
   std::vector <wxExConfigItem> items;
 
-  // Use specific connstructors.
-  wxExConfigItem ci1("ci1", 1, 5);
-  items.push_back(ci1);
-  CPPUNIT_ASSERT(ci1.GetName() == "ci1");
-  CPPUNIT_ASSERT(ci1.GetType() == CONFIG_SPINCTRL);
+  // Use specific constructors.
+  wxExConfigItem ci_sl("ci-sl", 1, 5, false);
+  items.push_back(ci_sl);
+  CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
+  CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
+
+  wxExConfigItem ci_sp("ci-sp", 1, 5);
+  items.push_back(ci_sp);
+  CPPUNIT_ASSERT(ci_sp.GetName() == "ci-sp");
+  CPPUNIT_ASSERT(ci_sp.GetType() == CONFIG_SPINCTRL);
   
-  wxExConfigItem ci2("ci1", 1.0, 5.0);
-  items.push_back(ci2);
-  CPPUNIT_ASSERT(ci2.GetType() == CONFIG_SPINCTRL_DOUBLE);
+  wxExConfigItem ci_sp_l("ci-sp-l", 1.0, 5.0);
+  items.push_back(ci_sp_l);
+  CPPUNIT_ASSERT(ci_sp_l.GetType() == CONFIG_SPINCTRL_DOUBLE);
   
-  wxExConfigItem ci3("string");
-  items.push_back(ci3);
-  CPPUNIT_ASSERT(ci3.GetType() == CONFIG_STRING);
+  wxExConfigItem ci_str("string");
+  items.push_back(ci_str);
+  CPPUNIT_ASSERT(ci_str.GetType() == CONFIG_STRING);
   
-  wxExConfigItem ci4("int", CONFIG_INT);
-  items.push_back(ci4);
-  CPPUNIT_ASSERT(ci4.GetType() == CONFIG_INT);
+  wxExConfigItem ci_int("int", CONFIG_INT);
+  items.push_back(ci_int);
+  CPPUNIT_ASSERT(ci_int.GetType() == CONFIG_INT);
 
   std::map<long, const wxString> echoices;
   echoices.insert(std::make_pair(0, _("Zero")));
   echoices.insert(std::make_pair(1, _("One")));
   echoices.insert(std::make_pair(2, _("Two")));
-  wxExConfigItem ci5("Radio Box", echoices, true);
-  items.push_back(ci5);
-  CPPUNIT_ASSERT(ci5.GetType() == CONFIG_RADIOBOX);
+  wxExConfigItem ci_rb("Radio Box", echoices, true);
+  items.push_back(ci_rb);
+  CPPUNIT_ASSERT(ci_rb.GetType() == CONFIG_RADIOBOX);
 
   std::map<long, const wxString> cl;
   cl.insert(std::make_pair(0, _("Bit One")));
   cl.insert(std::make_pair(1, _("Bit Two")));
   cl.insert(std::make_pair(2, _("Bit Three")));
   cl.insert(std::make_pair(4, _("Bit Four")));
-  wxExConfigItem ci6("Bin Choices", cl, false);
-  items.push_back(ci6);
-  CPPUNIT_ASSERT(ci6.GetType() == CONFIG_CHECKLISTBOX);
+  wxExConfigItem ci_bc("Bin Choices", cl, false);
+  items.push_back(ci_bc);
+  CPPUNIT_ASSERT(ci_bc.GetType() == CONFIG_CHECKLISTBOX);
 
-  wxExConfigItem ci7("hyper", "www.wxwidgets.org", wxEmptyString);
-  items.push_back(ci7);
-  CPPUNIT_ASSERT(ci7.GetType() == CONFIG_HYPERLINKCTRL);
+  wxExConfigItem ci_hl("hyper", "www.wxwidgets.org", wxEmptyString);
+  items.push_back(ci_hl);
+  CPPUNIT_ASSERT(ci_hl.GetType() == CONFIG_HYPERLINKCTRL);
 
   std::set<wxString> bchoices;
   bchoices.insert(_("This"));
   bchoices.insert(_("Or"));
   bchoices.insert(_("Other"));
-  wxExConfigItem ci8(bchoices);
-  items.push_back(ci8);
-  CPPUNIT_ASSERT(ci8.GetType() == CONFIG_CHECKLISTBOX_NONAME);
+  wxExConfigItem ci_cl_n(bchoices);
+  items.push_back(ci_cl_n);
+  CPPUNIT_ASSERT(ci_cl_n.GetType() == CONFIG_CHECKLISTBOX_NONAME);
 
   // Use general constructor, and add all items.
   for (

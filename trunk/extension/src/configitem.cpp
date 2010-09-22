@@ -16,6 +16,7 @@
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
 #include <wx/hyperlink.h>
+#include <wx/slider.h>
 #include <wx/spinctrl.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -70,6 +71,7 @@ wxExConfigItem::wxExConfigItem(
   int min,
   int max,
   const wxString& page,
+  bool spin,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
@@ -80,7 +82,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Name(name)
   , m_Page(page)
   , m_Style(0)
-  , m_Type(CONFIG_SPINCTRL)
+  , m_Type(spin ? CONFIG_SPINCTRL: CONFIG_SLIDER)
   , m_Cols(cols)
   , m_AddName(true)
   , m_MinDouble(0)
@@ -396,6 +398,17 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
       break;
 
+    case CONFIG_SLIDER:
+      m_Control = new wxSlider(parent,
+        m_Id,
+        wxEmptyString,
+        m_Min,
+        m_Max,
+        wxDefaultPosition,
+        wxSize(width_numeric, wxDefaultCoord));
+      expand = false;
+      break;
+
     case CONFIG_SPINCTRL:
       m_Control = new wxSpinCtrl(parent,
         m_Id,
@@ -691,6 +704,16 @@ void wxExConfigItem::ToConfig(bool save) const
           rb->SetStringSelection(c->second);
         }
       }
+      }
+      break;
+
+    case CONFIG_SLIDER:
+      {
+      wxSlider* sl = (wxSlider*)m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(m_Name, sl->GetValue());
+      else
+        sl->SetValue(wxConfigBase::Get()->ReadLong(m_Name, m_Min));
       }
       break;
 

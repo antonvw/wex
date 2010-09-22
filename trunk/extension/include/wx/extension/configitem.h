@@ -39,6 +39,7 @@ enum
   CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox ctrl
   CONFIG_HYPERLINKCTRL,   ///< a hyperlink ctrl
   CONFIG_RADIOBOX,        ///< a radiobox ctrl
+  CONFIG_SLIDER,          ///< a slider
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
   CONFIG_STRING,          ///< a textctrl
@@ -97,10 +98,11 @@ public:
     long style = wxRA_SPECIFY_COLS,
     int cols = -1);
 
-  /// Constructor for a spin ctrl.
+  /// Constructor for a spin ctrl or a slider.
   wxExConfigItem(const wxString& name,
     int min, int max,
     const wxString& page = wxEmptyString,
+    bool spin = true,
     int cols = -1);
 
   /// Constructor for a spin ctrl double.
