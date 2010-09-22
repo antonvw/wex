@@ -14,6 +14,7 @@
 #include <set>
 #include <wx/control.h>
 #include <wx/sizer.h>
+#include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/string.h>
 
 #if wxUSE_GUI

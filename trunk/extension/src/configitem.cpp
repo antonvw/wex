@@ -17,7 +17,6 @@
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
 #include <wx/hyperlink.h>
-#include <wx/slider.h>
 #include <wx/spinctrl.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
