@@ -41,6 +41,10 @@ public:
   /// Gets the no.
   long GetNo() const {return m_No;};
   
+  /// Resets the number of instances, so the no
+  /// will start from begin again.
+  static void ResetInstances();
+
   /// Does this vcs supports keyword expansion.
   bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:

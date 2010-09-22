@@ -144,3 +144,8 @@ const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
 
   return v;
 }
+
+void wxExVCSEntry::ResetInstances()
+{
+  m_Instances = wxExVCS::VCS_AUTO + 1;
+}

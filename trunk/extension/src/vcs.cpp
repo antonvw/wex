@@ -520,7 +520,7 @@ bool wxExVCS::Read()
 
   // Initialize members.
   m_Entries.clear();
-  wxExVCSCommand::ResetInstances();
+  wxExVCSEntry::ResetInstances();
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
