@@ -146,9 +146,11 @@ public:
   /// It returns the sizer that was used for creating the item sizer.
   wxFlexGridSizer* Layout(
     wxWindow* parent, 
-    wxSizer* sizer, 
+    wxSizer* sizer,
+    ///< specify the item will be readonly, it will not be changeable
+    ///< if underlying control supports this
     bool readonly = false,
-    ///< specify the size for creating the item, or NULL, 
+    ///< specify the sizer for creating the item, or NULL,
     ///< than a new one is created
     wxFlexGridSizer* fgz = NULL);
 
@@ -186,7 +188,6 @@ private:
 
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
-  // There were all const.
 
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;
