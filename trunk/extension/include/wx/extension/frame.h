@@ -40,12 +40,12 @@ public:
     STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
   };
 
-  /// Constructor, the frame position and size is taken from the config.
+  /// Constructor, the frame position and size is taken from the config,
+  /// the name is used internally for persistent registration.
   wxExFrame(wxWindow* parent,
     wxWindowID id,
     const wxString& title,
-    long style = wxDEFAULT_FRAME_STYLE,
-    const wxString& name = wxFrameNameStr);
+    long style = wxDEFAULT_FRAME_STYLE);
 
   /// Destructor, deletes the statusbar.
  ~wxExFrame();

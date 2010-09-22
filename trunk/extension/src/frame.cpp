@@ -67,9 +67,8 @@ END_EVENT_TABLE()
 wxExFrame::wxExFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
-  long style,
-  const wxString& name)
-  : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, name)
+  long style)
+  : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style)
   , m_FindReplaceDialog(NULL)
   , m_FocusGrid(NULL)
   , m_FocusListView(NULL)

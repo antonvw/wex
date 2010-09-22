@@ -28,8 +28,7 @@ public:
   wxExManagedFrame(wxWindow* parent,
     wxWindowID id,
     const wxString& title,
-    long style = wxDEFAULT_FRAME_STYLE,
-    const wxString& name = wxFrameNameStr);
+    long style = wxDEFAULT_FRAME_STYLE);
 
   /// Destructor, uninits the aui manager.
  ~wxExManagedFrame();

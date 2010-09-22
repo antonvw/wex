@@ -28,9 +28,8 @@ END_EVENT_TABLE()
 wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
-  long style,
-  const wxString& name)
-  : wxExFrame(parent, id, title, style, name)
+  long style)
+  : wxExFrame(parent, id, title, style)
 {
   m_Manager.SetManagedWindow(this);
 
