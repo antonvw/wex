@@ -562,15 +562,13 @@ int wxExSTC::ConfigDialog(
 {
   std::vector<wxExConfigItem> items;
 
-  const wxString page = 
-    ((flags & STC_CONFIG_SIMPLE) ? wxString(wxEmptyString): _("Setting"));
-
+  // Settings page.
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
   bchoices.insert(_("vi mode"));
-  items.push_back(wxExConfigItem(bchoices, page, 2));
+  items.push_back(wxExConfigItem(bchoices, _("Setting"), 2));
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
@@ -581,7 +579,7 @@ int wxExSTC::ConfigDialog(
     _("Whitespace"), 
     choices, 
     true, 
-    page,
+    _("Setting"),
     1));
 
   std::map<long, const wxString> wchoices;
@@ -592,7 +590,7 @@ int wxExSTC::ConfigDialog(
     _("Wrap line"), 
     wchoices, 
     true,
-    page,
+    _("Setting"),
     1));
 
   std::map<long, const wxString> vchoices;
@@ -603,63 +601,71 @@ int wxExSTC::ConfigDialog(
     _("Wrap visual flags"), 
     vchoices, 
     true, 
-    page,
+    _("Setting"),
     1));
 
-  if (!(flags & STC_CONFIG_SIMPLE))
+  // Edge page.
+  items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
+
+  std::map<long, const wxString> echoices;
+  echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
+  echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
+  echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
+  items.push_back(wxExConfigItem(
+    _("Edge line"), 
+    echoices, 
+    true, 
+    _("Edge"),
+    1));
+
+  // Colour page.
+  items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
+  items.push_back(
+    wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
+
+  // Margin page.
+  items.push_back(wxExConfigItem(
+    _("Tab width"), 
+    1, 
+    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+  items.push_back(wxExConfigItem(
+    _("Indent"), 
+    1, 
+    (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
+  items.push_back(
+    wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
+  items.push_back(
+    wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
+  items.push_back(
+    wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
+
+  if (wxExLexers::Get()->Count() > 0)
   {
-    items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
-
-    std::map<long, const wxString> echoices;
-    echoices.insert(std::make_pair(wxSTC_EDGE_NONE, _("None")));
-    echoices.insert(std::make_pair(wxSTC_EDGE_LINE, _("Line")));
-    echoices.insert(std::make_pair(wxSTC_EDGE_BACKGROUND, _("Background")));
-    items.push_back(wxExConfigItem(
-      _("Edge line"), 
-      echoices, 
-      true, 
-      _("Edge"),
-      1));
-
+    // Folding page.
     items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
-    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX, 
+    items.push_back(wxExConfigItem(_("Indentation guide"), CONFIG_CHECKBOX,
       _("Folding")));
 
     std::map<long, const wxString> fchoices;
     // next no longer available
 //    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED, 
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED,
       _("Line before expanded")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED, 
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED,
       _("Line before contracted")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED, 
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_EXPANDED,
       _("Line after expanded")));
-    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, 
+    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED,
       _("Line after contracted")));
     // next is experimental, wait for scintilla
     //fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LEVELNUMBERS, _("Level numbers")));
-    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false, 
+    items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false,
       _("Folding")));
+  }
 
-    items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
-    items.push_back(
-      wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
-
-    items.push_back(wxExConfigItem(
-      _("Tab width"), 
-      1, 
-      (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-    items.push_back(wxExConfigItem(
-      _("Indent"), 
-      1, 
-      (int)wxConfigBase::Get()->ReadLong(_("Edge column"), 80), _("Margin")));
-    items.push_back(
-      wxExConfigItem(_("Divider"), 0, 40, _("Margin")));
-    items.push_back(
-      wxExConfigItem(_("Folding"), 0, 40, _("Margin")));
-    items.push_back(
-      wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
-
+  if (!(flags & STC_CONFIG_SIMPLE))
+  {
+    // Directory page.
     items.push_back(
       wxExConfigItem(
         _("Include directory"), 
