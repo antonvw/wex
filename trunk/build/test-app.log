@@ -1,13 +1,38 @@
-.F....................
+.F.............F.F.F...F..F
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  21   Failures: 1   Errors: 0
+Run:  21   Failures: 6   Errors: 0
 
 
-1) test: testConfigItem (F) line: 70 ../extension/test/app/test.cpp
+1) test: testConfigItem (F) line: 77 ../extension/test/app/test.cpp
 assertion failed
-- Expression: ci7.GetType() == CONFIG_HYPERLINKCTRL
+- Expression: ci_hl.GetType() == CONFIG_HYPERLINKCTRL
+
+
+2) test: testSTC (F) line: 378 ../extension/test/app/test.cpp
+assertion failed
+- Expression: !lexer.ApplyLexer("xyz", stc, false)
+
+
+3) test: testSTCFile (F) line: 408 ../extension/test/app/test.cpp
+assertion failed
+- Expression: file.GetContentsChanged()
+
+
+4) test: testSTCShell (F) line: 435 ../extension/test/app/test.cpp
+assertion failed
+- Expression: shell->GetHistory().Contains("aaa")
+
+
+5) test: testVCSCommand (F) line: 507 ../extension/test/app/test.cpp
+assertion failed
+- Expression: update.GetNo() == 5
+
+
+6) test: testVi (F) line: 557 ../extension/test/app/test.cpp
+assertion failed
+- Expression: vi->OnChar(event)
 
 
