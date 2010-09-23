@@ -125,7 +125,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(style)
   , m_Type(type)
   , m_Cols(cols)
-  , m_AddName(add_name)
+  , m_AddName((type != CONFIG_STATICTEXT ? add_name: false))
   , m_MinDouble(0)
   , m_MaxDouble(0)
   , m_Inc(1)
@@ -432,7 +432,14 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_STATICTEXT:
-      m_Control = new wxStaticText(parent, m_Id, m_Name);
+      m_Control = new wxStaticText(parent,
+        m_Id,
+        m_Name,
+        wxDefaultPosition,
+        (m_Style & wxTE_MULTILINE ?
+           wxSize(width, 200):
+           wxSize(width, wxDefaultCoord)),
+        m_Style);
       break;
 
     case CONFIG_STRING:
@@ -443,8 +450,8 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
-           m_Style | 
-             (readonly ? wxTE_READONLY: 0));
+        m_Style | 
+          (readonly ? wxTE_READONLY: 0));
       break;
 
     default: wxFAIL;

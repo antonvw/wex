@@ -116,14 +116,15 @@ public:
     int cols = -1);
 
   /// Constructor for a string, a hyperlink ctrl or a static text.
-  /// The extra style argument is the style for the wxTextCtrl used.
-  /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
+  /// The extra style argument is the style for the control used
+  /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
   wxExConfigItem(const wxString& name,
     const wxString& default = wxEmptyString,
     const wxString& page = wxEmptyString,
     long style = 0,
     int type = CONFIG_STRING,
     bool is_required = false,
+    ///< ignored for a static text
     bool add_name = true,
     int cols = -1);
 
