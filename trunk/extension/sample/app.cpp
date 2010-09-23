@@ -528,12 +528,16 @@ void wxExSampleFrame::ShowConfigItems()
   v.push_back(wxExConfigItem(
     _("Hyper Link 1"),
     "www.wxwidgets.org",
-    "Hyperlinks"));
+    "Hyperlinks",
+    0,
+    CONFIG_HYPERLINKCTRL));
 
   v.push_back(wxExConfigItem(
     _("Hyper Link 2"),
     "www.scintilla.org",
-    "Hyperlinks"));
+    "Hyperlinks",
+    0,
+    CONFIG_HYPERLINKCTRL));
 
   // CONFIG_INT
   for (size_t j = 1; j <= 5; j++)

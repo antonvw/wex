@@ -119,7 +119,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(style)
   , m_Type(type)
   , m_Cols(cols)
-  , m_AddName((type != CONFIG_STATICTEXT ? add_name: false))
+  , m_AddName(
+      (type != CONFIG_STATICTEXT && 
+       type != CONFIG_HYPERLINKCTRL ? add_name: false))
   , m_Inc(1)
   , m_Default(value)
 {
