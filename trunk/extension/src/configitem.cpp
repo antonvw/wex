@@ -101,7 +101,7 @@ wxExConfigItem::wxExConfigItem(
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
-  const wxString& default,
+  const wxString& value,
   const wxString& page,
   long style,
   int type,
@@ -121,7 +121,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Cols(cols)
   , m_AddName((type != CONFIG_STATICTEXT ? add_name: false))
   , m_Inc(1)
-  , m_Default(default)
+  , m_Default(value)
 {
 }
 

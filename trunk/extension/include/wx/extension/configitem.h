@@ -119,7 +119,7 @@ public:
   /// The extra style argument is the style for the control used
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
   wxExConfigItem(const wxString& name,
-    const wxString& default = wxEmptyString,
+    const wxString& value = wxEmptyString,
     const wxString& page = wxEmptyString,
     long style = 0,
     int type = CONFIG_STRING,
