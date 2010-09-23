@@ -48,8 +48,6 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(
       type == CONFIG_CHECKBOX ||
       type == CONFIG_BUTTON ? false: add_name)
-  , m_MinDouble(0)
-  , m_MaxDouble(1)
   , m_Inc(1)
 {
 }
@@ -74,8 +72,6 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(spin ? CONFIG_SPINCTRL: CONFIG_SLIDER)
   , m_Cols(cols)
   , m_AddName(true)
-  , m_MinDouble(0)
-  , m_MaxDouble(0)
   , m_Inc(1)
 {
 }
@@ -91,8 +87,6 @@ wxExConfigItem::wxExConfigItem(
   , m_Id(wxID_ANY)
   , m_IsRequired(false)
   , m_MaxItems(0)
-  , m_MinDouble(min)
-  , m_MaxDouble(max)
   , m_Inc(inc)
   , m_Name(name)
   , m_Page(page)
@@ -100,8 +94,8 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_SPINCTRL_DOUBLE)
   , m_Cols(cols)
   , m_AddName(true)
-  , m_Min(0)
-  , m_Max(0)
+  , m_Min(min)
+  , m_Max(max)
 {
 }
 
@@ -126,8 +120,6 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(type)
   , m_Cols(cols)
   , m_AddName((type != CONFIG_STATICTEXT ? add_name: false))
-  , m_MinDouble(0)
-  , m_MaxDouble(0)
   , m_Inc(1)
   , m_Default(default)
 {
@@ -155,8 +147,6 @@ wxExConfigItem::wxExConfigItem(
   , m_Choices(choices)
   , m_Cols(cols)
   , m_AddName(false)
-  , m_MinDouble(0)
-  , m_MaxDouble(0)
   , m_Inc(1)
 {
 }
@@ -178,8 +168,6 @@ wxExConfigItem::wxExConfigItem(
   , m_ChoicesBool(choices) 
   , m_Cols(cols)
   , m_AddName(false)
-  , m_MinDouble(0)
-  , m_MaxDouble(0)
   , m_Inc(1)
 {
 }
@@ -424,9 +412,9 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         wxDefaultPosition,
         wxSize(width_numeric, wxDefaultCoord),
         wxSP_ARROW_KEYS | (readonly ? wxTE_READONLY: 0),
-        m_MinDouble,
-        m_MaxDouble,
-        m_MinDouble,
+        m_Min,
+        m_Max,
+        m_Min,
         m_Inc);
       expand = false;
       break;
@@ -742,7 +730,7 @@ void wxExConfigItem::ToConfig(bool save) const
       if (save)
         wxConfigBase::Get()->Write(m_Name, sc->GetValue());
       else
-        sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Name, m_MinDouble));
+        sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Name, m_Min));
       }
       break;
 

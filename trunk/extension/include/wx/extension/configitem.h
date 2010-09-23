@@ -177,13 +177,11 @@ private:
   int m_Cols;
   int m_Id;
   int m_MajorDimension;
-  int m_Min;
-  int m_Max;
   int m_MaxItems;
   int m_Type;
 
-  double m_MinDouble;
-  double m_MaxDouble;
+  double m_Min;
+  double m_Max;
   double m_Inc;
 
   wxString m_Name;
