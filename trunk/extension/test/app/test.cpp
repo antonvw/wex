@@ -393,6 +393,11 @@ void wxExAppTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->GetFlags() == 0);
   const wxCharBuffer& buffer = stc->GetTextRaw();
   CPPUNIT_ASSERT(buffer.length() == 40);
+
+  stc->SetText("hello");
+  CPPUNIT_ASSERT( stc->GetFile().GetContentsChanged());
+  stc->GetFile().ResetContentsChanged();
+  CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
 }
   
 void wxExAppTestFixture::testSTCFile()
@@ -402,12 +407,9 @@ void wxExAppTestFixture::testSTCFile()
 
   // The file itself is not assigned.  
   CPPUNIT_ASSERT(!file.GetFileName().GetStat().IsOk());
-  
   CPPUNIT_ASSERT(!file.GetContentsChanged());
-  stc->SetText("hello");
-  CPPUNIT_ASSERT( file.GetContentsChanged());
-  file.ResetContentsChanged();
-  CPPUNIT_ASSERT(!file.GetContentsChanged());
+
+  // For more tests see testSTC.
 }
 
 void wxExAppTestFixture::testSTCShell()
