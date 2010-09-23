@@ -31,25 +31,34 @@ void wxExAppTestFixture::testConfigItem()
   std::vector <wxExConfigItem> items;
 
   // Use specific constructors.
-  /*
   wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, false,
     wxSL_HORIZONTAL, -1);
   items.push_back(ci_sl);
   CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
-*/
+
   wxExConfigItem ci_sp("ci-sp", 1, 5);
   items.push_back(ci_sp);
   CPPUNIT_ASSERT(ci_sp.GetName() == "ci-sp");
   CPPUNIT_ASSERT(ci_sp.GetType() == CONFIG_SPINCTRL);
   
-  wxExConfigItem ci_sp_l("ci-sp-l", 1.0, 5.0);
-  items.push_back(ci_sp_l);
-  CPPUNIT_ASSERT(ci_sp_l.GetType() == CONFIG_SPINCTRL_DOUBLE);
+  wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0);
+  items.push_back(ci_sp_d);
+  CPPUNIT_ASSERT(ci_sp_d.GetType() == CONFIG_SPINCTRL_DOUBLE);
   
-  wxExConfigItem ci_str("string");
+  wxExConfigItem ci_str("ci-string");
   items.push_back(ci_str);
   CPPUNIT_ASSERT(ci_str.GetType() == CONFIG_STRING);
+  
+  wxExConfigItem ci_hl("ci-hyper",
+    "www.wxwidgets.org", wxEmptyString, 0, CONFIG_HYPERLINKCTRL);
+  items.push_back(ci_hl);
+  CPPUNIT_ASSERT(ci_hl.GetType() == CONFIG_HYPERLINKCTRL);
+
+  wxExConfigItem ci_st("ci-static",
+    "HELLO", wxEmptyString, 0, CONFIG_STATICTEXT);
+  items.push_back(ci_st);
+  CPPUNIT_ASSERT(ci_st.GetType() == CONFIG_STATICTEXT);
   
   wxExConfigItem ci_int("int", CONFIG_INT);
   items.push_back(ci_int);
@@ -71,10 +80,6 @@ void wxExAppTestFixture::testConfigItem()
   wxExConfigItem ci_bc("Bin Choices", cl, false);
   items.push_back(ci_bc);
   CPPUNIT_ASSERT(ci_bc.GetType() == CONFIG_CHECKLISTBOX);
-
-  wxExConfigItem ci_hl("hyper", "www.wxwidgets.org", wxEmptyString);
-  items.push_back(ci_hl);
-  CPPUNIT_ASSERT(ci_hl.GetType() == CONFIG_HYPERLINKCTRL);
 
   std::set<wxString> bchoices;
   bchoices.insert(_("This"));
