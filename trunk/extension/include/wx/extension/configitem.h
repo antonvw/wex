@@ -66,8 +66,12 @@ public:
     int type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
+    ///< the id as used by the control, use GetControl()->GetId()
+    ///< to retrieve actual value
     int id = wxID_ANY,
-    int max_items = 25, // used by CONFIG_COMBOBOX
+    ///< used by CONFIG_COMBOBOX
+    int max_items = 25,
+    ///< will the name be displayed as a static text
     bool add_name = true,
     int cols = -1);
 
