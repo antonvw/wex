@@ -29,7 +29,8 @@ public:
 
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
-  void BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
+  /// Returns number of items in menu.
+  int BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
 #endif
   
   /// Gets the command.

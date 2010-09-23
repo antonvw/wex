@@ -472,8 +472,7 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( wxExVCS::Get()->SupportKeywordExpansion());
 
   wxMenu* menu = new wxMenu("test");
-  wxExVCS::Get()->BuildMenu(100, menu);
-  CPPUNIT_ASSERT(menu->GetMenuItemCount() > 0);
+  CPPUNIT_ASSERT( wxExVCS::Get()->BuildMenu(100, menu) > 0);
 
   CPPUNIT_ASSERT( wxExVCS::Get()->GetFileName().IsOk());
 

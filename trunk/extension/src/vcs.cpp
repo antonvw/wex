@@ -49,7 +49,7 @@ wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
 }
 
 #if wxUSE_GUI
-void wxExVCS::BuildMenu(
+int wxExVCS::BuildMenu(
   int base_id, 
   wxMenu* menu, 
   const wxExFileName& filename,
@@ -57,7 +57,7 @@ void wxExVCS::BuildMenu(
 {
   if (m_Entries.size() == 0)
   {
-    return;
+    return 0;
   }
   
   if (filename.IsOk())
@@ -69,8 +69,10 @@ void wxExVCS::BuildMenu(
     
   if (it != m_Entries.end())
   {
-      it->second.BuildMenu(base_id, menu, is_popup);
+      return it->second.BuildMenu(base_id, menu, is_popup);
   }
+
+  return 0;
 }
 #endif
 

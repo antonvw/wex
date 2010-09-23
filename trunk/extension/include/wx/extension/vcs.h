@@ -49,6 +49,7 @@ public:
   
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
+  /// Returns number of items in menu.
   void BuildMenu(
     int base_id, 
     wxMenu* menu, 

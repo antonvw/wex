@@ -52,7 +52,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
 }
 
 #if wxUSE_GUI
-void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
+int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
   wxMenu* submenu = NULL;
   
@@ -96,6 +96,8 @@ void wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
         wxExEllipsed(it->GetCommand(false, true))); // use no sub and do accel
     }
   }
+
+  return menu->GetMenuItemCount();
 }
 
 #endif
