@@ -486,11 +486,6 @@ void wxExVCS::Initialize(int menu_id)
     {
       m_Command = it->second.GetCommand(command_id);
       m_Caption = GetName(m_FileName) + " " + m_Command.GetCommand();
-
-      // Currently no flags, as no command was executed.
-      m_CommandWithFlags = m_Command.GetCommand();
-
-      // Use general key.
       m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
     }
     else
