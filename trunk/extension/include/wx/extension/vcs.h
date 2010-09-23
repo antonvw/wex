@@ -50,7 +50,7 @@ public:
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
   /// Returns number of items in menu.
-  void BuildMenu(
+  int BuildMenu(
     int base_id, 
     wxMenu* menu, 
     const wxExFileName& filename = wxExFileName(),

@@ -585,12 +585,14 @@ void wxExSampleFrame::ShowConfigItems()
   {
     v.push_back(wxExConfigItem(
       wxString::Format(_("String%d"), l), 
+      wxEmptyString,
       "Strings",
       0));
   }
   
   v.push_back(wxExConfigItem(
     _("String Multiline"), 
+    wxEmptyString,
     "Strings",
     wxTE_MULTILINE));
 

@@ -669,8 +669,10 @@ int wxExSTC::ConfigDialog(
     items.push_back(
       wxExConfigItem(
         _("Include directory"), 
+        wxEmptyString,
         _("Directory"), 
         wxTE_MULTILINE | wxHSCROLL,
+        CONFIG_STRING,
         false,
         false)); // no name
   }

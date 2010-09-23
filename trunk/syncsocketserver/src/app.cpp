@@ -464,7 +464,12 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_SERVER_CONFIG:
     {
     std::vector<wxExConfigItem> v;
-    v.push_back(wxExConfigItem(_("Hostname"), wxEmptyString, 0, true));
+    v.push_back(wxExConfigItem(_("Hostname"), 
+      wxEmptyString, 
+      wxEmptyString,
+      0, 
+      CONFIG_STRING,
+      true));
     v.push_back(wxExConfigItem(_("Port"), 1000, 65536));
 
     // Configuring only possible if server is stopped,

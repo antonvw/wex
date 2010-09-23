@@ -122,13 +122,25 @@ int wxExHeader::ShowDialog(wxWindow* parent, const wxString& title) const
 
   // Purpose is required.
   v.push_back(
-    wxExConfigItem(m_TextPurpose, wxEmptyString, wxTE_MULTILINE, true));
+    wxExConfigItem(
+      m_TextPurpose, 
+      wxEmptyString, 
+      wxEmptyString,
+      wxTE_MULTILINE,
+      CONFIG_STRING, 
+      true));
 
   // Author is required, but only presented if empty.
   // Email and License also are only presented if Author empty.
   if (wxConfigBase::Get()->Read(m_TextAuthor).empty())
   {
-    v.push_back(wxExConfigItem(m_TextAuthor, wxEmptyString, 0, true));
+    v.push_back(wxExConfigItem(
+      m_TextAuthor, 
+      wxEmptyString, 
+      wxEmptyString,
+      0, 
+      CONFIG_STRING,
+      true));
 
     if (wxConfigBase::Get()->Read(m_TextEmail).empty())
     {
