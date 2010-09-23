@@ -507,7 +507,13 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(help.GetCommand(false, false) == "help");
   
   CPPUNIT_ASSERT(add.GetNo() == 0);
-  CPPUNIT_ASSERT(update.GetNo() == 6);
+  CPPUNIT_ASSERT(update.GetNo() != add.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != co.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != commit.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != diff.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != help.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != open.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != none.GetNo());
 
   CPPUNIT_ASSERT(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
   CPPUNIT_ASSERT(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
@@ -555,9 +561,11 @@ void wxExAppTestFixture::testVi()
 
   // First a enters insert mode, so is handled by vi, not to be skipped.
   CPPUNIT_ASSERT(!vi->OnChar(event));
+  wxYield();
 
   // The next a is to be skipped, we are now in insert mode.
   CPPUNIT_ASSERT( vi->OnChar(event));
+  wxYield();
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
