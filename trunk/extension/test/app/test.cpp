@@ -433,6 +433,7 @@ void wxExAppTestFixture::testSTCShell()
   wxPostEvent(shell, event);
 
   // Sleep a little to allow the event queue for shell to be processed.
+  wxYield();
   wxMilliSleep(10);
   CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
 
