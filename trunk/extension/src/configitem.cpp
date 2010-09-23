@@ -54,21 +54,6 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
- wxExConfigItem::wxExConfigItem(const wxString& name,
-   const wxString& url,
-   const wxString& page,
-   int cols)
-  : m_Control(NULL)
-  , m_Id(wxID_ANY)
-  , m_Type(CONFIG_HYPERLINKCTRL)
-  , m_Name(name)
-  , m_AddName(true)
-  , m_Page(page)
-  , m_Cols(cols)
-  , m_Default(url)
- {
- }
-
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
   int min,
@@ -122,8 +107,10 @@ wxExConfigItem::wxExConfigItem(
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
+  const wxString& default,
   const wxString& page,
   long style,
+  int type,
   bool is_required,
   bool add_name,
   int cols)
@@ -136,12 +123,13 @@ wxExConfigItem::wxExConfigItem(
   , m_Name(name)
   , m_Page(page)
   , m_Style(style)
-  , m_Type(CONFIG_STRING)
+  , m_Type(type)
   , m_Cols(cols)
   , m_AddName(add_name)
   , m_MinDouble(0)
   , m_MaxDouble(0)
   , m_Inc(1)
+  , m_Default(default)
 {
 }
 
@@ -443,6 +431,10 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       expand = false;
       break;
 
+    case CONFIG_STATICTEXT:
+      m_Control = new wxStaticText(parent, m_Id, m_Name);
+      break;
+
     case CONFIG_STRING:
       m_Control = new wxTextCtrl(parent,
         m_Id,
@@ -523,6 +515,7 @@ void wxExConfigItem::ToConfig(bool save) const
   {
     case CONFIG_BUTTON:
     case CONFIG_HYPERLINKCTRL:
+    case CONFIG_STATICTEXT:
       // these controls have no persistant info
       break;
 

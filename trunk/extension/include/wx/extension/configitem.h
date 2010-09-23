@@ -39,11 +39,14 @@ enum
   // Items that have an explicit constructor.
   CONFIG_CHECKLISTBOX,    ///< a checklistbox ctrl
   CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox ctrl
-  CONFIG_HYPERLINKCTRL,   ///< a hyperlink ctrl
   CONFIG_RADIOBOX,        ///< a radiobox ctrl
   CONFIG_SLIDER,          ///< a slider
   CONFIG_SPINCTRL,        ///< a spinctrl
   CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
+
+  // Items that share one constructor.
+  CONFIG_HYPERLINKCTRL,   ///< a hyperlink ctrl
+  CONFIG_STATICTEXT,      ///< a static text
   CONFIG_STRING,          ///< a textctrl
 
   /// Used for automatic testing only.
@@ -83,12 +86,6 @@ public:
     const wxString& page = wxEmptyString,
     int cols = -1);
 
-  /// Constructor for a hyperlink ctrl.
-  wxExConfigItem(const wxString& name,
-    const wxString& url,
-    const wxString& page = wxEmptyString,
-    int cols = -1);
-
   /// Constructor for a radiobox or a checklistbox. Just specify
   /// the map with values and text.
   /// A checklistbox (not mutually exclusive choices)
@@ -118,12 +115,14 @@ public:
     const wxString& page = wxEmptyString,
     int cols = -1);
 
-  /// Constructor for a string.
+  /// Constructor for a string, a hyperlink ctrl or a static text.
   /// The extra style argument is the style for the wxTextCtrl used.
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD)
   wxExConfigItem(const wxString& name,
+    const wxString& default = wxEmptyString,
     const wxString& page = wxEmptyString,
     long style = 0,
+    int type = CONFIG_STRING,
     bool is_required = false,
     bool add_name = true,
     int cols = -1);
