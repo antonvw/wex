@@ -54,11 +54,11 @@ bool wxExLexer::ApplyLexer(
   
   stc->SetLexerLanguage(m_ScintillaLexer);
   
-  m_IsOk = 
-    m_ScintillaLexer.empty() ||
-    (stc->GetLexer() != wxSTC_LEX_NULL);
+  m_IsOk = (stc->GetLexer() != wxSTC_LEX_NULL);
   
-  if (!m_IsOk && show_error)
+  if (!m_IsOk && 
+      !m_ScintillaLexer.empty()&&
+       show_error)
   {
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }

@@ -15,18 +15,20 @@
 #include <map>
 #include <wx/xml/xml.h>
 #include <wx/extension/filename.h>
+#include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 
 class wxMenu;
 class wxExSTCEntryDialog;
 
 /// This class collects all vcs handling.
+/// The VCS entries are read in from vcss.xml.
 class wxExVCS
 {
 public:
-  // The VCS systems are read in from vcss.xml.
-  // The ones here can be set in the config dialog, and are not
-  // present in the vcss.xml.
+  // The vcs id's here can be set using the config dialog, and are not
+  // present in the vcss.xml. These enums should be public,
+  // as new entries should start after the last one here.
   enum
   {
     VCS_NONE = 0, // no version control
