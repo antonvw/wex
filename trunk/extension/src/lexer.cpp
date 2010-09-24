@@ -54,7 +54,9 @@ bool wxExLexer::ApplyLexer(
   
   stc->SetLexerLanguage(m_ScintillaLexer);
   
-  m_IsOk = (stc->GetLexer() != wxSTC_LEX_NULL);
+  m_IsOk = 
+    m_ScintillaLexer.empty() ||
+   (stc->GetLexer() != wxSTC_LEX_NULL);
   
   if (!m_IsOk && 
       !m_ScintillaLexer.empty()&&
