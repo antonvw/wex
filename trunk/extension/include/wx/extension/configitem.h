@@ -62,10 +62,10 @@ enum
   /// a static text item
   CONFIG_STATICTEXT,
 
-   /// a textctrl item
+  /// a textctrl item
   CONFIG_STRING,
 
-   /// a toggle button item
+  /// a toggle button item
   CONFIG_TOGGLEBUTTON,
 
   /// Items that have an explicit constructor.
