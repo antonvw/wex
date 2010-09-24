@@ -31,13 +31,12 @@ void wxExAppTestFixture::testConfigItem()
   std::vector <wxExConfigItem> items;
 
   // Use specific constructors.
-  /*
   wxExConfigItem ci_sl("ci-sl", 1, 5, wxEmptyString, false,
     (long)wxSL_HORIZONTAL, -1);
   items.push_back(ci_sl);
   CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
-*/
+
   wxExConfigItem ci_sp("ci-sp", 1, 5);
   items.push_back(ci_sp);
   CPPUNIT_ASSERT(ci_sp.GetName() == "ci-sp");

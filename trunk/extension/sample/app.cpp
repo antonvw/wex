@@ -569,6 +569,17 @@ void wxExSampleFrame::ShowConfigItems()
     true, 
     "Radioboxes"));
 
+  // CONFIG_SLIDER
+  for (size_t sl = 1; sl <= 3; sl++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format("Slider%d", sl),
+      1,
+      s,
+      wxString("Spin controls"),
+      false));
+  }
+
   // CONFIG_SPINCTRL
   for (size_t s = 1; s <= 3; s++)
   {
@@ -580,18 +591,15 @@ void wxExSampleFrame::ShowConfigItems()
   }
 
   // CONFIG_SPINCTRL_DOUBLE
-#ifdef __WXMSW__  
-  // Problems finding right constructor using wxGTK.
   for (size_t sd = 1; sd <= 3; sd++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Spin Control Double%d", sd), 
-      (double)1, 
-      (double)sd, 
-      (double)1, 
+      1.0,
+      sd, 
+      1.0,
       "Spin controls", -1));
   }
-#endif  
 
   for (size_t st = 1; st <= 5; st++)
   {
