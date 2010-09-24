@@ -49,6 +49,8 @@ void wxExAppTestFixture::testConfigItem()
   wxExConfigItem ci_str("ci-string");
   items.push_back(ci_str);
   CPPUNIT_ASSERT(ci_str.GetType() == CONFIG_STRING);
+  CPPUNIT_ASSERT(ci_str.ToConfig(true));
+  CPPUNIT_ASSERT(ci_str.ToConfig(false));
   
   wxExConfigItem ci_hl("ci-hyper",
     "www.wxwidgets.org", wxEmptyString, 0, CONFIG_HYPERLINKCTRL);
@@ -58,7 +60,9 @@ void wxExAppTestFixture::testConfigItem()
   wxExConfigItem ci_st("ci-static",
     "HELLO", wxEmptyString, 0, CONFIG_STATICTEXT);
   items.push_back(ci_st);
-  CPPUNIT_ASSERT(ci_st.GetType() == CONFIG_STATICTEXT);
+  CPPUNIT_ASSERT( ci_st.GetType() == CONFIG_STATICTEXT);
+  CPPUNIT_ASSERT(!ci_st.ToConfig(true));
+  CPPUNIT_ASSERT(!ci_st.ToConfig(false));
   
   wxExConfigItem ci_int("int", CONFIG_INT);
   items.push_back(ci_int);

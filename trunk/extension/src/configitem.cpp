@@ -499,9 +499,11 @@ wxFlexGridSizer* wxExConfigItem::Layout(
   return use;
 }
 
-void wxExConfigItem::ToConfig(bool save) const
+bool wxExConfigItem::ToConfig(bool save) const
 {
   wxASSERT(m_Control != NULL);
+
+  bool config_accessed = true;
 
   switch (m_Type)
   {
@@ -510,6 +512,7 @@ void wxExConfigItem::ToConfig(bool save) const
     case CONFIG_STATICLINE:
     case CONFIG_STATICTEXT:
       // these controls have no persistant info
+      config_accessed = false;
       break;
 
     case CONFIG_CHECKBOX:
@@ -754,7 +757,10 @@ void wxExConfigItem::ToConfig(bool save) const
 
     default:
       wxFAIL;
+      config_accessed = false;
       break;
   }
+
+  return config_accessed;
 }
 #endif // wxUSE_GUI

@@ -25,12 +25,17 @@ enum
   /// Used for automatic testing only.
   CONFIG_ITEM_MIN,
 
-  /// Items that are constructed using the default constructor.
   /// a button item
   CONFIG_BUTTON,
   
   /// a checkbox item (use ReadBool to retrieve value)
   CONFIG_CHECKBOX,
+
+  /// a checklistbox item
+  CONFIG_CHECKLISTBOX,
+
+  /// a checklistbox item
+  CONFIG_CHECKLISTBOX_NONAME,
 
   /// a colour button item
   CONFIG_COLOUR,
@@ -56,6 +61,9 @@ enum
   /// a textctrl item that only accepts an integer (long)
   CONFIG_INT,
 
+  /// a radiobox item
+  CONFIG_RADIOBOX,
+
   /// a slider item
   CONFIG_SLIDER,
 
@@ -76,16 +84,6 @@ enum
 
   /// a toggle button item
   CONFIG_TOGGLEBUTTON,
-
-  /// Items that have an explicit constructor.
-  /// a checklistbox item
-  CONFIG_CHECKLISTBOX,
-
-  /// a checklistbox item
-  CONFIG_CHECKLISTBOX_NONAME,
-
-  /// a radiobox item
-  CONFIG_RADIOBOX,
 
   /// Used for automatic testing only.
   CONFIG_ITEM_MAX,
@@ -196,7 +194,9 @@ public:
     wxFlexGridSizer* fgz = NULL);
 
   /// Loads or saves this item to the config.
-  void ToConfig(bool save) const;
+  /// Returns true if the config was accessed, as not all
+  /// config items associate with the config.
+  bool ToConfig(bool save) const;
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticTextName(wxSizer* sizer) const;
