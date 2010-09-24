@@ -435,7 +435,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t h = 1; h <= 4; h++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("Checkbox%d"), h), 
+      wxString::Format("Checkbox%d", h), 
       CONFIG_CHECKBOX, 
       "Checkboxes"));
   }
@@ -452,21 +452,21 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_CHECKLISTBOX
   std::map<long, const wxString> clb;
-  clb.insert(std::make_pair(0, _("Bit One")));
-  clb.insert(std::make_pair(1, _("Bit Two")));
-  clb.insert(std::make_pair(2, _("Bit Three")));
-  clb.insert(std::make_pair(4, _("Bit Four")));
+  clb.insert(std::make_pair(0, "Bit One"));
+  clb.insert(std::make_pair(1, "Bit Two"));
+  clb.insert(std::make_pair(2, "Bit Three"));
+  clb.insert(std::make_pair(4, "Bit Four"));
   v.push_back(wxExConfigItem(
-    _("Bin Choices"), 
+    _"Bin Choices", 
     clb, 
     false, 
     "Checkbox lists"));
 
   // CONFIG_CHECKLISTBOX_NONAME
   std::set<wxString> bchoices;
-  bchoices.insert(_("This"));
-  bchoices.insert(_("Or"));
-  bchoices.insert(_("Other"));
+  bchoices.insert("This");
+  bchoices.insert("Or");
+  bchoices.insert("Other");
   v.push_back(wxExConfigItem(
     bchoices, 
     "Checkbox lists"));
@@ -475,7 +475,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t i = 1; i <= 5; i++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("Colour%d"), i), 
+      wxString::Format("Colour%d", i), 
       CONFIG_COLOUR, 
       "Colours"));
   }
@@ -484,14 +484,14 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t m = 1; m <= 5; m++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("Combobox%d"), m), 
+      wxString::Format("Combobox%d", m), 
       CONFIG_COMBOBOX, 
       "Comboboxes"));
   }
 
   // CONFIG_COMBOBOX without a name
   v.push_back(wxExConfigItem(
-    _("Combobox No Name"),
+    "Combobox No Name",
     CONFIG_COMBOBOX, 
     "Comboboxes",
     false,
@@ -501,7 +501,7 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
-    _("Combobox Required"), 
+    "Combobox Required",
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     true,
@@ -509,7 +509,7 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
-    _("Combobox Dir2"), 
+    "Combobox Dir2", 
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     false,
@@ -517,32 +517,32 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(
-    _("Dir Picker"), 
+    "Dir Picker", 
     CONFIG_DIRPICKERCTRL, 
     "Pickers"));
 
   // CONFIG_FILEPICKERCTRL
   v.push_back(wxExConfigItem(
-    _("File Picker"), 
+    "File Picker", 
     CONFIG_FILEPICKERCTRL, 
     "Pickers"));
 
   // CONFIG_FONTPICKERCTRL
   v.push_back(wxExConfigItem(
-    _("Font Picker"), 
+    "Font Picker", 
     CONFIG_FONTPICKERCTRL, 
     "Pickers"));
 
   // CONFIG_HYPERLINKCTRL
   v.push_back(wxExConfigItem(
-    _("Hyper Link 1"),
+    "Hyper Link 1",
     "www.wxwidgets.org",
     "Hyperlinks",
     0,
     CONFIG_HYPERLINKCTRL));
 
   v.push_back(wxExConfigItem(
-    _("Hyper Link 2"),
+    "Hyper Link 2",
     "www.scintilla.org",
     "Hyperlinks",
     0,
@@ -552,7 +552,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t j = 1; j <= 5; j++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("Integer%d"), j), 
+      wxString::Format("Integer%d", j), 
       CONFIG_INT, 
       "Integers", 
       true));
@@ -560,11 +560,11 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_RADIOBOX
   std::map<long, const wxString> echoices;
-  echoices.insert(std::make_pair(0, _("Zero")));
-  echoices.insert(std::make_pair(1, _("One")));
-  echoices.insert(std::make_pair(2, _("Two")));
+  echoices.insert(std::make_pair(0, "Zero"));
+  echoices.insert(std::make_pair(1, "One"));
+  echoices.insert(std::make_pair(2, "Two"));
   v.push_back(wxExConfigItem(
-    _("Radio Box"), 
+    "Radio Box", 
     echoices, 
     true, 
     "Radioboxes"));
@@ -573,7 +573,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t s = 1; s <= 3; s++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("Spin Control%d"), s), 
+      wxString::Format("Spin Control%d", s), 
       1, 
       s, 
       wxString("Spin controls")));
@@ -585,7 +585,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t sd = 1; sd <= 3; sd++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("Spin Control Double%d"), sd), 
+      wxString::Format("Spin Control Double%d", sd), 
       (double)1, 
       (double)sd, 
       (double)1, 
@@ -593,26 +593,32 @@ void wxExSampleFrame::ShowConfigItems()
   }
 #endif  
 
-  // CONFIG_STATICTEXT
-  v.push_back(wxExConfigItem(
-    "Static Text 1",
-    "this is my static text",
-    "Static Texts",
-    0,
-    CONFIG_STATICTEXT));
+  for (size_t st = 1; st <= 5; st++)
+  {
+    // CONFIG_STATICLINE
+    v.push_back(wxExConfigItem("test", CONFIG_STATICLINE, "Static Texts"));
+
+    // CONFIG_STATICTEXT
+    v.push_back(wxExConfigItem(
+      wxString::Format("Static Text%d"), st),
+      "this is my static text",
+      "Static Texts",
+      0,
+      CONFIG_STATICTEXT));
+  }
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format(_("String%d"), l), 
+      wxString::Format("String%d", l), 
       wxEmptyString,
       "Strings",
       0));
   }
   
   v.push_back(wxExConfigItem(
-    _("String Multiline"), 
+    "String Multiline", 
     wxEmptyString,
     "Strings",
     wxTE_MULTILINE));
@@ -620,7 +626,7 @@ void wxExSampleFrame::ShowConfigItems()
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
     v,
-    _("Config Dialog"),
+    "Config Dialog",
     10,
     1,
     wxAPPLY | wxCANCEL,

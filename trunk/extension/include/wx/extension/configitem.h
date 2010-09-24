@@ -35,6 +35,7 @@ enum
   CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
   CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
   CONFIG_INT,             ///< a textctrl that only accepts an integer (long)
+  CONFIG_STATICLINE,      ///< a static line
 
   // Items that have an explicit constructor.
   CONFIG_CHECKLISTBOX,    ///< a checklistbox ctrl
@@ -63,18 +64,18 @@ enum
 class wxExConfigItem
 {
 public:
-  /// Constuctor using type as specified.
+  /// Default constuctor.
   /// When using for a combobox dir, use id < wxID_LOWEST.
-  wxExConfigItem(const wxString& name,
-    int type,
+  wxExConfigItem(const wxString& name = wxEmptyString,
+    int type = CONFIG_STATICLINE,
     const wxString& page = wxEmptyString,
     bool is_required = false,
-    ///< the id as used by the control, use GetControl()->GetId()
-    ///< to retrieve actual value
+    /// the id as used by the control, use GetControl()->GetId()
+    /// to retrieve actual value
     int id = wxID_ANY,
-    ///< used by CONFIG_COMBOBOX
+    /// used by CONFIG_COMBOBOX
     int max_items = 25,
-    ///< will the name be displayed as a static text
+    /// will the name be displayed as a static text
     bool add_name = true,
     int cols = -1);
 

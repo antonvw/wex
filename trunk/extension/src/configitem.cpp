@@ -46,8 +46,9 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(type)
   , m_Cols(cols)
   , m_AddName(
+      type == CONFIG_BUTTON
       type == CONFIG_CHECKBOX ||
-      type == CONFIG_BUTTON ? false: add_name)
+      type == CONFIG_STATICLINE ? false: add_name)
   , m_Inc(1)
 {
 }
@@ -421,6 +422,10 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       expand = false;
       break;
 
+    case CONFIG_STATICLINE:
+      m_Control = new wxStaticLine(parent, m_Id);
+      break;
+
     case CONFIG_STATICTEXT:
       m_Control = new wxStaticText(parent,
         m_Id,
@@ -512,6 +517,7 @@ void wxExConfigItem::ToConfig(bool save) const
   {
     case CONFIG_BUTTON:
     case CONFIG_HYPERLINKCTRL:
+    case CONFIG_STATICLINE:
     case CONFIG_STATICTEXT:
       // these controls have no persistant info
       break;
