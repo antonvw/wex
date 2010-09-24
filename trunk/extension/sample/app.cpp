@@ -597,7 +597,7 @@ void wxExSampleFrame::ShowConfigItems()
       wxString::Format("Spin Control Double%d", sd), 
       1.0,
       (double)sd, 
-      "Spin controls",
+      wxString("Spin controls"),
       CONFIG_SPINCTRL_DOUBLE));
   }
 
