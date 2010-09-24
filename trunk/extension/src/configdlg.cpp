@@ -108,6 +108,17 @@ wxExConfigDialog::FindConfigItem(int id) const
   return m_ConfigItems.end();
 }
 
+void wxExConfigDialog::Click(int id) const
+{
+  wxASSERT(wxTheApp != NULL);
+  wxWindow* window = wxTheApp->GetTopWindow();
+  wxASSERT(window != NULL);
+  wxExFrame* frame = wxDynamicCast(window, wxExFrame);
+  wxASSERT(frame != NULL);
+
+  frame->OnCommandConfigDialog(GetId(), id);
+}
+
 void wxExConfigDialog::ForceCheckBoxChecked(
   const wxString& contains,
   const wxString& page)
@@ -177,7 +188,9 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
     previous_item_type = it->GetType();
 
-    if (it->GetType() == CONFIG_COMBOBOXDIR)
+    if (
+      it->GetType() == CONFIG_BUTTON ||
+      it->GetType() == CONFIG_COMBOBOXDIR)
     {
       Bind(
         wxEVT_COMMAND_BUTTON_CLICKED, 
@@ -222,17 +235,28 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 
     if (it != m_ConfigItems.end())
     {
-      auto browse = (wxComboBox*)it->GetControl();
-
-      wxDirDialog dir_dlg(
-        this,
-        _(wxDirSelectorPromptStr),
-        browse->GetValue(),
-        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-      if (dir_dlg.ShowModal() == wxID_OK)
+      if (it->GetType() == CONFIG_COMBOBOXDIR)
       {
-        browse->SetValue(dir_dlg.GetPath());
+        auto browse = (wxComboBox*)it->GetControl();
+
+        wxDirDialog dir_dlg(
+          this,
+          _(wxDirSelectorPromptStr),
+          browse->GetValue(),
+          wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+        if (dir_dlg.ShowModal() == wxID_OK)
+        {
+          browse->SetValue(dir_dlg.GetPath());
+        }
+      }
+      else if (it->GetType() == CONFIG_BUTTON)
+      {
+        Click(command.GetId());
+      }
+      else
+      {
+        wxFAIL;
       }
     }
   }
@@ -251,13 +275,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
       ((command.GetId() == wxID_OK ||
         command.GetId() == wxID_CANCEL) && !IsModal()))
   {
-    wxASSERT(wxTheApp != NULL);
-    wxWindow* window = wxTheApp->GetTopWindow();
-    wxASSERT(window != NULL);
-    wxExFrame* frame = wxDynamicCast(window, wxExFrame);
-    wxASSERT(frame != NULL);
-
-    frame->OnCommandConfigDialog(GetId(), command.GetId());
+    Click(command.GetId());
   }
 
   command.Skip();
