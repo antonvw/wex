@@ -26,62 +26,62 @@ enum
   CONFIG_ITEM_MIN,
 
   /// Items that are constructed using the default constructor.
-  /// a button
+  /// a button item
   CONFIG_BUTTON,
   
-  /// a checkbox (use ReadBool to retrieve value)
+  /// a checkbox item (use ReadBool to retrieve value)
   CONFIG_CHECKBOX,
 
-  /// a colour button
+  /// a colour button item
   CONFIG_COLOUR,
   
-  /// a combobox
+  /// a combobox item
   CONFIG_COMBOBOX,
 
-  /// a combobox with a browse button
+  /// a combobox item with a browse button
   CONFIG_COMBOBOXDIR,
 
-  /// a dirpicker ctrl
+  /// a dirpicker ctrl item
   CONFIG_DIRPICKERCTRL,
 
-  /// a filepicker ctrl
+  /// a filepicker ctrl item
   CONFIG_FILEPICKERCTRL,
 
-  /// a fontpicker ctrl
+  /// a fontpicker ctrl item
   CONFIG_FONTPICKERCTRL,
 
-  /// a hyperlink ctrl
+  /// a hyperlink ctrl item
   CONFIG_HYPERLINKCTRL,
 
-  /// a textctrl that only accepts an integer (long)
+  /// a textctrl item that only accepts an integer (long)
   CONFIG_INT,
 
-  /// a static line
+  /// a static line item (always horizontal)
   CONFIG_STATICLINE,
 
-  /// a static text
+  /// a static text item
   CONFIG_STATICTEXT,
 
-   /// a textctrl
+   /// a textctrl item
   CONFIG_STRING,
 
-  // Items that have an explicit constructor.
-  /// a checklistbox ctrl
+  /// Items that have an explicit constructor.
+  /// a checklistbox ctrl item
   CONFIG_CHECKLISTBOX,
 
-  /// a checklistbox ctrl
+  /// a checklistbox ctrl item
   CONFIG_CHECKLISTBOX_NONAME,
 
-  /// a radiobox ctrl
+  /// a radiobox ctrl item
   CONFIG_RADIOBOX,
 
-  /// a slider
+  /// a slider item
   CONFIG_SLIDER,
 
-  /// a spinctrl
+  /// a spinctrl item
   CONFIG_SPINCTRL,
 
-  /// a spinctrl double
+  /// a spinctrl double item
   CONFIG_SPINCTRL_DOUBLE,
 
   /// Used for automatic testing only.
