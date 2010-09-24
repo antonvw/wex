@@ -58,34 +58,12 @@ wxExConfigItem::wxExConfigItem(
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
-  int min,
-  int max,
-  const wxString& page,
-  bool spin,
-  long style,
-  int cols)
-  : m_Control(NULL)
-  , m_Id(wxID_ANY)
-  , m_IsRequired(false)
-  , m_Min(min)
-  , m_Max(max)
-  , m_MaxItems(0)
-  , m_Name(name)
-  , m_Page(page)
-  , m_Style(style)
-  , m_Type(spin ? CONFIG_SPINCTRL: CONFIG_SLIDER)
-  , m_Cols(cols)
-  , m_AddName(true)
-  , m_Inc(1)
-{
-}
-
-wxExConfigItem::wxExConfigItem(
-  const wxString& name,
   double min,
   double max,
-  double inc,
   const wxString& page,
+  int type,
+  long style,
+  double inc,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
@@ -94,8 +72,8 @@ wxExConfigItem::wxExConfigItem(
   , m_Inc(inc)
   , m_Name(name)
   , m_Page(page)
-  , m_Style(0)
-  , m_Type(CONFIG_SPINCTRL_DOUBLE)
+  , m_Style(style)
+  , m_Type(type)
   , m_Cols(cols)
   , m_AddName(true)
   , m_Min(min)

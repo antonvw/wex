@@ -577,7 +577,7 @@ void wxExSampleFrame::ShowConfigItems()
       1,
       s,
       wxString("Spin controls"),
-      false));
+      CONFIG_SLIDER));
   }
 
   // CONFIG_SPINCTRL
@@ -597,8 +597,8 @@ void wxExSampleFrame::ShowConfigItems()
       wxString::Format("Spin Control Double%d", sd), 
       1.0,
       sd, 
-      1.0,
-      "Spin controls", -1));
+      "Spin controls",
+      CONFIG_SPINCTRL_DOUBLE));
   }
 
   for (size_t st = 1; st <= 5; st++)

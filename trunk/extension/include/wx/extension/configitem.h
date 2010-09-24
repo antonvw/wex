@@ -56,6 +56,15 @@ enum
   /// a textctrl item that only accepts an integer (long)
   CONFIG_INT,
 
+  /// a slider item
+  CONFIG_SLIDER,
+
+  /// a spinctrl item
+  CONFIG_SPINCTRL,
+
+  /// a spinctrl double item
+  CONFIG_SPINCTRL_DOUBLE,
+
   /// a static line item (always horizontal)
   CONFIG_STATICLINE,
 
@@ -69,23 +78,14 @@ enum
   CONFIG_TOGGLEBUTTON,
 
   /// Items that have an explicit constructor.
-  /// a checklistbox ctrl item
+  /// a checklistbox item
   CONFIG_CHECKLISTBOX,
 
-  /// a checklistbox ctrl item
+  /// a checklistbox item
   CONFIG_CHECKLISTBOX_NONAME,
 
-  /// a radiobox ctrl item
+  /// a radiobox item
   CONFIG_RADIOBOX,
-
-  /// a slider item
-  CONFIG_SLIDER,
-
-  /// a spinctrl item
-  CONFIG_SPINCTRL,
-
-  /// a spinctrl double item
-  CONFIG_SPINCTRL_DOUBLE,
 
   /// Used for automatic testing only.
   CONFIG_ITEM_MAX,
@@ -131,6 +131,15 @@ public:
     bool add_name = true,
     int cols = -1);
 
+  /// Constructor for a spin ctrl, a spin ctrl double or a slider.
+  wxExConfigItem(const wxString& name,
+    double min, double max,
+    const wxString& page = wxEmptyString,
+    int type = CONFIG_SPINCTRL,
+    long style = wxSL_HORIZONTAL,
+    double inc = 1,
+    int cols = -1);
+
   /// Constructor for a checklistbox without a name. Just specify
   /// the set with names of boolean items.
   /// A checklistbox without a name (not mutually exclusive choices)
@@ -152,20 +161,6 @@ public:
     const wxString& page = wxEmptyString,
     int majorDimension = 0,
     long style = wxRA_SPECIFY_COLS,
-    int cols = -1);
-
-  /// Constructor for a spin ctrl or a slider.
-  wxExConfigItem(const wxString& name,
-    int min, int max,
-    const wxString& page = wxEmptyString,
-    bool spin = true,
-    long style = wxSL_HORIZONTAL,
-    int cols = -1);
-
-  /// Constructor for a spin ctrl double.
-  wxExConfigItem(const wxString& name,
-    double min, double max, double inc = 1,
-    const wxString& page = wxEmptyString,
     int cols = -1);
 
   /// Gets the columns.
