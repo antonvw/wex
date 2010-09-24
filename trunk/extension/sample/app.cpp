@@ -422,6 +422,15 @@ void wxExSampleFrame::ShowConfigItems()
 {
   std::vector<wxExConfigItem> v;
 
+  // CONFIG_BUTTON
+  for (size_t b = 1; b <= 4; b++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format("Button%d", h),
+      CONFIG_BUTTON,
+      "Buttons"));
+  }
+
   // CONFIG_CHECKBOX
   for (size_t h = 1; h <= 4; h++)
   {
@@ -583,6 +592,14 @@ void wxExSampleFrame::ShowConfigItems()
       "Spin controls", -1));
   }
 #endif  
+
+  // CONFIG_STATICTEXT
+  v.push_back(wxExConfigItem(
+    "Static Text 1",
+    "this is my static text",
+    "Static Texts",
+    0,
+    CONFIG_STATICTEXT));
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
