@@ -426,7 +426,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t b = 1; b <= 4; b++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Button%d", h),
+      wxString::Format("Button%d", b),
       CONFIG_BUTTON,
       "Buttons"));
   }
@@ -457,7 +457,7 @@ void wxExSampleFrame::ShowConfigItems()
   clb.insert(std::make_pair(2, "Bit Three"));
   clb.insert(std::make_pair(4, "Bit Four"));
   v.push_back(wxExConfigItem(
-    _"Bin Choices", 
+    "Bin Choices", 
     clb, 
     false, 
     "Checkbox lists"));
@@ -575,7 +575,7 @@ void wxExSampleFrame::ShowConfigItems()
     v.push_back(wxExConfigItem(
       wxString::Format("Slider%d", sl),
       1,
-      s,
+      sl,
       wxString("Spin controls"),
       CONFIG_SLIDER));
   }
@@ -596,7 +596,7 @@ void wxExSampleFrame::ShowConfigItems()
     v.push_back(wxExConfigItem(
       wxString::Format("Spin Control Double%d", sd), 
       1.0,
-      sd, 
+      (double)sd, 
       "Spin controls",
       CONFIG_SPINCTRL_DOUBLE));
   }
@@ -608,7 +608,7 @@ void wxExSampleFrame::ShowConfigItems()
 
     // CONFIG_STATICTEXT
     v.push_back(wxExConfigItem(
-      wxString::Format("Static Text%d"), st),
+      wxString::Format("Static Text%d", st),
       "this is my static text",
       "Static Texts",
       0,
@@ -621,8 +621,7 @@ void wxExSampleFrame::ShowConfigItems()
     v.push_back(wxExConfigItem(
       wxString::Format("String%d", l), 
       wxEmptyString,
-      "Strings",
-      0));
+      "Strings"));
   }
   
   v.push_back(wxExConfigItem(

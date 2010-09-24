@@ -20,6 +20,7 @@
 #include <wx/spinctrl.h>
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
+#include <wx/tglbtn.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
@@ -49,7 +50,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(type)
   , m_Cols(cols)
   , m_AddName(
-      type == CONFIG_BUTTON
+      type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
       type == CONFIG_STATICLINE ? false: add_name)
   , m_Inc(1)

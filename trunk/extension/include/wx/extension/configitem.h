@@ -99,10 +99,10 @@ enum
 class wxExConfigItem
 {
 public:
-  /// Default constuctor.
+  /// Constuctor.
   /// When using for a combobox dir, use id < wxID_LOWEST.
-  wxExConfigItem(const wxString& name = wxEmptyString,
-    int type = CONFIG_STATICLINE,
+  wxExConfigItem(const wxString& name,
+    int type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
     /// the id as used by the control, use GetControl()->GetId()
