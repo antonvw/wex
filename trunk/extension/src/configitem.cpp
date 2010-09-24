@@ -18,6 +18,8 @@
 #include <wx/fontpicker.h>
 #include <wx/hyperlink.h>
 #include <wx/spinctrl.h>
+#include <wx/spinctrl.h>
+#include <wx/statline.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
@@ -32,7 +34,8 @@ wxExConfigItem::wxExConfigItem(
   int id,
   int max_items,
   bool add_name,
-  int cols)
+  int cols,
+  long style)
   : m_Control(NULL)
   , m_Id(id)
   , m_IsRequired(is_required)
@@ -42,7 +45,7 @@ wxExConfigItem::wxExConfigItem(
   , m_MajorDimension(1)
   , m_Name(name)
   , m_Page(page)
-  , m_Style(0)
+  , m_Style(style)
   , m_Type(type)
   , m_Cols(cols)
   , m_AddName(
@@ -425,7 +428,12 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_STATICLINE:
-      m_Control = new wxStaticLine(parent, m_Id);
+      m_Control = new wxStaticLine(
+        parent,
+        m_Id,
+        wxDefaultPosition,
+        wxDefaultSize,
+        (m_Style == 0 ? wxLI_HORIZONTAL: wxLI_VERTICAL));
       break;
 
     case CONFIG_STATICTEXT:

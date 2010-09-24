@@ -114,7 +114,9 @@ public:
     int max_items = 25,
     /// will the name be displayed as a static text
     bool add_name = true,
-    int cols = -1);
+    int cols = -1,
+    /// extra style, only used for static line
+    long style = 0);
 
   /// Constructor for a string, a hyperlink ctrl or a static text.
   /// The extra style argument is the style for the control used
