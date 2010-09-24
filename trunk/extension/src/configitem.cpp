@@ -451,6 +451,10 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
           (readonly ? wxTE_READONLY: 0));
       break;
 
+    case CONFIG_TOGGLEBUTTON:
+      m_Control = new wxToggleButton(parent, m_Id, m_Name);
+      break;
+
     default: wxFAIL;
   }
 
@@ -749,6 +753,16 @@ void wxExConfigItem::ToConfig(bool save) const
         wxConfigBase::Get()->Write(m_Name, tc->GetValue());
       else
         tc->SetValue(wxConfigBase::Get()->Read(m_Name));
+      }
+      break;
+
+    case CONFIG_TOGGLEBUTTON:
+      {
+      wxToggleButton* ctrl = (wxToggleButton*)m_Control;
+      if (save)
+        wxConfigBase::Get()->Write(m_Name, ctrl->GetValue());
+      else
+        ctrl->SetValue(wxConfigBase::Get()->ReadBool(m_Name, false));
       }
       break;
 

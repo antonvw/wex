@@ -631,6 +631,15 @@ void wxExSampleFrame::ShowConfigItems()
     "Strings",
     wxTE_MULTILINE));
 
+  // CONFIG_TOGGLEBUTTON
+  for (size_t tb = 1; tb <= 4; tb++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format("Toggle Button%d", tb),
+      CONFIG_TOGGLEBUTTON,
+      "Toggle buttons"));
+  }
+
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
     v,

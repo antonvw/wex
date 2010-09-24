@@ -65,6 +65,9 @@ enum
    /// a textctrl item
   CONFIG_STRING,
 
+   /// a toggle button item
+  CONFIG_TOGGLEBUTTON,
+
   /// Items that have an explicit constructor.
   /// a checklistbox ctrl item
   CONFIG_CHECKLISTBOX,
