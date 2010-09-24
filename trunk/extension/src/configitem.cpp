@@ -175,7 +175,7 @@ wxExConfigItem::wxExConfigItem(
 {
 }
 
-void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
+wxFlexGridSizer* wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
 {
   wxASSERT(m_Control != NULL);
 
@@ -198,6 +198,8 @@ void wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
     wxSizerFlags().Center().Border());
 
   sizer->Add(fgz, wxSizerFlags().Left().Expand()); // no border
+
+  return fgz;
 }
 
 void wxExConfigItem::AddStaticTextName(wxSizer* sizer) const
@@ -468,40 +470,38 @@ wxFlexGridSizer* wxExConfigItem::Layout(
   
   wxFlexGridSizer* use = fgz;
 
-  switch (m_Type)
+  if (m_Type == CONFIG_COMBOBOXDIR)
   {
-    case CONFIG_COMBOBOXDIR:
-      AddBrowseButton(sizer);
-      break;
-
-    default:
-      if (m_AddName)
+    use = AddBrowseButton(sizer);
+  }
+  else
+  {
+    if (m_AddName)
+    {
+      // Construct a child flex grid sizer.
+      if (fgz == NULL)
       {
-        // Construct a child flex grid sizer.
-        if (fgz == NULL)
-        {
-          use = new wxFlexGridSizer(2, 0, 0);
-          use->AddGrowableCol(1); // the control
-          use->AddGrowableRow(0);
+        use = new wxFlexGridSizer(2, 0, 0);
+        use->AddGrowableCol(1); // the control
+        use->AddGrowableRow(0);
       
-          // Add name and control.
-          AddStaticTextName(use);
-          use->Add(m_Control, m_ControlFlags);
+        // Add name and control.
+        AddStaticTextName(use);
+        use->Add(m_Control, m_ControlFlags);
 
-          // Add to the sizer.
-          sizer->Add(use, wxSizerFlags().Expand());
-        }
-        else
-        {
-          AddStaticTextName(fgz);
-          fgz->Add(m_Control, m_ControlFlags);
-        }
+        // Add to the sizer.
+        sizer->Add(use, wxSizerFlags().Expand());
       }
       else
       {
-        sizer->Add(m_Control, m_ControlFlags);
+        AddStaticTextName(fgz);
+        fgz->Add(m_Control, m_ControlFlags);
       }
-    break;
+    }
+    else
+    {
+      sizer->Add(m_Control, m_ControlFlags);
+    }
   }
   
   ToConfig(false);

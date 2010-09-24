@@ -198,7 +198,7 @@ public:
   /// Loads or saves this item to the config.
   void ToConfig(bool save) const;
 private:
-  void AddBrowseButton(wxSizer* sizer) const;
+  wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticTextName(wxSizer* sizer) const;
   /// Creates the control.
   void CreateControl(wxWindow* parent, bool readonly);
