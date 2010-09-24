@@ -25,30 +25,64 @@ enum
   /// Used for automatic testing only.
   CONFIG_ITEM_MIN,
 
-  /// Items that are constructed using the general constructor.
-  CONFIG_BUTTON,          ///< a button
-  CONFIG_CHECKBOX,        ///< a checkbox (use ReadBool to retrieve value)
-  CONFIG_COLOUR,          ///< a colour button
-  CONFIG_COMBOBOX,        ///< a combobox
-  CONFIG_COMBOBOXDIR,     ///< a combobox with a browse button
-  CONFIG_DIRPICKERCTRL,   ///< a dirpicker ctrl
-  CONFIG_FILEPICKERCTRL,  ///< a filepicker ctrl
-  CONFIG_FONTPICKERCTRL,  ///< a fontpicker ctrl
-  CONFIG_INT,             ///< a textctrl that only accepts an integer (long)
-  CONFIG_STATICLINE,      ///< a static line
+  /// Items that are constructed using the default constructor.
+  /// a button
+  CONFIG_BUTTON,
+  
+  /// a checkbox (use ReadBool to retrieve value)
+  CONFIG_CHECKBOX,
+
+  /// a colour button
+  CONFIG_COLOUR,
+  
+  /// a combobox
+  CONFIG_COMBOBOX,
+
+  /// a combobox with a browse button
+  CONFIG_COMBOBOXDIR,
+
+  /// a dirpicker ctrl
+  CONFIG_DIRPICKERCTRL,
+
+  /// a filepicker ctrl
+  CONFIG_FILEPICKERCTRL,
+
+  /// a fontpicker ctrl
+  CONFIG_FONTPICKERCTRL,
+
+  /// a hyperlink ctrl
+  CONFIG_HYPERLINKCTRL,
+
+  /// a textctrl that only accepts an integer (long)
+  CONFIG_INT,
+
+  /// a static line
+  CONFIG_STATICLINE,
+
+  /// a static text
+  CONFIG_STATICTEXT,
+
+   /// a textctrl
+  CONFIG_STRING,
 
   // Items that have an explicit constructor.
-  CONFIG_CHECKLISTBOX,    ///< a checklistbox ctrl
-  CONFIG_CHECKLISTBOX_NONAME, ///< a checklistbox ctrl
-  CONFIG_RADIOBOX,        ///< a radiobox ctrl
-  CONFIG_SLIDER,          ///< a slider
-  CONFIG_SPINCTRL,        ///< a spinctrl
-  CONFIG_SPINCTRL_DOUBLE, ///< a spinctrl double
+  /// a checklistbox ctrl
+  CONFIG_CHECKLISTBOX,
 
-  // Items that share one constructor.
-  CONFIG_HYPERLINKCTRL,   ///< a hyperlink ctrl
-  CONFIG_STATICTEXT,      ///< a static text
-  CONFIG_STRING,          ///< a textctrl
+  /// a checklistbox ctrl
+  CONFIG_CHECKLISTBOX_NONAME,
+
+  /// a radiobox ctrl
+  CONFIG_RADIOBOX,
+
+  /// a slider
+  CONFIG_SLIDER,
+
+  /// a spinctrl
+  CONFIG_SPINCTRL,
+
+  /// a spinctrl double
+  CONFIG_SPINCTRL_DOUBLE,
 
   /// Used for automatic testing only.
   CONFIG_ITEM_MAX,
@@ -76,6 +110,19 @@ public:
     /// used by CONFIG_COMBOBOX
     int max_items = 25,
     /// will the name be displayed as a static text
+    bool add_name = true,
+    int cols = -1);
+
+  /// Constructor for a string, a hyperlink ctrl or a static text.
+  /// The extra style argument is the style for the control used
+  /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
+  wxExConfigItem(const wxString& name,
+    const wxString& value = wxEmptyString,
+    const wxString& page = wxEmptyString,
+    long style = 0,
+    int type = CONFIG_STRING,
+    bool is_required = false,
+    ///< ignored for a static text
     bool add_name = true,
     int cols = -1);
 
@@ -114,19 +161,6 @@ public:
   wxExConfigItem(const wxString& name,
     double min, double max, double inc = 1,
     const wxString& page = wxEmptyString,
-    int cols = -1);
-
-  /// Constructor for a string, a hyperlink ctrl or a static text.
-  /// The extra style argument is the style for the control used
-  /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
-  wxExConfigItem(const wxString& name,
-    const wxString& value = wxEmptyString,
-    const wxString& page = wxEmptyString,
-    long style = 0,
-    int type = CONFIG_STRING,
-    bool is_required = false,
-    ///< ignored for a static text
-    bool add_name = true,
     int cols = -1);
 
   /// Gets the columns.
