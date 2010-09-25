@@ -570,7 +570,7 @@ void wxExSampleFrame::ShowConfigItems()
     "Radioboxes"));
 
   // CONFIG_SLIDER
-  for (size_t sl = 1; sl <= 3; sl++)
+  for (size_t sl = 1; sl <= 5; sl++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Slider%d", sl),
