@@ -52,7 +52,8 @@ wxExConfigItem::wxExConfigItem(
   , m_AddName(
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
-      type == CONFIG_STATICLINE ? false: add_name)
+      type == CONFIG_STATICLINE || 
+      type == CONFIG_TOGGLEBUTTON ? false: add_name)
   , m_Inc(1)
 {
 }
@@ -209,6 +210,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   {
     case CONFIG_BUTTON:
       m_Control = new wxButton(parent, m_Id, m_Name);
+      expand = false;
       break;
 
     case CONFIG_CHECKBOX:
@@ -440,6 +442,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
     case CONFIG_TOGGLEBUTTON:
       m_Control = new wxToggleButton(parent, m_Id, m_Name);
+      expand = false;
       break;
 
     default: wxFAIL;
