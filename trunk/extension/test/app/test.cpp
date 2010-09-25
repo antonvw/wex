@@ -409,7 +409,7 @@ void wxExAppTestFixture::testSTC()
   const wxCharBuffer& buffer = stc->GetTextRaw();
   CPPUNIT_ASSERT(buffer.length() == 40);
 
-  stc->SetText("hello");
+  stc->AddText("hello");
   CPPUNIT_ASSERT( stc->GetFile().GetContentsChanged());
   stc->GetFile().ResetContentsChanged();
   CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
