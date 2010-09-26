@@ -29,7 +29,7 @@
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
-  int type,
+  wxExConfigType type,
   const wxString& page,
   bool is_required,
   int id,
@@ -63,7 +63,7 @@ wxExConfigItem::wxExConfigItem(
   double min,
   double max,
   const wxString& page,
-  int type,
+  wxExConfigType type,
   long style,
   double inc,
   int cols)
@@ -88,7 +88,7 @@ wxExConfigItem::wxExConfigItem(
   const wxString& value,
   const wxString& page,
   long style,
-  int type,
+  wxExConfigType type,
   bool is_required,
   bool add_name,
   int cols)

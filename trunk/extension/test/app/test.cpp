@@ -98,7 +98,9 @@ void wxExAppTestFixture::testConfigItem()
     i < CONFIG_ITEM_MAX;
     i++)
   {
-    items.push_back(wxExConfigItem(wxString::Format("item%d", i), i));
+    items.push_back(wxExConfigItem(
+      wxString::Format("item%d", i), 
+      (wxExConfigType)i));
   }
 
   // Check members are initialized.

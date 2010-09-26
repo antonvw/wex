@@ -20,7 +20,7 @@
 #if wxUSE_GUI
 /*! \file */
 /// The config item types supported.
-enum
+enum wxExConfigType
 {
   /// Used for automatic testing only.
   CONFIG_ITEM_MIN,
@@ -102,7 +102,7 @@ public:
   /// Constuctor.
   /// When using for a combobox dir, use id < wxID_LOWEST.
   wxExConfigItem(const wxString& name,
-    int type,
+    wxExConfigType type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
     /// the id as used by the control, use GetControl()->GetId()
@@ -123,7 +123,7 @@ public:
     const wxString& value = wxEmptyString,
     const wxString& page = wxEmptyString,
     long style = 0,
-    int type = CONFIG_STRING,
+    wxExConfigType type = CONFIG_STRING,
     bool is_required = false,
     ///< ignored for a static text
     bool add_name = true,
@@ -133,7 +133,7 @@ public:
   wxExConfigItem(const wxString& name,
     double min, double max,
     const wxString& page = wxEmptyString,
-    int type = CONFIG_SPINCTRL,
+    wxExConfigType type = CONFIG_SPINCTRL,
     long style = wxSL_HORIZONTAL,
     double inc = 1,
     int cols = -1);
@@ -177,7 +177,7 @@ public:
   const wxString& GetPage() const {return m_Page;};
 
   /// Gets the type.
-  int GetType() const {return m_Type;};
+  wxExConfigType GetType() const {return m_Type;};
 
   /// Creates the control,
   /// lays out this item on the specified sizer, and fills it
@@ -213,8 +213,7 @@ private:
   int m_Id;
   int m_MajorDimension;
   int m_MaxItems;
-  int m_Type;
-
+  
   double m_Min;
   double m_Max;
   double m_Inc;
@@ -228,6 +227,7 @@ private:
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
 
+  wxExConfigType m_Type;
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;
 };
