@@ -598,7 +598,9 @@ void wxExSampleFrame::ShowConfigItems()
       1.0,
       (double)sd, 
       wxString("Spin controls"),
-      CONFIG_SPINCTRL_DOUBLE));
+      CONFIG_SPINCTRL_DOUBLE,
+      wxSL_HORIZONTAL,
+      0.01));
   }
 
   for (size_t st = 1; st <= 5; st++)
