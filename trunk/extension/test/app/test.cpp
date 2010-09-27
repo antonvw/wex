@@ -128,16 +128,15 @@ void wxExAppTestFixture::testConfigItem()
     it != items.end();
     ++it)
   {
-    it->Layout(wxTheApp->GetTopWindow(), &sizer);
+    CPPUNIT_ASSERT(it->Layout(wxTheApp->GetTopWindow(), &sizer) != NULL);
     CPPUNIT_ASSERT(it->GetControl() != NULL);
   }
 
   // Now check ToConfig (after Layout).  
-  // Fix this.
-  //CPPUNIT_ASSERT(ci_str.ToConfig(true));
-  //CPPUNIT_ASSERT(ci_str.ToConfig(false));
-  //CPPUNIT_ASSERT(!ci_st.ToConfig(true));
-  //CPPUNIT_ASSERT(!ci_st.ToConfig(false));
+  CPPUNIT_ASSERT( ci_str.ToConfig(true));
+  CPPUNIT_ASSERT( ci_str.ToConfig(false));
+  CPPUNIT_ASSERT(!ci_st.ToConfig(true));
+  CPPUNIT_ASSERT(!ci_st.ToConfig(false));
 }
 
 void wxExAppTestFixture::testFrame()
