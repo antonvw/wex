@@ -58,9 +58,6 @@ General
 - Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
     
-- Test coverage is not yet done, it might be done using gcov
-    http://gcc.gnu.org/onlinedocs/gcc/Gcov.html
-
 - Translation is done using poedit (1.4.6)
     http://www.poedit.net/
   wxextension has it's own localization file, your application should
