@@ -38,6 +38,18 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
 
+  wxExConfigItem ci_vl("ci-vl", 
+    CONFIG_STATICLINE, 
+    "Static Texts",
+    false,
+    wxID_ANY,
+    25,
+    false,
+    -1,
+    1);
+  items.push_back(ci_vl);
+  CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_STATICLINE);
+    
   wxExConfigItem ci_sp(wxString("ci-sp"), 1, 5);
   items.push_back(ci_sp);
   CPPUNIT_ASSERT(ci_sp.GetName() == "ci-sp");

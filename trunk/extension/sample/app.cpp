@@ -616,6 +616,17 @@ void wxExSampleFrame::ShowConfigItems()
       0,
       CONFIG_STATICTEXT));
   }
+  
+  // CONFIG_STATICLINE (vertical)
+  v.push_back(wxExConfigItem("test", 
+    CONFIG_STATICLINE, 
+    "Static Texts",
+    false,
+    wxID_ANY,
+    25,
+    false,
+    -1,
+    1));
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
