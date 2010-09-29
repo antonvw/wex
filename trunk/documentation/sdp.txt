@@ -150,21 +150,3 @@ When adding functionality in trunk
 - add a sample for it in
     extension/sample, 
     extension/sample/report
-
-
-Roadmap
-- fix change marker for deleting text 
- (currently it gives stack overflow if enabled).
-    
-- use new ribbon toolbar
-    
-- add gdb front-end
-
-- add profile option (see gcc website, g++ -D_GLIBCXX_PROFILE foo.cc)
-    or use valgrind
-
-- add ctags (like Exuberant CTAGS)
-
-- use cbegin iterators
-
-- use Boost
