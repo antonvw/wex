@@ -73,7 +73,7 @@ enum wxExConfigType
   /// a spinctrl double item
   CONFIG_SPINCTRL_DOUBLE,
 
-  /// a static line item (always horizontal)
+  /// a static line item (default horizontal)
   CONFIG_STATICLINE,
 
   /// a static text item
