@@ -182,7 +182,8 @@ public:
   /// Creates the control,
   /// lays out this item on the specified sizer, and fills it
   /// with config value (calls ToConfig).
-  /// It returns the sizer that was used for creating the item sizer.
+  /// It returns the flex grid sizer that was used for creating the item sizer.
+  /// Or it returns NULL if no flex grid sizer was used.
   wxFlexGridSizer* Layout(
     wxWindow* parent, 
     wxSizer* sizer,

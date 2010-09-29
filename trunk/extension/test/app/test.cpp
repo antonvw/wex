@@ -32,15 +32,14 @@ void wxExAppTestFixture::testConfigItem()
 
   // Use specific constructors.
   wxExConfigItem ci_sl(wxString("ci-sl"), 1, 5, 
-    wxString(wxEmptyString), 
-    CONFIG_SLIDER);
+    wxEmptyString, CONFIG_SLIDER);
   items.push_back(ci_sl);
   CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
 
   wxExConfigItem ci_vl("ci-vl", 
     CONFIG_STATICLINE, 
-    "Static Texts",
+    wxEmptyString,
     false,
     wxID_ANY,
     25,
@@ -48,7 +47,7 @@ void wxExAppTestFixture::testConfigItem()
     -1,
     1);
   items.push_back(ci_vl);
-  CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_STATICLINE);
+  CPPUNIT_ASSERT(ci_vl.GetType() == CONFIG_STATICLINE);
     
   wxExConfigItem ci_sp(wxString("ci-sp"), 1, 5);
   items.push_back(ci_sp);
@@ -56,8 +55,7 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(ci_sp.GetType() == CONFIG_SPINCTRL);
   
   wxExConfigItem ci_sp_d(wxString("ci-sp-d"), 1.0, 5.0,
-    wxString(wxEmptyString), 
-    CONFIG_SPINCTRL_DOUBLE);
+    wxEmptyString, CONFIG_SPINCTRL_DOUBLE);
   items.push_back(ci_sp_d);
   CPPUNIT_ASSERT(ci_sp_d.GetType() == CONFIG_SPINCTRL_DOUBLE);
   
@@ -140,7 +138,9 @@ void wxExAppTestFixture::testConfigItem()
     it != items.end();
     ++it)
   {
-    CPPUNIT_ASSERT(it->Layout(wxTheApp->GetTopWindow(), &sizer) != NULL);
+    // Testing on not NULL not possible,
+    // not all items need a sizer.
+    it->Layout(wxTheApp->GetTopWindow(), &sizer);
     CPPUNIT_ASSERT(it->GetControl() != NULL);
   }
 
