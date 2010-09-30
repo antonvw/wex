@@ -22,12 +22,12 @@ class wxMenu;
 class wxExSTCEntryDialog;
 
 /// This class collects all vcs handling.
-/// The VCS entries are read in from vcss.xml.
+/// The VCS entries are read in from vcs.xml.
 class wxExVCS
 {
 public:
   // The vcs id's here can be set using the config dialog, and are not
-  // present in the vcss.xml. These enums should be public,
+  // present in the vcs.xml. These enums should be public,
   // as new entries should start after the last one here.
   enum
   {
@@ -38,8 +38,8 @@ public:
   /// Default constructor.
   wxExVCS();
 
-  /// Constructor for vcss from specified filename.
-  /// This must be an existing xml file containing all vcss.
+  /// Constructor for vcs from specified filename.
+  /// This must be an existing xml file containing all vcs.
   /// It does not Read this file, however if you use the global Get,
   /// it both constructs and reads the vcs.
   wxExVCS(const wxFileName& filename);
@@ -96,7 +96,7 @@ public:
   bool IsOpenCommand() const {
     return m_Command.IsOpen();};
 
-  /// Reads all containers (first clears them )from file.
+  /// Reads all containers (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   bool Read();
 

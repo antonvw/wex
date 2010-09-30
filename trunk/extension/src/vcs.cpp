@@ -367,7 +367,7 @@ long wxExVCS::FindNo(const wxString& name)
   }
   else
   {
-    // Do not fail, you might remove some from vcss.xml,
+    // Do not fail, you might remove some from vcs.xml,
     // then entry cannot be found.
     return VCS_NONE;
   }
@@ -383,7 +383,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
 #else
       wxStandardPaths::Get().GetUserDataDir()
 #endif
-      + wxFileName::GetPathSeparator() + "vcss.xml")
+      + wxFileName::GetPathSeparator() + "vcs.xml")
       );
 
     if (m_Self->Read())
