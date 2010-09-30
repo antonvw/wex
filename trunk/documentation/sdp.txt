@@ -80,9 +80,12 @@ General
     
     - under windows using Microsoft Visual Studio 2010
       Version 10.0.30319.1 RTMRel
-      TODO: fix, this no longer works
-      Microsoft .NET Framework files generated 
       using format msvs2008prj
+      TODO: fix, this no longer works
+    
+    - under windows using command line prompt
+      using format msvc
+      nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.1
     
     - under Ubuntu 10.04 linux gcc (Ubuntu 4.4.3-4ubuntu5) 4.4.3
       (no IDE)
