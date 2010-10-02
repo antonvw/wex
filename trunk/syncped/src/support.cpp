@@ -200,7 +200,7 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
   }
   else if (id == NOTEBOOK_EDITORS)
   {
-      wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
+    wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
     return dlg.ShowModalIfChanged() == wxID_OK;
   }
   else if (id == NOTEBOOK_PROJECTS)

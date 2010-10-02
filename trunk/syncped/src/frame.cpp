@@ -509,6 +509,13 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_CLOSE:
     if (editor != NULL)
     {
+      if (!AllowClose(
+        m_NotebookWithEditors->GetId(),
+        editor))
+      {
+        return;
+      }
+        
       m_NotebookWithEditors->DeletePage(editor->GetFileName().GetFullPath());
       SetTitle(wxEmptyString, wxEmptyString);
     }

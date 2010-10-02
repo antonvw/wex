@@ -18,12 +18,11 @@ class DecoratedFrame : public wxExFrameWithHistory
 {
 public:
   DecoratedFrame();
+  virtual bool AllowClose(wxWindowID id, wxWindow* page);
+  virtual void OnNotebook(wxWindowID id, wxWindow* page);
 protected:
   wxExMenu* GetVCSMenu() {return m_MenuVCS;};
 private:
-  virtual bool AllowClose(wxWindowID id, wxWindow* page);
-  virtual void OnNotebook(wxWindowID id, wxWindow* page);
-
   wxExMenu* m_MenuVCS;
 };
 #endif
