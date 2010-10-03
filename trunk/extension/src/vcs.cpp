@@ -78,6 +78,11 @@ int wxExVCS::BuildMenu(
 
 bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
 {
+  if (!fn.IsOk() || vcs.empty())
+  {
+    return false;
+  }
+  
   // these cannot be combined, as AppendDir is a void (2.9.1).
   wxFileName path(fn);
   path.AppendDir(vcs);
