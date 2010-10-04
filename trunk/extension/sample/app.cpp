@@ -393,7 +393,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     stc->SetDocPointer(m_STC->GetDocPointer());
     }
     break;
-
+    
   default:
     wxFAIL;
     break;
@@ -412,6 +412,10 @@ void wxExSampleFrame::OnCommandConfigDialog(
       m_STCLexers->ConfigGet();
     }
   }
+  else if (commandid > 1000 && commandid < 1020)
+  {
+    wxLogMessage(wxString::Format("hello%d", commandid));
+  }
   else
   {
     wxExManagedFrame::OnCommandConfigDialog(dialogid, commandid);
@@ -428,7 +432,9 @@ void wxExSampleFrame::ShowConfigItems()
     v.push_back(wxExConfigItem(
       wxString::Format("Button%d", b),
       CONFIG_BUTTON,
-      "Buttons"));
+      "Buttons",
+      false,
+      1000 + b));
   }
 
   // CONFIG_CHECKBOX
