@@ -14,7 +14,7 @@
 
 \section intro_sec Introduction
 wxextension contains a collection of extra wxWidgets classes.
-It uses wxWidgets 2.9.1 and STL classes.
+It uses wxWidgets 2.9.2 and STL classes.
 
 \section install_sec Installation from svn checkout
 
