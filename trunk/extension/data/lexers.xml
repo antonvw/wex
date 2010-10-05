@@ -1480,10 +1480,71 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
    4) A <comments> element.
    -->
   
-  <lexer 
-    name="cpp"
-    extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y"
-    match="wxSTC_C_">
+  <lexer name="abaqus" match="wxSTC_ABAQUS_"/> 
+  <lexer name="acf" match="wxSTC_ACF_" />
+  <lexer name="ada" extensions="*.a" match="wxSTC_ADA_">
+    <keywords>    
+      abort abs abstract accept access ackage aliased all and array at
+      begin body case constant declare delay delta digits do else elsif
+      end entry exception exit for function generic goto if in interface
+      israise limited loop mod new not null of or others out
+      overriding pragma private procedure protected range record rem renames 
+      requeue return reverse
+      select separate subtype synchronized tagged task terminate then type until
+      use when while with xor
+    </keywords>    
+    <comments begin1="--" />
+  </lexer>
+  <lexer name="apdl" match="wxSTC_APDL_" />
+  <lexer name="asm" extensions="*.mac" match="wxSTC_ASM_">
+    <styles>
+      <style no="wxSTC_ASM_CPUINSTRUCTION"> WORD </style>
+      <style no="wxSTC_ASM_MATHINSTRUCTION"> italic </style>
+      <style no="wxSTC_ASM_REGISTER"> fore:blue </style>
+      <style no="wxSTC_ASM_DIRECTIVE"> italic </style>
+      <style no="wxSTC_ASM_COMMENTBLOCK"> underline </style>
+    </styles>
+    <keywords>    
+    ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
+    BICB BIS BISB BIT BITB BLE BLO BLOS BLT
+    BMI BNE BPL BPT BR BVC BVS CLR CLRB C CCC CLC CLN CLV CLZ CMP CMPB COM COMB 
+    CSM DEC DECB DF DIV EMT HALT INC
+    INCB IOT JMP JSR MARK MFPD MFPS MFPT MOV MOVB MTPD MTPI MTPS MUL NEG NEGB 
+    NOP RESET ROL ROLB ROR RORB RTI RTS 
+    RTT SBC SBCB S SCC SEC SEN SEV SEZ SOB SPL SUB SWAB SXT TRAP TST TSTB 
+    TSTSET WAIT WRTLCK XOR
+    .ASCII .ASCIZ .ASECT .BLKB .BYTE .CROSS .CSECT .DSABL .ENABL .END .ENDC 
+    .EVEN .FLT2 .FLT4 .GLOBL .IDENT .IF 
+    .IFF .IFT .IFTF .IIF .INCLUDE .LIBRARY .LIMIT .LIST .NLIST .NOCROSS .ODD 
+    .PACKED .PAGE .PSECT .RAD50 .RADIX .REM 
+    .RESTORE .SBTTL .TITLE .WEAK .WORD
+    MN SO DO PC MS CC SP R1 R2 R3 R4 R5
+    </keywords>
+    <comments begin1=";" />
+  </lexer>
+  
+  <lexer name="asn1" match="wxSTC_ASN1_" />
+  <lexer name="asp" match="wxSTC_H_" /> 
+  <lexer name="asy" match="wxSTC_ASY_" />
+  <lexer name="au3" match="wxSTC_AU3_" />
+  <lexer name="ave" match="wxSTC_AVE_" />
+  <lexer name="baan" match="wxSTC_BAAN_" />
+  <lexer name="bash" extensions="*.bash" match="wxSTC_SH_"> 
+    <keywords>    
+    alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
+    for function
+    help history if in jobs kill logout mount pwd rm select set sleep source 
+    tail test then
+    time ulimit umount umask unalias unset until while
+    </keywords>
+    <comments begin1="#" />
+  </lexer>
+  <lexer name="batch" extensions="*.bat" match="wxSTC_BAT_" />
+  <lexer name="bullant" match="wxSTC_BULLANT_" />
+  <lexer name="caml" match="wxSTC_CAML_" />
+  <lexer name="clarion" match="wxSTC_CLW_" />
+  <lexer name="cmake" match="wxSTC_CMAKE_" />
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y" match="wxSTC_C_">
     <keywords>
     argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
     const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
@@ -1530,82 +1591,9 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
-  
-  <lexer name="pascal" extensions="*.pas" match="wxSTC_PAS_">
-    <keywords>    
-    ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
-    CLASS CONST
-    CONSTRUCTOR CONTAINS DEFAULT DESTRUCTOR DISPID DISPINTERFACE DIV DO DOWNTO 
-    DYNAMIC
-    ELSE END EXCEPT EXPORT EXPORTS EXTERNAL FAR FILE FINALIZATION FINALLY FOR 
-    FORWARD
-    FUNCTION GOTO IF IMPLEMENTATION IMPLEMENTS IN INDEX INHERITED INITIALIZATION
-    INLINE INTERFACE
-    IS LABEL LIBRARY MESSAGE MOD NAME NEAR NIL NODEFAULT NOT OBJECT OF OR OUT 
-    OVERLOAD
-    OVERRIDE PACKAGE PACKED PASCAL PRIVATE PROCEDURE PROGRAM PROPERTY PROTECTED 
-    PUBLIC PUBLISHED RAISE
-    READ READONLY RECORD REGISTER REINTRODUCE REPEAT REQUIRES RESIDENT 
-    RESOURCESTRING SAFECALL SET
-    SHL SHR STDCALL STORED STRING THEN THREADVAR TO TRY TYPE UNIT UNTIL USES VAR
-    VIRTUAL
-    WHILE WITH WRITE WRITELN WRITEONLY XOR BOOLEAN CHAR INTEGER REAL
-    </keywords>
-    <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
-  </lexer>
-  
-  <lexer name="ada" extensions="*.a" match="wxSTC_ADA_">
-    <keywords>    
-      abort abs abstract accept access ackage aliased all and array at
-      begin body case constant declare delay delta digits do else elsif
-      end entry exception exit for function generic goto if in interface
-      israise limited loop mod new not null of or others out
-      overriding pragma private procedure protected range record rem renames 
-      requeue return reverse
-      select separate subtype synchronized tagged task terminate then type until
-      use when while with xor
-    </keywords>    
-    <comments begin1="--" />
-  </lexer>
-    
-  <lexer name="bash" extensions="*.bash" match="wxSTC_SH_"> 
-    <keywords>    
-    alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
-    for function
-    help history if in jobs kill logout mount pwd rm select set sleep source 
-    tail test then
-    time ulimit umount umask unalias unset until while
-    </keywords>
-    <comments begin1="#" />
-  </lexer>
-  
-  <lexer name="asm" extensions="*.mac" match="wxSTC_ASM_">
-    <styles>
-      <style no="wxSTC_ASM_CPUINSTRUCTION"> WORD </style>
-      <style no="wxSTC_ASM_MATHINSTRUCTION"> italic </style>
-      <style no="wxSTC_ASM_REGISTER"> fore:blue </style>
-      <style no="wxSTC_ASM_DIRECTIVE"> italic </style>
-      <style no="wxSTC_ASM_COMMENTBLOCK"> underline </style>
-    </styles>
-    <keywords>    
-    ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
-    BICB BIS BISB BIT BITB BLE BLO BLOS BLT
-    BMI BNE BPL BPT BR BVC BVS CLR CLRB C CCC CLC CLN CLV CLZ CMP CMPB COM COMB 
-    CSM DEC DECB DF DIV EMT HALT INC
-    INCB IOT JMP JSR MARK MFPD MFPS MFPT MOV MOVB MTPD MTPI MTPS MUL NEG NEGB 
-    NOP RESET ROL ROLB ROR RORB RTI RTS 
-    RTT SBC SBCB S SCC SEC SEN SEV SEZ SOB SPL SUB SWAB SXT TRAP TST TSTB 
-    TSTSET WAIT WRTLCK XOR
-    .ASCII .ASCIZ .ASECT .BLKB .BYTE .CROSS .CSECT .DSABL .ENABL .END .ENDC 
-    .EVEN .FLT2 .FLT4 .GLOBL .IDENT .IF 
-    .IFF .IFT .IFTF .IIF .INCLUDE .LIBRARY .LIMIT .LIST .NLIST .NOCROSS .ODD 
-    .PACKED .PAGE .PSECT .RAD50 .RADIX .REM 
-    .RESTORE .SBTTL .TITLE .WEAK .WORD
-    MN SO DO PC MS CC SP R1 R2 R3 R4 R5
-    </keywords>
-    <comments begin1=";" />
-  </lexer>
-  
+  <lexer name="csound" match="wxSTC_CSOUND_" />
+  <lexer name="css" match="wxSTC_CSS_" />
+  <lexer name="d" match="wxSTC_D_" /> 
   <lexer name="diff" match="wxSTC_DIFF_">
     <styles>
     <style no="wxSTC_DIFF_HEADER"> fore:blue </style>
@@ -1614,7 +1602,16 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     <style no="wxSTC_DIFF_ADDED"> fore:lime green </style>
     </styles>
   </lexer>
-
+  <lexer name="eiffel" match="wxSTC_EIFFEL_" />
+  <lexer name="erlang" match="wxSTC_ERLANG_" />
+  <lexer name="errlist" match="wxSTC_ERR_" />
+  <lexer name="escript" match="wxSTC_ESCRIPT_" />
+  <lexer name="flagship" match="wxSTC_FS_" />
+  <lexer name="forth" match="wxSTC_FORTH_" />
+  <lexer name="fortran" match="wxSTC_F_" />
+  <lexer name="gap" match="wxSTC_GAP_" />
+  <lexer name="gui4cli" match="wxSTC_GC_" />
+  <lexer name="haskell" match="wxSTC_HA_" />
   <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_">
     <styles>
       <style no="wxSTC_H_TAG"> TAG </style>
@@ -1639,8 +1636,48 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <property name="asp.default.language"> 1 </property>
     </properties>
   </lexer>
-
- <lexer name="perl" extensions="*.pl" match="wxSTC_PL_">
+  <lexer name="inno" match="wxSTC_INNO_" />
+  <lexer name="kix" match="wxSTC_KIX_" />
+  <lexer name="latex" match="wxSTC_L_" />
+  <lexer name="lisp" match="wxSTC_LISP_" />
+  <lexer name="lot" match="wxSTC_LOT_" />
+  <lexer name="lout" match="wxSTC_LOUT_" />
+  <lexer name="lua" match="wxSTC_LUA_" />
+  <lexer name="magik" match="wxSTC_MAGIK" />
+  <lexer name="makefile" extensions="*makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
+  <lexer name="markdown" match="wxSTC_MARKDOWN" />
+  <lexer name="matlab" match="wxSTC_MATLAB_" />
+  <lexer name="metapost" match="wxSTC_METAPOST_" />
+  <lexer name="mmixal" match="wxSTC_MMIXAL_" />
+  <lexer name="mssql" match="wxSTC_MSSQL_" />
+  <lexer name="mysql" match="wxSTC_MYSQL" />
+  <lexer name="nncrontab" match="wxSTC_NNCRONTAB_" />
+  <lexer name="nsis" match="wxSTC_NSIS_" />
+  <lexer name="octave" match="wxSTC_MATLAB_" />
+  <lexer name="opal" match="wxSTC_OPAL_" />
+  <lexer name="pascal" extensions="*.pas" match="wxSTC_PAS_">
+    <keywords>    
+    ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
+    CLASS CONST
+    CONSTRUCTOR CONTAINS DEFAULT DESTRUCTOR DISPID DISPINTERFACE DIV DO DOWNTO 
+    DYNAMIC
+    ELSE END EXCEPT EXPORT EXPORTS EXTERNAL FAR FILE FINALIZATION FINALLY FOR 
+    FORWARD
+    FUNCTION GOTO IF IMPLEMENTATION IMPLEMENTS IN INDEX INHERITED INITIALIZATION
+    INLINE INTERFACE
+    IS LABEL LIBRARY MESSAGE MOD NAME NEAR NIL NODEFAULT NOT OBJECT OF OR OUT 
+    OVERLOAD
+    OVERRIDE PACKAGE PACKED PASCAL PRIVATE PROCEDURE PROGRAM PROPERTY PROTECTED 
+    PUBLIC PUBLISHED RAISE
+    READ READONLY RECORD REGISTER REINTRODUCE REPEAT REQUIRES RESIDENT 
+    RESOURCESTRING SAFECALL SET
+    SHL SHR STDCALL STORED STRING THEN THREADVAR TO TRY TYPE UNIT UNTIL USES VAR
+    VIRTUAL
+    WHILE WITH WRITE WRITELN WRITEONLY XOR BOOLEAN CHAR INTEGER REAL
+    </keywords>
+    <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
+  </lexer>
+  <lexer name="perl" extensions="*.pl" match="wxSTC_PL_">
     <keywords>
       abs accept 
       alarm and atan2 bind binmode bless caller chdir chmod chomp chop 
@@ -1671,7 +1708,9 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       given when default say state
     </keywords>
   </lexer>
- 
+  <lexer name="PL/M" match="wxSTC_PLM_" />
+  <lexer name="php" match="wxSTC_HPHP_" /> 
+  <lexer name="phpscript" match="wxSTC_H_" /> 
   <lexer name="po" extensions="*.po" match="wxSTC_PO_">
     <styles>
       <style no ="wxSTC_PO_MSGID"> WORD </style>
@@ -1681,7 +1720,12 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       msgid msgstr
     </keywords>
   </lexer>
-
+  <lexer name="pov" match="wxSTC_POV_" />
+  <lexer name="powerpro" match="wxSTC_POWERPRO" />
+  <lexer name="progress" match="wxSTC_4GL_" />
+  <lexer name="props" match="wxSTC_PROPS_" />
+  <lexer name="ps" match="wxSTC_POWERSHELL" />
+  <lexer name="ps" match="wxSTC_PS_" />
   <lexer name="python" extensions="*.py" match="wxSTC_P_">
     <keywords>
       keywordclass.python=and as assert break class continue def del elif 
@@ -1689,25 +1733,15 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       not or pass print raise return try while with yield
     </keywords>
   </lexer>
-
- 
-  <lexer name="xml" match="wxSTC_H_">
-    <styles>
-      <style no="wxSTC_H_TAG"> TAG </style>
-      <style no="wxSTC_H_TAGEND"> TAG </style>
-      <style no="wxSTC_H_TAGUNKNOWN"> ERROR </style>
-      <style no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </style>
-      <style no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </style>
-    </styles>
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.html"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
-    <!-- xml comments cannot be added, but don't need to, 
-         they are added in the source -->
-  </lexer>
-  
+  <lexer name="r" match="wxSTC_R_" />
+  <lexer name="rebol" match="wxSTC_REBOL_" />
+  <lexer name="ruby" match="wxSTC_RB_" />
+  <lexer name="scriptol" match="wxSTC_SCRIPTOL_WHITE" />
+  <lexer name="smalltalk" match="wxSTC_ST_" />
+  <lexer name="sml" match="wxSTC_SML" />
+  <lexer name="sorcus" match="wxSTC_SORCUS" />
+  <lexer name="specman" match="wxSTC_SN_" />
+  <lexer name="spice" match="wxSTC_SPICE_" />
   <lexer name="sql" match="wx_SSTC_SQL_">
     <keywords>    
     <!-- These ones added manually -->
@@ -1767,71 +1801,6 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     </keywords>
     <comments begin1="--" />
   </lexer>
-  
-  <lexer name="PL/M" match="wxSTC_PLM_" />
-  <lexer name="abaqus" match="wxSTC_ABAQUS_"/> 
-  <lexer name="acf" match="wxSTC_ACF_" />
-  <lexer name="apdl" match="wxSTC_APDL_" />
-  <lexer name="asn1" match="wxSTC_ASN1_" />
-  <lexer name="asp" match="wxSTC_H_" /> 
-  <lexer name="asy" match="wxSTC_ASY_" />
-  <lexer name="au3" match="wxSTC_AU3_" />
-  <lexer name="ave" match="wxSTC_AVE_" />
-  <lexer name="baan" match="wxSTC_BAAN_" />
-  <lexer name="batch" extensions="*.bat" match="wxSTC_BAT_" />
-  <lexer name="bullant" match="wxSTC_BULLANT_" />
-  <lexer name="caml" match="wxSTC_CAML_" />
-  <lexer name="clarion" match="wxSTC_CLW_" />
-  <lexer name="cmake" match="wxSTC_CMAKE_" />
-  <lexer name="csound" match="wxSTC_CSOUND_" />
-  <lexer name="css" match="wxSTC_CSS_" />
-  <lexer name="d" match="wxSTC_D_" /> 
-  <lexer name="eiffel" match="wxSTC_EIFFEL_" />
-  <lexer name="erlang" match="wxSTC_ERLANG_" />
-  <lexer name="errlist" match="wxSTC_ERR_" />
-  <lexer name="escript" match="wxSTC_ESCRIPT_" />
-  <lexer name="flagship" match="wxSTC_FS_" />
-  <lexer name="forth" match="wxSTC_FORTH_" />
-  <lexer name="fortran" match="wxSTC_F_" />
-  <lexer name="gap" match="wxSTC_GAP_" />
-  <lexer name="gui4cli" match="wxSTC_GC_" />
-  <lexer name="haskell" match="wxSTC_HA_" />
-  <lexer name="inno" match="wxSTC_INNO_" />
-  <lexer name="kix" match="wxSTC_KIX_" />
-  <lexer name="latex" match="wxSTC_L_" />
-  <lexer name="lisp" match="wxSTC_LISP_" />
-  <lexer name="lot" match="wxSTC_LOT_" />
-  <lexer name="lout" match="wxSTC_LOUT_" />
-  <lexer name="lua" match="wxSTC_LUA_" />
-  <lexer name="magik" match="wxSTC_MAGIK" />
-  <lexer name="makefile" extensions="*makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
-  <lexer name="markdown" match="wxSTC_MARKDOWN" />
-  <lexer name="matlab" match="wxSTC_MATLAB_" />
-  <lexer name="metapost" match="wxSTC_METAPOST_" />
-  <lexer name="mmixal" match="wxSTC_MMIXAL_" />
-  <lexer name="mssql" match="wxSTC_MSSQL_" />
-  <lexer name="mysql" match="wxSTC_MYSQL" />
-  <lexer name="nncrontab" match="wxSTC_NNCRONTAB_" />
-  <lexer name="nsis" match="wxSTC_NSIS_" />
-  <lexer name="octave" match="wxSTC_MATLAB_" />
-  <lexer name="opal" match="wxSTC_OPAL_" />
-  <lexer name="php" match="wxSTC_HPHP_" /> 
-  <lexer name="phpscript" match="wxSTC_H_" /> 
-  <lexer name="pov" match="wxSTC_POV_" />
-  <lexer name="powerpro" match="wxSTC_POWERPRO" />
-  <lexer name="progress" match="wxSTC_4GL_" />
-  <lexer name="props" match="wxSTC_PROPS_" />
-  <lexer name="ps" match="wxSTC_POWERSHELL" />
-  <lexer name="ps" match="wxSTC_PS_" />
-  <lexer name="r" match="wxSTC_R_" />
-  <lexer name="rebol" match="wxSTC_REBOL_" />
-  <lexer name="ruby" match="wxSTC_RB_" />
-  <lexer name="scriptol" match="wxSTC_SCRIPTOL_WHITE" />
-  <lexer name="smalltalk" match="wxSTC_ST_" />
-  <lexer name="sml" match="wxSTC_SML" />
-  <lexer name="sorcus" match="wxSTC_SORCUS" />
-  <lexer name="specman" match="wxSTC_SN_" />
-  <lexer name="spice" match="wxSTC_SPICE_" />
   <lexer name="tads3" match="wxSTC_T3_" />
   <lexer name="tcl" match="wxSTC_TCL_" />
   <lexer name="tex" match="wxSTC_TEX_" />
@@ -1839,6 +1808,22 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
   <lexer name="vbscript" match="wxSTC_B_" />
   <lexer name="verilog" match="wxSTC_V_" />
   <lexer name="vhdl" match="wxSTC_VHDL_" />
+  <lexer name="xml" match="wxSTC_H_">
+    <styles>
+      <style no="wxSTC_H_TAG"> TAG </style>
+      <style no="wxSTC_H_TAGEND"> TAG </style>
+      <style no="wxSTC_H_TAGUNKNOWN"> ERROR </style>
+      <style no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </style>
+      <style no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </style>
+    </styles>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.html"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+    </properties>
+    <!-- xml comments cannot be added, but don't need to, 
+         they are added in the source -->
+  </lexer>
   <lexer name="yaml" match="wxSTC_YAML_" />
   
 </lexers>
