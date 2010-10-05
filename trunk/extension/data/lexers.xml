@@ -1522,7 +1522,6 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     </keywords>
     <comments begin1=";" />
   </lexer>
-  
   <lexer name="asn1" match="wxSTC_ASN1_" />
   <lexer name="asp" match="wxSTC_H_" /> 
   <lexer name="asy" match="wxSTC_ASY_" />
