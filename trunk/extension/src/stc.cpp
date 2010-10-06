@@ -991,7 +991,7 @@ void wxExSTC::FoldAll()
     const auto level = GetFoldLevel(line);
     const auto last_child_line = GetLastChild(line, level);
     
-    if (xml && level == 0)
+    if (xml && level == wxSTC_FOLDLEVELBASE)
     {
       line++;
     }
