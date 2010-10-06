@@ -59,6 +59,10 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_MENU(ID_FOCUS_GRID, wxExFrame::OnCommand)
   EVT_MENU(ID_FOCUS_LISTVIEW, wxExFrame::OnCommand)
   EVT_MENU(ID_FOCUS_STC, wxExFrame::OnCommand)
+  EVT_MENU(ID_VIEW_MENUBAR, wxExFrame::OnCommand)
+  EVT_MENU(ID_VIEW_STATUSBAR, wxExFrame::OnCommand)
+  EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExFrame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrame::OnUpdateUI)
 #if wxUSE_STATUSBAR
   EVT_UPDATE_UI(ID_EDIT_STATUS_BAR, wxExFrame::OnUpdateUI)
 #endif
@@ -196,11 +200,12 @@ void wxExFrame::Initialize()
   SetDropTarget(new FileDropTarget(this));
 #endif
 
-  wxAcceleratorEntry entries[4];
+  wxAcceleratorEntry entries[5];
   entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
   entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[2].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
   entries[3].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
+  entries[4].Set(wxACCEL_CTRL, (int)'B', ID_VIEW_MENUBAR);
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
@@ -288,6 +293,21 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case ID_FOCUS_STC: 
     m_FocusSTC = (wxExSTC*)command.GetEventObject();;
     break;
+    
+  case ID_VIEW_MENUBAR:
+    if (GetMenuBar()->IsShown())
+    {
+      SetMenuBar(NULL);
+    }
+    break;
+
+  case ID_VIEW_STATUSBAR:
+    if (GetStatusBar() != NULL)
+    {
+      GetStatusBar()->Show(!GetStatusBar()->IsShown());
+      SendSizeEvent();
+    }
+    break;
 
   default: wxFAIL; break;
   }
@@ -354,14 +374,40 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  auto* stc = GetFocusedSTC();
-  if (stc == NULL) return;
-
   switch (event.GetId())
   {
+    case ID_VIEW_MENUBAR:
+      if (GetMenuBar() != NULL)
+      {
+        event.Check(GetMenuBar()->IsShown());
+      }
+      else
+      {
+        event.Check(false);
+      }
+    break;
+
+    case ID_VIEW_STATUSBAR:
+      if (GetStatusBar() != NULL)
+      {
+        event.Check(GetStatusBar()->IsShown());
+      }
+      else
+      {
+        event.Check(false);
+      }
+      break;
+      
 #if wxUSE_STATUSBAR
-  case ID_EDIT_STATUS_BAR: stc->UpdateStatusBar("PaneLines"); break;
+    case ID_EDIT_STATUS_BAR:
+    {
+    auto* stc = GetFocusedSTC();
+    if (stc == NULL) return;
+    stc->UpdateStatusBar("PaneLines"); 
+    }
+    break;
 #endif
+
   default:
     wxFAIL;
     break;

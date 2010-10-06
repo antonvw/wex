@@ -67,21 +67,6 @@ void wxExManagedFrame::OnCommand(wxCommandEvent& event)
     case ID_VIEW_FINDBAR: TogglePane("FINDBAR"); break;
     case ID_VIEW_TOOLBAR: TogglePane("TOOLBAR"); break;
 
-    case ID_VIEW_MENUBAR:
-      if (GetMenuBar()->IsShown())
-      {
-        SetMenuBar(NULL);
-      }
-      break;
-
-    case ID_VIEW_STATUSBAR:
-      if (GetStatusBar() != NULL)
-      {
-        GetStatusBar()->Show(!GetStatusBar()->IsShown());
-        SendSizeEvent();
-      }
-      break;
-
     default:
       wxFAIL;
   }
@@ -98,28 +83,6 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_VIEW_TOOLBAR:
       event.Check(GetManager().GetPane("TOOLBAR").IsShown());
     break;
-
-    case ID_VIEW_MENUBAR:
-      if (GetMenuBar() != NULL)
-      {
-        event.Check(GetMenuBar()->IsShown());
-      }
-      else
-      {
-        event.Check(false);
-      }
-    break;
-
-    case ID_VIEW_STATUSBAR:
-      if (GetStatusBar() != NULL)
-      {
-        event.Check(GetStatusBar()->IsShown());
-      }
-      else
-      {
-        event.Check(false);
-      }
-      break;
 
     default:
       wxFAIL;
