@@ -983,14 +983,19 @@ void wxExSTC::FoldAll()
   if (GetProperty("fold") != "1") return;
 
   const auto current_line = GetCurrentLine();
+  const bool xml = (m_Lexer.GetScintillaLexer() == "xml");
 
   int line = 0;
   while (line < GetLineCount())
   {
     const auto level = GetFoldLevel(line);
     const auto last_child_line = GetLastChild(line, level);
-
-    if (last_child_line > line)
+    
+    if (xml && level == 0)
+    {
+      line++;
+    }
+    else if (last_child_line > line)
     {
       if (GetFoldExpanded(line)) ToggleFold(line);
       line = last_child_line + 1;
