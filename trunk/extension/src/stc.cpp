@@ -990,8 +990,8 @@ void wxExSTC::FoldAll()
   {
     const auto level = GetFoldLevel(line);
     const auto last_child_line = GetLastChild(line, level);
-    wxLogMessage("%x %x %x", line, level, level & wxSTC_FOLDLEVELNUMBERMASK);
-    if (xml && (level & wxSTC_FOLDLEVELNUMBERMASK) <= 1)
+    
+    if (xml && (GetLine(line).Contains("lexers")))
     {
       line++;
     }
