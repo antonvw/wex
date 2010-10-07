@@ -52,8 +52,6 @@ General
   - API documentation is generated from the sources using Doxygen (1.6.1)
     http://www.stack.nl/~dimitri/doxygen/
   - Other docs are in html format using no special html editor
-  - Use bouml for reverse engineering and obtaining class diagrams
-    http://bouml.free.fr/index.html
 
 - Automated testing is done using cppunit
     http://sourceforge.net/projects/cppunit
