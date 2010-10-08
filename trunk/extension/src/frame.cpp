@@ -94,6 +94,9 @@ wxExFrame::~wxExFrame()
   {
     m_FindReplaceDialog->Destroy();
   }
+  
+  wxConfigBase::Get()->Write("ShowMenuBar", 
+    GetMenuBar() != NULL && GetMenuBar()->IsShown());
 
 #if wxUSE_STATUSBAR
   delete m_StatusBar;
@@ -438,6 +441,24 @@ bool wxExFrame::OpenFile(
   }
 
   return false;
+}
+
+void wxExFrame::SetMenuBar(wxMenuBar* bar)
+{
+  if (bar != NULL)
+  {
+    m_MenuBar = bar;
+  }
+  
+  if (!wxConfigBase::Get()->ReadBool("ShowMenuBar", true))
+  {
+    wxFrame::SetMenuBar(NULL);
+  }
+  else
+  {
+    wxASSERT(m_MenuBar != NULL);
+    wxFrame::SetMenuBar(m_MenuBar);
+  }
 }
 
 #if wxUSE_STATUSBAR

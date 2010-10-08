@@ -91,6 +91,9 @@ public:
     const wxString& WXUNUSED(unique),
     const wxString& WXUNUSED(contents),
     long flags = 0) {return false;};
+    
+  /// Override from base class.
+  void SetMenuBar(wxMenuBar* bar);
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
@@ -153,6 +156,7 @@ private:
 #endif
 
   wxFindReplaceDialog* m_FindReplaceDialog;
+  wxMenuBar* m_MenuBar;
 
   wxExGrid* m_FocusGrid;
   wxExListView* m_FocusListView;
