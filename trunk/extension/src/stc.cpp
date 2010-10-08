@@ -991,11 +991,12 @@ void wxExSTC::FoldAll()
     const auto level = GetFoldLevel(line);
     const auto last_child_line = GetLastChild(line, level);
     
-    if (xml && (GetLine(line).Contains("lexers")))
+    if (xml && (
+        level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
     {
       line++;
     }
-    else if (last_child_line > line)
+    else if (last_child_line > line + 1)
     {
       if (GetFoldExpanded(line)) ToggleFold(line);
       line = last_child_line + 1;
