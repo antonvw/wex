@@ -21,7 +21,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <set-wxlike-builddir/>
   
   <if cond="PLATFORM_UNIX=='1'">
-     <set var="DEFAULT_CXXFLAGS">-std=c++0x</set>
+     <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++0x</set>
   </if>
   
   <!-- options -->
