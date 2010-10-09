@@ -298,19 +298,13 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case ID_VIEW_MENUBAR:
-    {
-    static wxMenuBar* oldbar = NULL;
-
     if (GetMenuBar() != NULL)
     {
-      oldbar = GetMenuBar();
       SetMenuBar(NULL);
     }
     else
     {
-      SetMenuBar(oldbar);
-    }
-
+      SetMenuBar(m_MenuBar);
     }
     break;
 
