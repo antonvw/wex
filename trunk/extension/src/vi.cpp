@@ -839,7 +839,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   else if (m_InsertMode)
   {
     m_InsertText += event.GetUnicodeKey();
-
     return true;
   }
   else
@@ -899,6 +898,11 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       }
       else
       {
+        if (m_InsertText.size() > 1)
+        {
+          m_InsertText.Truncate(m_InsertText.size() - 1);
+        }
+        
         handled = false;
       }
       break;
