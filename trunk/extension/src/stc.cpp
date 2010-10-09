@@ -4,7 +4,7 @@
 * Author:        Anton van Wezenbeek
 * RCS-ID:        $Id$
 *
-* Copyright (c) 1998-2009 Anton van Wezenbeek
+* Copyright (c) 1998-2009 Anton van:
 * All rights are reserved. Reproduction in whole or part is prohibited
 * without the written consent of the copyright owner.
 \******************************************************************************/
@@ -435,9 +435,10 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-    GetSelectedText().empty() && 
-    GetProperty("fold") == "1" &&
-    m_Lexer.IsOk())
+     GetSelectedText().empty() && 
+     GetProperty("fold") == "1" &&
+     m_Lexer.IsOk() &&
+    !m_Lexer.GetScintillaLexer().empty())
   {
     menu.AppendSeparator();
     menu.Append(ID_EDIT_TOGGLE_FOLD, _("&Toggle Fold\tCtrl+T"));
