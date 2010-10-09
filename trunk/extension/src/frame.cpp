@@ -77,6 +77,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   , m_FocusGrid(NULL)
   , m_FocusListView(NULL)
   , m_FocusSTC(NULL)
+  , m_MenuBar(NULL)
 {
   Initialize();
 

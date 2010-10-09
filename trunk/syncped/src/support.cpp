@@ -180,8 +180,6 @@ DecoratedFrame::DecoratedFrame()
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar* menubar = new wxMenuBar();
-  SetMenuBar(menubar);
-
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
   menubar->Append(menuEdit, wxGetStockLabel(wxID_EDIT));
   menubar->Append(menuView, _("&View"));
@@ -190,6 +188,8 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuWindow, _("&Window"));
   menubar->Append(menuOptions, _("&Options"));
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
+  
+  SetMenuBar(menubar);
 }
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
