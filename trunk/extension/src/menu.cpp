@@ -82,7 +82,9 @@ wxMenuItem* wxExMenu::Append(
 
 void wxExMenu::AppendBars()
 {
+#ifndef __WXGTK__
   AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar"));
+#endif
   AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
   AppendCheckItem(ID_VIEW_TOOLBAR, _("&Toolbar"));
   AppendCheckItem(ID_VIEW_FINDBAR, _("&Findbar"));
