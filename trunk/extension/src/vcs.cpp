@@ -43,7 +43,10 @@ wxExVCS::wxExVCS(const wxFileName& filename)
 
 wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
 {
-  m_FileName = filename;
+  if (m_FileName.IsOk())
+  {
+    m_FileName = filename;
+  }
   
   Initialize(menu_id);
 }
