@@ -106,7 +106,7 @@ bool wxExVCS::CheckPathAll(
   const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
   
   // The .git dir only exists in the root, so check all components.
-  wxFileName root(fn.GetPath());
+  wxFileName root(fn);
 
   while (root.DirExists() && root.GetDirCount() > 0)
   {
