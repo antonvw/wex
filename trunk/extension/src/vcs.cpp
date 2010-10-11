@@ -151,7 +151,7 @@ int wxExVCS::ConfigDialog(
     // Estimate number of columns used by the radiobox.
     int cols = 5;
 
-    switch (m_Entries.size() + 2)
+    switch (choices.size())
     {
       case 6:
       case 11:
