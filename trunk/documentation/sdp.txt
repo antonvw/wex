@@ -53,9 +53,10 @@ General
     http://www.stack.nl/~dimitri/doxygen/
   - Other docs are in html format using no special html editor
 
-- Automated testing is done using cppunit
+- Automated testing is done using cppunit (1.12)
     http://sourceforge.net/projects/cppunit
-    
+    sudo apt-get install libcppunit-dev
+     
 - Translation is done using poedit (1.4.6)
     http://www.poedit.net/
   wxextension has it's own localization file, your application should
