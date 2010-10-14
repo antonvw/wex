@@ -182,8 +182,6 @@ int wxExVCS::ConfigDialog(
     }
   }
 
-  v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
-
   return wxExConfigDialog(parent, v, title).ShowModal();
 }
 #endif

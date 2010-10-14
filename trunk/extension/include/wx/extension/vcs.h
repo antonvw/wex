@@ -61,7 +61,7 @@ public:
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
-    const wxString& title = _("Set VCS And Comparator")) const;
+    const wxString& title = _("Set VCS")) const;
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.

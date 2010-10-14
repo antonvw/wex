@@ -640,19 +640,24 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
 
-  case ID_OPTION_VCS_AND_COMPARATOR: 
-    if (wxExVCS::Get()->ConfigDialog(this) == wxID_OK)
-    {
-      GetVCSMenu()->BuildVCS(wxExVCS::Get()->Use());
-    }
-    break;
-
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY,
       event.GetId());
     break;
+    
+  case ID_OPTION_LIST_COMPARATOR: 
+    {
+      std::vector<wxExConfigItem> v;
+      v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
+      wxExConfigDialog(
+        this,
+        v,
+        _("Set List Comparator")).ShowModal();
+    }
+    break;
+
   case ID_OPTION_LIST_FONT:
     {
       std::vector<wxExConfigItem> v;
@@ -700,6 +705,13 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_LIST_SORT_TOGGLE:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
+  case ID_OPTION_VCS: 
+    if (wxExVCS::Get()->ConfigDialog(this) == wxID_OK)
+    {
+      GetVCSMenu()->BuildVCS(wxExVCS::Get()->Use());
+    }
+    break;
+    
   case ID_PROCESS_SELECT: ProcessConfigDialog(this); break;
 
   case ID_PROJECT_CLOSE:

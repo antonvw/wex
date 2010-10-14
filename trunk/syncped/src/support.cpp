@@ -161,13 +161,14 @@ DecoratedFrame::DecoratedFrame()
   menuWindow->Append(ID_SPLIT, _("Split"));
 
   wxMenu* menuOptions = new wxMenu();
-  menuOptions->Append(
-    ID_OPTION_VCS_AND_COMPARATOR, wxExEllipsed(_("Set VCS And &Comparator")));
+  menuOptions->Append(ID_OPTION_VCS, wxExEllipsed(_("Set &VCS")));
   menuOptions->AppendSeparator();
+  menuOptions->Append(
+    ID_OPTION_LIST_COMPARATOR, wxExEllipsed(_("Set List &Comparator")));
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   // text also used as caption
   menuOptions->Append(
-    ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set List Read Only Colour")));
+    ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set List &Read Only Colour")));
   wxMenu *menuListSort = new wxMenu;
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
   menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
