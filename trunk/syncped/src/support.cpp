@@ -163,8 +163,13 @@ DecoratedFrame::DecoratedFrame()
   wxMenu* menuOptions = new wxMenu();
   menuOptions->Append(ID_OPTION_VCS, wxExEllipsed(_("Set &VCS")));
   menuOptions->AppendSeparator();
-  menuOptions->Append(
-    ID_OPTION_LIST_COMPARATOR, wxExEllipsed(_("Set List &Comparator")));
+  
+  if (wxExLexers::Get()->Count() == 0)
+  {
+    menuOptions->Append(
+      ID_OPTION_LIST_COMPARATOR, wxExEllipsed(_("Set List &Comparator")));
+  }
+  
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   // text also used as caption
   menuOptions->Append(
