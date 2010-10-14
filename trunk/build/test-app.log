@@ -1,33 +1,6 @@
-.......F.F......F...F.F...
+.....................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  21   Failures: 5   Errors: 0
-
-
-1) test: testLexer (F) line: 236 ../extension/test/app/test.cpp
-assertion failed
-- Expression: !lexer.GetExtensions().empty()
-
-
-2) test: testLexers (F) line: 272 ../extension/test/app/test.cpp
-assertion failed
-- Expression: wxExLexers::Get()->ApplyMacro("wxSTC_MARK_LCORNER") == "10"
-
-
-3) test: testSTC (F) line: 403 ../extension/test/app/test.cpp
-assertion failed
-- Expression: stc->SetLexer("cpp")
-
-
-4) test: testUtil (F) line: 478 ../extension/test/app/test.cpp
-assertion failed
-- Expression: wxExAlignText("test", "header", true, true, wxExLexers::Get()->FindByName("cpp")).size() == wxString("// headertest").size()
-
-
-5) test: testVCS (F) line: 495 ../extension/test/app/test.cpp
-assertion failed
-- Expression: wxExVCS::Get()->DirExists(wxFileName(TEST_FILE))
+OK (21 tests)
 
 
