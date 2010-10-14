@@ -679,6 +679,11 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
+  if (m_Entries.size() == 0)
+  {
+    return false;
+  }
+  
   const auto it = m_Entries.find(GetName(m_FileName));
     
   if (it != m_Entries.end())
