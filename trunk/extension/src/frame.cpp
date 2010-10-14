@@ -77,6 +77,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   , m_FocusGrid(NULL)
   , m_FocusListView(NULL)
   , m_FocusSTC(NULL)
+  , m_FocusSTCFind(NULL)
   , m_MenuBar(NULL)
 {
   Initialize();
@@ -237,6 +238,11 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         this, wxExFindReplaceData::Get(), _("Find")); 
     }
     
+    if (m_FocusSTC != NULL)
+    {
+      m_FocusSTCFind = m_FocusSTC;
+    }
+    
     m_FindReplaceDialog->Show();
     break;
     
@@ -261,6 +267,11 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
         wxFR_REPLACEDIALOG); 
     }
       
+    if (m_FocusSTC != NULL)
+    {
+      m_FocusSTCFind = m_FocusSTC;
+    }
+    
     m_FindReplaceDialog->Show();
     break;
     
@@ -344,10 +355,15 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     // show the dialog next time.
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = NULL;
+    m_FocusSTCFind = NULL;
     return;
   }
 
-  if (m_FocusSTC != NULL)
+  if (m_FocusSTCFind != NULL)
+  {
+    FindIn(event, m_FocusSTCFind);
+  }
+  else if (m_FocusSTC != NULL)
   {
     FindIn(event, m_FocusSTC);
   }
