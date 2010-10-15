@@ -785,7 +785,7 @@ void wxExSTC::ConfigGet()
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
     // Set defaults only.
-    wxConfigBase::Get()->ReadLong(_("Auto fold"), 2500);
+    wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500);
 
     wxConfigBase::Get()->SetRecordDefaults(false);
   }
@@ -2201,7 +2201,7 @@ bool wxExSTC::SetLexer(const wxString& lexer)
       SetMarginWidth(m_MarginFoldingNumber, 0);
     }
     
-    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), -1))
+    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
     {
       FoldAll();
     }
