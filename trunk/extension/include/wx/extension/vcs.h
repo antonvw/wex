@@ -112,11 +112,6 @@ public:
   /// (both the parameter and returned value may be NULL). 
   static wxExVCS* Set(wxExVCS* vcs);
 
-#if wxUSE_GUI
-  /// Shows output from Execute in a dialog.
-  void ShowOutput(wxWindow* parent) const;
-#endif  
-
   /// Does current vcs allow keyword expansion.
   bool SupportKeywordExpansion() const;
 
@@ -130,6 +125,10 @@ private:
   static long GetNo(const wxFileName& filename);
   void Initialize(int command_id);
   int ShowDialog(wxWindow* parent);
+#if wxUSE_GUI
+  /// Shows output from Execute in a dialog.
+  void ShowOutput(wxWindow* parent) const;
+#endif  
   bool UseFlags() const;
   bool UseSubcommand() const;
 
