@@ -25,7 +25,7 @@ class wxGrid;
 class wxStyledTextCtrl;
 
 /// Offers methods to the otl database.
-class wxExOTL
+class WXDLLIMPEXP_BASE wxExOTL
 {
 public:
   /// Default constructor.

@@ -20,7 +20,7 @@
 #if wxUSE_GUI
 
 /// Adds artid, edit, printing and tool menu items to wxMenu.
-class wxExMenu : public wxMenu
+class WXDLLIMPEXP_BASE wxExMenu : public wxMenu
 {
 public:
   /// The menu styles.

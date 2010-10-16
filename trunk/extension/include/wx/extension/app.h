@@ -18,7 +18,7 @@
 /// Offers the application, with wxExtension specific init and exit.
 /// It also keeps the locale and the catalog dir.
 /// Your application should be derived from this class.
-class wxExApp : public wxApp
+class WXDLLIMPEXP_BASE wxExApp : public wxApp
 {
 public:
   /// Gets the catalog dir.

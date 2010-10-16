@@ -13,7 +13,7 @@
 #include <wx/string.h>
 
 /// This class contains a single vcs command.
-class wxExVCSCommand
+class WXDLLIMPEXP_BASE wxExVCSCommand
 {
 public:
   enum

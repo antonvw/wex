@@ -15,7 +15,7 @@
 #include <wx/filename.h>
 
 /// Offers logging.
-class wxExLog
+class WXDLLIMPEXP_BASE wxExLog
 {
 public:
   /// Constructor, calls SetLogging with logging as specified.

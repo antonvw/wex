@@ -17,7 +17,7 @@
 #include <wx/extension/tool.h>
 
 /// Adds some standard lists.
-class wxExListViewStandard : public wxExListView
+class WXDLLIMPEXP_BASE wxExListViewStandard : public wxExListView
 {
 public:
   /// The supported lists.
@@ -106,7 +106,7 @@ class wxExFrameWithHistory;
 
 /// Adds a wxExFrameWithHistory to wxExListViewStandard.
 /// It also adds a tool menu if appropriate.
-class wxExListViewWithFrame : public wxExListViewStandard
+class WXDLLIMPEXP_BASE wxExListViewWithFrame : public wxExListViewStandard
 {
 public:
   /// Constructor.

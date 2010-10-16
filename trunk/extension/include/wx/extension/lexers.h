@@ -27,7 +27,7 @@
 class wxStyledTextCtrl;
 
 /// Collection of all lexers.
-class wxExLexers
+class WXDLLIMPEXP_BASE wxExLexers
 {
 public:
   /// Constructor for lexers from specified filename.

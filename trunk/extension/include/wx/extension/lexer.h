@@ -25,7 +25,7 @@ class wxStyledTextCtrl;
 /// syntax colouring and comment definitions.
 /// This lexer is one of the Scintilla lexers.
 /// The lexers are read by and kept in the wxExLexers class.
-class wxExLexer
+class WXDLLIMPEXP_BASE wxExLexer
 {
 public:
   /// Default constructor.

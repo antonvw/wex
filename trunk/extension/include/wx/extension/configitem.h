@@ -96,7 +96,7 @@ enum wxExConfigType
 /// for loading and saving from config.
 /// If you use the default for cols, then the number of cols used
 /// is determined by the config dialog, otherwise this number is used.
-class wxExConfigItem
+class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
   /// Constuctor.

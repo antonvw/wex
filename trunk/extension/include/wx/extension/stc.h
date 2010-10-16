@@ -25,7 +25,7 @@ class wxExConfigDialog;
 
 /// Offers a styled text ctrl with find/replace, printing, popup menu, 
 /// macro support, vi support and lexer support (syntax colouring, folding).
-class wxExSTC : public wxStyledTextCtrl
+class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
 public:
   /// Menu and tooltip flags (0 is used for no menu).

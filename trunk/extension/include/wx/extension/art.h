@@ -19,7 +19,7 @@
 #if wxUSE_GUI
 
 /// Offers a collection of art, mapping stock id's to art id's.
-class wxExStockArt
+class WXDLLIMPEXP_BASE wxExStockArt
 {
 public:
   /// Constructor, fills the map first time it is invoked.

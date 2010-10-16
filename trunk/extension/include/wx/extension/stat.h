@@ -16,7 +16,7 @@
 /// Adds IsOk to the stat base class, several methods
 /// to get/update on the stat members, and Sync to sync
 /// the stat from disk.
-class wxExStat : public stat
+class WXDLLIMPEXP_BASE wxExStat : public stat
 {
 public:
   /// Default constructor. Calls Sync.

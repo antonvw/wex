@@ -23,7 +23,7 @@ class wxExSTCEntryDialog;
 
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml.
-class wxExVCS
+class WXDLLIMPEXP_BASE wxExVCS
 {
 public:
   // The vcs id's here can be set using the config dialog, and are not

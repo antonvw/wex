@@ -20,7 +20,7 @@ class wxStyledTextCtrl;
 /// E.g.
 /// 1,2,3=fore:light steel blue,italic,size:8
 /// 1,2,3 are the scintilla styles numbers, and the rest is spec
-class wxExStyle
+class WXDLLIMPEXP_BASE wxExStyle
 {
 public:
   /// Default constructor.

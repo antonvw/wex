@@ -20,7 +20,7 @@ class wxExFrame;
 
 /// Offers a toolbar together with stock art.
 /// Default no controls are added, you have to call AddControls to do that.
-class wxExToolBar : public wxAuiToolBar
+class WXDLLIMPEXP_BASE wxExToolBar : public wxAuiToolBar
 {
 public:
   /// Constructor.

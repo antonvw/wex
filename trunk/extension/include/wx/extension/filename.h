@@ -17,7 +17,7 @@
 class wxExFile;
 
 /// Adds a wxExStat and a wxExLexer member to wxFileName.
-class wxExFileName : public wxFileName
+class WXDLLIMPEXP_BASE wxExFileName : public wxFileName
 {
   friend class wxExFile; // it might update stat
 public:

@@ -21,7 +21,7 @@
 class wxExManagedFrame;
 
 /// Offers a notebook with page mapping and interfaces with wxExManagedFrame.
-class wxExNotebook : public wxAuiNotebook
+class WXDLLIMPEXP_BASE wxExNotebook : public wxAuiNotebook
 {
 public:
   /// Constructor.

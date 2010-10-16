@@ -19,7 +19,7 @@
 
 /// Offers popup menu with copy/paste, printing.
 /// It also offers drag/drop functionality.
-class wxExGrid : public wxGrid
+class WXDLLIMPEXP_BASE wxExGrid : public wxGrid
 {
 public:
   /// Constructor.

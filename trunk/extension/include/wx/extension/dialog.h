@@ -18,7 +18,7 @@
 
 /// Offers a general dialog, with a separated button sizer at the bottom.
 /// Derived dialogs can use the user sizer for laying out their controls.
-class wxExDialog : public wxDialog
+class WXDLLIMPEXP_BASE wxExDialog : public wxDialog
 {
 public:
   /// Constructor.

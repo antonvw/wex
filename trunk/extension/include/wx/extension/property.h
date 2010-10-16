@@ -14,7 +14,7 @@
 
 class wxStyledTextCtrl;
 
-class wxExProperty
+class WXDLLIMPEXP_BASE wxExProperty
 {
 public:
   /// Default constructor.

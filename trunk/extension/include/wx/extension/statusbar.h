@@ -23,7 +23,7 @@ class wxExStatusBar;
 
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
-class wxExPane : public wxStatusBarPane
+class WXDLLIMPEXP_BASE wxExPane : public wxStatusBarPane
 {
 public:
   /// Default constructor.

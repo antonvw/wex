@@ -18,7 +18,7 @@
 class wxMenu;
 
 /// This class collects a single vcs.
-class wxExVCSEntry
+class WXDLLIMPEXP_BASE wxExVCSEntry
 {
 public:
   /// Default constructor.

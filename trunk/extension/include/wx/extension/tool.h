@@ -18,7 +18,7 @@
 
 /// This class defines our tool info.
 /// It is stored in the tool info map available from the wxExTool class.
-class wxExToolInfo
+class WXDLLIMPEXP_BASE wxExToolInfo
 {
 public:
   /// Default constructor.

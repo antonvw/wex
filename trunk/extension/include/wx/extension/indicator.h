@@ -16,7 +16,7 @@
 class wxStyledTextCtrl;
 
 /// This class defines our indicators.
-class wxExIndicator
+class WXDLLIMPEXP_BASE wxExIndicator
 {
 public:
   /// Default constructor.

@@ -19,7 +19,7 @@ class wxExFrameWithHistory;
 class wxExListView;
 
 /// Offers a wxExTextFile with reporting to a listview.
-class wxExTextFileWithListView : public wxExTextFile
+class WXDLLIMPEXP_BASE wxExTextFileWithListView : public wxExTextFile
 {
 public:
   /// Constructor.

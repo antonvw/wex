@@ -20,7 +20,7 @@
 class wxCheckListBox;
 
 /// Adds an existing config to wxFindReplaceData, and some members.
-class wxExFindReplaceData : public wxFindReplaceData
+class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
 {
 public:
   /// Constructor, gets members from config.

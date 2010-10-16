@@ -20,7 +20,7 @@ class wxExConfigDialog;
 class wxExSTC;
 
 /// Offers a class that extends STC with vi behaviour.
-class wxExVi
+class WXDLLIMPEXP_BASE wxExVi
 {
 public:
   /// Constructor.

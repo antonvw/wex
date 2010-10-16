@@ -22,7 +22,7 @@
 /// to store the items in the config).
 /// When pressing the apply button OnCommandConfigDialog is invoked from wxExFrame.
 /// If you only specify a wxCANCEL button, the dialog is readonly.
-class wxExConfigDialog: public wxExDialog
+class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 {
 public:
   /// Constructor, specify the vector of config items

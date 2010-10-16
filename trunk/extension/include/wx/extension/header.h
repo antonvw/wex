@@ -17,7 +17,7 @@
 class wxExFileName;
 
 /// This class offers methods to make a file header.
-class wxExHeader
+class WXDLLIMPEXP_BASE wxExHeader
 {
 public:
   /// Default constructor.

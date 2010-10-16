@@ -17,7 +17,7 @@ class wxExFrameWithHistory;
 #include <wx/extension/stc.h>
 
 /// Adds a frame to wxExSTC.
-class wxExSTCWithFrame : public wxExSTC
+class WXDLLIMPEXP_BASE wxExSTCWithFrame : public wxExSTC
 {
 public:
   /// Menu types, they determine how the context menu will appear.

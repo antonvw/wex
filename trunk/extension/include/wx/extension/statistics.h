@@ -20,7 +20,7 @@ template <class T> class wxExStatistics;
 
 /// Helper class for adding clear menu to the grid, and 
 /// calling Clear for the statistics.
-template <class T> class wxExGridStatistics: public wxExGrid
+template <class T> class WXDLLIMPEXP_BASE wxExGridStatistics: public wxExGrid
 {
 public:
   /// Constructor.
@@ -64,7 +64,7 @@ private:
 
 /// Offers base statistics. All statistics involve a key value pair,
 /// where the key is a wxString, and the value a template.
-template <class T> class wxExStatistics
+template <class T> class WXDLLIMPEXP_BASE wxExStatistics
 {
 public:
   /// Default constructor.

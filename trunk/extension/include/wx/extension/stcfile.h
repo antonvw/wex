@@ -18,7 +18,7 @@ class wxExSTC;
 
 #if wxUSE_GUI
 /// Adds file read and write to wxExSTC.
-class wxExSTCFile: public wxExFile
+class WXDLLIMPEXP_BASE wxExSTCFile: public wxExFile
 {
 public:
   /// Constructor.

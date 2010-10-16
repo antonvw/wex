@@ -19,7 +19,7 @@
 
 /// Offers a wxExDir with tool support.
 /// RunTool is FindFiles invoked on all matching files.
-class wxExDirTool : public wxExDir
+class WXDLLIMPEXP_BASE wxExDirTool : public wxExDir
 {
 public:
   /// Constructor, provide your tool and a path.

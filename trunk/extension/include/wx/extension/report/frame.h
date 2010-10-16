@@ -26,7 +26,7 @@ class wxExProcess;
 /// It also updates the title of the frame if you have a focused
 /// STC file or listview project.
 /// Finally it adds process support and find in files dialog.
-class wxExFrameWithHistory : public wxExManagedFrame
+class WXDLLIMPEXP_BASE wxExFrameWithHistory : public wxExManagedFrame
 {
 public:
   /// Constructor.

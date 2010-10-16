@@ -17,7 +17,7 @@
 /// Adds several File* methods to wxFile. All the File* methods update
 /// the wxExStat member. Also takes care of synchronization,
 /// all you have to do is call CheckSync once in a while.
-class wxExFile : public wxFile
+class WXDLLIMPEXP_BASE wxExFile : public wxFile
 {
 public:
   /// Default constructor.

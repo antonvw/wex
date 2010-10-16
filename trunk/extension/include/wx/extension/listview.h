@@ -30,7 +30,7 @@ enum wxExSortType
 };
 
 /// Offers a column to be used in a wxListCtrl. Facilitates sorting.
-class wxExColumn : public wxListItem
+class WXDLLIMPEXP_BASE wxExColumn : public wxListItem
 {
 public:
   /// Column types.
@@ -74,7 +74,7 @@ private:
 
 /// Adds printing, popup menu, images, columns and items to wxListView.
 /// Allows for sorting on any column.
-class wxExListView : public wxListView
+class WXDLLIMPEXP_BASE wxExListView : public wxListView
 {
 public:
   /// Which images to use.

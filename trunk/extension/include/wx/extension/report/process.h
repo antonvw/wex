@@ -18,7 +18,7 @@ class wxExFrameWithHistory;
 class wxExListView;
 
 /// Offers a wxProcess with output to a listview.
-class wxExProcess : public wxProcess
+class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 {
 public:
   /// Constructor.

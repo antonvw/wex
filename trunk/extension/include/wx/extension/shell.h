@@ -27,7 +27,7 @@
 /// - If you enter !\<number\> the previous \<number\> command is entered.
 /// - If you enter !\<abbreviation\> the last command starting with 
 ///   \<abbreviation\> is entered.
-class wxExSTCShell: public wxExSTC
+class WXDLLIMPEXP_BASE wxExSTCShell: public wxExSTC
 {
 public:
   /// Constructor.

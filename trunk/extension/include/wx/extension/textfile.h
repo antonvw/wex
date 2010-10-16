@@ -18,7 +18,7 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/tool.h>
 
-class wxExTextFile;
+class WXDLLIMPEXP_BASE wxExTextFile;
 
 /// Offers file statistics for elements and keywords.
 /// Used in wxExTextFile to keep statistics like comments and lines of code.

@@ -18,7 +18,7 @@ class wxExFrameWithHistory;
 
 /// Offers our generic dir control.
 /// It adds a popup menu and handling of the commands.
-class wxExGenericDirCtrl : public wxGenericDirCtrl
+class WXDLLIMPEXP_BASE wxExGenericDirCtrl : public wxGenericDirCtrl
 {
 public:
   /// Constructor.

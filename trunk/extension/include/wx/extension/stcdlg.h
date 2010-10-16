@@ -19,7 +19,7 @@ class wxExSTC;
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt (if not empty) is first added as a text sizer to the user sizer.
 /// Then the STC component is added to the user sizer.
-class wxExSTCEntryDialog : public wxExDialog
+class WXDLLIMPEXP_BASE wxExSTCEntryDialog : public wxExDialog
 {
 public:
   /// Constructor.

@@ -20,7 +20,7 @@
 #if wxUSE_GRID
 
 /// Offers a grid cell rendering.
-class wxExRenderer : public wxGridCellStringRenderer
+class WXDLLIMPEXP_BASE wxExRenderer : public wxGridCellStringRenderer
 {
 public:
   /// Renderer flags.

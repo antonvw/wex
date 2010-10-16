@@ -21,7 +21,7 @@ class wxExToolBar;
 #if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar and findbar support.
-class wxExManagedFrame : public wxExFrame
+class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
 {
 public:
   /// Constructor, registers the aui manager, and creates the bars.

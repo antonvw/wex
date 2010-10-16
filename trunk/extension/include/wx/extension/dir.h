@@ -17,7 +17,7 @@
 /// Adds FindFiles to a wxDir.
 /// By overriding OnDir and OnFile you can take care
 /// of what to do with the result.
-class wxExDir : public wxDir
+class WXDLLIMPEXP_BASE wxExDir : public wxDir
 {
 public:
   /// Constructor.

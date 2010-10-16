@@ -17,7 +17,7 @@
 #include <wx/print.h> 
 
 /// Offers printing support.
-class wxExPrinting
+class WXDLLIMPEXP_BASE wxExPrinting
 {
 public:
   /// Constructor.

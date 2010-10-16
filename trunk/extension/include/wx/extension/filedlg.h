@@ -15,7 +15,7 @@
 class wxExFile;
 
 /// Adds an wxExFile to wxFileDialog.
-class wxExFileDialog : public wxFileDialog
+class WXDLLIMPEXP_BASE wxExFileDialog : public wxFileDialog
 {
 public:
   /// Constructor.
