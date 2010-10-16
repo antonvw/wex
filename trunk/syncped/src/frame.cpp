@@ -1048,6 +1048,10 @@ bool Frame::OpenFile(
     {
       editor->SetLexer("diff");
     }
+    else if (unique.Contains("log"))
+    {
+      editor->SetLexer("");
+    }
     else
     {
       editor->SetLexer(filename.GetLexer().GetScintillaLexer());
