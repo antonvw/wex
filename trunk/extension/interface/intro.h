@@ -13,8 +13,14 @@
 \mainpage wxextension Main Page
 
 \section intro_sec Introduction
-wxextension contains a collection of extra wxWidgets classes.
+
+\subsection
+wxextension contains a collection of wxWidgets extension classes.
 It uses wxWidgets 2.9.2 and STL classes.
+
+\subsection
+wxexrep contains a collection of wxextension classes
+that are implemented for a list view component.
 
 \section install_sec Installation from svn checkout
 
@@ -24,8 +30,8 @@ do make.
 
 \subsection step2 Windows
 Use the build.bkl in the trunk/build directory file to create a msvc2003 or 2008
-project file. Use the generated Visual Studio build.sln file in the trunk directory to build.
-
+project file. Use the generated Visual Studio build.sln file in the 
+trunk directory to build.
 
 \section example_sec Examples
 The example is in the sample directory.
