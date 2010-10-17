@@ -465,6 +465,8 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
   {
     return;
   }
+  
+  m_STC->SetFocus();
 
   m_SearchForward = (c == '/');
   
@@ -492,6 +494,8 @@ void wxExVi::DoCommandLine()
   {
     return;
   }
+  
+  m_STC->SetFocus();
 
   const wxString val = wxExConfigFirstOf(item);
 
