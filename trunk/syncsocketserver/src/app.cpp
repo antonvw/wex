@@ -130,7 +130,8 @@ Frame::Frame()
   menuFile->Append(wxID_SAVE);
   menuFile->Append(wxID_SAVEAS);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_CLEAR_STATISTICS, _("Clear Statistics"), _("Clears the statistics"));
+  menuFile->Append(ID_CLEAR_STATISTICS, 
+    _("Clear Statistics"), _("Clears the statistics"));
   menuFile->AppendSeparator();
 #if wxUSE_TASKBARICON
   menuFile->Append(ID_HIDE, _("Hide"), _("Puts back in the task bar"));
@@ -305,7 +306,8 @@ void Frame::OnClose(wxCloseEvent& event)
     return;
   }
 
-  for_each (m_Clients.begin(), m_Clients.end(), std::mem_fun(&wxSocketBase::Destroy));
+  for_each (m_Clients.begin(), m_Clients.end(), 
+    std::mem_fun(&wxSocketBase::Destroy));
 
   m_Clients.clear();
 
@@ -397,7 +399,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Clients.clear();
 
       m_SocketServer->Destroy();
-//      delete m_SocketServer;
       m_SocketServer = NULL;
 
       const wxString text = _("server stopped");
@@ -586,8 +587,10 @@ void Frame::OnSocket(wxSocketEvent& event)
     if (wxConfigBase::Get()->ReadLong(_("Timer"), 0) > 0 && !m_Timer.IsRunning())
     {
       m_Timer.Start(1000 * wxConfigBase::Get()->ReadLong(_("Timer"), 0));
+      
 #if wxUSE_STATUSBAR
-      StatusText(wxString::Format("%ld", wxConfigBase::Get()->ReadLong(_("Timer"), 0)), "PaneTimer");
+      StatusText(wxString::Format("%ld", 
+        wxConfigBase::Get()->ReadLong(_("Timer"), 0)), "PaneTimer");
 #endif
     }
 
@@ -835,23 +838,27 @@ bool Frame::SetupSocketServer()
   // We use Ok() here to see if the server is really listening
   if (!m_SocketServer->Ok())
   {
-    text = wxString::Format(_("could not listen at %d"), wxConfigBase::Get()->ReadLong(_("Port"), 3000));
+    text = wxString::Format(_("could not listen at %d"), 
+      wxConfigBase::Get()->ReadLong(_("Port"), 3000));
+      
 #if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(notready), text);
 #endif
+
     m_SocketServer->Destroy();
-    delete m_SocketServer;
     m_SocketServer = NULL;
+    
 #if wxUSE_STATUSBAR
     StatusText(text);
 #endif
+
     m_LogWindow->AppendTextForced(text);
     return false;
   }
   else
   {
-    text =
-      wxString::Format(_("server listening at %d"), wxConfigBase::Get()->ReadLong(_("Port"), 3000));
+    text = wxString::Format(_("server listening at %d"), 
+        wxConfigBase::Get()->ReadLong(_("Port"), 3000));
 
 #if wxUSE_TASKBARICON
     m_TaskBarIcon->SetIcon(wxICON(ready), text);
@@ -875,11 +882,15 @@ bool Frame::SocketCheckError(const wxSocketBase* sock)
 {
   if (sock->Error())
   {
-    const wxString error = wxString::Format(_("Socket Error: %d"), sock->LastError());
+    const wxString error = 
+      wxString::Format(_("Socket Error: %d"), sock->LastError());
+      
 #if wxUSE_STATUSBAR
     StatusText(error);
 #endif
+
     m_Statistics.Inc(error);
+    
     return true;
   }
 
@@ -1080,4 +1091,3 @@ void TaskBarIcon::OnCommand(wxCommandEvent& event)
 }
 #endif // wxUSE_TASKBARICON
 #endif // wxUSE_SOCKETS
-
