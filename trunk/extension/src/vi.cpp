@@ -930,7 +930,12 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
       m_Command.clear();
       break;
-      
+
+    case WXK_TAB:
+      // prevent TAB to be entered when not inserting
+      handled = !m_InsertMode;
+      break;
+
     case WXK_RETURN:
       if (!m_InsertMode)
       {
