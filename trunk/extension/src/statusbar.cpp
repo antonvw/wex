@@ -105,8 +105,8 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
               SetToolTip(pane.GetHelpText());
             }
           }
-        }
 #endif
+        }
       }
     }
   }
