@@ -552,12 +552,7 @@ void wxExVi::DoCommandLine()
   else if (command.StartsWith(":r"))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
-
-    if (command.Contains(" "))
-    {
-      event.SetString(command.AfterFirst(' '));
-    }
-
+    event.SetString(command.AfterFirst(' '));
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else if (command.StartsWith(":w"))
