@@ -278,24 +278,31 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         {
           const wxString token = tkz.GetNextToken();
 
-          wxFileName file(token);
-  
-          if (file.IsRelative() && stc != NULL)
+          if (token.Contains("*") || token.Contains("?"))
           {
-            file.MakeAbsolute(stc->GetFileName().GetPath());
-
-            if (!file.FileExists())
+            files.Add(token);
+          }
+          else
+          {
+            wxFileName file(token);
+  
+            if (file.IsRelative() && stc != NULL)
             {
-              wxLogError(_("Cannot locate file") + ": " + token);
+              file.MakeAbsolute(stc->GetFileName().GetPath());
+
+              if (!file.FileExists())
+              {
+                wxLogError(_("Cannot locate file") + ": " + token);
+              }
+              else
+              {
+                files.Add(file.GetFullPath());
+              }
             }
             else
             {
               files.Add(file.GetFullPath());
             }
-          }
-          else
-          {
-            files.Add(file.GetFullPath());
           }
         }
 
