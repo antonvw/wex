@@ -522,10 +522,17 @@ void wxExVi::DoCommandLine()
   else if (command.StartsWith(":e"))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+    
     if (command.Contains(" "))
     {
       event.SetString(command.AfterFirst(' '));
+      
+      if (command.Contains("*") || command.Contains("?"))
+      {
+        wxSetWorkingDirectory(m_STC->GetFileName().GetPath());
+      }
     }
+    
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
   else if (command == ":n")
