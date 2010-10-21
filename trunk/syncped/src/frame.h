@@ -16,7 +16,6 @@
 #include <wx/extension/report/dirctrl.h>
 #include "support.h"
 
-/// Adds event handling and implements virtual methods.
 class Frame : public DecoratedFrame
 {
 public:
