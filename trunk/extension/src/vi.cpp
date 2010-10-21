@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/infobar.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
 #include <wx/extension/configdlg.h>
@@ -594,11 +595,7 @@ void wxExVi::DoCommandLine()
       command.AfterFirst(':').c_str(), 
       ToLineNumber(command.AfterFirst(':').BeforeLast('=')));
         
-#if wxUSE_TOOLTIPS
     m_STC->CallTipShow(m_STC->GetCurrentPos(), msg); 
-#else
-    wxMessageBox(msg);
-#endif        
   }
   else if (command.AfterFirst(':').IsNumber())
   {

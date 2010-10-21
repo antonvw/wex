@@ -44,6 +44,15 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 
   m_Manager.AddPane(new wxExFindToolBar(this),
     wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Findbar")));
+    
+  wxPanel* vipanel = new wxPanel(this);
+  wxFlexGridSizer* sizer = new wxFlexGridSizer(1);
+  sizer->AddGrowableCol(0);
+  sizer->Add(new wxTextCtrl(vipanel, 8888), wxSizerFlags().Expand());
+  vipanel->SetSizerAndFit(sizer);
+  
+  m_Manager.AddPane(vipanel,
+    wxAuiPaneInfo().Bottom().Name("VIBAR").Caption(_("Vibar")));
 }
 
 wxExManagedFrame::~wxExManagedFrame()
