@@ -590,11 +590,15 @@ void wxExVi::DoCommandLine()
   }
   else if (command.Last() == '=')
   {
-    m_STC->CallTipShow(
-      m_STC->GetCurrentPos(), 
-      wxString::Format("%s%d",
-        command.AfterFirst(':').c_str(), 
-        ToLineNumber(command.AfterFirst(':').BeforeLast('='))));
+    const wxString msg = wxString::Format("%s%d",
+      command.AfterFirst(':').c_str(), 
+      ToLineNumber(command.AfterFirst(':').BeforeLast('=')));
+        
+#if wxUSE_TOOLTIPS
+    m_STC->CallTipShow(m_STC->GetCurrentPos(), msg); 
+#else
+    wxMessageBox(msg);
+#endif        
   }
   else if (command.AfterFirst(':').IsNumber())
   {
