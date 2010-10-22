@@ -86,11 +86,11 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case ID_VIEW_FINDBAR:
-      event.Check(GetManager().GetPane("FINDBAR").IsShown());
+      event.Check(m_Manager.GetPane("FINDBAR").IsShown());
     break;
 
     case ID_VIEW_TOOLBAR:
-      event.Check(GetManager().GetPane("TOOLBAR").IsShown());
+      event.Check(m_Manager.GetPane("TOOLBAR").IsShown());
     break;
 
     default:
