@@ -20,8 +20,7 @@
 #if wxUSE_GUI
 
 // Support class.
-// Offers a find combobox that allows you to find text
-// on a current STC on an wxExFrame.
+// Offers a combobox related to a vi object.
 class wxExComboBox: public wxComboBox
 {
 public:
@@ -29,6 +28,7 @@ public:
   /// from FindReplace from config.
   wxExComboBox(
     wxWindow* parent,
+    wxExManagedFrame* frame,
     wxStaticText* text,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -39,6 +39,7 @@ public:
 private:
   void OnKey(wxKeyEvent& event);
   
+  wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
   wxStaticText* m_StaticText;
 
@@ -77,7 +78,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   m_viStaticText = new wxStaticText(vipanel, wxID_ANY, wxEmptyString);
-  m_viComboBox = new wxExComboBox(vipanel, m_viStaticText);
+  m_viComboBox = new wxExComboBox(vipanel, this, m_viStaticText);
   
   sizer->AddGrowableCol(1);
   sizer->Add(m_viStaticText, wxSizerFlags().Expand());
@@ -183,11 +184,13 @@ END_EVENT_TABLE()
 
 wxExComboBox::wxExComboBox(
   wxWindow* parent,
+  wxExManagedFrame* frame,
   wxStaticText* text,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
   : wxComboBox(parent, id, wxEmptyString, pos, size)
+  , m_Frame(frame)
   , m_vi(NULL)
   , m_StaticText(text)
 {
@@ -199,14 +202,19 @@ void wxExComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    if (m_StaticText->GetValue() == ":")
+    if (m_StaticText->GetLabel() == ":")
     {
       m_vi->ExecCommand(GetValue());
     }
     else
     {
-      m_vi->FindCommand(m_StaticText->GetValue(), GetValue());
+      m_vi->FindCommand(m_StaticText->GetLabel(), GetValue());
     }
+  }
+  else if (key == WXK_ESCAPE)
+  {
+    m_vi->GetSTC()->SetFocus();
+    m_Frame->HideViBar();
   }
   else
   {

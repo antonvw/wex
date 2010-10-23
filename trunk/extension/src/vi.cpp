@@ -36,6 +36,11 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
 {
+  wxASSERT(wxTheApp != NULL);
+  wxWindow* window = wxTheApp->GetTopWindow();
+  wxASSERT(window != NULL);
+  m_Frame = wxDynamicCast(window, wxExManagedFrame);
+  wxASSERT(m_Frame != NULL);
 }
 
 void wxExVi::Delete(int lines) const
@@ -144,23 +149,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
     else
     {
-      wxASSERT(wxTheApp != NULL);
-      wxWindow* window = wxTheApp->GetTopWindow();
-      wxASSERT(window != NULL);
-      wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
-      wxASSERT(frame != NULL);
-      
-      return frame->GetViCommand(this, command);
+      return m_Frame->GetViCommand(this, command);
     }
   }
           
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxASSERT(window != NULL);
-  wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
-  wxASSERT(frame != NULL);
-      
-  frame->HideViBar();
+  m_Frame->HideViBar();
       
   auto repeat = atoi(command.c_str());
 
@@ -415,15 +408,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'X': for (auto i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
-      case '?': 
-        {
-        wxASSERT(wxTheApp != NULL);
-        wxWindow* window = wxTheApp->GetTopWindow();
-        wxASSERT(window != NULL);
-        wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
-        wxASSERT(frame != NULL);
-        frame->GetViCommand(this, command);
-        }
+      case '?': m_Frame->GetViCommand(this, command);
         break;
 
       case '.': DoCommand(m_LastCommand, true); break;
@@ -631,14 +616,7 @@ void wxExVi::ExecCommand(const wxString& command)
   {
     const wxString msg = wxString::Format("%d",
       ToLineNumber(command.BeforeLast('=')));
-        
-    wxASSERT(wxTheApp != NULL);
-    wxWindow* window = wxTheApp->GetTopWindow();
-    wxASSERT(window != NULL);
-    wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
-    wxASSERT(frame != NULL);
-      
-    frame->ShowViMessage(msg);
+    m_Frame->ShowViMessage(msg);
   }
   else if (command.IsNumber())
   {

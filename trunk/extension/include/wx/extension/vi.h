@@ -16,6 +16,7 @@
 
 #if wxUSE_GUI
 
+class wxExManagedFrame;
 class wxExSTC;
 
 /// Offers a class that extends STC with vi behaviour.
@@ -34,6 +35,9 @@ public:
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
 
+  /// Gets the stc component.
+  wxExSTC* GetSTC() {return m_STC;};
+  
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
@@ -102,6 +106,7 @@ private:
   int m_InsertRepeatCount;
   int m_SearchFlags;
   
+  wxExManagedFrame* m_Frame;  
   wxExSTC* m_STC;
   
   wxString m_Command;
