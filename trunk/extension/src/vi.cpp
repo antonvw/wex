@@ -14,7 +14,6 @@
 #include <wx/infobar.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
-#include <wx/extension/configdlg.h>
 #include <wx/extension/file.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -24,7 +23,6 @@
 
 #if wxUSE_GUI
 
-wxExConfigDialog* wxExVi::m_FindDialog = NULL;
 wxString wxExVi::m_LastCommand;
 wxString wxExVi::m_LastFindCharCommand;
 
@@ -418,7 +416,14 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
       case '/': 
       case '?': 
-        DoCommandFind(command.Last());
+        {
+        wxASSERT(wxTheApp != NULL);
+        wxWindow* window = wxTheApp->GetTopWindow();
+        wxASSERT(window != NULL);
+        wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
+        wxASSERT(frame != NULL);
+        frame->GetViCommand(this, command);
+        }
         break;
 
       case '.': DoCommand(m_LastCommand, true); break;
@@ -453,37 +458,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   return handled;
 }
 
-void wxExVi::DoCommandFind(const wxUniChar& c)
+void wxExVi::FindCommand(const wxString& command, const wxString& text)
 {
-  const wxString title = "vi " + wxString(c);
-
-  if (m_FindDialog == NULL)
-  {
-    // Do not use stc as parent, as that might be destroyed.
-    m_FindDialog = wxExConfigComboBoxDialog(
-      wxTheApp->GetTopWindow(), 
-      title, 
-      wxExFindReplaceData::Get()->GetTextFindWhat());
-  }
-  else
-  {
-    m_FindDialog->Reload();
-    m_FindDialog->SetTitle(title);
-  }
-
-  m_FindDialog->SelectAll();
-
-  if (m_FindDialog->ShowModal() == wxID_CANCEL)
-  {
-    return;
-  }
-  
-  m_STC->SetFocus();
-
-  m_SearchForward = (c == '/');
+//    m_FindDialog->Reload();
+  m_SearchForward = (command== '/');
   
   m_STC->FindNext(
-    wxExConfigFirstOf(wxExFindReplaceData::Get()->GetTextFindWhat()), 
+    text,
     m_SearchFlags, 
     m_SearchForward);
 }

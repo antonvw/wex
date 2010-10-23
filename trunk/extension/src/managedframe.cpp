@@ -29,6 +29,7 @@ public:
   /// from FindReplace from config.
   wxExComboBox(
     wxWindow* parent,
+    wxStaticText* text,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
@@ -39,6 +40,7 @@ private:
   void OnKey(wxKeyEvent& event);
   
   wxExVi* m_vi;
+  wxStaticText* m_StaticText;
 
   DECLARE_EVENT_TABLE()
 };
@@ -74,8 +76,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   wxPanel* vipanel = new wxPanel(this);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
-  m_viComboBox = new wxExComboBox(vipanel);
   m_viStaticText = new wxStaticText(vipanel, wxID_ANY, wxEmptyString);
+  m_viComboBox = new wxExComboBox(vipanel, m_viStaticText);
   
   sizer->AddGrowableCol(1);
   sizer->Add(m_viStaticText, wxSizerFlags().Expand());
@@ -181,11 +183,13 @@ END_EVENT_TABLE()
 
 wxExComboBox::wxExComboBox(
   wxWindow* parent,
+  wxStaticText* text,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
   : wxComboBox(parent, id, wxEmptyString, pos, size)
   , m_vi(NULL)
+  , m_StaticText(text)
 {
 }
 
@@ -195,7 +199,14 @@ void wxExComboBox::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    m_vi->ExecCommand(GetValue());
+    if (m_StaticText->GetValue() == ":")
+    {
+      m_vi->ExecCommand(GetValue());
+    }
+    else
+    {
+      m_vi->FindCommand(m_StaticText->GetValue(), GetValue());
+    }
   }
   else
   {

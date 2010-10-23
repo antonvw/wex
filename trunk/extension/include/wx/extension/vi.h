@@ -16,7 +16,6 @@
 
 #if wxUSE_GUI
 
-class wxExConfigDialog;
 class wxExSTC;
 
 /// Offers a class that extends STC with vi behaviour.
@@ -29,6 +28,9 @@ public:
   /// Executes vi command.
   void ExecCommand(const wxString& command);
 
+  /// Does find command.
+  void FindCommand(const wxString& command, const wxString& text);
+  
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
 
@@ -52,7 +54,6 @@ private:
     const wxString& end_address);
   void DeleteMarker(const wxUniChar& marker);
   bool DoCommand(const wxString& command, bool dot);
-  void DoCommandFind(const wxUniChar& c);
   bool DoCommandRange(const wxString& command);
   void FindWord(bool find_next = true) const;
   void GotoBrace() const;
@@ -86,7 +87,6 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
 
-  static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
 
