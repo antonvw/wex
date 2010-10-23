@@ -16,15 +16,14 @@
 #include <wx/extension/vi.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/file.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
 
-wxExConfigDialog* wxExVi::m_CommandDialog = NULL;
 wxExConfigDialog* wxExVi::m_FindDialog = NULL;
 wxString wxExVi::m_LastCommand;
 wxString wxExVi::m_LastFindCharCommand;
@@ -147,12 +146,24 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
     else
     {
-      // A command will follow.
-      DoCommandLine();
-      return true;
+      wxASSERT(wxTheApp != NULL);
+      wxWindow* window = wxTheApp->GetTopWindow();
+      wxASSERT(window != NULL);
+      wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
+      wxASSERT(frame != NULL);
+      
+      return frame->GetViCommand(this, command);
     }
   }
           
+  wxASSERT(wxTheApp != NULL);
+  wxWindow* window = wxTheApp->GetTopWindow();
+  wxASSERT(window != NULL);
+  wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
+  wxASSERT(frame != NULL);
+      
+  frame->HideViBar();
+      
   auto repeat = atoi(command.c_str());
 
   if (repeat == 0)
@@ -477,144 +488,6 @@ void wxExVi::DoCommandFind(const wxUniChar& c)
     m_SearchForward);
 }
 
-void wxExVi::DoCommandLine()
-{
-  const wxString item = "commandline"; // do not translate
-
-  if (m_CommandDialog == NULL)
-  {
-    m_CommandDialog = wxExConfigComboBoxDialog(
-      wxTheApp->GetTopWindow(), 
-      "vi :", 
-      item);
-  }
-  
-  m_CommandDialog->SelectAll();
-
-  if (m_CommandDialog->ShowModal() == wxID_CANCEL)
-  {
-    return;
-  }
-  
-  m_STC->SetFocus();
-
-  const wxString val = wxExConfigFirstOf(item);
-
-  if (val.empty())
-  {
-    return;
-  }
-
-  const wxString command = ":" + val;
-
-  if (command == ":$")
-  {
-    m_STC->DocumentEnd();
-  }
-  else if (command == ":close")
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":d")
-  {
-    Delete(1);
-  }
-  else if (command.StartsWith(":e"))
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
-    
-    if (command.Contains(" "))
-    {
-      event.SetString(command.AfterFirst(' '));
-      
-      if (command.Contains("*") || command.Contains("?"))
-      {
-        wxSetWorkingDirectory(m_STC->GetFileName().GetPath());
-      }
-    }
-    
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":n")
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_NEXT);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":prev")
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_PREVIOUS);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":q")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command == ":q!")
-  {
-    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
-    event.SetCanVeto(false); 
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command.StartsWith(":r"))
-  {
-    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
-    event.SetString(command.AfterFirst(' '));
-    wxPostEvent(wxTheApp->GetTopWindow(), event);
-  }
-  else if (command.StartsWith(":w"))
-  {
-    if (command.Contains(" "))
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
-      event.SetString(command.AfterFirst(' '));
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
-    else
-    {
-      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
-      wxPostEvent(wxTheApp->GetTopWindow(), event);
-    }
-  }
-  else if (command == ":x")
-  {
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
-      
-    wxPostEvent(wxTheApp->GetTopWindow(), 
-      wxCloseEvent(wxEVT_CLOSE_WINDOW));
-  }
-  else if (command == ":y")
-  {
-    Yank(1);
-  }
-  else if (command.Last() == '=')
-  {
-    const wxString msg = wxString::Format("%s%d",
-      command.AfterFirst(':').c_str(), 
-      ToLineNumber(command.AfterFirst(':').BeforeLast('=')));
-        
-    m_STC->CallTipShow(m_STC->GetCurrentPos(), msg); 
-  }
-  else if (command.AfterFirst(':').IsNumber())
-  {
-    m_STC->GotoLine(atoi(command.AfterFirst(':').c_str()) - 1);
-  }
-  else
-  {
-    if (DoCommandRange(command))
-    {
-      m_LastCommand = command;
-      m_InsertText.clear();
-    }
-    else
-    {
-      wxBell();
-    }
-  }
-}
-
 bool wxExVi::DoCommandRange(const wxString& command)
 {
   // :[address] m destination
@@ -684,6 +557,123 @@ bool wxExVi::DoCommandRange(const wxString& command)
   default:
     wxFAIL;
     return false;
+  }
+}
+
+void wxExVi::ExecCommand(const wxString& command)
+{
+  m_STC->SetFocus();
+
+  if (command == "$")
+  {
+    m_STC->DocumentEnd();
+  }
+  else if (command == "close")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_CLOSE);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "d")
+  {
+    Delete(1);
+  }
+  else if (command.StartsWith("e"))
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+    
+    if (command.Contains(" "))
+    {
+      event.SetString(command.AfterFirst(' '));
+      
+      if (command.Contains("*") || command.Contains("?"))
+      {
+        wxSetWorkingDirectory(m_STC->GetFileName().GetPath());
+      }
+    }
+    
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "n")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_NEXT);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "prev")
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_PREVIOUS);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "q")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command == "q!")
+  {
+    wxCloseEvent event(wxEVT_CLOSE_WINDOW);
+    event.SetCanVeto(false); 
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command.StartsWith("r"))
+  {
+    wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
+    event.SetString(command.AfterFirst(' '));
+    wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command.StartsWith("w"))
+  {
+    if (command.Contains(" "))
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVEAS);
+      event.SetString(command.AfterFirst(' '));
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
+    else
+    {
+      wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+      wxPostEvent(wxTheApp->GetTopWindow(), event);
+    }
+  }
+  else if (command == "x")
+  {
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE));
+      
+    wxPostEvent(wxTheApp->GetTopWindow(), 
+      wxCloseEvent(wxEVT_CLOSE_WINDOW));
+  }
+  else if (command == "y")
+  {
+    Yank(1);
+  }
+  else if (command.Last() == '=')
+  {
+    const wxString msg = wxString::Format("%d",
+      ToLineNumber(command.BeforeLast('=')));
+        
+    wxASSERT(wxTheApp != NULL);
+    wxWindow* window = wxTheApp->GetTopWindow();
+    wxASSERT(window != NULL);
+    wxExManagedFrame* frame = wxDynamicCast(window, wxExManagedFrame);
+    wxASSERT(frame != NULL);
+      
+    frame->ShowViMessage(msg);
+  }
+  else if (command.IsNumber())
+  {
+    m_STC->GotoLine(atoi(command.c_str()) - 1);
+  }
+  else
+  {
+    if (DoCommandRange(":" + command))
+    {
+      m_LastCommand = ":" + command;
+      m_InsertText.clear();
+    }
+    else
+    {
+      wxBell();
+    }
   }
 }
 
@@ -877,6 +867,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
 
         m_Command.clear();
       }
+      
       return false;
     }
     else

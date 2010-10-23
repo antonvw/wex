@@ -16,7 +16,10 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
+class wxStaticText;
+class wxExComboBox;
 class wxExToolBar;
+class wxExVi;
 
 #if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
@@ -49,7 +52,16 @@ public:
 
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
+  
+  /// Gets a command line vi command.
+  bool GetViCommand(wxExVi* vi, const wxString& command);
+  
+  /// Hides the vi bar.
+  void HideViBar();
 
+  /// Shows text in vi bar.
+  void ShowViMessage(const wxString& text);
+  
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);
 protected:
@@ -60,6 +72,8 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
+  wxExComboBox* m_viComboBox;
+  wxStaticText* m_viStaticText;
 
   DECLARE_EVENT_TABLE()
 };

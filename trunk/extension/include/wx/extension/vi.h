@@ -25,6 +25,9 @@ class WXDLLIMPEXP_BASE wxExVi
 public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
+  
+  /// Executes vi command.
+  void ExecCommand(const wxString& command);
 
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
@@ -50,7 +53,6 @@ private:
   void DeleteMarker(const wxUniChar& marker);
   bool DoCommand(const wxString& command, bool dot);
   void DoCommandFind(const wxUniChar& c);
-  void DoCommandLine();
   bool DoCommandRange(const wxString& command);
   void FindWord(bool find_next = true) const;
   void GotoBrace() const;
@@ -84,7 +86,6 @@ private:
     const wxString& begin_address, 
     const wxString& end_address) const;
 
-  static wxExConfigDialog* m_CommandDialog;
   static wxExConfigDialog* m_FindDialog;
   static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
