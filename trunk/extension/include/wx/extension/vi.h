@@ -27,7 +27,7 @@ public:
   wxExVi(wxExSTC* stc);
   
   /// Executes vi command.
-  void ExecCommand(const wxString& command);
+  bool ExecCommand(const wxString& command);
 
   /// Does find command.
   bool FindCommand(const wxString& command, const wxString& text);

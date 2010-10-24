@@ -149,7 +149,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
     else
     {
-      return m_Frame->GetViCommand(this, command);
+      m_Frame->GetViCommand(this, command);
+      return true;
     }
   }
           
@@ -443,16 +444,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   return handled;
 }
 
-bool wxExVi::FindCommand(const wxString& command, const wxString& text)
-{
-  m_SearchForward = (command== '/');
-  
-  return m_STC->FindNext(
-    text,
-    m_SearchFlags, 
-    m_SearchForward);
-}
-
 bool wxExVi::DoCommandRange(const wxString& command)
 {
   // :[address] m destination
@@ -525,10 +516,8 @@ bool wxExVi::DoCommandRange(const wxString& command)
   }
 }
 
-void wxExVi::ExecCommand(const wxString& command)
+bool wxExVi::ExecCommand(const wxString& command)
 {
-  m_STC->SetFocus();
-
   if (command == "$")
   {
     m_STC->DocumentEnd();
@@ -631,8 +620,21 @@ void wxExVi::ExecCommand(const wxString& command)
     else
     {
       wxBell();
+      return false;
     }
   }
+  
+  return true;
+}
+
+bool wxExVi::FindCommand(const wxString& command, const wxString& text)
+{
+  m_SearchForward = (command== '/');
+  
+  return m_STC->FindNext(
+    text,
+    m_SearchFlags, 
+    m_SearchForward);
 }
 
 void wxExVi::FindWord(bool find_next) const

@@ -54,7 +54,7 @@ public:
   wxAuiManager& GetManager() {return m_Manager;};
   
   /// Gets a command line vi command.
-  bool GetViCommand(wxExVi* vi, const wxString& command);
+  void GetViCommand(wxExVi* vi, const wxString& command);
   
   /// Hides the vi bar.
   void HideViBar();
@@ -72,6 +72,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
+  wxExVi* m_vi;
   wxExComboBox* m_viComboBox;
   wxStaticText* m_viStaticText;
 

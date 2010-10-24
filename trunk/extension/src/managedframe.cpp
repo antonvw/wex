@@ -100,8 +100,9 @@ wxExManagedFrame::~wxExManagedFrame()
   m_Manager.UnInit();
 }
 
-bool wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
+void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
+  m_vi = vi;
   m_viStaticText->SetLabel(command);
   m_viComboBox->SelectAll();
   m_viComboBox->SetFocus();
@@ -109,12 +110,12 @@ bool wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
   
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
-
-  return true;
 }
   
 void wxExManagedFrame::HideViBar()
 {
+  m_vi->GetSTC()->SetFocus();
+  
   m_Manager.GetPane("VIBAR").Hide();
   m_Manager.Update();
 }
@@ -204,20 +205,22 @@ void wxExComboBox::OnKey(wxKeyEvent& event)
   {
     if (m_StaticText->GetLabel() == ":")
     {
-      m_vi->ExecCommand(GetValue());
+      if (m_vi->ExecCommand(GetValue())) 
+      {
+        m_vi->GetSTC()->SetFocus();
+      }
     }
     else
     {
 //    m_FindDialog->Reload();
       if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
       {
-        m_vi->GetSTC()->SetFocus();
+        m_Frame->HideViBar();
       }
     }
   }
   else if (key == WXK_ESCAPE)
   {
-    m_vi->GetSTC()->SetFocus();
     m_Frame->HideViBar();
   }
   else
