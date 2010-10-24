@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <files>
-  <!--wxex-test-rep project test-rep.prj za 23 okt 2010 12:37:57 CEST-->
+  <!--wxex-test-rep project test-rep.prj zo 24 okt 2010 21:17:19 CEST-->
   <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/aui</folder>
   <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/generic</folder>
   <folder extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">/usr/local/include/wx-2.9/wx/gtk/gnome</folder>
