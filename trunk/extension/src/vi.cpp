@@ -11,7 +11,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/infobar.h> 
 #include <wx/tokenzr.h> 
 #include <wx/extension/vi.h>
 #include <wx/extension/file.h>
