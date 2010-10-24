@@ -443,12 +443,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   return handled;
 }
 
-void wxExVi::FindCommand(const wxString& command, const wxString& text)
+bool wxExVi::FindCommand(const wxString& command, const wxString& text)
 {
-//    m_FindDialog->Reload();
   m_SearchForward = (command== '/');
   
-  m_STC->FindNext(
+  return m_STC->FindNext(
     text,
     m_SearchFlags, 
     m_SearchForward);

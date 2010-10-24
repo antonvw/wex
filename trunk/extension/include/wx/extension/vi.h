@@ -30,7 +30,7 @@ public:
   void ExecCommand(const wxString& command);
 
   /// Does find command.
-  void FindCommand(const wxString& command, const wxString& text);
+  bool FindCommand(const wxString& command, const wxString& text);
   
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};

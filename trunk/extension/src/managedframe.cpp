@@ -208,7 +208,11 @@ void wxExComboBox::OnKey(wxKeyEvent& event)
     }
     else
     {
-      m_vi->FindCommand(m_StaticText->GetLabel(), GetValue());
+//    m_FindDialog->Reload();
+      if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
+      {
+        m_vi->GetSTC()->SetFocus();
+      }
     }
   }
   else if (key == WXK_ESCAPE)
