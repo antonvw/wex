@@ -25,7 +25,7 @@ bool wxExTestApp::OnInit()
     return false;
   }
 
-  wxExFrame *frame = new wxExFrame(NULL, wxID_ANY, "wxex-test-app");
+  wxExManagedFrame *frame = new wxExManagedFrame(NULL, wxID_ANY, "wxex-test-app");
   frame->Show(true);
 
   SetTopWindow(frame);
