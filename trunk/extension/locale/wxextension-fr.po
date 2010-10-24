@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-14 19:38+0100\n"
-"PO-Revision-Date: 2010-10-14 19:39+0100\n"
+"POT-Creation-Date: 2010-10-24 13:20+0100\n"
+"PO-Revision-Date: 2010-10-24 13:20+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -35,21 +35,21 @@ msgstr "confirmer"
 msgid "Save changes to"
 msgstr "enregistrer les modifications apportées"
 
-#: ../src/frame.cpp:237
+#: ../src/frame.cpp:238
 #, fuzzy
 msgid "Find"
 msgstr "barre de recherche"
 
-#: ../src/frame.cpp:260
+#: ../src/frame.cpp:266
 msgid "Replace"
 msgstr "remplacer"
 
-#: ../src/frame.cpp:541
+#: ../src/frame.cpp:557
 #, fuzzy
 msgid "Synchronized"
 msgstr "Synchronizeer gewijzigde bestanden"
 
-#: ../src/frame.cpp:541
+#: ../src/frame.cpp:557
 msgid "Modified"
 msgstr "modifié"
 
@@ -182,15 +182,15 @@ msgstr ""
 msgid "Sorted on"
 msgstr ""
 
-#: ../src/managedframe.cpp:43
+#: ../src/managedframe.cpp:72
 msgid "Toolbar"
 msgstr "barre d'outils"
 
-#: ../src/managedframe.cpp:46
+#: ../src/managedframe.cpp:75
 msgid "Findbar"
 msgstr "barre de recherche"
 
-#: ../src/managedframe.cpp:60
+#: ../src/managedframe.cpp:128
 msgid "Editor Options"
 msgstr "options de l'éditeur"
 
@@ -818,19 +818,19 @@ msgstr ""
 msgid "Reached commands limit: %d"
 msgstr ""
 
-#: ../src/vi.cpp:79
-#: ../src/vi.cpp:115
+#: ../src/vi.cpp:82
+#: ../src/vi.cpp:118
 #, c-format
 msgid "%d fewer lines"
 msgstr ""
 
-#: ../src/vi.cpp:826
+#: ../src/vi.cpp:781
 #, c-format
 msgid "%d lines moved"
 msgstr ""
 
-#: ../src/vi.cpp:1219
-#: ../src/vi.cpp:1248
+#: ../src/vi.cpp:1180
+#: ../src/vi.cpp:1209
 #, c-format
 msgid "%d lines yanked"
 msgstr ""
@@ -890,16 +890,16 @@ msgstr "&Rechercher dans les fichiers"
 msgid "Process is running"
 msgstr ""
 
-#: ../src/report/frame.cpp:289
+#: ../src/report/frame.cpp:295
 #, fuzzy
 msgid "Cannot locate file"
 msgstr "ne peut pas ouvrir le fichier"
 
-#: ../src/report/frame.cpp:348
+#: ../src/report/frame.cpp:355
 msgid "Cancelled"
 msgstr ""
 
-#: ../src/report/frame.cpp:593
+#: ../src/report/frame.cpp:600
 msgid "Open &Recent"
 msgstr "Ouvrez&récents"
 
