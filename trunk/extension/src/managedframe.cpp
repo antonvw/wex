@@ -59,6 +59,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
+  , m_vi(NULL)
 {
   m_Manager.SetManagedWindow(this);
 
@@ -114,7 +115,10 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
   
 void wxExManagedFrame::HideViBar()
 {
-  m_vi->GetSTC()->SetFocus();
+  if (m_vi != NULL)
+  {
+    m_vi->GetSTC()->SetFocus();
+  }
   
   m_Manager.GetPane("VIBAR").Hide();
   m_Manager.Update();
@@ -161,6 +165,7 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 void wxExManagedFrame::ShowViMessage(const wxString& text)
 {
   m_viStaticText->SetLabel(text);
+  
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
 }
