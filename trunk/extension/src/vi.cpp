@@ -152,6 +152,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       return true;
     }
   }
+
+  m_Frame->HideViBar();
           
   auto repeat = atoi(command.c_str());
 

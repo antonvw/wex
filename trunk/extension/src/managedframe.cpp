@@ -37,8 +37,8 @@ public:
   /// Sets callback.
   void SetVi(wxExVi* vi) {m_vi = vi;};
 private:
-  void OnFocus(wxFocusEvent& event);
-  void OnKey(wxKeyEvent& event);
+  void OnEnter(wxCommandEvent& event);
+  void OnKeyDown(wxKeyEvent& event);
   
   wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
@@ -115,8 +115,11 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
   
 void wxExManagedFrame::HideViBar()
 {
-  m_Manager.GetPane("VIBAR").Hide();
-  m_Manager.Update();
+  if (m_Manager.GetPane("VIBAR").IsShown())
+  {
+    m_Manager.GetPane("VIBAR").Hide();
+    m_Manager.Update();
+  }
 }
   
 void wxExManagedFrame::OnCommand(wxCommandEvent& event)
@@ -180,8 +183,8 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(wxExComboBox, wxComboBox)
-  EVT_CHAR(wxExComboBox::OnKey)
-  EVT_KILL_FOCUS(wxExComboBox::OnFocus)
+  EVT_CHAR(wxExComboBox::OnKeyDown)
+  EVT_TEXT_ENTER(wxID_ANY, wxExComboBox::OnEnter)
 END_EVENT_TABLE()
 
 wxExComboBox::wxExComboBox(
@@ -191,41 +194,42 @@ wxExComboBox::wxExComboBox(
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxComboBox(parent, id, wxEmptyString, pos, size)
+  : wxComboBox(parent, id, wxEmptyString, pos, size, 0, NULL, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
   , m_vi(NULL)
   , m_StaticText(text)
 {
 }
 
-void wxExComboBox::OnFocus(wxFocusEvent& event)
+void wxExComboBox::OnEnter(wxCommandEvent& event)
 {
-  event.Skip();
-
-  m_Frame->HideViBar();
+  if (m_StaticText->GetLabel() == ":")
+  {
+    if (m_vi->ExecCommand(GetValue()))
+    {
+      m_Frame->HideViBar();
+      m_vi->GetSTC()->SetFocus();
+    }
+  }
+  else
+  {
+    if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
+    {
+      m_Frame->HideViBar();
+      m_vi->GetSTC()->SetFocus();
+    }
+  }
 }
 
-
-void wxExComboBox::OnKey(wxKeyEvent& event)
+void wxExComboBox::OnKeyDown(wxKeyEvent& event)
 {
   const auto key = event.GetKeyCode();
 
-  if (key == WXK_RETURN)
-  {
-    if (m_StaticText->GetLabel() == ":")
-    {
-      m_vi->ExecCommand(GetValue()); 
-    }
-    else
-    {
-//    m_FindDialog->Reload();
-      m_vi->FindCommand(m_StaticText->GetLabel(), GetValue());
-    }
-  }
-  else if (key == WXK_ESCAPE)
+  if (key == WXK_ESCAPE)
   {
     if (m_vi != NULL)
     {
+      m_Frame->HideViBar();
       m_vi->GetSTC()->SetFocus();
     }
   }
