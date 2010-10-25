@@ -37,8 +37,8 @@ public:
   /// Sets callback.
   void SetVi(wxExVi* vi) {m_vi = vi;};
 private:
-  void OnEnter(wxCommandEvent& event);
-  void OnKeyDown(wxKeyEvent& event);
+  void OnCommand(wxCommandEvent& event);
+  void OnKey(wxKeyEvent& event);
   
   wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
@@ -183,8 +183,8 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(wxExComboBox, wxComboBox)
-  EVT_CHAR(wxExComboBox::OnKeyDown)
-  EVT_TEXT_ENTER(wxID_ANY, wxExComboBox::OnEnter)
+  EVT_CHAR(wxExComboBox::OnKey)
+  EVT_TEXT_ENTER(wxID_ANY, wxExComboBox::OnCommand)
 END_EVENT_TABLE()
 
 wxExComboBox::wxExComboBox(
@@ -201,7 +201,7 @@ wxExComboBox::wxExComboBox(
 {
 }
 
-void wxExComboBox::OnEnter(wxCommandEvent& event)
+void wxExComboBox::OnCommand(wxCommandEvent& event)
 {
   if (m_StaticText->GetLabel() == ":")
   {
@@ -221,7 +221,7 @@ void wxExComboBox::OnEnter(wxCommandEvent& event)
   }
 }
 
-void wxExComboBox::OnKeyDown(wxKeyEvent& event)
+void wxExComboBox::OnKey(wxKeyEvent& event)
 {
   const auto key = event.GetKeyCode();
 
