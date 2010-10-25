@@ -72,7 +72,6 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
-  wxExVi* m_vi;
   wxExComboBox* m_viComboBox;
   wxStaticText* m_viStaticText;
 

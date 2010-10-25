@@ -60,7 +60,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
-  , m_vi(NULL)
 {
   m_Manager.SetManagedWindow(this);
 
@@ -104,8 +103,8 @@ wxExManagedFrame::~wxExManagedFrame()
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
-  m_vi = vi;
   m_viStaticText->SetLabel(command);
+
   m_viComboBox->SelectAll();
   m_viComboBox->SetFocus();
   m_viComboBox->SetVi(vi);
@@ -116,11 +115,6 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
   
 void wxExManagedFrame::HideViBar()
 {
-  if (m_vi != NULL)
-  {
-    m_vi->GetSTC()->SetFocus();
-  }
-  
   m_Manager.GetPane("VIBAR").Hide();
   m_Manager.Update();
 }
@@ -230,7 +224,10 @@ void wxExComboBox::OnKey(wxKeyEvent& event)
   }
   else if (key == WXK_ESCAPE)
   {
-    m_Frame->HideViBar();
+    if (m_vi != NULL)
+    {
+      m_vi->GetSTC()->SetFocus();
+    }
   }
   else
   {
