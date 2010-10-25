@@ -604,6 +604,9 @@ bool wxExVi::ExecCommand(const wxString& command)
     const wxString msg = wxString::Format("%d",
       ToLineNumber(command.BeforeLast('=')));
     m_Frame->ShowViMessage(msg);
+    m_STC->SetFocus();
+    
+    return false; // otherwise vi bar is hidden
   }
   else if (command.IsNumber())
   {
