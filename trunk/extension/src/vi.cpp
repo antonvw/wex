@@ -153,8 +153,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
   }
           
-  m_Frame->HideViBar();
-      
   auto repeat = atoi(command.c_str());
 
   if (repeat == 0)
@@ -629,6 +627,8 @@ bool wxExVi::ExecCommand(const wxString& command)
 bool wxExVi::FindCommand(const wxString& command, const wxString& text)
 {
   m_SearchForward = (command== '/');
+
+  wxExFindReplaceData::Get()->SetFindString(text);
   
   return m_STC->FindNext(
     text,

@@ -37,6 +37,7 @@ public:
   /// Sets callback.
   void SetVi(wxExVi* vi) {m_vi = vi;};
 private:
+  void OnFocus(wxFocusEvent& event);
   void OnKey(wxKeyEvent& event);
   
   wxExManagedFrame* m_Frame;
@@ -186,6 +187,7 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
 BEGIN_EVENT_TABLE(wxExComboBox, wxComboBox)
   EVT_CHAR(wxExComboBox::OnKey)
+  EVT_KILL_FOCUS(wxExComboBox::OnFocus)
 END_EVENT_TABLE()
 
 wxExComboBox::wxExComboBox(
@@ -202,6 +204,14 @@ wxExComboBox::wxExComboBox(
 {
 }
 
+void wxExComboBox::OnFocus(wxFocusEvent& event)
+{
+  event.Skip();
+
+  m_Frame->HideViBar();
+}
+
+
 void wxExComboBox::OnKey(wxKeyEvent& event)
 {
   const auto key = event.GetKeyCode();
@@ -210,18 +220,12 @@ void wxExComboBox::OnKey(wxKeyEvent& event)
   {
     if (m_StaticText->GetLabel() == ":")
     {
-      if (m_vi->ExecCommand(GetValue())) 
-      {
-        m_vi->GetSTC()->SetFocus();
-      }
+      m_vi->ExecCommand(GetValue()); 
     }
     else
     {
 //    m_FindDialog->Reload();
-      if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
-      {
-        m_Frame->HideViBar();
-      }
+      m_vi->FindCommand(m_StaticText->GetLabel(), GetValue());
     }
   }
   else if (key == WXK_ESCAPE)
