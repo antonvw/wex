@@ -218,9 +218,6 @@ void wxExComboBox::OnCommand(wxCommandEvent& event)
   {
     if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
     {
-      Clear(); // so we can append again
-      wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
-      
       m_Frame->HideViBar();
       m_vi->GetSTC()->SetFocus();
     }
