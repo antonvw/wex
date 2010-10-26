@@ -12,6 +12,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/managedframe.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -105,6 +106,7 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
   m_viStaticText->SetLabel(command);
 
+  m_viComboBox->Show();
   m_viComboBox->SelectAll();
   m_viComboBox->SetFocus();
   m_viComboBox->SetVi(vi);
@@ -163,6 +165,7 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 void wxExManagedFrame::ShowViMessage(const wxString& text)
 {
   m_viStaticText->SetLabel(text);
+  m_viComboBox->Hide();
   
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
@@ -215,6 +218,9 @@ void wxExComboBox::OnCommand(wxCommandEvent& event)
   {
     if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
     {
+      Clear(); // so we can append again
+      wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
+      
       m_Frame->HideViBar();
       m_vi->GetSTC()->SetFocus();
     }
