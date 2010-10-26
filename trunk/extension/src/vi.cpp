@@ -1090,11 +1090,13 @@ int wxExVi::ToLineNumber(const wxString& address) const
   }
 
   int dot = 0;
+  int stc_used = 0;
 
   if (filtered_address.Contains("."))
   {
     dot = m_STC->GetCurrentLine();
     filtered_address.Replace(".", "");
+    stc_used = 1;
   }
 
   int dollar = 0;
@@ -1103,6 +1105,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
   {
     dollar = m_STC->GetLineCount();
     filtered_address.Replace("$", "");
+    stc_used = 1;
   }
 
   if (!filtered_address.IsNumber()) 
@@ -1123,7 +1126,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
     }
   }
   
-  const auto line_no = marker + dot + dollar + i + 1;
+  const auto line_no = marker + dot + dollar + i + stc_used;
   
   // Limit the range of what is returned.
   if (line_no <= 0)
