@@ -75,22 +75,37 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.AddPane(new wxExFindToolBar(this),
     wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Findbar")));
     
-  wxPanel* vipanel = new wxPanel(this);
+  wxPanel* find_panel = new wxPanel(this);
   
-  wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
-  m_viStaticText = new wxStaticText(vipanel, wxID_ANY, wxEmptyString);
-  m_viTextCtrl = new wxExTextCtrl(vipanel, this, m_viStaticText);
+  wxFlexGridSizer* find_sizer = new wxFlexGridSizer(2);
+  m_viFindPrefix = new wxStaticText(find_panel, wxID_ANY, wxEmptyString);
+  m_viFind = new wxExTextCtrl(find_panel, this, m_viFindPrefix);
   
-  sizer->AddGrowableCol(1);
-  sizer->Add(m_viStaticText, wxSizerFlags().Expand());
-  sizer->Add(m_viTextCtrl, wxSizerFlags().Expand());
+  find_sizer->AddGrowableCol(1);
+  find_sizer->Add(m_viFindPrefix, wxSizerFlags().Expand());
+  find_sizer->Add(m_viFind, wxSizerFlags().Expand());
   
-  vipanel->SetSizerAndFit(sizer);
+  find_panel->SetSizerAndFit(find_sizer);
   
-  m_Manager.AddPane(vipanel,
-    wxAuiPaneInfo().Bottom().Floatable(false).Name("VIBAR").CaptionVisible(false));
+  wxPanel* command_panel = new wxPanel(this);
+  
+  wxFlexGridSizer* command_sizer = new wxFlexGridSizer(2);
+  m_viCommandPrefix = new wxStaticText(command_panel, wxID_ANY, wxEmptyString);
+  m_viCommand = new wxExTextCtrl(command_panel, this, m_viCommandPrefix);
+  
+  command_sizer->AddGrowableCol(1);
+  command_sizer->Add(m_viCommandPrefix, wxSizerFlags().Expand());
+  command_sizer->Add(m_viCommand, wxSizerFlags().Expand());
+  
+  command_panel->SetSizerAndFit(command_sizer);
+  
+  m_Manager.AddPane(find_panel,
+    wxAuiPaneInfo().Bottom().Floatable(false).Name("VIFINDBAR").CaptionVisible(false));
+  m_Manager.AddPane(command_panel,
+    wxAuiPaneInfo().Bottom().Floatable(false).Name("VICOMMANDBAR").CaptionVisible(false));
     
-  m_Manager.GetPane("VIBAR").Hide();
+  m_Manager.GetPane("VIFINDBAR").Hide();
+  m_Manager.GetPane("VICOMMANDBAR").Hide();
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -100,22 +115,43 @@ wxExManagedFrame::~wxExManagedFrame()
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
-  m_viStaticText->SetLabel(command);
+  if (command == ":")
+  {
+    m_viCommandPrefix->SetLabel(command);
 
-  m_viTextCtrl->Show();
-  m_viTextCtrl->SelectAll();
-  m_viTextCtrl->SetFocus();
-  m_viTextCtrl->SetVi(vi);
+    m_viCommand->Show();
+    m_viCommand->SelectAll();
+    m_viCommand->SetFocus();
+    m_viCommand->SetVi(vi);
   
-  m_Manager.GetPane("VIBAR").Show();
+    m_Manager.GetPane("VICOMMANDBAR").Show();
+  }
+  else
+  {
+    m_viFindPrefix->SetLabel(command);
+
+    m_viFind->Show();
+    m_viFind->SelectAll();
+    m_viFind->SetFocus();
+    m_viFind->SetVi(vi);
+  
+    m_Manager.GetPane("VIFINDBAR").Show();
+  }
+    
   m_Manager.Update();
 }
   
 void wxExManagedFrame::HideViBar()
 {
-  if (m_Manager.GetPane("VIBAR").IsShown())
+  if (m_Manager.GetPane("VIFINDBAR").IsShown())
   {
-    m_Manager.GetPane("VIBAR").Hide();
+    m_Manager.GetPane("VIFINDBAR").Hide();
+    m_Manager.Update();
+  }
+  
+  if (m_Manager.GetPane("VICOMMANDBAR").IsShown())
+  {
+    m_Manager.GetPane("VICOMMANDBAR").Hide();
     m_Manager.Update();
   }
 }
@@ -160,10 +196,10 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExManagedFrame::ShowViMessage(const wxString& text)
 {
-  m_viStaticText->SetLabel(text);
-  m_viTextCtrl->Hide();
+  m_viCommandPrefix->SetLabel(text);
+  m_viCommand->Hide();
   
-  m_Manager.GetPane("VIBAR").Show();
+  m_Manager.GetPane("VICOMMANDBAR").Show();
   m_Manager.Update();
 }
 

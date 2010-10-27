@@ -72,9 +72,12 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
-  wxExTextCtrl* m_viTextCtrl;
-  wxStaticText* m_viStaticText;
 
+  wxExTextCtrl* m_viCommand;
+  wxStaticText* m_viCommandPrefix;
+  wxExTextCtrl* m_viFind;
+  wxStaticText* m_viFindPrefix;
+  
   DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_AUI
