@@ -36,7 +36,7 @@ enum
 // Support class.
 // Offers a find combobox that allows you to find text
 // on a current STC on an wxExFrame.
-class FindStrings : public wxTextCtrl
+class FindString : public wxTextCtrl
 {
 public:
   /// Constructor. Fills the combobox box with values 
@@ -287,7 +287,6 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(FindString, wxTextCtrl)
-  EVT_CHAR(FindString::OnKey)
   EVT_MENU(wxID_DELETE, FindString::OnCommand)
   EVT_TEXT_ENTER(wxID_ANY, FindString::OnEnter)
 END_EVENT_TABLE()
