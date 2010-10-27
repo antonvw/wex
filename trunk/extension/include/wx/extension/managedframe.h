@@ -17,7 +17,7 @@
 #if wxUSE_GUI
 
 class wxStaticText;
-class wxExComboBox;
+class wxExTextCtrl;
 class wxExToolBar;
 class wxExVi;
 
@@ -72,7 +72,7 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   wxAuiManager m_Manager;
-  wxExComboBox* m_viComboBox;
+  wxExTextCtrl* m_viTextCtrl;
   wxStaticText* m_viStaticText;
 
   DECLARE_EVENT_TABLE()

@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/managedframe.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -21,13 +20,13 @@
 #if wxUSE_GUI
 
 // Support class.
-// Offers a combobox related to a vi object.
-class wxExComboBox: public wxComboBox
+// Offers a text ctrl related to a vi object.
+class wxExTextCtrl: public wxTextCtrl
 {
 public:
   /// Constructor. Fills the combobox box with values 
   /// from FindReplace from config.
-  wxExComboBox(
+  wxExTextCtrl(
     wxWindow* parent,
     wxExManagedFrame* frame,
     wxStaticText* text,
@@ -80,14 +79,13 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   m_viStaticText = new wxStaticText(vipanel, wxID_ANY, wxEmptyString);
-  m_viComboBox = new wxExComboBox(vipanel, this, m_viStaticText);
+  m_viTextCtrl = new wxExTextCtrl(vipanel, this, m_viStaticText);
   
   sizer->AddGrowableCol(1);
   sizer->Add(m_viStaticText, wxSizerFlags().Expand());
-  sizer->Add(m_viComboBox, wxSizerFlags().Expand());
+  sizer->Add(m_viTextCtrl, wxSizerFlags().Expand());
   
   vipanel->SetSizerAndFit(sizer);
-  wxExComboBoxFromList(m_viComboBox, wxExListFromConfig("VIBAR"));
   
   m_Manager.AddPane(vipanel,
     wxAuiPaneInfo().Bottom().Floatable(false).Name("VIBAR").CaptionVisible(false));
@@ -97,8 +95,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 
 wxExManagedFrame::~wxExManagedFrame()
 {
-  const auto l = wxExComboBoxToList(m_viComboBox, 25);
-  wxExListToConfig(l, "VIBAR");
   m_Manager.UnInit();
 }
 
@@ -106,10 +102,10 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
   m_viStaticText->SetLabel(command);
 
-  m_viComboBox->Show();
-  m_viComboBox->SelectAll();
-  m_viComboBox->SetFocus();
-  m_viComboBox->SetVi(vi);
+  m_viTextCtrl->Show();
+  m_viTextCtrl->SelectAll();
+  m_viTextCtrl->SetFocus();
+  m_viTextCtrl->SetVi(vi);
   
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
@@ -165,7 +161,7 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 void wxExManagedFrame::ShowViMessage(const wxString& text)
 {
   m_viStaticText->SetLabel(text);
-  m_viComboBox->Hide();
+  m_viTextCtrl->Hide();
   
   m_Manager.GetPane("VIBAR").Show();
   m_Manager.Update();
@@ -185,26 +181,26 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(wxExComboBox, wxComboBox)
-  EVT_CHAR(wxExComboBox::OnKey)
-  EVT_TEXT_ENTER(wxID_ANY, wxExComboBox::OnCommand)
+BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
+  EVT_CHAR(wxExTextCtrl::OnKey)
+  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnCommand)
 END_EVENT_TABLE()
 
-wxExComboBox::wxExComboBox(
+wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
   wxExManagedFrame* frame,
   wxStaticText* text,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxComboBox(parent, id, wxEmptyString, pos, size, 0, NULL, wxTE_PROCESS_ENTER)
+  : wxTextCtrl(parent, id, wxEmptyString, pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
   , m_vi(NULL)
   , m_StaticText(text)
 {
 }
 
-void wxExComboBox::OnCommand(wxCommandEvent& event)
+void wxExTextCtrl::OnCommand(wxCommandEvent& event)
 {
   if (m_StaticText->GetLabel() == ":")
   {
@@ -224,7 +220,7 @@ void wxExComboBox::OnCommand(wxCommandEvent& event)
   }
 }
 
-void wxExComboBox::OnKey(wxKeyEvent& event)
+void wxExTextCtrl::OnKey(wxKeyEvent& event)
 {
   const auto key = event.GetKeyCode();
 
