@@ -36,12 +36,12 @@ enum
 // Support class.
 // Offers a find combobox that allows you to find text
 // on a current STC on an wxExFrame.
-class FindStrings : public wxComboBox
+class FindStrings : public wxTextCtrl
 {
 public:
   /// Constructor. Fills the combobox box with values 
   /// from FindReplace from config.
-  FindStrings(
+  FindString(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
@@ -49,7 +49,7 @@ public:
     const wxSize& size = wxDefaultSize);
 private:
   void OnCommand(wxCommandEvent& event);
-  void OnKey(wxKeyEvent& event);
+  void OnEnter(wxCommandEvent& event);
   wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
@@ -188,7 +188,8 @@ wxExFindToolBar::wxExFindToolBar(
   Initialize();
 
   // And place the controls on the toolbar.
-  AddControl(m_FindStrings);
+  wxAuiToolBarItem* item = AddControl(m_FindString);
+  item->SetProportion(1);
   AddSeparator();
 
   AddTool(
@@ -217,7 +218,7 @@ void wxExFindToolBar::Initialize()
 #else
   const wxSize size(150, -1);
 #endif
-  m_FindStrings = new FindStrings(this, 
+  m_FindString = new FindString(this, 
     m_Frame, wxID_ANY, wxDefaultPosition, size);
 
   m_MatchCase = new wxCheckBox(this, 
@@ -252,7 +253,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       if (stc != NULL)
       {
         stc->FindNext(
-          m_FindStrings->GetValue(), 
+          m_FindString->GetValue(), 
           wxExFindReplaceData::Get()->STCFlags(),
           (event.GetId() == wxID_DOWN));
       }
@@ -280,23 +281,25 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 
 void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  event.Enable(!m_FindStrings->GetValue().empty());
+  event.Enable(!m_FindString->GetValue().empty());
 }
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(FindStrings, wxComboBox)
-  EVT_CHAR(FindStrings::OnKey)
-  EVT_MENU(wxID_DELETE, FindStrings::OnCommand)
+BEGIN_EVENT_TABLE(FindString, wxTextCtrl)
+  EVT_CHAR(FindString::OnKey)
+  EVT_MENU(wxID_DELETE, FindString::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, FindString::OnEnter)
 END_EVENT_TABLE()
 
-FindStrings::FindStrings(
+FindString::FindString(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxComboBox(parent, id, wxEmptyString, pos, size)
+  : wxTextCtrl(parent, id, 
+      wxExFindReplaceData::Get()->GetFindString(), pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;
@@ -307,16 +310,9 @@ FindStrings::FindStrings(
 
   SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
     wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
-
-  wxExComboBoxFromList(
-    this, 
-    wxExFindReplaceData::Get()->GetFindStrings());
-
-  // And override the value set by previous, as we want text to be same as in Find.
-  SetValue(wxExFindReplaceData::Get()->GetFindString());
 }
 
-void FindStrings::OnCommand(wxCommandEvent& event)
+void FindString::OnCommand(wxCommandEvent& event)
 {
   // README: The delete key default behaviour does not delete the char right from insertion point.
   // Instead, the event is sent to the editor and a char is deleted from the editor.
@@ -332,28 +328,16 @@ void FindStrings::OnCommand(wxCommandEvent& event)
   }
 }
 
-void FindStrings::OnKey(wxKeyEvent& event)
+void FindString::OnEnter(wxCommandEvent& event)
 {
-  const auto key = event.GetKeyCode();
+  auto* stc = m_Frame->GetSTC();
 
-  if (key == WXK_RETURN)
+  if (stc != NULL)
   {
-    auto* stc = m_Frame->GetSTC();
-
-    if (stc != NULL)
-    {
-      stc->FindNext(GetValue());
-
-      wxExFindReplaceData::Get()->SetFindString(GetValue());
-
-      Clear(); // so we can append again
-      wxExComboBoxFromList(this, wxExFindReplaceData::Get()->GetFindStrings());
-    }
-  }
-  else
-  {
-    event.Skip();
+    stc->FindNext(GetValue());
+    wxExFindReplaceData::Get()->SetFindString(GetValue());
   }
 }
+
 #endif // wxUSE_AUI
 #endif // wxUSE_GUI

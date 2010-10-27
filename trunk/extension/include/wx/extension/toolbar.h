@@ -69,7 +69,7 @@ protected:
 private:
   void Initialize();
 
-  wxComboBox* m_FindStrings;
+  wxTextCtrl* m_FindString;
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;
