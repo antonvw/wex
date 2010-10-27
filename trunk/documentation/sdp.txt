@@ -9,7 +9,7 @@ General
 - Subversion access
     under windows TortoiseSVN is used (TortoiseSVN 1.6.8)
       http://tortoisesvn.tigris.org/,
-    under Linux just the svn client (svn, version 1.5.4 (r33841))
+    under Linux just the svn client (svn, version 1.6.12 (r955767))
     
     The SVN support in wxExVCS works with SVN client 1.6.12
       http://www.sliksvn.com/en/download
