@@ -306,9 +306,6 @@ FindString::FindString(
   entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, wxID_DELETE);
   wxAcceleratorTable accel(accels, entries);
   SetAcceleratorTable(accel);
-
-  SetFont(wxConfigBase::Get()->ReadObject("FindFont", 
-    wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
 }
 
 void FindString::OnCommand(wxCommandEvent& event)
