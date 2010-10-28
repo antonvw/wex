@@ -102,10 +102,8 @@ void wxExManagedFrame::CreateViPanel(
   panel->SetSizerAndFit(sizer);
   
   m_Manager.AddPane(panel,
-    wxAuiPaneInfo().Bottom().Floatable(false).
+    wxAuiPaneInfo().Bottom().Floatable(false).Hide().
       Name(name).CaptionVisible(false));
-      
-  m_Manager.GetPane(name).Hide();
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
