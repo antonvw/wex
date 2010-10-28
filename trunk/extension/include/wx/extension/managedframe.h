@@ -75,6 +75,12 @@ private:
     wxStaticText*& statictext,
     wxExTextCtrl*& text,
     const wxString& name);
+  void GetViPaneCommand(
+    wxStaticText* statictext,
+    wxExTextCtrl* text,
+    const wxString& pane,
+    wxExVi* vi,
+    const wxString& command);
   
   wxAuiManager m_Manager;
 

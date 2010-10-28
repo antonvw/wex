@@ -110,30 +110,33 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
   if (command == ":")
   {
-    m_viCommandPrefix->SetLabel(command);
-
-    m_viCommand->Show();
-    m_viCommand->SelectAll();
-    m_viCommand->SetFocus();
-    m_viCommand->SetVi(vi);
-  
-    m_Manager.GetPane("VICOMMANDBAR").Show();
+    GetViPaneCommand(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR", vi, command);
   }
   else
   {
-    m_viFindPrefix->SetLabel(command);
-
-    m_viFind->Show();
-    m_viFind->SelectAll();
-    m_viFind->SetFocus();
-    m_viFind->SetVi(vi);
-  
-    m_Manager.GetPane("VIFINDBAR").Show();
+    GetViPaneCommand(m_viFindPrefix, m_viFind, "VIFINDBAR", vi, command);
   }
     
   m_Manager.Update();
 }
   
+void wxExManagedFrame::GetViPaneCommand(
+  wxStaticText* statictext,
+  wxExTextCtrl* text,
+  const wxString& pane,
+  wxExVi* vi,
+  const wxString& command)
+{
+  statictext->SetLabel(command);
+
+  text->Show();
+  text->SelectAll();
+  text->SetFocus();
+  text->SetVi(vi);
+  
+  m_Manager.GetPane(pane).Show();
+}
+    
 void wxExManagedFrame::HideViBar()
 {
   if (m_Manager.GetPane("VIFINDBAR").IsShown())
