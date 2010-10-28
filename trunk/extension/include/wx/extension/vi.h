@@ -48,6 +48,9 @@ public:
   /// Handles keydown events.
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
+  
+  /// Shows a message on the vi bar.
+  void ShowMessage(const wxString& text);
 
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};

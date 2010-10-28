@@ -63,10 +63,11 @@ bool wxExFindOtherFileName(
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Shows searching for in the statusbar.
-void wxExFindResult(
+const wxString wxExFindResult(
   const wxString& find_text, 
   bool find_next, 
-  bool recursive);
+  bool recursive,
+  bool show_on_statusbar = true);
 
 /// If text length exceeds max_chars,
 /// returns an ellipse prefix followed by the last max_chars from the text,

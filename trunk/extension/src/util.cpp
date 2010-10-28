@@ -212,30 +212,37 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
       (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
-void wxExFindResult(
+const wxString wxExFindResult(
   const wxString& find_text,
   bool find_next, 
-  bool recursive)
+  bool recursive,
+  bool show_on_statusbar)
 {
+  wxString text;
+  
   if (!recursive)
   {
     const wxString where = (find_next) ? _("bottom"): _("top");
+    
+    text = _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
+      _("hit") + " " + where);
 
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
-      _("hit") + " " + where);
+    wxExFrame::StatusText(text);
 #endif
   }
   else
   {
     wxBell();
+    
+    text = wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found");
 
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
+    wxExFrame::StatusText(text);
 #endif
   }
+  
+  return text;
 }
 
 bool wxExFindOtherFileName(

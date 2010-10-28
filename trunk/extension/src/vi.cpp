@@ -983,6 +983,11 @@ bool wxExVi::SetSelection(
   return true;
 }
 
+void wxExVi::ShowMessage(const wxString& text)
+{
+  m_Frame->ShowViMessage(text);
+}
+  
 bool wxExVi::Substitute(
   const wxString& begin_address, 
   const wxString& end_address, 
