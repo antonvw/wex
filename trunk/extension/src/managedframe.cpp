@@ -12,6 +12,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/managedframe.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -114,6 +115,9 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
   }
   else
   {
+    // sync with frd data.
+    m_viFind->SetValue(wxExFindReplaceData::Get()->GetFindString());
+    
     GetViPaneCommand(m_viFindPrefix, m_viFind, "VIFINDBAR", vi, command);
   }
     
