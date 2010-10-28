@@ -58,7 +58,7 @@ int wxExVCS::BuildMenu(
   const wxExFileName& filename,
   bool is_popup)
 {
-  if (m_Entries.size() == 0)
+  if (m_Entries.empty())
   {
     return 0;
   }
@@ -132,54 +132,56 @@ int wxExVCS::ConfigDialog(
   wxWindow* parent,
   const wxString& title) const
 {
+  if (m_Entries.empty())
+  {
+    return wxID_CANCEL;
+  }
+  
+  std::map<long, const wxString> choices;
+  choices.insert(std::make_pair((long)VCS_NONE, _("None")));
+  choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
+
+  for (
+    auto it = m_Entries.begin();
+    it != m_Entries.end();
+    ++it)
+  {
+    choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
+  }
+
+  // Estimate number of columns used by the radiobox.
+  int cols = 5;
+
+  switch (choices.size())
+  {
+    case 6:
+    case 11:
+      cols = 3;
+      break;
+
+    case 7:
+    case 8:
+    case 12:
+    case 16:
+      cols = 4;
+      break;
+  }
+
   std::vector<wxExConfigItem> v;
 
-  if (!m_Entries.empty())
+  v.push_back(wxExConfigItem(
+    "VCS",
+    choices,
+    true, // use a radiobox 
+    wxEmptyString, 
+    cols));
+
+  for (
+    auto it2 = m_Entries.begin();
+    it2 != m_Entries.end();
+    ++it2)
   {
-    std::map<long, const wxString> choices;
-    choices.insert(std::make_pair((long)VCS_NONE, _("None")));
-    choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
-  
-    for (
-      auto it = m_Entries.begin();
-      it != m_Entries.end();
-      ++it)
-    {
-      choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
-    }
-
-    // Estimate number of columns used by the radiobox.
-    int cols = 5;
-
-    switch (choices.size())
-    {
-      case 6:
-      case 11:
-        cols = 3;
-        break;
-
-      case 7:
-      case 8:
-      case 12:
-      case 16:
-        cols = 4;
-        break;
-    }
-
-    v.push_back(wxExConfigItem(
-      "VCS",
-      choices,
-      true, // use a radiobox 
-      wxEmptyString, 
-      cols));
-
-    for (
-      auto it2 = m_Entries.begin();
-      it2 != m_Entries.end();
-      ++it2)
-    {
-      v.push_back(wxExConfigItem(it2->second.GetName(), CONFIG_FILEPICKERCTRL));
-    }
+    v.push_back(wxExConfigItem(it2->second.GetName(), CONFIG_FILEPICKERCTRL));
   }
 
   return wxExConfigDialog(parent, v, title).ShowModal();
@@ -188,7 +190,7 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  if (m_Entries.size() == 0)
+  if (m_Entries.empty())
   {
     return false;
   }
@@ -679,7 +681,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  if (m_Entries.size() == 0)
+  if (m_Entries.empty())
   {
     return false;
   }
