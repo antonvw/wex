@@ -75,42 +75,37 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.AddPane(new wxExFindToolBar(this),
     wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Findbar")));
     
-  wxPanel* find_panel = new wxPanel(this);
-  
-  wxFlexGridSizer* find_sizer = new wxFlexGridSizer(2);
-  m_viFindPrefix = new wxStaticText(find_panel, wxID_ANY, wxEmptyString);
-  m_viFind = new wxExTextCtrl(find_panel, this, m_viFindPrefix);
-  
-  find_sizer->AddGrowableCol(1);
-  find_sizer->Add(m_viFindPrefix, wxSizerFlags().Expand());
-  find_sizer->Add(m_viFind, wxSizerFlags().Expand());
-  
-  find_panel->SetSizerAndFit(find_sizer);
-  
-  wxPanel* command_panel = new wxPanel(this);
-  
-  wxFlexGridSizer* command_sizer = new wxFlexGridSizer(2);
-  m_viCommandPrefix = new wxStaticText(command_panel, wxID_ANY, wxEmptyString);
-  m_viCommand = new wxExTextCtrl(command_panel, this, m_viCommandPrefix);
-  
-  command_sizer->AddGrowableCol(1);
-  command_sizer->Add(m_viCommandPrefix, wxSizerFlags().Expand());
-  command_sizer->Add(m_viCommand, wxSizerFlags().Expand());
-  
-  command_panel->SetSizerAndFit(command_sizer);
-  
-  m_Manager.AddPane(find_panel,
-    wxAuiPaneInfo().Bottom().Floatable(false).Name("VIFINDBAR").CaptionVisible(false));
-  m_Manager.AddPane(command_panel,
-    wxAuiPaneInfo().Bottom().Floatable(false).Name("VICOMMANDBAR").CaptionVisible(false));
-    
-  m_Manager.GetPane("VIFINDBAR").Hide();
-  m_Manager.GetPane("VICOMMANDBAR").Hide();
+  CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
+  CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
 }
 
 wxExManagedFrame::~wxExManagedFrame()
 {
   m_Manager.UnInit();
+}
+
+void wxExManagedFrame::CreateViPanel(
+  wxStaticText*& statictext, 
+  wxExTextCtrl*& text,
+  const wxString& name)
+{
+  wxPanel* panel = new wxPanel(this);
+  
+  wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
+  statictext = new wxStaticText(panel, wxID_ANY, wxEmptyString);
+  text = new wxExTextCtrl(panel, this, statictext);
+  
+  sizer->AddGrowableCol(1);
+  sizer->Add(statictext, wxSizerFlags().Expand());
+  sizer->Add(text, wxSizerFlags().Expand());
+  
+  panel->SetSizerAndFit(sizer);
+  
+  m_Manager.AddPane(panel,
+    wxAuiPaneInfo().Bottom().Floatable(false).
+      Name(name).CaptionVisible(false));
+      
+  m_Manager.GetPane(name).Hide();
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)

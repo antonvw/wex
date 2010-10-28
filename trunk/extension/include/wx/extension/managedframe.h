@@ -71,6 +71,11 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
+  void CreateViPanel(
+    wxStaticText*& statictext,
+    wxExTextCtrl*& text,
+    const wxString& name);
+  
   wxAuiManager m_Manager;
 
   wxExTextCtrl* m_viCommand;
