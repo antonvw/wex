@@ -303,7 +303,7 @@ long wxExVCS::Execute()
   wxArrayString errors;
   long retValue;
 
-  // Call wxExcute to execute the cvs command and
+  // Call wxExcute to execute the vcs command and
   // collect the output and the errors.
   if ((retValue = wxExecute(
     commandline,
