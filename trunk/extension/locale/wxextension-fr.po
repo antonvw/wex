@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: wxextension v0.9.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-24 13:20+0100\n"
-"PO-Revision-Date: 2010-10-24 13:38+0100\n"
+"PO-Revision-Date: 2010-10-29 15:01+0100\n"
 "Last-Translator: Emma v. Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -45,9 +45,8 @@ msgid "Replace"
 msgstr "remplacer"
 
 #: ../src/frame.cpp:557
-#, fuzzy
 msgid "Synchronized"
-msgstr "Synchronizeer gewijzigde bestanden"
+msgstr "Sychroniser les fichiers modifiés"
 
 #: ../src/frame.cpp:557
 msgid "Modified"
@@ -71,9 +70,8 @@ msgid "Regular expression"
 msgstr "expression régulière"
 
 #: ../src/frd.cpp:30
-#, fuzzy
 msgid "Replace with"
-msgstr "Vervangen in bestande&n"
+msgstr "Remplacer dans les fichier&s"
 
 #: ../src/frd.cpp:31
 msgid "Search down"
@@ -88,9 +86,8 @@ msgid "replacing with"
 msgstr "remplacer avec"
 
 #: ../src/header.cpp:24
-#, fuzzy
 msgid "Author"
-msgstr "&Automatisch sorteren"
+msgstr "&Trier automatiquement"
 
 #: ../src/header.cpp:25
 msgid "Email"
@@ -102,9 +99,8 @@ msgid "License"
 msgstr "lignes"
 
 #: ../src/header.cpp:27
-#, fuzzy
 msgid "Purpose"
-msgstr "Overzicht"
+msgstr "Vue d'ensemble"
 
 #: ../src/indicator.cpp:77
 #, fuzzy, c-format
@@ -157,9 +153,8 @@ msgstr ""
 
 #: ../src/lexers.cpp:387
 #: ../src/lexers.cpp:389
-#, fuzzy
 msgid "In files"
-msgstr "&Zoeken in bestanden"
+msgstr "&Rechercher dans les fichiers"
 
 #: ../src/lexers.cpp:392
 #: ../src/lexers.cpp:394
@@ -172,7 +167,7 @@ msgstr ""
 
 #: ../src/listview.cpp:169
 msgid "List Font"
-msgstr "liste des polices"
+msgstr "liste des fontes"
 
 #: ../src/listview.cpp:242
 msgid "Sort On"
@@ -205,9 +200,8 @@ msgid "Illegal marker number: %d on line: %d"
 msgstr "stule indicateur illégales: %s  à la ligne: %d"
 
 #: ../src/menu.cpp:86
-#, fuzzy
 msgid "&Menubar\tCtrl+B"
-msgstr "&Zoekbalk"
+msgstr "&Barre de recherche"
 
 #: ../src/menu.cpp:88
 msgid "&Statusbar"
@@ -222,9 +216,8 @@ msgid "&Findbar"
 msgstr "&Barre de recherche"
 
 #: ../src/menu.cpp:121
-#, fuzzy
 msgid "&Deselect All"
-msgstr "&Selecteren"
+msgstr "&Sélectionner"
 
 #: ../src/menu.cpp:132
 msgid "&Invert"
@@ -235,9 +228,8 @@ msgid "Page &Setup"
 msgstr ""
 
 #: ../src/menu.cpp:209
-#, fuzzy
 msgid "&Tools"
-msgstr "&Werkbalk"
+msgstr "&Barre d'outils"
 
 #: ../src/otl.cpp:49
 #: ../src/otl.cpp:70
@@ -283,9 +275,8 @@ msgid "&Compare Recent Version"
 msgstr ""
 
 #: ../src/stc.cpp:386
-#, fuzzy
 msgid "&Open In Browser"
-msgstr "&Overzicht"
+msgstr "&La vue d'ensemble"
 
 #: ../src/stc.cpp:411
 msgid "&Uppercase\tF11"
@@ -296,14 +287,12 @@ msgid "&Lowercase\tF12"
 msgstr ""
 
 #: ../src/stc.cpp:420
-#, fuzzy
 msgid "&Sort"
-msgstr "&Automatisch sorteren"
+msgstr "&Trier automatiquement"
 
 #: ../src/stc.cpp:424
-#, fuzzy
 msgid "&Selection"
-msgstr "&Selecteren"
+msgstr "&Sélectionner"
 
 #: ../src/stc.cpp:444
 msgid "&Toggle Fold\tCtrl+T"
@@ -385,9 +374,8 @@ msgid "End"
 msgstr ""
 
 #: ../src/stc.cpp:600
-#, fuzzy
 msgid "Start"
-msgstr "&Stat"
+msgstr "&Départ"
 
 #: ../src/stc.cpp:602
 #: ../src/stc.cpp:769
@@ -407,9 +395,8 @@ msgid "Edge"
 msgstr ""
 
 #: ../src/stc.cpp:613
-#, fuzzy
 msgid "Line"
-msgstr "lignes"
+msgstr "Lignes"
 
 #: ../src/stc.cpp:614
 msgid "Background"
@@ -471,16 +458,14 @@ msgstr ""
 
 #: ../src/stc.cpp:641
 #: ../src/stc.cpp:755
-#, fuzzy
 msgid "Line number"
-msgstr "bestand:regel nummer"
+msgstr "fichier:nuémro de ligne"
 
 #: ../src/stc.cpp:646
 #: ../src/stc.cpp:788
 #: ../src/stc.cpp:2204
-#, fuzzy
 msgid "Auto fold"
-msgstr "&Automatisch sorteren"
+msgstr "&Trier automatiquement"
 
 #: ../src/stc.cpp:647
 #: ../src/stc.cpp:745
@@ -519,9 +504,8 @@ msgid "Directory"
 msgstr "Histoire"
 
 #: ../src/stc.cpp:809
-#, fuzzy
 msgid "Control Character"
-msgstr "&Controle karakter"
+msgstr "&Caractère de Contrôle"
 
 #: ../src/stc.cpp:877
 msgid "Readonly attribute changed"
@@ -564,9 +548,8 @@ msgid "Generate %ld lines"
 msgstr ""
 
 #: ../src/stc.cpp:2195
-#, fuzzy
 msgid "Fold Flags"
-msgstr "Vlaggen"
+msgstr "Drapeaux"
 
 #: ../src/stc.cpp:2344
 msgid "Macro recording"
@@ -653,9 +636,8 @@ msgid "Report &Revision"
 msgstr ""
 
 #: ../src/tool.cpp:39
-#, fuzzy
 msgid "Counted"
-msgstr "Inhoud"
+msgstr "Contenu"
 
 #: ../src/tool.cpp:39
 msgid "Report &Count"
@@ -703,9 +685,8 @@ msgid "Synchronize modified files"
 msgstr "Synchroniser les fichiers modéfies"
 
 #: ../src/toolbar.cpp:198
-#, fuzzy
 msgid "Find next"
-msgstr "&Volgende zoeken\tF3"
+msgstr "&Rechercher le suivant/tF3"
 
 #: ../src/toolbar.cpp:203
 msgid "Find previous"
@@ -726,9 +707,8 @@ msgid "Search using regular expressions"
 msgstr "expression régulière"
 
 #: ../src/util.cpp:192
-#, fuzzy
 msgid "Compared"
-msgstr "Vergelijker"
+msgstr "Comparé"
 
 #: ../src/util.cpp:222
 msgid "bottom"
@@ -1109,15 +1089,13 @@ msgid "Add"
 msgstr ""
 
 #: ../src/report/process.cpp:34
-#, fuzzy
 msgid "Process folder"
-msgstr "&Proces"
+msgstr "&Proceès"
 
 #: ../src/report/process.cpp:149
 #: ../src/report/process.cpp:166
-#, fuzzy
 msgid "Process"
-msgstr "&Proces"
+msgstr "&Procès"
 
 #: ../src/report/process.cpp:190
 msgid "Cannot set working directory"
@@ -1153,14 +1131,12 @@ msgid "ODBC Error"
 msgstr ""
 
 #: ../include/wx/extension/configdlg.h:33
-#, fuzzy
 msgid "Options"
-msgstr "&Opties"
+msgstr "&Options"
 
 #: ../include/wx/extension/header.h:44
-#, fuzzy
 msgid "File Purpose"
-msgstr "Overzicht"
+msgstr "La vue d'ensemble"
 
 #: ../include/wx/extension/lexers.h:115
 #, fuzzy
@@ -1186,14 +1162,12 @@ msgid "Value"
 msgstr ""
 
 #: ../include/wx/extension/stc.h:122
-#, fuzzy
 msgid "Enter Control Character"
-msgstr "&Controle karakter"
+msgstr "&Caractère de contrôle"
 
 #: ../include/wx/extension/stc.h:169
-#, fuzzy
 msgid "Enter Line Number"
-msgstr "bestand:regel nummer"
+msgstr "Fichier:numéro de ligne"
 
 #: ../include/wx/extension/stc.h:262
 msgid "Enter Sort Position"
