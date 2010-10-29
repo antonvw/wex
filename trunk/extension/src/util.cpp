@@ -225,7 +225,7 @@ const wxString wxExFindResult(
     const wxString where = (find_next) ? _("bottom"): _("top");
     
     text = _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
-      _("hit") + " " + where);
+      _("hit") + " " + where;
 
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(text);
