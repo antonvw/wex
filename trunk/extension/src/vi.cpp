@@ -74,13 +74,11 @@ void wxExVi::Delete(int lines) const
 
   m_STC->Cut();
 
-#if wxUSE_STATUSBAR
   if (lines >= 2)
   {
-    wxExFrame::StatusText(
+    ShowMessage(
       wxString::Format(_("%d fewer lines"), end_line - line));
   }
-#endif
 }
 
 bool wxExVi::Delete(
@@ -111,12 +109,10 @@ bool wxExVi::Delete(
     DeleteMarker(end_address.GetChar(1));
   }
 
-#if wxUSE_STATUSBAR
   if (lines >= 2)
   {
-    wxExFrame::StatusText(wxString::Format(_("%d fewer lines"), lines));
+    ShowMessage(wxString::Format(_("%d fewer lines"), lines));
   }
-#endif
 
   return true;
 }
@@ -780,13 +776,11 @@ bool wxExVi::Move(
 
   m_STC->EndUndoAction();
   
-#if wxUSE_STATUSBAR
   const auto lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   if (lines >= 2)
   {
-    wxExFrame::StatusText(wxString::Format(_("%d lines moved"), lines));
+    ShowMessage(wxString::Format(_("%d lines moved"), lines));
   }
-#endif
 
   return true;
 }
@@ -983,7 +977,7 @@ bool wxExVi::SetSelection(
   return true;
 }
 
-void wxExVi::ShowMessage(const wxString& text)
+void wxExVi::ShowMessage(const wxString& text) const
 {
   m_Frame->ShowViMessage(text);
 }
@@ -1043,10 +1037,8 @@ bool wxExVi::Substitute(
 
   m_STC->EndUndoAction();
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
+  ShowMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
-#endif
 
   return true;
 }
@@ -1188,13 +1180,11 @@ void wxExVi::Yank(int lines) const
     SetIndicator(m_IndicatorYank, start, m_STC->GetLastPosition());
   }
 
-#if wxUSE_STATUSBAR
   if (lines >= 2)
   {
-    wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), 
+    ShowMessage(wxString::Format(_("%d lines yanked"), 
       wxExGetNumberOfLines(wxExClipboardGet()) - 1));
   }
-#endif
 }
 
 bool wxExVi::Yank(
@@ -1215,14 +1205,12 @@ bool wxExVi::Yank(
   m_STC->CopyRange(start, end);
   SetIndicator(m_IndicatorYank, start, end);
 
-#if wxUSE_STATUSBAR
   const auto lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
   
   if (lines >= 2)
   {
-    wxExFrame::StatusText(wxString::Format(_("%d lines yanked"), lines));
+    ShowMessage(wxString::Format(_("%d lines yanked"), lines));
   }
-#endif
 
   return true;
 }

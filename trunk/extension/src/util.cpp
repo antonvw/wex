@@ -228,7 +228,10 @@ const wxString wxExFindResult(
       _("hit") + " " + where;
 
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(text);
+    if (show_on_statusbar)
+    {
+      wxExFrame::StatusText(text);
+    }
 #endif
   }
   else
@@ -238,7 +241,10 @@ const wxString wxExFindResult(
     text = wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found");
 
 #if wxUSE_STATUSBAR
-    wxExFrame::StatusText(text);
+    if (show_on_statusbar)
+    {
+      wxExFrame::StatusText(text);
+    }
 #endif
   }
   

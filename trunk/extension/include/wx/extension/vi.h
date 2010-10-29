@@ -50,7 +50,7 @@ public:
   bool OnKeyDown(const wxKeyEvent& event);
   
   /// Shows a message on the vi bar.
-  void ShowMessage(const wxString& text);
+  void ShowMessage(const wxString& text) const;
 
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
