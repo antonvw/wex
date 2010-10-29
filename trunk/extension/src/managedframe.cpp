@@ -196,11 +196,18 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExManagedFrame::ShowViMessage(const wxString& text)
 {
-  m_viCommandPrefix->SetLabel(text);
-  m_viCommand->Hide();
+  if (GetStatusBar()->IsShown())
+  {
+    GetStatusBar()->SetStatusText(text);
+  }
+  else
+  {
+    m_viCommandPrefix->SetLabel(text);
+    m_viCommand->Hide();
   
-  m_Manager.GetPane("VICOMMANDBAR").Show();
-  m_Manager.Update();
+    m_Manager.GetPane("VICOMMANDBAR").Show();
+    m_Manager.Update();
+  }
 }
 
 void wxExManagedFrame::TogglePane(const wxString& pane)

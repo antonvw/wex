@@ -952,12 +952,7 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) < 0)
   {
-    const wxString text = wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
-    
-    if (m_vi.GetIsActive())
-    {
-      m_vi.ShowMessage(text);
-    }
+    wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
     
     if (!recursive)
     {
@@ -1226,14 +1221,7 @@ void wxExSTC::GotoLineAndSelect(
     if (SearchInTarget(text) < 0)
     {
       bool recursive = true;
-      
-      const wxString text = wxExFindResult(text, true, recursive, !m_vi.GetIsActive());
-    
-      if (m_vi.GetIsActive())
-      {
-        m_vi.ShowMessage(text);
-      }
-      
+      wxExFindResult(text, true, recursive, !m_vi.GetIsActive());
       return;
     }
   }
