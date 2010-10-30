@@ -935,6 +935,11 @@ void wxExVi::Put(bool after) const
   m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
 }        
 
+void wxExVi::SetFocus() const 
+{
+  m_STC->SetFocus();
+}
+
 void wxExVi::SetIndicator(
   const wxExIndicator& indicator, 
   int start, 
@@ -1052,7 +1057,7 @@ void wxExVi::ToggleCase() const
   wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
 
   m_STC->wxStyledTextCtrl::Replace(
-    m_STC->GetCurrentPos(), 
+  m_STC->GetCurrentPos(), 
     m_STC->GetCurrentPos() + 1, 
     text);
 

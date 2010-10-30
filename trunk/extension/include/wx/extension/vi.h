@@ -35,9 +35,6 @@ public:
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
 
-  /// Gets the stc component.
-  wxExSTC* GetSTC() {return m_STC;};
-  
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
@@ -48,6 +45,9 @@ public:
   /// Handles keydown events.
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
+  
+  /// Seys focus to the stc component.
+  void SetFocus() const;
   
   /// Shows a message on the vi bar.
   void ShowMessage(const wxString& text) const;

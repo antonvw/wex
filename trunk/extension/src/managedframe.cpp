@@ -251,7 +251,7 @@ void wxExTextCtrl::OnCommand(wxCommandEvent& event)
     if (m_vi->ExecCommand(GetValue()))
     {
       m_Frame->HideViBar();
-      m_vi->GetSTC()->SetFocus();
+      m_vi->SetFocus();
     }
   }
   else
@@ -259,7 +259,7 @@ void wxExTextCtrl::OnCommand(wxCommandEvent& event)
     if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
     {
       m_Frame->HideViBar();
-      m_vi->GetSTC()->SetFocus();
+      m_vi->SetFocus();
     }
   }
 }
@@ -273,7 +273,7 @@ void wxExTextCtrl::OnKey(wxKeyEvent& event)
     if (m_vi != NULL)
     {
       m_Frame->HideViBar();
-      m_vi->GetSTC()->SetFocus();
+      m_vi->SetFocus();
     }
   }
   else
