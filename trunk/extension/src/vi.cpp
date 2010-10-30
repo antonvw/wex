@@ -485,16 +485,16 @@ bool wxExVi::DoCommandRange(const wxString& command)
     break;
   case 's':
     {
-    wxStringTokenizer tkz(tkz.GetString(), "/");
+    wxStringTokenizer next(tkz.GetString(), "/");
 
-    if (!tkz.HasMoreTokens())
+    if (!next.HasMoreTokens())
     {
       return false;
     }
 
-    tkz.GetNextToken(); // skip empty token
-    const wxString pattern = tkz.GetNextToken();
-    const wxString replacement = tkz.GetNextToken();
+    next.GetNextToken(); // skip empty token
+    const wxString pattern = next.GetNextToken();
+    const wxString replacement = next.GetNextToken();
   
     return Substitute(begin_address, end_address, pattern, replacement);
     }
