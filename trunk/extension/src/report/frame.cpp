@@ -199,17 +199,15 @@ int wxExFrameWithHistory::FindInFilesDialog(int id)
 
     s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
     s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
-    
+    s.insert(m_TextRecursive);
     v.push_back(wxExConfigItem(s));
   }
   else
   {
-    v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+    std::set<wxString> s(wxExFindReplaceData::Get()->GetInfo());
+    s.insert(m_TextRecursive);
+    v.push_back(wxExConfigItem(s));
   }
-
-  v.push_back(wxExConfigItem(
-    m_TextRecursive, 
-    CONFIG_CHECKBOX));
   
   m_FiFDialog = new wxExConfigDialog(this,
     v,
