@@ -119,7 +119,9 @@ const wxString wxExPrintHeader(const wxFileName& filename);
 const wxString wxExQuoted(const wxString& text);
 
 /// Returns a string without all white space in specified input.
-const wxString wxExSkipWhiteSpace(const wxString& text);
+const wxString wxExSkipWhiteSpace(
+  const wxString& text,
+  const wxString& replace_with = " ");
 
 /// This takes care of the translation.
 const wxString wxExTranslate(const wxString& text, int pageNum, int numPages);

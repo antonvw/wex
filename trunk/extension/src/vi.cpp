@@ -1068,11 +1068,13 @@ void wxExVi::ToggleCase() const
 // so subtract 1 for stc line number.
 int wxExVi::ToLineNumber(const wxString& address) const
 {
-  wxString filtered_address(address);
+  wxString filtered_address(wxExSkipWhiteSpace(address, ""));
 
   // Check if we are referring to a defined marker.
   int marker = 0;
 
+  /// TODO: This should be a loop, that
+  // calcs all markers.
   if (address.StartsWith("'"))
   {
     auto it = 
