@@ -1070,19 +1070,37 @@ int wxExVi::ToLineNumber(const wxString& address) const
 {
   wxString filtered_address(wxExSkipWhiteSpace(address, ""));
 
-  // Check if we are referring to a defined marker.
-  int marker = 0;
+  // Filter all markers.
+  int markers = 0;
 
-  /// TODO: This should be a loop, that
-  // calcs all markers.
-  if (address.StartsWith("'"))
+  while (filtered_address.Contains("'"))
   {
+    const wxString oper = filtered_address.BeforeFirst('\'');
+    
+    int pos = filtered_address.Find('\'');
+    int size = 2;
+    
     auto it = 
-      m_Markers.find(address.GetChar(1));
-
+      m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
+      
     if (it != m_Markers.end())
     {
-      marker = it->second;
+      if (oper == "-")
+      {
+        markers -= it->second;
+        pos--;
+        size++;
+      }
+      else if (oper == "+")
+      {
+        markers += it->second;
+        pos--;
+        size++;
+      }
+      else 
+      {
+        markers += it->second;
+      }
     }
     else
     {
@@ -1090,7 +1108,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
       return 0;
     }
 
-    filtered_address = filtered_address.substr(2);
+    filtered_address.replace(pos + size, 2, "");
   }
 
   int dot = 0;
@@ -1103,6 +1121,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
     stc_used = 1;
   }
 
+  // Filter $.
   int dollar = 0;
 
   if (filtered_address.Contains("$"))
@@ -1112,13 +1131,14 @@ int wxExVi::ToLineNumber(const wxString& address) const
     stc_used = 1;
   }
 
+  // Now we should have a number.
   if (!filtered_address.IsNumber()) 
   {
     wxBell();
     return 0;
   }
 
-  // Calculate the line.
+  // Convert this number.
   int i = 0;
   
   if (!filtered_address.empty())
@@ -1130,7 +1150,8 @@ int wxExVi::ToLineNumber(const wxString& address) const
     }
   }
   
-  const auto line_no = marker + dot + dollar + i + stc_used;
+  // Calculate the line.
+  const auto line_no = markers + dot + dollar + i + stc_used;
   
   // Limit the range of what is returned.
   if (line_no <= 0)
