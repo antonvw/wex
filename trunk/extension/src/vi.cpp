@@ -595,7 +595,7 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   else if (command.Last() == '=')
   {
-    const int no = ToLineNumber(command.BeforeLast('='));
+    const auto no = ToLineNumber(command.BeforeLast('='));
     
     if (no == 0)
     {
