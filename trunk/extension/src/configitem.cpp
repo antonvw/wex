@@ -229,7 +229,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         arraychoices.Add(it->second);
       }
 
-      m_Control = (wxCheckListBox*)new wxCheckListBox(parent,
+      m_Control = new wxCheckListBox(parent,
         m_Id, wxDefaultPosition, wxDefaultSize, arraychoices);
       }
       break;
@@ -322,14 +322,12 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_HYPERLINKCTRL:
       {
 #if wxUSE_HYPERLINKCTRL
-      wxHyperlinkCtrl* hl = new wxHyperlinkCtrl(parent,
+      m_Control = new wxHyperlinkCtrl(parent,
         m_Id,
         m_Name,
         m_Default,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
-        
-      m_Control = hl;
       expand = false;
 #endif      
       }
@@ -515,7 +513,7 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_HYPERLINKCTRL:
     case CONFIG_STATICLINE:
     case CONFIG_STATICTEXT:
-      // these controls have no persistant info
+      // these controls have no persistent info
       config_accessed = false;
       break;
 
