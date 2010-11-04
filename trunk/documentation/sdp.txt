@@ -61,13 +61,14 @@ General
     http://www.poedit.net/
   wxextension has it's own localization file, your application should
   also add it's own one, and also put the standard wxwidgets localization file
-  in the localization dir. You should use wxstd for the standard file, if this 
-  file cannot be found the locale will not be initialized and translations 
-  are off. Currently a separate file wxstd-nl.po is added, as dutch translation
+  in the localization dir. 
+  Currently a separate file wxstd-xxx-nl.po is added, as dutch translation
   is updated only for wxWidgets 2.8.0, whereas we use 2.9.0, in the added file
   the extra needed translation are put. 
   The place where to put your po files can be found by running wxex-sample,
-  that shows the folder on the status bar.
+  that shows the folder on the status bar. 
+  You can also test other languages using the special LANG config item,
+  e.g. setting it to 80 allows you to test french translation.
 
 - Build process/IDE
   - First of all, the new C++ auto keyword is used a lot, so
