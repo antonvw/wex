@@ -595,9 +595,14 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   else if (command.Last() == '=')
   {
-    const wxString msg = wxString::Format("%d",
-      ToLineNumber(command.BeforeLast('=')));
-    m_Frame->ShowViMessage(msg);
+    const int no = ToLineNumber(command.BeforeLast('='));
+    
+    if (no == 0)
+    {
+      return false;
+    }
+    
+    m_Frame->ShowViMessage(wxString::Format("%d", no));
     m_STC->SetFocus();
     
     return false; // otherwise vi bar is hidden
