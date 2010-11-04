@@ -68,9 +68,7 @@ void wxExVi::Delete(int lines) const
     m_STC->DocumentEndExtend();
   }
 
-#if wxUSE_STATUSBAR
   const auto end_line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-#endif
 
   m_STC->Cut();
 
