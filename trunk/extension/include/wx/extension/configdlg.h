@@ -46,9 +46,6 @@ public:
 
   /// Reloads all items from config.
   void Reload() const;
-    
-  /// Selects all in the control, if appropriate.
-  void SelectAll();
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);

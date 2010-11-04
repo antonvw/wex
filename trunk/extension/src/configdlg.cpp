@@ -401,47 +401,4 @@ void wxExConfigDialog::Reload() const
   for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
 }
-
-void wxExConfigDialog::SelectAll()
-{
-  for (
-    auto it = m_ConfigItems.begin();
-    it != m_ConfigItems.end();
-    ++it)
-  {
-    switch (it->GetType())
-    {
-    case CONFIG_COMBOBOX:
-    case CONFIG_COMBOBOXDIR:
-      {
-      wxComboBox* c = (wxComboBox*)it->GetControl();
-      c->SelectAll();
-      }
-      break;
-
-    case CONFIG_INT:
-    case CONFIG_STRING:
-      {
-      wxTextCtrl* c = (wxTextCtrl*)it->GetControl();
-      c->SelectAll();
-      }
-      break;
-      
-    case CONFIG_SPINCTRL:
-      {
-      wxSpinCtrl* c = (wxSpinCtrl*)it->GetControl();
-      c->SetSelection(-1, -1);
-      }
-      break;
-      
-    case CONFIG_SPINCTRL_DOUBLE:
-      {
-      wxSpinCtrlDouble* c = (wxSpinCtrlDouble*)it->GetControl();
-      c->SetSelection(-1, -1);
-      }
-      break;
-    }
-  }
-}
-
 #endif // wxUSE_GUI
