@@ -19,17 +19,17 @@
 class wxExManagedFrame;
 class wxExSTC;
 
-/// Offers a class that extends STC with vi behaviour.
+/// Offers a class that extends wxExSTC with vi behaviour.
 class WXDLLIMPEXP_BASE wxExVi
 {
 public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
   
-  /// Executes vi command.
+  /// Executes vi: command that was entered on the vi bar.
   bool ExecCommand(const wxString& command);
 
-  /// Does find command.
+  /// Executes vi find command that was entered on the vi bar.
   bool FindCommand(const wxString& command, const wxString& text);
   
   /// Returns whether vi is active.
@@ -46,7 +46,7 @@ public:
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
   
-  /// Seys focus to the stc component.
+  /// Sets focus to the stc component.
   void SetFocus() const;
   
   /// Shows a message on the vi bar.
@@ -102,8 +102,8 @@ private:
   
   std::map<wxUniChar, int> m_Markers;
   
-  bool m_IsActive; // are we actively using vi mode?
   bool m_InsertMode;
+  bool m_IsActive; // are we actively using vi mode?
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
