@@ -1080,8 +1080,8 @@ int wxExVi::ToLineNumber(const wxString& address) const
   {
     const wxString oper = filtered_address.BeforeFirst('\'');
     
-    int pos = filtered_address.Find('\'');
-    int size = 2;
+    auto pos = filtered_address.Find('\'');
+    auto size = 2;
     
     auto it = 
       m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
