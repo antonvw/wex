@@ -103,7 +103,7 @@ void wxExManagedFrame::CreateViPanel(
   panel->SetSizerAndFit(sizer);
   
   m_Manager.AddPane(panel,
-    wxAuiPaneInfo().Bottom().Floatable(false).Resizable(false).Fixed().Hide().
+    wxAuiPaneInfo().Bottom().Floatable(false).Hide().
       Name(name).CaptionVisible(false));
 }
 
