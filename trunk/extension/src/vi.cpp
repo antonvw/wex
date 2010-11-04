@@ -1106,7 +1106,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
       return 0;
     }
 
-    filtered_address.replace(pos + size, 2, "");
+    filtered_address.replace(pos, size, "");
   }
 
   int dot = 0;
