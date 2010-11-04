@@ -43,9 +43,6 @@ public:
   void ForceCheckBoxChecked(
     const wxString& contains = wxEmptyString,
     const wxString& page = wxEmptyString);
-
-  /// Reloads all items from config.
-  void Reload() const;
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
@@ -53,6 +50,7 @@ private:
   void Click(int id) const;
   std::vector< wxExConfigItem >::const_iterator FindConfigItem(int id) const;
   void Layout(int rows, int cols);
+  void Reload() const;
 
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
