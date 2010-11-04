@@ -199,16 +199,19 @@ void wxExManagedFrame::ShowViMessage(const wxString& text)
   if (GetStatusBar()->IsShown())
   {
     GetStatusBar()->SetStatusText(text);
+    
+    m_Manager.GetPane("VICOMMANDBAR").Hide();
   }
   else
   {
     m_viCommandPrefix->SetLabel(text);
     m_viCommand->Hide();
   
-    m_Manager.GetPane("VIFINDBAR").Hide();
     m_Manager.GetPane("VICOMMANDBAR").Show();
-    m_Manager.Update();
   }
+  
+  m_Manager.GetPane("VIFINDBAR").Hide();
+  m_Manager.Update();
 }
 
 void wxExManagedFrame::TogglePane(const wxString& pane)
