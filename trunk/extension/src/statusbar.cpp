@@ -38,7 +38,6 @@ wxExStatusBar::wxExStatusBar(
 {
   // The statusbar is not managed by Aui, so show/hide it explicitly.    
   Show(wxConfigBase::Get()->ReadBool("ShowStatusBar", true));
-  SendSizeEvent();
 }
 
 wxExStatusBar::~wxExStatusBar()
@@ -94,13 +93,10 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             m_Frame->StatusBarClicked(pane.GetName());
           }
 #if wxUSE_TOOLTIPS
-          // Show tooltip if tooltip is available, and not yet tooltip presented.
-          else if (event.Moving())
+          // Show tooltip if tooltip is available, and not yet presented.
+          else if (event.Moving() && GetToolTip() != NULL)
           {
-            const wxString tooltip =
-              (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
-
-            if (tooltip != pane.GetHelpText())
+            if (GetToolTip()->GetTip() != pane.GetHelpText())
             {
               SetToolTip(pane.GetHelpText());
             }

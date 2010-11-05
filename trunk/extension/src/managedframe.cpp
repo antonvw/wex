@@ -61,6 +61,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
+  , m_viLayer(0)
+  , m_viRow(0)
 {
   m_Manager.SetManagedWindow(this);
 
@@ -103,25 +105,31 @@ void wxExManagedFrame::CreateViPanel(
   panel->SetSizerAndFit(sizer);
   
   m_Manager.AddPane(panel,
-    wxAuiPaneInfo().Bottom().Floatable(false).Hide().
-      Name(name).CaptionVisible(false));
+    wxAuiPaneInfo().
+      Bottom().
+      Floatable(false).
+      Hide().
+      Name(name).
+      Row(m_viRow++).
+      Layer(m_viLayer++).
+      CaptionVisible(false));
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
   if (command == ":")
   {
-    GetViPaneCommand(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR", vi, command);
+    GetViPaneCommand(
+      m_viCommandPrefix, m_viCommand, "VICOMMANDBAR", vi, command);
   }
   else
   {
     // sync with frd data.
     m_viFind->SetValue(wxExFindReplaceData::Get()->GetFindString());
     
-    GetViPaneCommand(m_viFindPrefix, m_viFind, "VIFINDBAR", vi, command);
+    GetViPaneCommand(
+      m_viFindPrefix, m_viFind, "VIFINDBAR", vi, command);
   }
-    
-  m_Manager.Update();
 }
   
 void wxExManagedFrame::GetViPaneCommand(
@@ -139,6 +147,7 @@ void wxExManagedFrame::GetViPaneCommand(
   text->SetVi(vi);
   
   m_Manager.GetPane(pane).Show();
+  m_Manager.Update();
 }
     
 void wxExManagedFrame::HideViBar()

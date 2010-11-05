@@ -49,8 +49,7 @@ public:
   /// Does this vcs supports keyword expansion.
   bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:
-  const std::vector<wxExVCSCommand> ParseNodeCommands(
-    const wxXmlNode* node) const;
+  void AddCommands(const wxXmlNode* node);
 
   static int m_Instances;
 

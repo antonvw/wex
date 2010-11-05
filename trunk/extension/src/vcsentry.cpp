@@ -38,16 +38,55 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   else
   {
     wxXmlNode *child = node->GetChildren();
+    
+    bool error = false;
 
-    while (child)
+    while (child && !error)
     {
       if (child->GetName() == "commands")
       {
-        m_Commands = ParseNodeCommands(child);
+        if (m_Commands.size() == 0)
+        {
+          AddCommands(child);
+        }
+        else
+        {
+          error = true;
+        }
       }
       
       child = child->GetNext();
     }
+  }
+}
+
+void wxExVCSEntry::AddCommands(const wxXmlNode* node)
+{
+  wxExVCSCommand::ResetInstances();
+
+  wxXmlNode* child = node->GetChildren();
+
+  while (child)
+  {
+    if (child->GetName() == "command")
+    {
+      if (m_Commands.size() == VCS_MAX_COMMANDS)
+      {
+        wxLogError(_("Reached commands limit: %d"), VCS_MAX_COMMANDS);
+      }
+      else
+      {
+        const wxString content = child->GetNodeContent().Strip(wxString::both);
+        const wxString attrib = child->GetAttribute("type");
+        const wxString submenu = child->GetAttribute("submenu");
+        const wxString subcommand = child->GetAttribute("subcommand");
+        
+        m_Commands.push_back(
+          wxExVCSCommand(content, attrib, submenu, subcommand));
+      }
+    }
+    
+    child = child->GetNext();
   }
 }
 
@@ -111,39 +150,6 @@ const wxExVCSCommand wxExVCSEntry::GetCommand(int command_id) const
   }
 }
   
-const std::vector<wxExVCSCommand> wxExVCSEntry::ParseNodeCommands(
-  const wxXmlNode* node) const
-{
-  std::vector<wxExVCSCommand> v;
-  
-  wxExVCSCommand::ResetInstances();
-
-  wxXmlNode* child = node->GetChildren();
-
-  while (child)
-  {
-    if (child->GetName() == "command")
-    {
-      if (v.size() == VCS_MAX_COMMANDS)
-      {
-        wxLogError(_("Reached commands limit: %d"), VCS_MAX_COMMANDS);
-      }
-      else
-      {
-        const wxString content = child->GetNodeContent().Strip(wxString::both);
-        const wxString attrib = child->GetAttribute("type");
-        const wxString submenu = child->GetAttribute("submenu");
-        const wxString subcommand = child->GetAttribute("subcommand");
-        v.push_back(wxExVCSCommand(content, attrib, submenu, subcommand));
-      }
-    }
-    
-    child = child->GetNext();
-  }
-
-  return v;
-}
-
 void wxExVCSEntry::ResetInstances()
 {
   m_Instances = wxExVCS::VCS_AUTO + 1;
