@@ -7,7 +7,7 @@ General
     http://svn.xp-dev.com/svn/wxextension/
 
 - Subversion access
-    under windows TortoiseSVN is used (TortoiseSVN 1.6.8)
+    under windows TortoiseSVN is used (TortoiseSVN 1.6.11)
       http://tortoisesvn.tigris.org/,
     under Linux just the svn client (svn, version 1.6.12 (r955767))
     
