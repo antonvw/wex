@@ -94,9 +94,13 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
           }
 #if wxUSE_TOOLTIPS
           // Show tooltip if tooltip is available, and not yet presented.
-          else if (event.Moving() && GetToolTip() != NULL)
+          // Do not move check for NULL, otherwise no tooltip presented.
+          else if (event.Moving())
           {
-            if (GetToolTip()->GetTip() != field.GetHelpText())
+            const wxString tooltip =
+              (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
+
+            if (tooltip != field.GetHelpText())
             {
               SetToolTip(field.GetHelpText());
             }
