@@ -1,5 +1,5 @@
-# Name:      wxstd-nl.po
-# Purpose:   Extra translations for items not present or incorrect in wxstd.
+# Name:      wxstd-xxx-nl.po
+# Purpose:   Extra translations for items not present or incorrect in wx nl.mo.
 # RCS-ID:    $Id$
 # Author:    Anton van Wezenbeek
 # Created:   2010-03-07
