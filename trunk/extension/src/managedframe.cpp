@@ -61,8 +61,6 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
-  , m_viLayer(0)
-  , m_viRow(0)
 {
   m_Manager.SetManagedWindow(this);
 
@@ -96,7 +94,7 @@ void wxExManagedFrame::CreateViPanel(
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
   statictext = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-  text = new wxExTextCtrl(panel, this, statictext);
+  text = new wxExTextCtrl(panel, this, statictext, wxID_ANY);
   
   sizer->AddGrowableCol(1);
   sizer->Add(statictext, wxSizerFlags().Expand());
@@ -106,13 +104,11 @@ void wxExManagedFrame::CreateViPanel(
   
   m_Manager.AddPane(panel,
     wxAuiPaneInfo().
+      ToolbarPane().
       Bottom().
-      Floatable(false).
       Hide().
       Name(name).
-      Row(m_viRow++).
-      Layer(m_viLayer++).
-      CaptionVisible(false));
+      Caption(_("vibar")));
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)

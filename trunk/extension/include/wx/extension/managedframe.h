@@ -89,9 +89,6 @@ private:
   wxExTextCtrl* m_viFind;
   wxStaticText* m_viFindPrefix;
   
-  int m_viLayer;
-  int m_viRow;
-  
   DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_AUI
