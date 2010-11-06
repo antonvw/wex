@@ -23,14 +23,14 @@ class wxExStatusBar;
 
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
-class WXDLLIMPEXP_BASE wxExPane : public wxStatusBarPane
+class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
   /// Default constructor.
-  wxExPane() : m_No(-1){;};
+  wxExStatusBarPane() : m_No(-1){;};
 
   /// Constructor.
-  wxExPane(
+  wxExStatusBarPane(
     /// If you do no provide helptext, it is derived from the name, by using
     /// text after the first 'e' character (so after 'Pane') if name is
     /// not 'PaneText'.
@@ -73,7 +73,7 @@ public:
 
   /// Sets the panes.
   /// Returns the number of panes added.
-  int SetPanes(const std::vector<wxExPane>& panes);
+  int SetPanes(const std::vector<wxExStatusBarPane>& panes);
 
   /// Sets text on specified pane.
   /// Returns true if the specified pane exists.
@@ -87,10 +87,10 @@ protected:
 private:
   /// Returns the status bar pane.
   /// If pane could not be found, returns empty pane.
-  const wxExPane GetPane(int pane) const;
+  const wxExStatusBarPane GetPane(int pane) const;
 
   wxExFrame* m_Frame;
-  std::map<wxString, wxExPane> m_Panes;
+  std::map<wxString, wxExStatusBarPane> m_Panes;
 
   DECLARE_EVENT_TABLE()
 };

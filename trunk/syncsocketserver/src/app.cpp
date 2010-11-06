@@ -97,13 +97,13 @@ Frame::Frame()
 
 #if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneClients", 75, _("Number of clients connected")));
-  panes.push_back(wxExPane("PaneTimer", 75, _("Repeat timer")));
-  panes.push_back(wxExPane("PaneBytes", 150, _("Number of bytes received and sent")));
-  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
+  std::vector<wxExStatusBarPane> panes;
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("PaneClients", 75, _("Number of clients connected")));
+  panes.push_back(wxExStatusBarPane("PaneTimer", 75, _("Repeat timer")));
+  panes.push_back(wxExStatusBarPane("PaneBytes", 150, _("Number of bytes received and sent")));
+  panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 #endif
 

@@ -21,7 +21,7 @@
 #if wxUSE_GUI
 #if wxUSE_STATUSBAR
 
-int wxExPane::m_Total = 0;
+int wxExStatusBarPane::m_Total = 0;
 
 BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
   EVT_LEFT_DOWN(wxExStatusBar::OnMouse)
@@ -45,7 +45,7 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
   
-const wxExPane wxExStatusBar::GetPane(int pane) const
+const wxExStatusBarPane wxExStatusBar::GetPane(int pane) const
 {
   for (
     auto it = m_Panes.begin();
@@ -58,7 +58,7 @@ const wxExPane wxExStatusBar::GetPane(int pane) const
     }
   }
 
-  return wxExPane();
+  return wxExStatusBarPane();
 }
 
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
@@ -77,7 +77,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       {
         found = true;
 
-        const wxExPane& pane(GetPane(i));
+        const wxExStatusBarPane& pane(GetPane(i));
 
         if (pane.GetNo() != -1)
         {
@@ -108,7 +108,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 }
 
-int wxExStatusBar::SetPanes(const std::vector<wxExPane>& panes)
+int wxExStatusBar::SetPanes(const std::vector<wxExStatusBarPane>& panes)
 {
   wxASSERT(m_Panes.empty());
   

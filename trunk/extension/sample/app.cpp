@@ -208,13 +208,13 @@ wxExSampleFrame::wxExSampleFrame()
   }
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExPane("PaneCells", 60, _("Cells")));
-  panes.push_back(wxExPane("PaneItems", 60, _("Items")));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
-  panes.push_back(wxExPane("PaneLexer", 60, _("Lexer")));
+  std::vector<wxExStatusBarPane> panes;
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
+  panes.push_back(wxExStatusBarPane("PaneCells", 60, _("Cells")));
+  panes.push_back(wxExStatusBarPane("PaneItems", 60, _("Items")));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
+  panes.push_back(wxExStatusBarPane("PaneLexer", 60, _("Lexer")));
   SetupStatusBar(panes);
 #endif
 }

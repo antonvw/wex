@@ -102,7 +102,7 @@ public:
   /// You can hide them by not providing this pane.
   /// Returns NULL if an error occurred.
   wxExStatusBar* SetupStatusBar(
-    const std::vector<wxExPane>& panes,
+    const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
     wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");

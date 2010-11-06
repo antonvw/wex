@@ -39,10 +39,10 @@ DecoratedFrame::DecoratedFrame()
   SetIcon(wxICON(app));
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneFileType", 50, _("File Type")));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines")));
+  std::vector<wxExStatusBarPane> panes;
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File Type")));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
 
   if (wxExLexers::Get()->Count() > 0)
   {
@@ -51,10 +51,10 @@ DecoratedFrame::DecoratedFrame()
 #else
     const int lexer_size = 75;
 #endif
-    panes.push_back(wxExPane("PaneLexer", lexer_size, _("Lexer")));
+    panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
   }
 
-  panes.push_back(wxExPane("PaneItems", 65, _("Items")));
+  panes.push_back(wxExStatusBarPane("PaneItems", 65, _("Items")));
   SetupStatusBar(panes);
 #endif
 

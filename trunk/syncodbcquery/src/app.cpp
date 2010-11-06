@@ -131,9 +131,9 @@ Frame::Frame()
   m_Shell->SetFocus();
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneLines", 100, _("Lines in window")));
+  std::vector<wxExStatusBarPane> panes;
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines in window")));
   SetupStatusBar(panes);
 #endif
 

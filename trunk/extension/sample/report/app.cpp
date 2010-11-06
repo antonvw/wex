@@ -98,12 +98,12 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   SetMenuBar(menubar);
 
 #if wxUSE_STATUSBAR
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("PaneFileType", 50));
-  panes.push_back(wxExPane("PaneLines", 100));
-  panes.push_back(wxExPane("PaneLexer", 60));
-  panes.push_back(wxExPane("PaneItems", 60));
+  std::vector<wxExStatusBarPane> panes;
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("PaneFileType", 50));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100));
+  panes.push_back(wxExStatusBarPane("PaneLexer", 60));
+  panes.push_back(wxExStatusBarPane("PaneItems", 60));
   SetupStatusBar(panes);
 #endif
 

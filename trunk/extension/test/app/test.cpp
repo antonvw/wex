@@ -157,13 +157,13 @@ void wxExAppTestFixture::testFrame()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
-  std::vector<wxExPane> panes;
+  std::vector<wxExStatusBarPane> panes;
 
-  panes.push_back(wxExPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
 
   for (int i = 0; i < 25; i++)
   {
-    panes.push_back(wxExPane(wxString::Format("Pane%d", i)));
+    panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
   }
   
   CPPUNIT_ASSERT(frame->SetupStatusBar(panes) != NULL);
@@ -361,11 +361,11 @@ void wxExAppTestFixture::testStatusBar()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
-  std::vector<wxExPane> panes;
-  panes.push_back(wxExPane("PaneText", -3));
-  panes.push_back(wxExPane("panex"));
-  panes.push_back(wxExPane("paney"));
-  panes.push_back(wxExPane("panez"));
+  std::vector<wxExStatusBarPane> panes;
+  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane("panex"));
+  panes.push_back(wxExStatusBarPane("paney"));
+  panes.push_back(wxExStatusBarPane("panez"));
 
   wxExStatusBar* sb = new wxExStatusBar(frame);
   
