@@ -35,7 +35,7 @@ public:
     /// text after the first 'e' character (so after 'Pane') if name is
     /// not 'PaneText'.
     const wxString& name,
-    /// Width of the pane.
+    /// Width of the field
     int width = 50,
     /// The helptext shown as a tooltip.
     const wxString& helptext = wxEmptyString,
@@ -71,23 +71,23 @@ public:
   /// Destructor.
  ~wxExStatusBar();  
 
-  /// Sets the panes.
-  /// Returns the number of panes added.
-  int SetPanes(const std::vector<wxExStatusBarPane>& panes);
+  /// Sets the fields.
+  /// Returns the number of fields added.
+  int SetFields(const std::vector<wxExStatusBarPane>& fields);
 
-  /// Sets text on specified pane.
-  /// Returns true if the specified pane exists.
+  /// Sets text on specified field.
+  /// Returns true if the specified field exists.
   bool SetStatusText(
     const wxString& text, 
-    const wxString& pane = "PaneText");
+    const wxString& field = "PaneText");
 protected:
   /// React on some mouse events line button down, double click and
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  /// Returns the status bar pane.
-  /// If pane could not be found, returns empty pane.
-  const wxExStatusBarPane GetPane(int pane) const;
+  /// Returns the status bar field.
+  /// If field could not be found, returns empty field.
+  const wxExStatusBarPane GetField(int field) const;
 
   wxExFrame* m_Frame;
   std::map<wxString, wxExStatusBarPane> m_Panes;

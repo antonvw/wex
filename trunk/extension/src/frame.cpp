@@ -481,7 +481,7 @@ wxExStatusBar* wxExFrame::SetupStatusBar(
 {
   if (wxFrame::CreateStatusBar(panes.size(), style, id, name) != NULL)
   {
-    if (m_StatusBar->SetPanes(panes) != panes.size())
+    if (m_StatusBar->SetFields(panes) != panes.size())
     {
       return NULL;
     }

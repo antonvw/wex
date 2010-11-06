@@ -374,7 +374,7 @@ void wxExAppTestFixture::testStatusBar()
   // failed in SetStatusWidths(): status bar field count mismatch
   //../src/common/statbar.cpp(189): assert "(size_t)n == m_panes.GetCount()" 
   // failed in SetStatusStyles(): field number mismatch
-  //CPPUNIT_ASSERT(sb->SetPanes(panes) == panes.size());
+  //CPPUNIT_ASSERT(sb->SetFields(panes) == panes.size());
   //CPPUNIT_ASSERT(sb->SetStatusText("hello"));
   //CPPUNIT_ASSERT(sb->SetStatusText("hello", "panex"));
   //CPPUNIT_ASSERT(sb->SetStatusText("hello", "paney"));

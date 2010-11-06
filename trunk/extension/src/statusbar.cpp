@@ -45,14 +45,14 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
   
-const wxExStatusBarPane wxExStatusBar::GetPane(int pane) const
+const wxExStatusBarPane wxExStatusBar::GetField(int field) const
 {
   for (
     auto it = m_Panes.begin();
     it != m_Panes.end();
     ++it)
   {
-    if (it->second.GetNo() == pane)
+    if (it->second.GetNo() == field)
     {
       return it->second;
     }
@@ -77,28 +77,28 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       {
         found = true;
 
-        const wxExStatusBarPane& pane(GetPane(i));
+        const wxExStatusBarPane& field(GetField(i));
 
-        if (pane.GetNo() != -1)
+        if (field.GetNo() != -1)
         {
           // Handle the event, don't fail if none is true here,
           // it seems that moving and clicking almost at the same time
           // could cause assertions.
           if (event.ButtonDClick())
           {
-            m_Frame->StatusBarDoubleClicked(pane.GetName());
+            m_Frame->StatusBarDoubleClicked(field.GetName());
           }
           else if (event.ButtonDown())
           {
-            m_Frame->StatusBarClicked(pane.GetName());
+            m_Frame->StatusBarClicked(field.GetName());
           }
 #if wxUSE_TOOLTIPS
           // Show tooltip if tooltip is available, and not yet presented.
           else if (event.Moving() && GetToolTip() != NULL)
           {
-            if (GetToolTip()->GetTip() != pane.GetHelpText())
+            if (GetToolTip()->GetTip() != field.GetHelpText())
             {
-              SetToolTip(pane.GetHelpText());
+              SetToolTip(field.GetHelpText());
             }
           }
 #endif
@@ -108,19 +108,19 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 }
 
-int wxExStatusBar::SetPanes(const std::vector<wxExStatusBarPane>& panes)
+int wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 {
   wxASSERT(m_Panes.empty());
   
-  int* styles = new int[panes.size()];
-  int* widths = new int[panes.size()];
+  int* styles = new int[fields.size()];
+  int* widths = new int[fields.size()];
 
   for (
-    auto it = panes.begin();
-    it != panes.end();
+    auto it = fields.begin();
+    it != fields.end();
     ++it)
   {
-    // our member should have same size as panes
+    // our member should have same size as fields
     m_Panes.insert(std::make_pair(it->GetName(), *it));
     
     if (it->GetNo() != -1)
@@ -153,9 +153,9 @@ int wxExStatusBar::SetPanes(const std::vector<wxExStatusBarPane>& panes)
   return m_Panes.size();
 }
 
-bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& pane)
+bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  const auto it = m_Panes.find(pane);
+  const auto it = m_Panes.find(field);
 
   if (it != m_Panes.end())
   {
