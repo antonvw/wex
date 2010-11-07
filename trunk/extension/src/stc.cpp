@@ -954,14 +954,16 @@ bool wxExSTC::FindNext(
   {
     wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
     
+    bool found = false;
+    
     if (!recursive)
     {
       recursive = true;
-      FindNext(text, search_flags, find_next);
+      found = FindNext(text, search_flags, find_next);
       recursive = false;
     }
     
-    return false;
+    return found;
   }
   else
   {
