@@ -165,7 +165,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
 
       previous_page = it->GetPage();
 
-      const int use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
+      const auto use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
 
       sizer = (rows != 0 ? 
         new wxFlexGridSizer(rows, use_cols, 0, 0):
