@@ -1599,6 +1599,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     <style no="wxSTC_DIFF_POSITION"> fore:brown </style>
     <style no="wxSTC_DIFF_DELETED"> fore:red </style>
     <style no="wxSTC_DIFF_ADDED"> fore:lime green </style>
+    <style no="wxSTC_DIFF_CHANGED"> fore:yellow </style>
     </styles>
   </lexer>
   <lexer name="eiffel" match="wxSTC_EIFFEL_" />
