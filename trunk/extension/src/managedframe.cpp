@@ -76,6 +76,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.AddPane(new wxExFindToolBar(this),
     wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Findbar")));
     
+  m_Manager.GetPane("FINDBAR").Hide();
+    
   CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
   CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
 }

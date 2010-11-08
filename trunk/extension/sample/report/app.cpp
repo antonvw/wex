@@ -43,7 +43,7 @@ BEGIN_EVENT_TABLE(wxExRepSampleFrame, wxExFrameWithHistory)
   EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExRepSampleFrame::OnCommand)
 END_EVENT_TABLE()
 
-IMPLEMENT_APP(wxExRepSampleApp)
+wxIMPLEMENT_APP(wxExRepSampleApp);
 
 bool wxExRepSampleApp::OnInit()
 {

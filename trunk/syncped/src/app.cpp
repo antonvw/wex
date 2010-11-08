@@ -20,8 +20,7 @@
 #include "app.h"
 #include "frame.h"
 
-DECLARE_APP(App)
-IMPLEMENT_APP(App)
+wxIMPLEMENT_APP(App);
 
 #ifdef __WXOSX__  
 void App::MacOpenFile(const wxString& fileName)

@@ -46,7 +46,7 @@ enum
   ID_LAST,
 };
 
-IMPLEMENT_APP(wxExSampleApp)
+wxIMPLEMENT_APP(wxExSampleApp);
 
 bool wxExSampleApp::OnInit()
 {

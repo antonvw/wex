@@ -93,7 +93,8 @@ General
 
     - under SunOS using the Sun make gives errors,
       you have to use GNU make (/usr/sfw/bin)
-      and the -mt option should be removed from generated Makefile
+      and the -mt option should be removed from generated Makefile, and
+      option -w should be added
       this config command was used (socket file did not compile, and
       glcancas neither):
       ../configure --with-gtk --disable-sockets --without-opengl

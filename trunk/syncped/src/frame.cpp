@@ -163,7 +163,6 @@ Frame::Frame(bool open_recent)
   {
     GetManager().GetPane("ASCIITABLE").Hide();
     GetManager().GetPane("DIRCTRL").Hide();
-    GetManager().GetPane("FINDBAR").Hide();
     GetManager().GetPane("HISTORY").Hide();
     GetManager().GetPane("PROJECTS").Hide();
   }

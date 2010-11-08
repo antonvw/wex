@@ -15,7 +15,7 @@
 #include <wx/extension/report/frame.h>
 #include "test.h"
 
-IMPLEMENT_APP(wxExReportTestApp)
+wxIMPLEMENT_APP(wxExReportTestApp);
 
 bool wxExReportTestApp::OnInit()
 {
@@ -27,7 +27,7 @@ bool wxExReportTestApp::OnInit()
   }
 
   wxExFrameWithHistory *frame = new 
-    wxExFrameWithHistory(NULL, wxID_ANY, "wxex-test-rep");
+    wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
     
   frame->Show(true);
 

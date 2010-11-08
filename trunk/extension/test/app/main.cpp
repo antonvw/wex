@@ -14,7 +14,7 @@
 #include <cppunit/TestRunner.h>
 #include "test.h"
 
-IMPLEMENT_APP(wxExTestApp)
+wxIMPLEMENT_APP(wxExTestApp);
 
 bool wxExTestApp::OnInit()
 {
@@ -25,7 +25,9 @@ bool wxExTestApp::OnInit()
     return false;
   }
 
-  wxExManagedFrame *frame = new wxExManagedFrame(NULL, wxID_ANY, "wxex-test-app");
+  wxExManagedFrame *frame = new wxExManagedFrame(NULL, 
+    wxID_ANY, wxTheApp->GetAppDisplayName());
+    
   frame->Show(true);
 
   SetTopWindow(frame);
