@@ -360,7 +360,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 
   const auto retValue = Execute();
   
-  return (retValue == < 0 || m_Output.empty() ? wxID_CANCEL: wxID_OK);
+  return (retValue < 0 || m_Output.empty() ? wxID_CANCEL: wxID_OK);
 }
 #endif
 
