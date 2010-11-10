@@ -35,9 +35,6 @@ public:
     VCS_AUTO, // uses the VCS appropriate for current file
   };
 
-  /// Default constructor.
-  wxExVCS();
-
   /// Constructor for vcs from specified filename.
   /// This must be an existing xml file containing all vcs.
   /// It does not Read this file, however if you use the global Get,
@@ -74,8 +71,8 @@ public:
   /// Shows a dialog and executes the vcs command if not cancelled.
   /// If no fullpath was specified, a dialog with base folder is shown, 
   /// otherwise the specified fullpath is used for getting vcs contents from.
-  /// Returns wxID_CANCEL if dialog was cancelled, wxID_OK if okay, 
-  /// or wxID_ABORT if errors were reported by vcs otherwise.
+  /// Returns wxID_CANCEL if dialog was cancelled, an error occurred, 
+  /// there is no output collected, and wxID_OK if okay.
   wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
 
@@ -102,8 +99,8 @@ public:
 
 #if wxUSE_GUI
   /// Combines all in one method. Calls the ExecuteDialog,
-  /// executes if not cancelled, and calls ShowOutput.
-  /// Returns return code from execute.
+  /// and calls ShowOutput if return code was wxID_OK.
+  /// Returns return code from ExecuteDialog.
   wxStandardID Request(wxWindow* parent);
 #endif  
 

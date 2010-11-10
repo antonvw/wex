@@ -2203,6 +2203,11 @@ bool wxExSTC::SetLexer(const wxString& lexer)
       SetMarginWidth(m_MarginFoldingNumber, 0);
     }
     
+    if (lexer == "diff")
+    {
+      SetEdgeMode(wxSTC_EDGE_NONE);
+    }
+    
     if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
     {
       FoldAll();

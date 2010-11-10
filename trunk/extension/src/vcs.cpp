@@ -32,10 +32,6 @@ wxExVCS* wxExVCS::m_Self = NULL;
 wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
 
-wxExVCS::wxExVCS()
-{
-}
-
 wxExVCS::wxExVCS(const wxFileName& filename)
 {
   m_FileNameXML = filename;
@@ -364,7 +360,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 
   const auto retValue = Execute();
   
-  return (retValue != -1 ? wxID_OK: wxID_CANCEL);
+  return (retValue == < 0 || m_Output.empty() ? wxID_CANCEL: wxID_OK);
 }
 #endif
 

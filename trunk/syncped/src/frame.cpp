@@ -1170,6 +1170,12 @@ bool Frame::OpenFile(
       {
         m_DirCtrl->SelectPath(filename.GetFullPath());
       }
+      
+      // Do not show an edge for project files opened as text.
+      if (filename.GetExt() == "prj")
+      {
+        editor->SetEdgeMode(wxSTC_EDGE_NONE);
+      }
     }
     else if (line_number > 0)
     {
