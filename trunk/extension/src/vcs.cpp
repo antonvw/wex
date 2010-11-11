@@ -655,7 +655,7 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
   }
 
   // Add a lexer when appropriate.
-  if (m_Command.IsOpen())
+  if (m_Command.IsOpen() && !m_Error && m_Command.GetCommand() != "log")
   {
     if (m_FileName.GetLexer().IsOk())
     {
