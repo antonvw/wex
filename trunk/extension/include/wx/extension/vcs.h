@@ -71,8 +71,9 @@ public:
   /// Shows a dialog and executes the vcs command if not cancelled.
   /// If no fullpath was specified, a dialog with base folder is shown, 
   /// otherwise the specified fullpath is used for getting vcs contents from.
-  /// Returns wxID_CANCEL if dialog was cancelled, an error occurred, 
-  /// there is no output collected, and wxID_OK if okay.
+  /// Returns wxID_CANCEL if dialog was cancelled, an execute error occurred, 
+  /// or there is no output collected. Returns wxID_OK if okay (use GetError
+  /// to check whether the output contains errors or normal info).
   wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
 
@@ -81,6 +82,10 @@ public:
 
   /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
+  
+  /// Returns true if the output contains error info instead of
+  /// normal vcs info.
+  bool GetError() const {return m_Error;};
 
   /// Gets the xml filename.
   static const wxFileName& GetFileName() {return m_FileNameXML;};
@@ -109,6 +114,11 @@ public:
   /// (both the parameter and returned value may be NULL). 
   static wxExVCS* Set(wxExVCS* vcs);
 
+#if wxUSE_GUI
+  /// Shows output from Execute in a dialog.
+  void ShowOutput(wxWindow* parent) const;
+#endif
+
   /// Does current vcs allow keyword expansion.
   bool SupportKeywordExpansion() const;
 
@@ -122,12 +132,10 @@ private:
   static long GetNo(const wxFileName& filename);
   void Initialize(int command_id);
   int ShowDialog(wxWindow* parent);
-#if wxUSE_GUI
-  /// Shows output from Execute in a dialog.
-  void ShowOutput(wxWindow* parent) const;
-#endif  
   bool UseFlags() const;
   bool UseSubcommand() const;
+  
+  bool m_Error;
 
   wxExVCSCommand m_Command;
 

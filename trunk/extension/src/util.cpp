@@ -628,11 +628,18 @@ void wxExVCSExecute(
   {
     if (vcs.ExecuteDialog(frame) == wxID_OK)
     {
-      frame->OpenFile(
-        filename, 
-        vcs.GetCommandWithFlags(), 
-        vcs.GetOutput(),
-        wxExSTC::STC_WIN_READ_ONLY);
+      if (!vcs.GetError())
+      {
+        frame->OpenFile(
+          filename, 
+          vcs.GetCommandWithFlags(), 
+          vcs.GetOutput(),
+          wxExSTC::STC_WIN_READ_ONLY);
+      }
+      else
+      {
+        vcs.ShowOutput(frame);
+      }
     }
   }
   else

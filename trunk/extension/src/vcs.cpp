@@ -33,11 +33,13 @@ wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
 #endif
 
 wxExVCS::wxExVCS(const wxFileName& filename)
+  : m_Error(false)
 {
   m_FileNameXML = filename;
 }
 
 wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
+  : m_Error(false)
 {
   if (m_FileName.IsOk())
   {
@@ -68,7 +70,7 @@ int wxExVCS::BuildMenu(
     
   if (it != m_Entries.end())
   {
-      return it->second.BuildMenu(base_id, menu, is_popup);
+    return it->second.BuildMenu(base_id, menu, is_popup);
   }
 
   return 0;
@@ -199,13 +201,9 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
     return true;
   }
   // This is the default check.
-  else if (CheckPath(name, filename))
+  else 
   {
-    return true;
-  }
-  else
-  {
-    return false;
+    return CheckPath(name, filename);
   }
 }
 
@@ -331,6 +329,8 @@ long wxExVCS::Execute()
   {
     m_Output += errors[i] + "\n";
   }
+  
+  m_Error = !errors.empty();
 
   // Then the normal output, will be empty if there are errors.
   for (
