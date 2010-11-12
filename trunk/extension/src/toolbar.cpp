@@ -34,12 +34,12 @@ enum
 };
 
 // Support class.
-// Offers a find combobox that allows you to find text
+// Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
 class FindString : public wxTextCtrl
 {
 public:
-  /// Constructor. Fills the combobox box with values 
+  /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
   FindString(
     wxWindow* parent,
@@ -87,9 +87,6 @@ void wxExToolBar::AddControls()
       ID_EDIT_HEX_MODE,
       "Hex"));
 
-//  m_HexMode->SetBackgroundColour(m_Frame->GetBackgroundColour());
-
-//  AddTool(ID_SYNC_MODE, "Sync", wxNullBitmap, wxEmptyString, wxITEM_CHECK);
   AddControl(
     m_SyncMode = new wxCheckBox(
       this,
@@ -101,8 +98,11 @@ void wxExToolBar::AddControls()
   m_SyncMode->SetToolTip(_("Synchronize modified files"));
 #endif
 
-  m_HexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
-  m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
+  m_HexMode->SetValue(
+    wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
+    
+  m_SyncMode->SetValue(i
+    wxConfigBase::Get()->ReadBool("AllowSync", true));
 
   Realize();
 }
@@ -188,8 +188,7 @@ wxExFindToolBar::wxExFindToolBar(
   Initialize();
 
   // And place the controls on the toolbar.
-  wxAuiToolBarItem* item = AddControl(m_FindString);
-  item->SetProportion(1);
+  AddControl(m_FindString);
   AddSeparator();
 
   AddTool(
@@ -213,13 +212,7 @@ wxExFindToolBar::wxExFindToolBar(
 
 void wxExFindToolBar::Initialize()
 {
-#ifdef __WXMSW__
-  const wxSize size(150, 20);
-#else
-  const wxSize size(150, -1);
-#endif
-  m_FindString = new FindString(this, 
-    m_Frame, wxID_ANY, wxDefaultPosition, size);
+  m_FindString = new FindString(this, m_Frame);
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -310,9 +303,10 @@ FindString::FindString(
 
 void FindString::OnCommand(wxCommandEvent& event)
 {
-  // README: The delete key default behaviour does not delete the char right from insertion point.
-  // Instead, the event is sent to the editor and a char is deleted from the editor.
-  // Therefore implement the delete here.
+  // README: The delete key default behaviour does not delete the char right 
+  // from insertion point.
+  // Instead, the event is sent to the editor and a char is deleted from 
+  // the editor. Therefore implement the delete here.
   switch (event.GetId())
   {
   case wxID_DELETE:

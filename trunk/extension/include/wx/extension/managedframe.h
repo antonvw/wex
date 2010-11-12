@@ -23,7 +23,7 @@ class wxExVi;
 
 #if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
-/// used by the notebook classes, and toolbar and findbar support.
+/// used by the notebook classes, and toolbar, findbar and vibar support.
 class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
 {
 public:
@@ -71,6 +71,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
+  bool AddToolBarPane(wxWindow* window, const wxString& name, const wxString& caption);
   void CreateViPanel(
     wxStaticText*& statictext,
     wxExTextCtrl*& text,

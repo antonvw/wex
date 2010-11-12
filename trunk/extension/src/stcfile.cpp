@@ -17,7 +17,6 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
-#include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 

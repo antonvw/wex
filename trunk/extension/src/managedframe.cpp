@@ -65,18 +65,11 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   m_Manager.SetManagedWindow(this);
 
   wxExToolBar* toolBar = new wxExToolBar(this);
-
   toolBar->AddControls();
-
   DoAddControl(toolBar);
 
-  m_Manager.AddPane(toolBar,
-    wxAuiPaneInfo().Top().ToolbarPane().Name("TOOLBAR").Caption(_("Toolbar")));
-
-  m_Manager.AddPane(new wxExFindToolBar(this),
-    wxAuiPaneInfo().Bottom().ToolbarPane().Name("FINDBAR").Caption(_("Findbar")));
-    
-  m_Manager.GetPane("FINDBAR").Hide();
+  AddToolBarPane(toolBar, "TOOLBAR", _("Toolbar"));
+  AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
     
   CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
   CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
@@ -85,6 +78,34 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 wxExManagedFrame::~wxExManagedFrame()
 {
   m_Manager.UnInit();
+}
+
+bool wxExManagedFrame::AddToolBarPane(
+  wxWindow* window, 
+  const wxString& name,
+  const wxString& caption)
+{
+  wxAuiPaneInfo pane;
+  
+  pane
+    .ToolbarPane()
+    .LeftDockable(false)
+    .RightDockable(false)
+    .Name(name)
+    .Caption(caption);
+
+  // The real toolbar is at the top, others at bottom and initially hidden.  
+  if (name == "TOOLBAR")
+  {
+    pane.Top();
+  }
+  else
+  {
+    pane.Bottom();
+    pane.Hide();
+  }
+  
+  return m_Manager.AddPane(window, pane);
 }
 
 void wxExManagedFrame::CreateViPanel(
@@ -104,13 +125,7 @@ void wxExManagedFrame::CreateViPanel(
   
   panel->SetSizerAndFit(sizer);
   
-  m_Manager.AddPane(panel,
-    wxAuiPaneInfo().
-      ToolbarPane().
-      Bottom().
-      Hide().
-      Name(name).
-      Caption(_("vibar")));
+  AddToolBarPane(panel, name, _("vibar"));
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
