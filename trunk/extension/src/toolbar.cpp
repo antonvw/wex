@@ -101,7 +101,7 @@ void wxExToolBar::AddControls()
   m_HexMode->SetValue(
     wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
     
-  m_SyncMode->SetValue(i
+  m_SyncMode->SetValue(
     wxConfigBase::Get()->ReadBool("AllowSync", true));
 
   Realize();
