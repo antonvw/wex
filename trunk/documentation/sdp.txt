@@ -32,7 +32,8 @@ General
 
   - STL is used whenever possible 
   
-  - GUI development library wxWidgets (2.8 branch, 2.9 branch, and trunk)
+  - GUI development library wxWidgets (0.8 branch uses wxWidgets 2.8, 
+      0.9 branch uses wxWidgets 2.9, and trunk also uses wxWidgets 2.9)
       http://www.wxwidgets.org/ (use STL instead of wxWidgets containers)
 
   - database is OTL (Version 4.0.214)
