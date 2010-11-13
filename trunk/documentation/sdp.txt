@@ -111,7 +111,7 @@ General
     under Linux just strip it
 
   - deploy under Windows using JustZIPIt
-      http://free-backup-software.net/index.htm
+      http://free-backup-software.net/free-zip-program.htm
     deploy under Linux using gzip and tar
 
 
