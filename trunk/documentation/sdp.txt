@@ -110,8 +110,8 @@ General
       http://upx.sourceforge.net/
     under Linux just strip it
 
-  - deploy under Windows using JustZIPIt
-      http://free-backup-software.net/free-zip-program.htm
+  - deploy under Windows using 7z
+      http://www.7-zip.org
     deploy under Linux using gzip and tar
 
 
