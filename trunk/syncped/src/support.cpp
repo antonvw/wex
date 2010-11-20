@@ -62,8 +62,13 @@ DecoratedFrame::DecoratedFrame()
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
-  menuFile->Append(ID_OPEN_LEXERS, _("Open &Lexers"));
-  menuFile->Append(ID_OPEN_LOGFILE, _("Open &Logfile"));
+  wxMenu* menuOpen = new wxMenu();
+  menuOpen->Append(ID_OPEN_LEXERS, _("&Lexers File"));
+  menuOpen->Append(ID_OPEN_VCS, _("&VCS File"));
+  menuOpen->Append(ID_OPEN_LOGFILE, _("&Log File"));
+  menuFile->AppendSeparator();
+  menuFile->AppendSubMenu(menuOpen, _("Open"));
+  menuFile->AppendSeparator();
   menuFile->Append(wxID_CLOSE);
   menuFile->Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
   menuFile->AppendSeparator();

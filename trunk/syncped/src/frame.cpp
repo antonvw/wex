@@ -562,6 +562,13 @@ void Frame::OnCommand(wxCommandEvent& event)
         editor->UpdateStatusBar("PaneLexer");
 #endif
       }
+      else if (editor->GetFileName() == 
+          wxExVCS::Get()->GetFileName())
+      {
+        if (wxExVCS::Get()->Read())
+        {
+        }
+      }
     }
     break;
   case wxID_SAVEAS:
@@ -638,6 +645,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
+  case ID_OPEN_VCS: OpenFile(wxExVCS::Get()->GetFileName()); break;
 
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
