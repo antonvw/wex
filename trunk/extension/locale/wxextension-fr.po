@@ -8,7 +8,7 @@
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v0.9.2\n"
+"Project-Id-Version: wxextension v0.9.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-24 13:20+0100\n"
 "PO-Revision-Date: 2010-10-29 15:01+0100\n"

@@ -9,4 +9,4 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#define wxEX_VERSION_STRING "wxExtension 0.9.2"
+#define wxEX_VERSION_STRING "wxExtension 0.9.3"

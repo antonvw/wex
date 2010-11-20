@@ -6,7 +6,7 @@
 # Copyright: (c) 2010 Anton van Wezenbeek
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: wxextension v0.9.3\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
