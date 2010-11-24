@@ -239,21 +239,10 @@ void wxExMenu::BuildVCS(bool fill)
 {
   if (m_MenuVCSFilled)
   {
-    wxMenuItem* item;
-
-    while ((item = FindItem(wxID_SEPARATOR)) != NULL)
+    for (int i = 0; i < GetMenuItemCount(); i++)
     {
+      wxMenuItem* item = FindItemByPosition(i);
       Destroy(item);
-    }
-
-    for (int id = ID_VCS_LOWEST + 1; id < ID_VCS_HIGHEST; id++)
-    {
-      // When using only Destroy, and the item does not exist,
-      // an assert happens.
-      if (FindItem(id) != NULL)
-      {
-        Destroy(id);
-      }
     }
   }
 
