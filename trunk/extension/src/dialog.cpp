@@ -17,10 +17,6 @@
 #include <wx/extension/dialog.h>
 
 #if wxUSE_GUI
-BEGIN_EVENT_TABLE(wxExDialog, wxDialog)
-  EVT_CHAR_HOOK(wxExDialog::OnKeyDown)
-END_EVENT_TABLE()
-
 wxExDialog::wxExDialog(wxWindow* parent,
   const wxString& title,
   long button_flags,
@@ -98,33 +94,6 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   SetSizerAndFit(m_TopSizer);
 
   wxPersistentRegisterAndRestore(this);
-}
-
-void wxExDialog::OnKeyDown(wxKeyEvent& event)
-{
-  // If we did not specify any buttons, then 
-  // use the RETURN key as OK and ESCAPE key as CANCEL.
-  if (m_ButtonFlags == 0)
-  {
-    if (event.GetKeyCode() == WXK_RETURN)
-    {
-      wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
-      wxPostEvent(this, event);
-    }
-    else if (event.GetKeyCode() == WXK_ESCAPE)
-    {
-      wxCommandEvent event(wxEVT_COMMAND_BUTTON_CLICKED, wxID_CANCEL);
-      wxPostEvent(this, event);
-    }
-    else
-    {
-      event.Skip();
-    }
-  }
-  else
-  {
-    event.Skip();
-  }
 }
 
 #endif // wxUSE_GUI

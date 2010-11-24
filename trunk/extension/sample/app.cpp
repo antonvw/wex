@@ -24,7 +24,6 @@
 #include <wx/extension/lexers.h>
 #include <wx/extension/log.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/renderer.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
@@ -83,10 +82,6 @@ void wxExSampleDir::OnFile(const wxString& file)
   const auto no = m_Grid->GetNumberRows() - 1;
   m_Grid->SetCellValue(no, 0, wxString::Format("cell%d", no));
   m_Grid->SetCellValue(no, 1, file);
-
-  wxExRenderer* renderer = new wxExRenderer(
-    wxExRenderer::CELL_CROSS, *wxGREEN_PEN, *wxRED_PEN);
-  m_Grid->SetCellRenderer(no, 0, renderer);
 
   // Let's make these cells readonly and colour them, so we can test
   // things like cutting and dropping is forbidden.

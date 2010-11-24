@@ -113,7 +113,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     </if>
     <sources>../extension/src/printing.cpp</sources>
     <sources>../extension/src/property.cpp</sources>
-    <sources>../extension/src/renderer.cpp</sources>
     <sources>../extension/src/shell.cpp</sources>
     <sources>../extension/src/stat.cpp</sources>
     <sources>../extension/src/statusbar.cpp</sources>
@@ -158,7 +157,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     </if>
     <headers>../extension/include/wx/extension/printing.h</headers>
     <headers>../extension/include/wx/extension/property.h</headers>
-    <headers>../extension/include/wx/extension/renderer.h</headers>
     <headers>../extension/include/wx/extension/shell.h</headers>
     <headers>../extension/include/wx/extension/stat.h</headers>
     <headers>../extension/include/wx/extension/statistics.h</headers>

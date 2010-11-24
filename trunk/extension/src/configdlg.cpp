@@ -24,37 +24,6 @@
 
 #if wxUSE_GUI
 
-wxExConfigDialog* wxExConfigComboBoxDialog(wxWindow* parent,
-  const wxString& title,
-  const wxString& item,
-  int max_items,
-  long flags,
-  wxWindowID id,
-  long style)
-{
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
-    item, 
-    CONFIG_COMBOBOX,
-    wxEmptyString,
-    true, // is required
-    wxID_ANY,
-    max_items,
-    false,// add name
-    -1)); 
-
-  return new wxExConfigDialog(
-    parent, 
-    v,
-    title, 
-    0, 
-    1, 
-    flags, 
-    id, 
-    style);
-}
-
 BEGIN_EVENT_TABLE(wxExConfigDialog, wxExDialog)
   EVT_BUTTON(wxID_APPLY, wxExConfigDialog::OnCommand)
   EVT_BUTTON(wxID_CANCEL, wxExConfigDialog::OnCommand)

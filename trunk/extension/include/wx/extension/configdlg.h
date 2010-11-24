@@ -59,24 +59,5 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-
-/// Returns a special config dialog using only one combobox.
-/// Default pressing return acts as OK and escape as CANCEL.
-wxExConfigDialog* wxExConfigComboBoxDialog(
-  /// Parent.
-  wxWindow* parent,
-  /// Title.
-  const wxString& title,
-  /// The item that is used for the label before the combobox.
-  const wxString& item, 
-  /// Max items used by the combobox.
-  int max_items = 25,
-  /// The flags.
-  long flags = 0,
-  /// The window id.
-  wxWindowID id = wxID_ANY,
-  /// The style.
-  long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-
 #endif // wxUSE_GUI
 #endif

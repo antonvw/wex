@@ -50,14 +50,10 @@ protected:
   /// they will be put at the bottom of the top sizer,
   /// and a sepator line will be added as specified.
   void LayoutSizers(bool add_separator_line = true);
-
-  void OnKeyDown(wxKeyEvent& event);
 private:
   const long m_ButtonFlags;
   wxFlexGridSizer* m_TopSizer;
   wxFlexGridSizer* m_UserSizer;
-
-  DECLARE_EVENT_TABLE()
 };
 #endif // wxUSE_GUI
 #endif
