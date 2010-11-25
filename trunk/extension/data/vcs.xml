@@ -66,22 +66,6 @@ Copyright: (c) 2010, Anton van Wezenbeek
     </commands>
   </vcs>
 
-  <vcs 
-    name="cvs"
-    keyword-expansion="true">
-
-    <commands>
-      <command> &amp;add </command>
-      <command> &amp;co </command>
-      <command> &amp;commit </command>
-      <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
-      <command> &amp;log </command>
-      <command> &amp;status </command>
-      <command> &amp;update </command>
-    </commands>
-  </vcs>
-  
   <vcs
     name="bazaar">
     
@@ -95,6 +79,40 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;log </command>
       <command> &amp;revert </command>
       <command> &amp;status </command>
+    </commands>
+  </vcs>
+  
+  <vcs
+    name="mercurial">
+    
+    <commands>
+      <command> &amp;add </command>
+      <command> &amp;annotate </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type = "main"> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;parents </command>
+      <command> &amp;push </command>
+      <command> &amp;pull </command>
+      <command> &amp;status </command>
+      <command> &amp;update </command>
+    </commands>
+  </vcs>
+  
+  <vcs 
+    name="cvs"
+    keyword-expansion="true">
+
+    <commands>
+      <command> &amp;add </command>
+      <command> &amp;co </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type = "main"> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;status </command>
+      <command> &amp;update </command>
     </commands>
   </vcs>
   
