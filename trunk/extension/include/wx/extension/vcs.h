@@ -14,43 +14,12 @@
 
 #include <map>
 #include <wx/xml/xml.h>
+#include <wx/extension/command.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 
 class wxMenu;
-class wxExSTCEntryDialog;
-
-/// This class offers functionality around wxExecute.
-class WXDLLIMPEXP_BASE wxExCommand
-{
-public:
-  /// Constructor.
-  wxExCommand(const wxString& command);
-  
-  /// Executes the command.
-  long Execute(const wxString& wd = wxEmptyString);
-  
-  /// Returns true if the output contains error info instead of
-  /// normal vcs info.
-  bool GetError() const {return m_Error;};
-
-  /// Gets the output from Execute.
-  const wxString& GetOutput() const {return m_Output;};
-  
-#if wxUSE_GUI
-  /// Shows output from Execute.
-  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
-#endif
-private:
-  bool m_Error;
-  const wxString m_Command;
-  wxString m_Output;
-  
-#if wxUSE_GUI
-  static wxExSTCEntryDialog* m_STCEntryDialog;
-#endif  
-};
 
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml.

@@ -13,6 +13,7 @@
 #define _EXDIALOG_H
 
 #include <wx/dialog.h>
+#include <wx/sizer.h>
 
 #if wxUSE_GUI
 
