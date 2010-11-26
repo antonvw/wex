@@ -152,12 +152,12 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   long file_flags = 0,
   int dir_flags = wxDIR_DEFAULT);
 
-/// Executes VCS command id for specified path
+/// Executes VCS command id for specified files
 /// and opens component if necessary.
 void wxExVCSExecute(
   wxExFrame* frame, 
   int id,
-  const wxExFileName& filename);
+  const wxArrayString& files);
 #endif // wxUSE_GUI
 
 #endif

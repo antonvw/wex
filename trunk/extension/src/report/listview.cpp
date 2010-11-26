@@ -746,9 +746,15 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
 
   if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxExVCSExecute(
-      m_Frame, event.GetId(), 
-      wxExListItem(this, GetFirstSelected()).GetFileName());
+    wxArrayString files;
+    
+    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    {
+      files.Add(wxExListItem(this, i).GetFileName().GetFullPath());
+    }
+  
+    wxExVCSExecute(m_Frame, event.GetId(), files);
+    }
     return;
   }
 

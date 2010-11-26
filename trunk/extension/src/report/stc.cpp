@@ -108,7 +108,9 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
            command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
     // Cannot move this code to wxExSTC, because of member m_Frame.
-    wxExVCSExecute(m_Frame, command.GetId(), GetFileName());
+    wxArrayString files;
+    files.Add(GetFileName().GetFullPath());
+    wxExVCSExecute(m_Frame, command.GetId(), files);
   }
   else
   {

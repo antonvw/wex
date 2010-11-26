@@ -21,9 +21,40 @@
 class wxMenu;
 class wxExSTCEntryDialog;
 
+/// This class offers functionality around wxExecute.
+class WXDLLIMPEXP_BASE wxExCommand
+{
+public:
+  /// Constructor.
+  wxExCommand(const wxString& command);
+  
+  /// Executes the command.
+  long Execute(const wxString& wd = wxEmptyString);
+  
+  /// Returns true if the output contains error info instead of
+  /// normal vcs info.
+  bool GetError() const {return m_Error;};
+
+  /// Gets the output from Execute.
+  const wxString& GetOutput() const {return m_Output;};
+  
+#if wxUSE_GUI
+  /// Shows output from Execute.
+  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
+#endif
+private:
+  bool m_Error;
+  const wxString m_Command;
+  wxString m_Output;
+  
+#if wxUSE_GUI
+  static wxExSTCEntryDialog* m_STCEntryDialog;
+#endif  
+};
+
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml.
-class WXDLLIMPEXP_BASE wxExVCS
+class WXDLLIMPEXP_BASE wxExVCS : public wxExCommand
 {
 public:
   // The vcs id's here can be set using the config dialog, and are not
@@ -83,15 +114,8 @@ public:
   /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
   
-  /// Returns true if the output contains error info instead of
-  /// normal vcs info.
-  bool GetError() const {return m_Error;};
-
   /// Gets the xml filename.
   static const wxFileName& GetFileName() {return m_FileNameXML;};
-
-  /// Gets the output from Execute.
-  const wxString& GetOutput() const {return m_Output;};
 
   /// Returns true if this command can behave like
   /// opening a file.  
@@ -115,8 +139,7 @@ public:
   static wxExVCS* Set(wxExVCS* vcs);
 
 #if wxUSE_GUI
-  /// Shows output from Execute in a dialog.
-  void ShowOutput(wxWindow* parent) const;
+  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 
   /// Does current vcs allow keyword expansion.
@@ -135,21 +158,15 @@ private:
   bool UseFlags() const;
   bool UseSubcommand() const;
   
-  bool m_Error;
-
   wxExVCSCommand m_Command;
 
   wxString m_Caption;
   wxString m_CommandWithFlags;
   wxString m_FlagsKey;
-  wxString m_Output;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxExFileName m_FileName;
   static wxFileName m_FileNameXML;
   static wxExVCS* m_Self;
-#if wxUSE_GUI
-  static wxExSTCEntryDialog* m_STCEntryDialog;
-#endif  
 };
 #endif

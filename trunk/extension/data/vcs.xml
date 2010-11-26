@@ -23,24 +23,34 @@ Copyright: (c) 2010, Anton van Wezenbeek
    The latter is handled the same, but also used as command to execute.
    -->
   
-  <vcs 
-    name="svn"
-    keyword-expansion="true">
-
+  <vcs
+    name="bazaar">
+    
     <commands>
       <command> &amp;add </command>
-      <command> &amp;blame </command>
       <command> &amp;cat </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
       <command type = "main"> &amp;help </command>
       <command> &amp;info </command>
       <command> &amp;log </command>
-      <command type = "main"> &amp;ls </command>
-      <command type = "popup"> &amp;proplist </command>
-      <command type = "popup"> prop&amp;set </command>
       <command> &amp;revert </command>
-      <command> &amp;stat </command>
+      <command> &amp;status </command>
+    </commands>
+  </vcs>
+  
+  <vcs 
+    name="cvs"
+    keyword-expansion="true">
+
+    <commands>
+      <command> &amp;add </command>
+      <command> &amp;co </command>
+      <command> &amp;commit </command>
+      <command> &amp;diff </command>
+      <command type = "main"> &amp;help </command>
+      <command> &amp;log </command>
+      <command> &amp;status </command>
       <command> &amp;update </command>
     </commands>
   </vcs>
@@ -67,22 +77,6 @@ Copyright: (c) 2010, Anton van Wezenbeek
   </vcs>
 
   <vcs
-    name="bazaar">
-    
-    <commands>
-      <command> &amp;add </command>
-      <command> &amp;cat </command>
-      <command> &amp;commit </command>
-      <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
-      <command> &amp;info </command>
-      <command> &amp;log </command>
-      <command> &amp;revert </command>
-      <command> &amp;status </command>
-    </commands>
-  </vcs>
-  
-  <vcs
     name="mercurial">
     
     <commands>
@@ -101,17 +95,23 @@ Copyright: (c) 2010, Anton van Wezenbeek
   </vcs>
   
   <vcs 
-    name="cvs"
+    name="svn"
     keyword-expansion="true">
 
     <commands>
       <command> &amp;add </command>
-      <command> &amp;co </command>
+      <command> &amp;blame </command>
+      <command> &amp;cat </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
       <command type = "main"> &amp;help </command>
+      <command> &amp;info </command>
       <command> &amp;log </command>
-      <command> &amp;status </command>
+      <command type = "main"> &amp;ls </command>
+      <command type = "popup"> &amp;proplist </command>
+      <command type = "popup"> prop&amp;set </command>
+      <command> &amp;revert </command>
+      <command> &amp;stat </command>
       <command> &amp;update </command>
     </commands>
   </vcs>

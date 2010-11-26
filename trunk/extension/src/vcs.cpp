@@ -28,18 +28,99 @@ std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxExFileName wxExVCS::m_FileName;
 wxFileName wxExVCS::m_FileNameXML;
 wxExVCS* wxExVCS::m_Self = NULL;
+
 #if wxUSE_GUI
-wxExSTCEntryDialog* wxExVCS::m_STCEntryDialog = NULL;
+wxExSTCEntryDialog* wxExCommand::m_STCEntryDialog = NULL;
+#endif
+
+wxExCommand::wxExCommand(const wxString& command)
+  : m_Command(command)
+  , m_Error(false)
+{
+  if (m_STCEntryDialog == NULL)
+  {
+    m_STCEntryDialog = new wxExSTCEntryDialog(
+      NULL,
+      wxEmptyString,
+      wxEmptyString,
+      wxEmptyString,
+      wxOK,
+      wxID_ANY,
+      wxDefaultPosition,
+      wxSize(350, 50));
+  }
+}
+
+long wxExCommand::Execute(const wxString& wd)
+{
+#if wxUSE_STATUSBAR
+  wxExFrame::StatusText(m_Command);
+#endif
+
+  wxArrayString output;
+  wxArrayString errors;
+  long retValue;
+
+  // Call wxExcute to execute the vcs command and
+  // collect the output and the errors.
+  if ((retValue = wxExecute(
+    m_Command,
+    output,
+    errors)) == -1)
+  {
+    // See also process, same log is shown.
+    wxLogError(_("Cannot execute") + ": " + m_Command);
+  }
+  else
+  {
+    wxExLog::Get()->Log(m_Command);
+  }
+
+  if (!wd.empty())
+  {
+    wxSetWorkingDirectory(wd);
+  }
+
+  m_Output.clear();
+
+  // First output the errors.
+  for (
+    size_t i = 0;
+    i < errors.GetCount();
+    i++)
+  {
+    m_Output += errors[i] + "\n";
+  }
+  
+  m_Error = !errors.empty();
+
+  // Then the normal output, will be empty if there are errors.
+  for (
+    size_t j = 0;
+    j < output.GetCount();
+    j++)
+  {
+    m_Output += output[j] + "\n";
+  }
+  
+  return retValue;
+}
+
+#if wxUSE_GUI
+void wxExCommand::ShowOutput(const wxString& caption) const
+{
+  m_STCEntryDialog->SetText(m_Output);
+  m_STCEntryDialog->SetTitle(caption.empty() ? m_Command: caption);
+  m_STCEntryDialog->Show();
+}
 #endif
 
 wxExVCS::wxExVCS(const wxFileName& filename)
-  : m_Error(false)
 {
   m_FileNameXML = filename;
 }
 
 wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
-  : m_Error(false)
 {
   if (m_FileName.IsOk())
   {
@@ -290,58 +371,9 @@ long wxExVCS::Execute()
   const wxString commandline = 
     vcs_bin + " " + 
     m_Command.GetCommand() + subcommand + flags + comment + file;
-
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(commandline);
-#endif
-
-  wxArrayString output;
-  wxArrayString errors;
-  long retValue;
-
-  // Call wxExcute to execute the vcs command and
-  // collect the output and the errors.
-  if ((retValue = wxExecute(
-    commandline,
-    output,
-    errors)) == -1)
-  {
-    // See also process, same log is shown.
-    wxLogError(_("Cannot execute") + ": " + commandline);
-  }
-  else
-  {
-    wxExLog::Get()->Log(commandline);
-  }
-
-  if (!cwd.empty())
-  {
-    wxSetWorkingDirectory(cwd);
-  }
-
-  m_Output.clear();
-
-  // First output the errors.
-  for (
-    size_t i = 0;
-    i < errors.GetCount();
-    i++)
-  {
-    m_Output += errors[i] + "\n";
-  }
-  
-  m_Error = !errors.empty();
-
-  // Then the normal output, will be empty if there are errors.
-  for (
-    size_t j = 0;
-    j < output.GetCount();
-    j++)
-  {
-    m_Output += output[j] + "\n";
-  }
-
-  return retValue;
+    
+  wxExCommand command(commandline);
+  return command.Execute(cwd);
 }
 
 #if wxUSE_GUI
@@ -360,7 +392,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 
   const auto retValue = Execute();
   
-  return (retValue < 0 || m_Output.empty() ? wxID_CANCEL: wxID_OK);
+  return (retValue < 0 || GetOutput().empty() ? wxID_CANCEL: wxID_OK);
 }
 #endif
 
@@ -502,8 +534,6 @@ void wxExVCS::Initialize(int menu_id)
       wxFAIL;
     }
   }
-
-  m_Output.clear();
 }
 
 bool wxExVCS::Read()
@@ -549,7 +579,7 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 
   if ((retValue = ExecuteDialog(parent)) == wxID_OK)
   {
-    ShowOutput(parent);
+    ShowOutput();
   }
 
   return retValue;
@@ -624,38 +654,10 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 #endif
 
 #if wxUSE_GUI
-void wxExVCS::ShowOutput(wxWindow* parent) const
+void wxExVCS::ShowOutput(const wxString& caption) const
 {
-  wxString caption = m_Caption;
-      
-  if (!m_Command.IsHelp())
-  {
-    caption += " " + (m_FileName.IsOk() ?  
-      m_FileName.GetFullName(): 
-      wxExConfigFirstOf(_("Base folder")));
-  }
-
-  // Create a dialog for contents.
-  if (m_STCEntryDialog == NULL)
-  {
-    m_STCEntryDialog = new wxExSTCEntryDialog(
-      parent,
-      caption,
-      m_Output,
-      wxEmptyString,
-      wxOK,
-      wxID_ANY,
-      wxDefaultPosition,
-      wxSize(350, 50));
-  }
-  else
-  {
-    m_STCEntryDialog->SetText(m_Output);
-    m_STCEntryDialog->SetTitle(caption);
-  }
-
   // Add a lexer when appropriate.
-  if (m_Command.IsOpen() && !m_Error && m_Command.GetCommand() != "log")
+  if (m_Command.IsOpen() && !GetError() && m_Command.GetCommand() != "log")
   {
     if (m_FileName.GetLexer().IsOk())
     {
@@ -671,7 +673,16 @@ void wxExVCS::ShowOutput(wxWindow* parent) const
     m_STCEntryDialog->SetLexer(wxEmptyString);
   }
 
-  m_STCEntryDialog->Show();
+  wxString caption = m_Caption;
+      
+  if (!m_Command.IsHelp())
+  {
+    caption += " " + (m_FileName.IsOk() ?  
+      m_FileName.GetFullName(): 
+      wxExConfigFirstOf(_("Base folder")));
+  }
+
+  wxExCommand::ShowOutput(caption);
 }
 #endif
 

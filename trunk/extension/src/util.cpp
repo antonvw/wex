@@ -556,14 +556,7 @@ void wxExOpenFilesDialog(
 
 const wxString wxExPrintCaption(const wxFileName& filename)
 {
-  if (filename.FileExists())
-  {
-    return filename.GetFullPath();
-  }
-  else
-  {
-    return _("Printout");
-  }
+  return filename.GetFullPath();
 }
 
 const wxString wxExPrintFooter()
@@ -617,33 +610,33 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
   return translation;
 }
 
-void wxExVCSExecute(
-  wxExFrame* frame, 
-  int id, 
-  const wxExFileName& filename)
+void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 {
-  wxExVCS vcs(id, filename);
-
-  if (vcs.IsOpenCommand())
+  for (size_t i = 0; i < files.GetCount(); i++)
   {
-    if (vcs.ExecuteDialog(frame) == wxID_OK)
+    wxExVCS vcs(id, files[i]);
+
+    if (vcs.IsOpenCommand())
     {
-      if (!vcs.GetError())
+      if (vcs.ExecuteDialog(frame) == wxID_OK)
       {
-        frame->OpenFile(
-          filename, 
-          vcs.GetCommandWithFlags(), 
-          vcs.GetOutput(),
-          wxExSTC::STC_WIN_READ_ONLY);
-      }
-      else
-      {
-        vcs.ShowOutput(frame);
+        if (!vcs.GetError())
+        {
+          frame->OpenFile(
+            files[i], 
+            vcs.GetCommandWithFlags(), 
+            vcs.GetOutput(),
+            wxExSTC::STC_WIN_READ_ONLY);
+        }
+        else
+        {
+          vcs.ShowOutput();
+        }
       }
     }
-  }
-  else
-  {
-    vcs.Request(frame);
+    else
+    {
+      vcs.Request(frame);
+    }
   }
 }

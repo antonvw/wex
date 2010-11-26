@@ -56,20 +56,19 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 
 void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 {
+  wxArrayString files;
+  GetFilePaths(files);
+    
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
-    wxArrayString files;
-    GetFilePaths(files);
-    wxExVCSExecute(m_Frame, event.GetId(), wxExFileName(files[0]));
+    wxExVCSExecute(m_Frame, event.GetId(), files);
   }
   else switch (event.GetId())
   {
   case ID_TREE_COPY: 
     {
     wxBusyCursor wait;
-    wxArrayString files;
-    GetFilePaths(files);
     wxString clipboard;
     for (
       auto it = files.begin();
@@ -83,15 +82,11 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   break;
   
   case ID_TREE_OPEN: 
-    {
-    wxArrayString files;
-    GetFilePaths(files);
     wxExOpenFiles(m_Frame, files, 0, wxDIR_FILES); // only files in this dir
-    }
   break;
   
   case ID_TREE_RUN_MAKE: 
-    wxExMake(m_Frame, wxFileName(GetFilePath()));
+    wxExMake(m_Frame, files[0]);
     break;
     
   default: wxFAIL;

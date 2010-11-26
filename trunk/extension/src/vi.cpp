@@ -303,6 +303,12 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       wxBell();
     }
   }
+  else if (command.StartsWith("!"))
+  {
+    wxExCommand exe(command.AfterFirst('!'));
+    exe.Execute();
+    exe.ShowOutput();
+  }
   else
   {
     switch ((int)command.Last())
