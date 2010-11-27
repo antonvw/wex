@@ -282,8 +282,7 @@ long wxExVCS::Execute()
     vcs_bin + " " + 
     m_Command.GetCommand() + subcommand + flags + comment + file;
     
-  wxExCommand command(commandline);
-  return command.Execute(wd);
+  return wxExCommand::Execute(commandline, wd);
 }
 
 #if wxUSE_GUI

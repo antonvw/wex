@@ -306,8 +306,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.StartsWith("!"))
   {
-    wxExCommand exe(command.AfterFirst('!'));
-    exe.Execute();
+    wxExCommand exe;
+    exe.Execute(command.AfterFirst('!'));
     exe.ShowOutput();
   }
   else

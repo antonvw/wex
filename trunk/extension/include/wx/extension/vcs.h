@@ -128,6 +128,7 @@ private:
   bool UseSubcommand() const;
   
   wxExVCSCommand m_Command;
+  wxExCommand m_CommandLine;
 
   wxString m_Caption;
   wxString m_CommandWithFlags;

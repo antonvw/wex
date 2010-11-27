@@ -19,24 +19,28 @@
 wxExSTCEntryDialog* wxExCommand::m_Dialog = NULL;
 #endif
 
-wxExCommand::wxExCommand()
+long wxExCommand::Execute(const wxString& command, const wxString& wd)
 {
-  Initialize();
-}
-
-wxExCommand::wxExCommand(const wxString& command)
-  : m_Command(command)
-  , m_Error(false)
-{
-  Initialize();
-}
-
-long wxExCommand::Execute(const wxString& wd)
-{
+  m_Command = command;
+  m_Error = false;
+  
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(m_Command);
 #endif
 
+  if (m_Dialog == NULL)
+  {
+    m_Dialog = new wxExSTCEntryDialog(
+      NULL,
+      "Command",
+      wxEmptyString,
+      wxEmptyString,
+      wxOK,
+      wxID_ANY,
+      wxDefaultPosition,
+      wxSize(350, 50));
+  }
+  
   wxString cwd;
   
   if (!wd.empty())
@@ -94,22 +98,6 @@ long wxExCommand::Execute(const wxString& wd)
   return retValue;
 }
 
-void wxExCommand::Initialize()
-{
-  if (m_Dialog == NULL)
-  {
-    m_Dialog = new wxExSTCEntryDialog(
-      NULL,
-      "Command",
-      wxEmptyString,
-      wxEmptyString,
-      wxOK,
-      wxID_ANY,
-      wxDefaultPosition,
-      wxSize(350, 50));
-  }
-}
-  
 #if wxUSE_GUI
 void wxExCommand::ShowOutput(const wxString& caption) const
 {

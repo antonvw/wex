@@ -16,14 +16,8 @@
 class WXDLLIMPEXP_BASE wxExCommand
 {
 public:
-  /// Default constructor.
-  wxExCommand();
-  
-  /// Constructor.
-  wxExCommand(const wxString& command);
-  
   /// Executes the command.
-  long Execute(const wxString& wd = wxEmptyString);
+  long Execute(const wxString& command, const wxString& wd = wxEmptyString);
   
   /// Returns true if the output contains error info instead of
   /// normal vcs info.
@@ -42,10 +36,8 @@ protected:
   static wxExSTCEntryDialog* GetDialog() {return m_Dialog;};
 #endif
 private:
-  void Initialize();
-  
   bool m_Error;
-  const wxString m_Command;
+  wxString m_Command;
   wxString m_Output;
   
 #if wxUSE_GUI
