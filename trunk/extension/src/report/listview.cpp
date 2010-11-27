@@ -741,10 +741,8 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
     RunItems(event.GetId());
-    return;
   }
-
-  if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
+  else if (event.GetId() > ID_EDIT_VCS_LOWEST && event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
     wxArrayString files;
     
@@ -754,11 +752,8 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     }
   
     wxExVCSExecute(m_Frame, event.GetId(), files);
-    }
-    return;
   }
-
-  switch (event.GetId())
+  else switch (event.GetId())
   {
   case ID_LIST_OPEN_ITEM:
   {

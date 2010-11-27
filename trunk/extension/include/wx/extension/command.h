@@ -37,7 +37,10 @@ public:
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 protected:
+  /// Gets the dialog used for presenting the output.
+#if wxUSE_GUI
   static wxExSTCEntryDialog* GetDialog() {return m_Dialog;};
+#endif
 private:
   void Init();
   

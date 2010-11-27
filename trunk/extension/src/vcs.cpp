@@ -204,14 +204,13 @@ long wxExVCS::Execute()
 {
   wxASSERT(m_Command.GetType() != wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
 
-  wxString cwd;
+  wxString wd;
   wxString file;
   const wxString name = GetName(m_FileName);
 
   if (!m_FileName.IsOk())
   {
-    cwd = wxGetCwd();
-    wxSetWorkingDirectory(wxExConfigFirstOf(_("Base folder")));
+    wd= wxExConfigFirstOf(_("Base folder"));
 
     if (m_Command.IsAdd())
     {
@@ -222,8 +221,7 @@ long wxExVCS::Execute()
   {
     if (name == "git")
     {
-      cwd = wxGetCwd();
-      wxSetWorkingDirectory(m_FileName.GetPath());
+      wd = m_FileName.GetPath();
       file = " \"" + m_FileName.GetFullName() + "\"";
     }
     else
@@ -285,7 +283,7 @@ long wxExVCS::Execute()
     m_Command.GetCommand() + subcommand + flags + comment + file;
     
   wxExCommand command(commandline);
-  return command.Execute(cwd);
+  return command.Execute(wd);
 }
 
 #if wxUSE_GUI

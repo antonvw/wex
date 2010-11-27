@@ -37,6 +37,14 @@ long wxExCommand::Execute(const wxString& wd)
   wxExFrame::StatusText(m_Command);
 #endif
 
+  wxString cwd;
+  
+  if (!wd.empty())
+  {
+    cwd = wxGetCwd();
+    wxSetWorkingDirectory(wd);
+  }
+
   wxArrayString output;
   wxArrayString errors;
   long retValue;
@@ -56,9 +64,9 @@ long wxExCommand::Execute(const wxString& wd)
     wxExLog::Get()->Log(m_Command);
   }
 
-  if (!wd.empty())
+  if (!cwd.empty())
   {
-    wxSetWorkingDirectory(wd);
+    wxSetWorkingDirectory(cwd);
   }
 
   m_Output.clear();
