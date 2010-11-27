@@ -42,7 +42,7 @@ protected:
   static wxExSTCEntryDialog* GetDialog() {return m_Dialog;};
 #endif
 private:
-  void Init();
+  void Initialize();
   
   bool m_Error;
   const wxString m_Command;

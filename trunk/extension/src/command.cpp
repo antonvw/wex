@@ -21,14 +21,14 @@ wxExSTCEntryDialog* wxExCommand::m_Dialog = NULL;
 
 wxExCommand::wxExCommand()
 {
-  Init();
+  Initialize();
 }
 
 wxExCommand::wxExCommand(const wxString& command)
   : m_Command(command)
   , m_Error(false)
 {
-  Init();
+  Initialize();
 }
 
 long wxExCommand::Execute(const wxString& wd)
@@ -94,13 +94,13 @@ long wxExCommand::Execute(const wxString& wd)
   return retValue;
 }
 
-void wxExCommand::Init()
+void wxExCommand::Initialize()
 {
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
       NULL,
-      wxEmptyString,
+      "Command",
       wxEmptyString,
       wxEmptyString,
       wxOK,
