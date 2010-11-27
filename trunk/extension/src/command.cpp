@@ -31,7 +31,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
-      NULL,
+      wxTheApp->GetTopWindow(),
       "Command",
       wxEmptyString,
       wxEmptyString,
