@@ -304,12 +304,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       wxBell();
     }
   }
-  else if (command.StartsWith("!"))
-  {
-    wxExCommand exe;
-    exe.Execute(command.AfterFirst('!'));
-    exe.ShowOutput();
-  }
   else
   {
     switch ((int)command.Last())
@@ -613,6 +607,12 @@ bool wxExVi::ExecCommand(const wxString& command)
     m_STC->SetFocus();
     
     return false; // otherwise vi bar is hidden
+  }
+  else if (command.StartsWith("!"))
+  {
+    wxExCommand exe;
+    exe.Execute(command.AfterFirst('!'));
+    exe.ShowOutput();
   }
   else if (command.IsNumber())
   {
