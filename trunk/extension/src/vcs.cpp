@@ -286,19 +286,17 @@ long wxExVCS::Execute()
 
   m_CommandWithFlags = m_Command.GetCommand() + flags;
 
-  const wxString vcs_bin = wxConfigBase::Get()->Read(name, "svn");
+  const wxString bin = wxConfigBase::Get()->Read(name, "svn");
 
-  if (vcs_bin.empty())
+  if (bin.empty())
   {
     wxLogError(name + " " + _("path is empty"));
     return -1;
   }
 
-  const wxString commandline = 
-    vcs_bin + " " + 
-    m_Command.GetCommand() + subcommand + flags + comment + file;
-    
-  return wxExCommand::Execute(commandline, wd);
+  return wxExCommand::Execute(
+    bin + " " + m_Command.GetCommand() + subcommand + flags + comment + file, 
+    wd);
 }
 
 #if wxUSE_GUI
@@ -315,9 +313,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
       wxConfigBase::Get()->Read(_("Flags")));
   }
 
-  const auto retValue = Execute();
-  
-  return (retValue < 0 || GetOutput().empty() ? wxID_CANCEL: wxID_OK);
+  return (Execute() < 0 || GetOutput().empty() ? wxID_CANCEL: wxID_OK);
 }
 #endif
 
@@ -581,6 +577,11 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
+  if (m_Files.empty())
+  {
+    return;
+  }
+  
   const wxExFileName filename(m_Files[0]);
   
   // Add a lexer when appropriate.
@@ -615,7 +616,7 @@ void wxExVCS::ShowOutput(const wxString& caption) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  if (m_Entries.empty())
+  if (m_Entries.empty() || m_Files.empty())
   {
     return false;
   }
@@ -624,7 +625,7 @@ bool wxExVCS::SupportKeywordExpansion() const
     
   if (it != m_Entries.end())
   {
-      return it->second.SupportKeywordExpansion();
+    return it->second.SupportKeywordExpansion();
   }
   
   return false;
