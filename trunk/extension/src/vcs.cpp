@@ -23,7 +23,7 @@
 #include <wx/extension/util.h>
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
-wxString wxExVCS::m_FileName;
+wxArrayString wxExVCS::m_Files;
 wxFileName wxExVCS::m_FileNameXML;
 wxExVCS* wxExVCS::m_Self = NULL;
 
@@ -36,7 +36,8 @@ wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
 {
   if (filename.IsOk())
   {
-    m_FileName = filename.GetFullPath();
+    m_Files.Clear();
+    m_Files.Add(filename.GetFullPath());
   }
   
   Initialize(menu_id);
@@ -44,6 +45,9 @@ wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
 
 wxExVCS::wxExVCS(int menu_id, const wxArrayString& files)
 {
+  m_Files = files;
+  
+  Initialize(menu_id);
 }
 
 #if wxUSE_GUI
@@ -60,10 +64,16 @@ int wxExVCS::BuildMenu(
   
   if (filename.IsOk())
   {
-    m_FileName = filename.GetFullPath();
+    m_Files.Clear();
+    m_Files.Add(filename.GetFullPath());
   }
   
-  const auto it = m_Entries.find(GetName(m_FileName));
+  if (m_Files.empty())
+  {
+    return 0;
+  }
+  
+  const auto it = m_Entries.find(GetName(m_Files[0]));
     
   if (it != m_Entries.end())
   {
@@ -207,11 +217,12 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 long wxExVCS::Execute()
 {
   wxASSERT(m_Command.GetType() != wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
+  wxASSERT(!m_Files.empty());
 
   wxString wd;
   wxString file;
-  const wxString name = GetName(m_FileName);
-  const wxFileName filename(m_FileName);
+  const wxString name = GetName(m_Files[0]);
+  const wxFileName filename(m_Files[0]);
 
   if (!filename.IsOk())
   {
@@ -435,12 +446,12 @@ void wxExVCS::Initialize(int menu_id)
 
   if (Use())
   {
-    const auto it = m_Entries.find(GetName(m_FileName));
+    const auto it = m_Entries.find(GetName(m_Files[0]));
   
     if (it != m_Entries.end())
     {
       m_Command = it->second.GetCommand(command_id);
-      m_Caption = GetName(m_FileName) + " " + m_Command.GetCommand();
+      m_Caption = GetName(m_Files[0]) + " " + m_Command.GetCommand();
       m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
     }
     else
@@ -521,7 +532,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!wxFileName(m_FileName).IsOk() && !m_Command.IsHelp())
+  if (!wxFileName(m_Files[0]).IsOk() && !m_Command.IsHelp())
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -570,7 +581,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
-  const wxExFileName filename(m_FileName);
+  const wxExFileName filename(m_Files[0]);
   
   // Add a lexer when appropriate.
   if (m_Command.IsOpen() && !GetError() && m_Command.GetCommand() != "log")
@@ -609,7 +620,7 @@ bool wxExVCS::SupportKeywordExpansion() const
     return false;
   }
   
-  const auto it = m_Entries.find(GetName(m_FileName));
+  const auto it = m_Entries.find(GetName(m_Files[0]));
     
   if (it != m_Entries.end())
   {
@@ -621,7 +632,12 @@ bool wxExVCS::SupportKeywordExpansion() const
 
 bool wxExVCS::Use() const
 {
-  return GetNo(m_FileName) != VCS_NONE;
+  if (m_Files.empty())
+  {
+    return false;
+  }
+  
+  return GetNo(m_Files[0]) != VCS_NONE;
 }
 
 bool wxExVCS::UseFlags() const

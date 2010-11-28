@@ -138,7 +138,7 @@ private:
   wxString m_FlagsKey;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
-  static wxString m_FileName;
+  static wxArrayString m_Files;
   static wxFileName m_FileNameXML;
   static wxExVCS* m_Self;
 };

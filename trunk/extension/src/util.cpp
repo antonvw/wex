@@ -612,31 +612,28 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
 
 void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 {
-  for (size_t i = 0; i < files.GetCount(); i++)
-  {
-    wxExVCS vcs(id, files[i]);
+  wxExVCS vcs(id, files);
 
-    if (vcs.IsOpenCommand())
+  if (vcs.IsOpenCommand())
+  {
+    if (vcs.ExecuteDialog(frame) == wxID_OK)
     {
-      if (vcs.ExecuteDialog(frame) == wxID_OK)
+      if (!vcs.GetError())
       {
-        if (!vcs.GetError())
-        {
-          frame->OpenFile(
-            files[i], 
-            vcs.GetCommandWithFlags(), 
-            vcs.GetOutput(),
-            wxExSTC::STC_WIN_READ_ONLY);
-        }
-        else
-        {
-          vcs.ShowOutput();
-        }
+        frame->OpenFile(
+          files[0], 
+          vcs.GetCommandWithFlags(), 
+          vcs.GetOutput(),
+          wxExSTC::STC_WIN_READ_ONLY);
+      }
+      else
+      {
+        vcs.ShowOutput();
       }
     }
-    else
-    {
-      vcs.Request(frame);
-    }
+  }
+  else
+  {
+    vcs.Request(frame);
   }
 }
