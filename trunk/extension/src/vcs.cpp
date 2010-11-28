@@ -42,7 +42,7 @@ wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
   Initialize(menu_id);
 }
 
-wxExVCS(int menu_id, const wxArrayString& files)
+wxExVCS::wxExVCS(int menu_id, const wxArrayString& files)
 {
 }
 
@@ -211,8 +211,9 @@ long wxExVCS::Execute()
   wxString wd;
   wxString file;
   const wxString name = GetName(m_FileName);
+  const wxFileName filename(m_FileName);
 
-  if (!m_FileName.IsOk())
+  if (!filename.IsOk())
   {
     wd= wxExConfigFirstOf(_("Base folder"));
 
@@ -225,12 +226,12 @@ long wxExVCS::Execute()
   {
     if (name == "git")
     {
-      wd = m_FileName.GetPath();
-      file = " \"" + m_FileName.GetFullName() + "\"";
+      wd = filename.GetPath();
+      file = " \"" + filename.GetFullName() + "\"";
     }
     else
     {
-      file = " \"" + m_FileName.GetFullPath() + "\"";
+      file = " \"" + filename.GetFullPath() + "\"";
     }
   }
 
@@ -569,12 +570,14 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
+  const wxExFileName filename(m_FileName);
+  
   // Add a lexer when appropriate.
   if (m_Command.IsOpen() && !GetError() && m_Command.GetCommand() != "log")
   {
-    if (m_FileName.GetLexer().IsOk())
+    if (filename.GetLexer().IsOk())
     {
-      GetDialog()->SetLexer(m_FileName.GetLexer().GetScintillaLexer());
+      GetDialog()->SetLexer(filename.GetLexer().GetScintillaLexer());
     }
   }
   else if (m_Command.IsDiff())
@@ -590,8 +593,8 @@ void wxExVCS::ShowOutput(const wxString& caption) const
       
   if (!m_Command.IsHelp())
   {
-    my_caption += " " + (m_FileName.IsOk() ?  
-      m_FileName.GetFullName(): 
+    my_caption += " " + (filename.IsOk() ?  
+      filename.GetFullName(): 
       wxExConfigFirstOf(_("Base folder")));
   }
 
