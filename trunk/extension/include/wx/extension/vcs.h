@@ -44,6 +44,9 @@ public:
   /// Constructor, specify the menu command id and a filename.
   wxExVCS(int menu_id, const wxExFileName& filename = wxExFileName());
   
+  /// Constructor, specify the menu command id and several files.
+  wxExVCS(int menu_id, const wxArrayString& files);
+  
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
   /// Returns number of items in menu.
@@ -135,7 +138,7 @@ private:
   wxString m_FlagsKey;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
-  static wxExFileName m_FileName;
+  static wxString m_FileName;
   static wxFileName m_FileNameXML;
   static wxExVCS* m_Self;
 };

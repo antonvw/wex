@@ -23,7 +23,7 @@
 #include <wx/extension/util.h>
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
-wxExFileName wxExVCS::m_FileName;
+wxString wxExVCS::m_FileName;
 wxFileName wxExVCS::m_FileNameXML;
 wxExVCS* wxExVCS::m_Self = NULL;
 
@@ -34,12 +34,16 @@ wxExVCS::wxExVCS(const wxFileName& filename)
 
 wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
 {
-  if (m_FileName.IsOk())
+  if (filename.IsOk())
   {
-    m_FileName = filename;
+    m_FileName = filename.GetFullPath();
   }
   
   Initialize(menu_id);
+}
+
+wxExVCS(int menu_id, const wxArrayString& files)
+{
 }
 
 #if wxUSE_GUI
@@ -56,7 +60,7 @@ int wxExVCS::BuildMenu(
   
   if (filename.IsOk())
   {
-    m_FileName = filename;
+    m_FileName = filename.GetFullPath();
   }
   
   const auto it = m_Entries.find(GetName(m_FileName));
@@ -516,7 +520,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!m_FileName.IsOk() && !m_Command.IsHelp())
+  if (!wxFileName(m_FileName).IsOk() && !m_Command.IsHelp())
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
