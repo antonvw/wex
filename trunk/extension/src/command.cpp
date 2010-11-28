@@ -101,8 +101,11 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 #if wxUSE_GUI
 void wxExCommand::ShowOutput(const wxString& caption) const
 {
-  m_Dialog->SetText(m_Output);
-  m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
-  m_Dialog->Show();
+  if (m_Dialog != NULL)
+  {
+    m_Dialog->SetText(m_Output);
+    m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
+    m_Dialog->Show();
+  }
 }
 #endif
