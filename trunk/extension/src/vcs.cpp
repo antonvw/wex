@@ -226,7 +226,7 @@ long wxExVCS::Execute()
 
   if (!filename.IsOk())
   {
-    wd= wxExConfigFirstOf(_("Base folder"));
+    wd = wxExConfigFirstOf(_("Base folder"));
 
     if (m_Command.IsAdd())
     {
@@ -235,7 +235,17 @@ long wxExVCS::Execute()
   }
   else
   {
-    if (name == "git")
+    if (m_Files.size() > 1)
+    {
+      for (
+        auto it = m_Files.begin();
+        it != m_Files.end();
+        it++)
+      {
+        file += " " + *it;
+      }
+    }
+    else if (name == "git")
     {
       wd = filename.GetPath();
       file = " \"" + filename.GetFullName() + "\"";
