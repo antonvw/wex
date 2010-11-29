@@ -13,9 +13,9 @@
 #define _EXVCS_H
 
 #include <map>
+#include <wx/filename.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/command.h>
-#include <wx/extension/filename.h>
 #include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 
@@ -41,8 +41,8 @@ public:
   /// it both constructs and reads the vcs.
   wxExVCS(const wxFileName& filename);
 
-  /// Constructor, specify the menu command id and a filename.
-  wxExVCS(int menu_id, const wxExFileName& filename = wxExFileName());
+  /// Constructor, specify the menu command id and a file.
+  wxExVCS(int menu_id, const wxString& file = wxEmptyString);
   
   /// Constructor, specify the menu command id and several files.
   wxExVCS(int menu_id, const wxArrayString& files);
@@ -53,7 +53,7 @@ public:
   int BuildMenu(
     int base_id, 
     wxMenu* menu, 
-    const wxExFileName& filename = wxExFileName(),
+    const wxFileName& filename = wxFileName(),
     bool is_popup = true);
 #endif
 
@@ -131,7 +131,6 @@ private:
   bool UseSubcommand() const;
   
   wxExVCSCommand m_Command;
-  wxExCommand m_CommandLine;
 
   wxString m_Caption;
   wxString m_CommandWithFlags;

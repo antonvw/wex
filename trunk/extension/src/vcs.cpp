@@ -32,12 +32,12 @@ wxExVCS::wxExVCS(const wxFileName& filename)
   m_FileNameXML = filename;
 }
 
-wxExVCS::wxExVCS(int menu_id, const wxExFileName& filename)
+wxExVCS::wxExVCS(int menu_id, const wxString& file)
 {
-  if (filename.IsOk())
+  if (wxFileName(file).IsOk())
   {
     m_Files.Clear();
-    m_Files.Add(filename.GetFullPath());
+    m_Files.Add(file);
   }
   
   Initialize(menu_id);
@@ -54,7 +54,7 @@ wxExVCS::wxExVCS(int menu_id, const wxArrayString& files)
 int wxExVCS::BuildMenu(
   int base_id, 
   wxMenu* menu, 
-  const wxExFileName& filename,
+  const wxFileName& filename,
   bool is_popup)
 {
   if (m_Entries.empty())
@@ -364,7 +364,7 @@ const wxString wxExVCS::GetName(const wxFileName& filename)
 {
   const long no = GetNo(filename);
   
-  if (no != VCS_NONE && no != VCS_AUTO)
+  if (no != VCS_NONE)
   {
     for (
       auto it = m_Entries.begin();
@@ -391,8 +391,7 @@ long wxExVCS::GetNo(const wxFileName& filename)
   {
     if (!filename.IsOk())
     {
-      // We do not have a filename, so return AUTO.
-      return vcs;
+      return VCS_NONE;
     }
     else
     {
@@ -414,12 +413,13 @@ long wxExVCS::GetNo(const wxFileName& filename)
         }
       }
 
-      // We have no match, so return AUTO.
-      return vcs;
+      return VCS_NONE;
     }
   }
-
-  return vcs;
+  else
+  {
+    return vcs;
+  }
 }
 
 void wxExVCS::Initialize(int menu_id)
