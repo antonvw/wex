@@ -216,11 +216,6 @@ bool wxExMenu::AppendTools(int itemid)
 // need to be destroyed an old one.
 void wxExMenu::AppendVCS(const wxExFileName& filename)
 {
-  if (!wxExVCS::Get()->Use())
-  {
-    return;
-  }
-
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST + 1;
 
   wxExMenu* vcsmenu = new wxExMenu;
