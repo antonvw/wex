@@ -562,13 +562,13 @@ int wxExSTC::ConfigDialog(
   std::vector<wxExConfigItem> items;
 
   // Setting page.
-  const int cols = 2;
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
   bchoices.insert(_("vi mode"));
-  items.push_back(wxExConfigItem(bchoices, _("Setting"), cols));
+  // use 2 cols here, but 1 for others on this page
+  items.push_back(wxExConfigItem(bchoices, _("Setting"), 2)); 
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
@@ -580,7 +580,7 @@ int wxExSTC::ConfigDialog(
     choices, 
     true, 
     _("Setting"),
-    cols));
+    1));
 
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
@@ -591,7 +591,7 @@ int wxExSTC::ConfigDialog(
     wchoices, 
     true,
     _("Setting"),
-    cols));
+    1));
 
   std::map<long, const wxString> vchoices;
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
@@ -602,7 +602,7 @@ int wxExSTC::ConfigDialog(
     vchoices, 
     true, 
     _("Setting"),
-    cols));
+    1));
 
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
@@ -1376,6 +1376,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
+  entries[i++].Set(wxACCEL_ALT, '+', ID_EDIT_ZOOM_IN);
+  entries[i++].Set(wxACCEL_ALT, '-', ID_EDIT_ZOOM_OUT);
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
@@ -1640,6 +1642,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
         file.GetFileName().GetFullPath()));
     }
     }
+    break;
+    
+  case ID_EDIT_ZOOM_IN:
+    SetZoom(GetZoom() + 1);
+    break;
+
+  case ID_EDIT_ZOOM_OUT:
+    SetZoom(GetZoom() - 1);
     break;
 
   default: wxFAIL; break;
