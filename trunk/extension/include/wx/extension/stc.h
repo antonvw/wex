@@ -283,7 +283,6 @@ protected:
   void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);
   void OnMouse(wxMouseEvent& event);
-  void OnMouseCapture(wxMouseCaptureLostEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void CheckAutoComp(const wxUniChar& c);

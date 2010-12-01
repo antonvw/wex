@@ -473,21 +473,14 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
 }
 
 #if wxUSE_STATUSBAR
-wxExStatusBar* wxExFrame::SetupStatusBar(
+void wxExFrame::SetupStatusBar(
   const std::vector<wxExStatusBarPane>& panes,
   long style,
   wxWindowID id,
   const wxString& name)
 {
-  if (wxFrame::CreateStatusBar(panes.size(), style, id, name) != NULL)
-  {
-    if (m_StatusBar->SetFields(panes) != panes.size())
-    {
-      return NULL;
-    }
-  }
-
-  return m_StatusBar;
+  wxFrame::CreateStatusBar(panes.size(), style, id, name);
+  m_StatusBar->SetFields(panes);
 }
 #endif // wxUSE_STATUSBAR
 

@@ -505,8 +505,6 @@ bool wxExConfigItem::ToConfig(bool save) const
 {
   wxASSERT(m_Control != NULL);
 
-  bool config_accessed = true;
-
   switch (m_Type)
   {
     case CONFIG_BUTTON:
@@ -514,7 +512,7 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_STATICLINE:
     case CONFIG_STATICTEXT:
       // these controls have no persistent info
-      config_accessed = false;
+      return false;
       break;
 
     case CONFIG_CHECKBOX:
@@ -759,10 +757,10 @@ bool wxExConfigItem::ToConfig(bool save) const
 
     default:
       wxFAIL;
-      config_accessed = false;
+      return false;
       break;
   }
 
-  return config_accessed;
+  return true;
 }
 #endif // wxUSE_GUI

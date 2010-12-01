@@ -100,26 +100,27 @@ class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
   /// Constuctor.
-  /// When using for a combobox dir, use id < wxID_LOWEST.
   wxExConfigItem(const wxString& name,
     wxExConfigType type,
     const wxString& page = wxEmptyString,
     bool is_required = false,
-    /// the id as used by the control, use GetControl()->GetId()
-    /// to retrieve actual value
+    ///< the id as used by the control, 
+    ///< when using for a combobox dir, use id < wxID_LOWEST
+    ///< accessible using GetControl()->GetId()
     int id = wxID_ANY,
-    /// used by CONFIG_COMBOBOX
+    ///< used by CONFIG_COMBOBOX
     int max_items = 25,
-    /// will the name be displayed as a static text
+    ///< will the name be displayed as a static text
     bool add_name = true,
     int cols = -1,
-    /// extra style, only used for static line
+    ///< extra style, only used for static line
     long style = 0);
 
   /// Constructor for a string, a hyperlink ctrl or a static text.
   /// The extra style argument is the style for the control used
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
   wxExConfigItem(const wxString& name,
+    ///< used as default for a hyperlink ctrl
     const wxString& value = wxEmptyString,
     const wxString& page = wxEmptyString,
     long style = 0,
@@ -221,7 +222,7 @@ private:
 
   wxString m_Name;
   wxString m_Page;
-  wxString m_Default;
+  wxString m_Default; // used by hyperlink as default web address
 
   long m_Style;
 

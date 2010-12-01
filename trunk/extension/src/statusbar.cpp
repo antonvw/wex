@@ -112,7 +112,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
   }
 }
 
-int wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
+void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 {
   wxASSERT(m_Panes.empty());
   
@@ -153,8 +153,6 @@ int wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
     &wxExStatusBar::OnMouse,
     this,
     wxID_ANY);
-
-  return m_Panes.size();
 }
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)

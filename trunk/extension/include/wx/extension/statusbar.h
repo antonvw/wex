@@ -72,8 +72,7 @@ public:
  ~wxExStatusBar();  
 
   /// Sets the fields.
-  /// Returns the number of fields added.
-  int SetFields(const std::vector<wxExStatusBarPane>& fields);
+  void SetFields(const std::vector<wxExStatusBarPane>& fields);
 
   /// Sets text on specified field.
   /// Returns true if the specified field exists.

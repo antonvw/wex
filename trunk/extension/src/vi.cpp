@@ -35,11 +35,8 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
+  , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
 {
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxASSERT(window != NULL);
-  m_Frame = wxDynamicCast(window, wxExManagedFrame);
   wxASSERT(m_Frame != NULL);
 }
 

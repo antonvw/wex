@@ -100,8 +100,7 @@ public:
   /// Normally the first pane should display status text messages,
   /// the wxextension uses the pane called 'PaneText' for them.
   /// You can hide them by not providing this pane.
-  /// Returns NULL if an error occurred.
-  wxExStatusBar* SetupStatusBar(
+  void SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
     wxWindowID id = ID_EDIT_STATUS_BAR,

@@ -166,7 +166,7 @@ void wxExAppTestFixture::testFrame()
     panes.push_back(wxExStatusBarPane(wxString::Format("Pane%d", i)));
   }
   
-  CPPUNIT_ASSERT(frame->SetupStatusBar(panes) != NULL);
+  frame->SetupStatusBar(panes);
 }
 
 void wxExAppTestFixture::testFrd()

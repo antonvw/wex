@@ -1,19 +1,18 @@
-/******************************************************************************\
-* File:          extension.h
-* Purpose:       Include file for all wxExtension classes
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      extension.h
+// Purpose:   Include file for all wxExtension classes
+// Author:    Anton van Wezenbeek
+// Created:   2010-11-30
+// RCS-ID:    $Id$
+// Copyright: (c) 2010 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WXEXTENSION_H
 #define _WXEXTENSION_H
 
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
+#include <wx/extension/command.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/defs.h>

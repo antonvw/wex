@@ -118,9 +118,4 @@ void wxExSTCEntryDialog::SetText(const wxString& text)
   }
 }
 
-void wxExSTCEntryDialog::UpdateFromConfig()
-{
-  m_STC->ConfigGet();
-}
-
 #endif // wxUSE_GUI

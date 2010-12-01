@@ -55,14 +55,12 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
-  EVT_MOUSE_CAPTURE_LOST(wxExSTC::OnMouseCapture)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_SET_FOCUS(wxExSTC::OnFocus)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
-//  EVT_STC_DWELLSTART(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
 std::vector <wxString> wxExSTC::m_Macro;
@@ -563,13 +561,14 @@ int wxExSTC::ConfigDialog(
 {
   std::vector<wxExConfigItem> items;
 
-  // Settings page.
+  // Setting page.
+  const int cols = 2;
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
   bchoices.insert(_("vi mode"));
-  items.push_back(wxExConfigItem(bchoices, _("Setting"), 2));
+  items.push_back(wxExConfigItem(bchoices, _("Setting"), cols));
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
@@ -581,7 +580,7 @@ int wxExSTC::ConfigDialog(
     choices, 
     true, 
     _("Setting"),
-    1));
+    cols));
 
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
@@ -592,7 +591,7 @@ int wxExSTC::ConfigDialog(
     wchoices, 
     true,
     _("Setting"),
-    1));
+    cols));
 
   std::map<long, const wxString> vchoices;
   vchoices.insert(std::make_pair(wxSTC_WRAPVISUALFLAG_NONE, _("None")));
@@ -603,7 +602,7 @@ int wxExSTC::ConfigDialog(
     vchoices, 
     true, 
     _("Setting"),
-    1));
+    cols));
 
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
@@ -616,8 +615,7 @@ int wxExSTC::ConfigDialog(
     _("Edge line"), 
     echoices, 
     true, 
-    _("Edge"),
-    1));
+    _("Edge")));
 
   // Colour page.
   items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
@@ -1768,10 +1766,6 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   {
     wxFAIL;
   }
-}
-
-void wxExSTC::OnMouseCapture(wxMouseCaptureLostEvent& event)
-{
 }
 
 void wxExSTC::OnStyledText(wxStyledTextEvent& event)

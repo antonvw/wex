@@ -18,7 +18,6 @@
 #include <wx/filepicker.h>
 #include <wx/notebook.h> 
 #include <wx/persist/treebook.h>
-#include <wx/spinctrl.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 
@@ -55,8 +54,6 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
 {
-  wxASSERT(!m_ConfigItems.empty());
-  
   Layout(rows, cols);
 }
 
@@ -79,13 +76,12 @@ wxExConfigDialog::FindConfigItem(int id) const
 
 void wxExConfigDialog::Click(int id) const
 {
-  wxASSERT(wxTheApp != NULL);
-  wxWindow* window = wxTheApp->GetTopWindow();
-  wxASSERT(window != NULL);
-  wxExFrame* frame = wxDynamicCast(window, wxExFrame);
-  wxASSERT(frame != NULL);
-
-  frame->OnCommandConfigDialog(GetId(), id);
+  wxExFrame* frame = wxDynamicCast(wxTheApp->GetTopWindow(), wxExFrame);
+  
+  if (frame != NULL)
+  {
+    frame->OnCommandConfigDialog(GetId(), id);
+  }
 }
 
 void wxExConfigDialog::ForceCheckBoxChecked(
@@ -99,6 +95,11 @@ void wxExConfigDialog::ForceCheckBoxChecked(
 
 void wxExConfigDialog::Layout(int rows, int cols)
 {
+  if (m_ConfigItems.empty())
+  {
+    return;
+  }
+  
   bool first_time = true;
   wxFlexGridSizer* sizer = NULL;
   wxFlexGridSizer* previous_item_sizer = NULL;
