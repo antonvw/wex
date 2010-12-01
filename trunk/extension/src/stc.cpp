@@ -1358,7 +1358,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 13; // take max number of entries
+  const int accels = 15; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1376,8 +1376,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, WXK_INSERT, wxID_COPY);
   entries[i++].Set(wxACCEL_SHIFT, WXK_INSERT, wxID_PASTE);
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
-  entries[i++].Set(wxACCEL_ALT, '+', ID_EDIT_ZOOM_IN);
-  entries[i++].Set(wxACCEL_ALT, '-', ID_EDIT_ZOOM_OUT);
+  entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
+  entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
