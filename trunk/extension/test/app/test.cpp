@@ -494,11 +494,12 @@ void wxExAppTestFixture::testVCS()
 {
   CPPUNIT_ASSERT( wxExVCS::Get()->Read());
   
+  wxMenu* menu = new wxMenu("test");
+  CPPUNIT_ASSERT( wxExVCS::Get()->BuildMenu(
+    100, menu, wxFileName(TEST_FILE)) > 0);
+
   CPPUNIT_ASSERT( wxExVCS::Get()->DirExists(wxFileName(TEST_FILE)));
   
-  wxMenu* menu = new wxMenu("test");
-  CPPUNIT_ASSERT( wxExVCS::Get()->BuildMenu(100, menu) > 0);
-
   CPPUNIT_ASSERT( wxExVCS::Get()->GetFileName().IsOk());
   CPPUNIT_ASSERT( wxExVCS::Get()->GetCommandWithFlags().empty());
   CPPUNIT_ASSERT( wxExVCS::Get()->GetOutput().empty());
