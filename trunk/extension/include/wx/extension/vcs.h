@@ -88,7 +88,7 @@ public:
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
   
   /// Gets the xml filename.
-  static const wxFileName& GetFileName() {return m_FileName;};
+  const wxFileName& GetFileName() {return m_FileName;};
 
   /// Returns true if this command can behave like
   /// opening a file.  
