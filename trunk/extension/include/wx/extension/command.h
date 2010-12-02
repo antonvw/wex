@@ -16,6 +16,9 @@
 class WXDLLIMPEXP_BASE wxExCommand
 {
 public:
+  /// Default constructor.
+  wxExCommand();
+  
   /// Executes the command.
   long Execute(const wxString& command, const wxString& wd = wxEmptyString);
   

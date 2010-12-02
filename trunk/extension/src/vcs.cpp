@@ -406,7 +406,7 @@ long wxExVCS::GetNo(const wxFileName& filename) const
 void wxExVCS::Initialize(int menu_id)
 {
   const wxExVCSEntry vcs = FindVCSEntry(
-    !m_Files.empty() ? m_Files[0]: wxEmptyString);
+    !m_Files.empty() ? m_Files[0]: wxString(wxEmptyString));
   
   int command_id = 0;
 

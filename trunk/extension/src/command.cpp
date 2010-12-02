@@ -19,6 +19,11 @@
 wxExSTCEntryDialog* wxExCommand::m_Dialog = NULL;
 #endif
 
+wxExCommand::wxExCommand()
+  : m_Error(false)
+{
+}
+
 long wxExCommand::Execute(const wxString& command, const wxString& wd)
 {
   m_Command = command;
