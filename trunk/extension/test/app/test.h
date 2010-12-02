@@ -54,6 +54,7 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
 
+  void testCommand();
   void testConfigItem();
   void testFrame();
   void testFrd();

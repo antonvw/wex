@@ -24,12 +24,12 @@
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxArrayString wxExVCS::m_Files;
-wxFileName wxExVCS::m_FileNameXML;
+wxFileName wxExVCS::m_FileName;
 wxExVCS* wxExVCS::m_Self = NULL;
 
 wxExVCS::wxExVCS(const wxFileName& filename)
 {
-  m_FileNameXML = filename;
+  m_FileName = filename;
 }
 
 wxExVCS::wxExVCS(int menu_id, const wxString& file)
@@ -57,11 +57,6 @@ int wxExVCS::BuildMenu(
   const wxFileName& filename,
   bool is_popup)
 {
-  if (m_Entries.empty())
-  {
-    return 0;
-  }
-  
   if (filename.IsOk())
   {
     m_Files.Clear();
@@ -73,18 +68,11 @@ int wxExVCS::BuildMenu(
     return 0;
   }
   
-  const auto it = m_Entries.find(GetName(m_Files[0]));
-    
-  if (it != m_Entries.end())
-  {
-    return it->second.BuildMenu(base_id, menu, is_popup);
-  }
-
-  return 0;
+  return FindVCSEntry(m_Files[0]).BuildMenu(base_id, menu, is_popup);
 }
 #endif
 
-bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
+bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
 {
   if (!fn.IsOk() || vcs.empty())
   {
@@ -109,7 +97,7 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
 
 bool wxExVCS::CheckPathAll(
   const wxString& vcs, 
-  const wxFileName& fn)
+  const wxFileName& fn) const
 {
   const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
   
@@ -200,7 +188,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
     return false;
   }
   
-  const wxString name = GetName(filename);
+  const wxString name = FindVCSEntry(filename).GetName();
 
   // When adding a vcs, also check GetNo.
   if ((name == "git" ||  name == "mercurial") && CheckPathAll(name, filename))
@@ -221,7 +209,8 @@ long wxExVCS::Execute()
 
   wxString wd;
   wxString file;
-  const wxString name = GetName(m_Files[0]);
+  
+  const wxString name = FindVCSEntry(m_Files[0]).GetName();
   const wxFileName filename(m_Files[0]);
 
   if (!filename.IsOk())
@@ -327,20 +316,25 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 }
 #endif
 
-long wxExVCS::FindNo(const wxString& name)
+const wxExVCSEntry wxExVCS::FindVCSEntry(const wxFileName& filename) const
 {
-  const auto it = m_Entries.find(name);
+  const long no = GetNo(filename);
+  
+  if (no != VCS_NONE)
+  {
+    for (
+      auto it = m_Entries.begin();
+      it != m_Entries.end();
+      ++it)
+    {
+      if (it->second.GetNo() == no)
+      {
+        return it->second;
+      }
+    }
+  }
 
-  if (it != m_Entries.end())
-  {
-    return it->second.GetNo();
-  }
-  else
-  {
-    // Do not fail, you might remove some from vcs.xml,
-    // then entry cannot be found.
-    return VCS_NONE;
-  }
+  return wxExVCSEntry();
 }
 
 wxExVCS* wxExVCS::Get(bool createOnDemand)
@@ -370,30 +364,7 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExVCS::GetName(const wxFileName& filename)
-{
-  const long no = GetNo(filename);
-  
-  if (no != VCS_NONE)
-  {
-    for (
-      auto it = m_Entries.begin();
-      it != m_Entries.end();
-      ++it)
-    {
-      if (it->second.GetNo() == no)
-      {
-        return it->second.GetName();
-      }
-    }
-    
-    wxFAIL;
-  }
-
-  return wxEmptyString;
-}
-
-long wxExVCS::GetNo(const wxFileName& filename)
+long wxExVCS::GetNo(const wxFileName& filename) const
 {
   const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
 
@@ -434,7 +405,10 @@ long wxExVCS::GetNo(const wxFileName& filename)
 
 void wxExVCS::Initialize(int menu_id)
 {
-  int command_id;
+  const wxExVCSEntry vcs = FindVCSEntry(
+    !m_Files.empty() ? m_Files[0]: wxEmptyString);
+  
+  int command_id = 0;
 
   if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
   {
@@ -444,41 +418,24 @@ void wxExVCS::Initialize(int menu_id)
   {
     command_id = menu_id - ID_EDIT_VCS_LOWEST - 1;
   }
-  else
-  {
-    wxFAIL;
-    return;
-  }
 
-  if (Use())
-  {
-    const auto it = m_Entries.find(GetName(m_Files[0]));
-  
-    if (it != m_Entries.end())
-    {
-      m_Command = it->second.GetCommand(command_id);
-      m_Caption = GetName(m_Files[0]) + " " + m_Command.GetCommand();
-      m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
-    }
-    else
-    {
-      wxFAIL;
-    }
-  }
+  m_Command = vcs.GetCommand(command_id);
+  m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
+  m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
 }
 
 bool wxExVCS::Read()
 {
   // This test is to prevent showing an error if the vcs file does not exist,
   // as this is not required.
-  if (!m_FileNameXML.FileExists())
+  if (!m_FileName.FileExists())
   {
     return false;
   }
 
   wxXmlDocument doc;
 
-  if (!doc.Load(m_FileNameXML.GetFullPath()))
+  if (!doc.Load(m_FileName.GetFullPath()))
   {
     return false;
   }
@@ -626,29 +583,17 @@ void wxExVCS::ShowOutput(const wxString& caption) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  if (m_Entries.empty() || m_Files.empty())
-  {
-    return false;
-  }
-  
-  const auto it = m_Entries.find(GetName(m_Files[0]));
-    
-  if (it != m_Entries.end())
-  {
-    return it->second.SupportKeywordExpansion();
-  }
-  
-  return false;
-}
-
-bool wxExVCS::Use() const
-{
   if (m_Files.empty())
   {
     return false;
   }
   
-  return GetNo(m_Files[0]) != VCS_NONE;
+  return FindVCSEntry(m_Files[0]).SupportKeywordExpansion();
+}
+
+bool wxExVCS::Use() const
+{
+  return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1) != VCS_NONE;
 }
 
 bool wxExVCS::UseFlags() const

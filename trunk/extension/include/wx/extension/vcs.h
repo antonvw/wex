@@ -50,6 +50,7 @@ public:
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
   /// Returns number of items in menu.
+  /// Sets the files member if you filename is ok.
   int BuildMenu(
     int base_id, 
     wxMenu* menu, 
@@ -87,7 +88,7 @@ public:
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
   
   /// Gets the xml filename.
-  static const wxFileName& GetFileName() {return m_FileNameXML;};
+  static const wxFileName& GetFileName() {return m_FileName;};
 
   /// Returns true if this command can behave like
   /// opening a file.  
@@ -120,11 +121,10 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  static bool CheckPath(const wxString& vcs, const wxFileName& fn);
-  static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
-  static long FindNo(const wxString& name);
-  static const wxString GetName(const wxFileName& filename);
-  static long GetNo(const wxFileName& filename);
+  bool CheckPath(const wxString& vcs, const wxFileName& fn) const;
+  bool CheckPathAll(const wxString& vcs, const wxFileName& fn) const;
+  const wxExVCSEntry FindVCSEntry(const wxFileName& filename) const;
+  long GetNo(const wxFileName& filename) const;
   void Initialize(int command_id);
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const;
@@ -138,7 +138,7 @@ private:
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxArrayString m_Files;
-  static wxFileName m_FileNameXML;
+  static wxFileName m_FileName;
   static wxExVCS* m_Self;
 };
 #endif

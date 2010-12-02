@@ -84,7 +84,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     m_Output += errors[i] + "\n";
   }
   
-  m_Error = !errors.empty();
+  m_Error = !errors.empty() || retValue == -1;
 
   // Then the normal output, will be empty if there are errors.
   for (

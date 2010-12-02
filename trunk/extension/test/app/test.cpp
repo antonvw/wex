@@ -26,6 +26,22 @@ void wxExAppTestFixture::setUp()
   wxExLexers* lexers = wxExLexers::Get();
 }
 
+void wxExAppTestFixture::testCommand()
+{
+  wxExCommand command;
+  
+  CPPUNIT_ASSERT(!command.GetError());
+  CPPUNIT_ASSERT( command.GetOutput().empty());
+  
+  CPPUNIT_ASSERT( command.Execute("ls -l") != -1);
+  CPPUNIT_ASSERT(!command.GetError());
+  CPPUNIT_ASSERT(!command.GetOutput().empty());
+  
+  CPPUNIT_ASSERT( command.Execute("xxxx") == -1);
+  CPPUNIT_ASSERT( command.GetError());
+  CPPUNIT_ASSERT( command.GetOutput().empty());
+}
+
 void wxExAppTestFixture::testConfigItem()
 {
   std::vector <wxExConfigItem> items;
@@ -492,27 +508,22 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  CPPUNIT_ASSERT( wxExVCS::Get()->Read());
-  
-  wxMenu* menu = new wxMenu("test");
-  CPPUNIT_ASSERT( wxExVCS::Get()->BuildMenu(
-    100, menu, wxFileName(TEST_FILE)) > 0);
+  wxExVCS vcs(ID_EDIT_VCS_LOWEST + 1, wxFileName(TEST_FILE));
 
-  CPPUNIT_ASSERT( wxExVCS::Get()->DirExists(wxFileName(TEST_FILE)));
-  
-  CPPUNIT_ASSERT( wxExVCS::Get()->GetFileName().IsOk());
-  CPPUNIT_ASSERT( wxExVCS::Get()->GetCommandWithFlags().empty());
-  CPPUNIT_ASSERT( wxExVCS::Get()->GetOutput().empty());
-
-  CPPUNIT_ASSERT(!wxExVCS::Get()->IsOpenCommand());
-
-  CPPUNIT_ASSERT( wxExVCS::Get()->SupportKeywordExpansion());
-
-  CPPUNIT_ASSERT( wxExVCS::Get()->Use());
-
+  CPPUNIT_ASSERT( vcs.BuildMenu(100, new wxMenu("test"), wxFileName(TEST_FILE)) > 0);
+  CPPUNIT_ASSERT( vcs.DirExists(wxFileName(TEST_FILE)));
+    
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
-//  CPPUNIT_ASSERT(vcs->Execute() != -1);
-//  CPPUNIT_ASSERT(!vcs->GetOutput().empty());
+//  CPPUNIT_ASSERT( vcs.Execute() != -1);
+//  CPPUNIT_ASSERT(!vcs.GetOutput().empty());
+
+  CPPUNIT_ASSERT( vcs.GetCommandWithFlags().empty());
+  CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
+  CPPUNIT_ASSERT( vcs.GetOutput().empty());
+  CPPUNIT_ASSERT(!vcs.IsOpenCommand());
+  CPPUNIT_ASSERT( vcs.Read());
+  CPPUNIT_ASSERT( vcs.SupportKeywordExpansion());
+  CPPUNIT_ASSERT( vcs.Use());
 }
 
 void wxExAppTestFixture::testVCSCommand()
@@ -601,6 +612,10 @@ void wxExAppTestFixture::testVi()
 wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testCommand",
+    &wxExAppTestFixture::testCommand));
+    
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testConfigItem",
     &wxExAppTestFixture::testConfigItem));
