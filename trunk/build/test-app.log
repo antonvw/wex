@@ -1,17 +1,12 @@
-.F..................F...
+...................F...
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  22   Failures: 2   Errors: 0
+Run:  22   Failures: 1   Errors: 0
 
 
-1) test: testCommand (F) line: 33 ../extension/test/app/test.cpp
-assertion failed
-- Expression: !command.GetError()
-
-
-2) test: testVCS (F) line: 514 ../extension/test/app/test.cpp
+1) test: testVCS (F) line: 515 ../extension/test/app/test.cpp
 assertion failed
 - Expression: vcs.DirExists(wxFileName(TEST_FILE))
 
