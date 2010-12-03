@@ -232,16 +232,16 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
   }
   else if (command.GetId() == wxID_CANCEL)
   {
-    Reload();
+    for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
   }
   else
   {
-    // Save to config.
     for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
       std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), true));
   }
 
-  if ( command.GetId() == wxID_APPLY ||
+  if (  command.GetId() == wxID_APPLY ||
       ((command.GetId() == wxID_OK ||
         command.GetId() == wxID_CANCEL) && !IsModal()))
   {
@@ -364,11 +364,5 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   {
     event.Enable(true);
   }
-}
-
-void wxExConfigDialog::Reload() const
-{
-  for_each (m_ConfigItems.begin(), m_ConfigItems.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExConfigItem::ToConfig), false));
 }
 #endif // wxUSE_GUI

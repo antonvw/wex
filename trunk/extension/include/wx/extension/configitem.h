@@ -84,6 +84,9 @@ enum wxExConfigType
 
   /// a toggle button item
   CONFIG_TOGGLEBUTTON,
+  
+  /// provide your own control
+  CONFIG_USER,
 
   /// Used for automatic testing only.
   CONFIG_ITEM_MAX,
@@ -99,7 +102,7 @@ enum wxExConfigType
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
-  /// Constuctor.
+  /// Constuctor for most types.
   wxExConfigItem(const wxString& name,
     wxExConfigType type,
     const wxString& page = wxEmptyString,
@@ -115,6 +118,24 @@ public:
     int cols = -1,
     ///< extra style, only used for static line
     long style = 0);
+    
+  /// Constructor for a user control.
+  /// Default it has no relation to the config,
+  /// if you want to, you have to implement UserControlToConfig
+  /// in your derived class.
+  wxExConfigItem(
+    ///< name for the control as on the dialog and in the config
+    const wxString& name,
+    ///< the control (use default constructor for it)
+    wxControl* control,
+    ///< the page
+    const wxString& page = wxEmptyString,
+    ///< is this control required
+    bool is_required = false,
+    ///< will the name be displayed as a static text
+    bool add_name = true,
+    ///< number of cols for this control
+    int cols = -1);
 
   /// Constructor for a string, a hyperlink ctrl or a static text.
   /// The extra style argument is the style for the control used
@@ -199,6 +220,13 @@ public:
   /// Returns true if the config was accessed, as not all
   /// config items associate with the config.
   bool ToConfig(bool save) const;
+protected:
+  /// Creates the user control item, using default Create method.
+  /// Override if you need an other Create method.
+  virtual void UserControlCreate(wxWindow* parent, bool readonly) const {
+    m_Control->Create(parent, m_Id);};
+  /// Allows you to load or save config data for your control.
+  virtual bool UserControlToConfig(bool save) const {;};
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticTextName(wxSizer* sizer) const;

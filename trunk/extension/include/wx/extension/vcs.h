@@ -124,11 +124,12 @@ private:
   bool CheckPath(const wxString& vcs, const wxFileName& fn) const;
   bool CheckPathAll(const wxString& vcs, const wxFileName& fn) const;
   const wxExVCSEntry FindVCSEntry(const wxFileName& filename) const;
-  long GetNo(const wxFileName& filename) const;
   void Initialize(int command_id);
   int ShowDialog(wxWindow* parent);
-  bool UseFlags() const;
-  bool UseSubcommand() const;
+  bool UseFlags() const {
+    return !m_Command.IsHelp();};
+  bool UseSubcommand() const {
+    return m_Command.IsHelp();};
   
   wxExVCSCommand m_Command;
 

@@ -607,13 +607,13 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t st = 1; st <= 5; st++)
   {
     // CONFIG_STATICLINE
-    v.push_back(wxExConfigItem("test", CONFIG_STATICLINE, "Static Texts"));
+    v.push_back(wxExConfigItem("test", CONFIG_STATICLINE, "Static Text"));
 
     // CONFIG_STATICTEXT
     v.push_back(wxExConfigItem(
       wxString::Format("Static Text%d", st),
       "this is my static text",
-      "Static Texts",
+      "Static Text",
       0,
       CONFIG_STATICTEXT));
   }
@@ -621,7 +621,7 @@ void wxExSampleFrame::ShowConfigItems()
   // CONFIG_STATICLINE (vertical)
   v.push_back(wxExConfigItem("test", 
     CONFIG_STATICLINE, 
-    "Static Texts",
+    "Static Text",
     false,
     wxID_ANY,
     25,
@@ -652,6 +652,17 @@ void wxExSampleFrame::ShowConfigItems()
       CONFIG_TOGGLEBUTTON,
       "Toggle buttons"));
   }
+  
+  /// CONFIG_USER
+  v.push_back(wxExConfigItem(
+    "Text Control", 
+    new wxTextCtrl(),
+    "User Controls"));
+    
+  v.push_back(wxExConfigItem(
+    "File Control", 
+    new wxFileCtrl(),
+    "User Controls"));
 
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,

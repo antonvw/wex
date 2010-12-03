@@ -50,7 +50,6 @@ private:
   void Click(int id) const;
   std::vector< wxExConfigItem >::const_iterator FindConfigItem(int id) const;
   void Layout(int rows, int cols);
-  void Reload() const;
 
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;

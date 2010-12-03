@@ -19,7 +19,6 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/util.h>
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
@@ -183,22 +182,17 @@ int wxExVCS::ConfigDialog(
 
 bool wxExVCS::DirExists(const wxFileName& filename) const
 {
-  if (m_Entries.empty())
-  {
-    return false;
-  }
-  
-  const wxString name = FindVCSEntry(filename).GetName();
+  const wxString vcs = FindVCSEntry(filename).GetName();
 
   // When adding a vcs, also check GetNo.
-  if ((name == "git" ||  name == "mercurial") && CheckPathAll(name, filename))
+  if ((vcs == "git" || vcs == "mercurial") && CheckPathAll(vcs, filename))
   {
     return true;
   }
   // This is the default check.
   else 
   {
-    return CheckPath(name, filename);
+    return CheckPath(vcs, filename);
   }
 }
 
@@ -318,23 +312,50 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 
 const wxExVCSEntry wxExVCS::FindVCSEntry(const wxFileName& filename) const
 {
-  const long no = GetNo(filename);
-  
-  if (no != VCS_NONE)
+  const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
+
+  if (vcs == VCS_AUTO)
+  {
+    if (!filename.IsOk())
+    {
+      return wxExVCSEntry();
+    }
+    else
+    {
+      for (
+        auto it = m_Entries.begin();
+        it != m_Entries.end();
+        ++it)
+      {
+        const wxString name = it->second.GetName();
+
+        if ((name == "git" || name == "mercurial") &&
+             CheckPathAll(name, filename))
+        {
+          return it->second;
+        }
+        else if (CheckPath(name, filename))
+        {
+          return it->second;
+        }
+      }
+
+      return wxExVCSEntry();
+    }
+  }
+  else
   {
     for (
       auto it = m_Entries.begin();
       it != m_Entries.end();
       ++it)
     {
-      if (it->second.GetNo() == no)
+      if (it->second.GetNo() == vcs)
       {
         return it->second;
       }
     }
   }
-
-  return wxExVCSEntry();
 }
 
 wxExVCS* wxExVCS::Get(bool createOnDemand)
@@ -356,51 +377,12 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
       // This is a static method, so not use m_Entries.
       if (!wxConfigBase::Get()->Exists("VCS"))
       {
-        wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO + 1);
+        wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
       }
     }
   }
 
   return m_Self;
-}
-
-long wxExVCS::GetNo(const wxFileName& filename) const
-{
-  const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1);
-
-  if (vcs == VCS_AUTO)
-  {
-    if (!filename.IsOk())
-    {
-      return VCS_NONE;
-    }
-    else
-    {
-      for (
-        auto it = m_Entries.begin();
-        it != m_Entries.end();
-        ++it)
-      {
-        const wxString name = it->second.GetName();
-
-        if ((name == "git" || name == "mercurial") &&
-             CheckPathAll(name, filename))
-        {
-          return it->second.GetNo();
-        }
-        else if (CheckPath(name, filename))
-        {
-          return it->second.GetNo();
-        }
-      }
-
-      return VCS_NONE;
-    }
-  }
-  else
-  {
-    return vcs;
-  }
 }
 
 void wxExVCS::Initialize(int menu_id)
@@ -593,15 +575,5 @@ bool wxExVCS::SupportKeywordExpansion() const
 
 bool wxExVCS::Use() const
 {
-  return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO + 1) != VCS_NONE;
-}
-
-bool wxExVCS::UseFlags() const
-{
-  return !m_Command.IsHelp();
-}
-
-bool wxExVCS::UseSubcommand() const
-{
-  return m_Command.IsHelp();
+  return wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) != VCS_NONE;
 }

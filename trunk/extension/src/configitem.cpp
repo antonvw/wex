@@ -60,6 +60,30 @@ wxExConfigItem::wxExConfigItem(
 
 wxExConfigItem::wxExConfigItem(
   const wxString& name,
+  wxControl* control,
+  const wxString& page,
+  bool is_required,
+  bool add_name,
+  int cols)
+  : m_Control(control)
+  , m_Id(control->GetId())
+  , m_IsRequired(is_required)
+  , m_Min(0)
+  , m_Max(1)
+  , m_MaxItems(1)
+  , m_MajorDimension(1)
+  , m_Name(name)
+  , m_Page(page)
+  , m_Style(0)
+  , m_Type(CONFIG_USER)
+  , m_Cols(cols)
+  , m_AddName(add_name)
+  , m_Inc(1)
+{
+}
+    
+wxExConfigItem::wxExConfigItem(
+  const wxString& name,
   double min,
   double max,
   const wxString& page,
@@ -443,6 +467,11 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       expand = false;
       break;
 
+    case CONFIG_USER:
+      wxASSERT(m_Control != NULL);
+      UserControlCreate(parent, readonly);
+      break;
+  
     default: wxFAIL;
   }
 
@@ -754,7 +783,11 @@ bool wxExConfigItem::ToConfig(bool save) const
         ctrl->SetValue(wxConfigBase::Get()->ReadBool(m_Name, false));
       }
       break;
-
+      
+    case CONFIG_USER:
+      return UserControlToConfig(save);
+      break;
+      
     default:
       wxFAIL;
       return false;
