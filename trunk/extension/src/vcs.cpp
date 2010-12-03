@@ -62,12 +62,10 @@ int wxExVCS::BuildMenu(
     m_Files.Add(filename.GetFullPath());
   }
   
-  if (m_Files.empty())
-  {
-    return 0;
-  }
+  const wxString file= (!m_Files.empty() ? 
+    m_Files[0]: wxString(wxEmptyString));
   
-  return FindVCSEntry(m_Files[0]).BuildMenu(base_id, menu, is_popup);
+  return FindVCSEntry(file).BuildMenu(base_id, menu, is_popup);
 }
 #endif
 
@@ -477,7 +475,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
       true)); // required
   }
 
-  if (!wxFileName(m_Files[0]).IsOk() && !m_Command.IsHelp())
+  if (m_Files.empty() && !m_Command.IsHelp())
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
