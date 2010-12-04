@@ -62,10 +62,8 @@ int wxExVCS::BuildMenu(
     m_Files.Add(filename.GetFullPath());
   }
   
-  const wxString file= (!m_Files.empty() ? 
-    m_Files[0]: wxString(wxEmptyString));
-  
-  return FindVCSEntry(file).BuildMenu(base_id, menu, is_popup);
+  return FindVCSEntry((!m_Files.empty() ? 
+    m_Files[0]: wxString(wxEmptyString))).BuildMenu(base_id, menu, is_popup);
 }
 #endif
 
@@ -96,6 +94,11 @@ bool wxExVCS::CheckPathAll(
   const wxString& vcs, 
   const wxFileName& fn) const
 {
+  if (!fn.IsOk() || vcs.empty())
+  {
+    return false;
+  }
+  
   const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
   
   // The .git dir only exists in the root, so check all components.
@@ -563,12 +566,8 @@ void wxExVCS::ShowOutput(const wxString& caption) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  if (m_Files.empty())
-  {
-    return false;
-  }
-  
-  return FindVCSEntry(m_Files[0]).SupportKeywordExpansion();
+  return FindVCSEntry((!m_Files.empty() ? 
+    m_Files[0]: wxString(wxEmptyString))).SupportKeywordExpansion();
 }
 
 bool wxExVCS::Use() const
