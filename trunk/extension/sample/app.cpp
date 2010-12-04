@@ -659,11 +659,6 @@ void wxExSampleFrame::ShowConfigItems()
     new wxTextCtrl(),
     "User Controls"));
     
-  v.push_back(wxExConfigItem(
-    "File Control", 
-    new wxFileCtrl(),
-    "User Controls"));
-
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
     v,

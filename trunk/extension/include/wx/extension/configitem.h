@@ -226,7 +226,7 @@ protected:
   virtual void UserControlCreate(wxWindow* parent, bool readonly) const {
     m_Control->Create(parent, m_Id);};
   /// Allows you to load or save config data for your control.
-  virtual bool UserControlToConfig(bool save) const {;};
+  virtual bool UserControlToConfig(bool save) const {return false;};
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticTextName(wxSizer* sizer) const;
