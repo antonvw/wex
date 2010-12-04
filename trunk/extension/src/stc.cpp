@@ -582,6 +582,17 @@ int wxExSTC::ConfigDialog(
     _("Setting"),
     1));
 
+  std::map<long, const wxString> smode;
+  smode.insert(std::make_pair(wxSTC_SEL_STREAM, _("Stream")));
+  smode.insert(std::make_pair(wxSTC_SEL_RECTANGLE, _("Rectangular")));
+  smode.insert(std::make_pair(wxSTC_SEL_THIN, _("Thin")));
+  items.push_back(wxExConfigItem(
+    _("Selection mode"), 
+    smode, 
+    true, 
+    _("Setting"),
+    1));
+
   std::map<long, const wxString> wchoices;
   wchoices.insert(std::make_pair(wxSTC_WRAP_NONE, _("None")));
   wchoices.insert(std::make_pair(wxSTC_WRAP_WORD, _("Word")));
@@ -757,6 +768,8 @@ void wxExSTC::ConfigGet()
     m_MarginLineNumber, 
     (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
+  SetSelectionMode(
+    wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), def_tab_width));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
   SetViewEOL(wxConfigBase::Get()->ReadBool(_("End of line"), false));
