@@ -361,8 +361,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (m_File.GetFileName().FileExists() && 
-      GetSelectedText().empty())
+  if (m_File.GetFileName().FileExists() && sel.empty())
   {
     if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
     {
@@ -376,7 +375,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
     }
   }
 
-  if (GetSelectedText().empty() && 
+  if (sel.empty() && 
       (m_Lexer.GetScintillaLexer() == "hypertext" ||
        m_Lexer.GetScintillaLexer() == "xml"))
   {
@@ -403,13 +402,13 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (!GetReadOnly())
   {
-    if (!GetSelectedText().empty())
+    if (!sel.empty())
     {
       wxExMenu* menuSelection = menuSelection = new wxExMenu(menu);
       menuSelection->Append(ID_EDIT_UPPERCASE, _("&Uppercase\tF11"));
       menuSelection->Append(ID_EDIT_LOWERCASE, _("&Lowercase\tF12"));
 
-      if (wxExGetNumberOfLines(GetSelectedText()) > 1)
+      if (wxExGetNumberOfLines(sel) > 1)
       {
         wxExMenu* menuSort = new wxExMenu(menu);
         menuSort->Append(wxID_SORT_ASCENDING);
@@ -433,7 +432,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   // Folding if nothing selected, property is set,
   // and we have a lexer.
   if (
-     GetSelectedText().empty() && 
+     sel.empty() && 
      GetProperty("fold") == "1" &&
      m_Lexer.IsOk() &&
     !m_Lexer.GetScintillaLexer().empty())
@@ -1047,7 +1046,7 @@ const wxString wxExSTC::GetEOL() const
 
 const wxString wxExSTC::GetFindString() const
 {
-  const wxString selection = const_cast< wxExSTC * >( this )->GetSelectedText();
+  const wxString selection = GetSelectedText();
 
   if (!selection.empty() && wxExGetNumberOfLines(selection) == 1)
   {
@@ -1092,9 +1091,22 @@ int wxExSTC::GetLineNumberAtCurrentPos() const
   return wxExGetLineNumber(text);
 }
 
+const wxString wxExSTC::GetSelectedText() const
+{
+  // TODO: Fix crash for rectangular selection.
+  if (SelectionIsRectangle())
+  {
+    return wxEmptyString;
+  }
+  else
+  {
+    return const_cast< wxExSTC * >( this )->wxStyledTextCtrl::GetSelectedText();
+  }
+}
+
 const wxString wxExSTC::GetTextAtCurrentPos() const
 {
-  const wxString sel = const_cast< wxExSTC * >( this )->GetSelectedText();
+  const wxString sel = GetSelectedText();
 
   if (!sel.empty())
   {

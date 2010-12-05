@@ -159,6 +159,9 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
+  /// Gets selected text.
+  const wxString GetSelectedText() const;
+
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;
   
