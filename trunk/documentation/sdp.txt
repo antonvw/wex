@@ -50,7 +50,7 @@ General
     http://www.gimp.org/
 
 - Documentation
-  - API documentation is generated from the sources using Doxygen (1.6.1)
+  - API documentation is generated from the sources using Doxygen (1.7.1)
     http://www.stack.nl/~dimitri/doxygen/
   - Other docs are in html format using no special html editor
 
