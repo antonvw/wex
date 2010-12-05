@@ -134,6 +134,9 @@ SVN hierarchy
 
 When adding functionality in trunk
 
+- apply a patch:
+    patch -p0 -i fixes.patch
+
 - document it in the source in doxy way
 
 - if it needs to be translated, add _() around text strings, 
