@@ -22,7 +22,8 @@
 class wxMenu;
 
 /// This class collects all vcs handling.
-/// The VCS entries are read in from vcs.xml.
+/// The VCS entries are read in from vcs.xml, this is done
+/// automatically during the first Get call.
 class WXDLLIMPEXP_BASE wxExVCS : public wxExCommand
 {
 public:
@@ -95,7 +96,7 @@ public:
   bool IsOpenCommand() const {
     return m_Command.IsOpen();};
 
-  /// Reads all containers (first clears them) from file.
+  /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   bool Read();
 

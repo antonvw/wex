@@ -5,11 +5,15 @@
 # RCS-ID:    $Id$
 # Copyright: (c) 2010 Anton van Wezenbeek
 
+# Run this file in the build folder
+
 tar cf syncped.tar \
-  syncped \
-  /home/anton/wxextension/trunk/extension/data/lexers.xml \
-  /home/anton/wxextension/trunk/extension/data/vcs.xml \
-  /home/anton/wxextension/trunk/extension/locale/wxextension-nl.mo \
-  /home/anton/wxextension/trunk/syncped/locale/syncped-nl.mo
+  gccgtk2/syncped \
+  ../extension/data/lexers.xml \
+  ../extension/data/vcs.xml \
+  ~/wxWidgets-2.9.1/locale/wxstd.mo \
+  ../extension/locale/wxextension-nl.mo \
+  ../extension/locale/wxstd-xxx-nl.mo \
+  ../syncped/locale/syncped-nl.mo
  
 gzip syncped.tar

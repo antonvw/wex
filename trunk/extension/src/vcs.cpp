@@ -19,6 +19,7 @@
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
+#include <wx/extension/filename.h>
 #include <wx/extension/util.h>
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;

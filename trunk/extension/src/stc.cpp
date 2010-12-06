@@ -2223,39 +2223,43 @@ void wxExSTC::SetGlobalStyles()
 
 bool wxExSTC::SetLexer(const wxString& lexer)
 {
-  if (m_Lexer.ApplyLexer(lexer, this))
+  if (!m_Lexer.ApplyLexer(lexer, this))
   {
-    if (GetProperty("fold") == "1")
-    {
-      SetMarginWidth(m_MarginFoldingNumber, 
-        wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-
-      SetFoldFlags(
-        wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-        wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
-          wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-    }
-    else
-    {
-      SetMarginWidth(m_MarginFoldingNumber, 0);
-    }
-    
-    if (lexer == "diff")
-    {
-      SetEdgeMode(wxSTC_EDGE_NONE);
-    }
-    
+    return false;
+  }
+  
+  if (GetProperty("fold") == "1")
+  {
+    SetMarginWidth(m_MarginFoldingNumber, 
+      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+    SetFoldFlags(
+      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
+        wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+        
     if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
     {
       FoldAll();
     }
-
-    wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
-    
-    return true;
+  }
+  else
+  {
+    SetMarginWidth(m_MarginFoldingNumber, 0);
   }
   
-  return false;
+  if (lexer == "diff")
+  {
+    SetEdgeMode(wxSTC_EDGE_NONE);
+  }
+  
+  wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
+    
+  return true;
+}
+
+void wxExSTC::SetProperty(const wxString& name, const wxString& value)
+{
+  m_Lexer.SetProperty(name, value);
 }
 
 void wxExSTC::SetText(const wxString& value)

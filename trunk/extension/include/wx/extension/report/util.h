@@ -13,7 +13,7 @@
 #define _EX_REPORT_UTIL_H
 
 #include <wx/aui/auibook.h>
-#include <wx/filename.h>
+#include <wx/extension/filename.h>
 
 class wxExFrameWithHistory;
 class wxExListView;
@@ -28,6 +28,9 @@ bool wxExFindOtherFileName(
 
 /// Do something (id) for all pages on the notebook.
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
+
+/// Gets the icon index for this filename (uses the file extension to get it).
+int wxExGetIconID(const wxExFileName& filename);
 
 /// Run make on specified makefile.
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);

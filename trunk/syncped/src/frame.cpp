@@ -783,7 +783,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxString::Format("stc%d", stc->GetId()),
       stc->GetFileName().GetFullName(),
       true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(stc->GetFileName().GetIconID()));
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(stc->GetFileName())));
 
     stc->SetDocPointer(editor->GetDocPointer());
     }
@@ -1075,7 +1075,7 @@ bool Frame::OpenFile(
       key,
       filename.GetFullName() + " " + unique,
       true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIconID()));
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(filename)));
   }
   else
   {
@@ -1172,7 +1172,7 @@ bool Frame::OpenFile(
         filename.GetFullPath(),
         filename.GetFullName(),
         true,
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(filename.GetIconID()));
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(filename)));
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {

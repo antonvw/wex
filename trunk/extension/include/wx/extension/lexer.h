@@ -101,6 +101,9 @@ public:
 
   /// Sets keywords (public for testing only).
   bool SetKeywords(const wxString& text);
+  
+  /// Override a local property.
+  void SetProperty(const wxString& name, const wxString& value);
 
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;

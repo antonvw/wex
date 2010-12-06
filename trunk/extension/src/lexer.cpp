@@ -476,6 +476,20 @@ bool wxExLexer::SetKeywords(const wxString& value)
   return true;
 }
 
+void wxExLexer::SetProperty(const wxString& name, const wxString& value)
+{
+  for (
+    auto it = m_Properties.begin();
+    it != m_Properties.end();
+    ++it)
+  {
+    if (it->GetName() == name)
+    {
+      it->Set(value);
+    }
+  }
+}
+
 int wxExLexer::UsableCharactersPerLine() const
 {
   // We always use lines with 80 characters. We adjust this here for

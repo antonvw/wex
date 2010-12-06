@@ -27,6 +27,8 @@
 class wxStyledTextCtrl;
 
 /// Collection of all lexers.
+/// The lexers are read in from lexers.xml, this is done
+/// automatically during the first Get call.
 class WXDLLIMPEXP_BASE wxExLexers
 {
 public:
@@ -97,7 +99,7 @@ public:
   const std::vector<wxExProperty> ParseNodeProperties(
     const wxXmlNode* node) const;
 
-  /// Reads all containers (first clears them )from file.
+  /// Reads all lexers (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   bool Read();
 

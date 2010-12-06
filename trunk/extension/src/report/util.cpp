@@ -14,6 +14,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
+#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/regex.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/util.h>
@@ -147,6 +149,29 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
   }
 
   return true;
+}
+
+int wxExGetIconID(const wxExFileName& filename)
+{
+  if (filename.GetStat().IsOk())
+  {
+    if (filename.DirExists(filename.GetFullPath()))
+    {
+      return wxFileIconsTable::folder;
+    }
+    else if (!filename.GetExt().empty())
+    {
+      return wxTheFileIconsTable->GetIconID(filename.GetExt());
+    }
+    else
+    {
+      return wxFileIconsTable::file;
+    }
+  }
+  else
+  {
+    return wxFileIconsTable::computer;
+  }
 }
 
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)

@@ -11,15 +11,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/stdpaths.h> // strangely enough, for wxTheFileIconsTable
-#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/extension/filename.h>
 #include <wx/extension/lexers.h>
-
-wxExFileName::wxExFileName()
-  : wxFileName()
-{
-}
 
 wxExFileName::wxExFileName(const wxString& fullpath, wxPathFormat format)
   : wxFileName(fullpath, format)
@@ -43,28 +36,5 @@ wxExFileName::wxExFileName(const wxFileName& filename)
   if (lexers != NULL)
   {
     m_Lexer = lexers->FindByFileName(*this);
-  }
-}
-
-int wxExFileName::GetIconID() const
-{
-  if (m_Stat.IsOk())
-  {
-    if (DirExists(GetFullPath()))
-    {
-      return wxFileIconsTable::folder;
-    }
-    else if (!GetExt().empty())
-    {
-      return wxTheFileIconsTable->GetIconID(GetExt());
-    }
-    else
-    {
-      return wxFileIconsTable::file;
-    }
-  }
-  else
-  {
-    return wxFileIconsTable::computer;
   }
 }

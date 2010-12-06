@@ -22,7 +22,7 @@ class WXDLLIMPEXP_BASE wxExFileName : public wxFileName
   friend class wxExFile; // it might update stat
 public:
   /// Default constructor.
-  wxExFileName();
+  wxExFileName() : wxFileName() {;};
 
   /// Constructor taking a full filename.
   wxExFileName(const wxString& fullpath, wxPathFormat format = wxPATH_NATIVE);
@@ -38,9 +38,6 @@ public:
     Assign(f.GetFullPath());
     return *this;
   };
-
-  /// Gets the icon index for this filename (uses the file extension to get it).
-  int GetIconID() const;
 
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};

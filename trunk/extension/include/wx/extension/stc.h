@@ -255,6 +255,9 @@ public:
 
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer);
+  
+  /// Sets prop name and value.
+  void SetProperty(const wxString& name, const wxString& value);
 
   /// Sets the text.
   void SetText(const wxString& value);
@@ -316,6 +319,9 @@ private:
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
 
+  // We use a separate lexer here as well,
+  // though m_File offers one, as you can manually override
+  // the lexer.
   wxExLexer m_Lexer;
   wxExSTCFile m_File;
   wxExVi m_vi;

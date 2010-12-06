@@ -18,10 +18,10 @@
 
 #if wxUSE_GUI
 /// Offers a dialog to set several items in the config.
+/// If you only specify a wxCANCEL button, the dialog is readonly.
 /// You can also use the dialog modeless (then you can use wxAPPLY
 /// to store the items in the config).
 /// When pressing the apply button OnCommandConfigDialog is invoked from wxExFrame.
-/// If you only specify a wxCANCEL button, the dialog is readonly.
 class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 {
 public:

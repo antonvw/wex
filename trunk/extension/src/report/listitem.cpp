@@ -74,7 +74,7 @@ void wxExListItem::Insert(long index)
 
   if (m_FileName.GetStat().IsOk())
   {
-    SetImage(m_FileName.GetIconID());
+    SetImage(wxExGetIconID(m_FileName));
   }
   else
   {

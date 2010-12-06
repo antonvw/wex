@@ -13,7 +13,7 @@
 \mainpage wxextension Main Page
 
 wxextension contains a collection of wxWidgets extension classes.
-It uses <a href="http://www.wxwidgets.org/">wxWidgets 2.9.2</a> 
+It uses <a href="http://www.wxwidgets.org/">wxWidgets 2.9.1</a> 
 and STL classes. There are also some
 classes to support database programming using the 
 <a href="http://otl.sourceforge.net/">Oracle and ODBC Template Library</a>.
