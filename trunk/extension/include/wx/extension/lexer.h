@@ -46,6 +46,11 @@ public:
     wxStyledTextCtrl* stc,
     bool show_error = true);
 
+  /// Reapply properties.
+  bool ApplyProperties(
+    wxStyledTextCtrl* stc,
+    bool show_error = true);
+
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
 

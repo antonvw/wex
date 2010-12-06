@@ -23,6 +23,12 @@ wxExProperty::wxExProperty(const wxXmlNode* node)
   }
 }
 
+wxExProperty::wxExProperty(const wxString& name, const wxString& value)
+  : m_Name(name)
+  , m_Value(value)
+{
+}
+  
 void wxExProperty::Apply(wxStyledTextCtrl* stc) const
 {
   if (IsOk())

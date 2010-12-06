@@ -268,12 +268,12 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command == "zE")
   {
     m_STC->SetProperty("fold", "0");
-    m_STC->SetLexer(m_STC->GetLexer().GetScintillaLexer());
+    m_STC->SetProperties();
   }
   else if (command == "zf")
   {
     m_STC->SetProperty("fold", "1");
-    m_STC->SetLexer(m_STC->GetLexer().GetScintillaLexer());
+    m_STC->SetProperties();
   }
   else if (command == "ZZ")
   {

@@ -103,6 +103,28 @@ bool wxExLexer::ApplyLexer(
   return m_IsOk;
 }
 
+bool wxExLexer::ApplyProperties(
+  wxStyledTextCtrl* stc,
+  bool show_error)
+{
+  stc->StyleClearAll();
+
+  wxExLexers::Get()->ApplyIndicators(stc);
+  wxExLexers::Get()->ApplyProperties(stc);
+  wxExLexers::Get()->ApplyMarkers(stc);
+  
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
+
+  for_each (m_Styles.begin(), m_Styles.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+
+  // And finally colour the entire document.
+  stc->Colourise(0, stc->GetLength() - 1);
+
+  return true;
+}
+
 const std::vector<wxExStyle> wxExLexer::AutoMatch(
   const wxString& lexer) const
 {
@@ -486,8 +508,11 @@ void wxExLexer::SetProperty(const wxString& name, const wxString& value)
     if (it->GetName() == name)
     {
       it->Set(value);
+      return;
     }
   }
+
+  m_Properties.push_back(wxExProperty(name, value));
 }
 
 int wxExLexer::UsableCharactersPerLine() const

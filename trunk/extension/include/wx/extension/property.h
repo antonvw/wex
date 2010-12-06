@@ -19,6 +19,9 @@ class WXDLLIMPEXP_BASE wxExProperty
 public:
   /// Default constructor.
   wxExProperty(const wxXmlNode* node = NULL);
+  
+  /// Constructor using name, value pair.
+  wxExProperty(const wxString& name, const wxString& value);
 
   /// Applies this property to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
