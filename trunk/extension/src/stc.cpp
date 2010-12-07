@@ -2257,7 +2257,7 @@ bool wxExSTC::SetLexer(const wxString& lexer)
   return true;
 }
 
-void wxExSTC::SetProperty(const wxString& name, const wxString& value)
+void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
 {
   m_Lexer.SetProperty(name, value);
 }

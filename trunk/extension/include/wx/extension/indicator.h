@@ -15,7 +15,7 @@
 
 class wxStyledTextCtrl;
 
-/// This class defines our indicators.
+/// This class defines our scintilla indicators.
 class WXDLLIMPEXP_BASE wxExIndicator
 {
 public:

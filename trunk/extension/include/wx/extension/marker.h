@@ -15,7 +15,7 @@
 
 class wxStyledTextCtrl;
 
-/// This class defines our markers, closely related to scintilla markers.
+/// This class defines our scintilla markers.
 class WXDLLIMPEXP_BASE wxExMarker
 {
 public:

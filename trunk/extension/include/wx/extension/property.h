@@ -14,6 +14,7 @@
 
 class wxStyledTextCtrl;
 
+/// This class defines our scintilla properties.
 class WXDLLIMPEXP_BASE wxExProperty
 {
 public:
@@ -26,7 +27,8 @@ public:
   /// Applies this property to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
-  /// Resets this property
+  /// Resets this property (resets the value of this property
+  /// on the stc component, but does not change the value).
   void ApplyReset(wxStyledTextCtrl* stc) const;
   
   /// Gets the name of this property.
@@ -35,7 +37,7 @@ public:
   /// Returns true if property is valid.
   bool IsOk() const;
   
-  /// Override this property.
+  /// Override this property (so does not apply this property).
   void Set(const wxString& value) {m_Value = value;};
 private:
   void Set(const wxXmlNode* node);

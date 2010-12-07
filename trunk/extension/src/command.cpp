@@ -46,12 +46,20 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
       wxSize(350, 50));
   }
   
+  m_Output.clear();
+
   wxString cwd;
   
   if (!wd.empty())
   {
     cwd = wxGetCwd();
-    wxSetWorkingDirectory(wd);
+    
+    if (!wxSetWorkingDirectory(wd))
+    {
+      wxLogError(_("Cannot set working directory"));
+      m_Error = true;
+      return -1;
+    }
   }
 
   wxArrayString output;
@@ -77,8 +85,6 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   {
     wxSetWorkingDirectory(cwd);
   }
-
-  m_Output.clear();
 
   // First output the errors.
   for (

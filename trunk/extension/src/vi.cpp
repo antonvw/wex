@@ -11,7 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/tokenzr.h> 
+#include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/command.h>
 #include <wx/extension/file.h>
@@ -267,13 +267,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command == "zE")
   {
-    m_STC->SetProperty("fold", "0");
-    m_STC->SetProperties();
+    m_STC->SetLexerProperty("fold", "0");
+    m_STC->GetLexer().Apply(m_STC);
   }
   else if (command == "zf")
   {
-    m_STC->SetProperty("fold", "1");
-    m_STC->SetProperties();
+    m_STC->SetLexerProperty("fold", "1");
+    m_STC->GetLexer().Apply(m_STC);
   }
   else if (command == "ZZ")
   {
@@ -978,9 +978,7 @@ bool wxExVi::SetSelection(
   const auto begin_line = ToLineNumber(begin_address);
   const auto end_line = ToLineNumber(end_address);
 
-  if (begin_line == 0 || 
-      end_line == 0 ||
-      end_line < begin_line)
+  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
     return false;
   }
@@ -1007,17 +1005,15 @@ bool wxExVi::Substitute(
     return false;
   }
 
-  m_STC->SetSearchFlags(wxSTC_FIND_REGEXP);
-
   const auto begin_line = ToLineNumber(begin_address);
   const auto end_line = ToLineNumber(end_address);
 
-  if (begin_line == 0 || 
-      end_line == 0 || 
-      end_line < begin_line)
+  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
     return false;
   }
+
+  m_STC->SetSearchFlags(m_SearchFlags);
 
   int nr_replacements = 0;
 
@@ -1185,19 +1181,18 @@ bool wxExVi::Write(
   const auto begin_line = ToLineNumber(begin_address);
   const auto end_line = ToLineNumber(end_address);
 
-  if (begin_line == 0 || end_line == 0)
+  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
     return false;
   }
-
-  const auto start = m_STC->PositionFromLine(begin_line - 1);
-  const auto end = m_STC->PositionFromLine(end_line);
 
   wxFile file(filename, wxFile::write);
 
   return 
     file.IsOpened() && 
-    file.Write(m_STC->GetTextRange(start, end));
+    file.Write(m_STC->GetTextRange(
+      m_STC->PositionFromLine(begin_line - 1), 
+      m_STC->PositionFromLine(end_line)));
 }
 
 void wxExVi::Yank(int lines) const

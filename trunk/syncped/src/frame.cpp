@@ -715,7 +715,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_VCS: 
     if (wxExVCS::Get()->ConfigDialog(this) == wxID_OK)
     {
-      GetVCSMenu()->BuildVCS(wxExVCS::Get()->Use());
+      GetVCSMenu()->BuildVCS();
     }
     break;
     

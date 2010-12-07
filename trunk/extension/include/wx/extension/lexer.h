@@ -34,20 +34,18 @@ public:
   /// Constructor using xml node.
   wxExLexer(const wxXmlNode* node);
 
-  /// Sets scintilla lexer for specified lexer and stc 
+  /// Applies this lexer to stc component
   /// (and colours the component).
+  void Apply(wxStyledTextCtrl* stc) const;
+
+  /// Sets scintilla lexer for specified lexer and stc. 
   /// Returns true if a scintilla lexer has been set.
   /// If show_error is true, a log error message is given
   /// if a lexer was specified, but could not be set.
   /// The is ok member is set as well according to whether the
-  /// lexer could be set.
+  /// lexer could be set. Calls Apply.
   bool ApplyLexer(
     const wxString& lexer, 
-    wxStyledTextCtrl* stc,
-    bool show_error = true);
-
-  /// Reapply properties.
-  bool ApplyProperties(
     wxStyledTextCtrl* stc,
     bool show_error = true);
 

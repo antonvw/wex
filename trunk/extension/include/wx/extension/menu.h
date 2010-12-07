@@ -82,11 +82,11 @@ public:
   /// Appends VCS menu items.
   void AppendVCS(const wxExFileName& filename);
 
-  /// Builds VCS menu items.
-  void BuildVCS(bool fill);
+  /// Builds VCS main menu items.
+  void BuildVCS();
 
   /// Is the VCS menu build?
-  bool IsVCSBuild() const {return m_MenuVCSFilled;};
+  bool IsVCSBuild() const {return GetMenuItemCount() > 0;};
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};
@@ -94,7 +94,6 @@ public:
   /// Sets the style.
   void SetStyle(long style) {m_Style = style;};
 private:
-  bool m_MenuVCSFilled;
   long m_Style;
 };
 #endif // wxUSE_GUI

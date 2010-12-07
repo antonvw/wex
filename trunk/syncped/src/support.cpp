@@ -17,7 +17,6 @@
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stc.h>
@@ -116,7 +115,7 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSubMenu(menuMore, _("More"));
   menuEdit->AppendSeparator();
   
-  m_MenuVCS->BuildVCS(wxExVCS::Get()->Use());
+  m_MenuVCS->BuildVCS();
   menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_MENU_VCS);
   menuEdit->AppendSeparator();
 

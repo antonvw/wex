@@ -256,11 +256,9 @@ public:
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer);
   
-  /// Sets prop name and value.
-  void SetProperty(const wxString& name, const wxString& value);
-
-  /// Sets properties
-  void SetProperties() {m_Lexer.ApplyProperties(this);};
+  /// Sets lexer prop name and value,
+  /// but does not apply them.
+  void SetLexerProperty(const wxString& name, const wxString& value);
 
   /// Sets the text.
   void SetText(const wxString& value);

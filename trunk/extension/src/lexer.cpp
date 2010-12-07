@@ -34,16 +34,53 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   Set(node);
 }
 
-bool wxExLexer::ApplyLexer(
-  const wxString& lexer, 
-  wxStyledTextCtrl* stc,
-  bool show_error)
+void wxExLexer::Apply(wxStyledTextCtrl* stc) const
 {
   stc->ClearDocumentStyle();
   
   for_each (m_Properties.begin(), m_Properties.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
 
+  // Reset keywords, also if no lexer is available.
+  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
+  {
+    stc->SetKeyWords(setno, wxEmptyString);
+  }
+
+  // Readme: The Scintilla lexer only recognized lower case words, apparently.
+  for (
+    auto it = m_KeywordsSet.begin();
+    it != m_KeywordsSet.end();
+    ++it)
+  {
+    stc->SetKeyWords(
+      it->first,
+      GetKeywordsString(it->first).Lower());
+  }
+  
+  wxExLexers::Get()->GetDefaultStyle().Apply(stc);
+
+  stc->StyleClearAll();
+
+  wxExLexers::Get()->ApplyIndicators(stc);
+  wxExLexers::Get()->ApplyProperties(stc);
+  wxExLexers::Get()->ApplyMarkers(stc);
+  
+  for_each (m_Properties.begin(), m_Properties.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
+
+  for_each (m_Styles.begin(), m_Styles.end(), 
+    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+
+  // And finally colour the entire document.
+  stc->Colourise(0, stc->GetLength() - 1);
+}
+
+bool wxExLexer::ApplyLexer(
+  const wxString& lexer, 
+  wxStyledTextCtrl* stc,
+  bool show_error)
+{
   // Even if the lexer is empty.
   (*this) = wxExLexers::Get()->FindByName(lexer);
   
@@ -65,64 +102,9 @@ bool wxExLexer::ApplyLexer(
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }
 
-  // Reset keywords, also if no lexer is available.
-  for (size_t setno = 0; setno < wxSTC_KEYWORDSET_MAX; setno++)
-  {
-    stc->SetKeyWords(setno, wxEmptyString);
-  }
-
-  // Readme: The Scintilla lexer only recognized lower case words, apparently.
-  for (
-    auto it = m_KeywordsSet.begin();
-    it != m_KeywordsSet.end();
-    ++it)
-  {
-    stc->SetKeyWords(
-      it->first,
-      GetKeywordsString(it->first).Lower());
-  }
-
-  wxExLexers::Get()->GetDefaultStyle().Apply(stc);
-
-  stc->StyleClearAll();
-
-  wxExLexers::Get()->ApplyGlobalStyles(stc);
-  wxExLexers::Get()->ApplyIndicators(stc);
-  wxExLexers::Get()->ApplyProperties(stc);
-  wxExLexers::Get()->ApplyMarkers(stc);
-  
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
-
-  for_each (m_Styles.begin(), m_Styles.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-
-  // And finally colour the entire document.
-  stc->Colourise(0, stc->GetLength() - 1);
+  Apply(stc);
   
   return m_IsOk;
-}
-
-bool wxExLexer::ApplyProperties(
-  wxStyledTextCtrl* stc,
-  bool show_error)
-{
-  stc->StyleClearAll();
-
-  wxExLexers::Get()->ApplyIndicators(stc);
-  wxExLexers::Get()->ApplyProperties(stc);
-  wxExLexers::Get()->ApplyMarkers(stc);
-  
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
-
-  for_each (m_Styles.begin(), m_Styles.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-
-  // And finally colour the entire document.
-  stc->Colourise(0, stc->GetLength() - 1);
-
-  return true;
 }
 
 const std::vector<wxExStyle> wxExLexer::AutoMatch(

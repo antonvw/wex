@@ -25,13 +25,11 @@
 
 wxExMenu::wxExMenu(long style)
   : m_Style(style)
-  , m_MenuVCSFilled(false)
 {
 }
 
 wxExMenu::wxExMenu(const wxExMenu& menu)
   : m_Style(menu.m_Style)
-  , m_MenuVCSFilled(menu.m_MenuVCSFilled)
 {
 }
 
@@ -230,18 +228,15 @@ void wxExMenu::AppendVCS(const wxExFileName& filename)
 // This is the general VCS menu, it is in the main menu,
 // and because contents depends on actual VCS used,
 // it is rebuild after change of VCS system.
-void wxExMenu::BuildVCS(bool fill)
+void wxExMenu::BuildVCS()
 {
-  if (m_MenuVCSFilled)
+  for (int i = 0; i < GetMenuItemCount(); i++)
   {
-    for (int i = 0; i < GetMenuItemCount(); i++)
-    {
-      wxMenuItem* item = FindItemByPosition(i);
-      Destroy(item);
-    }
+    wxMenuItem* item = FindItemByPosition(i);
+    Destroy(item);
   }
 
-  if (fill)
+  if (wxExVCS::Get()->Use())
   {
     const int vcs_offset_id = ID_VCS_LOWEST + 1;
     
@@ -250,13 +245,6 @@ void wxExMenu::BuildVCS(bool fill)
       this, 
       wxExFileName(), 
       false); // no popup
-      
-    if (GetMenuItemCount() == 0)
-    {
-      fill = false;
-    }
   }
-
-  m_MenuVCSFilled = fill;
 }
 #endif // wxUSE_GUI
