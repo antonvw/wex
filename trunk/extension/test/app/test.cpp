@@ -354,6 +354,7 @@ void wxExAppTestFixture::testLog()
 void wxExAppTestFixture::testMenu()
 {
   wxExMenu menu;
+  CPPUNIT_ASSERT(!menu.IsVCSBuild());
   
   menu.AppendSeparator();
   menu.AppendSeparator();
@@ -364,13 +365,7 @@ void wxExAppTestFixture::testMenu()
   menu.AppendBars();
   CPPUNIT_ASSERT(menu.GetMenuItemCount() > 0);
   
-  CPPUNIT_ASSERT(!menu.IsVCSBuild());
-  
-  menu.BuildVCS(true);
-  CPPUNIT_ASSERT(menu.IsVCSBuild());
-  
-  menu.BuildVCS(false);
-  CPPUNIT_ASSERT(!menu.IsVCSBuild());
+  // See alo testVCS.
 }
 
 void wxExAppTestFixture::testNotebook()
@@ -541,6 +536,11 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.Read());
   CPPUNIT_ASSERT( vcs.SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());
+  
+  wxExMenu menu;
+  CPPUNIT_ASSERT(!menu.IsVCSBuild());
+  menu.BuildVCS();
+  CPPUNIT_ASSERT( menu.IsVCSBuild());
 }
 
 void wxExAppTestFixture::testVCSCommand()
