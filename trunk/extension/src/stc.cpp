@@ -999,6 +999,28 @@ bool wxExSTC::FindNext(
   }
 }
 
+void wxExSTC::Fold()
+{
+  if (GetProperty("fold") == "1")
+  {
+    SetMarginWidth(m_MarginFoldingNumber, 
+      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+    SetFoldFlags(
+      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
+        wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
+        
+    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
+    {
+      FoldAll();
+    }
+  }
+  else
+  {
+    SetMarginWidth(m_MarginFoldingNumber, 0);
+  }
+}
+  
 void wxExSTC::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
@@ -2228,24 +2250,7 @@ bool wxExSTC::SetLexer(const wxString& lexer)
     return false;
   }
   
-  if (GetProperty("fold") == "1")
-  {
-    SetMarginWidth(m_MarginFoldingNumber, 
-      wxConfigBase::Get()->ReadLong(_("Folding"), 16));
-    SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
-      wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
-        wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
-        
-    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
-    {
-      FoldAll();
-    }
-  }
-  else
-  {
-    SetMarginWidth(m_MarginFoldingNumber, 0);
-  }
+  Fold();
   
   if (lexer == "diff")
   {

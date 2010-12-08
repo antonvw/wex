@@ -135,6 +135,9 @@ public:
     const wxString& text, 
     int search_flags = 0,
     bool find_next = true);
+    
+  /// Folds.
+  void Fold();
 
   /// Gets EOL string.
   const wxString GetEOL() const;
@@ -152,7 +155,7 @@ public:
 
   /// Gets current flags.
   long GetFlags() const {return m_Flags;};
-
+  
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
 

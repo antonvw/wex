@@ -269,11 +269,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     m_STC->SetLexerProperty("fold", "0");
     m_STC->GetLexer().Apply(m_STC);
+    m_STC->Fold();
   }
   else if (command == "zf")
   {
     m_STC->SetLexerProperty("fold", "1");
     m_STC->GetLexer().Apply(m_STC);
+    m_STC->Fold();
   }
   else if (command == "ZZ")
   {
