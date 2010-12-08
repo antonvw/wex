@@ -161,6 +161,8 @@ private:
   wxExListView* m_FocusListView;
   wxExSTC* m_FocusSTC;
   wxExSTC* m_FocusSTCFind; // focs before find dlg was activated
+  
+  bool m_IsCommand;
 
   DECLARE_EVENT_TABLE()
 };

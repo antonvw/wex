@@ -79,6 +79,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   , m_FocusSTC(NULL)
   , m_FocusSTCFind(NULL)
   , m_MenuBar(NULL)
+  , m_IsCommand(false)
 {
   Initialize();
 
@@ -218,6 +219,8 @@ void wxExFrame::Initialize()
 
 void wxExFrame::OnCommand(wxCommandEvent& command)
 {
+  m_IsCommand = true;
+
   switch (command.GetId())
   {
   case wxID_FIND: 
@@ -461,14 +464,15 @@ void wxExFrame::SetMenuBar(wxMenuBar* bar)
     m_MenuBar = bar;
   }
   
-  if (!wxConfigBase::Get()->ReadBool("ShowMenuBar", true))
+  if (
+    !m_IsCommand &&
+    !wxConfigBase::Get()->ReadBool("ShowMenuBar", true))
   {
     wxFrame::SetMenuBar(NULL);
   }
   else
   {
-    wxASSERT(m_MenuBar != NULL);
-    wxFrame::SetMenuBar(m_MenuBar);
+    wxFrame::SetMenuBar(bar);
   }
 }
 
