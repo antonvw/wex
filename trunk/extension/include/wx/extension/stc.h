@@ -182,6 +182,9 @@ public:
   /// Guesses the type.
   void GuessType();
 
+  /// Indent range of lines.
+  void Indent(int begin, int end, bool forward);
+  
   /// Indents lines from current position.
   void Indent(int lines, bool forward = true);
   

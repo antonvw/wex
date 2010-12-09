@@ -443,7 +443,7 @@ bool wxExVi::DoCommandRange(const wxString& command)
 {
   // :[address] m destination
   // :[address] s [/pattern/replacement/] [options] [count]
-  wxStringTokenizer tkz(command.AfterFirst(':'), "dmsyw");
+  wxStringTokenizer tkz(command.AfterFirst(':'), "dmsyw><");
   
   if (!tkz.HasMoreTokens())
   {
@@ -505,6 +505,14 @@ bool wxExVi::DoCommandRange(const wxString& command)
   case 'w':
     return Write(begin_address, end_address, tkz.GetString());
     break;
+    
+  case '>':
+    return Indent(begin_address, end_address, true);
+    break;
+  case '<':
+    return Indent(begin_address, end_address, false);
+    break;
+    
   default:
     wxFAIL;
     return false;
@@ -677,6 +685,29 @@ void wxExVi::GotoBrace() const
       m_STC->GotoPos(brace_match);
     }
   }
+}
+
+bool wxExVi::Indent(
+  const wxString& begin_address, 
+  const wxString& end_address, 
+  bool forward)
+{
+  if (m_STC->GetReadOnly())
+  {
+    return false;
+  }
+  
+  const auto begin_line = ToLineNumber(begin_address);
+  const auto end_line = ToLineNumber(end_address);
+
+  if (begin_line == 0 || end_line == 0 || end_line < begin_line)
+  {
+    return false;
+  }
+
+  m_STC->Indent(begin_line - 1, end_line, forward);
+  
+  return true;
 }
 
 void wxExVi::InsertMode(

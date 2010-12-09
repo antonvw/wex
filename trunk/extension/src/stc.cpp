@@ -1353,15 +1353,14 @@ void wxExSTC::HexDecCalltip(int pos)
   }
 }
 
-void wxExSTC::Indent(int lines, bool forward)
-{
-  const auto line = LineFromPosition(GetCurrentPos());
 
+void wxExSTC::Indent(int begin, int end, bool forward)
+{
   BeginUndoAction();
 
-  for (auto i = 0; i < lines; i++)
+  for (auto i = 0; i <= end - begin; i++)
   {
-    const auto start = PositionFromLine(line + i);
+    const auto start = PositionFromLine(begin + i);
 
     if (forward)
     {
@@ -1373,10 +1372,17 @@ void wxExSTC::Indent(int lines, bool forward)
       Remove(start, start + GetIndent());
     }
     
-    MarkerAddChange(line + i);
+    MarkerAddChange(begin + i);
   }
 
   EndUndoAction();
+}
+
+void wxExSTC::Indent(int lines, bool forward)
+{
+  const auto line = LineFromPosition(GetCurrentPos());
+
+  Indent(line, line + lines - 1, forward);
 }
 
 void wxExSTC::Initialize()

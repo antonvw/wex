@@ -64,6 +64,10 @@ private:
   bool DoCommandRange(const wxString& command);
   void FindWord(bool find_next = true) const;
   void GotoBrace() const;
+  bool Indent(
+    const wxString& begin_address, 
+    const wxString& end_address, 
+    bool forward);
   void InsertMode(
     const wxUniChar c = 'i', 
     int repeat = 1,
