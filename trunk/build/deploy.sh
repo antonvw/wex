@@ -18,8 +18,8 @@ tar cf syncped.tar \
  
 gzip syncped.tar
 
-cp syncped.tar.gz ~/syncped/bin
+mv syncped.tar.gz ~/syncped/bin
 
-cd syncped/bin
+cd ~/syncped/bin
 
 svn commit -m "deployed syncped"
