@@ -8,12 +8,18 @@
 # Run this file in the build folder
 
 tar cf syncped.tar \
-  gccgtk2/syncped \
+  gccgtk2_dll/syncped \
   ../extension/data/lexers.xml \
   ../extension/data/vcs.xml \
-  ~/wxWidgets-2.9.1/locale/wxstd.mo \
+  ~/wxWidgets-2.9.1/locale/nl.mo \
   ../extension/locale/wxextension-nl.mo \
   ../extension/locale/wxstd-xxx-nl.mo \
   ../syncped/locale/syncped-nl.mo
  
 gzip syncped.tar
+
+cp syncped.tar.gz ~/syncped/bin
+
+cd syncped/bin
+
+svn commit -m "deployed syncped"
