@@ -222,7 +222,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
-    info.SetVersion("1.0.3");
+    info.SetVersion("1.0.4");
     info.SetCopyright("(c) 2008-2010, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);

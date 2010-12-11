@@ -7,4 +7,13 @@
 # Copyright: (c) 2010 Anton van Wezenbeek
 ################################################################################
 
-find -name *.po Doxyfile *.h *.cpp -exec sed s/$1/$2/ '{}' \;
+if [ $# -ne 2 ]
+then
+  echo "Usage: `basename $0` old-version-no new-version-no"
+  exit 1
+fi
+
+find -name *.po -exec sed -i s/$1/$2/ '{}' \;
+find -name Doxyfile -exec sed -i s/$1/$2/ '{}' \;
+find -name *.h -exec sed -i s/$1/$2/ '{}' \;
+find -name *.cpp -exec sed -i s/$1/$2/ '{}' \;
