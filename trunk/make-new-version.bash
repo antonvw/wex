@@ -7,4 +7,4 @@
 # Copyright: (c) 2010 Anton van Wezenbeek
 ################################################################################
 
-sed -i s/$1/$2 *.po
+find -name *.po Doxyfile *.h *.cpp -exec sed s/$1/$2/ '{}' \;
