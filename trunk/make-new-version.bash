@@ -13,7 +13,8 @@ then
   exit 1
 fi
 
-find -name *.po -exec sed -i s/$1/$2/ '{}' \;
-find -name Doxyfile -exec sed -i s/$1/$2/ '{}' \;
-find -name *.h -exec sed -i s/$1/$2/ '{}' \;
-find -name *.cpp -exec sed -i s/$1/$2/ '{}' \;
+find -name "Doxyfile" -exec sed -i s/$1/$2/ '{}' \;
+find -name "*.cpp" -exec sed -i s/$1/$2/ '{}' \;
+find -name "*.h" -exec sed -i s/$1/$2/ '{}' \;
+find -name "*.htm" -exec sed -i s/$1/$2/ '{}' \;
+find -name "*.po" -exec sed -i s/$1/$2/ '{}' \;
