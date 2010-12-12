@@ -501,7 +501,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetDescription(description);
     info.SetCopyright("(c) 1998-2010, Anton van Wezenbeek. " 
       + wxString(_("All rights reserved.")));
-    info.SetWebSite("http://syncped.1.xpdev-hosted.com/index.htm");
+    info.SetWebSite(
+      "http://syncped.1.xpdev-hosted.com/tags/v" + APPL_VERSION + "/index.htm");
     wxAboutBox(info);
     }
     break;
