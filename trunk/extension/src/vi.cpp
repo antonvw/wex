@@ -208,6 +208,14 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     m_STC->Cut();
     m_STC->EndUndoAction();
   }
+  // this one should be first, so rJ will match
+  else if (command.Matches("*r?") && !m_STC->GetReadOnly())
+  {
+    m_STC->wxStyledTextCtrl::Replace(
+      m_STC->GetCurrentPos(), 
+      m_STC->GetCurrentPos() + repeat, 
+      wxString(command.Last(), repeat));
+  }
   else if (command.Matches("*f?"))
   {
     for (auto i = 0; i < repeat; i++) 
@@ -233,13 +241,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     DeleteMarker(command.Last());
     m_Markers[command.Last()] = m_STC->GetCurrentLine();
     m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol.GetNo());
-  }
-  else if (command.Matches("*r?") && !m_STC->GetReadOnly())
-  {
-    m_STC->wxStyledTextCtrl::Replace(
-      m_STC->GetCurrentPos(), 
-      m_STC->GetCurrentPos() + repeat, 
-      wxString(command.Last(), repeat));
   }
   else if (command.EndsWith("yw"))
   {
