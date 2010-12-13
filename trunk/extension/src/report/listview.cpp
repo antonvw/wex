@@ -607,14 +607,12 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
 
         menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
       }
-      else if (GetSelectedItemCount() == 1)
+      
+      if (wxExVCS::Get()->DirExists(
+        wxExListItem(this, GetFirstSelected()).GetFileName()))
       {
-        if (wxExVCS::Get()->DirExists(
-          wxExListItem(this, GetFirstSelected()).GetFileName()))
-        {
-          menu.AppendSeparator();
-          menu.AppendVCS(wxExListItem(this, GetFirstSelected()).GetFileName());
-        }
+        menu.AppendSeparator();
+        menu.AppendVCS(wxExListItem(this, GetFirstSelected()).GetFileName());
       }
     }
 
