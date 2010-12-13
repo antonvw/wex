@@ -759,9 +759,8 @@ void wxExSTC::ConfigGet()
   SetMarginWidth(
     m_MarginDividerNumber, 
     wxConfigBase::Get()->ReadLong(_("Divider"), 16));
-  SetMarginWidth(
-    m_MarginFoldingNumber, 
-    wxConfigBase::Get()->ReadLong(_("Folding"), 16));
+    
+  Fold();
 
   const auto margin = wxConfigBase::Get()->ReadLong(
     _("Line number"), 
@@ -1001,7 +1000,10 @@ bool wxExSTC::FindNext(
 
 void wxExSTC::Fold()
 {
-  if (GetProperty("fold") == "1")
+  if (
+     GetProperty("fold") == "1" &&
+     m_Lexer.IsOk() &&
+    !m_Lexer.GetScintillaLexer().empty())
   {
     SetMarginWidth(m_MarginFoldingNumber, 
       wxConfigBase::Get()->ReadLong(_("Folding"), 16));
