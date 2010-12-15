@@ -54,6 +54,8 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_COPY, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_CUT, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
@@ -567,9 +569,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       else if (editor->GetFileName() == 
           wxExVCS::Get()->GetFileName())
       {
-        if (wxExVCS::Get()->Read())
-        {
-        }
+        wxExVCS::Get()->Read();
       }
     }
     break;
@@ -981,6 +981,13 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxID_UNDO:
           event.Enable(editor->CanUndo());
           break;
+          
+        case wxID_COPY:
+          event.Enable(!editor->GetSelectedText().empty());
+          break;
+        case wxID_CUT:
+          event.Enable(!editor->GetSelectedText().empty() && !editor->GetReadOnly());
+          break;
 
         case ID_EDIT_CONTROL_CHAR:
           if (editor->GetReadOnly() && editor->GetSelectedText().length() != 1)
@@ -1012,6 +1019,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         {
           switch (event.GetId())
           {
+          case wxID_COPY:
+          case wxID_CUT:
+            event.Enable(list->GetSelectedItemCount() > 0);
+            break;
+
           case wxID_FIND:
             event.Enable(list->GetItemCount() > 0);
             break;

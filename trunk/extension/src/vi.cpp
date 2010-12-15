@@ -299,7 +299,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
     if (it != m_Markers.end())
     {
-      m_STC->GotoLine(it->second);
+      m_STC->GotoLineAndSelect(it->second + 1);
     }
     else
     {
@@ -626,7 +626,7 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   else if (command.IsNumber())
   {
-    m_STC->GotoLine(atoi(command.c_str()) - 1);
+    m_STC->GotoLineAndSelect(atoi(command.c_str()));
   }
   else
   {

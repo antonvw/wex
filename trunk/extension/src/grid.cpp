@@ -432,6 +432,8 @@ void wxExGrid::OnFocus(wxFocusEvent& event)
   {
     focusevent.SetEventObject(NULL);
   }
+  
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExGrid::OnGrid(wxGridEvent& event)

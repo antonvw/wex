@@ -628,8 +628,11 @@ void wxExListView::OnFocus(wxFocusEvent& event)
   }
   else
   {
+    wxExFrame::StatusText(wxEmptyString, "PaneItems");
     focusevent.SetEventObject(NULL);
   }
+  
+  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExListView::OnList(wxListEvent& event)

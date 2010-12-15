@@ -1550,8 +1550,9 @@ void wxExSTC::MacroPlayback()
 void wxExSTC::MarkerAddChange(int line)
 {
   if (
-    wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) &&
-    m_File.GetFileName().GetStat().IsOk())
+    !GetReadOnly() &&
+     wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange) &&
+     m_File.GetFileName().GetStat().IsOk())
   {
     MarkerAdd(line, m_MarkerChange.GetNo());
   }

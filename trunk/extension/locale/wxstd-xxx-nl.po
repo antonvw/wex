@@ -23,3 +23,9 @@ msgstr "&Ga naar"
 
 msgid "About "
 msgstr "Info "
+
+msgid "&Cancel"
+msgstr "&Annuleren"
+
+msgid "Cancel"
+msgstr "Annuleren"

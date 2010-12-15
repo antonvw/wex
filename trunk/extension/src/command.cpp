@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/infobar.h>
 #include <wx/extension/command.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/log.h>
@@ -112,7 +113,12 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 #if wxUSE_GUI
 void wxExCommand::ShowOutput(const wxString& caption) const
 {
-  if (m_Dialog != NULL && !m_Output.empty())
+  if (m_Output.empty())
+  {
+    wxInfoBar(wxTheApp->GetTopWindow()).ShowMessage(
+      _("Output is empty"));
+  }
+  else if (m_Dialog != NULL)
   {
     m_Dialog->SetText(m_Output);
     m_Dialog->SetTitle(caption.empty() ? m_Command: caption);

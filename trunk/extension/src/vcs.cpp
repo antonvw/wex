@@ -308,7 +308,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
       wxConfigBase::Get()->Read(_("Flags")));
   }
 
-  return (Execute() < 0 || GetOutput().empty() ? wxID_CANCEL: wxID_OK);
+  return (Execute() < 0 ? wxID_CANCEL: wxID_OK);
 }
 #endif
 
@@ -425,6 +425,8 @@ bool wxExVCS::Read()
   }
 
   // Initialize members.
+  const int old_entries = m_Entries.size();
+  
   m_Entries.clear();
   wxExVCSEntry::ResetInstances();
 
@@ -441,6 +443,14 @@ bool wxExVCS::Read()
     child = child->GetNext();
   }
 
+  // If current number of entries differs from old one,
+  // we added or removed an entry. That might give problems
+  // with the vcs id stored in the config, so reset it. 
+  if (old_entries != m_Entries.size())
+  {
+    wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
+  }
+  
   return true;
 }
 
