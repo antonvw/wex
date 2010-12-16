@@ -21,6 +21,7 @@ int wxExVCSEntry::m_Instances = wxExVCS::VCS_AUTO + 1;
 wxExVCSEntry::wxExVCSEntry()
   : m_No(-1)
   , m_Name()
+  , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
   , m_SupportKeywordExpansion(false)
 {
 }
@@ -28,6 +29,9 @@ wxExVCSEntry::wxExVCSEntry()
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : m_No(m_Instances++)
   , m_Name(node->GetAttribute("name"))
+  , m_FlagsLocation(
+      (node->GetAttribute("flags-location") == "prefix" ?
+         VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX)
   , m_SupportKeywordExpansion(
       node->GetAttribute("keyword-expansion") == "true")
 {

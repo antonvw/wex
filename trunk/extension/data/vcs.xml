@@ -12,7 +12,8 @@ Copyright: (c) 2010, Anton van Wezenbeek
   <!--
    Each <vcs> has a name atribute (name of vcs used), and
    a number of <commands>. 
-   Each <vcs> can also have a keyword-expansion attribute.
+   Each <vcs> can also have a keyword-expansion attribute (default false),
+   and a flags-location attribute (default postfix).
    
    Each <command> will be a menu item, the attribute type indicates
    how this item will be used, if type is 'popup' the item is only

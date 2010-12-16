@@ -21,6 +21,12 @@ class wxMenu;
 class WXDLLIMPEXP_BASE wxExVCSEntry
 {
 public:
+  enum wxExVCSEntryFlagsLocation
+  {
+    VCS_FLAGS_LOCATION_POSTFIX,
+    VCS_FLAGS_LOCATION_PREFIX,
+  };
+  
   /// Default constructor.
   wxExVCSEntry();
   
@@ -36,6 +42,9 @@ public:
   /// Gets the command.
   const wxExVCSCommand GetCommand(int command_id) const;
 
+  /// Gets the flags location.
+  const int GetFlagsLocation() const {return m_FlagsLocation;};
+  
   /// Gets the name.
   const wxString& GetName() const {return m_Name;};
 
@@ -53,6 +62,7 @@ private:
 
   static int m_Instances;
 
+  const int m_FlagsLocation;
   const wxString m_Name;
   const long m_No;
   const bool m_SupportKeywordExpansion;

@@ -205,7 +205,8 @@ long wxExVCS::Execute()
   wxString wd;
   wxString file;
   
-  const wxString name = FindVCSEntry(m_Files[0]).GetName();
+  const vcs = FindVCSEntry(m_Files[0]);
+  const wxString name = vcs.GetName();
   const wxFileName filename(m_Files[0]);
 
   if (!filename.IsOk())
@@ -288,9 +289,18 @@ long wxExVCS::Execute()
     return -1;
   }
 
-  return wxExCommand::Execute(
-    bin + " " + m_Command.GetCommand() + subcommand + flags + comment + file, 
-    wd);
+  if (vcs.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
+  {
+    return wxExCommand::Execute(
+      bin + " " + m_Command.GetCommand() + subcommand + flags + comment + file, 
+      wd);
+  }
+  else
+  {
+    return wxExCommand::Execute(
+      bin + " " + flags + m_Command.GetCommand() + subcommand + comment + file, 
+      wd);
+  }
 }
 
 #if wxUSE_GUI
