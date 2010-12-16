@@ -616,7 +616,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 
   if (vcs.IsOpenCommand())
   {
-    if (vcs.ExecuteDialog(frame) == wxID_OK && !vcs.GetOutput().empty())
+    if (vcs.ExecuteDialog(frame) == wxID_OK)
     {
       if (!vcs.GetError())
       {

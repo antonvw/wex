@@ -20,7 +20,7 @@ wxExVCSCommand::wxExVCSCommand()
   , m_SubMenu()
   , m_SubMenuIsCommand(false)
   , m_No(0)
-  , m_Type(VCS_COMMAND_IS_UNKNOWN) 
+  , m_Type(VCS_COMMAND_IS_BOTH) 
 {
 }
 
@@ -39,22 +39,20 @@ wxExVCSCommand::wxExVCSCommand(
   
 int wxExVCSCommand::From(const wxString& type) const
 {
-  if (type.IsEmpty())
+  long command = VCS_COMMAND_IS_BOTH;
+  
+  if (type.Contains("popup"))
   {
-    return VCS_COMMAND_IS_BOTH;
+    command = VCS_COMMAND_IS_POPUP;
   }
-  else if (type == "popup")
+  else if (type.Contains("main"))
   {
-    return VCS_COMMAND_IS_POPUP;
+    command = VCS_COMMAND_IS_MAIN;
   }
-  else if (type == "main")
-  {
-    return VCS_COMMAND_IS_MAIN;
-  }
-  else
-  {
-    return VCS_COMMAND_IS_UNKNOWN;
-  }
+  
+  long flags = (type.Contains("separator") ? VCS_COMMAND_SEPARATOR: 0);
+  
+  return command | flags;
 }
 
 const wxString wxExVCSCommand::GetCommand(

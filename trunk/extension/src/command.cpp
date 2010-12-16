@@ -66,14 +66,14 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   wxArrayString errors;
   long retValue;
 
-  // Call wxExcute to execute the vcs command and
+  // Call wxExecute to execute the command and
   // collect the output and the errors.
   if ((retValue = wxExecute(
     m_Command,
     output,
     errors)) == -1)
   {
-    // See also process, same log is shown.
+    // See also wxExProcess, same log error is shown.
     wxLogError(_("Cannot execute") + ": " + m_Command);
   }
   else
@@ -94,10 +94,13 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   {
     m_Output += errors[i] + "\n";
   }
-  
+
+  // Set the error member variable, 
+  // we have an error if there were errors, or the
+  // command could not be executed.  
   m_Error = !errors.empty() || retValue == -1;
 
-  // Then the normal output, will be empty if there are errors.
+  // Then add the normal output, will be empty if there are errors.
   for (
     size_t j = 0;
     j < output.GetCount();
@@ -112,11 +115,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 #if wxUSE_GUI
 void wxExCommand::ShowOutput(const wxString& caption) const
 {
-  if (m_Output.empty())
-  {
-    wxMessageBox(_("Output is empty"));
-  }
-  else if (m_Dialog != NULL)
+  if (m_Dialog != NULL)
   {
     m_Dialog->SetText(m_Output);
     m_Dialog->SetTitle(caption.empty() ? m_Command: caption);

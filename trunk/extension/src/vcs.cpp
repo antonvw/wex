@@ -200,7 +200,6 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(m_Command.GetType() != wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
   wxASSERT(!m_Files.empty());
 
   wxString wd;
@@ -522,28 +521,17 @@ int wxExVCS::ShowDialog(wxWindow* parent)
     v.push_back(wxExConfigItem(_("Subcommand")));
   }
   
-  if (v.empty())
-  {
-    return wxMessageBox(m_Caption);
-  }
-  else
-  {
-    return wxExConfigDialog(parent,
-      v,
-      m_Caption).ShowModal();
-  }
+  return wxExConfigDialog(parent,
+    v,
+    m_Caption).ShowModal();
 }
 #endif
 
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
-  if (m_Files.empty())
-  {
-    return;
-  }
-  
-  const wxExFileName filename(m_Files[0]);
+  const wxExFileName filename((!m_Files.empty() ? 
+    m_Files[0]: wxString(wxEmptyString)));
   
   // Add a lexer when appropriate.
   if (m_Command.IsOpen() && !GetError() && m_Command.GetCommand() != "log")

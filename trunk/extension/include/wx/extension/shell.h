@@ -21,7 +21,7 @@
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
 /// parent, with the command available as event.GetString().
-/// - If you press Ctrl-Q in the shell, i
+/// - If you press Ctrl-Q in the shell,
 ///   a ID_SHELL_COMMAND_STOP is sent to the parent.
 /// - If you enter 'history', all previously entered commands are shown.
 /// - If you enter !\<number\> the previous \<number\> command is entered.

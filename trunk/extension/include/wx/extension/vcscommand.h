@@ -16,12 +16,12 @@
 class WXDLLIMPEXP_BASE wxExVCSCommand
 {
 public:
-  enum
+  enum wxExVCSCommandType
   {
-    VCS_COMMAND_IS_BOTH,
-    VCS_COMMAND_IS_POPUP,
-    VCS_COMMAND_IS_MAIN,
-    VCS_COMMAND_IS_UNKNOWN,
+    VCS_COMMAND_IS_BOTH     = 0x0001, ///< command in main and popup menu 
+    VCS_COMMAND_IS_POPUP    = 0x0002, ///< command in popup menu 
+    VCS_COMMAND_IS_MAIN     = 0x0004, ///< command in main menu 
+    VCS_COMMAND_SEPARATOR   = 0x0010, ///< command is followed by a separator
   };
   
   /// Default constructor.
@@ -49,7 +49,7 @@ public:
   const wxString& GetSubMenu() const {return m_SubMenu;};
 
   /// Gets the type.
-  int GetType() const {return m_Type;};
+  long GetType() const {return m_Type;};
   
   /// Returns true if this is a add like command.
   bool IsAdd() const;
@@ -86,6 +86,6 @@ private:
 
   bool m_SubMenuIsCommand;
   int m_No;
-  int m_Type;
+  long m_Type;
 };
 #endif

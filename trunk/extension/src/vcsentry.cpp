@@ -121,8 +121,10 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
       submenu = NULL;
     }
+    
+    const long type = it->GetType() & 0x000F;
 
-    switch (it->GetType())
+    switch (type)
     {
       case wxExVCSCommand::VCS_COMMAND_IS_BOTH: add = true; break;
       case wxExVCSCommand::VCS_COMMAND_IS_POPUP: add = is_popup; break;
@@ -137,6 +139,13 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
       usemenu->Append(
         base_id + it->GetNo(), 
         wxExEllipsed(it->GetCommand(false, true))); // use no sub and do accel
+        
+      const long sep  = it->GetType() & 0x00F0;
+      
+      if (sep)
+      {
+        usemenu->AppendSeparator();
+      }
     }
   }
 

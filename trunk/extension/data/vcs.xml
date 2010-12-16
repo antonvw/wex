@@ -13,14 +13,18 @@ Copyright: (c) 2010, Anton van Wezenbeek
    Each <vcs> has a name atribute (name of vcs used), and
    a number of <commands>. 
    Each <vcs> can also have a keyword-expansion attribute.
+   
    Each <command> will be a menu item, the attribute type indicates
-   how this item will be used, if type is popup the item is only
-   on the popup menu, if type is main, the item is only on the
-   main menu, if not given, both on popup and main menu. 
-   You can set an accelerator everywhere using an & char (&amp;).
+   how this item will be used, if type is 'popup' the item is only
+   on the popup menu, if type is 'main', the item is only on the
+   main menu, if not given, both on popup and main menu. If the
+   type attribute contains extra 'separator' text, then the command
+   will be followed by a separator on the menu.
    Each <command> can also have a submenu or subcomand attribute, 
    the former is shown as a submenu using the name as specified.
    The latter is handled the same, but also used as command to execute.
+   
+   You can set an accelerator everywhere using an & char (&amp;).
    -->
   
   <vcs

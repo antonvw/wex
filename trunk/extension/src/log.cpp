@@ -58,17 +58,17 @@ wxExLog* wxExLog::Get(bool createOnDemand)
 
 bool wxExLog::Log(const wxString& text, bool add_timestamp ) const
 {
-  if (m_Logging) 
+  if (!m_Logging) 
   {
-    wxFile file(m_FileName.GetFullPath(), wxFile::write_append);
-
-    return 
-      file.IsOpened() &&
-      file.Write((add_timestamp ? wxDateTime::Now().Format() + " ": "") 
-        + text + wxTextFile::GetEOL());
+    return false;
   }
+  
+  wxFile file(m_FileName.GetFullPath(), wxFile::write_append);
 
-  return false;
+  return 
+    file.IsOpened() &&
+    file.Write((add_timestamp ? wxDateTime::Now().Format() + " ": "") 
+      + text + wxTextFile::GetEOL());
 }
 
 wxExLog* wxExLog::Set(wxExLog* log)
