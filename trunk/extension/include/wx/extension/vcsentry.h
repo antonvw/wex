@@ -40,7 +40,7 @@ public:
 #endif
   
   /// Gets the command.
-  const wxExVCSCommand GetCommand(int command_id) const;
+  const wxExVCSCommand GetCommand(int menu_id) const;
 
   /// Gets the flags location.
   const int GetFlagsLocation() const {return m_FlagsLocation;};

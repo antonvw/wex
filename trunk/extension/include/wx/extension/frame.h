@@ -16,6 +16,7 @@
 #include <wx/extension/statusbar.h>
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
+#include <wx/extension/vcs.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -84,12 +85,10 @@ public:
     const wxString& match = wxEmptyString,
     long flags = 0);
 
-  /// Allows you to open a filename with specified contents.
-  /// The unique argument can be used as addition for a key in the notebook.
+  /// Allows you to open a filename with info from vcs.
   virtual bool OpenFile(
     const wxExFileName& WXUNUSED(filename),
-    const wxString& WXUNUSED(unique),
-    const wxString& WXUNUSED(contents),
+    const wxExVCS& WXUNUSED(vcs),
     long flags = 0) {return false;};
     
   /// Override from base class.

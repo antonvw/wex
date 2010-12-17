@@ -30,7 +30,7 @@ public:
   /// Constructor, specify command and type.
   /// The submenu member is set to specified submenu if not empty,
   /// otherwise to specified subcommand.
-  /// Increments the no.
+  /// Sets the no to number of instances and increments the instances.
   wxExVCSCommand(
     const wxString& command,
     const wxString& type = wxEmptyString,
@@ -53,6 +53,9 @@ public:
   
   /// Returns true if this is a add like command.
   bool IsAdd() const;
+  
+  /// Returns true if this is a blame like command.
+  bool IsBlame() const;
 
   /// Returns true if this is a checkout like command.
   bool IsCheckout() const;
@@ -66,6 +69,9 @@ public:
   /// Returns true if this is a help like command.
   bool IsHelp() const;
 
+  /// Returns true if this is a history like command.
+  bool IsHistory() const;
+  
   /// Returns true if this command can behave like
   /// opening a file.
   bool IsOpen() const;

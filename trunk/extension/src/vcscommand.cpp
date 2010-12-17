@@ -80,6 +80,13 @@ bool wxExVCSCommand::IsAdd() const
     GetCommand(false) == "add";
 }
 
+bool wxExVCSCommand::IsBlame() const
+{
+  return 
+    GetCommand(false) == "blame" ||
+    GetCommand(false) == "print";
+}
+
 bool wxExVCSCommand::IsCheckout() const
 {
   return 
@@ -91,13 +98,14 @@ bool wxExVCSCommand::IsCommit() const
 {
   return 
     GetCommand(false) == "commit" ||
-    GetCommand(false) == "ci";
+    GetCommand(false) == "ci" ||
+    GetCommand(false) == "delta";
 }
 
 bool wxExVCSCommand::IsDiff() const
 {
   return 
-    GetCommand(false) == "diff";
+    GetCommand(false).Contains("diff");
 }
 
 bool wxExVCSCommand::IsHelp() const
@@ -106,13 +114,21 @@ bool wxExVCSCommand::IsHelp() const
     GetCommand(false) == "help";
 }
 
+bool wxExVCSCommand::IsHistory() const
+{
+  return 
+    GetCommand(false) == "log";
+}
+
 bool wxExVCSCommand::IsOpen() const
 {
   return
-    GetCommand(false) == "blame" ||
     GetCommand(false) == "cat" ||
-    GetCommand(false) == "log" ||
-    IsDiff();
+    GetCommand(false) == "prs" ||
+    GetCommand(false) == "prt" ||
+    IsBlame() ||
+    IsDiff() ||
+    IsHistory();
 }
 
 bool wxExVCSCommand::IsUpdate() const

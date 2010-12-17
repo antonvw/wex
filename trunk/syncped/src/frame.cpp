@@ -1048,10 +1048,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
 bool Frame::OpenFile(
   const wxExFileName& filename,
-  const wxString& unique,
-  const wxString& contents,
+  const wxExVCS& vcs,
   long flags)
 {
+  const wxString unique = vcs.GetCommandWithFlags();
+  const wxString contents = vcs.GetOutput();
   const wxString key = filename.GetFullPath() + unique;
 
   auto* page = m_NotebookWithEditors->GetPageByKey(key);
@@ -1065,11 +1066,11 @@ bool Frame::OpenFile(
       flags,
       filename.GetFullName() + " " + unique);
 
-    if (unique.Contains("diff"))
+    if (vcs.GetCommand().IsDiff())
     {
       editor->SetLexer("diff");
     }
-    else if (unique.Contains("log"))
+    else if (vcs.GetCommand().IsHistory())
     {
       editor->SetLexer("");
     }
@@ -1077,8 +1078,8 @@ bool Frame::OpenFile(
     {
       editor->SetLexer(filename.GetLexer().GetScintillaLexer());
     }
-
-    if (unique.Contains("blame"))
+    
+    if (vcs.GetCommand().IsBlame())
     {
       // Do not show an edge for blamed documents, they are too wide.
       editor->SetEdgeMode(wxSTC_EDGE_NONE);
@@ -1089,11 +1090,13 @@ bool Frame::OpenFile(
       key,
       filename.GetFullName() + " " + unique,
       true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(filename)));
+      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+        wxExGetIconID(filename)));
   }
   else
   {
-    m_NotebookWithEditors->SetSelection(m_NotebookWithEditors->GetPageIndex(page));
+    m_NotebookWithEditors->SetSelection(
+      m_NotebookWithEditors->GetPageIndex(page));
   }
 
   return true;

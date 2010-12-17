@@ -532,7 +532,7 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.GetCommandWithFlags().empty());
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
   CPPUNIT_ASSERT( vcs.GetOutput().empty());
-  CPPUNIT_ASSERT(!vcs.IsOpenCommand());
+  CPPUNIT_ASSERT(!vcs.GetCommand().IsOpen());
   CPPUNIT_ASSERT( vcs.Read());
   CPPUNIT_ASSERT( vcs.SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());
@@ -548,11 +548,12 @@ void wxExAppTestFixture::testVCSCommand()
   wxExVCSCommand::ResetInstances();
   
   const wxExVCSCommand add("a&dd");
+  const wxExVCSCommand blame("blame");
   const wxExVCSCommand co("checkou&t");
   const wxExVCSCommand commit("commit", "main");
   const wxExVCSCommand diff("diff", "popup", "submenu");
+  const wxExVCSCommand log("log", "main");
   const wxExVCSCommand help("h&elp", "error", "", "m&e");
-  const wxExVCSCommand open("blame");
   const wxExVCSCommand update("update");
   const wxExVCSCommand none;
 
@@ -569,28 +570,30 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(update.GetNo() != commit.GetNo());
   CPPUNIT_ASSERT(update.GetNo() != diff.GetNo());
   CPPUNIT_ASSERT(update.GetNo() != help.GetNo());
-  CPPUNIT_ASSERT(update.GetNo() != open.GetNo());
+  CPPUNIT_ASSERT(update.GetNo() != blame.GetNo());
   CPPUNIT_ASSERT(update.GetNo() != none.GetNo());
 
   CPPUNIT_ASSERT(add.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  CPPUNIT_ASSERT(blame.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
   CPPUNIT_ASSERT(commit.GetType() == wxExVCSCommand::VCS_COMMAND_IS_MAIN);
   CPPUNIT_ASSERT(diff.GetType() == wxExVCSCommand::VCS_COMMAND_IS_POPUP);
-  CPPUNIT_ASSERT(help.GetType() == wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
-  CPPUNIT_ASSERT(open.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  CPPUNIT_ASSERT(help.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
 
   CPPUNIT_ASSERT(add.IsAdd());
+  CPPUNIT_ASSERT(blame.IsBlame());
   CPPUNIT_ASSERT(co.IsCheckout());
   CPPUNIT_ASSERT(commit.IsCommit());
   CPPUNIT_ASSERT(diff.IsDiff());
   CPPUNIT_ASSERT(help.IsHelp());
-  CPPUNIT_ASSERT(open.IsOpen());
+  CPPUNIT_ASSERT(log.IsHistory());
+  CPPUNIT_ASSERT(blame.IsOpen());
   CPPUNIT_ASSERT(update.IsUpdate());
 
   CPPUNIT_ASSERT(add.GetSubMenu().empty());
   CPPUNIT_ASSERT(diff.GetSubMenu() == "submenu");
   CPPUNIT_ASSERT(help.GetSubMenu() == "m&e");
 
-  CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN);
+  CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
 }
 
 void wxExAppTestFixture::testVCSEntry()

@@ -85,16 +85,14 @@ public:
   /// Returns the vcs object.
   static wxExVCS* Get(bool createOnDemand = true);
 
+  /// Gets the command.  
+  const wxExVCSCommand& GetCommand() const {return m_Command;};
+
   /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
   
   /// Gets the xml filename.
   const wxFileName& GetFileName() {return m_FileName;};
-
-  /// Returns true if this command can behave like
-  /// opening a file.  
-  bool IsOpenCommand() const {
-    return m_Command.IsOpen();};
 
   /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.

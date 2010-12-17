@@ -614,7 +614,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 {
   wxExVCS vcs(id, files);
 
-  if (vcs.IsOpenCommand())
+  if (vcs.GetCommand().IsOpen())
   {
     if (vcs.ExecuteDialog(frame) == wxID_OK)
     {
@@ -622,8 +622,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
       {
         frame->OpenFile(
           files.size() == 1 ? files[0]: "VCS", 
-          vcs.GetCommandWithFlags(), 
-          vcs.GetOutput(),
+          vcs,
           wxExSTC::STC_WIN_READ_ONLY);
       }
       else

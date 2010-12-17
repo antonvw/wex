@@ -205,8 +205,8 @@ long wxExVCS::Execute()
   wxString wd;
   wxString file;
   
-  const vcs = FindVCSEntry(m_Files[0]);
-  const wxString name = vcs.GetName();
+  const wxExVCSEntry vcs = FindVCSEntry(m_Files[0]);
+  const wxString name(vcs.GetName());
   const wxFileName filename(m_Files[0]);
 
   if (!filename.IsOk())
@@ -215,7 +215,7 @@ long wxExVCS::Execute()
 
     if (m_Command.IsAdd())
     {
-      file = " " + wxExConfigFirstOf(_("Path"));
+      file = wxExConfigFirstOf(_("Path"));
     }
   }
   else
@@ -227,17 +227,17 @@ long wxExVCS::Execute()
         it != m_Files.end();
         it++)
       {
-        file += " " + *it;
+        file += *it + " ";
       }
     }
     else if (name == "git")
     {
       wd = filename.GetPath();
-      file = " \"" + filename.GetFullName() + "\"";
+      file = "\"" + filename.GetFullName() + "\"";
     }
     else
     {
-      file = " \"" + filename.GetFullPath() + "\"";
+      file = "\"" + filename.GetFullPath() + "\"";
     }
   }
 
@@ -246,7 +246,7 @@ long wxExVCS::Execute()
   if (m_Command.IsCommit())
   {
     comment = 
-      " -m \"" + wxExConfigFirstOf(_("Revision comment")) + "\"";
+      "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
   }
 
   wxString subcommand;
@@ -257,7 +257,7 @@ long wxExVCS::Execute()
 
     if (!subcommand.empty())
     {
-      subcommand = " " + subcommand;
+      subcommand += " ";
     }
   }
 
@@ -269,7 +269,7 @@ long wxExVCS::Execute()
 
     if (!flags.empty())
     {
-      flags = " " + flags;
+      flags += " ";
 
       // If we specified help flags, we do not need a file argument.      
       if (flags.Contains("help"))
@@ -401,18 +401,7 @@ void wxExVCS::Initialize(int menu_id)
   const wxExVCSEntry vcs = FindVCSEntry(
     !m_Files.empty() ? m_Files[0]: wxString(wxEmptyString));
   
-  int command_id = 0;
-
-  if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
-  {
-    command_id = menu_id - ID_VCS_LOWEST - 1;
-  }
-  else if (menu_id > ID_EDIT_VCS_LOWEST && menu_id < ID_EDIT_VCS_HIGHEST)
-  {
-    command_id = menu_id - ID_EDIT_VCS_LOWEST - 1;
-  }
-
-  m_Command = vcs.GetCommand(command_id);
+  m_Command = vcs.GetCommand(menu_id);
   m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
   m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
 }
@@ -544,7 +533,7 @@ void wxExVCS::ShowOutput(const wxString& caption) const
     m_Files[0]: wxString(wxEmptyString)));
   
   // Add a lexer when appropriate.
-  if (m_Command.IsOpen() && !GetError() && m_Command.GetCommand() != "log")
+  if (m_Command.IsOpen() && !GetError() && !m_Command.IsHistory())
   {
     if (filename.GetLexer().IsOk())
     {

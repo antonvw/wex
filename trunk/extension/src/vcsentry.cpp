@@ -31,7 +31,7 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
       (node->GetAttribute("flags-location") == "prefix" ?
-         VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX)
+         VCS_FLAGS_LOCATION_PREFIX: VCS_FLAGS_LOCATION_POSTFIX))
   , m_SupportKeywordExpansion(
       node->GetAttribute("keyword-expansion") == "true")
 {
@@ -133,7 +133,6 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
       case wxExVCSCommand::VCS_COMMAND_IS_BOTH: add = true; break;
       case wxExVCSCommand::VCS_COMMAND_IS_POPUP: add = is_popup; break;
       case wxExVCSCommand::VCS_COMMAND_IS_MAIN: add = !is_popup; break;
-      case wxExVCSCommand::VCS_COMMAND_IS_UNKNOWN: add = false; break;
       default: wxFAIL;
     }
 
@@ -158,8 +157,19 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
 #endif
 
-const wxExVCSCommand wxExVCSEntry::GetCommand(int command_id) const
+const wxExVCSCommand wxExVCSEntry::GetCommand(int menu_id) const
 {
+  int command_id = -1;
+
+  if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
+  {
+    command_id = menu_id - ID_VCS_LOWEST - 1;
+  }
+  else if (menu_id > ID_EDIT_VCS_LOWEST && menu_id < ID_EDIT_VCS_HIGHEST)
+  {
+    command_id = menu_id - ID_EDIT_VCS_LOWEST - 1;
+  }
+
   if (command_id >= m_Commands.size() || command_id < 0)
   {
     return wxExVCSCommand();

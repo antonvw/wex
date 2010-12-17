@@ -48,8 +48,7 @@ private:
     int commandid = wxID_APPLY);
   virtual bool OpenFile(
     const wxExFileName& filename,
-    const wxString& unique,
-    const wxString& contents,
+    const wxExVCS& vcs,
     long flags = 0);
   virtual void SyncCloseAll(wxWindowID id);
 

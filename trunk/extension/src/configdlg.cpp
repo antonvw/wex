@@ -98,7 +98,7 @@ void wxExConfigDialog::Layout(int rows, int cols)
   if (m_ConfigItems.empty())
   {
     AddUserSizer(CreateTextSizer(
-      _("No further info available"),
+      _("No further info available")),
       wxSizerFlags().Center());
     LayoutSizers();
     return;
