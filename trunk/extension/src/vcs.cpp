@@ -292,13 +292,13 @@ long wxExVCS::Execute()
   if (vcs.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
   {
     return wxExCommand::Execute(
-      bin + " " + m_Command.GetCommand() + subcommand + flags + comment + file, 
+      bin + " " + m_Command.GetCommand() + " " + subcommand + flags + comment + file, 
       wd);
   }
   else
   {
     return wxExCommand::Execute(
-      bin + " " + flags + m_Command.GetCommand() + subcommand + comment + file, 
+      bin + " " + flags + m_Command.GetCommand() + " " + subcommand + comment + file, 
       wd);
   }
 }
