@@ -121,6 +121,7 @@ private:
   bool CheckPath(const wxString& vcs, const wxFileName& fn) const;
   bool CheckPathAll(const wxString& vcs, const wxFileName& fn) const;
   const wxExVCSEntry FindVCSEntry(const wxFileName& filename) const;
+  const wxString GetFile() const;
   void Initialize(int command_id);
   int ShowDialog(wxWindow* parent);
   bool UseFlags() const {

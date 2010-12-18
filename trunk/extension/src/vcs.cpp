@@ -180,13 +180,12 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
+  const wxExVCSEntry vcs = FindVCSEntry(GetFile());
+  const wxString name(vcs.GetName());
+  const wxFileName filename(GetFile());
+
   wxString wd;
   wxString file;
-
-  const wxString fn = !m_Files.empty() ? m_Files[0]: wxString(wxEmptyString);  
-  const wxExVCSEntry vcs = FindVCSEntry(fn);
-  const wxString name(vcs.GetName());
-  const wxFileName filename(fn);
 
   if (!filename.IsOk())
   {
@@ -377,10 +376,14 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
+const wxString wxExVCS::GetFile() const
+{
+  return (m_Files.empty() ? wxString(wxEmptyString): m_Files[0]);
+}
+
 void wxExVCS::Initialize(int menu_id)
 {
-  const wxExVCSEntry vcs = FindVCSEntry(
-    !m_Files.empty() ? m_Files[0]: wxString(wxEmptyString));
+  const wxExVCSEntry vcs = FindVCSEntry(GetFile());
   
   m_Command = vcs.GetCommand(menu_id);
   m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
@@ -510,8 +513,7 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
-  const wxExFileName filename((!m_Files.empty() ? 
-    m_Files[0]: wxString(wxEmptyString)));
+  const wxExFileName filename(GetFile());
   
   // Add a lexer when appropriate.
   if (m_Command.IsOpen() && !GetError() && !m_Command.IsHistory())
@@ -545,8 +547,7 @@ void wxExVCS::ShowOutput(const wxString& caption) const
 
 bool wxExVCS::SupportKeywordExpansion() const
 {
-  return FindVCSEntry((!m_Files.empty() ? 
-    m_Files[0]: wxString(wxEmptyString))).SupportKeywordExpansion();
+  return FindVCSEntry(GetFile()).SupportKeywordExpansion();
 }
 
 bool wxExVCS::Use() const
