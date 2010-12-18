@@ -1,6 +1,13 @@
-......................
+...................F...
 
 
-OK (22 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  22   Failures: 1   Errors: 0
+
+
+1) test: testVCS (F) line: 545 ../extension/test/app/test.cpp
+assertion failed
+- Expression: menu.IsVCSBuild()
 
 
