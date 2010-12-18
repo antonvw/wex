@@ -520,7 +520,9 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  wxExVCS vcs(ID_EDIT_VCS_LOWEST + 1, TEST_FILE);
+  wxArrayString ar;
+  ar.Add(TEST_FILE);
+  wxExVCS vcs(ID_EDIT_VCS_LOWEST + 1, ar);
 
   CPPUNIT_ASSERT( vcs.BuildMenu(100, new wxMenu("test"), wxFileName(TEST_FILE)) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(wxFileName(TEST_FILE)));
@@ -540,7 +542,9 @@ void wxExAppTestFixture::testVCS()
   wxExMenu menu;
   CPPUNIT_ASSERT(!menu.IsVCSBuild());
   menu.BuildVCS();
-  CPPUNIT_ASSERT( menu.IsVCSBuild());
+  // The default VCS (auto) is used,
+  // so without a path, no VCS will be built.
+  CPPUNIT_ASSERT(!menu.IsVCSBuild());
 }
 
 void wxExAppTestFixture::testVCSCommand()
