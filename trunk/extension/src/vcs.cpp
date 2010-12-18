@@ -258,8 +258,6 @@ long wxExVCS::Execute()
     }
   }
 
-  m_CommandWithFlags = m_Command.GetCommand() + flags;
-
   const wxString bin = wxConfigBase::Get()->Read(name, "svn");
 
   if (bin.empty())
@@ -267,6 +265,8 @@ long wxExVCS::Execute()
     wxLogError(name + " " + _("path is empty"));
     return -1;
   }
+
+  m_CommandWithFlags = m_Command.GetCommand() + " " + flags;
 
   if (vcs.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
   {
@@ -346,6 +346,8 @@ const wxExVCSEntry wxExVCS::FindVCSEntry(const wxFileName& filename) const
       }
     }
   }
+  
+  return wxExVCSEntry();
 }
 
 wxExVCS* wxExVCS::Get(bool createOnDemand)
