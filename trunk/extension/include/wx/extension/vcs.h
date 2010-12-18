@@ -42,16 +42,14 @@ public:
   /// it both constructs and reads the vcs.
   wxExVCS(const wxFileName& filename);
 
-  /// Constructor, specify the menu command id and a file.
-  wxExVCS(int menu_id, const wxString& file = wxEmptyString);
-  
   /// Constructor, specify the menu command id and several files.
-  wxExVCS(int menu_id, const wxArrayString& files);
+  /// If the files array is empty, ShowDialog will show
+  /// a combobox for selecting a vcs folder.
+  wxExVCS(int menu_id, const wxArrayString& files = wxArrayString());
   
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
   /// Returns number of items in menu.
-  /// Sets the files member if you filename is ok.
   int BuildMenu(
     int base_id, 
     wxMenu* menu, 
@@ -132,12 +130,12 @@ private:
   
   wxExVCSCommand m_Command;
 
+  wxArrayString m_Files;
   wxString m_Caption;
   wxString m_CommandWithFlags;
   wxString m_FlagsKey;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
-  static wxArrayString m_Files;
   static wxFileName m_FileName;
   static wxExVCS* m_Self;
 };

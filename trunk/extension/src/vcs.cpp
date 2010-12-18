@@ -23,7 +23,6 @@
 #include <wx/extension/util.h>
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
-wxArrayString wxExVCS::m_Files;
 wxFileName wxExVCS::m_FileName;
 wxExVCS* wxExVCS::m_Self = NULL;
 
@@ -32,21 +31,9 @@ wxExVCS::wxExVCS(const wxFileName& filename)
   m_FileName = filename;
 }
 
-wxExVCS::wxExVCS(int menu_id, const wxString& file)
-{
-  if (wxFileName(file).IsOk())
-  {
-    m_Files.Clear();
-    m_Files.Add(file);
-  }
-  
-  Initialize(menu_id);
-}
-
 wxExVCS::wxExVCS(int menu_id, const wxArrayString& files)
+  : m_Files(files)
 {
-  m_Files = files;
-  
   Initialize(menu_id);
 }
 
@@ -57,14 +44,7 @@ int wxExVCS::BuildMenu(
   const wxFileName& filename,
   bool is_popup)
 {
-  if (filename.IsOk())
-  {
-    m_Files.Clear();
-    m_Files.Add(filename.GetFullPath());
-  }
-  
-  return FindVCSEntry((!m_Files.empty() ? 
-    m_Files[0]: wxString(wxEmptyString))).BuildMenu(base_id, menu, is_popup);
+  return FindVCSEntry(filename).BuildMenu(base_id, menu, is_popup);
 }
 #endif
 
@@ -200,14 +180,13 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  wxASSERT(!m_Files.empty());
-
   wxString wd;
   wxString file;
-  
-  const wxExVCSEntry vcs = FindVCSEntry(m_Files[0]);
+
+  const wxString fn = !m_Files.empty() ? m_Files[0]: wxString(wxEmptyString);  
+  const wxExVCSEntry vcs = FindVCSEntry(fn);
   const wxString name(vcs.GetName());
-  const wxFileName filename(m_Files[0]);
+  const wxFileName filename(fn);
 
   if (!filename.IsOk())
   {

@@ -243,7 +243,7 @@ void wxExMenu::BuildVCS()
     wxExVCS::Get()->BuildMenu(
       vcs_offset_id, 
       this, 
-      wxExFileName(), 
+      wxExFileName(),
       false); // no popup
   }
 }
