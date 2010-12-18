@@ -12,7 +12,8 @@
 /*!
 \mainpage wxextension Main Page
 
-wxextension contains a collection of wxWidgets extension classes.
+This is a <a href="http://svn.xp-dev.com/svn/wxextension/" public source code library</a>
+containing a collection of wxWidgets extension classes.
 
 <p>
 It uses <a href="http://www.wxwidgets.org/">wxWidgets 2.9.1</a> 
