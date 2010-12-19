@@ -65,6 +65,7 @@ END_EVENT_TABLE()
 
 std::vector <wxString> wxExSTC::m_Macro;
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
+int wxExSTC::m_Zoom = -1;
 
 wxExSTC::wxExSTC(wxWindow *parent, 
   const wxString& value,
@@ -1418,6 +1419,15 @@ void wxExSTC::Initialize()
   SetMarginType(m_MarginFoldingNumber, wxSTC_MARGIN_SYMBOL);
   SetMarginMask(m_MarginFoldingNumber, wxSTC_MASK_FOLDERS);
   SetMarginSensitive(m_MarginFoldingNumber, true);
+  
+  if (m_Zoom == -1)
+  {
+    m_Zoom = GetZoom();
+  }
+  else
+  {
+    SetZoom(m_Zoom);
+  }
 
   UsePopUp(false); // we have our own
 
@@ -1709,11 +1719,13 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     break;
     
   case ID_EDIT_ZOOM_IN:
-    SetZoom(GetZoom() + 1);
+    m_Zoom++;
+    SetZoom(m_Zoom);
     break;
 
   case ID_EDIT_ZOOM_OUT:
-    SetZoom(GetZoom() - 1);
+    m_Zoom--;
+    SetZoom(m_Zoom);
     break;
 
   default: wxFAIL; break;

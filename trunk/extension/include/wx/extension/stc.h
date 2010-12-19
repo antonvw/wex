@@ -338,6 +338,7 @@ private:
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
   static std::vector <wxString> m_Macro;
+  static int m_Zoom;
 
   DECLARE_EVENT_TABLE()
 };
