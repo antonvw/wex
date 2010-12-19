@@ -388,6 +388,11 @@ void wxExVCS::Initialize(int menu_id)
   m_Command = vcs.GetCommand(menu_id);
   m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
   m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
+  
+  if (!m_Command.IsHelp() && m_Files.size() == 1)
+  {
+    m_Caption += " " + m_Files[0];
+  }
 }
 
 bool wxExVCS::Read()
@@ -513,11 +518,11 @@ int wxExVCS::ShowDialog(wxWindow* parent)
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
-  const wxExFileName filename(GetFile());
-  
   // Add a lexer when appropriate.
   if (m_Command.IsOpen() && !GetError() && !m_Command.IsHistory())
   {
+    const wxExFileName filename(GetFile());
+  
     if (filename.GetLexer().IsOk())
     {
       GetDialog()->SetLexer(filename.GetLexer().GetScintillaLexer());
@@ -532,16 +537,7 @@ void wxExVCS::ShowOutput(const wxString& caption) const
     GetDialog()->SetLexer(wxEmptyString);
   }
 
-  wxString my_caption = m_Caption;
-      
-  if (!m_Command.IsHelp())
-  {
-    my_caption += " " + (filename.IsOk() ?  
-      filename.GetFullName(): 
-      wxExConfigFirstOf(_("Base folder")));
-  }
-
-  wxExCommand::ShowOutput(my_caption);
+  wxExCommand::ShowOutput(m_Caption);
 }
 #endif
 
