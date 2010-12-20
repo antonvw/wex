@@ -522,9 +522,9 @@ void wxExAppTestFixture::testVCS()
 {
   wxArrayString ar;
   ar.Add(TEST_FILE);
-  wxExVCS vcs(ID_EDIT_VCS_LOWEST + 1, ar);
+  wxExVCS vcs(ar, ID_EDIT_VCS_LOWEST + 1);
 
-  CPPUNIT_ASSERT( vcs.BuildMenu(100, new wxMenu("test"), wxFileName(TEST_FILE)) > 0);
+  CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(wxFileName(TEST_FILE)));
     
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
@@ -536,7 +536,7 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.GetOutput().empty());
   CPPUNIT_ASSERT(!vcs.GetCommand().IsOpen());
   CPPUNIT_ASSERT( vcs.Read());
-  CPPUNIT_ASSERT( vcs.SupportKeywordExpansion());
+  CPPUNIT_ASSERT( vcs.GetEntry().SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());
   
   wxExMenu menu;
