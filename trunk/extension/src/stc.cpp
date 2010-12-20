@@ -1968,6 +1968,8 @@ bool wxExSTC::Open(
       &wxExSTC::OnStyledText,
       this,
       wxID_ANY);
+      
+    wxExFrame::StatusText(wxEmptyString, "PaneLines");
 
     return false;
   }
