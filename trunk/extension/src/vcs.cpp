@@ -365,14 +365,22 @@ wxExVCS* wxExVCS::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxString wxExVCS::GetFile() const
-{
-  return (m_Files.empty() ? wxString(wxEmptyString): m_Files[0]);
-}
-
 const wxExVCSEntry wxExVCS::GetEntry() const
 {
   return FindVCSEntry(GetFile());
+}
+
+const wxString wxExVCS::GetFile() const
+{
+  if (m_Files.empty())
+  {
+    return m_Command.GetCommand().empty() ? 
+      wxExConfigFirstOf(_("Base folder")): wxString(wxEmptyString);
+  }
+  else
+  {
+    return m_Files[0];
+  }
 }
 
 void wxExVCS::Initialize(int menu_id)
