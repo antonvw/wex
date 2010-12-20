@@ -42,21 +42,13 @@ public:
   /// it both constructs and reads the vcs.
   wxExVCS(const wxFileName& filename);
 
-  /// Constructor, specify the menu command id and several files.
+  /// Constructor, specify several files and the menu command id.
   /// If the files array is empty, ShowDialog will show
   /// a combobox for selecting a vcs folder.
-  wxExVCS(int menu_id, const wxArrayString& files = wxArrayString());
+  wxExVCS(
+    const wxArrayString& files = wxArrayString(),
+    int menu_id = -1);
   
-#if wxUSE_GUI
-  /// Builds a menu, default assumes it is a popup menu.
-  /// Returns number of items in menu.
-  int BuildMenu(
-    int base_id, 
-    wxMenu* menu, 
-    const wxFileName& filename = wxFileName(),
-    bool is_popup = true);
-#endif
-
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
@@ -90,7 +82,10 @@ public:
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
   
   /// Gets the xml filename.
-  const wxFileName& GetFileName() {return m_FileName;};
+  const wxFileName& GetFileName() const {return m_FileName;};
+  
+  /// Gets the current vcs entry.
+  const wxExVCSEntry GetEntry() const;
 
   /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
@@ -111,9 +106,6 @@ public:
 #if wxUSE_GUI
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
-
-  /// Does current vcs allow keyword expansion.
-  bool SupportKeywordExpansion() const;
 
   /// Returns true if VCS usage is set in the config.
   bool Use() const;

@@ -441,7 +441,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   if (event.GetId() > ID_VCS_LOWEST && 
       event.GetId() < ID_VCS_HIGHEST)
   {
-    wxExVCS(event.GetId()).Request(this);
+    wxExVCS(wxArrayString(), event.GetId()).Request(this);
   }
   // edit commands
   // Do not change the wxID* in wxID_LOWEST and wdID_HIGHEST,

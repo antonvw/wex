@@ -31,22 +31,11 @@ wxExVCS::wxExVCS(const wxFileName& filename)
   m_FileName = filename;
 }
 
-wxExVCS::wxExVCS(int menu_id, const wxArrayString& files)
+wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   : m_Files(files)
 {
   Initialize(menu_id);
 }
-
-#if wxUSE_GUI
-int wxExVCS::BuildMenu(
-  int base_id, 
-  wxMenu* menu, 
-  const wxFileName& filename,
-  bool is_popup)
-{
-  return FindVCSEntry(filename).BuildMenu(base_id, menu, is_popup);
-}
-#endif
 
 bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
 {
@@ -180,7 +169,7 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  const wxExVCSEntry vcs = FindVCSEntry(GetFile());
+  const wxExVCSEntry vcs = GetEntry();
   const wxString name(vcs.GetName());
   const wxFileName filename(GetFile());
 
@@ -381,17 +370,32 @@ const wxString wxExVCS::GetFile() const
   return (m_Files.empty() ? wxString(wxEmptyString): m_Files[0]);
 }
 
+const wxExVCSEntry wxExVCS::GetEntry() const
+{
+  return FindVCSEntry(GetFile());
+}
+
 void wxExVCS::Initialize(int menu_id)
 {
-  const wxExVCSEntry vcs = FindVCSEntry(GetFile());
+  const wxExVCSEntry vcs = GetEntry();
   
   m_Command = vcs.GetCommand(menu_id);
-  m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
-  m_FlagsKey = wxString::Format("vcsflags/name%d", m_Command.GetNo());
   
-  if (!m_Command.IsHelp() && m_Files.size() == 1)
+  if (!vcs.GetName().empty())
   {
-    m_Caption += " " + m_Files[0];
+    m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
+    m_FlagsKey = wxString::Format(
+      "vcsflags/%s%d", vcs.GetName().c_str(), m_Command.GetNo());
+  
+    if (!m_Command.IsHelp() && m_Files.size() == 1)
+    {
+      m_Caption += " " + m_Files[0];
+    }
+  }
+  else
+  {
+    m_Caption.clear();
+    m_FlagsKey.clear();
   }
 }
 
@@ -540,11 +544,6 @@ void wxExVCS::ShowOutput(const wxString& caption) const
   wxExCommand::ShowOutput(m_Caption);
 }
 #endif
-
-bool wxExVCS::SupportKeywordExpansion() const
-{
-  return FindVCSEntry(GetFile()).SupportKeywordExpansion();
-}
 
 bool wxExVCS::Use() const
 {

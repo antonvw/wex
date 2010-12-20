@@ -612,7 +612,7 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
 
 void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 {
-  wxExVCS vcs(id, files);
+  wxExVCS vcs(files, id);
 
   if (vcs.GetCommand().IsOpen())
   {

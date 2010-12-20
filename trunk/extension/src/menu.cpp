@@ -217,11 +217,15 @@ void wxExMenu::AppendVCS(const wxExFileName& filename)
   const int vcs_offset_id = ID_EDIT_VCS_LOWEST + 1;
 
   wxExMenu* vcsmenu = new wxExMenu;
-  wxExVCS::Get()->BuildMenu(vcs_offset_id, vcsmenu, filename);
+  
+  wxArrayString ar;
+  ar.Add(filename.GetFullPath());
+  wxExVCS vcs(ar);
+  vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu);
 
   if (vcsmenu->GetMenuItemCount() > 0)
   { 
-    AppendSubMenu(vcsmenu, "&VCS");
+    AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
   }
 }
 
@@ -239,11 +243,12 @@ void wxExMenu::BuildVCS()
   if (wxExVCS::Get()->Use())
   {
     const int vcs_offset_id = ID_VCS_LOWEST + 1;
-    
-    wxExVCS::Get()->BuildMenu(
+ 
+    wxExVCS vcs;
+       
+    vcs.GetEntry().BuildMenu(
       vcs_offset_id, 
       this, 
-      wxExFileName(),
       false); // no popup
   }
 }
