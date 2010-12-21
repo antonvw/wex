@@ -364,7 +364,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_File.GetFileName().FileExists() && sel.empty())
   {
-    if (wxExVCS::Get()->DirExists(m_File.GetFileName()))
+    if (wxExVCS::DirExists(m_File.GetFileName()))
     {
       menu.AppendSeparator();
       menu.AppendVCS(m_File.GetFileName());
@@ -1259,7 +1259,14 @@ void wxExSTC::GotoLineAndSelect(
   // equal to number of lines.
   // Internally GotoLine starts with 0, therefore 
   // line_number - 1 is used afterwards.
-  wxASSERT(line_number <= GetLineCount() && line_number > 0);
+  if (line_number > GetLineCount())
+  {
+    line_number = GetLineCount();
+  }
+  else if (line_number <= 0) 
+  {
+    line_number = 1;
+  }
 
   GotoLine(line_number - 1);
   EnsureVisible(line_number - 1);
@@ -1482,7 +1489,11 @@ bool wxExSTC::LinkOpen(
   // Any line info is already in line_number, so skip here.
   const wxString link = link_with_line.BeforeFirst(':');
 
-  if (link.empty())
+  if (
+    link.empty() || 
+    // Otherwise, if you happen to select text that 
+    // ends with a separator, wx asserts.
+    wxFileName::IsPathSeparator(link.Last()))
   {
     return false;
   }

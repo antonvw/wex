@@ -568,10 +568,9 @@ void Frame::OnCommand(wxCommandEvent& event)
         editor->UpdateStatusBar("PaneLexer");
 #endif
       }
-      else if (editor->GetFileName() == 
-          wxExVCS::Get()->GetFileName())
+      else if (editor->GetFileName() == wxExVCS::GetFileName())
       {
-        wxExVCS::Get()->Read();
+        wxExVCS::Read();
       }
     }
     break;
@@ -649,7 +648,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
-  case ID_OPEN_VCS: OpenFile(wxExVCS::Get()->GetFileName()); break;
+  case ID_OPEN_VCS: OpenFile(wxExVCS::GetFileName()); break;
 
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
@@ -717,7 +716,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
   case ID_OPTION_VCS: 
-    if (wxExVCS::Get()->ConfigDialog(this) == wxID_OK)
+    if (wxExVCS().ConfigDialog(this) == wxID_OK)
     {
       GetVCSMenu()->BuildVCS();
     }
@@ -804,6 +803,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       }
     }
     break;
+    
   case ID_VIEW_HISTORY: 
     TogglePane("HISTORY");
 #if wxUSE_STATUSBAR
@@ -817,9 +817,25 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
 #endif
     break;
-  case ID_VIEW_OUTPUT: TogglePane("OUTPUT"); break;
-  case ID_VIEW_PROJECTS: TogglePane("PROJECTS"); break;
-
+  case ID_VIEW_OUTPUT: 
+    TogglePane("OUTPUT");
+#if wxUSE_STATUSBAR
+    if (!GetManager().GetPane("OUTPUT").IsShown())
+    {
+      StatusText(wxEmptyString, "PaneItems");
+    }
+#endif
+    break;
+  case ID_VIEW_PROJECTS: 
+    TogglePane("PROJECTS");
+#if wxUSE_STATUSBAR
+    if (!GetManager().GetPane("PROJECTS").IsShown())
+    {
+      StatusText(wxEmptyString, "PaneItems");
+    }
+#endif
+    break;
+    
   default: 
     wxFAIL;
     break;
@@ -900,7 +916,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     break;
 
     case ID_TOOL_REPORT_REVISION:
-      event.Check(!wxExVCS::Get()->Use());
+      event.Check(!wxExVCS().Use());
       break;
       
     case ID_VIEW_ASCII_TABLE:

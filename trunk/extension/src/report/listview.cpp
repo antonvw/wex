@@ -568,7 +568,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     }
 
     if ( GetType() != LIST_FILE &&
-        !wxExVCS::Get()->Use() &&
+        !wxExVCS().Use() &&
          exists && !is_folder)
     {
       wxExListView* list = m_Frame->Activate(LIST_FILE);
@@ -596,7 +596,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     if (exists && !is_folder)
     {
-      if (!wxExVCS::Get()->Use())
+      if (!wxExVCS().Use())
       {
         menu.AppendSeparator();
 
@@ -608,7 +608,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
         menu.Append(ID_LIST_VERSIONLIST, _("&Version List"));
       }
       
-      if (wxExVCS::Get()->DirExists(
+      if (wxExVCS::DirExists(
         wxExListItem(this, GetFirstSelected()).GetFileName()))
       {
         menu.AppendSeparator();

@@ -115,7 +115,7 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
     const wxString selection = files[0];
     const wxExFileName filename(selection);
   
-    if (wxExVCS::Get()->DirExists(filename))
+    if (wxExVCS::DirExists(filename))
     {
       menu.AppendSeparator();
       menu.AppendVCS(filename);

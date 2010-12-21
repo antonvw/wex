@@ -23,7 +23,7 @@ class wxMenu;
 
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml, this is done
-/// automatically during the first Get call.
+/// during wxExApp startup.
 class WXDLLIMPEXP_BASE wxExVCS : public wxExCommand
 {
 public:
@@ -36,19 +36,17 @@ public:
     VCS_AUTO, // uses the VCS appropriate for current file
   };
 
-  /// Constructor for vcs from specified filename.
-  /// This must be an existing xml file containing all vcs.
-  /// It does not Read this file, however if you use the global Get,
-  /// it both constructs and reads the vcs.
-  wxExVCS(const wxFileName& filename);
-
-  /// Constructor, specify several files and the menu command id.
+  /// Default constructor, specify several files and the menu command id.
   /// If the files array is empty, ShowDialog will show
   /// a combobox for selecting a vcs folder.
   wxExVCS(
     const wxArrayString& files = wxArrayString(),
     int menu_id = -1);
   
+  /// Constructor for vcs from specified filename.
+  /// This must be an existing xml file containing all vcs.
+  wxExVCS(const wxFileName& filename) {m_FileName = filename;};
+
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
   int ConfigDialog(
@@ -57,7 +55,7 @@ public:
 #endif    
 
   /// Returns true if specified filename (a path) is a vcs directory.
-  bool DirExists(const wxFileName& filename) const;
+  static bool DirExists(const wxFileName& filename);
 
   /// Executes the vcs command, and collects the output.
   long Execute();
@@ -72,24 +70,21 @@ public:
   wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
 
-  /// Returns the vcs object.
-  static wxExVCS* Get(bool createOnDemand = true);
-
   /// Gets the command.  
   const wxExVCSCommand& GetCommand() const {return m_Command;};
 
   /// Gets the flags and command (without the 'vcs') used to get the output.
   const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
   
-  /// Gets the xml filename.
-  const wxFileName& GetFileName() const {return m_FileName;};
-  
   /// Gets the current vcs entry.
-  const wxExVCSEntry GetEntry() const;
+  const wxExVCSEntry& GetEntry() const {return m_Entry;};
 
+  /// Gets the xml filename.
+  static const wxFileName& GetFileName() {return m_FileName;};
+  
   /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
-  bool Read();
+  static bool Read();
 
 #if wxUSE_GUI
   /// Combines all in one method. Calls the ExecuteDialog,
@@ -98,11 +93,6 @@ public:
   wxStandardID Request(wxWindow* parent);
 #endif  
 
-  /// Sets the object as the current one, returns the pointer 
-  /// to the previous current object 
-  /// (both the parameter and returned value may be NULL). 
-  static wxExVCS* Set(wxExVCS* vcs);
-
 #if wxUSE_GUI
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
@@ -110,9 +100,9 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  bool CheckPath(const wxString& vcs, const wxFileName& fn) const;
-  bool CheckPathAll(const wxString& vcs, const wxFileName& fn) const;
-  const wxExVCSEntry FindVCSEntry(const wxFileName& filename) const;
+  static bool CheckPath(const wxString& vcs, const wxFileName& fn);
+  static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
+  static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
   void Initialize(int command_id);
   int ShowDialog(wxWindow* parent);
@@ -122,6 +112,7 @@ private:
     return m_Command.IsHelp();};
   
   wxExVCSCommand m_Command;
+  wxExVCSEntry m_Entry;
 
   wxArrayString m_Files;
   wxString m_Caption;
@@ -130,6 +121,5 @@ private:
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxFileName m_FileName;
-  static wxExVCS* m_Self;
 };
 #endif

@@ -61,11 +61,12 @@ private:
   void AddCommands(const wxXmlNode* node);
 
   static int m_Instances;
-
-  const int m_FlagsLocation;
-  const wxString m_Name;
-  const long m_No;
-  const bool m_SupportKeywordExpansion;
+  
+  // no const, as entry is set using operator+ in wxExVCS.
+  int m_FlagsLocation;
+  wxString m_Name;
+  long m_No;
+  bool m_SupportKeywordExpansion;
 
   std::vector<wxExVCSCommand> m_Commands;
 };

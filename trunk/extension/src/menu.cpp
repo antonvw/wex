@@ -194,7 +194,7 @@ bool wxExMenu::AppendTools(int itemid)
     {
       const bool vcs_type = wxExTool(it->first).IsRCSType();
 
-      if ((vcs_type && !wxExVCS::Get()->Use()) || !vcs_type)
+      if ((vcs_type && !wxExVCS().Use()) || !vcs_type)
       {
         menuTool->Append(
           it->first, 
@@ -240,12 +240,12 @@ void wxExMenu::BuildVCS()
     Destroy(item);
   }
 
-  if (wxExVCS::Get()->Use())
+  const wxExVCS vcs;
+       
+  if (vcs.Use())
   {
     const int vcs_offset_id = ID_VCS_LOWEST + 1;
  
-    wxExVCS vcs;
-       
     vcs.GetEntry().BuildMenu(
       vcs_offset_id, 
       this, 

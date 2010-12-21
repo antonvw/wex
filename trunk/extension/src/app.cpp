@@ -34,7 +34,6 @@ int wxExApp::OnExit()
   delete wxExLog::Set(NULL);
   delete wxExPrinting::Set(NULL);
   delete wxExTool::Set(NULL);
-  delete wxExVCS::Set(NULL);
 
   return wxApp::OnExit(); // this destroys the config
 }
@@ -107,6 +106,15 @@ bool wxExApp::OnInit()
       }
     }
   }
+
+  wxExVCS(wxFileName(
+#ifdef wxExUSE_PORTABLE
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+    wxStandardPaths::Get().GetUserDataDir()
+#endif
+    + wxFileName::GetPathSeparator() + "vcs.xml")
+    ).Read();
 
   return true;
 }

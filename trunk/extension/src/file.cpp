@@ -107,8 +107,9 @@ bool wxExFile::FileSave(const wxExFileName& filename)
 
 bool wxExFile::Get(bool synced)
 {
-  if ( synced && !Open(m_FileName.GetFullPath()) ||
-      !synced && m_OpenFile && !Open(m_FileName.GetFullPath()))
+  if ( 
+     synced && !Open(m_FileName.GetFullPath()) ||
+    !synced && m_OpenFile && !Open(m_FileName.GetFullPath()))
   {
     return false;
   }
@@ -127,6 +128,11 @@ bool wxExFile::Get(bool synced)
 
 const wxCharBuffer wxExFile::Read(wxFileOffset seek_position)
 {
+  if (!IsOpened())
+  {
+    return wxCharBuffer((size_t)0);
+  }
+  
   const wxFileOffset bytes_to_read = Length() - seek_position;
 
   // Always do a seek, so you can do more Reads on the same object.

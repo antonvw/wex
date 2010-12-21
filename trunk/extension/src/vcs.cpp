@@ -24,12 +24,6 @@
 
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxFileName wxExVCS::m_FileName;
-wxExVCS* wxExVCS::m_Self = NULL;
-
-wxExVCS::wxExVCS(const wxFileName& filename)
-{
-  m_FileName = filename;
-}
 
 wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   : m_Files(files)
@@ -37,7 +31,7 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   Initialize(menu_id);
 }
 
-bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
+bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
 {
   if (!fn.IsOk() || vcs.empty())
   {
@@ -62,7 +56,7 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn) const
 
 bool wxExVCS::CheckPathAll(
   const wxString& vcs, 
-  const wxFileName& fn) const
+  const wxFileName& fn)
 {
   if (!fn.IsOk() || vcs.empty())
   {
@@ -151,9 +145,9 @@ int wxExVCS::ConfigDialog(
 }
 #endif
 
-bool wxExVCS::DirExists(const wxFileName& filename) const
+bool wxExVCS::DirExists(const wxFileName& filename)
 {
-  const wxString vcs = FindVCSEntry(filename).GetName();
+  const wxString vcs = FindEntry(filename).GetName();
 
   // When adding a vcs, also check GetNo.
   if ((vcs == "git" || vcs == "mercurial") && CheckPathAll(vcs, filename))
@@ -169,8 +163,6 @@ bool wxExVCS::DirExists(const wxFileName& filename) const
 
 long wxExVCS::Execute()
 {
-  const wxExVCSEntry vcs = GetEntry();
-  const wxString name(vcs.GetName());
   const wxFileName filename(GetFile());
 
   wxString wd;
@@ -197,10 +189,14 @@ long wxExVCS::Execute()
         file += *it + " ";
       }
     }
-    else if (name == "git")
+    else if (m_Entry.GetName() == "git")
     {
       wd = filename.GetPath();
       file = "\"" + filename.GetFullName() + "\"";
+    }
+    else if (m_Entry.GetName() == "SCCS")
+    {
+      file = "\"" + filename.GetFullPath(wxPATH_UNIX) + "\"";
     }
     else
     {
@@ -246,17 +242,17 @@ long wxExVCS::Execute()
     }
   }
 
-  const wxString bin = wxConfigBase::Get()->Read(name, "svn");
+  const wxString bin = wxConfigBase::Get()->Read(m_Entry.GetName(), "svn");
 
   if (bin.empty())
   {
-    wxLogError(name + " " + _("path is empty"));
+    wxLogError(m_Entry.GetName() + " " + _("path is empty"));
     return -1;
   }
 
   m_CommandWithFlags = m_Command.GetCommand() + " " + flags;
 
-  if (vcs.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
+  if (m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
   {
     return wxExCommand::Execute(
       bin + " " + m_Command.GetCommand() + " " + subcommand + flags + comment + file, 
@@ -288,7 +284,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 }
 #endif
 
-const wxExVCSEntry wxExVCS::FindVCSEntry(const wxFileName& filename) const
+const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 {
   const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
 
@@ -338,38 +334,6 @@ const wxExVCSEntry wxExVCS::FindVCSEntry(const wxFileName& filename) const
   return wxExVCSEntry();
 }
 
-wxExVCS* wxExVCS::Get(bool createOnDemand)
-{
-  if (m_Self == NULL && createOnDemand)
-  {
-    m_Self = new wxExVCS(wxFileName(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "vcs.xml")
-      );
-
-    if (m_Self->Read())
-    {
-      // Add default VCS.
-      // This is a static method, so not use m_Entries.
-      if (!wxConfigBase::Get()->Exists("VCS"))
-      {
-        wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
-      }
-    }
-  }
-
-  return m_Self;
-}
-
-const wxExVCSEntry wxExVCS::GetEntry() const
-{
-  return FindVCSEntry(GetFile());
-}
-
 const wxString wxExVCS::GetFile() const
 {
   if (m_Files.empty())
@@ -385,15 +349,15 @@ const wxString wxExVCS::GetFile() const
 
 void wxExVCS::Initialize(int menu_id)
 {
-  const wxExVCSEntry vcs = GetEntry();
+  m_Entry = FindEntry(GetFile());
   
-  m_Command = vcs.GetCommand(menu_id);
+  m_Command = m_Entry.GetCommand(menu_id);
   
-  if (!vcs.GetName().empty())
+  if (!m_Entry.GetName().empty())
   {
-    m_Caption = vcs.GetName() + " " + m_Command.GetCommand();
+    m_Caption = m_Entry.GetName() + " " + m_Command.GetCommand();
     m_FlagsKey = wxString::Format(
-      "vcsflags/%s%d", vcs.GetName().c_str(), m_Command.GetNo());
+      "vcsflags/%s%d", m_Entry.GetName().c_str(), m_Command.GetNo());
   
     if (!m_Command.IsHelp() && m_Files.size() == 1)
     {
@@ -442,11 +406,19 @@ bool wxExVCS::Read()
     child = child->GetNext();
   }
 
-  // If current number of entries differs from old one,
-  // we added or removed an entry. That might give problems
-  // with the vcs id stored in the config, so reset it. 
-  if (old_entries != m_Entries.size())
+  if (old_entries == 0)
   {
+    // Add default VCS.
+    if (!wxConfigBase::Get()->Exists("VCS"))
+    {
+      wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
+    }
+  }
+  else if (old_entries != m_Entries.size())
+  {
+    // If current number of entries differs from old one,
+    // we added or removed an entry. That might give problems
+    // with the vcs id stored in the config, so reset it. 
     wxConfigBase::Get()->Write("VCS", (long)VCS_AUTO);
   }
   
@@ -466,13 +438,6 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
   return retValue;
 }
 #endif
-
-wxExVCS* wxExVCS::Set(wxExVCS* vcs)
-{
-  wxExVCS* old = m_Self;
-  m_Self = vcs;
-  return old;
-}
 
 #if wxUSE_GUI
 int wxExVCS::ShowDialog(wxWindow* parent)
