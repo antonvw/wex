@@ -525,6 +525,11 @@ bool wxExVi::DoCommandRange(const wxString& command)
 
 bool wxExVi::ExecCommand(const wxString& command)
 {
+  if (command.empty())
+  {
+    return false;
+  }
+  
   if (command == "$")
   {
     m_STC->DocumentEnd();
