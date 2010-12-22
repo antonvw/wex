@@ -47,33 +47,36 @@ void wxExVi::Delete(int lines) const
     return;
   }
   
-  const bool pos_at_end =
-    (m_STC->GetCurrentPos() == m_STC->GetTextLength() &&
-     m_STC->GetTextLength() > 0);
-  const auto line = m_STC->LineFromPosition(
-    (pos_at_end ? m_STC->GetCurrentPos() - 1: m_STC->GetCurrentPos()));
-  const auto start = m_STC->PositionFromLine(line);
-  const auto end = m_STC->PositionFromLine(line + lines);
+  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const auto start_pos = m_STC->PositionFromLine(line);
+  const auto end_pos = m_STC->PositionFromLine(line + lines);
+  const auto linecount = m_STC->GetLineCount();
+    
+  m_STC->SetSelectionStart(start_pos);
 
-  m_STC->SetSelectionStart(start);
-
-  if (end != -1)
+  if (end_pos != -1)
   {
-    m_STC->SetSelectionEnd(end);
+    m_STC->SetSelectionEnd(end_pos);
   }
   else
   {
     m_STC->DocumentEndExtend();
   }
 
-  const auto end_line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-
-  m_STC->Cut();
+  if (m_STC->GetSelectedText().empty())
+  {
+    m_STC->DeleteBack();
+  }
+  else
+  {
+    m_STC->Cut();
+  }
 
   if (lines >= 2)
   {
     ShowMessage(
-      wxString::Format(_("%d fewer lines"), end_line - line));
+      wxString::Format(_("%d fewer lines"), 
+      linecount - m_STC->GetLineCount()));
   }
 }
 
@@ -239,7 +242,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command.Matches("m?"))
   {
     DeleteMarker(command.Last());
-    m_Markers[command.Last()] = m_STC->GetCurrentLine();
+    m_Markers[command.Last()] = m_STC->GetCurrentLine() + 1;
     m_STC->MarkerAdd(m_STC->GetCurrentLine(), m_MarkerSymbol.GetNo());
   }
   else if (command.EndsWith("yw"))
@@ -299,7 +302,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
     if (it != m_Markers.end())
     {
-      m_STC->GotoLineAndSelect(it->second + 1);
+      m_STC->GotoLineAndSelect(it->second);
     }
     else
     {
@@ -706,7 +709,7 @@ bool wxExVi::Indent(
     return false;
   }
 
-  m_STC->Indent(begin_line - 1, end_line, forward);
+  m_STC->Indent(begin_line - 1, end_line - 1, forward);
   
   return true;
 }

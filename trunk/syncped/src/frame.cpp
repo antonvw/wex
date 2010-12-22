@@ -1069,8 +1069,7 @@ bool Frame::OpenFile(
   const wxExVCS& vcs,
   long flags)
 {
-  const wxString unique = vcs.GetCommandWithFlags();
-  const wxString contents = vcs.GetOutput();
+  const wxString unique = vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
   const wxString key = filename.GetFullPath() + unique;
 
   auto* page = m_NotebookWithEditors->GetPageByKey(key);
@@ -1080,7 +1079,7 @@ bool Frame::OpenFile(
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
       m_NotebookWithEditors, 
       this,
-      contents,
+      vcs.GetOutput(),
       flags,
       filename.GetFullName() + " " + unique);
 

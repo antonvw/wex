@@ -64,7 +64,7 @@ bool wxExVCS::CheckPathAll(
   }
   
   const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
-  
+
   // The .git dir only exists in the root, so check all components.
   wxFileName root(fn);
 
@@ -196,7 +196,13 @@ long wxExVCS::Execute()
     }
     else if (m_Entry.GetName() == "SCCS")
     {
-      file = "\"" + filename.GetFullPath(wxPATH_UNIX) + "\"";
+      file = "\"" + 
+      // SCCS for windows does not handle windows paths,
+      // so convert them to UNIX, and add volume as well.
+#ifdef __WXMSW__      
+        filename.GetVolume() + "/" +
+#endif        
+        filename.GetFullPath(wxPATH_UNIX) + "\"";
     }
     else
     {
@@ -228,7 +234,7 @@ long wxExVCS::Execute()
 
   if (UseFlags())
   {
-    flags = wxConfigBase::Get()->Read(_("Flags"));
+    flags = GetFlags();
 
     if (!flags.empty())
     {
@@ -249,8 +255,6 @@ long wxExVCS::Execute()
     wxLogError(m_Entry.GetName() + " " + _("path is empty"));
     return -1;
   }
-
-  m_CommandWithFlags = m_Command.GetCommand() + " " + flags;
 
   if (m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
   {
@@ -276,8 +280,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 
   if (UseFlags())
   {
-    wxConfigBase::Get()->Write(m_FlagsKey, 
-      wxConfigBase::Get()->Read(_("Flags")));
+    wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
   }
 
   return (Execute() < 0 ? wxID_CANCEL: wxID_OK);
@@ -345,6 +348,11 @@ const wxString wxExVCS::GetFile() const
   {
     return m_Files[0];
   }
+}
+
+const wxString wxExVCS::GetFlags() const
+{
+  return wxConfigBase::Get()->Read(_("Flags"));
 }
 
 void wxExVCS::Initialize(int menu_id)

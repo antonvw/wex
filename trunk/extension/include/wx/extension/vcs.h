@@ -73,15 +73,15 @@ public:
   /// Gets the command.  
   const wxExVCSCommand& GetCommand() const {return m_Command;};
 
-  /// Gets the flags and command (without the 'vcs') used to get the output.
-  const wxString& GetCommandWithFlags() const {return m_CommandWithFlags;};
-  
   /// Gets the current vcs entry.
   const wxExVCSEntry& GetEntry() const {return m_Entry;};
-
+  
   /// Gets the xml filename.
   static const wxFileName& GetFileName() {return m_FileName;};
   
+  /// Gets the flags used to run the command.
+  const wxString GetFlags() const;
+
   /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   static bool Read();
@@ -116,7 +116,6 @@ private:
 
   wxArrayString m_Files;
   wxString m_Caption;
-  wxString m_CommandWithFlags;
   wxString m_FlagsKey;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;

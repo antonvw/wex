@@ -521,7 +521,7 @@ void wxExAppTestFixture::testVCS()
 {
   wxArrayString ar;
   ar.Add(TEST_FILE);
-  wxExVCS vcs(ar, ID_EDIT_VCS_LOWEST + 1);
+  wxExVCS vcs(ar);
 
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(wxFileName(TEST_FILE)));
@@ -530,7 +530,8 @@ void wxExAppTestFixture::testVCS()
 //  CPPUNIT_ASSERT( vcs.Execute() != -1);
 //  CPPUNIT_ASSERT(!vcs.GetOutput().empty());
 
-  CPPUNIT_ASSERT( vcs.GetCommandWithFlags().empty());
+  CPPUNIT_ASSERT( vcs.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT( vcs.GetFlags().empty());
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
   CPPUNIT_ASSERT( vcs.GetOutput().empty());
   CPPUNIT_ASSERT(!vcs.GetCommand().IsOpen());

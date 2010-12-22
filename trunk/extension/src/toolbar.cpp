@@ -49,7 +49,6 @@ public:
     const wxSize& size = wxDefaultSize);
 private:
   void OnCommand(wxCommandEvent& event);
-  void OnEnter(wxCommandEvent& event);
   wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
@@ -280,8 +279,7 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(FindString, wxTextCtrl)
-  EVT_MENU(wxID_DELETE, FindString::OnCommand)
-  EVT_TEXT_ENTER(wxID_ANY, FindString::OnEnter)
+  EVT_TEXT_ENTER(wxID_ANY, FindString::OnCommand)
 END_EVENT_TABLE()
 
 FindString::FindString(
@@ -302,23 +300,6 @@ FindString::FindString(
 }
 
 void FindString::OnCommand(wxCommandEvent& event)
-{
-  // README: The delete key default behaviour does not delete the char right 
-  // from insertion point.
-  // Instead, the event is sent to the editor and a char is deleted from 
-  // the editor. Therefore implement the delete here.
-  switch (event.GetId())
-  {
-  case wxID_DELETE:
-    Remove(GetInsertionPoint(), GetInsertionPoint() + 1);
-    break;
-  default:
-    wxFAIL;
-    break;
-  }
-}
-
-void FindString::OnEnter(wxCommandEvent& event)
 {
   auto* stc = m_Frame->GetSTC();
 
