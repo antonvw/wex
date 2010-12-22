@@ -1487,7 +1487,9 @@ bool wxExSTC::LinkOpen(
   wxString* filename)
 {
   // Any line info is already in line_number, so skip here.
-  const wxString link = link_with_line.BeforeFirst(':');
+  const wxString no = link_with_line.AfterFirst(':');
+  const wxString link = (no.IsNumber() ? 
+    link_with_line.BeforeFirst(':'): link_with_line);
 
   if (
     link.empty() || 
