@@ -260,7 +260,7 @@ public:
   void SequenceDialog();
 
   /// Sets the (scintilla) lexer for this document.
-  bool SetLexer(const wxString& lexer);
+  bool SetLexer(const wxString& lexer, bool fold = true);
   
   /// Sets lexer prop name and value,
   /// but does not apply them.

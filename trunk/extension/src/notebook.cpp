@@ -118,7 +118,9 @@ bool wxExNotebook::ForEach(int id)
       break;
       
     case ID_ALL_STC_SET_LEXER: 
-      stc->SetLexer(stc->GetLexer().GetScintillaLexer()); 
+      // Set (reset) lexer, do not fold as files
+      // are already open, so preserve current folds is nicer.
+      stc->SetLexer(stc->GetLexer().GetScintillaLexer(), false);
       break;
 
     case ID_ALL_STC_CLOSE:

@@ -14,16 +14,18 @@
 
 #include <map>
 #include <wx/filename.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/command.h>
 #include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 
-class wxMenu;
-
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml, this is done
 /// during wxExApp startup.
+/// This class is derived from wxExCommand, allowing 
+/// to execute a command, and offering basic for
+/// showing output. It also has a vcs commmand,
+/// that contains info about the current vcs command to be (or is)
+/// executed.
 class WXDLLIMPEXP_BASE wxExVCS : public wxExCommand
 {
 public:
@@ -39,6 +41,7 @@ public:
   /// Default constructor, specify several files and the menu command id.
   /// If the files array is empty, ShowDialog will show
   /// a combobox for selecting a vcs folder.
+  /// The menu command id will be used to set the vcs command.
   wxExVCS(
     const wxArrayString& files = wxArrayString(),
     int menu_id = -1);
@@ -70,7 +73,7 @@ public:
   wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
 
-  /// Gets the command.  
+  /// Gets the current vcs command.  
   const wxExVCSCommand& GetCommand() const {return m_Command;};
 
   /// Gets the current vcs entry.
@@ -94,6 +97,7 @@ public:
 #endif  
 
 #if wxUSE_GUI
+  /// Overriden from base class.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 

@@ -27,9 +27,12 @@ public:
   wxExVi(wxExSTC* stc);
   
   /// Executes vi: command that was entered on the vi bar.
+  /// Returns true if the command was handled.
   bool ExecCommand(const wxString& command);
 
   /// Executes vi find command that was entered on the vi bar.
+  /// The command should be a '/' or a '?'.
+  /// Returns true if the text was found.
   bool FindCommand(const wxString& command, const wxString& text);
   
   /// Returns whether vi is active.

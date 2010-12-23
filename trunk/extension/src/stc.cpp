@@ -2279,14 +2279,17 @@ void wxExSTC::SetGlobalStyles()
   wxExLexers::Get()->ApplyIndicators(this);
 }
 
-bool wxExSTC::SetLexer(const wxString& lexer)
+bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
 {
   if (!m_Lexer.ApplyLexer(lexer, this))
   {
     return false;
   }
   
-  Fold();
+  if (fold)
+  {
+    Fold();
+  }
   
   if (lexer == "diff")
   {

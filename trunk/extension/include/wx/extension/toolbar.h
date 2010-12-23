@@ -54,7 +54,7 @@ private:
 /// and checkboxes.
 /// The find combobox allows you to find in an wxExSTC
 /// component on the specified wxExFrame.
-class wxExFindToolBar : public wxExToolBar
+class WXDLLIMPEXP_BASE wxExFindToolBar : public wxExToolBar
 {
 public:
   /// Constructor.

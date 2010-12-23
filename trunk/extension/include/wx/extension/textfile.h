@@ -18,12 +18,12 @@
 #include <wx/extension/statistics.h>
 #include <wx/extension/tool.h>
 
-class WXDLLIMPEXP_BASE wxExTextFile;
+class wxExTextFile;
 
 /// Offers file statistics for elements and keywords.
 /// Used in wxExTextFile to keep statistics like comments and lines of code.
 /// These are stored as elements.
-class wxExFileStatistics
+class WXDLLIMPEXP_BASE wxExFileStatistics
 {
   friend class wxExTextFile;
 public:
@@ -54,7 +54,7 @@ private:
 };
 
 /// Class for keeping RCS information.
-class wxExRCS
+class WXDLLIMPEXP_BASE wxExRCS
 {
 public:
   /// Default constructor.
@@ -94,7 +94,7 @@ private:
 /// Adds file tool methods to wxTextFile.
 /// In your derived class just implement the Report or ReportStatistics, and take
 /// care that the strings are added to your component.
-class wxExTextFile : public wxTextFile
+class WXDLLIMPEXP_BASE wxExTextFile : public wxTextFile
 {
 public:
   /// Constructor.

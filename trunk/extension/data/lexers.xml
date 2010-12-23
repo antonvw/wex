@@ -1728,8 +1728,12 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
   <lexer name="props" match="wxSTC_PROPS_" />
   <lexer name="ps" match="wxSTC_PS_" />
   <lexer name="python" extensions="*.py" match="wxSTC_P_">
+    <styles>
+      <style no="wxSTC_P_TRIPLE"> COMMENT </style>
+      <style no="wxSTC_P_TRIPLEDOUBLE"> COMMENT </style>
+    </styles>
     <keywords>
-      keywordclass.python=and as assert break class continue def del elif 
+      and as assert break class continue def del elif 
       else except exec finally for from global if import in is lambda None 
       not or pass print raise return try while with yield
     </keywords>

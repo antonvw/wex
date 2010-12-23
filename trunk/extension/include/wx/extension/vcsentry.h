@@ -15,8 +15,6 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/vcscommand.h>
 
-class wxMenu;
-
 /// This class collects a single vcs.
 class WXDLLIMPEXP_BASE wxExVCSEntry
 {

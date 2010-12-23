@@ -30,7 +30,7 @@ class wxExToolBar;
 /// find/replace, and allows for file dropping.
 /// Also helps in maintaining focus to the base controls
 /// (grid, listview and STC).
-class wxExFrame : public wxFrame
+class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
   /// Flags for StatusText.

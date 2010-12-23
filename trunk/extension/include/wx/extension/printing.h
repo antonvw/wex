@@ -58,7 +58,7 @@ private:
 class wxStyledTextCtrl;
 
 // Offers a print out to be used by wxStyledTextCtrl.
-class wxExPrintout : public wxPrintout
+class WXDLLIMPEXP_BASE wxExPrintout : public wxPrintout
 {
 public:
   /// Constructor.

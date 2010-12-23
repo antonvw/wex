@@ -72,7 +72,7 @@ class wxExFrame;
 /// Allows you to easily open all files on specified path.
 /// After constructing, invoke FindFiles which
 /// causes all found files to be opened using OpenFile from frame.
-class wxExDirOpenFile : public wxExDir
+class WXDLLIMPEXP_BASE wxExDirOpenFile : public wxExDir
 {
 public:
   /// Constructor.
@@ -91,4 +91,3 @@ private:
 };
 #endif
 #endif
-

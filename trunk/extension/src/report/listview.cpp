@@ -744,7 +744,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
     wxArrayString files;
     
-    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       files.Add(wxExListItem(this, i).GetFileName().GetFullPath());
     }
@@ -755,7 +755,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
   case ID_LIST_OPEN_ITEM:
   {
-    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
       ItemActivated(i);
   }
   break;
@@ -776,7 +776,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
       wxASSERT(list != NULL);
     }
 
-    for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
@@ -885,7 +885,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   wxExStatistics<long> stats;
 
-  for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     stats += wxExListItem(this, i).Run(tool).GetElements();
   }
@@ -950,7 +950,7 @@ void RBSFile::GenerateDialog()
   Header();
 
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     wxExListItem li(m_ListView, i);
     const wxFileName* filename = &li.GetFileName();

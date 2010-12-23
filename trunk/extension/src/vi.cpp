@@ -655,7 +655,12 @@ bool wxExVi::ExecCommand(const wxString& command)
 
 bool wxExVi::FindCommand(const wxString& command, const wxString& text)
 {
-  m_SearchForward = (command== '/');
+  if (command.empty() || text.empty())
+  {
+    return false;
+  }
+  
+  m_SearchForward = (command == '/');
 
   wxExFindReplaceData::Get()->SetFindString(text);
   

@@ -556,9 +556,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       editor->GetFile().FileSave();
 
-      // Compare fullpath, otherwise the Read still reads in the old one.
-      if (editor->GetFileName() == 
-          wxExLexers::Get()->GetFileName())
+      if (editor->GetFileName() == wxExLexers::Get()->GetFileName())
       {
         wxExLexers::Get()->Read();
         m_NotebookWithEditors->ForEach(ID_ALL_STC_SET_LEXER);

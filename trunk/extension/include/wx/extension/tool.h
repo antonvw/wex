@@ -48,7 +48,7 @@ template <class T> class wxExStatistics;
 
 /// Offers tool methods and contains the tool info's.
 /// A tool with non empty text is used by wxExMenu::AppendTools.
-class wxExTool
+class WXDLLIMPEXP_BASE wxExTool
 {
 public:
   /// Constructor, specify the wxExToolId to use.

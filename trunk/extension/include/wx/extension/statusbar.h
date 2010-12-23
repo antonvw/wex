@@ -59,7 +59,7 @@ private:
 };
 
 /// Offers a status bar that calls virtual methods from wxExFrame.
-class wxExStatusBar : public wxStatusBar
+class WXDLLIMPEXP_BASE wxExStatusBar : public wxStatusBar
 {
 public:
   /// Constructor.

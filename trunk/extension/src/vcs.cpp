@@ -14,7 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/menu.h>
+#include <wx/xml/xml.h>
 #include <wx/stdpaths.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
@@ -181,6 +181,9 @@ long wxExVCS::Execute()
   {
     if (m_Files.size() > 1)
     {
+      // File should be surrounded by double quotes.
+      file = "\"";
+      
       for (
         auto it = m_Files.begin();
         it != m_Files.end();
@@ -188,6 +191,8 @@ long wxExVCS::Execute()
       {
         file += *it + " ";
       }
+      
+      file += "\"";
     }
     else if (m_Entry.GetName() == "git")
     {
@@ -200,7 +205,7 @@ long wxExVCS::Execute()
       // SCCS for windows does not handle windows paths,
       // so convert them to UNIX, and add volume as well.
 #ifdef __WXMSW__      
-        filename.GetVolume() + "/" +
+        filename.GetVolume() + filename.GetVolumeSeparator() +
 #endif        
         filename.GetFullPath(wxPATH_UNIX) + "\"";
     }

@@ -1289,7 +1289,8 @@ INCLUDE_FILE_PATTERNS  =
 # undefined via #undef or recursively expanded use the := operator 
 # instead of the = operator.
 
-PREDEFINED             = wxUSE_DRAG_AND_DROP \
+PREDEFINED             = wxUSE_AUI \
+                         wxUSE_DRAG_AND_DROP \
                          wxUSE_GUI \
                          wxUSE_GRID \
                          wxUSE_HTML \
