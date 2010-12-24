@@ -7,19 +7,25 @@
 
 # Run this file in the build folder
 
-tar cf syncped.tar \
-  gccgtk2_dll/syncped \
-  ../extension/data/lexers.xml \
-  ../extension/data/vcs.xml \
-  ~/wxWidgets-2.9.1/locale/nl.mo \
-  ../extension/locale/wxextension-nl.mo \
-  ../extension/locale/wxstd-xxx-nl.mo \
-  ../syncped/locale/syncped-nl.mo
+mkdir syncped
+mkdir syncped/nl-NL
+
+cp gccgtk2_dll/syncped syncped
+cp ~/wxWidgets-2.9.1/buildgtk/lib/libwx*2.9*so.1.0.0 syncped
+cp ../extension/data/lexers.xml syncped
+cp ../extension/data/vcs.xml syncped
+cp ~/wxWidgets-2.9.1/locale/nl.mo syncped/nl-NL/nl.mo
+cp ../extension/locale/wxextension-nl.mo syncped/nl-NL/wxextension-nl.mo
+cp ../extension/locale/wxstd-xxx-nl.mo syncped/nl-NL/wxstd-xxx-nl.mo
+cp ../syncped/locale/syncped-nl.mo syncped/nl-NL/syncped-nl.mo
  
+tar cf syncped.tar syncped
 gzip syncped.tar
 
-mv syncped.tar.gz ~/syncped/bin
+mv syncped.tar.gz ~/syncped/trunk/bin
 
-cd ~/syncped/bin
+rm -rf syncped
+
+cd ~/syncped/trunk/bin
 
 svn commit -m "deployed syncped"
