@@ -181,9 +181,7 @@ long wxExVCS::Execute()
   {
     if (m_Files.size() > 1)
     {
-      // File should be surrounded by double quotes.
-      file = "\"";
-      
+      // File should not be surrounded by double quotes.
       for (
         auto it = m_Files.begin();
         it != m_Files.end();
@@ -191,8 +189,6 @@ long wxExVCS::Execute()
       {
         file += *it + " ";
       }
-      
-      file += "\"";
     }
     else if (m_Entry.GetName() == "git")
     {
@@ -453,7 +449,7 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 #endif
 
 #if wxUSE_GUI
-int wxExVCS::ShowDialog(wxWindow* parent)
+int wxExVCS::ShowDialog(wxWindow* parent) const
 {
   std::vector<wxExConfigItem> v;
 

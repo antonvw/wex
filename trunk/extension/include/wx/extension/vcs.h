@@ -97,6 +97,9 @@ public:
 #endif  
 
 #if wxUSE_GUI
+  /// Shows dialog.
+  int ShowDialog(wxWindow* parent) const;
+  
   /// Overriden from base class.
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
@@ -109,7 +112,6 @@ private:
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
   void Initialize(int command_id);
-  int ShowDialog(wxWindow* parent);
   bool UseFlags() const {
     return !m_Command.IsHelp();};
   bool UseSubcommand() const {
