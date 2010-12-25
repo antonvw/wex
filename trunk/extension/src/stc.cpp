@@ -296,12 +296,19 @@ offset    hex field                                         ascii field
     {
       field_hex += ' ';
     }
-
-    text += wxString::Format("%08lx: ", (unsigned long)start + offset) +
-      field_hex +
-      wxString(
+    
+    // Using wxString::Format here asserts (wxWidgets-2.9.1).
+    char field_offset[11];
+    sprintf(field_offset, "%08lx: ", (unsigned long)start + (unsigned long)offset);
+    
+    const wxString field_spaces = wxString(
         ' ', 
-        space_between_fields + ((bytes_per_line - count)* each_hex_field)) +
+        space_between_fields + ((bytes_per_line - count)* each_hex_field));
+
+    text +=  
+      field_offset + 
+      field_hex +
+      field_spaces +
       field_ascii +
       GetEOL();
   }
