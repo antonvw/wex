@@ -279,11 +279,6 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
     return wxID_CANCEL;
   }
 
-  if (UseFlags())
-  {
-    wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
-  }
-
   return (Execute() < 0 ? wxID_CANCEL: wxID_OK);
 }
 #endif
@@ -451,6 +446,11 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 #if wxUSE_GUI
 int wxExVCS::ShowDialog(wxWindow* parent) const
 {
+  if (m_Caption.empty())
+  {
+    return wxID_CANCEL;
+  }
+  
   std::vector<wxExConfigItem> v;
 
   if (m_Command.IsCommit())
@@ -495,9 +495,19 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
     v.push_back(wxExConfigItem(_("Subcommand")));
   }
   
-  return wxExConfigDialog(parent,
+  const int retValue = wxExConfigDialog(parent,
     v,
     m_Caption).ShowModal();
+    
+  if (retValue == wxID_OK)
+  {
+    if (UseFlags())
+    {
+      wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
+    }
+  }
+  
+  return retValue;
 }
 #endif
 

@@ -618,7 +618,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
   {
     wxArrayString ar;
     ar.Add(files[0]);
-    wxExVCS vcs(ar, id);
+    const wxExVCS vcs(ar, id);
     
     if (vcs.ShowDialog(frame) == wxID_OK)
     {
