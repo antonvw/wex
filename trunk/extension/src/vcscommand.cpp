@@ -117,15 +117,15 @@ bool wxExVCSCommand::IsHelp() const
 bool wxExVCSCommand::IsHistory() const
 {
   return 
-    GetCommand(false) == "log";
+    GetCommand(false) == "log" ||
+    GetCommand(false) == "prs" ||
+    GetCommand(false) == "prt";
 }
 
 bool wxExVCSCommand::IsOpen() const
 {
   return
     GetCommand(false) == "cat" ||
-    GetCommand(false) == "prs" ||
-    GetCommand(false) == "prt" ||
     IsBlame() ||
     IsDiff() ||
     IsHistory();

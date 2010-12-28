@@ -24,13 +24,13 @@
 class wxGrid;
 class wxStyledTextCtrl;
 
-/// Offers methods to the otl database.
+/// Offers methods to the otl connection.
 class WXDLLIMPEXP_BASE wxExOTL
 {
 public:
   /// Default constructor.
   /// Initializes the otl connection using specified threaded mode.
-  wxExOTL(const int  threaded_mode = 0);
+  wxExOTL(int threaded_mode = 0);
 
   /// Destructor.
   /// Logs off.

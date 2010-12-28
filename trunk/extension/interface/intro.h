@@ -17,9 +17,13 @@ containing a collection of wxWidgets extension classes.
 
 <p>
 It uses <a href="http://www.wxwidgets.org/">wxWidgets 2.9.1</a> 
-and STL classes. 
+and <a href="http://www.cplusplus.com/reference/algorithm/"> STL classes</a>. 
 
 <p>
 There are also some classes to support database programming using the 
 <a href="http://otl.sourceforge.net/">Oracle and ODBC Template Library</a>.
+
+<p>
+For building instruction see 
+<a href="http://svn.xp-dev.com/svn/wxextension/trunk/documentation/sdp.txt"> sdp</a>.
 */

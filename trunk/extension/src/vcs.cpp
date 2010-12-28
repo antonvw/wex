@@ -149,7 +149,7 @@ bool wxExVCS::DirExists(const wxFileName& filename)
 {
   const wxString vcs = FindEntry(filename).GetName();
 
-  // When adding a vcs, also check GetNo.
+  // When adding a vcs, also check FindEntry.
   if ((vcs == "git" || vcs == "mercurial") && CheckPathAll(vcs, filename))
   {
     return true;
@@ -370,8 +370,12 @@ void wxExVCS::Initialize(int menu_id)
   }
   else
   {
-    m_Caption.clear();
-    m_FlagsKey.clear();
+    // This should not really occur,
+    // give some defaults to be able to fix this
+    // using the dialog.
+    m_Caption = "VCS";
+    m_Command = wxExVCSCommand("help");
+    m_FlagsKey = "vcsflags/VCS";
   }
 }
 
@@ -446,11 +450,6 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 #if wxUSE_GUI
 int wxExVCS::ShowDialog(wxWindow* parent) const
 {
-  if (m_Caption.empty())
-  {
-    return wxID_CANCEL;
-  }
-  
   std::vector<wxExConfigItem> v;
 
   if (m_Command.IsCommit())

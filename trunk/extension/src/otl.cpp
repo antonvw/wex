@@ -20,14 +20,12 @@
 #include <wx/config.h>
 #include <wx/grid.h>
 #include <wx/stc/stc.h>
-#include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/extension/otl.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/util.h>
 
 #if wxExUSE_OTL
 
-wxExOTL::wxExOTL(const int threaded_mode)
+wxExOTL::wxExOTL(int threaded_mode)
 {
   otl_connect::otl_initialize(threaded_mode);
 }
@@ -202,7 +200,7 @@ long wxExOTL::Query(
     m_Connect,
     otl_implicit_select);
 
-  stc->AppendText(wxTextFile::GetEOL());
+  stc->NewLine();
 
   long rows = 0;
   otl_column_desc* desc;
@@ -217,7 +215,7 @@ long wxExOTL::Query(
     if (n < desc_len - 1) stc->AppendText('\t');
   }
 
-  stc->AppendText(wxTextFile::GetEOL());
+  stc->NewLine();
 
   // Get all rows.
   while (!i.eof() && !stopped)
@@ -252,8 +250,9 @@ long wxExOTL::Query(
       if (n < desc_len - 1) line += '\t';
     }
 
-    stc->AppendText(line + wxTextFile::GetEOL());
-
+    stc->AppendText(line);
+    stc->NewLine();
+    
     if ((rows & 0xff) == 0)
     {
       wxTheApp->Yield();

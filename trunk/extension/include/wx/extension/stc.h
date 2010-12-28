@@ -140,6 +140,8 @@ public:
   void Fold();
 
   /// Gets EOL string.
+  /// If you only want to insert a newline, use NewLine()
+  /// (from wxStyledTextCtrl).
   const wxString GetEOL() const;
 
   /// Gets the file.
@@ -179,7 +181,8 @@ public:
     int line_number, 
     const wxString& text = wxEmptyString);
 
-  /// Guesses the type.
+  /// Guesses the file type using a small sample size from this document, 
+  /// and sets EOL mode and updates statusbar if it found eols.
   void GuessType();
 
   /// Indent range of lines.
@@ -256,7 +259,7 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
-  /// Adds a sequence.
+  /// Asks for a sequence and adds it if not cancelled.
   void SequenceDialog();
 
   /// Sets the (scintilla) lexer for this document.
