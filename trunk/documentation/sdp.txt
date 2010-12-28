@@ -110,9 +110,9 @@ General
       http://upx.sourceforge.net/
     under Linux just strip it
 
-  - deploy under Windows using 7z
+  - deploy under Windows using 7-Zip 9.20
       http://www.7-zip.org
-    deploy under Linux using gzip and tar
+    deploy under Linux using deploy.sh (in build dir)
 
 
 SVN hierarchy
