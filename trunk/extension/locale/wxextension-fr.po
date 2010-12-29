@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: wxextension v0.9.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-24 13:20+0100\n"
-"PO-Revision-Date: 2010-10-29 15:01+0100\n"
+"PO-Revision-Date: 2010-12-29 14:18+0100\n"
 "Last-Translator: Emma v. Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -36,9 +36,8 @@ msgid "Save changes to"
 msgstr "enregistrer les modifications apportées"
 
 #: ../src/frame.cpp:238
-#, fuzzy
 msgid "Find"
-msgstr "barre de recherche"
+msgstr "Trouver"
 
 #: ../src/frame.cpp:266
 msgid "Replace"
@@ -53,9 +52,8 @@ msgid "Modified"
 msgstr "modifié"
 
 #: ../src/frd.cpp:26
-#, fuzzy
 msgid "Find what"
-msgstr "barre de recherche"
+msgstr "Barre de recherche"
 
 #: ../src/frd.cpp:27
 msgid "Match case"
@@ -94,18 +92,17 @@ msgid "Email"
 msgstr "e-mail"
 
 #: ../src/header.cpp:26
-#, fuzzy
 msgid "License"
-msgstr "lignes"
+msgstr "Licence"
 
 #: ../src/header.cpp:27
 msgid "Purpose"
 msgstr "Vue d'ensemble"
 
 #: ../src/indicator.cpp:77
-#, fuzzy, c-format
+#, c-format
 msgid "Illegal indicator: %s on line: %d"
-msgstr "stule indicateur illégales: %s  à la ligne: %d"
+msgstr "Indicateur illégale: %s  à la ligne: %d"
 
 #: ../src/indicator.cpp:93
 #, c-format
@@ -113,9 +110,9 @@ msgid "Illegal indicator style: %s on line: %d"
 msgstr "stule indicateur illégales: %s  à la ligne: %d"
 
 #: ../src/indicator.cpp:113
-#, fuzzy, c-format
+#, c-format
 msgid "Illegal indicator number: %d on line: %d"
-msgstr "stule indicateur illégales: %s  à la ligne: %d"
+msgstr "Numéro de l'indicateur illégale: %d  à la ligne: %d"
 
 #: ../src/lexer.cpp:65
 msgid "Lexer is not known"
@@ -132,9 +129,8 @@ msgid "Keywords could not be set on line: %d"
 msgstr ""
 
 #: ../src/lexers.cpp:70
-#, fuzzy
 msgid "All Files"
-msgstr "fichiers"
+msgstr "Tous les fichiers"
 
 #: ../src/lexers.cpp:245
 #, c-format
@@ -195,9 +191,9 @@ msgid "Illegal marker: %s on line: %d"
 msgstr ""
 
 #: ../src/marker.cpp:102
-#, fuzzy, c-format
+#, c-format
 msgid "Illegal marker number: %d on line: %d"
-msgstr "stule indicateur illégales: %s  à la ligne: %d"
+msgstr "Numéro de repère illégale: %d  à la ligne: %d"
 
 #: ../src/menu.cpp:86
 msgid "&Menubar\tCtrl+B"
@@ -253,18 +249,17 @@ msgid "<Skipped>"
 msgstr ""
 
 #: ../src/property.cpp:51
-#, fuzzy, c-format
+#, c-format
 msgid "Illegal property name: %s or value: %s on line: %d"
-msgstr "stule indicateur illégales: %s  à la ligne: %d"
+msgstr "Nom de la propriété illicites: %s ou de la valeur: %s à la ligne: %d"
 
 #: ../src/shell.cpp:194
 msgid "event not found"
 msgstr ""
 
 #: ../src/stc.cpp:362
-#, fuzzy
 msgid "Open"
-msgstr "&Ouvrir"
+msgstr "Ouvrir"
 
 #: ../src/stc.cpp:374
 msgid "Comparator"
@@ -415,9 +410,8 @@ msgstr ""
 
 #: ../src/stc.cpp:623
 #: ../src/stc.cpp:625
-#, fuzzy
 msgid "Colour"
-msgstr "liste des couleurs"
+msgstr "Liste des couleurs"
 
 #: ../src/stc.cpp:625
 #: ../src/stc.cpp:737
@@ -499,9 +493,8 @@ msgid "Include directory"
 msgstr ""
 
 #: ../src/stc.cpp:674
-#, fuzzy
 msgid "Directory"
-msgstr "Histoire"
+msgstr "Directoire"
 
 #: ../src/stc.cpp:809
 msgid "Control Character"
@@ -560,18 +553,17 @@ msgid "Macro is recorded"
 msgstr ""
 
 #: ../src/stcfile.cpp:75
-#, fuzzy
 msgid "Opened"
-msgstr "&Ouvrir"
+msgstr "Ouvert"
 
 #: ../src/stcfile.cpp:119
 msgid "Saved"
 msgstr ""
 
 #: ../src/style.cpp:75
-#, fuzzy, c-format
+#, c-format
 msgid "Illegal style: %s on line: %d"
-msgstr "stule indicateur illégales: %s  à la ligne: %d"
+msgstr "Style illégales:% s à la ligne:% d"
 
 #: ../src/style.cpp:98
 #, c-format
@@ -603,9 +595,8 @@ msgstr ""
 
 #: ../src/textfile.cpp:585
 #: ../src/report/listview.cpp:241
-#, fuzzy
 msgid "Empty Lines"
-msgstr "lignes"
+msgstr "lignes vides"
 
 #: ../src/textfile.cpp:649
 #: ../src/tool.cpp:88
@@ -672,9 +663,8 @@ msgstr ""
 
 #: ../src/tool.cpp:88
 #: ../src/report/listviewfile.cpp:116
-#, fuzzy
 msgid "file(s)"
-msgstr "fichiers"
+msgstr "fichier(s)"
 
 #: ../src/toolbar.cpp:100
 msgid "View in hex mode"
@@ -697,14 +687,12 @@ msgid "Search case sensitive"
 msgstr ""
 
 #: ../src/toolbar.cpp:234
-#, fuzzy
 msgid "Search matching words"
-msgstr "regarder dans le bas"
+msgstr "Rechercher les mots correspondants"
 
 #: ../src/toolbar.cpp:235
-#, fuzzy
 msgid "Search using regular expressions"
-msgstr "expression régulière"
+msgstr "Recherche utilisant des expressions régulières"
 
 #: ../src/util.cpp:192
 msgid "Compared"
@@ -784,9 +772,8 @@ msgstr ""
 
 #: ../src/vcs.cpp:314
 #: ../src/report/process.cpp:217
-#, fuzzy
 msgid "Cannot execute"
-msgstr "ne peut pas ouvrir le fichier"
+msgstr "ne peut pas éxecuter le fichier"
 
 #: ../src/vcsentry.cpp:36
 #, c-format
@@ -871,9 +858,8 @@ msgid "Process is running"
 msgstr ""
 
 #: ../src/report/frame.cpp:295
-#, fuzzy
 msgid "Cannot locate file"
-msgstr "ne peut pas ouvrir le fichier"
+msgstr "Ne peut pas localiser le fichier"
 
 #: ../src/report/frame.cpp:355
 msgid "Cancelled"
@@ -891,9 +877,8 @@ msgstr "Ouvrez&récents"
 #: ../src/report/listview.cpp:231
 #: ../src/report/listview.cpp:266
 #: ../src/report/listview.cpp:690
-#, fuzzy
 msgid "File Name"
-msgstr "fichier enregistrer sous"
+msgstr "Fichier enregistrer sous"
 
 #: ../src/report/listitem.cpp:31
 #: ../src/report/listitem.cpp:167
@@ -910,9 +895,8 @@ msgstr ""
 #: ../src/report/listview.cpp:715
 #: ../src/report/listview.cpp:719
 #: ../src/report/listviewfile.cpp:257
-#, fuzzy
 msgid "Type"
-msgstr "type de fichier"
+msgstr "Type de fichier"
 
 #: ../src/report/listitem.cpp:142
 msgid "List Colour"
@@ -966,15 +950,13 @@ msgid "Keywords"
 msgstr ""
 
 #: ../src/report/listview.cpp:184
-#, fuzzy
 msgid "Process Output"
-msgstr "&Proces"
+msgstr "&Processus"
 
 #: ../src/report/listview.cpp:185
 #: ../src/report/listview.cpp:982
-#, fuzzy
 msgid "File"
-msgstr "fichiers"
+msgstr "Fichier"
 
 #: ../src/report/listview.cpp:186
 msgid "Replace Results"
@@ -1003,9 +985,8 @@ msgstr ""
 #: ../src/report/listview.cpp:278
 #: ../src/report/listview.cpp:724
 #: ../src/report/process.cpp:119
-#, fuzzy
 msgid "Line No"
-msgstr "lignes"
+msgstr "Lignes"
 
 #: ../src/report/listview.cpp:276
 msgid "Run Time"
@@ -1049,15 +1030,13 @@ msgid "Selection"
 msgstr "&Sélectionner"
 
 #: ../src/report/listview.cpp:714
-#, fuzzy
 msgid "Folder Type"
-msgstr "type de fichier"
+msgstr "Type de fichier"
 
 #: ../src/report/listview.cpp:937
 #: ../src/report/listview.cpp:942
-#, fuzzy
 msgid "RBS File"
-msgstr "fichiers"
+msgstr "RBS Fichier"
 
 #: ../src/report/listview.cpp:938
 #: ../src/report/listview.cpp:953
@@ -1066,19 +1045,19 @@ msgstr ""
 
 #: ../src/report/listview.cpp:939
 msgid "Build RBS File"
-msgstr ""
+msgstr "Construire Fichier RBS "
 
 #: ../src/report/listview.cpp:982
 msgid "generated"
-msgstr ""
+msgstr "généré"
 
 #: ../src/report/listviewfile.cpp:61
 msgid "Add files"
-msgstr ""
+msgstr "Ajouter des fichiers"
 
 #: ../src/report/listviewfile.cpp:116
 msgid "Added"
-msgstr ""
+msgstr "Ajouté"
 
 #: ../src/report/listviewfile.cpp:151
 msgid "Add Items"
@@ -1086,7 +1065,7 @@ msgstr "ajouter des éléments"
 
 #: ../src/report/listviewfile.cpp:159
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
 #: ../src/report/process.cpp:34
 msgid "Process folder"
@@ -1099,7 +1078,7 @@ msgstr "&Procès"
 
 #: ../src/report/process.cpp:190
 msgid "Cannot set working directory"
-msgstr ""
+msgstr "Ne peut pas définir le répertaire de travail"
 
 #: ../src/report/process.cpp:201
 msgid "No listview to collect output"
@@ -1111,24 +1090,24 @@ msgstr "Arrêter l'enregistrement"
 
 #: ../src/report/process.cpp:269
 msgid "Ready"
-msgstr ""
+msgstr "Prêt"
 
 #: ../src/report/stc.cpp:150
 msgid "Readonly"
-msgstr ""
+msgstr "Lecture seule"
 
 #: ../src/report/textfile.cpp:160
 #, c-format
 msgid "Retrieved: %d records"
-msgstr ""
+msgstr "Récupérée: %d documents"
 
 #: ../src/report/textfile.cpp:373
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 #: ../src/report/textfile.cpp:374
 msgid "ODBC Error"
-msgstr ""
+msgstr "ODBC Erreur"
 
 #: ../include/wx/extension/configdlg.h:33
 msgid "Options"
@@ -1139,27 +1118,24 @@ msgid "File Purpose"
 msgstr "La vue d'ensemble"
 
 #: ../include/wx/extension/lexers.h:115
-#, fuzzy
 msgid "Enter Lexer"
-msgstr "Lexer"
+msgstr "Entrer lexer"
 
 #: ../include/wx/extension/listview.h:125
-#, fuzzy
 msgid "Enter Item Number"
-msgstr "Lexer"
+msgstr "Entrer le numéro d'article"
 
 #: ../include/wx/extension/otl.h:54
 msgid "Open ODBC Connection"
-msgstr ""
+msgstr "Ouvrir une connexion ODBC"
 
 #: ../include/wx/extension/statistics.h:203
-#, fuzzy
 msgid "Item"
 msgstr "ajouter des éléments"
 
 #: ../include/wx/extension/statistics.h:204
 msgid "Value"
-msgstr ""
+msgstr "Valeur"
 
 #: ../include/wx/extension/stc.h:122
 msgid "Enter Control Character"
@@ -1171,17 +1147,16 @@ msgstr "Fichier:numéro de ligne"
 
 #: ../include/wx/extension/stc.h:262
 msgid "Enter Sort Position"
-msgstr ""
+msgstr "Entrer Position de trier"
 
 #: ../include/wx/extension/vcs.h:64
 msgid "Set VCS"
-msgstr ""
+msgstr "Set VCS"
 
 #: ../include/wx/extension/report/frame.h:85
 #: ../include/wx/extension/report/process.h:33
-#, fuzzy
 msgid "Select Process"
-msgstr "sélection des projets"
+msgstr "Sélection des Projets"
 
 #, fuzzy
 #~ msgid "Undefined tag: %s on line: %d"
