@@ -325,7 +325,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general socket server."));
     info.SetVersion("1.0.5");
-    info.SetCopyright("(c) 2007-2010, Anton van Wezenbeek");
+    info.SetCopyright("(c) 2007-2011, Anton van Wezenbeek");
     info.AddDeveloper(wxVERSION_STRING);
     info.AddDeveloper(wxEX_VERSION_STRING);
     wxAboutBox(info);

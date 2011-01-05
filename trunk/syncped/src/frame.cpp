@@ -503,7 +503,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 #endif
 
     info.SetDescription(description);
-    info.SetCopyright("(c) 1998-2010, Anton van Wezenbeek. " 
+    info.SetCopyright("(c) 1998-2011, Anton van Wezenbeek. " 
       + wxString(_("All rights reserved.")));
     info.SetWebSite(
       wxString("http://syncped.1.xpdev-hosted.com/index.htm"));
