@@ -30,8 +30,6 @@ bool wxExTestApp::OnInit()
     
   frame->Show(true);
 
-  SetTopWindow(frame);
-
   CppUnit::TextUi::TestRunner runner;
 
   wxExAppTestSuite* suite = new wxExAppTestSuite;

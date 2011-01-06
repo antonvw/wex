@@ -63,8 +63,6 @@ bool wxExSampleApp::OnInit()
   frame->StatusText(
     "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
 
-  SetTopWindow(frame);
-
   return true;
 }
 

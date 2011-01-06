@@ -57,10 +57,7 @@ bool wxExRepSampleApp::OnInit()
   wxExLog::Get()->SetLogging();
 
   wxExRepSampleFrame *frame = new wxExRepSampleFrame();
-
   frame->Show(true);
-
-  SetTopWindow(frame);
 
   return true;
 }

@@ -47,8 +47,6 @@ bool App::OnInit()
   Frame *frame = new Frame();
   frame->Show(true);
 
-  SetTopWindow(frame);
-
   return true;
 }
 

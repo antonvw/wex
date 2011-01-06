@@ -63,16 +63,6 @@ public:
   /// Executes the vcs command, and collects the output.
   long Execute();
 
-#if wxUSE_GUI
-  /// Shows a dialog and executes the vcs command if not cancelled.
-  /// If no fullpath was specified, a dialog with base folder is shown, 
-  /// otherwise the specified fullpath is used for getting vcs contents from.
-  /// Returns wxID_CANCEL if dialog was cancelled, an execute error occurred, 
-  /// or there is no output collected. Returns wxID_OK if okay (use GetError
-  /// to check whether the output contains errors or normal info).
-  wxStandardID ExecuteDialog(wxWindow* parent);
-#endif    
-
   /// Gets the current vcs command.  
   const wxExVCSCommand& GetCommand() const {return m_Command;};
 
@@ -109,6 +99,15 @@ public:
 private:
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
+#if wxUSE_GUI
+  /// Shows a dialog and executes the vcs command if not cancelled.
+  /// If no fullpath was specified, a dialog with base folder is shown, 
+  /// otherwise the specified fullpath is used for getting vcs contents from.
+  /// Returns wxID_CANCEL if dialog was cancelled, an execute error occurred, 
+  /// or there is no output collected. Returns wxID_OK if okay (use GetError
+  /// to check whether the output contains errors or normal info).
+  wxStandardID ExecuteDialog(wxWindow* parent);
+#endif    
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
   void Initialize(int command_id);

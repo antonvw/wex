@@ -49,8 +49,7 @@ bool App::OnInit()
     return false;
   }
 
-  Frame *frame = new Frame();
-  SetTopWindow(frame);
+  new Frame();
 
   return true;
 }

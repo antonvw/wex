@@ -55,8 +55,6 @@ bool App::OnInit()
   Frame* frame = new Frame(m_Files.Count() == 0);
   frame->Show();
 
-  SetTopWindow(frame);
-
   wxExOpenFiles(frame, m_Files, 0, wxDIR_FILES); // only files in this dir
  
   return true;
