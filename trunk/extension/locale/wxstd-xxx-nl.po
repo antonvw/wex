@@ -15,12 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "&Execute"
-msgstr "&Uitvoeren"
-
-msgid "&Jump to"
-msgstr "&Ga naar"
-
 msgid "About "
 msgstr "Info "
 
@@ -29,3 +23,15 @@ msgstr "&Annuleren"
 
 msgid "Cancel"
 msgstr "Annuleren"
+
+msgid "&Execute"
+msgstr "&Uitvoeren"
+
+msgid "&Jump to"
+msgstr "&Ga naar"
+
+msgid "Save &As..."
+msgstr "Opslaan &als..."
+
+msgid "Save As"
+msgstr "Opslaan als"
