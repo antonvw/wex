@@ -33,6 +33,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   wxExFrame::StatusText(m_Command);
 #endif
 
+#if wxUSE_GUI
   if (m_Dialog == NULL)
   {
     m_Dialog = new wxExSTCEntryDialog(
@@ -45,6 +46,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
       wxDefaultPosition,
       wxSize(350, 50));
   }
+#endif
   
   m_Output.clear();
 
@@ -95,10 +97,10 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     m_Output += errors[i] + "\n";
   }
 
-  // Set the error member variable, 
-  // we have an error if there were errors, or the
-  // command could not be executed.  
-  m_Error = !errors.empty() || retValue == -1;
+  // Set the error member variable. 
+  // We have an error if there were errors, and no output, 
+  // or the  command could not be executed.  
+  m_Error = (!errors.empty() && output.empty()) || retValue == -1;
 
   // Then add the normal output, will be empty if there are errors.
   for (
