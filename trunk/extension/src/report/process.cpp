@@ -205,9 +205,7 @@ long wxExProcess::Execute()
 
   if (pid > 0)
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(m_Command);
-#endif
+    wxLogStatus(m_Command);
     wxExLog::Get()->Log(m_Command);
 
     m_Timer.Start(1000); // each 1000 milliseconds
@@ -244,9 +242,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
 
   m_Timer.Stop();
   
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Stopped"));
-#endif
+  wxLogStatus(_("Stopped"));
 
   DeletePendingEvents();
 
@@ -265,10 +261,7 @@ void wxExProcess::OnTerminate(
     // Do nothing.
   }
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Ready"));
-#endif
-
+  wxLogStatus(_("Ready"));
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
   wxPostEvent(wxTheApp->GetTopWindow(), event);
 }

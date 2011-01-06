@@ -876,9 +876,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
     AfterSorting();
   }
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Sorted on") + ": " + sorted_col->GetText());
-#endif
+  wxLogStatus(_("Sorted on") + ": " + sorted_col->GetText());
 }
 
 void wxExListView::SortColumnReset()

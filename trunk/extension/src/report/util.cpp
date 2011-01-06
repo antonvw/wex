@@ -40,9 +40,7 @@ bool wxExFindOtherFileName(
 
   if (!reg.Matches(fullpath.Lower()))
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("No version information found"));
-#endif
+    wxLogStatus(_("No version information found"));
     return false;
   }
 
@@ -98,9 +96,7 @@ bool wxExFindOtherFileName(
 
   if (!found)
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("No files found"));
-#endif
+    wxLogStatus(_("No files found"));
   }
 
   return found;

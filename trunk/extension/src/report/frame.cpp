@@ -349,9 +349,7 @@ void wxExFrameWithHistory::OnCommandConfigDialog(
       if (wxExDir::GetIsBusy())
       {
         wxExDir::Cancel();
-#if wxUSE_STATUSBAR
-        wxExFrame::StatusText(_("Cancelled"));
-#endif
+        wxLogStatus(_("Cancelled"));
       }
       break;
 

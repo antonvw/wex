@@ -14,7 +14,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/textfile.h>
@@ -97,9 +96,7 @@ void wxExListItem::Insert(long index)
 
 const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
 {
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_FileName.GetFullPath());
-#endif
+  wxLogStatus(m_FileName.GetFullPath());
 
   if (m_FileName.FileExists())
   {

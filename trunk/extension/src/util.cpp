@@ -192,9 +192,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
   const wxString msg = _("Compared") + ": " + arguments;
 
   wxExLog::Get()->Log(msg);
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(msg);
-#endif
+  wxLogStatus(msg);
 
   return true;
 }
@@ -227,12 +225,10 @@ const wxString wxExFindResult(
     text = _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
       _("hit") + " " + where;
 
-#if wxUSE_STATUSBAR
     if (show_on_statusbar)
     {
-      wxExFrame::StatusText(text);
+      wxLogStatus(text);
     }
-#endif
   }
   else
   {
@@ -240,12 +236,10 @@ const wxString wxExFindResult(
     
     text = wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found");
 
-#if wxUSE_STATUSBAR
     if (show_on_statusbar)
     {
-      wxExFrame::StatusText(text);
+      wxLogStatus(text);
     }
-#endif
   }
   
   return text;
@@ -266,9 +260,7 @@ bool wxExFindOtherFileName(
 
   if (!reg.Matches(fullpath.Lower()))
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("No version information found"));
-#endif
+    wxLogStatus(_("No version information found"));
     return false;
   }
 
@@ -329,9 +321,7 @@ bool wxExFindOtherFileName(
 
   if (!found)
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("No files found"));
-#endif
+    wxLogStatus(_("No files found"));
   }
 
   return found;

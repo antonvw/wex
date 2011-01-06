@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/command.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/log.h>
 
 #if wxUSE_GUI
@@ -29,9 +28,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   m_Command = command;
   m_Error = false;
   
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_Command);
-#endif
+  wxLogStatus(m_Command);
 
 #if wxUSE_GUI
   if (m_Dialog == NULL)

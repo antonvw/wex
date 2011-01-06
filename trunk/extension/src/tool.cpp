@@ -16,7 +16,6 @@
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/log.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/vcs.h>
@@ -88,9 +87,7 @@ void wxExTool::Log(
     << " " << stat->Get(_("Files")) << " " << _("file(s)")
     << (!caption.empty() ? ": " + caption: "");
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(logtext);
-#endif
+  wxLogStatus(logtext);
 
   if (log_to_file && stat->Get(_("Files")) != 0)
   {

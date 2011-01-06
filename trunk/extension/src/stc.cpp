@@ -898,9 +898,7 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
   if (!(GetFlags() & STC_WIN_HEX))
   {
     SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Readonly attribute changed"));
-#endif
+    wxLogStatus(_("Readonly attribute changed"));
   }
 
   return true;
@@ -910,9 +908,7 @@ void wxExSTC::FileTypeMenu()
 {
   if (GetReadOnly())
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Document is readonly"));
-#endif
+    wxLogStatus(_("Document is readonly"));
     return;
   }
 
@@ -1572,9 +1568,7 @@ void wxExSTC::MacroPlayback()
     SendMsg(msg, wp, (wxIntPtr)txt);
   }
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Macro played back"));
-#endif
+  wxLogStatus(_("Macro played back"));
 }
 
 void wxExSTC::MarkerAddChange(int line)
@@ -1621,9 +1615,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
       GetReadOnly() && 
       wxIsalnum(event.GetUnicodeKey()))
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(_("Document is readonly"));
-#endif
+    wxLogStatus(_("Document is readonly"));
     return;
   }
 
@@ -1732,7 +1724,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     else
     {
-      wxExFrame::StatusText(wxString::Format(_("file: %s does not exist"), 
+      wxLogStatus(wxString::Format(_("file: %s does not exist"), 
         file.GetFileName().GetFullPath()));
     }
     }
@@ -2124,10 +2116,8 @@ int wxExSTC::ReplaceAll(
 
   EndUndoAction();
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxString::Format(_("Replaced: %d occurrences of: %s"),
+  wxLogStatus(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, find_text.c_str()));
-#endif
 
   return nr_replacements;
 }
@@ -2439,9 +2429,7 @@ void wxExSTC::StartRecord()
 
   m_Macro.clear();
 
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(_("Macro recording"));
-#endif
+  wxLogStatus(_("Macro recording"));
 
   wxStyledTextCtrl::StartRecord();
 }
@@ -2452,12 +2440,10 @@ void wxExSTC::StopRecord()
 
   m_MacroIsRecording = false;
 
-#if wxUSE_STATUSBAR
   if (!m_Macro.empty())
   {
-    wxExFrame::StatusText(_("Macro is recorded"));
+    wxLogStatus(_("Macro is recorded"));
   }
-#endif
 
   wxStyledTextCtrl::StopRecord();
 }

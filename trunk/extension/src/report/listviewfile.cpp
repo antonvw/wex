@@ -111,12 +111,10 @@ void wxExListViewFile::AddItems()
     }
   }
 
-#if wxUSE_STATUSBAR
   const wxString text = 
     _("Added") + wxString::Format(" %d ", added) + _("file(s)");
 
-  wxExFrame::StatusText(text);
-#endif
+  wxLogStatus(text);
 }
 
 void wxExListViewFile::AddItemsDialog()

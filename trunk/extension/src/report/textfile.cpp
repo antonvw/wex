@@ -159,9 +159,7 @@ bool wxExTextFileWithListView::ParseSQL()
 
     const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
     wxExLog::Get()->Log(msg);
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(msg);
-#endif
+    wxLogStatus(msg);
   }
 
   // Test for SQL end statement.

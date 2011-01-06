@@ -76,9 +76,7 @@ public:
 
   /// Sets text on specified field.
   /// Returns true if the specified field exists.
-  bool SetStatusText(
-    const wxString& text, 
-    const wxString& field = "PaneText");
+  bool SetStatusText(const wxString& text, const wxString& field);
 protected:
   /// React on some mouse events line button down, double click and
   /// moving over.

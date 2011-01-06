@@ -114,9 +114,7 @@ public:
 
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
-  static void StatusText(
-    const wxString& text, 
-    const wxString& pane = "PaneText");
+  static void StatusText(const wxString& text, const wxString& pane);
 
   /// Shows filename info on the statusbar.
   // Using type wxExStatusFlags instead of long gives compiler errors at

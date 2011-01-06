@@ -118,9 +118,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   wxExLog::Get()->Log(msg);
   
-#if wxUSE_STATUSBAR
-  wxExFrame::StatusText(msg);
-#endif
+  wxLogStatus(msg);
 }
 
 bool wxExSTCFile::GetContentsChanged() const 
