@@ -558,7 +558,7 @@ void wxExFrame::StatusText(const wxExFileName& filename, long flags)
     }
   }
 
-  StatusText(text);
+  wxLogStatus(text);
 }
 
 #endif // wxUSE_STATUSBAR
