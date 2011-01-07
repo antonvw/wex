@@ -2045,6 +2045,33 @@ void wxExSTC::PropertiesMessage()
 #endif
 }
 
+void wxExSTC::Reload(long flags)
+{
+  m_Flags = flags;
+  
+  const wxString value = GetText();
+  
+  Clear();
+  
+	if (m_Flags & STC_WIN_HEX)
+	{
+		AddTextHexMode(0, value.c_str());
+	}
+	else
+	{
+		SetText(value);
+	}
+
+	GuessType();
+
+	if (m_Flags & STC_WIN_READ_ONLY ||
+			// At this moment we do not allow to write in hex mode.
+			m_Flags & STC_WIN_HEX)
+	{
+		SetReadOnly(true);
+	}
+}
+
 int wxExSTC::ReplaceAll(
   const wxString& find_text,
   const wxString& replace_text)

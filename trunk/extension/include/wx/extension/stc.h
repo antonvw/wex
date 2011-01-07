@@ -233,6 +233,9 @@ public:
 
   /// Shows properties on the statusbar.
   virtual void PropertiesMessage();
+  
+  /// Reloads current document using specified flags.
+  void Reload(long flags);
 
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
