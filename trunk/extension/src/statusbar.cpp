@@ -45,22 +45,6 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
   
-const wxExStatusBarPane wxExStatusBar::GetField(int field) const
-{
-  for (
-    auto it = m_Panes.begin();
-    it != m_Panes.end();
-    ++it)
-  {
-    if (it->second.GetNo() == field)
-    {
-      return it->second;
-    }
-  }
-
-  return wxExStatusBarPane();
-}
-
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   event.Skip();
@@ -77,20 +61,20 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       {
         found = true;
 
-        const wxExStatusBarPane& field(GetField(i));
+        SetIterator(i);
 
-        if (field.GetNo() != -1)
+        if (m_PanesIterator != m_Panes.end())
         {
           // Handle the event, don't fail if none is true here,
           // it seems that moving and clicking almost at the same time
           // could cause assertions.
           if (event.ButtonDClick())
           {
-            m_Frame->StatusBarDoubleClicked(field.GetName());
+            m_Frame->StatusBarDoubleClicked(m_PanesIterator->second.GetName());
           }
           else if (event.ButtonDown())
           {
-            m_Frame->StatusBarClicked(field.GetName());
+            m_Frame->StatusBarClicked(m_PanesIterator->second.GetName());
           }
 #if wxUSE_TOOLTIPS
           // Show tooltip if tooltip is available, and not yet presented.
@@ -100,9 +84,9 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             const wxString tooltip =
               (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
 
-            if (tooltip != field.GetHelpText())
+            if (tooltip != m_PanesIterator->second.GetHelpText())
             {
-              SetToolTip(field.GetHelpText());
+              SetToolTip(m_PanesIterator->second.GetHelpText());
             }
           }
 #endif
@@ -153,6 +137,20 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
     &wxExStatusBar::OnMouse,
     this,
     wxID_ANY);
+}
+
+void wxExStatusBar::SetIterator(int field)
+{
+  for (
+    m_PanesIterator = m_Panes.begin();
+    m_PanesIterator != m_Panes.end();
+    ++m_PanesIterator)
+  {
+    if (m_PanesIterator->second.GetNo() == field)
+    {
+      return;
+    }
+  }
 }
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)

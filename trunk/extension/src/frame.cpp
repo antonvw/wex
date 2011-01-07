@@ -17,6 +17,7 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -520,6 +521,26 @@ void wxExFrame::StatusBarDoubleClicked(
   {
     wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
+  }
+  else if (pane == "PaneText")
+  {
+    if (wxExLog::Get()->GetLogging())
+    {
+      wxFile file(wxExLog::Get()->GetFileName().GetFullPath());
+      
+      const int bytes = 500;
+    
+      if (file.Length() > bytes && file.IsOpened())
+      {
+        file.SeekEnd(-bytes);
+        wxCharBuffer buffer(bytes);
+        file.Read(buffer.data(), bytes);
+        wxString str(buffer);
+        str = str.AfterFirst('\n');
+        wxExSTCEntryDialog(this, 
+          _("Log"), str, wxEmptyString, wxOK).ShowModal();
+			}
+		}
   }
   else
   {

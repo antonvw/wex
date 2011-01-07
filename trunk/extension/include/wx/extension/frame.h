@@ -96,9 +96,12 @@ public:
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
-  /// Normally the first pane should display status text messages,
-  /// the wxextension uses the pane called 'PaneText' for them.
-  /// You can hide them by not providing this pane.
+  /// The first pane should be reserved for display status text messages.
+  /// The next panes are used by the framework:
+  /// - PaneFileType, shows file types
+  /// - PaneLines, shows lines
+  /// - PaneLexer, shows lexer
+  /// - PaneItems, shows items
   void SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,

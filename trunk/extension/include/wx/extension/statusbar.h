@@ -26,14 +26,10 @@ class wxExStatusBar;
 class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
-  /// Default constructor.
-  wxExStatusBarPane() : m_No(-1){;};
-
   /// Constructor.
   wxExStatusBarPane(
     /// If you do no provide helptext, it is derived from the name, by using
-    /// text after the first 'e' character (so after 'Pane') if name is
-    /// not 'PaneText'.
+    /// text after the first 'e' character (so after 'Pane').
     const wxString& name,
     /// Width of the field
     int width = 50,
@@ -42,9 +38,7 @@ public:
     /// The style.
     int style = wxSB_NORMAL)
     : wxStatusBarPane(style, width)
-    , m_HelpText(
-        helptext.empty() && name != "PaneText" ? 
-          name.AfterFirst('e'): helptext)
+    , m_HelpText(helptext.empty() ? name.AfterFirst('e'): helptext)
     , m_Name(name)
     , m_No(m_Total)
     {m_Total++;};
@@ -82,12 +76,11 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  /// Returns the status bar field.
-  /// If field could not be found, returns empty field.
-  const wxExStatusBarPane GetField(int field) const;
+  void SetIterator(int field);
 
   wxExFrame* m_Frame;
   std::map<wxString, wxExStatusBarPane> m_Panes;
+  std::map<wxString, wxExStatusBarPane>::const_iterator m_PanesIterator;
 
   DECLARE_EVENT_TABLE()
 };
