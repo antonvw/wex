@@ -61,35 +61,39 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
       {
         found = true;
 
-        SetIterator(i);
-
-        if (m_PanesIterator != m_Panes.end())
+        for (
+          auto it = m_Panes.begin();
+          it != m_Panes.end();
+          ++it)
         {
-          // Handle the event, don't fail if none is true here,
-          // it seems that moving and clicking almost at the same time
-          // could cause assertions.
-          if (event.ButtonDClick())
+          if (it->second.GetNo() == i)
           {
-            m_Frame->StatusBarDoubleClicked(m_PanesIterator->second.GetName());
-          }
-          else if (event.ButtonDown())
-          {
-            m_Frame->StatusBarClicked(m_PanesIterator->second.GetName());
-          }
-#if wxUSE_TOOLTIPS
-          // Show tooltip if tooltip is available, and not yet presented.
-          // Do not move check for NULL, otherwise no tooltip presented.
-          else if (event.Moving())
-          {
-            const wxString tooltip =
-              (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
-
-            if (tooltip != m_PanesIterator->second.GetHelpText())
+            // Handle the event, don't fail if none is true here,
+            // it seems that moving and clicking almost at the same time
+            // could cause assertions.
+            if (event.ButtonDClick())
             {
-              SetToolTip(m_PanesIterator->second.GetHelpText());
+              m_Frame->StatusBarDoubleClicked(it->second.GetName());
             }
-          }
+            else if (event.ButtonDown())
+            {
+              m_Frame->StatusBarClicked(it->second.GetName());
+            }
+#if wxUSE_TOOLTIPS
+            // Show tooltip if tooltip is available, and not yet presented.
+            // Do not move check for NULL, otherwise no tooltip presented.
+            else if (event.Moving())
+            {
+              const wxString tooltip =
+                (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
+  
+              if (tooltip != it->second.GetHelpText())
+              {
+                SetToolTip(it->second.GetHelpText());
+              }
+            }
 #endif
+          }
         }
       }
     }
@@ -137,20 +141,6 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
     &wxExStatusBar::OnMouse,
     this,
     wxID_ANY);
-}
-
-void wxExStatusBar::SetIterator(int field)
-{
-  for (
-    m_PanesIterator = m_Panes.begin();
-    m_PanesIterator != m_Panes.end();
-    ++m_PanesIterator)
-  {
-    if (m_PanesIterator->second.GetNo() == field)
-    {
-      return;
-    }
-  }
 }
 
 bool wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)

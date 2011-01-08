@@ -19,7 +19,6 @@
 #if wxUSE_STATUSBAR
 
 class wxExFrame;
-class wxExStatusBar;
 
 /// This class defines our statusbar panes, used by wxExFrame::SetupStatusBar.
 /// It just adds some members to the base class, and keeps a static total.
@@ -76,11 +75,8 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
-  void SetIterator(int field);
-
   wxExFrame* m_Frame;
   std::map<wxString, wxExStatusBarPane> m_Panes;
-  std::map<wxString, wxExStatusBarPane>::const_iterator m_PanesIterator;
 
   DECLARE_EVENT_TABLE()
 };
