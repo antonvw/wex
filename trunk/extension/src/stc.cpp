@@ -1415,7 +1415,7 @@ void wxExSTC::Initialize()
 #endif
 
   // Try to set the background (or foreground) colour.
-  // Dit not have any effect.
+  // Did not have any effect.
   /*
   SetBackgroundColour(*wxBLACK);
   ClearBackground();
@@ -2047,28 +2047,20 @@ void wxExSTC::PropertiesMessage()
 
 void wxExSTC::Reload(long flags)
 {
-  m_Flags = flags;
-  
-  const wxString value = GetText();
-  
-  Clear();
-  
-	if (m_Flags & STC_WIN_HEX)
+	if ((flags & STC_WIN_HEX) && 
+			 !(m_Flags & STC_WIN_HEX))
 	{
+    const wxString value = GetText();
+    ClearDocument();
 		AddTextHexMode(0, value.c_str());
+		SetReadOnly(true);
+    m_Flags = flags;
+    EmptyUndoBuffer();
+    SetSavePoint();
 	}
 	else
 	{
-		SetText(value);
-	}
-
-	GuessType();
-
-	if (m_Flags & STC_WIN_READ_ONLY ||
-			// At this moment we do not allow to write in hex mode.
-			m_Flags & STC_WIN_HEX)
-	{
-		SetReadOnly(true);
+    Open(m_File.GetFileName(), 0, wxEmptyString, flags);
 	}
 }
 
