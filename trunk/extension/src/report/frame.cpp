@@ -75,6 +75,9 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
       wxConfigBase::Get()->Read(wxString::Format("RecentProject%d", i)));
   }
 
+  // Take care of default value.
+  wxConfigBase::Get()->ReadBool(m_TextRecursive, true); 
+  
 #ifdef wxExUSE_EMBEDDED_SQL
   wxExTool::Get()->AddInfo(
     ID_TOOL_SQL,
@@ -136,7 +139,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     
   int flags = wxDIR_FILES | wxDIR_HIDDEN;
   
-  if (wxConfigBase::Get()->ReadBool(m_TextRecursive, false)) 
+  if (wxConfigBase::Get()->ReadBool(m_TextRecursive, true)) 
   {
     flags |= wxDIR_DIRS;
   }

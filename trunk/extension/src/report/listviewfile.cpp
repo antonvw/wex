@@ -84,7 +84,7 @@ void wxExListViewFile::AddItems()
     flags |= wxDIR_FILES;
   }
 
-  if (wxConfigBase::Get()->ReadBool(m_TextAddRecursive, false)) 
+  if (wxConfigBase::Get()->ReadBool(m_TextAddRecursive, true)) 
   {
     flags |= wxDIR_DIRS;
   }
