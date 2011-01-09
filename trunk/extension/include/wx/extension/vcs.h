@@ -38,17 +38,20 @@ public:
     VCS_AUTO, // uses the VCS appropriate for current file
   };
 
-  /// Default constructor, specify several files and the menu command id.
-  /// If the files array is empty, ShowDialog will show
-  /// a combobox for selecting a vcs folder.
-  /// The menu command id will be used to set the vcs command.
+  /// Default constructor.
   wxExVCS(
+    /// Specify several files for which you want vcs action.
+    /// If the this array is empty, ShowDialog will show
+    /// a combobox for selecting a vcs folder.
     const wxArrayString& files = wxArrayString(),
+    /// The menu command id that is used to set the vcs command.
     int menu_id = -1);
   
   /// Constructor for vcs from specified filename.
-  /// This must be an existing xml file containing all vcs.
-  wxExVCS(const wxFileName& filename) {m_FileName = filename;};
+  wxExVCS(
+    /// This must be an existing xml file containing all vcs.
+    /// This is done during wxExApp startup.
+    const wxFileName& filename) {m_FileName = filename;};
 
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
