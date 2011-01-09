@@ -20,6 +20,8 @@
 #include <wx/extension/lexer.h>
 
 class wxExFrame;
+class wxExSTC;
+class wxExVCSCommand;
 class wxXmlNode;
 
 /*! \file */
@@ -150,6 +152,12 @@ void wxExOpenFilesDialog(wxExFrame* frame,
   bool ask_for_continue = false,
   long file_flags = 0,
   int dir_flags = wxDIR_DEFAULT);
+
+/// Use specified vcs command to set lexer on STC document.
+void wxExVCSCommandOnSTC(
+  const wxExVCSCommand* command, 
+  const wxExLexer& lexer,
+  wxExSTC* stc);
 
 /// Executes VCS command id for specified files
 /// and opens component if necessary.

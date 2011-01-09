@@ -600,6 +600,35 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
   return translation;
 }
 
+void wxExVCSCommandOnSTC(
+  const wxExVCSCommand* command, 
+  const wxExLexer& lexer,
+  wxExSTC* stc)
+{
+  if (command->IsBlame())
+  {
+    // Do not show an edge for blamed documents, they are too wide.
+    stc->SetEdgeMode(wxSTC_EDGE_NONE);
+  }
+  
+  if (command->IsDiff())
+  {
+    stc->SetLexer("diff");
+  }
+  else if (command->IsHistory())
+  {
+    stc->SetLexer("");
+  }
+  else if (command->IsOpen())
+  {
+    stc->SetLexer(lexer.GetScintillaLexer());
+  }
+  else
+  {
+    stc->SetLexer(wxEmptyString);
+  }
+}
+
 void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 {
   const wxExVCS check(files, id);

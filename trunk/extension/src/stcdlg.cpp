@@ -72,6 +72,11 @@ const wxExLexer* wxExSTCEntryDialog::GetLexer() const
   return &m_STC->GetLexer();
 }
 
+wxExSTC* wxExSTCEntryDialog::GetSTC()
+{
+  return m_STC;
+}
+
 const wxString wxExSTCEntryDialog::GetText() const 
 {
   return m_STC->GetText();

@@ -36,6 +36,9 @@ public:
 
   /// Gets the STC lexer.
   const wxExLexer* GetLexer() const;
+  
+  /// Gets the STC.
+  wxExSTC* GetSTC();
 
   /// Gets the normal STC text value.
   const wxString GetText() const;

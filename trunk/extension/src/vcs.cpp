@@ -513,23 +513,12 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
 #if wxUSE_GUI
 void wxExVCS::ShowOutput(const wxString& caption) const
 {
-  // Add a lexer when appropriate.
-  if (m_Command.IsOpen() && !GetError() && !m_Command.IsHistory())
+  if (!GetError())
   {
-    const wxExFileName filename(GetFile());
-  
-    if (filename.GetLexer().IsOk())
-    {
-      GetDialog()->SetLexer(filename.GetLexer().GetScintillaLexer());
-    }
-  }
-  else if (m_Command.IsDiff())
-  {
-    GetDialog()->SetLexer("diff");
-  }
-  else
-  {
-    GetDialog()->SetLexer(wxEmptyString);
+    wxExVCSCommandOnSTC(
+      &m_Command, 
+      wxExFileName(GetFile()).GetLexer(), 
+      GetDialog()->GetSTC());
   }
 
   wxExCommand::ShowOutput(m_Caption);

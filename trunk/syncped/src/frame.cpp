@@ -1081,25 +1081,8 @@ bool Frame::OpenFile(
       flags,
       filename.GetFullName() + " " + unique);
 
-    if (vcs.GetCommand().IsDiff())
-    {
-      editor->SetLexer("diff");
-    }
-    else if (vcs.GetCommand().IsHistory())
-    {
-      editor->SetLexer("");
-    }
-    else
-    {
-      editor->SetLexer(filename.GetLexer().GetScintillaLexer());
-    }
+    wxExVCSCommandOnSTC(&vcs.GetCommand(), filename.GetLexer(), editor);
     
-    if (vcs.GetCommand().IsBlame())
-    {
-      // Do not show an edge for blamed documents, they are too wide.
-      editor->SetEdgeMode(wxSTC_EDGE_NONE);
-    }
-
     m_NotebookWithEditors->AddPage(
       editor,
       key,
