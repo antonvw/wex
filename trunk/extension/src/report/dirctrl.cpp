@@ -27,7 +27,7 @@ BEGIN_EVENT_TABLE(wxExGenericDirCtrl, wxGenericDirCtrl)
     wxExGenericDirCtrl::OnCommand)
   EVT_MENU_RANGE(ID_TREE_OPEN, ID_TREE_RUN_MAKE, wxExGenericDirCtrl::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
-  EVT_TREE_ITEM_RIGHT_CLICK(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
+  EVT_TREE_ITEM_MENU(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
 END_EVENT_TABLE()
 
 wxExGenericDirCtrl::wxExGenericDirCtrl(
@@ -104,7 +104,7 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
     return;
   }
 
-  if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK)
+  if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_MENU)
   {
     wxExMenu menu;
     menu.Append(ID_TREE_OPEN, _("&Open"));
