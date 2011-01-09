@@ -164,9 +164,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     for (auto i = 0; i < repeat; i++) m_STC->WordRightExtend();
 
-    if (dot && !m_InsertText.empty())
+    if (dot)
     {
-      m_STC->ReplaceSelection(m_InsertText);
+			m_STC->ReplaceSelection(m_InsertText);
     }
     else
     {
