@@ -16,7 +16,7 @@
 class WXDLLIMPEXP_BASE wxExVCSCommand
 {
 public:
-  enum wxExVCSCommandType
+  enum
   {
     VCS_COMMAND_IS_BOTH     = 0x0001, ///< command in main and popup menu 
     VCS_COMMAND_IS_POPUP    = 0x0002, ///< command in popup menu 

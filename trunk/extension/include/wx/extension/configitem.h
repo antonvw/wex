@@ -103,20 +103,26 @@ class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
   /// Constuctor for most types.
-  wxExConfigItem(const wxString& name,
+  wxExConfigItem(
+    /// name for the control as on the dialog and in the config
+    const wxString& name,
+    /// type
     wxExConfigType type,
+    /// page on notebook
     const wxString& page = wxEmptyString,
+    /// is this item required
     bool is_required = false,
-    ///< the id as used by the control, 
-    ///< when using for a combobox dir, use id < wxID_LOWEST
-    ///< accessible using GetControl()->GetId()
+    /// the id as used by the control, 
+    /// when using for a combobox dir, use id < wxID_LOWEST
+    /// accessible using GetControl()->GetId()
     int id = wxID_ANY,
-    ///< used by CONFIG_COMBOBOX
+    /// used by CONFIG_COMBOBOX
     int max_items = 25,
-    ///< will the name be displayed as a static text
+    /// will the name be displayed as a static text
     bool add_name = true,
+    /// the number of cols
     int cols = -1,
-    ///< extra style, only used for static line
+    /// extra style, only used for static line
     long style = 0);
     
   /// Constructor for a user control.
@@ -124,63 +130,89 @@ public:
   /// if you want to, you have to implement UserControlToConfig
   /// in your derived class.
   wxExConfigItem(
-    ///< name for the control as on the dialog and in the config
+    /// name for the control as on the dialog and in the config
     const wxString& name,
-    ///< the control (use default constructor for it)
+    /// the control (use default constructor for it)
     wxControl* control,
-    ///< the page
+    /// page on notebook
     const wxString& page = wxEmptyString,
-    ///< is this control required
+    /// is this control required
     bool is_required = false,
-    ///< will the name be displayed as a static text
+    /// will the name be displayed as a static text
     bool add_name = true,
-    ///< number of cols for this control
+    /// number of cols for this control
     int cols = -1);
 
   /// Constructor for a string, a hyperlink ctrl or a static text.
   /// The extra style argument is the style for the control used
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
-  wxExConfigItem(const wxString& name,
-    ///< used as default for a hyperlink ctrl
+  wxExConfigItem(
+    /// name for the control as on the dialog and in the config
+    const wxString& name,
+    /// used as default for a hyperlink ctrl
     const wxString& value = wxEmptyString,
+    /// page on noyytebook
     const wxString& page = wxEmptyString,
+    /// the style
     long style = 0,
+    /// the type
     wxExConfigType type = CONFIG_STRING,
+    /// is this item required
     bool is_required = false,
-    ///< ignored for a static text
+    /// ignored for a static text
     bool add_name = true,
+    /// number of cols for this control
     int cols = -1);
 
   /// Constructor for a spin ctrl, a spin ctrl double or a slider.
-  wxExConfigItem(const wxString& name,
-    double min, double max,
+  wxExConfigItem(
+    /// name for the control as on the dialog and in the config
+    const wxString& name,
+    /// minimum value
+    double min, 
+    /// maximum value
+    double max,
+    /// page on noyytebook
     const wxString& page = wxEmptyString,
+    /// type
     wxExConfigType type = CONFIG_SPINCTRL,
+    /// style
     long style = wxSL_HORIZONTAL,
+    /// incrment value
     double inc = 1,
+    /// number of cols for this control
     int cols = -1);
 
-  /// Constructor for a checklistbox without a name. Just specify
-  /// the set with names of boolean items.
-  /// A checklistbox without a name (not mutually exclusive choices)
-  /// should be used to get/set several boolean values in one checklistbox.
-  wxExConfigItem(const std::set<wxString> & choices,
+  /// Constructor for a checklistbox without a name. 
+  /// This checklistbox can be used to get/set several boolean values.
+  wxExConfigItem(
+    /// the set with names of boolean items
+    const std::set<wxString> & choices,
+    /// page on noyytebook
     const wxString& page = wxEmptyString,
+    /// number of cols for this control
     int cols = -1);
 
-  /// Constructor for a radiobox or a checklistbox. Just specify
-  /// the map with values and text.
-  /// A checklistbox (not mutually exclusive choices)
-  /// should be used to get/set individual bits in a long.
+  /// Constructor for a radiobox or a checklistbox. 
+  /// This checklistbox (not mutually exclusive choices)
+  /// can be used to get/set individual bits in a long.
   /// A radiobox (mutually exclusive choices)
   /// should be used when a long value can have a short
   /// set of possible individual values.
-  wxExConfigItem(const wxString& name,
+  wxExConfigItem(
+    /// name for the control as on the dialog and in the config
+    const wxString& name,
+    /// the map with values and text
     const std::map<long, const wxString> & choices,
+    /// indicates whether to use a radiobox or a checklistbox.
     bool use_radiobox = true,
+    /// page on noyytebook
     const wxString& page = wxEmptyString,
+    /// major dimension for the radiobox
     int majorDimension = 0,
+    /// style for the radiobox
     long style = wxRA_SPECIFY_COLS,
+    /// number of cols for this control
     int cols = -1);
 
   /// Gets the columns.
@@ -207,13 +239,15 @@ public:
   /// It returns the flex grid sizer that was used for creating the item sizer.
   /// Or it returns NULL if no flex grid sizer was used.
   wxFlexGridSizer* Layout(
+    /// the parent
     wxWindow* parent, 
+    /// the sizer
     wxSizer* sizer,
-    ///< specify the item will be readonly, it will not be changeable
-    ///< if underlying control supports this
+    /// specify the item will be readonly, it will not be changeable
+    /// if underlying control supports this
     bool readonly = false,
-    ///< specify the sizer for creating the item, or NULL,
-    ///< than a new one is created
+    /// specify the sizer for creating the item, or NULL,
+    /// than a new one is created
     wxFlexGridSizer* fgz = NULL);
 
   /// Loads or saves this item to the config.
