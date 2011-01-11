@@ -17,7 +17,6 @@
 #include <wx/tokenzr.h> 
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/log.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/defs.h>
@@ -134,7 +133,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-  wxExLog::Get()->Log(
+  wxLogVerbose(
     wxExFindReplaceData::Get()->GetFindReplaceInfoText(replace));
     
   int flags = wxDIR_FILES | wxDIR_HIDDEN;

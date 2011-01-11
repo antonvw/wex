@@ -20,7 +20,6 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/util.h>
@@ -873,7 +872,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       return;
     }
     
-    wxExLog::Get()->Log(
+    wxLogVerbose(
       wxExFindReplaceData::Get()->GetFindReplaceInfoText(
         tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
@@ -978,7 +977,7 @@ void RBSFile::GenerateDialog()
   Footer();
   Close();
 
-  wxExLog::Get()->Log("RBS " + _("File") + ": " + script + " " + _("generated"));
+  wxLogVerbose("RBS " + _("File") + ": " + script + " " + _("generated"));
 }
 
 void RBSFile::GenerateTransmit(const wxString& text)

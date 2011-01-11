@@ -22,7 +22,6 @@
 #include <wx/extension/app.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/vcs.h>
@@ -31,7 +30,6 @@ int wxExApp::OnExit()
 {
   delete wxExFindReplaceData::Set(NULL);
   delete wxExLexers::Set(NULL);
-  delete wxExLog::Set(NULL);
   delete wxExPrinting::Set(NULL);
   delete wxExTool::Set(NULL);
 

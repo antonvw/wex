@@ -25,7 +25,6 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
 
@@ -191,7 +190,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
 
   const wxString msg = _("Compared") + ": " + arguments;
 
-  wxExLog::Get()->Log(msg);
+  wxLogVerbose(msg);
   wxLogStatus(msg);
 
   return true;

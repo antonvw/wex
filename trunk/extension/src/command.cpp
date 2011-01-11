@@ -12,7 +12,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/command.h>
-#include <wx/extension/log.h>
 
 #if wxUSE_GUI
 wxExSTCEntryDialog* wxExCommand::m_Dialog = NULL;
@@ -77,7 +76,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   }
   else
   {
-    wxExLog::Get()->Log(m_Command);
+    wxLogVerbose(m_Command);
   }
 
   if (!cwd.empty())

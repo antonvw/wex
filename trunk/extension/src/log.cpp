@@ -19,41 +19,17 @@
 #include <wx/textfile.h>
 #include <wx/extension/log.h>
 
-wxExLog* wxExLog::m_Self = NULL;
-
-wxExLog::wxExLog(const wxFileName& filename, bool logging)
+wxExLog::wxExLog(const wxFileName& filename)
   : m_FileName(filename)
 {
-  SetLogging(logging);
-}
-
-wxExLog* wxExLog::Get(bool createOnDemand)
-{
-  if (m_Self == NULL && createOnDemand)
+  if (!m_FileName.FileExists())
   {
-    wxFileName filename;
-
-    if (wxTheApp == NULL)
-    {
-      filename = wxFileName("app.log");
-    }
-    else
-    {
-#ifdef wxExUSE_PORTABLE
-      filename = wxFileName(
-        wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-        wxTheApp->GetAppName().Lower() + ".log");
-#else
-      filename = wxFileName(
-        wxStandardPaths::Get().GetUserDataDir(),
-        wxTheApp->GetAppName().Lower() + ".log");
-#endif
-    }
-
-    m_Self = new wxExLog(filename, false); // no logging
+    m_Logging = wxFile().Create(m_FileName.GetFullPath());
   }
-
-  return m_Self;
+  else
+  {
+    m_Logging = true;
+  }
 }
 
 bool wxExLog::Log(const wxString& text, bool add_timestamp ) const
@@ -69,30 +45,4 @@ bool wxExLog::Log(const wxString& text, bool add_timestamp ) const
     file.IsOpened() &&
     file.Write((add_timestamp ? wxDateTime::Now().Format() + " ": "") 
       + text + wxTextFile::GetEOL());
-}
-
-wxExLog* wxExLog::Set(wxExLog* log)
-{
-  wxExLog* old = m_Self;
-  m_Self = log;
-  return old;
-}
-
-void wxExLog::SetLogging(bool logging) 
-{
-  if (logging)
-  {
-    if (!m_FileName.FileExists())
-    {
-      m_Logging = wxFile().Create(m_FileName.GetFullPath());
-    }
-    else
-    {
-      m_Logging = true;
-    }
-  }
-  else
-  {
-    m_Logging = false;
-  }
 }

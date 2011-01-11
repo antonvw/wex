@@ -18,7 +18,6 @@
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/configdlg.h>
-#include <wx/extension/log.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/defs.h>
@@ -206,7 +205,7 @@ long wxExProcess::Execute()
   if (pid > 0)
   {
     wxLogStatus(m_Command);
-    wxExLog::Get()->Log(m_Command);
+    wxLogVerbose(m_Command);
 
     m_Timer.Start(1000); // each 1000 milliseconds
   }

@@ -71,7 +71,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    wxExLog::Get()->Log(_("Opened") + ": " + GetFileName().GetFullPath());
+    wxLogVerbose(_("Opened") + ": " + GetFileName().GetFullPath());
     m_STC->PropertiesMessage();
   }
   else
@@ -116,8 +116,8 @@ void wxExSTCFile::DoFileSave(bool save_as)
   m_STC->MarkerDeleteAllChange();
   
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
-  wxExLog::Get()->Log(msg);
   
+  wxLogVerbose(msg);
   wxLogStatus(msg);
 }
 
