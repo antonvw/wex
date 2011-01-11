@@ -16,6 +16,8 @@
 
 class App : public wxExApp
 {
+public:
+  static const wxString& GetLogFile() {return m_LogFile;};
 private:
 #ifdef __WXOSX__  
   virtual void MacOpenFile(const wxString& fileName);
@@ -25,5 +27,6 @@ private:
   virtual void OnInitCmdLine(wxCmdLineParser& parser);
 
   wxArrayString m_Files;
+  static wxString m_LogFile;
 };
 #endif

@@ -17,7 +17,6 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/frame.h>
-#include <wx/extension/log.h>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -86,11 +85,6 @@ void wxExSTCFile::DoFileLoad(bool synced)
   if (GetFileName().GetExt() == "log")
   {
     m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
-  }
-
-  if (GetFileName() == wxExLog::Get()->GetFileName())
-  {
-    m_STC->DocumentEnd();
   }
 }
 

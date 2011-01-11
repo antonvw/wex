@@ -13,9 +13,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/app.h>
 #include <wx/file.h>
-#include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/log.h>
 

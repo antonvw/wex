@@ -33,6 +33,7 @@
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "frame.h"
+#include "app.h"
 #include "defs.h"
 #include "version.h"
 
@@ -1192,6 +1193,11 @@ bool Frame::OpenFile(
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
         m_DirCtrl->SelectPath(filename.GetFullPath());
+      }
+      
+      if (filename.GetFileName().GetFullPath() == App::GetLogFile())
+      {
+        editor->DocumentEnd();
       }
       
       // Do not show an edge for project files opened as text.
