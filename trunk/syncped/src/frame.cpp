@@ -109,11 +109,13 @@ Frame::Frame(bool open_recent)
     wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
 #endif
 
-  std::filebuf fb;
-  fb.open(m_LogFile.c_str(), std::ios::out);
-  std::ostream os(&fb);
+//  std::filebuf fb;
+//  fb.open(m_LogFile.c_str(), std::ios::out);
+//  std::ostream os(&fb);
+  
+  wxLog::SetLogLevel(wxLOG_Info);
 
-  m_OldLog = wxLog::SetActiveTarget(new wxLogStream(&os)); 
+//  m_OldLog = wxLog::SetActiveTarget(new wxLogStream(&os)); 
 
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
@@ -233,7 +235,7 @@ Frame::Frame(bool open_recent)
 
 Frame::~Frame()
 {
-  delete m_OldLog;
+//  delete m_OldLog;
 }
 
 wxExListViewStandard* Frame::Activate(

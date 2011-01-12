@@ -224,6 +224,6 @@ void wxExVCSEntry::ShowOutput(const wxString& caption) const
       GetDialog()->GetSTC());
   }
 
-  wxExCommand::ShowOutput(GetName() + " " + m_Command.GetCommand());
+  wxExCommand::ShowOutput(caption);
 }
 #endif

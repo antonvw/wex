@@ -425,7 +425,7 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 
   if ((retValue = ExecuteDialog(parent)) == wxID_OK)
   {
-    m_Entry.ShowOutput();
+    m_Entry.ShowOutput(m_Caption);
   }
 
   return retValue;
