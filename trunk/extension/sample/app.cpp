@@ -22,7 +22,6 @@
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
@@ -56,11 +55,10 @@ bool wxExSampleApp::OnInit()
     return false;
   }
 
-  wxExLog::Get()->SetLogging();
-
   wxExSampleFrame *frame = new wxExSampleFrame();
   frame->Show(true);
-  frame->StatusText(
+  
+  wxLogStatus(
     "Locale: " + GetLocale().GetLocale() + " dir: " + GetCatalogDir());
 
   return true;
@@ -202,7 +200,7 @@ wxExSampleFrame::wxExSampleFrame()
 
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
   panes.push_back(wxExStatusBarPane("PaneCells", 60, _("Cells")));
   panes.push_back(wxExStatusBarPane("PaneItems", 60, _("Items")));
@@ -268,17 +266,13 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         wxExFileDialog dlg(this, &m_STC->GetFile());
     if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
 
-#if wxUSE_STATUSBAR
     wxStopWatch sw;
-#endif
     
     m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
 
-#if wxUSE_STATUSBAR
     const auto stop = sw.Time();
-    StatusText(wxString::Format(
+    wxLogStatus(wxString::Format(
       "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
-#endif
     }
     break;
 

@@ -20,6 +20,7 @@ class Frame : public DecoratedFrame
 {
 public:
   Frame(bool open_recent);
+ ~Frame();
   
   virtual bool OpenFile(
     const wxExFileName& filename,
@@ -50,6 +51,7 @@ private:
     const wxExFileName& filename,
     const wxExVCS& vcs,
     long flags = 0);
+  virtual void StatusBarDoubleClicked(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);
 
   int m_NewFileNo;
@@ -62,6 +64,8 @@ private:
   wxExNotebook* m_NotebookWithProjects;
 
   const wxString m_ProjectWildcard;
+  wxString m_LogFile;
+  wxLog* m_OldLog;
 
   DECLARE_EVENT_TABLE()
 };

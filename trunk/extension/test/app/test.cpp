@@ -191,7 +191,7 @@ void wxExAppTestFixture::testFrame()
 
   std::vector<wxExStatusBarPane> panes;
 
-  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane());
 
   for (int i = 0; i < 25; i++)
   {
@@ -389,7 +389,7 @@ void wxExAppTestFixture::testStatusBar()
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
   std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("panex"));
   panes.push_back(wxExStatusBarPane("paney"));
   panes.push_back(wxExStatusBarPane("panez"));

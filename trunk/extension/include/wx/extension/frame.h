@@ -33,14 +33,6 @@ class wxExToolBar;
 class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
-  /// Flags for StatusText.
-  enum wxExStatusFlags
-  {
-    STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
-    STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
-    STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
-  };
-
   /// Constructor, the frame position and size is taken from the config,
   /// the name is used internally for persistent registration.
   wxExFrame(wxWindow* parent,
@@ -118,13 +110,6 @@ public:
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
-
-  /// Shows filename info on the statusbar.
-  // Using type wxExStatusFlags instead of long gives compiler errors at
-  // invoking.
-  static void StatusText(
-    const wxExFileName& filename, 
-    long flags = STAT_DEFAULT);
 #endif // wxUSE_STATUSBAR
 
 protected:

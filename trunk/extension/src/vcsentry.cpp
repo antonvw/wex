@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/util.h>
@@ -157,6 +158,33 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 
 #endif
 
+long wxExVCSEntry::Execute(
+  const wxExVCSCommand& command, 
+  const wxExFileName& filename,
+  const wxString& args,
+  const wxString& wd)
+{
+  const wxString bin = wxConfigBase::Get()->Read(GetName(), "svn");
+
+  if (bin.empty())
+  {
+    wxLogError(GetName() + " " + _("path is empty"));
+    return -1;
+  }
+  
+  m_Command = command;
+  m_FileName = filename;
+  
+  wxString prefix;
+  
+  if (GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
+  {
+    prefix += wxConfigBase::Get()->Read(_("Prefix flags"), "svn") + " ";
+  }
+  
+  return wxExCommand::Execute(bin + " " + prefix + command.GetCommand() + " " + args, wd);
+}
+
 const wxExVCSCommand wxExVCSEntry::GetCommand(int menu_id) const
 {
   int command_id = -1;
@@ -184,3 +212,18 @@ void wxExVCSEntry::ResetInstances()
 {
   m_Instances = wxExVCS::VCS_AUTO + 1;
 }
+
+#if wxUSE_GUI
+void wxExVCSEntry::ShowOutput(const wxString& caption) const
+{
+  if (!GetError())
+  {
+    wxExVCSCommandOnSTC(
+      &m_Command, 
+      m_FileName.GetLexer(), 
+      GetDialog()->GetSTC());
+  }
+
+  wxExCommand::ShowOutput(GetName() + " " + m_Command.GetCommand());
+}
+#endif

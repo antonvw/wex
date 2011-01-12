@@ -21,6 +21,14 @@ class WXDLLIMPEXP_BASE wxExFileName : public wxFileName
 {
   friend class wxExFile; // it might update stat
 public:
+  /// Flags for StatusText.
+  enum wxExStatusFlags
+  {
+    STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
+    STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
+    STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
+  };
+
   /// Default constructor.
   wxExFileName() : wxFileName() {;};
 
@@ -44,6 +52,11 @@ public:
 
   /// Gets the stat.
   const wxExStat& GetStat() const {return m_Stat;};
+  
+  /// Shows filename info on the statusbar.
+  // Using type wxExStatusFlags instead of long gives compiler errors at
+  // invoking.
+  void StatusText(long flags = STAT_DEFAULT) const;
 private:
   wxExLexer m_Lexer;
   wxExStat m_Stat;

@@ -15,7 +15,6 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
@@ -53,8 +52,6 @@ bool wxExRepSampleApp::OnInit()
   {
     return false;
   }
-
-  wxExLog::Get()->SetLogging();
 
   wxExRepSampleFrame *frame = new wxExRepSampleFrame();
   frame->Show(true);
@@ -96,7 +93,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("PaneFileType", 50));
   panes.push_back(wxExStatusBarPane("PaneLines", 100));
   panes.push_back(wxExStatusBarPane("PaneLexer", 60));

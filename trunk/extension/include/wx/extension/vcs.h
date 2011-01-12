@@ -14,19 +14,16 @@
 
 #include <map>
 #include <wx/filename.h>
-#include <wx/extension/command.h>
 #include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml, this is done
 /// during wxExApp startup.
-/// This class is derived from wxExCommand, allowing 
-/// to execute a command, and offering basic for
-/// showing output. It also has a vcs commmand,
+/// This class has a vcs commmand,
 /// that contains info about the current vcs command to be (or is)
 /// executed.
-class WXDLLIMPEXP_BASE wxExVCS : public wxExCommand
+class WXDLLIMPEXP_BASE wxExVCS
 {
 public:
   // The vcs id's here can be set using the config dialog, and are not
@@ -51,7 +48,7 @@ public:
   wxExVCS(
     /// This must be an existing xml file containing all vcs.
     /// This is done during wxExApp startup.
-    const wxFileName& filename) {m_FileName = filename;};
+     const wxFileName& filename) {m_FileName = filename;};
 
 #if wxUSE_GUI
   /// Shows a dialog with options, returns dialog return code.
@@ -64,6 +61,7 @@ public:
   static bool DirExists(const wxFileName& filename);
 
   /// Executes the vcs command, and collects the output.
+  /// Returns return code from command Execute.
   long Execute();
 
   /// Gets the current vcs command.  
@@ -85,16 +83,16 @@ public:
 #if wxUSE_GUI
   /// Combines all in one method. Calls the ExecuteDialog,
   /// and calls ShowOutput if return code was wxID_OK.
-  /// Returns return code from ExecuteDialog.
+  /// Returns wxID_CANCEL if dialog was cancelled, an execute error occurred, 
+  /// or there is no output collected. Returns wxID_OK if okay (use GetError
+  /// to check whether the output contains errors or normal info).
   wxStandardID Request(wxWindow* parent);
 #endif  
 
 #if wxUSE_GUI
   /// Shows dialog.
+  /// Returns result from calling ShowModal.
   int ShowDialog(wxWindow* parent) const;
-  
-  /// Overriden from base class.
-  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
 
   /// Returns true if VCS usage is set in the config.
@@ -106,9 +104,6 @@ private:
   /// Shows a dialog and executes the vcs command if not cancelled.
   /// If no fullpath was specified, a dialog with base folder is shown, 
   /// otherwise the specified fullpath is used for getting vcs contents from.
-  /// Returns wxID_CANCEL if dialog was cancelled, an execute error occurred, 
-  /// or there is no output collected. Returns wxID_OK if okay (use GetError
-  /// to check whether the output contains errors or normal info).
   wxStandardID ExecuteDialog(wxWindow* parent);
 #endif    
   static const wxExVCSEntry FindEntry(const wxFileName& filename);

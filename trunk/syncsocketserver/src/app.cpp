@@ -97,7 +97,7 @@ Frame::Frame()
 #if wxUSE_STATUSBAR
   // Statusbar setup before STC construction.
   std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("PaneClients", 75, _("Number of clients connected")));
   panes.push_back(wxExStatusBarPane("PaneTimer", 75, _("Repeat timer")));
   panes.push_back(wxExStatusBarPane("PaneBytes", 150, _("Number of bytes received and sent")));
@@ -847,9 +847,7 @@ bool Frame::SetupSocketServer()
     m_SocketServer->Destroy();
     m_SocketServer = NULL;
     
-#if wxUSE_STATUSBAR
-    StatusText(text);
-#endif
+    wxLogStatus(text);
 
     m_LogWindow->AppendTextForced(text);
     return false;
@@ -864,9 +862,7 @@ bool Frame::SetupSocketServer()
 #endif
   }
 
-#if wxUSE_STATUSBAR
-  StatusText(text);
-#endif
+  wxLogStatus(text);
   m_LogWindow->AppendTextForced(text);
 
   // Setup the event handler and subscribe to connection events
@@ -884,9 +880,7 @@ bool Frame::SocketCheckError(const wxSocketBase* sock)
     const wxString error = 
       wxString::Format(_("Socket Error: %d"), sock->LastError());
       
-#if wxUSE_STATUSBAR
-    StatusText(error);
-#endif
+    wxLogStatus(error);
 
     m_Statistics.Inc(error);
     

@@ -16,7 +16,6 @@
 #include <wx/extension/stcfile.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
-#include <wx/extension/frame.h>
 #include <wx/extension/stc.h>
 
 #if wxUSE_GUI
@@ -75,10 +74,8 @@ void wxExSTCFile::DoFileLoad(bool synced)
   }
   else
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(GetFileName(), wxExFrame::STAT_SYNC);
+    GetFileName().StatusText(wxExFileName::STAT_SYNC);
     m_STC->UpdateStatusBar("PaneLines");
-#endif
   }
 
   // No edges for log files.

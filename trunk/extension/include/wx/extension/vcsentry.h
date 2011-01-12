@@ -14,9 +14,11 @@
 #include <wx/menu.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/vcscommand.h>
+#include <wx/extension/command.h>
+#include <wx/extension/filename.h>
 
 /// This class collects a single vcs.
-class WXDLLIMPEXP_BASE wxExVCSEntry
+class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExCommand
 {
 public:
   enum wxExVCSEntryFlagsLocation
@@ -36,6 +38,13 @@ public:
   /// Returns number of items in menu.
   int BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
 #endif
+
+  /// Executes the command for this vcs.
+  long Execute(
+    const wxExVCSCommand& command, 
+    const wxExFileName& filename,
+    const wxString& args,
+    const wxString& wd = wxEmptyString);
   
   /// Gets the command.
   const wxExVCSCommand GetCommand(int menu_id) const;
@@ -53,6 +62,11 @@ public:
   /// will start from begin again.
   static void ResetInstances();
 
+#if wxUSE_GUI
+  /// Overriden from base class.
+  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
+#endif
+  
   /// Does this vcs supports keyword expansion.
   bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:
@@ -65,6 +79,8 @@ private:
   wxString m_Name;
   long m_No;
   bool m_SupportKeywordExpansion;
+  wxExVCSCommand m_Command;
+  wxExFileName m_FileName;
 
   std::vector<wxExVCSCommand> m_Commands;
 };

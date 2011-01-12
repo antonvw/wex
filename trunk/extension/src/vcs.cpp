@@ -249,26 +249,11 @@ long wxExVCS::Execute()
     }
   }
 
-  const wxString bin = wxConfigBase::Get()->Read(m_Entry.GetName(), "svn");
-
-  if (bin.empty())
-  {
-    wxLogError(m_Entry.GetName() + " " + _("path is empty"));
-    return -1;
-  }
-
-  if (m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_POSTFIX)
-  {
-    return wxExCommand::Execute(
-      bin + " " + m_Command.GetCommand() + " " + subcommand + flags + comment + file, 
-      wd);
-  }
-  else
-  {
-    return wxExCommand::Execute(
-      bin + " " + flags + m_Command.GetCommand() + " " + subcommand + comment + file, 
-      wd);
-  }
+  return m_Entry.Execute(
+    m_Command,
+    wxExFileName(GetFile()),
+    subcommand + flags + comment + file, 
+    wd);
 }
 
 #if wxUSE_GUI
@@ -440,7 +425,7 @@ wxStandardID wxExVCS::Request(wxWindow* parent)
 
   if ((retValue = ExecuteDialog(parent)) == wxID_OK)
   {
-    ShowOutput();
+    m_Entry.ShowOutput();
   }
 
   return retValue;
@@ -489,6 +474,11 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
     v.push_back(wxExConfigItem(_("Flags")));
   }
 
+  if (m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
+  {
+    v.push_back(wxExConfigItem(_("Prefix flags")));
+  }
+  
   if (UseSubcommand())
   {
     v.push_back(wxExConfigItem(_("Subcommand")));
@@ -507,21 +497,6 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
   }
   
   return retValue;
-}
-#endif
-
-#if wxUSE_GUI
-void wxExVCS::ShowOutput(const wxString& caption) const
-{
-  if (!GetError())
-  {
-    wxExVCSCommandOnSTC(
-      &m_Command, 
-      wxExFileName(GetFile()).GetLexer(), 
-      GetDialog()->GetSTC());
-  }
-
-  wxExCommand::ShowOutput(m_Caption);
 }
 #endif
 

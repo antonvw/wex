@@ -39,7 +39,7 @@ DecoratedFrame::DecoratedFrame()
 
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes;
-  panes.push_back(wxExStatusBarPane("PaneText", -3));
+  panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File Type")));
   panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
 
@@ -237,7 +237,7 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   {
     SetTitle(wxEmptyString, ((wxExListViewFile*)page)->GetFileName().GetName());
 #if wxUSE_STATUSBAR
-    StatusText(((wxExListViewFile*)page)->GetFileName());
+    ((wxExListViewFile*)page)->GetFileName().StatusText();
     ((wxExListViewFile*)page)->UpdateStatusBar();
 #endif
   }

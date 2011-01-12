@@ -23,7 +23,6 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
-#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -2037,8 +2036,9 @@ void wxExSTC::PrintPreview()
 
 void wxExSTC::PropertiesMessage()
 {
+  m_File.GetFileName().StatusText();
+  
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(m_File.GetFileName());
   UpdateStatusBar("PaneFileType");
   UpdateStatusBar("PaneLexer");
   UpdateStatusBar("PaneLines");

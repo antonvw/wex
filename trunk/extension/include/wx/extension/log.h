@@ -26,10 +26,8 @@ public:
     Log(text);
     return *this;};
 
-  /// Returns the filename of the logfile.
-  const wxFileName& GetFileName() const {return m_FileName;};
-  
-  /// Logs text (if logging is on) with a timestamp at the end of the file.
+  /// Logs text with a timestamp at the end of the file.
+  /// Returns true if writing was succesfull.
   bool Log(const wxString& text, bool add_timestamp = true) const;
 private:
   bool m_Logging;

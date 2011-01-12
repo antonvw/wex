@@ -49,22 +49,6 @@ bool App::OnInit()
     return false;
   }
 
-#ifdef wxExUSE_PORTABLE
-  m_LogFile = wxFileName(
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-    wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
-#else
-  m_LogFile = wxFileName(
-    wxStandardPaths::Get().GetUserDataDir(),
-    wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
-#endif
-
-  std::filebuf fb;
-  fb.open (m_LogFile, ios::out);
-  std::ostream os(&fb);
-
-  delete wxLog::SetActiveTarget(wxLogStream(&os)); 
-
   Frame* frame = new Frame(m_Files.Count() == 0);
   frame->Show();
 

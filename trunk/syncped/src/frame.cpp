@@ -97,7 +97,21 @@ Frame::Frame(bool open_recent)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
 {
-  wxLogTrace("SY_CALL", "+Frame");
+#ifdef wxExUSE_PORTABLE
+  m_LogFile = wxFileName(
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
+    wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
+#else
+  m_LogFile = wxFileName(
+    wxStandardPaths::Get().GetUserDataDir(),
+    wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
+#endif
+
+  std::filebuf fb;
+  fb.open(m_LogFile, ios::out);
+  std::ostream os(&fb);
+
+  m_OldLog = wxLog::SetActiveTarget(wxLogStream(&os)); 
 
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
@@ -213,8 +227,11 @@ Frame::Frame(bool open_recent)
 
   // End with update, so all changes in the manager are handled.
   GetManager().Update();
+}
 
-  wxLogTrace("SY_CALL", "-Frame");
+Frame::~Frame()
+{
+  delete m_OldLog;
 }
 
 wxExListViewStandard* Frame::Activate(
@@ -646,7 +663,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
-  case ID_OPEN_LOGFILE: OpenFile(wxExLog::Get()->GetFileName()); break;
+  case ID_OPEN_LOGFILE: OpenFile(m_LogFile); break;
   case ID_OPEN_VCS: OpenFile(wxExVCS::GetFileName()); break;
 
   case ID_OPTION_EDITOR:
@@ -1078,7 +1095,7 @@ bool Frame::OpenFile(
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
       m_NotebookWithEditors, 
       this,
-      vcs.GetOutput(),
+      vcs.GetEntry().GetOutput(),
       flags,
       filename.GetFullName() + " " + unique);
 
@@ -1107,8 +1124,6 @@ bool Frame::OpenFile(
   const wxString& match,
   long flags)
 {
-  wxLogTrace("SY_CALL", "+OpenFile");
-
   if (!filename.GetStat().IsOk())
   {
     wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
@@ -1172,16 +1187,12 @@ bool Frame::OpenFile(
       if (wxConfigBase::Get()->ReadBool("HexMode", false))
         flags |= wxExSTC::STC_WIN_HEX;
 
-      wxLogTrace("SY_CALL", "+wxExSTCWithFrame");
-
       editor = new wxExSTCWithFrame(m_NotebookWithEditors,
         this,
         filename,
         line_number,
         match,
         flags);
-
-      wxLogTrace("SY_CALL", "-wxExSTCWithFrame");
 
       m_NotebookWithEditors->AddPage(
         editor,
@@ -1195,7 +1206,7 @@ bool Frame::OpenFile(
         m_DirCtrl->SelectPath(filename.GetFullPath());
       }
       
-      if (filename.GetFileName().GetFullPath() == App::GetLogFile())
+      if (filename.GetFullPath() == m_LogFile)
       {
         editor->DocumentEnd();
       }
@@ -1212,9 +1223,33 @@ bool Frame::OpenFile(
     }
   }
 
-  wxLogTrace("SY_CALL", "-OpenFile");
-
   return true;
+}
+
+void Frame::StatusBarDoubleClicked(const wxString& pane)
+{
+  if (pane.empty())
+  {
+    wxFile file(m_LogFile);
+      
+    const int bytes = 1000;
+    
+    if (file.Length() > bytes && file.IsOpened())
+    {
+      file.SeekEnd(-bytes);
+      wxCharBuffer buffer(bytes);
+      file.Read(buffer.data(), bytes);
+      wxString str(buffer);
+      str = str.AfterFirst('\n');
+      wxExSTCEntryDialog dlg(this, _("Log"), str, wxEmptyString, wxOK);
+      dlg.GetSTC()->DocumentEnd();
+      dlg.ShowModal();
+		}
+  }
+  else
+  {
+    DecoratedFrame::StatusBarDoubleClicked(pane);
+  }
 }
 
 void Frame::SyncCloseAll(wxWindowID id)

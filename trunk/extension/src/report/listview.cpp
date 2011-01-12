@@ -433,11 +433,7 @@ void wxExListViewStandard::OnIdle(wxIdleEvent& event)
         )
     {
       item.Update();
-#if wxUSE_STATUSBAR
-      wxExFrame::StatusText(
-        item.GetFileName(), 
-        wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
-#endif
+      item.GetFileName().StatusText(wxExFileName::STAT_SYNC | wxExFileName::STAT_FULLPATH);
       m_ItemUpdated = true;
     }
 
@@ -464,19 +460,15 @@ void wxExListViewStandard::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {
-#if wxUSE_STATUSBAR
     if (GetSelectedItemCount() == 1)
     {
       const wxExListItem item(this, event.GetIndex());
 
       if (item.GetFileName().GetStat().IsOk())
       {
-        wxExFrame::StatusText(
-          item.GetFileName(), 
-          wxExFrame::STAT_FULLPATH);
+        item.GetFileName().StatusText(wxExFileName::STAT_FULLPATH);
       }
     }
-#endif
 
     event.Skip();
   }

@@ -25,14 +25,29 @@ class wxExFrame;
 class WXDLLIMPEXP_BASE wxExStatusBarPane : public wxStatusBarPane
 {
 public:
+  /// Default constructor.
+  /// This constructs the pane text field.
+  wxExStatusBarPane(
+    int width = -3,
+    int style = wxSB_NORMAL)
+    : wxStatusBarPane(style, width)
+    , m_HelpText()
+    , m_Name()
+    , m_No(m_Total)
+    {m_Total++;};
+  
   /// Constructor.
   wxExStatusBarPane(
-    /// If you do no provide helptext, it is derived from the name, by using
-    /// text after the first 'e' character (so after 'Pane').
+    /// The name of the pane.
+    /// The wxetension lib uses PaneLexer, PaneLines, PaneItems,
+    /// PaneFileType, by setting up one of these panes,
+    /// youre panes will get controlled by the lib.
     const wxString& name,
     /// Width of the field
     int width = 50,
     /// The helptext shown as a tooltip.
+    /// If you do no provide helptext, it is derived from the name, by using
+    /// text after the first 'e' character (so after 'Pane').
     const wxString& helptext = wxEmptyString,
     /// The style.
     int style = wxSB_NORMAL)

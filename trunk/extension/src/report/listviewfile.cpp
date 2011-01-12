@@ -216,11 +216,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
   if (synced)
   {
-#if wxUSE_STATUSBAR
-    wxExFrame::StatusText(
-      GetFileName(), 
-      wxExFrame::STAT_SYNC | wxExFrame::STAT_FULLPATH);
-#endif
+    GetFileName().StatusText(wxExFileName::STAT_SYNC | wxExFileName::STAT_FULLPATH);
   }
 
   GetFrame()->SetRecentProject(GetFileName().GetFullPath());
@@ -321,7 +317,6 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
   {
     event.Skip();
 
-#if wxUSE_STATUSBAR
     // If no item has been selected, then show 
     // filename mod time in the statusbar.
     int flags = wxLIST_HITTEST_ONITEM;
@@ -331,10 +326,9 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
     {
       if (GetFileName().FileExists())
       {
-        wxExFrame::StatusText(GetFileName());
+        GetFileName().StatusText();
       }
     }
-#endif
   }
   else
   {

@@ -17,7 +17,6 @@
 #include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/log.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/tool.h>
@@ -325,11 +324,13 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_VIEW_STATUSBAR:
+#if wxUSE_STATUSBAR
     if (GetStatusBar() != NULL)
     {
       GetStatusBar()->Show(!GetStatusBar()->IsShown());
       SendSizeEvent();
     }
+#endif    
     break;
 
   default: wxFAIL; break;
@@ -490,8 +491,7 @@ void wxExFrame::SetupStatusBar(
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void wxExFrame::StatusBarDoubleClicked(
-  const wxString& pane)
+void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
 {
   if (pane == "PaneLines")
   {
@@ -522,33 +522,14 @@ void wxExFrame::StatusBarDoubleClicked(
     wxExListView* list = GetListView();
     if (list != NULL) list->GotoDialog();
   }
-  else if (pane == "PaneText")
-  {
-    if (wxExLog::Get()->GetLogging())
-    {
-      wxFile file(wxExLog::Get()->GetFileName().GetFullPath());
-      
-      const int bytes = 500;
-    
-      if (file.Length() > bytes && file.IsOpened())
-      {
-        file.SeekEnd(-bytes);
-        wxCharBuffer buffer(bytes);
-        file.Read(buffer.data(), bytes);
-        wxString str(buffer);
-        str = str.AfterFirst('\n');
-        wxExSTCEntryDialog(this, 
-          _("Log"), str, wxEmptyString, wxOK).ShowModal();
-			}
-		}
-  }
   else
   {
     // Clicking on another field, do nothing. 
   }
 }
+#endif // wxUSE_STATUSBAR
 
-// This is a static method, so you cannot call wxFrame::SetStatusText.
+#if wxUSE_STATUSBAR
 void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 {
   if (m_StatusBar != NULL)
@@ -556,31 +537,6 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
     m_StatusBar->SetStatusText(text, pane);
   }
 }
-
-void wxExFrame::StatusText(const wxExFileName& filename, long flags)
-{
-  // Clear status bar for empty or not existing or not initialized file names.
-  wxString text; 
-
-  if (filename.IsOk())
-  {
-    const wxString path = (flags & STAT_FULLPATH
-      ? filename.GetFullPath(): filename.GetFullName());
-
-    text += path;
-
-    if (filename.GetStat().IsOk())
-    {
-      const wxString what = (flags & STAT_SYNC
-        ? _("Synchronized"): _("Modified"));
-      const wxString time = (flags & STAT_SYNC
-        ? wxDateTime::Now().Format(): filename.GetStat().GetModificationTime());
-      text += " " + what + " " + time;
-    }
-  }
-
-  wxLogStatus(text);
-}
-
 #endif // wxUSE_STATUSBAR
+
 #endif // wxUSE_GUI

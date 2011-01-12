@@ -38,3 +38,28 @@ wxExFileName::wxExFileName(const wxFileName& filename)
     m_Lexer = lexers->FindByFileName(*this);
   }
 }
+
+void wxExFileName::StatusText(long flags) const
+{
+  // Clear status bar for empty or not existing or not initialized file names.
+  wxString text; 
+
+  if (IsOk())
+  {
+    const wxString path = (flags & STAT_FULLPATH
+      ? GetFullPath(): GetFullName());
+
+    text += path;
+
+    if (GetStat().IsOk())
+    {
+      const wxString what = (flags & STAT_SYNC
+        ? _("Synchronized"): _("Modified"));
+      const wxString time = (flags & STAT_SYNC
+        ? wxDateTime::Now().Format(): GetStat().GetModificationTime());
+      text += " " + what + " " + time;
+    }
+  }
+
+  wxLogStatus(text);
+}
