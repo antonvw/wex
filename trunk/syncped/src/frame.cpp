@@ -9,6 +9,8 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
+#include <iostream>
+#include <fstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -108,10 +110,10 @@ Frame::Frame(bool open_recent)
 #endif
 
   std::filebuf fb;
-  fb.open(m_LogFile, ios::out);
+  fb.open(m_LogFile.c_str(), std::ios::out);
   std::ostream os(&fb);
 
-  m_OldLog = wxLog::SetActiveTarget(wxLogStream(&os)); 
+  m_OldLog = wxLog::SetActiveTarget(new wxLogStream(&os)); 
 
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
