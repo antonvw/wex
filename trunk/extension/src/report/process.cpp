@@ -205,7 +205,6 @@ long wxExProcess::Execute()
   if (pid > 0)
   {
     wxLogStatus(m_Command);
-    wxLogVerbose(m_Command);
 
     m_Timer.Start(1000); // each 1000 milliseconds
   }

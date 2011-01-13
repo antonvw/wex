@@ -28,7 +28,30 @@ wxFileName wxExVCS::m_FileName;
 wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   : m_Files(files)
 {
-  Initialize(menu_id);
+  m_Entry = FindEntry(GetFile());
+  
+  if (!m_Entry.GetName().empty())
+  {
+    m_Entry.SetCommand(menu_id);
+    m_Caption = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
+    m_FlagsKey = wxString::Format(
+      "vcsflags/%s%d", 
+      m_Entry.GetName().c_str(), 
+      m_Entry.GetCommand().GetNo());
+  
+    if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
+    {
+      m_Caption += " " + m_Files[0];
+    }
+  }
+  else
+  {
+    // This should not really occur,
+    // give some defaults to be able to fix this
+    // using the dialog.
+    m_Caption = "VCS";
+    m_FlagsKey = "vcsflags/VCS";
+  }
 }
 
 bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
@@ -172,7 +195,7 @@ long wxExVCS::Execute()
   {
     wd = wxExConfigFirstOf(_("Base folder"));
 
-    if (m_Command.IsAdd())
+    if (m_Entry.GetCommand().IsAdd())
     {
       file = wxExConfigFirstOf(_("Path"));
     }
@@ -211,49 +234,7 @@ long wxExVCS::Execute()
     }
   }
 
-  wxString comment;
-
-  if (m_Command.IsCommit())
-  {
-    comment = 
-      "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
-  }
-
-  wxString subcommand;
-  
-  if (UseSubcommand())
-  {
-    subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
-
-    if (!subcommand.empty())
-    {
-      subcommand += " ";
-    }
-  }
-
-  wxString flags;
-
-  if (UseFlags())
-  {
-    flags = GetFlags();
-
-    if (!flags.empty())
-    {
-      flags += " ";
-
-      // If we specified help flags, we do not need a file argument.      
-      if (flags.Contains("help"))
-      {
-        file.clear();
-      }
-    }
-  }
-
-  return m_Entry.Execute(
-    m_Command,
-    wxExFileName(GetFile()),
-    subcommand + flags + comment + file, 
-    wd);
+  return m_Entry.Execute(wxExFileName(GetFile()), file, wd);
 }
 
 #if wxUSE_GUI
@@ -270,7 +251,7 @@ wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
 
 const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 {
-  const long vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
+  const int vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
 
   if (vcs == VCS_AUTO)
   {
@@ -320,48 +301,12 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 
 const wxString wxExVCS::GetFile() const
 {
-  if (m_Files.empty())
-  {
-    return m_Command.GetCommand().empty() ? 
-      wxExConfigFirstOf(_("Base folder")): wxString(wxEmptyString);
-  }
-  else
-  {
-    return m_Files[0];
-  }
+  return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
 }
 
 const wxString wxExVCS::GetFlags() const
 {
   return wxConfigBase::Get()->Read(_("Flags"));
-}
-
-void wxExVCS::Initialize(int menu_id)
-{
-  m_Entry = FindEntry(GetFile());
-  
-  m_Command = m_Entry.GetCommand(menu_id);
-  
-  if (!m_Entry.GetName().empty())
-  {
-    m_Caption = m_Entry.GetName() + " " + m_Command.GetCommand();
-    m_FlagsKey = wxString::Format(
-      "vcsflags/%s%d", m_Entry.GetName().c_str(), m_Command.GetNo());
-  
-    if (!m_Command.IsHelp() && m_Files.size() == 1)
-    {
-      m_Caption += " " + m_Files[0];
-    }
-  }
-  else
-  {
-    // This should not really occur,
-    // give some defaults to be able to fix this
-    // using the dialog.
-    m_Caption = "VCS";
-    m_Command = wxExVCSCommand("help");
-    m_FlagsKey = "vcsflags/VCS";
-  }
 }
 
 bool wxExVCS::Read()
@@ -437,7 +382,7 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
 {
   std::vector<wxExConfigItem> v;
 
-  if (m_Command.IsCommit())
+  if (m_Entry.GetCommand().IsCommit())
   {
     v.push_back(wxExConfigItem(
       _("Revision comment"), 
@@ -446,7 +391,7 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
       true)); // required
   }
 
-  if (m_Files.empty() && !m_Command.IsHelp())
+  if (m_Files.empty() && !m_Entry.GetCommand().IsHelp())
   {
     v.push_back(wxExConfigItem(
       _("Base folder"), 
@@ -455,7 +400,7 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
       true,
       1000));
 
-    if (m_Command.IsAdd())
+    if (m_Entry.GetCommand().IsAdd())
     {
       v.push_back(wxExConfigItem(
         _("Path"), 
@@ -465,7 +410,7 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
     }
   }
 
-  if (UseFlags())
+  if (m_Entry.GetCommand().UseFlags())
   {
     wxConfigBase::Get()->Write(
       _("Flags"), 
@@ -479,7 +424,7 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
     v.push_back(wxExConfigItem(_("Prefix flags")));
   }
   
-  if (UseSubcommand())
+  if (m_Entry.GetCommand().UseSubcommand())
   {
     v.push_back(wxExConfigItem(_("Subcommand")));
   }
@@ -490,7 +435,7 @@ int wxExVCS::ShowDialog(wxWindow* parent) const
     
   if (retValue == wxID_OK)
   {
-    if (UseFlags())
+    if (m_Entry.GetCommand().UseFlags())
     {
       wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
     }

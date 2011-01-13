@@ -20,9 +20,6 @@
 /// This class collects all vcs handling.
 /// The VCS entries are read in from vcs.xml, this is done
 /// during wxExApp startup.
-/// This class has a vcs commmand,
-/// that contains info about the current vcs command to be (or is)
-/// executed.
 class WXDLLIMPEXP_BASE wxExVCS
 {
 public:
@@ -63,9 +60,6 @@ public:
   /// Executes the vcs command, and collects the output.
   /// Returns return code from command Execute.
   long Execute();
-
-  /// Gets the current vcs command.  
-  const wxExVCSCommand& GetCommand() const {return m_Command;};
 
   /// Gets the current vcs entry.
   const wxExVCSEntry& GetEntry() const {return m_Entry;};
@@ -108,13 +102,7 @@ private:
 #endif    
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
-  void Initialize(int command_id);
-  bool UseFlags() const {
-    return !m_Command.IsHelp();};
-  bool UseSubcommand() const {
-    return m_Command.IsHelp();};
   
-  wxExVCSCommand m_Command;
   wxExVCSEntry m_Entry;
 
   wxArrayString m_Files;

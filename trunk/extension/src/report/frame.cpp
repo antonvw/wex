@@ -133,7 +133,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     return;
   }
 
-  wxLogVerbose(
+  wxLogStatus(
     wxExFindReplaceData::Get()->GetFindReplaceInfoText(replace));
     
   int flags = wxDIR_FILES | wxDIR_HIDDEN;

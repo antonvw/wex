@@ -138,3 +138,13 @@ bool wxExVCSCommand::IsUpdate() const
     GetCommand(false) == "update" ||
     GetCommand(false) == "up";
 }
+
+bool wxExVCSCommand::UseFlags() const 
+{
+  return !IsHelp();
+}
+    
+bool wxExVCSCommand::UseSubcommand() const
+{
+  return IsHelp();
+}

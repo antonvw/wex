@@ -39,15 +39,15 @@ public:
   int BuildMenu(int base_id, wxMenu* menu, bool is_popup = true) const;
 #endif
 
-  /// Executes the command for this vcs.
+  /// Executes the current command for this vcs.
   long Execute(
-    const wxExVCSCommand& command, 
     const wxExFileName& filename,
     const wxString& args,
     const wxString& wd = wxEmptyString);
   
-  /// Gets the command.
-  const wxExVCSCommand GetCommand(int menu_id) const;
+  /// Gets the current vcs command.  
+  const wxExVCSCommand& GetCommand() const {
+    return m_Commands.at(m_CommandId);};
 
   /// Gets the flags location.
   const int GetFlagsLocation() const {return m_FlagsLocation;};
@@ -56,11 +56,14 @@ public:
   const wxString& GetName() const {return m_Name;};
 
   /// Gets the no.
-  long GetNo() const {return m_No;};
+  int GetNo() const {return m_No;};
   
   /// Resets the number of instances, so the no
   /// will start from begin again.
   static void ResetInstances();
+
+  /// Sets the current vcs command.
+  void SetCommand(int menu_id);
 
 #if wxUSE_GUI
   /// Overriden from base class.
@@ -75,11 +78,11 @@ private:
   static int m_Instances;
   
   // no const, as entry is set using operator+ in wxExVCS.
-  int m_FlagsLocation;
-  wxString m_Name;
-  long m_No;
   bool m_SupportKeywordExpansion;
-  wxExVCSCommand m_Command;
+  int m_CommandId;
+  int m_FlagsLocation;
+  int m_No;
+  wxString m_Name;
   wxExFileName m_FileName;
 
   std::vector<wxExVCSCommand> m_Commands;

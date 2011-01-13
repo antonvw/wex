@@ -147,7 +147,7 @@ bool wxExTextFileWithListView::ParseSQL()
 */
   if (GetTool().GetId() == ID_TOOL_SQL)
   {
-    wxLogVerbose(
+    wxLogStatus(
       _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
     Recordset rs(&m_otl.GetConnect(), this);
@@ -157,7 +157,6 @@ bool wxExTextFileWithListView::ParseSQL()
     }
 
     const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
-    wxLogVerbose(msg);
     wxLogStatus(msg);
   }
 
@@ -371,7 +370,7 @@ bool Recordset::ExecQuery(const wxString& query)
       _("ODBC Error") + ":",
       p.msg,
       wxOK | wxCENTRE | wxTE_MULTILINE | wxRESIZE_BORDER).ShowModal();
-    wxLogVerbose(p.msg);
+    wxLogStatus(p.msg);
     return false;
   }
 }

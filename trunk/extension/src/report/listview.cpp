@@ -864,7 +864,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
       return;
     }
     
-    wxLogVerbose(
+    wxLogStatus(
       wxExFindReplaceData::Get()->GetFindReplaceInfoText(
         tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
@@ -969,7 +969,7 @@ void RBSFile::GenerateDialog()
   Footer();
   Close();
 
-  wxLogVerbose("RBS " + _("File") + ": " + script + " " + _("generated"));
+  wxLogStatus("RBS " + _("File") + ": " + script + " " + _("generated"));
 }
 
 void RBSFile::GenerateTransmit(const wxString& text)

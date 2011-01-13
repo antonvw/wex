@@ -91,8 +91,6 @@ void wxExTool::Log(
 
   if (log_to_file && stat->Get(_("Files")) != 0)
   {
-    wxLogVerbose(logtext);
-
     if (IsCount())
     {
       wxString logtext;

@@ -530,11 +530,11 @@ void wxExAppTestFixture::testVCS()
 //  CPPUNIT_ASSERT( vcs.Execute() != -1);
 //  CPPUNIT_ASSERT(!vcs.GetOutput().empty());
 
-  CPPUNIT_ASSERT( vcs.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT( vcs.GetEntry().GetCommand().GetCommand().empty());
   CPPUNIT_ASSERT( vcs.GetFlags().empty());
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
   CPPUNIT_ASSERT( vcs.GetOutput().empty());
-  CPPUNIT_ASSERT(!vcs.GetCommand().IsOpen());
+  CPPUNIT_ASSERT(!vcs.GetEntry().GetCommand().IsOpen());
   CPPUNIT_ASSERT( vcs.Read());
   CPPUNIT_ASSERT( vcs.GetEntry().SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());

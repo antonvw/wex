@@ -188,10 +188,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2)
     return false;
   }
 
-  const wxString msg = _("Compared") + ": " + arguments;
-
-  wxLogVerbose(msg);
-  wxLogStatus(msg);
+  wxLogStatus(_("Compared") + ": " + arguments);
 
   return true;
 }
@@ -600,25 +597,25 @@ const wxString wxExTranslate(const wxString& text, int pageNum, int numPages)
 }
 
 void wxExVCSCommandOnSTC(
-  const wxExVCSCommand* command, 
+  const wxExVCSCommand& command, 
   const wxExLexer& lexer,
   wxExSTC* stc)
 {
-  if (command->IsBlame())
+  if (command.IsBlame())
   {
     // Do not show an edge for blamed documents, they are too wide.
     stc->SetEdgeMode(wxSTC_EDGE_NONE);
   }
   
-  if (command->IsDiff())
+  if (command.IsDiff())
   {
     stc->SetLexer("diff");
   }
-  else if (command->IsHistory())
+  else if (command.IsHistory())
   {
     stc->SetLexer("");
   }
-  else if (command->IsOpen())
+  else if (command.IsOpen())
   {
     stc->SetLexer(lexer.GetScintillaLexer());
   }
@@ -632,7 +629,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
 {
   const wxExVCS check(files, id);
   
-  if (check.GetCommand().IsOpen() && files.GetCount() > 0)
+  if (check.GetEntry().GetCommand().IsOpen() && files.GetCount() > 0)
   {
     wxArrayString ar;
     ar.Add(files[0]);

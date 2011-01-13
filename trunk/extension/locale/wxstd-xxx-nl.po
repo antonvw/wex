@@ -35,3 +35,9 @@ msgstr "Opslaan &als..."
 
 msgid "Save As"
 msgstr "Opslaan als"
+
+msgid "Select &All"
+msgstr "Alles selecteren"
+
+msgid "Select All"
+msgstr "Alles &selecteren"

@@ -155,7 +155,7 @@ void wxExOpenFilesDialog(wxExFrame* frame,
 
 /// Use specified vcs command to set lexer on STC document.
 void wxExVCSCommandOnSTC(
-  const wxExVCSCommand* command, 
+  const wxExVCSCommand& command, 
   const wxExLexer& lexer,
   wxExSTC* stc);
 

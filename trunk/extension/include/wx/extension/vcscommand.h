@@ -82,6 +82,12 @@ public:
   /// Resets the number of instances, so the no
   /// will start from 0 again.
   static void ResetInstances() {m_Instances = 0;};
+  
+  /// Returns true if flags can be used for this command.
+  bool UseFlags() const;
+    
+  /// Returns true if a subcommand can be used for this command.
+  bool UseSubcommand() const;
 private:
   int From(const wxString& type) const;
 

@@ -114,6 +114,7 @@ Frame::Frame(bool open_recent)
 //  std::ostream os(&fb);
   
   wxLog::SetLogLevel(wxLOG_Info);
+  wxLog::SetVerbose();
 
 //  m_OldLog = wxLog::SetActiveTarget(new wxLogStream(&os)); 
 
@@ -1089,7 +1090,7 @@ bool Frame::OpenFile(
   const wxExVCS& vcs,
   long flags)
 {
-  const wxString unique = vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
+  const wxString unique = vcs.GetEntry().GetCommand().GetCommand() + " " + vcs.GetFlags();
   const wxString key = filename.GetFullPath() + unique;
 
   auto* page = m_NotebookWithEditors->GetPageByKey(key);
@@ -1103,7 +1104,8 @@ bool Frame::OpenFile(
       flags,
       filename.GetFullName() + " " + unique);
 
-    wxExVCSCommandOnSTC(&vcs.GetCommand(), filename.GetLexer(), editor);
+    wxExVCSCommandOnSTC(
+      vcs.GetEntry().GetCommand(), filename.GetLexer(), editor);
     
     m_NotebookWithEditors->AddPage(
       editor,

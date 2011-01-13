@@ -109,7 +109,6 @@ void wxExSTCFile::DoFileSave(bool save_as)
   const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
   
   wxLogVerbose(msg);
-  wxLogStatus(msg);
 }
 
 bool wxExSTCFile::GetContentsChanged() const 

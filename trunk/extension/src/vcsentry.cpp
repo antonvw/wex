@@ -21,14 +21,17 @@ int wxExVCSEntry::m_Instances = wxExVCS::VCS_AUTO + 1;
 
 wxExVCSEntry::wxExVCSEntry()
   : m_No(-1)
+  , m_CommandId(0)
   , m_Name()
   , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
   , m_SupportKeywordExpansion(false)
 {
+  m_Commands.push_back(wxExVCSCommand());
 }
 
 wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   : m_No(m_Instances++)
+  , m_CommandId(0)
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
       (node->GetAttribute("flags-location") == "prefix" ?
@@ -63,6 +66,12 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
       child = child->GetNext();
     }
   }
+  
+  if (m_Commands.size() == 0)
+  {
+    wxLogError(_("No commands found for: ") + m_Name);
+    m_Commands.push_back(wxExVCSCommand());
+  }  
 }
 
 void wxExVCSEntry::AddCommands(const wxXmlNode* node)
@@ -159,67 +168,102 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 #endif
 
 long wxExVCSEntry::Execute(
-  const wxExVCSCommand& command, 
   const wxExFileName& filename,
   const wxString& args,
   const wxString& wd)
 {
-  const wxString bin = wxConfigBase::Get()->Read(GetName(), "svn");
+  const wxString bin = wxConfigBase::Get()->Read(m_Name, "svn");
 
   if (bin.empty())
   {
-    wxLogError(GetName() + " " + _("path is empty"));
+    wxLogError(m_Name + " " + _("path is empty"));
     return -1;
   }
   
-  m_Command = command;
   m_FileName = filename;
   
   wxString prefix;
   
-  if (GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
+  if (m_FlagsLocation == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
   {
-    prefix += wxConfigBase::Get()->Read(_("Prefix flags"), "svn") + " ";
+    prefix += wxConfigBase::Get()->Read(_("Prefix flags")) + " ";
   }
   
-  return wxExCommand::Execute(bin + " " + prefix + command.GetCommand() + " " + args, wd);
-}
+  wxString comment;
 
-const wxExVCSCommand wxExVCSEntry::GetCommand(int menu_id) const
-{
-  int command_id = -1;
-
-  if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
+  if (GetCommand().IsCommit())
   {
-    command_id = menu_id - ID_VCS_LOWEST - 1;
-  }
-  else if (menu_id > ID_EDIT_VCS_LOWEST && menu_id < ID_EDIT_VCS_HIGHEST)
-  {
-    command_id = menu_id - ID_EDIT_VCS_LOWEST - 1;
+    comment = 
+      "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
   }
 
-  if (command_id >= m_Commands.size() || command_id < 0)
-  {
-    return wxExVCSCommand();
-  }
-  else
-  {
-    return m_Commands.at(command_id);
-  }
-}
+  wxString subcommand;
   
+  if (GetCommand().UseSubcommand())
+  {
+    subcommand = wxConfigBase::Get()->Read(_("Subcommand"));
+
+    if (!subcommand.empty())
+    {
+      subcommand += " ";
+    }
+  }
+
+  wxString flags;
+  wxString my_args(args);
+
+  if (GetCommand().UseFlags())
+  {
+    flags = wxConfigBase::Get()->Read(_("Flags"));
+
+    if (!flags.empty())
+    {
+      flags += " ";
+
+      // If we specified help flags, we do not need a file argument.      
+      if (flags.Contains("help"))
+      {
+        my_args.clear();
+      }
+    }
+  }
+
+  return wxExCommand::Execute(
+    bin + " " + 
+    prefix + 
+    GetCommand().GetCommand() + " " + 
+    subcommand + flags + comment + args, wd);
+}
+
 void wxExVCSEntry::ResetInstances()
 {
   m_Instances = wxExVCS::VCS_AUTO + 1;
 }
 
+void wxExVCSEntry::SetCommand(int menu_id)
+{
+  if (menu_id > ID_VCS_LOWEST && menu_id < ID_VCS_HIGHEST)
+  {
+    m_CommandId = menu_id - ID_VCS_LOWEST - 1;
+  }
+  else if (menu_id > ID_EDIT_VCS_LOWEST && menu_id < ID_EDIT_VCS_HIGHEST)
+  {
+    m_CommandId = menu_id - ID_EDIT_VCS_LOWEST - 1;
+  }
+  
+  if (m_CommandId < 0 || m_CommandId >= m_Commands.size())
+  {
+    m_CommandId = 0;
+  }
+}
+  
 #if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
   if (!GetError())
   {
     wxExVCSCommandOnSTC(
-      &m_Command, 
+      GetCommand(), 
       m_FileName.GetLexer(), 
       GetDialog()->GetSTC());
   }
