@@ -39,6 +39,28 @@
 #include "defs.h"
 #include "version.h"
 
+class wxExLogStderr : public wxLogStderr
+{
+  public:
+    wxExLogStderr(FILE* fp, wxFrame* frame) 
+      : wxLogStderr(fp)
+      , m_Frame(frame) {;};
+  protected:
+    virtual void 	DoLogTextAtLevel(wxLogLevel level, const wxString &msg)
+    {
+      if (level == wxLOG_Status)
+      {
+        m_Frame->SetStatusText(msg);
+      }      
+      else
+      {
+        wxLogStderr::DoLogTextAtLevel(level, msg);
+      }
+    }
+  private:
+    wxFrame* m_Frame;
+};
+
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CLOSE(Frame::OnClose)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
@@ -109,14 +131,11 @@ Frame::Frame(bool open_recent)
     wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
 #endif
 
-//  std::filebuf fb;
-//  fb.open(m_LogFile.c_str(), std::ios::out);
-//  std::ostream os(&fb);
-  
-  wxLog::SetLogLevel(wxLOG_Info);
   wxLog::SetVerbose();
+  
+  FILE* fp = fopen(m_LogFile.c_str() , "a+");
 
-//  m_OldLog = wxLog::SetActiveTarget(new wxLogStream(&os)); 
+  m_OldLog = wxLog::SetActiveTarget(new wxExLogStderr(fp, this)); 
 
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
@@ -236,7 +255,7 @@ Frame::Frame(bool open_recent)
 
 Frame::~Frame()
 {
-//  delete m_OldLog;
+  delete m_OldLog;
 }
 
 wxExListViewStandard* Frame::Activate(
