@@ -649,7 +649,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
         {
           frame->OpenFile(
             files[i], 
-            vcs,
+            vcs.GetEntry(),
             wxExSTC::STC_WIN_READ_ONLY);
         }
         else

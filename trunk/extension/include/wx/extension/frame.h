@@ -16,7 +16,7 @@
 #include <wx/extension/statusbar.h>
 #include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
-#include <wx/extension/vcs.h>
+#include <wx/extension/vcsentry.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -80,7 +80,7 @@ public:
   /// Allows you to open a filename with info from vcs.
   virtual bool OpenFile(
     const wxExFileName& WXUNUSED(filename),
-    const wxExVCS& WXUNUSED(vcs),
+    const wxExVCSEntry& WXUNUSED(vcs),
     long flags = 0) {return false;};
     
   /// Override from base class.

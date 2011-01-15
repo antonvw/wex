@@ -49,7 +49,7 @@ private:
     int commandid = wxID_APPLY);
   virtual bool OpenFile(
     const wxExFileName& filename,
-    const wxExVCS& vcs,
+    const wxExVCSEntry& vcs,
     long flags = 0);
   virtual void StatusBarDoubleClicked(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);

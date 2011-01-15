@@ -1107,11 +1107,11 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
 bool Frame::OpenFile(
   const wxExFileName& filename,
-  const wxExVCS& vcs,
+  const wxExVCSEntry& vcs,
   long flags)
 {
   const wxString unique = 
-    vcs.GetEntry().GetCommand().GetCommand() + " " + vcs.GetEntry().GetFlags();
+    vcs.GetCommand().GetCommand() + " " + vcs.GetFlags();
     
   const wxString key = filename.GetFullPath() + unique;
 
@@ -1122,12 +1122,12 @@ bool Frame::OpenFile(
     wxExSTCWithFrame* editor = new wxExSTCWithFrame(
       m_NotebookWithEditors, 
       this,
-      vcs.GetEntry().GetOutput(),
+      vcs.GetOutput(),
       flags,
       filename.GetFullName() + " " + unique);
 
     wxExVCSCommandOnSTC(
-      vcs.GetEntry().GetCommand(), filename.GetLexer(), editor);
+      vcs.GetCommand(), filename.GetLexer(), editor);
     
     m_NotebookWithEditors->AddPage(
       editor,
