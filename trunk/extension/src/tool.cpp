@@ -100,8 +100,7 @@ void wxExTool::Log(
         << stat->Get()
         << wxTextFile::GetEOL();
 
-      wxExLog log(GetLogfileName());
-      log << logtext;
+      wxExLog(GetLogfileName().GetFullPath()).Log(logtext);
     }
   }
 }

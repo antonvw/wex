@@ -12,14 +12,12 @@
 #ifndef _EXLOG_H
 #define _EXLOG_H
 
-#include <wx/filename.h>
-
 /// Offers logging.
 class WXDLLIMPEXP_BASE wxExLog
 {
 public:
   /// Constructor.
-  wxExLog(const wxFileName& filename);
+  wxExLog(const wxString& filename);
 
   /// Logs the text, using a timestamp.
   const wxExLog& operator<< (const wxString& text) {
@@ -30,7 +28,6 @@ public:
   /// Returns true if writing was succesfull.
   bool Log(const wxString& text, bool add_timestamp = true) const;
 private:
-  bool m_Logging;
-  const wxFileName m_FileName;
+  const wxString m_FileName;
 };
 #endif

@@ -17,27 +17,14 @@
 #include <wx/textfile.h>
 #include <wx/extension/log.h>
 
-wxExLog::wxExLog(const wxFileName& filename)
+wxExLog::wxExLog(const wxString& filename)
   : m_FileName(filename)
 {
-  if (!m_FileName.FileExists())
-  {
-    m_Logging = wxFile().Create(m_FileName.GetFullPath());
-  }
-  else
-  {
-    m_Logging = true;
-  }
 }
 
 bool wxExLog::Log(const wxString& text, bool add_timestamp ) const
 {
-  if (!m_Logging) 
-  {
-    return false;
-  }
-  
-  wxFile file(m_FileName.GetFullPath(), wxFile::write_append);
+  wxFile file(m_FileName, wxFile::write_append);
 
   return 
     file.IsOpened() &&

@@ -342,7 +342,7 @@ void wxExAppTestFixture::testListView()
 
 void wxExAppTestFixture::testLog()
 {
-  wxExLog log(wxFileName("output.log"));
+  wxExLog log("output.log");
   CPPUNIT_ASSERT(log.Log("hello from wxExtension test"));
 }
 
