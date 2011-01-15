@@ -65,6 +65,7 @@ private:
   void DeleteMarker(const wxUniChar& marker);
   bool DoCommand(const wxString& command, bool dot);
   bool DoCommandRange(const wxString& command);
+  bool DoCommandSet(const wxString& command);
   void FindWord(bool find_next = true) const;
   void GotoBrace() const;
   bool Indent(

@@ -475,6 +475,11 @@ bool wxExVi::DoCommandRange(const wxString& command)
     begin_address = address.BeforeFirst(',');
     end_address = address.AfterFirst(',');
   }
+  
+  if (begin_address.empty() || end_address.empty())
+  {
+    return false;
+  }
 
   switch (cmd)
   {
@@ -519,6 +524,19 @@ bool wxExVi::DoCommandRange(const wxString& command)
     
   default:
     wxFAIL;
+    return false;
+  }
+}
+
+bool wxExVi::DoCommandSet(const wxString& command)
+{
+  if (command.StartsWith("ts"))
+  {
+    m_STC->SetTabWidth(atoi(command.Mid(3));
+    return true;
+  }
+  else
+  {
     return false;
   }
 }
@@ -585,6 +603,10 @@ bool wxExVi::ExecCommand(const wxString& command)
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_EDIT_READ);
     event.SetString(command.AfterFirst(' '));
     wxPostEvent(wxTheApp->GetTopWindow(), event);
+  }
+  else if (command.StartsWith("set ")
+  {
+    return DoCommand(command.Mid(4));
   }
   else if (command.StartsWith("w"))
   {
