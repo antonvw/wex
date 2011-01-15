@@ -14,7 +14,6 @@
 
 #include <map>
 #include <wx/filename.h>
-#include <wx/extension/vcscommand.h>
 #include <wx/extension/vcsentry.h>
 
 /// This class collects all vcs handling.
@@ -48,7 +47,9 @@ public:
      const wxFileName& filename) {m_FileName = filename;};
 
 #if wxUSE_GUI
-  /// Shows a dialog with options, returns dialog return code.
+  /// Shows a dialog allowing you to choose which vcs to use
+  /// and to set the path for each known vcs.
+  /// Returns dialog return code.
   int ConfigDialog(
     wxWindow* parent,
     const wxString& title = _("Set VCS")) const;
@@ -67,26 +68,23 @@ public:
   /// Gets the xml filename.
   static const wxFileName& GetFileName() {return m_FileName;};
   
-  /// Gets the flags used to run the command.
-  const wxString GetFlags() const;
-
   /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   static bool Read();
 
 #if wxUSE_GUI
-  /// Combines all in one method. Calls the ExecuteDialog,
-  /// and calls ShowOutput if return code was wxID_OK.
-  /// Returns wxID_CANCEL if dialog was cancelled, an execute error occurred, 
-  /// or there is no output collected. Returns wxID_OK if okay (use GetError
+  /// Combines ShowDialog, Execute and entry ShowOutput in one method. 
+  /// Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
+  /// Returns wxID_OK if okay (use entry GetError
   /// to check whether the output contains errors or normal info).
   wxStandardID Request(wxWindow* parent);
 #endif  
 
 #if wxUSE_GUI
-  /// Shows dialog.
+  /// Shows a dialog allowing you to run or cancel the selected vcs command.
   /// Returns result from calling ShowModal.
-  int ShowDialog(wxWindow* parent) const;
+  int ShowDialog(wxWindow* parent) const {
+    return m_Entry.ShowDialog(parent, m_Caption, m_Files.empty());};
 #endif
 
   /// Returns true if VCS usage is set in the config.
@@ -94,12 +92,6 @@ public:
 private:
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
-#if wxUSE_GUI
-  /// Shows a dialog and executes the vcs command if not cancelled.
-  /// If no fullpath was specified, a dialog with base folder is shown, 
-  /// otherwise the specified fullpath is used for getting vcs contents from.
-  wxStandardID ExecuteDialog(wxWindow* parent);
-#endif    
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
   
@@ -107,7 +99,6 @@ private:
 
   wxArrayString m_Files;
   wxString m_Caption;
-  wxString m_FlagsKey;
 
   static std::map<wxString, wxExVCSEntry> m_Entries;
   static wxFileName m_FileName;

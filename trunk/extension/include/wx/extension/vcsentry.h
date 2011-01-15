@@ -49,9 +49,9 @@ public:
   const wxExVCSCommand& GetCommand() const {
     return m_Commands.at(m_CommandId);};
 
-  /// Gets the flags location.
-  const int GetFlagsLocation() const {return m_FlagsLocation;};
-  
+  /// Gets the flags used to run the command.
+  const wxString GetFlags() const;
+
   /// Gets the name.
   const wxString& GetName() const {return m_Name;};
 
@@ -64,6 +64,15 @@ public:
 
   /// Sets the current vcs command.
   void SetCommand(int menu_id);
+
+#if wxUSE_GUI
+  /// Shows a dialog allowing you to run or cancel the selected vcs command.
+  /// Returns result from calling ShowModal.
+  int ShowDialog(
+    wxWindow* parent, 
+    const wxString& caption,
+    bool add_folder) const;
+#endif
 
 #if wxUSE_GUI
   /// Overriden from base class.
@@ -82,7 +91,10 @@ private:
   int m_CommandId;
   int m_FlagsLocation;
   int m_No;
+  
+  wxString m_FlagsKey;
   wxString m_Name;
+  
   wxExFileName m_FileName;
 
   std::vector<wxExVCSCommand> m_Commands;

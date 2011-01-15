@@ -15,7 +15,6 @@
 #endif
 #include <wx/config.h>
 #include <wx/xml/xml.h>
-#include <wx/stdpaths.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -34,10 +33,6 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   {
     m_Entry.SetCommand(menu_id);
     m_Caption = m_Entry.GetName() + " " + m_Entry.GetCommand().GetCommand();
-    m_FlagsKey = wxString::Format(
-      "vcsflags/%s%d", 
-      m_Entry.GetName().c_str(), 
-      m_Entry.GetCommand().GetNo());
   
     if (!m_Entry.GetCommand().IsHelp() && m_Files.size() == 1)
     {
@@ -50,7 +45,6 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
     // give some defaults to be able to fix this
     // using the dialog.
     m_Caption = "VCS";
-    m_FlagsKey = "vcsflags/VCS";
   }
 }
 
@@ -237,18 +231,6 @@ long wxExVCS::Execute()
   return m_Entry.Execute(wxExFileName(GetFile()), file, wd);
 }
 
-#if wxUSE_GUI
-wxStandardID wxExVCS::ExecuteDialog(wxWindow* parent)
-{
-  if (ShowDialog(parent) == wxID_CANCEL)
-  {
-    return wxID_CANCEL;
-  }
-
-  return (Execute() < 0 ? wxID_CANCEL: wxID_OK);
-}
-#endif
-
 const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 {
   const int vcs = wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO);
@@ -302,11 +284,6 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 const wxString wxExVCS::GetFile() const
 {
   return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
-}
-
-const wxString wxExVCS::GetFlags() const
-{
-  return wxConfigBase::Get()->Read(_("Flags"));
 }
 
 bool wxExVCS::Read()
@@ -366,82 +343,19 @@ bool wxExVCS::Read()
 #if wxUSE_GUI
 wxStandardID wxExVCS::Request(wxWindow* parent)
 {
-  wxStandardID retValue;
-
-  if ((retValue = ExecuteDialog(parent)) == wxID_OK)
+  if (ShowDialog(parent) == wxID_CANCEL)
   {
-    m_Entry.ShowOutput(m_Caption);
-  }
-
-  return retValue;
-}
-#endif
-
-#if wxUSE_GUI
-int wxExVCS::ShowDialog(wxWindow* parent) const
-{
-  std::vector<wxExConfigItem> v;
-
-  if (m_Entry.GetCommand().IsCommit())
-  {
-    v.push_back(wxExConfigItem(
-      _("Revision comment"), 
-      CONFIG_COMBOBOX,
-      wxEmptyString,
-      true)); // required
-  }
-
-  if (m_Files.empty() && !m_Entry.GetCommand().IsHelp())
-  {
-    v.push_back(wxExConfigItem(
-      _("Base folder"), 
-      CONFIG_COMBOBOXDIR, 
-      wxEmptyString, 
-      true,
-      1000));
-
-    if (m_Entry.GetCommand().IsAdd())
-    {
-      v.push_back(wxExConfigItem(
-        _("Path"), 
-        CONFIG_COMBOBOX,
-        wxEmptyString, 
-        true)); // required
-    }
-  }
-
-  if (m_Entry.GetCommand().UseFlags())
-  {
-    wxConfigBase::Get()->Write(
-      _("Flags"), 
-      wxConfigBase::Get()->Read(m_FlagsKey));
-
-    v.push_back(wxExConfigItem(_("Flags")));
-  }
-
-  if (m_Entry.GetFlagsLocation() == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
-  {
-    v.push_back(wxExConfigItem(_("Prefix flags")));
-  }
+    return wxID_CANCEL;
+  }  
   
-  if (m_Entry.GetCommand().UseSubcommand())
+  if (Execute() < 0)
   {
-    v.push_back(wxExConfigItem(_("Subcommand")));
+    return wxID_CANCEL;
   }
-  
-  const int retValue = wxExConfigDialog(parent,
-    v,
-    m_Caption).ShowModal();
     
-  if (retValue == wxID_OK)
-  {
-    if (m_Entry.GetCommand().UseFlags())
-    {
-      wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
-    }
-  }
-  
-  return retValue;
+  m_Entry.ShowOutput(m_Caption);
+
+  return wxID_OK;
 }
 #endif
 

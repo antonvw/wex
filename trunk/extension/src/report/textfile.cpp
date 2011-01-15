@@ -147,7 +147,7 @@ bool wxExTextFileWithListView::ParseSQL()
 */
   if (GetTool().GetId() == ID_TOOL_SQL)
   {
-    wxLogStatus(
+    wxLogVerbose(
       _("File") + ": " + GetFileName().GetFullName() + " Query: " + wxExSkipWhiteSpace(m_SQLQuery));
 
     Recordset rs(&m_otl.GetConnect(), this);
@@ -158,6 +158,7 @@ bool wxExTextFileWithListView::ParseSQL()
 
     const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
     wxLogStatus(msg);
+    wxLogVerbose(msg);
   }
 
   // Test for SQL end statement.

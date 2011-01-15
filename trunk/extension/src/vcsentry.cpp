@@ -13,6 +13,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/vcsentry.h>
+#include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
@@ -47,20 +48,11 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
   {
     wxXmlNode *child = node->GetChildren();
     
-    bool error = false;
-
-    while (child && !error)
+    while (child)
     {
       if (child->GetName() == "commands")
       {
-        if (m_Commands.size() == 0)
-        {
-          AddCommands(child);
-        }
-        else
-        {
-          error = true;
-        }
+        AddCommands(child);
       }
       
       child = child->GetNext();
@@ -72,6 +64,11 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
     wxLogError(_("No commands found for: ") + m_Name);
     m_Commands.push_back(wxExVCSCommand());
   }  
+  
+  m_FlagsKey = wxString::Format(
+    "vcsflags/%s%d", 
+    m_Name.c_str(), 
+    GetCommand().GetNo());
 }
 
 void wxExVCSEntry::AddCommands(const wxXmlNode* node)
@@ -214,7 +211,7 @@ long wxExVCSEntry::Execute(
 
   if (GetCommand().UseFlags())
   {
-    flags = wxConfigBase::Get()->Read(_("Flags"));
+    flags = GetFlags();
 
     if (!flags.empty())
     {
@@ -233,6 +230,11 @@ long wxExVCSEntry::Execute(
     prefix + 
     GetCommand().GetCommand() + " " + 
     subcommand + flags + comment + args, wd);
+}
+
+const wxString wxExVCSEntry::GetFlags() const
+{
+  return wxConfigBase::Get()->Read(_("Flags"));
 }
 
 void wxExVCSEntry::ResetInstances()
@@ -256,6 +258,77 @@ void wxExVCSEntry::SetCommand(int menu_id)
     m_CommandId = 0;
   }
 }
+
+#if wxUSE_GUI
+int wxExVCSEntry::ShowDialog(
+  wxWindow* parent, 
+  const wxString& caption,
+  bool add_folder) const
+{
+  std::vector<wxExConfigItem> v;
+
+  if (GetCommand().IsCommit())
+  {
+    v.push_back(wxExConfigItem(
+      _("Revision comment"), 
+      CONFIG_COMBOBOX,
+      wxEmptyString,
+      true)); // required
+  }
+
+  if (add_folder && !GetCommand().IsHelp())
+  {
+    v.push_back(wxExConfigItem(
+      _("Base folder"), 
+      CONFIG_COMBOBOXDIR, 
+      wxEmptyString, 
+      true,
+      1000));
+
+    if (GetCommand().IsAdd())
+    {
+      v.push_back(wxExConfigItem(
+        _("Path"), 
+        CONFIG_COMBOBOX,
+        wxEmptyString, 
+        true)); // required
+    }
+  }
+
+  if (GetCommand().UseFlags())
+  {
+    wxConfigBase::Get()->Write(
+      _("Flags"), 
+      wxConfigBase::Get()->Read(m_FlagsKey));
+
+    v.push_back(wxExConfigItem(_("Flags")));
+  }
+
+  if (m_FlagsLocation == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
+  {
+    v.push_back(wxExConfigItem(_("Prefix flags")));
+  }
+  
+  if (GetCommand().UseSubcommand())
+  {
+    v.push_back(wxExConfigItem(_("Subcommand")));
+  }
+  
+  const int retValue = wxExConfigDialog(parent,
+    v,
+    caption).ShowModal();
+    
+  if (retValue == wxID_OK)
+  {
+    if (GetCommand().UseFlags())
+    {
+      wxConfigBase::Get()->Write(m_FlagsKey, GetFlags());
+    }
+  }
+  
+  return retValue;
+}
+#endif
   
 #if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const wxString& caption) const

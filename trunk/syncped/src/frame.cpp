@@ -9,8 +9,6 @@
 * without the written consent of the copyright owner.
 \******************************************************************************/
 
-#include <iostream>
-#include <fstream>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -46,7 +44,10 @@ class wxExLogStderr : public wxLogStderr
       : wxLogStderr(fp)
       , m_Frame(frame) {;};
   protected:
-    virtual void 	DoLogTextAtLevel(wxLogLevel level, const wxString &msg)
+    virtual void DoLogRecord(
+      wxLogLevel level,
+      const wxString& msg,
+      const wxLogRecordInfo& info)
     {
       if (level == wxLOG_Status)
       {
@@ -54,7 +55,7 @@ class wxExLogStderr : public wxLogStderr
       }      
       else
       {
-        wxLogStderr::DoLogTextAtLevel(level, msg);
+        wxLogStderr::DoLogRecord(level, msg, info);
       }
     }
   private:
@@ -132,10 +133,10 @@ Frame::Frame(bool open_recent)
 #endif
 
   wxLog::SetVerbose();
+  wxLog::SetTimeStamp("%X %x");
   
-  FILE* fp = fopen(m_LogFile.c_str() , "a+");
-
-  m_OldLog = wxLog::SetActiveTarget(new wxExLogStderr(fp, this)); 
+  m_OldLog = wxLog::SetActiveTarget(
+    new wxExLogStderr(fopen(m_LogFile.c_str() , "a"), this));
 
   const long flag =
     wxAUI_NB_DEFAULT_STYLE |
@@ -1109,7 +1110,9 @@ bool Frame::OpenFile(
   const wxExVCS& vcs,
   long flags)
 {
-  const wxString unique = vcs.GetEntry().GetCommand().GetCommand() + " " + vcs.GetFlags();
+  const wxString unique = 
+    vcs.GetEntry().GetCommand().GetCommand() + " " + vcs.GetEntry().GetFlags();
+    
   const wxString key = filename.GetFullPath() + unique;
 
   auto* page = m_NotebookWithEditors->GetPageByKey(key);
@@ -1257,7 +1260,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
   {
     wxFile file(m_LogFile);
       
-    const int bytes = 1000;
+    const int bytes = 1500;
     
     if (file.Length() > bytes && file.IsOpened())
     {
