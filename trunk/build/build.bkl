@@ -343,10 +343,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <!-- run the tests -->
   <if cond="PLATFORM_UNIX=='1'">
     <action id ="test-all">
-      <command>./wxex-test-base > test-base.log</command>
-      <command>./wxex-test-app > test-app.log</command>
-      <command>./wxex-test-rep > test-rep.log</command>
-      <command>svn commit -m "results of running test-all"</command>
+      <command>./test-all.sh</command>
     </action>
   </if>
   
