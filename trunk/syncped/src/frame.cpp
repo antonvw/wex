@@ -133,7 +133,7 @@ Frame::Frame(bool open_recent)
 #endif
 
   wxLog::SetVerbose();
-  wxLog::SetTimeStamp("%X %x");
+  wxLog::SetTimestamp("%X %x");
   
   m_OldLog = wxLog::SetActiveTarget(
     new wxExLogStderr(fopen(m_LogFile.c_str() , "a"), this));
