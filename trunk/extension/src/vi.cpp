@@ -542,18 +542,14 @@ bool wxExVi::DoCommandSet(const wxString& command)
       wxConfigBase::Get()->Write(_("Tab width"), val);
       return true;
     }
+  }
     
-    return false;
-  }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 bool wxExVi::ExecCommand(const wxString& command)
 {
-  if (command.empty())
+  if (!m_IsActive || command.empty())
   {
     return false;
   }
@@ -688,7 +684,7 @@ bool wxExVi::ExecCommand(const wxString& command)
 
 bool wxExVi::FindCommand(const wxString& command, const wxString& text)
 {
-  if (command.empty() || text.empty())
+  if (!m_IsActive || command.empty() || text.empty())
   {
     return false;
   }

@@ -26,7 +26,8 @@ public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
   
-  /// Executes vi: command that was entered on the vi bar.
+  /// Executes vi: command that was entered on the vi bar,
+  /// or present as modeline command inside a file.
   /// Returns true if the command was handled.
   bool ExecCommand(const wxString& command);
 
