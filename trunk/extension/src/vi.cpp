@@ -532,9 +532,9 @@ bool wxExVi::DoCommandRange(const wxString& command)
 bool wxExVi::DoCommandSet(const wxString& command)
 {
   // e.g. set ts=4
-  if (command.StartsWith("ts"))
+  if (command.StartsWith("ts") || command.StartsWith("tabstop"))
   {
-    const int val = atoi(command.Mid(3));
+    const int val = atoi(command.AfterFirst('='));
     
     if (val > 0)
     {

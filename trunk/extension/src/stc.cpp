@@ -1303,8 +1303,7 @@ void wxExSTC::GuessType()
     // Get a small sample from this file to detect the file mode.
     const auto sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
     const wxString text = GetTextRange(0, sample_size);
-    
-    wxRegEx ex("vi\\(: *set.*\\)");
+    const wxRegEx ex("vi\\(: *set.*\\)", wxRE_ADVANCED);
     
     if (ex.Matches(text))
     {
