@@ -1303,16 +1303,11 @@ void wxExSTC::GuessType()
     // Get a small sample from this file to detect the file mode.
     const auto sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
     const wxString text = GetTextRange(0, sample_size);
-    const wxRegEx ex("vi\\(: *set.*\\)", wxRE_ADVANCED);
+    const wxRegEx ex(".*vi: *set .*");
     
     if (ex.Matches(text))
     {
-      size_t start, len;
-      
-      if (ex.GetMatch(&start, &len, 1))
-      {
-        m_vi.ExecCommand(text.substr(start, len));
-      }
+      m_vi.ExecCommand(text.AfterFirst(':').Trim(false));
     }
 
     if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
