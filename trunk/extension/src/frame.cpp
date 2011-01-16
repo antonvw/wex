@@ -305,11 +305,16 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
 
   case ID_FOCUS_LISTVIEW:
-    m_FocusListView = (wxExListView*)command.GetEventObject();;
+    m_FocusListView = (wxExListView*)command.GetEventObject();
     break;
 
   case ID_FOCUS_STC: 
-    m_FocusSTC = (wxExSTC*)command.GetEventObject();;
+    m_FocusSTC = (wxExSTC*)command.GetEventObject();
+
+    if (m_FocusSTC == NULL)
+    {
+      m_FocusSTCFind = NULL;
+    }
     break;
     
   case ID_VIEW_MENUBAR:
