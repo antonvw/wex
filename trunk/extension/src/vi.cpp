@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/command.h>
@@ -530,10 +531,19 @@ bool wxExVi::DoCommandRange(const wxString& command)
 
 bool wxExVi::DoCommandSet(const wxString& command)
 {
+  // e.g. set ts=4
   if (command.StartsWith("ts"))
   {
-    m_STC->SetTabWidth(atoi(command.Mid(3));
-    return true;
+    const int val = atoi(command.Mid(3));
+    
+    if (val > 0)
+    {
+      m_STC->SetTabWidth(val);
+      wxConfigBase::Get()->Write(_("Tab width"), val);
+      return true;
+    }
+    
+    return false;
   }
   else
   {
@@ -604,9 +614,10 @@ bool wxExVi::ExecCommand(const wxString& command)
     event.SetString(command.AfterFirst(' '));
     wxPostEvent(wxTheApp->GetTopWindow(), event);
   }
-  else if (command.StartsWith("set ")
+  // e.g. set ts=4
+  else if (command.StartsWith("set "))
   {
-    return DoCommand(command.Mid(4));
+    return DoCommandSet(command.Mid(4));
   }
   else if (command.StartsWith("w"))
   {
