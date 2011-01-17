@@ -627,10 +627,10 @@ void wxExAppTestFixture::testVi()
  
   // Test for modeline support.
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
-    "// vi: set ts=120 \"
+    "// vi: set ts=120 "
     "// this is a modeline");
     
-  CPPUNIT_ASSERT(stc->GetTabWidth(), 120);
+  CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   
   wxExVi* vi = new wxExVi(stc);
   
