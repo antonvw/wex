@@ -634,6 +634,9 @@ void wxExAppTestFixture::testVi()
   
   wxExVi* vi = new wxExVi(stc);
   
+  CPPUNIT_ASSERT(!vi->GetIsActive());
+  
+  vi->Use(true);
   CPPUNIT_ASSERT( vi->GetIsActive());
   
   CPPUNIT_ASSERT( vi->ExecCommand("$"));
@@ -642,12 +645,6 @@ void wxExAppTestFixture::testVi()
   
   CPPUNIT_ASSERT( vi->FindCommand("/", "vi: "));
   CPPUNIT_ASSERT(!vi->FindCommand("/", "xxx"));
-  
-  vi->Use(false);
-  CPPUNIT_ASSERT(!vi->GetIsActive());
-  
-  vi->Use(true);
-  CPPUNIT_ASSERT( vi->GetIsActive());
   
   wxKeyEvent event(wxEVT_CHAR);
   event.m_keyCode = 97; // one char 'a'
