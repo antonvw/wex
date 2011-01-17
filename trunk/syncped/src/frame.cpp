@@ -1267,9 +1267,10 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
       file.Read(buffer.data(), bytes);
       wxString str(buffer);
       str = str.AfterFirst('\n');
-      wxExSTCEntryDialog dlg(this, _("Log"), str, wxEmptyString, wxOK);
-      dlg.GetSTC()->DocumentEnd();
-      dlg.ShowModal();
+      wxExSTCEntryDialog* dlg = new wxExSTCEntryDialog(
+        this, _("Log"), str, wxEmptyString, wxOK);
+      dlg->GetSTC()->DocumentEnd();
+      dlg->Show();
 		}
   }
   else
