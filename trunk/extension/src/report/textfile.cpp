@@ -156,9 +156,7 @@ bool wxExTextFileWithListView::ParseSQL()
       return false;
     }
 
-    const wxString msg = wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
-    wxLogStatus(msg);
-    wxLogVerbose(msg);
+    wxLogVerbose(wxString::Format(_("Retrieved: %d records"), rs.GetRecords());
   }
 
   // Test for SQL end statement.

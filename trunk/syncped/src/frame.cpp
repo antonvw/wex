@@ -49,11 +49,9 @@ class wxExLogStderr : public wxLogStderr
       const wxString& msg,
       const wxLogRecordInfo& info)
     {
-      if (level == wxLOG_Status)
-      {
-        m_Frame->SetStatusText(msg);
-      }      
-      else
+      m_Frame->SetStatusText(msg);
+      
+      if (level != wxLOG_Status)
       {
         wxLogStderr::DoLogRecord(level, msg, info);
       }
