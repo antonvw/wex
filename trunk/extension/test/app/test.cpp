@@ -589,6 +589,8 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(log.IsHistory());
   CPPUNIT_ASSERT(blame.IsOpen());
   CPPUNIT_ASSERT(update.IsUpdate());
+  CPPUNIT_ASSERT(!help.UseFlags());
+  CPPUNIT_ASSERT(help.UseSubcommand());
 
   CPPUNIT_ASSERT(add.GetSubMenu().empty());
   CPPUNIT_ASSERT(diff.GetSubMenu() == "submenu");
@@ -601,19 +603,47 @@ void wxExAppTestFixture::testVCSEntry()
 {
   wxExVCSEntry test;
   
-  CPPUNIT_ASSERT( test.GetFlags().empty());
-  CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
   CPPUNIT_ASSERT( test.GetNo() == -1);
+  CPPUNIT_ASSERT( test.GetOutput().empty());
+  CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
+
+  // This should have no effect.  
+  test.SetCommand(5);
+  
+  CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
+  CPPUNIT_ASSERT( test.GetFlags().empty());
+  CPPUNIT_ASSERT( test.GetName().empty());
+  CPPUNIT_ASSERT( test.GetNo() == -1);
+  CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }
 
 void wxExAppTestFixture::testVi()
 {
-  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
+  wxConfigBase::Get()->Write(_("vi mode"), true);
+ 
+  // Test for modeline support.
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
+    "// vi: set ts=120 \"
+    "// this is a modeline");
+    
+  CPPUNIT_ASSERT(stc->GetTabWidth(), 120);
+  
   wxExVi* vi = new wxExVi(stc);
   
+  CPPUNIT_ASSERT( vi->GetIsActive());
+  
+  CPPUNIT_ASSERT( vi->ExecCommand("$"));
+  CPPUNIT_ASSERT( vi->ExecCommand("100"));
+  CPPUNIT_ASSERT(!vi->ExecCommand("xxx"));
+  
+  CPPUNIT_ASSERT( vi->FindCommand("/", "vi: "));
+  CPPUNIT_ASSERT(!vi->FindCommand("/", "xxx"));
+  
+  vi->Use(false);
   CPPUNIT_ASSERT(!vi->GetIsActive());
   
   vi->Use(true);

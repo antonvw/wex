@@ -17,7 +17,6 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/defs.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/util.h>
 

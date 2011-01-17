@@ -544,6 +544,8 @@ bool wxExVi::DoCommandSet(const wxString& command)
     }
   }
     
+  wxBell();
+  
   return false;
 }
 

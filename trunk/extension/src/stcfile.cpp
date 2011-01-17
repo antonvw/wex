@@ -106,9 +106,7 @@ void wxExSTCFile::DoFileSave(bool save_as)
   
   m_STC->MarkerDeleteAllChange();
   
-  const wxString msg = _("Saved") + ": " + GetFileName().GetFullPath();
-  
-  wxLogVerbose(msg);
+  wxLogVerbose(_("Saved") + ": " + GetFileName().GetFullPath());
 }
 
 bool wxExSTCFile::GetContentsChanged() const 

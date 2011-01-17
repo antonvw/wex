@@ -64,11 +64,6 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
     wxLogError(_("No commands found for: ") + m_Name);
     m_Commands.push_back(wxExVCSCommand());
   }  
-  
-  m_FlagsKey = wxString::Format(
-    "vcsflags/%s%d", 
-    m_Name.c_str(), 
-    GetCommand().GetNo());
 }
 
 void wxExVCSEntry::AddCommands(const wxXmlNode* node)
@@ -257,6 +252,11 @@ void wxExVCSEntry::SetCommand(int menu_id)
   {
     m_CommandId = 0;
   }
+  
+  m_FlagsKey = wxString::Format(
+    "vcsflags/%s%d", 
+    m_Name.c_str(), 
+    GetCommand().GetNo());
 }
 
 #if wxUSE_GUI

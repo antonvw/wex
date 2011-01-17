@@ -141,10 +141,11 @@ bool wxExVCSCommand::IsUpdate() const
 
 bool wxExVCSCommand::UseFlags() const 
 {
+  // All commands, except help support flags.
   return !IsHelp();
 }
-    
+
 bool wxExVCSCommand::UseSubcommand() const
 {
-  return IsHelp();
+  return m_SubMenuIsCommand && !m_SubMenu.empty();
 }
