@@ -1,13 +1,6 @@
-......................F
+......................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  22   Failures: 1   Errors: 0
-
-
-1) test: testVi (F) line: 637 ../extension/test/app/test.cpp
-assertion failed
-- Expression: vi->GetIsActive()
+OK (22 tests)
 
 
