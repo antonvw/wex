@@ -150,10 +150,12 @@ wxExSampleFrame::wxExSampleFrame()
   m_STC = new wxExSTC(this);
   m_STCShell = new wxExSTCShell(this, ">", wxTextFile::GetEOL(), true, 10);
 
+  GetManager().AddPane(m_Notebook, 
+    wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_STC, 
-    wxAuiPaneInfo().CenterPane().CloseButton(false).MaximizeButton(true).Name("wxExSTC"));
-  GetManager().AddPane(m_STCShell, wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
-  GetManager().AddPane(m_Notebook, wxAuiPaneInfo().Left().MinSize(wxSize(250, 250)));
+    wxAuiPaneInfo().Left().MaximizeButton(true).Name("wxExSTC"));
+  GetManager().AddPane(m_STCShell, 
+    wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
