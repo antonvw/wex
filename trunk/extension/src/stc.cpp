@@ -2358,12 +2358,15 @@ bool wxExSTC::SmartIndentation()
   // Using isspace is not okay, as that copies the CR and LF too, these
   // are already copied.
   int i = 0;
+
   if (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
   {
     InsertText(GetCurrentPos(), GetEOL());
     GotoLine(GetCurrentLine() + 1);
 
-    while (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' '))
+    while (
+      i < line.size() && 
+      (line[i] == wxUniChar('\t') || line[i] == wxUniChar(' ')))
     {
       InsertText(GetCurrentPos(), line[i]);
       GotoPos(GetCurrentPos() + 1);

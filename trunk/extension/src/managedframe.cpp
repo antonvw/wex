@@ -19,6 +19,7 @@
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
+#if wxUSE_AUI
 
 // Support class.
 // Offers a text ctrl related to a vi object.
@@ -48,7 +49,6 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-#if wxUSE_AUI
 BEGIN_EVENT_TABLE(wxExManagedFrame, wxExFrame)
   EVT_MENU(wxID_PREFERENCES, wxExManagedFrame::OnCommand)
   EVT_MENU_RANGE(ID_VIEW_LOWEST, ID_VIEW_HIGHEST, wxExManagedFrame::OnCommand)
@@ -246,7 +246,6 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
   m_Manager.Update();
 }
-#endif // wxUSE_AUI
 
 // Implementation of support class.
 
@@ -307,4 +306,5 @@ void wxExTextCtrl::OnKey(wxKeyEvent& event)
   }
 }
 
+#endif // wxUSE_AUI
 #endif // wxUSE_GUI

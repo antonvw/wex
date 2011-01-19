@@ -24,6 +24,8 @@ wxExCommand::wxExCommand()
 
 long wxExCommand::Execute(const wxString& command, const wxString& wd)
 {
+  // See also wxExProcess, uses similar messages.
+  
   m_Command = command;
   m_Error = false;
   
@@ -34,7 +36,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   {
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),
-      "Command",
+      _("Command"),
       wxEmptyString,
       wxEmptyString,
       wxOK,
@@ -71,12 +73,11 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     output,
     errors)) == -1)
   {
-    // See also wxExProcess, same log error is shown.
     wxLogError(_("Cannot execute") + ": " + m_Command);
   }
   else
   {
-    wxLogVerbose(m_Command);
+    wxLogVerbose(_("Execute") + ": " + m_Command);
   }
 
   if (!cwd.empty())

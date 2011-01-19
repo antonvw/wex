@@ -1139,7 +1139,7 @@ void wxExVi::ToggleCase() const
   wxIslower(text[0]) ? text.UpperCase(): text.LowerCase();
 
   m_STC->wxStyledTextCtrl::Replace(
-  m_STC->GetCurrentPos(), 
+    m_STC->GetCurrentPos(), 
     m_STC->GetCurrentPos() + 1, 
     text);
 

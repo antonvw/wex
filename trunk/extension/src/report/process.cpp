@@ -13,7 +13,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/infobar.h>
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
@@ -174,7 +173,7 @@ long wxExProcess::Execute()
   {
     if (ConfigDialog(m_ListView) == wxID_CANCEL)
     {
-      return 0;
+      return -1;
     }
   }
 
@@ -187,30 +186,30 @@ long wxExProcess::Execute()
     if (!wxSetWorkingDirectory(dir))
     {
       wxLogError(_("Cannot set working directory"));
-      return 0;
+      return -1;
     }
-  }
-
-  m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS);
-
-  if (m_ListView == NULL)
-  {
-    // Only show a message, and continue,
-    // easier for testing.
-    wxInfoBar(m_Frame).ShowMessage(_("No listview to collect output"));
   }
 
   const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
 
-  if (pid > 0)
+  if (pid == -1)
   {
-    wxLogVerbose(m_Command);
-
-    m_Timer.Start(1000); // each 1000 milliseconds
+    wxLogError(_("Cannot execute") + ": " + m_Command);
   }
   else
   {
-    wxLogError(_("Cannot execute") + ": " + m_Command);
+    wxLogVerbose(_("Execute") + ": " + m_Command);
+
+    if ((m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS)) == NULL)
+    {
+      wxLogStatus(_("No listview to collect output"));
+      
+      m_Timer.Stop();
+    }
+    else
+    {
+      m_Timer.Start(1000); // each 1000 milliseconds
+    }
   }
 
   if (!cwd.empty())
