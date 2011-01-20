@@ -167,7 +167,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
     if (dot)
     {
-			m_STC->ReplaceSelection(m_InsertText);
+      m_STC->ReplaceSelection(m_InsertText);
     }
     else
     {
@@ -807,6 +807,8 @@ void wxExVi::InsertMode(
 
     if (dot)
     {
+      m_STC->SetTargetStart(m_STC->GetCurrentPos());
+      
       if (c == 'R' || c == 'C')
       {
         m_STC->ReplaceSelection(m_InsertText);
@@ -815,6 +817,9 @@ void wxExVi::InsertMode(
       {
         m_STC->AddText(m_InsertText);
       }
+      
+      m_STC->SetTargetEnd(m_STC->GetCurrentPos());
+      m_STC->MarkTargetChange();
     }
     else
     {

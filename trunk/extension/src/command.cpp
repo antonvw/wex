@@ -26,28 +26,6 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 {
   // See also wxExProcess, uses similar messages.
   
-  m_Command = command;
-  m_Error = false;
-  
-  wxLogStatus(m_Command);
-
-#if wxUSE_GUI
-  if (m_Dialog == NULL)
-  {
-    m_Dialog = new wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(),
-      _("Command"),
-      wxEmptyString,
-      wxEmptyString,
-      wxOK,
-      wxID_ANY,
-      wxDefaultPosition,
-      wxSize(350, 50));
-  }
-#endif
-  
-  m_Output.clear();
-
   wxString cwd;
   
   if (!wd.empty())
@@ -62,6 +40,26 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     }
   }
 
+#if wxUSE_GUI
+  // Cannot be in the constructor, that gives an assert.
+  if (m_Dialog == NULL)
+  {
+    m_Dialog = new wxExSTCEntryDialog(
+      wxTheApp->GetTopWindow(),
+      _("Command"),
+      wxEmptyString,
+      wxEmptyString,
+      wxOK,
+      wxID_ANY,
+      wxDefaultPosition,
+      wxSize(350, 50));
+  }
+#endif
+
+  m_Command = command;
+  wxLogStatus(m_Command);
+  
+  m_Output.clear();
   wxArrayString output;
   wxArrayString errors;
   long retValue;
@@ -71,11 +69,7 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   if ((retValue = wxExecute(
     m_Command,
     output,
-    errors)) == -1)
-  {
-    wxLogError(_("Cannot execute") + ": " + m_Command);
-  }
-  else
+    errors)) != -1)
   {
     wxLogVerbose(_("Execute") + ": " + m_Command);
   }

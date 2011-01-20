@@ -97,13 +97,13 @@ void wxExReportAppTestFixture::testListItem()
   
   sw.Start();
   
-  listView->SortColumn(_("File Name"), SORT_ASCENDING);
+  listView->SortColumn("File Name", SORT_ASCENDING);
   
   const long sort = sw.Time();
   
   printf("sorting %d items took %ld milliseconds\n", 3 * max, sort);
     
-  CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
+  CPPUNIT_ASSERT(listView->GetItemText(0, "File Name").Contains("main.cpp"));
 }
   
 void wxExReportAppTestFixture::testListViewFile()

@@ -17,7 +17,6 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
-#include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
@@ -104,23 +103,23 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
-  menuFile->Append(ID_STATISTICS_SHOW, _("Show Statistics"));
+  menuFile->Append(ID_STATISTICS_SHOW, "Show Statistics");
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
   wxExMenu* menuConfig = new wxExMenu;
-  menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
+  menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed("Config Dialog"));
   menuConfig->Append(
     ID_CONFIG_DLG_READONLY, 
-    wxExEllipsed(_("Config Dialog Readonly")));
+    wxExEllipsed("Config Dialog Readonly"));
 
   wxExMenu* menuSTC = new wxExMenu;
-  menuSTC->Append(ID_STC_FLAGS, wxExEllipsed(_("Open Flag")));
+  menuSTC->Append(ID_STC_FLAGS, wxExEllipsed("Open Flag"));
   menuSTC->AppendSeparator();
-  menuSTC->Append(ID_STC_CONFIG_DLG, wxExEllipsed(_("Config Dialog")));
-  menuSTC->Append(ID_STC_ENTRY_DLG, wxExEllipsed(_("Entry Dialog")));
+  menuSTC->Append(ID_STC_CONFIG_DLG, wxExEllipsed("Config Dialog"));
+  menuSTC->Append(ID_STC_ENTRY_DLG, wxExEllipsed("Entry Dialog"));
   menuSTC->AppendSeparator();
-  menuSTC->Append(ID_STC_SPLIT, _("Split"));
+  menuSTC->Append(ID_STC_SPLIT, "Split");
 
   wxExMenu *menuView = new wxExMenu;
   menuView->AppendBars();
@@ -129,11 +128,11 @@ wxExSampleFrame::wxExSampleFrame()
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menubar = new wxMenuBar;
-  menubar->Append(menuFile, _("&File"));
-  menubar->Append(menuView, _("&View"));
-  menubar->Append(menuSTC, _("&STC"));
-  menubar->Append(menuConfig, _("&Config"));
-  menubar->Append(menuHelp, _("&Help"));
+  menubar->Append(menuFile, "&File");
+  menubar->Append(menuView, "&View");
+  menubar->Append(menuSTC, "&STC");
+  menubar->Append(menuConfig, "&Config");
+  menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
   m_Notebook = new wxExNotebook(
@@ -153,9 +152,9 @@ wxExSampleFrame::wxExSampleFrame()
   GetManager().AddPane(m_Notebook, 
     wxAuiPaneInfo().CenterPane().MinSize(wxSize(250, 250)));
   GetManager().AddPane(m_STC, 
-    wxAuiPaneInfo().Left().MaximizeButton(true).Name("wxExSTC"));
+    wxAuiPaneInfo().Bottom().Caption("STC"));
   GetManager().AddPane(m_STCShell, 
-    wxAuiPaneInfo().Bottom().MinSize(wxSize(250, 250)));
+    wxAuiPaneInfo().Bottom().Caption("Shell").MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
@@ -203,11 +202,11 @@ wxExSampleFrame::wxExSampleFrame()
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes;
   panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExStatusBarPane("PaneCells", 60, _("Cells")));
-  panes.push_back(wxExStatusBarPane("PaneItems", 60, _("Items")));
-  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
-  panes.push_back(wxExStatusBarPane("PaneLexer", 60, _("Lexer")));
+  panes.push_back(wxExStatusBarPane("PaneFileType", 50, "File type"));
+  panes.push_back(wxExStatusBarPane("PaneCells", 60, "Cells"));
+  panes.push_back(wxExStatusBarPane("PaneItems", 60, "Items"));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, "Lines"));
+  panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
 }
@@ -265,7 +264,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case wxID_EXIT: Close(true); break;
   case wxID_OPEN:
     {
-        wxExFileDialog dlg(this, &m_STC->GetFile());
+    wxExFileDialog dlg(this, &m_STC->GetFile());
     if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
 
     wxStopWatch sw;
@@ -302,17 +301,17 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     {
     std::vector<wxExConfigItem> v;
 
-    v.push_back(wxExConfigItem(_("File Picker"), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
 
     for (size_t j = 1; j <= 10; j++)
     {
-      v.push_back(wxExConfigItem(wxString::Format(_("Integer%d"), j), CONFIG_INT));
+      v.push_back(wxExConfigItem(wxString::Format("Integer%d", j), CONFIG_INT));
     }
 
     wxExConfigDialog* dlg = new wxExConfigDialog(
       this,
       v,
-      _("Config Dialog Readonly"),
+      "Config Dialog Readonly",
       0,
       1,
       wxCANCEL);
@@ -332,7 +331,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
   case ID_STC_CONFIG_DLG:
     wxExSTC::ConfigDialog(
       this,
-      _("Editor Options"),
+      "Editor Options",
       wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
     break;
     

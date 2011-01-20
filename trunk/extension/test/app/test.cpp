@@ -95,26 +95,26 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(ci_int.GetType() == CONFIG_INT);
 
   std::map<long, const wxString> echoices;
-  echoices.insert(std::make_pair(0, _("Zero")));
-  echoices.insert(std::make_pair(1, _("One")));
-  echoices.insert(std::make_pair(2, _("Two")));
+  echoices.insert(std::make_pair(0, "Zero"));
+  echoices.insert(std::make_pair(1, "One"));
+  echoices.insert(std::make_pair(2, "Two"));
   wxExConfigItem ci_rb("ci-rb", echoices, true);
   items.push_back(ci_rb);
   CPPUNIT_ASSERT(ci_rb.GetType() == CONFIG_RADIOBOX);
 
   std::map<long, const wxString> cl;
-  cl.insert(std::make_pair(0, _("Bit One")));
-  cl.insert(std::make_pair(1, _("Bit Two")));
-  cl.insert(std::make_pair(2, _("Bit Three")));
-  cl.insert(std::make_pair(4, _("Bit Four")));
+  cl.insert(std::make_pair(0, "Bit One"));
+  cl.insert(std::make_pair(1, "Bit Two"));
+  cl.insert(std::make_pair(2, "Bit Three");
+  cl.insert(std::make_pair(4, "Bit Four")));
   wxExConfigItem ci_bc("ci-cl", cl, false);
   items.push_back(ci_bc);
   CPPUNIT_ASSERT(ci_bc.GetType() == CONFIG_CHECKLISTBOX);
 
   std::set<wxString> bchoices;
-  bchoices.insert(_("This"));
-  bchoices.insert(_("Or"));
-  bchoices.insert(_("Other"));
+  bchoices.insert("This");
+  bchoices.insert("Or");
+  bchoices.insert("Other");
   wxExConfigItem ci_cl_n(bchoices);
   items.push_back(ci_cl_n);
   CPPUNIT_ASSERT(ci_cl_n.GetType() == CONFIG_CHECKLISTBOX_NONAME);
@@ -623,7 +623,7 @@ void wxExAppTestFixture::testVCSEntry()
 
 void wxExAppTestFixture::testVi()
 {
-  wxConfigBase::Get()->Write(_("vi mode"), true);
+  wxConfigBase::Get()->Write("vi mode", true);
  
   // Test for modeline support.
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 

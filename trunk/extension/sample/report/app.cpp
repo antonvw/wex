@@ -73,8 +73,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menuFile->Append(wxID_EXIT);
 
   wxExMenu *menuProcess = new wxExMenu;
-  menuProcess->Append(ID_PROCESS_DIALOG, wxExEllipsed(_("Dialog")));
-  menuProcess->Append(ID_PROCESS_RUN, _("Run"));
+  menuProcess->Append(ID_PROCESS_DIALOG, wxExEllipsed("Dialog"));
+  menuProcess->Append(ID_PROCESS_RUN, "Run");
   menuProcess->AppendSeparator();
   menuProcess->Append(wxID_STOP);
 
@@ -85,10 +85,10 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menubar = new wxMenuBar;
-  menubar->Append(menuFile, _("&File"));
-  menubar->Append(menuView, _("&View"));
-  menubar->Append(menuProcess, _("&Process"));
-  menubar->Append(menuHelp, _("&Help"));
+  menubar->Append(menuFile, "&File");
+  menubar->Append(menuView, "&View");
+  menubar->Append(menuProcess, "&Process");
+  menubar->Append(menuHelp, "&Help");
   SetMenuBar(menubar);
 
 #if wxUSE_STATUSBAR
@@ -141,7 +141,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   GetManager().AddPane(
     new wxExGenericDirCtrl(this, this),
-    wxAuiPaneInfo().Caption(_("DirCtrl")).Left().MinSize(wxSize(250, 250)));
+    wxAuiPaneInfo().Caption("DirCtrl").Left().MinSize(wxSize(250, 250)));
 
   GetManager().Update();
 
@@ -241,7 +241,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
       }
       else
       {
-        wxLogMessage("No focus");
+        wxLogStatus("No focus");
       }
     }
     break;
@@ -256,7 +256,7 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
       }
       else
       {
-        wxLogMessage("No focus");
+        wxLogStatus("No focus");
       }
     }
     break;

@@ -192,11 +192,7 @@ long wxExProcess::Execute()
 
   const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
 
-  if (pid == -1)
-  {
-    wxLogError(_("Cannot execute") + ": " + m_Command);
-  }
-  else
+  if (pid != -1)
   {
     wxLogVerbose(_("Execute") + ": " + m_Command);
 
