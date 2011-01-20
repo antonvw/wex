@@ -623,7 +623,7 @@ void wxExAppTestFixture::testVCSEntry()
 
 void wxExAppTestFixture::testVi()
 {
-  wxConfigBase::Get()->Write("vi mode", true);
+  wxConfigBase::Get()->Write(_("vi mode"), true);
  
   // Test for modeline support.
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), 
