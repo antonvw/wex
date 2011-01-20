@@ -713,7 +713,8 @@ int wxExSTC::ConfigDialog(
       0,
       1,
       buttons,
-      id).ShowModal();
+      id,
+      wxExConfigDialog::CONFIG_TREEBOOK).ShowModal();
   }
   else
   {
@@ -726,7 +727,8 @@ int wxExSTC::ConfigDialog(
         0,
         1,
         buttons,
-        id);
+        id,
+        wxExConfigDialog::CONFIG_TREEBOOK);
     }
 
     return m_ConfigDialog->Show();

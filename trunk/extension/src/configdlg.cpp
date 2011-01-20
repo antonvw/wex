@@ -41,6 +41,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   int cols,
   long flags,
   wxWindowID id,
+  int notebook_style,
   long style)
   : wxExDialog(
       parent, 
@@ -54,7 +55,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
 {
-  Layout(rows, cols);
+  Layout(rows, cols, notebook_style);
 }
 
 std::vector< wxExConfigItem >::const_iterator 
@@ -93,7 +94,7 @@ void wxExConfigDialog::ForceCheckBoxChecked(
   m_Page = page;
 }
 
-void wxExConfigDialog::Layout(int rows, int cols)
+void wxExConfigDialog::Layout(int rows, int cols, int notebook_style)
 {
   if (m_ConfigItems.empty())
   {
@@ -108,10 +109,23 @@ void wxExConfigDialog::Layout(int rows, int cols)
   wxFlexGridSizer* sizer = NULL;
   wxFlexGridSizer* previous_item_sizer = NULL;
   int previous_item_type = -1;
-  wxNotebook* notebook = 
-    (m_ConfigItems.begin()->GetPage().empty() ? 
-       NULL: 
-       new wxNotebook(this, wxID_ANY));
+  
+  wxBookCtrlBase* notebook = NULL;
+  
+  if (!m_ConfigItems.begin()->GetPage().empty())
+  {
+    switch (notebook_style)
+    {
+    case CONFIG_TREEBOOK:
+      notebook = new wxTreebook(this, wxID_ANY);
+      break;
+      
+    case CONFIG_NOTEBOOK:
+      notebook = new wxNotebook(this, wxID_ANY);
+      break;
+    }
+  }
+       
   wxString previous_page = "XXXXXX";
 
   for (

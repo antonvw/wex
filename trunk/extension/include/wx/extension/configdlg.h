@@ -25,6 +25,15 @@
 class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 {
 public:
+  enum
+  {
+    CONFIG_NOTEBOOK = 1,
+    CONFIG_TREEBOOK,
+    CONFIG_CHOICEBOOK,
+    CONFIG_LISTBOOK,
+    CONFIG_TOOLBOOK,
+  };
+  
   /// Constructor, specify the vector of config items
   /// to be used. When wxOK or wxAPPLY is pressed, any change in one of the
   /// config items is saved in the config.
@@ -35,6 +44,7 @@ public:
     int cols = 1,
     long flags = wxOK | wxCANCEL,
     wxWindowID id = wxID_ANY,
+    int notebook_style = CONFIG_NOTEBOOK,
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
   /// If you specified some checkboxes, calling this method
@@ -49,7 +59,7 @@ protected:
 private:
   void Click(int id) const;
   std::vector< wxExConfigItem >::const_iterator FindConfigItem(int id) const;
-  void Layout(int rows, int cols);
+  void Layout(int rows, int cols, int notebook_style);
 
   std::vector<wxExConfigItem> m_ConfigItems;
   bool m_ForceCheckBoxChecked;
