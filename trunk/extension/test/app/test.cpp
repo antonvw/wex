@@ -105,8 +105,8 @@ void wxExAppTestFixture::testConfigItem()
   std::map<long, const wxString> cl;
   cl.insert(std::make_pair(0, "Bit One"));
   cl.insert(std::make_pair(1, "Bit Two"));
-  cl.insert(std::make_pair(2, "Bit Three");
-  cl.insert(std::make_pair(4, "Bit Four")));
+  cl.insert(std::make_pair(2, "Bit Three"));
+  cl.insert(std::make_pair(4, "Bit Four"));
   wxExConfigItem ci_bc("ci-cl", cl, false);
   items.push_back(ci_bc);
   CPPUNIT_ASSERT(ci_bc.GetType() == CONFIG_CHECKLISTBOX);
