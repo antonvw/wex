@@ -1,9 +1,16 @@
-.reading 100000 items from config took 212 milliseconds
-...adding 750 items took 2012 milliseconds
-sorting 750 items took 795 milliseconds
-...
+.reading 100000 items from config took 160 milliseconds
+...adding 750 items took 1145 milliseconds
+sorting 750 items took 0 milliseconds
+F...
 
 
-OK (7 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  7   Failures: 1   Errors: 0
+
+
+1) test: testListItem (F) line: 106 ../extension/test/report/test.cpp
+assertion failed
+- Expression: listView->GetItemText(0, "File Name").Contains("main.cpp")
 
 
