@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped v1.0.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-12 21:01+0100\n"
-"PO-Revision-Date: 2010-12-12 21:02+0100\n"
+"POT-Creation-Date: 2011-01-21 19:51+0100\n"
+"PO-Revision-Date: 2011-01-21 19:52+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,47 +18,47 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../src\n"
 
-#: ../src/frame.cpp:95
+#: ../src/frame.cpp:123
 msgid "Project Files"
 msgstr "Project bestanden"
 
-#: ../src/frame.cpp:142
+#: ../src/frame.cpp:180
 msgid "Files"
 msgstr "Bestanden"
 
-#: ../src/frame.cpp:146
+#: ../src/frame.cpp:184
 msgid "Projects"
 msgstr "Projecten"
 
-#: ../src/frame.cpp:148
+#: ../src/frame.cpp:186
 msgid "Explorer"
 msgstr "Verkenner"
 
-#: ../src/frame.cpp:150
+#: ../src/frame.cpp:188
 msgid "Ascii Table"
 msgstr "Ascii tabel"
 
-#: ../src/frame.cpp:152
+#: ../src/frame.cpp:190
 msgid "History"
 msgstr "Geschiedenis"
 
-#: ../src/frame.cpp:158
+#: ../src/frame.cpp:196
 msgid "Output"
 msgstr "Resultaten"
 
-#: ../src/frame.cpp:277
+#: ../src/frame.cpp:320
 msgid "Select Projects"
 msgstr "Projecten selecteren"
 
-#: ../src/frame.cpp:355
+#: ../src/frame.cpp:398
 msgid "project"
 msgstr "project"
 
-#: ../src/frame.cpp:355
+#: ../src/frame.cpp:398
 msgid "textfile"
 msgstr "bestand"
 
-#: ../src/frame.cpp:492
+#: ../src/frame.cpp:535
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing."
@@ -65,7 +66,7 @@ msgstr ""
 "Dit programma biedt een text of binaire editor\n"
 "met automatische synchronisatie."
 
-#: ../src/frame.cpp:497
+#: ../src/frame.cpp:540
 msgid ""
 " All its config files are read\n"
 "and saved in the same directory as where the executable is."
@@ -73,55 +74,60 @@ msgstr ""
 " Alle configuratie bestanden worden\n"
 "bewaard en gelezen in dezelfde map als waar het programma zelf staat."
 
-#: ../src/frame.cpp:503
+#: ../src/frame.cpp:546
 msgid "All rights reserved."
 msgstr "Alle rechten voorbehouden."
 
-#: ../src/frame.cpp:590
+#: ../src/frame.cpp:628
 msgid "File Save As"
 msgstr "Opslaan als"
 
-#: ../src/frame.cpp:654
+#: ../src/frame.cpp:692
 msgid "Editor Options"
 msgstr "Editor opties"
 
-#: ../src/frame.cpp:662
+#: ../src/frame.cpp:700
 msgid "Comparator"
 msgstr "Vergelijker"
 
-#: ../src/frame.cpp:666
+#: ../src/frame.cpp:704
 msgid "Set List Comparator"
 msgstr "Lijst vergelijker instellen"
 
-#: ../src/frame.cpp:673
-#: ../src/frame.cpp:681
+#: ../src/frame.cpp:711
+#: ../src/frame.cpp:719
 msgid "List Font"
 msgstr "Lijst lettertype"
 
-#: ../src/frame.cpp:678
+#: ../src/frame.cpp:716
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../src/frame.cpp:694
-#: ../src/frame.cpp:696
-#: ../src/frame.cpp:700
+#: ../src/frame.cpp:732
+#: ../src/frame.cpp:734
+#: ../src/frame.cpp:738
 msgid "List Colour"
 msgstr "Lijst kleuren"
 
-#: ../src/frame.cpp:706
+#: ../src/frame.cpp:744
 msgid "Set List Read Only Colour"
 msgstr "Lijst alleen lezen kleur instellen"
 
-#: ../src/frame.cpp:756
+#: ../src/frame.cpp:794
 msgid "Project Save As"
 msgstr "Project opslaan als"
 
-#: ../src/frame.cpp:1100
+#: ../src/frame.cpp:1153
 msgid "Cannot open file"
 msgstr "Kan bestand niet openen"
 
+#: ../src/frame.cpp:1269
+msgid "Log"
+msgstr "Log"
+
 #: ../src/support.cpp:43
-msgid "File Type"
+#, fuzzy
+msgid "File type"
 msgstr "Bestands type"
 
 #: ../src/support.cpp:44
@@ -306,147 +312,98 @@ msgstr "&Opties"
 
 #~ msgid "Open &Lexers"
 #~ msgstr "&Lexers file openen"
-
 #~ msgid "Open &Logfile"
 #~ msgstr "&Logfile openen"
-
 #~ msgid "Extra"
 #~ msgstr "Extra"
-
 #~ msgid "Findbar"
 #~ msgstr "Zoekbalk"
-
 #~ msgid "&Statusbar"
 #~ msgstr "&Statusbalk"
-
 #~ msgid "&Toolbar"
 #~ msgstr "&Werkbalk"
-
 #~ msgid "&Menubar"
 #~ msgstr "&Menubalk"
-
 #~ msgid "&Findbar"
 #~ msgstr "&Zoekbalk"
-
 #~ msgid "Open project"
 #~ msgstr "Project openen"
-
 #~ msgid "Save project"
 #~ msgstr "Project opslaan"
-
 #~ msgid "View in hex mode"
 #~ msgstr "Bekijk hexadecimaal"
-
 #~ msgid "Synchronize modified files"
 #~ msgstr "Synchronizeer gewijzigde bestanden"
-
 #~ msgid "&List"
 #~ msgstr "&Lijst"
-
 #~ msgid "&Detail"
 #~ msgstr "&Details"
-
 #~ msgid "&Small Icon"
 #~ msgstr "&Pictogrammen"
-
 #~ msgid "&Lists"
 #~ msgstr "&Lijstweergave"
-
 #~ msgid "View in list mode"
 #~ msgstr "Lijst weergave"
-
 #~ msgid "View in detail mode"
 #~ msgstr "Details weergave"
-
 #~ msgid "Set &List Read Only Colour"
 #~ msgstr "&Lijst kleuren instellen"
-
 #~ msgid "Perspective"
 #~ msgstr "Perspektief"
-
 #~ msgid "&Edit"
 #~ msgstr "Be&werken"
-
 #~ msgid "Flags"
 #~ msgstr "Vlaggen"
-
 #~ msgid "&Contents"
 #~ msgstr "Inhoud"
-
 #~ msgid "Make"
 #~ msgstr "Maken"
-
 #~ msgid "Print all files"
 #~ msgstr "Alle bestanden afdrukken"
-
 #~ msgid "Confirm"
 #~ msgstr "Bevestigen"
-
 #~ msgid "Print A&ll"
 #~ msgstr "&Alles afdrukken"
-
 #~ msgid "&Update"
 #~ msgstr "&Update"
-
 #~ msgid "C&ommit"
 #~ msgstr "C&ommit"
-
 #~ msgid "&Diff"
 #~ msgstr "&Diff"
-
-#~ msgid "&Log"
-#~ msgstr "&Log"
-
 #~ msgid "&Cat"
 #~ msgstr "&Cat"
-
 #~ msgid "&Make"
 #~ msgstr "&Maken"
-
 #~ msgid "&Stat"
 #~ msgstr "&Stat"
-
 #~ msgid "&Info"
 #~ msgstr "&Info"
-
 #~ msgid "&Goto"
 #~ msgstr "&Ga naar"
-
 #~ msgid "&Run"
 #~ msgstr "Uitvoeren"
-
 #~ msgid "&SVN"
 #~ msgstr "&SVN"
-
 #~ msgid "Toolbar"
 #~ msgstr "Werkbalk"
-
 #~ msgid "Browse"
 #~ msgstr "Overzicht"
-
 #~ msgid "&Browse"
 #~ msgstr "&Overzicht"
-
 #~ msgid "day"
 #~ msgstr "dag"
-
 #~ msgid "week"
 #~ msgstr "week"
-
 #~ msgid "month"
 #~ msgstr "maand"
-
 #~ msgid "year"
 #~ msgstr "jaar"
-
 #~ msgid "link"
 #~ msgstr "koppeling"
-
 #~ msgid "help"
 #~ msgstr "help"
-
 #~ msgid "show this help"
 #~ msgstr "geeft deze help"
-
 #~ msgid "input file:line number"
 #~ msgstr "bestand:regel nummer"
+
