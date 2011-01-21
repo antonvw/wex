@@ -15,9 +15,12 @@
 #endif
 #include <functional>
 #include <algorithm>
+#include <wx/bookctrl.h> 
+#include <wx/choicebk.h>
+#include <wx/listbook.h>
 #include <wx/filepicker.h>
-#include <wx/notebook.h> 
 #include <wx/persist/treebook.h>
+#include <wx/toolbook.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
 
@@ -41,7 +44,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   int cols,
   long flags,
   wxWindowID id,
-  int notebook_style,
+  int bookctrl_style,
   long style)
   : wxExDialog(
       parent, 
@@ -55,7 +58,7 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)
 {
-  Layout(rows, cols, notebook_style);
+  Layout(rows, cols, bookctrl_style);
 }
 
 std::vector< wxExConfigItem >::const_iterator 
@@ -94,7 +97,7 @@ void wxExConfigDialog::ForceCheckBoxChecked(
   m_Page = page;
 }
 
-void wxExConfigDialog::Layout(int rows, int cols, int notebook_style)
+void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
 {
   if (m_ConfigItems.empty())
   {
@@ -110,19 +113,34 @@ void wxExConfigDialog::Layout(int rows, int cols, int notebook_style)
   wxFlexGridSizer* previous_item_sizer = NULL;
   int previous_item_type = -1;
   
-  wxBookCtrlBase* notebook = NULL;
+  wxBookCtrlBase* bookctrl = NULL;
   
   if (!m_ConfigItems.begin()->GetPage().empty())
   {
-    switch (notebook_style)
+    switch (bookctrl_style)
     {
-    case CONFIG_TREEBOOK:
-      notebook = new wxTreebook(this, wxID_ANY);
+    case CONFIG_CHOICEBOOK:
+      bookctrl = new wxChoicebook(this, wxID_ANY);
       break;
-      
+
+    case CONFIG_LISTBOOK:
+      bookctrl = new wxListbook(this, wxID_ANY);
+      break;
+
     case CONFIG_NOTEBOOK:
-      notebook = new wxNotebook(this, wxID_ANY);
+      bookctrl = new wxNotebook(this, wxID_ANY);
       break;
+
+    case CONFIG_TOOLBOOK:
+      bookctrl = new wxToolbook(this, wxID_ANY);
+      break;
+
+    case CONFIG_TREEBOOK:
+      bookctrl = new wxTreebook(this, wxID_ANY);
+      break;
+
+    default:
+      wxFAIL;  
     }
   }
        
@@ -138,17 +156,17 @@ void wxExConfigDialog::Layout(int rows, int cols, int notebook_style)
     {
       first_time = false;
 
-      if (notebook != NULL)
+      if (bookctrl != NULL)
       {
         // Finish the current page.
-        if (notebook->GetCurrentPage() != NULL)
+        if (bookctrl->GetCurrentPage() != NULL)
         {
-          notebook->GetCurrentPage()->SetSizerAndFit(sizer);
+          bookctrl->GetCurrentPage()->SetSizerAndFit(sizer);
         }
 
         // And make a new one.
-        notebook->AddPage(
-          new wxWindow(notebook, wxID_ANY), it->GetPage(), true); // select
+        bookctrl->AddPage(
+          new wxWindow(bookctrl, wxID_ANY), it->GetPage(), true); // select
       }
 
       previous_page = it->GetPage();
@@ -169,7 +187,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int notebook_style)
       previous_item_sizer: NULL);
 
     previous_item_sizer = it->Layout(
-      (notebook != NULL ? notebook->GetCurrentPage(): this), 
+      (bookctrl != NULL ? bookctrl->GetCurrentPage(): this), 
       sizer, 
       GetButtonFlags() == wxCANCEL,
       use_item_sizer);
@@ -194,25 +212,25 @@ void wxExConfigDialog::Layout(int rows, int cols, int notebook_style)
     }
   }
 
-  if (notebook != NULL)
+  if (bookctrl != NULL)
   {
-    notebook->GetCurrentPage()->SetSizerAndFit(sizer);
-    notebook->SetName("book" + GetName());
+    bookctrl->GetCurrentPage()->SetSizerAndFit(sizer);
+    bookctrl->SetName("book" + GetName());
 
-    if (!wxPersistenceManager::Get().RegisterAndRestore(notebook))
+    if (!wxPersistenceManager::Get().RegisterAndRestore(bookctrl))
     {
       // nothing was restored, so choose the default page ourselves
-      notebook->SetSelection(0);
+      bookctrl->SetSelection(0);
     }
 
-    AddUserSizer(notebook);
+    AddUserSizer(bookctrl);
   }
   else
   {
     AddUserSizer(sizer);
   }
 
-  LayoutSizers(notebook == NULL); // add separator line if no notebook
+  LayoutSizers(bookctrl == NULL); // add separator line if no bookctrl
 }
 
 void wxExConfigDialog::OnCommand(wxCommandEvent& command)

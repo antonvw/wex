@@ -102,7 +102,7 @@ Frame::Frame()
   panes.push_back(wxExStatusBarPane("PaneTimer", 75, _("Repeat timer")));
   panes.push_back(wxExStatusBarPane("PaneBytes", 150, _("Number of bytes received and sent")));
   panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines in window")));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
   SetupStatusBar(panes);
 #endif
 

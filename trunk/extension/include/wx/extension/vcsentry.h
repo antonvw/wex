@@ -21,12 +21,6 @@
 class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExCommand
 {
 public:
-  enum wxExVCSEntryFlagsLocation
-  {
-    VCS_FLAGS_LOCATION_POSTFIX,
-    VCS_FLAGS_LOCATION_PREFIX,
-  };
-  
   /// Default constructor.
   wxExVCSEntry();
   
@@ -82,6 +76,12 @@ public:
   /// Does this vcs supports keyword expansion.
   bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:
+  enum
+  {
+    VCS_FLAGS_LOCATION_POSTFIX,
+    VCS_FLAGS_LOCATION_PREFIX,
+  };
+  
   void AddCommands(const wxXmlNode* node);
 
   static int m_Instances;

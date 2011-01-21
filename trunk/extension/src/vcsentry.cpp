@@ -176,7 +176,7 @@ long wxExVCSEntry::Execute(
   
   wxString prefix;
   
-  if (m_FlagsLocation == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
+  if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
   {
     prefix += wxConfigBase::Get()->Read(_("Prefix flags")) + " ";
   }
@@ -304,7 +304,7 @@ int wxExVCSEntry::ShowDialog(
     v.push_back(wxExConfigItem(_("Flags")));
   }
 
-  if (m_FlagsLocation == wxExVCSEntry::VCS_FLAGS_LOCATION_PREFIX)
+  if (m_FlagsLocation == VCS_FLAGS_LOCATION_PREFIX)
   {
     v.push_back(wxExConfigItem(_("Prefix flags")));
   }

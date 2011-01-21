@@ -131,7 +131,7 @@ Frame::Frame()
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes;
   panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines in window")));
+  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
   SetupStatusBar(panes);
 #endif
 
@@ -199,7 +199,7 @@ wxExSTC* Frame::GetSTC()
 
 void Frame::OnClose(wxCloseEvent& event)
 {
-    wxExFileDialog dlg(this, &m_Query->GetFile());
+  wxExFileDialog dlg(this, &m_Query->GetFile());
 
   if (dlg.ShowModalIfChanged()  == wxID_CANCEL)
   {

@@ -73,16 +73,15 @@ public:
   static bool Read();
 
 #if wxUSE_GUI
-  /// Combines ShowDialog, Execute and entry ShowOutput in one method. 
+  /// Combines ShowDialog, Execute and vcs entry ShowOutput in one method. 
   /// Returns wxID_CANCEL if dialog was cancelled, or an execute error occurred.
-  /// Returns wxID_OK if okay (use entry GetError
+  /// Returns wxID_OK if okay (use vcs entry GetError
   /// to check whether the output contains errors or normal info).
   wxStandardID Request(wxWindow* parent);
 #endif  
 
 #if wxUSE_GUI
-  /// Shows a dialog allowing you to run or cancel the selected vcs command.
-  /// Returns result from calling ShowModal.
+  /// Calls show dialog for the selected vcs entry.
   int ShowDialog(wxWindow* parent) const {
     return m_Entry.ShowDialog(parent, m_Caption, m_Files.empty());};
 #endif

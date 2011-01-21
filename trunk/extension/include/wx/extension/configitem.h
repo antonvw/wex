@@ -93,12 +93,13 @@ enum wxExConfigType
 };
 
 /// Container class for using with wxExConfigDialog.
-/// If you specify a page, then all items are placed on that page in a notebook.
-/// If you specify add name, then the name is added as a label to
-/// the item as well, otherwise the name is not added, and only used
-/// for loading and saving from config.
-/// If you use the default for cols, then the number of cols used
-/// is determined by the config dialog, otherwise this number is used.
+/// - If you specify a page, then all items are placed on that page 
+///   in a book ctrl on the config dialog.
+/// - If you specify add name, then the name is added as a label to
+///   the item as well, otherwise the name is not added, and only used
+///   for loading and saving from config.
+/// - If you use the default for cols, then the number of cols used
+///   is determined by the config dialog, otherwise this number is used.
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:

@@ -27,31 +27,41 @@ class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 public:
   enum
   {
-    CONFIG_NOTEBOOK = 1,
-    CONFIG_TREEBOOK,
-    CONFIG_CHOICEBOOK,
-    CONFIG_LISTBOOK,
-    CONFIG_TOOLBOOK,
+    CONFIG_NOTEBOOK,   ///< traditional notebook
+    CONFIG_TREEBOOK,   ///< a tree book
+    CONFIG_CHOICEBOOK, ///< a choice book
+    CONFIG_LISTBOOK,   ///< a list book
+    CONFIG_TOOLBOOK,   ///< a tool book
   };
-  
-  /// Constructor, specify the vector of config items
-  /// to be used. When wxOK or wxAPPLY is pressed, any change in one of the
-  /// config items is saved in the config.
+
+  /// Constructor.
   wxExConfigDialog(wxWindow* parent,
+    /// vector with config items 
     const std::vector<wxExConfigItem>& v,
+    /// title
     const wxString& title = _("Options"),
+    /// number of columns
     int rows = 0,
+    /// number of rows
     int cols = 1,
+    /// dialog flags for buttons
+    /// When wxOK or wxAPPLY is pressed, any change in one of the
+    /// config items is saved in the config.
     long flags = wxOK | wxCANCEL,
+    /// the window id
     wxWindowID id = wxID_ANY,
-    int notebook_style = CONFIG_NOTEBOOK,
+    /// bookctrl style, only used if you specified pages for your config items
+    int bookctrl_style = CONFIG_NOTEBOOK,
+    /// dialog style
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button
   /// to be enabled.
   void ForceCheckBoxChecked(
+    /// specify the (part of) the name of the checkbox
     const wxString& contains = wxEmptyString,
+    /// specify on which page
     const wxString& page = wxEmptyString);
 protected:
   void OnCommand(wxCommandEvent& event);

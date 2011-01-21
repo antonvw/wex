@@ -42,7 +42,9 @@ class wxExLogStderr : public wxLogStderr
   public:
     wxExLogStderr(FILE* fp, wxFrame* frame) 
       : wxLogStderr(fp)
-      , m_Frame(frame) {;};
+      , m_Frame(frame) {
+        SetVerbose();
+        SetTimestamp("%x %X");};
   protected:
     virtual void DoLogRecord(
       wxLogLevel level,
@@ -119,20 +121,16 @@ Frame::Frame(bool open_recent)
   , m_NewProjectNo(1)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
-{
 #ifdef wxExUSE_PORTABLE
-  m_LogFile = wxFileName(
+  , m_LogFile(wxFileName(
     wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
-    wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
+    wxTheApp->GetAppName().Lower() + ".log").GetFullPath())
 #else
-  m_LogFile = wxFileName(
+  , m_LogFile(wxFileName(
     wxStandardPaths::Get().GetUserDataDir(),
-    wxTheApp->GetAppName().Lower() + ".log").GetFullPath();
+    wxTheApp->GetAppName().Lower() + ".log").GetFullPath())
 #endif
-
-  wxLog::SetVerbose();
-  wxLog::SetTimestamp("%x %X");
-  
+{
   m_OldLog = wxLog::SetActiveTarget(
     new wxExLogStderr(fopen(m_LogFile.c_str() , "a"), this));
 
@@ -1271,7 +1269,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
         this, _("Log"), str, wxEmptyString, wxOK);
       dlg->GetSTC()->DocumentEnd();
       dlg->Show();
-		}
+    }
   }
   else
   {
