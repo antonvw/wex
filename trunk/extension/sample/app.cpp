@@ -620,7 +620,7 @@ void wxExSampleFrame::ShowConfigItems()
     25,
     false,
     -1,
-    1));
+    -1));
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
