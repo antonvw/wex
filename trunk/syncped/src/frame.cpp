@@ -468,6 +468,8 @@ void Frame::OnClose(wxCloseEvent& event)
     }
   }
 
+  wxLog::SetActiveTarget(NULL);
+  
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
   event.Skip();
