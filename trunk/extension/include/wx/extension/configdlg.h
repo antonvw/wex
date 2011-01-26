@@ -53,7 +53,9 @@ public:
     /// bookctrl style, only used if you specified pages for your config items
     int bookctrl_style = CONFIG_NOTEBOOK,
     /// dialog style
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    /// name
+    const wxString& name = "wxExConfigDialog");
 
   /// If you specified some checkboxes, calling this method
   /// requires that one of them should be checked for the OK button

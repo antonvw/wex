@@ -23,13 +23,13 @@ wxExDialog::wxExDialog(wxWindow* parent,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size, 
-  long style)
-  : wxDialog(parent, id, title, pos, size, style)
+  long style,
+  const wxString& name)
+  : wxDialog(parent, id, title, pos, size, style, name)
   , m_ButtonFlags(button_flags)
   , m_TopSizer(new wxFlexGridSizer(1, 0, 0))
   , m_UserSizer(new wxFlexGridSizer(1, 0, 0))
 {
-  SetName(title);
 }
 
 wxSizerItem* wxExDialog::AddUserSizer(

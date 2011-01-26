@@ -31,7 +31,8 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    const wxString& name = "wxExDialog");
 protected:
   /// Adds to the user sizer using the sizer flags.
   wxSizerItem* AddUserSizer(

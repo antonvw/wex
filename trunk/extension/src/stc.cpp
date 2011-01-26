@@ -1013,7 +1013,7 @@ void wxExSTC::Fold()
     SetMarginWidth(m_MarginFoldingNumber, 
       wxConfigBase::Get()->ReadLong(_("Folding"), 16));
     SetFoldFlags(
-      wxConfigBase::Get()->ReadLong(_("Fold Flags"),
+      wxConfigBase::Get()->ReadLong(_("Fold flags"),
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
         wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
         
@@ -1448,7 +1448,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 15; // take max number of entries
+  const int accels = 17; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1468,6 +1468,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
   entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
   entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
+  entries[i++].Set(wxACCEL_CTRL, '(', ID_EDIT_MARKER_NEXT);
+  entries[i++].Set(wxACCEL_CTRL, ')', ID_EDIT_MARKER_PREVIOUS);
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
@@ -1644,7 +1646,13 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   {
   case wxID_COPY: Copy(); break;
   case wxID_CUT: Cut(); break;
-  case wxID_DELETE: if (!GetReadOnly()) Clear(); break;
+  case wxID_DELETE: 
+    if (!GetReadOnly()) 
+    {
+      Clear(); 
+      MarkerAddChange(GetCurrentLine());
+    }
+    break;
   case wxID_JUMP_TO: GotoDialog(); break;
   case wxID_PASTE: Paste(); break;
   case wxID_SELECTALL: SelectAll(); break;
@@ -1692,6 +1700,9 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
+  
+  case ID_EDIT_MARKER_NEXT: MarkerNext(GetCurrentLine(), 0xFFFF); break;
+  case ID_EDIT_MARKER_PREVIOUS: MarkerPrevious(GetCurrentLine(), 0xFFFF); break;
   
   case ID_EDIT_OPEN_BROWSER:
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());

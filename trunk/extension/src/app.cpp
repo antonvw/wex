@@ -43,28 +43,19 @@ bool wxExApp::OnInit()
     return false;
   }
 
-  // First construct the config, as most classes use it.
-  wxConfigBase* config;
 #ifdef wxExUSE_PORTABLE
-  config = new wxFileConfig(
+  // Use a portable file config.
+  // This should be before first use of wxConfigBase::Get().
+  wxConfigBase* config = new wxFileConfig(
     wxEmptyString,
     wxEmptyString,
     wxFileName(
       wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath(),
-      GetAppName().Lower() + wxString(".conf")).GetFullPath(),
+      GetAppName().Lower() + wxString(".ini")).GetFullPath(),
     wxEmptyString,
     wxCONFIG_USE_LOCAL_FILE);
-#else
-  // As wxStandardPaths::GetUserDataDir is used, subdir is necessary for config.
-  // (ignored on non-Unix system)
-  config = new wxConfig(
-    wxEmptyString,
-    wxEmptyString,
-    wxEmptyString,
-    wxEmptyString,
-    wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
-#endif
   wxConfigBase::Set(config);
+#endif
   
   int lang = wxLANGUAGE_DEFAULT;
   

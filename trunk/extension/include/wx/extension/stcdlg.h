@@ -32,7 +32,8 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
-    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    const wxString& name = "wxExSTCEntryDialog");
 
   /// Gets the STC lexer.
   const wxExLexer* GetLexer() const;

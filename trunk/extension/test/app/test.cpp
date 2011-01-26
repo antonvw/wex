@@ -366,12 +366,13 @@ void wxExAppTestFixture::testMenu()
 void wxExAppTestFixture::testNotebook()
 {
   wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
-  // (parent should not be NULL)
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
   wxWindow* page2 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
+  
   CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(page2, "key2") != NULL);
   CPPUNIT_ASSERT(notebook->AddPage(page1, "key1") == NULL);
+  
   CPPUNIT_ASSERT(notebook->GetKeyByPage(page1) == "key1");
   CPPUNIT_ASSERT(notebook->GetPageByKey("key1") == page1);
   CPPUNIT_ASSERT(notebook->SetPageText("key1", "keyx", "hello"));

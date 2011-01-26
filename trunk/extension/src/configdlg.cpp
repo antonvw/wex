@@ -45,7 +45,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
   long flags,
   wxWindowID id,
   int bookctrl_style,
-  long style)
+  long style,
+  const wxString& name)
   : wxExDialog(
       parent, 
       title, 
@@ -53,7 +54,8 @@ wxExConfigDialog::wxExConfigDialog(wxWindow* parent,
       id, 
       wxDefaultPosition, 
       wxDefaultSize, 
-      style)
+      style,
+      name)
   , m_ForceCheckBoxChecked(false)
   , m_Page(wxEmptyString)
   , m_ConfigItems(v)

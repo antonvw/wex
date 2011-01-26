@@ -35,37 +35,22 @@ void wxExSTCFile::DoFileLoad(bool synced)
 
   // Synchronizing by appending only new data only works for log files.
   // Other kind of files might get new data anywhere inside the file,
-  // we cannot sync that by keeping pos. Also only do it for reasonably large files,
-  // so small log files are synced always (e.g. COM LIB report.log).
-  const bool log_sync =
+  // we cannot sync that by keeping pos. 
+  // Also only do it for reasonably large files.
+  ReadFromFile(
     synced &&
     GetFileName().GetExt().CmpNoCase("log") == 0 &&
-    m_STC->GetTextLength() > 1024;
-
-  // Be sure we can add text.
-  m_STC->SetReadOnly(false);
-
-  ReadFromFile(log_sync);
+    m_STC->GetTextLength() > 1024);
 
   if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
   {
-    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer(), true);
 
     if (m_STC->GetLexer().GetScintillaLexer() == "po")
     {
       m_STC->AddBasePathToPathList();
     }
   }
-
-  if (m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY ||
-      GetFileName().GetStat().IsReadOnly() ||
-      // At this moment we do not allow to write in hex mode.
-      m_STC->GetFlags() & m_STC->STC_WIN_HEX)
-  {
-    m_STC->SetReadOnly(true);
-  }
-
-  m_STC->EmptyUndoBuffer();
 
   if (!synced)
   {
@@ -116,6 +101,9 @@ bool wxExSTCFile::GetContentsChanged() const
 
 void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
+  // Be sure we can add text.
+  m_STC->SetReadOnly(false);
+
   const bool pos_at_end = (m_STC->GetCurrentPos() >= m_STC->GetTextLength() - 1);
 
   int startPos, endPos;
@@ -177,6 +165,16 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
     // TODO: This does not seem to work.
     m_STC->SetSelection(startPos, endPos);
   }
+  
+  if (m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY ||
+      GetFileName().GetStat().IsReadOnly() ||
+      // At this moment we do not allow to write in hex mode.
+      m_STC->GetFlags() & m_STC->STC_WIN_HEX)
+  {
+    m_STC->SetReadOnly(true);
+  }
+
+  m_STC->EmptyUndoBuffer();
 }
 
 void wxExSTCFile::ResetContentsChanged()

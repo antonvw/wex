@@ -113,16 +113,6 @@ bool wxExNotebook::ForEach(int id)
 
     switch (id)
     {
-    case ID_ALL_STC_CONFIG_GET: 
-      stc->ConfigGet(); 
-      break;
-      
-    case ID_ALL_STC_SET_LEXER: 
-      // Set (reset) lexer, do not fold as files
-      // are already open, so preserve current folds is nicer.
-      stc->SetLexer(stc->GetLexer().GetScintillaLexer(), false);
-      break;
-
     case ID_ALL_STC_CLOSE:
       {
       wxExFileDialog dlg(this, &stc->GetFile());
@@ -131,11 +121,19 @@ bool wxExNotebook::ForEach(int id)
       }
       break;
 
+    case ID_ALL_STC_CONFIG_GET: 
+      stc->ConfigGet(); 
+      break;
+      
     case ID_ALL_STC_SAVE:
       if (stc->GetFile().GetContentsChanged())
       {
         stc->GetFile().FileSave();
       }
+      break;
+
+    case ID_ALL_STC_SET_LEXER: 
+      stc->SetLexer(stc->GetLexer().GetScintillaLexer());
       break;
 
     default: wxFAIL; break;
@@ -161,21 +159,6 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
   wxFAIL;
 
   return wxEmptyString;
-}
-
-const wxString wxExNotebook::GetKeys() const
-{
-  wxString keys;
-
-  for (
-    auto it = m_MapPages.begin();
-    it != m_MapPages.end();
-    it++)
-  {
-    keys += it->first + "\n";
-  }
-
-  return keys;
 }
 
 wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
