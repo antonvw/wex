@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/stc.h>
 
@@ -38,6 +39,8 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
     AddUserSizer(CreateTextSizer(prompt), wxSizerFlags().Center());
   }
 
+  wxPersistentRegisterAndRestore(this);
+  
   m_STC = new wxExSTC(
     this, 
     text,

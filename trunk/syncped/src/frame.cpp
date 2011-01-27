@@ -119,6 +119,7 @@ Frame::Frame(bool open_recent)
   : DecoratedFrame()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
+  , m_LogTail(NULL)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
 #ifdef wxExUSE_PORTABLE
@@ -1267,10 +1268,19 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
       file.Read(buffer.data(), bytes);
       wxString str(buffer);
       str = str.AfterFirst('\n');
-      wxExSTCEntryDialog* dlg = new wxExSTCEntryDialog(
-        this, _("Log"), str, wxEmptyString, wxOK);
-      dlg->GetSTC()->DocumentEnd();
-      dlg->Show();
+      
+      if (m_LogTail == NULL)
+      {
+        m_LogTail = new wxExSTCEntryDialog(
+          this, _("Log"), str, wxEmptyString, wxOK);
+      }
+      else
+      {
+        m_LogTail->SetText(str);
+      }
+      
+      m_LogTail->GetSTC()->DocumentEnd();
+      m_LogTail->Show();
     }
   }
   else

@@ -72,7 +72,7 @@ wxExFrame::wxExFrame(wxWindow* parent,
   wxWindowID id,
   const wxString& title,
   long style)
-  : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style)
+  : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, "wxExFrame")
   , m_FindReplaceDialog(NULL)
   , m_FocusGrid(NULL)
   , m_FocusListView(NULL)
@@ -83,7 +83,6 @@ wxExFrame::wxExFrame(wxWindow* parent,
 {
   Initialize();
 
-  SetName("wxExFrame");
   wxPersistentRegisterAndRestore(this);
 
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE

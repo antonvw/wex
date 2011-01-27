@@ -62,6 +62,7 @@ private:
   wxExNotebook* m_NotebookWithEditors;
   wxExNotebook* m_NotebookWithLists;
   wxExNotebook* m_NotebookWithProjects;
+  wxExSTCEntryDialog* m_LogTail;
 
   const wxString m_ProjectWildcard;
   wxString m_LogFile;

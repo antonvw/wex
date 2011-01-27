@@ -13,7 +13,6 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/persist/toplevel.h>
 #include <wx/extension/dialog.h>
 
 #if wxUSE_GUI
@@ -92,8 +91,6 @@ void wxExDialog::LayoutSizers(bool add_separator_line)
   m_TopSizer->AddSpacer(wxSizerFlags::GetDefaultBorder());
 
   SetSizerAndFit(m_TopSizer);
-
-  wxPersistentRegisterAndRestore(this);
 }
 
 #endif // wxUSE_GUI

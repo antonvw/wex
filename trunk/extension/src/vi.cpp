@@ -215,10 +215,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   // this one should be first, so rJ will match
   else if (command.Matches("*r?") && !m_STC->GetReadOnly())
   {
-    m_STC->wxStyledTextCtrl::Replace(
-      m_STC->GetCurrentPos(), 
-      m_STC->GetCurrentPos() + repeat, 
-      wxString(command.Last(), repeat));
+    m_STC->SetTargetStart(m_STC->GetCurrentPos());
+    m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
+    m_STC->ReplaceTarget(wxString(command.Last(), repeat));
+    m_STC->MarkTargetChange();
   }
   else if (command.Matches("*f?"))
   {

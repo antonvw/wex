@@ -65,6 +65,9 @@ public:
     const wxString& contains = wxEmptyString,
     /// specify on which page
     const wxString& page = wxEmptyString);
+    
+  /// Reloads dialog from config.
+  void Reload() const;
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);

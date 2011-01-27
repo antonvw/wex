@@ -1468,8 +1468,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_SHIFT, WXK_DELETE, wxID_CUT);
   entries[i++].Set(wxACCEL_CTRL, '=', ID_EDIT_ZOOM_IN);
   entries[i++].Set(wxACCEL_CTRL, '-', ID_EDIT_ZOOM_OUT);
-  entries[i++].Set(wxACCEL_CTRL, '(', ID_EDIT_MARKER_NEXT);
-  entries[i++].Set(wxACCEL_CTRL, ')', ID_EDIT_MARKER_PREVIOUS);
+  entries[i++].Set(wxACCEL_CTRL, '9', ID_EDIT_MARKER_NEXT);
+  entries[i++].Set(wxACCEL_CTRL, '0', ID_EDIT_MARKER_PREVIOUS);
 
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
