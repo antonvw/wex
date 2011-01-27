@@ -34,9 +34,12 @@ wxExLexer::wxExLexer(const wxXmlNode* node)
   Set(node);
 }
 
-void wxExLexer::Apply(wxStyledTextCtrl* stc) const
+void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
 {
-  stc->ClearDocumentStyle();
+  if (clear)
+  {
+    stc->ClearDocumentStyle();
+  }
   
   for_each (m_Properties.begin(), m_Properties.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExProperty::ApplyReset), stc));
@@ -60,7 +63,10 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc) const
   
   wxExLexers::Get()->GetDefaultStyle().Apply(stc);
 
-  stc->StyleClearAll();
+  if (clear)
+  {
+    stc->StyleClearAll();
+  }
 
   wxExLexers::Get()->ApplyIndicators(stc);
   wxExLexers::Get()->ApplyProperties(stc);
@@ -79,7 +85,8 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc) const
 bool wxExLexer::ApplyLexer(
   const wxString& lexer, 
   wxStyledTextCtrl* stc,
-  bool show_error)
+  bool show_error,
+  bool clear)
 {
   // Even if the lexer is empty.
   (*this) = wxExLexers::Get()->FindByName(lexer);
@@ -102,7 +109,7 @@ bool wxExLexer::ApplyLexer(
     wxLogError(_("Lexer is not known") + ": " + m_ScintillaLexer);
   }
 
-  Apply(stc);
+  Apply(stc, clear);
   
   return m_IsOk;
 }

@@ -1701,8 +1701,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   
-  case ID_EDIT_MARKER_NEXT: MarkerNext(GetCurrentLine(), 0xFFFF); break;
-  case ID_EDIT_MARKER_PREVIOUS: MarkerPrevious(GetCurrentLine(), 0xFFFF); break;
+  case ID_EDIT_MARKER_NEXT: GotoLine(MarkerNext(GetCurrentLine() + 1, 0xFFFF)); break;
+  case ID_EDIT_MARKER_PREVIOUS: GotoLine(MarkerPrevious(GetCurrentLine() - 1, 0xFFFF)); break;
   
   case ID_EDIT_OPEN_BROWSER:
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
@@ -2316,7 +2316,7 @@ void wxExSTC::SetGlobalStyles()
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
 {
-  if (!m_Lexer.ApplyLexer(lexer, this))
+  if (!m_Lexer.ApplyLexer(lexer, this, false, fold))
   {
     return false;
   }

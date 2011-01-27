@@ -36,7 +36,7 @@ public:
 
   /// Applies this lexer to stc component
   /// (and colours the component).
-  void Apply(wxStyledTextCtrl* stc) const;
+  void Apply(wxStyledTextCtrl* stc, bool clear = true) const;
 
   /// Sets scintilla lexer for specified lexer and stc. 
   /// Returns true if a scintilla lexer has been set.
@@ -47,7 +47,8 @@ public:
   bool ApplyLexer(
     const wxString& lexer, 
     wxStyledTextCtrl* stc,
-    bool show_error = true);
+    bool show_error = true,
+    bool clear = true);
 
   /// Gets the comment begin.
   const wxString& GetCommentBegin() const {return m_CommentBegin;};
