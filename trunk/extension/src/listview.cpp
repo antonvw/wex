@@ -452,6 +452,11 @@ const wxString wxExListView::GetItemText(
 
 bool wxExListView::GotoDialog(const wxString& caption)
 {
+  if (!IsShown() || GetItemCount() == 0)
+  {
+    return false;
+  }
+  
   auto initial_value = GetFirstSelected();
 
   if (initial_value == -1) // nothing selected
