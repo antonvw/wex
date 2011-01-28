@@ -49,17 +49,13 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
       _("Command"),
       wxEmptyString,
       wxEmptyString,
-      wxOK,
-      wxID_ANY,
-      wxDefaultPosition,
-      wxSize(350, 50));
+      wxOK);
   }
 #endif
 
   m_Command = command;
   wxLogStatus(m_Command);
   
-  m_Output.clear();
   wxArrayString output;
   wxArrayString errors;
   long retValue;
@@ -79,29 +75,14 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     wxSetWorkingDirectory(cwd);
   }
 
-  // First output the errors.
-  for (
-    size_t i = 0;
-    i < errors.GetCount();
-    i++)
-  {
-    m_Output += errors[i] + "\n";
-  }
-
   // Set the error member variable. 
   // We have an error if there were errors, and no output, 
   // or the  command could not be executed.  
   m_Error = (!errors.empty() && output.empty()) || retValue == -1;
 
-  // Then add the normal output, will be empty if there are errors.
-  for (
-    size_t j = 0;
-    j < output.GetCount();
-    j++)
-  {
-    m_Output += output[j] + "\n";
-  }
-  
+  m_Output = wxJoin(errors, '\n');
+  m_Output += wxJoin(output, '\n');
+
   return retValue;
 }
 

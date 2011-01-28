@@ -21,7 +21,7 @@
 
 class wxStyledTextCtrl;
 
-/// This class defines a lexer using file associations,
+/// This class defines a lexer using file extensions,
 /// syntax colouring and comment definitions.
 /// This lexer is one of the Scintilla lexers.
 /// The lexers are read by and kept in the wxExLexers class.
@@ -40,14 +40,17 @@ public:
 
   /// Sets scintilla lexer for specified lexer and stc. 
   /// Returns true if a scintilla lexer has been set.
-  /// If show_error is true, a log error message is given
-  /// if a lexer was specified, but could not be set.
   /// The is ok member is set as well according to whether the
   /// lexer could be set. Calls Apply.
   bool ApplyLexer(
+    /// lexer to use
     const wxString& lexer, 
+    /// stc component on which to apply
     wxStyledTextCtrl* stc,
+    /// If show_error is true, a log error message is given
+    /// if a lexer was specified, but could not be set.
     bool show_error = true,
+    /// if clear is true, old styles are reset (including folding)
     bool clear = true);
 
   /// Gets the comment begin.

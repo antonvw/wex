@@ -270,20 +270,23 @@ wxExTextCtrl::wxExTextCtrl(
 
 void wxExTextCtrl::OnCommand(wxCommandEvent& event)
 {
-  if (m_StaticText->GetLabel() == ":")
+  if (m_vi != NULL)
   {
-    if (m_vi->ExecCommand(GetValue()))
+    if (m_StaticText->GetLabel() == ":")
     {
-      m_Frame->HideViBar();
-      m_vi->SetFocus();
+      if (m_vi->ExecCommand(GetValue()))
+      {
+        m_Frame->HideViBar();
+        m_vi->SetFocus();
+      }
     }
-  }
-  else
-  {
-    if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
+    else
     {
-      m_Frame->HideViBar();
-      m_vi->SetFocus();
+      if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
+      {
+        m_Frame->HideViBar();
+        m_vi->SetFocus();
+      }
     }
   }
 }

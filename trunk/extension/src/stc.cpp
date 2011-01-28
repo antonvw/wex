@@ -18,7 +18,6 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/configitem.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/header.h>
@@ -1701,8 +1700,36 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_LOWERCASE: LowerCase(); break;
   case ID_EDIT_UPPERCASE: UpperCase(); break;
   
-  case ID_EDIT_MARKER_NEXT: GotoLine(MarkerNext(GetCurrentLine() + 1, 0xFFFF)); break;
-  case ID_EDIT_MARKER_PREVIOUS: GotoLine(MarkerPrevious(GetCurrentLine() - 1, 0xFFFF)); break;
+  case ID_EDIT_MARKER_NEXT: 
+    {
+    int line = MarkerNext(GetCurrentLine() + 1, 0xFFFF);
+    
+    if (line == -1)
+    {
+      line = MarkerNext(0, 0xFFFF);
+    }
+    
+    if (line != -1)
+    {
+      GotoLine(line);
+    }
+    }
+    break;
+  case ID_EDIT_MARKER_PREVIOUS: 
+    {
+    int line = MarkerPrevious(GetCurrentLine() - 1, 0xFFFF);
+    
+    if (line == -1)
+    {
+      line = MarkerPrevious(GetLineCount() - 1, 0xFFFF);
+    }
+    
+    if (line != -1)
+    {
+      GotoLine(line); 
+    }
+    }
+    break;
   
   case ID_EDIT_OPEN_BROWSER:
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
