@@ -75,13 +75,10 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     wxSetWorkingDirectory(cwd);
   }
 
-  // Set the error member variable. 
   // We have an error if there were errors, and no output, 
   // or the  command could not be executed.  
   m_Error = (!errors.empty() && output.empty()) || retValue == -1;
-
-  m_Output = wxJoin(errors, '\n');
-  m_Output += wxJoin(output, '\n');
+  m_Output = wxJoin(errors, '\n') + wxJoin(output, '\n');
 
   return retValue;
 }
