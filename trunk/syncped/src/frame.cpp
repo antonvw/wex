@@ -563,7 +563,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       }
         
       m_NotebookWithEditors->DeletePage(editor->GetFileName().GetFullPath());
-      SetTitle(wxEmptyString);
     }
     break;
   case wxID_EXIT: Close(true); break;
@@ -767,7 +766,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (project != NULL)
     {
       m_NotebookWithProjects->DeletePage(project->GetFileName().GetFullPath());
-      SetTitle(wxEmptyString);
     }
     break;
   case ID_PROJECT_NEW: NewFile(true); break;
