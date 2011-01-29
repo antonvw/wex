@@ -317,17 +317,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       }
       break;
       
-    case ID_PROJECT_SAVE:
-      {
-        wxExListViewFile* project = GetProject();
-        if (project != NULL)
-        {
-          project->FileSave();
-          SetTitle(wxEmptyString, project->GetFileName().GetName());
-        }
-      }
-      break;
-
     case ID_FIND_IN_FILES:
     case ID_REPLACE_IN_FILES:
       FindInFilesDialog(event.GetId());
@@ -521,13 +510,10 @@ void wxExFrameWithHistory::SetRecentProject(const wxString& project)
   }
 }
     
-void wxExFrameWithHistory::SetTitle(
-  const wxString& file, 
-  const wxString& project)
+void wxExFrameWithHistory::SetTitle(const wxString& file)
 {
   // If one of the strings is empty, try to get a better string.
   wxString better_file(file);
-  wxString better_project(project);
 
   if (better_file.empty())
   {
@@ -539,30 +525,8 @@ void wxExFrameWithHistory::SetTitle(
     }
   }
 
-  if (better_project.empty())
-  {
-    wxExListViewFile* lv = wxDynamicCast(GetListView(), wxExListViewFile);
-
-    if (lv != NULL && lv->GetType() == wxExListViewStandard::LIST_FILE)
-    {
-      better_project = lv->GetFileName().GetName();
-    }
-  }
-
-  // And now update the title.
-  if (better_file.empty() && better_project.empty())
-  {
-    wxExFrame::SetTitle(wxTheApp->GetAppDisplayName());
-  }
-  else
-  {
-    const wxString sep =
-      (!better_file.empty() && !better_project.empty() ?
-          wxString(" - "):
-          wxString(wxEmptyString));
-
-    wxExFrame::SetTitle(better_file + sep + better_project);
-  }
+  wxExFrame::SetTitle(
+    better_file.empty() ? wxTheApp->GetAppDisplayName(): better_file);
 }
 
 void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)

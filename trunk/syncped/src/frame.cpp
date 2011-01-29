@@ -426,7 +426,6 @@ void Frame::NewFile(bool as_project)
       wxExListViewStandard::LIST_MENU_DEFAULT);
 
     ((wxExListViewFile*)page)->FileNew(key);
-    SetTitle(wxEmptyString, text);
 
     m_NewProjectNo++;
   }
@@ -564,7 +563,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       }
         
       m_NotebookWithEditors->DeletePage(editor->GetFileName().GetFullPath());
-      SetTitle(wxEmptyString, wxEmptyString);
+      SetTitle(wxEmptyString);
     }
     break;
   case wxID_EXIT: Close(true); break;
@@ -768,7 +767,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (project != NULL)
     {
       m_NotebookWithProjects->DeletePage(project->GetFileName().GetFullPath());
-      SetTitle(wxEmptyString, wxEmptyString);
+      SetTitle(wxEmptyString);
     }
     break;
   case ID_PROJECT_NEW: NewFile(true); break;
@@ -782,7 +781,6 @@ void Frame::OnCommand(wxCommandEvent& event)
       if (dlg.ShowModalIfChanged() != wxID_CANCEL)
       {
         project->FileSave();
-        SetTitle(wxEmptyString, project->GetFileName().GetName());
         OpenFile(project->GetFileName());
       }
     }
@@ -806,7 +804,6 @@ void Frame::OnCommand(wxCommandEvent& event)
           old_key,
           project->GetFileName().GetFullPath(),
           project->GetFileName().GetName());
-        SetTitle(wxEmptyString, project->GetFileName().GetName());
       }
     }
     break;
@@ -1190,8 +1187,6 @@ bool Frame::OpenFile(
       GetManager().GetPane("PROJECTS").Show();
       GetManager().Update();
     }
-
-    SetTitle(wxEmptyString, filename.GetName());
   }
   else
   {

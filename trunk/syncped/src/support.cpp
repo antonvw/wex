@@ -235,7 +235,6 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
-    SetTitle(wxEmptyString, ((wxExListViewFile*)page)->GetFileName().GetName());
 #if wxUSE_STATUSBAR
     ((wxExListViewFile*)page)->GetFileName().StatusText();
     ((wxExListViewFile*)page)->UpdateStatusBar();
