@@ -75,7 +75,10 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   }
 
   // Take care of default value.
-  wxConfigBase::Get()->ReadBool(m_TextRecursive, true); 
+  if (!wxConfigBase::Get()->Exists(m_TextRecursive))
+  {
+    wxConfigBase::Get()->Write(m_TextRecursive, true); 
+  }
   
 #ifdef wxExUSE_EMBEDDED_SQL
   wxExTool::Get()->AddInfo(
