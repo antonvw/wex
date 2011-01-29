@@ -469,7 +469,7 @@ void Frame::OnClose(wxCloseEvent& event)
     }
   }
 
-  wxLog::SetActiveTarget(NULL);
+  delete wxLog::SetActiveTarget(NULL);
   
   wxConfigBase::Get()->Write("Perspective", GetManager().SavePerspective());
 
