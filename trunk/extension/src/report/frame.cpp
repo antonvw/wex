@@ -541,7 +541,7 @@ void wxExFrameWithHistory::SetTitle(
 
   if (better_project.empty())
   {
-    wxExListViewFile* lv = (wxExListViewFile*)GetListView();
+    wxExListViewFile* lv = wxDynamicCast(GetListView(), wxExListViewFile);
 
     if (lv != NULL && lv->GetType() == wxExListViewStandard::LIST_FILE)
     {

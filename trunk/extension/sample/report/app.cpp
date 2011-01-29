@@ -111,6 +111,8 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
+  // TODO: There is a bug in wxExFrameWithHistory::SetTitle wxDynamicCast
+  // That uses a listview file to show iflename, these are normal listviewframes...
   for (
     int i = wxExListViewStandard::LIST_BEFORE_FIRST + 1;
     i < wxExListViewStandard::LIST_AFTER_LAST;

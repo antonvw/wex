@@ -146,9 +146,9 @@ bool wxExSTCWithFrame::Open(
 void wxExSTCWithFrame::PropertiesMessage()
 {
   wxExSTC::PropertiesMessage();
-
-  m_Frame->SetTitle(
-    GetName() + 
-      (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString)), 
-    wxEmptyString);
+  
+  const wxString file = GetName() + 
+    (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
+    
+  m_Frame->SetTitle(file, wxEmptyString);
 }
