@@ -1725,7 +1725,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
   <lexer name="powerpro" match="wxSTC_POWERPRO" />
   <lexer name="powershell" match="wxSTC_POWERSHELL" />
   <lexer name="progress" match="wxSTC_4GL_" />
-  <lexer name="props" extensions="*.ini" match="wxSTC_PROPS_">
+  <lexer name="props" extensions="*.ini;*.conf" match="wxSTC_PROPS_">
     <styles>
     <style no="wxSTC_PROPS_SECTION"> fore:blue </style>
     <style no="wxSTC_PROPS_ASSIGNMENT"> fore:brown </style>
