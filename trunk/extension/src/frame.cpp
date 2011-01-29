@@ -463,6 +463,28 @@ bool wxExFrame::OpenFile(
   return false;
 }
 
+bool wxExFrame::OpenFile(
+  const wxExFileName& filename,
+  const wxExVCSEntry& vcs,
+  long flags)
+{
+  auto* stc = GetFocusedSTC();
+
+  if (stc != NULL)
+  {
+    stc->SetText(vcs.GetOutput());
+
+    wxExVCSCommandOnSTC(
+      vcs.GetCommand(), filename.GetLexer(), stc);
+  }
+  else
+  {
+    wxMessageBox(vcs.GetOutput());
+  }
+
+  return true;
+}
+
 void wxExFrame::SetMenuBar(wxMenuBar* bar)
 {
   if (bar != NULL)

@@ -86,11 +86,15 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 #if wxUSE_GUI
 void wxExCommand::ShowOutput(const wxString& caption) const
 {
-  if (m_Dialog != NULL && !m_Error)
+  if (m_Dialog != NULL)
   {
     m_Dialog->SetText(m_Output);
     m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
     m_Dialog->Show();
+  }
+  else
+  {
+    wxMessageBox(m_Output);
   }
 }
 #endif

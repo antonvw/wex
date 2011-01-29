@@ -79,9 +79,9 @@ public:
 
   /// Allows you to open a filename with info from vcs.
   virtual bool OpenFile(
-    const wxExFileName& WXUNUSED(filename),
-    const wxExVCSEntry& WXUNUSED(vcs),
-    long flags = 0) {return false;};
+    const wxExFileName& filename,
+    const wxExVCSEntry& vcs,
+    long flags = 0);
     
   /// Override from base class.
   void SetMenuBar(wxMenuBar* bar);
