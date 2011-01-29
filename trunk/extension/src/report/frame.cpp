@@ -510,25 +510,6 @@ void wxExFrameWithHistory::SetRecentProject(const wxString& project)
   }
 }
     
-void wxExFrameWithHistory::SetTitle(const wxString& file)
-{
-  // If one of the strings is empty, try to get a better string.
-  wxString better_file(file);
-
-  if (better_file.empty())
-  {
-    auto* stc = GetSTC();
-
-    if (stc != NULL)
-    {
-      better_file = stc->GetFileName().GetFullPath();
-    }
-  }
-
-  wxExFrame::SetTitle(
-    better_file.empty() ? wxTheApp->GetAppDisplayName(): better_file);
-}
-
 void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
 {
   UseHistory(id, menu, m_FileHistory);

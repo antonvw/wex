@@ -105,9 +105,6 @@ public:
   /// Updates project history.
   void SetRecentProject(const wxString& project);
 
-  /// Sets the title using file.
-  void SetTitle(const wxString& file);
-
   /// Adds a recent file menu to specified menu,
   /// and sets the file history to use it.
   void UseFileHistory(wxWindowID id, wxMenu* menu);
