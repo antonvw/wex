@@ -643,9 +643,9 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
         ar.Add(files[i]);
         
         wxExVCS vcs(ar, id);
-        vcs.Execute();
+        const auto retValue = vcs.Execute();
         
-        if (!vcs.GetEntry().GetError())
+        if (!vcs.GetEntry().GetError() && retValue != -1)
         {
           frame->OpenFile(
             files[i], 
