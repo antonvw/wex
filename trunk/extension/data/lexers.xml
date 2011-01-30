@@ -1454,7 +1454,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
    In addition it might contain the next attributes:
    1) extensions. File extensions for files associated with this lexer.
       Extensions are separated by a semicolon (;).
-      If not present, the name is use as extension.
+      The extensions appear in the file open dialogs.
    2) match. The match attribute specifies the 'no' macro
       used for matching with the 'style' macro.
    Furthermore it might contain the next tags:

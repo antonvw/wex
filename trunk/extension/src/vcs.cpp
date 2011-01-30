@@ -66,7 +66,7 @@ bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
   {
     wxFileName path(fn);
     path.AppendDir("." + vcs);
-    return path.DirExists();
+    return path.DirExists() && !path.FileExists();
   }
 }
 
@@ -89,7 +89,7 @@ bool wxExVCS::CheckPathAll(
     wxFileName path(root);
     path.AppendDir("." + use_vcs);
 
-    if (path.DirExists())
+    if (path.DirExists() && !path.FileExists())
     {
       return true;
     }
