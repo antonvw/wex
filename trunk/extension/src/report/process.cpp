@@ -192,9 +192,11 @@ long wxExProcess::Execute()
     }
   }
 
+  // For asynchronous execution, however, the return value is the process id and zero 
+  // value indicates that the command could not be executed
   const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
 
-  if (pid != -1)
+  if (pid > 0)
   {
     wxLogVerbose(_("Execute") + ": " + m_Command);
 

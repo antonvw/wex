@@ -435,7 +435,7 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
 
   if ((m_Process = new wxExProcess(this, command)) != NULL)
   {
-    if (m_Process->Execute() >= 0)
+    if (m_Process->Execute() > 0)
     {
       return true;
     }
