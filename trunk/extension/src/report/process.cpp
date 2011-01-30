@@ -47,11 +47,6 @@ wxExProcess::wxExProcess(
 
 bool wxExProcess::CheckInput()
 {
-  if (m_ListView == NULL)
-  {
-    return false;
-  }
-
   bool hasInput = false;
 
   // This assumes that the output is always line buffered.
@@ -108,30 +103,37 @@ bool wxExProcess::CheckInput()
     wxFileName fn(path);
 
     fn.Normalize();
-
-    if (fn.FileExists())
+    
+    if (m_ListView != NULL)
     {
-      wxExListItem item(m_ListView, fn);
-      item.Insert();
-      item.SetItem(_("Line"), line);
-      item.SetItem(_("Line No"), lineno);
+      if (fn.FileExists())
+      {
+        wxExListItem item(m_ListView, fn);
+        item.Insert();
+        item.SetItem(_("Line"), line);
+        item.SetItem(_("Line No"), lineno);
+      }
+      else
+      {
+        m_ListView->InsertItem(m_ListView->GetItemCount(), line, -1);
+      }
+  
+      // If nothing selected, then ensure last line is visible.
+      // Otherwise you are busy inspecting some line, and
+      // it would be irritating to get it out of view.
+      if (m_ListView->GetSelectedItemCount() == 0)
+      {
+        m_ListView->EnsureVisible(m_ListView->GetItemCount() - 1);
+      }
+  
+  #if wxUSE_STATUSBAR
+      m_ListView->UpdateStatusBar();
+  #endif
     }
     else
     {
-      m_ListView->InsertItem(m_ListView->GetItemCount(), line, -1);
+      wxLogMessage(line);
     }
-
-    // If nothing selected, then ensure last line is visible.
-    // Otherwise you are busy inspecting some line, and
-    // it would be irritating to get it out of view.
-    if (m_ListView->GetSelectedItemCount() == 0)
-    {
-      m_ListView->EnsureVisible(m_ListView->GetItemCount() - 1);
-    }
-
-#if wxUSE_STATUSBAR
-    m_ListView->UpdateStatusBar();
-#endif
   }
 
   return hasInput;
@@ -171,7 +173,7 @@ long wxExProcess::Execute()
 {
   if (m_Command.empty())
   {
-    if (ConfigDialog(m_ListView) == wxID_CANCEL)
+    if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
     {
       return -1;
     }
@@ -199,13 +201,9 @@ long wxExProcess::Execute()
     if ((m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS)) == NULL)
     {
       wxLogStatus(_("No listview to collect output"));
-      
-      m_Timer.Stop();
     }
-    else
-    {
-      m_Timer.Start(1000); // each 1000 milliseconds
-    }
+    
+    m_Timer.Start(1000); // each 1000 milliseconds
   }
 
   if (!cwd.empty())
