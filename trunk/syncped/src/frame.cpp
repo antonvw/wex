@@ -196,7 +196,7 @@ Frame::Frame(bool open_recent)
   GetManager().AddPane(asciiTable,
     wxAuiPaneInfo().Left().Name("ASCIITABLE").Caption(_("Ascii Table")));
   GetManager().AddPane(m_LogTail,
-    wxAuiPaneInfo().Left().Name("LOG").Caption(_("Log")));
+    wxAuiPaneInfo().Bottom().Name("LOG").Caption(_("Log")));
   GetManager().AddPane(m_History,
     wxAuiPaneInfo().Left().Name("HISTORY").Caption(_("History")));
 
