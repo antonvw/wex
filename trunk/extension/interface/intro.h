@@ -16,7 +16,7 @@ This is a <a href="http://svn.xp-dev.com/svn/wxextension/">public source code li
 containing a collection of wxWidgets extension classes.
 
 <p>
-It uses <a href="http://www.wxwidgets.org/">wxWidgets 2.9.1</a> 
+It uses <a href="http://docs.wxwidgets.org/2.9.1/">wxWidgets 2.9.1</a> 
 and <a href="http://www.cplusplus.com/reference/algorithm/">STL classes</a>. 
 
 <p>

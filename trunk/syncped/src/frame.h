@@ -22,6 +22,7 @@ public:
   Frame(bool open_recent);
  ~Frame();
   
+  void Log(const wxString& msg);
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
@@ -59,10 +60,10 @@ private:
 
   wxExGenericDirCtrl* m_DirCtrl;
   wxExListViewWithFrame* m_History;
-  wxExNotebook* m_NotebookWithEditors;
-  wxExNotebook* m_NotebookWithLists;
-  wxExNotebook* m_NotebookWithProjects;
-  wxExSTCEntryDialog* m_LogTail;
+  wxExNotebook* m_Editors;
+  wxExNotebook* m_Lists;
+  wxExNotebook* m_Projects;
+  wxExSTC* m_LogTail;
 
   const wxString m_ProjectWildcard;
   wxString m_LogFile;
