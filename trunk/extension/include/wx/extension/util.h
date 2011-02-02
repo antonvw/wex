@@ -26,18 +26,22 @@ class wxXmlNode;
 
 /*! \file */
 
-/// Aligns text, if lexer is specified 
-/// fills out over lexer comment lines.
-/// If the lexer has no comment end character, fill out
-/// with spaces is not done.
-/// The header is used as a prefix for the line, directly 
-/// followed by the lines, and if necessary on the next line
-/// the header is repeated as a string of spaces.
+/// Aligns text.
 const wxString wxExAlignText(
+  /// lines to align
   const wxString& lines,
+  /// The header is used as a prefix for the line, directly 
+  /// followed by the lines, and if necessary on the next line
+  /// the header is repeated as a string of spaces.
   const wxString& header,
+  /// if fill out, then use space
   bool fill_out_with_space = false,
+  /// fill out
   bool fill_out = false,
+  /// if lexer is specified 
+  /// fills out over lexer comment lines  
+  /// If the lexer has no comment end character, fill out
+  /// with spaces is not done.
   const wxExLexer& lexer = wxExLexer());
 
 /// Adds data to the clipboard.
@@ -53,6 +57,7 @@ bool wxExCompareFile(const wxFileName& file1, const wxFileName& file2);
 const wxString wxExConfigFirstOf(const wxString& key);
 
 /// Adds an ellipses after text.
+/// The control, if present is postfixed, after a tab character (for accels).
 const wxString wxExEllipsed(
   const wxString& text,
   const wxString& control = wxEmptyString);

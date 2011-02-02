@@ -30,8 +30,10 @@ bool wxExFindOtherFileName(
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
 /// Gets the icon index for this filename (uses the file extension to get it).
+/// The return value is an index in wxTheFileIconsTable.
 int wxExGetIconID(const wxExFileName& filename);
 
 /// Run make on specified makefile.
+/// Results are place on the list process output, if it can be activated from frame.
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
 #endif
