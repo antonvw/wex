@@ -21,10 +21,10 @@ cp ../extension/data/lexers.xml syncped
 cp ../extension/data/vcs.xml syncped
 
 # Copy locale files.
-cp ~/wxWidgets-2.9.1/locale/nl.mo syncped/nl-NL/nl.mo
-cp ../extension/locale/wxextension-nl.mo syncped/nl-NL/wxextension-nl.mo
-cp ../extension/locale/wxstd-xxx-nl.mo syncped/nl-NL/wxstd-xxx-nl.mo
-cp ../syncped/locale/syncped-nl.mo syncped/nl-NL/syncped-nl.mo
+cp ~/wxWidgets-2.9.1/locale/nl.mo syncped/nl-NL/
+cp ../extension/locale/wxextension-nl.mo syncped/nl-NL/
+cp ../extension/locale/wxstd-xxx-nl.mo syncped/nl-NL/
+cp ../syncped/locale/syncped-nl.mo syncped/nl-NL/
  
 tar cf syncped.tar syncped
 gzip syncped.tar
