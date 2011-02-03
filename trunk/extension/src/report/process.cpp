@@ -106,7 +106,7 @@ bool wxExProcess::CheckInput()
     
     if (m_ListView != NULL)
     {
-      if (fn.FileExists())
+      if (fn.FileExists() || fn.DirExists())
       {
         wxExListItem item(m_ListView, fn);
         item.Insert();
