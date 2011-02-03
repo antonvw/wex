@@ -16,7 +16,6 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/imaglist.h>
-#include <wx/infobar.h>
 #include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
 #include <wx/textfile.h>
@@ -42,7 +41,6 @@ class wxExLogStderr : public wxLogStderr
   public:
     wxExLogStderr(FILE* fp, Frame* frame) 
       : wxLogStderr(fp)
-      , m_InfoBar(new wxInfoBar(frame))
       , m_Frame(frame) {
         SetVerbose();
         SetTimestamp("%x %X");};
@@ -57,17 +55,11 @@ class wxExLogStderr : public wxLogStderr
       if (level != wxLOG_Status)
       {
         wxLogStderr::DoLogRecord(level, msg, info);
-        m_Frame->Log(wxDateTime::Now().Format() + " " + msg);
-        
-        if (level == wxLOG_Error)
-        {
-          m_InfoBar->ShowMessage(msg);
-        }
+        m_Frame->Log(level, msg, info);
       }
     }
   private:
     Frame* m_Frame;
-    wxInfoBar* m_InfoBar;
 };
 
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
@@ -184,27 +176,44 @@ Frame::Frame(bool open_recent)
   asciiTable->AddAsciiTable();
   asciiTable->SetReadOnly(true);
 
-  GetManager().AddPane(m_Editors,
-    wxAuiPaneInfo().
-      CenterPane().MaximizeButton(true).Name("FILES").Caption(_("Files")));
+  GetManager().AddPane(m_Editors, wxAuiPaneInfo()
+    .CenterPane()
+    .MaximizeButton(true)
+    .Name("FILES")
+    .Caption(_("Files")));
 
-  GetManager().AddPane(m_Projects,
-      wxAuiPaneInfo().
-        Left().MaximizeButton(true).Name("PROJECTS").Caption(_("Projects")));
-  GetManager().AddPane(m_DirCtrl,
-    wxAuiPaneInfo().Left().Name("DIRCTRL").Caption(_("Explorer")));
-  GetManager().AddPane(asciiTable,
-    wxAuiPaneInfo().Left().Name("ASCIITABLE").Caption(_("Ascii Table")));
-  GetManager().AddPane(m_LogTail,
-    wxAuiPaneInfo().Bottom().Name("LOG").Caption(_("Log")));
-  GetManager().AddPane(m_History,
-    wxAuiPaneInfo().Left().Name("HISTORY").Caption(_("History")));
+  GetManager().AddPane(m_Projects, wxAuiPaneInfo()
+    .Left()
+    .MaximizeButton(true)
+    .Name("PROJECTS")
+    .Caption(_("Projects")));
 
-  GetManager().AddPane(m_Lists,
-    wxAuiPaneInfo().
-      Bottom().
-      MaximizeButton(true).
-      MinSize(250, 100).Name("OUTPUT").Caption(_("Output")));
+  GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
+    .Left()
+    .Name("DIRCTRL")
+    .Caption(_("Explorer")));
+
+  GetManager().AddPane(asciiTable, wxAuiPaneInfo()
+    .Left()
+    .Name("ASCIITABLE")
+    .Caption(_("Ascii Table")));
+
+  GetManager().AddPane(m_LogTail, wxAuiPaneInfo()
+    .Bottom()
+    .Name("LOG")
+    .LeftDockable(false)
+    .RightDockable(false)
+    .Caption(_("Log")));
+
+  GetManager().AddPane(m_History, wxAuiPaneInfo()
+    .Left().Name("HISTORY")
+    .Caption(_("History")));
+
+  GetManager().AddPane(m_Lists, wxAuiPaneInfo()
+    .Bottom()
+    .MaximizeButton(true)
+    .MinSize(250, 100).Name("OUTPUT")
+    .Caption(_("Output")));
 
   const wxString perspective = wxConfigBase::Get()->Read("Perspective");
 
@@ -406,12 +415,22 @@ wxExSTC* Frame::GetSTC()
   }
 }
 
-void Frame::Log(const wxString& msg)
+void Frame::Log(
+  wxLogLevel level,
+  const wxString& msg,
+  const wxLogRecordInfo& info)
 {
-  m_LogTail->AppendText(msg + "\n");
+  m_LogTail->AppendText(
+    wxDateTime(info.timestamp).Format() + " " + msg + "\n");
+    
   m_LogTail->EmptyUndoBuffer();
   m_LogTail->SetSavePoint();
   m_LogTail->DocumentEnd();
+  
+  if (level == wxLOG_Error)
+  {
+    GetManager().GetPane("LOG").Show();
+  }
 }
 
 void Frame::NewFile(bool as_project)
@@ -1268,8 +1287,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
   if (pane.empty())
   {
-    GetManager().GetPane("LOG").Show();
-    GetManager().Update();
+    TogglePane("LOG");
   }
   else
   {

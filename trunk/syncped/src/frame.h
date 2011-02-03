@@ -22,7 +22,11 @@ public:
   Frame(bool open_recent);
  ~Frame();
   
-  void Log(const wxString& msg);
+  void Log(
+    wxLogLevel level,
+    const wxString& msg,
+    const wxLogRecordInfo& info);
+  
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

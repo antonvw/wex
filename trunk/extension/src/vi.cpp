@@ -660,8 +660,11 @@ bool wxExVi::ExecCommand(const wxString& command)
   else if (command.StartsWith("!"))
   {
     wxExCommand exe;
-    exe.Execute(command.AfterFirst('!'));
-    exe.ShowOutput();
+    
+    if (exe.Execute(command.AfterFirst('!')) != -1)
+    {
+      exe.ShowOutput();
+    }
   }
   else if (command.IsNumber())
   {
