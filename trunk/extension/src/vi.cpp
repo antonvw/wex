@@ -75,7 +75,7 @@ void wxExVi::Delete(int lines) const
 
   if (lines >= 2)
   {
-    ShowMessage(
+    m_Frame->ShowViMessage(
       wxString::Format(_("%d fewer lines"), 
       linecount - m_STC->GetLineCount()));
   }
@@ -111,7 +111,7 @@ bool wxExVi::Delete(
 
   if (lines >= 2)
   {
-    ShowMessage(wxString::Format(_("%d fewer lines"), lines));
+    m_Frame->ShowViMessage(wxString::Format(_("%d fewer lines"), lines));
   }
 
   return true;
@@ -874,7 +874,7 @@ bool wxExVi::Move(
   const auto lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   if (lines >= 2)
   {
-    ShowMessage(wxString::Format(_("%d lines moved"), lines));
+    m_Frame->ShowViMessage(wxString::Format(_("%d lines moved"), lines));
   }
 
   return true;
@@ -1030,11 +1030,6 @@ void wxExVi::Put(bool after) const
   m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
 }        
 
-void wxExVi::SetFocus() const 
-{
-  m_STC->SetFocus();
-}
-
 void wxExVi::SetIndicator(
   const wxExIndicator& indicator, 
   int start, 
@@ -1075,11 +1070,6 @@ bool wxExVi::SetSelection(
   return true;
 }
 
-void wxExVi::ShowMessage(const wxString& text) const
-{
-  m_Frame->ShowViMessage(text);
-}
-  
 bool wxExVi::Substitute(
   const wxString& begin_address, 
   const wxString& end_address, 
@@ -1132,7 +1122,7 @@ bool wxExVi::Substitute(
 
   m_STC->EndUndoAction();
 
-  ShowMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
+  m_Frame->ShowViMessage(wxString::Format(_("Replaced: %d occurrences of: %s"),
     nr_replacements, pattern.c_str()));
 
   return true;
@@ -1299,7 +1289,7 @@ void wxExVi::Yank(int lines) const
 
   if (lines >= 2)
   {
-    ShowMessage(wxString::Format(_("%d lines yanked"), 
+    m_Frame->ShowViMessage(wxString::Format(_("%d lines yanked"), 
       wxExGetNumberOfLines(wxExClipboardGet()) - 1));
   }
 }
@@ -1326,7 +1316,7 @@ bool wxExVi::Yank(
   
   if (lines >= 2)
   {
-    ShowMessage(wxString::Format(_("%d lines yanked"), lines));
+    m_Frame->ShowViMessage(wxString::Format(_("%d lines yanked"), lines));
   }
 
   return true;

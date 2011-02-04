@@ -50,12 +50,6 @@ public:
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
   
-  /// Sets focus to the stc component.
-  void SetFocus() const;
-  
-  /// Shows a message on the vi bar.
-  void ShowMessage(const wxString& text) const;
-
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 private:

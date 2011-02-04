@@ -88,21 +88,25 @@ bool wxExManagedFrame::AddToolBarPane(
   wxAuiPaneInfo pane;
   
   pane
-    .ToolbarPane()
     .LeftDockable(false)
     .RightDockable(false)
-    .Name(name)
-    .Caption(caption);
+    .Name(name);
 
   // The real toolbar is at the top, others at bottom and initially hidden.  
   if (name == "TOOLBAR")
   {
-    pane.Top();
+    pane
+      .Top()
+      .ToolbarPane()
+      .Caption(caption);
   }
   else
   {
-    pane.Bottom();
-    pane.Hide();
+    pane
+      .Bottom()
+      .CloseButton(false)
+      .Hide()
+      .CaptionVisible(false);
   }
   
   return m_Manager.AddPane(window, pane);
@@ -175,6 +179,15 @@ void wxExManagedFrame::HideViBar()
   {
     m_Manager.GetPane("VICOMMANDBAR").Hide();
     m_Manager.Update();
+  }
+  
+  // Now get focus back to STC.
+  // Problem is that you might have closed the STC document.
+  wxExSTC* stc = GetSTC();
+  
+  if (stc != NULL)
+  {
+    stc->SetFocus();
   }
 }
   
@@ -277,7 +290,6 @@ void wxExTextCtrl::OnCommand(wxCommandEvent& event)
       if (m_vi->ExecCommand(GetValue()))
       {
         m_Frame->HideViBar();
-        m_vi->SetFocus();
       }
     }
     else
@@ -285,7 +297,6 @@ void wxExTextCtrl::OnCommand(wxCommandEvent& event)
       if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
       {
         m_Frame->HideViBar();
-        m_vi->SetFocus();
       }
     }
   }
@@ -297,11 +308,7 @@ void wxExTextCtrl::OnKey(wxKeyEvent& event)
 
   if (key == WXK_ESCAPE)
   {
-    if (m_vi != NULL)
-    {
-      m_Frame->HideViBar();
-      m_vi->SetFocus();
-    }
+    m_Frame->HideViBar();
   }
   else
   {
