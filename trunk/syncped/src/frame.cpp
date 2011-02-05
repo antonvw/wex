@@ -430,6 +430,7 @@ void Frame::Log(
   if (level == wxLOG_Error)
   {
     GetManager().GetPane("LOG").Show();
+    GetManager().Update();
   }
 }
 
