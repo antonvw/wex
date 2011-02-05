@@ -335,10 +335,17 @@ void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
   if (!GetError())
   {
-    wxExVCSCommandOnSTC(
-      GetCommand(), 
-      m_FileName.GetLexer(), 
-      GetDialog()->GetSTC());
+    if (GetFlags().Contains("xml"))
+    {
+      GetDialog()->SetLexer("xml");
+    }
+    else
+    {
+      wxExVCSCommandOnSTC(
+        GetCommand(), 
+        m_FileName.GetLexer(), 
+        GetDialog()->GetSTC());
+    }
   }
 
   wxExCommand::ShowOutput(caption);
