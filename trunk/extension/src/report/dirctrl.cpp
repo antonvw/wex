@@ -7,6 +7,7 @@
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <wx/log.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/frame.h>
 #include <wx/extension/menu.h>
@@ -28,6 +29,7 @@ BEGIN_EVENT_TABLE(wxExGenericDirCtrl, wxGenericDirCtrl)
   EVT_MENU_RANGE(ID_TREE_OPEN, ID_TREE_RUN_MAKE, wxExGenericDirCtrl::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
   EVT_TREE_ITEM_MENU(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
+  EVT_TREE_SEL_CHANGED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
 END_EVENT_TABLE()
 
 wxExGenericDirCtrl::wxExGenericDirCtrl(
@@ -112,8 +114,7 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
     menu.Append(ID_TREE_COPY,
       wxGetStockLabel(wxID_COPY), wxEmptyString, wxART_COPY);
 
-    const wxString selection = files[0];
-    const wxExFileName filename(selection);
+    const wxExFileName filename(files[0]);
   
     if (wxExVCS::DirExists(filename))
     {
@@ -132,6 +133,11 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
   else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
   {
     wxExOpenFiles(m_Frame, files, 0, wxDIR_FILES); // only files in this dir
+  }
+  else if (event.GetEventType() ==  wxEVT_COMMAND_TREE_SEL_CHANGED)
+  {
+    const wxExFileName filename(files[0]);
+    filename.StatusText(wxExFileName::STAT_FULLPATH);
   }
   else
   {
