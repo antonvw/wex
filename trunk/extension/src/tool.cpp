@@ -59,6 +59,11 @@ const wxFileName wxExTool::GetLogfileName() const
 
 const wxString wxExTool::Info() const
 {
+  if (m_Self == NULL)
+  {
+    return "No info available";
+  }
+  
   const auto it = m_Self->m_ToolInfo.find(m_Id);
 
   if (it != m_Self->m_ToolInfo.end())
