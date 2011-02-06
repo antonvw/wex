@@ -86,8 +86,6 @@ void wxExNotebook::ErasePage(const wxString& key)
 
   if (m_Frame != NULL)
   {
-    m_Frame->HideViBar();
-    
     if (m_MapPages.empty())
     {
       m_Frame->SyncCloseAll(GetId());
@@ -203,6 +201,7 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
       {
         const wxString key = GetKeyByPage(GetPage(GetSelection()));
         ErasePage(key);
+        m_Frame->HideViBar();
         event.Skip(); // call base
       }
     }
