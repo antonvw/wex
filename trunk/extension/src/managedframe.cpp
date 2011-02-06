@@ -183,8 +183,6 @@ void wxExManagedFrame::HideViBar()
     m_Manager.Update();
   }
   
-  // Now get focus back to STC.
-  // Problem is that you might have closed the STC document.
   wxExSTC* stc = GetSTC();
   
   if (stc != NULL)

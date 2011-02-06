@@ -84,9 +84,14 @@ void wxExNotebook::ErasePage(const wxString& key)
 {
   m_MapPages.erase(key);
 
-  if (m_MapPages.empty() && m_Frame != NULL)
+  if (m_Frame != NULL)
   {
-    m_Frame->SyncCloseAll(GetId());
+    m_Frame->HideViBar();
+    
+    if (m_MapPages.empty())
+    {
+      m_Frame->SyncCloseAll(GetId());
+    }
   }
 }
 
