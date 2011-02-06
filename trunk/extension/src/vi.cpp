@@ -930,13 +930,6 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   }
 }
 
-void wxExVi::OnClose(wxCloseEvent& event)
-{
-  m_STC = NULL;
-  m_IsActive = false;
-  m_Frame->HideViBar();
-}
-
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
   if (!m_IsActive)

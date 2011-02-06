@@ -296,7 +296,6 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   
   void OnChar(wxKeyEvent& event);
-  void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnFocus(wxFocusEvent& event);
   void OnIdle(wxIdleEvent& event);
