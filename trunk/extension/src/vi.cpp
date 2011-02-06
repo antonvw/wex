@@ -555,7 +555,7 @@ bool wxExVi::ExecCommand(const wxString& command)
   {
     return false;
   }
-  
+
   if (command == "$")
   {
     m_STC->DocumentEnd();
@@ -655,7 +655,7 @@ bool wxExVi::ExecCommand(const wxString& command)
     m_Frame->ShowViMessage(wxString::Format("%d", no));
     m_STC->SetFocus();
     
-    return false; // otherwise vi bar is hidden
+    return false;
   }
   else if (command.StartsWith("!"))
   {
@@ -928,6 +928,12 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       return true;
     }
   }
+}
+
+void wxExVi::OnClose(wxCloseEvent& event)
+{
+  m_STC = NULL;
+  m_IsActive = false;
 }
 
 bool wxExVi::OnKeyDown(const wxKeyEvent& event)

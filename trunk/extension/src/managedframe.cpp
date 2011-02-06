@@ -246,7 +246,7 @@ void wxExManagedFrame::ShowViMessage(const wxString& text)
   
     m_Manager.GetPane("VICOMMANDBAR").Show();
   }
-  
+
   m_Manager.GetPane("VIFINDBAR").Hide();
   m_Manager.Update();
 }

@@ -37,6 +37,7 @@ const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
+  EVT_CLOSE(wxExSTC::OnClose)
   EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
@@ -1638,6 +1639,12 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
     event.Skip();
   }
+}
+
+void wxExSTC::OnClose(wxCloseEvent& event)
+{
+  m_vi.OnClose(event);
+  event.Skip();
 }
 
 void wxExSTC::OnCommand(wxCommandEvent& command)

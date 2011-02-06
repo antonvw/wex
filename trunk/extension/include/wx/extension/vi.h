@@ -46,6 +46,9 @@ public:
   /// so the char should be handled by stc.
   bool OnChar(const wxKeyEvent& event);
 
+  /// Handles on close event (deactivates vi, resets stc member).
+  void OnClose(wxCloseEvent& event);
+  
   /// Handles keydown events.
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
