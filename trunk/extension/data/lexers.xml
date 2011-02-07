@@ -1814,7 +1814,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     <comments begin1="--" />
   </lexer>
   <lexer name="tads3" match="wxSTC_T3_" />
-  <lexer name="tcl" match="wxSTC_TCL_" />
+  <lexer name="tcl" extensions="*.tcl" match="wxSTC_TCL_" />
   <lexer name="tex" match="wxSTC_TEX_" />
   <lexer name="vb" match="wxSTC_B_" />
   <lexer name="vbscript" match="wxSTC_B_" />
