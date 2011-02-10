@@ -421,7 +421,8 @@ void Frame::Log(
   const wxLogRecordInfo& info)
 {
   m_LogTail->AppendText(
-    wxDateTime(info.timestamp).Format() + " " + msg + "\n");
+    wxDateTime(info.timestamp).Format(wxLog::GetTimestamp()) + " " + 
+    msg + "\n");
     
   m_LogTail->EmptyUndoBuffer();
   m_LogTail->SetSavePoint();
