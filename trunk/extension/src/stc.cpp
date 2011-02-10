@@ -571,6 +571,7 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
   bchoices.insert(_("Use tabs"));
+  bchoices.insert(_("Caret line"));
   bchoices.insert(_("vi mode"));
   // use 2 cols here, but 1 for others on this page
   items.push_back(wxExConfigItem(bchoices, _("Setting"), 2)); 
@@ -757,6 +758,9 @@ void wxExSTC::ConfigGet()
       _("Edge colour"), wxColour("GREY"))); 
     SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
+  
+  SetCaretLineVisible(
+    wxConfigBase::Get()->ReadBool(_("Caret line"), false));
     
   SetFoldFlags(wxConfigBase::Get()->ReadLong( _("Fold flags"),
     wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));

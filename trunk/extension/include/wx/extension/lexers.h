@@ -122,6 +122,7 @@ private:
 
   std::map<wxString, wxExLexer> m_Lexers;
 
+  std::map<wxString, wxString> m_Carets;
   std::map<wxString, wxString> m_Macros;
   std::map<wxString, wxString> m_MacrosStyle;
 

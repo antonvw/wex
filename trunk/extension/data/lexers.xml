@@ -1417,7 +1417,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
   
   <global>
   <!--
-   At this moment <style>, <indicator>, <marker>, <hex> and <properties> 
+   At this moment <style>, <indicator>, <marker>, <hex>, <caret> and <properties> 
    attributes are supported.  
    The marker element has a 'no' ATTRIBUTE and its value contains the next fields:
    <marker symbol NUMBER><','><foreground colour><','><background colour>
@@ -1440,6 +1440,9 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     
     <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
     <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
+    
+    <caret name="foreground"> blue </caret>
+    <caret name="linebackground"> green </caret>
     
     <properties>
       <property name="fold"> 1 </property>

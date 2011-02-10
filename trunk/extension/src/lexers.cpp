@@ -31,6 +31,21 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
 {
   for_each (m_Styles.begin(), m_Styles.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+    
+  for (
+    auto it = m_Carets.begin();
+    it != m_Carets.end();
+    ++it)
+  {
+    if (it->first == "foreground")
+    {
+      stc->SetCaretForeground(it->second);
+    }
+    else if (it->first == "linebackground")
+    {
+      stc->SetCaretLineBackground(it->second);
+    }
+  }
 }
 
 void wxExLexers::ApplyHexStyles(wxStyledTextCtrl* stc) const
@@ -255,6 +270,11 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
       {
         m_Styles.push_back(style);
       }
+    }
+    else if (child->GetName() == "caret")
+    {
+      m_Carets[child->GetAttribute("name", "0")] = 
+        ApplyMacro(child->GetNodeContent().Strip(wxString::both));
     }
     
     child = child->GetNext();
