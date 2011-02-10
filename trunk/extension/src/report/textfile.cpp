@@ -132,13 +132,13 @@ bool wxExTextFileWithListView::ParseSQL()
  ; SQL # ..
  ;       .. #
 <-- new data inserted by the recordset
- ; QUERY RUN TIME: 981201 150953
+ ; QUERY RUN TIME: 981201 1.0.63
  ; USING DATABASE F\GAREX\CONFIG_MAIN.mdb
  new data
  ..
 <-- end of new data
 <-- old data starts here, will be deleted (the marker points to here)
- ; QUERY RUN TIME: 981201 150953
+ ; QUERY RUN TIME: 981201 1.0.63
  ; USING DATABASE F\GAREX\CONFIG_MAIN.mdb
  old data
  ..

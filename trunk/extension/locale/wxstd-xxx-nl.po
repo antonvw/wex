@@ -10,7 +10,7 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v0.9.5\n"
+"Project-Id-Version: wxextension v0.9.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"

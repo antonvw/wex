@@ -8,7 +8,7 @@
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: syncped v1.0.5\n"
+"Project-Id-Version: syncped v1.0.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-21 19:52+0100\n"
 "PO-Revision-Date: 2011-01-21 19:53+0100\n"
