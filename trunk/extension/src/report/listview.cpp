@@ -31,7 +31,6 @@
 #include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
-  EVT_IDLE(wxExListViewStandard::OnIdle)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
   EVT_MENU(wxID_CUT, wxExListViewStandard::OnCommand)
   EVT_MENU(wxID_CLEAR, wxExListViewStandard::OnCommand)
@@ -85,8 +84,6 @@ wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
       IMAGE_FILE_ICON, 
       validator, 
       name)
-  , m_ItemUpdated(false)
-  , m_ItemNumber(0)
   , m_Type(type)
 {
   Initialize(lexer);
@@ -407,52 +404,6 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
   default: 
     wxFAIL;
     break;
-  }
-}
-
-void wxExListViewStandard::OnIdle(wxIdleEvent& event)
-{
-  event.Skip();
-
-  if (
-    !IsShown() ||
-     GetItemCount() == 0 ||
-     !wxConfigBase::Get()->ReadBool("AllowSync", true))
-  {
-    return;
-  }
-
-  if (m_ItemNumber < GetItemCount())
-  {
-    wxExListItem item(this, m_ItemNumber);
-
-    if ( item.GetFileName().FileExists() &&
-        (item.GetFileName().GetStat().GetModificationTime() != 
-         GetItemText(m_ItemNumber, _("Modified")) ||
-         item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
-        )
-    {
-      item.Update();
-      item.GetFileName().StatusText(wxExFileName::STAT_SYNC | wxExFileName::STAT_FULLPATH);
-      m_ItemUpdated = true;
-    }
-
-    m_ItemNumber++;
-  }
-  else
-  {
-    m_ItemNumber = 0;
-
-    if (m_ItemUpdated)
-    {
-      if (wxConfigBase::Get()->ReadBool("List/SortSync", true) && 
-          m_Type == LIST_FILE)
-      {
-        SortColumn(_("Modified"), SORT_KEEP);
-      }
-
-      m_ItemUpdated = false;
-    }
   }
 }
 

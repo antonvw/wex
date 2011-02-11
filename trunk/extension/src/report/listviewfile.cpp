@@ -63,6 +63,8 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_TextAddRecursive(_("Recursive"))
   , m_TextAddWhat(_("Add what"))
   , m_TextInFolder(_("In folder"))
+  , m_ItemUpdated(false)
+  , m_ItemNumber(0)
 {
   FileLoad(file);
 }
@@ -302,6 +304,46 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
 void wxExListViewFile::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
+
+  if (
+    !IsShown() ||
+     GetItemCount() == 0 ||
+     !wxConfigBase::Get()->ReadBool("AllowSync", true))
+  {
+    return;
+  }
+
+  if (m_ItemNumber < GetItemCount())
+  {
+    wxExListItem item(this, m_ItemNumber);
+
+    if ( item.GetFileName().FileExists() &&
+        (item.GetFileName().GetStat().GetModificationTime() != 
+         GetItemText(m_ItemNumber, _("Modified")) ||
+         item.GetFileName().GetStat().IsReadOnly() != item.IsReadOnly())
+        )
+    {
+      item.Update();
+      item.GetFileName().StatusText(wxExFileName::STAT_SYNC | wxExFileName::STAT_FULLPATH);
+      m_ItemUpdated = true;
+    }
+
+    m_ItemNumber++;
+  }
+  else
+  {
+    m_ItemNumber = 0;
+
+    if (m_ItemUpdated)
+    {
+      if (wxConfigBase::Get()->ReadBool("List/SortSync", true))
+      {
+        SortColumn(_("Modified"), SORT_KEEP);
+      }
+
+      m_ItemUpdated = false;
+    }
+  }
 
   if (
     IsShown() &&
