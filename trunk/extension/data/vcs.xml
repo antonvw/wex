@@ -125,6 +125,7 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;add </command>
       <command> &amp;blame </command>
       <command> &amp;cat </command>
+      <command> &amp;changelist </command>
       <command type = "main"> &amp;cleanup </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
