@@ -35,7 +35,9 @@ public:
   };
 
   /// Constructor.
-  wxExConfigDialog(wxWindow* parent,
+  wxExConfigDialog(
+    /// parent
+    wxWindow* parent,
     /// vector with config items 
     const std::vector<wxExConfigItem>& v,
     /// title

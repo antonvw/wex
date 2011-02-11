@@ -13,10 +13,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/file.h>
 #include <wx/stdpaths.h>
 #include <wx/textfile.h>
 #include <wx/extension/tool.h>
-#include <wx/extension/log.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/vcs.h>
 
@@ -98,14 +98,19 @@ void wxExTool::Log(
   {
     if (IsCount())
     {
-      wxString logtext;
+      wxFile file(GetLogfileName().GetFullPath(), wxFile::write_append);
+      
+      if (file.IsOpened())
+      {
+        wxString logtext;
 
-      logtext
-        << caption
-        << stat->Get()
-        << wxTextFile::GetEOL();
+        logtext
+          << caption
+          << stat->Get()
+          << wxTextFile::GetEOL();
 
-      wxExLog(GetLogfileName().GetFullPath()).Log(logtext);
+        file.Write(wxDateTime::Now().Format() + " " + logtext + wxTextFile::GetEOL());
+      }
     }
   }
 }

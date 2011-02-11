@@ -340,12 +340,6 @@ void wxExAppTestFixture::testListView()
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
 }
 
-void wxExAppTestFixture::testLog()
-{
-  wxExLog log("output.log");
-  CPPUNIT_ASSERT(log.Log("hello from wxExtension test"));
-}
-
 void wxExAppTestFixture::testMenu()
 {
   wxExMenu menu;
@@ -702,10 +696,6 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testListView",
     &wxExAppTestFixture::testListView));
-    
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
-    "testLog",
-    &wxExAppTestFixture::testLog));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testMenu",

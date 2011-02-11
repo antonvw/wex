@@ -29,7 +29,6 @@
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
-#include <wx/extension/log.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/marker.h>
 #include <wx/extension/menu.h>

@@ -64,7 +64,6 @@ public:
   void testLexer();
   void testLexers();
   void testListView();
-  void testLog();
   void testMenu();
   void testNotebook();
   void testStatusBar();
