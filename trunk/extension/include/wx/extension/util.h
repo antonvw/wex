@@ -145,30 +145,51 @@ const std::list < wxString > wxExComboBoxToList(
   size_t max_items = 25);
 
 /// Opens files.
-void wxExOpenFiles(wxExFrame* frame,
+/// Opens all files specified by files.
+void wxExOpenFiles(
+  /// frame on which OpenFile for each file is called,
+  /// and wxExDirOpenFile for each dir
+  wxExFrame* frame,
+  /// array with files
   const wxArrayString& files,
+  /// flags to be used with OpenFile
   long file_flags = 0,
+  /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
 
-/// Shows a dialog and opens selected files.
-void wxExOpenFilesDialog(wxExFrame* frame,
+/// Shows a dialog and opens selected files
+/// (calls wxExOpenFiles).
+void wxExOpenFilesDialog(
+  /// frame
+  wxExFrame* frame,
+  /// style for wxExFileDialog dialog
   long style = wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR,
+  /// wilcards for wxExFileDialog dialog
   const wxString& wildcards = wxFileSelectorDefaultWildcardStr,
+  /// flags to be used with wxExFileDialog
   bool ask_for_continue = false,
+  /// flags to be used with OpenFile
   long file_flags = 0,
+  /// flags to be used with wxExDirOpenFile
   int dir_flags = wxDIR_DEFAULT);
 
-/// Use specified vcs command to set lexer on STC document.
+/// Use specified VCS command to set lexer on STC document.
 void wxExVCSCommandOnSTC(
+  /// VCS command, used to check for diff or open command
   const wxExVCSCommand& command, 
+  /// lexer to be used
   const wxExLexer& lexer,
+  /// stc on which lexer is set
   wxExSTC* stc);
 
 /// Executes VCS command id for specified files
 /// and opens component if necessary.
 void wxExVCSExecute(
+  /// frame on which OpenFile is called
   wxExFrame* frame, 
+  /// VCS menu id to execute
   int id,
+  /// files on which to operate
   const wxArrayString& files);
 #endif // wxUSE_GUI
 
