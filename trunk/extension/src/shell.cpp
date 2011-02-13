@@ -62,6 +62,7 @@ wxExSTCShell::wxExSTCShell(
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
   ResetMargins(false); // do not reset divider margin
+  SetName("SHELL");
 
   // Start with a prompt.
   Prompt();

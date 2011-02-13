@@ -379,7 +379,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 
   if ((project != NULL && project->GetContentsChanged()) ||
        // using GetContentsChanged gives assert in vcs dialog
-      (stc != NULL && stc->GetModify()))
+      (stc != NULL && stc->GetModify() && stc->GetName() != "SHELL"))
   {
     // Project or editor changed, add indicator if not yet done.
     if (title.Last() != indicator)
