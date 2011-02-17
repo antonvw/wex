@@ -37,13 +37,21 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
     it != m_Carets.end();
     ++it)
   {
-    if (it->first == "foreground")
+    if (it->first == "caretforeground")
     {
       stc->SetCaretForeground(it->second);
     }
-    else if (it->first == "linebackground")
+    else if (it->first == "caretlinebackground")
     {
       stc->SetCaretLineBackground(it->second);
+    }
+    else if (it->first == "selbackground")
+    {
+      stc->SetSelBackground(true, it->second);
+    }
+    else if (it->first == "selforeground")
+    {
+      stc->SetSelBackground(true, it->second);
     }
   }
 }
@@ -271,7 +279,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
         m_Styles.push_back(style);
       }
     }
-    else if (child->GetName() == "caret")
+    else if (child->GetName() == "colour")
     {
       m_Carets[child->GetAttribute("name", "0")] = 
         ApplyMacro(child->GetNodeContent().Strip(wxString::both));
