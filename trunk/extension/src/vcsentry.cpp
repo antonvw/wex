@@ -211,20 +211,20 @@ long wxExVCSEntry::Execute(
     if (!flags.empty())
     {
       flags += " ";
-
-      // If we specified help flags, we do not need a file argument.      
-      if (flags.Contains("help"))
-      {
-        my_args.clear();
-      }
     }
+  }
+  
+  // If we specified help (flags), we do not need a file argument.      
+  if (GetCommand().IsHelp() || flags.Contains("help"))
+  {
+    my_args.clear();
   }
 
   return wxExCommand::Execute(
     bin + " " + 
     prefix + 
     GetCommand().GetCommand() + " " + 
-    subcommand + flags + comment + args, wd);
+    subcommand + flags + comment + my_args, wd);
 }
 
 const wxString wxExVCSEntry::GetFlags() const

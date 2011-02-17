@@ -147,5 +147,5 @@ bool wxExVCSCommand::UseFlags() const
 
 bool wxExVCSCommand::UseSubcommand() const
 {
-  return m_SubMenuIsCommand && !m_SubMenu.empty();
+  return IsHelp() || (m_SubMenuIsCommand && !m_SubMenu.empty());
 }
