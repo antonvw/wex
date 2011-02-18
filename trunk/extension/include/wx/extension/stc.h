@@ -127,13 +127,21 @@ public:
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
 
-  // Finds next with settings from find replace data.
+  /// Finds next with settings from find replace data.
   bool FindNext(bool find_next = true);
 
-  // Finds next.
+  /// Finds next.
   bool FindNext(
+    /// text to find
     const wxString& text, 
+    /// search flags to be used
+    /// wxSTC_FIND_WHOLEWORD 2
+    /// wxSTC_FIND_MATCHCASE 4
+    /// wxSTC_FIND_WORDSTART 0x00100000
+    /// wxSTC_FIND_REGEXP 0x00200000
+    /// wxSTC_FIND_POSIX 0x00400000
     int search_flags = 0,
+    /// finds next or previous
     bool find_next = true);
     
   /// Folds.
@@ -212,12 +220,14 @@ public:
   
   /// Opens the file, reads the content into the window, then closes the file
   /// and sets the lexer.
-  /// If you specify a line number, goes to the line if > 0, if -1 goes to end of file.
-  /// If you specify a match selects the text on that line.
   virtual bool Open(
+    /// file to open
     const wxExFileName& filename,
+    /// goes to the line if > 0, if -1 goes to end of file
     int line_number = 0,
+    /// if not empty selects the text on that line.
     const wxString& match = wxEmptyString,
+    /// flags
     long flags = 0);
 
   /// Paste text from clipboard.
@@ -253,9 +263,18 @@ public:
   /// It there is a selection, it replaces in the selection, otherwise
   /// it starts at current position.
   bool ReplaceNext(
+    /// text to find
     const wxString& find_text, 
+    /// text to replace with
     const wxString& replace_text,
+    /// search flags to be used
+    /// wxSTC_FIND_WHOLEWORD 2
+    /// wxSTC_FIND_MATCHCASE 4
+    /// wxSTC_FIND_WORDSTART 0x00100000
+    /// wxSTC_FIND_REGEXP 0x00200000
+    /// wxSTC_FIND_POSIX 0x00400000
     int search_flags = 0,
+    /// argument passed on to FindNext
     bool find_next = true);
   
   /// Reset all margins.

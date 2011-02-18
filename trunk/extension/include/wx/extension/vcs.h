@@ -44,7 +44,7 @@ public:
   wxExVCS(
     /// This must be an existing xml file containing all vcs.
     /// This is done during wxExApp startup.
-     const wxFileName& filename) {m_FileName = filename;};
+    const wxFileName& filename) {m_FileName = filename;};
 
 #if wxUSE_GUI
   /// Shows a dialog allowing you to choose which vcs to use

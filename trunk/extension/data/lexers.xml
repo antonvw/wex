@@ -1397,27 +1397,36 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     <!-- Macro's for wxextension folding -->
     <def no ="folder"> light blue </def>
     
-    <!-- These are the style macro's. 
-      -->    
-    <def style ="_PROCESSOR"> fore:dark grey </def>
-    <def style ="ATTRIBUTE"> fore:steel blue </def>
-    <def style ="CHAR"> fore:pink </def>
-    <def style ="COMMAND"> fore:steel blue </def>
-    <def style ="COMMENT"> fore:forest green,italic,eol </def>
-    <def style ="ERROR"> fore:red,italic,eol </def>
-    <def style ="IDENTIFIER"> fore:black</def>
-    <def style ="NUMBER"> fore:red </def>
-    <def style ="OPERATOR"> fore:brown </def>
-    <def style ="PREPROCESSOR"> fore:grey </def>
-    <def style ="STRING"> fore:blue </def>
-    <def style ="TAG"> fore:dark slate blue </def>
-    <def style ="VARIABLE"> fore:violet </def>
-    <def style ="WORD"> fore:dark turquoise </def>
+    <!-- These are the themes, including style macro's and colours.
+      -->
+    <themes>
+      <theme name = "default">
+        <def style ="_PROCESSOR"> fore:dark grey </def>
+        <def style ="ATTRIBUTE"> fore:steel blue </def>
+        <def style ="CHAR"> fore:pink </def>
+        <def style ="COMMAND"> fore:steel blue </def>
+        <def style ="COMMENT"> fore:forest green,italic,eol </def>
+        <def style ="ERROR"> fore:red,italic,eol </def>
+        <def style ="IDENTIFIER"> fore:black</def>
+        <def style ="NUMBER"> fore:red </def>
+        <def style ="OPERATOR"> fore:brown </def>
+        <def style ="PREPROCESSOR"> fore:grey </def>
+        <def style ="STRING"> fore:blue </def>
+        <def style ="TAG"> fore:dark slate blue </def>
+        <def style ="VARIABLE"> fore:violet </def>
+        <def style ="WORD"> fore:dark turquoise </def>
+        
+        <colour name="caretforeground"> blue </colour>
+        <colour name="caretlinebackground"> green </colour>
+        <colour name="selforeground"> white </colour>
+        <colour name="selbackground"> green </colour>
+      </theme>
+    </themes>
   </macro>
   
   <global>
   <!--
-   At this moment <style>, <indicator>, <marker>, <hex>, <colour> and <properties> 
+   At this moment <style>, <indicator>, <marker>, <hex> and <properties> 
    attributes are supported.  
    The marker element has a 'no' ATTRIBUTE and its value contains the next fields:
    <marker symbol NUMBER><','><foreground colour><','><background colour>
@@ -1440,11 +1449,6 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     
     <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
     <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
-    
-    <colour name="caretforeground"> blue </colour>
-    <colour name="caretlinebackground"> green </colour>
-    <colour name="selforeground"> green </colour>
-    <colour name="selbackground"> green </colour>
     
     <properties>
       <property name="fold"> 1 </property>

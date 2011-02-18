@@ -38,7 +38,7 @@ public:
   /// it both constructs and reads the lexers.
   wxExLexers(const wxFileName& filename);
 
-  /// Sets global styles for specified component.
+  /// Sets global styles and colours for current theme for specified component.
   void ApplyGlobalStyles(wxStyledTextCtrl* stc) const;
 
   /// Sets hex styles for specified component.
@@ -74,6 +74,8 @@ public:
   const wxExLexer FindByText(const wxString& text) const;
 
   /// Returns the lexers object.
+  /// If this is the first invocation, and createOnDemand is true,
+  /// it also invokes Read.
   static wxExLexers* Get(bool createOnDemand = true);
 
   /// Returns the default style.
@@ -85,9 +87,8 @@ public:
   /// Gets the macros.
   const std::map<wxString, wxString>& GetMacros() const {return m_Macros;};
 
-  /// Gets the style macros.
-  const std::map<wxString, wxString>& GetMacrosStyle() const {
-    return m_MacrosStyle;};
+  /// Gets the style macros for the current theme.
+  const std::map<wxString, wxString>& GetMacrosStyle() const;
 
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
@@ -109,22 +110,33 @@ public:
   static wxExLexers* Set(wxExLexers* lexers);
 
   /// Shows a dialog with all lexers, allowing you to choose one.
-  /// If you specify an existing lexer, it is selected.
   /// Returns true and fills the lexer if you selected one.
   bool ShowDialog(
+    /// parent
     wxWindow* parent,
+    /// If you specify an existing lexer, it is selected
+    /// in the list. If you press OK, the lexer is 
+    /// set to the selected lexer.
     wxString& lexer,
+    /// caption
     const wxString& caption = _("Enter Lexer")) const;
 private:
   const wxString GetLexerExtensions() const;
+  const wxString GetTheme(bool style = true) const;
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
+  void ParseNodeTheme(const wxXmlNode* node);
+  void ParseNodeThemes(const wxXmlNode* node);
 
   std::map<wxString, wxExLexer> m_Lexers;
 
-  std::map<wxString, wxString> m_Carets;
   std::map<wxString, wxString> m_Macros;
-  std::map<wxString, wxString> m_MacrosStyle;
+  
+  // themed colours and macro styles
+  std::map<wxString, std::map<wxString, wxString> > m_Colours;
+  std::map<wxString, std::map<wxString, wxString> > m_MacrosStyle;
+  std::map<wxString, wxString> m_TempColours;
+  std::map<wxString, wxString> m_TempMacrosStyle;
 
   std::set<wxExIndicator> m_Indicators;
   std::set<wxExMarker> m_Markers;
