@@ -1425,7 +1425,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       
       <!-- The ubuntu theme, resembles vi desert -->
       <theme name = "ubuntu">
-        <def style ="styledefault"> face:courier new,size:10,back:#7F5A58 </def>
+        <def style ="styledefault"> face:courier new,size:10,back:#2C001E,fore:white </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1434,7 +1434,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         <def style ="ERROR"> fore:red,italic,eol </def>
         <def style ="IDENTIFIER"> fore:white</def>
         <def style ="NUMBER"> fore:red </def>
-        <def style ="OPERATOR"> fore:brown </def>
+        <def style ="OPERATOR"> fore:white </def>
         <def style ="PREPROCESSOR"> fore:grey </def>
         <def style ="STRING"> fore:blue </def>
         <def style ="TAG"> fore:dark slate blue </def>
