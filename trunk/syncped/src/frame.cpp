@@ -1291,6 +1291,28 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
   {
     TogglePane("LOG");
   }
+  else if (pane == "PaneTheme")
+  {
+    if (wxExLexers::Get()->Count() > 0)
+    {
+      wxArrayString choices;
+      
+      for (
+        auto it = wxExLexers::Get()->GetThemeMacrosStyle().begin();
+        it != wxExLexers::Get()->GetThemeMacrosStyle().end();
+        ++it)
+      {
+        choices.Add(it->first);
+      }
+      
+      wxSingleChoiceDialog dlg(this,
+        "Themes",
+        "Themes",
+        choices);
+        
+      dlg.ShowModal();
+    }
+  }
   else
   {
     DecoratedFrame::StatusBarDoubleClicked(pane);

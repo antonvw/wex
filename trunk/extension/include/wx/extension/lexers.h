@@ -90,6 +90,11 @@ public:
   /// Gets the style macros for the current theme.
   const std::map<wxString, wxString>& GetMacrosStyle() const;
 
+  /// Gets the style macros for all themes.
+  const std::map<wxString, std::map<wxString, wxString> > & 
+    GetThemeMacrosStyle() const {
+      return m_MacrosStyle;};
+
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
