@@ -401,6 +401,8 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
     {
       m_TempColours[child->GetAttribute("name", "0")] = ApplyMacro(content);
     }
+    
+    child = child->GetNext();
   }
 }
 
@@ -413,10 +415,10 @@ void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
     if (child->GetName() == "theme")
     {
       ParseNodeTheme(child);
+      
+      m_Colours[child->GetAttribute("name", "")] = m_TempColours;
+      m_MacrosStyle[child->GetAttribute("name", "")] = m_TempMacrosStyle;
     }
-    
-    m_Colours[child->GetAttribute("name", "")] = m_TempColours;
-    m_MacrosStyle[child->GetAttribute("name", "")] = m_TempMacrosStyle;
     
     child = child->GetNext();
   }
