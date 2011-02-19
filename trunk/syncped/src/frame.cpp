@@ -1309,6 +1309,9 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
         "Themes",
         "Themes",
         choices);
+
+      // TODO: GetTheme not yet implemented.
+      dlg.SetSelection(wxExLexers::Get()->GetTheme());
         
       dlg.ShowModal();
     }
