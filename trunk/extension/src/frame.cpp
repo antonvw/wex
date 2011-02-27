@@ -85,6 +85,8 @@ wxExFrame::wxExFrame(wxWindow* parent,
 
   wxPersistentRegisterAndRestore(this);
 
+  StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+  
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxExPrinting::Get()->GetHtmlPrinter()->SetParentWindow(this);
 #endif

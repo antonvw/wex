@@ -29,9 +29,14 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 
 void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
 {
+  if (m_Styles.empty())
+  {
+    return;
+  }
+  
   for_each (m_Styles.begin(), m_Styles.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
-    
+
   const wxString theme = GetTheme(false);
   const auto colour_it = m_Colours.find(theme);
   
