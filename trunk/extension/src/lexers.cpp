@@ -541,3 +541,45 @@ bool wxExLexers::ShowDialog(
 
   return true;
 }
+
+bool wxExLexers::ShowThemeDialog(
+  wxWindow* parent, 
+  const wxString& caption) const
+{
+  if (m_MacrosStyle.empty())
+  {
+    return false;
+  }
+  
+  wxArrayString choices;
+      
+  for (
+    auto it = m_MacrosStyle.begin();
+    it != m_MacrosStyle.end();
+    ++it)
+  {
+    choices.Add(it->first);
+  }
+    
+  wxSingleChoiceDialog dlg(
+    parent,
+    _("Input") + ":", 
+    caption,
+    choices);
+    
+  const auto index = choices.Index(GetTheme());
+  
+  if (index != wxNOT_FOUND)
+  {
+    dlg.SetSelection(index);
+  }
+     
+  if (dlg.ShowModal() == wxID_CANCEL)
+  {
+    return false;
+  }
+
+  wxConfigBase::Get()->Write("theme", dlg.GetStringSelection());
+  
+  return true;
+}

@@ -90,11 +90,9 @@ public:
   /// Gets the style macros for the current theme.
   const std::map<wxString, wxString>& GetMacrosStyle() const;
 
-  /// Gets the style macros for all themes.
-  const std::map<wxString, std::map<wxString, wxString> > & 
-    GetThemeMacrosStyle() const {
-      return m_MacrosStyle;};
-
+  /// Returns the current theme.
+  const wxString GetTheme(bool style = true) const;
+  
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
@@ -125,9 +123,16 @@ public:
     wxString& lexer,
     /// caption
     const wxString& caption = _("Enter Lexer")) const;
+    
+  /// Shows a dialog with all themes, allowing you to choose one.
+  /// Returns true and sets current theme if you select one.
+  bool ShowThemeDialog(
+    /// parent
+    wxWindow* parent,
+    /// caption
+    const wxString& caption = _("Enter Theme")) const;
 private:
   const wxString GetLexerExtensions() const;
-  const wxString GetTheme(bool style = true) const;
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
   void ParseNodeTheme(const wxXmlNode* node);

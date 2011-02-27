@@ -266,7 +266,9 @@ Frame::Frame(bool open_recent)
   {
     GetManager().GetPane("PROJECTS").Hide();
   }
-
+  
+  StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+  
   // End with update, so all changes in the manager are handled.
   GetManager().Update();
 }
@@ -1293,27 +1295,10 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
   }
   else if (pane == "PaneTheme")
   {
-    if (wxExLexers::Get()->Count() > 0)
+    if (wxExLexers::Get()->ShowThemeDialog(this))
     {
-      wxArrayString choices;
-      
-      for (
-        auto it = wxExLexers::Get()->GetThemeMacrosStyle().begin();
-        it != wxExLexers::Get()->GetThemeMacrosStyle().end();
-        ++it)
-      {
-        choices.Add(it->first);
-      }
-      
-      wxSingleChoiceDialog dlg(this,
-        "Themes",
-        "Themes",
-        choices);
-
-      // TODO: GetTheme not yet implemented.
-      dlg.SetSelection(wxExLexers::Get()->GetTheme());
-        
-      dlg.ShowModal();
+      StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+      m_Editors->ForEach(ID_ALL_STC_SET_LEXER);
     }
   }
   else
