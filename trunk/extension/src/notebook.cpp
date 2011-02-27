@@ -139,6 +139,10 @@ bool wxExNotebook::ForEach(int id)
       stc->SetLexer(stc->GetLexer().GetScintillaLexer());
       break;
 
+    case ID_ALL_STC_SET_LEXER_THEME: 
+      stc->SetLexer(stc->GetLexer().GetScintillaLexer(), true);
+      break;
+
     default: wxFAIL; break;
     }
   }

@@ -416,8 +416,8 @@ void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
     {
       ParseNodeTheme(child);
       
-      m_Colours[child->GetAttribute("name", "")] = m_TempColours;
-      m_MacrosStyle[child->GetAttribute("name", "")] = m_TempMacrosStyle;
+      m_Colours[child->GetAttribute("name", "default")] = m_TempColours;
+      m_MacrosStyle[child->GetAttribute("name", "default")] = m_TempMacrosStyle;
     }
     
     child = child->GetNext();
@@ -544,7 +544,7 @@ bool wxExLexers::ShowDialog(
 
 bool wxExLexers::ShowThemeDialog(
   wxWindow* parent, 
-  const wxString& caption) const
+  const wxString& caption)
 {
   if (m_MacrosStyle.empty())
   {
@@ -581,5 +581,5 @@ bool wxExLexers::ShowThemeDialog(
 
   wxConfigBase::Get()->Write("theme", dlg.GetStringSelection());
   
-  return true;
+  return Read();
 }

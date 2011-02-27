@@ -130,7 +130,7 @@ public:
     /// parent
     wxWindow* parent,
     /// caption
-    const wxString& caption = _("Enter Theme")) const;
+    const wxString& caption = _("Enter Theme"));
 private:
   const wxString GetLexerExtensions() const;
   void ParseNodeGlobal(const wxXmlNode* node);

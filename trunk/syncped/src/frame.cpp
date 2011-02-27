@@ -1298,7 +1298,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
     if (wxExLexers::Get()->ShowThemeDialog(this))
     {
       StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
-      m_Editors->ForEach(ID_ALL_STC_SET_LEXER);
+      m_Editors->ForEach(ID_ALL_STC_SET_LEXER_THEME);
     }
   }
   else
