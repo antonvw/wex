@@ -267,6 +267,8 @@ Frame::Frame(bool open_recent)
     GetManager().GetPane("PROJECTS").Hide();
   }
   
+  StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
+  
   // End with update, so all changes in the manager are handled.
   GetManager().Update();
 }
