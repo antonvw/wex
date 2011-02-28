@@ -52,7 +52,7 @@ DecoratedFrame::DecoratedFrame()
 #endif
 
     panes.push_back(wxExStatusBarPane("PaneLexer", lexer_size, _("Lexer")));
-    panes.push_back(wxExStatusBarPane("PaneTheme", 100, _("Theme")));
+    panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
   }
 
   panes.push_back(wxExStatusBarPane("PaneItems", 65, _("Items")));
