@@ -436,7 +436,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     {
     auto* stc = GetFocusedSTC();
     if (stc == NULL) return;
-    stc->UpdateStatusBar("PaneLines"); 
+    stc->UpdateStatusBar("PaneInfo"); 
     }
     break;
 #endif
@@ -519,10 +519,13 @@ void wxExFrame::SetupStatusBar(
 #if wxUSE_STATUSBAR
 void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
 {
-  if (pane == "PaneLines")
+  if (pane == "PaneInfo")
   {
     auto* stc = GetSTC();
     if (stc != NULL) stc->GotoDialog();
+    
+    wxExListView* list = GetListView();
+    if (list != NULL) list->GotoDialog();
   }
   else if (pane == "PaneLexer")
   {
@@ -544,11 +547,6 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   {
     auto* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
-  }
-  else if (pane == "PaneItems")
-  {
-    wxExListView* list = GetListView();
-    if (list != NULL) list->GotoDialog();
   }
   else
   {

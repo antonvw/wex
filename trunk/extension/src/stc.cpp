@@ -551,7 +551,7 @@ void wxExSTC::ClearDocument()
   SetReadOnly(false);
   ClearAll();
 #if wxUSE_STATUSBAR
-  wxExFrame::StatusText(wxEmptyString, "PaneLines");
+  wxExFrame::StatusText(wxEmptyString, "PaneInfo");
 #endif
   EmptyUndoBuffer();
   SetSavePoint();
@@ -2031,7 +2031,7 @@ bool wxExSTC::Open(
       this,
       wxID_ANY);
       
-    wxExFrame::StatusText(wxEmptyString, "PaneLines");
+    wxExFrame::StatusText(wxEmptyString, "PaneInfo");
 
     return false;
   }
@@ -2092,7 +2092,7 @@ void wxExSTC::PropertiesMessage()
 #if wxUSE_STATUSBAR
   UpdateStatusBar("PaneFileType");
   UpdateStatusBar("PaneLexer");
-  UpdateStatusBar("PaneLines");
+  UpdateStatusBar("PaneInfo");
 #endif
 }
 
@@ -2528,7 +2528,7 @@ void wxExSTC::UpdateStatusBar(const wxString& pane)
 {
   wxString text;
 
-  if (pane == "PaneLines")
+  if (pane == "PaneInfo")
   {
     if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
     else

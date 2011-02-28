@@ -60,7 +60,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
   else
   {
     GetFileName().StatusText(wxExFileName::STAT_SYNC);
-    m_STC->UpdateStatusBar("PaneLines");
+    m_STC->UpdateStatusBar("PaneInfo");
   }
 
   // No edges for log files.

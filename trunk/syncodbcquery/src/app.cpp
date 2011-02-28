@@ -131,7 +131,7 @@ Frame::Frame()
 #if wxUSE_STATUSBAR
   std::vector<wxExStatusBarPane> panes;
   panes.push_back(wxExStatusBarPane());
-  panes.push_back(wxExStatusBarPane("PaneLines", 100, _("Lines")));
+  panes.push_back(wxExStatusBarPane("PaneInfo", 100, _("Lines")));
   SetupStatusBar(panes);
 #endif
 

@@ -886,29 +886,13 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
       m_History->UpdateStatusBar();
     }
-    else
-    {
-      StatusText(wxEmptyString, "PaneItems");
-    }
 #endif
     break;
   case ID_VIEW_OUTPUT: 
     TogglePane("OUTPUT");
-#if wxUSE_STATUSBAR
-    if (!GetManager().GetPane("OUTPUT").IsShown())
-    {
-      StatusText(wxEmptyString, "PaneItems");
-    }
-#endif
     break;
   case ID_VIEW_PROJECTS: 
     TogglePane("PROJECTS");
-#if wxUSE_STATUSBAR
-    if (!GetManager().GetPane("PROJECTS").IsShown())
-    {
-      StatusText(wxEmptyString, "PaneItems");
-    }
-#endif
     break;
     
   default: 
@@ -1317,16 +1301,10 @@ void Frame::SyncCloseAll(wxWindowID id)
   case NOTEBOOK_LISTS:
     GetManager().GetPane("OUTPUT").Hide();
     GetManager().Update();
-#if wxUSE_STATUSBAR
-    StatusText(wxEmptyString, "PaneItems");
-#endif
     break;
   case NOTEBOOK_PROJECTS:
     GetManager().GetPane("PROJECTS").Hide();
     GetManager().Update();
-#if wxUSE_STATUSBAR
-    StatusText(wxEmptyString, "PaneItems");
-#endif
     break;
   default: wxFAIL;
   }

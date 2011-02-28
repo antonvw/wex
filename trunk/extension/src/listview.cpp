@@ -903,11 +903,7 @@ void wxExListView::UpdateStatusBar() const
       wxString::Format("%d", GetItemCount()):
       wxString::Format("%d,%d", GetItemCount(), GetSelectedItemCount()));
       
-    wxExFrame::StatusText(text, "PaneItems");
-  }
-  else
-  {
-    wxExFrame::StatusText(wxEmptyString, "PaneItems");
+    wxExFrame::StatusText(text, "PaneInfo");
   }
 }
 #endif
