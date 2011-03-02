@@ -132,8 +132,8 @@ const std::vector<wxExStyle> wxExLexer::AutoMatch(
   {
     for (
       auto style = 
-        wxExLexers::Get()->GetMacrosStyle().begin();
-      style != wxExLexers::Get()->GetMacrosStyle().end();
+        wxExLexers::Get()->GetThemeMacros().begin();
+      style != wxExLexers::Get()->GetThemeMacros().end();
       ++style)
     {
       if (it->first.Contains(style->first))

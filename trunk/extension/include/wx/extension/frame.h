@@ -91,9 +91,8 @@ public:
   /// The first pane should be reserved for display status text messages.
   /// The next panes are used by the framework:
   /// - PaneFileType, shows file types
-  /// - PaneLines, shows lines
+  /// - PaneInfo, shows info for control, e.g. lines
   /// - PaneLexer, shows lexer
-  /// - PaneItems, shows items
   void SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,

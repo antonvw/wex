@@ -41,7 +41,7 @@ DecoratedFrame::DecoratedFrame()
   std::vector<wxExStatusBarPane> panes;
   panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("PaneFileType", 50, _("File type")));
-  panes.push_back(wxExStatusBarPane("PaneInfo", 100, _("Lines")));
+  panes.push_back(wxExStatusBarPane("PaneInfo", 100, _("Lines or items")));
 
   if (wxExLexers::Get()->Count() > 0)
   {

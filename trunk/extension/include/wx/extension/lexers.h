@@ -38,7 +38,8 @@ public:
   /// it both constructs and reads the lexers.
   wxExLexers(const wxFileName& filename);
 
-  /// Sets global styles and colours for current theme for specified component.
+  /// Sets global styles (and colours and indicators) 
+  /// for current theme for specified component.
   void ApplyGlobalStyles(wxStyledTextCtrl* stc) const;
 
   /// Sets hex styles for specified component.
@@ -87,12 +88,14 @@ public:
   /// Gets the macros.
   const std::map<wxString, wxString>& GetMacros() const {return m_Macros;};
 
-  /// Gets the style macros for the current theme.
-  const std::map<wxString, wxString>& GetMacrosStyle() const;
-
-  /// Returns the current theme.
-  const wxString GetTheme(bool style = true) const;
+  /// Returns the current theme, as present in the config.
+  /// It checks whether the config theme is really
+  /// present as a theme, if not, empty string is returned.
+  const wxString GetTheme() const;
   
+  /// Gets the theme macros for the current theme.
+  const std::map<wxString, wxString>& GetThemeMacros() const;
+
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;
 
@@ -139,14 +142,11 @@ private:
   void ParseNodeThemes(const wxXmlNode* node);
 
   std::map<wxString, wxExLexer> m_Lexers;
-
   std::map<wxString, wxString> m_Macros;
-  
-  // themed colours and macro styles
-  std::map<wxString, std::map<wxString, wxString> > m_Colours;
-  std::map<wxString, std::map<wxString, wxString> > m_MacrosStyle;
   std::map<wxString, wxString> m_TempColours;
-  std::map<wxString, wxString> m_TempMacrosStyle;
+  std::map<wxString, wxString> m_TempMacros;
+  std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;
+  std::map<wxString, std::map<wxString, wxString> > m_ThemeMacros;
 
   std::set<wxExIndicator> m_Indicators;
   std::set<wxExMarker> m_Markers;

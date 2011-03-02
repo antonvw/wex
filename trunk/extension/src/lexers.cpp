@@ -29,39 +29,43 @@ wxExLexers::wxExLexers(const wxFileName& filename)
 
 void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
 {
-  if (m_Styles.empty())
-  {
-    return;
-  }
-  
+  m_DefaultStyle.Apply(stc);
+
+  stc->StyleClearAll();
+
   for_each (m_Styles.begin(), m_Styles.end(), 
     std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
 
-  const wxString theme = GetTheme(false);
-  const auto colour_it = m_Colours.find(theme);
+  const wxString theme = GetTheme();
+  const auto colour_it = m_ThemeColours.find(theme);
   
-  for (
-    auto it = colour_it->second.begin();
-    it != colour_it->second.end();
-    ++it)
+  if (colour_it != m_ThemeColours.end())
   {
-    if (it->first == "caretforeground")
+    for (
+      auto it = colour_it->second.begin();
+      it != colour_it->second.end();
+      ++it)
     {
-      stc->SetCaretForeground(it->second);
-    }
-    else if (it->first == "caretlinebackground")
-    {
-      stc->SetCaretLineBackground(it->second);
-    }
-    else if (it->first == "selbackground")
-    {
-      stc->SetSelBackground(true, it->second);
-    }
-    else if (it->first == "selforeground")
-    {
-      stc->SetSelForeground(true, it->second);
+      if (it->first == "caretforeground")
+      {
+        stc->SetCaretForeground(it->second);
+      }
+      else if (it->first == "caretlinebackground")
+      {
+        stc->SetCaretLineBackground(it->second);
+      }
+      else if (it->first == "selbackground")
+      {
+        stc->SetSelBackground(true, it->second);
+      }
+      else if (it->first == "selforeground")
+      {
+        stc->SetSelForeground(true, it->second);
+      }
     }
   }
+  
+  ApplyIndicators(stc);
 }
 
 void wxExLexers::ApplyHexStyles(wxStyledTextCtrl* stc) const
@@ -221,26 +225,32 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-const std::map<wxString, wxString>& wxExLexers::GetMacrosStyle() const
+const wxString wxExLexers::GetTheme() const
 {
-  const auto it = m_MacrosStyle.find(GetTheme());
-  return it->second;
+  const wxString theme = wxConfigBase::Get()->Read("theme", "");
+
+  // Use the theme macros, though we could also use the theme colours,
+  // as they contain the same themes.  
+  const auto it = m_ThemeMacros.find(theme);
+    
+  if (it != m_ThemeMacros.end())
+  {
+    return theme;
+  }
+  else if (!m_ThemeMacros.empty())
+  {
+    return m_ThemeMacros.begin()->first;
+  }
+
+  // During Read we added empty theme,
+  // so use that one if we have come here.  
+  return wxEmptyString;
 }
 
-const wxString wxExLexers::GetTheme(bool style) const
+const std::map<wxString, wxString>& wxExLexers::GetThemeMacros() const
 {
-  const wxString theme = wxConfigBase::Get()->Read("theme", "default");
-  
-  if (style)
-  {
-    const auto it = m_MacrosStyle.find(theme);
-    return (it != m_MacrosStyle.end() ? it->first: "default");
-  }
-  else
-  {
-    const auto it = m_Colours.find(theme);
-    return (it != m_Colours.end() ? it->first: "default");
-  }
+  const auto it = m_ThemeMacros.find(GetTheme());
+  return it->second;
 }
 
 bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
@@ -373,7 +383,7 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
 void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
 {
   m_TempColours.clear();
-  m_TempMacrosStyle.clear();
+  m_TempMacros.clear();
   
   wxXmlNode *child = node->GetChildren();
   
@@ -388,9 +398,9 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
       if (!style.empty())
       {
         auto it = 
-          m_TempMacrosStyle.find(style);
+          m_TempMacros.find(style);
 
-        if (it != m_TempMacrosStyle.end())
+        if (it != m_TempMacros.end())
         {
           wxLogError(_("Macro style: %s on line: %d already exists"),
             style.c_str(), 
@@ -398,7 +408,7 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
         }
         else
         {
-          m_TempMacrosStyle[style] = content;
+          m_TempMacros[style] = content;
         }
       }
     }
@@ -421,8 +431,8 @@ void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
     {
       ParseNodeTheme(child);
       
-      m_Colours[child->GetAttribute("name", "default")] = m_TempColours;
-      m_MacrosStyle[child->GetAttribute("name", "default")] = m_TempMacrosStyle;
+      m_ThemeColours[child->GetAttribute("name")] = m_TempColours;
+      m_ThemeMacros[child->GetAttribute("name")] = m_TempMacros;
     }
     
     child = child->GetNext();
@@ -447,18 +457,20 @@ bool wxExLexers::Read()
 
   // Initialize members.
   m_DefaultStyle = wxExStyle();
-  m_Colours.clear();
+  m_ThemeColours.clear();
   m_GlobalProperties.clear();
   m_Indicators.clear();
   m_Lexers.clear();
   m_Macros.clear();
-  m_MacrosStyle.clear();
+  m_ThemeMacros.clear();
   m_Markers.clear();
   m_Styles.clear();
   m_StylesHex.clear();
+  m_TempColours.clear();
+  m_TempMacros.clear();
   
-  m_Colours["default"] = m_TempColours;
-  m_MacrosStyle["default"] = m_TempMacrosStyle;
+  m_ThemeColours[""] = m_TempColours;
+  m_ThemeMacros[""] = m_TempMacros;
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
@@ -551,7 +563,7 @@ bool wxExLexers::ShowThemeDialog(
   wxWindow* parent, 
   const wxString& caption)
 {
-  if (m_MacrosStyle.empty())
+  if (m_ThemeMacros.empty())
   {
     return false;
   }
@@ -559,8 +571,8 @@ bool wxExLexers::ShowThemeDialog(
   wxArrayString choices;
       
   for (
-    auto it = m_MacrosStyle.begin();
-    it != m_MacrosStyle.end();
+    auto it = m_ThemeMacros.begin();
+    it != m_ThemeMacros.end();
     ++it)
   {
     choices.Add(it->first);

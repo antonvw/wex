@@ -63,9 +63,9 @@ void wxExStyle::Set(const wxXmlNode* node)
   m_Value = node->GetNodeContent().Strip(wxString::both);
 
   const auto it = 
-    wxExLexers::Get()->GetMacrosStyle().find(m_Value);
+    wxExLexers::Get()->GetThemeMacros().find(m_Value);
 
-  if (it != wxExLexers::Get()->GetMacrosStyle().end())
+  if (it != wxExLexers::Get()->GetThemeMacros().end())
   {
     m_Value = it->second;
   }

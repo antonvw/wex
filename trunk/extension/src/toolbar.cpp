@@ -97,11 +97,8 @@ void wxExToolBar::AddControls()
   m_SyncMode->SetToolTip(_("Synchronize modified files"));
 #endif
 
-  m_HexMode->SetValue(
-    wxConfigBase::Get()->ReadBool("HexMode", false)); // default no hex
-    
-  m_SyncMode->SetValue(
-    wxConfigBase::Get()->ReadBool("AllowSync", true));
+  m_HexMode->SetValue(wxConfigBase::Get()->ReadBool("HexMode", false));
+  m_SyncMode->SetValue(wxConfigBase::Get()->ReadBool("AllowSync", true));
 
   Realize();
 }
@@ -141,19 +138,6 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
   {
   case ID_EDIT_HEX_MODE:
     wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());
-
-    {
-      auto* stc = m_Frame->GetSTC();
-
-      if (stc != NULL)
-      {
-        long flags = 0;
-        if (m_HexMode->GetValue()) flags |= wxExSTC::STC_WIN_HEX;
-        wxExFileDialog dlg(m_Frame, &stc->GetFile());
-        if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
-        stc->Reload(flags);
-      }
-    }
     break;
 
   case ID_SYNC_MODE:

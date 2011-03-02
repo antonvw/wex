@@ -522,10 +522,15 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   if (pane == "PaneInfo")
   {
     auto* stc = GetSTC();
-    if (stc != NULL) stc->GotoDialog();
-    
-    wxExListView* list = GetListView();
-    if (list != NULL) list->GotoDialog();
+    if (stc != NULL) 
+    {
+      stc->GotoDialog();
+    }
+    else
+    {
+      wxExListView* list = GetListView();
+      if (list != NULL) list->GotoDialog();
+    }
   }
   else if (pane == "PaneLexer")
   {

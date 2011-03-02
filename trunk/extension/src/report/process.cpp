@@ -47,8 +47,6 @@ wxExProcess::wxExProcess(
 
 bool wxExProcess::CheckInput()
 {
-  bool hasInput = false;
-
   // This assumes that the output is always line buffered.
   wxString line;
 
@@ -56,16 +54,14 @@ bool wxExProcess::CheckInput()
   {
     wxTextInputStream tis(*GetInputStream());
     line << tis.ReadLine();
-    hasInput = true;
   }
   else if (IsErrorAvailable())
   {
     wxTextInputStream tis(*GetErrorStream());
     line << tis.ReadLine();
-    hasInput = true;
   }
 
-  if (hasInput && !line.empty())
+  if (!line.empty())
   {
     wxString lineno;
     wxString path;
@@ -126,9 +122,9 @@ bool wxExProcess::CheckInput()
         m_ListView->EnsureVisible(m_ListView->GetItemCount() - 1);
       }
   
-  #if wxUSE_STATUSBAR
+#if wxUSE_STATUSBAR
       m_ListView->UpdateStatusBar();
-  #endif
+#endif
     }
     else
     {
@@ -136,7 +132,7 @@ bool wxExProcess::CheckInput()
     }
   }
 
-  return hasInput;
+  return !line.empty();
 }
 
 int wxExProcess::ConfigDialog(

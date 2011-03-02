@@ -135,11 +135,11 @@ public:
     /// text to find
     const wxString& text, 
     /// search flags to be used
-    /// wxSTC_FIND_WHOLEWORD 2
-    /// wxSTC_FIND_MATCHCASE 4
-    /// wxSTC_FIND_WORDSTART 0x00100000
-    /// wxSTC_FIND_REGEXP 0x00200000
-    /// wxSTC_FIND_POSIX 0x00400000
+    /// wxSTC_FIND_WHOLEWORD
+    /// wxSTC_FIND_MATCHCASE
+    /// wxSTC_FIND_WORDSTART
+    /// wxSTC_FIND_REGEXP
+    /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
     bool find_next = true);
@@ -268,11 +268,11 @@ public:
     /// text to replace with
     const wxString& replace_text,
     /// search flags to be used
-    /// wxSTC_FIND_WHOLEWORD 2
-    /// wxSTC_FIND_MATCHCASE 4
-    /// wxSTC_FIND_WORDSTART 0x00100000
-    /// wxSTC_FIND_REGEXP 0x00200000
-    /// wxSTC_FIND_POSIX 0x00400000
+    /// wxSTC_FIND_WHOLEWORD
+    /// wxSTC_FIND_MATCHCASE
+    /// wxSTC_FIND_WORDSTART
+    /// wxSTC_FIND_REGEXP
+    /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// argument passed on to FindNext
     bool find_next = true);

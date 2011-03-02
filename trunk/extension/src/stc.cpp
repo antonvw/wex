@@ -18,6 +18,8 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/defs.h>
+#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/header.h>
@@ -891,6 +893,12 @@ void wxExSTC::Cut()
   
 void wxExSTC::EOLModeUpdate(int eol_mode)
 {
+  if (GetReadOnly())
+  {
+    wxLogStatus(_("Document is readonly"));
+    return;
+  }
+
   ConvertEOLs(eol_mode);
   SetEOLMode(eol_mode);
 #if wxUSE_STATUSBAR
@@ -911,22 +919,27 @@ bool wxExSTC::FileReadOnlyAttributeChanged()
 
 void wxExSTC::FileTypeMenu()
 {
-  if (GetReadOnly())
-  {
-    wxLogStatus(_("Document is readonly"));
-    return;
-  }
-
-  wxMenu* eol = new wxMenu();
+  wxMenu* menu = new wxMenu();
 
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
-  eol->Append(ID_EDIT_EOL_DOS, "&DOS", wxEmptyString, wxITEM_CHECK);
-  eol->Append(ID_EDIT_EOL_MAC, "&MAC", wxEmptyString, wxITEM_CHECK);
-  eol->Append(ID_EDIT_EOL_UNIX, "&UNIX", wxEmptyString, wxITEM_CHECK);
-  eol->FindItemByPosition(GetEOLMode())->Check();
+  menu->Append(ID_EDIT_EOL_DOS, "&DOS", wxEmptyString, wxITEM_CHECK);
+  menu->Append(ID_EDIT_EOL_MAC, "&MAC", wxEmptyString, wxITEM_CHECK);
+  menu->Append(ID_EDIT_EOL_UNIX, "&UNIX", wxEmptyString, wxITEM_CHECK);
+  
+  menu->AppendSeparator();
+  
+  if (!(GetFlags() & STC_WIN_HEX))
+  {
+    menu->FindItemByPosition(GetEOLMode())->Check();
+    menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString);
+  }
+  else
+  {
+    menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
+  }
 
-  PopupMenu(eol);
+  PopupMenu(menu);
 }
 
 bool wxExSTC::FindNext(bool find_next)
@@ -1684,7 +1697,14 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
   case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-  
+  case ID_EDIT_EOL_HEX: 
+    {
+    wxExFileDialog dlg(this, &m_File);
+    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
+    Reload(m_Flags ^ STC_WIN_HEX); 
+    }
+    break;
+
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
   case ID_EDIT_UNFOLD_ALL:
     for (auto i = 0; i < GetLineCount(); i++) EnsureVisible(i);
@@ -2098,21 +2118,21 @@ void wxExSTC::PropertiesMessage()
 
 void wxExSTC::Reload(long flags)
 {
-	if ((flags & STC_WIN_HEX) && 
-			 !(m_Flags & STC_WIN_HEX))
-	{
+  if ((flags & STC_WIN_HEX) && 
+     !(m_Flags & STC_WIN_HEX))
+  {
     const wxString value = GetText();
     ClearDocument();
-		AddTextHexMode(0, value.c_str());
-		SetReadOnly(true);
+    AddTextHexMode(0, value.c_str());
+    SetReadOnly(true);
     m_Flags = flags;
     EmptyUndoBuffer();
     SetSavePoint();
-	}
-	else
-	{
+  }
+  else
+  {
     Open(m_File.GetFileName(), 0, wxEmptyString, flags);
-	}
+  }
 }
 
 int wxExSTC::ReplaceAll(
@@ -2338,12 +2358,7 @@ void wxExSTC::SequenceDialog()
 
 void wxExSTC::SetGlobalStyles()
 {
-  wxExLexers::Get()->GetDefaultStyle().Apply(this);
-
-  StyleClearAll();
-
   wxExLexers::Get()->ApplyGlobalStyles(this);
-  wxExLexers::Get()->ApplyIndicators(this);
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)

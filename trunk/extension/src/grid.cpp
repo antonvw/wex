@@ -513,7 +513,7 @@ void wxExGrid::OnGrid(wxGridEvent& event)
 #if wxUSE_STATUSBAR
     wxExFrame::StatusText(
       wxString::Format("%d,%d", 1 + event.GetCol(), 1 + event.GetRow()),
-      "PaneCells");
+      "PaneInfo");
 #endif
 
     event.Skip();
@@ -535,7 +535,7 @@ void wxExGrid::OnGridRange(wxGridRangeSelectEvent& event)
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(
     wxString::Format("%d", GetSelectedCells().GetCount()),
-    "PaneCells");
+    "PaneInfo");
 #endif
 }
 

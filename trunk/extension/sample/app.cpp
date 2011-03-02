@@ -203,8 +203,7 @@ wxExSampleFrame::wxExSampleFrame()
   std::vector<wxExStatusBarPane> panes;
   panes.push_back(wxExStatusBarPane());
   panes.push_back(wxExStatusBarPane("PaneFileType", 50, "File type"));
-  panes.push_back(wxExStatusBarPane("PaneCells", 60, "Cells"));
-  panes.push_back(wxExStatusBarPane("PaneInfo", 100, "Lines"));
+  panes.push_back(wxExStatusBarPane("PaneInfo", 100, "Lines or items"));
   panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
