@@ -135,7 +135,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
       case wxExVCSCommand::VCS_COMMAND_IS_BOTH: add = true; break;
       case wxExVCSCommand::VCS_COMMAND_IS_POPUP: add = is_popup; break;
       case wxExVCSCommand::VCS_COMMAND_IS_MAIN: add = !is_popup; break;
-      case wxExVCSCommand::VCS_COMMAND_NONE: add = false; break;
+      case wxExVCSCommand::VCS_COMMAND_IS_NONE: add = false; break;
       default: wxFAIL;
     }
 
