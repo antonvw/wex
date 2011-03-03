@@ -1399,8 +1399,8 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     
     <!-- These are the themes, including style macro's and colours. -->
     <themes>
-      <!-- The default theme, mostly used for MSW -->
-      <theme name = "default">
+      <!-- The default theme, resembles Visual Studio -->
+      <theme name = "studio">
         <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
