@@ -29,7 +29,7 @@ enum
   ID_MATCH_WHOLE_WORD = 100,
   ID_MATCH_CASE,
   ID_REGULAR_EXPRESSION,
-  ID_EDIT_HEX_MODE,
+  ID_HEX_MODE,
   ID_SYNC_MODE,
 };
 
@@ -55,7 +55,7 @@ private:
 };
 
 BEGIN_EVENT_TABLE(wxExToolBar, wxAuiToolBar)
-  EVT_CHECKBOX(ID_EDIT_HEX_MODE, wxExToolBar::OnCommand)
+  EVT_CHECKBOX(ID_HEX_MODE, wxExToolBar::OnCommand)
   EVT_CHECKBOX(ID_SYNC_MODE, wxExToolBar::OnCommand)
 END_EVENT_TABLE()
 
@@ -83,7 +83,7 @@ void wxExToolBar::AddControls()
   AddControl(
     m_HexMode = new wxCheckBox(
       this,
-      ID_EDIT_HEX_MODE,
+      ID_HEX_MODE,
       "Hex"));
 
   AddControl(
@@ -136,7 +136,7 @@ void wxExToolBar::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
-  case ID_EDIT_HEX_MODE:
+  case ID_HEX_MODE:
     wxConfigBase::Get()->Write("HexMode", m_HexMode->GetValue());
     break;
 

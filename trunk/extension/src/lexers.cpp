@@ -24,6 +24,7 @@ wxExLexers* wxExLexers::m_Self = NULL;
 
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
+  , m_NoTheme(wxEmptyString)
 {
 }
 
@@ -61,6 +62,18 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
       else if (it->first == "selforeground")
       {
         stc->SetSelForeground(true, it->second);
+      }
+      else if (it->first == "calltipbackground")
+      {
+        stc->CallTipSetBackground(wxColour(it->second));
+      }
+      else if (it->first == "calltipforeground")
+      {
+        stc->CallTipSetForeground(wxColour(it->second));
+      }
+      else if (it->first == "edge")
+      {
+        stc->SetEdgeColour(wxColour(it->second));
       }
     }
   }
@@ -227,7 +240,7 @@ const wxString wxExLexers::GetLexerExtensions() const
 
 const wxString wxExLexers::GetTheme() const
 {
-  const wxString theme = wxConfigBase::Get()->Read("theme", "");
+  const wxString theme = wxConfigBase::Get()->Read("theme", m_NoTheme);
 
   // Use the theme macros, though we could also use the theme colours,
   // as they contain the same themes.  
@@ -242,9 +255,9 @@ const wxString wxExLexers::GetTheme() const
     return m_ThemeMacros.begin()->first;
   }
 
-  // During Read we added empty theme,
-  // so use that one if we have come here.  
-  return wxEmptyString;
+  // During Read we added the no theme,
+  // so use that one if we have come here.
+  return m_NoTheme;
 }
 
 const std::map<wxString, wxString>& wxExLexers::GetThemeMacros() const
@@ -469,8 +482,8 @@ bool wxExLexers::Read()
   m_TempColours.clear();
   m_TempMacros.clear();
   
-  m_ThemeColours[""] = m_TempColours;
-  m_ThemeMacros[""] = m_TempMacros;
+  m_ThemeColours[m_NoTheme] = m_TempColours;
+  m_ThemeMacros[m_NoTheme] = m_TempMacros;
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
@@ -567,9 +580,9 @@ bool wxExLexers::ShowThemeDialog(
   {
     return false;
   }
-  
+
   wxArrayString choices;
-      
+
   for (
     auto it = m_ThemeMacros.begin();
     it != m_ThemeMacros.end();
@@ -577,26 +590,26 @@ bool wxExLexers::ShowThemeDialog(
   {
     choices.Add(it->first);
   }
-    
+
   wxSingleChoiceDialog dlg(
     parent,
     _("Input") + ":", 
     caption,
     choices);
-    
+
   const auto index = choices.Index(GetTheme());
-  
+
   if (index != wxNOT_FOUND)
   {
     dlg.SetSelection(index);
   }
-     
+
   if (dlg.ShowModal() == wxID_CANCEL)
   {
     return false;
   }
 
   wxConfigBase::Get()->Write("theme", dlg.GetStringSelection());
-  
+
   return Read();
 }

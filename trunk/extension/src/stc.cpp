@@ -640,11 +640,6 @@ int wxExSTC::ConfigDialog(
     true, 
     _("Edge")));
 
-  // Colour page.
-  items.push_back(wxExConfigItem(_("Calltip"), CONFIG_COLOUR, _("Colour")));
-  items.push_back(
-    wxExConfigItem(_("Edge colour"), CONFIG_COLOUR, _("Colour")));
-
   // Margin page.
   items.push_back(wxExConfigItem(
     _("Tab width"), 
@@ -739,14 +734,11 @@ int wxExSTC::ConfigDialog(
 
 void wxExSTC::ConfigGet()
 {
-  if (!wxConfigBase::Get()->Exists(_("Calltip")))
+  if (!wxConfigBase::Get()->Exists(_("Caret line")))
   {
     wxConfigBase::Get()->SetRecordDefaults(true);
   }
 
-  CallTipSetBackground(wxConfigBase::Get()->ReadObject(
-    _("Calltip"), wxColour("YELLOW")));
-    
   const long def_tab_width = 2;
 
   if (m_File.GetFileName().GetExt().CmpNoCase("log") == 0)
@@ -756,8 +748,6 @@ void wxExSTC::ConfigGet()
   else
   {
     SetEdgeColumn(wxConfigBase::Get()->ReadLong(_("Edge column"), 80));
-    SetEdgeColour(wxConfigBase::Get()->ReadObject(
-      _("Edge colour"), wxColour("GREY"))); 
     SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
   
@@ -926,17 +916,16 @@ void wxExSTC::FileTypeMenu()
   menu->Append(ID_EDIT_EOL_DOS, "&DOS", wxEmptyString, wxITEM_CHECK);
   menu->Append(ID_EDIT_EOL_MAC, "&MAC", wxEmptyString, wxITEM_CHECK);
   menu->Append(ID_EDIT_EOL_UNIX, "&UNIX", wxEmptyString, wxITEM_CHECK);
-  
   menu->AppendSeparator();
+  wxMenuItem* hex = menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
   
   if (!(GetFlags() & STC_WIN_HEX))
   {
     menu->FindItemByPosition(GetEOLMode())->Check();
-    menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString);
   }
   else
   {
-    menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
+    hex->Check();
   }
 
   PopupMenu(menu);
@@ -1438,14 +1427,6 @@ void wxExSTC::Initialize()
   SetEOLMode(wxSTC_EOL_LF);
 #endif
 
-  // Try to set the background (or foreground) colour.
-  // Did not have any effect.
-  /*
-  SetBackgroundColour(*wxBLACK);
-  ClearBackground();
-  SetForegroundColour(*wxBLACK);
-  */
-
   SetBackSpaceUnIndents(true);
   SetMouseDwellTime(1000);
   SetMarginType(m_MarginLineNumber, wxSTC_MARGIN_NUMBER);
@@ -1702,6 +1683,9 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxExFileDialog dlg(this, &m_File);
     if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
     Reload(m_Flags ^ STC_WIN_HEX); 
+#if wxUSE_STATUSBAR
+    UpdateStatusBar("PaneFileType");
+#endif
     }
     break;
 

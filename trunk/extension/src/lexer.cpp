@@ -114,11 +114,8 @@ bool wxExLexer::ApplyLexer(
   return m_IsOk;
 }
 
-const std::vector<wxExStyle> wxExLexer::AutoMatch(
-  const wxString& lexer) const
+void wxExLexer::AutoMatch(const wxString& lexer)
 {
-  std::vector<wxExStyle> text;
-
   auto itlow = 
     wxExLexers::Get()->GetMacros().lower_bound(lexer);
 
@@ -131,19 +128,16 @@ const std::vector<wxExStyle> wxExLexer::AutoMatch(
     ++it)
   {
     for (
-      auto style = 
-        wxExLexers::Get()->GetThemeMacros().begin();
+      auto style = wxExLexers::Get()->GetThemeMacros().begin();
       style != wxExLexers::Get()->GetThemeMacros().end();
       ++style)
     {
       if (it->first.Contains(style->first))
       {
-        text.push_back(wxExStyle(it->second, style->second));
+        m_Styles.push_back(wxExStyle(it->second, style->second));
       }
     }
   }
-
-  return text;
 }
 
 const wxString wxExLexer::GetFormattedText(
@@ -368,7 +362,7 @@ void wxExLexer::Set(const wxXmlNode* node)
 
     if (!node->GetAttribute("match").empty())
     {
-      m_Styles = AutoMatch(node->GetAttribute("match"));
+      AutoMatch(node->GetAttribute("match"));
     }
 
     if (m_ScintillaLexer == "hypertext")

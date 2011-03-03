@@ -20,7 +20,7 @@ wxExVCSCommand::wxExVCSCommand()
   , m_SubMenu()
   , m_SubMenuIsCommand(false)
   , m_No(0)
-  , m_Type(VCS_COMMAND_IS_BOTH) 
+  , m_Type(VCS_COMMAND_NONE)
 {
 }
 

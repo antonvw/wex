@@ -115,7 +115,7 @@ public:
   /// Returns number of chars that fit on a line, skipping comment chars.
   int UsableCharactersPerLine() const;
 private:
-  const std::vector<wxExStyle> AutoMatch(const wxString& lexer) const;
+  void AutoMatch(const wxString& lexer);
   const wxString GetFormattedText(
     const wxString& lines,
     const wxString& header,

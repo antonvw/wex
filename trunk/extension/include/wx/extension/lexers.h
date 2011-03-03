@@ -158,6 +158,7 @@ private:
   wxExStyle m_DefaultStyle;
 
   const wxFileName m_FileName;
+  const wxString m_NoTheme;
 
   static wxExLexers* m_Self;
 };
