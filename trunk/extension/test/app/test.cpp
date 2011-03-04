@@ -321,7 +321,7 @@ void wxExAppTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeMacros().empty());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
@@ -536,7 +536,7 @@ void wxExAppTestFixture::testVCS()
   menu.BuildVCS();
   // The default VCS (auto) is used,
   // so without a path, no VCS will be built, perhaps the config dir?
-  CPPUNIT_ASSERT( menu.IsVCSBuild());
+  CPPUNIT_ASSERT(!menu.IsVCSBuild());
 }
 
 void wxExAppTestFixture::testVCSCommand()
@@ -591,7 +591,7 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(diff.GetSubMenu() == "submenu");
   CPPUNIT_ASSERT(help.GetSubMenu() == "m&e");
 
-  CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_BOTH);
+  CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_NONE);
 }
 
 void wxExAppTestFixture::testVCSEntry()
