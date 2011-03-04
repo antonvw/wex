@@ -75,7 +75,7 @@ General
   - First of all, the new C++ auto keyword is used a lot, so
     you need a recent compiler to compile sources.
 
-  - Project and make files are generated using Bakefile 0.2.8
+  - Project and make files are generated using Bakefile 0.2.9
     http://www.bakefile.org/
     this is done in the build dir, directly under trunk:
     
