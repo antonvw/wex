@@ -1,0 +1,8 @@
+........wxExFile::Read:60 wxFile::Read:106
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:14
+.
+
+
+OK (10 tests)
+
+
