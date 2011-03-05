@@ -1390,8 +1390,14 @@ void wxExSTC::Indent(int begin, int end, bool forward)
 
     if (forward)
     {
-      const wxUniChar c = (GetUseTabs() ? '\t': ' ');
-      InsertText(start, wxString(c, GetIndent()));
+      if (GetUseTabs())
+      {
+        InsertText(start, '\t');
+      }
+      else
+      {
+        InsertText(start, wxString(' ', GetIndent()));
+      }
     }
     else
     {
