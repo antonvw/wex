@@ -11,7 +11,6 @@ General
       http://tortoisesvn.tigris.org/,
     under Linux svn client (version 1.6.12 (r955767))
     under mac os 10.4 svn client (version 1.5.5 http://homepage.mac.com/martinott/)
-
     
     The SVN support in wxExVCS works with SVN client 1.6.12
       http://www.sliksvn.com/en/download
@@ -105,6 +104,9 @@ General
       more attempts (wxWidgets 2.9.1).
 
     - under cygwin 1.7 wxWidgets 2.9.1 does not compile 
+    
+    - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
+      ../configure --with-mac
 
   - debug under Windows using IDE, under Linux using Kdbg
 
@@ -128,6 +130,8 @@ SVN hierarchy
     generated using build.bkl, 
     does not find the correct wxextension libraries 
     when linking, you have to adjust it manually.
+  - the mac-os branch is added because the trunk uses c++0x flags, not supported
+    by gcc 4.0.1 under mac os 10.4
 
 - tags contain all release versions
 
