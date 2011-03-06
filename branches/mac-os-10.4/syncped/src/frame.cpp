@@ -440,10 +440,10 @@ void Frame::Log(
 void Frame::NewFile(bool as_project)
 {
   const wxString name = (as_project ? _("project") : _("textfile"));
-  const auto use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
+  const int use_no = (as_project ? m_NewProjectNo : m_NewFileNo);
   const wxString text = wxString::Format("%s%d", name.c_str(), use_no);
   wxString key;
-  auto* notebook = (as_project ? m_Projects : m_Editors);
+  wxExNotebook* notebook = (as_project ? m_Projects : m_Editors);
   wxWindow* page;
 
   if (as_project)
@@ -516,8 +516,8 @@ void Frame::OnClose(wxCloseEvent& event)
 
 void Frame::OnCommand(wxCommandEvent& event)
 {
-  auto* editor = GetSTC();
-  auto* project = GetProject();
+  wxExSTC* editor = GetSTC();
+  wxExListViewFile* project = GetProject();
 
   // VCS commands.
   if (event.GetId() > ID_VCS_LOWEST && 
@@ -999,8 +999,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
     default:
     {
-      auto* editor = GetSTC();
-      auto* list = (wxExListViewFile*)GetFocusedListView();
+      wxExSTC* editor = GetSTC();
+      wxExListViewFile* list = (wxExListViewFile*)GetFocusedListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())
       {
@@ -1133,7 +1133,7 @@ bool Frame::OpenFile(
     
   const wxString key = filename.GetFullPath() + unique;
 
-  auto* page = m_Editors->GetPageByKey(key);
+  wxWindow* page = m_Editors->GetPageByKey(key);
 
   if (page == NULL)
   {
@@ -1176,7 +1176,7 @@ bool Frame::OpenFile(
     return false;
   }
 
-  auto* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
+  wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
     ? m_Projects : m_Editors);
 
   wxWindow* page = notebook->GetPageByKey(filename.GetFullPath());

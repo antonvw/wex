@@ -115,7 +115,7 @@ int wxExVCS::ConfigDialog(
   choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
 
   for (
-    auto it = m_Entries.begin();
+    std::map<wxString, wxExVCSEntry>::const_iterator it = m_Entries.begin();
     it != m_Entries.end();
     ++it)
   {
@@ -150,7 +150,7 @@ int wxExVCS::ConfigDialog(
     cols));
 
   for (
-    auto it2 = m_Entries.begin();
+    std::map<wxString, wxExVCSEntry>::const_iterator it2 = m_Entries.begin();
     it2 != m_Entries.end();
     ++it2)
   {
@@ -199,7 +199,7 @@ long wxExVCS::Execute()
     {
       // File should not be surrounded by double quotes.
       for (
-        auto it = m_Files.begin();
+        wxArrayString::iterator it = m_Files.begin();
         it != m_Files.end();
         it++)
       {
@@ -243,7 +243,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
     else
     {
       for (
-        auto it = m_Entries.begin();
+        std::map<wxString, wxExVCSEntry>::iterator it = m_Entries.begin();
         it != m_Entries.end();
         ++it)
       {
@@ -266,7 +266,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   else
   {
     for (
-      auto it = m_Entries.begin();
+      std::map<wxString, wxExVCSEntry>::iterator it = m_Entries.begin();
       it != m_Entries.end();
       ++it)
     {

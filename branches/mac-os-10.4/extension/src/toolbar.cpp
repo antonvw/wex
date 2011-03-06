@@ -224,7 +224,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case wxID_DOWN:
   case wxID_UP:
     {
-      auto* stc = m_Frame->GetSTC();
+      wxExSTC* stc = m_Frame->GetSTC();
 
       if (stc != NULL)
       {
@@ -285,7 +285,7 @@ FindString::FindString(
 
 void FindString::OnCommand(wxCommandEvent& event)
 {
-  auto* stc = m_Frame->GetSTC();
+  wxExSTC* stc = m_Frame->GetSTC();
 
   if (stc != NULL)
   {

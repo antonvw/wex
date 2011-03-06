@@ -50,7 +50,7 @@ wxExListItem::wxExListItem(
 void wxExListItem::Insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
-  const auto col = m_ListView->FindColumn(_("File Name"));
+  const int col = m_ListView->FindColumn(_("File Name"));
   const wxString filename = (
     m_FileName.FileExists() || m_FileName.DirExists() ?
       m_FileName.GetFullName():

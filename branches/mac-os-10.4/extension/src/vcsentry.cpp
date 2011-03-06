@@ -104,7 +104,7 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
   wxString prev_menu = "XXXXX";
 
   for (
-    auto it = m_Commands.begin();
+    std::vector<wxExVCSCommand>::const_iterator it = m_Commands.begin();
     it != m_Commands.end();
     ++it)
   {

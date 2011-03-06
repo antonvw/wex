@@ -29,14 +29,7 @@ void SetItemColumnStatistics(
   const wxString& col,
   const wxExStatistics<long>& stat)
 {
-  const auto it = stat.GetItems().find(col);
-
-  if (it != stat.GetItems().end())
-  {
-    item.SetItem(
-      col,
-      wxString::Format("%ld", it->second));
-  }
+  // TODO: FIX (code removed)
 }
 
 #if wxExUSE_EMBEDDED_SQL
@@ -107,7 +100,7 @@ bool wxExTextFileWithListView::ParseComments()
           1,
           Recordset::QueryRunTimeText().length()) == Recordset::QueryRunTimeText())
       {
-        const auto start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
+        const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
         m_SQLQueryRunTime = GetComments().substr(start_of_runtime);
         Report(GetCurrentLine());
       }
@@ -258,24 +251,7 @@ void wxExTextFileWithListView::ReportStatistics()
 
   case ID_TOOL_REPORT_KEYWORD:
   {
-    long total = 0;
-    for (size_t i = 0; i < GetFileName().GetLexer().GetKeywords().size(); i++)
-    {
-      wxListItem col;
-      col.SetMask(wxLIST_MASK_TEXT);
-      m_Report->GetColumn(i + 1, col);
-      const wxString name = col.GetText();
-      const auto& stat = GetStatistics().GetKeywords();
-      const auto it = stat.GetItems().find(name);
-      if (it != stat.GetItems().end())
-      {
-        item.SetItem(i + 1, wxString::Format("%ld", it->second));
-        total += it->second;
-      }
-    }
-    item.SetItem(
-      GetFileName().GetLexer().GetKeywords().size() + 1,
-      wxString::Format("%ld", total));
+    // TODO: FIX (code removed)
   }
   break;
 
@@ -391,7 +367,7 @@ void Recordset::UpdateTextFileFromQuery()
     wxString line;
     char rowstr[512];
 
-    for (auto n = 0; n < desc_len; n++)
+    for (int n = 0; n < desc_len; n++)
     {
       m_stream >> rowstr;
       line += rowstr;

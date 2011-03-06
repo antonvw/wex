@@ -73,7 +73,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
     wxBusyCursor wait;
     wxString clipboard;
     for (
-      auto it = files.begin();
+      wxArrayString::iterator it = files.begin();
       it != files.end();
       it++)
     {

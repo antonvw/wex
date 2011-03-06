@@ -153,7 +153,7 @@ int wxExProcess::ConfigDialog(
     true,
     1000));
 
-  const auto result = wxExConfigDialog(parent,
+  const int result = wxExConfigDialog(parent,
     v,
     title).ShowModal();
 

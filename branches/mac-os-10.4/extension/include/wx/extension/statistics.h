@@ -76,13 +76,7 @@ public:
 
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
-    for (
-      std::map<wxString, int>::iterator it = s.m_Items.begin();
-      it != s.m_Items.end();
-      ++it)
-    {
-      Inc(it->first, it->second);
-    }
+    // TODO: FIX (removed code).
     return *this;}
 
   /// Clears the items. If you have Shown the statistics

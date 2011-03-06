@@ -141,9 +141,9 @@ void wxExListViewStandard::DeleteDoubles()
 {
   wxDateTime mtime((time_t)0);
   wxString name;
-  const auto itemcount = GetItemCount();
+  const int itemcount = GetItemCount();
 
-  for (auto i = itemcount - 1; i >= 0; i--)
+  for (int i = itemcount - 1; i >= 0; i--)
   {
     wxExListItem item(this, i);
 
@@ -247,7 +247,7 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
   break;
   case LIST_KEYWORD:
     for (
-      auto it = lexer->GetKeywords().begin();
+      std::set<wxString>::iterator it = lexer->GetKeywords().begin();
       it != lexer->GetKeywords().end();
       ++it)
     {
@@ -373,7 +373,7 @@ const wxString wxExListViewStandard::ItemToText(long item_number) const
 
 void wxExListViewStandard::ItemsUpdate()
 {
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (int i = 0; i < GetItemCount(); i++)
   {
     wxExListItem(this, i).Update();
   }
@@ -662,7 +662,7 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
   else if (item.GetFileName().FileExists())
   {
     const wxString line_number_str = GetItemText(item_number, _("Line No"));
-    const auto line_number = atoi(line_number_str.c_str());
+    const int line_number = atoi(line_number_str.c_str());
     const wxString match =
       (GetType() == LIST_REPLACE ?
          GetItemText(item_number, _("Replaced")):
@@ -686,7 +686,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
     wxArrayString files;
     
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       files.Add(wxExListItem(this, i).GetFileName().GetFullPath());
     }
@@ -697,7 +697,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
   case ID_LIST_OPEN_ITEM:
   {
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
       ItemActivated(i);
   }
   break;
@@ -718,7 +718,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
       wxASSERT(list != NULL);
     }
 
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
@@ -731,7 +731,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
           {
             list = m_Frame->Activate(LIST_FILE);
             if (list == NULL) return;
-            const auto main_selected = list->GetFirstSelected();
+            const int main_selected = list->GetFirstSelected();
             wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
           }
           else
@@ -827,7 +827,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   wxExStatistics<long> stats;
 
-  for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     stats += wxExListItem(this, i).Run(tool).GetElements();
   }
@@ -892,7 +892,7 @@ void RBSFile::GenerateDialog()
   Header();
 
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     wxExListItem li(m_ListView, i);
     const wxFileName* filename = &li.GetFileName();

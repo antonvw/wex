@@ -64,7 +64,7 @@ const wxString wxExTool::Info() const
     return "No info available";
   }
   
-  const auto it = m_Self->m_ToolInfo.find(m_Id);
+  std::map < int, wxExToolInfo >::const_iterator it = m_Self->m_ToolInfo.find(m_Id);
 
   if (it != m_Self->m_ToolInfo.end())
   {

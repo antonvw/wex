@@ -275,7 +275,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       {
         wxArrayString files;
         wxStringTokenizer tkz(event.GetString());
-        auto* stc = GetSTC();
+        wxExSTC* stc = GetSTC();
 
         while (tkz.HasMoreTokens())
         {
@@ -371,8 +371,8 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
-  auto* stc = GetFocusedSTC();
-  auto* project = GetProject();
+  wxExSTC* stc = GetFocusedSTC();
+  wxExListViewFile* project = GetProject();
 
   const wxString title(GetTitle());
   const wxUniChar indicator('*');
@@ -488,7 +488,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
       if (m_FileHistoryList->GetItemCount() > 1)
       {
-        for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
+        for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
         {
           wxExListItem item(m_FileHistoryList, i);
 
