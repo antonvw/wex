@@ -304,7 +304,7 @@ void wxExTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExTextCtrl::OnKey(wxKeyEvent& event)
 {
-  const auto key = event.GetKeyCode();
+  const int key = event.GetKeyCode();
 
   if (key == WXK_ESCAPE)
   {

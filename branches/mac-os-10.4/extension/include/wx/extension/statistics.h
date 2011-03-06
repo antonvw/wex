@@ -77,7 +77,7 @@ public:
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
     for (
-      auto it = s.m_Items.begin();
+      std::map<wxString, int>::iterator it = s.m_Items.begin();
       it != s.m_Items.end();
       ++it)
     {
@@ -104,31 +104,17 @@ public:
   /// Gets all items as a string. All items are returned as a string,
   /// with newlines separating items.
   const wxString Get() const {
-    wxString text;
-    for (
-      auto it = m_Items.begin();
-      it != m_Items.end();
-      ++it)
-    {
-      // An cEOL gives incorrect result (CRCRLF)
-      text << "\n" << it->first << " " << it->second;
-    }
-    return text;};
+    // TODO: FIX
+    return "not yet implemented";
+	};
 
   /// Gets the items.
   const std::map<wxString, T> & GetItems() const {return m_Items;};
 
   /// Gets value for specified key.
   const T Get(const wxString& key) const {
-    const auto it = m_Items.find(key);
-	if (it != m_Items.end())
-	{
-	  return it->second;
-	}
-	else
-	{
+      // TODO: FIX
 	  return T();
-	}
   }
 
   /// Decrements key with value.
@@ -147,7 +133,7 @@ public:
 #if wxUSE_GRID
     if (m_Grid != NULL)
     {
-      const auto it = m_Rows.find(key);
+      std::map<wxString, int>::const_iterator it = m_Rows.find(key);
 
       if (it != m_Rows.end())
       {
@@ -157,7 +143,7 @@ public:
       {
         m_Grid->AppendRows(1);
 
-        const auto row = m_Grid->GetNumberRows() - 1;
+        const int row = m_Grid->GetNumberRows() - 1;
         m_Rows.insert(std::make_pair(key, row));
 
         m_Grid->SetCellValue(row, 0, key);
@@ -210,21 +196,7 @@ public:
       {
         m_Grid->HideColLabels();
       }
-
-      for (
-        auto it = m_Items.begin();
-        it != m_Items.end();
-        ++it)
-      {
-       m_Grid->AppendRows(1);
-
-       const auto row = m_Grid->GetNumberRows() - 1;
-
-       m_Grid->SetCellValue(row, 0, it->first);
-       m_Grid->SetCellValue(row, 1, wxString::Format("%d", it->second));
-
-       m_Rows[it->first] = row;
-      }
+      // TODO: FIX (removed code)
     }
     m_Grid->Show();
     return m_Grid;}

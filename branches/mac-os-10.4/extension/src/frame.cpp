@@ -139,7 +139,7 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExListView* lv)
 
 void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
 {
-  auto* frd = wxExFindReplaceData::Get();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   // Match word and regular expression do not work together.
   if (frd->MatchWord())
@@ -181,7 +181,7 @@ void wxExFrame::GetFindString()
   }
   else
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
 
     if (stc != NULL && stc->IsShown())
     {
@@ -386,9 +386,9 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   }
   else
   {
-    auto* stc = GetSTC();
-    auto* lv = GetListView();
-    auto* grid = GetGrid();
+    wxExSTC* stc = GetSTC();
+    wxExListView* lv = GetListView();
+    wxExGrid* grid = GetGrid();
 
     if (stc != NULL && stc->IsShown())
     {
@@ -434,7 +434,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
     case ID_EDIT_STATUS_BAR:
     {
-    auto* stc = GetFocusedSTC();
+    wxExSTC* stc = GetFocusedSTC();
     if (stc == NULL) return;
     stc->UpdateStatusBar("PaneInfo"); 
     }
@@ -453,7 +453,7 @@ bool wxExFrame::OpenFile(
   const wxString& match,
   long flags)
 {
-  auto* stc = GetFocusedSTC();
+  wxExSTC* stc = GetFocusedSTC();
 
   if (stc != NULL)
   {
@@ -468,7 +468,7 @@ bool wxExFrame::OpenFile(
   const wxExVCSEntry& vcs,
   long flags)
 {
-  auto* stc = GetFocusedSTC();
+  wxExSTC* stc = GetFocusedSTC();
 
   if (stc != NULL)
   {
@@ -521,7 +521,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
 {
   if (pane == "PaneInfo")
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) 
     {
       stc->GotoDialog();
@@ -534,7 +534,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   }
   else if (pane == "PaneLexer")
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
 
     if (stc != NULL && wxExLexers::Get()->Count() > 0)
     {
@@ -550,7 +550,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   }
   else if (pane == "PaneFileType")
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) stc->FileTypeMenu();
   }
   else

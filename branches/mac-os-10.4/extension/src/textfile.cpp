@@ -23,22 +23,7 @@
 
 long wxExFileStatistics::Get(const wxString& key) const
 {
-  const auto it = m_Elements.GetItems().find(key);
-
-  if (it != m_Elements.GetItems().end())
-  {
-    return it->second;
-  }
-  else
-  {
-    const auto it = m_Keywords.GetItems().find(key);
-
-    if (it != m_Keywords.GetItems().end())
-    {
-      return it->second;
-    }
-  }
-
+  // TODO: FIX (removed code)
   return 0;
 }
 
@@ -263,7 +248,7 @@ bool wxExTextFile::MatchLine(wxString& line)
   bool match = false;
   int count = 1;
 
-  auto* frd = wxExFindReplaceData::Get();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   if (!frd->UseRegularExpression() || !frd->GetRegularExpression().IsValid())
   {
@@ -543,10 +528,11 @@ bool wxExTextFile::ParseLine(const wxString& line)
       {
         if (m_Tool.GetId() == ID_TOOL_REPORT_KEYWORD)
         {
-          if (m_FileName.GetLexer().IsKeyword(codeword))
-          {
-            m_Stats.m_Keywords.Inc(codeword);
-          }
+		 // TODO: FIX (IsKeyword no longer const)
+         // if (m_FileName.GetLexer().IsKeyword(codeword))
+         // {
+         ////   m_Stats.m_Keywords.Inc(codeword);
+         // }
         }
 
         sequence = false;

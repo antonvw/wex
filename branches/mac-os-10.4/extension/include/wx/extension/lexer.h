@@ -80,14 +80,14 @@ public:
   const wxString& GetScintillaLexer() const {return m_ScintillaLexer;};
 
   /// Is this word a keyword (allways all keywords), case sensitive.
-  bool IsKeyword(const wxString& word) const;
+  bool IsKeyword(const wxString& word);
 
   /// Is this lexer valid.
   bool IsOk() const {return m_IsOk;};
 
   /// Does any keyword (allways all keywords) start with this word,
   /// case insensitive.
-  bool KeywordStartsWith(const wxString& word) const;
+  bool KeywordStartsWith(const wxString& word);
 
   /// Returns a lexer comment string with text formatted.
   const wxString MakeComment(

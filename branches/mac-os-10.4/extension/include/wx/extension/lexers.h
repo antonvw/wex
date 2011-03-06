@@ -40,7 +40,7 @@ public:
 
   /// Sets global styles (and colours and indicators) 
   /// for current theme for specified component.
-  void ApplyGlobalStyles(wxStyledTextCtrl* stc) const;
+  void ApplyGlobalStyles(wxStyledTextCtrl* stc);
 
   /// Sets hex styles for specified component.
   void ApplyHexStyles(wxStyledTextCtrl* stc) const;
@@ -91,10 +91,10 @@ public:
   /// Returns the current theme, as present in the config.
   /// It checks whether the config theme is really
   /// present as a theme, if not, empty string is returned.
-  const wxString GetTheme() const;
+  const wxString GetTheme();
   
   /// Gets the theme macros for the current theme.
-  const std::map<wxString, wxString>& GetThemeMacros() const;
+  const std::map<wxString, wxString>& GetThemeMacros();
 
   /// Returns true if specified indicator is available.
   bool IndicatorIsLoaded(const wxExIndicator& indic) const;

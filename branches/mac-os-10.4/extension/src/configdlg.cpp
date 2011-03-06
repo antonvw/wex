@@ -67,7 +67,7 @@ std::vector< wxExConfigItem >::const_iterator
 wxExConfigDialog::FindConfigItem(int id) const
 {
   for (
-    auto it = m_ConfigItems.begin();
+    std::vector<wxExConfigItem>::const_iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {
@@ -149,7 +149,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
   wxString previous_page = "XXXXXX";
 
   for (
-    auto it = m_ConfigItems.begin();
+    std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {
@@ -173,13 +173,13 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
 
       previous_page = it->GetPage();
 
-      const auto use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
+      const int use_cols = (it->GetColumns() != -1 ? it->GetColumns(): cols);
 
       sizer = (rows != 0 ? 
         new wxFlexGridSizer(rows, use_cols, 0, 0):
         new wxFlexGridSizer(use_cols));
 
-      for (auto i = 0; i < use_cols; i++)
+      for (int i = 0; i < use_cols; i++)
       {
         sizer->AddGrowableCol(i);
       }
@@ -239,13 +239,13 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
 {
   if (command.GetId() < wxID_LOWEST)
   {
-    auto it = FindConfigItem(command.GetId());
+    std::vector<wxExConfigItem>::const_iterator it = FindConfigItem(command.GetId());
 
     if (it != m_ConfigItems.end())
     {
       if (it->GetType() == CONFIG_COMBOBOXDIR)
       {
-        auto browse = (wxComboBox*)it->GetControl();
+        wxComboBox* browse = (wxComboBox*)it->GetControl();
 
         wxDirDialog dir_dlg(
           this,
@@ -293,7 +293,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
   bool one_checkbox_checked = false;
 
   for (
-    auto it = m_ConfigItems.begin();
+    std::vector<wxExConfigItem>::iterator it = m_ConfigItems.begin();
     it != m_ConfigItems.end();
     ++it)
   {

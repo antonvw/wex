@@ -196,18 +196,18 @@ const wxString wxExListView::BuildPage()
   text << "<tr>" << wxTextFile::GetEOL();
 
   for (
-    auto it = m_Columns.begin();
+    std::vector<wxExColumn>::iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
     text << "<td><i>" << it->GetColumn() << "</i>" << wxTextFile::GetEOL();
   }
 
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (int i = 0; i < GetItemCount(); i++)
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    for (auto col = 0; col < GetColumnCount(); col++)
+    for (int col = 0; col < GetColumnCount(); col++)
     {
       text << "<td>" << wxListView::GetItemText(i, col) << wxTextFile::GetEOL();
     }
@@ -232,7 +232,7 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     wxMenu* menuSort = new wxMenu;
 
     for (
-      auto it = m_Columns.begin();
+      std::vector<wxExColumn>::iterator it = m_Columns.begin();
       it != m_Columns.end();
       ++it)
     {
@@ -287,7 +287,7 @@ void wxExListView::EditDelete()
 int wxExListView::FindColumn(const wxString& name) const
 {
   for (
-    auto it = m_Columns.begin();
+    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
     it != m_Columns.end();
     ++it)
   {
@@ -318,7 +318,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
     text_use.MakeUpper();
   }
 
-  const auto firstselected = GetFirstSelected();
+  const int firstselected = GetFirstSelected();
 
   if (find_next)
   {
@@ -350,11 +350,11 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   int match = -1;
 
   for (
-    auto index = start_item;
+    int index = start_item;
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
-    for (auto col = 0; col < GetColumnCount() && match == -1; col++)
+    for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
       wxString text = wxListView::GetItemText(index, col);
 
@@ -418,7 +418,7 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     return 0;
   }
 
-  const auto it = m_ArtIDs.find(artid);
+  const std::map<wxArtID, unsigned int>::iterator it = m_ArtIDs.find(artid);
 
   if (it != m_ArtIDs.end())
   {
@@ -457,7 +457,7 @@ bool wxExListView::GotoDialog(const wxString& caption)
     return false;
   }
   
-  auto initial_value = GetFirstSelected();
+  int initial_value = GetFirstSelected();
 
   if (initial_value == -1) // nothing selected
   {
@@ -558,7 +558,7 @@ const wxString wxExListView::ItemToText(long item_number) const
 {
   wxString text;
 
-  for (auto col = 0; col < GetColumnCount(); col++)
+  for (int col = 0; col < GetColumnCount(); col++)
   {
     text += wxListView::GetItemText(item_number, col);
 
@@ -608,7 +608,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     EditInvertAll();
     break;
   case ID_EDIT_SELECT_NONE:
-    for (auto i = 0; i < GetItemCount(); i++)
+    for (int i = 0; i < GetItemCount(); i++)
     {
       Select(i, false);
     }
@@ -815,7 +815,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   std::vector<wxString> items;
   pitems = &items;
 
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (int i = 0; i < GetItemCount(); i++)
   {
     const wxString val = wxListView::GetItemText(i, column_no);
     items.push_back(val);

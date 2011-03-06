@@ -246,7 +246,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
 
       for (
-        auto it = m_Choices.begin();
+        std::map<long, const wxString>::iterator it = m_Choices.begin();
         it != m_Choices.end();
        ++it)
       {
@@ -373,7 +373,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
 
       for (
-        auto it = m_Choices.begin();
+        std::map<long, const wxString>::iterator it = m_Choices.begin();
         it != m_Choices.end();
         ++it)
       {
@@ -564,7 +564,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       int item = 0;
 
       for (
-        auto b = m_Choices.begin();
+        std::map<long, const wxString>::const_iterator b = m_Choices.begin();
         b != m_Choices.end();
         ++b)
       {
@@ -628,10 +628,12 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_COMBOBOXDIR:
       {
       wxComboBox* cb = (wxComboBox*)m_Control;
+	  // TODO: FIX.
+	  /*
 
       if (save)
       {
-        const auto l = wxExComboBoxToList(cb, m_MaxItems);
+        const std::list < wxString >::const_iterator l = wxExComboBoxToList(cb, m_MaxItems);
 
         wxExListToConfig(l, m_Name);
 
@@ -647,7 +649,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       else
       {
         wxExComboBoxFromList(cb, wxExListFromConfig(m_Name));
-      }
+      }*/
       }
       break;
 
@@ -711,7 +713,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       if (save)
       {
         for (
-          auto b = m_Choices.begin();
+          std::map<long, const wxString>::const_iterator b = m_Choices.begin();
           b != m_Choices.end();
           ++b)
         {
@@ -723,7 +725,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       else
       {
-        const auto c = 
+        const std::map<long, const wxString>::const_iterator c = 
           m_Choices.find(wxConfigBase::Get()->ReadLong(m_Name, 0));
 
         if (c != m_Choices.end())

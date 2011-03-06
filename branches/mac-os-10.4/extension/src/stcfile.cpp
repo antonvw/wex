@@ -135,7 +135,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
     const int SCI_ADDTEXT = 2001;
     const int SCI_APPENDTEXT = 2282;
-    const auto message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
+    const int message = (get_only_new_data ? SCI_APPENDTEXT: SCI_ADDTEXT);
 
     // README: The stc.h equivalents AddText, AddTextRaw, InsertText, 
     // InsertTextRaw do not add the length.

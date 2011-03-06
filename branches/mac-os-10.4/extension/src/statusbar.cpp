@@ -51,7 +51,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
 
   bool found = false;
 
-  for (auto i = 0; i < GetFieldsCount() && !found; i++)
+  for (int i = 0; i < GetFieldsCount() && !found; i++)
   {
     wxRect rect;
 
@@ -62,7 +62,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         found = true;
 
         for (
-          auto it = m_Panes.begin();
+          std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.begin();
           it != m_Panes.end();
           ++it)
         {
@@ -108,7 +108,7 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
   int* widths = new int[fields.size()];
 
   for (
-    auto it = fields.begin();
+    std::vector<wxExStatusBarPane>::const_iterator it = fields.begin();
     it != fields.end();
     ++it)
   {
@@ -145,7 +145,7 @@ void wxExStatusBar::SetFields(const std::vector<wxExStatusBarPane>& fields)
 
 void wxExStatusBar::SetStatusText(const wxString& text, const wxString& field)
 {
-  const auto it = m_Panes.find(field);
+  const std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.find(field);
 
   if (it != m_Panes.end())
   {
