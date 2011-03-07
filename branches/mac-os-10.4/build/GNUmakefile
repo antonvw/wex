@@ -168,7 +168,7 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX):
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex09.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep09.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
+all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex09.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep09.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped syncped_bundle
 
 install: install_syncped
 
@@ -180,6 +180,7 @@ clean:
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex09.a
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep09.a
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
+	rm -rf syncped.app
 
 test_for_selected_wxbuild: 
 	@$(WX_CONFIG) $(WX_CONFIG_FLAGS)
@@ -203,6 +204,32 @@ install_syncped: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 
 uninstall_syncped: 
 	rm -f $(DESTDIR)/usr/local/bin//syncped
+
+gccosx_carbon_dll/syncped.app/Contents/PkgInfo: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
+	/Developer/Tools/SetFile -t APPL gccosx_carbon_dll//syncped
+	
+	
+	mkdir -p gccosx_carbon_dll/syncped.app/Contents
+	mkdir -p gccosx_carbon_dll/syncped.app/Contents/MacOS
+	mkdir -p gccosx_carbon_dll/syncped.app/Contents/Resources
+	
+	
+	sed -e "s/IDENTIFIER/syncped/" \
+	-e "s/EXECUTABLE/syncped/" \
+	-e "s/VERSION/1.0/" \
+	../../wxWidgets-2.9.1/src/osx/carbon/Info.plist.in >gccosx_carbon_dll/syncped.app/Contents/Info.plist
+	
+	
+	echo -n "APPL????" >gccosx_carbon_dll/syncped.app/Contents/PkgInfo
+	
+	
+	ln -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped gccosx_carbon_dll/syncped.app/Contents/MacOS/syncped
+	
+	
+	
+	cp -f ../../wxWidgets-2.9.1/src/osx/carbon/wxmac.icns gccosx_carbon_dll/syncped.app/Contents/Resources/wxmac.icns
+
+syncped_bundle: gccosx_carbon_dll/syncped.app/Contents/PkgInfo
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o: ./../extension/src/app.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
@@ -360,7 +387,8 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_frame.o: ./../syn
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_support.o: ./../syncped/src/support.cpp
 	$(CXX) -c -o $@ $(SYNCPED_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean install_syncped uninstall_syncped
+.PHONY: all install uninstall clean install_syncped uninstall_syncped \
+	syncped_bundle
 
 
 # Dependencies tracking:

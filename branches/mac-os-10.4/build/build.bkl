@@ -20,6 +20,73 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <include file="presets/wx.bkl"/>
   <set-wxlike-builddir/>
   
+  <if cond="FORMAT=='gnu'">
+ 	 <define-tag name="osx-bundle" rules="exe">
+ 
+		<set var="BUNDLE_IDENTIFIER">$(id)</set>
+ 
+		<set var="WXDIR">../../wxWidgets-2.9.1</set>
+ 
+		<set var="MAC_VERSION">1.0</set>
+		<set var="BUNDLE_PLIST">$(WXDIR)/src/osx/carbon/Info.plist.in</set>
+		<!-- <set var="BUNDLE_RESOURCE">/usr/local/lib/libwx_mac-2.5.4.rsrc</set> -->
+		<set var="BUNDLE_ICONS">$(WXDIR)/src/osx/carbon/wxmac.icns</set>
+ 
+		<!-- bundle directory: -->
+		<set var="BINDIR">gccosx_carbon_dll/</set>
+		<set var="BUNDLE">$(BINDIR)$(id).app/Contents</set>
+		<set var="BUNDLE_TGT">$(BUNDLE)/PkgInfo</set>
+		<set var="BUNDLE_TGT_REF">$(BUNDLE)/PkgInfo</set>
+ 
+ 
+		<add-target target="$(BUNDLE_TGT)" type="action"/>
+		<modify-target target="$(BUNDLE_TGT)">
+			<depends>$(id)</depends>
+			<!-- required data: -->
+			<command>
+				<!--/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -o 
+				$(BINDIR)$(id) Carbon.r /usr/local/lib/libwx_mac-2.5.4.r 
+				$(WXDIR)/samples/sample.r -->
+				/Developer/Tools/SetFile -t APPL $(BINDIR)/$(id)
+ 
+				<!-- create the directories: -->
+				mkdir -p $(BUNDLE)
+				mkdir -p $(BUNDLE)/MacOS
+				mkdir -p $(BUNDLE)/Resources
+ 
+				<!-- Info.plist: -->
+				sed -e "s/IDENTIFIER/$(BUNDLE_IDENTIFIER)/" \
+				-e "s/EXECUTABLE/$(id)/" \
+				-e "s/VERSION/$(MAC_VERSION)/" \
+				$(BUNDLE_PLIST) >$(BUNDLE)/Info.plist
+ 
+				<!-- PkgInfo: -->
+				echo -n "APPL????" >$(BUNDLE)/PkgInfo
+ 
+				<!-- make a hardlink to the binary: -->
+				ln -f $(ref("__targetdir",id))$(ref("__targetname",id)) $(BUNDLE)/MacOS/$(id)
+ 
+				<!-- ditto wxWidgets resources and icons: -->
+				<!-- cp -f $(BUNDLE_RESOURCE) $(BUNDLE)/Resources/$(id).rsrc -->
+				cp -f $(BUNDLE_ICONS) $(BUNDLE)/Resources/wxmac.icns
+			</command>
+		</modify-target>
+ 
+		<!-- add pseudo target id_bundle: -->
+		<add-target target="$(id)_bundle" type="phony"/>
+		<modify-target target="$(id)_bundle">
+			<dependency-of>all</dependency-of>
+			<depends>$(BUNDLE_TGT_REF)</depends>
+		</modify-target>
+ 
+		<!-- "make clean" should delete the bundle: -->
+		<modify-target target="clean">
+			<command>rm -rf $(id).app</command>
+		</modify-target>
+		
+	</define-tag>
+  </if>
+  
   <!-- options -->
   <option name="USE_EMBEDDED_SQL">
      <values>0,1</values>
@@ -250,6 +317,10 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
+		
+	<if cond="FORMAT=='gnu'">
+		<osx-bundle/>
+	</if>
   </exe>
   
 </makefile>
