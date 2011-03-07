@@ -201,7 +201,9 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuProject, _("&Project"));
   menubar->Append(menuWindow, _("&Window"));
   menubar->Append(menuOptions, _("&Options"));
+#ifndef __WXOSX__  
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
+#endif
   
   SetMenuBar(menubar);
 }
