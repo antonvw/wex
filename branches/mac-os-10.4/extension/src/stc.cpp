@@ -1429,8 +1429,10 @@ void wxExSTC::Initialize()
 
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
-#else
+#elseifdef __WXGTK__
   SetEOLMode(wxSTC_EOL_LF);
+#else
+  SetEOLMode(wxSTC_EOL_CR);
 #endif
 
   SetBackSpaceUnIndents(true);
