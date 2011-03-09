@@ -80,7 +80,7 @@ wxMenuItem* wxExMenu::Append(
 
 void wxExMenu::AppendBars()
 {
-#ifndef __WXGTK__
+#ifdef __WXMSW__
   AppendCheckItem(ID_VIEW_MENUBAR, _("&Menubar\tCtrl+B"));
 #endif
   AppendCheckItem(ID_VIEW_STATUSBAR, _("&Statusbar"));
@@ -181,6 +181,11 @@ bool wxExMenu::AppendTools(int itemid)
   {
     return false;
   }
+
+#ifdef __WXOSX__  
+  // We do not (yet) support tools for mac osx, statistics is not working.
+  return false;
+#endif
 
   wxExMenu* menuTool = new wxExMenu(*this);
 
