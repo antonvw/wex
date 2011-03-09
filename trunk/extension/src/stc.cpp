@@ -1401,7 +1401,14 @@ void wxExSTC::Indent(int begin, int end, bool forward)
     }
     else
     {
-      Remove(start, start + GetIndent());
+      if (GetUseTabs())
+      {
+        Remove(start, start + 1);
+      }
+      else
+      {
+        Remove(start, start + GetIndent());
+      }
     }
     
     MarkerAddChange(begin + i);
