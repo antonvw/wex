@@ -1448,7 +1448,7 @@ void wxExSTC::Initialize()
 
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
-#elseifdef __WXGTK__
+#elif __WXGTK__
   SetEOLMode(wxSTC_EOL_LF);
 #else
   SetEOLMode(wxSTC_EOL_CR);
