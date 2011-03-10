@@ -1408,7 +1408,19 @@ void wxExSTC::Indent(int begin, int end, bool forward)
     }
     else
     {
-      Remove(start, start + GetIndent());
+      const int cols = GetLineIndentation(begin + i);
+      
+      if (cols > 0)
+      {
+        if (GetUseTabs())
+        {
+          Remove(start, start + 1);
+        }
+        else
+        {
+          Remove(start, start + GetIndent());
+        }
+      }
     }
     
     MarkerAddChange(begin + i);

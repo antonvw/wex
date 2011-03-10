@@ -123,7 +123,7 @@ void wxExVi::DeleteMarker(const wxUniChar& marker)
 
   if (it != m_Markers.end())
   {
-    m_STC->MarkerDelete(it->second, m_MarkerSymbol.GetNo());
+    m_STC->MarkerDelete(it->second - 1, m_MarkerSymbol.GetNo());
     m_Markers.erase(it);
   }
 }
