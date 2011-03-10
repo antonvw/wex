@@ -700,6 +700,13 @@ int wxExSTC::ConfigDialog(
   {
     buttons |= wxAPPLY;
   }
+  
+#ifdef __WXOSX__
+  // The listbook does not look nice on the iBook.
+  const int style = wxExConfigDialog::CONFIG_NOTEBOOK;
+#else  
+  const int style = wxExConfigDialog::CONFIG_LISTBOOK;
+#endif
 
   if (!(flags & STC_CONFIG_MODELESS))
   {
@@ -711,7 +718,7 @@ int wxExSTC::ConfigDialog(
       1,
       buttons,
       id,
-      wxExConfigDialog::CONFIG_LISTBOOK).ShowModal();
+      style).ShowModal();
   }
   else
   {
@@ -725,7 +732,7 @@ int wxExSTC::ConfigDialog(
         1,
         buttons,
         id,
-        wxExConfigDialog::CONFIG_LISTBOOK);
+        style);
     }
 
     return m_ConfigDialog->Show();
@@ -1441,8 +1448,10 @@ void wxExSTC::Initialize()
 
 #ifdef __WXMSW__
   SetEOLMode(wxSTC_EOL_CRLF);
-#else
+#elseifdef __WXGTK__
   SetEOLMode(wxSTC_EOL_LF);
+#else
+  SetEOLMode(wxSTC_EOL_CR);
 #endif
 
   SetBackSpaceUnIndents(true);
