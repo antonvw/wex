@@ -230,7 +230,7 @@ gccosx_carbon_dll/syncped.app/Contents/PkgInfo: $(COMPILER_PREFIX)$(WX_PORT)$(_B
 	
 	
 	
-	cp -f ../../wxWidgets-2.9.1/src/osx/carbon/wxmac.icns gccosx_carbon_dll/syncped.app/Contents/Resources/wxmac.icns
+	cp -f ../syncped/src/app.icns gccosx_carbon_dll/syncped.app/Contents/Resources/app.icns
 
 syncped_bundle: gccosx_carbon_dll/syncped.app/Contents/PkgInfo
 

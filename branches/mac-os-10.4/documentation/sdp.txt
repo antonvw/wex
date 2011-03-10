@@ -50,6 +50,7 @@ General
     http://www.convertico.com/
     and converted to xpm using GIMP (2.6.6)    
     http://www.gimp.org/
+	converted (xpm) to syncped app.icns using http://iconverticons.com/
 
 - Documentation
   - API documentation is generated from the sources using Doxygen (1.7.1)
