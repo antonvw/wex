@@ -1419,6 +1419,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         
         <colour name="caretforeground"> blue </colour>
         <colour name="caretlinebackground"> green </colour>
+        <colour name="edge"> blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -1467,6 +1468,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> green </colour>
+        <colour name="edge"> white </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
