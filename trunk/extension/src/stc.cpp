@@ -1499,7 +1499,7 @@ void wxExSTC::Initialize()
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
   
-  SetGlobalStyles();
+  wxExLexers::Get()->ApplyGlobalStyles(this);
   
   ConfigGet();
 }
@@ -2365,11 +2365,6 @@ void wxExSTC::SequenceDialog()
   }
 
   AddText(sequence + GetEOL());
-}
-
-void wxExSTC::SetGlobalStyles()
-{
-  wxExLexers::Get()->ApplyGlobalStyles(this);
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
