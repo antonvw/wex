@@ -1438,13 +1438,14 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         <def style ="OPERATOR"> fore:white </def>
         <def style ="PREPROCESSOR"> fore:grey </def>
         <def style ="STRING"> fore:blue </def>
-        <def style ="TAG"> fore:dark slate blue </def>
+        <def style ="TAG"> fore:light blue </def>
         <def style ="VARIABLE"> fore:violet </def>
         <def style ="WORD"> fore:dark turquoise </def>
         
         <colour name="caretforeground"> blue </colour>
         <colour name="caretlinebackground"> green </colour>
-        <colour name="selforeground"> white </colour>
+        <colour name="edge"> white </colour>
+        <colour name="selforeground"> black</colour>
         <colour name="selbackground"> green </colour>
       </theme>
       
@@ -1493,6 +1494,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         
         <colour name="caretforeground"> blue </colour>
         <colour name="caretlinebackground"> green </colour>
+        <colour name="edge"> blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
