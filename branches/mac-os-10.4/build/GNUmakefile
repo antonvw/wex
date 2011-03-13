@@ -205,34 +205,34 @@ install_syncped: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 uninstall_syncped: 
 	rm -f $(DESTDIR)/usr/local/bin//syncped
 
-gccosx_carbon_dll/syncped.app/Contents/PkgInfo: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
-	/Developer/Tools/SetFile -t APPL gccosx_carbon_dll//syncped
+gccosx_cocoa_dll/syncped.app/Contents/PkgInfo: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
+	/Developer/Tools/SetFile -t APPL gccosx_cocoa_dll//syncped
 	
 	
-	mkdir -p gccosx_carbon_dll/syncped.app/Contents
-	mkdir -p gccosx_carbon_dll/syncped.app/Contents/MacOS
-	mkdir -p gccosx_carbon_dll/syncped.app/Contents/Resources
+	mkdir -p gccosx_cocoa_dll/syncped.app/Contents
+	mkdir -p gccosx_cocoa_dll/syncped.app/Contents/MacOS
+	mkdir -p gccosx_cocoa_dll/syncped.app/Contents/Resources
 	
 	
 	sed -e "s/IDENTIFIER/syncped/" \
 	-e "s/EXECUTABLE/syncped/" \
 	-e "s/VERSION/1.0/" \
-	../../wxWidgets-2.9.1/src/osx/carbon/Info.plist.in >gccosx_carbon_dll/syncped.app/Contents/Info.plist
+	../../wxWidgets/src/osx/carbon/Info.plist.in >gccosx_cocoa_dll/syncped.app/Contents/Info.plist
 	
 	
-	echo -n "APPL????" >gccosx_carbon_dll/syncped.app/Contents/PkgInfo
+	echo -n "APPL????" >gccosx_cocoa_dll/syncped.app/Contents/PkgInfo
 	
 	
-	ln -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped gccosx_carbon_dll/syncped.app/Contents/MacOS/syncped
+	ln -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped gccosx_cocoa_dll/syncped.app/Contents/MacOS/syncped
 	
 	
-	cp ../extension/data/*.xml gccosx_carbon_dll/syncped.app/Contents/MacOS/
+	cp ../extension/data/*.xml gccosx_cocoa_dll/syncped.app/Contents/MacOS/
 	
 	
 	
-	cp -f ../syncped/src/app.icns gccosx_carbon_dll/syncped.app/Contents/Resources/app.icns
+	cp -f ../syncped/src/app-large.icns gccosx_cocoa_dll/syncped.app/Contents/Resources/app.icns
 
-syncped_bundle: gccosx_carbon_dll/syncped.app/Contents/PkgInfo
+syncped_bundle: gccosx_cocoa_dll/syncped.app/Contents/PkgInfo
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_app.o: ./../extension/src/app.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
