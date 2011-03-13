@@ -49,6 +49,8 @@ General
     http://www.convertico.com/
     and converted to xpm using GIMP (2.6.6)    
     http://www.gimp.org/
+    and convert to mac icns (first make 128 by 128 icon),
+    then use http://iconverticons.com/ to convert to mac icns.
 
 - Documentation
   - API documentation is generated from the sources using Doxygen (1.7.1)
