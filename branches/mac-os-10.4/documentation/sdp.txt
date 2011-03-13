@@ -45,12 +45,13 @@ General
     menu and toolbar bitmaps are from wxWidgets, using wxArtProvider, 
     or gtk stock items
     application icons are from
-    http://www.famfamfam.com/lab/icons/silk/
+    http://tango.freedesktop.org/Tango_Desktop_Project
     and converted to ico using
     http://www.convertico.com/
     and converted to xpm using GIMP (2.6.6)    
     http://www.gimp.org/
-	converted (xpm) to syncped app.icns using http://iconverticons.com/
+    and convert to mac icns (first make 128 by 128 icon),
+    then use http://iconverticons.com/ to convert to mac icns.
 
 - Documentation
   - API documentation is generated from the sources using Doxygen (1.7.1)
