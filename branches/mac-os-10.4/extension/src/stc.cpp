@@ -568,7 +568,7 @@ int wxExSTC::ConfigDialog(
 {
   std::vector<wxExConfigItem> items;
 
-  // Setting page.
+  // General page.
   std::set<wxString> bchoices;
   bchoices.insert(_("End of line"));
   bchoices.insert(_("Line numbers"));
@@ -576,7 +576,7 @@ int wxExSTC::ConfigDialog(
   bchoices.insert(_("Caret line"));
   bchoices.insert(_("vi mode"));
   // use 2 cols here, but 1 for others on this page
-  items.push_back(wxExConfigItem(bchoices, _("Setting"), 2)); 
+  items.push_back(wxExConfigItem(bchoices, _("General"), 2)); 
 
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair(wxSTC_WS_INVISIBLE, _("Invisible")));
@@ -587,7 +587,7 @@ int wxExSTC::ConfigDialog(
     _("Whitespace"), 
     choices, 
     true, 
-    _("Setting"),
+    _("General"),
     1));
 
   // Next code does not have any effect (2.9.1, on MSW and GTK)
@@ -601,7 +601,7 @@ int wxExSTC::ConfigDialog(
     _("Selection mode"), 
     smode, 
     true, 
-    _("Setting"),
+    _("General"),
     1));
   */
   
@@ -613,7 +613,7 @@ int wxExSTC::ConfigDialog(
     _("Wrap line"), 
     wchoices, 
     true,
-    _("Setting"),
+    _("General"),
     1));
 
   std::map<long, const wxString> vchoices;
@@ -624,7 +624,7 @@ int wxExSTC::ConfigDialog(
     _("Wrap visual flags"), 
     vchoices, 
     true, 
-    _("Setting"),
+    _("General"),
     1));
 
   // Edge page.
@@ -1499,7 +1499,7 @@ void wxExSTC::Initialize()
   wxAcceleratorTable accel(i, entries);
   SetAcceleratorTable(accel);
   
-  SetGlobalStyles();
+  wxExLexers::Get()->ApplyGlobalStyles(this);
   
   ConfigGet();
 }
@@ -2365,11 +2365,6 @@ void wxExSTC::SequenceDialog()
   }
 
   AddText(sequence + GetEOL());
-}
-
-void wxExSTC::SetGlobalStyles()
-{
-  wxExLexers::Get()->ApplyGlobalStyles(this);
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)

@@ -336,7 +336,6 @@ private:
     int line_number = 0, 
     wxString* filename = NULL); // name of found file
   void MarkerAddChange(int line);
-  void SetGlobalStyles();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();

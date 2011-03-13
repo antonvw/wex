@@ -1402,6 +1402,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <!-- The studio theme, resembles Visual Studio -->
       <theme name = "studio">
         <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
+        <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1419,6 +1420,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         
         <colour name="caretforeground"> blue </colour>
         <colour name="caretlinebackground"> green </colour>
+        <colour name="edge"> blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -1426,6 +1428,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <!-- The ubuntu theme, uses same background as ubuntu -->
       <theme name = "ubuntu">
         <def style ="styledefault"> face:courier new,size:10,back:#2C001E,fore:white </def>
+        <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1436,20 +1439,22 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         <def style ="NUMBER"> fore:red </def>
         <def style ="OPERATOR"> fore:white </def>
         <def style ="PREPROCESSOR"> fore:grey </def>
-        <def style ="STRING"> fore:blue </def>
-        <def style ="TAG"> fore:dark slate blue </def>
+        <def style ="STRING"> fore:red </def>
+        <def style ="TAG"> fore:light blue </def>
         <def style ="VARIABLE"> fore:violet </def>
         <def style ="WORD"> fore:dark turquoise </def>
         
-        <colour name="caretforeground"> blue </colour>
+        <colour name="caretforeground"> white</colour>
         <colour name="caretlinebackground"> green </colour>
-        <colour name="selforeground"> white </colour>
+        <colour name="edge"> white </colour>
+        <colour name="selforeground"> black</colour>
         <colour name="selbackground"> green </colour>
       </theme>
       
       <!-- The torte theme, resembles vi torte -->
       <theme name = "torte">
         <def style ="styledefault"> face:courier new,size:10,back:black,fore:#BBBBBB </def>
+        <def style ="bracelight"> back:blue,fore:white</def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1467,6 +1472,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> green </colour>
+        <colour name="edge"> white </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -1474,6 +1480,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <!-- The xcode theme, resembles OSX Xcode -->
       <theme name = "xcode">
         <def style ="styledefault"> face:courier new,size:12,back:white,fore:black </def>
+        <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1491,6 +1498,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         
         <colour name="caretforeground"> blue </colour>
         <colour name="caretlinebackground"> green </colour>
+        <colour name="edge"> blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -1520,7 +1528,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     <!-- this style is applied before all other styles -->
     <style no="wxSTC_STYLE_DEFAULT"> styledefault </style>
     
-    <style no="wxSTC_STYLE_BRACELIGHT"> back:yellow </style>
+    <style no="wxSTC_STYLE_BRACELIGHT"> bracelight </style>
     <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
     
     <properties>

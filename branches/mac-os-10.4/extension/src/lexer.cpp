@@ -66,6 +66,7 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
   if (clear)
   {
     stc->StyleClearAll();
+    wxExLexers::Get()->ApplyGlobalStyles(stc);
   }
 
   wxExLexers::Get()->ApplyIndicators(stc);
