@@ -49,6 +49,10 @@ bool App::OnInit()
     return false;
   }
 
+#ifdef __WXOSX__  
+  wxApp::SetExitOnFrameDelete(false);
+#endif  
+  
   Frame* frame = new Frame(m_Files.Count() == 0);
   frame->Show();
 
