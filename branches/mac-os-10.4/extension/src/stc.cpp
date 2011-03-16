@@ -2132,9 +2132,9 @@ void wxExSTC::Reload(long flags)
   if ((flags & STC_WIN_HEX) && 
      !(m_Flags & STC_WIN_HEX))
   {
-    const wxString value = GetText();
+    const wxCharBuffer buffer = GetTextRaw();
     ClearDocument();
-    AddTextHexMode(0, value.c_str());
+    AddTextHexMode(0, buffer);
     SetReadOnly(true);
     m_Flags = flags;
     EmptyUndoBuffer();
