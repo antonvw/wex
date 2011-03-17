@@ -240,7 +240,7 @@ const wxString wxExLexers::GetLexerExtensions() const
 
 const wxString wxExLexers::GetTheme() const
 {
-  const wxString theme = wxConfigBase::Get()->Read("theme", m_NoTheme);
+  const wxString theme = wxConfigBase::Get()->Read("theme", "studio");
 
   // Use the theme macros, though we could also use the theme colours,
   // as they contain the same themes.  
