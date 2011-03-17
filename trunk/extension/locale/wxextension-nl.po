@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxextension v0.9.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-12 20:00+0100\n"
-"PO-Revision-Date: 2011-03-12 20:00+0100\n"
+"POT-Creation-Date: 2011-03-17 19:00+0100\n"
+"PO-Revision-Date: 2011-03-17 19:00+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -677,8 +677,8 @@ msgid "file(s)"
 msgstr "bestand(en)"
 
 #: ../src/toolbar.cpp:96
-msgid "View in hex mode"
-msgstr "Bekijk hexadecimaal"
+msgid "Open in hex mode"
+msgstr "Hexadecimaal openen"
 
 #: ../src/toolbar.cpp:97
 msgid "Synchronize modified files"
