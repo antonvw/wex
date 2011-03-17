@@ -93,7 +93,7 @@ void wxExToolBar::AddControls()
       "Sync"));
 
 #if wxUSE_TOOLTIPS
-  m_HexMode->SetToolTip(_("View in hex mode"));
+  m_HexMode->SetToolTip(_("Open in hex mode"));
   m_SyncMode->SetToolTip(_("Synchronize modified files"));
 #endif
 
