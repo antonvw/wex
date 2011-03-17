@@ -123,8 +123,8 @@ Copyright: (c) 2010, Anton van Wezenbeek
 
     <commands>
       <command> &amp;add </command>
-      <command> &amp;blame </command>
-      <command> &amp;cat </command>
+      <command type="popup"> &amp;blame </command>
+      <command type="popup"> &amp;cat </command>
       <command> &amp;changelist </command>
       <command type = "main"> &amp;cleanup </command>
       <command> &amp;commit </command>
