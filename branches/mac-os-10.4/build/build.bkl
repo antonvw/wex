@@ -33,7 +33,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <set var="BUNDLE_ICONS">../syncped/src/app-large.icns</set>
  
     <!-- bundle directory: -->
-    <set var="BINDIR">gccosx_cocoa_dll/</set>
+    <set var="BINDIR">gccosx_carbon_dll/</set>
     <set var="BUNDLE">$(BINDIR)$(id).app/Contents</set>
     <set var="BUNDLE_TGT">$(BUNDLE)/PkgInfo</set>
     <set var="BUNDLE_TGT_REF">$(BUNDLE)/PkgInfo</set>
