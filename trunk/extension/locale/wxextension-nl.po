@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: wxextension v0.9.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-17 19:00+0100\n"
-"PO-Revision-Date: 2011-03-17 19:00+0100\n"
+"PO-Revision-Date: 2011-03-18 19:29+0100\n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -1169,231 +1169,156 @@ msgstr "Proces selecteren"
 
 #~ msgid "Setting"
 #~ msgstr "Instelling"
-
 #~ msgid "Calltip"
 #~ msgstr "Info"
-
 #~ msgid "Colour"
 #~ msgstr "Kleur"
-
 #~ msgid "Edge colour"
 #~ msgstr "Kantlijn kleur"
-
 #~ msgid "Fold Flags"
 #~ msgstr "Opvouw vlaggen"
-
 #~ msgid "Cannot execute"
 #~ msgstr "Kan niet uitvoeren"
-
 #~ msgid "Printout"
 #~ msgstr "Afdrukpagina"
-
 #~ msgid "Set VCS And Comparator"
 #~ msgstr "VCS en vergelijker instellen"
-
 #~ msgid "Undefined styles tag: %s on line: %d"
 #~ msgstr "Onbekende stijl tag: %s op regel: %d"
-
 #~ msgid "Undefined lexer tag: %s on line: %d"
 #~ msgstr "Onbekende lexer tag: %s op regel: %d"
-
 #~ msgid "Undefined tag: %s on line: %d"
 #~ msgstr "Ontbekende tag: %s op regel: %d"
-
 #~ msgid "Undefined global tag: %s on line: %d"
 #~ msgstr "Onbekende globale tag: %s op regel: %d"
-
 #~ msgid "Undefined macro tag: %s on line: %d"
 #~ msgstr "Onbekende macro: %s op regel: %d"
-
 #~ msgid "Undefined properties tag: %s on line: %d"
 #~ msgstr "Onbekende properties tag: %s op regel: %d"
-
 #~ msgid "Illegal marker on line: %d"
 #~ msgstr "Onbekende marker op regel: %d"
-
 #~ msgid "Illegal property on line: %d"
 #~ msgstr "Onbekende eigenschap: %d"
-
 #~ msgid "Illegal indicator: %s"
 #~ msgstr "Onbekenbde indicator: %s"
-
 #~ msgid "Undefined colourings tag: %s on line: %d"
 #~ msgstr "Onbekende kleuren tag: %s  op regel: %d"
-
 #~ msgid "Tool Bar"
 #~ msgstr "Tool Bar"
-
 #~ msgid "Find Bar"
 #~ msgstr "Zoekbalk"
-
 #~ msgid "Insert Sequence"
 #~ msgstr "Rij toevoegen"
-
 #~ msgid "Box"
 #~ msgstr "Box"
-
 #~ msgid "Parsed code lines"
 #~ msgstr "Code regels"
-
 #~ msgid "Parsed comment lines"
 #~ msgstr "Commentaar regels"
-
 #~ msgid "Find &In Files"
 #~ msgstr "&Zoeken in bestanden"
-
 #~ msgid "&Replace In Files"
 #~ msgstr "&Vervangen in bestanden"
-
 #~ msgid "&Add Header"
 #~ msgstr "&Koptekst toevoegen"
-
 #~ msgid "Level numbers"
 #~ msgstr "Niveau nummers"
-
 #~ msgid "Undefined macro: %s"
 #~ msgstr "Onbekende macro: %s"
-
 #~ msgid "<none>"
 #~ msgstr "<geen>"
-
 #~ msgid "Use SVN"
 #~ msgstr "Gebruik SVN"
-
 #~ msgid "Files Passed"
 #~ msgstr "Bestanden langs gelopen"
-
 #~ msgid "Add Files"
 #~ msgstr "Bestanden toevoegen"
-
 #~ msgid "searchline"
 #~ msgstr "zoekregel"
-
 #~ msgid "commandline"
 #~ msgstr "commando regel"
-
 #~ msgid "Cancelled previous find files"
 #~ msgstr "Zoeken naar bestanden geannuleerd"
-
 #~ msgid "Edge Column"
 #~ msgstr "Kantlijn kolom"
-
 #~ msgid "Project"
 #~ msgstr "Project"
-
 #~ msgid "Insert Timestamp"
 #~ msgstr "Tijdstip toevoegen"
-
 #~ msgid "Running process"
 #~ msgstr "Uitvoeren proces"
-
 #~ msgid "Cannot run process"
 #~ msgstr "Kan proces niet uitvoeren"
-
 #~ msgid "Select Projects"
 #~ msgstr "Projecten selecteren"
-
 #~ msgid "Select File"
 #~ msgstr "Bestand selecteren"
-
 #~ msgid "Select Directory"
 #~ msgstr "Map selecteren"
-
 #~ msgid "Company"
 #~ msgstr "Bedrijf"
-
 #~ msgid "Open ODBC Database"
 #~ msgstr "ODBC database openen"
-
 #~ msgid "Already busy finding files"
 #~ msgstr "Zoek naar bestanden al bezig"
-
 #~ msgid "No comments available for lexer: %s, cannot make comment"
 #~ msgstr "Geen commentaar beschikbaar voor lexer: %s"
-
 #~ msgid "Address"
 #~ msgstr "Adres"
-
 #~ msgid "Country"
 #~ msgstr "Land"
-
 #~ msgid "Place"
 #~ msgstr "Plaats"
-
 #~ msgid "Zipcode"
 #~ msgstr "Postcode"
-
 #~ msgid "Make"
 #~ msgstr "Maken"
-
 #~ msgid "&Diff"
 #~ msgstr "&Diff"
-
 #~ msgid "&Log"
 #~ msgstr "&Log"
-
 #~ msgid "&Cat"
 #~ msgstr "&Cat"
-
 #~ msgid "&Blame"
 #~ msgstr "&Blame"
-
 #~ msgid "&Commit"
 #~ msgstr "&Commit"
-
 #~ msgid "SVN Cat"
 #~ msgstr "SVN Cat"
-
 #~ msgid "SVN Commit"
 #~ msgstr "SVN Commit"
-
 #~ msgid "SVN Diff"
 #~ msgstr "SVN Diff"
-
 #~ msgid "SVN Info"
 #~ msgstr "SVN Info"
-
 #~ msgid "SVN Log"
 #~ msgstr "SVN Log"
-
 #~ msgid "SVN Stat"
 #~ msgstr "SVN Stat"
-
 #~ msgid "&Report"
 #~ msgstr "&Rapporteren"
-
 #~ msgid "SQL &Query Report"
 #~ msgstr "&SQL Queries"
-
 #~ msgid "Commited"
 #~ msgstr "Gecommit"
-
 #~ msgid "Please add a comparator"
 #~ msgstr "Voeg een vergelijker toe"
-
 #~ msgid "Headers"
 #~ msgstr "Kopteksten"
-
 #~ msgid "Header Description"
 #~ msgstr "Koptekst omschrijving"
-
 #~ msgid "Description"
 #~ msgstr "Omschrijving"
-
 #~ msgid "Add Header Description"
 #~ msgstr "Geef koptekst omschrijving"
-
 #~ msgid "File created and header added."
 #~ msgstr "Bestand gemaakt en koptekst toegevoegd."
-
 #~ msgid "Header added."
 #~ msgstr "Koptekst toegevoegd."
-
 #~ msgid "Edited header in"
 #~ msgstr "Koptekst gewijzigd in "
-
 #~ msgid "Reported %ld headers in"
 #~ msgstr "%ld kopteksten gerapporteerd in"
-
 #~ msgid "File: %s Modified: %s Printed: %s"
 #~ msgstr "Bestand: %s Gewijzigd: %s Afgedrukt: %s"
+
