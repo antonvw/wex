@@ -322,6 +322,17 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       FindInFilesDialog(event.GetId());
       break;
 
+    case ID_PROJECT_SAVE:
+      {
+        wxExListViewFile* project = GetProject();
+        
+        if (project != NULL)
+        {
+          project->FileSave();
+        }
+      }
+      break;
+      
     case ID_TERMINATED_PROCESS:
       wxBell();
       wxDELETE(m_Process);
