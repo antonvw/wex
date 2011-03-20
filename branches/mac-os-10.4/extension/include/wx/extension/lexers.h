@@ -51,7 +51,7 @@ public:
   /// Applies macro to text:
   /// if text is referring to a macro, text is replaced by the macro value.
   /// Otherwise the same text is returned.
-  const wxString ApplyMacro(const wxString& text) const;
+  const wxString ApplyMacro(const wxString& text);
 
   /// Sets markers for specified component.
   void ApplyMarkers(wxStyledTextCtrl* stc) const;

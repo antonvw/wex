@@ -93,7 +93,7 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
     std::bind2nd(std::mem_fun_ref(&wxExIndicator::Apply), stc));
 }
 
-const wxString wxExLexers::ApplyMacro(const wxString& text) const
+const wxString wxExLexers::ApplyMacro(const wxString& text)
 {
   const std::map<wxString, wxString>::const_iterator it = m_Macros.find(text);
   if (it != m_Macros.end())
@@ -102,15 +102,12 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
   else
   {
-    for (
-      auto style = GetThemeMacros().begin();
-      style != GetThemeMacros().end();
-      ++style)
+    const std::map<wxString, wxString>::const_iterator it = 
+      GetThemeMacros().find(text);
+
+    if (it != GetThemeMacros().end())
     {
-      if (style->first == text)
-      {
-        return style->second;
-      }
+      return it->second;
     }
   }
   
