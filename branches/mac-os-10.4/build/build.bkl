@@ -70,7 +70,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
  
         <!-- ditto wxWidgets resources and icons: -->
         <!-- cp -f $(BUNDLE_RESOURCE) $(BUNDLE)/Resources/$(id).rsrc -->
-        cp -f $(BUNDLE_ICONS) $(BUNDLE)/Resources/app.icns
+        cp -f $(BUNDLE_ICONS) $(BUNDLE)/Resources/wxmac.icns
       </command>
     </modify-target>
  
