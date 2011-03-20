@@ -102,15 +102,12 @@ const wxString wxExLexers::ApplyMacro(const wxString& text) const
   }
   else
   {
-    for (
-      auto style = GetThemeMacros().begin();
-      style != GetThemeMacros().end();
-      ++style)
+    const auto it = 
+      GetThemeMacros().find(text);
+
+    if (it != GetThemeMacros().end())
     {
-      if (style->first == text)
-      {
-        return style->second;
-      }
+      return it->second;
     }
   }
   
