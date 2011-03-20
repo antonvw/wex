@@ -96,7 +96,25 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
 const wxString wxExLexers::ApplyMacro(const wxString& text) const
 {
   const auto it = m_Macros.find(text);
-  return (it != m_Macros.end() ? it->second: text);
+  if (it != m_Macros.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    for (
+      auto style = GetThemeMacros().begin();
+      style != GetThemeMacros().end();
+      ++style)
+    {
+      if (style->first == text)
+      {
+        return style->second;
+      }
+    }
+  }
+  
+  return text;
 }
 
 void wxExLexers::ApplyMarkers(wxStyledTextCtrl* stc) const
