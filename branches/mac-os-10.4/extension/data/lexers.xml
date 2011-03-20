@@ -1394,15 +1394,13 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
     <def no ="wxEx_MARKNUM_CHANGE"> 1 </def>
     <def no ="wxEx_MARKNUM_VI"> 0 </def>
     
-    <!-- Macro's for wxextension folding -->
-    <def no ="folder"> light blue </def>
-    
     <!-- These are the themes, including style macro's and colours. -->
     <themes>
       <!-- The studio theme, resembles Visual Studio -->
       <theme name = "studio">
         <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
+        <def style ="folder"> light blue </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1429,6 +1427,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <theme name = "ubuntu">
         <def style ="styledefault"> face:courier new,size:10,back:#2C001E,fore:white </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
+        <def style ="folder"> light blue </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1455,6 +1454,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <theme name = "torte">
         <def style ="styledefault"> face:courier new,size:10,back:black,fore:#BBBBBB </def>
         <def style ="bracelight"> back:blue,fore:white</def>
+        <def style ="folder"> light blue </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1481,6 +1481,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <theme name = "xcode">
         <def style ="styledefault"> face:courier new,size:12,back:white,fore:black </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
+        <def style ="folder"> light blue </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
         <def style ="ATTRIBUTE"> fore:steel blue </def>
         <def style ="CHAR"> fore:pink </def>
@@ -1496,7 +1497,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
         <def style ="VARIABLE"> fore:violet </def>
         <def style ="WORD"> fore:dark turquoise </def>
         
-        <colour name="caretforeground"> blue </colour>
+        <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> green </colour>
         <colour name="edge"> blue </colour>
         <colour name="selforeground"> white </colour>
