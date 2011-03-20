@@ -50,7 +50,8 @@ bool App::OnInit()
   }
 
 #ifdef __WXOSX__  
-  wxApp::SetExitOnFrameDelete(false);
+  // At least on OSX 10.4 and carbon this does not work
+  //wxApp::SetExitOnFrameDelete(false);
 #endif  
   
   Frame* frame = new Frame(m_Files.Count() == 0);
