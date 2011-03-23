@@ -1704,7 +1704,7 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
   <lexer name="gap" match="wxSTC_GAP_" />
   <lexer name="gui4cli" match="wxSTC_GC_" />
   <lexer name="haskell" match="wxSTC_HA_" />
-  <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_">
+  <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_" >
     <styles>
       <style no="wxSTC_H_TAG"> TAG </style>
       <style no="wxSTC_H_TAGEND"> TAG </style>
@@ -1719,6 +1719,8 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
       <style no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </style>
       <style no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </style>
       <style no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </style>
+      <style no="wxSTC_HPHP_COMMENT"> fore:green </style>
+      <style no="wxSTC_HPHP_COMMENTLINE"> fore:green </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -1845,11 +1847,11 @@ Copyright: (c) 1998-2009, Anton van Wezenbeek
   <lexer name="sorcus" match="wxSTC_SORCUS" />
   <lexer name="specman" match="wxSTC_SN_" />
   <lexer name="spice" match="wxSTC_SPICE_" />
-  <lexer name="sql" match="wx_SSTC_SQL_">
+  <lexer name="sql" extensions="*.sql" match="wxSTC_SQL_">
     <keywords>    
-    <!-- These ones added manually -->
-    auto_increment comment index exists
+    <!-- First line added manually -->
     <!-- Copied from scite, v1.68. -->
+    auto_increment comment index exists
     absolute action add admin after aggregate
     alias all allocate alter and any are array as asc
     assertion at authorization
