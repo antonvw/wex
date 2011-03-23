@@ -628,12 +628,9 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_COMBOBOXDIR:
       {
       wxComboBox* cb = (wxComboBox*)m_Control;
-	  // TODO: FIX.
-	  /*
-
       if (save)
       {
-        const std::list < wxString >::const_iterator l = wxExComboBoxToList(cb, m_MaxItems);
+        const std::list < wxString > l = wxExComboBoxToList(cb, m_MaxItems);
 
         wxExListToConfig(l, m_Name);
 
@@ -649,7 +646,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       else
       {
         wxExComboBoxFromList(cb, wxExListFromConfig(m_Name));
-      }*/
+      }
       }
       break;
 
