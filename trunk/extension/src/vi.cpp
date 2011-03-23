@@ -1142,6 +1142,9 @@ void wxExVi::ToggleCase() const
     text);
 
   m_STC->CharRight();
+  
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  m_STC->MarkerAddChange(line);
 }
 
 // Returns 0 and bells on error in address, otherwise the vi line number,

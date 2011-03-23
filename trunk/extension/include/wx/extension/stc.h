@@ -212,6 +212,9 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
   
+  /// Marks specified line as changed.
+  void MarkerAddChange(int line);
+  
   /// Deletes all change markers.
   void MarkerDeleteAllChange();
   
@@ -335,7 +338,6 @@ private:
     const wxString& link,
     int line_number = 0, 
     wxString* filename = NULL); // name of found file
-  void MarkerAddChange(int line);
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
