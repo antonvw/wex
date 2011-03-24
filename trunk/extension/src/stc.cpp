@@ -1733,8 +1733,16 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     HexDecCalltip(GetCurrentPos());
   break;
 
-  case ID_EDIT_LOWERCASE: LowerCase(); break;
-  case ID_EDIT_UPPERCASE: UpperCase(); break;
+  case ID_EDIT_LOWERCASE: 
+    LowerCase(); 
+    TargetFromSelection();
+    MarkTargetChange();
+    break;
+  case ID_EDIT_UPPERCASE: 
+    UpperCase(); 
+    TargetFromSelection();
+    MarkTargetChange();
+    break;
   
   case ID_EDIT_MARKER_NEXT: 
     {
