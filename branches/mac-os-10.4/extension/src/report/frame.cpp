@@ -521,6 +521,31 @@ void wxExFrameWithHistory::SetRecentProject(const wxString& project)
   }
 }
     
+void wxExFrameWithHistory::StatusBarClicked(const wxString& pane)
+{
+  if (pane.empty()) 
+  {
+    wxMenu* menu = new wxMenu();
+
+    for (int i = m_FileHistory.GetCount() - 1; i >= 0; i--)
+    {
+      wxExFileName file(m_FileHistory.GetHistoryFile(i));
+
+      if (file.GetStat().IsOk())
+      {
+        menu->Append(wxID_FILE1 + i, file.GetFullPath());
+      }
+    }
+    
+    PopupMenu(menu);
+  }
+  else
+  {
+    wxExManagedFrame::StatusBarClicked(pane);
+  }
+}
+
+
 void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
 {
   UseHistory(id, menu, m_FileHistory);

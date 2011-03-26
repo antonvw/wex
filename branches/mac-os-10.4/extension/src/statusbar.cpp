@@ -24,8 +24,8 @@
 int wxExStatusBarPane::m_Total = 0;
 
 BEGIN_EVENT_TABLE(wxExStatusBar, wxStatusBar)
-  EVT_LEFT_DOWN(wxExStatusBar::OnMouse)
   EVT_LEFT_DCLICK(wxExStatusBar::OnMouse)
+  EVT_RIGHT_DCLICK(wxExStatusBar::OnMouse)
 END_EVENT_TABLE()
 
 wxExStatusBar::wxExStatusBar(
@@ -71,11 +71,11 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             // Handle the event, don't fail if none is true here,
             // it seems that moving and clicking almost at the same time
             // could cause assertions.
-            if (event.ButtonDClick())
+            if (event.LeftDClick())
             {
               m_Frame->StatusBarDoubleClicked(it->second.GetName());
             }
-            else if (event.ButtonDown())
+            else if (event.RightDClick())
             {
               m_Frame->StatusBarClicked(it->second.GetName());
             }

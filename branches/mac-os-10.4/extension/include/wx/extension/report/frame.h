@@ -23,8 +23,7 @@ class wxExListViewWithFrame;
 class wxExProcess;
 
 /// Adds file and project history support to wxExManagedFrame.
-/// It also updates the title of the frame if you have a focused
-/// STC file or listview project.
+/// It also sets a change indicator in the title of the frame if applicable.
 /// Finally it adds process support and find in files dialog.
 class WXDLLIMPEXP_BASE wxExFrameWithHistory : public wxExManagedFrame
 {
@@ -67,6 +66,7 @@ public:
     if (m_ProjectHistory.GetCount() == 0) return wxEmptyString;
     return m_ProjectHistory.GetHistoryFile(0);}
 
+  /// Override OnCommandConfigDialog for add, find and replace in files.
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int commandid = wxID_APPLY);
@@ -121,6 +121,8 @@ protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
+  
+  virtual void StatusBarClicked(const wxString& pane);
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
