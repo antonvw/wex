@@ -1,13 +1,6 @@
-.........F............
+.....................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  21   Failures: 1   Errors: 0
-
-
-1) test: testLexers (F) line: 324 ../extension/test/app/test.cpp
-assertion failed
-- Expression: wxExLexers::Get()->GetThemeMacros().empty()
+OK (21 tests)
 
 
