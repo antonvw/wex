@@ -321,7 +321,7 @@ void wxExAppTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetThemeMacros().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
