@@ -521,7 +521,7 @@ void wxExFrameWithHistory::SetRecentProject(const wxString& project)
   }
 }
     
-void wxExFrameWithHistory::StatusBarClicked(const wxString& pane)
+void wxExFrameWithHistory::StatusBarDoubleClickedRight(const wxString& pane)
 {
   if (pane.empty()) 
   {
@@ -541,7 +541,7 @@ void wxExFrameWithHistory::StatusBarClicked(const wxString& pane)
   }
   else
   {
-    wxExManagedFrame::StatusBarClicked(pane);
+    wxExManagedFrame::StatusBarDoubleClickedRight(pane);
   }
 }
 
