@@ -99,12 +99,12 @@ public:
     wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");
 
-  /// Do something when statusbar is clicked.
-  virtual void StatusBarClicked(const wxString& ) {};
-
-  /// When double clicked, uses the GetSTC() for some dialogs.
+  /// When (left) double clicked, uses the GetSTC() for some dialogs.
   virtual void StatusBarDoubleClicked(
     const wxString& pane);
+
+  /// Do something when statusbar is (right) double clicked.
+  virtual void StatusBarDoubleClickedRight(const wxString& ) {};
 
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.

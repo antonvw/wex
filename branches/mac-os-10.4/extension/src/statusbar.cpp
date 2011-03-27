@@ -77,7 +77,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             }
             else if (event.RightDClick())
             {
-              m_Frame->StatusBarClicked(it->second.GetName());
+              m_Frame->StatusBarDoubleClickedRight(it->second.GetName());
             }
 #if wxUSE_TOOLTIPS
             // Show tooltip if tooltip is available, and not yet presented.
