@@ -545,7 +545,6 @@ void wxExFrameWithHistory::StatusBarDoubleClickedRight(const wxString& pane)
   }
 }
 
-
 void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
 {
   UseHistory(id, menu, m_FileHistory);
