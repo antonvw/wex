@@ -92,7 +92,7 @@ void wxExCommand::ShowOutput(const wxString& caption) const
     m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
     m_Dialog->Show();
   }
-  else
+  else if (!m_Output.empty())
   {
     wxMessageBox(m_Output);
   }
