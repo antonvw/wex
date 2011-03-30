@@ -57,6 +57,7 @@ private:
     const wxExVCSEntry& vcs,
     long flags = 0);
   virtual void StatusBarDoubleClicked(const wxString& pane);
+  virtual void StatusBarDoubleClickedRight(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);
 
   int m_NewFileNo;

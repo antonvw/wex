@@ -723,7 +723,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_OPEN_LEXERS: OpenFile(wxExLexers::Get()->GetFileName()); break;
   case ID_OPEN_LOGFILE: OpenFile(m_LogFile); break;
   case ID_OPEN_VCS: OpenFile(wxExVCS::GetFileName()); break;
 
@@ -1288,6 +1287,18 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
   else
   {
     DecoratedFrame::StatusBarDoubleClicked(pane);
+  }
+}
+
+void Frame::StatusBarDoubleClickedRight(const wxString& pane)
+{
+  if (pane == "PaneLexer" || pane == "PaneTheme")
+  {
+    OpenFile(wxExLexers::Get()->GetFileName());
+  }
+  else
+  {
+    wxExFrameWithHistory::StatusBarDoubleClickedRight(pane);
   }
 }
 
