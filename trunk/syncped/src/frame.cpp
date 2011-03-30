@@ -100,6 +100,7 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_MENU_VCS, Frame::OnUpdateUI)
+  EVT_UPDATE_UI(ID_OPTION_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_PROJECT_MENU, Frame::OnUpdateUI)
@@ -949,6 +950,10 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         event.GetId() - ID_OPTION_LIST_SORT_ASCENDING == 
         wxConfigBase::Get()->ReadLong("List/SortMethod", SORT_TOGGLE) - SORT_ASCENDING);
     break;
+    
+    case ID_OPTION_VCS:
+      event.Enable(wxExVCS::GetCount() > 0);
+      break;
 
     case ID_PROJECT_CLOSE:
     case ID_PROJECT_SAVEAS:

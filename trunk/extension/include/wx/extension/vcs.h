@@ -61,6 +61,9 @@ public:
   /// Executes the vcs command, and collects the output.
   /// Returns return code from command Execute.
   long Execute();
+  
+  /// Gets the number of vcs entries.
+  static int GetCount() {return m_Entries.size();};
 
   /// Gets the current vcs entry.
   const wxExVCSEntry& GetEntry() const {return m_Entry;};
