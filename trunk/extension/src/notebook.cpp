@@ -219,7 +219,8 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
 bool wxExNotebook::SetPageText(
   const wxString& key,
   const wxString& new_key,
-  const wxString& text)
+  const wxString& text,
+  const wxBitmap& bitmap)
 {
   wxWindow* page = GetPageByKey(key);
 
@@ -231,6 +232,11 @@ bool wxExNotebook::SetPageText(
     if (!wxAuiNotebook::SetPageText(GetPageIndex(page), text))
     {
       wxFAIL;
+    }
+    
+    if (bitmap.IsOk())
+    {
+      SetPageBitmap(GetPageIndex(page), bitmap);
     }
   }
 

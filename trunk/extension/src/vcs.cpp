@@ -236,11 +236,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 
   if (vcs == VCS_AUTO)
   {
-    if (!filename.IsOk())
-    {
-      return wxExVCSEntry();
-    }
-    else
+    if (filename.IsOk())
     {
       for (
         auto it = m_Entries.begin();
@@ -259,8 +255,6 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
           return it->second;
         }
       }
-
-      return wxExVCSEntry();
     }
   }
   else

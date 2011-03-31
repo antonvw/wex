@@ -34,7 +34,7 @@ public:
   /// Default constructor.
   wxExVCS(
     /// Specify several files for which you want vcs action.
-    /// If the this array is empty, ShowDialog will show
+    /// If this array is empty, ShowDialog will show
     /// a combobox for selecting a vcs folder.
     const wxArrayString& files = wxArrayString(),
     /// The menu command id that is used to set the vcs command.

@@ -586,8 +586,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetDescription(description);
     info.SetCopyright("(c) 1998-2011, Anton van Wezenbeek. " 
       + wxString(_("All rights reserved.")));
-    info.SetWebSite(
-      wxString("http://syncped.1.xpdev-hosted.com/index.htm"));
+    info.SetWebSite("http://syncped.1.xpdev-hosted.com/index.htm");
       
     wxAboutBox(info);
     }
@@ -605,8 +604,16 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Editors->DeletePage(editor->GetFileName().GetFullPath());
     }
     break;
+    
   case wxID_EXIT: Close(true); break;
+  
+  case wxID_HELP:
+    wxLaunchDefaultBrowser(wxString("http://syncped.1.xpdev-hosted.com/tags/v") + 
+      APPL_VERSION + wxString("/syncped.htm"));
+    break;
+    
   case wxID_NEW: NewFile(); break;
+  
   case wxID_PREVIEW:
     if (GetFocusedSTC() != NULL)
     {
@@ -681,7 +688,9 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Editors->SetPageText(
         old_key,
         editor->GetFileName().GetFullPath(),
-        editor->GetFileName().GetFullName());
+        editor->GetFileName().GetFullName(),
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+          wxExGetIconID(editor->GetFileName())));
     }
     editor->PropertiesMessage();
     break;
@@ -1277,11 +1286,7 @@ bool Frame::OpenFile(
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
-  if (pane.empty())
-  {
-    TogglePane("LOG");
-  }
-  else if (pane == "PaneTheme")
+  if (pane == "PaneTheme")
   {
     if (wxExLexers::Get()->ShowThemeDialog(this))
     {
@@ -1297,13 +1302,17 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 
 void Frame::StatusBarDoubleClickedRight(const wxString& pane)
 {
-  if (pane == "PaneLexer" || pane == "PaneTheme")
+  if (pane.empty())
+  {
+    TogglePane("LOG");
+  }
+  else if (pane == "PaneLexer" || pane == "PaneTheme")
   {
     OpenFile(wxExLexers::Get()->GetFileName());
   }
   else
   {
-    wxExFrameWithHistory::StatusBarDoubleClickedRight(pane);
+    DecoratedFrame::StatusBarDoubleClickedRight(pane);
   }
 }
 

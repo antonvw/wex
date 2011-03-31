@@ -122,7 +122,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
   
-  virtual void StatusBarDoubleClickedRight(const wxString& pane);
+  virtual void StatusBarDoubleClicked(const wxString& pane);
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);

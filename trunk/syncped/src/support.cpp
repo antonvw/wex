@@ -191,6 +191,7 @@ DecoratedFrame::DecoratedFrame()
 
   wxMenu *menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
+  menuHelp->Append(wxID_HELP);
 
   wxMenuBar* menubar = new wxMenuBar();
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));
