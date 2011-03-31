@@ -99,7 +99,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_OPTION_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
@@ -734,7 +733,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPEN_LOGFILE: OpenFile(m_LogFile); break;
-  case ID_OPEN_VCS: OpenFile(wxExVCS::GetFileName()); break;
 
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
@@ -801,12 +799,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_LIST_SORT_TOGGLE:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
-  case ID_OPTION_VCS: 
-    if (wxExVCS().ConfigDialog(this) == wxID_OK)
-    {
-      GetVCSMenu()->BuildVCS();
-    }
-    break;
+  case ID_OPTION_VCS: wxExVCS().ConfigDialog(this); break;
     
   case ID_PROCESS_SELECT: ProcessConfigDialog(this); break;
 
@@ -947,10 +940,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_ALL_STC_SAVE:
       event.Enable(m_Editors->GetPageCount() > 2);
     break;
-
-    case ID_MENU_VCS:
-      event.Enable(GetVCSMenu()->IsVCSBuild());
-      break;
 
     case ID_OPTION_LIST_SORT_ASCENDING:
     case ID_OPTION_LIST_SORT_DESCENDING:
@@ -1294,6 +1283,16 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
       m_Editors->ForEach(ID_ALL_STC_SET_LEXER_THEME);
     }
   }
+  else if (pane == "PaneVCS")
+  {
+    if (wxExVCS::GetCount() > 0)
+    {
+      wxExMenu* menu = new wxExMenu;
+      menu->BuildVCS();
+      PopupMenu(menu);
+      delete menu;
+    }
+  }
   else
   {
     DecoratedFrame::StatusBarDoubleClicked(pane);
@@ -1309,6 +1308,10 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
   else if (pane == "PaneLexer" || pane == "PaneTheme")
   {
     OpenFile(wxExLexers::Get()->GetFileName());
+  }
+  else if (pane == "PaneVCS")
+  {
+    OpenFile(wxExVCS::GetFileName());
   }
   else
   {

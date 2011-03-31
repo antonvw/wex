@@ -20,9 +20,5 @@ public:
   DecoratedFrame();
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
-protected:
-  wxExMenu* GetVCSMenu() {return m_MenuVCS;};
-private:
-  wxExMenu* m_MenuVCS;
 };
 #endif
