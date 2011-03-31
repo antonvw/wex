@@ -65,7 +65,8 @@ public:
   bool SetPageText(
     const wxString& key,
     const wxString& new_key,
-    const wxString& text);
+    const wxString& text,
+    const wxBitmap& bitmap = wxNullBitmap);
 protected:
   void OnNotebook(wxAuiNotebookEvent& event);
 private:

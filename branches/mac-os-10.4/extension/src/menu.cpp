@@ -225,10 +225,9 @@ void wxExMenu::AppendVCS(const wxExFileName& filename)
   
   wxArrayString ar;
   ar.Add(filename.GetFullPath());
-  wxExVCS vcs(ar);
-  vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu);
+  const wxExVCS vcs(ar);
 
-  if (vcsmenu->GetMenuItemCount() > 0)
+  if (vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu))
   { 
     AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
   }

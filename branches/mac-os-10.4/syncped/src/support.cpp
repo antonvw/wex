@@ -18,6 +18,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/util.h>
+#include <wx/extension/vcs.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/stc.h>
 #ifndef __WXMSW__
@@ -33,7 +34,6 @@ DecoratedFrame::DecoratedFrame()
       wxTheApp->GetAppDisplayName(), // title
       25,                     // maxFiles
       4)                      // maxProjects
-  , m_MenuVCS(new wxExMenu)
 {
   SetIcon(wxICON(app));
 
@@ -55,18 +55,25 @@ DecoratedFrame::DecoratedFrame()
     panes.push_back(wxExStatusBarPane("PaneTheme", lexer_size, _("Theme")));
   }
 
+  if (wxExVCS::GetCount() > 0)
+  {
+    panes.push_back(wxExStatusBarPane("PaneVCS", 50, _("VCS")));
+  }
+  
   SetupStatusBar(panes);
+  
+  if (wxExVCS::GetCount() > 0)
+  {
+    wxExVCS vcs;
+    StatusText(vcs.GetEntry().GetName(), "PaneVCS");
+  }
 #endif
 
   wxExMenu *menuFile = new wxExMenu();
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
-  wxMenu* menuOpen = new wxMenu();
-  menuOpen->Append(ID_OPEN_LOGFILE, _("&Log File"));
-  menuOpen->Append(ID_OPEN_VCS, _("&VCS File"));
-  menuFile->AppendSeparator();
-  menuFile->AppendSubMenu(menuOpen, _("Open"));
+  menuFile->Append(ID_OPEN_LOGFILE, _("Open &Log File"));
   menuFile->AppendSeparator();
   menuFile->Append(wxID_CLOSE);
   menuFile->Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
@@ -115,10 +122,6 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSubMenu(menuMore, _("More"));
   menuEdit->AppendSeparator();
   
-  m_MenuVCS->BuildVCS();
-  menuEdit->AppendSubMenu(m_MenuVCS, "&VCS", wxEmptyString, ID_MENU_VCS);
-  menuEdit->AppendSeparator();
-
   wxExMenu* menuMacro = new wxExMenu();
   menuMacro->Append(ID_EDIT_MACRO_START_RECORD, _("Start Record"));
   menuMacro->Append(ID_EDIT_MACRO_STOP_RECORD, _("Stop Record"));
@@ -166,17 +169,18 @@ DecoratedFrame::DecoratedFrame()
 
   wxMenu* menuOptions = new wxMenu();
   
-  if (wxExLexers::Get()->Count() > 0)
+  if (wxExVCS::GetCount() > 0)
   {
     menuOptions->Append(ID_OPTION_VCS, wxExEllipsed(_("Set &VCS")));
+    menuOptions->AppendSeparator();
   }
-  else
+  
+  if (wxExVCS::GetCount() == 0)
   {
     menuOptions->Append(
       ID_OPTION_LIST_COMPARATOR, wxExEllipsed(_("Set List &Comparator")));
   }
   
-  menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));
   // text also used as caption
   menuOptions->Append(
@@ -191,6 +195,7 @@ DecoratedFrame::DecoratedFrame()
 
   wxMenu *menuHelp = new wxMenu();
   menuHelp->Append(wxID_ABOUT);
+  menuHelp->Append(wxID_HELP);
 
   wxMenuBar* menubar = new wxMenuBar();
   menubar->Append(menuFile, wxGetStockLabel(wxID_FILE));

@@ -334,7 +334,7 @@ int wxExVCSEntry::ShowDialog(
 #if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
-  if (!GetError())
+  if (!GetError() && GetDialog() != NULL)
   {
     if (GetFlags().Contains("xml"))
     {

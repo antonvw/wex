@@ -99,7 +99,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_OPTION_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
@@ -586,8 +585,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetDescription(description);
     info.SetCopyright("(c) 1998-2011, Anton van Wezenbeek. " 
       + wxString(_("All rights reserved.")));
-    info.SetWebSite(
-      wxString("http://syncped.1.xpdev-hosted.com/index.htm"));
+    info.SetWebSite("http://syncped.1.xpdev-hosted.com/index.htm");
       
     wxAboutBox(info);
     }
@@ -605,8 +603,16 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Editors->DeletePage(editor->GetFileName().GetFullPath());
     }
     break;
+    
   case wxID_EXIT: Close(true); break;
+  
+  case wxID_HELP:
+    wxLaunchDefaultBrowser(wxString("http://syncped.1.xpdev-hosted.com/tags/v") + 
+      APPL_VERSION + wxString("/syncped.htm"));
+    break;
+    
   case wxID_NEW: NewFile(); break;
+  
   case wxID_PREVIEW:
     if (GetFocusedSTC() != NULL)
     {
@@ -681,7 +687,9 @@ void Frame::OnCommand(wxCommandEvent& event)
       m_Editors->SetPageText(
         old_key,
         editor->GetFileName().GetFullPath(),
-        editor->GetFileName().GetFullName());
+        editor->GetFileName().GetFullName(),
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+          wxExGetIconID(editor->GetFileName())));
     }
     editor->PropertiesMessage();
     break;
@@ -725,7 +733,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_OPEN_LOGFILE: OpenFile(m_LogFile); break;
-  case ID_OPEN_VCS: OpenFile(wxExVCS::GetFileName()); break;
 
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
@@ -794,8 +801,9 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_OPTION_VCS: 
     if (wxExVCS().ConfigDialog(this) == wxID_OK)
-    {
-      GetVCSMenu()->BuildVCS();
+    { 
+      wxExVCS vcs;
+      StatusText(vcs.GetEntry().GetName(), "PaneVCS");
     }
     break;
     
@@ -938,10 +946,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     case ID_ALL_STC_SAVE:
       event.Enable(m_Editors->GetPageCount() > 2);
     break;
-
-    case ID_MENU_VCS:
-      event.Enable(GetVCSMenu()->IsVCSBuild());
-      break;
 
     case ID_OPTION_LIST_SORT_ASCENDING:
     case ID_OPTION_LIST_SORT_DESCENDING:
@@ -1277,16 +1281,22 @@ bool Frame::OpenFile(
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
-  if (pane.empty())
-  {
-    TogglePane("LOG");
-  }
-  else if (pane == "PaneTheme")
+  if (pane == "PaneTheme")
   {
     if (wxExLexers::Get()->ShowThemeDialog(this))
     {
       StatusText(wxExLexers::Get()->GetTheme(), "PaneTheme");
       m_Editors->ForEach(ID_ALL_STC_SET_LEXER_THEME);
+    }
+  }
+  else if (pane == "PaneVCS")
+  {
+    if (wxExVCS::GetCount() > 0)
+    {
+      wxExMenu* menu = new wxExMenu;
+      menu->BuildVCS();
+      PopupMenu(menu);
+      delete menu;
     }
   }
   else
@@ -1297,13 +1307,21 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 
 void Frame::StatusBarDoubleClickedRight(const wxString& pane)
 {
-  if (pane == "PaneLexer" || pane == "PaneTheme")
+  if (pane.empty())
+  {
+    TogglePane("LOG");
+  }
+  else if (pane == "PaneLexer" || pane == "PaneTheme")
   {
     OpenFile(wxExLexers::Get()->GetFileName());
   }
+  else if (pane == "PaneVCS")
+  {
+    OpenFile(wxExVCS::GetFileName());
+  }
   else
   {
-    wxExFrameWithHistory::StatusBarDoubleClickedRight(pane);
+    DecoratedFrame::StatusBarDoubleClickedRight(pane);
   }
 }
 
