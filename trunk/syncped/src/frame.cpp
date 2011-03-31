@@ -799,7 +799,13 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_OPTION_LIST_SORT_TOGGLE:
     wxConfigBase::Get()->Write("List/SortMethod", (long)SORT_TOGGLE); break;
 
-  case ID_OPTION_VCS: wxExVCS().ConfigDialog(this); break;
+  case ID_OPTION_VCS: 
+    if (wxExVCS().ConfigDialog(this) == wxID_OK)
+    { 
+      wxExVCS vcs;
+      StatusText(vcs.GetEntry().GetName(), "PaneVCS");
+    }
+    break;
     
   case ID_PROCESS_SELECT: ProcessConfigDialog(this); break;
 

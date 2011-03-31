@@ -61,6 +61,12 @@ DecoratedFrame::DecoratedFrame()
   }
   
   SetupStatusBar(panes);
+  
+  if (wxExVCS::GetCount() > 0)
+  {
+    wxExVCS vcs;
+    StatusText(vcs.GetEntry().GetName(), "PaneVCS");
+  }
 #endif
 
   wxExMenu *menuFile = new wxExMenu();
