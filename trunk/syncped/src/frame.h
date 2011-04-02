@@ -35,6 +35,7 @@ public:
 protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnNotebook(wxAuiNotebookEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewStandard* Activate(

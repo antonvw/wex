@@ -26,6 +26,7 @@ cp ../extension/locale/wxextension-nl.mo syncped/nl-NL/
 cp ../extension/locale/wxstd-xxx-nl.mo syncped/nl-NL/
 cp ../syncped/locale/syncped-nl.mo syncped/nl-NL/
  
+strip syncped
 tar cf syncped.tar syncped
 gzip syncped.tar
 

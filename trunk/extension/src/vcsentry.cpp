@@ -100,8 +100,9 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
 int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
   wxMenu* submenu = NULL;
-  
-  wxString prev_menu = "XXXXX";
+
+  const wxString unused = "XXXXX";  
+  wxString prev_menu = unused;
 
   for (
     auto it = m_Commands.begin();
@@ -119,9 +120,9 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
     }
     else if (it->GetSubMenu().empty())
     {
-      if (prev_menu != "XXXXX")
+      if (prev_menu != unused)
       {
-        prev_menu = "XXXXX";
+        prev_menu = unused;
         menu->AppendSeparator();
       }
 

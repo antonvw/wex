@@ -73,7 +73,6 @@ DecoratedFrame::DecoratedFrame()
   menuFile->Append(wxID_NEW);
   menuFile->Append(wxID_OPEN);
   UseFileHistory(ID_RECENT_FILE_MENU, menuFile);
-  menuFile->Append(ID_OPEN_LOGFILE, _("Open &Log File"));
   menuFile->AppendSeparator();
   menuFile->Append(wxID_CLOSE);
   menuFile->Append(ID_ALL_STC_CLOSE, _("Close A&ll"));
@@ -117,7 +116,7 @@ DecoratedFrame::DecoratedFrame()
   menuMore->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuMore->AppendSeparator();
   menuMore->Append(
-    ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+H"));
+    ID_EDIT_CONTROL_CHAR, wxExEllipsed(_("&Control Char"), "Ctrl+K"));
   
   menuEdit->AppendSubMenu(menuMore, _("More"));
   menuEdit->AppendSeparator();

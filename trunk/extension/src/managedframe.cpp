@@ -19,7 +19,6 @@
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
-#if wxUSE_AUI
 
 // Support class.
 // Offers a text ctrl related to a vi object.
@@ -316,5 +315,4 @@ void wxExTextCtrl::OnKey(wxKeyEvent& event)
   }
 }
 
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI

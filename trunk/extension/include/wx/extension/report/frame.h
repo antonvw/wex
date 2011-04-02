@@ -48,6 +48,9 @@ public:
     wxExListViewStandard::ListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
+    
+  /// Shows a file history popup menu.
+  void FileHistoryPopupMenu();
 
   /// If there is a project somewhere, 
   /// your implementation should return that one.
@@ -121,8 +124,6 @@ protected:
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
-  
-  virtual void StatusBarDoubleClicked(const wxString& pane);
 private:
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
