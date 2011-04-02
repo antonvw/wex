@@ -9,7 +9,10 @@
 
 # this script only works if there are no new files since previous commit
 # other they have to be added first using svn add
+# by doing svn stat, you see which files are not yet added,
+# so you should add them using svn add html/*, and commit afterwards
 
 cd ~/syncped/trunk/doc
 cp -rf ~/wxextension/trunk/extension/html/ .
 svn commit -m "updated docs"
+svn stat
