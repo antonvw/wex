@@ -412,7 +412,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
     case ID_EDIT_STATUS_BAR:
     {
-    auto* stc = GetFocusedSTC();
+    wxExSTC* stc = GetFocusedSTC();
     if (stc != NULL) 
     {
       stc->UpdateStatusBar("PaneInfo"); 
@@ -443,16 +443,6 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
       }
       break;
       
-#if wxUSE_STATUSBAR
-    case ID_EDIT_STATUS_BAR:
-    {
-    wxExSTC* stc = GetFocusedSTC();
-    if (stc == NULL) return;
-    stc->UpdateStatusBar("PaneInfo"); 
-    }
-    break;
-#endif
-
   default:
     wxFAIL;
     break;
