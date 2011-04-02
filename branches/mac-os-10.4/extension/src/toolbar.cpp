@@ -21,7 +21,6 @@
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
-#if wxUSE_AUI
 
 // Cannot use wxNewId here, as these are used in a switch statement.
 enum
@@ -294,5 +293,4 @@ void FindString::OnCommand(wxCommandEvent& event)
   }
 }
 
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI

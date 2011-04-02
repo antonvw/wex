@@ -123,6 +123,25 @@ void wxExFrameWithHistory::DoRecent(
   }
 }
 
+void wxExFrameWithHistory::FileHistoryPopupMenu()
+{
+  wxMenu* menu = new wxMenu();
+
+  for (int i = 0; i < m_FileHistory.GetCount(); i++)
+  {
+    wxExFileName file(m_FileHistory.GetHistoryFile(i));
+
+    if (file.GetStat().IsOk())
+    {
+      menu->Append(wxID_FILE1 + i, file.GetFullPath());
+    }
+  }
+    
+  PopupMenu(menu);
+    
+  delete menu;
+}
+  
 void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 {
   const bool replace = (dialogid == ID_REPLACE_IN_FILES);
@@ -521,30 +540,6 @@ void wxExFrameWithHistory::SetRecentProject(const wxString& project)
   }
 }
     
-void wxExFrameWithHistory::StatusBarDoubleClicked(const wxString& pane)
-{
-  if (pane.empty()) 
-  {
-    wxMenu* menu = new wxMenu();
-
-    for (int i = m_FileHistory.GetCount() - 1; i >= 0; i--)
-    {
-      wxExFileName file(m_FileHistory.GetHistoryFile(i));
-
-      if (file.GetStat().IsOk())
-      {
-        menu->Append(wxID_FILE1 + i, file.GetFullPath());
-      }
-    }
-    
-    PopupMenu(menu);
-  }
-  else
-  {
-    wxExManagedFrame::StatusBarDoubleClicked(pane);
-  }
-}
-
 void wxExFrameWithHistory::UseFileHistory(wxWindowID id, wxMenu* menu)
 {
   UseHistory(id, menu, m_FileHistory);

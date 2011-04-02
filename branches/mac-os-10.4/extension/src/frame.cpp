@@ -409,6 +409,18 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
   switch (event.GetId())
   {
+#if wxUSE_STATUSBAR
+    case ID_EDIT_STATUS_BAR:
+    {
+    auto* stc = GetFocusedSTC();
+    if (stc != NULL) 
+    {
+      stc->UpdateStatusBar("PaneInfo"); 
+    }
+    }
+    break;
+#endif
+
     case ID_VIEW_MENUBAR:
       if (GetMenuBar() != NULL)
       {

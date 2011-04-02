@@ -14,7 +14,6 @@
 
 // Only if we have a gui.
 #if wxUSE_GUI
-#if wxUSE_AUI
 
 class wxExFrame;
 
@@ -76,6 +75,5 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI
 #endif

@@ -21,7 +21,6 @@ class wxExTextCtrl;
 class wxExToolBar;
 class wxExVi;
 
-#if wxUSE_AUI
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
 class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
@@ -92,6 +91,5 @@ private:
   
   DECLARE_EVENT_TABLE()
 };
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI
 #endif

@@ -64,6 +64,7 @@ class wxExLogStderr : public wxLogStderr
 
 BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_CLOSE(Frame::OnClose)
+  EVT_AUINOTEBOOK_BG_DCLICK(NOTEBOOK_EDITORS, Frame::OnNotebook)
   EVT_MENU(wxID_DELETE, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
   EVT_MENU(wxID_JUMP_TO, Frame::OnCommand)
@@ -732,8 +733,6 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case ID_OPEN_LOGFILE: OpenFile(m_LogFile); break;
-
   case ID_OPTION_EDITOR:
     wxExSTC::ConfigDialog(this,
       _("Editor Options"),
@@ -924,6 +923,11 @@ void Frame::OnCommandConfigDialog(
   {
     DecoratedFrame::OnCommandConfigDialog(dialogid, commandid);
   }
+}
+
+void Frame::OnNotebook(wxAuiNotebookEvent& event)
+{
+  FileHistoryPopupMenu();
 }
 
 void Frame::OnUpdateUI(wxUpdateUIEvent& event)
@@ -1281,7 +1285,11 @@ bool Frame::OpenFile(
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
-  if (pane == "PaneTheme")
+  if (pane.empty())
+  {
+    TogglePane("LOG");
+  }
+  else if (pane == "PaneTheme")
   {
     if (wxExLexers::Get()->ShowThemeDialog(this))
     {
@@ -1309,7 +1317,7 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
 {
   if (pane.empty())
   {
-    TogglePane("LOG");
+    OpenFile(m_LogFile);
   }
   else if (pane == "PaneLexer" || pane == "PaneTheme")
   {

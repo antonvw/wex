@@ -94,6 +94,8 @@ General
     
     - under Ubuntu 10.10 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
       (no IDE)
+      using gtk version:
+      ../configure --with-gtk
       GNUMakefile generated using format gnu
 
     - under SunOS using the Sun make gives errors,
@@ -110,11 +112,9 @@ General
 
   - debug under Windows using IDE, under Linux using Kdbg
 
-  - finally strip the executable under Windows using UPX
-      http://upx.sourceforge.net/
-    under Linux just strip it
-
   - deploy under Windows using 7-Zip 9.20
+      strip the executable under Windows using UPX
+      http://upx.sourceforge.net/
       http://www.7-zip.org
     deploy under Linux using deploy.sh (in build dir)
 

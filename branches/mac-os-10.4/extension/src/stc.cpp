@@ -936,6 +936,8 @@ void wxExSTC::FileTypeMenu()
   }
 
   PopupMenu(menu);
+  
+  delete menu;
 }
 
 bool wxExSTC::FindNext(bool find_next)

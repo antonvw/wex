@@ -16,7 +16,6 @@
 #include <wx/aui/auibook.h>
 
 #if wxUSE_GUI
-#if wxUSE_AUI
 
 class wxExManagedFrame;
 
@@ -78,6 +77,5 @@ private:
 
   DECLARE_EVENT_TABLE()
 };
-#endif // wxUSE_AUI
 #endif // wxUSE_GUI
 #endif
