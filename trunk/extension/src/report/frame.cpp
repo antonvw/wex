@@ -129,12 +129,8 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
 
   for (int i = 0; i < m_FileHistory.GetCount(); i++)
   {
-    wxExFileName file(m_FileHistory.GetHistoryFile(i));
-
-    if (file.GetStat().IsOk())
-    {
-      menu->Append(wxID_FILE1 + i, file.GetFullPath());
-    }
+    const wxFileName file(m_FileHistory.GetHistoryFile(i));
+    menu->Append(wxID_FILE1 + i, file.GetFullName());
   }
     
   PopupMenu(menu);

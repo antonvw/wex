@@ -178,6 +178,9 @@ public:
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;
   
+  /// Gets vi component.
+  const wxExVi& GetVi() const {return m_vi;};
+  
   /// Gets word at position.
   const wxString GetWordAtPos(int pos) const;
 

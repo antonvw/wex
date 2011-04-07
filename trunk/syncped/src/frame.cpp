@@ -1041,9 +1041,12 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
         case ID_EDIT_MACRO_PLAYBACK:
           event.Enable(editor->MacroIsRecorded() && !editor->MacroIsRecording());
-        break;
+          break;
         case ID_EDIT_MACRO_START_RECORD:
-          event.Enable(editor->GetLength() > 0 && !editor->MacroIsRecording());
+          event.Enable(
+            editor->GetLength() > 0 && !editor->MacroIsRecording() && 
+              (!editor->GetVi().GetIsActive() || 
+               (editor->GetVi().GetIsActive() && editor->GetVi().GetInsertMode())));
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
           event.Enable(editor->MacroIsRecording());
