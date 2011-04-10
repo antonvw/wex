@@ -15,6 +15,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
+#include <wx/imaglist.h>
 #include <wx/tokenzr.h> 
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
