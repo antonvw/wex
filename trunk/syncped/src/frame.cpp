@@ -430,12 +430,6 @@ void Frame::Log(
   m_LogTail->EmptyUndoBuffer();
   m_LogTail->SetSavePoint();
   m_LogTail->DocumentEnd();
-  
-  if (level == wxLOG_Error)
-  {
-    GetManager().GetPane("LOG").Show();
-    GetManager().Update();
-  }
 }
 
 void Frame::NewFile(bool as_project)
