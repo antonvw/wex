@@ -17,7 +17,7 @@
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/textfile.h>
-#include <wx/extension/report/util.h>
+#include <wx/extension/util.h>
 
 // Do not give an error if columns do not exist.
 // E.g. the LIST_PROCESS has none of the file columns.

@@ -14,7 +14,7 @@
 
 #include <wx/artprov.h> // for wxArtID
 #include <wx/menu.h>
-#include <wx/extension/filename.h>
+#include <wx/filename.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
@@ -68,7 +68,7 @@ public:
   /// If no items have yet been appended, it ignores this one.
   void AppendSeparator();
 
-  /// Appends a submenu (and resets the is separator member).
+  /// Appends a submenu.
   void AppendSubMenu(
     wxMenu *submenu,
     const wxString& text,
@@ -80,13 +80,9 @@ public:
   bool AppendTools(int itemid = wxID_ANY);
 
   /// Appends VCS menu items.
-  void AppendVCS(const wxExFileName& filename);
-
-  /// Builds VCS main menu items.
-  void BuildVCS();
-
-  /// Is the VCS menu build?
-  bool IsVCSBuild() const {return GetMenuItemCount() > 0;};
+  /// If a filename is specified the menu is built as a submenu,
+  /// otherwise as menu items.
+  void AppendVCS(const wxFileName& filename = wxFileName());
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};

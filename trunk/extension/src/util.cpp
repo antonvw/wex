@@ -18,6 +18,7 @@
 #include <wx/config.h>
 #include <wx/regex.h>
 #include <wx/stdpaths.h>
+#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/tokenzr.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/util.h>
@@ -347,6 +348,30 @@ const wxString wxExGetEndOfText(
 const wxUniChar wxExGetFieldSeparator()
 {
   return '\x0B';
+}
+
+int wxExGetIconID(const wxFileName& filename)
+{
+  if (filename.FileExists(filename.GetFullPath()) || 
+      filename.DirExists(filename.GetFullPath()))
+  {
+    if (filename.DirExists(filename.GetFullPath()))
+    {
+      return wxFileIconsTable::folder;
+    }
+    else if (!filename.GetExt().empty())
+    {
+      return wxTheFileIconsTable->GetIconID(filename.GetExt());
+    }
+    else
+    {
+      return wxFileIconsTable::file;
+    }
+  }
+  else
+  {
+    return wxFileIconsTable::computer;
+  }
 }
 
 int wxExGetNumberOfLines(const wxString& text)

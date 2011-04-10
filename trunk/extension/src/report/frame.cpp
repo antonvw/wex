@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/tokenzr.h> 
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
@@ -130,7 +131,16 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
   for (int i = 0; i < m_FileHistory.GetCount(); i++)
   {
     const wxFileName file(m_FileHistory.GetHistoryFile(i));
-    menu->Append(wxID_FILE1 + i, file.GetFullName());
+    
+    wxMenuItem* item = new wxMenuItem(
+      menu, 
+      wxID_FILE1 + i, 
+      file.GetFullName());
+
+    item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+      wxExGetIconID(file)));
+    
+    menu->Append(item);
   }
     
   PopupMenu(menu);

@@ -343,7 +343,6 @@ void wxExAppTestFixture::testListView()
 void wxExAppTestFixture::testMenu()
 {
   wxExMenu menu;
-  CPPUNIT_ASSERT(!menu.IsVCSBuild());
   
   menu.AppendSeparator();
   menu.AppendSeparator();
@@ -532,11 +531,9 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.Use());
   
   wxExMenu menu;
-  CPPUNIT_ASSERT(!menu.IsVCSBuild());
-  menu.BuildVCS();
+  menu.AppendVCS();
   // The default VCS (auto) is used,
   // so without a path, no VCS will be built, perhaps the config dir?
-  CPPUNIT_ASSERT(!menu.IsVCSBuild());
 }
 
 void wxExAppTestFixture::testVCSCommand()
