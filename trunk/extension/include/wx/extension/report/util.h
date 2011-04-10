@@ -29,7 +29,7 @@ bool wxExFindOtherFileName(
 /// Do something (id) for all pages on the notebook.
 bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont());
 
-/// Run make on specified makefile.
-/// Results are place on the list process output, if it can be activated from frame.
+/// Runs make on specified makefile.
+/// Results are placed on the list process output, if it can be activated from frame.
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
 #endif
