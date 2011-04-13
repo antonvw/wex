@@ -69,10 +69,10 @@ private:
   wxExNotebook* m_Editors;
   wxExNotebook* m_Lists;
   wxExNotebook* m_Projects;
-  wxExSTC* m_LogTail;
 
   const wxString m_ProjectWildcard;
   wxString m_LogFile;
+  wxString m_LogText;
   wxLog* m_OldLog;
 
   DECLARE_EVENT_TABLE()

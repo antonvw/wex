@@ -2309,7 +2309,7 @@ void wxExSTC::SequenceDialog()
 
   if (start.length() != end.length())
   {
-    wxLogMessage(_("Start and end sequence should have same length"));
+    wxLogStatus(_("Start and end sequence should have same length"));
     return;
   }
 

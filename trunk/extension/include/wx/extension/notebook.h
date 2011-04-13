@@ -57,6 +57,10 @@ public:
   /// Returns the page specified by the given key.
   /// If the key does not exist NULL is returned.
   wxWindow* GetPageByKey(const wxString& key) const;
+  
+  /// Selects (and returns) the page specified by the given key.
+  /// If the key does not exist NULL is returned.
+  wxWindow* SelectPage(const wxString& key);
 
   /// Sets the pagetext for the given new key,
   /// on the page for the given key.

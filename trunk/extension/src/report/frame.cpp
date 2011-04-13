@@ -115,7 +115,7 @@ void wxExFrameWithHistory::DoRecent(
     if (!wxFileExists(file))
     {
       history.RemoveFileFromHistory(index);
-      wxLogMessage(_("Removed not existing file: %s from history"), 
+      wxLogStatus(_("Removed not existing file: %s from history"), 
         file.c_str());
     }
     else
@@ -257,7 +257,7 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
   {
     if (m_Process->IsRunning())
     {
-      wxLogMessage(_("Process is running"));
+      wxLogStatus(_("Process is running"));
       event.Veto();
       return;
     }
@@ -408,10 +408,16 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
 {
   event.Skip();
 
+  const wxString title(GetTitle());
+  
+  if (title.empty())
+  {
+    return;
+  }
+  
   auto* stc = GetFocusedSTC();
   auto* project = GetProject();
 
-  const wxString title(GetTitle());
   const wxUniChar indicator('*');
 
   if ((project != NULL && project->GetContentsChanged()) ||
@@ -427,7 +433,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
   else
   {
     // Project or editor not changed, remove indicator if not yet done.
-    if (title.Last() == indicator)
+    if (title.Last() == indicator && title.size() > 2)
     {
       wxFrame::SetTitle(title.substr(0, title.length() - 2));
     }
