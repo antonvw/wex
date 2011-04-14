@@ -209,7 +209,7 @@ bool wxExMenu::AppendTools(int itemid)
   return true;
 }
 
-void wxExMenu::AppendVCS(const wxFileName& filename)
+bool wxExMenu::AppendVCS(const wxFileName& filename)
 {
   if (!filename.IsOk())
   {
@@ -219,10 +219,10 @@ void wxExMenu::AppendVCS(const wxFileName& filename)
     {
       const int vcs_offset_id = ID_VCS_LOWEST + 1;
  
-      vcs.GetEntry().BuildMenu(
+      return vcs.GetEntry().BuildMenu(
         vcs_offset_id, 
         this, 
-        false); // no popup
+        false) > 0;// no popup
     }
   }
   else
@@ -238,7 +238,10 @@ void wxExMenu::AppendVCS(const wxFileName& filename)
     if (vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu))
     { 
       AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
+      return true;
     }
   }
+  
+  return false;
 }
 #endif // wxUSE_GUI

@@ -99,6 +99,11 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
 #if wxUSE_GUI
 int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
+  if (GetBin().empty()) 
+  {
+    return 0;
+  }
+  
   wxMenu* submenu = NULL;
 
   const wxString unused = "XXXXX";  
@@ -166,14 +171,6 @@ long wxExVCSEntry::Execute(
   const wxString& args,
   const wxString& wd)
 {
-  const wxString bin = wxConfigBase::Get()->Read(m_Name, "svn");
-
-  if (bin.empty())
-  {
-    wxLogError(m_Name + " " + _("path is empty"));
-    return -1;
-  }
-  
   m_FileName = filename;
   
   wxString prefix;
@@ -223,10 +220,15 @@ long wxExVCSEntry::Execute(
   }
 
   return wxExCommand::Execute(
-    bin + " " + 
+    GetBin() + " " + 
     prefix + 
     GetCommand().GetCommand() + " " + 
     subcommand + flags + comment + my_args, wd);
+}
+
+const wxString wxExVCSEntry::GetBin() const
+{
+  return wxConfigBase::Get()->Read(m_Name, "svn");
 }
 
 const wxString wxExVCSEntry::GetFlags() const

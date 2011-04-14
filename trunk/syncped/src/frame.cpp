@@ -1287,8 +1287,12 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
     if (wxExVCS::GetCount() > 0)
     {
       wxExMenu* menu = new wxExMenu;
-      menu->AppendVCS();
-      PopupMenu(menu);
+      
+      if (menu->AppendVCS())
+      {
+        PopupMenu(menu);
+      }
+      
       delete menu;
     }
   }
