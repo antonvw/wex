@@ -28,6 +28,9 @@ public:
   wxExListItem(wxExListView* listview,
     const wxExFileName& filename,
     const wxString& filespec = wxEmptyString);
+    
+  // Deletes this item from the listview.
+  void Delete() {m_ListView->DeleteItem(GetId());};
 
   /// Gets the filename.
   const wxExFileName& GetFileName() const {return m_FileName;};

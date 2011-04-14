@@ -99,8 +99,7 @@ public:
   bool ProcessRun(const wxString& command = wxEmptyString);
 
   /// Stops the process.
-  /// Return true if process could be stopped, or if it was not running at all.
-  bool ProcessStop();
+  void ProcessStop();
 
   /// Updates file history.
   void SetRecentFile(const wxString& file);

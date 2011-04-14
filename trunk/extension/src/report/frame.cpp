@@ -489,32 +489,13 @@ bool wxExFrameWithHistory::ProcessRun(const wxString& command)
   return false;
 }
 
-bool wxExFrameWithHistory::ProcessStop()
+void wxExFrameWithHistory::ProcessStop()
 {
-  if (m_Process == NULL)
+  if (m_Process != NULL && m_Process->IsRunning())
   {
-    return true;
-  }
-  else if (m_Process->IsRunning())
-  {
-    if (m_Process->Kill() == wxKILL_ERROR)
-    {
-      // Even if the process could not be killed, set it to NULL, as it is deleted.
-      wxFAIL;
-      m_Process = NULL;
-      return false;
-    }
-    else
-    {
-      m_Process = NULL;
-      return true;
-    }
-
-    return true;
-  }
-  else
-  {
-    return false;
+    m_Process->Kill();
+    
+    wxDELETE(m_Process);
   }
 }
 
@@ -537,7 +518,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
           if (item.GetFileName().GetFullPath() == file)
           {
-            m_FileHistoryList->DeleteItem(i);
+            item.Delete();
           }
         }
       }
