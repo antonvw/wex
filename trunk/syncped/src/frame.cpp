@@ -1266,6 +1266,8 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
     {
       editor = new wxExSTCWithFrame(m_Editors, this);
       editor->SetName(_("Log"));
+      editor->SetEdgeMode(wxSTC_EDGE_NONE);
+      
       m_Editors->AddPage(editor, "LOGTAIL", _("Log"), true);
     }
     
