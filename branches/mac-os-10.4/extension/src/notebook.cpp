@@ -215,6 +215,18 @@ void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)
   }
 }
 
+wxWindow* wxExNotebook::SelectPage(const wxString& key)
+{
+  wxWindow* page = GetPageByKey(key);
+
+  if (page != NULL)
+  {
+    SetSelection(GetPageIndex(page));
+  }
+  
+  return page;
+}
+  
 bool wxExNotebook::SetPageText(
   const wxString& key,
   const wxString& new_key,

@@ -120,7 +120,6 @@ Frame::Frame(bool open_recent)
   : DecoratedFrame()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
-  , m_LogTail(NULL)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
   , m_LogFile(wxFileName(
@@ -169,8 +168,6 @@ Frame::Frame(bool open_recent)
     wxExListViewStandard::LIST_HISTORY,
     wxExListViewStandard::LIST_MENU_DEFAULT);
     
-  m_LogTail = new wxExSTC(this);
-
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
   wxExSTC* asciiTable = new wxExSTC(this);
@@ -198,13 +195,6 @@ Frame::Frame(bool open_recent)
     .Left()
     .Name("ASCIITABLE")
     .Caption(_("Ascii Table")));
-
-  GetManager().AddPane(m_LogTail, wxAuiPaneInfo()
-    .Bottom()
-    .Name("LOG")
-    .LeftDockable(false)
-    .RightDockable(false)
-    .Caption(_("Log")));
 
   GetManager().AddPane(m_History, wxAuiPaneInfo()
     .Left().Name("HISTORY")
@@ -423,13 +413,9 @@ void Frame::Log(
   const wxString& msg,
   const wxLogRecordInfo& info)
 {
-  m_LogTail->AppendText(
+  m_LogText += 
     wxDateTime(info.timestamp).Format(wxLog::GetTimestamp()) + " " + 
-    msg + "\n");
-    
-  m_LogTail->EmptyUndoBuffer();
-  m_LogTail->SetSavePoint();
-  m_LogTail->DocumentEnd();
+    msg + "\n";
 }
 
 void Frame::NewFile(bool as_project)
@@ -1142,7 +1128,7 @@ bool Frame::OpenFile(
     
   const wxString key = filename.GetFullPath() + unique;
 
-  wxWindow* page = m_Editors->GetPageByKey(key);
+  auto* page = m_Editors->SelectPage(key);
 
   if (page == NULL)
   {
@@ -1164,11 +1150,6 @@ bool Frame::OpenFile(
       wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
         wxExGetIconID(filename)));
   }
-  else
-  {
-    m_Editors->SetSelection(
-      m_Editors->GetPageIndex(page));
-  }
 
   return true;
 }
@@ -1188,12 +1169,7 @@ bool Frame::OpenFile(
   wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
     ? m_Projects : m_Editors);
 
-  wxWindow* page = notebook->GetPageByKey(filename.GetFullPath());
-
-  if (page != NULL)
-  {
-    notebook->SetSelection(notebook->GetPageIndex(page));
-  }
+  wxWindow* page = notebook->SelectPage(filename.GetFullPath());
 
   if (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT)
   {
@@ -1284,7 +1260,19 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
   if (pane.empty())
   {
-    TogglePane("LOG");
+    wxExSTCWithFrame* editor;
+    
+    if ((editor = (wxExSTCWithFrame*)m_Editors->SelectPage("LOGTAIL")) == NULL)
+    {
+      editor = new wxExSTCWithFrame(m_Editors, this);
+      editor->SetName(_("Log"));
+      m_Editors->AddPage(editor, "LOGTAIL", _("Log"), true);
+    }
+    
+    editor->SetText(m_LogText);
+    editor->EmptyUndoBuffer();
+    editor->SetSavePoint();
+    editor->DocumentEnd();
   }
   else if (pane == "PaneTheme")
   {
