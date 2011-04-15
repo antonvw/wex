@@ -13,9 +13,9 @@
 #include <vector>
 #include <wx/menu.h>
 #include <wx/xml/xml.h>
-#include <wx/extension/vcscommand.h>
 #include <wx/extension/command.h>
 #include <wx/extension/filename.h>
+#include <wx/extension/vcscommand.h>
 
 /// This class collects a single vcs.
 class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExCommand
@@ -73,7 +73,7 @@ public:
   virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
 #endif
   
-  /// Does this vcs supports keyword expansion.
+  /// Does this vcs support keyword expansion.
   bool SupportKeywordExpansion() const {return m_SupportKeywordExpansion;};
 private:
   enum
@@ -83,6 +83,7 @@ private:
   };
   
   void AddCommands(const wxXmlNode* node);
+  const wxString GetBin() const;
 
   static int m_Instances;
   

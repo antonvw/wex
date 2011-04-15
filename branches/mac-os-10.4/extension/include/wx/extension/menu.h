@@ -82,7 +82,8 @@ public:
   /// Appends VCS menu items.
   /// If a filename is specified the menu is built as a submenu,
   /// otherwise as menu items.
-  void AppendVCS(const wxFileName& filename = wxFileName());
+  /// Returns true if items have been appended.
+  bool AppendVCS(const wxFileName& filename = wxFileName());
 
   /// Gets the style.
   long GetStyle() const {return m_Style;};
