@@ -214,46 +214,36 @@ bool wxExMenu::AppendTools(int itemid)
   return true;
 }
 
-// This is the VCS submenu, as present on a popup.
-// Therefore it is build when clicking, and does not
-// need to be destroyed an old one.
-void wxExMenu::AppendVCS(const wxExFileName& filename)
+void wxExMenu::AppendVCS(const wxFileName& filename)
 {
-  const int vcs_offset_id = ID_EDIT_VCS_LOWEST + 1;
-
-  wxExMenu* vcsmenu = new wxExMenu;
-  
-  wxArrayString ar;
-  ar.Add(filename.GetFullPath());
-  const wxExVCS vcs(ar);
-
-  if (vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu))
-  { 
-    AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
-  }
-}
-
-// This is the general VCS menu, it is in the main menu,
-// and because contents depends on actual VCS used,
-// it is rebuild after change of VCS system.
-void wxExMenu::BuildVCS()
-{
-  for (int i = 0; i < GetMenuItemCount(); i++)
+  if (!filename.IsOk())
   {
-    wxMenuItem* item = FindItemByPosition(i);
-    Destroy(item);
-  }
-
-  const wxExVCS vcs;
+    const wxExVCS vcs;
        
-  if (vcs.Use())
-  {
-    const int vcs_offset_id = ID_VCS_LOWEST + 1;
+    if (vcs.Use())
+    {
+      const int vcs_offset_id = ID_VCS_LOWEST + 1;
  
-    vcs.GetEntry().BuildMenu(
-      vcs_offset_id, 
-      this, 
-      false); // no popup
+      vcs.GetEntry().BuildMenu(
+        vcs_offset_id, 
+        this, 
+        false); // no popup
+    }
+  }
+  else
+  {
+    const int vcs_offset_id = ID_EDIT_VCS_LOWEST + 1;
+
+    wxExMenu* vcsmenu = new wxExMenu;
+  
+    wxArrayString ar;
+    ar.Add(filename.GetFullPath());
+    const wxExVCS vcs(ar);
+
+    if (vcs.GetEntry().BuildMenu(vcs_offset_id, vcsmenu))
+    { 
+      AppendSubMenu(vcsmenu, vcs.GetEntry().GetName());
+    }
   }
 }
 #endif // wxUSE_GUI

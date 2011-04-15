@@ -85,6 +85,12 @@ const wxString wxExGetEndOfText(
 /// Gets field separator.
 const wxUniChar wxExGetFieldSeparator();
 
+/// Gets the icon index for this filename (uses the file extension to get it).
+/// The return value is an index in wxTheFileIconsTable.
+/// You can use this index as a bitmap using:
+/// wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(file))
+int wxExGetIconID(const wxFileName& filename);
+
 /// Gets a line number from a string.
 int wxExGetLineNumber(const wxString& text);
 

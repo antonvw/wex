@@ -430,12 +430,6 @@ void Frame::Log(
   m_LogTail->EmptyUndoBuffer();
   m_LogTail->SetSavePoint();
   m_LogTail->DocumentEnd();
-  
-  if (level == wxLOG_Error)
-  {
-    GetManager().GetPane("LOG").Show();
-    GetManager().Update();
-  }
 }
 
 void Frame::NewFile(bool as_project)
@@ -1041,9 +1035,12 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
         case ID_EDIT_MACRO_PLAYBACK:
           event.Enable(editor->MacroIsRecorded() && !editor->MacroIsRecording());
-        break;
+          break;
         case ID_EDIT_MACRO_START_RECORD:
-          event.Enable(editor->GetLength() > 0 && !editor->MacroIsRecording());
+          event.Enable(
+            editor->GetLength() > 0 && !editor->MacroIsRecording() && 
+              (!editor->GetVi().GetIsActive() || 
+               (editor->GetVi().GetIsActive() && editor->GetVi().GetInsertMode())));
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
           event.Enable(editor->MacroIsRecording());
@@ -1302,7 +1299,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
     if (wxExVCS::GetCount() > 0)
     {
       wxExMenu* menu = new wxExMenu;
-      menu->BuildVCS();
+      menu->AppendVCS();
       PopupMenu(menu);
       delete menu;
     }

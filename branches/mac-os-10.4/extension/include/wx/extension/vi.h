@@ -36,6 +36,9 @@ public:
   /// Returns true if the text was found.
   bool FindCommand(const wxString& command, const wxString& text);
   
+  /// Returns whether we are in insert mode.
+  bool GetInsertMode() const {return m_InsertMode;};
+  
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
 
