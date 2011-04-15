@@ -1128,7 +1128,7 @@ bool Frame::OpenFile(
     
   const wxString key = filename.GetFullPath() + unique;
 
-  auto* page = m_Editors->SelectPage(key);
+  wxWindow* page = m_Editors->SelectPage(key);
 
   if (page == NULL)
   {

@@ -415,8 +415,8 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     return;
   }
   
-  auto* stc = GetFocusedSTC();
-  auto* project = GetProject();
+  wxExSTC* stc = GetFocusedSTC();
+  wxExListViewFile* project = GetProject();
 
   const wxUniChar indicator('*');
 
