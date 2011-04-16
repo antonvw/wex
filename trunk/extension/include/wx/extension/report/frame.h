@@ -125,7 +125,7 @@ protected:
   void OnIdle(wxIdleEvent& event);
 private:
   void CreateDialogs();
-  void DoRecent(wxFileHistory& history, int index, long flags = 0);
+  void DoRecent(wxFileHistory& history, size_t index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
