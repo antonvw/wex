@@ -165,10 +165,10 @@ void wxExFrameWithHistory::CreateDialogs()
 
 void wxExFrameWithHistory::DoRecent(
   wxFileHistory& history, 
-  int index, 
+  size_t index, 
   long flags)
 {
-  if (history.GetCount() > 0)
+  if (history.GetCount() > 0 && index < history.GetMaxFiles())
   {
     const wxString file(history.GetHistoryFile(index));
 
