@@ -59,6 +59,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   int style)
   : wxExManagedFrame(parent, id, title, style)
   , m_FiFDialog(NULL)
+  , m_RiFDialog(NULL)
   , m_TextInFiles(_("In files"))
   , m_TextInFolder(_("In folder"))
   , m_TextRecursive(_("Recursive"))
@@ -82,6 +83,8 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
   
+  CreateDialogs();
+
 #ifdef wxExUSE_EMBEDDED_SQL
   wxExTool::Get()->AddInfo(
     ID_TOOL_SQL,
@@ -97,10 +100,67 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
 {
-  if (m_FiFDialog != NULL)
-  {
-    m_FiFDialog->Destroy();
-  }
+  m_FiFDialog->Destroy();
+  m_RiFDialog->Destroy();
+}
+
+void wxExFrameWithHistory::CreateDialogs()
+{
+  std::vector<wxExConfigItem> f;
+  std::vector<wxExConfigItem> r;
+
+  f.push_back(
+    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+  r.push_back(f.back());
+
+  r.push_back(wxExConfigItem(
+    wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+    CONFIG_COMBOBOX));
+  
+  f.push_back(wxExConfigItem(
+    m_TextInFiles, 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+  r.push_back(f.back());
+
+  f.push_back(wxExConfigItem(
+    m_TextInFolder, 
+    CONFIG_COMBOBOXDIR, 
+    wxEmptyString, 
+    true,
+    1000));
+  r.push_back(f.back());
+
+  // Match whole word does not work with replace.
+  std::set<wxString> s;
+  s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
+  s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
+  s.insert(m_TextRecursive);
+  r.push_back(wxExConfigItem(s));
+  
+  std::set<wxString> t(wxExFindReplaceData::Get()->GetInfo());
+  t.insert(m_TextRecursive);
+  f.push_back(wxExConfigItem(t));
+  
+  m_FiFDialog = new wxExConfigDialog(this,
+    f,
+    _("Find In Files"),
+    0,
+    1,
+    wxOK | wxCANCEL,
+    ID_FIND_IN_FILES);
+    
+  m_RiFDialog = new wxExConfigDialog(this,
+    r,
+    _("Replace In Files"),
+    0,
+    1,
+    wxOK | wxCANCEL,
+    ID_REPLACE_IN_FILES);
 }
 
 void wxExFrameWithHistory::DoRecent(
@@ -183,72 +243,6 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   tool.Log(
     &dir.GetStatistics().GetElements(), 
     wxExConfigFirstOf(m_TextInFolder));
-}
-
-int wxExFrameWithHistory::FindInFilesDialog(int id)
-{
-  if (m_FiFDialog != NULL)
-  {
-    m_FiFDialog->Destroy();
-    m_FiFDialog = NULL;
-  }
-
-  GetFindString();
-
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(
-    wxExConfigItem(wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  if (id == ID_REPLACE_IN_FILES) 
-  {
-    v.push_back(wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX));
-  }
-  
-  v.push_back(wxExConfigItem(
-    m_TextInFiles, 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  v.push_back(wxExConfigItem(
-    m_TextInFolder, 
-    CONFIG_COMBOBOXDIR, 
-    wxEmptyString, 
-    true,
-    1000));
-
-  if (id == ID_REPLACE_IN_FILES) 
-  {
-    // Match whole word does not work with replace.
-    std::set<wxString> s;
-
-    s.insert(wxExFindReplaceData::Get()->GetTextMatchCase());
-    s.insert(wxExFindReplaceData::Get()->GetTextRegEx());
-    s.insert(m_TextRecursive);
-    v.push_back(wxExConfigItem(s));
-  }
-  else
-  {
-    std::set<wxString> s(wxExFindReplaceData::Get()->GetInfo());
-    s.insert(m_TextRecursive);
-    v.push_back(wxExConfigItem(s));
-  }
-  
-  m_FiFDialog = new wxExConfigDialog(this,
-    v,
-    (id == ID_REPLACE_IN_FILES ? _("Replace In Files"): _("Find In Files")),
-    0,
-    1,
-    wxOK | wxCANCEL,
-    id);
-  
-  return m_FiFDialog->Show();
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
@@ -343,10 +337,8 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       }
       break;
       
-    case ID_FIND_IN_FILES:
-    case ID_REPLACE_IN_FILES:
-      FindInFilesDialog(event.GetId());
-      break;
+    case ID_FIND_IN_FILES: m_FiFDialog->Show(); break;
+    case ID_REPLACE_IN_FILES: m_RiFDialog->Show(); break;
 
     case ID_PROJECT_SAVE:
       {
