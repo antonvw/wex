@@ -124,12 +124,13 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnIdle(wxIdleEvent& event);
 private:
+  void CreateDialogs();
   void DoRecent(wxFileHistory& history, int index, long flags = 0);
   void FindInFiles(wxWindowID dialogid);
-  int FindInFilesDialog(int id = ID_FIND_IN_FILES);
   void UseHistory(wxWindowID id, wxMenu* menu, wxFileHistory& history);
 
   wxExConfigDialog* m_FiFDialog;
+  wxExConfigDialog* m_RiFDialog;
   wxFileHistory m_FileHistory;
   wxExListView* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
