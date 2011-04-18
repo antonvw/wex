@@ -169,15 +169,15 @@ void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
   }
 }
 
-void wxExFrame::GetFindString()
+const wxString wxExFrame::GetFindString()
 {
   if (m_FocusSTC != NULL)
   {
-    m_FocusSTC->GetFindString();
+    return m_FocusSTC->GetFindString();
   }
   else if (m_FocusGrid != NULL)
   {
-    m_FocusGrid->GetFindString();
+    return m_FocusGrid->GetFindString();
   }
   else
   {
@@ -185,7 +185,7 @@ void wxExFrame::GetFindString()
 
     if (stc != NULL && stc->IsShown())
     {
-      stc->GetFindString();
+      return stc->GetFindString();
     }
     else
     {
@@ -193,10 +193,12 @@ void wxExFrame::GetFindString()
 
       if (grid != NULL && grid->IsShown() )
       {
-        grid->GetFindString();
+        return grid->GetFindString();
       }
     }
   }
+  
+  return wxEmptyString;
 }
 
 void wxExFrame::Initialize()

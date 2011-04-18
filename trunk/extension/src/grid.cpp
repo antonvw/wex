@@ -145,7 +145,7 @@ void wxExGrid::BuildPopupMenu(wxExMenu& menu)
   menu.AppendEdit();
 }
 
-bool wxExGrid::CopySelectedCellsToClipboard()
+bool wxExGrid::CopySelectedCellsToClipboard() const
 {
   wxBusyCursor wait;
   return wxExClipboardAdd(GetSelectedCellsValue());
@@ -293,7 +293,7 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
   }
 }
 
-void wxExGrid::GetFindString()
+const wxString wxExGrid::GetFindString() const
 {
   if (IsSelection())
   {
@@ -321,9 +321,11 @@ void wxExGrid::GetFindString()
       wxExFindReplaceData::Get()->SetFindString(val);
     }
   }
+    
+  return wxExFindReplaceData::Get()->GetFindString();
 }
 
-const wxString wxExGrid::GetSelectedCellsValue()
+const wxString wxExGrid::GetSelectedCellsValue() const
 {
   // This does not work, only filled in for singly selected cells.
   // wxGridCellCoordsArray cells = GetSelectedCells();

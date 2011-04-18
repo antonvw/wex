@@ -44,7 +44,7 @@ public:
  ~wxExFrame();
 
   /// Invokes GetFindString on one of the controls.
-  void GetFindString();
+  const wxString GetFindString();
 
   /// Returns a grid, default returns the focused grid.
   virtual wxExGrid* GetGrid() {return m_FocusGrid;};
