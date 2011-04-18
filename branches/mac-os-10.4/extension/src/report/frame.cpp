@@ -337,8 +337,23 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       }
       break;
       
-    case ID_FIND_IN_FILES: m_FiFDialog->Show(); break;
-    case ID_REPLACE_IN_FILES: m_RiFDialog->Show(); break;
+    case ID_FIND_IN_FILES: 
+      if (GetFindString() != wxEmptyString)
+      {
+        m_FiFDialog->Reload(); 
+      }
+      
+      m_FiFDialog->Show(); 
+      break;
+      
+    case ID_REPLACE_IN_FILES: 
+      if (GetFindString() != wxEmptyString)
+      {
+        m_RiFDialog->Reload(); 
+      }
+      
+      m_RiFDialog->Show(); 
+      break;
 
     case ID_PROJECT_SAVE:
       {

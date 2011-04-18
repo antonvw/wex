@@ -61,13 +61,13 @@ public:
   bool FindNext(const wxString& text, bool find_next = true);
 
   /// Updates find replace text.
-  void GetFindString();
+  const wxString GetFindString() const;
 
   /// Get text from selected cells,
-  const wxString GetSelectedCellsValue();
+  const wxString GetSelectedCellsValue() const;
 
   /// Copy from selected cells.
-  bool CopySelectedCellsToClipboard();
+  bool CopySelectedCellsToClipboard() const;
 
   /// Paste starting at current grid cursor.
   void PasteCellsFromClipboard();
