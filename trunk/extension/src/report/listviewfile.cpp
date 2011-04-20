@@ -67,14 +67,42 @@ wxExListViewFile::wxExListViewFile(wxWindow* parent,
   , m_ItemNumber(0)
 {
   FileLoad(file);
+  
+  std::vector<wxExConfigItem> v;
+
+  v.push_back(wxExConfigItem(
+    m_TextAddWhat, 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+
+  v.push_back(wxExConfigItem(
+    m_TextInFolder, 
+    CONFIG_COMBOBOXDIR, 
+    wxEmptyString, 
+    true,
+    1000));
+
+  std::set<wxString> set;
+    
+  set.insert(m_TextAddFiles);
+  set.insert(m_TextAddFolders);
+  set.insert(m_TextAddRecursive);
+
+  v.push_back(wxExConfigItem(set));
+
+  m_AddItemsDialog = new wxExConfigDialog(this,
+    v,
+    _("Add Items"),
+    0,
+    1,
+    wxOK | wxCANCEL,
+    wxID_ADD);
 }
 
 wxExListViewFile::~wxExListViewFile()
 {
-  if (m_AddItemsDialog != NULL)
-  {
-    m_AddItemsDialog->Destroy();
-  }
+  m_AddItemsDialog->Destroy();
 }
 
 void wxExListViewFile::AddItems()
@@ -117,47 +145,6 @@ void wxExListViewFile::AddItems()
     _("Added") + wxString::Format(" %d ", added) + _("file(s)");
 
   wxLogStatus(text);
-}
-
-void wxExListViewFile::AddItemsDialog()
-{
-  if (m_AddItemsDialog == NULL)
-  {
-    std::vector<wxExConfigItem> v;
-
-    v.push_back(wxExConfigItem(
-      m_TextAddWhat, 
-      CONFIG_COMBOBOX, 
-      wxEmptyString, 
-      true));
-
-    v.push_back(wxExConfigItem(
-      m_TextInFolder, 
-      CONFIG_COMBOBOXDIR, 
-      wxEmptyString, 
-      true,
-      1000));
-
-    std::set<wxString> set;
-    
-    set.insert(m_TextAddFiles);
-    set.insert(m_TextAddFolders);
-    set.insert(m_TextAddRecursive);
-
-    v.push_back(wxExConfigItem(set));
-
-    m_AddItemsDialog = new wxExConfigDialog(this,
-      v,
-      _("Add Items"),
-      0,
-      1,
-      wxOK | wxCANCEL,
-      wxID_ADD);
-  }
-
-  // Force at least one of the checkboxes to be checked.
-  m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
-  m_AddItemsDialog->Show();
 }
 
 void wxExListViewFile::AfterSorting()
@@ -287,9 +274,13 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
       event.Skip();
       m_ContentsChanged = true;
     }
-  break;
+    break;
 
-  case wxID_ADD: AddItemsDialog(); break;
+  case wxID_ADD:   
+    // Force at least one of the checkboxes to be checked.
+    m_AddItemsDialog->ForceCheckBoxChecked(_("Add"));
+    m_AddItemsDialog->Show();
+    break;
 
   default: 
     wxFAIL;

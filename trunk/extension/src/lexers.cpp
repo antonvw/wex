@@ -308,7 +308,11 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 
   while (child)
   {
-    if (child->GetName() == "hex")
+    if (GetTheme() == m_NoTheme)
+    {
+      // Do nothing.
+    }
+    else if (child->GetName() == "hex")
     {
       m_StylesHex.push_back(wxExStyle(child));
     }
