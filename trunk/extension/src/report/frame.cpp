@@ -198,8 +198,11 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
       wxID_FILE1 + i, 
       file.GetFullName());
 
-    item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-      wxExGetIconID(file)));
+    if (file.FileExists())
+    {
+      item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+        wxExGetIconID(file)));
+    }
     
     menu->Append(item);
   }
