@@ -191,8 +191,9 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   // Add automatic lexers if text starts with some special tokens.
   const wxString text_lowercase = text.Lower();
 
-  if (text_lowercase.StartsWith("<html>") ||
-      text_lowercase.StartsWith("<?php"))
+  if (text_lowercase.StartsWith("<html>"))
+  // php is not yet ok, so do not add it here.
+  //   text_lowercase.StartsWith("<?php"))
   {
     return FindByName("hypertext");
   }
