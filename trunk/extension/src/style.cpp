@@ -36,12 +36,22 @@ wxExStyle::wxExStyle(const wxString& no, const wxString& value)
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
-  for (
-    auto it = m_No.begin();
-    it != m_No.end();
-    ++it)
+  // Currently the default style is constructed using
+  // default constructor.
+  // If this is the only style, reset STC.
+  if (m_No.empty())
   {
-    stc->StyleSetSpec(*it, m_Value);
+    stc->StyleResetDefault();
+  }
+  else
+  {
+    for (
+      auto it = m_No.begin();
+      it != m_No.end();
+      ++it)
+    {
+      stc->StyleSetSpec(*it, m_Value);
+    }
   }
 }
 

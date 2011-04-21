@@ -90,8 +90,11 @@ public:
 
   /// Returns the current theme, as present in the config.
   /// It checks whether the config theme is really
-  /// present as a theme, if not, empty string is returned.
+  /// present as a theme, if not, the empty theme is returned.
   const wxString GetTheme() const;
+  
+  /// Returns whether the current theme is not the empty theme.
+  bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
   
   /// Gets the theme macros for the current theme.
   const std::map<wxString, wxString>& GetThemeMacros() const;
