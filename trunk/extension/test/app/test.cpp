@@ -315,7 +315,7 @@ void wxExAppTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsDefault());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());

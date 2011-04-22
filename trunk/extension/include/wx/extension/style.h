@@ -35,8 +35,8 @@ public:
   /// Applies this style to stc component.
   void Apply(wxStyledTextCtrl* stc) const;
 
-  /// Does this style concern the default style.
-  bool IsDefault() const;
+  /// Is the default style part of these styles.
+  bool ContainsDefaultStyle() const;
 
   /// Returns true if this style is valid.
   bool IsOk() const;

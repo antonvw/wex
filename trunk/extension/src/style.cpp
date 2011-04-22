@@ -55,7 +55,7 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
   }
 }
 
-bool wxExStyle::IsDefault() const
+bool wxExStyle::ContainsDefaultStyle() const
 {
   const auto it = m_No.find(wxSTC_STYLE_DEFAULT);
   return (it != m_No.end());

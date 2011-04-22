@@ -139,6 +139,7 @@ public:
     const wxString& caption = _("Enter Theme"));
 private:
   const wxString GetLexerExtensions() const;
+  void Init();
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
   void ParseNodeTheme(const wxXmlNode* node);

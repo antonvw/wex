@@ -297,6 +297,25 @@ bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
   return (it != m_Indicators.end());
 }
 
+void wxExLexers::Init()
+{
+  m_DefaultStyle = wxExStyle();
+  m_ThemeColours.clear();
+  m_GlobalProperties.clear();
+  m_Indicators.clear();
+  m_Lexers.clear();
+  m_Macros.clear();
+  m_ThemeMacros.clear();
+  m_Markers.clear();
+  m_Styles.clear();
+  m_StylesHex.clear();
+  m_TempColours.clear();
+  m_TempMacros.clear();
+  
+  m_ThemeColours[m_NoTheme] = m_TempColours;
+  m_ThemeMacros[m_NoTheme] = m_TempMacros;
+}
+
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
 {
   const auto it = m_Markers.find(marker);
@@ -343,7 +362,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     {
       const wxExStyle style(child);
 
-      if (style.IsDefault())
+      if (style.ContainsDefaultStyle())
       {
         if (m_DefaultStyle.IsOk())
         {
@@ -496,23 +515,11 @@ bool wxExLexers::Read()
   {
     return false;
   }
-
-  // Initialize members.
-  m_DefaultStyle = wxExStyle();
-  m_ThemeColours.clear();
-  m_GlobalProperties.clear();
-  m_Indicators.clear();
-  m_Lexers.clear();
-  m_Macros.clear();
-  m_ThemeMacros.clear();
-  m_Markers.clear();
-  m_Styles.clear();
-  m_StylesHex.clear();
-  m_TempColours.clear();
-  m_TempMacros.clear();
   
-  m_ThemeColours[m_NoTheme] = m_TempColours;
-  m_ThemeMacros[m_NoTheme] = m_TempMacros;
+  Init();
+  
+  // Even if no theme is chosen,
+  // read all lexers, to be able to select other themes again.
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
