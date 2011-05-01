@@ -40,7 +40,7 @@ public:
 
   /// Sets global styles (and colours and indicators) 
   /// for current theme for specified component.
-  void ApplyGlobalStyles(wxStyledTextCtrl* stc) const;
+  void ApplyGlobalStyles(wxStyledTextCtrl* stc);
 
   /// Sets hex styles for specified component.
   void ApplyHexStyles(wxStyledTextCtrl* stc) const;
@@ -139,7 +139,7 @@ public:
     const wxString& caption = _("Enter Theme"));
 private:
   const wxString GetLexerExtensions() const;
-  void Init();
+  void Initialize();
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
   void ParseNodeTheme(const wxXmlNode* node);
@@ -147,6 +147,7 @@ private:
 
   std::map<wxString, wxExLexer> m_Lexers;
   std::map<wxString, wxString> m_Macros;
+  std::map<wxString, wxString> m_DefaultColours;
   std::map<wxString, wxString> m_TempColours;
   std::map<wxString, wxString> m_TempMacros;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;

@@ -23,6 +23,9 @@ class wxExVi;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
+/// - The toolbar, and findbar are added as wxExToolbarPanes to the aui manager.
+///   You can add your own controls to the toolbar by overriding the DoAddControl.
+/// - The vi bars are added as panels to the aui manager.
 class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
 {
 public:

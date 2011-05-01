@@ -26,10 +26,23 @@ wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
   , m_NoTheme(wxEmptyString)
 {
+  m_DefaultColours.clear();
 }
 
-void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc) const
+// No longer const, as it updates m_DefaultColours.
+void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
 {
+  if (m_DefaultColours.empty())
+  {
+    m_DefaultColours["caretforeground"] = stc->GetCaretForeground().GetAsString();
+    m_DefaultColours["caretlinebackground"] = stc->GetCaretLineBackground().GetAsString();
+    m_DefaultColours["edge"] = stc->GetEdgeColour().GetAsString();
+    //tempColours["selbackground"]
+    //tempColours["selforeground"]
+    //tempColours["calltipbackground"]
+    //tempColours["calltipforeground"]
+  }
+    
   m_DefaultStyle.Apply(stc);
 
   stc->StyleClearAll();
@@ -297,7 +310,7 @@ bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
   return (it != m_Indicators.end());
 }
 
-void wxExLexers::Init()
+void wxExLexers::Initialize()
 {
   m_DefaultStyle = wxExStyle();
   m_ThemeColours.clear();
@@ -312,7 +325,7 @@ void wxExLexers::Init()
   m_TempColours.clear();
   m_TempMacros.clear();
   
-  m_ThemeColours[m_NoTheme] = m_TempColours;
+  m_ThemeColours[m_NoTheme] = m_DefaultColours;
   m_ThemeMacros[m_NoTheme] = m_TempMacros;
 }
 
@@ -516,7 +529,7 @@ bool wxExLexers::Read()
     return false;
   }
   
-  Init();
+  Initialize();
   
   // Even if no theme is chosen,
   // read all lexers, to be able to select other themes again.

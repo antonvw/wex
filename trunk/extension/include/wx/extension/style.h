@@ -26,13 +26,14 @@ public:
   /// Default constructor.
   wxExStyle();
   
-  /// Constructor using xml node.
+  /// Constructor using xml node (sets no from the no attribute).
   wxExStyle(const wxXmlNode* node);
 
   /// Constructor using no and value.
   wxExStyle(const wxString& no, const wxString& value);
 
   /// Applies this style to stc component.
+  /// If no style is present, STC StyleResetDefault is invoked.
   void Apply(wxStyledTextCtrl* stc) const;
 
   /// Is the default style part of these styles.
