@@ -248,6 +248,47 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
     wxExConfigFirstOf(m_TextInFolder));
 }
 
+int wxExFrameWithHistory::FindInSelectionDialog(int id)
+{
+  GetFindString();
+
+  std::vector<wxExConfigItem> v;
+
+  v.push_back(wxExConfigItem(
+    wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+
+  if (id == ID_TOOL_REPORT_REPLACE) 
+  {
+    v.push_back(wxExConfigItem(
+      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+      CONFIG_COMBOBOX));
+  }
+
+  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+
+  if (wxExConfigDialog(this,
+    v,
+    GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
+  {
+    return wxID_CANCEL;
+  }
+
+  return wxID_OK;
+}
+
+const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
+{
+  const wxString prefix =
+    (id == ID_TOOL_REPORT_REPLACE ?
+       _("Replace In"):
+       _("Find In")) + " ";
+
+  return prefix + _("Selection");
+}
+
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto() && m_Process != NULL)

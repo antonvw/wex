@@ -124,8 +124,6 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:
-  int FindInFilesDialog(int id);
-  const wxString GetFindInCaption(int id) const;
   void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);
 

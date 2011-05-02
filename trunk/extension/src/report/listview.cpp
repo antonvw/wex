@@ -566,12 +566,12 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     {
       menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, 
-        wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
+        wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
       if (!read_only)
       {
         menu.Append(ID_TOOL_REPORT_REPLACE, 
-          wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+          wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
       }
     }
   }
@@ -583,59 +583,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     menu.AppendSeparator();
     menu.AppendTools();
-  }
-}
-
-int wxExListViewWithFrame::FindInFilesDialog(int id)
-{
-  m_Frame->GetFindString();
-
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
-    wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  if (id == ID_TOOL_REPORT_REPLACE) 
-  {
-    v.push_back(wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX));
-  }
-
-  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
-
-  if (wxExConfigDialog(this,
-    v,
-    GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
-  {
-    return wxID_CANCEL;
-  }
-
-  return wxID_OK;
-}
-
-const wxString wxExListViewWithFrame::GetFindInCaption(int id) const
-{
-  const wxString prefix =
-    (id == ID_TOOL_REPORT_REPLACE ?
-       _("Replace In"):
-       _("Find In")) + " ";
-
-  if (GetSelectedItemCount() == 1)
-  {
-    // The File Name is better than using 0, as it can be another column as well.
-    return prefix + GetItemText(GetFirstSelected(), _("File Name"));
-  }
-  else if (GetSelectedItemCount() > 1)
-  {
-    return prefix + _("Selection");
-  }
-  else
-  {
-    return prefix + GetName();
   }
 }
 
@@ -810,7 +757,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   if (tool.IsFindType())
   {
-    if (FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
+    if (m_Frame->FindInSelectionDialog(tool.GetId()) == wxID_CANCEL)
     {
       return;
     }

@@ -19,12 +19,11 @@
 
 class wxExConfigDialog;
 class wxExListViewFile;
-class wxExListViewWithFrame;
 class wxExProcess;
 
 /// Adds file and project history support to wxExManagedFrame.
 /// It also sets a change indicator in the title of the frame if applicable.
-/// Finally it adds process support and find in files dialog.
+/// Finally it adds process support and find in files and selection dialogs.
 class WXDLLIMPEXP_BASE wxExFrameWithHistory : public wxExManagedFrame
 {
 public:
@@ -52,6 +51,12 @@ public:
   /// Shows a file history popup menu.
   void FileHistoryPopupMenu();
 
+  /// Finds in selected files dialog.
+  int FindInSelectionDialog(int id);
+  
+  /// Returns caption for FindInFilesDialog.
+  const wxString GetFindInCaption(int id) const;
+  
   /// If there is a project somewhere, 
   /// your implementation should return that one.
   /// Default it returns NULL.
