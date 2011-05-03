@@ -87,6 +87,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     return;
   }
 
+  // TODO: This code is no longer use, remove it, and from event table as well.
   if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
   {
     const wxExTool tool(command.GetId());
@@ -95,7 +96,7 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     {
       wxExTextFileWithListView report(GetFileName(), tool);
       report.RunTool();
-      tool.Log(&report.GetStatistics().GetElements(), GetFileName().GetFullPath());
+      tool.Log(&report.GetStatistics().GetElements());
 
       if (tool.IsCount())
       {

@@ -78,7 +78,6 @@ const wxString wxExTool::Info() const
 
 void wxExTool::Log(
   const wxExStatistics<long>* stat, 
-  const wxString& caption, 
   bool log_to_file) const
 {
   wxString logtext(Info());
@@ -88,9 +87,7 @@ void wxExTool::Log(
     logtext = logtext.Format(logtext, stat->Get(_("Actions Completed")));
   }
 
-  logtext
-    << " " << stat->Get(_("Files")) << " " << _("file(s)")
-    << (!caption.empty() ? ": " + caption: "");
+  logtext << " " << stat->Get(_("Files")) << " " << _("file(s)");
 
   wxLogStatus(logtext);
 
@@ -105,7 +102,6 @@ void wxExTool::Log(
         wxString logtext;
 
         logtext
-          << caption
           << stat->Get()
           << wxTextFile::GetEOL();
 

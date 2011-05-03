@@ -92,7 +92,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
       stats += file.GetStatistics().GetElements();
     }
     
-    tool.Log(&stats, "test");
+    tool.Log(&stats);
   }
   else switch (event.GetId())
   {

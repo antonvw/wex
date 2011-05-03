@@ -243,9 +243,7 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
   dir.FindFiles();
 
-  tool.Log(
-    &dir.GetStatistics().GetElements(), 
-    wxExConfigFirstOf(m_TextInFolder));
+  tool.Log(&dir.GetStatistics().GetElements());
 }
 
 int wxExFrameWithHistory::FindInSelectionDialog(int id)
