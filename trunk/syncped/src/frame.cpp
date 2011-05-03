@@ -112,7 +112,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(
     ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -997,15 +996,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       if (list == NULL && editor != NULL && editor->IsShown())
       {
         event.Enable(true);
-
-        if (
-           event.GetId() == ID_MENU_TOOLS ||
-          (event.GetId() > ID_TOOL_LOWEST &&
-           event.GetId() < ID_TOOL_HIGHEST))
-        {
-          event.Enable(editor->GetLength() > 0);
-          return;
-        }
 
         switch (event.GetId())
         {

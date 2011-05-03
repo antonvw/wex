@@ -10,6 +10,7 @@
 #include <wx/log.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/frame.h>
+#include <wx/extension/frd.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/util.h>
@@ -17,6 +18,7 @@
 #include <wx/extension/report/dirctrl.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
+#include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
 #if wxUSE_DIRDLG
@@ -27,6 +29,7 @@ BEGIN_EVENT_TABLE(wxExGenericDirCtrl, wxGenericDirCtrl)
     ID_EDIT_VCS_HIGHEST, 
     wxExGenericDirCtrl::OnCommand)
   EVT_MENU_RANGE(ID_TREE_OPEN, ID_TREE_RUN_MAKE, wxExGenericDirCtrl::OnCommand)
+  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExGenericDirCtrl::OnCommand)
   EVT_TREE_ITEM_ACTIVATED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
   EVT_TREE_ITEM_MENU(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
   EVT_TREE_SEL_CHANGED(wxID_TREECTRL, wxExGenericDirCtrl::OnTree)
@@ -65,6 +68,31 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
       event.GetId() < ID_EDIT_VCS_HIGHEST)
   {
     wxExVCSExecute(m_Frame, event.GetId(), files);
+  }
+  else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
+  {
+    const wxExTool tool(event.GetId());
+    
+    if (m_Frame->FindInSelectionDialog(tool.GetId()) == wxID_CANCEL ||
+       !wxExTextFileWithListView::SetupTool(tool, m_Frame))
+    {
+      return;
+    }
+    
+    wxLogStatus(
+      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
+        tool.GetId() == ID_TOOL_REPORT_REPLACE));
+
+    wxExStatistics<long> stats;
+
+    for (auto i = 0; i < files.GetCount(); i++)
+    {
+      wxExTextFileWithListView file(wxExFileName(files[i]), tool);
+      file.RunTool();
+      stats += file.GetStatistics().GetElements();
+    }
+    
+    tool.Log(&stats, "test");
   }
   else switch (event.GetId())
   {
@@ -128,6 +156,13 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
       menu.Append(ID_TREE_RUN_MAKE, "&Make");
     }
 
+    menu.AppendSeparator();
+    menu.Append(ID_TOOL_REPORT_FIND, 
+      wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
+
+    menu.Append(ID_TOOL_REPORT_REPLACE, 
+      wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+      
     PopupMenu(&menu);
   }
   else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
