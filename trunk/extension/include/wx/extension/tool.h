@@ -101,11 +101,8 @@ public:
       m_Id == ID_TOOL_REPORT_COUNT ||
       m_Id == ID_TOOL_REPORT_KEYWORD;}
 
-  /// Logs the statistics to
-  /// the statusbar (always) and to the statistics logfile (if specified).
-  void Log(
-    const wxExStatistics<long>* stat, 
-    bool log_to_file = true) const;
+  /// Logs the statistics to the statusbar.
+  void Log(const wxExStatistics<long>* stat) const;
 
   /// Sets the object as the current one, returns the pointer 
   /// to the previous current object (both the parameter and returned value may be NULL). 

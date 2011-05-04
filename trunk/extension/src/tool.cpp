@@ -63,9 +63,7 @@ const wxString wxExTool::Info() const
   return wxEmptyString;
 }
 
-void wxExTool::Log(
-  const wxExStatistics<long>* stat, 
-  bool log_to_file) const
+void wxExTool::Log(const wxExStatistics<long>* stat) const
 {
   wxString logtext(Info());
 
@@ -78,7 +76,7 @@ void wxExTool::Log(
 
   wxLogStatus(logtext);
 
-  if (log_to_file && stat->Get(_("Files")) != 0)
+  if (stat->Get(_("Files")) != 0)
   {
     if (IsCount())
     {

@@ -27,7 +27,6 @@ BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
     wxExSTCWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
@@ -87,20 +86,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  // TODO: This code is no longer use, remove it, and from event table as well.
-  if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
-  {
-    const wxExTool tool(command.GetId());
-
-    if (wxExTextFileWithListView::SetupTool(tool, m_Frame))
-    {
-      wxExTextFileWithListView report(GetFileName(), tool);
-      report.RunTool();
-      tool.Log(&report.GetStatistics().GetElements());
-    }
-  }
-  else if (command.GetId() > ID_EDIT_VCS_LOWEST && 
-           command.GetId() < ID_EDIT_VCS_HIGHEST)
+  if (command.GetId() > ID_EDIT_VCS_LOWEST && 
+      command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
     // Cannot move this code to wxExSTC, because of member m_Frame.
     wxArrayString files;
