@@ -97,12 +97,6 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
       wxExTextFileWithListView report(GetFileName(), tool);
       report.RunTool();
       tool.Log(&report.GetStatistics().GetElements());
-
-      if (tool.IsCount())
-      {
-        m_Frame->OpenFile(
-          tool.GetLogfileName(), 0, wxEmptyString, STC_WIN_FROM_OTHER);
-      }
     }
   }
   else if (command.GetId() > ID_EDIT_VCS_LOWEST && 

@@ -44,19 +44,6 @@ wxExTool* wxExTool::Get(bool createOnDemand)
   return m_Self;
 }
 
-const wxFileName wxExTool::GetLogfileName() const
-{
-  wxFileName filename(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-    wxStandardPaths::Get().GetUserDataDir()
-#endif
-    + wxFileName::GetPathSeparator() + _("statistics.log"));
-
-  return filename;
-}
-
 const wxString wxExTool::Info() const
 {
   if (m_Self == NULL)
@@ -95,18 +82,7 @@ void wxExTool::Log(
   {
     if (IsCount())
     {
-      wxFile file(GetLogfileName().GetFullPath(), wxFile::write_append);
-      
-      if (file.IsOpened())
-      {
-        wxString logtext;
-
-        logtext
-          << stat->Get()
-          << wxTextFile::GetEOL();
-
-        file.Write(wxDateTime::Now().Format() + " " + logtext + wxTextFile::GetEOL());
-      }
+      wxLogMessage(stat->Get());
     }
   }
 }

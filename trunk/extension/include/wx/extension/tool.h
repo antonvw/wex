@@ -70,9 +70,6 @@ public:
   /// Gets the tool id.
   int GetId() const {return m_Id;};
 
-  /// Returns the log filename.
-  const wxFileName GetLogfileName() const;
-
   /// Gets all the tool info.
   const std::map < int, wxExToolInfo > & GetToolInfo() const {return m_ToolInfo;};
 
