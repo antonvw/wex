@@ -106,12 +106,6 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSeparator();
 
   wxExMenu* menuMore = new wxExMenu();
-  
-  if (menuMore->AppendTools(ID_MENU_TOOLS))
-  {
-    menuMore->AppendSeparator();
-  }
-
   menuMore->Append(ID_EDIT_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuMore->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuMore->AppendSeparator();

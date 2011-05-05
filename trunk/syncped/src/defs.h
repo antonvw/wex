@@ -42,7 +42,6 @@ enum
   ID_RECENT_PROJECT_MENU,
   ID_SORT_SYNC,
   ID_SPLIT,
-  ID_MENU_TOOLS,
   ID_VIEW_PANE_FIRST, // put all your panes from here
   ID_VIEW_FILES,
   ID_VIEW_PROJECTS,
