@@ -13,12 +13,8 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/file.h>
-#include <wx/stdpaths.h>
-#include <wx/textfile.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/vcs.h>
 
 wxExTool* wxExTool::m_Self = NULL;
 
