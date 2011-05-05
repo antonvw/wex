@@ -182,6 +182,7 @@ Frame::Frame(bool open_recent)
     .Left()
     .MaximizeButton(true)
     .Name("PROJECTS")
+    .MinSize(wxSize(150, -1))
     .Caption(_("Projects")));
 
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
