@@ -69,7 +69,7 @@ bool wxExFindOtherFileName(
   wxFileName* lastfile); // in case more files found, only most recent here
 
 /// Shows searching for in the statusbar.
-const wxString wxExFindResult(
+void wxExFindResult(
   const wxString& find_text, 
   bool find_next, 
   bool recursive,
