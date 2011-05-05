@@ -74,8 +74,6 @@ void wxExTool::Log(const wxExStatistics<long>* stat) const
 
   logtext << " " << stat->Get(_("Files")) << " " << _("file(s)");
 
-  wxLogStatus(logtext);
-
   if (stat->Get(_("Files")) != 0)
   {
     if (IsCount())
@@ -83,6 +81,8 @@ void wxExTool::Log(const wxExStatistics<long>* stat) const
       wxLogMessage(stat->Get());
     }
   }
+  
+  wxLogStatus(logtext);
 }
 
 wxExTool* wxExTool::Set(wxExTool* tool)
