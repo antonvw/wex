@@ -274,6 +274,10 @@ int wxExFrameWithHistory::FindInSelectionDialog(int id)
     return wxID_CANCEL;
   }
 
+  wxLogStatus(
+    wxExFindReplaceData::Get()->GetFindReplaceInfoText(
+      id == ID_TOOL_REPORT_REPLACE));
+        
   return wxID_OK;
 }
 

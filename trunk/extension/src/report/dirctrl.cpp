@@ -10,7 +10,6 @@
 #include <wx/log.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/frame.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/util.h>
@@ -79,10 +78,6 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
       return;
     }
     
-    wxLogStatus(
-      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-        tool.GetId() == ID_TOOL_REPORT_REPLACE));
-
     wxExStatistics<long> stats;
 
     for (auto i = 0; i < files.GetCount(); i++)

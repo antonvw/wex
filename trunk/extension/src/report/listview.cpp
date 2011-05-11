@@ -17,7 +17,6 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
@@ -760,10 +759,6 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     {
       return;
     }
-    
-    wxLogStatus(
-      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-        tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))
