@@ -16,40 +16,27 @@
 #include <wx/extension/tool.h>
 #include <wx/extension/statistics.h>
 
-wxExTool* wxExTool::m_Self = NULL;
+std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
 
 wxExTool::wxExTool(int type)
   : m_Id(type)
 {
-}
-
-wxExTool* wxExTool::Get(bool createOnDemand)
-{
-  if (m_Self == NULL && createOnDemand)
+  if (m_ToolInfo.empty())
   {
-    m_Self = new wxExTool(0);
-
-    m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-    m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
-    m_Self->AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
-    m_Self->AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
-    m_Self->AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
-    m_Self->AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
+    AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
+    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
+    AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
+    AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
+    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
+    AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
   }
-
-  return m_Self;
 }
 
 const wxString wxExTool::Info() const
 {
-  if (m_Self == NULL)
-  {
-    return "No info available";
-  }
-  
-  const auto it = m_Self->m_ToolInfo.find(m_Id);
+  const auto it = m_ToolInfo.find(m_Id);
 
-  if (it != m_Self->m_ToolInfo.end())
+  if (it != m_ToolInfo.end())
   {
     return it->second.GetInfo();
   }
@@ -79,11 +66,4 @@ void wxExTool::Log(const wxExStatistics<long>* stat) const
   }
   
   wxLogStatus(logtext);
-}
-
-wxExTool* wxExTool::Set(wxExTool* tool)
-{
-  wxExTool* old = m_Self;
-  m_Self = tool;
-  return old;
 }
