@@ -96,12 +96,11 @@ bool wxExProcess::CheckInput()
       }
     }
 
-    wxFileName fn(path);
-
-    fn.Normalize();
-    
     if (m_ListView != NULL)
     {
+      wxFileName fn(path);
+      fn.Normalize();
+    
       if (fn.FileExists() || fn.DirExists())
       {
         wxExListItem item(m_ListView, fn);
