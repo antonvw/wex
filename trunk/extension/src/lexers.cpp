@@ -22,6 +22,10 @@
 
 wxExLexers* wxExLexers::m_Self = NULL;
 
+// Constructor for lexers from specified filename.
+// This must be an existing xml file containing all lexers.
+// It does not Read this file, however if you use the global Get,
+// it both constructs and reads the lexers.
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
   , m_NoTheme(wxEmptyString)

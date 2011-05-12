@@ -32,12 +32,6 @@ class wxStyledTextCtrl;
 class WXDLLIMPEXP_BASE wxExLexers
 {
 public:
-  /// Constructor for lexers from specified filename.
-  /// This must be an existing xml file containing all lexers.
-  /// It does not Read this file, however if you use the global Get,
-  /// it both constructs and reads the lexers.
-  wxExLexers(const wxFileName& filename);
-
   /// Sets global styles (and colours and indicators) 
   /// for current theme for specified component.
   void ApplyGlobalStyles(wxStyledTextCtrl* stc);
@@ -138,6 +132,7 @@ public:
     /// caption
     const wxString& caption = _("Enter Theme"));
 private:
+  wxExLexers(const wxFileName& filename);
   const wxString GetLexerExtensions() const;
   void Initialize();
   void ParseNodeGlobal(const wxXmlNode* node);
