@@ -1155,7 +1155,7 @@ bool Frame::OpenFile(
     wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
     return false;
   }
-
+  
   auto* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
     ? m_Projects : m_Editors);
 
@@ -1171,7 +1171,7 @@ bool Frame::OpenFile(
         wxID_ANY,
         wxExListViewStandard::LIST_MENU_DEFAULT);
 
-      m_Projects->AddPage(
+      notebook->AddPage(
         project,
         filename.GetFullPath(),
         filename.GetName(),
@@ -1213,7 +1213,7 @@ bool Frame::OpenFile(
         match,
         flags);
 
-      m_Editors->AddPage(
+      notebook->AddPage(
         editor,
         filename.GetFullPath(),
         filename.GetFullName(),
