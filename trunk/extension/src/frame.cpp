@@ -236,18 +236,14 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       }
     }
     
-    if (m_FindReplaceDialog == NULL)
-    {
-      m_FindReplaceDialog = new wxFindReplaceDialog(
-        this, wxExFindReplaceData::Get(), _("Find")); 
-    }
+    m_FindReplaceDialog = new wxFindReplaceDialog(
+      this, wxExFindReplaceData::Get(), _("Find")); 
+    m_FindReplaceDialog->Show();
     
     if (m_FocusSTC != NULL)
     {
       m_FocusSTCFind = m_FocusSTC;
     }
-    
-    m_FindReplaceDialog->Show();
     break;
     
   case wxID_REPLACE: 
@@ -262,21 +258,17 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       }
     }
     
-    if (m_FindReplaceDialog == NULL)
-    {
-      m_FindReplaceDialog = new wxFindReplaceDialog(
-        this, 
-        wxExFindReplaceData::Get(),
-        _("Replace"), 
-        wxFR_REPLACEDIALOG); 
-    }
+    m_FindReplaceDialog = new wxFindReplaceDialog(
+      this, 
+      wxExFindReplaceData::Get(),
+      _("Replace"), 
+      wxFR_REPLACEDIALOG); 
+    m_FindReplaceDialog->Show();
       
     if (m_FocusSTC != NULL)
     {
       m_FocusSTCFind = m_FocusSTC;
     }
-    
-    m_FindReplaceDialog->Show();
     break;
     
   case ID_EDIT_FIND_NEXT: 
@@ -358,10 +350,10 @@ wxStatusBar* wxExFrame::OnCreateStatusBar(
 
 void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
 {
-  wxASSERT(m_FindReplaceDialog != NULL);
-
   if (event.GetEventType() == wxEVT_COMMAND_FIND_CLOSE)
   {
+    wxASSERT(m_FindReplaceDialog != NULL);
+
     // Hiding instead of destroying, does not 
     // show the dialog next time.
     m_FindReplaceDialog->Destroy();
