@@ -51,8 +51,8 @@ template <class T> class wxExStatistics;
 class WXDLLIMPEXP_BASE wxExTool
 {
 public:
-  /// Constructor, specify the wxExToolId to use.
-  wxExTool(int id);
+  /// Default constructor, specify the wxExToolId to use.
+  wxExTool(int id = -1);
 
   /// Adds your own info to the tool.
   /// If you use a %ld in the info string, it is replaced by GetStatistics
@@ -68,7 +68,7 @@ public:
   int GetId() const {return m_Id;};
 
   /// Gets all the tool info.
-  static const std::map < int, wxExToolInfo > & GetToolInfo() {return m_ToolInfo;};
+  const std::map < int, wxExToolInfo > & GetToolInfo() const {return m_ToolInfo;};
 
   /// Gets info about current tool.
   const wxString Info() const;

@@ -41,8 +41,6 @@ const wxString wxExTool::Info() const
     return it->second.GetInfo();
   }
 
-  wxFAIL;
-
   return wxEmptyString;
 }
 

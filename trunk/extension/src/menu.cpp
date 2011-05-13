@@ -186,8 +186,8 @@ bool wxExMenu::AppendTools(int itemid)
 
   for (
     auto it = 
-      wxExTool::GetToolInfo().begin();
-    it != wxExTool::GetToolInfo().end();
+      wxExTool().GetToolInfo().begin();
+    it != wxExTool().GetToolInfo().end();
     ++it)
   {
     if (!it->second.GetText().empty())
