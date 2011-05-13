@@ -206,8 +206,11 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
     
     menu->Append(item);
   }
-    
-  PopupMenu(menu);
+  
+  if (menu->GetMenuItemCount() > 0)
+  {
+    PopupMenu(menu);
+  }
     
   delete menu;
 }
