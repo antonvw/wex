@@ -20,12 +20,9 @@
 class WXDLLIMPEXP_BASE wxExPrinting
 {
 public:
-  /// Constructor.
-  wxExPrinting();
-
-  /// Destructor.
+  // Destructor (not for Doxy).
  ~wxExPrinting();
-
+ 
   /// Returns the printing object.
   static wxExPrinting* Get(bool createOnDemand = true);
 
@@ -43,6 +40,8 @@ public:
   /// to the previous current object (both the parameter and returned value may be NULL). 
   static wxExPrinting* Set(wxExPrinting* printing);
 private:
+  wxExPrinting();
+
 #if wxUSE_HTML & wxUSE_PRINTING_ARCHITECTURE
   wxHtmlEasyPrinting* m_HtmlPrinter;
 #endif

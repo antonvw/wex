@@ -23,12 +23,9 @@ class wxCheckListBox;
 class WXDLLIMPEXP_BASE wxExFindReplaceData : public wxFindReplaceData
 {
 public:
-  /// Constructor, gets members from config.
-  wxExFindReplaceData();
-
-  /// Destructor, saves members to config.
+  // Destructor (not for Doxy).
  ~wxExFindReplaceData();
-
+ 
   /// Gets the find replace data.
   static wxExFindReplaceData* Get(bool createOnDemand = true);
 
@@ -119,6 +116,7 @@ public:
   /// Returns true if find text is used as a regular expression.
   bool UseRegularExpression() const {return m_UseRegularExpression;};
 private:
+  wxExFindReplaceData();
   void SetFindRegularExpression();
 
   wxRegEx m_FindRegularExpression;

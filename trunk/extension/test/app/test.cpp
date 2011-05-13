@@ -227,7 +227,6 @@ void wxExAppTestFixture::testGlobal()
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
-  CPPUNIT_ASSERT(wxExTool::Get() != NULL);
 }
 
 void wxExAppTestFixture::testGrid()
