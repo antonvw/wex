@@ -57,7 +57,7 @@ public:
   /// Adds your own info to the tool.
   /// If you use a %ld in the info string, it is replaced by GetStatistics
   /// with the Actions Completed element.
-  static void AddInfo(
+  void AddInfo(
     int tool_id,
     const wxString& info,
     const wxString& text = wxEmptyString,

@@ -86,12 +86,12 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   CreateDialogs();
 
 #ifdef wxExUSE_EMBEDDED_SQL
-  wxExTool::Get()->AddInfo(
+  wxExTool().AddInfo(
     ID_TOOL_SQL,
     _("Executed %ld SQL queries in"),
     wxExEllipsed(_("&SQL Query Run")));
 
-  wxExTool::Get()->AddInfo(
+  wxExTool().AddInfo(
     ID_TOOL_REPORT_SQL,
     _("Reported %ld SQL queries in"),
     _("Report SQL &Query"));
