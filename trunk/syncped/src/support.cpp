@@ -186,7 +186,7 @@ DecoratedFrame::DecoratedFrame()
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_EDITOR, wxExEllipsed(_("Set &Editor Options")));
 
-  wxMenu *menuHelp = new wxMenu();
+  wxExMenu *menuHelp = new wxExMenu(); // use wxExMenu for art with HELP
   menuHelp->Append(wxID_ABOUT);
   menuHelp->Append(wxID_HELP);
 
