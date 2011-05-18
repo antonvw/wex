@@ -11,6 +11,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
@@ -36,9 +37,10 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Sets callback.
-  void SetVi(wxExVi* vi) {m_vi = vi;};
+  void SetVi(wxExVi* vi);
 private:
   void OnCommand(wxCommandEvent& event);
+  void OnEnter(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
   
   wxExManagedFrame* m_Frame;
@@ -263,7 +265,8 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
 BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
   EVT_CHAR(wxExTextCtrl::OnKey)
-  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnCommand)
+  EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
 END_EVENT_TABLE()
 
 wxExTextCtrl::wxExTextCtrl(
@@ -281,6 +284,16 @@ wxExTextCtrl::wxExTextCtrl(
 }
 
 void wxExTextCtrl::OnCommand(wxCommandEvent& event)
+{
+  event.Skip();
+  
+  if (m_vi != NULL && m_StaticText->GetLabel() != ":")
+  {
+    m_vi->FindCommandIncremental(m_StaticText->GetLabel(), GetValue());
+  }
+}
+
+void wxExTextCtrl::OnEnter(wxCommandEvent& event)
 {
   if (m_vi != NULL)
   {
@@ -307,12 +320,23 @@ void wxExTextCtrl::OnKey(wxKeyEvent& event)
 
   if (key == WXK_ESCAPE)
   {
+    if (m_vi != NULL)
+    {
+      m_vi->PositionRestore();
+    }
+    
     m_Frame->HideViBar();
   }
   else
   {
     event.Skip();
   }
+}
+
+void wxExTextCtrl::SetVi(wxExVi* vi) 
+{
+  m_vi = vi;
+  m_vi->PositionSave();
 }
 
 #endif // wxUSE_GUI

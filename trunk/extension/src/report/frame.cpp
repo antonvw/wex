@@ -83,8 +83,6 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
   
-  CreateDialogs();
-
 #ifdef wxExUSE_EMBEDDED_SQL
   wxExTool().AddInfo(
     ID_TOOL_SQL,
@@ -100,8 +98,17 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
 {
-  m_FiFDialog->Destroy();
-  m_RiFDialog->Destroy();
+  if (m_FiFDialog != NULL)
+  {
+    m_FiFDialog->Destroy();
+  }
+  
+  if (m_RiFDialog != NULL)
+  {
+    m_RiFDialog->Destroy();
+  }
+  
+  wxDELETE(m_Process);
 }
 
 void wxExFrameWithHistory::CreateDialogs()
@@ -306,8 +313,6 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
     }
   }
 
-  wxDELETE(m_Process);
-
   m_FileHistory.Save(*wxConfigBase::Get());
 
   for (size_t i = 0; i < m_ProjectHistory.GetCount(); i++)
@@ -387,6 +392,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
       
     case ID_FIND_IN_FILES: 
+      if (m_FiFDialog == NULL)
+      {
+        CreateDialogs();
+      }
+
       if (GetFindString() != wxEmptyString)
       {
         m_FiFDialog->Reload(); 
@@ -396,6 +406,11 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
       
     case ID_REPLACE_IN_FILES: 
+      if (m_RiFDialog == NULL)
+      {
+        CreateDialogs();
+      }
+      
       if (GetFindString() != wxEmptyString)
       {
         m_RiFDialog->Reload(); 

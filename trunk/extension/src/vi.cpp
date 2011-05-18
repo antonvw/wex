@@ -37,6 +37,7 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
+  , m_Position(0)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -704,6 +705,43 @@ bool wxExVi::FindCommand(const wxString& command, const wxString& text)
     m_SearchForward);
 }
 
+void wxExVi::FindCommandIncremental(
+  const wxString& command, const wxString& text) const
+{
+  if (!m_IsActive || command.empty() || text.empty())
+  {
+    return;
+  }
+  
+  int start_pos, end_pos;
+  
+  if (command == '/')
+  {
+    start_pos = 0;
+    end_pos = m_STC->GetTextLength();
+  }
+  else
+  {
+    start_pos = m_STC->GetTextLength();
+    end_pos = 0;
+  }
+  
+  m_STC->SetTargetStart(start_pos);
+  m_STC->SetTargetEnd(end_pos);
+  m_STC->SetSearchFlags(m_SearchFlags);
+
+  if (m_STC->SearchInTarget(text) >= 0)
+  {
+    if (m_STC->GetTargetStart() != m_STC->GetTargetEnd())
+    {
+      m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
+    }
+    
+    m_STC->EnsureVisible(m_STC->LineFromPosition(m_STC->GetTargetStart()));
+    m_STC->EnsureCaretVisible();
+  }
+}
+
 void wxExVi::FindWord(bool find_next) const
 {
   const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
@@ -1010,6 +1048,18 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   return !handled;
 }
 
+void wxExVi::PositionRestore() const
+{
+  m_STC->SetSelection(0, 0);
+  m_STC->SetCurrentPos(m_Position);
+  m_STC->EnsureCaretVisible();
+}
+  
+void wxExVi::PositionSave()
+{
+  m_Position = m_STC->GetCurrentPos();
+}
+  
 void wxExVi::Put(bool after) const
 {
   const auto lines = wxExGetNumberOfLines(wxExClipboardGet());
