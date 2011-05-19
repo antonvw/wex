@@ -940,6 +940,43 @@ void wxExSTC::FileTypeMenu()
   delete menu;
 }
 
+void wxExSTC::FindIncremental(
+  const wxString& text, int search_flags, bool find_next)
+{
+  if (text.empty())
+  {
+    return;
+  }
+  
+  int start_pos, end_pos;
+  
+  if (find_next)
+  {
+    start_pos = 0;
+    end_pos = GetTextLength();
+  }
+  else
+  {
+    start_pos = GetTextLength();
+    end_pos = 0;
+  }
+  
+  SetTargetStart(start_pos);
+  SetTargetEnd(end_pos);
+  SetSearchFlags(search_flags);
+
+  if (SearchInTarget(text) >= 0)
+  {
+    if (GetTargetStart() != GetTargetEnd())
+    {
+      SetSelection(GetTargetStart(), GetTargetEnd());
+    }
+    
+    EnsureVisible(LineFromPosition(GetTargetStart()));
+    EnsureCaretVisible();
+  }
+}
+
 bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(

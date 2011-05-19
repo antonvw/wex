@@ -708,38 +708,12 @@ bool wxExVi::FindCommand(const wxString& command, const wxString& text)
 void wxExVi::FindCommandIncremental(
   const wxString& command, const wxString& text) const
 {
-  if (!m_IsActive || command.empty() || text.empty())
+  if (!m_IsActive || command.empty())
   {
     return;
   }
   
-  int start_pos, end_pos;
-  
-  if (command == '/')
-  {
-    start_pos = 0;
-    end_pos = m_STC->GetTextLength();
-  }
-  else
-  {
-    start_pos = m_STC->GetTextLength();
-    end_pos = 0;
-  }
-  
-  m_STC->SetTargetStart(start_pos);
-  m_STC->SetTargetEnd(end_pos);
-  m_STC->SetSearchFlags(m_SearchFlags);
-
-  if (m_STC->SearchInTarget(text) >= 0)
-  {
-    if (m_STC->GetTargetStart() != m_STC->GetTargetEnd())
-    {
-      m_STC->SetSelection(m_STC->GetTargetStart(), m_STC->GetTargetEnd());
-    }
-    
-    m_STC->EnsureVisible(m_STC->LineFromPosition(m_STC->GetTargetStart()));
-    m_STC->EnsureCaretVisible();
-  }
+  m_STC->FindIncremental(text, m_SearchFlags, command == '/'); 
 }
 
 void wxExVi::FindWord(bool find_next) const
@@ -1050,7 +1024,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 void wxExVi::PositionRestore() const
 {
-  m_STC->SetSelection(0, 0);
+  m_STC->SetSelection(m_Position, m_Position);
   m_STC->SetCurrentPos(m_Position);
   m_STC->EnsureCaretVisible();
 }

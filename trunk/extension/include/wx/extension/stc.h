@@ -127,6 +127,10 @@ public:
   /// Shows a menu with current line type checked, and allows you to change it.
   void FileTypeMenu();
 
+  /// Finds incrementally the specified text.
+  void FindIncremental(
+    const wxString& text, int search_flags = 0, bool find_next = true);
+  
   /// Finds next with settings from find replace data.
   bool FindNext(bool find_next = true);
 

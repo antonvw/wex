@@ -24,7 +24,6 @@
 class wxExGrid;
 class wxExListView;
 class wxExSTC;
-class wxExToolBar;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and allows for file dropping.

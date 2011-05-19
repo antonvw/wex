@@ -464,15 +464,14 @@ void Frame::NewFile(bool as_project)
     m_NewFileNo++;
   }
 
+  // This file does yet exist, so do not give it a bitmap.
   notebook->AddPage(
     page,
     key,
     text,
-    true,
-    wxArtProvider::GetBitmap(wxART_NORMAL_FILE));
+    true);
 
-  const wxString pane = (as_project ? "PROJECTS" : "FILES");
-  GetManager().GetPane(pane).Show();
+  GetManager().GetPane(as_project ? "PROJECTS" : "FILES").Show();
   GetManager().Update();
 }
 

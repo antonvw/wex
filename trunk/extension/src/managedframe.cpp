@@ -38,11 +38,11 @@ public:
     
   /// Sets callback.
   void SetVi(wxExVi* vi);
-private:
+protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
   void OnKey(wxKeyEvent& event);
-  
+private:  
   wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
   wxStaticText* m_StaticText;

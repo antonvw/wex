@@ -46,8 +46,10 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
-private:
+protected:
   void OnCommand(wxCommandEvent& event);
+  void OnEnter(wxCommandEvent& event);
+private:  
   wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
@@ -262,7 +264,8 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(FindString, wxTextCtrl)
-  EVT_TEXT_ENTER(wxID_ANY, FindString::OnCommand)
+  EVT_TEXT(wxID_ANY, FindString::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, FindString::OnEnter)
 END_EVENT_TABLE()
 
 FindString::FindString(
@@ -283,6 +286,18 @@ FindString::FindString(
 }
 
 void FindString::OnCommand(wxCommandEvent& event)
+{
+  event.Skip();
+  
+  auto* stc = m_Frame->GetSTC();
+
+  if (stc != NULL)
+  {
+    stc->FindIncremental(GetValue());
+  }
+}
+
+void FindString::OnEnter(wxCommandEvent& event)
 {
   auto* stc = m_Frame->GetSTC();
 
