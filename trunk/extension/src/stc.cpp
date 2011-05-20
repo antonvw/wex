@@ -940,6 +940,12 @@ void wxExSTC::FileTypeMenu()
   delete menu;
 }
 
+
+void wxExSTC::FindIncremental(const wxString& text)
+{
+  FindIncremental(text, wxExFindReplaceData::Get()->STCFlags(), true);
+}
+
 void wxExSTC::FindIncremental(
   const wxString& text, int search_flags, bool find_next)
 {
@@ -948,21 +954,8 @@ void wxExSTC::FindIncremental(
     return;
   }
   
-  int start_pos, end_pos;
-  
-  if (find_next)
-  {
-    start_pos = 0;
-    end_pos = GetTextLength();
-  }
-  else
-  {
-    start_pos = GetTextLength();
-    end_pos = 0;
-  }
-  
-  SetTargetStart(start_pos);
-  SetTargetEnd(end_pos);
+  SetTargetStart(GetCurrentPos());
+  SetTargetEnd(find_next ? GetTextLength(): 0);
   SetSearchFlags(search_flags);
 
   if (SearchInTarget(text) >= 0)

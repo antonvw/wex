@@ -21,7 +21,7 @@ class wxExListView;
 /*! \file */
 
 /// Finds other filenames from the one specified in the same dir structure.
-/// Results are put on the list if not null, or in the filename if not null.
+/// Results are put on the listview.
 bool wxExFindOtherFileName(
   const wxFileName& filename,
   wxExListView* listview);

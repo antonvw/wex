@@ -58,6 +58,21 @@ public:
   /// If the key does not exist NULL is returned.
   wxWindow* GetPageByKey(const wxString& key) const;
   
+  /// Returns the page index specified by the given key.
+  /// If the key does not exist -1 is returned.
+  int GetPageIndexByKey(const wxString& key) const;
+  
+  /// Inserts the page with given key and fills the map.
+  /// If the key already exists, NULL is returned,
+  /// and no new page is added.
+  wxWindow* InsertPage(
+    size_t page_idx,
+    wxWindow* page,
+    const wxString& key,
+    const wxString& text = wxEmptyString, // in that case uses key as text
+    bool select = false,
+    const wxBitmap& bitmap = wxNullBitmap);
+
   /// Selects (and returns) the page specified by the given key.
   /// If the key does not exist NULL is returned.
   wxWindow* SelectPage(const wxString& key);

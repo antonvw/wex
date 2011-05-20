@@ -162,7 +162,6 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   if (startPos != endPos)
   {
-    // TODO: This does not seem to work.
     m_STC->SetSelection(startPos, endPos);
   }
   

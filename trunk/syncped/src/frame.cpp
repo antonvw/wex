@@ -839,7 +839,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
     wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
 
-    m_Editors->AddPage(
+    // Place new page next to page for editor.
+    m_Editors->InsertPage(
+      m_Editors->GetPageIndex(editor),
       stc,
       // key should be unique
       wxString::Format("stc%d", stc->GetId()),
@@ -1131,13 +1133,13 @@ bool Frame::OpenFile(
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
     
-    m_Editors->AddPage(
+    // Place new page next to the one used for vcs.
+    m_Editors->InsertPage(
+      m_Editors->GetPageIndexByKey(filename.GetFullPath()) + 1,
       editor,
       key,
       filename.GetFullName() + " " + unique,
-      true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-        wxExGetIconID(filename)));
+      true);
   }
 
   return true;

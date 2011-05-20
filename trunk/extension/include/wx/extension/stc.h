@@ -128,8 +128,13 @@ public:
   void FileTypeMenu();
 
   /// Finds incrementally the specified text.
-  void FindIncremental(
-    const wxString& text, int search_flags = 0, bool find_next = true);
+  /// Search flags are taken from find replace data.
+  /// Always finds next.
+  void FindIncremental(const wxString& text);
+  
+  /// Finds incrementally the specified text.
+  void FindIncremental(const wxString& text, 
+    int search_flags, bool find_next = true);
   
   /// Finds next with settings from find replace data.
   bool FindNext(bool find_next = true);

@@ -63,7 +63,7 @@ const wxString wxExEllipsed(
   const wxString& control = wxEmptyString);
 
 /// Finds other filenames from the one specified in the same dir structure.
-/// Results are put on the list if not null, or in the filename if not null.
+/// Results are put on the lastfile argument.
 bool wxExFindOtherFileName(
   const wxFileName& filename,
   wxFileName* lastfile); // in case more files found, only most recent here

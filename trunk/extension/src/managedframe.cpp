@@ -23,12 +23,12 @@
 
 // Support class.
 // Offers a text ctrl related to a vi object.
-class wxExTextCtrl: public wxTextCtrl
+class wxExViFindCtrl: public wxTextCtrl
 {
 public:
   /// Constructor. Fills the combobox box with values 
   /// from FindReplace from config.
-  wxExTextCtrl(
+  wxExViFindCtrl(
     wxWindow* parent,
     wxExManagedFrame* frame,
     wxStaticText* text,
@@ -37,7 +37,7 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Sets callback.
-  void SetVi(wxExVi* vi);
+  void SetVi(wxExVi* vi) {m_vi = vi;};
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
@@ -46,6 +46,7 @@ private:
   wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
   wxStaticText* m_StaticText;
+  bool m_UserInput;
 
   DECLARE_EVENT_TABLE()
 };
@@ -62,6 +63,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   const wxString& title,
   long style)
   : wxExFrame(parent, id, title, style)
+  
 {
   m_Manager.SetManagedWindow(this);
 
@@ -70,7 +72,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   DoAddControl(toolBar);
 
   AddToolBarPane(toolBar, "TOOLBAR", _("Toolbar"));
-  AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
+  AddToolBarPane(new wxExFindToolBar(this), "FINDBAR");
     
   CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
   CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
@@ -94,7 +96,7 @@ bool wxExManagedFrame::AddToolBarPane(
     .Name(name);
 
   // The real toolbar is at the top, others at bottom and initially hidden.  
-  if (name == "TOOLBAR")
+  if (!caption.empty())
   {
     pane
       .Top()
@@ -117,22 +119,23 @@ bool wxExManagedFrame::AddToolBarPane(
 
 void wxExManagedFrame::CreateViPanel(
   wxStaticText*& statictext, 
-  wxExTextCtrl*& text,
+  wxExViFindCtrl*& victrl,
   const wxString& name)
 {
+  // A vi panel starts with small static text for : or /, then
+  // comes the vi ctrl for getting user input.
   wxPanel* panel = new wxPanel(this);
+  statictext = new wxStaticText(panel, wxID_ANY, wxEmptyString);
+  victrl = new wxExViFindCtrl(panel, this, statictext, wxID_ANY);
   
   wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
-  statictext = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-  text = new wxExTextCtrl(panel, this, statictext, wxID_ANY);
-  
   sizer->AddGrowableCol(1);
   sizer->Add(statictext, wxSizerFlags().Expand());
-  sizer->Add(text, wxSizerFlags().Expand());
+  sizer->Add(victrl, wxSizerFlags().Expand());
   
   panel->SetSizerAndFit(sizer);
   
-  AddToolBarPane(panel, name, _("vibar"));
+  AddToolBarPane(panel, name);
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
@@ -154,17 +157,17 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
   
 void wxExManagedFrame::GetViPaneCommand(
   wxStaticText* statictext,
-  wxExTextCtrl* text,
+  wxExViFindCtrl* victrl,
   const wxString& pane,
   wxExVi* vi,
   const wxString& command)
 {
   statictext->SetLabel(command);
 
-  text->Show();
-  text->SelectAll();
-  text->SetFocus();
-  text->SetVi(vi);
+  victrl->Show();
+  victrl->SelectAll();
+  victrl->SetFocus();
+  victrl->SetVi(vi);
   
   m_Manager.GetPane(pane).Show();
   m_Manager.Update();
@@ -263,13 +266,13 @@ void wxExManagedFrame::TogglePane(const wxString& pane)
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
-  EVT_CHAR(wxExTextCtrl::OnKey)
-  EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
-  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
+BEGIN_EVENT_TABLE(wxExViFindCtrl, wxTextCtrl)
+  EVT_CHAR(wxExViFindCtrl::OnKey)
+  EVT_TEXT(wxID_ANY, wxExViFindCtrl::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, wxExViFindCtrl::OnEnter)
 END_EVENT_TABLE()
 
-wxExTextCtrl::wxExTextCtrl(
+wxExViFindCtrl::wxExViFindCtrl(
   wxWindow* parent,
   wxExManagedFrame* frame,
   wxStaticText* text,
@@ -280,20 +283,21 @@ wxExTextCtrl::wxExTextCtrl(
   , m_Frame(frame)
   , m_vi(NULL)
   , m_StaticText(text)
+  , m_UserInput(false)
 {
 }
 
-void wxExTextCtrl::OnCommand(wxCommandEvent& event)
+void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
 {
   event.Skip();
   
-  if (m_vi != NULL && m_StaticText->GetLabel() != ":")
+  if (m_UserInput && m_vi != NULL && m_StaticText->GetLabel() != ":")
   {
     m_vi->FindCommandIncremental(m_StaticText->GetLabel(), GetValue());
   }
 }
 
-void wxExTextCtrl::OnEnter(wxCommandEvent& event)
+void wxExViFindCtrl::OnEnter(wxCommandEvent& event)
 {
   if (m_vi != NULL)
   {
@@ -314,7 +318,7 @@ void wxExTextCtrl::OnEnter(wxCommandEvent& event)
   }
 }
 
-void wxExTextCtrl::OnKey(wxKeyEvent& event)
+void wxExViFindCtrl::OnKey(wxKeyEvent& event)
 {
   const auto key = event.GetKeyCode();
 
@@ -326,17 +330,18 @@ void wxExTextCtrl::OnKey(wxKeyEvent& event)
     }
     
     m_Frame->HideViBar();
+    
+    m_UserInput = false;
   }
   else
   {
+    if (!m_UserInput)
+    {
+      m_vi->PositionSave();
+      m_UserInput = true;
+    }
+    
     event.Skip();
   }
 }
-
-void wxExTextCtrl::SetVi(wxExVi* vi) 
-{
-  m_vi = vi;
-  m_vi->PositionSave();
-}
-
 #endif // wxUSE_GUI

@@ -49,9 +49,9 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-/// Offers a find toolbar, containing a find combobox, up and down arrows
+/// Offers a find toolbar, containing a find ctrl, up and down arrows
 /// and checkboxes.
-/// The find combobox allows you to find in an wxExSTC
+/// The find ctrl allows you to find in an wxExSTC
 /// component on the specified wxExFrame.
 class WXDLLIMPEXP_BASE wxExFindToolBar : public wxExToolBar
 {
@@ -68,7 +68,7 @@ protected:
 private:
   void Initialize();
 
-  wxTextCtrl* m_FindString;
+  wxTextCtrl* m_FindCtrl;
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;

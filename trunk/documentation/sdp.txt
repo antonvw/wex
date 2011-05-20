@@ -107,7 +107,11 @@ General
       than libs were built, but listctrl and auidemo both crashed, no
       more attempts (wxWidgets 2.9.1).
 
-    - under cygwin 1.7 wxWidgets 2.9.1 does not compile 
+    - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)
+      ../configure --with-msw
+      do a make and a make install
+      Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
+      Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
     
     - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
       ../configure --with-mac

@@ -35,12 +35,12 @@ enum
 // Support class.
 // Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
-class FindString : public wxTextCtrl
+class FindCtrl : public wxTextCtrl
 {
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  FindString(
+  FindCtrl(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
@@ -172,7 +172,7 @@ wxExFindToolBar::wxExFindToolBar(
   Initialize();
 
   // And place the controls on the toolbar.
-  AddControl(m_FindString);
+  AddControl(m_FindCtrl);
   AddSeparator();
 
   AddTool(
@@ -196,7 +196,7 @@ wxExFindToolBar::wxExFindToolBar(
 
 void wxExFindToolBar::Initialize()
 {
-  m_FindString = new FindString(this, m_Frame);
+  m_FindCtrl = new FindCtrl(this, m_Frame);
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -230,7 +230,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       if (stc != NULL)
       {
         stc->FindNext(
-          m_FindString->GetValue(), 
+          m_FindCtrl->GetValue(), 
           wxExFindReplaceData::Get()->STCFlags(),
           (event.GetId() == wxID_DOWN));
       }
@@ -258,17 +258,17 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 
 void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  event.Enable(!m_FindString->GetValue().empty());
+  event.Enable(!m_FindCtrl->GetValue().empty());
 }
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(FindString, wxTextCtrl)
-  EVT_TEXT(wxID_ANY, FindString::OnCommand)
-  EVT_TEXT_ENTER(wxID_ANY, FindString::OnEnter)
+BEGIN_EVENT_TABLE(FindCtrl, wxTextCtrl)
+  EVT_TEXT(wxID_ANY, FindCtrl::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, FindCtrl::OnEnter)
 END_EVENT_TABLE()
 
-FindString::FindString(
+FindCtrl::FindCtrl(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
@@ -285,7 +285,7 @@ FindString::FindString(
   SetAcceleratorTable(accel);
 }
 
-void FindString::OnCommand(wxCommandEvent& event)
+void FindCtrl::OnCommand(wxCommandEvent& event)
 {
   event.Skip();
   
@@ -297,7 +297,7 @@ void FindString::OnCommand(wxCommandEvent& event)
   }
 }
 
-void FindString::OnEnter(wxCommandEvent& event)
+void FindCtrl::OnEnter(wxCommandEvent& event)
 {
   auto* stc = m_Frame->GetSTC();
 
