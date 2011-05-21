@@ -839,7 +839,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
     wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
 
-    // Place new page next to page for editor.
+    // Place new page before page for editor.
     m_Editors->InsertPage(
       m_Editors->GetPageIndex(editor),
       stc,
@@ -1133,9 +1133,9 @@ bool Frame::OpenFile(
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
     
-    // Place new page next to the one used for vcs.
+    // Place new page before the one used for vcs.
     m_Editors->InsertPage(
-      m_Editors->GetPageIndexByKey(filename.GetFullPath()) + 1,
+      m_Editors->GetPageIndexByKey(filename.GetFullPath()),
       editor,
       key,
       filename.GetFullName() + " " + unique,
