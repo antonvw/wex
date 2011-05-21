@@ -949,25 +949,7 @@ void wxExSTC::FindIncremental(const wxString& text)
 void wxExSTC::FindIncremental(
   const wxString& text, int search_flags, bool find_next)
 {
-  if (text.empty())
-  {
-    return;
-  }
-  
-  SetTargetStart(GetCurrentPos());
-  SetTargetEnd(find_next ? GetTextLength(): 0);
-  SetSearchFlags(search_flags);
-
-  if (SearchInTarget(text) >= 0)
-  {
-    if (GetTargetStart() != GetTargetEnd())
-    {
-      SetSelection(GetTargetStart(), GetTargetEnd());
-    }
-    
-    EnsureVisible(LineFromPosition(GetTargetStart()));
-    EnsureCaretVisible();
-  }
+  FindNext(text, search_flags, find_next, false);
 }
 
 bool wxExSTC::FindNext(bool find_next)
@@ -981,7 +963,8 @@ bool wxExSTC::FindNext(bool find_next)
 bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
-  bool find_next)
+  bool find_next,
+  bool show_result)
 {
   if (text.empty())
   {
@@ -1019,14 +1002,17 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) < 0)
   {
-    wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
+    if (show_result)
+    {
+      wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
+    }
     
     bool found = false;
     
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next);
+      found = FindNext(text, search_flags, find_next, show_result);
       recursive = false;
     }
     

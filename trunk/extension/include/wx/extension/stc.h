@@ -151,7 +151,9 @@ public:
     /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
-    bool find_next = true);
+    bool find_next = true,
+    /// shows find result on status bar
+    bool show_result = true);
     
   /// Folds.
   void Fold();
