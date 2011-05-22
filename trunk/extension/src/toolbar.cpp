@@ -293,7 +293,7 @@ void FindCtrl::OnCommand(wxCommandEvent& event)
 
   if (stc != NULL)
   {
-    stc->FindIncremental(GetValue());
+    stc->FindNext(GetValue(), false);
   }
 }
 

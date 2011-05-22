@@ -688,7 +688,7 @@ bool wxExVi::ExecCommand(const wxString& command)
   return true;
 }
 
-void wxExVi::FindCommandIncremental(
+void wxExVi::FindCommand(
   const wxString& command, const wxString& text) const
 {
   if (!m_IsActive || command.empty())
@@ -696,7 +696,7 @@ void wxExVi::FindCommandIncremental(
     return;
   }
   
-  m_STC->FindIncremental(text, m_SearchFlags, command == '/'); 
+  m_STC->FindNext(text, m_SearchFlags, command == '/', false); 
 }
 
 void wxExVi::FindWord(bool find_next) const

@@ -941,23 +941,13 @@ void wxExSTC::FileTypeMenu()
 }
 
 
-void wxExSTC::FindIncremental(const wxString& text)
-{
-  FindIncremental(text, wxExFindReplaceData::Get()->STCFlags(), true);
-}
-
-void wxExSTC::FindIncremental(
-  const wxString& text, int search_flags, bool find_next)
-{
-  FindNext(text, search_flags, find_next, false);
-}
-
-bool wxExSTC::FindNext(bool find_next)
+bool wxExSTC::FindNext(bool find_next, bool show_result)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->STCFlags(),
-    find_next);
+    find_next,
+    show_result);
 }
 
 bool wxExSTC::FindNext(

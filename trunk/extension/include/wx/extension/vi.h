@@ -31,8 +31,8 @@ public:
   /// Returns true if the command was handled.
   bool ExecCommand(const wxString& command);
 
-  /// Executes incremental find of the specified text.
-  void FindCommandIncremental(
+  /// Executes find of the specified text.
+  void FindCommand(
     const wxString& command, const wxString& text) const;
   
   /// Returns whether we are in insert mode.

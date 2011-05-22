@@ -293,7 +293,7 @@ void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
   
   if (m_UserInput && m_vi != NULL && m_StaticText->GetLabel() != ":")
   {
-    m_vi->FindCommandIncremental(m_StaticText->GetLabel(), GetValue());
+    m_vi->FindCommand(m_StaticText->GetLabel(), GetValue());
   }
 }
 
