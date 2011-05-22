@@ -299,22 +299,24 @@ void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExViFindCtrl::OnEnter(wxCommandEvent& event)
 {
-  if (m_vi != NULL)
+  if (m_StaticText->GetLabel() == ":")
   {
-    if (m_StaticText->GetLabel() == ":")
+    if (m_vi != NULL)
     {
       if (m_vi->ExecCommand(GetValue()))
       {
         m_Frame->HideViBar();
       }
     }
-    else
+  }
+  else
+  {
+    if (!GetValue().empty())
     {
-      if (m_vi->FindCommand(m_StaticText->GetLabel(), GetValue()))
-      {
-        m_Frame->HideViBar();
-      }
+      wxExFindReplaceData::Get()->SetFindString(GetValue());
     }
+      
+    m_Frame->HideViBar();
   }
 }
 

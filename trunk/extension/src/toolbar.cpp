@@ -299,11 +299,8 @@ void FindCtrl::OnCommand(wxCommandEvent& event)
 
 void FindCtrl::OnEnter(wxCommandEvent& event)
 {
-  auto* stc = m_Frame->GetSTC();
-
-  if (stc != NULL)
+  if (!GetValue().empty())
   {
-    stc->FindNext(GetValue());
     wxExFindReplaceData::Get()->SetFindString(GetValue());
   }
 }

@@ -688,23 +688,6 @@ bool wxExVi::ExecCommand(const wxString& command)
   return true;
 }
 
-bool wxExVi::FindCommand(const wxString& command, const wxString& text)
-{
-  if (!m_IsActive || command.empty() || text.empty())
-  {
-    return false;
-  }
-  
-  m_SearchForward = (command == '/');
-
-  wxExFindReplaceData::Get()->SetFindString(text);
-  
-  return m_STC->FindNext(
-    text,
-    m_SearchFlags, 
-    m_SearchForward);
-}
-
 void wxExVi::FindCommandIncremental(
   const wxString& command, const wxString& text) const
 {
