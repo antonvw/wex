@@ -107,7 +107,6 @@ BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_FIND(wxID_ANY, wxExListView::OnFindDialog)
   EVT_FIND_NEXT(wxID_ANY, wxExListView::OnFindDialog)
   EVT_SET_FOCUS(wxExListView::OnFocus)
-  EVT_KILL_FOCUS(wxExListView::OnFocus)
   EVT_LIST_BEGIN_DRAG(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
@@ -645,16 +644,7 @@ void wxExListView::OnFocus(wxFocusEvent& event)
   event.Skip();
 
   wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
-
-  if (event.GetEventType() == wxEVT_SET_FOCUS)
-  {
-    focusevent.SetEventObject(this);
-  }
-  else
-  {
-    focusevent.SetEventObject(NULL);
-  }
-  
+  focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 

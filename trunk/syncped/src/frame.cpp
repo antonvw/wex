@@ -593,23 +593,23 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_NEW: NewFile(); break;
   
   case wxID_PREVIEW:
-    if (GetFocusedSTC() != NULL)
+    if (GetSTC() != NULL)
     {
-      GetFocusedSTC()->PrintPreview();
+      GetSTC()->PrintPreview();
     }
-    else if (GetFocusedListView() != NULL)
+    else if (GetListView() != NULL)
     {
-      GetFocusedListView()->PrintPreview();
+      GetListView()->PrintPreview();
     }
     break;
   case wxID_PRINT:
-    if (GetFocusedSTC() != NULL)
+    if (GetSTC() != NULL)
     {
-      GetFocusedSTC()->Print();
+      GetSTC()->Print();
     }
-    else if (GetFocusedListView() != NULL)
+    else if (GetListView() != NULL)
     {
-      GetFocusedListView()->Print();
+      GetListView()->Print();
     }
     break;
   case wxID_PRINT_SETUP:
@@ -922,8 +922,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(
-        (GetFocusedSTC() != NULL && GetFocusedSTC()->GetLength() > 0) ||
-        (GetFocusedListView() != NULL && GetFocusedListView()->GetItemCount() > 0));
+        (GetSTC() != NULL && GetSTC()->GetLength() > 0) ||
+        (GetListView() != NULL && GetListView()->GetItemCount() > 0));
       break;
 
     case ID_ALL_STC_CLOSE:
@@ -992,7 +992,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     default:
     {
       auto* editor = GetSTC();
-      auto* list = (wxExListViewFile*)GetFocusedListView();
+      auto* list = (wxExListViewFile*)GetListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())
       {

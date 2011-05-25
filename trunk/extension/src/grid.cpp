@@ -69,7 +69,6 @@ BEGIN_EVENT_TABLE(wxExGrid, wxGrid)
   EVT_FIND(wxID_ANY, wxExGrid::OnFindDialog)
   EVT_FIND_NEXT(wxID_ANY, wxExGrid::OnFindDialog)
   EVT_SET_FOCUS(wxExGrid::OnFocus)
-  EVT_KILL_FOCUS(wxExGrid::OnFocus)
   EVT_GRID_CELL_LEFT_CLICK(wxExGrid::OnGrid)
   EVT_GRID_CELL_RIGHT_CLICK(wxExGrid::OnGrid)
   EVT_GRID_CELL_BEGIN_DRAG(wxExGrid::OnGrid)
@@ -444,16 +443,7 @@ void wxExGrid::OnFocus(wxFocusEvent& event)
   event.Skip();
 
   wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
-
-  if (event.GetEventType() == wxEVT_SET_FOCUS)
-  {
-    focusevent.SetEventObject(this);
-  }
-  else
-  {
-    focusevent.SetEventObject(NULL);
-  }
-  
+  focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 

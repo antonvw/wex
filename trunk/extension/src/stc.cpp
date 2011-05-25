@@ -46,7 +46,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
-  EVT_KILL_FOCUS(wxExSTC::OnFocus)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
@@ -1887,16 +1886,7 @@ void wxExSTC::OnFocus(wxFocusEvent& event)
   event.Skip();
 
   wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
-
-  if (event.GetEventType() == wxEVT_SET_FOCUS)
-  {
-    focusevent.SetEventObject(this);
-  }
-  else
-  {
-    focusevent.SetEventObject(NULL);
-  }
-
+  focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
