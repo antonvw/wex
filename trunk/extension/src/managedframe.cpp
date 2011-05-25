@@ -13,6 +13,7 @@
 #endif
 #include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/toolbar.h>

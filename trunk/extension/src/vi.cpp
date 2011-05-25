@@ -15,6 +15,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/command.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/file.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -281,7 +282,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     m_STC->SetLexerProperty("fold", "1");
     m_STC->GetLexer().Apply(m_STC);
-    m_STC->Fold();
+    m_STC->Fold(true);
   }
   else if (command == "ZZ")
   {

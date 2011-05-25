@@ -17,59 +17,62 @@
 
 #if wxUSE_GUI
 
-std::map<wxWindowID, wxArtID> wxExStockArt::m_StockArt;
+std::map<wxWindowID, wxArtID> wxExStockArt::m_ArtIDs;
 
 wxExStockArt::wxExStockArt(wxWindowID id)
   : m_Id(id)
 {
-  if (m_StockArt.empty())
+  if (m_ArtIDs.empty())
   {
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_BACKWARD, wxART_GO_BACK));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_CLOSE, wxART_CLOSE));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_COPY, wxART_COPY));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_CUT, wxART_CUT));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_DELETE, wxART_DELETE));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_DOWN, wxART_GO_DOWN));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_EXIT, wxART_QUIT));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_FIND, wxART_FIND));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_FORWARD, wxART_GO_FORWARD));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_HELP, wxART_HELP));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_HOME, wxART_GO_HOME));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_NEW, wxART_NEW));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_OPEN, wxART_FILE_OPEN));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_PASTE, wxART_PASTE));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_PRINT, wxART_PRINT));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_REDO, wxART_REDO));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_REPLACE, wxART_FIND_AND_REPLACE));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_SAVE, wxART_FILE_SAVE));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_SAVEAS, wxART_FILE_SAVE_AS));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_UNDO, wxART_UNDO));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_UP, wxART_GO_UP));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_VIEW_DETAILS, wxART_REPORT_VIEW));
-    m_StockArt.insert(std::make_pair((wxWindowID)wxID_VIEW_LIST, wxART_LIST_VIEW));
+    Add(wxID_BACKWARD, wxART_GO_BACK);
+    Add(wxID_CLOSE, wxART_CLOSE);
+    Add(wxID_COPY, wxART_COPY);
+    Add(wxID_CUT, wxART_CUT);
+    Add(wxID_DELETE, wxART_DELETE);
+    Add(wxID_DOWN, wxART_GO_DOWN);
+    Add(wxID_EXIT, wxART_QUIT);
+    Add(wxID_FIND, wxART_FIND);
+    Add(wxID_FORWARD, wxART_GO_FORWARD);
+    Add(wxID_HELP, wxART_HELP);
+    Add(wxID_HOME, wxART_GO_HOME);
+    Add(wxID_NEW, wxART_NEW);
+    Add(wxID_OPEN, wxART_FILE_OPEN);
+    Add(wxID_PASTE, wxART_PASTE);
+    Add(wxID_PRINT, wxART_PRINT);
+    Add(wxID_REDO, wxART_REDO);
+    Add(wxID_REPLACE, wxART_FIND_AND_REPLACE);
+    Add(wxID_SAVE, wxART_FILE_SAVE);
+    Add(wxID_SAVEAS, wxART_FILE_SAVE_AS);
+    Add(wxID_UNDO, wxART_UNDO);
+    Add(wxID_UP, wxART_GO_UP);
+    Add(wxID_VIEW_DETAILS, wxART_REPORT_VIEW);
+    Add(wxID_VIEW_LIST, wxART_LIST_VIEW);
   }
+}
+
+void wxExStockArt::Add(int id, const wxArtID art)
+{    
+  m_ArtIDs.insert(std::make_pair((wxWindowID)id, art));
 }
 
 const wxBitmap wxExStockArt::GetBitmap(
   const wxArtClient& client,
   const wxSize& bitmap_size) const
 {
-  wxBitmap bitmap;
-
   if (wxIsStockID(m_Id))
   {
     // Check if there is art for this id.
-    const auto art_it = m_StockArt.find(m_Id);
+    const auto art_it = m_ArtIDs.find(m_Id);
 
-    if (art_it != m_StockArt.end())
+    if (art_it != m_ArtIDs.end())
     {
-      bitmap = wxArtProvider::GetBitmap(
+      return wxArtProvider::GetBitmap(
         art_it->second, 
         client, 
         bitmap_size);
     }
   }
 
-  return bitmap;
+  return wxBitmap();
 }
 #endif // wxUSE_GUI

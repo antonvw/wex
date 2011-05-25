@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/notebook.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>

@@ -38,13 +38,18 @@ public:
     wxItemKind kind = wxITEM_NORMAL);
 
   /// Adds the standard controls.
+  /// This adds a file open, save and print control, and
+  /// the hex mode and sync check boxes.
   void AddControls();
+  
+  /// Gets the frame.
+  wxExFrame* GetFrame() {return m_Frame;};
 protected:
   void OnCommand(wxCommandEvent& event);
-  wxExFrame* m_Frame;
 private:
   wxCheckBox* m_HexMode;
   wxCheckBox* m_SyncMode;
+  wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };

@@ -14,6 +14,7 @@
 
 #include <map>
 #include <vector>
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/listctrl.h>
 #include <wx/extension/menu.h> // for wxExMenu
 
@@ -188,6 +189,7 @@ protected:
 
   // Events.
   void OnCommand(wxCommandEvent& event);
+  void OnFindDialog(wxFindDialogEvent& event);
   void OnFocus(wxFocusEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);

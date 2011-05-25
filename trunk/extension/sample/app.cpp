@@ -19,6 +19,7 @@
 #include <wx/numdlg.h>
 #include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>

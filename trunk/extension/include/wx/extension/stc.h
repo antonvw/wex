@@ -13,6 +13,7 @@
 #define _EXSTC_H
 
 #include <vector> 
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/stc/stc.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/lexer.h>
@@ -146,8 +147,11 @@ public:
     /// shows find result on status bar
     bool show_result = true);
     
-  /// Folds.
-  void Fold();
+  /// Enables or disables folding depending on fold property.
+  /// If foldall (and fold propertry is on) is not specified, all lines are folded
+  /// if document contains more than 'Auto fold' lines,
+  /// if foldall (and fold propertry is on) is specified, always all lines are folded.
+  void Fold(bool foldall = false);
 
   /// Gets EOL string.
   /// If you only want to insert a newline, use NewLine()
@@ -324,6 +328,7 @@ protected:
   
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnFindDialog(wxFindDialogEvent& event);
   void OnFocus(wxFocusEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKeyDown(wxKeyEvent& event);

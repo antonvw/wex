@@ -14,7 +14,6 @@
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/frame.h>
 #include <wx/extension/statusbar.h>
-#include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
 #include <wx/extension/vcsentry.h>
 
@@ -43,25 +42,16 @@ public:
  ~wxExFrame();
 
   /// Invokes GetFindString on one of the controls.
-  const wxString GetFindString();
+  void GetFindString();
 
-  /// Returns a grid, default returns the focused grid.
-  virtual wxExGrid* GetGrid() {return m_FocusGrid;};
+  /// Returns a grid.
+  virtual wxExGrid* GetGrid();
 
-  /// Returns a listview, default returns the focused listview.
-  virtual wxExListView* GetListView() {return m_FocusListView;};
+  /// Returns a listview.
+  virtual wxExListView* GetListView();
 
-  /// Returns an STC, default returns the focused STC.
-  virtual wxExSTC* GetSTC() {return m_FocusSTC;};
-
-  /// Gets the focused grid.
-  wxExGrid* GetFocusedGrid() {return m_FocusGrid;};
-
-  /// Gets the focused list view.
-  wxExListView* GetFocusedListView() {return m_FocusListView;};
-
-  /// Gets the focused STC.
-  wxExSTC* GetFocusedSTC() {return m_FocusSTC;};
+  /// Returns an STC.
+  virtual wxExSTC* GetSTC();
 
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
@@ -95,7 +85,6 @@ public:
   void SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
-    wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");
 
   /// When (left) double clicked, uses the GetSTC() for some dialogs.
@@ -128,9 +117,6 @@ protected:
   /// If there is a focused STC, updates the status bar.
   void OnUpdateUI(wxUpdateUIEvent& event);  
 private:
-  void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
-  void FindIn(wxFindDialogEvent& event, wxExListView* lv);
-  void FindIn(wxFindDialogEvent& event, wxExSTC* stc);
   void Initialize();
 
 #if wxUSE_STATUSBAR
@@ -139,11 +125,7 @@ private:
 
   wxFindReplaceDialog* m_FindReplaceDialog;
   wxMenuBar* m_MenuBar;
-
-  wxExGrid* m_FocusGrid;
-  wxExListView* m_FocusListView;
-  wxExSTC* m_FocusSTC;
-  wxExSTC* m_FocusSTCFind; // focs before find dlg was activated
+  wxWindow* m_Focus; // focus before find dlg was activated
   
   bool m_IsCommand;
 

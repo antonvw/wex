@@ -118,7 +118,7 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
     return wxAuiToolBar::AddTool(
       toolId, 
       wxEmptyString,
-      art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
+      art.GetBitmap(wxART_TOOLBAR),
       wxGetStockLabel(toolId, wxSTOCK_NOFLAGS),
       kind);
   }
@@ -178,12 +178,12 @@ wxExFindToolBar::wxExFindToolBar(
   AddTool(
     wxID_DOWN, 
     wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR),
     _("Find next"));
   AddTool(
     wxID_UP, 
     wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
     _("Find previous"));
   AddSeparator();
 
@@ -196,7 +196,7 @@ wxExFindToolBar::wxExFindToolBar(
 
 void wxExFindToolBar::Initialize()
 {
-  m_FindCtrl = new FindCtrl(this, m_Frame);
+  m_FindCtrl = new FindCtrl(this, GetFrame());
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -225,7 +225,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   case wxID_DOWN:
   case wxID_UP:
     {
-      auto* stc = m_Frame->GetSTC();
+      auto* stc = GetFrame()->GetSTC();
 
       if (stc != NULL)
       {

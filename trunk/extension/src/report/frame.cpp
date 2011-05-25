@@ -397,7 +397,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         CreateDialogs();
       }
 
-      if (GetFindString() != wxEmptyString)
+//      if (GetFindString() != wxEmptyString)
       {
         m_FiFDialog->Reload(); 
       }
@@ -411,7 +411,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         CreateDialogs();
       }
       
-      if (GetFindString() != wxEmptyString)
+//      if (GetFindString() != wxEmptyString)
       {
         m_RiFDialog->Reload(); 
       }
@@ -486,7 +486,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     return;
   }
   
-  auto* stc = GetFocusedSTC();
+  auto* stc = GetSTC();
   auto* project = GetProject();
 
   const wxUniChar indicator('*');
@@ -565,32 +565,33 @@ void wxExFrameWithHistory::ProcessStop()
   if (m_Process != NULL && m_Process->IsRunning())
   {
     m_Process->Kill();
-    
     wxDELETE(m_Process);
   }
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 {
-  if (!file.empty())
+  if (file.empty())
   {
-    m_FileHistory.AddFileToHistory(file);
+    return;
+  }
+  
+  m_FileHistory.AddFileToHistory(file);
 
-    if (m_FileHistoryList != NULL)
+  if (m_FileHistoryList != NULL)
+  {
+    wxExListItem item(m_FileHistoryList, file);
+    item.Insert((long)0);
+
+    if (m_FileHistoryList->GetItemCount() > 1)
     {
-      wxExListItem item(m_FileHistoryList, file);
-      item.Insert((long)0);
-
-      if (m_FileHistoryList->GetItemCount() > 1)
+      for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
       {
-        for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
-        {
-          wxExListItem item(m_FileHistoryList, i);
+        wxExListItem item(m_FileHistoryList, i);
 
-          if (item.GetFileName().GetFullPath() == file)
-          {
-            item.Delete();
-          }
+        if (item.GetFileName().GetFullPath() == file)
+        {
+          item.Delete();
         }
       }
     }

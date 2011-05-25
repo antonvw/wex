@@ -39,6 +39,10 @@ const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
+  EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_REPLACE(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_REPLACE_ALL(wxID_ANY, wxExSTC::OnFindDialog)
   EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
@@ -992,10 +996,7 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) < 0)
   {
-    if (show_result)
-    {
-      wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
-    }
+    wxExFindResult(text, find_next, recursive, show_result);
     
     bool found = false;
     
@@ -1024,7 +1025,7 @@ bool wxExSTC::FindNext(
   }
 }
 
-void wxExSTC::Fold()
+void wxExSTC::Fold(bool foldall)
 {
   if (
      GetProperty("fold") == "1" &&
@@ -1038,7 +1039,9 @@ void wxExSTC::Fold()
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
         wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
         
-    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
+    if (
+      foldall || 
+      GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
     {
       FoldAll();
     }
@@ -1673,6 +1676,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   }
 }
 
+
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -1837,7 +1841,44 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     SetZoom(m_Zoom);
     break;
 
+  case ID_EDIT_FIND_NEXT: 
+  case ID_EDIT_FIND_PREVIOUS: 
+    FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
+    break;
+    
   default: wxFAIL; break;
+  }
+}
+
+void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
+{
+  auto* frd = wxExFindReplaceData::Get();
+
+  // Match word and regular expression do not work together.
+  if (frd->MatchWord())
+  {
+    frd->SetUseRegularExpression(false);
+  }
+
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    FindNext(frd->SearchDown());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  {
+    ReplaceNext(frd->SearchDown());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
+  {
+    ReplaceAll(
+      frd->GetFindString(), 
+      frd->GetReplaceString());
+  }
+  else
+  {
+    wxFAIL;
   }
 }
 
@@ -1845,7 +1886,7 @@ void wxExSTC::OnFocus(wxFocusEvent& event)
 {
   event.Skip();
 
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
 
   if (event.GetEventType() == wxEVT_SET_FOCUS)
   {

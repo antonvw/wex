@@ -68,6 +68,7 @@ public:
   void TogglePane(const wxString& pane);
 protected:
   /// Add controls to specified toolbar.
+  /// This toolbar already contains the standard controls.
   virtual void DoAddControl(wxExToolBar*) {;};
 
   void OnCommand(wxCommandEvent& event);

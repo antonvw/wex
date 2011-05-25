@@ -12,6 +12,7 @@
 #ifndef _EXGRID_H
 #define _EXGRID_H
 
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/grid.h>
 #include <wx/extension/menu.h> // for wxExMenu
 
@@ -94,6 +95,7 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
 
   void OnCommand(wxCommandEvent& event);
+  void OnFindDialog(wxFindDialogEvent& event);
   void OnFocus(wxFocusEvent& event);
   void OnGrid(wxGridEvent& event);
   void OnGridRange(wxGridRangeSelectEvent& event);
