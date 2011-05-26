@@ -9,9 +9,7 @@
 
 #include <wx/log.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
-#include <wx/extension/frame.h>
 #include <wx/extension/menu.h>
-#include <wx/extension/textfile.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/dirctrl.h>
@@ -131,7 +129,7 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_MENU)
   {
-    wxExMenu menu;
+    wxExMenu menu; // uses AppendVCS
     menu.Append(ID_TREE_OPEN, _("&Open"));
     menu.AppendSeparator();
     menu.Append(ID_TREE_COPY,

@@ -14,7 +14,6 @@
 #include <wx/config.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/art.h>
-#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
@@ -35,21 +34,22 @@ enum
 // Support class.
 // Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
-class FindCtrl : public wxTextCtrl
+class wxExTextCtrl : public wxTextCtrl
 {
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  FindCtrl(
+  wxExTextCtrl(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
+  void Find(bool find_next = true);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
-private:  
+private:
   wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
@@ -196,7 +196,7 @@ wxExFindToolBar::wxExFindToolBar(
 
 void wxExFindToolBar::Initialize()
 {
-  m_FindCtrl = new FindCtrl(this, GetFrame());
+  m_FindCtrl = new wxExTextCtrl(this, GetFrame());
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -224,19 +224,8 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   {
   case wxID_DOWN:
   case wxID_UP:
-    {
-      auto* stc = GetFrame()->GetSTC();
-
-      if (stc != NULL)
-      {
-        stc->FindNext(
-          m_FindCtrl->GetValue(), 
-          wxExFindReplaceData::Get()->STCFlags(),
-          (event.GetId() == wxID_DOWN));
-      }
-    }
+    m_FindCtrl->Find(event.GetId() == wxID_DOWN);
     break;
-
   case ID_MATCH_WHOLE_WORD:
     wxExFindReplaceData::Get()->SetMatchWord(
       m_MatchWholeWord->GetValue());
@@ -249,7 +238,6 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     wxExFindReplaceData::Get()->SetUseRegularExpression(
       m_IsRegularExpression->GetValue());
     break;
-
   default:
     wxFAIL;
     break;
@@ -263,19 +251,21 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(FindCtrl, wxTextCtrl)
-  EVT_TEXT(wxID_ANY, FindCtrl::OnCommand)
-  EVT_TEXT_ENTER(wxID_ANY, FindCtrl::OnEnter)
+BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
+  EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
 END_EVENT_TABLE()
 
-FindCtrl::FindCtrl(
+wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxTextCtrl(parent, id, 
-      wxExFindReplaceData::Get()->GetFindString(), pos, size, wxTE_PROCESS_ENTER)
+  : wxTextCtrl(parent, 
+      id,
+      wxExFindReplaceData::Get()->GetFindString(), 
+      pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;
@@ -285,24 +275,33 @@ FindCtrl::FindCtrl(
   SetAcceleratorTable(accel);
 }
 
-void FindCtrl::OnCommand(wxCommandEvent& event)
+void wxExTextCtrl::Find(bool find_next)
 {
-  event.Skip();
-  
+  // We cannot use events here, as OnFindDialog in stc uses frd data,
+  // whereas we need the GetValue here.
   auto* stc = m_Frame->GetSTC();
 
   if (stc != NULL)
   {
-    stc->FindNext(GetValue(), false);
+    stc->FindNext(
+      GetValue(), 
+      wxExFindReplaceData::Get()->STCFlags(),
+      find_next);
   }
 }
 
-void FindCtrl::OnEnter(wxCommandEvent& event)
+void wxExTextCtrl::OnCommand(wxCommandEvent& event)
+{
+  event.Skip();
+  Find();
+}
+
+void wxExTextCtrl::OnEnter(wxCommandEvent& event)
 {
   if (!GetValue().empty())
   {
     wxExFindReplaceData::Get()->SetFindString(GetValue());
+    Find();
   }
 }
-
 #endif // wxUSE_GUI

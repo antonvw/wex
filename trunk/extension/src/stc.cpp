@@ -51,10 +51,14 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
+  EVT_MENU(wxID_FIND, wxExSTC::OnCommand)
+  EVT_MENU(wxID_REPLACE, wxExSTC::OnCommand)
   EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
   EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
   EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_FIND_NEXT, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
@@ -1483,7 +1487,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 17; // take max number of entries
+  const int accels = 19; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1491,6 +1495,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
@@ -1697,6 +1703,12 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_SAVE: m_File.FileSave(); break;
   case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
   case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
+  
+  case wxID_FIND: 
+  case wxID_REPLACE: 
+    GetFindString();
+    command.Skip();
+    break;
 
   case ID_EDIT_COMPARE:
     {

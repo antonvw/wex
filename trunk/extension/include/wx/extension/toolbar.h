@@ -16,6 +16,7 @@
 #if wxUSE_GUI
 
 class wxExFrame;
+class wxExTextCtrl;
 
 /// Offers a toolbar together with stock art.
 /// Default no controls are added, you have to call AddControls to do that.
@@ -73,7 +74,7 @@ protected:
 private:
   void Initialize();
 
-  wxTextCtrl* m_FindCtrl;
+  wxExTextCtrl* m_FindCtrl;
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;

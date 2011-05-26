@@ -20,14 +20,13 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxExGrid;
 class wxExListView;
 class wxExSTC;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and allows for file dropping.
-/// Also helps in maintaining focus to the base controls
-/// (grid, listview and STC).
+/// Also helps in maintaining access to the base controls
+/// (listview and STC).
 class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
@@ -41,17 +40,16 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
-  /// Invokes GetFindString on one of the controls.
-  void GetFindString();
-
-  /// Returns a grid.
-  virtual wxExGrid* GetGrid();
-
+  /// Returns window that has or had focus. 
+  wxWindow* GetFocusWindow() {return m_Focus;};
+  
   /// Returns a listview.
-  virtual wxExListView* GetListView();
+  /// Default returns NULL.
+  virtual wxExListView* GetListView() {return NULL;};
 
   /// Returns an STC.
-  virtual wxExSTC* GetSTC();
+  /// Default returns NULL.
+  virtual wxExSTC* GetSTC() {return NULL;};
 
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
@@ -98,11 +96,7 @@ public:
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
 #endif // wxUSE_STATUSBAR
-
 protected:
-  /// Handles command event.
-  void OnCommand(wxCommandEvent& command);
-
 #if wxUSE_STATUSBAR
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
@@ -111,10 +105,8 @@ protected:
     const wxString& name);
 #endif
 
-  /// If there is a STC, calls find.
+  void OnCommand(wxCommandEvent& command);
   void OnFindDialog(wxFindDialogEvent& event);
-  
-  /// If there is a focused STC, updates the status bar.
   void OnUpdateUI(wxUpdateUIEvent& event);  
 private:
   void Initialize();
@@ -125,7 +117,7 @@ private:
 
   wxFindReplaceDialog* m_FindReplaceDialog;
   wxMenuBar* m_MenuBar;
-  wxWindow* m_Focus; // focus before find dlg was activated
+  wxWindow* m_Focus;
   
   bool m_IsCommand;
 

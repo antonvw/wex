@@ -390,11 +390,7 @@ wxExListViewFile* Frame::GetProject()
 
 wxExSTC* Frame::GetSTC()
 {
-  if (DecoratedFrame::GetSTC() != NULL)
-  {
-    return DecoratedFrame::GetSTC();
-  }
-  else if (
+  if (
     !m_Editors->IsShown() || 
      m_Editors->GetPageCount() == 0)
   {
@@ -1005,6 +1001,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxID_REPLACE:
         case wxID_SAVEAS:
         case ID_EDIT_FIND_NEXT:
+        case ID_EDIT_FIND_PREVIOUS:
         case ID_EDIT_FOLD_ALL:
         case ID_EDIT_UNFOLD_ALL:
           event.Enable(editor->GetLength() > 0);

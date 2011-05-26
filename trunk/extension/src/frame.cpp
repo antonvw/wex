@@ -15,12 +15,10 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/tool.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -57,8 +55,6 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_MENU(wxID_FIND, wxExFrame::OnCommand)
   EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
-  EVT_MENU(ID_EDIT_FIND_NEXT, wxExFrame::OnCommand)
-  EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExFrame::OnCommand)
   EVT_MENU(ID_FOCUS, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_MENUBAR, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_STATUSBAR, wxExFrame::OnCommand)
@@ -103,39 +99,16 @@ wxExFrame::~wxExFrame()
 #endif
 }
 
-void wxExFrame::GetFindString()
-{
-//  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SET_FINDSTRING);
-//  wxPostEvent(m_Focus, event);
-}
-
-wxExGrid* wxExFrame::GetGrid() 
-{
-  return NULL;
-}
-
-wxExListView* wxExFrame::GetListView() 
-{ 
-  return NULL;
-}
-
-wxExSTC* wxExFrame::GetSTC() 
-{
-  return NULL;
-}
-
 void wxExFrame::Initialize()
 {
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new FileDropTarget(this));
 #endif
 
-  wxAcceleratorEntry entries[5];
-  entries[0].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
-  entries[1].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
-  entries[2].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
-  entries[3].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
-  entries[4].Set(wxACCEL_CTRL, (int)'B', ID_VIEW_MENUBAR);
+  wxAcceleratorEntry entries[3];
+  entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
+  entries[1].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
+  entries[2].Set(wxACCEL_CTRL, (int)'B', ID_VIEW_MENUBAR);
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
@@ -148,8 +121,6 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_FIND: 
-    GetFindString();
-    
     if (m_FindReplaceDialog != NULL)
     {
       m_FindReplaceDialog->Destroy();
@@ -161,8 +132,6 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     break;
     
   case wxID_REPLACE: 
-    GetFindString();
-    
     if (m_FindReplaceDialog != NULL)
     {
       m_FindReplaceDialog->Destroy();
@@ -174,11 +143,6 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       _("Replace"), 
       wxFR_REPLACEDIALOG); 
     m_FindReplaceDialog->Show();
-    break;
-    
-  case ID_EDIT_FIND_NEXT: 
-  case ID_EDIT_FIND_PREVIOUS: 
-    // wxPostEvent(m_Focus, event);
     break;
     
   case ID_FOCUS:
@@ -248,36 +212,37 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
     case ID_UPDATE_STATUS_BAR:
     {
-    auto* stc = GetSTC();
-    if (stc != NULL) 
-    {
-      stc->UpdateStatusBar("PaneInfo"); 
-    }
+      auto* stc = GetSTC();
+      
+      if (stc != NULL) 
+      {
+        stc->UpdateStatusBar("PaneInfo"); 
+      }
     }
     break;
 #endif
 
-    case ID_VIEW_MENUBAR:
-      if (GetMenuBar() != NULL)
-      {
-        event.Check(GetMenuBar()->IsShown());
-      }
-      else
-      {
-        event.Check(false);
-      }
+  case ID_VIEW_MENUBAR:
+    if (GetMenuBar() != NULL)
+    {
+      event.Check(GetMenuBar()->IsShown());
+    }
+    else
+    {
+      event.Check(false);
+    }
     break;
 
-    case ID_VIEW_STATUSBAR:
-      if (GetStatusBar() != NULL)
-      {
-        event.Check(GetStatusBar()->IsShown());
-      }
-      else
-      {
-        event.Check(false);
-      }
-      break;
+  case ID_VIEW_STATUSBAR:
+    if (GetStatusBar() != NULL)
+    {
+      event.Check(GetStatusBar()->IsShown());
+    }
+    else
+    {
+      event.Check(false);
+    }
+    break;
       
   default:
     wxFAIL;
@@ -359,6 +324,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   if (pane == "PaneInfo")
   {
     auto* stc = GetSTC();
+    
     if (stc != NULL) 
     {
       stc->GotoDialog();
@@ -366,6 +332,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
     else
     {
       wxExListView* list = GetListView();
+      
       if (list != NULL) list->GotoDialog();
     }
   }
@@ -388,6 +355,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   else if (pane == "PaneFileType")
   {
     auto* stc = GetSTC();
+    
     if (stc != NULL) stc->FileTypeMenu();
   }
   else

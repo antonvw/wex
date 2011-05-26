@@ -258,7 +258,10 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
 int wxExFrameWithHistory::FindInSelectionDialog(int id)
 {
-  GetFindString();
+  if (GetSTC() != NULL)
+  {
+    GetSTC()->GetFindString();
+  }
 
   std::vector<wxExConfigItem> v;
 
@@ -397,11 +400,14 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         CreateDialogs();
       }
 
-//      if (GetFindString() != wxEmptyString)
+      if (GetSTC() != NULL)
       {
-        m_FiFDialog->Reload(); 
+        if (!GetSTC()->GetFindString().empty())
+        {
+          m_FiFDialog->Reload(); 
+        }
       }
-      
+        
       m_FiFDialog->Show(); 
       break;
       
@@ -411,9 +417,12 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
         CreateDialogs();
       }
       
-//      if (GetFindString() != wxEmptyString)
+      if (GetSTC() != NULL)
       {
-        m_RiFDialog->Reload(); 
+        if (!GetSTC()->GetFindString().empty())
+        {
+          m_RiFDialog->Reload(); 
+        }
       }
       
       m_RiFDialog->Show(); 
