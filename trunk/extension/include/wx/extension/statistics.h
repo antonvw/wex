@@ -54,7 +54,9 @@ protected:
       event.Skip();
     }};
   void OnGrid(wxGridEvent& event) {
-    wxExMenu menu(wxExMenu::MENU_ALLOW_CLEAR);
+    int style = wxExMenu::MENU_ALLOW_CLEAR;
+    if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
+    wxExMenu menu(style);
     BuildPopupMenu(menu);
     PopupMenu(&menu);};
 private:
