@@ -563,11 +563,12 @@ void wxExSampleFrame::ShowConfigItems()
     "Radioboxes"));
 
   // CONFIG_SLIDER
-  for (size_t sl = 1; sl <= 5; sl++)
+  const int start = 1;
+  for (size_t sl = start + 1; sl <= start + 5; sl++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Slider%d", sl),
-      1,
+      start,
       sl,
       wxString("Spin controls"),
       CONFIG_SLIDER));
