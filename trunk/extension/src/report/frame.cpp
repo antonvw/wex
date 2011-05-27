@@ -507,7 +507,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     // Project or editor changed, add indicator if not yet done.
     if (title.Last() != indicator)
     {
-      wxFrame::SetTitle(title + " " + indicator);
+      SetTitle(title + " " + indicator);
     }
   }
   else
@@ -515,7 +515,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     // Project or editor not changed, remove indicator if not yet done.
     if (title.Last() == indicator && title.size() > 2)
     {
-      wxFrame::SetTitle(title.substr(0, title.length() - 2));
+      SetTitle(title.substr(0, title.length() - 2));
     }
   }
 }

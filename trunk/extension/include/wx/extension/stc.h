@@ -85,14 +85,8 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Adds an ascii table to current document.
-  void AddAsciiTable();
-
   /// Adds base path.
   void AddBasePathToPathList();
-
-  /// Adds a header.
-  void AddHeader();
 
   /// Adds text in hex mode.
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
@@ -118,10 +112,6 @@ public:
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
 
-  /// Edit the current selected char as a control char, or if nothing selected,
-  /// add a new control char.
-  void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
-  
   /// Cuts text to clipboard.
   void Cut();
 
@@ -293,9 +283,6 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
-  /// Asks for a sequence and adds it if not cancelled.
-  void SequenceDialog();
-
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
   
@@ -305,11 +292,6 @@ public:
 
   /// Sets the text.
   void SetText(const wxString& value);
-
-  /// Asks for confirmation to sort the selection.
-  void SortSelectionDialog(
-    bool sort_ascending,
-    const wxString& caption = _("Enter Sort Position"));
 
   /// Starts recording the macro, and empties the previous one.
   /// There is only one shared macro for all objects.
@@ -339,6 +321,7 @@ private:
   void CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
+  void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
@@ -351,6 +334,9 @@ private:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+  void SortSelectionDialog(
+    bool sort_ascending,
+    const wxString& caption = _("Enter Sort Position"));
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;

@@ -16,11 +16,10 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/imaglist.h>
-#include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
@@ -32,7 +31,6 @@
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "frame.h"
-#include "app.h"
 #include "defs.h"
 #include "version.h"
 
@@ -169,8 +167,7 @@ Frame::Frame(bool open_recent)
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
   wxExSTC* asciiTable = new wxExSTC(this);
-  asciiTable->AddAsciiTable();
-  asciiTable->SetReadOnly(true);
+  AddAsciiTable(asciiTable);
 
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
@@ -282,6 +279,46 @@ wxExListViewStandard* Frame::Activate(
     GetManager().GetPane("OUTPUT").Show();
     GetManager().Update();
     return list;
+  }
+}
+
+void Frame::AddAsciiTable(wxExSTC* stc)
+{
+  // Do not show an edge, eol or whitespace for ascii table.
+  stc->SetEdgeMode(wxSTC_EDGE_NONE);
+  stc->SetViewEOL(false);
+  stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+
+  // And override tab width.
+  stc->SetTabWidth(5);
+
+  for (auto i = 1; i <= 255; i++)
+  {
+    stc->AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
+    stc->AddText((i % 5 == 0) ? stc->GetEOL(): "\t");
+  }
+
+  stc->EmptyUndoBuffer();
+  stc->SetSavePoint();
+  stc->SetReadOnly(true);
+}
+
+void Frame::AddHeader(wxExSTC* stc)
+{
+  const wxExHeader header;
+
+  if (header.ShowDialog(this) != wxID_CANCEL)
+  {
+    if (stc->GetLexer().GetScintillaLexer() == "hypertext")
+    {
+      stc->GotoLine(1);
+    }
+    else
+    {
+      stc->DocumentStart();
+    }
+
+    stc->AddText(header.Get(&stc->GetFile().GetFileName()));
   }
 }
 
@@ -677,8 +714,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     m_Editors->ForEach(event.GetId());
     break;
 
-  case ID_EDIT_ADD_HEADER: if (editor != NULL) editor->AddHeader(); break;
-  case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) editor->SequenceDialog(); break;
+  case ID_EDIT_ADD_HEADER: if (editor != NULL) AddHeader(editor); break;
+  case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
 
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->StartRecord(); break;
@@ -960,7 +997,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
     case ID_SORT_SYNC:
       event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
-    break;
+      break;
 
     case ID_TOOL_REPORT_REVISION:
       event.Check(!wxExVCS().Use());
@@ -1242,6 +1279,102 @@ bool Frame::OpenFile(
   }
 
   return true;
+}
+
+void Frame::SequenceDialog(wxExSTC* stc)
+{
+  static wxString start_previous;
+
+  const wxString start = wxGetTextFromUser(
+    _("Input") + ":",
+    _("Start Of Sequence"),
+    start_previous,
+    this);
+
+  if (start.empty()) return;
+
+  start_previous = start;
+
+  static wxString end_previous = start;
+
+  const wxString end = wxGetTextFromUser(
+    _("Input") + ":",
+    _("End Of Sequence"),
+    end_previous,
+    this);
+
+  if (end.empty()) return;
+
+  end_previous = end;
+
+  if (start.length() != end.length())
+  {
+    wxLogStatus(_("Start and end sequence should have same length"));
+    return;
+  }
+
+  long lines = 1;
+
+  for (int pos = end.length() - 1; pos >= 0; pos--)
+  {
+    lines *= abs(end[pos] - start[pos]) + 1;
+  }
+
+  if (wxMessageBox(wxString::Format(_("Generate %ld lines"), lines) + "?",
+    _("Confirm"),
+    wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
+  {
+    return;
+  }
+
+  wxBusyCursor wait;
+
+  wxString sequence = start;
+
+  long actual_line = 0;
+
+  while (sequence != end)
+  {
+    stc->AddText(sequence + stc->GetEOL());
+    actual_line++;
+
+    if (actual_line > lines)
+    {
+      wxFAIL;
+      return;
+    }
+
+    if (start < end)
+    {
+      sequence.Last() = (int)sequence.Last() + 1;
+    }
+    else
+    {
+      sequence.Last() = (int)sequence.Last() - 1;
+    }
+
+    for (int pos = end.length() - 1; pos > 0; pos--)
+    {
+      if (start < end)
+      {
+        if (sequence[pos] > end[pos])
+        {
+          sequence[pos - 1] = (int)sequence[pos - 1] + 1;
+          sequence[pos] = start[pos];
+        }
+      }
+      else
+      {
+        if (sequence[pos] < end[pos])
+        {
+          sequence[pos - 1] = (int)sequence[pos - 1] - 1;
+          sequence[pos] = start[pos];
+        }
+      }
+    }
+  }
+
+  stc->AddText(sequence + stc->GetEOL());
 }
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)

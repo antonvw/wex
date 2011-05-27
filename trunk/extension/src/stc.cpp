@@ -22,7 +22,6 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
@@ -166,26 +165,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   }
 }
 
-void wxExSTC::AddAsciiTable()
-{
-  // Do not show an edge, eol or whitespace for ascii table.
-  SetEdgeMode(wxSTC_EDGE_NONE);
-  SetViewEOL(false);
-  SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-
-  // And override tab width.
-  SetTabWidth(5);
-
-  for (auto i = 1; i <= 255; i++)
-  {
-    AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
-    AddText((i % 5 == 0) ? GetEOL(): "\t");
-  }
-
-  EmptyUndoBuffer();
-  SetSavePoint();
-}
-
 void wxExSTC::AddBasePathToPathList()
 {
   // First find the base path, if this is not yet on the list, add it.
@@ -208,25 +187,6 @@ void wxExSTC::AddBasePathToPathList()
     GetLineEndPosition(line) - 3);
 
   m_PathList.Add(basepath);
-}
-
-void wxExSTC::AddHeader()
-{
-  const wxExHeader header;
-
-  if (header.ShowDialog(this) != wxID_CANCEL)
-  {
-    if (m_Lexer.GetScintillaLexer() == "hypertext")
-    {
-      GotoLine(1);
-    }
-    else
-    {
-      DocumentStart();
-    }
-
-    AddText(header.Get(&m_File.GetFileName()));
-  }
 }
 
 void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
@@ -2328,102 +2288,6 @@ void wxExSTC::ResetMargins(bool divider_margin)
   {
     SetMarginWidth(m_MarginDividerNumber, 0);
   }
-}
-
-void wxExSTC::SequenceDialog()
-{
-  static wxString start_previous;
-
-  const wxString start = wxGetTextFromUser(
-    _("Input") + ":",
-    _("Start Of Sequence"),
-    start_previous,
-    this);
-
-  if (start.empty()) return;
-
-  start_previous = start;
-
-  static wxString end_previous = start;
-
-  const wxString end = wxGetTextFromUser(
-    _("Input") + ":",
-    _("End Of Sequence"),
-    end_previous,
-    this);
-
-  if (end.empty()) return;
-
-  end_previous = end;
-
-  if (start.length() != end.length())
-  {
-    wxLogStatus(_("Start and end sequence should have same length"));
-    return;
-  }
-
-  long lines = 1;
-
-  for (int pos = end.length() - 1; pos >= 0; pos--)
-  {
-    lines *= abs(end[pos] - start[pos]) + 1;
-  }
-
-  if (wxMessageBox(wxString::Format(_("Generate %ld lines"), lines) + "?",
-    _("Confirm"),
-    wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-  {
-    return;
-  }
-
-  wxBusyCursor wait;
-
-  wxString sequence = start;
-
-  long actual_line = 0;
-
-  while (sequence != end)
-  {
-    AddText(sequence + GetEOL());
-    actual_line++;
-
-    if (actual_line > lines)
-    {
-      wxFAIL;
-      return;
-    }
-
-    if (start < end)
-    {
-      sequence.Last() = (int)sequence.Last() + 1;
-    }
-    else
-    {
-      sequence.Last() = (int)sequence.Last() - 1;
-    }
-
-    for (int pos = end.length() - 1; pos > 0; pos--)
-    {
-      if (start < end)
-      {
-        if (sequence[pos] > end[pos])
-        {
-          sequence[pos - 1] = (int)sequence[pos - 1] + 1;
-          sequence[pos] = start[pos];
-        }
-      }
-      else
-      {
-        if (sequence[pos] < end[pos])
-        {
-          sequence[pos - 1] = (int)sequence[pos - 1] - 1;
-          sequence[pos] = start[pos];
-        }
-      }
-    }
-  }
-
-  AddText(sequence + GetEOL());
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)

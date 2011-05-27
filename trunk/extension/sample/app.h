@@ -10,14 +10,14 @@
 \******************************************************************************/
 
 #include <wx/extension/app.h>
-#include <wx/extension/managedframe.h>
-#include <wx/extension/statistics.h>
 #include <wx/extension/dir.h>
 #include <wx/extension/grid.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/managedframe.h>
 #include <wx/extension/notebook.h>
-#include <wx/extension/stc.h>
 #include <wx/extension/shell.h>
+#include <wx/extension/statistics.h>
+#include <wx/extension/stc.h>
 
 /// Derive your application from wxExApp.
 class wxExSampleApp: public wxExApp
@@ -44,7 +44,7 @@ public:
 private:
   /// Override the OnFile.
   virtual void OnFile(const wxString& file);
-  wxExGrid* m_Grid; ///< put it in a grid
+  wxExGrid* m_Grid;
 };
 #endif
 
@@ -58,25 +58,23 @@ protected:
   virtual void OnCommandConfigDialog(
     wxWindowID id, 
     int commandid = wxID_APPLY);
-  /// Do something.
   void OnCommand(wxCommandEvent& event);
 private:
-  virtual wxExGrid* GetGrid();
   virtual wxExListView* GetListView();
   virtual wxExSTC* GetSTC();
   void ShowConfigItems();
   
 #if wxUSE_GRID
-  wxExGrid* m_Grid;         ///< a grid
+  wxExGrid* m_Grid;
 #endif
-  wxExListView* m_ListView; ///< a listview
-  wxExNotebook* m_Notebook; ///< a notebook
-  wxExSTCShell* m_STCShell; ///< an stc shell
-  wxExSTC* m_STC;           ///< an stc
-  wxExSTC* m_STCLexers;     ///< an stc
+  wxExListView* m_ListView;
+  wxExNotebook* m_Notebook;
+  wxExSTC* m_STC;
+  wxExSTC* m_STCLexers;
+  wxExSTCShell* m_STCShell;
 
-  long m_FlagsSTC;          ///< keep current flags
-  wxExStatistics <long> m_Statistics; ///< keep some statistics
+  long m_FlagsSTC;
+  wxExStatistics <long> m_Statistics;
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)
   DECLARE_EVENT_TABLE()

@@ -13,13 +13,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)

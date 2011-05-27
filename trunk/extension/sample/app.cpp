@@ -104,8 +104,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
-  menuFile->Append(ID_STATISTICS_SHOW, "Show Statistics");
-  menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
   wxExMenu* menuConfig = new wxExMenu;
@@ -124,6 +122,8 @@ wxExSampleFrame::wxExSampleFrame()
 
   wxExMenu *menuView = new wxExMenu;
   menuView->AppendBars();
+  menuView->AppendSeparator();
+  menuView->Append(ID_STATISTICS_SHOW, "Statistics");
   
   wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);
@@ -208,11 +208,6 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
-}
-
-wxExGrid* wxExSampleFrame::GetGrid()
-{
-  return m_Grid;
 }
 
 wxExListView* wxExSampleFrame::GetListView()
