@@ -38,7 +38,7 @@ PROJECT_NAME           = wxextension
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = v0.9.7
+PROJECT_NUMBER         = v0.9.8
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 

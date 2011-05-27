@@ -1,18 +1,7 @@
 #!/bin/bash
 #
 # $Id$
-#
-# This bash script regenerates the HTML doxygen version of the
-# wxWidgets manual and adjusts the doxygen log to make it more
-# readable.
-#
-# Usage:
-#    ./regen.sh [html|chm|xml|latex|all]
-#
-# Pass "x" to regen only the X output format and "all" to regen them all.
-# If no arguments are passed all formats are regenerated
-# (just like passing "all").
-#
+# Copied from wxWidgets
 
 
 # remember current folder and then cd to the docs/doxygen one

@@ -31,17 +31,16 @@ public:
   /// Returns true if the command was handled.
   bool ExecCommand(const wxString& command);
 
-  /// Executes vi find command that was entered on the vi bar.
-  /// The command should be a '/' or a '?'.
-  /// Returns true if the text was found.
-  bool FindCommand(const wxString& command, const wxString& text);
+  /// Executes find of the specified text.
+  void FindCommand(
+    const wxString& command, const wxString& text) const;
   
   /// Returns whether we are in insert mode.
   bool GetInsertMode() const {return m_InsertMode;};
   
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
-
+  
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
@@ -52,7 +51,13 @@ public:
   /// Handles keydown events.
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
+
+  /// Restores saved position.
+  void PositionRestore() const;
   
+  /// Saves position.
+  void PositionSave();
+
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 private:
@@ -113,6 +118,7 @@ private:
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
+  int m_Position;
   int m_SearchFlags;
   
   wxExManagedFrame* m_Frame;  

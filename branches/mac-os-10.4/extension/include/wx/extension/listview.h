@@ -14,6 +14,7 @@
 
 #include <map>
 #include <vector>
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/listctrl.h>
 #include <wx/extension/menu.h> // for wxExMenu
 
@@ -118,9 +119,6 @@ public:
     long item_number,
     const wxString& col_name) const;
 
-  /// Gets the sorted column.
-  int GetSortedColumnNo() const {return m_SortedColumnNo;};
-
   /// Asks for an item number and goes to the item.
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));
 
@@ -188,6 +186,7 @@ protected:
 
   // Events.
   void OnCommand(wxCommandEvent& event);
+  void OnFindDialog(wxFindDialogEvent& event);
   void OnFocus(wxFocusEvent& event);
   void OnList(wxListEvent& event);
   void OnMouse(wxMouseEvent& event);
@@ -195,15 +194,12 @@ protected:
 private:
   const wxString BuildPage();
   void CopySelectedItemsToClipboard();
-  /// Deletes selected items.
   void EditDelete();
-  /// Inverts all items from selected to not selected.
   void EditInvertAll() {
     for (int i = 0; i < GetItemCount(); i++)
     {
       Select(i, !IsSelected(i));
     }}
-  /// Selects all items.
   void EditSelectAll() {
     SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);};
 

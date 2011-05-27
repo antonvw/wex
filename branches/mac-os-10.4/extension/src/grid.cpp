@@ -17,6 +17,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/grid.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/printing.h>
@@ -65,8 +66,9 @@ bool wxExTextDropTarget::OnDropText(
 #endif // wxUSE_DRAG_AND_DROP
 
 BEGIN_EVENT_TABLE(wxExGrid, wxGrid)
+  EVT_FIND(wxID_ANY, wxExGrid::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExGrid::OnFindDialog)
   EVT_SET_FOCUS(wxExGrid::OnFocus)
-  EVT_KILL_FOCUS(wxExGrid::OnFocus)
   EVT_GRID_CELL_LEFT_CLICK(wxExGrid::OnGrid)
   EVT_GRID_CELL_RIGHT_CLICK(wxExGrid::OnGrid)
   EVT_GRID_CELL_BEGIN_DRAG(wxExGrid::OnGrid)
@@ -420,21 +422,28 @@ void wxExGrid::OnCommand(wxCommandEvent& event)
   }
 }
 
+void wxExGrid::OnFindDialog(wxFindDialogEvent& event)
+{
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());
+  }
+  else
+  {
+    wxFAIL;
+  }
+}
+
 void wxExGrid::OnFocus(wxFocusEvent& event)
 {
   event.Skip();
 
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_GRID);
-
-  if (event.GetEventType() == wxEVT_SET_FOCUS)
-  {
-    focusevent.SetEventObject(this);
-  }
-  else
-  {
-    focusevent.SetEventObject(NULL);
-  }
-  
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
+  focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 

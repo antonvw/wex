@@ -22,7 +22,6 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
-#include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
@@ -39,19 +38,26 @@ const wxFileOffset start_hex_field = 10;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
+  EVT_FIND(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_REPLACE(wxID_ANY, wxExSTC::OnFindDialog)
+  EVT_FIND_REPLACE_ALL(wxID_ANY, wxExSTC::OnFindDialog)
   EVT_IDLE(wxExSTC::OnIdle)
   EVT_KEY_DOWN(wxExSTC::OnKeyDown)
   EVT_KEY_UP(wxExSTC::OnKeyUp)
-  EVT_KILL_FOCUS(wxExSTC::OnFocus)
   EVT_LEFT_UP(wxExSTC::OnMouse)
   EVT_MENU(ID_EDIT_OPEN_BROWSER, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_OPEN_LINK, wxExSTC::OnCommand)
   EVT_MENU(ID_EDIT_READ, wxExSTC::OnCommand)
   EVT_MENU(wxID_DELETE, wxExSTC::OnCommand)
+  EVT_MENU(wxID_FIND, wxExSTC::OnCommand)
+  EVT_MENU(wxID_REPLACE, wxExSTC::OnCommand)
   EVT_MENU(wxID_JUMP_TO, wxExSTC::OnCommand)
   EVT_MENU(wxID_SELECTALL, wxExSTC::OnCommand)
   EVT_MENU(wxID_SORT_ASCENDING, wxExSTC::OnCommand)
   EVT_MENU(wxID_SORT_DESCENDING, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_FIND_NEXT, wxExSTC::OnCommand)
+  EVT_MENU(ID_EDIT_FIND_PREVIOUS, wxExSTC::OnCommand)
   EVT_MENU_RANGE(ID_EDIT_STC_LOWEST, ID_EDIT_STC_HIGHEST, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
@@ -201,25 +207,6 @@ void wxExSTC::AddBasePathToPathList()
     GetLineEndPosition(line) - 3);
 
   m_PathList.Add(basepath);
-}
-
-void wxExSTC::AddHeader()
-{
-  const wxExHeader header;
-
-  if (header.ShowDialog(this) != wxID_CANCEL)
-  {
-    if (m_Lexer.GetScintillaLexer() == "hypertext")
-    {
-      GotoLine(1);
-    }
-    else
-    {
-      DocumentStart();
-    }
-
-    AddText(header.Get(&m_File.GetFileName()));
-  }
 }
 
 void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
@@ -940,18 +927,21 @@ void wxExSTC::FileTypeMenu()
   delete menu;
 }
 
-bool wxExSTC::FindNext(bool find_next)
+
+bool wxExSTC::FindNext(bool find_next, bool show_result)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->STCFlags(),
-    find_next);
+    find_next,
+    show_result);
 }
 
 bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
-  bool find_next)
+  bool find_next,
+  bool show_result)
 {
   if (text.empty())
   {
@@ -989,14 +979,14 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) < 0)
   {
-    wxExFindResult(text, find_next, recursive, !m_vi.GetIsActive());
+    wxExFindResult(text, find_next, recursive, show_result);
     
     bool found = false;
     
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next);
+      found = FindNext(text, search_flags, find_next, show_result);
       recursive = false;
     }
     
@@ -1018,7 +1008,7 @@ bool wxExSTC::FindNext(
   }
 }
 
-void wxExSTC::Fold()
+void wxExSTC::Fold(bool foldall)
 {
   if (
      GetProperty("fold") == "1" &&
@@ -1032,7 +1022,9 @@ void wxExSTC::Fold()
       wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | 
         wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED));
         
-    if (GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
+    if (
+      foldall || 
+      GetLineCount() > wxConfigBase::Get()->ReadLong(_("Auto fold"), 1500))
     {
       FoldAll();
     }
@@ -1475,7 +1467,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 17; // take max number of entries
+  const int accels = 19; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1483,6 +1475,8 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
+  entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F8, wxID_SORT_DESCENDING);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F9, ID_EDIT_FOLD_ALL);
@@ -1667,6 +1661,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   }
 }
 
+
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
   switch (command.GetId())
@@ -1688,6 +1683,12 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case wxID_SAVE: m_File.FileSave(); break;
   case wxID_SORT_ASCENDING: SortSelectionDialog(true); break;
   case wxID_SORT_DESCENDING: SortSelectionDialog(false); break;
+  
+  case wxID_FIND: 
+  case wxID_REPLACE: 
+    GetFindString();
+    command.Skip();
+    break;
 
   case ID_EDIT_COMPARE:
     {
@@ -1831,7 +1832,44 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     SetZoom(m_Zoom);
     break;
 
+  case ID_EDIT_FIND_NEXT: 
+  case ID_EDIT_FIND_PREVIOUS: 
+    FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
+    break;
+    
   default: wxFAIL; break;
+  }
+}
+
+void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
+{
+  auto* frd = wxExFindReplaceData::Get();
+
+  // Match word and regular expression do not work together.
+  if (frd->MatchWord())
+  {
+    frd->SetUseRegularExpression(false);
+  }
+
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    FindNext(frd->SearchDown());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
+  {
+    ReplaceNext(frd->SearchDown());
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
+  {
+    ReplaceAll(
+      frd->GetFindString(), 
+      frd->GetReplaceString());
+  }
+  else
+  {
+    wxFAIL;
   }
 }
 
@@ -1839,17 +1877,8 @@ void wxExSTC::OnFocus(wxFocusEvent& event)
 {
   event.Skip();
 
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_STC);
-
-  if (event.GetEventType() == wxEVT_SET_FOCUS)
-  {
-    focusevent.SetEventObject(this);
-  }
-  else
-  {
-    focusevent.SetEventObject(NULL);
-  }
-
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
+  focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
@@ -2279,102 +2308,6 @@ void wxExSTC::ResetMargins(bool divider_margin)
   {
     SetMarginWidth(m_MarginDividerNumber, 0);
   }
-}
-
-void wxExSTC::SequenceDialog()
-{
-  static wxString start_previous;
-
-  const wxString start = wxGetTextFromUser(
-    _("Input") + ":",
-    _("Start Of Sequence"),
-    start_previous,
-    this);
-
-  if (start.empty()) return;
-
-  start_previous = start;
-
-  static wxString end_previous = start;
-
-  const wxString end = wxGetTextFromUser(
-    _("Input") + ":",
-    _("End Of Sequence"),
-    end_previous,
-    this);
-
-  if (end.empty()) return;
-
-  end_previous = end;
-
-  if (start.length() != end.length())
-  {
-    wxLogStatus(_("Start and end sequence should have same length"));
-    return;
-  }
-
-  long lines = 1;
-
-  for (int pos = end.length() - 1; pos >= 0; pos--)
-  {
-    lines *= abs(end[pos] - start[pos]) + 1;
-  }
-
-  if (wxMessageBox(wxString::Format(_("Generate %ld lines"), lines) + "?",
-    _("Confirm"),
-    wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
-  {
-    return;
-  }
-
-  wxBusyCursor wait;
-
-  wxString sequence = start;
-
-  long actual_line = 0;
-
-  while (sequence != end)
-  {
-    AddText(sequence + GetEOL());
-    actual_line++;
-
-    if (actual_line > lines)
-    {
-      wxFAIL;
-      return;
-    }
-
-    if (start < end)
-    {
-      sequence.Last() = (int)sequence.Last() + 1;
-    }
-    else
-    {
-      sequence.Last() = (int)sequence.Last() - 1;
-    }
-
-    for (int pos = end.length() - 1; pos > 0; pos--)
-    {
-      if (start < end)
-      {
-        if (sequence[pos] > end[pos])
-        {
-          sequence[pos - 1] = (int)sequence[pos - 1] + 1;
-          sequence[pos] = start[pos];
-        }
-      }
-      else
-      {
-        if (sequence[pos] < end[pos])
-        {
-          sequence[pos - 1] = (int)sequence[pos - 1] - 1;
-          sequence[pos] = start[pos];
-        }
-      }
-    }
-  }
-
-  AddText(sequence + GetEOL());
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)

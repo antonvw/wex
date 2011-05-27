@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/notebook.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/stc.h>
@@ -179,6 +180,44 @@ wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
   {
     return NULL;
   }
+}
+
+int wxExNotebook::GetPageIndexByKey(const wxString& key) const
+{
+  wxWindow* page = GetPageByKey(key);
+  
+  if (page != NULL)
+  {
+    return GetPageIndex(page);
+  }
+  
+  return -1;
+}
+
+wxWindow* wxExNotebook::InsertPage(
+  size_t page_idx,
+  wxWindow* page,
+  const wxString& key,
+  const wxString& text,
+  bool select,
+  const wxBitmap& bitmap)
+{
+  if (GetPageByKey(key) != NULL)
+  {
+    return NULL;
+  }
+
+  const wxString use_text = (text.empty() ? key: text);
+
+  if (!wxAuiNotebook::InsertPage(page_idx, page, use_text, select, bitmap))
+  {
+    wxFAIL;
+    return NULL;
+  }
+
+  m_MapPages[key] = page;
+
+  return page;
 }
 
 void wxExNotebook::OnNotebook(wxAuiNotebookEvent& event)

@@ -19,6 +19,7 @@
 #include <wx/numdlg.h>
 #include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
@@ -103,8 +104,6 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendSeparator();
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
-  menuFile->Append(ID_STATISTICS_SHOW, "Show Statistics");
-  menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
   wxExMenu* menuConfig = new wxExMenu;
@@ -123,6 +122,8 @@ wxExSampleFrame::wxExSampleFrame()
 
   wxExMenu *menuView = new wxExMenu;
   menuView->AppendBars();
+  menuView->AppendSeparator();
+  menuView->Append(ID_STATISTICS_SHOW, "Statistics");
   
   wxExMenu* menuHelp = new wxExMenu;
   menuHelp->Append(wxID_ABOUT);
@@ -207,11 +208,6 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
-}
-
-wxExGrid* wxExSampleFrame::GetGrid()
-{
-  return m_Grid;
 }
 
 wxExListView* wxExSampleFrame::GetListView()
@@ -562,11 +558,12 @@ void wxExSampleFrame::ShowConfigItems()
     "Radioboxes"));
 
   // CONFIG_SLIDER
-  for (size_t sl = 1; sl <= 5; sl++)
+  const int start = 1;
+  for (size_t sl = start + 1; sl <= start + 5; sl++)
   {
     v.push_back(wxExConfigItem(
       wxString::Format("Slider%d", sl),
-      1,
+      start,
       sl,
       wxString("Spin controls"),
       CONFIG_SLIDER));

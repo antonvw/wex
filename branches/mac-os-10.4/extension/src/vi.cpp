@@ -15,6 +15,7 @@
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/command.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/file.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
@@ -37,6 +38,7 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
+  , m_Position(0)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -280,7 +282,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     m_STC->SetLexerProperty("fold", "1");
     m_STC->GetLexer().Apply(m_STC);
-    m_STC->Fold();
+    m_STC->Fold(true);
   }
   else if (command == "ZZ")
   {
@@ -687,21 +689,15 @@ bool wxExVi::ExecCommand(const wxString& command)
   return true;
 }
 
-bool wxExVi::FindCommand(const wxString& command, const wxString& text)
+void wxExVi::FindCommand(
+  const wxString& command, const wxString& text) const
 {
-  if (!m_IsActive || command.empty() || text.empty())
+  if (!m_IsActive || command.empty())
   {
-    return false;
+    return;
   }
   
-  m_SearchForward = (command == '/');
-
-  wxExFindReplaceData::Get()->SetFindString(text);
-  
-  return m_STC->FindNext(
-    text,
-    m_SearchFlags, 
-    m_SearchForward);
+  m_STC->FindNext(text, m_SearchFlags, command == '/', false); 
 }
 
 void wxExVi::FindWord(bool find_next) const
@@ -1010,6 +1006,18 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   return !handled;
 }
 
+void wxExVi::PositionRestore() const
+{
+  m_STC->SetSelection(m_Position, m_Position);
+  m_STC->SetCurrentPos(m_Position);
+  m_STC->EnsureCaretVisible();
+}
+  
+void wxExVi::PositionSave()
+{
+  m_Position = m_STC->GetCurrentPos();
+}
+  
 void wxExVi::Put(bool after) const
 {
   const int lines = wxExGetNumberOfLines(wxExClipboardGet());

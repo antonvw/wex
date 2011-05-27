@@ -83,15 +83,13 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
     wxConfigBase::Get()->Write(m_TextRecursive, true); 
   }
   
-  CreateDialogs();
-
 #ifdef wxExUSE_EMBEDDED_SQL
-  wxExTool::Get()->AddInfo(
+  wxExTool().AddInfo(
     ID_TOOL_SQL,
     _("Executed %ld SQL queries in"),
     wxExEllipsed(_("&SQL Query Run")));
 
-  wxExTool::Get()->AddInfo(
+  wxExTool().AddInfo(
     ID_TOOL_REPORT_SQL,
     _("Reported %ld SQL queries in"),
     _("Report SQL &Query"));
@@ -100,8 +98,17 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
 
 wxExFrameWithHistory::~wxExFrameWithHistory()
 {
-  m_FiFDialog->Destroy();
-  m_RiFDialog->Destroy();
+  if (m_FiFDialog != NULL)
+  {
+    m_FiFDialog->Destroy();
+  }
+  
+  if (m_RiFDialog != NULL)
+  {
+    m_RiFDialog->Destroy();
+  }
+  
+  wxDELETE(m_Process);
 }
 
 void wxExFrameWithHistory::CreateDialogs()
@@ -198,13 +205,19 @@ void wxExFrameWithHistory::FileHistoryPopupMenu()
       wxID_FILE1 + i, 
       file.GetFullName());
 
-    item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-      wxExGetIconID(file)));
+    if (file.FileExists())
+    {
+      item->SetBitmap(wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
+        wxExGetIconID(file)));
+    }
     
     menu->Append(item);
   }
-    
-  PopupMenu(menu);
+  
+  if (menu->GetMenuItemCount() > 0)
+  {
+    PopupMenu(menu);
+  }
     
   delete menu;
 }
@@ -240,9 +253,55 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
 
   dir.FindFiles();
 
-  tool.Log(
-    &dir.GetStatistics().GetElements(), 
-    wxExConfigFirstOf(m_TextInFolder));
+  tool.Log(&dir.GetStatistics().GetElements());
+}
+
+int wxExFrameWithHistory::FindInSelectionDialog(int id)
+{
+  if (GetSTC() != NULL)
+  {
+    GetSTC()->GetFindString();
+  }
+
+  std::vector<wxExConfigItem> v;
+
+  v.push_back(wxExConfigItem(
+    wxExFindReplaceData::Get()->GetTextFindWhat(), 
+    CONFIG_COMBOBOX, 
+    wxEmptyString, 
+    true));
+
+  if (id == ID_TOOL_REPORT_REPLACE) 
+  {
+    v.push_back(wxExConfigItem(
+      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
+      CONFIG_COMBOBOX));
+  }
+
+  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
+
+  if (wxExConfigDialog(this,
+    v,
+    GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
+  {
+    return wxID_CANCEL;
+  }
+
+  wxLogStatus(
+    wxExFindReplaceData::Get()->GetFindReplaceInfoText(
+      id == ID_TOOL_REPORT_REPLACE));
+        
+  return wxID_OK;
+}
+
+const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
+{
+  const wxString prefix =
+    (id == ID_TOOL_REPORT_REPLACE ?
+       _("Replace In"):
+       _("Find In")) + " ";
+
+  return prefix + _("Selection");
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
@@ -256,8 +315,6 @@ void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
       return;
     }
   }
-
-  wxDELETE(m_Process);
 
   m_FileHistory.Save(*wxConfigBase::Get());
 
@@ -338,18 +395,34 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       break;
       
     case ID_FIND_IN_FILES: 
-      if (GetFindString() != wxEmptyString)
+      if (m_FiFDialog == NULL)
       {
-        m_FiFDialog->Reload(); 
+        CreateDialogs();
       }
-      
+
+      if (GetSTC() != NULL)
+      {
+        if (!GetSTC()->GetFindString().empty())
+        {
+          m_FiFDialog->Reload(); 
+        }
+      }
+        
       m_FiFDialog->Show(); 
       break;
       
     case ID_REPLACE_IN_FILES: 
-      if (GetFindString() != wxEmptyString)
+      if (m_RiFDialog == NULL)
       {
-        m_RiFDialog->Reload(); 
+        CreateDialogs();
+      }
+      
+      if (GetSTC() != NULL)
+      {
+        if (!GetSTC()->GetFindString().empty())
+        {
+          m_RiFDialog->Reload(); 
+        }
       }
       
       m_RiFDialog->Show(); 
@@ -434,7 +507,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     // Project or editor changed, add indicator if not yet done.
     if (title.Last() != indicator)
     {
-      wxFrame::SetTitle(title + " " + indicator);
+      SetTitle(title + " " + indicator);
     }
   }
   else
@@ -442,7 +515,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     // Project or editor not changed, remove indicator if not yet done.
     if (title.Last() == indicator && title.size() > 2)
     {
-      wxFrame::SetTitle(title.substr(0, title.length() - 2));
+      SetTitle(title.substr(0, title.length() - 2));
     }
   }
 }
@@ -501,32 +574,35 @@ void wxExFrameWithHistory::ProcessStop()
   if (m_Process != NULL && m_Process->IsRunning())
   {
     m_Process->Kill();
-    
     wxDELETE(m_Process);
   }
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 {
-  if (!file.empty())
+  if (file.empty())
   {
-    m_FileHistory.AddFileToHistory(file);
+    return;
+  }
+  
+  m_FileHistory.AddFileToHistory(file);
 
-    if (m_FileHistoryList != NULL)
+  if (m_FileHistoryList != NULL)
+  {
+    wxExListItem item(m_FileHistoryList, file);
+    item.Insert((long)0);
+
+    if (m_FileHistoryList->GetItemCount() > 1)
     {
-      wxExListItem item(m_FileHistoryList, file);
-      item.Insert((long)0);
+      for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
+      {
+        wxExListItem item(m_FileHistoryList, i);
 
       if (m_FileHistoryList->GetItemCount() > 1)
       {
         for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
         {
-          wxExListItem item(m_FileHistoryList, i);
-
-          if (item.GetFileName().GetFullPath() == file)
-          {
-            item.Delete();
-          }
+          item.Delete();
         }
       }
     }

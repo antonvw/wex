@@ -8,11 +8,11 @@
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v0.9.7\n"
+"Project-Id-Version: wxextension v0.9.8\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-04-15 15:49+0100\n"
-"PO-Revision-Date: 2011-04-15 15:49+0100\n"
-"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"PO-Revision-Date: 2011-04-21 20:15+0100\n"
+"Last-Translator: Emma van Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1131,9 +1131,8 @@ msgid "Enter Lexer"
 msgstr "Entrer lexer"
 
 #: ../include/wx/extension/lexers.h:136
-#, fuzzy
 msgid "Enter Theme"
-msgstr "Entrer lexer"
+msgstr "Entrer Thème"
 
 #: ../include/wx/extension/listview.h:125
 msgid "Enter Item Number"
@@ -1174,222 +1173,154 @@ msgstr "Sélection des Projets"
 
 #~ msgid "Colour"
 #~ msgstr "Liste des couleurs"
-
 #~ msgid "Fold Flags"
 #~ msgstr "Drapeaux"
-
 #~ msgid "Cannot execute"
 #~ msgstr "ne peut pas éxecuter le fichier"
 
 #, fuzzy
 #~ msgid "Undefined tag: %s on line: %d"
 #~ msgstr "stule indicateur illégales: %s  à la ligne: %d"
-
 #~ msgid "Illegal indicator: %s"
 #~ msgstr "indicateur illégales: %s"
-
 #~ msgid "Projects"
 #~ msgstr "Projets"
-
 #~ msgid "Output"
 #~ msgstr "résultats"
-
 #~ msgid "Explorer"
 #~ msgstr "éclaireur"
-
 #~ msgid "Ascii Table"
 #~ msgstr "table Ascii"
-
 #~ msgid "project"
 #~ msgstr "projet"
-
 #~ msgid "textfile"
 #~ msgstr "fichier"
-
 #~ msgid ""
 #~ "This program offers a portable text or binary editor\n"
 #~ "with automatic syncing."
 #~ msgstr ""
 #~ "Ce programme fournit un texte ou binaire \n"
 #~ " éditeur avec synchronisation automatique."
-
 #~ msgid ""
 #~ " All its config files are read\n"
 #~ "and saved in the same directory as where the executable is."
 #~ msgstr ""
 #~ "Tous les fichiers de configuration\n"
 #~ "stockés et lus dans le même dossier où le programme est lui-même."
-
 #~ msgid "All rights reserved."
 #~ msgstr "Tous droits réservés"
-
 #~ msgid "Set List Font"
 #~ msgstr "list des polices instituer"
-
 #~ msgid "Set List Read Only Colour"
 #~ msgstr "liste des couleurs instituer"
-
 #~ msgid "Project Save As"
 #~ msgstr "projet enregister comme"
-
 #~ msgid "Open &Logfile"
 #~ msgstr "&Logfile openen"
-
 #~ msgid "Close A&ll"
 #~ msgstr "A&lles sluiten"
-
 #~ msgid "Save A&ll"
 #~ msgstr "A&lles opslaan"
-
 #~ msgid "Start Record"
 #~ msgstr "Start opname"
-
 #~ msgid "Playback\tCtrl+M"
 #~ msgstr "Afspelen\tCtrl+M"
-
 #~ msgid "&Files"
 #~ msgstr "&Bestanden"
-
 #~ msgid "&Projects"
 #~ msgstr "&Projecten"
-
 #~ msgid "&Explorer"
 #~ msgstr "&Verkenner"
-
 #~ msgid "&Output"
 #~ msgstr "&Resultaten"
-
 #~ msgid "&Ascii Table"
 #~ msgstr "&Ascii tabel"
-
 #~ msgid "&History"
 #~ msgstr "&Geschiedenis"
-
 #~ msgid "&List"
 #~ msgstr "&Lijst"
-
 #~ msgid "&Detail"
 #~ msgstr "&Details"
-
 #~ msgid "&Small Icon"
 #~ msgstr "&Pictogrammen"
-
 #~ msgid "&Lists"
 #~ msgstr "&Lijstweergave"
-
 #~ msgid "&Open As Text"
 #~ msgstr "&Als tekst openen"
-
 #~ msgid "Split"
 #~ msgstr "Splitsen"
-
 #~ msgid "Set SVN And &Comparator"
 #~ msgstr "SVN en vergelijker &instellen"
-
 #~ msgid "Set &List Font"
 #~ msgstr "&Lijst lettertype instellen"
-
 #~ msgid "Set &List Read Only Colour"
 #~ msgstr "&Lijst kleuren instellen"
-
 #~ msgid "&Ascending"
 #~ msgstr "&Oplopend"
-
 #~ msgid "&Descending"
 #~ msgstr "&Aflopend"
-
 #~ msgid "&Toggle"
 #~ msgstr "&Afwisselen"
-
 #~ msgid "Set &List Sort Method"
 #~ msgstr "&Lijst sorteer methode instellen"
-
 #~ msgid "Set &Editor Options"
 #~ msgstr "&Editor opties"
-
 #~ msgid "&View"
 #~ msgstr "&Beeld"
-
 #~ msgid "&Project"
 #~ msgstr "&Project"
-
 #~ msgid "&Window"
 #~ msgstr "&Venster"
-
 #~ msgid "Open project"
 #~ msgstr "Project openen"
-
 #~ msgid "Save project"
 #~ msgstr "Project opslaan"
-
 #~ msgid "View in list mode"
 #~ msgstr "Lijst weergave"
-
 #~ msgid "View in detail mode"
 #~ msgstr "Details weergave"
-
 #~ msgid "Set SVN And Comparator"
 #~ msgstr "SVN en vergelijker instellen"
-
 #~ msgid "&File"
 #~ msgstr "&Bestand"
-
 #~ msgid "&Edit"
 #~ msgstr "Be&werken"
-
 #~ msgid "Make"
 #~ msgstr "Maken"
-
 #~ msgid "Print all files"
 #~ msgstr "Alle bestanden afdrukken"
-
 #~ msgid "Print A&ll"
 #~ msgstr "&Alles afdrukken"
-
 #~ msgid "&Update"
 #~ msgstr "&Update"
-
 #~ msgid "C&ommit"
 #~ msgstr "C&ommit"
-
 #~ msgid "&Diff"
 #~ msgstr "&Diff"
-
 #~ msgid "&Log"
 #~ msgstr "&Log"
-
 #~ msgid "&Cat"
 #~ msgstr "&Cat"
-
 #~ msgid "&Info"
 #~ msgstr "&Info"
-
 #~ msgid "&Goto"
 #~ msgstr "&Ga naar"
-
 #~ msgid "&Run"
 #~ msgstr "Uitvoeren"
-
 #~ msgid "&SVN"
 #~ msgstr "&SVN"
-
 #~ msgid "day"
 #~ msgstr "dag"
-
 #~ msgid "week"
 #~ msgstr "week"
-
 #~ msgid "month"
 #~ msgstr "maand"
-
 #~ msgid "year"
 #~ msgstr "jaar"
-
 #~ msgid "link"
 #~ msgstr "koppeling"
-
 #~ msgid "help"
 #~ msgstr "help"
-
 #~ msgid "show this help"
 #~ msgstr "geeft deze help"
+

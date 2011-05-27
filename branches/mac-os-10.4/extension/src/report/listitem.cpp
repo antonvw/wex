@@ -115,7 +115,7 @@ const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
       // Here we show the counts of individual folders on the top level.
       if (tool.IsCount() && m_ListView->GetSelectedItemCount() > 1)
       {
-        tool.Log(&dir.GetStatistics().GetElements(), m_FileName.GetFullPath());
+        tool.Log(&dir.GetStatistics().GetElements());
       }
     }
 

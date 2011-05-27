@@ -17,8 +17,6 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/configdlg.h>
-#include <wx/extension/frame.h>
-#include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/vcs.h>
@@ -413,12 +411,8 @@ void wxExListViewStandard::OnList(wxListEvent& event)
   {
     if (GetSelectedItemCount() == 1)
     {
-      const wxExListItem item(this, event.GetIndex());
-
-      if (item.GetFileName().GetStat().IsOk())
-      {
-        item.GetFileName().StatusText(wxExFileName::STAT_FULLPATH);
-      }
+      wxExListItem(this, event.GetIndex()).
+        GetFileName().StatusText(wxExFileName::STAT_FULLPATH);
     }
 
     event.Skip();
@@ -566,12 +560,12 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     {
       menu.AppendSeparator();
       menu.Append(ID_TOOL_REPORT_FIND, 
-        wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_FIND)));
+        wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_FIND)));
 
       if (!read_only)
       {
         menu.Append(ID_TOOL_REPORT_REPLACE, 
-          wxExEllipsed(GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
+          wxExEllipsed(m_Frame->GetFindInCaption(ID_TOOL_REPORT_REPLACE)));
       }
     }
   }
@@ -583,59 +577,6 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   {
     menu.AppendSeparator();
     menu.AppendTools();
-  }
-}
-
-int wxExListViewWithFrame::FindInFilesDialog(int id)
-{
-  m_Frame->GetFindString();
-
-  std::vector<wxExConfigItem> v;
-
-  v.push_back(wxExConfigItem(
-    wxExFindReplaceData::Get()->GetTextFindWhat(), 
-    CONFIG_COMBOBOX, 
-    wxEmptyString, 
-    true));
-
-  if (id == ID_TOOL_REPORT_REPLACE) 
-  {
-    v.push_back(wxExConfigItem(
-      wxExFindReplaceData::Get()->GetTextReplaceWith(), 
-      CONFIG_COMBOBOX));
-  }
-
-  v.push_back(wxExConfigItem(wxExFindReplaceData::Get()->GetInfo()));
-
-  if (wxExConfigDialog(this,
-    v,
-    GetFindInCaption(id)).ShowModal() == wxID_CANCEL)
-  {
-    return wxID_CANCEL;
-  }
-
-  return wxID_OK;
-}
-
-const wxString wxExListViewWithFrame::GetFindInCaption(int id) const
-{
-  const wxString prefix =
-    (id == ID_TOOL_REPORT_REPLACE ?
-       _("Replace In"):
-       _("Find In")) + " ";
-
-  if (GetSelectedItemCount() == 1)
-  {
-    // The File Name is better than using 0, as it can be another column as well.
-    return prefix + GetItemText(GetFirstSelected(), _("File Name"));
-  }
-  else if (GetSelectedItemCount() > 1)
-  {
-    return prefix + _("Selection");
-  }
-  else
-  {
-    return prefix + GetName();
   }
 }
 
@@ -810,14 +751,10 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   if (tool.IsFindType())
   {
-    if (FindInFilesDialog(tool.GetId()) == wxID_CANCEL)
+    if (m_Frame->FindInSelectionDialog(tool.GetId()) == wxID_CANCEL)
     {
       return;
     }
-    
-    wxLogStatus(
-      wxExFindReplaceData::Get()->GetFindReplaceInfoText(
-        tool.GetId() == ID_TOOL_REPORT_REPLACE));
   }
 
   if (!wxExTextFileWithListView::SetupTool(tool, m_Frame))
@@ -832,13 +769,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
     stats += wxExListItem(this, i).Run(tool).GetElements();
   }
 
-  tool.Log(&stats, GetListInfo());
-
-  if (tool.IsCount())
-  {
-    m_Frame->OpenFile(
-      tool.GetLogfileName(), 0 , wxEmptyString, wxExSTC::STC_WIN_FROM_OTHER);
-  }
+  tool.Log(&stats);
 }
 
 #ifdef __WXMSW__

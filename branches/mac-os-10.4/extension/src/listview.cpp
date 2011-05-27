@@ -21,6 +21,7 @@
 #include <wx/textfile.h> // for wxTextFile::GetEOL()
 #include <wx/tokenzr.h>
 #include <wx/extension/listview.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/printing.h>
@@ -103,8 +104,9 @@ const int ID_COL_FIRST = 1000;
 const int ID_COL_LAST = ID_COL_FIRST + 255;
 
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
+  EVT_FIND(wxID_ANY, wxExListView::OnFindDialog)
+  EVT_FIND_NEXT(wxID_ANY, wxExListView::OnFindDialog)
   EVT_SET_FOCUS(wxExListView::OnFocus)
-  EVT_KILL_FOCUS(wxExListView::OnFocus)
   EVT_LIST_BEGIN_DRAG(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
@@ -621,21 +623,28 @@ void wxExListView::OnCommand(wxCommandEvent& event)
 #endif
 }
 
+void wxExListView::OnFindDialog(wxFindDialogEvent& event)
+{
+  if (
+    event.GetEventType() == wxEVT_COMMAND_FIND ||
+    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
+  {
+    FindNext(
+      wxExFindReplaceData::Get()->GetFindString(), 
+      wxExFindReplaceData::Get()->SearchDown());
+  }
+  else
+  {
+    wxFAIL;
+  }
+}
+
 void wxExListView::OnFocus(wxFocusEvent& event)
 {
   event.Skip();
 
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS_LISTVIEW);
-
-  if (event.GetEventType() == wxEVT_SET_FOCUS)
-  {
-    focusevent.SetEventObject(this);
-  }
-  else
-  {
-    focusevent.SetEventObject(NULL);
-  }
-  
+  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
+  focusevent.SetEventObject(this);
   wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 

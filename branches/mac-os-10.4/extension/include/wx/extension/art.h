@@ -31,7 +31,9 @@ public:
     const wxArtClient& client = wxART_OTHER, 
     const wxSize& bitmap_size = wxDefaultSize) const;
 private:
-  static std::map<wxWindowID, wxArtID> m_StockArt;
+  void Add(int id, const wxArtID art);
+  
+  static std::map<wxWindowID, wxArtID> m_ArtIDs;
   const wxWindowID m_Id;
 };
 #endif // wxUSE_GUI

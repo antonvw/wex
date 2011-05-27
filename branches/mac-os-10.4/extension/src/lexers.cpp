@@ -22,14 +22,30 @@
 
 wxExLexers* wxExLexers::m_Self = NULL;
 
+// Constructor for lexers from specified filename.
+// This must be an existing xml file containing all lexers.
+// It does not Read this file, however if you use the global Get,
+// it both constructs and reads the lexers.
 wxExLexers::wxExLexers(const wxFileName& filename)
   : m_FileName(filename)
   , m_NoTheme(wxEmptyString)
 {
+  m_DefaultColours.clear();
 }
 
 void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
 {
+  if (m_DefaultColours.empty())
+  {
+    m_DefaultColours["caretforeground"] = stc->GetCaretForeground().GetAsString();
+    m_DefaultColours["caretlinebackground"] = stc->GetCaretLineBackground().GetAsString();
+    m_DefaultColours["edge"] = stc->GetEdgeColour().GetAsString();
+    //tempColours["selbackground"]
+    //tempColours["selforeground"]
+    //tempColours["calltipbackground"]
+    //tempColours["calltipforeground"]
+  }
+    
   m_DefaultStyle.Apply(stc);
 
   stc->StyleClearAll();
@@ -191,8 +207,9 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   // Add automatic lexers if text starts with some special tokens.
   const wxString text_lowercase = text.Lower();
 
-  if (text_lowercase.StartsWith("<html>") ||
-      text_lowercase.StartsWith("<?php"))
+  if (text_lowercase.StartsWith("<html>"))
+  // php is not yet ok, so do not add it here.
+  //   text_lowercase.StartsWith("<?php"))
   {
     return FindByName("hypertext");
   }
@@ -296,6 +313,25 @@ bool wxExLexers::IndicatorIsLoaded(const wxExIndicator& indic) const
   return (it != m_Indicators.end());
 }
 
+void wxExLexers::Initialize()
+{
+  m_DefaultStyle = wxExStyle();
+  m_ThemeColours.clear();
+  m_GlobalProperties.clear();
+  m_Indicators.clear();
+  m_Lexers.clear();
+  m_Macros.clear();
+  m_ThemeMacros.clear();
+  m_Markers.clear();
+  m_Styles.clear();
+  m_StylesHex.clear();
+  m_TempColours.clear();
+  m_TempMacros.clear();
+  
+  m_ThemeColours[m_NoTheme] = m_DefaultColours;
+  m_ThemeMacros[m_NoTheme] = m_TempMacros;
+}
+
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
 {
   const std::set<wxExMarker>::const_iterator it = m_Markers.find(marker);
@@ -308,7 +344,11 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
 
   while (child)
   {
-    if (child->GetName() == "hex")
+    if (GetTheme() == m_NoTheme)
+    {
+      // Do nothing.
+    }
+    else if (child->GetName() == "hex")
     {
       m_StylesHex.push_back(wxExStyle(child));
     }
@@ -338,7 +378,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     {
       const wxExStyle style(child);
 
-      if (style.IsDefault())
+      if (style.ContainsDefaultStyle())
       {
         if (m_DefaultStyle.IsOk())
         {
@@ -491,23 +531,11 @@ bool wxExLexers::Read()
   {
     return false;
   }
-
-  // Initialize members.
-  m_DefaultStyle = wxExStyle();
-  m_ThemeColours.clear();
-  m_GlobalProperties.clear();
-  m_Indicators.clear();
-  m_Lexers.clear();
-  m_Macros.clear();
-  m_ThemeMacros.clear();
-  m_Markers.clear();
-  m_Styles.clear();
-  m_StylesHex.clear();
-  m_TempColours.clear();
-  m_TempMacros.clear();
   
-  m_ThemeColours[m_NoTheme] = m_TempColours;
-  m_ThemeMacros[m_NoTheme] = m_TempMacros;
+  Initialize();
+  
+  // Even if no theme is chosen,
+  // read all lexers, to be able to select other themes again.
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 

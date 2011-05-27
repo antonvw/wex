@@ -23,7 +23,6 @@
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/tool.h>
 #include <wx/extension/vcs.h>
 
 int wxExApp::OnExit()
@@ -31,7 +30,6 @@ int wxExApp::OnExit()
   delete wxExFindReplaceData::Set(NULL);
   delete wxExLexers::Set(NULL);
   delete wxExPrinting::Set(NULL);
-  delete wxExTool::Set(NULL);
 
   return wxApp::OnExit(); // this destroys the config
 }

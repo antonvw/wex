@@ -46,9 +46,6 @@ public:
   /// Returns member.
   virtual bool GetContentsChanged() const {return m_ContentsChanged;};
 
-  virtual const wxString GetListInfo() const {
-    return GetFileName().GetName();};
-
   virtual bool ItemFromText(const wxString& text);
 
   /// Resets the member.
@@ -62,8 +59,6 @@ protected:
   void OnIdle(wxIdleEvent& event);
   void OnMouse(wxMouseEvent& event);
 private:
-  void AddItemsDialog();
-
   bool m_ContentsChanged;
   wxExConfigDialog* m_AddItemsDialog;
 

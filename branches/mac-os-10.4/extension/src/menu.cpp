@@ -191,8 +191,8 @@ bool wxExMenu::AppendTools(int itemid)
 
   for (
 	std::map < int, wxExToolInfo >::const_iterator it = 
-      wxExTool::Get()->GetToolInfo().begin();
-    it != wxExTool::Get()->GetToolInfo().end();
+      wxExTool().GetToolInfo().begin();
+    it != wxExTool().GetToolInfo().end();
     ++it)
   {
     if (!it->second.GetText().empty())

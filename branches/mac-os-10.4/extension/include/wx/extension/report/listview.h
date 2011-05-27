@@ -65,10 +65,6 @@ public:
   /// Gets the list type.
   const ListType GetType() const {return m_Type;};
 
-  /// Gets info about this list.
-  virtual const wxString GetListInfo() const {
-    return GetTypeDescription();};
-
   /// Gets the list type as a string.
   const wxString GetTypeDescription() const {
     return GetTypeDescription(m_Type);};
@@ -124,8 +120,6 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:
-  int FindInFilesDialog(int id);
-  const wxString GetFindInCaption(int id) const;
   void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);
 

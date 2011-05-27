@@ -14,7 +14,6 @@
 #include <wx/config.h>
 #include <wx/extension/toolbar.h>
 #include <wx/extension/art.h>
-#include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/stc.h>
@@ -35,19 +34,22 @@ enum
 // Support class.
 // Offers a find text ctrl that allows you to find text
 // on a current STC on an wxExFrame.
-class FindString : public wxTextCtrl
+class wxExTextCtrl : public wxTextCtrl
 {
 public:
   /// Constructor. Fills the text ctrl with value 
   /// from FindReplace from config.
-  FindString(
+  wxExTextCtrl(
     wxWindow* parent,
     wxExFrame* frame,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
-private:
+  void Find(bool find_next = true);
+protected:
   void OnCommand(wxCommandEvent& event);
+  void OnEnter(wxCommandEvent& event);
+private:
   wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
@@ -116,7 +118,7 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
     return wxAuiToolBar::AddTool(
       toolId, 
       wxEmptyString,
-      art.GetBitmap(wxART_TOOLBAR, GetToolBitmapSize()),
+      art.GetBitmap(wxART_TOOLBAR),
       wxGetStockLabel(toolId, wxSTOCK_NOFLAGS),
       kind);
   }
@@ -170,18 +172,18 @@ wxExFindToolBar::wxExFindToolBar(
   Initialize();
 
   // And place the controls on the toolbar.
-  AddControl(m_FindString);
+  AddControl(m_FindCtrl);
   AddSeparator();
 
   AddTool(
     wxID_DOWN, 
     wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR),
     _("Find next"));
   AddTool(
     wxID_UP, 
     wxEmptyString, 
-    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, GetToolBitmapSize()),
+    wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
     _("Find previous"));
   AddSeparator();
 
@@ -194,7 +196,7 @@ wxExFindToolBar::wxExFindToolBar(
 
 void wxExFindToolBar::Initialize()
 {
-  m_FindString = new FindString(this, m_Frame);
+  m_FindCtrl = new wxExTextCtrl(this, GetFrame());
 
   m_MatchCase = new wxCheckBox(this, 
     ID_MATCH_CASE, wxExFindReplaceData::Get()->GetTextMatchCase());
@@ -234,7 +236,6 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
       }
     }
     break;
-
   case ID_MATCH_WHOLE_WORD:
     wxExFindReplaceData::Get()->SetMatchWord(
       m_MatchWholeWord->GetValue());
@@ -247,7 +248,6 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
     wxExFindReplaceData::Get()->SetUseRegularExpression(
       m_IsRegularExpression->GetValue());
     break;
-
   default:
     wxFAIL;
     break;
@@ -256,23 +256,26 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
 
 void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  event.Enable(!m_FindString->GetValue().empty());
+  event.Enable(!m_FindCtrl->GetValue().empty());
 }
 
 // Implementation of support class.
 
-BEGIN_EVENT_TABLE(FindString, wxTextCtrl)
-  EVT_TEXT_ENTER(wxID_ANY, FindString::OnCommand)
+BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
+  EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
+  EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
 END_EVENT_TABLE()
 
-FindString::FindString(
+wxExTextCtrl::wxExTextCtrl(
   wxWindow* parent,
   wxExFrame* frame,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size)
-  : wxTextCtrl(parent, id, 
-      wxExFindReplaceData::Get()->GetFindString(), pos, size, wxTE_PROCESS_ENTER)
+  : wxTextCtrl(parent, 
+      id,
+      wxExFindReplaceData::Get()->GetFindString(), 
+      pos, size, wxTE_PROCESS_ENTER)
   , m_Frame(frame)
 {
   const int accels = 1;
@@ -282,15 +285,31 @@ FindString::FindString(
   SetAcceleratorTable(accel);
 }
 
-void FindString::OnCommand(wxCommandEvent& event)
+void wxExTextCtrl::Find(bool find_next)
 {
   wxExSTC* stc = m_Frame->GetSTC();
 
   if (stc != NULL)
   {
-    stc->FindNext(GetValue());
-    wxExFindReplaceData::Get()->SetFindString(GetValue());
+    stc->FindNext(
+      GetValue(), 
+      wxExFindReplaceData::Get()->STCFlags(),
+      find_next);
   }
 }
 
+void wxExTextCtrl::OnCommand(wxCommandEvent& event)
+{
+  event.Skip();
+  Find();
+}
+
+void wxExTextCtrl::OnEnter(wxCommandEvent& event)
+{
+  if (!GetValue().empty())
+  {
+    wxExFindReplaceData::Get()->SetFindString(GetValue());
+    Find();
+  }
+}
 #endif // wxUSE_GUI

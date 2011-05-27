@@ -35,10 +35,6 @@ public:
     , m_Statistics(statistics)
   {
     Connect(
-      wxEVT_GRID_CELL_RIGHT_CLICK, 
-      wxGridEventHandler(wxExGridStatistics::OnGrid));
-
-    Connect(
       wxID_CLEAR, 
       wxEVT_COMMAND_MENU_SELECTED, 
       wxCommandEventHandler(wxExGridStatistics::OnCommand));
@@ -53,10 +49,11 @@ protected:
     {
       event.Skip();
     }};
-  void OnGrid(wxGridEvent& event) {
-    wxExMenu menu(wxExMenu::MENU_ALLOW_CLEAR);
-    BuildPopupMenu(menu);
-    PopupMenu(&menu);};
+  void BuildPopupMenu(wxExMenu& menu) {
+    int style = wxExMenu::MENU_ALLOW_CLEAR;
+    if (IsSelection()) style |= wxExMenu::MENU_IS_SELECTED;
+    menu.SetStyle(style);
+    wxExGrid::BuildPopupMenu(menu);};
 private:
   wxExStatistics <T> * m_Statistics;
 };
@@ -64,15 +61,17 @@ private:
 
 /// Offers base statistics. All statistics involve a key value pair,
 /// where the key is a wxString, and the value a template.
+/// The statistics can be shown on a grid, that is automatically
+/// updated whenever statistics change.
 template <class T> class WXDLLIMPEXP_BASE wxExStatistics
 {
 public:
   /// Default constructor.
-  wxExStatistics() {
+  wxExStatistics() 
 #if wxUSE_GRID
-    m_Grid = NULL;
+    : m_Grid(NULL)
 #endif
-  };
+    {};
 
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
@@ -154,14 +153,17 @@ public:
 
 #if wxUSE_GRID
   /// Shows the statistics as a grid window on the parent,
-  /// and specify whether to show row labels (i.e. row numbers)
-  /// and col labels (Item, Value).
+  /// and specify whether to show row labels and col labels.
   /// Returns the window that is created, or is activated,
   /// if it already was created.
-  /// You can also the id of the grid component.
-  wxExGrid* Show(wxWindow* parent,
+  wxExGrid* Show(
+    /// the parent for the grid
+    wxWindow* parent,
+    /// show row labels (i.e. row numbers)
     bool hide_row_labels = true,
+    /// show col labels (Item, Value)
     bool hide_col_labels = true,
+    /// the id of the grid component
     wxWindowID id = wxID_ANY)
     {
     if (m_Grid == NULL)
@@ -195,8 +197,8 @@ public:
     m_Grid->Show();
     return m_Grid;}
 
-    /// Access to the grid, returns NULL if has not been shown yet.
-    const wxExGrid* GetGrid() const {return m_Grid;}
+  /// Access to the grid, returns NULL if the grid has not been shown yet.
+  const wxExGrid* GetGrid() const {return m_Grid;}
 #endif
 private:
   std::map<wxString, T> m_Items;

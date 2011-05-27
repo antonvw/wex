@@ -16,6 +16,7 @@
 #if wxUSE_GUI
 
 class wxExFrame;
+class wxExTextCtrl;
 
 /// Offers a toolbar together with stock art.
 /// Default no controls are added, you have to call AddControls to do that.
@@ -38,20 +39,25 @@ public:
     wxItemKind kind = wxITEM_NORMAL);
 
   /// Adds the standard controls.
+  /// This adds a file open, save and print control, and
+  /// the hex mode and sync check boxes.
   void AddControls();
+  
+  /// Gets the frame.
+  wxExFrame* GetFrame() {return m_Frame;};
 protected:
   void OnCommand(wxCommandEvent& event);
-  wxExFrame* m_Frame;
 private:
   wxCheckBox* m_HexMode;
   wxCheckBox* m_SyncMode;
+  wxExFrame* m_Frame;
 
   DECLARE_EVENT_TABLE()
 };
 
-/// Offers a find toolbar, containing a find combobox, up and down arrows
+/// Offers a find toolbar, containing a find ctrl, up and down arrows
 /// and checkboxes.
-/// The find combobox allows you to find in an wxExSTC
+/// The find ctrl allows you to find in an wxExSTC
 /// component on the specified wxExFrame.
 class WXDLLIMPEXP_BASE wxExFindToolBar : public wxExToolBar
 {
@@ -68,7 +74,7 @@ protected:
 private:
   void Initialize();
 
-  wxTextCtrl* m_FindString;
+  wxExTextCtrl* m_FindCtrl;
   wxCheckBox* m_IsRegularExpression;
   wxCheckBox* m_MatchCase;
   wxCheckBox* m_MatchWholeWord;

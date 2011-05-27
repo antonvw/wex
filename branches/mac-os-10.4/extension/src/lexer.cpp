@@ -56,28 +56,37 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
     it != m_KeywordsSet.end();
     ++it)
   {
-    stc->SetKeyWords(
-      it->first,
-      GetKeywordsString(it->first).Lower());
+    // Readme: The Scintilla lexer only recognized lower case words, apparently.
+    for (
+      auto it = m_KeywordsSet.begin();
+      it != m_KeywordsSet.end();
+      ++it)
+    {
+      stc->SetKeyWords(
+        it->first,
+        GetKeywordsString(it->first).Lower());
+    }
+    
+    wxExLexers::Get()->GetDefaultStyle().Apply(stc);
   }
   
-  wxExLexers::Get()->GetDefaultStyle().Apply(stc);
-
   if (clear)
   {
-    stc->StyleClearAll();
     wxExLexers::Get()->ApplyGlobalStyles(stc);
   }
 
-  wxExLexers::Get()->ApplyIndicators(stc);
-  wxExLexers::Get()->ApplyProperties(stc);
-  wxExLexers::Get()->ApplyMarkers(stc);
+  if (wxExLexers::Get()->GetThemeOk())
+  {
+    wxExLexers::Get()->ApplyIndicators(stc);
+    wxExLexers::Get()->ApplyProperties(stc);
+    wxExLexers::Get()->ApplyMarkers(stc);
   
-  for_each (m_Properties.begin(), m_Properties.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
+    for_each (m_Properties.begin(), m_Properties.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExProperty::Apply), stc));
 
-  for_each (m_Styles.begin(), m_Styles.end(), 
-    std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+    for_each (m_Styles.begin(), m_Styles.end(), 
+      std::bind2nd(std::mem_fun_ref(&wxExStyle::Apply), stc));
+  }
 
   // And finally colour the entire document.
   stc->Colourise(0, stc->GetLength() - 1);

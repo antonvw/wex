@@ -14,22 +14,19 @@
 #include <wx/fdrepdlg.h> // for wxFindDialogDialog and Event
 #include <wx/frame.h>
 #include <wx/extension/statusbar.h>
-#include <wx/extension/defs.h> // for ID_EDIT_STATUS_BAR
 #include <wx/extension/filename.h>
 #include <wx/extension/vcsentry.h>
 
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxExGrid;
 class wxExListView;
 class wxExSTC;
-class wxExToolBar;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and allows for file dropping.
-/// Also helps in maintaining focus to the base controls
-/// (grid, listview and STC).
+/// Also helps in maintaining access to the base controls
+/// (listview and STC).
 class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
@@ -43,26 +40,16 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
-  /// Invokes GetFindString on one of the controls.
-  const wxString GetFindString();
+  /// Returns window that has or had focus. 
+  wxWindow* GetFocusWindow() {return m_Focus;};
+  
+  /// Returns a listview.
+  /// Default returns NULL.
+  virtual wxExListView* GetListView() {return NULL;};
 
-  /// Returns a grid, default returns the focused grid.
-  virtual wxExGrid* GetGrid() {return m_FocusGrid;};
-
-  /// Returns a listview, default returns the focused listview.
-  virtual wxExListView* GetListView() {return m_FocusListView;};
-
-  /// Returns an STC, default returns the focused STC.
-  virtual wxExSTC* GetSTC() {return m_FocusSTC;};
-
-  /// Gets the focused grid.
-  wxExGrid* GetFocusedGrid() {return m_FocusGrid;};
-
-  /// Gets the focused list view.
-  wxExListView* GetFocusedListView() {return m_FocusListView;};
-
-  /// Gets the focused STC.
-  wxExSTC* GetFocusedSTC() {return m_FocusSTC;};
+  /// Returns an STC.
+  /// Default returns NULL.
+  virtual wxExSTC* GetSTC() {return NULL;};
 
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
@@ -96,7 +83,6 @@ public:
   void SetupStatusBar(
     const std::vector<wxExStatusBarPane>& panes,
     long style = wxST_SIZEGRIP,
-    wxWindowID id = ID_EDIT_STATUS_BAR,
     const wxString& name = "statusBar");
 
   /// When (left) double clicked, uses the GetSTC() for some dialogs.
@@ -110,11 +96,7 @@ public:
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
 #endif // wxUSE_STATUSBAR
-
 protected:
-  /// Handles command event.
-  void OnCommand(wxCommandEvent& command);
-
 #if wxUSE_STATUSBAR
   // Interface from wxFrame.
   virtual wxStatusBar* OnCreateStatusBar(int number,
@@ -123,15 +105,10 @@ protected:
     const wxString& name);
 #endif
 
-  /// If there is a STC, calls find.
+  void OnCommand(wxCommandEvent& command);
   void OnFindDialog(wxFindDialogEvent& event);
-  
-  /// If there is a focused STC, updates the status bar.
   void OnUpdateUI(wxUpdateUIEvent& event);  
 private:
-  void FindIn(wxFindDialogEvent& event, wxExGrid* grid);
-  void FindIn(wxFindDialogEvent& event, wxExListView* lv);
-  void FindIn(wxFindDialogEvent& event, wxExSTC* stc);
   void Initialize();
 
 #if wxUSE_STATUSBAR
@@ -140,11 +117,7 @@ private:
 
   wxFindReplaceDialog* m_FindReplaceDialog;
   wxMenuBar* m_MenuBar;
-
-  wxExGrid* m_FocusGrid;
-  wxExListView* m_FocusListView;
-  wxExSTC* m_FocusSTC;
-  wxExSTC* m_FocusSTCFind; // focs before find dlg was activated
+  wxWindow* m_Focus;
   
   bool m_IsCommand;
 

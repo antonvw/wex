@@ -41,11 +41,21 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
     it != m_No.end();
     ++it)
   {
-    stc->StyleSetSpec(*it, m_Value);
+    stc->StyleResetDefault();
+  }
+  else
+  {
+    for (
+      auto it = m_No.begin();
+      it != m_No.end();
+      ++it)
+    {
+      stc->StyleSetSpec(*it, m_Value);
+    }
   }
 }
 
-bool wxExStyle::IsDefault() const
+bool wxExStyle::ContainsDefaultStyle() const
 {
   const std::set <int>::const_iterator it = m_No.find(wxSTC_STYLE_DEFAULT);
   return (it != m_No.end());

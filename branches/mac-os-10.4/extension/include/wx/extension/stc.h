@@ -13,6 +13,7 @@
 #define _EXSTC_H
 
 #include <vector> 
+#include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/stc/stc.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/lexer.h>
@@ -84,14 +85,8 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Adds an ascii table to current document.
-  void AddAsciiTable();
-
   /// Adds base path.
   void AddBasePathToPathList();
-
-  /// Adds a header.
-  void AddHeader();
 
   /// Adds text in hex mode.
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
@@ -117,10 +112,6 @@ public:
   /// Sets the configurable parameters to values currently in config.
   void ConfigGet();
 
-  /// Edit the current selected char as a control char, or if nothing selected,
-  /// add a new control char.
-  void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
-  
   /// Cuts text to clipboard.
   void Cut();
 
@@ -128,7 +119,7 @@ public:
   void FileTypeMenu();
 
   /// Finds next with settings from find replace data.
-  bool FindNext(bool find_next = true);
+  bool FindNext(bool find_next = true, bool show_result = true);
 
   /// Finds next.
   bool FindNext(
@@ -142,10 +133,15 @@ public:
     /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
-    bool find_next = true);
+    bool find_next = true,
+    /// shows find result on status bar
+    bool show_result = true);
     
-  /// Folds.
-  void Fold();
+  /// Enables or disables folding depending on fold property.
+  /// If foldall (and fold propertry is on) is not specified, all lines are folded
+  /// if document contains more than 'Auto fold' lines,
+  /// if foldall (and fold propertry is on) is specified, always all lines are folded.
+  void Fold(bool foldall = false);
 
   /// Gets EOL string.
   /// If you only want to insert a newline, use NewLine()
@@ -287,9 +283,6 @@ public:
   /// Default also resets the divider margin.
   void ResetMargins(bool divider_margin = true);
 
-  /// Asks for a sequence and adds it if not cancelled.
-  void SequenceDialog();
-
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
   
@@ -299,11 +292,6 @@ public:
 
   /// Sets the text.
   void SetText(const wxString& value);
-
-  /// Asks for confirmation to sort the selection.
-  void SortSelectionDialog(
-    bool sort_ascending,
-    const wxString& caption = _("Enter Sort Position"));
 
   /// Starts recording the macro, and empties the previous one.
   /// There is only one shared macro for all objects.
@@ -322,6 +310,7 @@ protected:
   
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnFindDialog(wxFindDialogEvent& event);
   void OnFocus(wxFocusEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKeyDown(wxKeyEvent& event);
@@ -332,6 +321,7 @@ private:
   void CheckAutoComp(const wxUniChar& c);
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
+  void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
   void EOLModeUpdate(int eol_mode);
   bool FileReadOnlyAttributeChanged(); // sets changed read-only attribute
   void FoldAll();
@@ -344,6 +334,9 @@ private:
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
+  void SortSelectionDialog(
+    bool sort_ascending,
+    const wxString& caption = _("Enter Sort Position"));
 
   const int m_MarginDividerNumber;
   const int m_MarginFoldingNumber;

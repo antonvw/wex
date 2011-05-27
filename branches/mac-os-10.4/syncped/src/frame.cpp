@@ -16,11 +16,10 @@
 #include <wx/aboutdlg.h>
 #include <wx/config.h>
 #include <wx/imaglist.h>
-#include <wx/numdlg.h>
 #include <wx/stdpaths.h> // for wxStandardPaths
-#include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/header.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
@@ -32,7 +31,6 @@
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 #include "frame.h"
-#include "app.h"
 #include "defs.h"
 #include "version.h"
 
@@ -99,7 +97,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI(ID_EDIT_MACRO_PLAYBACK, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_START_RECORD, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_EDIT_MACRO_STOP_RECORD, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_MENU_TOOLS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_OPTION_VCS, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_PROJECT_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
@@ -112,7 +109,6 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_UPDATE_UI_RANGE(
     ID_OPTION_LIST_SORT_ASCENDING, ID_OPTION_LIST_SORT_TOGGLE, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_PROJECT_OPENTEXT, ID_PROJECT_SAVEAS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, Frame::OnUpdateUI)
   EVT_UPDATE_UI_RANGE(ID_VIEW_PANE_FIRST + 1, ID_VIEW_PANE_LAST - 1, Frame::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -171,8 +167,7 @@ Frame::Frame(bool open_recent)
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
   wxExSTC* asciiTable = new wxExSTC(this);
-  asciiTable->AddAsciiTable();
-  asciiTable->SetReadOnly(true);
+  AddAsciiTable(asciiTable);
 
   GetManager().AddPane(m_Editors, wxAuiPaneInfo()
     .CenterPane()
@@ -184,6 +179,7 @@ Frame::Frame(bool open_recent)
     .Left()
     .MaximizeButton(true)
     .Name("PROJECTS")
+    .MinSize(wxSize(150, -1))
     .Caption(_("Projects")));
 
   GetManager().AddPane(m_DirCtrl, wxAuiPaneInfo()
@@ -283,6 +279,46 @@ wxExListViewStandard* Frame::Activate(
     GetManager().GetPane("OUTPUT").Show();
     GetManager().Update();
     return list;
+  }
+}
+
+void Frame::AddAsciiTable(wxExSTC* stc)
+{
+  // Do not show an edge, eol or whitespace for ascii table.
+  stc->SetEdgeMode(wxSTC_EDGE_NONE);
+  stc->SetViewEOL(false);
+  stc->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
+
+  // And override tab width.
+  stc->SetTabWidth(5);
+
+  for (auto i = 1; i <= 255; i++)
+  {
+    stc->AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
+    stc->AddText((i % 5 == 0) ? stc->GetEOL(): "\t");
+  }
+
+  stc->EmptyUndoBuffer();
+  stc->SetSavePoint();
+  stc->SetReadOnly(true);
+}
+
+void Frame::AddHeader(wxExSTC* stc)
+{
+  const wxExHeader header;
+
+  if (header.ShowDialog(this) != wxID_CANCEL)
+  {
+    if (stc->GetLexer().GetScintillaLexer() == "hypertext")
+    {
+      stc->GotoLine(1);
+    }
+    else
+    {
+      stc->DocumentStart();
+    }
+
+    stc->AddText(header.Get(&stc->GetFile().GetFileName()));
   }
 }
 
@@ -391,11 +427,7 @@ wxExListViewFile* Frame::GetProject()
 
 wxExSTC* Frame::GetSTC()
 {
-  if (DecoratedFrame::GetSTC() != NULL)
-  {
-    return DecoratedFrame::GetSTC();
-  }
-  else if (
+  if (
     !m_Editors->IsShown() || 
      m_Editors->GetPageCount() == 0)
   {
@@ -465,15 +497,14 @@ void Frame::NewFile(bool as_project)
     m_NewFileNo++;
   }
 
+  // This file does yet exist, so do not give it a bitmap.
   notebook->AddPage(
     page,
     key,
     text,
-    true,
-    wxArtProvider::GetBitmap(wxART_NORMAL_FILE));
+    true);
 
-  const wxString pane = (as_project ? "PROJECTS" : "FILES");
-  GetManager().GetPane(pane).Show();
+  GetManager().GetPane(as_project ? "PROJECTS" : "FILES").Show();
   GetManager().Update();
 }
 
@@ -595,23 +626,23 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_NEW: NewFile(); break;
   
   case wxID_PREVIEW:
-    if (GetFocusedSTC() != NULL)
+    if (GetSTC() != NULL)
     {
-      GetFocusedSTC()->PrintPreview();
+      GetSTC()->PrintPreview();
     }
-    else if (GetFocusedListView() != NULL)
+    else if (GetListView() != NULL)
     {
-      GetFocusedListView()->PrintPreview();
+      GetListView()->PrintPreview();
     }
     break;
   case wxID_PRINT:
-    if (GetFocusedSTC() != NULL)
+    if (GetSTC() != NULL)
     {
-      GetFocusedSTC()->Print();
+      GetSTC()->Print();
     }
-    else if (GetFocusedListView() != NULL)
+    else if (GetListView() != NULL)
     {
-      GetFocusedListView()->Print();
+      GetListView()->Print();
     }
     break;
   case wxID_PRINT_SETUP:
@@ -683,8 +714,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     m_Editors->ForEach(event.GetId());
     break;
 
-  case ID_EDIT_ADD_HEADER: if (editor != NULL) editor->AddHeader(); break;
-  case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) editor->SequenceDialog(); break;
+  case ID_EDIT_ADD_HEADER: if (editor != NULL) AddHeader(editor); break;
+  case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
 
   case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->MacroPlayback(); break;
   case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->StartRecord(); break;
@@ -841,7 +872,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
     wxExSTCWithFrame* stc = new wxExSTCWithFrame(*editor, this);
 
-    m_Editors->AddPage(
+    // Place new page before page for editor.
+    m_Editors->InsertPage(
+      m_Editors->GetPageIndex(editor),
       stc,
       // key should be unique
       wxString::Format("stc%d", stc->GetId()),
@@ -922,8 +955,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(
-        (GetFocusedSTC() != NULL && GetFocusedSTC()->GetLength() > 0) ||
-        (GetFocusedListView() != NULL && GetFocusedListView()->GetItemCount() > 0));
+        (GetSTC() != NULL && GetSTC()->GetLength() > 0) ||
+        (GetListView() != NULL && GetListView()->GetItemCount() > 0));
       break;
 
     case ID_ALL_STC_CLOSE:
@@ -964,7 +997,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
     case ID_SORT_SYNC:
       event.Check(wxConfigBase::Get()->ReadBool("List/SortSync", true));
-    break;
+      break;
 
     case ID_TOOL_REPORT_REVISION:
       event.Check(!wxExVCS().Use());
@@ -998,15 +1031,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       {
         event.Enable(true);
 
-        if (
-           event.GetId() == ID_MENU_TOOLS ||
-          (event.GetId() > ID_TOOL_LOWEST &&
-           event.GetId() < ID_TOOL_HIGHEST))
-        {
-          event.Enable(editor->GetLength() > 0);
-          return;
-        }
-
         switch (event.GetId())
         {
         case wxID_FIND:
@@ -1014,6 +1038,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
         case wxID_REPLACE:
         case wxID_SAVEAS:
         case ID_EDIT_FIND_NEXT:
+        case ID_EDIT_FIND_PREVIOUS:
         case ID_EDIT_FOLD_ALL:
         case ID_EDIT_UNFOLD_ALL:
           event.Enable(editor->GetLength() > 0);
@@ -1142,13 +1167,13 @@ bool Frame::OpenFile(
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
     
-    m_Editors->AddPage(
+    // Place new page before the one used for vcs.
+    m_Editors->InsertPage(
+      m_Editors->GetPageIndexByKey(filename.GetFullPath()),
       editor,
       key,
       filename.GetFullName() + " " + unique,
-      true,
-      wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-        wxExGetIconID(filename)));
+      true);
   }
 
   return true;
@@ -1165,7 +1190,7 @@ bool Frame::OpenFile(
     wxLogError(_("Cannot open file") + ": " + filename.GetFullPath());
     return false;
   }
-
+  
   wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
     ? m_Projects : m_Editors);
 
@@ -1181,7 +1206,7 @@ bool Frame::OpenFile(
         wxID_ANY,
         wxExListViewStandard::LIST_MENU_DEFAULT);
 
-      m_Projects->AddPage(
+      notebook->AddPage(
         project,
         filename.GetFullPath(),
         filename.GetName(),
@@ -1223,7 +1248,7 @@ bool Frame::OpenFile(
         match,
         flags);
 
-      m_Editors->AddPage(
+      notebook->AddPage(
         editor,
         filename.GetFullPath(),
         filename.GetFullName(),
@@ -1256,6 +1281,102 @@ bool Frame::OpenFile(
   return true;
 }
 
+void Frame::SequenceDialog(wxExSTC* stc)
+{
+  static wxString start_previous;
+
+  const wxString start = wxGetTextFromUser(
+    _("Input") + ":",
+    _("Start Of Sequence"),
+    start_previous,
+    this);
+
+  if (start.empty()) return;
+
+  start_previous = start;
+
+  static wxString end_previous = start;
+
+  const wxString end = wxGetTextFromUser(
+    _("Input") + ":",
+    _("End Of Sequence"),
+    end_previous,
+    this);
+
+  if (end.empty()) return;
+
+  end_previous = end;
+
+  if (start.length() != end.length())
+  {
+    wxLogStatus(_("Start and end sequence should have same length"));
+    return;
+  }
+
+  long lines = 1;
+
+  for (int pos = end.length() - 1; pos >= 0; pos--)
+  {
+    lines *= abs(end[pos] - start[pos]) + 1;
+  }
+
+  if (wxMessageBox(wxString::Format(_("Generate %ld lines"), lines) + "?",
+    _("Confirm"),
+    wxOK | wxCANCEL | wxICON_QUESTION) == wxCANCEL)
+  {
+    return;
+  }
+
+  wxBusyCursor wait;
+
+  wxString sequence = start;
+
+  long actual_line = 0;
+
+  while (sequence != end)
+  {
+    stc->AddText(sequence + stc->GetEOL());
+    actual_line++;
+
+    if (actual_line > lines)
+    {
+      wxFAIL;
+      return;
+    }
+
+    if (start < end)
+    {
+      sequence.Last() = (int)sequence.Last() + 1;
+    }
+    else
+    {
+      sequence.Last() = (int)sequence.Last() - 1;
+    }
+
+    for (int pos = end.length() - 1; pos > 0; pos--)
+    {
+      if (start < end)
+      {
+        if (sequence[pos] > end[pos])
+        {
+          sequence[pos - 1] = (int)sequence[pos - 1] + 1;
+          sequence[pos] = start[pos];
+        }
+      }
+      else
+      {
+        if (sequence[pos] < end[pos])
+        {
+          sequence[pos - 1] = (int)sequence[pos - 1] - 1;
+          sequence[pos] = start[pos];
+        }
+      }
+    }
+  }
+
+  stc->AddText(sequence + stc->GetEOL());
+}
+
 void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
   if (pane.empty())
@@ -1267,6 +1388,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
       editor = new wxExSTCWithFrame(m_Editors, this);
       editor->SetName(_("Log"));
       editor->SetEdgeMode(wxSTC_EDGE_NONE);
+      editor->SetReadOnly(true);
       
       m_Editors->AddPage(editor, "LOGTAIL", _("Log"), true);
     }
@@ -1275,6 +1397,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
     editor->EmptyUndoBuffer();
     editor->SetSavePoint();
     editor->DocumentEnd();
+    editor->SetReadOnly(true);
   }
   else if (pane == "PaneTheme")
   {

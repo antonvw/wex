@@ -13,13 +13,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/extension/filedlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
@@ -27,7 +25,6 @@ BEGIN_EVENT_TABLE(wxExSTCWithFrame, wxExSTC)
     ID_EDIT_VCS_LOWEST, 
     ID_EDIT_VCS_HIGHEST, 
     wxExSTCWithFrame::OnCommand)
-  EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExSTCWithFrame::OnCommand)
 END_EVENT_TABLE()
 
 wxExSTCWithFrame::wxExSTCWithFrame(wxWindow* parent,
@@ -87,25 +84,8 @@ void wxExSTCWithFrame::OnCommand(wxCommandEvent& command)
     return;
   }
 
-  if (command.GetId() > ID_TOOL_LOWEST && command.GetId() < ID_TOOL_HIGHEST)
-  {
-    const wxExTool tool(command.GetId());
-
-    if (wxExTextFileWithListView::SetupTool(tool, m_Frame))
-    {
-      wxExTextFileWithListView report(GetFileName(), tool);
-      report.RunTool();
-      tool.Log(&report.GetStatistics().GetElements(), GetFileName().GetFullPath());
-
-      if (tool.IsCount())
-      {
-        m_Frame->OpenFile(
-          tool.GetLogfileName(), 0, wxEmptyString, STC_WIN_FROM_OTHER);
-      }
-    }
-  }
-  else if (command.GetId() > ID_EDIT_VCS_LOWEST && 
-           command.GetId() < ID_EDIT_VCS_HIGHEST)
+  if (command.GetId() > ID_EDIT_VCS_LOWEST && 
+      command.GetId() < ID_EDIT_VCS_HIGHEST)
   {
     // Cannot move this code to wxExSTC, because of member m_Frame.
     wxArrayString files;

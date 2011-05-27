@@ -32,12 +32,6 @@ class wxStyledTextCtrl;
 class WXDLLIMPEXP_BASE wxExLexers
 {
 public:
-  /// Constructor for lexers from specified filename.
-  /// This must be an existing xml file containing all lexers.
-  /// It does not Read this file, however if you use the global Get,
-  /// it both constructs and reads the lexers.
-  wxExLexers(const wxFileName& filename);
-
   /// Sets global styles (and colours and indicators) 
   /// for current theme for specified component.
   void ApplyGlobalStyles(wxStyledTextCtrl* stc);
@@ -90,8 +84,11 @@ public:
 
   /// Returns the current theme, as present in the config.
   /// It checks whether the config theme is really
-  /// present as a theme, if not, empty string is returned.
+  /// present as a theme, if not, the empty theme is returned.
   const wxString GetTheme();
+  
+  /// Returns whether the current theme is not the empty theme.
+  bool GetThemeOk() const {return GetTheme() != m_NoTheme;};
   
   /// Gets the theme macros for the current theme.
   const std::map<wxString, wxString>& GetThemeMacros();
@@ -135,7 +132,9 @@ public:
     /// caption
     const wxString& caption = _("Enter Theme"));
 private:
+  wxExLexers(const wxFileName& filename);
   const wxString GetLexerExtensions() const;
+  void Initialize();
   void ParseNodeGlobal(const wxXmlNode* node);
   void ParseNodeMacro(const wxXmlNode* node);
   void ParseNodeTheme(const wxXmlNode* node);
@@ -143,6 +142,7 @@ private:
 
   std::map<wxString, wxExLexer> m_Lexers;
   std::map<wxString, wxString> m_Macros;
+  std::map<wxString, wxString> m_DefaultColours;
   std::map<wxString, wxString> m_TempColours;
   std::map<wxString, wxString> m_TempMacros;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;

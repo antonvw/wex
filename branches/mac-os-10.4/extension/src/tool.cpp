@@ -13,48 +13,23 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/file.h>
-#include <wx/stdpaths.h>
-#include <wx/textfile.h>
 #include <wx/extension/tool.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/vcs.h>
 
-wxExTool* wxExTool::m_Self = NULL;
+std::map < int, wxExToolInfo > wxExTool::m_ToolInfo;
 
 wxExTool::wxExTool(int type)
   : m_Id(type)
 {
-}
-
-wxExTool* wxExTool::Get(bool createOnDemand)
-{
-  if (m_Self == NULL && createOnDemand)
+  if (m_ToolInfo.empty())
   {
-    m_Self = new wxExTool(0);
-
-    m_Self->AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-    m_Self->AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
-    m_Self->AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
-    m_Self->AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
-    m_Self->AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
-    m_Self->AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
+    AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
+    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
+    AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
+    AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
+    AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
+    AddInfo(ID_TOOL_REPORT_KEYWORD, _("Reported %ld keywords in"), _("Report &Keyword"));
   }
-
-  return m_Self;
-}
-
-const wxFileName wxExTool::GetLogfileName() const
-{
-  wxFileName filename(
-#ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-    wxStandardPaths::Get().GetUserDataDir()
-#endif
-    + wxFileName::GetPathSeparator() + _("statistics.log"));
-
-  return filename;
 }
 
 const wxString wxExTool::Info() const
@@ -66,20 +41,15 @@ const wxString wxExTool::Info() const
   
   std::map < int, wxExToolInfo >::const_iterator it = m_Self->m_ToolInfo.find(m_Id);
 
-  if (it != m_Self->m_ToolInfo.end())
+  if (it != m_ToolInfo.end())
   {
     return it->second.GetInfo();
   }
 
-  wxFAIL;
-
   return wxEmptyString;
 }
 
-void wxExTool::Log(
-  const wxExStatistics<long>* stat, 
-  const wxString& caption, 
-  bool log_to_file) const
+void wxExTool::Log(const wxExStatistics<long>* stat) const
 {
   wxString logtext(Info());
 
@@ -88,36 +58,15 @@ void wxExTool::Log(
     logtext = logtext.Format(logtext, stat->Get(_("Actions Completed")));
   }
 
-  logtext
-    << " " << stat->Get(_("Files")) << " " << _("file(s)")
-    << (!caption.empty() ? ": " + caption: "");
+  logtext << " " << stat->Get(_("Files")) << " " << _("file(s)");
 
-  wxLogStatus(logtext);
-
-  if (log_to_file && stat->Get(_("Files")) != 0)
+  if (stat->Get(_("Files")) != 0)
   {
     if (IsCount())
     {
-      wxFile file(GetLogfileName().GetFullPath(), wxFile::write_append);
-      
-      if (file.IsOpened())
-      {
-        wxString logtext;
-
-        logtext
-          << caption
-          << stat->Get()
-          << wxTextFile::GetEOL();
-
-        file.Write(wxDateTime::Now().Format() + " " + logtext + wxTextFile::GetEOL());
-      }
+      wxLogMessage(stat->Get());
     }
   }
-}
-
-wxExTool* wxExTool::Set(wxExTool* tool)
-{
-  wxExTool* old = m_Self;
-  m_Self = tool;
-  return old;
+  
+  wxLogStatus(logtext);
 }

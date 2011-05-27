@@ -17,10 +17,10 @@
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/stc.h>
 #ifndef __WXMSW__
 #include "app.xpm"
 #endif
@@ -98,7 +98,6 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSeparator();
   wxExMenu* menuFind = new wxExMenu();
   menuFind->Append(wxID_FIND);
-  menuFind->Append(ID_EDIT_FIND_NEXT, _("Find &Next\tF3"));
   menuFind->Append(wxID_REPLACE);
   menuFind->Append(ID_FIND_IN_FILES, wxExEllipsed(_("Find &In Files")));
   menuFind->Append(ID_REPLACE_IN_FILES, wxExEllipsed(_("Replace In File&s")));
@@ -106,12 +105,6 @@ DecoratedFrame::DecoratedFrame()
   menuEdit->AppendSeparator();
 
   wxExMenu* menuMore = new wxExMenu();
-  
-  if (menuMore->AppendTools(ID_MENU_TOOLS))
-  {
-    menuMore->AppendSeparator();
-  }
-
   menuMore->Append(ID_EDIT_ADD_HEADER, wxExEllipsed(_("&Add Header")));
   menuMore->Append(ID_EDIT_INSERT_SEQUENCE, wxExEllipsed(_("Insert Sequence")));
   menuMore->AppendSeparator();
@@ -192,7 +185,7 @@ DecoratedFrame::DecoratedFrame()
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_EDITOR, wxExEllipsed(_("Set &Editor Options")));
 
-  wxMenu *menuHelp = new wxMenu();
+  wxExMenu *menuHelp = new wxExMenu(); // use wxExMenu for art with HELP
   menuHelp->Append(wxID_ABOUT);
   menuHelp->Append(wxID_HELP);
 

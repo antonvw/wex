@@ -207,41 +207,6 @@ const wxString wxExEllipsed(const wxString& text, const wxString& control)
       (!control.empty() ? "\t" + control: wxString(wxEmptyString));
 }
 
-const wxString wxExFindResult(
-  const wxString& find_text,
-  bool find_next, 
-  bool recursive,
-  bool show_on_statusbar)
-{
-  wxString text;
-  
-  if (!recursive)
-  {
-    const wxString where = (find_next) ? _("bottom"): _("top");
-    
-    text = _("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
-      _("hit") + " " + where;
-
-    if (show_on_statusbar)
-    {
-      wxLogStatus(text);
-    }
-  }
-  else
-  {
-    wxBell();
-    
-    text = wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found");
-
-    if (show_on_statusbar)
-    {
-      wxLogStatus(text);
-    }
-  }
-  
-  return text;
-}
-
 bool wxExFindOtherFileName(
   const wxFileName& filename,
   wxFileName* lastfile)
@@ -322,6 +287,33 @@ bool wxExFindOtherFileName(
   }
 
   return found;
+}
+
+void wxExFindResult(
+  const wxString& find_text,
+  bool find_next, 
+  bool recursive,
+  bool show_on_statusbar)
+{
+  if (!recursive)
+  {
+    if (show_on_statusbar)
+    {
+      const wxString where = (find_next) ? _("bottom"): _("top");
+    
+      wxLogStatus(_("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
+        _("hit") + " " + where);
+    }
+  }
+  else
+  {
+    wxBell();
+    
+    if (show_on_statusbar)
+    {
+      wxLogStatus(wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
+    }
+  }
 }
 
 const wxString wxExGetEndOfText(

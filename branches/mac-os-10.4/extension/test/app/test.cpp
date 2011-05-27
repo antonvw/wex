@@ -227,7 +227,6 @@ void wxExAppTestFixture::testGlobal()
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
-  CPPUNIT_ASSERT(wxExTool::Get() != NULL);
 }
 
 void wxExAppTestFixture::testGrid()
@@ -315,7 +314,7 @@ void wxExAppTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByName(
     "xxx").GetScintillaLexer().empty());
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsDefault());
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().ContainsDefaultStyle());
   CPPUNIT_ASSERT( wxExLexers::Get()->GetDefaultStyle().IsOk());
 
   CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());

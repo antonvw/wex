@@ -41,6 +41,8 @@ private:
   virtual wxExListViewStandard* Activate(
     wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
+  void AddAsciiTable(wxExSTC* stc);
+  void AddHeader(wxExSTC* stc);
   wxExListViewWithFrame* AddPage(
     wxExListViewStandard::ListType type, 
     const wxExLexer* lexer = NULL);
@@ -57,6 +59,7 @@ private:
     const wxExFileName& filename,
     const wxExVCSEntry& vcs,
     long flags = 0);
+  void SequenceDialog(wxExSTC* stc);
   virtual void StatusBarDoubleClicked(const wxString& pane);
   virtual void StatusBarDoubleClickedRight(const wxString& pane);
   virtual void SyncCloseAll(wxWindowID id);
