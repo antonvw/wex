@@ -292,7 +292,7 @@ void Frame::AddAsciiTable(wxExSTC* stc)
   // And override tab width.
   stc->SetTabWidth(5);
 
-  for (auto i = 1; i <= 255; i++)
+  for (int i = 1; i <= 255; i++)
   {
     stc->AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
     stc->AddText((i % 5 == 0) ? stc->GetEOL(): "\t");
@@ -1025,7 +1025,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
     default:
     {
       wxExSTC* editor = GetSTC();
-      wxExListViewFile* list = (wxExListViewFile*)GetFocusedListView();
+      wxExListViewFile* list = (wxExListViewFile*)GetListView();
 
       if (list == NULL && editor != NULL && editor->IsShown())
       {

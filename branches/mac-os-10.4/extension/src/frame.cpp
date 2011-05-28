@@ -99,102 +99,6 @@ wxExFrame::~wxExFrame()
 #endif
 }
 
-void wxExFrame::FindIn(wxFindDialogEvent& event, wxExGrid* grid)
-{
-  if (
-    event.GetEventType() == wxEVT_COMMAND_FIND ||
-    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    grid->FindNext(
-      wxExFindReplaceData::Get()->GetFindString(), 
-      wxExFindReplaceData::Get()->SearchDown());
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExFrame::FindIn(wxFindDialogEvent& event, wxExListView* lv)
-{
-  if (
-    event.GetEventType() == wxEVT_COMMAND_FIND ||
-    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    lv->FindNext(
-      wxExFindReplaceData::Get()->GetFindString(), 
-      wxExFindReplaceData::Get()->SearchDown());
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-void wxExFrame::FindIn(wxFindDialogEvent& event, wxExSTC* stc)
-{
-  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-
-  // Match word and regular expression do not work together.
-  if (frd->MatchWord())
-  {
-    frd->SetUseRegularExpression(false);
-  }
-
-  if (
-    event.GetEventType() == wxEVT_COMMAND_FIND ||
-    event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)
-  {
-    stc->FindNext(frd->SearchDown());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE)
-  {
-    stc->ReplaceNext(frd->SearchDown());
-  }
-  else if (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL)
-  {
-    stc->ReplaceAll(
-      frd->GetFindString(), 
-      frd->GetReplaceString());
-  }
-  else
-  {
-    wxFAIL;
-  }
-}
-
-const wxString wxExFrame::GetFindString()
-{
-  if (m_FocusSTC != NULL)
-  {
-    return m_FocusSTC->GetFindString();
-  }
-  else if (m_FocusGrid != NULL)
-  {
-    return m_FocusGrid->GetFindString();
-  }
-  else
-  {
-    wxExSTC* stc = GetSTC();
-
-    if (stc != NULL && stc->IsShown())
-    {
-      return stc->GetFindString();
-    }
-    else
-    {
-      wxExGrid* grid = GetGrid();
-
-      if (grid != NULL && grid->IsShown() )
-      {
-        return grid->GetFindString();
-      }
-    }
-  }
-  
-  return wxEmptyString;
-}
-
 void wxExFrame::Initialize()
 {
 #if wxUSE_DRAG_AND_DROP
@@ -299,37 +203,6 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
   {
     wxPostEvent(m_Focus, event);
   }
-  else if (m_FocusSTC != NULL)
-  {
-    FindIn(event, m_FocusSTC);
-  }
-  else if (m_FocusListView != NULL)
-  {
-    FindIn(event, m_FocusListView);
-  }
-  else if (m_FocusGrid != NULL)
-  {
-    FindIn(event, m_FocusGrid);
-  }
-  else
-  {
-    wxExSTC* stc = GetSTC();
-    wxExListView* lv = GetListView();
-    wxExGrid* grid = GetGrid();
-
-    if (stc != NULL && stc->IsShown())
-    {
-      FindIn(event, stc);
-    }
-    else if (lv != NULL && lv->IsShown())
-    {
-      FindIn(event, lv);
-    }
-    else if (grid != NULL && grid->IsShown())
-    {
-      FindIn(event, grid);
-    }
-  }
 }
 
 void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
@@ -339,11 +212,12 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
     case ID_UPDATE_STATUS_BAR:
     {
-    wxExSTC* stc = GetFocusedSTC();
+    wxExSTC* stc = GetSTC();
     if (stc != NULL) 
     {
       stc->UpdateStatusBar("PaneInfo"); 
     }
+	}
     break;
 #endif
 
@@ -381,7 +255,7 @@ bool wxExFrame::OpenFile(
   const wxString& match,
   long flags)
 {
-  wxExSTC* stc = GetFocusedSTC();
+  wxExSTC* stc = GetSTC();
 
   if (stc != NULL)
   {
@@ -396,7 +270,7 @@ bool wxExFrame::OpenFile(
   const wxExVCSEntry& vcs,
   long flags)
 {
-  wxExSTC* stc = GetFocusedSTC();
+  wxExSTC* stc = GetSTC();
 
   if (stc != NULL)
   {

@@ -34,12 +34,7 @@ wxExTool::wxExTool(int type)
 
 const wxString wxExTool::Info() const
 {
-  if (m_Self == NULL)
-  {
-    return "No info available";
-  }
-  
-  std::map < int, wxExToolInfo >::const_iterator it = m_Self->m_ToolInfo.find(m_Id);
+  std::map < int, wxExToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
 
   if (it != m_ToolInfo.end())
   {

@@ -78,7 +78,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
     
     wxExStatistics<long> stats;
 
-    for (auto i = 0; i < files.GetCount(); i++)
+    for (int i = 0; i < files.GetCount(); i++)
     {
       wxExTextFileWithListView file(wxExFileName(files[i]), tool);
       file.RunTool();

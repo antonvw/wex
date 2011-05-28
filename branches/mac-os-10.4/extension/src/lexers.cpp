@@ -270,7 +270,7 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-const wxString wxExLexers::GetTheme()
+const wxString wxExLexers::GetTheme() const
 {
   const wxString default_theme =
 #ifdef __WXMSW__
@@ -285,7 +285,7 @@ const wxString wxExLexers::GetTheme()
 
   // Use the theme macros, though we could also use the theme colours,
   // as they contain the same themes.  
-  std::map<wxString, std::map<wxString, wxString> >::iterator it = m_ThemeMacros.find(theme);
+  std::map<wxString, std::map<wxString, wxString> >::const_iterator it = m_ThemeMacros.find(theme);
     
   if (it != m_ThemeMacros.end())
   {

@@ -223,18 +223,7 @@ void wxExFindToolBar::OnCommand(wxCommandEvent& event)
   switch (event.GetId())
   {
   case wxID_DOWN:
-  case wxID_UP:
-    {
-      wxExSTC* stc = m_Frame->GetSTC();
-
-      if (stc != NULL)
-      {
-        stc->FindNext(
-          m_FindString->GetValue(), 
-          wxExFindReplaceData::Get()->STCFlags(),
-          (event.GetId() == wxID_DOWN));
-      }
-    }
+  case wxID_UP: m_FindCtrl->Find(event.GetId() == wxID_DOWN);
     break;
   case ID_MATCH_WHOLE_WORD:
     wxExFindReplaceData::Get()->SetMatchWord(

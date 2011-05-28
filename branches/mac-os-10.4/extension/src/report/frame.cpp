@@ -495,7 +495,7 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     return;
   }
   
-  wxExSTC* stc = GetFocusedSTC();
+  wxExSTC* stc = GetSTC();
   wxExListViewFile* project = GetProject();
 
   const wxUniChar indicator('*');
@@ -592,19 +592,13 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
     wxExListItem item(m_FileHistoryList, file);
     item.Insert((long)0);
 
+    // TODO: Check this
     if (m_FileHistoryList->GetItemCount() > 1)
     {
-      for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
-      {
-        wxExListItem item(m_FileHistoryList, i);
-
-      if (m_FileHistoryList->GetItemCount() > 1)
-      {
         for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
         {
           item.Delete();
         }
-      }
     }
   }
 }

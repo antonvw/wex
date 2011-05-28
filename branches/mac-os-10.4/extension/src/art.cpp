@@ -62,7 +62,7 @@ const wxBitmap wxExStockArt::GetBitmap(
   if (wxIsStockID(m_Id))
   {
     // Check if there is art for this id.
-    const std::map<wxWindowID, wxArtID>::iterator art_it = m_StockArt.find(m_Id);
+    const std::map<wxWindowID, wxArtID>::iterator art_it = m_ArtIDs.find(m_Id);
 
     if (art_it != m_ArtIDs.end())
     {

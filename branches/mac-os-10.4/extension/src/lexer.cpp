@@ -56,20 +56,13 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
     it != m_KeywordsSet.end();
     ++it)
   {
-    // Readme: The Scintilla lexer only recognized lower case words, apparently.
-    for (
-      auto it = m_KeywordsSet.begin();
-      it != m_KeywordsSet.end();
-      ++it)
-    {
-      stc->SetKeyWords(
-        it->first,
-        GetKeywordsString(it->first).Lower());
-    }
-    
-    wxExLexers::Get()->GetDefaultStyle().Apply(stc);
+	stc->SetKeyWords(
+	  it->first,
+	  GetKeywordsString(it->first).Lower());
   }
   
+		wxExLexers::Get()->GetDefaultStyle().Apply(stc);
+
   if (clear)
   {
     wxExLexers::Get()->ApplyGlobalStyles(stc);

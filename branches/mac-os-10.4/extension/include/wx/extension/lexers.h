@@ -85,7 +85,7 @@ public:
   /// Returns the current theme, as present in the config.
   /// It checks whether the config theme is really
   /// present as a theme, if not, the empty theme is returned.
-  const wxString GetTheme();
+  const wxString GetTheme() const;
   
   /// Returns whether the current theme is not the empty theme.
   bool GetThemeOk() const {return GetTheme() != m_NoTheme;};

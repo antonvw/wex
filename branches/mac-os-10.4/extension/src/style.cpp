@@ -36,17 +36,10 @@ wxExStyle::wxExStyle(const wxString& no, const wxString& value)
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 {
-  for (
-    std::set <int>::iterator it = m_No.begin();
-    it != m_No.end();
-    ++it)
-  {
-    stc->StyleResetDefault();
-  }
-  else
+  // TODO: insert code
   {
     for (
-      auto it = m_No.begin();
+      std::set <int>::const_iterator it = m_No.begin();
       it != m_No.end();
       ++it)
     {

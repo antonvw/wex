@@ -165,26 +165,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   }
 }
 
-void wxExSTC::AddAsciiTable()
-{
-  // Do not show an edge, eol or whitespace for ascii table.
-  SetEdgeMode(wxSTC_EDGE_NONE);
-  SetViewEOL(false);
-  SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-
-  // And override tab width.
-  SetTabWidth(5);
-
-  for (int i = 1; i <= 255; i++)
-  {
-    AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
-    AddText((i % 5 == 0) ? GetEOL(): "\t");
-  }
-
-  EmptyUndoBuffer();
-  SetSavePoint();
-}
-
 void wxExSTC::AddBasePathToPathList()
 {
   // First find the base path, if this is not yet on the list, add it.
@@ -1843,7 +1823,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
-  auto* frd = wxExFindReplaceData::Get();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   // Match word and regular expression do not work together.
   if (frd->MatchWord())
