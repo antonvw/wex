@@ -119,7 +119,7 @@ public:
   void FileTypeMenu();
 
   /// Finds next with settings from find replace data.
-  bool FindNext(bool find_next = true, bool show_result = true);
+  bool FindNext(bool find_next = true);
 
   /// Finds next.
   bool FindNext(
@@ -133,9 +133,7 @@ public:
     /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
-    bool find_next = true,
-    /// shows find result on status bar
-    bool show_result = true);
+    bool find_next = true);
     
   /// Enables or disables folding depending on fold property.
   /// If foldall (and fold propertry is on) is not specified, all lines are folded

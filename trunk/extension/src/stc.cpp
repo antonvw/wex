@@ -908,20 +908,18 @@ void wxExSTC::FileTypeMenu()
 }
 
 
-bool wxExSTC::FindNext(bool find_next, bool show_result)
+bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->STCFlags(),
-    find_next,
-    show_result);
+    find_next);
 }
 
 bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
-  bool find_next,
-  bool show_result)
+  bool find_next)
 {
   if (text.empty())
   {
@@ -959,14 +957,14 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) < 0)
   {
-    wxExFindResult(text, find_next, recursive, show_result);
+    wxExFindResult(text, find_next, recursive);
     
     bool found = false;
     
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next, show_result);
+      found = FindNext(text, search_flags, find_next);
       recursive = false;
     }
     
@@ -1277,7 +1275,7 @@ void wxExSTC::GotoLineAndSelect(
     if (SearchInTarget(text) < 0)
     {
       bool recursive = true;
-      wxExFindResult(text, true, recursive, !m_vi.GetIsActive());
+      wxExFindResult(text, true, recursive);
       return;
     }
   }

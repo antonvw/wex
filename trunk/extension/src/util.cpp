@@ -292,27 +292,21 @@ bool wxExFindOtherFileName(
 void wxExFindResult(
   const wxString& find_text,
   bool find_next, 
-  bool recursive,
-  bool show_on_statusbar)
+  bool recursive)
 {
   if (!recursive)
   {
-    if (show_on_statusbar)
-    {
-      const wxString where = (find_next) ? _("bottom"): _("top");
-    
-      wxLogStatus(_("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
-        _("hit") + " " + where);
-    }
+    const wxString where = (find_next) ? _("bottom"): _("top");
+    wxLogStatus(
+      _("Searching for") + " " + 
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
+      _("hit") + " " + where);
   }
   else
   {
     wxBell();
-    
-    if (show_on_statusbar)
-    {
-      wxLogStatus(wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
-    }
+    wxLogStatus(
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
   }
 }
 

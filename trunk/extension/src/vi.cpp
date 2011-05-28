@@ -697,7 +697,7 @@ bool wxExVi::FindCommand(
     return false;
   }
   
-  return m_STC->FindNext(text, m_SearchFlags, command == '/', false); 
+  return m_STC->FindNext(text, m_SearchFlags, command == '/'); 
 }
 
 void wxExVi::FindWord(bool find_next) const
