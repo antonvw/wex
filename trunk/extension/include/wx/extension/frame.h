@@ -57,7 +57,7 @@ public:
     wxWindowID WXUNUSED(dialogid),
     int WXUNUSED(commandid) = wxID_APPLY) {};
 
-  /// Default opens the file using the GetFocusedSTC.
+  /// Default opens the file using GetSTC.
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
