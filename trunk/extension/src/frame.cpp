@@ -233,6 +233,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     }
     break;
 
+#if wxUSE_STATUSBAR
   case ID_VIEW_STATUSBAR:
     if (GetStatusBar() != NULL)
     {
@@ -243,6 +244,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(false);
     }
     break;
+#endif
       
   default:
     wxFAIL;

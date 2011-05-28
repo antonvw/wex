@@ -77,6 +77,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     
   CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
   CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
+  
+  m_Manager.Update();
 }
 
 wxExManagedFrame::~wxExManagedFrame()
