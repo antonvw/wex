@@ -32,7 +32,8 @@ public:
   bool ExecCommand(const wxString& command);
 
   /// Executes find of the specified text.
-  void FindCommand(
+  /// Returns result of FindNext on STC component.
+  bool FindCommand(
     const wxString& command, const wxString& text) const;
   
   /// Returns whether we are in insert mode.

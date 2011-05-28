@@ -689,15 +689,15 @@ bool wxExVi::ExecCommand(const wxString& command)
   return true;
 }
 
-void wxExVi::FindCommand(
+bool wxExVi::FindCommand(
   const wxString& command, const wxString& text) const
 {
   if (!m_IsActive || command.empty())
   {
-    return;
+    return false;
   }
   
-  m_STC->FindNext(text, m_SearchFlags, command == '/', false); 
+  return m_STC->FindNext(text, m_SearchFlags, command == '/', false); 
 }
 
 void wxExVi::FindWord(bool find_next) const
