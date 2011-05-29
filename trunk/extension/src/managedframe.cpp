@@ -296,6 +296,7 @@ void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
   
   if (m_UserInput && m_vi != NULL && m_StaticText->GetLabel() != ":")
   {
+    m_vi->PositionRestore();
     m_vi->GetSTC()->FindNext(
       GetValue(),
       m_vi->GetSearchFlags(),
