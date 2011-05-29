@@ -689,17 +689,6 @@ bool wxExVi::ExecCommand(const wxString& command)
   return true;
 }
 
-bool wxExVi::FindCommand(
-  const wxString& command, const wxString& text) const
-{
-  if (!m_IsActive || command.empty())
-  {
-    return false;
-  }
-  
-  return m_STC->FindNext(text, m_SearchFlags, command == '/'); 
-}
-
 void wxExVi::FindWord(bool find_next) const
 {
   const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
