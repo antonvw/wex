@@ -85,9 +85,6 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Adds base path.
-  void AddBasePathToPathList();
-
   /// Adds text in hex mode.
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
 
@@ -166,6 +163,9 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
+  /// Gets the path list.
+  wxPathList& GetPathList() {return m_PathList;};
+  
   /// Gets selected text.
   const wxString GetSelectedText() const;
 

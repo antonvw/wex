@@ -165,30 +165,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   }
 }
 
-void wxExSTC::AddBasePathToPathList()
-{
-  // First find the base path, if this is not yet on the list, add it.
-  const wxString basepath_text = "Basepath:";
-
-  const auto find = FindText(
-    0,
-    1000, // the max pos to look for, this seems enough
-    basepath_text,
-    wxSTC_FIND_WHOLEWORD);
-
-  if (find == -1)
-  {
-    return;
-  }
-
-  const auto  line = LineFromPosition(find);
-  const wxString basepath = GetTextRange(
-    find + basepath_text.length() + 1,
-    GetLineEndPosition(line) - 3);
-
-  m_PathList.Add(basepath);
-}
-
 void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
 /*
 e.g.:
