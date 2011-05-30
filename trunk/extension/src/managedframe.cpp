@@ -38,7 +38,7 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Sets callback.
-  void SetVi(wxExVi* vi) {m_vi = vi;};
+  void SetVi(wxExVi* vi);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
@@ -167,9 +167,6 @@ void wxExManagedFrame::GetViPaneCommand(
 {
   statictext->SetLabel(command);
 
-  victrl->Show();
-  victrl->SelectAll();
-  victrl->SetFocus();
   victrl->SetVi(vi);
   
   m_Manager.GetPane(pane).Show();
@@ -353,4 +350,15 @@ void wxExViFindCtrl::OnKey(wxKeyEvent& event)
     event.Skip();
   }
 }
+
+void wxExViFindCtrl::SetVi(wxExVi* vi) 
+{
+  m_vi = vi;
+  m_UserInput = false;
+  
+  Show();
+  SelectAll();
+  SetFocus();
+};
+
 #endif // wxUSE_GUI
