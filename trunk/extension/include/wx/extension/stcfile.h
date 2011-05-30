@@ -28,6 +28,9 @@ public:
   /// Override virtual methods.
   virtual bool GetContentsChanged() const;
   virtual void ResetContentsChanged();
+  
+  /// Reads other file and adds contents.
+  void Read(const wxString& file);
 protected:
   virtual void DoFileLoad(bool synced = false);
   virtual void DoFileNew();

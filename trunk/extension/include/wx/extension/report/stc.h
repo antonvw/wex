@@ -20,21 +20,6 @@ class wxExFrameWithHistory;
 class WXDLLIMPEXP_BASE wxExSTCWithFrame : public wxExSTC
 {
 public:
-  /// Menu types, they determine how the context menu will appear.
-  /// These values extend the menu types used by wxExSTC.
-  enum
-  {
-    STC_MENU_TOOL           = 0x0100, ///< for adding tool menu
-    STC_MENU_REPORT_FIND    = 0x0200, ///< for adding find in files
-    STC_MENU_REPORT_REPLACE = 0x0400, ///< for adding replace in files
-  };
-
-  /// Extra open flags.
-  enum
-  {
-    STC_WIN_IS_PROJECT = 0x0100,
-  };
-
   /// Constructor. Does not open a file, but sets text to specified value.
   wxExSTCWithFrame(wxWindow* parent,
     wxExFrameWithHistory* frame,

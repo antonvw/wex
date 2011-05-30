@@ -241,7 +241,7 @@ Frame::Frame(bool open_recent)
           wxExFileName(GetRecentProject()),
           0,
           wxEmptyString,
-          wxExSTCWithFrame::STC_WIN_IS_PROJECT);
+          WIN_IS_PROJECT);
       }
       else
       {
@@ -382,7 +382,7 @@ bool Frame::DialogProjectOpen()
 
   wxArrayString files;
   dlg.GetPaths(files);
-  wxExOpenFiles(this, files, wxExSTCWithFrame::STC_WIN_IS_PROJECT);
+  wxExOpenFiles(this, files, WIN_IS_PROJECT);
 
   return true;
 }
@@ -1191,12 +1191,11 @@ bool Frame::OpenFile(
     return false;
   }
   
-  auto* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
-    ? m_Projects : m_Editors);
+  auto* notebook = (flags & WIN_IS_PROJECT ? m_Projects : m_Editors);
 
   wxWindow* page = notebook->SelectPage(filename.GetFullPath());
 
-  if (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT)
+  if (flags & WIN_IS_PROJECT)
   {
     if (page == NULL)
     {

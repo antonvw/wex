@@ -62,7 +62,7 @@ void wxExReportAppTestFixture::testFrameWithHistory()
     wxExFileName(TEST_PRJ),
     0,
     wxEmptyString,
-    wxExSTCWithFrame::STC_WIN_IS_PROJECT));
+    wxExFrameWithHistory::WIN_IS_PROJECT));
 
   // TODO: if it does not open, next should fail.
   CPPUNIT_ASSERT( frame->GetRecentProject().Contains("test-rep.prj"));

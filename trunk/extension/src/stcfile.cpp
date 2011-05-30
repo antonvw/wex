@@ -46,7 +46,7 @@ void wxExSTCFile::AddBasePathToPathList()
     find + basepath_text.length() + 1,
     m_STC->GetLineEndPosition(line) - 3);
 
-  m_STC->GetPathList().Add(basepath);
+  m_STC->m_PathList.Add(basepath);
 }
 
 void wxExSTCFile::DoFileLoad(bool synced)
@@ -123,6 +123,31 @@ bool wxExSTCFile::GetContentsChanged() const
   return m_STC->GetModify();
 }
 
+void wxExSTCFile::Read(const wxString& name)
+{
+  wxExFileName fn(name);
+
+  if (fn.IsRelative())
+  {
+    fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
+  }
+
+  wxExFile file(fn);
+
+  if (file.IsOpened())
+  {
+    const int SCI_ADDTEXT = 2001;
+    const wxCharBuffer& buffer = file.Read();
+    m_STC->SendMsg(
+      SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+  }
+  else
+  {
+    wxLogStatus(wxString::Format(_("file: %s does not exist"), 
+      file.GetFileName().GetFullPath()));
+  }
+}
+
 void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
   // Be sure we can add text.
@@ -147,7 +172,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  const wxCharBuffer& buffer = Read(offset);
+  const wxCharBuffer& buffer = wxExFile::Read(offset);
 
   if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
   {

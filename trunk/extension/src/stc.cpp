@@ -1574,6 +1574,25 @@ void wxExSTC::MarkerDeleteAllChange()
   }
 }
   
+void wxExSTC::MarkerNext(bool next)
+{
+  int line = (next ? 
+    wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
+    wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
+    
+  if (line == -1)
+  {
+    line = (next ?
+      wxStyledTextCtrl::MarkerNext(0, 0xFFFF):
+      wxStyledTextCtrl::MarkerPrevious(GetLineCount() - 1, 0xFFFF));
+  }
+    
+  if (line != -1)
+  {
+    GotoLine(line);
+  }
+}
+      
 // cannot be const because of MarkerAddChange
 void wxExSTC::MarkTargetChange()
 {
@@ -1590,7 +1609,7 @@ void wxExSTC::MarkTargetChange()
     MarkerAddChange(i);
   }
 }
-      
+
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
   const bool skip = m_vi.OnChar(event);
@@ -1614,7 +1633,6 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     event.Skip();
   }
 }
-
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
@@ -1701,36 +1719,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     MarkTargetChange();
     break;
   
-  case ID_EDIT_MARKER_NEXT: 
-    {
-    int line = MarkerNext(GetCurrentLine() + 1, 0xFFFF);
-    
-    if (line == -1)
-    {
-      line = MarkerNext(0, 0xFFFF);
-    }
-    
-    if (line != -1)
-    {
-      GotoLine(line);
-    }
-    }
-    break;
-  case ID_EDIT_MARKER_PREVIOUS: 
-    {
-    int line = MarkerPrevious(GetCurrentLine() - 1, 0xFFFF);
-    
-    if (line == -1)
-    {
-      line = MarkerPrevious(GetLineCount() - 1, 0xFFFF);
-    }
-    
-    if (line != -1)
-    {
-      GotoLine(line); 
-    }
-    }
-    break;
+  case ID_EDIT_MARKER_NEXT: MarkerNext(true); break;
+  case ID_EDIT_MARKER_PREVIOUS: MarkerNext(false); break;
   
   case ID_EDIT_OPEN_BROWSER:
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
@@ -1751,30 +1741,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_EDIT_READ:
-    {
-    wxExFileName fn(command.GetString());
-
-    if (fn.IsRelative())
-    {
-      fn.Normalize(wxPATH_NORM_ALL, m_File.GetFileName().GetPath());
-    }
-
-    wxExFile file(fn);
-
-    if (file.IsOpened())
-    {
-      const wxCharBuffer& buffer = file.Read();
-      SendMsg(
-        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
-    }
-    else
-    {
-      wxLogStatus(wxString::Format(_("file: %s does not exist"), 
-        file.GetFileName().GetFullPath()));
-    }
-    }
-    break;
+  case ID_EDIT_READ: m_File.Read(command.GetString()); break;
     
   case ID_EDIT_ZOOM_IN:
     m_Zoom++;
@@ -2022,6 +1989,8 @@ bool wxExSTC::Open(
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
+    
+  bool success;
 
   if (m_File.FileLoad(filename))
   {
@@ -2039,26 +2008,21 @@ bool wxExSTC::Open(
       }
     }
 
-    Bind(
-      wxEVT_STC_MODIFIED, 
-      &wxExSTC::OnStyledText,
-      this,
-      wxID_ANY);
-
-    return true;
+    success = true;
   }
   else
   {
-    Bind(
-      wxEVT_STC_MODIFIED, 
-      &wxExSTC::OnStyledText,
-      this,
-      wxID_ANY);
-      
     wxExFrame::StatusText(wxEmptyString, "PaneInfo");
-
-    return false;
+    success = false;
   }
+  
+  Bind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+
+  return success;
 }
 
 void wxExSTC::Paste()

@@ -27,6 +27,12 @@ class wxExProcess;
 class WXDLLIMPEXP_BASE wxExFrameWithHistory : public wxExManagedFrame
 {
 public:
+  /// Extra open flags.
+  enum
+  {
+    WIN_IS_PROJECT = 0x0100,
+  };
+
   /// Constructor.
   /// Default it gives file history support to be used from the file menu.
   /// So you should call UseFileHistory somewhere to set it up.

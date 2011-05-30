@@ -28,6 +28,7 @@ class wxExConfigDialog;
 /// macro support, vi support and lexer support (syntax colouring, folding).
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
+  friend class wxExSTCFile; // it might update m_PathList
 public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExMenuFlags
@@ -163,9 +164,6 @@ public:
   /// Gets line number at current position.
   int GetLineNumberAtCurrentPos() const;
 
-  /// Gets the path list.
-  wxPathList& GetPathList() {return m_PathList;};
-  
   /// Gets selected text.
   const wxString GetSelectedText() const;
 
@@ -329,6 +327,7 @@ private:
     const wxString& link,
     int line_number = 0, 
     wxString* filename = NULL); // name of found file
+  void MarkerNext(bool next);
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
@@ -346,8 +345,8 @@ private:
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
 
-  // We use a separate lexer here as well,
-  // though m_File offers one, as you can manually override
+  // We use a separate lexer here as well
+  // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
   wxExLexer m_Lexer;
   wxExSTCFile m_File;
