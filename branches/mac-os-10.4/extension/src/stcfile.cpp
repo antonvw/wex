@@ -17,12 +17,37 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h> // for STAT_ etc.
 
 #if wxUSE_GUI
 wxExSTCFile::wxExSTCFile(wxExSTC* stc)
   : m_STC(stc)
   , m_PreviousLength(0)
 {
+}
+
+void wxExSTCFile::AddBasePathToPathList()
+{
+  // First find the base path, if this is not yet on the list, add it.
+  const wxString basepath_text = "Basepath:";
+
+  const auto find = m_STC->FindText(
+    0,
+    1000, // the max pos to look for, this seems enough
+    basepath_text,
+    wxSTC_FIND_WHOLEWORD);
+
+  if (find == -1)
+  {
+    return;
+  }
+
+  const auto  line = m_STC->LineFromPosition(find);
+  const wxString basepath = m_STC->GetTextRange(
+    find + basepath_text.length() + 1,
+    m_STC->GetLineEndPosition(line) - 3);
+
+  m_STC->m_PathList.Add(basepath);
 }
 
 void wxExSTCFile::DoFileLoad(bool synced)
@@ -48,20 +73,16 @@ void wxExSTCFile::DoFileLoad(bool synced)
 
     if (m_STC->GetLexer().GetScintillaLexer() == "po")
     {
-      m_STC->AddBasePathToPathList();
+      AddBasePathToPathList();
     }
   }
 
   if (!synced)
   {
     wxLogVerbose(_("Opened") + ": " + GetFileName().GetFullPath());
-    m_STC->PropertiesMessage();
   }
-  else
-  {
-    GetFileName().StatusText(wxExFileName::STAT_SYNC);
-    m_STC->UpdateStatusBar("PaneInfo");
-  }
+  
+  m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
 
   // No edges for log files.
   if (GetFileName().GetExt() == "log")
@@ -99,6 +120,31 @@ bool wxExSTCFile::GetContentsChanged() const
   return m_STC->GetModify();
 }
 
+void wxExSTCFile::Read(const wxString& name) const
+{
+  wxFileName fn(name);
+
+  if (fn.IsRelative())
+  {
+    fn.Normalize(wxPATH_NORM_ALL, GetFileName().GetPath());
+  }
+
+  wxExFile file(fn);
+
+  if (file.IsOpened())
+  {
+    const int SCI_ADDTEXT = 2001;
+    const wxCharBuffer& buffer = file.Read();
+    m_STC->SendMsg(
+      SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
+  }
+  else
+  {
+    wxLogStatus(wxString::Format(_("file: %s does not exist"), 
+      file.GetFileName().GetFullPath()));
+  }
+}
+
 void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 {
   // Be sure we can add text.
@@ -123,7 +169,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   m_PreviousLength = Length();
 
-  const wxCharBuffer& buffer = Read(offset);
+  const wxCharBuffer& buffer = wxExFile::Read(offset);
 
   if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
   {

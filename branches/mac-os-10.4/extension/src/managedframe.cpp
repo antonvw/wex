@@ -38,7 +38,7 @@ public:
     const wxSize& size = wxDefaultSize);
     
   /// Sets callback.
-  void SetVi(wxExVi* vi) {m_vi = vi;};
+  void SetVi(wxExVi* vi);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
@@ -77,6 +77,8 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
     
   CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
   CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
+  
+  m_Manager.Update();
 }
 
 wxExManagedFrame::~wxExManagedFrame()
@@ -165,9 +167,6 @@ void wxExManagedFrame::GetViPaneCommand(
 {
   statictext->SetLabel(command);
 
-  victrl->Show();
-  victrl->SelectAll();
-  victrl->SetFocus();
   victrl->SetVi(vi);
   
   m_Manager.GetPane(pane).Show();
@@ -294,7 +293,11 @@ void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
   
   if (m_UserInput && m_vi != NULL && m_StaticText->GetLabel() != ":")
   {
-    m_vi->FindCommand(m_StaticText->GetLabel(), GetValue());
+    m_vi->PositionRestore();
+    m_vi->GetSTC()->FindNext(
+      GetValue(),
+      m_vi->GetSearchFlags(),
+      m_StaticText->GetLabel() == '/');
   }
 }
 
@@ -347,4 +350,15 @@ void wxExViFindCtrl::OnKey(wxKeyEvent& event)
     event.Skip();
   }
 }
+
+void wxExViFindCtrl::SetVi(wxExVi* vi) 
+{
+  m_vi = vi;
+  m_UserInput = false;
+  
+  Show();
+  SelectAll();
+  SetFocus();
+};
+
 #endif // wxUSE_GUI

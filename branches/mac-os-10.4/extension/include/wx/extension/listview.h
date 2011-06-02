@@ -165,11 +165,6 @@ public:
     const wxString& column_name, 
     wxExSortType sort_method = SORT_TOGGLE) {  
       SortColumn(FindColumn(column_name), sort_method);};
-  
-#if wxUSE_STATUSBAR
-  /// Updates pane items field on the statusbar.
-  void UpdateStatusBar() const;
-#endif
 protected:
   // Interface.
   /// Invoked after sorting, allows you to do something extra.

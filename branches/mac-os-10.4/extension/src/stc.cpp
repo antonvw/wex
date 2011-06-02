@@ -866,7 +866,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
   ConvertEOLs(eol_mode);
   SetEOLMode(eol_mode);
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
+  wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
 }
 
@@ -908,20 +908,18 @@ void wxExSTC::FileTypeMenu()
 }
 
 
-bool wxExSTC::FindNext(bool find_next, bool show_result)
+bool wxExSTC::FindNext(bool find_next)
 {
   return FindNext(
     wxExFindReplaceData::Get()->GetFindString(),
     wxExFindReplaceData::Get()->STCFlags(),
-    find_next,
-    show_result);
+    find_next);
 }
 
 bool wxExSTC::FindNext(
   const wxString& text, 
   int search_flags,
-  bool find_next,
-  bool show_result)
+  bool find_next)
 {
   if (text.empty())
   {
@@ -959,14 +957,14 @@ bool wxExSTC::FindNext(
 
   if (SearchInTarget(text) < 0)
   {
-    wxExFindResult(text, find_next, recursive, show_result);
+    wxExFindResult(text, find_next, recursive);
     
     bool found = false;
     
     if (!recursive)
     {
       recursive = true;
-      found = FindNext(text, search_flags, find_next, show_result);
+      found = FindNext(text, search_flags, find_next);
       recursive = false;
     }
     
@@ -1277,7 +1275,7 @@ void wxExSTC::GotoLineAndSelect(
     if (SearchInTarget(text) < 0)
     {
       bool recursive = true;
-      wxExFindResult(text, true, recursive, !m_vi.GetIsActive());
+      wxExFindResult(text, true, recursive);
       return;
     }
   }
@@ -1306,7 +1304,7 @@ void wxExSTC::GuessType()
   }
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
+  wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
 }
 
@@ -1600,6 +1598,25 @@ void wxExSTC::MarkerDeleteAllChange()
   }
 }
   
+void wxExSTC::MarkerNext(bool next)
+{
+  int line = (next ? 
+    wxStyledTextCtrl::MarkerNext(GetCurrentLine() + 1, 0xFFFF):
+    wxStyledTextCtrl::MarkerPrevious(GetCurrentLine() - 1, 0xFFFF));
+    
+  if (line == -1)
+  {
+    line = (next ?
+      wxStyledTextCtrl::MarkerNext(0, 0xFFFF):
+      wxStyledTextCtrl::MarkerPrevious(GetLineCount() - 1, 0xFFFF));
+  }
+    
+  if (line != -1)
+  {
+    GotoLine(line);
+  }
+}
+      
 // cannot be const because of MarkerAddChange
 void wxExSTC::MarkTargetChange()
 {
@@ -1616,7 +1633,7 @@ void wxExSTC::MarkTargetChange()
     MarkerAddChange(i);
   }
 }
-      
+
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
   const bool skip = m_vi.OnChar(event);
@@ -1640,7 +1657,6 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     event.Skip();
   }
 }
-
 
 void wxExSTC::OnCommand(wxCommandEvent& command)
 {
@@ -1694,7 +1710,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
     Reload(m_Flags ^ STC_WIN_HEX); 
 #if wxUSE_STATUSBAR
-    UpdateStatusBar("PaneFileType");
+    wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
     }
     break;
@@ -1727,36 +1743,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     MarkTargetChange();
     break;
   
-  case ID_EDIT_MARKER_NEXT: 
-    {
-    int line = MarkerNext(GetCurrentLine() + 1, 0xFFFF);
-    
-    if (line == -1)
-    {
-      line = MarkerNext(0, 0xFFFF);
-    }
-    
-    if (line != -1)
-    {
-      GotoLine(line);
-    }
-    }
-    break;
-  case ID_EDIT_MARKER_PREVIOUS: 
-    {
-    int line = MarkerPrevious(GetCurrentLine() - 1, 0xFFFF);
-    
-    if (line == -1)
-    {
-      line = MarkerPrevious(GetLineCount() - 1, 0xFFFF);
-    }
-    
-    if (line != -1)
-    {
-      GotoLine(line); 
-    }
-    }
-    break;
+  case ID_EDIT_MARKER_NEXT: MarkerNext(true); break;
+  case ID_EDIT_MARKER_PREVIOUS: MarkerNext(false); break;
   
   case ID_EDIT_OPEN_BROWSER:
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
@@ -1777,30 +1765,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_EDIT_READ:
-    {
-    wxExFileName fn(command.GetString());
-
-    if (fn.IsRelative())
-    {
-      fn.Normalize(wxPATH_NORM_ALL, m_File.GetFileName().GetPath());
-    }
-
-    wxExFile file(fn);
-
-    if (file.IsOpened())
-    {
-      const wxCharBuffer& buffer = file.Read();
-      SendMsg(
-        SCI_ADDTEXT, buffer.length(), (wxIntPtr)(const char *)buffer.data());
-    }
-    else
-    {
-      wxLogStatus(wxString::Format(_("file: %s does not exist"), 
-        file.GetFileName().GetFullPath()));
-    }
-    }
-    break;
+  case ID_EDIT_READ: m_File.Read(command.GetString()); break;
     
   case ID_EDIT_ZOOM_IN:
     m_Zoom++;
@@ -1824,12 +1789,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get();
-
-  // Match word and regular expression do not work together.
-  if (frd->MatchWord())
-  {
-    frd->SetUseRegularExpression(false);
-  }
 
   if (
     event.GetEventType() == wxEVT_COMMAND_FIND ||
@@ -2048,6 +2007,8 @@ bool wxExSTC::Open(
     &wxExSTC::OnStyledText,
     this,
     wxID_ANY);
+    
+  bool success;
 
   if (m_File.FileLoad(filename))
   {
@@ -2065,26 +2026,21 @@ bool wxExSTC::Open(
       }
     }
 
-    Bind(
-      wxEVT_STC_MODIFIED, 
-      &wxExSTC::OnStyledText,
-      this,
-      wxID_ANY);
-
-    return true;
+    success = true;
   }
   else
   {
-    Bind(
-      wxEVT_STC_MODIFIED, 
-      &wxExSTC::OnStyledText,
-      this,
-      wxID_ANY);
-      
     wxExFrame::StatusText(wxEmptyString, "PaneInfo");
-
-    return false;
+    success = false;
   }
+  
+  Bind(
+    wxEVT_STC_MODIFIED, 
+    &wxExSTC::OnStyledText,
+    this,
+    wxID_ANY);
+
+  return success;
 }
 
 void wxExSTC::Paste()
@@ -2135,14 +2091,18 @@ void wxExSTC::PrintPreview()
 }
 #endif
 
-void wxExSTC::PropertiesMessage()
+void wxExSTC::PropertiesMessage(long flags)
 {
-  m_File.GetFileName().StatusText();
+  wxExLogStatus(m_File.GetFileName(), flags);
   
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
-  UpdateStatusBar("PaneLexer");
-  UpdateStatusBar("PaneInfo");
+  if (flags != STAT_SYNC)
+  {
+    wxExFrame::UpdateStatusBar(this, "PaneFileType");
+    wxExFrame::UpdateStatusBar(this, "PaneLexer");
+  }
+  
+  wxExFrame::UpdateStatusBar(this, "PaneInfo");
 #endif
 }
 
@@ -2315,6 +2275,7 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
 void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
 {
   m_Lexer.SetProperty(name, value);
+  m_Lexer.Apply(this);
 }
 
 void wxExSTC::SetText(const wxString& value)

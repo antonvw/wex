@@ -411,8 +411,8 @@ void wxExListViewStandard::OnList(wxListEvent& event)
   {
     if (GetSelectedItemCount() == 1)
     {
-      wxExListItem(this, event.GetIndex()).
-        GetFileName().StatusText(wxExFileName::STAT_FULLPATH);
+      wxExLogStatus(wxExListItem(this, event.GetIndex()).GetFileName(), 
+        STAT_FULLPATH);
     }
 
     event.Skip();

@@ -16,7 +16,6 @@
 #include <wx/extension/vi.h>
 #include <wx/extension/command.h>
 #include <wx/extension/defs.h>
-#include <wx/extension/file.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
@@ -275,13 +274,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command == "zE")
   {
     m_STC->SetLexerProperty("fold", "0");
-    m_STC->GetLexer().Apply(m_STC);
     m_STC->Fold();
   }
   else if (command == "zf")
   {
     m_STC->SetLexerProperty("fold", "1");
-    m_STC->GetLexer().Apply(m_STC);
     m_STC->Fold(true);
   }
   else if (command == "ZZ")
@@ -357,10 +354,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
       case 'n': 
         for (int i = 0; i < repeat; i++) 
-          m_STC->FindNext(
+          if (!m_STC->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
             m_SearchFlags, 
-            m_SearchForward);
+            m_SearchForward)) break;
         break;
 
       case 'p': Put(true); break;
@@ -403,10 +400,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
       case 'N': 
         for (int i = 0; i < repeat; i++) 
-          m_STC->FindNext(
+          if (!m_STC->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
             m_SearchFlags, 
-            !m_SearchForward);
+            !m_SearchForward)) break;
         break;
       case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
@@ -687,17 +684,6 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   
   return true;
-}
-
-void wxExVi::FindCommand(
-  const wxString& command, const wxString& text) const
-{
-  if (!m_IsActive || command.empty())
-  {
-    return;
-  }
-  
-  m_STC->FindNext(text, m_SearchFlags, command == '/', false); 
 }
 
 void wxExVi::FindWord(bool find_next) const

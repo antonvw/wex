@@ -233,8 +233,8 @@ void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
   else if (id == NOTEBOOK_PROJECTS)
   {
 #if wxUSE_STATUSBAR
-    ((wxExListViewFile*)page)->GetFileName().StatusText();
-    ((wxExListViewFile*)page)->UpdateStatusBar();
+    wxExLogStatus(((wxExListViewFile*)page)->GetFileName());
+    UpdateStatusBar((wxExListViewFile*)page);
 #endif
   }
   else if (id == NOTEBOOK_LISTS)

@@ -31,15 +31,17 @@ public:
   /// Returns true if the command was handled.
   bool ExecCommand(const wxString& command);
 
-  /// Executes find of the specified text.
-  void FindCommand(
-    const wxString& command, const wxString& text) const;
-  
   /// Returns whether we are in insert mode.
   bool GetInsertMode() const {return m_InsertMode;};
   
   /// Returns whether vi is active.
   bool GetIsActive() const {return m_IsActive;};
+  
+  /// Returns search flags.
+  int GetSearchFlags() const {return m_SearchFlags;};
+  
+  /// Returns STC component.
+  wxExSTC* GetSTC() {return m_STC;};
   
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.

@@ -232,6 +232,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     }
     break;
 
+#if wxUSE_STATUSBAR
   case ID_VIEW_STATUSBAR:
     if (GetStatusBar() != NULL)
     {
@@ -242,6 +243,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Check(false);
     }
     break;
+#endif
       
   default:
     wxFAIL;
@@ -373,5 +375,92 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
   }
 }
 #endif // wxUSE_STATUSBAR
+
+#if wxUSE_STATUSBAR
+void wxExFrame::UpdateStatusBar(wxExListView* lv)
+{
+  if (lv->IsShown())
+  {
+    const wxString text = (lv->GetSelectedItemCount() == 0 ?
+      wxString::Format("%d", lv->GetItemCount()):
+      wxString::Format("%d,%d", lv->GetItemCount(), lv->GetSelectedItemCount()));
+      
+    StatusText(text, "PaneInfo");
+  }
+}
+
+// Do not make it const, too many const_casts needed,
+// I thought that might cause crash in rect selection, but it didn't.
+void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
+{
+  wxString text;
+
+  if (pane == "PaneInfo")
+  {
+    if (stc->GetCurrentPos() == 0) text = wxString::Format("%d", stc->GetLineCount());
+    else
+    {
+      int start;
+      int end;
+      stc->GetSelection(&start, &end);
+
+      const auto len  = end - start;
+      const auto line = stc->GetCurrentLine() + 1;
+      const auto pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
+
+      if (len == 0) text = wxString::Format("%d,%d", line, pos);
+      else
+      {
+        if (stc->SelectionIsRectangle())
+        {
+          // The number of chars in the selection must be calculated.
+          // TODO: However, next code crashes (wxWidgets 2.9.0).
+          // GetSelectedText().length()
+          text = wxString::Format("%d,%d", line, pos);
+        }
+        else
+        {
+          // There might be NULL's inside selection.
+          // So use the GetSelectedTextRaw variant.
+          const auto number_of_lines = 
+            wxExGetNumberOfLines(stc->GetSelectedTextRaw());
+            
+          if (number_of_lines <= 1) 
+            text = wxString::Format("%d,%d,%d", line, pos, len);
+          else
+            text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
+        }
+      }
+    }
+  }
+  else if (pane == "PaneLexer")
+  {
+    text = stc->GetLexer().GetScintillaLexer();
+  }
+  else if (pane == "PaneFileType")
+  {
+    if (stc->GetFlags() & wxExSTC::STC_WIN_HEX)
+    {
+      text = "HEX";
+    }
+    else
+    {
+      switch (stc->GetEOLMode())
+      {
+      case wxSTC_EOL_CRLF: text = "DOS"; break;
+      case wxSTC_EOL_CR: text = "MAC"; break;
+      case wxSTC_EOL_LF: text = "UNIX"; break;
+      default: text = "UNKNOWN";
+      }
+    }
+  }
+  else
+  {
+    wxFAIL;
+  }
+
+  StatusText(text, pane);
+}
+#endif
 
 #endif // wxUSE_GUI

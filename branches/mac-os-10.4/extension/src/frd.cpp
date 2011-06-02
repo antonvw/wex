@@ -208,9 +208,17 @@ void wxExFindReplaceData::SetMatchCase(bool value)
 void wxExFindReplaceData::SetMatchWord(bool value)
 {
   int flags = GetFlags();
+  
   if (value) flags |= wxFR_WHOLEWORD;
   else       flags &= ~wxFR_WHOLEWORD;
+  
   SetFlags(flags);
+  
+  // Match word and regular expression do not work together.
+  if (value)
+  {
+    SetUseRegularExpression(false);
+  }
 }
 
 void wxExFindReplaceData::SetReplaceString(const wxString& value)

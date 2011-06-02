@@ -241,7 +241,7 @@ Frame::Frame(bool open_recent)
           wxExFileName(GetRecentProject()),
           0,
           wxEmptyString,
-          wxExSTCWithFrame::STC_WIN_IS_PROJECT);
+          WIN_IS_PROJECT);
       }
       else
       {
@@ -382,7 +382,7 @@ bool Frame::DialogProjectOpen()
 
   wxArrayString files;
   dlg.GetPaths(files);
-  wxExOpenFiles(this, files, wxExSTCWithFrame::STC_WIN_IS_PROJECT);
+  wxExOpenFiles(this, files, WIN_IS_PROJECT);
 
   return true;
 }
@@ -661,7 +661,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
         // As the lexer might have changed, update status bar field as well.
 #if wxUSE_STATUSBAR
-        editor->UpdateStatusBar("PaneLexer");
+        UpdateStatusBar(editor, "PaneLexer");
 #endif
       }
       else if (editor->GetFileName() == wxExVCS::GetFileName())
@@ -902,10 +902,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_VIEW_HISTORY: 
     TogglePane("HISTORY");
 #if wxUSE_STATUSBAR
-    if (GetManager().GetPane("HISTORY").IsShown())
-    {
-      m_History->UpdateStatusBar();
-    }
+    UpdateStatusBar(m_History);
 #endif
     break;
   case ID_VIEW_OUTPUT: 
@@ -1196,7 +1193,7 @@ bool Frame::OpenFile(
 
   wxWindow* page = notebook->SelectPage(filename.GetFullPath());
 
-  if (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT)
+  if (flags & WIN_IS_PROJECT)
   {
     if (page == NULL)
     {
@@ -1388,7 +1385,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
       editor = new wxExSTCWithFrame(m_Editors, this);
       editor->SetName(_("Log"));
       editor->SetEdgeMode(wxSTC_EDGE_NONE);
-      editor->SetReadOnly(true);
+      editor->SetReadOnly(true); // to update page title
       
       m_Editors->AddPage(editor, "LOGTAIL", _("Log"), true);
     }

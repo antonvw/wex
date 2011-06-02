@@ -28,6 +28,7 @@ class wxExConfigDialog;
 /// macro support, vi support and lexer support (syntax colouring, folding).
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
+  friend class wxExSTCFile; // it might update m_PathList
 public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExMenuFlags
@@ -85,9 +86,6 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Adds base path.
-  void AddBasePathToPathList();
-
   /// Adds text in hex mode.
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
 
@@ -119,7 +117,7 @@ public:
   void FileTypeMenu();
 
   /// Finds next with settings from find replace data.
-  bool FindNext(bool find_next = true, bool show_result = true);
+  bool FindNext(bool find_next = true);
 
   /// Finds next.
   bool FindNext(
@@ -133,9 +131,7 @@ public:
     /// wxSTC_FIND_POSIX
     int search_flags = 0,
     /// finds next or previous
-    bool find_next = true,
-    /// shows find result on status bar
-    bool show_result = true);
+    bool find_next = true);
     
   /// Enables or disables folding depending on fold property.
   /// If foldall (and fold propertry is on) is not specified, all lines are folded
@@ -244,7 +240,7 @@ public:
 #endif
 
   /// Shows properties on the statusbar.
-  virtual void PropertiesMessage();
+  virtual void PropertiesMessage(long flags = 0);
   
   /// Reloads current document using specified flags.
   void Reload(long flags);
@@ -286,8 +282,7 @@ public:
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
   
-  /// Sets lexer prop name and value,
-  /// but does not apply them.
+  /// Sets lexer prop name and value, and applies it.
   void SetLexerProperty(const wxString& name, const wxString& value);
 
   /// Sets the text.
@@ -299,11 +294,6 @@ public:
 
   /// Stops recording the macro.
   void StopRecord();
-
-#if wxUSE_STATUSBAR
-  /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane);
-#endif
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);
@@ -331,6 +321,7 @@ private:
     const wxString& link,
     int line_number = 0, 
     wxString* filename = NULL); // name of found file
+  void MarkerNext(bool next);
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
@@ -348,8 +339,8 @@ private:
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
 
-  // We use a separate lexer here as well,
-  // though m_File offers one, as you can manually override
+  // We use a separate lexer here as well
+  // (though wxExSTCFile offers one), as you can manually override
   // the lexer.
   wxExLexer m_Lexer;
   wxExSTCFile m_File;

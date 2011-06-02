@@ -292,27 +292,21 @@ bool wxExFindOtherFileName(
 void wxExFindResult(
   const wxString& find_text,
   bool find_next, 
-  bool recursive,
-  bool show_on_statusbar)
+  bool recursive)
 {
   if (!recursive)
   {
-    if (show_on_statusbar)
-    {
-      const wxString where = (find_next) ? _("bottom"): _("top");
-    
-      wxLogStatus(_("Searching for") + " " + wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
-        _("hit") + " " + where);
-    }
+    const wxString where = (find_next) ? _("bottom"): _("top");
+    wxLogStatus(
+      _("Searching for") + " " + 
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + 
+      _("hit") + " " + where);
   }
   else
   {
     wxBell();
-    
-    if (show_on_statusbar)
-    {
-      wxLogStatus(wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
-    }
+    wxLogStatus(
+      wxExQuoted(wxExSkipWhiteSpace(find_text)) + " " + _("not found"));
   }
 }
 
@@ -457,6 +451,33 @@ void wxExListToConfig(
   }
 
   wxConfigBase::Get()->Write(config, text);
+}
+
+void wxExLogStatus(const wxFileName& fn, long flags)
+{
+  if (!fn.IsOk())
+  {
+    return;
+  }
+  
+  wxString text = (flags & STAT_FULLPATH ? 
+    fn.GetFullPath(): 
+    fn.GetFullName());
+
+  if (fn.FileExists())
+  {
+    const wxString what = (flags & STAT_SYNC ? 
+      _("Synchronized"): 
+      _("Modified"));
+        
+    const wxString time = (flags & STAT_SYNC ? 
+      wxDateTime::Now().Format(): 
+      fn.GetModificationTime().Format());
+        
+    text += " " + what + " " + time;
+  }
+
+  wxLogStatus(text);
 }
 
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)

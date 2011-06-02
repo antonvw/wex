@@ -95,6 +95,12 @@ public:
   /// Sets text on specified pane.
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
+  
+  /// Updates pane items field on the statusbar.
+  static void UpdateStatusBar(wxExListView* lv);
+  
+  /// Updates the specified statusbar pane with current values.
+  static void UpdateStatusBar(wxExSTC* stc, const wxString& pane);
 #endif // wxUSE_STATUSBAR
 protected:
 #if wxUSE_STATUSBAR

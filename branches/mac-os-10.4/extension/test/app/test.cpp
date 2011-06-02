@@ -412,6 +412,11 @@ void wxExAppTestFixture::testSTC()
   
   CPPUNIT_ASSERT(stc->ReplaceAll("more", "less") == 1);
 //  CPPUNIT_ASSERT(stc->FindNext("less text"));
+
+// TODO: Add this test that was previously part of vi test
+// (and was OK)  
+//  CPPUNIT_ASSERT( vi->FindCommand("/", "vi: "));
+//  CPPUNIT_ASSERT(!vi->FindCommand("/", "xxx"));
   
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
@@ -633,9 +638,6 @@ void wxExAppTestFixture::testVi()
   CPPUNIT_ASSERT( vi->ExecCommand("$"));
   CPPUNIT_ASSERT( vi->ExecCommand("100"));
   CPPUNIT_ASSERT(!vi->ExecCommand("xxx"));
-  
-  CPPUNIT_ASSERT( vi->FindCommand("/", "vi: "));
-  CPPUNIT_ASSERT(!vi->FindCommand("/", "xxx"));
   
   wxKeyEvent event(wxEVT_CHAR);
   event.m_keyCode = 97; // one char 'a'

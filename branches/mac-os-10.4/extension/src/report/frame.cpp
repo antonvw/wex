@@ -341,7 +341,7 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
   {
     DoRecent(m_ProjectHistory,
       event.GetId() - ID_RECENT_PROJECT_LOWEST,
-      wxExSTCWithFrame::STC_WIN_IS_PROJECT);
+      WIN_IS_PROJECT);
   }
   else
   {

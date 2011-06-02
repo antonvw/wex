@@ -31,7 +31,7 @@ public:
 
   /// Opens a file with a filename.
   wxExFile(
-    const wxExFileName& filename,
+    const wxFileName& filename,
     wxFile::OpenMode mode = wxFile::read,
     bool open_file = true);
 
