@@ -111,6 +111,19 @@ void wxExListToConfig(
   const std::list < wxString > & l, 
   const wxString& config);
 
+/// Flags for wxExLogStatus.
+enum wxExStatusFlags
+{
+  STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
+  STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
+  STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
+};
+
+/// Logs filename info on the statusbar.
+// Using type wxExStatusFlags instead of long gives compiler errors at
+// invoking.
+void wxExLogStatus(const wxFileName& filename, long flags = STAT_DEFAULT);
+
 /// Returns true if filename (fullname) matches one of the
 /// fields in specified pattern (fields separated by ; sign).
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& patterns);

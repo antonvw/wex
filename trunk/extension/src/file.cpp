@@ -22,13 +22,14 @@ wxExFile::wxExFile(bool open_file)
 }
 
 wxExFile::wxExFile(
-  const wxExFileName& filename,
+  const wxFileName& filename,
   wxFile::OpenMode mode,
   bool open_file)
   : wxFile(filename.GetFullPath(), mode)
   , m_OpenFile(open_file)
+  , m_Stat(filename.GetFullPath())
 {
-  Assign(filename);
+  m_FileName.Assign(filename);
   MakeAbsolute();
 }
 

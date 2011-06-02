@@ -56,7 +56,7 @@ public:
     long flags = 0);
 
   /// Invokes base properties message and sets the frame title.
-  virtual void PropertiesMessage();
+  virtual void PropertiesMessage(long flags = 0);
 protected:
   void OnCommand(wxCommandEvent& command);
 

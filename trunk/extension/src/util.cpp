@@ -453,6 +453,33 @@ void wxExListToConfig(
   wxConfigBase::Get()->Write(config, text);
 }
 
+void wxExLogStatus(const wxFileName& fn, long flags)
+{
+  if (!fn.IsOk())
+  {
+    return;
+  }
+  
+  wxString text = (flags & STAT_FULLPATH ? 
+    fn.GetFullPath(): 
+    fn.GetFullName());
+
+  if (fn.FileExists())
+  {
+    const wxString what = (flags & STAT_SYNC ? 
+      _("Synchronized"): 
+      _("Modified"));
+        
+    const wxString time = (flags & STAT_SYNC ? 
+      wxDateTime::Now().Format(): 
+      fn.GetModificationTime().Format());
+        
+    text += " " + what + " " + time;
+  }
+
+  wxLogStatus(text);
+}
+
 bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 {
   if (pattern == "*") return true; // asterix matches always.

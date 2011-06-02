@@ -17,6 +17,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/filename.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/util.h> // for STAT_ etc.
 
 #if wxUSE_GUI
 wxExSTCFile::wxExSTCFile(wxExSTC* stc)
@@ -79,13 +80,9 @@ void wxExSTCFile::DoFileLoad(bool synced)
   if (!synced)
   {
     wxLogVerbose(_("Opened") + ": " + GetFileName().GetFullPath());
-    m_STC->PropertiesMessage();
   }
-  else
-  {
-    GetFileName().StatusText(wxExFileName::STAT_SYNC);
-    m_STC->UpdateStatusBar("PaneInfo");
-  }
+  
+  m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
 
   // No edges for log files.
   if (GetFileName().GetExt() == "log")
@@ -123,9 +120,9 @@ bool wxExSTCFile::GetContentsChanged() const
   return m_STC->GetModify();
 }
 
-void wxExSTCFile::Read(const wxString& name)
+void wxExSTCFile::Read(const wxString& name) const
 {
-  wxExFileName fn(name);
+  wxFileName fn(name);
 
   if (fn.IsRelative())
   {

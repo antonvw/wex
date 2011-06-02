@@ -205,7 +205,7 @@ void wxExListViewFile::DoFileLoad(bool synced)
 
   if (synced)
   {
-    GetFileName().StatusText(wxExFileName::STAT_SYNC | wxExFileName::STAT_FULLPATH);
+    wxExLogStatus(GetFileName(), STAT_SYNC | STAT_FULLPATH);
   }
 
   GetFrame()->SetRecentProject(GetFileName().GetFullPath());
@@ -288,7 +288,7 @@ void wxExListViewFile::OnCommand(wxCommandEvent& event)
   }
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar();
+  wxExFrame::UpdateStatusBar(this);
 #endif
 }
 
@@ -315,7 +315,7 @@ void wxExListViewFile::OnIdle(wxIdleEvent& event)
         )
     {
       item.Update();
-      item.GetFileName().StatusText(wxExFileName::STAT_SYNC | wxExFileName::STAT_FULLPATH);
+      wxExLogStatus(item.GetFileName(), STAT_SYNC | STAT_FULLPATH);
       m_ItemUpdated = true;
     }
 
@@ -357,10 +357,7 @@ void wxExListViewFile::OnMouse(wxMouseEvent& event)
 
     if (index < 0)
     {
-      if (GetFileName().FileExists())
-      {
-        GetFileName().StatusText();
-      }
+      wxExLogStatus(GetFileName());
     }
   }
   else

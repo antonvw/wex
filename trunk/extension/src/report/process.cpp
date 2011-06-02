@@ -122,7 +122,7 @@ bool wxExProcess::CheckInput()
       }
   
 #if wxUSE_STATUSBAR
-      m_ListView->UpdateStatusBar();
+      m_Frame->UpdateStatusBar(m_ListView);
 #endif
     }
     else

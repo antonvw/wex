@@ -240,7 +240,7 @@ public:
 #endif
 
   /// Shows properties on the statusbar.
-  virtual void PropertiesMessage();
+  virtual void PropertiesMessage(long flags = 0);
   
   /// Reloads current document using specified flags.
   void Reload(long flags);
@@ -282,8 +282,7 @@ public:
   /// Sets the (scintilla) lexer for this document.
   bool SetLexer(const wxString& lexer, bool fold = false);
   
-  /// Sets lexer prop name and value,
-  /// but does not apply them.
+  /// Sets lexer prop name and value, and applies it.
   void SetLexerProperty(const wxString& name, const wxString& value);
 
   /// Sets the text.
@@ -295,11 +294,6 @@ public:
 
   /// Stops recording the macro.
   void StopRecord();
-
-#if wxUSE_STATUSBAR
-  /// Updates the specified statusbar pane with current values.
-  void UpdateStatusBar(const wxString& pane);
-#endif
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);

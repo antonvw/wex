@@ -263,7 +263,7 @@ void wxExListView::EditClearAll()
   DeleteAllItems();
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar();
+  wxExFrame::UpdateStatusBar(this);
 #endif
 }
 
@@ -619,7 +619,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
   }
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar();
+  wxExFrame::UpdateStatusBar(this);
 #endif
 }
 
@@ -673,13 +673,13 @@ void wxExListView::OnList(wxListEvent& event)
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_DESELECTED)
   {
 #if wxUSE_STATUSBAR
-    UpdateStatusBar();
+  wxExFrame::UpdateStatusBar(this);
 #endif
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {
 #if wxUSE_STATUSBAR
-    UpdateStatusBar();
+  wxExFrame::UpdateStatusBar(this);
 #endif
   }
   else if (event.GetEventType() == wxEVT_COMMAND_LIST_BEGIN_DRAG)
@@ -741,7 +741,9 @@ void wxExListView::OnMouse(wxMouseEvent& event)
 void wxExListView::OnShow(wxShowEvent& event)
 {
   event.Skip();
-  UpdateStatusBar();
+#if wxUSE_STATUSBAR
+  wxExFrame::UpdateStatusBar(this);
+#endif  
 }
 
 void wxExListView::Print()
@@ -902,19 +904,5 @@ void wxExListView::SortColumnReset()
 
   m_SortedColumnNo = -1;
 }
-
-#if wxUSE_STATUSBAR
-void wxExListView::UpdateStatusBar() const
-{
-  if (IsShown())
-  {
-    const wxString text = (GetSelectedItemCount() == 0 ?
-      wxString::Format("%d", GetItemCount()):
-      wxString::Format("%d,%d", GetItemCount(), GetSelectedItemCount()));
-      
-    wxExFrame::StatusText(text, "PaneInfo");
-  }
-}
-#endif
 
 #endif // wxUSE_GUI

@@ -123,7 +123,7 @@ bool wxExSTCWithFrame::Open(
   return retValue;
 }
 
-void wxExSTCWithFrame::PropertiesMessage()
+void wxExSTCWithFrame::PropertiesMessage(long flags)
 {
   wxExSTC::PropertiesMessage();
   

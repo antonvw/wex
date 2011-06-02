@@ -164,8 +164,7 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
   }
   else if (event.GetEventType() ==  wxEVT_COMMAND_TREE_SEL_CHANGED)
   {
-    const wxExFileName filename(files[0]);
-    filename.StatusText(wxExFileName::STAT_FULLPATH);
+    wxExLogStatus(wxFileName(files[0]), STAT_FULLPATH);
   }
   else
   {

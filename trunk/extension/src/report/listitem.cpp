@@ -14,6 +14,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/extension/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/textfile.h>
@@ -64,12 +65,9 @@ void wxExListItem::Insert(long index)
 
   m_ListView->InsertItem(*this);
   
-  if (m_ListView->IsShown())
-  {
 #if wxUSE_STATUSBAR
-    m_ListView->UpdateStatusBar();
+  wxExFrame::UpdateStatusBar(m_ListView);
 #endif
-  }
 
   if (m_FileName.GetStat().IsOk())
   {
@@ -101,9 +99,7 @@ const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
   if (m_FileName.FileExists())
   {
     wxExTextFileWithListView file(m_FileName, tool);
-
     file.RunTool();
-
     return file.GetStatistics();
   }
   else

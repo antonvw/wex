@@ -842,7 +842,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
   ConvertEOLs(eol_mode);
   SetEOLMode(eol_mode);
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
+  wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
 }
 
@@ -1280,7 +1280,7 @@ void wxExSTC::GuessType()
   }
 
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
+  wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
 }
 
@@ -1686,7 +1686,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
     Reload(m_Flags ^ STC_WIN_HEX); 
 #if wxUSE_STATUSBAR
-    UpdateStatusBar("PaneFileType");
+    wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
     }
     break;
@@ -1765,12 +1765,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
   auto* frd = wxExFindReplaceData::Get();
-
-  // Match word and regular expression do not work together.
-  if (frd->MatchWord())
-  {
-    frd->SetUseRegularExpression(false);
-  }
 
   if (
     event.GetEventType() == wxEVT_COMMAND_FIND ||
@@ -2073,14 +2067,18 @@ void wxExSTC::PrintPreview()
 }
 #endif
 
-void wxExSTC::PropertiesMessage()
+void wxExSTC::PropertiesMessage(long flags)
 {
-  m_File.GetFileName().StatusText();
+  wxExLogStatus(m_File.GetFileName(), flags);
   
 #if wxUSE_STATUSBAR
-  UpdateStatusBar("PaneFileType");
-  UpdateStatusBar("PaneLexer");
-  UpdateStatusBar("PaneInfo");
+  if (flags != STAT_SYNC)
+  {
+    wxExFrame::UpdateStatusBar(this, "PaneFileType");
+    wxExFrame::UpdateStatusBar(this, "PaneLexer");
+  }
+  
+  wxExFrame::UpdateStatusBar(this, "PaneInfo");
 #endif
 }
 
@@ -2253,6 +2251,7 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
 void wxExSTC::SetLexerProperty(const wxString& name, const wxString& value)
 {
   m_Lexer.SetProperty(name, value);
+  m_Lexer.Apply(this);
 }
 
 void wxExSTC::SetText(const wxString& value)
@@ -2403,78 +2402,4 @@ void wxExSTC::StopRecord()
   wxStyledTextCtrl::StopRecord();
 }
 
-#if wxUSE_STATUSBAR
-// Do not make it const, too many const_casts needed,
-// I thought that might cause crash in rect selection, but it didn't.
-void wxExSTC::UpdateStatusBar(const wxString& pane)
-{
-  wxString text;
-
-  if (pane == "PaneInfo")
-  {
-    if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
-    else
-    {
-      int start;
-      int end;
-      GetSelection(&start, &end);
-
-      const auto len  = end - start;
-      const auto line = GetCurrentLine() + 1;
-      const auto pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
-
-      if (len == 0) text = wxString::Format("%d,%d", line, pos);
-      else
-      {
-        if (SelectionIsRectangle())
-        {
-          // The number of chars in the selection must be calculated.
-          // TODO: However, next code crashes (wxWidgets 2.9.0).
-          // GetSelectedText().length()
-          text = wxString::Format("%d,%d", line, pos);
-        }
-        else
-        {
-          // There might be NULL's inside selection.
-          // So use the GetSelectedTextRaw variant.
-          const auto number_of_lines = 
-            wxExGetNumberOfLines(GetSelectedTextRaw());
-            
-          if (number_of_lines <= 1) 
-            text = wxString::Format("%d,%d,%d", line, pos, len);
-          else
-            text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
-        }
-      }
-    }
-  }
-  else if (pane == "PaneLexer")
-  {
-    text = m_Lexer.GetScintillaLexer();
-  }
-  else if (pane == "PaneFileType")
-  {
-    if (GetFlags() & STC_WIN_HEX)
-    {
-      text = "HEX";
-    }
-    else
-    {
-      switch (GetEOLMode())
-      {
-      case wxSTC_EOL_CRLF: text = "DOS"; break;
-      case wxSTC_EOL_CR: text = "MAC"; break;
-      case wxSTC_EOL_LF: text = "UNIX"; break;
-      default: text = "UNKNOWN";
-      }
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-
-  wxExFrame::StatusText(text, pane);
-}
-#endif
 #endif // wxUSE_GUI
