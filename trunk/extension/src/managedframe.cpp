@@ -37,7 +37,10 @@ public:
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
     
-  /// Sets callback.
+  /// Returns vi component.
+  wxExVi* GetVi() {return m_vi;};
+    
+  /// Sets vi component.
   void SetVi(wxExVi* vi);
 protected:
   void OnCommand(wxCommandEvent& event);
@@ -179,19 +182,15 @@ void wxExManagedFrame::HideViBar()
   {
     m_Manager.GetPane("VIFINDBAR").Hide();
     m_Manager.Update();
+    
+    m_viFind->GetVi()->GetSTC()->SetFocus();
   }
-  
-  if (m_Manager.GetPane("VICOMMANDBAR").IsShown())
+  else if (m_Manager.GetPane("VICOMMANDBAR").IsShown())
   {
     m_Manager.GetPane("VICOMMANDBAR").Hide();
     m_Manager.Update();
-  }
-  
-  wxExSTC* stc = GetSTC();
-  
-  if (stc != NULL)
-  {
-    stc->SetFocus();
+    
+    m_viCommand->GetVi()->GetSTC()->SetFocus();
   }
 }
   

@@ -290,7 +290,6 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
     recursive = false;
     SetGridCursor(match.GetRow(), match.GetCol());
     MakeCellVisible(match); // though docs say this isn't necessary, it is
-    SetFocus();
     return true;
   }
 }
