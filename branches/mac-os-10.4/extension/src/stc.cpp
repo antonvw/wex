@@ -165,30 +165,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   }
 }
 
-void wxExSTC::AddBasePathToPathList()
-{
-  // First find the base path, if this is not yet on the list, add it.
-  const wxString basepath_text = "Basepath:";
-
-  const int find = FindText(
-    0,
-    1000, // the max pos to look for, this seems enough
-    basepath_text,
-    wxSTC_FIND_WHOLEWORD);
-
-  if (find == -1)
-  {
-    return;
-  }
-
-  const int  line = LineFromPosition(find);
-  const wxString basepath = GetTextRange(
-    find + basepath_text.length() + 1,
-    GetLineEndPosition(line) - 3);
-
-  m_PathList.Add(basepath);
-}
-
 void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
 /*
 e.g.:
@@ -2426,78 +2402,4 @@ void wxExSTC::StopRecord()
   wxStyledTextCtrl::StopRecord();
 }
 
-#if wxUSE_STATUSBAR
-// Do not make it const, too many const_casts needed,
-// I thought that might cause crash in rect selection, but it didn't.
-void wxExSTC::UpdateStatusBar(const wxString& pane)
-{
-  wxString text;
-
-  if (pane == "PaneInfo")
-  {
-    if (GetCurrentPos() == 0) text = wxString::Format("%d", GetLineCount());
-    else
-    {
-      int start;
-      int end;
-      GetSelection(&start, &end);
-
-      const int len  = end - start;
-      const int line = GetCurrentLine() + 1;
-      const int pos = GetCurrentPos() + 1 - PositionFromLine(line - 1);
-
-      if (len == 0) text = wxString::Format("%d,%d", line, pos);
-      else
-      {
-        if (SelectionIsRectangle())
-        {
-          // The number of chars in the selection must be calculated.
-          // TODO: However, next code crashes (wxWidgets 2.9.0).
-          // GetSelectedText().length()
-          text = wxString::Format("%d,%d", line, pos);
-        }
-        else
-        {
-          // There might be NULL's inside selection.
-          // So use the GetSelectedTextRaw variant.
-          const int number_of_lines = 
-            wxExGetNumberOfLines(GetSelectedTextRaw());
-            
-          if (number_of_lines <= 1) 
-            text = wxString::Format("%d,%d,%d", line, pos, len);
-          else
-            text = wxString::Format("%d,%d,%d", line, number_of_lines, len);
-        }
-      }
-    }
-  }
-  else if (pane == "PaneLexer")
-  {
-    text = m_Lexer.GetScintillaLexer();
-  }
-  else if (pane == "PaneFileType")
-  {
-    if (GetFlags() & STC_WIN_HEX)
-    {
-      text = "HEX";
-    }
-    else
-    {
-      switch (GetEOLMode())
-      {
-      case wxSTC_EOL_CRLF: text = "DOS"; break;
-      case wxSTC_EOL_CR: text = "MAC"; break;
-      case wxSTC_EOL_LF: text = "UNIX"; break;
-      default: text = "UNKNOWN";
-      }
-    }
-  }
-  else
-  {
-    wxFAIL;
-  }
-
-  wxExFrame::StatusText(text, pane);
-}
-#endif
 #endif // wxUSE_GUI

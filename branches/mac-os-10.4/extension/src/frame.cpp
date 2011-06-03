@@ -215,7 +215,7 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
     wxExSTC* stc = GetSTC();
     if (stc != NULL) 
     {
-      stc->UpdateStatusBar("PaneInfo"); 
+      UpdateStatusBar(stc, "PaneInfo"); 
     }
 	}
     break;
@@ -404,9 +404,9 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
       int end;
       stc->GetSelection(&start, &end);
 
-      const auto len  = end - start;
-      const auto line = stc->GetCurrentLine() + 1;
-      const auto pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
+      const int len  = end - start;
+      const int line = stc->GetCurrentLine() + 1;
+      const int pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
 
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
       else
@@ -422,7 +422,7 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
         {
           // There might be NULL's inside selection.
           // So use the GetSelectedTextRaw variant.
-          const auto number_of_lines = 
+          const int number_of_lines = 
             wxExGetNumberOfLines(stc->GetSelectedTextRaw());
             
           if (number_of_lines <= 1) 

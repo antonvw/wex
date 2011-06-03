@@ -1188,7 +1188,7 @@ bool Frame::OpenFile(
     return false;
   }
   
-  wxExNotebook* notebook = (flags & wxExSTCWithFrame::STC_WIN_IS_PROJECT
+  wxExNotebook* notebook = (flags & WIN_IS_PROJECT
     ? m_Projects : m_Editors);
 
   wxWindow* page = notebook->SelectPage(filename.GetFullPath());

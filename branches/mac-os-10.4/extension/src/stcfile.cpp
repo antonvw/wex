@@ -31,7 +31,7 @@ void wxExSTCFile::AddBasePathToPathList()
   // First find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath:";
 
-  const auto find = m_STC->FindText(
+  const int find = m_STC->FindText(
     0,
     1000, // the max pos to look for, this seems enough
     basepath_text,
@@ -42,7 +42,7 @@ void wxExSTCFile::AddBasePathToPathList()
     return;
   }
 
-  const auto  line = m_STC->LineFromPosition(find);
+  const int  line = m_STC->LineFromPosition(find);
   const wxString basepath = m_STC->GetTextRange(
     find + basepath_text.length() + 1,
     m_STC->GetLineEndPosition(line) - 3);
