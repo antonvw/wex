@@ -1,5 +1,5 @@
 wxExtension contains a wxWidgets extension library, adding xml lexer 
-configuration use full classes to wxWidgets, 
+configuration and usefull classes to wxWidgets, 
 and some applications that show how to use it.
 
 The syncped application is one of these applications, beging a full
