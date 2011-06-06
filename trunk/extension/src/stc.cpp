@@ -1387,6 +1387,7 @@ void wxExSTC::Indent(int lines, bool forward)
 void wxExSTC::Initialize()
 {
   m_MacroIsRecording = false;
+  m_Position = 0;
   
   Bind(
     wxEVT_STC_MODIFIED, 
@@ -2032,6 +2033,18 @@ void wxExSTC::Paste()
       MarkerAddChange(i);
     }
   }
+}
+
+void wxExSTC::PositionRestore()
+{
+  SetSelection(m_Position, m_Position);
+  SetCurrentPos(m_Position);
+  EnsureCaretVisible();
+}
+  
+void wxExSTC::PositionSave()
+{
+  m_Position = GetCurrentPos();
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE

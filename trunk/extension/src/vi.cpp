@@ -37,7 +37,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
-  , m_Position(0)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -882,20 +881,20 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       if (DoCommand(m_Command, false))
       {
         if ((m_Command.length() > 1 && !m_Command.Matches("m?")) || 
-            m_Command == "a" || 
-            m_Command == "i" || 
-            m_Command == "o" || 
-            m_Command == "p" ||
-            m_Command == "x" ||
-            m_Command == "A" || 
-            m_Command == "C" || 
-            m_Command == "D" || 
-            m_Command == "I" || 
-            m_Command == "O" || 
-            m_Command == "R" || 
-            m_Command == "X" || 
-            m_Command == "~"
-            )
+          m_Command == "a" || 
+          m_Command == "i" || 
+          m_Command == "o" || 
+          m_Command == "p" ||
+          m_Command == "x" ||
+          m_Command == "A" || 
+          m_Command == "C" || 
+          m_Command == "D" || 
+          m_Command == "I" || 
+          m_Command == "O" || 
+          m_Command == "R" || 
+          m_Command == "X" || 
+          m_Command == "~"
+          )
         {
           m_LastCommand = m_Command;
         }
@@ -992,18 +991,6 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   return !handled;
 }
 
-void wxExVi::PositionRestore() const
-{
-  m_STC->SetSelection(m_Position, m_Position);
-  m_STC->SetCurrentPos(m_Position);
-  m_STC->EnsureCaretVisible();
-}
-  
-void wxExVi::PositionSave()
-{
-  m_Position = m_STC->GetCurrentPos();
-}
-  
 void wxExVi::Put(bool after) const
 {
   const auto lines = wxExGetNumberOfLines(wxExClipboardGet());

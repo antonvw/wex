@@ -27,8 +27,7 @@
 class wxExViFindCtrl: public wxTextCtrl
 {
 public:
-  /// Constructor. Fills the combobox box with values 
-  /// from FindReplace from config.
+  /// Constructor. Creates empty control.
   wxExViFindCtrl(
     wxWindow* parent,
     wxExManagedFrame* frame,
@@ -49,7 +48,7 @@ protected:
 private:  
   wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
-  wxStaticText* m_StaticText;
+  const wxStaticText* m_StaticText;
   bool m_UserInput;
 
   DECLARE_EVENT_TABLE()
@@ -292,7 +291,7 @@ void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
   
   if (m_UserInput && m_vi != NULL && m_StaticText->GetLabel() != ":")
   {
-    m_vi->PositionRestore();
+    m_vi->GetSTC()->PositionRestore();
     m_vi->GetSTC()->FindNext(
       GetValue(),
       m_vi->GetSearchFlags(),
@@ -302,6 +301,8 @@ void wxExViFindCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExViFindCtrl::OnEnter(wxCommandEvent& event)
 {
+  event.Skip();
+  
   if (m_StaticText->GetLabel() == ":")
   {
     if (m_vi != NULL)
@@ -314,9 +315,19 @@ void wxExViFindCtrl::OnEnter(wxCommandEvent& event)
   }
   else
   {
-    if (!GetValue().empty())
+    if (m_UserInput)
     {
-      wxExFindReplaceData::Get()->SetFindString(GetValue());
+      if (!GetValue().empty())
+      {
+        wxExFindReplaceData::Get()->SetFindString(GetValue());
+      }
+    }
+    else if (m_vi != NULL)
+    {
+      m_vi->GetSTC()->FindNext(
+        GetValue(),
+        m_vi->GetSearchFlags(),
+        m_StaticText->GetLabel() == '/');
     }
       
     m_Frame->HideViBar();
@@ -331,7 +342,7 @@ void wxExViFindCtrl::OnKey(wxKeyEvent& event)
   {
     if (m_vi != NULL)
     {
-      m_vi->PositionRestore();
+      m_vi->GetSTC()->PositionRestore();
     }
     
     m_Frame->HideViBar();
@@ -342,7 +353,7 @@ void wxExViFindCtrl::OnKey(wxKeyEvent& event)
   {
     if (!m_UserInput)
     {
-      m_vi->PositionSave();
+      m_vi->GetSTC()->PositionSave();
       m_UserInput = true;
     }
     
@@ -352,12 +363,20 @@ void wxExViFindCtrl::OnKey(wxKeyEvent& event)
 
 void wxExViFindCtrl::SetVi(wxExVi* vi) 
 {
-  m_vi = vi;
-  m_UserInput = false;
+  if (vi->GetSTC()->IsBeingDeleted())
+  {
+    wxLogStatus("invalid vi");
+    m_vi = NULL;
+  }
+  else
+  {
+    m_vi = vi;
+    m_UserInput = false;
   
-  Show();
-  SelectAll();
-  SetFocus();
-};
+    Show();
+    SelectAll();
+    SetFocus();
+  }
+}
 
 #endif // wxUSE_GUI

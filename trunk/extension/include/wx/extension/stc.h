@@ -231,6 +231,12 @@ public:
   /// Paste text from clipboard.
   void Paste();
 
+  /// Restores saved position.
+  void PositionRestore();
+  
+  /// Saves position.
+  void PositionSave();
+
 #if wxUSE_PRINTING_ARCHITECTURE
   /// Prints the document.
   void Print(bool prompt = true);
@@ -335,6 +341,7 @@ private:
   const wxExMarker m_MarkerChange;
   const long m_MenuFlags;
 
+  int m_Position;
   long m_Flags; // win flags
   long m_GotoLineNumber;
   bool m_MacroIsRecording;

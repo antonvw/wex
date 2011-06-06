@@ -54,12 +54,6 @@ public:
   /// See OnChar.
   bool OnKeyDown(const wxKeyEvent& event);
 
-  /// Restores saved position.
-  void PositionRestore() const;
-  
-  /// Saves position.
-  void PositionSave();
-
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 private:
@@ -120,7 +114,6 @@ private:
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
-  int m_Position;
   int m_SearchFlags;
   
   wxExManagedFrame* m_Frame;  

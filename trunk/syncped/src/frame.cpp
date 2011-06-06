@@ -909,7 +909,14 @@ void Frame::OnCommand(wxCommandEvent& event)
     TogglePane("OUTPUT");
     break;
   case ID_VIEW_PROJECTS: 
-    TogglePane("PROJECTS");
+    if (m_Projects->GetPageCount() == 0)
+    {
+      NewFile(true);
+    }
+    else
+    {
+      TogglePane("PROJECTS");
+    }
     break;
     
   default: 

@@ -45,10 +45,13 @@ public:
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize);
-  void Find(bool find_next = true);
+    
+  /// Finds current value in control.
+  void Find(bool find_next = true, bool restore_position = false);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnEnter(wxCommandEvent& event);
+  void OnFocus(wxFocusEvent& event);
 private:
   wxExFrame* m_Frame;
 
@@ -252,6 +255,7 @@ void wxExFindToolBar::OnUpdateUI(wxUpdateUIEvent& event)
 // Implementation of support class.
 
 BEGIN_EVENT_TABLE(wxExTextCtrl, wxTextCtrl)
+  EVT_SET_FOCUS(wxExTextCtrl::OnFocus)
   EVT_TEXT(wxID_ANY, wxExTextCtrl::OnCommand)
   EVT_TEXT_ENTER(wxID_ANY, wxExTextCtrl::OnEnter)
 END_EVENT_TABLE()
@@ -275,14 +279,19 @@ wxExTextCtrl::wxExTextCtrl(
   SetAcceleratorTable(accel);
 }
 
-void wxExTextCtrl::Find(bool find_next)
+void wxExTextCtrl::Find(bool find_next, bool restore_position)
 {
   // We cannot use events here, as OnFindDialog in stc uses frd data,
   // whereas we need the GetValue here.
-  auto* stc = m_Frame->GetSTC();
+  wxExSTC* stc = m_Frame->GetSTC();
 
   if (stc != NULL)
   {
+    if (restore_position)
+    {
+      stc->PositionRestore();
+    }
+    
     stc->FindNext(
       GetValue(), 
       wxExFindReplaceData::Get()->STCFlags(),
@@ -293,7 +302,7 @@ void wxExTextCtrl::Find(bool find_next)
 void wxExTextCtrl::OnCommand(wxCommandEvent& event)
 {
   event.Skip();
-  Find();
+  Find(true, true);
 }
 
 void wxExTextCtrl::OnEnter(wxCommandEvent& event)
@@ -304,4 +313,17 @@ void wxExTextCtrl::OnEnter(wxCommandEvent& event)
     Find();
   }
 }
+
+void wxExTextCtrl::OnFocus(wxFocusEvent& event)
+{
+  event.Skip();
+
+  wxExSTC* stc = m_Frame->GetSTC();
+
+  if (stc != NULL)
+  {
+    stc->PositionSave();
+  }
+}
+
 #endif // wxUSE_GUI
