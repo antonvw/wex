@@ -49,6 +49,7 @@ bool App::OnInit()
     return false;
   }
 
+  // Show (and possibly Hide) is in the constuctor.
   new Frame();
 
   return true;
@@ -236,20 +237,6 @@ void Frame::DoAddControl(wxExToolBar* toolbar)
     wxArtProvider::GetBitmap(
       wxART_GO_FORWARD, wxART_TOOLBAR, toolbar->GetToolBitmapSize()),
     _("Write data"));
-}
-
-wxExGrid* Frame::GetGrid()
-{
-  const wxExGrid* grid = m_Statistics.GetGrid();
-
-  if (grid != NULL && grid->IsShown())
-  {
-    return (wxExGrid*)grid;
-  }
-  else
-  {
-    return NULL;
-  }
 }
 
 wxExSTC* Frame::GetSTC()

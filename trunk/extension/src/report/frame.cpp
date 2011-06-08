@@ -296,12 +296,9 @@ int wxExFrameWithHistory::FindInSelectionDialog(int id)
 
 const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
 {
-  const wxString prefix =
-    (id == ID_TOOL_REPORT_REPLACE ?
-       _("Replace In"):
-       _("Find In")) + " ";
-
-  return prefix + _("Selection");
+  return (id == ID_TOOL_REPORT_REPLACE ?
+    _("Replace In Selection"):
+    _("Find In Selection"));
 }
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)

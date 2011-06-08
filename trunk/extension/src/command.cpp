@@ -75,9 +75,8 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
     wxSetWorkingDirectory(cwd);
   }
 
-  // We have an error if there were errors, and no output, 
-  // or the  command could not be executed.  
-  m_Error = (!errors.empty() && output.empty()) || retValue == -1;
+  // We have an error if the command could not be executed.  
+  m_Error = (retValue == -1);
   m_Output = wxJoin(errors, '\n') + wxJoin(output, '\n');
 
   return retValue;
@@ -86,15 +85,18 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 #if wxUSE_GUI
 void wxExCommand::ShowOutput(const wxString& caption) const
 {
-  if (m_Dialog != NULL)
+  if (!m_Error)
   {
-    m_Dialog->SetText(m_Output);
-    m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
-    m_Dialog->Show();
-  }
-  else if (!m_Output.empty())
-  {
-    wxMessageBox(m_Output);
+    if (m_Dialog != NULL)
+    {
+      m_Dialog->SetText(m_Output);
+      m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
+      m_Dialog->Show();
+    }
+    else if (!m_Output.empty())
+    {
+      wxMessageBox(m_Output);
+    }
   }
 }
 #endif

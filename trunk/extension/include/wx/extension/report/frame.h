@@ -60,7 +60,7 @@ public:
   /// Finds in selected files dialog.
   int FindInSelectionDialog(int id);
   
-  /// Returns caption for FindInFilesDialog.
+  /// Returns caption for FindInSelectionDialog.
   const wxString GetFindInCaption(int id) const;
   
   /// If there is a project somewhere, 

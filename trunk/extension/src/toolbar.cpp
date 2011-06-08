@@ -116,7 +116,7 @@ wxAuiToolBarItem* wxExToolBar::AddTool(
 {
   const wxExStockArt art(toolId);
 
-  if (art.GetBitmap().IsOk())
+  if (art.GetBitmap(wxART_TOOLBAR).IsOk())
   {
     return wxAuiToolBar::AddTool(
       toolId, 

@@ -75,7 +75,7 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
   DoAddControl(toolBar);
 
   AddToolBarPane(toolBar, "TOOLBAR", _("Toolbar"));
-  AddToolBarPane(new wxExFindToolBar(this), "FINDBAR");
+  AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
     
   CreateViPanel(m_viFindPrefix, m_viFind, "VIFINDBAR");
   CreateViPanel(m_viCommandPrefix, m_viCommand, "VICOMMANDBAR");
@@ -100,7 +100,8 @@ bool wxExManagedFrame::AddToolBarPane(
     .RightDockable(false)
     .Name(name);
 
-  // The real toolbar is at the top, others at bottom and initially hidden.  
+  // If the toolbar has a caption, it is at the top, 
+  // otherwise fixed at the bottom and initially hidden.  
   if (!caption.empty())
   {
     pane
@@ -353,7 +354,11 @@ void wxExViFindCtrl::OnKey(wxKeyEvent& event)
   {
     if (!m_UserInput)
     {
-      m_vi->GetSTC()->PositionSave();
+      if (m_vi != NULL)
+      {
+        m_vi->GetSTC()->PositionSave();
+      }
+        
       m_UserInput = true;
     }
     

@@ -378,7 +378,7 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 #endif // wxUSE_STATUSBAR
 
 #if wxUSE_STATUSBAR
-void wxExFrame::UpdateStatusBar(wxExListView* lv)
+void wxExFrame::UpdateStatusBar(const wxListView* lv)
 {
   if (lv->IsShown())
   {

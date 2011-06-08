@@ -1,23 +1,24 @@
 # Software Development Plan
 
-
 ## General
 
-- Subversion Repository is on xp-dev.com
-    http://svn.xp-dev.com/svn/wxextension/
+- Subversion repository is on xp-dev.com
+  http://svn.xp-dev.com/svn/wxextension/
+  
+- git repository is on github
+  https://github.com/antonvw/wxExtension  
 
-- Subversion access
-  under windows TortoiseSVN is used (TortoiseSVN 1.6.15)
-    http://tortoisesvn.tigris.org/,
-  under Linux svn client (version 1.6.12 (r955767))
-  under mac os 10.4 svn client (version 1.5.5 http://homepage.mac.com/martinott/)
-    
+- Subversion access 
   The SVN support in wxExVCS works with SVN client 1.6.12
-    http://www.sliksvn.com/en/download
+  http://www.sliksvn.com/en/download
+  - under windows TortoiseSVN is used (TortoiseSVN 1.6.15)
+  http://tortoisesvn.tigris.org/,
+  - under Linux svn client (version 1.6.12 (r955767))
+  - under mac os 10.4 svn client (version 1.5.5 http://homepage.mac.com/martinott/)
     
-- GIT access
+- git access
   use
-      git svn clone http://svn.xp-dev.com/svn/wxextension/
+    git svn clone http://svn.xp-dev.com/svn/wxextension/
   to create a git clone.
   use
     git commit -a -m "your comment" to update your local repository
@@ -82,47 +83,47 @@
   http://www.bakefile.org/
   this is done in the build dir, directly under trunk:
     
-    - under windows using Microsoft Visual Studio 2010
-    Version 10.0.30319.1 RTMRel
-    using format msvs2008prj
-    TODO: fix, this no longer works
+  - under windows using Microsoft Visual Studio 2010
+  Version 10.0.30319.1 RTMRel
+  using format msvs2008prj
+  TODO: fix, this no longer works
     
-    - under windows using command line prompt
-    using format msvc
+  - under windows using command line prompt
+  using format msvc
       nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.1
     
-    - under Ubuntu 10.10 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
-    (no IDE)
-    using gtk version:
+  - under Ubuntu 10.10 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
+  (no IDE)
+  using gtk version:
       ../configure --with-gtk
-    GNUMakefile generated using format gnu
+  GNUMakefile generated using format gnu
 
-    - under SunOS using the Sun make gives errors,
-    you have to use GNU make (/usr/sfw/bin)
-    and the -mt option should be removed from generated Makefile, and
-    option -w should be added
-    this config command was used (socket file did not compile, and
-    glcancas neither):
+  - under SunOS using the Sun make gives errors,
+  you have to use GNU make (/usr/sfw/bin)
+  and the -mt option should be removed from generated Makefile, and
+  option -w should be added
+  this config command was used (socket file did not compile, and
+  glcancas neither):
       ../configure --with-gtk --disable-sockets --without-opengl
-    than libs were built, but listctrl and auidemo both crashed, no
-    more attempts (wxWidgets 2.9.1).
+  than libs were built, but listctrl and auidemo both crashed, no
+  more attempts (wxWidgets 2.9.1).
 
-    - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)
+  - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)
       ../configure --with-msw
-    do a make and a make install
-    Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
-    Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
+  do a make and a make install
+  Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
+  Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
     
-    - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
-      ../configure --with-mac
+  - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
+    ../configure --with-mac
 
   - debug under Windows using IDE, under Linux using Kdbg
 
   - deploy under Windows using 7-Zip 9.20
-    strip the executable under Windows using UPX
-    http://upx.sourceforge.net/
-    http://www.7-zip.org
-    deploy under Linux using deploy.sh (in build dir)
+  strip the executable under Windows using UPX
+  http://upx.sourceforge.net/
+  http://www.7-zip.org
+  deploy under Linux using deploy.sh (in build dir)
 
 
 ## SVN hierarchy

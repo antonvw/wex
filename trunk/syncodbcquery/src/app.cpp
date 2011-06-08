@@ -166,27 +166,6 @@ Frame::Frame()
   GetManager().Update();
 }
 
-wxExGrid* Frame::GetGrid()
-{
-  if (m_Results->IsShown())
-  {
-    return m_Results;
-  }
-  else
-  {
-    const wxExGrid* grid = m_Statistics.GetGrid();
-
-    if (grid != NULL && grid->IsShown())
-    {
-      return (wxExGrid*)grid;
-    }
-    else
-    {
-      return NULL;
-    }
-  }
-}
-
 wxExSTC* Frame::GetSTC()
 {
   if (m_Query->IsShown())

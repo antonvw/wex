@@ -107,12 +107,11 @@ bool wxExApp::OnInit()
 
   wxExVCS(wxFileName(
 #ifdef wxExUSE_PORTABLE
-    wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+    wxPathOnly(wxStandardPaths::Get().GetExecutablePath()),
 #else
-    wxStandardPaths::Get().GetUserDataDir()
+    wxStandardPaths::Get().GetUserDataDir(),
 #endif
-    + wxFileName::GetPathSeparator() + "vcs.xml")
-    ).Read();
+    "vcs.xml")).Read();
 
   return true;
 }

@@ -745,70 +745,72 @@ void wxExVi::InsertMode(
   bool overtype,
   bool dot)
 {
-  if (!m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly())
   {
-    if (!dot)
+    return;
+  }
+    
+  if (!dot)
+  {
+    m_InsertMode = true;
+    m_InsertText.clear();
+    m_InsertRepeatCount = repeat;
+    m_STC->BeginUndoAction();
+  }
+
+  switch ((int)c)
+  {
+    case 'a': m_STC->CharRight(); 
+      break;
+
+    case 'i': 
+      break;
+
+    case 'o': 
+      m_STC->LineEnd(); 
+      m_STC->NewLine(); 
+      break;
+    case 'A': m_STC->LineEnd(); 
+      break;
+
+    case 'C': 
+    case 'R': 
+      m_STC->SetSelectionStart(m_STC->GetCurrentPos());
+      m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
+      break;
+
+    case 'I': 
+      m_STC->Home(); 
+      break;
+
+    case 'O': 
+      m_STC->Home(); 
+      m_STC->NewLine(); 
+      m_STC->LineUp(); 
+      break;
+
+    default: wxFAIL;
+  }
+
+  if (dot)
+  {
+    m_STC->SetTargetStart(m_STC->GetCurrentPos());
+    
+    if (c == 'R' || c == 'C')
     {
-      m_InsertMode = true;
-      m_InsertText.clear();
-      m_InsertRepeatCount = repeat;
-      m_STC->BeginUndoAction();
-    }
-
-    switch ((int)c)
-    {
-      case 'a': m_STC->CharRight(); 
-        break;
-
-      case 'i': 
-        break;
-
-      case 'o': 
-        m_STC->LineEnd(); 
-        m_STC->NewLine(); 
-        break;
-      case 'A': m_STC->LineEnd(); 
-        break;
-
-      case 'C': 
-      case 'R': 
-        m_STC->SetSelectionStart(m_STC->GetCurrentPos());
-        m_STC->SetSelectionEnd(m_STC->GetLineEndPosition(m_STC->GetCurrentLine()));
-        break;
-
-      case 'I': 
-        m_STC->Home(); 
-        break;
-
-      case 'O': 
-        m_STC->Home(); 
-        m_STC->NewLine(); 
-        m_STC->LineUp(); 
-        break;
-
-      default: wxFAIL;
-    }
-
-    if (dot)
-    {
-      m_STC->SetTargetStart(m_STC->GetCurrentPos());
-      
-      if (c == 'R' || c == 'C')
-      {
-        m_STC->ReplaceSelection(m_InsertText);
-      }
-      else
-      {
-        m_STC->AddText(m_InsertText);
-      }
-      
-      m_STC->SetTargetEnd(m_STC->GetCurrentPos());
-      m_STC->MarkTargetChange();
+      m_STC->ReplaceSelection(m_InsertText);
     }
     else
     {
-      m_STC->SetOvertype(overtype);
+      m_STC->AddText(m_InsertText);
     }
+    
+    m_STC->SetTargetEnd(m_STC->GetCurrentPos());
+    m_STC->MarkTargetChange();
+  }
+  else
+  {
+    m_STC->SetOvertype(overtype);
   }
 }
 

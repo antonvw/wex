@@ -40,7 +40,9 @@ class wxExLogStderr : public wxLogStderr
     wxExLogStderr(FILE* fp, Frame* frame) 
       : wxLogStderr(fp)
       , m_Frame(frame) {
+#ifdef __WXDEBUG__
         SetVerbose();
+#endif        
         SetTimestamp("%x %X");};
   protected:
     virtual void DoLogRecord(
@@ -48,6 +50,7 @@ class wxExLogStderr : public wxLogStderr
       const wxString& msg,
       const wxLogRecordInfo& info)
     {
+#ifdef __WXDEBUG__
       m_Frame->SetStatusText(msg);
       
       if (level != wxLOG_Status)
@@ -55,6 +58,19 @@ class wxExLogStderr : public wxLogStderr
         wxLogStderr::DoLogRecord(level, msg, info);
         m_Frame->Log(level, msg, info);
       }
+#else      
+      switch (level)
+      {
+      case wxLOG_Status: 
+         m_Frame->SetStatusText(msg); 
+         break;
+      case wxLOG_Error:
+      case wxLOG_Message:
+         wxLogStderr::DoLogRecord(level, msg, info);
+         m_Frame->Log(level, msg, info);
+         break
+      }
+#endif
     }
   private:
     Frame* m_Frame;

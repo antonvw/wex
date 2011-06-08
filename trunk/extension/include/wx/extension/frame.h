@@ -20,6 +20,7 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
+class wxListView;
 class wxExListView;
 class wxExSTC;
 
@@ -30,8 +31,9 @@ class wxExSTC;
 class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
-  /// Constructor, the frame position and size is taken from the config,
-  /// the name is used internally for persistent registration.
+  /// Constructor,
+  /// the name is used internally for persistent registration,
+  /// setting the frame position and size. 
   wxExFrame(wxWindow* parent,
     wxWindowID id,
     const wxString& title,
@@ -71,7 +73,7 @@ public:
     long flags = 0);
     
   /// Override from base class.
-  void SetMenuBar(wxMenuBar* bar);
+  virtual void SetMenuBar(wxMenuBar* bar);
 
 #if wxUSE_STATUSBAR
   /// Sets up the status bar if you want to use StatusText.
@@ -96,10 +98,10 @@ public:
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
   
-  /// Updates pane items field on the statusbar.
-  static void UpdateStatusBar(wxExListView* lv);
+  /// Updates statusbar pane items pane with values from specified listview.
+  static void UpdateStatusBar(const wxListView* lv);
   
-  /// Updates the specified statusbar pane with current values.
+  /// Updates the specified statusbar pane with values from specified stc.
   static void UpdateStatusBar(wxExSTC* stc, const wxString& pane);
 #endif // wxUSE_STATUSBAR
 protected:
