@@ -2,9 +2,36 @@
 
 ## General
 
-- Subversion repository 
-  - on xp-dev.com
-  http://svn.xp-dev.com/svn/wxextension/
+- git repository 
+  - on github https://github.com/antonvw/wxExtension  
+
+  - git access use
+    git svn clone http://svn.xp-dev.com/svn/wxextension/
+  to create a git clone.
+  use
+    git commit -am "your comment" to update your local repository
+    git svn dcommit to commit your changes to svn repository
+  use 
+    git svn rebase to fetch changes from svn repository
+
+  - branches contain stable releases, and follow the wxWidgets branches
+    - currrently 2.9.1 is used as a stable branch, 
+    though not really for wxWidgets,
+    - the 2.8 branch is added to build using the real 
+    wxWidgets stable branch,
+    it compiles, but with some warnings, and the project file, 
+    generated using build.bkl, 
+    does not find the correct wxextension libraries 
+    when linking, you have to adjust it manually.
+    - the mac-os branch is added because the trunk uses c++0x flags, not supported
+    by gcc 4.0.1 under mac os 10.4
+
+  - tags contain all release versions
+
+  - trunk contains the development version
+      
+- mirrored subversion repository 
+  - on xp-dev.com http://svn.xp-dev.com/svn/wxextension/
   
   - access 
   The SVN support in wxExVCS works with SVN client 1.6.12
@@ -14,19 +41,6 @@
   - under Linux svn client (version 1.6.12 (r955767))
   - under mac os 10.4 svn client (version 1.5.5 http://homepage.mac.com/martinott/)
     
-- git repository 
-  - on github
-  https://github.com/antonvw/wxExtension  
-
-  - git access use
-    git svn clone http://svn.xp-dev.com/svn/wxextension/
-  to create a git clone.
-  use
-    git commit -a -m "your comment" to update your local repository
-    git svn dcommit to commit your changes to svn repository
-  use 
-    git svn rebase to fetch changes from svn repository
-      
 - Source code      
   - Coding standard:
   http://www.gnu.org/prep/standards/standards.html
@@ -125,25 +139,6 @@
   http://upx.sourceforge.net/
   http://www.7-zip.org
   deploy under Linux using deploy.sh (in build dir)
-
-
-## SVN hierarchy
-
-- branches contain stable releases, and follow the wxWidgets branches
-  - currrently 2.9.1 is used as a stable branch, 
-  though not really for wxWidgets,
-  - the 2.8 branch is added to build using the real 
-  wxWidgets stable branch,
-  it compiles, but with some warnings, and the project file, 
-  generated using build.bkl, 
-  does not find the correct wxextension libraries 
-  when linking, you have to adjust it manually.
-  - the mac-os branch is added because the trunk uses c++0x flags, not supported
-  by gcc 4.0.1 under mac os 10.4
-
-- tags contain all release versions
-
-- trunk contains the development version
 
 
 ## When adding functionality in trunk
