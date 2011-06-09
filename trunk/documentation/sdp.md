@@ -154,10 +154,7 @@
 - add a test for it in 
     extension/test/base, 
     extension/test/app,
-    extension/test/report,
-
-  where it has least dependancies
-
+    extension/test/report, where it has least dependencies,
   run test-all.sh from the build dir, which collects output in several log files, 
   and commits automatically.
 
