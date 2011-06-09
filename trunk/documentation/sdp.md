@@ -2,13 +2,11 @@
 
 ## General
 
-- Subversion repository is on xp-dev.com
+- Subversion repository 
+  - on xp-dev.com
   http://svn.xp-dev.com/svn/wxextension/
   
-- git repository is on github
-  https://github.com/antonvw/wxExtension  
-
-- Subversion access 
+  - access 
   The SVN support in wxExVCS works with SVN client 1.6.12
   http://www.sliksvn.com/en/download
   - under windows TortoiseSVN is used (TortoiseSVN 1.6.15)
@@ -16,8 +14,11 @@
   - under Linux svn client (version 1.6.12 (r955767))
   - under mac os 10.4 svn client (version 1.5.5 http://homepage.mac.com/martinott/)
     
-- git access
-  use
+- git repository 
+  - on github
+  https://github.com/antonvw/wxExtension  
+
+  - git access use
     git svn clone http://svn.xp-dev.com/svn/wxextension/
   to create a git clone.
   use

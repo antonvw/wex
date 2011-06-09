@@ -1,6 +1,13 @@
-.....................
+..................F...
 
 
-OK (21 tests)
+!!!FAILURES!!!
+Test Results:
+Run:  21   Failures: 1   Errors: 0
+
+
+1) test: testVCS (F) line: 524 ../extension/test/app/test.cpp
+assertion failed
+- Expression: vcs.DirExists(wxFileName(TEST_FILE))
 
 
