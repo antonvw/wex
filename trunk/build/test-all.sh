@@ -16,4 +16,5 @@ $TESTDIR/wxex-test-app > $ORG/test-app.log
 echo "-- test report --"
 $TESTDIR/wxex-test-rep > $ORG/test-rep.log
 
-svn commit -m "results of running test-all"
+# Commit changes (locally)
+git commit -am "results of running test-all"

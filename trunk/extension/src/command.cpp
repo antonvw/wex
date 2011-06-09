@@ -78,6 +78,8 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   // We have an error if the command could not be executed.  
   m_Error = (retValue == -1);
   m_Output = wxJoin(errors, '\n') + wxJoin(output, '\n');
+  
+  wxLogStatus(_("Ready"));
 
   return retValue;
 }

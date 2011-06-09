@@ -50,27 +50,20 @@ class wxExLogStderr : public wxLogStderr
       const wxString& msg,
       const wxLogRecordInfo& info)
     {
-#ifdef __WXDEBUG__
-      m_Frame->SetStatusText(msg);
-      
-      if (level != wxLOG_Status)
-      {
-        wxLogStderr::DoLogRecord(level, msg, info);
-        m_Frame->Log(level, msg, info);
-      }
-#else      
       switch (level)
       {
       case wxLOG_Status: 
-         m_Frame->SetStatusText(msg); 
-         break;
+        m_Frame->SetStatusText(msg); 
+        break;
+#ifdef __WXDEBUG__
+      case wxLOG_Info:
+#endif
       case wxLOG_Error:
       case wxLOG_Message:
-         wxLogStderr::DoLogRecord(level, msg, info);
-         m_Frame->Log(level, msg, info);
-         break
+        wxLogStderr::DoLogRecord(level, msg, info);
+        m_Frame->Log(level, msg, info);
+        break;
       }
-#endif
     }
   private:
     Frame* m_Frame;

@@ -33,7 +33,7 @@ Copyright: (c) 2010, Anton van Wezenbeek
   <vcs
     name="SCCS"
     flags-location="prefix">
-    
+
     <commands>
       <command> &amp;diffs </command>
       <command> &amp;get </command>
@@ -45,7 +45,7 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;delta </command>
     </commands>
   </vcs>
-  
+
   <vcs
     name="bazaar">
     
@@ -61,7 +61,7 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;status </command>
     </commands>
   </vcs>
-  
+
   <vcs 
     name="cvs"
     keyword-expansion="true">
@@ -92,10 +92,10 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;revert </command>
       <command> &amp;show </command>
       <command> &amp;status </command>
-      <command subcommand = "svn"> &amp;rebase </command>
-      <command subcommand = "svn"> &amp;dcommit </command>
-      <command subcommand = "svn"> &amp;blame </command>
-      <command subcommand = "svn"> &amp;help </command>
+      <command type = "main" subcommand = "svn"> &amp;rebase </command>
+      <command type = "main" subcommand = "svn"> &amp;dcommit </command>
+      <command type = "main" subcommand = "svn"> &amp;blame </command>
+      <command type = "main" subcommand = "svn"> &amp;help </command>
     </commands>
   </vcs>
 
@@ -116,7 +116,7 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;update </command>
     </commands>
   </vcs>
-  
+
   <vcs 
     name="svn"
     keyword-expansion="true">
@@ -140,5 +140,5 @@ Copyright: (c) 2010, Anton van Wezenbeek
       <command> &amp;update </command>
     </commands>
   </vcs>
-  
+
 </vcss>
