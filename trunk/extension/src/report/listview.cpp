@@ -91,29 +91,18 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
 {
   long style = 0;
 
-  if (m_Type == LIST_HISTORY)
-  {
-    style |= wxExMenu::MENU_IS_READ_ONLY;
-  }
-
   if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
   if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-
-  if (GetSelectedItemCount() == 0 && 
-      GetItemCount() > 0 &&
-      m_Type != LIST_HISTORY) 
-  {
-    style |= wxExMenu::MENU_ALLOW_CLEAR;
-  }
+  if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= wxExMenu::MENU_ALLOW_CLEAR;
 
   menu.SetStyle(style);
 
   wxExListView::BuildPopupMenu(menu);
 
-  if (GetSelectedItemCount() >= 1)
-  {
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
+  if (GetSelectedItemCount() >= 1)
+  {
     bool exists = true;
     bool is_folder = false;
 
@@ -130,9 +119,9 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
       menu.AppendSeparator();
       menu.Append(ID_LIST_SEND_ITEM, wxExEllipsed(_("&Build RBS File")));
     }
-#endif
-#endif
   }
+#endif
+#endif
 }
 
 void wxExListViewStandard::DeleteDoubles()
