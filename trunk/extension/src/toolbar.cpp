@@ -80,9 +80,7 @@ void wxExToolBar::AddControls()
   AddTool(wxID_OPEN);
   AddTool(wxID_SAVE);
   AddTool(wxID_PRINT);
-  AddSeparator();
   AddTool(wxID_FIND);
-  AddSeparator();
 
   AddControl(
     m_HexMode = new wxCheckBox(
@@ -176,7 +174,6 @@ wxExFindToolBar::wxExFindToolBar(
 
   // And place the controls on the toolbar.
   AddControl(m_FindCtrl);
-  AddSeparator();
 
   AddTool(
     wxID_DOWN, 
@@ -188,7 +185,6 @@ wxExFindToolBar::wxExFindToolBar(
     wxEmptyString, 
     wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR),
     _("Find previous"));
-  AddSeparator();
 
   AddControl(m_MatchWholeWord);
   AddControl(m_MatchCase);
