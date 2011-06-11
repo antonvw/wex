@@ -515,11 +515,12 @@ void wxExAppTestFixture::testVCS()
 {
   wxArrayString ar;
   ar.Add(TEST_FILE);
-  // In wxExApp the vcs is Read, so svn is known,
+  
+  // In wxExApp the vcs is Read, so current vcs is known,
   // using this constructor results in command id 0,
-  // giving the first command of svn, being add.
+  // giving the first command of current vcs, being add.
   wxExVCS vcs(ar);
-
+  
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
   CPPUNIT_ASSERT( vcs.DirExists(wxFileName(TEST_FILE)));
     
