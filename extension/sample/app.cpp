@@ -26,6 +26,7 @@
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
+#include <wx/extension/vcs.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -208,6 +209,11 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
+
+  wxArrayString ar;
+  ar.Add("app.cpp");
+  wxExVCS vcs(ar);
+  wxLogMessage(vcs.GetEntry().GetName());
 }
 
 wxExListView* wxExSampleFrame::GetListView()
