@@ -14,22 +14,10 @@
   use 
     git svn rebase to fetch changes from svn repository
 
-  - branches contain stable releases, and follow the wxWidgets branches
-    - currrently 2.9.1 is used as a stable branch, 
-    though not really for wxWidgets,
-    - the 2.8 branch is added to build using the real 
-    wxWidgets stable branch,
-    it compiles, but with some warnings, and the project file, 
-    generated using build.bkl, 
-    does not find the correct wxextension libraries 
-    when linking, you have to adjust it manually.
-    - the mac-os branch is added because the trunk uses c++0x flags, not supported
+  - wxWidgets 2.9.1 is used as a stable master branch
+    - the mac-os branch is added because the master uses c++0x flags, not supported
     by gcc 4.0.1 under mac os 10.4
 
-  - tags contain all release versions
-
-  - trunk contains the development version
-      
 - mirrored subversion repository 
   - on xp-dev.com http://svn.xp-dev.com/svn/wxextension/
   
