@@ -4,8 +4,7 @@ Name:      vcs.xml
 Purpose:   collection of version control systems supported
 Author:    Anton van Wezenbeek
 Created:   2010-08-23
-RCS-ID:    $Id$
-Copyright: (c) 2010, Anton van Wezenbeek
+Copyright: (c) 2011, Anton van Wezenbeek
 -->
 
 <vcss>
