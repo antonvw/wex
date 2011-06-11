@@ -6,8 +6,7 @@ Purpose:   Lexers configuration for wxextension.
            See scintilla v2.03 (www.scintilla.org).
 Author:    Anton van Wezenbeek
 Created:   2006
-RCS-ID:    $Id$
-Copyright: (c) 1998-2009, Anton van Wezenbeek
+Copyright: (c) 2011, Anton van Wezenbeek
 -->
 
 <lexers>
