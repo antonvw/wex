@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.cpp
-* Purpose:       Implementation of sample classes for wxExtension
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.cpp
+// Purpose:   Implementation of sample classes for wxExtension
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <numeric>
 #include <functional>
@@ -25,8 +21,8 @@
 #include <wx/extension/printing.h>
 #include <wx/extension/stcdlg.h>
 #include <wx/extension/util.h>
-#include <wx/extension/version.h>
 #include <wx/extension/vcs.h>
+#include <wx/extension/version.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"
@@ -37,6 +33,7 @@ enum
   ID_FIRST = 15000,
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
+  ID_SHOW_VCS,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
   ID_STC_ENTRY_DLG,
@@ -103,6 +100,7 @@ wxExSampleFrame::wxExSampleFrame()
   wxExMenu* menuFile = new wxExMenu;
   menuFile->Append(wxID_OPEN);
   menuFile->AppendSeparator();
+  menuFile->Append(ID_SHOW_VCS, "Show VCS");
   menuFile->AppendPrint();
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
@@ -209,11 +207,6 @@ wxExSampleFrame::wxExSampleFrame()
   panes.push_back(wxExStatusBarPane("PaneLexer", 60, "Lexer"));
   SetupStatusBar(panes);
 #endif
-
-  wxArrayString ar;
-  ar.Add("app.cpp");
-  wxExVCS vcs(ar);
-  wxLogMessage(vcs.GetEntry().GetName());
 }
 
 wxExListView* wxExSampleFrame::GetListView()
@@ -322,6 +315,20 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 
   case ID_SHELL_COMMAND:
       m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");
+    break;
+    
+  case ID_SHOW_VCS:
+    {
+    wxArrayString ar;
+    ar.Add("../app.cpp");
+    wxExVCS vcs(ar);
+    wxLogMessage(vcs.GetEntry().GetName());
+    
+    if (vcs.GetEntry().SupportKeywordExpansion())
+    {
+      wxLogMessage("supports keyword expansion");
+    }
+    }
     break;
 
   case ID_STATISTICS_SHOW:
