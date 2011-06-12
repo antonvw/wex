@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          header.cpp
-* Purpose:       Implementation of wxExHeader class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      header.cpp
+// Purpose:   Implementation of wxExHeader class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -49,6 +45,10 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   const wxExLexer l = filename->GetLexer();
   wxArrayString ar;
   ar.Add(filename->GetFullPath());
+  
+  const bool add_created = 
+    !filename->FileExists() || 
+     filename->GetModificationTime().GetDateOnly() == wxDateTime::Today();
 
   if (!l.GetCommentEnd().empty())
   {
@@ -56,6 +56,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << h_name << filename->GetFullName() << "\n";
     header << wxExAlignText(purpose, h_purpose) << "\n";
     header << h_author << author << "\n";
+    if (add_created)
     header << h_created << wxDateTime::Now().FormatISODate() << "\n";
     if (wxExVCS(ar).GetEntry().SupportKeywordExpansion())
     // Prevent the Id to be expanded by VCS itself here.
@@ -72,6 +73,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << l.MakeComment(h_name, filename->GetFullName()) << "\n";
     header << l.MakeComment(h_purpose, purpose) << "\n";
     header << l.MakeComment(h_author, author) << "\n";
+    if (add_created)
     header << l.MakeComment(h_created, wxDateTime::Now().FormatISODate()) << "\n";
     if (wxExVCS(ar).GetEntry().SupportKeywordExpansion())
     // Prevent the Id to be expanded by VCS itself here.
