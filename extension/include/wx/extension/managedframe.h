@@ -3,7 +3,6 @@
 // Purpose:   Declaration of wxExManagedFrame class.
 // Author:    Anton van Wezenbeek
 // Created:   2010-04-11
-// RCS-ID:    $Id$
 // Copyright: (c) 2010 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -19,7 +18,7 @@
 class wxStaticText;
 class wxExToolBar;
 class wxExVi;
-class wxExViFindCtrl;
+class wxExViTextCtrl;
 
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
@@ -54,9 +53,15 @@ public:
 
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
-  
+
   /// Gets a command line vi command.
   void GetViCommand(wxExVi* vi, const wxString& command);
+  
+  /// Returns true if vi command is a find command.
+  bool GetViCommandIsFind() const;
+  
+  /// Returns true if vi command is a find command and a find next.
+  bool GetViCommandIsFindNext() const;
   
   /// Hides the vi bar.
   void HideViBar();
@@ -78,23 +83,11 @@ private:
     wxWindow* window, 
     const wxString& name, 
     const wxString& caption = wxEmptyString);
-  void CreateViPanel(
-    wxStaticText*& statictext,
-    wxExViFindCtrl*& text,
-    const wxString& name);
-  void GetViPaneCommand(
-    wxStaticText* statictext,
-    wxExViFindCtrl* text,
-    const wxString& pane,
-    wxExVi* vi,
-    const wxString& command);
   
   wxAuiManager m_Manager;
 
-  wxExViFindCtrl* m_viCommand;
-  wxStaticText* m_viCommandPrefix;
-  wxExViFindCtrl* m_viFind;
-  wxStaticText* m_viFindPrefix;
+  wxExViTextCtrl* m_viTextCtrl;
+  wxStaticText* m_viTextPrefix;
   
   DECLARE_EVENT_TABLE()
 };
