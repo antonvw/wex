@@ -354,7 +354,16 @@ void wxExViTextCtrl::SetVi(wxExVi* vi)
     m_UserInput = false;
   
     Show();
-    SelectAll();
+    
+    if (m_Frame->GetViCommandIsFind())
+    {
+      SelectAll();
+    }
+    else
+    {
+      Clear();
+    }
+    
     SetFocus();
   }
 }
