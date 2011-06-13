@@ -37,25 +37,24 @@ public:
   /// Destructor, uninits the aui manager.
  ~wxExManagedFrame();
 
-  // Interface for notebooks.
   /// Returns true if the page can be closed.
   virtual bool AllowClose(
     wxWindowID WXUNUSED(id), 
     wxWindow* WXUNUSED(page)) {return true;}
 
-  /// Called if the notebook changed page.
-  virtual void OnNotebook(
-    wxWindowID WXUNUSED(id), 
-    wxWindow* WXUNUSED(page)) {;};
-
-  /// Called after all pages from the notebooks are deleted.
-  virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
-
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
 
   /// Gets a command line vi command.
-  void GetViCommand(wxExVi* vi, const wxString& command);
+  /// It shows the vibar, sets the label and 
+  /// sets focus to it, allowing
+  /// you to enter a command.
+  /// You can override it to e.g. hide other panels.
+  virtual void GetViCommand(
+    /// the vi on which command is to be done
+    wxExVi* vi, 
+    /// label for the vibar (like / or ? or :)
+    const wxString& label);
   
   /// Returns true if vi command is a find command.
   bool GetViCommandIsFind() const;
@@ -66,9 +65,17 @@ public:
   /// Hides the vi bar.
   void HideViBar();
 
+  /// Called if the notebook changed page.
+  virtual void OnNotebook(
+    wxWindowID WXUNUSED(id), 
+    wxWindow* WXUNUSED(page)) {;};
+
   /// Shows text in vi bar.
   void ShowViMessage(const wxString& text);
   
+  /// Called after all pages from the notebooks are deleted.
+  virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
+
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);
 protected:

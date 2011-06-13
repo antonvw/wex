@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          frame.cpp
-* Purpose:       Implementation of class 'Frame'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      frame.cpp
+// Purpose:   Implementation of class 'Frame'
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -447,6 +443,13 @@ wxExSTC* Frame::GetSTC()
     return (wxExSTC*)m_Editors->GetPage(
       m_Editors->GetSelection());
   }
+}
+
+void Frame::GetViCommand(wxExVi* vi, const wxString& label)
+{
+  DecoratedFrame::GetViCommand(vi, label);
+  GetManager().GetPane("OUTPUT").Hide();
+  GetManager().Update();  
 }
 
 void Frame::Log(

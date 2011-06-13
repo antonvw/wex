@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          frame.h
-* Purpose:       Declaration of class 'Frame'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      frame.h
+// Purpose:   Declaration of class 'Frame'
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FRAME_H
 #define _FRAME_H
@@ -51,6 +47,9 @@ private:
   virtual wxExListView* GetListView();
   virtual wxExListViewFile* GetProject();
   virtual wxExSTC* GetSTC();
+  virtual void GetViCommand(
+    wxExVi* vi, 
+    const wxString& label);
   void NewFile(bool as_project = false);
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
