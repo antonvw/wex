@@ -135,12 +135,6 @@ bool wxExManagedFrame::AddToolBarPane(
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
-  if (command != ":")
-  {
-    // sync with frd data.
-    m_viTextCtrl->SetValue(wxExFindReplaceData::Get()->GetFindString());
-  }
-  
   m_viTextPrefix->SetLabel(command);
   m_viTextCtrl->SetVi(vi);
   
@@ -357,6 +351,8 @@ void wxExViTextCtrl::SetVi(wxExVi* vi)
     
     if (m_Frame->GetViCommandIsFind())
     {
+      // sync with frd data.
+      SetValue(wxExFindReplaceData::Get()->GetFindString());
       SelectAll();
     }
     else
