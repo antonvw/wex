@@ -651,6 +651,7 @@ bool wxExVi::ExecCommand(const wxString& command)
     }
     
     m_Frame->ShowViMessage(wxString::Format("%d", no));
+    return true;
   }
   else if (command.StartsWith("!"))
   {
@@ -679,6 +680,7 @@ bool wxExVi::ExecCommand(const wxString& command)
     }
   }
   
+  m_Frame->HideViBar();
   return true;
 }
 
