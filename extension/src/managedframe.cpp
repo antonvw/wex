@@ -208,17 +208,17 @@ void wxExManagedFrame::ShowViMessage(const wxString& text)
   {
     GetStatusBar()->SetStatusText(text);
     
-    m_Manager.GetPane("VIBAR").Hide();
+    HideViBar();
   }
   else
   {
     m_viTextPrefix->SetLabel(text);
     m_viTextCtrl->Hide();
+    m_viTextCtrl->GetVi()->GetSTC()->SetFocus();
   
     m_Manager.GetPane("VIBAR").Show();
+    m_Manager.Update();
   }
-
-  m_Manager.Update();
 }
 
 void wxExManagedFrame::TogglePane(const wxString& pane)
@@ -278,8 +278,7 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
     {
       if (m_vi->ExecCommand(GetValue()))
       {
-        wxConfigBase::Get()->Write("vicommand", GetValue()));
-        m_Frame->HideViBar();
+        wxConfigBase::Get()->Write("vicommand", GetValue());
       }
     }
   }

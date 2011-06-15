@@ -651,9 +651,6 @@ bool wxExVi::ExecCommand(const wxString& command)
     }
     
     m_Frame->ShowViMessage(wxString::Format("%d", no));
-    m_STC->SetFocus();
-    
-    return false;
   }
   else if (command.StartsWith("!"))
   {
