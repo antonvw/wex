@@ -125,7 +125,7 @@ bool wxExSTCWithFrame::Open(
 
 void wxExSTCWithFrame::PropertiesMessage(long flags)
 {
-  wxExSTC::PropertiesMessage();
+  wxExSTC::PropertiesMessage(flags);
   
   const wxString file = GetName() + 
     (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
