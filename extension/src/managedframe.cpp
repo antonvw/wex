@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/wxcrt.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/defs.h>
@@ -277,6 +278,7 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
     {
       if (m_vi->ExecCommand(GetValue()))
       {
+        wxConfigBase::Get()->Write("vicommand", GetValue()));
         m_Frame->HideViBar();
       }
     }
@@ -337,6 +339,8 @@ void wxExViTextCtrl::OnKey(wxKeyEvent& event)
 
 void wxExViTextCtrl::SetVi(wxExVi* vi) 
 {
+  m_UserInput = false;
+
   if (vi->GetSTC()->IsBeingDeleted())
   {
     wxLogStatus("invalid vi");
@@ -345,21 +349,19 @@ void wxExViTextCtrl::SetVi(wxExVi* vi)
   else
   {
     m_vi = vi;
-    m_UserInput = false;
   
     Show();
     
     if (m_Frame->GetViCommandIsFind())
     {
-      // sync with frd data.
       SetValue(wxExFindReplaceData::Get()->GetFindString());
-      SelectAll();
     }
     else
     {
-      Clear();
+      SetValue(wxConfigBase::Get()->Read("vicommand", wxEmptyString));
     }
     
+    SelectAll();
     SetFocus();
   }
 }
