@@ -707,15 +707,19 @@ void Frame::OnCommand(wxCommandEvent& event)
 
         editor->GetFile().FileSave(dlg.GetPath());
       }
+      
+      const wxBitmap bitmap = (editor->GetFileName().GetStat().IsOk() ? 
+        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(wxExGetIconID(editor->GetFileName())) : 
+        wxNullBitmap);
 
       m_Editors->SetPageText(
         old_key,
         editor->GetFileName().GetFullPath(),
         editor->GetFileName().GetFullName(),
-        wxTheFileIconsTable->GetSmallImageList()->GetBitmap(
-          wxExGetIconID(editor->GetFileName())));
+        bitmap);
+          
+      editor->PropertiesMessage();
     }
-    editor->PropertiesMessage();
     break;
 
   case wxID_EXECUTE: ProcessRun(); break;

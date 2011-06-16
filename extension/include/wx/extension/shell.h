@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          shell.h
-* Purpose:       Declaration of class wxExSTCShell
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      shell.h
+// Purpose:   Declaration of class wxExSTCShell
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCSHELL_H
 #define _EXSTCSHELL_H
@@ -47,7 +43,7 @@ public:
     /// The lexer used by stc.
     const wxString& lexer = wxEmptyString,
     /// The stc menu flags.
-    long menu_flags = STC_MENU_SIMPLE | STC_MENU_FIND,
+    long menu_flags = STC_MENU_DEFAULT,
     /// The window id.
     wxWindowID id = wxID_ANY,
     /// Position.

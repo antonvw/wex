@@ -1,12 +1,9 @@
-/******************************************************************************\
-* File:          stc.h
-* Purpose:       Declaration of class wxExSTC
-* Author:        Anton van Wezenbeek
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      stc.h
+// Purpose:   Declaration of class wxExSTC
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTC_H
 #define _EXSTC_H
@@ -32,9 +29,7 @@ public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExMenuFlags
   {
-    STC_MENU_SIMPLE    = 0x0001, ///< for adding copy/paste etc. menu
     STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
-
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
   };
 

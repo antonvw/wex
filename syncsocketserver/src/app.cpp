@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.cpp
-* Purpose:       Implementation of classes for syncsocketserver
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2007-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.cpp
+// Purpose:   Implementation of classes for syncsocketserver
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
 #include <algorithm>
@@ -114,8 +110,7 @@ Frame::Frame()
     this,
     wxEmptyString,
     0,
-    _("Log"),
-    wxExSTCWithFrame::STC_MENU_SIMPLE | wxExSTCWithFrame::STC_MENU_FIND);
+    _("Log"));
 
   m_Shell = new wxExSTCShell(this);
 

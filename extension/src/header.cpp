@@ -46,9 +46,12 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   wxArrayString ar;
   ar.Add(filename->GetFullPath());
   
+  wxDateTime ctime;
+  filename->GetTimes(NULL, NULL, &ctime);
+  
   const bool add_created = 
     !filename->FileExists() || 
-     filename->GetModificationTime().GetDateOnly() == wxDateTime::Today();
+     ctime.GetDateOnly() == wxDateTime::Today();
 
   if (!l.GetCommentEnd().empty())
   {

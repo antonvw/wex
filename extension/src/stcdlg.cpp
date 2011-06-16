@@ -3,8 +3,7 @@
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
 // Created:   2009-11-18
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -43,14 +42,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   
   m_STC = new wxExSTC(
     this, 
-    text,
-    0,
-    wxEmptyString, // title
-    wxExSTC::STC_MENU_SIMPLE | 
-      wxExSTC::STC_MENU_FIND | 
-      wxExSTC::STC_MENU_REPLACE,
-    wxID_ANY,
-    wxDefaultPosition);
+    text);
 
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   m_STC->ResetMargins();
