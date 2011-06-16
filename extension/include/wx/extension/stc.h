@@ -2,7 +2,6 @@
 * File:          stc.h
 * Purpose:       Declaration of class wxExSTC
 * Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
 *
 * Copyright (c) 1998-2009, Anton van Wezenbeek
 * All rights are reserved. Reproduction in whole or part is prohibited
@@ -34,8 +33,6 @@ public:
   enum wxExMenuFlags
   {
     STC_MENU_SIMPLE    = 0x0001, ///< for adding copy/paste etc. menu
-    STC_MENU_FIND      = 0x0002, ///< for adding find menu
-    STC_MENU_REPLACE   = 0x0004, ///< for adding replace menu
     STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
 
     STC_MENU_DEFAULT   = 0xFFFF, ///< all
