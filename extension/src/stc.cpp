@@ -1749,6 +1749,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_FIND_NEXT: 
   case ID_EDIT_FIND_PREVIOUS: 
+    GetFindString();
     FindNext(command.GetId() == ID_EDIT_FIND_NEXT); 
     break;
     
