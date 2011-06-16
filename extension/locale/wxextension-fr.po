@@ -3,12 +3,11 @@
 # Purpose:   Translation for wxextension library to french
 # Author:    Anton van Wezenbeek
 # Created:   2009-12-21
-# RCS-ID:    $Id$
-# Copyright: (c) 2009 Anton van Wezenbeek
+# Copyright: (c) 2011 Anton van Wezenbeek
 # ###############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v0.9.8\n"
+"Project-Id-Version: wxextension v1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-06-11 15:08+0100\n"
 "PO-Revision-Date: 2011-06-11 15:08+0100\n"
