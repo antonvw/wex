@@ -1,7 +1,6 @@
 # File:    syncped-nl.po
 # Purpose: Translation for syncped to dutch.
-# RCS-ID:  $Id$
-# Copyright (c) 1998-2009 Anton van Wezenbeek
+# Copyright (c) 2011 Anton van Wezenbeek
 msgid ""
 msgstr ""
 "Project-Id-Version: syncped v1.1.0\n"
