@@ -1,7 +1,6 @@
 # File:    syncodbcquery-nl.po
 # Purpose: Translation for syncodbcquery to dutch.
-# RCS-ID:  $Id$
-# Copyright (c) 1998-2009 Anton van Wezenbeek
+# Copyright (c) 2011 Anton van Wezenbeek
 msgid ""
 msgstr ""
 "Project-Id-Version: syncodbcquery v1.1.0\n"
