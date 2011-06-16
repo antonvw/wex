@@ -3,9 +3,7 @@
 # Name:      Doxyfile
 # Purpose:   A Doxyfile for wxextension
 # Author:    Anton van Wezenbeek
-# Created:   2007
-# RCS-ID:    $Id$
-# Copyright: (c) 2009 Anton van Wezenbeek
+# Copyright: (c) 2011 Anton van Wezenbeek
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -38,7 +36,7 @@ PROJECT_NAME           = wxextension
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = v0.9.8
+PROJECT_NUMBER         = v1.1.0
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 

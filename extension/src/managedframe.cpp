@@ -270,8 +270,6 @@ void wxExViTextCtrl::OnCommand(wxCommandEvent& event)
 
 void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
 {
-  event.Skip();
-  
   if (!m_Frame->GetViCommandIsFind())
   {
     if (m_vi != NULL)
@@ -330,7 +328,10 @@ void wxExViTextCtrl::OnKey(wxKeyEvent& event)
   }
   else
   {
-    m_UserInput = true;
+    if (key != WXK_RETURN)
+    {
+      m_UserInput = true;
+    }
     
     event.Skip();
   }
