@@ -446,13 +446,6 @@ wxExSTC* Frame::GetSTC()
   }
 }
 
-void Frame::GetViCommand(wxExVi* vi, const wxString& label)
-{
-  DecoratedFrame::GetViCommand(vi, label);
-//  GetManager().GetPane("OUTPUT").Hide();
-//  GetManager().Update();  
-}
-
 void Frame::Log(
   wxLogLevel level,
   const wxString& msg,

@@ -47,9 +47,6 @@ private:
   virtual wxExListView* GetListView();
   virtual wxExListViewFile* GetProject();
   virtual wxExSTC* GetSTC();
-  virtual void GetViCommand(
-    wxExVi* vi, 
-    const wxString& label);
   void NewFile(bool as_project = false);
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
