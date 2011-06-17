@@ -34,14 +34,9 @@ Copyright: (c) 2011, Anton van Wezenbeek
     flags-location="prefix">
 
     <commands>
-      <command> &amp;diffs </command>
-      <command> &amp;get </command>
-      <command> &amp;info </command>
       <command> &amp;print </command>
       <command> &amp;prs </command>
-      <command type = "separator"> &amp;prt </command>
-      <command> &amp;comb </command>
-      <command> &amp;delta </command>
+      <command> &amp;prt </command>
     </commands>
   </vcs>
 
@@ -85,16 +80,13 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <command> &amp;blame </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
-      <command type = "main"> &amp;help </command>
       <command> &amp;log </command>
+      <command> &amp;pull </command>
       <command> &amp;push </command>
       <command> &amp;revert </command>
       <command> &amp;show </command>
       <command> &amp;status </command>
-      <command type = "main" subcommand = "svn"> &amp;rebase </command>
-      <command type = "main" subcommand = "svn"> &amp;dcommit </command>
-      <command type = "main" subcommand = "svn"> &amp;blame </command>
-      <command type = "main" subcommand = "svn"> &amp;help </command>
+      <command type = "main"> &amp;help </command>
     </commands>
   </vcs>
 
