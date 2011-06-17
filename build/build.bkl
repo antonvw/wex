@@ -4,8 +4,7 @@ Name:      build.bkl
 Purpose:   Bakefile for wxextension libraries, samples, tests and applications
 Author:    Anton van Wezenbeek
 Created:   2009-06-17
-RCS-ID:    $Id$
-Copyright: (c) 2009 Anton van Wezenbeek
+Copyright: (c) 2011 Anton van Wezenbeek
 -->
 
 <!--
@@ -350,17 +349,17 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
     
-    <sources>../syncped/src/app.cpp</sources>
-    <sources>../syncped/src/frame.cpp</sources>
-    <sources>../syncped/src/support.cpp</sources>
+    <sources>../syncped/app.cpp</sources>
+    <sources>../syncped/frame.cpp</sources>
+    <sources>../syncped/support.cpp</sources>
     
-    <win32-res>../syncped/src/app.rc</win32-res>
+    <win32-res>../syncped/app.rc</win32-res>
     
-    <headers>../syncped/src/app.h</headers>
-    <headers>../syncped/src/defs.h</headers>
-    <headers>../syncped/src/frame.h</headers>
-    <headers>../syncped/src/support.h</headers>
-    <headers>../syncped/src/version.h</headers>
+    <headers>../syncped/app.h</headers>
+    <headers>../syncped/defs.h</headers>
+    <headers>../syncped/frame.h</headers>
+    <headers>../syncped/support.h</headers>
+    <headers>../syncped/version.h</headers>
     
     <include>../extension/include</include>
     
@@ -387,9 +386,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
     <exe id="syncodbcquery" template="wxgui,wxlike">
       <define>$(VAR_USE_OTL)</define>
-      <sources>../syncodbcquery/src/app.cpp</sources>
-      <win32-res>../syncodbcquery/src/app.rc</win32-res>
-      <headers>../syncodbcquery/src/app.h</headers>
+      <sources>../syncodbcquery/app.cpp</sources>
+      <win32-res>../syncodbcquery/app.rc</win32-res>
+      <headers>../syncodbcquery/app.h</headers>
     
       <include>../extension/include</include>
 
@@ -413,9 +412,9 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
   </if>
 
   <exe id="syncsocketserver" template="wxgui,wxlike">
-    <sources>../syncsocketserver/src/app.cpp</sources>
-    <win32-res>../syncsocketserver/src/app.rc</win32-res>
-    <headers>../syncsocketserver/src/app.h</headers>
+    <sources>../syncsocketserver/app.cpp</sources>
+    <win32-res>../syncsocketserver/app.rc</win32-res>
+    <headers>../syncsocketserver/app.h</headers>
     
     <include>../extension/include</include>
     
