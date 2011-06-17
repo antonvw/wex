@@ -128,6 +128,7 @@ bool wxExManagedFrame::AddToolBarPane(
       .Hide()
       .DockFixed(true)
       .Movable(false)
+      .Row(10)
       .CaptionVisible(false);
   }
   

@@ -205,6 +205,7 @@ Frame::Frame(bool open_recent)
     .Bottom()
     .MaximizeButton(true)
     .MinSize(250, 100).Name("OUTPUT")
+    .Row(0)
     .Caption(_("Output")));
 
   const wxString perspective = wxConfigBase::Get()->Read("Perspective");
@@ -448,8 +449,8 @@ wxExSTC* Frame::GetSTC()
 void Frame::GetViCommand(wxExVi* vi, const wxString& label)
 {
   DecoratedFrame::GetViCommand(vi, label);
-  GetManager().GetPane("OUTPUT").Hide();
-  GetManager().Update();  
+//  GetManager().GetPane("OUTPUT").Hide();
+//  GetManager().Update();  
 }
 
 void Frame::Log(
