@@ -1,12 +1,17 @@
-..................F...
+.......F...........F...
 
 
 !!!FAILURES!!!
 Test Results:
-Run:  21   Failures: 1   Errors: 0
+Run:  21   Failures: 2   Errors: 0
 
 
-1) test: testVCS (F) line: 524 ../extension/test/app/test.cpp
+1) test: testHeader (F) line: 257 ../extension/test/app/test.cpp
+assertion failed
+- Expression: str.Contains("Created")
+
+
+2) test: testVCS (F) line: 525 ../extension/test/app/test.cpp
 assertion failed
 - Expression: vcs.DirExists(wxFileName(TEST_FILE))
 

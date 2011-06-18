@@ -99,7 +99,7 @@ one of these applications, being a full featured source code text editor.
   using format msvc
       nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.1
     
-  - under Ubuntu 10.10 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
+  - under Ubuntu 11.04 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
   (no IDE)
   using gtk version:
       ../configure --with-gtk
