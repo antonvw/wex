@@ -1,18 +1,14 @@
-/******************************************************************************\
-* File:          intro.h
-* Purpose:       Interface file containing Doxyfile reference for mainpage
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2008-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      intro.h
+// Purpose:   Interface file containing Doxyfile reference for mainpage
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
 \mainpage wxextension Main Page
 
-This is a <a href="http://svn.xp-dev.com/svn/wxextension/">public source code library</a>
+This is a <a href="https://antonvw@github.com/antonvw/wxExtension.git">public source code library</a>
 containing a collection of wxWidgets extension classes.
 
 <p>
@@ -25,5 +21,5 @@ There are also some classes to support database programming using the
 
 <p>
 For building instruction see 
-<a href="http://svn.xp-dev.com/svn/wxextension/trunk/documentation/sdp.txt">sdp</a>.
+<a href="https://github.com/antonvw/wxExtension/blob/master/README.md">READE</a>.
 */

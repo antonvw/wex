@@ -2,25 +2,16 @@ wxExtension contains a wxWidgets extension library, adding xml lexer
 configuration and usefull classes to wxWidgets, 
 and some applications that show how to use it.
 
-The <a href="http://syncped.1.xpdev-hosted.com/">syncped</a> application is 
+The <a href="http://antonvw.github.com/syncped/">syncped</a> application is 
 one of these applications, being a full featured source code text editor. 
 
 ## General
 
 - git repository 
   - on github https://github.com/antonvw/wxExtension  
-
-  - git access use
-    git svn clone http://svn.xp-dev.com/svn/wxextension/
-  to create a git clone.
-  use
-    git commit -am "your comment" to update your local repository
-    git svn dcommit to commit your changes to svn repository
-  use 
-    git svn rebase to fetch changes from svn repository
-
+  
   - wxWidgets 2.9.1 is used as a stable master branch
-    - the mac-os branch is added because the master uses c++0x flags, not supported
+  - the mac-os branch is added because the master uses c++0x flags, not supported
     by gcc 4.0.1 under mac os 10.4
 
 - old subversion repository 
