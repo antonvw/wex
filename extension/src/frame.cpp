@@ -3,8 +3,7 @@
 // Purpose:   Implementation of wxExFrame class
 // Author:    Anton van Wezenbeek
 // Created:   2010-03-26
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -58,6 +57,7 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_MENU(ID_FOCUS, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_MENUBAR, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_STATUSBAR, wxExFrame::OnCommand)
+  EVT_MENU(ID_VIEW_TITLEBAR, wxExFrame::OnCommand)
   EVT_UPDATE_UI(ID_VIEW_MENUBAR, wxExFrame::OnUpdateUI)
   EVT_UPDATE_UI(ID_VIEW_STATUSBAR, wxExFrame::OnUpdateUI)
 #if wxUSE_STATUSBAR
@@ -105,10 +105,11 @@ void wxExFrame::Initialize()
   SetDropTarget(new FileDropTarget(this));
 #endif
 
-  wxAcceleratorEntry entries[3];
+  wxAcceleratorEntry entries[4];
   entries[0].Set(wxACCEL_NORMAL, WXK_F5, wxID_FIND);
   entries[1].Set(wxACCEL_NORMAL, WXK_F6, wxID_REPLACE);
   entries[2].Set(wxACCEL_CTRL, (int)'B', ID_VIEW_MENUBAR);
+  entries[3].Set(wxACCEL_CTRL, (int)'T', ID_VIEW_TITLEBAR);
 
   wxAcceleratorTable accel(WXSIZEOF(entries), entries);
   SetAcceleratorTable(accel);
@@ -168,6 +169,19 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       SendSizeEvent();
     }
 #endif    
+    break;
+    
+  case ID_VIEW_TITLEBAR:
+    if (!(GetWindowStyleFlag() & wxCAPTION))
+    {
+      SetWindowStyleFlag(GetWindowStyleFlag() & wxCAPTION);
+      Refresh();
+    }
+    else
+    {
+      SetWindowStyleFlag(GetWindowStyleFlag() & ~wxCAPTION);
+      Refresh();
+    }
     break;
 
   default: wxFAIL; break;

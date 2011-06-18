@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          support.cpp
-* Purpose:       Implementation of DecoratedFrame class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      support.cpp
+// Purpose:   Implementation of DecoratedFrame class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -32,8 +28,8 @@ DecoratedFrame::DecoratedFrame()
       NULL,
       wxID_ANY,
       wxTheApp->GetAppDisplayName(), // title
-      25,                     // maxFiles
-      4)                      // maxProjects
+      25,                            // maxFiles
+      4)                             // maxProjects
 {
   SetIcon(wxICON(app));
 

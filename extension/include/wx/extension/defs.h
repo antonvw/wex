@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          defs.h
-* Purpose:       Common defs for all wxExtension classes
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      defs.h
+// Purpose:   Common defs for all wxExtension classes
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDEFS_H
 #define _EXDEFS_H
@@ -50,6 +46,7 @@ enum wxExId
 
   ID_VIEW_MENUBAR,
   ID_VIEW_STATUSBAR,
+  ID_VIEW_TITLEBAR,
 
   ID_VIEW_LOWEST,        // aui panes that can be toggled
   ID_VIEW_FINDBAR,
