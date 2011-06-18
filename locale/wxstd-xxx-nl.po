@@ -1,16 +1,15 @@
 # Name:      wxstd-xxx-nl.po
 # Purpose:   Extra translations for items not present or incorrect in wx nl.mo.
-# RCS-ID:    $Id$
 # Author:    Anton van Wezenbeek
 # Created:   2010-03-07
-# Copyright: (c) 2010 Anton van Wezenbeek
+# Copyright: (c) 2011 Anton van Wezenbeek
 
 # The Save As and Select All under Ubuntu should be
 # changed in nl.po as well, do not understand why.
 
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v0.9.8\n"
+"Project-Id-Version: wxextension v1.1.0\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
