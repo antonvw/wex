@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          vcs.cpp
-* Purpose:       Implementation of wxExVCS class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      vcs.cpp
+// Purpose:   Implementation of wxExVCS class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -165,12 +161,10 @@ bool wxExVCS::DirExists(const wxFileName& filename)
 {
   const wxString vcs = FindEntry(filename).GetName();
 
-  // When adding a vcs, also check FindEntry.
-  if ((vcs == "git" || vcs == "mercurial") && CheckPathAll(vcs, filename))
+  if (IsCheckPathAllVCS(vcs) && CheckPathAll(vcs, filename))
   {
     return true;
   }
-  // This is the default check.
   else 
   {
     return CheckPath(vcs, filename);
@@ -209,7 +203,11 @@ long wxExVCS::Execute()
     else if (m_Entry.GetName() == "git")
     {
       wd = filename.GetPath();
-      file = "\"" + filename.GetFullName() + "\"";
+      
+      if (!filename.GetFullName().empty())
+      {
+        file = "\"" + filename.GetFullName() + "\"";
+      }
     }
     else if (m_Entry.GetName() == "SCCS")
     {
@@ -245,8 +243,7 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
       {
         const wxString name = it->second.GetName();
 
-        if ((name == "git" || name == "mercurial") &&
-             CheckPathAll(name, filename))
+        if (IsCheckPathAllVCS(name) && CheckPathAll(name, filename))
         {
           return it->second;
         }
@@ -277,6 +274,11 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 const wxString wxExVCS::GetFile() const
 {
   return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
+}
+
+bool wxExVCS::IsCheckPathAllVCS(const wxString& vcs)
+{
+  return vcs == "git" || vcs == "mercurial";
 }
 
 bool wxExVCS::Read()

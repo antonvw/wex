@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          vcs.h
-* Purpose:       Declaration of wxExVCS class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      vcs.h
+// Purpose:   Declaration of wxExVCS class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCS_H
 #define _EXVCS_H
@@ -96,6 +92,7 @@ private:
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
+  static bool IsCheckPathAllVCS(const wxString& vcs);
   
   wxExVCSEntry m_Entry;
 
