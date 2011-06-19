@@ -260,7 +260,7 @@ void wxExAppTestFixture::testHeader()
   wxExFileName newfile("XXXXXXX");
   wxExHeader newheader;
   newheader.Set("hello test", "AvW");
-  const wxString newstr = newheader.Get(&filename);
+  const wxString newstr = newheader.Get(&newfile);
   
   CPPUNIT_ASSERT(newstr.Contains("Created"));
 }

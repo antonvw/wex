@@ -319,8 +319,14 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     
   case ID_SHOW_VCS:
     {
+    wxFileDialog openFileDialog(this, _("Open File"), "", "",
+      "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+      return;     // the user changed idea...
+        
     wxArrayString ar;
-    ar.Add("../app.cpp");
+    ar.Add(openFileDialog.GetPath());
     wxExVCS vcs(ar);
     wxLogMessage(vcs.GetEntry().GetName());
     
