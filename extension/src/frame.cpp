@@ -174,7 +174,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   case ID_VIEW_TITLEBAR:
     if (!(GetWindowStyleFlag() & wxCAPTION))
     {
-      SetWindowStyleFlag(GetWindowStyleFlag() & wxCAPTION);
+      SetWindowStyleFlag(wxDEFAULT_FRAME_STYLE);
       Refresh();
     }
     else
