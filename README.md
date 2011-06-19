@@ -81,40 +81,40 @@ one of these applications, being a full featured source code text editor.
   http://www.bakefile.org/
   this is done in the build dir:
     
-  - under windows using Microsoft Visual Studio 2010
-  Version 10.0.30319.1 RTMRel
-  using format msvs2008prj
-  TODO: fix, this no longer works
-    
-  - under windows using command line prompt
-  using format msvc
-      nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.1
-    
-  - under Ubuntu 11.04 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
-  (no IDE)
-  using gtk version:
-      ../configure --with-gtk
-  GNUMakefile generated using format gnu
-
-  - under SunOS using the Sun make gives errors,
-  you have to use GNU make (/usr/sfw/bin)
-  and the -mt option should be removed from generated Makefile, and
-  option -w should be added
-  this config command was used (socket file did not compile, and
-  glcancas neither):
-      ../configure --with-gtk --disable-sockets --without-opengl
-  than libs were built, but listctrl and auidemo both crashed, no
-  more attempts (wxWidgets 2.9.1).
-
-  - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)
-      ../configure --with-msw
-  do a make and a make install
-  Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
-  Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
-    
-  - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
-    ../configure --with-mac
-
+    - under windows using Microsoft Visual Studio 2010
+    Version 10.0.30319.1 RTMRel
+    using format msvs2008prj
+    TODO: fix, this no longer works
+      
+    - under windows using command line prompt
+    using format msvc
+        nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.1
+      
+    - under Ubuntu 11.04 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
+    (no IDE)
+    using gtk version:
+        ../configure --with-gtk
+    GNUMakefile generated using format gnu
+  
+    - under SunOS using the Sun make gives errors,
+    you have to use GNU make (/usr/sfw/bin)
+    and the -mt option should be removed from generated Makefile, and
+    option -w should be added
+    this config command was used (socket file did not compile, and
+    glcancas neither):
+        ../configure --with-gtk --disable-sockets --without-opengl
+    than libs were built, but listctrl and auidemo both crashed, no
+    more attempts (wxWidgets 2.9.1).
+  
+    - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)
+        ../configure --with-msw
+    do a make and a make install
+    Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
+    Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
+      
+    - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
+      ../configure --with-mac
+  
   - debug under Windows using IDE, under Linux using Kdbg
 
   - deploy under Windows using 7-Zip 9.20
