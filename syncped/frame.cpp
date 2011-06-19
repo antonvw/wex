@@ -625,8 +625,7 @@ void Frame::OnCommand(wxCommandEvent& event)
   case wxID_EXIT: Close(true); break;
   
   case wxID_HELP:
-    wxLaunchDefaultBrowser(wxString("http://syncped.1.xpdev-hosted.com/tags/v") + 
-      APPL_VERSION + wxString("/syncped.htm"));
+    wxLaunchDefaultBrowser("http://antonvw.github.com/syncped/syncped.htm");
     break;
     
   case wxID_NEW: NewFile(); break;
