@@ -311,21 +311,27 @@ void Frame::AddAsciiTable(wxExSTC* stc)
 
 void Frame::AddHeader(wxExSTC* stc)
 {
-  const wxExHeader header;
-
-  if (header.ShowDialog(this) != wxID_CANCEL)
+  const wxString sel = stc->GetSelectedText();
+  const wxExHeader header(sel);
+  
+  if (sel.empty())
   {
-    if (stc->GetLexer().GetScintillaLexer() == "hypertext")
+    if (header.ShowDialog(this) == wxID_CANCEL)
     {
-      stc->GotoLine(1);
+      return;
     }
-    else
-    {
-      stc->DocumentStart();
-    }
-
-    stc->AddText(header.Get(&stc->GetFile().GetFileName()));
   }
+
+  if (stc->GetLexer().GetScintillaLexer() == "hypertext")
+  {
+    stc->GotoLine(1);
+  }
+  else
+  {
+    stc->DocumentStart();
+  }
+  
+  stc->AddText(header.Get(&stc->GetFile().GetFileName()));
 }
 
 wxExListViewWithFrame* Frame::AddPage(

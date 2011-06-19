@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          header.h
-* Purpose:       Declaration of wxExHeader class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      header.h
+// Purpose:   Declaration of wxExHeader class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXHEADER_H
 #define _EXHEADER_H
@@ -21,7 +17,12 @@ class WXDLLIMPEXP_BASE wxExHeader
 {
 public:
   /// Default constructor.
-  wxExHeader();
+  /// Sets fields if purpose is not empty.
+  wxExHeader(
+    const wxString& purpose = wxEmptyString, 
+    const wxString& author = wxEmptyString,
+    const wxString& email = wxEmptyString,
+    const wxString& license = wxEmptyString);
 
   /// Returns a file header for specified filename,
   /// using it's lexer and data from config,

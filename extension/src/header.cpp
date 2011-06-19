@@ -16,12 +16,20 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-wxExHeader::wxExHeader()
+wxExHeader::wxExHeader(
+  const wxString& purpose, 
+  const wxString& author,
+  const wxString& email,
+  const wxString& license)
   : m_TextAuthor(_("Author"))
   , m_TextEmail(_("Email"))
   , m_TextLicense(_("License"))
   , m_TextPurpose(_("Purpose"))
 {
+  if (!purpose.empty())
+  {
+    Set(purpose, author, email, license);
+  }
 }
 
 const wxString wxExHeader::Get(const wxExFileName* filename) const
