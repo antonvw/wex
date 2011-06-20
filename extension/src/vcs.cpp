@@ -273,7 +273,32 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 
 const wxString wxExVCS::GetFile() const
 {
-  return (m_Files.empty() ? wxExConfigFirstOf(_("Base folder")): m_Files[0]);
+  if (m_Files.empty())
+  {
+    const wxString& folder = wxExConfigFirstOf(_("Base folder"));
+    
+    if (folder.empty())
+    {
+      wxDirDialog dlg(NULL);
+      
+      if (dlg.ShowModal() == wxID_OK)
+      {
+        return dlg.GetPath();
+      }
+      else
+      {
+        return wxEmptyString;
+      }
+    }
+    else
+    {
+      return folder;
+    }
+  }
+  else
+  {
+    return m_Files[0];
+  }
 }
 
 bool wxExVCS::IsCheckPathAllVCS(const wxString& vcs)
