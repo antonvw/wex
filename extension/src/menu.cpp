@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          menu.cpp
-* Purpose:       Implementation of wxExMenu class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      menu.cpp
+// Purpose:   Implementation of wxExMenu class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -213,7 +209,10 @@ bool wxExMenu::AppendVCS(const wxFileName& filename)
 {
   if (!filename.IsOk())
   {
-    const wxExVCS vcs;
+    const wxExVCS vcs(
+      wxArrayString(),
+      -1,
+      wxTheApp->GetTopWindow());
        
     if (vcs.Use())
     {

@@ -34,7 +34,10 @@ public:
     /// a combobox for selecting a vcs folder.
     const wxArrayString& files = wxArrayString(),
     /// The menu command id that is used to set the vcs command.
-    int menu_id = -1);
+    int menu_id = -1,
+    /// Parent window for showing dir dialog if 
+    /// there is not a current directory.
+    wxWindow* parent = NULL);
   
   /// Constructor for vcs from specified filename.
   wxExVCS(
@@ -67,6 +70,10 @@ public:
   /// Gets the xml filename.
   static const wxFileName& GetFileName() {return m_FileName;};
   
+  /// Returns name for current vcs entry, or empty string
+  /// if vcs is not used.
+  const wxString GetName() const;
+  
   /// Reads all vcs (first clears them) from file.
   /// Returns true if the file could be read and loaded as valid xml file.
   static bool Read();
@@ -91,7 +98,7 @@ private:
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
-  const wxString GetFile() const;
+  const wxString GetFile(wxWindow* parent = NULL) const;
   static bool IsCheckPathAllVCS(const wxString& vcs);
   
   wxExVCSEntry m_Entry;

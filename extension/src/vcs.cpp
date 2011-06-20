@@ -19,10 +19,10 @@
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxFileName wxExVCS::m_FileName;
 
-wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
+wxExVCS::wxExVCS(const wxArrayString& files, int menu_id, wxWindow* parent)
   : m_Files(files)
 {
-  m_Entry = FindEntry(GetFile());
+  m_Entry = FindEntry(GetFile(parent));
   
   if (!m_Entry.GetName().empty())
   {
@@ -271,18 +271,19 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   return wxExVCSEntry();
 }
 
-const wxString wxExVCS::GetFile() const
+const wxString wxExVCS::GetFile(wxWindow* parent) const
 {
   if (m_Files.empty())
   {
     const wxString& folder = wxExConfigFirstOf(_("Base folder"));
     
-    if (folder.empty())
+    if ((folder.empty() || !DirExists(wxFileName(folder))) && parent != NULL)
     {
-      wxDirDialog dlg(NULL);
+      wxDirDialog dlg(parent);
       
       if (dlg.ShowModal() == wxID_OK)
       {
+        wxConfigBase::Get()->Write(_("Base folder"), dlg.GetPath());
         return dlg.GetPath();
       }
       else
@@ -298,6 +299,22 @@ const wxString wxExVCS::GetFile() const
   else
   {
     return m_Files[0];
+  }
+}
+
+const wxString wxExVCS::GetName() const
+{
+  if (!Use())
+  {
+    return wxEmptyString;
+  }
+  else if (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) == VCS_AUTO)
+  {
+    return "Auto";
+  }
+  else
+  {
+    return m_Entry.GetName();
   }
 }
 
