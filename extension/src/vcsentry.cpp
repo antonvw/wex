@@ -97,11 +97,6 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
 #if wxUSE_GUI
 int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 {
-  if (GetBin().empty()) 
-  {
-    return 0;
-  }
-  
   wxMenu* submenu = NULL;
 
   const wxString unused = "XXXXX";  
