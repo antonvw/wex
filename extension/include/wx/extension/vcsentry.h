@@ -25,7 +25,7 @@ public:
   wxExVCSEntry();
   
   /// Constructor using xml node.
-  wxExVCSEntry(const wxXmlNode* node);
+  wxExVCSEntry(const wxXmlNode* node, int no);
 
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
@@ -52,10 +52,6 @@ public:
   /// Gets the no.
   int GetNo() const {return m_No;};
   
-  /// Resets the number of instances, so the no
-  /// will start from begin again.
-  static void ResetInstances();
-
   /// Sets the current vcs command.
   void SetCommand(int menu_id);
 
@@ -85,8 +81,6 @@ private:
   void AddCommands(const wxXmlNode* node);
   const wxString GetBin() const;
 
-  static int m_Instances;
-  
   // no const, as entry is set using operator+ in wxExVCS.
   bool m_SupportKeywordExpansion;
   int m_CommandId;

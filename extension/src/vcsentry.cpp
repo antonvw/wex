@@ -18,8 +18,6 @@
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 
-int wxExVCSEntry::m_Instances = wxExVCS::VCS_AUTO + 1;
-
 wxExVCSEntry::wxExVCSEntry()
   : m_No(-1)
   , m_CommandId(0)
@@ -30,8 +28,8 @@ wxExVCSEntry::wxExVCSEntry()
   m_Commands.push_back(wxExVCSCommand());
 }
 
-wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
-  : m_No(m_Instances++)
+wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node, int no)
+  : m_No(no)
   , m_CommandId(0)
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
@@ -234,11 +232,6 @@ const wxString wxExVCSEntry::GetBin() const
 const wxString wxExVCSEntry::GetFlags() const
 {
   return wxConfigBase::Get()->Read(_("Flags"));
-}
-
-void wxExVCSEntry::ResetInstances()
-{
-  m_Instances = wxExVCS::VCS_AUTO + 1;
 }
 
 void wxExVCSEntry::SetCommand(int menu_id)

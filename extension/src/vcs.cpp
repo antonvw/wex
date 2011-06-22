@@ -36,16 +36,13 @@ wxExVCS::wxExVCS(const wxArrayString& files, int menu_id, wxWindow* parent)
   }
   else
   {
-    // This should not really occur,
-    // give some defaults to be able to fix this
-    // using the dialog.
     m_Caption = "VCS";
   }
 }
 
 bool wxExVCS::CheckPath(const wxString& vcs, const wxFileName& fn)
 {
-  if (!fn.IsOk() || vcs.empty())
+  if (vcs.empty() || !fn.IsOk())
   {
     return false;
   }
@@ -275,7 +272,7 @@ const wxString wxExVCS::GetFile(wxWindow* parent) const
 {
   if (m_Files.empty())
   {
-    const wxString& folder = wxExConfigFirstOf(_("Base folder"));
+    const wxString folder = wxExConfigFirstOf(_("Base folder"));
     
     if ((folder.empty() || !DirExists(wxFileName(folder))) && parent != NULL)
     {
@@ -283,7 +280,9 @@ const wxString wxExVCS::GetFile(wxWindow* parent) const
       
       if (dlg.ShowModal() == wxID_OK)
       {
-        wxConfigBase::Get()->Write(_("Base folder"), dlg.GetPath());
+        wxConfigBase::Get()->Write(_("Base folder"), 
+          dlg.GetPath() + wxFileName::GetPathSeparator());
+          
         return dlg.GetPath();
       }
       else
@@ -310,7 +309,16 @@ const wxString wxExVCS::GetName() const
   }
   else if (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) == VCS_AUTO)
   {
-    return "Auto";
+    const wxString name = m_Entry.GetName();
+    
+    if (!name.empty())
+    {
+      return name;
+    }
+    else
+    {
+      return "Auto";
+    }
   }
   else
   {
@@ -343,7 +351,6 @@ bool wxExVCS::Read()
   const int old_entries = m_Entries.size();
   
   m_Entries.clear();
-  wxExVCSEntry::ResetInstances();
 
   wxXmlNode* child = doc.GetRoot()->GetChildren();
 
@@ -351,7 +358,7 @@ bool wxExVCS::Read()
   {
     if (child->GetName() == "vcs")
     {
-      const wxExVCSEntry vcs(child);
+      const wxExVCSEntry vcs(child, m_Entries.size() + VCS_MAX);
       m_Entries.insert(std::make_pair(vcs.GetName(), vcs));
     }
 

@@ -18,15 +18,6 @@
 class WXDLLIMPEXP_BASE wxExVCS
 {
 public:
-  // The vcs id's here can be set using the config dialog, and are not
-  // present in the vcs.xml. These enums should be public,
-  // as new entries should start after the last one here.
-  enum
-  {
-    VCS_NONE = 0, // no version control
-    VCS_AUTO, // uses the VCS appropriate for current file
-  };
-
   /// Default constructor.
   wxExVCS(
     /// Specify several files for which you want vcs action.
@@ -95,6 +86,15 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
+  // The vcs id's here can be set using the config dialog, and are not
+  // present in the vcs.xml. 
+  enum
+  {
+    VCS_NONE = 0, // no version control
+    VCS_AUTO, // uses the VCS appropriate for current file
+    VCS_MAX
+  };
+
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
