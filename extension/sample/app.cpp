@@ -328,7 +328,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     wxArrayString ar;
     ar.Add(openFileDialog.GetPath());
     wxExVCS vcs(ar);
-    wxLogMessage(vcs.GetEntry().GetName());
+    wxLogMessage(vcs.GetName());
     
     if (vcs.GetEntry().SupportKeywordExpansion())
     {

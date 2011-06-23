@@ -2,9 +2,7 @@
 // Name:      vcsentry.h
 // Purpose:   Declaration of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Created:   2010-08-27
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCSENTRY_H
@@ -14,7 +12,7 @@
 #include <wx/menu.h>
 #include <wx/xml/xml.h>
 #include <wx/extension/command.h>
-#include <wx/extension/filename.h>
+#include <wx/extension/lexer.h>
 #include <wx/extension/vcscommand.h>
 
 /// This class collects a single vcs.
@@ -35,7 +33,7 @@ public:
 
   /// Executes the current command for this vcs.
   long Execute(
-    const wxExFileName& filename,
+    const wxExLexer& lexer,
     const wxString& args,
     const wxString& wd = wxEmptyString);
   
@@ -90,7 +88,7 @@ private:
   wxString m_FlagsKey;
   wxString m_Name;
   
-  wxExFileName m_FileName;
+  wxExLexer m_Lexer;
 
   std::vector<wxExVCSCommand> m_Commands;
 };

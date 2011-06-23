@@ -545,8 +545,6 @@ void wxExAppTestFixture::testVCS()
 
 void wxExAppTestFixture::testVCSCommand()
 {
-  wxExVCSCommand::ResetInstances();
-  
   const wxExVCSCommand add("a&dd");
   const wxExVCSCommand blame("blame");
   const wxExVCSCommand co("checkou&t");

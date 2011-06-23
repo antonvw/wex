@@ -2,9 +2,7 @@
 // Name:      vcsentry.cpp
 // Purpose:   Implementation of wxExVCSEntry class
 // Author:    Anton van Wezenbeek
-// Created:   2010-08-27
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -66,8 +64,6 @@ wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node, int no)
 
 void wxExVCSEntry::AddCommands(const wxXmlNode* node)
 {
-  wxExVCSCommand::ResetInstances();
-
   wxXmlNode* child = node->GetChildren();
 
   while (child)
@@ -86,7 +82,7 @@ void wxExVCSEntry::AddCommands(const wxXmlNode* node)
         const wxString subcommand = child->GetAttribute("subcommand");
         
         m_Commands.push_back(
-          wxExVCSCommand(content, attrib, submenu, subcommand));
+          wxExVCSCommand(content, m_Commands.size(), attrib, submenu, subcommand));
       }
     }
     
@@ -160,11 +156,30 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 #endif
 
 long wxExVCSEntry::Execute(
-  const wxExFileName& filename,
+  const wxExLexer& lexer,
   const wxString& args,
   const wxString& wd)
 {
-  m_FileName = filename;
+  if (GetBin().empty())
+  {
+#if defined(__WXMSW__) || defined(__OS2__)
+    const wxString wc = "*.exe";
+#else // Unix/Mac
+    const wxString wc(wxFileSelectorDefaultWildcardStr);
+#endif
+
+    wxFileDialog 
+      dlg(NULL, m_Name, "", "", wc, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return -1;
+    }
+        
+    wxConfigBase::Get()->Write(m_Name, dlg.GetPath());
+  }
+  
+  m_Lexer = lexer;
   
   wxString prefix;
   
@@ -335,7 +350,7 @@ void wxExVCSEntry::ShowOutput(const wxString& caption) const
     {
       wxExVCSCommandOnSTC(
         GetCommand(), 
-        m_FileName.GetLexer(), 
+        m_Lexer, 
         GetDialog()->GetSTC());
     }
   }

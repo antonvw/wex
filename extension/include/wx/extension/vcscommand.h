@@ -2,9 +2,7 @@
 // Name:      vcscommand.h
 // Purpose:   Declaration of wxExVCSCommand class
 // Author:    Anton van Wezenbeek
-// Created:   2010-08-27
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVCSCOMMAND_H
@@ -28,13 +26,15 @@ public:
   /// Default constructor.
   wxExVCSCommand();
 
-  /// Constructor, specify command and type.
-  /// The submenu member is set to specified submenu if not empty,
-  /// otherwise to specified subcommand.
-  /// Sets the no to number of instances and increments the instances.
+  /// Constructor.
   wxExVCSCommand(
+    /// Specify command.
     const wxString& command,
+    /// The no.
+    int no,
     const wxString& type = wxEmptyString,
+    /// The submenu member is set to specified submenu if not empty,
+    /// otherwise to specified subcommand.
     const wxString& submenu = wxEmptyString,
     const wxString& subcommand = wxEmptyString);
 
@@ -80,10 +80,6 @@ public:
   /// Returns true if this is a update like command.
   bool IsUpdate() const;
 
-  /// Resets the number of instances, so the no
-  /// will start from 0 again.
-  static void ResetInstances() {m_Instances = 0;};
-  
   /// Returns true if flags can be used for this command.
   bool UseFlags() const;
     
@@ -92,8 +88,6 @@ public:
 private:
   int From(const wxString& type) const;
 
-  static int m_Instances;
-  
   wxString m_Command;
   wxString m_SubMenu;
 

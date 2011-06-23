@@ -2,9 +2,7 @@
 // Name:      command.cpp
 // Purpose:   Implementation of wxExCommand class
 // Author:    Anton van Wezenbeek
-// Created:   2010-11-26
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -79,8 +77,6 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   m_Error = (retValue == -1);
   m_Output = wxJoin(errors, '\n') + wxJoin(output, '\n');
   
-  wxLogStatus(_("Ready"));
-
   return retValue;
 }
 

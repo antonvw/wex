@@ -154,6 +154,25 @@ int wxExVCS::ConfigDialog(
 }
 #endif
 
+wxString wxExVCS::CurrentVCS(const wxFileName& filename)
+{
+  const wxString vcs = FindEntry(filename).GetName();
+
+  if (IsCheckPathAllVCS(vcs) && CheckPathAll(vcs, filename))
+  {
+    return vcs;
+  }
+  else 
+  {
+    if (CheckPath(vcs, filename))
+    {
+      return vcs;
+    }
+  }
+  
+  return wxEmptyString;
+}
+
 bool wxExVCS::DirExists(const wxFileName& filename)
 {
   const wxString vcs = FindEntry(filename).GetName();
@@ -222,7 +241,7 @@ long wxExVCS::Execute()
     }
   }
 
-  return m_Entry.Execute(wxExFileName(GetFile()), file, wd);
+  return m_Entry.Execute(wxExFileName(GetFile()).GetLexer(), file, wd);
 }
 
 const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
@@ -274,7 +293,10 @@ const wxString wxExVCS::GetFile(wxWindow* parent) const
   {
     const wxString folder = wxExConfigFirstOf(_("Base folder"));
     
-    if ((folder.empty() || !DirExists(wxFileName(folder))) && parent != NULL)
+    if (
+      folder.empty() 
+      // || CurrentVCS(wxFileName(folder)) != m_Entry.GetName()) 
+      && parent != NULL)
     {
       wxDirDialog dlg(parent);
       
@@ -309,16 +331,7 @@ const wxString wxExVCS::GetName() const
   }
   else if (wxConfigBase::Get()->ReadLong("VCS", VCS_AUTO) == VCS_AUTO)
   {
-    const wxString name = m_Entry.GetName();
-    
-    if (!name.empty())
-    {
-      return name;
-    }
-    else
-    {
-      return "Auto";
-    }
+    return "Auto";
   }
   else
   {
