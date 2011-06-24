@@ -1044,7 +1044,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       auto* editor = GetSTC();
       auto* list = (wxExListViewFile*)GetListView();
 
-      if (list == NULL && editor != NULL && editor->IsShown())
+      if (editor != NULL && editor->HasFocus())
       {
         event.Enable(true);
 
@@ -1119,7 +1119,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           wxFAIL;
         }
       }
-      else if (list != NULL)
+      else if (list != NULL && list->HasFocus())
       {
         event.Enable(false);
 

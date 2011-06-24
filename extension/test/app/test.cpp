@@ -545,14 +545,14 @@ void wxExAppTestFixture::testVCS()
 
 void wxExAppTestFixture::testVCSCommand()
 {
-  const wxExVCSCommand add("a&dd");
-  const wxExVCSCommand blame("blame");
-  const wxExVCSCommand co("checkou&t");
-  const wxExVCSCommand commit("commit", "main");
-  const wxExVCSCommand diff("diff", "popup", "submenu");
-  const wxExVCSCommand log("log", "main");
-  const wxExVCSCommand help("h&elp", "error", "", "m&e");
-  const wxExVCSCommand update("update");
+  const wxExVCSCommand add("a&dd", 0);
+  const wxExVCSCommand blame("blame", 1);
+  const wxExVCSCommand co("checkou&t", 2);
+  const wxExVCSCommand commit("commit", 3, "main");
+  const wxExVCSCommand diff("diff", 4, "popup", "submenu");
+  const wxExVCSCommand log("log", 5, "main");
+  const wxExVCSCommand help("h&elp", 6, "error", "", "m&e");
+  const wxExVCSCommand update("update", 7);
   const wxExVCSCommand none;
 
   CPPUNIT_ASSERT(add.GetCommand() == "add");

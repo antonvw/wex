@@ -19,10 +19,14 @@
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxFileName wxExVCS::m_FileName;
 
-wxExVCS::wxExVCS(const wxArrayString& files, int menu_id, wxWindow* parent)
+wxExVCS::wxExVCS()
+{
+}
+
+wxExVCS::wxExVCS(const wxArrayString& files, int menu_id)
   : m_Files(files)
 {
-  m_Entry = FindEntry(GetFile(parent));
+  m_Entry = FindEntry(GetFile());
   
   if (!m_Entry.GetName().empty())
   {
@@ -154,25 +158,6 @@ int wxExVCS::ConfigDialog(
 }
 #endif
 
-wxString wxExVCS::CurrentVCS(const wxFileName& filename)
-{
-  const wxString vcs = FindEntry(filename).GetName();
-
-  if (IsCheckPathAllVCS(vcs) && CheckPathAll(vcs, filename))
-  {
-    return vcs;
-  }
-  else 
-  {
-    if (CheckPath(vcs, filename))
-    {
-      return vcs;
-    }
-  }
-  
-  return wxEmptyString;
-}
-
 bool wxExVCS::DirExists(const wxFileName& filename)
 {
   const wxString vcs = FindEntry(filename).GetName();
@@ -287,35 +272,39 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
   return wxExVCSEntry();
 }
 
-const wxString wxExVCS::GetFile(wxWindow* parent) const
+bool wxExVCS::GetDir(wxWindow* parent)
+{
+  if (!Use())
+  {
+    return false;
+  }
+  
+  wxString folder = wxExConfigFirstOf(_("Base folder"));
+  
+  if (folder.empty()) 
+  {
+    wxDirDialog dlg(parent);
+    
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
+    
+    folder = dlg.GetPath() + wxFileName::GetPathSeparator();
+    
+    wxConfigBase::Get()->Write(_("Base folder"), folder);
+  }
+  
+  m_Entry = FindEntry(folder);
+  
+  return true;
+}
+
+const wxString wxExVCS::GetFile() const
 {
   if (m_Files.empty())
   {
-    const wxString folder = wxExConfigFirstOf(_("Base folder"));
-    
-    if (
-      folder.empty() 
-      // || CurrentVCS(wxFileName(folder)) != m_Entry.GetName()) 
-      && parent != NULL)
-    {
-      wxDirDialog dlg(parent);
-      
-      if (dlg.ShowModal() == wxID_OK)
-      {
-        wxConfigBase::Get()->Write(_("Base folder"), 
-          dlg.GetPath() + wxFileName::GetPathSeparator());
-          
-        return dlg.GetPath();
-      }
-      else
-      {
-        return wxEmptyString;
-      }
-    }
-    else
-    {
-      return folder;
-    }
+    return wxExConfigFirstOf(_("Base folder"));
   }
   else
   {

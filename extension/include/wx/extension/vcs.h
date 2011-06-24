@@ -19,16 +19,14 @@ class WXDLLIMPEXP_BASE wxExVCS
 {
 public:
   /// Default constructor.
+  wxExVCS();
+    
+  /// Constructor.
   wxExVCS(
     /// Specify several files for which you want vcs action.
-    /// If this array is empty, ShowDialog will show
-    /// a combobox for selecting a vcs folder.
-    const wxArrayString& files = wxArrayString(),
+    const wxArrayString& files,
     /// The menu command id that is used to set the vcs command.
-    int menu_id = -1,
-    /// Parent window for showing dir dialog if 
-    /// there is not a current directory.
-    wxWindow* parent = NULL);
+    int menu_id = -1);
   
   /// Constructor for vcs from specified filename.
   wxExVCS(
@@ -54,6 +52,13 @@ public:
   
   /// Gets the number of vcs entries.
   static int GetCount() {return m_Entries.size();};
+  
+  /// ShowDialog will show
+  /// a combobox for selecting a vcs folder.
+  bool GetDir(
+    /// Parent window for showing dir dialog if 
+    /// there is not a current directory.
+    wxWindow* parent = NULL);
 
   /// Gets the current vcs entry.
   const wxExVCSEntry& GetEntry() const {return m_Entry;};
@@ -97,9 +102,8 @@ private:
 
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
-  static wxString CurrentVCS(const wxFileName& filename);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
-  const wxString GetFile(wxWindow* parent = NULL) const;
+  const wxString GetFile() const;
   static bool IsCheckPathAllVCS(const wxString& vcs);
   
   wxExVCSEntry m_Entry;

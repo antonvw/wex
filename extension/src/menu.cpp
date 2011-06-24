@@ -209,12 +209,9 @@ bool wxExMenu::AppendVCS(const wxFileName& filename)
 {
   if (!filename.IsOk())
   {
-    const wxExVCS vcs(
-      wxArrayString(),
-      -1,
-      wxTheApp->GetTopWindow());
+    wxExVCS vcs;
        
-    if (vcs.Use())
+    if (vcs.GetDir(wxTheApp->GetTopWindow()))
     {
       const int vcs_offset_id = ID_VCS_LOWEST + 1;
  
