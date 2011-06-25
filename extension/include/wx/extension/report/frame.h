@@ -30,7 +30,7 @@ public:
   /// Extra open flags.
   enum
   {
-    WIN_IS_PROJECT = 0x0100,
+    WIN_IS_PROJECT = 0x0100, ///< open as project
   };
 
   /// Constructor.

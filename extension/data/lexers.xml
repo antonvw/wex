@@ -1623,7 +1623,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <lexer name="au3" match="wxSTC_AU3_" />
   <lexer name="ave" match="wxSTC_AVE_" />
   <lexer name="baan" match="wxSTC_BAAN_" />
-  <lexer name="bash" extensions="*.bash;*.sh" match="wxSTC_SH_"> 
+  <lexer name="bash" extensions="*.bash;*.sh;Doxyfile" match="wxSTC_SH_"> 
     <keywords>    
     alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
     for function
