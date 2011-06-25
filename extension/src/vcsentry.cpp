@@ -169,7 +169,7 @@ long wxExVCSEntry::Execute(
 #endif
 
     wxFileDialog 
-      dlg(NULL, m_Name, "", "", wc, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+      dlg(NULL, _("Select") + " " + m_Name + " bin", "", "", wc, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 
     if (dlg.ShowModal() == wxID_CANCEL)
     {

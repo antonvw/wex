@@ -280,10 +280,30 @@ bool wxExVCS::GetDir(wxWindow* parent)
   }
   
   wxString folder = wxExConfigFirstOf(_("Base folder"));
+  const wxString message = _("Select VCS Folder");
   
   if (folder.empty()) 
   {
-    wxDirDialog dlg(parent);
+    wxDirDialog dlg(parent, message);
+    
+    if (dlg.ShowModal() == wxID_CANCEL)
+    {
+      return false;
+    }
+    
+    folder = dlg.GetPath() + wxFileName::GetPathSeparator();
+    
+    wxConfigBase::Get()->Write(_("Base folder"), folder);
+  }
+  
+  m_Entry = FindEntry(folder);
+  
+  if (m_Entry.GetName().empty())
+  {
+    wxDirDialog dlg(
+      parent,
+      message,
+      folder);
     
     if (dlg.ShowModal() == wxID_CANCEL)
     {
