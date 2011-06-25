@@ -1,5 +1,5 @@
-........wxExFile::Read:95 wxFile::Read:97
-.wxExFileName::IsReadOnly:1 wxFileName::IsFileWritable:10
+........wxExFile::Read:59 wxFile::Read:93
+.wxExFileName::IsReadOnly:0 wxFileName::IsFileWritable:9
 .
 
 

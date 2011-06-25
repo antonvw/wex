@@ -6,7 +6,7 @@ Test Results:
 Run:  21   Failures: 1   Errors: 0
 
 
-1) test: testVCS (F) line: 532 ../extension/test/app/test.cpp
+1) test: testVCS (F) line: 527 ../extension/test/app/test.cpp
 assertion failed
 - Expression: vcs.DirExists(wxFileName(TEST_FILE))
 
