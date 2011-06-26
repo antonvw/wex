@@ -515,7 +515,9 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
-  const wxFileName file(TEST_FILE);
+  wxFileName file(TEST_FILE);
+  file.Normalize();
+  
   wxArrayString ar;
   ar.Add(file.GetFullPath());
   
@@ -535,7 +537,7 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( vcs.GetFileName().IsOk());
   CPPUNIT_ASSERT(!vcs.GetEntry().GetCommand().IsOpen());
   CPPUNIT_ASSERT( vcs.Read());
-  CPPUNIT_ASSERT( vcs.GetEntry().SupportKeywordExpansion());
+  CPPUNIT_ASSERT(!vcs.GetEntry().SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());
   
   wxExMenu menu;
