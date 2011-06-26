@@ -826,6 +826,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (wxExVCS().ConfigDialog(this) == wxID_OK)
     { 
       wxExVCS vcs;
+      vcs.GetDir();
       StatusText(vcs.GetName(), "PaneVCS");
     }
     break;
