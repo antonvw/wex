@@ -317,7 +317,7 @@ bool wxExVCS::GetDir(wxWindow* parent)
   
   m_Entry = FindEntry(folder);
   
-  return true;
+  return !m_Entry.GetName().empty();
 }
 
 const wxString wxExVCS::GetFile() const
