@@ -515,8 +515,9 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
+  const wxFileName file(TEST_FILE);
   wxArrayString ar;
-  ar.Add(TEST_FILE);
+  ar.Add(file.GetFullPath());
   
   // In wxExApp the vcs is Read, so current vcs is known,
   // using this constructor results in command id 0,
@@ -524,7 +525,7 @@ void wxExAppTestFixture::testVCS()
   wxExVCS vcs(ar);
   
   CPPUNIT_ASSERT( vcs.GetEntry().BuildMenu(100, new wxMenu("test")) > 0);
-  CPPUNIT_ASSERT( vcs.DirExists(wxFileName(TEST_FILE)));
+  CPPUNIT_ASSERT( vcs.DirExists(file));
     
   // There is a problem in wxExecute inside wxExVCS::Execute (it hangs).
 //  CPPUNIT_ASSERT( vcs.Execute() != -1);
