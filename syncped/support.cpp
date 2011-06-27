@@ -167,7 +167,8 @@ DecoratedFrame::DecoratedFrame()
   if (wxExVCS::GetCount() == 0)
   {
     menuOptions->Append(
-      ID_OPTION_LIST_COMPARATOR, wxExEllipsed(_("Set List &Comparator")));
+      ID_OPTION_COMPARATOR, wxExEllipsed(_("Set &Comparator")));
+    menuOptions->AppendSeparator();
   }
   
   menuOptions->Append(ID_OPTION_LIST_FONT, wxExEllipsed(_("Set &List Font")));

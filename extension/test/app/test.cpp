@@ -515,6 +515,8 @@ void wxExAppTestFixture::testUtil()
 
 void wxExAppTestFixture::testVCS()
 {
+  CPPUNIT_ASSERT(wxExVCS::GetCount() > 0);
+  
   wxFileName file(TEST_FILE);
   file.Normalize();
   
@@ -540,10 +542,10 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT(!vcs.GetEntry().SupportKeywordExpansion());
   CPPUNIT_ASSERT( vcs.Use());
   
+  wxConfigBase::Get()->Write(_("Base folder"), wxGetCwd());
+  
   wxExMenu menu;
-  menu.AppendVCS();
-  // The default VCS (auto) is used,
-  // so without a path, no VCS will be built, perhaps the config dir?
+  CPPUNIT_ASSERT( menu.AppendVCS() );
 }
 
 void wxExAppTestFixture::testVCSCommand()
