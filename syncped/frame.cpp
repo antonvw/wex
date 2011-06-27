@@ -764,14 +764,14 @@ void Frame::OnCommand(wxCommandEvent& event)
       event.GetId());
     break;
     
-  case ID_OPTION_LIST_COMPARATOR: 
+  case ID_OPTION_COMPARATOR: 
     {
       std::vector<wxExConfigItem> v;
       v.push_back(wxExConfigItem(_("Comparator"), CONFIG_FILEPICKERCTRL));
       wxExConfigDialog(
         this,
         v,
-        _("Set List Comparator")).ShowModal();
+        _("Set Comparator")).ShowModal();
     }
     break;
 
