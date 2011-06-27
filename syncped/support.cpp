@@ -61,6 +61,7 @@ DecoratedFrame::DecoratedFrame()
   if (wxExVCS::GetCount() > 0)
   {
     wxExVCS vcs;
+    vcs.GetDir();
     StatusText(vcs.GetName(), "PaneVCS");
   }
 #endif
