@@ -445,6 +445,10 @@ wxExSTC* Frame::GetSTC()
   {
     return NULL;
   }
+  else if (GetListView() != NULL)
+  {
+    return NULL;
+  }
   else
   {
     return (wxExSTC*)m_Editors->GetPage(
