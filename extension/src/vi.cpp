@@ -163,6 +163,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   // Handle multichar commands.
   if (command.EndsWith("cw") && !m_STC->GetReadOnly())
   {
+    const int pos = m_STC->GetCurrentPos();
+    
     for (auto i = 0; i < repeat; i++) m_STC->WordRightExtend();
 
     if (dot)
@@ -172,6 +174,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     else
     {
       InsertMode();
+      const int anchor = m_STC->GetCurrentPos();
+      m_STC->SetCurrentPos(pos);
+      m_STC->SetAnchor(anchor);
     }
   }
   else if (command == "cc" && !m_STC->GetReadOnly())
