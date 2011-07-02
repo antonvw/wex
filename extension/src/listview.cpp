@@ -228,8 +228,6 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
   if (GetItemCount() > 0 && GetSelectedItemCount() == 0)
   {
     menu.AppendSeparator();
-    menu.Append(wxID_FIND);
-    menu.AppendSeparator();
 
     wxMenu* menuSort = new wxMenu;
 

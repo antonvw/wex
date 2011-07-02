@@ -84,14 +84,10 @@ BEGIN_EVENT_TABLE(Frame, DecoratedFrame)
   EVT_MENU_RANGE(ID_VCS_LOWEST, ID_VCS_HIGHEST, Frame::OnCommand)
   EVT_UPDATE_UI(ID_ALL_STC_CLOSE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_ALL_STC_SAVE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_COPY, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_CUT, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_EXECUTE, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_FIND, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_JUMP_TO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PRINT, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_PREVIEW, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(wxID_PASTE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REPLACE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_UNDO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_REDO, Frame::OnUpdateUI)
@@ -417,9 +413,16 @@ wxExListView* Frame::GetListView()
   }
   else
   {
-    return (wxExListView*)m_Lists->GetPage(
+    wxExListView* lv = (wxExListView*)m_Lists->GetPage(
       m_Lists->GetSelection());
+      
+    if (lv != NULL && lv->HasFocus())
+    {
+      return lv;
+    }
   }
+  
+  return NULL;
 }
 
 wxExListViewFile* Frame::GetProject()
@@ -445,15 +448,18 @@ wxExSTC* Frame::GetSTC()
   {
     return NULL;
   }
-  else if (GetListView() != NULL)
-  {
-    return NULL;
-  }
   else
   {
-    return (wxExSTC*)m_Editors->GetPage(
+    wxExSTC* stc = (wxExSTC*)m_Editors->GetPage(
       m_Editors->GetSelection());
+      
+    if (stc != NULL && stc->HasFocus())
+    {
+      return stc;
+    }
   }
+  
+  return NULL;
 }
 
 void Frame::Log(
@@ -1049,13 +1055,12 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       auto* editor = GetSTC();
       auto* list = (wxExListViewFile*)GetListView();
 
-      if (editor != NULL && editor->HasFocus())
+      if (editor != NULL)
       {
         event.Enable(true);
 
         switch (event.GetId())
         {
-        case wxID_FIND:
         case wxID_JUMP_TO:
         case wxID_REPLACE:
         case wxID_SAVEAS:
@@ -1085,10 +1090,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
             editor->GetFoldLevel(editor->GetCurrentLine()) > wxSTC_FOLDLEVELBASE);
           break;
 
-        case wxID_PASTE:
-          event.Enable(editor->CanPaste());
-          break;
-
         case wxID_SAVE:
           event.Enable(
             !editor->GetFileName().GetFullPath().empty() &&
@@ -1101,13 +1102,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           event.Enable(editor->CanUndo());
           break;
           
-        case wxID_COPY:
-          event.Enable(!editor->GetSelectedText().empty());
-          break;
-        case wxID_CUT:
-          event.Enable(!editor->GetSelectedText().empty() && !editor->GetReadOnly());
-          break;
-
         case ID_EDIT_CONTROL_CHAR:
           if (editor->GetReadOnly() && editor->GetSelectedText().length() != 1)
           {
@@ -1124,7 +1118,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           wxFAIL;
         }
       }
-      else if (list != NULL && list->HasFocus())
+      else if (list != NULL)
       {
         event.Enable(false);
 
@@ -1133,28 +1127,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           event.GetId() < ID_TOOL_HIGHEST)
         {
           event.Enable(list->GetSelectedItemCount() > 0);
-        }
-        else
-        {
-          switch (event.GetId())
-          {
-          case wxID_COPY:
-          case wxID_CUT:
-            event.Enable(list->GetSelectedItemCount() > 0);
-            break;
-
-          case wxID_FIND:
-            event.Enable(list->GetItemCount() > 0);
-            break;
-
-          case wxID_PASTE:
-            event.Enable(list->GetType() == wxExListViewStandard::LIST_FILE);
-            break;
-
-          default:
-            // No wxFAIL;, too many events here.
-            ;
-          }
         }
       }
       else
