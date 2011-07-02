@@ -279,43 +279,33 @@ bool wxExVCS::GetDir(wxWindow* parent)
     return false;
   }
   
-  wxString folder = wxExConfigFirstOf(_("Base folder"));
   const wxString message = _("Select VCS Folder");
   
-  if (folder.empty()) 
+  std::vector<wxExConfigItem> v;
+
+  v.push_back(wxExConfigItem(_("Base folder"), CONFIG_DIRPICKERCTRL));
+
+  if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
-    wxDirDialog dlg(parent, message);
-    
-    if (dlg.ShowModal() == wxID_CANCEL)
+    if (wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
     {
       return false;
     }
-    
-    folder = dlg.GetPath() + wxFileName::GetPathSeparator();
-    
-    wxConfigBase::Get()->Write(_("Base folder"), folder);
   }
-  
-  m_Entry = FindEntry(folder);
-  
-  if (m_Entry.GetName().empty())
+  else
   {
-    wxDirDialog dlg(
-      parent,
-      message,
-      folder);
-    
-    if (dlg.ShowModal() == wxID_CANCEL)
+    m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
+  
+    if (m_Entry.GetName().empty())
     {
-      return false;
+      if (wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+      {
+        return false;
+      }
     }
-    
-    folder = dlg.GetPath() + wxFileName::GetPathSeparator();
-    
-    wxConfigBase::Get()->Write(_("Base folder"), folder);
   }
   
-  m_Entry = FindEntry(folder);
+  m_Entry = FindEntry(wxExConfigFirstOf(_("Base folder")));
   
   return !m_Entry.GetName().empty();
 }

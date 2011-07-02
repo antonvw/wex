@@ -53,7 +53,7 @@ DecoratedFrame::DecoratedFrame()
 
   if (wxExVCS::GetCount() > 0)
   {
-    panes.push_back(wxExStatusBarPane("PaneVCS", 50, _("VCS")));
+    panes.push_back(wxExStatusBarPane("PaneVCS", 75, _("VCS")));
   }
   
   SetupStatusBar(panes);
