@@ -967,6 +967,11 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
         wxBell();
       }
 
+      if (!m_STC->GetSelectedText().empty())
+      {
+        m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+      }
+
       m_Command.clear();
       break;
 
