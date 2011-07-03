@@ -32,10 +32,12 @@ public:
     const wxString& command,
     /// The no.
     int no,
+    /// The type (main, popup, both).
     const wxString& type = wxEmptyString,
     /// The submenu member is set to specified submenu if not empty,
     /// otherwise to specified subcommand.
     const wxString& submenu = wxEmptyString,
+    /// The subcommand (used as submenu, but also used for executing).
     const wxString& subcommand = wxEmptyString);
 
   /// Gets the command (and subcommand and accelerators if necessary).
