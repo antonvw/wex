@@ -19,6 +19,7 @@ class WXDLLIMPEXP_BASE wxExVCS
 {
 public:
   /// Default constructor.
+  /// Use GetDir to check on vcs for current base folder.
   wxExVCS();
     
   /// Constructor.
@@ -52,9 +53,11 @@ public:
   
   /// Gets the number of vcs entries.
   static int GetCount() {return m_Entries.size();};
-  
-  /// ShowDialog will show
-  /// a combobox for selecting a vcs folder.
+
+  /// Checks whether the current base folder is under vcs control.
+  /// If not, it will show
+  /// a dialog for selecting a vcs folder.
+  /// Sets the entry.
   bool GetDir(
     /// Parent window for showing dir dialog if 
     /// there is not a current directory.
