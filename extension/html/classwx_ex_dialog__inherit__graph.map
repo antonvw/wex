@@ -1,0 +1,4 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classwx_ex_config_dialog.html" title="Offers a dialog to set several items in the config." alt="" coords="5,86,131,117"/>
+<area shape="rect" id="node5" href="$classwx_ex_s_t_c_entry_dialog.html" title="Offers an wxExSTC as a dialog (like wxTextEntryDialog)." alt="" coords="155,86,299,117"/>
+</map>
