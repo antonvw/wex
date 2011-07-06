@@ -10,7 +10,7 @@ one of these applications, being a full featured source code text editor.
 - git repository 
   - on github https://github.com/antonvw/wxExtension  
   
-  - wxWidgets 2.9.1 is used as a stable master branch
+  - wxWidgets 2.9.2 is used as a stable master branch
   - the mac-os branch is added because the master uses c++0x flags, not supported
     by gcc 4.0.1 under mac os 10.4
 
@@ -88,9 +88,9 @@ one of these applications, being a full featured source code text editor.
       
     - under windows using command line prompt
     using format msvc
-        nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.1
+        nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.2
       
-    - under Ubuntu 11.04 linux gcc (Ubuntu/Linaro 4.4.4-14ubuntu5) 4.4.5
+    - under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2
     (no IDE)
     using gtk version:
         ../configure --with-gtk
