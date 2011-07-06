@@ -138,8 +138,7 @@ one of these applications, being a full featured source code text editor.
     extension/test/base, 
     extension/test/app,
     extension/test/report, where it has least dependencies,
-  run test-all.sh from the build dir, which collects output in several log files, 
-  and commits automatically.
+  run test-all.sh from the build dir, which collects output in several log files. 
 
 - add a sample for it in
     extension/sample, 

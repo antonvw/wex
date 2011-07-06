@@ -508,7 +508,7 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
-    "Combobox Required",
+    "Combobox Dir Required",
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     true,
@@ -516,7 +516,7 @@ void wxExSampleFrame::ShowConfigItems()
 
   // CONFIG_COMBOBOXDIR
   v.push_back(wxExConfigItem(
-    "Combobox Dir2", 
+    "Combobox Dir", 
     CONFIG_COMBOBOXDIR, 
     "Comboboxes",
     false,
