@@ -24,20 +24,6 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
 {
   // See also wxExProcess, uses similar messages.
   
-  wxString cwd;
-  
-  if (!wd.empty())
-  {
-    cwd = wxGetCwd();
-    
-    if (!wxSetWorkingDirectory(wd))
-    {
-      wxLogError(_("Cannot set working directory"));
-      m_Error = true;
-      return -1;
-    }
-  }
-
 #if wxUSE_GUI
   // Cannot be in the constructor, that gives an assert.
   if (m_Dialog == NULL)
@@ -58,19 +44,18 @@ long wxExCommand::Execute(const wxString& command, const wxString& wd)
   wxArrayString errors;
   long retValue;
 
+  const struct wxExecuteEnv env = {wd, wxEnvVariableHashMap()};
+  
   // Call wxExecute to execute the command and
   // collect the output and the errors.
   if ((retValue = wxExecute(
     m_Command,
     output,
-    errors)) != -1)
+    errors,
+    0,
+    &env)) != -1)
   {
     wxLogVerbose(_("Execute") + ": " + m_Command);
-  }
-
-  if (!cwd.empty())
-  {
-    wxSetWorkingDirectory(cwd);
   }
 
   // We have an error if the command could not be executed.  
