@@ -283,8 +283,14 @@ bool wxExVCS::GetDir(wxWindow* parent)
   
   std::vector<wxExConfigItem> v;
 
-  v.push_back(wxExConfigItem(_("Base folder"), CONFIG_DIRPICKERCTRL));
-
+  // See also vcsentry, same item is used there.
+  v.push_back(wxExConfigItem(
+    _("Base folder"), 
+    CONFIG_COMBOBOXDIR, 
+    wxEmptyString, 
+    true,
+    1000));
+      
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
     if (wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
