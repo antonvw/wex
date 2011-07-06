@@ -174,22 +174,13 @@ long wxExProcess::Execute()
     }
   }
 
-  wxString cwd;
-  const wxString dir = wxExConfigFirstOf(m_WorkingDirKey);
-
-  if (!dir.empty())
-  {
-    cwd = wxGetCwd();
-    if (!wxSetWorkingDirectory(dir))
-    {
-      wxLogError(_("Cannot set working directory"));
-      return -1;
-    }
-  }
-
+  const struct wxExecuteEnv env = {
+    wxExConfigFirstOf(m_WorkingDirKey), 
+    wxEnvVariableHashMap()};
+  
   // For asynchronous execution, however, the return value is the process id and zero 
   // value indicates that the command could not be executed
-  const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this);
+  const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this, &env);
 
   if (pid > 0)
   {
@@ -201,11 +192,6 @@ long wxExProcess::Execute()
     }
     
     m_Timer.Start(1000); // each 1000 milliseconds
-  }
-
-  if (!cwd.empty())
-  {
-    wxSetWorkingDirectory(cwd);
   }
 
   return pid;
