@@ -1742,7 +1742,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <lexer name="lua" match="wxSTC_LUA_" />
   <lexer name="magik" match="wxSTC_MAGIK" />
   <lexer name="makefile" extensions="*makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
-  <lexer name="markdown" match="wxSTC_MARKDOWN" />
+  <lexer name="markdown" extensions="*.md" match="wxSTC_MARKDOWN" />
   <lexer name="matlab" match="wxSTC_MATLAB_" />
   <lexer name="metapost" match="wxSTC_METAPOST_" />
   <lexer name="mmixal" match="wxSTC_MMIXAL_" />
