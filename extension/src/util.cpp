@@ -470,11 +470,7 @@ void wxExLogStatus(const wxFileName& fn, long flags)
       _("Synchronized"): 
       _("Modified"));
         
-    const wxString time = (flags & STAT_SYNC ? 
-      wxDateTime::Now().Format(): 
-      fn.GetModificationTime().Format());
-        
-    text += " " + what + " " + time;
+    text += " " + what + " " + fn.GetModificationTime().Format();
   }
 
   wxLogStatus(text);
