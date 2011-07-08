@@ -58,7 +58,6 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSTC::OnCommand)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
-  EVT_SET_FOCUS(wxExSTC::OnFocus)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
@@ -1781,15 +1780,6 @@ void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
   {
     wxFAIL;
   }
-}
-
-void wxExSTC::OnFocus(wxFocusEvent& event)
-{
-  event.Skip();
-
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExSTC::OnIdle(wxIdleEvent& event)

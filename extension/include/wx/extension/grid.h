@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          grid.h
-* Purpose:       Declaration of wxExGrid class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      grid.h
+// Purpose:   Declaration of wxExGrid class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXGRID_H
 #define _EXGRID_H
@@ -96,7 +92,6 @@ protected:
 
   void OnCommand(wxCommandEvent& event);
   void OnFindDialog(wxFindDialogEvent& event);
-  void OnFocus(wxFocusEvent& event);
   void OnGrid(wxGridEvent& event);
   void OnGridRange(wxGridRangeSelectEvent& event);
   void OnMouse(wxMouseEvent& event);

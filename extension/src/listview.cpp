@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          listview.cpp
-* Purpose:       Implementation of wxExListView and related classes
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      listview.cpp
+// Purpose:   Implementation of wxExListView and related classes
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -106,7 +102,6 @@ const int ID_COL_LAST = ID_COL_FIRST + 255;
 BEGIN_EVENT_TABLE(wxExListView, wxListView)
   EVT_FIND(wxID_ANY, wxExListView::OnFindDialog)
   EVT_FIND_NEXT(wxID_ANY, wxExListView::OnFindDialog)
-  EVT_SET_FOCUS(wxExListView::OnFocus)
   EVT_LIST_BEGIN_DRAG(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_CLICK(wxID_ANY, wxExListView::OnList)
   EVT_LIST_COL_RIGHT_CLICK(wxID_ANY, wxExListView::OnList)
@@ -635,15 +630,6 @@ void wxExListView::OnFindDialog(wxFindDialogEvent& event)
   {
     wxFAIL;
   }
-}
-
-void wxExListView::OnFocus(wxFocusEvent& event)
-{
-  event.Skip();
-
-  wxCommandEvent focusevent(wxEVT_COMMAND_MENU_SELECTED, ID_FOCUS);
-  focusevent.SetEventObject(this);
-  wxPostEvent(wxTheApp->GetTopWindow(), focusevent);
 }
 
 void wxExListView::OnList(wxListEvent& event)

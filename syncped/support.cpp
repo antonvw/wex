@@ -224,6 +224,8 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
 
 void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
+  wxExFrameWithHistory::OnNotebook(id, page);
+  
   if (id == NOTEBOOK_EDITORS)
   {
     ((wxExSTC*)page)->PropertiesMessage();

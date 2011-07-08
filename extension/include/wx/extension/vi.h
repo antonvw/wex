@@ -2,9 +2,7 @@
 // Name:      vi.h
 // Purpose:   Declaration of class wxExVi
 // Author:    Anton van Wezenbeek
-// Created:   2009-11-21
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXVI_H
