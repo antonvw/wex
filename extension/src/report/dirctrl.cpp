@@ -59,7 +59,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
 void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 {
   wxArrayString files;
-  GetFilePaths(files);
+  GetPaths(files);
     
   if (event.GetId() > ID_EDIT_VCS_LOWEST && 
       event.GetId() < ID_EDIT_VCS_HIGHEST)
@@ -119,7 +119,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
 void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
 {
   wxArrayString files;
-  GetFilePaths(files);
+  GetPaths(files);
 
   if (files.empty()) 
   {
@@ -129,14 +129,19 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
 
   if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_MENU)
   {
+    const wxExFileName filename(files[0]);
+  
     wxExMenu menu; // uses AppendVCS
-    menu.Append(ID_TREE_OPEN, _("&Open"));
-    menu.AppendSeparator();
+    
+    if (filename.FileExists())
+    {
+      menu.Append(ID_TREE_OPEN, _("&Open"));
+      menu.AppendSeparator();
+    }
+    
     menu.Append(ID_TREE_COPY,
       wxGetStockLabel(wxID_COPY), wxEmptyString, wxART_COPY);
 
-    const wxExFileName filename(files[0]);
-  
     if (wxExVCS::DirExists(filename))
     {
       menu.AppendSeparator();
