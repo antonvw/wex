@@ -54,7 +54,6 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_MENU(wxID_FIND, wxExFrame::OnCommand)
   EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
-  EVT_MENU(ID_FOCUS, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_MENUBAR, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_STATUSBAR, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_TITLEBAR, wxExFrame::OnCommand)
@@ -71,8 +70,8 @@ wxExFrame::wxExFrame(wxWindow* parent,
   long style)
   : wxFrame(parent, id, title, wxDefaultPosition, wxDefaultSize, style, "wxExFrame")
   , m_FindReplaceDialog(NULL)
-  , m_Focus(NULL)
   , m_MenuBar(NULL)
+  , m_FindFocus(NULL)
   , m_IsCommand(false)
 {
   Initialize();
@@ -99,6 +98,20 @@ wxExFrame::~wxExFrame()
 #endif
 }
 
+wxExListView* wxExFrame::GetListView()
+{
+  wxWindow* win = wxWindow::FindFocus();
+  wxExListView* lv = dynamic_cast<wxExListView*>(win);
+  return lv;
+}
+
+wxExSTC* wxExFrame::GetSTC()
+{
+  wxWindow* win = wxWindow::FindFocus();
+  wxExSTC* stc = dynamic_cast<wxExSTC*>(win);
+  return stc;
+}
+  
 void wxExFrame::Initialize()
 {
 #if wxUSE_DRAG_AND_DROP
@@ -127,6 +140,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       m_FindReplaceDialog->Destroy();
     }
     
+    m_FindFocus = wxWindow::FindFocus();
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, wxExFindReplaceData::Get(), _("Find")); 
     m_FindReplaceDialog->Show();
@@ -138,16 +152,13 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
       m_FindReplaceDialog->Destroy();
     }
     
+    m_FindFocus = wxWindow::FindFocus();
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, 
       wxExFindReplaceData::Get(),
       _("Replace"), 
       wxFR_REPLACEDIALOG); 
     m_FindReplaceDialog->Show();
-    break;
-    
-  case ID_FOCUS:
-    m_Focus = (wxWindow*)command.GetEventObject();
     break;
     
   case ID_VIEW_MENUBAR:
@@ -211,11 +222,13 @@ void wxExFrame::OnFindDialog(wxFindDialogEvent& event)
     // show the dialog next time.
     m_FindReplaceDialog->Destroy();
     m_FindReplaceDialog = NULL;
-    m_Focus = NULL;
   }
-  else if (m_Focus != NULL)
+  else
   {
-    wxPostEvent(m_Focus, event);
+    if (m_FindFocus != NULL)
+    {
+      wxPostEvent(m_FindFocus, event);
+    }
   }
 }
 
@@ -390,6 +403,11 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
   }
 }
 #endif // wxUSE_STATUSBAR
+
+void wxExFrame::UpdateFindFocus()
+{
+  m_FindFocus = wxWindow::FindFocus();
+}
 
 #if wxUSE_STATUSBAR
 void wxExFrame::UpdateStatusBar(const wxListView* lv)

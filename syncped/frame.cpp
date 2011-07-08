@@ -395,36 +395,6 @@ bool Frame::DialogProjectOpen()
   return true;
 }
 
-wxExListView* Frame::GetListView()
-{
-  if (m_History->HasFocus())
-  {
-    return m_History;
-  }
-  else if (GetProject() != NULL && GetProject()->HasFocus())
-  {
-    return GetProject();
-  }
-  else if (
-    !m_Lists->IsShown() || 
-     m_Lists->GetPageCount() == 0)
-  {
-    return NULL;
-  }
-  else
-  {
-    wxExListView* lv = (wxExListView*)m_Lists->GetPage(
-      m_Lists->GetSelection());
-      
-    if (lv != NULL && lv->HasFocus())
-    {
-      return lv;
-    }
-  }
-  
-  return NULL;
-}
-
 wxExListViewFile* Frame::GetProject()
 {
   if (
@@ -438,28 +408,6 @@ wxExListViewFile* Frame::GetProject()
     return (wxExListViewFile*)m_Projects->
       GetPage(m_Projects->GetSelection());
   }
-}
-
-wxExSTC* Frame::GetSTC()
-{
-  if (
-    !m_Editors->IsShown() || 
-     m_Editors->GetPageCount() == 0)
-  {
-    return NULL;
-  }
-  else
-  {
-    wxExSTC* stc = (wxExSTC*)m_Editors->GetPage(
-      m_Editors->GetSelection());
-      
-    if (stc != NULL && stc->HasFocus())
-    {
-      return stc;
-    }
-  }
-  
-  return NULL;
 }
 
 void Frame::Log(
@@ -1442,6 +1390,8 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
 
 void Frame::SyncCloseAll(wxWindowID id)
 {
+  DecoratedFrame::SyncCloseAll(id);
+  
   switch (id)
   {
   case NOTEBOOK_EDITORS:

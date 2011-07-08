@@ -42,16 +42,11 @@ public:
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
 
-  /// Returns window that has or had focus. 
-  wxWindow* GetFocusWindow() {return m_Focus;};
-  
   /// Returns a listview.
-  /// Default returns NULL.
-  virtual wxExListView* GetListView() {return NULL;};
+  virtual wxExListView* GetListView();
 
   /// Returns an STC.
-  /// Default returns NULL.
-  virtual wxExSTC* GetSTC() {return NULL;};
+  virtual wxExSTC* GetSTC();
 
   /// Called when a config dialog command event is triggered.
   /// Default it fires when the apply button was pressed.
@@ -98,6 +93,9 @@ public:
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
   
+  /// Call this if you think the find focus should be updated.
+  void UpdateFindFocus();
+  
   /// Updates statusbar pane items pane with values from specified listview.
   static void UpdateStatusBar(const wxListView* lv);
   
@@ -123,9 +121,9 @@ private:
   static wxExStatusBar* m_StatusBar;
 #endif
 
+  wxWindow* m_FindFocus;
   wxFindReplaceDialog* m_FindReplaceDialog;
   wxMenuBar* m_MenuBar;
-  wxWindow* m_Focus;
   
   bool m_IsCommand;
 

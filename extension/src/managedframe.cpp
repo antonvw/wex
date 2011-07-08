@@ -135,6 +135,12 @@ bool wxExManagedFrame::AddToolBarPane(
   return m_Manager.AddPane(window, pane);
 }
 
+bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
+{
+  UpdateFindFocus();
+  return true;
+}
+
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 {
   m_viTextPrefix->SetLabel(command);
@@ -203,6 +209,11 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
   }
 }
 
+void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
+{
+  UpdateFindFocus();
+}
+
 void wxExManagedFrame::ShowViMessage(const wxString& text)
 {
   if (GetStatusBar()->IsShown())
@@ -220,6 +231,11 @@ void wxExManagedFrame::ShowViMessage(const wxString& text)
     m_Manager.GetPane("VIBAR").Show();
     m_Manager.Update();
   }
+}
+
+void wxExManagedFrame::SyncCloseAll(wxWindowID id)
+{
+  UpdateFindFocus();
 }
 
 void wxExManagedFrame::TogglePane(const wxString& pane)

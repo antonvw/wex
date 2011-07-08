@@ -299,7 +299,6 @@ protected:
   void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnFindDialog(wxFindDialogEvent& event);
-  void OnFocus(wxFocusEvent& event);
   void OnIdle(wxIdleEvent& event);
   void OnKeyDown(wxKeyEvent& event);
   void OnKeyUp(wxKeyEvent& event);

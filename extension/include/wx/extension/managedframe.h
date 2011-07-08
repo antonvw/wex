@@ -38,9 +38,7 @@ public:
  ~wxExManagedFrame();
 
   /// Returns true if the page can be closed.
-  virtual bool AllowClose(
-    wxWindowID WXUNUSED(id), 
-    wxWindow* WXUNUSED(page)) {return true;}
+  virtual bool AllowClose(wxWindowID id, wxWindow* page);
 
   /// Gets the manager.
   wxAuiManager& GetManager() {return m_Manager;};
@@ -66,15 +64,13 @@ public:
   void HideViBar();
 
   /// Called if the notebook changed page.
-  virtual void OnNotebook(
-    wxWindowID WXUNUSED(id), 
-    wxWindow* WXUNUSED(page)) {;};
+  virtual void OnNotebook(wxWindowID id, wxWindow* page);
 
   /// Shows text in vi bar.
   void ShowViMessage(const wxString& text);
   
   /// Called after all pages from the notebooks are deleted.
-  virtual void SyncCloseAll(wxWindowID WXUNUSED(id)) {;};
+  virtual void SyncCloseAll(wxWindowID id);
 
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);

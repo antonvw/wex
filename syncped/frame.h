@@ -44,9 +44,7 @@ private:
     const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   bool DialogProjectOpen();
-  virtual wxExListView* GetListView();
   virtual wxExListViewFile* GetProject();
-  virtual wxExSTC* GetSTC();
   void NewFile(bool as_project = false);
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
