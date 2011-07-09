@@ -2,9 +2,7 @@
 // Name:      configitem.h
 // Purpose:   Declaration of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Created:   2009-11-10
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCONFIGITEM_H
@@ -95,8 +93,8 @@ enum wxExConfigType
 /// Container class for using with wxExConfigDialog.
 /// - If you specify a page, then all items are placed on that page 
 ///   in a book ctrl on the config dialog.
-/// - If you specify add name, then the name is added as a label to
-///   the item as well, otherwise the name is not added, and only used
+/// - If you specify add label, then the label is added as a label to
+///   the item as well, otherwise the label is not added, and only used
 ///   for loading and saving from config.
 /// - If you use the default for cols, then the number of cols used
 ///   is determined by the config dialog, otherwise this number is used.
@@ -105,8 +103,8 @@ class WXDLLIMPEXP_BASE wxExConfigItem
 public:
   /// Constuctor for most types.
   wxExConfigItem(
-    /// name for the control as on the dialog and in the config
-    const wxString& name,
+    /// label for the control as on the dialog and in the config
+    const wxString& label,
     /// type
     wxExConfigType type,
     /// page on notebook
@@ -119,8 +117,8 @@ public:
     int id = wxID_ANY,
     /// used by CONFIG_COMBOBOX
     int max_items = 25,
-    /// will the name be displayed as a static text
-    bool add_name = true,
+    /// will the label be displayed as a static text
+    bool add_label = true,
     /// the number of cols
     int cols = -1,
     /// extra style, only used for static line
@@ -131,16 +129,16 @@ public:
   /// if you want to, you have to implement UserControlToConfig
   /// in your derived class.
   wxExConfigItem(
-    /// name for the control as on the dialog and in the config
-    const wxString& name,
+    /// label for the control as on the dialog and in the config
+    const wxString& label,
     /// the control (use default constructor for it)
     wxControl* control,
     /// page on notebook
     const wxString& page = wxEmptyString,
     /// is this control required
     bool is_required = false,
-    /// will the name be displayed as a static text
-    bool add_name = true,
+    /// will the label be displayed as a static text
+    bool add_label = true,
     /// number of cols for this control
     int cols = -1);
 
@@ -148,8 +146,8 @@ public:
   /// The extra style argument is the style for the control used
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
   wxExConfigItem(
-    /// name for the control as on the dialog and in the config
-    const wxString& name,
+    /// label for the control as on the dialog and in the config
+    const wxString& label,
     /// used as default for a hyperlink ctrl
     const wxString& value = wxEmptyString,
     /// page on noyytebook
@@ -161,14 +159,14 @@ public:
     /// is this item required
     bool is_required = false,
     /// ignored for a static text
-    bool add_name = true,
+    bool add_label = true,
     /// number of cols for this control
     int cols = -1);
 
   /// Constructor for a spin ctrl, a spin ctrl double or a slider.
   wxExConfigItem(
-    /// name for the control as on the dialog and in the config
-    const wxString& name,
+    /// label for the control as on the dialog and in the config
+    const wxString& label,
     /// minimum value
     double min, 
     /// maximum value
@@ -184,7 +182,7 @@ public:
     /// number of cols for this control
     int cols = -1);
 
-  /// Constructor for a checklistbox without a name. 
+  /// Constructor for a checklistbox without a label. 
   /// This checklistbox can be used to get/set several boolean values.
   wxExConfigItem(
     /// the set with names of boolean items
@@ -201,8 +199,8 @@ public:
   /// should be used when a long value can have a short
   /// set of possible individual values.
   wxExConfigItem(
-    /// name for the control as on the dialog and in the config
-    const wxString& name,
+    /// label for the control as on the dialog and in the config
+    const wxString& label,
     /// the map with values and text
     const std::map<long, const wxString> & choices,
     /// indicates whether to use a radiobox or a checklistbox.
@@ -225,8 +223,8 @@ public:
   /// Gets is required.
   bool GetIsRequired() const {return m_IsRequired;};
 
-  /// Gets the name.
-  const wxString& GetName() const {return m_Name;};
+  /// Gets the label.
+  const wxString& GetLabel() const {return m_Label;};
 
   /// Gets the page.
   const wxString& GetPage() const {return m_Page;};
@@ -265,13 +263,13 @@ protected:
   virtual bool UserControlToConfig(bool save) const {return false;};
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
-  void AddStaticTextName(wxSizer* sizer) const;
+  void AddStaticText(wxSizer* sizer) const;
   void CreateControl(wxWindow* parent, bool readonly);
 
   // The members are allowed to be const using
   // MS Visual Studio 2010, not using gcc, so
   // removed again (operator= seems to be used).
-  bool m_AddName;
+  bool m_AddLabel;
   bool m_IsRequired;
 
   int m_Cols;
@@ -283,7 +281,7 @@ private:
   double m_Max;
   double m_Inc;
 
-  wxString m_Name;
+  wxString m_Label;
   wxString m_Page;
   wxString m_Default; // used by hyperlink as default web address
 

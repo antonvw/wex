@@ -46,7 +46,7 @@ void wxExAppTestFixture::testConfigItem()
   wxExConfigItem ci_sl("ci-sl", 1, 5, 
     wxEmptyString, CONFIG_SLIDER);
   items.push_back(ci_sl);
-  CPPUNIT_ASSERT(ci_sl.GetName() == "ci-sl");
+  CPPUNIT_ASSERT(ci_sl.GetLabel() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
 
   wxExConfigItem ci_vl("ci-vl", 
@@ -63,7 +63,7 @@ void wxExAppTestFixture::testConfigItem()
     
   wxExConfigItem ci_sp("ci-sp", 1, 5);
   items.push_back(ci_sp);
-  CPPUNIT_ASSERT(ci_sp.GetName() == "ci-sp");
+  CPPUNIT_ASSERT(ci_sp.GetLabel() == "ci-sp");
   CPPUNIT_ASSERT(ci_sp.GetType() == CONFIG_SPINCTRL);
   
   wxExConfigItem ci_sp_d("ci-sp-d", 1.0, 5.0,
@@ -144,7 +144,7 @@ void wxExAppTestFixture::testConfigItem()
     else 
       CPPUNIT_ASSERT( it->GetControl() == NULL);
     CPPUNIT_ASSERT(!it->GetIsRequired());
-    CPPUNIT_ASSERT(!it->GetName().empty());
+    CPPUNIT_ASSERT(!it->GetLabel().empty());
     CPPUNIT_ASSERT( it->GetPage().empty());
 
     CPPUNIT_ASSERT(
