@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          frame.cpp
-* Purpose:       Implementation of wxExFrameWithHistory class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      frame.cpp
+// Purpose:   Implementation of wxExFrameWithHistory class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -256,7 +252,9 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   tool.Log(&dir.GetStatistics().GetElements());
 }
 
-int wxExFrameWithHistory::FindInSelectionDialog(int id)
+int wxExFrameWithHistory::FindInSelectionDialog(
+  int id,
+  bool add_in_files)
 {
   if (GetSTC() != NULL)
   {
@@ -271,6 +269,15 @@ int wxExFrameWithHistory::FindInSelectionDialog(int id)
     wxEmptyString, 
     true));
 
+  if (add_in_files)
+  {
+    v.push_back(wxExConfigItem(
+      m_TextInFiles, 
+      CONFIG_COMBOBOX, 
+      wxEmptyString, 
+      true));
+  }
+    
   if (id == ID_TOOL_REPORT_REPLACE) 
   {
     v.push_back(wxExConfigItem(

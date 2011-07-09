@@ -2,9 +2,7 @@
 // Name:      dirctrl.cpp
 // Purpose:   Implementation of class 'wxExGenericDirCtrl'
 // Author:    Anton van Wezenbeek
-// Created:   2010-08-16
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/log.h>
@@ -68,9 +66,12 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   }
   else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
+    const wxExFileName filename(files[0]);
     const wxExTool tool(event.GetId());
     
-    if (m_Frame->FindInSelectionDialog(tool.GetId()) == wxID_CANCEL ||
+    if (m_Frame->FindInSelectionDialog(
+      tool.GetId(),
+      filename.DirExists() && !filename.FileExists()) == wxID_CANCEL ||
        !wxExTextFileWithListView::SetupTool(tool, m_Frame))
     {
       return;
