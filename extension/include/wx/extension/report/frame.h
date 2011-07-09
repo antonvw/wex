@@ -53,6 +53,11 @@ public:
   /// Shows a file history popup menu.
   void FileHistoryPopupMenu();
 
+  /// Finds in selected files.  
+  void FindInSelection(
+    const wxArrayString& files,
+    int id);
+
   /// Finds in selected files dialog.
   int FindInSelectionDialog(
     /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE

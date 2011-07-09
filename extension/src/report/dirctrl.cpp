@@ -66,27 +66,7 @@ void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
   }
   else if (event.GetId() > ID_TOOL_LOWEST && event.GetId() < ID_TOOL_HIGHEST)
   {
-    const wxExFileName filename(files[0]);
-    const wxExTool tool(event.GetId());
-    
-    if (m_Frame->FindInSelectionDialog(
-      tool.GetId(),
-      filename.DirExists() && !filename.FileExists()) == wxID_CANCEL ||
-       !wxExTextFileWithListView::SetupTool(tool, m_Frame))
-    {
-      return;
-    }
-    
-    wxExStatistics<long> stats;
-
-    for (auto i = 0; i < files.GetCount(); i++)
-    {
-      wxExTextFileWithListView file(wxExFileName(files[i]), tool);
-      file.RunTool();
-      stats += file.GetStatistics().GetElements();
-    }
-    
-    tool.Log(&stats);
+    m_Frame->FindInSelection(files, event.GetId());
   }
   else switch (event.GetId())
   {
