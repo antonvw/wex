@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          frame.h
-* Purpose:       Include file for wxExFrameWithHistory class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      frame.h
+// Purpose:   Include file for wxExFrameWithHistory class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_FRAME_H
 #define _EX_REPORT_FRAME_H
@@ -58,7 +54,11 @@ public:
   void FileHistoryPopupMenu();
 
   /// Finds in selected files dialog.
-  int FindInSelectionDialog(int id);
+  int FindInSelectionDialog(
+    /// ID_TOOL_REPORT_FIND or ID_TOOL_REPORT_REPLACE
+    int id,
+    /// add file types selection as well
+    bool add_in_files = false);
   
   /// Returns caption for FindInSelectionDialog.
   const wxString GetFindInCaption(int id) const;
