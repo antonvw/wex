@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          art.cpp
-* Purpose:       Implementation of wxExStockArt class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      art.cpp
+// Purpose:   Implementation of wxExStockArt class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -32,9 +28,12 @@ wxExStockArt::wxExStockArt(wxWindowID id)
     Add(wxID_DOWN, wxART_GO_DOWN);
     Add(wxID_EXIT, wxART_QUIT);
     Add(wxID_FIND, wxART_FIND);
+    Add(wxID_FIRST, wxART_GOTO_FIRST);
     Add(wxID_FORWARD, wxART_GO_FORWARD);
     Add(wxID_HELP, wxART_HELP);
     Add(wxID_HOME, wxART_GO_HOME);
+    Add(wxID_INFO, wxART_INFORMATION);
+    Add(wxID_LAST, wxART_GOTO_LAST);
     Add(wxID_NEW, wxART_NEW);
     Add(wxID_OPEN, wxART_FILE_OPEN);
     Add(wxID_PASTE, wxART_PASTE);

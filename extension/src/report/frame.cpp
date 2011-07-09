@@ -252,6 +252,48 @@ void wxExFrameWithHistory::FindInFiles(wxWindowID dialogid)
   tool.Log(&dir.GetStatistics().GetElements());
 }
 
+void wxExFrameWithHistory::FindInSelection(
+  const wxArrayString& files,
+  int id)
+{
+  const wxExFileName filename(files[0]);
+  const wxExTool tool(id);
+  
+  if (FindInSelectionDialog(
+    tool.GetId(),
+    filename.DirExists() && !filename.FileExists()) == wxID_CANCEL ||
+     !wxExTextFileWithListView::SetupTool(tool, this))
+  {
+    return;
+  }
+  
+  wxExStatistics<long> stats;
+
+  for (auto i = 0; i < files.GetCount(); i++)
+  {
+    const wxExFileName fn(files[i]);
+    
+    if (fn.FileExists())
+    {
+      wxExTextFileWithListView file(fn, tool);
+      file.RunTool();
+      stats += file.GetStatistics().GetElements();
+    }
+    else
+    {
+      wxExDirTool dir(
+        tool, 
+        fn.GetFullPath(), 
+        wxExConfigFirstOf(m_TextInFiles));
+        
+      dir.FindFiles();
+      stats += dir.GetStatistics().GetElements();
+    }
+  }
+  
+  tool.Log(&stats);
+}
+
 int wxExFrameWithHistory::FindInSelectionDialog(
   int id,
   bool add_in_files)
