@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          configdlg.cpp
-* Purpose:       Implementation of wxExtension config dialog class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      configdlg.cpp
+// Purpose:   Implementation of wxExtension config dialog class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -304,7 +300,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
       {
         wxCheckBox* cb = (wxCheckBox*)it->GetControl();
 
-        if (it->GetName().Lower().Contains(m_Contains.Lower()) && 
+        if (it->GetLabel().Lower().Contains(m_Contains.Lower()) && 
             cb->GetValue() &&
             it->GetPage() == m_Page)
         {

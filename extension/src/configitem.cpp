@@ -2,9 +2,7 @@
 // Name:      configitem.cpp
 // Purpose:   Implementation of wxExConfigItem class
 // Author:    Anton van Wezenbeek
-// Created:   2009-11-10
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -28,13 +26,13 @@
 #if wxUSE_GUI
 
 wxExConfigItem::wxExConfigItem(
-  const wxString& name,
+  const wxString& label,
   wxExConfigType type,
   const wxString& page,
   bool is_required,
   int id,
   int max_items,
-  bool add_name,
+  bool add_label,
   int cols,
   long style)
   : m_Control(NULL)
@@ -44,26 +42,26 @@ wxExConfigItem::wxExConfigItem(
   , m_Max(1)
   , m_MaxItems(max_items)
   , m_MajorDimension(1)
-  , m_Name(name)
+  , m_Label(label)
   , m_Page(page)
   , m_Style(style)
   , m_Type(type)
   , m_Cols(cols)
-  , m_AddName(
+  , m_AddLabel(
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
       type == CONFIG_STATICLINE || 
-      type == CONFIG_TOGGLEBUTTON ? false: add_name)
+      type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
 {
 }
 
 wxExConfigItem::wxExConfigItem(
-  const wxString& name,
+  const wxString& label,
   wxControl* control,
   const wxString& page,
   bool is_required,
-  bool add_name,
+  bool add_label,
   int cols)
   : m_Control(control)
   , m_Id(control->GetId())
@@ -72,18 +70,18 @@ wxExConfigItem::wxExConfigItem(
   , m_Max(1)
   , m_MaxItems(1)
   , m_MajorDimension(1)
-  , m_Name(name)
+  , m_Label(label)
   , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_USER)
   , m_Cols(cols)
-  , m_AddName(add_name)
+  , m_AddLabel(add_label)
   , m_Inc(1)
 {
 }
     
 wxExConfigItem::wxExConfigItem(
-  const wxString& name,
+  const wxString& label,
   double min,
   double max,
   const wxString& page,
@@ -96,25 +94,25 @@ wxExConfigItem::wxExConfigItem(
   , m_IsRequired(false)
   , m_MaxItems(0)
   , m_Inc(inc)
-  , m_Name(name)
+  , m_Label(label)
   , m_Page(page)
   , m_Style(style)
   , m_Type(type)
   , m_Cols(cols)
-  , m_AddName(true)
+  , m_AddLabel(true)
   , m_Min(min)
   , m_Max(max)
 {
 }
 
 wxExConfigItem::wxExConfigItem(
-  const wxString& name,
+  const wxString& label,
   const wxString& value,
   const wxString& page,
   long style,
   wxExConfigType type,
   bool is_required,
-  bool add_name,
+  bool add_label,
   int cols)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
@@ -122,21 +120,21 @@ wxExConfigItem::wxExConfigItem(
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
-  , m_Name(name)
+  , m_Label(label)
   , m_Page(page)
   , m_Style(style)
   , m_Type(type)
   , m_Cols(cols)
-  , m_AddName(
+  , m_AddLabel(
       (type != CONFIG_STATICTEXT && 
-       type != CONFIG_HYPERLINKCTRL ? add_name: false))
+       type != CONFIG_HYPERLINKCTRL ? add_label: false))
   , m_Inc(1)
   , m_Default(value)
 {
 }
 
 wxExConfigItem::wxExConfigItem(
-  const wxString& name,
+  const wxString& label,
   const std::map<long, const wxString> & choices,
   bool use_radiobox,
   const wxString& page,
@@ -150,13 +148,13 @@ wxExConfigItem::wxExConfigItem(
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
-  , m_Name(name)
+  , m_Label(label)
   , m_Page(page)
   , m_Style(style)
   , m_Type(use_radiobox ? CONFIG_RADIOBOX: CONFIG_CHECKLISTBOX)
   , m_Choices(choices)
   , m_Cols(cols)
-  , m_AddName(false)
+  , m_AddLabel(false)
   , m_Inc(1)
 {
 }
@@ -171,13 +169,13 @@ wxExConfigItem::wxExConfigItem(
   , m_Min(0)
   , m_Max(0)
   , m_MaxItems(0)
-  , m_Name("checklistbox_noname")
+  , m_Label("checklistbox_noname")
   , m_Page(page)
   , m_Style(0)
   , m_Type(CONFIG_CHECKLISTBOX_NONAME)
   , m_ChoicesBool(choices) 
   , m_Cols(cols)
-  , m_AddName(false)
+  , m_AddLabel(false)
   , m_Inc(1)
 {
 }
@@ -190,7 +188,7 @@ wxFlexGridSizer* wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
 
   fgz->AddGrowableCol(1);
 
-  AddStaticTextName(fgz);
+  AddStaticText(fgz);
 
   fgz->Add(m_Control, m_ControlFlags);
 
@@ -209,16 +207,16 @@ wxFlexGridSizer* wxExConfigItem::AddBrowseButton(wxSizer* sizer) const
   return fgz;
 }
 
-void wxExConfigItem::AddStaticTextName(wxSizer* sizer) const
+void wxExConfigItem::AddStaticText(wxSizer* sizer) const
 {
-  wxASSERT(!m_Name.empty());
+  wxASSERT(!m_Label.empty());
   wxASSERT(m_Control != NULL);
 
   sizer->Add(
     new wxStaticText(m_Control->GetParent(), 
-    wxID_ANY, 
-    m_Name + ":"), 
-    wxSizerFlags().Right().Border());
+      wxID_ANY, 
+      m_Label + ":"), 
+      wxSizerFlags().Right().Border());
 }
 
 void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
@@ -233,12 +231,12 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   switch (m_Type)
   {
     case CONFIG_BUTTON:
-      m_Control = new wxButton(parent, m_Id, m_Name);
+      m_Control = new wxButton(parent, m_Id, m_Label);
       expand = false;
       break;
 
     case CONFIG_CHECKBOX:
-      m_Control = new wxCheckBox(parent, m_Id, m_Name);
+      m_Control = new wxCheckBox(parent, m_Id, m_Label);
       break;
 
     case CONFIG_CHECKLISTBOX:
@@ -348,7 +346,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 #if wxUSE_HYPERLINKCTRL
       m_Control = new wxHyperlinkCtrl(parent,
         m_Id,
-        m_Name,
+        m_Label,
         m_Default,
         wxDefaultPosition,
         wxSize(width, wxDefaultCoord));
@@ -382,7 +380,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
 
       m_Control = new wxRadioBox(parent,
         m_Id, 
-        m_Name, 
+        m_Label, 
         wxDefaultPosition, 
         wxDefaultSize, 
         arraychoices, 
@@ -442,7 +440,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_STATICTEXT:
       m_Control = new wxStaticText(parent,
         m_Id,
-        m_Name,
+        m_Label,
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
@@ -463,7 +461,7 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_TOGGLEBUTTON:
-      m_Control = new wxToggleButton(parent, m_Id, m_Name);
+      m_Control = new wxToggleButton(parent, m_Id, m_Label);
       expand = false;
       break;
 
@@ -497,7 +495,7 @@ wxFlexGridSizer* wxExConfigItem::Layout(
   }
   else
   {
-    if (m_AddName)
+    if (m_AddLabel)
     {
       // Construct a child flex grid sizer.
       if (fgz == NULL)
@@ -506,8 +504,8 @@ wxFlexGridSizer* wxExConfigItem::Layout(
         use->AddGrowableCol(1); // the control
         use->AddGrowableRow(0);
       
-        // Add name and control.
-        AddStaticTextName(use);
+        // Add label and control.
+        AddStaticText(use);
         use->Add(m_Control, m_ControlFlags);
 
         // Add to the sizer.
@@ -515,7 +513,7 @@ wxFlexGridSizer* wxExConfigItem::Layout(
       }
       else
       {
-        AddStaticTextName(fgz);
+        AddStaticText(fgz);
         fgz->Add(m_Control, m_ControlFlags);
       }
     }
@@ -548,9 +546,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxCheckBox* cb = (wxCheckBox*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, cb->GetValue());
+        wxConfigBase::Get()->Write(m_Label, cb->GetValue());
       else
-        cb->SetValue(wxConfigBase::Get()->ReadBool(m_Name, false));
+        cb->SetValue(wxConfigBase::Get()->ReadBool(m_Label, false));
       }
       break;
 
@@ -560,7 +558,7 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       long value = 0;
       if (!save)
-        value = wxConfigBase::Get()->ReadLong(m_Name, 0);
+        value = wxConfigBase::Get()->ReadLong(m_Label, 0);
       int item = 0;
 
       for (
@@ -584,7 +582,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
 
       if (save)
-        wxConfigBase::Get()->Write(m_Name, value);
+        wxConfigBase::Get()->Write(m_Label, value);
       }
       break;
 
@@ -618,9 +616,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxColourPickerWidget* gcb = (wxColourPickerWidget*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, gcb->GetColour());
+        wxConfigBase::Get()->Write(m_Label, gcb->GetColour());
       else
-        gcb->SetColour(wxConfigBase::Get()->ReadObject(m_Name, *wxWHITE));
+        gcb->SetColour(wxConfigBase::Get()->ReadObject(m_Label, *wxWHITE));
       }
       break;
 
@@ -633,20 +631,20 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
         const auto l = wxExComboBoxToList(cb, m_MaxItems);
 
-        wxExListToConfig(l, m_Name);
+        wxExListToConfig(l, m_Label);
 
-        if (m_Name == wxExFindReplaceData::Get()->GetTextFindWhat())
+        if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
         {
           wxExFindReplaceData::Get()->SetFindStrings(l);
         }
-        else if (m_Name == wxExFindReplaceData::Get()->GetTextReplaceWith())
+        else if (m_Label == wxExFindReplaceData::Get()->GetTextReplaceWith())
         {
           wxExFindReplaceData::Get()->SetReplaceStrings(l);
         }
       }
       else
       {
-        wxExComboBoxFromList(cb, wxExListFromConfig(m_Name));
+        wxExComboBoxFromList(cb, wxExListFromConfig(m_Label));
       }
       }
       break;
@@ -655,9 +653,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxDirPickerCtrl* pc = (wxDirPickerCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, pc->GetPath());
+        wxConfigBase::Get()->Write(m_Label, pc->GetPath());
       else
-        pc->SetPath(wxConfigBase::Get()->Read(m_Name));
+        pc->SetPath(wxConfigBase::Get()->Read(m_Label));
       }
       break;
 
@@ -667,11 +665,11 @@ bool wxExConfigItem::ToConfig(bool save) const
       
       if (save)
       {
-        wxConfigBase::Get()->Write(m_Name, pc->GetPath());
+        wxConfigBase::Get()->Write(m_Label, pc->GetPath());
       }
       else
       {
-        const wxString val(wxConfigBase::Get()->Read(m_Name));
+        const wxString val(wxConfigBase::Get()->Read(m_Label));
         
         if (!val.empty())
         {
@@ -685,10 +683,10 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxFontPickerCtrl* pc = (wxFontPickerCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, pc->GetSelectedFont());
+        wxConfigBase::Get()->Write(m_Label, pc->GetSelectedFont());
       else
         pc->SetFont(
-          wxConfigBase::Get()->ReadObject(m_Name, 
+          wxConfigBase::Get()->ReadObject(m_Label, 
           wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
       }
       break;
@@ -697,10 +695,10 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, atol(tc->GetValue().c_str()));
+        wxConfigBase::Get()->Write(m_Label, atol(tc->GetValue().c_str()));
       else
         tc->SetValue(
-          wxString::Format("%ld", wxConfigBase::Get()->ReadLong(m_Name, 0)));
+          wxString::Format("%ld", wxConfigBase::Get()->ReadLong(m_Label, 0)));
       }
       break;
 
@@ -717,14 +715,14 @@ bool wxExConfigItem::ToConfig(bool save) const
         {
           if (b->second == rb->GetStringSelection())
           {
-            wxConfigBase::Get()->Write(m_Name, b->first);
+            wxConfigBase::Get()->Write(m_Label, b->first);
           }
         }
       }
       else
       {
         const auto c = 
-          m_Choices.find(wxConfigBase::Get()->ReadLong(m_Name, 0));
+          m_Choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
 
         if (c != m_Choices.end())
         {
@@ -738,9 +736,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxSlider* sl = (wxSlider*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, sl->GetValue());
+        wxConfigBase::Get()->Write(m_Label, sl->GetValue());
       else
-        sl->SetValue(wxConfigBase::Get()->ReadLong(m_Name, m_Min));
+        sl->SetValue(wxConfigBase::Get()->ReadLong(m_Label, m_Min));
       }
       break;
 
@@ -748,9 +746,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxSpinCtrl* sc = (wxSpinCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, sc->GetValue());
+        wxConfigBase::Get()->Write(m_Label, sc->GetValue());
       else
-        sc->SetValue(wxConfigBase::Get()->ReadLong(m_Name, m_Min));
+        sc->SetValue(wxConfigBase::Get()->ReadLong(m_Label, m_Min));
       }
       break;
 
@@ -758,9 +756,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxSpinCtrlDouble* sc = (wxSpinCtrlDouble*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, sc->GetValue());
+        wxConfigBase::Get()->Write(m_Label, sc->GetValue());
       else
-        sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Name, m_Min));
+        sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Label, m_Min));
       }
       break;
 
@@ -768,9 +766,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, tc->GetValue());
+        wxConfigBase::Get()->Write(m_Label, tc->GetValue());
       else
-        tc->SetValue(wxConfigBase::Get()->Read(m_Name));
+        tc->SetValue(wxConfigBase::Get()->Read(m_Label));
       }
       break;
 
@@ -778,9 +776,9 @@ bool wxExConfigItem::ToConfig(bool save) const
       {
       wxToggleButton* ctrl = (wxToggleButton*)m_Control;
       if (save)
-        wxConfigBase::Get()->Write(m_Name, ctrl->GetValue());
+        wxConfigBase::Get()->Write(m_Label, ctrl->GetValue());
       else
-        ctrl->SetValue(wxConfigBase::Get()->ReadBool(m_Name, false));
+        ctrl->SetValue(wxConfigBase::Get()->ReadBool(m_Label, false));
       }
       break;
       
