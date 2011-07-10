@@ -34,7 +34,7 @@ enum wxExConfigType
 
   /// a checklistbox item
   CONFIG_CHECKLISTBOX_NONAME,
-
+  
   /// a colour button item
   CONFIG_COLOUR,
   
@@ -43,6 +43,9 @@ enum wxExConfigType
 
   /// a combobox item with a browse button
   CONFIG_COMBOBOXDIR,
+
+  /// a commandlink button
+  CONFIG_COMMAND_LINK_BUTTON,
 
   /// a dirpicker ctrl item
   CONFIG_DIRPICKERCTRL,
@@ -103,7 +106,9 @@ class WXDLLIMPEXP_BASE wxExConfigItem
 public:
   /// Constuctor for most types.
   wxExConfigItem(
-    /// label for the control as on the dialog and in the config
+    /// label for the control as on the dialog and in the config,
+    /// - might also contain the note after a tab for a command link button
+    /// - if the control supports it you can use a markup label
     const wxString& label,
     /// type
     wxExConfigType type,
@@ -248,7 +253,7 @@ public:
     /// specify the sizer for creating the item, or NULL,
     /// than a new one is created
     wxFlexGridSizer* fgz = NULL);
-
+    
   /// Loads or saves this item to the config.
   /// Returns true if the config was accessed, as not all
   /// config items associate with the config.
