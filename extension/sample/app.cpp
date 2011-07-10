@@ -431,7 +431,7 @@ void wxExSampleFrame::ShowConfigItems()
   for (size_t b = 1; b <= 4; b++)
   {
     v.push_back(wxExConfigItem(
-      wxString::Format("Button%d", b),
+      wxString::Format("<span size='x-large' color='blue'>Big</span> <b>bold</b> button %d", b),
       CONFIG_BUTTON,
       "Buttons",
       false,
@@ -521,6 +521,17 @@ void wxExSampleFrame::ShowConfigItems()
     "Comboboxes",
     false,
     1001));
+
+  // CONFIG_COMMAND_LINK_BUTTON
+  for (size_t l = 1; l <= 4; l++)
+  {
+    v.push_back(wxExConfigItem(
+      wxString::Format("Command Link Button%d\tThis text describes what the button does", l),
+      CONFIG_COMMAND_LINK_BUTTON,
+      "Command Link Buttons",
+      false,
+      1000 + l));
+  }
 
   // CONFIG_DIRPICKERCTRL
   v.push_back(wxExConfigItem(
@@ -634,7 +645,7 @@ void wxExSampleFrame::ShowConfigItems()
     25,
     false,
     -1,
-    -1));
+    -1)); // style -1 -> vertical
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)

@@ -11,6 +11,7 @@
 #endif
 #include <wx/button.h>
 #include <wx/clrpicker.h> // for wxColourPickerWidget
+#include <wx/commandlinkbutton.h>
 #include <wx/config.h>
 #include <wx/filepicker.h>
 #include <wx/fontpicker.h>
@@ -50,6 +51,7 @@ wxExConfigItem::wxExConfigItem(
   , m_AddLabel(
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
+      type == CONFIG_COMMAND_LINK_BUTTON ||
       type == CONFIG_STATICLINE || 
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
@@ -231,7 +233,8 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
   switch (m_Type)
   {
     case CONFIG_BUTTON:
-      m_Control = new wxButton(parent, m_Id, m_Label);
+      m_Control = new wxButton(parent, m_Id);
+      ((wxButton *)m_Control)->SetLabelMarkup(m_Label);
       expand = false;
       break;
 
@@ -279,6 +282,15 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
         wxEmptyString,
         wxDefaultPosition,
         wxSize(250, wxDefaultCoord));
+      break;
+
+    case CONFIG_COMMAND_LINK_BUTTON:
+      m_Control = new wxCommandLinkButton(
+        parent, 
+        m_Id, 
+        m_Label.BeforeFirst('\t'), 
+        m_Label.AfterFirst('\t'));
+      expand = false;
       break;
 
     case CONFIG_DIRPICKERCTRL:
@@ -440,12 +452,13 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
     case CONFIG_STATICTEXT:
       m_Control = new wxStaticText(parent,
         m_Id,
-        m_Label,
+        wxEmptyString,
         wxDefaultPosition,
         (m_Style & wxTE_MULTILINE ?
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
         m_Style);
+      ((wxStaticText* )m_Control)->SetLabelMarkup(m_Label);
       break;
 
     case CONFIG_STRING:
@@ -535,6 +548,7 @@ bool wxExConfigItem::ToConfig(bool save) const
   switch (m_Type)
   {
     case CONFIG_BUTTON:
+    case CONFIG_COMMAND_LINK_BUTTON:
     case CONFIG_HYPERLINKCTRL:
     case CONFIG_STATICLINE:
     case CONFIG_STATICTEXT:
