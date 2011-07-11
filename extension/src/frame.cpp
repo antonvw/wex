@@ -404,9 +404,16 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 }
 #endif // wxUSE_STATUSBAR
 
-void wxExFrame::UpdateFindFocus()
+void wxExFrame::UpdateFindFocus(wxWindow* focus)
 {
-  m_FindFocus = wxWindow::FindFocus();
+  if (focus != NULL)
+  {
+    m_FindFocus = focus;
+  }
+  else
+  {
+    m_FindFocus = wxWindow::FindFocus();
+  }
 }
 
 #if wxUSE_STATUSBAR
