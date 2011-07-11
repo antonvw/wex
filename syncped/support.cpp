@@ -14,6 +14,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
+#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/listviewfile.h>
@@ -198,6 +199,12 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   
   SetMenuBar(menubar);
+}
+
+void DecoratedFrame::DoAddControl(wxExToolBar* toolbar)
+{
+wxLogMessage("added");
+  toolbar->AddTool(wxID_HELP);
 }
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)

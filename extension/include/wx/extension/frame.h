@@ -94,7 +94,9 @@ public:
   static void StatusText(const wxString& text, const wxString& pane);
   
   /// Call this if you think the find focus should be updated.
-  void UpdateFindFocus();
+  /// If focus is NULL, FindFocus is called, otherwise
+  /// focus is use.d
+  void UpdateFindFocus(wxWindow* focus = NULL);
   
   /// Updates statusbar pane items pane with values from specified listview.
   static void UpdateStatusBar(const wxListView* lv);
