@@ -2,9 +2,7 @@
 // Name:      toolbar.h
 // Purpose:   Declaration of wxExToolBar classes
 // Author:    Anton van Wezenbeek
-// RCS-ID:    $Id$
-// Created:   2010-03-26
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXTOOLBAR_H

@@ -9,7 +9,9 @@
 #ifndef _EXMANAGEDFRAME_H
 #define _EXMANAGEDFRAME_H
 
+#include <wx/aui/auibar.h> // for wxAuiToolBar
 #include <wx/aui/framemanager.h> // for wxAuiManager
+#include <wx/panel.h>
 #include <wx/extension/frame.h>
 
 // Only if we have a gui.
@@ -23,7 +25,6 @@ class wxExViTextCtrl;
 /// Offers an aui managed frame with a notebook multiple document interface,
 /// used by the notebook classes, and toolbar, findbar and vibar support.
 /// - The toolbar and findbar are added as wxExToolbarPanes to the aui manager.
-///   You can add your own controls to the toolbar by overriding the DoAddControl.
 /// - The vibar is added as normal aui panel to the aui manager.
 class WXDLLIMPEXP_BASE wxExManagedFrame : public wxExFrame
 {
@@ -57,7 +58,7 @@ public:
   /// Returns true if vi command is a find command.
   bool GetViCommandIsFind() const;
   
-  /// Returns true if vi command is a find command and a find next.
+  /// Returns true if vi command is a find next.
   bool GetViCommandIsFindNext() const;
   
   /// Hides the vi bar.
@@ -75,10 +76,8 @@ public:
   /// Toggles the managed pane: if shown hides it, otherwise shows it.
   void TogglePane(const wxString& pane);
 protected:
-  /// Add controls to specified toolbar.
-  /// This toolbar already contains the standard controls.
-  virtual void DoAddControl(wxExToolBar*) {;};
-
+  /// Returns the toolbar.
+  wxExToolBar* GetToolBar() {return m_ToolBar;};
   void OnCommand(wxCommandEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
@@ -86,9 +85,10 @@ private:
     wxWindow* window, 
     const wxString& name, 
     const wxString& caption = wxEmptyString);
+  wxPanel* CreateViPanel();
   
   wxAuiManager m_Manager;
-
+  wxExToolBar* m_ToolBar;
   wxExViTextCtrl* m_viTextCtrl;
   wxStaticText* m_viTextPrefix;
   

@@ -109,7 +109,16 @@ wxExSTC* wxExFrame::GetSTC()
 {
   wxWindow* win = wxWindow::FindFocus();
   wxExSTC* stc = dynamic_cast<wxExSTC*>(win);
-  return stc;
+  
+  if (stc != NULL)
+  {
+    return stc;
+  }
+  else if (m_FindFocus != NULL)
+  {
+    wxExSTC* stc = dynamic_cast<wxExSTC*>(m_FindFocus);
+    return stc;
+  }
 }
   
 void wxExFrame::Initialize()

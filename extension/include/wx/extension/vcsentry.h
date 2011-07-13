@@ -33,8 +33,8 @@ public:
 
   /// Executes the current command for this vcs.
   long Execute(
-    const wxExLexer& lexer,
     const wxString& args,
+    const wxExLexer& lexer,
     const wxString& wd = wxEmptyString);
   
   /// Gets the current vcs command.  

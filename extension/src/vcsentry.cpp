@@ -156,8 +156,8 @@ int wxExVCSEntry::BuildMenu(int base_id, wxMenu* menu, bool is_popup) const
 #endif
 
 long wxExVCSEntry::Execute(
-  const wxExLexer& lexer,
   const wxString& args,
+  const wxExLexer& lexer,
   const wxString& wd)
 {
   if (GetBin().empty())

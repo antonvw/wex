@@ -213,6 +213,14 @@ Frame::Frame()
     m_Shell->DocumentEnd();
   }
 
+  GetToolBar()->AddTool(
+    ID_WRITE_DATA,
+    wxEmptyString,
+    wxArtProvider::GetBitmap(
+      wxART_GO_FORWARD, wxART_TOOLBAR, GetToolBar()->GetToolBitmapSize()),
+    _("Write data"));
+  GetToolBar()->Realize();
+    
   GetManager().Update();
 }
 
@@ -222,30 +230,6 @@ Frame::~Frame()
   delete m_TaskBarIcon;
 #endif
   delete m_SocketServer;
-}
-
-void Frame::DoAddControl(wxExToolBar* toolbar)
-{
-  toolbar->AddTool(
-    ID_WRITE_DATA,
-    wxEmptyString,
-    wxArtProvider::GetBitmap(
-      wxART_GO_FORWARD, wxART_TOOLBAR, toolbar->GetToolBitmapSize()),
-    _("Write data"));
-}
-
-wxExSTC* Frame::GetSTC()
-{
-  if (m_DataWindow->IsShown())
-  {
-    return m_DataWindow;
-  }
-  else if (m_LogWindow->IsShown())
-  {
-    return m_LogWindow;
-  }
-
-  return NULL;
 }
 
 void Frame::LogConnection(

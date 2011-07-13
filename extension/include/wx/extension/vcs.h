@@ -94,15 +94,6 @@ public:
   /// Returns true if VCS usage is set in the config.
   bool Use() const;
 private:
-  // The vcs id's here can be set using the config dialog, and are not
-  // present in the vcs.xml. 
-  enum
-  {
-    VCS_NONE = 0, // no version control
-    VCS_AUTO, // uses the VCS appropriate for current file
-    VCS_MAX
-  };
-
   static bool CheckPath(const wxString& vcs, const wxFileName& fn);
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);

@@ -16,6 +16,15 @@
 #include <wx/extension/filename.h>
 #include <wx/extension/util.h>
 
+// The vcs id's here can be set using the config dialog, and are not
+// present in the vcs.xml. 
+enum
+{
+  VCS_NONE = 0, // no version control
+  VCS_AUTO,     // uses the VCS appropriate for current file
+  VCS_MAX
+};
+
 std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
 wxFileName wxExVCS::m_FileName;
 
@@ -174,22 +183,24 @@ bool wxExVCS::DirExists(const wxFileName& filename)
 
 long wxExVCS::Execute()
 {
-  const wxFileName filename(GetFile());
-
-  wxString wd;
-  wxString file;
+  const wxExFileName filename(GetFile());
 
   if (!filename.IsOk())
   {
-    wd = wxExConfigFirstOf(_("Base folder"));
+    wxString args;
 
     if (m_Entry.GetCommand().IsAdd())
     {
-      file = wxExConfigFirstOf(_("Path"));
+      args = wxExConfigFirstOf(_("Path"));
     }
+    
+    return m_Entry.Execute(args, wxExLexer(), wxExConfigFirstOf(_("Base folder")));
   }
   else
   {
+    wxString args;
+    wxString wd;
+    
     if (m_Files.size() > 1)
     {
       // File should not be surrounded by double quotes.
@@ -198,7 +209,7 @@ long wxExVCS::Execute()
         it != m_Files.end();
         it++)
       {
-        file += *it + " ";
+        args += *it + " ";
       }
     }
     else if (m_Entry.GetName() == "git")
@@ -207,12 +218,12 @@ long wxExVCS::Execute()
       
       if (!filename.GetFullName().empty())
       {
-        file = "\"" + filename.GetFullName() + "\"";
+        args = "\"" + filename.GetFullName() + "\"";
       }
     }
     else if (m_Entry.GetName() == "SCCS")
     {
-      file = "\"" + 
+      args = "\"" + 
       // SCCS for windows does not handle windows paths,
       // so convert them to UNIX, and add volume as well.
 #ifdef __WXMSW__      
@@ -222,11 +233,11 @@ long wxExVCS::Execute()
     }
     else
     {
-      file = "\"" + filename.GetFullPath() + "\"";
+      args = "\"" + filename.GetFullPath() + "\"";
     }
+    
+    return m_Entry.Execute(args, filename.GetLexer(), wd);
   }
-
-  return m_Entry.Execute(wxExFileName(GetFile()).GetLexer(), file, wd);
 }
 
 const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)

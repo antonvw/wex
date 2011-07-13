@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.cpp
-* Purpose:       Implementation of classes for syncodbcquery
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2008-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.cpp
+// Purpose:   Implementation of classes for syncodbcquery
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -164,16 +160,6 @@ Frame::Frame()
   GetManager().GetPane("QUERY").Show(false);
 
   GetManager().Update();
-}
-
-wxExSTC* Frame::GetSTC()
-{
-  if (m_Query->IsShown())
-  {
-    return m_Query;
-  }
-
-  return NULL;
 }
 
 void Frame::OnClose(wxCloseEvent& event)

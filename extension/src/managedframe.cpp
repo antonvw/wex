@@ -69,27 +69,12 @@ wxExManagedFrame::wxExManagedFrame(wxWindow* parent,
 {
   m_Manager.SetManagedWindow(this);
 
-  wxExToolBar* toolBar = new wxExToolBar(this);
-  toolBar->AddControls();
-  DoAddControl(toolBar);
+  m_ToolBar = new wxExToolBar(this);
+  m_ToolBar->AddControls();
 
-  AddToolBarPane(toolBar, "TOOLBAR", _("Toolbar"));
+  AddToolBarPane(m_ToolBar, "TOOLBAR", _("Toolbar"));
   AddToolBarPane(new wxExFindToolBar(this), "FINDBAR", _("Findbar"));
-    
-  // A vi panel starts with small static text for : or /, then
-  // comes the vi ctrl for getting user input.
-  wxPanel* panel = new wxPanel(this);
-  m_viTextPrefix = new wxStaticText(panel, wxID_ANY, wxEmptyString);
-  m_viTextCtrl = new wxExViTextCtrl(panel, this, wxID_ANY);
-  
-  wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
-  sizer->AddGrowableCol(1);
-  sizer->Add(m_viTextPrefix, wxSizerFlags().Expand());
-  sizer->Add(m_viTextCtrl, wxSizerFlags().Expand());
-  
-  panel->SetSizerAndFit(sizer);
-  
-  AddToolBarPane(panel, "VIBAR");
+  AddToolBarPane(CreateViPanel(), "VIBAR");
   
   m_Manager.Update();
 }
@@ -137,8 +122,26 @@ bool wxExManagedFrame::AddToolBarPane(
 
 bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  UpdateFindFocus(page);
+  // The page will be closed, so do not update find focus now.
   return true;
+}
+
+wxPanel* wxExManagedFrame::CreateViPanel()
+{
+  // A vi panel starts with small static text for : or /, then
+  // comes the vi ctrl for getting user input.
+  wxPanel* panel = new wxPanel(this);
+  m_viTextPrefix = new wxStaticText(panel, wxID_ANY, wxEmptyString);
+  m_viTextCtrl = new wxExViTextCtrl(panel, this, wxID_ANY);
+  
+  wxFlexGridSizer* sizer = new wxFlexGridSizer(2);
+  sizer->AddGrowableCol(1);
+  sizer->Add(m_viTextPrefix, wxSizerFlags().Expand());
+  sizer->Add(m_viTextCtrl, wxSizerFlags().Expand());
+  
+  panel->SetSizerAndFit(sizer);
+
+  return panel;
 }
 
 void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
@@ -157,7 +160,7 @@ bool wxExManagedFrame::GetViCommandIsFind() const
 
 bool wxExManagedFrame::GetViCommandIsFindNext() const
 {
-  return GetViCommandIsFind() && m_viTextPrefix->GetLabel() == "/";
+  return m_viTextPrefix->GetLabel() == "/";
 }
   
 void wxExManagedFrame::HideViBar()
