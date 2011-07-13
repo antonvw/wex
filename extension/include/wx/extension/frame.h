@@ -95,7 +95,7 @@ public:
   
   /// Call this if you think the find focus should be updated.
   /// If focus is NULL, FindFocus is called, otherwise
-  /// focus is use.d
+  /// focus is used.
   void UpdateFindFocus(wxWindow* focus = NULL);
   
   /// Updates statusbar pane items pane with values from specified listview.

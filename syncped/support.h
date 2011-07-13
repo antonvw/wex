@@ -16,7 +16,5 @@ public:
   DecoratedFrame();
   virtual bool AllowClose(wxWindowID id, wxWindow* page);
   virtual void OnNotebook(wxWindowID id, wxWindow* page);
-protected:
-  virtual void DoAddControl(wxExToolBar* bar);
 };
 #endif

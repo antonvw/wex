@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.h
-* Purpose:       Declaration of classes for syncodbcquery
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2008, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.h
+// Purpose:   Declaration of classes for syncodbcquery
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011
+////////////////////////////////////////////////////////////////////////////////
 
 #define wxExUSE_OTL 1
 #include <wx/extension/app.h>
@@ -52,7 +48,6 @@ private:
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int commandid);
-  virtual wxExSTC* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,

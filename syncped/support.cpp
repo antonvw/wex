@@ -199,12 +199,9 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   
   SetMenuBar(menubar);
-}
-
-void DecoratedFrame::DoAddControl(wxExToolBar* toolbar)
-{
-wxLogMessage("added");
-  toolbar->AddTool(wxID_HELP);
+  
+  GetToolBar()->AddTool(wxID_HELP);
+  GetToolBar()->Realize();
 }
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)

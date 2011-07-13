@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.h
-* Purpose:       Declaration of classes for syncsocketserver
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2007-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.h
+// Purpose:   Declaration of classes for syncsocketserver
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011
+////////////////////////////////////////////////////////////////////////////////
 
 #include <list>
 #include <wx/socket.h>
@@ -37,7 +33,6 @@ public:
   bool ServerNotListening() const {
     return m_SocketServer == NULL;}
 protected:
-  virtual void DoAddControl(wxExToolBar* bar);
   void OnClose(wxCloseEvent& event);
   void OnCommand(wxCommandEvent& event);
   void OnSocket(wxSocketEvent& event);
@@ -47,7 +42,6 @@ private:
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int /* commandid*/);
-  virtual wxExSTC* GetSTC();
   virtual bool OpenFile(
     const wxExFileName& filename,
     int line_number = 0,
