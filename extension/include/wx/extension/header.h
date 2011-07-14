@@ -23,6 +23,10 @@ public:
     const wxString& author = wxEmptyString,
     const wxString& email = wxEmptyString,
     const wxString& license = wxEmptyString);
+    
+  /// Returns true if you should do ShowDialog
+  /// to get more info, and not yet do a Get.
+  bool InfoNeeded() const;
 
   /// Returns a file header for specified filename,
   /// using it's lexer and data from config,

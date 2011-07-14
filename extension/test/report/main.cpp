@@ -30,6 +30,8 @@ bool wxExReportTestApp::OnInit()
     
   frame->Show(true);
 
+  wxLog::SetActiveTarget(new wxLogStderr());
+    
   CppUnit::TextUi::TestRunner runner;
 
   wxExReportTestSuite* suite = new wxExReportTestSuite;

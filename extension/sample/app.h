@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.h
-* Purpose:       Declaration of sample classes for wxExtension
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.h
+// Purpose:   Declaration of sample classes for wxExtension
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/extension/app.h>
 #include <wx/extension/dir.h>
@@ -61,7 +57,6 @@ protected:
   void OnCommand(wxCommandEvent& event);
 private:
   virtual wxExListView* GetListView();
-  virtual wxExSTC* GetSTC();
   void ShowConfigItems();
   
 #if wxUSE_GRID
