@@ -241,6 +241,8 @@ void wxExAppTestFixture::testHeader()
   wxExFileName filename(TEST_FILE);
   wxExHeader header;
   header.Set("hello test", "AvW");
+  CPPUNIT_ASSERT(!header.InfoNeeded());
+  
   const wxString str = header.Get(&filename);
   
   CPPUNIT_ASSERT(!str.empty());

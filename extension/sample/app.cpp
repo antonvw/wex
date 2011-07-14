@@ -214,30 +214,6 @@ wxExListView* wxExSampleFrame::GetListView()
   return m_ListView;
 }
 
-wxExSTC* wxExSampleFrame::GetSTC()
-{
-  // First if we have a focus somewhere.
-  if (m_STC->HasFocus())
-  {
-    return m_STC;
-  }
-  else if (m_STCLexers->HasFocus())
-  {
-    return m_STCLexers;
-  }
-  // Then if shown.
-  else if (m_STC->IsShown())
-  {
-    return m_STC;
-  }
-  else if (m_STCLexers->IsShown())
-  {
-    return m_STCLexers;
-  }
-  
-  return NULL;
-}
-  
 void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 {
   m_Statistics.Inc(wxString::Format("%d", event.GetId()));

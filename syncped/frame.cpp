@@ -310,7 +310,7 @@ void Frame::AddHeader(wxExSTC* stc)
   const wxString sel = stc->GetSelectedText();
   const wxExHeader header(sel);
   
-  if (sel.empty())
+  if (sel.empty() || header.InfoNeeded())
   {
     if (header.ShowDialog(this) == wxID_CANCEL)
     {

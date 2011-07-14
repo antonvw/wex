@@ -26,10 +26,7 @@ wxExHeader::wxExHeader(
   , m_TextLicense(_("License"))
   , m_TextPurpose(_("Purpose"))
 {
-  if (!purpose.empty())
-  {
-    Set(purpose, author, email, license);
-  }
+  Set(purpose, author, email, license);
 }
 
 const wxString wxExHeader::Get(const wxExFileName* filename) const
@@ -112,13 +109,21 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   return header;
 }
 
+bool wxExHeader::InfoNeeded() const
+{
+  return 
+    wxConfigBase::Get()->Read(m_TextPurpose).empty() ||
+    wxConfigBase::Get()->Read(m_TextAuthor).empty();
+}
+
 void wxExHeader::Set(
   const wxString& purpose, 
   const wxString& author,
   const wxString& email,
   const wxString& license)
 {
-  wxConfigBase::Get()->Write(m_TextPurpose, purpose);
+  if (!purpose.empty())
+    wxConfigBase::Get()->Write(m_TextPurpose, purpose);
   
   if (!author.empty())
     wxConfigBase::Get()->Write(m_TextAuthor, author);
