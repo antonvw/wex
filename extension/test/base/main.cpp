@@ -7,6 +7,7 @@
 
 #include <ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
+#include <wx/log.h>
 #include "test.h"
 
 int main (int argc, char* argv[])
