@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          util.cpp
-* Purpose:       Implementation of wxExtension report utility functions
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      util.cpp
+// Purpose:   Implementation of wxExtension report utility functions
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -147,20 +143,9 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
 {
-  const wxString cwd = wxGetCwd();
-
-  if (!wxSetWorkingDirectory(makefile.GetPath()))
-  {
-    wxLogError(_("Cannot set working directory"));
-    return false;
-  }
-
-  const bool ret = frame->ProcessRun(
+  return frame->ProcessRun(
     wxConfigBase::Get()->Read("Make", "make") + " " +
-    wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
-    makefile.GetFullPath());
-
-  wxSetWorkingDirectory(cwd);
-
-  return ret;
+      wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
+      makefile.GetFullPath(),
+    makefile.GetPath());
 }

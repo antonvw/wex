@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          process.cpp
-* Purpose:       Implementation of class 'wxExProcess'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      process.cpp
+// Purpose:   Implementation of class 'wxExProcess'
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -164,7 +160,7 @@ int wxExProcess::ConfigDialog(
   return result;
 }
 
-long wxExProcess::Execute()
+long wxExProcess::Execute(const wxString& wd)
 {
   if (m_Command.empty())
   {
@@ -175,7 +171,7 @@ long wxExProcess::Execute()
   }
 
   const struct wxExecuteEnv env = {
-    wxExConfigFirstOf(m_WorkingDirKey), 
+    (wd.empty() ? wxExConfigFirstOf(m_WorkingDirKey): wd), 
     wxEnvVariableHashMap()};
   
   // For asynchronous execution, however, the return value is the process id and zero 

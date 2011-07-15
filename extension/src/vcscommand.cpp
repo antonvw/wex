@@ -124,6 +124,7 @@ bool wxExVCSCommand::IsOpen() const
   return
     GetCommand(false) == "cat" ||
     GetCommand(false) == "get" ||
+    GetCommand(false) == "open" ||
     IsBlame() ||
     IsDiff() ||
     IsHistory();

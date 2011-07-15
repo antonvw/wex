@@ -1108,14 +1108,28 @@ bool Frame::OpenFile(
 
     wxExVCSCommandOnSTC(
       vcs.GetCommand(), filename.GetLexer(), editor);
+      
+    const int index = m_Editors->GetPageIndexByKey(filename.GetFullPath());
     
-    // Place new page before the one used for vcs.
-    m_Editors->InsertPage(
-      m_Editors->GetPageIndexByKey(filename.GetFullPath()),
-      editor,
-      key,
-      filename.GetFullName() + " " + unique,
-      true);
+    if (index != -1)
+    {
+      // Place new page before the one used for vcs.
+      m_Editors->InsertPage(
+        index,
+        editor,
+        key,
+        filename.GetFullName() + " " + unique,
+        true);
+      }
+    else
+    {
+      // Just add at the end.
+      m_Editors->AddPage(
+        editor,
+        key,
+        filename.GetFullName() + " " + unique,
+        true);
+    }
   }
 
   return true;

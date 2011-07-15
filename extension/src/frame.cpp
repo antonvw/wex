@@ -100,6 +100,18 @@ wxExFrame::~wxExFrame()
 
 wxExListView* wxExFrame::GetListView()
 {
+  // If we had a find focus on listview component, return that one.
+  if (m_FindFocus != NULL && m_FindFocus->IsShown())
+  {
+    wxExListView* lv = dynamic_cast<wxExListView*>(m_FindFocus);
+    
+    if (lv != NULL)
+    {
+      return lv;
+    }
+  }
+  
+  // If current focus is on listview component, return that one.  
   wxWindow* win = wxWindow::FindFocus();
   wxExListView* lv = dynamic_cast<wxExListView*>(win);
   return lv;
@@ -107,18 +119,21 @@ wxExListView* wxExFrame::GetListView()
 
 wxExSTC* wxExFrame::GetSTC()
 {
-  wxWindow* win = wxWindow::FindFocus();
-  wxExSTC* stc = dynamic_cast<wxExSTC*>(win);
-  
-  if (stc != NULL)
-  {
-    return stc;
-  }
-  else if (m_FindFocus != NULL)
+  // If we had a find focus on stc component, return that one.
+  if (m_FindFocus != NULL && m_FindFocus->IsShown())
   {
     wxExSTC* stc = dynamic_cast<wxExSTC*>(m_FindFocus);
-    return stc;
+    
+    if (stc != NULL)
+    {
+      return stc;
+    }
   }
+
+  // If current focus is on stc component, return that one.  
+  wxWindow* win = wxWindow::FindFocus();
+  wxExSTC* stc = dynamic_cast<wxExSTC*>(win);
+  return stc;
 }
   
 void wxExFrame::Initialize()

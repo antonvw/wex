@@ -2,9 +2,7 @@
 // Name:      toolbar.cpp
 // Purpose:   Implementation of wxExToolBar class
 // Author:    Anton van Wezenbeek
-// Created:   2010-03-26
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
@@ -283,6 +281,8 @@ void wxExTextCtrl::Find(bool find_next, bool restore_position)
 
   if (stc != NULL)
   {
+    m_Frame->UpdateFindFocus(stc);
+  
     if (restore_position)
     {
       stc->PositionRestore();
@@ -312,14 +312,14 @@ void wxExTextCtrl::OnEnter(wxCommandEvent& event)
 
 void wxExTextCtrl::OnFocus(wxFocusEvent& event)
 {
-  event.Skip();
-
   wxExSTC* stc = m_Frame->GetSTC();
 
   if (stc != NULL)
   {
     stc->PositionSave();
   }
+  
+  event.Skip();
 }
 
 #endif // wxUSE_GUI
