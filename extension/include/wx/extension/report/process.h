@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          process.h
-* Purpose:       Declaration of class 'wxExProcess'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      process.h
+// Purpose:   Declaration of class 'wxExProcess'
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_PROCESS_H
 #define _EX_REPORT_PROCESS_H
@@ -38,7 +34,7 @@ public:
   /// that the command could not be executed.
   /// When the process is finished, a ID_TERMINATED_PROCESS command event
   /// is sent to the frame as specified in the constructor.
-  long Execute();
+  long Execute(const wxString& wd = wxEmptyString);
   
   /// Returns true if this process is running.
   bool IsRunning() const;

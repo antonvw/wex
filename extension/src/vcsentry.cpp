@@ -188,14 +188,6 @@ long wxExVCSEntry::Execute(
     prefix += wxConfigBase::Get()->Read(_("Prefix flags")) + " ";
   }
   
-  wxString comment;
-
-  if (GetCommand().IsCommit())
-  {
-    comment = 
-      "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
-  }
-
   wxString subcommand;
   
   if (GetCommand().UseSubcommand())
@@ -215,12 +207,24 @@ long wxExVCSEntry::Execute(
   {
     flags = GetFlags();
 
-    if (!flags.empty())
+    // E.g. in git you can do
+    // git show HEAD~15:syncped/frame.cpp
+    // where flags is HEAD~15:,
+    // so there should be no space after it
+    if (!flags.empty() && !args.EndsWith(':'))
     {
       flags += " ";
     }
   }
   
+  wxString comment;
+
+  if (GetCommand().IsCommit())
+  {
+    comment = 
+      "-m \"" + wxExConfigFirstOf(_("Revision comment")) + "\" ";
+  }
+
   // If we specified help (flags), we do not need a file argument.      
   if (GetCommand().IsHelp() || flags.Contains("help"))
   {

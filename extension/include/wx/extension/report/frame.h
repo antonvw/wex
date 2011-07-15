@@ -112,7 +112,9 @@ public:
   /// Runs the process.
   /// Outputs to a listview LIST_PROCESS.
   /// Returns true if the process executes.
-  bool ProcessRun(const wxString& command = wxEmptyString);
+  bool ProcessRun(
+    const wxString& command = wxEmptyString,
+    const wxString& wd = wxEmptyString);
 
   /// Stops the process.
   void ProcessStop();

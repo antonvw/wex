@@ -598,13 +598,15 @@ bool wxExFrameWithHistory::ProcessIsSelected() const
   return wxExProcess::IsSelected();
 }
   
-bool wxExFrameWithHistory::ProcessRun(const wxString& command)
+bool wxExFrameWithHistory::ProcessRun(
+  const wxString& command,
+  const wxString& wd)
 {
   wxASSERT(m_Process == NULL);
 
   if ((m_Process = new wxExProcess(this, command)) != NULL)
   {
-    if (m_Process->Execute() > 0)
+    if (m_Process->Execute(wd) > 0)
     {
       return true;
     }

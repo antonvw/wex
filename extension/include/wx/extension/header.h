@@ -16,8 +16,7 @@ class wxExFileName;
 class WXDLLIMPEXP_BASE wxExHeader
 {
 public:
-  /// Default constructor.
-  /// Sets fields if purpose is not empty.
+  /// Default constructor. Calls Set.
   wxExHeader(
     const wxString& purpose = wxEmptyString, 
     const wxString& author = wxEmptyString,
