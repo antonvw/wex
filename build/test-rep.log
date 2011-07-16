@@ -1,6 +1,6 @@
-.reading 100000 items from config took 245 milliseconds
-...adding 750 items took 3751 milliseconds
-sorting 750 items took 2172 milliseconds
+.reading 100000 items from config took 350 milliseconds
+...adding 750 items took 2971 milliseconds
+sorting 750 items took 2234 milliseconds
 ...
 
 
