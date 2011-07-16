@@ -657,7 +657,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
 void wxExFrameWithHistory::SetRecentProject(const wxString& project) 
 {
-  if (!project.empty()) 
+  if (!project.empty() && m_ProjectHistory.GetMaxFiles() > 0) 
   {
     m_ProjectHistory.AddFileToHistory(project);
   }
@@ -702,8 +702,11 @@ void wxExFrameWithHistory::UseHistory(
 
 void wxExFrameWithHistory::UseProjectHistory(wxWindowID id, wxMenu* menu)
 {
-  UseHistory(id, menu, m_ProjectHistory);
+  if (m_ProjectHistory.GetMaxFiles() > 0)
+  {
+    UseHistory(id, menu, m_ProjectHistory);
 
-  // And add the files to the menu.
-  m_ProjectHistory.AddFilesToMenu();
+    // And add the files to the menu.
+    m_ProjectHistory.AddFilesToMenu();
+  }
 }
