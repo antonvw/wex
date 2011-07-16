@@ -211,7 +211,7 @@ long wxExVCSEntry::Execute(
     // git show HEAD~15:syncped/frame.cpp
     // where flags is HEAD~15:,
     // so there should be no space after it
-    if (!flags.empty() && !args.EndsWith(':'))
+    if (!flags.empty() && !flags.EndsWith(':'))
     {
       flags += " ";
     }
@@ -240,7 +240,7 @@ long wxExVCSEntry::Execute(
 
 const wxString wxExVCSEntry::GetBin() const
 {
-  return wxConfigBase::Get()->Read(m_Name, "svn");
+  return wxConfigBase::Get()->Read(m_Name, "");
 }
 
 const wxString wxExVCSEntry::GetFlags() const

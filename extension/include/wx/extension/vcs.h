@@ -98,6 +98,7 @@ private:
   static bool CheckPathAll(const wxString& vcs, const wxFileName& fn);
   static const wxExVCSEntry FindEntry(const wxFileName& filename);
   const wxString GetFile() const;
+  const wxString GetRelativeFile(const wxString& vcs, const wxFileName& file) const;
   static bool IsCheckPathAllVCS(const wxString& vcs);
   
   wxExVCSEntry m_Entry;
