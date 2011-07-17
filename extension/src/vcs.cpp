@@ -219,9 +219,9 @@ long wxExVCS::Execute()
       
       if (!filename.GetFullName().empty())
       {
-        args = "\"" + GetRelativeFile(
+        args = GetRelativeFile(
           vcs, 
-          filename) + "\"";
+          filename);
       }
     }
     else if (m_Entry.GetName() == "SCCS")
@@ -380,7 +380,7 @@ const wxString wxExVCS::GetRelativeFile(
 
       for (int i = as.GetCount() - 1; i >= 0; i--)
       {
-        relative_file += as[i] + wxFileName::GetPathSeparator();
+        relative_file += as[i] + "/";
       }
       
       return relative_file + fn.GetFullName();
