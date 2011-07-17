@@ -214,12 +214,13 @@ long wxExVCS::Execute()
     }
     else if (m_Entry.GetName() == "git")
     {
-      wd = filename.GetPath();
+      const wxString vcs = FindEntry(filename).GetName();
+      wd = GetRoot(vcs, filename);
       
       if (!filename.GetFullName().empty())
       {
         args = "\"" + GetRelativeFile(
-          FindEntry(filename).GetName(), 
+          vcs, 
           filename) + "\"";
       }
     }
@@ -389,6 +390,37 @@ const wxString wxExVCS::GetRelativeFile(
     root.RemoveLastDir();
   }
   
+  return wxEmptyString;
+}
+
+// See CheckPathAll
+const wxString wxExVCS::GetRoot(
+  const wxString& vcs, 
+  const wxFileName& fn) const
+{
+  if (!fn.IsOk() || vcs.empty())
+  {
+    return wxEmptyString;
+  }
+  
+  const wxString use_vcs = (vcs == "mercurial" ? "hg": vcs);
+
+  // The .git dir only exists in the root, so check all components.
+  wxFileName root(fn);
+
+  while (root.DirExists() && root.GetDirCount() > 0)
+  {
+    wxFileName path(root);
+    path.AppendDir("." + use_vcs);
+
+    if (path.DirExists() && !path.FileExists())
+    {
+      return root.GetPath();
+    }
+
+    root.RemoveLastDir();
+  }
+
   return wxEmptyString;
 }
 
