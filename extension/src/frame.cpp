@@ -477,10 +477,7 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
       {
         if (stc->SelectionIsRectangle())
         {
-          // The number of chars in the selection must be calculated.
-          // TODO: However, next code crashes (wxWidgets 2.9.0).
-          // GetSelectedText().length()
-          text = wxString::Format("%d,%d", line, pos);
+          text = wxString::Format("%d,%d,%d", line, pos, stc->GetSelectedText().length());
         }
         else
         {

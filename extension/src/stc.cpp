@@ -1863,9 +1863,7 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
     {
       int style = 0; // otherwise CAN_PASTE already on
       if (GetReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
-      // TODO added SelectionIsRectangle() to fix assert when sel is rectangle,
-      // however check GetSelectedText() is done quite often
-      if (SelectionIsRectangle() || !GetSelectedText().empty()) 
+      if (!GetSelectedText().empty()) 
         style |= wxExMenu::MENU_IS_SELECTED;
       if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
       if (CanPaste()) style |= wxExMenu::MENU_CAN_PASTE;
