@@ -155,7 +155,7 @@ public:
     const wxString& label,
     /// used as default for a hyperlink ctrl
     const wxString& value = wxEmptyString,
-    /// page on noyytebook
+    /// page on notebook
     const wxString& page = wxEmptyString,
     /// the style
     long style = 0,
@@ -166,7 +166,9 @@ public:
     /// ignored for a static text
     bool add_label = true,
     /// number of cols for this control
-    int cols = -1);
+    int cols = -1,
+    /// supply a text validator (only used for a string)
+    const wxTextValidator& validator = wxTextValidator());
 
   /// Constructor for a spin ctrl, a spin ctrl double or a slider.
   wxExConfigItem(
@@ -176,7 +178,7 @@ public:
     double min, 
     /// maximum value
     double max,
-    /// page on noyytebook
+    /// page on notebook
     const wxString& page = wxEmptyString,
     /// type
     wxExConfigType type = CONFIG_SPINCTRL,
@@ -192,7 +194,7 @@ public:
   wxExConfigItem(
     /// the set with names of boolean items
     const std::set<wxString> & choices,
-    /// page on noyytebook
+    /// page on notebook
     const wxString& page = wxEmptyString,
     /// number of cols for this control
     int cols = -1);
@@ -210,7 +212,7 @@ public:
     const std::map<long, const wxString> & choices,
     /// indicates whether to use a radiobox or a checklistbox.
     bool use_radiobox = true,
-    /// page on noyytebook
+    /// page on notebook
     const wxString& page = wxEmptyString,
     /// major dimension for the radiobox
     int majorDimension = 0,
@@ -298,6 +300,7 @@ private:
   wxExConfigType m_Type;
   wxControl* m_Control;
   wxSizerFlags m_ControlFlags;
+  wxTextValidator m_TextValidator;
 };
 #endif // wxUSE_GUI
 #endif

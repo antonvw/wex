@@ -12,7 +12,6 @@
 #include <wx/config.h>
 #include <wx/generic/dirctrlg.h> // for wxTheFileIconsTable
 #include <wx/imaglist.h>
-#include <wx/tokenzr.h> 
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
@@ -33,7 +32,6 @@ const int ID_RECENT_PROJECT_LOWEST =  wxID_FILE1 + NUMBER_RECENT_FILES + 1;
 BEGIN_EVENT_TABLE(wxExFrameWithHistory, wxExManagedFrame)
   EVT_CLOSE(wxExFrameWithHistory::OnClose)
   EVT_IDLE(wxExFrameWithHistory::OnIdle)
-  EVT_MENU(wxID_OPEN, wxExFrameWithHistory::OnCommand)
   EVT_MENU(ID_TERMINATED_PROCESS, wxExFrameWithHistory::OnCommand)
   EVT_MENU_RANGE(
     wxID_FILE1, 
@@ -393,53 +391,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
   {
     switch (event.GetId())
     {
-    case wxID_OPEN:
-      if (!event.GetString().empty())
-      {
-        wxArrayString files;
-        wxStringTokenizer tkz(event.GetString());
-        auto* stc = GetSTC();
-
-        while (tkz.HasMoreTokens())
-        {
-          const wxString token = tkz.GetNextToken();
-
-          if (token.Contains("*") || token.Contains("?"))
-          {
-            files.Add(token);
-          }
-          else
-          {
-            wxFileName file(token);
-  
-            if (file.IsRelative() && stc != NULL)
-            {
-              file.MakeAbsolute(stc->GetFileName().GetPath());
-
-              if (!file.FileExists())
-              {
-                wxLogError(_("Cannot locate file") + ": " + token);
-              }
-              else
-              {
-                files.Add(file.GetFullPath());
-              }
-            }
-            else
-            {
-              files.Add(file.GetFullPath());
-            }
-          }
-        }
-
-        wxExOpenFiles(this, files);
-      }
-      else
-      {
-        wxExOpenFilesDialog(this);
-      }
-      break;
-      
     case ID_FIND_IN_FILES: 
       if (m_FiFDialog == NULL)
       {

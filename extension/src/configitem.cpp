@@ -115,7 +115,8 @@ wxExConfigItem::wxExConfigItem(
   wxExConfigType type,
   bool is_required,
   bool add_label,
-  int cols)
+  int cols,
+  const wxTextValidator& validator)
   : m_Control(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(is_required)
@@ -132,6 +133,7 @@ wxExConfigItem::wxExConfigItem(
        type != CONFIG_HYPERLINKCTRL ? add_label: false))
   , m_Inc(1)
   , m_Default(value)
+  , m_TextValidator(validator)
 {
 }
 
@@ -470,7 +472,8 @@ void wxExConfigItem::CreateControl(wxWindow* parent, bool readonly)
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
         m_Style | 
-          (readonly ? wxTE_READONLY: 0));
+          (readonly ? wxTE_READONLY: 0),
+        m_TextValidator);
       break;
 
     case CONFIG_TOGGLEBUTTON:
