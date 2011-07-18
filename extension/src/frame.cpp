@@ -11,6 +11,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/persist/toplevel.h>
+#include <wx/tokenzr.h> 
 #include <wx/extension/frame.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
@@ -54,6 +55,7 @@ BEGIN_EVENT_TABLE(wxExFrame, wxFrame)
   EVT_FIND_REPLACE_ALL(wxID_ANY, wxExFrame::OnFindDialog)
   EVT_MENU(wxID_FIND, wxExFrame::OnCommand)
   EVT_MENU(wxID_REPLACE, wxExFrame::OnCommand)
+  EVT_MENU(wxID_OPEN, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_MENUBAR, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_STATUSBAR, wxExFrame::OnCommand)
   EVT_MENU(ID_VIEW_TITLEBAR, wxExFrame::OnCommand)
@@ -185,6 +187,59 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     m_FindReplaceDialog->Show();
     break;
     
+  case wxID_OPEN:
+    if (!command.GetString().empty())
+    {
+      wxArrayString files;
+      wxStringTokenizer tkz(command.GetString());
+      auto* stc = GetSTC();
+
+      if ( stc != NULL && 
+          (command.GetString().Contains("*") || command.GetString().Contains("?")))
+      {
+        wxSetWorkingDirectory(stc->GetFileName().GetPath());
+      }
+      
+      while (tkz.HasMoreTokens())
+      {
+        const wxString token = tkz.GetNextToken();
+
+        if (token.Contains("*") || token.Contains("?"))
+        {
+          files.Add(token);
+        }
+        else
+        {
+          wxFileName file(token);
+
+          if (file.IsRelative() && stc != NULL)
+          {
+            file.MakeAbsolute(stc->GetFileName().GetPath());
+
+            if (!file.FileExists())
+            {
+              wxLogError(_("Cannot locate file") + ": " + token);
+            }
+            else
+            {
+              files.Add(file.GetFullPath());
+            }
+          }
+          else
+          {
+            files.Add(file.GetFullPath());
+          }
+        }
+      }
+
+      wxExOpenFiles(this, files);
+    }
+    else
+    {
+      wxExOpenFilesDialog(this);
+    }
+    break;
+      
   case ID_VIEW_MENUBAR:
     if (GetMenuBar() != NULL)
     {

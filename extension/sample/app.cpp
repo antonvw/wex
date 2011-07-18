@@ -42,6 +42,25 @@ enum
   ID_LAST,
 };
 
+class ConfigItem : public wxExConfigItem
+{
+public:
+  ConfigItem(
+    const wxString& label,
+    wxTextCtrl* control,
+    const wxString& page = wxEmptyString,
+    bool is_required = false,
+    bool add_label = true,
+    int cols = -1) 
+    : wxExConfigItem(label, control, page, is_required, add_label)
+    , m_TextCtrl(control){;};
+protected:
+  virtual void UserControlCreate(wxWindow* parent, bool readonly) const {
+    m_TextCtrl->Create(parent, 100);};
+private:
+  wxTextCtrl* m_TextCtrl;
+};
+
 wxIMPLEMENT_APP(wxExSampleApp);
 
 bool wxExSampleApp::OnInit()
@@ -648,10 +667,12 @@ void wxExSampleFrame::ShowConfigItems()
   }
   
   /// CONFIG_USER
-  v.push_back(wxExConfigItem(
+  ConfigItem item(
     "Text Control", 
     new wxTextCtrl(),
-    "User Controls"));
+    "User Controls");
+    
+  v.push_back(item);
     
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,

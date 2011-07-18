@@ -584,11 +584,6 @@ bool wxExVi::ExecCommand(const wxString& command)
     if (command.Contains(" "))
     {
       event.SetString(command.AfterFirst(' '));
-      
-      if (command.Contains("*") || command.Contains("?"))
-      {
-        wxSetWorkingDirectory(m_STC->GetFileName().GetPath());
-      }
     }
     
     wxPostEvent(wxTheApp->GetTopWindow(), event);
