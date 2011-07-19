@@ -67,7 +67,7 @@ wxExConfigDialog::FindConfigItem(int id) const
     it != m_ConfigItems.end();
     ++it)
   {
-    if (it->GetControl()->GetId() == id)
+    if (it->GetWindow()->GetId() == id)
     {
       return it;
     }
@@ -200,7 +200,7 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
         wxEVT_COMMAND_BUTTON_CLICKED, 
         &wxExConfigDialog::OnCommand, 
         this, 
-        it->GetControl()->GetId());
+        it->GetWindow()->GetId());
     }
 
     if ( sizer->GetRows() > 0 &&
@@ -241,7 +241,7 @@ void wxExConfigDialog::OnCommand(wxCommandEvent& command)
     {
       if (it->GetType() == CONFIG_COMBOBOXDIR)
       {
-        auto browse = (wxComboBox*)it->GetControl();
+        auto browse = (wxComboBox*)it->GetWindow();
 
         wxDirDialog dir_dlg(
           this,
@@ -298,7 +298,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_CHECKBOX:
       if (m_ForceCheckBoxChecked)
       {
-        wxCheckBox* cb = (wxCheckBox*)it->GetControl();
+        wxCheckBox* cb = (wxCheckBox*)it->GetWindow();
 
         if (it->GetLabel().Lower().Contains(m_Contains.Lower()) && 
             cb->GetValue() &&
@@ -312,7 +312,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_CHECKLISTBOX_NONAME:
       if (m_ForceCheckBoxChecked)
       {
-        wxCheckListBox* clb = (wxCheckListBox*)it->GetControl();
+        wxCheckListBox* clb = (wxCheckListBox*)it->GetWindow();
 
         for (
           size_t i = 0;
@@ -332,7 +332,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_COMBOBOX:
     case CONFIG_COMBOBOXDIR:
       {
-      wxComboBox* cb = (wxComboBox*)it->GetControl();
+      wxComboBox* cb = (wxComboBox*)it->GetWindow();
       if (it->GetIsRequired())
       {
         if (cb->GetValue().empty())
@@ -347,7 +347,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     case CONFIG_INT:
     case CONFIG_STRING:
       {
-      wxTextCtrl* tc = (wxTextCtrl*)it->GetControl();
+      wxTextCtrl* tc = (wxTextCtrl*)it->GetWindow();
       if (it->GetIsRequired())
       {
         if (tc->GetValue().empty())
@@ -361,7 +361,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_DIRPICKERCTRL:
       {
-      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->GetControl();
+      wxDirPickerCtrl* pc = (wxDirPickerCtrl*)it->GetWindow();
       if (it->GetIsRequired())
       {
         if (pc->GetPath().empty())
@@ -375,7 +375,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
 
     case CONFIG_FILEPICKERCTRL:
       {
-      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->GetControl();
+      wxFilePickerCtrl* pc = (wxFilePickerCtrl*)it->GetWindow();
       if (it->GetIsRequired())
       {
         if (pc->GetPath().empty())

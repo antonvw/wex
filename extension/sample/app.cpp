@@ -55,7 +55,7 @@ public:
     : wxExConfigItem(label, control, page, is_required, add_label)
     , m_TextCtrl(control){;};
 protected:
-  virtual void UserControlCreate(wxWindow* parent, bool readonly) const {
+  virtual void UserWindowCreate(wxWindow* parent, bool readonly) const {
     m_TextCtrl->Create(parent, 100);};
 private:
   wxTextCtrl* m_TextCtrl;
