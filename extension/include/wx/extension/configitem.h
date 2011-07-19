@@ -10,10 +10,10 @@
 
 #include <map>
 #include <set>
-#include <wx/control.h>
 #include <wx/sizer.h>
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/string.h>
+#include <wx/window.h>
 
 #if wxUSE_GUI
 /*! \file */
@@ -86,7 +86,7 @@ enum wxExConfigType
   /// a toggle button item
   CONFIG_TOGGLEBUTTON,
   
-  /// provide your own control
+  /// provide your own window
   CONFIG_USER,
 
   /// Used for automatic testing only.
@@ -106,9 +106,9 @@ class WXDLLIMPEXP_BASE wxExConfigItem
 public:
   /// Constuctor for most types.
   wxExConfigItem(
-    /// label for the control as on the dialog and in the config,
+    /// label for the window as on the dialog and in the config,
     /// - might also contain the note after a tab for a command link button
-    /// - if the control supports it you can use a markup label
+    /// - if the window supports it you can use a markup label
     const wxString& label,
     /// type
     wxExConfigType type,
@@ -116,9 +116,9 @@ public:
     const wxString& page = wxEmptyString,
     /// is this item required
     bool is_required = false,
-    /// the id as used by the control, 
+    /// the id as used by the window, 
     /// when using for a combobox dir, use id < wxID_LOWEST
-    /// accessible using GetControl()->GetId()
+    /// accessible using GetWindow()->GetId()
     int id = wxID_ANY,
     /// used by CONFIG_COMBOBOX
     int max_items = 25,
@@ -129,15 +129,15 @@ public:
     /// extra style, only used for static line
     long style = 0);
     
-  /// Constructor for a user control.
+  /// Constructor for a user window.
   /// Default it has no relation to the config,
-  /// if you want to, you have to implement UserControlToConfig
+  /// if you want to, you have to implement UserWindowToConfig
   /// in your derived class.
   wxExConfigItem(
-    /// label for the control as on the dialog and in the config
+    /// label for the window as on the dialog and in the config
     const wxString& label,
-    /// the control (use default constructor for it)
-    wxControl* control,
+    /// the window (use default constructor for it)
+    wxWindow* window,
     /// page on notebook
     const wxString& page = wxEmptyString,
     /// is this control required
@@ -224,9 +224,6 @@ public:
   /// Gets the columns.
   int GetColumns() const {return m_Cols;};
 
-  /// Gets the control (first call Layout).
-  wxControl* GetControl() const {return m_Control;};
-
   /// Gets is required.
   bool GetIsRequired() const {return m_IsRequired;};
 
@@ -239,7 +236,10 @@ public:
   /// Gets the type.
   wxExConfigType GetType() const {return m_Type;};
 
-  /// Creates the control,
+  /// Gets the window (first call Layout, to create it, otherwise it is NULL).
+  wxWindow* GetWindow() const {return m_Window;};
+
+  /// Creates the window,
   /// lays out this item on the specified sizer, and fills it
   /// with config value (calls ToConfig).
   /// It returns the flex grid sizer that was used for creating the item sizer.
@@ -261,17 +261,17 @@ public:
   /// config items associate with the config.
   bool ToConfig(bool save) const;
 protected:
-  /// Creates the user control item, using default Create method.
+  /// Creates the user window item, using default Create method.
   /// Override if you need an other Create method.
-  virtual void UserControlCreate(wxWindow* parent, bool readonly) const {
-    m_Control->Create(parent, m_Id);};
-  /// Allows you to load or save config data for your control.
+  virtual void UserWindowCreate(wxWindow* parent, bool readonly) const {
+    m_Window->Create(parent, m_Id);};
+  /// Allows you to load or save config data for your window.
   /// See ToConfig.
-  virtual bool UserControlToConfig(bool save) const {return false;};
+  virtual bool UserWindowToConfig(bool save) const {return false;};
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticText(wxSizer* sizer) const;
-  void CreateControl(wxWindow* parent, bool readonly);
+  void CreateWindow(wxWindow* parent, bool readonly);
 
   // The members are allowed to be const using
   // MS Visual Studio 2010, not using gcc, so
@@ -298,9 +298,9 @@ private:
   std::set<wxString> m_ChoicesBool;
 
   wxExConfigType m_Type;
-  wxControl* m_Control;
-  wxSizerFlags m_ControlFlags;
+  wxSizerFlags m_SizerFlags;
   wxTextValidator m_TextValidator;
+  wxWindow* m_Window;
 };
 #endif // wxUSE_GUI
 #endif

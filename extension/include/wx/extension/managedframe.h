@@ -55,11 +55,14 @@ public:
     /// label for the vibar (like / or ? or :)
     const wxString& label);
   
-  /// Returns true if vi command is a find command.
+  /// Returns true if vi command is a find (next or previous) command.
   bool GetViCommandIsFind() const;
   
   /// Returns true if vi command is a find next.
   bool GetViCommandIsFindNext() const;
+  
+  /// Returns true if vi command is a find previous.
+  bool GetViCommandIsFindPrevious() const;
   
   /// Hides the vi bar.
   void HideViBar();

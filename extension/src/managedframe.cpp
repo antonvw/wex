@@ -155,7 +155,7 @@ void wxExManagedFrame::GetViCommand(wxExVi* vi, const wxString& command)
 
 bool wxExManagedFrame::GetViCommandIsFind() const
 {
-  return m_viTextPrefix->GetLabel() == "/" || m_viTextPrefix->GetLabel() == "?";
+  return GetViCommandIsFindNext() || GetViCommandIsFindPrevious();
 }
 
 bool wxExManagedFrame::GetViCommandIsFindNext() const
@@ -163,6 +163,11 @@ bool wxExManagedFrame::GetViCommandIsFindNext() const
   return m_viTextPrefix->GetLabel() == "/";
 }
   
+bool wxExManagedFrame::GetViCommandIsFindPrevious() const
+{
+  return m_viTextPrefix->GetLabel() == "?";
+}
+
 void wxExManagedFrame::HideViBar()
 {
   if (m_Manager.GetPane("VIBAR").IsShown())
@@ -361,29 +366,21 @@ void wxExViTextCtrl::SetVi(wxExVi* vi)
 {
   m_UserInput = false;
 
-  if (vi->GetSTC()->IsBeingDeleted())
+  m_vi = vi;
+  
+  Show();
+    
+  if (m_Frame->GetViCommandIsFind())
   {
-    wxLogStatus("invalid vi");
-    m_vi = NULL;
+    SetValue(wxExFindReplaceData::Get()->GetFindString());
   }
   else
   {
-    m_vi = vi;
-  
-    Show();
-    
-    if (m_Frame->GetViCommandIsFind())
-    {
-      SetValue(wxExFindReplaceData::Get()->GetFindString());
-    }
-    else
-    {
-      SetValue(wxConfigBase::Get()->Read("vicommand", wxEmptyString));
-    }
-    
-    SelectAll();
-    SetFocus();
+    SetValue(wxConfigBase::Get()->Read("vicommand", wxEmptyString));
   }
+    
+  SelectAll();
+  SetFocus();
 }
 
 #endif // wxUSE_GUI

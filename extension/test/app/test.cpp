@@ -140,9 +140,9 @@ void wxExAppTestFixture::testConfigItem()
   {
     CPPUNIT_ASSERT( it->GetColumns() == -1);
     if (it->GetType() == CONFIG_USER)
-      CPPUNIT_ASSERT( it->GetControl() != NULL);
+      CPPUNIT_ASSERT( it->GetWindow() != NULL);
     else 
-      CPPUNIT_ASSERT( it->GetControl() == NULL);
+      CPPUNIT_ASSERT( it->GetWindow() == NULL);
     CPPUNIT_ASSERT(!it->GetIsRequired());
     CPPUNIT_ASSERT(!it->GetLabel().empty());
     CPPUNIT_ASSERT( it->GetPage().empty());
@@ -168,7 +168,7 @@ void wxExAppTestFixture::testConfigItem()
       it->Layout(wxTheApp->GetTopWindow(), &sizer);
     }
     
-    CPPUNIT_ASSERT(it->GetControl() != NULL);
+    CPPUNIT_ASSERT(it->GetWindow() != NULL);
   }
 
   // Now check ToConfig (after Layout).  
