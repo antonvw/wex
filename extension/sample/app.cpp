@@ -42,24 +42,10 @@ enum
   ID_LAST,
 };
 
-class ConfigItem : public wxExConfigItem
+void myCreate(wxWindow* user, wxWindow* parent, bool readonly)
 {
-public:
-  ConfigItem(
-    const wxString& label,
-    wxTextCtrl* control,
-    const wxString& page = wxEmptyString,
-    bool is_required = false,
-    bool add_label = true,
-    int cols = -1) 
-    : wxExConfigItem(label, control, page, is_required, add_label)
-    , m_TextCtrl(control){;};
-protected:
-  virtual void UserWindowCreate(wxWindow* parent, bool readonly) const {
-    m_TextCtrl->Create(parent, 100);};
-private:
-  wxTextCtrl* m_TextCtrl;
-};
+  ((wxTextCtrl *)user)->Create(parent, 100);
+}
 
 wxIMPLEMENT_APP(wxExSampleApp);
 
@@ -619,9 +605,6 @@ void wxExSampleFrame::ShowConfigItems()
 
   for (size_t st = 1; st <= 5; st++)
   {
-    // CONFIG_STATICLINE
-    v.push_back(wxExConfigItem("test", CONFIG_STATICLINE, "Static Text"));
-
     // CONFIG_STATICTEXT
     v.push_back(wxExConfigItem(
       wxString::Format("Static Text%d", st),
@@ -631,16 +614,11 @@ void wxExSampleFrame::ShowConfigItems()
       CONFIG_STATICTEXT));
   }
   
+  // CONFIG_STATICLINE (horizontal)
+  v.push_back(wxExConfigItem(wxLI_HORIZONTAL, "Static Line"));
+
   // CONFIG_STATICLINE (vertical)
-  v.push_back(wxExConfigItem("test", 
-    CONFIG_STATICLINE, 
-    "Static Text",
-    false,
-    wxID_ANY,
-    25,
-    false,
-    -1,
-    -1)); // style -1 -> vertical
+  v.push_back(wxExConfigItem(wxLI_VERTICAL, "Static Line"));
 
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
@@ -667,19 +645,19 @@ void wxExSampleFrame::ShowConfigItems()
   }
   
   /// CONFIG_USER
-  ConfigItem item(
+  v.push_back(wxExConfigItem(
     "Text Control", 
     new wxTextCtrl(),
-    "User Controls");
-    
-  v.push_back(item);
+    myCreate,
+    NULL,
+    "User Controls"));
     
   wxExConfigDialog* dlg = new wxExConfigDialog(
     this,
     v,
     "Config Dialog",
     0,
-    1,
+    2,
     wxAPPLY | wxCANCEL,
     wxID_ANY,
     wxExConfigDialog::CONFIG_LISTBOOK);

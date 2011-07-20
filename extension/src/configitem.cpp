@@ -18,7 +18,6 @@
 #include <wx/hyperlink.h>
 #include <wx/spinctrl.h>
 #include <wx/spinctrl.h>
-#include <wx/statline.h>
 #include <wx/tglbtn.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
@@ -27,6 +26,17 @@
 #if wxUSE_GUI
 
 wxExConfigItem::wxExConfigItem(
+  long style,
+  const wxString& page)
+  : m_Window(NULL)
+  , m_Page(page)
+  , m_Style(style)
+  , m_Type(CONFIG_STATICLINE)
+  , m_AddLabel(false)
+{
+}
+    
+wxExConfigItem::wxExConfigItem(
   const wxString& label,
   wxExConfigType type,
   const wxString& page,
@@ -34,8 +44,7 @@ wxExConfigItem::wxExConfigItem(
   int id,
   int max_items,
   bool add_label,
-  int cols,
-  long style)
+  int cols)
   : m_Window(NULL)
   , m_Id(id)
   , m_IsRequired(is_required)
@@ -45,14 +54,13 @@ wxExConfigItem::wxExConfigItem(
   , m_MajorDimension(1)
   , m_Label(label)
   , m_Page(page)
-  , m_Style(style)
+  , m_Style(0)
   , m_Type(type)
   , m_Cols(cols)
   , m_AddLabel(
       type == CONFIG_BUTTON ||
       type == CONFIG_CHECKBOX ||
       type == CONFIG_COMMAND_LINK_BUTTON ||
-      type == CONFIG_STATICLINE || 
       type == CONFIG_TOGGLEBUTTON ? false: add_label)
   , m_Inc(1)
 {
@@ -61,6 +69,8 @@ wxExConfigItem::wxExConfigItem(
 wxExConfigItem::wxExConfigItem(
   const wxString& label,
   wxWindow* window,
+  wxExUserWindowCreate user,
+  wxExUserWindowToConfig cfg,
   const wxString& page,
   bool is_required,
   bool add_label,
@@ -79,6 +89,8 @@ wxExConfigItem::wxExConfigItem(
   , m_Cols(cols)
   , m_AddLabel(add_label)
   , m_Inc(1)
+  , m_UserWindowCreate(user)
+  , m_UserWindowToConfig(cfg)
 {
 }
     
@@ -133,7 +145,7 @@ wxExConfigItem::wxExConfigItem(
        type != CONFIG_HYPERLINKCTRL ? add_label: false))
   , m_Inc(1)
   , m_Default(value)
-  , m_TextValidator(validator)
+//  , m_TextValidator(validator)
 {
 }
 
@@ -445,10 +457,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
     case CONFIG_STATICLINE:
       m_Window = new wxStaticLine(
         parent,
-        m_Id,
+        wxID_ANY,
         wxDefaultPosition,
         wxDefaultSize,
-        (m_Style == 0 ? wxLI_HORIZONTAL: wxLI_VERTICAL));
+        m_Style);
       break;
 
     case CONFIG_STATICTEXT:
@@ -472,8 +484,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, 200):
            wxSize(width, wxDefaultCoord)),
         m_Style | 
-          (readonly ? wxTE_READONLY: 0),
-        m_TextValidator);
+          (readonly ? wxTE_READONLY: 0));
+//        m_TextValidator);
       break;
 
     case CONFIG_TOGGLEBUTTON:
@@ -483,7 +495,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case CONFIG_USER:
       wxASSERT(m_Window != NULL);
-      UserWindowCreate(parent, readonly);
+      if (m_UserWindowCreate != NULL)
+      {
+        (m_UserWindowCreate)(m_Window, parent, readonly);
+      }
       break;
   
     default: wxFAIL;
@@ -550,15 +565,6 @@ bool wxExConfigItem::ToConfig(bool save) const
 
   switch (m_Type)
   {
-    case CONFIG_BUTTON:
-    case CONFIG_COMMAND_LINK_BUTTON:
-    case CONFIG_HYPERLINKCTRL:
-    case CONFIG_STATICLINE:
-    case CONFIG_STATICTEXT:
-      // these controls have no persistent info
-      return false;
-      break;
-
     case CONFIG_CHECKBOX:
       {
       wxCheckBox* cb = (wxCheckBox*)m_Window;
@@ -800,11 +806,14 @@ bool wxExConfigItem::ToConfig(bool save) const
       break;
       
     case CONFIG_USER:
-      return UserWindowToConfig(save);
+      if (m_UserWindowToConfig != NULL)
+      {
+        return (m_UserWindowToConfig)(m_Window, save);
+      }
       break;
       
     default:
-      wxFAIL;
+      // the other types have no persistent info
       return false;
       break;
   }

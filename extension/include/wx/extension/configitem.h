@@ -12,7 +12,9 @@
 #include <set>
 #include <wx/sizer.h>
 #include <wx/slider.h> // for wxSL_HORIZONTAL
+#include <wx/statline.h>
 #include <wx/string.h>
+#include <wx/valtext.h>
 #include <wx/window.h>
 
 #if wxUSE_GUI
@@ -93,6 +95,12 @@ enum wxExConfigType
   CONFIG_ITEM_MAX,
 };
 
+/// Callback for user window creation.
+typedef void (*wxExUserWindowCreate)(wxWindow* user, wxWindow* parent, bool readonly);
+
+/// Callback for load or save data for user window.
+typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
+
 /// Container class for using with wxExConfigDialog.
 /// - If you specify a page, then all items are placed on that page 
 ///   in a book ctrl on the config dialog.
@@ -104,6 +112,13 @@ enum wxExConfigType
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
+  /// Default constuctor for a static horizontal or vertical line.
+  wxExConfigItem(
+    /// style
+    long style, // = wxLI_HORIZONTAL,
+    /// page on notebook
+    const wxString& page = wxEmptyString);
+    
   /// Constuctor for most types.
   wxExConfigItem(
     /// label for the window as on the dialog and in the config,
@@ -125,19 +140,19 @@ public:
     /// will the label be displayed as a static text
     bool add_label = true,
     /// the number of cols
-    int cols = -1,
-    /// extra style, only used for static line
-    long style = 0);
+    int cols = -1);
     
   /// Constructor for a user window.
-  /// Default it has no relation to the config,
-  /// if you want to, you have to implement UserWindowToConfig
-  /// in your derived class.
   wxExConfigItem(
     /// label for the window as on the dialog and in the config
     const wxString& label,
     /// the window (use default constructor for it)
     wxWindow* window,
+    /// callback for window creation (required, useless without one)
+    wxExUserWindowCreate user,
+    /// callback for load and save to config
+    /// default it has no relation to the config
+    wxExUserWindowToConfig cfg = NULL,
     /// page on notebook
     const wxString& page = wxEmptyString,
     /// is this control required
@@ -297,9 +312,14 @@ private:
   std::map<long, const wxString> m_Choices;
   std::set<wxString> m_ChoicesBool;
 
+  wxExUserWindowCreate m_UserWindowCreate;
+  wxExUserWindowToConfig m_UserWindowToConfig;
+    
   wxExConfigType m_Type;
   wxSizerFlags m_SizerFlags;
-  wxTextValidator m_TextValidator;
+// does not compile under Ubuntu 11.04, problems with
+// operator on wxTextValidator
+//  wxTextValidator m_TextValidator;
   wxWindow* m_Window;
 };
 #endif // wxUSE_GUI

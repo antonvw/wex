@@ -49,15 +49,7 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(ci_sl.GetLabel() == "ci-sl");
   CPPUNIT_ASSERT(ci_sl.GetType() == CONFIG_SLIDER);
 
-  wxExConfigItem ci_vl("ci-vl", 
-    CONFIG_STATICLINE, 
-    wxEmptyString,
-    false,
-    wxID_ANY,
-    25,
-    false,
-    -1,
-    1);
+  wxExConfigItem ci_vl(wxLI_HORIZONTAL);
   items.push_back(ci_vl);
   CPPUNIT_ASSERT(ci_vl.GetType() == CONFIG_STATICLINE);
     
@@ -114,7 +106,7 @@ void wxExAppTestFixture::testConfigItem()
   items.push_back(ci_cl_n);
   CPPUNIT_ASSERT(ci_cl_n.GetType() == CONFIG_CHECKLISTBOX_NONAME);
   
-  wxExConfigItem ci_user("ci-usr", new wxTextCtrl());
+  wxExConfigItem ci_user("ci-usr", new wxTextCtrl(), NULL);
   items.push_back(ci_user);
   CPPUNIT_ASSERT(ci_user.GetType() == CONFIG_USER);
 
