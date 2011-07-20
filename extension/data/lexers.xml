@@ -1742,7 +1742,23 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <lexer name="lua" match="wxSTC_LUA_" />
   <lexer name="magik" match="wxSTC_MAGIK" />
   <lexer name="makefile" extensions="*makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
-  <lexer name="markdown" extensions="*.md" match="wxSTC_MARKDOWN" />
+  <lexer name="markdown" extensions="*.md" match="wxSTC_MARKDOWN" >
+    <styles>
+      <style no="wxSTC_MARKDOWN_HEADER1"> bold,eol </style>
+      <style no="wxSTC_MARKDOWN_HEADER2"> bold,eol </style>
+      <style no="wxSTC_MARKDOWN_HEADER3"> bold,eol </style>
+      <style no="wxSTC_MARKDOWN_HEADER4"> bold,eol </style>
+      <style no="wxSTC_MARKDOWN_HEADER5"> bold,eol </style>
+      <style no="wxSTC_MARKDOWN_HEADER6"> bold,eol </style>
+      <style no="wxSTC_MARKDOWN_ULIST_ITEM"> fore:green </style>
+      <style no="wxSTC_MARKDOWN_OLIST_ITEM"> fore:green </style>
+      <style no="wxSTC_MARKDOWN_LINK"> italic </style>
+      <style no="wxSTC_MARKDOWN_CODE"> fore:blue </style>
+      <style no="wxSTC_MARKDOWN_CODE2"> fore:blue </style>
+      <style no="wxSTC_MARKDOWN_CODEBK"> fore:blue </style>
+    </styles>
+  </lexer>
+  
   <lexer name="matlab" match="wxSTC_MATLAB_" />
   <lexer name="metapost" match="wxSTC_METAPOST_" />
   <lexer name="mmixal" match="wxSTC_MMIXAL_" />
