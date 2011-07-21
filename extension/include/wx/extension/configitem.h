@@ -14,7 +14,6 @@
 #include <wx/slider.h> // for wxSL_HORIZONTAL
 #include <wx/statline.h>
 #include <wx/string.h>
-#include <wx/valtext.h>
 #include <wx/window.h>
 
 #if wxUSE_GUI
@@ -112,10 +111,10 @@ typedef bool (*wxExUserWindowToConfig)(wxWindow* user, bool save);
 class WXDLLIMPEXP_BASE wxExConfigItem
 {
 public:
-  /// Default constuctor for a static horizontal or vertical line.
+  /// Constuctor for a static horizontal or vertical line.
   wxExConfigItem(
-    /// style
-    long style, // = wxLI_HORIZONTAL,
+    /// style: wxLI_HORIZONTAL or wxLI_VERTICAL
+    long style, 
     /// page on notebook
     const wxString& page = wxEmptyString);
     
@@ -181,9 +180,7 @@ public:
     /// ignored for a static text
     bool add_label = true,
     /// number of cols for this control
-    int cols = -1,
-    /// supply a text validator (only used for a string)
-    const wxTextValidator& validator = wxTextValidator());
+    int cols = -1);
 
   /// Constructor for a spin ctrl, a spin ctrl double or a slider.
   wxExConfigItem(
@@ -317,9 +314,6 @@ private:
     
   wxExConfigType m_Type;
   wxSizerFlags m_SizerFlags;
-// does not compile under Ubuntu 11.04, problems with
-// operator on wxTextValidator
-//  wxTextValidator m_TextValidator;
   wxWindow* m_Window;
 };
 #endif // wxUSE_GUI
