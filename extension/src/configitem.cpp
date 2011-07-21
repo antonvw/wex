@@ -19,6 +19,7 @@
 #include <wx/spinctrl.h>
 #include <wx/spinctrl.h>
 #include <wx/tglbtn.h>
+#include <wx/valtext.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
@@ -127,8 +128,7 @@ wxExConfigItem::wxExConfigItem(
   wxExConfigType type,
   bool is_required,
   bool add_label,
-  int cols,
-  const wxTextValidator& validator)
+  int cols)
   : m_Window(NULL)
   , m_Id(wxID_ANY)
   , m_IsRequired(is_required)
@@ -145,7 +145,6 @@ wxExConfigItem::wxExConfigItem(
        type != CONFIG_HYPERLINKCTRL ? add_label: false))
   , m_Inc(1)
   , m_Default(value)
-//  , m_TextValidator(validator)
 {
 }
 
@@ -485,7 +484,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
            wxSize(width, wxDefaultCoord)),
         m_Style | 
           (readonly ? wxTE_READONLY: 0));
-//        m_TextValidator);
       break;
 
     case CONFIG_TOGGLEBUTTON:

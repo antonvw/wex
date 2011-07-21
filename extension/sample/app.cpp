@@ -13,6 +13,7 @@
 #endif
 #include <wx/aboutdlg.h>
 #include <wx/numdlg.h>
+#include <wx/html/htmlwin.h>
 #include <wx/textfile.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/defs.h>
@@ -42,7 +43,12 @@ enum
   ID_LAST,
 };
 
-void myCreate(wxWindow* user, wxWindow* parent, bool readonly)
+void myHtmlCreate(wxWindow* user, wxWindow* parent, bool readonly)
+{
+  ((wxHtmlWindow *)user)->Create(parent, 100);
+}
+
+void myTextCreate(wxWindow* user, wxWindow* parent, bool readonly)
 {
   ((wxTextCtrl *)user)->Create(parent, 100);
 }
@@ -646,9 +652,16 @@ void wxExSampleFrame::ShowConfigItems()
   
   /// CONFIG_USER
   v.push_back(wxExConfigItem(
+    "HTML Control", 
+    new wxHtmlWindow(),
+    myHtmlCreate,
+    NULL,
+    "User Controls"));
+    
+  v.push_back(wxExConfigItem(
     "Text Control", 
     new wxTextCtrl(),
-    myCreate,
+    myTextCreate,
     NULL,
     "User Controls"));
     
@@ -657,7 +670,7 @@ void wxExSampleFrame::ShowConfigItems()
     v,
     "Config Dialog",
     0,
-    2,
+    1,
     wxAPPLY | wxCANCEL,
     wxID_ANY,
     wxExConfigDialog::CONFIG_LISTBOOK);
