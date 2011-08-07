@@ -34,6 +34,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Style(style)
   , m_Type(CONFIG_STATICLINE)
   , m_AddLabel(false)
+  , m_Cols(-1)
 {
 }
     
