@@ -272,14 +272,6 @@ public:
   /// Returns true if the config was accessed, as not all
   /// config items associate with the config.
   bool ToConfig(bool save) const;
-protected:
-  /// Creates the user window item, using default Create method.
-  /// Override if you need an other Create method.
-  virtual void UserWindowCreate(wxWindow* parent, bool readonly) const {
-    m_Window->Create(parent, m_Id);};
-  /// Allows you to load or save config data for your window.
-  /// See ToConfig.
-  virtual bool UserWindowToConfig(bool save) const {return false;};
 private:
   wxFlexGridSizer* AddBrowseButton(wxSizer* sizer) const;
   void AddStaticText(wxSizer* sizer) const;
