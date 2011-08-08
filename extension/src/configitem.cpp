@@ -22,6 +22,7 @@
 #include <wx/valtext.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/listview.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -393,6 +394,12 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       expand = false;
       break;
 
+    case CONFIG_LISTVIEW:
+      m_Window = new wxExListViewStandard(parent,
+        wxExListViewStandard::LIST_FILE,
+        m_Id);
+      break;
+
     case CONFIG_RADIOBOX:
       {
       wxArrayString arraychoices;
@@ -483,6 +490,10 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         wxEmptyString,
         wxExSTC::STC_MENU_DEFAULT,
         m_Id);
+      if (!m_Default.empty())
+      {
+        ((wxExSTC* )m_Window)->SetLexer(m_Default);
+      }
       break;
 
     case CONFIG_STRING:
@@ -726,11 +737,24 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_INT:
       {
       wxTextCtrl* tc = (wxTextCtrl*)m_Window;
+      
       if (save)
         wxConfigBase::Get()->Write(m_Label, atol(tc->GetValue().c_str()));
       else
         tc->SetValue(
           wxString::Format("%ld", wxConfigBase::Get()->ReadLong(m_Label, 0)));
+      }
+      break;
+
+    case CONFIG_LISTVIEW:
+      {
+      wxExListViewStandard* win = (wxExListViewStandard*)m_Window;
+/*      
+      if (save)
+        wxConfigBase::Get()->Write(m_Label, wxExListViewStandard->GetValue());
+      else
+        win->SetValue(wxConfigBase::Get()->ReadLong(m_Label, m_Min));
+*/        
       }
       break;
 
