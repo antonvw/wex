@@ -563,6 +563,12 @@ void wxExSampleFrame::ShowConfigItems()
       true));
   }
 
+  // CONFIG_LISTVIEW
+  v.push_back(wxExConfigItem(
+    "ListView",
+    CONFIG_LISTVIEW,
+    "ListView"));
+
   // CONFIG_RADIOBOX
   std::map<long, const wxString> echoices;
   echoices.insert(std::make_pair(0, "Zero"));
@@ -629,7 +635,7 @@ void wxExSampleFrame::ShowConfigItems()
   // CONFIG_STC
   v.push_back(wxExConfigItem(
     "STC", 
-    wxEmptyString,
+    "cpp",
     "STC",
     0,
     CONFIG_STC));

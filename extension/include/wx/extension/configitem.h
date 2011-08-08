@@ -63,7 +63,7 @@ enum wxExConfigType
   /// a textctrl item that only accepts an integer (long)
   CONFIG_INT,
   
-  /// a listview ctrl item
+  /// a listview ctrl item (a list view standard file)
   CONFIG_LISTVIEW,
 
   /// a radiobox item
@@ -173,7 +173,7 @@ public:
   wxExConfigItem(
     /// label for the control as on the dialog and in the config
     const wxString& label,
-    /// used as default for a hyperlink ctrl
+    /// used as default for a hyperlink ctrl, or as lexer for STC
     const wxString& value = wxEmptyString,
     /// page on notebook
     const wxString& page = wxEmptyString,
