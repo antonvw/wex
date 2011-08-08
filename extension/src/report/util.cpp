@@ -18,6 +18,8 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listviewfile.h>
+#include <wx/extension/report/dir.h>
+#include <wx/extension/report/textfile.h>
 
 bool wxExFindOtherFileName(
   const wxFileName& filename,
@@ -148,4 +150,31 @@ bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
       wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
       makefile.GetFullPath(),
     makefile.GetPath());
+}
+
+const wxExFileStatistics wxExRun(const wxExListItem& item, const wxExTool& tool)
+{
+  wxLogStatus(item.GetFileName().GetFullPath());
+
+  if (item.GetFileName().FileExists())
+  {
+    wxExTextFileWithListView file(item.GetFileName(), tool);
+    file.RunTool();
+    return file.GetStatistics();
+  }
+  else
+  {
+    wxExDirTool dir(tool, item.GetFileName().GetFullPath(), item.GetFileSpec());
+
+    if (dir.FindFiles())
+    {
+      // Here we show the counts of individual folders on the top level.
+      if (tool.IsCount() && item.GetListView()->GetSelectedItemCount() > 1)
+      {
+        tool.Log(&dir.GetStatistics().GetElements());
+      }
+    }
+
+    return dir.GetStatistics();
+  }
 }
