@@ -736,7 +736,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
-    stats += wxExListItem(this, i).Run(tool).GetElements();
+    stats += wxExRun(wxExListItem(this, i), tool).GetElements();
   }
 
   tool.Log(&stats);

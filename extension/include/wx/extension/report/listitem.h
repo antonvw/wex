@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          listitem.h
-* Purpose:       Declaration of class 'wxExListItem'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      listitem.h
+// Purpose:   Declaration of class 'wxExListItem'
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EX_REPORT_LISTITEM_H
 #define _EX_REPORT_LISTITEM_H
@@ -35,15 +31,18 @@ public:
   /// Gets the filename.
   const wxExFileName& GetFileName() const {return m_FileName;};
 
+  /// Gets the file spec.
+  const wxString GetFileSpec() const {return m_FileSpec;};
+  
+  /// Gets the listview.
+  wxExListView* GetListView() const {return m_ListView;};
+  
   /// Inserts the item at index (if -1 at the end of the listview),
   /// and sets all attributes.
   void Insert(long index = -1);
 
   /// Returns true if this item is readonly (on the listview).
   bool IsReadOnly() const {return m_IsReadOnly;};
-
-  /// Runs a tool on this item.
-  const wxExFileStatistics Run(const wxExTool& tool);
 
   /// Sets the item text using column number.
   void SetItem(int col_number, const wxString& text);

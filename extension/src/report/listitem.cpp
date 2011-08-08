@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          listitem.cpp
-* Purpose:       Implementation of class 'wxExListItem'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      listitem.cpp
+// Purpose:   Implementation of class 'wxExListItem'
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -16,8 +12,6 @@
 #include <wx/config.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/report/listitem.h>
-#include <wx/extension/report/dir.h>
-#include <wx/extension/report/textfile.h>
 #include <wx/extension/util.h>
 
 // Do not give an error if columns do not exist.
@@ -89,33 +83,6 @@ void wxExListItem::Insert(long index)
   if (col > 0)
   {
     SetItem(col, filename);
-  }
-}
-
-const wxExFileStatistics wxExListItem::Run(const wxExTool& tool)
-{
-  wxLogStatus(m_FileName.GetFullPath());
-
-  if (m_FileName.FileExists())
-  {
-    wxExTextFileWithListView file(m_FileName, tool);
-    file.RunTool();
-    return file.GetStatistics();
-  }
-  else
-  {
-    wxExDirTool dir(tool, m_FileName.GetFullPath(), m_FileSpec);
-
-    if (dir.FindFiles())
-    {
-      // Here we show the counts of individual folders on the top level.
-      if (tool.IsCount() && m_ListView->GetSelectedItemCount() > 1)
-      {
-        tool.Log(&dir.GetStatistics().GetElements());
-      }
-    }
-
-    return dir.GetStatistics();
   }
 }
 
