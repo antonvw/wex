@@ -1,19 +1,16 @@
-/******************************************************************************\
-* File:          app.cpp
-* Purpose:       Implementation of sample classes for wxExRep
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.cpp
+// Purpose:   Implementation of sample classes for wxExRep
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/toolbar.h>
@@ -21,7 +18,6 @@
 #include <wx/extension/version.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/dirctrl.h>
-#include <wx/extension/report/listitem.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"

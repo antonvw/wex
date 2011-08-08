@@ -13,7 +13,6 @@
 #include <wx/extension/textfile.h> // for wxExRCS
 
 /// Offers a list item associated with a file on an wxExListView.
-/// It allows you to run tools on the item and keeps statistics when running.
 class WXDLLIMPEXP_BASE wxExListItem : public wxListItem
 {
 public:

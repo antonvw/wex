@@ -102,6 +102,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/indicator.cpp</sources>
     <sources>../extension/src/lexer.cpp</sources>
     <sources>../extension/src/lexers.cpp</sources>
+    <sources>../extension/src/listitem.cpp</sources>
     <sources>../extension/src/listview.cpp</sources>
     <sources>../extension/src/managedframe.cpp</sources>
     <sources>../extension/src/marker.cpp</sources>
@@ -146,6 +147,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/indicator.h</headers>
     <headers>../extension/include/wx/extension/lexer.h</headers>
     <headers>../extension/include/wx/extension/lexers.h</headers>
+    <headers>../extension/include/wx/extension/listitem.h</headers>
     <headers>../extension/include/wx/extension/listview.h</headers>
     <headers>../extension/include/wx/extension/managedframe.h</headers>
     <headers>../extension/include/wx/extension/marker.h</headers>
@@ -193,7 +195,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/report/dir.cpp</sources>
     <sources>../extension/src/report/dirctrl.cpp</sources>
     <sources>../extension/src/report/frame.cpp</sources>
-    <sources>../extension/src/report/listitem.cpp</sources>
     <sources>../extension/src/report/listview.cpp</sources>
     <sources>../extension/src/report/listviewfile.cpp</sources>
     <sources>../extension/src/report/process.cpp</sources>
@@ -205,7 +206,6 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <headers>../extension/include/wx/extension/report/dir.h</headers>
     <headers>../extension/include/wx/extension/report/dirctrl.h</headers>
     <headers>../extension/include/wx/extension/report/frame.h</headers>
-    <headers>../extension/include/wx/extension/report/listitem.h</headers>
     <headers>../extension/include/wx/extension/report/listview.h</headers>
     <headers>../extension/include/wx/extension/report/listviewfile.h</headers>
     <headers>../extension/include/wx/extension/report/process.h</headers>

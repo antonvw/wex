@@ -10,7 +10,7 @@
 
 #include <wx/aui/auibook.h>
 #include <wx/filename.h>
-#include <wx/extension/report/listitem.h>
+#include <wx/extension/listitem.h>
 
 class wxExFrameWithHistory;
 class wxExListView;
@@ -30,7 +30,7 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font = wxFont())
 /// Results are placed on the list process output, if it can be activated from frame.
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile);
 
-/// Runs a tool on this item.
+/// Runs a tool on this item, and returns statistics.
 const wxExFileStatistics wxExRun(const wxExListItem& item, const wxExTool& tool);
 
 #endif

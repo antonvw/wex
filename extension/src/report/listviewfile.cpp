@@ -16,12 +16,12 @@
 #include <wx/xml/xml.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frame.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/listitem.h>
 
 BEGIN_EVENT_TABLE(wxExListViewFile, wxExListViewWithFrame)
   EVT_IDLE(wxExListViewFile::OnIdle)

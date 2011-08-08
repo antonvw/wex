@@ -13,11 +13,11 @@
 #include <wx/tokenzr.h>
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/configdlg.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listview.h>
 
 BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
