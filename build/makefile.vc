@@ -87,6 +87,7 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_indicator.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexer.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexers.obj \
+	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listitem.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listview.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_managedframe.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_marker.obj \
@@ -119,7 +120,6 @@ WXEX_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_dir.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_dirctrl.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_frame.obj \
-	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_listitem.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_listview.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_listviewfile.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_process.obj \
@@ -532,6 +532,9 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexer.obj: .
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexers.obj: .\..\extension\src\lexers.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\lexers.cpp
 
+$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listitem.obj: .\..\extension\src\listitem.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\listitem.cpp
+
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listview.obj: .\..\extension\src\listview.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\listview.cpp
 
@@ -606,9 +609,6 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_dirctrl.
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_frame.obj: .\..\extension\src\report\frame.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_REP_CXXFLAGS) .\..\extension\src\report\frame.cpp
-
-$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_listitem.obj: .\..\extension\src\report\listitem.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_REP_CXXFLAGS) .\..\extension\src\report\listitem.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_listview.obj: .\..\extension\src\report\listview.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_REP_CXXFLAGS) .\..\extension\src\report\listview.cpp
