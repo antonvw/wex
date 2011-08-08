@@ -14,11 +14,11 @@
 #include <wx/imaglist.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
-#include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>

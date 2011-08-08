@@ -12,11 +12,11 @@
 #include <wx/config.h>
 #include <wx/regex.h>
 #include <wx/extension/filedlg.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/util.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/listitem.h>
 #include <wx/extension/report/listviewfile.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/textfile.h>

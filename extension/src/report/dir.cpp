@@ -14,8 +14,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/report/dir.h>
-#include <wx/extension/report/listitem.h>
 
 wxExDirTool::wxExDirTool(const wxExTool& tool,
   const wxString& fullpath, const wxString& filespec, int flags)

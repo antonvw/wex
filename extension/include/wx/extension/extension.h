@@ -2,9 +2,7 @@
 // Name:      extension.h
 // Purpose:   Include file for all wxExtension classes
 // Author:    Anton van Wezenbeek
-// Created:   2010-11-30
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WXEXTENSION_H
@@ -28,6 +26,7 @@
 #include <wx/extension/indicator.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/lexers.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/marker.h>

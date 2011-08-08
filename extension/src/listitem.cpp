@@ -11,7 +11,7 @@
 #endif
 #include <wx/config.h>
 #include <wx/extension/frame.h>
-#include <wx/extension/report/listitem.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
 
 // Do not give an error if columns do not exist.

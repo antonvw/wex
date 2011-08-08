@@ -16,10 +16,10 @@
 #include <wx/config.h>
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/listitem.h>
 #include <wx/extension/util.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
-#include <wx/extension/report/listitem.h>
 
 wxExListView* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;
@@ -233,7 +233,7 @@ void wxExTextFileWithListView::ReportStatistics()
   if (GetTool().GetId() == ID_TOOL_REPORT_KEYWORD)
   {
     m_Report = m_Frame->Activate(
-      wxExListViewStandard::GetTypeTool(GetTool()),
+      wxExListViewWithFrame::GetTypeTool(GetTool()),
       &GetFileName().GetLexer());
 
     if (m_Report == NULL)
@@ -334,7 +334,7 @@ bool wxExTextFileWithListView::SetupTool(
   {
     if (tool.GetId() != ID_TOOL_REPORT_KEYWORD)
     {
-      m_Report = m_Frame->Activate(wxExListViewStandard::GetTypeTool(tool));
+      m_Report = m_Frame->Activate(wxExListViewWithFrame::GetTypeTool(tool));
 
       if (m_Report == NULL)
       {
