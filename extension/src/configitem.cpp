@@ -22,6 +22,7 @@
 #include <wx/valtext.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
 #if wxUSE_GUI
@@ -475,6 +476,15 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       ((wxStaticText* )m_Window)->SetLabelMarkup(m_Label);
       break;
 
+    case CONFIG_STC:
+      m_Window = new wxExSTC(parent,
+        wxEmptyString,
+        0,
+        wxEmptyString,
+        wxExSTC::STC_MENU_DEFAULT,
+        m_Id);
+      break;
+
     case CONFIG_STRING:
       m_Window = new wxTextCtrl(parent,
         m_Id,
@@ -781,6 +791,16 @@ bool wxExConfigItem::ToConfig(bool save) const
         wxConfigBase::Get()->Write(m_Label, sc->GetValue());
       else
         sc->SetValue(wxConfigBase::Get()->ReadDouble(m_Label, m_Min));
+      }
+      break;
+
+    case CONFIG_STC:
+      {
+      wxExSTC* tc = (wxExSTC*)m_Window;
+      if (save)
+        wxConfigBase::Get()->Write(m_Label, tc->GetValue());
+      else
+        tc->SetValue(wxConfigBase::Get()->Read(m_Label));
       }
       break;
 

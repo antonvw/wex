@@ -62,6 +62,9 @@ enum wxExConfigType
 
   /// a textctrl item that only accepts an integer (long)
   CONFIG_INT,
+  
+  /// a listview ctrl item
+  CONFIG_LISTVIEW,
 
   /// a radiobox item
   CONFIG_RADIOBOX,
@@ -83,6 +86,9 @@ enum wxExConfigType
 
   /// a textctrl item
   CONFIG_STRING,
+
+  /// a styled text ctrl item  
+  CONFIG_STC,
 
   /// a toggle button item
   CONFIG_TOGGLEBUTTON,
@@ -161,7 +167,7 @@ public:
     /// number of cols for this control
     int cols = -1);
 
-  /// Constructor for a string, a hyperlink ctrl or a static text.
+  /// Constructor for a string, a hyperlink ctrl, a static text or a STC.
   /// The extra style argument is the style for the control used
   /// (e.g. wxTE_MULTILINE or wxTE_PASSWORD).
   wxExConfigItem(

@@ -626,6 +626,14 @@ void wxExSampleFrame::ShowConfigItems()
   // CONFIG_STATICLINE (vertical)
   v.push_back(wxExConfigItem(wxLI_VERTICAL, "Static Line"));
 
+  // CONFIG_STC
+  v.push_back(wxExConfigItem(
+    "STC", 
+    wxEmptyString,
+    "STC",
+    0,
+    CONFIG_STC));
+      
   // CONFIG_STRING
   for (size_t l = 1; l <= 5; l++)
   {
