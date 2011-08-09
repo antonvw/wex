@@ -892,6 +892,7 @@ void wxExListView::SortColumnReset()
 
 BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
+  EVT_MENU(wxID_ADD, wxExListViewStandard::OnCommand)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -954,6 +955,11 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
 
   menu.SetStyle(style);
 
+  if (m_Type == LIST_FOLDER)
+  {
+    menu.Append(wxID_ADD);
+  }
+  
   wxExListView::BuildPopupMenu(menu);
 
 #ifdef __WXMSW__
@@ -1132,49 +1138,56 @@ bool wxExListViewStandard::ItemFromText(const wxString& text)
   while (tk.HasMoreTokens())
   {
     modified = true;
-
-    wxStringTokenizer tkz(tk.GetNextToken(), GetFieldSeparator());
-    if (tkz.HasMoreTokens())
+    
+    if (m_Type == LIST_FOLDER)
     {
-      const wxString value = tkz.GetNextToken();
-      wxFileName fn(value);
-
-      if (fn.FileExists())
+      InsertItem(GetItemCount(), tk.GetNextToken());
+    }
+    else
+    {
+      wxStringTokenizer tkz(tk.GetNextToken(), GetFieldSeparator());
+      if (tkz.HasMoreTokens())
       {
-        wxExListItem item(this, fn);
-        item.Insert();
-
-        // And try to set the rest of the columns 
-        // (that are not already set by inserting).
-        int col = 1;
-        while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
+        const wxString value = tkz.GetNextToken();
+        wxFileName fn(value);
+  
+        if (fn.FileExists())
         {
-          const wxString value = tkz.GetNextToken();
-
-          if (col != FindColumn(_("Type")) &&
-              col != FindColumn(_("In Folder")) &&
-              col != FindColumn(_("Size")) &&
-              col != FindColumn(_("Modified")))
+          wxExListItem item(this, fn);
+          item.Insert();
+  
+          // And try to set the rest of the columns 
+          // (that are not already set by inserting).
+          int col = 1;
+          while (tkz.HasMoreTokens() && col < GetColumnCount() - 1)
           {
-            item.SetItem(col, value);
+            const wxString value = tkz.GetNextToken();
+  
+            if (col != FindColumn(_("Type")) &&
+                col != FindColumn(_("In Folder")) &&
+                col != FindColumn(_("Size")) &&
+                col != FindColumn(_("Modified")))
+            {
+              item.SetItem(col, value);
+            }
+  
+            col++;
           }
-
-          col++;
+        }
+        else
+        {
+          // Now we need only the first column (containing findfiles). If more
+          // columns are present, these are ignored.
+          const wxString findfiles =
+            (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
+  
+          wxExListItem(this, value, findfiles).Insert();
         }
       }
       else
       {
-        // Now we need only the first column (containing findfiles). If more
-        // columns are present, these are ignored.
-        const wxString findfiles =
-          (tkz.HasMoreTokens() ? tkz.GetNextToken(): tkz.GetString());
-
-        wxExListItem(this, value, findfiles).Insert();
+        wxExListItem(this, text).Insert();
       }
-    }
-    else
-    {
-      wxExListItem(this, text).Insert();
     }
   }
 
@@ -1183,24 +1196,38 @@ bool wxExListViewStandard::ItemFromText(const wxString& text)
 
 const wxString wxExListViewStandard::ItemToText(long item_number) const
 {
-  wxExListItem item(
-    const_cast< wxExListViewStandard * >(this), item_number);
-
-  wxString text = (item.GetFileName().GetStat().IsOk() ? 
-    item.GetFileName().GetFullPath(): 
-    item.GetFileName().GetFullName());
-
-  if (item.GetFileName().DirExists())
+  if (item_number == -1)
   {
-    text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
+    wxString text;
+    
+    for (long i = 0; i < GetItemCount(); i++)
+    {
+      text += wxListView::GetItemText(i) + wxTextFile::GetEOL();
+    }
+    
+    return text;
   }
-
-  if (m_Type != LIST_FILE)
+  else
   {
-    text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
-  }
+    wxExListItem item(
+      const_cast< wxExListViewStandard * >(this), item_number);
 
-  return text;
+    wxString text = (item.GetFileName().GetStat().IsOk() ? 
+      item.GetFileName().GetFullPath(): 
+      item.GetFileName().GetFullName());
+
+    if (item.GetFileName().DirExists())
+    {
+      text += GetFieldSeparator() + GetItemText(item_number, _("Type"));
+    }
+
+    if (m_Type != LIST_FILE)
+    {
+      text += GetFieldSeparator() + wxExListView::ItemToText(item_number);
+    }
+    
+    return text;
+  }
 }
 
 void wxExListViewStandard::ItemsUpdate()
@@ -1222,6 +1249,24 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
     break;
 #endif
 #endif
+
+  case wxID_ADD:   
+    {
+      wxDirDialog dir_dlg(
+        this,
+        _(wxDirSelectorPromptStr),
+        wxEmptyString,
+        wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+      if (dir_dlg.ShowModal() == wxID_OK)
+      {
+        const int no = (GetSelectedItemCount() > 0 ? 
+          GetFirstSelected(): GetItemCount());
+         
+        InsertItem(no, dir_dlg.GetPath());
+      }
+    }
+    break;
 
   default: 
     wxFAIL;

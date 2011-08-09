@@ -621,12 +621,12 @@ int wxExSTC::ConfigDialog(
     items.push_back(
       wxExConfigItem(
         _("Include directory"), 
-        wxEmptyString,
+        CONFIG_LISTVIEW,
         _("Directory"), 
-        wxTE_MULTILINE | wxHSCROLL,
-        CONFIG_STRING,
         false,
-        false)); // no name
+        wxID_ANY,
+        25,
+        false)); // no label
   }
 
   int buttons = wxOK | wxCANCEL;
