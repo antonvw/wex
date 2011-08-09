@@ -749,12 +749,11 @@ bool wxExConfigItem::ToConfig(bool save) const
     case CONFIG_LISTVIEW:
       {
       wxExListViewStandard* win = (wxExListViewStandard*)m_Window;
-/*      
+      
       if (save)
-        wxConfigBase::Get()->Write(m_Label, wxExListViewStandard->GetValue());
+        wxConfigBase::Get()->Write(m_Label, win->ItemToText(-1));
       else
-        win->SetValue(wxConfigBase::Get()->ReadLong(m_Label, m_Min));
-*/        
+        win->ItemFromText(wxConfigBase::Get()->Read(m_Label));
       }
       break;
 
