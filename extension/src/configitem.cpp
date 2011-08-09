@@ -396,7 +396,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
 
     case CONFIG_LISTVIEW:
       m_Window = new wxExListViewStandard(parent,
-        wxExListViewStandard::LIST_FILE,
+        wxExListViewStandard::LIST_FOLDER,
         m_Id);
       break;
 
