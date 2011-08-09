@@ -217,6 +217,7 @@ public:
   enum ListType
   {
     LIST_BEFORE_FIRST, ///< for iterating
+    LIST_FOLDER,       ///< a list containing folders only
     LIST_COUNT,        ///< a list to show statistics
     LIST_FIND,         ///< a list to show find results
     LIST_HISTORY,      ///< a list to show history items
@@ -228,17 +229,6 @@ public:
     LIST_SQL,          ///< a list to show embedded sql
     LIST_VERSION,      ///< a list to show versions
     LIST_AFTER_LAST,   ///< for iterating
-  };
-
-  /// Menu flags, they determine how the context menu will appear.
-  enum
-  {
-    LIST_MENU_REPORT_FIND = 0x0001, ///< for adding find and replace in files
-    LIST_MENU_TOOL        = 0x0002, ///< for adding tool menu
-
-    LIST_MENU_DEFAULT = 
-      LIST_MENU_REPORT_FIND | 
-      LIST_MENU_TOOL
   };
 
   /// Constructor.

@@ -163,7 +163,7 @@ Frame::Frame(bool open_recent)
     
   m_History = new wxExListViewWithFrame(this, this,
     wxExListViewStandard::LIST_HISTORY,
-    wxExListViewStandard::LIST_MENU_DEFAULT);
+    wxExListViewWithFrame::LIST_MENU_DEFAULT);
     
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
     
@@ -346,7 +346,7 @@ wxExListViewWithFrame* Frame::AddPage(
       m_Lists, this,
       type,
       wxID_ANY,
-      wxExListViewStandard::LIST_MENU_DEFAULT,
+      wxExListViewWithFrame::LIST_MENU_DEFAULT,
       lexer);
 
     m_Lists->AddPage(list, name, name, true);
@@ -445,7 +445,7 @@ void Frame::NewFile(bool as_project)
       this,
       key,
       wxID_ANY,
-      wxExListViewStandard::LIST_MENU_DEFAULT);
+      wxExListViewWithFrame::LIST_MENU_DEFAULT);
 
     ((wxExListViewFile*)page)->FileNew(key);
 
@@ -1159,7 +1159,7 @@ bool Frame::OpenFile(
         this,
         filename.GetFullPath(),
         wxID_ANY,
-        wxExListViewStandard::LIST_MENU_DEFAULT);
+        wxExListViewWithFrame::LIST_MENU_DEFAULT);
 
       notebook->AddPage(
         project,

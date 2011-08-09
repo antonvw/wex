@@ -1017,6 +1017,7 @@ const wxString wxExListViewStandard::GetTypeDescription(ListType type)
 
   switch (type)
   {
+  case LIST_FOLDER: value = _("Folder"); break;
   case LIST_COUNT: value = _("File Count"); break;
   case LIST_FIND: value = _("Find Results"); break;
   case LIST_HISTORY: value = _("History"); break;
@@ -1109,10 +1110,13 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
     InsertColumn(wxExColumn(_("Replaced")));
   }
 
-  InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
-  InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
-  InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
-  InsertColumn(wxExColumn(_("Size")));
+  if (m_Type != LIST_FOLDER)
+  {
+    InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
+    InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Size")));
+  }
 }
 
 bool wxExListViewStandard::ItemFromText(const wxString& text)
