@@ -131,12 +131,18 @@ void wxExAppTestFixture::testConfigItem()
     ++it)
   {
     CPPUNIT_ASSERT( it->GetColumns() == -1);
+    
     if (it->GetType() == CONFIG_USER)
       CPPUNIT_ASSERT( it->GetWindow() != NULL);
     else 
       CPPUNIT_ASSERT( it->GetWindow() == NULL);
+      
     CPPUNIT_ASSERT(!it->GetIsRequired());
-    CPPUNIT_ASSERT(!it->GetLabel().empty());
+    if (it->GetType() != CONFIG_STATICLINE)
+    {
+      CPPUNIT_ASSERT(!it->GetLabel().empty());
+    }
+    
     CPPUNIT_ASSERT( it->GetPage().empty());
 
     CPPUNIT_ASSERT(
@@ -328,10 +334,11 @@ void wxExAppTestFixture::testListView()
 {
   wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
   
+  listView->SetSingleStyle(wxLC_REPORT);
   listView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   listView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
 
-  CPPUNIT_ASSERT(listView->FindColumn("String")  == 0);
+  CPPUNIT_ASSERT(listView->FindColumn("String") == 0);
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
 }
 

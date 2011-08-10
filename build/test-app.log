@@ -1,13 +1,6 @@
-..F...................
+.....................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  21   Failures: 1   Errors: 0
-
-
-1) test: testConfigItem (F) line: 133 ../extension/test/app/test.cpp
-assertion failed
-- Expression: it->GetColumns() == -1
+OK (21 tests)
 
 
