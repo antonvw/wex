@@ -34,13 +34,13 @@ protected:
   void OnNotebook(wxAuiNotebookEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  virtual wxExListViewStandard* Activate(
-    wxExListViewStandard::ListType type, 
+  virtual wxExListViewFileName* Activate(
+    wxExListViewFileName::ListType type, 
     const wxExLexer* lexer = NULL);
   void AddAsciiTable(wxExSTC* stc);
   void AddHeader(wxExSTC* stc);
   wxExListViewWithFrame* AddPage(
-    wxExListViewStandard::ListType type, 
+    wxExListViewFileName::ListType type, 
     const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   bool DialogProjectOpen();

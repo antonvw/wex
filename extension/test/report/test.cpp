@@ -69,8 +69,8 @@ void wxExReportAppTestFixture::testFrameWithHistory()
 void wxExReportAppTestFixture::testListItem()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewStandard* listView = new wxExListViewStandard(
-    frame, wxExListViewStandard::LIST_FILE);
+  wxExListViewFileName* listView = new wxExListViewFileName(
+    frame, wxExListViewFileName::LIST_FILE);
   
   wxStopWatch sw;
   sw.Start();

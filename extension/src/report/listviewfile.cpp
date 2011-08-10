@@ -257,7 +257,7 @@ void wxExListViewFile::DoFileSave(bool save_as)
 bool wxExListViewFile::ItemFromText(const wxString& text)
 {
   m_ContentsChanged = true;
-  return wxExListViewStandard::ItemFromText(text);
+  return wxExListViewFileName::ItemFromText(text);
 }
 
 void wxExListViewFile::OnCommand(wxCommandEvent& event)

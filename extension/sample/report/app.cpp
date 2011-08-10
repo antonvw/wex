@@ -107,14 +107,14 @@ wxExRepSampleFrame::wxExRepSampleFrame()
   const wxExLexer lexer = wxExLexers::Get()->FindByName("cpp");
 
   for (
-    int i = wxExListViewStandard::LIST_BEFORE_FIRST + 1;
-    i < wxExListViewStandard::LIST_AFTER_LAST;
+    int i = wxExListViewFileName::LIST_BEFORE_FIRST + 1;
+    i < wxExListViewFileName::LIST_AFTER_LAST;
     i++)
   {
     wxExListViewWithFrame* vw = new wxExListViewWithFrame(
       this,
       this, 
-      (wxExListViewStandard::ListType)i, 
+      (wxExListViewFileName::ListType)i, 
       wxID_ANY,
       0xFF, 
       &lexer); // set all flags
@@ -142,7 +142,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExDirWithListView dir(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewStandard::GetTypeDescription(wxExListViewStandard::LIST_FILE)),
+      wxExListViewFileName::GetTypeDescription(wxExListViewFileName::LIST_FILE)),
     wxGetCwd(),
     "*.cpp;*.h");
 
@@ -150,14 +150,14 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 
   wxExListItem item(
     (wxExListView*)m_NotebookWithLists->GetPageByKey(
-      wxExListViewStandard::GetTypeDescription(wxExListViewStandard::LIST_FILE)),
+      wxExListViewFileName::GetTypeDescription(wxExListViewFileName::LIST_FILE)),
     wxFileName("NOT EXISTING ITEM"));
 
   item.Insert();
 }
 
-wxExListViewStandard* wxExRepSampleFrame::Activate(
-  wxExListViewStandard::ListType type, 
+wxExListViewFileName* wxExRepSampleFrame::Activate(
+  wxExListViewFileName::ListType type, 
   const wxExLexer* lexer)
 {
   for (
@@ -165,11 +165,11 @@ wxExListViewStandard* wxExRepSampleFrame::Activate(
     i < m_NotebookWithLists->GetPageCount();
     i++)
   {
-    wxExListViewStandard* vw = (wxExListViewStandard*)m_NotebookWithLists->GetPage(i);
+    wxExListViewFileName* vw = (wxExListViewFileName*)m_NotebookWithLists->GetPage(i);
 
     if (vw->GetType() == type)
     {
-      if (type == wxExListViewStandard::LIST_KEYWORD)
+      if (type == wxExListViewFileName::LIST_KEYWORD)
       {
         if (lexer != NULL)
         {
