@@ -563,10 +563,10 @@ void wxExSampleFrame::ShowConfigItems()
       true));
   }
 
-  // CONFIG_LISTVIEW
+  // CONFIG_LISTVIEW_FOLDER
   v.push_back(wxExConfigItem(
     "ListView",
-    CONFIG_LISTVIEW,
+    CONFIG_LISTVIEW_FOLDER,
     "ListView"));
 
   // CONFIG_RADIOBOX
