@@ -218,8 +218,13 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
 {
   menu.AppendSeparator();
   menu.AppendEdit(true);
+  
+  const long style = GetWindowStyle();
 
-  if (GetItemCount() > 0 && GetSelectedItemCount() == 0)
+  if (
+    GetItemCount() > 0 && 
+    GetSelectedItemCount() == 0 &&
+    style & wxLC_REPORT)
   {
     menu.AppendSeparator();
 
@@ -889,6 +894,7 @@ void wxExListView::SortColumnReset()
 }
 
 BEGIN_EVENT_TABLE(wxExListViewFileName, wxExListView)
+  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewFileName::OnList)
   EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFileName::OnList)
   EVT_MENU(wxID_ADD, wxExListViewFileName::OnCommand)
 END_EVENT_TABLE()
@@ -1132,6 +1138,44 @@ void wxExListViewFileName::Initialize(const wxExLexer* lexer)
   }
 }
 
+void wxExListViewFileName::ItemActivated(long item_number)
+{
+  wxASSERT(item_number >= 0);
+  
+  if (m_Type == LIST_FOLDER)
+  {
+    wxDirDialog dir_dlg(
+      this,
+      _(wxDirSelectorPromptStr),
+      wxListView::GetItemText(item_number),
+      wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+    if (dir_dlg.ShowModal() == wxID_OK)
+    {
+      SetItemText(item_number, dir_dlg.GetPath());
+    }
+  }
+  else
+  {
+    // Cannot be const because of SetItem later on.
+    wxExListItem item(this, item_number);
+  
+    if (!item.GetFileName().FileExists() &&
+         item.GetFileName().DirExists())
+    {
+      wxTextEntryDialog dlg(this,
+        _("Input") + ":",
+        _("Folder Type"),
+        GetItemText(item_number, _("Type")));
+  
+      if (dlg.ShowModal() == wxID_OK)
+      {
+        item.SetItem(_("Type"), dlg.GetValue());
+      }
+    }
+  }
+}
+
 bool wxExListViewFileName::ItemFromText(const wxString& text)
 {
   if (text.empty())
@@ -1292,6 +1336,10 @@ void wxExListViewFileName::OnList(wxListEvent& event)
     }
 
     event.Skip();
+  }
+  else if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
+  {
+    ItemActivated(event.GetIndex());
   }
   else
   {

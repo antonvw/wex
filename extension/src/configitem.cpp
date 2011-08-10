@@ -755,7 +755,10 @@ bool wxExConfigItem::ToConfig(bool save) const
       if (save)
         wxConfigBase::Get()->Write(m_Label, win->ItemToText(-1));
       else
+      {
+        win->DeleteAllItems();
         win->ItemFromText(wxConfigBase::Get()->Read(m_Label));
+      }
       }
       break;
 
