@@ -621,7 +621,7 @@ int wxExSTC::ConfigDialog(
     items.push_back(
       wxExConfigItem(
         _("Include directory"), 
-        CONFIG_LISTVIEW,
+        CONFIG_LISTVIEW_FOLDER,
         _("Directory"), 
         false,
         wxID_ANY,

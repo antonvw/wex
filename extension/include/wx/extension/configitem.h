@@ -64,7 +64,7 @@ enum wxExConfigType
   CONFIG_INT,
   
   /// a listview ctrl item (a list view standard file)
-  CONFIG_LISTVIEW,
+  CONFIG_LISTVIEW_FOLDER,
 
   /// a radiobox item
   CONFIG_RADIOBOX,

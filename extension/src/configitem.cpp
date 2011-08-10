@@ -394,10 +394,13 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       expand = false;
       break;
 
-    case CONFIG_LISTVIEW:
+    case CONFIG_LISTVIEW_FOLDER:
       m_Window = new wxExListViewStandard(parent,
         wxExListViewStandard::LIST_FOLDER,
-        m_Id);
+        m_Id,
+        NULL,
+        wxDefaultPosition,
+        wxSize(width, 200));
       break;
 
     case CONFIG_RADIOBOX:
@@ -421,7 +424,6 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_MajorDimension,
         m_Style);
       }
-
       break;
 
     case CONFIG_SLIDER:
@@ -746,7 +748,7 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       break;
 
-    case CONFIG_LISTVIEW:
+    case CONFIG_LISTVIEW_FOLDER:
       {
       wxExListViewStandard* win = (wxExListViewStandard*)m_Window;
       

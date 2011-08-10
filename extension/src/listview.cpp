@@ -135,8 +135,6 @@ wxExListView::wxExListView(wxWindow* parent,
   , m_ImageWidth(16)
   , m_SortedColumnNo(-1)
 {
-  SetSingleStyle(wxLC_REPORT);
-
 #if wxUSE_DRAG_AND_DROP
   SetDropTarget(new ListViewDropTarget(this));
 #endif
@@ -1044,6 +1042,15 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
 {
   SetName(GetTypeDescription());
 
+  if (m_Type != LIST_FOLDER)
+  {
+    SetSingleStyle(wxLC_REPORT);
+  }
+  else
+  {
+    SetSingleStyle(wxLC_SMALL_ICON | wxLC_NO_HEADER);
+  }
+
   if (m_Type == LIST_KEYWORD)
   {
     if (lexer == NULL)
@@ -1057,7 +1064,7 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
 
   const int col_line_width = 250;
 
-  if (m_Type != LIST_PROCESS)
+  if (m_Type != LIST_PROCESS && m_Type != LIST_FOLDER)
   {
     InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
   }
