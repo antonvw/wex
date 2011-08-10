@@ -11,7 +11,7 @@
 #include <wx/filehistory.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/listview.h> // for wxExListViewStandard::ListType 
+#include <wx/extension/report/listview.h> // for wxExListViewFileName::ListType 
 
 class wxExConfigDialog;
 class wxExListViewFile;
@@ -45,8 +45,8 @@ public:
 
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
-  virtual wxExListViewStandard* Activate(
-    wxExListViewStandard::ListType WXUNUSED(list_type), 
+  virtual wxExListViewFileName* Activate(
+    wxExListViewFileName::ListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
     

@@ -888,9 +888,9 @@ void wxExListView::SortColumnReset()
   m_SortedColumnNo = -1;
 }
 
-BEGIN_EVENT_TABLE(wxExListViewStandard, wxExListView)
-  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewStandard::OnList)
-  EVT_MENU(wxID_ADD, wxExListViewStandard::OnCommand)
+BEGIN_EVENT_TABLE(wxExListViewFileName, wxExListView)
+  EVT_LIST_ITEM_SELECTED(wxID_ANY, wxExListViewFileName::OnList)
+  EVT_MENU(wxID_ADD, wxExListViewFileName::OnCommand)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -920,7 +920,7 @@ private:
 #endif // wxExUSE_RBS
 #endif // __WXMSW__
 
-wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
+wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
   ListType type,
   wxWindowID id,
   const wxExLexer* lexer,
@@ -943,7 +943,7 @@ wxExListViewStandard::wxExListViewStandard(wxWindow* parent,
   Initialize(lexer);
 }
 
-void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
+void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 {
   long style = 0;
 
@@ -985,7 +985,7 @@ void wxExListViewStandard::BuildPopupMenu(wxExMenu& menu)
 #endif
 }
 
-void wxExListViewStandard::DeleteDoubles()
+void wxExListViewFileName::DeleteDoubles()
 {
   wxDateTime mtime((time_t)0);
   wxString name;
@@ -1015,7 +1015,7 @@ void wxExListViewStandard::DeleteDoubles()
   }
 }
 
-const wxString wxExListViewStandard::GetTypeDescription(ListType type)
+const wxString wxExListViewFileName::GetTypeDescription(ListType type)
 {
   wxString value;
 
@@ -1038,7 +1038,7 @@ const wxString wxExListViewStandard::GetTypeDescription(ListType type)
   return value;
 }
 
-void wxExListViewStandard::Initialize(const wxExLexer* lexer)
+void wxExListViewFileName::Initialize(const wxExLexer* lexer)
 {
   SetName(GetTypeDescription());
 
@@ -1132,7 +1132,7 @@ void wxExListViewStandard::Initialize(const wxExLexer* lexer)
   }
 }
 
-bool wxExListViewStandard::ItemFromText(const wxString& text)
+bool wxExListViewFileName::ItemFromText(const wxString& text)
 {
   if (text.empty())
   {
@@ -1201,7 +1201,7 @@ bool wxExListViewStandard::ItemFromText(const wxString& text)
   return modified;
 }
 
-const wxString wxExListViewStandard::ItemToText(long item_number) const
+const wxString wxExListViewFileName::ItemToText(long item_number) const
 {
   if (item_number == -1)
   {
@@ -1217,7 +1217,7 @@ const wxString wxExListViewStandard::ItemToText(long item_number) const
   else
   {
     wxExListItem item(
-      const_cast< wxExListViewStandard * >(this), item_number);
+      const_cast< wxExListViewFileName * >(this), item_number);
 
     wxString text = (item.GetFileName().GetStat().IsOk() ? 
       item.GetFileName().GetFullPath(): 
@@ -1237,7 +1237,7 @@ const wxString wxExListViewStandard::ItemToText(long item_number) const
   }
 }
 
-void wxExListViewStandard::ItemsUpdate()
+void wxExListViewFileName::ItemsUpdate()
 {
   for (auto i = 0; i < GetItemCount(); i++)
   {
@@ -1245,7 +1245,7 @@ void wxExListViewStandard::ItemsUpdate()
   }
 }
 
-void wxExListViewStandard::OnCommand(wxCommandEvent& event)
+void wxExListViewFileName::OnCommand(wxCommandEvent& event)
 {
   switch (event.GetId())
   {
@@ -1281,7 +1281,7 @@ void wxExListViewStandard::OnCommand(wxCommandEvent& event)
   }
 }
 
-void wxExListViewStandard::OnList(wxListEvent& event)
+void wxExListViewFileName::OnList(wxListEvent& event)
 {
   if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_SELECTED)
   {

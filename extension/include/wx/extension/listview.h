@@ -209,8 +209,9 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-/// Adds some standard lists.
-class WXDLLIMPEXP_BASE wxExListViewStandard : public wxExListView
+/// Adds some standard lists, all these lists
+/// have items associated with files or folders.
+class WXDLLIMPEXP_BASE wxExListViewFileName : public wxExListView
 {
 public:
   /// The supported lists.
@@ -232,7 +233,7 @@ public:
   };
 
   /// Constructor.
-  wxExListViewStandard(wxWindow* parent,
+  wxExListViewFileName(wxWindow* parent,
     ListType type,
     wxWindowID id = wxID_ANY,
     const wxExLexer* lexer = NULL,

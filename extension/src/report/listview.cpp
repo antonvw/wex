@@ -23,7 +23,7 @@
 #include <wx/extension/report/textfile.h>
 #include <wx/extension/report/util.h>
 
-BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewStandard)
+BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFileName)
   EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
@@ -44,7 +44,7 @@ wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   long style,
   const wxValidator& validator,
   const wxString &name)
-  : wxExListViewStandard(
+  : wxExListViewFileName(
       parent, 
       type, 
       id, 
@@ -86,7 +86,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
     menu.AppendSeparator();
   }
 
-  wxExListViewStandard::BuildPopupMenu(menu);
+  wxExListViewFileName::BuildPopupMenu(menu);
 
   if (GetSelectedItemCount() > 1 && exists &&
      !wxConfigBase::Get()->Read(_("Comparator")).empty())
@@ -267,7 +267,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
     wxString file1,file2;
     bool found = false;
 
-    wxExListViewStandard* list = NULL;
+    wxExListViewFileName* list = NULL;
 
     if (event.GetId() == ID_LIST_VERSIONLIST)
     {

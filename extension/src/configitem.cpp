@@ -395,8 +395,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       break;
 
     case CONFIG_LISTVIEW_FOLDER:
-      m_Window = new wxExListViewStandard(parent,
-        wxExListViewStandard::LIST_FOLDER,
+      m_Window = new wxExListViewFileName(parent,
+        wxExListViewFileName::LIST_FOLDER,
         m_Id,
         NULL,
         wxDefaultPosition,
@@ -750,7 +750,7 @@ bool wxExConfigItem::ToConfig(bool save) const
 
     case CONFIG_LISTVIEW_FOLDER:
       {
-      wxExListViewStandard* win = (wxExListViewStandard*)m_Window;
+      wxExListViewFileName* win = (wxExListViewFileName*)m_Window;
       
       if (save)
         wxConfigBase::Get()->Write(m_Label, win->ItemToText(-1));

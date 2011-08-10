@@ -162,7 +162,7 @@ Frame::Frame(bool open_recent)
     flag);
     
   m_History = new wxExListViewWithFrame(this, this,
-    wxExListViewStandard::LIST_HISTORY,
+    wxExListViewFileName::LIST_HISTORY,
     wxExListViewWithFrame::LIST_MENU_DEFAULT);
     
   m_DirCtrl = new wxExGenericDirCtrl(this, this);
@@ -267,11 +267,11 @@ Frame::~Frame()
   delete m_OldLog;
 }
 
-wxExListViewStandard* Frame::Activate(
-  wxExListViewStandard::ListType type, 
+wxExListViewFileName* Frame::Activate(
+  wxExListViewFileName::ListType type, 
   const wxExLexer* lexer)
 {
-  if (type == wxExListViewStandard::LIST_FILE)
+  if (type == wxExListViewFileName::LIST_FILE)
   {
     return GetProject();
   }
@@ -331,16 +331,16 @@ void Frame::AddHeader(wxExSTC* stc)
 }
 
 wxExListViewWithFrame* Frame::AddPage(
-  wxExListViewStandard::ListType type, 
+  wxExListViewFileName::ListType type, 
   const wxExLexer* lexer)
 {
-  const wxString name = wxExListViewStandard::GetTypeDescription(type) +
+  const wxString name = wxExListViewFileName::GetTypeDescription(type) +
     (lexer != NULL ?  " " + lexer->GetScintillaLexer(): wxString(wxEmptyString));
 
   wxExListViewWithFrame* list = 
     (wxExListViewWithFrame*)m_Lists->GetPageByKey(name);
 
-  if (list == NULL && type != wxExListViewStandard::LIST_FILE)
+  if (list == NULL && type != wxExListViewFileName::LIST_FILE)
   {
     list = new wxExListViewWithFrame(
       m_Lists, this,

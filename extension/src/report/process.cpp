@@ -182,7 +182,7 @@ long wxExProcess::Execute(const wxString& wd)
   {
     wxLogVerbose(_("Execute") + ": " + m_Command);
 
-    if ((m_ListView = m_Frame->Activate(wxExListViewStandard::LIST_PROCESS)) == NULL)
+    if ((m_ListView = m_Frame->Activate(wxExListViewFileName::LIST_PROCESS)) == NULL)
     {
       wxLogStatus(_("No listview to collect output"));
     }
