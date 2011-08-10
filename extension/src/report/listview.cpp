@@ -24,7 +24,6 @@
 #include <wx/extension/report/util.h>
 
 BEGIN_EVENT_TABLE(wxExListViewWithFrame, wxExListViewFileName)
-  EVT_LIST_ITEM_ACTIVATED(wxID_ANY, wxExListViewWithFrame::OnList)
   EVT_MENU_RANGE(ID_LIST_LOWEST, ID_LIST_HIGHEST, wxExListViewWithFrame::OnCommand)
   EVT_MENU_RANGE(ID_TOOL_LOWEST, ID_TOOL_HIGHEST, wxExListViewWithFrame::OnCommand)
   EVT_MENU_RANGE(
@@ -198,25 +197,10 @@ wxExListViewWithFrame::ListType wxExListViewWithFrame::GetTypeTool(
 
 void wxExListViewWithFrame::ItemActivated(long item_number)
 {
-  wxASSERT(item_number >= 0);
- 
   // Cannot be const because of SetItem later on.
   wxExListItem item(this, item_number);
 
-  if (!item.GetFileName().FileExists() &&
-       item.GetFileName().DirExists())
-  {
-    wxTextEntryDialog dlg(this,
-      _("Input") + ":",
-      _("Folder Type"),
-      GetItemText(item_number, _("Type")));
-
-    if (dlg.ShowModal() == wxID_OK)
-    {
-      item.SetItem(_("Type"), dlg.GetValue());
-    }
-  }
-  else if (item.GetFileName().FileExists())
+  if (item.GetFileName().FileExists() && !item.GetFileName().DirExists())
   {
     const wxString line_number_str = GetItemText(item_number, _("Line No"));
     const auto line_number = atoi(line_number_str.c_str());
@@ -230,6 +214,10 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
       line_number, match);
 
     SetFocus();
+  }
+  else
+  { 
+    wxExListViewFileName::ItemActivated(item_number);
   }
 }
 
@@ -340,18 +328,6 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   default: 
     wxFAIL;
     break;
-  }
-}
-
-void wxExListViewWithFrame::OnList(wxListEvent& event)
-{
-  if (event.GetEventType() == wxEVT_COMMAND_LIST_ITEM_ACTIVATED)
-  {
-    ItemActivated(event.GetIndex());
-  }
-  else
-  {
-    wxFAIL;
   }
 }
 

@@ -48,7 +48,6 @@ protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   wxExFrameWithHistory* GetFrame() {return m_Frame;};
   void OnCommand(wxCommandEvent& event);
-  void OnList(wxListEvent& event);
 private:
   void ItemActivated(long item_number);
   void RunItems(const wxExTool& tool);

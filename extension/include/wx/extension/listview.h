@@ -259,6 +259,9 @@ public:
   /// Updates all items.
   virtual void ItemsUpdate();
 
+  /// When item is double clicked.
+  virtual void ItemActivated(long item_number);
+  
   /// Tries to insert items from specified text.
   /// Returns true if successfull.
   virtual bool ItemFromText(const wxString& text);
