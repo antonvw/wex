@@ -45,11 +45,23 @@ wxExListItem::wxExListItem(
 void wxExListItem::Insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
-  const auto col = m_ListView->FindColumn(_("File Name"));
-  const wxString filename = (
-    m_FileName.FileExists() || m_FileName.DirExists() ?
-      m_FileName.GetFullName():
-      m_FileName.GetFullPath());
+  
+  auto col = 0;
+  wxString filename;
+  
+  if (m_ListView->GetWindowStyle() & wxLC_REPORT)
+  {
+    col = m_ListView->FindColumn(_("File Name"));
+    filename = (
+      m_FileName.FileExists() || m_FileName.DirExists() ?
+        m_FileName.GetFullName():
+        m_FileName.GetFullPath());
+  }
+  else
+  {
+    col = 0;
+    filename = m_FileName.GetFullPath();
+  }
 
   if (col == 0)
   {
@@ -117,9 +129,12 @@ void wxExListItem::Update()
 {
   SetReadOnly(m_FileName.GetStat().IsReadOnly());
 
-  if (m_FileName.GetStat().IsOk())
+  if (
+    (m_ListView->GetWindowStyle() & wxLC_REPORT) &&
+     m_FileName.GetStat().IsOk())
   {
     const unsigned long size = m_FileName.GetStat().st_size; // to prevent warning
+    
     SetItem(_("Type"),
       (wxFileName::DirExists(m_FileName.GetFullPath()) ? // IsDir not ok
          m_FileSpec:
