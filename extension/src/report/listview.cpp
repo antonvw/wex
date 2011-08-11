@@ -197,10 +197,9 @@ wxExListViewWithFrame::ListType wxExListViewWithFrame::GetTypeTool(
 
 void wxExListViewWithFrame::ItemActivated(long item_number)
 {
-  // Cannot be const because of SetItem later on.
-  wxExListItem item(this, item_number);
+  const wxExListItem item(this, item_number);
 
-  if (item.GetFileName().FileExists() && !item.GetFileName().DirExists())
+  if (item.GetFileName().FileExists())
   {
     const wxString line_number_str = GetItemText(item_number, _("Line No"));
     const auto line_number = atoi(line_number_str.c_str());
