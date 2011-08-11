@@ -1193,7 +1193,7 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
     
     if (m_Type == LIST_FOLDER)
     {
-      InsertItem(GetItemCount(), tk.GetNextToken());
+      wxExListItem(this, tk.GetNextToken()).Insert();
     }
     else
     {
@@ -1315,7 +1315,7 @@ void wxExListViewFileName::OnCommand(wxCommandEvent& event)
         const int no = (GetSelectedItemCount() > 0 ? 
           GetFirstSelected(): GetItemCount());
          
-        InsertItem(no, dir_dlg.GetPath());
+        wxExListItem(this, dir_dlg.GetPath()).Insert(no);
       }
     }
     break;
