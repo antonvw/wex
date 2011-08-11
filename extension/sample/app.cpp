@@ -185,6 +185,7 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
 #endif
 
+  m_ListView->SetSingleStyle(wxLC_REPORT);
   m_ListView->InsertColumn(wxExColumn("String", wxExColumn::COL_STRING));
   m_ListView->InsertColumn(wxExColumn("Number", wxExColumn::COL_INT));
   m_ListView->InsertColumn(wxExColumn("Float", wxExColumn::COL_FLOAT));

@@ -959,13 +959,14 @@ void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 
   menu.SetStyle(style);
 
+  wxExListView::BuildPopupMenu(menu);
+
   if (m_Type == LIST_FOLDER)
   {
+    menu.AppendSeparator();
     menu.Append(wxID_ADD);
   }
   
-  wxExListView::BuildPopupMenu(menu);
-
 #ifdef __WXMSW__
 #ifdef wxExUSE_RBS
   if (GetSelectedItemCount() >= 1)
