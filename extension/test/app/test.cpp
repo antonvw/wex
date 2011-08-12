@@ -410,17 +410,11 @@ void wxExAppTestFixture::testSTC()
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
   stc->DocumentStart();
   
-  // next asserts, do not know why
-//  CPPUNIT_ASSERT(stc->FindNext("more text"));
+  CPPUNIT_ASSERT(stc->FindNext("more text", 0));
   
   CPPUNIT_ASSERT(stc->ReplaceAll("more", "less") == 1);
-//  CPPUNIT_ASSERT(stc->FindNext("less text"));
+  CPPUNIT_ASSERT(stc->FindNext("less text", 0));
 
-// TODO: Add this test that was previously part of vi test
-// (and was OK)  
-//  CPPUNIT_ASSERT( vi->FindCommand("/", "vi: "));
-//  CPPUNIT_ASSERT(!vi->FindCommand("/", "xxx"));
-  
   stc->SetText("new text");
   CPPUNIT_ASSERT(stc->GetText() == "new text");
   
