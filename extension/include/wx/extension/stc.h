@@ -165,6 +165,9 @@ public:
   /// Gets vi component.
   const wxExVi& GetVi() const {return m_vi;};
   
+  /// Gets vi component (for testing).
+  wxExVi& GetVi() {return m_vi;};
+  
   /// Gets word at position.
   const wxString GetWordAtPos(int pos) const;
 

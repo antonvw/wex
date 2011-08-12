@@ -8,6 +8,9 @@
 #include <vector>
 #include <TestCaller.h>
 #include <wx/config.h>
+//#if wxUSE_UIACTIONSIMULATOR
+//  #include "wx/uiaction.h"
+//#endif
 #include "test.h"
 
 #define TEST_FILE "./test.h"
@@ -629,9 +632,7 @@ void wxExAppTestFixture::testVi()
     
   CPPUNIT_ASSERT(stc->GetTabWidth() == 120);
   
-  wxExVi* vi = new wxExVi(stc);
-  
-  CPPUNIT_ASSERT(!vi->GetIsActive());
+  wxExVi* vi = &stc->GetVi();
   
   vi->Use(true);
   CPPUNIT_ASSERT( vi->GetIsActive());
@@ -640,17 +641,28 @@ void wxExAppTestFixture::testVi()
   CPPUNIT_ASSERT( vi->ExecCommand("100"));
   CPPUNIT_ASSERT(!vi->ExecCommand("xxx"));
   
+  CPPUNIT_ASSERT(!vi->GetInsertMode());
+  
+  // Tried to use  
+  //  wxUIActionSimulator sim;
+  //  stc->SetFocus();
+  //  sim.Char('i');
+  //  wxYield();
+    
+  // First i enters insert mode, so is handled by vi, not to be skipped.
   wxKeyEvent event(wxEVT_CHAR);
-  event.m_keyCode = 97; // one char 'a'
-
-  // First a enters insert mode, so is handled by vi, not to be skipped.
+  event.m_uniChar = 'i';
   CPPUNIT_ASSERT(!vi->OnChar(event));
-  wxYield();
-
-  // The next a is to be skipped, we are now in insert mode.
-  // TODO: fix test.
-  //CPPUNIT_ASSERT( vi->OnChar(event));
-  //wxYield();
+  
+  CPPUNIT_ASSERT( vi->GetInsertMode());
+  
+  // Second i (and more) to be handled by stc.
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  CPPUNIT_ASSERT( vi->OnChar(event));
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
