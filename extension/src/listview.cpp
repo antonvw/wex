@@ -703,7 +703,8 @@ void wxExListView::OnMouse(wxMouseEvent& event)
 {
   if (event.RightDown())
   {
-    int style = wxExMenu::MENU_DEFAULT;
+    long style = wxExMenu::MENU_DEFAULT;
+    
     if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
     if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
     if (GetSelectedItemCount() == 0 && GetItemCount() > 0) 
@@ -951,14 +952,6 @@ wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
 
 void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 {
-  long style = 0;
-
-  if (GetSelectedItemCount() > 0) style |= wxExMenu::MENU_IS_SELECTED;
-  if (GetItemCount() == 0) style |= wxExMenu::MENU_IS_EMPTY;
-  if (GetSelectedItemCount() == 0 && GetItemCount() > 0) style |= wxExMenu::MENU_ALLOW_CLEAR;
-
-  menu.SetStyle(style);
-
   wxExListView::BuildPopupMenu(menu);
 
   if (m_Type == LIST_FOLDER)
@@ -1258,6 +1251,10 @@ const wxString wxExListViewFileName::ItemToText(long item_number) const
     }
     
     return text;
+  }
+  else if (m_Type == LIST_FOLDER)
+  {
+    return wxListView::GetItemText(item_number);
   }
   else
   {

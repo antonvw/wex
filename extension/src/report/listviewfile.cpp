@@ -158,8 +158,7 @@ void wxExListViewFile::AfterSorting()
 
 void wxExListViewFile::BuildPopupMenu(wxExMenu& menu)
 {
-  // This contains the CAN_PASTE flag.
-  const long style = wxExMenu::MENU_DEFAULT |
+  const long style = menu.GetStyle() |
     (GetFileName().GetStat().IsReadOnly() ? wxExMenu::MENU_IS_READ_ONLY: 0);
 
   menu.SetStyle(style);
