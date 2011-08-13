@@ -167,6 +167,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     
     m_FindFocus = wxWindow::FindFocus();
+    
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, wxExFindReplaceData::Get(), _("Find")); 
     m_FindReplaceDialog->Show();
@@ -179,6 +180,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     
     m_FindFocus = wxWindow::FindFocus();
+    
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, 
       wxExFindReplaceData::Get(),

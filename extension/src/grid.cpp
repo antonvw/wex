@@ -141,8 +141,6 @@ const wxString wxExGrid::BuildPage()
 
 void wxExGrid::BuildPopupMenu(wxExMenu& menu)
 {
-  menu.Append(wxID_FIND);
-  menu.AppendSeparator();
   menu.AppendEdit();
 }
 

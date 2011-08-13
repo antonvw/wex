@@ -20,9 +20,9 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
-class wxListView;
 class wxExListView;
 class wxExSTC;
+class wxListView;
 
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and allows for file dropping.
