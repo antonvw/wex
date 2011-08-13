@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          otl.h
-* Purpose:       Declaration of wxExOTL class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2008-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      otl.h
+// Purpose:   Declaration of wxExOTL class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXOTL_H
 #define _EXOTL_H
@@ -20,6 +16,7 @@
 #define OTL_ODBC_UNIX
 #endif
 #include <otlv4.h>
+#include "wx/versioninfo.h"
 
 class wxGrid;
 class wxStyledTextCtrl;
@@ -74,8 +71,8 @@ public:
     bool& stopped,
     int buffer_size = 1024);
 
-  /// Returns the OTL version as a string.
-  static const wxString Version();
+  /// Returns the OTL version.
+  static const wxVersionInfo VersionInfo();
 private:
   otl_connect m_Connect;
 };

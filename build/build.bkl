@@ -127,6 +127,7 @@ bakefile -f msvs2003prj -I../build/bakefiles/wxpresets build.bkl
     <sources>../extension/src/vcs.cpp</sources>
     <sources>../extension/src/vcscommand.cpp</sources>
     <sources>../extension/src/vcsentry.cpp</sources>
+    <sources>../extension/src/version.cpp</sources>
     <sources>../extension/src/vi.cpp</sources>
     
     <headers>../extension/include/wx/extension/app.h</headers>

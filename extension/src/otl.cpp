@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          otl.cpp
-* Purpose:       Implementation of wxExOTL class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2008-2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      otl.cpp
+// Purpose:   Implementation of wxExOTL class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -264,11 +260,12 @@ long wxExOTL::Query(
   return rows;
 }
 
-const wxString wxExOTL::Version()
+const wxVersionInfo wxExOTL::VersionInfo()
 {
   const long version = OTL_VERSION_NUMBER;
 
-  return wxString::Format("OTL %d.%d.%d",
+  return wxVersionInfo(
+    "OTL", 
      version >> 16,
     (version >> 8) & 0xff,
     (version & 0xff));

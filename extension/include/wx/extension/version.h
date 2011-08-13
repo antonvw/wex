@@ -5,4 +5,6 @@
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#define wxEX_VERSION_STRING "wxExtension 1.1.0"
+#include <wx/versioninfo.h>
+
+const wxVersionInfo wxExGetVersionInfo();

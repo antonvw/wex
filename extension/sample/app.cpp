@@ -233,8 +233,7 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
     {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(wxEX_VERSION_STRING);
-    info.AddDeveloper(wxVERSION_STRING);
+    info.AddDeveloper(wxExGetVersionInfo().GetVersionString());
     info.SetCopyright("(c) 1998-2011 Anton van Wezenbeek");
     wxAboutBox(info);
     }
