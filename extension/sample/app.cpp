@@ -116,6 +116,21 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
+  wxExMenu *menuEdit = new wxExMenu();
+  menuEdit->Append(wxID_UNDO);
+  menuEdit->Append(wxID_REDO);
+  menuEdit->AppendSeparator();
+  menuEdit->Append(wxID_CUT);
+  menuEdit->Append(wxID_COPY);
+  menuEdit->Append(wxID_PASTE);
+  menuEdit->AppendSeparator();
+  menuEdit->Append(wxID_JUMP_TO);
+  menuEdit->AppendSeparator();
+  wxExMenu* menuFind = new wxExMenu();
+  menuFind->Append(wxID_FIND);
+  menuFind->Append(wxID_REPLACE);
+  menuEdit->AppendSubMenu(menuFind, _("&Find And Replace"));
+  
   wxExMenu* menuConfig = new wxExMenu;
   menuConfig->Append(ID_CONFIG_DLG, wxExEllipsed("Config Dialog"));
   menuConfig->Append(
@@ -140,6 +155,7 @@ wxExSampleFrame::wxExSampleFrame()
 
   wxMenuBar *menubar = new wxMenuBar;
   menubar->Append(menuFile, "&File");
+  menubar->Append(menuEdit, "&Edit");
   menubar->Append(menuView, "&View");
   menubar->Append(menuSTC, "&STC");
   menubar->Append(menuConfig, "&Config");
