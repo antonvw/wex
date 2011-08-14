@@ -96,6 +96,7 @@ void wxExSampleDir::OnFile(const wxString& file)
 #endif
 
 BEGIN_EVENT_TABLE(wxExSampleFrame, wxExManagedFrame)
+  EVT_MENU(wxID_JUMP_TO, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_CUT, wxID_CLEAR, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
@@ -234,170 +235,193 @@ wxExSampleFrame::wxExSampleFrame()
 #endif
 }
 
-wxExListView* wxExSampleFrame::GetListView()
-{
-  return m_ListView;
-}
-
 void wxExSampleFrame::OnCommand(wxCommandEvent& event)
 {
   m_Statistics.Inc(wxString::Format("%d", event.GetId()));
 
-  switch (event.GetId())
+  auto* editor = GetSTC();
+  auto* grid = GetGrid();
+  auto* listview = GetListView();
+
+  if (
+    (event.GetId() == wxID_UNDO ||
+     event.GetId() == wxID_REDO ||
+     event.GetId() == wxID_DELETE ||
+     event.GetId() == wxID_SELECTALL ||
+     event.GetId() == wxID_JUMP_TO) ||
+    (event.GetId() >= wxID_CUT && event.GetId() <= wxID_CLEAR))
   {
-  case wxID_ABOUT:
+    if (editor != NULL)
     {
-    wxAboutDialogInfo info;
-    info.SetIcon(GetIcon());
-    info.AddDeveloper(wxExGetVersionInfo().GetVersionString());
-    info.SetCopyright("(c) 1998-2011 Anton van Wezenbeek");
-    wxAboutBox(info);
+      wxPostEvent(editor, event);
     }
-    break;
-  case wxID_EXIT: Close(true); break;
-  case wxID_OPEN:
+    else if (grid != NULL)
     {
-    wxExFileDialog dlg(this, &m_STC->GetFile());
-    if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
-
-    wxStopWatch sw;
-    
-    m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
-
-    const auto stop = sw.Time();
-    wxLogStatus(wxString::Format(
-      "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+      wxPostEvent(grid, event);
     }
-    break;
-
-  case wxID_PREVIEW: m_ListView->PrintPreview(); break;
-  case wxID_PRINT: m_ListView->Print(); break;
-  case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); break;
-
-  case wxID_SAVE:
-    m_STC->GetFile().FileSave();
-
-    if (m_STC->GetFileName().GetFullPath() == 
-        wxExLexers::Get()->GetFileName().GetFullPath())
+    else if (listview != NULL)
     {
-      wxExLexers::Get()->Read();
-      wxLogMessage("File contains: %d lexers", wxExLexers::Get()->Count());
-        // As the lexer might have changed, update status bar field as well.
-#if wxUSE_STATUSBAR
-      UpdateStatusBar(m_STC, "PaneLexer");
-#endif
+      wxPostEvent(listview, event);
     }
-    break;
-
-  case ID_CONFIG_DLG: ShowConfigItems(); break;
-  case ID_CONFIG_DLG_READONLY:
+  }
+  else
+  {
+    switch (event.GetId())
     {
-    std::vector<wxExConfigItem> v;
-
-    v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
-
-    for (size_t j = 1; j <= 10; j++)
-    {
-      v.push_back(wxExConfigItem(wxString::Format("Integer%d", j), CONFIG_INT));
-    }
-
-    wxExConfigDialog* dlg = new wxExConfigDialog(
-      this,
-      v,
-      "Config Dialog Readonly",
-      0,
-      1,
-      wxCANCEL);
-
-      dlg->Show();
-    }
-    break;
-
-  case ID_SHELL_COMMAND:
-      m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");
-    break;
-    
-  case ID_SHOW_VCS:
-    {
-    wxFileDialog openFileDialog(this, _("Open File"), "", "",
-      "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-
-    if (openFileDialog.ShowModal() == wxID_CANCEL)
-      return;     // the user changed idea...
-        
-    wxArrayString ar;
-    ar.Add(openFileDialog.GetPath());
-    wxExVCS vcs(ar);
-    wxLogMessage(vcs.GetName());
-    
-    if (vcs.GetEntry().SupportKeywordExpansion())
-    {
-      wxLogMessage("supports keyword expansion");
-    }
-    }
-    break;
-
-  case ID_STATISTICS_SHOW:
-    m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
-    break;
-
-  case ID_STC_CONFIG_DLG:
-    wxExSTC::ConfigDialog(
-      this,
-      "Editor Options",
-      wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
-    break;
-    
-  case ID_STC_ENTRY_DLG:
-    {
-    wxString text;
-    
-    for (auto i = 0; i < 100; i++)
-    {
-      text += wxString::Format("Hello from line: %d\n", i);
-    }
-    
-    wxExSTCEntryDialog dlg(
-      this,
-      "Hello world",
-      text,      
-      "Greetings from " + wxTheApp->GetAppDisplayName());
+    case wxID_ABOUT:
+      {
+      wxAboutDialogInfo info;
+      info.SetIcon(GetIcon());
+      info.AddDeveloper(wxExGetVersionInfo().GetVersionString());
+      info.SetCopyright("(c) 1998-2011 Anton van Wezenbeek");
+      wxAboutBox(info);
+      }
+      break;
+    case wxID_EXIT: Close(true); break;
+    case wxID_OPEN:
+      {
+      wxExFileDialog dlg(this, &m_STC->GetFile());
+      if (dlg.ShowModalIfChanged(true) == wxID_CANCEL) return;
+  
+      wxStopWatch sw;
       
-      dlg.ShowModal();
+      m_STC->Open(dlg.GetPath(), 0, wxEmptyString, m_FlagsSTC);
+  
+      const auto stop = sw.Time();
+      wxLogStatus(wxString::Format(
+        "wxExSTC::Open:%ld milliseconds, %d bytes", stop, m_STC->GetTextLength()));
+      }
+      break;
+  
+    case wxID_PREVIEW: m_ListView->PrintPreview(); break;
+    case wxID_PRINT: m_ListView->Print(); break;
+    case wxID_PRINT_SETUP: wxExPrinting::Get()->GetHtmlPrinter()->PageSetup(); break;
+  
+    case wxID_SAVE:
+      m_STC->GetFile().FileSave();
+  
+      if (m_STC->GetFileName().GetFullPath() == 
+          wxExLexers::Get()->GetFileName().GetFullPath())
+      {
+        wxExLexers::Get()->Read();
+        wxLogMessage("File contains: %d lexers", wxExLexers::Get()->Count());
+          // As the lexer might have changed, update status bar field as well.
+  #if wxUSE_STATUSBAR
+        UpdateStatusBar(m_STC, "PaneLexer");
+  #endif
+      }
+      break;
+  
+    case ID_CONFIG_DLG: ShowConfigItems(); break;
+    case ID_CONFIG_DLG_READONLY:
+      {
+      std::vector<wxExConfigItem> v;
+  
+      v.push_back(wxExConfigItem("File Picker", CONFIG_FILEPICKERCTRL));
+  
+      for (size_t j = 1; j <= 10; j++)
+      {
+        v.push_back(wxExConfigItem(wxString::Format("Integer%d", j), CONFIG_INT));
+      }
+  
+      wxExConfigDialog* dlg = new wxExConfigDialog(
+        this,
+        v,
+        "Config Dialog Readonly",
+        0,
+        1,
+        wxCANCEL);
+  
+        dlg->Show();
+      }
+      break;
+  
+    case ID_SHELL_COMMAND:
+        m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");
+      break;
+      
+    case ID_SHOW_VCS:
+      {
+      wxFileDialog openFileDialog(this, _("Open File"), "", "",
+        "All files (*.*)|*.*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+  
+      if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return;     // the user changed idea...
+          
+      wxArrayString ar;
+      ar.Add(openFileDialog.GetPath());
+      wxExVCS vcs(ar);
+      wxLogMessage(vcs.GetName());
+      
+      if (vcs.GetEntry().SupportKeywordExpansion())
+      {
+        wxLogMessage("supports keyword expansion");
+      }
+      }
+      break;
+  
+    case ID_STATISTICS_SHOW:
+      m_Notebook->AddPage(m_Statistics.Show(m_Notebook), "Statistics");
+      break;
+  
+    case ID_STC_CONFIG_DLG:
+      wxExSTC::ConfigDialog(
+        this,
+        "Editor Options",
+        wxExSTC::STC_CONFIG_MODELESS | wxExSTC::STC_CONFIG_WITH_APPLY);
+      break;
+      
+    case ID_STC_ENTRY_DLG:
+      {
+      wxString text;
+      
+      for (auto i = 0; i < 100; i++)
+      {
+        text += wxString::Format("Hello from line: %d\n", i);
+      }
+      
+      wxExSTCEntryDialog dlg(
+        this,
+        "Hello world",
+        text,      
+        "Greetings from " + wxTheApp->GetAppDisplayName());
+        
+        dlg.ShowModal();
+      }
+      break;
+      
+    case ID_STC_FLAGS:
+      {
+      long value = wxGetNumberFromUser(
+        "Input:",
+        wxEmptyString,
+        "STC Open Flag",
+        m_FlagsSTC,
+        0,
+        0xFFFF);
+  
+      if (value != -1)
+      {
+        m_FlagsSTC = value;
+      }
+      }
+      break;
+      
+    case ID_STC_SPLIT:
+      {
+      wxExSTC* stc = new wxExSTC(*m_STC);
+      m_Notebook->AddPage(
+        stc,
+        wxString::Format("stc%d", stc->GetId()),
+        m_STC->GetFileName().GetFullName());
+      stc->SetDocPointer(m_STC->GetDocPointer());
+      }
+      break;
+      
+    default:
+      wxFAIL;
+      break;
     }
-    break;
-    
-  case ID_STC_FLAGS:
-    {
-    long value = wxGetNumberFromUser(
-      "Input:",
-      wxEmptyString,
-      "STC Open Flag",
-      m_FlagsSTC,
-      0,
-      0xFFFF);
-
-    if (value != -1)
-    {
-      m_FlagsSTC = value;
-    }
-    }
-    break;
-    
-  case ID_STC_SPLIT:
-    {
-    wxExSTC* stc = new wxExSTC(*m_STC);
-    m_Notebook->AddPage(
-      stc,
-      wxString::Format("stc%d", stc->GetId()),
-      m_STC->GetFileName().GetFullName());
-    stc->SetDocPointer(m_STC->GetDocPointer());
-    }
-    break;
-    
-  default:
-    wxFAIL;
-    break;
   }
 }
 

@@ -56,7 +56,6 @@ protected:
     int commandid = wxID_APPLY);
   void OnCommand(wxCommandEvent& event);
 private:
-  virtual wxExListView* GetListView();
   void ShowConfigItems();
   
 #if wxUSE_GRID

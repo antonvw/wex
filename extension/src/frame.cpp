@@ -15,6 +15,7 @@
 #include <wx/extension/frame.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/grid.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/printing.h>
@@ -98,6 +99,25 @@ wxExFrame::~wxExFrame()
 #if wxUSE_STATUSBAR
   delete m_StatusBar;
 #endif
+}
+
+wxExGrid* wxExFrame::GetGrid()
+{
+  // If we had a find focus on listview component, return that one.
+  if (m_FindFocus != NULL && m_FindFocus->IsShown())
+  {
+    wxExGrid* win = dynamic_cast<wxExGrid*>(m_FindFocus);
+    
+    if (win != NULL)
+    {
+      return win;
+    }
+  }
+  
+  // If current focus is on grid component, return that one.  
+  wxWindow* win = wxWindow::FindFocus();
+  wxExGrid* grid = dynamic_cast<wxExGrid*>(win);
+  return grid;
 }
 
 wxExListView* wxExFrame::GetListView()

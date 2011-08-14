@@ -20,6 +20,7 @@
 // Only if we have a gui.
 #if wxUSE_GUI
 
+class wxExGrid;
 class wxExListView;
 class wxExSTC;
 class wxListView;
@@ -27,7 +28,7 @@ class wxListView;
 /// Offers a frame with easy statusbar methods, 
 /// find/replace, and allows for file dropping.
 /// Also helps in maintaining access to the base controls
-/// (listview and STC).
+/// (grid, listview and STC).
 class WXDLLIMPEXP_BASE wxExFrame : public wxFrame
 {
 public:
@@ -41,6 +42,9 @@ public:
 
   /// Destructor, deletes the statusbar.
  ~wxExFrame();
+
+  /// Returns a grid.
+  virtual wxExGrid* GetGrid();
 
   /// Returns a listview.
   virtual wxExListView* GetListView();
