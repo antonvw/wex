@@ -55,6 +55,7 @@ protected:
     wxWindowID id, 
     int commandid = wxID_APPLY);
   void OnCommand(wxCommandEvent& event);
+  void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   void ShowConfigItems();
   
