@@ -101,6 +101,8 @@ BEGIN_EVENT_TABLE(wxExSampleFrame, wxExManagedFrame)
   EVT_MENU_RANGE(wxID_OPEN, wxID_PREFERENCES, wxExSampleFrame::OnCommand)
   EVT_MENU_RANGE(ID_FIRST, ID_LAST, wxExSampleFrame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, wxExSampleFrame::OnCommand)
+  EVT_UPDATE_UI(wxID_PRINT, wxExSampleFrame::OnUpdateUI)
+  EVT_UPDATE_UI(wxID_PREVIEW, wxExSampleFrame::OnUpdateUI)
 END_EVENT_TABLE()
 
 wxExSampleFrame::wxExSampleFrame()
@@ -444,6 +446,19 @@ void wxExSampleFrame::OnCommandConfigDialog(
   else
   {
     wxExManagedFrame::OnCommandConfigDialog(dialogid, commandid);
+  }
+}
+
+void wxExSampleFrame::OnUpdateUI(wxUpdateUIEvent& event)
+{
+  switch (event.GetId())
+  {
+    case wxID_PREVIEW:
+    case wxID_PRINT:
+      event.Enable(
+        (GetListView() != NULL && GetListView()->GetItemCount() > 0) ||
+        (GetSTC() != NULL && GetSTC()->GetLength() > 0));
+      break;
   }
 }
 
