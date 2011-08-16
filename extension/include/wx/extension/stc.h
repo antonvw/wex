@@ -81,10 +81,6 @@ public:
   /// Adds text in hex mode.
   void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
 
-  /// Appends text, possibly with timestamp, even if the document is readonly.
-  /// If caret was at end, it is repositioned at the end.
-  void AppendTextForced(const wxString& text, bool withTimestamp = true);
-
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).

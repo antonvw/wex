@@ -409,7 +409,7 @@ void wxExAppTestFixture::testSTC()
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
   
-  stc->AppendTextForced("more text");
+  stc->AppendText("more text");
   CPPUNIT_ASSERT(stc->GetText() != "hello stc");
   stc->DocumentStart();
   
