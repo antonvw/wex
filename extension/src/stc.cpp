@@ -254,40 +254,6 @@ offset    hex field                                         ascii field
   AddText(text);
 }
 
-void wxExSTC::AppendTextForced(const wxString& text, bool withTimestamp)
-{
-  const bool pos_at_end = (GetCurrentPos() == GetTextLength());
-  const bool readonly = GetReadOnly();
-
-  if (readonly)
-  {
-    SetReadOnly(false);
-  }
-
-  if (withTimestamp)
-  {
-    const wxString now = wxDateTime::Now().Format();
-    AppendText(now + " " + text + GetEOL());
-  }
-  else
-  {
-    // No GetEOL, that is only added with timestamps.
-    AppendText(text);
-  }
-
-  SetSavePoint();
-
-  if (readonly)
-  {
-    SetReadOnly(true);
-  }
-
-  if (pos_at_end)
-  {
-    DocumentEnd();
-  }
-}
-
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 {
   const wxString sel = GetSelectedText();

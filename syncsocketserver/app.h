@@ -39,6 +39,7 @@ protected:
   void OnTimer(wxTimerEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
+  void AppendTextForced(wxExSTC* stc, const wxString& text, bool withTimestamp = true);
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int /* commandid*/);
