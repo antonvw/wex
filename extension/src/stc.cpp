@@ -1345,7 +1345,9 @@ void wxExSTC::Indent(int lines, bool forward)
 void wxExSTC::Initialize()
 {
   m_MacroIsRecording = false;
-  m_Position = 0;
+  m_SavedPos = 0;
+  m_SavedSelectionStart = -1;
+  m_SavedSelectionEnd = -1;
   
   Bind(
     wxEVT_STC_MODIFIED, 
@@ -1985,14 +1987,24 @@ void wxExSTC::Paste()
 
 void wxExSTC::PositionRestore()
 {
-  SetSelection(m_Position, m_Position);
-  SetCurrentPos(m_Position);
+  if (m_SavedSelectionStart != -1 && m_SavedSelectionEnd != -1)
+  {
+    SetSelection(m_SavedSelectionStart, m_SavedSelectionEnd);
+  }
+  else
+  {
+    SetSelection(m_SavedPos, m_SavedPos);
+  }
+  
+  SetCurrentPos(m_SavedPos);
   EnsureCaretVisible();
 }
   
 void wxExSTC::PositionSave()
 {
-  m_Position = GetCurrentPos();
+  m_SavedPos = GetCurrentPos();
+  m_SavedSelectionStart = GetSelectionStart();  
+  m_SavedSelectionEnd = GetSelectionEnd();
 }
 
 #if wxUSE_PRINTING_ARCHITECTURE

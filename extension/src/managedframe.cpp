@@ -372,7 +372,15 @@ void wxExViTextCtrl::SetVi(wxExVi* vi)
     
   if (m_Frame->GetViCommandIsFind())
   {
-    SetValue(wxExFindReplaceData::Get()->GetFindString());
+    if (!m_vi->GetSTC()->GetSelectedText().empty())
+    {
+      SetValue(m_vi->GetSTC()->GetSelectedText());
+      wxExFindReplaceData::Get()->SetFindString(GetValue());
+    }
+    else
+    {
+      SetValue(wxExFindReplaceData::Get()->GetFindString());
+    }
   }
   else
   {
