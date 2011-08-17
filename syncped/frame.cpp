@@ -1213,7 +1213,7 @@ bool Frame::OpenFile(
 
       if (GetManager().GetPane("DIRCTRL").IsShown())
       {
-        m_DirCtrl->SelectPath(filename.GetFullPath());
+        m_DirCtrl->ExpandAndSelectPath(filename.GetFullPath());
       }
       
       if (filename.GetFullPath() == m_LogFile)

@@ -43,7 +43,7 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
   : wxGenericDirCtrl(
       parent,
       id,
-      wxFileName(frame->GetRecentFile()).GetFullPath(),
+      wxDirDialogDefaultFolderStr,
       pos,
       size,
       style,
@@ -52,6 +52,13 @@ wxExGenericDirCtrl::wxExGenericDirCtrl(
       name)
   , m_Frame(frame)
 {
+}
+
+void wxExGenericDirCtrl::ExpandAndSelectPath(const wxString& path)
+{
+  UnselectAll();
+  ExpandPath(path);
+  SelectPath(path);
 }
 
 void wxExGenericDirCtrl::OnCommand(wxCommandEvent& event)
