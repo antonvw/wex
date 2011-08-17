@@ -331,7 +331,9 @@ private:
   const wxExMarker m_MarkerChange;
   const long m_MenuFlags;
 
-  int m_Position;
+  int m_SavedPos;
+  int m_SavedSelectionStart;
+  int m_SavedSelectionEnd;
   long m_Flags; // win flags
   long m_GotoLineNumber;
   bool m_MacroIsRecording;
