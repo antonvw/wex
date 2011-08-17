@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: syncped v1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-14 20:07+0100\n"
-"PO-Revision-Date: 2011-08-14 20:07+0100\n"
-"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
+"PO-Revision-Date: 2011-08-17 20:47+0100\n"
+"Last-Translator: Emma van Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: ../syncped/support.cpp:57
 msgid "VCS"
-msgstr ""
+msgstr "VCS"
 
 #: ../syncped/support.cpp:76
 msgid "Close A&ll"
