@@ -2,9 +2,7 @@
 // Name:      dirctrl.h
 // Purpose:   Declaration of class 'wxExGenericDirCtrl'
 // Author:    Anton van Wezenbeek
-// Created:   2010-08-16
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _DIRCTRL_H
@@ -32,6 +30,8 @@ public:
     const wxString& filter = wxEmptyString, 
     int defaultFilter = 0, 
     const wxString& name = wxTreeCtrlNameStr);
+  /// Expands path and selects it.
+  void ExpandAndSelectPath(const wxString& path);
 protected:
   void OnCommand(wxCommandEvent& event);
   void OnTree(wxTreeEvent& event);
