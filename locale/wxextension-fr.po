@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: wxextension v1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-14 20:07+0100\n"
-"PO-Revision-Date: 2011-08-17 20:44+0100\n"
+"PO-Revision-Date: 2011-08-17 22:00+0100\n"
 "Last-Translator: Emma van Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -696,24 +696,24 @@ msgstr "&Caractère de Contrôle"
 #: ../extension/src/stc.cpp:830
 #: ../extension/src/stc.cpp:1614
 msgid "Document is readonly"
-msgstr ""
+msgstr "Document est en lectureseule"
 
 #: ../extension/src/stc.cpp:846
 msgid "Readonly attribute changed"
-msgstr ""
+msgstr "Attribut lecture en seule changé"
 
 #: ../extension/src/stc.cpp:1548
 msgid "Macro played back"
-msgstr ""
+msgstr "Macro a joué retour"
 
 #: ../extension/src/stc.cpp:2170
 #, c-format
 msgid "Replaced: %d occurrences of: %s"
-msgstr ""
+msgstr "Remplacé: %d les occurrences de: %s"
 
 #: ../extension/src/stc.cpp:2381
 msgid "Macro recording"
-msgstr ""
+msgstr "Macro enregistre"
 
 #: ../extension/src/stc.cpp:2394
 msgid "Macro is recorded"
