@@ -69,6 +69,9 @@ public:
     const wxExVCSEntry& vcs,
     long flags = 0);
     
+  /// Sets the find focus to specified window.
+  void SetFindFocus(wxWindow* focus);
+  
   /// Override from base class.
   virtual void SetMenuBar(wxMenuBar* bar);
 
@@ -96,9 +99,7 @@ public:
   static void StatusText(const wxString& text, const wxString& pane);
   
   /// Call this if you think the find focus should be updated.
-  /// If focus is NULL, FindFocus is called, otherwise
-  /// focus is used.
-  void UpdateFindFocus(wxWindow* focus = NULL);
+  void UpdateFindFocus();
   
   /// Updates statusbar pane items pane with values from specified listview.
   static void UpdateStatusBar(const wxListView* lv);

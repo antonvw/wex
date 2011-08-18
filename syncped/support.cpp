@@ -213,17 +213,22 @@ bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
   else if (id == NOTEBOOK_EDITORS)
   {
     wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
-    return dlg.ShowModalIfChanged() == wxID_OK;
+    
+    if (dlg.ShowModalIfChanged() != wxID_OK)
+    {
+      return false;
+    }
   }
   else if (id == NOTEBOOK_PROJECTS)
   {
     wxExFileDialog dlg(this, (wxExListViewFile*)page);
-    return dlg.ShowModalIfChanged() == wxID_OK;
+    if (dlg.ShowModalIfChanged() != wxID_OK)
+    {
+      return false;
+    }
   }
-  else
-  {
-    return wxExFrameWithHistory::AllowClose(id, page);
-  }
+  
+  return wxExFrameWithHistory::AllowClose(id, page);
 }
 
 void DecoratedFrame::OnNotebook(wxWindowID id, wxWindow* page)

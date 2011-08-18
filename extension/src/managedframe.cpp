@@ -123,6 +123,7 @@ bool wxExManagedFrame::AddToolBarPane(
 bool wxExManagedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
   // The page will be closed, so do not update find focus now.
+  SetFindFocus(NULL);
   return true;
 }
 
@@ -219,7 +220,7 @@ void wxExManagedFrame::OnUpdateUI(wxUpdateUIEvent& event)
 
 void wxExManagedFrame::OnNotebook(wxWindowID id, wxWindow* page)
 {
-  UpdateFindFocus(page);
+  SetFindFocus(page);
 }
 
 void wxExManagedFrame::ShowViMessage(const wxString& text)

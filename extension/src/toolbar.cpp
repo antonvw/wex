@@ -281,7 +281,7 @@ void wxExTextCtrl::Find(bool find_next, bool restore_position)
 
   if (stc != NULL)
   {
-    m_Frame->UpdateFindFocus(stc);
+    m_Frame->SetFindFocus(stc);
   
     if (restore_position)
     {
