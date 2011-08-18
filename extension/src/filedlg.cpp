@@ -2,9 +2,7 @@
 // Name:      filedlg.cpp
 // Purpose:   Implementation of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Created:   2009-10-07
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>

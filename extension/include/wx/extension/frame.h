@@ -2,9 +2,7 @@
 // Name:      frame.h
 // Purpose:   Declaration of wxExFrame class
 // Author:    Anton van Wezenbeek
-// RCS-ID:    $Id$
-// Created:   2010-03-26
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFRAME_H

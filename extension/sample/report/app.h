@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.h
-* Purpose:       Declaration of sample classes for wxExRep
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.h
+// Purpose:   Declaration of sample classes for wxExtension report
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/treectrl.h>
 #include <wx/extension/app.h>

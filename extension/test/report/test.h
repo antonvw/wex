@@ -1,14 +1,9 @@
-/******************************************************************************\
-* File:          test.h
-* Purpose:       Declaration of classes for wxExtension report cpp unit testing
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-* Created:       za 17 jan 2009 11:51:20 CET
-*
-* Copyright (c) 2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      test.h
+// Purpose:   Declaration of classes for wxExtension report cpp unit testing
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _FTTESTUNIT_H
 #define _FTTESTUNIT_H

@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          app.h
-* Purpose:       Include file for wxExApp class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      app.h
+// Purpose:   Include file for wxExApp class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXAPP_H
 #define _EXAPP_H

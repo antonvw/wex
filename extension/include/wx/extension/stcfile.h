@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          stcfile.h
-* Purpose:       Declaration of class wxExSTCFile
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      stcfile.h
+// Purpose:   Declaration of class wxExSTCFile
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCFILE_H
 #define _EXSTCFILE_H

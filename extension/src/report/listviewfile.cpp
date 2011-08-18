@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      listviewfile.cpp
-// Purpose:   Implementation of class 'wxExListViewFile'
+// Purpose:   Implementation of class wxExListViewFile
 // Author:    Anton van Wezenbeek
-// Created:   2010-01-29
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>

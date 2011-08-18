@@ -2,9 +2,7 @@
 // Name:      command.h
 // Purpose:   Declaration of wxExCommand class
 // Author:    Anton van Wezenbeek
-// Created:   2010-11-26
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXCOMMAND_H

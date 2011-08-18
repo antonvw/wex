@@ -2,9 +2,7 @@
 // Name:      filedlg.h
 // Purpose:   Declaration of wxExtension file dialog class
 // Author:    Anton van Wezenbeek
-// Created:   2009-10-07
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFILEDLG_H

@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      marker.h
-// Purpose:   Declaration of class 'wxExMarker'
+// Purpose:   Declaration of class wxExMarker
 // Author:    Anton van Wezenbeek
-// Created:   2010-02-08
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXMARKER_H
