@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          lexers.h
-* Purpose:       Declaration of wxExLexers class
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      lexers.h
+// Purpose:   Declaration of wxExLexers class
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXLEXERS_H
 #define _EXLEXERS_H

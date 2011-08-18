@@ -2,9 +2,7 @@
 // Name:      stcdlg.h
 // Purpose:   Declaration of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Created:   2009-11-18
-// RCS-ID:    $Id$
-// Copyright: (c) 2009 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTCDLG_H

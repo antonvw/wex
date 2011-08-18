@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      filename.h
-// Purpose:   Declaration of class 'wxExFileName'
+// Purpose:   Declaration of class wxExFileName
 // Author:    Anton van Wezenbeek
-// Created:   2010-03-18
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXFILENAME_H

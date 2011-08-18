@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          dir.h
-* Purpose:       Declaration of class 'wxExDir' and 'wxExDirOpenFile'
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2008, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      dir.h
+// Purpose:   Declaration of class wxExDir and wxExDirOpenFile
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXDIR_H
 #define _EXDIR_H

@@ -1,13 +1,9 @@
-/******************************************************************************\
-* File:          util.cpp
-* Purpose:       Implementation of wxExtension utility methods
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      util.cpp
+// Purpose:   Implementation of wxExtension utility methods
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
 #include <wx/wxprec.h>

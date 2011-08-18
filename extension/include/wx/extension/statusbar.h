@@ -2,9 +2,7 @@
 // Name:      statusbar.h
 // Purpose:   Declaration of wxExStatusBar class
 // Author:    Anton van Wezenbeek
-// RCS-ID:    $Id$
-// Created:   2010-03-26
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _EXSTATUSBAR_H

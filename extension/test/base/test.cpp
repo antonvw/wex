@@ -1,14 +1,9 @@
-/******************************************************************************\
-* File:          test.cpp
-* Purpose:       Implementation for wxExtension cpp unit testing
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-* Created:       za 17 jan 2009 11:51:20 CET
-*
-* Copyright (c) 2009 Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      test.cpp
+// Purpose:   Implementation for wxExtension cpp unit testing
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
 
 #include <TestCaller.h>
 #include <wx/extension/extension.h>

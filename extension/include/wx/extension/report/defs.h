@@ -1,13 +1,10 @@
-/******************************************************************************\
-* File:          defs.h
-* Purpose:       Common definitions for wxExtension report
-* Author:        Anton van Wezenbeek
-* RCS-ID:        $Id$
-*
-* Copyright (c) 1998-2009, Anton van Wezenbeek
-* All rights are reserved. Reproduction in whole or part is prohibited
-* without the written consent of the copyright owner.
-\******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Name:      defs.h
+// Purpose:   Common definitions for wxExtension report
+// Author:    Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
+////////////////////////////////////////////////////////////////////////////////
+
 #ifndef _EX_REPORT_DEFS_H
 #define _EX_REPORT_DEFS_H
 

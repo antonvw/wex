@@ -1,10 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      file.cpp
-// Purpose:   Implementation of class 'wxExFile'
+// Purpose:   Implementation of class wxExFile
 // Author:    Anton van Wezenbeek
-// Created:   2010-03-18
-// RCS-ID:    $Id$
-// Copyright: (c) 2010 Anton van Wezenbeek
+// Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <wx/wxprec.h>

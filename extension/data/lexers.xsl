@@ -3,9 +3,7 @@
 Name:      lexers.xsl
 Purpose:   Stylesheet for lexers.xml
 Author:    Anton van Wezenbeek
-Created:   2009-08-13
-RCS-ID:    $Id$
-Copyright: (c) 2009 Anton van Wezenbeek
+Copyright: (c) 2011 Anton van Wezenbeek
 -->
 
 <xsl:stylesheet version="1.0"
