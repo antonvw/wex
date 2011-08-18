@@ -115,7 +115,7 @@ one of these applications, being a full featured source code text editor.
     - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
       ../configure --with-mac
   
-  - debug under Windows using IDE, under Linux using Kdbg
+  - debug under Windows using IDE, under Linux using ddd
 
   - deploy under Windows using 7-Zip 9.20
   strip the executable under Windows using UPX
