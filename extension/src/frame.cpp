@@ -418,6 +418,11 @@ bool wxExFrame::OpenFile(
   return true;
 }
 
+void wxExFrame::SetFindFocus(wxWindow* focus)
+{
+  m_FindFocus = focus;
+}
+
 void wxExFrame::SetMenuBar(wxMenuBar* bar)
 {
   if (bar != NULL)
@@ -505,16 +510,9 @@ void wxExFrame::StatusText(const wxString& text, const wxString& pane)
 }
 #endif // wxUSE_STATUSBAR
 
-void wxExFrame::UpdateFindFocus(wxWindow* focus)
+void wxExFrame::UpdateFindFocus()
 {
-  if (focus != NULL)
-  {
-    m_FindFocus = focus;
-  }
-  else
-  {
-    m_FindFocus = wxWindow::FindFocus();
-  }
+  m_FindFocus = wxWindow::FindFocus();
 }
 
 #if wxUSE_STATUSBAR
