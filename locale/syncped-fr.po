@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: syncped v1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-14 20:07+0100\n"
-"PO-Revision-Date: 2011-08-17 20:47+0100\n"
+"PO-Revision-Date: 2011-08-17 21:55+0100\n"
 "Last-Translator: Emma van Wezenbeek <emmac.vw@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -94,9 +94,8 @@ msgid "Comparator"
 msgstr "Comparateur"
 
 #: ../syncped/frame.cpp:732
-#, fuzzy
 msgid "Set Comparator"
-msgstr "régler SVN et Comparateur "
+msgstr "Régler SVN et Comparateur "
 
 #: ../syncped/frame.cpp:739
 #: ../syncped/frame.cpp:747
@@ -128,26 +127,24 @@ msgstr "Impossible d'ouvrir le fichier"
 #: ../syncped/frame.cpp:1244
 #: ../syncped/frame.cpp:1256
 msgid "Input"
-msgstr ""
+msgstr "Entrée"
 
 #: ../syncped/frame.cpp:1245
-#, fuzzy
 msgid "Start Of Sequence"
-msgstr "Insérer Séquence"
+msgstr "Démarrer la Séquence"
 
 #: ../syncped/frame.cpp:1257
-#, fuzzy
 msgid "End Of Sequence"
-msgstr "Insérer Séquence"
+msgstr "Terminer Séquence"
 
 #: ../syncped/frame.cpp:1267
 msgid "Start and end sequence should have same length"
-msgstr ""
+msgstr "Séquence de démarrage et de fin doivent avoir la même longueur"
 
 #: ../syncped/frame.cpp:1278
 #, c-format
 msgid "Generate %ld lines"
-msgstr ""
+msgstr "Générer %ld des lignes"
 
 #: ../syncped/frame.cpp:1279
 msgid "Confirm"
@@ -164,7 +161,7 @@ msgstr "Type de Fichier"
 
 #: ../syncped/support.cpp:41
 msgid "Lines or items"
-msgstr ""
+msgstr "Des lignes ou des articles"
 
 #: ../syncped/support.cpp:51
 msgid "Lexer"
@@ -172,7 +169,7 @@ msgstr "Lexer"
 
 #: ../syncped/support.cpp:52
 msgid "Theme"
-msgstr ""
+msgstr "Thème"
 
 #: ../syncped/support.cpp:57
 msgid "VCS"
@@ -275,7 +272,6 @@ msgid "Set &VCS"
 msgstr "Set &VCS"
 
 #: ../syncped/support.cpp:171
-#, fuzzy
 msgid "Set &Comparator"
 msgstr "régler SVN et Comparateur"
 
