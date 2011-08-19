@@ -181,6 +181,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_FIND: 
+    {
     if (m_FindReplaceDialog != NULL)
     {
       m_FindReplaceDialog->Destroy();
@@ -199,9 +200,11 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, wxExFindReplaceData::Get(), _("Find")); 
     m_FindReplaceDialog->Show();
+    }
     break;
     
   case wxID_REPLACE: 
+    {
     if (m_FindReplaceDialog != NULL)
     {
       m_FindReplaceDialog->Destroy();
@@ -209,12 +212,21 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     
     m_FindFocus = wxWindow::FindFocus();
     
+    // If stc text is selected, copy to find replace data.
+    wxExSTC* stc = GetSTC();
+    
+    if (stc != NULL)
+    {
+      stc->GetFindString();
+    }
+    
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, 
       wxExFindReplaceData::Get(),
       _("Replace"), 
       wxFR_REPLACEDIALOG); 
     m_FindReplaceDialog->Show();
+    }
     break;
     
   case wxID_OPEN:
