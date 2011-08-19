@@ -651,7 +651,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         wxExFileDialog dlg(
           this, 
           &editor->GetFile(), 
-          _("File Save As"), 
+          wxGetStockLabel(wxID_SAVEAS), 
           wxFileSelectorDefaultWildcardStr, 
           wxFD_SAVE);
 

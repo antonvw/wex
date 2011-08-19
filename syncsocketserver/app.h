@@ -39,7 +39,7 @@ protected:
   void OnTimer(wxTimerEvent& event);
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
-  void AppendTextForced(wxExSTC* stc, const wxString& text, bool withTimestamp = true);
+  void AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp = true);
   virtual void OnCommandConfigDialog(
     wxWindowID dialogid,
     int /* commandid*/);
@@ -66,7 +66,7 @@ private:
   std::list<wxSocketBase*> m_Clients;
 
   wxExSTCWithFrame* m_DataWindow;
-  wxExSTCWithFrame* m_LogWindow;
+  wxExSTC* m_LogWindow;
   wxExSTCShell* m_Shell;
 
   wxExStatistics < long > m_Statistics;

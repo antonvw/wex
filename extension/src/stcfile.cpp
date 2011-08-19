@@ -75,7 +75,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
 
   if (!synced)
   {
-    wxLogMessage(_("Opened") + ": " + GetFileName().GetFullPath());
+    wxLogStatus(_("Opened") + ": " + GetFileName().GetFullPath());
   }
   
   m_STC->PropertiesMessage(synced ? STAT_SYNC: STAT_DEFAULT);
