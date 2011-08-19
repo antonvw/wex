@@ -227,7 +227,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(
         this, 
         &m_Query->GetFile(), 
-        _("File Save As"), 
+        wxGetStockLabel(wxID_SAVEAS), 
         wxFileSelectorDefaultWildcardStr, 
         wxFD_SAVE);
 

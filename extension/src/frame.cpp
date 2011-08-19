@@ -187,6 +187,14 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     }
     
     m_FindFocus = wxWindow::FindFocus();
+
+    // If stc text is selected, copy to find replace data.
+    wxExSTC* stc = GetSTC();
+    
+    if (stc != NULL)
+    {
+      stc->GetFindString();
+    }
     
     m_FindReplaceDialog = new wxFindReplaceDialog(
       this, wxExFindReplaceData::Get(), _("Find")); 

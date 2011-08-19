@@ -334,6 +334,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
 
       case '0': 
+      case '^': 
         if (command.length() == 1)
         {
           m_STC->Home(); 

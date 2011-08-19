@@ -22,7 +22,6 @@
 #include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/version.h>
-#include <wx/extension/report/defs.h>
 #include "app.h"
 
 #ifndef __WXMSW__
@@ -105,16 +104,10 @@ Frame::Frame()
 
   m_DataWindow = new wxExSTCWithFrame(this, this);
 
-  m_LogWindow = new wxExSTCWithFrame(
-    this,
-    this,
-    wxEmptyString,
-    0,
-    _("Log"));
+  m_LogWindow = new wxExSTC(this, wxEmptyString, 0, _("Log"));
 
   m_Shell = new wxExSTCShell(this);
 
-  m_LogWindow->SetReadOnly(true);
   m_LogWindow->ResetMargins();
 
   wxExMenu* menuFile = new wxExMenu();
@@ -185,14 +178,14 @@ Frame::Frame()
   GetManager().AddPane(m_LogWindow,
     wxAuiPaneInfo().CenterPane().Name("LOG"));
   GetManager().AddPane(m_DataWindow,
-    wxAuiPaneInfo().Hide().Left().MaximizeButton(true).Caption(_("Data")).Name("DATA"));
+    wxAuiPaneInfo().Hide().Left().
+      MaximizeButton(true).Caption(_("Data")).Name("DATA"));
   GetManager().AddPane(m_Shell,
-    wxAuiPaneInfo().Hide().Left().MaximizeButton(true).Caption(_("Shell")).Name("SHELL"));
+    wxAuiPaneInfo().Hide().Left().
+      MaximizeButton(true).Caption(_("Shell")).Name("SHELL"));
   GetManager().AddPane(m_Statistics.Show(this),
     wxAuiPaneInfo().Hide().Left().
-      MaximizeButton(true).
-      Caption(_("Statistics")).
-      Name("STATISTICS"));
+      MaximizeButton(true).Caption(_("Statistics")).Name("STATISTICS"));
   GetManager().LoadPerspective(wxConfigBase::Get()->Read("Perspective"));
 
   if (SetupSocketServer())
@@ -232,15 +225,9 @@ Frame::~Frame()
   delete m_SocketServer;
 }
 
-void Frame::AppendTextForced(wxExSTC* stc, const wxString& text, bool withTimestamp)
+void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
 {
   const bool pos_at_end = (stc->GetCurrentPos() == stc->GetTextLength());
-  const bool readonly = stc->GetReadOnly();
-
-  if (readonly)
-  {
-    stc->SetReadOnly(false);
-  }
 
   if (withTimestamp)
   {
@@ -254,11 +241,6 @@ void Frame::AppendTextForced(wxExSTC* stc, const wxString& text, bool withTimest
   }
 
   stc->SetSavePoint();
-
-  if (readonly)
-  {
-    stc->SetReadOnly(true);
-  }
 
   if (pos_at_end)
   {
@@ -287,7 +269,7 @@ void Frame::LogConnection(
     text << " " << _("clients: ") << m_Clients.size();
   }
 
-  AppendTextForced(m_LogWindow, text);
+  AppendText(m_LogWindow, text);
 }
 
 void Frame::OnClose(wxCloseEvent& event)
@@ -361,7 +343,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       wxExFileDialog dlg(
         this, 
         &m_DataWindow->GetFile(), 
-        _("File Save As"), 
+        wxGetStockLabel(wxID_SAVEAS), 
         wxFileSelectorDefaultWildcardStr, 
         wxFD_SAVE);
         
@@ -406,13 +388,13 @@ void Frame::OnCommand(wxCommandEvent& event)
         "PaneClients");
 #endif
 
-      AppendTextForced(m_LogWindow, text);
+      AppendText(m_LogWindow, text);
 
       const wxString statistics = m_Statistics.Get();
 
       if (!statistics.empty())
       {
-        AppendTextForced(m_LogWindow, statistics);
+        AppendText(m_LogWindow, statistics);
       }
     }
     break;
@@ -502,7 +484,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_TIMER_STOP:
     m_Timer.Stop();
-    AppendTextForced(m_LogWindow, _("timer stopped"));
+    AppendText(m_LogWindow, _("timer stopped"));
 #if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
 #endif
@@ -554,7 +536,7 @@ void Frame::OnSocket(wxSocketEvent& event)
 
     if (sock == NULL)
     {
-      AppendTextForced(m_LogWindow,
+      AppendText(m_LogWindow,
         _("error: couldn't accept a new connection"));
       return;
     }
@@ -635,7 +617,7 @@ void Frame::OnSocket(wxSocketEvent& event)
 
           if (GetManager().GetPane("SHELL").IsShown())
           {
-            AppendTextForced(m_Shell, text, false);
+            AppendText(m_Shell, text, false);
 
             if (text.EndsWith("\n"))
             {
@@ -647,13 +629,13 @@ void Frame::OnSocket(wxSocketEvent& event)
           {
             if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
             {
-              AppendTextForced(m_LogWindow, 
+              AppendText(m_LogWindow, 
                 wxString::Format(_("read: %d bytes from: %s"), 
                   sock->LastCount(), SocketDetails(sock).c_str()));
             }
             else
             {
-              AppendTextForced(m_LogWindow, text);
+              AppendText(m_LogWindow, text);
             }
           }
         }
@@ -795,7 +777,7 @@ bool Frame::OpenFile(
     GetManager().GetPane("DATA").Show();
     GetManager().Update();
 
-    AppendTextForced(m_LogWindow,
+    AppendText(m_LogWindow,
       _("opened: ") + filename.GetFullPath() + wxString::Format(" (%d bytes)",
       m_DataWindow->GetLength()));
 
@@ -844,7 +826,7 @@ bool Frame::SetupSocketServer()
     
     wxLogStatus(text);
 
-    AppendTextForced(m_LogWindow, text);
+    AppendText(m_LogWindow, text);
     return false;
   }
   else
@@ -858,7 +840,7 @@ bool Frame::SetupSocketServer()
   }
 
   wxLogStatus(text);
-  AppendTextForced(m_LogWindow, text);
+  AppendText(m_LogWindow, text);
 
   // Setup the event handler and subscribe to connection events
   m_SocketServer->SetEventHandler(*this, ID_SERVER);
@@ -968,7 +950,7 @@ void Frame::TimerDialog()
   if (val > 0)
   {
     m_Timer.Start(1000 * val);
-    AppendTextForced(m_LogWindow,
+    AppendText(m_LogWindow,
       wxString::Format(_("timer set to: %d seconds (%s)"),
       val,
       wxTimeSpan(0, 0, val, 0).Format().c_str()));
@@ -979,7 +961,7 @@ void Frame::TimerDialog()
   else if (val == 0)
   {
     m_Timer.Stop();
-    AppendTextForced(m_LogWindow, _("timer stopped"));
+    AppendText(m_LogWindow, _("timer stopped"));
 #if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
 #endif
@@ -999,7 +981,7 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
 
   if (client->LastCount() != buffer.length())
   {
-    AppendTextForced(m_LogWindow, _("not all bytes sent to socket"));
+    AppendText(m_LogWindow, _("not all bytes sent to socket"));
   }
 
   m_Statistics.Inc(_("Bytes Sent"), client->LastCount());
@@ -1015,13 +997,13 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
   {
     if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
     {
-      AppendTextForced(m_LogWindow,
+      AppendText(m_LogWindow,
         wxString::Format(_("write: %d bytes to: %s"),
           client->LastCount(), SocketDetails(client).c_str()));
     }
     else
     {
-      AppendTextForced(m_LogWindow, buffer);
+      AppendText(m_LogWindow, buffer);
     }
   }
 }
