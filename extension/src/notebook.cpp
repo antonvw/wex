@@ -132,7 +132,9 @@ bool wxExNotebook::ForEach(int id)
       break;
 
     case ID_ALL_STC_SET_LEXER: 
-      stc->SetLexer(stc->GetLexer().GetScintillaLexer());
+      // At this moment same as themed change,
+      // as we want default colour updates as well.
+      stc->SetLexer(stc->GetLexer().GetScintillaLexer(), true);
       break;
 
     case ID_ALL_STC_SET_LEXER_THEME: 
