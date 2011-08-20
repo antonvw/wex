@@ -8,15 +8,20 @@ Copyright: (c) 2011 Anton van Wezenbeek
 -->
 
 <!--
-Run this bakefile directly in the build folder.
+Run this bakefile directly in the build folder, if you added or removed
+source files.
+
+Use -f msvc as target to create a visual studio makefile.
 Add the wxpresets folder containing the wx.bkl file to the bakefile path,
 or as include dir using -I option:
-bakefile -f msvc -I../build/bakefiles/wxpresets build.bkl
+bakefile -f msvc -I ../build/bakefiles/wxpresets build.bkl
 
 To make a release version, first build wxWidgets in release mode
 nmake -f makefile.vc BUILD=release
+
 Then make a release makefile
-bakefile -omakefile_release.vc -f msvc -DWX_DEBUG=0 -I../build/bakefiles/wxpresets build.bkl
+bakefile -omakefile-release.vc -f msvc -DWX_DEBUG=0 -I../build/bakefiles/wxpresets build.bkl
+make-release.bat
 -->
 
 <makefile>
