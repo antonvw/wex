@@ -51,12 +51,14 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
   wxArrayString ar;
   ar.Add(filename->GetFullPath());
   
-  wxDateTime ctime;
-  filename->GetTimes(NULL, NULL, &ctime);
+  // Creation time does not work under linux,
+  // use mod time.
+  wxDateTime time;
+  filename->GetTimes(NULL, &time, NULL);
   
-  const bool add_created = 
+  const bool add_time = 
     !filename->FileExists() || 
-     ctime.GetDateOnly() == wxDateTime::Today();
+     time.GetDateOnly() == wxDateTime::Today();
 
   if (!l.GetCommentEnd().empty())
   {
@@ -64,7 +66,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << h_name << filename->GetFullName() << "\n";
     header << wxExAlignText(purpose, h_purpose) << "\n";
     header << h_author << author << "\n";
-    if (add_created)
+    if (add_time)
     header << h_created << wxDateTime::Now().FormatISODate() << "\n";
     if (wxExVCS(ar).GetEntry().SupportKeywordExpansion())
     // Prevent the Id to be expanded by VCS itself here.
@@ -81,7 +83,7 @@ const wxString wxExHeader::Get(const wxExFileName* filename) const
     header << l.MakeComment(h_name, filename->GetFullName()) << "\n";
     header << l.MakeComment(h_purpose, purpose) << "\n";
     header << l.MakeComment(h_author, author) << "\n";
-    if (add_created)
+    if (add_time)
     header << l.MakeComment(h_created, wxDateTime::Now().FormatISODate()) << "\n";
     if (wxExVCS(ar).GetEntry().SupportKeywordExpansion())
     // Prevent the Id to be expanded by VCS itself here.
