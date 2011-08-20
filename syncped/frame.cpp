@@ -51,11 +51,7 @@ class wxExLogStderr : public wxLogStderr
       case wxLOG_Status: 
         m_Frame->SetStatusText(msg); 
         break;
-#ifdef __WXDEBUG__
-      case wxLOG_Info:
-#endif
-      case wxLOG_Error:
-      case wxLOG_Message:
+      default:
         wxLogStderr::DoLogRecord(level, msg, info);
         m_Frame->Log(level, msg, info);
         break;
