@@ -244,7 +244,7 @@ void wxExManagedFrame::ShowViMessage(const wxString& text)
 
 void wxExManagedFrame::SyncCloseAll(wxWindowID id)
 {
-  UpdateFindFocus();
+  SetFindFocus(NULL);
 }
 
 void wxExManagedFrame::TogglePane(const wxString& pane)

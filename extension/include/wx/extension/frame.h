@@ -98,9 +98,6 @@ public:
   /// Don't forget to call SetupStatusBar first.
   static void StatusText(const wxString& text, const wxString& pane);
   
-  /// Call this if you think the find focus should be updated.
-  void UpdateFindFocus();
-  
   /// Updates statusbar pane items pane with values from specified listview.
   static void UpdateStatusBar(const wxListView* lv);
   
