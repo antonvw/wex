@@ -11,6 +11,7 @@
 #endif
 #include <algorithm>
 #include <wx/config.h>
+#include <wx/regex.h>
 #include <wx/stdpaths.h>
 #include <wx/stc/stc.h>
 #include <wx/extension/lexers.h>
@@ -219,6 +220,17 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
   else if (text_lowercase.StartsWith("//"))
   {
     return FindByName("cpp");
+  }
+  else
+  {
+    // If there is a Shell Language Indicator,
+    // match with bash.
+    const wxRegEx re("#! */bin/.*");
+    
+    if (re.Matches(text_lowercase)
+    {
+      return FindByName("bash");
+    }
   }
 
   return wxExLexer();
