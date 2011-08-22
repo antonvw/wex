@@ -9,7 +9,9 @@ Copyright: (c) 2011 Anton van Wezenbeek
 
 <!--
 To make a release version, first build wxWidgets in release mode:
-nmake -f makefile.vc BUILD=release DEBUG_FLAG=0
+nmake -f makefile.vc BUILD=release 
+(the DEBUG_FLAG=0 should be added to remove assert info, however
+ sample gives link errors with unknown wxAssert)
 
 Run this bakefile directly in the build folder (if you added or removed
 source files).

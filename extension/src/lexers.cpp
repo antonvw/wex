@@ -227,7 +227,7 @@ const wxExLexer wxExLexers::FindByText(const wxString& text) const
     // match with bash.
     const wxRegEx re("#! */bin/.*");
     
-    if (re.Matches(text_lowercase)
+    if (re.Matches(text_lowercase))
     {
       return FindByName("bash");
     }
