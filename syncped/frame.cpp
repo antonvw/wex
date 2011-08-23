@@ -1330,7 +1330,7 @@ void Frame::SequenceDialog(wxExSTC* stc)
 
 void Frame::StatusBarDoubleClicked(const wxString& pane)
 {
-  if (pane.empty())
+  if (pane.empty() && !m_LogText.empty())
   {
     wxExSTCWithFrame* editor;
     

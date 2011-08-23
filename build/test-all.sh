@@ -1,6 +1,10 @@
-# bash
-# File:    test-all.sh
-# Purpose: script to run all tests
+#!/bin/sh
+################################################################################
+# Name:      test-all.sh
+# Purpose:   script to run all tests
+# Author:    Anton van Wezenbeek
+# Copyright: (c) 2011 Anton van Wezenbeek
+################################################################################
 
 TESTDIR=./gccgtk2_dll/
 

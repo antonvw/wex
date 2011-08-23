@@ -44,14 +44,13 @@ Copyright: (c) 2011, Anton van Wezenbeek
     name="bazaar">
     
     <commands>
-      <command> &amp;add </command>
+      <command type = "main"> &amp;add </command>
       <command> &amp;cat </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
       <command type = "main"> &amp;help </command>
       <command> &amp;info </command>
       <command> &amp;log </command>
-      <command> &amp;revert </command>
       <command> &amp;status </command>
     </commands>
   </vcs>
@@ -61,7 +60,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
     keyword-expansion="true">
 
     <commands>
-      <command> &amp;add </command>
+      <command type = "main"> &amp;add </command>
       <command> &amp;co </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
@@ -76,17 +75,16 @@ Copyright: (c) 2011, Anton van Wezenbeek
     name="git">
 
     <commands>
-      <command> &amp;add </command>
+      <command type = "main"> &amp;add </command>
       <command> &amp;blame </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
+      <command type = "main"> &amp;help </command>
       <command> &amp;log </command>
       <command> &amp;pull </command>
       <command> &amp;push </command>
-      <command> &amp;revert </command>
       <command> &amp;show </command>
       <command> &amp;status </command>
-      <command type = "main"> &amp;help </command>
     </commands>
   </vcs>
 
@@ -94,7 +92,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
     name="mercurial">
     
     <commands>
-      <command> &amp;add </command>
+      <command type = "main"> &amp;add </command>
       <command> &amp;annotate </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
@@ -116,7 +114,6 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <command> &amp;add </command>
       <command type="popup"> &amp;blame </command>
       <command type="popup"> &amp;cat </command>
-      <command> &amp;changelist </command>
       <command type = "main"> &amp;cleanup </command>
       <command> &amp;commit </command>
       <command> &amp;diff </command>
@@ -126,7 +123,6 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <command type = "main"> &amp;ls </command>
       <command type = "popup"> &amp;proplist </command>
       <command type = "popup"> prop&amp;set </command>
-      <command> &amp;revert </command>
       <command> &amp;stat </command>
       <command> &amp;update </command>
     </commands>
