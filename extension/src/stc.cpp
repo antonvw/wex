@@ -906,6 +906,8 @@ bool wxExSTC::FindNext(
   }
   else
   {
+    wxLogStatus(wxEmptyString);
+    
     recursive = false;
 
     if (GetTargetStart() != GetTargetEnd())
