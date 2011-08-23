@@ -1741,7 +1741,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <lexer name="lout" match="wxSTC_LOUT_" />
   <lexer name="lua" match="wxSTC_LUA_" />
   <lexer name="magik" match="wxSTC_MAGIK" />
-  <lexer name="makefile" extensions="*makefile;makefile.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
+  <lexer name="makefile" extensions="*makefile;makefile*.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
   <lexer name="markdown" extensions="*.md" match="wxSTC_MARKDOWN" >
     <styles>
       <style no="wxSTC_MARKDOWN_HEADER1"> bold,eol </style>
