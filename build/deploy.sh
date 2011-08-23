@@ -31,10 +31,6 @@ strip syncped/syncped
 tar cf syncped.tar syncped
 gzip syncped.tar
 
-mv syncped.tar.gz ~/syncped/trunk/bin
+mv syncped.tar.gz ~/syncped/bin
 
 rm -rf syncped
-
-cd ~/syncped/trunk/bin
-
-svn commit -m "deployed syncped"
