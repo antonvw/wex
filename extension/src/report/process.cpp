@@ -14,7 +14,7 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listview.h>
 
-wxExProcessListView::wxExProcess(
+wxExProcessListView::wxExProcessListView(
   wxExFrameWithHistory* frame, 
   const wxString& command)
   : wxExProcess(command)
@@ -60,8 +60,5 @@ void wxExProcessListView::ReportAdd(
 
 void wxExProcessListView::ReportCreate()
 {
-  if ((m_ListView = m_Frame->Activate(wxExListViewFileName::LIST_PROCESS)) == NULL)
-  {
-    wxLogStatus(_("No listview to collect output"));
-  }
+  m_Frame->Activate(wxExListViewFileName::LIST_PROCESS);
 }

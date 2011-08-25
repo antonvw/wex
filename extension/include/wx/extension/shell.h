@@ -73,7 +73,7 @@ public:
   /// Set the event handler to which commands are sent.
   /// Normally these go to the parent, you can change that here.
   void SetEventHandler(wxEvtHandler* handler) {
-    m_Handler = handler);
+    m_Handler = handler;};
 
   /// Sets the prompt, and prompts if asked for.
   void SetPrompt(const wxString& prompt, bool do_prompt = true) {

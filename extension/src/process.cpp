@@ -14,6 +14,7 @@
 #include <wx/txtstrm.h> // for wxTextInputStream
 #include <wx/extension/process.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/defs.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 
@@ -233,7 +234,7 @@ void wxExProcess::ReportCreate()
 {
   if (m_Shell == NULL)
   {
-    m_Shell = new wxExSTCEntryDialog(wxTheApp->GetTopWindow());
+    m_Shell = new wxExSTCShell(wxTheApp->GetTopWindow());
     m_Shell->SetEventHandler(this);
   }
   else

@@ -15,7 +15,7 @@
 
 class wxExConfigDialog;
 class wxExListViewFile;
-class wxExProcess;
+class wxExProcessListView;
 
 /// Adds file and project history support to wxExManagedFrame.
 /// It also sets a change indicator in the title of the frame if applicable.
