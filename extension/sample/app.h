@@ -11,6 +11,7 @@
 #include <wx/extension/listview.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/notebook.h>
+#include <wx/extension/process.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/stc.h>
@@ -70,6 +71,7 @@ private:
 
   long m_FlagsSTC;
   wxExStatistics <long> m_Statistics;
+  wxExProcess m_Process;
 
   DECLARE_NO_COPY_CLASS(wxExSampleFrame)
   DECLARE_EVENT_TABLE()
