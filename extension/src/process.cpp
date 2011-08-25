@@ -23,18 +23,13 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
 END_EVENT_TABLE()
 
 wxString wxExProcess::m_Command;
+wxExSTCShell* wxExProcess::m_Shell = NULL;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
-wxExProcess::wxExProcess(
-  const wxString& command)
+wxExProcess::wxExProcess()
   : wxProcess(wxPROCESS_REDIRECT)
   , m_Timer(this)
-  , m_Shell(NULL)
 {
-  if (!command.empty())
-  {
-    m_Command = command;
-  }
 }
 
 bool wxExProcess::CheckInput()
@@ -133,14 +128,20 @@ int wxExProcess::ConfigDialog(
   return result;
 }
 
-long wxExProcess::Execute(const wxString& wd)
+long wxExProcess::Execute(
+  const wxString& command,
+  const wxString& wd)
 {
-  if (m_Command.empty())
+  if (command.empty() && m_Command.empty())
   {
     if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
     {
       return -1;
     }
+  }
+  else if (!command.empty())
+  {
+    m_Command = command;
   }
 
   const struct wxExecuteEnv env = {

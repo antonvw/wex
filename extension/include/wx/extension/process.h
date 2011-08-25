@@ -19,7 +19,7 @@ class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 {
 public:
   /// Default constructor.
-  wxExProcess(const wxString& command = wxEmptyString);
+  wxExProcess();
 
   /// Shows a config dialog, sets the command 
   /// and returns dialog return code.
@@ -33,7 +33,12 @@ public:
   /// that the command could not be executed.
   /// When the process is finished, a ID_TERMINATED_PROCESS command event
   /// is sent to the application top window.
-  long Execute(const wxString& wd = wxEmptyString);
+  long Execute(
+    const wxString& command,
+    const wxString& wd = wxEmptyString);
+  
+  /// Returns the shell (might be NULL).
+  static wxExSTCShell* GetSTC() {return m_Shell;};
   
   /// Returns true if this process is running.
   bool IsRunning() const;
@@ -71,7 +76,7 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  wxExSTCShell* m_Shell;
+  static wxExSTCShell* m_Shell;
 #endif  
 
   wxTimer m_Timer;

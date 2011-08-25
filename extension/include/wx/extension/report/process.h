@@ -18,9 +18,7 @@ class WXDLLIMPEXP_BASE wxExProcessListView : public wxExProcess
 {
 public:
   /// Constructor.
-  wxExProcessListView(
-    wxExFrameWithHistory* frame, 
-    const wxString& command = wxEmptyString);
+  wxExProcessListView(wxExFrameWithHistory* frame);
 protected:
   virtual void ReportAdd(
     const wxString& line, 
