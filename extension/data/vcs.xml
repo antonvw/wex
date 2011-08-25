@@ -111,7 +111,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
     keyword-expansion="true">
 
     <commands>
-      <command> &amp;add </command>
+      <command type = "main"> &amp;add </command>
       <command type="popup"> &amp;blame </command>
       <command type="popup"> &amp;cat </command>
       <command type = "main"> &amp;cleanup </command>

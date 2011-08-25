@@ -34,7 +34,8 @@
 #include <wx/extension/notebook.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/printing.h>
-#include <wx/extension/property.h>
+#include <wx/extension/printing.h>
+#include <wx/extension/process.h>
 #include <wx/extension/shell.h>
 #include <wx/extension/statistics.h>
 #include <wx/extension/statusbar.h>

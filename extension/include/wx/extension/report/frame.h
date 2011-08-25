@@ -152,7 +152,7 @@ private:
   wxFileHistory m_FileHistory;
   wxExListView* m_FileHistoryList;
   wxFileHistory m_ProjectHistory;
-  wxExProcess* m_Process;
+  wxExProcessListView* m_Process;
 
   const wxString m_TextInFiles;
   const wxString m_TextInFolder;
