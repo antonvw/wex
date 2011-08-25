@@ -14,10 +14,8 @@
 #include <wx/extension/report/frame.h>
 #include <wx/extension/report/listview.h>
 
-wxExProcessListView::wxExProcessListView(
-  wxExFrameWithHistory* frame, 
-  const wxString& command)
-  : wxExProcess(command)
+wxExProcessListView::wxExProcessListView(wxExFrameWithHistory* frame)
+  : wxExProcess()
   , m_Frame(frame)
   , m_ListView(NULL)
 {
@@ -60,5 +58,5 @@ void wxExProcessListView::ReportAdd(
 
 void wxExProcessListView::ReportCreate()
 {
-  m_Frame->Activate(wxExListViewFileName::LIST_PROCESS);
+  m_ListView = m_Frame->Activate(wxExListViewFileName::LIST_PROCESS);
 }
