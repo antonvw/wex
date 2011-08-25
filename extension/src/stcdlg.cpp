@@ -2,7 +2,6 @@
 // Name:      stcdlg.cpp
 // Purpose:   Implementation of class wxExSTCEntryDialog
 // Author:    Anton van Wezenbeek
-// Created:   2009-11-18
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -12,7 +11,7 @@
 #endif
 #include <wx/persist/toplevel.h>
 #include <wx/extension/stcdlg.h>
-#include <wx/extension/stc.h>
+#include <wx/extension/shell.h>
 
 #if wxUSE_GUI
 
@@ -26,6 +25,7 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   const wxString& text,
   const wxString& prompt,
   long button_style,
+  bool use_shell,
   wxWindowID id,
   const wxPoint& pos,
   const wxSize& size, 
@@ -39,10 +39,17 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   }
 
   wxPersistentRegisterAndRestore(this);
-  
-  m_STC = new wxExSTC(
-    this, 
-    text);
+
+  if (!use_shell)
+  {  
+    m_STC = new wxExSTC(
+      this, 
+      text);
+  }
+  else
+  {
+    m_STC = new wxExSTCShell(this);
+  }
 
   m_STC->SetEdgeMode(wxSTC_EDGE_NONE);
   m_STC->ResetMargins();

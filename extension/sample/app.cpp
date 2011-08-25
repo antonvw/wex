@@ -35,6 +35,8 @@ enum
   ID_CONFIG_DLG,
   ID_CONFIG_DLG_READONLY,
   ID_SHOW_VCS,
+  ID_PROCESS_SELECT,
+  ID_PROCESS_RUN,
   ID_STATISTICS_SHOW,
   ID_STC_CONFIG_DLG,
   ID_STC_ENTRY_DLG,
@@ -116,6 +118,9 @@ wxExSampleFrame::wxExSampleFrame()
   menuFile->AppendSeparator();
   menuFile->Append(ID_SHOW_VCS, "Show VCS");
   menuFile->AppendPrint();
+  menuFile->AppendSeparator();
+  menuFile->Append(ID_PROCESS_SELECT, "Select Process");
+  menuFile->Append(ID_PROCESS_RUN, "Run Process");
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
@@ -337,7 +342,15 @@ void wxExSampleFrame::OnCommand(wxCommandEvent& event)
         dlg->Show();
       }
       break;
+      
+    case ID_PROCESS_SELECT:
+      wxExProcess::ConfigDialog(this);
+      break;
   
+    case ID_PROCESS_RUN:
+      m_Process.Execute(wxEmptyString);
+      break;
+      
     case ID_SHELL_COMMAND:
         m_STCShell->Prompt("\nHello '" + event.GetString() + "' from the shell");
       break;

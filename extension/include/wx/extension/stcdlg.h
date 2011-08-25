@@ -27,6 +27,7 @@ public:
     const wxString& text,
     const wxString& prompt = wxEmptyString,
     long button_style = wxOK | wxCANCEL,
+    bool use_shell = false,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
     const wxSize& size = wxDefaultSize, 
