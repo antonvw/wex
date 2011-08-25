@@ -54,6 +54,7 @@ wxExSTCShell::wxExSTCShell(
   , m_CommandsInConfigDelimiter(wxUniChar(0x03))
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
+  , m_Handler(parent)
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -184,7 +185,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
 
           wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
           event.SetString(m_Command);
-          wxPostEvent(GetParent(), event);
+          wxPostEvent(m_Handler, event);
         }
         else
         {
@@ -197,7 +198,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
         KeepCommand();
         wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
         event.SetString(m_Command);
-        wxPostEvent(GetParent(), event);
+        wxPostEvent(m_Handler, event);
       }
 
       m_Command.clear();
@@ -231,7 +232,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'Q')
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
-    wxPostEvent(GetParent(), event);
+    wxPostEvent(m_Handler, event);
   }
   // Ctrl-V pressed, used for pasting as well.
   else if (event.GetModifiers() == wxMOD_CONTROL && key == 'V')

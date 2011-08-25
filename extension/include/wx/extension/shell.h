@@ -16,9 +16,9 @@
 /// The commands are entered at the last line, and kept in a list of commands,
 /// by pressing key up and down you browse through the commands.
 /// If a command is entered, an ID_SHELL_COMMAND command event is sent to the
-/// parent, with the command available as event.GetString().
+/// event handler, with the command available as event.GetString().
 /// - If you press Ctrl-Q in the shell,
-///   a ID_SHELL_COMMAND_STOP is sent to the parent.
+///   a ID_SHELL_COMMAND_STOP is sent to the event handler.
 /// - If you enter 'history', all previously entered commands are shown.
 /// - If you enter !\<number\> the previous \<number\> command is entered.
 /// - If you enter !\<abbreviation\> the last command starting with 
@@ -69,6 +69,11 @@ public:
   void Prompt(
     const wxString& text = wxEmptyString,
     bool add_eol = true);
+    
+  /// Set the event handler to which commands are sent.
+  /// Normally these go to the parent, you can change that here.
+  void SetEventHandler(wxEvtHandler* handler) {
+    m_Handler = handler);
 
   /// Sets the prompt, and prompts if asked for.
   void SetPrompt(const wxString& prompt, bool do_prompt = true) {
@@ -99,6 +104,8 @@ private:
   const wxString m_CommandsInConfigDelimiter;
   const int m_CommandsSaveInConfig;
   wxString m_Prompt;
+  
+  wxEvtHandler* m_Handler;
 
   DECLARE_EVENT_TABLE()
 };

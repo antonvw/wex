@@ -555,7 +555,7 @@ bool wxExFrameWithHistory::ProcessRun(
 {
   wxASSERT(m_Process == NULL);
 
-  if ((m_Process = new wxExProcess(this, command)) != NULL)
+  if ((m_Process = new wxExProcessListView(this, command)) != NULL)
   {
     if (m_Process->Execute(wd) > 0)
     {

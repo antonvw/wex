@@ -3,7 +3,6 @@
 Name:      build.bkl
 Purpose:   Bakefile for wxextension libraries, samples, tests and applications
 Author:    Anton van Wezenbeek
-Created:   2009-06-17
 Copyright: (c) 2011 Anton van Wezenbeek
 -->
 
@@ -129,6 +128,7 @@ make-release.bat
     <sources>../extension/src/otl.cpp</sources>
     </if>
     <sources>../extension/src/printing.cpp</sources>
+    <sources>../extension/src/process.cpp</sources>
     <sources>../extension/src/property.cpp</sources>
     <sources>../extension/src/shell.cpp</sources>
     <sources>../extension/src/stat.cpp</sources>
