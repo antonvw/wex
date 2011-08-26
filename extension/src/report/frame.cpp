@@ -550,7 +550,7 @@ bool wxExFrameWithHistory::ProcessIsSelected() const
   
 bool wxExFrameWithHistory::ProcessRun(const wxString& command, const wxString& wd)
 {
-  return m_Process->Execute(command, wd) > 0);
+  return m_Process->Execute(command, wd) > 0;
 }
 
 void wxExFrameWithHistory::ProcessStop()
