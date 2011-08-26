@@ -9,10 +9,10 @@
 #define _EX_PROCESS_H
 
 #include <wx/process.h>
+#include <wx/extension/stcdlg.h>
 
-class wxExSTCShell;
-
-/// Offers a wxProcess with default output to a wxExSTCShell.
+/// Offers a wxProcess with default output to a wxExSTCShell on a 
+/// wxExSTCEntryDialog.
 /// You can change that by inheriting this class and provide
 /// your own report generators.
 class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
@@ -31,14 +31,19 @@ public:
   /// For each output line ReportAdd is invoked.
   /// The return value is the process id and zero value indicates 
   /// that the command could not be executed.
+  /// The return value can also be -1, if config dialog was invoked and
+  /// cancelled.
   /// When the process is finished, a ID_TERMINATED_PROCESS command event
   /// is sent to the application top window.
   long Execute(
+    /// command to be executed, if empty
+    /// last given command is used
     const wxString& command,
+    /// working dir, if empty last working dir is used
     const wxString& wd = wxEmptyString);
   
   /// Returns the shell (might be NULL).
-  static wxExSTCShell* GetSTC() {return m_Shell;};
+  static wxExSTC* GetSTC() {return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;};
   
   /// Returns true if this process is running.
   bool IsRunning() const;
@@ -68,6 +73,7 @@ protected:
   /// Default report creator uses a wxExSTShell.
   virtual void ReportCreate();
     
+  void OnCommand(wxCommandEvent& event);
   void OnTimer(wxTimerEvent& event);
 private:
   bool CheckInput();
@@ -76,7 +82,7 @@ private:
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
-  static wxExSTCShell* m_Shell;
+  static wxExSTCEntryDialog* m_Dialog;
 #endif  
 
   wxTimer m_Timer;

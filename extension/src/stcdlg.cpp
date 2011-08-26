@@ -80,6 +80,11 @@ wxExSTC* wxExSTCEntryDialog::GetSTC()
   return m_STC;
 }
 
+wxExSTCShell* wxExSTCEntryDialog::GetSTCShell()
+{
+  return (wxExSTCShell *)m_STC;
+}
+
 const wxString wxExSTCEntryDialog::GetText() const 
 {
   return m_STC->GetText();
