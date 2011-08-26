@@ -15,6 +15,7 @@
 #if wxUSE_GUI
 
 class wxExManagedFrame;
+class wxExProcess;
 class wxExSTC;
 
 /// Offers a class that extends wxExSTC with vi behaviour.
@@ -23,6 +24,9 @@ class WXDLLIMPEXP_BASE wxExVi
 public:
   /// Constructor.
   wxExVi(wxExSTC* stc);
+  
+  /// Destructor.
+ ~wxExVi();
   
   /// Executes vi: command that was entered on the vi bar,
   /// or present as modeline command inside a file.
@@ -115,6 +119,7 @@ private:
   int m_SearchFlags;
   
   wxExManagedFrame* m_Frame;  
+  wxExProcess* m_Process;
   wxExSTC* m_STC;
   
   wxString m_Command;

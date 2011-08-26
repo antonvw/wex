@@ -60,7 +60,7 @@ wxExFrameWithHistory::wxExFrameWithHistory(wxWindow* parent,
   , m_FileHistory(maxFiles, wxID_FILE1)
   , m_FileHistoryList(NULL)
   , m_ProjectHistory(maxProjects, ID_RECENT_PROJECT_LOWEST)
-  , m_Process(NULL)
+  , m_Process(new wxExProcessListView(this))
 {
   // There is only support for one history in the config.
   // We use file history for this, so update project history ourselves.
@@ -350,7 +350,7 @@ const wxString wxExFrameWithHistory::GetFindInCaption(int id) const
 
 void wxExFrameWithHistory::OnClose(wxCloseEvent& event)
 {
-  if (event.CanVeto() && m_Process != NULL)
+  if (event.CanVeto())
   {
     if (m_Process->IsRunning())
     {
@@ -438,7 +438,6 @@ void wxExFrameWithHistory::OnCommand(wxCommandEvent& event)
       
     case ID_TERMINATED_PROCESS:
       wxBell();
-      wxDELETE(m_Process);
     break;
 
     default:
@@ -541,7 +540,7 @@ int wxExFrameWithHistory::ProcessConfigDialog(
 
 bool wxExFrameWithHistory::ProcessIsRunning() const
 {
-  return m_Process != NULL && m_Process->IsRunning();
+  return m_Process->IsRunning();
 }
   
 bool wxExFrameWithHistory::ProcessIsSelected() const
@@ -549,32 +548,14 @@ bool wxExFrameWithHistory::ProcessIsSelected() const
   return wxExProcess::IsSelected();
 }
   
-bool wxExFrameWithHistory::ProcessRun(
-  const wxString& command,
-  const wxString& wd)
+bool wxExFrameWithHistory::ProcessRun(const wxString& command, const wxString& wd)
 {
-  wxASSERT(m_Process == NULL);
-
-  if ((m_Process = new wxExProcessListView(this)) != NULL)
-  {
-    if (m_Process->Execute(command, wd) > 0)
-    {
-      return true;
-    }
-
-    wxDELETE(m_Process);
-  }
-
-  return false;
+  return m_Process->Execute(command, wd) > 0);
 }
 
 void wxExFrameWithHistory::ProcessStop()
 {
-  if (m_Process != NULL && m_Process->IsRunning())
-  {
-    m_Process->Kill();
-    wxDELETE(m_Process);
-  }
+  m_Process->Kill();
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)

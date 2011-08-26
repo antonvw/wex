@@ -19,11 +19,13 @@
 #include <wx/extension/util.h> // for wxExConfigFirstOf
 
 BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
+  EVT_MENU(ID_SHELL_COMMAND, wxExProcess::OnCommand)
+  EVT_MENU(ID_SHELL_COMMAND_STOP, wxExProcess::OnCommand)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
 wxString wxExProcess::m_Command;
-wxExSTCShell* wxExProcess::m_Shell = NULL;
+wxExSTCEntryDialog* wxExProcess::m_Dialog = NULL;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess()
@@ -187,14 +189,39 @@ wxKillError wxExProcess::Kill(wxSignal sig)
 
   DeletePendingEvents();
 
-  if (m_Shell != NULL)
+  if (m_Dialog != NULL)
   {
-    m_Shell->Prompt();
+    m_Dialog->GetSTCShell()->Prompt();
   }
   
   return wxProcess::Kill(GetPid(), sig);
 }
 
+void  wxExProcess::OnCommand(wxCommandEvent& event)
+{
+  switch (command.GetId())
+  {
+  case ID_SHELL_COMMAND:
+    {
+    // send command to process
+    wxTextOutputStream os(*GetOutputStream());
+    os.WriteString(event.GetString());
+
+    if (m_Dialog != NULL)
+    {
+      m_Dialog->GetSTCShell()->Prompt();
+    }
+    }
+    break;
+
+  case ID_SHELL_COMMAND_STOP:
+    Kill();
+    break;
+    
+  default: wxFAIL; break;
+  }
+}
+  
 void wxExProcess::OnTerminate(int pid, int status)
 {
   m_Timer.Stop();
@@ -209,9 +236,9 @@ void wxExProcess::OnTerminate(int pid, int status)
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
   wxPostEvent(wxTheApp->GetTopWindow(), event);
   
-  if (m_Shell != NULL)
+  if (m_Dialog != NULL)
   {
-    m_Shell->Prompt();
+    m_Dialog->GetSTCShell()->Prompt();
   }
 }
 
@@ -228,19 +255,26 @@ void wxExProcess::ReportAdd(
   const wxString& path,
   const wxString& lineno)
 {
-  m_Shell->AddText(line);
+  m_Dialog->GetSTCShell()->AddText(line);
 }
 
 void wxExProcess::ReportCreate()
 {
-  if (m_Shell == NULL)
+  if (m_Dialog == NULL)
   {
-    m_Shell = new wxExSTCShell(wxTheApp->GetTopWindow());
-    m_Shell->SetEventHandler(this);
+    m_Dialog = new wxExSTCEntryDialog(
+      wxTheApp->GetTopWindow(),
+      _("Process"),
+      wxEmptyString,
+      wxEmptyString,
+      wxOK,
+      true); // use shell
+      
+    m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
   else
   {
-    m_Shell->Clear();
-    m_Shell->Prompt();
+    m_Dialog->GetSTCShell()->Clear();
+    m_Dialog->GetSTCShell()->Prompt();
   }
 }

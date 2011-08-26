@@ -12,11 +12,11 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/vi.h>
-#include <wx/extension/command.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
+#include <wx/extension/process.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -35,8 +35,14 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
   , m_SearchForward(true)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
+  , m_Process(new wxExProcess)
 {
   wxASSERT(m_Frame != NULL);
+}
+
+wxExVi::~wxExVi()
+{
+  delete m_Process;
 }
 
 void wxExVi::Delete(int lines) const
@@ -659,12 +665,7 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   else if (command.StartsWith("!"))
   {
-    wxExCommand exe;
-    
-    if (exe.Execute(command.AfterFirst('!')) != -1)
-    {
-      exe.ShowOutput();
-    }
+    m_Process->Execute(command.AfterFirst('!'));
   }
   else if (command.IsNumber())
   {
