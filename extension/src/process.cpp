@@ -199,7 +199,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
 
 void  wxExProcess::OnCommand(wxCommandEvent& event)
 {
-  switch (command.GetId())
+  switch (event.GetId())
   {
   case ID_SHELL_COMMAND:
     {
