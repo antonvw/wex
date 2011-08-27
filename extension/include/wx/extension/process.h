@@ -39,8 +39,17 @@ public:
     /// command to be executed, if empty
     /// last given command is used
     const wxString& command,
+    /// flags for wxExecute
+    long flags = wxEXEC_ASYNC,
     /// working dir, if empty last working dir is used
     const wxString& wd = wxEmptyString);
+  
+  /// Returns true if the output contains error info instead of
+  /// normal info.
+  bool GetError() const {return m_Error;};
+
+  /// Gets the output from Execute.
+  const wxString& GetOutput() const {return m_Output;};
   
   /// Returns the shell (might be NULL).
   static wxExSTC* GetSTC() {return m_Dialog != NULL ? m_Dialog->GetSTC(): NULL;};
@@ -54,6 +63,11 @@ public:
     
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
+  
+#if wxUSE_GUI
+  /// Shows output from Execute.
+  virtual void ShowOutput(const wxString& caption = wxEmptyString) const;
+#endif
 protected:
   /// Overriden from wxProcess.
   virtual void OnTerminate(int pid, int status);
@@ -78,6 +92,10 @@ protected:
 private:
   bool CheckInput();
 
+  bool m_Error;
+  
+  wxString m_Output;
+  
   static wxString m_Command;
   static wxString m_WorkingDirKey;
 

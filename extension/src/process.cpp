@@ -31,6 +31,7 @@ wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 wxExProcess::wxExProcess()
   : wxProcess(wxPROCESS_REDIRECT)
   , m_Timer(this)
+  , m_Error(false)
 {
 }
 
@@ -132,6 +133,7 @@ int wxExProcess::ConfigDialog(
 
 long wxExProcess::Execute(
   const wxString& command,
+  long flags,
   const wxString& wd)
 {
   if (command.empty() && m_Command.empty())
@@ -149,21 +151,48 @@ long wxExProcess::Execute(
   const struct wxExecuteEnv env = {
     (wd.empty() ? wxExConfigFirstOf(m_WorkingDirKey): wd), 
     wxEnvVariableHashMap()};
-  
-  // For asynchronous execution, however, the return value is the process id and zero 
-  // value indicates that the command could not be executed
-  const long pid = wxExecute(m_Command, wxEXEC_ASYNC, this, &env);
-
-  if (pid > 0)
-  {
-    wxLogVerbose(_("Execute") + ": " + m_Command);
     
-    ReportCreate();
+  if (flags &  wxEXEC_ASYNC)
+  {
+    // For asynchronous execution, however, the return value is the process id and zero 
+    // value indicates that the command could not be executed
+    const long pid = wxExecute(m_Command, flags, this, &env);
 
-    m_Timer.Start(1000); // each 1000 milliseconds
+    if (pid > 0)
+    {
+      wxLogVerbose(_("Execute") + ": " + m_Command);
+    
+      ReportCreate();
+
+      m_Timer.Start(1000); // each 1000 milliseconds
+    }
+
+    return pid;
   }
+  else
+  {
+    wxArrayString output;
+    wxArrayString errors;
+    long retValue;
+    
+    // Call wxExecute to execute the command and
+    // collect the output and the errors.
+    if ((retValue = wxExecute(
+      m_Command,
+      output,
+      errors,
+      flags,
+      &env)) != -1)
+    {
+     wxLogVerbose(_("Execute") + ": " + m_Command);
+    }
 
-  return pid;
+    // We have an error if the command could not be executed.  
+    m_Error = (retValue == -1);
+    m_Output = wxJoin(errors, '\n') + wxJoin(output, '\n');
+  
+    return retValue;
+  }
 }
 
 bool wxExProcess::IsRunning() const
@@ -278,3 +307,22 @@ void wxExProcess::ReportCreate()
     m_Dialog->GetSTCShell()->Prompt();
   }
 }
+
+#if wxUSE_GUI
+void wxExProcess::ShowOutput(const wxString& caption) const
+{
+  if (!m_Error)
+  {
+    if (m_Dialog != NULL)
+    {
+      m_Dialog->SetText(m_Output);
+      m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
+      m_Dialog->Show();
+    }
+    else if (!m_Output.empty())
+    {
+      wxMessageBox(m_Output);
+    }
+  }
+}
+#endif
