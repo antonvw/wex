@@ -133,7 +133,7 @@ int wxExProcess::ConfigDialog(
 
 long wxExProcess::Execute(
   const wxString& command,
-  long flags,
+  int flags,
   const wxString& wd)
 {
   if (command.empty() && m_Command.empty())
@@ -152,7 +152,7 @@ long wxExProcess::Execute(
     (wd.empty() ? wxExConfigFirstOf(m_WorkingDirKey): wd), 
     wxEnvVariableHashMap()};
     
-  if (flags &  wxEXEC_ASYNC)
+  if (!(flags & wxEXEC_SYNC))
   {
     // For asynchronous execution, however, the return value is the process id and zero 
     // value indicates that the command could not be executed
@@ -297,7 +297,7 @@ void wxExProcess::ReportCreate()
       wxEmptyString,
       wxEmptyString,
       wxOK,
-      true); // use shell
+      true);
       
     m_Dialog->GetSTCShell()->SetEventHandler(this);
   }
@@ -306,6 +306,8 @@ void wxExProcess::ReportCreate()
     m_Dialog->GetSTCShell()->Clear();
     m_Dialog->GetSTCShell()->Prompt();
   }
+  
+  m_Dialog->Show();
 }
 
 #if wxUSE_GUI
@@ -315,7 +317,7 @@ void wxExProcess::ShowOutput(const wxString& caption) const
   {
     if (m_Dialog != NULL)
     {
-      m_Dialog->SetText(m_Output);
+      m_Dialog->GetSTC()->SetText(m_Output);
       m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
       m_Dialog->Show();
     }

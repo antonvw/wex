@@ -56,15 +56,6 @@ wxExSTCEntryDialog::wxExSTCEntryDialog(wxWindow* parent,
   m_STC->SetViewEOL(false);
   m_STC->SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
   
-  if ((button_style & wxCANCEL) == 0 &&
-      (button_style & wxNO) == 0)
-  {
-    // You did not specify one of these buttons,
-    // so you cannot cancel the operation.
-    // Therefore make the component readonly.
-    m_STC->SetReadOnly(true);
-  }
-
   AddUserSizer(m_STC);
 
   LayoutSizers();
@@ -112,23 +103,6 @@ void wxExSTCEntryDialog::OnCommand(wxCommandEvent& command)
 bool wxExSTCEntryDialog::SetLexer(const wxString& lexer) 
 {
   return m_STC->SetLexer(lexer);
-}
-
-void wxExSTCEntryDialog::SetText(const wxString& text)
-{
-  const bool readonly = m_STC->GetReadOnly();
-
-  if (readonly)
-  {
-    m_STC->SetReadOnly(false);
-  }
-
-  m_STC->SetText(text);
-
-  if (readonly)
-  {
-    m_STC->SetReadOnly(true);
-  }
 }
 
 #endif // wxUSE_GUI
