@@ -125,9 +125,9 @@ void wxExReportAppTestFixture::testProcess()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   
-  wxExProcess* process = new wxExProcessListView(frame, "wc test.h");
+  wxExProcess* process = new wxExProcessListView(frame);
+  CPPUNIT_ASSERT(process->Execute("wc test.h"));
   CPPUNIT_ASSERT(process->IsSelected());
-  CPPUNIT_ASSERT(process->Execute());
 }
 
 void wxExReportAppTestFixture::testSTCWithFrame()
