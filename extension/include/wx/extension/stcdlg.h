@@ -8,12 +8,11 @@
 #ifndef _EXSTCDLG_H
 #define _EXSTCDLG_H
 
-#include <wx/extension/dialog.h> // for wxExDialog
+#include <wx/extension/dialog.h>
+#include <wx/extension/shell.h>
 
 #if wxUSE_GUI
 class wxExLexer;
-class wxExSTC;
-class wxExSTCShell;
 
 /// Offers an wxExSTC as a dialog (like wxTextEntryDialog).
 /// The prompt (if not empty) is first added as a text sizer to the user sizer.
@@ -65,9 +64,6 @@ public:
 
   /// Sets the STC lexer.
   bool SetLexer(const wxString& lexer);
-
-  /// Sets the STC text (either normal or raw).
-  void SetText(const wxString& text);
 protected:
   void OnCommand(wxCommandEvent& command);
 private:

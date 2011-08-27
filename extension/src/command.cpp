@@ -72,7 +72,7 @@ void wxExCommand::ShowOutput(const wxString& caption) const
   {
     if (m_Dialog != NULL)
     {
-      m_Dialog->SetText(m_Output);
+      m_Dialog->GetSTC()->SetText(m_Output);
       m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
       m_Dialog->Show();
     }

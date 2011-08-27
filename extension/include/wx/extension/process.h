@@ -40,7 +40,7 @@ public:
     /// last given command is used
     const wxString& command,
     /// flags for wxExecute
-    long flags = wxEXEC_ASYNC,
+    int flags = wxEXEC_ASYNC,
     /// working dir, if empty last working dir is used
     const wxString& wd = wxEmptyString);
   
