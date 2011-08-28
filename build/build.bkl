@@ -103,7 +103,6 @@ make-release.bat
     
     <sources>../extension/src/app.cpp</sources>
     <sources>../extension/src/art.cpp</sources>
-    <sources>../extension/src/command.cpp</sources>
     <sources>../extension/src/configdlg.cpp</sources>
     <sources>../extension/src/configitem.cpp</sources>
     <sources>../extension/src/dialog.cpp</sources>
@@ -149,7 +148,6 @@ make-release.bat
     
     <headers>../extension/include/wx/extension/app.h</headers>
     <headers>../extension/include/wx/extension/art.h</headers>
-    <headers>../extension/include/wx/extension/command.h</headers>
     <headers>../extension/include/wx/extension/configdlg.h</headers>
     <headers>../extension/include/wx/extension/configitem.h</headers>
     <headers>../extension/include/wx/extension/defs.h</headers>

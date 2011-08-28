@@ -52,6 +52,12 @@ class wxExLogStderr : public wxLogStderr
         m_Frame->SetStatusText(msg); 
         break;
       default:
+        // Show errors on statusbar as well.
+        if (level == wxLOG_Error)
+        {
+          m_Frame->SetStatusText(msg); 
+        }
+        
         wxLogStderr::DoLogRecord(level, msg, info);
         m_Frame->Log(level, msg, info);
         break;

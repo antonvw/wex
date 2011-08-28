@@ -66,7 +66,6 @@ WXEX_CXXFLAGS = /MD /DWIN32 $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) /D__WXMSW__
 WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_app.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_art.obj \
-	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_command.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_configdlg.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_configitem.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_dialog.obj \
@@ -397,9 +396,6 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_app.obj: .\.
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_art.obj: .\..\extension\src\art.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\art.cpp
-
-$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_command.obj: .\..\extension\src\command.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\command.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_configdlg.obj: .\..\extension\src\configdlg.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\configdlg.cpp
