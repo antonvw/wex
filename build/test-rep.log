@@ -1,21 +1,9 @@
-.reading 100000 items from config took 143 milliseconds
-..F.adding 750 items took 2580 milliseconds
-sorting 750 items took 2584 milliseconds
-..F.
+.reading 100000 items from config took 362 milliseconds
+...adding 750 items took 2814 milliseconds
+sorting 750 items took 2321 milliseconds
+...
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  7   Failures: 2   Errors: 0
-
-
-1) test: testFrameWithHistory (F) line: 65 ../extension/test/report/test.cpp
-assertion failed
-- Expression: frame->ProcessRun("wc test.h")
-
-
-2) test: testProcess (F) line: 130 ../extension/test/report/test.cpp
-assertion failed
-- Expression: process->Execute("wc test.h")
+OK (7 tests)
 
 
