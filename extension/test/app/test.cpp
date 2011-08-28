@@ -24,23 +24,6 @@ void wxExAppTestFixture::setUp()
   wxExLexers* lexers = wxExLexers::Get();
 }
 
-void wxExAppTestFixture::testCommand()
-{
-  wxExCommand command;
-  
-  CPPUNIT_ASSERT(!command.GetError());
-  CPPUNIT_ASSERT( command.GetOutput().empty());
-  
-  // wxExecute hangs, see also wxExVCS test
-//  CPPUNIT_ASSERT( command.Execute("ls -l") != -1);
-//  CPPUNIT_ASSERT(!command.GetError());
-//  CPPUNIT_ASSERT(!command.GetOutput().empty());
-  
-//  CPPUNIT_ASSERT( command.Execute("xxxx") == -1);
-//  CPPUNIT_ASSERT( command.GetError());
-//  CPPUNIT_ASSERT( command.GetOutput().empty());
-}
-
 void wxExAppTestFixture::testConfigItem()
 {
   std::vector <wxExConfigItem> items;
@@ -379,6 +362,23 @@ void wxExAppTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
+void wxExAppTestFixture::testProcess()
+{
+  wxExProcess command;
+  
+  CPPUNIT_ASSERT(!command.GetError());
+  CPPUNIT_ASSERT( command.GetOutput().empty());
+  
+  // wxExecute hangs, see also wxExVCS test
+//  CPPUNIT_ASSERT( command.Execute("ls -l") != -1);
+//  CPPUNIT_ASSERT(!command.GetError());
+//  CPPUNIT_ASSERT(!command.GetOutput().empty());
+  
+//  CPPUNIT_ASSERT( command.Execute("xxxx") == -1);
+//  CPPUNIT_ASSERT( command.GetError());
+//  CPPUNIT_ASSERT( command.GetOutput().empty());
+}
+
 void wxExAppTestFixture::testStatusBar()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
@@ -669,10 +669,6 @@ wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
-    "testCommand",
-    &wxExAppTestFixture::testCommand));
-    
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testConfigItem",
     &wxExAppTestFixture::testConfigItem));
     
@@ -715,6 +711,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testNotebook",
     &wxExAppTestFixture::testNotebook));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testProcess",
+    &wxExAppTestFixture::testProcess));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testStatusBar",

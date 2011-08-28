@@ -9,6 +9,7 @@
 #define _EX_PROCESS_H
 
 #include <wx/process.h>
+#include <wx/timer.h>
 #include <wx/extension/stcdlg.h>
 
 /// Offers a wxProcess with default output to a wxExSTCShell on a 
@@ -20,6 +21,15 @@ class WXDLLIMPEXP_BASE wxExProcess : public wxProcess
 public:
   /// Default constructor.
   wxExProcess();
+  
+  /// Destructor.
+ ~wxExProcess();
+
+  /// Copy constructor.
+  wxExProcess(const wxExProcess& process);
+
+  /// Assignment operator.
+  wxExProcess& operator=(const wxExProcess& p);
 
   /// Shows a config dialog, sets the command 
   /// and returns dialog return code.
@@ -58,8 +68,7 @@ public:
   bool IsRunning() const;
 
   /// Returns true if a process command is selected.
-  static bool IsSelected() {
-    return !m_Command.empty();};
+  bool IsSelected() const {return !m_Command.empty();};
     
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);
@@ -94,16 +103,16 @@ private:
 
   bool m_Error;
   
+  wxString m_Command;
   wxString m_Output;
   
-  static wxString m_Command;
   static wxString m_WorkingDirKey;
 
 #if wxUSE_GUI
   static wxExSTCEntryDialog* m_Dialog;
 #endif  
 
-  wxTimer m_Timer;
+  wxTimer* m_Timer;
 
   DECLARE_EVENT_TABLE()
 };

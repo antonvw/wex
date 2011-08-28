@@ -11,12 +11,12 @@
 #include <vector>
 #include <wx/menu.h>
 #include <wx/xml/xml.h>
-#include <wx/extension/command.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/process.h>
 #include <wx/extension/vcscommand.h>
 
 /// This class collects a single vcs.
-class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExCommand
+class WXDLLIMPEXP_BASE wxExVCSEntry : public wxExProcess
 {
 public:
   /// Default constructor.

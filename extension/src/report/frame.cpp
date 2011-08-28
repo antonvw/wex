@@ -545,7 +545,7 @@ bool wxExFrameWithHistory::ProcessIsRunning() const
   
 bool wxExFrameWithHistory::ProcessIsSelected() const
 {
-  return wxExProcess::IsSelected();
+  return m_Process->IsSelected();
 }
   
 bool wxExFrameWithHistory::ProcessRun(const wxString& command, const wxString& wd)

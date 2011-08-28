@@ -10,7 +10,6 @@
 
 #include <wx/extension/app.h>
 #include <wx/extension/art.h>
-#include <wx/extension/command.h>
 #include <wx/extension/configdlg.h>
 #include <wx/extension/configitem.h>
 #include <wx/extension/defs.h>

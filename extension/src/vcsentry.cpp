@@ -231,11 +231,13 @@ long wxExVCSEntry::Execute(
     my_args.clear();
   }
 
-  return wxExCommand::Execute(
+  return wxExProcess::Execute(
     GetBin() + " " + 
     prefix + 
     GetCommand().GetCommand() + " " + 
-    subcommand + flags + comment + my_args, wd);
+    subcommand + flags + comment + my_args, 
+    wxEXEC_SYNC, // for the moment
+    wd);
 }
 
 const wxString wxExVCSEntry::GetBin() const
@@ -344,21 +346,21 @@ int wxExVCSEntry::ShowDialog(
 #if wxUSE_GUI
 void wxExVCSEntry::ShowOutput(const wxString& caption) const
 {
-  if (!GetError() && GetDialog() != NULL)
+  if (!GetError() && GetSTC() != NULL)
   {
     if (GetFlags().Contains("xml"))
     {
-      GetDialog()->SetLexer("xml");
+      GetSTC()->SetLexer("xml");
     }
     else
     {
       wxExVCSCommandOnSTC(
         GetCommand(), 
         m_Lexer, 
-        GetDialog()->GetSTC());
+        GetSTC());
     }
   }
 
-  wxExCommand::ShowOutput(caption);
+  wxExProcess::ShowOutput(caption);
 }
 #endif

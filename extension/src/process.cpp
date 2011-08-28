@@ -24,15 +24,35 @@ BEGIN_EVENT_TABLE(wxExProcess, wxProcess)
   EVT_TIMER(-1, wxExProcess::OnTimer)
 END_EVENT_TABLE()
 
-wxString wxExProcess::m_Command;
 wxExSTCEntryDialog* wxExProcess::m_Dialog = NULL;
 wxString wxExProcess::m_WorkingDirKey = _("Process folder");
 
 wxExProcess::wxExProcess()
   : wxProcess(wxPROCESS_REDIRECT)
-  , m_Timer(this)
+  , m_Timer(new wxTimer(this))
   , m_Error(false)
 {
+  m_Command = wxExConfigFirstOf(_("Process"));
+}
+
+wxExProcess::~wxExProcess()
+{
+  delete m_Timer;
+}
+
+wxExProcess::wxExProcess(const wxExProcess& process)
+{
+  *this = process;
+}
+
+wxExProcess& wxExProcess::operator=(const wxExProcess& p)
+{
+  m_Command = p.m_Command;
+  m_Error = p.m_Error;
+  m_Output = p.m_Output;
+  m_Timer = new wxTimer(this);
+  
+  return *this;
 }
 
 bool wxExProcess::CheckInput()
@@ -119,16 +139,9 @@ int wxExProcess::ConfigDialog(
     true,
     1000));
 
-  const auto result = wxExConfigDialog(parent,
+  return wxExConfigDialog(parent,
     v,
     title).ShowModal();
-
-  if (result == wxID_OK)
-  {
-    m_Command = wxExConfigFirstOf(_("Process"));
-  }
-
-  return result;
 }
 
 long wxExProcess::Execute(
@@ -164,7 +177,7 @@ long wxExProcess::Execute(
     
       ReportCreate();
 
-      m_Timer.Start(1000); // each 1000 milliseconds
+      m_Timer->Start(1000); // each 1000 milliseconds
     }
 
     return pid;
@@ -212,7 +225,7 @@ wxKillError wxExProcess::Kill(wxSignal sig)
     return wxKILL_NO_PROCESS;
   }
 
-  m_Timer.Stop();
+  m_Timer->Stop();
   
   wxLogStatus(_("Stopped"));
 
@@ -253,7 +266,7 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
   
 void wxExProcess::OnTerminate(int pid, int status)
 {
-  m_Timer.Stop();
+  m_Timer->Stop();
 
   // Collect remaining input.
   while (CheckInput())
@@ -267,7 +280,7 @@ void wxExProcess::OnTerminate(int pid, int status)
   
   if (m_Dialog != NULL)
   {
-    m_Dialog->GetSTCShell()->Prompt();
+    m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false); // no eol
   }
 }
 
@@ -284,7 +297,7 @@ void wxExProcess::ReportAdd(
   const wxString& path,
   const wxString& lineno)
 {
-  m_Dialog->GetSTCShell()->AddText(line);
+  m_Dialog->GetSTCShell()->AddText(line + m_Dialog->GetSTCShell()->GetEOL());
 }
 
 void wxExProcess::ReportCreate()
@@ -293,7 +306,7 @@ void wxExProcess::ReportCreate()
   {
     m_Dialog = new wxExSTCEntryDialog(
       wxTheApp->GetTopWindow(),
-      _("Process"),
+      m_Command,
       wxEmptyString,
       wxEmptyString,
       wxOK,
@@ -303,7 +316,8 @@ void wxExProcess::ReportCreate()
   }
   else
   {
-    m_Dialog->GetSTCShell()->Clear();
+    m_Dialog->SetTitle(m_Command);
+    m_Dialog->GetSTCShell()->ClearAll();
     m_Dialog->GetSTCShell()->Prompt();
   }
   
