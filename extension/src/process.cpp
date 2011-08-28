@@ -329,16 +329,22 @@ void wxExProcess::ShowOutput(const wxString& caption) const
 {
   if (!m_Error)
   {
-    if (m_Dialog != NULL)
+    if (m_Dialog == NULL)
+    {
+      m_Dialog = new wxExSTCEntryDialog(
+        wxTheApp->GetTopWindow(),
+        caption.empty() ? m_Command: caption,
+        m_Output,
+        wxEmptyString,
+        wxOK);
+    }
+    else
     {
       m_Dialog->GetSTC()->SetText(m_Output);
       m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
-      m_Dialog->Show();
     }
-    else if (!m_Output.empty())
-    {
-      wxMessageBox(m_Output);
-    }
+    
+    m_Dialog->Show();
   }
 }
 #endif
