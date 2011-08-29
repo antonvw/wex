@@ -71,54 +71,56 @@ bool wxExProcess::CheckInput()
     line << tis.ReadLine();
   }
 
-  if (!line.empty())
+  if (line.empty())
   {
-    wxString lineno;
-    wxString path;
+    return false;
+  }
+  
+  wxString lineno;
+  wxString path;
 
-    // Check on error in php script output.
-    const wxRegEx regex(".*in \\(.*\\) on line \\(.*\\)", wxRE_ADVANCED);
+  // Check on error in php script output.
+  const wxRegEx regex(".*in \\(.*\\) on line \\(.*\\)", wxRE_ADVANCED);
 
-    if (regex.Matches(line))
+  if (regex.Matches(line))
+  {
+    size_t start, len;
+
+    if (regex.GetMatch(&start, &len, 1))
     {
-      size_t start, len;
-
-      if (regex.GetMatch(&start, &len, 1))
-      {
-        path = line.substr(start, len);
-      }
-
-      if (regex.GetMatch(&start, &len, 2))
-      {
-        lineno = line.substr(start, len);
-      }
-    }
-    else
-    {
-      // Check on error in gcc output (and some others).
-      wxStringTokenizer tkz(line, ':');
-      path = tkz.GetNextToken();
-
-      if (tkz.HasMoreTokens())
-      {
-        lineno = tkz.GetNextToken();
-      }
+      path = line.substr(start, len);
     }
 
-    if (atoi(lineno.c_str()) == 0)
+    if (regex.GetMatch(&start, &len, 2))
     {
-      lineno.clear();
+      lineno = line.substr(start, len);
     }
-    
-    if (!wxFileExists(path))
+  }
+  else
+  {
+    // Check on error in gcc output (and some others).
+    wxStringTokenizer tkz(line, ':');
+    path = tkz.GetNextToken();
+
+    if (tkz.HasMoreTokens())
     {
-      path.clear();
+      lineno = tkz.GetNextToken();
     }
-    
-    ReportAdd(line, path, lineno);
   }
 
-  return !line.empty();
+  if (atoi(lineno.c_str()) == 0)
+  {
+    lineno.clear();
+  }
+    
+  if (!wxFileExists(path))
+  {
+    path.clear();
+  }
+    
+  ReportAdd(line, path, lineno);
+
+  return true;
 }
 
 int wxExProcess::ConfigDialog(
@@ -155,6 +157,8 @@ long wxExProcess::Execute(
     {
       return -1;
     }
+    
+    m_Command = wxExConfigFirstOf(_("Process"));
   }
   else if (!command.empty())
   {
