@@ -68,7 +68,7 @@ public:
   bool IsRunning() const;
 
   /// Returns true if a process command is selected.
-  bool IsSelected() const {return !m_Command.empty();};
+  bool IsSelected() const;
     
   /// Kills the process (sends specified signal if process still running).
   wxKillError Kill(wxSignal sig = wxSIGKILL);

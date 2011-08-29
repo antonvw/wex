@@ -229,8 +229,9 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
     }
   }
   // Ctrl-Q pressed, used to stop processing.
-  else if (event.GetModifiers() == wxMOD_CONTROL && 
-    (key == 'Q' || key == 'C')
+  else if (
+    event.GetModifiers() == wxMOD_CONTROL && 
+   (key == 'Q' || key == 'C'))
   {
     wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND_STOP);
     wxPostEvent(m_Handler, event);
