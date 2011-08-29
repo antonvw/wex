@@ -151,16 +151,19 @@ long wxExProcess::Execute(
   int flags,
   const wxString& wd)
 {
-  if (command.empty() && m_Command.empty())
+  if (command.empty())
   {
-    if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
+    if (m_Command.empty())
     {
-      return -1;
+      if (ConfigDialog(wxTheApp->GetTopWindow()) == wxID_CANCEL)
+      {
+        return -1;
+      }
     }
     
     m_Command = wxExConfigFirstOf(_("Process"));
   }
-  else if (!command.empty())
+  else
   {
     m_Command = command;
   }
@@ -220,6 +223,13 @@ bool wxExProcess::IsRunning() const
   }
 
   return Exists(GetPid());
+}
+
+bool wxExProcess::IsSelected() const
+{
+  return 
+    !m_Command.empty() ||
+    !wxExConfigFirstOf(_("Process")).empty();
 }
 
 wxKillError wxExProcess::Kill(wxSignal sig)
