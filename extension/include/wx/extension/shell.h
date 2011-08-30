@@ -55,6 +55,14 @@ public:
 
   /// Destructor, keeps the commands in the config, if required.
  ~wxExSTCShell();
+ 
+  /// Enable/disable shell processing.
+  /// Default (and after constructed) shell processing is enabled.
+  /// When disabled, shell is a normal STC.
+  void Enable(bool enable = true);
+  
+  /// Returns whether shell processing is enabled.
+  bool GetEnabled() const {return m_Enabled;};
 
   /// Gets all history commands as a string, 
   /// separated by a newline (for testing).
@@ -101,6 +109,7 @@ private:
   const wxString m_CommandEnd;
   int m_CommandStartPosition;
   const bool m_Echo;
+  bool m_Enabled;
   const wxString m_CommandsInConfigDelimiter;
   const int m_CommandsSaveInConfig;
   wxString m_Prompt;

@@ -115,6 +115,7 @@ bool wxExProcess::CheckInput()
     
   if (!wxFileExists(path))
   {
+    lineno.clear();
     path.clear();
   }
     

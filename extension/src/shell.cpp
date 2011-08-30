@@ -55,6 +55,7 @@ wxExSTCShell::wxExSTCShell(
   , m_CommandsSaveInConfig(commands_save_in_config)
   , m_Prompt(prompt)
   , m_Handler(parent)
+  , m_Enabled(true)
 {
   // Override defaults from config.
   SetEdgeMode(wxSTC_EDGE_NONE);
@@ -103,6 +104,11 @@ wxExSTCShell::~wxExSTCShell()
   }
 }
 
+bool wxExSTCShell::Enable(bool enabled)
+{
+  m_Enabled = enabled;
+}
+
 const wxString wxExSTCShell::GetHistory() const
 {
   return accumulate(m_Commands.begin(), m_Commands.end(), wxString());
@@ -116,6 +122,12 @@ void wxExSTCShell::KeepCommand()
 
 void wxExSTCShell::OnCommand(wxCommandEvent& command)
 {
+  if (!m_Enabled)
+  {
+    command.Skip();
+    return;
+  }
+  
   switch (command.GetId())
   {
     case wxID_PASTE:
@@ -136,6 +148,12 @@ void wxExSTCShell::OnCommand(wxCommandEvent& command)
 
 void wxExSTCShell::OnKey(wxKeyEvent& event)
 {
+  if (!m_Enabled)
+  {
+    event.Skip();
+    return;
+  }
+  
   const auto key = event.GetKeyCode();
 
   // Enter key pressed, we might have entered a command.
@@ -274,11 +292,22 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
 
 void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
 {
+  if (!m_Enabled)
+  {
+    event.Skip();
+    return;
+  }
+  
   // do nothing, keep event from sent to wxExSTC.
 }
 
 void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
 {
+  if (!m_Enabled)
+  {
+    return;
+  }
+  
   if (!text.empty())
   {
     AppendText(text);
