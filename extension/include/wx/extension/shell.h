@@ -59,10 +59,10 @@ public:
   /// Enable/disable shell processing.
   /// Default (and after constructed) shell processing is enabled.
   /// When disabled, shell is a normal STC.
-  void Enable(bool enable = true);
+  void EnableShell(bool enable = true);
   
   /// Returns whether shell processing is enabled.
-  bool GetEnabled() const {return m_Enabled;};
+  bool GetShellEnabled() const {return m_Enabled;};
 
   /// Gets all history commands as a string, 
   /// separated by a newline (for testing).
