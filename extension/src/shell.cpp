@@ -104,7 +104,7 @@ wxExSTCShell::~wxExSTCShell()
   }
 }
 
-bool wxExSTCShell::Enable(bool enabled)
+void wxExSTCShell::EnableShell(bool enabled)
 {
   m_Enabled = enabled;
 }

@@ -169,6 +169,19 @@ long wxExProcess::Execute(
     m_Command = command;
   }
 
+  if (m_Dialog == NULL)
+  {
+    m_Dialog = new wxExSTCEntryDialog(
+      wxTheApp->GetTopWindow(),
+      m_Command,
+      wxEmptyString,
+      wxEmptyString,
+      wxOK,
+      true);
+      
+    m_Dialog->GetSTCShell()->SetEventHandler(this);
+  }
+      
   const struct wxExecuteEnv env = {
     (wd.empty() ? wxExConfigFirstOf(m_WorkingDirKey): wd), 
     wxEnvVariableHashMap()};
@@ -182,6 +195,8 @@ long wxExProcess::Execute(
     if (pid > 0)
     {
       wxLogVerbose(_("Execute") + ": " + m_Command);
+      
+      m_Dialog->GetSTCShell()->EnableShell(true);
     
       ReportCreate();
 
@@ -196,6 +211,8 @@ long wxExProcess::Execute(
     wxArrayString errors;
     long retValue;
     
+    m_Dialog->GetSTCShell()->EnableShell(false);
+    
     // Call wxExecute to execute the command and
     // collect the output and the errors.
     if ((retValue = wxExecute(
@@ -205,7 +222,7 @@ long wxExProcess::Execute(
       flags,
       &env)) != -1)
     {
-     wxLogVerbose(_("Execute") + ": " + m_Command);
+      wxLogVerbose(_("Execute") + ": " + m_Command);
     }
 
     // We have an error if the command could not be executed.  
@@ -263,11 +280,7 @@ void  wxExProcess::OnCommand(wxCommandEvent& event)
     // send command to process
     wxTextOutputStream os(*GetOutputStream());
     os.WriteString(event.GetString());
-
-    if (m_Dialog != NULL)
-    {
-      m_Dialog->GetSTCShell()->Prompt();
-    }
+    m_Dialog->GetSTCShell()->Prompt();
     }
     break;
 
@@ -292,11 +305,7 @@ void wxExProcess::OnTerminate(int pid, int status)
   wxLogStatus(_("Ready"));
   wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
   wxPostEvent(wxTheApp->GetTopWindow(), event);
-  
-  if (m_Dialog != NULL)
-  {
-    m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false); // no eol
-  }
+  m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false); // no eol
 }
 
 void wxExProcess::OnTimer(wxTimerEvent& event)
@@ -317,48 +326,19 @@ void wxExProcess::ReportAdd(
 
 void wxExProcess::ReportCreate()
 {
-  if (m_Dialog == NULL)
-  {
-    m_Dialog = new wxExSTCEntryDialog(
-      wxTheApp->GetTopWindow(),
-      m_Command,
-      wxEmptyString,
-      wxEmptyString,
-      wxOK,
-      true);
-      
-    m_Dialog->GetSTCShell()->SetEventHandler(this);
-  }
-  else
-  {
-    m_Dialog->SetTitle(m_Command);
-    m_Dialog->GetSTCShell()->ClearAll();
-    m_Dialog->GetSTCShell()->Prompt();
-  }
-  
+  m_Dialog->SetTitle(m_Command);
+  m_Dialog->GetSTCShell()->ClearAll();
+  m_Dialog->GetSTCShell()->Prompt();
   m_Dialog->Show();
 }
 
 #if wxUSE_GUI
 void wxExProcess::ShowOutput(const wxString& caption) const
 {
-  if (!m_Error)
+  if (!m_Error && m_Dialog != NULL)
   {
-    if (m_Dialog == NULL)
-    {
-      m_Dialog = new wxExSTCEntryDialog(
-        wxTheApp->GetTopWindow(),
-        caption.empty() ? m_Command: caption,
-        m_Output,
-        wxEmptyString,
-        wxOK);
-    }
-    else
-    {
-      m_Dialog->GetSTC()->SetText(m_Output);
-      m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
-    }
-    
+    m_Dialog->GetSTC()->SetText(m_Output);
+    m_Dialog->SetTitle(caption.empty() ? m_Command: caption);
     m_Dialog->Show();
   }
 }
