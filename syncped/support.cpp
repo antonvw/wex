@@ -206,11 +206,7 @@ DecoratedFrame::DecoratedFrame()
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
 {
-  if (ProcessIsRunning())
-  {
-    return false;
-  }
-  else if (id == NOTEBOOK_EDITORS)
+  if (id == NOTEBOOK_EDITORS)
   {
     wxExFileDialog dlg(this, &((wxExSTC*)page)->GetFile());
     

@@ -62,8 +62,8 @@ void wxExReportAppTestFixture::testFrameWithHistory()
   // It does not open, next should fail.
   CPPUNIT_ASSERT(!frame->GetRecentProject().Contains("test-rep.prj"));
   
-  CPPUNIT_ASSERT( frame->ProcessRun("wc test.h"));
-  CPPUNIT_ASSERT( frame->ProcessIsSelected());
+  CPPUNIT_ASSERT( frame->GetProcess()->Execute("wc test.h", wxEXEC_ASYNC));
+  CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
 }
 
 void wxExReportAppTestFixture::testListItem()

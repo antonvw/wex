@@ -20,7 +20,6 @@
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/listviewfile.h>
-#include <wx/extension/report/process.h>
 #include <wx/extension/report/stc.h>
 #include <wx/extension/report/util.h>
 
@@ -529,33 +528,6 @@ bool wxExFrameWithHistory::OpenFile(
   }
 
   return false;
-}
-
-int wxExFrameWithHistory::ProcessConfigDialog(
-  wxWindow* parent, 
-  const wxString& title) const
-{
-  return wxExProcess::ConfigDialog(parent, title);
-}
-
-bool wxExFrameWithHistory::ProcessIsRunning() const
-{
-  return m_Process->IsRunning();
-}
-  
-bool wxExFrameWithHistory::ProcessIsSelected() const
-{
-  return m_Process->IsSelected();
-}
-  
-bool wxExFrameWithHistory::ProcessRun(const wxString& command, const wxString& wd)
-{
-  return m_Process->Execute(command, wxEXEC_ASYNC, wd) > 0;
-}
-
-void wxExFrameWithHistory::ProcessStop()
-{
-  m_Process->Kill();
 }
 
 void wxExFrameWithHistory::SetRecentFile(const wxString& file)
