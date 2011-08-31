@@ -18,6 +18,7 @@
 #include <wx/extension/version.h>
 #include <wx/extension/report/dir.h>
 #include <wx/extension/report/dirctrl.h>
+#include <wx/extension/report/listview.h>
 #include "app.h"
 #ifndef __WXMSW__
 #include "app.xpm"

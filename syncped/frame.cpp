@@ -300,9 +300,9 @@ void Frame::AddAsciiTable(wxExSTC* stc)
   {
     switch (i)
     {
-       9: stc->AddText(wxString::Format("%3d\tTAB", i); break;
-      10: stc->AddText(wxString::Format("%3d\tLF", i); break;
-      13: stc->AddText(wxString::Format("%3d\tCR", i); break;
+      case  9: stc->AddText(wxString::Format("%3d\tTAB", i)); break;
+      case 10: stc->AddText(wxString::Format("%3d\tLF", i)); break;
+      case 13: stc->AddText(wxString::Format("%3d\tCR", i)); break;
         
       default:
         stc->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
@@ -941,7 +941,7 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
       event.Enable( GetProcess()->IsSelected() &&
                    !GetProcess()->IsRunning()); 
       break;
-    case wxID_STOP: event.Enable(ProcessIsRunning()); break;
+    case wxID_STOP: event.Enable(GetProcess()->IsRunning()); break;
     case wxID_PREVIEW:
     case wxID_PRINT:
       event.Enable(

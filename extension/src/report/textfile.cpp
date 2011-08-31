@@ -16,6 +16,7 @@
 #include <wx/extension/util.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/frame.h>
+#include <wx/extension/report/listview.h>
 
 wxExListView* wxExTextFileWithListView::m_Report = NULL;
 wxExFrameWithHistory* wxExTextFileWithListView::m_Frame = NULL;

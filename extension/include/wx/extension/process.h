@@ -48,7 +48,7 @@ public:
   long Execute(
     /// command to be executed, if empty
     /// last given command is used
-    const wxString& command,
+    const wxString& command = wxEmptyString,
     /// flags for wxExecute
     int flags = wxEXEC_ASYNC,
     /// working dir, if empty last working dir is used

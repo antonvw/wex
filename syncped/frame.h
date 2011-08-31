@@ -10,6 +10,7 @@
 
 #include <wx/extension/notebook.h>
 #include <wx/extension/report/dirctrl.h>
+#include <wx/extension/report/listview.h>
 #include "support.h"
 
 class Frame : public DecoratedFrame
