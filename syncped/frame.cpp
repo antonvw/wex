@@ -298,7 +298,16 @@ void Frame::AddAsciiTable(wxExSTC* stc)
 
   for (auto i = 1; i <= 255; i++)
   {
-    stc->AddText(wxString::Format("%d\t%c", i, (wxUniChar)i));
+    switch (i)
+    {
+       9: stc->AddText(wxString::Format("%3d\tTAB", i); break;
+      10: stc->AddText(wxString::Format("%3d\tLF", i); break;
+      13: stc->AddText(wxString::Format("%3d\tCR", i); break;
+        
+      default:
+        stc->AddText(wxString::Format("%3d\t%c", i, (wxUniChar)i));
+    }
+    
     stc->AddText((i % 5 == 0) ? stc->GetEOL(): "\t");
   }
 
@@ -484,7 +493,10 @@ void Frame::OnClose(wxCloseEvent& event)
 {
   if (event.CanVeto())
   {
-    if (!AllowCloseAll(NOTEBOOK_PROJECTS) || !AllowCloseAll(NOTEBOOK_EDITORS))
+    if (
+       GetProcess()->IsRunning() || 
+      !AllowCloseAll(NOTEBOOK_PROJECTS) || 
+      !AllowCloseAll(NOTEBOOK_EDITORS))
     {
       event.Veto();
       return;
@@ -679,8 +691,8 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
 
-  case wxID_EXECUTE: ProcessRun(); break;
-  case wxID_STOP: ProcessStop(); break;
+  case wxID_EXECUTE: GetProcess()->Execute(); break;
+  case wxID_STOP: GetProcess()->Kill(); break;
 
   case ID_ALL_STC_CLOSE:
   case ID_ALL_STC_SAVE:
@@ -791,7 +803,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     }
     break;
     
-  case ID_PROCESS_SELECT: ProcessConfigDialog(this); break;
+  case ID_PROCESS_SELECT: wxExProcess::ConfigDialog(this); break;
 
   case ID_PROJECT_CLOSE:
     if (project != NULL)
@@ -926,8 +938,8 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
   switch (event.GetId())
   {
     case wxID_EXECUTE: 
-      event.Enable( ProcessIsSelected() &&
-                   !ProcessIsRunning()); 
+      event.Enable( GetProcess()->IsSelected() &&
+                   !GetProcess()->IsRunning()); 
       break;
     case wxID_STOP: event.Enable(ProcessIsRunning()); break;
     case wxID_PREVIEW:

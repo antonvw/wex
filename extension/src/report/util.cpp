@@ -145,10 +145,11 @@ bool wxExForEach(wxAuiNotebook* notebook, int id, const wxFont& font)
 
 bool wxExMake(wxExFrameWithHistory* frame, const wxFileName& makefile)
 {
-  return frame->ProcessRun(
+  return frame->GetProcess()->Execute(
     wxConfigBase::Get()->Read("Make", "make") + " " +
       wxConfigBase::Get()->Read("MakeSwitch", "-f") + " " +
       makefile.GetFullPath(),
+    wxEXEC_ASYNC,
     makefile.GetPath());
 }
 

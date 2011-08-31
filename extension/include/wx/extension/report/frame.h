@@ -9,13 +9,13 @@
 #define _EX_REPORT_FRAME_H
 
 #include <wx/filehistory.h>
+#include <wx/extension/listview.h> // for wxExListViewFileName::ListType 
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
-#include <wx/extension/report/listview.h> // for wxExListViewFileName::ListType 
+#include <wx/extension/report/process.h>
 
 class wxExConfigDialog;
 class wxExListViewFile;
-class wxExProcessListView;
 
 /// Adds file and project history support to wxExManagedFrame.
 /// It also sets a change indicator in the title of the frame if applicable.
@@ -68,6 +68,9 @@ public:
   /// Returns caption for FindInSelectionDialog.
   const wxString GetFindInCaption(int id) const;
   
+  /// Gets the process.
+  wxExProcess* GetProcess() {return m_Process;};
+  
   /// If there is a project somewhere, 
   /// your implementation should return that one.
   /// Default it returns NULL.
@@ -96,28 +99,6 @@ public:
     int line_number = 0,
     const wxString& match = wxEmptyString,
     long flags = 0);
-
-  /// Shows a config dialog, sets the command 
-  /// and returns dialog return code.
-  int ProcessConfigDialog(
-    wxWindow* parent,
-    const wxString& title = _("Select Process")) const;
-    
-  /// Is a process running.
-  bool ProcessIsRunning() const;
-  
-  /// Is a process selected.
-  bool ProcessIsSelected() const;
-  
-  /// Runs the process.
-  /// Outputs to a listview LIST_PROCESS.
-  /// Returns true if the process executes.
-  bool ProcessRun(
-    const wxString& command = wxEmptyString,
-    const wxString& wd = wxEmptyString);
-
-  /// Stops the process.
-  void ProcessStop();
 
   /// Updates file history.
   void SetRecentFile(const wxString& file);

@@ -260,15 +260,15 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     break;
 
   case wxID_STOP:
-    ProcessStop();
+    GetProcess()->Kill();
     break;
 
   case ID_PROCESS_DIALOG:
-    ProcessConfigDialog(this);
+    wxExProcess::ConfigDialog(this);
     break;
 
   case ID_PROCESS_RUN:
-    ProcessRun();
+    GetProcess()->Execute();
     break;
 
   default: 
