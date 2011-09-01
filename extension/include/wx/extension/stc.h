@@ -214,7 +214,8 @@ public:
     const wxExFileName& filename,
     /// goes to the line if > 0, if -1 goes to end of file
     int line_number = 0,
-    /// if not empty selects the text on that line.
+    /// if not empty selects the text on that line (if line was specified)
+    /// or finds text from begin (if line was 0) or end (line was -1)
     const wxString& match = wxEmptyString,
     /// flags
     long flags = 0);
