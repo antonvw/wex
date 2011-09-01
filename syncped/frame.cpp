@@ -1431,7 +1431,7 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
     vcs.GetDir();
     
     const wxString match = (vcs.GetName() != "Auto" ? 
-      vcs.GetName(): wxEmptyString);
+      vcs.GetName(): wxString(wxEmptyString));
       
     OpenFile(
       wxExVCS::GetFileName(),
