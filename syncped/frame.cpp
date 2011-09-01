@@ -1404,11 +1404,17 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
   }
   else if (pane == "PaneLexer" || pane == "PaneTheme")
   {
-    OpenFile(wxExLexers::Get()->GetFileName());
+    OpenFile(
+      wxExLexers::Get()->GetFileName(),
+      0,
+      wxExLexers::Get()->GetTheme());
   }
   else if (pane == "PaneVCS")
   {
-    OpenFile(wxExVCS::GetFileName());
+    OpenFile(
+      wxExVCS::GetFileName(),
+      0,
+      wxExVCS().GetName());
   }
   else
   {
