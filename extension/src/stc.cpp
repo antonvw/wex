@@ -1951,7 +1951,18 @@ bool wxExSTC::Open(
     {
       if (line_number == -1)
       {
-        DocumentEnd();
+        if (!match.empty())
+        {
+           FindNext(match, 0, false);
+        }
+        else
+        {
+          DocumentEnd();
+        }
+      }
+      else if (!match.empty())
+      {
+        FindNext(match);
       }
     }
 
