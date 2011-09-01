@@ -1404,17 +1404,39 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
   }
   else if (pane == "PaneLexer" || pane == "PaneTheme")
   {
+    wxString match;
+    
+    if (pane == "PaneLexer")
+    {
+      wxExSTC* stc = GetSTC();
+    
+      if (stc != NULL)
+      {
+        match = stc->GetLexer().GetScintillaLexer();
+      }
+    }
+    else
+    {
+      match = wxExLexers::Get()->GetTheme();
+    }
+    
     OpenFile(
       wxExLexers::Get()->GetFileName(),
       0,
-      wxExLexers::Get()->GetTheme());
+      match);
   }
   else if (pane == "PaneVCS")
   {
+    wxExVCS vcs;
+    vcs.GetDir();
+    
+    const wxString match = (vcs.GetName() != "Auto" ? 
+      vcs.GetName(): wxEmptyString);
+      
     OpenFile(
       wxExVCS::GetFileName(),
       0,
-      wxExVCS().GetName());
+      match);
   }
   else
   {
