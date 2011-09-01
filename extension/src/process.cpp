@@ -235,7 +235,7 @@ long wxExProcess::Execute(
 
 bool wxExProcess::IsRunning() const
 {
-  if (GetPid() < 0)
+  if (GetPid() <= 0)
   {
     return false;
   }
