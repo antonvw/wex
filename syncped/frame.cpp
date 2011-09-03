@@ -1412,7 +1412,7 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
     
       if (stc != NULL)
       {
-        match = stc->GetLexer().GetScintillaLexer();
+        match = "name=\"" + stc->GetLexer().GetScintillaLexer();
       }
     }
     else
