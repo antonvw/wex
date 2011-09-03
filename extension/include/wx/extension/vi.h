@@ -106,7 +106,6 @@ private:
   static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
 
-  const wxExIndicator m_IndicatorYank;
   const wxExMarker m_MarkerSymbol;
   
   std::map<wxUniChar, int> m_Markers;

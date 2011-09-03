@@ -1389,7 +1389,6 @@ Copyright: (c) 2011, Anton van Wezenbeek
     <def no ="wxSTC_MARKDOWN_CODEBK"> 21 </def>
     
     <!-- Macro's for wxextension vi mode -->
-    <def no ="wxEx_INDIC_VI_YANK"> 0 </def>
     <def no ="wxEx_MARKNUM_CHANGE"> 1 </def>
     <def no ="wxEx_MARKNUM_VI"> 0 </def>
     
@@ -1526,8 +1525,6 @@ Copyright: (c) 2011, Anton van Wezenbeek
     
     <marker no="wxEx_MARKNUM_CHANGE">wxSTC_MARK_FULLRECT,green,light blue</marker>
     <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
-    
-    <indicator no="wxEx_INDIC_VI_YANK"> wxSTC_INDIC_BOX,styleyank </indicator>
     
     <!-- this style is applied before all other styles -->
     <style no="wxSTC_STYLE_DEFAULT"> styledefault </style>
