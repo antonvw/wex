@@ -29,7 +29,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_IsActive(false)
   , m_MarkerSymbol(0)
-  , m_IndicatorYank(0)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
@@ -262,12 +261,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.EndsWith("yw"))
   {
-    const auto start = m_STC->GetCurrentPos();
     for (auto i = 0; i < repeat; i++) 
       m_STC->WordRight();
-    m_STC->CopyRange(start, m_STC->GetCurrentPos());
-    SetIndicator(m_IndicatorYank, start, m_STC->GetCurrentPos());
-    m_STC->GotoPos(start);
+    for (auto j = 0; j < repeat; j++) 
+      m_STC->WordLeftEndExtend();
+    m_STC->Copy();
   }
   else if (command.EndsWith("yy"))
   {
@@ -1018,8 +1016,6 @@ void wxExVi::Put(bool after) const
   {
     m_STC->LineUp();
   }
-  
-  m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
 }        
 
 void wxExVi::SetIndicator(
@@ -1033,14 +1029,6 @@ void wxExVi::SetIndicator(
   }
 
   m_STC->SetIndicatorCurrent(indicator.GetNo());
-
-  // When yanking, old one can be cleared.
-  // For put it is useful to keep them.
-  if (indicator == m_IndicatorYank)
-  {
-    m_STC->IndicatorClearRange(0, m_STC->GetLength() - 1);
-  }
-
   m_STC->IndicatorFillRange(start, end - start);
 }
 
@@ -1274,12 +1262,10 @@ void wxExVi::Yank(int lines) const
   if (end != -1)
   {
     m_STC->CopyRange(start, end);
-    SetIndicator(m_IndicatorYank, start, end);
   }
   else
   {
     m_STC->CopyRange(start, m_STC->GetLastPosition());
-    SetIndicator(m_IndicatorYank, start, m_STC->GetLastPosition());
   }
 
   if (lines >= 2)
@@ -1305,7 +1291,6 @@ bool wxExVi::Yank(
   const auto end = m_STC->PositionFromLine(end_line);
 
   m_STC->CopyRange(start, end);
-  SetIndicator(m_IndicatorYank, start, end);
 
   const auto lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
   
