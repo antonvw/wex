@@ -233,10 +233,10 @@ long wxExVCSEntry::Execute(
 
   return wxExProcess::Execute(
     GetBin() + " " + 
-    prefix + 
-    GetCommand().GetCommand() + " " + 
-    subcommand + flags + comment + my_args, 
-    wxEXEC_SYNC, // for the moment
+      prefix + 
+      GetCommand().GetCommand() + " " + 
+      subcommand + flags + comment + my_args, 
+    wxEXEC_SYNC, // for the moment (problems with wxTimer when ASYC is used)
     wd);
 }
 

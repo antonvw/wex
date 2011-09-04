@@ -81,8 +81,10 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <command> &amp;diff </command>
       <command type = "main"> &amp;help </command>
       <command> &amp;log </command>
-      <command> &amp;pull </command>
-      <command> &amp;push </command>
+      <!-- pull and push ask for password (should be asyc, not yet)
+      <command type = "main"> &amp;pull </command>
+      <command type = "main"> &amp;push </command>
+      -->
       <command> &amp;show </command>
       <command> &amp;status </command>
     </commands>
