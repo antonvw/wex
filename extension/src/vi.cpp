@@ -262,9 +262,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command.EndsWith("yw"))
   {
     for (auto i = 0; i < repeat; i++) 
-      m_STC->WordRight();
+      m_STC->WordRightEnd();
     for (auto j = 0; j < repeat; j++) 
-      m_STC->WordLeftEndExtend();
+      m_STC->WordLeftExtend();
     m_STC->Copy();
   }
   else if (command.EndsWith("yy"))
