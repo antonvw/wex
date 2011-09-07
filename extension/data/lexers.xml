@@ -1423,7 +1423,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
       
       <!-- The ubuntu theme, uses same background as ubuntu -->
       <theme name = "ubuntu">
-        <def style ="styledefault"> face:Monospace,size:10,back:#2C001E,fore:white </def>
+        <def style ="styledefault"> face:default,size:10,back:#2C001E,fore:white </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
         <def style ="folder"> light blue </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>
@@ -1450,7 +1450,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
       
       <!-- The torte theme, resembles vi torte -->
       <theme name = "torte">
-        <def style ="styledefault"> face:Monospace,size:10,back:black,fore:#BBBBBB </def>
+        <def style ="styledefault"> face:default,size:10,back:black,fore:#BBBBBB </def>
         <def style ="bracelight"> back:blue,fore:white</def>
         <def style ="folder"> light blue </def>
         <def style ="_PROCESSOR"> fore:dark grey </def>

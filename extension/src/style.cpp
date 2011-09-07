@@ -75,7 +75,15 @@ void wxExStyle::Set(const wxXmlNode* node)
 
   if (it != wxExLexers::Get()->GetThemeMacros().end())
   {
-    m_Value = it->second;
+    wxString value = it->second;
+    
+    if (value.Contains("default"))
+    {
+      value.Replace("default", 
+        wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT).GetFaceName());
+    }
+    
+    m_Value = value;
   }
 
   if (!IsOk())
