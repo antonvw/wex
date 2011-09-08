@@ -9,6 +9,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/config.h>
 #include <wx/log.h> 
 #include <wx/stc/stc.h>
 #include <wx/tokenzr.h>
@@ -77,10 +78,14 @@ void wxExStyle::Set(const wxXmlNode* node)
   {
     wxString value = it->second;
     
-    if (value.Contains("default"))
+    if (value.Contains("default-font"))
     {
-      value.Replace("default", 
-        wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT).GetFaceName());
+      const wxFont font(wxConfigBase::Get()->ReadObject(_("Default font"), 
+        wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+      
+      value.Replace("default-font", 
+        wxString::Format("face:%s,size:%d",
+          font.GetFaceName().c_str(), font.GetPointSize()));
     }
     
     m_Value = value;

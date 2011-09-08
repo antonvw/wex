@@ -346,6 +346,7 @@ private:
   wxExSTCFile m_File;
   wxExVi m_vi;
 
+  wxFont m_DefaultFont;
   wxPathList m_PathList;
 
   // All objects share the following:
