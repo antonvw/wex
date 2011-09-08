@@ -527,6 +527,8 @@ int wxExSTC::ConfigDialog(
     true, 
     _("General"),
     1));
+    
+  items.push_back(wxExConfigItem(_("Default font"), CONFIG_FONTPICKERCTRL));
 
   // Edge page.
   items.push_back(wxExConfigItem(_("Edge column"), 0, 500, _("Edge")));
@@ -645,6 +647,19 @@ void wxExSTC::ConfigGet()
   if (!wxConfigBase::Get()->Exists(_("Caret line")))
   {
     wxConfigBase::Get()->SetRecordDefaults(true);
+  }
+  
+  const wxFont font(wxConfigBase::Get()->ReadObject(
+    _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT)));
+
+  if (m_DefaultFont != font)
+  {
+    m_DefaultFont = font;
+    
+    // Doing this once is enough, not yet possible.
+    wxExLexers::Get()->Read();
+    
+    SetLexer(GetLexer().GetScintillaLexer(), true);
   }
 
   const long def_tab_width = 2;
@@ -1350,6 +1365,9 @@ void wxExSTC::Initialize()
   m_SavedPos = 0;
   m_SavedSelectionStart = -1;
   m_SavedSelectionEnd = -1;
+  
+  m_DefaultFont = wxConfigBase::Get()->ReadObject(
+    _("Default font"), wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT));
   
   Bind(
     wxEVT_STC_MODIFIED, 
