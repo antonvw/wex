@@ -5,7 +5,6 @@ Name:      lexers.xml
 Purpose:   Lexers configuration for wxextension.
            See scintilla v2.03 (www.scintilla.org).
 Author:    Anton van Wezenbeek
-Created:   2006
 Copyright: (c) 2011, Anton van Wezenbeek
 -->
 
@@ -1559,6 +1558,8 @@ Copyright: (c) 2011, Anton van Wezenbeek
       size:[num] sets the font size in points
       eol turns on eol filling
       underline turns on underlining
+      It can also have the default-font value which is kept in the config
+      and can be set using options edit, and substitutes face and size.
    2) <keywords>. Keywords for this lexer. Default they are in set 0, but you can 
       explicitly express the set by adding :<setno> after the keyword.
    3) <properties>. Properties for this lexer. This field

@@ -1245,6 +1245,10 @@ bool Frame::OpenFile(
     {
       editor->GotoLineAndSelect(line_number, match);
     }
+    else if (!match.empty())
+    {
+      editor->FindNext(match);
+    }
   }
 
   return true;
