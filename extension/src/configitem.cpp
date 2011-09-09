@@ -358,7 +358,8 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
         m_Id,
         wxNullFont,
         wxDefaultPosition,
-        wxSize(width, wxDefaultCoord));
+        wxDefaultSize,
+        wxFNTP_FONTDESC_AS_LABEL); // no wxFNTP_USEFONT_FOR_LABEL
 
       m_Window = pc;
 
@@ -366,6 +367,7 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       {
         pc->GetTextCtrl()->SetWindowStyleFlag(wxTE_READONLY);
       }
+      expand = false;
       }
       break;
 
