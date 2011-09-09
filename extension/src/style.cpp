@@ -86,6 +86,24 @@ void wxExStyle::Set(const wxXmlNode* node)
       value.Replace("default-font", 
         wxString::Format("face:%s,size:%d",
           font.GetFaceName().c_str(), font.GetPointSize()));
+          
+      if (
+        (font.GetStyle() & wxFONTSTYLE_ITALIC) ||
+        (font.GetStyle() & wxFONTSTYLE_SLANT))
+      {
+        // This does not work (2.9.2)
+        // value += ",italic";
+      }
+      
+      if (font.GetWeight() & wxFONTWEIGHT_BOLD)
+      {
+        value += ",bold";
+      }
+      
+      if (font.GetUnderlined())
+      {
+        value += ",underline";
+      }
     }
     
     m_Value = value;
