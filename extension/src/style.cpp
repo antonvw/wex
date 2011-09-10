@@ -87,15 +87,14 @@ void wxExStyle::Set(const wxXmlNode* node)
         wxString::Format("face:%s,size:%d",
           font.GetFaceName().c_str(), font.GetPointSize()));
           
-      if (
-        (font.GetStyle() & wxFONTSTYLE_ITALIC) ||
-        (font.GetStyle() & wxFONTSTYLE_SLANT))
+      const wxFontStyle style = font.GetStyle();
+          
+      if (style == wxFONTSTYLE_ITALIC || style == wxFONTSTYLE_SLANT)
       {
-        // This does not work (2.9.2)
-        // value += ",italic";
+        value += ",italic";
       }
       
-      if (font.GetWeight() & wxFONTWEIGHT_BOLD)
+      if (font.GetWeight() == wxFONTWEIGHT_BOLD)
       {
         value += ",bold";
       }
