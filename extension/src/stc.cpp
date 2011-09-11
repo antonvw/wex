@@ -656,7 +656,7 @@ void wxExSTC::ConfigGet()
   {
     m_DefaultFont = font;
     
-    // StyleClearAll();
+    StyleResetDefault();
     
     // Doing this once is enough, not yet possible.
     wxExLexers::Get()->Read();
