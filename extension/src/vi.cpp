@@ -173,7 +173,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
     const int pos = m_STC->GetCurrentPos();
     
-    for (auto i = 0; i < repeat; i++) m_STC->WordRightExtend();
+    for (auto i = 0; i < repeat; i++) m_STC->WordRightEndExtend();
 
     if (dot)
     {
