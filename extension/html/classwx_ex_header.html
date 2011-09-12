@@ -53,11 +53,8 @@
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6422f53415909ba66b8fa77c29ba24c"></a><!-- doxytag: member="wxExHeader::wxExHeader" ref="af6422f53415909ba66b8fa77c29ba24c" args="(const wxString &amp;purpose=wxEmptyString, const wxString &amp;author=wxEmptyString, const wxString &amp;email=wxEmptyString, const wxString &amp;license=wxEmptyString)" -->
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_header.html#af6422f53415909ba66b8fa77c29ba24c">wxExHeader</a> (const wxString &amp;purpose=wxEmptyString, const wxString &amp;author=wxEmptyString, const wxString &amp;email=wxEmptyString, const wxString &amp;license=wxEmptyString)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. Calls Set. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_header.html#a542892592a9b6745a4d2bb93d560c57c">InfoNeeded</a> () const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if you should do ShowDialog to get more info, and not yet do a Get.  <a href="#a542892592a9b6745a4d2bb93d560c57c"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_header.html#af6422f53415909ba66b8fa77c29ba24c">wxExHeader</a> (const wxString &amp;purpose=wxEmptyString, const wxString &amp;author=wxEmptyString, const wxString &amp;email=wxEmptyString, const wxString &amp;license=wxEmptyString)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#af6422f53415909ba66b8fa77c29ba24c"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_header.html#abfe3598485fcab9070d0f9b7f612402e">Get</a> (const <a class="el" href="classwx_ex_file_name.html">wxExFileName</a> *filename) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a file header for specified filename, using it's lexer and data from config, among which the file purpose.  <a href="#abfe3598485fcab9070d0f9b7f612402e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aef905f46a123d360f1d26bf219dcb04e"></a><!-- doxytag: member="wxExHeader::Set" ref="aef905f46a123d360f1d26bf219dcb04e" args="(const wxString &amp;purpose, const wxString &amp;author=wxEmptyString, const wxString &amp;email=wxEmptyString, const wxString &amp;license=wxEmptyString)" -->
@@ -70,7 +67,50 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>This class offers methods to make a file header. </p>
-</div><hr/><h2>Member Function Documentation</h2>
+</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="af6422f53415909ba66b8fa77c29ba24c"></a><!-- doxytag: member="wxExHeader::wxExHeader" ref="af6422f53415909ba66b8fa77c29ba24c" args="(const wxString &amp;purpose=wxEmptyString, const wxString &amp;author=wxEmptyString, const wxString &amp;email=wxEmptyString, const wxString &amp;license=wxEmptyString)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wxExHeader::wxExHeader </td>
+          <td>(</td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>purpose</em> = <code>wxEmptyString</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>author</em> = <code>wxEmptyString</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>email</em> = <code>wxEmptyString</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>license</em> = <code>wxEmptyString</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Default constructor. </p>
+<p>Sets fields if purpose is not empty. </p>
+
+</div>
+</div>
+<hr/><h2>Member Function Documentation</h2>
 <a class="anchor" id="abfe3598485fcab9070d0f9b7f612402e"></a><!-- doxytag: member="wxExHeader::Get" ref="abfe3598485fcab9070d0f9b7f612402e" args="(const wxExFileName *filename) const " -->
 <div class="memitem">
 <div class="memproto">
@@ -87,24 +127,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="memdoc">
 
 <p>Returns a file header for specified filename, using it's lexer and data from config, among which the file purpose. </p>
-
-</div>
-</div>
-<a class="anchor" id="a542892592a9b6745a4d2bb93d560c57c"></a><!-- doxytag: member="wxExHeader::InfoNeeded" ref="a542892592a9b6745a4d2bb93d560c57c" args="() const " -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExHeader::InfoNeeded </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Returns true if you should do ShowDialog to get more info, and not yet do a Get. </p>
 
 </div>
 </div>
@@ -167,7 +189,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:31 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:56 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

@@ -66,15 +66,13 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae2ccb750551c52276ec9f71a96c0d10e"></a><!-- doxytag: member="wxExFrame::~wxExFrame" ref="ae2ccb750551c52276ec9f71a96c0d10e" args="()" -->
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#ae2ccb750551c52276ec9f71a96c0d10e">~wxExFrame</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, deletes the statusbar. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a19eb0bd4b64423ff3f5a19a962d6924f"></a><!-- doxytag: member="wxExFrame::GetGrid" ref="a19eb0bd4b64423ff3f5a19a962d6924f" args="()" -->
-virtual <a class="el" href="classwx_ex_grid.html">wxExGrid</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a19eb0bd4b64423ff3f5a19a962d6924f">GetGrid</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a grid. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc5ba2ae5b79ca516c130e5592956773"></a><!-- doxytag: member="wxExFrame::GetListView" ref="afc5ba2ae5b79ca516c130e5592956773" args="()" -->
-virtual <a class="el" href="classwx_ex_list_view.html">wxExListView</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#afc5ba2ae5b79ca516c130e5592956773">GetListView</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a listview. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b557e8360825cb37e8d5b9e94a28eb4"></a><!-- doxytag: member="wxExFrame::GetSTC" ref="a5b557e8360825cb37e8d5b9e94a28eb4" args="()" -->
-virtual <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a5b557e8360825cb37e8d5b9e94a28eb4">GetSTC</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an STC. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad2b47c591fa341549e59235f967fc86e"></a><!-- doxytag: member="wxExFrame::GetFocusWindow" ref="ad2b47c591fa341549e59235f967fc86e" args="()" -->
+wxWindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#ad2b47c591fa341549e59235f967fc86e">GetFocusWindow</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns window that has or had focus. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classwx_ex_list_view.html">wxExListView</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#afc5ba2ae5b79ca516c130e5592956773">GetListView</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a listview.  <a href="#afc5ba2ae5b79ca516c130e5592956773"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a5b557e8360825cb37e8d5b9e94a28eb4">GetSTC</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an STC.  <a href="#a5b557e8360825cb37e8d5b9e94a28eb4"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#aa34cdde42be97856f9e947c9f8ac8842">OnCommandConfigDialog</a> (wxWindowID WXUNUSED(dialogid), int WXUNUSED(commandid)=wxID_APPLY)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when a config dialog command event is triggered.  <a href="#aa34cdde42be97856f9e947c9f8ac8842"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac92bb789089cacffb768222af6179bc5"></a><!-- doxytag: member="wxExFrame::OpenFile" ref="ac92bb789089cacffb768222af6179bc5" args="(const wxExFileName &amp;filename, int line_number=0, const wxString &amp;match=wxEmptyString, long flags=0)" -->
@@ -83,9 +81,6 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4469cab363bb3a7ee94c0a82968611b0"></a><!-- doxytag: member="wxExFrame::OpenFile" ref="a4469cab363bb3a7ee94c0a82968611b0" args="(const wxExFileName &amp;filename, const wxExVCSEntry &amp;vcs, long flags=0)" -->
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a4469cab363bb3a7ee94c0a82968611b0">OpenFile</a> (const <a class="el" href="classwx_ex_file_name.html">wxExFileName</a> &amp;filename, const <a class="el" href="classwx_ex_v_c_s_entry.html">wxExVCSEntry</a> &amp;vcs, long flags=0)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Allows you to open a filename with info from vcs. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41ef9a585033cff9f29f3fc49fb90342"></a><!-- doxytag: member="wxExFrame::SetFindFocus" ref="a41ef9a585033cff9f29f3fc49fb90342" args="(wxWindow *focus)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a41ef9a585033cff9f29f3fc49fb90342">SetFindFocus</a> (wxWindow *focus)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the find focus to specified window. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a856086c989d611355cfe44afdcce14f8"></a><!-- doxytag: member="wxExFrame::SetMenuBar" ref="a856086c989d611355cfe44afdcce14f8" args="(wxMenuBar *bar)" -->
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_frame.html#a856086c989d611355cfe44afdcce14f8">SetMenuBar</a> (wxMenuBar *bar)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Override from base class. <br/></td></tr>
@@ -110,7 +105,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Offers a frame with easy statusbar methods, find/replace, and allows for file dropping. </p>
-<p>Also helps in maintaining access to the base controls (grid, listview and STC). </p>
+<p>Also helps in maintaining access to the base controls (listview and STC). </p>
 </div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a1f39ceb6692d75ec7b8ffa98acd2e17b"></a><!-- doxytag: member="wxExFrame::wxExFrame" ref="a1f39ceb6692d75ec7b8ffa98acd2e17b" args="(wxWindow *parent, wxWindowID id, const wxString &amp;title, long style=wxDEFAULT_FRAME_STYLE)" -->
 <div class="memitem">
@@ -154,6 +149,44 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="afc5ba2ae5b79ca516c130e5592956773"></a><!-- doxytag: member="wxExFrame::GetListView" ref="afc5ba2ae5b79ca516c130e5592956773" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classwx_ex_list_view.html">wxExListView</a>* wxExFrame::GetListView </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [inline, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Returns a listview. </p>
+<p>Default returns NULL. </p>
+
+</div>
+</div>
+<a class="anchor" id="a5b557e8360825cb37e8d5b9e94a28eb4"></a><!-- doxytag: member="wxExFrame::GetSTC" ref="a5b557e8360825cb37e8d5b9e94a28eb4" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a>* wxExFrame::GetSTC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [inline, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Returns an STC. </p>
+<p>Default returns NULL. </p>
+
+</div>
+</div>
 <a class="anchor" id="aa34cdde42be97856f9e947c9f8ac8842"></a><!-- doxytag: member="wxExFrame::OnCommandConfigDialog" ref="aa34cdde42be97856f9e947c9f8ac8842" args="(wxWindowID WXUNUSED(dialogid), int WXUNUSED(commandid)=wxID_APPLY)" -->
 <div class="memitem">
 <div class="memproto">
@@ -256,7 +289,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:31 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:56 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

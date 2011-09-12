@@ -94,6 +94,8 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a318b3ee2ed72812d5124c6ab57f00151"></a><!-- doxytag: member="wxExSTC::AddTextHexMode" ref="a318b3ee2ed72812d5124c6ab57f00151" args="(wxFileOffset start, const wxCharBuffer &amp;buffer)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a318b3ee2ed72812d5124c6ab57f00151">AddTextHexMode</a> (wxFileOffset start, const wxCharBuffer &amp;buffer)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds text in hex mode. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a80cf3778aacc1f6e64448ebe72483044">AppendTextForced</a> (const wxString &amp;text, bool withTimestamp=true)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends text, possibly with timestamp, even if the document is readonly.  <a href="#a80cf3778aacc1f6e64448ebe72483044"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b3f701accf6fada5a1a25497b34b623"></a><!-- doxytag: member="wxExSTC::ConfigGet" ref="a4b3f701accf6fada5a1a25497b34b623" args="()" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a4b3f701accf6fada5a1a25497b34b623">ConfigGet</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the configurable parameters to values currently in config. <br/></td></tr>
@@ -138,9 +140,6 @@ const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4d5d9fd4da3df34e909fe376d6e6ba09"></a><!-- doxytag: member="wxExSTC::GetVi" ref="a4d5d9fd4da3df34e909fe376d6e6ba09" args="() const " -->
 const <a class="el" href="classwx_ex_vi.html">wxExVi</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a4d5d9fd4da3df34e909fe376d6e6ba09">GetVi</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets vi component. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d09114706df0621f8b7c660e78d8b28"></a><!-- doxytag: member="wxExSTC::GetVi" ref="a3d09114706df0621f8b7c660e78d8b28" args="()" -->
-<a class="el" href="classwx_ex_vi.html">wxExVi</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a3d09114706df0621f8b7c660e78d8b28">GetVi</a> ()</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets vi component (for testing). <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67d69801fbb6c21c545c7c890bc957d1"></a><!-- doxytag: member="wxExSTC::GetWordAtPos" ref="a67d69801fbb6c21c545c7c890bc957d1" args="(int pos) const " -->
 const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c.html#a67d69801fbb6c21c545c7c890bc957d1">GetWordAtPos</a> (int pos) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets word at position. <br/></td></tr>
@@ -401,6 +400,36 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 <hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="a80cf3778aacc1f6e64448ebe72483044"></a><!-- doxytag: member="wxExSTC::AppendTextForced" ref="a80cf3778aacc1f6e64448ebe72483044" args="(const wxString &amp;text, bool withTimestamp=true)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void wxExSTC::AppendTextForced </td>
+          <td>(</td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>withTimestamp</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Appends text, possibly with timestamp, even if the document is readonly. </p>
+<p>If caret was at end, it is repositioned at the end. </p>
+
+</div>
+</div>
 <a class="anchor" id="a7430a19daf357aa94f3665a909fec366"></a><!-- doxytag: member="wxExSTC::ConfigDialog" ref="a7430a19daf357aa94f3665a909fec366" args="(wxWindow *parent, const wxString &amp;title=_(&quot;Editor Options&quot;), long flags=0, wxWindowID id=wxID_ANY)" -->
 <div class="memitem">
 <div class="memproto">
@@ -623,7 +652,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <table class="params">
     <tr><td class="paramname">filename</td><td>file to open </td></tr>
     <tr><td class="paramname">line_number</td><td>goes to the line if &gt; 0, if -1 goes to end of file </td></tr>
-    <tr><td class="paramname">match</td><td>if not empty selects the text on that line (if line was specified) or finds text from begin (if line was 0) or end (line was -1) </td></tr>
+    <tr><td class="paramname">match</td><td>if not empty selects the text on that line. </td></tr>
     <tr><td class="paramname">flags</td><td>flags </td></tr>
   </table>
   </dd>
@@ -660,26 +689,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 <p>Replaces all text. </p>
 <p>It there is a selection, it replaces in the selection, otherwise in the entire document. Returns the number of replacements. </p>
-
-</div>
-</div>
-<a class="anchor" id="a5344964f840aed885b077f09e0e9736b"></a><!-- doxytag: member="wxExSTC::ReplaceNext" ref="a5344964f840aed885b077f09e0e9736b" args="(bool find_next)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool wxExSTC::ReplaceNext </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>find_next</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Replaces text and calls find next. </p>
-<p>Uses settings from find replace data. </p>
 
 </div>
 </div>
@@ -734,6 +743,26 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
+<a class="anchor" id="a5344964f840aed885b077f09e0e9736b"></a><!-- doxytag: member="wxExSTC::ReplaceNext" ref="a5344964f840aed885b077f09e0e9736b" args="(bool find_next)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool wxExSTC::ReplaceNext </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>find_next</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Replaces text and calls find next. </p>
+<p>Uses settings from find replace data. </p>
+
+</div>
+</div>
 <a class="anchor" id="a43565cab0cf2410335b1e0d65f31b15f"></a><!-- doxytag: member="wxExSTC::ResetMargins" ref="a43565cab0cf2410335b1e0d65f31b15f" args="(bool divider_margin=true)" -->
 <div class="memitem">
 <div class="memproto">
@@ -774,7 +803,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:31 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:57 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

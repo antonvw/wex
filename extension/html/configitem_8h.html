@@ -37,7 +37,6 @@
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <h1>include/wx/extension/configitem.h File Reference</h1>  </div>
@@ -45,11 +44,10 @@
 <div class="contents">
 <div class="textblock"><code>#include &lt;map&gt;</code><br/>
 <code>#include &lt;set&gt;</code><br/>
+<code>#include &lt;wx/control.h&gt;</code><br/>
 <code>#include &lt;wx/sizer.h&gt;</code><br/>
 <code>#include &lt;wx/slider.h&gt;</code><br/>
-<code>#include &lt;wx/statline.h&gt;</code><br/>
 <code>#include &lt;wx/string.h&gt;</code><br/>
-<code>#include &lt;wx/window.h&gt;</code><br/>
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for configitem.h:</div>
 <div class="dyncontent">
@@ -62,14 +60,6 @@ Include dependency graph for configitem.h:</div>
 Classes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_config_item.html">wxExConfigItem</a></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Container class for using with <a class="el" href="classwx_ex_config_dialog.html" title="Offers a dialog to set several items in the config.">wxExConfigDialog</a>.  <a href="classwx_ex_config_item.html#_details">More...</a><br/></td></tr>
-<tr><td colspan="2"><h2><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a68f133cc2aa71ee61508fc111fef9782"></a><!-- doxytag: member="configitem.h::wxExUserWindowCreate" ref="a68f133cc2aa71ee61508fc111fef9782" args=")(wxWindow *user, wxWindow *parent, bool readonly)" -->
-typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="configitem_8h.html#a68f133cc2aa71ee61508fc111fef9782">wxExUserWindowCreate</a> )(wxWindow *user, wxWindow *parent, bool readonly)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for user window creation. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a884efecb486683df525c394c090eb382"></a><!-- doxytag: member="configitem.h::wxExUserWindowToConfig" ref="a884efecb486683df525c394c090eb382" args=")(wxWindow *user, bool save)" -->
-typedef bool(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="configitem_8h.html#a884efecb486683df525c394c090eb382">wxExUserWindowToConfig</a> )(wxWindow *user, bool save)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback for load or save data for user window. <br/></td></tr>
 <tr><td colspan="2"><h2><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9">wxExConfigType</a> { <br/>
@@ -83,27 +73,23 @@ Enumerations</h2></td></tr>
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9afa4b6ed95de8abac4d37f2d5190da5e7">CONFIG_COMBOBOX</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a24fb68ababa3a2645911e7343aeed963">CONFIG_COMBOBOXDIR</a>, 
 <br/>
-&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a52675524eb2098c5f750008195c44700">CONFIG_COMMAND_LINK_BUTTON</a>, 
-<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9ad1251a0b9965eb872dc557d45ce38bb9">CONFIG_DIRPICKERCTRL</a>, 
+&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9ad1251a0b9965eb872dc557d45ce38bb9">CONFIG_DIRPICKERCTRL</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a4780e0a570aad369281296edcaf30d66">CONFIG_FILEPICKERCTRL</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a5486cc03173255ad7284b3cf29d62629">CONFIG_FONTPICKERCTRL</a>, 
+<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9af71b456a44e9c40ef187e4260e265093">CONFIG_HYPERLINKCTRL</a>, 
 <br/>
-&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9af71b456a44e9c40ef187e4260e265093">CONFIG_HYPERLINKCTRL</a>, 
-<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9aa3e565ceb73b5b262b3058f08d7d3e17">CONFIG_INT</a>, 
-<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a80ed226042c0d67082cc5a7b84275c0b">CONFIG_LISTVIEW_FOLDER</a>, 
+&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9aa3e565ceb73b5b262b3058f08d7d3e17">CONFIG_INT</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a6f1055fa0f8adb84c6722a2f26db6fe7">CONFIG_RADIOBOX</a>, 
-<br/>
-&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9ae0bb743a7ba6adfc1bab93ca3c8df3d8">CONFIG_SLIDER</a>, 
+<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9ae0bb743a7ba6adfc1bab93ca3c8df3d8">CONFIG_SLIDER</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a0b2430d0f4f8926a022ba30b8ee7c270">CONFIG_SPINCTRL</a>, 
-<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a3d315721fd29334a178e5a82ccf52eb7">CONFIG_SPINCTRL_DOUBLE</a>, 
+<br/>
+&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a3d315721fd29334a178e5a82ccf52eb7">CONFIG_SPINCTRL_DOUBLE</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9ab82c62b6b4232b24126772cfc43ba29e">CONFIG_STATICLINE</a>, 
-<br/>
-&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a2ba6ca9ba726682c1bf54bb098e9f3e6">CONFIG_STATICTEXT</a>, 
+<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a2ba6ca9ba726682c1bf54bb098e9f3e6">CONFIG_STATICTEXT</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a490ce51012af9db8e77afc4c63af3c09">CONFIG_STRING</a>, 
-<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a48765ed7ada51fa180f55c04691ccdcd">CONFIG_STC</a>, 
-<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9abe3447f91c7e3bffec534a5552310a09">CONFIG_TOGGLEBUTTON</a>, 
 <br/>
-&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a4e21279b3c714ead51720d16a86f2634">CONFIG_USER</a>, 
+&#160;&#160;<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9abe3447f91c7e3bffec534a5552310a09">CONFIG_TOGGLEBUTTON</a>, 
+<a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a4e21279b3c714ead51720d16a86f2634">CONFIG_USER</a>, 
 <a class="el" href="configitem_8h.html#a921934b4f0c593e1af4bd52d8391b6d9a1a6baf3944c89874a37d0bfbff4b5ef9">CONFIG_ITEM_MAX</a>
 <br/>
  }</td></tr>
@@ -149,9 +135,6 @@ Enumerations</h2></td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a24fb68ababa3a2645911e7343aeed963"></a><!-- doxytag: member="CONFIG_COMBOBOXDIR" ref="a921934b4f0c593e1af4bd52d8391b6d9a24fb68ababa3a2645911e7343aeed963" args="" -->CONFIG_COMBOBOXDIR</em>&nbsp;</td><td>
 <p>a combobox item with a browse button </p>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a52675524eb2098c5f750008195c44700"></a><!-- doxytag: member="CONFIG_COMMAND_LINK_BUTTON" ref="a921934b4f0c593e1af4bd52d8391b6d9a52675524eb2098c5f750008195c44700" args="" -->CONFIG_COMMAND_LINK_BUTTON</em>&nbsp;</td><td>
-<p>a commandlink button </p>
-</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9ad1251a0b9965eb872dc557d45ce38bb9"></a><!-- doxytag: member="CONFIG_DIRPICKERCTRL" ref="a921934b4f0c593e1af4bd52d8391b6d9ad1251a0b9965eb872dc557d45ce38bb9" args="" -->CONFIG_DIRPICKERCTRL</em>&nbsp;</td><td>
 <p>a dirpicker ctrl item </p>
 </td></tr>
@@ -166,9 +149,6 @@ Enumerations</h2></td></tr>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9aa3e565ceb73b5b262b3058f08d7d3e17"></a><!-- doxytag: member="CONFIG_INT" ref="a921934b4f0c593e1af4bd52d8391b6d9aa3e565ceb73b5b262b3058f08d7d3e17" args="" -->CONFIG_INT</em>&nbsp;</td><td>
 <p>a textctrl item that only accepts an integer (long) </p>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a80ed226042c0d67082cc5a7b84275c0b"></a><!-- doxytag: member="CONFIG_LISTVIEW_FOLDER" ref="a921934b4f0c593e1af4bd52d8391b6d9a80ed226042c0d67082cc5a7b84275c0b" args="" -->CONFIG_LISTVIEW_FOLDER</em>&nbsp;</td><td>
-<p>a listview ctrl item (a list view standard file) </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a6f1055fa0f8adb84c6722a2f26db6fe7"></a><!-- doxytag: member="CONFIG_RADIOBOX" ref="a921934b4f0c593e1af4bd52d8391b6d9a6f1055fa0f8adb84c6722a2f26db6fe7" args="" -->CONFIG_RADIOBOX</em>&nbsp;</td><td>
 <p>a radiobox item </p>
@@ -191,14 +171,11 @@ Enumerations</h2></td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a490ce51012af9db8e77afc4c63af3c09"></a><!-- doxytag: member="CONFIG_STRING" ref="a921934b4f0c593e1af4bd52d8391b6d9a490ce51012af9db8e77afc4c63af3c09" args="" -->CONFIG_STRING</em>&nbsp;</td><td>
 <p>a textctrl item </p>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a48765ed7ada51fa180f55c04691ccdcd"></a><!-- doxytag: member="CONFIG_STC" ref="a921934b4f0c593e1af4bd52d8391b6d9a48765ed7ada51fa180f55c04691ccdcd" args="" -->CONFIG_STC</em>&nbsp;</td><td>
-<p>a styled text ctrl item </p>
-</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9abe3447f91c7e3bffec534a5552310a09"></a><!-- doxytag: member="CONFIG_TOGGLEBUTTON" ref="a921934b4f0c593e1af4bd52d8391b6d9abe3447f91c7e3bffec534a5552310a09" args="" -->CONFIG_TOGGLEBUTTON</em>&nbsp;</td><td>
 <p>a toggle button item </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a4e21279b3c714ead51720d16a86f2634"></a><!-- doxytag: member="CONFIG_USER" ref="a921934b4f0c593e1af4bd52d8391b6d9a4e21279b3c714ead51720d16a86f2634" args="" -->CONFIG_USER</em>&nbsp;</td><td>
-<p>provide your own window </p>
+<p>provide your own control </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a921934b4f0c593e1af4bd52d8391b6d9a1a6baf3944c89874a37d0bfbff4b5ef9"></a><!-- doxytag: member="CONFIG_ITEM_MAX" ref="a921934b4f0c593e1af4bd52d8391b6d9a1a6baf3944c89874a37d0bfbff4b5ef9" args="" -->CONFIG_ITEM_MAX</em>&nbsp;</td><td>
 <p>Used for automatic testing only. </p>
@@ -210,7 +187,7 @@ Enumerations</h2></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:30 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:55 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

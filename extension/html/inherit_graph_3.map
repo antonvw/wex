@@ -1,5 +1,3 @@
 <map id="G" name="G">
-<area shape="rect" id="node1" href="$classwx_ex_dialog.html" title="Offers a general dialog, with a separated button sizer at the bottom." alt="" coords="5,31,96,62"/>
-<area shape="rect" id="node3" href="$classwx_ex_config_dialog.html" title="Offers a dialog to set several items in the config." alt="" coords="153,5,279,35"/>
-<area shape="rect" id="node5" href="$classwx_ex_s_t_c_entry_dialog.html" title="Offers an wxExSTC as a dialog (like wxTextEntryDialog)." alt="" coords="144,58,288,89"/>
+<area shape="rect" id="node1" href="$classwx_ex_config_item.html" title="Container class for using with wxExConfigDialog." alt="" coords="5,5,123,35"/>
 </map>
