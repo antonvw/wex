@@ -1,3 +1,5 @@
 <map id="G" name="G">
-<area shape="rect" id="node1" href="$classwx_ex_status_bar_pane.html" title="This class defines our statusbar panes, used by wxExFrame::SetupStatusBar." alt="" coords="5,5,147,35"/>
+<area shape="rect" id="node1" href="$classwx_ex_s_t_c.html" title="Offers a styled text ctrl with find/replace, printing, popup menu, macro support, vi support and lexe..." alt="" coords="7,31,84,62"/>
+<area shape="rect" id="node3" href="$classwx_ex_s_t_c_shell.html" title="This class offers a wxExSTC with support for commands." alt="" coords="149,5,256,35"/>
+<area shape="rect" id="node5" href="$classwx_ex_s_t_c_with_frame.html" title="Adds a frame to wxExSTC." alt="" coords="133,58,272,89"/>
 </map>

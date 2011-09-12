@@ -38,14 +38,16 @@
 </div>
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a>  </div>
   <div class="headertitle">
 <h1>wxExListViewWithFrame Class Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="wxExListViewWithFrame" --><!-- doxytag: inherits="wxExListViewStandard" -->
-<p>Adds a <a class="el" href="classwx_ex_frame_with_history.html" title="Adds file and project history support to wxExManagedFrame.">wxExFrameWithHistory</a> to <a class="el" href="classwx_ex_list_view_standard.html" title="Adds some standard lists.">wxExListViewStandard</a>.  
+<!-- doxytag: class="wxExListViewWithFrame" --><!-- doxytag: inherits="wxExListViewFileName" -->
+<p>Adds a <a class="el" href="classwx_ex_frame_with_history.html" title="Adds file and project history support to wxExManagedFrame.">wxExFrameWithHistory</a> to <a class="el" href="classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders.">wxExListViewFileName</a>.  
 <a href="#_details">More...</a></p>
 
 <p><code>#include &lt;wx/extension/report/listview.h&gt;</code></p>
@@ -54,16 +56,28 @@ Inheritance diagram for wxExListViewWithFrame:</div>
 <div class="dyncontent">
 <div class="center"><img src="classwx_ex_list_view_with_frame__inherit__graph.png" border="0" usemap="#wx_ex_list_view_with_frame_inherit__map" alt="Inheritance graph"/></div>
 <map name="wx_ex_list_view_with_frame_inherit__map" id="wx_ex_list_view_with_frame_inherit__map">
-<area shape="rect" id="node7" href="classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="27,246,149,277"/><area shape="rect" id="node2" href="classwx_ex_list_view_standard.html" title="Adds some standard lists." alt="" coords="11,86,165,117"/><area shape="rect" id="node4" href="classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView." alt="" coords="37,6,139,37"/></map>
+<area shape="rect" id="node7" href="classwx_ex_list_view_file.html" title="Combines wxExListViewWithFrame and wxExFile, giving you a list control with file synchronization supp..." alt="" coords="27,246,149,277"/><area shape="rect" id="node2" href="classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders." alt="" coords="9,86,167,117"/><area shape="rect" id="node4" href="classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView." alt="" coords="37,6,139,37"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 
 <p><a href="classwx_ex_list_view_with_frame-members.html">List of all members.</a></p>
 <table class="memberdecls">
+<tr><td colspan="2"><h2><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classwx_ex_list_view_with_frame.html#a737e66273963f81c255603d503fecd8ba0d38a726015ef4c5bae2e12529645e18">LIST_MENU_REPORT_FIND</a> =  0x0001, 
+<a class="el" href="classwx_ex_list_view_with_frame.html#a737e66273963f81c255603d503fecd8baaf49d52000996b637782624de9e9b30f">LIST_MENU_TOOL</a> =  0x0002
+ }</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Menu flags, they determine how the context menu will appear. </p>
+ <a href="classwx_ex_list_view_with_frame.html#a737e66273963f81c255603d503fecd8b">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4402d0941598151524565e9b5c8805df"></a><!-- doxytag: member="wxExListViewWithFrame::wxExListViewWithFrame" ref="a4402d0941598151524565e9b5c8805df" args="(wxWindow *parent, wxExFrameWithHistory *frame, ListType type, wxWindowID id=wxID_ANY, long menu_flags=LIST_MENU_DEFAULT, const wxExLexer *lexer=NULL, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxLC_LIST|wxLC_HRULES|wxLC_VRULES|wxSUNKEN_BORDER, const wxValidator &amp;validator=wxDefaultValidator, const wxString &amp;name=wxListCtrlNameStr)" -->
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_view_with_frame.html#a4402d0941598151524565e9b5c8805df">wxExListViewWithFrame</a> (wxWindow *parent, <a class="el" href="classwx_ex_frame_with_history.html">wxExFrameWithHistory</a> *frame, <a class="el" href="classwx_ex_list_view_standard.html#a6797581c096e8b2f7cc865ad7b79d847">ListType</a> type, wxWindowID id=wxID_ANY, long menu_flags=LIST_MENU_DEFAULT, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> *lexer=NULL, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxLC_LIST|wxLC_HRULES|wxLC_VRULES|wxSUNKEN_BORDER, const wxValidator &amp;validator=wxDefaultValidator, const wxString &amp;name=wxListCtrlNameStr)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_view_with_frame.html#a4402d0941598151524565e9b5c8805df">wxExListViewWithFrame</a> (wxWindow *parent, <a class="el" href="classwx_ex_frame_with_history.html">wxExFrameWithHistory</a> *frame, <a class="el" href="classwx_ex_list_view_file_name.html#a17ae4129c69d07ef760a7bff80739f83">ListType</a> type, wxWindowID id=wxID_ANY, long menu_flags=LIST_MENU_DEFAULT, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> *lexer=NULL, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxLC_LIST|wxLC_HRULES|wxLC_VRULES|wxSUNKEN_BORDER, const wxValidator &amp;validator=wxDefaultValidator, const wxString &amp;name=wxListCtrlNameStr)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br/></td></tr>
+<tr><td colspan="2"><h2><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acda3e4a7aed910b97fd76ed4da90e2da"></a><!-- doxytag: member="wxExListViewWithFrame::GetTypeTool" ref="acda3e4a7aed910b97fd76ed4da90e2da" args="(const wxExTool &amp;tool)" -->
+static <a class="el" href="classwx_ex_list_view_file_name.html#a17ae4129c69d07ef760a7bff80739f83">ListType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_view_with_frame.html#acda3e4a7aed910b97fd76ed4da90e2da">GetTypeTool</a> (const <a class="el" href="classwx_ex_tool.html">wxExTool</a> &amp;tool)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns list type from tool id. <br/></td></tr>
 <tr><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a405d6fd7aa9e68cd62c09bba351d6f47"></a><!-- doxytag: member="wxExListViewWithFrame::BuildPopupMenu" ref="a405d6fd7aa9e68cd62c09bba351d6f47" args="(wxExMenu &amp;menu)" -->
@@ -71,10 +85,36 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds the popup menu. <br/></td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
-<div class="textblock"><p>Adds a <a class="el" href="classwx_ex_frame_with_history.html" title="Adds file and project history support to wxExManagedFrame.">wxExFrameWithHistory</a> to <a class="el" href="classwx_ex_list_view_standard.html" title="Adds some standard lists.">wxExListViewStandard</a>. </p>
+<div class="textblock"><p>Adds a <a class="el" href="classwx_ex_frame_with_history.html" title="Adds file and project history support to wxExManagedFrame.">wxExFrameWithHistory</a> to <a class="el" href="classwx_ex_list_view_file_name.html" title="Adds some standard lists, all these lists have items associated with files or folders.">wxExListViewFileName</a>. </p>
 <p>It also adds a tool menu if appropriate. </p>
-</div></div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:56 for wxextension by&#160;
+</div><hr/><h2>Member Enumeration Documentation</h2>
+<a class="anchor" id="a737e66273963f81c255603d503fecd8b"></a><!-- doxytag: member="wxExListViewWithFrame::@4" ref="a737e66273963f81c255603d503fecd8b" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Menu flags, they determine how the context menu will appear. </p>
+<dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="a737e66273963f81c255603d503fecd8ba0d38a726015ef4c5bae2e12529645e18"></a><!-- doxytag: member="LIST_MENU_REPORT_FIND" ref="a737e66273963f81c255603d503fecd8ba0d38a726015ef4c5bae2e12529645e18" args="" -->LIST_MENU_REPORT_FIND</em>&nbsp;</td><td>
+<p>for adding find and replace in files </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a737e66273963f81c255603d503fecd8baaf49d52000996b637782624de9e9b30f"></a><!-- doxytag: member="LIST_MENU_TOOL" ref="a737e66273963f81c255603d503fecd8baaf49d52000996b637782624de9e9b30f" args="" -->LIST_MENU_TOOL</em>&nbsp;</td><td>
+<p>for adding tool menu </p>
+</td></tr>
+</table>
+</dd>
+</dl>
+
+</div>
+</div>
+</div>
+<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:31 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

@@ -1,4 +1,3 @@
 <map id="G" name="G">
-<area shape="rect" id="node1" href="$classwx_ex_tool_bar.html" title="Offers a toolbar together with stock art." alt="" coords="5,5,104,35"/>
-<area shape="rect" id="node3" href="$classwx_ex_find_tool_bar.html" title="Offers a find toolbar, containing a find ctrl, up and down arrows and checkboxes." alt="" coords="152,5,275,35"/>
+<area shape="rect" id="node1" href="$classwx_ex_tool_info.html" title="This class defines our tool info." alt="" coords="7,5,105,35"/>
 </map>

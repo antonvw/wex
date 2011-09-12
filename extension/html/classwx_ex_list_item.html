@@ -47,7 +47,7 @@
 <p>Offers a list item associated with a file on an <a class="el" href="classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView.">wxExListView</a>.  
 <a href="#_details">More...</a></p>
 
-<p><code>#include &lt;wx/extension/report/listitem.h&gt;</code></p>
+<p><code>#include &lt;wx/extension/listitem.h&gt;</code></p>
 
 <p><a href="classwx_ex_list_item-members.html">List of all members.</a></p>
 <table class="memberdecls">
@@ -62,14 +62,17 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6f6e16e48281b338c7ef065f4facdda"></a><!-- doxytag: member="wxExListItem::GetFileName" ref="ab6f6e16e48281b338c7ef065f4facdda" args="() const " -->
 const <a class="el" href="classwx_ex_file_name.html">wxExFileName</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#ab6f6e16e48281b338c7ef065f4facdda">GetFileName</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the filename. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae64b66a3a9dff9d1a4e258a3f6e1345d"></a><!-- doxytag: member="wxExListItem::GetFileSpec" ref="ae64b66a3a9dff9d1a4e258a3f6e1345d" args="() const " -->
+const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#ae64b66a3a9dff9d1a4e258a3f6e1345d">GetFileSpec</a> () const </td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the file spec. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c7366a784c6c92b8589514fe1510ff7"></a><!-- doxytag: member="wxExListItem::GetListView" ref="a9c7366a784c6c92b8589514fe1510ff7" args="() const " -->
+<a class="el" href="classwx_ex_list_view.html">wxExListView</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#a9c7366a784c6c92b8589514fe1510ff7">GetListView</a> () const </td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the listview. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#a0214461567edc51bd75256e568a576d8">Insert</a> (long index=-1)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts the item at index (if -1 at the end of the listview), and sets all attributes.  <a href="#a0214461567edc51bd75256e568a576d8"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78b7bc3775e88871ba7dda1b3a3ff355"></a><!-- doxytag: member="wxExListItem::IsReadOnly" ref="a78b7bc3775e88871ba7dda1b3a3ff355" args="() const " -->
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#a78b7bc3775e88871ba7dda1b3a3ff355">IsReadOnly</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if this item is readonly (on the listview). <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6db6a5149bb53e29de950271905340e4"></a><!-- doxytag: member="wxExListItem::Run" ref="a6db6a5149bb53e29de950271905340e4" args="(const wxExTool &amp;tool)" -->
-const <a class="el" href="classwx_ex_file_statistics.html">wxExFileStatistics</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#a6db6a5149bb53e29de950271905340e4">Run</a> (const <a class="el" href="classwx_ex_tool.html">wxExTool</a> &amp;tool)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs a tool on this item. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affbed824380e616001d3c4901575fa75"></a><!-- doxytag: member="wxExListItem::SetItem" ref="affbed824380e616001d3c4901575fa75" args="(int col_number, const wxString &amp;text)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_list_item.html#affbed824380e616001d3c4901575fa75">SetItem</a> (int col_number, const wxString &amp;text)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the item text using column number. <br/></td></tr>
@@ -85,7 +88,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Offers a list item associated with a file on an <a class="el" href="classwx_ex_list_view.html" title="Adds printing, popup menu, images, columns and items to wxListView.">wxExListView</a>. </p>
-<p>It allows you to run tools on the item and keeps statistics when running. </p>
 </div><hr/><h2>Member Function Documentation</h2>
 <a class="anchor" id="a0214461567edc51bd75256e568a576d8"></a><!-- doxytag: member="wxExListItem::Insert" ref="a0214461567edc51bd75256e568a576d8" args="(long index=&#45;1)" -->
 <div class="memitem">
@@ -107,7 +109,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:56 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:31 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

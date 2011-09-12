@@ -43,7 +43,7 @@
 <h1>wxExVCSEntry Class Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="wxExVCSEntry" --><!-- doxytag: inherits="wxExCommand" -->
+<!-- doxytag: class="wxExVCSEntry" --><!-- doxytag: inherits="wxExProcess" -->
 <p>This class collects a single vcs.  
 <a href="#_details">More...</a></p>
 
@@ -53,7 +53,7 @@ Inheritance diagram for wxExVCSEntry:</div>
 <div class="dyncontent">
 <div class="center"><img src="classwx_ex_v_c_s_entry__inherit__graph.png" border="0" usemap="#wx_ex_v_c_s_entry_inherit__map" alt="Inheritance graph"/></div>
 <map name="wx_ex_v_c_s_entry_inherit__map" id="wx_ex_v_c_s_entry_inherit__map">
-<area shape="rect" id="node2" href="classwx_ex_command.html" title="This class offers functionality around wxExecute." alt="" coords="5,6,117,37"/></map>
+<area shape="rect" id="node2" href="classwx_ex_process.html" title="Offers a wxProcess with default output to a wxExSTCShell on a wxExSTCEntryDialog." alt="" coords="9,6,111,37"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 
 <p><a href="classwx_ex_v_c_s_entry-members.html">List of all members.</a></p>
@@ -68,8 +68,8 @@ Public Member Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor using xml node. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#a23015846cc516902bdfde1d8cd30c646">BuildMenu</a> (int base_id, wxMenu *menu, bool is_popup=true) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a menu, default assumes it is a popup menu.  <a href="#a23015846cc516902bdfde1d8cd30c646"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a844ce8332bb12416259e84628113212f"></a><!-- doxytag: member="wxExVCSEntry::Execute" ref="a844ce8332bb12416259e84628113212f" args="(const wxExLexer &amp;lexer, const wxString &amp;args, const wxString &amp;wd=wxEmptyString)" -->
-long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#a844ce8332bb12416259e84628113212f">Execute</a> (const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, const wxString &amp;args, const wxString &amp;wd=wxEmptyString)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae14c524cf8d0fdad1498956b1baecc7d"></a><!-- doxytag: member="wxExVCSEntry::Execute" ref="ae14c524cf8d0fdad1498956b1baecc7d" args="(const wxString &amp;args, const wxExLexer &amp;lexer, const wxString &amp;wd=wxEmptyString)" -->
+long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#ae14c524cf8d0fdad1498956b1baecc7d">Execute</a> (const wxString &amp;args, const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> &amp;lexer, const wxString &amp;wd=wxEmptyString)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the current command for this vcs. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad82c07a33101ab1fef0b4f5d98380f77"></a><!-- doxytag: member="wxExVCSEntry::GetCommand" ref="ad82c07a33101ab1fef0b4f5d98380f77" args="() const " -->
 const <a class="el" href="classwx_ex_v_c_s_command.html">wxExVCSCommand</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_v_c_s_entry.html#ad82c07a33101ab1fef0b4f5d98380f77">GetCommand</a> () const </td></tr>
@@ -171,7 +171,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:57 for wxextension by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:32 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>

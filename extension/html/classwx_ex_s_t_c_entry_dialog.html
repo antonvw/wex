@@ -60,15 +60,16 @@ Inheritance diagram for wxExSTCEntryDialog:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a956d13e374d12b275cfcc3f943cc5f59"></a><!-- doxytag: member="wxExSTCEntryDialog::wxExSTCEntryDialog" ref="a956d13e374d12b275cfcc3f943cc5f59" args="(wxWindow *parent, const wxString &amp;caption, const wxString &amp;text, const wxString &amp;prompt=wxEmptyString, long button_style=wxOK|wxCANCEL, wxWindowID id=wxID_ANY, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExSTCEntryDialog&quot;)" -->
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#a956d13e374d12b275cfcc3f943cc5f59">wxExSTCEntryDialog</a> (wxWindow *parent, const wxString &amp;caption, const wxString &amp;text, const wxString &amp;prompt=wxEmptyString, long button_style=wxOK|wxCANCEL, wxWindowID id=wxID_ANY, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExSTCEntryDialog&quot;)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#accf75d7f0e6b9e7d0f08177baacd4552">wxExSTCEntryDialog</a> (wxWindow *parent, const wxString &amp;caption, const wxString &amp;text, const wxString &amp;prompt=wxEmptyString, long button_style=wxOK|wxCANCEL, bool use_shell=false, wxWindowID id=wxID_ANY, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExSTCEntryDialog&quot;)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#accf75d7f0e6b9e7d0f08177baacd4552"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8e391e6bb91ea3fdf63e172352dc40c"></a><!-- doxytag: member="wxExSTCEntryDialog::GetLexer" ref="aa8e391e6bb91ea3fdf63e172352dc40c" args="() const " -->
 const <a class="el" href="classwx_ex_lexer.html">wxExLexer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#aa8e391e6bb91ea3fdf63e172352dc40c">GetLexer</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the STC lexer. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a725ee46c7511c7ef9dae80d4eff76724"></a><!-- doxytag: member="wxExSTCEntryDialog::GetSTC" ref="a725ee46c7511c7ef9dae80d4eff76724" args="()" -->
 <a class="el" href="classwx_ex_s_t_c.html">wxExSTC</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#a725ee46c7511c7ef9dae80d4eff76724">GetSTC</a> ()</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the STC. <br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="classwx_ex_s_t_c_shell.html">wxExSTCShell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#abb56a95ec72cddeba1d7393efe89d5ee">GetSTCShell</a> ()</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the STC Shell (only if use_shell was true when constructed).  <a href="#abb56a95ec72cddeba1d7393efe89d5ee"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a36b541e49cd98289906b6a039ccc6b12"></a><!-- doxytag: member="wxExSTCEntryDialog::GetText" ref="a36b541e49cd98289906b6a039ccc6b12" args="() const " -->
 const wxString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#a36b541e49cd98289906b6a039ccc6b12">GetText</a> () const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the normal STC text value. <br/></td></tr>
@@ -78,15 +79,132 @@ const wxCharBuffer&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6939490c163c00bf6a902fc79b379238"></a><!-- doxytag: member="wxExSTCEntryDialog::SetLexer" ref="a6939490c163c00bf6a902fc79b379238" args="(const wxString &amp;lexer)" -->
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#a6939490c163c00bf6a902fc79b379238">SetLexer</a> (const wxString &amp;lexer)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the STC lexer. <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8c542d380abd872a6d665713b8e3c14f"></a><!-- doxytag: member="wxExSTCEntryDialog::SetText" ref="a8c542d380abd872a6d665713b8e3c14f" args="(const wxString &amp;text)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classwx_ex_s_t_c_entry_dialog.html#a8c542d380abd872a6d665713b8e3c14f">SetText</a> (const wxString &amp;text)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the STC text (either normal or raw). <br/></td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Offers an <a class="el" href="classwx_ex_s_t_c.html" title="Offers a styled text ctrl with find/replace, printing, popup menu, macro support, vi support and lexe...">wxExSTC</a> as a dialog (like wxTextEntryDialog). </p>
 <p>The prompt (if not empty) is first added as a text sizer to the user sizer. Then the STC component is added to the user sizer. </p>
-</div></div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun Jul 3 2011 11:29:57 for wxextension by&#160;
+</div><hr/><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="accf75d7f0e6b9e7d0f08177baacd4552"></a><!-- doxytag: member="wxExSTCEntryDialog::wxExSTCEntryDialog" ref="accf75d7f0e6b9e7d0f08177baacd4552" args="(wxWindow *parent, const wxString &amp;caption, const wxString &amp;text, const wxString &amp;prompt=wxEmptyString, long button_style=wxOK|wxCANCEL, bool use_shell=false, wxWindowID id=wxID_ANY, const wxPoint &amp;pos=wxDefaultPosition, const wxSize &amp;size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, const wxString &amp;name=&quot;wxExSTCEntryDialog&quot;)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wxExSTCEntryDialog::wxExSTCEntryDialog </td>
+          <td>(</td>
+          <td class="paramtype">wxWindow *&#160;</td>
+          <td class="paramname"><em>parent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>caption</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>prompt</em> = <code>wxEmptyString</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>button_style</em> = <code>wxOK|wxCANCEL</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_shell</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">wxWindowID&#160;</td>
+          <td class="paramname"><em>id</em> = <code>wxID_ANY</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxPoint &amp;&#160;</td>
+          <td class="paramname"><em>pos</em> = <code>wxDefaultPosition</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxSize &amp;&#160;</td>
+          <td class="paramname"><em>size</em> = <code>wxDefaultSize</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>style</em> = <code>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const wxString &amp;&#160;</td>
+          <td class="paramname"><em>name</em> = <code>&quot;wxExSTCEntryDialog&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Constructor. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parent</td><td>parent </td></tr>
+    <tr><td class="paramname">caption</td><td>caption </td></tr>
+    <tr><td class="paramname">text</td><td>initial text </td></tr>
+    <tr><td class="paramname">prompt</td><td>prompt (as with wxTextEntryDialog) </td></tr>
+    <tr><td class="paramname">button_style</td><td>buttons </td></tr>
+    <tr><td class="paramname">use_shell</td><td>normally a normal STC is used for entry, if you set this flag, an STCShell is used </td></tr>
+    <tr><td class="paramname">id</td><td>window id </td></tr>
+    <tr><td class="paramname">pos</td><td>pos </td></tr>
+    <tr><td class="paramname">size</td><td>size </td></tr>
+    <tr><td class="paramname">style</td><td>dialog style </td></tr>
+    <tr><td class="paramname">name</td><td>name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="abb56a95ec72cddeba1d7393efe89d5ee"></a><!-- doxytag: member="wxExSTCEntryDialog::GetSTCShell" ref="abb56a95ec72cddeba1d7393efe89d5ee" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classwx_ex_s_t_c_shell.html">wxExSTCShell</a>* wxExSTCEntryDialog::GetSTCShell </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Gets the STC Shell (only if use_shell was true when constructed). </p>
+<p>Therefore might be NULL. </p>
+
+</div>
+</div>
+</div>
+<hr class="footer"/><address class="footer"><small>Generated on Mon Sep 12 2011 19:47:31 for wxextension by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </small></address>
 </body>
