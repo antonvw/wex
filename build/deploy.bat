@@ -9,7 +9,7 @@ mkdir syncped
 mkdir syncped\nl-NL
 
 rem Copy application.
-copy vcmswu\syncped\.exe syncped
+copy vcmswu\syncped.exe syncped
 
 rem Copy data.
 copy ..\extension\data\lexers.xml syncped
@@ -21,8 +21,8 @@ copy ..\locale\wxextension-nl.mo syncped\nl-NL\
 copy ..\locale\wxstd-xxx-nl.mo syncped\nl-NL\
 copy ..\locale\syncped-nl.mo syncped\nl-NL\
  
-7z a syncped
+7z a syncped.7z syncped\
 
-move syncped.7z ~\syncped\bin
+move syncped.7z ..\..\syncped\bin
 
 rmdir /S /Q syncped
