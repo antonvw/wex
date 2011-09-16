@@ -11,6 +11,10 @@ mkdir syncped\nl-NL
 rem Copy application.
 copy vcmswu\syncped.exe syncped
 
+rem Copy msvc DLL's
+copy c:\windows\syswow64\msvcp100.dll syncped
+copy c:\windows\syswow64\msvcr100.dll syncped
+
 rem Copy data.
 copy ..\extension\data\lexers.xml syncped
 copy ..\extension\data\vcs.xml syncped
