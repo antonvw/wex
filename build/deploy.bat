@@ -1,3 +1,4 @@
+@echo off
 rem Name:      deploy.bat
 rem Purpose:   Deploy file (for syncped)
 rem Author:    Anton van Wezenbeek
