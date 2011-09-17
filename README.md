@@ -14,17 +14,6 @@ one of these applications, being a full featured source code text editor.
   - the mac-os branch is added because the master uses c++0x flags, not supported
     by gcc 4.0.1 under mac os 10.4
 
-- old subversion repository 
-  - on xp-dev.com http://svn.xp-dev.com/svn/wxextension/
-  
-  - access 
-  The SVN support in wxExVCS works with SVN client 1.6.12
-  http://www.sliksvn.com/en/download
-  - under windows TortoiseSVN is used (TortoiseSVN 1.6.15)
-  http://tortoisesvn.tigris.org/,
-  - under Linux svn client (version 1.6.12 (r955767))
-  - under mac os 10.4 svn client (version 1.5.5 http://homepage.mac.com/martinott/)
-    
 - Source code      
   - Coding standard:
   http://www.gnu.org/prep/standards/standards.html
@@ -117,11 +106,8 @@ one of these applications, being a full featured source code text editor.
   
   - debug under Windows using IDE, under Linux using ddd
 
-  - deploy under Windows using 7-Zip 9.20
-  strip the executable under Windows using UPX
-  http://upx.sourceforge.net/
-  http://www.7-zip.org
-  deploy under Linux using deploy.sh (in build dir)
+  - deploy under Windows using deply.bat (in build dir)
+  - deploy under Linux using deploy.sh (in build dir)
 
 
 ## When adding functionality
