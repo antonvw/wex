@@ -263,7 +263,11 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
 
       for (
+#ifdef wxExUSE_CPP0X	
         auto it = m_Choices.begin();
+#else
+        std::map<long, const wxString>::iterator it = m_Choices.begin();
+#endif		
         it != m_Choices.end();
        ++it)
       {
@@ -410,7 +414,11 @@ void wxExConfigItem::CreateWindow(wxWindow* parent, bool readonly)
       wxArrayString arraychoices;
 
       for (
+#ifdef wxExUSE_CPP0X	
         auto it = m_Choices.begin();
+#else
+        std::map<long, const wxString>::iterator it = m_Choices.begin();
+#endif		
         it != m_Choices.end();
         ++it)
       {
@@ -609,7 +617,11 @@ bool wxExConfigItem::ToConfig(bool save) const
       int item = 0;
 
       for (
+#ifdef wxExUSE_CPP0X	
         auto b = m_Choices.begin();
+#else
+        std::map<long, const wxString>::const_iterator b = m_Choices.begin();
+#endif		
         b != m_Choices.end();
         ++b)
       {
@@ -676,8 +688,11 @@ bool wxExConfigItem::ToConfig(bool save) const
 
       if (save)
       {
+#ifdef wxExUSE_CPP0X	
         const auto l = wxExComboBoxToList(cb, m_MaxItems);
-
+#else
+        const std::list < wxString > l = wxExComboBoxToList(cb, m_MaxItems);
+#endif		
         wxExListToConfig(l, m_Label);
 
         if (m_Label == wxExFindReplaceData::Get()->GetTextFindWhat())
@@ -771,7 +786,11 @@ bool wxExConfigItem::ToConfig(bool save) const
       if (save)
       {
         for (
+#ifdef wxExUSE_CPP0X	
           auto b = m_Choices.begin();
+#else
+          std::map<long, const wxString>::const_iterator b = m_Choices.begin();
+#endif		  
           b != m_Choices.end();
           ++b)
         {
@@ -783,8 +802,13 @@ bool wxExConfigItem::ToConfig(bool save) const
       }
       else
       {
+#ifdef wxExUSE_CPP0X	
         const auto c = 
           m_Choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
+#else
+        const std::map<long, const wxString>::const_iterator c = 
+          m_Choices.find(wxConfigBase::Get()->ReadLong(m_Label, 0));
+#endif		  
 
         if (c != m_Choices.end())
         {

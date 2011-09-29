@@ -45,7 +45,11 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
   else
   {
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_No.begin();
+#else
+      std::set <int>::const_iterator it = m_No.begin();
+#endif	  
       it != m_No.end();
       ++it)
     {
@@ -56,7 +60,12 @@ void wxExStyle::Apply(wxStyledTextCtrl* stc) const
 
 bool wxExStyle::ContainsDefaultStyle() const
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_No.find(wxSTC_STYLE_DEFAULT);
+#else
+  const std::set <int>::const_iterator it = m_No.find(wxSTC_STYLE_DEFAULT);
+#endif
+  
   return (it != m_No.end());
 }
 
@@ -71,8 +80,13 @@ void wxExStyle::Set(const wxXmlNode* node)
 
   m_Value = node->GetNodeContent().Strip(wxString::both);
 
+#ifdef wxExUSE_CPP0X	
   const auto it = 
     wxExLexers::Get()->GetThemeMacros().find(m_Value);
+#else
+  std::map<wxString, wxString>::const_iterator it = 
+    wxExLexers::Get()->GetThemeMacros().find(m_Value);
+#endif	
 
   if (it != wxExLexers::Get()->GetThemeMacros().end())
   {

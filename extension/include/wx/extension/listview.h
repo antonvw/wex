@@ -187,7 +187,7 @@ private:
   void CopySelectedItemsToClipboard();
   void EditDelete();
   void EditInvertAll() {
-    for (auto i = 0; i < GetItemCount(); i++)
+    for (int i = 0; i < GetItemCount(); i++)
     {
       Select(i, !IsSelected(i));
     }}

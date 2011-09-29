@@ -19,6 +19,7 @@
 
 long wxExFileStatistics::Get(const wxString& key) const
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_Elements.GetItems().find(key);
 
   if (it != m_Elements.GetItems().end())
@@ -34,6 +35,9 @@ long wxExFileStatistics::Get(const wxString& key) const
       return it->second;
     }
   }
+#else
+  // TODO: Fix this.
+#endif  
 
   return 0;
 }
@@ -259,7 +263,7 @@ bool wxExTextFile::MatchLine(wxString& line)
   bool match = false;
   int count = 1;
 
-  auto* frd = wxExFindReplaceData::Get();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   if (!frd->UseRegularExpression() || !frd->GetRegularExpression().IsValid())
   {

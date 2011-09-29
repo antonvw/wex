@@ -261,7 +261,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
     const wxString link = GetTextAtCurrentPos();
-    const auto line_no = (!sel.empty() ? 
+    const int line_no = (!sel.empty() ? 
       wxExGetLineNumber(sel): 
       GetLineNumberAtCurrentPos());
 
@@ -355,17 +355,17 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
 void wxExSTC::CheckAutoComp(const wxUniChar& c)
 {
-  static wxString autoc;
+  static wxString text;
 
   if (isspace(GetCharAt(GetCurrentPos() - 1)))
   {
-    autoc = c;
+    text = c;
   }
   else
   {
-    autoc += c;
+    text += c;
 
-    if (autoc.length() >= 3) // Only autocompletion for large words
+    if (text.length() >= 3) // Only autocompletion for large words
     {
       if (!AutoCompActive())
       {
@@ -373,9 +373,9 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
         AutoCompSetAutoHide(false);
       }
 
-      if (m_Lexer.KeywordStartsWith(autoc))
+      if (m_Lexer.KeywordStartsWith(text))
         AutoCompShow(
-          autoc.length() - 1,
+          text.length() - 1,
           m_Lexer.GetKeywordsString());
       else
         AutoCompCancel();
@@ -385,7 +385,7 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
 
 bool wxExSTC::CheckBrace(int pos)
 {
-  const auto brace_match = BraceMatch(pos);
+  const int brace_match = BraceMatch(pos);
 
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -401,13 +401,13 @@ bool wxExSTC::CheckBrace(int pos)
 
 bool wxExSTC::CheckBraceHex(int pos)
 {
-  const auto col = GetColumn(pos);
+  const int col = GetColumn(pos);
   const wxFileOffset start_ascii_field =
     start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
 
   if (col >= start_ascii_field)
   {
-    const auto offset = col - start_ascii_field;
+    const int offset = col - start_ascii_field;
     int space = 0;
 
     if (col >= start_ascii_field + bytes_per_line / 2)
@@ -434,7 +434,7 @@ bool wxExSTC::CheckBraceHex(int pos)
         space++;
       }
 
-      const auto offset = (col - (start_hex_field + space)) / each_hex_field;
+      const int offset = (col - (start_hex_field + space)) / each_hex_field;
 
       BraceHighlight(pos,
         PositionFromLine(LineFromPosition(pos)) + start_ascii_field + offset);
@@ -691,7 +691,7 @@ void wxExSTC::ConfigGet()
     
   Fold();
 
-  const auto margin = wxConfigBase::Get()->ReadLong(
+  const int margin = wxConfigBase::Get()->ReadLong(
     _("Line number"), 
     TextWidth(wxSTC_STYLE_DEFAULT, "999999"));
 
@@ -970,14 +970,14 @@ void wxExSTC::FoldAll()
 {
   if (GetProperty("fold") != "1") return;
 
-  const auto current_line = GetCurrentLine();
+  const int current_line = GetCurrentLine();
   const bool xml = (m_Lexer.GetScintillaLexer() == "xml");
 
   int line = 0;
   while (line < GetLineCount())
   {
-    const auto level = GetFoldLevel(line);
-    const auto last_child_line = GetLastChild(line, level);
+    const int level = GetFoldLevel(line);
+    const int last_child_line = GetLastChild(line, level);
     
     if (xml && (
         level == wxSTC_FOLDLEVELBASE + wxSTC_FOLDLEVELHEADERFLAG))
@@ -1046,8 +1046,8 @@ int wxExSTC::GetLineNumberAtCurrentPos() const
   // This method is used by LinkOpen.
   // So, if no line number present return 0, 
   // otherwise link open jumps to last line.
-  const auto pos = GetCurrentPos();
-  const auto line_no = LineFromPosition(pos);
+  const int pos = GetCurrentPos();
+  const int line_no = LineFromPosition(pos);
 
   // Cannot use GetLine, as that includes EOF, and then the ToLong does not
   // return correct number.
@@ -1087,8 +1087,8 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
   }
   else
   {
-    const auto pos = GetCurrentPos();
-    const auto line_no = LineFromPosition(pos);
+    const int pos = GetCurrentPos();
+    const int line_no = LineFromPosition(pos);
     const wxString text = GetLine(line_no);
 
     // Better first try to find "...", then <...>, as in next example.
@@ -1144,9 +1144,9 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
 
 const wxString wxExSTC::GetWordAtPos(int pos) const
 {
-  const auto word_start = 
+  const int word_start = 
     const_cast< wxExSTC * >( this )->WordStartPosition(pos, true);
-  const auto word_end = 
+  const int word_end = 
     const_cast< wxExSTC * >( this )->WordEndPosition(pos, true);
 
   if (word_start == word_end && word_start < GetTextLength())
@@ -1215,8 +1215,8 @@ void wxExSTC::GotoLineAndSelect(
 
   m_GotoLineNumber = line_number;
 
-  const auto start_pos = PositionFromLine(line_number - 1);
-  const auto end_pos = GetLineEndPosition(line_number - 1);
+  const int start_pos = PositionFromLine(line_number - 1);
+  const int end_pos = GetLineEndPosition(line_number - 1);
 
   SetTargetStart(start_pos);
   SetTargetEnd(end_pos);
@@ -1241,7 +1241,7 @@ void wxExSTC::GuessType()
   if (!(GetFlags() & STC_WIN_HEX))
   {
     // Get a small sample from this file to detect the file mode.
-    const auto sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
+    const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
     const wxString text = GetTextRange(0, sample_size);
     const wxRegEx ex(".*vi: *set .*");
     
@@ -1316,9 +1316,9 @@ void wxExSTC::Indent(int begin, int end, bool forward)
 {
   BeginUndoAction();
 
-  for (auto i = 0; i <= end - begin; i++)
+  for (int i = 0; i <= end - begin; i++)
   {
-    const auto start = PositionFromLine(begin + i);
+    const int start = PositionFromLine(begin + i);
 
     if (forward)
     {
@@ -1356,7 +1356,7 @@ void wxExSTC::Indent(int begin, int end, bool forward)
 
 void wxExSTC::Indent(int lines, bool forward)
 {
-  const auto line = LineFromPosition(GetCurrentPos());
+  const int line = LineFromPosition(GetCurrentPos());
 
   Indent(line, line + lines - 1, forward);
 }
@@ -1521,7 +1521,11 @@ void wxExSTC::MacroPlayback()
   wxASSERT(MacroIsRecorded());
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = m_Macro.begin();
+#else
+    std::vector <wxString>::iterator it = m_Macro.begin();
+#endif	
     it != m_Macro.end();
     ++it)
   {
@@ -1584,10 +1588,10 @@ void wxExSTC::MarkTargetChange()
     return;
   }
   
-  const auto line_begin = LineFromPosition(GetTargetStart());
-  const auto line_end = LineFromPosition(GetTargetEnd());
+  const int line_begin = LineFromPosition(GetTargetStart());
+  const int line_end = LineFromPosition(GetTargetEnd());
     
-  for (auto i = line_begin; i <= line_end; i++)
+  for (int i = line_begin; i <= line_end; i++)
   {
     MarkerAddChange(i);
   }
@@ -1676,12 +1680,12 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
   case ID_EDIT_UNFOLD_ALL:
-    for (auto i = 0; i < GetLineCount(); i++) EnsureVisible(i);
+    for (int i = 0; i < GetLineCount(); i++) EnsureVisible(i);
   break;
   case ID_EDIT_TOGGLE_FOLD:
   {
-    const auto level = GetFoldLevel(GetCurrentLine());
-    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+    const int level = GetFoldLevel(GetCurrentLine());
+    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
       GetCurrentLine(): GetFoldParent(GetCurrentLine());
     ToggleFold(line_to_fold);
   }
@@ -1748,7 +1752,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
 
 void wxExSTC::OnFindDialog(wxFindDialogEvent& event)
 {
-  auto* frd = wxExFindReplaceData::Get();
+  wxExFindReplaceData* frd = wxExFindReplaceData::Get();
 
   if (
     event.GetEventType() == wxEVT_COMMAND_FIND ||
@@ -1911,8 +1915,8 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   {
     if (event.GetMargin() == m_MarginFoldingNumber)
     {
-      const auto line = LineFromPosition(event.GetPosition());
-      const auto level = GetFoldLevel(line);
+      const int line = LineFromPosition(event.GetPosition());
+      const int level = GetFoldLevel(line);
 
       if ((level & wxSTC_FOLDLEVELHEADERFLAG) > 0)
       {
@@ -2005,13 +2009,13 @@ bool wxExSTC::Open(
 
 void wxExSTC::Paste()
 {
-  const auto line = GetCurrentLine();
+  const int line = GetCurrentLine();
 
   wxStyledTextCtrl::Paste();
   
   if (wxExLexers::Get()->MarkerIsLoaded(m_MarkerChange))
   {
-    for (auto i = line; i <= GetCurrentLine(); i++)
+    for (int i = line; i <= GetCurrentLine(); i++)
     {
       MarkerAddChange(i);
     }
@@ -2043,7 +2047,7 @@ void wxExSTC::PositionSave()
 #if wxUSE_PRINTING_ARCHITECTURE
 void wxExSTC::Print(bool prompt)
 {
-  auto* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
+  wxPrintData* data = wxExPrinting::Get()->GetHtmlPrinter()->GetPrintData();
   wxExPrinting::Get()->GetPrinter()->GetPrintDialogData().SetPrintData(*data);
   wxExPrinting::Get()->GetPrinter()->Print(this, new wxExPrintout(this), prompt);
 }
@@ -2113,8 +2117,8 @@ int wxExSTC::ReplaceAll(
 {
   const wxString selection = GetSelectedText();
   int selection_from_end = 0;
-  const auto selstart = GetSelectionStart();
-  const auto selend = GetSelectionEnd();
+  const int selstart = GetSelectionStart();
+  const int selend = GetSelectionEnd();
 
   // We cannot use wxExGetNumberOfLines here if we have a rectangular selection.
   // So do it the other way.
@@ -2139,7 +2143,7 @@ int wxExSTC::ReplaceAll(
 
   while (SearchInTarget(find_text) > 0)
   {
-    const auto target_start = GetTargetStart();
+    const int target_start = GetTargetStart();
     int length;
     bool skip_replace = false;
 
@@ -2147,9 +2151,9 @@ int wxExSTC::ReplaceAll(
     // If not just continue without replacing.
     if (SelectionIsRectangle() && selection_from_end != 0)
     {
-      const auto line = LineFromPosition(target_start);
-      const auto start_pos = GetLineSelStartPosition(line);
-      const auto end_pos = GetLineSelEndPosition(line);
+      const int line = LineFromPosition(target_start);
+      const int start_pos = GetLineSelStartPosition(line);
+      const int end_pos = GetLineSelEndPosition(line);
       length = GetTargetEnd() - target_start;
 
       if (start_pos == wxSTC_INVALID_POSITION ||
@@ -2329,8 +2333,8 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   wxBusyCursor wait;
 
-  const auto start_line = LineFromPosition(GetSelectionStart());
-  const auto start_pos = PositionFromLine(start_line);
+  const int start_line = LineFromPosition(GetSelectionStart());
+  const int start_pos = PositionFromLine(start_line);
   SetSelection(start_pos, PositionFromLine(LineFromPosition(GetSelectionEnd())));
 
   // Empty lines are not kept after sorting, as they are used as separator.
@@ -2357,7 +2361,7 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   if (sort_ascending)
   {
     for (
-      auto it = mm.begin();
+      std::multimap<wxString, wxString>::iterator it = mm.begin();
       it != mm.end();
       ++it)
     {
@@ -2367,7 +2371,11 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
   else
   {
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = mm.rbegin();
+#else
+      std::multimap<wxString, wxString>::reverse_iterator it = mm.rbegin();
+#endif	  
       it != mm.rend();
       ++it)
     {

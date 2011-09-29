@@ -50,7 +50,11 @@ void wxExLexer::Apply(wxStyledTextCtrl* stc, bool clear) const
   {
     // Readme: The Scintilla lexer only recognized lower case words, apparently.
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_KeywordsSet.begin();
+#else
+      std::map< int, std::set<wxString> >::const_iterator it = m_KeywordsSet.begin();
+#endif	  
       it != m_KeywordsSet.end();
       ++it)
     {
@@ -118,19 +122,35 @@ bool wxExLexer::ApplyLexer(
 
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
+#ifdef wxExUSE_CPP0X	
   auto itlow = 
     wxExLexers::Get()->GetMacros().lower_bound(lexer);
 
   auto itup = 
     wxExLexers::Get()->GetMacros().upper_bound(lexer + "ZZZ");
+#else
+  std::map<wxString, wxString>::const_iterator itlow = 
+    wxExLexers::Get()->GetMacros().lower_bound(lexer);
+
+  std::map<wxString, wxString>::const_iterator itup = 
+    wxExLexers::Get()->GetMacros().upper_bound(lexer + "ZZZ");
+#endif	
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = itlow;
+#else
+    std::map<wxString, wxString>::const_iterator it = itlow;
+#endif	
     it != itup;
     ++it)
   {
     for (
+#ifdef wxExUSE_CPP0X	
       auto style = wxExLexers::Get()->GetThemeMacros().begin();
+#else
+      std::map<wxString, wxString>::const_iterator style = wxExLexers::Get()->GetThemeMacros().begin();
+#endif	  
       style != wxExLexers::Get()->GetThemeMacros().end();
       ++style)
     {
@@ -188,8 +208,13 @@ const wxString wxExLexer::GetKeywordsString(int keyword_set) const
   }
   else
   {
+#ifdef wxExUSE_CPP0X	
     const auto it = 
       m_KeywordsSet.find(keyword_set);
+#else
+    const std::map< int, std::set<wxString> >::const_iterator it = 
+      m_KeywordsSet.find(keyword_set);
+#endif	  
 
     if (it != m_KeywordsSet.end())
     {
@@ -208,7 +233,11 @@ const wxString wxExLexer::GetKeywordsStringSet(
   wxString keywords;
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = kset.begin();
+#else
+    std::set<wxString>::iterator it = kset.begin();
+#endif	
     it != kset.end();
     ++it)
   {
@@ -236,13 +265,23 @@ void wxExLexer::Initialize()
 
 bool wxExLexer::IsKeyword(const wxString& word) const
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_Keywords.find(word);
+#else
+  std::set<wxString>::iterator it = m_Keywords.find(word);
+#endif
+  
   return (it != m_Keywords.end());
 }
 
 bool wxExLexer::KeywordStartsWith(const wxString& word) const
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_Keywords.lower_bound(word.Lower());
+#else
+  std::set<wxString>::iterator it = m_Keywords.lower_bound(word.Lower());
+#endif
+  
   return 
     it != m_Keywords.end() &&
     it->StartsWith(word.Lower());
@@ -311,7 +350,7 @@ const wxString wxExLexer::MakeSingleLineComment(
     // To prevent filling out spaces
     if (fill_out_character != ' ' || !m_CommentEnd.empty())
     {
-      const auto fill_chars = UsableCharactersPerLine() - text.size();
+      const int fill_chars = UsableCharactersPerLine() - text.size();
 
       if (fill_chars > 0)
       {
@@ -449,7 +488,7 @@ bool wxExLexer::SetKeywords(const wxString& value)
     {
       keyword = fields.GetNextToken();
 
-      const auto new_setno = atoi(fields.GetNextToken().c_str());
+      const int new_setno = atoi(fields.GetNextToken().c_str());
 
       if (new_setno >= wxSTC_KEYWORDSET_MAX)
       {
@@ -486,7 +525,11 @@ bool wxExLexer::SetKeywords(const wxString& value)
 void wxExLexer::SetProperty(const wxString& name, const wxString& value)
 {
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = m_Properties.begin();
+#else
+    std::vector<wxExProperty>::iterator it = m_Properties.begin();
+#endif	
     it != m_Properties.end();
     ++it)
   {

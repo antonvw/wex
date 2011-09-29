@@ -46,7 +46,7 @@ void wxExListItem::Insert(long index)
 {
   SetId(index == -1 ? m_ListView->GetItemCount(): index);
   
-  auto col = 0;
+  int col = 0;
   wxString filename;
   
   if (m_ListView->GetWindowStyle() & wxLC_REPORT)

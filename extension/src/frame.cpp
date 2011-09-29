@@ -234,7 +234,7 @@ void wxExFrame::OnCommand(wxCommandEvent& command)
     {
       wxArrayString files;
       wxStringTokenizer tkz(command.GetString());
-      auto* stc = GetSTC();
+      wxExSTC* stc = GetSTC();
 
       if ( stc != NULL && 
           (command.GetString().Contains("*") || command.GetString().Contains("?")))
@@ -360,13 +360,12 @@ void wxExFrame::OnUpdateUI(wxUpdateUIEvent& event)
 #if wxUSE_STATUSBAR
     case ID_UPDATE_STATUS_BAR:
     {
-      auto* stc = GetSTC();
-      
-      if (stc != NULL) 
-      {
-        UpdateStatusBar(stc, "PaneInfo"); 
-      }
+    wxExSTC* stc = GetSTC();
+    if (stc != NULL) 
+    {
+      UpdateStatusBar(stc, "PaneInfo"); 
     }
+	}
     break;
 #endif
 
@@ -406,7 +405,7 @@ bool wxExFrame::OpenFile(
   const wxString& match,
   long flags)
 {
-  auto* stc = GetSTC();
+  wxExSTC* stc = GetSTC();
 
   if (stc != NULL)
   {
@@ -421,7 +420,7 @@ bool wxExFrame::OpenFile(
   const wxExVCSEntry& vcs,
   long flags)
 {
-  auto* stc = GetSTC();
+  wxExSTC* stc = GetSTC();
 
   if (stc != NULL)
   {
@@ -478,7 +477,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
 {
   if (pane == "PaneInfo")
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     
     if (stc != NULL) 
     {
@@ -493,7 +492,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   }
   else if (pane == "PaneLexer")
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
 
     if (stc != NULL && wxExLexers::Get()->Count() > 0)
     {
@@ -509,7 +508,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   }
   else if (pane == "PaneFileType")
   {
-    auto* stc = GetSTC();
+    wxExSTC* stc = GetSTC();
     
     if (stc != NULL) stc->FileTypeMenu();
   }
@@ -558,9 +557,9 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
       int end;
       stc->GetSelection(&start, &end);
 
-      const auto len  = end - start;
-      const auto line = stc->GetCurrentLine() + 1;
-      const auto pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
+      const int len  = end - start;
+      const int line = stc->GetCurrentLine() + 1;
+      const int pos = stc->GetCurrentPos() + 1 - stc->PositionFromLine(line - 1);
 
       if (len == 0) text = wxString::Format("%d,%d", line, pos);
       else
@@ -573,7 +572,7 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
         {
           // There might be NULL's inside selection.
           // So use the GetSelectedTextRaw variant.
-          const auto number_of_lines = 
+          const int number_of_lines = 
             wxExGetNumberOfLines(stc->GetSelectedTextRaw());
             
           if (number_of_lines <= 1) 

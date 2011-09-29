@@ -192,18 +192,22 @@ const wxString wxExListView::BuildPage()
   text << "<tr>" << wxTextFile::GetEOL();
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = m_Columns.begin();
+#else
+    std::vector<wxExColumn>::iterator it = m_Columns.begin();
+#endif	
     it != m_Columns.end();
     ++it)
   {
     text << "<td><i>" << it->GetColumn() << "</i>" << wxTextFile::GetEOL();
   }
 
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (int i = 0; i < GetItemCount(); i++)
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    for (auto col = 0; col < GetColumnCount(); col++)
+    for (int col = 0; col < GetColumnCount(); col++)
     {
       text << "<td>" << wxListView::GetItemText(i, col) << wxTextFile::GetEOL();
     }
@@ -231,7 +235,11 @@ void wxExListView::BuildPopupMenu(wxExMenu& menu)
     wxMenu* menuSort = new wxMenu;
 
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_Columns.begin();
+#else
+      std::vector<wxExColumn>::iterator it = m_Columns.begin();
+#endif	  
       it != m_Columns.end();
       ++it)
     {
@@ -286,7 +294,11 @@ void wxExListView::EditDelete()
 int wxExListView::FindColumn(const wxString& name) const
 {
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = m_Columns.begin();
+#else
+    std::vector<wxExColumn>::const_iterator it = m_Columns.begin();
+#endif	
     it != m_Columns.end();
     ++it)
   {
@@ -317,7 +329,7 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
     text_use.MakeUpper();
   }
 
-  const auto firstselected = GetFirstSelected();
+  const int firstselected = GetFirstSelected();
 
   if (find_next)
   {
@@ -349,11 +361,11 @@ bool wxExListView::FindNext(const wxString& text, bool find_next)
   int match = -1;
 
   for (
-    auto index = start_item;
+    int index = start_item;
     index != end_item && match == -1;
     (find_next ? index++: index--))
   {
-    for (auto col = 0; col < GetColumnCount() && match == -1; col++)
+    for (int col = 0; col < GetColumnCount() && match == -1; col++)
     {
       wxString text = wxListView::GetItemText(index, col);
 
@@ -417,7 +429,11 @@ unsigned int wxExListView::GetArtID(const wxArtID& artid)
     return 0;
   }
 
+#ifdef wxExUSE_CPP0X	
   const auto it = m_ArtIDs.find(artid);
+#else
+  const std::map<wxArtID, unsigned int>::iterator it = m_ArtIDs.find(artid);
+#endif  
 
   if (it != m_ArtIDs.end())
   {
@@ -456,7 +472,7 @@ bool wxExListView::GotoDialog(const wxString& caption)
     return false;
   }
   
-  auto initial_value = GetFirstSelected();
+  int initial_value = GetFirstSelected();
 
   if (initial_value == -1) // nothing selected
   {
@@ -557,7 +573,7 @@ const wxString wxExListView::ItemToText(long item_number) const
 {
   wxString text;
 
-  for (auto col = 0; col < GetColumnCount(); col++)
+  for (int col = 0; col < GetColumnCount(); col++)
   {
     text += wxListView::GetItemText(item_number, col);
 
@@ -607,7 +623,7 @@ void wxExListView::OnCommand(wxCommandEvent& event)
     EditInvertAll();
     break;
   case ID_EDIT_SELECT_NONE:
-    for (auto i = 0; i < GetItemCount(); i++)
+    for (int i = 0; i < GetItemCount(); i++)
     {
       Select(i, false);
     }
@@ -815,7 +831,7 @@ void wxExListView::SortColumn(int column_no, wxExSortType sort_method)
   std::vector<wxString> items;
   pitems = &items;
 
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (int i = 0; i < GetItemCount(); i++)
   {
     const wxString val = wxListView::GetItemText(i, column_no);
     items.push_back(val);
@@ -989,9 +1005,9 @@ void wxExListViewFileName::DeleteDoubles()
 {
   wxDateTime mtime((time_t)0);
   wxString name;
-  const auto itemcount = GetItemCount();
+  const long itemcount = GetItemCount();
 
-  for (auto i = itemcount - 1; i >= 0; i--)
+  for (long i = itemcount - 1; i >= 0; i--)
   {
     wxExListItem item(this, i);
 
@@ -1089,7 +1105,11 @@ void wxExListViewFileName::Initialize(const wxExLexer* lexer)
   break;
   case LIST_KEYWORD:
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = lexer->GetKeywords().begin();
+#else
+      std::set<wxString>::iterator it = lexer->GetKeywords().begin();
+#endif	  
       it != lexer->GetKeywords().end();
       ++it)
     {
@@ -1281,7 +1301,7 @@ const wxString wxExListViewFileName::ItemToText(long item_number) const
 
 void wxExListViewFileName::ItemsUpdate()
 {
-  for (auto i = 0; i < GetItemCount(); i++)
+  for (long i = 0; i < GetItemCount(); i++)
   {
     wxExListItem(this, i).Update();
   }
@@ -1396,7 +1416,7 @@ void RBSFile::GenerateDialog()
   Header();
 
   const wxString rsx_pattern = wxConfigBase::Get()->Read(_("RBS Pattern")) + wxFILE_SEP_PATH;
-  for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  for (long i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     wxExListItem li(m_ListView, i);
     const wxFileName* filename = &li.GetFileName();

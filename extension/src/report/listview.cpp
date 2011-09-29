@@ -202,7 +202,7 @@ void wxExListViewWithFrame::ItemActivated(long item_number)
   if (item.GetFileName().FileExists())
   {
     const wxString line_number_str = GetItemText(item_number, _("Line No"));
-    const auto line_number = atoi(line_number_str.c_str());
+    const int line_number = atoi(line_number_str.c_str());
     const wxString match =
       (GetType() == LIST_REPLACE ?
          GetItemText(item_number, _("Replaced")):
@@ -230,7 +230,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
     wxArrayString files;
     
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       files.Add(wxExListItem(this, i).GetFileName().GetFullPath());
     }
@@ -241,7 +241,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
   {
   case ID_LIST_OPEN_ITEM:
   {
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
       ItemActivated(i);
   }
   break;
@@ -262,7 +262,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
       wxASSERT(list != NULL);
     }
 
-    for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+    for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
     {
       wxExListItem li(this, i);
       const wxFileName* filename = &li.GetFileName();
@@ -275,7 +275,7 @@ void wxExListViewWithFrame::OnCommand(wxCommandEvent& event)
           {
             list = m_Frame->Activate(LIST_FILE);
             if (list == NULL) return;
-            const auto main_selected = list->GetFirstSelected();
+            const int main_selected = list->GetFirstSelected();
             wxExCompareFile(wxExListItem(list, main_selected).GetFileName(), *filename);
           }
           else
@@ -355,7 +355,7 @@ void wxExListViewWithFrame::RunItems(const wxExTool& tool)
 
   wxExStatistics<long> stats;
 
-  for (auto i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
+  for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
   {
     stats += wxExRun(wxExListItem(this, i), tool).GetElements();
   }

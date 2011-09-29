@@ -26,6 +26,7 @@ void SetItemColumnStatistics(
   const wxString& col,
   const wxExStatistics<long>& stat)
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = stat.GetItems().find(col);
 
   if (it != stat.GetItems().end())
@@ -34,6 +35,9 @@ void SetItemColumnStatistics(
       col,
       wxString::Format("%ld", it->second));
   }
+#else
+  // TODO: Fix this.
+#endif  
 }
 
 #if wxExUSE_EMBEDDED_SQL
@@ -104,7 +108,7 @@ bool wxExTextFileWithListView::ParseComments()
           1,
           Recordset::QueryRunTimeText().length()) == Recordset::QueryRunTimeText())
       {
-        const auto start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
+        const int start_of_runtime = Recordset::QueryRunTimeText().length() + 1;
         m_SQLQueryRunTime = GetComments().substr(start_of_runtime);
         Report(GetCurrentLine());
       }
@@ -262,6 +266,7 @@ void wxExTextFileWithListView::ReportStatistics()
       col.SetMask(wxLIST_MASK_TEXT);
       m_Report->GetColumn(i + 1, col);
       const wxString name = col.GetText();
+#ifdef wxExUSE_CPP0X	
       const auto& stat = GetStatistics().GetKeywords();
       const auto it = stat.GetItems().find(name);
       if (it != stat.GetItems().end())
@@ -269,6 +274,9 @@ void wxExTextFileWithListView::ReportStatistics()
         item.SetItem(i + 1, wxString::Format("%ld", it->second));
         total += it->second;
       }
+#else
+      // TODO: Fix this.
+#endif	  
     }
     item.SetItem(
       GetFileName().GetLexer().GetKeywords().size() + 1,
@@ -388,7 +396,7 @@ void Recordset::UpdateTextFileFromQuery()
     wxString line;
     char rowstr[512];
 
-    for (auto n = 0; n < desc_len; n++)
+    for (int n = 0; n < desc_len; n++)
     {
       m_stream >> rowstr;
       line += rowstr;

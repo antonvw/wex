@@ -42,8 +42,8 @@ bool wxExTextDropTarget::OnDropText(
   wxCoord y, 
   const wxString& data)
 {
-  const auto row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
-  const auto col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
+  const int row = m_Grid->YToRow(y - m_Grid->GetColLabelSize());
+  const int col = m_Grid->XToCol(x - m_Grid->GetRowLabelSize());
 
   if (row == wxNOT_FOUND || col == wxNOT_FOUND)
   {
@@ -108,17 +108,17 @@ const wxString wxExGrid::BuildPage()
   // Add the col labels only if they are shown.
   if (GetColLabelSize() > 0)
   {
-    for (auto c = 0 ; c < GetNumberCols(); c++)
+    for (int c = 0 ; c < GetNumberCols(); c++)
     {
       text << "<td><i>" << GetColLabelValue(c) << "</i>" << wxTextFile::GetEOL();
     }
   }
 
-  for (auto i = 0 ; i < GetNumberRows(); i++)
+  for (int i = 0 ; i < GetNumberRows(); i++)
   {
     text << "<tr>" << wxTextFile::GetEOL();
 
-    for (auto j = 0 ; j < GetNumberCols(); j++)
+    for (int j = 0 ; j < GetNumberCols(); j++)
     {
       text << "<td>" <<
         (GetCellValue(i, j).empty() ? "&nbsp": GetCellValue(i, j)) <<
@@ -161,9 +161,9 @@ void wxExGrid::EmptySelection()
 {
   wxBusyCursor wait;
 
-  for (auto i = 0; i < GetNumberRows(); i++)
+  for (int i = 0; i < GetNumberRows(); i++)
   {
-    for (auto j = 0; j < GetNumberCols(); j++)
+    for (int j = 0; j < GetNumberCols(); j++)
     {
       if (IsInSelection(i, j) && !IsReadOnly(i, j))
       {
@@ -235,9 +235,9 @@ bool wxExGrid::FindNext(const wxString& text, bool find_next)
 
   wxGridCellCoords match;
 
-  for (auto j = start_col; j != end_col && !match; (find_next ? j++: j--))
+  for (int j = start_col; j != end_col && !match; (find_next ? j++: j--))
   {
-    for (auto i = (j == start_col ? start_row: init_row);
+    for (int i = (j == start_col ? start_row: init_row);
          i != end_row && !match;
          (find_next ? i++: i--))
     {
@@ -306,8 +306,8 @@ const wxString wxExGrid::GetFindString() const
   else
   {
     // Just take current cell value, if not empty.
-    const auto row = GetGridCursorRow();
-    const auto col = GetGridCursorCol();
+    const int row = GetGridCursorRow();
+    const int col = GetGridCursorCol();
     const wxString val = GetCellValue(row, col);
 
     if (!val.empty())
@@ -325,11 +325,11 @@ const wxString wxExGrid::GetSelectedCellsValue() const
   // wxGridCellCoordsArray cells = GetSelectedCells();
   wxString text;
 
-  for (auto i = 0; i < GetNumberRows(); i++)
+  for (int i = 0; i < GetNumberRows(); i++)
   {
     bool value_added = false;
 
-    for (auto j = 0; j < GetNumberCols(); j++)
+    for (int j = 0; j < GetNumberCols(); j++)
     {
       if (IsInSelection(i, j))
       {
