@@ -339,7 +339,7 @@ void wxExViTextCtrl::OnFocus(wxFocusEvent& event)
 
 void wxExViTextCtrl::OnKey(wxKeyEvent& event)
 {
-  const auto key = event.GetKeyCode();
+  const int key = event.GetKeyCode();
 
   if (key == WXK_ESCAPE)
   {

@@ -30,7 +30,11 @@ wxExTool::wxExTool(int type)
 
 const wxString wxExTool::Info() const
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_ToolInfo.find(m_Id);
+#else
+  std::map < int, wxExToolInfo >::const_iterator it = m_ToolInfo.find(m_Id);
+#endif  
 
   if (it != m_ToolInfo.end())
   {

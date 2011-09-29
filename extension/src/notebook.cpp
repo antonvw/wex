@@ -91,7 +91,7 @@ void wxExNotebook::ErasePage(const wxString& key)
 
 bool wxExNotebook::ForEach(int id)
 {
-  // The page should be an int (no auto), otherwise page >= 0 never fails!
+  // The page should be an int (no), otherwise page >= 0 never fails!
   for (int page = GetPageCount() - 1; page >= 0; page--)
   {
     // When trying to cast to wxExFile, there is an error:
@@ -151,7 +151,11 @@ bool wxExNotebook::ForEach(int id)
 const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 {
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = m_MapPages.begin();
+#else
+    std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.begin();
+#endif	
     it != m_MapPages.end();
     ++it)
   {
@@ -168,7 +172,11 @@ const wxString wxExNotebook::GetKeyByPage(wxWindow* page) const
 
 wxWindow* wxExNotebook::GetPageByKey(const wxString& key) const
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_MapPages.find(key);
+#else
+  const std::map<wxString, wxWindow*>::const_iterator it = m_MapPages.find(key);
+#endif  
 
   if (it != m_MapPages.end())
   {

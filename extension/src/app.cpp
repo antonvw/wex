@@ -88,7 +88,11 @@ bool wxExApp::OnInit()
     wxDir::GetAllFiles(m_CatalogDir, &files);
 
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = files.begin();
+#else
+      wxArrayString::iterator it = files.begin();
+#endif	  
       it != files.end();
       it++)
     {

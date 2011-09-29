@@ -265,8 +265,12 @@ void wxExFrameWithHistory::FindInSelection(
   }
   
   wxExStatistics<long> stats;
-
+  
+#ifdef wxExUSE_CPP0X	
   for (auto i = 0; i < files.GetCount(); i++)
+#else
+  for (int i = 0; i < files.GetCount(); i++)
+#endif
   {
     const wxExFileName fn(files[i]);
     
@@ -490,8 +494,14 @@ void wxExFrameWithHistory::OnIdle(wxIdleEvent& event)
     return;
   }
   
+
+#ifdef wxExUSE_CPP0X	
   auto* stc = GetSTC();
   auto* project = GetProject();
+#else
+  wxExSTC* stc = GetSTC();
+  wxExListViewFile* project = GetProject();
+#endif
 
   const wxUniChar indicator('*');
 
@@ -546,7 +556,7 @@ void wxExFrameWithHistory::SetRecentFile(const wxString& file)
 
     if (m_FileHistoryList->GetItemCount() > 1)
     {
-      for (auto i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
+      for (int i = m_FileHistoryList->GetItemCount() - 1; i >= 1 ; i--)
       {
         wxExListItem item(m_FileHistoryList, i);
 

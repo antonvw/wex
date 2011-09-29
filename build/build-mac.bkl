@@ -35,8 +35,72 @@ make-release.bat
   <include file="presets/wx.bkl"/>
   <set-wxlike-builddir/>
   
-  <if cond="PLATFORM_UNIX=='1'">
-     <set var="DEFAULT_CXXFLAGS">-Wno-write-strings -std=c++0x</set>
+  <if cond="FORMAT=='gnu'">
+    <define-tag name="osx-bundle" rules="exe">
+ 
+    <set var="BUNDLE_IDENTIFIER">$(id)</set>
+ 
+    <set var="WXDIR">../../wxWidgets-2.9.2</set>
+ 
+    <set var="MAC_VERSION">1.0</set>
+    <set var="BUNDLE_PLIST">$(WXDIR)/src/osx/carbon/Info.plist.in</set>
+    <!-- <set var="BUNDLE_RESOURCE">/usr/local/lib/libwx_mac-2.5.4.rsrc</set> -->
+    <set var="BUNDLE_ICONS">../syncped/app-large.icns</set>
+ 
+    <!-- bundle directory: -->
+    <set var="BINDIR">gccosx_carbon_dll/</set>
+    <set var="BUNDLE">$(BINDIR)$(id).app/Contents</set>
+    <set var="BUNDLE_TGT">$(BUNDLE)/PkgInfo</set>
+    <set var="BUNDLE_TGT_REF">$(BUNDLE)/PkgInfo</set>
+ 
+    <add-target target="$(BUNDLE_TGT)" type="action"/>
+    <modify-target target="$(BUNDLE_TGT)">
+      <depends>$(id)</depends>
+      <!-- required data: -->
+      <command>
+        <!--/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -o 
+        $(BINDIR)$(id) cocoa.r /usr/local/lib/libwx_mac-2.5.4.r 
+        $(WXDIR)/samples/sample.r -->
+        /Developer/Tools/SetFile -t APPL $(BINDIR)/$(id)
+ 
+        <!-- create the directories: -->
+        mkdir -p $(BUNDLE)
+        mkdir -p $(BUNDLE)/MacOS
+        mkdir -p $(BUNDLE)/Resources
+ 
+        <!-- Info.plist: -->
+        sed -e "s/IDENTIFIER/$(BUNDLE_IDENTIFIER)/" \
+        -e "s/EXECUTABLE/$(id)/" \
+        -e "s/VERSION/$(MAC_VERSION)/" \
+        $(BUNDLE_PLIST) >$(BUNDLE)/Info.plist
+ 
+        <!-- PkgInfo: -->
+        echo -n "APPL????" >$(BUNDLE)/PkgInfo
+ 
+        <!-- make a hardlink to the bundle -->
+        ln -f $(ref("__targetdir",id))$(ref("__targetname",id)) $(BUNDLE)/MacOS/$(id)
+        
+        <!-- copy xml data to the bundle -->
+        cp ../extension/data/*.xml $(BUNDLE)/MacOS/
+ 
+        <!-- ditto wxWidgets resources and icons: -->
+        <!-- cp -f $(BUNDLE_RESOURCE) $(BUNDLE)/Resources/$(id).rsrc -->
+        cp -f $(BUNDLE_ICONS) $(BUNDLE)/Resources/wxmac.icns
+      </command>
+    </modify-target>
+ 
+    <!-- add pseudo target id_bundle: -->
+    <add-target target="$(id)_bundle" type="phony"/>
+    <modify-target target="$(id)_bundle">
+      <dependency-of>all</dependency-of>
+      <depends>$(BUNDLE_TGT_REF)</depends>
+    </modify-target>
+ 
+    <!-- "make clean" should delete the bundle: -->
+    <modify-target target="clean">
+      <command>rm -rf $(id).app</command>
+    </modify-target>
+  </define-tag>
   </if>
   
   <!-- options -->
@@ -48,29 +112,29 @@ make-release.bat
   </option>
 
   <option name="USE_OTL">
-     <values>0,1</values>
-     <values-description>No OTL,Uses OTL</values-description>
-     <default-value>1</default-value>
-     <description>Use images in notebooks?</description>
+    <values>0,1</values>
+    <values-description>No OTL,Uses OTL</values-description>
+    <default-value>1</default-value>
+    <description>Use images in notebooks?</description>
   </option>
 
   <option name="USE_PORTABLE">
-     <values>0,1</values>
-     <values-description>Uses registry etc.,Uses local files only</values-description>
-     <default-value>0</default-value>
-     <description>Use portable build of wxex library?</description>
+    <values>0,1</values>
+    <values-description>Uses registry etc.,Uses local files only</values-description>
+    <default-value>0</default-value>
+    <description>Use portable build of wxex library?</description>
   </option>
         
   <option name="USE_RBS">
-     <values>0,1</values>
-     <values-description>No RBS,Uses RBS</values-description>
-     <default-value>0</default-value>
-     <description>Use RBS?</description>
+    <values>0,1</values>
+    <values-description>No RBS,Uses RBS</values-description>
+    <default-value>0</default-value>
+    <description>Use RBS?</description>
   </option>
         
   <!-- variables derived from options, so they can be used in the targets as weak conditions -->
   <!-- Todo: there is a bug (in bakefile), when making one var of these, bakefile hangs,
-              doing it as is written here, only uses the last line -->
+             doing it as is written here, only uses the last line -->
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='1'">wxExUSE_EMBEDDED_SQL</set>
   <set var="VAR_USE_EMBEDDED_SQL" cond="USE_EMBEDDED_SQL=='0'"></set>
   
@@ -78,9 +142,6 @@ make-release.bat
   <set var="VAR_USE_OTL" cond="USE_OTL=='0'"></set>
   
   <if cond="PLATFORM_UNIX=='1'">
-    <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='0'"></set>
-  </if>
-  <if cond="PLATFORM_UNIX=='0'">
     <set var="VAR_USE_PORTABLE" cond="USE_PORTABLE=='1'">wxExUSE_PORTABLE</set>
   </if>
   
@@ -93,7 +154,6 @@ make-release.bat
     
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
-    <define>wxExUSE_CPP0X</define>
     
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
@@ -174,6 +234,7 @@ make-release.bat
     <headers>../extension/include/wx/extension/otl.h</headers>
     </if>
     <headers>../extension/include/wx/extension/printing.h</headers>
+    <headers>../extension/include/wx/extension/process.h</headers>
     <headers>../extension/include/wx/extension/property.h</headers>
     <headers>../extension/include/wx/extension/shell.h</headers>
     <headers>../extension/include/wx/extension/stat.h</headers>
@@ -201,7 +262,6 @@ make-release.bat
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
     <define>$(VAR_USE_RBS)</define>
-    <define>wxExUSE_CPP0X</define>
     
     <if cond="FORMAT=='msvs2008prj'">
       <define>_CRT_SECURE_NO_WARNINGS</define>
@@ -234,139 +294,10 @@ make-release.bat
     <depends>wxex</depends>
   </lib>
   
-  <!-- samples -->
-  <exe id="wxex-sample" template="wxgui,wxlike">
-    <sources>../extension/sample/app.cpp</sources>
-    <win32-res>../extension/sample/app.rc</win32-res>
-    <headers>../extension/sample/app.h</headers>
-    
-    <include>../extension/include</include>
-    
-    <library>wxex</library>
-    
-    <!-- not necessary: expat png.lib wxjpeg.lib wxregexu.lib wxtiff.lib 
-          see in wx.bkl:
-          NOTE: as a reference here is a list of all wxWidgets libraries satisfying
-          the dependency constraints mentioned in <wx-lib> description:
-      -->
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-  </exe>
-  
-  <exe id="wxex-sample-rep" template="wxgui,wxlike">
-    <sources>../extension/sample/report/app.cpp</sources>
-    <win32-res>../extension/sample/report/app.rc</win32-res>
-    <headers>../extension/sample/report/app.h</headers>
-    
-    <include>../extension/include</include>
-    
-    <library>wxex-rep</library>
-    <library>wxex</library>
-    
-    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-      <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
-    </if>
-    
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-  </exe>
-  
-  <!-- tests -->
-  <if cond="PLATFORM_UNIX=='1'">
-    <exe id="wxex-test-base" template="wxgui,wxlike">
-      <sources>../extension/test/base/main.cpp</sources>
-      <sources>../extension/test/base/test.cpp</sources>
-      <headers>../extension/test/base/test.h</headers>
-      
-      <include>/usr/include/cppunit</include>
-      <include>../extension/include</include>
-      
-      <library>wxex</library>
-      
-      <sys-lib>cppunit</sys-lib>
-      <wx-lib>aui</wx-lib>
-      <wx-lib>stc</wx-lib>
-      <wx-lib>html</wx-lib>
-      <wx-lib>adv</wx-lib>
-      <wx-lib>xml</wx-lib> 
-      <wx-lib>core</wx-lib>
-      <wx-lib>base</wx-lib>
-    </exe>
-    
-    <exe id="wxex-test-app" template="wxgui,wxlike">
-      <sources>../extension/test/app/main.cpp</sources>
-      <sources>../extension/test/app/test.cpp</sources>
-      
-      <headers>../extension/test/app/test.h</headers>
-      
-      <include>/usr/include/cppunit</include>
-      <include>../extension/include</include>
-      
-      <library>wxex</library>
-      
-      <sys-lib>cppunit</sys-lib>
-      
-      <wx-lib>aui</wx-lib>
-      <wx-lib>stc</wx-lib>
-      <wx-lib>html</wx-lib>
-      <wx-lib>adv</wx-lib>
-      <wx-lib>xml</wx-lib> 
-      <wx-lib>core</wx-lib>
-      <wx-lib>base</wx-lib>
-    </exe>
-    
-    <exe id="wxex-test-rep" template="wxgui,wxlike">
-      <sources>../extension/test/report/main.cpp</sources>
-      <sources>../extension/test/report/test.cpp</sources>
-      <headers>../extension/test/report/test.h</headers>
-      
-      <include>/usr/include/cppunit</include>
-      <include>../extension/include</include>
-      
-      <library>wxex-rep</library>
-      <library>wxex</library>
-      
-      <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-        <if cond="PLATFORM_UNIX=='1'">
-          <sys-lib>odbc</sys-lib>
-        </if>
-      </if>
-      
-      <sys-lib>cppunit</sys-lib>
-      
-      <wx-lib>aui</wx-lib>
-      <wx-lib>stc</wx-lib>
-      <wx-lib>html</wx-lib>
-      <wx-lib>adv</wx-lib>
-      <wx-lib>xml</wx-lib> 
-      <wx-lib>core</wx-lib>
-      <wx-lib>base</wx-lib>
-    </exe>
-  </if>
-  <!-- tests -->
-  
-  <!-- run the tests -->
-  <if cond="PLATFORM_UNIX=='1'">
-    <action id ="test-all">
-      <command>./test-all.sh</command>
-    </action>
-  </if>
-  
   <!-- applications -->
   <exe id="syncped" template="wxgui,wxlike">
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>
-    <define>wxExUSE_CPP0X</define>
     
     <sources>../syncped/app.cpp</sources>
     <sources>../syncped/frame.cpp</sources>
@@ -400,62 +331,10 @@ make-release.bat
     <wx-lib>xml</wx-lib> 
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
-  </exe>
 
-  <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-    <exe id="syncodbcquery" template="wxgui,wxlike">
-      <define>$(VAR_USE_OTL)</define>
-      <sources>../syncodbcquery/app.cpp</sources>
-      <win32-res>../syncodbcquery/app.rc</win32-res>
-      <headers>../syncodbcquery/app.h</headers>
-    
-      <include>../extension/include</include>
-
-      <library>wxex-rep</library>
-      <library>wxex</library>
-    
-      <if cond="PLATFORM_UNIX=='1'">
-        <sys-lib>odbc</sys-lib>
-      </if>
-    
-      <install-to>/usr/local/bin/</install-to>
-    
-      <wx-lib>aui</wx-lib>
-      <wx-lib>stc</wx-lib>
-      <wx-lib>html</wx-lib>
-      <wx-lib>adv</wx-lib>
-      <wx-lib>xml</wx-lib> 
-      <wx-lib>core</wx-lib>
-      <wx-lib>base</wx-lib>
-    </exe>
-  </if>
-
-  <exe id="syncsocketserver" template="wxgui,wxlike">
-    <sources>../syncsocketserver/app.cpp</sources>
-    <win32-res>../syncsocketserver/app.rc</win32-res>
-    <headers>../syncsocketserver/app.h</headers>
-    
-    <include>../extension/include</include>
-    
-    <library>wxex-rep</library>
-    <library>wxex</library>
-
-    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-      <if cond="PLATFORM_UNIX=='1'">
-        <sys-lib>odbc</sys-lib>
-      </if>
+    <if cond="FORMAT=='gnu'">
+      <osx-bundle/>
     </if>
-    
-    <install-to>/usr/local/bin/</install-to>
-    
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>net</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
   </exe>
   
 </makefile>

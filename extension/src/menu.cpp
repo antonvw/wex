@@ -178,11 +178,21 @@ bool wxExMenu::AppendTools(int itemid)
     return false;
   }
 
+#ifdef __WXOSX__  
+  // We do not (yet) support tools for mac osx, statistics is not working.
+  return false;
+#endif
+
   wxExMenu* menuTool = new wxExMenu(*this);
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = 
       wxExTool().GetToolInfo().begin();
+#else
+	std::map < int, wxExToolInfo >::const_iterator it = 
+      wxExTool().GetToolInfo().begin();
+#endif	  
     it != wxExTool().GetToolInfo().end();
     ++it)
   {

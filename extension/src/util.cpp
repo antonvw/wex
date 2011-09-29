@@ -439,7 +439,11 @@ void wxExListToConfig(
   wxString text;
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = l.begin();
+#else
+    std::list < wxString >::const_iterator it = l.begin();
+#endif	
     it != l.end();
     it++)
   {
@@ -496,7 +500,11 @@ void wxExOpenFiles(
 {
   // std::vector gives compile error.
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = files.begin();
+#else
+    wxArrayString::const_iterator it = files.begin();
+#endif	
     it != files.end();
     it++)
   {
@@ -530,7 +538,7 @@ void wxExOpenFilesDialog(
   long file_flags,
   int dir_flags)
 {
-  auto* stc = frame->GetSTC();
+  wxExSTC* stc = frame->GetSTC();
   wxArrayString files;
 
   const wxString caption(_("Select Files"));
@@ -673,7 +681,7 @@ void wxExVCSExecute(wxExFrame* frame, int id, const wxArrayString& files)
         ar.Add(files[i]);
         
         wxExVCS vcs(ar, id);
-        const auto retValue = vcs.Execute();
+        const int retValue = vcs.Execute();
         
         if (!vcs.GetEntry().GetError() && retValue != -1)
         {

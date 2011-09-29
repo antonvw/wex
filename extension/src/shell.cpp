@@ -92,7 +92,11 @@ wxExSTCShell::~wxExSTCShell()
     int items = 0;
 
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_Commands.rbegin();
+#else
+      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
+#endif	  
       it != m_Commands.rend() && items < m_CommandsSaveInConfig;
       it++)
     {
@@ -154,7 +158,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
     return;
   }
   
-  const auto key = event.GetKeyCode();
+  const int key = event.GetKeyCode();
 
   // Enter key pressed, we might have entered a command.
   if (key == WXK_RETURN)
@@ -329,14 +333,18 @@ void wxExSTCShell::Prompt(const wxString& text, bool add_eol)
 
 bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
 {
-  const auto no_asked_for = atoi(short_command.c_str());
+  const int no_asked_for = atoi(short_command.c_str());
 
   if (no_asked_for > 0)
   {
     int no = 1;
 
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_Commands.begin();
+#else
+      std::list < wxString >::iterator it = m_Commands.begin();
+#endif	  
       it != m_Commands.end();
       it++)
     {
@@ -366,7 +374,11 @@ bool wxExSTCShell::SetCommandFromHistory(const wxString& short_command)
     }
 
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_Commands.rbegin();
+#else
+      std::list < wxString >::reverse_iterator it = m_Commands.rbegin();
+#endif	  
       it != m_Commands.rend();
       it++)
     {
@@ -426,7 +438,11 @@ void wxExSTCShell::ShowHistory()
   int command_no = 1;
 
   for (
+#ifdef wxExUSE_CPP0X	
     auto it = m_Commands.begin();
+#else
+    std::list < wxString >::iterator it = m_Commands.begin();
+#endif	
     it != m_Commands.end();
     it++)
   {

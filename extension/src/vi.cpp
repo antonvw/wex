@@ -51,10 +51,10 @@ void wxExVi::Delete(int lines) const
     return;
   }
   
-  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const auto start_pos = m_STC->PositionFromLine(line);
-  const auto end_pos = m_STC->PositionFromLine(line + lines);
-  const auto linecount = m_STC->GetLineCount();
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const int start_pos = m_STC->PositionFromLine(line);
+  const int end_pos = m_STC->PositionFromLine(line + lines);
+  const int linecount = m_STC->GetLineCount();
     
   m_STC->SetSelectionStart(start_pos);
 
@@ -98,7 +98,7 @@ bool wxExVi::Delete(
     return false;
   }
 
-  const auto lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   
   m_STC->Cut();
 
@@ -122,7 +122,11 @@ bool wxExVi::Delete(
 
 void wxExVi::DeleteMarker(const wxUniChar& marker)
 {
+#ifdef wxExUSE_CPP0X	
   const auto it = m_Markers.find(marker);
+#else
+  const std::map<wxUniChar, int>::iterator it = m_Markers.find(marker);
+#endif
 
   if (it != m_Markers.end())
   {
@@ -154,7 +158,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
   m_Frame->HideViBar();
           
-  auto repeat = atoi(command.c_str());
+  int repeat = atoi(command.c_str());
 
   if (repeat == 0)
   {
@@ -173,7 +177,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
     const int pos = m_STC->GetCurrentPos();
     
-    for (auto i = 0; i < repeat; i++) m_STC->WordRightEndExtend();
+    for (int i = 0; i < repeat; i++) m_STC->WordRightEndExtend();
 
     if (dot)
     {
@@ -218,8 +222,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   else if (command.EndsWith("dw") && !m_STC->GetReadOnly())
   {
     m_STC->BeginUndoAction();
-    const auto start = m_STC->GetCurrentPos();
-    for (auto i = 0; i < repeat; i++) 
+    const int start = m_STC->GetCurrentPos();
+    for (int i = 0; i < repeat; i++) 
       m_STC->WordRight();
     m_STC->SetSelection(start, m_STC->GetCurrentPos());
     m_STC->Cut();
@@ -235,13 +239,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("*f?"))
   {
-    for (auto i = 0; i < repeat; i++) 
+    for (int i = 0; i < repeat; i++) 
       m_STC->FindNext(command.Last(), m_SearchFlags);
     m_LastFindCharCommand = command;
   }
   else if (command.Matches("*F?"))
   {
-    for (auto i = 0; i < repeat; i++) 
+    for (int i = 0; i < repeat; i++) 
       m_STC->FindNext(command.Last(), m_SearchFlags, false);
     m_LastFindCharCommand = command;
   }
@@ -261,9 +265,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.EndsWith("yw"))
   {
-    for (auto i = 0; i < repeat; i++) 
+    for (int i = 0; i < repeat; i++) 
       m_STC->WordRightEnd();
-    for (auto j = 0; j < repeat; j++) 
+    for (int j = 0; j < repeat; j++) 
       m_STC->WordLeftExtend();
     m_STC->Copy();
   }
@@ -273,8 +277,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command == "zc" || command == "zo")
   {
-    const auto level = m_STC->GetFoldLevel(m_STC->GetCurrentLine());
-    const auto line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
+    const int level = m_STC->GetFoldLevel(m_STC->GetCurrentLine());
+    const int line_to_fold = (level & wxSTC_FOLDLEVELHEADERFLAG) ?
       m_STC->GetCurrentLine(): m_STC->GetFoldParent(m_STC->GetCurrentLine());
 
     if (m_STC->GetFoldExpanded(line_to_fold) && command == "zc")
@@ -309,7 +313,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("'?"))
   {
+#ifdef wxExUSE_CPP0X	
     const auto it = m_Markers.find(command.Last());
+#else
+    const std::map<wxUniChar, int>::iterator it = m_Markers.find(command.Last());
+#endif	
 
     if (it != m_Markers.end())
     {
@@ -348,24 +356,24 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           handled = false;
         }
         break;
-      case 'b': for (auto i = 0; i < repeat; i++) m_STC->WordLeft(); break;
-      case 'e': for (auto i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
+      case 'b': for (int i = 0; i < repeat; i++) m_STC->WordLeft(); break;
+      case 'e': for (int i = 0; i < repeat; i++) m_STC->WordRightEnd(); break;
       case 'g': m_STC->DocumentStart(); break;
       case 'h': 
-        for (auto i = 0; i < repeat; i++) m_STC->CharLeft(); 
+        for (int i = 0; i < repeat; i++) m_STC->CharLeft(); 
         break;
       case 'j': 
-        for (auto i = 0; i < repeat; i++) m_STC->LineDown(); 
+        for (int i = 0; i < repeat; i++) m_STC->LineDown(); 
         break;
       case 'k': 
-        for (auto i = 0; i < repeat; i++) m_STC->LineUp(); 
+        for (int i = 0; i < repeat; i++) m_STC->LineUp(); 
         break;
       case 'l': 
       case ' ': 
-        for (auto i = 0; i < repeat; i++) m_STC->CharRight(); 
+        for (int i = 0; i < repeat; i++) m_STC->CharRight(); 
         break;
       case 'n': 
-        for (auto i = 0; i < repeat; i++) 
+        for (int i = 0; i < repeat; i++) 
           if (!m_STC->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
             m_SearchFlags, 
@@ -375,10 +383,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'p': Put(true); break;
       case 'P': Put(false); break;
 
-      case 'w': for (auto i = 0; i < repeat; i++) m_STC->WordRight(); break;
+      case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
       case 'x': 
-        for (auto i = 0; i < repeat; i++) 
+        for (int i = 0; i < repeat; i++) 
         {
           m_STC->CharRight();
           m_STC->DeleteBack(); 
@@ -411,13 +419,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         m_STC->GetFirstVisibleLine() + m_STC->LinesOnScreen()); 
         break;
       case 'N': 
-        for (auto i = 0; i < repeat; i++) 
+        for (int i = 0; i < repeat; i++) 
           if (!m_STC->FindNext(
             wxExFindReplaceData::Get()->GetFindString(), 
             m_SearchFlags, 
             !m_SearchForward)) break;
         break;
-      case 'X': for (auto i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
+      case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
       case '?': m_Frame->GetViCommand(this, command);
@@ -435,16 +443,16 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case '#': FindWord(false); break;
       
       case 2:  // ^b
-        for (auto i = 0; i < repeat; i++) m_STC->PageUp(); 
+        for (int i = 0; i < repeat; i++) m_STC->PageUp(); 
         break;
       case 7:  // ^g (^f is not possible, already find accel key)
-        for (auto i = 0; i < repeat; i++) m_STC->PageDown(); 
+        for (int i = 0; i < repeat; i++) m_STC->PageDown(); 
         break;
       case 16: // ^p (^y is not possible, already redo accel key)
-        for (auto i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
+        for (int i = 0; i < repeat; i++) m_STC->LineScrollUp(); 
         break;
       case 17: // ^q (^n is not possible, already new doc accel key)
-        for (auto i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
+        for (int i = 0; i < repeat; i++) m_STC->LineScrollDown(); 
         break;
 
       default:
@@ -651,7 +659,7 @@ bool wxExVi::ExecCommand(const wxString& command)
   }
   else if (command.Last() == '=')
   {
-    const auto no = ToLineNumber(command.BeforeLast('='));
+    const int no = ToLineNumber(command.BeforeLast('='));
     
     if (no == 0)
     {
@@ -689,8 +697,8 @@ bool wxExVi::ExecCommand(const wxString& command)
 
 void wxExVi::FindWord(bool find_next) const
 {
-  const auto start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
-  const auto end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
+  const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
+  const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
   
   wxExFindReplaceData::Get()->SetFindString(
     "\\<" + m_STC->GetTextRange(start, end) + "\\>");
@@ -701,7 +709,7 @@ void wxExVi::FindWord(bool find_next) const
 
 void wxExVi::GotoBrace() const
 {
-  auto brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
+  int brace_match = m_STC->BraceMatch(m_STC->GetCurrentPos());
           
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -728,8 +736,8 @@ bool wxExVi::Indent(
     return false;
   }
   
-  const auto begin_line = ToLineNumber(begin_address);
-  const auto end_line = ToLineNumber(end_address);
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
@@ -826,7 +834,7 @@ bool wxExVi::Move(
     return false;
   }
 
-  const auto dest_line = ToLineNumber(destination);
+  const int dest_line = ToLineNumber(destination);
 
   if (dest_line == 0)
   {
@@ -856,7 +864,7 @@ bool wxExVi::Move(
 
   m_STC->EndUndoAction();
   
-  const auto lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
+  const int lines = wxExGetNumberOfLines(m_STC->GetSelectedText());
   if (lines >= 2)
   {
     m_Frame->ShowViMessage(wxString::Format(_("%d lines moved"), lines));
@@ -947,7 +955,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       if (m_InsertMode)
       {
         // Add extra inserts if necessary.        
-        for (auto i = 1; i < m_InsertRepeatCount; i++)
+        for (int i = 1; i < m_InsertRepeatCount; i++)
         {
           m_STC->AddText(m_InsertText);
         }
@@ -976,14 +984,14 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     case WXK_RETURN:
       if (!m_InsertMode)
       {
-        auto repeat = atoi(m_Command.c_str());
+        int repeat = atoi(m_Command.c_str());
 
         if (repeat == 0)
         {
           repeat++;
         }
   
-        for (auto i = 0; i < repeat; i++) m_STC->LineDown();
+        for (int i = 0; i < repeat; i++) m_STC->LineDown();
 
         m_Command.clear();
       }
@@ -1002,7 +1010,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 void wxExVi::Put(bool after) const
 {
-  const auto lines = wxExGetNumberOfLines(wxExClipboardGet());
+  const int lines = wxExGetNumberOfLines(wxExClipboardGet());
   
   if (lines > 1)
   {
@@ -1036,8 +1044,8 @@ bool wxExVi::SetSelection(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
-  const auto begin_line = ToLineNumber(begin_address);
-  const auto end_line = ToLineNumber(end_address);
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
@@ -1061,8 +1069,8 @@ bool wxExVi::Substitute(
     return false;
   }
 
-  const auto begin_line = ToLineNumber(begin_address);
-  const auto end_line = ToLineNumber(end_address);
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
@@ -1081,7 +1089,7 @@ bool wxExVi::Substitute(
 
   while (m_STC->SearchInTarget(pattern) > 0)
   {
-    const auto target_start = m_STC->GetTargetStart();
+    const int target_start = m_STC->GetTargetStart();
 
     if (target_start >= m_STC->GetTargetEnd())
     {
@@ -1090,7 +1098,7 @@ bool wxExVi::Substitute(
 
     m_STC->MarkTargetChange();
   
-    const auto length = (is_re ? 
+    const int length = (is_re ? 
       m_STC->ReplaceTargetRE(replacement): 
       m_STC->ReplaceTarget(replacement));
 
@@ -1140,11 +1148,16 @@ int wxExVi::ToLineNumber(const wxString& address) const
   {
     const wxString oper = filtered_address.BeforeFirst('\'');
     
-    auto pos = filtered_address.Find('\'');
-    auto size = 2;
+    int pos = filtered_address.Find('\'');
+    int size = 2;
     
+#ifdef wxExUSE_CPP0X	
     auto it = 
       m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
+#else
+    std::map<wxUniChar, int>::const_iterator it = 
+      m_Markers.find(filtered_address.AfterFirst('\'').GetChar(0));
+#endif	  
       
     if (it != m_Markers.end())
     {
@@ -1214,7 +1227,7 @@ int wxExVi::ToLineNumber(const wxString& address) const
   }
   
   // Calculate the line.
-  const auto line_no = markers + dot + dollar + i + stc_used;
+  const int line_no = markers + dot + dollar + i + stc_used;
   
   // Limit the range of what is returned.
   if (line_no <= 0)
@@ -1236,8 +1249,8 @@ bool wxExVi::Write(
   const wxString& end_address,
   const wxString& filename) const
 {
-  const auto begin_line = ToLineNumber(begin_address);
-  const auto end_line = ToLineNumber(end_address);
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0 || end_line < begin_line)
   {
@@ -1255,9 +1268,9 @@ bool wxExVi::Write(
 
 void wxExVi::Yank(int lines) const
 {
-  const auto line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
-  const auto start = m_STC->PositionFromLine(line);
-  const auto end = m_STC->PositionFromLine(line + lines);
+  const int line = m_STC->LineFromPosition(m_STC->GetCurrentPos());
+  const int start = m_STC->PositionFromLine(line);
+  const int end = m_STC->PositionFromLine(line + lines);
 
   if (end != -1)
   {
@@ -1279,20 +1292,20 @@ bool wxExVi::Yank(
   const wxString& begin_address, 
   const wxString& end_address) const
 {
-  const auto begin_line = ToLineNumber(begin_address);
-  const auto end_line = ToLineNumber(end_address);
+  const int begin_line = ToLineNumber(begin_address);
+  const int end_line = ToLineNumber(end_address);
 
   if (begin_line == 0 || end_line == 0)
   {
     return false;
   }
 
-  const auto start = m_STC->PositionFromLine(begin_line - 1);
-  const auto end = m_STC->PositionFromLine(end_line);
+  const int start = m_STC->PositionFromLine(begin_line - 1);
+  const int end = m_STC->PositionFromLine(end_line);
 
   m_STC->CopyRange(start, end);
 
-  const auto lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
+  const int lines = wxExGetNumberOfLines(wxExClipboardGet()) - 1;
   
   if (lines >= 2)
   {
