@@ -218,7 +218,7 @@ gccosx_carbon_dll/syncped.app/Contents/PkgInfo: $(COMPILER_PREFIX)$(WX_PORT)$(_B
 	sed -e "s/IDENTIFIER/syncped/" \
 	-e "s/EXECUTABLE/syncped/" \
 	-e "s/VERSION/1.0/" \
-	../../wxWidgets-2.9.1/src/osx/carbon/Info.plist.in >gccosx_carbon_dll/syncped.app/Contents/Info.plist
+	../../wxWidgets-2.9.2/src/osx/carbon/Info.plist.in >gccosx_carbon_dll/syncped.app/Contents/Info.plist
 	
 	
 	echo -n "APPL????" >gccosx_carbon_dll/syncped.app/Contents/PkgInfo
