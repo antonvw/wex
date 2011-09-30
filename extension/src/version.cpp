@@ -14,5 +14,5 @@
 
 const wxVersionInfo wxExGetVersionInfo() 
 {
-  return wxVersionInfo("wxExtension", 1, 1, 0, "wxExtension 1.1.0");
+  return wxVersionInfo("wxExtension", 2, 9, 3, "wxExtension 2.9.3");
 }

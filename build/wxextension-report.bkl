@@ -8,7 +8,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
 
 <makefile>
   <lib id="wxex-rep" template="wx-lib,wxlike">
-    <libname>wxex-rep09</libname>
+    <libname>wxex-rep29</libname>
     
     <define>$(VAR_USE_EMBEDDED_SQL)</define>
     <define>$(VAR_USE_OTL)</define>
