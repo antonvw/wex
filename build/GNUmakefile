@@ -26,7 +26,7 @@ RANLIB ?= ranlib
 CXX = `$(WX_CONFIG) --cxx`
 
 # Standard flags for C++ 
-CXXFLAGS ?= -Wno-write-strings -std=c++0x
+CXXFLAGS ?= -Wno-write-strings -std=c++0x -DwxExUSE_CPP0X
 
 # Standard preprocessor flags (common for CC and CXX) 
 CPPFLAGS ?= 
@@ -148,8 +148,8 @@ WXEX_TEST_REP_CXXFLAGS = $(VAR) $(VAR_3) -I/usr/include/cppunit \
 WXEX_TEST_REP_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_rep_main.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_test_rep_test.o
-SYNCPED_CXXFLAGS = $(VAR) $(VAR_3) -I../extension/include `$(WX_CONFIG) \
-	--cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
+SYNCPED_CXXFLAGS = $(VAR) $(VAR_3) -DwxExUSE_CPP0X -I../extension/include \
+	`$(WX_CONFIG) --cxxflags $(WX_CONFIG_FLAGS)` $(CPPFLAGS) $(CXXFLAGS)
 SYNCPED_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_app.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped_frame.o \
