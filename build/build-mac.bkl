@@ -6,7 +6,10 @@ Author:    Anton van Wezenbeek
 Copyright: (c) 2011 Anton van Wezenbeek
 -->
 
-<!-- see build.bkl -->
+<!-- see build.bkl 
+  bakefile -f gnu -oGNUmakefile-mac 
+    -I ~/Documents/wxWidgets-2.9.2/build/bakefiles/wxpresets/ build-mac.bkl
+  -->
 
 <makefile>
 
