@@ -134,46 +134,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
   <include file="wxextension-report.bkl"/>
   
   <!-- applications -->
-  <exe id="syncped" template="wxgui,wxlike">
-    <define>$(VAR_USE_OTL)</define>
-    <define>$(VAR_USE_PORTABLE)</define>
-    
-    <sources>../syncped/app.cpp</sources>
-    <sources>../syncped/frame.cpp</sources>
-    <sources>../syncped/support.cpp</sources>
-    
-    <win32-res>../syncped/app.rc</win32-res>
-    
-    <headers>../syncped/app.h</headers>
-    <headers>../syncped/defs.h</headers>
-    <headers>../syncped/frame.h</headers>
-    <headers>../syncped/support.h</headers>
-    <headers>../syncped/version.h</headers>
-    
-    <include>../extension/include</include>
-    
-    <install-to>/usr/local/bin/</install-to>
-    
-    <library>wxex-rep</library>
-    <library>wxex</library>
-    
-    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-      <if cond="PLATFORM_UNIX=='1'">
-        <sys-lib>odbc</sys-lib>
-      </if>
-    </if>
-    
-    <wx-lib>aui</wx-lib>
-    <wx-lib>stc</wx-lib>
-    <wx-lib>html</wx-lib>
-    <wx-lib>adv</wx-lib>
-    <wx-lib>xml</wx-lib> 
-    <wx-lib>core</wx-lib>
-    <wx-lib>base</wx-lib>
-
-    <if cond="FORMAT=='gnu'">
-      <osx-bundle/>
-    </if>
-  </exe>
+  <include file="syncped.bkl"/>
   
 </makefile>
