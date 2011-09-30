@@ -8,7 +8,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
 
 <makefile>
   <lib id="wxex" template="wx-lib,wxlike">
-    <libname>wxex09</libname>
+    <libname>wxex29</libname>
     
     <define>$(VAR_USE_OTL)</define>
     <define>$(VAR_USE_PORTABLE)</define>

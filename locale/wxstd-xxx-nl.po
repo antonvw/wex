@@ -7,7 +7,7 @@
 # changed in nl.po as well, do not understand why.
 msgid ""
 msgstr ""
-"Project-Id-Version: wxextension v1.1.0\n"
+"Project-Id-Version: wxextension v2.9.3\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
