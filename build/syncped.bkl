@@ -44,7 +44,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <wx-lib>core</wx-lib>
     <wx-lib>base</wx-lib>
 
-    <if cond="FORMAT=='gnu'">
+    <if cond="PLATFORM_UNIX=='0' and PLATFORM_WIN32=='0'">
       <osx-bundle/>
     </if>
   </exe>
