@@ -496,7 +496,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
 
     if (stc != NULL && wxExLexers::Get()->Count() > 0)
     {
-      wxString lexer = stc->GetLexer().GetScintillaLexer();
+      wxString lexer = stc->GetLexer().GetDisplayLexer();
 
       if (wxExLexers::Get()->ShowDialog(this, lexer))
       {
@@ -585,7 +585,7 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   }
   else if (pane == "PaneLexer")
   {
-    text = stc->GetLexer().GetScintillaLexer();
+    text = stc->GetLexer().GetDisplayLexer();
   }
   else if (pane == "PaneFileType")
   {
