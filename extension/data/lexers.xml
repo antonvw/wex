@@ -1632,6 +1632,26 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <lexer name="caml" match="wxSTC_CAML_" />
   <lexer name="clarion" match="wxSTC_CLW_" />
   <lexer name="cmake" match="wxSTC_CMAKE_" />
+  <lexer name="cpp" display="c#" extensions="*.cs" match="wxSTC_C_">
+    <keywords>
+abstract      as         base          bool         break
+Byte          case       catch         char         checked
+class         const      continue      decimal      default
+delegate      do         double        else         enum
+event         explicit   extern        false        finally
+fixed         float      for           foreach      goto
+if            implicit   in            int          interface
+internal      is         lock          long         namespace
+new           null       object        operator     out
+override      params     private       protected    public
+readonly      ref        return        sbyte        sealed
+short         sizeof     stackalloc    static       string
+struct        switch     this          throw        true
+try           typeof     uint          ulong        unchecked
+unsafe        ushort     using         virtual      volatile
+void          while    
+    </keywords>
+  </lexer>
   <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y" match="wxSTC_C_">
     <keywords>
     argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0

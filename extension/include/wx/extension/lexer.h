@@ -67,6 +67,9 @@ public:
   /// Gets the keywords.
   const std::set<wxString>& GetKeywords() const {return m_Keywords;};
 
+  /// Gets the display lexer (as shown in dialog).
+  const wxString& GetDisplayLexer() const {return m_DisplayLexer;};
+
   /// Gets the keywords as one large string, 
   /// if keyword_set -1 take all the sets,
   /// otherwise take the specified set.
@@ -131,6 +134,12 @@ private:
   // The scintilla name for this lexer.
   // Cannot be const, as in wxExFileName the operator= is used on a lexer.
   wxString m_ScintillaLexer;
+
+  // Normally the lexer displayed is the scintilla lexer,
+  // however this might be different, as with c#.
+  // In that case the scintilla lexer is cpp, whereas the
+  // display lexer is c#.  
+  wxString m_DisplayLexer;
 
   std::set<wxString> m_Keywords;
   std::vector<wxExProperty> m_Properties;

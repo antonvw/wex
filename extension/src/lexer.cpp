@@ -399,7 +399,14 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
   else
   {
-    m_Extensions = node->GetAttribute("extensions");
+    if (!node->GetAttribute("display").empty())
+    {
+      m_DisplayLexer = node->GetAttribute("display");
+    }
+    else
+    {
+      m_DisplayLexer = m_ScintillaLexer;
+    }
 
     if (!node->GetAttribute("match").empty())
     {
