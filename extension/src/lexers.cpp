@@ -696,7 +696,7 @@ bool wxExLexers::ShowDialog(
     return false;
   }
 
-  lexer = FindByName(dlg.GetStringSelection()).GetScintillaLexer();
+  lexer = FindByName(dlg.GetStringSelection()).GetDisplayLexer();
 
   return true;
 }

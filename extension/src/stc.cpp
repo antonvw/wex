@@ -2253,7 +2253,7 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
   
-  wxExFrame::StatusText(m_Lexer.GetScintillaLexer(), "PaneLexer");
+  wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
     
   return true;
 }
