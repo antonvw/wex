@@ -1415,7 +1415,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> green </colour>
-        <colour name="edge"> blue </colour>
+        <colour name="edge"> light blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -1442,7 +1442,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         
         <colour name="caretforeground"> white</colour>
         <colour name="caretlinebackground"> green </colour>
-        <colour name="edge"> white </colour>
+        <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black</colour>
         <colour name="selbackground"> green </colour>
       </theme>
@@ -1469,7 +1469,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> green </colour>
-        <colour name="edge"> white </colour>
+        <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black </colour>
         <colour name="selbackground"> grey </colour>
       </theme>
@@ -1496,7 +1496,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> green </colour>
-        <colour name="edge"> blue </colour>
+        <colour name="edge"> light blue </colour>
         <colour name="selforeground"> white </colour>
         <colour name="selbackground"> green </colour>
       </theme>
