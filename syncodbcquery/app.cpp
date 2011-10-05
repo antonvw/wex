@@ -186,7 +186,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
     info.SetVersion(wxExGetVersionInfo().GetVersionString());
-    info.SetCopyright("(c) 2008-2011, Anton van Wezenbeek");
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
     info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
     wxAboutBox(info);
     }

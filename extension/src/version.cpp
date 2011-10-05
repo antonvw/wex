@@ -12,7 +12,33 @@
 #endif
 #include <wx/extension/version.h>
 
-const wxVersionInfo wxExGetVersionInfo() 
+const wxExVersionInfo wxExGetVersionInfo() 
 {
-  return wxVersionInfo("wxExtension", 2, 9, 3, "wxExtension 2.9.3");
+  return wxExVersionInfo(
+    "wxExtension", 
+    2, 9, 3, 
+    "wxExtension 2.9.3",
+    "(c) 1998-2011, Anton van Wezenbeek. " + wxString(_("All rights reserved.")));
+}
+
+wxExVersionInfo::wxExVersionInfo(const wxString& name,
+  int major,
+  int minor,
+  int micro,
+  const wxString& description,
+  const wxString& copyright)
+  : wxVersionInfo(name, major, minor, micro, description, copyright)
+{
+}
+    
+const wxString wxExVersionInfo::GetVersionString() const
+{
+  wxString str;
+  
+  str << GetMajor() << '.' << GetMinor();
+  
+  if ( GetMicro() )
+    str << '.' << GetMicro();
+
+  return str;
 }
