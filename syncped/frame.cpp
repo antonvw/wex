@@ -28,7 +28,6 @@
 #include <wx/extension/report/util.h>
 #include "frame.h"
 #include "defs.h"
-#include "version.h"
 
 class wxExLogStderr : public wxLogStderr
 {
@@ -559,8 +558,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(APPL_VERSION);
-    info.AddDeveloper(wxExGetVersionInfo().GetVersionString());
+    info.SetVersion(wxExGetVersionInfo().GetVersionString());
 
 #ifdef wxExUSE_OTL
     info.AddDeveloper(wxExOTL::Version());
