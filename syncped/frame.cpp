@@ -575,8 +575,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 #endif
 
     info.SetDescription(description);
-    info.SetCopyright("(c) 1998-2011, Anton van Wezenbeek. " 
-      + wxString(_("All rights reserved.")));
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
     info.SetWebSite("http://antonvw.github.com/syncped/index.htm");
       
     wxAboutBox(info);
