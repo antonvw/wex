@@ -388,6 +388,7 @@ void Frame::OnCommand(wxCommandEvent& event)
         "PaneClients");
 #endif
 
+      wxLogStatus(text);
       AppendText(m_LogWindow, text);
 
       const wxString statistics = m_Statistics.Get();
@@ -825,8 +826,8 @@ bool Frame::SetupSocketServer()
     m_SocketServer = NULL;
     
     wxLogStatus(text);
-
     AppendText(m_LogWindow, text);
+    
     return false;
   }
   else
