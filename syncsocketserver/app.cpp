@@ -448,7 +448,10 @@ void Frame::OnCommand(wxCommandEvent& event)
       0, 
       CONFIG_STRING,
       true));
-    v.push_back(wxExConfigItem(_("Port"), 1000, 65536));
+      
+    // Well known ports are in the range from 0 to 1023.
+    // Just allow here for most flexibility.
+    v.push_back(wxExConfigItem(_("Port"), 1, 65536));
 
     // Configuring only possible if server is stopped,
     // otherwise just show settings readonly mode.
