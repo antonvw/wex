@@ -60,6 +60,9 @@ private:
   const wxString SocketDetails(const wxSocketBase* sock) const;
   void SocketLost(wxSocketBase* sock, bool remove_from_clients);
   void TimerDialog();
+#if wxUSE_TASKBARICON
+  void UpdateTaskBar();
+#endif
   void WriteDataToClient(const wxCharBuffer& data, wxSocketBase* client);
   void WriteDataWindowToClients();
 
