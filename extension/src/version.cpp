@@ -31,7 +31,7 @@ wxExVersionInfo::wxExVersionInfo(const wxString& name,
 {
 }
     
-const wxString wxExVersionInfo::GetVersionString() const
+const wxString wxExVersionInfo::GetVersionOnlyString() const
 {
   wxString str;
   
