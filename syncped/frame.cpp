@@ -558,7 +558,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.SetVersion(wxExGetVersionInfo().GetVersionString());
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
 
 #ifdef wxExUSE_OTL
     info.AddDeveloper(wxExOTL::Version());
