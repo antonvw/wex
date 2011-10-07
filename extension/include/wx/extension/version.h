@@ -7,7 +7,7 @@
 
 #include <wx/versioninfo.h>
 
-/// This class offers our own version info.
+/// This class offers adds GetVersionOnlyString.
 class WXDLLIMPEXP_BASE wxExVersionInfo : public wxVersionInfo
 {
 public:
@@ -18,9 +18,10 @@ public:
     int micro = 0,
     const wxString& description = wxString(),
     const wxString& copyright = wxString());
-                  
-  /// Override base, this one does not include name.
-  const wxString GetVersionString() const;
+       
+  /// Base offers GetVersionString,
+  /// this one does not include name.
+  const wxString GetVersionOnlyString() const;
 };
 
 const wxExVersionInfo wxExGetVersionInfo();
