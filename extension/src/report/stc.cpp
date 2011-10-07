@@ -126,5 +126,12 @@ void wxExSTCWithFrame::PropertiesMessage(long flags)
   const wxString file = GetName() + 
     (GetReadOnly() ? " [" + _("Readonly") + "]": wxString(wxEmptyString));
     
-  m_Frame->SetTitle(file);
+  if (file.empty())
+  {
+    m_Frame->SetTitle(wxTheApp->GetAppName());
+  }
+  else
+  {
+    m_Frame->SetTitle(file);
+  }
 }
