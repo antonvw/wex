@@ -573,13 +573,8 @@ void Frame::OnSocket(wxSocketEvent& event)
 #endif
     }
 
-    const wxString text =
-      wxString::Format(_("%s connected at %d"),
-        wxTheApp->GetAppName().c_str(),
-        wxConfigBase::Get()->ReadLong(_("Port"), 3000));
-
 #if wxUSE_TASKBARICON
-    m_TaskBarIcon->SetIcon(wxICON(connect), text);
+    UpdateTaskBar();
 #endif
   }
   else if (event.GetId() == ID_CLIENT)
@@ -652,6 +647,9 @@ void Frame::OnSocket(wxSocketEvent& event)
           "PaneBytes");
 #endif
 
+#if wxUSE_TASKBARICON
+        UpdateTaskBar();
+#endif
         // Enable input events again.
         sock->SetNotify(wxSOCKET_LOST_FLAG | wxSOCKET_INPUT_FLAG);
         break;
@@ -676,13 +674,11 @@ void Frame::OnSocket(wxSocketEvent& event)
 #endif
           }
 
-#if wxUSE_TASKBARICON
-          m_TaskBarIcon->SetIcon(
-            wxICON(ready), 
-            wxString::Format(_("server listening at %d"), 
-              wxConfigBase::Get()->ReadLong(_("Port"), 3000)));
-#endif
         }
+        
+#if wxUSE_TASKBARICON
+        UpdateTaskBar();
+#endif
         break;
 
       default:
@@ -970,6 +966,32 @@ void Frame::TimerDialog()
 #endif
   }
 }
+
+#if wxUSE_TASKBARICON
+void Frame::UpdateTaskBar()
+{
+  if (m_Clients.size() == 0)
+  {
+    m_TaskBarIcon->SetIcon(
+      wxICON(ready), 
+      wxString::Format(_("server listening at %d"), 
+        wxConfigBase::Get()->ReadLong(_("Port"), 3000)));
+  }
+  else
+  {
+    const wxString text =
+      wxString::Format(
+        _("%s %d clients connected at %d\nreceived: %ld bytes sent: %ld bytes"),
+          wxTheApp->GetAppName().c_str(),
+          m_Clients.size(),
+          wxConfigBase::Get()->ReadLong(_("Port"), 3000),
+          m_Statistics.Get(_("Bytes Sent")),
+          m_Statistics.Get(_("Bytes Received")));
+
+    m_TaskBarIcon->SetIcon(wxICON(connect), text);
+  }
+}
+#endif
 
 void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
 {
