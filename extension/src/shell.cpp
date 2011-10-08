@@ -82,6 +82,9 @@ wxExSTCShell::wxExSTCShell(
   m_CommandsIterator = m_Commands.end();
 
   SetLexer(lexer);
+  
+  // A shell does not use vi mode.
+  GetVi().Use(false);
 }
 
 wxExSTCShell::~wxExSTCShell()
