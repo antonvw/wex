@@ -27,20 +27,27 @@ void wxExProcessListView::ReportAdd(
   const wxString& lineno)
 {
   wxASSERT(m_ListView != NULL);
-  
-  wxFileName fn(path);
-  fn.Normalize();
+
+  if (!path.empty())
+  {  
+    wxFileName fn(path);
+    fn.Normalize();
     
-  if (fn.FileExists() || fn.DirExists())
-  {
-    wxExListItem item(m_ListView, fn);
-    item.Insert();
-    item.SetItem(_("Line"), line);
-    item.SetItem(_("Line No"), lineno);
+    if (fn.FileExists() || fn.DirExists())
+    {
+      wxExListItem item(m_ListView, fn);
+      item.Insert();
+      item.SetItem(_("Line"), line);
+      item.SetItem(_("Line No"), lineno);
+    }
+    else
+    {
+      m_ListView->InsertItem(m_ListView->GetItemCount(), line);
+    }
   }
   else
   {
-    m_ListView->InsertItem(m_ListView->GetItemCount(), line, -1);
+    m_ListView->InsertItem(m_ListView->GetItemCount(), line);
   }
   
   // If nothing selected, then ensure last line is visible.
