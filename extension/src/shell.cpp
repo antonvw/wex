@@ -80,11 +80,10 @@ wxExSTCShell::wxExSTCShell(
 
   // Take care that m_CommandsIterator is valid.
   m_CommandsIterator = m_Commands.end();
+  
+  EnableShell(true);
 
   SetLexer(lexer);
-  
-  // A shell does not use vi mode.
-  GetVi().Use(false);
 }
 
 wxExSTCShell::~wxExSTCShell()
@@ -114,6 +113,12 @@ wxExSTCShell::~wxExSTCShell()
 void wxExSTCShell::EnableShell(bool enabled)
 {
   m_Enabled = enabled;
+  
+  if (m_Enabled)
+  {
+    // A shell does not use vi mode.
+    GetVi().Use(false);
+  }
 }
 
 const wxString wxExSTCShell::GetHistory() const

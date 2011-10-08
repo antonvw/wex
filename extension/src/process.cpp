@@ -200,6 +200,8 @@ long wxExProcess::Execute(
     
       ReportCreate();
 
+      CheckInput();
+      
       m_Timer->Start(1000); // each 1000 milliseconds
     }
 
@@ -296,15 +298,16 @@ void wxExProcess::OnTerminate(int pid, int status)
 {
   m_Timer->Stop();
 
+  wxLogStatus(_("Ready"));
+  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
+  wxPostEvent(wxTheApp->GetTopWindow(), event);
+  
   // Collect remaining input.
   while (CheckInput())
   {
     // Do nothing.
   }
-
-  wxLogStatus(_("Ready"));
-  wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_TERMINATED_PROCESS);
-  wxPostEvent(wxTheApp->GetTopWindow(), event);
+  
   m_Dialog->GetSTCShell()->Prompt(wxEmptyString, false); // no eol
 }
 
