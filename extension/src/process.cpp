@@ -133,7 +133,8 @@ int wxExProcess::ConfigDialog(
   v.push_back(wxExConfigItem(
     _("Process"), 
     CONFIG_COMBOBOX, 
-    wxEmptyString));
+    wxEmptyString),
+    true);
 
   v.push_back(wxExConfigItem(
     m_WorkingDirKey, 
