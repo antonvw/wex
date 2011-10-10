@@ -482,12 +482,15 @@ bool wxExMatchesOneOf(const wxFileName& filename, const wxString& pattern)
 
   const wxString fullname_uppercase = filename.GetFullName().Upper();
 
-  wxStringTokenizer tokenizer(pattern.Upper(), ";");
-  while (tokenizer.HasMoreTokens())
+  wxStringTokenizer tkz(pattern.Upper(), ";");
+  
+  while (tkz.HasMoreTokens())
   {
-    if (fullname_uppercase.Matches(tokenizer.GetNextToken())) return true;
+    const wxString token = tkz.GetNextToken();
+    
+    if (fullname_uppercase.Matches(token)) return true;
   }
-
+  
   return false;
 }
 
