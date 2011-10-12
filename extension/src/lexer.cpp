@@ -407,6 +407,9 @@ void wxExLexer::Set(const wxXmlNode* node)
     {
       m_DisplayLexer = m_ScintillaLexer;
     }
+    
+    m_Extensions = node->GetAttribute("extensions");
+
 
     if (!node->GetAttribute("match").empty())
     {
