@@ -505,6 +505,7 @@ void wxExAppTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
   CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 3);
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
+  CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));
   CPPUNIT_ASSERT( wxExSkipWhiteSpace("\n\tt \n    es   t\n") == "t es t");
   CPPUNIT_ASSERT(!wxExTranslate(
