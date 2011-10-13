@@ -1404,7 +1404,7 @@ void wxExSTC::Initialize()
 
   UsePopUp(false); // we have our own
 
-  const int accels = 19; // take max number of entries
+  const int accels = 20; // take max number of entries
   wxAcceleratorEntry entries[accels];
 
   int i = 0;
@@ -1412,6 +1412,7 @@ void wxExSTC::Initialize()
   entries[i++].Set(wxACCEL_CTRL, (int)'Z', wxID_UNDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'Y', wxID_REDO);
   entries[i++].Set(wxACCEL_CTRL, (int)'D', ID_EDIT_HEX_DEC_CALLTIP);
+  entries[i++].Set(wxACCEL_CTRL, (int)'K', ID_EDIT_CONTROL_CHAR);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F3, ID_EDIT_FIND_NEXT);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F4, ID_EDIT_FIND_PREVIOUS);
   entries[i++].Set(wxACCEL_NORMAL, WXK_F7, wxID_SORT_ASCENDING);
