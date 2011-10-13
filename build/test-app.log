@@ -1,18 +1,6 @@
-.......F.F.............
+.....................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  21   Failures: 2   Errors: 0
-
-
-1) test: testLexer (F) line: 254 ../extension/test/app/test.cpp
-assertion failed
-- Expression: !lexer.GetExtensions().empty()
-
-
-2) test: testLexers (F) line: 297 ../extension/test/app/test.cpp
-assertion failed
-- Expression: wxExLexers::Get()->FindByFileName( wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp"
+OK (21 tests)
 
 
