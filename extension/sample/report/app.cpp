@@ -209,8 +209,8 @@ void wxExRepSampleFrame::OnCommand(wxCommandEvent& event)
     {
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
-    info.AddDeveloper(wxExGetVersionInfo().GetVersionString());
-    info.SetCopyright("(c) 1998-2011 Anton van Wezenbeek");
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
+    info.SetCopyright(wxExGetVersionInfo().GetCopyright());
     wxAboutBox(info);
     }
     break;
