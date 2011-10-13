@@ -985,8 +985,8 @@ void Frame::UpdateTaskBar()
           wxTheApp->GetAppName().c_str(),
           m_Clients.size(),
           wxConfigBase::Get()->ReadLong(_("Port"), 3000),
-          m_Statistics.Get(_("Bytes Sent")),
-          m_Statistics.Get(_("Bytes Received")));
+          m_Statistics.Get(_("Bytes Received")),
+          m_Statistics.Get(_("Bytes Sent")));
 
     m_TaskBarIcon->SetIcon(wxICON(connect), text);
   }
@@ -1016,6 +1016,10 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
   StatusText(wxString::Format("%d,%d",
     m_Statistics.Get(_("Bytes Received")), m_Statistics.Get(_("Bytes Sent"))),
     "PaneBytes");
+#endif
+
+#if wxUSE_TASKBARICON
+  UpdateTaskBar();
 #endif
 
   if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))

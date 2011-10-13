@@ -35,9 +35,15 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
 {
   if (m_DefaultColours.empty())
   {
-    m_DefaultColours["caretforeground"] = stc->GetCaretForeground().GetAsString();
-    m_DefaultColours["caretlinebackground"] = stc->GetCaretLineBackground().GetAsString();
-    m_DefaultColours["edge"] = stc->GetEdgeColour().GetAsString();
+    m_DefaultColours["caretforeground"] = 
+      stc->GetCaretForeground().GetAsString();
+      
+    m_DefaultColours["caretlinebackground"] = 
+      stc->GetCaretLineBackground().GetAsString();
+      
+    m_DefaultColours["edge"] = 
+      stc->GetEdgeColour().GetAsString();
+      
     //tempColours["selbackground"]
     //tempColours["selforeground"]
     //tempColours["calltipbackground"]
@@ -56,7 +62,8 @@ void wxExLexers::ApplyGlobalStyles(wxStyledTextCtrl* stc)
 #ifdef wxExUSE_CPP0X	
   const auto colour_it = m_ThemeColours.find(theme);
 #else
-  const std::map<wxString, std::map<wxString, wxString> >::const_iterator colour_it = m_ThemeColours.find(theme);
+  const std::map<wxString, std::map<wxString, wxString> >::const_iterator 
+    colour_it = m_ThemeColours.find(theme);
 #endif  
   
   if (colour_it != m_ThemeColours.end())
@@ -317,23 +324,15 @@ const wxString wxExLexers::GetLexerExtensions() const
 
 const wxString wxExLexers::GetTheme() const
 {
-  const wxString default_theme =
-#ifdef __WXMSW__
-    "studio";
-#elif __WXGTK__
-    "ubuntu";
-#else
-    "xcode";
-#endif
-
-  const wxString theme = wxConfigBase::Get()->Read("theme", default_theme);
+  const wxString theme = wxConfigBase::Get()->Read("theme", "torte");
 
   // Use the theme macros, though we could also use the theme colours,
   // as they contain the same themes.  
 #ifdef wxExUSE_CPP0X	
   const auto it = m_ThemeMacros.find(theme);
 #else
-  std::map<wxString, std::map<wxString, wxString> >::const_iterator it = m_ThemeMacros.find(theme);
+  std::map<wxString, std::map<wxString, wxString> >::const_iterator it = 
+    m_ThemeMacros.find(theme);
 #endif  
     
   if (it != m_ThemeMacros.end())
@@ -355,7 +354,8 @@ const std::map<wxString, wxString>& wxExLexers::GetThemeMacros() const
 #ifdef wxExUSE_CPP0X	
   const auto it = m_ThemeMacros.find(GetTheme());
 #else
-  const std::map<wxString, std::map<wxString, wxString> >::const_iterator it = m_ThemeMacros.find(GetTheme());
+  const std::map<wxString, std::map<wxString, wxString> >::const_iterator it = 
+    m_ThemeMacros.find(GetTheme());
 #endif
   
   return it->second;
