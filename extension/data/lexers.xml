@@ -1444,7 +1444,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
         <colour name="caretlinebackground"> green </colour>
         <colour name="edge"> dim grey </colour>
         <colour name="selforeground"> black </colour>
-        <colour name="selbackground"> grey </colour>
+        <colour name="selbackground"> green </colour>
       </theme>
     </themes>
   </macro>
