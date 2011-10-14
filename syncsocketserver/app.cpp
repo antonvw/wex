@@ -563,16 +563,6 @@ void Frame::OnSocket(wxSocketEvent& event)
     const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
     WriteDataToClient(buffer, sock);
 
-    if (wxConfigBase::Get()->ReadLong(_("Timer"), 0) > 0 && !m_Timer.IsRunning())
-    {
-      m_Timer.Start(1000 * wxConfigBase::Get()->ReadLong(_("Timer"), 0));
-      
-#if wxUSE_STATUSBAR
-      StatusText(wxString::Format("%ld", 
-        wxConfigBase::Get()->ReadLong(_("Timer"), 0)), "PaneTimer");
-#endif
-    }
-
 #if wxUSE_TASKBARICON
     UpdateTaskBar();
 #endif
@@ -664,18 +654,6 @@ void Frame::OnSocket(wxSocketEvent& event)
           "PaneClients");
 #endif
 
-        if (m_Clients.size() == 0)
-        {
-          if (m_Timer.IsRunning())
-          {
-            m_Timer.Stop();
-#if wxUSE_STATUSBAR
-            StatusText(wxEmptyString, "PaneTimer");
-#endif
-          }
-
-        }
-        
 #if wxUSE_TASKBARICON
         UpdateTaskBar();
 #endif
@@ -949,10 +927,12 @@ void Frame::TimerDialog()
   if (val > 0)
   {
     m_Timer.Start(1000 * val);
+    
     AppendText(m_LogWindow,
       wxString::Format(_("timer set to: %d seconds (%s)"),
       val,
       wxTimeSpan(0, 0, val, 0).Format().c_str()));
+      
 #if wxUSE_STATUSBAR
     StatusText(wxString::Format("%ld", val), "PaneTimer");
 #endif
@@ -960,7 +940,9 @@ void Frame::TimerDialog()
   else if (val == 0)
   {
     m_Timer.Stop();
+    
     AppendText(m_LogWindow, _("timer stopped"));
+    
 #if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
 #endif
