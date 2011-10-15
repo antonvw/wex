@@ -810,12 +810,27 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 {
   if (GetReadOnly())
   {
-    wxLogStatus(_("Document is readonly"));
-    return;
+    if (m_Flags & STC_WIN_HEX)
+    {
+      Reload(m_Flags ^ STC_WIN_HEX); 
+      
+      if (GetEOLMode() != eol_mode)
+      {
+        ConvertEOLs(eol_mode);
+      }
+    }
+    else
+    {
+      wxLogStatus(_("Document is readonly"));
+    }
   }
-
-  ConvertEOLs(eol_mode);
+  else
+  {
+    ConvertEOLs(eol_mode);
+  }
+  
   SetEOLMode(eol_mode);
+  
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this, "PaneFileType");
 #endif
@@ -2108,7 +2123,22 @@ void wxExSTC::Reload(long flags)
   }
   else
   {
-    Open(m_File.GetFileName(), 0, wxEmptyString, flags);
+    // The STC_WIN_HEX has been removed.
+    if (m_File.GetFileName().FileExists())
+    {
+      Open(m_File.GetFileName(), 0, wxEmptyString, flags);
+    }
+    else
+    {
+      // If the document was not yet saved,
+      // there is no file to reread,
+      // so clear the document.
+      ClearDocument();
+      SetReadOnly(true);
+      m_Flags = flags;
+      EmptyUndoBuffer();
+      SetSavePoint();
+    }
   }
 }
 
