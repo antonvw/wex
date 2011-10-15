@@ -240,6 +240,7 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
     stc->AppendText(text);
   }
 
+  stc->EmptyUndoBuffer();
   stc->SetSavePoint();
 
   if (pos_at_end)
