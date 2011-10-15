@@ -228,16 +228,33 @@ Frame::~Frame()
 void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
 {
   const bool pos_at_end = (stc->GetCurrentPos() == stc->GetTextLength());
+  
+  bool readonly = false;
+  
+  if (stc->GetReadOnly())
+  {
+    readonly = true;
+    stc->SetReadOnly(false);
+  }
+  
+  const bool hex = (stc->GetFlags() & wxExSTC::STC_WIN_HEX);
 
-  if (withTimestamp)
+  if (withTimestamp && !hex)
   {
     const wxString now = wxDateTime::Now().Format();
     stc->AppendText(now + " " + text + stc->GetEOL());
   }
   else
   {
-    // No GetEOL, that is only added with timestamps.
-    stc->AppendText(text);
+    if (hex)
+    {
+      stc->AddTextHexMode(stc->GetLength(), text.c_str());
+    }
+    else
+    {
+      // No GetEOL, that is only added with timestamps.
+      stc->AppendText(text);
+    }
   }
 
   stc->EmptyUndoBuffer();
@@ -246,6 +263,11 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
   if (pos_at_end)
   {
     stc->DocumentEnd();
+  }
+  
+  if (readonly)
+  {
+    stc->SetReadOnly(true);
   }
 }
 
