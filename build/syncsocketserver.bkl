@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+Name:      syncsocketserver.bkl
+Purpose:   Bakefile for syncsocketserver application
+Author:    Anton van Wezenbeek
+Copyright: (c) 2011 Anton van Wezenbeek
+-->
+
+<makefile>
+  <exe id="syncsocketserver" template="wxgui,wxlike">
+    <sources>../syncsocketserver/app.cpp</sources>
+    <win32-res>../syncsocketserver/app.rc</win32-res>
+    <headers>../syncsocketserver/app.h</headers>
+    
+    <include>../extension/include</include>
+    
+    <library>wxex-rep</library>
+    <library>wxex</library>
+
+    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
+      <if cond="PLATFORM_UNIX=='1'">
+        <sys-lib>odbc</sys-lib>
+      </if>
+    </if>
+    
+    <install-to>/usr/local/bin/</install-to>
+    
+    <wx-lib>aui</wx-lib>
+    <wx-lib>stc</wx-lib>
+    <wx-lib>html</wx-lib>
+    <wx-lib>adv</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>xml</wx-lib> 
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
+    
+    <if cond="PLATFORM_UNIX=='0' and PLATFORM_WIN32=='0'">
+      <osx-bundle/>
+    </if>
+  </exe>
+  
+</makefile>
