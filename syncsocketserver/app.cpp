@@ -386,7 +386,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       }
 
       for (
-        auto it = m_Clients.begin();
+        std::list<wxSocketBase*>::iterator it = m_Clients.begin();
         it != m_Clients.end();
         ++it)
       {
@@ -494,7 +494,7 @@ void Frame::OnCommand(wxCommandEvent& event)
       const wxCharBuffer& buffer(str.c_str());
 
       for (
-        auto it = m_Clients.begin();
+        std::list<wxSocketBase*>::iterator it = m_Clients.begin();
         it != m_Clients.end();
         ++it)
       {
@@ -602,7 +602,7 @@ void Frame::OnSocket(wxSocketEvent& event)
         // wxSocketEvent again.
         sock->SetNotify(wxSOCKET_LOST_FLAG);
 
-        const auto size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
+        const long size = wxConfigBase::Get()->ReadLong(_("Buffer Size"), 4096);
 
         if (size <= 0)
         {
@@ -934,7 +934,7 @@ void Frame::StatusBarDoubleClicked(const wxString& pane)
 
 void Frame::TimerDialog()
 {
-  const auto val = wxGetNumberFromUser(
+  const long val = wxGetNumberFromUser(
     _("Input (seconds):"),
     wxEmptyString,
     _("Repeat Timer"),
@@ -1047,7 +1047,7 @@ void Frame::WriteDataWindowToClients()
   const wxCharBuffer& buffer = m_DataWindow->GetTextRaw();
 
   for (
-    auto it = m_Clients.begin();
+    std::list<wxSocketBase*>::iterator it = m_Clients.begin();
     it != m_Clients.end();
     ++it)
   {
