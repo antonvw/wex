@@ -135,5 +135,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
   
   <!-- applications -->
   <include file="syncped.bkl"/>
+  <include file="syncsocketserver.bkl"/>
   
 </makefile>
