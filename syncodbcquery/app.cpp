@@ -185,9 +185,9 @@ void Frame::OnCommand(wxCommandEvent& event)
     wxAboutDialogInfo info;
     info.SetIcon(GetIcon());
     info.SetDescription(_("This program offers a general ODBC query."));
-    info.SetVersion(wxExGetVersionInfo().GetVersionString());
+    info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
     info.SetCopyright(wxExGetVersionInfo().GetCopyright());
-    info.AddDeveloper(wxExOTL::VersionInfo().GetVersionOnlyString());
+    info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
     wxAboutBox(info);
     }
     break;
