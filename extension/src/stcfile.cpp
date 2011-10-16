@@ -186,7 +186,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   }
   else
   {
-    m_STC->AddTextHexMode(offset, buffer);
+    m_STC->AppendTextHexMode(buffer);
   }
 
   if (get_only_new_data)

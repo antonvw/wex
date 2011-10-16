@@ -78,8 +78,8 @@ public:
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
 
-  /// Adds text in hex mode.
-  void AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer);
+  /// Appends text in hex mode.
+  void AppendTextHexMode(const wxCharBuffer& buffer);
 
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
@@ -319,6 +319,7 @@ private:
     int line_number = 0, 
     wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
+  void SetHexMode();
   /// After pressing enter, starts new line at same place
   /// as previous line.
   bool SmartIndentation();
