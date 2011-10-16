@@ -46,7 +46,10 @@ bool wxExOTL::Logon(
     true,          // is_required
     max_items));
   v.push_back(wxExConfigItem(_("User")));
-  v.push_back(wxExConfigItem(_("Password"), wxEmptyString, wxTE_PASSWORD));
+  v.push_back(wxExConfigItem(_("Password"), 
+    wxEmptyString, 
+    wxEmptyString,
+    wxTE_PASSWORD));
 
   // Always show the dialog.
   if (wxExConfigDialog(parent,
