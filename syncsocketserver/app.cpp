@@ -248,7 +248,7 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
   {
     if (hex)
     {
-      stc->AddTextHexMode(stc->GetLength(), text.c_str());
+      stc->AppendTextHexMode(text.c_str());
     }
     else
     {

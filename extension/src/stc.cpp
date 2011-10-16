@@ -96,7 +96,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   {
     if (m_Flags & STC_WIN_HEX)
     {
-      AddTextHexMode(0, value.c_str());
+      AppendTextHexMode(value.c_str());
     }
     else
     {
@@ -160,7 +160,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   }
 }
 
-void wxExSTC::AddTextHexMode(wxFileOffset start, const wxCharBuffer& buffer)
+void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 /*
 e.g.:
 offset    hex field                                         ascii field
@@ -173,15 +173,6 @@ offset    hex field                                         ascii field
                                   <- mid_in_hex_field
 */
 {
-  SetControlCharSymbol('x');
-  wxExLexers::Get()->ApplyHexStyles(this);
-  wxExLexers::Get()->ApplyMarkers(this);
-
-  // Do not show an edge, eol or whitespace in hex mode.
-  SetEdgeMode(wxSTC_EDGE_NONE);
-  SetViewEOL(false);
-  SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
-
   const wxFileOffset mid_in_hex_field = 7;
 
   wxString text;
@@ -193,6 +184,8 @@ offset    hex field                                         ascii field
     (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
      buffer.length() * each_hex_field + buffer.length());
 
+  wxFileOffset start = GetLength();
+  
   for (
     wxFileOffset offset = 0; 
     offset < buffer.length(); 
@@ -1378,6 +1371,11 @@ void wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize()
 {
+  if (m_Flags & STC_WIN_HEX)
+  {
+    SetHexMode();
+  }
+  
   m_MacroIsRecording = false;
   m_SavedPos = 0;
   m_SavedSelectionStart = -1;
@@ -2115,7 +2113,8 @@ void wxExSTC::Reload(long flags)
   {
     const wxCharBuffer buffer = GetTextRaw();
     ClearDocument();
-    AddTextHexMode(0, buffer);
+    SetHexMode();
+    AppendTextHexMode(buffer);
     SetReadOnly(true);
     m_Flags = flags;
     EmptyUndoBuffer();
@@ -2265,6 +2264,18 @@ void wxExSTC::ResetMargins(bool divider_margin)
   {
     SetMarginWidth(m_MarginDividerNumber, 0);
   }
+}
+
+void wxExSTC::SetHexMode()
+{
+  SetControlCharSymbol('x');
+  wxExLexers::Get()->ApplyHexStyles(this);
+  wxExLexers::Get()->ApplyMarkers(this);
+
+  // Do not show an edge, eol or whitespace in hex mode.
+  SetEdgeMode(wxSTC_EDGE_NONE);
+  SetViewEOL(false);
+  SetViewWhiteSpace(wxSTC_WS_INVISIBLE);
 }
 
 bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
