@@ -37,6 +37,7 @@ wxExConfigItem::wxExConfigItem(
   , m_Type(CONFIG_STATICLINE)
   , m_AddLabel(false)
   , m_Cols(-1)
+  , m_IsRequired(false)
 {
 }
     
