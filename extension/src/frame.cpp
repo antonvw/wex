@@ -431,7 +431,7 @@ bool wxExFrame::OpenFile(
   }
   else
   {
-    wxMessageBox(vcs.GetOutput());
+    wxLogMessage(vcs.GetOutput());
   }
 
   return true;
