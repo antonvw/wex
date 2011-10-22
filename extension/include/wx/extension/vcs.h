@@ -8,7 +8,7 @@
 #ifndef _EXVCS_H
 #define _EXVCS_H
 
-#include <map>
+#include <vector>
 #include <wx/filename.h>
 #include <wx/extension/vcsentry.h>
 
@@ -107,7 +107,7 @@ private:
   wxArrayString m_Files;
   wxString m_Caption;
 
-  static std::map<wxString, wxExVCSEntry> m_Entries;
+  static std::vector<wxExVCSEntry> m_Entries;
   static wxFileName m_FileName;
 };
 #endif
