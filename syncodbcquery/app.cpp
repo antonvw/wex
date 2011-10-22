@@ -50,6 +50,7 @@ BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
   EVT_CLOSE(Frame::OnClose)
   EVT_MENU(wxID_ABOUT, Frame::OnCommand)
   EVT_MENU(wxID_EXECUTE, Frame::OnCommand)
+  EVT_MENU(wxID_EXIT, Frame::OnCommand)
   EVT_MENU(wxID_STOP, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND, Frame::OnCommand)
   EVT_MENU(ID_SHELL_COMMAND_STOP, Frame::OnCommand)
@@ -418,6 +419,11 @@ void Frame::RunQuery(const wxString& query, bool empty_results)
 
 void Frame::RunQueries(const wxString& text)
 {
+  if (text.empty())
+  {
+    return;
+  }
+  
   if (m_Results->IsShown())
   {
     m_Results->ClearGrid();
