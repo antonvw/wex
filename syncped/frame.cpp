@@ -561,7 +561,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
 
 #ifdef wxExUSE_OTL
-    info.AddDeveloper(wxExOTL::Version());
+    info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
 #endif
 
     wxString description(
