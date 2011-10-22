@@ -5,6 +5,7 @@
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <map>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -25,7 +26,7 @@ enum
   VCS_MAX
 };
 
-std::map<wxString, wxExVCSEntry> wxExVCS::m_Entries;
+std::vector<wxExVCSEntry> wxExVCS::m_Entries;
 wxFileName wxExVCS::m_FileName;
 
 wxExVCS::wxExVCS()
@@ -124,12 +125,12 @@ int wxExVCS::ConfigDialog(
 #ifdef wxExUSE_CPP0X	
     auto it = m_Entries.begin();
 #else
-    std::map<wxString, wxExVCSEntry>::const_iterator it = m_Entries.begin();
+    std::vector<wxExVCSEntry>::const_iterator it = m_Entries.begin();
 #endif	
     it != m_Entries.end();
     ++it)
   {
-    choices.insert(std::make_pair(it->second.GetNo(), it->second.GetName()));
+    choices.insert(std::make_pair(it->GetNo(), it->GetName()));
   }
 
   // Estimate number of columns used by the radiobox.
@@ -163,12 +164,12 @@ int wxExVCS::ConfigDialog(
 #ifdef wxExUSE_CPP0X	
     auto it2 = m_Entries.begin();
 #else
-    std::map<wxString, wxExVCSEntry>::const_iterator it2 = m_Entries.begin();
+    std::vector<wxExVCSEntry>::const_iterator it2 = m_Entries.begin();
 #endif	
     it2 != m_Entries.end();
     ++it2)
   {
-    v.push_back(wxExConfigItem(it2->second.GetName(), CONFIG_FILEPICKERCTRL));
+    v.push_back(wxExConfigItem(it2->GetName(), CONFIG_FILEPICKERCTRL));
   }
 
   return wxExConfigDialog(parent, v, title).ShowModal();
@@ -267,20 +268,20 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 #ifdef wxExUSE_CPP0X	
         auto it = m_Entries.begin();
 #else
-        std::map<wxString, wxExVCSEntry>::iterator it = m_Entries.begin();
+        std::vector<wxExVCSEntry>::iterator it = m_Entries.begin();
 #endif		
         it != m_Entries.end();
         ++it)
       {
-        const wxString name = it->second.GetName();
+        const wxString name = it->GetName();
 
         if (IsCheckPathAllVCS(name) && CheckPathAll(name, filename))
         {
-          return it->second;
+          return *it;
         }
         else if (CheckPath(name, filename))
         {
-          return it->second;
+          return *it;
         }
       }
     }
@@ -291,14 +292,14 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
 #ifdef wxExUSE_CPP0X	
       auto it = m_Entries.begin();
 #else
-      std::map<wxString, wxExVCSEntry>::iterator it = m_Entries.begin();
+      std::vector<wxExVCSEntry>::iterator it = m_Entries.begin();
 #endif	  
       it != m_Entries.end();
       ++it)
     {
-      if (it->second.GetNo() == vcs)
+      if (it->GetNo() == vcs)
       {
-        return it->second;
+        return *it;
       }
     }
   }
@@ -477,7 +478,7 @@ bool wxExVCS::Read()
     if (child->GetName() == "vcs")
     {
       const wxExVCSEntry vcs(child, m_Entries.size() + VCS_MAX);
-      m_Entries.insert(std::make_pair(vcs.GetName(), vcs));
+      m_Entries.push_back(vcs);
     }
 
     child = child->GetNext();
