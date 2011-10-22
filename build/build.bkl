@@ -134,10 +134,6 @@ make-release.bat
     <library>wxex-rep</library>
     <library>wxex</library>
     
-    <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-      <if cond="PLATFORM_UNIX=='1'"><sys-lib>odbc</sys-lib></if>
-    </if>
-    
     <wx-lib>aui</wx-lib>
     <wx-lib>stc</wx-lib>
     <wx-lib>html</wx-lib>
@@ -202,12 +198,6 @@ make-release.bat
       <library>wxex-rep</library>
       <library>wxex</library>
       
-      <if cond="VAR_USE_OTL=='wxExUSE_OTL'">
-        <if cond="PLATFORM_UNIX=='1'">
-          <sys-lib>odbc</sys-lib>
-        </if>
-      </if>
-      
       <sys-lib>cppunit</sys-lib>
       
       <wx-lib>aui</wx-lib>
@@ -246,6 +236,10 @@ make-release.bat
     
       <if cond="PLATFORM_UNIX=='1'">
         <sys-lib>odbc</sys-lib>
+      </if>
+    
+      <if cond="PLATFORM_WIN32=='1'">
+        <sys-lib>odbc32</sys-lib>
       </if>
     
       <install-to>/usr/local/bin/</install-to>

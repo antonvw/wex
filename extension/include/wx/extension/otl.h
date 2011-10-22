@@ -54,7 +54,7 @@ public:
   long Query(const wxString& query);
 
 #if wxUSE_GRID
-  /// Runs the query and puts results on the grid (if the grid is shown).
+  /// Runs the query and puts results on the grid.
   /// If empty_results then the grid is cleared first.
   /// Returns number of rows appended.
   long Query(const wxString& query,
