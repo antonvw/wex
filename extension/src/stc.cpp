@@ -552,7 +552,7 @@ int wxExSTC::ConfigDialog(
   items.push_back(
     wxExConfigItem(_("Line number"), 0, 100, _("Margin")));
 
-  if (wxExLexers::Get()->Count() > 0)
+  if (wxExLexers::Get()->GetCount() > 0)
   {
     // Folding page.
     items.push_back(wxExConfigItem(_("Auto fold"), 0, INT_MAX, _("Folding")));
