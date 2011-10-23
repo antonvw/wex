@@ -34,6 +34,10 @@ Copyright: (c) 2011 Anton van Wezenbeek
       <if cond="PLATFORM_UNIX=='1'">
         <sys-lib>odbc</sys-lib>
       </if>
+      
+      <if cond="PLATFORM_WIN32=='1'">
+        <sys-lib>odbc32</sys-lib>
+      </if>
     </if>
     
     <wx-lib>aui</wx-lib>
