@@ -52,9 +52,6 @@ public:
   /// Builds a wildcard string from available lexers using specified filename.
   const wxString BuildWildCards(const wxFileName& filename) const;
 
-  /// Returns the number of lexers.
-  size_t Count() const {return m_Lexers.size();};
-
   /// Finds a lexer specified by a filename.
   const wxExLexer FindByFileName(const wxFileName& filename) const;
 
@@ -68,6 +65,9 @@ public:
   /// If this is the first invocation, and createOnDemand is true,
   /// it also invokes Read.
   static wxExLexers* Get(bool createOnDemand = true);
+
+  /// Returns the number of lexers.
+  size_t GetCount() const {return m_Lexers.size();};
 
   /// Returns the default style.
   const wxExStyle& GetDefaultStyle() const {return m_DefaultStyle;};

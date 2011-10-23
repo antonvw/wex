@@ -173,7 +173,7 @@ void wxExMenu::AppendSubMenu(
 
 bool wxExMenu::AppendTools(int itemid)
 {
-  if (wxExLexers::Get()->Count() == 0)
+  if (wxExLexers::Get()->GetCount() == 0)
   {
     return false;
   }

@@ -494,7 +494,7 @@ void wxExFrame::StatusBarDoubleClicked(const wxString& pane)
   {
     wxExSTC* stc = GetSTC();
 
-    if (stc != NULL && wxExLexers::Get()->Count() > 0)
+    if (stc != NULL && wxExLexers::Get()->GetCount() > 0)
     {
       wxString lexer = stc->GetLexer().GetDisplayLexer();
 
