@@ -21,9 +21,9 @@
 // present in the vcs.xml. 
 enum
 {
-  VCS_NONE = 0, // no version control
-  VCS_AUTO,     // uses the VCS appropriate for current file
-  VCS_MAX
+  VCS_NONE = -2, // no version control
+  VCS_AUTO = -1, // uses the VCS appropriate for current file
+  VCS_START = 0  // no where fixed VCS start (index in vector)
 };
 
 std::vector<wxExVCSEntry> wxExVCS::m_Entries;
@@ -120,6 +120,8 @@ int wxExVCS::ConfigDialog(
   std::map<long, const wxString> choices;
   choices.insert(std::make_pair((long)VCS_NONE, _("None")));
   choices.insert(std::make_pair((long)VCS_AUTO, "Auto"));
+  
+  long i = VCS_START;
 
   for (
 #ifdef wxExUSE_CPP0X	
@@ -130,7 +132,8 @@ int wxExVCS::ConfigDialog(
     it != m_Entries.end();
     ++it)
   {
-    choices.insert(std::make_pair(it->GetNo(), it->GetName()));
+    choices.insert(std::make_pair(i, it->GetName()));
+    i++;
   }
 
   // Estimate number of columns used by the radiobox.
@@ -286,22 +289,9 @@ const wxExVCSEntry wxExVCS::FindEntry(const wxFileName& filename)
       }
     }
   }
-  else
+  else if (vcs >= VCS_START && vcs < m_Entries.size())
   {
-    for (
-#ifdef wxExUSE_CPP0X	
-      auto it = m_Entries.begin();
-#else
-      std::vector<wxExVCSEntry>::iterator it = m_Entries.begin();
-#endif	  
-      it != m_Entries.end();
-      ++it)
-    {
-      if (it->GetNo() == vcs)
-      {
-        return *it;
-      }
-    }
+    return m_Entries[vcs];
   }
   
   return wxExVCSEntry();
@@ -477,8 +467,7 @@ bool wxExVCS::Read()
   {
     if (child->GetName() == "vcs")
     {
-      const wxExVCSEntry vcs(child, m_Entries.size() + VCS_MAX);
-      m_Entries.push_back(vcs);
+      m_Entries.push_back(wxExVCSEntry(child));
     }
 
     child = child->GetNext();
