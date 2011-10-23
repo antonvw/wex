@@ -23,7 +23,7 @@ public:
   wxExVCSEntry();
   
   /// Constructor using xml node.
-  wxExVCSEntry(const wxXmlNode* node, int no);
+  wxExVCSEntry(const wxXmlNode* node);
 
 #if wxUSE_GUI
   /// Builds a menu, default assumes it is a popup menu.
@@ -47,9 +47,6 @@ public:
   /// Gets the name.
   const wxString& GetName() const {return m_Name;};
 
-  /// Gets the no.
-  int GetNo() const {return m_No;};
-  
   /// Sets the current vcs command.
   void SetCommand(int menu_id);
 
@@ -83,7 +80,6 @@ private:
   bool m_SupportKeywordExpansion;
   int m_CommandId;
   int m_FlagsLocation;
-  int m_No;
   
   wxString m_FlagsKey;
   wxString m_Name;

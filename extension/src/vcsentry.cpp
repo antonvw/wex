@@ -17,8 +17,7 @@
 #include <wx/extension/vcs.h>
 
 wxExVCSEntry::wxExVCSEntry()
-  : m_No(-1)
-  , m_CommandId(0)
+  : m_CommandId(0)
   , m_Name()
   , m_FlagsLocation(VCS_FLAGS_LOCATION_POSTFIX)
   , m_SupportKeywordExpansion(false)
@@ -26,9 +25,8 @@ wxExVCSEntry::wxExVCSEntry()
   m_Commands.push_back(wxExVCSCommand());
 }
 
-wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node, int no)
-  : m_No(no)
-  , m_CommandId(0)
+wxExVCSEntry::wxExVCSEntry(const wxXmlNode* node)
+  : m_CommandId(0)
   , m_Name(node->GetAttribute("name"))
   , m_FlagsLocation(
       (node->GetAttribute("flags-location") == "prefix" ?
