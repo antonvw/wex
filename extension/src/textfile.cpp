@@ -21,6 +21,9 @@ long wxExFileStatistics::Get(const wxString& key) const
 {
 #ifdef wxExUSE_CPP0X	
   const auto it = m_Elements.GetItems().find(key);
+#else
+  std::map<wxString, long>::const_iterator it = m_Elements.GetItems().find(key);  
+#endif  
 
   if (it != m_Elements.GetItems().end())
   {
@@ -28,16 +31,17 @@ long wxExFileStatistics::Get(const wxString& key) const
   }
   else
   {
+#ifdef wxExUSE_CPP0X	
     const auto it = m_Keywords.GetItems().find(key);
+#else
+    std::map<wxString, long>::const_iterator it = m_Keywords.GetItems().find(key);    
+#endif  
 
     if (it != m_Keywords.GetItems().end())
     {
       return it->second;
     }
   }
-#else
-  // TODO: Fix this.
-#endif  
 
   return 0;
 }

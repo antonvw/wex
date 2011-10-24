@@ -28,6 +28,9 @@ void SetItemColumnStatistics(
 {
 #ifdef wxExUSE_CPP0X	
   const auto it = stat.GetItems().find(col);
+#else
+  std::map<wxString,long>::const_iterator it = stat.GetItems().find(col);
+#endif  
 
   if (it != stat.GetItems().end())
   {
@@ -35,9 +38,6 @@ void SetItemColumnStatistics(
       col,
       wxString::Format("%ld", it->second));
   }
-#else
-  // TODO: Fix this.
-#endif  
 }
 
 #if wxExUSE_EMBEDDED_SQL
@@ -266,17 +266,18 @@ void wxExTextFileWithListView::ReportStatistics()
       col.SetMask(wxLIST_MASK_TEXT);
       m_Report->GetColumn(i + 1, col);
       const wxString name = col.GetText();
+      const wxExStatistics<long>& stat = GetStatistics().GetKeywords();
 #ifdef wxExUSE_CPP0X	
-      const auto& stat = GetStatistics().GetKeywords();
       const auto it = stat.GetItems().find(name);
+#else
+      std::map<wxString,long>::const_iterator it = stat.GetItems().find(name);
+#endif	  
+      
       if (it != stat.GetItems().end())
       {
         item.SetItem(i + 1, wxString::Format("%ld", it->second));
         total += it->second;
       }
-#else
-      // TODO: Fix this.
-#endif	  
     }
     item.SetItem(
       GetFileName().GetLexer().GetKeywords().size() + 1,

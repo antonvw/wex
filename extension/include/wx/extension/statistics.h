@@ -71,17 +71,17 @@ public:
 
   /// Adds other statistics.
   wxExStatistics& operator+=(const wxExStatistics& s) {
-#ifdef wxExUSE_CPP0X	
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = s.m_Items.begin();
+#else
+      typename std::map<wxString, T>::const_iterator it = s.m_Items.begin();
+#endif
       it != s.m_Items.end();
       ++it)
     {
       Inc(it->first, it->second);
     }
-#else
-    // TODO: Fix this.
-#endif
 	
     return *this;}
 
@@ -105,18 +105,18 @@ public:
   /// with newlines separating items.
   const wxString Get() const {
     wxString text;
-#ifdef wxExUSE_CPP0X	
     for (
+#ifdef wxExUSE_CPP0X	
       auto it = m_Items.begin();
+#else
+      typename std::map<wxString, T>::const_iterator it = m_Items.begin();
+#endif	
       it != m_Items.end();
       ++it)
     {
       // An cEOL gives incorrect result (CRCRLF)
       text << "\n" << it->first << " " << it->second;
     }
-#else
-    // TODO: Fix this.
-#endif	
     return text;};
 
   /// Gets the items.
@@ -126,19 +126,17 @@ public:
   const T Get(const wxString& key) const {
 #ifdef wxExUSE_CPP0X	
     const auto it = m_Items.find(key);
-	if (it != m_Items.end())
-	{
-	  return it->second;
-	}
-	else
-	{
-	  return T();
-	}
 #else
-    // TODO: Fix this.
-
-    return T();
+    std::map<wxString, T>::const_iterator it = m_Items.find(key);
 #endif	
+    if (it != m_Items.end())
+    {
+      return it->second;
+    }
+    else
+    {
+      return T();
+    }
   }
 
   /// Decrements key with value.
@@ -228,24 +226,24 @@ public:
         m_Grid->HideColLabels();
       }
 
-#ifdef wxExUSE_CPP0X	
       for (
+#ifdef wxExUSE_CPP0X	
         auto it = m_Items.begin();
+#else
+        typename std::map<wxString, T>::const_iterator it = m_Items.begin();
+#endif	  
         it != m_Items.end();
         ++it)
       {
-       m_Grid->AppendRows(1);
+        m_Grid->AppendRows(1);
 
-       const auto row = m_Grid->GetNumberRows() - 1;
+        const int row = m_Grid->GetNumberRows() - 1;
 
-       m_Grid->SetCellValue(row, 0, it->first);
-       m_Grid->SetCellValue(row, 1, wxString::Format("%d", it->second));
+        m_Grid->SetCellValue(row, 0, it->first);
+        m_Grid->SetCellValue(row, 1, wxString::Format("%d", it->second));
 
-       m_Rows[it->first] = row;
+        m_Rows[it->first] = row;
       }
-#else
-    // TODO: Fix this.
-#endif	  
     }
     m_Grid->Show();
     return m_Grid;}
