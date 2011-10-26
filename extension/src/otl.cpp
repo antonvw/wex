@@ -18,6 +18,7 @@
 #include <wx/stc/stc.h>
 #include <wx/extension/otl.h>
 #include <wx/extension/configdlg.h>
+#include <wx/extension/util.h>
 
 #if wxExUSE_OTL
 
@@ -29,6 +30,11 @@ wxExOTL::wxExOTL(int threaded_mode)
 wxExOTL::~wxExOTL()
 {
   Logoff();
+}
+
+const wxString wxExOTL::Datasource() const
+{
+  return wxExConfigFirstOf(_("Datasource"));
 }
 
 bool wxExOTL::Logoff()
@@ -74,25 +80,20 @@ bool wxExOTL::Logon(
   try
   {
     const wxString connect =
-      config->Read(_("User")) + "/" +
-      config->Read(_("Password")) + "@" +
-      config->Read(_("Datasource"));
+      config->Read(_("User")) + "/" + config->Read(_("Password")) + "@" +
+      Datasource();
 
     m_Connect.rlogon(
       connect.c_str(),
       1); // autocommit-flag
-
-    // We cannot use rlogon return value, that is a void.
-    return IsConnected();
   }
   catch (otl_exception& p)
   {
-    wxLogError("Exception: '%s' while logon to database: %s",
-      p.msg,
-      config->Read(_("Datasource")).c_str());
+    wxLogError("Cannot logon to %s because of: %s",
+      Datasource().c_str(), p.msg);
   }
 
-  return false;
+  return IsConnected();
 }
 
 long wxExOTL::Query(const wxString& query)
