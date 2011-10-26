@@ -291,7 +291,7 @@ void wxExAppTestFixture::testLexers()
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(
     wxFileName(TEST_FILE)).empty());
-  CPPUNIT_ASSERT( wxExLexers::Get()->Count() > 0);
+  CPPUNIT_ASSERT( wxExLexers::Get()->GetCount() > 0);
 
   CPPUNIT_ASSERT( wxExLexers::Get()->FindByFileName(
     wxFileName(TEST_FILE)).GetScintillaLexer() == "cpp");
@@ -607,7 +607,6 @@ void wxExAppTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
   CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
-  CPPUNIT_ASSERT( test.GetNo() == -1);
   CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 
@@ -617,7 +616,6 @@ void wxExAppTestFixture::testVCSEntry()
   CPPUNIT_ASSERT( test.GetCommand().GetCommand().empty());
   CPPUNIT_ASSERT( test.GetFlags().empty());
   CPPUNIT_ASSERT( test.GetName().empty());
-  CPPUNIT_ASSERT( test.GetNo() == -1);
   CPPUNIT_ASSERT( test.GetOutput().empty());
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }

@@ -31,6 +31,18 @@ wxExOTL::~wxExOTL()
   Logoff();
 }
 
+bool wxExOTL::Logoff()
+{
+  if (!IsConnected())
+  {
+    return false;
+  }
+  
+  m_Connect.logoff();
+  
+  return true;
+}
+
 bool wxExOTL::Logon(
   wxWindow* parent,
   int max_items,
