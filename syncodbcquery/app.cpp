@@ -244,14 +244,17 @@ void Frame::OnCommand(wxCommandEvent& event)
     break;
 
   case ID_DATABASE_CLOSE:
-    m_otl.Logoff();
-    m_Shell->SetPrompt(">");
+    if (m_otl.Logoff())
+    {
+      m_Shell->SetPrompt(">");
+    }
     break;
 
   case ID_DATABASE_OPEN:
-    m_otl.Logon(this);
-    m_Shell->SetPrompt(
-      (m_otl.IsConnected() ? wxConfigBase::Get()->Read(_("Datasource")): "") + ">");
+    if (m_otl.Logon(this))
+    {
+      m_Shell->SetPrompt(wxConfigBase::Get()->Read(_("Datasource")) + ">");
+    }
     break;
 
   case ID_SHELL_COMMAND:

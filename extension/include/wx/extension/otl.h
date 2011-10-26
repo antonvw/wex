@@ -40,7 +40,8 @@ public:
   bool IsConnected() const {return m_Connect.connected > 0;};
 
   /// Logs off.
-  void Logoff() {m_Connect.logoff();};
+  /// Returns true if you were connected.
+  bool Logoff();
 
   /// Logons to the datasource (shows a connection dialog).
   /// max_items specifies max number of datasources in the combobox and config.
