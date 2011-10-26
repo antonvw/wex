@@ -384,7 +384,7 @@ void Recordset::UpdateTextFileFromQuery()
 {
   m_TextFile->GoToLine(m_TextFile->GetCurrentLine() + 1);
   WriteComment(QueryRunTimeText() + wxDateTime::Now().FormatISOCombined(' '));
-  WriteComment("USING ODBC DATABASE: " + wxConfigBase::Get()->Read(_("Datasource")));
+  WriteComment("USING ODBC DATABASE: " + m_otl.Datasource());
 
   // Get columns.
   int desc_len;
