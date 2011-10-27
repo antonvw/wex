@@ -1085,8 +1085,6 @@ bool wxExVi::Substitute(
   m_STC->SetTargetStart(m_STC->PositionFromLine(begin_line - 1));
   m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
 
-  const bool is_re = m_STC->IsTargetRE(replacement);
-
   while (m_STC->SearchInTarget(pattern) > 0)
   {
     const int target_start = m_STC->GetTargetStart();
@@ -1097,11 +1095,7 @@ bool wxExVi::Substitute(
     }
 
     m_STC->MarkTargetChange();
-  
-    const int length = (is_re ? 
-      m_STC->ReplaceTargetRE(replacement): 
-      m_STC->ReplaceTarget(replacement));
-
+    const int length = m_STC->ReplaceTargetRE(replacement); // always RE!
     m_STC->SetTargetStart(target_start + length);
     m_STC->SetTargetEnd(m_STC->PositionFromLine(end_line));
 

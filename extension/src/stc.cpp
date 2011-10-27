@@ -1451,20 +1451,6 @@ void wxExSTC::Initialize()
   ConfigGet();
 }
 
-bool wxExSTC::IsTargetRE(const wxString& target) const
-{
-  return 
-    target.Contains("\\1") ||
-    target.Contains("\\2") ||
-    target.Contains("\\3") ||
-    target.Contains("\\4") ||
-    target.Contains("\\5") ||
-    target.Contains("\\6") ||
-    target.Contains("\\7") ||
-    target.Contains("\\8") ||
-    target.Contains("\\9");
-}
-
 bool wxExSTC::LinkOpen(
   const wxString& link_with_line,
   int line_number,
@@ -2169,8 +2155,6 @@ int wxExSTC::ReplaceAll(
 
   BeginUndoAction();
 
-  const bool is_re = IsTargetRE(replace_text);
-
   while (SearchInTarget(find_text) > 0)
   {
     const int target_start = GetTargetStart();
@@ -2199,7 +2183,7 @@ int wxExSTC::ReplaceAll(
     {
       MarkTargetChange();
   
-      length = (is_re ?
+      length = (wxExFindReplaceData::Get()->UseRegularExpression() ?
         ReplaceTargetRE(replace_text):
         ReplaceTarget(replace_text));
 
@@ -2246,7 +2230,7 @@ bool wxExSTC::ReplaceNext(
 
   MarkTargetChange();
       
-  IsTargetRE(replace_text) ?
+  wxExFindReplaceData::Get()->UseRegularExpression() ?
     ReplaceTargetRE(replace_text):
     ReplaceTarget(replace_text);
 
