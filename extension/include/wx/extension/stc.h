@@ -185,10 +185,6 @@ public:
   /// Indents lines from current position.
   void Indent(int lines, bool forward = true);
   
-  /// Returns true if specified target is a RE, to be used by
-  /// ReplaceTargetRE.
-  bool IsTargetRE(const wxString& target) const;
-
   /// A macro has been recorded.
   bool MacroIsRecorded() const {return !m_Macro.empty();};
 
