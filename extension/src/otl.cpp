@@ -90,7 +90,7 @@ bool wxExOTL::Logon(
   catch (otl_exception& p)
   {
     wxLogError("Cannot logon to %s because of: %s",
-      Datasource().c_str(), p.msg);
+      Datasource().c_str(), wxString(p.msg).c_str());
   }
 
   return IsConnected();
