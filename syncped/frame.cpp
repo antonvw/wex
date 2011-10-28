@@ -560,7 +560,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     info.SetIcon(GetIcon());
     info.SetVersion(wxExGetVersionInfo().GetVersionOnlyString());
 
-#ifdef wxExUSE_OTL
+#ifdef wxExUSE_EMBEDDED_SQL
     info.AddDeveloper(wxExOTL::VersionInfo().GetVersionString());
 #endif
 
