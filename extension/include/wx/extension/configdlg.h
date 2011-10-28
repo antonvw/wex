@@ -27,7 +27,7 @@ public:
     CONFIG_TREEBOOK,   ///< a tree book
     CONFIG_CHOICEBOOK, ///< a choice book
     CONFIG_LISTBOOK,   ///< a list book
-    CONFIG_TOOLBOOK,   ///< a tool book
+    CONFIG_TOOLBOOK    ///< a tool book
   };
 
   /// Constructor.

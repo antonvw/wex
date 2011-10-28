@@ -112,7 +112,7 @@ enum wxExStatusFlags
 {
   STAT_DEFAULT  = 0x0000, ///< shows 'modified' and file 'fullname'
   STAT_SYNC     = 0x0001, ///< shows 'synchronized' instead of 'modified'
-  STAT_FULLPATH = 0x0002, ///< shows file 'fullpath' instead of 'fullname'
+  STAT_FULLPATH = 0x0002  ///< shows file 'fullpath' instead of 'fullname'
 };
 
 /// Logs filename info on the statusbar.

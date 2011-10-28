@@ -97,7 +97,7 @@ enum wxExConfigType
   CONFIG_USER,
 
   /// Used for automatic testing only.
-  CONFIG_ITEM_MAX,
+  CONFIG_ITEM_MAX
 };
 
 /// Callback for user window creation.

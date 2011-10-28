@@ -30,7 +30,7 @@ public:
   enum wxExMenuFlags
   {
     STC_MENU_OPEN_LINK = 0x0020, ///< for adding link open menu
-    STC_MENU_DEFAULT   = 0xFFFF, ///< all
+    STC_MENU_DEFAULT   = 0xFFFF  ///< all
   };
 
   /// Window flags (0 is used as default).
@@ -39,7 +39,7 @@ public:
     STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, 
                                   ///<   this mode overrides real mode from disk
     STC_WIN_HEX         = 0x0002, ///< window in hex mode
-    STC_WIN_FROM_OTHER  = 0x0020, ///< opened from within another file (e.g. a link)
+    STC_WIN_FROM_OTHER  = 0x0020  ///< opened from within another file (e.g. a link)
   };
 
   /// Config dialog flags (0 gives
@@ -48,7 +48,7 @@ public:
   {
     STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
     STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
-    STC_CONFIG_SIMPLE     = 0x0004, ///< only 'simple' options on dialog
+    STC_CONFIG_SIMPLE     = 0x0004  ///< only 'simple' options on dialog
   };
 
   /// Constructor.

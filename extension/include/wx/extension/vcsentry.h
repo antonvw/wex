@@ -70,7 +70,7 @@ private:
   enum
   {
     VCS_FLAGS_LOCATION_POSTFIX,
-    VCS_FLAGS_LOCATION_PREFIX,
+    VCS_FLAGS_LOCATION_PREFIX 
   };
   
   void AddCommands(const wxXmlNode* node);

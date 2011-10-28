@@ -158,7 +158,7 @@ private:
   {
     SYNTAX_NONE = 0, ///< no syntax
     SYNTAX_ONE,      ///< syntax according to comment begin1 and end1
-    SYNTAX_TWO,      ///< syntax according to comment begin2 and end2
+    SYNTAX_TWO       ///< syntax according to comment begin2 and end2
   };
 
   wxExCommentType CheckCommentSyntax(

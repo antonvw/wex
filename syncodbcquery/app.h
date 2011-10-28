@@ -20,7 +20,7 @@ enum
   ID_VIEW_QUERY,
   ID_VIEW_RESULTS,
   ID_VIEW_STATISTICS,
-  ID_LAST,
+  ID_LAST 
 };
 
 class wxExGrid;

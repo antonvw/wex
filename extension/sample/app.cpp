@@ -42,7 +42,7 @@ enum
   ID_STC_ENTRY_DLG,
   ID_STC_FLAGS,
   ID_STC_SPLIT,
-  ID_LAST,
+  ID_LAST 
 };
 
 void myHtmlCreate(wxWindow* user, wxWindow* parent, bool readonly)
