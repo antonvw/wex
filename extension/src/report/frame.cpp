@@ -266,11 +266,7 @@ void wxExFrameWithHistory::FindInSelection(
   
   wxExStatistics<long> stats;
   
-#ifdef wxExUSE_CPP0X	
-  for (auto i = 0; i < files.GetCount(); i++)
-#else
   for (int i = 0; i < files.GetCount(); i++)
-#endif
   {
     const wxExFileName fn(files[i]);
     
