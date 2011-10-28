@@ -62,6 +62,7 @@ bool wxExOTL::Logon(
     CONFIG_COMBOBOX,
     wxEmptyString, // page
     true,          // is_required
+    wxID_ANY,
     max_items));
   v.push_back(wxExConfigItem(_("User")));
   v.push_back(wxExConfigItem(_("Password"), 
