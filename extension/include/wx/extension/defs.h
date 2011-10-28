@@ -80,7 +80,7 @@ enum wxExId
   ID_VCS_LOWEST,
   ID_VCS_HIGHEST = ID_VCS_LOWEST + ID_EDIT_VCS_HIGHEST - ID_EDIT_VCS_LOWEST,
 
-  ID_EDIT_HIGHEST,
+  ID_EDIT_HIGHEST
 };
 
 /// The available tools.
@@ -99,6 +99,6 @@ enum wxExToolId
   ID_TOOL_REPORT_KEYWORD,
   ID_TOOL_REPORT_FIRST_USER, // after this your own report
   ID_TOOL_REPORT_LAST = ID_TOOL_REPORT_FIRST_USER + TOOL_MAX_REPORTS,  // before this is the last report
-  ID_TOOL_HIGHEST,
+  ID_TOOL_HIGHEST
 };
 #endif

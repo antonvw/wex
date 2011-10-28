@@ -26,7 +26,7 @@ enum
   ID_MATCH_CASE,
   ID_REGULAR_EXPRESSION,
   ID_HEX_MODE,
-  ID_SYNC_MODE,
+  ID_SYNC_MODE 
 };
 
 // Support class.

@@ -29,7 +29,7 @@ public:
     MENU_ALLOW_CLEAR  = 0x0008, ///< add clear item in menu
     MENU_CAN_PASTE    = 0x0010, ///< add paste item in menu
 
-    MENU_DEFAULT      = MENU_CAN_PASTE, ///< default
+    MENU_DEFAULT      = MENU_CAN_PASTE  ///< default
   };
 
   /// Default constructor.

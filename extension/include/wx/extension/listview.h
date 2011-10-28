@@ -24,7 +24,7 @@ enum wxExSortType
   SORT_KEEP = 1,   ///< keep current order, just resort
   SORT_ASCENDING,  ///< sort ascending
   SORT_DESCENDING, ///< sort descending
-  SORT_TOGGLE,     ///< toggle sort order
+  SORT_TOGGLE      ///< toggle sort order
 };
 
 /// Offers a column to be used in a wxListCtrl. Facilitates sorting.
@@ -37,7 +37,7 @@ public:
     COL_INT = 1, ///< integer, should be different from 0, as inverse is used by sorting!
     COL_DATE,    ///< date
     COL_FLOAT,   ///< float
-    COL_STRING,  ///< string
+    COL_STRING   ///< string
   };
 
   /// Constructor.
@@ -81,7 +81,7 @@ public:
     IMAGE_NONE,
     IMAGE_ART,       ///< using wxArtProvider
     IMAGE_FILE_ICON, ///< using the wxFileIconsTable
-    IMAGE_OWN,       ///< use your own images
+    IMAGE_OWN        ///< use your own images
   };
 
   /// Constructor.
@@ -229,7 +229,7 @@ public:
     LIST_REVISION,     ///< a list to show revisions
     LIST_SQL,          ///< a list to show embedded sql
     LIST_VERSION,      ///< a list to show versions
-    LIST_AFTER_LAST,   ///< for iterating
+    LIST_AFTER_LAST    ///< for iterating
   };
 
   /// Constructor.

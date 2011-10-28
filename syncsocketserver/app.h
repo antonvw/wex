@@ -127,7 +127,7 @@ enum
   ID_MENU_LAST,
 
   ID_SERVER,
-  ID_CLIENT,
+  ID_CLIENT
 };
 
 #endif // wxUSE_SOCKETS

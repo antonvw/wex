@@ -20,7 +20,7 @@ public:
     VCS_COMMAND_IS_BOTH     = 0x0001, ///< command in main and popup menu 
     VCS_COMMAND_IS_POPUP    = 0x0002, ///< command in popup menu 
     VCS_COMMAND_IS_MAIN     = 0x0004, ///< command in main menu 
-    VCS_COMMAND_SEPARATOR   = 0x0010, ///< command is followed by a separator
+    VCS_COMMAND_SEPARATOR   = 0x0010  ///< command is followed by a separator
   };
   
   /// Default constructor.

@@ -28,7 +28,7 @@ enum
 {
   ID_PROCESS_DIALOG,
   ID_PROCESS_RUN,
-  ID_RECENTFILE_MENU,
+  ID_RECENTFILE_MENU
 };
 
 BEGIN_EVENT_TABLE(wxExRepSampleFrame, wxExFrameWithHistory)

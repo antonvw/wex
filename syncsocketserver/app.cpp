@@ -1058,7 +1058,7 @@ void Frame::WriteDataWindowToClients()
 
 enum
 {
-  ID_OPEN = ID_CLIENT + 1,
+  ID_OPEN = ID_CLIENT + 1
 };
 
 #if wxUSE_TASKBARICON
