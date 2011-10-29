@@ -244,7 +244,7 @@ offset    hex field                                         ascii field
       GetEOL();
   }
 
-  AddText(text);
+  AppendText(text);
 }
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
