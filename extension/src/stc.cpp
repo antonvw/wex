@@ -30,7 +30,9 @@ const int SCI_ADDTEXT = 2001;
 const wxFileOffset bytes_per_line = 16;
 const wxFileOffset each_hex_field = 3;
 const wxFileOffset space_between_fields = 1;
-const wxFileOffset start_hex_field = 10;
+const wxFileOffset start_hex_field = 9;
+const wxFileOffset start_ascii_field =
+  start_hex_field + each_hex_field * bytes_per_line + space_between_fields;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
@@ -163,14 +165,15 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 /*
 e.g.:
-offset    hex field                                         ascii field
-00000000: 23 69 6e 63 6c 75 64 65  20 3c 77 78 2f 63 6d 64  #include <wx/cmd
-00000010: 6c 69 6e 65 2e 68 3e 20  2f 2f 20 66 6f 72 20 77  line.h> // for w
-00000020: 78 43 6d 64 4c 69 6e 65  50 61 72 73 65 72 0a 23  xCmdLineParser #
-          <----------------------------------------------> bytes_per_line
-          <-> each_hex_field
-                                     space_between_fields <>
-                                  <- mid_in_hex_field
+         <- start_hex_field                               <- start_ascii_field
+offset   hex field                                        ascii field
+00000000 23 69 6e 63 6c 75 64 65  20 3c 77 78 2f 63 6d 64 #include <wx/cmd
+00000010 6c 69 6e 65 2e 68 3e 20  2f 2f 20 66 6f 72 20 77 line.h> // for w
+00000020 78 43 6d 64 4c 69 6e 65  50 61 72 73 65 72 0a 23 xCmdLineParser #
+         <----------------------------------------------> bytes_per_line
+         <-> each_hex_field
+                                 <- space_between_fields
+                                 <- mid_in_hex_field
 */
 {
   const wxFileOffset mid_in_hex_field = 7;
@@ -178,13 +181,18 @@ offset    hex field                                         ascii field
   wxString text;
 
   // Allocate space for the string.
-  // Offset requires 10 * length / 16 bytes (+ 1 + 1 for separators, 
-  // hex field 3 * length and the ascii field just the length.
   text.Alloc(
+    // offset:      (9 + 1 + 1) * length / 16 bytes, 
     (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
-     buffer.length() * each_hex_field + buffer.length());
+    // hex field:   3 * length 
+    each_hex_field * buffer.length() + 
+    // ascii field: just the length
+    buffer.length());
 
   wxFileOffset start = GetLength();
+  
+  // Using wxString::Format here asserts (wxWidgets-2.9.1).
+  char field_offset[9];
   
   for (
     wxFileOffset offset = 0; 
@@ -228,13 +236,11 @@ offset    hex field                                         ascii field
       field_hex += ' ';
     }
     
-    // Using wxString::Format here asserts (wxWidgets-2.9.1).
-    char field_offset[11];
-    sprintf(field_offset, "%08lx: ", (unsigned long)start + (unsigned long)offset);
+    sprintf(field_offset, "%08lx ", (unsigned long)start + (unsigned long)offset);
     
     const wxString field_spaces = wxString(
-        ' ', 
-        space_between_fields + ((bytes_per_line - count)* each_hex_field));
+      ' ', 
+      (bytes_per_line - count)* each_hex_field);
 
     text +=  
       field_offset + 
@@ -395,15 +401,17 @@ bool wxExSTC::CheckBrace(int pos)
 bool wxExSTC::CheckBraceHex(int pos)
 {
   const int col = GetColumn(pos);
-  const wxFileOffset start_ascii_field =
-    start_hex_field + each_hex_field * bytes_per_line + 2 * space_between_fields;
 
   if (col >= start_ascii_field)
   {
     const int offset = col - start_ascii_field;
     int space = 0;
 
-    if (col >= start_ascii_field + bytes_per_line / 2)
+    if (col >= start_ascii_field + bytes_per_line)
+    {
+      space--;
+    }
+    else if (col >= start_ascii_field + bytes_per_line / 2)
     {
       space++;
     }
