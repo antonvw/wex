@@ -38,7 +38,16 @@ public:
   
   /// Returns the position for a matching brace.
   int BraceMatch(int pos) const;
+  
+  /// Returns the byte no for this position (offset and hex field).
+  int GetByte(int pos) const;
+  
+  /// Returns true if this position refers to a readonly position
+  /// (as in the offset field, or on a space).
+  bool IsReadOnly(int pos) const;
 private:
+  int Convert(int offset) const;
+  
   const wxString m_Line;
 };
 #endif

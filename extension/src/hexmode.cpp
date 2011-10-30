@@ -19,16 +19,16 @@ wxExHexModeLine::wxExHexModeLine(const wxString& line)
 
 int wxExHexModeLine::BraceMatch(int pos) const
 {
-  if (pos >= start_ascii_field)
+  if (pos > start_ascii_field + bytes_per_line)
+  {
+    return wxSTC_INVALID_POSITION;
+  }
+  else if (pos >= start_ascii_field)
   {
     const int offset = pos - start_ascii_field;
     int space = 0;
 
-    if (pos > start_ascii_field + bytes_per_line)
-    {
-      return wxSTC_INVALID_POSITION;
-    }
-    else if (pos == start_ascii_field + bytes_per_line)
+    if (pos == start_ascii_field + bytes_per_line)
     {
       space--;
     }
@@ -60,4 +60,57 @@ int wxExHexModeLine::BraceMatch(int pos) const
   }
 
   return wxSTC_INVALID_POSITION;
+}
+
+int wxExHexModeLine::Convert(int offset) const
+{
+  return atoi(m_Line.Mid(0, start_hex_field)) + offset;
+}
+
+int wxExHexModeLine::GetByte(int pos) const
+{
+  if (pos > start_ascii_field + bytes_per_line)
+  {
+    return wxSTC_INVALID_POSITION;
+  }
+  else if (pos >= start_ascii_field)
+  {
+    return Convert(pos - start_ascii_field);
+  }
+  else if (pos >= start_hex_field)
+  {
+    if (m_Line.GetChar(pos) != ' ')
+    {
+      int space = 0;
+
+      if (pos >= 
+        start_hex_field + 
+        space_between_fields + 
+        (bytes_per_line * each_hex_field) / 2)
+      {
+        space++;
+      }
+
+      return Convert((pos - (start_hex_field + space)) / each_hex_field);
+    }
+  }
+
+  return wxSTC_INVALID_POSITION;
+}
+  
+bool wxExHexModeLine::IsReadOnly(int pos) const
+{
+  if (pos >= start_ascii_field)
+  {
+    return false;
+  }
+  else if (pos >= start_hex_field)
+  {
+    if (m_Line.GetChar(pos) != ' ')
+    {
+      return false;
+    }
+  }
+  
+  return true;
 }
