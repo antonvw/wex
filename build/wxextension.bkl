@@ -33,6 +33,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/frd.cpp</sources>
     <sources>../extension/src/grid.cpp</sources>
     <sources>../extension/src/header.cpp</sources>
+    <sources>../extension/src/hexmode.cpp</sources>
     <sources>../extension/src/indicator.cpp</sources>
     <sources>../extension/src/lexer.cpp</sources>
     <sources>../extension/src/lexers.cpp</sources>
@@ -79,6 +80,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/frd.h</headers>
     <headers>../extension/include/wx/extension/grid.h</headers>
     <headers>../extension/include/wx/extension/header.h</headers>
+    <headers>../extension/include/wx/extension/hexmode.h</headers>
     <headers>../extension/include/wx/extension/indicator.h</headers>
     <headers>../extension/include/wx/extension/lexer.h</headers>
     <headers>../extension/include/wx/extension/lexers.h</headers>

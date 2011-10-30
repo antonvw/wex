@@ -18,6 +18,7 @@
 #include <wx/extension/filedlg.h>
 #include <wx/extension/frame.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/printing.h>
 #include <wx/extension/util.h>
@@ -26,13 +27,6 @@
 #if wxUSE_GUI
 
 const int SCI_ADDTEXT = 2001;
-
-const wxFileOffset bytes_per_line = 16;
-const wxFileOffset each_hex_field = 3;
-const wxFileOffset space_between_fields = 1;
-const wxFileOffset start_hex_field = 9;
-const wxFileOffset start_ascii_field =
-  start_hex_field + each_hex_field * bytes_per_line + space_between_fields;
 
 BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_CHAR(wxExSTC::OnChar)
@@ -163,18 +157,6 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 }
 
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
-/*
-e.g.:
-         <- start_hex_field                               <- start_ascii_field
-offset   hex field                                        ascii field
-00000000 23 69 6e 63 6c 75 64 65  20 3c 77 78 2f 63 6d 64 #include <wx/cmd
-00000010 6c 69 6e 65 2e 68 3e 20  2f 2f 20 66 6f 72 20 77 line.h> // for w
-00000020 78 43 6d 64 4c 69 6e 65  50 61 72 73 65 72 0a 23 xCmdLineParser #
-         <----------------------------------------------> bytes_per_line
-         <-> each_hex_field
-                                 <- space_between_fields
-                                 <- mid_in_hex_field
-*/
 {
   const wxFileOffset mid_in_hex_field = 7;
 
@@ -400,58 +382,19 @@ bool wxExSTC::CheckBrace(int pos)
 
 bool wxExSTC::CheckBraceHex(int pos)
 {
-  const int col = GetColumn(pos);
-
-  if (col >= start_ascii_field)
+  const wxExHexModeLine hl(GetCurLine());
+  const int brace_match = hl.BraceMatch(GetColumn(pos));
+  
+  if (brace_match != wxSTC_INVALID_POSITION)
   {
-    const int offset = col - start_ascii_field;
-    int space = 0;
-
-    if (col > start_ascii_field + bytes_per_line)
-    {
-      return false;
-    }
-    else if (col == start_ascii_field + bytes_per_line)
-    {
-      space--;
-    }
-    else if (col >= start_ascii_field + bytes_per_line / 2)
-    {
-      space++;
-    }
-
-    BraceHighlight(pos,
-      PositionFromLine(LineFromPosition(pos)) 
-        + start_hex_field + each_hex_field * offset + space);
+    BraceHighlight(pos, PositionFromLine(LineFromPosition(pos)) + brace_match);
     return true;
-  }
-  else if (col >= start_hex_field)
-  {
-    if (GetCharAt(pos) != ' ')
-    {
-      int space = 0;
-
-      if (col >= 
-        start_hex_field + 
-        space_between_fields + 
-        (bytes_per_line * each_hex_field) / 2)
-      {
-        space++;
-      }
-
-      const int offset = (col - (start_hex_field + space)) / each_hex_field;
-
-      BraceHighlight(pos,
-        PositionFromLine(LineFromPosition(pos)) + start_ascii_field + offset);
-      return true;
-    }
   }
   else
   {
     BraceHighlight(wxSTC_INVALID_POSITION, wxSTC_INVALID_POSITION);
+    return false;
   }
-
-  return false;
 }
 
 void wxExSTC::ClearDocument()
