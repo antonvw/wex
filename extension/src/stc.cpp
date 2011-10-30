@@ -407,7 +407,11 @@ bool wxExSTC::CheckBraceHex(int pos)
     const int offset = col - start_ascii_field;
     int space = 0;
 
-    if (col >= start_ascii_field + bytes_per_line)
+    if (col > start_ascii_field + bytes_per_line)
+    {
+      return false;
+    }
+    else if (col == start_ascii_field + bytes_per_line)
     {
       space--;
     }
@@ -1835,7 +1839,10 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
       {
         if (!CheckBraceHex(GetCurrentPos()))
         {
-          CheckBraceHex(GetCurrentPos() - 1);
+          if (PositionFromLine(GetCurrentLine() != GetCurrentPos()))
+          {
+            CheckBraceHex(GetCurrentPos() - 1);
+          }
         }
       }
     }
