@@ -1839,7 +1839,7 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
       {
         if (!CheckBraceHex(GetCurrentPos()))
         {
-          if (PositionFromLine(GetCurrentLine() != GetCurrentPos()))
+          if (PositionFromLine(GetCurrentLine()) != GetCurrentPos())
           {
             CheckBraceHex(GetCurrentPos() - 1);
           }
