@@ -36,6 +36,10 @@ public:
   /// Constructor.
   wxExHexModeLine(const wxString& line);
   
+  /// Returns true if you are allowed
+  /// to replace text starting at position
+  bool AllowReplace(int pos, const wxString& text) const;
+  
   /// Returns the position for a matching brace.
   int BraceMatch(int pos) const;
   

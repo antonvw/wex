@@ -17,6 +17,19 @@ wxExHexModeLine::wxExHexModeLine(const wxString& line)
 {
 }  
 
+bool wxExHexModeLine::AllowReplace(int pos, const wxString& text) const
+{
+  for (int i = 0; i < text.length(); i++)
+  {
+    if (IsReadOnly(pos + i))
+    {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 int wxExHexModeLine::BraceMatch(int pos) const
 {
   if (pos > start_ascii_field + bytes_per_line)

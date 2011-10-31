@@ -2192,6 +2192,16 @@ bool wxExSTC::ReplaceNext(
     SetTargetEnd(GetLength());
     if (SearchInTarget(find_text) == -1) return false;
   }
+  
+  if (m_Flags & STC_WIN_HEX)
+  {
+    const wxExHexModeLine ml(GetCurLine());
+    
+    if (!ml.AllowReplace(GetColumn(GetTargetStart()), replace_text))
+    {
+      return false;
+    }
+  }
 
   MarkTargetChange();
       
