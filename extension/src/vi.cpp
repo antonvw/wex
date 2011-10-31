@@ -14,6 +14,7 @@
 #include <wx/extension/vi.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
+#include <wx/extension/hexmode.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/managedframe.h>
 #include <wx/extension/process.h>
@@ -153,6 +154,16 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     {
       m_Frame->GetViCommand(this, command);
       return true;
+    }
+  }
+  
+  if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
+  {
+    const wxExHexModeLine ml(m_STC->GetCurLine());
+      
+    if (ml.IsReadOnly(m_STC->GetColumn(m_STC->GetCurrentPos())))
+    {
+      return false;
     }
   }
 

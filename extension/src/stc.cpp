@@ -101,9 +101,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
 
     GuessType();
 
-    if (m_Flags & STC_WIN_READ_ONLY ||
-        // At this moment we do not allow to write in hex mode.
-        m_Flags & STC_WIN_HEX)
+    if (m_Flags & STC_WIN_READ_ONLY)
     {
       SetReadOnly(true);
     }
@@ -758,6 +756,10 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 {
   if (GetReadOnly())
   {
+    wxLogStatus(_("Document is readonly"));
+  }
+  else
+  {
     if (m_Flags & STC_WIN_HEX)
     {
       Reload(m_Flags ^ STC_WIN_HEX); 
@@ -769,12 +771,8 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
     }
     else
     {
-      wxLogStatus(_("Document is readonly"));
+      ConvertEOLs(eol_mode);
     }
-  }
-  else
-  {
-    ConvertEOLs(eol_mode);
   }
   
   SetEOLMode(eol_mode);
@@ -1566,6 +1564,16 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
   if (skip)
   {
+    if (m_Flags & STC_WIN_HEX)
+    {
+      const wxExHexModeLine ml(GetCurLine());
+      
+      if (ml.IsReadOnly(GetColumn(GetCurrentPos())))
+      {
+        return;
+      }
+    }
+    
     // Auto complete does not yet combine with vi mode.
     if (!m_vi.GetIsActive())
     {
@@ -2059,7 +2067,6 @@ void wxExSTC::Reload(long flags)
     ClearDocument();
     SetHexMode();
     AppendTextHexMode(buffer);
-    SetReadOnly(true);
     m_Flags = flags;
     EmptyUndoBuffer();
     SetSavePoint();
