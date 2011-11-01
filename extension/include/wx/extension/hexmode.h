@@ -46,12 +46,18 @@ public:
   /// Returns the byte no for this position (offset and hex field).
   int GetByte(int pos) const;
   
+  /// Gets the line.
+  const wxString& GetLine() const {return m_Line;};
+  
   /// Returns true if this position refers to a readonly position
   /// (as in the offset field, or on a space).
   bool IsReadOnly(int pos) const;
+  
+  /// Replaces text at position.
+  bool Replace(int pos, const wxString& text);
 private:
   int Convert(int offset) const;
   
-  const wxString m_Line;
+  wxString m_Line;
 };
 #endif

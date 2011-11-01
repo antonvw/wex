@@ -127,3 +127,18 @@ bool wxExHexModeLine::IsReadOnly(int pos) const
   
   return true;
 }
+
+bool wxExHexModeLine::Replace(int pos, const wxString& text)
+{
+  if (!AllowReplace(pos, text))
+  {
+    return false;
+  }
+  
+  for (int i = 0; i < text.length(); i++)
+  {
+    m_Line[pos + i] = text[i];
+  }
+  
+  return true;
+}
