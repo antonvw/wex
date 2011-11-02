@@ -161,12 +161,12 @@ bool wxExFindReplaceData::Set(const wxString& field, bool value)
 
 void wxExFindReplaceData::SetFindRegularExpression()
 {
-  if (UseRegularExpression())
-  {
-    int flags = wxRE_DEFAULT;
-    if (!MatchCase()) flags |= wxRE_ICASE;
-    m_FindRegularExpression.Compile(GetFindString(), flags);
-  }
+  // We always set the regular expression, in the Find In Files
+  // dialog, the FindString is invoked before matc regex
+  // was set...
+  int flags = wxRE_DEFAULT;
+  if (!MatchCase()) flags |= wxRE_ICASE;
+  m_FindRegularExpression.Compile(GetFindString(), flags);
 }
 
 void wxExFindReplaceData::SetFindString(const wxString& value)

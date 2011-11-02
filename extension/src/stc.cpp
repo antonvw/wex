@@ -2096,6 +2096,12 @@ int wxExSTC::ReplaceAll(
   const wxString& find_text,
   const wxString& replace_text)
 {
+  if (m_Flags & STC_WIN_HEX)
+  {
+    wxLogStatus("Replace all in hex mode not yet supported");
+    return 0;
+  }
+  
   const wxString selection = GetSelectedText();
   int selection_from_end = 0;
   const int selstart = GetSelectionStart();
@@ -2195,19 +2201,25 @@ bool wxExSTC::ReplaceNext(
   
   if (m_Flags & STC_WIN_HEX)
   {
-    const wxExHexModeLine ml(GetCurLine());
+    wxExHexModeLine ml(GetCurLine());
     
     if (!ml.AllowReplace(GetColumn(GetTargetStart()), replace_text))
     {
       return false;
     }
-  }
-
-  MarkTargetChange();
+    
+    MarkTargetChange();
       
-  wxExFindReplaceData::Get()->UseRegularExpression() ?
-    ReplaceTargetRE(replace_text):
-    ReplaceTarget(replace_text);
+    ml.Replace(GetColumn(GetTargetStart()), replace_text);
+  }
+  else
+  {
+    MarkTargetChange();
+      
+    wxExFindReplaceData::Get()->UseRegularExpression() ?
+      ReplaceTargetRE(replace_text):
+      ReplaceTarget(replace_text);
+  }
 
   FindNext(find_text, search_flags, find_next);
   
