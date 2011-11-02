@@ -159,7 +159,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   
   if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
   {
-    const wxExHexModeLine ml(m_STC->GetCurLine());
+    const wxExHexModeLine ml(m_STC);
       
     if (ml.IsReadOnly(m_STC->GetColumn(m_STC->GetCurrentPos())))
     {
