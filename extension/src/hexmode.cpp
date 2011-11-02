@@ -10,10 +10,11 @@
 #include <wx/wx.h>
 #endif
 #include <wx/extension/hexmode.h>
-#include <wx/stc/stc.h>
+#include <wx/extension/stc.h>
 
-wxExHexModeLine::wxExHexModeLine(const wxString& line)
-  : m_Line(line)
+wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
+  : m_Line(stc->GetCurLine())
+  , m_STC(stc)
 {
 }  
 
@@ -138,6 +139,9 @@ bool wxExHexModeLine::Replace(int pos, const wxString& text)
   for (int i = 0; i < text.length(); i++)
   {
     m_Line[pos + i] = text[i];
+    
+    m_STC->wxStyledTextCtrl::Replace(
+      pos, pos + 1, text[i]);
   }
   
   return true;

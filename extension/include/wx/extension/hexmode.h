@@ -17,6 +17,8 @@ const wxFileOffset start_hex_field = 9;
 const wxFileOffset start_ascii_field =
   start_hex_field + each_hex_field * bytes_per_line + space_between_fields;
   
+class wxExSTC;
+  
 /// Offers a hex mode line.
 /*
 e.g.:
@@ -34,7 +36,8 @@ class WXDLLIMPEXP_BASE wxExHexModeLine
 {
 public:
   /// Constructor.
-  wxExHexModeLine(const wxString& line);
+  /// Operates on the current line in stc component.
+  wxExHexModeLine(wxExSTC* stc);
   
   /// Returns true if you are allowed
   /// to replace text starting at position
@@ -46,9 +49,6 @@ public:
   /// Returns the byte no for this position (offset and hex field).
   int GetByte(int pos) const;
   
-  /// Gets the line.
-  const wxString& GetLine() const {return m_Line;};
-  
   /// Returns true if this position refers to a readonly position
   /// (as in the offset field, or on a space).
   bool IsReadOnly(int pos) const;
@@ -59,5 +59,6 @@ private:
   int Convert(int offset) const;
   
   wxString m_Line;
+  wxExSTC* m_STC;
 };
 #endif
