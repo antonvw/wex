@@ -50,7 +50,7 @@ public:
   /// Returns the index for a matching brace.
   int BraceMatch() const;
   
-  /// Returns true if this position refers to a readonly position
+  /// Returns true if current index refers to a readonly position
   /// (as in the offset field, or on a space).
   bool IsReadOnly() const;
   
@@ -63,6 +63,9 @@ private:
   int Convert(int offset) const;
   /// Returns the byte no for this position (offset and hex field).
   int GetByte() const;
+  /// Returns true if this position refers to a readonly position
+  /// (as in the offset field, or on a space).
+  bool IsReadOnly(int pos) const;
   
   wxString m_Line;
   int m_Index;
