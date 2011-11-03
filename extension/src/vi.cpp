@@ -161,7 +161,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     const wxExHexModeLine ml(m_STC);
       
-    if (ml.IsReadOnly(m_STC->GetColumn(m_STC->GetCurrentPos())))
+    if (ml.IsReadOnly())
     {
       return false;
     }
