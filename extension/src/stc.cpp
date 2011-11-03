@@ -380,8 +380,8 @@ bool wxExSTC::CheckBrace(int pos)
 
 bool wxExSTC::CheckBraceHex(int pos)
 {
-  const wxExHexModeLine hl(this);
-  const int brace_match = hl.BraceMatch(GetColumn(pos));
+  wxExHexModeLine hl(this);
+  const int brace_match = hl.BraceMatch();
   
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -1568,7 +1568,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     {
       const wxExHexModeLine ml(this);
       
-      if (ml.IsReadOnly(GetColumn(GetCurrentPos())))
+      if (ml.IsReadOnly())
       {
         return;
       }
@@ -2202,15 +2202,16 @@ bool wxExSTC::ReplaceNext(
   if (m_Flags & STC_WIN_HEX)
   {
     wxExHexModeLine ml(this);
+    ml.Set(GetCurrLine(), GetTargetStart());
     
-    if (!ml.AllowReplace(GetColumn(GetTargetStart()), replace_text))
+    if (!ml.AllowReplace(replace_text))
     {
       return false;
     }
     
     MarkTargetChange();
       
-    ml.Replace(GetColumn(GetTargetStart()), replace_text);
+    ml.Replace(replace_text);
   }
   else
   {

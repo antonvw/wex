@@ -36,29 +36,36 @@ class WXDLLIMPEXP_BASE wxExHexModeLine
 {
 public:
   /// Constructor.
-  /// Operates on the current line in stc component.
+  /// Sets line and index with current line and pos.
   wxExHexModeLine(wxExSTC* stc);
+  
+  /// Constructor.
+  /// Sets line and pos.
+  wxExHexModeLine(wxExSTC* stc, int line, int pos);
   
   /// Returns true if you are allowed
   /// to replace text starting at position
-  bool AllowReplace(int pos, const wxString& text) const;
+  bool AllowReplace(const wxString& text) const;
   
-  /// Returns the position for a matching brace.
-  int BraceMatch(int pos) const;
-  
-  /// Returns the byte no for this position (offset and hex field).
-  int GetByte(int pos) const;
+  /// Returns the index for a matching brace.
+  int BraceMatch() const;
   
   /// Returns true if this position refers to a readonly position
   /// (as in the offset field, or on a space).
-  bool IsReadOnly(int pos) const;
+  bool IsReadOnly() const;
   
   /// Replaces text at position.
-  bool Replace(int pos, const wxString& text);
+  bool Replace(const wxString& text);
+  
+  /// Sets line and index  from stc component.
+  void Set(int line, int pos);
 private:
   int Convert(int offset) const;
+  /// Returns the byte no for this position (offset and hex field).
+  int GetByte() const;
   
   wxString m_Line;
+  int m_Index;
   wxExSTC* m_STC;
 };
 #endif
