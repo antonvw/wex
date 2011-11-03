@@ -20,7 +20,7 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
 }  
 
  wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
-  : m_Stc(stc)
+  : m_STC(stc)
 {
   Set(line, pos); 
 }
@@ -119,15 +119,20 @@ int wxExHexModeLine::GetByte() const
   return wxSTC_INVALID_POSITION;
 }
   
-bool wxExHexModeLine::IsReadOnly(int m_Index) const
+bool wxExHexModeLine::IsReadOnly() const
 {
-  if (m_Index >= start_ascii_field)
+  return IsReadOnly(m_Index);
+}
+
+bool wxExHexModeLine::IsReadOnly(int pos) const
+{
+  if (pos >= start_ascii_field)
   {
     return false;
   }
-  else if (m_Index >= start_hex_field)
+  else if (pos >= start_hex_field)
   {
-    if (m_Line.GetChar(m_Index) != ' ')
+    if (m_Line.GetChar(pos) != ' ')
     {
       return false;
     }
@@ -138,7 +143,7 @@ bool wxExHexModeLine::IsReadOnly(int m_Index) const
 
 bool wxExHexModeLine::Replace(const wxString& text)
 {
-  if (!AllowReplace(m_Index, text))
+  if (!AllowReplace(text))
   {
     return false;
   }
@@ -156,6 +161,6 @@ bool wxExHexModeLine::Replace(const wxString& text)
 
 void wxExHexModeLine::Set(int line, int pos)
 {
-  m_Line = line;
+  m_Line = m_STC->GetLine(line);
   m_Index = m_STC->GetColumn(pos);
 }

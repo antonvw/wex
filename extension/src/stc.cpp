@@ -2201,8 +2201,7 @@ bool wxExSTC::ReplaceNext(
   
   if (m_Flags & STC_WIN_HEX)
   {
-    wxExHexModeLine ml(this);
-    ml.Set(GetCurrLine(), GetTargetStart());
+    wxExHexModeLine ml(this, GetCurrentLine(), GetTargetStart());
     
     if (!ml.AllowReplace(replace_text))
     {
