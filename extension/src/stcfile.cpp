@@ -97,13 +97,25 @@ void wxExSTCFile::DoFileNew()
 
 void wxExSTCFile::DoFileSave(bool save_as)
 {
-  const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
-  Write(buffer.data(), buffer.length());
+  if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
+  {
+    const wxCharBuffer& buffer = m_STC->m_HexBuffer; 
+    Write(buffer.data(), buffer.length());
+  }
+  else
+  {
+    const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
+    Write(buffer.data(), buffer.length());
 
+    if (save_as)
+    {
+      m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
+    }
+  }
+  
   if (save_as)
   {
     m_STC->SetName(GetFileName().GetFullPath());
-    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
   }
   
   m_STC->MarkerDeleteAllChange();

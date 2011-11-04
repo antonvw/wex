@@ -156,6 +156,8 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 {
+  m_HexBuffer += buffer;
+  
   const wxFileOffset mid_in_hex_field = 7;
 
   wxString text;

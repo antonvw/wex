@@ -12,6 +12,7 @@
 #include <wx/fdrepdlg.h> // for wxFindDialogEvent
 #include <wx/stc/stc.h>
 #include <wx/extension/filename.h>
+#include <wx/extension/hexmode.h>
 #include <wx/extension/lexer.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/stcfile.h>
@@ -24,7 +25,8 @@ class wxExConfigDialog;
 /// macro support, vi support and lexer support (syntax colouring, folding).
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
-  friend class wxExSTCFile; // it might update m_PathList
+  friend class wxExSTCFile; //  might update m_PathList
+  friend class wxExHexModeLine; // might update m_HexBuffer
 public:
   /// Menu and tooltip flags (0 is used for no menu).
   enum wxExMenuFlags
@@ -345,6 +347,9 @@ private:
 
   wxFont m_DefaultFont;
   wxPathList m_PathList;
+  
+  // Only used in hex mode.
+  wxCharBuffer m_HexBuffer;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;

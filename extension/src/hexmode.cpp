@@ -88,23 +88,23 @@ int wxExHexModeLine::Convert(int offset) const
   return atoi(m_Line.Mid(0, start_hex_field)) + offset;
 }
 
-int wxExHexModeLine::GetByte() const
+int wxExHexModeLine::GetByte(int i) const
 {
-  if (m_Index > start_ascii_field + bytes_per_line)
+  if (m_Index + i > start_ascii_field + bytes_per_line)
   {
     return wxSTC_INVALID_POSITION;
   }
-  else if (m_Index >= start_ascii_field)
+  else if (m_Index + i >= start_ascii_field)
   {
     return Convert(m_Index - start_ascii_field);
   }
-  else if (m_Index >= start_hex_field)
+  else if (m_Index + i >= start_hex_field)
   {
-    if (m_Line.GetChar(m_Index) != ' ')
+    if (m_Line.GetChar(m_Index + i) != ' ')
     {
       int space = 0;
 
-      if (m_Index >= 
+      if (m_Index  + i >= 
         start_hex_field + 
         space_between_fields + 
         (bytes_per_line * each_hex_field) / 2)
@@ -112,7 +112,7 @@ int wxExHexModeLine::GetByte() const
         space++;
       }
 
-      return Convert((m_Index - (start_hex_field + space)) / each_hex_field);
+      return Convert((m_Index  + i - (start_hex_field + space)) / each_hex_field);
     }
   }
 
@@ -154,6 +154,8 @@ bool wxExHexModeLine::Replace(const wxString& text)
     
     m_STC->wxStyledTextCtrl::Replace(
       m_Index, m_Index + 1, text[i]);
+      
+    m_STC->m_HexBuffer[GetByte(i)] = text[i];
   }
   
   return true;
