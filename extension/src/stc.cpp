@@ -383,7 +383,7 @@ bool wxExSTC::CheckBrace(int pos)
 bool wxExSTC::CheckBraceHex(int pos)
 {
   wxExHexModeLine hl(this);
-  const int brace_match = hl.BraceMatch();
+  const int brace_match = hl.OtherField();
   
   if (brace_match != wxSTC_INVALID_POSITION)
   {
