@@ -46,12 +46,14 @@ public:
   /// Returns true if you are allowed to replace starting at current index.
   bool AllowReplace(const wxString& text) const;
   
-  /// Returns the index for a matching brace.
-  int BraceMatch() const;
-  
   /// Returns true if current index refers to a readonly position in current line.
   /// (as in the offset field, or on a space).
   bool IsReadOnly() const;
+  
+  /// If on ascii field, return index for hex field,
+  /// if on hex field, return index for ascii field,
+  /// if on offset field or invalid field, returns wxSTC_INVALID_POSITION.
+  int OtherField() const;
   
   /// Replaces current line at current index with text.
   bool Replace(const wxString& text);
@@ -60,8 +62,12 @@ public:
   void Set(int line, int pos);
 private:
   int Convert(int offset) const;
+  
+  int GetAsciiField() const;
   /// Returns the byte no for this position (offset and hex field).
   int GetByte(int i) const;
+  int GetHexField() const;
+  
   /// Returns true if this position refers to a readonly position
   /// (as in the offset field, or on a space).
   bool IsReadOnly(int pos) const;

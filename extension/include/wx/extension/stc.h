@@ -349,7 +349,7 @@ private:
   wxPathList m_PathList;
   
   // Only used in hex mode.
-  wxCharBuffer m_HexBuffer;
+  wxString m_HexBuffer;
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;

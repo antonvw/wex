@@ -72,6 +72,10 @@ void wxExSTCFile::DoFileLoad(bool synced)
       AddBasePathToPathList();
     }
   }
+  else
+  {
+    m_STC->m_HexBuffer.clear();
+  }
 
   if (!synced)
   {
@@ -99,8 +103,8 @@ void wxExSTCFile::DoFileSave(bool save_as)
 {
   if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
   {
-    const wxCharBuffer& buffer = m_STC->m_HexBuffer; 
-    Write(buffer.data(), buffer.length());
+    // TODO: Does this allow NULLs?
+    Write(m_STC->m_HexBuffer, m_STC->m_HexBuffer.size());
   }
   else
   {
