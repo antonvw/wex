@@ -40,29 +40,28 @@ public:
   wxExHexModeLine(wxExSTC* stc);
   
   /// Constructor.
-  /// Sets line and pos.
+  /// Sets line and index.
   wxExHexModeLine(wxExSTC* stc, int line, int pos);
   
-  /// Returns true if you are allowed
-  /// to replace text starting at position
+  /// Returns true if you are allowed to replace starting at current index.
   bool AllowReplace(const wxString& text) const;
   
   /// Returns the index for a matching brace.
   int BraceMatch() const;
   
-  /// Returns true if current index refers to a readonly position
+  /// Returns true if current index refers to a readonly position in current line.
   /// (as in the offset field, or on a space).
   bool IsReadOnly() const;
   
-  /// Replaces text at position.
+  /// Replaces current line at current index with text.
   bool Replace(const wxString& text);
   
-  /// Sets line and index  from stc component.
+  /// Sets line and index from stc component.
   void Set(int line, int pos);
 private:
   int Convert(int offset) const;
   /// Returns the byte no for this position (offset and hex field).
-  int GetByte() const;
+  int GetByte(int i) const;
   /// Returns true if this position refers to a readonly position
   /// (as in the offset field, or on a space).
   bool IsReadOnly(int pos) const;
