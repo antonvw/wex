@@ -157,6 +157,8 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
   
   const int pos = m_STC->PositionFromLine(m_LineNo);
   
+  wxUniChar val = c;
+  
   if (IsAsciiField())
   {
     // replace ascii field with value
@@ -167,6 +169,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
       
     // replace hex field with code
     const wxString code = wxString::Format("%02x", c);
+    
     m_STC->wxStyledTextCtrl::Replace(
       pos + OtherField(), 
       pos + OtherField() + 2, 
@@ -205,17 +208,30 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     int code;
     sscanf(str, "%x", &code);
     
+    wxUniChar s;
+    
+    if (code != 0 && code != '\r' && code != '\n' && code != '\t')
+    {
+      s = code;
+    }
+    else
+    {
+      s = '.';
+    }
+    
     m_STC->wxStyledTextCtrl::Replace(
       pos + OtherField(), 
       pos + OtherField() + 1, 
-      wxUniChar(code));
+      s);
+      
+    val = code;
   }
   else
   {
     return false;
   }
       
-  m_STC->m_HexBuffer[GetByte()] = c;
+  m_STC->m_HexBuffer[GetByte()] = val;
   
   return true;
 }
