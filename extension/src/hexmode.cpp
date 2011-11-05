@@ -14,28 +14,16 @@
 
 wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
   : m_Line(stc->GetCurLine())
+  , m_LineNo(stc->GetCurrentLine())
   , m_Index(stc->GetColumn(stc->GetCurrentPos()))
   , m_STC(stc)
 {
 }  
 
- wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
+wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
   : m_STC(stc)
 {
   Set(line, pos); 
-}
-
-bool wxExHexModeLine::AllowReplace(const wxString& text) const
-{
-  for (int i = 0; i < text.length(); i++)
-  {
-    if (IsReadOnly(m_Index + i))
-    {
-      return false;
-    }
-  }
-  
-  return true;
 }
 
 int wxExHexModeLine::Convert(int offset) const
@@ -61,25 +49,27 @@ int wxExHexModeLine::GetAsciiField() const
 
     return start_ascii_field + offset;
   }
+  
+  return wxSTC_INVALID_POSITION;
 }
 
-int wxExHexModeLine::GetByte(int i) const
+int wxExHexModeLine::GetByte() const
 {
-  if (m_Index + i > start_ascii_field + bytes_per_line)
+  if (m_Index > start_ascii_field + bytes_per_line)
   {
     return wxSTC_INVALID_POSITION;
   }
-  else if (m_Index + i >= start_ascii_field)
+  else if (m_Index >= start_ascii_field)
   {
     return Convert(m_Index - start_ascii_field);
   }
-  else if (m_Index + i >= start_hex_field)
+  else if (m_Index >= start_hex_field)
   {
-    if (m_Line.GetChar(m_Index + i) != ' ')
+    if (m_Line.GetChar(m_Index) != ' ')
     {
       int space = 0;
 
-      if (m_Index  + i >= 
+      if (m_Index >= 
         start_hex_field + 
         space_between_fields + 
         (bytes_per_line * each_hex_field) / 2)
@@ -87,7 +77,7 @@ int wxExHexModeLine::GetByte(int i) const
         space++;
       }
 
-      return Convert((m_Index  + i - (start_hex_field + space)) / each_hex_field);
+      return Convert((m_Index - (start_hex_field + space)) / each_hex_field);
     }
   }
 
@@ -111,20 +101,29 @@ int wxExHexModeLine::GetHexField() const
   return start_hex_field + each_hex_field * offset + space;
 }
 
-bool wxExHexModeLine::IsReadOnly() const
+bool wxExHexModeLine::IsAsciiField() const
 {
-  return IsReadOnly(m_Index);
+  return 
+    m_Index >= start_ascii_field && 
+    m_Index < start_ascii_field + bytes_per_line;
 }
 
-bool wxExHexModeLine::IsReadOnly(int pos) const
+bool wxExHexModeLine::IsHexField() const
 {
-  if (pos >= start_ascii_field)
+  return 
+    m_Index >= start_hex_field &&
+    m_Index < start_ascii_field;
+}
+
+bool wxExHexModeLine::IsReadOnly() const
+{
+  if (IsAsciiField())
   {
     return false;
   }
-  else if (pos >= start_hex_field)
+  else if (IsHexField())
   {
-    if (m_Line.GetChar(pos) != ' ')
+    if (m_Line.GetChar(m_Index) != ' ')
     {
       return false;
     }
@@ -135,38 +134,88 @@ bool wxExHexModeLine::IsReadOnly(int pos) const
 
 int wxExHexModeLine::OtherField() const
 {
-  if (m_Index > start_ascii_field + bytes_per_line)
-  {
-    return wxSTC_INVALID_POSITION;
-  }
-  else if (m_Index >= start_ascii_field)
+  if (IsAsciiField())
   {
     return GetHexField();
   }
-  else if (m_Index >= start_hex_field)
+  else if (IsHexField())
   {
     return GetAsciiField();
   }
-
-  return wxSTC_INVALID_POSITION;
+  else
+  {
+    return wxSTC_INVALID_POSITION;
+  }
 }
 
-bool wxExHexModeLine::Replace(const wxString& text)
+bool wxExHexModeLine::Replace(const wxUniChar& c)
 {
-  if (!AllowReplace(text))
+  if (IsReadOnly())
   {
     return false;
   }
   
-  for (int i = 0; i < text.length(); i++)
+  const int pos = m_STC->PositionFromLine(m_LineNo);
+  
+  if (IsAsciiField())
   {
-    m_Line[m_Index + i] = text[i];
+    // replace ascii field with value
+    m_STC->wxStyledTextCtrl::Replace(
+      pos + m_Index, 
+      pos + m_Index + 1, 
+      c);
+      
+    // replace hex field with code
+    const wxString code = wxString::Format("%02x", c);
+    m_STC->wxStyledTextCtrl::Replace(
+      pos + OtherField(), 
+      pos + OtherField() + 2, 
+      code);
+  }
+  else if (IsHexField())
+  {
+    // hex text should be entered.
+    if (!isxdigit(c))
+    {
+      return false;
+    }
+      
+    // replace hex field with value
+    m_STC->wxStyledTextCtrl::Replace(
+      pos + m_Index, 
+      pos + m_Index + 1,
+      c);
+        
+    // replace ascii field with code
+    char str[3];
+    
+    if (m_Line[m_Index + 1] == ' ')
+    {
+      str[0] = m_Line[m_Index - 1];
+      str[1] = c;
+    }
+    else
+    {
+      str[0] = c;
+      str[1] = m_Line[m_Index];
+    }
+    
+    str[2] = '\0';
+    
+    int code;
+    sscanf(str, "%x", &code);
     
     m_STC->wxStyledTextCtrl::Replace(
-      m_Index, m_Index + i, text[i]);
-      
-    m_STC->m_HexBuffer[GetByte(i)] = text[i];
+      pos + OtherField(), 
+      pos + OtherField() + 1, 
+      wxUniChar(code));
   }
+  else
+  {
+    return false;
+  }
+      
+  m_STC->m_HexBuffer[GetByte()] = c;
   
   return true;
 }
@@ -174,5 +223,6 @@ bool wxExHexModeLine::Replace(const wxString& text)
 void wxExHexModeLine::Set(int line, int pos)
 {
   m_Line = m_STC->GetLine(line);
+  m_LineNo = line;
   m_Index = m_STC->GetColumn(pos);
 }

@@ -43,9 +43,6 @@ public:
   /// Sets line and index.
   wxExHexModeLine(wxExSTC* stc, int line, int pos);
   
-  /// Returns true if you are allowed to replace starting at current index.
-  bool AllowReplace(const wxString& text) const;
-  
   /// Returns true if current index refers to a readonly position in current line.
   /// (as in the offset field, or on a space).
   bool IsReadOnly() const;
@@ -55,8 +52,8 @@ public:
   /// if on offset field or invalid field, returns wxSTC_INVALID_POSITION.
   int OtherField() const;
   
-  /// Replaces current line at current index with text.
-  bool Replace(const wxString& text);
+  /// Replaces current line at current index with char.
+  bool Replace(const wxUniChar& c);
   
   /// Sets line and index from stc component.
   void Set(int line, int pos);
@@ -65,14 +62,14 @@ private:
   
   int GetAsciiField() const;
   /// Returns the byte no for this position (offset and hex field).
-  int GetByte(int i) const;
+  int GetByte() const;
   int GetHexField() const;
   
-  /// Returns true if this position refers to a readonly position
-  /// (as in the offset field, or on a space).
-  bool IsReadOnly(int pos) const;
+  bool IsAsciiField() const;
+  bool IsHexField() const;
   
   wxString m_Line;
+  int m_LineNo;
   int m_Index;
   wxExSTC* m_STC;
 };

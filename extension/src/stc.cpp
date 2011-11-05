@@ -2205,14 +2205,14 @@ bool wxExSTC::ReplaceNext(
   {
     wxExHexModeLine ml(this, GetCurrentLine(), GetTargetStart());
     
-    if (!ml.AllowReplace(replace_text))
+    if (ml.IsReadOnly())
     {
       return false;
     }
     
     MarkTargetChange();
       
-    ml.Replace(replace_text);
+    ml.Replace(replace_text[0]);
   }
   else
   {

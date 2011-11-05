@@ -159,12 +159,25 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   
   if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
   {
-    const wxExHexModeLine ml(m_STC);
+    wxExHexModeLine ml(m_STC);
       
     if (ml.IsReadOnly())
     {
       return false;
     }
+    
+    bool handled = false;
+    
+    // TODO: Currently only r supported in HEX mode.
+    if (command.Matches("*r?") && !m_STC->GetReadOnly())
+    {
+      ml.Replace(command.Last());
+      handled = true;
+    }
+    
+    m_Frame->HideViBar();
+    
+    return handled;
   }
 
   m_Frame->HideViBar();
