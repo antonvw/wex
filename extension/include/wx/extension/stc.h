@@ -180,6 +180,9 @@ public:
   /// Guesses the file type using a small sample size from this document, 
   /// and sets EOL mode and updates statusbar if it found eols.
   void GuessType();
+  
+  /// Returns true if we are in hex mode.
+  bool HexMode() const {return m_Flags & STC_WIN_HEX;};
 
   /// Indent range of lines.
   void Indent(int begin, int end, bool forward);

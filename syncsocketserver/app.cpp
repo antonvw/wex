@@ -237,7 +237,7 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
     stc->SetReadOnly(false);
   }
   
-  const bool hex = (stc->GetFlags() & wxExSTC::STC_WIN_HEX);
+  const bool hex = (stc->HexMode());
 
   if (withTimestamp && !hex)
   {

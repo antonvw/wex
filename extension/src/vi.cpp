@@ -157,7 +157,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
   }
   
-  if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
+  if (m_STC->HexMode())
   {
     wxExHexModeLine ml(m_STC);
       

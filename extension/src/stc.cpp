@@ -90,7 +90,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
 
   if (!value.empty())
   {
-    if (m_Flags & STC_WIN_HEX)
+    if (HexMode())
     {
       AppendTextHexMode(value.c_str());
     }
@@ -762,7 +762,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
   }
   else
   {
-    if (m_Flags & STC_WIN_HEX)
+    if (HexMode())
     {
       Reload(m_Flags ^ STC_WIN_HEX); 
       
@@ -786,7 +786,7 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 
 bool wxExSTC::FileReadOnlyAttributeChanged()
 {
-  if (!(GetFlags() & STC_WIN_HEX))
+  if (!HexMode())
   {
     SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
     wxLogStatus(_("Readonly attribute changed"));
@@ -807,7 +807,7 @@ void wxExSTC::FileTypeMenu()
   menu->AppendSeparator();
   wxMenuItem* hex = menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
   
-  if (!(GetFlags() & STC_WIN_HEX))
+  if (!HexMode())
   {
     menu->FindItemByPosition(GetEOLMode())->Check();
   }
@@ -1201,7 +1201,7 @@ void wxExSTC::GotoLineAndSelect(
 
 void wxExSTC::GuessType()
 {
-  if (!(GetFlags() & STC_WIN_HEX))
+  if (!HexMode())
   {
     // Get a small sample from this file to detect the file mode.
     const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
@@ -1274,7 +1274,6 @@ void wxExSTC::HexDecCalltip(int pos)
   }
 }
 
-
 void wxExSTC::Indent(int begin, int end, bool forward)
 {
   BeginUndoAction();
@@ -1326,7 +1325,7 @@ void wxExSTC::Indent(int lines, bool forward)
 
 void wxExSTC::Initialize()
 {
-  if (m_Flags & STC_WIN_HEX)
+  if (HexMode())
   {
     SetHexMode();
   }
@@ -1566,7 +1565,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
 
   if (skip)
   {
-    if (m_Flags & STC_WIN_HEX)
+    if (HexMode())
     {
       const wxExHexModeLine ml(this);
       
@@ -1788,7 +1787,7 @@ void wxExSTC::OnKeyUp(wxKeyEvent& event)
   {
     if (!CheckBrace(GetCurrentPos() - 1))
     {
-      if (m_Flags & STC_WIN_HEX)
+      if (HexMode())
       {
         if (!CheckBraceHex(GetCurrentPos()))
         {
@@ -2062,8 +2061,7 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
-  if ((flags & STC_WIN_HEX) && 
-     !(m_Flags & STC_WIN_HEX))
+  if ((flags & STC_WIN_HEX) && !HexMode())
   {
     const wxCharBuffer buffer = GetTextRaw();
     ClearDocument();
@@ -2098,7 +2096,7 @@ int wxExSTC::ReplaceAll(
   const wxString& find_text,
   const wxString& replace_text)
 {
-  if (m_Flags & STC_WIN_HEX)
+  if (HexMode())
   {
     wxLogStatus("Replace all in hex mode not yet supported");
     return 0;
@@ -2201,7 +2199,7 @@ bool wxExSTC::ReplaceNext(
     if (SearchInTarget(find_text) == -1) return false;
   }
   
-  if (m_Flags & STC_WIN_HEX)
+  if (HexMode())
   {
     wxExHexModeLine ml(this, GetCurrentLine(), GetTargetStart());
     

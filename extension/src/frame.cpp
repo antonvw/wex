@@ -589,7 +589,7 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   }
   else if (pane == "PaneFileType")
   {
-    if (stc->GetFlags() & wxExSTC::STC_WIN_HEX)
+    if (stc->HexMode())
     {
       text = "HEX";
     }
