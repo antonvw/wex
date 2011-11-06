@@ -10,13 +10,6 @@
 
 #include <wx/string.h>
 
-const wxFileOffset bytes_per_line = 16;
-const wxFileOffset each_hex_field = 3;
-const wxFileOffset space_between_fields = 1;
-const wxFileOffset start_hex_field = 9;
-const wxFileOffset start_ascii_field =
-  start_hex_field + each_hex_field * bytes_per_line + space_between_fields;
-  
 class wxExSTC;
   
 /// Offers a hex mode line.
@@ -42,6 +35,9 @@ public:
   /// Constructor.
   /// Sets line and index.
   wxExHexModeLine(wxExSTC* stc, int line, int pos);
+
+  /// Appends text to stc  component.  
+  void AppendText(const wxCharBuffer& buffer);
   
   /// Returns true if current index refers to a readonly position in current line.
   /// (as in the offset field, or on a space).
