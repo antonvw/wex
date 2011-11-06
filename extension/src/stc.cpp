@@ -406,6 +406,11 @@ void wxExSTC::ClearDocument()
 #endif
   EmptyUndoBuffer();
   SetSavePoint();
+  
+  if (HexMode())
+  {
+    m_HexBuffer.clear();
+  }
 }
 
 // This is a static method, cannot use normal members here.
@@ -2064,8 +2069,8 @@ void wxExSTC::Reload(long flags)
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
     const wxCharBuffer buffer = GetTextRaw();
-    ClearDocument();
     SetHexMode();
+    ClearDocument();
     AppendTextHexMode(buffer);
     m_Flags = flags;
     EmptyUndoBuffer();
