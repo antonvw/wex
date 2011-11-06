@@ -157,29 +157,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     }
   }
   
-  if (m_STC->HexMode())
-  {
-    wxExHexModeLine ml(m_STC);
-      
-    if (ml.IsReadOnly())
-    {
-      return false;
-    }
-    
-    bool handled = false;
-    
-    // TODO: Currently only r supported in HEX mode.
-    if (command.Matches("*r?") && !m_STC->GetReadOnly())
-    {
-      ml.Replace(command.Last());
-      handled = true;
-    }
-    
-    m_Frame->HideViBar();
-    
-    return handled;
-  }
-
   m_Frame->HideViBar();
           
   int repeat = atoi(command.c_str());
@@ -192,7 +169,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   bool handled = true;
 
   // Handle multichar commands.
-  if (command.EndsWith("cw") && !m_STC->GetReadOnly())
+  if (command.EndsWith("cw") && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     if (!m_STC->GetSelectedText().empty())
     {
@@ -215,7 +192,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       m_STC->SetAnchor(anchor);
     }
   }
-  else if (command == "cc" && !m_STC->GetReadOnly())
+  else if (command == "cc" && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     m_STC->Home();
     m_STC->DelLineRight();
@@ -229,21 +206,21 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       InsertMode();
     }
   }
-  else if (command.EndsWith("dd") && !m_STC->GetReadOnly())
+  else if (command.EndsWith("dd") && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     Delete(repeat);
   }
-  else if (command == "d0" && !m_STC->GetReadOnly())
+  else if (command == "d0" && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     m_STC->HomeExtend();
     m_STC->Cut();
   }
-  else if (command == "d$" && !m_STC->GetReadOnly())
+  else if (command == "d$" && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     m_STC->LineEndExtend();
     m_STC->Cut();
   }
-  else if (command.EndsWith("dw") && !m_STC->GetReadOnly())
+  else if (command.EndsWith("dw") && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     m_STC->BeginUndoAction();
     const int start = m_STC->GetCurrentPos();
@@ -256,10 +233,24 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   // this one should be first, so rJ will match
   else if (command.Matches("*r?") && !m_STC->GetReadOnly())
   {
-    m_STC->SetTargetStart(m_STC->GetCurrentPos());
-    m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
-    m_STC->ReplaceTarget(wxString(command.Last(), repeat));
-    m_STC->MarkTargetChange();
+    if (m_STC->HexMode())
+    {
+      wxExHexModeLine ml(m_STC);
+      
+      if (ml.IsReadOnly())
+      {
+        return false;
+      }
+      
+      ml.Replace(command.Last());
+    }
+    else
+    {
+      m_STC->SetTargetStart(m_STC->GetCurrentPos());
+      m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
+      m_STC->ReplaceTarget(wxString(command.Last(), repeat));
+      m_STC->MarkTargetChange();
+    }
   }
   else if (command.Matches("*f?"))
   {
@@ -327,11 +318,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     wxPostEvent(wxTheApp->GetTopWindow(), 
       wxCloseEvent(wxEVT_CLOSE_WINDOW));
   }
-  else if (command.EndsWith(">>") && !m_STC->GetReadOnly())
+  else if (command.EndsWith(">>") && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     m_STC->Indent(repeat);
   }
-  else if (command.EndsWith("<<") && !m_STC->GetReadOnly())
+  else if (command.EndsWith("<<") && !m_STC->GetReadOnly() && !m_STC->HexMode())
   {
     m_STC->Indent(repeat, false);
   }
@@ -779,7 +770,7 @@ void wxExVi::InsertMode(
   bool overtype,
   bool dot)
 {
-  if (m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return;
   }
@@ -1034,6 +1025,11 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 
 void wxExVi::Put(bool after) const
 {
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
+  {
+    return;
+  }
+  
   const int lines = wxExGetNumberOfLines(wxExClipboardGet());
   
   if (lines > 1)
