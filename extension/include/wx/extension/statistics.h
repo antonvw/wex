@@ -127,7 +127,7 @@ public:
 #ifdef wxExUSE_CPP0X	
     const auto it = m_Items.find(key);
 #else
-    std::map<wxString, T>::const_iterator it = m_Items.find(key);
+    typename std::map<wxString, T>::const_iterator it = m_Items.find(key);
 #endif	
     if (it != m_Items.end())
     {
