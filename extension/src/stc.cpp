@@ -156,83 +156,8 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 {
-  m_HexBuffer += buffer;
-  
-  const wxFileOffset mid_in_hex_field = 7;
-
-  wxString text;
-
-  // Allocate space for the string.
-  text.Alloc(
-    // offset:      (9 + 1 + 1) * length / 16 bytes, 
-    (start_hex_field + 1 + 1) * buffer.length() / bytes_per_line + 
-    // hex field:   3 * length 
-    each_hex_field * buffer.length() + 
-    // ascii field: just the length
-    buffer.length());
-
-  wxFileOffset start = GetLength();
-  
-  // Using wxString::Format here asserts (wxWidgets-2.9.1).
-  char field_offset[9];
-  
-  for (
-    wxFileOffset offset = 0; 
-    offset < buffer.length(); 
-    offset += bytes_per_line)
-  {
-    long count = buffer.length() - offset;
-    count =
-      (bytes_per_line < count ? bytes_per_line : count);
-
-    wxString field_hex, field_ascii;
-
-    for (register wxFileOffset byte = 0; byte < count; byte++)
-    {
-      const char c = buffer.data()[offset + byte];
-
-      field_hex += wxString::Format("%02x ", (unsigned char)c);
-
-      // Print an extra space.
-      if (byte == mid_in_hex_field)
-      {
-        field_hex += ' ';
-      }
-
-      // We do not want the \n etc. to be printed,
-      // as that disturbs the hex view field.
-      if (c != 0 && c != '\r' && c != '\n' && c != '\t')
-      {
-        field_ascii += c;
-      }
-      else
-      {
-        // Therefore print an ordinary ascii char.
-        field_ascii += '.';
-      }
-    }
-
-    // The extra space if we ended too soon.
-    if (count <= mid_in_hex_field)
-    {
-      field_hex += ' ';
-    }
-    
-    sprintf(field_offset, "%08lx ", (unsigned long)start + (unsigned long)offset);
-    
-    const wxString field_spaces = wxString(
-      ' ', 
-      (bytes_per_line - count)* each_hex_field);
-
-    text +=  
-      field_offset + 
-      field_hex +
-      field_spaces +
-      field_ascii +
-      GetEOL();
-  }
-
-  AppendText(text);
+  wxExHexModeLine ml(this);
+  ml.AppendText(buffer);
 }
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
