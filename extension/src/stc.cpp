@@ -100,11 +100,11 @@ wxExSTC::wxExSTC(wxWindow *parent,
     }
 
     GuessType();
-
-    if (m_Flags & STC_WIN_READ_ONLY)
-    {
-      SetReadOnly(true);
-    }
+  }
+  
+  if (m_Flags & STC_WIN_READ_ONLY)
+  {
+    SetReadOnly(true);
   }
 }
 
@@ -1748,7 +1748,7 @@ void wxExSTC::OnIdle(wxIdleEvent& event)
     m_File.CheckSync() &&
     // the readonly flags bit of course can differ from file actual readonly mode,
     // therefore add this check
-    !(GetFlags() & STC_WIN_READ_ONLY) &&
+    !GetReadOnly() &&
     m_File.GetFileName().GetStat().IsOk() &&
     m_File.GetFileName().GetStat().IsReadOnly() != GetReadOnly())
   {
