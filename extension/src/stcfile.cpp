@@ -63,7 +63,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
     GetFileName().GetExt().CmpNoCase("log") == 0 &&
     m_STC->GetTextLength() > 1024);
 
-  if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
+  if (!m_STC->HexMode())
   {
     m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer(), true);
 
@@ -101,7 +101,7 @@ void wxExSTCFile::DoFileNew()
 
 void wxExSTCFile::DoFileSave(bool save_as)
 {
-  if (m_STC->GetFlags() & wxExSTC::STC_WIN_HEX)
+  if (m_STC->HexMode())
   {
     // TODO: Does this allow NULLs?
     Write(m_STC->m_HexBuffer, m_STC->m_HexBuffer.size());
@@ -183,7 +183,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
 
   const wxCharBuffer& buffer = wxExFile::Read(offset);
 
-  if (!(m_STC->GetFlags() & wxExSTC::STC_WIN_HEX))
+  if (!m_STC->HexMode())
   {
     // At least for toggling between hex and non-hex this is necessary to
     // reshow the edge line.
@@ -226,7 +226,7 @@ void wxExSTCFile::ReadFromFile(bool get_only_new_data)
   if (m_STC->GetFlags() & m_STC->STC_WIN_READ_ONLY ||
       GetFileName().GetStat().IsReadOnly() ||
       // At this moment we do not allow to write in hex mode.
-      m_STC->GetFlags() & m_STC->STC_WIN_HEX)
+      m_STC->HexMode())
   {
     m_STC->SetReadOnly(true);
   }
