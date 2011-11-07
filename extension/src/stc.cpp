@@ -2126,23 +2126,22 @@ bool wxExSTC::ReplaceNext(
     if (SearchInTarget(find_text) == -1) return false;
   }
   
+  MarkTargetChange();
+    
   if (HexMode())
   {
-    wxExHexModeLine ml(this, GetCurrentLine(), GetTargetStart());
-    
-    if (ml.IsReadOnly())
+    for (int i = 0; i < replace_text.size(); i++)
     {
-      return false;
-    }
+      wxExHexModeLine ml(this, GetCurrentLine(), GetTargetStart());
     
-    MarkTargetChange();
-      
-    ml.Replace(replace_text[0]);
+      if (!ml.IsReadOnly())
+      {
+        ml.Replace(replace_text[i]);
+      }
+    }
   }
   else
   {
-    MarkTargetChange();
-      
     wxExFindReplaceData::Get()->UseRegularExpression() ?
       ReplaceTargetRE(replace_text):
       ReplaceTarget(replace_text);
