@@ -716,11 +716,8 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
 
 bool wxExSTC::FileReadOnlyAttributeChanged()
 {
-  if (!HexMode())
-  {
-    SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
-    wxLogStatus(_("Readonly attribute changed"));
-  }
+  SetReadOnly(m_File.GetFileName().GetStat().IsReadOnly()); // does not return anything
+  wxLogStatus(_("Readonly attribute changed"));
 
   return true;
 }
