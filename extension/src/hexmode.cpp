@@ -27,6 +27,12 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
 {
 }  
 
+wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
+  : m_STC(stc)
+{
+  Set(line, pos); 
+}
+
 void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
 {
   m_STC->m_HexBuffer += buffer;
@@ -106,12 +112,6 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
   }
 
   m_STC->AppendText(text);
-}
-
-wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
-  : m_STC(stc)
-{
-  Set(line, pos); 
 }
 
 int wxExHexModeLine::Convert(int offset) const
