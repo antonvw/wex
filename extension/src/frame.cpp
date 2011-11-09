@@ -589,19 +589,12 @@ void wxExFrame::UpdateStatusBar(wxExSTC* stc, const wxString& pane)
   }
   else if (pane == "PaneFileType")
   {
-    if (stc->HexMode())
+    switch (stc->GetEOLMode())
     {
-      text = "HEX";
-    }
-    else
-    {
-      switch (stc->GetEOLMode())
-      {
-      case wxSTC_EOL_CRLF: text = "DOS"; break;
-      case wxSTC_EOL_CR: text = "MAC"; break;
-      case wxSTC_EOL_LF: text = "UNIX"; break;
-      default: text = "UNKNOWN";
-      }
+    case wxSTC_EOL_CRLF: text = "DOS"; break;
+    case wxSTC_EOL_CR: text = "MAC"; break;
+    case wxSTC_EOL_LF: text = "UNIX"; break;
+    default: text = "UNKNOWN";
     }
   }
   else

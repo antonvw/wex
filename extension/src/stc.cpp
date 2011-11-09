@@ -734,11 +734,9 @@ void wxExSTC::FileTypeMenu()
   menu->AppendSeparator();
   wxMenuItem* hex = menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
   
-  if (!HexMode())
-  {
-    menu->FindItemByPosition(GetEOLMode())->Check();
-  }
-  else
+  menu->FindItemByPosition(GetEOLMode())->Check();
+  
+  if (HexMode())
   {
     hex->Check();
   }
@@ -1128,23 +1126,20 @@ void wxExSTC::GotoLineAndSelect(
 
 void wxExSTC::GuessType()
 {
-  if (!HexMode())
-  {
-    // Get a small sample from this file to detect the file mode.
-    const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
-    const wxString text = GetTextRange(0, sample_size);
-    const wxRegEx ex(".*vi: *set .*");
+  // Get a small sample from this file to detect the file mode.
+  const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
+  const wxString text = GetTextRange(0, sample_size);
+  const wxRegEx ex(".*vi: *set .*");
     
-    if (ex.Matches(text))
-    {
-      m_vi.ExecCommand(text.AfterFirst(':').Trim(false));
-    }
-
-    if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
-    else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
-    else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
-    else return; // do nothing
+  if (ex.Matches(text))
+  {
+    m_vi.ExecCommand(text.AfterFirst(':').Trim(false));
   }
+
+  if      (text.Contains("\r\n")) SetEOLMode(wxSTC_EOL_CRLF);
+  else if (text.Contains("\n"))   SetEOLMode(wxSTC_EOL_LF);
+  else if (text.Contains("\r"))   SetEOLMode(wxSTC_EOL_CR);
+  else return; // do nothing
 
 #if wxUSE_STATUSBAR
   wxExFrame::UpdateStatusBar(this, "PaneFileType");
@@ -1494,12 +1489,12 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   {
     if (HexMode())
     {
-      const wxExHexModeLine ml(this);
-      
-      if (ml.IsReadOnly())
+      if (GetOverType())
       {
-        return;
+        wxExHexModeLine(this).Replace(event.GetUnicodeKey());
       }
+      
+      return;
     }
     
     // Auto complete does not yet combine with vi mode.
@@ -1563,9 +1558,6 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxExFileDialog dlg(this, &m_File);
     if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
     Reload(m_Flags ^ STC_WIN_HEX); 
-#if wxUSE_STATUSBAR
-    wxExFrame::UpdateStatusBar(this, "PaneFileType");
-#endif
     }
     break;
 
