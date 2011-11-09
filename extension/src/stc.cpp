@@ -729,7 +729,7 @@ void wxExSTC::FileTypeMenu()
   menu->AppendRadioItem(ID_EDIT_EOL_MAC, "&MAC");
   menu->AppendRadioItem(ID_EDIT_EOL_UNIX, "&UNIX");
   menu->AppendSeparator();
-  wxMenuItem* hex = menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
+  wxMenuItem* hex = menu->AppendCheckItem(ID_EDIT_HEX, "&HEX");
   
   menu->FindItemByPosition(GetEOLMode())->Check();
   
@@ -742,7 +742,6 @@ void wxExSTC::FileTypeMenu()
   
   delete menu;
 }
-
 
 bool wxExSTC::FindNext(bool find_next)
 {
@@ -1550,7 +1549,8 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
   case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
-  case ID_EDIT_EOL_HEX: 
+  
+  case ID_EDIT_HEX: 
     {
     wxExFileDialog dlg(this, &m_File);
     if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
