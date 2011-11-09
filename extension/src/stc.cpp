@@ -728,9 +728,9 @@ void wxExSTC::FileTypeMenu()
 
   // The order here should be the same as the defines for wxSTC_EOL_CRLF.
   // So the FindItemByPosition can work
-  menu->Append(ID_EDIT_EOL_DOS, "&DOS", wxEmptyString, wxITEM_CHECK);
-  menu->Append(ID_EDIT_EOL_MAC, "&MAC", wxEmptyString, wxITEM_CHECK);
-  menu->Append(ID_EDIT_EOL_UNIX, "&UNIX", wxEmptyString, wxITEM_CHECK);
+  menu->AppendRadioItem(ID_EDIT_EOL_DOS, "&DOS");
+  menu->AppendRadioItem(ID_EDIT_EOL_MAC, "&MAC");
+  menu->AppendRadioItem(ID_EDIT_EOL_UNIX, "&UNIX");
   menu->AppendSeparator();
   wxMenuItem* hex = menu->Append(ID_EDIT_EOL_HEX, "&HEX", wxEmptyString, wxITEM_CHECK);
   
@@ -1489,7 +1489,7 @@ void wxExSTC::OnChar(wxKeyEvent& event)
   {
     if (HexMode())
     {
-      if (GetOverType())
+      if (GetOvertype())
       {
         wxExHexModeLine(this).Replace(event.GetUnicodeKey());
       }

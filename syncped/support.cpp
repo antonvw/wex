@@ -177,9 +177,9 @@ DecoratedFrame::DecoratedFrame()
   menuOptions->Append(
     ID_OPTION_LIST_READONLY_COLOUR, wxExEllipsed(_("Set List &Read Only Colour")));
   wxMenu *menuListSort = new wxMenu;
-  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
-  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
-  menuListSort->AppendCheckItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
+  menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_ASCENDING, _("&Ascending"));
+  menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_DESCENDING, _("&Descending"));
+  menuListSort->AppendRadioItem(ID_OPTION_LIST_SORT_TOGGLE, _("&Toggle"));
   menuOptions->AppendSubMenu(menuListSort, _("Set &List Sort Method"));
   menuOptions->AppendSeparator();
   menuOptions->Append(ID_OPTION_EDITOR, wxExEllipsed(_("Set &Editor Options")));
