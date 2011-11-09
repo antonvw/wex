@@ -64,6 +64,8 @@ private:
   bool IsAsciiField() const;
   bool IsHexField() const;
   
+  wxUniChar Printable(int c) const;
+  
   wxString m_Line;
   int m_LineNo;
   int m_Index;

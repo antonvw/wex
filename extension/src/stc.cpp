@@ -322,7 +322,7 @@ bool wxExSTC::CheckBraceHex(int pos)
   }
 }
 
-void wxExSTC::ClearDocument()
+void wxExSTC::ClearDocument(bool clear_hex_buffer)
 {
   SetReadOnly(false);
   ClearAll();
@@ -332,7 +332,7 @@ void wxExSTC::ClearDocument()
   EmptyUndoBuffer();
   SetSavePoint();
   
-  if (HexMode())
+  if (HexMode() && clear_hex_buffer)
   {
     m_HexBuffer.clear();
   }
@@ -689,17 +689,14 @@ void wxExSTC::EOLModeUpdate(int eol_mode)
   if (GetReadOnly())
   {
     wxLogStatus(_("Document is readonly"));
+    return;
   }
   else
   {
     if (HexMode())
     {
-      Reload(m_Flags ^ STC_WIN_HEX); 
-      
-      if (GetEOLMode() != eol_mode)
-      {
-        ConvertEOLs(eol_mode);
-      }
+      wxLogStatus(_("Not allowed in hex mode"));
+      return;
     }
     else
     {
@@ -1982,10 +1979,9 @@ void wxExSTC::Reload(long flags)
 {
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
-    const wxCharBuffer buffer = GetTextRaw();
     SetHexMode();
     ClearDocument();
-    AppendTextHexMode(buffer);
+    AppendTextHexMode(GetTextRaw());
     m_Flags = flags;
     EmptyUndoBuffer();
     SetSavePoint();
@@ -1999,11 +1995,8 @@ void wxExSTC::Reload(long flags)
     }
     else
     {
-      // If the document was not yet saved,
-      // there is no file to reread,
-      // so clear the document.
-      ClearDocument();
-      SetReadOnly(true);
+      ClearDocument(false); // do not clear the hex buffer!
+      AppendTextHexMode(m_HexBuffer.ToAscii());
       m_Flags = flags;
       EmptyUndoBuffer();
       SetSavePoint();
@@ -2017,7 +2010,7 @@ int wxExSTC::ReplaceAll(
 {
   if (HexMode())
   {
-    wxLogStatus("Replace all in hex mode not yet supported");
+    wxLogStatus(_("Not allowed in hex mode"));
     return 0;
   }
   
