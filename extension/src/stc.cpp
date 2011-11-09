@@ -156,8 +156,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
 
 void wxExSTC::AppendTextHexMode(const wxCharBuffer& buffer)
 {
-  wxExHexModeLine ml(this);
-  ml.AppendText(buffer);
+  wxExHexModeLine(this).AppendText(buffer);
 }
 
 void wxExSTC::BuildPopupMenu(wxExMenu& menu)
@@ -307,8 +306,7 @@ bool wxExSTC::CheckBrace(int pos)
 
 bool wxExSTC::CheckBraceHex(int pos)
 {
-  wxExHexModeLine hl(this);
-  const int brace_match = hl.OtherField();
+  const int brace_match = wxExHexModeLine(this).OtherField();
   
   if (brace_match != wxSTC_INVALID_POSITION)
   {
@@ -1895,6 +1893,12 @@ bool wxExSTC::Open(
 
 void wxExSTC::Paste()
 {
+  if (HexMode())
+  {
+    wxLogStatus(_("Not allowed in hex mode"));
+    return;
+  }
+  
   const int line = GetCurrentLine();
 
   wxStyledTextCtrl::Paste();
@@ -2121,12 +2125,8 @@ bool wxExSTC::ReplaceNext(
   {
     for (int i = 0; i < replace_text.size(); i++)
     {
-      wxExHexModeLine ml(this, GetCurrentLine(), GetTargetStart());
-    
-      if (!ml.IsReadOnly())
-      {
-        ml.Replace(replace_text[i]);
-      }
+      wxExHexModeLine(
+        this, GetCurrentLine(), GetTargetStart()).Replace(replace_text[i]);
     }
   }
   else
