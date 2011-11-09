@@ -1487,7 +1487,10 @@ void wxExSTC::OnChar(wxKeyEvent& event)
     {
       if (GetOvertype())
       {
-        wxExHexModeLine(this).Replace(event.GetUnicodeKey());
+        if (wxExHexModeLine(this).Replace(event.GetUnicodeKey()))
+        {
+          CharRight();
+        }
       }
       
       return;
@@ -1979,9 +1982,10 @@ void wxExSTC::Reload(long flags)
 {
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
+    const wxCharBuffer buffer = GetTextRaw(); // keep buffer
     SetHexMode();
     ClearDocument();
-    AppendTextHexMode(GetTextRaw());
+    AppendTextHexMode(buffer);
     m_Flags = flags;
     EmptyUndoBuffer();
     SetSavePoint();
