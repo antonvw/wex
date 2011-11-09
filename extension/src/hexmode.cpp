@@ -228,16 +228,26 @@ int wxExHexModeLine::OtherField() const
 
 wxUniChar wxExHexModeLine::Printable(int c) const
 {
-  // We do not want the \n etc. to be printed,
+  // We do not want control chars (\n etc.) to be printed,
   // as that disturbs the hex view field.
-  if (c != 0 && c != '\r' && c != '\n' && c != '\t')
+  if (!iscntrl(c))
   {
     return c;
   }
   else
   {
-    // Therefore print an ordinary ascii char.
-    return '.';
+    // If we already defined our own symbol, use that one,
+    // otherwise print an ordinary ascii char.
+    const int symbol = m_STC->GetControlCharSymbol();
+    
+    if (symbol == 0)
+    {
+      return '.';
+    }
+    else
+    {
+      return symbol;
+    }
   }
 }
   

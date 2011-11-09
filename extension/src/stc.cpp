@@ -2154,7 +2154,7 @@ void wxExSTC::ResetMargins(bool divider_margin)
 
 void wxExSTC::SetHexMode()
 {
-  SetControlCharSymbol('x');
+  SetControlCharSymbol('.');
   wxExLexers::Get()->ApplyHexStyles(this);
   wxExLexers::Get()->ApplyMarkers(this);
 
