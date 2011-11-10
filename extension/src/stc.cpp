@@ -320,9 +320,7 @@ bool wxExSTC::CheckBraceHex(int pos)
   }
 }
 
-void wxExSTC::ClearDocument(
-  bool clear_hex_buffer,
-  bool set_savepoint)
+void wxExSTC::ClearDocument(bool set_savepoint)
 {
   SetReadOnly(false);
   
@@ -338,7 +336,7 @@ void wxExSTC::ClearDocument(
     SetSavePoint();
   }
   
-  if (HexMode() && clear_hex_buffer)
+  if (HexMode())
   {
     m_HexBuffer.clear();
   }
@@ -627,6 +625,34 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   if (GetSelectedText().length() > 1)
   {
     // Do nothing
+    return;
+  }
+  
+  if (HexMode())
+  {
+    wxExHexModeLine ml(this);
+    
+    if (
+      ml.IsAsciiField() &&
+      GetSelectedText().length() == 1)
+    {
+      const wxUniChar value = GetSelectedText().GetChar(0);
+
+      long new_value;
+      if ((new_value = wxGetNumberFromUser(_("Input") + " 0 - 255:",
+        wxEmptyString,
+        caption,
+        value,
+        0,
+        255,
+        this)) < 0)
+      {
+        return;
+      }
+      
+      ml.Replace(new_value);
+    }
+    
     return;
   }
 
@@ -1998,7 +2024,7 @@ void wxExSTC::Reload(long flags)
   {
     const wxCharBuffer buffer = GetTextRaw(); // keep buffer
     SetHexMode();
-    ClearDocument(true, !modified);
+    ClearDocument(!modified);
     
     AppendTextHexMode(buffer);
     
@@ -2019,11 +2045,10 @@ void wxExSTC::Reload(long flags)
     }
     else
     {
-      ClearDocument(
-        false, // do not clear the hex buffer!
-        !modified);
+      const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
+      ClearDocument(!modified);
       
-      AppendTextHexMode(m_HexBuffer.ToAscii());
+      AppendText(buffer);
       
       m_Flags = flags;
       

@@ -86,9 +86,7 @@ public:
   // Clears the component: all text is cleared and all styles are reset.
   // Invoked by Open and DoFileNew.
   // (Clear is used by scintilla to clear the selection).
-  void ClearDocument(
-    bool clear_hex_buffer = true,
-    bool set_savepoint = true);
+  void ClearDocument(bool set_savepoint = true);
 
   /// Shows a dialog with options, returns dialog return code.
   /// If used modeless, it uses the dialog id as specified,
