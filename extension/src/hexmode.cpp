@@ -110,7 +110,18 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
 
 int wxExHexModeLine::Convert(int offset) const
 {
-  return atoi(m_Line.Mid(0, start_hex_field)) + offset;
+  const wxString address(m_Line.Mid(0, start_hex_field));
+  
+  long val;
+  
+  if (sscanf(address.c_str(), "%lx", &val))
+  {
+    return val + offset;
+  }
+  
+  wxLogError("Cannot convert hex: " + address + " to number");
+      
+  return 0;
 }
 
 int wxExHexModeLine::GetAsciiField() const
