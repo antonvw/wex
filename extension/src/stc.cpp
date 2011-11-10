@@ -1549,9 +1549,9 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_COPY: Copy(); break;
-  case wxID_CUT: Cut(); break;
+  case wxID_CUT: if (!HexMode()) Cut(); break;
   case wxID_DELETE: 
-    if (!GetReadOnly()) 
+    if (!GetReadOnly() && !HexMode()) 
     {
       Clear(); 
       MarkerAddChange(GetCurrentLine());
