@@ -36,17 +36,13 @@ public:
   /// Sets line and index.
   wxExHexModeLine(wxExSTC* stc, int line, int pos);
 
-  /// Appends text to stc  component.  
+  /// Appends hex mode lines to stc  component.  
   void AppendText(const wxCharBuffer& buffer);
   
   /// Returns info about current index,
   /// depending on which field is current.
   const wxString GetInfo() const;
   
-  /// Returns true if current index refers to a readonly position in current line.
-  /// (as in the offset field, or on a space).
-  bool IsReadOnly() const;
-
   /// Returns true if current index in within ascii field.
   bool IsAsciiField() const;
   
@@ -56,12 +52,17 @@ public:
   /// Returns true if current index in within offset field.
   bool IsOffsetField() const;
   
+  /// Returns true if current index refers to a readonly position in current line.
+  /// (as in the offset field, or on a space).
+  bool IsReadOnly() const;
+
   /// If on ascii field, return index for hex field,
   /// if on hex field, return index for ascii field,
   /// if on offset field or invalid field, returns wxSTC_INVALID_POSITION.
   int OtherField() const;
   
-  /// Replaces current line at current index with char.
+  /// Replaces current line at current index with chari for
+  /// both ascii and hex field. Also updates the hex buffer from stc.
   bool Replace(const wxUniChar& c);
   
   /// Sets line and index from stc component.
