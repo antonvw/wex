@@ -320,15 +320,23 @@ bool wxExSTC::CheckBraceHex(int pos)
   }
 }
 
-void wxExSTC::ClearDocument(bool clear_hex_buffer)
+void wxExSTC::ClearDocument(
+  bool clear_hex_buffer,
+  bool set_savepoint)
 {
   SetReadOnly(false);
+  
   ClearAll();
+  
 #if wxUSE_STATUSBAR
   wxExFrame::StatusText(wxEmptyString, "PaneInfo");
 #endif
-  EmptyUndoBuffer();
-  SetSavePoint();
+
+  if (set_savepoint)
+  {
+    EmptyUndoBuffer();
+    SetSavePoint();
+  }
   
   if (HexMode() && clear_hex_buffer)
   {
@@ -1557,13 +1565,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
   case ID_EDIT_EOL_MAC: EOLModeUpdate(wxSTC_EOL_CR); break;
   
-  case ID_EDIT_HEX: 
-    {
-    wxExFileDialog dlg(this, &m_File);
-    if (dlg.ShowModalIfChanged() == wxID_CANCEL) return;
-    Reload(m_Flags ^ STC_WIN_HEX); 
-    }
-    break;
+  case ID_EDIT_HEX: Reload(m_Flags ^ STC_WIN_HEX); break;
 
   case ID_EDIT_FOLD_ALL: FoldAll(); break;
   case ID_EDIT_UNFOLD_ALL:
@@ -1990,15 +1992,23 @@ void wxExSTC::PropertiesMessage(long flags)
 
 void wxExSTC::Reload(long flags)
 {
+  const bool modified = GetModify();
+  
   if ((flags & STC_WIN_HEX) && !HexMode())
   {
     const wxCharBuffer buffer = GetTextRaw(); // keep buffer
     SetHexMode();
-    ClearDocument();
+    ClearDocument(true, !modified);
+    
     AppendTextHexMode(buffer);
+    
     m_Flags = flags;
-    EmptyUndoBuffer();
-    SetSavePoint();
+    
+    if (!modified)
+    {
+      EmptyUndoBuffer();
+      SetSavePoint();
+    }
   }
   else
   {
@@ -2009,11 +2019,19 @@ void wxExSTC::Reload(long flags)
     }
     else
     {
-      ClearDocument(false); // do not clear the hex buffer!
+      ClearDocument(
+        false, // do not clear the hex buffer!
+        !modified);
+      
       AppendTextHexMode(m_HexBuffer.ToAscii());
+      
       m_Flags = flags;
-      EmptyUndoBuffer();
-      SetSavePoint();
+      
+      if (!modified)
+      {
+        EmptyUndoBuffer();
+        SetSavePoint();
+      }
     }
   }
 }
