@@ -46,6 +46,15 @@ public:
   /// Returns true if current index refers to a readonly position in current line.
   /// (as in the offset field, or on a space).
   bool IsReadOnly() const;
+
+  /// Returns true if current index in within ascii field.
+  bool IsAsciiField() const;
+  
+  /// Returns true if current index in within hex field.
+  bool IsHexField() const;
+  
+  /// Returns true if current index in within offset field.
+  bool IsOffsetField() const;
   
   /// If on ascii field, return index for hex field,
   /// if on hex field, return index for ascii field,
@@ -64,10 +73,6 @@ private:
   /// Returns the byte no for this position (offset and hex field).
   int GetByte() const;
   int GetHexField() const;
-  
-  bool IsAsciiField() const;
-  bool IsHexField() const;
-  bool IsOffsetField() const;
   
   wxUniChar Printable(int c) const;
   
