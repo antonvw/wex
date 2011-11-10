@@ -39,6 +39,10 @@ public:
   /// Appends text to stc  component.  
   void AppendText(const wxCharBuffer& buffer);
   
+  /// Returns info about current index,
+  /// depending on which field is current.
+  const wxString GetInfo() const;
+  
   /// Returns true if current index refers to a readonly position in current line.
   /// (as in the offset field, or on a space).
   bool IsReadOnly() const;
@@ -63,6 +67,7 @@ private:
   
   bool IsAsciiField() const;
   bool IsHexField() const;
+  bool IsOffsetField() const;
   
   wxUniChar Printable(int c) const;
   

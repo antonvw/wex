@@ -97,8 +97,12 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
       field_offset + 
       field_hex +
       field_spaces +
-      field_ascii +
-      m_STC->GetEOL();
+      field_ascii;
+      
+    if (buffer.length() - offset >= bytes_per_line)
+    {
+      text += m_STC->GetEOL();
+    }
   }
 
   m_STC->AppendText(text);
@@ -162,6 +166,27 @@ int wxExHexModeLine::GetByte() const
   return wxSTC_INVALID_POSITION;
 }
   
+const wxString wxExHexModeLine::GetInfo() const
+{
+  if (IsHexField() || IsOffsetField())
+  {
+    const wxString word = m_STC->GetWordAtPos(m_STC->GetCurrentPos());
+    
+    if (!word.empty())
+    {
+      long base16_val;
+      const bool base16_ok = word.ToLong(&base16_val, 16);
+
+      if (base16_ok)
+      {
+        return wxString::Format("dec: %ld", base16_val);
+      }
+    }
+  }
+  
+  return wxEmptyString;
+}
+
 int wxExHexModeLine::GetHexField() const
 {
   const int offset = m_Index - start_ascii_field;
@@ -191,6 +216,11 @@ bool wxExHexModeLine::IsHexField() const
   return 
     m_Index >= start_hex_field &&
     m_Index < start_ascii_field;
+}
+
+bool wxExHexModeLine::IsOffsetField() const
+{
+  return m_Index < start_hex_field;
 }
 
 bool wxExHexModeLine::IsReadOnly() const
