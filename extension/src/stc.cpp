@@ -2025,37 +2025,21 @@ void wxExSTC::Reload(long flags)
     ClearDocument(!modified);
     
     AppendTextHexMode(buffer);
-    
-    m_Flags = flags;
-    
-    if (!modified)
-    {
-      EmptyUndoBuffer();
-      SetSavePoint();
-    }
   }
   else
   {
-    // The STC_WIN_HEX has been removed.
-    if (m_File.GetFileName().FileExists())
-    {
-      Open(m_File.GetFileName(), 0, wxEmptyString, flags);
-    }
-    else
-    {
-      const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
-      ClearDocument(!modified);
+    const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
+    ClearDocument(!modified);
       
-      AppendText(buffer);
-      
-      m_Flags = flags;
-      
-      if (!modified)
-      {
-        EmptyUndoBuffer();
-        SetSavePoint();
-      }
-    }
+    AppendText(buffer);
+  }
+  
+  m_Flags = flags;
+    
+  if (!modified)
+  {
+    EmptyUndoBuffer();
+    SetSavePoint();
   }
 }
 
