@@ -630,7 +630,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   
   if (HexMode())
   {
-    wxExHexModeLine ml(this);
+    wxExHexModeLine ml(this, GetCurrentLine(), GetSelectionStart());
     
     if (
       ml.IsAsciiField() &&
@@ -1583,9 +1583,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     break;
 
-  case ID_EDIT_CONTROL_CHAR:
-    ControlCharDialog();
-  break;
+  case ID_EDIT_CONTROL_CHAR: ControlCharDialog(); break;
   
   case ID_EDIT_EOL_DOS: EOLModeUpdate(wxSTC_EOL_CRLF); break;
   case ID_EDIT_EOL_UNIX: EOLModeUpdate(wxSTC_EOL_LF); break;
