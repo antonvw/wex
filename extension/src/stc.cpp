@@ -1146,6 +1146,12 @@ void wxExSTC::HexDecCalltip(int pos)
   {
     CallTipCancel();
   }
+  
+  if (HexMode())
+  {
+    CallTipShow(pos, wxExHexModeLine(this).GetInfo());
+    return;
+  }
 
   wxString word;
 
