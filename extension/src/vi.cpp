@@ -1089,6 +1089,12 @@ bool wxExVi::Substitute(
     return false;
   }
 
+  if (m_STC->HexMode())
+  {
+    wxLogStatus(_("Not allowed in hex mode"));
+    return false;
+  }
+  
   const int begin_line = ToLineNumber(begin_address);
   const int end_line = ToLineNumber(end_address);
 
