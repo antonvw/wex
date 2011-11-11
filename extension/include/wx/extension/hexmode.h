@@ -36,12 +36,20 @@ public:
   /// Sets line and index.
   wxExHexModeLine(wxExSTC* stc, int line, int pos);
 
+  /// Constructor.
+  /// Specify byte offset.
+  /// Sets line and index.
+  wxExHexModeLine(wxExSTC* stc, int offset);
+
   /// Appends hex mode lines to stc  component.  
   void AppendText(const wxCharBuffer& buffer);
   
   /// Returns info about current index,
   /// depending on which field is current.
   const wxString GetInfo() const;
+  
+  /// Goes to line.
+  void Goto() const;
   
   /// Returns true if current index in within ascii field.
   bool IsAsciiField() const;

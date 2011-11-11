@@ -55,6 +55,7 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
@@ -76,7 +77,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   : wxStyledTextCtrl(parent, id , pos, size, style, title)
   , m_Flags(win_flags)
   , m_MenuFlags(menu_flags)
-  , m_GotoLineNumber(1)
+  , m_Goto(1)
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
@@ -120,7 +121,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   long style)
   : wxStyledTextCtrl(parent, id, pos, size, style)
   , m_File(this)
-  , m_GotoLineNumber(1)
+  , m_Goto(1)
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
@@ -137,7 +138,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
 wxExSTC::wxExSTC(const wxExSTC& stc)
   : wxStyledTextCtrl(stc.GetParent())
   , m_Flags(stc.m_Flags)
-  , m_GotoLineNumber(stc.m_GotoLineNumber)
+  , m_Goto(stc.m_Goto)
   , m_MenuFlags(stc.m_MenuFlags)
   , m_MarginDividerNumber(stc.m_MarginDividerNumber)
   , m_MarginFoldingNumber(stc.m_MarginFoldingNumber)
@@ -285,6 +286,24 @@ void wxExSTC::CheckAutoComp(const wxUniChar& c)
       else
         AutoCompCancel();
     }
+  }
+}
+
+void wxExSTC::CheckBrace()
+{
+  if (HexMode())
+  {
+    if (!CheckBraceHex(GetCurrentPos()))
+    {
+      if (PositionFromLine(GetCurrentLine()) != GetCurrentPos())
+      {
+        CheckBraceHex(GetCurrentPos() - 1);
+      }
+    }
+  }
+  else if (!CheckBrace(GetCurrentPos()))
+  {
+    CheckBrace(GetCurrentPos() - 1);
   }
 }
 
@@ -1090,21 +1109,40 @@ const wxString wxExSTC::GetWordAtPos(int pos) const
 
 bool wxExSTC::GotoDialog(const wxString& caption)
 {
-  wxASSERT(m_GotoLineNumber <= GetLineCount() && m_GotoLineNumber > 0);
-
-  long val;
-  if ((val = wxGetNumberFromUser(
-    _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
-    wxEmptyString,
-    caption,
-    m_GotoLineNumber, // initial value
-    1,
-    GetLineCount())) < 0)
+  if (HexMode())
   {
-    return false;
-  }
+    long val;
+    if ((val = wxGetNumberFromUser(
+      _("Input") + wxString::Format(" 1 - %d:", GetTextLength()),
+      wxEmptyString,
+      caption,
+      m_Goto, // initial value
+      1,
+      GetTextLength())) < 0)
+    {
+      return false;
+    }
 
-  GotoLineAndSelect(val);
+    wxExHexModeLine(this, val).Goto();
+  }
+  else
+  {
+    wxASSERT(m_Goto <= GetLineCount() && m_Goto > 0);
+
+    long val;
+    if ((val = wxGetNumberFromUser(
+      _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
+      wxEmptyString,
+      caption,
+      m_Goto, // initial value
+      1,
+      GetLineCount())) < 0)
+    {
+      return false;
+    }
+
+    GotoLineAndSelect(val);
+  }
 
   return true;
 }
@@ -1113,7 +1151,7 @@ void wxExSTC::GotoLineAndSelect(
   int line_number, 
   const wxString& text)
 {
-  // line_number and m_GotoLineNumber start with 1 and is allowed to be 
+  // line_number and m_Goto start with 1 and is allowed to be 
   // equal to number of lines.
   // Internally GotoLine starts with 0, therefore 
   // line_number - 1 is used afterwards.
@@ -1129,7 +1167,7 @@ void wxExSTC::GotoLineAndSelect(
   GotoLine(line_number - 1);
   EnsureVisible(line_number - 1);
 
-  m_GotoLineNumber = line_number;
+  m_Goto = line_number;
 
   const int start_pos = PositionFromLine(line_number - 1);
   const int end_pos = GetLineEndPosition(line_number - 1);
@@ -1731,23 +1769,7 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
 void wxExSTC::OnKeyUp(wxKeyEvent& event)
 {
   event.Skip();
-
-  if (!CheckBrace(GetCurrentPos()))
-  {
-    if (!CheckBrace(GetCurrentPos() - 1))
-    {
-      if (HexMode())
-      {
-        if (!CheckBraceHex(GetCurrentPos()))
-        {
-          if (PositionFromLine(GetCurrentLine()) != GetCurrentPos())
-          {
-            CheckBraceHex(GetCurrentPos() - 1);
-          }
-        }
-      }
-    }
-  }
+  CheckBrace();
 }
 
 void wxExSTC::OnMouse(wxMouseEvent& event)
@@ -1755,13 +1777,8 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
   if (event.LeftUp())
   {
     PropertiesMessage();
-
     event.Skip();
-
-    if (!CheckBrace(GetCurrentPos()))
-    {
-      CheckBrace(GetCurrentPos() - 1);
-    }
+    CheckBrace();
   }
   else if (event.RightUp())
   {
@@ -1801,6 +1818,13 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     event.Skip();
 
 //    MarkerAddChange(event.GetLine()); 
+  }
+  else if (event.GetEventType() == wxEVT_STC_DO_DROP)
+  {
+    if (!HexMode())
+    {
+      event.Skip();
+    }
   }
   else if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
