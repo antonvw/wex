@@ -307,6 +307,7 @@ protected:
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void CheckAutoComp(const wxUniChar& c);
+  void CheckBrace();
   bool CheckBrace(int pos);
   bool CheckBraceHex(int pos);
   void ControlCharDialog(const wxString& caption = _("Enter Control Character"));
@@ -338,7 +339,7 @@ private:
   int m_SavedSelectionStart;
   int m_SavedSelectionEnd;
   long m_Flags; // win flags
-  long m_GotoLineNumber;
+  long m_Goto;
   bool m_MacroIsRecording;
 
   // We use a separate lexer here as well

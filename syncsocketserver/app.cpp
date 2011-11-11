@@ -33,6 +33,13 @@
 
 #if wxUSE_SOCKETS
 
+enum
+{
+  ANSWER_OFF,
+  ANSWER_ECHO,
+  ANSWER_COMMAND,
+};
+
 wxIMPLEMENT_APP(App);
 
 bool App::OnInit()
@@ -65,7 +72,6 @@ BEGIN_EVENT_TABLE(Frame, wxExFrameWithHistory)
   EVT_UPDATE_UI(wxID_SAVE, Frame::OnUpdateUI)
   EVT_UPDATE_UI(wxID_STOP, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLEAR_STATISTICS, Frame::OnUpdateUI)
-  EVT_UPDATE_UI(ID_CLIENT_ECHO, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_LOG_DATA, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_CLIENT_LOG_DATA_COUNT_ONLY, Frame::OnUpdateUI)
   EVT_UPDATE_UI(ID_RECENT_FILE_MENU, Frame::OnUpdateUI)
@@ -81,6 +87,7 @@ END_EVENT_TABLE()
 Frame::Frame()
   : wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName())
   , m_Timer(this)
+  , m_Answer(ANSWER_OFF)
 {
   SetIcon(wxICON(app));
 
@@ -135,8 +142,18 @@ Frame::Frame()
   menuServer->Append(wxID_STOP);
 
   wxExMenu* menuClient = new wxExMenu();
-  menuClient->AppendCheckItem(ID_CLIENT_ECHO, _("Echo"),
+  
+  wxMenu* menuAnswer = new wxMenu();
+  
+  menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_OFF, _("Off"),
+    _("No answer back to client"));
+  menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_ECHO, _("Echo"),
     _("Echo's received data back to client"));
+  menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_COMMAND, _("Command"),
+    _("Send last shell command back to client"));
+    
+  menuClient->Append(menuAnswer, _("&Answer"));
+  menuClient->AppendSeparator();
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
     _("Logs data read from and written to client"));
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA_COUNT_ONLY, _("Count Only"),
@@ -237,16 +254,14 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
     stc->SetReadOnly(false);
   }
   
-  const bool hex = (stc->HexMode());
-
-  if (withTimestamp && !hex)
+  if (withTimestamp && !stc->HexMode())
   {
     const wxString now = wxDateTime::Now().Format();
     stc->AppendText(now + " " + text + stc->GetEOL());
   }
   else
   {
-    if (hex)
+    if (stc->HexMode())
     {
       stc->AppendTextHexMode(text.c_str());
     }
@@ -426,6 +441,10 @@ void Frame::OnCommand(wxCommandEvent& event)
     m_Statistics.Clear();
     break;
 
+  case ID_CLIENT_ANSWER_COMMAND: m_Answer = ANSWER_COMMAND; break;
+  case ID_CLIENT_ANSWER_ECHO: m_Answer = ANSWER_ECHO; break;
+  case ID_CLIENT_ANSWER_OFF: m_Answer = ANSWER_OFF; break;
+
   case ID_CLIENT_BUFFER_SIZE:
     {
     long val;
@@ -440,11 +459,6 @@ void Frame::OnCommand(wxCommandEvent& event)
         wxConfigBase::Get()->Write(_("Buffer Size"), val);
       }
     }
-    break;
-
-  case ID_CLIENT_ECHO:
-    wxConfigBase::Get()->Write(_("Echo"), 
-      !wxConfigBase::Get()->ReadBool(_("Echo"), false));
     break;
 
   case ID_CLIENT_LOG_DATA:
@@ -617,25 +631,20 @@ void Frame::OnSocket(wxSocketEvent& event)
 
         if (sock->LastCount() > 0)
         {
-          if (wxConfigBase::Get()->ReadBool(_("Echo"), false))
-          {
-            sock->Write(buffer, sock->LastCount());
-            SocketCheckError(sock);
-            m_Statistics.Inc(_("Bytes Sent"), sock->LastCount());
-          }
-
           const wxString text(buffer, sock->LastCount());
+
+          switch m_Answer)
+          {
+            case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
+            case ANSWER_COMMAND: WriteDataToClient(m_Shell.GetCommand(), sock); break;
+          }
 
           if (GetManager().GetPane("SHELL").IsShown())
           {
             AppendText(m_Shell, text, false);
-
-            if (text.EndsWith("\n"))
-            {
-              m_Shell->Prompt(wxEmptyString, false); // no eol
-            }
+            m_Shell->Prompt(wxEmptyString, false); // no eol
           }
-
+              
           if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
           {
             if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
@@ -711,10 +720,6 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
 
   case wxID_STOP:
     event.Enable(m_SocketServer != NULL);
-    break;
-
-  case ID_CLIENT_ECHO:
-    event.Check(wxConfigBase::Get()->ReadBool(_("Echo"), false));
     break;
 
   case ID_CLIENT_LOG_DATA:

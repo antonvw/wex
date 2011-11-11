@@ -33,6 +33,12 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
   Set(line, pos); 
 }
 
+wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
+  : m_STC(stc)
+{
+  Set(line, pos); 
+}
+
 void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
 {
   m_STC->m_HexBuffer += buffer;
@@ -99,7 +105,7 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
       field_spaces +
       field_ascii;
       
-    if (buffer.length() - offset >= bytes_per_line)
+    if (buffer.length() - offset > bytes_per_line)
     {
       text += m_STC->GetEOL();
     }
@@ -190,9 +196,20 @@ const wxString wxExHexModeLine::GetInfo() const
 
       if (base16_ok)
       {
-        return wxString::Format("dec: %ld", base16_val);
+        if (IsOffsetField())
+        {
+          return wxString::Format("%ld", base16_val);
+        }
+        else
+        {
+          return wxString::Format("byte: %ld %ld", GetByte(), base16_val);
+        }
       }
     }
+  }
+  else if (IsAsciiField())
+  {
+    return wxString::Format("byte: %ld", GetByte());
   }
   
   return wxEmptyString;
@@ -213,6 +230,10 @@ int wxExHexModeLine::GetHexField() const
   }
 
   return start_hex_field + each_hex_field * offset + space;
+}
+
+void wxExHexModeLine::Goto() const
+{
 }
 
 bool wxExHexModeLine::IsAsciiField() const
