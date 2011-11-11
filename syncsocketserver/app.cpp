@@ -141,7 +141,7 @@ Frame::Frame()
   menuServer->Append(wxID_EXECUTE);
   menuServer->Append(wxID_STOP);
 
-  wxExMenu* menuClient = new wxExMenu();
+  wxMenu* menuClient = new wxMenu();
   
   wxMenu* menuAnswer = new wxMenu();
   
@@ -152,7 +152,7 @@ Frame::Frame()
   menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_COMMAND, _("Command"),
     _("Send last shell command back to client"));
     
-  menuClient->Append(menuAnswer, _("&Answer"));
+  menuClient->AppendSubMenu(menuAnswer, _("&Answer"));
   menuClient->AppendSeparator();
   menuClient->AppendCheckItem(ID_CLIENT_LOG_DATA, _("Log Data"),
     _("Logs data read from and written to client"));
@@ -633,10 +633,11 @@ void Frame::OnSocket(wxSocketEvent& event)
         {
           const wxString text(buffer, sock->LastCount());
 
-          switch m_Answer)
+          switch (m_Answer)
           {
             case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
-            case ANSWER_COMMAND: WriteDataToClient(m_Shell.GetCommand(), sock); break;
+            case ANSWER_COMMAND: WriteDataToClient(
+              m_Shell->GetCommand().ToAscii(), sock); break;
           }
 
           if (GetManager().GetPane("SHELL").IsShown())
