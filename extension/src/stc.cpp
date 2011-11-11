@@ -1192,9 +1192,13 @@ void wxExSTC::GotoLineAndSelect(
 
 void wxExSTC::GuessType()
 {
-  // Get a small sample from this file to detect the file mode.
-  const int sample_size = (GetTextLength() > 255 ? 255: GetTextLength());
-  const wxString text = GetTextRange(0, sample_size);
+  // Get a small sample from this document to detect the file mode.
+  const int length = (!HexMode() ? GetTextLength(): m_HexBuffer.size());
+  const int sample_size = (length > 255 ? 255: length);
+  
+  const wxString text = (!HexMode() ? GetTextRange(0, sample_size): 
+    m_HexBuffer.Mid(0, sample_size));
+  
   const wxRegEx ex(".*vi: *set .*");
     
   if (ex.Matches(text))
