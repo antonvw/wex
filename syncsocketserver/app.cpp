@@ -40,6 +40,13 @@ enum
   ANSWER_COMMAND,
 };
 
+enum
+{
+  DATA_MESSAGE,
+  DATA_READ,
+  DATA_WRITE,
+};
+
 wxIMPLEMENT_APP(App);
 
 bool App::OnInit()
@@ -242,7 +249,7 @@ Frame::~Frame()
   delete m_SocketServer;
 }
 
-void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
+void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
 {
   const bool pos_at_end = (stc->GetCurrentPos() == stc->GetTextLength());
   
@@ -254,22 +261,14 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, bool withTimestamp)
     stc->SetReadOnly(false);
   }
   
-  if (withTimestamp && !stc->HexMode())
+  if (!stc->HexMode())
   {
     const wxString now = wxDateTime::Now().Format();
     stc->AppendText(now + " " + text + stc->GetEOL());
   }
   else
   {
-    if (stc->HexMode())
-    {
-      stc->AppendTextHexMode(text.c_str());
-    }
-    else
-    {
-      // No GetEOL, that is only added with timestamps.
-      stc->AppendText(text);
-    }
+    stc->AppendTextHexMode(text.c_str());
   }
 
   stc->EmptyUndoBuffer();
@@ -307,7 +306,7 @@ void Frame::LogConnection(
     text << " " << _("clients: ") << m_Clients.size();
   }
 
-  AppendText(m_LogWindow, text);
+  AppendText(m_LogWindow, text, DATA_MESSAGE);
 }
 
 void Frame::OnClose(wxCloseEvent& event)
@@ -426,13 +425,13 @@ void Frame::OnCommand(wxCommandEvent& event)
 #endif
 
       wxLogStatus(text);
-      AppendText(m_LogWindow, text);
+      AppendText(m_LogWindow, text, DATA_MESSAGE);
 
       const wxString statistics = m_Statistics.Get();
 
       if (!statistics.empty())
       {
-        AppendText(m_LogWindow, statistics);
+        AppendText(m_LogWindow, statistics, DATA_MESSAGE);
       }
     }
     break;
@@ -524,7 +523,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_TIMER_STOP:
     m_Timer.Stop();
-    AppendText(m_LogWindow, _("timer stopped"));
+    AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
 #if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
 #endif
@@ -577,7 +576,8 @@ void Frame::OnSocket(wxSocketEvent& event)
     if (sock == NULL)
     {
       AppendText(m_LogWindow,
-        _("error: couldn't accept a new connection"));
+        _("error: couldn't accept a new connection"),
+        DATA_MESSAGE);
       return;
     }
 
@@ -642,7 +642,7 @@ void Frame::OnSocket(wxSocketEvent& event)
 
           if (GetManager().GetPane("SHELL").IsShown())
           {
-            AppendText(m_Shell, text, false);
+            AppendText(m_Shell, text, DATA_MESSAGE);
             m_Shell->Prompt(wxEmptyString, false); // no eol
           }
               
@@ -652,11 +652,12 @@ void Frame::OnSocket(wxSocketEvent& event)
             {
               AppendText(m_LogWindow, 
                 wxString::Format(_("read: %d bytes from: %s"), 
-                  sock->LastCount(), SocketDetails(sock).c_str()));
+                  sock->LastCount(), SocketDetails(sock).c_str()),
+                DATA_MESSAGE);
             }
             else
             {
-              AppendText(m_LogWindow, text);
+              AppendText(m_LogWindow, text, DATA_READ);
             }
           }
         }
@@ -785,7 +786,8 @@ bool Frame::OpenFile(
 
     AppendText(m_LogWindow,
       _("opened: ") + filename.GetFullPath() + wxString::Format(" (%d bytes)",
-      m_DataWindow->GetLength()));
+      m_DataWindow->GetLength()),
+      DATA_MESSAGE);
 
     return true;
   }
@@ -831,7 +833,7 @@ bool Frame::SetupSocketServer()
     m_SocketServer = NULL;
     
     wxLogStatus(text);
-    AppendText(m_LogWindow, text);
+    AppendText(m_LogWindow, text, DATA_MESSAGE);
     
     return false;
   }
@@ -846,7 +848,7 @@ bool Frame::SetupSocketServer()
   }
 
   wxLogStatus(text);
-  AppendText(m_LogWindow, text);
+  AppendText(m_LogWindow, text, DATA_MESSAGE);
 
   // Setup the event handler and subscribe to connection events
   m_SocketServer->SetEventHandler(*this, ID_SERVER);
@@ -960,7 +962,8 @@ void Frame::TimerDialog()
     AppendText(m_LogWindow,
       wxString::Format(_("timer set to: %d seconds (%s)"),
       val,
-      wxTimeSpan(0, 0, val, 0).Format().c_str()));
+      wxTimeSpan(0, 0, val, 0).Format().c_str()),
+      DATA_MESSAGE);
       
 #if wxUSE_STATUSBAR
     StatusText(wxString::Format("%ld", val), "PaneTimer");
@@ -970,7 +973,7 @@ void Frame::TimerDialog()
   {
     m_Timer.Stop();
     
-    AppendText(m_LogWindow, _("timer stopped"));
+    AppendText(m_LogWindow, _("timer stopped"), DATA_MESSAGE);
     
 #if wxUSE_STATUSBAR
     StatusText(wxEmptyString, "PaneTimer");
@@ -1017,7 +1020,7 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
 
   if (client->LastCount() != buffer.length())
   {
-    AppendText(m_LogWindow, _("not all bytes sent to socket"));
+    AppendText(m_LogWindow, _("not all bytes sent to socket"), DATA_MESSAGE);
   }
 
   m_Statistics.Inc(_("Bytes Sent"), client->LastCount());
@@ -1039,11 +1042,12 @@ void Frame::WriteDataToClient(const wxCharBuffer& buffer, wxSocketBase* client)
     {
       AppendText(m_LogWindow,
         wxString::Format(_("write: %d bytes to: %s"),
-          client->LastCount(), SocketDetails(client).c_str()));
+          client->LastCount(), SocketDetails(client).c_str()),
+        DATA_MESSAGE);
     }
     else
     {
-      AppendText(m_LogWindow, buffer);
+      AppendText(m_LogWindow, buffer, DATA_WRITE);
     }
   }
 }
