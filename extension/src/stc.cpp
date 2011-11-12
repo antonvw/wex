@@ -1107,7 +1107,7 @@ const wxString wxExSTC::GetWordAtPos(int pos) const
   }
 }
 
-bool wxExSTC::GotoDialog(const wxString& caption)
+bool wxExSTC::GotoDialog()
 {
   if (HexMode())
   {
@@ -1115,7 +1115,7 @@ bool wxExSTC::GotoDialog(const wxString& caption)
     if ((val = wxGetNumberFromUser(
       _("Input") + wxString::Format(" 1 - %d:", GetTextLength()),
       wxEmptyString,
-      caption,
+      _("Enter Byte Offset"),
       m_Goto, // initial value
       1,
       GetTextLength())) < 0)
@@ -1133,7 +1133,7 @@ bool wxExSTC::GotoDialog(const wxString& caption)
     if ((val = wxGetNumberFromUser(
       _("Input") + wxString::Format(" 1 - %d:", GetLineCount()),
       wxEmptyString,
-      caption,
+      _("Enter Line Number"),
       m_Goto, // initial value
       1,
       GetLineCount())) < 0)

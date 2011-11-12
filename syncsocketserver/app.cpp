@@ -38,6 +38,7 @@ enum
   ANSWER_OFF,
   ANSWER_ECHO,
   ANSWER_COMMAND,
+  ANSWER_FILE,
 };
 
 enum
@@ -158,6 +159,8 @@ Frame::Frame()
     _("Echo's received data back to client"));
   menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_COMMAND, _("Command"),
     _("Send last shell command back to client"));
+  menuAnswer->AppendRadioItem(ID_CLIENT_ANSWER_FILE, _("File"),
+    _("Send file contents back to client"));
     
   menuClient->AppendSubMenu(menuAnswer, _("&Answer"));
   menuClient->AppendSeparator();
@@ -261,14 +264,22 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
     stc->SetReadOnly(false);
   }
   
+  wxString prefix;
+  
+  switch (mode)
+  {
+    case DATA_MESSAGE: break;
+    case DATA_READ: prefix = "r: "; break;
+    case DATA_WRITE: prefix = "w: "; break;
+  }
+  
   if (!stc->HexMode())
   {
-    const wxString now = wxDateTime::Now().Format();
-    stc->AppendText(now + " " + text + stc->GetEOL());
+    stc->AppendText(wxDateTime::Now().Format() + " " + prefix + text + stc->GetEOL());
   }
   else
   {
-    stc->AppendTextHexMode(text.c_str());
+    stc->AppendTextHexMode(wxString(prefix + text).c_str());
   }
 
   stc->EmptyUndoBuffer();
@@ -442,6 +453,7 @@ void Frame::OnCommand(wxCommandEvent& event)
 
   case ID_CLIENT_ANSWER_COMMAND: m_Answer = ANSWER_COMMAND; break;
   case ID_CLIENT_ANSWER_ECHO: m_Answer = ANSWER_ECHO; break;
+  case ID_CLIENT_ANSWER_FILE: m_Answer = ANSWER_FILE; break;
   case ID_CLIENT_ANSWER_OFF: m_Answer = ANSWER_OFF; break;
 
   case ID_CLIENT_BUFFER_SIZE:
@@ -633,19 +645,6 @@ void Frame::OnSocket(wxSocketEvent& event)
         {
           const wxString text(buffer, sock->LastCount());
 
-          switch (m_Answer)
-          {
-            case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
-            case ANSWER_COMMAND: WriteDataToClient(
-              m_Shell->GetCommand().ToAscii(), sock); break;
-          }
-
-          if (GetManager().GetPane("SHELL").IsShown())
-          {
-            AppendText(m_Shell, text, DATA_MESSAGE);
-            m_Shell->Prompt(wxEmptyString, false); // no eol
-          }
-              
           if (wxConfigBase::Get()->ReadBool(_("Log Data"), true))
           {
             if (wxConfigBase::Get()->ReadBool(_("Count Only"), true))
@@ -659,6 +658,20 @@ void Frame::OnSocket(wxSocketEvent& event)
             {
               AppendText(m_LogWindow, text, DATA_READ);
             }
+          }
+          
+          switch (m_Answer)
+          {
+            case ANSWER_COMMAND: WriteDataToClient(
+              m_Shell->GetCommand().ToAscii(), sock); break;
+            case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
+            case ANSWER_FILE: WriteDataToClient(m_DataWindow->GetTextRaw(), sock); break;
+          }
+
+          if (GetManager().GetPane("SHELL").IsShown())
+          {
+            AppendText(m_Shell, text, DATA_MESSAGE);
+            m_Shell->Prompt(wxEmptyString, false); // no eol
           }
         }
 
