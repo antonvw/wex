@@ -170,7 +170,8 @@ public:
   const wxString GetWordAtPos(int pos) const;
 
   /// Asks for a line number and goes to the line.
-  bool GotoDialog(const wxString& caption = _("Enter Line Number"));
+  /// In hex mode asks for a byte offset, and goes to that byte.
+  bool GotoDialog();
 
   /// Goes to line and selects the line or the specified text in it.
   void GotoLineAndSelect(

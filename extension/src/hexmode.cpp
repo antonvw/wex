@@ -38,11 +38,15 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
 {
   char field_offset[start_hex_field];
   
-  sprintf(field_offset, "%08lx ", (unsigned long)offset);
+  sprintf(field_offset, "%08lx", (unsigned long)offset);
   
   if (m_STC->FindNext(field_offset))
   {
     Set(m_STC->GetCurrentLine(), m_STC->GetCurrentPos()); 
+  }
+  else
+  {
+    Set(0, 0);
   }
 }
 
