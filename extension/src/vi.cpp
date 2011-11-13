@@ -89,11 +89,11 @@ bool wxExVi::Delete(
   const wxString& begin_address, 
   const wxString& end_address)
 {
-  if (m_STC->GetReadOnly())
+  if (m_STC->GetReadOnly() || m_STC->HexMode())
   {
     return false;
   }
-
+  
   if (!SetSelection(begin_address, end_address))
   {
     return false;
@@ -401,6 +401,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
       case 'x': 
+        if (m_STC->HexMode()) return false;
         for (int i = 0; i < repeat; i++) 
         {
           m_STC->CharRight();
@@ -440,7 +441,9 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
             m_SearchFlags, 
             !m_SearchForward)) break;
         break;
-      case 'X': for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
+      case 'X': 
+        if (m_STC->HexMode()) return false;
+        for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
       case '?': m_Frame->GetViCommand(this, command);
