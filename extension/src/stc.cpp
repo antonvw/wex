@@ -1123,6 +1123,8 @@ bool wxExSTC::GotoDialog()
       return false;
     }
 
+    m_Goto = val;
+    
     wxExHexModeLine(this, val).Goto();
   }
   else

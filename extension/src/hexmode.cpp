@@ -38,13 +38,13 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
 {
   char field_offset[start_hex_field];
   
-  offset = offset & ~0x0f;
-  
-  sprintf(field_offset, "%08lx", (unsigned long)offset);
+  sprintf(field_offset, "%08lx", (unsigned long)(offset & ~0x0f));
   
   if (m_STC->FindNext(field_offset, 0))
   {
-    Set(m_STC->GetCurrentLine(), m_STC->GetCurrentPos()); 
+    m_LineNo = m_STC->GetCurrentLine();
+    m_Line = m_STC->GetLine(m_LineNo);
+    m_Index = (offset & 0x0f);
   }
   else
   {
@@ -249,7 +249,7 @@ void wxExHexModeLine::Goto() const
 {
   const int start = m_STC->PositionFromLine(m_LineNo);
   
-  m_STC->SetCurrentPos(start + GetAsciiField());
+  m_STC->SetCurrentPos(start + start_ascii_field + m_Index - 1);
   m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos() + 1);
 }
 
