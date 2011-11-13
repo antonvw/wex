@@ -38,7 +38,7 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
 {
   char field_offset[start_hex_field];
   
-  offset = offset & ~0xff;
+  offset = offset & ~0x0f;
   
   sprintf(field_offset, "%08lx", (unsigned long)offset);
   
