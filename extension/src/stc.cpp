@@ -392,7 +392,7 @@ int wxExSTC::ConfigDialog(
     _("General"),
     1));
 
-  // Next code does not have any effect (2.9.1, on MSW and GTK)
+  // Next code does not have any effect (2.9.2, on MSW and GTK)
   /*
   std::map<long, const wxString> smode;
   smode.insert(std::make_pair(wxSTC_SEL_STREAM, _("Stream")));
@@ -468,8 +468,6 @@ int wxExSTC::ConfigDialog(
       _("Folding")));
 
     std::map<long, const wxString> fchoices;
-    // next no longer available
-//    fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_BOX, _("Box")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_EXPANDED,
       _("Line before expanded")));
     fchoices.insert(std::make_pair(wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED,
@@ -483,6 +481,20 @@ int wxExSTC::ConfigDialog(
     items.push_back(wxExConfigItem(_("Fold flags"), fchoices, false,
       _("Folding")));
   }
+  
+  // Printer page
+  std::map<long, const wxString> pchoices;
+  pchoices.insert(std::make_pair(wxSTC_PRINT_NORMAL, _("Normal")));
+  pchoices.insert(std::make_pair(wxSTC_PRINT_INVERTLIGHT, _("Invert on white")));
+  pchoices.insert(std::make_pair(wxSTC_PRINT_BLACKONWHITE, _("Black on white")));
+  pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITE, _("Colour on white")));
+  pchoices.insert(std::make_pair(wxSTC_PRINT_COLOURONWHITEDEFAULTBG, _("Colour on white normal")));
+  items.push_back(wxExConfigItem(
+    _("Print flags"), 
+    pchoices, 
+    true, 
+    _("Printer"),
+    1));
 
   if (!(flags & STC_CONFIG_SIMPLE))
   {
@@ -577,6 +589,9 @@ void wxExSTC::ConfigGet()
     SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
   
+  SetPrintColourMode(wxConfigBase::Get()->ReadLong(_("Printer flags"),
+    wxSTC_PRINT_BLACKONWHITE));
+  
   SetCaretLineVisible(
     wxConfigBase::Get()->ReadBool(_("Caret line"), false));
     
@@ -600,11 +615,8 @@ void wxExSTC::ConfigGet()
     m_MarginLineNumber, 
     (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
-  // See above.
-  /*
-    SetSelectionMode(
+  SetSelectionMode(
     wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
-  */
     
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), def_tab_width));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
@@ -730,9 +742,11 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
 
 void wxExSTC::Cut()
 {
-  wxStyledTextCtrl::Cut();
-  
-  MarkerAddChange(GetCurrentLine());
+  if (!HexMode()) 
+  {
+    wxStyledTextCtrl::Cut();
+    MarkerAddChange(GetCurrentLine());
+  }
 }
   
 void wxExSTC::EOLModeUpdate(int eol_mode)
@@ -1069,11 +1083,14 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
     }
 
     // Okay, get everything inbetween.
-    const wxString match = 
+    wxString match = 
       text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
 
     // And make sure we skip white space.
-    return match.Strip(wxString::both);
+    match.Trim(true);
+    match.Trim(false);
+    
+    return match;
   }
 }
 
@@ -1113,12 +1130,12 @@ bool wxExSTC::GotoDialog()
   {
     long val;
     if ((val = wxGetNumberFromUser(
-      _("Input") + wxString::Format(" 1 - %d:", GetTextLength()),
+      _("Input") + wxString::Format(" 0 - %d:", GetTextLength() - 1),
       wxEmptyString,
       _("Enter Byte Offset"),
       m_Goto, // initial value
-      1,
-      GetTextLength())) < 0)
+      0,
+      GetTextLength() - 1)) < 0)
     {
       return false;
     }
@@ -1330,6 +1347,8 @@ void wxExSTC::Initialize()
     SetHexMode();
   }
   
+  m_HexBuffer.clear(); // always, not only in hex mode
+  
   m_MacroIsRecording = false;
   m_SavedPos = 0;
   m_SavedSelectionStart = -1;
@@ -1412,8 +1431,7 @@ bool wxExSTC::LinkOpen(
 {
   // Any line info is already in line_number, so skip here.
   const wxString no = link_with_line.AfterFirst(':');
-  const wxString link = (no.IsNumber() ? 
-    link_with_line.BeforeFirst(':'): link_with_line);
+  const wxString link = link_with_line.BeforeFirst(':');
 
   if (
     link.empty() || 
@@ -1593,7 +1611,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
   switch (command.GetId())
   {
   case wxID_COPY: Copy(); break;
-  case wxID_CUT: if (!HexMode()) Cut(); break;
+  case wxID_CUT: Cut(); break;
   case wxID_DELETE: 
     if (!GetReadOnly() && !HexMode()) 
     {
@@ -1795,7 +1813,14 @@ void wxExSTC::OnMouse(wxMouseEvent& event)
     else
     {
       int style = 0; // otherwise CAN_PASTE already on
-      if (GetReadOnly()) style |= wxExMenu::MENU_IS_READ_ONLY;
+      
+      if (
+        GetReadOnly() ||
+        HexMode()) 
+      {
+        style |= wxExMenu::MENU_IS_READ_ONLY;
+      }
+      
       if (!GetSelectedText().empty()) 
         style |= wxExMenu::MENU_IS_SELECTED;
       if (GetTextLength() == 0) style |= wxExMenu::MENU_IS_EMPTY;
@@ -1957,7 +1982,6 @@ void wxExSTC::Paste()
 {
   if (HexMode())
   {
-    wxLogStatus(_("Not allowed in hex mode"));
     return;
   }
   
@@ -2058,6 +2082,8 @@ void wxExSTC::Reload(long flags)
   }
   else
   {
+    m_Goto = 1;
+    
     const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
     ClearDocument(!modified);
       
@@ -2218,6 +2244,8 @@ void wxExSTC::SetHexMode()
   SetControlCharSymbol('.');
   wxExLexers::Get()->ApplyHexStyles(this);
   wxExLexers::Get()->ApplyMarkers(this);
+  
+  m_Goto = 0;
 
   // Do not show an edge, eol or whitespace in hex mode.
   SetEdgeMode(wxSTC_EDGE_NONE);

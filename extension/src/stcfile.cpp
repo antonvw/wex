@@ -63,18 +63,12 @@ void wxExSTCFile::DoFileLoad(bool synced)
     GetFileName().GetExt().CmpNoCase("log") == 0 &&
     m_STC->GetTextLength() > 1024);
 
-  if (!m_STC->HexMode())
-  {
-    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer(), true);
+  m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer(), true);
 
-    if (m_STC->GetLexer().GetScintillaLexer() == "po")
-    {
-      AddBasePathToPathList();
-    }
-  }
-  else
+  if (!m_STC->HexMode() &&
+       m_STC->GetLexer().GetScintillaLexer() == "po")
   {
-    m_STC->m_HexBuffer.clear();
+    AddBasePathToPathList();
   }
 
   if (!synced)
@@ -110,15 +104,11 @@ void wxExSTCFile::DoFileSave(bool save_as)
   {
     const wxCharBuffer& buffer = m_STC->GetTextRaw(); 
     Write(buffer.data(), buffer.length());
-
-    if (save_as)
-    {
-      m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
-    }
   }
   
   if (save_as)
   {
+    m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer());
     m_STC->SetName(GetFileName().GetFullPath());
   }
   

@@ -17,7 +17,6 @@
 #include <wx/fontpicker.h>
 #include <wx/hyperlink.h>
 #include <wx/spinctrl.h>
-#include <wx/spinctrl.h>
 #include <wx/tglbtn.h>
 #include <wx/valtext.h>
 #include <wx/extension/configitem.h>
