@@ -404,14 +404,7 @@ void wxExConfigDialog::OnUpdateUI(wxUpdateUIEvent& event)
     }
   }
 
-  if (m_ForceCheckBoxChecked)
-  {
-    event.Enable(one_checkbox_checked);
-  }
-  else
-  {
-    event.Enable(true);
-  }
+  event.Enable(m_ForceCheckBoxChecked ? one_checkbox_checked: true);
 }
 
 void wxExConfigDialog::Reload() const
