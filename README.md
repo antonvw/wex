@@ -9,10 +9,7 @@ one of these applications, being a full featured source code text editor.
 
 - git repository 
   - on github https://github.com/antonvw/wxExtension  
-  
   - wxWidgets 2.9.2 is used as a stable master branch
-  - the mac-os branch is added because the master uses c++0x flags, not supported
-    by gcc 4.0.1 under mac os 10.4
 
 - Source code      
   - Coding standard:
@@ -71,12 +68,7 @@ one of these applications, being a full featured source code text editor.
   this is done in the build dir:
     
     - under windows using Microsoft Visual Studio 2010
-    Version 10.0.30319.1 RTMRel
-    using format msvs2008prj
-    TODO: fix, this no longer works
-      
-    - under windows using command line prompt
-    using format msvc
+    Version 10.0.30319.1 RTMRel using command line prompt
         nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.2
       
     - under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2
