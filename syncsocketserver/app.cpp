@@ -280,6 +280,7 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
   else
   {
     stc->AppendTextHexMode(wxString(prefix + text).c_str());
+    stc->AppendText(stc->GetEOL());
   }
 
   stc->EmptyUndoBuffer();

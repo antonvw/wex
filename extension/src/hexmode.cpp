@@ -49,7 +49,9 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
   }
   else
   {
-    Set(0, 0);
+    m_LineNo = -1;
+    m_Line.clear();
+    m_Index = -1;
   }
 }
 
@@ -88,9 +90,9 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
 
     for (register wxFileOffset byte = 0; byte < count; byte++)
     {
-      const char c = buffer.data()[offset + byte];
+      const unsigned char c = buffer.data()[offset + byte];
 
-      field_hex += wxString::Format("%02x ", (unsigned char)c);
+      field_hex += wxString::Format("%02x ", c);
 
       // Print an extra space.
       if (byte == mid_in_hex_field)
@@ -248,6 +250,11 @@ int wxExHexModeLine::GetHexField() const
 
 void wxExHexModeLine::Goto() const
 {
+  if (m_LineNo < 0 || m_Index < 0)
+  {
+    return;
+  }
+  
   const int start = m_STC->PositionFromLine(m_LineNo);
  
   m_STC->SetFocus(); 
@@ -271,7 +278,9 @@ bool wxExHexModeLine::IsHexField() const
 
 bool wxExHexModeLine::IsOffsetField() const
 {
-  return m_Index < start_hex_field;
+  return 
+    m_Index >= 0 &&
+    m_Index < start_hex_field;
 }
 
 bool wxExHexModeLine::IsReadOnly() const
@@ -334,7 +343,7 @@ wxUniChar wxExHexModeLine::Printable(int c) const
   
 bool wxExHexModeLine::Replace(const wxUniChar& c)
 {
-  if (IsReadOnly())
+  if (IsReadOnly() || m_LineNo < 0 || m_Index < 0)
   {
     return false;
   }
@@ -389,7 +398,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     
     str[2] = '\0';
     
-    int code;
+    unsigned char code;
     sscanf(str, "%x", &code);
     
     m_STC->wxStyledTextCtrl::Replace(

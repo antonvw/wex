@@ -55,7 +55,8 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_MENU_RANGE(wxID_UNDO, wxID_REDO, wxExSTC::OnCommand)
   EVT_RIGHT_UP(wxExSTC::OnMouse)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
+  EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
@@ -589,7 +590,7 @@ void wxExSTC::ConfigGet()
     SetEdgeMode(wxConfigBase::Get()->ReadLong(_("Edge line"), wxSTC_EDGE_NONE));
   }
   
-  SetPrintColourMode(wxConfigBase::Get()->ReadLong(_("Printer flags"),
+  SetPrintColourMode(wxConfigBase::Get()->ReadLong(_("Print flags"),
     wxSTC_PRINT_BLACKONWHITE));
   
   SetCaretLineVisible(
@@ -1073,24 +1074,27 @@ const wxString wxExSTC::GetTextAtCurrentPos() const
       pos_char1 = text.find("'");
       pos_char2 = text.rfind("'");
     }
+    
+    wxString out;
 
     // If we did not find anything.
     if (pos_char1 == wxString::npos || 
         pos_char2 == wxString::npos || 
         pos_char2 <= pos_char1)
     {
-      return wxEmptyString;
+      out = text;
+    }
+    else
+    {
+      // Okay, get everything inbetween.
+      out = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
     }
 
-    // Okay, get everything inbetween.
-    wxString match = 
-      text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
-
     // And make sure we skip white space.
-    match.Trim(true);
-    match.Trim(false);
+    out.Trim(true);
+    out.Trim(false);
     
-    return match;
+    return out;
   }
 }
 
@@ -1850,12 +1854,23 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
 
 //    MarkerAddChange(event.GetLine()); 
   }
+  else if (event.GetEventType() == wxEVT_STC_START_DRAG)
+  {
+    if (HexMode())
+    {
+      event.SetDragAllowMove(false);
+    }
+    
+    event.Skip();
+  }
   else if (event.GetEventType() == wxEVT_STC_DO_DROP)
   {
-    if (!HexMode())
+    if (HexMode())
     {
-      event.Skip();
+      event.SetDragResult(wxDragNone);
     }
+    
+    event.Skip();
   }
   else if (event.GetEventType() == wxEVT_STC_DWELLEND)
   {
@@ -2083,6 +2098,7 @@ void wxExSTC::Reload(long flags)
   else
   {
     m_Goto = 1;
+    SetControlCharSymbol(32);
     
     const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
     ClearDocument(!modified);
