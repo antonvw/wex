@@ -1134,12 +1134,12 @@ bool wxExSTC::GotoDialog()
   {
     long val;
     if ((val = wxGetNumberFromUser(
-      _("Input") + wxString::Format(" 0 - %d:", GetTextLength() - 1),
+      _("Input") + wxString::Format(" 0 - %d:", m_HexBuffer.length() - 1),
       wxEmptyString,
       _("Enter Byte Offset"),
       m_Goto, // initial value
       0,
-      GetTextLength() - 1)) < 0)
+      m_HexBuffer.length() - 1)) < 0)
     {
       return false;
     }
