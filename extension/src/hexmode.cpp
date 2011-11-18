@@ -316,11 +316,11 @@ int wxExHexModeLine::OtherField() const
   }
 }
 
-wxUniChar wxExHexModeLine::Printable(int c) const
+wxUniChar wxExHexModeLine::Printable(unsigned int c) const
 {
   // We do not want control chars (\n etc.) to be printed,
   // as that disturbs the hex view field.
-  if (!iscntrl(c))
+  if (c <= 255 && !iscntrl(c))
   {
     return c;
   }
@@ -405,7 +405,7 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     
     str[2] = '\0';
     
-    unsigned char code;
+    unsigned int code;
     sscanf(str, "%x", &code);
     
     m_STC->wxStyledTextCtrl::Replace(

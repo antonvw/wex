@@ -83,7 +83,7 @@ private:
   int GetByte() const;
   int GetHexField() const;
   
-  wxUniChar Printable(int c) const;
+  wxUniChar Printable(unsigned int c) const;
   
   wxString m_Line;
   int m_LineNo;
