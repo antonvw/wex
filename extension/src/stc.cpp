@@ -2098,7 +2098,7 @@ void wxExSTC::Reload(long flags)
   else
   {
     m_Goto = 1;
-    SetControlCharSymbol(32);
+    SetControlCharSymbol(0);
     
     const wxCharBuffer buffer = m_HexBuffer.ToAscii(); // keep buffer
     ClearDocument(!modified);
