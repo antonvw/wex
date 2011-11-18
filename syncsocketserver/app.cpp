@@ -273,15 +273,18 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
     case DATA_WRITE: prefix = "w: "; break;
   }
   
-  if (!stc->HexMode())
+  stc->AppendText(wxDateTime::Now().Format() + " " + prefix);
+  
+  if (!stc->HexMode() || mode == DATA_MESSAGE)
   {
-    stc->AppendText(wxDateTime::Now().Format() + " " + prefix + text + stc->GetEOL());
+    stc->AppendText(text);
   }
   else
   {
-    stc->AppendTextHexMode(wxString(prefix + text).c_str());
-    stc->AppendText(stc->GetEOL());
+    stc->AppendTextHexMode(text.c_str());
   }
+  
+  stc->AppendText(stc->GetEOL());
 
   stc->EmptyUndoBuffer();
   stc->SetSavePoint();

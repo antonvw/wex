@@ -57,6 +57,8 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
 
 void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
 {
+  wxFileOffset start = m_STC->m_HexBuffer.length();
+  
   m_STC->m_HexBuffer += buffer;
   
   const wxFileOffset mid_in_hex_field = 7;
@@ -72,8 +74,6 @@ void wxExHexModeLine::AppendText(const wxCharBuffer& buffer)
     // ascii field: just the length
     buffer.length());
 
-  wxFileOffset start = m_STC->GetLength();
-  
   // Using wxString::Format here asserts (wxWidgets-2.9.1).
   char field_offset[start_hex_field];
   
@@ -348,6 +348,13 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
     return false;
   }
   
+  const int byte = GetByte();
+  
+  if (byte == wxSTC_INVALID_POSITION)
+  {
+    return false;
+  }
+  
   const int pos = m_STC->PositionFromLine(m_LineNo);
   
   wxUniChar val = c;
@@ -412,8 +419,8 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
   {
     return false;
   }
-      
-  m_STC->m_HexBuffer[GetByte()] = val;
+  
+  m_STC->m_HexBuffer[byte] = val;
   
   return true;
 }
