@@ -215,7 +215,7 @@ class WXDLLIMPEXP_BASE wxExListViewFileName : public wxExListView
 {
 public:
   /// The supported lists.
-  enum ListType
+  enum wxExListType
   {
     LIST_BEFORE_FIRST, ///< for iterating
     LIST_FOLDER,       ///< a list containing folders only
@@ -234,7 +234,7 @@ public:
 
   /// Constructor.
   wxExListViewFileName(wxWindow* parent,
-    ListType type,
+    wxExListType type,
     wxWindowID id = wxID_ANY,
     const wxExLexer* lexer = NULL,
     const wxPoint& pos = wxDefaultPosition,
@@ -247,14 +247,14 @@ public:
   void DeleteDoubles();
 
   /// Gets the list type.
-  const ListType GetType() const {return m_Type;};
+  const wxExListType GetType() const {return m_Type;};
 
   /// Gets the list type as a string.
   const wxString GetTypeDescription() const {
     return GetTypeDescription(m_Type);};
 
   /// Gets the list type as a string for specified type.
-  static const wxString GetTypeDescription(ListType type);
+  static const wxString GetTypeDescription(wxExListType type);
 
   /// Updates all items.
   virtual void ItemsUpdate();
@@ -274,7 +274,7 @@ protected:
   void OnList(wxListEvent& event);
 private:
   void Initialize(const wxExLexer* lexer);
-  const ListType m_Type;
+  const wxExListType m_Type;
 
   DECLARE_EVENT_TABLE()
 };
