@@ -616,8 +616,8 @@ void wxExSTC::ConfigGet()
     m_MarginLineNumber, 
     (wxConfigBase::Get()->ReadBool(_("Line numbers"), false) ? margin: 0));
 
-  SetSelectionMode(
-    wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
+  //SetSelectionMode(
+  //  wxConfigBase::Get()->ReadLong(_("Selection mode"), wxSTC_SEL_STREAM));
     
   SetTabWidth(wxConfigBase::Get()->ReadLong(_("Tab width"), def_tab_width));
   SetUseTabs(wxConfigBase::Get()->ReadBool(_("Use tabs"), false));
