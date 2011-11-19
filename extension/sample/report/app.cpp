@@ -115,7 +115,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
     wxExListViewWithFrame* vw = new wxExListViewWithFrame(
       this,
       this, 
-      (wxExListViewFileName::ListType)i, 
+      (wxExListViewFileName::wxExListType)i, 
       wxID_ANY,
       0xFF, 
       &lexer); // set all flags
@@ -158,7 +158,7 @@ wxExRepSampleFrame::wxExRepSampleFrame()
 }
 
 wxExListViewFileName* wxExRepSampleFrame::Activate(
-  wxExListViewFileName::ListType type, 
+  wxExListViewFileName::wxExListType type, 
   const wxExLexer* lexer)
 {
   for (

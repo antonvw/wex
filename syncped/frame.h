@@ -36,12 +36,12 @@ protected:
   void OnUpdateUI(wxUpdateUIEvent& event);
 private:
   virtual wxExListViewFileName* Activate(
-    wxExListViewFileName::ListType type, 
+    wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
   void AddAsciiTable(wxExSTC* stc);
   void AddHeader(wxExSTC* stc);
   wxExListViewWithFrame* AddPage(
-    wxExListViewFileName::ListType type, 
+    wxExListViewFileName::wxExListType type, 
     const wxExLexer* lexer = NULL);
   bool AllowCloseAll(wxWindowID id);
   bool DialogProjectOpen();

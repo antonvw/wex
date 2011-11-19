@@ -32,7 +32,7 @@ public:
   /// Constructor.
   wxExListViewWithFrame(wxWindow* parent,
     wxExFrameWithHistory* frame,
-    ListType type,
+    wxExListType type,
     wxWindowID id = wxID_ANY,
     long menu_flags = LIST_MENU_DEFAULT,
     const wxExLexer* lexer = NULL,
@@ -43,7 +43,7 @@ public:
     const wxString &name = wxListCtrlNameStr);    
     
   /// Returns list type from tool id.
-  static ListType GetTypeTool(const wxExTool& tool);
+  static wxExListType GetTypeTool(const wxExTool& tool);
 protected:
   virtual void BuildPopupMenu(wxExMenu& menu);
   wxExFrameWithHistory* GetFrame() {return m_Frame;};

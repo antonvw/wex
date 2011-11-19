@@ -9,7 +9,7 @@
 #define _EX_REPORT_FRAME_H
 
 #include <wx/filehistory.h>
-#include <wx/extension/listview.h> // for wxExListViewFileName::ListType 
+#include <wx/extension/listview.h> // for wxExListViewFileName::wxExListType 
 #include <wx/extension/managedframe.h>
 #include <wx/extension/report/defs.h>
 #include <wx/extension/report/process.h>
@@ -46,7 +46,7 @@ public:
   /// This method is called to activate a certain listview.
   /// Default it returns NULL.
   virtual wxExListViewFileName* Activate(
-    wxExListViewFileName::ListType WXUNUSED(list_type), 
+    wxExListViewFileName::wxExListType WXUNUSED(list_type), 
     const wxExLexer* WXUNUSED(lexer) = NULL) {
     return NULL;};
     

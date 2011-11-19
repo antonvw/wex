@@ -34,7 +34,7 @@ END_EVENT_TABLE()
 
 wxExListViewWithFrame::wxExListViewWithFrame(wxWindow* parent,
   wxExFrameWithHistory* frame,
-  ListType type,
+  wxExListType type,
   wxWindowID id,
   long menu_flags,
   const wxExLexer* lexer,
@@ -179,7 +179,7 @@ void wxExListViewWithFrame::BuildPopupMenu(wxExMenu& menu)
   }
 }
 
-wxExListViewWithFrame::ListType wxExListViewWithFrame::GetTypeTool(
+wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
   const wxExTool& tool)
 {
   switch (tool.GetId())

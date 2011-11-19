@@ -944,7 +944,7 @@ private:
 #endif // __WXMSW__
 
 wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
-  ListType type,
+  wxExListType type,
   wxWindowID id,
   const wxExLexer* lexer,
   const wxPoint& pos,
@@ -1031,7 +1031,7 @@ void wxExListViewFileName::DeleteDoubles()
   }
 }
 
-const wxString wxExListViewFileName::GetTypeDescription(ListType type)
+const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
 {
   wxString value;
 
@@ -1064,7 +1064,7 @@ void wxExListViewFileName::Initialize(const wxExLexer* lexer)
   }
   else
   {
-    SetSingleStyle(wxLC_SMALL_ICON | wxLC_NO_HEADER);
+    SetSingleStyle(wxLC_LIST);
   }
 
   if (m_Type == LIST_KEYWORD)

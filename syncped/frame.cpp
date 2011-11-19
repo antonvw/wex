@@ -269,7 +269,7 @@ Frame::~Frame()
 }
 
 wxExListViewFileName* Frame::Activate(
-  wxExListViewFileName::ListType type, 
+  wxExListViewFileName::wxExListType type, 
   const wxExLexer* lexer)
 {
   if (type == wxExListViewFileName::LIST_FILE)
@@ -341,7 +341,7 @@ void Frame::AddHeader(wxExSTC* stc)
 }
 
 wxExListViewWithFrame* Frame::AddPage(
-  wxExListViewFileName::ListType type, 
+  wxExListViewFileName::wxExListType type, 
   const wxExLexer* lexer)
 {
   const wxString name = wxExListViewFileName::GetTypeDescription(type) +
