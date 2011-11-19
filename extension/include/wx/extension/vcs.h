@@ -56,7 +56,7 @@ public:
 
   /// Checks whether the current base folder is under vcs control.
   /// If not, it will show
-  /// a dialog for selecting a vcs folder.
+  /// a dialog for selecting a vcs folder (if parent is not NULL).
   /// Sets the entry.
   bool GetDir(
     /// Parent window for showing dir dialog if 

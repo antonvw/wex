@@ -795,7 +795,7 @@ void Frame::OnCommand(wxCommandEvent& event)
     if (wxExVCS().ConfigDialog(this) == wxID_OK)
     { 
       wxExVCS vcs;
-      vcs.GetDir();
+      vcs.GetDir(this);
       StatusText(vcs.GetName(), "PaneVCS");
     }
     break;
@@ -1430,7 +1430,7 @@ void Frame::StatusBarDoubleClickedRight(const wxString& pane)
   else if (pane == "PaneVCS")
   {
     wxExVCS vcs;
-    vcs.GetDir();
+    vcs.GetDir(this);
     
     const wxString match = (vcs.GetName() != "Auto" ? 
       vcs.GetName(): wxString(wxEmptyString));
