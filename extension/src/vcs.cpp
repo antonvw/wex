@@ -318,7 +318,9 @@ bool wxExVCS::GetDir(wxWindow* parent)
       
   if (wxExConfigFirstOf(_("Base folder")).empty()) 
   {
-    if (wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+    if (
+      parent != NULL && 
+      wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
     {
       return false;
     }
@@ -329,7 +331,9 @@ bool wxExVCS::GetDir(wxWindow* parent)
   
     if (m_Entry.GetName().empty())
     {
-      if (wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
+      if (
+        parent != NULL &&
+        wxExConfigDialog(parent, v, message).ShowModal() == wxID_CANCEL)
       {
         return false;
       }

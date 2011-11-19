@@ -256,14 +256,6 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
 {
   const bool pos_at_end = (stc->GetCurrentPos() == stc->GetTextLength());
   
-  bool readonly = false;
-  
-  if (stc->GetReadOnly())
-  {
-    readonly = true;
-    stc->SetReadOnly(false);
-  }
-  
   wxString prefix;
   
   switch (mode)
@@ -292,11 +284,6 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
   if (pos_at_end)
   {
     stc->DocumentEnd();
-  }
-  
-  if (readonly)
-  {
-    stc->SetReadOnly(true);
   }
 }
 
