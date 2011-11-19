@@ -248,11 +248,11 @@ int wxExHexModeLine::GetHexField() const
   return start_hex_field + each_hex_field * offset + space;
 }
 
-void wxExHexModeLine::Goto() const
+bool wxExHexModeLine::Goto() const
 {
   if (m_LineNo < 0 || m_Index < 0)
   {
-    return;
+    return false;
   }
   
   const int start = m_STC->PositionFromLine(m_LineNo);
@@ -260,6 +260,8 @@ void wxExHexModeLine::Goto() const
   m_STC->SetFocus(); 
   m_STC->SetCurrentPos(start + start_ascii_field + m_Index);
   m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+  
+  return true;
 }
 
 bool wxExHexModeLine::IsAsciiField() const
@@ -427,7 +429,10 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
 
 void wxExHexModeLine::Set(int line, int pos)
 {
-  m_Line = m_STC->GetLine(line);
-  m_LineNo = line;
-  m_Index = m_STC->GetColumn(pos);
+  if (line < m_STC->GetLineCount())
+  {
+    m_Line = m_STC->GetLine(line);
+    m_LineNo = line;
+    m_Index = m_STC->GetColumn(pos);
+  }
 }

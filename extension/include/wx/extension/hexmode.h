@@ -48,8 +48,9 @@ public:
   /// depending on which field is current.
   const wxString GetInfo() const;
   
-  /// Goes to line.
-  void Goto() const;
+  /// Goes to position in stc component as
+  /// implied by current line and index.
+  bool Goto() const;
   
   /// Returns true if current index in within ascii field.
   bool IsAsciiField() const;

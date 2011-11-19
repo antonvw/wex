@@ -248,13 +248,15 @@ void wxExAppTestFixture::testHeader()
 
 void wxExAppTestFixture::testHexMode()
 {
+  // 0000000000111111111222222222233333333334444444444555555555566666666666
+  // 0123456789012345678901234567890123456789012345678901234567890123456789
   // 00000000 30 31 32 33 34 35 36 37  38 39                   0123456789
   wxExSTC* stc = new wxExSTC(
     wxTheApp->GetTopWindow(), "0123456789", wxExSTC::STC_WIN_HEX);
     
   CPPUNIT_ASSERT(stc->GetText() != "0123456789");
   
-  stc->SetCurrentPos(5);
+  stc->SetCurrentPos(5); // 0 <-
   
   wxExHexModeLine hex(stc);
   
@@ -269,8 +271,12 @@ void wxExAppTestFixture::testHexMode()
   CPPUNIT_ASSERT(!hex.Replace('x'));
   CPPUNIT_ASSERT( hex.OtherField() == wxSTC_INVALID_POSITION);
   
+  stc->Reload();
+  CPPUNIT_ASSERT(stc->GetText() == "01234567890123456789");
+  
   // test hex field
-  hex.Set(0, 13);
+  stc->Reload(wxExSTC::STC_WIN_HEX);
+  hex.Set(0, 13); // 31 <- (ascii 1)
   CPPUNIT_ASSERT(!hex.IsOffsetField());
   CPPUNIT_ASSERT( hex.IsHexField());
   CPPUNIT_ASSERT(!hex.IsAsciiField());
@@ -281,10 +287,15 @@ void wxExAppTestFixture::testHexMode()
   CPPUNIT_ASSERT(!hex.Replace('g'));
   CPPUNIT_ASSERT( hex.Replace('a'));
   CPPUNIT_ASSERT( hex.Replace('9'));
+  CPPUNIT_ASSERT( hex.Replace('b')); // (ascii ;)
   CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
   
+  stc->Reload();
+  CPPUNIT_ASSERT(stc->GetText() == "0;234567890123456789");
+  
   // test ascii field
-  hex.Set(0, 63);
+  stc->Reload(wxExSTC::STC_WIN_HEX);
+  hex.Set(0, 63); // 5 <-
   CPPUNIT_ASSERT(!hex.IsOffsetField());
   CPPUNIT_ASSERT(!hex.IsHexField());
   CPPUNIT_ASSERT( hex.IsAsciiField());
@@ -292,6 +303,14 @@ void wxExAppTestFixture::testHexMode()
   CPPUNIT_ASSERT(!hex.GetInfo().empty());
   CPPUNIT_ASSERT( hex.Replace('x'));
   CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
+  
+  stc->Reload();
+  CPPUNIT_ASSERT(stc->GetText() == "0;234x67890123456789");
+  
+  hex.Set(0, 63); // valid
+  CPPUNIT_ASSERT( hex.Goto());
+  hex.Set(0, 9999); // invalid
+  CPPUNIT_ASSERT(!hex.Goto());
 }
 
 void wxExAppTestFixture::testLexer()

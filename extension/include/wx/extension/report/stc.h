@@ -20,7 +20,7 @@ public:
   wxExSTCWithFrame(wxWindow* parent,
     wxExFrameWithHistory* frame,
     const wxString& value = wxEmptyString,
-    long flags = 0,
+    long flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
     long type = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
@@ -34,7 +34,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
-    long flags = 0,
+    long flags = STC_WIN_DEFAULT,
     long type = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -49,7 +49,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
-    long flags = 0);
+    long flags = STC_WIN_DEFAULT);
 
   /// Invokes base properties message and sets the frame title.
   virtual void PropertiesMessage(long flags = 0);
