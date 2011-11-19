@@ -246,6 +246,54 @@ void wxExAppTestFixture::testHeader()
   CPPUNIT_ASSERT(newstr.Contains("Created"));
 }
 
+void wxExAppTestFixture::testHexMode()
+{
+  // 00000000 30 31 32 33 34 35 36 37  38 39                   0123456789
+  wxExSTC* stc = new wxExSTC(
+    wxTheApp->GetTopWindow(), "0123456789", wxExSTC::STC_WIN_HEX);
+    
+  CPPUNIT_ASSERT(stc->GetText() != "0123456789");
+  
+  stc->SetCurrentPos(5);
+  
+  wxExHexModeLine hex(stc);
+  
+  hex.AppendText("0123456789");
+
+  // test the offset field  
+  CPPUNIT_ASSERT( hex.IsOffsetField());
+  CPPUNIT_ASSERT(!hex.IsHexField());
+  CPPUNIT_ASSERT(!hex.IsAsciiField());
+  CPPUNIT_ASSERT( hex.IsReadOnly());
+  CPPUNIT_ASSERT(!hex.GetInfo().empty());
+  CPPUNIT_ASSERT(!hex.Replace('x'));
+  CPPUNIT_ASSERT( hex.OtherField() == wxSTC_INVALID_POSITION);
+  
+  // test hex field
+  hex.Set(0, 13);
+  CPPUNIT_ASSERT(!hex.IsOffsetField());
+  CPPUNIT_ASSERT( hex.IsHexField());
+  CPPUNIT_ASSERT(!hex.IsAsciiField());
+  CPPUNIT_ASSERT(!hex.IsReadOnly());
+  CPPUNIT_ASSERT(!hex.GetInfo().empty());
+  CPPUNIT_ASSERT(!hex.Replace('x'));
+  CPPUNIT_ASSERT(!hex.Replace('y'));
+  CPPUNIT_ASSERT(!hex.Replace('g'));
+  CPPUNIT_ASSERT( hex.Replace('a'));
+  CPPUNIT_ASSERT( hex.Replace('9'));
+  CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
+  
+  // test ascii field
+  hex.Set(0, 63);
+  CPPUNIT_ASSERT(!hex.IsOffsetField());
+  CPPUNIT_ASSERT(!hex.IsHexField());
+  CPPUNIT_ASSERT( hex.IsAsciiField());
+  CPPUNIT_ASSERT(!hex.IsReadOnly());
+  CPPUNIT_ASSERT(!hex.GetInfo().empty());
+  CPPUNIT_ASSERT( hex.Replace('x'));
+  CPPUNIT_ASSERT( hex.OtherField() != wxSTC_INVALID_POSITION);
+}
+
 void wxExAppTestFixture::testLexer()
 {
   wxExLexer lexer;
@@ -690,6 +738,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testHeader",
     &wxExAppTestFixture::testHeader));
+    
+  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+    "testHexMode",
+    &wxExAppTestFixture::testHexMode));
     
   addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
     "testLexer",

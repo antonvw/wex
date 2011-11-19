@@ -55,6 +55,7 @@ public:
   void testGlobal();
   void testGrid();
   void testHeader();
+  void testHexMode();
   void testLexer();
   void testLexers();
   void testListView();
