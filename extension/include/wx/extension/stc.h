@@ -35,19 +35,20 @@ public:
     STC_MENU_DEFAULT   = 0xFFFF  ///< all
   };
 
-  /// Window flags (0 is used as default).
+  /// Window flags.
   enum wxExWindowFlags
   {
+    STC_WIN_DEFAULT     = 0x0000, ///< default, not readonly, not hex mode
     STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, 
                                   ///<   this mode overrides real mode from disk
     STC_WIN_HEX         = 0x0002, ///< window in hex mode
     STC_WIN_FROM_OTHER  = 0x0020  ///< opened from within another file (e.g. a link)
   };
 
-  /// Config dialog flags (0 gives
-  /// a modal dialog with all options).
+  /// Config dialog flags.
   enum wxExConfigFlags
   {
+    STC_CONFIG_DEFAULT    = 0x0000, ///< modal dialog with all options
     STC_CONFIG_MODELESS   = 0x0001, ///< use as modeless dialog
     STC_CONFIG_WITH_APPLY = 0x0002, ///< add the apply button
     STC_CONFIG_SIMPLE     = 0x0004  ///< only 'simple' options on dialog
@@ -56,7 +57,7 @@ public:
   /// Constructor.
   wxExSTC(wxWindow *parent, 
     const wxString& value = wxEmptyString,
-    long win_flags = 0,
+    long win_flags = STC_WIN_DEFAULT,
     const wxString& title = wxEmptyString,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
@@ -70,7 +71,7 @@ public:
     const wxExFileName& filename,
     int line_number = 0,
     const wxString& match = wxEmptyString,
-    long win_flags = 0,
+    long win_flags = STC_WIN_DEFAULT,
     long menu_flags = STC_MENU_DEFAULT,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
@@ -243,7 +244,7 @@ public:
   virtual void PropertiesMessage(long flags = 0);
   
   /// Reloads current document using specified flags.
-  void Reload(long flags);
+  void Reload(long flags = STC_WIN_DEFAULT);
 
   /// Replaces all text.
   /// It there is a selection, it replaces in the selection, otherwise
