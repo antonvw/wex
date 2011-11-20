@@ -27,31 +27,33 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc)
 {
 }  
 
-wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int line, int pos)
+wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, 
+  int pos_or_offset, bool is_position)
   : m_STC(stc)
 {
-  Set(line, pos); 
-}
-
-wxExHexModeLine::wxExHexModeLine(wxExSTC* stc, int offset)
-  : m_STC(stc)
-{
-  char field_offset[start_hex_field];
-  
-  sprintf(field_offset, "%08lx", (unsigned long)(offset & ~0x0f));
-  
-  if (m_STC->FindNext(field_offset, 0))
+  if (is_position)
   {
-    m_LineNo = m_STC->GetCurrentLine();
-    m_Line = m_STC->GetLine(m_LineNo);
-    m_Index = (offset & 0x0f);
-    m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+    Set(pos_or_offset); 
   }
   else
   {
-    m_LineNo = -1;
-    m_Line.clear();
-    m_Index = -1;
+    char field_offset[start_hex_field];
+  
+    sprintf(field_offset, "%08lx", (unsigned long)(pos_or_offset & ~0x0f));
+  
+    if (m_STC->FindNext(field_offset, 0))
+    {
+      m_LineNo = m_STC->GetCurrentLine();
+      m_Line = m_STC->GetLine(m_LineNo);
+      m_Index = (pos_or_offset & 0x0f);
+      m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+    }
+    else
+    {
+      m_LineNo = -1;
+      m_Line.clear();
+      m_Index = -1;
+    }
   }
 }
 
@@ -427,12 +429,9 @@ bool wxExHexModeLine::Replace(const wxUniChar& c)
   return true;
 }
 
-void wxExHexModeLine::Set(int line, int pos)
+void wxExHexModeLine::Set(int pos)
 {
-  if (line < m_STC->GetLineCount())
-  {
-    m_Line = m_STC->GetLine(line);
-    m_LineNo = line;
-    m_Index = m_STC->GetColumn(pos);
-  }
+  m_LineNo = m_STC->LineFromPosition(pos);
+  m_Line = m_STC->GetLine(m_LineNo);
+  m_Index = m_STC->GetColumn(pos);
 }
