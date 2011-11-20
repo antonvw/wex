@@ -231,7 +231,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     m_STC->EndUndoAction();
   }
   // this one should be first, so rJ will match
-  else if (command.Matches("*r?") && !m_STC->GetReadOnly())
+  else if (wxRegEx("[0-9]*r.").Matches(command) && !m_STC->GetReadOnly())
   {
     if (m_STC->HexMode())
     {
@@ -995,8 +995,25 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
       break;
 
     case WXK_TAB:
-      // prevent TAB to be entered when not inserting
-      handled = !m_InsertMode;
+      if (m_Command.size() > 0 && wxRegEx("[0-9]*r").Matches(m_Command))
+      {
+        int repeat = atoi(m_Command.c_str());
+
+        if (repeat == 0)
+        {
+          repeat++;
+        }
+  
+        for (int i = 0; i < repeat; i++) m_STC->AddText("\t");
+        
+        m_LastCommand = m_Command + "\t";
+        m_Command.clear();
+      }
+      else
+      {
+        // prevent TAB to be entered when not inserting
+        handled = !m_InsertMode;
+      }
       break;
 
     case WXK_RETURN:
@@ -1011,6 +1028,7 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   
         for (int i = 0; i < repeat; i++) m_STC->LineDown();
 
+        m_LastCommand = m_Command + m_STC->GetEOL();
         m_Command.clear();
       }
       else
