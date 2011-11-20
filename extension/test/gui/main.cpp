@@ -1,32 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Name:      main.cpp
-// Purpose:   main for wxExtension report cpp unit testing
+// Purpose:   main for wxExtension cpp unit testing
 // Author:    Anton van Wezenbeek
-// Copyright: (c) 2011 Anton van Wezenbeek
+// Copyright: (c) 2011
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <ui/text/TestRunner.h>
 #include <cppunit/TestRunner.h>
-#include <wx/extension/report/frame.h>
 #include "test.h"
 
-wxIMPLEMENT_APP(wxExReportTestApp);
+wxIMPLEMENT_APP(wxExTestApp);
 
-bool wxExReportTestApp::OnInit()
+bool wxExTestApp::OnInit()
 {
-  SetAppName("wxex-test-rep");
+  SetAppName("wxex-test-gui");
 
   if (!wxExApp::OnInit())
   {
     return false;
   }
 
-  wxExFrameWithHistory *frame = new 
-    wxExFrameWithHistory(NULL, wxID_ANY, wxTheApp->GetAppDisplayName());
+  wxExManagedFrame *frame = new wxExManagedFrame(NULL, 
+    wxID_ANY, wxTheApp->GetAppDisplayName());
     
   frame->Show(true);
 
@@ -34,11 +29,11 @@ bool wxExReportTestApp::OnInit()
     
   CppUnit::TextUi::TestRunner runner;
 
-  wxExReportTestSuite* suite = new wxExReportTestSuite;
+  wxExAppTestSuite* suite = new wxExAppTestSuite;
 
   runner.addTest(suite);
   runner.run();
-
+  
   // Return false, so test ends here.
   return false;
 }

@@ -165,11 +165,11 @@ make-release.bat
       <wx-lib>base</wx-lib>
     </exe>
     
-    <exe id="wxex-test-app" template="wxgui,wxlike">
-      <sources>../extension/test/app/main.cpp</sources>
-      <sources>../extension/test/app/test.cpp</sources>
+    <exe id="wxex-test-gui" template="wxgui,wxlike">
+      <sources>../extension/test/gui/main.cpp</sources>
+      <sources>../extension/test/gui/test.cpp</sources>
       
-      <headers>../extension/test/app/test.h</headers>
+      <headers>../extension/test/gui/test.h</headers>
       
       <include>/usr/include/cppunit</include>
       <include>../extension/include</include>
@@ -187,10 +187,10 @@ make-release.bat
       <wx-lib>base</wx-lib>
     </exe>
     
-    <exe id="wxex-test-rep" template="wxgui,wxlike">
-      <sources>../extension/test/report/main.cpp</sources>
-      <sources>../extension/test/report/test.cpp</sources>
-      <headers>../extension/test/report/test.h</headers>
+    <exe id="wxex-test-gui-report" template="wxgui,wxlike">
+      <sources>../extension/test/gui-report/main.cpp</sources>
+      <sources>../extension/test/gui-report/test.cpp</sources>
+      <headers>../extension/test/gui-report/test.h</headers>
       
       <include>/usr/include/cppunit</include>
       <include>../extension/include</include>
