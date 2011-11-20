@@ -1146,7 +1146,7 @@ bool wxExSTC::GotoDialog()
 
     m_Goto = val;
     
-    wxExHexModeLine(this, val).Goto();
+    wxExHexModeLine(this, val, false).Goto();
   }
   else
   {
@@ -2229,7 +2229,7 @@ bool wxExSTC::ReplaceNext(
     for (int i = 0; i < replace_text.size(); i++)
     {
       wxExHexModeLine(
-        this, GetCurrentLine(), GetTargetStart()).Replace(replace_text[i]);
+        this, GetTargetStart()).Replace(replace_text[i]);
     }
   }
   else

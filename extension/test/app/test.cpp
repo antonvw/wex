@@ -276,7 +276,7 @@ void wxExAppTestFixture::testHexMode()
   
   // test hex field
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(0, 13); // 31 <- (ascii 1)
+  hex.Set(13); // 31 <- (ascii 1)
   CPPUNIT_ASSERT(!hex.IsOffsetField());
   CPPUNIT_ASSERT( hex.IsHexField());
   CPPUNIT_ASSERT(!hex.IsAsciiField());
@@ -295,7 +295,7 @@ void wxExAppTestFixture::testHexMode()
   
   // test ascii field
   stc->Reload(wxExSTC::STC_WIN_HEX);
-  hex.Set(0, 63); // 5 <-
+  hex.Set(63); // 5 <-
   CPPUNIT_ASSERT(!hex.IsOffsetField());
   CPPUNIT_ASSERT(!hex.IsHexField());
   CPPUNIT_ASSERT( hex.IsAsciiField());
@@ -307,10 +307,10 @@ void wxExAppTestFixture::testHexMode()
   stc->Reload();
   CPPUNIT_ASSERT(stc->GetText() == "0;234x67890123456789");
   
-  hex.Set(0, 63); // valid
+  hex.Set(63); // valid
   CPPUNIT_ASSERT( hex.Goto());
-  hex.Set(0, 9999); // invalid
-  CPPUNIT_ASSERT(!hex.Goto());
+  hex.Set(9999); // invalid, should result in goto end
+  CPPUNIT_ASSERT( hex.Goto());
 }
 
 void wxExAppTestFixture::testLexer()

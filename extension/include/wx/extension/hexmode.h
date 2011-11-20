@@ -29,17 +29,15 @@ class WXDLLIMPEXP_BASE wxExHexModeLine
 {
 public:
   /// Constructor.
-  /// Sets line and index with current line and pos.
+  /// Uses current position and line.
   wxExHexModeLine(wxExSTC* stc);
   
   /// Constructor.
-  /// Sets line and index.
-  wxExHexModeLine(wxExSTC* stc, int line, int pos);
-
-  /// Constructor.
-  /// Specify byte offset.
-  /// Sets line and index.
-  wxExHexModeLine(wxExSTC* stc, int offset);
+  /// Specify position or byte offset.
+  /// Default assumes you specify a position.
+  wxExHexModeLine(wxExSTC* stc, 
+    int pos_or_offset, 
+    bool is_position = true);
 
   /// Appends hex mode lines to stc  component.  
   void AppendText(const wxCharBuffer& buffer);
@@ -74,8 +72,8 @@ public:
   /// both ascii and hex field. Also updates the hex buffer from stc.
   bool Replace(const wxUniChar& c);
   
-  /// Sets line and index from stc component.
-  void Set(int line, int pos);
+  /// Sets line and index from specified position on stc component.
+  void Set(int pos);
 private:
   int Convert(int offset) const;
   
