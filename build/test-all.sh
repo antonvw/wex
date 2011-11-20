@@ -13,8 +13,10 @@ ORG=$PWD
 echo "-- test base --"
 $TESTDIR/wxex-test-base > $ORG/test-base.log
 
-echo "-- test app --"
-$TESTDIR/wxex-test-app > $ORG/test-app.log
+echo "-- test gui --"
+$TESTDIR/wxex-test-gui > $ORG/test-gui.log
 
-echo "-- test report --"
-$TESTDIR/wxex-test-rep > $ORG/test-rep.log
+echo "-- test gui report --"
+$TESTDIR/wxex-test-gui-report > $ORG/test-gui-report.log
+
+cat *.log
