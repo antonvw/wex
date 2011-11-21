@@ -114,8 +114,8 @@ one of these applications, being a full featured source code text editor.
 
 - add a test for it in 
     extension/test/base, 
-    extension/test/app,
-    extension/test/report, where it has least dependencies,
+    extension/test/gui,
+    extension/test/gui-report, where it has least dependencies,
   run test-all.sh from the build dir, which collects output in several log files. 
 
 - add a sample for it in
