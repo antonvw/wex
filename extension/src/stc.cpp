@@ -873,7 +873,10 @@ bool wxExSTC::FindNext(
   }
   else
   {
-    wxLogStatus(wxEmptyString);
+    if (!recursive)
+    {
+      wxLogStatus(wxEmptyString);
+    }
     
     recursive = false;
 
