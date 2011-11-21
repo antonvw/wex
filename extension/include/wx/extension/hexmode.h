@@ -50,13 +50,13 @@ public:
   /// implied by current line and index.
   bool Goto() const;
   
-  /// Returns true if current index in within ascii field.
+  /// Returns true if current index is within ascii field.
   bool IsAsciiField() const;
   
-  /// Returns true if current index in within hex field.
+  /// Returns true if current index is within hex field.
   bool IsHexField() const;
   
-  /// Returns true if current index in within offset field.
+  /// Returns true if current index is within offset field.
   bool IsOffsetField() const;
   
   /// Returns true if current index refers to a readonly position in current line.
@@ -68,7 +68,7 @@ public:
   /// if on offset field or invalid field, returns wxSTC_INVALID_POSITION.
   int OtherField() const;
   
-  /// Replaces current line at current index with chari for
+  /// Replaces current line at current index with char for
   /// both ascii and hex field. Also updates the hex buffer from stc.
   bool Replace(const wxUniChar& c);
   

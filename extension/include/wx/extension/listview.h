@@ -112,9 +112,11 @@ public:
   wxExImageType GetImageType() const {return m_ImageType;};
 
   /// Gets the item text using item number and column name.
+  /// If you do not specify a column, the item label is returned
+  /// (this is also valid in non report mode).
   const wxString GetItemText(
     long item_number,
-    const wxString& col_name) const;
+    const wxString& col_name = wxEmptyString) const;
 
   /// Asks for an item number and goes to the item.
   bool GotoDialog(const wxString& caption = _("Enter Item Number"));

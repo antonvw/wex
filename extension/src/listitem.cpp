@@ -21,14 +21,15 @@ wxExListItem::wxExListItem(
   long itemnumber)
   : m_ListView(lv)
   , m_FileName(
-      (!lv->GetItemText(itemnumber, _("File Name")).empty() ?
-          lv->GetItemText(itemnumber, _("In Folder")) + wxFileName::GetPathSeparator() +
-          lv->GetItemText(itemnumber, _("File Name")) : wxString(wxEmptyString))
-      )
+    (!lv->GetItemText(itemnumber, _("File Name")).empty() ?
+        wxFileName(
+          lv->GetItemText(itemnumber, _("In Folder")),
+          lv->GetItemText(itemnumber, _("File Name"))) : 
+        lv->GetItemText(itemnumber)))
   , m_FileSpec(lv->GetItemText(itemnumber, _("Type")))
 {
   SetId(itemnumber);
-  m_IsReadOnly = (m_ListView->GetItemData(itemnumber) > 0);
+  m_IsReadOnly = (m_ListView->GetItemData(GetId()) > 0);
 }
 
 wxExListItem::wxExListItem(

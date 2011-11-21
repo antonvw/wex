@@ -455,6 +455,11 @@ const wxString wxExListView::GetItemText(
   long item_number,
   const wxString& col_name) const 
 {
+  if (col_name.empty())
+  {
+    return wxListView::GetItemText(item_number);
+  }
+  
   const int col = FindColumn(col_name);
   
   if (col < 0)
@@ -1321,10 +1326,18 @@ void wxExListViewFileName::OnCommand(wxCommandEvent& event)
 
   case wxID_ADD:   
     {
+      wxString defaultPath;
+      
+      if (GetSelectedItemCount() > 0)
+      {
+        defaultPath = wxExListItem(
+          this, GetFirstSelected()).GetFileName().GetFullPath();
+      }
+      
       wxDirDialog dir_dlg(
         this,
         _(wxDirSelectorPromptStr),
-        wxEmptyString,
+        defaultPath,
         wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
       if (dir_dlg.ShowModal() == wxID_OK)
