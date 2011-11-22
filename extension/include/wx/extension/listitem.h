@@ -10,7 +10,6 @@
 
 #include <wx/extension/listview.h>
 #include <wx/extension/statistics.h>
-#include <wx/extension/textfile.h> // for wxExRCS
 
 /// Offers a list item associated with a file on an wxExListView.
 class WXDLLIMPEXP_BASE wxExListItem : public wxListItem
@@ -52,9 +51,6 @@ public:
 
   /// Updates all attributes.
   void Update();
-
-  /// Sets revision list columns with data from specified rcs.
-  void UpdateRevisionList(const wxExRCS& rcs);
 private:
   void SetReadOnly(bool readonly);
 
