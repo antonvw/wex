@@ -971,6 +971,79 @@ wxExListViewFileName::wxExListViewFileName(wxWindow* parent,
   Initialize(lexer);
 }
 
+void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
+{
+  const int col_line_width = 250;
+
+  if (m_Type != LIST_PROCESS)
+  {
+    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+  }
+
+  switch (m_Type)
+  {
+  case LIST_COUNT:
+    // See wxExTextFileWithListView::Report, 
+    // the order in which columns are set should be the same there.
+    InsertColumn(wxExColumn(_("Lines")));
+    InsertColumn(wxExColumn(_("Lines Of Code")));
+    InsertColumn(wxExColumn(_("Empty Lines")));
+    InsertColumn(wxExColumn(_("Words Of Code")));
+    InsertColumn(wxExColumn(_("Comments")));
+    InsertColumn(wxExColumn(_("Comment Size")));
+  break;
+  case LIST_FIND:
+  case LIST_REPLACE:
+    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    InsertColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Line No")));
+  break;
+  case LIST_KEYWORD:
+    for (
+#ifdef wxExUSE_CPP0X	
+      auto it = lexer->GetKeywords().begin();
+#else
+      std::set<wxString>::iterator it = lexer->GetKeywords().begin();
+#endif	  
+      it != lexer->GetKeywords().end();
+      ++it)
+    {
+      InsertColumn(wxExColumn(*it));
+    }
+
+    InsertColumn(wxExColumn(_("Keywords")));
+  break;
+  case LIST_PROCESS:
+    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
+    InsertColumn(wxExColumn(_("Line No")));
+    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
+  break;
+  case LIST_REVISION:
+    InsertColumn(wxExColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400));
+    InsertColumn(wxExColumn(_("Date"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("Initials"), wxExColumn::COL_STRING));
+    InsertColumn(wxExColumn(_("Line No")));
+    InsertColumn(wxExColumn(_("Revision"), wxExColumn::COL_STRING));
+  break;
+  case LIST_SQL:
+    InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
+    InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
+    InsertColumn(wxExColumn(_("Line No")));
+  break;
+  default: break; // to prevent warnings
+  }
+
+  if (m_Type == LIST_REPLACE)
+  {
+    InsertColumn(wxExColumn(_("Replaced")));
+  }
+
+  InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
+  InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
+  InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
+  InsertColumn(wxExColumn(_("Size")));
+}
+
 void wxExListViewFileName::BuildPopupMenu(wxExMenu& menu)
 {
   wxExListView::BuildPopupMenu(menu);
@@ -1063,15 +1136,6 @@ void wxExListViewFileName::Initialize(const wxExLexer* lexer)
 {
   SetName(GetTypeDescription());
 
-  if (m_Type != LIST_FOLDER)
-  {
-    SetSingleStyle(wxLC_REPORT);
-  }
-  else
-  {
-    SetSingleStyle(wxLC_LIST);
-  }
-
   if (m_Type == LIST_KEYWORD)
   {
     if (lexer == NULL)
@@ -1082,78 +1146,16 @@ void wxExListViewFileName::Initialize(const wxExLexer* lexer)
 
     SetName(GetName() + " " + lexer->GetScintillaLexer());
   }
-
-  const int col_line_width = 250;
-
-  if (m_Type != LIST_PROCESS && m_Type != LIST_FOLDER)
-  {
-    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
-  }
-
-  switch (m_Type)
-  {
-  case LIST_COUNT:
-    // See wxExTextFileWithListView::Report, 
-    // the order in which columns are set should be the same there.
-    InsertColumn(wxExColumn(_("Lines")));
-    InsertColumn(wxExColumn(_("Lines Of Code")));
-    InsertColumn(wxExColumn(_("Empty Lines")));
-    InsertColumn(wxExColumn(_("Words Of Code")));
-    InsertColumn(wxExColumn(_("Comments")));
-    InsertColumn(wxExColumn(_("Comment Size")));
-  break;
-  case LIST_FIND:
-  case LIST_REPLACE:
-    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    InsertColumn(wxExColumn(_("Match"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Line No")));
-  break;
-  case LIST_KEYWORD:
-    for (
-#ifdef wxExUSE_CPP0X	
-      auto it = lexer->GetKeywords().begin();
-#else
-      std::set<wxString>::iterator it = lexer->GetKeywords().begin();
-#endif	  
-      it != lexer->GetKeywords().end();
-      ++it)
-    {
-      InsertColumn(wxExColumn(*it));
-    }
-
-    InsertColumn(wxExColumn(_("Keywords")));
-  break;
-  case LIST_PROCESS:
-    InsertColumn(wxExColumn(_("Line"), wxExColumn::COL_STRING, col_line_width));
-    InsertColumn(wxExColumn(_("Line No")));
-    InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
-  break;
-  case LIST_REVISION:
-    InsertColumn(wxExColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400));
-    InsertColumn(wxExColumn(_("Date"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("Initials"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Line No")));
-    InsertColumn(wxExColumn(_("Revision"), wxExColumn::COL_STRING));
-  break;
-  case LIST_SQL:
-    InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
-    InsertColumn(wxExColumn(_("Line No")));
-  break;
-  default: break; // to prevent warnings
-  }
-
-  if (m_Type == LIST_REPLACE)
-  {
-    InsertColumn(wxExColumn(_("Replaced")));
-  }
-
+  
   if (m_Type != LIST_FOLDER)
   {
-    InsertColumn(wxExColumn(_("Modified"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("In Folder"), wxExColumn::COL_STRING, 175));
-    InsertColumn(wxExColumn(_("Type"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Size")));
+    SetSingleStyle(wxLC_REPORT);
+    
+    AddColumns(lexer);
+  }
+  else
+  {
+    SetSingleStyle(wxLC_LIST);
   }
 }
 
@@ -1209,13 +1211,15 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
   {
     modified = true;
     
-    if (m_Type == LIST_FOLDER)
+    if (!(GetWindowStyle() & wxLC_REPORT))
     {
       wxExListItem(this, tk.GetNextToken()).Insert();
     }
     else
     {
-      wxStringTokenizer tkz(tk.GetNextToken(), GetFieldSeparator());
+      const wxString token(tk.GetNextToken());
+      wxStringTokenizer tkz(token, GetFieldSeparator());
+      
       if (tkz.HasMoreTokens())
       {
         const wxString value = tkz.GetNextToken();
@@ -1256,7 +1260,7 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
       }
       else
       {
-        wxExListItem(this, text).Insert();
+        wxExListItem(this, token).Insert();
       }
     }
   }

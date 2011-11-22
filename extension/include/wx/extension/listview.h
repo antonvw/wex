@@ -275,6 +275,7 @@ protected:
   void OnCommand(wxCommandEvent& event);
   void OnList(wxListEvent& event);
 private:
+  void AddColumns(const wxExLexer* lexer);
   void Initialize(const wxExLexer* lexer);
   const wxExListType m_Type;
 
