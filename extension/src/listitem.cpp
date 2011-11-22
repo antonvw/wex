@@ -148,11 +148,3 @@ void wxExListItem::Update()
     SetItem(_("Modified"), m_FileName.GetStat().GetModificationTime());
   }
 }
-
-void wxExListItem::UpdateRevisionList(const wxExRCS& rcs)
-{
-  SetItem(_("Revision"), rcs.GetRevisionNumber());
-  SetItem(_("Date"), rcs.GetRevisionTime().FormatISOCombined(' '));
-  SetItem(_("Initials"), rcs.GetUser());
-  SetItem(_("Revision Comment"), rcs.GetDescription());
-}

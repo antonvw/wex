@@ -215,7 +215,10 @@ void wxExTextFileWithListView::Report(size_t line)
   break;
 
   case ID_TOOL_REPORT_REVISION:
-    item.UpdateRevisionList(GetRCS());
+    item.SetItem(_("Revision"), GetRCS().GetRevisionNumber());
+    item.SetItem(_("Date"), GetRCS().GetRevisionTime().FormatISOCombined(' '));
+    item.SetItem(_("Initials"), GetRCS().GetUser());
+    item.SetItem(_("Revision Comment"), GetRCS().GetDescription());
   break;
 
 #if wxExUSE_EMBEDDED_SQL
