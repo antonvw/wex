@@ -16,7 +16,7 @@
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
 
-void wxExAppTestFixture::setUp()
+void wxExGuiTestFixture::setUp()
 {
   // Create the global lexers object, 
   // it should be present in ~/.wxex-test-app
@@ -24,7 +24,7 @@ void wxExAppTestFixture::setUp()
   wxExLexers* lexers = wxExLexers::Get();
 }
 
-void wxExAppTestFixture::testConfigItem()
+void wxExGuiTestFixture::testConfigItem()
 {
   std::vector <wxExConfigItem> items;
 
@@ -164,7 +164,7 @@ void wxExAppTestFixture::testConfigItem()
   CPPUNIT_ASSERT(!ci_st.ToConfig(false));
 }
 
-void wxExAppTestFixture::testFrame()
+void wxExGuiTestFixture::testFrame()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
@@ -180,7 +180,7 @@ void wxExAppTestFixture::testFrame()
   frame->SetupStatusBar(panes);
 }
 
-void wxExAppTestFixture::testFrd()
+void wxExGuiTestFixture::testFrd()
 {
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
@@ -201,14 +201,14 @@ void wxExAppTestFixture::testFrd()
   CPPUNIT_ASSERT(!frd->GetReplaceStrings().empty());
 }
 
-void wxExAppTestFixture::testGlobal()
+void wxExGuiTestFixture::testGlobal()
 {
   CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
 }
 
-void wxExAppTestFixture::testGrid()
+void wxExGuiTestFixture::testGrid()
 {
   wxExGrid* grid = new wxExGrid(wxTheApp->GetTopWindow());
   CPPUNIT_ASSERT(grid->CreateGrid(5, 5));
@@ -220,7 +220,7 @@ void wxExAppTestFixture::testGrid()
   CPPUNIT_ASSERT(grid->GetCellValue(0, 0) == "test1");
 }
 
-void wxExAppTestFixture::testHeader()
+void wxExGuiTestFixture::testHeader()
 {
   wxExFileName filename(TEST_FILE);
   wxExHeader header;
@@ -246,7 +246,7 @@ void wxExAppTestFixture::testHeader()
   CPPUNIT_ASSERT(newstr.Contains("Created"));
 }
 
-void wxExAppTestFixture::testHexMode()
+void wxExGuiTestFixture::testHexMode()
 {
   // 0000000000111111111222222222233333333334444444444555555555566666666666
   // 0123456789012345678901234567890123456789012345678901234567890123456789
@@ -313,7 +313,7 @@ void wxExAppTestFixture::testHexMode()
   CPPUNIT_ASSERT( hex.Goto());
 }
 
-void wxExAppTestFixture::testLexer()
+void wxExGuiTestFixture::testLexer()
 {
   wxExLexer lexer;
   lexer = wxExLexers::Get()->FindByText("// this is a cpp comment text");
@@ -351,7 +351,7 @@ void wxExAppTestFixture::testLexer()
   CPPUNIT_ASSERT(!lexer.GetKeywords().empty());
 }
 
-void wxExAppTestFixture::testLexers()
+void wxExGuiTestFixture::testLexers()
 {
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("wxSTC_MARK_LCORNER") == "10");
@@ -383,7 +383,43 @@ void wxExAppTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());
 }
 
-void wxExAppTestFixture::testListView()
+void wxExGuiTestFixture::testListItem()
+{
+  wxExListViewFileName* listView = new wxExListViewFileName(
+    wxTheApp->GetTopWindow(), wxExListViewFileName::LIST_FILE);
+  
+  wxStopWatch sw;
+  sw.Start();
+
+  const int max = 250;
+  for (int j = 0; j < max; j++)
+  {
+    wxExListItem item1(listView, wxExFileName("./test.h"));
+    item1.Insert();
+    wxExListItem item2(listView, wxExFileName("./test.cpp"));
+    item2.Insert();
+    wxExListItem item3(listView, wxExFileName("./main.cpp"));
+    item3.Insert();
+  }
+  
+  const long add = sw.Time();
+
+  printf("adding %d items took %ld milliseconds\n", 3 * max, add);
+  
+  sw.Start();
+  
+  // The File Name column must be translated, otherwise
+  // test fails.
+  listView->SortColumn(_("File Name"), SORT_ASCENDING);
+  
+  const long sort = sw.Time();
+  
+  printf("sorting %d items took %ld milliseconds\n", 3 * max, sort);
+    
+  CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
+}
+  
+void wxExGuiTestFixture::testListView()
 {
   wxExListView* listView = new wxExListView(wxTheApp->GetTopWindow());
   
@@ -395,7 +431,7 @@ void wxExAppTestFixture::testListView()
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
 }
 
-void wxExAppTestFixture::testMenu()
+void wxExGuiTestFixture::testMenu()
 {
   wxExMenu menu;
   
@@ -411,7 +447,7 @@ void wxExAppTestFixture::testMenu()
   // See alo testVCS.
 }
 
-void wxExAppTestFixture::testNotebook()
+void wxExGuiTestFixture::testNotebook()
 {
   wxExNotebook* notebook = new wxExNotebook(wxTheApp->GetTopWindow(), NULL);
   wxWindow* page1 = new wxWindow(wxTheApp->GetTopWindow(), wxID_ANY);
@@ -429,7 +465,7 @@ void wxExAppTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
-void wxExAppTestFixture::testProcess()
+void wxExGuiTestFixture::testProcess()
 {
   wxExProcess command;
   
@@ -446,7 +482,7 @@ void wxExAppTestFixture::testProcess()
 //  CPPUNIT_ASSERT( command.GetOutput().empty());
 }
 
-void wxExAppTestFixture::testStatusBar()
+void wxExGuiTestFixture::testStatusBar()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
 
@@ -471,7 +507,7 @@ void wxExAppTestFixture::testStatusBar()
   //CPPUNIT_ASSERT(!sb->SetStatusText("hello", "panexxx"));
 }
 
-void wxExAppTestFixture::testSTC()
+void wxExGuiTestFixture::testSTC()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   CPPUNIT_ASSERT(stc->GetText() == "hello stc");
@@ -518,7 +554,7 @@ void wxExAppTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
 }
   
-void wxExAppTestFixture::testSTCFile()
+void wxExGuiTestFixture::testSTCFile()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
   wxExSTCFile file(stc);
@@ -530,7 +566,7 @@ void wxExAppTestFixture::testSTCFile()
   // For more tests see testSTC.
 }
 
-void wxExAppTestFixture::testSTCShell()
+void wxExGuiTestFixture::testSTCShell()
 {
   wxExSTCShell* shell = new wxExSTCShell(wxTheApp->GetTopWindow());
   shell->Prompt("test1");
@@ -559,7 +595,7 @@ void wxExAppTestFixture::testSTCShell()
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
 }
 
-void wxExAppTestFixture::testUtil()
+void wxExGuiTestFixture::testUtil()
 {
   CPPUNIT_ASSERT( wxExAlignText("test", "header", true, true,
     wxExLexers::Get()->FindByName("cpp")).size() 
@@ -579,7 +615,7 @@ void wxExAppTestFixture::testUtil()
     "hello @PAGENUM@ from @PAGESCNT@", 1, 2).Contains("@"));
 }
 
-void wxExAppTestFixture::testVCS()
+void wxExGuiTestFixture::testVCS()
 {
   CPPUNIT_ASSERT(wxExVCS::GetCount() > 0);
   
@@ -614,7 +650,7 @@ void wxExAppTestFixture::testVCS()
   CPPUNIT_ASSERT( menu.AppendVCS() );
 }
 
-void wxExAppTestFixture::testVCSCommand()
+void wxExGuiTestFixture::testVCSCommand()
 {
   const wxExVCSCommand add("a&dd", 0);
   const wxExVCSCommand blame("blame", 1);
@@ -667,7 +703,7 @@ void wxExAppTestFixture::testVCSCommand()
   CPPUNIT_ASSERT(none.GetType() == wxExVCSCommand::VCS_COMMAND_IS_NONE);
 }
 
-void wxExAppTestFixture::testVCSEntry()
+void wxExGuiTestFixture::testVCSEntry()
 {
   wxExVCSEntry test;
   
@@ -687,7 +723,7 @@ void wxExAppTestFixture::testVCSEntry()
   CPPUNIT_ASSERT(!test.SupportKeywordExpansion());
 }
 
-void wxExAppTestFixture::testVi()
+void wxExGuiTestFixture::testVi()
 {
   wxConfigBase::Get()->Write(_("vi mode"), true);
  
@@ -734,91 +770,95 @@ void wxExAppTestFixture::testVi()
 wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testConfigItem",
-    &wxExAppTestFixture::testConfigItem));
+    &wxExGuiTestFixture::testConfigItem));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFrame",
-    &wxExAppTestFixture::testFrame));
+    &wxExGuiTestFixture::testFrame));
 
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFrd",
-    &wxExAppTestFixture::testFrd));
+    &wxExGuiTestFixture::testFrd));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testGlobal",
-    &wxExAppTestFixture::testGlobal));
+    &wxExGuiTestFixture::testGlobal));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testGrid",
-    &wxExAppTestFixture::testGrid));
+    &wxExGuiTestFixture::testGrid));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testHeader",
-    &wxExAppTestFixture::testHeader));
+    &wxExGuiTestFixture::testHeader));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testHexMode",
-    &wxExAppTestFixture::testHexMode));
+    &wxExGuiTestFixture::testHexMode));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testLexer",
-    &wxExAppTestFixture::testLexer));
+    &wxExGuiTestFixture::testLexer));
 
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testLexers",
-    &wxExAppTestFixture::testLexers));
+    &wxExGuiTestFixture::testLexers));
 
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testListItem",
+    &wxExGuiTestFixture::testListItem));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testListView",
-    &wxExAppTestFixture::testListView));
+    &wxExGuiTestFixture::testListView));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testMenu",
-    &wxExAppTestFixture::testMenu));
+    &wxExGuiTestFixture::testMenu));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testNotebook",
-    &wxExAppTestFixture::testNotebook));
+    &wxExGuiTestFixture::testNotebook));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testProcess",
-    &wxExAppTestFixture::testProcess));
+    &wxExGuiTestFixture::testProcess));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testStatusBar",
-    &wxExAppTestFixture::testStatusBar));
+    &wxExGuiTestFixture::testStatusBar));
 
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testSTC",
-    &wxExAppTestFixture::testSTC));
+    &wxExGuiTestFixture::testSTC));
  
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testSTCFile",
-    &wxExAppTestFixture::testSTCFile));
+    &wxExGuiTestFixture::testSTCFile));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testSTCShell",
-    &wxExAppTestFixture::testSTCShell));
+    &wxExGuiTestFixture::testSTCShell));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testUtil",
-    &wxExAppTestFixture::testUtil));
+    &wxExGuiTestFixture::testUtil));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVCS",
-    &wxExAppTestFixture::testVCS));
+    &wxExGuiTestFixture::testVCS));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVCSCommand",
-    &wxExAppTestFixture::testVCSCommand));
+    &wxExGuiTestFixture::testVCSCommand));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVCSEntry",
-    &wxExAppTestFixture::testVCSEntry));
+    &wxExGuiTestFixture::testVCSEntry));
     
-  addTest(new CppUnit::TestCaller<wxExAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVi",
-    &wxExAppTestFixture::testVi));
+    &wxExGuiTestFixture::testVi));
 }

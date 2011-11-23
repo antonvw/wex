@@ -11,6 +11,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/filename.h>
 #include <wx/extension/listitem.h>
+#include <wx/extension/textfile.h> // for wxExFileStatistics
 
 class wxExFrameWithHistory;
 class wxExListView;

@@ -33,14 +33,14 @@ private:
 
 /// CppUnit app test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
-class wxExAppTestFixture : public CppUnit::TestFixture
+class wxExGuiTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  wxExAppTestFixture() : TestFixture() {}; 
+  wxExGuiTestFixture() : TestFixture() {}; 
   
   /// Destructor.
- ~wxExAppTestFixture() {};
+ ~wxExGuiTestFixture() {};
 
   /// From TestFixture.
   /// Set up context before running a test.
@@ -58,6 +58,7 @@ public:
   void testHexMode();
   void testLexer();
   void testLexers();
+  void testListItem();
   void testListView();
   void testMenu();
   void testNotebook();

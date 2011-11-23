@@ -35,6 +35,7 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
   
+  void testConfig();
   void testDir();
   void testFile();
   void testFileName();

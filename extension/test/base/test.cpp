@@ -6,11 +6,36 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <TestCaller.h>
+#include <wx/config.h>
 #include <wx/extension/extension.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
 #define TEST_BIN "./test.bin"
+
+void wxExTestFixture::testConfig()
+{
+  wxConfig* cfg = new wxConfig(
+    wxEmptyString, 
+    wxEmptyString, 
+    "test.cfg", 
+    wxEmptyString, 
+    wxCONFIG_USE_LOCAL_FILE);
+    
+  const int max = 100000;
+
+  wxStopWatch sw;
+  sw.Start();
+
+  for (int j = 0; j < max; j++)
+  {
+    cfg->Read("test", 0l);
+  }
+
+  const long config = sw.Time();
+
+  printf("reading %d items from config took %ld milliseconds\n", max, config);
+}
 
 void wxExTestFixture::testDir()
 {
@@ -213,6 +238,10 @@ void wxExTestFixture::testTool()
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
+  addTest(new CppUnit::TestCaller<wxExTestFixture>(
+    "testConfig",
+    &wxExTestFixture::testConfig));
+    
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testDir",
     &wxExTestFixture::testDir));
