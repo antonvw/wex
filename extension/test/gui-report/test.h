@@ -13,19 +13,19 @@
 #include <wx/extension/app.h>
 
 /// CppUnit test suite.
-class wxExReportTestSuite : public CppUnit::TestSuite
+class wxExTestSuite : public CppUnit::TestSuite
 {
 public:
   /// Default constructor.
-  wxExReportTestSuite();
+  wxExTestSuite();
 };
 
 /// Derive your application from wxExApp.
-class wxExReportTestApp: public wxExApp
+class wxExTestApp: public wxExApp
 {
 public:
   /// Constructor.
-  wxExReportTestApp() {}
+  wxExTestApp() {}
 private:
   /// Override the OnInit.
   virtual bool OnInit();
@@ -33,14 +33,14 @@ private:
 
 /// CppUnit app test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
-class wxExReportAppTestFixture : public CppUnit::TestFixture
+class wxExGuiReportTestFixture : public CppUnit::TestFixture
 {
 public:
   /// Default constructor.
-  wxExReportAppTestFixture() : TestFixture() {};
+  wxExGuiReportTestFixture() : TestFixture() {};
 
   /// Destructor.
- ~wxExReportAppTestFixture() {};
+ ~wxExGuiReportTestFixture() {};
 
   /// From TestFixture.
   /// Set up context before running a test.
@@ -49,10 +49,8 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
 
-  void testConfig();
   void testDirWithListView();
   void testFrameWithHistory();
-  void testListItem();
   void testListViewFile();
   void testProcess();
   void testSTCWithFrame();

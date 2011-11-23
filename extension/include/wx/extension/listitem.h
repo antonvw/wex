@@ -8,6 +8,7 @@
 #ifndef _EX_REPORT_LISTITEM_H
 #define _EX_REPORT_LISTITEM_H
 
+#include <wx/extension/filename.h>
 #include <wx/extension/listview.h>
 #include <wx/extension/statistics.h>
 

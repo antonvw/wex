@@ -6,38 +6,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <TestCaller.h>
-#include <wx/config.h>
 #include <wx/extension/report/report.h>
 #include "test.h"
 
 #define TEST_FILE "./test.h"
 #define TEST_PRJ "./test-rep.prj"
 
-void wxExReportAppTestFixture::testConfig()
-{
-  wxConfig* cfg = new wxConfig(
-    wxEmptyString, 
-    wxEmptyString, 
-    "test.cfg", 
-    wxEmptyString, 
-    wxCONFIG_USE_LOCAL_FILE);
-    
-  const int max = 100000;
-
-  wxStopWatch sw;
-  sw.Start();
-
-  for (int j = 0; j < max; j++)
-  {
-    cfg->Read("test", 0l);
-  }
-
-  const long config = sw.Time();
-
-  printf("reading %d items from config took %ld milliseconds\n", max, config);
-}
-
-void wxExReportAppTestFixture::testDirWithListView()
+void wxExGuiReportTestFixture::testDirWithListView()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_PRJ);
@@ -46,7 +21,7 @@ void wxExReportAppTestFixture::testDirWithListView()
   CPPUNIT_ASSERT(dir->FindFiles());
 }
 
-void wxExReportAppTestFixture::testFrameWithHistory()
+void wxExGuiReportTestFixture::testFrameWithHistory()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   
@@ -66,44 +41,7 @@ void wxExReportAppTestFixture::testFrameWithHistory()
   CPPUNIT_ASSERT( frame->GetProcess()->IsSelected());
 }
 
-void wxExReportAppTestFixture::testListItem()
-{
-  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
-  wxExListViewFileName* listView = new wxExListViewFileName(
-    frame, wxExListViewFileName::LIST_FILE);
-  
-  wxStopWatch sw;
-  sw.Start();
-
-  const int max = 250;
-  for (int j = 0; j < max; j++)
-  {
-    wxExListItem item1(listView, wxExFileName("./test.h"));
-    item1.Insert();
-    wxExListItem item2(listView, wxExFileName("./test.cpp"));
-    item2.Insert();
-    wxExListItem item3(listView, wxExFileName("./main.cpp"));
-    item3.Insert();
-  }
-  
-  const long add = sw.Time();
-
-  printf("adding %d items took %ld milliseconds\n", 3 * max, add);
-  
-  sw.Start();
-  
-  // The File Name column must be translated, otherwise
-  // test fails.
-  listView->SortColumn(_("File Name"), SORT_ASCENDING);
-  
-  const long sort = sw.Time();
-  
-  printf("sorting %d items took %ld milliseconds\n", 3 * max, sort);
-    
-  CPPUNIT_ASSERT(listView->GetItemText(0, _("File Name")).Contains("main.cpp"));
-}
-  
-void wxExReportAppTestFixture::testListViewFile()
+void wxExGuiReportTestFixture::testListViewFile()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExListViewFile* listView = new wxExListViewFile(frame, frame, TEST_PRJ);
@@ -121,7 +59,7 @@ void wxExReportAppTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
 
-void wxExReportAppTestFixture::testProcess()
+void wxExGuiReportTestFixture::testProcess()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   
@@ -130,7 +68,7 @@ void wxExReportAppTestFixture::testProcess()
   CPPUNIT_ASSERT(process->IsSelected());
 }
 
-void wxExReportAppTestFixture::testSTCWithFrame()
+void wxExGuiReportTestFixture::testSTCWithFrame()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   wxExSTCWithFrame stc(frame, frame, wxExFileName(TEST_FILE));
@@ -138,34 +76,26 @@ void wxExReportAppTestFixture::testSTCWithFrame()
   CPPUNIT_ASSERT(stc.GetFileName().GetFullPath().Contains("test.h"));
 }
   
-wxExReportTestSuite::wxExReportTestSuite()
+wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
-    "testConfig",
-    &wxExReportAppTestFixture::testConfig));
-    
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testDirWithListView",
-    &wxExReportAppTestFixture::testDirWithListView));
+    &wxExGuiReportTestFixture::testDirWithListView));
     
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testFrameWithHistory",
-    &wxExReportAppTestFixture::testFrameWithHistory));
+    &wxExGuiReportTestFixture::testFrameWithHistory));
     
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
-    "testListItem",
-    &wxExReportAppTestFixture::testListItem));
-    
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testListViewFile",
-    &wxExReportAppTestFixture::testListViewFile));
+    &wxExGuiReportTestFixture::testListViewFile));
     
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testProcess",
-    &wxExReportAppTestFixture::testProcess));
+    &wxExGuiReportTestFixture::testProcess));
     
-  addTest(new CppUnit::TestCaller<wxExReportAppTestFixture>(
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testSTCWithFrame",
-    &wxExReportAppTestFixture::testSTCWithFrame));
+    &wxExGuiReportTestFixture::testSTCWithFrame));
 }

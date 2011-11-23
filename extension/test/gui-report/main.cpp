@@ -14,9 +14,9 @@
 #include <wx/extension/report/frame.h>
 #include "test.h"
 
-wxIMPLEMENT_APP(wxExReportTestApp);
+wxIMPLEMENT_APP(wxExTestApp);
 
-bool wxExReportTestApp::OnInit()
+bool wxExTestApp::OnInit()
 {
   SetAppName("wxex-test-gui-report");
 
@@ -34,7 +34,7 @@ bool wxExReportTestApp::OnInit()
     
   CppUnit::TextUi::TestRunner runner;
 
-  wxExReportTestSuite* suite = new wxExReportTestSuite;
+  wxExTestSuite* suite = new wxExTestSuite;
 
   runner.addTest(suite);
   runner.run();
