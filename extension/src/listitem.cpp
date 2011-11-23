@@ -76,14 +76,7 @@ void wxExListItem::Insert(long index)
   wxExFrame::UpdateStatusBar(m_ListView);
 #endif
 
-  if (m_FileName.GetStat().IsOk())
-  {
-    SetImage(wxExGetIconID(m_FileName));
-  }
-  else
-  {
-    SetImage(-1);
-  }
+  SetImage(m_FileName.GetStat().IsOk() ? wxExGetIconID(m_FileName): -1);
 
   if (!m_ListView->SetItem(*this))
   {
@@ -109,15 +102,9 @@ void wxExListItem::SetItem(int col_number, const wxString& text)
 
 void wxExListItem::SetReadOnly(bool readonly)
 {
-  if (readonly)
-  {
-    SetTextColour(wxConfigBase::Get()->ReadObject(
-      _("List Colour"), wxColour("RED")));
-  }
-  else
-  {
-    SetTextColour(*wxBLACK);
-  }
+  SetTextColour(readonly ? 
+    wxConfigBase::Get()->ReadObject(_("List Colour"), wxColour("RED")):
+    *wxBLACK);
 
   m_ListView->SetItem(*this);
 
