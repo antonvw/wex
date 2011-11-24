@@ -31,7 +31,7 @@ private:
   virtual bool OnInit();
 };
 
-/// CppUnit app test fixture.
+/// CppUnit gui test fixture.
 /// These classes require either an wxExApp object, or wx to be initialized.
 class wxExGuiTestFixture : public CppUnit::TestFixture
 {
@@ -49,24 +49,32 @@ public:
   /// Clean up after the test run.
   virtual void tearDown() {};
 
+  void testConfigDialog();
   void testConfigItem();
+  void testDialog();
   void testFrame();
   void testFrd();
-  void testGlobal();
   void testGrid();
   void testHeader();
   void testHexMode();
+  void testIndicator();
   void testLexer();
   void testLexers();
   void testListItem();
   void testListView();
+  void testManagedFrame();
+  void testMarker();
   void testMenu();
   void testNotebook();
+  void testOTL();
+  void testPrinting();
   void testProcess();
+  void testProperty();
+  void testShell();
   void testStatusBar();
   void testSTC();
   void testSTCFile();
-  void testSTCShell();
+  void testStyle();
   void testUtil();
   void testVCS();
   void testVCSCommand();

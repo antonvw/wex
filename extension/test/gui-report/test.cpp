@@ -59,6 +59,13 @@ void wxExGuiReportTestFixture::testListViewFile()
   CPPUNIT_ASSERT(listView->ItemFromText("test1\ntest2\n"));
 }
 
+void wxExGuiReportTestFixture::testListViewWithFrame()
+{
+  wxExTool tool(ID_TOOL_REPORT_FIND);
+  CPPUNIT_ASSERT(
+    wxExListViewWithFrame::GetTypeTool(tool) == wxExListViewWithFrame::LIST_FIND);
+}
+
 void wxExGuiReportTestFixture::testProcess()
 {
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
@@ -76,6 +83,14 @@ void wxExGuiReportTestFixture::testSTCWithFrame()
   CPPUNIT_ASSERT(stc.GetFileName().GetFullPath().Contains("test.h"));
 }
   
+void wxExGuiReportTestFixture::testTextFileWithListView()
+{
+  wxExTool tool(ID_TOOL_REPORT_FIND);
+  wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
+  
+  CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool, frame));
+}
+
 wxExTestSuite::wxExTestSuite()
   : CppUnit::TestSuite("wxexreport test suite")
 {
@@ -92,10 +107,18 @@ wxExTestSuite::wxExTestSuite()
     &wxExGuiReportTestFixture::testListViewFile));
     
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
+    "testListViewWithFrame",
+    &wxExGuiReportTestFixture::testListViewWithFrame));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testProcess",
     &wxExGuiReportTestFixture::testProcess));
     
   addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
     "testSTCWithFrame",
     &wxExGuiReportTestFixture::testSTCWithFrame));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiReportTestFixture>(
+    "testTextFileWithListView",
+    &wxExGuiReportTestFixture::testTextFileWithListView));
 }

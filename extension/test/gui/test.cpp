@@ -24,6 +24,20 @@ void wxExGuiTestFixture::setUp()
   wxExLexers* lexers = wxExLexers::Get();
 }
 
+void  wxExGuiTestFixture::testConfigDialog()
+{
+  std::vector <wxExConfigItem> items;
+  
+  wxExConfigItem ci_str("ci-string");
+  items.push_back(ci_str);
+  
+  wxExConfigDialog dlg(this, v);
+  
+  dlg.ForceCheckBoxChecked();
+  
+  dlg.Reload();
+}
+
 void wxExGuiTestFixture::testConfigItem()
 {
   std::vector <wxExConfigItem> items;
@@ -164,6 +178,11 @@ void wxExGuiTestFixture::testConfigItem()
   CPPUNIT_ASSERT(!ci_st.ToConfig(false));
 }
 
+void  wxExGuiTestFixture::testDialog()
+{
+  wxExDialog(this, "hello").ShowModal();
+}
+
 void wxExGuiTestFixture::testFrame()
 {
   wxExFrame* frame = (wxExFrame*)wxTheApp->GetTopWindow();
@@ -182,6 +201,8 @@ void wxExGuiTestFixture::testFrame()
 
 void wxExGuiTestFixture::testFrd()
 {
+  CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
+  
   wxExFindReplaceData* frd = wxExFindReplaceData::Get(); 
   
   frd->SetUseRegularExpression(true);
@@ -199,13 +220,6 @@ void wxExGuiTestFixture::testFrd()
   frd->SetReplaceString("replace[0-9]");
 
   CPPUNIT_ASSERT(!frd->GetReplaceStrings().empty());
-}
-
-void wxExGuiTestFixture::testGlobal()
-{
-  CPPUNIT_ASSERT(wxExFindReplaceData::Get() != NULL);
-  CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
-  CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
 }
 
 void wxExGuiTestFixture::testGrid()
@@ -313,6 +327,19 @@ void wxExGuiTestFixture::testHexMode()
   CPPUNIT_ASSERT( hex.Goto());
 }
 
+void wxExGuiTestFixture::testIndicator()
+{
+  wxExIndicator ind;
+  CPPUNIT_ASSERT( !ind.IsOk() );
+  
+  wxExIndicator indx(5);
+  wxExIndicator indy(7);
+  
+  CPPUNIT_ASSERT( indx.IsOk());
+  CPPUNIT_ASSERT( indy.IsOk());
+  CPPUNIT_ASSERT( indx < indy );
+}
+
 void wxExGuiTestFixture::testLexer()
 {
   wxExLexer lexer;
@@ -353,6 +380,8 @@ void wxExGuiTestFixture::testLexer()
 
 void wxExGuiTestFixture::testLexers()
 {
+  CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
+  
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("wxSTC_MARK_LCORNER") == "10");
 
@@ -431,6 +460,35 @@ void wxExGuiTestFixture::testListView()
   CPPUNIT_ASSERT(listView->FindColumn("Number") == 1);
 }
 
+void wxExGuiTestFixture::testManagedFrame()
+{
+  wxExManagedFrame* frame = (wxExManagedFrame*)wxTheApp->GetTopWindow();
+
+  CPPUNIT_ASSERT(!frame->AllowClose(100, NULL));
+  
+  wxExSTC* stc = new wxExSTC(frame, "hello world");
+  wxExVi* vi = &stc->GetVi();
+  
+  frame->GetViCommand(vi, "/");
+  
+  CPPUNIT_ASSERT( frame->GetViCommandIsFind());
+  CPPUNIT_ASSERT( frame->GetViCommandIsFindNext());
+  CPPUNIT_ASSERT(!frame->GetViCommandIsFindPrevious());
+}
+
+void wxExGuiTestFixture::testMarker()
+{
+  wxExMarker marker;
+  CPPUNIT_ASSERT( !marker.IsOk() );
+  
+  wxExMarker markerx(5);
+  wxExMarker markery(7);
+  
+  CPPUNIT_ASSERT( markerx.IsOk());
+  CPPUNIT_ASSERT( markery.IsOk());
+  CPPUNIT_ASSERT( markerx < markery );
+}
+
 void wxExGuiTestFixture::testMenu()
 {
   wxExMenu menu;
@@ -465,6 +523,24 @@ void wxExGuiTestFixture::testNotebook()
   CPPUNIT_ASSERT(notebook->GetPageByKey("keyx") == NULL);
 }
 
+void  wxExGuiTestFixture::testOTL()
+{
+#if wxExUSE_OTL
+  wxExOTL otl;
+  
+  CPPUNIT_ASSERT( otl.Datasource().empty());
+  CPPUNIT_ASSERT(!otl.IsConnected());
+  CPPUNIT_ASSERT(!otl.Logoff());
+  CPPUNIT_ASSERT( otl.Query("select * from world") == 0);
+#endif
+}
+
+void  wxExGuiTestFixture::testPrinting()
+{
+  CPPUNIT_ASSERT(wxExPrinting::Get() != NULL);
+  CPPUNIT_ASSERT(wxExPrinting::Get()->GetPrinter() != NULL);
+}
+
 void wxExGuiTestFixture::testProcess()
 {
   wxExProcess command;
@@ -480,6 +556,55 @@ void wxExGuiTestFixture::testProcess()
 //  CPPUNIT_ASSERT( command.Execute("xxxx") == -1);
 //  CPPUNIT_ASSERT( command.GetError());
 //  CPPUNIT_ASSERT( command.GetOutput().empty());
+}
+
+void wxExGuiTestFixture::testProperty()
+{
+  wxExProperty inv;
+  CPPUNIT_ASSERT( !inv.IsOk() );
+  
+  wxExProperty prop("man", "ugly");
+  
+  CPPUNIT_ASSERT( prop.IsOk());
+  
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  
+  propx.Apply(stc);
+  CPPUNIT_ASSERT( prop.IsOk());
+  
+  propx.ApplyReset(stc);
+  CPPUNIT_ASSERT( prop.IsOk());
+  
+  CPPUNIT_ASSERT( prop.GetName() == "man");
+}
+
+void wxExGuiTestFixture::testShell()
+{
+  wxExSTCShell* shell = new wxExSTCShell(wxTheApp->GetTopWindow());
+  shell->Prompt("test1");
+  shell->Prompt("test2");
+  shell->Prompt("test3");
+  shell->Prompt("test4");
+
+  // Prompting does not add a command to history.
+  CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
+
+  // Post 3 'a' chars to the shell, and check whether it comes in the history.
+  wxKeyEvent event(wxEVT_CHAR);
+  event.m_keyCode = 97; // one char 'a'
+  wxPostEvent(shell, event);
+  wxPostEvent(shell, event);
+  wxPostEvent(shell, event);
+  event.m_keyCode = WXK_RETURN;
+  wxPostEvent(shell, event);
+
+  // Sleep a little to allow the event queue for shell to be processed.
+  // TODO: Use wxUiActionSimulator for this.
+  //wxYield();
+  //wxMilliSleep(10);
+  //CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
+
+  CPPUNIT_ASSERT(shell->GetPrompt() == ">");
 }
 
 void wxExGuiTestFixture::testStatusBar()
@@ -566,33 +691,23 @@ void wxExGuiTestFixture::testSTCFile()
   // For more tests see testSTC.
 }
 
-void wxExGuiTestFixture::testSTCShell()
+void wxExGuiTestFixture::testStyle()
 {
-  wxExSTCShell* shell = new wxExSTCShell(wxTheApp->GetTopWindow());
-  shell->Prompt("test1");
-  shell->Prompt("test2");
-  shell->Prompt("test3");
-  shell->Prompt("test4");
-
-  // Prompting does not add a command to history.
-  CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
-
-  // Post 3 'a' chars to the shell, and check whether it comes in the history.
-  wxKeyEvent event(wxEVT_CHAR);
-  event.m_keyCode = 97; // one char 'a'
-  wxPostEvent(shell, event);
-  wxPostEvent(shell, event);
-  wxPostEvent(shell, event);
-  event.m_keyCode = WXK_RETURN;
-  wxPostEvent(shell, event);
-
-  // Sleep a little to allow the event queue for shell to be processed.
-  // TODO: Use wxUiActionSimulator for this.
-  //wxYield();
-  //wxMilliSleep(10);
-  //CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
-
-  CPPUNIT_ASSERT(shell->GetPrompt() == ">");
+  wxExStyle inv;
+  CPPUNIT_ASSERT(!inv.IsOk() );
+  
+  wxExStyle test("man", "ugly");
+  
+  CPPUNIT_ASSERT( !test.IsOk()); // no should be a number??
+  
+  wxExStyle style("55", "ugly");
+  
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
+  
+  style.Apply(stc);
+  CPPUNIT_ASSERT( style.IsOk());
+  
+  CPPUNIT_ASSERT(!style.ContainsDefaultStyle());
 }
 
 void wxExGuiTestFixture::testUtil()
@@ -771,8 +886,16 @@ wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testConfigDialog",
+    &wxExGuiTestFixture::testConfigDialog));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testConfigItem",
     &wxExGuiTestFixture::testConfigItem));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testDialog",
+    &wxExGuiTestFixture::testDialog));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFrame",
@@ -781,10 +904,6 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testFrd",
     &wxExGuiTestFixture::testFrd));
-    
-  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
-    "testGlobal",
-    &wxExGuiTestFixture::testGlobal));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testGrid",
@@ -797,6 +916,10 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testHexMode",
     &wxExGuiTestFixture::testHexMode));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testIndicator",
+    &wxExGuiTestFixture::testIndicator));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testLexer",
@@ -815,6 +938,14 @@ wxExAppTestSuite::wxExAppTestSuite()
     &wxExGuiTestFixture::testListView));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testManagedFrame",
+    &wxExGuiTestFixture::testManagedFrame));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testMarker",
+    &wxExGuiTestFixture::testMarker));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testMenu",
     &wxExGuiTestFixture::testMenu));
     
@@ -823,8 +954,24 @@ wxExAppTestSuite::wxExAppTestSuite()
     &wxExGuiTestFixture::testNotebook));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testOTL",
+    &wxExGuiTestFixture::testOTL));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testPrinting",
+    &wxExGuiTestFixture::testPrinting));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testProcess",
     &wxExGuiTestFixture::testProcess));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testProperty",
+    &wxExGuiTestFixture::testProperty));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testShell",
+    &wxExGuiTestFixture::testShell));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testStatusBar",
@@ -839,8 +986,8 @@ wxExAppTestSuite::wxExAppTestSuite()
     &wxExGuiTestFixture::testSTCFile));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
-    "testSTCShell",
-    &wxExGuiTestFixture::testSTCShell));
+    "testStyle",
+    &wxExGuiTestFixture::testStyle));
     
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testUtil",
