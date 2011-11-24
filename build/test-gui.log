@@ -1,8 +1,8 @@
-..........adding 750 items took 3129 milliseconds
-sorting 750 items took 2278 milliseconds
-.............
+............adding 750 items took 2333 milliseconds
+sorting 750 items took 1699 milliseconds
+...................
 
 
-OK (23 tests)
+OK (31 tests)
 
 

@@ -26,9 +26,9 @@ wxExIndicator::wxExIndicator(const wxXmlNode* node)
   }
 }
 
-wxExIndicator::wxExIndicator(int no)
+wxExIndicator::wxExIndicator(int no, int style)
   : m_No(no)
-  , m_Style(-1)
+  , m_Style(style)
   , m_Under(false)
 {
 }
@@ -61,8 +61,8 @@ void wxExIndicator::Apply(wxStyledTextCtrl* stc) const
 bool wxExIndicator::IsOk() const
 {
   return 
-    m_No >= 0 && m_Style >= 0 &&
-    m_No <= wxSTC_INDIC_MAX && m_Style <= wxSTC_INDIC_ROUNDBOX;
+    m_No >= 0 && m_No <= wxSTC_INDIC_MAX &&
+    m_Style >= 0 && m_Style <= wxSTC_INDIC_ROUNDBOX;
 }
 
 void wxExIndicator::Set(const wxXmlNode* node)

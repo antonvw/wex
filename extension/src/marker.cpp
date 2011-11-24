@@ -25,9 +25,9 @@ wxExMarker::wxExMarker(const wxXmlNode* node)
   }
 }
 
-wxExMarker::wxExMarker(int no)
+wxExMarker::wxExMarker(int no, int symbol)
   : m_No(no)
-  , m_Symbol(-1)
+  , m_Symbol(symbol)
 {
 }
 
@@ -56,8 +56,8 @@ void wxExMarker::Apply(wxStyledTextCtrl* stc) const
 bool wxExMarker::IsOk() const
 {
   return 
-    m_No >= 0 && m_Symbol >= 0 &&
-    m_No <= wxSTC_MARKER_MAX && m_Symbol <= wxSTC_MARKER_MAX;
+    m_No >= 0 && m_No <= wxSTC_MARKER_MAX &&
+    m_Symbol >= 0 && m_Symbol <= wxSTC_MARKER_MAX;
 }
 
 void wxExMarker::Set(const wxXmlNode* node)

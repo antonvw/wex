@@ -21,7 +21,7 @@ public:
   wxExIndicator(const wxXmlNode* node = NULL);
 
   /// Constructor.
-  wxExIndicator(int no);
+  wxExIndicator(int no, int style);
 
   /// < operator
   bool operator<(const wxExIndicator& i) const;

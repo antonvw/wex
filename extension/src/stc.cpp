@@ -82,7 +82,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
-  , m_MarkerChange(1)
+  , m_MarkerChange(1, -1)
   , m_vi(wxExVi(this))
   , m_File(this)
 {
@@ -126,7 +126,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_MarginDividerNumber(1)
   , m_MarginFoldingNumber(2)
   , m_MarginLineNumber(0)
-  , m_MarkerChange(1)
+  , m_MarkerChange(1, -1)
   , m_Flags(flags)
   , m_MenuFlags(menu_flags)
   , m_vi(wxExVi(this))

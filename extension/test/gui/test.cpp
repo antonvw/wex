@@ -31,7 +31,7 @@ void  wxExGuiTestFixture::testConfigDialog()
   wxExConfigItem ci_str("ci-string");
   items.push_back(ci_str);
   
-  wxExConfigDialog dlg(this, v);
+  wxExConfigDialog dlg(wxTheApp->GetTopWindow(), items);
   
   dlg.ForceCheckBoxChecked();
   
@@ -178,9 +178,9 @@ void wxExGuiTestFixture::testConfigItem()
   CPPUNIT_ASSERT(!ci_st.ToConfig(false));
 }
 
-void  wxExGuiTestFixture::testDialog()
+void wxExGuiTestFixture::testDialog()
 {
-  wxExDialog(this, "hello").ShowModal();
+  wxExDialog(wxTheApp->GetTopWindow(), "hello").Show();
 }
 
 void wxExGuiTestFixture::testFrame()
@@ -332,8 +332,8 @@ void wxExGuiTestFixture::testIndicator()
   wxExIndicator ind;
   CPPUNIT_ASSERT( !ind.IsOk() );
   
-  wxExIndicator indx(5);
-  wxExIndicator indy(7);
+  wxExIndicator indx(5, 2);
+  wxExIndicator indy(7, 5);
   
   CPPUNIT_ASSERT( indx.IsOk());
   CPPUNIT_ASSERT( indy.IsOk());
@@ -406,8 +406,8 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0)));
-  CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0)));
+  CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
+  CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
 
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());
 }
@@ -464,7 +464,7 @@ void wxExGuiTestFixture::testManagedFrame()
 {
   wxExManagedFrame* frame = (wxExManagedFrame*)wxTheApp->GetTopWindow();
 
-  CPPUNIT_ASSERT(!frame->AllowClose(100, NULL));
+  CPPUNIT_ASSERT(frame->AllowClose(100, NULL));
   
   wxExSTC* stc = new wxExSTC(frame, "hello world");
   wxExVi* vi = &stc->GetVi();
@@ -481,8 +481,8 @@ void wxExGuiTestFixture::testMarker()
   wxExMarker marker;
   CPPUNIT_ASSERT( !marker.IsOk() );
   
-  wxExMarker markerx(5);
-  wxExMarker markery(7);
+  wxExMarker markerx(5, 2);
+  wxExMarker markery(7, 5);
   
   CPPUNIT_ASSERT( markerx.IsOk());
   CPPUNIT_ASSERT( markery.IsOk());
@@ -569,10 +569,10 @@ void wxExGuiTestFixture::testProperty()
   
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   
-  propx.Apply(stc);
+  prop.Apply(stc);
   CPPUNIT_ASSERT( prop.IsOk());
   
-  propx.ApplyReset(stc);
+  prop.ApplyReset(stc);
   CPPUNIT_ASSERT( prop.IsOk());
   
   CPPUNIT_ASSERT( prop.GetName() == "man");

@@ -88,7 +88,8 @@ void wxExGuiReportTestFixture::testTextFileWithListView()
   wxExTool tool(ID_TOOL_REPORT_FIND);
   wxExFrameWithHistory* frame = (wxExFrameWithHistory *)wxTheApp->GetTopWindow();
   
-  CPPUNIT_ASSERT(wxExTextFileWithListView::SetupTool(tool, frame));
+  // We have no reports, so setup should fail.
+  CPPUNIT_ASSERT(!wxExTextFileWithListView::SetupTool(tool, frame));
 }
 
 wxExTestSuite::wxExTestSuite()

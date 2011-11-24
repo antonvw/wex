@@ -21,7 +21,7 @@ public:
   wxExMarker(const wxXmlNode* node = NULL);
 
   /// Constructor.
-  wxExMarker(int no);
+  wxExMarker(int no, int symbol);
 
   /// < operator
   bool operator<(const wxExMarker& m) const;
