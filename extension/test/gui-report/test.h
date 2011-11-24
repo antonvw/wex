@@ -52,8 +52,10 @@ public:
   void testDirWithListView();
   void testFrameWithHistory();
   void testListViewFile();
+  void testListViewWithFrame();
   void testProcess();
   void testSTCWithFrame();
+  void testTextFileWithListView();
 };
 #endif
 
