@@ -88,15 +88,17 @@ void wxExListItem::Insert(long index)
 
   if (col > 0)
   {
-    SetItem(col, filename);
+    m_ListView->SetItem(GetId(), col, filename);
   }
 }
 
-void wxExListItem::SetItem(int col_number, const wxString& text) 
+void wxExListItem::SetItem(const wxString& col_name, const wxString& text) 
 {
-  if (col_number != -1)
+  const int col = m_ListView->FindColumn(col_name);
+  
+  if (col != -1)
   {
-    m_ListView->SetItem(GetId(), col_number, text);
+    m_ListView->SetItem(GetId(), col, text);
   }
 }
 

@@ -20,9 +20,6 @@ public:
   /// Default constructor. Calls Sync.
   wxExStat(const wxString& fullpath = wxEmptyString);
 
-  /// Gets the fullpath member.
-  const wxString& GetFullPath() const {return m_FullPath;};
-
   /// Gets the modification time.
   /// From wxFileName class GetModificationTime is available as well,
   /// this one returns string and only uses the stat member, and is fast.

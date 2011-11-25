@@ -150,15 +150,6 @@ public:
     return (GetImageType() == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
-  /// Sorts on a column.
-  /// If you specified use_images,
-  /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
-  /// it is sorted ascending or descending.
-  /// By using wxArtProvider CreateBitmap you can override this image to provide your own one.
-  void SortColumn(
-    int column_no, 
-    wxExSortType sort_method = SORT_TOGGLE);
-
   /// Sorts on a column specified by column name.
   void SortColumn(
     const wxString& column_name, 
@@ -195,6 +186,14 @@ private:
     }}
   void EditSelectAll() {
     SetItemState(-1, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);};
+  /// Sorts on a column.
+  /// If you specified use_images,
+  /// the column that is sorted gets an image (wxART_GO_DOWN or wxART_GO_UP), depending on whether
+  /// it is sorted ascending or descending.
+  /// By using wxArtProvider CreateBitmap you can override this image to provide your own one.
+  void SortColumn(
+    int column_no, 
+    wxExSortType sort_method = SORT_TOGGLE);
 
   const wxUniChar m_FieldSeparator;
   const wxExImageType m_ImageType;

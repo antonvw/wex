@@ -43,12 +43,8 @@ public:
   /// Returns true if this item is readonly (on the listview).
   bool IsReadOnly() const {return m_IsReadOnly;};
 
-  /// Sets the item text using column number.
-  void SetItem(int col_number, const wxString& text);
-
   /// Sets the item text using column name.
-  void SetItem(const wxString& col_name, const wxString& text) {
-    SetItem(m_ListView->FindColumn(col_name), text);};
+  void SetItem(const wxString& col_name, const wxString& text);
 
   /// Updates all attributes.
   void Update();
