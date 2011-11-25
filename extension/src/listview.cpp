@@ -1242,7 +1242,7 @@ bool wxExListViewFileName::ItemFromText(const wxString& text)
                 col != FindColumn(_("Size")) &&
                 col != FindColumn(_("Modified")))
             {
-              item.SetItem(col, value);
+              SetItem(item.GetId(), col, value);
             }
   
             col++;

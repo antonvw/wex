@@ -278,11 +278,13 @@ void wxExTextFileWithListView::ReportStatistics()
       
       if (it != stat.GetItems().end())
       {
-        item.SetItem(i + 1, wxString::Format("%ld", it->second));
+        m_Report->SetItem(item.GetId(), i + 1, wxString::Format("%ld", it->second));
         total += it->second;
       }
     }
-    item.SetItem(
+    
+    m_Report->SetItem(
+      item.GetId(),
       GetFileName().GetLexer().GetKeywords().size() + 1,
       wxString::Format("%ld", total));
   }

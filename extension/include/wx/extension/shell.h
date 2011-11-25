@@ -73,6 +73,9 @@ public:
 
   /// Returns whether shell processing is enabled.
   bool GetShellEnabled() const {return m_Enabled;};
+  
+  /// Processes specified key (public for testing).
+  void OnKey(wxKeyEvent& event);
 
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
   /// and empties the undo buffer. 
@@ -92,7 +95,6 @@ public:
     if (do_prompt) Prompt();};
 protected:
   void OnCommand(wxCommandEvent& event);
-  void OnKey(wxKeyEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void KeepCommand();
