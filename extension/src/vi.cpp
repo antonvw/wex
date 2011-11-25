@@ -407,6 +407,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           m_STC->CharRight();
           m_STC->DeleteBack(); 
         }
+        m_STC->MarkerAddChange(GetCurrentLine());
         break;
 
       case 'D': 
