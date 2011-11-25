@@ -29,7 +29,7 @@ wxString wxExVi::m_LastFindCharCommand;
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
   , m_IsActive(false)
-  , m_MarkerSymbol(0)
+  , m_MarkerSymbol(0, -1)
   , m_InsertMode(false)
   , m_InsertRepeatCount(1)
   , m_SearchFlags(wxSTC_FIND_REGEXP | wxFR_MATCHCASE)
@@ -1004,8 +1004,11 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
           repeat++;
         }
   
-        for (int i = 0; i < repeat; i++) m_STC->AddText("\t");
-        
+        m_STC->SetTargetStart(m_STC->GetCurrentPos());
+        m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
+        m_STC->ReplaceTarget(wxString('\t', repeat));
+        m_STC->MarkTargetChange();
+          
         m_LastCommand = m_Command + "\t";
         m_Command.clear();
       }

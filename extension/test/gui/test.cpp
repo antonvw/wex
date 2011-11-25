@@ -581,6 +581,9 @@ void wxExGuiTestFixture::testProperty()
 void wxExGuiTestFixture::testShell()
 {
   wxExSTCShell* shell = new wxExSTCShell(wxTheApp->GetTopWindow());
+  
+  CPPUNIT_ASSERT(shell->GetShellEnabled());
+  
   shell->Prompt("test1");
   shell->Prompt("test2");
   shell->Prompt("test3");
@@ -600,11 +603,15 @@ void wxExGuiTestFixture::testShell()
 
   // Sleep a little to allow the event queue for shell to be processed.
   // TODO: Use wxUiActionSimulator for this.
-  //wxYield();
-  //wxMilliSleep(10);
-  //CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
-
+  wxYield();
+  wxMilliSleep(10);
+  
+  CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
+  CPPUNIT_ASSERT(shell->GeCommand() == "aaa");
+  
+  shell->EnableShell(false);
+  CPPUNIT_ASSERT(!shell->GetShellEnabled());
 }
 
 void wxExGuiTestFixture::testStatusBar()
