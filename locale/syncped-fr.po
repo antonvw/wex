@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: syncped v2.9.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-14 20:07+0100\n"
-"PO-Revision-Date: 2011-08-17 21:55+0100\n"
-"Last-Translator: Emma van Wezenbeek <emmac.vw@gmail.com>\n"
+"POT-Creation-Date: 2011-11-26 19:25+0100\n"
+"PO-Revision-Date: 2011-11-26 19:25+0100\n"
+"Last-Translator: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "Language-Team: Anton van Wezenbeek <a.m.vanwezenbeek@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,47 +21,47 @@ msgstr ""
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: ../syncped\n"
 
-#: ../syncped/frame.cpp:121
+#: ../syncped/frame.cpp:122
 msgid "Project Files"
 msgstr "Fichiers de Projet"
 
-#: ../syncped/frame.cpp:177
+#: ../syncped/frame.cpp:178
 msgid "Files"
 msgstr "Fichiers"
 
-#: ../syncped/frame.cpp:184
+#: ../syncped/frame.cpp:185
 msgid "Projects"
 msgstr "Projets"
 
-#: ../syncped/frame.cpp:189
+#: ../syncped/frame.cpp:190
 msgid "Explorer"
 msgstr "Explorer"
 
-#: ../syncped/frame.cpp:194
+#: ../syncped/frame.cpp:195
 msgid "Ascii Table"
 msgstr "Ascii Tableu"
 
-#: ../syncped/frame.cpp:198
+#: ../syncped/frame.cpp:199
 msgid "History"
 msgstr "Histoire"
 
-#: ../syncped/frame.cpp:205
+#: ../syncped/frame.cpp:206
 msgid "Output"
 msgstr "Résultats"
 
-#: ../syncped/frame.cpp:379
+#: ../syncped/frame.cpp:389
 msgid "Select Projects"
 msgstr "Sélectionner des Projets"
 
-#: ../syncped/frame.cpp:425
+#: ../syncped/frame.cpp:435
 msgid "project"
 msgstr "projet"
 
-#: ../syncped/frame.cpp:425
+#: ../syncped/frame.cpp:435
 msgid "textfile"
 msgstr "Fichier"
 
-#: ../syncped/frame.cpp:556
+#: ../syncped/frame.cpp:568
 msgid ""
 "This program offers a portable text or binary editor\n"
 "with automatic syncing."
@@ -69,7 +69,7 @@ msgstr ""
 "Ce programme offre un texte portable ou éditeur binaire\n"
 "avec la synchronisation automatique."
 
-#: ../syncped/frame.cpp:561
+#: ../syncped/frame.cpp:573
 msgid ""
 " All its config files are read\n"
 "and saved in the same directory as where the executable is."
@@ -77,81 +77,73 @@ msgstr ""
 "Tous les fichiers de configuration\n"
 "stockés et lus dans le même dossier que le programme lui-même est."
 
-#: ../syncped/frame.cpp:567
-msgid "All rights reserved."
-msgstr "Tous droits réservés."
-
-#: ../syncped/frame.cpp:654
-msgid "File Save As"
-msgstr "Enregistrer comme"
-
-#: ../syncped/frame.cpp:720
+#: ../syncped/frame.cpp:731
 msgid "Editor Options"
 msgstr "Options de l'éditeur"
 
-#: ../syncped/frame.cpp:728
+#: ../syncped/frame.cpp:739
 msgid "Comparator"
 msgstr "Comparateur"
 
-#: ../syncped/frame.cpp:732
+#: ../syncped/frame.cpp:743
 msgid "Set Comparator"
 msgstr "Régler SVN et Comparateur "
 
-#: ../syncped/frame.cpp:739
-#: ../syncped/frame.cpp:747
+#: ../syncped/frame.cpp:750
+#: ../syncped/frame.cpp:758
 msgid "List Font"
 msgstr "Liste des Types de caractère"
 
-#: ../syncped/frame.cpp:744
+#: ../syncped/frame.cpp:755
 msgid "Set List Font"
 msgstr "Lijst lettertype instellen"
 
-#: ../syncped/frame.cpp:760
-#: ../syncped/frame.cpp:762
-#: ../syncped/frame.cpp:766
+#: ../syncped/frame.cpp:771
+#: ../syncped/frame.cpp:773
+#: ../syncped/frame.cpp:777
 msgid "List Colour"
 msgstr "Liste des Couleurs"
 
-#: ../syncped/frame.cpp:772
+#: ../syncped/frame.cpp:783
 msgid "Set List Read Only Colour"
 msgstr "Régler une Liste des Coulerurs"
 
-#: ../syncped/frame.cpp:822
+#: ../syncped/frame.cpp:833
 msgid "Project Save As"
 msgstr "Enregistrer le Projet comme"
 
-#: ../syncped/frame.cpp:1146
+#: ../syncped/frame.cpp:1157
 msgid "Cannot open file"
 msgstr "Impossible d'ouvrir le fichier"
 
-#: ../syncped/frame.cpp:1244
-#: ../syncped/frame.cpp:1256
+#: ../syncped/frame.cpp:1260
+#: ../syncped/frame.cpp:1272
 msgid "Input"
 msgstr "Entrée"
 
-#: ../syncped/frame.cpp:1245
+#: ../syncped/frame.cpp:1261
 msgid "Start Of Sequence"
 msgstr "Démarrer la Séquence"
 
-#: ../syncped/frame.cpp:1257
+#: ../syncped/frame.cpp:1273
 msgid "End Of Sequence"
 msgstr "Terminer Séquence"
 
-#: ../syncped/frame.cpp:1267
+#: ../syncped/frame.cpp:1283
 msgid "Start and end sequence should have same length"
 msgstr "Séquence de démarrage et de fin doivent avoir la même longueur"
 
-#: ../syncped/frame.cpp:1278
+#: ../syncped/frame.cpp:1294
 #, c-format
 msgid "Generate %ld lines"
 msgstr "Générer %ld des lignes"
 
-#: ../syncped/frame.cpp:1279
+#: ../syncped/frame.cpp:1295
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: ../syncped/frame.cpp:1344
-#: ../syncped/frame.cpp:1348
+#: ../syncped/frame.cpp:1360
+#: ../syncped/frame.cpp:1364
 msgid "Log"
 msgstr "Log"
 
@@ -322,6 +314,12 @@ msgstr "&Fenêtre"
 #: ../syncped/support.cpp:198
 msgid "&Options"
 msgstr "&Options"
+
+#~ msgid "All rights reserved."
+#~ msgstr "Tous droits réservés."
+
+#~ msgid "File Save As"
+#~ msgstr "Enregistrer comme"
 
 #~ msgid "Find &Next\tF3"
 #~ msgstr "Trouver & Prochaine \tF3"
