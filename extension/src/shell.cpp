@@ -19,6 +19,7 @@
 #if wxUSE_GUI
 
 BEGIN_EVENT_TABLE(wxExSTCShell, wxExSTC)
+  EVT_CHAR(wxExSTCShell::OnChar)
   EVT_KEY_DOWN(wxExSTCShell::OnKey)
   EVT_MENU(wxID_PASTE, wxExSTCShell::OnCommand)
   EVT_STC_CHARADDED(wxID_ANY, wxExSTCShell::OnStyledText)
@@ -121,6 +122,18 @@ void wxExSTCShell::EnableShell(bool enabled)
   }
 }
 
+const wxString wxExSTCShell::GetCommand() const
+{
+  if (!m_Commands.empty())
+  {
+    return m_Commands.back();
+  }
+  else
+  {
+    return wxEmptyString;
+  }
+}
+
 const wxString wxExSTCShell::GetHistory() const
 {
   return accumulate(m_Commands.begin(), m_Commands.end(), wxString());
@@ -158,6 +171,19 @@ void wxExSTCShell::OnCommand(wxCommandEvent& command)
   }
 }
 
+void wxExSTCShell::OnChar(wxKeyEvent& event)
+{
+  if (m_Enabled)
+  {
+    ProcessChar(event.GetKeyCode());
+  }
+  
+  if (m_Echo)
+  {
+    event.Skip();
+  }
+}
+
 void wxExSTCShell::OnKey(wxKeyEvent& event)
 {
   if (!m_Enabled)
@@ -168,77 +194,9 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   
   const int key = event.GetKeyCode();
 
-  // Enter key pressed, we might have entered a command.
   if (key == WXK_RETURN)
   {
-    // First get the command.
-    SetTargetStart(GetTextLength());
-    SetTargetEnd(0);
-    SetSearchFlags(wxSTC_FIND_REGEXP);
-
-    if (SearchInTarget("^" + m_Prompt + ".*") != -1)
-    {
-      m_Command = GetText().substr(
-        GetTargetStart() + m_Prompt.length(),
-        GetTextLength() - 1);
-      m_Command.Trim();
-    }
-
-    if (m_Command.empty())
-    {
-      Prompt();
-    }
-    else if (
-      m_CommandEnd == GetEOL() ||
-      m_Command.EndsWith(m_CommandEnd))
-    {
-      // We have a command.
-      EmptyUndoBuffer();
-
-      // History command.
-      if (m_Command == wxString("history") +
-         (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
-      {
-        KeepCommand();
-        ShowHistory();
-        Prompt();
-      }
-      // !.. command, get it from history.
-      else if (m_Command.StartsWith("!"))
-      {
-        if (SetCommandFromHistory(m_Command.substr(1)))
-        {
-          AppendText(GetEOL() + m_Command);
-
-          // We don't keep the command, so commands are not rearranged and
-          // repeatingly calling !5 always gives the same command, just as bash does.
-
-          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-          event.SetString(m_Command);
-          wxPostEvent(m_Handler, event);
-        }
-        else
-        {
-          Prompt(GetEOL() + m_Command + ": " + _("event not found"));
-        }
-      }
-      // Other command, send to parent.
-      else
-      {
-        KeepCommand();
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
-        event.SetString(m_Command);
-        wxPostEvent(m_Handler, event);
-      }
-
-      m_Command.clear();
-    }
-    else
-    {
-      if (m_Echo) event.Skip();
-    }
-
-    m_CommandsIterator = m_Commands.end();
+    // ProcessChar(key); ??
   }
   // Up or down key pressed, and at the end of document.
   else if ((key == WXK_UP || key == WXK_DOWN) &&
@@ -311,6 +269,68 @@ void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
   }
   
   // do nothing, keep event from sent to wxExSTC.
+}
+
+void wxExSTCShell::ProcessChar(int key)
+{
+  if (key == '\n')
+  {
+    if (m_Command.empty())
+    {
+      Prompt();
+    }
+    else if (
+      m_CommandEnd == GetEOL() ||
+      m_Command.EndsWith(m_CommandEnd))
+    {
+      // We have a command.
+      EmptyUndoBuffer();
+
+      // History command.
+      if (m_Command == wxString("history") +
+         (m_CommandEnd == GetEOL() ? wxString(wxEmptyString): m_CommandEnd))
+      {
+        KeepCommand();
+        ShowHistory();
+        Prompt();
+      }
+      // !.. command, get it from history.
+      else if (m_Command.StartsWith("!"))
+      {
+        if (SetCommandFromHistory(m_Command.substr(1)))
+        {
+          AppendText(GetEOL() + m_Command);
+
+          // We don't keep the command, so commands are not rearranged and
+          // repeatingly calling !5 always gives the same command, just as bash does.
+
+          wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+          event.SetString(m_Command);
+          wxPostEvent(m_Handler, event);
+        }
+        else
+        {
+          Prompt(GetEOL() + m_Command + ": " + _("event not found"));
+        }
+      }
+      // Other command, send to parent.
+      else
+      {
+        KeepCommand();
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, ID_SHELL_COMMAND);
+        event.SetString(m_Command);
+        wxPostEvent(m_Handler, event);
+      }
+
+      m_Command.clear();
+    }
+
+    m_CommandsIterator = m_Commands.end();
+  }
+  else
+  {
+    m_Command += wxChar(key);
+  }
 }
 
 void wxExSTCShell::Prompt(const wxString& text, bool add_eol)

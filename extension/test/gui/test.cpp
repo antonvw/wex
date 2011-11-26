@@ -593,17 +593,25 @@ void wxExGuiTestFixture::testShell()
   CPPUNIT_ASSERT(!shell->GetHistory().Contains("test4"));
 
   // Post 3 'a' chars to the shell, and check whether it comes in the history.
-  wxKeyEvent event(wxEVT_KEY_DOWN);
-  event.m_keyCode = 97; // one char 'a'
-  shell->OnKey(event);
-  shell->OnKey(event);
-  shell->OnKey(event);
-  event.m_keyCode = WXK_RETURN;
-  shell->OnKey(event);
+  shell->ProcessChar('a');
+  shell->ProcessChar('a');
+  shell->ProcessChar('a');
+  shell->ProcessChar('\n');
 
   CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
   CPPUNIT_ASSERT(shell->GetCommand() == "aaa");
+  
+  // Post 3 'b' chars to the shell, and check whether it comes in the history.
+  shell->ProcessChar('b');
+  shell->ProcessChar('b');
+  shell->ProcessChar('b');
+  shell->ProcessChar('\n');
+
+  CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
+  CPPUNIT_ASSERT(shell->GetHistory().Contains("bbb"));
+  CPPUNIT_ASSERT(shell->GetPrompt() == ">");
+  CPPUNIT_ASSERT(shell->GetCommand() == "bbb");
   
   shell->EnableShell(false);
   CPPUNIT_ASSERT(!shell->GetShellEnabled());

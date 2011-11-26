@@ -1,15 +1,8 @@
-............adding 750 items took 2356 milliseconds
-sorting 750 items took 1674 milliseconds
-..........F.........
+............adding 750 items took 2424 milliseconds
+sorting 750 items took 1708 milliseconds
+...................
 
 
-!!!FAILURES!!!
-Test Results:
-Run:  31   Failures: 1   Errors: 0
-
-
-1) test: testShell (F) line: 604 ../extension/test/gui/test.cpp
-assertion failed
-- Expression: shell->GetHistory().Contains("aaa")
+OK (31 tests)
 
 
