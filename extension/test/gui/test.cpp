@@ -596,7 +596,7 @@ void wxExGuiTestFixture::testShell()
   shell->ProcessChar('a');
   shell->ProcessChar('a');
   shell->ProcessChar('a');
-  shell->ProcessChar('\n');
+  shell->ProcessChar('\r');
 
   CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
   CPPUNIT_ASSERT(shell->GetPrompt() == ">");
@@ -606,7 +606,7 @@ void wxExGuiTestFixture::testShell()
   shell->ProcessChar('b');
   shell->ProcessChar('b');
   shell->ProcessChar('b');
-  shell->ProcessChar('\n');
+  shell->ProcessChar('\r');
 
   CPPUNIT_ASSERT(shell->GetHistory().Contains("aaa"));
   CPPUNIT_ASSERT(shell->GetHistory().Contains("bbb"));
@@ -615,6 +615,14 @@ void wxExGuiTestFixture::testShell()
   
   shell->EnableShell(false);
   CPPUNIT_ASSERT(!shell->GetShellEnabled());
+  
+  const wxString prompt("---------->");
+  shell->SetPrompt(prompt);
+  CPPUNIT_ASSERT(shell->GetPrompt() == prompt);
+  
+  shell->Prompt("test1");
+  shell->Prompt("test2");
+  CPPUNIT_ASSERT(shell->GetPrompt() == prompt);
 }
 
 void wxExGuiTestFixture::testStatusBar()
