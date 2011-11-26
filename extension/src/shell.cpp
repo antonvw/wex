@@ -196,7 +196,7 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
 
   if (key == WXK_RETURN)
   {
-    // ProcessChar(key); ??
+    ProcessChar(key);
   }
   // Up or down key pressed, and at the end of document.
   else if ((key == WXK_UP || key == WXK_DOWN) &&
@@ -273,7 +273,7 @@ void wxExSTCShell::OnStyledText(wxStyledTextEvent& event)
 
 void wxExSTCShell::ProcessChar(int key)
 {
-  if (key == '\n')
+  if (key == '\r')
   {
     if (m_Command.empty())
     {
@@ -450,7 +450,8 @@ void wxExSTCShell::ShowCommand(int key)
 
     if (m_CommandsIterator != m_Commands.end())
     {
-      ReplaceTarget(m_Prompt + *m_CommandsIterator);
+      m_Command = *m_CommandsIterator;
+      ReplaceTarget(m_Prompt + m_Command);
     }
     else
     {
