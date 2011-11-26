@@ -62,7 +62,7 @@ public:
   void EnableShell(bool enable = true);
   
   /// Gets last entered command.
-  const wxString& GetCommand() const {return m_Command;};
+  const wxString GetCommand() const;
   
   /// Gets all history commands as a string, 
   /// separated by a newline (for testing).
@@ -74,9 +74,9 @@ public:
   /// Returns whether shell processing is enabled.
   bool GetShellEnabled() const {return m_Enabled;};
   
-  /// Processes specified key (public for testing).
-  void OnKey(wxKeyEvent& event);
-
+  /// Processes specified char (public for testing).
+  void ProcessChar(int c);
+  
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
   /// and empties the undo buffer. 
   /// Default it also adds an eol before the prompt.
@@ -94,7 +94,9 @@ public:
     m_Prompt = prompt;
     if (do_prompt) Prompt();};
 protected:
+  void OnChar(wxKeyEvent& event);
   void OnCommand(wxCommandEvent& event);
+  void OnKey(wxKeyEvent& event);
   void OnStyledText(wxStyledTextEvent& event);
 private:
   void KeepCommand();
