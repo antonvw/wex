@@ -447,7 +447,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         for (int i = 0; i < repeat; i++) m_STC->DeleteBack(); break;
 
       case '/': 
-      case '?': m_Frame->GetViCommand(this, command);
+      case '?': m_Frame->GetViCommand(this, command.Last());
         break;
 
       case '.': DoCommand(m_LastCommand, true); break;
