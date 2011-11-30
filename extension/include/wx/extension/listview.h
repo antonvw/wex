@@ -108,9 +108,6 @@ public:
   /// Gets the field separator.
   const wxUniChar& GetFieldSeparator() const {return m_FieldSeparator;};
 
-  /// Gets image type.
-  wxExImageType GetImageType() const {return m_ImageType;};
-
   /// Gets the item text using item number and column name.
   /// If you do not specify a column, the item label is returned
   /// (this is also valid in non report mode).
@@ -142,12 +139,12 @@ public:
   /// Sets the item image, using the image list.
   /// If the listview does not already contain the image, it is added.
   bool SetItemImage(long item_number, const wxArtID& artid) {
-    return (GetImageType() == IMAGE_ART ?
+    return (m_ImageType == IMAGE_ART ?
       wxListView::SetItemImage(item_number, GetArtID(artid)): false);};
 
   /// Sets the item file icon image.
   bool SetItemImage(long item_number, int iconid) {
-    return (GetImageType() == IMAGE_FILE_ICON ?
+    return (m_ImageType == IMAGE_FILE_ICON ?
       wxListView::SetItemImage(item_number, iconid): false);};
 
   /// Sorts on a column specified by column name.
