@@ -44,6 +44,7 @@ enum
 enum
 {
   DATA_MESSAGE,
+  DATA_MESSAGE_RAW,
   DATA_READ,
   DATA_WRITE,
 };
@@ -261,13 +262,17 @@ void Frame::AppendText(wxExSTC* stc, const wxString& text, int mode)
   switch (mode)
   {
     case DATA_MESSAGE: break;
+    case DATA_MESSAGE_RAW: break;
     case DATA_READ: prefix = "r: "; break;
     case DATA_WRITE: prefix = "w: "; break;
   }
+
+  if (mode !=  DATA_MESSAGE_RAW)
+  {
+    stc->AppendText(wxDateTime::Now().Format() + " " + prefix);
+  }
   
-  stc->AppendText(wxDateTime::Now().Format() + " " + prefix);
-  
-  if (!stc->HexMode() || mode == DATA_MESSAGE)
+  if (!stc->HexMode() || mode == DATA_MESSAGE || mode == DATA_MESSAGE_RAW)
   {
     stc->AppendText(text);
   }
@@ -653,15 +658,23 @@ void Frame::OnSocket(wxSocketEvent& event)
           
           switch (m_Answer)
           {
-            case ANSWER_COMMAND: WriteDataToClient(
-              m_Shell->GetCommand().ToAscii(), sock); break;
+            case ANSWER_COMMAND: 
+              {
+              const wxString command(m_Shell->GetCommand());
+              if (command != "history")
+              {
+                WriteDataToClient(command.ToAscii(), sock); 
+              }
+              }
+              break;
+              
             case ANSWER_ECHO: WriteDataToClient(text.ToAscii(), sock); break;
             case ANSWER_FILE: WriteDataToClient(m_DataWindow->GetTextRaw(), sock); break;
           }
 
           if (GetManager().GetPane("SHELL").IsShown())
           {
-            AppendText(m_Shell, text, DATA_MESSAGE);
+            AppendText(m_Shell, text, DATA_MESSAGE_RAW);
             m_Shell->Prompt(wxEmptyString, false); // no eol
           }
         }

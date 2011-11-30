@@ -198,6 +198,11 @@ void wxExSTCShell::OnKey(wxKeyEvent& event)
   {
     ProcessChar(key);
   }
+  else if (key == WXK_BACK)
+  {
+    ProcessChar(key);
+    if (m_Echo) event.Skip();
+  }
   // Up or down key pressed, and at the end of document.
   else if ((key == WXK_UP || key == WXK_DOWN) &&
             GetCurrentPos() == GetTextLength())
@@ -326,6 +331,10 @@ void wxExSTCShell::ProcessChar(int key)
     }
 
     m_CommandsIterator = m_Commands.end();
+  }
+  else if (key == WXK_BACK)
+  {
+    m_Command = m_Command.Truncate(m_Command.size() - 1);
   }
   else
   {
