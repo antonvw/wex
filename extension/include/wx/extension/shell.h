@@ -74,8 +74,8 @@ public:
   /// Returns whether shell processing is enabled.
   bool GetShellEnabled() const {return m_Enabled;};
   
-  /// Processes specified char (public for testing).
-  void ProcessChar(int c);
+  /// Processes specified char.
+  virtual void ProcessChar(int c);
   
   /// Puts the text (if not empty) and a prompt at the end, goes to the end,
   /// and empties the undo buffer. 

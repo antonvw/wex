@@ -701,15 +701,15 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     return;
   }
 
-  static long value = ' '; // don't use 0 as default as NULL is not handled
+  static int value = ' '; // don't use 0 as default as NULL is not handled
 
   if (GetSelectedText().length() == 1)
   {
     value = GetSelectedText().GetChar(0);
   }
 
-  long new_value;
-  if ((new_value = wxGetNumberFromUser(_("Input") + " 0 - 255:",
+  int new_value;
+  if ((new_value = (int)wxGetNumberFromUser(_("Input") + " 0 - 255:",
     wxEmptyString,
     caption,
     value,
@@ -738,6 +738,8 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
     // InsertTextRaw do not add the length.
     // To be able to add NULLs this is the only way.
     SendMsg(SCI_ADDTEXT, 1, (wxIntPtr)buffer);
+    
+    ProcessChar(new_value);
   }
 }
 
