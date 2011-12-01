@@ -82,12 +82,6 @@ public:
   bool IsReportType() const {
     return m_Id > ID_TOOL_REPORT_FIRST && m_Id < ID_TOOL_REPORT_LAST;}
 
-  /// Is this tool a RCS type.
-  bool IsRCSType() const {
-    return
-      m_Id == ID_TOOL_REVISION_RECENT ||
-      m_Id == ID_TOOL_REPORT_REVISION;}
-
   /// Is this tool a statistics type.
   bool IsStatisticsType() const {
     return

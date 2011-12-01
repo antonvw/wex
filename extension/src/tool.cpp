@@ -19,8 +19,6 @@ wxExTool::wxExTool(int type)
 {
   if (m_ToolInfo.empty())
   {
-    AddInfo(ID_TOOL_REVISION_RECENT, _("Recent revision from"));
-    AddInfo(ID_TOOL_REPORT_REVISION, _("Reported %ld revisions in"), _("Report &Revision"));
     AddInfo(ID_TOOL_REPORT_COUNT, _("Counted"), _("Report &Count"));
     AddInfo(ID_TOOL_REPORT_FIND, _("Found %ld matches in"));
     AddInfo(ID_TOOL_REPORT_REPLACE, _("Replaced %ld matches in"));
