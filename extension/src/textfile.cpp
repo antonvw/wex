@@ -46,68 +46,6 @@ long wxExFileStatistics::Get(const wxString& key) const
   return 0;
 }
 
-const wxString REV_DATE_FORMAT = "%y%m%d";
-
-wxExRCS::wxExRCS()
-  : m_RevisionFormat(REV_DATE_FORMAT)
-{
-}
-
-void wxExRCS::AppendDescription(const wxString& text)
-{
-  m_Description += 
-    (m_Description.empty() ? wxString(" "): wxString(wxEmptyString)) + text;
-}
-
-const wxString wxExRCS::GetRevision() const
-{
-  wxString logtext;
-
-  if (!m_RevisionNumber.empty()) logtext << m_RevisionNumber << ' ';
-  if (m_RevisionTime.IsValid()) logtext << m_RevisionTime.Format(m_RevisionFormat) << ' ';
-  if (!m_User.empty()) logtext << m_User << ' ';
-  logtext << m_Description;
-
-  return logtext;
-}
-
-bool wxExRCS::SetRevision(wxString& text)
-{
-  // If there is a revision in the first word, store it.
-  wxString word = wxExGetWord(text);
-  if (word.find('.') != wxString::npos)
-  {
-    m_RevisionNumber = word;
-  }
-  else
-  {
-    m_RevisionNumber.clear();
-    text = word + " " + text; // put back the word!
-  }
-
-  const wxString REV_TIMESTAMP_FORMAT = "%y%m%d %H%M%S";
-
-  wxString::const_iterator end;
-
-  if      (m_RevisionTime.ParseFormat(text, REV_TIMESTAMP_FORMAT, &end))
-    m_RevisionFormat = REV_TIMESTAMP_FORMAT;
-  else if (m_RevisionTime.ParseFormat(text, REV_DATE_FORMAT, &end))
-    m_RevisionFormat = REV_DATE_FORMAT;
-  else
-  {
-    // At this moment we support no other formats.
-    return false;
-  }
-
-  text = wxString(end, text.end());
-  word = wxExGetWord(text);
-  m_User = word;
-  text.Trim();
-  m_Description = text;
-
-  return true;
-}
-
 wxExTextFile::wxExTextFile(
   const wxExFileName& filename,
   const wxExTool& tool)
@@ -121,10 +59,8 @@ wxExTextFile::wxExTextFile(
   , m_IsCommentStatement(false)
   , m_IsString(false)
   , m_Modified(false)
-  , m_RevisionActive(false)
   , m_LineMarker(0)
   , m_LineMarkerEnd(0)
-  , m_VersionLine(0)
 {
 }
 
@@ -229,21 +165,6 @@ void wxExTextFile::CommentStatementStart()
   m_Stats.m_Elements.Inc(
     _("Comment Size"),
     CommentBegin().length());
-}
-
-void wxExTextFile::EndCurrentRevision()
-{
-  if (m_RevisionActive)
-  {
-    IncActionsCompleted();
-
-    if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
-    {
-      Report(GetCurrentLine() - 1);
-    }
-
-    m_RevisionActive = false;
-  }
 }
 
 void wxExTextFile::InsertLine(const wxString& line)
@@ -396,63 +317,6 @@ bool wxExTextFile::Parse()
 
 bool wxExTextFile::ParseComments()
 {
-  if (m_Tool.IsRCSType())
-  {
-    if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION || m_VersionLine <= 1)
-    {
-      // this is the minimal prefix
-      if (m_Comments.length() >= 3)
-      {
-        const bool insert = 
-          (wxRegEx("^[\\*| ]   *").ReplaceFirst(&m_Comments, wxEmptyString) == 0);
-
-        m_Comments.Trim(); // from right, default
-
-        if (insert)
-        {
-          EndCurrentRevision();
-
-          if (!PrepareRevision())
-          {
-            m_Comments.clear();
-            return true;
-          }
-
-          m_RevisionActive = true;
-        }
-        else
-        {
-          if (m_VersionLine >= 1 && GetCurrentLine() == m_LineMarkerEnd + 1)
-          {
-            m_LineMarkerEnd = GetCurrentLine();
-            m_RCS.AppendDescription(m_Comments);
-          }
-          else
-          {
-            m_Comments.clear();
-            return true;
-          }
-        }
-      }
-    }
-
-    if (  m_AllowAction ||
-         // In case there is one revision comment, this is ended by an empty line.
-        (m_Tool.GetId() == ID_TOOL_REVISION_RECENT &&
-         !m_FinishedAction && m_VersionLine == 1 && m_EmptyLine)
-       )
-    {
-      if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT)
-      {
-        m_AllowAction = false;
-        // We are not yet finished, there might still be RCS keywords somewhere!
-        // m_FinishedAction = true;
-      }
-    }
-
-    m_Comments.clear();
-  }
-
   return true;
 }
 
@@ -571,15 +435,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
   if (line_contains_code)
   {
     m_Stats.m_Elements.Inc(_("Lines Of Code"));
-
-    // Finish action.
-    // However, some sources might contain revisions at the end of the file, 
-    // so these are not reported.
-    if (m_Stats.m_Elements.Get(_("Lines Of Code")) > 5 &&
-        m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
-    {
-      m_FinishedAction = true;
-    }
   }
 
   m_EmptyLine = (line.length() == 0);
@@ -599,48 +454,6 @@ bool wxExTextFile::ParseLine(const wxString& line)
   }
 
   return ParseComments();
-}
-
-bool wxExTextFile::PrepareRevision()
-{
-  if (m_Tool.GetId() == ID_TOOL_REVISION_RECENT ||
-      wxConfigBase::Get()->ReadBool("RCS/RecentOnly", false))
-  {
-    if (m_VersionLine == 1)
-    {
-      if (!m_FinishedAction)
-      {
-        m_AllowAction = true;
-      }
-
-      return false;
-    }
-  }
-
-  if (!m_RCS.SetRevision(m_Comments))
-  {
-    return false;
-  }
-
-  if (m_LineMarker == 0)
-  {
-    m_LineMarker = GetCurrentLine();
-    m_LineMarkerEnd = GetCurrentLine();
-  }
-
-  if (m_Tool.GetId() == ID_TOOL_REPORT_REVISION)
-  {
-    m_LineMarkerEnd = GetCurrentLine();
-  }
-
-  if (m_Tool.GetId() != ID_TOOL_REVISION_RECENT)
-  {
-    m_AllowAction = true;
-  }
-
-  m_VersionLine++;
-
-  return true;
 }
 
 bool wxExTextFile::RunTool()

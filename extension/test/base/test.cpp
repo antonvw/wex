@@ -95,13 +95,6 @@ void wxExTestFixture::testFileStatistics()
   CPPUNIT_ASSERT(!fileStatistics.Get().empty());
 }
 
-void wxExTestFixture::testRCS()
-{
-  wxExRCS rcs;
-  CPPUNIT_ASSERT(rcs.GetDescription().empty());
-  CPPUNIT_ASSERT(rcs.GetUser().empty());
-}
-
 void wxExTestFixture::testStat()
 {
   wxExStat stat(TEST_FILE);
@@ -257,10 +250,6 @@ wxExTestSuite::wxExTestSuite()
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testFileStatistics",
     &wxExTestFixture::testFileStatistics));
-
-  addTest(new CppUnit::TestCaller<wxExTestFixture>(
-    "testRCS",
-    &wxExTestFixture::testRCS));
 
   addTest(new CppUnit::TestCaller<wxExTestFixture>(
     "testStat",
