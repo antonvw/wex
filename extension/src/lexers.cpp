@@ -123,20 +123,21 @@ void wxExLexers::ApplyIndicators(wxStyledTextCtrl* stc) const
     std::bind2nd(std::mem_fun_ref(&wxExIndicator::Apply), stc));
 }
 
-const wxString wxExLexers::ApplyMacro(const wxString& text) const
+const wxString wxExLexers::ApplyMacro(
+  const wxString& text, const wxString& lexer) const
 {
 #ifdef wxExUSE_CPP0X	
-  const auto it = m_Macros.find(text);
+  const auto it = GetMacros(lexer).find(text);
 #else
-  const std::map<wxString, wxString>::const_iterator it = m_Macros.find(text);
+  const std::map<wxString, wxString>::const_iterator it = 
+    GetMacros(lexer).find(text);
 #endif  
-  if (it != m_Macros.end())
+  if (it != GetMacros(lexer).end())
   {
     return it->second;
   }
   else
   {
-  
 #ifdef wxExUSE_CPP0X	
     const auto it = 
       GetThemeMacros().find(text);
@@ -322,20 +323,19 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
-const std::map<wxString, wxString>& wxExLexers::GetMacros(const wxString& lexer) const
+const std::map<wxString, wxString>& wxExLexers::GetMacros(
+  const wxString& lexer) const
 {
-  const std::map<wxString, std::map<wxString, wxString> >::iterator it = 
+  const std::map<wxString, std::map<wxString, wxString> >::const_iterator it = 
     m_Macros.find(lexer);
   
-  if (it != macro_map.end())
+  if (it != m_Macros.end())
   {
-    return it.second;
+    return it->second;
   }
   else
   {
-    std::map<wxString, <wxString, wxString> > empty_map;
-    
-    return empty_map;
+    return m_Macros.begin()->second;
   }
 }
 
@@ -404,6 +404,9 @@ void wxExLexers::Initialize()
   m_TempColours.clear();
   m_TempMacros.clear();
   
+  const std::map<wxString, wxString> empty_map;
+  m_Macros["global"] = empty_map;
+    
   m_ThemeColours[m_NoTheme] = m_DefaultColours;
   m_ThemeMacros[m_NoTheme] = m_TempMacros;
 }
@@ -494,7 +497,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
     
       wxXmlNode* macro = child->GetChildren();
       
-      std::map macro_map<wxString, wxString>;
+      std::map <wxString, wxString>macro_map;
 
       while (macro)
       {
@@ -592,7 +595,8 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
     }
     else if (child->GetName() == "colour")
     {
-      m_TempColours[child->GetAttribute("name", "0")] = ApplyMacro(content);
+      m_TempColours[child->GetAttribute("name", "0")] = 
+        ApplyMacro(content);
     }
     
     child = child->GetNext();
