@@ -73,7 +73,7 @@ public:
   bool RunTool();
 protected:
   /// Invoked after comments have been found.
-  virtual bool ParseComments() {returnn true;};
+  virtual bool ParseComments() {return true;};
 
   // Virtual report generators.
   /// This one is invoked during parsing of lines.
