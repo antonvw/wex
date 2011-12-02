@@ -122,27 +122,10 @@ bool wxExLexer::ApplyLexer(
 
 void wxExLexer::AutoMatch(const wxString& lexer)
 {
-#ifdef wxExUSE_CPP0X	
-  auto itlow = 
-    wxExLexers::Get()->GetMacros().lower_bound(lexer);
-
-  auto itup = 
-    wxExLexers::Get()->GetMacros().upper_bound(lexer + "ZZZ");
-#else
-  std::map<wxString, wxString>::const_iterator itlow = 
-    wxExLexers::Get()->GetMacros().lower_bound(lexer);
-
-  std::map<wxString, wxString>::const_iterator itup = 
-    wxExLexers::Get()->GetMacros().upper_bound(lexer + "ZZZ");
-#endif	
-
   for (
-#ifdef wxExUSE_CPP0X	
-    auto it = itlow;
-#else
-    std::map<wxString, wxString>::const_iterator it = itlow;
-#endif	
-    it != itup;
+    std::map<wxString, wxString>::const_iterator it = 
+      wxExLexers::Get()->GetMacros(lexer).begin();
+    it != wxExLexers::Get()->GetMacros(lexer).end();
     ++it)
   {
     for (
@@ -399,22 +382,15 @@ void wxExLexer::Set(const wxXmlNode* node)
   }
   else
   {
-    if (!node->GetAttribute("display").empty())
-    {
-      m_DisplayLexer = node->GetAttribute("display");
-    }
-    else
-    {
-      m_DisplayLexer = m_ScintillaLexer;
-    }
+    m_DisplayLexer = (!node->GetAttribute("display").empty() ?
+      node->GetAttribute("display");
+      m_ScintillaLexer);
     
     m_Extensions = node->GetAttribute("extensions");
 
-
-    if (!node->GetAttribute("match").empty())
-    {
-      AutoMatch(node->GetAttribute("match"));
-    }
+    AutoMatch((!node->GetAttribute("macro").empty() ?
+      node->GetAttribute("macro")):
+      node->GetAttribute(m_ScintillaLexer));
 
     if (m_ScintillaLexer == "hypertext")
     {

@@ -10,1408 +10,1559 @@ Copyright: (c) 2011, Anton van Wezenbeek
 
 <lexers>
   <macro>
-  <!-- 
-    These macro's allow you to use text instead of numbers.
-    When adding a new macro from stc.h you can use the next regular expression:
-    find:    '#define \(.*\) \(.*\)'
-    replace: '    <def no ="\1"> \2 </def>'
-    -->
-    <def no ="wxSTC_MARK_CIRCLE"> 0 </def>
-    <def no ="wxSTC_MARK_ROUNDRECT"> 1 </def>
-    <def no ="wxSTC_MARK_ARROW"> 2 </def>
-    <def no ="wxSTC_MARK_SMALLRECT"> 3 </def>
-    <def no ="wxSTC_MARK_SHORTARROW"> 4 </def>
-    <def no ="wxSTC_MARK_EMPTY"> 5 </def>
-    <def no ="wxSTC_MARK_ARROWDOWN"> 6 </def>
-    <def no ="wxSTC_MARK_MINUS"> 7 </def>
-    <def no ="wxSTC_MARK_PLUS"> 8 </def>
-    <def no ="wxSTC_MARK_VLINE"> 9 </def>
-    <def no ="wxSTC_MARK_LCORNER"> 10 </def>
-    <def no ="wxSTC_MARK_TCORNER"> 11 </def>
-    <def no ="wxSTC_MARK_BOXPLUS"> 12 </def>
-    <def no ="wxSTC_MARK_BOXPLUSCONNECTED"> 13 </def>
-    <def no ="wxSTC_MARK_BOXMINUS"> 14 </def>
-    <def no ="wxSTC_MARK_BOXMINUSCONNECTED"> 15 </def>
-    <def no ="wxSTC_MARK_LCORNERCURVE"> 16 </def>
-    <def no ="wxSTC_MARK_TCORNERCURVE"> 17 </def>
-    <def no ="wxSTC_MARK_CIRCLEPLUS"> 18 </def>
-    <def no ="wxSTC_MARK_CIRCLEPLUSCONNECTED"> 19 </def>
-    <def no ="wxSTC_MARK_CIRCLEMINUS"> 20 </def>
-    <def no ="wxSTC_MARK_CIRCLEMINUSCONNECTED"> 21 </def>
-    <def no ="wxSTC_MARK_BACKGROUND"> 22 </def>
-    <def no ="wxSTC_MARK_DOTDOTDOT"> 23 </def>
-    <def no ="wxSTC_MARK_ARROWS"> 24 </def>
-    <def no ="wxSTC_MARK_PIXMAP"> 25 </def>
-    <def no ="wxSTC_MARK_FULLRECT"> 26 </def>
-    <def no ="wxSTC_MARKNUM_FOLDEREND"> 25 </def>
-    <def no ="wxSTC_MARKNUM_FOLDEROPENMID"> 26 </def>
-    <def no ="wxSTC_MARKNUM_FOLDERMIDTAIL"> 27 </def>
-    <def no ="wxSTC_MARKNUM_FOLDERTAIL"> 28 </def>
-    <def no ="wxSTC_MARKNUM_FOLDERSUB"> 29 </def>
-    <def no ="wxSTC_MARKNUM_FOLDER"> 30 </def>
-    <def no ="wxSTC_MARKNUM_FOLDEROPEN"> 31 </def>
-    <def no ="wxSTC_STYLE_DEFAULT"> 32 </def>
-    <def no ="wxSTC_STYLE_LINENUMBER"> 33 </def>
-    <def no ="wxSTC_STYLE_BRACELIGHT"> 34 </def>
-    <def no ="wxSTC_STYLE_BRACEBAD"> 35 </def>
-    <def no ="wxSTC_STYLE_CONTROLCHAR"> 36 </def>
-    <def no ="wxSTC_STYLE_INDENTGUIDE"> 37 </def>
-    <def no ="wxSTC_STYLE_CALLTIP"> 38 </def>
-    <def no ="wxSTC_INDIC_PLAIN"> 0 </def>
-    <def no ="wxSTC_INDIC_SQUIGGLE"> 1 </def>
-    <def no ="wxSTC_INDIC_TT"> 2 </def>
-    <def no ="wxSTC_INDIC_DIAGONAL"> 3 </def>
-    <def no ="wxSTC_INDIC_STRIKE"> 4 </def>
-    <def no ="wxSTC_INDIC_HIDDEN"> 5 </def>
-    <def no ="wxSTC_INDIC_BOX"> 6 </def>
-    <def no ="wxSTC_INDIC_ROUNDBOX"> 7 </def>
-    <def no ="wxSTC_INDIC_CONTAINER"> 8 </def>
-    <def no ="wxSTC_IV_NONE"> 0 </def>
-    <def no ="wxSTC_IV_REAL"> 1 </def>
-    <def no ="wxSTC_IV_LOOKFORWARD"> 2 </def>
-    <def no ="wxSTC_IV_LOOKBOTH"> 3 </def>
-    <!-- python -->
-    <def no ="wxSTC_P_DEFAULT"> 0 </def>
-    <def no ="wxSTC_P_COMMENTLINE"> 1 </def>
-    <def no ="wxSTC_P_NUMBER"> 2 </def>
-    <def no ="wxSTC_P_STRING"> 3 </def>
-    <def no ="wxSTC_P_CHARACTER"> 4 </def>
-    <def no ="wxSTC_P_WORD"> 5 </def>
-    <def no ="wxSTC_P_TRIPLE"> 6 </def>
-    <def no ="wxSTC_P_TRIPLEDOUBLE"> 7 </def>
-    <def no ="wxSTC_P_CLASSNAME"> 8 </def>
-    <def no ="wxSTC_P_DEFNAME"> 9 </def>
-    <def no ="wxSTC_P_OPERATOR"> 10 </def>
-    <def no ="wxSTC_P_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_P_COMMENTBLOCK"> 12 </def>
-    <def no ="wxSTC_P_STRINGEOL"> 13 </def>
-    <def no ="wxSTC_P_WORD2"> 14 </def>
-    <def no ="wxSTC_P_DECORATOR"> 15 </def>
-    <!-- cpp -->
-    <def no ="wxSTC_C_DEFAULT"> 0 </def>
-    <def no ="wxSTC_C_COMMENT"> 1 </def>
-    <def no ="wxSTC_C_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_C_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_C_NUMBER"> 4 </def>
-    <def no ="wxSTC_C_WORD"> 5 </def>
-    <def no ="wxSTC_C_STRING"> 6 </def>
-    <def no ="wxSTC_C_CHARACTER"> 7 </def>
-    <def no ="wxSTC_C_UUID"> 8 </def>
-    <def no ="wxSTC_C_PREPROCESSOR"> 9 </def>
-    <def no ="wxSTC_C_OPERATOR"> 10 </def>
-    <def no ="wxSTC_C_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_C_STRINGEOL"> 12 </def>
-    <def no ="wxSTC_C_VERBATIM"> 13 </def>
-    <def no ="wxSTC_C_REGEX"> 14 </def>
-    <def no ="wxSTC_C_COMMENTLINEDOC"> 15 </def>
-    <def no ="wxSTC_C_WORD2"> 16 </def>
-    <def no ="wxSTC_C_COMMENTDOCKEYWORD"> 17 </def>
-    <def no ="wxSTC_C_COMMENTDOCKEYWORDERROR"> 18 </def>
-    <def no ="wxSTC_C_GLOBALCLASS"> 19 </def>
-    <!-- d -->
-    <def no ="wxSTC_D_DEFAULT"> 0 </def>
-    <def no ="wxSTC_D_COMMENT"> 1 </def>
-    <def no ="wxSTC_D_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_D_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_D_COMMENTNESTED"> 4 </def>
-    <def no ="wxSTC_D_NUMBER"> 5 </def>
-    <def no ="wxSTC_D_WORD"> 6 </def>
-    <def no ="wxSTC_D_WORD2"> 7 </def>
-    <def no ="wxSTC_D_WORD3"> 8 </def>
-    <def no ="wxSTC_D_TYPEDEF"> 9 </def>
-    <def no ="wxSTC_D_STRING"> 10 </def>
-    <def no ="wxSTC_D_STRINGEOL"> 11 </def>
-    <def no ="wxSTC_D_CHARACTER"> 12 </def>
-    <def no ="wxSTC_D_OPERATOR"> 13 </def>
-    <def no ="wxSTC_D_IDENTIFIER"> 14 </def>
-    <def no ="wxSTC_D_COMMENTLINEDOC"> 15 </def>
-    <def no ="wxSTC_D_COMMENTDOCKEYWORD"> 16 </def>
-    <def no ="wxSTC_D_COMMENTDOCKEYWORDERROR"> 17 </def>
-    <!-- tcl -->
-    <def no ="wxSTC_TCL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_TCL_COMMENT"> 1 </def>
-    <def no ="wxSTC_TCL_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_TCL_NUMBER"> 3 </def>
-    <def no ="wxSTC_TCL_WORD_IN_QUOTE"> 4 </def>
-    <def no ="wxSTC_TCL_IN_QUOTE"> 5 </def>
-    <def no ="wxSTC_TCL_OPERATOR"> 6 </def>
-    <def no ="wxSTC_TCL_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_TCL_SUBSTITUTION"> 8 </def>
-    <def no ="wxSTC_TCL_SUB_BRACE"> 9 </def>
-    <def no ="wxSTC_TCL_MODIFIER"> 10 </def>
-    <def no ="wxSTC_TCL_EXPAND"> 11 </def>
-    <def no ="wxSTC_TCL_WORD"> 12 </def>
-    <def no ="wxSTC_TCL_WORD2"> 13 </def>
-    <def no ="wxSTC_TCL_WORD3"> 14 </def>
-    <def no ="wxSTC_TCL_WORD4"> 15 </def>
-    <def no ="wxSTC_TCL_WORD5"> 16 </def>
-    <def no ="wxSTC_TCL_WORD6"> 17 </def>
-    <def no ="wxSTC_TCL_WORD7"> 18 </def>
-    <def no ="wxSTC_TCL_WORD8"> 19 </def>
-    <def no ="wxSTC_TCL_COMMENT_BOX"> 20 </def>
-    <def no ="wxSTC_TCL_BLOCK_COMMENT"> 21 </def>
-    <!-- hypertext -->
-    <def no ="wxSTC_H_DEFAULT"> 0 </def>
-    <def no ="wxSTC_H_TAG"> 1 </def>
-    <def no ="wxSTC_H_TAGUNKNOWN"> 2 </def>
-    <def no ="wxSTC_H_ATTRIBUTE"> 3 </def>
-    <def no ="wxSTC_H_ATTRIBUTEUNKNOWN"> 4 </def>
-    <def no ="wxSTC_H_NUMBER"> 5 </def>
-    <def no ="wxSTC_H_DOUBLESTRING"> 6 </def>
-    <def no ="wxSTC_H_SINGLESTRING"> 7 </def>
-    <def no ="wxSTC_H_OTHER"> 8 </def>
-    <def no ="wxSTC_H_COMMENT"> 9 </def>
-    <def no ="wxSTC_H_ENTITY"> 10 </def>
-    <def no ="wxSTC_H_TAGEND"> 11 </def>
-    <def no ="wxSTC_H_XMLSTART"> 12 </def>
-    <def no ="wxSTC_H_XMLEND"> 13 </def>
-    <def no ="wxSTC_H_SCRIPT"> 14 </def>
-    <def no ="wxSTC_H_ASP"> 15 </def>
-    <def no ="wxSTC_H_ASPAT"> 16 </def>
-    <def no ="wxSTC_H_CDATA"> 17 </def>
-    <def no ="wxSTC_H_QUESTION"> 18 </def>
-    <def no ="wxSTC_H_VALUE"> 19 </def>
-    <def no ="wxSTC_H_XCCOMMENT"> 20 </def>
-    <def no ="wxSTC_H_SGML_DEFAULT"> 21 </def>
-    <def no ="wxSTC_H_SGML_COMMAND"> 22 </def>
-    <def no ="wxSTC_H_SGML_1ST_PARAM"> 23 </def>
-    <def no ="wxSTC_H_SGML_DOUBLESTRING"> 24 </def>
-    <def no ="wxSTC_H_SGML_SIMPLESTRING"> 25 </def>
-    <def no ="wxSTC_H_SGML_ERROR"> 26 </def>
-    <def no ="wxSTC_H_SGML_SPECIAL"> 27 </def>
-    <def no ="wxSTC_H_SGML_ENTITY"> 28 </def>
-    <def no ="wxSTC_H_SGML_COMMENT"> 29 </def>
-    <def no ="wxSTC_H_SGML_1ST_PARAM_COMMENT"> 30 </def>
-    <def no ="wxSTC_H_SGML_BLOCK_DEFAULT"> 31 </def>
-    <def no ="wxSTC_HJ_START"> 40 </def>
-    <def no ="wxSTC_HJ_DEFAULT"> 41 </def>
-    <def no ="wxSTC_HJ_COMMENT"> 42 </def>
-    <def no ="wxSTC_HJ_COMMENTLINE"> 43 </def>
-    <def no ="wxSTC_HJ_COMMENTDOC"> 44 </def>
-    <def no ="wxSTC_HJ_NUMBER"> 45 </def>
-    <def no ="wxSTC_HJ_WORD"> 46 </def>
-    <def no ="wxSTC_HJ_KEYWORD"> 47 </def>
-    <def no ="wxSTC_HJ_DOUBLESTRING"> 48 </def>
-    <def no ="wxSTC_HJ_SINGLESTRING"> 49 </def>
-    <def no ="wxSTC_HJ_SYMBOLS"> 50 </def>
-    <def no ="wxSTC_HJ_STRINGEOL"> 51 </def>
-    <def no ="wxSTC_HJ_REGEX"> 52 </def>
-    <def no ="wxSTC_HJA_START"> 55 </def>
-    <def no ="wxSTC_HJA_DEFAULT"> 56 </def>
-    <def no ="wxSTC_HJA_COMMENT"> 57 </def>
-    <def no ="wxSTC_HJA_COMMENTLINE"> 58 </def>
-    <def no ="wxSTC_HJA_COMMENTDOC"> 59 </def>
-    <def no ="wxSTC_HJA_NUMBER"> 60 </def>
-    <def no ="wxSTC_HJA_WORD"> 61 </def>
-    <def no ="wxSTC_HJA_KEYWORD"> 62 </def>
-    <def no ="wxSTC_HJA_DOUBLESTRING"> 63 </def>
-    <def no ="wxSTC_HJA_SINGLESTRING"> 64 </def>
-    <def no ="wxSTC_HJA_SYMBOLS"> 65 </def>
-    <def no ="wxSTC_HJA_STRINGEOL"> 66 </def>
-    <def no ="wxSTC_HJA_REGEX"> 67 </def>
-    <def no ="wxSTC_HB_START"> 70 </def>
-    <def no ="wxSTC_HB_DEFAULT"> 71 </def>
-    <def no ="wxSTC_HB_COMMENTLINE"> 72 </def>
-    <def no ="wxSTC_HB_NUMBER"> 73 </def>
-    <def no ="wxSTC_HB_WORD"> 74 </def>
-    <def no ="wxSTC_HB_STRING"> 75 </def>
-    <def no ="wxSTC_HB_IDENTIFIER"> 76 </def>
-    <def no ="wxSTC_HB_STRINGEOL"> 77 </def>
-    <def no ="wxSTC_HBA_START"> 80 </def>
-    <def no ="wxSTC_HBA_DEFAULT"> 81 </def>
-    <def no ="wxSTC_HBA_COMMENTLINE"> 82 </def>
-    <def no ="wxSTC_HBA_NUMBER"> 83 </def>
-    <def no ="wxSTC_HBA_WORD"> 84 </def>
-    <def no ="wxSTC_HBA_STRING"> 85 </def>
-    <def no ="wxSTC_HBA_IDENTIFIER"> 86 </def>
-    <def no ="wxSTC_HBA_STRINGEOL"> 87 </def>
-    <def no ="wxSTC_HP_START"> 90 </def>
-    <def no ="wxSTC_HP_DEFAULT"> 91 </def>
-    <def no ="wxSTC_HP_COMMENTLINE"> 92 </def>
-    <def no ="wxSTC_HP_NUMBER"> 93 </def>
-    <def no ="wxSTC_HP_STRING"> 94 </def>
-    <def no ="wxSTC_HP_CHARACTER"> 95 </def>
-    <def no ="wxSTC_HP_WORD"> 96 </def>
-    <def no ="wxSTC_HP_TRIPLE"> 97 </def>
-    <def no ="wxSTC_HP_TRIPLEDOUBLE"> 98 </def>
-    <def no ="wxSTC_HP_CLASSNAME"> 99 </def>
-    <def no ="wxSTC_HP_DEFNAME"> 100 </def>
-    <def no ="wxSTC_HP_OPERATOR"> 101 </def>
-    <def no ="wxSTC_HP_IDENTIFIER"> 102 </def>
-    <def no ="wxSTC_HPHP_COMPLEX_VARIABLE"> 104 </def>
-    <def no ="wxSTC_HPA_START"> 105 </def>
-    <def no ="wxSTC_HPA_DEFAULT"> 106 </def>
-    <def no ="wxSTC_HPA_COMMENTLINE"> 107 </def>
-    <def no ="wxSTC_HPA_NUMBER"> 108 </def>
-    <def no ="wxSTC_HPA_STRING"> 109 </def>
-    <def no ="wxSTC_HPA_CHARACTER"> 110 </def>
-    <def no ="wxSTC_HPA_WORD"> 111 </def>
-    <def no ="wxSTC_HPA_TRIPLE"> 112 </def>
-    <def no ="wxSTC_HPA_TRIPLEDOUBLE"> 113 </def>
-    <def no ="wxSTC_HPA_CLASSNAME"> 114 </def>
-    <def no ="wxSTC_HPA_DEFNAME"> 115 </def>
-    <def no ="wxSTC_HPA_OPERATOR"> 116 </def>
-    <def no ="wxSTC_HPA_IDENTIFIER"> 117 </def>
-    <def no ="wxSTC_HPHP_DEFAULT"> 118 </def>
-    <def no ="wxSTC_HPHP_HSTRING"> 119 </def>
-    <def no ="wxSTC_HPHP_SIMPLESTRING"> 120 </def>
-    <def no ="wxSTC_HPHP_WORD"> 121 </def>
-    <def no ="wxSTC_HPHP_NUMBER"> 122 </def>
-    <def no ="wxSTC_HPHP_VARIABLE"> 123 </def>
-    <def no ="wxSTC_HPHP_COMMENT"> 124 </def>
-    <def no ="wxSTC_HPHP_COMMENTLINE"> 125 </def>
-    <def no ="wxSTC_HPHP_HSTRING_VARIABLE"> 126 </def>
-    <def no ="wxSTC_HPHP_OPERATOR"> 127 </def>
-    <!-- perl -->
-    <def no ="wxSTC_PL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_PL_ERROR"> 1 </def>
-    <def no ="wxSTC_PL_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_PL_POD"> 3 </def>
-    <def no ="wxSTC_PL_NUMBER"> 4 </def>
-    <def no ="wxSTC_PL_WORD"> 5 </def>
-    <def no ="wxSTC_PL_STRING"> 6 </def>
-    <def no ="wxSTC_PL_CHARACTER"> 7 </def>
-    <def no ="wxSTC_PL_PUNCTUATION"> 8 </def>
-    <def no ="wxSTC_PL_PREPROCESSOR"> 9 </def>
-    <def no ="wxSTC_PL_OPERATOR"> 10 </def>
-    <def no ="wxSTC_PL_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_PL_SCALAR"> 12 </def>
-    <def no ="wxSTC_PL_ARRAY"> 13 </def>
-    <def no ="wxSTC_PL_HASH"> 14 </def>
-    <def no ="wxSTC_PL_SYMBOLTABLE"> 15 </def>
-    <def no ="wxSTC_PL_VARIABLE_INDEXER"> 16 </def>
-    <def no ="wxSTC_PL_REGEX"> 17 </def>
-    <def no ="wxSTC_PL_REGSUBST"> 18 </def>
-    <def no ="wxSTC_PL_LONGQUOTE"> 19 </def>
-    <def no ="wxSTC_PL_BACKTICKS"> 20 </def>
-    <def no ="wxSTC_PL_DATASECTION"> 21 </def>
-    <def no ="wxSTC_PL_HERE_DELIM"> 22 </def>
-    <def no ="wxSTC_PL_HERE_Q"> 23 </def>
-    <def no ="wxSTC_PL_HERE_QQ"> 24 </def>
-    <def no ="wxSTC_PL_HERE_QX"> 25 </def>
-    <def no ="wxSTC_PL_STRING_Q"> 26 </def>
-    <def no ="wxSTC_PL_STRING_QQ"> 27 </def>
-    <def no ="wxSTC_PL_STRING_QX"> 28 </def>
-    <def no ="wxSTC_PL_STRING_QR"> 29 </def>
-    <def no ="wxSTC_PL_STRING_QW"> 30 </def>
-    <def no ="wxSTC_PL_POD_VERB"> 31 </def>
-    <def no ="wxSTC_PL_SUB_PROTOTYPE"> 40 </def>
-    <def no ="wxSTC_PL_FORMAT_IDENT"> 41 </def>
-    <def no ="wxSTC_PL_FORMAT"> 42 </def>
-    <!-- Lexical states for SCLEX_RUBY -->
-    <def no ="wxSTC_RB_DEFAULT"> 0 </def>
-    <def no ="wxSTC_RB_ERROR"> 1 </def>
-    <def no ="wxSTC_RB_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_RB_POD"> 3 </def>
-    <def no ="wxSTC_RB_NUMBER"> 4 </def>
-    <def no ="wxSTC_RB_WORD"> 5 </def>
-    <def no ="wxSTC_RB_STRING"> 6 </def>
-    <def no ="wxSTC_RB_CHARACTER"> 7 </def>
-    <def no ="wxSTC_RB_CLASSNAME"> 8 </def>
-    <def no ="wxSTC_RB_DEFNAME"> 9 </def>
-    <def no ="wxSTC_RB_OPERATOR"> 10 </def>
-    <def no ="wxSTC_RB_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_RB_REGEX"> 12 </def>
-    <def no ="wxSTC_RB_GLOBAL"> 13 </def>
-    <def no ="wxSTC_RB_SYMBOL"> 14 </def>
-    <def no ="wxSTC_RB_MODULE_NAME"> 15 </def>
-    <def no ="wxSTC_RB_INSTANCE_VAR"> 16 </def>
-    <def no ="wxSTC_RB_CLASS_VAR"> 17 </def>
-    <def no ="wxSTC_RB_BACKTICKS"> 18 </def>
-    <def no ="wxSTC_RB_DATASECTION"> 19 </def>
-    <def no ="wxSTC_RB_HERE_DELIM"> 20 </def>
-    <def no ="wxSTC_RB_HERE_Q"> 21 </def>
-    <def no ="wxSTC_RB_HERE_QQ"> 22 </def>
-    <def no ="wxSTC_RB_HERE_QX"> 23 </def>
-    <def no ="wxSTC_RB_STRING_Q"> 24 </def>
-    <def no ="wxSTC_RB_STRING_QQ"> 25 </def>
-    <def no ="wxSTC_RB_STRING_QX"> 26 </def>
-    <def no ="wxSTC_RB_STRING_QR"> 27 </def>
-    <def no ="wxSTC_RB_STRING_QW"> 28 </def>
-    <def no ="wxSTC_RB_WORD_DEMOTED"> 29 </def>
-    <def no ="wxSTC_RB_STDIN"> 30 </def>
-    <def no ="wxSTC_RB_STDOUT"> 31 </def>
-    <def no ="wxSTC_RB_STDERR"> 40 </def>
-    <def no ="wxSTC_RB_UPPER_BOUND"> 41 </def>
-    <!-- Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC -->
-    <def no ="wxSTC_B_DEFAULT"> 0 </def>
-    <def no ="wxSTC_B_COMMENT"> 1 </def>
-    <def no ="wxSTC_B_NUMBER"> 2 </def>
-    <def no ="wxSTC_B_KEYWORD"> 3 </def>
-    <def no ="wxSTC_B_STRING"> 4 </def>
-    <def no ="wxSTC_B_PREPROCESSOR"> 5 </def>
-    <def no ="wxSTC_B_OPERATOR"> 6 </def>
-    <def no ="wxSTC_B_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_B_DATE"> 8 </def>
-    <def no ="wxSTC_B_STRINGEOL"> 9 </def>
-    <def no ="wxSTC_B_KEYWORD2"> 10 </def>
-    <def no ="wxSTC_B_KEYWORD3"> 11 </def>
-    <def no ="wxSTC_B_KEYWORD4"> 12 </def>
-    <def no ="wxSTC_B_CONSTANT"> 13 </def>
-    <def no ="wxSTC_B_ASM"> 14 </def>
-    <def no ="wxSTC_B_LABEL"> 15 </def>
-    <def no ="wxSTC_B_ERROR"> 16 </def>
-    <def no ="wxSTC_B_HEXNUMBER"> 17 </def>
-    <def no ="wxSTC_B_BINNUMBER"> 18 </def>
-    <!-- Lexical states for SCLEX_PROPERTIES -->
-    <def no ="wxSTC_PROPS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_PROPS_COMMENT"> 1 </def>
-    <def no ="wxSTC_PROPS_SECTION"> 2 </def>
-    <def no ="wxSTC_PROPS_ASSIGNMENT"> 3 </def>
-    <def no ="wxSTC_PROPS_DEFVAL"> 4 </def>
-    <def no ="wxSTC_PROPS_KEY"> 5 </def>
-    <!-- Lexical states for SCLEX_LATEX -->
-    <def no ="wxSTC_L_DEFAULT"> 0 </def>
-    <def no ="wxSTC_L_COMMAND"> 1 </def>
-    <def no ="wxSTC_L_TAG"> 2 </def>
-    <def no ="wxSTC_L_MATH"> 3 </def>
-    <def no ="wxSTC_L_COMMENT"> 4 </def>
-    <!-- Lexical states for SCLEX_LUA -->
-    <def no ="wxSTC_LUA_DEFAULT"> 0 </def>
-    <def no ="wxSTC_LUA_COMMENT"> 1 </def>
-    <def no ="wxSTC_LUA_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_LUA_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_LUA_NUMBER"> 4 </def>
-    <def no ="wxSTC_LUA_WORD"> 5 </def>
-    <def no ="wxSTC_LUA_STRING"> 6 </def>
-    <def no ="wxSTC_LUA_CHARACTER"> 7 </def>
-    <def no ="wxSTC_LUA_LITERALSTRING"> 8 </def>
-    <def no ="wxSTC_LUA_PREPROCESSOR"> 9 </def>
-    <def no ="wxSTC_LUA_OPERATOR"> 10 </def>
-    <def no ="wxSTC_LUA_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_LUA_STRINGEOL"> 12 </def>
-    <def no ="wxSTC_LUA_WORD2"> 13 </def>
-    <def no ="wxSTC_LUA_WORD3"> 14 </def>
-    <def no ="wxSTC_LUA_WORD4"> 15 </def>
-    <def no ="wxSTC_LUA_WORD5"> 16 </def>
-    <def no ="wxSTC_LUA_WORD6"> 17 </def>
-    <def no ="wxSTC_LUA_WORD7"> 18 </def>
-    <def no ="wxSTC_LUA_WORD8"> 19 </def>
-    <!-- Lexical states for SCLEX_ERRORLIST -->
-    <def no ="wxSTC_ERR_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ERR_PYTHON"> 1 </def>
-    <def no ="wxSTC_ERR_GCC"> 2 </def>
-    <def no ="wxSTC_ERR_MS"> 3 </def>
-    <def no ="wxSTC_ERR_CMD"> 4 </def>
-    <def no ="wxSTC_ERR_BORLAND"> 5 </def>
-    <def no ="wxSTC_ERR_PERL"> 6 </def>
-    <def no ="wxSTC_ERR_NET"> 7 </def>
-    <def no ="wxSTC_ERR_LUA"> 8 </def>
-    <def no ="wxSTC_ERR_CTAG"> 9 </def>
-    <def no ="wxSTC_ERR_DIFF_CHANGED"> 10 </def>
-    <def no ="wxSTC_ERR_DIFF_ADDITION"> 11 </def>
-    <def no ="wxSTC_ERR_DIFF_DELETION"> 12 </def>
-    <def no ="wxSTC_ERR_DIFF_MESSAGE"> 13 </def>
-    <def no ="wxSTC_ERR_PHP"> 14 </def>
-    <def no ="wxSTC_ERR_ELF"> 15 </def>
-    <def no ="wxSTC_ERR_IFC"> 16 </def>
-    <def no ="wxSTC_ERR_IFORT"> 17 </def>
-    <def no ="wxSTC_ERR_ABSF"> 18 </def>
-    <def no ="wxSTC_ERR_TIDY"> 19 </def>
-    <def no ="wxSTC_ERR_JAVA_STACK"> 20 </def>
-    <def no ="wxSTC_ERR_VALUE"> 21 </def>
-    <!-- Lexical states for SCLEX_BATCH -->
-    <def no ="wxSTC_BAT_DEFAULT"> 0 </def>
-    <def no ="wxSTC_BAT_COMMENT"> 1 </def>
-    <def no ="wxSTC_BAT_WORD"> 2 </def>
-    <def no ="wxSTC_BAT_LABEL"> 3 </def>
-    <def no ="wxSTC_BAT_HIDE"> 4 </def>
-    <def no ="wxSTC_BAT_COMMAND"> 5 </def>
-    <def no ="wxSTC_BAT_IDENTIFIER"> 6 </def>
-    <def no ="wxSTC_BAT_OPERATOR"> 7 </def>
-    <!-- make -->
-    <def no ="wxSTC_MAKE_DEFAULT"> 0 </def>
-    <def no ="wxSTC_MAKE_COMMENT"> 1 </def>
-    <def no ="wxSTC_MAKE_PREPROCESSOR"> 2 </def>
-    <def no ="wxSTC_MAKE_IDENTIFIER"> 3 </def>
-    <def no ="wxSTC_MAKE_OPERATOR"> 4 </def>
-    <def no ="wxSTC_MAKE_TARGET"> 5 </def>
-    <def no ="wxSTC_MAKE_IDEOL"> 9 </def>
-    <!-- Lexical states for SCLEX_DIFF -->
-    <def no ="wxSTC_DIFF_DEFAULT"> 0 </def>
-    <def no ="wxSTC_DIFF_COMMENT"> 1 </def>
-    <def no ="wxSTC_DIFF_COMMAND"> 2 </def>
-    <def no ="wxSTC_DIFF_HEADER"> 3 </def>
-    <def no ="wxSTC_DIFF_POSITION"> 4 </def>
-    <def no ="wxSTC_DIFF_DELETED"> 5 </def>
-    <def no ="wxSTC_DIFF_ADDED"> 6 </def>
-    <def no ="wxSTC_DIFF_CHANGED"> 7 </def>
-    <!-- Lexical states for SCLEX_CONF (Apache Configuration Files Lexer) -->
-    <def no ="wxSTC_CONF_DEFAULT"> 0 </def>
-    <def no ="wxSTC_CONF_COMMENT"> 1 </def>
-    <def no ="wxSTC_CONF_NUMBER"> 2 </def>
-    <def no ="wxSTC_CONF_IDENTIFIER"> 3 </def>
-    <def no ="wxSTC_CONF_EXTENSION"> 4 </def>
-    <def no ="wxSTC_CONF_PARAMETER"> 5 </def>
-    <def no ="wxSTC_CONF_STRING"> 6 </def>
-    <def no ="wxSTC_CONF_OPERATOR"> 7 </def>
-    <def no ="wxSTC_CONF_IP"> 8 </def>
-    <def no ="wxSTC_CONF_DIRECTIVE"> 9 </def>
-    <!-- Lexical states for SCLEX_AVE, Avenue -->
-    <def no ="wxSTC_AVE_DEFAULT"> 0 </def>
-    <def no ="wxSTC_AVE_COMMENT"> 1 </def>
-    <def no ="wxSTC_AVE_NUMBER"> 2 </def>
-    <def no ="wxSTC_AVE_WORD"> 3 </def>
-    <def no ="wxSTC_AVE_STRING"> 6 </def>
-    <def no ="wxSTC_AVE_ENUM"> 7 </def>
-    <def no ="wxSTC_AVE_STRINGEOL"> 8 </def>
-    <def no ="wxSTC_AVE_IDENTIFIER"> 9 </def>
-    <def no ="wxSTC_AVE_OPERATOR"> 10 </def>
-    <def no ="wxSTC_AVE_WORD1"> 11 </def>
-    <def no ="wxSTC_AVE_WORD2"> 12 </def>
-    <def no ="wxSTC_AVE_WORD3"> 13 </def>
-    <def no ="wxSTC_AVE_WORD4"> 14 </def>
-    <def no ="wxSTC_AVE_WORD5"> 15 </def>
-    <def no ="wxSTC_AVE_WORD6"> 16 </def>
-    <!-- ada -->
-    <def no ="wxSTC_ADA_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ADA_WORD"> 1 </def>
-    <def no ="wxSTC_ADA_IDENTIFIER"> 2 </def>
-    <def no ="wxSTC_ADA_NUMBER"> 3 </def>
-    <def no ="wxSTC_ADA_STRINGEOL"> 8 </def>
-    <def no ="wxSTC_ADA_LABEL"> 9 </def>
-    <def no ="wxSTC_ADA_COMMENTLINE"> 10 </def>
-    <def no ="wxSTC_ADA_ILLEGAL"> 11 </def>
-    <!-- Lexical states for SCLEX_BAAN -->
-    <def no ="wxSTC_BAAN_DEFAULT"> 0 </def>
-    <def no ="wxSTC_BAAN_COMMENT"> 1 </def>
-    <def no ="wxSTC_BAAN_COMMENTDOC"> 2 </def>
-    <def no ="wxSTC_BAAN_NUMBER"> 3 </def>
-    <def no ="wxSTC_BAAN_WORD"> 4 </def>
-    <def no ="wxSTC_BAAN_STRING"> 5 </def>
-    <def no ="wxSTC_BAAN_PREPROCESSOR"> 6 </def>
-    <def no ="wxSTC_BAAN_OPERATOR"> 7 </def>
-    <def no ="wxSTC_BAAN_IDENTIFIER"> 8 </def>
-    <def no ="wxSTC_BAAN_STRINGEOL"> 9 </def>
-    <def no ="wxSTC_BAAN_WORD2"> 10 </def>
-    <!-- Lexical states for SCLEX_LISP -->
-    <def no ="wxSTC_LISP_DEFAULT"> 0 </def>
-    <def no ="wxSTC_LISP_COMMENT"> 1 </def>
-    <def no ="wxSTC_LISP_NUMBER"> 2 </def>
-    <def no ="wxSTC_LISP_KEYWORD"> 3 </def>
-    <def no ="wxSTC_LISP_KEYWORD_KW"> 4 </def>
-    <def no ="wxSTC_LISP_SYMBOL"> 5 </def>
-    <def no ="wxSTC_LISP_STRING"> 6 </def>
-    <def no ="wxSTC_LISP_STRINGEOL"> 8 </def>
-    <def no ="wxSTC_LISP_IDENTIFIER"> 9 </def>
-    <def no ="wxSTC_LISP_OPERATOR"> 10 </def>
-    <def no ="wxSTC_LISP_SPECIAL"> 11 </def>
-    <def no ="wxSTC_LISP_MULTI_COMMENT"> 12 </def>
-    <!-- Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW -->
-    <def no ="wxSTC_EIFFEL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_EIFFEL_COMMENTLINE"> 1 </def>
-    <def no ="wxSTC_EIFFEL_NUMBER"> 2 </def>
-    <def no ="wxSTC_EIFFEL_WORD"> 3 </def>
-    <def no ="wxSTC_EIFFEL_STRING"> 4 </def>
-    <def no ="wxSTC_EIFFEL_CHARACTER"> 5 </def>
-    <def no ="wxSTC_EIFFEL_OPERATOR"> 6 </def>
-    <def no ="wxSTC_EIFFEL_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_EIFFEL_STRINGEOL"> 8 </def>
-    <!-- Lexical states for SCLEX_NNCRONTAB (nnCron crontab Lexer) -->
-    <def no ="wxSTC_NNCRONTAB_DEFAULT"> 0 </def>
-    <def no ="wxSTC_NNCRONTAB_COMMENT"> 1 </def>
-    <def no ="wxSTC_NNCRONTAB_TASK"> 2 </def>
-    <def no ="wxSTC_NNCRONTAB_SECTION"> 3 </def>
-    <def no ="wxSTC_NNCRONTAB_KEYWORD"> 4 </def>
-    <def no ="wxSTC_NNCRONTAB_MODIFIER"> 5 </def>
-    <def no ="wxSTC_NNCRONTAB_ASTERISK"> 6 </def>
-    <def no ="wxSTC_NNCRONTAB_NUMBER"> 7 </def>
-    <def no ="wxSTC_NNCRONTAB_STRING"> 8 </def>
-    <def no ="wxSTC_NNCRONTAB_ENVIRONMENT"> 9 </def>
-    <def no ="wxSTC_NNCRONTAB_IDENTIFIER"> 10 </def>
-    <!-- Lexical states for SCLEX_FORTH (Forth Lexer) -->
-    <def no ="wxSTC_FORTH_DEFAULT"> 0 </def>
-    <def no ="wxSTC_FORTH_COMMENT"> 1 </def>
-    <def no ="wxSTC_FORTH_COMMENT_ML"> 2 </def>
-    <def no ="wxSTC_FORTH_IDENTIFIER"> 3 </def>
-    <def no ="wxSTC_FORTH_CONTROL"> 4 </def>
-    <def no ="wxSTC_FORTH_KEYWORD"> 5 </def>
-    <def no ="wxSTC_FORTH_DEFWORD"> 6 </def>
-    <def no ="wxSTC_FORTH_PREWORD1"> 7 </def>
-    <def no ="wxSTC_FORTH_PREWORD2"> 8 </def>
-    <def no ="wxSTC_FORTH_NUMBER"> 9 </def>
-    <def no ="wxSTC_FORTH_STRING"> 10 </def>
-    <def no ="wxSTC_FORTH_LOCALE"> 11 </def>
-    <!-- Lexical states for SCLEX_MATLAB -->
-    <def no ="wxSTC_MATLAB_DEFAULT"> 0 </def>
-    <def no ="wxSTC_MATLAB_COMMENT"> 1 </def>
-    <def no ="wxSTC_MATLAB_COMMAND"> 2 </def>
-    <def no ="wxSTC_MATLAB_NUMBER"> 3 </def>
-    <def no ="wxSTC_MATLAB_KEYWORD"> 4 </def>
-    <!-- single quoted STRING -->
-    <def no ="wxSTC_MATLAB_STRING"> 5 </def>
-    <def no ="wxSTC_MATLAB_OPERATOR"> 6 </def>
-    <def no ="wxSTC_MATLAB_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_MATLAB_DOUBLEQUOTESTRING"> 8 </def>
-    <!-- Lexical states for SCLEX_SCRIPTOL -->
-    <def no ="wxSTC_SCRIPTOL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SCRIPTOL_WHITE"> 1 </def>
-    <def no ="wxSTC_SCRIPTOL_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_SCRIPTOL_PERSISTENT"> 3 </def>
-    <def no ="wxSTC_SCRIPTOL_CSTYLE"> 4 </def>
-    <def no ="wxSTC_SCRIPTOL_COMMENTBLOCK"> 5 </def>
-    <def no ="wxSTC_SCRIPTOL_NUMBER"> 6 </def>
-    <def no ="wxSTC_SCRIPTOL_STRING"> 7 </def>
-    <def no ="wxSTC_SCRIPTOL_CHARACTER"> 8 </def>
-    <def no ="wxSTC_SCRIPTOL_STRINGEOL"> 9 </def>
-    <def no ="wxSTC_SCRIPTOL_KEYWORD"> 10 </def>
-    <def no ="wxSTC_SCRIPTOL_OPERATOR"> 11 </def>
-    <def no ="wxSTC_SCRIPTOL_IDENTIFIER"> 12 </def>
-    <def no ="wxSTC_SCRIPTOL_TRIPLE"> 13 </def>
-    <def no ="wxSTC_SCRIPTOL_CLASSNAME"> 14 </def>
-    <def no ="wxSTC_SCRIPTOL_PREPROCESSOR"> 15 </def>
-    <!-- asm -->
-    <def no ="wxSTC_ASM_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ASM_COMMENT"> 1 </def>
-    <def no ="wxSTC_ASM_NUMBER"> 2 </def>
-    <def no ="wxSTC_ASM_STRING"> 3 </def>
-    <def no ="wxSTC_ASM_OPERATOR"> 4 </def>
-    <def no ="wxSTC_ASM_IDENTIFIER"> 5 </def>
-    <def no ="wxSTC_ASM_CPUINSTRUCTION"> 6 </def>
-    <def no ="wxSTC_ASM_MATHINSTRUCTION"> 7 </def>
-    <def no ="wxSTC_ASM_REGISTER"> 8 </def>
-    <def no ="wxSTC_ASM_DIRECTIVE"> 9 </def>
-    <def no ="wxSTC_ASM_DIRECTIVEOPERAND"> 10 </def>
-    <def no ="wxSTC_ASM_COMMENTBLOCK"> 11 </def>
-    <def no ="wxSTC_ASM_CHARACTER"> 12 </def>
-    <def no ="wxSTC_ASM_STRINGEOL"> 13 </def>
-    <def no ="wxSTC_ASM_EXTINSTRUCTION"> 14 </def>
-    <!-- Lexical states for SCLEX_FORTRAN -->
-    <def no ="wxSTC_F_DEFAULT"> 0 </def>
-    <def no ="wxSTC_F_COMMENT"> 1 </def>
-    <def no ="wxSTC_F_NUMBER"> 2 </def>
-    <def no ="wxSTC_F_STRING1"> 3 </def>
-    <def no ="wxSTC_F_STRING2"> 4 </def>
-    <def no ="wxSTC_F_STRINGEOL"> 5 </def>
-    <def no ="wxSTC_F_OPERATOR"> 6 </def>
-    <def no ="wxSTC_F_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_F_WORD"> 8 </def>
-    <def no ="wxSTC_F_WORD2"> 9 </def>
-    <def no ="wxSTC_F_WORD3"> 10 </def>
-    <def no ="wxSTC_F_PREPROCESSOR"> 11 </def>
-    <def no ="wxSTC_F_OPERATOR2"> 12 </def>
-    <def no ="wxSTC_F_LABEL"> 13 </def>
-    <def no ="wxSTC_F_CONTINUATION"> 14 </def>
-    <!-- Lexical states for SCLEX_CSS -->
-    <def no ="wxSTC_CSS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_CSS_TAG"> 1 </def>
-    <def no ="wxSTC_CSS_CLASS"> 2 </def>
-    <def no ="wxSTC_CSS_PSEUDOCLASS"> 3 </def>
-    <def no ="wxSTC_CSS_UNKNOWN_PSEUDOCLASS"> 4 </def>
-    <def no ="wxSTC_CSS_OPERATOR"> 5 </def>
-    <def no ="wxSTC_CSS_IDENTIFIER"> 6 </def>
-    <def no ="wxSTC_CSS_UNKNOWN_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_CSS_VALUE"> 8 </def>
-    <def no ="wxSTC_CSS_COMMENT"> 9 </def>
-    <def no ="wxSTC_CSS_ID"> 10 </def>
-    <def no ="wxSTC_CSS_IMPORTANT"> 11 </def>
-    <def no ="wxSTC_CSS_DIRECTIVE"> 12 </def>
-    <def no ="wxSTC_CSS_DOUBLESTRING"> 13 </def>
-    <def no ="wxSTC_CSS_SINGLESTRING"> 14 </def>
-    <def no ="wxSTC_CSS_IDENTIFIER2"> 15 </def>
-    <def no ="wxSTC_CSS_ATTRIBUTE"> 16 </def>
-    <!-- Lexical states for SCLEX_POV -->
-    <def no ="wxSTC_POV_DEFAULT"> 0 </def>
-    <def no ="wxSTC_POV_COMMENT"> 1 </def>
-    <def no ="wxSTC_POV_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_POV_NUMBER"> 3 </def>
-    <def no ="wxSTC_POV_OPERATOR"> 4 </def>
-    <def no ="wxSTC_POV_IDENTIFIER"> 5 </def>
-    <def no ="wxSTC_POV_STRING"> 6 </def>
-    <def no ="wxSTC_POV_STRINGEOL"> 7 </def>
-    <def no ="wxSTC_POV_DIRECTIVE"> 8 </def>
-    <def no ="wxSTC_POV_BADDIRECTIVE"> 9 </def>
-    <def no ="wxSTC_POV_WORD2"> 10 </def>
-    <def no ="wxSTC_POV_WORD3"> 11 </def>
-    <def no ="wxSTC_POV_WORD4"> 12 </def>
-    <def no ="wxSTC_POV_WORD5"> 13 </def>
-    <def no ="wxSTC_POV_WORD6"> 14 </def>
-    <def no ="wxSTC_POV_WORD7"> 15 </def>
-    <def no ="wxSTC_POV_WORD8"> 16 </def>
-    <!-- Lexical states for SCLEX_LOUT -->
-    <def no ="wxSTC_LOUT_DEFAULT"> 0 </def>
-    <def no ="wxSTC_LOUT_COMMENT"> 1 </def>
-    <def no ="wxSTC_LOUT_NUMBER"> 2 </def>
-    <def no ="wxSTC_LOUT_WORD"> 3 </def>
-    <def no ="wxSTC_LOUT_WORD2"> 4 </def>
-    <def no ="wxSTC_LOUT_WORD3"> 5 </def>
-    <def no ="wxSTC_LOUT_WORD4"> 6 </def>
-    <def no ="wxSTC_LOUT_STRING"> 7 </def>
-    <def no ="wxSTC_LOUT_OPERATOR"> 8 </def>
-    <def no ="wxSTC_LOUT_IDENTIFIER"> 9 </def>
-    <def no ="wxSTC_LOUT_STRINGEOL"> 10 </def>
-    <!-- Lexical states for SCLEX_ESCRIPT -->
-    <def no ="wxSTC_ESCRIPT_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ESCRIPT_COMMENT"> 1 </def>
-    <def no ="wxSTC_ESCRIPT_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_ESCRIPT_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_ESCRIPT_NUMBER"> 4 </def>
-    <def no ="wxSTC_ESCRIPT_WORD"> 5 </def>
-    <def no ="wxSTC_ESCRIPT_STRING"> 6 </def>
-    <def no ="wxSTC_ESCRIPT_OPERATOR"> 7 </def>
-    <def no ="wxSTC_ESCRIPT_IDENTIFIER"> 8 </def>
-    <def no ="wxSTC_ESCRIPT_BRACE"> 9 </def>
-    <def no ="wxSTC_ESCRIPT_WORD2"> 10 </def>
-    <def no ="wxSTC_ESCRIPT_WORD3"> 11 </def>
-    <!-- Lexical states for SCLEX_PS -->
-    <def no ="wxSTC_PS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_PS_COMMENT"> 1 </def>
-    <def no ="wxSTC_PS_DSC_COMMENT"> 2 </def>
-    <def no ="wxSTC_PS_DSC_VALUE"> 3 </def>
-    <def no ="wxSTC_PS_NUMBER"> 4 </def>
-    <def no ="wxSTC_PS_NAME"> 5 </def>
-    <def no ="wxSTC_PS_KEYWORD"> 6 </def>
-    <def no ="wxSTC_PS_LITERAL"> 7 </def>
-    <def no ="wxSTC_PS_IMMEVAL"> 8 </def>
-    <def no ="wxSTC_PS_PAREN_ARRAY"> 9 </def>
-    <def no ="wxSTC_PS_PAREN_DICT"> 10 </def>
-    <def no ="wxSTC_PS_PAREN_PROC"> 11 </def>
-    <def no ="wxSTC_PS_TEXT"> 12 </def>
-    <def no ="wxSTC_PS_HEXSTRING"> 13 </def>
-    <def no ="wxSTC_PS_BASE85STRING"> 14 </def>
-    <def no ="wxSTC_PS_BADSTRINGCHAR"> 15 </def>
-    <!-- Lexical states for SCLEX_NSIS -->
-    <def no ="wxSTC_NSIS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_NSIS_COMMENT"> 1 </def>
-    <def no ="wxSTC_NSIS_STRINGDQ"> 2 </def>
-    <def no ="wxSTC_NSIS_STRINGLQ"> 3 </def>
-    <def no ="wxSTC_NSIS_STRINGRQ"> 4 </def>
-    <def no ="wxSTC_NSIS_FUNCTION"> 5 </def>
-    <def no ="wxSTC_NSIS_VARIABLE"> 6 </def>
-    <def no ="wxSTC_NSIS_LABEL"> 7 </def>
-    <def no ="wxSTC_NSIS_USERDEFINED"> 8 </def>
-    <def no ="wxSTC_NSIS_SECTIONDEF"> 9 </def>
-    <def no ="wxSTC_NSIS_SUBSECTIONDEF"> 10 </def>
-    <def no ="wxSTC_NSIS_IFDEFINEDEF"> 11 </def>
-    <def no ="wxSTC_NSIS_MACRODEF"> 12 </def>
-    <def no ="wxSTC_NSIS_STRINGVAR"> 13 </def>
-    <def no ="wxSTC_NSIS_NUMBER"> 14 </def>
-    <def no ="wxSTC_NSIS_SECTIONGROUP"> 15 </def>
-    <def no ="wxSTC_NSIS_PAGEEX"> 16 </def>
-    <def no ="wxSTC_NSIS_FUNCTIONDEF"> 17 </def>
-    <def no ="wxSTC_NSIS_COMMENTBOX"> 18 </def>
-    <!-- Lexical states for SCLEX_MMIXAL -->
-    <def no ="wxSTC_MMIXAL_LEADWS"> 0 </def>
-    <def no ="wxSTC_MMIXAL_COMMENT"> 1 </def>
-    <def no ="wxSTC_MMIXAL_LABEL"> 2 </def>
-    <def no ="wxSTC_MMIXAL_OPCODE"> 3 </def>
-    <def no ="wxSTC_MMIXAL_OPCODE_PRE"> 4 </def>
-    <def no ="wxSTC_MMIXAL_OPCODE_VALID"> 5 </def>
-    <def no ="wxSTC_MMIXAL_OPCODE_UNKNOWN"> 6 </def>
-    <def no ="wxSTC_MMIXAL_OPCODE_POST"> 7 </def>
-    <def no ="wxSTC_MMIXAL_OPERANDS"> 8 </def>
-    <def no ="wxSTC_MMIXAL_NUMBER"> 9 </def>
-    <def no ="wxSTC_MMIXAL_REF"> 10 </def>
-    <def no ="wxSTC_MMIXAL_CHAR"> 11 </def>
-    <def no ="wxSTC_MMIXAL_STRING"> 12 </def>
-    <def no ="wxSTC_MMIXAL_REGISTER"> 13 </def>
-    <def no ="wxSTC_MMIXAL_HEX"> 14 </def>
-    <def no ="wxSTC_MMIXAL_OPERATOR"> 15 </def>
-    <def no ="wxSTC_MMIXAL_SYMBOL"> 16 </def>
-    <def no ="wxSTC_MMIXAL_INCLUDE"> 17 </def>
-    <!-- Lexical states for SCLEX_CLW -->
-    <def no ="wxSTC_CLW_DEFAULT"> 0 </def>
-    <def no ="wxSTC_CLW_LABEL"> 1 </def>
-    <def no ="wxSTC_CLW_COMMENT"> 2 </def>
-    <def no ="wxSTC_CLW_STRING"> 3 </def>
-    <def no ="wxSTC_CLW_USER_IDENTIFIER"> 4 </def>
-    <def no ="wxSTC_CLW_INTEGER_CONSTANT"> 5 </def>
-    <def no ="wxSTC_CLW_REAL_CONSTANT"> 6 </def>
-    <def no ="wxSTC_CLW_PICTURE_STRING"> 7 </def>
-    <def no ="wxSTC_CLW_KEYWORD"> 8 </def>
-    <def no ="wxSTC_CLW_COMPILER_DIRECTIVE"> 9 </def>
-    <def no ="wxSTC_CLW_RUNTIME_EXPRESSIONS"> 10 </def>
-    <def no ="wxSTC_CLW_BUILTIN_PROCEDURES_FUNCTION"> 11 </def>
-    <def no ="wxSTC_CLW_STRUCTURE_DATA_TYPE"> 12 </def>
-    <def no ="wxSTC_CLW_ATTRIBUTE"> 13 </def>
-    <def no ="wxSTC_CLW_STANDARD_EQUATE"> 14 </def>
-    <def no ="wxSTC_CLW_ERROR"> 15 </def>
-    <def no ="wxSTC_CLW_DEPRECATED"> 16 </def>
-    <!-- Lexical states for SCLEX_LOT -->
-    <def no ="wxSTC_LOT_DEFAULT"> 0 </def>
-    <def no ="wxSTC_LOT_HEADER"> 1 </def>
-    <def no ="wxSTC_LOT_BREAK"> 2 </def>
-    <def no ="wxSTC_LOT_SET"> 3 </def>
-    <def no ="wxSTC_LOT_PASS"> 4 </def>
-    <def no ="wxSTC_LOT_FAIL"> 5 </def>
-    <def no ="wxSTC_LOT_ABORT"> 6 </def>
-    <!-- Lexical states for SCLEX_YAML -->
-    <def no ="wxSTC_YAML_DEFAULT"> 0 </def>
-    <def no ="wxSTC_YAML_COMMENT"> 1 </def>
-    <def no ="wxSTC_YAML_IDENTIFIER"> 2 </def>
-    <def no ="wxSTC_YAML_KEYWORD"> 3 </def>
-    <def no ="wxSTC_YAML_NUMBER"> 4 </def>
-    <def no ="wxSTC_YAML_REFERENCE"> 5 </def>
-    <def no ="wxSTC_YAML_DOCUMENT"> 6 </def>
-    <def no ="wxSTC_YAML_TEXT"> 7 </def>
-    <def no ="wxSTC_YAML_ERROR"> 8 </def>
-    <def no ="wxSTC_YAML_OPERATOR"> 9 </def>
-    <!-- Lexical states for SCLEX_TEX -->
-    <def no ="wxSTC_TEX_DEFAULT"> 0 </def>
-    <def no ="wxSTC_TEX_SPECIAL"> 1 </def>
-    <def no ="wxSTC_TEX_GROUP"> 2 </def>
-    <def no ="wxSTC_TEX_SYMBOL"> 3 </def>
-    <def no ="wxSTC_TEX_COMMAND"> 4 </def>
-    <def no ="wxSTC_TEX_TEXT"> 5 </def>
-    <def no ="wxSTC_METAPOST_DEFAULT"> 0 </def>
-    <def no ="wxSTC_METAPOST_SPECIAL"> 1 </def>
-    <def no ="wxSTC_METAPOST_GROUP"> 2 </def>
-    <def no ="wxSTC_METAPOST_SYMBOL"> 3 </def>
-    <def no ="wxSTC_METAPOST_COMMAND"> 4 </def>
-    <def no ="wxSTC_METAPOST_TEXT"> 5 </def>
-    <def no ="wxSTC_METAPOST_EXTRA"> 6 </def>
-    <!-- Lexical states for SCLEX_ERLANG -->
-    <def no ="wxSTC_ERLANG_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ERLANG_COMMENT"> 1 </def>
-    <def no ="wxSTC_ERLANG_VARIABLE"> 2 </def>
-    <def no ="wxSTC_ERLANG_NUMBER"> 3 </def>
-    <def no ="wxSTC_ERLANG_KEYWORD"> 4 </def>
-    <def no ="wxSTC_ERLANG_STRING"> 5 </def>
-    <def no ="wxSTC_ERLANG_OPERATOR"> 6 </def>
-    <def no ="wxSTC_ERLANG_ATOM"> 7 </def>
-    <def no ="wxSTC_ERLANG_FUNCTION_NAME"> 8 </def>
-    <def no ="wxSTC_ERLANG_CHARACTER"> 9 </def>
-    <def no ="wxSTC_ERLANG_MACRO"> 10 </def>
-    <def no ="wxSTC_ERLANG_RECORD"> 11 </def>
-    <def no ="wxSTC_ERLANG_SEPARATOR"> 12 </def>
-    <def no ="wxSTC_ERLANG_NODE_NAME"> 13 </def>
-    <def no ="wxSTC_ERLANG_UNKNOWN"> 31 </def>
-    <!-- Lexical states for SCLEX_OCTAVE are identical to MatLab -->
-    <!-- Lexical states for SCLEX_MSSQL -->
-    <def no ="wxSTC_MSSQL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_MSSQL_COMMENT"> 1 </def>
-    <def no ="wxSTC_MSSQL_LINE_COMMENT"> 2 </def>
-    <def no ="wxSTC_MSSQL_NUMBER"> 3 </def>
-    <def no ="wxSTC_MSSQL_STRING"> 4 </def>
-    <def no ="wxSTC_MSSQL_OPERATOR"> 5 </def>
-    <def no ="wxSTC_MSSQL_IDENTIFIER"> 6 </def>
-    <def no ="wxSTC_MSSQL_VARIABLE"> 7 </def>
-    <def no ="wxSTC_MSSQL_COLUMN_NAME"> 8 </def>
-    <def no ="wxSTC_MSSQL_STATEMENT"> 9 </def>
-    <def no ="wxSTC_MSSQL_DATATYPE"> 10 </def>
-    <def no ="wxSTC_MSSQL_SYSTABLE"> 11 </def>
-    <def no ="wxSTC_MSSQL_GLOBAL_VARIABLE"> 12 </def>
-    <def no ="wxSTC_MSSQL_FUNCTION"> 13 </def>
-    <def no ="wxSTC_MSSQL_STORED_PROCEDURE"> 14 </def>
-    <def no ="wxSTC_MSSQL_DEFAULT_PREF_DATATYPE"> 15 </def>
-    <def no ="wxSTC_MSSQL_COLUMN_NAME_2"> 16 </def>
-    <!-- Lexical states for SCLEX_VERILOG -->
-    <def no ="wxSTC_V_DEFAULT"> 0 </def>
-    <def no ="wxSTC_V_COMMENT"> 1 </def>
-    <def no ="wxSTC_V_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_V_COMMENTLINEBANG"> 3 </def>
-    <def no ="wxSTC_V_NUMBER"> 4 </def>
-    <def no ="wxSTC_V_WORD"> 5 </def>
-    <def no ="wxSTC_V_STRING"> 6 </def>
-    <def no ="wxSTC_V_WORD2"> 7 </def>
-    <def no ="wxSTC_V_WORD3"> 8 </def>
-    <def no ="wxSTC_V_PREPROCESSOR"> 9 </def>
-    <def no ="wxSTC_V_OPERATOR"> 10 </def>
-    <def no ="wxSTC_V_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_V_STRINGEOL"> 12 </def>
-    <def no ="wxSTC_V_USER"> 19 </def>
-    <!-- Lexical states for SCLEX_KIX -->
-    <def no ="wxSTC_KIX_DEFAULT"> 0 </def>
-    <def no ="wxSTC_KIX_COMMENT"> 1 </def>
-    <def no ="wxSTC_KIX_STRING1"> 2 </def>
-    <def no ="wxSTC_KIX_STRING2"> 3 </def>
-    <def no ="wxSTC_KIX_NUMBER"> 4 </def>
-    <def no ="wxSTC_KIX_VAR"> 5 </def>
-    <def no ="wxSTC_KIX_MACRO"> 6 </def>
-    <def no ="wxSTC_KIX_KEYWORD"> 7 </def>
-    <def no ="wxSTC_KIX_FUNCTIONS"> 8 </def>
-    <def no ="wxSTC_KIX_OPERATOR"> 9 </def>
-    <def no ="wxSTC_KIX_IDENTIFIER"> 31 </def>
-    <!-- Lexical states for SCLEX_GUI4CLI -->
-    <def no ="wxSTC_GC_DEFAULT"> 0 </def>
-    <def no ="wxSTC_GC_COMMENTLINE"> 1 </def>
-    <def no ="wxSTC_GC_COMMENTBLOCK"> 2 </def>
-    <def no ="wxSTC_GC_GLOBAL"> 3 </def>
-    <def no ="wxSTC_GC_EVENT"> 4 </def>
-    <def no ="wxSTC_GC_ATTRIBUTE"> 5 </def>
-    <def no ="wxSTC_GC_CONTROL"> 6 </def>
-    <def no ="wxSTC_GC_COMMAND"> 7 </def>
-    <def no ="wxSTC_GC_STRING"> 8 </def>
-    <def no ="wxSTC_GC_OPERATOR"> 9 </def>
-    <!-- Lexical states for SCLEX_SPECMAN -->
-    <def no ="wxSTC_SN_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SN_CODE"> 1 </def>
-    <def no ="wxSTC_SN_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_SN_COMMENTLINEBANG"> 3 </def>
-    <def no ="wxSTC_SN_NUMBER"> 4 </def>
-    <def no ="wxSTC_SN_WORD"> 5 </def>
-    <def no ="wxSTC_SN_STRING"> 6 </def>
-    <def no ="wxSTC_SN_WORD2"> 7 </def>
-    <def no ="wxSTC_SN_WORD3"> 8 </def>
-    <def no ="wxSTC_SN_PREPROCESSOR"> 9 </def>
-    <def no ="wxSTC_SN_OPERATOR"> 10 </def>
-    <def no ="wxSTC_SN_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_SN_STRINGEOL"> 12 </def>
-    <def no ="wxSTC_SN_REGEXTAG"> 13 </def>
-    <def no ="wxSTC_SN_SIGNAL"> 14 </def>
-    <def no ="wxSTC_SN_USER"> 19 </def>
-    <!-- Lexical states for SCLEX_AU3 -->
-    <def no ="wxSTC_AU3_DEFAULT"> 0 </def>
-    <def no ="wxSTC_AU3_COMMENT"> 1 </def>
-    <def no ="wxSTC_AU3_COMMENTBLOCK"> 2 </def>
-    <def no ="wxSTC_AU3_NUMBER"> 3 </def>
-    <def no ="wxSTC_AU3_FUNCTION"> 4 </def>
-    <def no ="wxSTC_AU3_KEYWORD"> 5 </def>
-    <def no ="wxSTC_AU3_MACRO"> 6 </def>
-    <def no ="wxSTC_AU3_STRING"> 7 </def>
-    <def no ="wxSTC_AU3_OPERATOR"> 8 </def>
-    <def no ="wxSTC_AU3_VARIABLE"> 9 </def>
-    <def no ="wxSTC_AU3_SENT"> 10 </def>
-    <def no ="wxSTC_AU3_PREPROCESSOR"> 11 </def>
-    <def no ="wxSTC_AU3_SPECIAL"> 12 </def>
-    <def no ="wxSTC_AU3_EXPAND"> 13 </def>
-    <def no ="wxSTC_AU3_COMOBJ"> 14 </def>
-    <def no ="wxSTC_AU3_UDF"> 15 </def>
-    <!-- Lexical states for SCLEX_APDL -->
-    <def no ="wxSTC_APDL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_APDL_COMMENT"> 1 </def>
-    <def no ="wxSTC_APDL_COMMENTBLOCK"> 2 </def>
-    <def no ="wxSTC_APDL_NUMBER"> 3 </def>
-    <def no ="wxSTC_APDL_STRING"> 4 </def>
-    <def no ="wxSTC_APDL_OPERATOR"> 5 </def>
-    <def no ="wxSTC_APDL_WORD"> 6 </def>
-    <def no ="wxSTC_APDL_PROCESSOR"> 7 </def>
-    <def no ="wxSTC_APDL_COMMAND"> 8 </def>
-    <def no ="wxSTC_APDL_SLASHCOMMAND"> 9 </def>
-    <def no ="wxSTC_APDL_STARCOMMAND"> 10 </def>
-    <def no ="wxSTC_APDL_ARGUMENT"> 11 </def>
-    <def no ="wxSTC_APDL_FUNCTION"> 12 </def>
-    <!-- Lexical states for SCLEX_SQL -->
-    <def no ="wxSTC_SQL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SQL_COMMENT"> 1 </def>
-    <def no ="wxSTC_SQL_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_SQL_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_SQL_NUMBER"> 4 </def>
-    <def no ="wxSTC_SQL_WORD"> 5 </def>
-    <def no ="wxSTC_SQL_STRING"> 6 </def>
-    <def no ="wxSTC_SQL_CHARACTER"> 7 </def>
-    <def no ="wxSTC_SQL_SQLPLUS"> 8 </def>
-    <def no ="wxSTC_SQL_SQLPLUS_PROMPT"> 9 </def>
-    <def no ="wxSTC_SQL_OPERATOR"> 10 </def>
-    <def no ="wxSTC_SQL_IDENTIFIER"> 11 </def>
-    <def no ="wxSTC_SQL_SQLPLUS_COMMENT"> 13 </def>
-    <def no ="wxSTC_SQL_COMMENTLINEDOC"> 15 </def>
-    <def no ="wxSTC_SQL_WORD2"> 16 </def>
-    <def no ="wxSTC_SQL_COMMENTDOCKEYWORD"> 17 </def>
-    <def no ="wxSTC_SQL_COMMENTDOCKEYWORDERROR"> 18 </def>
-    <def no ="wxSTC_SQL_USER1"> 19 </def>
-    <def no ="wxSTC_SQL_USER2"> 20 </def>
-    <def no ="wxSTC_SQL_USER3"> 21 </def>
-    <def no ="wxSTC_SQL_USER4"> 22 </def>
-    <def no ="wxSTC_SQL_QUOTEDIDENTIFIER"> 23 </def>
-    <!-- bash -->
-    <def no ="wxSTC_SH_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SH_ERROR"> 1 </def>
-    <def no ="wxSTC_SH_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_SH_NUMBER"> 3 </def>
-    <def no ="wxSTC_SH_WORD"> 4 </def>
-    <def no ="wxSTC_SH_STRING"> 5 </def>
-    <def no ="wxSTC_SH_CHARACTER"> 6 </def>
-    <def no ="wxSTC_SH_OPERATOR"> 7 </def>
-    <def no ="wxSTC_SH_IDENTIFIER"> 8 </def>
-    <def no ="wxSTC_SH_SCALAR"> 9 </def>
-    <def no ="wxSTC_SH_PARAM"> 10 </def>
-    <def no ="wxSTC_SH_BACKTICKS"> 11 </def>
-    <def no ="wxSTC_SH_HERE_DELIM"> 12 </def>
-    <def no ="wxSTC_SH_HERE_Q"> 13 </def>
-    <!-- Lexical states for SCLEX_ASN1 -->
-    <def no ="wxSTC_ASN1_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ASN1_COMMENT"> 1 </def>
-    <def no ="wxSTC_ASN1_IDENTIFIER"> 2 </def>
-    <def no ="wxSTC_ASN1_STRING"> 3 </def>
-    <def no ="wxSTC_ASN1_OID"> 4 </def>
-    <def no ="wxSTC_ASN1_SCALAR"> 5 </def>
-    <def no ="wxSTC_ASN1_KEYWORD"> 6 </def>
-    <def no ="wxSTC_ASN1_ATTRIBUTE"> 7 </def>
-    <def no ="wxSTC_ASN1_DESCRIPTOR"> 8 </def>
-    <def no ="wxSTC_ASN1_TYPE"> 9 </def>
-    <def no ="wxSTC_ASN1_OPERATOR"> 10 </def>
-    <!-- Lexical states for SCLEX_VHDL -->
-    <def no ="wxSTC_VHDL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_VHDL_COMMENT"> 1 </def>
-    <def no ="wxSTC_VHDL_COMMENTLINEBANG"> 2 </def>
-    <def no ="wxSTC_VHDL_NUMBER"> 3 </def>
-    <def no ="wxSTC_VHDL_STRING"> 4 </def>
-    <def no ="wxSTC_VHDL_OPERATOR"> 5 </def>
-    <def no ="wxSTC_VHDL_IDENTIFIER"> 6 </def>
-    <def no ="wxSTC_VHDL_STRINGEOL"> 7 </def>
-    <def no ="wxSTC_VHDL_KEYWORD"> 8 </def>
-    <def no ="wxSTC_VHDL_STDOPERATOR"> 9 </def>
-    <def no ="wxSTC_VHDL_ATTRIBUTE"> 10 </def>
-    <def no ="wxSTC_VHDL_STDFUNCTION"> 11 </def>
-    <def no ="wxSTC_VHDL_STDPACKAGE"> 12 </def>
-    <def no ="wxSTC_VHDL_STDTYPE"> 13 </def>
-    <def no ="wxSTC_VHDL_USERWORD"> 14 </def>
-    <!-- Lexical states for SCLEX_CAML -->
-    <def no ="wxSTC_CAML_DEFAULT"> 0 </def>
-    <def no ="wxSTC_CAML_IDENTIFIER"> 1 </def>
-    <def no ="wxSTC_CAML_TAGNAME"> 2 </def>
-    <def no ="wxSTC_CAML_KEYWORD"> 3 </def>
-    <def no ="wxSTC_CAML_KEYWORD2"> 4 </def>
-    <def no ="wxSTC_CAML_KEYWORD3"> 5 </def>
-    <def no ="wxSTC_CAML_LINENUM"> 6 </def>
-    <def no ="wxSTC_CAML_OPERATOR"> 7 </def>
-    <def no ="wxSTC_CAML_NUMBER"> 8 </def>
-    <def no ="wxSTC_CAML_CHAR"> 9 </def>
-    <def no ="wxSTC_CAML_STRING"> 11 </def>
-    <def no ="wxSTC_CAML_COMMENT"> 12 </def>
-    <def no ="wxSTC_CAML_COMMENT1"> 13 </def>
-    <def no ="wxSTC_CAML_COMMENT2"> 14 </def>
-    <def no ="wxSTC_CAML_COMMENT3"> 15 </def>
-    <!-- Lexical states for SCLEX_HASKELL -->
-    <def no ="wxSTC_HA_DEFAULT"> 0 </def>
-    <def no ="wxSTC_HA_IDENTIFIER"> 1 </def>
-    <def no ="wxSTC_HA_KEYWORD"> 2 </def>
-    <def no ="wxSTC_HA_NUMBER"> 3 </def>
-    <def no ="wxSTC_HA_STRING"> 4 </def>
-    <def no ="wxSTC_HA_CHARACTER"> 5 </def>
-    <def no ="wxSTC_HA_CLASS"> 6 </def>
-    <def no ="wxSTC_HA_MODULE"> 7 </def>
-    <def no ="wxSTC_HA_CAPITAL"> 8 </def>
-    <def no ="wxSTC_HA_DATA"> 9 </def>
-    <def no ="wxSTC_HA_IMPORT"> 10 </def>
-    <def no ="wxSTC_HA_OPERATOR"> 11 </def>
-    <def no ="wxSTC_HA_INSTANCE"> 12 </def>
-    <def no ="wxSTC_HA_COMMENTLINE"> 13 </def>
-    <def no ="wxSTC_HA_COMMENTBLOCK"> 14 </def>
-    <def no ="wxSTC_HA_COMMENTBLOCK2"> 15 </def>
-    <def no ="wxSTC_HA_COMMENTBLOCK3"> 16 </def>
-    <!-- Lexical states of SCLEX_TADS3 -->
-    <def no ="wxSTC_T3_DEFAULT"> 0 </def>
-    <def no ="wxSTC_T3_X_DEFAULT"> 1 </def>
-    <def no ="wxSTC_T3_PREPROCESSOR"> 2 </def>
-    <def no ="wxSTC_T3_BLOCK_COMMENT"> 3 </def>
-    <def no ="wxSTC_T3_LINE_COMMENT"> 4 </def>
-    <def no ="wxSTC_T3_OPERATOR"> 5 </def>
-    <def no ="wxSTC_T3_KEYWORD"> 6 </def>
-    <def no ="wxSTC_T3_NUMBER"> 7 </def>
-    <def no ="wxSTC_T3_IDENTIFIER"> 8 </def>
-    <def no ="wxSTC_T3_S_STRING"> 9 </def>
-    <def no ="wxSTC_T3_D_STRING"> 10 </def>
-    <def no ="wxSTC_T3_X_STRING"> 11 </def>
-    <def no ="wxSTC_T3_LIB_DIRECTIVE"> 12 </def>
-    <def no ="wxSTC_T3_MSG_PARAM"> 13 </def>
-    <def no ="wxSTC_T3_HTML_TAG"> 14 </def>
-    <def no ="wxSTC_T3_HTML_DEFAULT"> 15 </def>
-    <def no ="wxSTC_T3_HTML_STRING"> 16 </def>
-    <def no ="wxSTC_T3_USER1"> 17 </def>
-    <def no ="wxSTC_T3_USER2"> 18 </def>
-    <def no ="wxSTC_T3_USER3"> 19 </def>
-    <def no ="wxSTC_T3_BRACE"> 20 </def>
-    <!-- Lexical states for SCLEX_REBOL -->
-    <def no ="wxSTC_REBOL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_REBOL_COMMENTLINE"> 1 </def>
-    <def no ="wxSTC_REBOL_COMMENTBLOCK"> 2 </def>
-    <def no ="wxSTC_REBOL_PREFACE"> 3 </def>
-    <def no ="wxSTC_REBOL_OPERATOR"> 4 </def>
-    <def no ="wxSTC_REBOL_CHARACTER"> 5 </def>
-    <def no ="wxSTC_REBOL_QUOTEDSTRING"> 6 </def>
-    <def no ="wxSTC_REBOL_BRACEDSTRING"> 7 </def>
-    <def no ="wxSTC_REBOL_NUMBER"> 8 </def>
-    <def no ="wxSTC_REBOL_PAIR"> 9 </def>
-    <def no ="wxSTC_REBOL_TUPLE"> 10 </def>
-    <def no ="wxSTC_REBOL_BINARY"> 11 </def>
-    <def no ="wxSTC_REBOL_MONEY"> 12 </def>
-    <def no ="wxSTC_REBOL_ISSUE"> 13 </def>
-    <def no ="wxSTC_REBOL_TAG"> 14 </def>
-    <def no ="wxSTC_REBOL_FILE"> 15 </def>
-    <def no ="wxSTC_REBOL_EMAIL"> 16 </def>
-    <def no ="wxSTC_REBOL_URL"> 17 </def>
-    <def no ="wxSTC_REBOL_DATE"> 18 </def>
-    <def no ="wxSTC_REBOL_TIME"> 19 </def>
-    <def no ="wxSTC_REBOL_IDENTIFIER"> 20 </def>
-    <def no ="wxSTC_REBOL_WORD"> 21 </def>
-    <def no ="wxSTC_REBOL_WORD2"> 22 </def>
-    <def no ="wxSTC_REBOL_WORD3"> 23 </def>
-    <def no ="wxSTC_REBOL_WORD4"> 24 </def>
-    <def no ="wxSTC_REBOL_WORD5"> 25 </def>
-    <def no ="wxSTC_REBOL_WORD6"> 26 </def>
-    <def no ="wxSTC_REBOL_WORD7"> 27 </def>
-    <def no ="wxSTC_REBOL_WORD8"> 28 </def>
-    <!-- Lexical states for SCLEX_SMALLTALK -->
-    <def no ="wxSTC_ST_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ST_STRING"> 1 </def>
-    <def no ="wxSTC_ST_NUMBER"> 2 </def>
-    <def no ="wxSTC_ST_COMMENT"> 3 </def>
-    <def no ="wxSTC_ST_SYMBOL"> 4 </def>
-    <def no ="wxSTC_ST_BINARY"> 5 </def>
-    <def no ="wxSTC_ST_BOOL"> 6 </def>
-    <def no ="wxSTC_ST_SELF"> 7 </def>
-    <def no ="wxSTC_ST_SUPER"> 8 </def>
-    <def no ="wxSTC_ST_NIL"> 9 </def>
-    <def no ="wxSTC_ST_GLOBAL"> 10 </def>
-    <def no ="wxSTC_ST_RETURN"> 11 </def>
-    <def no ="wxSTC_ST_SPECIAL"> 12 </def>
-    <def no ="wxSTC_ST_KWSEND"> 13 </def>
-    <def no ="wxSTC_ST_ASSIGN"> 14 </def>
-    <def no ="wxSTC_ST_CHARACTER"> 15 </def>
-    <def no ="wxSTC_ST_SPEC_SEL"> 16 </def>
-    <!-- Lexical states for SCLEX_FLAGSHIP (clipper) -->
-    <def no ="wxSTC_FS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_FS_COMMENT"> 1 </def>
-    <def no ="wxSTC_FS_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_FS_COMMENTDOC"> 3 </def>
-    <def no ="wxSTC_FS_COMMENTLINEDOC"> 4 </def>
-    <def no ="wxSTC_FS_COMMENTDOCKEYWORD"> 5 </def>
-    <def no ="wxSTC_FS_COMMENTDOCKEYWORDERROR"> 6 </def>
-    <def no ="wxSTC_FS_KEYWORD"> 7 </def>
-    <def no ="wxSTC_FS_KEYWORD2"> 8 </def>
-    <def no ="wxSTC_FS_KEYWORD3"> 9 </def>
-    <def no ="wxSTC_FS_KEYWORD4"> 10 </def>
-    <def no ="wxSTC_FS_NUMBER"> 11 </def>
-    <def no ="wxSTC_FS_STRING"> 12 </def>
-    <def no ="wxSTC_FS_PREPROCESSOR"> 13 </def>
-    <def no ="wxSTC_FS_OPERATOR"> 14 </def>
-    <def no ="wxSTC_FS_IDENTIFIER"> 15 </def>
-    <def no ="wxSTC_FS_DATE"> 16 </def>
-    <def no ="wxSTC_FS_STRINGEOL"> 17 </def>
-    <def no ="wxSTC_FS_CONSTANT"> 18 </def>
-    <def no ="wxSTC_FS_ASM"> 19 </def>
-    <def no ="wxSTC_FS_LABEL"> 20 </def>
-    <def no ="wxSTC_FS_ERROR"> 21 </def>
-    <def no ="wxSTC_FS_HEXNUMBER"> 22 </def>
-    <def no ="wxSTC_FS_BINNUMBER"> 23 </def>
-    <!-- Lexical states for SCLEX_CSOUND -->
-    <def no ="wxSTC_CSOUND_DEFAULT"> 0 </def>
-    <def no ="wxSTC_CSOUND_COMMENT"> 1 </def>
-    <def no ="wxSTC_CSOUND_NUMBER"> 2 </def>
-    <def no ="wxSTC_CSOUND_OPERATOR"> 3 </def>
-    <def no ="wxSTC_CSOUND_INSTR"> 4 </def>
-    <def no ="wxSTC_CSOUND_IDENTIFIER"> 5 </def>
-    <def no ="wxSTC_CSOUND_OPCODE"> 6 </def>
-    <def no ="wxSTC_CSOUND_HEADERSTMT"> 7 </def>
-    <def no ="wxSTC_CSOUND_USERKEYWORD"> 8 </def>
-    <def no ="wxSTC_CSOUND_COMMENTBLOCK"> 9 </def>
-    <def no ="wxSTC_CSOUND_PARAM"> 10 </def>
-    <def no ="wxSTC_CSOUND_ARATE_VAR"> 11 </def>
-    <def no ="wxSTC_CSOUND_KRATE_VAR"> 12 </def>
-    <def no ="wxSTC_CSOUND_IRATE_VAR"> 13 </def>
-    <def no ="wxSTC_CSOUND_GLOBAL_VAR"> 14 </def>
-    <def no ="wxSTC_CSOUND_STRINGEOL"> 15 </def>
-    <!-- Lexical states for SCLEX_INNOSETUP -->
-    <def no ="wxSTC_INNO_DEFAULT"> 0 </def>
-    <def no ="wxSTC_INNO_COMMENT"> 1 </def>
-    <def no ="wxSTC_INNO_KEYWORD"> 2 </def>
-    <def no ="wxSTC_INNO_PARAMETER"> 3 </def>
-    <def no ="wxSTC_INNO_SECTION"> 4 </def>
-    <def no ="wxSTC_INNO_PREPROC"> 5 </def>
-    <def no ="wxSTC_INNO_PREPROC_INLINE"> 6 </def>
-    <def no ="wxSTC_INNO_COMMENT_PASCAL"> 7 </def>
-    <def no ="wxSTC_INNO_KEYWORD_PASCAL"> 8 </def>
-    <def no ="wxSTC_INNO_KEYWORD_USER"> 9 </def>
-    <def no ="wxSTC_INNO_STRING_DOUBLE"> 10 </def>
-    <def no ="wxSTC_INNO_STRING_SINGLE"> 11 </def>
-    <def no ="wxSTC_INNO_IDENTIFIER"> 12 </def>
-    <!-- Lexical states for SCLEX_OPAL -->
-    <def no ="wxSTC_OPAL_SPACE"> 0 </def>
-    <def no ="wxSTC_OPAL_COMMENT_BLOCK"> 1 </def>
-    <def no ="wxSTC_OPAL_COMMENT_LINE"> 2 </def>
-    <def no ="wxSTC_OPAL_INTEGER"> 3 </def>
-    <def no ="wxSTC_OPAL_KEYWORD"> 4 </def>
-    <def no ="wxSTC_OPAL_SORT"> 5 </def>
-    <def no ="wxSTC_OPAL_STRING"> 6 </def>
-    <def no ="wxSTC_OPAL_PAR"> 7 </def>
-    <def no ="wxSTC_OPAL_BOOL_CONST"> 8 </def>
-    <def no ="wxSTC_OPAL_DEFAULT"> 32 </def>
-    <!-- Lexical states for SCLEX_SPICE -->
-    <def no ="wxSTC_SPICE_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SPICE_IDENTIFIER"> 1 </def>
-    <def no ="wxSTC_SPICE_KEYWORD"> 2 </def>
-    <def no ="wxSTC_SPICE_KEYWORD2"> 3 </def>
-    <def no ="wxSTC_SPICE_KEYWORD3"> 4 </def>
-    <def no ="wxSTC_SPICE_NUMBER"> 5 </def>
-    <def no ="wxSTC_SPICE_DELIMITER"> 6 </def>
-    <def no ="wxSTC_SPICE_VALUE"> 7 </def>
-    <def no ="wxSTC_SPICE_COMMENTLINE"> 8 </def>
-    <!-- Lexical states for SCLEX_CMAKE -->
-    <def no ="wxSTC_CMAKE_DEFAULT"> 0 </def>
-    <def no ="wxSTC_CMAKE_COMMENT"> 1 </def>
-    <def no ="wxSTC_CMAKE_STRINGDQ"> 2 </def>
-    <def no ="wxSTC_CMAKE_STRINGLQ"> 3 </def>
-    <def no ="wxSTC_CMAKE_STRINGRQ"> 4 </def>
-    <def no ="wxSTC_CMAKE_COMMANDS"> 5 </def>
-    <def no ="wxSTC_CMAKE_PARAMETERS"> 6 </def>
-    <def no ="wxSTC_CMAKE_VARIABLE"> 7 </def>
-    <def no ="wxSTC_CMAKE_USERDEFINED"> 8 </def>
-    <def no ="wxSTC_CMAKE_WHILEDEF"> 9 </def>
-    <def no ="wxSTC_CMAKE_FOREACHDEF"> 10 </def>
-    <def no ="wxSTC_CMAKE_IFDEFINEDEF"> 11 </def>
-    <def no ="wxSTC_CMAKE_MACRODEF"> 12 </def>
-    <def no ="wxSTC_CMAKE_STRINGVAR"> 13 </def>
-    <def no ="wxSTC_CMAKE_NUMBER"> 14 </def>
-    <!-- Lexical states for SCLEX_GAP -->
-    <def no ="wxSTC_GAP_DEFAULT"> 0 </def>
-    <def no ="wxSTC_GAP_IDENTIFIER"> 1 </def>
-    <def no ="wxSTC_GAP_KEYWORD"> 2 </def>
-    <def no ="wxSTC_GAP_KEYWORD2"> 3 </def>
-    <def no ="wxSTC_GAP_KEYWORD3"> 4 </def>
-    <def no ="wxSTC_GAP_KEYWORD4"> 5 </def>
-    <def no ="wxSTC_GAP_STRING"> 6 </def>
-    <def no ="wxSTC_GAP_CHAR"> 7 </def>
-    <def no ="wxSTC_GAP_OPERATOR"> 8 </def>
-    <def no ="wxSTC_GAP_COMMENT"> 9 </def>
-    <def no ="wxSTC_GAP_NUMBER"> 10 </def>
-    <def no ="wxSTC_GAP_STRINGEOL"> 11 </def>
-    <!-- Lexical state for SCLEX_PLM -->
-    <def no ="wxSTC_PLM_DEFAULT"> 0 </def>
-    <def no ="wxSTC_PLM_COMMENT"> 1 </def>
-    <def no ="wxSTC_PLM_STRING"> 2 </def>
-    <def no ="wxSTC_PLM_NUMBER"> 3 </def>
-    <def no ="wxSTC_PLM_IDENTIFIER"> 4 </def>
-    <def no ="wxSTC_PLM_OPERATOR"> 5 </def>
-    <def no ="wxSTC_PLM_CONTROL"> 6 </def>
-    <def no ="wxSTC_PLM_KEYWORD"> 7 </def>
-    <!-- Lexical state for SCLEX_PROGRESS -->
-    <def no ="wxSTC_4GL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_4GL_NUMBER"> 1 </def>
-    <def no ="wxSTC_4GL_WORD"> 2 </def>
-    <def no ="wxSTC_4GL_STRING"> 3 </def>
-    <def no ="wxSTC_4GL_CHARACTER"> 4 </def>
-    <def no ="wxSTC_4GL_PREPROCESSOR"> 5 </def>
-    <def no ="wxSTC_4GL_OPERATOR"> 6 </def>
-    <def no ="wxSTC_4GL_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_4GL_BLOCK"> 8 </def>
-    <def no ="wxSTC_4GL_END"> 9 </def>
-    <def no ="wxSTC_4GL_COMMENT1"> 10 </def>
-    <def no ="wxSTC_4GL_COMMENT2"> 11 </def>
-    <def no ="wxSTC_4GL_COMMENT3"> 12 </def>
-    <def no ="wxSTC_4GL_COMMENT4"> 13 </def>
-    <def no ="wxSTC_4GL_COMMENT5"> 14 </def>
-    <def no ="wxSTC_4GL_COMMENT6"> 15 </def>
-    <def no ="wxSTC_4GL_DEFAULT_"> 16 </def>
-    <def no ="wxSTC_4GL_NUMBER_"> 17 </def>
-    <def no ="wxSTC_4GL_WORD_"> 18 </def>
-    <def no ="wxSTC_4GL_STRING_"> 19 </def>
-    <def no ="wxSTC_4GL_CHARACTER_"> 20 </def>
-    <def no ="wxSTC_4GL_PREPROCESSOR_"> 21 </def>
-    <def no ="wxSTC_4GL_OPERATOR_"> 22 </def>
-    <def no ="wxSTC_4GL_IDENTIFIER_"> 23 </def>
-    <def no ="wxSTC_4GL_BLOCK_"> 24 </def>
-    <def no ="wxSTC_4GL_END_"> 25 </def>
-    <def no ="wxSTC_4GL_COMMENT1_"> 26 </def>
-    <def no ="wxSTC_4GL_COMMENT2_"> 27 </def>
-    <def no ="wxSTC_4GL_COMMENT3_"> 28 </def>
-    <def no ="wxSTC_4GL_COMMENT4_"> 29 </def>
-    <def no ="wxSTC_4GL_COMMENT5_"> 30 </def>
-    <def no ="wxSTC_4GL_COMMENT6_"> 31 </def>
-    <!-- Lexical states for SCLEX_ABAQUS -->
-    <def no ="wxSTC_ABAQUS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ABAQUS_COMMENT"> 1 </def>
-    <def no ="wxSTC_ABAQUS_COMMENTBLOCK"> 2 </def>
-    <def no ="wxSTC_ABAQUS_NUMBER"> 3 </def>
-    <def no ="wxSTC_ABAQUS_STRING"> 4 </def>
-    <def no ="wxSTC_ABAQUS_OPERATOR"> 5 </def>
-    <def no ="wxSTC_ABAQUS_WORD"> 6 </def>
-    <def no ="wxSTC_ABAQUS_PROCESSOR"> 7 </def>
-    <def no ="wxSTC_ABAQUS_COMMAND"> 8 </def>
-    <def no ="wxSTC_ABAQUS_SLASHCOMMAND"> 9 </def>
-    <def no ="wxSTC_ABAQUS_STARCOMMAND"> 10 </def>
-    <def no ="wxSTC_ABAQUS_ARGUMENT"> 11 </def>
-    <def no ="wxSTC_ABAQUS_FUNCTION"> 12 </def>
-    <!-- Lexical states for SCLEX_ASYMPTOTE -->
-    <def no ="wxSTC_ASY_DEFAULT"> 0 </def>
-    <def no ="wxSTC_ASY_COMMENT"> 1 </def>
-    <def no ="wxSTC_ASY_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_ASY_NUMBER"> 3 </def>
-    <def no ="wxSTC_ASY_WORD"> 4 </def>
-    <def no ="wxSTC_ASY_STRING"> 5 </def>
-    <def no ="wxSTC_ASY_CHARACTER"> 6 </def>
-    <def no ="wxSTC_ASY_OPERATOR"> 7 </def>
-    <def no ="wxSTC_ASY_IDENTIFIER"> 8 </def>
-    <def no ="wxSTC_ASY_STRINGEOL"> 9 </def>
-    <def no ="wxSTC_ASY_COMMENTLINEDOC"> 10 </def>
-    <def no ="wxSTC_ASY_WORD2"> 11 </def>
-    <!-- Lexical states for SCLEX_R -->
-    <def no ="wxSTC_R_DEFAULT"> 0 </def>
-    <def no ="wxSTC_R_COMMENT"> 1 </def>
-    <def no ="wxSTC_R_KWORD"> 2 </def>
-    <def no ="wxSTC_R_BASEKWORD"> 3 </def>
-    <def no ="wxSTC_R_OTHERKWORD"> 4 </def>
-    <def no ="wxSTC_R_NUMBER"> 5 </def>
-    <def no ="wxSTC_R_STRING"> 6 </def>
-    <def no ="wxSTC_R_STRING2"> 7 </def>
-    <def no ="wxSTC_R_OPERATOR"> 8 </def>
-    <def no ="wxSTC_R_IDENTIFIER"> 9 </def>
-    <def no ="wxSTC_R_INFIX"> 10 </def>
-    <def no ="wxSTC_R_INFIXEOL"> 11 </def>
-    <!-- Lexical state for SCLEX_MAGIKSF -->
-    <def no ="wxSTC_MAGIK_DEFAULT"> 0 </def>
-    <def no ="wxSTC_MAGIK_COMMENT"> 1 </def>
-    <def no ="wxSTC_MAGIK_HYPER_COMMENT"> 16 </def>
-    <def no ="wxSTC_MAGIK_STRING"> 2 </def>
-    <def no ="wxSTC_MAGIK_CHARACTER"> 3 </def>
-    <def no ="wxSTC_MAGIK_NUMBER"> 4 </def>
-    <def no ="wxSTC_MAGIK_IDENTIFIER"> 5 </def>
-    <def no ="wxSTC_MAGIK_OPERATOR"> 6 </def>
-    <def no ="wxSTC_MAGIK_FLOW"> 7 </def>
-    <def no ="wxSTC_MAGIK_CONTAINER"> 8 </def>
-    <def no ="wxSTC_MAGIK_BRACKET_BLOCK"> 9 </def>
-    <def no ="wxSTC_MAGIK_BRACE_BLOCK"> 10 </def>
-    <def no ="wxSTC_MAGIK_SQBRACKET_BLOCK"> 11 </def>
-    <def no ="wxSTC_MAGIK_UNKNOWN_KEYWORD"> 12 </def>
-    <def no ="wxSTC_MAGIK_KEYWORD"> 13 </def>
-    <def no ="wxSTC_MAGIK_PRAGMA"> 14 </def>
-    <def no ="wxSTC_MAGIK_SYMBOL"> 15 </def>
-    <!-- Lexical state for SCLEX_POWERSHELL -->
-    <def no ="wxSTC_POWERSHELL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_POWERSHELL_COMMENT"> 1 </def>
-    <def no ="wxSTC_POWERSHELL_STRING"> 2 </def>
-    <def no ="wxSTC_POWERSHELL_CHARACTER"> 3 </def>
-    <def no ="wxSTC_POWERSHELL_NUMBER"> 4 </def>
-    <def no ="wxSTC_POWERSHELL_VARIABLE"> 5 </def>
-    <def no ="wxSTC_POWERSHELL_OPERATOR"> 6 </def>
-    <def no ="wxSTC_POWERSHELL_IDENTIFIER"> 7 </def>
-    <def no ="wxSTC_POWERSHELL_KEYWORD"> 8 </def>
-    <def no ="wxSTC_POWERSHELL_CMDLET"> 9 </def>
-    <def no ="wxSTC_POWERSHELL_ALIAS"> 10 </def>
-    <!-- Lexical state for SCLEX_MYSQL -->
-    <def no ="wxSTC_MYSQL_DEFAULT"> 0 </def>
-    <def no ="wxSTC_MYSQL_COMMENT"> 1 </def>
-    <def no ="wxSTC_MYSQL_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_MYSQL_VARIABLE"> 3 </def>
-    <def no ="wxSTC_MYSQL_SYSTEMVARIABLE"> 4 </def>
-    <def no ="wxSTC_MYSQL_KNOWNSYSTEMVARIABLE"> 5 </def>
-    <def no ="wxSTC_MYSQL_NUMBER"> 6 </def>
-    <def no ="wxSTC_MYSQL_MAJORKEYWORD"> 7 </def>
-    <def no ="wxSTC_MYSQL_KEYWORD"> 8 </def>
-    <def no ="wxSTC_MYSQL_DATABASEOBJECT"> 9 </def>
-    <def no ="wxSTC_MYSQL_PROCEDUREKEYWORD"> 10 </def>
-    <def no ="wxSTC_MYSQL_STRING"> 11 </def>
-    <def no ="wxSTC_MYSQL_SQSTRING"> 12 </def>
-    <def no ="wxSTC_MYSQL_DQSTRING"> 13 </def>
-    <def no ="wxSTC_MYSQL_OPERATOR"> 14 </def>
-    <def no ="wxSTC_MYSQL_FUNCTION"> 15 </def>
-    <def no ="wxSTC_MYSQL_IDENTIFIER"> 16 </def>
-    <def no ="wxSTC_MYSQL_QUOTEDIDENTIFIER"> 17 </def>
-    <def no ="wxSTC_MYSQL_USER1"> 18 </def>
-    <def no ="wxSTC_MYSQL_USER2"> 19 </def>
-    <def no ="wxSTC_MYSQL_USER3"> 20 </def>
-    <def no ="wxSTC_MYSQL_HIDDENCOMMAND"> 21 </def>
-    <!-- Lexical state for SCLEX_PO -->
-    <def no ="wxSTC_PO_DEFAULT"> 0 </def>
-    <def no ="wxSTC_PO_COMMENT"> 1 </def>
-    <def no ="wxSTC_PO_MSGID"> 2 </def>
-    <def no ="wxSTC_PO_MSGID_TEXT"> 3 </def>
-    <def no ="wxSTC_PO_MSGSTR"> 4 </def>
-    <def no ="wxSTC_PO_MSGSTR_TEXT"> 5 </def>
-    <def no ="wxSTC_PO_MSGCTXT"> 6 </def>
-    <def no ="wxSTC_PO_MSGCTXT_TEXT"> 7 </def>
-    <def no ="wxSTC_PO_FUZZY"> 8 </def>
-    <!-- Lexical states for SCLEX_PASCAL -->
-    <def no ="wxSTC_PAS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_PAS_IDENTIFIER"> 1 </def>
-    <def no ="wxSTC_PAS_COMMENT"> 2 </def>
-    <def no ="wxSTC_PAS_COMMENT2"> 3 </def>
-    <def no ="wxSTC_PAS_COMMENTLINE"> 4 </def>
-    <def no ="wxSTC_PAS_PREPROCESSOR"> 5 </def>
-    <def no ="wxSTC_PAS_PREPROCESSOR2"> 6 </def>
-    <def no ="wxSTC_PAS_NUMBER"> 7 </def>
-    <def no ="wxSTC_PAS_HEXNUMBER"> 8 </def>
-    <def no ="wxSTC_PAS_WORD"> 9 </def>
-    <def no ="wxSTC_PAS_STRING"> 10 </def>
-    <def no ="wxSTC_PAS_STRINGEOL"> 11 </def>
-    <def no ="wxSTC_PAS_CHARACTER"> 12 </def>
-    <def no ="wxSTC_PAS_OPERATOR"> 13 </def>
-    <def no ="wxSTC_PAS_ASM"> 14 </def>
-    <!-- Lexical state for SCLEX_SORCUS -->
-    <def no ="wxSTC_SORCUS_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SORCUS_COMMAND"> 1 </def>
-    <def no ="wxSTC_SORCUS_PARAMETER"> 2 </def>
-    <def no ="wxSTC_SORCUS_COMMENTLINE"> 3 </def>
-    <def no ="wxSTC_SORCUS_STRING"> 4 </def>
-    <def no ="wxSTC_SORCUS_STRINGEOL"> 5 </def>
-    <def no ="wxSTC_SORCUS_IDENTIFIER"> 6 </def>
-    <def no ="wxSTC_SORCUS_OPERATOR"> 7 </def>
-    <def no ="wxSTC_SORCUS_NUMBER"> 8 </def>
-    <def no ="wxSTC_SORCUS_CONSTANT"> 9 </def>
-    <!-- Lexical state for SCLEX_POWERPRO -->
-    <def no ="wxSTC_POWERPRO_DEFAULT"> 0 </def>
-    <def no ="wxSTC_POWERPRO_COMMENTBLOCK"> 1 </def>
-    <def no ="wxSTC_POWERPRO_COMMENTLINE"> 2 </def>
-    <def no ="wxSTC_POWERPRO_NUMBER"> 3 </def>
-    <def no ="wxSTC_POWERPRO_WORD"> 4 </def>
-    <def no ="wxSTC_POWERPRO_WORD2"> 5 </def>
-    <def no ="wxSTC_POWERPRO_WORD3"> 6 </def>
-    <def no ="wxSTC_POWERPRO_WORD4"> 7 </def>
-    <def no ="wxSTC_POWERPRO_DOUBLEQUOTEDSTRING"> 8 </def>
-    <def no ="wxSTC_POWERPRO_SINGLEQUOTEDSTRING"> 9 </def>
-    <def no ="wxSTC_POWERPRO_LINECONTINUE"> 10 </def>
-    <def no ="wxSTC_POWERPRO_OPERATOR"> 11 </def>
-    <def no ="wxSTC_POWERPRO_IDENTIFIER"> 12 </def>
-    <def no ="wxSTC_POWERPRO_STRINGEOL"> 13 </def>
-    <def no ="wxSTC_POWERPRO_VERBATIM"> 14 </def>
-    <def no ="wxSTC_POWERPRO_ALTQUOTE"> 15 </def>
-    <def no ="wxSTC_POWERPRO_FUNCTION"> 16 </def>
-    <!-- Lexical states for SCLEX_SML -->
-    <def no ="wxSTC_SML_DEFAULT"> 0 </def>
-    <def no ="wxSTC_SML_IDENTIFIER"> 1 </def>
-    <def no ="wxSTC_SML_TAGNAME"> 2 </def>
-    <def no ="wxSTC_SML_KEYWORD"> 3 </def>
-    <def no ="wxSTC_SML_KEYWORD2"> 4 </def>
-    <def no ="wxSTC_SML_KEYWORD3"> 5 </def>
-    <def no ="wxSTC_SML_LINENUM"> 6 </def>
-    <def no ="wxSTC_SML_OPERATOR"> 7 </def>
-    <def no ="wxSTC_SML_NUMBER"> 8 </def>
-    <def no ="wxSTC_SML_CHAR"> 9 </def>
-    <def no ="wxSTC_SML_STRING"> 11 </def>
-    <def no ="wxSTC_SML_COMMENT"> 12 </def>
-    <def no ="wxSTC_SML_COMMENT1"> 13 </def>
-    <def no ="wxSTC_SML_COMMENT2"> 14 </def>
-    <def no ="wxSTC_SML_COMMENT3"> 15 </def>
-    <!-- Lexical state for SCLEX_MARKDOWN -->
-    <def no ="wxSTC_MARKDOWN_DEFAULT"> 0 </def>
-    <def no ="wxSTC_MARKDOWN_LINE_BEGIN"> 1 </def>
-    <def no ="wxSTC_MARKDOWN_STRONG1"> 2 </def>
-    <def no ="wxSTC_MARKDOWN_STRONG2"> 3 </def>
-    <def no ="wxSTC_MARKDOWN_EM1"> 4 </def>
-    <def no ="wxSTC_MARKDOWN_EM2"> 5 </def>
-    <def no ="wxSTC_MARKDOWN_HEADER1"> 6 </def>
-    <def no ="wxSTC_MARKDOWN_HEADER2"> 7 </def>
-    <def no ="wxSTC_MARKDOWN_HEADER3"> 8 </def>
-    <def no ="wxSTC_MARKDOWN_HEADER4"> 9 </def>
-    <def no ="wxSTC_MARKDOWN_HEADER5"> 10 </def>
-    <def no ="wxSTC_MARKDOWN_HEADER6"> 11 </def>
-    <def no ="wxSTC_MARKDOWN_PRECHAR"> 12 </def>
-    <def no ="wxSTC_MARKDOWN_ULIST_ITEM"> 13 </def>
-    <def no ="wxSTC_MARKDOWN_OLIST_ITEM"> 14 </def>
-    <def no ="wxSTC_MARKDOWN_BLOCKQUOTE"> 15 </def>
-    <def no ="wxSTC_MARKDOWN_STRIKEOUT"> 16 </def>
-    <def no ="wxSTC_MARKDOWN_HRULE"> 17 </def>
-    <def no ="wxSTC_MARKDOWN_LINK"> 18 </def>
-    <def no ="wxSTC_MARKDOWN_CODE"> 19 </def>
-    <def no ="wxSTC_MARKDOWN_CODE2"> 20 </def>
-    <def no ="wxSTC_MARKDOWN_CODEBK"> 21 </def>
-    
+    <def name = "global">
+      <def no ="mark_circle"> 0 </def>
+      <def no ="mark_roundrect"> 1 </def>
+      <def no ="mark_arrow"> 2 </def>
+      <def no ="mark_smallrect"> 3 </def>
+      <def no ="mark_shortarrow"> 4 </def>
+      <def no ="mark_empty"> 5 </def>
+      <def no ="mark_arrowdown"> 6 </def>
+      <def no ="mark_minus"> 7 </def>
+      <def no ="mark_plus"> 8 </def>
+      <def no ="mark_vline"> 9 </def>
+      <def no ="mark_lcorner"> 10 </def>
+      <def no ="mark_tcorner"> 11 </def>
+      <def no ="mark_boxplus"> 12 </def>
+      <def no ="mark_boxplusconnected"> 13 </def>
+      <def no ="mark_boxminus"> 14 </def>
+      <def no ="mark_boxminusconnected"> 15 </def>
+      <def no ="mark_lcornercurve"> 16 </def>
+      <def no ="mark_tcornercurve"> 17 </def>
+      <def no ="mark_circleplus"> 18 </def>
+      <def no ="mark_circleplusconnected"> 19 </def>
+      <def no ="mark_circleminus"> 20 </def>
+      <def no ="mark_circleminusconnected"> 21 </def>
+      <def no ="mark_background"> 22 </def>
+      <def no ="mark_dotdotdot"> 23 </def>
+      <def no ="mark_arrows"> 24 </def>
+      <def no ="mark_pixmap"> 25 </def>
+      <def no ="mark_fullrect"> 26 </def>
+      <def no ="marknum_folderend"> 25 </def>
+      <def no ="marknum_folderopenmid"> 26 </def>
+      <def no ="marknum_foldermidtail"> 27 </def>
+      <def no ="marknum_foldertail"> 28 </def>
+      <def no ="marknum_foldersub"> 29 </def>
+      <def no ="marknum_folder"> 30 </def>
+      <def no ="marknum_folderopen"> 31 </def>
+      <def no ="style_default"> 32 </def>
+      <def no ="style_linenumber"> 33 </def>
+      <def no ="style_bracelight"> 34 </def>
+      <def no ="style_bracebad"> 35 </def>
+      <def no ="style_controlchar"> 36 </def>
+      <def no ="style_indentguide"> 37 </def>
+      <def no ="style_calltip"> 38 </def>
+      <def no ="indic_plain"> 0 </def>
+      <def no ="indic_squiggle"> 1 </def>
+      <def no ="indic_tt"> 2 </def>
+      <def no ="indic_diagonal"> 3 </def>
+      <def no ="indic_strike"> 4 </def>
+      <def no ="indic_hidden"> 5 </def>
+      <def no ="indic_box"> 6 </def>
+      <def no ="indic_roundbox"> 7 </def>
+      <def no ="indic_container"> 8 </def>
+      <def no ="iv_none"> 0 </def>
+      <def no ="iv_real"> 1 </def>
+      <def no ="iv_lookforward"> 2 </def>
+      <def no ="iv_lookboth"> 3 </def>
     <!-- Macro's for wxextension vi mode -->
-    <def no ="wxEx_MARKNUM_CHANGE"> 1 </def>
-    <def no ="wxEx_MARKNUM_VI"> 0 </def>
+      <def no ="ex_marknum_change"> 1 </def>
+      <def no ="ex_marknum_vi"> 0 </def>
+    </def>
+
+    <def name = "abaqus">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentblock"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="word"> 6 </def>
+      <def no ="processor"> 7 </def>
+      <def no ="command"> 8 </def>
+      <def no ="slashcommand"> 9 </def>
+      <def no ="starcommand"> 10 </def>
+      <def no ="argument"> 11 </def>
+      <def no ="function"> 12 </def>
+    </def>
+    
+    <def name = "ada">
+      <def no ="default"> 0 </def>
+      <def no ="word"> 1 </def>
+      <def no ="identifier"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="stringeol"> 8 </def>
+      <def no ="label"> 9 </def>
+      <def no ="commentline"> 10 </def>
+      <def no ="illegal"> 11 </def>
+    </def>
+    
+    <def name = "apdl">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentblock"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="word"> 6 </def>
+      <def no ="processor"> 7 </def>
+      <def no ="command"> 8 </def>
+      <def no ="slashcommand"> 9 </def>
+      <def no ="starcommand"> 10 </def>
+      <def no ="argument"> 11 </def>
+      <def no ="function"> 12 </def>
+    </def>
+    
+    <def name = "asm">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="string"> 3 </def>
+      <def no ="operator"> 4 </def>
+      <def no ="identifier"> 5 </def>
+      <def no ="cpuinstruction"> 6 </def>
+      <def no ="mathinstruction"> 7 </def>
+      <def no ="register"> 8 </def>
+      <def no ="directive"> 9 </def>
+      <def no ="directiveoperand"> 10 </def>
+      <def no ="commentblock"> 11 </def>
+      <def no ="character"> 12 </def>
+      <def no ="stringeol"> 13 </def>
+      <def no ="extinstruction"> 14 </def>
+    </def>
+    
+    <def name = "asn1">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="identifier"> 2 </def>
+      <def no ="string"> 3 </def>
+      <def no ="oid"> 4 </def>
+      <def no ="scalar"> 5 </def>
+      <def no ="keyword"> 6 </def>
+      <def no ="attribute"> 7 </def>
+      <def no ="descriptor"> 8 </def>
+      <def no ="type"> 9 </def>
+      <def no ="operator"> 10 </def>
+    </def>
+    
+    <def name = "asy">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="word"> 4 </def>
+      <def no ="string"> 5 </def>
+      <def no ="character"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="identifier"> 8 </def>
+      <def no ="stringeol"> 9 </def>
+      <def no ="commentlinedoc"> 10 </def>
+      <def no ="word2"> 11 </def>
+    </def>
+    
+    <def name = "au3">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentblock"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="function"> 4 </def>
+      <def no ="keyword"> 5 </def>
+      <def no ="macro"> 6 </def>
+      <def no ="string"> 7 </def>
+      <def no ="operator"> 8 </def>
+      <def no ="variable"> 9 </def>
+      <def no ="sent"> 10 </def>
+      <def no ="preprocessor"> 11 </def>
+      <def no ="special"> 12 </def>
+      <def no ="expand"> 13 </def>
+      <def no ="comobj"> 14 </def>
+      <def no ="udf"> 15 </def>
+    </def>
+    
+    <def name = "ave">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="word"> 3 </def>
+      <def no ="string"> 6 </def>
+      <def no ="enum"> 7 </def>
+      <def no ="stringeol"> 8 </def>
+      <def no ="identifier"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="word1"> 11 </def>
+      <def no ="word2"> 12 </def>
+      <def no ="word3"> 13 </def>
+      <def no ="word4"> 14 </def>
+      <def no ="word5"> 15 </def>
+      <def no ="word6"> 16 </def>
+    </def>
+    
+    <def name = "baan">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentdoc"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="word"> 4 </def>
+      <def no ="string"> 5 </def>
+      <def no ="preprocessor"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="identifier"> 8 </def>
+      <def no ="stringeol"> 9 </def>
+      <def no ="word2"> 10 </def>
+    </def>
+    
+    <def name = "bash">
+      <def no ="default"> 0 </def>
+      <def no ="error"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="word"> 4 </def>
+      <def no ="string"> 5 </def>
+      <def no ="character"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="identifier"> 8 </def>
+      <def no ="scalar"> 9 </def>
+      <def no ="param"> 10 </def>
+      <def no ="backticks"> 11 </def>
+      <def no ="here_delim"> 12 </def>
+      <def no ="here_q"> 13 </def>
+    </def>
+    
+    <def name = "batch">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="word"> 2 </def>
+      <def no ="label"> 3 </def>
+      <def no ="hide"> 4 </def>
+      <def no ="command"> 5 </def>
+      <def no ="identifier"> 6 </def>
+      <def no ="operator"> 7 </def>
+    </def>
+    
+    <def name = "caml">
+      <def no ="default"> 0 </def>
+      <def no ="identifier"> 1 </def>
+      <def no ="tagname"> 2 </def>
+      <def no ="keyword"> 3 </def>
+      <def no ="keyword2"> 4 </def>
+      <def no ="keyword3"> 5 </def>
+      <def no ="linenum"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="number"> 8 </def>
+      <def no ="char"> 9 </def>
+      <def no ="string"> 11 </def>
+      <def no ="comment"> 12 </def>
+      <def no ="comment1"> 13 </def>
+      <def no ="comment2"> 14 </def>
+      <def no ="comment3"> 15 </def>
+    </def>
+    
+    <def name = "clarion">
+      <def no ="default"> 0 </def>
+      <def no ="label"> 1 </def>
+      <def no ="comment"> 2 </def>
+      <def no ="string"> 3 </def>
+      <def no ="user_identifier"> 4 </def>
+      <def no ="integer_constant"> 5 </def>
+      <def no ="real_constant"> 6 </def>
+      <def no ="picture_string"> 7 </def>
+      <def no ="keyword"> 8 </def>
+      <def no ="compiler_directive"> 9 </def>
+      <def no ="runtime_expressions"> 10 </def>
+      <def no ="builtin_procedures_function"> 11 </def>
+      <def no ="structure_data_type"> 12 </def>
+      <def no ="attribute"> 13 </def>
+      <def no ="standard_equate"> 14 </def>
+      <def no ="error"> 15 </def>
+      <def no ="deprecated"> 16 </def>
+    </def>
+    
+    <def name = "cmake">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="stringdq"> 2 </def>
+      <def no ="stringlq"> 3 </def>
+      <def no ="stringrq"> 4 </def>
+      <def no ="commands"> 5 </def>
+      <def no ="parameters"> 6 </def>
+      <def no ="variable"> 7 </def>
+      <def no ="userdefined"> 8 </def>
+      <def no ="whiledef"> 9 </def>
+      <def no ="foreachdef"> 10 </def>
+      <def no ="ifdefinedef"> 11 </def>
+      <def no ="macrodef"> 12 </def>
+      <def no ="stringvar"> 13 </def>
+      <def no ="number"> 14 </def>
+    </def>
+    
+    <def name = "conf">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="identifier"> 3 </def>
+      <def no ="extension"> 4 </def>
+      <def no ="parameter"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="ip"> 8 </def>
+      <def no ="directive"> 9 </def>
+    </def>
+    
+    <def name = "cpp">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentdoc"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="character"> 7 </def>
+      <def no ="uuid"> 8 </def>
+      <def no ="preprocessor"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="stringeol"> 12 </def>
+      <def no ="verbatim"> 13 </def>
+      <def no ="regex"> 14 </def>
+      <def no ="commentlinedoc"> 15 </def>
+      <def no ="word2"> 16 </def>
+      <def no ="commentdockeyword"> 17 </def>
+      <def no ="commentdockeyworderror"> 18 </def>
+      <def no ="globalclass"> 19 </def>
+    </def>
+    
+    <def name = "csound">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="operator"> 3 </def>
+      <def no ="instr"> 4 </def>
+      <def no ="identifier"> 5 </def>
+      <def no ="opcode"> 6 </def>
+      <def no ="headerstmt"> 7 </def>
+      <def no ="userkeyword"> 8 </def>
+      <def no ="commentblock"> 9 </def>
+      <def no ="param"> 10 </def>
+      <def no ="arate_var"> 11 </def>
+      <def no ="krate_var"> 12 </def>
+      <def no ="irate_var"> 13 </def>
+      <def no ="global_var"> 14 </def>
+      <def no ="stringeol"> 15 </def>
+    </def>
+    
+    <def name = "css">
+      <def no ="default"> 0 </def>
+      <def no ="tag"> 1 </def>
+      <def no ="class"> 2 </def>
+      <def no ="pseudoclass"> 3 </def>
+      <def no ="unknown_pseudoclass"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="identifier"> 6 </def>
+      <def no ="unknown_identifier"> 7 </def>
+      <def no ="value"> 8 </def>
+      <def no ="comment"> 9 </def>
+      <def no ="id"> 10 </def>
+      <def no ="important"> 11 </def>
+      <def no ="directive"> 12 </def>
+      <def no ="doublestring"> 13 </def>
+      <def no ="singlestring"> 14 </def>
+      <def no ="identifier2"> 15 </def>
+      <def no ="attribute"> 16 </def>
+    </def>
+    
+    <def name = "d">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentdoc"> 3 </def>
+      <def no ="commentnested"> 4 </def>
+      <def no ="number"> 5 </def>
+      <def no ="word"> 6 </def>
+      <def no ="word2"> 7 </def>
+      <def no ="word3"> 8 </def>
+      <def no ="typedef"> 9 </def>
+      <def no ="string"> 10 </def>
+      <def no ="stringeol"> 11 </def>
+      <def no ="character"> 12 </def>
+      <def no ="operator"> 13 </def>
+      <def no ="identifier"> 14 </def>
+      <def no ="commentlinedoc"> 15 </def>
+      <def no ="commentdockeyword"> 16 </def>
+      <def no ="commentdockeyworderror"> 17 </def>
+    </def>
+    
+    <def name = "diff">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="command"> 2 </def>
+      <def no ="header"> 3 </def>
+      <def no ="position"> 4 </def>
+      <def no ="deleted"> 5 </def>
+      <def no ="added"> 6 </def>
+      <def no ="changed"> 7 </def>
+    </def>
+    
+    <def name = "eiffel">
+      <def no ="default"> 0 </def>
+      <def no ="commentline"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="word"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="character"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="stringeol"> 8 </def>
+    </def>
+    
+    <def name = "erlang">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="variable"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="keyword"> 4 </def>
+      <def no ="string"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="atom"> 7 </def>
+      <def no ="function_name"> 8 </def>
+      <def no ="character"> 9 </def>
+      <def no ="macro"> 10 </def>
+      <def no ="record"> 11 </def>
+      <def no ="separator"> 12 </def>
+      <def no ="node_name"> 13 </def>
+      <def no ="unknown"> 31 </def>
+    </def>
+    
+    <def name = "errlist">
+      <def no ="default"> 0 </def>
+      <def no ="python"> 1 </def>
+      <def no ="gcc"> 2 </def>
+      <def no ="ms"> 3 </def>
+      <def no ="cmd"> 4 </def>
+      <def no ="borland"> 5 </def>
+      <def no ="perl"> 6 </def>
+      <def no ="net"> 7 </def>
+      <def no ="lua"> 8 </def>
+      <def no ="ctag"> 9 </def>
+      <def no ="diff_changed"> 10 </def>
+      <def no ="diff_addition"> 11 </def>
+      <def no ="diff_deletion"> 12 </def>
+      <def no ="diff_message"> 13 </def>
+      <def no ="php"> 14 </def>
+      <def no ="elf"> 15 </def>
+      <def no ="ifc"> 16 </def>
+      <def no ="ifort"> 17 </def>
+      <def no ="absf"> 18 </def>
+      <def no ="tidy"> 19 </def>
+      <def no ="java_stack"> 20 </def>
+      <def no ="value"> 21 </def>
+    </def>
+    
+    <def name = "escript">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentdoc"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="identifier"> 8 </def>
+      <def no ="brace"> 9 </def>
+      <def no ="word2"> 10 </def>
+      <def no ="word3"> 11 </def>
+    </def>
+    
+    <def name = "flagship">
+    <!--  (clipper) -->
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentdoc"> 3 </def>
+      <def no ="commentlinedoc"> 4 </def>
+      <def no ="commentdockeyword"> 5 </def>
+      <def no ="commentdockeyworderror"> 6 </def>
+      <def no ="keyword"> 7 </def>
+      <def no ="keyword2"> 8 </def>
+      <def no ="keyword3"> 9 </def>
+      <def no ="keyword4"> 10 </def>
+      <def no ="number"> 11 </def>
+      <def no ="string"> 12 </def>
+      <def no ="preprocessor"> 13 </def>
+      <def no ="operator"> 14 </def>
+      <def no ="identifier"> 15 </def>
+      <def no ="date"> 16 </def>
+      <def no ="stringeol"> 17 </def>
+      <def no ="constant"> 18 </def>
+      <def no ="asm"> 19 </def>
+      <def no ="label"> 20 </def>
+      <def no ="error"> 21 </def>
+      <def no ="hexnumber"> 22 </def>
+      <def no ="binnumber"> 23 </def>
+    </def>
+    
+    <def name = "forth">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="comment_ml"> 2 </def>
+      <def no ="identifier"> 3 </def>
+      <def no ="control"> 4 </def>
+      <def no ="keyword"> 5 </def>
+      <def no ="defword"> 6 </def>
+      <def no ="preword1"> 7 </def>
+      <def no ="preword2"> 8 </def>
+      <def no ="number"> 9 </def>
+      <def no ="string"> 10 </def>
+      <def no ="locale"> 11 </def>
+    </def>
+    
+    <def name = "fortran">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="string1"> 3 </def>
+      <def no ="string2"> 4 </def>
+      <def no ="stringeol"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="word"> 8 </def>
+      <def no ="word2"> 9 </def>
+      <def no ="word3"> 10 </def>
+      <def no ="preprocessor"> 11 </def>
+      <def no ="operator2"> 12 </def>
+      <def no ="label"> 13 </def>
+      <def no ="continuation"> 14 </def>
+    </def>
+    
+    <def name = "gap">
+      <def no ="default"> 0 </def>
+      <def no ="identifier"> 1 </def>
+      <def no ="keyword"> 2 </def>
+      <def no ="keyword2"> 3 </def>
+      <def no ="keyword3"> 4 </def>
+      <def no ="keyword4"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="char"> 7 </def>
+      <def no ="operator"> 8 </def>
+      <def no ="comment"> 9 </def>
+      <def no ="number"> 10 </def>
+      <def no ="stringeol"> 11 </def>
+    </def>
+    
+    <def name = "gui4cli">
+      <def no ="default"> 0 </def>
+      <def no ="commentline"> 1 </def>
+      <def no ="commentblock"> 2 </def>
+      <def no ="global"> 3 </def>
+      <def no ="event"> 4 </def>
+      <def no ="attribute"> 5 </def>
+      <def no ="control"> 6 </def>
+      <def no ="command"> 7 </def>
+      <def no ="string"> 8 </def>
+      <def no ="operator"> 9 </def>
+    </def>
+    
+    <def name = "haskell">
+      <def no ="default"> 0 </def>
+      <def no ="identifier"> 1 </def>
+      <def no ="keyword"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="character"> 5 </def>
+      <def no ="class"> 6 </def>
+      <def no ="module"> 7 </def>
+      <def no ="capital"> 8 </def>
+      <def no ="data"> 9 </def>
+      <def no ="import"> 10 </def>
+      <def no ="operator"> 11 </def>
+      <def no ="instance"> 12 </def>
+      <def no ="commentline"> 13 </def>
+      <def no ="commentblock"> 14 </def>
+      <def no ="commentblock2"> 15 </def>
+      <def no ="commentblock3"> 16 </def>
+    </def>
+    
+    <def name = "hypertext">
+      <def no ="default"> 0 </def>
+      <def no ="tag"> 1 </def>
+      <def no ="tagunknown"> 2 </def>
+      <def no ="attribute"> 3 </def>
+      <def no ="attributeunknown"> 4 </def>
+      <def no ="number"> 5 </def>
+      <def no ="doublestring"> 6 </def>
+      <def no ="singlestring"> 7 </def>
+      <def no ="other"> 8 </def>
+      <def no ="comment"> 9 </def>
+      <def no ="entity"> 10 </def>
+      <def no ="tagend"> 11 </def>
+      <def no ="xmlstart"> 12 </def>
+      <def no ="xmlend"> 13 </def>
+      <def no ="script"> 14 </def>
+      <def no ="asp"> 15 </def>
+      <def no ="aspat"> 16 </def>
+      <def no ="cdata"> 17 </def>
+      <def no ="question"> 18 </def>
+      <def no ="value"> 19 </def>
+      <def no ="xccomment"> 20 </def>
+      <def no ="default"> 21 </def>
+      <def no ="command"> 22 </def>
+      <def no ="param"> 23 </def>
+      <def no ="doublestring"> 24 </def>
+      <def no ="simplestring"> 25 </def>
+      <def no ="error"> 26 </def>
+      <def no ="special"> 27 </def>
+      <def no ="entity"> 28 </def>
+      <def no ="comment"> 29 </def>
+      <def no ="comment"> 30 </def>
+      <def no ="default"> 31 </def>
+      <def no ="hj_start"> 40 </def>
+      <def no ="hj_default"> 41 </def>
+      <def no ="hj_comment"> 42 </def>
+      <def no ="hj_commentline"> 43 </def>
+      <def no ="hj_commentdoc"> 44 </def>
+      <def no ="hj_number"> 45 </def>
+      <def no ="hj_word"> 46 </def>
+      <def no ="hj_keyword"> 47 </def>
+      <def no ="hj_doublestring"> 48 </def>
+      <def no ="hj_singlestring"> 49 </def>
+      <def no ="hj_symbols"> 50 </def>
+      <def no ="hj_stringeol"> 51 </def>
+      <def no ="hj_regex"> 52 </def>
+      <def no ="hja_start"> 55 </def>
+      <def no ="hja_default"> 56 </def>
+      <def no ="hja_comment"> 57 </def>
+      <def no ="hja_commentline"> 58 </def>
+      <def no ="hja_commentdoc"> 59 </def>
+      <def no ="hja_number"> 60 </def>
+      <def no ="hja_word"> 61 </def>
+      <def no ="hja_keyword"> 62 </def>
+      <def no ="hja_doublestring"> 63 </def>
+      <def no ="hja_singlestring"> 64 </def>
+      <def no ="hja_symbols"> 65 </def>
+      <def no ="hja_stringeol"> 66 </def>
+      <def no ="hja_regex"> 67 </def>
+      <def no ="hb_start"> 70 </def>
+      <def no ="hb_default"> 71 </def>
+      <def no ="hb_commentline"> 72 </def>
+      <def no ="hb_number"> 73 </def>
+      <def no ="hb_word"> 74 </def>
+      <def no ="hb_string"> 75 </def>
+      <def no ="hb_identifier"> 76 </def>
+      <def no ="hb_stringeol"> 77 </def>
+      <def no ="hba_start"> 80 </def>
+      <def no ="hba_default"> 81 </def>
+      <def no ="hba_commentline"> 82 </def>
+      <def no ="hba_number"> 83 </def>
+      <def no ="hba_word"> 84 </def>
+      <def no ="hba_string"> 85 </def>
+      <def no ="hba_identifier"> 86 </def>
+      <def no ="hba_stringeol"> 87 </def>
+      <def no ="hp_start"> 90 </def>
+      <def no ="hp_default"> 91 </def>
+      <def no ="hp_commentline"> 92 </def>
+      <def no ="hp_number"> 93 </def>
+      <def no ="hp_string"> 94 </def>
+      <def no ="hp_character"> 95 </def>
+      <def no ="hp_word"> 96 </def>
+      <def no ="hp_triple"> 97 </def>
+      <def no ="hp_tripledouble"> 98 </def>
+      <def no ="hp_classname"> 99 </def>
+      <def no ="hp_defname"> 100 </def>
+      <def no ="hp_operator"> 101 </def>
+      <def no ="hp_identifier"> 102 </def>
+      <def no ="hphp_complex_variable"> 104 </def>
+      <def no ="hpa_start"> 105 </def>
+      <def no ="hpa_default"> 106 </def>
+      <def no ="hpa_commentline"> 107 </def>
+      <def no ="hpa_number"> 108 </def>
+      <def no ="hpa_string"> 109 </def>
+      <def no ="hpa_character"> 110 </def>
+      <def no ="hpa_word"> 111 </def>
+      <def no ="hpa_triple"> 112 </def>
+      <def no ="hpa_tripledouble"> 113 </def>
+      <def no ="hpa_classname"> 114 </def>
+      <def no ="hpa_defname"> 115 </def>
+      <def no ="hpa_operator"> 116 </def>
+      <def no ="hpa_identifier"> 117 </def>
+      <def no ="hphp_default"> 118 </def>
+      <def no ="hphp_hstring"> 119 </def>
+      <def no ="hphp_simplestring"> 120 </def>
+      <def no ="hphp_word"> 121 </def>
+      <def no ="hphp_number"> 122 </def>
+      <def no ="hphp_variable"> 123 </def>
+      <def no ="hphp_comment"> 124 </def>
+      <def no ="hphp_commentline"> 125 </def>
+      <def no ="hphp_hstring_variable"> 126 </def>
+      <def no ="hphp_operator"> 127 </def>
+    </def>
+    
+    <def name = "inno">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="keyword"> 2 </def>
+      <def no ="parameter"> 3 </def>
+      <def no ="section"> 4 </def>
+      <def no ="preproc"> 5 </def>
+      <def no ="preproc_inline"> 6 </def>
+      <def no ="comment_pascal"> 7 </def>
+      <def no ="keyword_pascal"> 8 </def>
+      <def no ="keyword_user"> 9 </def>
+      <def no ="string_double"> 10 </def>
+      <def no ="string_single"> 11 </def>
+      <def no ="identifier"> 12 </def>
+    </def>
+    
+    <def name = "kix">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="string1"> 2 </def>
+      <def no ="string2"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="var"> 5 </def>
+      <def no ="macro"> 6 </def>
+      <def no ="keyword"> 7 </def>
+      <def no ="functions"> 8 </def>
+      <def no ="operator"> 9 </def>
+      <def no ="identifier"> 31 </def>
+    </def>
+    
+    <def name = "latex">
+      <def no ="default"> 0 </def>
+      <def no ="command"> 1 </def>
+      <def no ="tag"> 2 </def>
+      <def no ="math"> 3 </def>
+      <def no ="comment"> 4 </def>
+    </def>
+    
+    <def name = "lisp">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="keyword"> 3 </def>
+      <def no ="keyword_kw"> 4 </def>
+      <def no ="symbol"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="stringeol"> 8 </def>
+      <def no ="identifier"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="special"> 11 </def>
+      <def no ="multi_comment"> 12 </def>
+    </def>
+    
+    <def name = "lot">
+      <def no ="default"> 0 </def>
+      <def no ="header"> 1 </def>
+      <def no ="break"> 2 </def>
+      <def no ="set"> 3 </def>
+      <def no ="pass"> 4 </def>
+      <def no ="fail"> 5 </def>
+      <def no ="abort"> 6 </def>
+    </def>
+    
+    <def name = "lout">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="word"> 3 </def>
+      <def no ="word2"> 4 </def>
+      <def no ="word3"> 5 </def>
+      <def no ="word4"> 6 </def>
+      <def no ="string"> 7 </def>
+      <def no ="operator"> 8 </def>
+      <def no ="identifier"> 9 </def>
+      <def no ="stringeol"> 10 </def>
+    </def>
+    
+    <def name = "lua">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentdoc"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="character"> 7 </def>
+      <def no ="literalstring"> 8 </def>
+      <def no ="preprocessor"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="stringeol"> 12 </def>
+      <def no ="word2"> 13 </def>
+      <def no ="word3"> 14 </def>
+      <def no ="word4"> 15 </def>
+      <def no ="word5"> 16 </def>
+      <def no ="word6"> 17 </def>
+      <def no ="word7"> 18 </def>
+      <def no ="word8"> 19 </def>
+    </def>
+    
+    <def name = "magik">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="hyper_comment"> 16 </def>
+      <def no ="string"> 2 </def>
+      <def no ="character"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="identifier"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="flow"> 7 </def>
+      <def no ="container"> 8 </def>
+      <def no ="bracket_block"> 9 </def>
+      <def no ="brace_block"> 10 </def>
+      <def no ="sqbracket_block"> 11 </def>
+      <def no ="unknown_keyword"> 12 </def>
+      <def no ="keyword"> 13 </def>
+      <def no ="pragma"> 14 </def>
+      <def no ="symbol"> 15 </def>
+    </def>
+    
+    <def name = "makefile">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="preprocessor"> 2 </def>
+      <def no ="identifier"> 3 </def>
+      <def no ="operator"> 4 </def>
+      <def no ="target"> 5 </def>
+      <def no ="ideol"> 9 </def>
+    </def>
+    
+    <def name = "markdown">
+      <def no ="default"> 0 </def>
+      <def no ="line_begin"> 1 </def>
+      <def no ="strong1"> 2 </def>
+      <def no ="strong2"> 3 </def>
+      <def no ="em1"> 4 </def>
+      <def no ="em2"> 5 </def>
+      <def no ="header1"> 6 </def>
+      <def no ="header2"> 7 </def>
+      <def no ="header3"> 8 </def>
+      <def no ="header4"> 9 </def>
+      <def no ="header5"> 10 </def>
+      <def no ="header6"> 11 </def>
+      <def no ="prechar"> 12 </def>
+      <def no ="ulist_item"> 13 </def>
+      <def no ="olist_item"> 14 </def>
+      <def no ="blockquote"> 15 </def>
+      <def no ="strikeout"> 16 </def>
+      <def no ="hrule"> 17 </def>
+      <def no ="link"> 18 </def>
+      <def no ="code"> 19 </def>
+      <def no ="code2"> 20 </def>
+      <def no ="codebk"> 21 </def>
+    </def>
+    
+    <def name = "matlab">
+    <!-- octave are identical to matlab -->
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="command"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="keyword"> 4 </def>
+      <def no ="string"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="doublequotestring"> 8 </def>
+    </def>
+    
+    <def name = "metapost">
+      <def no ="default"> 0 </def>
+      <def no ="special"> 1 </def>
+      <def no ="group"> 2 </def>
+      <def no ="symbol"> 3 </def>
+      <def no ="command"> 4 </def>
+      <def no ="text"> 5 </def>
+      <def no ="extra"> 6 </def>
+    </def>
+    
+    <def name = "mmixal">
+      <def no ="leadws"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="label"> 2 </def>
+      <def no ="opcode"> 3 </def>
+      <def no ="opcode_pre"> 4 </def>
+      <def no ="opcode_valid"> 5 </def>
+      <def no ="opcode_unknown"> 6 </def>
+      <def no ="opcode_post"> 7 </def>
+      <def no ="operands"> 8 </def>
+      <def no ="number"> 9 </def>
+      <def no ="ref"> 10 </def>
+      <def no ="char"> 11 </def>
+      <def no ="string"> 12 </def>
+      <def no ="register"> 13 </def>
+      <def no ="hex"> 14 </def>
+      <def no ="operator"> 15 </def>
+      <def no ="symbol"> 16 </def>
+      <def no ="include"> 17 </def>
+    </def>
+    
+    <def name = "mssql">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="line_comment"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="identifier"> 6 </def>
+      <def no ="variable"> 7 </def>
+      <def no ="column_name"> 8 </def>
+      <def no ="statement"> 9 </def>
+      <def no ="datatype"> 10 </def>
+      <def no ="systable"> 11 </def>
+      <def no ="global_variable"> 12 </def>
+      <def no ="function"> 13 </def>
+      <def no ="stored_procedure"> 14 </def>
+      <def no ="default_pref_datatype"> 15 </def>
+      <def no ="column_name_2"> 16 </def>
+    </def>
+    
+    <def name = "mysql">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="variable"> 3 </def>
+      <def no ="systemvariable"> 4 </def>
+      <def no ="knownsystemvariable"> 5 </def>
+      <def no ="number"> 6 </def>
+      <def no ="majorkeyword"> 7 </def>
+      <def no ="keyword"> 8 </def>
+      <def no ="databaseobject"> 9 </def>
+      <def no ="procedurekeyword"> 10 </def>
+      <def no ="string"> 11 </def>
+      <def no ="sqstring"> 12 </def>
+      <def no ="dqstring"> 13 </def>
+      <def no ="operator"> 14 </def>
+      <def no ="function"> 15 </def>
+      <def no ="identifier"> 16 </def>
+      <def no ="quotedidentifier"> 17 </def>
+      <def no ="user1"> 18 </def>
+      <def no ="user2"> 19 </def>
+      <def no ="user3"> 20 </def>
+      <def no ="hiddencommand"> 21 </def>
+    </def>
+    
+    <def name = "nncrontab">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="task"> 2 </def>
+      <def no ="section"> 3 </def>
+      <def no ="keyword"> 4 </def>
+      <def no ="modifier"> 5 </def>
+      <def no ="asterisk"> 6 </def>
+      <def no ="number"> 7 </def>
+      <def no ="string"> 8 </def>
+      <def no ="environment"> 9 </def>
+      <def no ="identifier"> 10 </def>
+    </def>
+    
+    <def name = "nsis">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="stringdq"> 2 </def>
+      <def no ="stringlq"> 3 </def>
+      <def no ="stringrq"> 4 </def>
+      <def no ="function"> 5 </def>
+      <def no ="variable"> 6 </def>
+      <def no ="label"> 7 </def>
+      <def no ="userdefined"> 8 </def>
+      <def no ="sectiondef"> 9 </def>
+      <def no ="subsectiondef"> 10 </def>
+      <def no ="ifdefinedef"> 11 </def>
+      <def no ="macrodef"> 12 </def>
+      <def no ="stringvar"> 13 </def>
+      <def no ="number"> 14 </def>
+      <def no ="sectiongroup"> 15 </def>
+      <def no ="pageex"> 16 </def>
+      <def no ="functiondef"> 17 </def>
+      <def no ="commentbox"> 18 </def>
+    </def>
+    
+    <def name = "opal">
+      <def no ="space"> 0 </def>
+      <def no ="comment_block"> 1 </def>
+      <def no ="comment_line"> 2 </def>
+      <def no ="integer"> 3 </def>
+      <def no ="keyword"> 4 </def>
+      <def no ="sort"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="par"> 7 </def>
+      <def no ="bool_const"> 8 </def>
+      <def no ="default"> 32 </def>
+    </def>
+    
+    <def name = "pascal">
+      <def no ="default"> 0 </def>
+      <def no ="identifier"> 1 </def>
+      <def no ="comment"> 2 </def>
+      <def no ="comment2"> 3 </def>
+      <def no ="commentline"> 4 </def>
+      <def no ="preprocessor"> 5 </def>
+      <def no ="preprocessor2"> 6 </def>
+      <def no ="number"> 7 </def>
+      <def no ="hexnumber"> 8 </def>
+      <def no ="word"> 9 </def>
+      <def no ="string"> 10 </def>
+      <def no ="stringeol"> 11 </def>
+      <def no ="character"> 12 </def>
+      <def no ="operator"> 13 </def>
+      <def no ="asm"> 14 </def>
+    </def>
+    
+    <def name = "perl">
+      <def no ="default"> 0 </def>
+      <def no ="error"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="pod"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="character"> 7 </def>
+      <def no ="punctuation"> 8 </def>
+      <def no ="preprocessor"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="scalar"> 12 </def>
+      <def no ="array"> 13 </def>
+      <def no ="hash"> 14 </def>
+      <def no ="symboltable"> 15 </def>
+      <def no ="variable_indexer"> 16 </def>
+      <def no ="regex"> 17 </def>
+      <def no ="regsubst"> 18 </def>
+      <def no ="longquote"> 19 </def>
+      <def no ="backticks"> 20 </def>
+      <def no ="datasection"> 21 </def>
+      <def no ="here_delim"> 22 </def>
+      <def no ="here_q"> 23 </def>
+      <def no ="here_qq"> 24 </def>
+      <def no ="here_qx"> 25 </def>
+      <def no ="string_q"> 26 </def>
+      <def no ="string_qq"> 27 </def>
+      <def no ="string_qx"> 28 </def>
+      <def no ="string_qr"> 29 </def>
+      <def no ="string_qw"> 30 </def>
+      <def no ="pod_verb"> 31 </def>
+      <def no ="sub_prototype"> 40 </def>
+      <def no ="format_ident"> 41 </def>
+      <def no ="format"> 42 </def>
+    </def>
+    
+    <def name = "plm">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="string"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="identifier"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="control"> 6 </def>
+      <def no ="keyword"> 7 </def>
+    </def>
+    
+    <def name = "po">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="msgid"> 2 </def>
+      <def no ="msgid_text"> 3 </def>
+      <def no ="msgstr"> 4 </def>
+      <def no ="msgstr_text"> 5 </def>
+      <def no ="msgctxt"> 6 </def>
+      <def no ="msgctxt_text"> 7 </def>
+      <def no ="fuzzy"> 8 </def>
+    </def>
+    
+    <def name = "pov">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="operator"> 4 </def>
+      <def no ="identifier"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="stringeol"> 7 </def>
+      <def no ="directive"> 8 </def>
+      <def no ="baddirective"> 9 </def>
+      <def no ="word2"> 10 </def>
+      <def no ="word3"> 11 </def>
+      <def no ="word4"> 12 </def>
+      <def no ="word5"> 13 </def>
+      <def no ="word6"> 14 </def>
+      <def no ="word7"> 15 </def>
+      <def no ="word8"> 16 </def>
+    </def>
+    
+    <def name = "powerpro">
+      <def no ="default"> 0 </def>
+      <def no ="commentblock"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="word"> 4 </def>
+      <def no ="word2"> 5 </def>
+      <def no ="word3"> 6 </def>
+      <def no ="word4"> 7 </def>
+      <def no ="doublequotedstring"> 8 </def>
+      <def no ="singlequotedstring"> 9 </def>
+      <def no ="linecontinue"> 10 </def>
+      <def no ="operator"> 11 </def>
+      <def no ="identifier"> 12 </def>
+      <def no ="stringeol"> 13 </def>
+      <def no ="verbatim"> 14 </def>
+      <def no ="altquote"> 15 </def>
+      <def no ="function"> 16 </def>
+    </def>
+    
+    <def name = "powershell">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="string"> 2 </def>
+      <def no ="character"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="variable"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="keyword"> 8 </def>
+      <def no ="cmdlet"> 9 </def>
+      <def no ="alias"> 10 </def>
+    </def>
+    
+    <def name = "progress">
+      <def no ="default"> 0 </def>
+      <def no ="number"> 1 </def>
+      <def no ="word"> 2 </def>
+      <def no ="string"> 3 </def>
+      <def no ="character"> 4 </def>
+      <def no ="preprocessor"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="block"> 8 </def>
+      <def no ="end"> 9 </def>
+      <def no ="comment1"> 10 </def>
+      <def no ="comment2"> 11 </def>
+      <def no ="comment3"> 12 </def>
+      <def no ="comment4"> 13 </def>
+      <def no ="comment5"> 14 </def>
+      <def no ="comment6"> 15 </def>
+      <def no ="default_"> 16 </def>
+      <def no ="number_"> 17 </def>
+      <def no ="word_"> 18 </def>
+      <def no ="string_"> 19 </def>
+      <def no ="character_"> 20 </def>
+      <def no ="preprocessor_"> 21 </def>
+      <def no ="operator_"> 22 </def>
+      <def no ="identifier_"> 23 </def>
+      <def no ="block_"> 24 </def>
+      <def no ="end_"> 25 </def>
+      <def no ="comment1_"> 26 </def>
+      <def no ="comment2_"> 27 </def>
+      <def no ="comment3_"> 28 </def>
+      <def no ="comment4_"> 29 </def>
+      <def no ="comment5_"> 30 </def>
+      <def no ="comment6_"> 31 </def>
+    </def>
+    
+    <def name = "props">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="section"> 2 </def>
+      <def no ="assignment"> 3 </def>
+      <def no ="defval"> 4 </def>
+      <def no ="key"> 5 </def>
+    </def>
+    
+    <def name = "ps">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="dsc_comment"> 2 </def>
+      <def no ="dsc_value"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="name"> 5 </def>
+      <def no ="keyword"> 6 </def>
+      <def no ="literal"> 7 </def>
+      <def no ="immeval"> 8 </def>
+      <def no ="paren_array"> 9 </def>
+      <def no ="paren_dict"> 10 </def>
+      <def no ="paren_proc"> 11 </def>
+      <def no ="text"> 12 </def>
+      <def no ="hexstring"> 13 </def>
+      <def no ="base85string"> 14 </def>
+      <def no ="badstringchar"> 15 </def>
+    </def>
+    
+    <def name = "python">
+      <def no ="default"> 0 </def>
+      <def no ="commentline"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="string"> 3 </def>
+      <def no ="character"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="triple"> 6 </def>
+      <def no ="tripledouble"> 7 </def>
+      <def no ="classname"> 8 </def>
+      <def no ="defname"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="commentblock"> 12 </def>
+      <def no ="stringeol"> 13 </def>
+      <def no ="word2"> 14 </def>
+      <def no ="decorator"> 15 </def>
+    </def>
+    
+    <def name = "r">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="kword"> 2 </def>
+      <def no ="basekword"> 3 </def>
+      <def no ="otherkword"> 4 </def>
+      <def no ="number"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="string2"> 7 </def>
+      <def no ="operator"> 8 </def>
+      <def no ="identifier"> 9 </def>
+      <def no ="infix"> 10 </def>
+      <def no ="infixeol"> 11 </def>
+    </def>
+    
+    <def name = "rebol">
+      <def no ="default"> 0 </def>
+      <def no ="commentline"> 1 </def>
+      <def no ="commentblock"> 2 </def>
+      <def no ="preface"> 3 </def>
+      <def no ="operator"> 4 </def>
+      <def no ="character"> 5 </def>
+      <def no ="quotedstring"> 6 </def>
+      <def no ="bracedstring"> 7 </def>
+      <def no ="number"> 8 </def>
+      <def no ="pair"> 9 </def>
+      <def no ="tuple"> 10 </def>
+      <def no ="binary"> 11 </def>
+      <def no ="money"> 12 </def>
+      <def no ="issue"> 13 </def>
+      <def no ="tag"> 14 </def>
+      <def no ="file"> 15 </def>
+      <def no ="email"> 16 </def>
+      <def no ="url"> 17 </def>
+      <def no ="date"> 18 </def>
+      <def no ="time"> 19 </def>
+      <def no ="identifier"> 20 </def>
+      <def no ="word"> 21 </def>
+      <def no ="word2"> 22 </def>
+      <def no ="word3"> 23 </def>
+      <def no ="word4"> 24 </def>
+      <def no ="word5"> 25 </def>
+      <def no ="word6"> 26 </def>
+      <def no ="word7"> 27 </def>
+      <def no ="word8"> 28 </def>
+    </def>
+    
+    <def name = "ruby">
+      <def no ="default"> 0 </def>
+      <def no ="error"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="pod"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="character"> 7 </def>
+      <def no ="classname"> 8 </def>
+      <def no ="defname"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="regex"> 12 </def>
+      <def no ="global"> 13 </def>
+      <def no ="symbol"> 14 </def>
+      <def no ="module_name"> 15 </def>
+      <def no ="instance_var"> 16 </def>
+      <def no ="class_var"> 17 </def>
+      <def no ="backticks"> 18 </def>
+      <def no ="datasection"> 19 </def>
+      <def no ="here_delim"> 20 </def>
+      <def no ="here_q"> 21 </def>
+      <def no ="here_qq"> 22 </def>
+      <def no ="here_qx"> 23 </def>
+      <def no ="string_q"> 24 </def>
+      <def no ="string_qq"> 25 </def>
+      <def no ="string_qx"> 26 </def>
+      <def no ="string_qr"> 27 </def>
+      <def no ="string_qw"> 28 </def>
+      <def no ="word_demoted"> 29 </def>
+      <def no ="stdin"> 30 </def>
+      <def no ="stdout"> 31 </def>
+      <def no ="stderr"> 40 </def>
+      <def no ="upper_bound"> 41 </def>
+    </def>
+    
+    <def name = "scriptol">
+      <def no ="default"> 0 </def>
+      <def no ="white"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="persistent"> 3 </def>
+      <def no ="cstyle"> 4 </def>
+      <def no ="commentblock"> 5 </def>
+      <def no ="number"> 6 </def>
+      <def no ="string"> 7 </def>
+      <def no ="character"> 8 </def>
+      <def no ="stringeol"> 9 </def>
+      <def no ="keyword"> 10 </def>
+      <def no ="operator"> 11 </def>
+      <def no ="identifier"> 12 </def>
+      <def no ="triple"> 13 </def>
+      <def no ="classname"> 14 </def>
+      <def no ="preprocessor"> 15 </def>
+    </def>
+    
+    <def name = "smalltalk">
+      <def no ="default"> 0 </def>
+      <def no ="string"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="comment"> 3 </def>
+      <def no ="symbol"> 4 </def>
+      <def no ="binary"> 5 </def>
+      <def no ="bool"> 6 </def>
+      <def no ="self"> 7 </def>
+      <def no ="super"> 8 </def>
+      <def no ="nil"> 9 </def>
+      <def no ="global"> 10 </def>
+      <def no ="return"> 11 </def>
+      <def no ="special"> 12 </def>
+      <def no ="kwsend"> 13 </def>
+      <def no ="assign"> 14 </def>
+      <def no ="character"> 15 </def>
+      <def no ="spec_sel"> 16 </def>
+    </def>
+    
+    <def name = "sml">
+      <def no ="default"> 0 </def>
+      <def no ="identifier"> 1 </def>
+      <def no ="tagname"> 2 </def>
+      <def no ="keyword"> 3 </def>
+      <def no ="keyword2"> 4 </def>
+      <def no ="keyword3"> 5 </def>
+      <def no ="linenum"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="number"> 8 </def>
+      <def no ="char"> 9 </def>
+      <def no ="string"> 11 </def>
+      <def no ="comment"> 12 </def>
+      <def no ="comment1"> 13 </def>
+      <def no ="comment2"> 14 </def>
+      <def no ="comment3"> 15 </def>
+    </def>
+    
+    <def name = "sorcus">
+      <def no ="default"> 0 </def>
+      <def no ="command"> 1 </def>
+      <def no ="parameter"> 2 </def>
+      <def no ="commentline"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="stringeol"> 5 </def>
+      <def no ="identifier"> 6 </def>
+      <def no ="operator"> 7 </def>
+      <def no ="number"> 8 </def>
+      <def no ="constant"> 9 </def>
+    </def>
+    
+    <def name = "specman">
+      <def no ="default"> 0 </def>
+      <def no ="code"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentlinebang"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="word2"> 7 </def>
+      <def no ="word3"> 8 </def>
+      <def no ="preprocessor"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="stringeol"> 12 </def>
+      <def no ="regextag"> 13 </def>
+      <def no ="signal"> 14 </def>
+      <def no ="user"> 19 </def>
+    </def>
+    
+    <def name = "spice">
+      <def no ="default"> 0 </def>
+      <def no ="identifier"> 1 </def>
+      <def no ="keyword"> 2 </def>
+      <def no ="keyword2"> 3 </def>
+      <def no ="keyword3"> 4 </def>
+      <def no ="number"> 5 </def>
+      <def no ="delimiter"> 6 </def>
+      <def no ="value"> 7 </def>
+      <def no ="commentline"> 8 </def>
+    </def>
+    
+    <def name = "sql">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentdoc"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="character"> 7 </def>
+      <def no ="sqlplus"> 8 </def>
+      <def no ="sqlplus_prompt"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="sqlplus_comment"> 13 </def>
+      <def no ="commentlinedoc"> 15 </def>
+      <def no ="word2"> 16 </def>
+      <def no ="commentdockeyword"> 17 </def>
+      <def no ="commentdockeyworderror"> 18 </def>
+      <def no ="user1"> 19 </def>
+      <def no ="user2"> 20 </def>
+      <def no ="user3"> 21 </def>
+      <def no ="user4"> 22 </def>
+      <def no ="quotedidentifier"> 23 </def>
+    </def>
+    
+    <def name = "tads3">
+      <def no ="default"> 0 </def>
+      <def no ="x_default"> 1 </def>
+      <def no ="preprocessor"> 2 </def>
+      <def no ="block_comment"> 3 </def>
+      <def no ="line_comment"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="keyword"> 6 </def>
+      <def no ="number"> 7 </def>
+      <def no ="identifier"> 8 </def>
+      <def no ="s_string"> 9 </def>
+      <def no ="d_string"> 10 </def>
+      <def no ="x_string"> 11 </def>
+      <def no ="lib_directive"> 12 </def>
+      <def no ="msg_param"> 13 </def>
+      <def no ="html_tag"> 14 </def>
+      <def no ="html_default"> 15 </def>
+      <def no ="html_string"> 16 </def>
+      <def no ="user1"> 17 </def>
+      <def no ="user2"> 18 </def>
+      <def no ="user3"> 19 </def>
+      <def no ="brace"> 20 </def>
+    </def>
+    
+    <def name = "tcl">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="quote"> 4 </def>
+      <def no ="quote"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="substitution"> 8 </def>
+      <def no ="brace"> 9 </def>
+      <def no ="modifier"> 10 </def>
+      <def no ="expand"> 11 </def>
+      <def no ="word"> 12 </def>
+      <def no ="word2"> 13 </def>
+      <def no ="word3"> 14 </def>
+      <def no ="word4"> 15 </def>
+      <def no ="word5"> 16 </def>
+      <def no ="word6"> 17 </def>
+      <def no ="word7"> 18 </def>
+      <def no ="word8"> 19 </def>
+      <def no ="box"> 20 </def>
+      <def no ="comment"> 21 </def>
+    </def>
+    
+    <def name = "tex">
+      <def no ="default"> 0 </def>
+      <def no ="special"> 1 </def>
+      <def no ="group"> 2 </def>
+      <def no ="symbol"> 3 </def>
+      <def no ="command"> 4 </def>
+      <def no ="text"> 5 </def>
+    </def>
+    
+    <def name = "vb">
+    <!-- , vbscript, powerbasic -->
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="number"> 2 </def>
+      <def no ="keyword"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="preprocessor"> 5 </def>
+      <def no ="operator"> 6 </def>
+      <def no ="identifier"> 7 </def>
+      <def no ="date"> 8 </def>
+      <def no ="stringeol"> 9 </def>
+      <def no ="keyword2"> 10 </def>
+      <def no ="keyword3"> 11 </def>
+      <def no ="keyword4"> 12 </def>
+      <def no ="constant"> 13 </def>
+      <def no ="asm"> 14 </def>
+      <def no ="label"> 15 </def>
+      <def no ="error"> 16 </def>
+      <def no ="hexnumber"> 17 </def>
+      <def no ="binnumber"> 18 </def>
+    </def>
+    
+    <def name = "verilog">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentline"> 2 </def>
+      <def no ="commentlinebang"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="word"> 5 </def>
+      <def no ="string"> 6 </def>
+      <def no ="word2"> 7 </def>
+      <def no ="word3"> 8 </def>
+      <def no ="preprocessor"> 9 </def>
+      <def no ="operator"> 10 </def>
+      <def no ="identifier"> 11 </def>
+      <def no ="stringeol"> 12 </def>
+      <def no ="user"> 19 </def>
+    </def>
+    
+    <def name = "vhdl">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="commentlinebang"> 2 </def>
+      <def no ="number"> 3 </def>
+      <def no ="string"> 4 </def>
+      <def no ="operator"> 5 </def>
+      <def no ="identifier"> 6 </def>
+      <def no ="stringeol"> 7 </def>
+      <def no ="keyword"> 8 </def>
+      <def no ="stdoperator"> 9 </def>
+      <def no ="attribute"> 10 </def>
+      <def no ="stdfunction"> 11 </def>
+      <def no ="stdpackage"> 12 </def>
+      <def no ="stdtype"> 13 </def>
+      <def no ="userword"> 14 </def>
+    </def>
+    
+    <def name = "yaml">
+      <def no ="default"> 0 </def>
+      <def no ="comment"> 1 </def>
+      <def no ="identifier"> 2 </def>
+      <def no ="keyword"> 3 </def>
+      <def no ="number"> 4 </def>
+      <def no ="reference"> 5 </def>
+      <def no ="document"> 6 </def>
+      <def no ="text"> 7 </def>
+      <def no ="error"> 8 </def>
+      <def no ="operator"> 9 </def>
+    </def>
     
     <!-- These are the themes, including style macro's and colours. -->
     <themes>
       <!-- The studio theme, resembles Visual Studio -->
       <theme name = "studio">
-        <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
+        <def style ="attribute"> fore:steel blue </def>
         <def style ="bracelight"> back:yellow,fore:black</def>
+        <def style ="char"> fore:pink </def>
+        <def style ="command"> fore:steel blue </def>
+        <def style ="comment"> fore:forest green,italic,eol </def>
+        <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
-        <def style ="_PROCESSOR"> fore:dark grey </def>
-        <def style ="ATTRIBUTE"> fore:steel blue </def>
-        <def style ="CHAR"> fore:pink </def>
-        <def style ="COMMAND"> fore:steel blue </def>
-        <def style ="COMMENT"> fore:forest green,italic,eol </def>
-        <def style ="ERROR"> fore:red,italic,eol </def>
-        <def style ="IDENTIFIER"> fore:black</def>
-        <def style ="NUMBER"> fore:red </def>
-        <def style ="OPERATOR"> fore:brown </def>
-        <def style ="PREPROCESSOR"> fore:grey </def>
-        <def style ="STRING"> fore:blue </def>
-        <def style ="TAG"> fore:dark slate blue </def>
-        <def style ="VARIABLE"> fore:violet </def>
-        <def style ="WORD"> fore:dark turquoise </def>
+        <def style ="identifier"> fore:black</def>
+        <def style ="number"> fore:red </def>
+        <def style ="operator"> fore:brown </def>
+        <def style ="preprocessor"> fore:grey </def>
+        <def style ="processor"> fore:dark grey </def>
+        <def style ="string"> fore:blue </def>
+        <def style ="styledefault"> face:courier new,size:10,back:white,fore:black </def>
+        <def style ="tag"> fore:dark slate blue </def>
+        <def style ="variable"> fore:violet </def>
+        <def style ="word"> fore:dark turquoise </def>
         
         <colour name="caretforeground"> black </colour>
         <colour name="caretlinebackground"> light grey </colour>
@@ -1422,23 +1573,23 @@ Copyright: (c) 2011, Anton van Wezenbeek
       
       <!-- The torte theme, resembles vi torte -->
       <theme name = "torte">
-        <def style ="styledefault"> default-font,back:black,fore:#BBBBBB </def>
+        <def style ="attribute"> fore:green </def>
         <def style ="bracelight"> back:blue,fore:white</def>
+        <def style ="char"> fore:pink </def>
+        <def style ="command"> fore:steel blue </def>
+        <def style ="comment"> fore:#80a0ff,italic,eol </def>
+        <def style ="error"> fore:red,italic,eol </def>
         <def style ="folder"> light blue </def>
-        <def style ="_PROCESSOR"> fore:dark grey </def>
-        <def style ="ATTRIBUTE"> fore:green </def>
-        <def style ="CHAR"> fore:pink </def>
-        <def style ="COMMAND"> fore:steel blue </def>
-        <def style ="COMMENT"> fore:#80a0ff,italic,eol </def>
-        <def style ="ERROR"> fore:red,italic,eol </def>
-        <def style ="IDENTIFIER"> fore:white</def>
-        <def style ="NUMBER"> fore:red </def>
-        <def style ="OPERATOR"> fore:white </def>
-        <def style ="PREPROCESSOR"> fore:grey </def>
-        <def style ="STRING"> fore:#FFAB8F </def>
-        <def style ="TAG"> fore:cadet blue </def>
-        <def style ="VARIABLE"> fore:violet </def>
-        <def style ="WORD"> fore:yellow </def>
+        <def style ="identifier"> fore:white</def>
+        <def style ="number"> fore:red </def>
+        <def style ="operator"> fore:white </def>
+        <def style ="preprocessor"> fore:grey </def>
+        <def style ="processor"> fore:dark grey </def>
+        <def style ="string"> fore:#ffab8f </def>
+        <def style ="styledefault"> default-font,back:black,fore:#BBBBBB </def>
+        <def style ="tag"> fore:cadet blue </def>
+        <def style ="variable"> fore:violet </def>
+        <def style ="word"> fore:yellow </def>
         
         <colour name="caretforeground"> white </colour>
         <colour name="caretlinebackground"> dark grey </colour>
@@ -1456,22 +1607,22 @@ Copyright: (c) 2011, Anton van Wezenbeek
    The marker element has a 'no' ATTRIBUTE and its value contains the next fields:
    <marker symbol NUMBER><','><foreground colour><','><background colour>
    -->
-    <marker no="wxSTC_MARKNUM_FOLDEREND"> wxSTC_MARK_PLUS,folder </marker>
-    <marker no="wxSTC_MARKNUM_FOLDEROPENMID"> wxSTC_MARK_MINUS,folder </marker>
-    <marker no="wxSTC_MARKNUM_FOLDERMIDTAIL"> wxSTC_MARK_TCORNERCURVE,folder,folder</marker>
-    <marker no="wxSTC_MARKNUM_FOLDERTAIL"> wxSTC_MARK_LCORNERCURVE,folder,folder </marker>
-    <marker no="wxSTC_MARKNUM_FOLDERSUB"> wxSTC_MARK_VLINE,folder,folder</marker>
-    <marker no="wxSTC_MARKNUM_FOLDER"> wxSTC_MARK_PLUS,folder </marker>
-    <marker no="wxSTC_MARKNUM_FOLDEROPEN"> wxSTC_MARK_MINUS,folder </marker>
+    <marker no="marknum_folderend"> mark_plus,folder </marker>
+    <marker no="marknum_folderopenmid"> mark_minus,folder </marker>
+    <marker no="marknum_foldermidtail"> mark_tcornercurve,folder,folder</marker>
+    <marker no="marknum_foldertail"> mark_lcornercurve,folder,folder </marker>
+    <marker no="marknum_foldersub"> mark_vline,folder,folder</marker>
+    <marker no="marknum_folder"> mark_plus,folder </marker>
+    <marker no="marknum_folderopen"> mark_minus,folder </marker>
     
-    <marker no="wxEx_MARKNUM_CHANGE">wxSTC_MARK_FULLRECT,green,light blue</marker>
-    <marker no="wxEx_MARKNUM_VI"> wxSTC_MARK_CIRCLE,blue,light blue </marker>
+    <marker no="ex_marknum_change">mark_fullrect,green,light blue</marker>
+    <marker no="ex_marknum_vi"> mark_circle,blue,light blue </marker>
     
     <!-- this style is applied before all other styles -->
-    <style no="wxSTC_STYLE_DEFAULT"> styledefault </style>
+    <style no="style_default"> styledefault </style>
     
-    <style no="wxSTC_STYLE_BRACELIGHT"> bracelight </style>
-    <hex no="wxSTC_STYLE_BRACELIGHT"> back:red </hex>
+    <style no="style_bracelight"> bracelight </style>
+    <hex no="style_bracelight"> back:red </hex>
     
     <properties>
       <property name="fold"> 1 </property>
@@ -1515,9 +1666,8 @@ Copyright: (c) 2011, Anton van Wezenbeek
    4) A <comments> element.
    -->
   
-  <lexer name="abaqus" match="wxSTC_ABAQUS_"/> 
-  <lexer name="acf" match="wxSTC_ACF_" />
-  <lexer name="ada" extensions="*.a" match="wxSTC_ADA_">
+  <lexer name="abaqus"/> 
+  <lexer name="ada" extensions="*.a">
     <keywords>    
       abort abs abstract accept access ackage aliased all and array at
       begin body case constant declare delay delta digits do else elsif
@@ -1530,14 +1680,14 @@ Copyright: (c) 2011, Anton van Wezenbeek
     </keywords>    
     <comments begin1="--" />
   </lexer>
-  <lexer name="apdl" match="wxSTC_APDL_" />
-  <lexer name="asm" extensions="*.mac" match="wxSTC_ASM_">
+  <lexer name="apdl"/>
+  <lexer name="asm" extensions="*.mac">
     <styles>
-      <style no="wxSTC_ASM_CPUINSTRUCTION"> WORD </style>
-      <style no="wxSTC_ASM_MATHINSTRUCTION"> italic </style>
-      <style no="wxSTC_ASM_REGISTER"> fore:blue </style>
-      <style no="wxSTC_ASM_DIRECTIVE"> italic </style>
-      <style no="wxSTC_ASM_COMMENTBLOCK"> underline </style>
+      <style no="cpuinstruction"> word </style>
+      <style no="mathinstruction"> italic </style>
+      <style no="register"> fore:blue </style>
+      <style no="directive"> italic </style>
+      <style no="commentblock"> underline </style>
     </styles>
     <keywords>    
     ADC ADCB ADD ASH ASHC ASL ASLB ASR ASRB BCC BCS BEQ BGE BGT BHI BHIS BIC 
@@ -1557,13 +1707,13 @@ Copyright: (c) 2011, Anton van Wezenbeek
     </keywords>
     <comments begin1=";" />
   </lexer>
-  <lexer name="asn1" match="wxSTC_ASN1_" />
-  <lexer name="asp" match="wxSTC_H_" /> 
-  <lexer name="asy" match="wxSTC_ASY_" />
-  <lexer name="au3" match="wxSTC_AU3_" />
-  <lexer name="ave" match="wxSTC_AVE_" />
-  <lexer name="baan" match="wxSTC_BAAN_" />
-  <lexer name="bash" extensions="*.bash;.bash*;*.sh;Doxyfile" match="wxSTC_SH_"> 
+  <lexer name="asn1"/>
+  <lexer name="asp" macro="hypertext"/> 
+  <lexer name="asy"/>
+  <lexer name="au3"/>
+  <lexer name="ave"/>
+  <lexer name="baan"/>
+  <lexer name="bash" extensions="*.bash;.bash*;*.sh;Doxyfile"> 
     <keywords>    
     alias bg case cd cp diff do done echo elif else esac exit export fg fi find 
     for function
@@ -1573,12 +1723,12 @@ Copyright: (c) 2011, Anton van Wezenbeek
     </keywords>
     <comments begin1="#" />
   </lexer>
-  <lexer name="batch" extensions="*.bat" match="wxSTC_BAT_" />
-  <lexer name="bullant" match="wxSTC_BULLANT_" />
-  <lexer name="caml" match="wxSTC_CAML_" />
-  <lexer name="clarion" match="wxSTC_CLW_" />
-  <lexer name="cmake" match="wxSTC_CMAKE_" />
-  <lexer name="cpp" display="c#" extensions="*.cs" match="wxSTC_C_">
+  <lexer name="batch" extensions="*.bat"/>
+  <lexer name="bullant"/>
+  <lexer name="caml"/>
+  <lexer name="clarion"/>
+  <lexer name="cmake"/>
+  <lexer name="cpp" display="c#" extensions="*.cs">
     <keywords>
 abstract      as         base          bool         break
 Byte          case       catch         char         checked
@@ -1598,7 +1748,7 @@ unsafe        ushort     using         virtual      volatile
 void          while    
     </keywords>
   </lexer>
-  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y" match="wxSTC_C_">
+  <lexer name="cpp" extensions="*.cpp;*.c;*.cc;*.h;*.hpp;*.inl;*.cxx;*.l;*.y">
     <keywords>
     argc:0 argv:0 auto:0 bool:0 break:0 case:0 catch:0 char:0 class:0 const:0
     const_cast:0 continue:0 default:0 delete:0 do:0 double:0 dynamic_cast:0
@@ -1645,45 +1795,45 @@ void          while
     </keywords>
     <comments begin1="//" begin2="/*" end2="*/" />
   </lexer>
-  <lexer name="csound" match="wxSTC_CSOUND_" />
-  <lexer name="css" match="wxSTC_CSS_" />
-  <lexer name="d" match="wxSTC_D_" /> 
-  <lexer name="diff" match="wxSTC_DIFF_">
+  <lexer name="csound"/>
+  <lexer name="css"/>
+  <lexer name="d"/> 
+  <lexer name="diff">
     <styles>
-    <style no="wxSTC_DIFF_HEADER"> fore:blue </style>
-    <style no="wxSTC_DIFF_POSITION"> fore:brown </style>
-    <style no="wxSTC_DIFF_DELETED"> fore:red </style>
-    <style no="wxSTC_DIFF_ADDED"> fore:lime green </style>
-    <style no="wxSTC_DIFF_CHANGED"> fore:yellow </style>
+    <style no="header"> fore:blue </style>
+    <style no="position"> fore:brown </style>
+    <style no="deleted"> fore:red </style>
+    <style no="added"> fore:lime green </style>
+    <style no="changed"> fore:yellow </style>
     </styles>
   </lexer>
-  <lexer name="eiffel" match="wxSTC_EIFFEL_" />
-  <lexer name="erlang" match="wxSTC_ERLANG_" />
-  <lexer name="errlist" match="wxSTC_ERR_" />
-  <lexer name="escript" match="wxSTC_ESCRIPT_" />
-  <lexer name="flagship" match="wxSTC_FS_" />
-  <lexer name="forth" match="wxSTC_FORTH_" />
-  <lexer name="fortran" match="wxSTC_F_" />
-  <lexer name="gap" match="wxSTC_GAP_" />
-  <lexer name="gui4cli" match="wxSTC_GC_" />
-  <lexer name="haskell" match="wxSTC_HA_" />
-  <lexer name="hypertext" extensions="*.htm;*.html" match="wxSTC_H_" >
+  <lexer name="eiffel"/>
+  <lexer name="erlang"/>
+  <lexer name="errlist"/>
+  <lexer name="escript"/>
+  <lexer name="flagship"/>
+  <lexer name="forth"/>
+  <lexer name="fortran"/>
+  <lexer name="gap"/>
+  <lexer name="gui4cli"/>
+  <lexer name="haskell"/>
+  <lexer name="hypertext" extensions="*.htm;*.html">
     <styles>
-      <style no="wxSTC_H_TAG"> TAG </style>
-      <style no="wxSTC_H_TAGEND"> TAG </style>
-      <style no="wxSTC_H_TAGUNKNOWN"> ERROR </style>
-      <style no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </style>
-      <style no="wxSTC_H_QUESTION"> fore:#0000FF,back:#FFEFBF </style>
-      <style no="wxSTC_H_VALUE"> fore:#FF00FF,back:#FFEFFF </style>
-      <style no="wxSTC_HPHP_DEFAULT"> fore:green,eol </style>
-      <style no="wxSTC_HPHP_HSTRING"> fore:#007F00,back:#FFF8F8 </style>
-      <style no="wxSTC_HPHP_SIMPLESTRING"> fore:#009F00,back:#FFF8F8 </style>
-      <style no="wxSTC_HPHP_WORD"> fore:#7F007F,italic,back:#FFF8F8 </style>
-      <style no="wxSTC_HPHP_NUMBER"> fore:#CC9900,back:#FFF8F8 </style>
-      <style no="wxSTC_HPHP_HSTRING_VARIABLE"> fore:#007F00,italic,back:#FFF8F8 </style>
-      <style no="wxSTC_HPHP_OPERATOR"> fore:#000000,back:#FFF8F8 </style>
-      <style no="wxSTC_HPHP_COMMENT"> fore:green </style>
-      <style no="wxSTC_HPHP_COMMENTLINE"> fore:green </style>
+      <style no="tag"> tag </style>
+      <style no="tagend"> tag </style>
+      <style no="tagunknown"> error </style>
+      <style no="attributeunknown"> error </style>
+      <style no="question"> fore:#0000ff,back:#ffefbf </style>
+      <style no="value"> fore:#ff00ff,back:#ffefff </style>
+      <style no="hphp_default"> fore:green,eol </style>
+      <style no="hphp_hstring"> fore:#007f00,back:#fff8f8 </style>
+      <style no="hphp_simplestring"> fore:#009f00,back:#fff8f8 </style>
+      <style no="hphp_word"> fore:#7f007f,italic,back:#fff8f8 </style>
+      <style no="hphp_number"> fore:#cc9900,back:#fff8f8 </style>
+      <style no="hphp_hstring_variable"> fore:#007f00,italic,back:#fff8f8 </style>
+      <style no="hphp_operator"> fore:#000000,back:#fff8f8 </style>
+      <style no="hphp_comment"> fore:green </style>
+      <style no="hphp_commentline"> fore:green </style>
     </styles>
     <properties>
       <property name="fold"> 1 </property>
@@ -1693,42 +1843,58 @@ void          while
       <property name="asp.default.language"> 1 </property>
     </properties>
   </lexer>
-  <lexer name="inno" match="wxSTC_INNO_" />
-  <lexer name="kix" match="wxSTC_KIX_" />
-  <lexer name="latex" match="wxSTC_L_" />
-  <lexer name="lisp" match="wxSTC_LISP_" />
-  <lexer name="lot" match="wxSTC_LOT_" />
-  <lexer name="lout" match="wxSTC_LOUT_" />
-  <lexer name="lua" match="wxSTC_LUA_" />
-  <lexer name="magik" match="wxSTC_MAGIK" />
-  <lexer name="makefile" extensions="*makefile;makefile*.*" match="wxSTC_MAKE_"> <comments begin1="#" /> </lexer>
-  <lexer name="markdown" extensions="*.md" match="wxSTC_MARKDOWN" >
+  <lexer name="hypertext" display= "xml">
     <styles>
-      <style no="wxSTC_MARKDOWN_HEADER1"> bold,eol </style>
-      <style no="wxSTC_MARKDOWN_HEADER2"> bold,eol </style>
-      <style no="wxSTC_MARKDOWN_HEADER3"> bold,eol </style>
-      <style no="wxSTC_MARKDOWN_HEADER4"> bold,eol </style>
-      <style no="wxSTC_MARKDOWN_HEADER5"> bold,eol </style>
-      <style no="wxSTC_MARKDOWN_HEADER6"> bold,eol </style>
-      <style no="wxSTC_MARKDOWN_ULIST_ITEM"> fore:green </style>
-      <style no="wxSTC_MARKDOWN_OLIST_ITEM"> fore:green </style>
-      <style no="wxSTC_MARKDOWN_LINK"> italic </style>
-      <style no="wxSTC_MARKDOWN_CODE"> fore:blue </style>
-      <style no="wxSTC_MARKDOWN_CODE2"> fore:blue </style>
-      <style no="wxSTC_MARKDOWN_CODEBK"> fore:blue </style>
+      <style no="tag"> tag </style>
+      <style no="tagend"> tag </style>
+      <style no="tagunknown"> error </style>
+      <style no="attributeunknown"> error </style>
+      <style no="xmlstart,xmlend"> fore:red </style>
+    </styles>
+    <properties>
+      <property name="fold"> 1 </property>
+      <property name="fold.html"> 1 </property>
+      <property name="fold.compact"> 1 </property>
+    </properties>
+    <!-- xml comments cannot be added, but don't need to, 
+         they are added in the source -->
+  </lexer>
+  <lexer name="inno"/>
+  <lexer name="kix"/>
+  <lexer name="latex"/>
+  <lexer name="lisp"/>
+  <lexer name="lot"/>
+  <lexer name="lout"/>
+  <lexer name="lua"/>
+  <lexer name="magik"/>
+  <lexer name="makefile" extensions="*makefile;makefile*.*"/>
+  <lexer name="markdown" extensions="*.md">
+    <styles>
+      <style no="header1"> bold,eol </style>
+      <style no="header2"> bold,eol </style>
+      <style no="header3"> bold,eol </style>
+      <style no="header4"> bold,eol </style>
+      <style no="header5"> bold,eol </style>
+      <style no="header6"> bold,eol </style>
+      <style no="ulist_item"> fore:green </style>
+      <style no="olist_item"> fore:green </style>
+      <style no="link"> italic </style>
+      <style no="code"> fore:blue </style>
+      <style no="code2"> fore:blue </style>
+      <style no="codebk"> fore:blue </style>
     </styles>
   </lexer>
   
-  <lexer name="matlab" match="wxSTC_MATLAB_" />
-  <lexer name="metapost" match="wxSTC_METAPOST_" />
-  <lexer name="mmixal" match="wxSTC_MMIXAL_" />
-  <lexer name="mssql" match="wxSTC_MSSQL_" />
-  <lexer name="mysql" match="wxSTC_MYSQL" />
-  <lexer name="nncrontab" match="wxSTC_NNCRONTAB_" />
-  <lexer name="nsis" match="wxSTC_NSIS_" />
-  <lexer name="octave" match="wxSTC_MATLAB_" />
-  <lexer name="opal" match="wxSTC_OPAL_" />
-  <lexer name="pascal" extensions="*.pas" match="wxSTC_PAS_">
+  <lexer name="matlab"/>
+  <lexer name="metapost"/>
+  <lexer name="mmixal"/>
+  <lexer name="mssql"/>
+  <lexer name="mysql"/>
+  <lexer name="nncrontab"/>
+  <lexer name="nsis"/>
+  <lexer name="octave" macro="matlab"/>
+  <lexer name="opal"/>
+  <lexer name="pascal" extensions="*.pas">
     <keywords>    
     ABSOLUTE ABSTRACT AND ARRAY AS ASM ASSEMBLER AUTOMATED BEGIN CASE CDECL 
     CLASS CONST
@@ -1750,7 +1916,7 @@ void          while
     </keywords>
     <comments begin1="(*" end1="*)" begin2="{" end2="}"/>
   </lexer>
-  <lexer name="perl" extensions="*.pl" match="wxSTC_PL_">
+  <lexer name="perl" extensions="*.pl">
     <keywords>
       abs accept 
       alarm and atan2 bind binmode bless caller chdir chmod chomp chop 
@@ -1781,35 +1947,35 @@ void          while
       given when default say state
     </keywords>
   </lexer>
-  <lexer name="PL/M" match="wxSTC_PLM_" />
-  <lexer name="php" match="wxSTC_HPHP_" /> 
-  <lexer name="phpscript" match="wxSTC_H_" /> 
-  <lexer name="po" extensions="*.po" match="wxSTC_PO_">
+  <lexer name="plm"/>
+  <lexer name="php" macro="hypertext"/> 
+  <lexer name="phpscript" macro="hypertext"/> 
+  <lexer name="po" extensions="*.po">
     <styles>
-      <style no ="wxSTC_PO_MSGID"> WORD </style>
-      <style no ="wxSTC_PO_MSGSTR"> WORD </style>
+      <style no ="MSGID"> WORD </style>
+      <style no ="MSGSTR"> WORD </style>
     </styles>
     <keywords>    
       msgid msgstr
     </keywords>
   </lexer>
-  <lexer name="pov" match="wxSTC_POV_" />
-  <lexer name="powerpro" match="wxSTC_POWERPRO" />
-  <lexer name="powershell" match="wxSTC_POWERSHELL" />
-  <lexer name="progress" match="wxSTC_4GL_" />
-  <lexer name="props" extensions="*.ini;*.conf" match="wxSTC_PROPS_">
+  <lexer name="pov"/>
+  <lexer name="powerpro"/>
+  <lexer name="powershell"/>
+  <lexer name="progress"/>
+  <lexer name="props" extensions="*.ini;*.conf">
     <styles>
-    <style no="wxSTC_PROPS_SECTION"> fore:blue </style>
-    <style no="wxSTC_PROPS_ASSIGNMENT"> fore:brown </style>
-    <style no="wxSTC_PROPS_DEFVAL"> fore:red </style>
-    <style no="wxSTC_PROPS_KEY"> fore:grey </style>
+    <style no="section"> fore:blue </style>
+    <style no="assignment"> fore:brown </style>
+    <style no="defval"> fore:red </style>
+    <style no="key"> fore:grey </style>
     </styles>
   </lexer>
-  <lexer name="ps" match="wxSTC_PS_" />
-  <lexer name="python" extensions="*.py" match="wxSTC_P_">
+  <lexer name="ps"/>
+  <lexer name="python" extensions="*.py">
     <styles>
-      <style no="wxSTC_P_TRIPLE"> COMMENT </style>
-      <style no="wxSTC_P_TRIPLEDOUBLE"> COMMENT </style>
+      <style no="triple"> comment </style>
+      <style no="tripledouble"> comment </style>
     </styles>
     <keywords>
       and as assert break class continue def del elif 
@@ -1817,16 +1983,16 @@ void          while
       not or pass print raise return try while with yield
     </keywords>
   </lexer>
-  <lexer name="r" match="wxSTC_R_" />
-  <lexer name="rebol" match="wxSTC_REBOL_" />
-  <lexer name="ruby" match="wxSTC_RB_" />
-  <lexer name="scriptol" match="wxSTC_SCRIPTOL_WHITE" />
-  <lexer name="smalltalk" match="wxSTC_ST_" />
-  <lexer name="sml" match="wxSTC_SML" />
-  <lexer name="sorcus" match="wxSTC_SORCUS" />
-  <lexer name="specman" match="wxSTC_SN_" />
-  <lexer name="spice" match="wxSTC_SPICE_" />
-  <lexer name="sql" extensions="*.sql" match="wxSTC_SQL_">
+  <lexer name="r"/>
+  <lexer name="rebol"/>
+  <lexer name="ruby"/>
+  <lexer name="scriptol"/>
+  <lexer name="smalltalk"/>
+  <lexer name="sml"/>
+  <lexer name="sorcus"/>
+  <lexer name="specman"/>
+  <lexer name="spice"/>
+  <lexer name="sql" extensions="*.sql">
     <keywords>    
     <!-- First line added manually -->
     <!-- Copied from scite, v1.68. -->
@@ -1885,29 +2051,13 @@ void          while
     </keywords>
     <comments begin1="--" />
   </lexer>
-  <lexer name="tads3" match="wxSTC_T3_" />
-  <lexer name="tcl" extensions="*.tcl" match="wxSTC_TCL_" />
-  <lexer name="tex" match="wxSTC_TEX_" />
-  <lexer name="vb" match="wxSTC_B_" />
-  <lexer name="vbscript" match="wxSTC_B_" />
-  <lexer name="verilog" match="wxSTC_V_" />
-  <lexer name="vhdl" match="wxSTC_VHDL_" />
-  <lexer name="xml" match="wxSTC_H_">
-    <styles>
-      <style no="wxSTC_H_TAG"> TAG </style>
-      <style no="wxSTC_H_TAGEND"> TAG </style>
-      <style no="wxSTC_H_TAGUNKNOWN"> ERROR </style>
-      <style no="wxSTC_H_ATTRIBUTEUNKNOWN"> ERROR </style>
-      <style no="wxSTC_H_XMLSTART,wxSTC_H_XMLEND"> fore:red </style>
-    </styles>
-    <properties>
-      <property name="fold"> 1 </property>
-      <property name="fold.html"> 1 </property>
-      <property name="fold.compact"> 1 </property>
-    </properties>
-    <!-- xml comments cannot be added, but don't need to, 
-         they are added in the source -->
-  </lexer>
-  <lexer name="yaml" match="wxSTC_YAML_" />
+  <lexer name="tads3"/>
+  <lexer name="tcl" extensions="*.tcl"/>
+  <lexer name="tex"/>
+  <lexer name="vb"/>
+  <lexer name="vbscript"/>
+  <lexer name="verilog"/>
+  <lexer name="vhdl"/>
+  <lexer name="yaml"/>
   
 </lexers>

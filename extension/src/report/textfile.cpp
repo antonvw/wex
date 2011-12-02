@@ -78,6 +78,22 @@ wxExTextFileWithListView::wxExTextFileWithListView(
 {
 }
 
+void wxExTextFileWithListView::InsertLine(const wxString& line)
+{
+  if (GetCurrentLine() == GetLineCount())
+  {
+    AddLine(line);
+  }
+  else
+  {
+    wxTextFile::InsertLine(line, GetCurrentLine());
+  }
+
+  m_Modified = true;
+
+  GoToLine(GetCurrentLine() + 1);
+}
+
 #if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::ParseComments()
 {

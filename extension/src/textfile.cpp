@@ -11,8 +11,6 @@
 #endif
 #include <algorithm>
 #include <cctype> // for isspace
-#include <wx/config.h>
-#include <wx/regex.h>
 #include <wx/extension/textfile.h>
 #include <wx/extension/frd.h>
 #include <wx/extension/util.h>
@@ -53,14 +51,10 @@ wxExTextFile::wxExTextFile(
   , m_LastSyntaxType(SYNTAX_NONE)
   , m_SyntaxType(SYNTAX_NONE)
   , m_Tool(tool)
-  , m_AllowAction(false)
   , m_EmptyLine(false)
-  , m_FinishedAction(false)
   , m_IsCommentStatement(false)
   , m_IsString(false)
   , m_Modified(false)
-  , m_LineMarker(0)
-  , m_LineMarkerEnd(0)
 {
 }
 
@@ -167,22 +161,6 @@ void wxExTextFile::CommentStatementStart()
     CommentBegin().length());
 }
 
-void wxExTextFile::InsertLine(const wxString& line)
-{
-  if (GetCurrentLine() == GetLineCount())
-  {
-    AddLine(line);
-  }
-  else
-  {
-    wxTextFile::InsertLine(line, GetCurrentLine());
-  }
-
-  m_Modified = true;
-
-  GoToLine(GetCurrentLine() + 1);
-}
-
 bool wxExTextFile::MatchLine(wxString& line)
 {
   bool match = false;
@@ -287,10 +265,7 @@ bool wxExTextFile::Parse()
     }
   }
 
-  for (
-    size_t i = 0; 
-    i < GetLineCount() && !m_FinishedAction; 
-    i++)
+  for (size_t i = 0; i < GetLineCount(); i++)
   {
     wxString& line = GetLine(i);
 
@@ -312,11 +287,6 @@ bool wxExTextFile::Parse()
     }
   }
 
-  return true;
-}
-
-bool wxExTextFile::ParseComments()
-{
   return true;
 }
 
