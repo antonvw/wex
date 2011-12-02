@@ -322,6 +322,23 @@ const wxString wxExLexers::GetLexerExtensions() const
   return text;
 }
 
+const std::map<wxString, wxString>& wxExLexers::GetMacros(const wxString& lexer) const
+{
+  const std::map<wxString, std::map<wxString, wxString> >::iterator it = 
+    m_Macros.find(lexer);
+  
+  if (it != macro_map.end())
+  {
+    return it.second;
+  }
+  else
+  {
+    std::map<wxString, <wxString, wxString> > empty_map;
+    
+    return empty_map;
+  }
+}
+
 const wxString wxExLexers::GetTheme() const
 {
   const wxString theme = wxConfigBase::Get()->Read("theme", "torte");
@@ -473,27 +490,38 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
   {
     if (child->GetName() == "def")
     {
-      const wxString attrib = child->GetAttribute("no");
-      const wxString content = child->GetNodeContent().Strip(wxString::both);
+      const wxString name = child->GetAttribute("name");
+    
+      wxXmlNode* macro = child->GetChildren();
+      
+      std::map macro_map<wxString, wxString>;
 
-      if (!attrib.empty())
+      while (macro)
       {
+        const wxString attrib = macro->GetAttribute("no");
+        const wxString content = macro->GetNodeContent().Strip(wxString::both);
+
+        if (!attrib.empty())
+        {
 #ifdef wxExUSE_CPP0X	
-        const auto it = m_Macros.find(attrib);
+          const auto it = macro_map.find(attrib);
 #else
-        const std::map<wxString, wxString>::iterator it = m_Macros.find(attrib);
+          const std::map<wxString, wxString>::iterator it = macro_map.find(attrib);
 #endif		
 
-        if (it != m_Macros.end())
-        {
-          wxLogError(_("Macro: %s on line: %d already exists"),
-            attrib.c_str(), 
-            child->GetLineNumber());
+          if (it != macro_map.end())
+          {
+            wxLogError(_("Macro: %s on line: %d already exists"),
+              attrib.c_str(), 
+              macro->GetLineNumber());
+          }
+          else
+          {
+            macro_map[attrib] = content;
+          }
         }
-        else
-        {
-          m_Macros[attrib] = content;
-        }
+      
+      m_Macros[name] = macro_map;      
       }
     }
     else if (child->GetName() == "themes")

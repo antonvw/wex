@@ -75,8 +75,8 @@ public:
   /// Gets the filename.
   const wxFileName& GetFileName() const {return m_FileName;};
 
-  /// Gets the macros.
-  const std::map<wxString, wxString>& GetMacros() const {return m_Macros;};
+  /// Gets the macros for specified lexer.
+  const std::map<wxString, wxString>& GetMacros(const wxString& lexer) const;
 
   /// Returns the current theme, as present in the config.
   /// It checks whether the config theme is really
@@ -137,7 +137,7 @@ private:
   void ParseNodeThemes(const wxXmlNode* node);
 
   std::map<wxString, wxExLexer> m_Lexers;
-  std::map<wxString, wxString> m_Macros;
+  std::map<wxString, std::map<wxString, wxString> > m_Macros;
   std::map<wxString, wxString> m_DefaultColours;
   std::map<wxString, wxString> m_TempColours;
   std::map<wxString, wxString> m_TempMacros;

@@ -69,15 +69,11 @@ public:
   /// Gets the tool.
   const wxExTool& GetTool() const {return m_Tool;};
 
-  /// Inserts a line at current line (or at end if at end),
-  /// make that line current and sets modified.
-  void InsertLine(const wxString& line);
-
   /// Runs the tool (opens the file before running and closes afterwards).
   bool RunTool();
 protected:
-  /// Called after comments have been found.
-  virtual bool ParseComments();
+  /// Invoked after comments have been found.
+  virtual bool ParseComments() {returnn true;};
 
   // Virtual report generators.
   /// This one is invoked during parsing of lines.
@@ -159,9 +155,7 @@ private:
   bool MatchLine(wxString& line);
   bool Parse();
 
-  bool m_AllowAction;
   bool m_EmptyLine;
-  bool m_FinishedAction;
   bool m_IsCommentStatement;
   bool m_IsString;
   bool m_Modified;
@@ -171,9 +165,6 @@ private:
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
   const wxExTool m_Tool;
-
-  size_t m_LineMarker;
-  size_t m_LineMarkerEnd;
 
   std::string m_FindString;
 
