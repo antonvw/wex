@@ -383,7 +383,10 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT(wxExLexers::Get() != NULL);
   
   CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("XXX") == "XXX");
-  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("wxSTC_MARK_LCORNER") == "10");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("mark_lcorner") == "10");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number") == "fore:red");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "asm") == "2");
+  CPPUNIT_ASSERT( wxExLexers::Get()->ApplyMacro("number", "cpp") == "4");
 
   CPPUNIT_ASSERT(!wxExLexers::Get()->BuildWildCards(
     wxFileName(TEST_FILE)).empty());
@@ -403,10 +406,14 @@ void wxExGuiTestFixture::testLexers()
 
   CPPUNIT_ASSERT( wxExLexers::Get()->GetFileName().IsOk());
 
-  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros().empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("global").empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("cpp").empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("pascal").empty());
+  CPPUNIT_ASSERT(!wxExLexers::Get()->GetMacros("XXX").empty());
+  
   CPPUNIT_ASSERT(!wxExLexers::Get()->GetThemeMacros().empty());
 
-  CPPUNIT_ASSERT( wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
+  CPPUNIT_ASSERT(!wxExLexers::Get()->IndicatorIsLoaded(wxExIndicator(0, -1)));
   CPPUNIT_ASSERT( wxExLexers::Get()->MarkerIsLoaded(wxExMarker(0, -1)));
 
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());

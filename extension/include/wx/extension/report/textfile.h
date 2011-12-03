@@ -26,6 +26,10 @@ public:
   /// Sets up the tool.
   static bool SetupTool(const wxExTool& tool, wxExFrameWithHistory* frame);
 private:
+  /// Inserts a line at current line (or at end if at end),
+  /// make that line current and sets modified.
+  void InsertLine(const wxString& line);
+
   // Implement interface from wxExTextFile.
   virtual void Report(size_t line);
   virtual void ReportStatistics();

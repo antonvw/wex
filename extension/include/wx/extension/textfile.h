@@ -49,44 +49,6 @@ private:
   wxExStatistics<long> m_Keywords;
 };
 
-/// Class for keeping RCS information.
-class WXDLLIMPEXP_BASE wxExRCS
-{
-public:
-  /// Default constructor.
-  wxExRCS();
-
-  /// Appends to the description.
-  void AppendDescription(const wxString& text);
-
-  /// Gets the description.
-  const wxString& GetDescription() const {return m_Description;};
-
-  /// Gets a revision string from number, time, user and description.
-  const wxString GetRevision() const;
-
-  /// Gets the revision format.
-  const wxString& GetRevisionFormat() const {return m_RevisionFormat;};
-
-  /// Gets the revision number.
-  const wxString& GetRevisionNumber() const {return m_RevisionNumber;};
-
-  /// Gets the revision time.
-  const wxDateTime& GetRevisionTime() const {return m_RevisionTime;};
-
-  /// Gets the user.
-  const wxString& GetUser() const {return m_User;};
-  
-  /// Sets revision info from specified text.
-  bool SetRevision(wxString& text);
-private:
-  wxString m_Description;
-  wxString m_RevisionFormat;
-  wxString m_RevisionNumber;
-  wxDateTime m_RevisionTime;
-  wxString m_User;
-};
-
 /// Adds file tool methods to wxTextFile.
 /// In your derived class just implement the Report or ReportStatistics, and take
 /// care that the strings are added to your component.
@@ -101,24 +63,17 @@ public:
   /// Gets the filename.
   const wxExFileName& GetFileName() const {return m_FileName;};
 
-  /// Gets the RCS data.
-  const wxExRCS& GetRCS() const {return m_RCS;};
-
   /// Gets the statistics.
   const wxExFileStatistics& GetStatistics() const {return m_Stats;}
 
   /// Gets the tool.
   const wxExTool& GetTool() const {return m_Tool;};
 
-  /// Inserts a line at current line (or at end if at end),
-  /// make that line current and sets modified.
-  void InsertLine(const wxString& line);
-
   /// Runs the tool (opens the file before running and closes afterwards).
   bool RunTool();
 protected:
-  /// Called after comments have been found.
-  virtual bool ParseComments();
+  /// Invoked after comments have been found.
+  virtual bool ParseComments() {return true;};
 
   // Virtual report generators.
   /// This one is invoked during parsing of lines.
@@ -142,6 +97,8 @@ protected:
   /// and fills the comments if any on the line.
   /// At the end it calls ParseComments.
   bool ParseLine(const wxString& line);
+  
+  bool m_Modified;
 private:
   /// The comment type.
   enum wxExCommentType
@@ -182,7 +139,6 @@ private:
   wxExCommentType CheckForComment(const wxString& text);
   void CommentStatementEnd();
   void CommentStatementStart();
-  void EndCurrentRevision();
   void Initialize();
 
   /// Returns true if char is a brace open or close character.
@@ -200,26 +156,16 @@ private:
 
   bool MatchLine(wxString& line);
   bool Parse();
-  bool PrepareRevision();
 
-  bool m_AllowAction;
   bool m_EmptyLine;
-  bool m_FinishedAction;
   bool m_IsCommentStatement;
   bool m_IsString;
-  bool m_Modified;
-  bool m_RevisionActive;
 
   wxExFileName m_FileName;
   wxExFileStatistics m_Stats;
-  wxExRCS m_RCS;
   wxExSyntaxType m_LastSyntaxType;
   wxExSyntaxType m_SyntaxType;
   const wxExTool m_Tool;
-
-  size_t m_LineMarker;
-  size_t m_LineMarkerEnd;
-  size_t m_VersionLine;
 
   std::string m_FindString;
 

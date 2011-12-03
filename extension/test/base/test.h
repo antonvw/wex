@@ -40,7 +40,6 @@ public:
   void testFile();
   void testFileName();
   void testFileStatistics();
-  void testRCS();
   void testStat();
   void testStatistics();
   void testTextFile();

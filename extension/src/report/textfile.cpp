@@ -78,6 +78,22 @@ wxExTextFileWithListView::wxExTextFileWithListView(
 {
 }
 
+void wxExTextFileWithListView::InsertLine(const wxString& line)
+{
+  if (GetCurrentLine() == GetLineCount())
+  {
+    AddLine(line);
+  }
+  else
+  {
+    wxTextFile::InsertLine(line, GetCurrentLine());
+  }
+
+  m_Modified = true;
+
+  GoToLine(GetCurrentLine() + 1);
+}
+
 #if wxExUSE_EMBEDDED_SQL
 bool wxExTextFileWithListView::ParseComments()
 {
@@ -212,13 +228,6 @@ void wxExTextFileWithListView::Report(size_t line)
   case ID_TOOL_REPORT_FIND:
     item.SetItem(_("Line"), GetLine(line).Strip(wxString::both));
     item.SetItem(_("Match"), wxExFindReplaceData::Get()->GetFindString());
-  break;
-
-  case ID_TOOL_REPORT_REVISION:
-    item.SetItem(_("Revision"), GetRCS().GetRevisionNumber());
-    item.SetItem(_("Date"), GetRCS().GetRevisionTime().FormatISOCombined(' '));
-    item.SetItem(_("Initials"), GetRCS().GetUser());
-    item.SetItem(_("Revision Comment"), GetRCS().GetDescription());
   break;
 
 #if wxExUSE_EMBEDDED_SQL

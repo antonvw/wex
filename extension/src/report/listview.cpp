@@ -188,7 +188,6 @@ wxExListViewWithFrame::wxExListType wxExListViewWithFrame::GetTypeTool(
     case ID_TOOL_REPORT_FIND: return LIST_FIND; break;
     case ID_TOOL_REPORT_KEYWORD: return LIST_KEYWORD; break;
     case ID_TOOL_REPORT_REPLACE: return LIST_REPLACE; break;
-    case ID_TOOL_REPORT_REVISION: return LIST_REVISION; break;
     case ID_TOOL_REPORT_SQL: return LIST_SQL; break;
     case ID_TOOL_REPORT_VERSION: return LIST_VERSION; break;
     default: wxFAIL; return LIST_FILE;

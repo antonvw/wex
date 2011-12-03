@@ -1018,13 +1018,6 @@ void wxExListViewFileName::AddColumns(const wxExLexer* lexer)
     InsertColumn(wxExColumn(_("Line No")));
     InsertColumn(wxExColumn(_("File Name"), wxExColumn::COL_STRING));
   break;
-  case LIST_REVISION:
-    InsertColumn(wxExColumn(_("Revision Comment"), wxExColumn::COL_STRING, 400));
-    InsertColumn(wxExColumn(_("Date"), wxExColumn::COL_DATE));
-    InsertColumn(wxExColumn(_("Initials"), wxExColumn::COL_STRING));
-    InsertColumn(wxExColumn(_("Line No")));
-    InsertColumn(wxExColumn(_("Revision"), wxExColumn::COL_STRING));
-  break;
   case LIST_SQL:
     InsertColumn(wxExColumn(_("Run Time"), wxExColumn::COL_DATE));
     InsertColumn(wxExColumn(_("Query"), wxExColumn::COL_STRING, 400));
@@ -1123,7 +1116,6 @@ const wxString wxExListViewFileName::GetTypeDescription(wxExListType type)
   case LIST_PROCESS: value = _("Process Output"); break;
   case LIST_FILE: value = _("File"); break;
   case LIST_REPLACE: value = _("Replace Results"); break;
-  case LIST_REVISION: value = _("Revisions"); break;
   case LIST_SQL: value = _("SQL Queries"); break;
   case LIST_VERSION: value = _("Version List"); break;
   default: wxFAIL;

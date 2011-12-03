@@ -193,15 +193,10 @@ bool wxExMenu::AppendTools(int itemid)
   {
     if (!it->second.GetText().empty())
     {
-      const bool vcs_type = wxExTool(it->first).IsRCSType();
-
-      if ((vcs_type && !wxExVCS().Use()) || !vcs_type)
-      {
-        menuTool->Append(
-          it->first, 
-          it->second.GetText(), 
-          it->second.GetHelpText());
-      }
+      menuTool->Append(
+        it->first, 
+        it->second.GetText(), 
+        it->second.GetHelpText());
     }
   }
 
