@@ -497,7 +497,7 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
     
       wxXmlNode* macro = child->GetChildren();
       
-      std::map <wxString, wxString>macro_map;
+      std::map <wxString, wxString> macro_map;
 
       while (macro)
       {
@@ -523,9 +523,11 @@ void wxExLexers::ParseNodeMacro(const wxXmlNode* node)
             macro_map[attrib] = content;
           }
         }
+        
+        macro = macro->GetNext();
+      }
       
       m_Macros[name] = macro_map;      
-      }
     }
     else if (child->GetName() == "themes")
     {

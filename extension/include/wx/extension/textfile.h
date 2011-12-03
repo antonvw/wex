@@ -97,6 +97,8 @@ protected:
   /// and fills the comments if any on the line.
   /// At the end it calls ParseComments.
   bool ParseLine(const wxString& line);
+  
+  bool m_Modified;
 private:
   /// The comment type.
   enum wxExCommentType
@@ -158,7 +160,6 @@ private:
   bool m_EmptyLine;
   bool m_IsCommentStatement;
   bool m_IsString;
-  bool m_Modified;
 
   wxExFileName m_FileName;
   wxExFileStatistics m_Stats;
