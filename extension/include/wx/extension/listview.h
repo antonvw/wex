@@ -224,7 +224,6 @@ public:
     LIST_REPLACE,      ///< a list to show replace results
     LIST_PROCESS,      ///< a list to show process output
     LIST_FILE,         ///< a list associated with a file
-    LIST_REVISION,     ///< a list to show revisions
     LIST_SQL,          ///< a list to show embedded sql
     LIST_VERSION,      ///< a list to show versions
     LIST_AFTER_LAST    ///< for iterating
