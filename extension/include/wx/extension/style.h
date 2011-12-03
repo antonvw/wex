@@ -25,7 +25,7 @@ public:
   wxExStyle();
   
   /// Constructor using xml node (sets no from the no attribute).
-  wxExStyle(const wxXmlNode* node);
+  wxExStyle(const wxXmlNode* node, const wxString& macro);
 
   /// Constructor using no and value.
   wxExStyle(const wxString& no, const wxString& value);
@@ -40,7 +40,7 @@ public:
   /// Returns true if this style is valid.
   bool IsOk() const;
 private:
-  void Set(const wxXmlNode* node);
+  void Set(const wxXmlNode* node, const wxString& macro);
   void SetNo(const wxString& no);
 
   std::set <int> m_No;
