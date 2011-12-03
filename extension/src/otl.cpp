@@ -190,7 +190,7 @@ long wxExOTL::Query(
   }
 
   grid->EndBatch();
-  grid->AutoSizeColumns();
+  grid->AutoSizeColumns(false); // not set as minimum width
 
   return rows;
 }
