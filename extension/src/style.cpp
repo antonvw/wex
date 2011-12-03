@@ -22,9 +22,9 @@ wxExStyle::wxExStyle()
 {
 }
   
-wxExStyle::wxExStyle(const wxXmlNode* node)
+wxExStyle::wxExStyle(const wxXmlNode* node, const wxString& macro)
 {
-  Set(node);
+  Set(node, macro);
 }
 
 wxExStyle::wxExStyle(const wxString& no, const wxString& value)
@@ -74,9 +74,9 @@ bool wxExStyle::IsOk() const
   return !m_No.empty() && !m_Value.empty();
 }
 
-void wxExStyle::Set(const wxXmlNode* node)
+void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
 {
-  SetNo(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0")));
+  SetNo(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"), macro));
 
   m_Value = node->GetNodeContent().Strip(wxString::both);
 

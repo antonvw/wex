@@ -359,7 +359,7 @@ const std::vector<wxExStyle> wxExLexer::ParseNodeStyles(
   {
     if (child->GetName() == "style")
     {
-      text.push_back(wxExStyle(child));
+      text.push_back(wxExStyle(child, m_ScintillaLexer));
     }
     
     child = child->GetNext();

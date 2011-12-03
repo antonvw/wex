@@ -603,17 +603,17 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <def no ="question"> 18 </def>
       <def no ="value"> 19 </def>
       <def no ="xccomment"> 20 </def>
-      <def no ="default"> 21 </def>
-      <def no ="command"> 22 </def>
-      <def no ="param"> 23 </def>
-      <def no ="doublestring"> 24 </def>
-      <def no ="simplestring"> 25 </def>
-      <def no ="error"> 26 </def>
-      <def no ="special"> 27 </def>
-      <def no ="entity"> 28 </def>
-      <def no ="comment"> 29 </def>
-      <def no ="comment"> 30 </def>
-      <def no ="default"> 31 </def>
+      <def no ="sgml_default"> 21 </def>
+      <def no ="sgml_command"> 22 </def>
+      <def no ="sgml_param"> 23 </def>
+      <def no ="sgml_doublestring"> 24 </def>
+      <def no ="sgml_simplestring"> 25 </def>
+      <def no ="sgml_error"> 26 </def>
+      <def no ="sgml_special"> 27 </def>
+      <def no ="sgml_entity"> 28 </def>
+      <def no ="sgml_comment"> 29 </def>
+      <def no ="sgml_1st_param_comment"> 30 </def>
+      <def no ="sgml_block_default"> 31 </def>
       <def no ="hj_start"> 40 </def>
       <def no ="hj_default"> 41 </def>
       <def no ="hj_comment"> 42 </def>
@@ -1442,8 +1442,8 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <def no ="comment"> 1 </def>
       <def no ="commentline"> 2 </def>
       <def no ="number"> 3 </def>
-      <def no ="quote"> 4 </def>
-      <def no ="quote"> 5 </def>
+      <def no ="word_in_quote"> 4 </def>
+      <def no ="in_quote"> 5 </def>
       <def no ="operator"> 6 </def>
       <def no ="identifier"> 7 </def>
       <def no ="substitution"> 8 </def>
@@ -1459,7 +1459,7 @@ Copyright: (c) 2011, Anton van Wezenbeek
       <def no ="word7"> 18 </def>
       <def no ="word8"> 19 </def>
       <def no ="box"> 20 </def>
-      <def no ="comment"> 21 </def>
+      <def no ="block_comment"> 21 </def>
     </def>
     
     <def name = "tex">
