@@ -1952,8 +1952,8 @@ void          while
   <lexer name="phpscript" macro="hypertext"/> 
   <lexer name="po" extensions="*.po">
     <styles>
-      <style no ="MSGID"> WORD </style>
-      <style no ="MSGSTR"> WORD </style>
+      <style no ="msgid"> word </style>
+      <style no ="msgstr"> word </style>
     </styles>
     <keywords>    
       msgid msgstr

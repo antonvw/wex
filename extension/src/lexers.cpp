@@ -434,7 +434,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "hex")
     {
-      m_StylesHex.push_back(wxExStyle(child));
+      m_StylesHex.push_back(wxExStyle(child, "global"));
     }
     else if (child->GetName() == "indicator")
     {
@@ -460,7 +460,7 @@ void wxExLexers::ParseNodeGlobal(const wxXmlNode* node)
     }
     else if (child->GetName() == "style")
     {
-      const wxExStyle style(child);
+      const wxExStyle style(child, "global");
 
       if (style.ContainsDefaultStyle())
       {
