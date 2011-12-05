@@ -128,18 +128,21 @@ void wxExLexer::AutoMatch(const wxString& lexer)
     it != wxExLexers::Get()->GetMacros(lexer).end();
     ++it)
   {
+    bool match = false;
+    
     for (
 #ifdef wxExUSE_CPP0X	
       auto style = wxExLexers::Get()->GetThemeMacros().begin();
 #else
       std::map<wxString, wxString>::const_iterator style = wxExLexers::Get()->GetThemeMacros().begin();
 #endif	  
-      style != wxExLexers::Get()->GetThemeMacros().end();
+      style != wxExLexers::Get()->GetThemeMacros().end() && !match;
       ++style)
     {
       if (it->first.Contains(style->first))
       {
         m_Styles.push_back(wxExStyle(it->second, style->second));
+        match = true;
       }
     }
   }
@@ -390,7 +393,7 @@ void wxExLexer::Set(const wxXmlNode* node)
 
     AutoMatch((!node->GetAttribute("macro").empty() ?
       node->GetAttribute("macro"):
-      node->GetAttribute(m_ScintillaLexer)));
+      m_ScintillaLexer));
 
     if (m_ScintillaLexer == "hypertext")
     {
