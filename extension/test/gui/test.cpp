@@ -721,17 +721,19 @@ void wxExGuiTestFixture::testStyle()
   wxExStyle inv;
   CPPUNIT_ASSERT(!inv.IsOk() );
   
-  wxExStyle test1("man", "ugly");
+  wxExStyle test1("MARK_CIRCLE", "ugly");
   wxExStyle test2("512", "ugly");
   wxExStyle test3("number,string,comment", "fore:blue", "cpp");
   wxExStyle test4("number,string,xxx", "fore:black", "cpp");
+  wxExStyle test5("xxx", "fore:black", "cpp");
   
   CPPUNIT_ASSERT(!test1.IsOk());
-  CPPUNIT_ASSERT( test2.IsOk());
+  CPPUNIT_ASSERT(!test2.IsOk());
   CPPUNIT_ASSERT( test3.IsOk());
-  CPPUNIT_ASSERT(!test4.IsOk());
+  CPPUNIT_ASSERT( test4.IsOk()); // because number, string is ok
+  CPPUNIT_ASSERT(!test5.IsOk());
   
-  wxExStyle style("55", "ugly");
+  wxExStyle style("mark_circle", "0");
   
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello stc");
   

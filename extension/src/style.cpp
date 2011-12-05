@@ -150,11 +150,11 @@ void wxExStyle::SetNo(const wxString& no, const wxString& macro)
 
     if (single.IsNumber())
     {
-      const int style_no = atoi(single.c_str();
+      const int style_no = atoi(single.c_str());
       
-      if (no >= 0 && no <= wxSTC_STYLE_MAX)
+      if (style_no >= 0 && style_no <= wxSTC_STYLE_MAX)
       {
-        m_No.insert(no));
+        m_No.insert(style_no);
         error = false;
       }
     }
