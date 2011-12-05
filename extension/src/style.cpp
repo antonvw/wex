@@ -27,10 +27,13 @@ wxExStyle::wxExStyle(const wxXmlNode* node, const wxString& macro)
   Set(node, macro);
 }
 
-wxExStyle::wxExStyle(const wxString& no, const wxString& value)
+wxExStyle::wxExStyle(
+  const wxString& no, 
+  const wxString& value,
+  const wxString& macro)
   : m_Value(value)
 {
-  SetNo(no);
+  SetNo(no, macro);
 }
 
 void wxExStyle::Apply(wxStyledTextCtrl* stc) const
@@ -76,7 +79,9 @@ bool wxExStyle::IsOk() const
 
 void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
 {
-  SetNo(wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"), macro));
+  SetNo(
+    wxExLexers::Get()->ApplyMacro(node->GetAttribute("no", "0"), macro),
+    macro);
 
   m_Value = node->GetNodeContent().Strip(wxString::both);
 
@@ -129,7 +134,7 @@ void wxExStyle::Set(const wxXmlNode* node, const wxString& macro)
   }
 }
 
-void wxExStyle::SetNo(const wxString& no)
+void wxExStyle::SetNo(const wxString& no, const wxString& macro)
 {
   m_No.clear();
   
@@ -139,13 +144,22 @@ void wxExStyle::SetNo(const wxString& no)
   while (no_fields.HasMoreTokens())
   {
     const wxString single = 
-      wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken());
+      wxExLexers::Get()->ApplyMacro(no_fields.GetNextToken(), macro);
+      
+    bool error = true;
 
     if (single.IsNumber())
     {
-      m_No.insert(atoi(single.c_str()));
+      const int style_no = atoi(single.c_str();
+      
+      if (no >= 0 && no <= wxSTC_STYLE_MAX)
+      {
+        m_No.insert(no));
+        error = false;
+      }
     }
-    else
+    
+    if (error)
     {
       wxLogError(_("Illegal style: %s"), no.c_str());
     }
