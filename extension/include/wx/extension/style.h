@@ -28,7 +28,10 @@ public:
   wxExStyle(const wxXmlNode* node, const wxString& macro);
 
   /// Constructor using no and value.
-  wxExStyle(const wxString& no, const wxString& value);
+  wxExStyle(
+    const wxString& no, 
+    const wxString& value,
+    const wxString& macro = "global");
 
   /// Applies this style to stc component.
   /// If no style is present, STC StyleResetDefault is invoked.
@@ -41,7 +44,7 @@ public:
   bool IsOk() const;
 private:
   void Set(const wxXmlNode* node, const wxString& macro);
-  void SetNo(const wxString& no);
+  void SetNo(const wxString& no, const wxString& macro);
 
   std::set <int> m_No;
   wxString m_Value;

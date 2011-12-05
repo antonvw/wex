@@ -721,9 +721,15 @@ void wxExGuiTestFixture::testStyle()
   wxExStyle inv;
   CPPUNIT_ASSERT(!inv.IsOk() );
   
-  wxExStyle test("man", "ugly");
+  wxExStyle test1("man", "ugly");
+  wxExStyle test2("512", "ugly");
+  wxExStyle test3("number,string,comment", "fore:blue", "cpp");
+  wxExStyle test4("number,string,xxx", "fore:black", "cpp");
   
-  CPPUNIT_ASSERT( !test.IsOk()); // no should be a number??
+  CPPUNIT_ASSERT(!test1.IsOk());
+  CPPUNIT_ASSERT( test2.IsOk());
+  CPPUNIT_ASSERT( test3.IsOk());
+  CPPUNIT_ASSERT(!test4.IsOk());
   
   wxExStyle style("55", "ugly");
   
