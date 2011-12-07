@@ -33,7 +33,7 @@ wxExHexModeLine::wxExHexModeLine(wxExSTC* stc,
 {
   if (is_position)
   {
-    Set(pos_or_offset); 
+    Set(pos_or_offset != -1 ? pos_or_offset: stc->GetCurrentPos()); 
   }
   else
   {
