@@ -5,30 +5,19 @@ and some applications that show how to use it.
 The <a href="http://antonvw.github.com/syncped/">syncped</a> application is 
 one of these applications, being a full featured source code text editor. 
 
-## General
+## Dependencies
 
-- git repository 
-  - on github https://github.com/antonvw/wxExtension  
-  - wxWidgets 2.9.2 is used as a stable master branch
-
-- Source code      
-  - Coding standard:
-  http://www.gnu.org/prep/standards/standards.html
-  and wxWidgets guidelines
-  http://www.wxwidgets.org/develop/standard.htm
-
-  - STL is used whenever possible 
-  
-  - GUI development library wxWidgets 
+- wxWidgets 2.9.3 is used as a stable master branch  
   http://www.wxwidgets.org/ (use STL instead of wxWidgets containers)
 
-  - database is OTL (Version 4.0.214)
+- STL is used whenever possible 
+
+- database is OTL (Version 4.0.214)  
   http://otl.sourceforge.net/
 
 - icons and bitmaps
-  menu and toolbar bitmaps are from wxWidgets, using wxArtProvider, 
-  or gtk stock items
-  application icons are from
+  - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
+  - application icons are from
   http://tango.freedesktop.org/Tango_Desktop_Project
   and converted to ico using
   http://www.convertico.com/
@@ -37,20 +26,59 @@ one of these applications, being a full featured source code text editor.
   and convert to mac icns (first make 128 by 128 icon),
   then use http://iconverticons.com/ to convert to mac icns.
 
-- Documentation
-  - API documentation is generated from the sources using Doxygen (1.7.1)
-  http://www.stack.nl/~dimitri/doxygen/
-  - Other docs are in html format using no special html editor
+## Build process
 
-- Automated testing is done using cppunit (1.12)
-  http://sourceforge.net/projects/cppunit
-    sudo apt-get install libcppunit-dev
-     
-- Translation is done using poedit (1.4.6)
+- First of all, the new C++ auto keyword is used a lot, so
+you need a recent compiler to compile sources.
+
+- Project and make files are generated using Bakefile 0.2.9  
+  http://www.bakefile.org/  
+  in the build dir:
+  - under windows using Microsoft Visual Studio 2010  
+    Version 10.0.30319.1 RTMRel using command line prompt
+      `nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.2`
+      
+  - under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2  
+    using gtk version:  
+      `../configure --with-gtk`  
+    GNUMakefile generated using format gnu
+  
+  - under SunOS using the Sun make gives errors,  
+    you have to use GNU make (/usr/sfw/bin)
+    this config command was used (glcancas did not compile):  
+      `../configure --with-gtk --disable-shared --without-opengl`  
+    than libs were built
+  
+  - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)  
+      `../configure --with-msw`  
+    do a make and a make install
+    Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
+    Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
+      
+  - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)  
+      `../configure --with-mac`
+  
+## When adding functionality
+
+- coding standard:  
+  http://www.gnu.org/prep/standards/standards.html  
+  and wxWidgets guidelines  
+  http://www.wxwidgets.org/develop/standard.htm
+
+- apply a patch:  
+    `patch -p0 -i fixes.patch`
+
+- document it in the source in doxy way  
+  API documentation is generated from the sources using Doxygen (1.7.1)
+  http://www.stack.nl/~dimitri/doxygen/
+
+- translation is done using poedit (1.4.6)  
   http://www.poedit.net/
   wxextension has it's own localization file, your application should
-  also add it's own one, and also put the standard wxwidgets localization file
-  in the localization dir. 
+  also add it's own one(add _() around text strings), 
+  and also put the standard wxwidgets localization file
+  in the localization dir.  
+
   Currently a separate file wxstd-xxx-nl.po is added, as dutch translation
   is updated only for wxWidgets 2.8.0, whereas we use 2.9, in the added file
   the extra needed translation are put. 
@@ -59,65 +87,24 @@ one of these applications, being a full featured source code text editor.
   You can also test other languages using the special LANG config item,
   e.g. setting it to 80 allows you to test french translation.
 
-- Build process/IDE
-  - First of all, the new C++ auto keyword is used a lot, so
-  you need a recent compiler to compile sources.
-
-  - Project and make files are generated using Bakefile 0.2.9
-  http://www.bakefile.org/
-  this is done in the build dir:
-    
-    - under windows using Microsoft Visual Studio 2010
-    Version 10.0.30319.1 RTMRel using command line prompt
-        nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.2
-      
-    - under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2
-    (no IDE)
-    using gtk version:
-        ../configure --with-gtk
-    GNUMakefile generated using format gnu
-  
-    - under SunOS using the Sun make gives errors,
-    you have to use GNU make (/usr/sfw/bin)
-    and the -mt option should be removed from generated Makefile, and
-    option -w should be added
-    this config command was used (socket file did not compile, and
-    glcancas neither):
-        ../configure --with-gtk --disable-sockets --without-opengl
-    than libs were built, but listctrl and auidemo both crashed, no
-    more attempts (wxWidgets 2.9.1).
-  
-    - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)
-        ../configure --with-msw
-    do a make and a make install
-    Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
-    Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
-      
-    - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)
-      ../configure --with-mac
-  
-  - debug under Windows using IDE, under Linux using ddd
-
-  - deploy under Windows using deply.bat (in build dir)
-  - deploy under Linux using deploy.sh (in build dir)
-
-
-## When adding functionality
-
-- apply a patch:
-    patch -p0 -i fixes.patch
-
-- document it in the source in doxy way
-
-- if it needs to be translated, add _() around text strings, 
-  and update po file(s)
-
-- add a test for it in 
-    extension/test/base, 
-    extension/test/gui,
-    extension/test/gui-report, where it has least dependencies,
+- automated testing is done using cppunit (1.12)  
+  http://sourceforge.net/projects/cppunit:
+    `sudo apt-get install libcppunit-dev`
+  add a test for it in 
+  - extension/test/base
+  - extension/test/gui
+  - extension/test/gui-report  
+  where it has least dependencies,
   run test-all.sh from the build dir, which collects output in several log files. 
 
 - add a sample for it in
-    extension/sample, 
-    extension/sample/report
+  - extension/sample
+  - extension/sample/report
+  
+- debug 
+  - under Windows using IDE 
+  - under Linux using ddd
+
+- deploy 
+  - under Windows using deploy.bat (in build dir)
+  - under Linux using deploy.sh (in build dir)

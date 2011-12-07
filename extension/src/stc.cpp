@@ -662,7 +662,7 @@ void wxExSTC::ControlCharDialog(const wxString& caption)
   
   if (HexMode())
   {
-    wxExHexModeLine ml(this, GetCurrentLine(), GetSelectionStart());
+    wxExHexModeLine ml(this, GetSelectionStart());
     
     if (
       ml.IsAsciiField() &&
@@ -2113,6 +2113,11 @@ void wxExSTC::Reload(long flags)
   
   m_Flags = flags;
     
+  if (m_Flags & STC_WIN_READ_ONLY || GetFileName().GetStat().IsReadOnly())
+  {
+    SetReadOnly(true);
+  }
+  
   if (!modified)
   {
     EmptyUndoBuffer();
