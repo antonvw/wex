@@ -49,6 +49,7 @@ private:
   wxExManagedFrame* m_Frame;
   wxExVi* m_vi;
   bool m_UserInput;
+  bool m_Found;
 
   DECLARE_EVENT_TABLE()
 };
@@ -277,6 +278,7 @@ wxExViTextCtrl::wxExViTextCtrl(
   , m_Frame(frame)
   , m_vi(NULL)
   , m_UserInput(false)
+  , m_Found(false)
 {
 }
 
@@ -287,7 +289,7 @@ void wxExViTextCtrl::OnCommand(wxCommandEvent& event)
   if (m_UserInput && m_vi != NULL && m_Frame->GetViCommandIsFind())
   {
     m_vi->GetSTC()->PositionRestore();
-    m_vi->GetSTC()->FindNext(
+    m_Found = m_vi->GetSTC()->FindNext(
       GetValue(),
       m_vi->GetSearchFlags(),
       m_Frame->GetViCommandIsFindNext());
@@ -317,7 +319,7 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
     }
     else if (m_vi != NULL)
     {
-      m_vi->GetSTC()->FindNext(
+      m_Found = m_vi->GetSTC()->FindNext(
         GetValue(),
         m_vi->GetSearchFlags(),
         m_Frame->GetViCommandIsFindNext());
@@ -357,6 +359,10 @@ void wxExViTextCtrl::OnKey(wxKeyEvent& event)
     if (key != WXK_RETURN)
     {
       m_UserInput = true;
+    }
+    else
+    {
+      m_UserInput = m_Found;
     }
     
     event.Skip();
