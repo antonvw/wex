@@ -117,6 +117,10 @@ Frame::Frame(bool open_recent)
   : DecoratedFrame()
   , m_NewFileNo(1)
   , m_NewProjectNo(1)
+  , m_Editors(NULL)
+  , m_Projects(NULL)
+  , m_Lists(NULL)
+  , m_DirCtrl(NULL)
   , m_History(NULL)
   , m_ProjectWildcard(_("Project Files") + " (*.prj)|*.prj")
   , m_LogFile(wxFileName(
@@ -406,7 +410,8 @@ bool Frame::DialogProjectOpen()
 
 wxExListViewFile* Frame::GetProject()
 {
-  if (
+  if 
+    (m_Projects == NULL ||
     !m_Projects->IsShown() || 
      m_Projects->GetPageCount() == 0)
   {
