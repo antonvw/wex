@@ -634,7 +634,7 @@ void wxExSTC::ConfigGet()
 
   m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
 
-  m_Link.GetFromConfig();
+  m_Link.SetFromConfig();
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
@@ -2175,6 +2175,12 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
     SetEdgeMode(wxSTC_EDGE_NONE);
   }
   
+  if (!HexMode() &&
+       GetLexer().GetScintillaLexer() == "po")
+  {
+    m_Link.AddBasePath();
+  }
+
   wxExFrame::StatusText(m_Lexer.GetDisplayLexer(), "PaneLexer");
     
   return true;

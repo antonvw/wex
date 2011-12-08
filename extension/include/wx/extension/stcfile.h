@@ -32,7 +32,6 @@ protected:
   virtual void DoFileNew();
   virtual void DoFileSave(bool save_as = false);
 private:
-  void AddBasePathToPathList();
   void ReadFromFile(bool get_only_new_data);
 
   wxExSTC* m_STC;
