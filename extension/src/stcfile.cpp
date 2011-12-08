@@ -41,12 +41,6 @@ void wxExSTCFile::DoFileLoad(bool synced)
 
   m_STC->SetLexer(GetFileName().GetLexer().GetScintillaLexer(), true);
 
-  if (!m_STC->HexMode() &&
-       m_STC->GetLexer().GetScintillaLexer() == "po")
-  {
-    m_STC->m_Link.AddBasePathToPathList();
-  }
-
   if (!synced)
   {
     wxLogStatus(_("Opened") + ": " + GetFileName().GetFullPath());

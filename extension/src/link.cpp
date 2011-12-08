@@ -20,7 +20,7 @@ wxExLink::wxExLink(wxExSTC* stc)
 {
 }
 
-void wxExLink::AddBasePathToPathList()
+void wxExLink::AddBasePath()
 {
   // First find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath:";
@@ -42,20 +42,6 @@ void wxExLink::AddBasePathToPathList()
     m_STC->GetLineEndPosition(line) - 3);
 
   m_PathList.Add(basepath);
-}
-
-void wxExLink::GetFromConfig()
-{
-  wxStringTokenizer tkz(
-    wxConfigBase::Get()->Read(_("Include directory")),
-    "\r\n");
-    
-  m_PathList.Empty();
-  
-  while (tkz.HasMoreTokens())
-  {
-    m_PathList.Add(tkz.GetNextToken());
-  }
 }
 
 const wxString wxExLink::GetPath(const wxString& line) const
@@ -177,5 +163,19 @@ const wxString wxExLink::GetTextAtCurrentPos() const
     out.Trim(false);
     
     return out;
+  }
+}
+
+void wxExLink::SetFromConfig()
+{
+  wxStringTokenizer tkz(
+    wxConfigBase::Get()->Read(_("Include directory")),
+    "\r\n");
+    
+  m_PathList.Empty();
+  
+  while (tkz.HasMoreTokens())
+  {
+    m_PathList.Add(tkz.GetNextToken());
   }
 }

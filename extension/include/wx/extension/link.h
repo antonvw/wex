@@ -21,17 +21,17 @@ public:
   /// Constructor.
   wxExLink(wxExSTC* stc);
   
-  /// Adds a possible base path to path list.
-  void AddBasePathToPathList();
-  
-  /// Fills link with info from config.
-  void GetFromConfig();
+  /// Adds a possible base path.
+  void AddBasePath();
   
   /// Gets a path from line.
   const wxString GetPath(const wxString& line) const;
   
   /// Gets text at current position.
   const wxString GetTextAtCurrentPos() const;
+  
+  /// Sets link with info from config.
+  void SetFromConfig();
 private:
   wxPathList m_PathList;
   wxExSTC* m_STC;

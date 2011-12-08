@@ -26,7 +26,7 @@ class wxExConfigDialog;
 /// macro support, vi support and lexer support (syntax colouring, folding).
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
-  friend class wxExSTCFile; //  might update m_Link
+  friend class wxExSTCFile; //  might update m_HexBuffer
   friend class wxExHexModeLine; // might update m_HexBuffer
 public:
   /// Menu and tooltip flags (0 is used for no menu).
