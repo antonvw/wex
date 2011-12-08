@@ -85,6 +85,7 @@ wxExSTC::wxExSTC(wxWindow *parent,
   , m_MarkerChange(1, -1)
   , m_vi(wxExVi(this))
   , m_File(this)
+  , m_Link(wxExLink(this))
 {
   Initialize();
 
@@ -130,6 +131,7 @@ wxExSTC::wxExSTC(wxWindow* parent,
   , m_Flags(flags)
   , m_MenuFlags(menu_flags)
   , m_vi(wxExVi(this))
+  , m_Link(wxExLink(this))
 {
   Initialize();
 
@@ -147,6 +149,7 @@ wxExSTC::wxExSTC(const wxExSTC& stc)
   , m_MarkerChange(stc.m_MarkerChange)
   , m_vi(wxExVi(this)) // do not use stc.m_vi, crash
   , m_File(this)
+  , m_Link(wxExLink(this))
 {
   Initialize();
 
@@ -167,7 +170,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
-    const wxString link = GetTextAtCurrentPos();
+    const wxString link = m_Link.GetTextAtCurrentPos();
     const int line_no = (!sel.empty() ? 
       wxExGetLineNumber(sel): 
       GetLineNumberAtCurrentPos());
@@ -631,16 +634,7 @@ void wxExSTC::ConfigGet()
 
   m_vi.Use(wxConfigBase::Get()->ReadBool(_("vi mode"), false));
 
-  wxStringTokenizer tkz(
-    wxConfigBase::Get()->Read(_("Include directory")),
-    "\r\n");
-
-  m_PathList.Empty();
-  
-  while (tkz.HasMoreTokens())
-  {
-    m_PathList.Add(tkz.GetNextToken());
-  }
+  m_Link.GetFromConfig();
 
   if (wxConfigBase::Get()->IsRecordingDefaults())
   {
@@ -1026,83 +1020,6 @@ const wxString wxExSTC::GetSelectedText() const
   }
 }
 
-const wxString wxExSTC::GetTextAtCurrentPos() const
-{
-  const wxString sel = GetSelectedText();
-
-  if (!sel.empty())
-  {
-    if (wxExGetNumberOfLines(sel) > 1)
-    {
-      // wxPathList cannot handle links over several lines.
-      return wxEmptyString;
-    }
-
-    return sel;
-  }
-  else
-  {
-    const int pos = GetCurrentPos();
-    const int line_no = LineFromPosition(pos);
-    const wxString text = GetLine(line_no);
-
-    // Better first try to find "...", then <...>, as in next example.
-    // <A HREF="http://www.scintilla.org">scintilla</A> component.
-
-    // So, first get text between " signs.
-    size_t pos_char1 = text.find("\"");
-    size_t pos_char2 = text.rfind("\"");
-
-    // If that did not succeed, then get text between < and >.
-    if (pos_char1 == wxString::npos || 
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find("<");
-      pos_char2 = text.rfind(">");
-    }
-
-    // If that did not succeed, then get text between : and : (in .po files).
-    if (pos_char1 == wxString::npos || 
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find(": ");
-      pos_char2 = text.rfind(":");
-    }
-
-    // If that did not succeed, then get text between ' and '.
-    if (pos_char1 == wxString::npos ||
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find("'");
-      pos_char2 = text.rfind("'");
-    }
-    
-    wxString out;
-
-    // If we did not find anything.
-    if (pos_char1 == wxString::npos || 
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      out = text;
-    }
-    else
-    {
-      // Okay, get everything inbetween.
-      out = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
-    }
-
-    // And make sure we skip white space.
-    out.Trim(true);
-    out.Trim(false);
-    
-    return out;
-  }
-}
-
 const wxString wxExSTC::GetWordAtPos(int pos) const
 {
   const int word_start = 
@@ -1438,45 +1355,7 @@ bool wxExSTC::LinkOpen(
   int line_number,
   wxString* filename)
 {
-  // Any line info is already in line_number, so skip here.
-  const wxString no = link_with_line.AfterFirst(':');
-  const wxString link = link_with_line.BeforeFirst(':');
-
-  if (
-    link.empty() || 
-    // Otherwise, if you happen to select text that 
-    // ends with a separator, wx asserts.
-    wxFileName::IsPathSeparator(link.Last()))
-  {
-    return false;
-  }
-
-  wxFileName file(link);
-  wxString fullpath;
-
-  if (file.FileExists())
-  {
-    file.MakeAbsolute();
-    fullpath = file.GetFullPath();
-  }
-  else
-  {
-    if (file.IsRelative())
-    {
-      if (file.MakeAbsolute(m_File.GetFileName().GetPath()))
-      {
-        if (file.FileExists())
-        {
-          fullpath = file.GetFullPath();
-        }
-      }
-    }
-
-    if (fullpath.empty())
-    {
-      fullpath = m_PathList.FindAbsoluteValidPath(link);
-    }
-  }
+  const wxString fullpath(m_Link.GetPath(link_with_line));
   
   if (!fullpath.empty())
   {
@@ -1707,7 +1586,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     else
     {
-      LinkOpen(GetTextAtCurrentPos(), GetLineNumberAtCurrentPos());
+      LinkOpen(m_Link.GetTextAtCurrentPos(), GetLineNumberAtCurrentPos());
     }
     }
     break;

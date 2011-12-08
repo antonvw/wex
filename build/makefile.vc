@@ -88,6 +88,7 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_indicator.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexer.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexers.obj \
+	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_link.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listitem.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listview.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_managedframe.obj \
@@ -579,6 +580,9 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexer.obj: .
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexers.obj: .\..\extension\src\lexers.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\lexers.cpp
+
+$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_link.obj: .\..\extension\src\link.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\link.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listitem.obj: .\..\extension\src\listitem.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\listitem.cpp

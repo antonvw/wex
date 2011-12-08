@@ -14,6 +14,7 @@
 #include <wx/extension/filename.h>
 #include <wx/extension/hexmode.h>
 #include <wx/extension/lexer.h>
+#include <wx/extension/link.h>
 #include <wx/extension/menu.h>
 #include <wx/extension/stcfile.h>
 #include <wx/extension/vi.h>
@@ -25,7 +26,7 @@ class wxExConfigDialog;
 /// macro support, vi support and lexer support (syntax colouring, folding).
 class WXDLLIMPEXP_BASE wxExSTC : public wxStyledTextCtrl
 {
-  friend class wxExSTCFile; //  might update m_PathList
+  friend class wxExSTCFile; //  might update m_Link
   friend class wxExHexModeLine; // might update m_HexBuffer
 public:
   /// Menu and tooltip flags (0 is used for no menu).
@@ -158,9 +159,6 @@ public:
   /// Gets selected text.
   const wxString GetSelectedText() const;
 
-  /// Gets text at current position.
-  const wxString GetTextAtCurrentPos() const;
-  
   /// Gets vi component.
   const wxExVi& GetVi() const {return m_vi;};
   
@@ -355,9 +353,9 @@ private:
   wxExLexer m_Lexer;
   wxExSTCFile m_File;
   wxExVi m_vi;
+  wxExLink m_Link;
 
   wxFont m_DefaultFont;
-  wxPathList m_PathList;
   
   // Only used in hex mode.
   wxString m_HexBuffer;

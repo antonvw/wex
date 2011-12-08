@@ -22,30 +22,6 @@ wxExSTCFile::wxExSTCFile(wxExSTC* stc)
 {
 }
 
-void wxExSTCFile::AddBasePathToPathList()
-{
-  // First find the base path, if this is not yet on the list, add it.
-  const wxString basepath_text = "Basepath:";
-
-  const int find = m_STC->FindText(
-    0,
-    1000, // the max pos to look for, this seems enough
-    basepath_text,
-    wxSTC_FIND_WHOLEWORD);
-
-  if (find == -1)
-  {
-    return;
-  }
-
-  const int  line = m_STC->LineFromPosition(find);
-  const wxString basepath = m_STC->GetTextRange(
-    find + basepath_text.length() + 1,
-    m_STC->GetLineEndPosition(line) - 3);
-
-  m_STC->m_PathList.Add(basepath);
-}
-
 void wxExSTCFile::DoFileLoad(bool synced)
 {
   if (GetContentsChanged())
@@ -68,7 +44,7 @@ void wxExSTCFile::DoFileLoad(bool synced)
   if (!m_STC->HexMode() &&
        m_STC->GetLexer().GetScintillaLexer() == "po")
   {
-    AddBasePathToPathList();
+    m_STC->m_Link.AddBasePathToPathList();
   }
 
   if (!synced)

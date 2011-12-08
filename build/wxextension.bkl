@@ -37,6 +37,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/indicator.cpp</sources>
     <sources>../extension/src/lexer.cpp</sources>
     <sources>../extension/src/lexers.cpp</sources>
+    <sources>../extension/src/link.cpp</sources>
     <sources>../extension/src/listitem.cpp</sources>
     <sources>../extension/src/listview.cpp</sources>
     <sources>../extension/src/managedframe.cpp</sources>
@@ -84,6 +85,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/indicator.h</headers>
     <headers>../extension/include/wx/extension/lexer.h</headers>
     <headers>../extension/include/wx/extension/lexers.h</headers>
+    <headers>../extension/include/wx/extension/link.h</headers>
     <headers>../extension/include/wx/extension/listitem.h</headers>
     <headers>../extension/include/wx/extension/listview.h</headers>
     <headers>../extension/include/wx/extension/managedframe.h</headers>
