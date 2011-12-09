@@ -19,15 +19,31 @@ class WXDLLIMPEXP_BASE wxExDialog : public wxDialog
 {
 public:
   /// Constructor.
-  /// Flags is a bit list of the following flags:
-  /// wxOK, wxCANCEL, wxYES, wxNO, wxAPPLY, wxCLOSE, wxHELP, wxNO_DEFAULT.
-  wxExDialog(wxWindow* parent,
+  wxExDialog(
+    /// parent
+    wxWindow* parent,
+    /// title
     const wxString& title,
+    /// this is a bit list of the following flags:
+    /// - wxOK 
+    /// - wxYES 
+    /// - wxAPPLY
+    /// - wxSAVE 
+    /// - wxCLOSE
+    /// - wxNO
+    /// - wxCANCEL
+    /// - wxHELP
+    /// - wxNO_DEFAULT
     long button_flags = wxOK | wxCANCEL,
+    /// windod id
     wxWindowID id = wxID_ANY,
+    /// position
     const wxPoint& pos = wxDefaultPosition,
+    /// size
     const wxSize& size = wxDefaultSize, 
+    /// style
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
+    /// name
     const wxString& name = "wxExDialog");
 protected:
   /// Adds to the user sizer using the sizer flags.

@@ -60,6 +60,7 @@ public:
   void testIndicator();
   void testLexer();
   void testLexers();
+  void testLink();
   void testListItem();
   void testListView();
   void testManagedFrame();

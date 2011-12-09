@@ -170,7 +170,9 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
-    const wxString link = m_Link.GetTextAtCurrentPos();
+    const wxString sel = m_STC->GetSelectedText();
+    const wxString link = m_Link.FindPath(!sel.empty() ? 
+      sel: m_STC->GetCurLine());
     const int line_no = (!sel.empty() ? 
       wxExGetLineNumber(sel): 
       GetLineNumberAtCurrentPos());
@@ -1355,9 +1357,9 @@ bool wxExSTC::LinkOpen(
   int line_number,
   wxString* filename)
 {
-  const wxString fullpath(m_Link.GetPath(link_with_line));
+  const wxString path(m_Link.GetPath(link_with_line));
   
-  if (!fullpath.empty())
+  if (!path.empty())
   {
     if (filename == NULL)
     {
@@ -1369,11 +1371,11 @@ bool wxExSTC::LinkOpen(
     }
     else
     {
-      *filename = wxFileName(fullpath).GetFullName();
+      *filename = wxFileName(path).GetFullName();
     }
   }
   
-  return !fullpath.empty();
+  return !path.empty();
 }
 
 void wxExSTC::MacroPlayback()
@@ -1586,7 +1588,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     }
     else
     {
-      LinkOpen(m_Link.GetTextAtCurrentPos(), GetLineNumberAtCurrentPos());
+      LinkOpen(m_Link.FindPath(GetCurLine()), GetLineNumberAtCurrentPos());
     }
     }
     break;

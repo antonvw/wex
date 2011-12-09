@@ -20,11 +20,10 @@ wxExLink::wxExLink(wxExSTC* stc)
 {
 }
 
-void wxExLink::AddBasePath()
+bool wxExLink::AddBasePath()
 {
-  // First find the base path, if this is not yet on the list, add it.
+  // Find the base path, if this is not yet on the list, add it.
   const wxString basepath_text = "Basepath:";
-
   const int find = m_STC->FindText(
     0,
     1000, // the max pos to look for, this seems enough
@@ -33,82 +32,30 @@ void wxExLink::AddBasePath()
 
   if (find == -1)
   {
-    return;
+    return false;
   }
+  
+  const int line = m_STC->LineFromPosition(find);
 
-  const int  line = m_STC->LineFromPosition(find);
-  const wxString basepath = m_STC->GetTextRange(
+  return m_PathList.Add(m_STC->GetTextRange(
     find + basepath_text.length() + 1,
-    m_STC->GetLineEndPosition(line) - 3);
-
-  m_PathList.Add(basepath);
+    m_STC->GetLineEndPosition(line) - 3));
 }
 
-const wxString wxExLink::GetPath(const wxString& line) const
+const wxString wxExLink::FindPath(const wxString& text) const
 {
-  // Any line info is already in line_number, so skip here.
-  const wxString no = line.AfterFirst(':');
-  const wxString link = line.BeforeFirst(':');
-
-  if (
-    link.empty() || 
-    // Otherwise, if you happen to select text that 
-    // ends with a separator, wx asserts.
-    wxFileName::IsPathSeparator(link.Last()))
+  if (text.empty())
   {
     return wxEmptyString;
   }
 
-  wxFileName file(link);
-  wxString fullpath;
-
-  if (file.FileExists())
+  if (wxExGetNumberOfLines(text) > 1)
   {
-    file.MakeAbsolute();
-    fullpath = file.GetFullPath();
+    // wxPathList cannot handle links over several lines.
+    return wxEmptyString;
   }
   else
   {
-    if (file.IsRelative())
-    {
-      if (file.MakeAbsolute(m_STC->GetFileName().GetPath()))
-      {
-        if (file.FileExists())
-        {
-          fullpath = file.GetFullPath();
-        }
-      }
-    }
-
-    if (fullpath.empty())
-    {
-      fullpath = m_PathList.FindAbsoluteValidPath(link);
-    }
-  }
-  
-  return fullpath;
-}
-  
-const wxString wxExLink::GetTextAtCurrentPos() const
-{
-  const wxString sel = m_STC->GetSelectedText();
-
-  if (!sel.empty())
-  {
-    if (wxExGetNumberOfLines(sel) > 1)
-    {
-      // wxPathList cannot handle links over several lines.
-      return wxEmptyString;
-    }
-
-    return sel;
-  }
-  else
-  {
-    const int pos = m_STC->GetCurrentPos();
-    const int line_no = m_STC->LineFromPosition(pos);
-    const wxString text = m_STC->GetLine(line_no);
-
     // Better first try to find "...", then <...>, as in next example.
     // <A HREF="http://www.scintilla.org">scintilla</A> component.
 
@@ -166,6 +113,51 @@ const wxString wxExLink::GetTextAtCurrentPos() const
   }
 }
 
+const wxString wxExLink::GetPath(const wxString& text) const
+{
+  // Any line info is already in line_number, so skip here.
+  const wxString no = text.AfterFirst(':');
+  const wxString link = text.BeforeFirst(':');
+
+  if (
+    link.empty() || 
+    // Otherwise, if you happen to select text that 
+    // ends with a separator, wx asserts.
+    wxFileName::IsPathSeparator(link.Last()))
+  {
+    return wxEmptyString;
+  }
+
+  wxFileName file(link);
+  wxString fullpath;
+
+  if (file.FileExists())
+  {
+    file.MakeAbsolute();
+    fullpath = file.GetFullPath();
+  }
+  else
+  {
+    if (file.IsRelative())
+    {
+      if (file.MakeAbsolute(m_STC->GetFileName().GetPath()))
+      {
+        if (file.FileExists())
+        {
+          fullpath = file.GetFullPath();
+        }
+      }
+    }
+
+    if (fullpath.empty())
+    {
+      fullpath = m_PathList.FindAbsoluteValidPath(link);
+    }
+  }
+  
+  return fullpath;
+}
+  
 void wxExLink::SetFromConfig()
 {
   wxStringTokenizer tkz(
