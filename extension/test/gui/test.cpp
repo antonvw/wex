@@ -428,16 +428,16 @@ void wxExGuiTestFixture::testLink()
   wxExLink link(stc);  
   
   CPPUNIT_ASSERT( link.FindPath("").empty());
-  CPPUNIT_ASSERT( link.FindPath("xxxx").empty());
+  CPPUNIT_ASSERT(!link.FindPath("xxxx").empty());
   CPPUNIT_ASSERT(!link.FindPath("./test").empty());
   CPPUNIT_ASSERT( link.FindPath("<test>") == "test");
-  CPPUNIT_ASSERT( link.FindPath(":test") == "test");
+  CPPUNIT_ASSERT( link.FindPath(":test") == ":test");
   CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
   CPPUNIT_ASSERT( link.FindPath("c:\\test") == "c:\\test");
-  CPPUNIT_ASSERT( link.FindPath("test:50") == "test");
+  CPPUNIT_ASSERT( link.FindPath("test:50") == "test:50");
   
   CPPUNIT_ASSERT( link.AddBasePath());
-  CPPUNIT_ASSERT(!link.AddBasePath());
+  CPPUNIT_ASSERT( link.AddBasePath());
   
   CPPUNIT_ASSERT( link.GetPath("test") == "/usr/bin/test");
 }

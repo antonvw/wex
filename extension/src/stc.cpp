@@ -170,9 +170,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
-    const wxString sel = m_STC->GetSelectedText();
-    const wxString link = m_Link.FindPath(!sel.empty() ? 
-      sel: m_STC->GetCurLine());
+    const wxString sel = GetSelectedText();
+    const wxString link = m_Link.FindPath(!sel.empty() ? sel: GetCurLine());
     const int line_no = (!sel.empty() ? 
       wxExGetLineNumber(sel): 
       GetLineNumberAtCurrentPos());
@@ -1364,7 +1363,7 @@ bool wxExSTC::LinkOpen(
     if (filename == NULL)
     {
       return Open(
-        fullpath, 
+        path, 
         line_number, 
         wxEmptyString, 
         GetFlags() | STC_WIN_FROM_OTHER);
@@ -2178,7 +2177,7 @@ bool wxExSTC::SetLexer(const wxString& lexer, bool fold)
   }
   
   if (!HexMode() &&
-       GetLexer().GetScintillaLexer() == "po")
+       m_Lexer.GetScintillaLexer() == "po")
   {
     m_Link.AddBasePath();
   }
