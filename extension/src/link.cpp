@@ -12,6 +12,7 @@
 #include <wx/config.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/link.h>
+#include <wx/extension/lexer.h>
 #include <wx/extension/stc.h>
 #include <wx/extension/util.h>
 
@@ -27,8 +28,7 @@ bool wxExLink::AddBasePath()
   const int find = m_STC->FindText(
     0,
     1000, // the max pos to look for, this seems enough
-    basepath_text,
-    wxSTC_FIND_WHOLEWORD);
+    basepath_text);
 
   if (find == -1)
   {
@@ -73,9 +73,10 @@ const wxString wxExLink::FindPath(const wxString& text) const
     }
 
     // If that did not succeed, then get text between : and : (in .po files).
-    if (pos_char1 == wxString::npos || 
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
+    if (m_STC->GetLexer().GetScintillaLexer() == "po" && 
+        (pos_char1 == wxString::npos || 
+         pos_char2 == wxString::npos || 
+         pos_char2 <= pos_char1))
     {
       pos_char1 = text.find(": ");
       pos_char2 = text.rfind(":");
@@ -115,9 +116,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
 
 const wxString wxExLink::GetPath(const wxString& text) const
 {
-  // Any line info is already in line_number, so skip here.
-  const wxString no = text.AfterFirst(':');
-  const wxString link = text.BeforeFirst(':');
+  const wxString link(FindPath(text));
 
   if (
     link.empty() || 
