@@ -5,7 +5,6 @@
 // Copyright: (c) 2011 Anton van Wezenbeek
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <wx/log.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/menu.h>
 #include <wx/extension/util.h>
@@ -157,7 +156,16 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
   }
   else if (event.GetEventType() == wxEVT_COMMAND_TREE_ITEM_ACTIVATED)
   {
-    wxExOpenFiles(m_Frame, files, 0, wxDIR_FILES); // only files in this dir
+    const wxFileName fn(files[0]);
+    
+    if (!fn.FileExists() && fn.DirExists())
+    {
+      ExpandAndSelectPath(files[0]);
+    }
+    else
+    {
+      wxExOpenFiles(m_Frame, files, 0, wxDIR_FILES); // only files in this dir
+    }
   }
   else if (event.GetEventType() ==  wxEVT_COMMAND_TREE_SEL_CHANGED)
   {

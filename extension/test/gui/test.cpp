@@ -419,6 +419,29 @@ void wxExGuiTestFixture::testLexers()
   CPPUNIT_ASSERT( wxExLexers::Get()->Read());
 }
 
+void wxExGuiTestFixture::testLink()
+{
+  wxExSTC* stc = new wxExSTC(
+    wxTheApp->GetTopWindow(), 
+    "hello stc, Basepath:/usr/bin");
+  
+  wxExLink link(stc);  
+  
+  CPPUNIT_ASSERT( link.FindPath("").empty());
+  CPPUNIT_ASSERT( link.FindPath("xxxx").empty());
+  CPPUNIT_ASSERT(!link.FindPath("./test").empty());
+  CPPUNIT_ASSERT( link.FindPath("<test>") == "test");
+  CPPUNIT_ASSERT( link.FindPath(":test") == "test");
+  CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
+  CPPUNIT_ASSERT( link.FindPath("c:\\test") == "c:\\test");
+  CPPUNIT_ASSERT( link.FindPath("test:50") == "test");
+  
+  CPPUNIT_ASSERT( link.AddBasePath());
+  CPPUNIT_ASSERT(!link.AddBasePath());
+  
+  CPPUNIT_ASSERT( link.GetPath("test") == "/usr/bin/test");
+}
+
 void wxExGuiTestFixture::testListItem()
 {
   wxExListViewFileName* listView = new wxExListViewFileName(
@@ -962,6 +985,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     "testLexers",
     &wxExGuiTestFixture::testLexers));
 
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testLink",
+    &wxExGuiTestFixture::testLink));
+    
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testListItem",
     &wxExGuiTestFixture::testListItem));
