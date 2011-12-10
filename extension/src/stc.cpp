@@ -170,12 +170,8 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
 
   if (m_MenuFlags & STC_MENU_OPEN_LINK)
   {
-    const wxString sel = GetSelectedText();
-    const wxString link = m_Link.FindPath(!sel.empty() ? sel: GetCurLine());
-    const int line_no = m_Link.GetLineNo(!sel.empty() ? sel: GetCurLine());
-
     wxString filename;
-    if (LinkOpen(link, line_no, &filename))
+    if (LinkOpen(&filename))
     {
       menu.AppendSeparator();
       menu.Append(ID_EDIT_OPEN_LINK, _("Open") + " " + filename);
@@ -1332,12 +1328,11 @@ void wxExSTC::Initialize()
   ConfigGet();
 }
 
-bool wxExSTC::LinkOpen(
-  const wxString& link_with_line,
-  int line_number,
-  wxString* filename)
+bool wxExSTC::LinkOpen(wxString* filename)
 {
-  const wxString path(m_Link.GetPath(link_with_line));
+  const wxString sel = GetSelectedText();
+  const wxString path = m_Link.GetPath(!sel.empty() ? sel: GetCurLine());
+  const int line_no = m_Link.GetLineNo(!sel.empty() ? sel: GetCurLine());
   
   if (!path.empty())
   {
@@ -1345,7 +1340,7 @@ bool wxExSTC::LinkOpen(
     {
       return Open(
         path, 
-        line_number, 
+        line_no, 
         wxEmptyString, 
         GetFlags() | STC_WIN_FROM_OTHER);
     }
@@ -1558,20 +1553,7 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     wxLaunchDefaultBrowser(m_File.GetFileName().GetFullPath());
     break;
 
-  case ID_EDIT_OPEN_LINK:
-    {
-    const wxString sel = GetSelectedText();
-    
-    if (!sel.empty())
-    {
-      LinkOpen(sel, m_Link.GetLineNo(sel));
-    }
-    else
-    {
-      LinkOpen(m_Link.FindPath(GetCurLine()), m_Link.GetLineNo(GetCurLine()));
-    }
-    }
-    break;
+  case ID_EDIT_OPEN_LINK: LinkOpen(); break;
 
   case ID_EDIT_READ: m_File.Read(command.GetString()); break;
     
