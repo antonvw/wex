@@ -37,9 +37,11 @@ bool wxExLink::AddBasePath()
   
   const int line = m_STC->LineFromPosition(find);
 
-  return m_PathList.Add(m_STC->GetTextRange(
+  m_PathList.Add(m_STC->GetTextRange(
     find + basepath_text.length() + 1,
     m_STC->GetLineEndPosition(line) - 3));
+    
+  return true;
 }
 
 const wxString wxExLink::FindPath(const wxString& text) const
@@ -112,6 +114,11 @@ const wxString wxExLink::FindPath(const wxString& text) const
     
     return out;
   }
+}
+
+int wxExLink::GetLineNo(const wxString& text) const
+{
+  return -1;
 }
 
 const wxString wxExLink::GetPath(const wxString& text) const
