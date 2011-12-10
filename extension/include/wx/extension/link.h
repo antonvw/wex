@@ -31,7 +31,7 @@ public:
   const wxString FindPath(const wxString& text) const;
   
   /// Tries to find a line number in combination with a path.
-  /// Returns -1 if none could be found.
+  /// Returns 0 if none could be found.
   int GetLineNo(const wxString& text) const;
   
   /// Gets a path from text, using path list if necessary.

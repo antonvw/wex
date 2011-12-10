@@ -118,7 +118,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
 
 int wxExLink::GetLineNo(const wxString& text) const
 {
-  return -1;
+  return wxExGetLineNumber(text);
 }
 
 const wxString wxExLink::GetPath(const wxString& text) const

@@ -153,9 +153,6 @@ public:
   /// Gets the lexer.
   const wxExLexer& GetLexer() const {return m_Lexer;};
 
-  /// Gets line number at current position.
-  int GetLineNumberAtCurrentPos() const;
-
   /// Gets selected text.
   const wxString GetSelectedText() const;
 
