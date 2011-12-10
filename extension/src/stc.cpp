@@ -172,9 +172,7 @@ void wxExSTC::BuildPopupMenu(wxExMenu& menu)
   {
     const wxString sel = GetSelectedText();
     const wxString link = m_Link.FindPath(!sel.empty() ? sel: GetCurLine());
-    const int line_no = (!sel.empty() ? 
-      wxExGetLineNumber(sel): 
-      GetLineNumberAtCurrentPos());
+    const int line_no = m_Link.GetLineNo(!sel.empty() ? sel: GetCurLine());
 
     wxString filename;
     if (LinkOpen(link, line_no, &filename))
@@ -991,23 +989,6 @@ const wxString wxExSTC::GetFindString() const
   return wxExFindReplaceData::Get()->GetFindString();
 }
 
-int wxExSTC::GetLineNumberAtCurrentPos() const
-{
-  // This method is used by LinkOpen.
-  // So, if no line number present return 0, 
-  // otherwise link open jumps to last line.
-  const int pos = GetCurrentPos();
-  const int line_no = LineFromPosition(pos);
-
-  // Cannot use GetLine, as that includes EOF, and then the ToLong does not
-  // return correct number.
-  const wxString text = const_cast< wxExSTC * >( this )->GetTextRange(
-    PositionFromLine(line_no), 
-    GetLineEndPosition(line_no));
-
-  return wxExGetLineNumber(text);
-}
-
 const wxString wxExSTC::GetSelectedText() const
 {
   // TODO: Fix crash for rectangular selection.
@@ -1583,11 +1564,11 @@ void wxExSTC::OnCommand(wxCommandEvent& command)
     
     if (!sel.empty())
     {
-      LinkOpen(sel, wxExGetLineNumber(sel));
+      LinkOpen(sel, m_Link.GetLineNo(sel));
     }
     else
     {
-      LinkOpen(m_Link.FindPath(GetCurLine()), GetLineNumberAtCurrentPos());
+      LinkOpen(m_Link.FindPath(GetCurLine()), m_Link.GetLineNo(GetCurLine()));
     }
     }
     break;
