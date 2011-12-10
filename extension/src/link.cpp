@@ -51,7 +51,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
     return wxEmptyString;
   }
 
-  if (wxExGetNumberOfLines(text) > 1)
+  if (GetLineNo(text) > 1)
   {
     // wxPathList cannot handle links over several lines.
     return wxEmptyString;

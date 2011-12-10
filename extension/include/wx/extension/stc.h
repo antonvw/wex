@@ -318,10 +318,7 @@ private:
   void FoldAll();
   void HexDecCalltip(int pos);
   void Initialize();
-  bool LinkOpen(
-    const wxString& link,
-    int line_number = 0, 
-    wxString* filename = NULL); // name of found file
+  bool LinkOpen(wxString* filename = NULL); // name of found file
   void MarkerNext(bool next);
   void SetHexMode();
   /// After pressing enter, starts new line at same place
