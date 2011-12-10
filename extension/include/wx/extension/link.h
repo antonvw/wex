@@ -22,12 +22,17 @@ public:
   wxExLink(wxExSTC* stc);
   
   /// Adds a possible base path, present in the stc component.
-  /// Returns true if a path was added.
+  /// Returns false if a path was not added.
   bool AddBasePath();
   
   /// Gets a possible path from text, does not use pathlist
-  /// to make an existing path of it.
+  /// to make an existing path of it, use GetPath
+  /// to retrieve an existing path.
   const wxString FindPath(const wxString& text) const;
+  
+  /// Tries to find a line number in combination with a path.
+  /// Returns -1 if none could be found.
+  int GetLineNo(const wxString& text) const;
   
   /// Gets a path from text, using path list if necessary.
   /// Returns empty string if no path could be found.

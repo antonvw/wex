@@ -1604,8 +1604,8 @@ Copyright: (c) 2011, Anton van Wezenbeek
   <!--
    At this moment <style>, <indicator>, <marker>, <hex> and <properties> 
    attributes are supported.  
-   The marker element has a 'no' ATTRIBUTE and its value contains the next fields:
-   <marker symbol NUMBER><','><foreground colour><','><background colour>
+   The marker element has a 'no' attribute and its value contains the next fields:
+   <marker symbol number><','><foreground colour><','><background colour>
    -->
     <marker no="marknum_folderend"> mark_plus,folder </marker>
     <marker no="marknum_folderopenmid"> mark_minus,folder </marker>
@@ -1638,8 +1638,10 @@ Copyright: (c) 2011, Anton van Wezenbeek
    1) extensions. File extensions for files associated with this lexer.
       Extensions are separated by a semicolon (;).
       The extensions appear in the file open dialogs.
-   2) match. The match attribute specifies the 'no' macro
+   2) macro. The macro attribute specifies the 'no' macro
       used for matching with the 'style' macro.
+   3) display. Use if you want to use a certain lexer,
+      but show it under a different name (see c sharp).
    Furthermore it might contain the next tags:
    1) <styles>. Colouring styles for this lexer. 
       The attribute 'no' contains the scintilla styles.
