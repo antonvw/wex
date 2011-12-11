@@ -46,74 +46,69 @@ bool wxExLink::AddBasePath()
 
 const wxString wxExLink::FindPath(const wxString& text) const
 {
-  if (text.empty())
+  if (
+    text.empty() ||
+    // wxPathList cannot handle links over several lines.
+    wxExGetNumberOfLines(text) > 1)
   {
     return wxEmptyString;
   }
 
-  if (GetLineNo(text) > 1)
+  // Better first try to find "...", then <...>, as in next example.
+  // <A HREF="http://www.scintilla.org">scintilla</A> component.
+
+  // So, first get text between " signs.
+  size_t pos_char1 = text.find("\"");
+  size_t pos_char2 = text.rfind("\"");
+
+  // If that did not succeed, then get text between < and >.
+  if (pos_char1 == wxString::npos || 
+      pos_char2 == wxString::npos || 
+      pos_char2 <= pos_char1)
   {
-    // wxPathList cannot handle links over several lines.
-    return wxEmptyString;
+    pos_char1 = text.find("<");
+    pos_char2 = text.rfind(">");
+  }
+
+  // If that did not succeed, then get text between : and : (in .po files).
+  if (m_STC->GetLexer().GetScintillaLexer() == "po" && 
+      (pos_char1 == wxString::npos || 
+       pos_char2 == wxString::npos || 
+       pos_char2 <= pos_char1))
+  {
+    pos_char1 = text.find(": ");
+    pos_char2 = text.rfind(":");
+  }
+
+  // If that did not succeed, then get text between ' and '.
+  if (pos_char1 == wxString::npos ||
+      pos_char2 == wxString::npos || 
+      pos_char2 <= pos_char1)
+  {
+    pos_char1 = text.find("'");
+    pos_char2 = text.rfind("'");
+  }
+  
+  wxString out;
+
+  // If we did not find anything.
+  if (pos_char1 == wxString::npos || 
+      pos_char2 == wxString::npos || 
+      pos_char2 <= pos_char1)
+  {
+    out = text;
   }
   else
   {
-    // Better first try to find "...", then <...>, as in next example.
-    // <A HREF="http://www.scintilla.org">scintilla</A> component.
-
-    // So, first get text between " signs.
-    size_t pos_char1 = text.find("\"");
-    size_t pos_char2 = text.rfind("\"");
-
-    // If that did not succeed, then get text between < and >.
-    if (pos_char1 == wxString::npos || 
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find("<");
-      pos_char2 = text.rfind(">");
-    }
-
-    // If that did not succeed, then get text between : and : (in .po files).
-    if (m_STC->GetLexer().GetScintillaLexer() == "po" && 
-        (pos_char1 == wxString::npos || 
-         pos_char2 == wxString::npos || 
-         pos_char2 <= pos_char1))
-    {
-      pos_char1 = text.find(": ");
-      pos_char2 = text.rfind(":");
-    }
-
-    // If that did not succeed, then get text between ' and '.
-    if (pos_char1 == wxString::npos ||
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      pos_char1 = text.find("'");
-      pos_char2 = text.rfind("'");
-    }
-    
-    wxString out;
-
-    // If we did not find anything.
-    if (pos_char1 == wxString::npos || 
-        pos_char2 == wxString::npos || 
-        pos_char2 <= pos_char1)
-    {
-      out = text;
-    }
-    else
-    {
-      // Okay, get everything inbetween.
-      out = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
-    }
-
-    // And make sure we skip white space.
-    out.Trim(true);
-    out.Trim(false);
-    
-    return out;
+    // Okay, get everything inbetween.
+    out = text.substr(pos_char1 + 1, pos_char2 - pos_char1 - 1);
   }
+
+  // And make sure we skip white space.
+  out.Trim(true);
+  out.Trim(false);
+  
+  return out;
 }
 
 int wxExLink::GetLineNo(const wxString& text) const
