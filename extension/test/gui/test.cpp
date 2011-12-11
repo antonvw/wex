@@ -423,7 +423,7 @@ void wxExGuiTestFixture::testLink()
 {
   wxExSTC* stc = new wxExSTC(
     wxTheApp->GetTopWindow(), 
-    "hello stc, Basepath:/usr/bin");
+    "hello stc, \"X-Poedit-Basepath: /usr/bin\\n\"");
   
   wxExLink link(stc);  
   
@@ -432,9 +432,12 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT(!link.FindPath("./test").empty());
   CPPUNIT_ASSERT( link.FindPath("<test>") == "test");
   CPPUNIT_ASSERT( link.FindPath(":test") == ":test");
+  CPPUNIT_ASSERT( link.FindPath(": test:") == ": test:"); // no po file
   CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
   CPPUNIT_ASSERT( link.FindPath("c:\\test") == "c:\\test");
   CPPUNIT_ASSERT( link.FindPath("test:50") == "test:50");
+  
+  CPPUNIT_ASSERT( link.GetLineNo("test:50") == 50);
   
   CPPUNIT_ASSERT( link.AddBasePath());
   CPPUNIT_ASSERT( link.AddBasePath());
@@ -777,7 +780,7 @@ void wxExGuiTestFixture::testUtil()
   CPPUNIT_ASSERT( wxExGetEndOfText("test", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetEndOfText("testtest", 3).size() == 3);
   CPPUNIT_ASSERT( wxExGetLineNumber("test on line: 1200") == 1200);
-  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 3);
+  CPPUNIT_ASSERT( wxExGetNumberOfLines("test\ntest\n") == 2);
   CPPUNIT_ASSERT(!wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.txt"));
   CPPUNIT_ASSERT( wxExMatchesOneOf(wxFileName("test.txt"), "*.cpp;*.txt"));

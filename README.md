@@ -28,35 +28,44 @@ one of these applications, being a full featured source code text editor.
 
 ## Build process
 
+# Building wxWidgets
+
+- under windows using Microsoft Visual Studio 2010  
+  Version 10.0.30319.1 RTMRel using command line prompt  
+    `nmake -f makefile.vc`
+    
+- under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2  
+  using gtk version:  
+    `../configure --with-gtk`  
+
+- under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)  
+    `../configure --with-mac`
+    
+- under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)  
+    `../configure --with-msw`  
+  Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
+  Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
+    
+- under SunOS using the Sun make gives errors,  
+  you have to use GNU make (/usr/sfw/bin)
+  this config command was used (glcancas did not compile):  
+    `../configure --with-gtk --disable-shared --without-opengl`  
+  than libs were built
+  
+# Building wxExtension      
+      
 - First of all, the new C++ auto keyword is used a lot, so
-you need a recent compiler to compile sources.
+  you need a recent compiler to compile sources.
 
 - Project and make files are generated using Bakefile 0.2.9  
   http://www.bakefile.org/  
   in the build dir:
-  - under windows using Microsoft Visual Studio 2010  
-    Version 10.0.30319.1 RTMRel using command line prompt
-      `nmake -f makefile.vc WXWIN=c:\wxwidgets-2.9.2`
-      
-  - under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2  
-    using gtk version:  
-      `../configure --with-gtk`  
-    GNUMakefile generated using format gnu
   
-  - under SunOS using the Sun make gives errors,  
-    you have to use GNU make (/usr/sfw/bin)
-    this config command was used (glcancas did not compile):  
-      `../configure --with-gtk --disable-shared --without-opengl`  
-    than libs were built
-  
-  - under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)  
-      `../configure --with-msw`  
-    do a make and a make install
-    Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
-    Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
-      
-  - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)  
-      `../configure --with-mac`
+  - under windows:  
+    `make` or `make-release`
+    
+  - others:
+    `make`
   
 ## When adding functionality
 
@@ -78,10 +87,6 @@ you need a recent compiler to compile sources.
   also add it's own one(add _() around text strings), 
   and also put the standard wxwidgets localization file
   in the localization dir.  
-
-  Currently a separate file wxstd-xxx-nl.po is added, as dutch translation
-  is updated only for wxWidgets 2.8.0, whereas we use 2.9, in the added file
-  the extra needed translation are put. 
   The place where to put your po files can be found by running wxex-sample,
   that shows the folder on the status bar. 
   You can also test other languages using the special LANG config item,
