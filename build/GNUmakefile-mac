@@ -86,6 +86,7 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_indicator.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_lexer.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_lexers.o \
+	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_link.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_listitem.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_listview.o \
 	$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_managedframe.o \
@@ -174,7 +175,7 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX):
 
 ### Targets: ###
 
-all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped syncped_bundle $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
+all: test_for_selected_wxbuild $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 
 install: install_syncped install_syncsocketserver
 
@@ -186,7 +187,6 @@ clean:
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
-	rm -rf syncped.app
 	rm -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver
 
 test_for_selected_wxbuild: 
@@ -211,35 +211,6 @@ install_syncped: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
 
 uninstall_syncped: 
 	rm -f $(DESTDIR)/usr/local/bin//syncped
-
-gccosx_carbon_dll/syncped.app/Contents/PkgInfo: $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped
-	/Developer/Tools/SetFile -t APPL gccosx_carbon_dll//syncped
-	
-	
-	mkdir -p gccosx_carbon_dll/syncped.app/Contents
-	mkdir -p gccosx_carbon_dll/syncped.app/Contents/MacOS
-	mkdir -p gccosx_carbon_dll/syncped.app/Contents/Resources
-	
-	
-	sed -e "s/IDENTIFIER/syncped/" \
-	-e "s/EXECUTABLE/syncped/" \
-	-e "s/VERSION/1.0/" \
-	../../wxWidgets-2.9.2/src/osx/carbon/Info.plist.in >gccosx_carbon_dll/syncped.app/Contents/Info.plist
-	
-	
-	echo -n "APPL????" >gccosx_carbon_dll/syncped.app/Contents/PkgInfo
-	
-	
-	ln -f $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncped gccosx_carbon_dll/syncped.app/Contents/MacOS/syncped
-	
-	
-	cp ../extension/data/*.xml gccosx_carbon_dll/syncped.app/Contents/MacOS/
-	
-	
-	
-	cp -f ../syncped/app-large.icns gccosx_carbon_dll/syncped.app/Contents/Resources/wxmac.icns
-
-syncped_bundle: gccosx_carbon_dll/syncped.app/Contents/PkgInfo
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver: $(SYNCSOCKETSERVER_OBJECTS) $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a
 	$(CXX) -o $@ $(SYNCSOCKETSERVER_OBJECTS)   $(VAR_3) $(LDFLAGS)  $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex-rep29.a $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/libwxex29.a `$(WX_CONFIG) $(WX_CONFIG_FLAGS) --libs aui,stc,html,adv,net,xml,core,base`
@@ -300,6 +271,9 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_lexer.o: ./../extens
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_lexers.o: ./../extension/src/lexers.cpp
+	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
+
+$(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_link.o: ./../extension/src/link.cpp
 	$(CXX) -c -o $@ $(WXEX_CXXFLAGS) $(CPPDEPS) $<
 
 $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/wxex_listitem.o: ./../extension/src/listitem.cpp
@@ -417,7 +391,7 @@ $(COMPILER_PREFIX)$(WX_PORT)$(_BUILDDIR_SHARED_SUFFIX)/syncsocketserver_app.o: .
 	$(CXX) -c -o $@ $(SYNCSOCKETSERVER_CXXFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean install_syncped uninstall_syncped \
-	syncped_bundle install_syncsocketserver uninstall_syncsocketserver
+	install_syncsocketserver uninstall_syncsocketserver
 
 
 # Dependencies tracking:

@@ -64,8 +64,11 @@ one of these applications, being a full featured source code text editor.
   - under windows:  
     `make` or `make-release`
     
-  - others:
+  - under Ubuntu:
     `make`
+    
+  - under mac:
+    `make -f GNUMakefile-mac`
   
 ## When adding functionality
 
