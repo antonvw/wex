@@ -5,7 +5,7 @@ and some applications that show how to use it.
 The <a href="http://antonvw.github.com/syncped/">syncped</a> application is 
 one of these applications, being a full featured source code text editor. 
 
-## Dependencies
+# Dependencies
 
 - wxWidgets 2.9.3 is used as a stable master branch  
   http://www.wxwidgets.org/ (use STL instead of wxWidgets containers)
@@ -26,25 +26,22 @@ one of these applications, being a full featured source code text editor.
   and convert to mac icns (first make 128 by 128 icon),
   then use http://iconverticons.com/ to convert to mac icns.
 
-## Build process
+# Build process
 
-# Building wxWidgets
+## Building wxWidgets
 
 - under windows using Microsoft Visual Studio 2010  
   Version 10.0.30319.1 RTMRel using command line prompt  
     `nmake -f makefile.vc`
     
+- under windows using cygwin 1.7.9   
+    `../configure --with-msw --disable-shared`  
+    
 - under Ubuntu 11.04 linux gcc gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2  
-  using gtk version:  
     `../configure --with-gtk`  
 
 - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)  
     `../configure --with-mac`
-    
-- under cygwin 1.7 wxWidgets 2.9.1 does not compile (snapshot does)  
-    `../configure --with-msw`  
-  Strangely, wxWidgets libs build, wxextension does not (wxcrt.h complains).
-  Also g++ version (g++ (GCC) 4.3.4 20090804 (release) 1) does not support c++0x.
     
 - under SunOS using the Sun make gives errors,  
   you have to use GNU make (/usr/sfw/bin)
@@ -52,7 +49,7 @@ one of these applications, being a full featured source code text editor.
     `../configure --with-gtk --disable-shared --without-opengl`  
   than libs were built
   
-# Building wxExtension      
+## Building wxExtension      
       
 - First of all, the new C++ auto keyword is used a lot, so
   you need a recent compiler to compile sources.
@@ -70,7 +67,11 @@ one of these applications, being a full featured source code text editor.
   - under mac:
     `make -f GNUMakefile-mac`
   
-## When adding functionality
+- under cygwin   
+    `make`  
+  wxextension does not yet compile (wxcrt.h complains).  
+    
+# When adding functionality
 
 - coding standard:  
   http://www.gnu.org/prep/standards/standards.html  
@@ -80,7 +81,7 @@ one of these applications, being a full featured source code text editor.
 - apply a patch:  
     `patch -p0 -i fixes.patch`
 
-- document it in the source in doxy way  
+- doxy document sources  
   API documentation is generated from the sources using Doxygen (1.7.1)
   http://www.stack.nl/~dimitri/doxygen/
 
@@ -97,12 +98,12 @@ one of these applications, being a full featured source code text editor.
 
 - automated testing is done using cppunit (1.12)  
   http://sourceforge.net/projects/cppunit:
-    `sudo apt-get install libcppunit-dev`
+    `sudo apt-get install libcppunit-dev`  
   add a test for it in 
   - extension/test/base
   - extension/test/gui
   - extension/test/gui-report  
-  where it has least dependencies,
+  where it has least dependencies,  
   run test-all.sh from the build dir, which collects output in several log files. 
 
 - add a sample for it in

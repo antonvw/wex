@@ -23,11 +23,12 @@ class WXDLLIMPEXP_BASE wxExConfigDialog: public wxExDialog
 public:
   enum
   {
-    CONFIG_NOTEBOOK,   ///< traditional notebook
-    CONFIG_TREEBOOK,   ///< a tree book
-    CONFIG_CHOICEBOOK, ///< a choice book
-    CONFIG_LISTBOOK,   ///< a list book
-    CONFIG_TOOLBOOK    ///< a tool book
+    CONFIG_NOTEBOOK,    ///< traditional notebook
+    CONFIG_AUINOTEBOOK, ///< aui notebook
+    CONFIG_TREEBOOK,    ///< a tree book
+    CONFIG_CHOICEBOOK,  ///< a choice book
+    CONFIG_LISTBOOK,    ///< a list book
+    CONFIG_TOOLBOOK     ///< a tool book
   };
 
   /// Constructor.
@@ -49,7 +50,7 @@ public:
     /// the window id
     wxWindowID id = wxID_ANY,
     /// bookctrl style, only used if you specified pages for your config items
-    int bookctrl_style = CONFIG_NOTEBOOK,
+    int bookctrl_style = CONFIG_AUINOTEBOOK,
     /// dialog style
     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER,
     /// name

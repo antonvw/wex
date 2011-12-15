@@ -1251,6 +1251,8 @@ void wxExSTC::Initialize()
     SetHexMode();
   }
   
+  m_AllowChangeIndicator = !(m_Flags & STC_WIN_NO_INDICATOR);
+  
   m_HexBuffer.clear(); // always, not only in hex mode
   
   m_MacroIsRecording = false;

@@ -22,7 +22,7 @@ copy ..\extension\data\lexers.xml syncped
 copy ..\extension\data\vcs.xml syncped
 
 rem Copy locale files.
-copy c:\wxWidgets-2.9.2\locale\nl.mo syncped\nl_NL\
+copy c:\wxWidgets-2.9.3\locale\nl.mo syncped\nl_NL\
 copy ..\locale\wxextension-nl.mo syncped\nl_NL\
 copy ..\locale\wxstd-xxx-nl.mo syncped\nl_NL\
 copy ..\locale\syncped-nl.mo syncped\nl_NL\
