@@ -123,7 +123,9 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
     switch (bookctrl_style)
     {
     case CONFIG_AUINOTEBOOK:
-      bookctrl = new wxAuiNotebook(this);
+      bookctrl = new wxNotebook(this, wxID_ANY);
+      // crashes wxWidgets-2.9.3
+      // bookctrl = new wxAuiNotebook(this);
       break;
 
     case CONFIG_CHOICEBOOK:
