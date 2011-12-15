@@ -39,11 +39,12 @@ public:
   /// Window flags.
   enum wxExWindowFlags
   {
-    STC_WIN_DEFAULT     = 0x0000, ///< default, not readonly, not hex mode
-    STC_WIN_READ_ONLY   = 0x0001, ///< window is readonly, 
-                                  ///<   this mode overrides real mode from disk
-    STC_WIN_HEX         = 0x0002, ///< window in hex mode
-    STC_WIN_FROM_OTHER  = 0x0020  ///< opened from within another file (e.g. a link)
+    STC_WIN_DEFAULT      = 0x0000, ///< default, not readonly, not hex mode
+    STC_WIN_READ_ONLY    = 0x0001, ///< window is readonly, 
+                                   ///<   overrides real mode from disk
+    STC_WIN_HEX          = 0x0002, ///< window in hex mode
+    STC_WIN_NO_INDICATOR = 0x0004, ///< a change indicator is not used
+    STC_WIN_FROM_OTHER   = 0x0020  ///< opened from within another file (e.g. a link)
   };
 
   /// Config dialog flags.
@@ -81,6 +82,9 @@ public:
 
   /// Copy constructor.
   wxExSTC(const wxExSTC& stc);
+  
+  /// Is a change indicator allowed.
+  bool AllowChangeIndicator() const {return m_AllowChangeIndicator;};
 
   /// Appends text in hex mode.
   void AppendTextHexMode(const wxCharBuffer& buffer);
@@ -337,8 +341,11 @@ private:
   int m_SavedPos;
   int m_SavedSelectionStart;
   int m_SavedSelectionEnd;
+  
   long m_Flags; // win flags
   long m_Goto;
+  
+  bool m_AllowChangeIndicator;
   bool m_MacroIsRecording;
 
   // We use a separate lexer here as well

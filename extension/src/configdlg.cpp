@@ -11,6 +11,7 @@
 #endif
 #include <functional>
 #include <algorithm>
+#include <wx/aui/auibook.h>
 #include <wx/bookctrl.h> 
 #include <wx/choicebk.h>
 #include <wx/listbook.h>
@@ -121,6 +122,10 @@ void wxExConfigDialog::Layout(int rows, int cols, int bookctrl_style)
   {
     switch (bookctrl_style)
     {
+    case CONFIG_AUINOTEBOOK:
+      bookctrl = new wxAuiNotebook(this);
+      break;
+
     case CONFIG_CHOICEBOOK:
       bookctrl = new wxChoicebook(this, wxID_ANY);
       break;

@@ -40,7 +40,7 @@ wxExSTCShell::wxExSTCShell(
   : wxExSTC(
       parent, 
       wxEmptyString,
-      0,
+      STC_WIN_NO_INDICATOR,
       wxEmptyString, // title
       menu_flags, 
       id, 

@@ -120,7 +120,8 @@ Frame::Frame()
 
   m_DataWindow = new wxExSTCWithFrame(this, this);
 
-  m_LogWindow = new wxExSTC(this, wxEmptyString, 0, _("Log"));
+  m_LogWindow = new wxExSTC(
+    this, wxEmptyString, wxExSTC::STC_WIN_NO_INDICATOR, _("Log"));
 
   m_Shell = new wxExSTCShell(this);
 

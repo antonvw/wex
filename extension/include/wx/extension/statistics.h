@@ -102,7 +102,7 @@ public:
   };
 
   /// Gets all items as a string. All items are returned as a string,
-  /// with newlines separating items.
+  /// with comma's separating items, and a : separating key and value.
   const wxString Get() const {
     wxString text;
     for (
@@ -114,8 +114,12 @@ public:
       it != m_Items.end();
       ++it)
     {
-      // An cEOL gives incorrect result (CRCRLF)
-      text << "\n" << it->first << " " << it->second;
+      if (!text.empty())
+      {
+        text << ",";
+      }
+      
+      text << it->first << ": " << it->second;
     }
     return text;};
 
