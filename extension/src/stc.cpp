@@ -1705,7 +1705,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_START_DRAG)
   {
-    if (HexMode())
+    if (HexMode() || GetReadOnly())
     {
       event.SetDragAllowMove(false);
     }
@@ -1714,7 +1714,7 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
   }
   else if (event.GetEventType() == wxEVT_STC_DO_DROP)
   {
-    if (HexMode())
+    if (HexMode() || GetReadOnly())
     {
       event.SetDragResult(wxDragNone);
     }
