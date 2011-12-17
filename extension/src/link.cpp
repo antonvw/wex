@@ -10,6 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/extension/link.h>
 #include <wx/extension/lexer.h>
@@ -96,7 +97,25 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 == wxString::npos || 
       pos_char2 <= pos_char1)
   {
-    out = text;
+    wxRegEx regex("(.*):[0-9]*");
+    
+    if (regex.Matches(text))
+    {
+      size_t start, len;
+
+      if (regex.GetMatch(&start, &len, 1))
+      {
+        out = text.substr(start, len);
+      }
+      else
+      {
+        out = text;
+      }
+    }
+    else
+    {
+      out = text;
+    }
   }
   else
   {
