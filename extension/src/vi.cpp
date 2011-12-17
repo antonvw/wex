@@ -1055,9 +1055,9 @@ void wxExVi::Put(bool after) const
     return;
   }
   
-  const int lines = wxExGetNumberOfLines(wxExClipboardGet());
+  const bool lines = wxExClipboardGet().Contains("\n");
   
-  if (lines > 1)
+  if (lines)
   {
     if (after) m_STC->LineDown();
     m_STC->Home();
@@ -1065,7 +1065,7 @@ void wxExVi::Put(bool after) const
 
   m_STC->Paste();
 
-  if (lines > 1 && after)
+  if (lines && after)
   {
     m_STC->LineUp();
   }

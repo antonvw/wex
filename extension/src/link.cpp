@@ -97,7 +97,7 @@ const wxString wxExLink::FindPath(const wxString& text) const
       pos_char2 == wxString::npos || 
       pos_char2 <= pos_char1)
   {
-    wxRegEx regex("(.*):[0-9]*");
+    wxRegEx regex("(.*):[0-9]+");
     
     if (regex.Matches(text))
     {

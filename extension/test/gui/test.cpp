@@ -435,7 +435,10 @@ void wxExGuiTestFixture::testLink()
   CPPUNIT_ASSERT( link.FindPath(": test:") == ": test:"); // no po file
   CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
   CPPUNIT_ASSERT( link.FindPath("c:\\test") == "c:\\test");
-  CPPUNIT_ASSERT( link.FindPath("test:50") == "test:50");
+  CPPUNIT_ASSERT( link.FindPath("c:test") == "c:test");
+  CPPUNIT_ASSERT( link.FindPath("test:50") == "test");
+  CPPUNIT_ASSERT( link.FindPath("test:500000") == "test");
+  CPPUNIT_ASSERT( link.FindPath("test:xyz") == "test:xyz");
   
   CPPUNIT_ASSERT( link.GetLineNo("test:50") == 50);
   
