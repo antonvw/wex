@@ -116,10 +116,10 @@ public:
     {
       if (!text.empty())
       {
-        text << ",";
+        text << ", ";
       }
       
-      text << it->first << ": " << it->second;
+      text << it->first << ":" << it->second;
     }
     return text;};
 
