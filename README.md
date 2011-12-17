@@ -8,23 +8,10 @@ one of these applications, being a full featured source code text editor.
 # Dependencies
 
 - wxWidgets 2.9.3 is used as a stable master branch  
-  http://www.wxwidgets.org/ (use STL instead of wxWidgets containers)
-
-- STL is used whenever possible 
+  http://www.wxwidgets.org/
 
 - database is OTL (Version 4.0.214)  
   http://otl.sourceforge.net/
-
-- icons and bitmaps
-  - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
-  - application icons are from
-  http://tango.freedesktop.org/Tango_Desktop_Project
-  and converted to ico using
-  http://www.convertico.com/
-  and converted to xpm using GIMP (2.6.6)    
-  http://www.gimp.org/
-  and convert to mac icns (first make 128 by 128 icon),
-  then use http://iconverticons.com/ to convert to mac icns.
 
 # Build process
 
@@ -72,6 +59,19 @@ one of these applications, being a full featured source code text editor.
   wxextension does not yet compile (wxcrt.h complains).  
     
 # When adding functionality
+
+- STL is used whenever possible 
+
+- icons and bitmaps
+  - menu and toolbar bitmaps are from wxWidgets, using wxArtProvider
+  - application icons  
+  http://tango.freedesktop.org/Tango_Desktop_Project
+  and converted to ico using  
+  http://www.convertico.com/
+  and converted to xpm using GIMP (2.6.6)    
+  http://www.gimp.org/
+  and convert to mac icns (first make 128 by 128 icon)
+  http://iconverticons.com/
 
 - coding standard:  
   http://www.gnu.org/prep/standards/standards.html  
