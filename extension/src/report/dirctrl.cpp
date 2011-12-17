@@ -160,7 +160,14 @@ void wxExGenericDirCtrl::OnTree(wxTreeEvent& event)
     
     if (!fn.FileExists() && fn.DirExists())
     {
-      ExpandAndSelectPath(files[0]);
+      if (!GetTreeCtrl()->IsExpanded(event.GetItem()))
+      {
+        ExpandAndSelectPath(files[0]);
+      }
+      else
+      {
+        CollapsePath(files[0]);
+      }
     }
     else
     {

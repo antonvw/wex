@@ -915,7 +915,7 @@ void wxExSTC::FoldAll()
   if (GetProperty("fold") != "1") return;
 
   const int current_line = GetCurrentLine();
-  const bool xml = (m_Lexer.GetScintillaLexer() == "xml");
+  const bool xml = (m_Lexer.GetDisplayLexer() == "xml");
 
   int line = 0;
   while (line < GetLineCount())
