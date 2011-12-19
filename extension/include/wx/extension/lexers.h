@@ -141,8 +141,6 @@ private:
   std::map<wxString, wxExLexer> m_Lexers;
   std::map<wxString, std::map<wxString, wxString> > m_Macros;
   std::map<wxString, wxString> m_DefaultColours;
-  std::map<wxString, wxString> m_TempColours;
-  std::map<wxString, wxString> m_TempMacros;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeColours;
   std::map<wxString, std::map<wxString, wxString> > m_ThemeMacros;
 
