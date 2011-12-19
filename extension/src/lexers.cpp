@@ -401,14 +401,12 @@ void wxExLexers::Initialize()
   m_Markers.clear();
   m_Styles.clear();
   m_StylesHex.clear();
-  m_TempColours.clear();
-  m_TempMacros.clear();
   
   const std::map<wxString, wxString> empty_map;
   m_Macros["global"] = empty_map;
     
   m_ThemeColours[m_NoTheme] = m_DefaultColours;
-  m_ThemeMacros[m_NoTheme] = m_TempMacros;
+  m_ThemeMacros[m_NoTheme] = empty_map;
 }
 
 bool wxExLexers::MarkerIsLoaded(const wxExMarker& marker) const
@@ -560,8 +558,8 @@ const std::vector<wxExProperty> wxExLexers::ParseNodeProperties(
 
 void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
 {
-  m_TempColours.clear();
-  m_TempMacros.clear();
+  std::map<wxString, wxString> tmpColours;
+  std::map<wxString, wxString> tmpMacros;
   
   wxXmlNode *child = node->GetChildren();
   
@@ -577,13 +575,13 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
       {
 #ifdef wxExUSE_CPP0X	
         auto it = 
-          m_TempMacros.find(style);
+          tmpMacros.find(style);
 #else
         std::map<wxString, wxString>::iterator it = 
-          m_TempMacros.find(style);
+          tmpMacros.find(style);
 #endif		  
 
-        if (it != m_TempMacros.end())
+        if (it != tmpMacros.end())
         {
           wxLogError(_("Macro style: %s on line: %d already exists"),
             style.c_str(), 
@@ -591,18 +589,21 @@ void wxExLexers::ParseNodeTheme(const wxXmlNode* node)
         }
         else
         {
-          m_TempMacros[style] = content;
+          tmpMacros[style] = content;
         }
       }
     }
     else if (child->GetName() == "colour")
     {
-      m_TempColours[child->GetAttribute("name", "0")] = 
+      tmpColours[child->GetAttribute("name", "0")] = 
         ApplyMacro(content);
     }
     
     child = child->GetNext();
   }
+  
+  m_ThemeColours[node->GetAttribute("name")] = tmpColours;
+  m_ThemeMacros[node->GetAttribute("name")] = tmpMacros;
 }
 
 void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
@@ -614,9 +615,6 @@ void wxExLexers::ParseNodeThemes(const wxXmlNode* node)
     if (child->GetName() == "theme")
     {
       ParseNodeTheme(child);
-      
-      m_ThemeColours[child->GetAttribute("name")] = m_TempColours;
-      m_ThemeMacros[child->GetAttribute("name")] = m_TempMacros;
     }
     
     child = child->GetNext();
