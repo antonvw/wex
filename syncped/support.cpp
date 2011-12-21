@@ -9,12 +9,10 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/config.h>
 #include <wx/stockitem.h> // for wxGetStockLabel
 #include <wx/extension/filedlg.h>
 #include <wx/extension/lexers.h>
 #include <wx/extension/stc.h>
-#include <wx/extension/toolbar.h>
 #include <wx/extension/util.h>
 #include <wx/extension/vcs.h>
 #include <wx/extension/report/listviewfile.h>
@@ -199,9 +197,6 @@ DecoratedFrame::DecoratedFrame()
   menubar->Append(menuHelp, wxGetStockLabel(wxID_HELP));
   
   SetMenuBar(menubar);
-  
-  GetToolBar()->AddTool(wxID_HELP);
-  GetToolBar()->Realize();
 }
 
 bool DecoratedFrame::AllowClose(wxWindowID id, wxWindow* page)
