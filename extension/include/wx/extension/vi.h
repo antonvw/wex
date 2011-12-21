@@ -45,6 +45,15 @@ public:
   /// Returns STC component.
   wxExSTC* GetSTC() {return m_STC;};
   
+  /// A macro has been recorded.
+  bool MacroIsRecorded() const;
+
+  /// A marco is now being recorded.
+  bool MacroIsRecording() const;
+
+  /// Stop A marco is now being recorded.
+  void MacroStopRecording() const;
+
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
@@ -105,6 +114,7 @@ private:
 
   static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
+  static std::map <wxString, wxString> m_Macros;
 
   const wxExMarker m_MarkerSymbol;
   

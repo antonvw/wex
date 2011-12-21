@@ -45,16 +45,19 @@ one of these applications, being a full featured source code text editor.
   - under windows:  
     `make` or `make-release`
     
+  - under cygwin   
+    `make`  
+    wxextension does not yet compile
+    
   - under Ubuntu:  
     `make`
     
   - under mac:  
     `make -f GNUMakefile-mac`
-  
-  - under cygwin   
-    `make`  
-    wxextension does not yet compile
     
+  - under SunOS:  
+    `/usr/sfw/bin/make`
+  
 # When adding functionality
 
 - STL is used whenever possible 
