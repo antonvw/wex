@@ -30,7 +30,7 @@ one of these applications, being a full featured source code text editor.
 - under mac os 10.4 use gcc 4.0.1 (part of xcode25_8m2258_developerdvd.dmg)  
     `../configure --with-mac`
     
-- under SunOS using GNU make (/usr/sfw/bin)
+- under SunOS using GNU make (/usr/sfw/bin)  
     `../configure --with-gtk --disable-shared --without-opengl`  
   
 ## Building wxExtension      
@@ -45,10 +45,10 @@ one of these applications, being a full featured source code text editor.
   - under windows:  
     `make` or `make-release`
     
-  - under Ubuntu:
+  - under Ubuntu:  
     `make`
     
-  - under mac:
+  - under mac:  
     `make -f GNUMakefile-mac`
   
   - under cygwin   
