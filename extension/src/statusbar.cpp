@@ -60,7 +60,7 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
         found = true;
 
         for (
-#ifdef wxExUSE_CPP0X	
+#ifdef wxExUSE_CPP0X  
           auto it = m_Panes.begin();
 #else
           std::map<wxString, wxExStatusBarPane>::iterator it = m_Panes.begin();
@@ -81,20 +81,23 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
             {
               m_Frame->StatusBarDoubleClickedRight(it->second.GetName());
             }
-#if wxUSE_TOOLTIPS
             // Show tooltip if tooltip is available, and not yet presented.
-            // Do not move check for NULL, otherwise no tooltip presented.
             else if (event.Moving())
             {
-              const wxString tooltip =
-                (GetToolTip() != NULL ? GetToolTip()->GetTip(): wxString(wxEmptyString));
-  
-              if (tooltip != it->second.GetHelpText())
+              const wxString tooltip = GetToolTipText();
+              
+              if (it->second.GetHelpText().empty())
+              {
+                if (!tooltip.empty())
+                {
+                  UnsetToolTip();
+                }
+              }
+              else if (tooltip != it->second.GetHelpText())
               {
                 SetToolTip(it->second.GetHelpText());
               }
             }
-#endif
           }
         }
       }
