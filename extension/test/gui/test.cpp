@@ -713,11 +713,11 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded());
   
-  stc->StartRecord();
+  stc->MacroStartRecord();
   CPPUNIT_ASSERT( stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded());
   
-  stc->StopRecord();
+  stc->MacroStopRecord();
   CPPUNIT_ASSERT(!stc->MacroIsRecording());
   CPPUNIT_ASSERT(!stc->MacroIsRecorded()); // still no macro
   

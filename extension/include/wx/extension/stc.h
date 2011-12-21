@@ -200,6 +200,13 @@ public:
   /// Plays back the last recorded macro.
   void MacroPlayback();
   
+  /// Starts recording the macro, and empties the previous one.
+  /// There is only one shared macro for all objects.
+  void MacroStartRecord();
+
+  /// Stops recording the macro.
+  void MacroStopRecord();
+  
   /// Marks specified line as changed.
   void MarkerAddChange(int line);
   
@@ -292,13 +299,6 @@ public:
 
   /// Sets the text.
   void SetText(const wxString& value);
-
-  /// Starts recording the macro, and empties the previous one.
-  /// There is only one shared macro for all objects.
-  void StartRecord();
-
-  /// Stops recording the macro.
-  void StopRecord();
 protected:
   /// Builds the popup menu.
   virtual void BuildPopupMenu(wxExMenu& menu);

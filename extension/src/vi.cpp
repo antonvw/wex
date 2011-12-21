@@ -854,6 +854,14 @@ bool wxExVi::MacroIsRecording() const
   return false;
 }
 
+void wxExVi::MacroPlayback()
+{
+}
+
+void wxExVi::MacroStartRecording() const
+{
+}
+
 void wxExVi::MacroStopRecording() const
 {
 }
