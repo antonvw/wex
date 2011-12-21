@@ -51,7 +51,13 @@ public:
   /// A marco is now being recorded.
   bool MacroIsRecording() const;
 
-  /// Stop A marco is now being recorded.
+  /// Plays back a recorded macro.
+  void MacroPlayback();
+  
+  /// Start recording a macro.  
+  void MacroStartRecording() const;
+  
+  /// Stop recording a macro.
   void MacroStopRecording() const;
 
   /// Handles char events.

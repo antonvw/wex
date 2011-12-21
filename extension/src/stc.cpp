@@ -1354,6 +1354,16 @@ bool wxExSTC::LinkOpen(wxString* filename)
   return !path.empty();
 }
 
+bool wxExSTC::MacroIsRecorded() const 
+{
+  return m_vi.GetIsActive() ? m_vi.MacroIsRecorded(): !m_Macro.empty();
+}
+
+bool wxExSTC::MacroIsRecording() const 
+{
+  return m_vi.GetIsActive() ? m_vi.MacroIsRecording(): m_MacroIsRecording;
+}
+
 void wxExSTC::MacroPlayback()
 {
   wxASSERT(MacroIsRecorded());
@@ -1380,14 +1390,31 @@ void wxExSTC::MacroPlayback()
   wxLogStatus(_("Macro played back"));
 }
 
-bool wxExSTC::MacroIsRecorded() const 
+void wxExSTC::MacroStartRecord()
 {
-  return m_vi.GetIsActive() ? m_vi.MacroIsRecorded(): !m_Macro.empty();
+  wxASSERT(!m_MacroIsRecording);
+
+  m_MacroIsRecording = true;
+
+  m_Macro.clear();
+
+  wxLogStatus(_("Macro recording"));
+
+  wxStyledTextCtrl::StartRecord();
 }
 
-bool wxExSTC::MacroIsRecording() const 
+void wxExSTC::MacroStopRecord()
 {
-  return m_vi.GetIsActive() ? m_vi.MacroIsRecording(): m_MacroIsRecording;
+  wxASSERT(m_MacroIsRecording);
+
+  m_MacroIsRecording = false;
+
+  if (!m_Macro.empty())
+  {
+    wxLogStatus(_("Macro is recorded"));
+  }
+
+  wxStyledTextCtrl::StopRecord();
 }
   
 void wxExSTC::MarkerAddChange(int line)
@@ -2290,33 +2317,6 @@ void wxExSTC::SortSelectionDialog(bool sort_ascending, const wxString& caption)
 
   // Set selection back, without removed empty lines.
   SetSelection(start_pos, GetLineEndPosition(start_line + mm.size()));
-}
-
-void wxExSTC::StartRecord()
-{
-  wxASSERT(!m_MacroIsRecording);
-
-  m_MacroIsRecording = true;
-
-  m_Macro.clear();
-
-  wxLogStatus(_("Macro recording"));
-
-  wxStyledTextCtrl::StartRecord();
-}
-
-void wxExSTC::StopRecord()
-{
-  wxASSERT(m_MacroIsRecording);
-
-  m_MacroIsRecording = false;
-
-  if (!m_Macro.empty())
-  {
-    wxLogStatus(_("Macro is recorded"));
-  }
-
-  wxStyledTextCtrl::StopRecord();
 }
 
 #endif // wxUSE_GUI
