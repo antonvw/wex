@@ -25,6 +25,7 @@
 
 wxString wxExVi::m_LastCommand;
 wxString wxExVi::m_LastFindCharCommand;
+std::map <wxString, wxString> wxExVi::m_Macros;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
@@ -843,6 +844,20 @@ void wxExVi::InsertMode(
   }
 }
 
+bool wxExVi::MacroIsRecorded() const
+{
+  return false;
+}
+
+bool wxExVi::MacroIsRecording() const
+{
+  return false;
+}
+
+void wxExVi::MacroStopRecording() const
+{
+}
+  
 bool wxExVi::Move(
   const wxString& begin_address, 
   const wxString& end_address, 

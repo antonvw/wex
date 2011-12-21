@@ -192,10 +192,10 @@ public:
   void Indent(int lines, bool forward = true);
   
   /// A macro has been recorded.
-  bool MacroIsRecorded() const {return !m_Macro.empty();};
+  bool MacroIsRecorded() const;
 
   /// A marco is now being recorded.
-  bool MacroIsRecording() const {return m_MacroIsRecording;};
+  bool MacroIsRecording() const;
 
   /// Plays back the last recorded macro.
   void MacroPlayback();

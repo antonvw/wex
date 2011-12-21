@@ -1380,6 +1380,16 @@ void wxExSTC::MacroPlayback()
   wxLogStatus(_("Macro played back"));
 }
 
+bool wxExSTC::MacroIsRecorded() const 
+{
+  return m_vi.GetIsActive() ? m_vi.MacroIsRecorded(): !m_Macro.empty();
+}
+
+bool wxExSTC::MacroIsRecording() const 
+{
+  return m_vi.GetIsActive() ? m_vi.MacroIsRecording(): m_MacroIsRecording;
+}
+  
 void wxExSTC::MarkerAddChange(int line)
 {
   if (
