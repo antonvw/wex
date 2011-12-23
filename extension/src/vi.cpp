@@ -37,6 +37,7 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchForward(true)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_Process(new wxExProcess)
+  , m_IsRecording(false)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -344,6 +345,17 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       wxBell();
     }
   }
+  else if (command.Matches("q?"))
+  {
+    if (!MacroIsRecording())
+    {
+      MacroStartRecording(command.Mid(1));
+    }
+  } 
+  else if (command.Matches("*@?"))
+  {
+    MacroPlayback(command.AfterFirst('@'), repeat);
+  }
   else
   {
     switch ((int)command.Last())
@@ -398,7 +410,18 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
       case 'p': Put(true); break;
       case 'P': Put(false); break;
-
+      
+      case 'q': 
+        if (MacroIsRecording())
+        {
+          MacroStopRecording();
+        }
+        else
+        {
+          handled = false;
+        }
+        break;
+      
       case 'w': for (int i = 0; i < repeat; i++) m_STC->WordRight(); break;
       case 'u': m_STC->Undo(); break;
       case 'x': 
@@ -846,24 +869,65 @@ void wxExVi::InsertMode(
 
 bool wxExVi::MacroIsRecorded() const
 {
-  return false;
+  return !m_Macros.empty();
 }
 
 bool wxExVi::MacroIsRecording() const
 {
-  return false;
+  return m_IsRecording;
 }
 
-void wxExVi::MacroPlayback()
+void wxExVi::MacroPlayback(const wxString& macro, int repeat)
 {
+  if (macro.empty())
+  {
+    // TODO: ask for macro name.
+    return;
+  }
+  
+  std::map<wxString, wxString>::const_iterator it = m_Macros.find(macro);
+      
+  if (it == m_Macros.end())
+  {
+    wxLogStatus(_("Unknown macro"));
+    return;
+  }
+    
+  for (int i = 0; i < repeat; i++)
+  {
+    wxStringTokenizer tkz(it->second, "\n");
+    
+    while (tkz.HasMoreTokens())
+    {
+      DoCommand(tkz.GetNextToken(), false);
+    }
+  }
+  
+  wxLogStatus(_("Macro played back"));
 }
 
-void wxExVi::MacroStartRecording() const
+void wxExVi::MacroStartRecording(const wxString& macro)
 {
+  if (macro.empty())
+  {
+    // TODO: ask for macro name.
+    return;
+  }
+  
+  m_Macro = macro;
+  m_IsRecording = true;
+  
+  wxLogStatus(_("Macro recording"));
 }
 
-void wxExVi::MacroStopRecording() const
+void wxExVi::MacroStopRecording()
 {
+  m_IsRecording = false;
+  
+  if (!m_Macros[m_Macro].empty())
+  {
+    wxLogStatus(_("Macro is recorded"));
+  }
 }
   
 bool wxExVi::Move(
@@ -951,6 +1015,11 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
           )
         {
           m_LastCommand = m_Command;
+        }
+        
+        if (MacroIsRecording())
+        {
+          m_Macros[m_Macro] = m_Command + "\n";
         }
 
         m_Command.clear();
