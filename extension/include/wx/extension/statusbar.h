@@ -87,6 +87,8 @@ protected:
   /// moving over.
   void OnMouse(wxMouseEvent& event);
 private:
+  void Handle(wxMouseEvent& event, const wxExStatusBarPane& wxExStatusBarPane);
+  
   wxExFrame* m_Frame;
   std::map<wxString, wxExStatusBarPane> m_Panes;
 
