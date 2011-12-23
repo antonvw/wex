@@ -879,13 +879,34 @@ bool wxExVi::MacroIsRecording() const
 
 void wxExVi::MacroPlayback(const wxString& macro, int repeat)
 {
-  if (macro.empty())
+  wxString choice(macro);
+  
+  if (choice.empty())
   {
-    // TODO: ask for macro name.
-    return;
+    wxArrayString choices;
+    
+    for (
+      std::map<wxString, wxString>::const_iterator it = m_Macros.begin();
+      it != m_Macros.end();
+      ++it)
+    {
+      choices.Add(it->first);
+    }
+
+    wxSingleChoiceDialog dialog(m_STC,
+      _("Input") + ":", 
+      _("Select a macro"),
+      choices);
+      
+    if (dialog.ShowModal() != wxID_OK)
+    {
+      return;
+    }
+    
+    choice = dialog.GetStringSelection();
   }
   
-  std::map<wxString, wxString>::const_iterator it = m_Macros.find(macro);
+  std::map<wxString, wxString>::const_iterator it = m_Macros.find(choice);
       
   if (it == m_Macros.end())
   {
@@ -908,13 +929,31 @@ void wxExVi::MacroPlayback(const wxString& macro, int repeat)
 
 void wxExVi::MacroStartRecording(const wxString& macro)
 {
-  if (macro.empty())
+  wxString choice(macro);
+  
+  if (choice.empty())
   {
-    // TODO: ask for macro name.
-    return;
+    wxArrayString choices;
+    
+    for (int i = 'a'; i <= 'z'; i++)
+    {
+      choices.Add(wxString::Format("%c", i));
+    }
+
+    wxSingleChoiceDialog dialog(m_STC,
+      _("Input") + ":", 
+      _("Select a macro"),
+      choices);
+      
+    if (dialog.ShowModal() != wxID_OK)
+    {
+      return;
+    }
+    
+    choice = dialog.GetStringSelection();
   }
   
-  m_Macro = macro;
+  m_Macro = choice;
   m_IsRecording = true;
   
   wxLogStatus(_("Macro recording"));
@@ -988,6 +1027,12 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   else if (m_InsertMode)
   {
     m_InsertText += event.GetUnicodeKey();
+    
+    if (MacroIsRecording())
+    {
+      m_Macros[m_Macro] += event.GetUnicodeKey();
+    }
+    
     return true;
   }
   else
@@ -995,6 +1040,11 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     if (!(event.GetModifiers() & wxMOD_ALT))
     {
       m_Command += event.GetUnicodeKey();
+      
+      if (MacroIsRecording())
+      {
+        m_Macros[m_Macro] += event.GetUnicodeKey();
+      }
 
       if (DoCommand(m_Command, false))
       {
@@ -1019,9 +1069,12 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         
         if (MacroIsRecording())
         {
-          m_Macros[m_Macro] = m_Command + "\n";
+          if (!m_Macros[m_Macro].empty())
+          {
+            m_Macros[m_Macro] += "\n";
+          }
         }
-
+        
         m_Command.clear();
       }
       
