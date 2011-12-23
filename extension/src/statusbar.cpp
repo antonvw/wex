@@ -10,9 +10,6 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#if wxUSE_TOOLTIPS
-#include <wx/tooltip.h> // for GetTip
-#endif
 #include <wx/extension/statusbar.h>
 #include <wx/extension/frame.h>
 
@@ -43,6 +40,35 @@ wxExStatusBar::~wxExStatusBar()
   wxConfigBase::Get()->Write("ShowStatusBar", IsShown());
 }
   
+void wxExStatusBar::Handle(wxMouseEvent& event, const wxExStatusBarPane& pane)
+{
+  if (event.LeftDClick())
+  {
+    m_Frame->StatusBarDoubleClicked(pane.GetName());
+  }
+  else if (event.RightDClick())
+  {
+    m_Frame->StatusBarDoubleClickedRight(pane.GetName());
+  }
+  // Show tooltip if tooltip is available, and not yet presented.
+  else if (event.Moving())
+  {
+    const wxString tooltip = GetToolTipText();
+              
+    if (pane.GetHelpText().empty())
+    {
+      if (!tooltip.empty())
+      {
+        UnsetToolTip();
+      }
+    }
+    else if (tooltip != pane.GetHelpText())
+    {
+      SetToolTip(pane.GetHelpText());
+    }
+  }
+}
+            
 void wxExStatusBar::OnMouse(wxMouseEvent& event)
 {
   event.Skip();
@@ -68,36 +94,12 @@ void wxExStatusBar::OnMouse(wxMouseEvent& event)
           it != m_Panes.end();
           ++it)
         {
+          // Handle the event, don't fail if none is true here,
+          // it seems that moving and clicking almost at the same time
+          // could cause assertions.
           if (it->second.GetNo() == i)
           {
-            // Handle the event, don't fail if none is true here,
-            // it seems that moving and clicking almost at the same time
-            // could cause assertions.
-            if (event.LeftDClick())
-            {
-              m_Frame->StatusBarDoubleClicked(it->second.GetName());
-            }
-            else if (event.RightDClick())
-            {
-              m_Frame->StatusBarDoubleClickedRight(it->second.GetName());
-            }
-            // Show tooltip if tooltip is available, and not yet presented.
-            else if (event.Moving())
-            {
-              const wxString tooltip = GetToolTipText();
-              
-              if (it->second.GetHelpText().empty())
-              {
-                if (!tooltip.empty())
-                {
-                  UnsetToolTip();
-                }
-              }
-              else if (tooltip != it->second.GetHelpText())
-              {
-                SetToolTip(it->second.GetHelpText());
-              }
-            }
+            Handle(event, it->second);
           }
         }
       }
