@@ -1366,55 +1366,76 @@ bool wxExSTC::MacroIsRecording() const
 
 void wxExSTC::MacroPlayback()
 {
-  wxASSERT(MacroIsRecorded());
-
-  for (
-#ifdef wxExUSE_CPP0X	
-    auto it = m_Macro.begin();
-#else
-    std::vector <wxString>::iterator it = m_Macro.begin();
-#endif	
-    it != m_Macro.end();
-    ++it)
+  if (m_vi.GetIsActive())
   {
-    int msg, wp;
-    char c = ' ';
-    sscanf((*it).c_str(), "%d %d %c", &msg, &wp, &c);
-    char txt[2];
-    txt[0] = c;
-    txt[1] = '\0';
-
-    SendMsg(msg, wp, (wxIntPtr)txt);
+    m_vi.MacroPlayback();
   }
+  else
+  {
+    wxASSERT(MacroIsRecorded());
 
-  wxLogStatus(_("Macro played back"));
+    for (
+#ifdef wxExUSE_CPP0X	
+      auto it = m_Macro.begin();
+#else
+      std::vector <wxString>::iterator it = m_Macro.begin();
+#endif	
+      it != m_Macro.end();
+      ++it)
+    {
+      int msg, wp;
+      char c = ' ';
+      sscanf((*it).c_str(), "%d %d %c", &msg, &wp, &c);
+      char txt[2];
+      txt[0] = c;
+      txt[1] = '\0';
+
+      SendMsg(msg, wp, (wxIntPtr)txt);
+    }
+
+    wxLogStatus(_("Macro played back"));
+  }
 }
 
 void wxExSTC::MacroStartRecord()
 {
-  wxASSERT(!m_MacroIsRecording);
+  if (m_vi.GetIsActive())
+  {
+    m_vi.MacroStartRecording();
+  }
+  else
+  {
+    wxASSERT(!m_MacroIsRecording);
 
-  m_MacroIsRecording = true;
+    m_MacroIsRecording = true;
 
-  m_Macro.clear();
+    m_Macro.clear();
 
-  wxLogStatus(_("Macro recording"));
-
-  wxStyledTextCtrl::StartRecord();
+    wxStyledTextCtrl::StartRecord();
+  
+    wxLogStatus(_("Macro recording"));
+  }
 }
 
 void wxExSTC::MacroStopRecord()
 {
-  wxASSERT(m_MacroIsRecording);
-
-  m_MacroIsRecording = false;
-
-  if (!m_Macro.empty())
+  if (m_vi.GetIsActive())
   {
-    wxLogStatus(_("Macro is recorded"));
+    m_vi.MacroStopRecording();
   }
+  else
+  {
+    wxASSERT(m_MacroIsRecording);
 
-  wxStyledTextCtrl::StopRecord();
+    m_MacroIsRecording = false;
+
+    if (!m_Macro.empty())
+    {
+      wxLogStatus(_("Macro is recorded"));
+    }
+
+    wxStyledTextCtrl::StopRecord();
+  }
 }
   
 void wxExSTC::MarkerAddChange(int line)

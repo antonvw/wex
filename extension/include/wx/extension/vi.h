@@ -48,17 +48,23 @@ public:
   /// A macro has been recorded.
   bool MacroIsRecorded() const;
 
-  /// A marco is now being recorded.
+  /// A macro is now being recorded.
   bool MacroIsRecording() const;
 
   /// Plays back a recorded macro.
-  void MacroPlayback();
+  /// If specified macro is empty,
+  /// it asks for the name of the macro.
+  void MacroPlayback(
+    const wxString& macro = wxEmptyString,
+    int repeat = 1);
   
   /// Start recording a macro.  
-  void MacroStartRecording() const;
+  /// If specified macro is empty,
+  /// it asks for the name of the macro.
+  void MacroStartRecording(const wxString& macro = wxEmptyString);
   
-  /// Stop recording a macro.
-  void MacroStopRecording() const;
+  /// Stop recording current macro.
+  void MacroStopRecording();
 
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -128,6 +134,7 @@ private:
   
   bool m_InsertMode;
   bool m_IsActive; // are we actively using vi mode?
+  bool m_IsRecording; // are we recording a macro
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
@@ -139,6 +146,7 @@ private:
   
   wxString m_Command;
   wxString m_InsertText;
+  wxString m_Macro; // current macro being recorded, or played back
 };
 #endif // wxUSE_GUI
 #endif
