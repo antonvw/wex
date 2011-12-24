@@ -145,6 +145,13 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     return false;
   }
   
+  if (m_InsertMode && command.Last() != WXK_ESCAPE)
+  {
+    m_STC->AddText(command);
+    m_STC->MarkerAddChange(m_STC->GetCurrentLine());
+    return true;
+  }
+
   if (command.StartsWith(":"))
   {
     if (command.length() > 1)
@@ -360,6 +367,96 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     switch ((int)command.Last())
     {
+      case WXK_BACK:
+        if (!m_InsertMode)
+        {
+          m_STC->CharLeft();
+          handled = true;
+        }
+        else
+        {
+          if (m_InsertText.size() > 1)
+          {
+            m_InsertText.Truncate(m_InsertText.size() - 1);
+          }
+          
+          handled = false;
+        }
+        break;
+        
+      case WXK_ESCAPE:
+        if (m_InsertMode)
+        {
+          // Add extra inserts if necessary.        
+          for (int i = 1; i < m_InsertRepeatCount; i++)
+          {
+            m_STC->AddText(m_InsertText);
+          }
+          
+          m_STC->EndUndoAction();
+          
+          m_InsertMode = false;
+        }
+        else
+        {
+          wxBell();
+        }
+  
+        if (!m_STC->GetSelectedText().empty())
+        {
+          m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
+        }
+  
+        m_Command.clear();
+        break;
+  
+      case WXK_RETURN:
+        if (!m_InsertMode)
+        {
+          int repeat = atoi(m_Command.c_str());
+  
+          if (repeat == 0)
+          {
+            repeat++;
+          }
+    
+          for (int i = 0; i < repeat; i++) m_STC->LineDown();
+  
+          m_LastCommand = m_Command + m_STC->GetEOL();
+          m_Command.clear();
+        }
+        else
+        {
+          m_InsertText += command.Last();
+          handled = false;
+        }
+        break;
+      
+      case WXK_TAB:
+        if (m_Command.size() > 0 && wxRegEx("[0-9]*r").Matches(m_Command))
+        {
+          int repeat = atoi(m_Command.c_str());
+  
+          if (repeat == 0)
+          {
+            repeat++;
+          }
+    
+          m_STC->SetTargetStart(m_STC->GetCurrentPos());
+          m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
+          m_STC->ReplaceTarget(wxString('\t', repeat));
+          m_STC->MarkTargetChange();
+            
+          m_LastCommand = m_Command + "\t";
+          m_Command.clear();
+        }
+        else
+        {
+          // prevent TAB to be entered when not inserting
+          handled = !m_InsertMode;
+        }
+        break;
+  
       case 'a': 
       case 'i': 
       case 'o': 
@@ -1093,104 +1190,19 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
   {
     return false;
   }
-
-  bool handled = true;
-
-  switch (event.GetKeyCode())
+  
+  if (
+    event.GetKeyCode() == WXK_BACK ||
+    event.GetKeyCode() == WXK_ESCAPE ||
+    event.GetKeyCode() == WXK_RETURN ||
+    event.GetKeyCode() == WXK_TAB)
   {
-    case WXK_BACK:
-      if (!m_InsertMode)
-      {
-        m_STC->CharLeft();
-        handled = true;
-      }
-      else
-      {
-        if (m_InsertText.size() > 1)
-        {
-          m_InsertText.Truncate(m_InsertText.size() - 1);
-        }
-        
-        handled = false;
-      }
-      break;
-      
-    case WXK_ESCAPE:
-      if (m_InsertMode)
-      {
-        // Add extra inserts if necessary.        
-        for (int i = 1; i < m_InsertRepeatCount; i++)
-        {
-          m_STC->AddText(m_InsertText);
-        }
-        
-        m_STC->EndUndoAction();
-        m_InsertMode = false;
-      }
-      else
-      {
-        wxBell();
-      }
-
-      if (!m_STC->GetSelectedText().empty())
-      {
-        m_STC->SetSelection(m_STC->GetCurrentPos(), m_STC->GetCurrentPos());
-      }
-
-      m_Command.clear();
-      break;
-
-    case WXK_TAB:
-      if (m_Command.size() > 0 && wxRegEx("[0-9]*r").Matches(m_Command))
-      {
-        int repeat = atoi(m_Command.c_str());
-
-        if (repeat == 0)
-        {
-          repeat++;
-        }
-  
-        m_STC->SetTargetStart(m_STC->GetCurrentPos());
-        m_STC->SetTargetEnd(m_STC->GetCurrentPos() + repeat);
-        m_STC->ReplaceTarget(wxString('\t', repeat));
-        m_STC->MarkTargetChange();
-          
-        m_LastCommand = m_Command + "\t";
-        m_Command.clear();
-      }
-      else
-      {
-        // prevent TAB to be entered when not inserting
-        handled = !m_InsertMode;
-      }
-      break;
-
-    case WXK_RETURN:
-      if (!m_InsertMode)
-      {
-        int repeat = atoi(m_Command.c_str());
-
-        if (repeat == 0)
-        {
-          repeat++;
-        }
-  
-        for (int i = 0; i < repeat; i++) m_STC->LineDown();
-
-        m_LastCommand = m_Command + m_STC->GetEOL();
-        m_Command.clear();
-      }
-      else
-      {
-        m_InsertText += event.GetUnicodeKey();
-        handled = false;
-      }
-      break;
-      
-   default: handled = false;
+    return !DoCommand((char)event.GetKeyCode(), false);
   }
-
-  return !handled;
+  else
+  {
+    return true;
+  }
 }
 
 void wxExVi::Put(bool after) const
