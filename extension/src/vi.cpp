@@ -145,7 +145,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     return false;
   }
   
-  bool handled = true;
+  bool handled = false;
 
   switch ((int)command.Last())
   {
@@ -161,8 +161,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         {
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
-        
-        handled = false;
       }
       break;
       
@@ -190,6 +188,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       }
 
       m_Command.clear();
+      
+      handled = true;
       break;
 
     case WXK_RETURN:
@@ -206,11 +206,11 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
 
         m_LastCommand = m_Command + m_STC->GetEOL();
         m_Command.clear();
+        handled = true;
       }
       else
       {
         m_InsertText += command.Last();
-        handled = false;
       }
       break;
     
@@ -231,6 +231,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           
         m_LastCommand = m_Command + "\t";
         m_Command.clear();
+        handled = true;
       }
       else
       {
@@ -238,9 +239,6 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         handled = !m_InsertMode;
       }
       break;
-      
-      default:
-        handled = false;
   }
   
   if (!handled)
@@ -256,6 +254,8 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   {
     return true;
   }
+  
+  handled = true;
 
   if (command.StartsWith(":"))
   {
@@ -1211,7 +1211,17 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    return !DoCommand((char)event.GetKeyCode(), false);
+    const bool result = DoCommand((char)event.GetKeyCode(), false);
+    
+    if (result && MacroIsRecording())
+    {
+      if (!m_Macros[m_Macro].empty())
+      {
+        m_Macros[m_Macro] += wxString::Format("\n%c\n", (char)event.GetKeyCode());
+      }
+    }
+          
+    return !result;
   }
   else
   {
