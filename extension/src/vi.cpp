@@ -10,7 +10,9 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
+#include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
+#include <wx/xml/xml.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
@@ -715,11 +717,8 @@ bool wxExVi::ExecCommand(const wxString& command)
   {
     return false;
   }
-
-  if (MacroIsRecording())
-  {
-    m_Macros[m_Macro] += "\n" + command + "\n";
-  }
+  
+  MacroRecord(command);
 
   if (command == "$")
   {
@@ -843,10 +842,7 @@ bool wxExVi::ExecCommand(const wxString& command)
 
 bool wxExVi::FindNext(const wxString& text, bool find_next)
 {
-  if (MacroIsRecording())
-  {
-    m_Macros[m_Macro] += "\n" + text + "\n";
-  }
+  MacroRecord(text);
 
   return m_STC->FindNext(
      text,
@@ -1030,32 +1026,71 @@ void wxExVi::MacroPlayback(const wxString& macro, int repeat)
     return;
   }
   
-  bool error = false;
+  bool stop = false;
     
   for (int i = 0; i < repeat; i++)
   {
     wxStringTokenizer tkz(it->second, "\n");
     
-    while (tkz.HasMoreTokens() && !error)
+    while (tkz.HasMoreTokens() && !stop)
     { 
       const wxString command(tkz.GetNextToken());
 
       if (command == "/" || command == "?")
       {
-        error = FindNext(tkz.GetNextToken(), command == "/");
+        stop = !FindNext(tkz.GetNextToken(), command == "/");
       }
       else if (command == ":")
       {
-        error = ExecCommand(tkz.GetNextToken());
+        stop = !ExecCommand(tkz.GetNextToken());
       }
       else
       {
-        error = DoCommand(command, false);
+        stop = !DoCommand(command, false);
       }
     }
   }
 
-  wxLogStatus(!error ? _("Macro played back"): _("Macro aborted"));
+  wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
+}
+
+void wxExVi::MacroRecord(const wxString& text)
+{
+  if (MacroIsRecording())
+  {
+    m_Macros[m_Macro] += "\n" + text + "\n";
+  }
+}
+
+void wxExVi::MacroSaveDocument()
+{
+  wxXmlDocument doc;
+  
+  wxFileName fn(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + "macros.xml");
+      
+  if (!doc.Load(fn.GetFullPath()))
+  {
+    return;
+  }
+  
+  wxXmlNode* root = doc.GetRoot();
+ 
+  for (
+    std::map<wxString, wxString>::const_iterator it = m_Macros.begin();
+    it != m_Macros.end();
+    ++it)
+  {
+    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, it->first);
+    wxXmlNode* content = new wxXmlNode(element, wxXML_TEXT_NODE, it->first, it->second);
+  }
+  
+  doc.Save(fn.GetFullPath());
 }
 
 void wxExVi::MacroStartRecording(const wxString& macro)
@@ -1175,7 +1210,10 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       
       if (MacroIsRecording())
       {
-        m_Macros[m_Macro] += event.GetUnicodeKey();
+        if (!m_InsertMode && event.GetUnicodeKey() != 'q')
+        {
+          m_Macros[m_Macro] += event.GetUnicodeKey();
+        }
       }
 
       if (DoCommand(m_Command, false))

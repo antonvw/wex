@@ -505,6 +505,8 @@ void Frame::OnClose(wxCloseEvent& event)
       return;
     }
   }
+  
+  wxExVi::MacroSaveDocument();
 
   delete wxLog::SetActiveTarget(NULL);
   

@@ -315,6 +315,11 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
       if (!GetValue().empty())
       {
         wxExFindReplaceData::Get()->SetFindString(GetValue());
+        
+        if (m_vi != NULL)
+        {
+          m_vi->MacroRecord(GetValue());
+        }
       }
     }
     else if (m_vi != NULL)
