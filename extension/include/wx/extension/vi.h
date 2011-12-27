@@ -64,6 +64,12 @@ public:
     const wxString& macro = wxEmptyString,
     int repeat = 1);
   
+  /// Records text within a macro.
+  void MacroRecord(const wxString& text);
+  
+  /// Saves all macros to xml document.
+  static void MacroSaveDocument();
+
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.
@@ -71,7 +77,7 @@ public:
   
   /// Stop recording current macro.
   void MacroStopRecording();
-
+  
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
   /// This means that the char is not handled by vi,
