@@ -989,6 +989,33 @@ bool wxExVi::MacroIsRecording() const
   return m_IsRecording;
 }
 
+void wxExVi::MacroLoadDocument()
+{
+  wxXmlDocument doc;
+  
+  wxFileName fn(
+#ifdef wxExUSE_PORTABLE
+      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
+#else
+      wxStandardPaths::Get().GetUserDataDir()
+#endif
+      + wxFileName::GetPathSeparator() + "macros.xml");
+      
+  if (!doc.Load(fn.GetFullPath()))
+  {
+    return;
+  }
+  
+  wxXmlNode* root = doc.GetRoot();
+  wxXmlNode* child = root->GetChildren();
+  
+  while (child)
+  {
+    m_Macros[child->GetName()] = child->GetNodeContent();
+    child = child->GetNext();
+  }
+}
+
 void wxExVi::MacroPlayback(const wxString& macro, int repeat)
 {
   wxString choice(macro);
@@ -1080,10 +1107,17 @@ void wxExVi::MacroSaveDocument()
   }
   
   wxXmlNode* root = doc.GetRoot();
+  wxXmlNode* child;
+  
+  while (child = root->GetChildren())
+  {
+    root->RemoveChild(child);
+    delete child;
+  }
  
   for (
-    std::map<wxString, wxString>::const_iterator it = m_Macros.begin();
-    it != m_Macros.end();
+    std::map<wxString, wxString>::reverse_iterator it = m_Macros.rbegin();
+    it != m_Macros.rend();
     ++it)
   {
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, it->first);

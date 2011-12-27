@@ -57,6 +57,9 @@ public:
   /// A macro is now being recorded.
   bool MacroIsRecording() const;
 
+  /// Loads all macros from xml document.
+  static void MacroLoadDocument();
+
   /// Plays back a recorded macro.
   /// If specified macro is empty,
   /// it asks for the name of the macro.

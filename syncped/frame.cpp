@@ -131,6 +131,8 @@ Frame::Frame(bool open_recent)
 #endif
       wxTheApp->GetAppName().Lower() + ".log").GetFullPath())
 {
+  wxExVi::MacroLoadDocument();
+  
   m_OldLog = wxLog::SetActiveTarget(
     new wxExLogStderr(fopen(m_LogFile.c_str() , "a"), this));
     
