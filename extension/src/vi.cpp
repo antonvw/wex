@@ -145,23 +145,18 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
     return false;
   }
   
-  bool handled = false;
-
   switch ((int)command.Last())
   {
     case WXK_BACK:
-      if (!m_InsertMode)
-      {
-        m_STC->CharLeft();
-        handled = true;
-      }
-      else
+      if (m_InsertMode)
       {
         if (m_InsertText.size() > 1)
         {
           m_InsertText.Truncate(m_InsertText.size() - 1);
         }
       }
+      m_STC->CharLeft();
+      return true;
       break;
       
     case WXK_ESCAPE:
@@ -188,8 +183,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       }
 
       m_Command.clear();
-      
-      handled = true;
+      return true;
       break;
 
     case WXK_RETURN:
@@ -205,13 +199,14 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         for (int i = 0; i < repeat; i++) m_STC->LineDown();
 
         m_LastCommand = m_Command + m_STC->GetEOL();
-        m_Command.clear();
-        handled = true;
       }
       else
       {
         m_InsertText += command.Last();
       }
+
+      m_Command.clear();
+      return !m_InsertMode;
       break;
     
     case WXK_TAB:
@@ -231,31 +226,24 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
           
         m_LastCommand = m_Command + "\t";
         m_Command.clear();
-        handled = true;
+        return true;
       }
       else
       {
         // prevent TAB to be entered when not inserting
-        handled = !m_InsertMode;
+       return !m_InsertMode;
       }
       break;
   }
   
-  if (!handled)
+  if (m_InsertMode)
   {
-    if (m_InsertMode)
-    {
-      m_STC->AddText(command);
-      m_STC->MarkerAddChange(m_STC->GetCurrentLine());
-      return true;
-    }
-  }
-  else
-  {
+    m_STC->AddText(command);
+    m_STC->MarkerAddChange(m_STC->GetCurrentLine());
     return true;
   }
   
-  handled = true;
+  bool handled = true;
 
   if (command.StartsWith(":"))
   {
@@ -728,6 +716,11 @@ bool wxExVi::ExecCommand(const wxString& command)
     return false;
   }
 
+  if (MacroIsRecording())
+  {
+    m_Macros[m_Macro] += "\n" + command + "\n";
+  }
+
   if (command == "$")
   {
     m_STC->DocumentEnd();
@@ -846,6 +839,19 @@ bool wxExVi::ExecCommand(const wxString& command)
   
   m_Frame->HideViBar();
   return true;
+}
+
+bool wxExVi::FindNext(const wxString& text, bool find_next)
+{
+  if (MacroIsRecording())
+  {
+    m_Macros[m_Macro] += "\n" + text + "\n";
+  }
+
+  return m_STC->FindNext(
+     text,
+     GetSearchFlags(),
+     find_next);
 }
 
 void wxExVi::FindWord(bool find_next) const
@@ -1023,18 +1029,33 @@ void wxExVi::MacroPlayback(const wxString& macro, int repeat)
     wxLogStatus(_("Unknown macro"));
     return;
   }
+  
+  bool error = false;
     
   for (int i = 0; i < repeat; i++)
   {
     wxStringTokenizer tkz(it->second, "\n");
     
-    while (tkz.HasMoreTokens())
-    {
-      DoCommand(tkz.GetNextToken(), false);
+    while (tkz.HasMoreTokens() && !error)
+    { 
+      const wxString command(tkz.GetNextToken());
+
+      if (command == "/" || command == "?")
+      {
+        error = FindNext(tkz.GetNextToken(), command == "/");
+      }
+      else if (command == ":")
+      {
+        error = ExecCommand(tkz.GetNextToken());
+      }
+      else
+      {
+        error = DoCommand(command, false);
+      }
     }
   }
-  
-  wxLogStatus(_("Macro played back"));
+
+  wxLogStatus(!error ? _("Macro played back"): _("Macro aborted"));
 }
 
 void wxExVi::MacroStartRecording(const wxString& macro)

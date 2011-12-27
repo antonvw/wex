@@ -319,10 +319,7 @@ void wxExViTextCtrl::OnEnter(wxCommandEvent& event)
     }
     else if (m_vi != NULL)
     {
-      m_Found = m_vi->GetSTC()->FindNext(
-        GetValue(),
-        m_vi->GetSearchFlags(),
-        m_Frame->GetViCommandIsFindNext());
+      m_Found = m_vi->FindNext(GetValue(), m_Frame->GetViCommandIsFindNext());
     }
       
     m_Frame->HideViBar();

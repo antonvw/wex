@@ -1685,7 +1685,12 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
     return;
   }
 
-  if (!m_vi.GetIsActive() || m_vi.OnKeyDown(event))
+  if (!m_vi.GetIsActive())
+  { 
+    event.Skip();
+  }
+
+  if (m_vi.OnKeyDown(event))
   {
     if (event.GetKeyCode() == WXK_RETURN)
     {
