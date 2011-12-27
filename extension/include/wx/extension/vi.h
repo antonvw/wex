@@ -33,6 +33,12 @@ public:
   /// Returns true if the command was handled.
   bool ExecCommand(const wxString& command);
 
+  /// Finds next.
+  bool FindNext(
+    /// text to find
+    const wxString& text, 
+    /// finds next or previous
+    bool find_next = true);
   /// Returns whether we are in insert mode.
   bool GetInsertMode() const {return m_InsertMode;};
   
