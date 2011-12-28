@@ -33,11 +33,8 @@ public:
   /// Clears macro.
   void Clear(const wxString& macro);
   
-  /// Is macro available.
-  bool Contains(const wxString& macro) const;
-  
   /// Returns macro contents.
-  const wxString& Get(const wxString& macro) const;
+  const wxString Get(const wxString& macro) const;
   
   /// Returns all macros as an array of strings.
   const wxArrayString Get() const;
@@ -45,16 +42,19 @@ public:
   /// Returns separator.
   const char GetSeparator() const {return m_Separator;};
   
+  /// Is macro available.
+  bool IsAvailable(const wxString& macro =wxEmptyString) const;
+  
   /// Loads all macros from xml document.
   static void LoadDocument();
   
   /// Saves all macros to xml document.
   static void SaveDocument();
 private:  
-  const wxFileName GetFileName() const;
-  bool Load(wxXmlDocument& doc);
+  static const wxFileName GetFileName();
+  static bool Load(wxXmlDocument& doc);
     
-  std::map <wxString, wxString> m_Macros;
+  static std::map <wxString, wxString> m_Macros;
   const char m_Separator;
 };
 #endif // wxUSE_GUI

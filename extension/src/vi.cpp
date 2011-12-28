@@ -1010,17 +1010,21 @@ bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
     choice = dialog.GetStringSelection();
   }
   
-  if (!m_Macros.Contains(choice))
+  if (!m_Macros.IsAvailable(choice))
   {
     wxLogStatus(_("Unknown macro"));
     return false;
   }
   
+  m_Macro = choice;
+  
+  m_STC->BeginUndoAction();
+  
   bool stop = false;
     
   for (int i = 0; i < repeat; i++)
   {
-    wxStringTokenizer tkz(m_Macros.Get(choice), m_Macros.GetSeparator());
+    wxStringTokenizer tkz(m_Macros.Get(m_Macro), m_Macros.GetSeparator());
     
     while (tkz.HasMoreTokens() && !stop)
     { 
@@ -1041,6 +1045,8 @@ bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
     }
   }
 
+  m_STC->EndUndoAction();
+  
   wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
   
   return !stop;
@@ -1065,7 +1071,7 @@ void wxExVi::MacroStartRecording(const wxString& macro)
   
   if (choice.empty())
   {
-    wxTextEntryDialog dlg(this,
+    wxTextEntryDialog dlg(m_STC,
       _("Input") + ":",
       _("Macro"),
       m_Macro);
@@ -1198,7 +1204,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         
         if (MacroIsRecording())
         {
-          if (!m_Macros[m_Macro].empty())
+          if (m_Macros.IsAvailable(m_Macro))
           {
             m_Macros.AddSeparator(m_Macro);
           }

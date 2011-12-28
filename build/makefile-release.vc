@@ -82,6 +82,7 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_indicator.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexer.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexers.obj \
+	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_link.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listitem.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listview.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_managedframe.obj \
@@ -107,7 +108,8 @@ WXEX_OBJECTS =  \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vcscommand.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vcsentry.obj \
 	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_version.obj \
-	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vi.obj
+	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vi.obj \
+	$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vimacros.obj
 WXEX_REP_CXXFLAGS = /MD /DWIN32 $(____WX_SHARED) $(__WXUNICODE_DEFINE_p) \
 	/D__WXMSW__ /I$(WX_DIR)$(__WXLIBPATH_FILENAMES_1)\msw$(WXLIBPOSTFIX) \
 	/I$(WX_DIR)\include /O2 \
@@ -482,6 +484,9 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexer.obj: .
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_lexers.obj: .\..\extension\src\lexers.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\lexers.cpp
 
+$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_link.obj: .\..\extension\src\link.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\link.cpp
+
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_listitem.obj: .\..\extension\src\listitem.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\listitem.cpp
 
@@ -559,6 +564,9 @@ $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_version.obj:
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vi.obj: .\..\extension\src\vi.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\vi.cpp
+
+$(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_vimacros.obj: .\..\extension\src\vimacros.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_CXXFLAGS) .\..\extension\src\vimacros.cpp
 
 $(COMPILER_PREFIX)msw$(WXLIBPOSTFIX)$(_BUILDDIR_SHARED_SUFFIX)\wxex_rep_dir.obj: .\..\extension\src\report\dir.cpp
 	$(CXX) /c /nologo /TP /Fo$@ $(WXEX_REP_CXXFLAGS) .\..\extension\src\report\dir.cpp
