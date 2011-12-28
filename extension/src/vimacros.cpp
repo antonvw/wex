@@ -18,7 +18,7 @@
 std::map <wxString, wxString> wxExViMacros::m_Macros;
 
 wxExViMacros::wxExViMacros()
-  : m_Separator('\n')
+  : m_Separator(0x1c)
 {
 }
 
@@ -69,7 +69,11 @@ const wxArrayString wxExViMacros::Get() const
     it != m_Macros.end();
     ++it)
   {
-    as.Add(it->first);
+    // Add only if we have content.
+    if (!it->second.empty())
+    {
+      as.Add(it->first);
+    }
   }
    
   return as;
@@ -107,7 +111,9 @@ bool wxExViMacros::Load(wxXmlDocument& doc)
     return false;
   } 
   
-  if (!doc.Load(GetFileName().GetFullPath()))
+  if (!doc.Load(
+    GetFileName().GetFullPath(),
+    "UTF-16"))
   {
     return false;
   }

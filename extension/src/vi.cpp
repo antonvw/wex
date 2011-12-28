@@ -1095,10 +1095,7 @@ void wxExVi::MacroStopRecording()
 {
   m_IsRecording = false;
   
-  if (!m_Macros.Get(m_Macro).empty())
-  {
-    wxLogStatus(_("Macro is recorded"));
-  }
+  wxLogStatus(_("Macro is recorded"));
 }
   
 bool wxExVi::Move(
