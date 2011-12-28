@@ -131,7 +131,7 @@ Frame::Frame(bool open_recent)
 #endif
       wxTheApp->GetAppName().Lower() + ".log").GetFullPath())
 {
-  wxExVi::MacroLoadDocument();
+  wxExViMacros::LoadDocument();
   
   m_OldLog = wxLog::SetActiveTarget(
     new wxExLogStderr(fopen(m_LogFile.c_str() , "a"), this));
@@ -508,7 +508,7 @@ void Frame::OnClose(wxCloseEvent& event)
     }
   }
   
-  wxExVi::MacroSaveDocument();
+  wxExViMacros::SaveDocument();
 
   delete wxLog::SetActiveTarget(NULL);
   
@@ -707,9 +707,9 @@ void Frame::OnCommand(wxCommandEvent& event)
   case ID_EDIT_ADD_HEADER: if (editor != NULL) AddHeader(editor); break;
   case ID_EDIT_INSERT_SEQUENCE: if (editor != NULL) SequenceDialog(editor); break;
 
-  case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->MacroPlayback(); break;
-  case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->MacroStartRecord(); break;
-  case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->MacroStopRecord(); break;
+  case ID_EDIT_MACRO_PLAYBACK: if (editor != NULL) editor->GetVi().MacroPlayback(); break;
+  case ID_EDIT_MACRO_START_RECORD: if (editor != NULL) editor->GetVi().MacroStartRecording(); break;
+  case ID_EDIT_MACRO_STOP_RECORD: if (editor != NULL) editor->GetVi().MacroStopRecording(); break;
   
   case ID_EDIT_NEXT:
     if (m_Editors->GetSelection() == 
@@ -1035,13 +1035,13 @@ void Frame::OnUpdateUI(wxUpdateUIEvent& event)
           break;
 
         case ID_EDIT_MACRO_PLAYBACK:
-          event.Enable(editor->MacroIsRecorded() && !editor->MacroIsRecording());
+          event.Enable(editor->GetVi().MacroIsRecorded() && !editor->GetVi().MacroIsRecording());
           break;
         case ID_EDIT_MACRO_START_RECORD:
-          event.Enable(editor->GetLength() > 0 && !editor->MacroIsRecording());
+          event.Enable(editor->GetLength() > 0 && !editor->GetVi().MacroIsRecording());
           break;
         case ID_EDIT_MACRO_STOP_RECORD:
-          event.Enable(editor->MacroIsRecording());
+          event.Enable(editor->GetVi().MacroIsRecording());
           break;
 
         case ID_EDIT_TOGGLE_FOLD:

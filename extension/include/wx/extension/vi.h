@@ -11,6 +11,7 @@
 #include <map>
 #include <wx/extension/indicator.h>
 #include <wx/extension/marker.h>
+#include <wx/extension/vimacros.h>
 
 #if wxUSE_GUI
 
@@ -38,7 +39,8 @@ public:
     /// text to find
     const wxString& text, 
     /// finds next or previous
-    bool find_next = true);
+    bool find_next = true);
+
   /// Returns whether we are in insert mode.
   bool GetInsertMode() const {return m_InsertMode;};
   
@@ -52,27 +54,26 @@ public:
   wxExSTC* GetSTC() {return m_STC;};
   
   /// A macro has been recorded.
-  bool MacroIsRecorded() const;
+  /// If you do not specify a macro, then
+  /// returns true if any macro has been recorded,
+  /// otherwise true if specified macro has been recorded.
+  bool MacroIsRecorded(const wxString& macro = wxEmptyString) const {
+    return m_Macros.IsRecorded();};
 
   /// A macro is now being recorded.
   bool MacroIsRecording() const;
 
-  /// Loads all macros from xml document.
-  static void MacroLoadDocument();
-
   /// Plays back a recorded macro.
   /// If specified macro is empty,
   /// it asks for the name of the macro.
-  void MacroPlayback(
+  /// Returns true if the macro was played back succesfully.
+  bool MacroPlayback(
     const wxString& macro = wxEmptyString,
     int repeat = 1);
   
   /// Records text within a macro.
   void MacroRecord(const wxString& text);
   
-  /// Saves all macros to xml document.
-  static void MacroSaveDocument();
-
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.
@@ -141,7 +142,7 @@ private:
 
   static wxString m_LastCommand;
   static wxString m_LastFindCharCommand;
-  static std::map <wxString, wxString> m_Macros;
+  static wxExViMacros m_Macros;
 
   const wxExMarker m_MarkerSymbol;
   

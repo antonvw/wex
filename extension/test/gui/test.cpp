@@ -710,17 +710,6 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT( lexer.ApplyLexer("cpp", stc, false));
   CPPUNIT_ASSERT(!lexer.ApplyLexer("xyz", stc, false));
   
-  CPPUNIT_ASSERT(!stc->MacroIsRecording());
-  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
-  
-  stc->MacroStartRecord();
-  CPPUNIT_ASSERT( stc->MacroIsRecording());
-  CPPUNIT_ASSERT(!stc->MacroIsRecorded());
-  
-  stc->MacroStopRecord();
-  CPPUNIT_ASSERT(!stc->MacroIsRecording());
-  CPPUNIT_ASSERT(!stc->MacroIsRecorded()); // still no macro
-  
   // do the same test as with wxExFile in base for a binary file
   CPPUNIT_ASSERT(stc->Open(wxExFileName(TEST_BIN)));
   CPPUNIT_ASSERT(stc->GetFlags() == 0);
@@ -942,6 +931,29 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT( vi->OnChar(event));
   CPPUNIT_ASSERT( vi->OnChar(event));
   CPPUNIT_ASSERT( vi->OnChar(event));
+  
+  CPPUNIT_ASSERT(!vi->MacroIsRecording());
+  CPPUNIT_ASSERT(!vi->MacroIsRecorded());
+  
+  vi->MacroStartRecording("a");
+  CPPUNIT_ASSERT( vi->MacroIsRecording());
+  CPPUNIT_ASSERT(!vi->MacroIsRecorded("a"));
+  
+  vi->MacroStopRecording();
+  CPPUNIT_ASSERT(!vi->MacroIsRecording());
+  CPPUNIT_ASSERT(!vi->MacroIsRecorded("a")); // still no macro
+  
+  vi->MacroStartRecording("a");
+  CPPUNIT_ASSERT( vi->OnChar(event));
+  vi->MacroStopRecording();
+  
+  CPPUNIT_ASSERT(!vi->MacroIsRecording());
+  CPPUNIT_ASSERT( vi->MacroIsRecorded("a"));
+  
+  CPPUNIT_ASSERT(!vi->MacroIsRecorded("b"));
+  
+  CPPUNIT_ASSERT( vi->MacroPlayback("a"));
+  CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
 }
   
 wxExAppTestSuite::wxExAppTestSuite()
