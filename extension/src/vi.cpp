@@ -10,9 +10,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/config.h>
-#include <wx/stdpaths.h>
 #include <wx/tokenzr.h>
-#include <wx/xml/xml.h>
 #include <wx/extension/vi.h>
 #include <wx/extension/defs.h>
 #include <wx/extension/frd.h>
@@ -27,7 +25,7 @@
 
 wxString wxExVi::m_LastCommand;
 wxString wxExVi::m_LastFindCharCommand;
-std::map <wxString, wxString> wxExVi::m_Macros;
+wxExViMacros wxExVi::m_Macros;
 
 wxExVi::wxExVi(wxExSTC* stc)
   : m_STC(stc)
@@ -452,6 +450,10 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       MacroStartRecording(command.Mid(1));
     }
   } 
+  else if (command.Matches("*@@"))
+  {
+    MacroPlayback(m_Macro, repeat);
+  }
   else if (command.Matches("*@?"))
   {
     MacroPlayback(command.AfterFirst('@'), repeat);
@@ -979,85 +981,46 @@ void wxExVi::InsertMode(
   }
 }
 
-bool wxExVi::MacroIsRecorded() const
-{
-  return !m_Macros.empty();
-}
-
 bool wxExVi::MacroIsRecording() const
 {
   return m_IsRecording;
 }
 
-void wxExVi::MacroLoadDocument()
+bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
 {
-  wxXmlDocument doc;
-  
-  wxFileName fn(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "macros.xml");
-      
-  if (!doc.Load(fn.GetFullPath()))
+  if (!m_IsActive)
   {
-    return;
+    return false;
   }
   
-  wxXmlNode* root = doc.GetRoot();
-  wxXmlNode* child = root->GetChildren();
-  
-  while (child)
-  {
-    m_Macros[child->GetName()] = child->GetNodeContent();
-    child = child->GetNext();
-  }
-}
-
-void wxExVi::MacroPlayback(const wxString& macro, int repeat)
-{
   wxString choice(macro);
   
   if (choice.empty())
   {
-    wxArrayString choices;
-    
-    for (
-      std::map<wxString, wxString>::const_iterator it = m_Macros.begin();
-      it != m_Macros.end();
-      ++it)
-    {
-      choices.Add(it->first);
-    }
-
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
       _("Select a macro"),
-      choices);
+      m_Macros.Get());
       
     if (dialog.ShowModal() != wxID_OK)
     {
-      return;
+      return false;
     }
     
     choice = dialog.GetStringSelection();
   }
   
-  std::map<wxString, wxString>::const_iterator it = m_Macros.find(choice);
-      
-  if (it == m_Macros.end())
+  if (!m_Macros.Contains(choice))
   {
     wxLogStatus(_("Unknown macro"));
-    return;
+    return false;
   }
   
   bool stop = false;
     
   for (int i = 0; i < repeat; i++)
   {
-    wxStringTokenizer tkz(it->second, "\n");
+    wxStringTokenizer tkz(m_Macros.Get(choice), m_Macros.GetSeparator());
     
     while (tkz.HasMoreTokens() && !stop)
     { 
@@ -1079,82 +1042,44 @@ void wxExVi::MacroPlayback(const wxString& macro, int repeat)
   }
 
   wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
+  
+  return !stop;
 }
 
 void wxExVi::MacroRecord(const wxString& text)
 {
   if (MacroIsRecording())
   {
-    m_Macros[m_Macro] += "\n" + text + "\n";
+    m_Macros.Add(m_Macro, text);
   }
-}
-
-void wxExVi::MacroSaveDocument()
-{
-  wxXmlDocument doc;
-  
-  wxFileName fn(
-#ifdef wxExUSE_PORTABLE
-      wxPathOnly(wxStandardPaths::Get().GetExecutablePath())
-#else
-      wxStandardPaths::Get().GetUserDataDir()
-#endif
-      + wxFileName::GetPathSeparator() + "macros.xml");
-      
-  if (!doc.Load(fn.GetFullPath()))
-  {
-    return;
-  }
-  
-  wxXmlNode* root = doc.GetRoot();
-  wxXmlNode* child;
-  
-  while (child = root->GetChildren())
-  {
-    root->RemoveChild(child);
-    delete child;
-  }
- 
-  for (
-    std::map<wxString, wxString>::reverse_iterator it = m_Macros.rbegin();
-    it != m_Macros.rend();
-    ++it)
-  {
-    wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, it->first);
-    wxXmlNode* content = new wxXmlNode(element, wxXML_TEXT_NODE, it->first, it->second);
-  }
-  
-  doc.Save(fn.GetFullPath());
 }
 
 void wxExVi::MacroStartRecording(const wxString& macro)
 {
+  if (!m_IsActive)
+  {
+    return;
+  }
+  
   wxString choice(macro);
   
   if (choice.empty())
   {
-    wxArrayString choices;
-    
-    for (int i = 'a'; i <= 'z'; i++)
-    {
-      choices.Add(wxString::Format("%c", i));
-    }
-
-    wxSingleChoiceDialog dialog(m_STC,
-      _("Input") + ":", 
-      _("Select a macro"),
-      choices);
-      
-    if (dialog.ShowModal() != wxID_OK)
+    wxTextEntryDialog dlg(this,
+      _("Input") + ":",
+      _("Macro"),
+      m_Macro);
+  
+    if (dlg.ShowModal() != wxID_OK)
     {
       return;
     }
     
-    choice = dialog.GetStringSelection();
+    choice = dlg.GetValue();
   }
   
   m_Macro = choice;
-  m_Macros[m_Macro].clear();
+  m_Macros.Clear(m_Macro);
   m_IsRecording = true;
   
   wxLogStatus(_("Macro recording"));
@@ -1164,7 +1089,7 @@ void wxExVi::MacroStopRecording()
 {
   m_IsRecording = false;
   
-  if (!m_Macros[m_Macro].empty())
+  if (!m_Macros.Get(m_Macro).empty())
   {
     wxLogStatus(_("Macro is recorded"));
   }
@@ -1231,7 +1156,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     
     if (MacroIsRecording())
     {
-      m_Macros[m_Macro] += event.GetUnicodeKey();
+      m_Macros.Add(m_Macro, event.GetUnicodeKey());
     }
     
     return true;
@@ -1246,7 +1171,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       {
         if (!m_InsertMode && event.GetUnicodeKey() != 'q')
         {
-          m_Macros[m_Macro] += event.GetUnicodeKey();
+          m_Macros.Add(m_Macro, event.GetUnicodeKey());
         }
       }
 
@@ -1275,7 +1200,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         {
           if (!m_Macros[m_Macro].empty())
           {
-            m_Macros[m_Macro] += "\n";
+            m_Macros.AddSeparator(m_Macro);
           }
         }
         
@@ -1308,9 +1233,9 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
     
     if (result && MacroIsRecording())
     {
-      if (!m_Macros[m_Macro].empty())
+      if (!m_Macros.Get(m_Macro).empty())
       {
-        m_Macros[m_Macro] += wxString::Format("\n%c\n", (char)event.GetKeyCode());
+        m_Macros.Add(m_Macro, event.GetKeyCode(), true);
       }
     }
           

@@ -66,6 +66,7 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <sources>../extension/src/vcsentry.cpp</sources>
     <sources>../extension/src/version.cpp</sources>
     <sources>../extension/src/vi.cpp</sources>
+    <sources>../extension/src/vimacros.cpp</sources>
     
     <headers>../extension/include/wx/extension/app.h</headers>
     <headers>../extension/include/wx/extension/art.h</headers>
@@ -114,5 +115,6 @@ Copyright: (c) 2011 Anton van Wezenbeek
     <headers>../extension/include/wx/extension/vcsentry.h</headers>
     <headers>../extension/include/wx/extension/version.h</headers>
     <headers>../extension/include/wx/extension/vi.h</headers>
+    <headers>../extension/include/wx/extension/vimacros.h</headers>
   </lib>
 </makefile>

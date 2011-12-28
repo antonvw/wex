@@ -58,11 +58,9 @@ BEGIN_EVENT_TABLE(wxExSTC, wxStyledTextCtrl)
   EVT_STC_START_DRAG(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_DO_DROP(wxID_ANY, wxExSTC::OnStyledText)  
   EVT_STC_DWELLEND(wxID_ANY, wxExSTC::OnStyledText)
-  EVT_STC_MACRORECORD(wxID_ANY, wxExSTC::OnStyledText)
   EVT_STC_MARGINCLICK(wxID_ANY, wxExSTC::OnStyledText)
 END_EVENT_TABLE()
 
-std::vector <wxString> wxExSTC::m_Macro;
 wxExConfigDialog* wxExSTC::m_ConfigDialog = NULL;
 int wxExSTC::m_Zoom = -1;
 
@@ -1255,7 +1253,6 @@ void wxExSTC::Initialize()
   
   m_HexBuffer.clear(); // always, not only in hex mode
   
-  m_MacroIsRecording = false;
   m_SavedPos = 0;
   m_SavedSelectionStart = -1;
   m_SavedSelectionEnd = -1;
@@ -1354,90 +1351,6 @@ bool wxExSTC::LinkOpen(wxString* filename)
   return !path.empty();
 }
 
-bool wxExSTC::MacroIsRecorded() const 
-{
-  return m_vi.GetIsActive() ? m_vi.MacroIsRecorded(): !m_Macro.empty();
-}
-
-bool wxExSTC::MacroIsRecording() const 
-{
-  return m_vi.GetIsActive() ? m_vi.MacroIsRecording(): m_MacroIsRecording;
-}
-
-void wxExSTC::MacroPlayback()
-{
-  if (m_vi.GetIsActive())
-  {
-    m_vi.MacroPlayback();
-  }
-  else
-  {
-    wxASSERT(MacroIsRecorded());
-
-    for (
-#ifdef wxExUSE_CPP0X	
-      auto it = m_Macro.begin();
-#else
-      std::vector <wxString>::iterator it = m_Macro.begin();
-#endif	
-      it != m_Macro.end();
-      ++it)
-    {
-      int msg, wp;
-      char c = ' ';
-      sscanf((*it).c_str(), "%d %d %c", &msg, &wp, &c);
-      char txt[2];
-      txt[0] = c;
-      txt[1] = '\0';
-
-      SendMsg(msg, wp, (wxIntPtr)txt);
-    }
-
-    wxLogStatus(_("Macro played back"));
-  }
-}
-
-void wxExSTC::MacroStartRecord()
-{
-  if (m_vi.GetIsActive())
-  {
-    m_vi.MacroStartRecording();
-  }
-  else
-  {
-    wxASSERT(!m_MacroIsRecording);
-
-    m_MacroIsRecording = true;
-
-    m_Macro.clear();
-
-    wxStyledTextCtrl::StartRecord();
-  
-    wxLogStatus(_("Macro recording"));
-  }
-}
-
-void wxExSTC::MacroStopRecord()
-{
-  if (m_vi.GetIsActive())
-  {
-    m_vi.MacroStopRecording();
-  }
-  else
-  {
-    wxASSERT(m_MacroIsRecording);
-
-    m_MacroIsRecording = false;
-
-    if (!m_Macro.empty())
-    {
-      wxLogStatus(_("Macro is recorded"));
-    }
-
-    wxStyledTextCtrl::StopRecord();
-  }
-}
-  
 void wxExSTC::MarkerAddChange(int line)
 {
   if (
@@ -1790,24 +1703,6 @@ void wxExSTC::OnStyledText(wxStyledTextEvent& event)
     {
       CallTipCancel();
     }
-  }
-  else if (event.GetEventType() == wxEVT_STC_MACRORECORD)
-  {
-    wxString msg = wxString::Format("%d %d ", 
-      event.GetMessage(), 
-      event.GetWParam());
-
-    if (event.GetLParam() != 0)
-    {
-      char* txt = (char *)(wxIntPtr)event.GetLParam();
-      msg += txt;
-    }
-    else
-    {
-      msg += "0";
-    }
-
-    m_Macro.push_back(msg);
   }
   else if (event.GetEventType() == wxEVT_STC_MARGINCLICK)
   {

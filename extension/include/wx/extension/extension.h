@@ -52,5 +52,6 @@
 #include <wx/extension/vcsentry.h>
 #include <wx/extension/version.h>
 #include <wx/extension/vi.h>
+#include <wx/extension/vimacros.h>
 
 #endif

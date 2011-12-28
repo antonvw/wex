@@ -191,22 +191,6 @@ public:
   /// Indents lines from current position.
   void Indent(int lines, bool forward = true);
   
-  /// A macro has been recorded.
-  bool MacroIsRecorded() const;
-
-  /// A marco is now being recorded.
-  bool MacroIsRecording() const;
-
-  /// Plays back the last recorded macro.
-  void MacroPlayback();
-  
-  /// Starts recording the macro, and empties the previous one.
-  /// There is only one shared macro for all objects.
-  void MacroStartRecord();
-
-  /// Stops recording the macro.
-  void MacroStopRecord();
-  
   /// Marks specified line as changed.
   void MarkerAddChange(int line);
   
@@ -346,7 +330,6 @@ private:
   long m_Goto;
   
   bool m_AllowChangeIndicator;
-  bool m_MacroIsRecording;
 
   // We use a separate lexer here as well
   // (though wxExSTCFile offers one), as you can manually override
@@ -363,7 +346,6 @@ private:
 
   // All objects share the following:
   static wxExConfigDialog* m_ConfigDialog;
-  static std::vector <wxString> m_Macro;
   static int m_Zoom;
 
   DECLARE_EVENT_TABLE()
