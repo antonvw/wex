@@ -15,12 +15,14 @@
 
 #if wxUSE_GUI
 
+std::map <wxString, wxString> wxExViMacros::m_Macros;
+
 wxExViMacros::wxExViMacros()
-  : m_Separator('\n');
+  : m_Separator('\n')
 {
 }
 
-wxExViMacros::Add(const wxString& macro, char c, bool separated)
+void wxExViMacros::Add(const wxString& macro, char c, bool separated)
 {
   if (separated) m_Macros[macro] += m_Separator;
   
@@ -29,26 +31,19 @@ wxExViMacros::Add(const wxString& macro, char c, bool separated)
   if (separated) m_Macros[macro] += m_Separator;
 }
 
-wxExViMacros::Add(const wxString& macro, const wxString& text)
+void wxExViMacros::Add(const wxString& macro, const wxString& text)
 {
   m_Macros[macro] += m_Separator + text + m_Separator;
 }
 
-wxExViMacros::AddSeparator(const wxString& macro)
+void wxExViMacros::AddSeparator(const wxString& macro)
 {
   m_Macros[macro] += m_Separator;
 }
 
-bool wxExViMacros::Contains(const wxString& macro) const
+void wxExViMacros::Clear(const wxString& macro)
 {
-  if (macro.empty())
-  {
-    return !m_Macros.empty();
-  }
-  else
-  {
-    return !Get(macro).empty();
-  }
+  m_Macros[macro].clear();
 }
 
 const wxString wxExViMacros::Get(const wxString& macro) const
@@ -80,7 +75,7 @@ const wxArrayString wxExViMacros::Get() const
   return as;
 }
 
-const wxFileName wxExViMacros::GetFileName() const
+const wxFileName wxExViMacros::GetFileName()
 {
   return wxFileName(
 #ifdef wxExUSE_PORTABLE
@@ -89,6 +84,18 @@ const wxFileName wxExViMacros::GetFileName() const
       wxStandardPaths::Get().GetUserDataDir()
 #endif
       + wxFileName::GetPathSeparator() + "macros.xml");
+}
+
+bool wxExViMacros::IsAvailable(const wxString& macro) const
+{
+  if (macro.empty())
+  {
+    return !m_Macros.empty();
+  }
+  else
+  {
+    return !Get(macro).empty();
+  }
 }
 
 bool wxExViMacros::Load(wxXmlDocument& doc)

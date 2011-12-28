@@ -58,7 +58,7 @@ public:
   /// returns true if any macro has been recorded,
   /// otherwise true if specified macro has been recorded.
   bool MacroIsRecorded(const wxString& macro = wxEmptyString) const {
-    return m_Macros.IsRecorded();};
+    return m_Macros.IsAvailable(macro);};
 
   /// A macro is now being recorded.
   bool MacroIsRecording() const;
