@@ -28,6 +28,9 @@ public:
   /// Returns all macros (names) as an array of strings.
   const wxArrayString Get() const;
   
+  /// Returns contents of macro (for testing).
+  const std::vector< wxString > Get(const wxString& macro) const;
+  
   /// Returns current or last macro.
   const wxString& GetMacro() {return m_Macro;};
   
@@ -68,7 +71,6 @@ public:
 private:  
   static const wxFileName GetFileName();
   static bool Load(wxXmlDocument& doc);
-  const std::vector< wxString > Get(const wxString& macro) const;
     
   static std::map <wxString, std::vector< wxString > > m_Macros;
   bool m_IsRecording;

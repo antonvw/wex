@@ -485,7 +485,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("q?"))
   {
-    if (!m_IsRecording)
+    if (!m_Macros.IsRecording())
     {
       MacroStartRecording(command.Mid(1));
     }
@@ -554,7 +554,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'P': Put(false); break;
       
       case 'q': 
-        if (m_IsRecording)
+        if (m_Macros.IsRecording())
         {
           MacroStopRecording();
         }
@@ -1183,7 +1183,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
           m_LastCommand = m_Command;
         }
         
-        if (m_IsRecording)
+        if (m_Macros.IsRecording())
         {
           if (m_Macros.IsRecorded(m_Macro))
           {

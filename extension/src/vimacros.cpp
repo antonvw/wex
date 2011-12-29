@@ -11,6 +11,7 @@
 #endif
 #include <wx/stdpaths.h>
 #include <wx/extension/vimacros.h>
+#include <wx/extension/stc.h>
 #include <wx/extension/vi.h>
 
 #if wxUSE_GUI
@@ -33,7 +34,7 @@ const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
   }
   else
   {
-    std::vector empty;
+    std::vector<wxString> empty;
     return empty;
   }
 }
@@ -109,13 +110,13 @@ void wxExViMacros::LoadDocument()
   
     while (child)
     {
-      std::vector v;
+      std::vector<wxString> v;
       
       wxXmlNode* command = child->GetChildren();
   
       while (command)
       {
-        v.push_back(command->GetNodeContent();
+        v.push_back(command->GetNodeContent());
         command = command->GetNext();
       }
       
@@ -142,7 +143,7 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
   {
     for (
       std::vector<wxString>::const_iterator it = m_Macros[macro].begin();
-      it != m_Macros.end() && !stop;
+      it != m_Macros[macro].end() && !stop;
       ++it)
     { 
       const wxString command(*it);
@@ -151,7 +152,7 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
       {
         ++it;
         
-        if (it != m_Macros.end())
+        if (it != m_Macros[macro].end())
         {
           stop = !vi->FindNext(*it, command == "/");
         }
@@ -160,7 +161,7 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
       {
         ++it;
         
-        if (it != m_Macros.end())
+        if (it != m_Macros[macro].end())
         {
           stop = !vi->ExecCommand(*it);
         }
@@ -187,7 +188,7 @@ void wxExViMacros::Record(char c, bool separated)
   }
   else
   {
-    m_Macros[macro].back() += c;
+    m_Macros[m_Macro].back() += c;
   }
 }
 
@@ -228,12 +229,12 @@ void wxExViMacros::SaveDocument()
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, it->first);
     
     for (
-      std::vector<wxString>::iterator it = it2->second.begin();
+      std::vector<wxString>::iterator it2 = it->second.begin();
       it2 != it->second.end();
       ++it2)
     {
-      wxXmlNode* cmd = new wxXmlNode(root, wxXML_ELEMENT_NODE, "command");
-      wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", it2->second);
+      wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
+      wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", *it2);
     }
   }
   
