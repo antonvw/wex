@@ -1156,7 +1156,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
       
       if (m_Macros.IsRecording())
       {
-        if (!m_InsertMode && event.GetUnicodeKey() != 'q')
+        if (event.GetUnicodeKey() != 'q')
         {
           m_Macros.Record(event.GetUnicodeKey());
         }
@@ -1185,10 +1185,7 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
         
         if (m_Macros.IsRecording())
         {
-          if (m_Macros.IsRecorded(m_Macro))
-          {
-            m_Macros.RecordSeparator();
-          }
+          m_Macros.RecordNew();
         }
         
         m_Command.clear();

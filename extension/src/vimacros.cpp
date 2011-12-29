@@ -180,9 +180,14 @@ bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
   return !stop;
 }
 
-void wxExViMacros::Record(char c, bool separated)
+void wxExViMacros::Record(const wxString& text)
 {
-  if (separated) 
+  m_Macros[m_Macro].push_back(text);
+}
+
+void wxExViMacros::Record(char c, bool new_command)
+{
+  if (new_command) 
   {
     m_Macros[m_Macro].push_back(c);
   }
@@ -192,12 +197,7 @@ void wxExViMacros::Record(char c, bool separated)
   }
 }
 
-void wxExViMacros::Record(const wxString& text)
-{
-  m_Macros[m_Macro].push_back(text);
-}
-
-void wxExViMacros::RecordSeparator()
+void wxExViMacros::RecordNew()
 {
   m_Macros[m_Macro].push_back(wxEmptyString);
 }
@@ -232,9 +232,14 @@ void wxExViMacros::SaveDocument()
       std::vector<wxString>::iterator it2 = it->second.begin();
       it2 != it->second.end();
       ++it2)
-    {
-      wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
-      wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", *it2);
+    { 
+      const wxString contents(*it2);
+      
+      if (!contents.empty())
+      {
+        wxXmlNode* cmd = new wxXmlNode(element, wxXML_ELEMENT_NODE, "command");
+        wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", contents);
+      }
     }
   }
   
