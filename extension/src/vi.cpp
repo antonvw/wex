@@ -37,7 +37,6 @@ wxExVi::wxExVi(wxExSTC* stc)
   , m_SearchForward(true)
   , m_Frame(wxDynamicCast(wxTheApp->GetTopWindow(), wxExManagedFrame))
   , m_Process(new wxExProcess)
-  , m_IsRecording(false)
 {
   wxASSERT(m_Frame != NULL);
 }
@@ -45,6 +44,34 @@ wxExVi::wxExVi(wxExSTC* stc)
 wxExVi::~wxExVi()
 {
   delete m_Process;
+}
+
+bool wxExVi::ChangeNumber(bool inc)
+{
+  const int start = m_STC->WordStartPosition(m_STC->GetCurrentPos(), true);
+  const int end = m_STC->WordEndPosition(m_STC->GetCurrentPos(), true);
+  
+  wxString word = m_STC->GetTextRange(start, end);
+  
+  long number;
+  
+  if (word.ToLong(&number))
+  {
+    if (inc)
+    {
+      m_STC->wxStyledTextCtrl::Replace(start, end, 
+        wxString::Format("%d", number++));
+    }
+    else
+    {
+      m_STC->wxStyledTextCtrl::Replace(start, end, 
+        wxString::Format("%d", number--));
+    }
+    
+    return true;
+  }
+  
+  return false;
 }
 
 void wxExVi::Delete(int lines) const
@@ -147,6 +174,19 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   
   switch ((int)command.Last())
   {
+    case WXK_CONTROL_A:
+      if (ChangeNumber(true))
+      {
+        return true;
+      }
+      break;
+    case WXK_CONTROL_X:
+      if (ChangeNumber(false))
+      {
+        return true;
+      }
+      break;
+      
     case WXK_BACK:
       if (m_InsertMode)
       {
@@ -445,7 +485,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
   }
   else if (command.Matches("q?"))
   {
-    if (!MacroIsRecording())
+    if (!m_IsRecording)
     {
       MacroStartRecording(command.Mid(1));
     }
@@ -514,7 +554,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
       case 'P': Put(false); break;
       
       case 'q': 
-        if (MacroIsRecording())
+        if (m_IsRecording)
         {
           MacroStopRecording();
         }
@@ -577,7 +617,7 @@ bool wxExVi::DoCommand(const wxString& command, bool dot)
         break;
 
       case '.': DoCommand(m_LastCommand, true); break;
-      case ';': DoCommand(m_LastFindCharCommand, false); break;
+      case ';': Command(m_LastFindCharCommand); break;
       case '~': ToggleCase(); break;
       case '$': m_STC->LineEnd(); break;
       case '{': m_STC->ParaUp(); break;
@@ -981,11 +1021,6 @@ void wxExVi::InsertMode(
   }
 }
 
-bool wxExVi::MacroIsRecording() const
-{
-  return m_IsRecording;
-}
-
 bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
 {
   if (!m_IsActive)
@@ -999,7 +1034,7 @@ bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
   {
     wxSingleChoiceDialog dialog(m_STC,
       _("Input") + ":", 
-      _("Select a macro"),
+      _("Select Macro"),
       m_Macros.Get());
       
     if (dialog.ShowModal() != wxID_OK)
@@ -1010,54 +1045,14 @@ bool wxExVi::MacroPlayback(const wxString& macro, int repeat)
     choice = dialog.GetStringSelection();
   }
   
-  if (!m_Macros.IsAvailable(choice))
+  const bool ok = m_Macros.Playback(this, choice, repeat);
+  
+  if (ok)
   {
-    wxLogStatus(_("Unknown macro"));
-    return false;
+    m_Macro = choice;
   }
   
-  m_Macro = choice;
-  
-  m_STC->BeginUndoAction();
-  
-  bool stop = false;
-    
-  for (int i = 0; i < repeat; i++)
-  {
-    wxStringTokenizer tkz(m_Macros.Get(m_Macro), m_Macros.GetSeparator());
-    
-    while (tkz.HasMoreTokens() && !stop)
-    { 
-      const wxString command(tkz.GetNextToken());
-
-      if (command == "/" || command == "?")
-      {
-        stop = !FindNext(tkz.GetNextToken(), command == "/");
-      }
-      else if (command == ":")
-      {
-        stop = !ExecCommand(tkz.GetNextToken());
-      }
-      else
-      {
-        stop = !DoCommand(command, false);
-      }
-    }
-  }
-
-  m_STC->EndUndoAction();
-  
-  wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
-  
-  return !stop;
-}
-
-void wxExVi::MacroRecord(const wxString& text)
-{
-  if (MacroIsRecording())
-  {
-    m_Macros.Add(m_Macro, text);
-  }
+  return ok;
 }
 
 void wxExVi::MacroStartRecording(const wxString& macro)
@@ -1073,8 +1068,8 @@ void wxExVi::MacroStartRecording(const wxString& macro)
   {
     wxTextEntryDialog dlg(m_STC,
       _("Input") + ":",
-      _("Macro"),
-      m_Macro);
+      _("Enter Macro"),
+      m_Macros.GetMacro());
   
     if (dlg.ShowModal() != wxID_OK)
     {
@@ -1084,20 +1079,9 @@ void wxExVi::MacroStartRecording(const wxString& macro)
     choice = dlg.GetValue();
   }
   
-  m_Macro = choice;
-  m_Macros.Clear(m_Macro);
-  m_IsRecording = true;
-  
-  wxLogStatus(_("Macro recording"));
+  m_Macros.StartRecording(choice);
 }
 
-void wxExVi::MacroStopRecording()
-{
-  m_IsRecording = false;
-  
-  wxLogStatus(_("Macro is recorded"));
-}
-  
 bool wxExVi::Move(
   const wxString& begin_address, 
   const wxString& end_address, 
@@ -1157,9 +1141,9 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
   {
     m_InsertText += event.GetUnicodeKey();
     
-    if (MacroIsRecording())
+    if (m_Macros.IsRecording())
     {
-      m_Macros.Add(m_Macro, event.GetUnicodeKey());
+      m_Macros.Record(event.GetUnicodeKey());
     }
     
     return true;
@@ -1170,15 +1154,15 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
     {
       m_Command += event.GetUnicodeKey();
       
-      if (MacroIsRecording())
+      if (m_Macros.IsRecording())
       {
         if (!m_InsertMode && event.GetUnicodeKey() != 'q')
         {
-          m_Macros.Add(m_Macro, event.GetUnicodeKey());
+          m_Macros.Record(event.GetUnicodeKey());
         }
       }
 
-      if (DoCommand(m_Command, false))
+      if (Command(m_Command))
       {
         if ((m_Command.length() > 1 && !m_Command.Matches("m?")) || 
           m_Command == "a" || 
@@ -1199,11 +1183,11 @@ bool wxExVi::OnChar(const wxKeyEvent& event)
           m_LastCommand = m_Command;
         }
         
-        if (MacroIsRecording())
+        if (m_IsRecording)
         {
-          if (m_Macros.IsAvailable(m_Macro))
+          if (m_Macros.IsRecorded(m_Macro))
           {
-            m_Macros.AddSeparator(m_Macro);
+            m_Macros.RecordSeparator();
           }
         }
         
@@ -1223,23 +1207,21 @@ bool wxExVi::OnKeyDown(const wxKeyEvent& event)
 {
   if (!m_IsActive)
   {
-    return false;
+    return true;
   }
-  
-  if (
+  else if (
+    event.GetKeyCode() == WXK_CONTROL_A ||
+    event.GetKeyCode() == WXK_CONTROL_X ||
     event.GetKeyCode() == WXK_BACK ||
     event.GetKeyCode() == WXK_ESCAPE ||
     event.GetKeyCode() == WXK_RETURN ||
     event.GetKeyCode() == WXK_TAB)
   {
-    const bool result = DoCommand((char)event.GetKeyCode(), false);
+    const bool result = Command((char)event.GetKeyCode());
     
-    if (result && MacroIsRecording())
+    if (result && m_Macros.IsRecording())
     {
-      if (!m_Macros.Get(m_Macro).empty())
-      {
-        m_Macros.Add(m_Macro, event.GetKeyCode(), true);
-      }
+      m_Macros.Record(event.GetKeyCode(), true);
     }
           
     return !result;

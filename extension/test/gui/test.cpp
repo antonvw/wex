@@ -24,7 +24,7 @@ void wxExGuiTestFixture::setUp()
   wxExLexers* lexers = wxExLexers::Get();
 }
 
-void  wxExGuiTestFixture::testConfigDialog()
+void wxExGuiTestFixture::testConfigDialog()
 {
   std::vector <wxExConfigItem> items;
   
@@ -722,6 +722,14 @@ void wxExGuiTestFixture::testSTC()
   CPPUNIT_ASSERT(!stc->GetFile().GetContentsChanged());
 }
   
+void wxExGuiTestFixture::testSTCEntryDialog()
+{
+  wxExSTCEntryDialog dlg(wxTheApp->GetTopWindow(), "hello", "testing");
+  
+  CPPUNIT_ASSERT(dlg.GetText() == "testing");
+  CPPUNIT_ASSERT(dlg.GetTextRaw() == "testing");
+}
+
 void wxExGuiTestFixture::testSTCFile()
 {
   wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), wxExFileName(TEST_FILE));
@@ -956,6 +964,40 @@ void wxExGuiTestFixture::testVi()
   CPPUNIT_ASSERT(!vi->MacroPlayback("b"));
 }
   
+void wxExGuiTestFixture::testViMacros()
+{
+  wxExSTC* stc = new wxExSTC(wxTheApp->GetTopWindow(), "hello");
+  wxExVi* vi = &stc->GetVi();
+  
+  wxExViMacros macros;
+  
+  CPPUNIT_ASSERT(!macros->IsRecording());
+  CPPUNIT_ASSERT(!macros->IsRecorded());
+  
+  macros->StartRecording("a");
+  CPPUNIT_ASSERT( macros->IsRecording());
+  CPPUNIT_ASSERT(!macros->IsRecorded("a"));
+  
+  macros->StopRecording();
+  CPPUNIT_ASSERT(!macros->IsRecording());
+  CPPUNIT_ASSERT(!macros->IsRecorded("a")); // still no macro
+  
+  macros->StartRecording("a");
+  macros->Record('a');
+  macros->Record("test");
+  macros->RecordSeparator();
+  macros->StopRecording();
+  
+  CPPUNIT_ASSERT(!macros->IsRecording());
+  CPPUNIT_ASSERT( macros->IsRecorded("a"));
+  
+  CPPUNIT_ASSERT(!macros->IsRecorded("b"));
+  
+  CPPUNIT_ASSERT( macros->Playback(vi, "a"));
+  CPPUNIT_ASSERT( macros->Get("a").Contains("test"));
+  CPPUNIT_ASSERT(!macros->Playback(vi, "b"));
+}
+  
 wxExAppTestSuite::wxExAppTestSuite()
   : CppUnit::TestSuite("wxExtension test suite")
 {
@@ -1060,6 +1102,10 @@ wxExAppTestSuite::wxExAppTestSuite()
     &wxExGuiTestFixture::testSTC));
  
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testSTCEntryDialog",
+    &wxExGuiTestFixture::testSTCEntryDialog));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testSTCFile",
     &wxExGuiTestFixture::testSTCFile));
     
@@ -1086,4 +1132,8 @@ wxExAppTestSuite::wxExAppTestSuite()
   addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
     "testVi",
     &wxExGuiTestFixture::testVi));
+    
+  addTest(new CppUnit::TestCaller<wxExGuiTestFixture>(
+    "testViMacros",
+    &wxExGuiTestFixture::testViMacros));
 }

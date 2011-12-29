@@ -28,13 +28,18 @@ public:
   
   /// Destructor.
  ~wxExVi();
+ 
+  /// Executes command in command mode.
+  /// Returns true if the command was executed.
+  bool Command(const wxString& command) {return DoCommand(command, false);};
   
   /// Executes vi: command that was entered on the vi bar,
   /// or present as modeline command inside a file.
-  /// Returns true if the command was handled.
+  /// Returns true if the command was executed.
   bool ExecCommand(const wxString& command);
 
   /// Finds next.
+  /// Returns true if text was found.
   bool FindNext(
     /// text to find
     const wxString& text, 
@@ -58,10 +63,10 @@ public:
   /// returns true if any macro has been recorded,
   /// otherwise true if specified macro has been recorded.
   bool MacroIsRecorded(const wxString& macro = wxEmptyString) const {
-    return m_Macros.IsAvailable(macro);};
+    return m_IsActive && m_Macros.IsRecorded(macro);};
 
   /// A macro is now being recorded.
-  bool MacroIsRecording() const;
+  bool MacroIsRecording() const {m_Macros.IsRecording();};
 
   /// Plays back a recorded macro.
   /// If specified macro is empty,
@@ -72,15 +77,16 @@ public:
     int repeat = 1);
   
   /// Records text within a macro.
-  void MacroRecord(const wxString& text);
+  void MacroRecord(const wxString& text) {
+    if (m_Macros.IsRecording()) m_Macros.Record(text);};
   
   /// Start recording a macro.  
   /// If specified macro is empty,
   /// it asks for the name of the macro.
   void MacroStartRecording(const wxString& macro = wxEmptyString);
   
-  /// Stop recording current macro.
-  void MacroStopRecording();
+  /// Stops recording current macro.
+  void MacroStopRecording() {m_Macros.StopRecording();};
   
   /// Handles char events.
   /// Returns true if event is allowed to be skipped.
@@ -96,6 +102,7 @@ public:
   /// Set using vi mode.
   void Use(bool mode) {m_IsActive = mode;};
 private:
+  bool ChangeNumber(bool inc);
   void Delete(int lines) const;
   bool Delete(
     const wxString& begin_address, 
@@ -150,7 +157,6 @@ private:
   
   bool m_InsertMode;
   bool m_IsActive; // are we actively using vi mode?
-  bool m_IsRecording; // are we recording a macro
   bool m_SearchForward;
   
   int m_InsertRepeatCount;
@@ -162,7 +168,7 @@ private:
   
   wxString m_Command;
   wxString m_InsertText;
-  wxString m_Macro; // current macro being recorded, or played back
+  wxString m_Macro; // macro played back
 };
 #endif // wxUSE_GUI
 #endif

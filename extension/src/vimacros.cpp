@@ -10,45 +10,22 @@
 #include <wx/wx.h>
 #endif
 #include <wx/stdpaths.h>
-#include <wx/tokenzr.h>
 #include <wx/extension/vimacros.h>
+#include <wx/extension/vi.h>
 
 #if wxUSE_GUI
 
-std::map <wxString, wxString> wxExViMacros::m_Macros;
+std::map <wxString, std::vector< wxString > > wxExViMacros::m_Macros;
 
 wxExViMacros::wxExViMacros()
-  : m_Separator(0x1c)
+  : m_IsRecording(false)
 {
 }
 
-void wxExViMacros::Add(const wxString& macro, char c, bool separated)
+const std::vector< wxString > wxExViMacros::Get(const wxString& macro) const
 {
-  if (separated) m_Macros[macro] += m_Separator;
-  
-  m_Macros[macro] += c;
-  
-  if (separated) m_Macros[macro] += m_Separator;
-}
-
-void wxExViMacros::Add(const wxString& macro, const wxString& text)
-{
-  m_Macros[macro] += m_Separator + text + m_Separator;
-}
-
-void wxExViMacros::AddSeparator(const wxString& macro)
-{
-  m_Macros[macro] += m_Separator;
-}
-
-void wxExViMacros::Clear(const wxString& macro)
-{
-  m_Macros[macro].clear();
-}
-
-const wxString wxExViMacros::Get(const wxString& macro) const
-{
-  std::map<wxString, wxString>::const_iterator it = m_Macros.find(macro);
+  std::map<wxString, std::vector< wxString >>::const_iterator it = 
+    m_Macros.find(macro);
     
   if (it != m_Macros.end())
   {
@@ -56,7 +33,8 @@ const wxString wxExViMacros::Get(const wxString& macro) const
   }
   else
   {
-    return wxEmptyString;
+    std::vector empty;
+    return empty;
   }
 }
 
@@ -65,7 +43,8 @@ const wxArrayString wxExViMacros::Get() const
   wxArrayString as;
     
   for (
-    std::map<wxString, wxString>::const_iterator it = m_Macros.begin();
+    std::map<wxString, std::vector<wxString> >::const_iterator it = 
+      m_Macros.begin();
     it != m_Macros.end();
     ++it)
   {
@@ -90,7 +69,7 @@ const wxFileName wxExViMacros::GetFileName()
       + wxFileName::GetPathSeparator() + "macros.xml");
 }
 
-bool wxExViMacros::IsAvailable(const wxString& macro) const
+bool wxExViMacros::IsRecorded(const wxString& macro) const
 {
   if (macro.empty())
   {
@@ -111,9 +90,7 @@ bool wxExViMacros::Load(wxXmlDocument& doc)
     return false;
   } 
   
-  if (!doc.Load(
-    GetFileName().GetFullPath(),
-    "UTF-16"))
+  if (!doc.Load(GetFileName().GetFullPath()))
   {
     return false;
   }
@@ -132,10 +109,96 @@ void wxExViMacros::LoadDocument()
   
     while (child)
     {
-      m_Macros[child->GetName()] = child->GetNodeContent();
+      std::vector v;
+      
+      wxXmlNode* command = child->GetChildren();
+  
+      while (command)
+      {
+        v.push_back(command->GetNodeContent();
+        command = command->GetNext();
+      }
+      
+      m_Macros[child->GetName()] = v;
+      
       child = child->GetNext();
     }
   }
+}
+
+bool wxExViMacros::Playback(wxExVi* vi, const wxString& macro, int repeat)
+{
+  if (!IsRecorded(macro))
+  {
+    wxLogStatus(_("Unknown macro"));
+    return false;
+  }
+  
+  vi->GetSTC()->BeginUndoAction();
+  
+  bool stop = false;
+    
+  for (int i = 0; i < repeat; i++)
+  {
+    for (
+      std::vector<wxString>::const_iterator it = m_Macros[macro].begin();
+      it != m_Macros.end() && !stop;
+      ++it)
+    { 
+      const wxString command(*it);
+
+      if (command == "/" || command == "?")
+      {
+        ++it;
+        
+        if (it != m_Macros.end())
+        {
+          stop = !vi->FindNext(*it, command == "/");
+        }
+      }
+      else if (command == ":")
+      {
+        ++it;
+        
+        if (it != m_Macros.end())
+        {
+          stop = !vi->ExecCommand(*it);
+        }
+      }
+      else
+      {
+        stop = !vi->Command(command);
+      }
+    }
+  }
+
+  vi->GetSTC()->EndUndoAction();
+  
+  wxLogStatus(!stop ? _("Macro played back"): _("Macro aborted"));
+  
+  return !stop;
+}
+
+void wxExViMacros::Record(char c, bool separated)
+{
+  if (separated) 
+  {
+    m_Macros[m_Macro].push_back(c);
+  }
+  else
+  {
+    m_Macros[macro].back() += c;
+  }
+}
+
+void wxExViMacros::Record(const wxString& text)
+{
+  m_Macros[m_Macro].push_back(text);
+}
+
+void wxExViMacros::RecordSeparator()
+{
+  m_Macros[m_Macro].push_back(wxEmptyString);
 }
 
 void wxExViMacros::SaveDocument()
@@ -157,15 +220,49 @@ void wxExViMacros::SaveDocument()
   }
  
   for (
-    std::map<wxString, wxString>::reverse_iterator it = m_Macros.rbegin();
+    std::map<wxString, std::vector<wxString> >::reverse_iterator it = 
+      m_Macros.rbegin();
     it != m_Macros.rend();
     ++it)
   {
     wxXmlNode* element = new wxXmlNode(root, wxXML_ELEMENT_NODE, it->first);
-    wxXmlNode* content = new wxXmlNode(element, wxXML_TEXT_NODE, it->first, it->second);
+    
+    for (
+      std::vector<wxString>::iterator it = it2->second.begin();
+      it2 != it->second.end();
+      ++it2)
+    {
+      wxXmlNode* cmd = new wxXmlNode(root, wxXML_ELEMENT_NODE, "command");
+      wxXmlNode* content = new wxXmlNode(cmd, wxXML_TEXT_NODE, "", it2->second);
+    }
   }
   
   doc.Save(GetFileName().GetFullPath());
+}
+
+void wxExViMacros::StartRecording(const wxString& macro)
+{
+  if (m_IsRecording)
+  {
+    return;
+  }
+  
+  m_IsRecording = true;
+  m_Macro = macro;
+  m_Macros[m_Macro].clear();
+  
+  wxLogStatus(_("Macro recording"));
+}
+
+void wxExViMacros::StopRecording()
+{
+  if (!m_IsRecording)
+  {
+    return;
+  }
+  
+  m_IsRecording = false;
+  wxLogStatus(_("Macro is recorded"));
 }
 
 #endif // wxUSE_GUI
