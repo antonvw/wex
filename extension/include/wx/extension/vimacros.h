@@ -9,41 +9,56 @@
 #define _EXVIMACROS_H
 
 #include <map>
+#include <vector>
 #include <wx/filename.h>
 #include <wx/xml/xml.h>
 
 #if wxUSE_GUI
 
-/// Offers the macro collection.
+class wxExVi;
+
+/// Offers the macro collection, and allows
+/// recording and playback to vi component.
 class WXDLLIMPEXP_BASE wxExViMacros
 {
 public:  
   /// Default constructor.
   wxExViMacros();
   
-  /// Adds single char to macro.
-  void Add(const wxString& macro, char c, bool separated = false);
-  
-  /// Adds (separated) text to macro.
-  void Add(const wxString& macro, const wxString& text);
-  
-  /// Adds a separator only.
-  void AddSeparator(const wxString& macro);
-
-  /// Clears macro.
-  void Clear(const wxString& macro);
-  
-  /// Returns macro contents.
-  const wxString Get(const wxString& macro) const;
-  
-  /// Returns all macros as an array of strings.
+  /// Returns all macros (names) as an array of strings.
   const wxArrayString Get() const;
   
-  /// Returns separator.
-  const char GetSeparator() const {return m_Separator;};
+  /// Returns current or last macro.
+  const wxString& GetMacro() {return m_Macro;};
   
-  /// Is macro available.
-  bool IsAvailable(const wxString& macro =wxEmptyString) const;
+  /// Is macro recorded.
+  bool IsRecorded(const wxString& macro = wxEmptyString) const;
+  
+  /// Are we recording?
+  bool IsRecording() const {return m_IsRecording;};
+  
+  /// Plays back macro a number of repeat times on the vi component.
+  /// Returns true if all text could be executed.
+  bool Playback(wxExVi* vi, const wxString& macro, int repeat = 1);
+  
+  /// Records (separated) text to current macro.
+  /// The text to be recorded should be valid vi command,
+  /// though it is not checked here.
+  /// If you playback this macro however, the text
+  /// is sent to the vi component to execute it.
+  void Record(const wxString& text);
+  
+  /// Records single char to current macro.
+  void Record(char c, bool separated = false);
+  
+  /// Records a separator only to current macro.
+  void RecordSeparator();
+
+  /// Starts recording a macro (overwrites if exists).
+  void StartRecording(const wxString& macro);
+  
+  /// Stops recording.
+  void StopRecording();
   
   /// Loads all macros from xml document.
   static void LoadDocument();
@@ -53,9 +68,11 @@ public:
 private:  
   static const wxFileName GetFileName();
   static bool Load(wxXmlDocument& doc);
+  const std::vector< wxString > Get(const wxString& macro) const;
     
-  static std::map <wxString, wxString> m_Macros;
-  const char m_Separator;
+  static std::map <wxString, std::vector< wxString > > m_Macros;
+  bool m_IsRecording;
+  wxString m_Macro;
 };
 #endif // wxUSE_GUI
 #endif

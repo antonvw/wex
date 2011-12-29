@@ -1408,18 +1408,16 @@ void wxExSTC::MarkTargetChange()
 
 void wxExSTC::OnChar(wxKeyEvent& event)
 {
-  const bool skip = m_vi.OnChar(event);
-
-  if (skip && 
+  if (m_vi.OnChar(event))
+  {
+    if (
       GetReadOnly() && 
       wxIsalnum(event.GetUnicodeKey()))
-  {
-    wxLogStatus(_("Document is readonly"));
-    return;
-  }
+    {
+      wxLogStatus(_("Document is readonly"));
+      return;
+    }
 
-  if (skip)
-  {
     if (HexMode())
     {
       if (GetOvertype())
@@ -1597,12 +1595,7 @@ void wxExSTC::OnKeyDown(wxKeyEvent& event)
   {
     return;
   }
-
-  if (!m_vi.GetIsActive())
-  { 
-    event.Skip();
-  }
-
+  
   if (m_vi.OnKeyDown(event))
   {
     if (event.GetKeyCode() == WXK_RETURN)

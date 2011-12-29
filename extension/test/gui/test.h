@@ -74,6 +74,7 @@ public:
   void testShell();
   void testStatusBar();
   void testSTC();
+  void testSTCEntryDialog();
   void testSTCFile();
   void testStyle();
   void testUtil();
@@ -81,5 +82,6 @@ public:
   void testVCSCommand();
   void testVCSEntry();
   void testVi();
+  void testViMacros();
 };
 #endif
